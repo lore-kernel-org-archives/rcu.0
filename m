@@ -1,115 +1,71 @@
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6558D47A5E
+	for <rcu@vger.kernel.org>; Fri,  8 Dec 2023 22:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="X0X1fXqR"
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B23E1718
-	for <rcu@vger.kernel.org>; Thu,  7 Dec 2023 16:14:37 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-589d4033e84so748516eaf.1
-        for <rcu@vger.kernel.org>; Thu, 07 Dec 2023 16:14:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701994476; x=1702599276; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KsKHFVig8Dki2bHfANw8ALG7R64wuw23sFTNA9faAXw=;
-        b=X0X1fXqRWoy6qOoBp9aurah2Yrh+xZ46bIT3VwdaXNnaYvNFpCZKcF7Qm35xz2jDzr
-         OiSmbqH4RjXVLRCeld7zeoruhaNeNb7eqtnY/AMVNn/SFmF5YUAw+vJIB6MoX7jS4dX0
-         5umK00RiKQClpNIZV5U4Zf9PJbmTBF8wZ5y36N1sML2/KGSZ4f/kf8u5uYT52BRTu7TO
-         u4zM6/aMi+Q0htcn3gYITgg45GtOric04GqUnDfY82BALVurXtkifM6e/Wl5Su8Gfshl
-         zd8eZ18GfLYcPcQnyITCpjuRm5qOlLMlsk7oAbj3/EzxsFZN5d3CmcbcKwkFySRKVKEF
-         dvtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701994476; x=1702599276;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KsKHFVig8Dki2bHfANw8ALG7R64wuw23sFTNA9faAXw=;
-        b=wvI/f6Y4k3wxa+AGkXgLA6RpnOzI11Ox9Yxgt+guXoKSoCSLwfYfTaw0ph0dwPdKIk
-         Gc42zvN/9X1MNSF/0oSCdi6WjhtGRisJ+EwXUGo1y7suJ2w9KG35hHA534bfKzzpwrCs
-         VMp42MV1GCCX5cB7DqPNxuv4Vcj7kShQ3noAQgcu424iePJLzcFbauPJLDsIb+bdChge
-         JQx7VPwsVnv+1MFp+od2usXmwNjNe0449rf562hyyNIvMkCKhJSB2ZHDe+4RXFSTfDUK
-         beMH4/z4309Mc1o3SrQLs0Ymujpov1iGW1M0FJQ1507rIo3PrLrC4c7aX/BjXzvuuL1b
-         7K0w==
-X-Gm-Message-State: AOJu0Yw8aakCdDJ8/Pv0OBGAXzwgeEgYvoxqcd8NsvBcIrh5IE6OcCxD
-	LWFqnXsGu0wUlvME/T5G8h+kUQ==
-X-Google-Smtp-Source: AGHT+IGFhFEyHaePLp7aaH5vRLf4K84ntlrQqetpr3FB57IuOrBgLtT6SPajR7cU26q5dujAxeqGOg==
-X-Received: by 2002:a05:6358:4320:b0:170:b35:16fc with SMTP id r32-20020a056358432000b001700b3516fcmr3983467rwc.9.1701994475967;
-        Thu, 07 Dec 2023 16:14:35 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id h11-20020a65638b000000b0059cc2f1b7basm293544pgv.11.2023.12.07.16.14.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 16:14:35 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rBOVk-005IDr-12;
-	Fri, 08 Dec 2023 11:14:32 +1100
-Date: Fri, 8 Dec 2023 11:14:32 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: alexjlzheng@gmail.com
-Cc: djwong@kernel.org, bfoster@redhat.com, linux-xfs@vger.kernel.org,
-	raven@themaw.net, rcu@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: About the conflict between XFS inode recycle and VFS rcu-walk
-Message-ID: <ZXJf6C0V1znU+ngP@dread.disaster.area>
-References: <20231205113833.1187297-1-alexjlzheng@tencent.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pw+MKktq"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A29DC433C7;
+	Fri,  8 Dec 2023 22:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702073152;
+	bh=CgYvOu578AFfLRbBC6EHcv8SUptcV6n5XjcrCPA7nDI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Pw+MKktqBiWhUgo6VfuY7O/2yoxIeItlKxQdYL8fX1bz1s/zy7Ihk79bC/wo1Bxzi
+	 uRBhcWs2U2UYM8pajpvAJQqhLS1aJEJRK3lZWjiB/Kbo2QkALyO58X3A+D0NApzlhs
+	 Bn8MOA1bGIAehpbs4DsmTNLqnsEvc+owbWRKAMWST3L6qc9VgdnxnPkdwwF1GDQ9ft
+	 Gv8/IyjFjDnOlait/gfqbobtCiex+zCxlqD/+1oAvQaJ8mGK9w38VwSjdMgdTa4A87
+	 lZqYCSKGDMU3PDjsZgd5PKusJFY5k5lUn0Nhnu4KjvGW4OcWko9ekeeaqzdFsFBZ7v
+	 jnjrxXCI3aBvA==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	rcu <rcu@vger.kernel.org>
+Subject: [PATCH 0/8] rcu: Fix expedited GP deadlock (and cleanup some nocb stuff)
+Date: Fri,  8 Dec 2023 23:05:37 +0100
+Message-ID: <20231208220545.7452-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205113833.1187297-1-alexjlzheng@tencent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Dec 05, 2023 at 07:38:33PM +0800, alexjlzheng@gmail.com wrote:
-> Hi, all
-> 
-> I would like to ask if the conflict between xfs inode recycle and vfs rcu-walk
-> which can lead to null pointer references has been resolved?
-> 
-> I browsed through emails about the following patches and their discussions:
-> - https://lore.kernel.org/linux-xfs/20220217172518.3842951-2-bfoster@redhat.com/
-> - https://lore.kernel.org/linux-xfs/20220121142454.1994916-1-bfoster@redhat.com/
-> - https://lore.kernel.org/linux-xfs/164180589176.86426.501271559065590169.stgit@mickey.themaw.net/
-> 
-> And then came to the conclusion that this problem has not been solved, am I
-> right? Did I miss some patch that could solve this problem?
+TREE04 can trigger a writer stall if run with memory pressure. This
+is due to a circular dependency between waiting for expedited grace
+period and polling on expedited grace period when workqueues go back
+to mayday serialization.
 
-We fixed the known problems this caused by turning off the VFS
-functionality that the rcu pathwalks kept tripping over. See commit
-7b7820b83f23 ("xfs: don't expose internal symlink metadata buffers to
-the vfs").
+Here is a proposal fix.
 
-Apart from that issue, I'm not aware of any other issues that the
-XFS inode recycling directly exposes.
+Frederic Weisbecker (8):
+  rcu/nocb: Make IRQs disablement symetric
+  rcu/nocb: Re-arrange call_rcu() NOCB specific code
+  rcu/exp: Fix RCU expedited parallel grace period kworker allocation
+    failure recovery
+  rcu/exp: Handle RCU expedited grace period kworker allocation failure
+  rcu: s/boost_kthread_mutex/kthread_mutex
+  rcu/exp: Make parallel exp gp kworker per rcu node
+  rcu/exp: Handle parallel exp gp kworkers affinity
+  rcu/exp: Remove rcu_par_gp_wq
 
-> According to my understanding, the essence of this problem is that XFS reuses
-> the inode evicted by VFS, but VFS rcu-walk assumes that this will not happen.
+ kernel/rcu/rcu.h         |   5 -
+ kernel/rcu/tree.c        | 222 +++++++++++++++++++++++++--------------
+ kernel/rcu/tree.h        |  12 +--
+ kernel/rcu/tree_exp.h    |  81 +++-----------
+ kernel/rcu/tree_nocb.h   |  38 ++++---
+ kernel/rcu/tree_plugin.h |  52 ++-------
+ 6 files changed, 191 insertions(+), 219 deletions(-)
 
-It assumes that the inode will not change identity during the RCU
-grace period after the inode has been evicted from cache. We can
-safely reinstantiate an evicted inode without waiting for an RCU
-grace period as long as it is the same inode with the same content
-and same state.
-
-Problems *may* arise when we unlink the inode, then evict it, then a
-new file is created and the old slab cache memory address is used
-for the new inode. I describe the issue here:
-
-https://lore.kernel.org/linux-xfs/20220118232547.GD59729@dread.disaster.area/
-
-That said, we have exactly zero evidence that this is actually a
-problem in production systems. We did get systems tripping over the
-symlink issue, but there's no evidence that the
-unlink->close->open(O_CREAT) issues are manifesting in the wild and
-hence there hasn't been any particular urgency to address it.
-
-> Are there any recommended workarounds until an elegant and efficient solution
-> can be proposed? After all, causing a crash is extremely unacceptable in a
-> production environment.
-
-What crashes are you seeing in your production environment?
-
--Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+2.42.1
+
