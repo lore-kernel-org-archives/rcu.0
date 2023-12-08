@@ -1,102 +1,115 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="pMnlYoYB"
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320BD10FC
-	for <rcu@vger.kernel.org>; Thu,  7 Dec 2023 09:20:36 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c2a444311so9650135e9.2
-        for <rcu@vger.kernel.org>; Thu, 07 Dec 2023 09:20:36 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="X0X1fXqR"
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B23E1718
+	for <rcu@vger.kernel.org>; Thu,  7 Dec 2023 16:14:37 -0800 (PST)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-589d4033e84so748516eaf.1
+        for <rcu@vger.kernel.org>; Thu, 07 Dec 2023 16:14:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1701969634; x=1702574434; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701994476; x=1702599276; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MJZmz+Xu31RsK3yOUZORHxWDqDtm9lOUD8SdzkJgnz0=;
-        b=pMnlYoYBy+mj2rR3/EpiYBOyI5lboZ9sN1UVqJqvK1tCZNObhLFt+HC3VPjwwyHH1n
-         zVPApKrWTNhwC0QkXHqALz4UDUt5g83S0lyqkwb4QvUURp3j+FhOkT0Y4rD+IFo1QVat
-         rt/y3aMsqp72tCBxnVIDCgIxoI6p+1geAXDLYDcoEVO8+xUn7pPALt1mSkZO6qTF1RzP
-         sS6MtiKVzfNp27bLqyejx2bagwN124HFxiVADW7KQ5QVhGCuSmHns++jWXlm/mA5d1TT
-         9MHf+btuiuCxjULGDUmdw9YyZ+FKmSp9SBNpG2V5CasvWGG9vedneau/4YG+Fz5BDmnM
-         KGKA==
+        bh=KsKHFVig8Dki2bHfANw8ALG7R64wuw23sFTNA9faAXw=;
+        b=X0X1fXqRWoy6qOoBp9aurah2Yrh+xZ46bIT3VwdaXNnaYvNFpCZKcF7Qm35xz2jDzr
+         OiSmbqH4RjXVLRCeld7zeoruhaNeNb7eqtnY/AMVNn/SFmF5YUAw+vJIB6MoX7jS4dX0
+         5umK00RiKQClpNIZV5U4Zf9PJbmTBF8wZ5y36N1sML2/KGSZ4f/kf8u5uYT52BRTu7TO
+         u4zM6/aMi+Q0htcn3gYITgg45GtOric04GqUnDfY82BALVurXtkifM6e/Wl5Su8Gfshl
+         zd8eZ18GfLYcPcQnyITCpjuRm5qOlLMlsk7oAbj3/EzxsFZN5d3CmcbcKwkFySRKVKEF
+         dvtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701969634; x=1702574434;
+        d=1e100.net; s=20230601; t=1701994476; x=1702599276;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MJZmz+Xu31RsK3yOUZORHxWDqDtm9lOUD8SdzkJgnz0=;
-        b=qr5n0APezrK3Rn+EN7gmY8f9vsIgGe6y4WIGVRIvzjJz+ZDwLiGpwG9yNhiJt0Vuxz
-         V+SnXPeoDud1zmLmZUD+5X74Rnzn5r5OePD5P5kGkaQlmvs3VJ6hMCt03YstZTaBTq8C
-         ISqQdXUS4PUUTEBnx2Zy76S+bdKDsk8wnkR9bZxvZMKiCrrQILf/svm73k396i/fbHE/
-         H4CXIlsn3uR7F9PuftW6XrX3NDA6Z0bv1rxqKACLz3Vh2tRKZDuLrWu2ZkWmTOIKvwPv
-         nUA+G4c9oEwtfH+xjNEHe+6XSgf2KQh9h/W1+hTQDbMLw1MCv8CwCWa9OR41jecYszsX
-         uR7A==
-X-Gm-Message-State: AOJu0YwzShb2UkUdXa2AMzIyWrE4ZQFZ+lF0cI7HsGDrj5RGcP64iEdK
-	drlELWAL+0LoTZPxyTLnpD0MWA==
-X-Google-Smtp-Source: AGHT+IHBoX8I60F64oLKl/3IeE8m25oA1jeZ3zTmZ1x7KOkD6L2XcMtJGWBkxLiOkWToPoUqFUixhw==
-X-Received: by 2002:a05:600c:6009:b0:40c:251a:101a with SMTP id az9-20020a05600c600900b0040c251a101amr697747wmb.311.1701969634537;
-        Thu, 07 Dec 2023 09:20:34 -0800 (PST)
-Received: from airbuntu ([104.132.45.98])
-        by smtp.gmail.com with ESMTPSA id bd19-20020a05600c1f1300b0040839fcb217sm318562wmb.8.2023.12.07.09.20.33
+        bh=KsKHFVig8Dki2bHfANw8ALG7R64wuw23sFTNA9faAXw=;
+        b=wvI/f6Y4k3wxa+AGkXgLA6RpnOzI11Ox9Yxgt+guXoKSoCSLwfYfTaw0ph0dwPdKIk
+         Gc42zvN/9X1MNSF/0oSCdi6WjhtGRisJ+EwXUGo1y7suJ2w9KG35hHA534bfKzzpwrCs
+         VMp42MV1GCCX5cB7DqPNxuv4Vcj7kShQ3noAQgcu424iePJLzcFbauPJLDsIb+bdChge
+         JQx7VPwsVnv+1MFp+od2usXmwNjNe0449rf562hyyNIvMkCKhJSB2ZHDe+4RXFSTfDUK
+         beMH4/z4309Mc1o3SrQLs0Ymujpov1iGW1M0FJQ1507rIo3PrLrC4c7aX/BjXzvuuL1b
+         7K0w==
+X-Gm-Message-State: AOJu0Yw8aakCdDJ8/Pv0OBGAXzwgeEgYvoxqcd8NsvBcIrh5IE6OcCxD
+	LWFqnXsGu0wUlvME/T5G8h+kUQ==
+X-Google-Smtp-Source: AGHT+IGFhFEyHaePLp7aaH5vRLf4K84ntlrQqetpr3FB57IuOrBgLtT6SPajR7cU26q5dujAxeqGOg==
+X-Received: by 2002:a05:6358:4320:b0:170:b35:16fc with SMTP id r32-20020a056358432000b001700b3516fcmr3983467rwc.9.1701994475967;
+        Thu, 07 Dec 2023 16:14:35 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id h11-20020a65638b000000b0059cc2f1b7basm293544pgv.11.2023.12.07.16.14.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 09:20:34 -0800 (PST)
-Date: Thu, 7 Dec 2023 17:20:32 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrea Righi <andrea.righi@canonical.com>,
-	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-Message-ID: <20231207172032.kto27hfdxa4juq7b@airbuntu>
-References: <20231203011252.233748-1-qyousef@layalina.io>
- <20231205162043.GA2558193@google.com>
+        Thu, 07 Dec 2023 16:14:35 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rBOVk-005IDr-12;
+	Fri, 08 Dec 2023 11:14:32 +1100
+Date: Fri, 8 Dec 2023 11:14:32 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: alexjlzheng@gmail.com
+Cc: djwong@kernel.org, bfoster@redhat.com, linux-xfs@vger.kernel.org,
+	raven@themaw.net, rcu@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: About the conflict between XFS inode recycle and VFS rcu-walk
+Message-ID: <ZXJf6C0V1znU+ngP@dread.disaster.area>
+References: <20231205113833.1187297-1-alexjlzheng@tencent.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205162043.GA2558193@google.com>
+In-Reply-To: <20231205113833.1187297-1-alexjlzheng@tencent.com>
 
-On 12/05/23 16:20, Joel Fernandes wrote:
+On Tue, Dec 05, 2023 at 07:38:33PM +0800, alexjlzheng@gmail.com wrote:
+> Hi, all
+> 
+> I would like to ask if the conflict between xfs inode recycle and vfs rcu-walk
+> which can lead to null pointer references has been resolved?
+> 
+> I browsed through emails about the following patches and their discussions:
+> - https://lore.kernel.org/linux-xfs/20220217172518.3842951-2-bfoster@redhat.com/
+> - https://lore.kernel.org/linux-xfs/20220121142454.1994916-1-bfoster@redhat.com/
+> - https://lore.kernel.org/linux-xfs/164180589176.86426.501271559065590169.stgit@mickey.themaw.net/
+> 
+> And then came to the conclusion that this problem has not been solved, am I
+> right? Did I miss some patch that could solve this problem?
 
-> I think a better approach is not do an anti-CONFIG option and instead do
-> a shorter parameter "rcutree.lazy=0". If CONFIG_RCU_LAZY is set, then we can
-> just default to keeping lazy on. I'd like to avoid proliferation of already
-> large number of RCU config options and more chances of errors.
+We fixed the known problems this caused by turning off the VFS
+functionality that the rcu pathwalks kept tripping over. See commit
+7b7820b83f23 ("xfs: don't expose internal symlink metadata buffers to
+the vfs").
 
-The issue is that we don't want to ship with default on :-)
+Apart from that issue, I'm not aware of any other issues that the
+XFS inode recycling directly exposes.
 
-> I also want lazy to be ON for everybody configuring it into the kernel by
-> default (those who don't want it just set CONFIG_RCU_LAZY=n), this is what
+> According to my understanding, the essence of this problem is that XFS reuses
+> the inode evicted by VFS, but VFS rcu-walk assumes that this will not happen.
 
-This is still the default behavior.
+It assumes that the inode will not change identity during the RCU
+grace period after the inode has been evicted from cache. We can
+safely reinstantiate an evicted inode without waiting for an RCU
+grace period as long as it is the same inode with the same content
+and same state.
 
-And all or nothing approach is not practical. You're telling me if I can't ship
-with default off, then I must disable it altogether. Adoption will become
-harder IMHO.
+Problems *may* arise when we unlink the inode, then evict it, then a
+new file is created and the old slab cache memory address is used
+for the new inode. I describe the issue here:
 
-> tglx also suggested that's why we made changed of our initial prototypes of
-> call_rcu_lazy() and instead we made call_rcu() to put everyone on the lazy
-> train and not add more APIs (thus causing more confusion to kernel
-> developers). This was a bit painful, but it was worth it.
+https://lore.kernel.org/linux-xfs/20220118232547.GD59729@dread.disaster.area/
 
-I think implementation details make sense, but orthogonal to the problem of
-enabling CONFIG_RCU_LAZY=y but still ship with default off. It is a risky
-change and we want to start staging with default off first. Not allowing this
-in upstream means I'll either have to resort to keep it disabled, or carry out
-of tree patch to get what I want. Both of which would be unfortunate.
+That said, we have exactly zero evidence that this is actually a
+problem in production systems. We did get systems tripping over the
+symlink issue, but there's no evidence that the
+unlink->close->open(O_CREAT) issues are manifesting in the wild and
+hence there hasn't been any particular urgency to address it.
 
+> Are there any recommended workarounds until an elegant and efficient solution
+> can be proposed? After all, causing a crash is extremely unacceptable in a
+> production environment.
 
-Thanks!
+What crashes are you seeing in your production environment?
 
---
-Qais Yousef
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
