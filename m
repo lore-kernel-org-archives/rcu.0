@@ -1,352 +1,136 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9197354657
-	for <rcu@vger.kernel.org>; Fri,  8 Dec 2023 22:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N7ajCbOy"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6F3DC433C7;
-	Fri,  8 Dec 2023 22:06:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702073176;
-	bh=JLGAnxgy6nMvCAyCTe/HdN56Qsu1Gnt8OmKPAxvGxvo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N7ajCbOy9LlP59Yg0Xo3AzLcwsyZc0S0S2qpauxE4tjdhJgOZWjBfBSnmxCsRX40B
-	 39C1NreJGUtnKIw5QIjWyMIH/c2/auPtH8rmtB9WgobxtqUd7hU4jZVQhhVh6S2KCp
-	 Bo0Vs1Kv3ZAtjG2/6SzfBAkVmV7Be4cnc1Tb9FkNpKscIEgab7Cfu/rSoF29CyTqgr
-	 5OtUd2/ThgK7newWTCY06JwbRc5Rdwyumd5xH0xi7Kn9LkiHwh0STVkYeB7c00JuuS
-	 DIj/JSf2kXsEKAB6DdmQ/ajkBNQpJQ7gYryshlUO8m8DzaeZ/EnY587PfblOytxp0r
-	 IxkoHLVG8girA==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	Anna-Maria Behnsen <anna-maria.behnsen@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: [PATCH 8/8] rcu/exp: Remove rcu_par_gp_wq
-Date: Fri,  8 Dec 2023 23:05:45 +0100
-Message-ID: <20231208220545.7452-9-frederic@kernel.org>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231208220545.7452-1-frederic@kernel.org>
-References: <20231208220545.7452-1-frederic@kernel.org>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="MZq5jTgV"
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F12010D2
+	for <rcu@vger.kernel.org>; Fri,  8 Dec 2023 22:26:32 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77f3c4914e5so134635485a.3
+        for <rcu@vger.kernel.org>; Fri, 08 Dec 2023 22:26:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1702103191; x=1702707991; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rGEqRbAOqRDZpXV3cM8EuFLtIYKbtDmEW5PqabCIpAE=;
+        b=MZq5jTgVRTRSPm3zRY4rft+fJRk2xCHY19K6F7t2gL/RFh4wmcqtJfjyK2aS1ZOYBW
+         QUGL8BU78j6BnrsmL/bTLfodSHpIFW63qRrllfV6ShR6qfZzR8R0SKc/p7Za2mK1K8h6
+         rkp/ndLAMS2CkUSkzS5BqzI2cyzzcP2K1wwI4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702103191; x=1702707991;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rGEqRbAOqRDZpXV3cM8EuFLtIYKbtDmEW5PqabCIpAE=;
+        b=QRZxc+ET2hd3KqlX/Pqe6fz23U1AZxp6ZC+DJuwAjIunOMvb45b0HNiCSEsr2vfVqv
+         R2OsLUpwYBksCMAnB2EBpnfbmIS295IxZoWaib/Bmo8ZxNr+wgyqaDkAlbOWnIXhmWd5
+         oz0E+M5cwvOga93VmaKSqm5qbDHg/3/Oce5tAMufNKTg/Jir1WH94Qt4gptVRA9DOlOO
+         2oCC5Q2WhLjtRD2S1mgiRu4cWV4WDv1G1fw0c0hyk5UCPqjIrCv+zqtNzXojX5U7mRRk
+         gxWOM5YMMZRTHu4miSN1zAy1n4TShXRogmtCDE+gz6Z0arcWe4lkq3RjDgMNog+CfWnr
+         Ygcw==
+X-Gm-Message-State: AOJu0YzV7Xrk1mWFRZugS+axJ94U4RZc6TXypcf1oGMzajDoamW1NJ6X
+	d000lE4haJw59x0Phdvvp0P6GQ==
+X-Google-Smtp-Source: AGHT+IEfmFqu5X1I7POQ6eMTDP02vZ0lPLNqpg+VRe6aWHQnfAy9uIrcy9YbOSXaWuirdwtTFLv3PA==
+X-Received: by 2002:ae9:c013:0:b0:77f:395c:3794 with SMTP id u19-20020ae9c013000000b0077f395c3794mr1423302qkk.106.1702103191221;
+        Fri, 08 Dec 2023 22:26:31 -0800 (PST)
+Received: from [100.115.92.196] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id tn24-20020a05620a3c1800b0077f052fa73bsm1227929qkn.15.2023.12.08.22.26.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Dec 2023 22:26:30 -0800 (PST)
+Message-ID: <0d531690-1240-4356-a647-b4c71a56b31d@joelfernandes.org>
+Date: Sat, 9 Dec 2023 01:26:27 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Content-Language: en-US
+To: Qais Yousef <qyousef@layalina.io>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Andrea Righi <andrea.righi@canonical.com>, John Stultz <jstultz@google.com>,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+References: <20231203011252.233748-1-qyousef@layalina.io>
+ <20231205162043.GA2558193@google.com>
+ <20231207172032.kto27hfdxa4juq7b@airbuntu>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20231207172032.kto27hfdxa4juq7b@airbuntu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-TREE04 running on short iterations can produce writer stalls of the
-following kind:
+On 12/7/23 12:20, Qais Yousef wrote:
+> On 12/05/23 16:20, Joel Fernandes wrote:
+> 
+>> I think a better approach is not do an anti-CONFIG option and instead do
+>> a shorter parameter "rcutree.lazy=0". If CONFIG_RCU_LAZY is set, then we can
+>> just default to keeping lazy on. I'd like to avoid proliferation of already
+>> large number of RCU config options and more chances of errors.
+> 
+> The issue is that we don't want to ship with default on :-)
 
- ??? Writer stall state RTWS_EXP_SYNC(4) g3968 f0x0 ->state 0x2 cpu 0
- task:rcu_torture_wri state:D stack:14568 pid:83    ppid:2      flags:0x00004000
- Call Trace:
-  <TASK>
-  __schedule+0x2de/0x850
-  ? trace_event_raw_event_rcu_exp_funnel_lock+0x6d/0xb0
-  schedule+0x4f/0x90
-  synchronize_rcu_expedited+0x430/0x670
-  ? __pfx_autoremove_wake_function+0x10/0x10
-  ? __pfx_synchronize_rcu_expedited+0x10/0x10
-  do_rtws_sync.constprop.0+0xde/0x230
-  rcu_torture_writer+0x4b4/0xcd0
-  ? __pfx_rcu_torture_writer+0x10/0x10
-  kthread+0xc7/0xf0
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x2f/0x50
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork_asm+0x1b/0x30
-  </TASK>
+Yes, so you can ship with rcutree.enable_lazy=0 which this patch adds, no? In
+theory, you can accomplish this by simply CONFIG_RCU_LAZY=y and
+rcutree.enable_lazy=0 or rcutree.lazy=0.
 
-Waiting for an expedited grace period and polling for an expedited
-grace period both are operations that internally rely on the same
-workqueue performing necessary asynchronous work.
+However, I see the inconvenience factor (you have to set a boot parameter
+without making this a purely .config affair) so I am not terribly opposed with
+this patch (I am also guilty of adding a CONFIG option to avoid having to set a
+boot parameter (for unrelated feature), but in my defense I did not know a boot
+parameter existed for the said feature). ;-)
 
-However, a dependency chain is involved between those two operations,
-as depicted below:
+>> I also want lazy to be ON for everybody configuring it into the kernel by
+>> default (those who don't want it just set CONFIG_RCU_LAZY=n), this is what
+> 
+> This is still the default behavior.
+> 
+> And all or nothing approach is not practical. You're telling me if I can't ship
+> with default off, then I must disable it altogether. Adoption will become
+> harder IMHO.
 
-       ====== CPU 0 =======                          ====== CPU 1 =======
+No, that's not what I said. You misunderstood me (which is probably my fault at
+not being more clear). It is not all or nothing. I am just saying you can
+accomplish "default off" by just setting the boot parameter. With this patch,
+you are not willing to do that out of convenience, which I can understand but
+still we should at least have a discussion about that.
 
-                                                     synchronize_rcu_expedited()
-                                                         exp_funnel_lock()
-                                                             mutex_lock(&rcu_state.exp_mutex);
-    start_poll_synchronize_rcu_expedited
-        queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-                                                         synchronize_rcu_expedited_queue_work()
-                                                             queue_work(rcu_gp_wq, &rew->rew_work);
-                                                         wait_event() // A, wait for &rew->rew_work completion
-                                                         mutex_unlock() // B
-    //======> switch to kworker
+> 
+>> tglx also suggested that's why we made changed of our initial prototypes of
+>> call_rcu_lazy() and instead we made call_rcu() to put everyone on the lazy
+>> train and not add more APIs (thus causing more confusion to kernel
+>> developers). This was a bit painful, but it was worth it.
+> 
+> I think implementation details make sense, but orthogonal to the problem of
+> enabling CONFIG_RCU_LAZY=y but still ship with default off. It is a risky
+> change and we want to start staging with default off first.
 
-    sync_rcu_do_polled_gp() {
-        synchronize_rcu_expedited()
-            exp_funnel_lock()
-                mutex_lock(&rcu_state.exp_mutex); // C, wait B
-                ....
-    } // D
+Never had any issue with that. I very much want to see this safely rolled out to
+Android. ;-)
 
-Since workqueues are usually implemented on top of several kworkers
-handling the queue concurrently, the above situation wouldn't deadlock
-most of the time because A then doesn't depend on D. But in case of
-memory stress, a single kworker may end up handling alone all the works
-in a serialized way. In that case the above layout becomes a problem
-because A then waits for D, closing a circular dependency:
+> Not allowing this
+> in upstream means I'll either have to resort to keep it disabled, or carry out
+> of tree patch to get what I want. Both of which would be unfortunate.
 
-	A -> D -> C -> B -> A
+There is already precedent for building things into the kernel but keeping them
+default off, so I don't have an issue with the experimentation use case. I was
+just discussing whether the additional CONFIG is really needed when you already
+have added a boot param to keep it default-off. If you have an argument for why
+that would be really helpful [1].
 
-This however only happens when CONFIG_RCU_EXP_KTHREAD=n. Indeed
-synchronize_rcu_expedited() is otherwise implemented on top of a kthread
-worker while polling still relies on rcu_gp_wq workqueue, breaking the
-above circular dependency chain.
+Also, nit: rcutree.enable_lazy is probably better than rcutree.enable_rcu_lazy.
+The 'rcu' is redundant.
 
-Fix this with making expedited grace period to always rely on kthread
-worker. The workqueue based implementation is essentially a duplicate
-anyway now that the per-node initialization is performed by per-node
-kthread workers.
+Other than that, the patch LGTM but if you could update the commit log with
+details about [1], that would be great. And while at it, you could add my tag:
 
-Meanwhile the CONFIG_RCU_EXP_KTHREAD switch is still kept around to
-manage the scheduler policy of these kthread workers.
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Reported-by: Anna-Maria Behnsen <anna-maria.behnsen@linutronix.de>
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Suggested-by: Joel Fernandes <joel@joelfernandes.org>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/rcu.h      |  4 ---
- kernel/rcu/tree.c     | 40 ++++---------------------
- kernel/rcu/tree.h     |  4 ---
- kernel/rcu/tree_exp.h | 70 +------------------------------------------
- 4 files changed, 7 insertions(+), 111 deletions(-)
+thanks,
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 6beaf70d629f..99032b9cb667 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -623,11 +623,7 @@ int rcu_get_gp_kthreads_prio(void);
- void rcu_fwd_progress_check(unsigned long j);
- void rcu_force_quiescent_state(void);
- extern struct workqueue_struct *rcu_gp_wq;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- extern struct kthread_worker *rcu_exp_gp_kworker;
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--extern struct workqueue_struct *rcu_par_gp_wq;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- void rcu_gp_slow_register(atomic_t *rgssp);
- void rcu_gp_slow_unregister(atomic_t *rgssp);
- #endif /* #else #ifdef CONFIG_TINY_RCU */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e75ddf42e9b1..0c28adb56ad4 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4367,7 +4367,6 @@ rcu_boot_init_percpu_data(int cpu)
- 	rcu_boot_init_nocb_percpu_data(rdp);
- }
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- struct kthread_worker *rcu_exp_gp_kworker;
- 
- static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
-@@ -4387,7 +4386,9 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
- 		return;
- 	}
- 	WRITE_ONCE(rnp->exp_kworker, kworker);
--	sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
-+
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
- }
- 
- static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
-@@ -4411,39 +4412,14 @@ static void __init rcu_start_exp_gp_kworker(void)
- 		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
--	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
--}
--
--static inline void rcu_alloc_par_gp_wq(void)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--struct workqueue_struct *rcu_par_gp_wq;
--
--static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
--{
--}
--
--static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
--{
--	return NULL;
--}
--
--static void __init rcu_start_exp_gp_kworker(void)
--{
--}
- 
--static inline void rcu_alloc_par_gp_wq(void)
--{
--	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
--	WARN_ON(!rcu_par_gp_wq);
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
- }
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- 
- static void rcu_spawn_rnp_kthreads(struct rcu_node *rnp)
- {
--	if ((IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) ||
--	     IS_ENABLED(CONFIG_RCU_BOOST)) && rcu_scheduler_fully_active) {
-+	if (rcu_scheduler_fully_active) {
- 		mutex_lock(&rnp->kthread_mutex);
- 		rcu_spawn_one_boost_kthread(rnp);
- 		rcu_spawn_exp_par_gp_kworker(rnp);
-@@ -4527,9 +4503,6 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
- 	struct rcu_node *rnp;
- 	struct task_struct *task_boost, *task_exp;
- 
--	if (!IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) && !IS_ENABLED(CONFIG_RCU_BOOST))
--		return;
--
- 	rdp = per_cpu_ptr(&rcu_data, cpu);
- 	rnp = rdp->mynode;
- 
-@@ -5209,7 +5182,6 @@ void __init rcu_init(void)
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
--	rcu_alloc_par_gp_wq();
- 
- 	/* Fill in default value for rcutree.qovld boot parameter. */
- 	/* -After- the rcu_node ->lock fields are initialized! */
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index ef3d3385063f..35f7af331e6c 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -24,11 +24,7 @@
- /* Communicate arguments to a workqueue handler. */
- struct rcu_exp_work {
- 	unsigned long rew_s;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- 	struct kthread_work rew_work;
--#else
--	struct work_struct rew_work;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- };
- 
- /* RCU's kthread states for tracing. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 744d6acf5553..dd33948ab80f 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -420,7 +420,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 
- static void rcu_exp_sel_wait_wake(unsigned long s);
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
- {
- 	struct rcu_exp_work *rewp =
-@@ -472,69 +471,6 @@ static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew
- 	kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
- }
- 
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp =
--		container_of(wp, struct rcu_exp_work, rew_work);
--
--	__sync_rcu_exp_select_node_cpus(rewp);
--}
--
--static inline bool rcu_exp_worker_started(void)
--{
--	return !!READ_ONCE(rcu_gp_wq);
--}
--
--static inline bool rcu_exp_par_worker_started(struct rcu_node *rnp)
--{
--	return !!READ_ONCE(rcu_par_gp_wq);
--}
--
--static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
--{
--	int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
--
--	INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
--	/* If all offline, queue the work on an unbound CPU. */
--	if (unlikely(cpu > rnp->grphi - rnp->grplo))
--		cpu = WORK_CPU_UNBOUND;
--	else
--		cpu += rnp->grplo;
--	queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
--}
--
--static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
--{
--	flush_work(&rnp->rew.rew_work);
--}
--
--/*
-- * Work-queue handler to drive an expedited grace period forward.
-- */
--static void wait_rcu_exp_gp(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp;
--
--	rewp = container_of(wp, struct rcu_exp_work, rew_work);
--	rcu_exp_sel_wait_wake(rewp->rew_s);
--}
--
--static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
--{
--	INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
--	queue_work(rcu_gp_wq, &rew->rew_work);
--}
--
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--	destroy_work_on_stack(&rew->rew_work);
--}
--#endif /* CONFIG_RCU_EXP_KTHREAD */
--
- /*
-  * Select the nodes that the upcoming expedited grace period needs
-  * to wait for.
-@@ -978,8 +914,7 @@ void synchronize_rcu_expedited(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
--	can_queue = (rcu_scheduler_active != RCU_SCHEDULER_INIT) &&
--		    rcu_exp_worker_started();
-+	can_queue = (rcu_scheduler_active != RCU_SCHEDULER_INIT) && rcu_exp_worker_started();
- 
- 	/* Is the state is such that the call is a grace period? */
- 	if (rcu_blocking_is_gp()) {
-@@ -1027,9 +962,6 @@ void synchronize_rcu_expedited(void)
- 
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
--
--	if (likely(can_queue))
--		synchronize_rcu_expedited_destroy_work(&rew);
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
- 
--- 
-2.42.1
+ - Joel
 
