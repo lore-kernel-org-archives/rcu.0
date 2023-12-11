@@ -1,39 +1,39 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="g4Oa9O5H"
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74B9D8
-	for <rcu@vger.kernel.org>; Sun, 10 Dec 2023 17:56:14 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35f418f394dso6603625ab.0
-        for <rcu@vger.kernel.org>; Sun, 10 Dec 2023 17:56:14 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="o92bPhVg"
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DE6D8
+	for <rcu@vger.kernel.org>; Sun, 10 Dec 2023 17:57:29 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7b6f19f3af9so176813639f.3
+        for <rcu@vger.kernel.org>; Sun, 10 Dec 2023 17:57:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702259774; x=1702864574; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1702259849; x=1702864649; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0kLLsvsTVKPGR1aUZ5CxdQS0YxKVY+vVHvFwMxx0irc=;
-        b=g4Oa9O5Hln/Gju5Cu4vz7WCEQ1kxg3vGsy9IWQQSeTqi9Xnu0dwpiB2nTmoTh9mehJ
-         XSh6tnHHj3i1CibKkuOcOG2QKJy0WZkGcN/avk7RYBn8UC9oBbZHVN+1i+UqzyoI66a6
-         sk8unpcGTfIkOfKNQFbsgjkanf5tY6d8qfSfo=
+        bh=/Vr+YzVHJ/mPJrnzMDjXJsm4sTrJoVDHcdAw1WNnfhs=;
+        b=o92bPhVgbk4+YC5frbcvgO0CTMoUE0sUyyXnbwH+wCFtUN6ib9YMCx0tp8EOYws4C1
+         i7pN14jEvQUfKBdfvVJ3GhT7GzpAqoOF6sEGmVU40vHAt4pTuJYP2bNG4tkKcwbbZupN
+         Nuom+jKi1EpuYFxmOY6M2q6xjvv+chr+00EE8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702259774; x=1702864574;
+        d=1e100.net; s=20230601; t=1702259849; x=1702864649;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0kLLsvsTVKPGR1aUZ5CxdQS0YxKVY+vVHvFwMxx0irc=;
-        b=UgwVJmkpConUTQAsIJrrp5WE/OU3X577GxVkGwlqcjx7b/CQ+bzWYO6ZM9h+9i+GSi
-         TZLyRlCvrB6Vf1D4mffDXkj0048o6c63oHFj/AfvLHnZXwl1GaF+ou4KBHgaESKfAIMi
-         h173ULSXlf/NdOKA/r17FXK3YH/j6Ihy45ch86zP16V15EQv4F1HeQTeSUwcYcKuACoV
-         I12n9vUpW83zGk5NiNUzFD9x2yI3rMHfsw4tah8qcLNCQQLE+s8rmrSvqRqimkiJvPcX
-         ZPIr2vLErMpS8LFdCeXqnfW6nzghmSUa7CHebQMAyWEn8mB8ZlNKSwS1jwHQDjrJz2Vr
-         Fqvw==
-X-Gm-Message-State: AOJu0Yw+1iPbbZe6y/7PtKzpHfaa04IhK9M8aQzMIXu6isnxY82ttbTp
-	Zjq7tu83QQI9pWYcd+HOGtjOkP4JmuZNF7dKhgM=
-X-Google-Smtp-Source: AGHT+IGEpi2Ao8lqbCSALU9/7Mujq6xkLaKre4TBcEq1OUySc3xDXHgUE65n/8qQgl1T2EeISorClA==
-X-Received: by 2002:a05:6e02:1689:b0:35d:59a2:331d with SMTP id f9-20020a056e02168900b0035d59a2331dmr6953090ila.33.1702259773949;
-        Sun, 10 Dec 2023 17:56:13 -0800 (PST)
+        bh=/Vr+YzVHJ/mPJrnzMDjXJsm4sTrJoVDHcdAw1WNnfhs=;
+        b=ZQHmNmqgFt+QdrTjkTDu1rWIeMl08YneWugrjP5S/o/Zvbwv/CfBtsEKA1+/Quzofv
+         9i8m2hi6rTzNvQDsSyT3iCNV2VeyicOWRzy/E+qziVI2xyz3gicn1EZGph8cBqWh3oIC
+         RQ/pa5QBvmGF2qo/3yzJgahm95tKAR5FJTbZ6FMwVLPkr/CgtcdiL5YIANfz+XSEPf+q
+         9M2V/alykqSRqazIt7qsDCZoygxSVKcfiEc9dukwtjHbYcUkZtLVva4hyexBJME2+7Qz
+         po4KKVCCr6RrcClWiZIoqr/1o6gaQGQENM9GG5EE0nmGZeMNVIMjZtiE/PETCh1QzEsu
+         OFYg==
+X-Gm-Message-State: AOJu0YwoddcpzQd3kZXY7yt2ZbhwiUBw/Do+dIiXDpJX2vU6/uzjIkJ8
+	rwa6qGXQpV/YKnhh/hrPjroomA==
+X-Google-Smtp-Source: AGHT+IFnO0bKn5i2P1O8YLdvk4Da1GGmaNBPL6L8dgKEQo7Tbfw6V9d/9SYoyqYp1nMH3ueuW9QIBw==
+X-Received: by 2002:a6b:4115:0:b0:7b4:28f8:d0 with SMTP id n21-20020a6b4115000000b007b428f800d0mr5524811ioa.25.1702259849093;
+        Sun, 10 Dec 2023 17:57:29 -0800 (PST)
 Received: from joelboxx5.c.googlers.com.com (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
-        by smtp.gmail.com with ESMTPSA id t22-20020a02ab96000000b0046856360a07sm1669337jan.13.2023.12.10.17.56.13
+        by smtp.gmail.com with ESMTPSA id h11-20020a056602130b00b007b74680132esm474248iov.38.2023.12.10.17.57.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 17:56:13 -0800 (PST)
+        Sun, 10 Dec 2023 17:57:28 -0800 (PST)
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To: linux-kernel@vger.kernel.org,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -45,9 +45,9 @@ Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
 	rcu@vger.kernel.org
-Subject: [PATCH] srcu: Improvement comments about acceleration leak
-Date: Mon, 11 Dec 2023 01:56:05 +0000
-Message-ID: <20231211015606.1067121-1-joel@joelfernandes.org>
+Subject: [PATCH v2] srcu: Improve comments about acceleration leak
+Date: Mon, 11 Dec 2023 01:57:16 +0000
+Message-ID: <20231211015717.1067822-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -68,6 +68,8 @@ Cc: Frederic Weisbecker <frederic@kernel.org>
 Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
+v1->v2: Fix typo in change log.
+
  kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
  1 file changed, 20 insertions(+), 4 deletions(-)
 
