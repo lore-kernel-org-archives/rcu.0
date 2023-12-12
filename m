@@ -1,99 +1,81 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C2efV6wn"
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2302CF;
-	Tue, 12 Dec 2023 09:34:39 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5bdb0be3591so4932404a12.2;
-        Tue, 12 Dec 2023 09:34:39 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UcB3TR4+"
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2EA93;
+	Tue, 12 Dec 2023 09:39:55 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6ce33234fd7so3141600b3a.0;
+        Tue, 12 Dec 2023 09:39:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702402479; x=1703007279; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LjqNPmTsqEqqrVWfas3u5VADPjrH7KEM9DoAzSldHo8=;
-        b=C2efV6wnQoeNuG1XKhWn2EH7YE8h3aRgl0xJBF4kyooXrLhdy2PlNb+G+Jm2GRlJWK
-         hmwtgBLvJgKYQ0csInWxFSh0nl77YYQ2uttXKsCjvUJruJG/CZQlLMxBKGp+fRO7qWJZ
-         bztBfZqlK4RRejx5+/ricNkNK6sq0gka1j9emqOQ3AgGQZJD/+jqDmofRBNsVA/A39rX
-         2rJLbQ1Vr2wnwS/7YfVSEXV4t6dnQijanazZJJM3w0HxIKCgfqbUkYilN7TD3eyVOsda
-         HXeaUrAYZBpujWINircmBTHZkNIN9zpgROgy6MF9Hc5iQdgTLLGJvhUi8rDUcr8AWVMa
-         pBxg==
+        d=gmail.com; s=20230601; t=1702402794; x=1703007594; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0bimU+RjPXnA4GcSVMRC2y8VYJ0x8Wxk5dqkFvYFDmQ=;
+        b=UcB3TR4+hVzwbuXwUvncgd6U5wdRg6cfgNSEOOXdeXTGVp/ALfzBJNLs8Mj776Zn2q
+         n3T5Tjd3dFaQlXoHJN2SLXUn+nVfHMK7zZBxg3y8pleb78t9WT2sdbcIIbIGpQ6N9szh
+         QwdzxVV1W6Qsq/qbRDuSlGg6MldIt9AvuCIAIGhifRTSf207jLbJomMvsb8U86/LHeKL
+         vYmLmmjURW9eXrxsjoVxmR7SRZBxmXtfz0uEaMB7PDh1N8jYrShFw1ckARbrunRQyLqr
+         sgo++0VJ6+binmrFA3a13ggj+ejmWTLCt13qu/DxM7Nh9YwDE9EnAGuks4GqlrmBSvOQ
+         p8/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402479; x=1703007279;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LjqNPmTsqEqqrVWfas3u5VADPjrH7KEM9DoAzSldHo8=;
-        b=QP/PsPXD3S/a4mPZ943bXuMeoWJrmNJQ+r/8VMRKtuAaYv/tnR6RSS9Q1Ccp06m/AB
-         KifxfFhHS6P8mCpCxzfsTzI0NqCNCk4mcd7tEDu7XBrzbxbPXCzOJ4AkIg9C4/n0msBZ
-         kXJsYzq9RZLTLPFJJd10cIQQKAEgE1dO3ilDMyl49uytY92ppCT/sc4iEdBN6HhxXVSC
-         twuLXsLBpNAaRdgF4FiggsLDEP1BRqjw82i8OGDi1T9fTWEH4qLpvTshu4FHTqZ0M/pr
-         fV4er5VNHqPsOxmUOQ2q/Auwd4E2oKoKavYaW23AGhdj8ImJ3YN+vOzXsAwJV3wTV+TE
-         Wjcw==
-X-Gm-Message-State: AOJu0YwTQnq0BxjSFgIgyorOVTrQlCgNxzmYH6z8lQJTniMMea4AZC8R
-	u7Rn2pFrXfexWHVpFltem2t5O/uNTB2331NG
-X-Google-Smtp-Source: AGHT+IGPcGz2GH8gwSM0o4jUtojz2k0rG0D390xUpeft6LaUWb2w/7moy+DHRW/sVfpXmxn2uNBtDg==
-X-Received: by 2002:a17:90b:1e07:b0:286:6cc1:3f25 with SMTP id pg7-20020a17090b1e0700b002866cc13f25mr5109756pjb.92.1702402478556;
-        Tue, 12 Dec 2023 09:34:38 -0800 (PST)
-Received: from localhost.localdomain ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id nc4-20020a17090b37c400b00285545ac9d2sm9213862pjb.47.2023.12.12.09.34.35
+        d=1e100.net; s=20230601; t=1702402794; x=1703007594;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0bimU+RjPXnA4GcSVMRC2y8VYJ0x8Wxk5dqkFvYFDmQ=;
+        b=KjQZrEZVnniJ0OLvU4WR2jvsc/Yrmi3JeoUIbMPVSn4MaljUowbXDqiDn6grFjXtpX
+         nl0ZX7ISoC0yetMFPeaG+rX5P4nx51gyFbaihhbYjNODHfiSfw1bzOhlzt2blMcVhQQB
+         r3m8HWdpALFIvMJnSEilRtNJatO0+im9EJt+cdSGsrdPTTrFM+gLBB2qUz+3LAsDkzwW
+         BmFN++ujNpOTioDABpLJwsMJiBCZAh1x/7XFRic/aezAqxD6L5iCMf0md9yWpCzqY29g
+         WdjS9qpeQRuFW/gAlZxT2dL5YS7A5wPQKRaTn8c1OpAXR8fxB9WbO1T+NUakKm6UiAwJ
+         0Rnw==
+X-Gm-Message-State: AOJu0YzCo2DJ3mH8p9rnC9SmMmow8cXI7nO39G+vnOLm+ucu/XOTgyNn
+	I9u3rim4eTU7F5akB1+z127/srIurCRJgFr+
+X-Google-Smtp-Source: AGHT+IFadAS+SyDVgm58OPghc2OCdPROFHBDIHrxFJPHsDzzW43OTDML6jWi0zmAD3TWRQ0XOnYK2Q==
+X-Received: by 2002:a05:6a00:8606:b0:6ce:2731:7a02 with SMTP id hg6-20020a056a00860600b006ce27317a02mr2253347pfb.56.1702402793924;
+        Tue, 12 Dec 2023 09:39:53 -0800 (PST)
+Received: from neeraj.linux ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id c11-20020a630d0b000000b005c2185be2basm8418384pgl.54.2023.12.12.09.39.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:34:38 -0800 (PST)
+        Tue, 12 Dec 2023 09:39:53 -0800 (PST)
+Date: Tue, 12 Dec 2023 23:09:48 +0530
 From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	paulmck@kernel.org,
-	Neeraj.Upadhyay@amd.com,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 4/4] rcutorture: Add fqs_holdoff check before fqs_task is created
-Date: Tue, 12 Dec 2023 23:04:14 +0530
-Message-Id: <20231212173414.11602-4-neeraj.iitr10@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231212173334.GA11572@neeraj.linux>
-References: <20231212173334.GA11572@neeraj.linux>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+	paulmck@kernel.org, Neeraj.Upadhyay@amd.com
+Subject: [PATCH rcu 0/3] RCU misc fixes for v6.8
+Message-ID: <20231212173948.GA11724@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+Hello,
 
-For rcutorture tests on RCU implementations that support
-force-quiescent-state operations and that set the fqs_duration module
-parameter greater than zero, the fqs_task kthread will be created.
-However, if the fqs_holdoff module parameter is not set, then its default
-value of zero will cause fqs_task enter a long-term busy loop until
-stopped by kthread_stop().  This commit therefore adds a fqs_holdoff
-check before the fqs_task is created, making sure that whenever the
-fqs_task is created, the fqs_holdoff will be greater than zero.
+This series contains misc RCU fixes:
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
----
- kernel/rcu/rcutorture.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+1.      Restrict access to RCU CPU stall notifiers.
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 30fc9d34e329..a0b2520bd32b 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -3872,7 +3872,9 @@ rcu_torture_init(void)
- 	}
- 	if (fqs_duration < 0)
- 		fqs_duration = 0;
--	if (fqs_duration) {
-+	if (fqs_holdoff < 0)
-+		fqs_holdoff = 0;
-+	if (fqs_duration && fqs_holdoff) {
- 		/* Create the fqs thread */
- 		firsterr = torture_create_kthread(rcu_torture_fqs, NULL,
- 						  fqs_task);
--- 
-2.40.1
+2.      Remove unused macros from rcupdate.h, courtesy of Pedro Falcato.
 
+3.      Force quiescent states only for ongoing grace period, courtesy
+        of Zqiang.
+
+
+Thanks
+Neeraj
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt |    6 ++++++
+ include/linux/rcu_notifier.h                    |    6 +++---
+ include/linux/rcupdate.h                        |    3 ---
+ kernel/rcu/Kconfig.debug                        |   25 +++++++++++++++++++++++++
+ kernel/rcu/rcu.h                                |    8 +++++---
+ kernel/rcu/rcutorture.c                         |   12 +++++++-----
+ kernel/rcu/tree.c                               |    2 ++
+ kernel/rcu/tree_stall.h                         |   11 ++++++++++-
+ kernel/rcu/update.c                             |    6 ++++++
+ 9 files changed, 64 insertions(+), 15 deletions(-)
