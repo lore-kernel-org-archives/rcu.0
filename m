@@ -1,39 +1,63 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6136954F83
-	for <rcu@vger.kernel.org>; Mon, 11 Dec 2023 21:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQBlTVCD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D657DC433C7;
-	Mon, 11 Dec 2023 21:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702330780;
-	bh=DJzT/+cc0AJqLW4pldSyhoXC+1cJku2DkenpvUYqIfk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=UQBlTVCDf58q07TcrYjQ59xXuTWWfl6Vc6U1nDuWsfcVOavgqyypcqYhpVObRG4OQ
-	 dx1Y7/wRdLptSr+QtLwviqYjxk81q3yngumwNNl9exR/Fk9rq8lGomGig8+tWo+CWG
-	 uEbb9Noi21I2XOUk4Wt5Rwsdfb9RA3AOjX3mHdVIZ2cigw9e9xsSNzn9hX4GfFg9cg
-	 9oQAidAd8l8/3+zTLgguS7nsoiLrNdSIAOy7Nl6mdaSlI4wROhyvDUHo9WYI1wYCTT
-	 aqSzxiA0in6ktR3FxAoFIylMRdv33A2dbi3By3n/+cs9PsqofjT75rAnbWodoOu3OT
-	 m6d59NmWGC58Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 76730CE04B6; Mon, 11 Dec 2023 13:39:40 -0800 (PST)
-Date: Mon, 11 Dec 2023 13:39:40 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/8] rcu: Fix expedited GP deadlock (and cleanup some
- nocb stuff)
-Message-ID: <c429620e-53ab-4cd1-b1c2-ca83f4f3cea7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231208220545.7452-1-frederic@kernel.org>
- <0be847d6-804e-4f9d-9eb4-beee9efb6c78@paulmck-laptop>
- <ZXdrNJFCaXAFMITp@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="LBTBVL+e"
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3078DF4
+	for <rcu@vger.kernel.org>; Tue, 12 Dec 2023 04:05:59 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c41b43e1eso29757465e9.1
+        for <rcu@vger.kernel.org>; Tue, 12 Dec 2023 04:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702382757; x=1702987557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=13Ja0Nw0pPSuSjFH0IeSQRlQSG+h5LbxqOjPprrcVUw=;
+        b=LBTBVL+e6HjCFWoT5yz3khfIQFU+1yrZ0091b8YaLlhi6LhWpOoStg+TCbnC6rs2S5
+         MKRojI3gw3lQiPqgPRrY5iNnaR1YJ2KwGimH+OkAwcDpzrTCSFeTgDoUbIFYN0hXHSfr
+         tmr8lJmsgTzZ9GasTICsEw/En6yAWjItt0DQIPTYLHvhcEhW61iGDJECbVRHw1EaEIBd
+         AO4NJT23w5FVZANyWyWZkuDr5tARX2i1tlhReEBxHqOhlfSMjf+ZyVXIfi8DNTym89Tb
+         WnFNgnWczL27cjFgjkw+2O29GTstuY3Hrk7jWWm9E7A8jkoiPuawniEecm5RdM2J5Xix
+         8xpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702382757; x=1702987557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=13Ja0Nw0pPSuSjFH0IeSQRlQSG+h5LbxqOjPprrcVUw=;
+        b=ODyRJaPP1ZK32pNry6ND35mQjIyZ8bSOK4/6srGiKoLToNecSPzC2t1EfDBRukpRk0
+         acwK9SIEm+O7NLIfjXbHe7S9mwZZv76IfjLSHfMJemktlx07/R24MXt3rS7e2GW6nN8e
+         Wy5D7hnYZWKnvhEy2ZRa0nZpOp36vJbwUO9mlf69RuWM0IueKRcERxlWEUQJOQPpu9Mo
+         KOOureXBnbNdP9j3EoY24BKjs5JVr0/ZFjtrK4TGqUawIP8z74wK6RRhKq4AjNkQijY7
+         DNrA3gCwxaSDJ/+26wFtOr8uHXieFP+zz3V9QSHz86aDumjebJMHfh6IcLiG9GDV594S
+         b7qw==
+X-Gm-Message-State: AOJu0YxzdzoUeWlQ3QIitdrnXyPOmj67JiQlflES82JOowkcNr6ITF13
+	KtM3ogY+SILxijNcDReBrOH3Ew==
+X-Google-Smtp-Source: AGHT+IGgjoAn2HE1UEgBwViiepp0+DZatRSss7QIX4mMogy9AnMEBgnie0Cd206XFxiA8r5oPda77g==
+X-Received: by 2002:a05:600c:4812:b0:40c:3bb2:ca58 with SMTP id i18-20020a05600c481200b0040c3bb2ca58mr2815131wmo.31.1702382757343;
+        Tue, 12 Dec 2023 04:05:57 -0800 (PST)
+Received: from airbuntu ([104.132.45.98])
+        by smtp.gmail.com with ESMTPSA id z20-20020a05600c0a1400b004064e3b94afsm18818476wmp.4.2023.12.12.04.05.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 04:05:56 -0800 (PST)
+Date: Tue, 12 Dec 2023 12:05:55 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrea Righi <andrea.righi@canonical.com>,
+	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Message-ID: <20231212120555.wradm57buz7ckv4p@airbuntu>
+References: <20231203011252.233748-1-qyousef@layalina.io>
+ <20231205162043.GA2558193@google.com>
+ <20231207172032.kto27hfdxa4juq7b@airbuntu>
+ <0d531690-1240-4356-a647-b4c71a56b31d@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -42,61 +66,95 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZXdrNJFCaXAFMITp@localhost.localdomain>
+In-Reply-To: <0d531690-1240-4356-a647-b4c71a56b31d@joelfernandes.org>
 
-On Mon, Dec 11, 2023 at 09:04:04PM +0100, Frederic Weisbecker wrote:
-> Le Mon, Dec 11, 2023 at 08:38:59AM -0800, Paul E. McKenney a écrit :
-> > On Fri, Dec 08, 2023 at 11:05:37PM +0100, Frederic Weisbecker wrote:
-> > > TREE04 can trigger a writer stall if run with memory pressure. This
-> > > is due to a circular dependency between waiting for expedited grace
-> > > period and polling on expedited grace period when workqueues go back
-> > > to mayday serialization.
-> > > 
-> > > Here is a proposal fix.
+On 12/09/23 01:26, Joel Fernandes wrote:
+> On 12/7/23 12:20, Qais Yousef wrote:
+> > On 12/05/23 16:20, Joel Fernandes wrote:
 > > 
-> > The torture.sh "acceptance test" with KCSAN and --duration 30 ran
-> > fine except for this in TREE09:
+> >> I think a better approach is not do an anti-CONFIG option and instead do
+> >> a shorter parameter "rcutree.lazy=0". If CONFIG_RCU_LAZY is set, then we can
+> >> just default to keeping lazy on. I'd like to avoid proliferation of already
+> >> large number of RCU config options and more chances of errors.
 > > 
-> > kernel/rcu/tree_nocb.h:1785:13: error: unused function '__call_rcu_nocb_wake' [-Werror,-Wunused-function]
+> > The issue is that we don't want to ship with default on :-)
+> 
+> Yes, so you can ship with rcutree.enable_lazy=0 which this patch adds, no? In
+> theory, you can accomplish this by simply CONFIG_RCU_LAZY=y and
+> rcutree.enable_lazy=0 or rcutree.lazy=0.
+> 
+> However, I see the inconvenience factor (you have to set a boot parameter
+> without making this a purely .config affair) so I am not terribly opposed with
+> this patch (I am also guilty of adding a CONFIG option to avoid having to set a
+> boot parameter (for unrelated feature), but in my defense I did not know a boot
+> parameter existed for the said feature). ;-)
+
+It is more than inconvenience. The GKI doesn't ship with a specific userspace.
+So we can't guarantee the boot parameter will be set and have to rely on no one
+missing the memo to add this additional parameter.
+
+And to speed up adoption and testing, I am backporting the feature to 5.10,
+5.15 and 6.1. It is risky enough to get a backport, but to default on it could
+  introduce more subtle surprises. But not doing so we could end up waiting for
+2 years before enough people move to the latest LTS that contains the feature.
+
+> 
+> >> I also want lazy to be ON for everybody configuring it into the kernel by
+> >> default (those who don't want it just set CONFIG_RCU_LAZY=n), this is what
 > > 
-> > My guess is that the declaration of __call_rcu_nocb_wake() in
-> > kernel/rcu/tree.h needs an "#ifdef CONFIG_SMP", but you might have a
-> > better fix.
+> > This is still the default behavior.
+> > 
+> > And all or nothing approach is not practical. You're telling me if I can't ship
+> > with default off, then I must disable it altogether. Adoption will become
+> > harder IMHO.
 > 
-> Could be because if CONFIG_RCU_NO_CB_CPU=n, the function is only called
-> (though as dead code) from rcutree_migrate_callbacks() which in turn only
-> exists if CONFIG_HOTPLUG_CPU=y.
+> No, that's not what I said. You misunderstood me (which is probably my fault at
+> not being more clear). It is not all or nothing. I am just saying you can
+> accomplish "default off" by just setting the boot parameter. With this patch,
+> you are not willing to do that out of convenience, which I can understand but
+> still we should at least have a discussion about that.
+
+Okay, sorry if I misunderstood.
+
 > 
-> Something like that then:
+> > 
+> >> tglx also suggested that's why we made changed of our initial prototypes of
+> >> call_rcu_lazy() and instead we made call_rcu() to put everyone on the lazy
+> >> train and not add more APIs (thus causing more confusion to kernel
+> >> developers). This was a bit painful, but it was worth it.
+> > 
+> > I think implementation details make sense, but orthogonal to the problem of
+> > enabling CONFIG_RCU_LAZY=y but still ship with default off. It is a risky
+> > change and we want to start staging with default off first.
 > 
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index 35f7af331e6c..e1ff53d5084c 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -445,6 +445,8 @@ static void rcu_qs(void);
->  static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp);
->  #ifdef CONFIG_HOTPLUG_CPU
->  static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
-> +static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
-> +				 unsigned long flags);
->  #endif /* #ifdef CONFIG_HOTPLUG_CPU */
->  static int rcu_print_task_exp_stall(struct rcu_node *rnp);
->  static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp);
-> @@ -466,8 +468,6 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
->  				  unsigned long j, bool lazy);
->  static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
->  			  rcu_callback_t func, unsigned long flags, bool lazy);
-> -static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
-> -				 unsigned long flags);
->  static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level);
->  static bool do_nocb_deferred_wakeup(struct rcu_data *rdp);
->  static void rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp);
+> Never had any issue with that. I very much want to see this safely rolled out to
+> Android. ;-)
+> 
+> > Not allowing this
+> > in upstream means I'll either have to resort to keep it disabled, or carry out
+> > of tree patch to get what I want. Both of which would be unfortunate.
+> 
+> There is already precedent for building things into the kernel but keeping them
+> default off, so I don't have an issue with the experimentation use case. I was
+> just discussing whether the additional CONFIG is really needed when you already
+> have added a boot param to keep it default-off. If you have an argument for why
+> that would be really helpful [1].
+> 
+> Also, nit: rcutree.enable_lazy is probably better than rcutree.enable_rcu_lazy.
+> The 'rcu' is redundant.
 
-This one passes TREE01 and TINY01, but on TREE09 still gets this:
+It matches the config option so feels natural to have them both named the same?
 
-kernel/rcu/tree_nocb.h:1785:13: error: ‘__call_rcu_nocb_wake’ defined but not used [-Werror=unused-function]
+> 
+> Other than that, the patch LGTM but if you could update the commit log with
+> details about [1], that would be great. And while at it, you could add my tag:
 
-Huh.  I suppose that there is always __maybe_unused?
+You forgot to include [1]? Or I'm just blind today?
 
-							Thanx, Paul
+> 
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+Thanks!
+
+--
+Qais Yousef
