@@ -1,104 +1,76 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBlrOGB/"
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7C394;
-	Tue, 12 Dec 2023 09:44:26 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d3448937ddso3852075ad.2;
-        Tue, 12 Dec 2023 09:44:26 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AHwIyp6e"
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB4294;
+	Tue, 12 Dec 2023 09:47:57 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-28ac11407cfso372931a91.1;
+        Tue, 12 Dec 2023 09:47:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702403065; x=1703007865; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5KKzp1EbEDs6N+rI5JIGWryzdQ1kJSdRSLI+Af4oxu8=;
-        b=ZBlrOGB/scjQxQcRFsobpGpiha+btbQ77K74SbKWdUxQANqW56bOX3c1761baxJeKb
-         aNfWhOYnIZYwkLRjLcdGyVt1sOJIsgSRldPkj+MJUtXLNsGF2dzIRTZhWcuslJKIXIlq
-         rf13BGVDKjWPq9ajbaR9Z6TYZnORAykNIfTPiYH9tlTd+qwNnroXkn+oBhdXiqXBdych
-         XbNX9Qplp7Ai/2lImS6BqVZwVSDbjr4vSRDglTrGIFnKv883BTDWETla9XzoP5uuS07L
-         eu7kZGgMewyn37gKW8/VXbO9KbPayGencOaJ561Q5nPvWpOrtc2k+6WCaMPSnac+zGos
-         3x0A==
+        d=gmail.com; s=20230601; t=1702403275; x=1703008075; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Lpcp9URoW3Nxmv8uilTZFjiHClsiXT96h5WC+LC09D8=;
+        b=AHwIyp6eWN96NQkVsP6j8AG/o4omFQPKqdlgqa1uYkstJ2gGyFZ7wNtlqNI3KzFo3h
+         uEhCgL9TYTWRkfl58aGTFsUW6AqwnOqRzd7BE+fawko9iTzkznh5nxYMRCOZEvI9wjrI
+         yQNhgUXEfm3fKhQr/00l5pSrGHx+UQVnCI5YPj/zvqXe7Y+CyqPejpptKtkR6rp+M7sM
+         IoefbgaA7tAXxU6uPiXhenXDS7gQuRpWf4WizDJOSZ1Drrsu1CJ4tH7lrqFB0QjbhQ1R
+         gPoywW0IiGGIb1YoLUauh+fnRg80Z7Jc1iXEJZlfYQrtNqhNDMPCQPspMCAWCCQE4igZ
+         6e3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702403065; x=1703007865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5KKzp1EbEDs6N+rI5JIGWryzdQ1kJSdRSLI+Af4oxu8=;
-        b=X4DUbvquaAyYyQAQkImHiJmswTjFFfdXeRbhjB2eUytNeJR+xpp1RhfsxEABluImVV
-         jRHdyzZ+6wDLEqd4j2JxY5oQAfWCVl3VdNTMdGCCl1PoSf5vIj6RhSDDapSAiJUOFmMz
-         W+sy6pQ+4xS4H+g/GcPAhuRjlcvdZ1640D/Tb7Cu1tVyZ4pblT/wEG4KQhO1dkJwvPEy
-         YFIvRfusFDZebnm5kHyJ4UgdsoP209o5l9TV4yuCvCCSZ9qi3CLoeQSo/MuBTO5KiPwk
-         ve7+fkaaq89PGkuc+uYr75UcCQVpFcQP3liwkOqyBldh8eRbeGPylg6dL9FlwUHiI0BZ
-         rgEg==
-X-Gm-Message-State: AOJu0YxIQxNqnf296VPvhRGOTnW6G07jadSdVLwhYN4J45fPCSOceNEB
-	2W1gV81UUTUhwr01FBXQNh7B3LW8rac4/Gcf
-X-Google-Smtp-Source: AGHT+IEQGOmnlGiG4EEyXbW/ZmLkZMLVu58QKVIhOgRRi1/SOfshTbiX74NTBLVUPcPtKkjoUW/4KQ==
-X-Received: by 2002:a17:902:d2cf:b0:1d0:c986:8aae with SMTP id n15-20020a170902d2cf00b001d0c9868aaemr3983134plc.97.1702403065304;
-        Tue, 12 Dec 2023 09:44:25 -0800 (PST)
-Received: from localhost.localdomain ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id d14-20020a170902cece00b001d0cd48e08fsm8975208plg.179.2023.12.12.09.44.22
+        d=1e100.net; s=20230601; t=1702403275; x=1703008075;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lpcp9URoW3Nxmv8uilTZFjiHClsiXT96h5WC+LC09D8=;
+        b=dUvF/Bhu+SUzozID78n+fct8PapeoXQpfoj2F3vtMVmIchthE35YFMJlpwQ0fqUVff
+         JfktiPJ2MbTQrjf5WMBWMnES0/4F2La1QGVcUXqK3zzLzwo9ZxpRdUl27Y7V4BeNbE5P
+         nY0m9ndPtP2rwMqFvV5jI0Lu4lF6K8/+VGjWLam3qgFL2CZzcQokSDIzK8IT/m7277BA
+         jdZN0+mS8rgxyiG0/e1d2J/0lqLnt1YXU1WL7lT960h+E32oc82zre6LZjREI57q9I6y
+         lq6y0a3s1jfTEqdeoB6LfbV05SyVXAMEgeL8JrV1dmZGghPGymkLNEHY92WLTov3DxDE
+         YVkA==
+X-Gm-Message-State: AOJu0YydioepTpCQLI7XFxBSnABaHxWxs3djhiC9QSSXt46nO0A2g56N
+	ywXS7eVnLgfQGTiBoaqWDzukmvmna9StqdZb
+X-Google-Smtp-Source: AGHT+IE5We6VeCbXzoTpALvI+cZjFzQ1SripHmBSbTqDFzpmZuLx01H3+4+b0Ns3CASoMQ//PPIJvg==
+X-Received: by 2002:a17:90b:203:b0:288:898d:70c2 with SMTP id fy3-20020a17090b020300b00288898d70c2mr2894098pjb.4.1702403275546;
+        Tue, 12 Dec 2023 09:47:55 -0800 (PST)
+Received: from neeraj.linux ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id nl13-20020a17090b384d00b0028adcc0f2c4sm64200pjb.18.2023.12.12.09.47.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:44:24 -0800 (PST)
+        Tue, 12 Dec 2023 09:47:55 -0800 (PST)
+Date: Tue, 12 Dec 2023 23:17:50 +0530
 From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	paulmck@kernel.org,
-	Neeraj.Upadhyay@amd.com,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 1/1] rcu-tasks: Mark RCU Tasks accesses to current->rcu_tasks_idle_cpu
-Date: Tue, 12 Dec 2023 23:13:50 +0530
-Message-Id: <20231212174350.11835-1-neeraj.iitr10@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231212174331.GA11807@neeraj.linux>
-References: <20231212174331.GA11807@neeraj.linux>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+	paulmck@kernel.org, Neeraj.Upadhyay@amd.com
+Subject: [PATCH rcu 0/3] SRCU updates for v6.8
+Message-ID: <20231212174750.GA11886@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hello,
 
-The task_struct structure's ->rcu_tasks_idle_cpu can be concurrently
-read and written from the RCU Tasks grace-period kthread and from the
-CPU on which the task_struct structure's task is running.  This commit
-therefore marks the accesses appropriately.
+This series contains SRCU updates:
 
-Reported-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
----
- kernel/rcu/tasks.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+1.      Remove superfluous callbacks advancing from srcu_gp_start(),
+        courtesy of Frederic Weisbecker.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index f54d5782eca0..732ad5b39946 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -975,7 +975,7 @@ static void check_holdout_task(struct task_struct *t,
- 	    t->rcu_tasks_nvcsw != READ_ONCE(t->nvcsw) ||
- 	    !rcu_tasks_is_holdout(t) ||
- 	    (IS_ENABLED(CONFIG_NO_HZ_FULL) &&
--	     !is_idle_task(t) && t->rcu_tasks_idle_cpu >= 0)) {
-+	     !is_idle_task(t) && READ_ONCE(t->rcu_tasks_idle_cpu) >= 0)) {
- 		WRITE_ONCE(t->rcu_tasks_holdout, false);
- 		list_del_init(&t->rcu_tasks_holdout_list);
- 		put_task_struct(t);
-@@ -993,7 +993,7 @@ static void check_holdout_task(struct task_struct *t,
- 		 t, ".I"[is_idle_task(t)],
- 		 "N."[cpu < 0 || !tick_nohz_full_cpu(cpu)],
- 		 t->rcu_tasks_nvcsw, t->nvcsw, t->rcu_tasks_holdout,
--		 t->rcu_tasks_idle_cpu, cpu);
-+		 data_race(t->rcu_tasks_idle_cpu), cpu);
- 	sched_show_task(t);
- }
- 
--- 
-2.40.1
+2.      No need to advance/accelerate if no callback enqueued, courtesy
+        of Frederic Weisbecker.
 
+3.      Explain why callbacks invocations can't run concurrently,
+        courtesy of Frederic Weisbecker.
+
+
+Thanks
+Neeraj
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/srcutree.c |   10 ----------
+ kernel/rcu/srcutree.c   |   14 +++++++++++---
+ 2 files changed, 11 insertions(+), 13 deletions(-)
