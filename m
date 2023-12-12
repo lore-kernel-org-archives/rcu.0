@@ -1,106 +1,135 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hovtu6L6"
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4385EAB;
-	Tue, 12 Dec 2023 09:48:54 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d0897e99e0so34892675ad.3;
-        Tue, 12 Dec 2023 09:48:54 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="HNUd3McG"
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2DF121
+	for <rcu@vger.kernel.org>; Tue, 12 Dec 2023 12:09:42 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6d9e179b217so4326118a34.0
+        for <rcu@vger.kernel.org>; Tue, 12 Dec 2023 12:09:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702403333; x=1703008133; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=btFMgkxywo8icROu0D3fMxutyCln5kSOeODGB3sFA/8=;
-        b=Hovtu6L6rdxL/dcstSbje1s3PDnyAtd5s5WHkRMQXIWgA6OvB9ayCArB+fABzzQakX
-         sxkfYNaEELD8X/rWfRIoTEAvNJx1iL3lq4QqcXSZG8z09TIuB73Uf+KxP4CPto/Vw4EQ
-         4gEDKWOKwKoDBKuiG+y4+bO3Q56gib+kW7cAwDGAKCsWKNLyrdAccjzVIGfKKJElot31
-         UxnyEmuLhCiuBlQ/hh81n0c8DMIk6h3wy5ZGQjpuRhv0zmB4KlvwYY0fGCBJNi3iYnQc
-         ve6T7nSZDYVh9nnpQRv/F5J155+6Kcxh31RCJj8ymDnXKDWcUJm2+AhyTXKraHJoDseo
-         MI3g==
+        d=joelfernandes.org; s=google; t=1702411782; x=1703016582; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m+Xh20zqhrr/iCJFFTsT9uro5zbSBKHOa3I/xPuTFPg=;
+        b=HNUd3McGI3PBXZePBJln6N7UxShskPc8zFMpV8hOI+Rfbc6TnNQOq9exgo518dAT/m
+         fnhaGrrvrQCEmS+wMM1wixTObiMIaB88MqguBn3tDOtyT4yDIIOoSZRj4t0OxfRqh/Yj
+         tIPGLK4uecZCNjZ64ekMpTlXsEe+anKkkA5a4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702403333; x=1703008133;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702411782; x=1703016582;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=btFMgkxywo8icROu0D3fMxutyCln5kSOeODGB3sFA/8=;
-        b=c4ytcBcjTSqlOCPrZbWCiqW8wT60XzKY1lMhP9myvFAbpuPhGYZdwtvEbYRuO087vB
-         LxYyMF4o3+pjP9JiB99zBs/XUb/+ArSTEy2N5N/Vxw6XKHEHCJ/2B1XfaksTffddW/xh
-         kSrQivGR5VRQoeDk4fRa50a8cb4tWuYNC9oc7Vgi498aAPfr5YqHFk5RAX7Wlh8l2CuN
-         M4mB3UtHMSAeqAh+jBKjVlwmhZJ0Qfm7OWCL3LfrtLRugpF02RXCu2GB8j5WEmjcYXQ2
-         Uixey+cSf//LbYWys+lwREBZlQmFcZdcmTseRYrEMUWMSQ3D3JVwEN7UK7hC+Htx8PRq
-         5IRQ==
-X-Gm-Message-State: AOJu0Ywv2XfNqAaLVz9yYxvzHYRzxYwrqda1qkzz149xsWtk64CwYfbf
-	kn0xNa+turxcUFr9BPMy1BWjjgHe/A84hXXB
-X-Google-Smtp-Source: AGHT+IF2FYbKe+vbMhBcMf71PvvDV88AaCRLwzE7NODtKKTCDPRq1ZkcMsRWJcA8R2zUcGXBL5n6zw==
-X-Received: by 2002:a17:902:efc5:b0:1d0:cc54:85e2 with SMTP id ja5-20020a170902efc500b001d0cc5485e2mr3010887plb.21.1702403333073;
-        Tue, 12 Dec 2023 09:48:53 -0800 (PST)
-Received: from localhost.localdomain ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170902eb1100b001d0b42fa98bsm8880871plb.4.2023.12.12.09.48.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:48:52 -0800 (PST)
-From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	paulmck@kernel.org,
-	Neeraj.Upadhyay@amd.com,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 3/3] srcu: Explain why callbacks invocations can't run concurrently
-Date: Tue, 12 Dec 2023 23:18:17 +0530
-Message-Id: <20231212174817.11919-3-neeraj.iitr10@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231212174750.GA11886@neeraj.linux>
-References: <20231212174750.GA11886@neeraj.linux>
+        bh=m+Xh20zqhrr/iCJFFTsT9uro5zbSBKHOa3I/xPuTFPg=;
+        b=ZNKhM5Gu2lsflqAex1cBZPY21+Rt8fMFujYlk1nb/wTsFI7TLw12JBe4k6s/Hpv71i
+         HHhGE4gBSVE+InSxdVSWwnLj9ishILRQR9ndvUIrX+6iL9SmU/p2y+VDuj3ODI+PMXH9
+         J/JUjM7SjKcUdpaBa5XTmqJljpc2uIjNZDU8kuYK9hsehk229eGzZwD4Vm7fXCDXYG8z
+         180FJGL8TyNkukQekZvpFUs7VmxdTxrHhsErIzX3IprJls8i4V80QyaO8OJoLj8hTqou
+         tr/p/hkzzfg7pw4r/pv4Kxh9PRTUFfuS1otfgdcyaes3bGnPK2NtPccSeWcwm0XpMasi
+         fevQ==
+X-Gm-Message-State: AOJu0Yytn7xlX/rFQXwO+YHp4TUq/Y+FGSCJyHmrsiiKMW8ql5V97h8a
+	PD+28eWGuJsv4VMwTO1hqdQaAg==
+X-Google-Smtp-Source: AGHT+IH/AADEMab3M/6qUBjdv2aKEw9zBEV7hdZDu2k87/v6BK/Pqce46L+PSMF8hGoiLLhsXpZsQA==
+X-Received: by 2002:a9d:7351:0:b0:6d9:e67b:7890 with SMTP id l17-20020a9d7351000000b006d9e67b7890mr7569650otk.32.1702411782275;
+        Tue, 12 Dec 2023 12:09:42 -0800 (PST)
+Received: from smtpclient.apple ([185.189.25.71])
+        by smtp.gmail.com with ESMTPSA id cy26-20020a056830699a00b006d9a339773csm16054otb.27.2023.12.12.12.09.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 12:09:41 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Joel Fernandes <joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH rcu 3/5] doc: Clarify RCU Tasks reader/updater checklist
+Date: Tue, 12 Dec 2023 15:09:28 -0500
+Message-Id: <019C4075-EDA3-48A9-8762-CBB28D0BA37C@joelfernandes.org>
+References: <20231212172653.11485-3-neeraj.iitr10@gmail.com>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ rostedt@goodmis.org, paulmck@kernel.org, Neeraj.Upadhyay@amd.com,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231212172653.11485-3-neeraj.iitr10@gmail.com>
+To: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
+X-Mailer: iPhone Mail (20B101)
 
-From: Frederic Weisbecker <frederic@kernel.org>
 
-If an SRCU barrier is queued while callbacks are running and a new
-callbacks invocator for the same sdp were to run concurrently, the
-RCU barrier might execute too early. As this requirement is non-obvious,
-make sure to keep a record.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
----
- kernel/rcu/srcutree.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> On Dec 12, 2023, at 12:27 PM, Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.c=
+om> wrote:
+>=20
+> =EF=BB=BFFrom: "Paul E. McKenney" <paulmck@kernel.org>
+>=20
+> Currently, the reader/updater compatibility rules for the three RCU
+> Tasks flavors are squished together in a single paragraph, which can
+> result in confusion.  This commit therefore splits them out into a list,
+> clearly showing the distinction between these flavors.
+>=20
+> Link: https://lore.kernel.org/all/20231002211936.5948253e@gandalf.local.ho=
+me/
+>=20
+> Reported-by: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+> ---
+> Documentation/RCU/checklist.rst | 25 ++++++++++++++++---------
+> 1 file changed, 16 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist=
+.rst
+> index bd3c58c44bef..c432899aff22 100644
+> --- a/Documentation/RCU/checklist.rst
+> +++ b/Documentation/RCU/checklist.rst
+> @@ -241,15 +241,22 @@ over a rather long period of time, but improvements a=
+re always welcome!
+>    srcu_struct.  The rules for the expedited RCU grace-period-wait
+>    primitives are the same as for their non-expedited counterparts.
+>=20
+> -    If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
+> -    then the readers must refrain from executing voluntary
+> -    context switches, that is, from blocking.  If the updater uses
+> -    call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
+> -    the corresponding readers must use rcu_read_lock_trace() and
+> -    rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
+> -    or synchronize_rcu_tasks_rude(), then the corresponding readers
+> -    must use anything that disables preemption, for example,
+> -    preempt_disable() and preempt_enable().
+> +    Similarly, it is necssary to correctly use the RCU Tasks flavors:
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 2bfc8ed1eed2..0351a4e83529 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1715,6 +1715,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
- 	rcu_segcblist_advance(&sdp->srcu_cblist,
- 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-+	/*
-+	 * Although this function is theoretically re-entrant, concurrent
-+	 * callbacks invocation is disallowed to avoid executing an SRCU barrier
-+	 * too early.
-+	 */
- 	if (sdp->srcu_cblist_invoking ||
- 	    !rcu_segcblist_ready_cbs(&sdp->srcu_cblist)) {
- 		spin_unlock_irq_rcu_node(sdp);
-@@ -1745,6 +1750,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	sdp->srcu_cblist_invoking = false;
- 	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
- 	spin_unlock_irq_rcu_node(sdp);
-+	/* An SRCU barrier or callbacks from previous nesting work pending */
- 	if (more)
- 		srcu_schedule_cbs_sdp(sdp, 0);
- }
--- 
-2.40.1
+Typo: necessary.
 
+Probably no need to resend this one, just fix in the PR.
+
+Thanks,
+
+ - Joel
+
+
+
+
+> +
+> +    a.    If the updater uses synchronize_rcu_tasks() or
+> +        call_rcu_tasks(), then the readers must refrain from
+> +        executing voluntary context switches, that is, from
+> +        blocking.
+> +
+> +    b.    If the updater uses call_rcu_tasks_trace()
+> +        or synchronize_rcu_tasks_trace(), then the
+> +        corresponding readers must use rcu_read_lock_trace()
+> +        and rcu_read_unlock_trace().
+> +
+> +    c.    If an updater uses call_rcu_tasks_rude() or
+> +        synchronize_rcu_tasks_rude(), then the corresponding
+> +        readers must use anything that disables preemption,
+> +        for example, preempt_disable() and preempt_enable().
+>=20
+>    Mixing things up will result in confusion and broken kernels, and
+>    has even resulted in an exploitable security issue.  Therefore,
+> --=20
+> 2.40.1
+>=20
+>=20
