@@ -1,82 +1,90 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hey09nK7"
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCBA184;
-	Tue, 12 Dec 2023 09:23:50 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cecb004339so3175724b3a.3;
-        Tue, 12 Dec 2023 09:23:50 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FPtY/QHU"
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823E68E;
+	Tue, 12 Dec 2023 09:27:20 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1d06d42a58aso54601695ad.0;
+        Tue, 12 Dec 2023 09:27:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702401829; x=1703006629; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=77k5xhH3hhXQbw86kfVyq2j870GiGq/zqEUCE85wFZA=;
-        b=Hey09nK71rjPAR/TzkKTgOp8Vg3HpJQEcFeTCGtthCw+J7jE+9CEY7keWD543vZ/Kv
-         rUfyZG6lhT5BRVQlzr1OeY5hJWXR0azfh19h6CfsbD+ucGw0uLL5cjEsgQHGkivLriPC
-         E3bjc08eq6ua8V90AoCwTrdTbY6GZV35Vg65COkjHfCSBl8Xkq1NZRWcu+dDoAh2KVMZ
-         e+hF0e9JpkmXfEtzP88OadzHeBKnXKg8OtP8j9fW8B/tnSM/7/bpmt77wFXYcOs5O8Jc
-         qAD3sJpIiaqRmrJhSfh/mx9BcKoHKrPeVQbrfZKja4MRzhi9A5pUq/1fhxOppLo9J6Od
-         HoCQ==
+        d=gmail.com; s=20230601; t=1702402039; x=1703006839; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KVgafbUy1yoVoGBH+PlApmsusqaMuafzZh+z/PK2PwE=;
+        b=FPtY/QHUUehnBEd8W7/PYOvYwbxs1AO/MWVKbZjALE5XbeLpTl1Zi+kdsnp+Z454WS
+         NE1ld8+Vha8xulthfQ4Mq7KI/iNEn9GnFRgc3VaHO8GJpmlt20EyAsgrEwJeqmCASAG5
+         sZEgxLswUt0hQ5iLq8z/BMPFGlGlR/g2JDqJ0Z4PdwWSPO3nJW4SOGlW7bQwW7tTKODU
+         ehuP82rhIcCzJDDUL1HgH5ms0E6Neb678+IKAGl03W4lSYRAMj7s7dUb7hyQbeeO+jCj
+         rS+CideBrZSdcpXKL+eCP916v0e+wYTW/n2914lKd3qyPGeV9hOTTjujqI7Gmk9KW3gE
+         8Nbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702401829; x=1703006629;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=77k5xhH3hhXQbw86kfVyq2j870GiGq/zqEUCE85wFZA=;
-        b=HtyNL1rS0ixe13sEp7D78tPwNk0eWIea8yu0aWzz1bQMSjYvolBGk1bi0tgr2uWQbP
-         YJm+9yN+PmBQNEprTZT+oILdkZS8porPgGiyBBx9vSRvZmCzBjwxfgajSAy/geFpzrFr
-         oZosVGfQzHJpDkulwfE8BnWOzpBtRCq53AThFpivRwYKBUKT0m/Inv72aAFeJgyGnJif
-         tAvqQxYf+QNpwAbi9ksNNYDz3y60qkwYWT5hcSzKw8TQL9N93mdH0S5GtkxJkqguxaCR
-         aea1euotQTDCtLJUPHe0MLVNjcGdq1eVPC+Y6nZr4K5+ybzAyQ77bDLzjYiSV1I9lIUR
-         zMtw==
-X-Gm-Message-State: AOJu0YwzwTuARIcriDfMlgMQ0GXqONIxQHlG/5KnvxN70VZ+RkqcGVO8
-	fGXX2vFyc6HAVGzy4YruZ/ybWJLjfTnZ94ri
-X-Google-Smtp-Source: AGHT+IGSkLkafckUlzV4IGdiSCFzPPwmbn7F7TFVmbfUubljLV0bKQTgdcXh11lhRlrY/ahDJvbPqA==
-X-Received: by 2002:a05:6a20:914b:b0:18b:aceb:7a79 with SMTP id x11-20020a056a20914b00b0018baceb7a79mr3647717pzc.12.1702401828327;
-        Tue, 12 Dec 2023 09:23:48 -0800 (PST)
-Received: from neeraj.linux ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id b16-20020aa78710000000b006cea1db00cbsm8246636pfo.204.2023.12.12.09.23.46
+        d=1e100.net; s=20230601; t=1702402039; x=1703006839;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KVgafbUy1yoVoGBH+PlApmsusqaMuafzZh+z/PK2PwE=;
+        b=KxXp64J5xPgGsT8Yytv2opBbld8hTVpPY36EvlYwTWXN56SEiMVR1BfKCH9UxwJigt
+         01CqH/dn8GwBbqi4teEEPcZKSughhOdZXaURLfaq8Wbu2MTQbtMRxc99rT49ixo7djRO
+         J5n9QpQmTZRMMsHpzsMUnz1i42S0LieXD0AszalSRBloCGcNdFn8YQ2nli2Gtnp7WxLD
+         lTlNdhRbCldzfV6bwGTsjWD61YHQZEBO6q471w7n8JPcqcOv2QDqS57gDHDI4ALgI7v4
+         YbgSvG3AaPvf3NwXpiHEAJVrm6M5jUUirnKClAOnFtNH1yRJKazk1k1Gp4gr+ccgAyOz
+         YR/w==
+X-Gm-Message-State: AOJu0YzI0sqhVSnuo3aZ+JCbV0TP98EE7KaJrQuz4RcTzroLJdiaj+EF
+	8gfJa9UMN5LOldQPpKQ9k8cL0Y+3uG3YuOgo
+X-Google-Smtp-Source: AGHT+IGPGjbUX+hHxAoRGLSoyjCh5c5hQrmYfnnNqkcEghF336vceXn7APzJBUI2pAvCWoMY34jYMg==
+X-Received: by 2002:a17:902:ea0e:b0:1d0:cec3:4568 with SMTP id s14-20020a170902ea0e00b001d0cec34568mr7842357plg.54.1702402039260;
+        Tue, 12 Dec 2023 09:27:19 -0800 (PST)
+Received: from localhost.localdomain ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id b18-20020a170902d51200b001cf511aa772sm8863170plg.145.2023.12.12.09.27.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:23:47 -0800 (PST)
-Date: Tue, 12 Dec 2023 22:53:43 +0530
+        Tue, 12 Dec 2023 09:27:18 -0800 (PST)
 From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
-	paulmck@kernel.org, Neeraj.Upadhyay@amd.com
-Subject: [PATCH rcu 0/5] Documentation updates for v6.8
-Message-ID: <20231212172343.GA11383@neeraj.linux>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	paulmck@kernel.org,
+	Neeraj.Upadhyay@amd.com,
+	Charles Han <hanchunchao@inspur.com>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Subject: [PATCH rcu 1/5] Documentation: RCU: Remove repeated word in comments
+Date: Tue, 12 Dec 2023 22:56:49 +0530
+Message-Id: <20231212172653.11485-1-neeraj.iitr10@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231212172343.GA11383@neeraj.linux>
+References: <20231212172343.GA11383@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Charles Han <hanchunchao@inspur.com>
 
-This series contains documentation updates:
+Remove the repeated word "of" in comments.
 
-1.      Documentation: RCU: Remove repeated word in comments, courtesy
-        of Charles Han.
+Signed-off-by: Charles Han <hanchunchao@inspur.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+---
+ Documentation/RCU/torture.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-2.      rculist.h: docs: Fix wrong function summary, courtesy of Philipp
-        Stanner.
+diff --git a/Documentation/RCU/torture.rst b/Documentation/RCU/torture.rst
+index b3b6dfa85248..49e7beea6ae1 100644
+--- a/Documentation/RCU/torture.rst
++++ b/Documentation/RCU/torture.rst
+@@ -185,7 +185,7 @@ argument.
+ Not all changes require that all scenarios be run.  For example, a change
+ to Tree SRCU might run only the SRCU-N and SRCU-P scenarios using the
+ --configs argument to kvm.sh as follows:  "--configs 'SRCU-N SRCU-P'".
+-Large systems can run multiple copies of of the full set of scenarios,
++Large systems can run multiple copies of the full set of scenarios,
+ for example, a system with 448 hardware threads can run five instances
+ of the full set concurrently.  To make this happen::
+ 
+-- 
+2.40.1
 
-3.      Clarify RCU Tasks reader/updater checklist.
-
-4.      Mention address and data dependencies in rcu_dereference.rst.
-
-5.      Clarify historical disclaimers in memory-barriers.txt.
-
-
-Thanks
-Neeraj
-
-------------------------------------------------------------------------
-
- Documentation/RCU/checklist.rst       |   25 ++++++++++++++++---------
- Documentation/RCU/rcu_dereference.rst |   27 ++++++++++++++++++++-------
- Documentation/RCU/torture.rst         |    2 +-
- Documentation/memory-barriers.txt     |   17 ++++++++++-------
- include/linux/rculist.h               |    2 +-
- 5 files changed, 48 insertions(+), 25 deletions(-)
