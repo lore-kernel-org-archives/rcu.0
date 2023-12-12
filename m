@@ -1,103 +1,68 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OCM2och8"
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420C1B9;
-	Tue, 12 Dec 2023 09:40:43 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1d08a924fcfso54654525ad.2;
-        Tue, 12 Dec 2023 09:40:43 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Th/XAmoQ"
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7069693;
+	Tue, 12 Dec 2023 09:43:38 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d08a924fcfso54683735ad.2;
+        Tue, 12 Dec 2023 09:43:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702402842; x=1703007642; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+hVYCAI2p7S4gpzlrrN9H99T+gyz5l3W/ngLbHdWIEo=;
-        b=OCM2och8DqNHnDY2/UUWsGzcmowjOpGVCwtjbdHPEOUtHDT0+9fo/JzRp+aqAhFFNE
-         UGNjkIqMQ9Q3+RgQSUP1gHcGOiEinhmcG6dC8JpCDP66YdHrp+GZ4lkXZI+h0f/b8uga
-         ea2xjFsU8XPgapZ0VJHl8teOZ95AoKVhjCH01h25yMw+tFssuyFP6Z1gH7QkKAFeBU+q
-         v+mLL+5GSaUC5qH2A7qr13CcX0wTi5EZLq1MZFV2zRq6AuwKYTmDEj69nlSFKUOmfR01
-         A+tyqHMjG4LuJireZHpWA3sFX9ZVRCFCARpSYIuYTBqzPuMKNyVNFtSjy5DOURCnoANA
-         cPxQ==
+        d=gmail.com; s=20230601; t=1702403017; x=1703007817; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hdTQW81TUFg8C2LBr5hrwnNeuP2zn3bh5csoTb3XyjI=;
+        b=Th/XAmoQ8XiaGaIU0QhPrPo8MNs9Av50+nb4a+d7Gl2jMMO0hS4emsHmJB13K3myVJ
+         mtIxGwkbpDx0C2Vh+zX1KVrNqGlVxY5+Ix+FN6m75GmgoEc1xOt2qbuxC9wqgdYmoT8G
+         V3+PLdxJYtz18K1z5VQQRvr+qnVN6K/+Iy2nPidowsPi9tTL69tmDZXpsfPDY3IcR+D+
+         OoRwjO1BNjtxOF91mHF8v6EKRgmskHelMt0xtbwqxDFb5qh9ynTbDD/rc1CWyEyaLF3s
+         EKLee8q8MgGnlydY/J4xLOS/8IwIpS5OaSVIAIXA2RUznxQVCmJw7eTNKZAp8SeM1+dQ
+         s+aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402842; x=1703007642;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+hVYCAI2p7S4gpzlrrN9H99T+gyz5l3W/ngLbHdWIEo=;
-        b=iB3IHnOeysgUD0W5b7pbTtzlTrhorN/phZ+h61hANlEInkfXbWSmUJEeNnoSvnEif2
-         +PxBf52qqjgNRzmKLZnatYjfIvfGKSfNaWyI5RP4b9NFwp4Tb4t4MOV3EQGZZO+kDWIP
-         9oDZEZRIrY+Bxk8GmeXZWN+DuJIgaJo/QHHWnkeNs3fGQGAzMZC3GlqY4eH1gmRxZvUG
-         5O58BMsiF6h5EkfeYUDxtIXJCTNjTQ8yA495YKXgtrylAL7Tz6MOg/lg1w8/WSQnczAf
-         ckj3tAV0jqMMfGx8uDZr5j/bY5ZOsduovZCtqOsUE3ZOfVqYHV+UfPlGTWez97XKCbut
-         g22w==
-X-Gm-Message-State: AOJu0YxRb1l/LQFcfqLdhbRa5meW5eeFrDekhxbLFFsd0Up+Nu+uWAWx
-	RJR1ulRK2HWDIhiTEaJdPFOrJ+Dz5ZHVW4S5
-X-Google-Smtp-Source: AGHT+IEqiUuAayQvAwz5Tqis+nTCZ6fx/x3J3Ye/XIu03msGYuEq51Dc7OEnEDlhsaD7wtOmp2zaPQ==
-X-Received: by 2002:a17:90a:df08:b0:28a:bf3f:e69d with SMTP id gp8-20020a17090adf0800b0028abf3fe69dmr1077249pjb.44.1702402841714;
-        Tue, 12 Dec 2023 09:40:41 -0800 (PST)
-Received: from localhost.localdomain ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id jc19-20020a17090325d300b001cc25cfec58sm8903135plb.226.2023.12.12.09.40.38
+        d=1e100.net; s=20230601; t=1702403017; x=1703007817;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hdTQW81TUFg8C2LBr5hrwnNeuP2zn3bh5csoTb3XyjI=;
+        b=tcemOMRHC8XB5n3juiCNL77D5pUMLIPfmYz3kmrFTj151dgd3lD9m/JuZYnfSlAd1g
+         UVX0hfGpB0Solo5Ee2lVI5nRd5lbqHV+8NjnfAeCilPt7Z7hqRHqnFNUnMZqYSqLe6Cp
+         BYIG0/v3eJglvrFgu8epNgVwg33cz374FWCyLHS9TFQXhDAQaQFnUeoca3H3Tjq//wQL
+         LHaUNVXcnmIdKfHSVnqGqNQC9zeyKyrSZ3iKg1Uu6Oed6KWjWoOpKdQiVKh91ewrpQWm
+         e0APQiZfx3t5PnFJFS4TiUpC67G0uNLhhkpZZWDulv4xESYHR7ClUbrKi0unXOJ3I7Xa
+         0NwQ==
+X-Gm-Message-State: AOJu0Yx/nZ2piuC60lM//jx6+ay2NDFsP+WsgKcHYCtzH5UngkHUBk/8
+	M2nrGiwVf7FsKVyFcbVXIcd5G8qJgBsSUNRr
+X-Google-Smtp-Source: AGHT+IHrMylmsFnbfZdBfw3h6puUyjP7GPaQE/O6Xp2+Ck8XHtHLmh5SanXcd0daviKb27ZqWIF65g==
+X-Received: by 2002:a17:902:e88a:b0:1cc:43af:f568 with SMTP id w10-20020a170902e88a00b001cc43aff568mr6900604plg.6.1702403016900;
+        Tue, 12 Dec 2023 09:43:36 -0800 (PST)
+Received: from neeraj.linux ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id 3-20020a170902c10300b001d1cd7e4acesm8892791pli.68.2023.12.12.09.43.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:40:41 -0800 (PST)
+        Tue, 12 Dec 2023 09:43:36 -0800 (PST)
+Date: Tue, 12 Dec 2023 23:13:31 +0530
 From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	paulmck@kernel.org,
-	Neeraj.Upadhyay@amd.com,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 3/3] rcu: Force quiescent states only for ongoing grace period
-Date: Tue, 12 Dec 2023 23:10:04 +0530
-Message-Id: <20231212174004.11754-3-neeraj.iitr10@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231212173948.GA11724@neeraj.linux>
-References: <20231212173948.GA11724@neeraj.linux>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+	paulmck@kernel.org, Neeraj.Upadhyay@amd.com
+Subject: [PATCH rcu 0/1] RCU tasks updates for v6.8
+Message-ID: <20231212174331.GA11807@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+Hello,
 
-If an rcutorture test scenario creates an fqs_task kthread, it will
-periodically invoke rcu_force_quiescent_state() in order to start
-force-quiescent-state (FQS) operations.  However, an FQS operation
-will be started even if there is no RCU grace period in progress.
-Although testing FQS operations startup when there is no grace period in
-progress is necessary, it need not happen all that often.  This commit
-therefore causes rcu_force_quiescent_state() to take an early exit
-if there is no grace period in progress.
+This series contains RCU tasks updates:
 
-Note that there will still be attempts to start an FQS scan in the
-absence of a grace period because the grace period might end right
-after the rcu_force_quiescent_state() function's check.  In actual
-testing, this happens about once every ten minutes, which should
-provide adequate testing.
+1.      rcu-tasks: Mark RCU Tasks accesses to current->rcu_tasks_idle_cpu.
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
----
- kernel/rcu/tree.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3ac3c846105f..1ae851777806 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2338,6 +2338,8 @@ void rcu_force_quiescent_state(void)
- 	struct rcu_node *rnp;
- 	struct rcu_node *rnp_old = NULL;
- 
-+	if (!rcu_gp_in_progress())
-+		return;
- 	/* Funnel through hierarchy to reduce memory contention. */
- 	rnp = raw_cpu_read(rcu_data.mynode);
- 	for (; rnp != NULL; rnp = rnp->parent) {
--- 
-2.40.1
+Thanks
+Neeraj
 
+------------------------------------------------------------------------
+
+ tasks.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
