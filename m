@@ -1,83 +1,126 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OXhjn/OC"
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BE78E;
-	Tue, 12 Dec 2023 09:33:40 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d076ebf79cso34752855ad.1;
-        Tue, 12 Dec 2023 09:33:40 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lHWQAdTX"
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894FF8E;
+	Tue, 12 Dec 2023 09:34:25 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-28abd1ecb85so602476a91.0;
+        Tue, 12 Dec 2023 09:34:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702402420; x=1703007220; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702402464; x=1703007264; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KMS4HUj98gmEXET3bMrTA2D/KN0j+hyjWzbKO4NEc+g=;
-        b=OXhjn/OCRINmjh0IOBAGAXSCqZAvYql7y0+BTWJhb6OuwaL2Pe3b3jgrKzLcYAoFd9
-         p6VA0vnzAryR5rWDAYi/tDR+5hGrV0RvaDBvXJKa+krNYurPXkQszAojE+cmpmP4tDMI
-         6NLeFy3tnnfsFNG7Mf/NzeH842uIKKFWZyBQFTvrq0Q80uJuPw9cFC6YnX4rnMldZwiD
-         hjwYMnbycpUpYkUlPogXpq1vw508I3whLx4wH4ZtJfeIcx6T2NLrd6L5dg8KR7XQbQeX
-         E2nIPYvWR7BaIzDUh1I4EIefZpxNuCVGq/Z68v5VRTKrVbvRclomlaut0QOutfVW92EN
-         wYNA==
+        bh=kOjHx9AciPI0bIXgcXZ7IgsUeZnP8qbNbJ9CPNPXPQE=;
+        b=lHWQAdTXFMDmV/UPQDigQ/B08OhulArDOg8M+HDT7yHh7mIp/ksVoYLE8jYPITDQza
+         J8lWRrDDn4ezQdvsm49m1eaYNe+PO+HOdAXmnJHFDl/yvwkjBl8QGeOQurUNfkA6zEKw
+         7A+lB/xA1EquCDk7wKtVLVCWGYAxy6K9Z9tT/B8550VQF2zwH/lSAUgK1Sjl4p8bxMy0
+         tsmAYgTH5YlxFCvzW+pS3nmxlEaqPcO02IQsRoYgtjHsWCaqra97vBgTdppH25VKvxfp
+         At1ylBOnSUAiDbTKAeSMDkrDpCoD/66dTFU7dP1pw0dsnhesk70wgIyE33tTvPCY/xj+
+         QlOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402420; x=1703007220;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702402464; x=1703007264;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KMS4HUj98gmEXET3bMrTA2D/KN0j+hyjWzbKO4NEc+g=;
-        b=EE0fkUAyrpNHiXA6PmtvN1SqGerJ1ypmrk773u914sisTW+osRItUcbOsCB07abQuX
-         u+qzHsJDSg8a5GKFkIJaEihf5IftC04JFuoJW2YCaYf5b3i+1mDnyqhfRDG1rqV8SdHM
-         CsIgn7dzjdGA1HKejXfqXFXgAaq3ePJpbwnSGmR35NBbN1VwJDOFtYCsLAtzOIRz2ugt
-         drk1yA0GtpjLxoQoZTJu6wdh0KU4m2I6LBLfciRVbZIcMt0iitsuUenbpx06aU3wTc3V
-         qPaxB6Jkmj2GBpqxNzlOSUunTtTs+Lrp+H62WDDYPrTCU2y8Qvxf1/7f0k/SUit5+19r
-         cKZA==
-X-Gm-Message-State: AOJu0YzgCHc/WZSvr6KukZ5jk6UD5sJbpqw6Eb6PW0QyRJJnl5kEolih
-	wbUKXneMagLLhPqpg/IBkh3qxVPYRiZqJzE7
-X-Google-Smtp-Source: AGHT+IENYkXloNENM1w7WWp7L32HPjiYDdSSIM4TXmvnOl6GfxrK8YnfM/7vdEV35ASrUrl7czkx/w==
-X-Received: by 2002:a17:902:db12:b0:1d3:45b7:bc25 with SMTP id m18-20020a170902db1200b001d345b7bc25mr667555plx.47.1702402419556;
-        Tue, 12 Dec 2023 09:33:39 -0800 (PST)
-Received: from neeraj.linux ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id h4-20020a170902f54400b001cc20dd8825sm8894548plf.213.2023.12.12.09.33.37
+        bh=kOjHx9AciPI0bIXgcXZ7IgsUeZnP8qbNbJ9CPNPXPQE=;
+        b=Ol9FjyM4DgdpixGtRzFBXEvCC3GcebbpL/tS4ueNCHtKUKqL07bZXIoea3AWDpgSq5
+         P+gwanrpm6Nev4xFeVaFlwDj6OgBXUei5QQ+UhCK2m23ECIHgveo5fdDwz6dfZIFkbOV
+         13YrD1ght5ucZRyjVLs+JSBneXUxShIaXLli/N1zhOn97TbCiwTAdog/cmWfPLSyIx+u
+         EgJ5onp6eGKl1qEMT8PWcYYrI0W/vh2AAPkCrNw7CXB/bYBYQ2gKHJKdU9Vy4JkiYpKr
+         Ej3Cw5wwwFbXTqA2RcGvWLkVPnm6zKPh5bI6EWREDgqosPi/Db/pB1j4+nIVdBKMBW8C
+         Gmyg==
+X-Gm-Message-State: AOJu0YxbQjYw5cgnMVgO4bg2S3Nzy6e7XPU3Xp1lX8C8E1IG8RDe0mfU
+	NZMrXEIdsIDe1yHnAfasuDx1u8l+w5qRGifM
+X-Google-Smtp-Source: AGHT+IE4wTs42pptzmoD3ldD3SBz8bD8IWZocjwoJa+8yqUeJ3f9fVmRfb++MOlvMkmXmtizjwyDVg==
+X-Received: by 2002:a17:90b:b14:b0:286:c399:7c16 with SMTP id bf20-20020a17090b0b1400b00286c3997c16mr3097304pjb.44.1702402463875;
+        Tue, 12 Dec 2023 09:34:23 -0800 (PST)
+Received: from localhost.localdomain ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id nc4-20020a17090b37c400b00285545ac9d2sm9213862pjb.47.2023.12.12.09.34.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:33:39 -0800 (PST)
-Date: Tue, 12 Dec 2023 23:03:34 +0530
+        Tue, 12 Dec 2023 09:34:23 -0800 (PST)
 From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
-	paulmck@kernel.org, Neeraj.Upadhyay@amd.com
-Subject: [PATCH rcu 0/4] RCU/lock torture updates for v6.8
-Message-ID: <20231212173334.GA11572@neeraj.linux>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	paulmck@kernel.org,
+	Neeraj.Upadhyay@amd.com,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Subject: [PATCH rcu 1/4] locktorture: Increase Hamming distance between call_rcu_chain and rcu_call_chains
+Date: Tue, 12 Dec 2023 23:04:11 +0530
+Message-Id: <20231212173414.11602-1-neeraj.iitr10@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231212173334.GA11572@neeraj.linux>
+References: <20231212173334.GA11572@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-Hello,
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series contains torture-test updates:
+One letter difference is really not enough, so this commit changes
+call_rcu_chain to call_rcu_chain_list.
 
-1.      Increase Hamming distance between call_rcu_chain and
-        rcu_call_chains.
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+---
+ kernel/locking/locktorture.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-2.      add nolibc init support for mips, ppc and rv64, courtesy of
-        Thomas Weiﬂschuh.
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 69d3cd2cfc3b..415d81e6ce70 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -124,7 +124,7 @@ struct call_rcu_chain {
+ 	struct rcu_head crc_rh;
+ 	bool crc_stop;
+ };
+-struct call_rcu_chain *call_rcu_chain;
++struct call_rcu_chain *call_rcu_chain_list;
+ 
+ /* Forward reference. */
+ static void lock_torture_cleanup(void);
+@@ -1074,12 +1074,12 @@ static int call_rcu_chain_init(void)
+ 
+ 	if (call_rcu_chains <= 0)
+ 		return 0;
+-	call_rcu_chain = kcalloc(call_rcu_chains, sizeof(*call_rcu_chain), GFP_KERNEL);
+-	if (!call_rcu_chain)
++	call_rcu_chain_list = kcalloc(call_rcu_chains, sizeof(*call_rcu_chain_list), GFP_KERNEL);
++	if (!call_rcu_chain_list)
+ 		return -ENOMEM;
+ 	for (i = 0; i < call_rcu_chains; i++) {
+-		call_rcu_chain[i].crc_stop = false;
+-		call_rcu(&call_rcu_chain[i].crc_rh, call_rcu_chain_cb);
++		call_rcu_chain_list[i].crc_stop = false;
++		call_rcu(&call_rcu_chain_list[i].crc_rh, call_rcu_chain_cb);
+ 	}
+ 	return 0;
+ }
+@@ -1089,13 +1089,13 @@ static void call_rcu_chain_cleanup(void)
+ {
+ 	int i;
+ 
+-	if (!call_rcu_chain)
++	if (!call_rcu_chain_list)
+ 		return;
+ 	for (i = 0; i < call_rcu_chains; i++)
+-		smp_store_release(&call_rcu_chain[i].crc_stop, true);
++		smp_store_release(&call_rcu_chain_list[i].crc_stop, true);
+ 	rcu_barrier();
+-	kfree(call_rcu_chain);
+-	call_rcu_chain = NULL;
++	kfree(call_rcu_chain_list);
++	call_rcu_chain_list = NULL;
+ }
+ 
+ static void lock_torture_cleanup(void)
+-- 
+2.40.1
 
-3.      Add mid-sized stall to TREE07.
-
-4.      Add fqs_holdoff check before fqs_task is created, courtesy
-        of Zqiang.
-
-
-Thanks
-Neeraj
-
-------------------------------------------------------------------------
-
- kernel/locking/locktorture.c                               |   18 +++++++++---------
- kernel/rcu/rcutorture.c                                    |    4 +++-
- tools/testing/selftests/rcutorture/bin/mkinitrd.sh         |    5 ++++-
- tools/testing/selftests/rcutorture/configs/rcu/TREE07.boot |    3 +++
- 4 files changed, 19 insertions(+), 11 deletions(-)
