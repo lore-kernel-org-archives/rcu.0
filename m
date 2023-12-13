@@ -1,203 +1,223 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="batvxJUv"
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D99D0;
-	Wed, 13 Dec 2023 02:35:40 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2cc259392a6so38238301fa.2;
-        Wed, 13 Dec 2023 02:35:40 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GcnDdyiW"
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F114818E;
+	Wed, 13 Dec 2023 05:01:21 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-551ee7d5214so1781010a12.0;
+        Wed, 13 Dec 2023 05:01:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702463739; x=1703068539; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=V3CWtF2fNs4rwpfbH1gBvvm+8Rnb61bFFG6hs2W4ExA=;
-        b=batvxJUvMPnHAKsWWExrG0Rx53MG3rISmoTDbs/OWl+0ton6lrhtsrWE/mPeViInv0
-         168fMk+q1OW6YlwOUzGU7X5gXp3CkxXXUyuC68CgNdZjhjvmYylNqkh38jkaxXtPDiIa
-         x3aK6phkgdL2Nl/1ks1H21NLmzwAq+zyPdKN54EcSB29GxQeqmCtpNPbhrVFfQveH13B
-         kmCpiSXHLrUvErqRr0qmwXEYF7svVTIkX2aO3xQNjk3ai3lzFfgrKxIMZaEGsPy3imWh
-         Y2pq72d2bK/H3lkm4u6VgXv/Vz2ZAwgPj0rJ5oa6AqcoWZCL+kJqtd4jEevonAozTfnG
-         +yiA==
+        d=gmail.com; s=20230601; t=1702472480; x=1703077280; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BjR4GTzbD+ztOczUPclPn7Vi4rG18p+B+ycvMIj49cc=;
+        b=GcnDdyiWOLgWg6q+1R5IivLY15dQIq0wBSMIzts5MDUcyc62vTRdF9mqSeJ9Tk19zT
+         3fp5eyoe96CEwDg0jHs/aQwWluEH9qP+lDaP4jWh2x+qHI+O2HyKD6Pft7U1AtbiRGiO
+         4Ov4t2Sw+9QP7ooDmHrXpsdTPqEtlLDImzlNVMNwCZ8ZoqJ2EHY8+ly8jOsgL7eU5toB
+         UpVjFshTgKEB/sorXU5/KBgG5MLsfTIVa7fTcSXnfuhzp7HnzWF2Eoa5NA99YdzoTk7g
+         Wn7B26niWWXTHPVYXPPQsnSw3HBNpUYIhp564jdJuql2NVOcQBSK5SEfJr65HhCgkIWf
+         mrKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702463739; x=1703068539;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V3CWtF2fNs4rwpfbH1gBvvm+8Rnb61bFFG6hs2W4ExA=;
-        b=Xmja3WDjJjKrVrDP4BrGDyWlxJgNLDBIe0YiBPpyRO4CvHj/2s8T77gYjdd8RnrmK8
-         Koi6n1tCOfBMmBJxUeOES3MU+kzZq2YNXcVfG06Y0By/nXU0+voCOHxf18GoTfMgLrXL
-         v4tUZ/VHBFYopSNqeI3eXbOwdzHTyf+k6zpBu9Ic6vK62IAaeU5zPKHoaNhXLWNBqrMY
-         MvUXZCPbvj6AZq5ZFFPIhCqylgtm5wUMViJGMT7sHV3XuaDiZCNd1bidJUj7/II1j249
-         6Y776DopAz6Xmd5m4pooy+1XgsmA+ZHo+dsHpSsOAoHx9HL3/S92q1IQzzZGA06M1Rtb
-         jm9Q==
-X-Gm-Message-State: AOJu0YxTrKQMH5UKSDoiHRL/zo0g1ACGnUrE2Ac8xR4BT6qeYxYbDcYH
-	R+qRUZwHQO4IzGoj3KS1tUE=
-X-Google-Smtp-Source: AGHT+IEQui0wHCLJmNUMvL14iDsJqoNnWAgoMis8U6G/2ToohSIRNjWhCuxMn+s0PRVlKH5GIu1JRg==
-X-Received: by 2002:a05:651c:901:b0:2cc:264a:1c37 with SMTP id e1-20020a05651c090100b002cc264a1c37mr3394042ljq.104.1702463738671;
-        Wed, 13 Dec 2023 02:35:38 -0800 (PST)
-Received: from pc636 (host-90-235-2-229.mobileonline.telia.com. [90.235.2.229])
-        by smtp.gmail.com with ESMTPSA id y5-20020a05651c020500b002ca35a126e5sm1792425ljn.119.2023.12.13.02.35.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 02:35:38 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 13 Dec 2023 11:35:35 +0100
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>, Qais Yousef <qyousef@layalina.io>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrea Righi <andrea.righi@canonical.com>,
-	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-Message-ID: <ZXmI9zDW8KlZqQj7@pc636>
-References: <20231203011252.233748-1-qyousef@layalina.io>
- <ZXhTjrTqZvMTXKtK@pc636>
- <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1702472480; x=1703077280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BjR4GTzbD+ztOczUPclPn7Vi4rG18p+B+ycvMIj49cc=;
+        b=M23P6gQbX1/qkU1tI5H1PjC2vj6ELfxPgTH6g18IwpLeWCn5NWUEuZ+ChKUiXNjztH
+         lrjUMr7q/VdSiU4ow5uu5oP4SKbQT0R/p6EKxFRO8NVKo2qxVstGn41W3dQgTVzHxX6b
+         UIsBM7L9K5zewu68g6H698dJZqhDd2tUDRCLQrm7bqgl6cfvKWXg/fnMZJmJoHdDwEZo
+         L16gf4daFxQ9aauyxUlJHOVmv0v1ifLSsjeKNPwPK/h25o6Iy6QcW8/1tYf1tFBi6e/f
+         MUOlnid4DnV8RGQrS3VMH8GSj+Amw3fBUOleZZxJCYsqVx9wtNV0ySQ9R5Y7Wb9kW3Vw
+         1vtA==
+X-Gm-Message-State: AOJu0YwXCf2dP0J6ViBVt0tGP+eYHJiFMURxRlekFRdtVUpiQAbdjDLx
+	KoIg2nsUO+so15XXEK8gq/dJf+BDoA0lA0b8sw8=
+X-Google-Smtp-Source: AGHT+IHkjpgOArvGX6PoFoREmY9ZaOYav27hT0YCYst2VY7YTTAiD8kLE4mXTMByEOqYf7+3kANia1x38jtI6KJtB6Y=
+X-Received: by 2002:a17:906:51c6:b0:a1e:ac03:9752 with SMTP id
+ v6-20020a17090651c600b00a1eac039752mr7386746ejk.52.1702472479965; Wed, 13 Dec
+ 2023 05:01:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com>
+References: <20231208220545.7452-1-frederic@kernel.org> <20231208220545.7452-2-frederic@kernel.org>
+In-Reply-To: <20231208220545.7452-2-frederic@kernel.org>
+From: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Date: Wed, 13 Dec 2023 18:31:07 +0530
+Message-ID: <CAFwiDX8NN_vJ7S50SRiyQKMZ9YpGemB-GLOAHuTQSSD+f0SiVA@mail.gmail.com>
+Subject: Re: [PATCH 1/8] rcu/nocb: Make IRQs disablement symetric
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Neeraj Upadhyay <neeraj.upadhyay@amd.com>, 
+	"Paul E . McKenney" <paulmck@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 05:28:54PM -0500, Joel Fernandes wrote:
-> On Tue, Dec 12, 2023 at 7:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> >
-> > On Sun, Dec 03, 2023 at 01:12:52AM +0000, Qais Yousef wrote:
-> > > To allow more flexible arrangements while still provide a single kernel
-> > > for distros, provide a boot time parameter to enable/disable lazy RCU.
-> > >
-> > > Specify:
-> > >
-> > >       rcutree.enable_rcu_lazy=[y|1|n|0]
-> > >
-> > > Which also requires
-> > >
-> > >       rcu_nocbs=all
-> > >
-> > > at boot time to enable/disable lazy RCU.
-> > >
-> > > To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
-> > > CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
-> > >
-> > > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> > > ---
-> > >
-> > > Changes since v1:
-> > >
-> > >       * Use module_param() instead of module_param_cb()
-> > >       * Add new CONFIG_RCU_LAZY_DEFAULT_OFF to force default off.
-> > >       * Remove unnecessary READ_ONCE()
-> > >
-> > > Tested on qemu only this time with various config/boot configuration to ensure
-> > > expected values are in sysfs.
-> > >
-> > > Did a bunch of build tests against various configs/archs.
-> > >
-> > >  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
-> > >  kernel/rcu/Kconfig                              | 13 +++++++++++++
-> > >  kernel/rcu/tree.c                               |  7 ++++++-
-> > >  3 files changed, 24 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > index 65731b060e3f..2f0386a12aa7 100644
-> > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > @@ -5021,6 +5021,11 @@
-> > >                       this kernel boot parameter, forcibly setting it
-> > >                       to zero.
-> > >
-> > > +     rcutree.enable_rcu_lazy= [KNL]
-> > > +                     To save power, batch RCU callbacks and flush after
-> > > +                     delay, memory pressure or callback list growing too
-> > > +                     big.
-> > > +
-> > >       rcuscale.gp_async= [KNL]
-> > >                       Measure performance of asynchronous
-> > >                       grace-period primitives such as call_rcu().
-> > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > > index bdd7eadb33d8..e7d2dd267593 100644
-> > > --- a/kernel/rcu/Kconfig
-> > > +++ b/kernel/rcu/Kconfig
-> > > @@ -314,6 +314,19 @@ config RCU_LAZY
-> > >         To save power, batch RCU callbacks and flush after delay, memory
-> > >         pressure, or callback list growing too big.
-> > >
-> > > +       Requires rcu_nocbs=all to be set.
-> > > +
-> > > +       Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
-> > > +
-> > > +config RCU_LAZY_DEFAULT_OFF
-> > > +     bool "Turn RCU lazy invocation off by default"
-> > > +     depends on RCU_LAZY
-> > > +     default n
-> > > +     help
-> > > +       Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
-> > > +       off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
-> > > +       it back on.
-> > > +
-> > >  config RCU_DOUBLE_CHECK_CB_TIME
-> > >       bool "RCU callback-batch backup time check"
-> > >       depends on RCU_EXPERT
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 3ac3c846105f..8b7675624815 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
-> > >  }
-> > >
-> > >  #ifdef CONFIG_RCU_LAZY
-> > > +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
-> > > +module_param(enable_rcu_lazy, bool, 0444);
-> > > +
-> > >  /**
-> > >   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
-> > >   * flush all lazy callbacks (including the new one) to the main ->cblist while
-> > > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
-> > >       __call_rcu_common(head, func, false);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> > > +#else
-> > > +#define enable_rcu_lazy              false
-> > >  #endif
-> > >
-> > >  /**
-> > > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> > >   */
-> > >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > >  {
-> > > -     __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-> > > +     __call_rcu_common(head, func, enable_rcu_lazy);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(call_rcu);
-> > >
-> > I think, it makes sense. Especially for devices/systems where it is hard
-> > to recompile the kernel and deploy it. For example, Google and GKI approach.
-> 
-> My concerns had nothing to do with recompiling the kernel. Passing a
-> boot parameter (without a kernel compile) can just as well
-> default-disable the feature.
-> 
-> I think what Qais is saying is that passing a boot parameter is itself
-> a hassle in Android (something I did not know about) because of GKI
-> etc.
+On Sat, Dec 9, 2023 at 3:35=E2=80=AFAM Frederic Weisbecker <frederic@kernel=
+.org> wrote:
 >
-That is true. Doing:
+> Currently IRQs are disabled on call_rcu() and then depending on the
+> context:
+>
+> * If the CPU is in nocb mode:
+>
+>    - If the callback is enqueued in the bypass list, IRQs are re-enabled
+>      implictly by rcu_nocb_try_bypass()
+>
+>    - If the callback is enqueued in the normal list, IRQs are re-enabled
+>      implicitly by __call_rcu_nocb_wake()
+>
+> * If the CPU is NOT in nocb mode, IRQs are reenabled explicitly from call=
+_rcu()
+>
+> This makes the code a bit hard to follow, especially as it interleaves
+> with nocb locking.
+>
+> To make the IRQ flags coverage clearer and also in order to prepare for
+> moving all the nocb enqueue code to its own function, always re-enable
+> the IRQ flags explicitly from call_rcu().
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree.c      |  9 ++++++---
+>  kernel/rcu/tree_nocb.h | 20 +++++++++-----------
+>  2 files changed, 15 insertions(+), 14 deletions(-)
+>
 
-echo 1 > /sys/.../enable_lazy
+Nit: s/symetric/symmetric/
 
-is a way how to make it easy and flexible.
+Reviewed-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
 
---
-Uladzislau Rezki
+
+Thanks
+Neeraj
+
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 52c2fdbc6363..74159c6d3bdf 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2697,8 +2697,10 @@ __call_rcu_common(struct rcu_head *head, rcu_callb=
+ack_t func, bool lazy_in)
+>         }
+>
+>         check_cb_ovld(rdp);
+> -       if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy))
+> +       if (rcu_nocb_try_bypass(rdp, head, &was_alldone, flags, lazy)) {
+> +               local_irq_restore(flags);
+>                 return; // Enqueued onto ->nocb_bypass, so just leave.
+> +       }
+>         // If no-CBs CPU gets here, rcu_nocb_try_bypass() acquired ->nocb=
+_lock.
+>         rcu_segcblist_enqueue(&rdp->cblist, head);
+>         if (__is_kvfree_rcu_offset((unsigned long)func))
+> @@ -2716,8 +2718,8 @@ __call_rcu_common(struct rcu_head *head, rcu_callba=
+ck_t func, bool lazy_in)
+>                 __call_rcu_nocb_wake(rdp, was_alldone, flags); /* unlocks=
+ */
+>         } else {
+>                 __call_rcu_core(rdp, head, flags);
+> -               local_irq_restore(flags);
+>         }
+> +       local_irq_restore(flags);
+>  }
+>
+>  #ifdef CONFIG_RCU_LAZY
+> @@ -4615,8 +4617,9 @@ void rcutree_migrate_callbacks(int cpu)
+>                 __call_rcu_nocb_wake(my_rdp, true, flags);
+>         } else {
+>                 rcu_nocb_unlock(my_rdp); /* irqs remain disabled. */
+> -               raw_spin_unlock_irqrestore_rcu_node(my_rnp, flags);
+> +               raw_spin_unlock_rcu_node(my_rnp); /* irqs remain disabled=
+. */
+>         }
+> +       local_irq_restore(flags);
+>         if (needwake)
+>                 rcu_gp_kthread_wake();
+>         lockdep_assert_irqs_enabled();
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 5598212d1f27..3f70fd0a2db4 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -532,9 +532,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp,=
+ struct rcu_head *rhp,
+>         // 2. Both of these conditions are met:
+>         //    a. The bypass list previously had only lazy CBs, and:
+>         //    b. The new CB is non-lazy.
+> -       if (ncbs && (!bypass_is_lazy || lazy)) {
+> -               local_irq_restore(flags);
+> -       } else {
+> +       if (!ncbs || (bypass_is_lazy && !lazy)) {
+>                 // No-CBs GP kthread might be indefinitely asleep, if so,=
+ wake.
+>                 rcu_nocb_lock(rdp); // Rare during call_rcu() flood.
+>                 if (!rcu_segcblist_pend_cbs(&rdp->cblist)) {
+> @@ -544,7 +542,7 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp,=
+ struct rcu_head *rhp,
+>                 } else {
+>                         trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>                                             TPS("FirstBQnoWake"));
+> -                       rcu_nocb_unlock_irqrestore(rdp, flags);
+> +                       rcu_nocb_unlock(rdp);
+>                 }
+>         }
+>         return true; // Callback already enqueued.
+> @@ -570,7 +568,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp=
+, bool was_alldone,
+>         // If we are being polled or there is no kthread, just leave.
+>         t =3D READ_ONCE(rdp->nocb_gp_kthread);
+>         if (rcu_nocb_poll || !t) {
+> -               rcu_nocb_unlock_irqrestore(rdp, flags);
+> +               rcu_nocb_unlock(rdp);
+>                 trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>                                     TPS("WakeNotPoll"));
+>                 return;
+> @@ -583,17 +581,17 @@ static void __call_rcu_nocb_wake(struct rcu_data *r=
+dp, bool was_alldone,
+>                 rdp->qlen_last_fqs_check =3D len;
+>                 // Only lazy CBs in bypass list
+>                 if (lazy_len && bypass_len =3D=3D lazy_len) {
+> -                       rcu_nocb_unlock_irqrestore(rdp, flags);
+> +                       rcu_nocb_unlock(rdp);
+>                         wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
+>                                            TPS("WakeLazy"));
+>                 } else if (!irqs_disabled_flags(flags)) {
+>                         /* ... if queue was empty ... */
+> -                       rcu_nocb_unlock_irqrestore(rdp, flags);
+> +                       rcu_nocb_unlock(rdp);
+>                         wake_nocb_gp(rdp, false);
+>                         trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+>                                             TPS("WakeEmpty"));
+>                 } else {
+> -                       rcu_nocb_unlock_irqrestore(rdp, flags);
+> +                       rcu_nocb_unlock(rdp);
+>                         wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
+>                                            TPS("WakeEmptyIsDeferred"));
+>                 }
+> @@ -611,15 +609,15 @@ static void __call_rcu_nocb_wake(struct rcu_data *r=
+dp, bool was_alldone,
+>                 if ((rdp->nocb_cb_sleep ||
+>                      !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+>                     !timer_pending(&rdp->nocb_timer)) {
+> -                       rcu_nocb_unlock_irqrestore(rdp, flags);
+> +                       rcu_nocb_unlock(rdp);
+>                         wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_FORCE,
+>                                            TPS("WakeOvfIsDeferred"));
+>                 } else {
+> -                       rcu_nocb_unlock_irqrestore(rdp, flags);
+> +                       rcu_nocb_unlock(rdp);
+>                         trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS=
+("WakeNot"));
+>                 }
+>         } else {
+> -               rcu_nocb_unlock_irqrestore(rdp, flags);
+> +               rcu_nocb_unlock(rdp);
+>                 trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WakeNo=
+t"));
+>         }
+>  }
+> --
+> 2.42.1
+>
+>
