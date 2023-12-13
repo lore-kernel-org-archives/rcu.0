@@ -1,128 +1,120 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADB359551
-	for <rcu@vger.kernel.org>; Wed, 13 Dec 2023 18:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ssMW5lZJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96F8FC433C8;
-	Wed, 13 Dec 2023 18:10:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702491011;
-	bh=Ibow/m3GEIZ8IbXREIXNaOr+KBGSFkWlItf/pSKXo4c=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ssMW5lZJIZ5NkgTVS2CPSerSu2jRNbbVAQMzsq1elsgc+uvsg7FpqeseiFpjIgOzd
-	 xPYO9kMqRGH4nMcEa/Io2KeiyRXVRmhuZstS0RDleFb+oYGQkJKdvwU1GNLLZ3jC2L
-	 dl27/wYKQZbdsnsPx15szs2sxCYclPJA6663OmuN69hchuNg5wd1SwMw5m6i4CRJO7
-	 vdVwsZBN/V28TYQGDM30RT4DhIAC6h6Phd41QN0EY6/kxpgZBRIFw3DwfBJdo4q4RC
-	 skmIisgdZ0wGWDFyN+kYeAH2LBWKgJ1vnwQ4pbU60sLhhTOY4tlc4ZGP4Ir9cZ+tIz
-	 ahBjiOpKnm4dw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3608ACE0C4D; Wed, 13 Dec 2023 10:10:11 -0800 (PST)
-Date: Wed, 13 Dec 2023 10:10:11 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] srcu: Improve comments about acceleration leak
-Message-ID: <41db96d6-db3f-4e17-87a1-744441ae56c5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231211015717.1067822-1-joel@joelfernandes.org>
- <48B36383-8849-4F52-8882-3B98AD0B9AF7@joelfernandes.org>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="qv7D4Gyg"
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7CEAB
+	for <rcu@vger.kernel.org>; Wed, 13 Dec 2023 10:35:35 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2cc3facf0c0so2012661fa.0
+        for <rcu@vger.kernel.org>; Wed, 13 Dec 2023 10:35:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1702492534; x=1703097334; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mv+5XsUdJVuk8GOh1DuytA+yuMqTKKF6sR66teLcGMU=;
+        b=qv7D4Gyg7PjuBe8+/3qFwd8oRLfSAXelbFfnSkV+PDSmr9rJ7sypzaGeFiVb4vmwjn
+         03zTxKHs4E8X3uQuKChdTGFeX7Dki0eaW6/7Ta5q1dVpVI4NUaipTWv8a/5rccMowBC8
+         1LzzFvgm9bWC0anuRpGLRQj4yP4SwAReNcT88=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492534; x=1703097334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mv+5XsUdJVuk8GOh1DuytA+yuMqTKKF6sR66teLcGMU=;
+        b=K52Peu3BOt5sjWFH9bZnUvZ6t91GFJNFDY99K1VcUuxI5x5JU1l+kPuizNco9CcOhj
+         x/qT01a3eBfkh+HqicL+Pl0g1xbVD83gQc1oeE0YA+qbSNJUA9CjeKhPlIkrGK1ues09
+         du4vtYLoFGYoyfvwehPHAQ80v4WUGit4j3MXiou1Bm2B/dEDFkPCufqMA/OuOw43hNd5
+         edoeXZ/re6X6yek4Zaw1K2jZ+mpWMCL898WnmMG3rJoHClrrp3IPRwpJNC8UbWZ741mc
+         rXHPTEcEJEX8PABgt9VKclTIzio7Z8BynyXjgiC0IuAveodBXUjyQ7YQ1wkCbtws3MmJ
+         z0Mw==
+X-Gm-Message-State: AOJu0YzftsmdZUmsGd7nx7K+AjpslbgEepfAIejkfYLK4Lxh4q1BB6VZ
+	G2fAvk9pjuaNzx00xPzHLVMvgo/r3f2YlC86bHK2Vg==
+X-Google-Smtp-Source: AGHT+IF98/Eb//7DFZtThhYC5gn2eqT/lGOfRQfhM6QVrDzFFDAch/dR4KHz4VQs4C66M1mY9YscTVbF02261clQEW0=
+X-Received: by 2002:a2e:9f4a:0:b0:2cc:3dac:2e8 with SMTP id
+ v10-20020a2e9f4a000000b002cc3dac02e8mr351771ljk.26.1702492534092; Wed, 13 Dec
+ 2023 10:35:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <48B36383-8849-4F52-8882-3B98AD0B9AF7@joelfernandes.org>
+References: <20231212174750.GA11886@neeraj.linux> <20231212174817.11919-3-neeraj.iitr10@gmail.com>
+ <CAEXW_YRHjdM+NA3CqNuwaRNXkRWbtypmt5Ov=YXnrpn3Eo-==Q@mail.gmail.com> <2b2c1573-337d-409b-a8ee-daeff096c7f4@paulmck-laptop>
+In-Reply-To: <2b2c1573-337d-409b-a8ee-daeff096c7f4@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Wed, 13 Dec 2023 13:35:22 -0500
+Message-ID: <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
+Subject: Re: [PATCH rcu 3/3] srcu: Explain why callbacks invocations can't run concurrently
+To: paulmck@kernel.org
+Cc: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org, 
+	Neeraj.Upadhyay@amd.com, Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 03:11:30PM -0500, Joel Fernandes wrote:
-> 
-> 
-> > On Dec 10, 2023, at 8:57 PM, Joel Fernandes (Google) <joel@joelfernandes.org> wrote:
-> > 
-> > ﻿The comments added in commit 1ef990c4b36b ("srcu: No need to
-> > advance/accelerate if no callback enqueued") are a bit confusing to me.
-> > The comments are describing a scenario for code that was moved and is
-> > no longer the way it was (snapshot after advancing). Improve the code
-> > comments to reflect this and also document by acceleration can never
-> > fail.
-> > 
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> Do we want to quick review and put it in Neeraj PR?
-> 
-> Or next merge window ok with me. Just that then I have to keep track of it ;-)
+On Wed, Dec 13, 2023 at 12:52=E2=80=AFPM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
+>
+> On Wed, Dec 13, 2023 at 09:27:09AM -0500, Joel Fernandes wrote:
+> > On Tue, Dec 12, 2023 at 12:48=E2=80=AFPM Neeraj Upadhyay (AMD)
+> > <neeraj.iitr10@gmail.com> wrote:
+> > >
+> > > From: Frederic Weisbecker <frederic@kernel.org>
+> > >
+> > > If an SRCU barrier is queued while callbacks are running and a new
+> > > callbacks invocator for the same sdp were to run concurrently, the
+> > > RCU barrier might execute too early. As this requirement is non-obvio=
+us,
+> > > make sure to keep a record.
+> > >
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+> > > ---
+> > >  kernel/rcu/srcutree.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index 2bfc8ed1eed2..0351a4e83529 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -1715,6 +1715,11 @@ static void srcu_invoke_callbacks(struct work_=
+struct *work)
+> > >         WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_N=
+EXT_TAIL));
+> > >         rcu_segcblist_advance(&sdp->srcu_cblist,
+> > >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp=
+_seq));
+> > > +       /*
+> > > +        * Although this function is theoretically re-entrant, concur=
+rent
+> > > +        * callbacks invocation is disallowed to avoid executing an S=
+RCU barrier
+> > > +        * too early.
+> > > +        */
+> >
+> > Side comment:
+> > I guess even without the barrier reasoning, it is best not to allow
+> > concurrent CB execution anyway since it diverges from the behavior of
+> > straight RCU :)
+>
+> Good point!
+>
+> But please do not forget item 12 on the list in checklist.rst.  ;-)
+> (Which I just updated to include the other call_rcu*() functions.)
 
-Or it could get an ack and I could pull it into -rcu.  ;-)
+I think this is more so now with recent kernels (with the dynamic nocb
+switch) than with older kernels right? I haven't kept up with the
+checklist recently (which is my bad).
 
-							Thanx, Paul
+My understanding comes from the fact that the RCU barrier depends on
+callbacks on the same CPU executing in order with straight RCU
+otherwise it breaks. Hence my comment. But as you pointed out, that's
+outdated knowledge.
 
-> Thanks,
-> 
-> - Joel 
-> 
-> 
-> 
-> > ---
-> > v1->v2: Fix typo in change log.
-> > 
-> > kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
-> > 1 file changed, 20 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index 0351a4e83529..051e149490d1 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> >    if (rhp)
-> >        rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-> >    /*
-> > -     * The snapshot for acceleration must be taken _before_ the read of the
-> > -     * current gp sequence used for advancing, otherwise advancing may fail
-> > -     * and acceleration may then fail too.
-> > +     * It's crucial to capture the snapshot 's' for acceleration before
-> > +     * reading the current gp_seq that is used for advancing. This is
-> > +     * essential because if the acceleration snapshot is taken after a
-> > +     * failed advancement attempt, there's a risk that a grace period may
-> > +     * conclude and a new one may start in the interim. If the snapshot is
-> > +     * captured after this sequence of events, the acceleration snapshot 's'
-> > +     * could be excessively advanced, leading to acceleration failure.
-> > +     * In such a scenario, an 'acceleration leak' can occur, where new
-> > +     * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segment.
-> > +     * Also note that encountering advancing failures is a normal
-> > +     * occurrence when the grace period for RCU_WAIT_TAIL is in progress.
-> >     *
-> > -     * This could happen if:
-> > +     * To see this, consider the following events which occur if
-> > +     * rcu_seq_snap() were to be called after advance:
-> >     *
-> >     *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num = X + 4) and the
-> >     *     RCU_NEXT_READY_TAIL also has callbacks (gp_num = X + 8).
-> > @@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
-> >    if (rhp) {
-> >        rcu_segcblist_advance(&sdp->srcu_cblist,
-> >                      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-> > +        /*
-> > +         * Acceleration can never fail because the state of gp_seq used
-> > +         * for advancing is <= the state of gp_seq used for
-> > +         * acceleration. This means that RCU_NEXT_TAIL segment will
-> > +         * always be able to be emptied by the acceleration into the
-> > +         * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
-> > +         */
-> >        WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
-> >    }
-> >    if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
-> > -- 
-> > 2.43.0.472.g3155946c3a-goog
-> > 
+I should just shut up and hide in shame now.
+
+:-/
+
+ - Joel
