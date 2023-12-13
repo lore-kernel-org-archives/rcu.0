@@ -1,136 +1,125 @@
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3081A24B3D
+	for <rcu@vger.kernel.org>; Wed, 13 Dec 2023 18:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bX+E2bqA"
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B9C116;
-	Wed, 13 Dec 2023 10:39:02 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-58ceab7daddso3134636eaf.3;
-        Wed, 13 Dec 2023 10:39:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702492741; x=1703097541; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jNurO2RUnEzKo4ZS8HOimOcXuDT2A2EtiRl1qsSi+WE=;
-        b=bX+E2bqAO9MGAx+W81g+1R49Ras0p7oBYirKD6USexGbUOIeAKryi1aIGQJLjnmI/E
-         aH1yCm5iOj3ouISJODnOsr7b1dIWr7NCsMY9uv3pojl4oCLxJwV6j4xsXwskIOvp43vD
-         sUGgu56mXUI2pAue4mn3dAzNvmBZNZeb5bsWErmpa64b5mRelhQiKYM96pXxSuT51jRg
-         lUnenxtzelS4xfEt8CGvBrdINi+h+Tbe6r0/cmNm3yZZGP9gEVipjmApqT9Co6H/SlEN
-         5g1K5CMK76ym+N+Asbyo2WJ54UtA1Wwpq1PIMrkCauEoktTiWeu2AhtjV/ErOoKUg3aG
-         oPrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702492741; x=1703097541;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jNurO2RUnEzKo4ZS8HOimOcXuDT2A2EtiRl1qsSi+WE=;
-        b=QlIuBF8Wmm7cLW363vM4GKPCsQtCh82X89OUvZMZ37vQPxpD68iw4OZAwAiktGQ21E
-         JjGnUUNk77TroOKdYqcd+Q88atjs0AfPq/dB2lR2vS4u3ZxiXI0AXjDGLSbkG3LYZNVr
-         2uT11UdLwwRChiI1aNtB1x8e2A8OLL5sL6klQuqV9/G4J42xdxtREVD/N1SzvmEjysfd
-         bzQOmnE9vdzoRDX7I2ivp6G75DX6xxTy8PS6mQhOHO0DW7T8dzFewy9xLtdw/uxoOh/q
-         obdTqToVbUouDVqvaeW9/HyKu67o9XrqARWY00A79vV4WXqjByheLW4ziH0HfgvC9qpX
-         pylg==
-X-Gm-Message-State: AOJu0YxxPvIgIZmbssC1v0Un5pMAlMjDL3glQAK5M3U8ZiDM5U6p7yMt
-	8W/kIVPQ1rGhiH7kRgCULEtBRg9XRbtYiGfL
-X-Google-Smtp-Source: AGHT+IGoPgsSzIDZXty3JpWjVN4Zx9Qy5YElEqStEHOl3F+ifcnvX7maL7VZZYoUMZWVeEerEpD2BA==
-X-Received: by 2002:a05:6358:5e0f:b0:170:4208:ecc with SMTP id q15-20020a0563585e0f00b0017042080eccmr3385080rwn.5.1702492741037;
-        Wed, 13 Dec 2023 10:39:01 -0800 (PST)
-Received: from localhost.localdomain ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id k189-20020a6324c6000000b005bcea1bf43bsm9981750pgk.12.2023.12.13.10.38.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 10:39:00 -0800 (PST)
-From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	paulmck@kernel.org,
-	Neeraj.Upadhyay@amd.com,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 4/3] srcu: Use try-lock lockdep annotation for NMI-safe access.
-Date: Wed, 13 Dec 2023 23:48:43 +0530
-Message-Id: <20231213181843.12844-1-neeraj.iitr10@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231212174750.GA11886@neeraj.linux>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLEwHEC9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B224DC433C7;
+	Wed, 13 Dec 2023 18:55:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702493701;
+	bh=gNwdzPsr9UWjlIeXdMO9ihywHKgw6GU/WIg5VvGTAaw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=BLEwHEC9xexsuNcvGDIs8F1R9mitnFG6BFTwBMIo1YZzyJo76DWKF6wPmO4/EaJ5m
+	 HUu9AoGBBPrbm2BPquvJZWg35Q3qJtb5a7l2Ummy744S+2EwCL0yR+ARXGOmEBorxT
+	 kzFXM/cNvD20CP1t5fAiIhd8UdZUZAAasA1W+goHjmIzDNH2ao/66M28sMLMRf/D+n
+	 07LPLi4iT7jkAmeWvgGL+jeyLay3u2/0KNHbwuc6uZeqtjo8S4WKIe6WrP3aiysClf
+	 CK+b93YBH0HwW0uNT7kAcWvnUKGFKlBth+5Ab3QfYV3W9IwTu2fy4FlcaAPFLkUhFE
+	 DuVjVYKghL8OA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 50904CE0C4D; Wed, 13 Dec 2023 10:55:01 -0800 (PST)
+Date: Wed, 13 Dec 2023 10:55:01 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Neeraj.Upadhyay@amd.com,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH rcu 3/3] srcu: Explain why callbacks invocations can't
+ run concurrently
+Message-ID: <9109c700-a353-4b12-a7c5-2f67e9ab4e86@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20231212174750.GA11886@neeraj.linux>
+ <20231212174817.11919-3-neeraj.iitr10@gmail.com>
+ <CAEXW_YRHjdM+NA3CqNuwaRNXkRWbtypmt5Ov=YXnrpn3Eo-==Q@mail.gmail.com>
+ <2b2c1573-337d-409b-a8ee-daeff096c7f4@paulmck-laptop>
+ <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Wed, Dec 13, 2023 at 01:35:22PM -0500, Joel Fernandes wrote:
+> On Wed, Dec 13, 2023 at 12:52 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Wed, Dec 13, 2023 at 09:27:09AM -0500, Joel Fernandes wrote:
+> > > On Tue, Dec 12, 2023 at 12:48 PM Neeraj Upadhyay (AMD)
+> > > <neeraj.iitr10@gmail.com> wrote:
+> > > >
+> > > > From: Frederic Weisbecker <frederic@kernel.org>
+> > > >
+> > > > If an SRCU barrier is queued while callbacks are running and a new
+> > > > callbacks invocator for the same sdp were to run concurrently, the
+> > > > RCU barrier might execute too early. As this requirement is non-obvious,
+> > > > make sure to keep a record.
+> > > >
+> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+> > > > ---
+> > > >  kernel/rcu/srcutree.c | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > >
+> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > index 2bfc8ed1eed2..0351a4e83529 100644
+> > > > --- a/kernel/rcu/srcutree.c
+> > > > +++ b/kernel/rcu/srcutree.c
+> > > > @@ -1715,6 +1715,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+> > > >         WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+> > > >         rcu_segcblist_advance(&sdp->srcu_cblist,
+> > > >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> > > > +       /*
+> > > > +        * Although this function is theoretically re-entrant, concurrent
+> > > > +        * callbacks invocation is disallowed to avoid executing an SRCU barrier
+> > > > +        * too early.
+> > > > +        */
+> > >
+> > > Side comment:
+> > > I guess even without the barrier reasoning, it is best not to allow
+> > > concurrent CB execution anyway since it diverges from the behavior of
+> > > straight RCU :)
+> >
+> > Good point!
+> >
+> > But please do not forget item 12 on the list in checklist.rst.  ;-)
+> > (Which I just updated to include the other call_rcu*() functions.)
+> 
+> I think this is more so now with recent kernels (with the dynamic nocb
+> switch) than with older kernels right? I haven't kept up with the
+> checklist recently (which is my bad).
 
-It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
-triggers a lockdep if used from NMI because lockdep expects a deadlock
-since nothing disables NMIs while the lock is acquired.
+You are quite correct!  But even before this, I was saying that
+lack of same-CPU callback concurrency was an accident of the current
+implementation rather than a guarantee.  For example, there might come
+a time when RCU needs to respond to callback flooding with concurrent
+execution of the flooded CPU's callbacks.  Or not, but we do need to
+keep this option open.
 
-This is because commit f0f44752f5f61 ("rcu: Annotate SRCU's update-side
-lockdep dependencies") annotates synchronize_srcu() as a write lock
-usage. This helps to detect a deadlocks such as
-	srcu_read_lock();
-	synchronize_srcu();
-	srcu_read_unlock();
+> My understanding comes from the fact that the RCU barrier depends on
+> callbacks on the same CPU executing in order with straight RCU
+> otherwise it breaks. Hence my comment. But as you pointed out, that's
+> outdated knowledge.
 
-The side effect is that the lock srcu_struct now has a USED usage in normal
-contexts, so it conflicts with a USED_READ usage in NMI. But this shouldn't
-cause a real deadlock because the write lock usage from synchronize_srcu()
-is a fake one and only used for read/write deadlock detection.
+That is still one motivation for ordered execution of callbacks.  For the
+dynamic nocb switch, we could have chosen to make rcu_barrier() place
+a callback on both lists, but we instead chose to exclude rcu_barrier()
+calls during the switch.
 
-Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
-complains if used from NMI.
+> I should just shut up and hide in shame now.
 
-Fixes: f0f44752f5f6 ("rcu: Annotate SRCU's update-side lockdep dependencies")
-Link: https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
----
- include/linux/rcupdate.h | 6 ++++++
- include/linux/srcu.h     | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+No need for that!  After all, one motivation for Requirements.rst was
+to help me keep track of all this stuff.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index f7206b2623c9..31d523c4e089 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -301,6 +301,11 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
- 	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
- }
- 
-+static inline void rcu_try_lock_acquire(struct lockdep_map *map)
-+{
-+	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
-+}
-+
- static inline void rcu_lock_release(struct lockdep_map *map)
- {
- 	lock_release(map, _THIS_IP_);
-@@ -315,6 +320,7 @@ int rcu_read_lock_any_held(void);
- #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
- 
- # define rcu_lock_acquire(a)		do { } while (0)
-+# define rcu_try_lock_acquire(a)	do { } while (0)
- # define rcu_lock_release(a)		do { } while (0)
- 
- static inline int rcu_read_lock_held(void)
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 127ef3b2e607..236610e4a8fa 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
- 
- 	srcu_check_nmi_safety(ssp, true);
- 	retval = __srcu_read_lock_nmisafe(ssp);
--	rcu_lock_acquire(&ssp->dep_map);
-+	rcu_try_lock_acquire(&ssp->dep_map);
- 	return retval;
- }
- 
--- 
-2.40.1
+							Thanx, Paul
 
+> :-/
+> 
+>  - Joel
