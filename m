@@ -1,146 +1,154 @@
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82E73FB0B
-	for <rcu@vger.kernel.org>; Fri, 15 Dec 2023 16:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970D43EA6B;
+	Fri, 15 Dec 2023 16:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="P7CNJ3qe"
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cc55698c81so3400991fa.0
-        for <rcu@vger.kernel.org>; Fri, 15 Dec 2023 08:32:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IurPGBVZ"
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cc3facf0c0so8301801fa.0;
+        Fri, 15 Dec 2023 08:59:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702657940; x=1703262740; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ojDU/9VN5GeC3dLaid8BphJaGimgFMHJdaFdGJs6sOs=;
-        b=P7CNJ3qeJMN3y/cujteH1AaQmFBJlmmtrMGDE196bIzJU0iw7r9ozi9cDbOJNw3bnr
-         A0x0Y5N++UgNZmVZva/wlFCsVBqmxTcnpgm9rZ5DLKvBDwxZZBKI6YmTXgJTDQ+JHIpc
-         MN6VzFWlLnt1inypJo5fprHpFPQU2wp+3Iol8=
+        d=gmail.com; s=20230601; t=1702659538; x=1703264338; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ng6OxL3bfprBeqixlAY27bfZCnLXVb/25bFamyart8Q=;
+        b=IurPGBVZyPxLwUG7oD0kRT33HeAnQ4XleFTQ/Mal2YDn4A70oD2vR7EUhLgB0EhWlL
+         /3s8zaFjjFRxc27Gq8oToxxlgg+aUng2PwSsKWzbcjXQvcff//7+2AMN3ZBbMLva9r6N
+         WkoXfY0g2lau3J+nbNACGc0+8zwcveXOHMIV+eKYg+YvaKciHoevz+66vLY3LQ/Oo6wC
+         v73ZeW1JQrqYhs/N4Ww9s5da7RHCf9a7NFAP5N0Bs78x+pYO5xwEVrtKdlbbwiTgNW4r
+         qsF74/oP1Q3kubhEroU74fXwLprQlWAqUcxgWtIQcCBkvOHfRQBhU7cKmJ9IgqJcGdCh
+         cDUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702657940; x=1703262740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ojDU/9VN5GeC3dLaid8BphJaGimgFMHJdaFdGJs6sOs=;
-        b=A+1jGkUn9wrLKX8ITI2iLDrBAbD+OTfHz4IRpqqTL68mArbVFpPRRnY5HUToIC5thZ
-         hI0G3+pW2tyms2pkUTEM1D4KKzsBBISzraNpqSZ7DyVzq3xTv8WTLj2B/Uo8FUnc9LTv
-         r1rDCbPw76qVoXds2XLpIvLMf4k3KGJkumAOlmP6biufiWc9ne0r4JGe8SqBisKyhZ9l
-         zclkwjtV6D9t2l56Zbmk02LqRHYuretWOhTTfyyRNVp/XSCk2zbIArVDpGBr+bLJdrsY
-         k/LwtRyINq3gALEZ7dxpMt31TOtMuWw8Sc5J5Vyb3TuHaI6UHvEHgbv5BD2B6hRFv+L4
-         SVgg==
-X-Gm-Message-State: AOJu0Yywiz6lLOU2W0ZmchynizhEK5xdikI9JJg1lRPXJ/+iqY24d9hO
-	rcMIXQzcadklSx0ukEqfYj9qa39wI0+ZiJL7V4fRxOmSQicC5gox
-X-Google-Smtp-Source: AGHT+IGY6RKV7kOjHCo00Xasu9YBIUHdxyiAoiCv3LSuwch9yvWFnkm3keeK7vWU0VlytqR7XOrQRgv4YBQrVOx/m5o=
-X-Received: by 2002:a2e:be0c:0:b0:2cc:200f:4392 with SMTP id
- z12-20020a2ebe0c000000b002cc200f4392mr5299553ljq.46.1702657939891; Fri, 15
- Dec 2023 08:32:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702659538; x=1703264338;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ng6OxL3bfprBeqixlAY27bfZCnLXVb/25bFamyart8Q=;
+        b=tfyS9yAWsO6lMmhUP7QDlhuEj7Mtnx0LiYUCSr66LsIJbuzSYUgku6opZL37tjEp7N
+         AdBDv5tPLSN2QyndyNWQDkoOiyE43ey5deb5T90zGQj9ZGq3262tBqF1Ni76U7vo3eH/
+         L06t/mmCdmLINEPJHF/5Lh5rVOp48csaua4lroxythd2y3e+j2IlxXY2PFb/csI+Iz11
+         fTASX25Hnk45qZp8i+/CeQkNlNN6uqzzUPn6LnQdde7baEV1MbVlPynkdV/Z0VlN5RHP
+         y1+vzaXjxJhEVV/v+uyJ+rEN31xmthxw0VZmw20XS6DqXGNKyGJwmmiL+Ie4zY4iiyYP
+         XsgA==
+X-Gm-Message-State: AOJu0YxETCJ4pRLOeDQjwGSMxzsfhX/j/Ktll2gOzLPJxgUEIHp9tzvC
+	Y9K0mXjCqmrN6wKJdC1KrPQ=
+X-Google-Smtp-Source: AGHT+IHP23uE00H/RQwr42qR+drtU4psvRD8J4Zc/giYF4D+Pn6m6nF7FIYwwhvM1WTYs6Vdj/TX/Q==
+X-Received: by 2002:a2e:a367:0:b0:2ca:27a:1829 with SMTP id i7-20020a2ea367000000b002ca027a1829mr6530295ljn.2.1702659538200;
+        Fri, 15 Dec 2023 08:58:58 -0800 (PST)
+Received: from pc636 (host-90-235-2-229.mobileonline.telia.com. [90.235.2.229])
+        by smtp.gmail.com with ESMTPSA id z13-20020a05651c11cd00b002c9f8626256sm2530609ljo.53.2023.12.15.08.58.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 08:58:57 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Fri, 15 Dec 2023 17:58:55 +0100
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Qais Yousef <qyousef@layalina.io>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrea Righi <andrea.righi@canonical.com>,
+	John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Message-ID: <ZXyFz1BD6Nh1zsnc@pc636>
+References: <20231203011252.233748-1-qyousef@layalina.io>
+ <ZXhTjrTqZvMTXKtK@pc636>
+ <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com>
+ <ZXmI9zDW8KlZqQj7@pc636>
+ <CAEXW_YRdgQywfJ+A9fa1itDojPDiZ_Xc3M8n6dS=M2LHX9hSFg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231203011252.233748-1-qyousef@layalina.io> <ZXhTjrTqZvMTXKtK@pc636>
- <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com> <ZXmI9zDW8KlZqQj7@pc636>
-In-Reply-To: <ZXmI9zDW8KlZqQj7@pc636>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Fri, 15 Dec 2023 11:32:08 -0500
-Message-ID: <CAEXW_YRdgQywfJ+A9fa1itDojPDiZ_Xc3M8n6dS=M2LHX9hSFg@mail.gmail.com>
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Qais Yousef <qyousef@layalina.io>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Andrea Righi <andrea.righi@canonical.com>, John Stultz <jstultz@google.com>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YRdgQywfJ+A9fa1itDojPDiZ_Xc3M8n6dS=M2LHX9hSFg@mail.gmail.com>
 
-On Wed, Dec 13, 2023 at 5:35=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com>=
- wrote:
-[....]
-> > > > +       Use rcutree.enable_rcu_lazy=3D0 to turn it off at boot time=
-.
-> > > > +
-> > > > +config RCU_LAZY_DEFAULT_OFF
-> > > > +     bool "Turn RCU lazy invocation off by default"
-> > > > +     depends on RCU_LAZY
-> > > > +     default n
-> > > > +     help
-> > > > +       Allows building the kernel with CONFIG_RCU_LAZY=3Dy yet kee=
-p it default
-> > > > +       off. Boot time param rcutree.enable_rcu_lazy=3D1 can be use=
-d to switch
-> > > > +       it back on.
-> > > > +
-> > > >  config RCU_DOUBLE_CHECK_CB_TIME
-> > > >       bool "RCU callback-batch backup time check"
-> > > >       depends on RCU_EXPERT
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index 3ac3c846105f..8b7675624815 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_=
-callback_t func, bool lazy_in)
-> > > >  }
-> > > >
-> > > >  #ifdef CONFIG_RCU_LAZY
-> > > > +static bool enable_rcu_lazy __read_mostly =3D !IS_ENABLED(CONFIG_R=
-CU_LAZY_DEFAULT_OFF);
-> > > > +module_param(enable_rcu_lazy, bool, 0444);
-> > > > +
-> > > >  /**
-> > > >   * call_rcu_hurry() - Queue RCU callback for invocation after grac=
-e period, and
-> > > >   * flush all lazy callbacks (including the new one) to the main ->=
-cblist while
-> > > > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rc=
-u_callback_t func)
-> > > >       __call_rcu_common(head, func, false);
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> > > > +#else
-> > > > +#define enable_rcu_lazy              false
-> > > >  #endif
-> > > >
-> > > >  /**
-> > > > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> > > >   */
-> > > >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > >  {
-> > > > -     __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-> > > > +     __call_rcu_common(head, func, enable_rcu_lazy);
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(call_rcu);
-> > > >
-> > > I think, it makes sense. Especially for devices/systems where it is h=
-ard
-> > > to recompile the kernel and deploy it. For example, Google and GKI ap=
-proach.
+Hello, Joel!
+
+> [....]
+> > > > > +       Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
+> > > > > +
+> > > > > +config RCU_LAZY_DEFAULT_OFF
+> > > > > +     bool "Turn RCU lazy invocation off by default"
+> > > > > +     depends on RCU_LAZY
+> > > > > +     default n
+> > > > > +     help
+> > > > > +       Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
+> > > > > +       off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
+> > > > > +       it back on.
+> > > > > +
+> > > > >  config RCU_DOUBLE_CHECK_CB_TIME
+> > > > >       bool "RCU callback-batch backup time check"
+> > > > >       depends on RCU_EXPERT
+> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > index 3ac3c846105f..8b7675624815 100644
+> > > > > --- a/kernel/rcu/tree.c
+> > > > > +++ b/kernel/rcu/tree.c
+> > > > > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+> > > > >  }
+> > > > >
+> > > > >  #ifdef CONFIG_RCU_LAZY
+> > > > > +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
+> > > > > +module_param(enable_rcu_lazy, bool, 0444);
+> > > > > +
+> > > > >  /**
+> > > > >   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+> > > > >   * flush all lazy callbacks (including the new one) to the main ->cblist while
+> > > > > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+> > > > >       __call_rcu_common(head, func, false);
+> > > > >  }
+> > > > >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > > > > +#else
+> > > > > +#define enable_rcu_lazy              false
+> > > > >  #endif
+> > > > >
+> > > > >  /**
+> > > > > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > > > >   */
+> > > > >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > > >  {
+> > > > > -     __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> > > > > +     __call_rcu_common(head, func, enable_rcu_lazy);
+> > > > >  }
+> > > > >  EXPORT_SYMBOL_GPL(call_rcu);
+> > > > >
+> > > > I think, it makes sense. Especially for devices/systems where it is hard
+> > > > to recompile the kernel and deploy it. For example, Google and GKI approach.
+> > >
+> > > My concerns had nothing to do with recompiling the kernel. Passing a
+> > > boot parameter (without a kernel compile) can just as well
+> > > default-disable the feature.
+> > >
+> > > I think what Qais is saying is that passing a boot parameter is itself
+> > > a hassle in Android (something I did not know about) because of GKI
+> > > etc.
+> > >
+> > That is true. Doing:
 > >
-> > My concerns had nothing to do with recompiling the kernel. Passing a
-> > boot parameter (without a kernel compile) can just as well
-> > default-disable the feature.
+> > echo 1 > /sys/.../enable_lazy
 > >
-> > I think what Qais is saying is that passing a boot parameter is itself
-> > a hassle in Android (something I did not know about) because of GKI
-> > etc.
-> >
-> That is true. Doing:
->
-> echo 1 > /sys/.../enable_lazy
->
-> is a way how to make it easy and flexible.
+> > is a way how to make it easy and flexible.
+> 
+> Hey Vlad, are you suggesting that the boot parameter be made to
+> support runtime? We can keep that for later as it may get complicated.
+> Qais's boot parameter is designed only for boot time.
+> 
+No problem. Yes, i meant a runtime one. But as you stated there might
+be hidden issues witch we are not aware of yet.
 
-Hey Vlad, are you suggesting that the boot parameter be made to
-support runtime? We can keep that for later as it may get complicated.
-Qais's boot parameter is designed only for boot time.
+Thanks!
 
-Qais, could you resend the patch with our tags and updated description? Tha=
-nks,
-
- - Joel
+--
+Uladzislau Rezki
