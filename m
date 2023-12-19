@@ -1,357 +1,187 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1061132C9A;
-	Tue, 19 Dec 2023 14:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D93A1CA82;
+	Tue, 19 Dec 2023 15:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YrMddE/Y"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C73E8C433C9;
-	Tue, 19 Dec 2023 14:09:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gp5ey1fg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A63DFC433D9;
+	Tue, 19 Dec 2023 15:29:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702994953;
-	bh=KHpyaaxmo3PSq0zjNwS6oE4RcAJ7YOJQkzkl6fO+m3A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YrMddE/YAi6sDMcpG5VCuPwcqrPqBKTxGOsGPPZpvig5V0sOge70yxoBTeaJrLA/y
-	 XTyhnvfx/j1Se0BXk9XypFOSf5t3amDX022BMXVeAM+SoAFYCQp9RMWdb9RZusS7LN
-	 yAY+uGZQhO72SOWPN/R0VQWA3xO+gUReHoPrhWSVDUBqMundLUusvjKqYw3Jqxk5f/
-	 Q27DOg6IasXVIPZ8vMH2GkCCrPGWWMBCJYHZzYWPbnG6jeFRYF4huoriPy9ESnzkDg
-	 2V6TdR9P8w4LxIPDdeSkrbVlIIvWke682qcXM1QkXx6HJz0gajub6qJ9xDU8+b8rUp
-	 zBhu1ECxUwPOQ==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+	s=k20201202; t=1702999763;
+	bh=q7a9zPyS7FnollgtLmCVbmrzHtXm3HyWLIGbUs5rFFI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Gp5ey1fgf6OunXBrFexRX0WH52xrn/Dzy2cYwwqlY2pTtrYCEYUoGC1pOYG1Ak8Oq
+	 Nb+zAU/uYHAAaJunG8lZXQhI814Y9L/ai5Q8kFqH2X7oT6E05i6RqvmccGuSoGE26D
+	 a2m9EdU2G30vwsI60B8+bzmnhWRU8JOgGEj70C2NJn8wcXfPvhCgejdMjVtlDBFaJ1
+	 YToBZVtyZjCKkS9gLWFSEjbJatQ5yMIvVYzIEsfdfWDKL8cHhyXCuXDZygTj5FBr/7
+	 IgAAb82cNHQIuSO87/qQhJKV3CA7+1mcLorr5isLEs1v7S3ELrRBxD+Ko0JSmEmCkj
+	 ogmBXOQ0luAFg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3C796CE0B37; Tue, 19 Dec 2023 07:29:23 -0800 (PST)
+Date: Tue, 19 Dec 2023 07:29:23 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	Hillf Danton <hdanton@sina.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: [PATCH 8/8] rcu/exp: Remove rcu_par_gp_wq
-Date: Tue, 19 Dec 2023 15:08:43 +0100
-Message-Id: <20231219140843.939329-9-frederic@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231219140843.939329-1-frederic@kernel.org>
-References: <20231219140843.939329-1-frederic@kernel.org>
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/3] rcu: Defer RCU kthreads wakeup when CPU is dying
+Message-ID: <b6da15c7-4729-4c7c-a88a-cc6773f9a371@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231218231916.11719-1-frederic@kernel.org>
+ <20231218231916.11719-3-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218231916.11719-3-frederic@kernel.org>
 
-TREE04 running on short iterations can produce writer stalls of the
-following kind:
+On Tue, Dec 19, 2023 at 12:19:15AM +0100, Frederic Weisbecker wrote:
+> When the CPU goes idle for the last time during the CPU down hotplug
+> process, RCU reports a final quiescent state for the current CPU. If
+> this quiescent state propagates up to the top, some tasks may then be
+> woken up to complete the grace period: the main grace period kthread
+> and/or the expedited main workqueue (or kworker).
+> 
+> If those kthreads have a SCHED_FIFO policy, the wake up can indirectly
+> arm the RT bandwith timer to the local offline CPU. Since this happens
+> after hrtimers have been migrated at CPUHP_AP_HRTIMERS_DYING stage, the
+> timer gets ignored. Therefore if the RCU kthreads are waiting for RT
+> bandwidth to be available, they may never be actually scheduled.
+> 
+> This triggers TREE03 rcutorture hangs:
+> 
+> 	 rcu: INFO: rcu_preempt self-detected stall on CPU
+> 	 rcu:     4-...!: (1 GPs behind) idle=9874/1/0x4000000000000000 softirq=0/0 fqs=20 rcuc=21071 jiffies(starved)
+> 	 rcu:     (t=21035 jiffies g=938281 q=40787 ncpus=6)
+> 	 rcu: rcu_preempt kthread starved for 20964 jiffies! g938281 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+> 	 rcu:     Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+> 	 rcu: RCU grace-period kthread stack dump:
+> 	 task:rcu_preempt     state:R  running task     stack:14896 pid:14    tgid:14    ppid:2      flags:0x00004000
+> 	 Call Trace:
+> 	  <TASK>
+> 	  __schedule+0x2eb/0xa80
+> 	  schedule+0x1f/0x90
+> 	  schedule_timeout+0x163/0x270
+> 	  ? __pfx_process_timeout+0x10/0x10
+> 	  rcu_gp_fqs_loop+0x37c/0x5b0
+> 	  ? __pfx_rcu_gp_kthread+0x10/0x10
+> 	  rcu_gp_kthread+0x17c/0x200
+> 	  kthread+0xde/0x110
+> 	  ? __pfx_kthread+0x10/0x10
+> 	  ret_from_fork+0x2b/0x40
+> 	  ? __pfx_kthread+0x10/0x10
+> 	  ret_from_fork_asm+0x1b/0x30
+> 	  </TASK>
+> 
+> The situation can't be solved with just unpinning the timer. The hrtimer
+> infrastructure and the nohz heuristics involved in finding the best
+> remote target for an unpinned timer would then also need to handle
+> enqueues from an offline CPU in the most horrendous way.
+> 
+> So fix this on the RCU side instead and defer the wake up to an online
+> CPU if it's too late for the local one.
 
- ??? Writer stall state RTWS_EXP_SYNC(4) g3968 f0x0 ->state 0x2 cpu 0
- task:rcu_torture_wri state:D stack:14568 pid:83    ppid:2      flags:0x00004000
- Call Trace:
-  <TASK>
-  __schedule+0x2de/0x850
-  ? trace_event_raw_event_rcu_exp_funnel_lock+0x6d/0xb0
-  schedule+0x4f/0x90
-  synchronize_rcu_expedited+0x430/0x670
-  ? __pfx_autoremove_wake_function+0x10/0x10
-  ? __pfx_synchronize_rcu_expedited+0x10/0x10
-  do_rtws_sync.constprop.0+0xde/0x230
-  rcu_torture_writer+0x4b4/0xcd0
-  ? __pfx_rcu_torture_writer+0x10/0x10
-  kthread+0xc7/0xf0
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x2f/0x50
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork_asm+0x1b/0x30
-  </TASK>
+One question below...
 
-Waiting for an expedited grace period and polling for an expedited
-grace period both are operations that internally rely on the same
-workqueue performing necessary asynchronous work.
+> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> Fixes: 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree.c     | 34 +++++++++++++++++++++++++++++++++-
+>  kernel/rcu/tree_exp.h |  3 +--
+>  2 files changed, 34 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 3ac3c846105f..157f3ca2a9b5 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1013,6 +1013,38 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
+>  	return needmore;
+>  }
+>  
+> +static void swake_up_one_online_ipi(void *arg)
+> +{
+> +	struct swait_queue_head *wqh = arg;
+> +
+> +	swake_up_one(wqh);
+> +}
+> +
+> +static void swake_up_one_online(struct swait_queue_head *wqh)
+> +{
+> +	int cpu = get_cpu();
 
-However, a dependency chain is involved between those two operations,
-as depicted below:
+This works because get_cpu() is currently preempt_disable().  If there are plans to
+make get_cpu() be some sort of read lock, we might deadlock when synchronize_rcu()
+is invoked from a CPU-hotplug notifier, correct?
 
-       ====== CPU 0 =======                          ====== CPU 1 =======
+Might this be worth a comment somewhere at some point?
 
-                                                     synchronize_rcu_expedited()
-                                                         exp_funnel_lock()
-                                                             mutex_lock(&rcu_state.exp_mutex);
-    start_poll_synchronize_rcu_expedited
-        queue_work(rcu_gp_wq, &rnp->exp_poll_wq);
-                                                         synchronize_rcu_expedited_queue_work()
-                                                             queue_work(rcu_gp_wq, &rew->rew_work);
-                                                         wait_event() // A, wait for &rew->rew_work completion
-                                                         mutex_unlock() // B
-    //======> switch to kworker
+								Thanx, Paul
 
-    sync_rcu_do_polled_gp() {
-        synchronize_rcu_expedited()
-            exp_funnel_lock()
-                mutex_lock(&rcu_state.exp_mutex); // C, wait B
-                ....
-    } // D
-
-Since workqueues are usually implemented on top of several kworkers
-handling the queue concurrently, the above situation wouldn't deadlock
-most of the time because A then doesn't depend on D. But in case of
-memory stress, a single kworker may end up handling alone all the works
-in a serialized way. In that case the above layout becomes a problem
-because A then waits for D, closing a circular dependency:
-
-	A -> D -> C -> B -> A
-
-This however only happens when CONFIG_RCU_EXP_KTHREAD=n. Indeed
-synchronize_rcu_expedited() is otherwise implemented on top of a kthread
-worker while polling still relies on rcu_gp_wq workqueue, breaking the
-above circular dependency chain.
-
-Fix this with making expedited grace period to always rely on kthread
-worker. The workqueue based implementation is essentially a duplicate
-anyway now that the per-node initialization is performed by per-node
-kthread workers.
-
-Meanwhile the CONFIG_RCU_EXP_KTHREAD switch is still kept around to
-manage the scheduler policy of these kthread workers.
-
-Reported-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Suggested-by: Joel Fernandes <joel@joelfernandes.org>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/rcu.h      |  4 ---
- kernel/rcu/tree.c     | 40 ++++---------------------
- kernel/rcu/tree.h     |  6 +---
- kernel/rcu/tree_exp.h | 70 +------------------------------------------
- 4 files changed, 8 insertions(+), 112 deletions(-)
-
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 4bc8cd6d461e..4e65a92e528e 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -623,11 +623,7 @@ int rcu_get_gp_kthreads_prio(void);
- void rcu_fwd_progress_check(unsigned long j);
- void rcu_force_quiescent_state(void);
- extern struct workqueue_struct *rcu_gp_wq;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- extern struct kthread_worker *rcu_exp_gp_kworker;
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--extern struct workqueue_struct *rcu_par_gp_wq;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- void rcu_gp_slow_register(atomic_t *rgssp);
- void rcu_gp_slow_unregister(atomic_t *rgssp);
- #endif /* #else #ifdef CONFIG_TINY_RCU */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 40bfc58f1821..c8980d76f402 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4403,7 +4403,6 @@ rcu_boot_init_percpu_data(int cpu)
- 	rcu_boot_init_nocb_percpu_data(rdp);
- }
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- struct kthread_worker *rcu_exp_gp_kworker;
- 
- static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
-@@ -4423,7 +4422,9 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
- 		return;
- 	}
- 	WRITE_ONCE(rnp->exp_kworker, kworker);
--	sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
-+
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
- }
- 
- static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
-@@ -4447,39 +4448,14 @@ static void __init rcu_start_exp_gp_kworker(void)
- 		rcu_exp_gp_kworker = NULL;
- 		return;
- 	}
--	sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
--}
--
--static inline void rcu_alloc_par_gp_wq(void)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--struct workqueue_struct *rcu_par_gp_wq;
--
--static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
--{
--}
--
--static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
--{
--	return NULL;
--}
--
--static void __init rcu_start_exp_gp_kworker(void)
--{
--}
- 
--static inline void rcu_alloc_par_gp_wq(void)
--{
--	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
--	WARN_ON(!rcu_par_gp_wq);
-+	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
-+		sched_setscheduler_nocheck(rcu_exp_gp_kworker->task, SCHED_FIFO, &param);
- }
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- 
- static void rcu_spawn_rnp_kthreads(struct rcu_node *rnp)
- {
--	if ((IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) ||
--	     IS_ENABLED(CONFIG_RCU_BOOST)) && rcu_scheduler_fully_active) {
-+	if (rcu_scheduler_fully_active) {
- 		mutex_lock(&rnp->kthread_mutex);
- 		rcu_spawn_one_boost_kthread(rnp);
- 		rcu_spawn_exp_par_gp_kworker(rnp);
-@@ -4563,9 +4539,6 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
- 	struct rcu_node *rnp;
- 	struct task_struct *task_boost, *task_exp;
- 
--	if (!IS_ENABLED(CONFIG_RCU_EXP_KTHREAD) && !IS_ENABLED(CONFIG_RCU_BOOST))
--		return;
--
- 	rdp = per_cpu_ptr(&rcu_data, cpu);
- 	rnp = rdp->mynode;
- 
-@@ -5255,7 +5228,6 @@ void __init rcu_init(void)
- 	/* Create workqueue for Tree SRCU and for expedited GPs. */
- 	rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
- 	WARN_ON(!rcu_gp_wq);
--	rcu_alloc_par_gp_wq();
- 
- 	/* Fill in default value for rcutree.qovld boot parameter. */
- 	/* -After- the rcu_node ->lock fields are initialized! */
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index aa580fd0c097..04c0c7a54291 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -21,14 +21,10 @@
- 
- #include "rcu_segcblist.h"
- 
--/* Communicate arguments to a workqueue handler. */
-+/* Communicate arguments to a kthread worker handler. */
- struct rcu_exp_work {
- 	unsigned long rew_s;
--#ifdef CONFIG_RCU_EXP_KTHREAD
- 	struct kthread_work rew_work;
--#else
--	struct work_struct rew_work;
--#endif /* CONFIG_RCU_EXP_KTHREAD */
- };
- 
- /* RCU's kthread states for tracing. */
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index aa701ccdeda9..d35caa0bf0e8 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -418,7 +418,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 
- static void rcu_exp_sel_wait_wake(unsigned long s);
- 
--#ifdef CONFIG_RCU_EXP_KTHREAD
- static void sync_rcu_exp_select_node_cpus(struct kthread_work *wp)
- {
- 	struct rcu_exp_work *rewp =
-@@ -470,69 +469,6 @@ static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew
- 	kthread_queue_work(rcu_exp_gp_kworker, &rew->rew_work);
- }
- 
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--}
--#else /* !CONFIG_RCU_EXP_KTHREAD */
--static void sync_rcu_exp_select_node_cpus(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp =
--		container_of(wp, struct rcu_exp_work, rew_work);
--
--	__sync_rcu_exp_select_node_cpus(rewp);
--}
--
--static inline bool rcu_exp_worker_started(void)
--{
--	return !!READ_ONCE(rcu_gp_wq);
--}
--
--static inline bool rcu_exp_par_worker_started(struct rcu_node *rnp)
--{
--	return !!READ_ONCE(rcu_par_gp_wq);
--}
--
--static inline void sync_rcu_exp_select_cpus_queue_work(struct rcu_node *rnp)
--{
--	int cpu = find_next_bit(&rnp->ffmask, BITS_PER_LONG, -1);
--
--	INIT_WORK(&rnp->rew.rew_work, sync_rcu_exp_select_node_cpus);
--	/* If all offline, queue the work on an unbound CPU. */
--	if (unlikely(cpu > rnp->grphi - rnp->grplo))
--		cpu = WORK_CPU_UNBOUND;
--	else
--		cpu += rnp->grplo;
--	queue_work_on(cpu, rcu_par_gp_wq, &rnp->rew.rew_work);
--}
--
--static inline void sync_rcu_exp_select_cpus_flush_work(struct rcu_node *rnp)
--{
--	flush_work(&rnp->rew.rew_work);
--}
--
--/*
-- * Work-queue handler to drive an expedited grace period forward.
-- */
--static void wait_rcu_exp_gp(struct work_struct *wp)
--{
--	struct rcu_exp_work *rewp;
--
--	rewp = container_of(wp, struct rcu_exp_work, rew_work);
--	rcu_exp_sel_wait_wake(rewp->rew_s);
--}
--
--static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew)
--{
--	INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
--	queue_work(rcu_gp_wq, &rew->rew_work);
--}
--
--static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)
--{
--	destroy_work_on_stack(&rew->rew_work);
--}
--#endif /* CONFIG_RCU_EXP_KTHREAD */
--
- /*
-  * Select the nodes that the upcoming expedited grace period needs
-  * to wait for.
-@@ -976,8 +912,7 @@ void synchronize_rcu_expedited(void)
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu_expedited() in RCU read-side critical section");
- 
--	can_queue = (rcu_scheduler_active != RCU_SCHEDULER_INIT) &&
--		    rcu_exp_worker_started();
-+	can_queue = (rcu_scheduler_active != RCU_SCHEDULER_INIT) && rcu_exp_worker_started();
- 
- 	/* Is the state is such that the call is a grace period? */
- 	if (rcu_blocking_is_gp()) {
-@@ -1025,9 +960,6 @@ void synchronize_rcu_expedited(void)
- 
- 	/* Let the next expedited grace period start. */
- 	mutex_unlock(&rcu_state.exp_mutex);
--
--	if (likely(can_queue))
--		synchronize_rcu_expedited_destroy_work(&rew);
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu_expedited);
- 
--- 
-2.34.1
-
+> +
+> +	/*
+> +	 * If called from rcutree_report_cpu_starting(), wake up
+> +	 * is dangerous that late in the CPU-down hotplug process. The
+> +	 * scheduler might queue an ignored hrtimer. Defer the wake up
+> +	 * to an online CPU instead.
+> +	 */
+> +	if (unlikely(cpu_is_offline(cpu))) {
+> +		int target;
+> +
+> +		target = cpumask_any_and(housekeeping_cpumask(HK_TYPE_RCU),
+> +					 cpu_online_mask);
+> +
+> +		smp_call_function_single(target, swake_up_one_online_ipi,
+> +					 wqh, 0);
+> +		put_cpu();
+> +	} else {
+> +		put_cpu();
+> +		swake_up_one(wqh);
+> +	}
+> +}
+> +
+>  /*
+>   * Awaken the grace-period kthread.  Don't do a self-awaken (unless in an
+>   * interrupt or softirq handler, in which case we just might immediately
+> @@ -1037,7 +1069,7 @@ static void rcu_gp_kthread_wake(void)
+>  		return;
+>  	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+>  	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
+> -	swake_up_one(&rcu_state.gp_wq);
+> +	swake_up_one_online(&rcu_state.gp_wq);
+>  }
+>  
+>  /*
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index 6d7cea5d591f..2ac440bc7e10 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -173,7 +173,6 @@ static bool sync_rcu_exp_done_unlocked(struct rcu_node *rnp)
+>  	return ret;
+>  }
+>  
+> -
+>  /*
+>   * Report the exit from RCU read-side critical section for the last task
+>   * that queued itself during or before the current expedited preemptible-RCU
+> @@ -201,7 +200,7 @@ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
+>  			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  			if (wake) {
+>  				smp_mb(); /* EGP done before wake_up(). */
+> -				swake_up_one(&rcu_state.expedited_wq);
+> +				swake_up_one_online(&rcu_state.expedited_wq);
+>  			}
+>  			break;
+>  		}
+> -- 
+> 2.42.1
+> 
