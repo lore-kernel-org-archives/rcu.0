@@ -1,39 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149B1768FC;
-	Mon, 18 Dec 2023 23:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D701FAE;
+	Tue, 19 Dec 2023 01:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TuJESOJ2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8BCEC433C8;
-	Mon, 18 Dec 2023 23:19:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nqEconij"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8948BC433C7;
+	Tue, 19 Dec 2023 01:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702941572;
-	bh=x/5xI2oI/qJM/7tPaUtUa288bDEyvUKnDytjUeL9Kh8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TuJESOJ2ve3eFm0UYRg2rZDQWAy4X4nBL5GMaqztfenpsittW/7VpTa2Fhrd4QSGm
-	 +4WtgAd5/4b0ttyCzM/F0tWSKiBtHuIgRSmPJC+MNF4qQK7AzbDFLquasL5HIhBvko
-	 2od7mFYsC3y7Z9lM/13oy3C5Ds0lgasesvO74eNVZbI0UDBt/hrYn+2OcZE1v8lBsQ
-	 F1o10ntJRcveoVk9Uqd/OvHDDEpWoLi5bGtodA9+4g8SXSWR7E84jbSCX3xnEqp+ta
-	 tuxCuQSKug4vCynxWCzXdsfwjFQS+o/dd0A4bRCEumq3jmNKrGJFoV6WBRWwEugbtK
-	 0X6UvUFT1qdUw==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+	s=k20201202; t=1702950042;
+	bh=dUKH6D+WzIOMLrgnYnmJD46YvRtTLGyBcs3F5gy8Mq0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=nqEconijl9NAh7LJLyv62d/EeGs4eXqV7spb1vnkNwT3hu7MPrvR7AYsXv/PN9mxm
+	 OBKFxk1DwQZIlmggh17z+SIH04TYkmjMqh95gMY8uaj3zPeT+TfYk/7wFdRMfEjwby
+	 JjjXHv8X8Xkn4+qSYwuFGHbOfj7piL6pSfLEyh7ysTNohR/8oYxO+a022dM7wdaGRz
+	 njk1QCgF9cXH605zcwzNe1C7XeHYRutjWes1XCEHvDvJNhZvU0/scBRiqV0VGU1Jki
+	 Jp9L4hCCne67b8Vq/pngY2TNhG6LGS7P4j7DLv2MrXp99qbpUsnUT9I5gTlhYkO42e
+	 nkQJhf7PxTTkw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 16D35CE0BDF; Mon, 18 Dec 2023 17:40:42 -0800 (PST)
+Date: Mon, 18 Dec 2023 17:40:42 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 3/3] rcu/exp: Remove full barrier upon main thread wakeup
-Date: Tue, 19 Dec 2023 00:19:16 +0100
-Message-ID: <20231218231916.11719-4-frederic@kernel.org>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231218231916.11719-1-frederic@kernel.org>
+Subject: Re: [PATCH 0/3] timers & RCU: Fix TREE03 stalls
+Message-ID: <b1611b83-f3f5-445c-8be1-286c33703624@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20231218231916.11719-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -41,40 +39,35 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231218231916.11719-1-frederic@kernel.org>
 
-When an expedited grace period is ending, care must be taken so that all
-the quiescent states propagated up to the root are correctly ordered
-against the wake up of the main expedited grace period workqueue.
+On Tue, Dec 19, 2023 at 12:19:13AM +0100, Frederic Weisbecker wrote:
+> 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
+> has introduced an issue with RCU. This is a proposal to solve the
+> situation after realizing that fixing that on the timers side wouldn't
+> be pretty to say the least.
+> 
+> Oh and the last patch is absolutely irrelevant to the issue...
 
-This ordering is already carried through the root rnp locking augmented
-by an smp_mb__after_unlock_lock() barrier.
+I pulled all three in and started testing.
 
-Therefore the explicit smp_mb() placed before the wake up is not needed
-and can be removed.
+That last one will need some careful review, but you knew that already.  ;-)
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/tree_exp.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+							Thanx, Paul
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 2ac440bc7e10..014ddf672165 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -198,10 +198,9 @@ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
- 		}
- 		if (rnp->parent == NULL) {
- 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--			if (wake) {
--				smp_mb(); /* EGP done before wake_up(). */
-+			if (wake)
- 				swake_up_one_online(&rcu_state.expedited_wq);
--			}
-+
- 			break;
- 		}
- 		mask = rnp->grpmask;
--- 
-2.42.1
-
+> Frederic Weisbecker (3):
+>   hrtimer: Report offline hrtimer enqueue
+>   rcu: Defer RCU kthreads wakeup when CPU is dying
+>   rcu/exp: Remove full barrier upon main thread wakeup
+> 
+>  include/linux/hrtimer.h |  3 ++-
+>  kernel/rcu/tree.c       | 34 +++++++++++++++++++++++++++++++++-
+>  kernel/rcu/tree_exp.h   |  8 +++-----
+>  kernel/time/hrtimer.c   |  3 +++
+>  4 files changed, 41 insertions(+), 7 deletions(-)
+> 
+> -- 
+> 2.42.1
+> 
