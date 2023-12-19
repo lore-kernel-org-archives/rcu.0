@@ -1,48 +1,25 @@
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCDA5232
-	for <rcu@vger.kernel.org>; Tue, 19 Dec 2023 03:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3B0818B04;
+	Tue, 19 Dec 2023 11:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="fJtiqTop"
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-67ad277a06bso30372666d6.1
-        for <rcu@vger.kernel.org>; Mon, 18 Dec 2023 19:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702957139; x=1703561939; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=YX5TYy/ybPzczd7hAS2O6+/O2HDPlz224pHU/1rX4w8=;
-        b=fJtiqTopOMUglG1zrPdSL+JFs741Itp6FWm+7Br1O1ljcNEPnpaTQiO0R3urqcZmZE
-         W/XurKyMXM5ZjwVgnezdy400I03Hv9O6rTA7UMVUsvf4jSm1vALnLsp8zuKfWYGYyOUc
-         BJm8mdvVFCUHZqVG2HKxA+NknJapibIurJsi8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702957139; x=1703561939;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YX5TYy/ybPzczd7hAS2O6+/O2HDPlz224pHU/1rX4w8=;
-        b=fpAMt2w82ww4/u/scPFlLWs99gSburZHVHKMxFOFNYZ+fVOUS9UkT+TTPSujkXIBYE
-         YYy+Bt1xcZ+eRQZ5UAJ8nkHKZ24G5dr2FMSNb8XMAIEtaRMJvlMkL20XfxI8Co3itEMA
-         hzVmi8w3kkCuGtFVaj0b6i0g5NFKE15DtKa0vFVUAyLT75//so4TtBdRtP+UMQ4w1o18
-         1/88kR6ig3yjhbhrxgcUonKgNTYwUVlQ8xHt+5si8s8KZGBrCpoy2Y2yM/YcoX1kAyQ0
-         5Ss8U4sA6wkpBKHqjNnnO8pDvpSUU/XzKPAHQaw37GG1oFpA1gvSjJP9Nntlg+wzAknP
-         Kudg==
-X-Gm-Message-State: AOJu0Yz6wUQ0jgOdSh5YQ4RRWF9u5VSLG7AFVNBNK5emION61d8NwG4h
-	VMxpAxMPCraGLZWE4VPgrK/dzA==
-X-Google-Smtp-Source: AGHT+IHPKLo6fcEr1pM0YaqtWfX95s6Zp0/4QRmdjAcJisqE0iOCB1H6R4jciX1G+uIwTRksePlMrA==
-X-Received: by 2002:a05:6214:f0a:b0:67f:45fb:bc2d with SMTP id gw10-20020a0562140f0a00b0067f45fbbc2dmr4109071qvb.92.1702957138746;
-        Mon, 18 Dec 2023 19:38:58 -0800 (PST)
-Received: from localhost ([91.196.69.49])
-        by smtp.gmail.com with ESMTPSA id p1-20020ad452e1000000b0067f4bdacb6csm1074396qvu.116.2023.12.18.19.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 19:38:57 -0800 (PST)
-Message-ID: <65811051.d40a0220.75c79.66cf@mx.google.com>
-X-Google-Original-Message-ID: <20231219033852.GA2930@JoelBox.>
-Date: Mon, 18 Dec 2023 22:38:52 -0500
-From: Joel Fernandes <joel@joelfernandes.org>
-To: Frederic Weisbecker <frederic@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sUoBuG6g"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2799C433C8;
+	Tue, 19 Dec 2023 11:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702987013;
+	bh=zHISBvsIcJR3OT2FDj6duE1bfStgYazzhYoF/8iQEvM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sUoBuG6ga2p+k2lnkG33dKZ6x5zB4zLfgae7TsCT/D3yYb4nUX7+uXuej/GaO6H4G
+	 xABOiYmHr2G8gP57997/aN5aA9Hi/YG3xyENJXKvZ1SufFx80IgGipzwdiZxCey61w
+	 GKfGGugatD9/KLoXpvXtCfml5yj+yanI8Ga3PZWcFfyERm3BTni+6z+Fjh5WpI8tEN
+	 ILyb/O2dBjM7FmPI05QSNnvL6YCEvvwqyJGwNhu/jO6cc4JH9KQsnznRbF+Yvg1HLO
+	 9os382r35AvC3X7DB4SMfbwZ6FXSgDY3+nWE3ef90jnU7crClhxLMRCjcft9Wqd0/+
+	 W5rOlz/Pz8Vpg==
+Date: Tue, 19 Dec 2023 12:56:50 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
@@ -51,8 +28,10 @@ Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH 2/3] rcu: Defer RCU kthreads wakeup when CPU is dying
+Message-ID: <ZYGFAtLNQsLUWGPr@lothringen>
 References: <20231218231916.11719-1-frederic@kernel.org>
  <20231218231916.11719-3-frederic@kernel.org>
+ <65811051.d40a0220.75c79.66cf@mx.google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,177 +40,68 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231218231916.11719-3-frederic@kernel.org>
+In-Reply-To: <65811051.d40a0220.75c79.66cf@mx.google.com>
 
-On Tue, Dec 19, 2023 at 12:19:15AM +0100, Frederic Weisbecker wrote:
-> When the CPU goes idle for the last time during the CPU down hotplug
-> process, RCU reports a final quiescent state for the current CPU. If
-> this quiescent state propagates up to the top, some tasks may then be
-> woken up to complete the grace period: the main grace period kthread
-> and/or the expedited main workqueue (or kworker).
+On Mon, Dec 18, 2023 at 10:38:52PM -0500, Joel Fernandes wrote:
+> On Tue, Dec 19, 2023 at 12:19:15AM +0100, Frederic Weisbecker wrote:
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 3ac3c846105f..157f3ca2a9b5 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1013,6 +1013,38 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
+> >  	return needmore;
+> >  }
+> >  
+> > +static void swake_up_one_online_ipi(void *arg)
+> > +{
+> > +	struct swait_queue_head *wqh = arg;
+> > +
+> > +	swake_up_one(wqh);
+> > +}
 > 
-> If those kthreads have a SCHED_FIFO policy, the wake up can indirectly
-> arm the RT bandwith timer to the local offline CPU. Since this happens
-> after hrtimers have been migrated at CPUHP_AP_HRTIMERS_DYING stage, the
-> timer gets ignored. Therefore if the RCU kthreads are waiting for RT
-> bandwidth to be available, they may never be actually scheduled.
+> Speaking of, the scheduler refuses to do remote-IPI-style wakeups
+> (TTWU_QUEUE) whenever the destination CPU is in a hotplug state.
 > 
-> This triggers TREE03 rcutorture hangs:
+> static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
+> {
+> 	/*
+> 	 * Do not complicate things with the async wake_list while the CPU is
+> 	 * in hotplug state.
+> 	 */
+> 	if (!cpu_active(cpu))
+> 		return false;
+> 	...
+> }
+
+Yes, because all irrelevant tasks must be migrated out upon
+CPUHP_AP_SCHED_WAIT_EMPTY, thanks to balance_push_set().
+
+(Though right now I'm missing the flush_smp_call_function_queue() call that flushes
+the ttwu queue between sched_cpu_deactivate() and sched_cpu_wait_empty())
+
 > 
-> 	 rcu: INFO: rcu_preempt self-detected stall on CPU
-> 	 rcu:     4-...!: (1 GPs behind) idle=9874/1/0x4000000000000000 softirq=0/0 fqs=20 rcuc=21071 jiffies(starved)
-> 	 rcu:     (t=21035 jiffies g=938281 q=40787 ncpus=6)
-> 	 rcu: rcu_preempt kthread starved for 20964 jiffies! g938281 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-> 	 rcu:     Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-> 	 rcu: RCU grace-period kthread stack dump:
-> 	 task:rcu_preempt     state:R  running task     stack:14896 pid:14    tgid:14    ppid:2      flags:0x00004000
-> 	 Call Trace:
-> 	  <TASK>
-> 	  __schedule+0x2eb/0xa80
-> 	  schedule+0x1f/0x90
-> 	  schedule_timeout+0x163/0x270
-> 	  ? __pfx_process_timeout+0x10/0x10
-> 	  rcu_gp_fqs_loop+0x37c/0x5b0
-> 	  ? __pfx_rcu_gp_kthread+0x10/0x10
-> 	  rcu_gp_kthread+0x17c/0x200
-> 	  kthread+0xde/0x110
-> 	  ? __pfx_kthread+0x10/0x10
-> 	  ret_from_fork+0x2b/0x40
-> 	  ? __pfx_kthread+0x10/0x10
-> 	  ret_from_fork_asm+0x1b/0x30
-> 	  </TASK>
+> Along these lines, I wonder if, it is safe to do a wakeup in this fashion (as
+> done by this patch) if the destination CPU was also going down.
 > 
-> The situation can't be solved with just unpinning the timer. The hrtimer
-> infrastructure and the nohz heuristics involved in finding the best
-> remote target for an unpinned timer would then also need to handle
-> enqueues from an offline CPU in the most horrendous way.
+> Also the same ttwu_queue_cond() checks for CPU affinities before deciding to
+> not do the IPI-style queue.
 > 
-> So fix this on the RCU side instead and defer the wake up to an online
-> CPU if it's too late for the local one.
-
-Ah, ideally we'd not run into this if sched_feat(TTWU_QUEUE) was enabled
-but then in any case there is also the ttwu_queue_cond() also shutting down
-the remote queueing..
-
-> Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> Fixes: 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  kernel/rcu/tree.c     | 34 +++++++++++++++++++++++++++++++++-
->  kernel/rcu/tree_exp.h |  3 +--
->  2 files changed, 34 insertions(+), 3 deletions(-)
+> 	/* Ensure the task will still be allowed to run on the CPU. */
+> 	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+> 		return false;
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 3ac3c846105f..157f3ca2a9b5 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1013,6 +1013,38 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
->  	return needmore;
->  }
->  
-> +static void swake_up_one_online_ipi(void *arg)
-> +{
-> +	struct swait_queue_head *wqh = arg;
-> +
-> +	swake_up_one(wqh);
-> +}
-
-Speaking of, the scheduler refuses to do remote-IPI-style wakeups
-(TTWU_QUEUE) whenever the destination CPU is in a hotplug state.
-
-static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
-{
-	/*
-	 * Do not complicate things with the async wake_list while the CPU is
-	 * in hotplug state.
-	 */
-	if (!cpu_active(cpu))
-		return false;
-	...
-}
-
-Along these lines, I wonder if, it is safe to do a wakeup in this fashion (as
-done by this patch) if the destination CPU was also going down.
-
-Also the same ttwu_queue_cond() checks for CPU affinities before deciding to
-not do the IPI-style queue.
-
-	/* Ensure the task will still be allowed to run on the CPU. */
-	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
-		return false;
-
-Not that anyone should be changing RCU thread priorities around while the IPI
-is in flight, but...
-
-I wonder if the reason TTWU is excessively paranoid is that the IPI can be
-delayed for example, leading to race conditions.
-
-Anyway, just my 2 cents.
-
-Happy holidays! thanks,
-
- - Joel
-
-
-> +
-> +static void swake_up_one_online(struct swait_queue_head *wqh)
-> +{
-> +	int cpu = get_cpu();
-> +
-> +	/*
-> +	 * If called from rcutree_report_cpu_starting(), wake up
-> +	 * is dangerous that late in the CPU-down hotplug process. The
-> +	 * scheduler might queue an ignored hrtimer. Defer the wake up
-> +	 * to an online CPU instead.
-> +	 */
-> +	if (unlikely(cpu_is_offline(cpu))) {
-> +		int target;
-> +
-> +		target = cpumask_any_and(housekeeping_cpumask(HK_TYPE_RCU),
-> +					 cpu_online_mask);
-> +
-> +		smp_call_function_single(target, swake_up_one_online_ipi,
-> +					 wqh, 0);
-> +		put_cpu();
-> +	} else {
-> +		put_cpu();
-> +		swake_up_one(wqh);
-> +	}
-> +}
-> +
->  /*
->   * Awaken the grace-period kthread.  Don't do a self-awaken (unless in an
->   * interrupt or softirq handler, in which case we just might immediately
-> @@ -1037,7 +1069,7 @@ static void rcu_gp_kthread_wake(void)
->  		return;
->  	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
->  	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
-> -	swake_up_one(&rcu_state.gp_wq);
-> +	swake_up_one_online(&rcu_state.gp_wq);
->  }
->  
->  /*
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 6d7cea5d591f..2ac440bc7e10 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -173,7 +173,6 @@ static bool sync_rcu_exp_done_unlocked(struct rcu_node *rnp)
->  	return ret;
->  }
->  
-> -
->  /*
->   * Report the exit from RCU read-side critical section for the last task
->   * that queued itself during or before the current expedited preemptible-RCU
-> @@ -201,7 +200,7 @@ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
->  			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  			if (wake) {
->  				smp_mb(); /* EGP done before wake_up(). */
-> -				swake_up_one(&rcu_state.expedited_wq);
-> +				swake_up_one_online(&rcu_state.expedited_wq);
->  			}
->  			break;
->  		}
-> -- 
-> 2.42.1
+> Not that anyone should be changing RCU thread priorities around while the IPI
+> is in flight, but...
 > 
+> I wonder if the reason TTWU is excessively paranoid is that the IPI can be
+> delayed for example, leading to race conditions.
+
+It's because nothing irrelevant must be queued after sched_cpu_wait_empty().
+
+But note this patch does something different, it doesn't defer the runqueue
+enqueue like ttwu queue does. It defers the whole actual wakeup. This means that the
+decision as to where to queue the task is delegated to an online CPU. So it's
+not the same constraints. Waking up a task _from_ a CPU that is active or not but
+at least online is supposed to be fine.
+
+Thanks.
