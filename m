@@ -1,38 +1,60 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEEE6101;
-	Wed, 20 Dec 2023 01:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8C68C06
+	for <rcu@vger.kernel.org>; Wed, 20 Dec 2023 03:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gpq3RUWu"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C4EEC433C8;
-	Wed, 20 Dec 2023 01:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703036868;
-	bh=hvJlLQs5zEM/bYJflBKrAbgZJqlhq41MU0G88Uwz0hM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Gpq3RUWuS8hO+S1jgyAHjVXsG3+cFamc3bcJOoIi8iPrhq9QDOekQbTSJ6p2z8Q7Y
-	 w+bj6cb8yzE1TDe/gmFDV+3VVX3JCnYd43nZaucZfbP6c5dziAGfHuOkDoSliMEY1T
-	 xTt4a1LuWOB1HLL0XBIFFZhcxcZA2yruk2mNlURMassntf2aLjohvaY6WU5YZ+DUf5
-	 X4buKOJXg5hHlbzb6qXyoT9XlH7IPpP/itos69loMOcW5iAxJFMaxX1/DI9soakt01
-	 odRYezTdZIkYV5VMItN8Y8YcvJGVoG1gXbvoMXAUwBdqPLKY2nnZRSLsUXokd6PiuW
-	 CIPlVIAfG40mw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B59CFCE10DA; Tue, 19 Dec 2023 17:47:47 -0800 (PST)
-Date: Tue, 19 Dec 2023 17:47:47 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 6/7] rcu: Move sync related data to rcu_state structure
-Message-ID: <664015f6-6064-4c51-8072-ff48f43ed000@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231128080033.288050-1-urezki@gmail.com>
- <20231128080033.288050-7-urezki@gmail.com>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="MyZ5PtdH"
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4260b6eaae9so50463571cf.1
+        for <rcu@vger.kernel.org>; Tue, 19 Dec 2023 19:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1703041317; x=1703646117; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=XD0gRaE/GD7TBRGiqCrx3DHZEddpSttePAQKexu8u2g=;
+        b=MyZ5PtdHHMrnCJPPWjiVPfCB1ZOP4dKIkP/RBV9QCU2Wn1xINNjGDf1FXJb/sl5bir
+         Gmr69laeBabo0o1dkh9pti30IV5cbepcnISd/N0SWVU25dvKxncTxi2oEL+nnZMr3TXt
+         4BURLFDUmS+J00kH2L5ETYNr9MbjrKt4ZllNU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703041317; x=1703646117;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XD0gRaE/GD7TBRGiqCrx3DHZEddpSttePAQKexu8u2g=;
+        b=RzGLiNioznuN2ULdQboM6Ct6zeHev2vhiL4OzH9k0ONNZ2mvt326UqY3Pn0H1k+x5R
+         RxStEkmbgZLHkgImCYsng9ivrfZQMUSduxpdeP4ltyuHP46nqqFI1VAmVFU1aYwL2RWN
+         FB39FW52/ye7nG/FKxdL/tR61u5KmH8LnBsu+6X8QkRfIZyEQaKB7aRuqjDz/NRWLGwm
+         G9CXZ1vuC9+Vou2HBxLKHcjyksu6Yz8AHL4JUtQq4gakaBRuzk+2qucwxWVcmyOskb9r
+         8Jkgkb+ZxhIfJGTkChDfQwwi7R86i4D12ajwr/YczqFm60GoXCiCt5zsj/OJI6gdm8Rt
+         om8A==
+X-Gm-Message-State: AOJu0Yw5xWS3OA7utoinymhR9srA2UZIKmnW7ZD6XOyHmWLPZ9Irex/M
+	NRuPlP5Jw4MzKub2eRqRzCm64pU4wPQ/+aOEuvM=
+X-Google-Smtp-Source: AGHT+IFORiDdgAptC4EJWMmUY2s0Y9J6QOiHZTyxxA3nCQ7IANNK0EYU39Z6CGmXMP2SYUWDdfDkTQ==
+X-Received: by 2002:a05:622a:490:b0:425:a07f:6ca2 with SMTP id p16-20020a05622a049000b00425a07f6ca2mr27096673qtx.58.1703041316804;
+        Tue, 19 Dec 2023 19:01:56 -0800 (PST)
+Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id br6-20020a05622a1e0600b00425962ee7bdsm7792215qtb.18.2023.12.19.19.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 19:01:56 -0800 (PST)
+Message-ID: <65825924.050a0220.222f1.dc9d@mx.google.com>
+X-Google-Original-Message-ID: <20231220030155.GA56328@JoelBox.>
+Date: Tue, 19 Dec 2023 22:01:55 -0500
+From: Joel Fernandes <joel@joelfernandes.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/3] rcu: Defer RCU kthreads wakeup when CPU is dying
+References: <20231218231916.11719-1-frederic@kernel.org>
+ <20231218231916.11719-3-frederic@kernel.org>
+ <65811051.d40a0220.75c79.66cf@mx.google.com>
+ <ZYGFAtLNQsLUWGPr@lothringen>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -41,188 +63,89 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231128080033.288050-7-urezki@gmail.com>
+In-Reply-To: <ZYGFAtLNQsLUWGPr@lothringen>
 
-On Tue, Nov 28, 2023 at 09:00:32AM +0100, Uladzislau Rezki (Sony) wrote:
-> Move synchronize_rcu() main control data under the rcu_state
-> structure. An access is done via "rcu_state" global variable.
+On Tue, Dec 19, 2023 at 12:56:50PM +0100, Frederic Weisbecker wrote:
+> On Mon, Dec 18, 2023 at 10:38:52PM -0500, Joel Fernandes wrote:
+> > On Tue, Dec 19, 2023 at 12:19:15AM +0100, Frederic Weisbecker wrote:
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 3ac3c846105f..157f3ca2a9b5 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -1013,6 +1013,38 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
+> > >  	return needmore;
+> > >  }
+> > >  
+> > > +static void swake_up_one_online_ipi(void *arg)
+> > > +{
+> > > +	struct swait_queue_head *wqh = arg;
+> > > +
+> > > +	swake_up_one(wqh);
+> > > +}
+> > 
+> > Speaking of, the scheduler refuses to do remote-IPI-style wakeups
+> > (TTWU_QUEUE) whenever the destination CPU is in a hotplug state.
+> > 
+> > static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
+> > {
+> > 	/*
+> > 	 * Do not complicate things with the async wake_list while the CPU is
+> > 	 * in hotplug state.
+> > 	 */
+> > 	if (!cpu_active(cpu))
+> > 		return false;
+> > 	...
+> > }
 > 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Yes, because all irrelevant tasks must be migrated out upon
+> CPUHP_AP_SCHED_WAIT_EMPTY, thanks to balance_push_set().
 
-Could we please fold this into the earlier patches?  Your future self
-might thank me.  ;-)
+Ah, got it.
 
-							Thanx, Paul
+> (Though right now I'm missing the flush_smp_call_function_queue() call that flushes
+> the ttwu queue between sched_cpu_deactivate() and sched_cpu_wait_empty())
 
-> ---
->  kernel/rcu/tree.c | 50 ++++++++++++++---------------------------------
->  kernel/rcu/tree.h | 19 ++++++++++++++++++
->  2 files changed, 34 insertions(+), 35 deletions(-)
+Possible. I saw your IRC message to Peter on that as well, thanks for
+following up. I need to find some time to look more into that, but that does
+sound concerning.
+
+> > Along these lines, I wonder if, it is safe to do a wakeup in this fashion (as
+> > done by this patch) if the destination CPU was also going down.
+> > 
+> > Also the same ttwu_queue_cond() checks for CPU affinities before deciding to
+> > not do the IPI-style queue.
+> > 
+> > 	/* Ensure the task will still be allowed to run on the CPU. */
+> > 	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+> > 		return false;
+> > 
+> > Not that anyone should be changing RCU thread priorities around while the IPI
+> > is in flight, but...
+> > 
+> > I wonder if the reason TTWU is excessively paranoid is that the IPI can be
+> > delayed for example, leading to race conditions.
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 69663a6d5050..c0d3e46730e8 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1384,19 +1384,6 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  }
->  
-> -/*
-> - * A max threshold for synchronize_rcu() users which are
-> - * awaken directly by the rcu_gp_kthread(). Left part is
-> - * deferred to the main worker.
-> - */
-> -#define SR_MAX_USERS_WAKE_FROM_GP 5
-> -#define SR_NORMAL_GP_WAIT_HEAD_MAX 5
-> -
-> -struct sr_wait_node {
-> -	atomic_t inuse;
-> -	struct llist_node node;
-> -};
-> -
->  /*
->   * There is a single llist, which is used for handling
->   * synchronize_rcu() users' enqueued rcu_synchronize nodes.
-> @@ -1523,17 +1510,10 @@ struct sr_wait_node {
->   * +----------+     +--------+
->   *
->   */
-> -static struct sr_normal_state {
-> -	struct llist_head srs_next;	/* request a GP users. */
-> -	struct llist_node *srs_wait_tail; /* wait for GP users. */
-> -	struct llist_node *srs_done_tail; /* ready for GP users. */
-> -	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
-> -} sr;
-> -
->  static bool rcu_sr_is_wait_head(struct llist_node *node)
->  {
-> -	return &(sr.srs_wait_nodes)[0].node <= node &&
-> -		node <= &(sr.srs_wait_nodes)[SR_NORMAL_GP_WAIT_HEAD_MAX - 1].node;
-> +	return &(rcu_state.srs_wait_nodes)[0].node <= node &&
-> +		node <= &(rcu_state.srs_wait_nodes)[SR_NORMAL_GP_WAIT_HEAD_MAX - 1].node;
->  }
->  
->  static struct llist_node *rcu_sr_get_wait_head(void)
-> @@ -1542,7 +1522,7 @@ static struct llist_node *rcu_sr_get_wait_head(void)
->  	int i;
->  
->  	for (i = 0; i < SR_NORMAL_GP_WAIT_HEAD_MAX; i++) {
-> -		sr_wn = &(sr.srs_wait_nodes)[i];
-> +		sr_wn = &(rcu_state.srs_wait_nodes)[i];
->  
->  		if (!atomic_cmpxchg_acquire(&sr_wn->inuse, 0, 1))
->  			return &sr_wn->node;
-> @@ -1590,7 +1570,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
->  	 * cannot execute concurrently by multiple kworkers,
->  	 * the done tail list manipulations are protected here.
->  	 */
-> -	done = smp_load_acquire(&sr.srs_done_tail);
-> +	done = smp_load_acquire(&rcu_state.srs_done_tail);
->  	if (!done)
->  		return;
->  
-> @@ -1626,12 +1606,12 @@ static void rcu_sr_normal_gp_cleanup(void)
->  	struct llist_node *wait_tail, *head, *rcu;
->  	int done = 0;
->  
-> -	wait_tail = sr.srs_wait_tail;
-> +	wait_tail = rcu_state.srs_wait_tail;
->  	if (wait_tail == NULL)
->  		return;
->  
-> -	sr.srs_wait_tail = NULL;
-> -	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
-> +	rcu_state.srs_wait_tail = NULL;
-> +	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
->  
->  	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
->  	head = wait_tail->next;
-> @@ -1662,8 +1642,8 @@ static void rcu_sr_normal_gp_cleanup(void)
->  	}
->  
->  	// concurrent sr_normal_gp_cleanup work might observe this update.
-> -	smp_store_release(&sr.srs_done_tail, wait_tail);
-> -	ASSERT_EXCLUSIVE_WRITER(sr.srs_done_tail);
-> +	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> +	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
->  
->  	if (wait_tail->next)
->  		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> @@ -1678,7 +1658,7 @@ static bool rcu_sr_normal_gp_init(void)
->  	struct llist_node *wait_head;
->  	bool start_new_poll = false;
->  
-> -	first = READ_ONCE(sr.srs_next.first);
-> +	first = READ_ONCE(rcu_state.srs_next.first);
->  	if (!first || rcu_sr_is_wait_head(first))
->  		return start_new_poll;
->  
-> @@ -1690,23 +1670,23 @@ static bool rcu_sr_normal_gp_init(void)
->  	}
->  
->  	/* Inject a wait-dummy-node. */
-> -	llist_add(wait_head, &sr.srs_next);
-> +	llist_add(wait_head, &rcu_state.srs_next);
->  
->  	/*
->  	 * A waiting list of rcu_synchronize nodes should be empty on
->  	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
->  	 * rolls it over. If not, it is a BUG, warn a user.
->  	 */
-> -	WARN_ON_ONCE(sr.srs_wait_tail != NULL);
-> -	sr.srs_wait_tail = wait_head;
-> -	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
-> +	WARN_ON_ONCE(rcu_state.srs_wait_tail != NULL);
-> +	rcu_state.srs_wait_tail = wait_head;
-> +	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
->  
->  	return start_new_poll;
->  }
->  
->  static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
->  {
-> -	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
-> +	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
->  }
->  
->  /*
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index 192536916f9a..f72166b5067a 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -316,6 +316,19 @@ do {									\
->  	__set_current_state(TASK_RUNNING);				\
->  } while (0)
->  
-> +/*
-> + * A max threshold for synchronize_rcu() users which are
-> + * awaken directly by the rcu_gp_kthread(). Left part is
-> + * deferred to the main worker.
-> + */
-> +#define SR_MAX_USERS_WAKE_FROM_GP 5
-> +#define SR_NORMAL_GP_WAIT_HEAD_MAX 5
-> +
-> +struct sr_wait_node {
-> +	atomic_t inuse;
-> +	struct llist_node node;
-> +};
-> +
->  /*
->   * RCU global state, including node hierarchy.  This hierarchy is
->   * represented in "heap" form in a dense array.  The root (first level)
-> @@ -397,6 +410,12 @@ struct rcu_state {
->  						/* Synchronize offline with */
->  						/*  GP pre-initialization. */
->  	int nocb_is_setup;			/* nocb is setup from boot */
-> +
-> +	/* synchronize_rcu() part. */
-> +	struct llist_head srs_next;	/* request a GP users. */
-> +	struct llist_node *srs_wait_tail; /* wait for GP users. */
-> +	struct llist_node *srs_done_tail; /* ready for GP users. */
-> +	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
->  };
->  
->  /* Values for rcu_state structure's gp_flags field. */
-> -- 
-> 2.39.2
-> 
+> It's because nothing irrelevant must be queued after sched_cpu_wait_empty().
+
+Makes sense.
+
+> But note this patch does something different, it doesn't defer the runqueue
+> enqueue like ttwu queue does. It defers the whole actual wakeup. This means that the
+> decision as to where to queue the task is delegated to an online CPU. So it's
+> not the same constraints. Waking up a task _from_ a CPU that is active or not but
+> at least online is supposed to be fine.
+
+Agreed, thanks for the clarifications. But along similar lines (and at the
+risk of oversimplifying), is it not possible to send an IPI to an online CPU
+to queue the hrtimer locally there if you detect that the current CPU is
+going down? In the other thread to Hilf, you mentioned the hrtimer infra has
+to have equal or earlier deadline, but you can just queue the hrtimer from
+the IPI handler and that should take care of it?
+
+Let me know if I missed something which should make for some good holiday
+reading material. ;-)
+
+thanks,
+
+ - Joel
+
