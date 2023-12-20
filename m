@@ -1,37 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F48D1D13C;
-	Tue, 19 Dec 2023 15:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB964BA2B;
+	Wed, 20 Dec 2023 01:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kj0CwLgR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D07EC433C8;
-	Tue, 19 Dec 2023 15:47:23 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahFj4rtC"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52EE1C433C8;
+	Wed, 20 Dec 2023 01:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703000843;
-	bh=+Jv09aqqB55o8pN1kBnu6kkjl+pN06As0VbU1JQsbLE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kj0CwLgRMiWjB+XF6njqtLdfEWyA8oeacX2dl50oJsjHTWd/UMZWnt/OJLqzrsfHc
-	 +Ogk7/8vL4hipt5pNY8JmuuRH50X7F1FivoSnE3Mtma5ec7O2HgV544ADt5pPW1qTN
-	 DgyWVI2RG5Uijl3Ozr0cPv2eyyqsxAoUV5NAZmPVUkjsZKQEShrL2rMZ9f5q3XN0mr
-	 Anzqa1m4lrM0UkdBYhAtnCyvDACQQfdMhUBZY+Q0UeID5MMfzk1hdeObj2+kpuNuhs
-	 CgOslLkaQOz4bT9ZzAtUOFjYq0X+qMcmttUq2rC1qQBaBlfxhwF3i1sjFQTjR9Dl73
-	 w8uXOGlM22J5g==
-Date: Tue, 19 Dec 2023 16:47:20 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	s=k20201202; t=1703034898;
+	bh=zsdzPRN0SiD7hT3wXMfa4wKmlukUIAOzXAVh0C3nQ8E=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ahFj4rtCXaC7GT5onWH6gIxyYIH0v27hIhmFoFtCkaEk5n2LJM1lPrikOKLf5Yu7o
+	 CXr4JICVMItoUNDPlXh2Y7jsEQwSQsUeaocUfpAP6YohTbuqpX8LDBVYo5AHf0XMn9
+	 oNoDMCoOBJfQGaiS7nkh4g7FgrA7lgDMpIEgVetLZ2KrgHmyuOSapl6w+6yeg/7v8v
+	 37CdB/DKVO6aVuICGCC4sZl1mNn9syDeZ/kh9jw4vtpgYkvMdxO8tIccRds2BTgozB
+	 3tsuR/Vm1nnuQznKr0CEfIUUwQzE/z7Z+jNS6OZVDG7ll+vcYPdIon5aFZ+g/j/AVH
+	 C0xx2is9zjNkA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E3D5ECE10DA; Tue, 19 Dec 2023 17:14:57 -0800 (PST)
+Date: Tue, 19 Dec 2023 17:14:57 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/3] rcu: Defer RCU kthreads wakeup when CPU is dying
-Message-ID: <ZYG7COHYyLNwxbNi@lothringen>
-References: <20231218231916.11719-1-frederic@kernel.org>
- <20231218231916.11719-3-frederic@kernel.org>
- <b6da15c7-4729-4c7c-a88a-cc6773f9a371@paulmck-laptop>
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 7/7] rcu: Add CONFIG_RCU_SR_NORMAL_DEBUG_GP
+Message-ID: <81e233e8-ea1e-4d59-992e-826b3c96ce01@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231128080033.288050-1-urezki@gmail.com>
+ <20231128080033.288050-8-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -40,19 +41,72 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b6da15c7-4729-4c7c-a88a-cc6773f9a371@paulmck-laptop>
+In-Reply-To: <20231128080033.288050-8-urezki@gmail.com>
 
-On Tue, Dec 19, 2023 at 07:29:23AM -0800, Paul E. McKenney wrote:
-> > +static void swake_up_one_online(struct swait_queue_head *wqh)
-> > +{
-> > +	int cpu = get_cpu();
+On Tue, Nov 28, 2023 at 09:00:33AM +0100, Uladzislau Rezki (Sony) wrote:
+> This option enables additional debugging for detecting a grace
+> period incompletion for synchronize_rcu() users. If a GP is not
+> fully passed for any user, the warning message is emitted.
 > 
-> This works because get_cpu() is currently preempt_disable().  If there are plans to
-> make get_cpu() be some sort of read lock, we might deadlock when synchronize_rcu()
-> is invoked from a CPU-hotplug notifier, correct?
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+
+Much better, thank you, as this avoids the possibility of false positives
+in production.  But to avoid potential bisection issues, could you please
+fold this into the first patch?
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/Kconfig.debug | 12 ++++++++++++
+>  kernel/rcu/tree.c        |  7 +++++--
+>  2 files changed, 17 insertions(+), 2 deletions(-)
 > 
-> Might this be worth a comment somewhere at some point?
-
-Sure, I can add that.
-
-Thanks.
+> diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+> index 2984de629f74..3d44106ca1f0 100644
+> --- a/kernel/rcu/Kconfig.debug
+> +++ b/kernel/rcu/Kconfig.debug
+> @@ -143,4 +143,16 @@ config RCU_STRICT_GRACE_PERIOD
+>  	  when looking for certain types of RCU usage bugs, for example,
+>  	  too-short RCU read-side critical sections.
+>  
+> +config RCU_SR_NORMAL_DEBUG_GP
+> +	bool "Debug synchronize_rcu() callers for a grace period completion"
+> +	depends on DEBUG_KERNEL && RCU_EXPERT
+> +	default n
+> +	help
+> +	  This option enables additional debugging for detecting a grace
+> +	  period incompletion for synchronize_rcu() users. If a GP is not
+> +	  fully passed for any user, the warning message is emitted.
+> +
+> +	  Say Y here if you want to enable such debugging
+> +	  Say N if you are unsure.
+> +
+>  endmenu # "RCU Debugging"
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c0d3e46730e8..421bce4b8dd7 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1547,7 +1547,8 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+>  		(struct rcu_head *) node, struct rcu_synchronize, head);
+>  	unsigned long oldstate = (unsigned long) rs->head.func;
+>  
+> -	WARN_ONCE(!rcu_gp_is_expedited() && !poll_state_synchronize_rcu(oldstate),
+> +	WARN_ONCE(IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP) &&
+> +		!poll_state_synchronize_rcu(oldstate),
+>  		"A full grace period is not passed yet: %lu",
+>  		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
+>  
+> @@ -3822,7 +3823,9 @@ static void synchronize_rcu_normal(void)
+>  	 * This code might be preempted, therefore take a GP
+>  	 * snapshot before adding a request.
+>  	 */
+> -	rs.head.func = (void *) get_state_synchronize_rcu();
+> +	if (IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP))
+> +		rs.head.func = (void *) get_state_synchronize_rcu();
+> +
+>  	rcu_sr_normal_add_req(&rs);
+>  
+>  	/* Kick a GP and start waiting. */
+> -- 
+> 2.39.2
+> 
