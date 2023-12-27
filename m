@@ -1,154 +1,126 @@
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D40A5D;
-	Sat, 23 Dec 2023 02:14:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B00B46529
+	for <rcu@vger.kernel.org>; Wed, 27 Dec 2023 17:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/HOGkQR"
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6da4893142aso1624312a34.0;
-        Fri, 22 Dec 2023 18:14:40 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="GGlNg/gz"
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42786514fe6so48642361cf.0
+        for <rcu@vger.kernel.org>; Wed, 27 Dec 2023 09:47:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703297680; x=1703902480; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tDoasEUWLnkjnWJK/jt2Zzxrewc0//8PjRqnoVoBd04=;
-        b=j/HOGkQRAfnbIYA/4HVhwHpGeFf1B3/dDsjcENe0bz0WFSgM0SoL0SXq10Rsr1Nels
-         /f9OrNWC+VwQKDQFALOPyOrUWmbIRTnk8Pgj0hMe+kUPnodZaU+8bkjL8bzYE+yprddh
-         l2Gi6+sm8nL7ayg/7nkpKaovo0D9QHi+7Fzhoyl21jdufqG0/Slmg19doMQgGELAfzVg
-         F8rgLHjxXwJOJI2GKnr9qK0sQQdLZWSXHgo75pxahk6Zuqz6SF2BXU8UIRgJ1oiZc7Ht
-         75vc6w9h0Vd9FOn5GLRbMDj/EskGDVfSY8L8jH4rUPtIMkVpHVvfVRmWpBTWx0eawYif
-         XUPw==
+        d=joelfernandes.org; s=google; t=1703699259; x=1704304059; darn=vger.kernel.org;
+        h=content-disposition:mime-version:subject:cc:to:from:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JCZ69uSbcTjkg8dgoQT15Hv1NXMMjojf76ZK+8F+h+A=;
+        b=GGlNg/gzkY8fU2RQA4hMvY1Y3O09ip2hlt0mXTYyn06FyOTZSbBGmE0wU3pYl6RLS/
+         Buaaemp1DqNPBLegGvd9aQDVItfRZJRwiFQwilTzh/HsB+tFCWj27xNCyIHDK7VD2HGE
+         ZwrFofNIaehL9H+xTDTYkCLNsFiEZP0gejGGg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703297680; x=1703902480;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tDoasEUWLnkjnWJK/jt2Zzxrewc0//8PjRqnoVoBd04=;
-        b=hqoMNMWMdI+YpKSzyyOxcDkclhQwzX1bpze8DGfl57L28q4z2Gk0CQNbrAqqSUycF9
-         iBYNGbbX+iS6cUxJNi9219wF32ccNsyRQh2J1t7ZtyDdwexYxVzyE3Jtds/8XjIlE6gs
-         e8WExjkAQmoBKMf1VdyCR959ttm+nVkMgjP794zgbz0AvGf1xbZUvdW+WB7JPxwt5JgN
-         6SLjwPT0zkMi3YrjTKN0z5ksWc/wCaeRfWDUJ9T7+RZZhSW2srNKoVJBaRY1jyrKHfdA
-         NymcNVf5QfGPZNNHxYuaC1+fyECaQ0f8rzpyO5Yqj6FfvcM+7m3LOImd/pcAhC1PcjQZ
-         Hjjw==
-X-Gm-Message-State: AOJu0YxNuR0XLOTkZ0locT6Z5/TFBgUOVA0lbc3eeYGS1GT2+SWbxj6O
-	eqJjko+FR2wOA+WwngvWl7crRAymuvTbUuAe
-X-Google-Smtp-Source: AGHT+IGsP+Dx5US+YyGZ8FehEhE5qH8Z+70E3egeddHxCl8zPtRDEUfakBpe+vJB0nuVXeatFA12lw==
-X-Received: by 2002:a05:6830:1055:b0:6da:5c20:f8ad with SMTP id b21-20020a056830105500b006da5c20f8admr2135202otp.60.1703297679756;
-        Fri, 22 Dec 2023 18:14:39 -0800 (PST)
-Received: from neeraj.linux ([101.0.62.128])
-        by smtp.gmail.com with ESMTPSA id h19-20020a62b413000000b006d7d454e58asm765266pfn.117.2023.12.22.18.14.35
+        d=1e100.net; s=20230601; t=1703699259; x=1704304059;
+        h=content-disposition:mime-version:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JCZ69uSbcTjkg8dgoQT15Hv1NXMMjojf76ZK+8F+h+A=;
+        b=s9XYMQgzqq5Kj7i3detOEKSB9dF65sJzmtIPpTbNkZlTbbIJmEzjLNHjiSg8WSyy63
+         XUFOm0FvUJ1fHPjioaic8/LQeAfKImE/K2RzOqCTXU7XqRY647pEus94Zk7YEY8AP4s6
+         Aiw9pC2xQyUAE66KmpRK7F9Bh1x1Q2Yrdy+ST3oRtC6T9k1JZVsDLsCVkaIORfxsCcKQ
+         NMjgkjDbyTnulFtZxZcAhbAFJ1ImDhHrE97YAd6hV+wo34DoLXAgtyK9gI/O3zO3D29b
+         nElMYmwoZRkq6p99jTmSfEqDpBEAZNIf2HSvX0xdiPdQ1jifGiKnBUmeSycgtY34Nwkp
+         9AVg==
+X-Gm-Message-State: AOJu0YzaLCCmDzLJrIOewbg0TGFA4XZqxNfGkYSu9/GcZeb66rHAB3NT
+	slN/5JnOKMur5lhGJpbZRedL0OhM2+3x6g==
+X-Google-Smtp-Source: AGHT+IHcoGzBbcSYGqh6UKthu6pqug96DjBDJYTB+W7U5OTX9o2FKVNAx3Rrej3aC7rZ3VDfJksI0Q==
+X-Received: by 2002:a05:622a:590:b0:427:8fcf:52c3 with SMTP id c16-20020a05622a059000b004278fcf52c3mr14161093qtb.86.1703699258974;
+        Wed, 27 Dec 2023 09:47:38 -0800 (PST)
+Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id fc17-20020a05622a489100b00427d0be9ca3sm3855689qtb.80.2023.12.27.09.47.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Dec 2023 18:14:39 -0800 (PST)
-Date: Sat, 23 Dec 2023 07:44:34 +0530
-From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
-	frederic@kernel.org, mingo@kernel.org, tglx@linutronix.de,
-	rcu@vger.kernel.org, boqun.feng@gmail.com, joel@joelfernandes.org,
-	neeraj.upadhyay@amd.com, urezki@gmail.com,
-	qiang.zhang1211@gmail.com
-Subject: [GIT PULL] RCU changes for v6.8
-Message-ID: <20231223021434.GA2714@neeraj.linux>
+        Wed, 27 Dec 2023 09:47:38 -0800 (PST)
+Message-ID: <658c633a.050a0220.d8198.83e8@mx.google.com>
+X-Google-Original-Message-ID: <20231227174738.GA1119@JoelBox.>
+Date: Wed, 27 Dec 2023 12:47:38 -0500
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
+Subject: [PATCH v3] srcu: Improve comments about acceleration leak
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 
-Hi Linus,
+The comments added in commit 1ef990c4b36b ("srcu: No need to
+advance/accelerate if no callback enqueued") are a bit confusing.
+The comments are describing a scenario for code that was moved and is
+no longer the way it was (snapshot after advancing). Improve the code
+comments to reflect this and also document why acceleration can never
+fail.
 
-Once the merge window opens, please pull the latest RCU git tree from:
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1->v2: Fix typo in change log.
+v2->v3: Improvement to acceleration comment.
 
-  https://github.com/neeraju/linux.git tags/rcu.release.v6.8
+ kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-# HEAD: 7dfb03dd24d43b9e7a725e70d2e8a83bb29df294:
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 0351a4e83529..051e149490d1 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+ 	if (rhp)
+ 		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+ 	/*
+-	 * The snapshot for acceleration must be taken _before_ the read of the
+-	 * current gp sequence used for advancing, otherwise advancing may fail
+-	 * and acceleration may then fail too.
++	 * It's crucial to capture the snapshot 's' for acceleration before
++	 * reading the current gp_seq that is used for advancing. This is
++	 * essential because if the acceleration snapshot is taken after a
++	 * failed advancement attempt, there's a risk that a grace period may
++	 * conclude and a new one may start in the interim. If the snapshot is
++	 * captured after this sequence of events, the acceleration snapshot 's'
++	 * could be excessively advanced, leading to acceleration failure.
++	 * In such a scenario, an 'acceleration leak' can occur, where new
++	 * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segment.
++	 * Also note that encountering advancing failures is a normal
++	 * occurrence when the grace period for RCU_WAIT_TAIL is in progress.
+ 	 *
+-	 * This could happen if:
++	 * To see this, consider the following events which occur if
++	 * rcu_seq_snap() were to be called after advance:
+ 	 *
+ 	 *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num = X + 4) and the
+ 	 *     RCU_NEXT_READY_TAIL also has callbacks (gp_num = X + 8).
+@@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
+ 	if (rhp) {
+ 		rcu_segcblist_advance(&sdp->srcu_cblist,
+ 				      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
++		/*
++		 * Acceleration can never fail because the base current gp_seq
++		 * used for acceleration is <= the value of gp_seq used for
++		 * advancing. This means that RCU_NEXT_TAIL segment will
++		 * always be able to be emptied by the acceleration into the
++		 * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
++		 */
+ 		WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
+ 	}
+ 	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+-- 
+2.43.0.472.g3155946c3a-goog
 
-  Merge branches 'doc.2023.12.13a', 'torture.2023.11.23a', 'fixes.2023.12.13a', 'rcu-tasks.2023.12.12b' and 'srcu.2023.12.13a' into rcu-merge.2023.12.13a (2023-12-14 01:21:31 +0530)
-
-----------------------------------------------------------------
-RCU pull request for v6.8
-
-This pull request contains the following branches:
-
-doc.2023.12.13a: Documentation and comment updates.
-
-torture.2023.11.23a: RCU torture, locktorture updates that include
-        cleanups; nolibc init build support for mips, ppc and rv64;
-        testing of mid stall duration scenario and fixing fqs task
-        creation conditions.
-
-fixes.2023.12.13a: Misc fixes, most notably restricting usage of
-        RCU CPU stall notifiers, to confine their usage primarily
-        to debug kernels.
-
-rcu-tasks.2023.12.12b: RCU tasks minor fixes.
-
-srcu.2023.12.13a: lockdep annotation fix for NMI-safe accesses,
-        callback advancing/acceleration cleanup and documentation
-        improvements.
-
-----------------------------------------------------------------
-Charles Han (1):
-      Documentation: RCU: Remove repeated word in comments
-
-Frederic Weisbecker (3):
-      srcu: Remove superfluous callbacks advancing from srcu_gp_start()
-      srcu: No need to advance/accelerate if no callback enqueued
-      srcu: Explain why callbacks invocations can't run concurrently
-
-Neeraj Upadhyay (AMD) (1):
-      Merge branches 'doc.2023.12.13a', 'torture.2023.11.23a', 'fixes.2023.12.13a', 'rcu-tasks.2023.12.12b' and 'srcu.2023.12.13a' into rcu-merge.2023.12.13a
-
-Paul E. McKenney (7):
-      locktorture: Increase Hamming distance between call_rcu_chain and rcu_call_chains
-      rcutorture: Add mid-sized stall to TREE07
-      rcu-tasks: Mark RCU Tasks accesses to current->rcu_tasks_idle_cpu
-      rcu: Restrict access to RCU CPU stall notifiers
-      doc: Clarify RCU Tasks reader/updater checklist
-      doc: Mention address and data dependencies in rcu_dereference.rst
-      doc: Clarify historical disclaimers in memory-barriers.txt
-
-Pedro Falcato (1):
-      rcu: Remove unused macros from rcupdate.h
-
-Philipp Stanner (1):
-      rculist.h: docs: Fix wrong function summary
-
-Sebastian Andrzej Siewior (1):
-      srcu: Use try-lock lockdep annotation for NMI-safe access.
-
-Thomas Weiﬂschuh (1):
-      rcutorture: add nolibc init support for mips, ppc and rv64
-
-Zqiang (2):
-      rcutorture: Add fqs_holdoff check before fqs_task is created
-      rcu: Force quiescent states only for ongoing grace period
-
- Documentation/RCU/checklist.rst                            | 25 ++++++++++++++++---------
- Documentation/RCU/rcu_dereference.rst                      | 27 ++++++++++++++++++++-------
- Documentation/RCU/torture.rst                              |  2 +-
- Documentation/admin-guide/kernel-parameters.txt            |  6 ++++++
- Documentation/memory-barriers.txt                          | 17 ++++++++++-------
- include/linux/rcu_notifier.h                               |  6 +++---
- include/linux/rculist.h                                    |  2 +-
- include/linux/rcupdate.h                                   |  9 ++++++---
- include/linux/srcu.h                                       |  2 +-
- kernel/locking/locktorture.c                               | 18 +++++++++---------
- kernel/rcu/Kconfig.debug                                   | 25 +++++++++++++++++++++++++
- kernel/rcu/rcu.h                                           |  8 +++++---
- kernel/rcu/rcutorture.c                                    | 16 ++++++++++------
- kernel/rcu/srcutree.c                                      | 24 +++++++++++-------------
- kernel/rcu/tasks.h                                         |  4 ++--
- kernel/rcu/tree.c                                          |  2 ++
- kernel/rcu/tree_stall.h                                    | 11 ++++++++++-
- kernel/rcu/update.c                                        |  6 ++++++
- tools/testing/selftests/rcutorture/bin/mkinitrd.sh         |  5 ++++-
- tools/testing/selftests/rcutorture/configs/rcu/TREE07.boot |  3 +++
- 20 files changed, 151 insertions(+), 67 deletions(-)
