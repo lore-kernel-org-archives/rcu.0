@@ -1,23 +1,23 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FDC618C2F;
-	Fri, 12 Jan 2024 23:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E062C18E2C;
+	Fri, 12 Jan 2024 23:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JWyfoPNX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39D34C433F1;
-	Fri, 12 Jan 2024 23:09:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njIy9xgk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEF69C433F1;
+	Fri, 12 Jan 2024 23:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705100994;
-	bh=efTI8B5muEIKqGCBPUBKmsADMSjVD/REEPOCMdTkE/g=;
+	s=k20201202; t=1705101617;
+	bh=BVDuigBYTOkL1XAi3KeGeioizo6Ea+Fj47cSJCEZh/Y=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JWyfoPNXyKJEhKGXUj7KSKllQ6JLPm2xKqjl7YpSLMHORqfS9ohgTqHH1poT1/M0C
-	 LN/hbtbQx6cFrr++HvCe8PEA5iyevhrVAH5TslsOzL88xFLeLKyANgYidtBlIALNXg
-	 Q2+rZcnccRmqFeodEIh63X3ZJXz5POndb0ZXChM/uR/pIgtHscbWd+pYHSKgenBbJ3
-	 w38WIPRYVW5wCJVA5tGkmk6yDmogJZv57sv9SYBxDK2HygvnO/PBfRLSGZygEHmjmj
-	 Y4KcuWyRfn5JaJEYbVDAPTsXbhUw6svq0ZW8vfVtcUlO3vFX10CJs8aLRRGomMkq8z
-	 KXSIjJfGOS02Q==
-Date: Sat, 13 Jan 2024 00:09:51 +0100
+	b=njIy9xgkfwRBZ6Q+Ga0emA3HhdJKPpEFX6/XysqgdoxSNxKTnRs9h5//+TNuZYOa2
+	 gJZp1lDAfRuhKvhNFXKIe6EAcff62F0eLMeLw4vftgJTd3M8Mugb/2u1wmaH8FYFt0
+	 olA8fT7ZYG5v9PD3YaWHVIyo6ILHEhsEg7KFB8WPRS6nDCJnY0wd5Jkw7tUc5Y9I06
+	 wcYUhzkFhNv2QUFOHFjVWhGh2Fi0Urqi57CBO/TmktnGgw2n7RMdSg/StJ5Hj74RsP
+	 G730Kw/l2sf2PG1e7m1xYFyCEbyP6qmdK88X1RH6mrCbsKxSpZ3JF33lxJ4uPrn3Jc
+	 wLbujrtPs3+5w==
+Date: Sat, 13 Jan 2024 00:20:14 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
 To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
@@ -26,10 +26,11 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <ZaHGv3wMYP4LDCxG@localhost.localdomain>
+Subject: Re: [PATCH v4 2/4] rcu: Add a trace event for
+ synchronize_rcu_normal()
+Message-ID: <ZaHJLmsoY8OTvQB9@localhost.localdomain>
 References: <20240104162510.72773-1-urezki@gmail.com>
- <20240104162510.72773-2-urezki@gmail.com>
+ <20240104162510.72773-3-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -39,131 +40,100 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240104162510.72773-2-urezki@gmail.com>
+In-Reply-To: <20240104162510.72773-3-urezki@gmail.com>
 
-Le Thu, Jan 04, 2024 at 05:25:07PM +0100, Uladzislau Rezki (Sony) a écrit :
-> diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-> index 9b0b52e1836f..4812c6249185 100644
-> --- a/kernel/rcu/Kconfig.debug
-> +++ b/kernel/rcu/Kconfig.debug
-> @@ -168,4 +168,16 @@ config RCU_STRICT_GRACE_PERIOD
->  	  when looking for certain types of RCU usage bugs, for example,
->  	  too-short RCU read-side critical sections.
+Le Thu, Jan 04, 2024 at 05:25:08PM +0100, Uladzislau Rezki (Sony) a écrit :
+> Add an rcu_sr_normal() trace event. It takes three arguments
+> first one is the name of RCU flavour, second one is a user id
+> which triggeres synchronize_rcu_normal() and last one is an
+> event.
+> 
+> There are two traces in the synchronize_rcu_normal(). On entry,
+> when a new request is registered and on exit point when request
+> is completed.
+> 
+> Please note, CONFIG_RCU_TRACE=y is required to activate traces.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  include/trace/events/rcu.h | 27 +++++++++++++++++++++++++++
+>  kernel/rcu/tree.c          |  7 ++++++-
+>  2 files changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> index 2ef9c719772a..31b3e0d3e65f 100644
+> --- a/include/trace/events/rcu.h
+> +++ b/include/trace/events/rcu.h
+> @@ -707,6 +707,33 @@ TRACE_EVENT_RCU(rcu_invoke_kfree_bulk_callback,
+>  		__entry->rcuname, __entry->p, __entry->nr_records)
+>  );
 >  
-> +config RCU_SR_NORMAL_DEBUG_GP
-> +	bool "Debug synchronize_rcu() callers for a grace period completion"
-> +	depends on DEBUG_KERNEL && RCU_EXPERT
-> +	default n
-> +	help
-> +	  This option enables additional debugging for detecting a grace
-> +	  period incompletion for synchronize_rcu() users. If a GP is not
-> +	  fully passed for any user, the warning message is emitted.
-> +
-> +	  Say Y here if you want to enable such debugging
-> +	  Say N if you are unsure.
+> +/*
+> + * Tracepoint for a normal synchronize_rcu() states. The first argument
+> + * is the RCU flavor, the second argument is a pointer to rcu_head the
+> + * last one is an event.
+> + */
+> +TRACE_EVENT_RCU(rcu_sr_normal,
 
-How about just reuse CONFIG_PROVE_RCU instead?
+Can we call this "synchronize_rcu" instead? So people really know what it's
+about.
+
+Then should the need arise, we can still add "synchronize_rcu_expedited" trace
+events later.
+
+Thanks.
 
 > +
->  endmenu # "RCU Debugging"
+> +	TP_PROTO(const char *rcuname, struct rcu_head *rhp, const char *srevent),
+> +
+> +	TP_ARGS(rcuname, rhp, srevent),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(const char *, rcuname)
+> +		__field(void *, rhp)
+> +		__field(const char *, srevent)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->rcuname = rcuname;
+> +		__entry->rhp = rhp;
+> +		__entry->srevent = srevent;
+> +	),
+> +
+> +	TP_printk("%s rhp=0x%p event=%s",
+> +		__entry->rcuname, __entry->rhp, __entry->srevent)
+> +);
+> +
+>  /*
+>   * Tracepoint for exiting rcu_do_batch after RCU callbacks have been
+>   * invoked.  The first argument is the name of the RCU flavor,
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 499803234176..b756c40e4960 100644
+> index b756c40e4960..7d2ed89efcb3 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -1422,6 +1422,106 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> @@ -3672,9 +3672,11 @@ static void synchronize_rcu_normal(void)
+>  {
+>  	struct rcu_synchronize rs;
+>  
+> +	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+> +
+>  	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
+>  		wait_rcu_gp(call_rcu_hurry);
+> -		return;
+> +		goto trace_complete_out;
+>  	}
+>  
+>  	init_rcu_head_on_stack(&rs.head);
+> @@ -3695,6 +3697,9 @@ static void synchronize_rcu_normal(void)
+>  	/* Now we can wait. */
+>  	wait_for_completion(&rs.completion);
+>  	destroy_rcu_head_on_stack(&rs.head);
+> +
+> +trace_complete_out:
+> +	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("complete"));
 >  }
 >  
-> +/*
-> + * There are three lists for handling synchronize_rcu() users.
-> + * A first list corresponds to new coming users, second for users
-> + * which wait for a grace period and third is for which a grace
-> + * period is passed.
-> + */
-> +static struct sr_normal_state {
-> +	struct llist_head srs_next;	/* request a GP users. */
-> +	struct llist_head srs_wait;	/* wait for GP users. */
-> +	struct llist_head srs_done;	/* ready for GP users. */
-> +
-> +	/*
-> +	 * In order to add a batch of nodes to already
-> +	 * existing srs-done-list, a tail of srs-wait-list
-> +	 * is maintained.
-> +	 */
-> +	struct llist_node *srs_wait_tail;
-> +} sr;
-
-"sr" is good enough for a function scope variable but not for a file scope one.
-
-At least "sr_state" would be better. Or maybe you don't even need to name that
-struct and make instead:
-
-struct {
-    ...
-    ...
-} sr_normal_state;
-
-
-> +
-> +/* Disabled by default. */
-> +static int rcu_normal_wake_from_gp;
-> +module_param(rcu_normal_wake_from_gp, int, 0644);
-> +
-> +static void rcu_sr_normal_complete(struct llist_node *node)
-> +{
-> +	struct rcu_synchronize *rs = container_of(
-> +		(struct rcu_head *) node, struct rcu_synchronize, head);
-
-Should there be some union in struct rcu_synchronize between struct rcu_head
-and struct llist_node?
-
-Anyway it's stack allocated, they could even be separate fields.
-
-> +	unsigned long oldstate = (unsigned long) rs->head.func;
-
-Luckily struct callback_head layout allows such magic but if rcu_head
-and llist_node were separate, reviewers would be less hurt.
-
-If stack space really matters, something like the below?
-
-struct rcu_synchronize {
-	union {
-		struct rcu_head head;
-		struct {
-			struct llist_node node;
-			unsigned long seq;
-		}
-	}
-	struct completion completion;
-};
-
-
-> +
-> +	WARN_ONCE(IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP) &&
-> +		!poll_state_synchronize_rcu(oldstate),
-> +		"A full grace period is not passed yet: %lu",
-> +		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-> +
-> +	/* Finally. */
-> +	complete(&rs->completion);
-> +}
-> +
-[...]
-> +
-> +/*
-> + * Helper function for rcu_gp_cleanup().
-> + */
-> +static void rcu_sr_normal_gp_cleanup(void)
-> +{
-> +	struct llist_node *head, *tail;
-> +
-> +	if (llist_empty(&sr.srs_wait))
-> +		return;
-> +
-> +	tail = READ_ONCE(sr.srs_wait_tail);
-
-Is the READ_ONCE() needed?
-
-A part from those boring details:
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>  /**
+> -- 
+> 2.39.2
+> 
