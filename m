@@ -1,55 +1,162 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73CCF4FE;
-	Sat, 13 Jan 2024 00:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837EF539E;
+	Sat, 13 Jan 2024 09:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nV22CbmX"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A3C23C433F1;
-	Sat, 13 Jan 2024 00:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705107505;
-	bh=/4QD6IGM7rqcDr7taj1p6wJy2jiV6FU2MzO0WL0hSo8=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=nV22CbmXrjhf1Ew++1qd51+BmDPn4IBYWnC9I/wPHGBrC+878fgtAVMbEZF8mgDW+
-	 IdrN0ylWvG+tqNnvAgIKQjbkDTq3W/KcfUWHFMUsoXd6n21ilyNRW/kCaKtnv5P76+
-	 wPkT4euxkWq13pDstlzXKKzLhl9BKGixxf9HCM3UeXgSfXGvYWCoaO2DJ3oE7f1dOv
-	 qyiX+yCy7dPb6i7PowMvW7ooKHTGjmPSpNpgpN0UHvZEvX7+tQ9bGKqqrwIW+9gmV7
-	 TqlBpNggIS1WoCBkXFC7JqAXphIOK02FcnxWXvfxqpH6o0mC9PjZBuLF/gxTfmqhzo
-	 hQp3gUJj0YrSg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8DDBFD8C96D;
-	Sat, 13 Jan 2024 00:58:25 +0000 (UTC)
-Subject: Re: [GIT PULL] RCU changes for v6.8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20231223021434.GA2714@neeraj.linux>
-References: <20231223021434.GA2714@neeraj.linux>
-X-PR-Tracked-List-Id: <rcu.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231223021434.GA2714@neeraj.linux>
-X-PR-Tracked-Remote: https://github.com/neeraju/linux.git tags/rcu.release.v6.8
-X-PR-Tracked-Commit-Id: 7dfb03dd24d43b9e7a725e70d2e8a83bb29df294
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 23a80d462c67406303df852d58b745b8618acc4a
-Message-Id: <170510750556.1054.15219442074526332796.pr-tracker-bot@kernel.org>
-Date: Sat, 13 Jan 2024 00:58:25 +0000
-To: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org, frederic@kernel.org, mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org, boqun.feng@gmail.com, joel@joelfernandes.org, neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xo2He0Sl"
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cf2306c1b4so2329278a12.1;
+        Sat, 13 Jan 2024 01:19:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705137597; x=1705742397; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6sfqb+fzZIGw3om64N3dJXyfe4oJMfslxh9iArfXFow=;
+        b=Xo2He0SlX2dq9PArla/YxqONxUFsRfuJcbZfYz/9Vhc0Tq/bsSEAm0y53nT3kfnEq4
+         NdtEUqJPryuOu3jDg7G0Qc9XfN2oMf63tUrTGZDV3xa4Fx2N0lndaR4RxPG8M17HXgOW
+         ff/WddLcC62hfqN5Gfvlnndw44vL4RYWAbnj85BQT3PZSCsgMePJw8ShBNmw6SBQUyvO
+         8Q8W61ZGZpcRe7UVA12Cn1a3IROyoEzIGeJeLkhTLL4rXAADIvMw81Hq4x3SzzsUSn5N
+         pKmGc8s5h/pjbIYGxsaeCAqWPyLGC9Q+oqcUWDIv7Vu2gKf5aLzyESKS2KfwMrtrR0Rx
+         zaHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705137597; x=1705742397;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6sfqb+fzZIGw3om64N3dJXyfe4oJMfslxh9iArfXFow=;
+        b=bIW6XzcH3/dPD2xSKiFrAquyi/MktFa2TI4hHyPMKcWG6AxD4iskDX3u+U8IUOb0A4
+         utwne9QJnCQ4Qjknrq0PxWVC4Pw/RUPxIfdT7tCWVuA/kMRTyZ7grdiRpbqOVoIXcWSV
+         /cciMgJ6+6IdydpE3fhCe7+2sxRN37k5hAgYDvj5mXGvx0BB5IcDj6maUUNECmGgcCXr
+         D1i0hPQvRSy9P7vOmhte1XDrRcGZOm67scKZiC5rQgR8WiTa+VJcbPBF8QWKMWeRdCnD
+         Rin6TmAD2jwDhj8gK6mkxzIwjHMKcxZk11r9esJukcGwUJJ8MmiS4FQYxbICsF8JYJGK
+         wrwQ==
+X-Gm-Message-State: AOJu0Yz9bqOpYNjKaW0A2BdF0g9Jyof3Mo7RRmqthBKbkxoJiRbPxLbv
+	nT9FQ7Spxya7AAotysGUARVyv1PiM5bm9+qL6M0=
+X-Google-Smtp-Source: AGHT+IEaFDSkR1r08ImLaaFnxKqj5iDc7NPeaL2eaaGyC7i9ou78NE2z70aqDpsq2/yZzoHa3OHNeZU82zkcohUF+RA=
+X-Received: by 2002:a17:903:48b:b0:1d2:eb05:9d05 with SMTP id
+ jj11-20020a170903048b00b001d2eb059d05mr2257946plb.90.1705137596847; Sat, 13
+ Jan 2024 01:19:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240104162510.72773-1-urezki@gmail.com> <20240104162510.72773-5-urezki@gmail.com>
+In-Reply-To: <20240104162510.72773-5-urezki@gmail.com>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Sat, 13 Jan 2024 17:19:45 +0800
+Message-ID: <CALm+0cUM=5bg0eKQ4D-mm7ZaAnQbf+2NjetUYnqHOLq5uR0w5g@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] rcu: Support direct wake-up of synchronize_rcu() users
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, 
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Hillf Danton <hdanton@sina.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-The pull request you sent on Sat, 23 Dec 2023 07:44:34 +0530:
+>
+> This patch introduces a small enhancement which allows to do a
+> direct wake-up of synchronize_rcu() callers. It occurs after a
+> completion of grace period, thus by the gp-kthread.
+>
+> Number of clients is limited by the hard-coded maximum allowed
+> threshold. The remaining part, if still exists is deferred to
+> a main worker.
+>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  kernel/rcu/tree.c | 31 +++++++++++++++++++++++++++++--
+>  kernel/rcu/tree.h |  6 ++++++
+>  2 files changed, 35 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 88a47a6a658e..96fe9cc122ca 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1642,7 +1642,8 @@ static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
+>   */
+>  static void rcu_sr_normal_gp_cleanup(void)
+>  {
+> -       struct llist_node *wait_tail;
+> +       struct llist_node *wait_tail, *next, *rcu;
+> +       int done = 0;
+>
+>         wait_tail = rcu_state.srs_wait_tail;
+>         if (wait_tail == NULL)
+> @@ -1650,12 +1651,38 @@ static void rcu_sr_normal_gp_cleanup(void)
+>
+>         rcu_state.srs_wait_tail = NULL;
+>         ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
+> +       WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
+> +
+> +       /*
+> +        * Process (a) and (d) cases. See an illustration. Apart of
+> +        * that it handles the scenario when all clients are done,
+> +        * wait-head is released if last. The worker is not kicked.
+> +        */
+> +       llist_for_each_safe(rcu, next, wait_tail->next) {
+> +               if (rcu_sr_is_wait_head(rcu)) {
+> +                       if (!rcu->next) {
+> +                               rcu_sr_put_wait_head(rcu);
+> +                               wait_tail->next = NULL;
+> +                       } else {
+> +                               wait_tail->next = rcu;
+> +                       }
+> +
+> +                       break;
+> +               }
+> +
+> +               rcu_sr_normal_complete(rcu);
+> +               // It can be last, update a next on this step.
+> +               wait_tail->next = next;
+> +
+> +               if (++done == SR_MAX_USERS_WAKE_FROM_GP)
+> +                       break;
+> +       }
+>
+>         // concurrent sr_normal_gp_cleanup work might observe this update.
+>         smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+>         ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+>
+> -       if (wait_tail)
+> +       if (wait_tail->next)
+>                 queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+>
 
-> https://github.com/neeraju/linux.git tags/rcu.release.v6.8
+I'm testing these patches :) , one question is as follows:
+Can we use (WQ_MEM_RECLAIM | WQ_HIGHPR)type of workqueue to perform
+wake-up actions? avoid kworker creation failure under memory pressure, causing
+the wake-up action to be delayed.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/23a80d462c67406303df852d58b745b8618acc4a
+Thanks
+Zqiang
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+>  }
+>
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index 4c35d7d37647..5d8b71a1caec 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -316,6 +316,12 @@ do {                                                                       \
+>         __set_current_state(TASK_RUNNING);                              \
+>  } while (0)
+>
+> +/*
+> + * A max threshold for synchronize_rcu() users which are
+> + * awaken directly by the rcu_gp_kthread(). Left part is
+> + * deferred to the main worker.
+> + */
+> +#define SR_MAX_USERS_WAKE_FROM_GP 5
+>  #define SR_NORMAL_GP_WAIT_HEAD_MAX 5
+>
+>  struct sr_wait_node {
+> --
+> 2.39.2
+>
+>
