@@ -1,75 +1,52 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918ED1CD21;
-	Tue, 16 Jan 2024 18:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5F71D68B;
+	Tue, 16 Jan 2024 19:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705428880; cv=none; b=Jxe+xQOghFsP4qmByNls5v7LWdrsutRmgCFoJ62/QyOtmIOYN7OHm3AXkCgJsfyraLJGO3dqtgY8dAo0IR/PyKmVrTuwKu7gM6ofhOcOo9AqhjJGA1qhSKrTOo3hO5acdTBxoVYYiLw+VXhr03fNuouXppvCwjCwWOxfiehLIkA=
+	t=1705432217; cv=none; b=USLELk0vyFzEPkOv3so91CvNJ/Erqz2N84zW2UTTEYkifOam+6MQ/NF6eCSnrovjBJ/qUQ3GPIlus+vH0tWuUMwAYiEPZv+UvZMX2SCXq6VShhOMkw6DKAdDAtsbCZNTkLJ/4zmYwx/RcRIBiQuZPKB/jXqKSHWUBWAc+OQFS6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705428880; c=relaxed/simple;
-	bh=/8t8aGI0dsmuyvHxpwC8tN1rzHOQ9w1Gua7WMUtjW2w=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Sender:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nQ9r4hKBlkF2rHmTTgOVLxNRyNHUBBP29bpgghkiGXDwIu6p7T8iqhLm3J17Q4AqdrPI+ngFKP9nujT+YFA/bLvkl2ejmtZI8bKrbtnJaRIfStwaPGMaGGwzmgiFMraZunY8cSsh9JsCYa7sduFiTFUHuf+GsghpDhGGJrx2isQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W2ZZqprn; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1705432217; c=relaxed/simple;
+	bh=goJhqzGkIgr079nD2DeN8gJaKA+Pl39WyAy4k38NqJg=;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=rOr5QwmPVQk1kErQBMVqtHdsHBnjC9fv5HK0Ewt0eoTIvsPi9oMr+6vTpLKytZZhXkfSTbOZOkJdLHxtk6KcDcPWHwF2Jr5f/ltZU8F65siIYENfR+XBBPrDDgidcjh+DZoZsFQsUvw2XWY2NRkjyd5R3h9XRDn3c0JhnW1F3JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/zkQjxW; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W2ZZqprn"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d426ad4433so62064965ad.0;
-        Tue, 16 Jan 2024 10:14:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705428879; x=1706033679; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wLYtcvGvL/mi4llSElQtiPFZH5wjeerjqPS6bhhaNQk=;
-        b=W2ZZqprn25xsX8LeP5sd+769+mQ7eGJvspyHSXg7hcGfHdFuKrP+XZn7oPSnhfAqDf
-         Whgju5bl28xEfUAuurXqma/gaQJS4+hdPki1GpZrBodPc1tsW6fonNW7oex1XhGkS25d
-         wBDvYFDbYipFJNLX8+jliG/5a0olZ7MxpzqhEw3me06eOBMSMLWWBhBHPTyY8V32rfXM
-         Sq9x2jO4QtfkdgjSPGbpfkmVmYmgq1vYdVfaQ4mPsej9kHP45lTg1PdSKe1fXDzTm5br
-         0V926PE4Vqf7N9v14fnWcpJkf4UChb/dQhB4AsAgpteeLAxtRjexzXcmAYtcyi+DTcoh
-         nLRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705428879; x=1706033679;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wLYtcvGvL/mi4llSElQtiPFZH5wjeerjqPS6bhhaNQk=;
-        b=up/bDNTuJBlIuc4XtGuiMLDFj3Spf1Kz69vDpL+EAGykOiCbNKxplKdPy+xZt4qb8i
-         FdpokKo9a6RKhm7qsuj5/Td7gtFXFfBT9YOtVbarcMzjdY7aCKGxlqpT2qe44rOZe4yn
-         5UA+TUUmH3/xvRJKneJK0P1/49sCYg0P3UiVHB96leP/GvN55C5A6G0v7xiY4SzlYdBT
-         JuD1Z/s54IFP9+ckOxc11pbrSbtj5WjywtvDONjIJ9rYNuHSxMEP2UvLiZ/IaoG27fwC
-         1edyTajPCtJh4X3xg7VuaBbBYV9n9zQP8/sl9uxeV+grJkL8T7IFUMjg6Ete6Iq45Mav
-         08GA==
-X-Gm-Message-State: AOJu0Yxyxv+gzWk/mlK/2GKnrEGqli5vrJgsjfPPUMNANGi/iw8XuV8z
-	RiDkCX2bc1dsXd67MUWh4EQ=
-X-Google-Smtp-Source: AGHT+IH6JhzGVYdHplZcg5wg7Tyj4SwHva3TepBR8qWjhKWXw2ITVqqKOk8t2393Tp/quAQoAg669w==
-X-Received: by 2002:a17:902:8505:b0:1d5:e387:2ef8 with SMTP id bj5-20020a170902850500b001d5e3872ef8mr1157058plb.113.1705428878775;
-        Tue, 16 Jan 2024 10:14:38 -0800 (PST)
-Received: from localhost (dhcp-72-235-13-140.hawaiiantel.net. [72.235.13.140])
-        by smtp.gmail.com with ESMTPSA id e18-20020a170902cf5200b001d58ed4c58asm9556708plg.63.2024.01.16.10.14.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 10:14:38 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 16 Jan 2024 08:14:37 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q/zkQjxW"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61085C433F1;
+	Tue, 16 Jan 2024 19:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705432216;
+	bh=goJhqzGkIgr079nD2DeN8gJaKA+Pl39WyAy4k38NqJg=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Q/zkQjxWZ7izZ6L8QKzsPUD23n0hgHSQZ4gXn/1B5EUFSrcLeTECWbQcL/+7gJfW2
+	 hMdXnQjGpGSDiZ80x1YFS5R2DTxrwqwZ2dfDhmSLmFRMPiZqBIDce+b45tIIr9jgw5
+	 /Rm9dSiAnjPzQ2HKlx7/DHJA/noxB5bqF5XBDZ6hjo+7PQjFubFCiTxrpI1by8ZheJ
+	 a9c/Y7Va0zL3pfPLJhHaxqbMkrFuxrC5eFTYUfqRZLcf0Gec6/HhDosMByP/FJUBgn
+	 ceVPw/QB5xmf/QvrMLOTbxgisXoAZTLSGInS9m6yLUSqIV8os3pwlPb+WLHup1h11s
+	 IrTtXSRIuJkEg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1A736CE04A3; Tue, 16 Jan 2024 11:10:14 -0800 (PST)
+Date: Tue, 16 Jan 2024 11:10:14 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
 Cc: Onkarnarth <onkarnath.1@samsung.com>, frederic@kernel.org,
 	quic_neeraju@quicinc.com, joel@joelfernandes.org,
 	josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
 	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
 	qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org, r.thapliyal@samsung.com,
-	maninder1.s@samsung.com, oleg@redhat.com, peterz@infradead.org
+	maninder1.s@samsung.com, tj@kernel.org, peterz@infradead.org
 Subject: Re: [PATCH 1/1] rcu/sync: remove un-used rcu_sync_enter_start
  function
-Message-ID: <ZabHjU45N4H4L9jq@slm.duckdns.org>
+Message-ID: <75830847-a2ab-4bf4-bd4c-f7695e48ea3d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <CGME20240111092805epcas5p2ebb993010ae31d039e8f9de1e7818f7c@epcas5p2.samsung.com>
  <20240111092722.322454-1-onkarnath.1@samsung.com>
  <de792eee-1f44-48e2-a122-c3ded1645155@paulmck-laptop>
+ <20240116181058.GB12342@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -78,27 +55,52 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de792eee-1f44-48e2-a122-c3ded1645155@paulmck-laptop>
+In-Reply-To: <20240116181058.GB12342@redhat.com>
 
-On Tue, Jan 16, 2024 at 08:50:35AM -0800, Paul E. McKenney wrote:
-> On Thu, Jan 11, 2024 at 02:57:22PM +0530, Onkarnarth wrote:
-> > From: Onkarnath <onkarnath.1@samsung.com>
-> > 
-> > With commit '6a010a49b63a ("cgroup: Make !percpu threadgroup_rwsem
-> > operations optional")' usage of rcu_sync_enter_start is removed.
-> > 
-> > So this function can also be removed.
-> > 
-> > Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
-> > Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+On Tue, Jan 16, 2024 at 07:10:59PM +0100, Oleg Nesterov wrote:
+> On 01/16, Paul E. McKenney wrote:
+> >
+> > On Thu, Jan 11, 2024 at 02:57:22PM +0530, Onkarnarth wrote:
+> > > From: Onkarnath <onkarnath.1@samsung.com>
+> > >
+> > > With commit '6a010a49b63a ("cgroup: Make !percpu threadgroup_rwsem
+> > > operations optional")' usage of rcu_sync_enter_start is removed.
+> > >
+> > > So this function can also be removed.
+> > >
+> > > Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
+> > > Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 > 
-> Adding Oleg, Peter, and Tejun for their thoughts.  Any objections?
+> Acked-by: Oleg Nesterov <oleg@redhat.com>
 
-Looks good to me. FWIW,
+Queued, thank you all!
 
-Acked-by: Tejun Heo <tj@kernel.org>
+> For the record, this was already discussed, see
+> https://lore.kernel.org/all/20220725121208.GB28662@redhat.com/
 
-Thanks.
+I am clearly not keeping up.  ;-)
 
--- 
-tejun
+> Note also the patch in this message, __rcu_sync_enter(wait => false)
+> is a better alternative if someone needs rcu_sync_enter_start() again.
+
+Good to know!  I added this to the commit log, so please let me know
+if this is in any way inappropriate:
+
+------------------------------------------------------------------------
+
+In the words of Oleg Nesterov:
+
+	__rcu_sync_enter(wait => false) is a better alternative if
+	someone needs rcu_sync_enter_start() again.
+
+Link: https://lore.kernel.org/all/20220725121208.GB28662@redhat.com/
+
+------------------------------------------------------------------------
+
+> This patch probably makes sense anyway. Not only cgroup_favor_dynmods()
+> can use __rcu_sync_enter(), freeze_super() can use it too to avoid
+> 3 synchronize_rcu()'s in a row.
+
+Thank you for the background information, much appreciated!
+
+							Thanx, Paul
