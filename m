@@ -1,113 +1,102 @@
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6818B2C695;
-	Mon, 15 Jan 2024 12:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD7910A01;
+	Tue, 16 Jan 2024 06:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IPWzZQFH"
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cd8bd6ce1bso42132911fa.1;
-        Mon, 15 Jan 2024 04:14:48 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amf2rWhL"
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28e718874e1so228763a91.0;
+        Mon, 15 Jan 2024 22:19:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705320886; x=1705925686; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Bi4Uj5858V6ni9HWJRDgfoHLGkgl98d9toR5WWB7mEY=;
-        b=IPWzZQFHyY+nqLEag0nORJMqYA/bm2u6HQDpSUi146r9iG6TU/NDjv/u3LHGby8AiE
-         z60t8xylsZ0NjkytHD01MXqJRfQSRq/qOqppCKTeLlK5+UZYkmt7ZP+KO8iEJvHWCUCQ
-         BiCS7s8gHt6LphkpRp8mbx7NjfWnE65AHh7OWD26+Zzd4MCug+gjhvYQZ1X6ktkZh0ZP
-         OvMR/nup6bSez683SvaOmMjE1/sRpwvIUjcUtkjbOWCeeZFvljLRJsYlegnNUdZP9p5f
-         G7HuQs7y9A7TowuX3EFK7naNOfr7DhjD5+ifdVqIVmldjDEFgjVib5H33Nzp8MfZuh8T
-         yq7w==
+        d=gmail.com; s=20230601; t=1705385986; x=1705990786; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BtPgpHD29V6EL14MEPmiAO57qgLbXU9vw9VJiILh/Cg=;
+        b=amf2rWhLTgL/XKyDzii4NU4e4sKIrejPY61gWsw9PMf+GbKCf8gJSSomUQq9wLAEiQ
+         R9+L7v/0E2uaHTZJICAgW4vJp/CY0tJBolpeqdS6fipCs4s8pVzhGo3bAOZsELL+7SBh
+         T4LsBT9lgvy2eDmvht6H9qOte3btkrpWWw/yv2R/bcRtIXJbZZTpeHYBZDXnQS9RdVsQ
+         3IL7/zSNlapsITxUmi2MZab+Y11wSOVBGNA8tuRSbmdYF1TlJeOUtFEYPr4L5pp2vl4X
+         qO0i6zMLn9miw21BCOEQya11FB3LB4cfQfZL62FZUCvehMSoMcq4+2EKeYyyRISOEBjK
+         TVfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705320886; x=1705925686;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bi4Uj5858V6ni9HWJRDgfoHLGkgl98d9toR5WWB7mEY=;
-        b=vpKSxYTeNl27OoYJks+H+UB8ekBSgMZRhtBHqpOEPiEvkUBF7iLO3GnzynVh5lpGpy
-         rKDxjEjlyXibHnYCtPpl+Id6mEY/wP3f6aLj32Az+X4H2gJ6tHI4WNNRdHZF7q+NBAqC
-         IGFGv+3kfiN+RjfjV7ps5NAU2vg4LtL010J5NffJGpS/4tZPqp9EVbDY8284/MoELRZD
-         ZdDemDieRUrsLbXNsjlBS1nEa2uMkGZFSVuzk3D0tBWMBH0MMGcu70GDHl24AdhGDx/k
-         iqaQDYttp5w+aicwECOvkjBdnDTuARESEIYdtbJJaLIjE4hevsbnGmIe4iIOoseWWtYA
-         uM3A==
-X-Gm-Message-State: AOJu0YzxcaDOlVzVwASPK5IcW8xzF4oybvT947i1K2Cq1pCFw60I+mlf
-	bvzNy4UPaFFJj7FGy07O9ahb1huM3LY=
-X-Google-Smtp-Source: AGHT+IFQ+zqKbiT42sn0c5ASgJ30jOaTuPieb+Xk5W186fMGU2/QmYtnDJh9NESMJ9zdjuyPwDZCUw==
-X-Received: by 2002:a2e:3e19:0:b0:2cd:ce2:496e with SMTP id l25-20020a2e3e19000000b002cd0ce2496emr1519246lja.37.1705320886141;
-        Mon, 15 Jan 2024 04:14:46 -0800 (PST)
-Received: from pc636 (host-90-233-221-202.mobileonline.telia.com. [90.233.221.202])
-        by smtp.gmail.com with ESMTPSA id i19-20020a2ea233000000b002cd057bbf67sm1398055ljm.133.2024.01.15.04.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jan 2024 04:14:45 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 15 Jan 2024 13:14:43 +0100
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v4 2/4] rcu: Add a trace event for
- synchronize_rcu_normal()
-Message-ID: <ZaUhs1ASJUzkiAt6@pc636>
-References: <20240104162510.72773-1-urezki@gmail.com>
- <20240104162510.72773-3-urezki@gmail.com>
- <ZaHJLmsoY8OTvQB9@localhost.localdomain>
+        d=1e100.net; s=20230601; t=1705385986; x=1705990786;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BtPgpHD29V6EL14MEPmiAO57qgLbXU9vw9VJiILh/Cg=;
+        b=eTX8SUFaixQb9SbL0zk6fe23/eqxHXkw1zwdlJjGvQ1QnC5DiLF1EIaz/v4dyAI2AC
+         gevFqTgwIGWyrsFk+0AJwbECoGXSoZ/q0u5/XSHquaw+XilDFFBEOmZxpnWkjoFwUEhr
+         6MpYd1NdAgDtH3ZmBUAGz9nSzVgMj63AaGtX0WBex/5YiEbrRp9IS84TMr0xGCL6EQgN
+         HqOOJ87/vQhJkdo8DYhUi9SAcnZGVTpw/bYQjWj1rjwvgyt6s1DOixqxvnDCzTjv1NEX
+         4mELJTglA552/cHGSfyhD4QbusDQIdX3GGzCtCTmiFIXsywdCHarAiQ7NukXkvIVT9C7
+         uSeA==
+X-Gm-Message-State: AOJu0YwyN0iAiYpCoGq3n++RnPYTiPUPN5Amo//RVaGBeMfNlq3jmLPD
+	9HeJL7vUW0A4iCGKYGs9mI7WlFlWYO+AUl+SiIM=
+X-Google-Smtp-Source: AGHT+IHmkrNvhKDKFHox3ulCebL+np3+W4JM6eg+SHAB+VouWyI94c7i/NMcdnCogXRsl+VEQRyUj1tISPHk6lzCyDk=
+X-Received: by 2002:a17:90a:c797:b0:28b:e57d:9710 with SMTP id
+ gn23-20020a17090ac79700b0028be57d9710mr3306050pjb.6.1705385986020; Mon, 15
+ Jan 2024 22:19:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZaHJLmsoY8OTvQB9@localhost.localdomain>
+References: <20240104162510.72773-1-urezki@gmail.com> <20240104162510.72773-5-urezki@gmail.com>
+ <CALm+0cUM=5bg0eKQ4D-mm7ZaAnQbf+2NjetUYnqHOLq5uR0w5g@mail.gmail.com>
+ <ZaUNCJyYREsw7O3h@pc636> <ZaUPo97uzZlGkNdY@pc636>
+In-Reply-To: <ZaUPo97uzZlGkNdY@pc636>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Tue, 16 Jan 2024 14:19:34 +0800
+Message-ID: <CALm+0cWVJPis4c6VhGviXaHF90+njEVXvOjVZ-COL43dJFgNbw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] rcu: Support direct wake-up of synchronize_rcu() users
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, 
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Hillf Danton <hdanton@sina.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Jan 13, 2024 at 12:20:14AM +0100, Frederic Weisbecker wrote:
-> Le Thu, Jan 04, 2024 at 05:25:08PM +0100, Uladzislau Rezki (Sony) a écrit :
-> > Add an rcu_sr_normal() trace event. It takes three arguments
-> > first one is the name of RCU flavour, second one is a user id
-> > which triggeres synchronize_rcu_normal() and last one is an
-> > event.
-> > 
-> > There are two traces in the synchronize_rcu_normal(). On entry,
-> > when a new request is registered and on exit point when request
-> > is completed.
-> > 
-> > Please note, CONFIG_RCU_TRACE=y is required to activate traces.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  include/trace/events/rcu.h | 27 +++++++++++++++++++++++++++
-> >  kernel/rcu/tree.c          |  7 ++++++-
-> >  2 files changed, 33 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> > index 2ef9c719772a..31b3e0d3e65f 100644
-> > --- a/include/trace/events/rcu.h
-> > +++ b/include/trace/events/rcu.h
-> > @@ -707,6 +707,33 @@ TRACE_EVENT_RCU(rcu_invoke_kfree_bulk_callback,
-> >  		__entry->rcuname, __entry->p, __entry->nr_records)
-> >  );
-> >  
-> > +/*
-> > + * Tracepoint for a normal synchronize_rcu() states. The first argument
-> > + * is the RCU flavor, the second argument is a pointer to rcu_head the
-> > + * last one is an event.
-> > + */
-> > +TRACE_EVENT_RCU(rcu_sr_normal,
-> 
-> Can we call this "synchronize_rcu" instead? So people really know what it's
-> about.
-> 
-I will update it accordingly!
+>
+> > Hello, Zqiang.
+> >
+> > > >
+> > > >         // concurrent sr_normal_gp_cleanup work might observe this update.
+> > > >         smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> > > >         ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+> > > >
+> > > > -       if (wait_tail)
+> > > > +       if (wait_tail->next)
+> > > >                 queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+> > > >
+> > >
+> > > I'm testing these patches :) , one question is as follows:
+> > > Can we use (WQ_MEM_RECLAIM | WQ_HIGHPR)type of workqueue to perform
+> > > wake-up actions? avoid kworker creation failure under memory pressure, causing
+> > > the wake-up action to be delayed.
+> > >
+> > I do not have any objections in not doing that, so we can add.
+> >
+> > Thank for testing this!
+> >
+> I forgot to ask, is your testing simulates a low memory condition so
+> you see the failure you refer to? Or it is just a possible scenario?
+>
 
---
-Uladzislau Rezki
+I'm not currently testing this feature in low memory scenarios,  I thought
+of this possible scenario.  I will test it in a low memory scenario later and
+let you know if it happens :) .
+
+Thanks
+Zqiang
+
+>
+> Thanks!
+
+>
+> --
+> Uladzislau Rezki
+>
