@@ -1,110 +1,186 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44090225A6
-	for <rcu@vger.kernel.org>; Wed, 17 Jan 2024 17:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86A5249E0
+	for <rcu@vger.kernel.org>; Wed, 17 Jan 2024 19:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705511716; cv=none; b=q7wjywLIjy4+Doud8nH4kIpedEiBnyMK4KaMT0+KqbGEIHgqD+aRgLwPUZHoDpqU+qvKo6B3jQRQuIpnxLsyBDieF++8cWFyRZIbKxNTyKri7ACzmiMNTzxTc53bA5yCgYgyVS5IAqZwYrRnz3rH/AR9H/c08gfadiouEx9zqQY=
+	t=1705519111; cv=none; b=lemzV9Sn8mKPl+Ll23PRqT9p+NyvN/1pzu5izB8MqVKKkgTmZ1oLPTBjykHJRWAGLjXAvzChnkntyFYKphmLOtZHGp5Ty3wCeL32j7vF7gYjBekJbY+M3D8KuQMup2ydri4Z0nMDVt+TByT/uaNmWZYcxpBhx9udI/8Yg17P0qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705511716; c=relaxed/simple;
-	bh=T7IslF0lI3yblMUodVhB9tJHIl2XHIH3degOHlEEIZ4=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
-	 References:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Scanned-By; b=ipVVHe2e+awJ7a8NjnfGPoRNCaJ5rm3AlO/Gvt6dj2HZ8dDrvzTF+GFNNFSxHlE3Dg52BxHzfs+sCL634NkzROaCP1CMDUvwYNCr4P/fpNar2UwKAMfgOkL97fIt0xwH5hWPK53ViP/4aA5ycsMDnPT446m5e8uxGGLguBu4Pzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T4oiCMX7; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1705519111; c=relaxed/simple;
+	bh=KXMZLBHc65ghx6GVKoCeeaBBmQtZBXUvyYnNtgLk8Uk=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:User-Agent; b=ECk3rDXQTcQitiOLMUAPSiNxh6JB7zkRfVKxa9R4ycBk9ySOXzOzgsbiCj8GNou9ZCE3yEG08NiE4bPJgAYo2VCBiupBMsANOyKV0GkbJwIWUh1Rl54JkgHYq8eclhTmhuhYE+ymwsD5Eky8PDOVq+Qd+UH2wO62KkSTdlTrYo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Aoc4VMep; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T4oiCMX7"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705511714;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gGm/eLi1COg3Vpc3apSqmPNHHb4PLdH7xLSc6T9224c=;
-	b=T4oiCMX7cHsO2mC2D74g47PKVT7S/m6NZ16kVEuw2a5p2EE4m6VwrGD5+UxvlmjteywAMP
-	Wwkfcb84y9OTvs6JPH4aCeACwRb1tvJj+qY62jFM6y6Ngs7rYDr+ESMGFBJYATV9xbEGkP
-	nh6UjSHDJI+TFoH/zMkXe6cf9Bv+3lc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-631-7Yv0cQF3P-OKvQw7cQLm-g-1; Wed, 17 Jan 2024 12:15:11 -0500
-X-MC-Unique: 7Yv0cQF3P-OKvQw7cQLm-g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0782885CBA5;
-	Wed, 17 Jan 2024 17:15:10 +0000 (UTC)
-Received: from [10.22.16.147] (unknown [10.22.16.147])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C7E4F2026D6F;
-	Wed, 17 Jan 2024 17:15:07 +0000 (UTC)
-Message-ID: <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
-Date: Wed, 17 Jan 2024 12:15:07 -0500
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Aoc4VMep"
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e8cf57d63so6945535e9.1
+        for <rcu@vger.kernel.org>; Wed, 17 Jan 2024 11:18:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705519108; x=1706123908; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RY9ElmoBN1yaIqWHYG7QtdZi3QcPx+E4bgcakiLYwTI=;
+        b=Aoc4VMepqGSnmkwi4QUmvhiCZ0gdPanyDlHWsCNUhSXOmN1xRWt+HPA2ExAXzT5OG9
+         mEkJ2hYnln70PnBAu0GlP8eSZvid3Wf/NkoIeMHgTtE0WCGxhJTJjekOpiiAOcjz5+Ch
+         w0UDTOFguuVSsw5cGKCDVIz3wPrFpWI/vOlTYCgHBbQeaFa1W+RlKIkpdOM4+CRvvgQf
+         xbtJkQekg+UEqHplaviHCDSYm/qE4uaJr/EwVdKFkZsZ8iU2YLzK6whRO7NlSXMQf6N9
+         sUqXQTfeZ9U0l+0veTLVnz0MyT1wfGpiokjrWtNzHsVvwQhW3YsxUXYdhoHE4uWiPH/R
+         Afjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705519108; x=1706123908;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RY9ElmoBN1yaIqWHYG7QtdZi3QcPx+E4bgcakiLYwTI=;
+        b=ksuL8vFJHX5LiRdbnEQ4Uy62ydbrOXYD+Dq/XFXOGplZTJe8i8x33HhuJWQhTm4MY3
+         og3lgl73JJS9RQcMf1SqarIQwp5wRY5Q5rMGK4jgMtJk1BIWNL0+KIJmT2xddHuWIwqp
+         upv5FgSeikysKELjNdXL59Imq7/GZHiicn9CoBoxArM9PVN6nCXuAhzEfUmLdGt/we2X
+         poJjz/T1t0mKGFs6MQ8GiFmOOyVVgx59GRhmzgVTGDAhm68TkccR7knpOGwDlOztt0Ke
+         51MR1fBHKVA1bnHeE/1IOcofz+7OuZMLlG+oyyRn4A0z703vKzhLyRecN1OetA6izk53
+         QwXQ==
+X-Gm-Message-State: AOJu0Yy40V8cwiMiaKQpMuHP/1+B/n6jZnHXRyujkzgzmzhStwvnEEog
+	R7tb4cPj54x0xFYestIlRpg3Ey/wXljg
+X-Google-Smtp-Source: AGHT+IF4oL0BAsF+ha3wzXLc42eUoMZFRTm2jnAgJhUc+DjiH4e3oSAEbqgOtj+F3gpV7AEiC56wkA==
+X-Received: by 2002:a7b:ca59:0:b0:40e:76f6:9613 with SMTP id m25-20020a7bca59000000b0040e76f69613mr3246094wml.8.1705519107822;
+        Wed, 17 Jan 2024 11:18:27 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:e545:8ceb:c441:7541])
+        by smtp.gmail.com with ESMTPSA id bi13-20020a05600c3d8d00b0040e8800fcf3sm3597189wmb.5.2024.01.17.11.18.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 11:18:27 -0800 (PST)
+Date: Wed, 17 Jan 2024 20:18:21 +0100
+From: Marco Elver <elver@google.com>
+To: Alexander Potapenko <glider@google.com>
+Cc: quic_charante@quicinc.com, akpm@linux-foundation.org,
+	aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com,
+	david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	mgorman@techsingularity.net, osalvador@suse.de, vbabka@suse.cz,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Nicholas Miehlbradt <nicholas@linux.ibm.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
+Message-ID: <Zagn_T44RU94dZa7@elver.google.com>
+References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
+ <20240115184430.2710652-1-glider@google.com>
+ <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Frederic Weisbecker <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
- Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
- Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Alex Gladkov <agladkov@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
- Phil Auld <pauld@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
- Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Costa Shulyupin <cshulyup@redhat.com>
-References: <20240117163511.88173-1-longman@redhat.com>
- <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
+On Mon, Jan 15, 2024 at 09:34PM +0100, Marco Elver wrote:
+> On Mon, 15 Jan 2024 at 19:44, Alexander Potapenko <glider@google.com> wrote:
+> >
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Dmitry Vyukov <dvyukov@google.com>
+> > Cc: kasan-dev@googlegroups.com
+> > Cc: Ilya Leoshkevich <iii@linux.ibm.com>
+> > Cc: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+> >
+> > Hi folks,
+> >
+> > (adding KMSAN reviewers and IBM people who are currently porting KMSAN to other
+> > architectures, plus Paul for his opinion on refactoring RCU)
+> >
+> > this patch broke x86 KMSAN in a subtle way.
+> >
+> > For every memory access in the code instrumented by KMSAN we call
+> > kmsan_get_metadata() to obtain the metadata for the memory being accessed. For
+> > virtual memory the metadata pointers are stored in the corresponding `struct
+> > page`, therefore we need to call virt_to_page() to get them.
+> >
+> > According to the comment in arch/x86/include/asm/page.h, virt_to_page(kaddr)
+> > returns a valid pointer iff virt_addr_valid(kaddr) is true, so KMSAN needs to
+> > call virt_addr_valid() as well.
+> >
+> > To avoid recursion, kmsan_get_metadata() must not call instrumented code,
+> > therefore ./arch/x86/include/asm/kmsan.h forks parts of arch/x86/mm/physaddr.c
+> > to check whether a virtual address is valid or not.
+> >
+> > But the introduction of rcu_read_lock() to pfn_valid() added instrumented RCU
+> > API calls to virt_to_page_or_null(), which is called by kmsan_get_metadata(),
+> > so there is an infinite recursion now. I do not think it is correct to stop that
+> > recursion by doing kmsan_enter_runtime()/kmsan_exit_runtime() in
+> > kmsan_get_metadata(): that would prevent instrumented functions called from
+> > within the runtime from tracking the shadow values, which might introduce false
+> > positives.
+> >
+> > I am currently looking into inlining __rcu_read_lock()/__rcu_read_unlock(), into
+> > KMSAN code to prevent it from being instrumented, but that might require factoring
+> > out parts of kernel/rcu/tree_plugin.h into a non-private header. Do you think this
+> > is feasible?
+> 
+> __rcu_read_lock/unlock() is only outlined in PREEMPT_RCU. Not sure that helps.
+> 
+> Otherwise, there is rcu_read_lock_sched_notrace() which does the bare
+> minimum and is static inline.
+> 
+> Does that help?
 
-On 1/17/24 12:07, Tejun Heo wrote:
-> Hello,
->
-> On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
->> The first 2 patches are adopted from Federic with minor twists to fix
->> merge conflicts and compilation issue. The rests are for implementing
->> the new cpuset.cpus.isolation_full interface which is essentially a flag
->> to globally enable or disable full CPU isolation on isolated partitions.
-> I think the interface is a bit premature. The cpuset partition feature is
-> already pretty restrictive and makes it really clear that it's to isolate
-> the CPUs. I think it'd be better to just enable all the isolation features
-> by default. If there are valid use cases which can't be served without
-> disabling some isolation features, we can worry about adding the interface
-> at that point.
+Hrm, rcu_read_unlock_sched_notrace() can still call
+__preempt_schedule_notrace(), which is again instrumented by KMSAN.
 
-My current thought is to make isolated partitions act like 
-isolcpus=domain, additional CPU isolation capabilities are optional and 
-can be turned on using isolation_full. However, I am fine with making 
-all these turned on by default if it is the consensus.
+This patch gets me a working kernel:
 
-Cheers,
-Longman
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 4ed33b127821..2d62df462d88 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -2000,6 +2000,7 @@ static inline int pfn_valid(unsigned long pfn)
+ {
+ 	struct mem_section *ms;
+ 	int ret;
++	unsigned long flags;
+ 
+ 	/*
+ 	 * Ensure the upper PAGE_SHIFT bits are clear in the
+@@ -2013,9 +2014,9 @@ static inline int pfn_valid(unsigned long pfn)
+ 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+ 		return 0;
+ 	ms = __pfn_to_section(pfn);
+-	rcu_read_lock();
++	local_irq_save(flags);
+ 	if (!valid_section(ms)) {
+-		rcu_read_unlock();
++		local_irq_restore(flags);
+ 		return 0;
+ 	}
+ 	/*
+@@ -2023,7 +2024,7 @@ static inline int pfn_valid(unsigned long pfn)
+ 	 * the entire section-sized span.
+ 	 */
+ 	ret = early_section(ms) || pfn_section_valid(ms, pfn);
+-	rcu_read_unlock();
++	local_irq_restore(flags);
+ 
+ 	return ret;
+ }
 
+Disabling interrupts is a little heavy handed - it also assumes the
+current RCU implementation. There is
+preempt_enable_no_resched_notrace(), but that might be worse because it
+breaks scheduling guarantees.
+
+That being said, whatever we do here should be wrapped in some
+rcu_read_lock/unlock_<newvariant>() helper.
+
+Is there an existing helper we can use? If not, we need a variant that
+can be used from extremely constrained contexts that can't even call
+into the scheduler. And if we want pfn_valid() to switch to it, it also
+should be fast.
+
+Thanks,
+-- Marco
