@@ -1,46 +1,46 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0FF224D4
-	for <rcu@vger.kernel.org>; Wed, 17 Jan 2024 16:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4857D224E4
+	for <rcu@vger.kernel.org>; Wed, 17 Jan 2024 16:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705509376; cv=none; b=NxsQ+qKEvoJJaTVXG2ZxfrVRRFE5/LppwscJklkJLHTL/YP+/bIXnFMjAt+pFjgoJVpPqInO1JbP3qtA8uW9ur027dTmQ21j7e8a7zd45mkj2LfJe8njbj4AxTBE1uqUaBmarMjIcz1yNuIc/6q62IsBUzltyMCWpwAZvznBSeg=
+	t=1705509376; cv=none; b=IePCjS3IsEXKHlkc7+2GhwbzGl22oukDXLtSBgrxNa6CqNT4u0/DK8zuUKvs5BfiUDVgOO9NvqcOaecHSFjcYiKwKBvAODLSJGBCiy8bg4t6+9lT1f0dEPGpd0GbHOkWkYo0kjtbvGyDbUMLCTFU8m4zUywdO31PRWAN0oZEFTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705509376; c=relaxed/simple;
-	bh=+9dhGREDar7JnxPjUNvDr3ukqeiS2D+HMIM215GKB3o=;
+	bh=cqoNjlPc6YRXzLiB2bCt5YjvjoQjt75FOzIQ4Y3qvrA=;
 	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:Cc:
 	 Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-Scanned-By; b=eiQDjNs/SbxoOPpefUg+A9idt/42yUD8xHL4hEtMINuLtk3EjFCgD+TOO16Vy4SY4C7ng4AllJM3NjHQbyV4tpDj1p9U3jOFJGwkdIkTjS9BZ+i0b0K5AsIAtIHlWDkbHAhRaQawV/O3NoPmZSjiL3okD1ki67jtDU6G70EftaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ArKkIITv; arc=none smtp.client-ip=170.10.129.124
+	 Content-Transfer-Encoding:X-Scanned-By; b=flJUHY1jBF+vMO/XAuxJhclgiKSzN8PgAmggPPMokL+oZDg9otj5/qci1fz1vkYhZqlvZMV/exwjPP5fWlZc2I1QJD3eyU5Lv+NEif1SJusexrqUQdvZU3SaY6E/2bDJ+dR2Y076hp0IFQSbnZR0YvGbDfRN4VsbMgmP34khfCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ef8YCtBz; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ArKkIITv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ef8YCtBz"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705509373;
+	s=mimecast20190719; t=1705509374;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xvHDvVh6wugcYdMxmpgUJ/MFh5amT/B96L0R0KTNtzk=;
-	b=ArKkIITvUYN5Q7FmdGKfU3J02HfrXzrbjwJDp+pjeQE/qaK1ZXvepowUMGRj4+N6j+6cYX
-	vMejGY/RUFmOycWwyDpeRfmZXWXTM2akSFczHvGB0JjcAuL5SysKyvFSmU5Fc+ob6mZXBh
-	eMnJDbYD/nQ1rcnYvbkmObwLe8y6m8U=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-473-xwCFczkROcG7hczghk4wLg-1; Wed, 17 Jan 2024 11:36:07 -0500
-X-MC-Unique: xwCFczkROcG7hczghk4wLg-1
+	bh=v6l2z5hmcKTog3XiOuPlPdWnGHwPaZmCTdkb04dCE+c=;
+	b=Ef8YCtBzuuwRFd2xPGC07XuHvbxW+Cxbx3kDOxhOFDSIyKoBoqkxzFbhBpbNbTVhtxKee7
+	DVfL9WgB1DugC9sXBvU643paSG+CDNlQfskaphJLC5i30dHd87Koi84SjRrwmH0d5QkCFL
+	oZ7RvPuOUI0SJwnDcGXq/4L10Tlh1sY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-292-NamU-_HuOXOPyQsDLH2XPg-1; Wed,
+ 17 Jan 2024 11:36:12 -0500
+X-MC-Unique: NamU-_HuOXOPyQsDLH2XPg-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5E6E782A6C6;
-	Wed, 17 Jan 2024 16:36:06 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B0F6529AC003;
+	Wed, 17 Jan 2024 16:36:09 +0000 (UTC)
 Received: from llong.com (unknown [10.22.16.147])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B9285111E402;
-	Wed, 17 Jan 2024 16:36:04 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 22AAD1121306;
+	Wed, 17 Jan 2024 16:36:08 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Zefan Li <lizefan.x@bytedance.com>,
@@ -78,9 +78,9 @@ Cc: cgroups@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Costa Shulyupin <cshulyup@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [RFC PATCH 1/8] rcu/nocb: Pass a cpumask instead of a single CPU to offload/deoffload
-Date: Wed, 17 Jan 2024 11:35:04 -0500
-Message-Id: <20240117163511.88173-2-longman@redhat.com>
+Subject: [RFC PATCH 3/8] rcu/no_cb: Add rcu_nocb_enabled() to expose the rcu_nocb state
+Date: Wed, 17 Jan 2024 11:35:06 -0500
+Message-Id: <20240117163511.88173-4-longman@redhat.com>
 In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
 References: <20240117163511.88173-1-longman@redhat.com>
 Precedence: bulk
@@ -92,219 +92,58 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-From: Frederic Weisbecker <frederic@kernel.org>
+Add a new rcu_nocb_enabled() helper to expose the rcu_nocb state
+to other kernel subsystems like cpuset.  That will allow cpuset to
+determine if RCU no-callback can be enabled on isolated CPUs within
+isolated partitions. If so, the corresponding RCU functions can be
+called to enable it when full CPU isolation is requested.
 
-Currently the interface to toggle callbacks offloading state only takes
-a single CPU per call. Now driving RCU NOCB through cpusets requires
-to be able to change the offloading state of a whole set of CPUs.
-
-To make it easier, extend the (de-)offloading interface to support a
-cpumask.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Phil Auld <pauld@redhat.com>
-Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- include/linux/rcupdate.h |   9 ++--
- kernel/rcu/rcutorture.c  |   4 +-
- kernel/rcu/tree_nocb.h   | 102 ++++++++++++++++++++++++++-------------
- 3 files changed, 76 insertions(+), 39 deletions(-)
+ include/linux/rcupdate.h |  6 ++++++
+ kernel/rcu/tree_nocb.h   | 12 ++++++++++++
+ 2 files changed, 18 insertions(+)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 0746b1b0b663..b649344075d2 100644
+index b649344075d2..976d55a3e523 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -142,13 +142,14 @@ static inline void rcu_irq_work_resched(void) { }
+@@ -120,6 +120,12 @@ void rcu_init(void);
+ extern int rcu_scheduler_active;
+ void rcu_sched_clock_irq(int user);
  
- #ifdef CONFIG_RCU_NOCB_CPU
- void rcu_init_nohz(void);
--int rcu_nocb_cpu_offload(int cpu);
--int rcu_nocb_cpu_deoffload(int cpu);
-+int rcu_nocb_cpumask_update(const struct cpumask *cpumask, bool offload);
- void rcu_nocb_flush_deferred_wakeup(void);
- #else /* #ifdef CONFIG_RCU_NOCB_CPU */
- static inline void rcu_init_nohz(void) { }
--static inline int rcu_nocb_cpu_offload(int cpu) { return -EINVAL; }
--static inline int rcu_nocb_cpu_deoffload(int cpu) { return 0; }
-+static inline int rcu_nocb_cpumask_update(const struct cpumask *cpumask, bool offload)
-+{
-+	return -EINVAL;
-+}
- static inline void rcu_nocb_flush_deferred_wakeup(void) { }
- #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
- 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 7567ca8e743c..228a5488eb5e 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2140,10 +2140,10 @@ static int rcu_nocb_toggle(void *arg)
- 		r = torture_random(&rand);
- 		cpu = (r >> 1) % (maxcpu + 1);
- 		if (r & 0x1) {
--			rcu_nocb_cpu_offload(cpu);
-+			rcu_nocb_cpumask_update(cpumask_of(cpu), true);
- 			atomic_long_inc(&n_nocb_offload);
- 		} else {
--			rcu_nocb_cpu_deoffload(cpu);
-+			rcu_nocb_cpumask_update(cpumask_of(cpu), false);
- 			atomic_long_inc(&n_nocb_deoffload);
- 		}
- 		toggle_delay = torture_random(&rand) % toggle_fuzz + toggle_interval;
++#ifdef CONFIG_RCU_NOCB_CPU
++int rcu_nocb_enabled(struct cpumask *out_mask);
++#else
++static inline int rcu_nocb_enabled(struct cpumask *out_mask) { return 0; }
++#endif
++
+ #ifdef CONFIG_TASKS_RCU_GENERIC
+ void rcu_init_tasks_generic(void);
+ #else
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 4efbf7333d4e..60b0a15ed6e2 100644
+index bbcf6f4152a3..020a347ccd52 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1203,29 +1203,23 @@ static long rcu_nocb_rdp_deoffload(void *arg)
- 	return 0;
+@@ -81,6 +81,18 @@ static int __init parse_rcu_nocb_poll(char *arg)
  }
+ __setup("rcu_nocb_poll", parse_rcu_nocb_poll);
  
--int rcu_nocb_cpu_deoffload(int cpu)
-+static int rcu_nocb_cpu_deoffload(int cpu)
- {
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 	int ret = 0;
- 
--	cpus_read_lock();
--	mutex_lock(&rcu_state.barrier_mutex);
--	if (rcu_rdp_is_offloaded(rdp)) {
--		if (cpu_online(cpu)) {
--			ret = work_on_cpu(cpu, rcu_nocb_rdp_deoffload, rdp);
--			if (!ret)
--				cpumask_clear_cpu(cpu, rcu_nocb_mask);
--		} else {
--			pr_info("NOCB: Cannot CB-deoffload offline CPU %d\n", rdp->cpu);
--			ret = -EINVAL;
--		}
--	}
--	mutex_unlock(&rcu_state.barrier_mutex);
--	cpus_read_unlock();
-+	if (cpu_is_offline(cpu))
-+		return -EINVAL;
-+
-+	if (!rcu_rdp_is_offloaded(rdp))
++/*
++ * Return the rcu_nocb state & optionally copy out rcu_nocb_mask.
++ */
++int rcu_nocb_enabled(struct cpumask *out_mask)
++{
++	if (!rcu_state.nocb_is_setup)
 +		return 0;
-+
-+	ret = work_on_cpu(cpu, rcu_nocb_rdp_deoffload, rdp);
-+	if (!ret)
-+		cpumask_clear_cpu(cpu, rcu_nocb_mask);
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(rcu_nocb_cpu_deoffload);
- 
- static long rcu_nocb_rdp_offload(void *arg)
- {
-@@ -1236,12 +1230,6 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	WARN_ON_ONCE(rdp->cpu != raw_smp_processor_id());
--	/*
--	 * For now we only support re-offload, ie: the rdp must have been
--	 * offloaded on boot first.
--	 */
--	if (!rdp->nocb_gp_rdp)
--		return -EINVAL;
- 
- 	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
- 		return -EINVAL;
-@@ -1288,29 +1276,77 @@ static long rcu_nocb_rdp_offload(void *arg)
- 	return 0;
- }
- 
--int rcu_nocb_cpu_offload(int cpu)
-+static int rcu_nocb_cpu_offload(int cpu)
- {
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	int ret = 0;
-+	int ret;
-+
-+	if (cpu_is_offline(cpu))
-+		return -EINVAL;
-+
-+	if (rcu_rdp_is_offloaded(rdp))
-+		return 0;
-+
-+	ret = work_on_cpu(cpu, rcu_nocb_rdp_offload, rdp);
-+	if (!ret)
-+		cpumask_set_cpu(cpu, rcu_nocb_mask);
-+
-+	return ret;
++	if (out_mask)
++		cpumask_copy(out_mask, rcu_nocb_mask);
++	return 1;
 +}
 +
-+int rcu_nocb_cpumask_update(const struct cpumask *cpumask, bool offload)
-+{
-+	int cpu;
-+	int err = 0;
-+	int err_cpu;
-+	cpumask_var_t saved_nocb_mask;
-+
-+	if (!alloc_cpumask_var(&saved_nocb_mask, GFP_KERNEL))
-+		return -ENOMEM;
-+
-+	cpumask_copy(saved_nocb_mask, rcu_nocb_mask);
- 
- 	cpus_read_lock();
- 	mutex_lock(&rcu_state.barrier_mutex);
--	if (!rcu_rdp_is_offloaded(rdp)) {
--		if (cpu_online(cpu)) {
--			ret = work_on_cpu(cpu, rcu_nocb_rdp_offload, rdp);
--			if (!ret)
--				cpumask_set_cpu(cpu, rcu_nocb_mask);
-+	for_each_cpu(cpu, cpumask) {
-+		if (offload) {
-+			err = rcu_nocb_cpu_offload(cpu);
-+			if (err < 0) {
-+				err_cpu = cpu;
-+				pr_err("NOCB: offload cpu %d failed (%d)\n", cpu, err);
-+				break;
-+			}
- 		} else {
--			pr_info("NOCB: Cannot CB-offload offline CPU %d\n", rdp->cpu);
--			ret = -EINVAL;
-+			err = rcu_nocb_cpu_deoffload(cpu);
-+			if (err < 0) {
-+				err_cpu = cpu;
-+				pr_err("NOCB: deoffload cpu %d failed (%d)\n", cpu, err);
-+				break;
-+			}
-+		}
-+	}
-+
-+	/* Rollback in case of error */
-+	if (err < 0) {
-+		err_cpu = cpu;
-+		for_each_cpu(cpu, cpumask) {
-+			if (err_cpu == cpu)
-+				break;
-+			if (cpumask_test_cpu(cpu, saved_nocb_mask))
-+				WARN_ON_ONCE(rcu_nocb_cpu_offload(cpu));
-+			else
-+				WARN_ON_ONCE(rcu_nocb_cpu_deoffload(cpu));
- 		}
- 	}
-+
- 	mutex_unlock(&rcu_state.barrier_mutex);
- 	cpus_read_unlock();
- 
--	return ret;
-+	free_cpumask_var(saved_nocb_mask);
-+
-+	return err;
- }
--EXPORT_SYMBOL_GPL(rcu_nocb_cpu_offload);
-+EXPORT_SYMBOL_GPL(rcu_nocb_cpumask_update);
- 
- #ifdef CONFIG_RCU_LAZY
- static unsigned long
+ /*
+  * Don't bother bypassing ->cblist if the call_rcu() rate is low.
+  * After all, the main point of bypassing is to avoid lock contention
 -- 
 2.39.3
 
