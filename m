@@ -1,104 +1,92 @@
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3651BC2E;
-	Wed, 17 Jan 2024 10:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E7A1DFCF;
+	Wed, 17 Jan 2024 12:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705487190; cv=none; b=a8B/WQKz5IOXqUTPSc4ZbKeRgQQmexwDQtWdqbcGhm+PjAELwy7/pG4A+QcGfH7WZI0FUa3ARl/RJyz/tq8HLOgik/zGTT6DlRDQQV3p7QtzJ3kz7RYGjyFJv8UzjRpxB4D6wKxQT+RZttKnBoMeAozyHjJhno/g34IpgSO5NUo=
+	t=1705493249; cv=none; b=ftvBX/xm5z9UjJsKaKXAaywOBHPihKim/NI9BJLLsD3Am6WAWfe0Rw1DRhsfz8tOA7tGNrtWjUDfBiJzJ2Y4n3iTmc4K50Gxt3Tpk023ZI5cD0oxRzGr+60dDRk5hQ1yYwVh5V9WMDHGQYoyYoLF03SnhPEe9mqMyTL/LY1FTrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705487190; c=relaxed/simple;
-	bh=nw1ctmmn99ih3vrMxnXPLShNwmlGeic28XUYbf2UxTQ=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 To:Cc:Subject:Date:Message-Id:X-Mailer; b=QOBpmUa9rXc+M5y6Gac9qcbRxNk7j6EFJ3Y2OH5+FLdmzgH7oetquzscmv9ZZV4YUUv+LYeimOGhUoLLir/3u1/SqHoNfhIHi8mlN/zb4XcMfArwAzXfUOTfgJ0b63Q40yIP/jjdeYKfwy5SQtIlUDmgt6lcwHaCKeRmExIqyIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W+2uUPPW; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1705493249; c=relaxed/simple;
+	bh=wpw637Q0rxse1Y2+Phvi66Mke3B2SRMl31WlpUI87QE=;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To; b=kmKSjk6Ynih+YKXK1C02Ds4gKiJC5OOcAq3VbmuK5tWbkCbMKoB+SaVHqSvDWIC8dsplvK2JkCi+Y+SE3coHwaO99XHi21CQMTR9QKj1KzYd1tygM6OoYv7lYmc/1voMstdWj3It41zlJfEFRwNqPivmag2isIi9ic+FHH2Inio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FEqsFe94; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W+2uUPPW"
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5f8cf76ef5bso97801697b3.0;
-        Wed, 17 Jan 2024 02:26:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705487187; x=1706091987; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cr+Yty3TNQxQc0mfbzoHMY7BuPSC95Nw8wev9SQkgyM=;
-        b=W+2uUPPWHR/jIIWzwTg5Z57VExOAwg6Kd7m1XlJrTweJjsNpwObS0dcjCzfQRtpxi9
-         zMwonfbsQiGmU97L38AR4R6qoeV6jKdVKlx9Ezszr9+f5ZbIfxMePaSQtjjn3nfQ4mvX
-         FmZRo929peXTPTBGow5Y7kLtY7whZLCW8LKQqiMMBQzkJtX9V2kfl9ABbttME8PpVQvS
-         ibBfFFVZu4zNBG/2E4Pnplf7ImmzS46Pz2T3RlvrNGs4GM4sr7axJs/s4YXSLVcBH+YX
-         3TEYaKY42ZVdIkTh6Uekt3EttwRzUxiII9jDkPYkcc76nTJOzX+R+GEbYagvgCIwryPW
-         t/Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705487187; x=1706091987;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cr+Yty3TNQxQc0mfbzoHMY7BuPSC95Nw8wev9SQkgyM=;
-        b=FTRGtEl/iu/Yd0tyou2fwBE85UpM8OdJ/UPXV2HbGHu2176ZIyZumY719PSIkRIfeA
-         f+Zt5ByMPkBXr65GPkf/SLaDiJJ5vMgMlaA6OK2dxj0w/61O5ftcL9PVOi/WGVpamcjE
-         JMuOKicA7OYIPLwGh82pm2m9OQeXFLMcPtHnAB9e3KF6Vb2XTr4iC4X3WEf5iaOvpfzU
-         vm6z6hJYdlxpKqswtWGc6JGRIcxJTDDySV+kCm1xhNaLgINq7LY8ZO2D44g+D88Sb8Pn
-         53one/21xM0LMCPpv0vkNYd5iPg3/oLwxd9uFkCRfwW5e7L6W7IE2R86kORb75JjGGH4
-         msCA==
-X-Gm-Message-State: AOJu0YyKXdmalnRNfT6A1uwgQ67eSLxsAginOIIjL3Z9AU7XPnoBCWoY
-	Wque0/6ou8v7ecgGvyah7zA=
-X-Google-Smtp-Source: AGHT+IGFxfJu+5xNE/cuDHqTxgWQmGMLi+De5VIsw4LLcuQlf1punDqfdOJy58C2YToxWnP5pMgTaw==
-X-Received: by 2002:a81:b385:0:b0:5e9:5538:d930 with SMTP id r127-20020a81b385000000b005e95538d930mr6529658ywh.47.1705487187588;
-        Wed, 17 Jan 2024 02:26:27 -0800 (PST)
-Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
-        by smtp.gmail.com with ESMTPSA id e18-20020a170902cf5200b001d58ed4c58asm10657042plg.63.2024.01.17.02.26.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 02:26:27 -0800 (PST)
-From: Zqiang <qiang.zhang1211@gmail.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	quic_neeraju@quicinc.com,
-	joel@joelfernandes.org
-Cc: qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in __call_rcu_nocb_wake()
-Date: Wed, 17 Jan 2024 18:26:16 +0800
-Message-Id: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FEqsFe94"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC2AC433C7;
+	Wed, 17 Jan 2024 12:07:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705493249;
+	bh=wpw637Q0rxse1Y2+Phvi66Mke3B2SRMl31WlpUI87QE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FEqsFe94WyllVCMT1A45wmnuJLWetHY7WzypkL9ZFY4eYcvHiQt+FQHOhkz5d3/yS
+	 1g8GZM1xqMkWlcRL23XZ5xzrB7BMb+YMFSohb4NyW1tMeOH6f0dBVy8693tRQPwsk7
+	 CT841qWqiuPQcvzyP/rDAfLfFRzJlhXKEtlUHHsQMlMtx9cfIH7CAlGgHb6zTqsz/K
+	 aFo/lsZ8a44WowDz8jLLyvORB8mlTzu637Ohk9VajFXicO7ElCJwoN+9zeWLAIgV/E
+	 fB3sor/umyNg2YuoYjENSZQWg0OMKuXAttn8MmwVB2Hvam3HcKvKrvzFJY9CRj9GM5
+	 pEQhOk4XAIWMA==
+Date: Wed, 17 Jan 2024 13:07:25 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Zqiang <qiang.zhang1211@gmail.com>
+Cc: paulmck@kernel.org, quic_neeraju@quicinc.com, joel@joelfernandes.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in
+ __call_rcu_nocb_wake()
+Message-ID: <ZafC_YkTJKsOropE@localhost.localdomain>
+References: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
 
-Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
-no-rdp_gp structure, the timer_pending() is always return false,
-this commit therefore need to check rdp_gp->nocb_timer in
-__call_rcu_nocb_wake().
+Le Wed, Jan 17, 2024 at 06:26:16PM +0800, Zqiang a écrit :
+> Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
+> no-rdp_gp structure, the timer_pending() is always return false,
+> this commit therefore need to check rdp_gp->nocb_timer in
+> __call_rcu_nocb_wake().
+> 
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>  kernel/rcu/tree_nocb.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 54971afc3a9b..3f85577bddd4 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+>  	long lazy_len;
+>  	long len;
+>  	struct task_struct *t;
+> +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+>  
+>  	// If we are being polled or there is no kthread, just leave.
+>  	t = READ_ONCE(rdp->nocb_gp_kthread);
+> @@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+>  		smp_mb(); /* Enqueue before timer_pending(). */
+>  		if ((rdp->nocb_cb_sleep ||
+>  		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+> -		    !timer_pending(&rdp->nocb_timer)) {
+> +		    !timer_pending(&rdp_gp->nocb_timer)) {
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/rcu/tree_nocb.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hehe, good eyes ;-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 54971afc3a9b..3f85577bddd4 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 	long lazy_len;
- 	long len;
- 	struct task_struct *t;
-+	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	// If we are being polled or there is no kthread, just leave.
- 	t = READ_ONCE(rdp->nocb_gp_kthread);
-@@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 		smp_mb(); /* Enqueue before timer_pending(). */
- 		if ((rdp->nocb_cb_sleep ||
- 		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
--		    !timer_pending(&rdp->nocb_timer)) {
-+		    !timer_pending(&rdp_gp->nocb_timer)) {
- 			rcu_nocb_unlock(rdp);
- 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_FORCE,
- 					   TPS("WakeOvfIsDeferred"));
--- 
-2.17.1
+I had that change in mind but while checking that area further I actually
+wondered what is the actual purpose of this RCU_NOCB_WAKE_FORCE thing. If
+we reach that place, it means that the nocb_gp kthread should be awaken
+already (or the timer pending), so what does a force wake up solve in that
+case?
 
+Paul, any recollection of that?
+
+In the meantime:
+
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
