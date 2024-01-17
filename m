@@ -1,254 +1,168 @@
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE681E89E;
-	Wed, 17 Jan 2024 12:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B623921A01
+	for <rcu@vger.kernel.org>; Wed, 17 Jan 2024 16:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705494386; cv=none; b=RiptsqIlgXJy4+XFlww+7Lrv2y5aKkxhrhpB5ie+q0fI0MYd/a+g8GqluSHxA6jBbg+1/BQ6Hrg/qCeKVPNKxN+CzVx5RYnX8zn9iPT/eeXawveAobZWCmcbM5pB+knk+/fVFJVEl0WhJ68rR5N3ve9+R8fSUMh6XHaAWpNR26w=
+	t=1705509375; cv=none; b=bUbDrsbHdWcJCGPJP/C6FCo7he+e7wKv+lUOy4N2Xym9/zb4FudOFKEWHwtheGcj63RckUlfDbT7jWwN4WVdfhYje4/iVYPYy0e090DqpDnBA6NhIi8weTyNSw6U/vm3+Gws9rYT1jgMCrtt7U7GlPQDqxVdBiVlzwr/HXe5KUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705494386; c=relaxed/simple;
-	bh=dMRPNMfnZdbmEGK6soJL6Xz1KLZ8SkRSDkiKqO49UNg=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 X-Google-Original-From:Date:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=KP+gVB4u3z35sSTJjMXDrnYBt0fuj8l9/wevWaSlyGdOjm0J35iNjNNjVCQU3ohCRF52UnBCf/h16V36JzUAXENW8+hR7Cy1u7g7A30ZdAHbC/WOoZuW4hey0thNwqCih4oxDugisRkKzasOXU1QrDHs3JJaMBPy2E5Or+6C6B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c6ye0WbO; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1705509375; c=relaxed/simple;
+	bh=T/btiksz2pjdc/htwRedVgNxpGRbSjdss4lHcMx0Ds4=;
+	h=DKIM-Signature:Received:X-MC-Unique:Received:Received:From:To:Cc:
+	 Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:X-Scanned-By; b=smWXu5ZRGe6UHyfe3DSQiEtkTZCSeHFhk1QwFgcO4WHjU+FkAzZ7gLN2UCLWvO136gMWEL1R2c9pCKJzYUd4qGwUx5UNes1GdDrVxLOqF14tBnNfMEHVTKfvP8gTWUfYudveQhus2XpcBTk44Y4l7H6t1Ns+g8XPzUxxrBGu35U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fqrkScbM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c6ye0WbO"
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cc9fa5e8e1so126497861fa.3;
-        Wed, 17 Jan 2024 04:26:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705494383; x=1706099183; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cIIWT/IwddEjV/+NQCreP/WJZ3qm+exSEEdJpu8py0I=;
-        b=c6ye0WbOsOAhJevuZwqFKy8hl2MgS4oYGlIyQuEpfDuLqB1BE/+HmvmSEfXdFwvhzA
-         QEX2DQaedMOJcxgoAmYWrMV5Kmdql8cLIN8Ynib8hr/BsZBd0k5tTFepATQjYy/qqmmQ
-         QoJCa0TSG6zY6cUTH1otZqKcWkJ+NkNbhttw4PeFjpgTJ9H53CS61STqyuLQzFpvusUs
-         RPcJbRuSU+R7XMlVbxNWaePRpdkSI6bnDNxDmAlrbf2B9YirIu8/Ktg1VSjeUiLpf6xd
-         yNyfYBM0L12gs5wGof2FCqL6HUbg6sMOPMa4PtYodpN0Sy3dIk3eScaVZtUvf/SSt7Ou
-         eskA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705494383; x=1706099183;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cIIWT/IwddEjV/+NQCreP/WJZ3qm+exSEEdJpu8py0I=;
-        b=Vb+jGRFORvHfiN5MK4BVOi+rYFKMPbu86TXJt/43KVNBqmea8YwF13bUSYOeQpLJHN
-         mxyo/javkspm/SSwCT1vmjXNZB0yjHn70vvlgqMrFTNg5cM8fBAO4F6AxxH0j8RX+eWC
-         SoeiBIfxuhwayIBTMV8xqiH+SjztRBZOwokxXyNcSKsYE09qQjie0tx399x1cjr440mA
-         kAsMA8sK3XdHTX+OVXPvtf/KnYjwROx7XTnMs2G7+RdCPJaSwQcPFhnx+sWixG59kC8D
-         5O6Sn01mtdBPLUd483aNgMX6psZtrcezdFwTUCMo7wQ4vEufODw0f0560nlN+sJtDasy
-         djFg==
-X-Gm-Message-State: AOJu0Yx4th74YHW9J5qHW2UFpZBmh9XvFmyjjsEm3HNRvlcPKfVlyESO
-	Nm84Yxz6ZW5hZhtSqvmrSwI=
-X-Google-Smtp-Source: AGHT+IH04Dhy+IcBK3g3YpdoPAtLwrds9n6xYVLzNmpNU02GKxauyyc5Vl900ghZfaRlcXGzL4XucA==
-X-Received: by 2002:a05:6512:488e:b0:50d:1c9d:59e4 with SMTP id eq14-20020a056512488e00b0050d1c9d59e4mr3708593lfb.47.1705494382623;
-        Wed, 17 Jan 2024 04:26:22 -0800 (PST)
-Received: from pc636 (host-90-235-20-191.mobileonline.telia.com. [90.235.20.191])
-        by smtp.gmail.com with ESMTPSA id p3-20020a056512312300b0050e7fe17591sm240685lfd.137.2024.01.17.04.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 04:26:22 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 17 Jan 2024 13:26:19 +0100
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fqrkScbM"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705509372;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hMKTEJCLgRjbNlvIEToGyQAyufjPtT3IoQqw3muUhg4=;
+	b=fqrkScbMw98uDgoV0cFeqwv2KE4SEoZt0X9OaP0s593ApgooioWY8RSN6d8I4AGUiItwyY
+	AxOSyYhDIbJ33B9u+AxIFzzrwR/rVJGFKCckoFnhK7ssQHpSSSMWtNWPc/GsSz59PSEoP3
+	fbEh1Z/pKGp7NtpBr7jSrLV4ixiUYHo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-261-y1ui9Ik_OUyghLE7fiOplw-1; Wed,
+ 17 Jan 2024 11:36:09 -0500
+X-MC-Unique: y1ui9Ik_OUyghLE7fiOplw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 11A88383009D;
+	Wed, 17 Jan 2024 16:36:08 +0000 (UTC)
+Received: from llong.com (unknown [10.22.16.147])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 6F72D1121306;
+	Wed, 17 Jan 2024 16:36:06 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <ZafHa37MS_eYMEr6@pc636>
-References: <20240104162510.72773-1-urezki@gmail.com>
- <20240104162510.72773-2-urezki@gmail.com>
- <8edf32ff-ea10-43f3-8820-b67f1691bad2@paulmck-laptop>
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>,
+	Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Alex Gladkov <agladkov@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Phil Auld <pauld@redhat.com>,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Costa Shulyupin <cshulyup@redhat.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [RFC PATCH 2/8] rcu/nocb: Prepare to change nocb cpumask from CPU-hotplug protected cpuset caller
+Date: Wed, 17 Jan 2024 11:35:05 -0500
+Message-Id: <20240117163511.88173-3-longman@redhat.com>
+In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
+References: <20240117163511.88173-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8edf32ff-ea10-43f3-8820-b67f1691bad2@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-> > +/*
-> > + * There are three lists for handling synchronize_rcu() users.
-> > + * A first list corresponds to new coming users, second for users
-> > + * which wait for a grace period and third is for which a grace
-> > + * period is passed.
-> > + */
-> > +static struct sr_normal_state {
-> > +	struct llist_head srs_next;	/* request a GP users. */
-> > +	struct llist_head srs_wait;	/* wait for GP users. */
-> > +	struct llist_head srs_done;	/* ready for GP users. */
-> > +
-> > +	/*
-> > +	 * In order to add a batch of nodes to already
-> > +	 * existing srs-done-list, a tail of srs-wait-list
-> > +	 * is maintained.
-> > +	 */
-> > +	struct llist_node *srs_wait_tail;
-> > +} sr;
-> 
-> Please put this in the rcu_state structure.  Having the separate structure
-> is fine (it does group the fields nicely, plus you can take a pointer
-> to it in the functions using this state), but it is good to have the
-> state in one place.
-> 
-> Also, please add the data structures in a separate patch.  This might
-> save someone a lot of time and effort should someone breaks the kernel
-> in a way that depends on data-structure size.  It would be much easier
-> for us if their bisection converged on the commit that adds the data
-> structures instead of the commit that also adds a lot of code.
-> 
-I put the data under rcu_state in the patch-3 in this series. But i can
-create a separate patch for this purpose. Should i split it or not?
+From: Frederic Weisbecker <frederic@kernel.org>
 
-> > +	/* Finally. */
-> > +	complete(&rs->completion);
-> > +}
-> > +
-> > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > +{
-> > +	struct llist_node *done, *rcu, *next;
-> > +
-> > +	done = llist_del_all(&sr.srs_done);
-> > +	if (!done)
-> > +		return;
-> > +
-> > +	llist_for_each_safe(rcu, next, done)
-> > +		rcu_sr_normal_complete(rcu);
-> > +}
-> > +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
-> 
-> Why not put this into the sr_normal_state structure?  You can use
-> __WORK_INITIALIZER() to initialize it, as is done in a number of other
-> places in the kernel.
-> 
-It is not a big problem. I can move it under "rcu_state" also!
+cpusets is going to use the NOCB (de-)offloading interface while
+holding hotplug lock. Therefore pull out the responsibility of protecting
+against concurrent CPU-hotplug changes to the callers of
+rcu_nocb_cpumask_update().
 
-> > +/*
-> > + * Helper function for rcu_gp_cleanup().
-> > + */
-> > +static void rcu_sr_normal_gp_cleanup(void)
-> > +{
-> > +	struct llist_node *head, *tail;
-> > +
-> > +	if (llist_empty(&sr.srs_wait))
-> > +		return;
-> > +
-> > +	tail = READ_ONCE(sr.srs_wait_tail);
-> > +	head = __llist_del_all(&sr.srs_wait);
-> > +
-> > +	if (head) {
-> > +		/* Can be not empty. */
-> > +		llist_add_batch(head, tail, &sr.srs_done);
-> > +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> > +	}
-> > +}
-> > +
-> > +/*
-> > + * Helper function for rcu_gp_init().
-> > + */
-> > +static void rcu_sr_normal_gp_init(void)
-> > +{
-> > +	struct llist_node *head, *tail;
-> > +
-> > +	if (llist_empty(&sr.srs_next))
-> > +		return;
-> > +
-> > +	tail = llist_del_all(&sr.srs_next);
-> > +	head = llist_reverse_order(tail);
-> 
-> Again, reversing the order is going to cause trouble on large systems.
-> Let's please not do that.  (I could have sworn that this was not present
-> in the last series...)
-> 
-> > +	/*
-> > +	 * A waiting list of GP should be empty on this step,
-> > +	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-> > +	 * rolls it over. If not, it is a BUG, warn a user.
-> > +	 */
-> > +	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
-> > +
-> > +	WRITE_ONCE(sr.srs_wait_tail, tail);
-> > +	__llist_add_batch(head, tail, &sr.srs_wait);
-> > +}
-> > +
-> > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> > +{
-> > +	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
-> > +}
-> > +
-> >  /*
-> >   * Initialize a new grace period.  Return false if no grace period required.
-> >   */
-> > @@ -1456,6 +1556,7 @@ static noinline_for_stack bool rcu_gp_init(void)
-> >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> >  	rcu_seq_start(&rcu_state.gp_seq);
-> >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > +	rcu_sr_normal_gp_init();
-> >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
-> >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
-> >  	raw_spin_unlock_irq_rcu_node(rnp);
-> > @@ -1825,6 +1926,9 @@ static noinline void rcu_gp_cleanup(void)
-> >  	}
-> >  	raw_spin_unlock_irq_rcu_node(rnp);
-> >  
-> > +	// Make synchronize_rcu() users aware of the end of old grace period.
-> > +	rcu_sr_normal_gp_cleanup();
-> > +
-> >  	// If strict, make all CPUs aware of the end of the old grace period.
-> >  	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
-> >  		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-> > @@ -3561,6 +3665,38 @@ static int rcu_blocking_is_gp(void)
-> >  	return true;
-> >  }
-> >  
-> > +/*
-> > + * Helper function for the synchronize_rcu() API.
-> > + */
-> > +static void synchronize_rcu_normal(void)
-> > +{
-> > +	struct rcu_synchronize rs;
-> > +
-> > +	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
-> > +		wait_rcu_gp(call_rcu_hurry);
-> > +		return;
-> > +	}
-> > +
-> > +	init_rcu_head_on_stack(&rs.head);
-> > +	init_completion(&rs.completion);
-> > +
-> > +	/*
-> > +	 * This code might be preempted, therefore take a GP
-> > +	 * snapshot before adding a request.
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP))
-> > +		rs.head.func = (void *) get_state_synchronize_rcu();
-> > +
-> > +	rcu_sr_normal_add_req(&rs);
-> > +
-> > +	/* Kick a GP and start waiting. */
-> > +	(void) start_poll_synchronize_rcu();
-> 
-> It is unfortunate that the debugging requires an extra timestamp.
-> The ways I can think of to avoid this have problems, though.  If this
-> thing was replicated per leaf rcu_node structure, the usual approach
-> would be to protect it with that structure's ->lock.
-> 
-Hmm.. a per-node approach can be deployed later. As discussed earlier :)
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Phil Auld <pauld@redhat.com>
+Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+ kernel/rcu/rcutorture.c | 2 ++
+ kernel/rcu/tree_nocb.h  | 4 ++--
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-Debugging part i do not follow, could you please elaborate a bit?
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 228a5488eb5e..e935152346ff 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2139,6 +2139,7 @@ static int rcu_nocb_toggle(void *arg)
+ 	do {
+ 		r = torture_random(&rand);
+ 		cpu = (r >> 1) % (maxcpu + 1);
++		cpus_read_lock();
+ 		if (r & 0x1) {
+ 			rcu_nocb_cpumask_update(cpumask_of(cpu), true);
+ 			atomic_long_inc(&n_nocb_offload);
+@@ -2146,6 +2147,7 @@ static int rcu_nocb_toggle(void *arg)
+ 			rcu_nocb_cpumask_update(cpumask_of(cpu), false);
+ 			atomic_long_inc(&n_nocb_deoffload);
+ 		}
++		cpus_read_unlock();
+ 		toggle_delay = torture_random(&rand) % toggle_fuzz + toggle_interval;
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		schedule_hrtimeout(&toggle_delay, HRTIMER_MODE_REL);
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 60b0a15ed6e2..bbcf6f4152a3 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1301,12 +1301,13 @@ int rcu_nocb_cpumask_update(const struct cpumask *cpumask, bool offload)
+ 	int err_cpu;
+ 	cpumask_var_t saved_nocb_mask;
+ 
++	lockdep_assert_cpus_held();
++
+ 	if (!alloc_cpumask_var(&saved_nocb_mask, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+ 	cpumask_copy(saved_nocb_mask, rcu_nocb_mask);
+ 
+-	cpus_read_lock();
+ 	mutex_lock(&rcu_state.barrier_mutex);
+ 	for_each_cpu(cpu, cpumask) {
+ 		if (offload) {
+@@ -1340,7 +1341,6 @@ int rcu_nocb_cpumask_update(const struct cpumask *cpumask, bool offload)
+ 	}
+ 
+ 	mutex_unlock(&rcu_state.barrier_mutex);
+-	cpus_read_unlock();
+ 
+ 	free_cpumask_var(saved_nocb_mask);
+ 
+-- 
+2.39.3
 
-Thanks!
-
---
-Uladzislau Rezki
