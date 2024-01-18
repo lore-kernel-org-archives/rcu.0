@@ -1,183 +1,227 @@
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA5D200A4
-	for <rcu@vger.kernel.org>; Thu, 18 Jan 2024 09:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65522033C;
+	Thu, 18 Jan 2024 10:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705571000; cv=none; b=Ou6/BTP7uMHJR/kvpYhjThF+4G0vWA8KHeCqovab37k/me2ZnLsIEyBKvv//A5/5KZHbmwRCdEpz00jxMRpqXpQWT6Eh8Cfms7bc37am+IK1CMkzFzPsrWbhs2ljCTnqLz2ttNRQjbtedOff19Ex9gzBgO/OPD14TR/eTAItP/Y=
+	t=1705574238; cv=none; b=kJDLh80rPjDdujqN/qovrCD7s7XPyND36jwZjB0sooCIGcaVvNlYuhr4B98KsZ5ZXgNsy/VqmUHl+vgvSyZEHiedI0KyW08G7VQCdlcsvCcQUk+GcYKi1i3TjxVvSqXwZhJ9WVJIC4vttWjv280ol13ZG2YwT3HJx5nlJBKGJfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705571000; c=relaxed/simple;
-	bh=Q7p3OWqmOkliqPEGHXQJk80V7+FoxK3eZPEcgL4cGNc=;
+	s=arc-20240116; t=1705574238; c=relaxed/simple;
+	bh=RJ4L71AXZx+xhM6BQtxN0J2s4OHf6poSNuVUQ6oqgck=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
-	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:User-Agent; b=jtuFgA4y2/PM8AWx/lPwUlzW4Pi/4VNqkZ2d1DtUOt+M1tThEjTcbljZV2I8wl5cM9HcJBo20a6CBX5EQER8KYHrYEFu4ixufidXCWbAzidLub/wBc5gupIq9AP5mXsXJa14MT8dq7D0cVncN5vbDlHlfhW0rlvYsCld4N14KGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BVCvkwYI; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 X-Google-Original-From:Date:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To; b=e09sdgjSLbsyD3Tls69D0WKP+gRfTG9ZlPf6E+37lY2gwxXt470pOLhqxZE5gJJ0E3xAWZpIpbQjtEkOuStSSCIS4SAMOA8j1WojKj0cyKMsHMVSCb1Vmb1rIxbFiSqSDjdOeQFXucdKY93fiSYEyx6UQKaAOHZNzKoKh9MB3K8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CiwIEf+s; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BVCvkwYI"
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3376f71fcbbso9717799f8f.1
-        for <rcu@vger.kernel.org>; Thu, 18 Jan 2024 01:43:13 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CiwIEf+s"
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50e7e55c0f6so14725835e87.0;
+        Thu, 18 Jan 2024 02:37:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705570992; x=1706175792; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cuYpIw9soBWDz51Uc9U824cyLkAJt+cFBIInHg6YOR8=;
-        b=BVCvkwYICvMkn1L5asRCBWTJAL0H9QG4lNu8nu2dTvTX4aaarTg6XPujejXWgKID6U
-         HQ0uR0lLrEtVTuvkyCxfO5lERKXgmgT4O+uVF9ZDNtXcvAY8xBOQKbaMEF1qiNC8Bs71
-         fCKH94AEEaHBqLQ/eFQJwEzVJUH8Wo+A1nIbN/Wbcdhs0PiGpTWCaCAmIute66DR0c5B
-         WOWUBWKAyC8ptzeHBYg2gBgaSaAXgkgJM4h5vFKqH8DGaWKmql96gJHxW3fSdvvaQmIG
-         ffUHoti8tT0S4QUkN3+k3m0rm1ya7mod221kemLTQNNmwQ9R4TXnp9rxoFa8TC9M83OB
-         nUhA==
+        d=gmail.com; s=20230601; t=1705574235; x=1706179035; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qFraLko0Sunles8rE+veYeEajynN3b2IofKXL2TxPzM=;
+        b=CiwIEf+sfzHHyPumXgIbl2gYONHQn/+LjPavYTIDf2EJra036MWtWRDCmcPSdJlnWY
+         i73OIx79GJWrvHc3/+ZXcfq4paT3CIxNsbkJNYXzmzPFgUldrULwGhMvp3i7mB+NYp5j
+         dLoz6ebBclCUmhMR05bPV2hLLYFJXqwsu2HrCns2XpULBWCjfvbzaZuW+AvbWVho784R
+         eCZHLYqFoE+SGKufX162QhGL9FxFpQXi+qbZDk4oH0BsDq9yqptpCmjlUH23nVl6DOma
+         xbEehzssWCbd6f0T8lSTpTtIIk+EtwnxRgPDgrEoWHd9h1aQSFuuHUQTUd0AbRf+Qrqm
+         pIqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705570992; x=1706175792;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cuYpIw9soBWDz51Uc9U824cyLkAJt+cFBIInHg6YOR8=;
-        b=E1RGGz36QXFZLUn+mbIY5PZVaJW+SQuPVMM3wSODQqNiCQRyLLuO9T10vEEHqs+b9h
-         uOKJ1ozEvC3crE/jVvF/2FgB77rwUqGPXwkpnm3ZFqxDjJFmQVqPjtVUEXscojpoAAHq
-         TfzAJPwldiJA9XQmnjSDVlHi99FA6ai2QXmrahWn6NY4Gy2fYcp31jkmvDgAR833FjOn
-         O1fdtg9FPCQ3zfCKca5hybZCYUS5Mmva9Bx+W7cIduZNbP/R5yt8ZvrALiWpTZcjjhmJ
-         Re7bSPcU9m1H1euD3Uwqj2gdK0gUc63KDEFvxB/owUrqAKFzYa5FSpCUc9MOKeFRjTda
-         s0TA==
-X-Gm-Message-State: AOJu0YxQ37lmATnF5eBDnlufP5x/oaophum6TMBgO7MB4BRICIEmaQcN
-	bp5m+QIjLPopWkkufTS9AxsDw5CZ1K5k56QGJR+wrFCM43mKClwMFoN7/UsSdw==
-X-Google-Smtp-Source: AGHT+IGzcGfdh/XGZX6vq9NkjYiXbIvTy/IuZlNkPA9MWbrFDI/4qIoYnFKmLtyVcsgZ61zbZ7ar+Q==
-X-Received: by 2002:a5d:508a:0:b0:337:bde6:63b3 with SMTP id a10-20020a5d508a000000b00337bde663b3mr205462wrt.31.1705570992147;
-        Thu, 18 Jan 2024 01:43:12 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:9c:201:9d7e:25fb:9605:2bef])
-        by smtp.gmail.com with ESMTPSA id q8-20020adff788000000b003367a51217csm3581808wrp.34.2024.01.18.01.43.11
+        d=1e100.net; s=20230601; t=1705574235; x=1706179035;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qFraLko0Sunles8rE+veYeEajynN3b2IofKXL2TxPzM=;
+        b=GqOnF2jmvUaBY1V1FX/uNymiksgDFlCOXwUxxxcvBF5jK1VkmwW+KNTgq5p0ktqTXQ
+         CnYfhYYJlLJRvc+LbghfBEuJ5D5E3yzKI+WjzappAZ+mIoLAyLA8JqaNqzdnb4kJvVvY
+         zNzB1FVNZfOcuh/BKmNaXKbWrLsvAsA0LVXujCptiwqWwSDArElozGNhQ9v5BTvez8q7
+         m8sipiTdsnvW/91nX0wUCayQDE005cGiRKlzZHxhuPQYJSpHYTFUpSVEBcGpJyFm6WKj
+         Z9huTuKyHd1ZfKBJVAJj+z19GXDHknDmFAFPvfTpObe33SVp6d7FL/FZJJjZNbayGQGZ
+         LYQg==
+X-Gm-Message-State: AOJu0Yx/STzLePLEQaGvD3Mdb8DuVTLU+DI3B4ddAM9NbKnXs0aa0wy3
+	J3kDe2mJCE81uZ0X9shUI20jfy9rAKeKNkaL8BGkLDC/rYgXHFM0
+X-Google-Smtp-Source: AGHT+IGztuqXWrg30hrZfO2olrqNs7VCjF+rYVLphMtpPYdpBGJVF7g0KOxH1eK3rpZyM9tMbah56Q==
+X-Received: by 2002:a05:6512:3081:b0:50e:bd4d:9e2a with SMTP id z1-20020a056512308100b0050ebd4d9e2amr226676lfd.96.1705574234582;
+        Thu, 18 Jan 2024 02:37:14 -0800 (PST)
+Received: from pc636 (host-90-235-20-191.mobileonline.telia.com. [90.235.20.191])
+        by smtp.gmail.com with ESMTPSA id b5-20020a056512060500b0050e6bf65b2asm590662lfe.288.2024.01.18.02.37.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 01:43:11 -0800 (PST)
-Date: Thu, 18 Jan 2024 10:43:06 +0100
-From: Marco Elver <elver@google.com>
-To: Alexander Potapenko <glider@google.com>
-Cc: quic_charante@quicinc.com, akpm@linux-foundation.org,
-	aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com,
-	david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	mgorman@techsingularity.net, osalvador@suse.de, vbabka@suse.cz,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Nicholas Miehlbradt <nicholas@linux.ibm.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
-Message-ID: <ZajyqgE3ZHYHSvZC@elver.google.com>
-References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
- <20240115184430.2710652-1-glider@google.com>
- <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
- <Zagn_T44RU94dZa7@elver.google.com>
- <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
+        Thu, 18 Jan 2024 02:37:14 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 18 Jan 2024 11:37:11 +0100
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <Zaj_Vw8B5E28TqZ2@pc636>
+References: <20240104162510.72773-1-urezki@gmail.com>
+ <20240104162510.72773-2-urezki@gmail.com>
+ <ZaHGv3wMYP4LDCxG@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZaHGv3wMYP4LDCxG@localhost.localdomain>
 
-On Thu, Jan 18, 2024 at 10:01AM +0100, Alexander Potapenko wrote:
-> >
-> > Hrm, rcu_read_unlock_sched_notrace() can still call
-> > __preempt_schedule_notrace(), which is again instrumented by KMSAN.
-> >
-> > This patch gets me a working kernel:
-> >
-[...]
-> > Disabling interrupts is a little heavy handed - it also assumes the
-> > current RCU implementation. There is
-> > preempt_enable_no_resched_notrace(), but that might be worse because it
-> > breaks scheduling guarantees.
-> >
-> > That being said, whatever we do here should be wrapped in some
-> > rcu_read_lock/unlock_<newvariant>() helper.
+On Sat, Jan 13, 2024 at 12:09:51AM +0100, Frederic Weisbecker wrote:
+> Le Thu, Jan 04, 2024 at 05:25:07PM +0100, Uladzislau Rezki (Sony) a écrit :
+> > diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+> > index 9b0b52e1836f..4812c6249185 100644
+> > --- a/kernel/rcu/Kconfig.debug
+> > +++ b/kernel/rcu/Kconfig.debug
+> > @@ -168,4 +168,16 @@ config RCU_STRICT_GRACE_PERIOD
+> >  	  when looking for certain types of RCU usage bugs, for example,
+> >  	  too-short RCU read-side critical sections.
+> >  
+> > +config RCU_SR_NORMAL_DEBUG_GP
+> > +	bool "Debug synchronize_rcu() callers for a grace period completion"
+> > +	depends on DEBUG_KERNEL && RCU_EXPERT
+> > +	default n
+> > +	help
+> > +	  This option enables additional debugging for detecting a grace
+> > +	  period incompletion for synchronize_rcu() users. If a GP is not
+> > +	  fully passed for any user, the warning message is emitted.
+> > +
+> > +	  Say Y here if you want to enable such debugging
+> > +	  Say N if you are unsure.
 > 
-> We could as well redefine rcu_read_lock/unlock in mm/kmsan/shadow.c
-> (or the x86-specific KMSAN header, depending on whether people are
-> seeing the problem on s390 and Power) with some header magic.
-> But that's probably more fragile than adding a helper.
+> How about just reuse CONFIG_PROVE_RCU instead?
 > 
-> >
-> > Is there an existing helper we can use? If not, we need a variant that
-> > can be used from extremely constrained contexts that can't even call
-> > into the scheduler. And if we want pfn_valid() to switch to it, it also
-> > should be fast.
+Less extra CONFIG_* configuration we have the better approach is. I do
+not mind, so we can reuse it. Thanks for this point :)
 
-The below patch also gets me a working kernel. For pfn_valid(), using
-rcu_read_lock_sched() should be reasonable, given its critical section
-is very small and also enables it to be called from more constrained
-contexts again (like KMSAN).
+I see in some places indeed it is used as a debugging peace.
 
-Within KMSAN we also have to suppress reschedules. This is again not
-ideal, but since it's limited to KMSAN should be tolerable.
+> > +
+> >  endmenu # "RCU Debugging"
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 499803234176..b756c40e4960 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1422,6 +1422,106 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> >  }
+> >  
+> > +/*
+> > + * There are three lists for handling synchronize_rcu() users.
+> > + * A first list corresponds to new coming users, second for users
+> > + * which wait for a grace period and third is for which a grace
+> > + * period is passed.
+> > + */
+> > +static struct sr_normal_state {
+> > +	struct llist_head srs_next;	/* request a GP users. */
+> > +	struct llist_head srs_wait;	/* wait for GP users. */
+> > +	struct llist_head srs_done;	/* ready for GP users. */
+> > +
+> > +	/*
+> > +	 * In order to add a batch of nodes to already
+> > +	 * existing srs-done-list, a tail of srs-wait-list
+> > +	 * is maintained.
+> > +	 */
+> > +	struct llist_node *srs_wait_tail;
+> > +} sr;
+> 
+> "sr" is good enough for a function scope variable but not for a file scope one.
+> 
+> At least "sr_state" would be better. Or maybe you don't even need to name that
+> struct and make instead:
+> 
+> struct {
+>     ...
+>     ...
+> } sr_normal_state;
+> 
+It is moved by the following patch in the series under the "rcu_state" struct variable.
 
-WDYT?
+> 
+> > +
+> > +/* Disabled by default. */
+> > +static int rcu_normal_wake_from_gp;
+> > +module_param(rcu_normal_wake_from_gp, int, 0644);
+> > +
+> > +static void rcu_sr_normal_complete(struct llist_node *node)
+> > +{
+> > +	struct rcu_synchronize *rs = container_of(
+> > +		(struct rcu_head *) node, struct rcu_synchronize, head);
+> 
+> Should there be some union in struct rcu_synchronize between struct rcu_head
+> and struct llist_node?
+> 
+> Anyway it's stack allocated, they could even be separate fields.
+> 
+> > +	unsigned long oldstate = (unsigned long) rs->head.func;
+> 
+> Luckily struct callback_head layout allows such magic but if rcu_head
+> and llist_node were separate, reviewers would be less hurt.
+> 
+> If stack space really matters, something like the below?
+> 
+> struct rcu_synchronize {
+> 	union {
+> 		struct rcu_head head;
+> 		struct {
+> 			struct llist_node node;
+> 			unsigned long seq;
+> 		}
+> 	}
+> 	struct completion completion;
+> };
+> 
+> 
+We can do that. I am not sure if should be a separate patch or as a big
+change. I tend to separate it.
 
------- >8 ------
+> > +
+> > +	WARN_ONCE(IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP) &&
+> > +		!poll_state_synchronize_rcu(oldstate),
+> > +		"A full grace period is not passed yet: %lu",
+> > +		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
+> > +
+> > +	/* Finally. */
+> > +	complete(&rs->completion);
+> > +}
+> > +
+> [...]
+> > +
+> > +/*
+> > + * Helper function for rcu_gp_cleanup().
+> > + */
+> > +static void rcu_sr_normal_gp_cleanup(void)
+> > +{
+> > +	struct llist_node *head, *tail;
+> > +
+> > +	if (llist_empty(&sr.srs_wait))
+> > +		return;
+> > +
+> > +	tail = READ_ONCE(sr.srs_wait_tail);
+> 
+> Is the READ_ONCE() needed?
+> 
+> A part from those boring details:
+> 
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>
+Appreciate for the review. I will fix all the comments.
 
-diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
-index 8fa6ac0e2d76..bbb1ba102129 100644
---- a/arch/x86/include/asm/kmsan.h
-+++ b/arch/x86/include/asm/kmsan.h
-@@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
- {
- 	unsigned long x = (unsigned long)addr;
- 	unsigned long y = x - __START_KERNEL_map;
-+	bool ret;
- 
- 	/* use the carry flag to determine if x was < __START_KERNEL_map */
- 	if (unlikely(x > y)) {
-@@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
- 			return false;
- 	}
- 
--	return pfn_valid(x >> PAGE_SHIFT);
-+	/*
-+	 * pfn_valid() relies on RCU, and may call into the scheduler on exiting
-+	 * the critical section. However, this would result in recursion with
-+	 * KMSAN. Therefore, disable preemption here, and re-enable preemption
-+	 * below while suppressing rescheduls to avoid recursion.
-+	 *
-+	 * Note, this sacrifices occasionally breaking scheduling guarantees.
-+	 * Although, a kernel compiled with KMSAN has already given up on any
-+	 * performance guarantees due to being heavily instrumented.
-+	 */
-+	preempt_disable();
-+	ret = pfn_valid(x >> PAGE_SHIFT);
-+	preempt_enable_no_resched();
-+
-+	return ret;
- }
- 
- #endif /* !MODULE */
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 4ed33b127821..a497f189d988 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
- 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
- 		return 0;
- 	ms = __pfn_to_section(pfn);
--	rcu_read_lock();
-+	rcu_read_lock_sched();
- 	if (!valid_section(ms)) {
--		rcu_read_unlock();
-+		rcu_read_unlock_sched();
- 		return 0;
- 	}
- 	/*
-@@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
- 	 * the entire section-sized span.
- 	 */
- 	ret = early_section(ms) || pfn_section_valid(ms, pfn);
--	rcu_read_unlock();
-+	rcu_read_unlock_sched();
- 
- 	return ret;
- }
+Thanks!
+
+--
+Uladzislau Rezki
