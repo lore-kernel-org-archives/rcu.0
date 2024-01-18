@@ -1,133 +1,183 @@
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495F3125B0
-	for <rcu@vger.kernel.org>; Thu, 18 Jan 2024 09:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA5D200A4
+	for <rcu@vger.kernel.org>; Thu, 18 Jan 2024 09:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705568563; cv=none; b=EIr9E5tVd3hfqBs5D2Aj+m6ownSkvE9xvOloqVuBcaPIq9oSGGHXTN6Gpa/7iGQFdKCHLEJc86KB1xY1vd7IJyNNTvAhv+4afgUD1F/dSXs6FdT0HpXgJhiwcTlB0bikSrzgQB23PCDHrippinNrwOdKFv05+M4A9EUwmBA1Bg0=
+	t=1705571000; cv=none; b=Ou6/BTP7uMHJR/kvpYhjThF+4G0vWA8KHeCqovab37k/me2ZnLsIEyBKvv//A5/5KZHbmwRCdEpz00jxMRpqXpQWT6Eh8Cfms7bc37am+IK1CMkzFzPsrWbhs2ljCTnqLz2ttNRQjbtedOff19Ex9gzBgO/OPD14TR/eTAItP/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705568563; c=relaxed/simple;
-	bh=Nl/rIH1RimRHGQpazXMbevhw4cRHoT/buJCa7tVHuLg=;
+	s=arc-20240116; t=1705571000; c=relaxed/simple;
+	bh=Q7p3OWqmOkliqPEGHXQJk80V7+FoxK3eZPEcgL4cGNc=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type; b=S5bgiFvlcXZPS96o2bEFp5aRoz/6mHxz02TEFNZnPLSam9aOfQdLUeMEWYyxoa952Sqw/18bLTyuOGtG/cR/GKoLdk47V4A/y5sp2pfC3jMFtzjIWKpwibfYu9CWFcJ7nKHQUeJ1EIr3jrqvRthlSGUiyF9VLiaaCA972jXwhCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Hu3yt/cH; arc=none smtp.client-ip=209.85.219.50
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:User-Agent; b=jtuFgA4y2/PM8AWx/lPwUlzW4Pi/4VNqkZ2d1DtUOt+M1tThEjTcbljZV2I8wl5cM9HcJBo20a6CBX5EQER8KYHrYEFu4ixufidXCWbAzidLub/wBc5gupIq9AP5mXsXJa14MT8dq7D0cVncN5vbDlHlfhW0rlvYsCld4N14KGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BVCvkwYI; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Hu3yt/cH"
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-67fe0264dd2so74115746d6.0
-        for <rcu@vger.kernel.org>; Thu, 18 Jan 2024 01:02:41 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BVCvkwYI"
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3376f71fcbbso9717799f8f.1
+        for <rcu@vger.kernel.org>; Thu, 18 Jan 2024 01:43:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705568560; x=1706173360; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dZx8jkcSyxiY1OJQQRVdDwc9jw/KxeIOYkFsA2FOdyk=;
-        b=Hu3yt/cHmxvFfgMaSwzlpvIBAiqAKBOl/2cOviM7s47ZGdsOXEpE42VP87lGsSxJPr
-         WZNMvGiKBePcNJhApVkd7luXbCcRUrpfSzRDdB8dCgXmuUVXM2rx2Iy2d41FlbaOYC5X
-         hyUGvY9p6a5ieBi0E4kdRdvlhwmeInbYJZMI68Vd4pNY0OxmrjWbP/s8oROGWDDm10eF
-         EHpbor0hPKqrwZOEgknvft9rT0QHb/XSFeKJ84HrgxV1b6uYy0ZJMq4atEoz3IsGysCp
-         8j1WTyiHyRIrQTh32ZEEp39pE+8Qzx6ntOp8KcFz++GUvoLf6Y7/NluEdo0IOdMvrMxX
-         MqZg==
+        d=google.com; s=20230601; t=1705570992; x=1706175792; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cuYpIw9soBWDz51Uc9U824cyLkAJt+cFBIInHg6YOR8=;
+        b=BVCvkwYICvMkn1L5asRCBWTJAL0H9QG4lNu8nu2dTvTX4aaarTg6XPujejXWgKID6U
+         HQ0uR0lLrEtVTuvkyCxfO5lERKXgmgT4O+uVF9ZDNtXcvAY8xBOQKbaMEF1qiNC8Bs71
+         fCKH94AEEaHBqLQ/eFQJwEzVJUH8Wo+A1nIbN/Wbcdhs0PiGpTWCaCAmIute66DR0c5B
+         WOWUBWKAyC8ptzeHBYg2gBgaSaAXgkgJM4h5vFKqH8DGaWKmql96gJHxW3fSdvvaQmIG
+         ffUHoti8tT0S4QUkN3+k3m0rm1ya7mod221kemLTQNNmwQ9R4TXnp9rxoFa8TC9M83OB
+         nUhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705568560; x=1706173360;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dZx8jkcSyxiY1OJQQRVdDwc9jw/KxeIOYkFsA2FOdyk=;
-        b=V014g+IU1q4GcB3Ykgzr7FiP29rn3N9VIIxLDqefRMMdeakZuv+rexbQdPDSI1SmNp
-         yU6OAYg0M8BBE0djAF8YKMfpguO7rStE8o8ADAWeVJGZznIBl13iPSeqklx8FBEBABip
-         xbRiSdDT0uaWXSgUChd51gjR0s3S9v4FOoYDv9o1sVrFZ+5+p67VFFROxk+ZGbi6DVmd
-         X8Y5Q5oqhaRNP8T8pON1tpdCl0b8N2bLrrwjFI6L3lnRtDxiTwdJJ3mqMajc4YPb/YGC
-         ykUU9NumoxGkHdFEt6sIvLSEtyYSjgLXaSvS9vICM3VKBFj/ws8yuDTEssille/TkWVG
-         zYvQ==
-X-Gm-Message-State: AOJu0YzrFmMOKywJu5ixRRSS+bSsAXW67qRWJltd2/EkvTcaYTdSxdO1
-	d8W182IsbBuFWQ7i96yQDOojhVpRS9tJddC3QsKaqIA1nFdD6q6+KTT6D/Hxd/pChTUfTmTHrlz
-	JdCrQO9Hcd9vjltsHkyWA2+toyc13tcxpbLr/
-X-Google-Smtp-Source: AGHT+IGzaN1qKPT5YRlCBwEsg7XH4i+PuJyz8L04g9JEpbgJdI9ce77LIl/RZ+4p52Xb99R6mwrrK/ZPB53xiCbcATQ=
-X-Received: by 2002:ad4:4ee1:0:b0:681:86fe:6fc with SMTP id
- dv1-20020ad44ee1000000b0068186fe06fcmr477337qvb.116.1705568560115; Thu, 18
- Jan 2024 01:02:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705570992; x=1706175792;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cuYpIw9soBWDz51Uc9U824cyLkAJt+cFBIInHg6YOR8=;
+        b=E1RGGz36QXFZLUn+mbIY5PZVaJW+SQuPVMM3wSODQqNiCQRyLLuO9T10vEEHqs+b9h
+         uOKJ1ozEvC3crE/jVvF/2FgB77rwUqGPXwkpnm3ZFqxDjJFmQVqPjtVUEXscojpoAAHq
+         TfzAJPwldiJA9XQmnjSDVlHi99FA6ai2QXmrahWn6NY4Gy2fYcp31jkmvDgAR833FjOn
+         O1fdtg9FPCQ3zfCKca5hybZCYUS5Mmva9Bx+W7cIduZNbP/R5yt8ZvrALiWpTZcjjhmJ
+         Re7bSPcU9m1H1euD3Uwqj2gdK0gUc63KDEFvxB/owUrqAKFzYa5FSpCUc9MOKeFRjTda
+         s0TA==
+X-Gm-Message-State: AOJu0YxQ37lmATnF5eBDnlufP5x/oaophum6TMBgO7MB4BRICIEmaQcN
+	bp5m+QIjLPopWkkufTS9AxsDw5CZ1K5k56QGJR+wrFCM43mKClwMFoN7/UsSdw==
+X-Google-Smtp-Source: AGHT+IGzcGfdh/XGZX6vq9NkjYiXbIvTy/IuZlNkPA9MWbrFDI/4qIoYnFKmLtyVcsgZ61zbZ7ar+Q==
+X-Received: by 2002:a5d:508a:0:b0:337:bde6:63b3 with SMTP id a10-20020a5d508a000000b00337bde663b3mr205462wrt.31.1705570992147;
+        Thu, 18 Jan 2024 01:43:12 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:9d7e:25fb:9605:2bef])
+        by smtp.gmail.com with ESMTPSA id q8-20020adff788000000b003367a51217csm3581808wrp.34.2024.01.18.01.43.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 01:43:11 -0800 (PST)
+Date: Thu, 18 Jan 2024 10:43:06 +0100
+From: Marco Elver <elver@google.com>
+To: Alexander Potapenko <glider@google.com>
+Cc: quic_charante@quicinc.com, akpm@linux-foundation.org,
+	aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com,
+	david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	mgorman@techsingularity.net, osalvador@suse.de, vbabka@suse.cz,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Nicholas Miehlbradt <nicholas@linux.ibm.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
+Message-ID: <ZajyqgE3ZHYHSvZC@elver.google.com>
+References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
+ <20240115184430.2710652-1-glider@google.com>
+ <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
+ <Zagn_T44RU94dZa7@elver.google.com>
+ <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1697202267-23600-1-git-send-email-quic_charante@quicinc.com>
- <20240115184430.2710652-1-glider@google.com> <CANpmjNMP802yN0i6puHHKX5E1PZ_6_h1x9nkGHCXZ4DVabxy7A@mail.gmail.com>
- <Zagn_T44RU94dZa7@elver.google.com>
-In-Reply-To: <Zagn_T44RU94dZa7@elver.google.com>
-From: Alexander Potapenko <glider@google.com>
-Date: Thu, 18 Jan 2024 10:01:58 +0100
-Message-ID: <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
-Subject: Re: [PATCH] mm/sparsemem: fix race in accessing memory_section->usage
-To: Marco Elver <elver@google.com>
-Cc: quic_charante@quicinc.com, akpm@linux-foundation.org, 
-	aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com, david@redhat.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mgorman@techsingularity.net, 
-	osalvador@suse.de, vbabka@suse.cz, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Nicholas Miehlbradt <nicholas@linux.ibm.com>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG_fn=XcMBWLCZKNY+hiP9HxT9vr0bXDEaHmOcr9-jVro5yAxw@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
->
-> Hrm, rcu_read_unlock_sched_notrace() can still call
-> __preempt_schedule_notrace(), which is again instrumented by KMSAN.
->
-> This patch gets me a working kernel:
->
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 4ed33b127821..2d62df462d88 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -2000,6 +2000,7 @@ static inline int pfn_valid(unsigned long pfn)
->  {
->         struct mem_section *ms;
->         int ret;
-> +       unsigned long flags;
->
->         /*
->          * Ensure the upper PAGE_SHIFT bits are clear in the
-> @@ -2013,9 +2014,9 @@ static inline int pfn_valid(unsigned long pfn)
->         if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
->                 return 0;
->         ms = __pfn_to_section(pfn);
-> -       rcu_read_lock();
-> +       local_irq_save(flags);
->         if (!valid_section(ms)) {
-> -               rcu_read_unlock();
-> +               local_irq_restore(flags);
->                 return 0;
->         }
->         /*
-> @@ -2023,7 +2024,7 @@ static inline int pfn_valid(unsigned long pfn)
->          * the entire section-sized span.
->          */
->         ret = early_section(ms) || pfn_section_valid(ms, pfn);
-> -       rcu_read_unlock();
-> +       local_irq_restore(flags);
->
->         return ret;
->  }
->
-> Disabling interrupts is a little heavy handed - it also assumes the
-> current RCU implementation. There is
-> preempt_enable_no_resched_notrace(), but that might be worse because it
-> breaks scheduling guarantees.
->
-> That being said, whatever we do here should be wrapped in some
-> rcu_read_lock/unlock_<newvariant>() helper.
+On Thu, Jan 18, 2024 at 10:01AM +0100, Alexander Potapenko wrote:
+> >
+> > Hrm, rcu_read_unlock_sched_notrace() can still call
+> > __preempt_schedule_notrace(), which is again instrumented by KMSAN.
+> >
+> > This patch gets me a working kernel:
+> >
+[...]
+> > Disabling interrupts is a little heavy handed - it also assumes the
+> > current RCU implementation. There is
+> > preempt_enable_no_resched_notrace(), but that might be worse because it
+> > breaks scheduling guarantees.
+> >
+> > That being said, whatever we do here should be wrapped in some
+> > rcu_read_lock/unlock_<newvariant>() helper.
+> 
+> We could as well redefine rcu_read_lock/unlock in mm/kmsan/shadow.c
+> (or the x86-specific KMSAN header, depending on whether people are
+> seeing the problem on s390 and Power) with some header magic.
+> But that's probably more fragile than adding a helper.
+> 
+> >
+> > Is there an existing helper we can use? If not, we need a variant that
+> > can be used from extremely constrained contexts that can't even call
+> > into the scheduler. And if we want pfn_valid() to switch to it, it also
+> > should be fast.
 
-We could as well redefine rcu_read_lock/unlock in mm/kmsan/shadow.c
-(or the x86-specific KMSAN header, depending on whether people are
-seeing the problem on s390 and Power) with some header magic.
-But that's probably more fragile than adding a helper.
+The below patch also gets me a working kernel. For pfn_valid(), using
+rcu_read_lock_sched() should be reasonable, given its critical section
+is very small and also enables it to be called from more constrained
+contexts again (like KMSAN).
 
->
-> Is there an existing helper we can use? If not, we need a variant that
-> can be used from extremely constrained contexts that can't even call
-> into the scheduler. And if we want pfn_valid() to switch to it, it also
-> should be fast.
+Within KMSAN we also have to suppress reschedules. This is again not
+ideal, but since it's limited to KMSAN should be tolerable.
+
+WDYT?
+
+------ >8 ------
+
+diff --git a/arch/x86/include/asm/kmsan.h b/arch/x86/include/asm/kmsan.h
+index 8fa6ac0e2d76..bbb1ba102129 100644
+--- a/arch/x86/include/asm/kmsan.h
++++ b/arch/x86/include/asm/kmsan.h
+@@ -64,6 +64,7 @@ static inline bool kmsan_virt_addr_valid(void *addr)
+ {
+ 	unsigned long x = (unsigned long)addr;
+ 	unsigned long y = x - __START_KERNEL_map;
++	bool ret;
+ 
+ 	/* use the carry flag to determine if x was < __START_KERNEL_map */
+ 	if (unlikely(x > y)) {
+@@ -79,7 +80,21 @@ static inline bool kmsan_virt_addr_valid(void *addr)
+ 			return false;
+ 	}
+ 
+-	return pfn_valid(x >> PAGE_SHIFT);
++	/*
++	 * pfn_valid() relies on RCU, and may call into the scheduler on exiting
++	 * the critical section. However, this would result in recursion with
++	 * KMSAN. Therefore, disable preemption here, and re-enable preemption
++	 * below while suppressing rescheduls to avoid recursion.
++	 *
++	 * Note, this sacrifices occasionally breaking scheduling guarantees.
++	 * Although, a kernel compiled with KMSAN has already given up on any
++	 * performance guarantees due to being heavily instrumented.
++	 */
++	preempt_disable();
++	ret = pfn_valid(x >> PAGE_SHIFT);
++	preempt_enable_no_resched();
++
++	return ret;
+ }
+ 
+ #endif /* !MODULE */
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 4ed33b127821..a497f189d988 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -2013,9 +2013,9 @@ static inline int pfn_valid(unsigned long pfn)
+ 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+ 		return 0;
+ 	ms = __pfn_to_section(pfn);
+-	rcu_read_lock();
++	rcu_read_lock_sched();
+ 	if (!valid_section(ms)) {
+-		rcu_read_unlock();
++		rcu_read_unlock_sched();
+ 		return 0;
+ 	}
+ 	/*
+@@ -2023,7 +2023,7 @@ static inline int pfn_valid(unsigned long pfn)
+ 	 * the entire section-sized span.
+ 	 */
+ 	ret = early_section(ms) || pfn_section_valid(ms, pfn);
+-	rcu_read_unlock();
++	rcu_read_unlock_sched();
+ 
+ 	return ret;
+ }
