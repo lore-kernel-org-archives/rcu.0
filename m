@@ -1,68 +1,49 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C352D3C693;
-	Fri, 19 Jan 2024 10:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AE853E3F;
+	Fri, 19 Jan 2024 15:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705659875; cv=none; b=Ee9QJKCx0km0WBg/+7oI1oSGStf+tMf6QhHFMFMYAENUl6h13upBsyIsJhwVr6A+vtMnRYeKXAvmrsoCc3Vp7OOdcGt51oiZObO19yvwiB9NHHOty+Y5WHB0q8Rj7qQWX0ddWLLXHFAoh5Z/Bssy1LRX/3fgUbrpoDppoTNkRfE=
+	t=1705677869; cv=none; b=sgbZKhxrgXVJ0kVPGPHfobogS7BRPMXvgQjMwHjpAwnfqvmwLiMqqNrMARQiU9NCeuqNRdKeheQZ3IjOELLWkHE5Wzd9C2hUZU3yrxapI8qjzNFUymTtT+0hxY+AYMl34/HOgvY+00+vkKKtsJfs7bBPNyuQbnJ7iWRXK89Knoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705659875; c=relaxed/simple;
-	bh=1JTZbN5qh9CT0H6mxkpOji2eqTwX6brav/2vU7IADqY=;
+	s=arc-20240116; t=1705677869; c=relaxed/simple;
+	bh=DTFQbk5+BUv2laaRQWuEtSScWz9AejqYW30LKmvnmIY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mmileMnakmbfjnRHiA5qOMQzPS7IV5Tp1e+w4owR/fC5Iis8Vr0HpnchHRm6A1PbevdKLFONqWS2fZS/kWUMzCFYOKybaLxqcSLONYvYFgWxWMFKBd3NR8fBlEs/nq6Vml0Z/PNRvnPdwzJreuHI7f2EJ2umvdOJoGahlMttOE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUnyka1z; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=LiA3ehQORLchHa0v6gsTU/Sq3eNvrGIVNbQ/tI2oXWfCCRaq54dPtJvjSfrgX3B4WZPvAOeIzjihwws3ho7U8ih7R0rbKBErP9oHYxnh+vJmWmPi2Kljt1NSdo/WB5ca9HaNgMTfw3uZexmwJXc/Jl3sVbZDf+GyozN3BpVOB80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hTomJA3z; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUnyka1z"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ABBAC433F1;
-	Fri, 19 Jan 2024 10:24:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hTomJA3z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BD69C433C7;
+	Fri, 19 Jan 2024 15:24:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705659875;
-	bh=1JTZbN5qh9CT0H6mxkpOji2eqTwX6brav/2vU7IADqY=;
+	s=k20201202; t=1705677869;
+	bh=DTFQbk5+BUv2laaRQWuEtSScWz9AejqYW30LKmvnmIY=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=tUnyka1zdEsMcGr0V3gN/gUgHN0bguQ9TLw7nUFX/7fn6ybsx1BktWgGc0xNHLjl/
-	 SvRzF8Gq9PfNJd02epxrJ5++PeV1VC6ajBQVcQIhd5Mm5mQIdnbWFm91ITdtFWfizo
-	 yEBab6oTUeAjecNq/BAOSY7N2fjEY1/BOOrTNHDLqg9Z0Fd3hA5ZJrIAXiAZoKqZ9U
-	 UqjZexiv/FLTaQStfc2v5R2bv0AFx169ErX7s2LMSPofJqGgOXxJr9GPH4cz+vEHoF
-	 t8YN+FLBrbJjDWDEJu7rhvsz1ITB76G7ZUqCw2DrKZ9nspCJ8XbpA5G+5v11U7kgzU
-	 HZwj1KeVkRZjw==
+	b=hTomJA3zN/4+Qx7mZaI5kBYR6IdqUjsEkj2DKzOGNgwstkc120MS6XIcjCClSFUeQ
+	 UK2xBiLXOkixE7wQ4BYJX3HlPzKOaRoQAgLSg35ba7F+taOMk2n7zDDHCskOkHfhvY
+	 G71T/Mu6beYs7IAKBogOo/+b5HURaUNAoN08M/R/M8uUDP26Uz0vhMtWpfYLNxP83X
+	 XdofSwhs1NjryyqzNiEET4f9ItZmtvEr3IydvgN8M/ZEz0vdL5IMFRPDn1DGJDp9aw
+	 P+HMKEqg4WR8RBrrK90vhYx/ptR2fmG9TQTCuV9+jrFXaDd5EOfmRhjKedIHbQd2XA
+	 FCQ506bTYAZKg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C29F2CE114A; Fri, 19 Jan 2024 02:24:34 -0800 (PST)
-Date: Fri, 19 Jan 2024 02:24:34 -0800
+	id A1EAECE08F1; Fri, 19 Jan 2024 07:24:28 -0800 (PST)
+Date: Fri, 19 Jan 2024 07:24:28 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ad806d7c-91ec-4659-9348-1b0bb42dd417@paulmck-laptop>
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <0280b920-65d0-4b95-ba5c-f533bc18d036@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240117163511.88173-1-longman@redhat.com>
+References: <20240104162510.72773-1-urezki@gmail.com>
+ <20240104162510.72773-2-urezki@gmail.com>
+ <8edf32ff-ea10-43f3-8820-b67f1691bad2@paulmck-laptop>
+ <ZafHa37MS_eYMEr6@pc636>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -71,64 +52,192 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
+In-Reply-To: <ZafHa37MS_eYMEr6@pc636>
 
-On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> This patch series is based on the RFC patch from Frederic [1]. Instead
-> of offering RCU_NOCB as a separate option, it is now lumped into a
-> root-only cpuset.cpus.isolation_full flag that will enable all the
-> additional CPU isolation capabilities available for isolated partitions
-> if set. RCU_NOCB is just the first one to this party. Additional dynamic
-> CPU isolation capabilities will be added in the future.
-> 
-> The first 2 patches are adopted from Federic with minor twists to fix
-> merge conflicts and compilation issue. The rests are for implementing
-> the new cpuset.cpus.isolation_full interface which is essentially a flag
-> to globally enable or disable full CPU isolation on isolated partitions.
-> On read, it also shows the CPU isolation capabilities that are currently
-> enabled. RCU_NOCB requires that the rcu_nocbs option be present in
-> the kernel boot command line. Without that, the rcu_nocb functionality
-> cannot be enabled even if the isolation_full flag is set. So we allow
-> users to check the isolation_full file to verify that if the desired
-> CPU isolation capability is enabled or not.
-> 
-> Only sanity checking has been done so far. More testing, especially on
-> the RCU side, will be needed.
+On Wed, Jan 17, 2024 at 01:26:19PM +0100, Uladzislau Rezki wrote:
+> > > +/*
+> > > + * There are three lists for handling synchronize_rcu() users.
+> > > + * A first list corresponds to new coming users, second for users
+> > > + * which wait for a grace period and third is for which a grace
+> > > + * period is passed.
+> > > + */
+> > > +static struct sr_normal_state {
+> > > +	struct llist_head srs_next;	/* request a GP users. */
+> > > +	struct llist_head srs_wait;	/* wait for GP users. */
+> > > +	struct llist_head srs_done;	/* ready for GP users. */
+> > > +
+> > > +	/*
+> > > +	 * In order to add a batch of nodes to already
+> > > +	 * existing srs-done-list, a tail of srs-wait-list
+> > > +	 * is maintained.
+> > > +	 */
+> > > +	struct llist_node *srs_wait_tail;
+> > > +} sr;
+> > 
+> > Please put this in the rcu_state structure.  Having the separate structure
+> > is fine (it does group the fields nicely, plus you can take a pointer
+> > to it in the functions using this state), but it is good to have the
+> > state in one place.
+> > 
+> > Also, please add the data structures in a separate patch.  This might
+> > save someone a lot of time and effort should someone breaks the kernel
+> > in a way that depends on data-structure size.  It would be much easier
+> > for us if their bisection converged on the commit that adds the data
+> > structures instead of the commit that also adds a lot of code.
+> > 
+> I put the data under rcu_state in the patch-3 in this series. But i can
+> create a separate patch for this purpose. Should i split it or not?
 
-There has been some discussion of simplifying the (de-)offloading code
-to handle only offline CPUs.  Along with some discussion of eliminating
-the (de-)offloading capability altogehter.
+Bisection is best if the data-structure changes come first, keeping in
+mind the example where the change in data size triggers some unrelated
+bug.  Better to have that bisection converge on a data-structure only
+commit than on a more complex commit.
 
-We clearly should converge on the capability to be provided before
-exposing this to userspace.  ;-)
+So it would be much better if the data started out in rcu_state.
+
+> > > +	/* Finally. */
+> > > +	complete(&rs->completion);
+> > > +}
+> > > +
+> > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> > > +{
+> > > +	struct llist_node *done, *rcu, *next;
+> > > +
+> > > +	done = llist_del_all(&sr.srs_done);
+> > > +	if (!done)
+> > > +		return;
+> > > +
+> > > +	llist_for_each_safe(rcu, next, done)
+> > > +		rcu_sr_normal_complete(rcu);
+> > > +}
+> > > +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
+> > 
+> > Why not put this into the sr_normal_state structure?  You can use
+> > __WORK_INITIALIZER() to initialize it, as is done in a number of other
+> > places in the kernel.
+> > 
+> It is not a big problem. I can move it under "rcu_state" also!
+
+Very good, thank you!
+
+> > > +/*
+> > > + * Helper function for rcu_gp_cleanup().
+> > > + */
+> > > +static void rcu_sr_normal_gp_cleanup(void)
+> > > +{
+> > > +	struct llist_node *head, *tail;
+> > > +
+> > > +	if (llist_empty(&sr.srs_wait))
+> > > +		return;
+> > > +
+> > > +	tail = READ_ONCE(sr.srs_wait_tail);
+> > > +	head = __llist_del_all(&sr.srs_wait);
+> > > +
+> > > +	if (head) {
+> > > +		/* Can be not empty. */
+> > > +		llist_add_batch(head, tail, &sr.srs_done);
+> > > +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+> > > +	}
+> > > +}
+> > > +
+> > > +/*
+> > > + * Helper function for rcu_gp_init().
+> > > + */
+> > > +static void rcu_sr_normal_gp_init(void)
+> > > +{
+> > > +	struct llist_node *head, *tail;
+> > > +
+> > > +	if (llist_empty(&sr.srs_next))
+> > > +		return;
+> > > +
+> > > +	tail = llist_del_all(&sr.srs_next);
+> > > +	head = llist_reverse_order(tail);
+> > 
+> > Again, reversing the order is going to cause trouble on large systems.
+> > Let's please not do that.  (I could have sworn that this was not present
+> > in the last series...)
+> > 
+> > > +	/*
+> > > +	 * A waiting list of GP should be empty on this step,
+> > > +	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> > > +	 * rolls it over. If not, it is a BUG, warn a user.
+> > > +	 */
+> > > +	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
+> > > +
+> > > +	WRITE_ONCE(sr.srs_wait_tail, tail);
+> > > +	__llist_add_batch(head, tail, &sr.srs_wait);
+> > > +}
+> > > +
+> > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> > > +{
+> > > +	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
+> > > +}
+> > > +
+> > >  /*
+> > >   * Initialize a new grace period.  Return false if no grace period required.
+> > >   */
+> > > @@ -1456,6 +1556,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+> > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
+> > >  	rcu_seq_start(&rcu_state.gp_seq);
+> > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > > +	rcu_sr_normal_gp_init();
+> > >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+> > >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+> > >  	raw_spin_unlock_irq_rcu_node(rnp);
+> > > @@ -1825,6 +1926,9 @@ static noinline void rcu_gp_cleanup(void)
+> > >  	}
+> > >  	raw_spin_unlock_irq_rcu_node(rnp);
+> > >  
+> > > +	// Make synchronize_rcu() users aware of the end of old grace period.
+> > > +	rcu_sr_normal_gp_cleanup();
+> > > +
+> > >  	// If strict, make all CPUs aware of the end of the old grace period.
+> > >  	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
+> > >  		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+> > > @@ -3561,6 +3665,38 @@ static int rcu_blocking_is_gp(void)
+> > >  	return true;
+> > >  }
+> > >  
+> > > +/*
+> > > + * Helper function for the synchronize_rcu() API.
+> > > + */
+> > > +static void synchronize_rcu_normal(void)
+> > > +{
+> > > +	struct rcu_synchronize rs;
+> > > +
+> > > +	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
+> > > +		wait_rcu_gp(call_rcu_hurry);
+> > > +		return;
+> > > +	}
+> > > +
+> > > +	init_rcu_head_on_stack(&rs.head);
+> > > +	init_completion(&rs.completion);
+> > > +
+> > > +	/*
+> > > +	 * This code might be preempted, therefore take a GP
+> > > +	 * snapshot before adding a request.
+> > > +	 */
+> > > +	if (IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP))
+> > > +		rs.head.func = (void *) get_state_synchronize_rcu();
+> > > +
+> > > +	rcu_sr_normal_add_req(&rs);
+> > > +
+> > > +	/* Kick a GP and start waiting. */
+> > > +	(void) start_poll_synchronize_rcu();
+> > 
+> > It is unfortunate that the debugging requires an extra timestamp.
+> > The ways I can think of to avoid this have problems, though.  If this
+> > thing was replicated per leaf rcu_node structure, the usual approach
+> > would be to protect it with that structure's ->lock.
+> > 
+> Hmm.. a per-node approach can be deployed later. As discussed earlier :)
+
+Agreed!
+
+> Debugging part i do not follow, could you please elaborate a bit?
+
+Let's not worry about this unless and until we need per-rcu_node lists
+of tasks waiting on grace periods.  At that point, we will know more
+and things will be more clear.
 
 							Thanx, Paul
-
-> [1] https://lore.kernel.org/lkml/20220525221055.1152307-1-frederic@kernel.org/
-> 
-> Frederic Weisbecker (2):
->   rcu/nocb: Pass a cpumask instead of a single CPU to offload/deoffload
->   rcu/nocb: Prepare to change nocb cpumask from CPU-hotplug protected
->     cpuset caller
-> 
-> Waiman Long (6):
->   rcu/no_cb: Add rcu_nocb_enabled() to expose the rcu_nocb state
->   cgroup/cpuset: Better tracking of addition/deletion of isolated CPUs
->   cgroup/cpuset: Add cpuset.cpus.isolation_full
->   cgroup/cpuset: Enable dynamic rcu_nocb mode on isolated CPUs
->   cgroup/cpuset: Document the new cpuset.cpus.isolation_full control
->     file
->   cgroup/cpuset: Update test_cpuset_prs.sh to handle
->     cpuset.cpus.isolation_full
-> 
->  Documentation/admin-guide/cgroup-v2.rst       |  24 ++
->  include/linux/rcupdate.h                      |  15 +-
->  kernel/cgroup/cpuset.c                        | 237 ++++++++++++++----
->  kernel/rcu/rcutorture.c                       |   6 +-
->  kernel/rcu/tree_nocb.h                        | 118 ++++++---
->  .../selftests/cgroup/test_cpuset_prs.sh       |  23 +-
->  6 files changed, 337 insertions(+), 86 deletions(-)
-> 
-> -- 
-> 2.39.3
-> 
