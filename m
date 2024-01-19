@@ -1,243 +1,117 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77AE853E3F;
-	Fri, 19 Jan 2024 15:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E586244362;
+	Fri, 19 Jan 2024 21:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705677869; cv=none; b=sgbZKhxrgXVJ0kVPGPHfobogS7BRPMXvgQjMwHjpAwnfqvmwLiMqqNrMARQiU9NCeuqNRdKeheQZ3IjOELLWkHE5Wzd9C2hUZU3yrxapI8qjzNFUymTtT+0hxY+AYMl34/HOgvY+00+vkKKtsJfs7bBPNyuQbnJ7iWRXK89Knoc=
+	t=1705700847; cv=none; b=FITkIbPyGcSQ/AQyGM4EdYLfiXeGSeeMyD35+yi2z27d4H0yfISyDgVewzmFhTvOqY/J97ggsVX7/uzRJ1FIgowUnJu+Wa4ytwHIOyQd9T0N7+n2B+eALHo9kT8/G0Z3fPbNm6tLER542sbQ31f0CG41pNIFblxESW/CRjkvk0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705677869; c=relaxed/simple;
-	bh=DTFQbk5+BUv2laaRQWuEtSScWz9AejqYW30LKmvnmIY=;
+	s=arc-20240116; t=1705700847; c=relaxed/simple;
+	bh=d1jNRu5Jqv52A+YfDyvK0d0IJXmzb7fcNKIJCXuOjiY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LiA3ehQORLchHa0v6gsTU/Sq3eNvrGIVNbQ/tI2oXWfCCRaq54dPtJvjSfrgX3B4WZPvAOeIzjihwws3ho7U8ih7R0rbKBErP9oHYxnh+vJmWmPi2Kljt1NSdo/WB5ca9HaNgMTfw3uZexmwJXc/Jl3sVbZDf+GyozN3BpVOB80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hTomJA3z; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=QRZjyscaWQ7HBLj3w70xTTyDNtK1aeNlOfYK0kwOslJAT/lloUjJp/Bu99lvqGRTusRhGRNUEutz2EunkB4nLGh84ylROTISj1VPVdDDNvJ4DnbT3dbdwRSwlgT2ggdZcyayEDPNMI+RX+gETE/fy8+Ka97ZDhgel4D3wny1t4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RYj1u7PX; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hTomJA3z"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BD69C433C7;
-	Fri, 19 Jan 2024 15:24:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RYj1u7PX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8C7C433C7;
+	Fri, 19 Jan 2024 21:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705677869;
-	bh=DTFQbk5+BUv2laaRQWuEtSScWz9AejqYW30LKmvnmIY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=hTomJA3zN/4+Qx7mZaI5kBYR6IdqUjsEkj2DKzOGNgwstkc120MS6XIcjCClSFUeQ
-	 UK2xBiLXOkixE7wQ4BYJX3HlPzKOaRoQAgLSg35ba7F+taOMk2n7zDDHCskOkHfhvY
-	 G71T/Mu6beYs7IAKBogOo/+b5HURaUNAoN08M/R/M8uUDP26Uz0vhMtWpfYLNxP83X
-	 XdofSwhs1NjryyqzNiEET4f9ItZmtvEr3IydvgN8M/ZEz0vdL5IMFRPDn1DGJDp9aw
-	 P+HMKEqg4WR8RBrrK90vhYx/ptR2fmG9TQTCuV9+jrFXaDd5EOfmRhjKedIHbQd2XA
-	 FCQ506bTYAZKg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A1EAECE08F1; Fri, 19 Jan 2024 07:24:28 -0800 (PST)
-Date: Fri, 19 Jan 2024 07:24:28 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <0280b920-65d0-4b95-ba5c-f533bc18d036@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240104162510.72773-1-urezki@gmail.com>
- <20240104162510.72773-2-urezki@gmail.com>
- <8edf32ff-ea10-43f3-8820-b67f1691bad2@paulmck-laptop>
- <ZafHa37MS_eYMEr6@pc636>
+	s=k20201202; t=1705700846;
+	bh=d1jNRu5Jqv52A+YfDyvK0d0IJXmzb7fcNKIJCXuOjiY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RYj1u7PX0K83PiVxxUCQQEYz3ph3NLFwpq3fnLn85HmDRKd41WeCTP+ue40e8sKxj
+	 bQRQcdTKwUsEzelcME4pvuWyFqqM1L9qRnR9yH5LXNvQXBamcHp+xM9VuGFmxUkMqn
+	 C8LCyDqT+3o9XPdvrB0az0D/oPHIBThBR3CB7tMiT0OSNlh31nOs6yJdBrwQORyrT/
+	 FreQkWtyOCUsYmmGXsptPOYOUIcQREHQK6ySh+RcYx5GD1XFg8Y7zWEX0jA0echUfj
+	 g7ceuE8eQAaRwRv8/iyX168Z53UdzfkgRsP6TItT03YnHYlibwSrYopBTLMKve67Gp
+	 d465adJ4gj5KQ==
+Date: Fri, 19 Jan 2024 22:47:23 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Zqiang <qiang.zhang1211@gmail.com>, quic_neeraju@quicinc.com,
+	joel@joelfernandes.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in
+ __call_rcu_nocb_wake()
+Message-ID: <Zart693B-klrEF5I@pavilion.home>
+References: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
+ <ZafC_YkTJKsOropE@localhost.localdomain>
+ <3b63cf39-3805-4c1d-b79b-fdd5aeb17db3@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZafHa37MS_eYMEr6@pc636>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3b63cf39-3805-4c1d-b79b-fdd5aeb17db3@paulmck-laptop>
 
-On Wed, Jan 17, 2024 at 01:26:19PM +0100, Uladzislau Rezki wrote:
-> > > +/*
-> > > + * There are three lists for handling synchronize_rcu() users.
-> > > + * A first list corresponds to new coming users, second for users
-> > > + * which wait for a grace period and third is for which a grace
-> > > + * period is passed.
-> > > + */
-> > > +static struct sr_normal_state {
-> > > +	struct llist_head srs_next;	/* request a GP users. */
-> > > +	struct llist_head srs_wait;	/* wait for GP users. */
-> > > +	struct llist_head srs_done;	/* ready for GP users. */
-> > > +
-> > > +	/*
-> > > +	 * In order to add a batch of nodes to already
-> > > +	 * existing srs-done-list, a tail of srs-wait-list
-> > > +	 * is maintained.
-> > > +	 */
-> > > +	struct llist_node *srs_wait_tail;
-> > > +} sr;
-> > 
-> > Please put this in the rcu_state structure.  Having the separate structure
-> > is fine (it does group the fields nicely, plus you can take a pointer
-> > to it in the functions using this state), but it is good to have the
-> > state in one place.
-> > 
-> > Also, please add the data structures in a separate patch.  This might
-> > save someone a lot of time and effort should someone breaks the kernel
-> > in a way that depends on data-structure size.  It would be much easier
-> > for us if their bisection converged on the commit that adds the data
-> > structures instead of the commit that also adds a lot of code.
-> > 
-> I put the data under rcu_state in the patch-3 in this series. But i can
-> create a separate patch for this purpose. Should i split it or not?
-
-Bisection is best if the data-structure changes come first, keeping in
-mind the example where the change in data size triggers some unrelated
-bug.  Better to have that bisection converge on a data-structure only
-commit than on a more complex commit.
-
-So it would be much better if the data started out in rcu_state.
-
-> > > +	/* Finally. */
-> > > +	complete(&rs->completion);
-> > > +}
-> > > +
-> > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > +{
-> > > +	struct llist_node *done, *rcu, *next;
-> > > +
-> > > +	done = llist_del_all(&sr.srs_done);
-> > > +	if (!done)
-> > > +		return;
-> > > +
-> > > +	llist_for_each_safe(rcu, next, done)
-> > > +		rcu_sr_normal_complete(rcu);
-> > > +}
-> > > +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
-> > 
-> > Why not put this into the sr_normal_state structure?  You can use
-> > __WORK_INITIALIZER() to initialize it, as is done in a number of other
-> > places in the kernel.
-> > 
-> It is not a big problem. I can move it under "rcu_state" also!
-
-Very good, thank you!
-
-> > > +/*
-> > > + * Helper function for rcu_gp_cleanup().
-> > > + */
-> > > +static void rcu_sr_normal_gp_cleanup(void)
-> > > +{
-> > > +	struct llist_node *head, *tail;
-> > > +
-> > > +	if (llist_empty(&sr.srs_wait))
-> > > +		return;
-> > > +
-> > > +	tail = READ_ONCE(sr.srs_wait_tail);
-> > > +	head = __llist_del_all(&sr.srs_wait);
-> > > +
-> > > +	if (head) {
-> > > +		/* Can be not empty. */
-> > > +		llist_add_batch(head, tail, &sr.srs_done);
-> > > +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> > > +	}
-> > > +}
-> > > +
-> > > +/*
-> > > + * Helper function for rcu_gp_init().
-> > > + */
-> > > +static void rcu_sr_normal_gp_init(void)
-> > > +{
-> > > +	struct llist_node *head, *tail;
-> > > +
-> > > +	if (llist_empty(&sr.srs_next))
-> > > +		return;
-> > > +
-> > > +	tail = llist_del_all(&sr.srs_next);
-> > > +	head = llist_reverse_order(tail);
-> > 
-> > Again, reversing the order is going to cause trouble on large systems.
-> > Let's please not do that.  (I could have sworn that this was not present
-> > in the last series...)
-> > 
-> > > +	/*
-> > > +	 * A waiting list of GP should be empty on this step,
-> > > +	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-> > > +	 * rolls it over. If not, it is a BUG, warn a user.
-> > > +	 */
-> > > +	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
-> > > +
-> > > +	WRITE_ONCE(sr.srs_wait_tail, tail);
-> > > +	__llist_add_batch(head, tail, &sr.srs_wait);
-> > > +}
-> > > +
-> > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> > > +{
-> > > +	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
-> > > +}
-> > > +
-> > >  /*
-> > >   * Initialize a new grace period.  Return false if no grace period required.
-> > >   */
-> > > @@ -1456,6 +1556,7 @@ static noinline_for_stack bool rcu_gp_init(void)
-> > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> > >  	rcu_seq_start(&rcu_state.gp_seq);
-> > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > > +	rcu_sr_normal_gp_init();
-> > >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
-> > >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
-> > >  	raw_spin_unlock_irq_rcu_node(rnp);
-> > > @@ -1825,6 +1926,9 @@ static noinline void rcu_gp_cleanup(void)
-> > >  	}
-> > >  	raw_spin_unlock_irq_rcu_node(rnp);
+Le Thu, Jan 18, 2024 at 06:51:57AM -0800, Paul E. McKenney a écrit :
+> On Wed, Jan 17, 2024 at 01:07:25PM +0100, Frederic Weisbecker wrote:
+> > Le Wed, Jan 17, 2024 at 06:26:16PM +0800, Zqiang a écrit :
+> > > Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
+> > > no-rdp_gp structure, the timer_pending() is always return false,
+> > > this commit therefore need to check rdp_gp->nocb_timer in
+> > > __call_rcu_nocb_wake().
+> > > 
+> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > ---
+> > >  kernel/rcu/tree_nocb.h | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > index 54971afc3a9b..3f85577bddd4 100644
+> > > --- a/kernel/rcu/tree_nocb.h
+> > > +++ b/kernel/rcu/tree_nocb.h
+> > > @@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > >  	long lazy_len;
+> > >  	long len;
+> > >  	struct task_struct *t;
+> > > +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
 > > >  
-> > > +	// Make synchronize_rcu() users aware of the end of old grace period.
-> > > +	rcu_sr_normal_gp_cleanup();
-> > > +
-> > >  	// If strict, make all CPUs aware of the end of the old grace period.
-> > >  	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
-> > >  		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-> > > @@ -3561,6 +3665,38 @@ static int rcu_blocking_is_gp(void)
-> > >  	return true;
-> > >  }
-> > >  
-> > > +/*
-> > > + * Helper function for the synchronize_rcu() API.
-> > > + */
-> > > +static void synchronize_rcu_normal(void)
-> > > +{
-> > > +	struct rcu_synchronize rs;
-> > > +
-> > > +	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
-> > > +		wait_rcu_gp(call_rcu_hurry);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	init_rcu_head_on_stack(&rs.head);
-> > > +	init_completion(&rs.completion);
-> > > +
-> > > +	/*
-> > > +	 * This code might be preempted, therefore take a GP
-> > > +	 * snapshot before adding a request.
-> > > +	 */
-> > > +	if (IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP))
-> > > +		rs.head.func = (void *) get_state_synchronize_rcu();
-> > > +
-> > > +	rcu_sr_normal_add_req(&rs);
-> > > +
-> > > +	/* Kick a GP and start waiting. */
-> > > +	(void) start_poll_synchronize_rcu();
+> > >  	// If we are being polled or there is no kthread, just leave.
+> > >  	t = READ_ONCE(rdp->nocb_gp_kthread);
+> > > @@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > >  		smp_mb(); /* Enqueue before timer_pending(). */
+> > >  		if ((rdp->nocb_cb_sleep ||
+> > >  		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+> > > -		    !timer_pending(&rdp->nocb_timer)) {
+> > > +		    !timer_pending(&rdp_gp->nocb_timer)) {
 > > 
-> > It is unfortunate that the debugging requires an extra timestamp.
-> > The ways I can think of to avoid this have problems, though.  If this
-> > thing was replicated per leaf rcu_node structure, the usual approach
-> > would be to protect it with that structure's ->lock.
+> > Hehe, good eyes ;-)
 > > 
-> Hmm.. a per-node approach can be deployed later. As discussed earlier :)
+> > I had that change in mind but while checking that area further I actually
+> > wondered what is the actual purpose of this RCU_NOCB_WAKE_FORCE thing. If
+> > we reach that place, it means that the nocb_gp kthread should be awaken
+> > already (or the timer pending), so what does a force wake up solve in that
+> > case?
+> > 
+> > Paul, any recollection of that?
+> 
+> Huh.  We never actually do RCU_NOCB_WAKE_FORCE in v6.7, if I followed
+> all the code paths correctly.
+> 
+> Historically, I have been worried about lost wakeups.  Also, there
+> used to be code paths in which a wakeup was not needed, for example,
+> because we knew that the ending of the current grace period would take
+> care of things.  Unless there was some huge pile of callbacks, in which
+> case an immediate wakeup could avoid falling behind a callback flood.
 
-Agreed!
+Ok then looks like it's time for me to add RCU_NOCB_WAKE_FORCE removal in
+my TODO list...unless Zqiang would like to give it a try? :-)
 
-> Debugging part i do not follow, could you please elaborate a bit?
+> 
+> Given that rcutorture does test callback flooding, we appear to be OK,
+> but maybe it is time to crank up the flooding more.
+> 
+> On the other hand, I have started seeing the (very) occasional OOM
+> on TREE03.
+> (In addition to those that show up from time to time on the
+> single-CPU TREE09 scenario.)
 
-Let's not worry about this unless and until we need per-rcu_node lists
-of tasks waiting on grace periods.  At that point, we will know more
-and things will be more clear.
+Interesting, are those recent? Bisectable?
 
-							Thanx, Paul
+Thanks!
