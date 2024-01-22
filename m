@@ -1,151 +1,278 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4374B5D2;
-	Mon, 22 Jan 2024 15:08:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92AE58232;
+	Mon, 22 Jan 2024 17:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936085; cv=none; b=qKLlkOrV2zLkXD5irrhiqLiEKNDnSwXcaMo5273jijxCRPa3eRmmu5RJ/H6vsJM29Dheq4lqb+5I5HgFTgKjXtQpkP04/vdJst+H2p1rb9LY9F68bjCQBsd2UbJH01CFdI60uE0QTmzpkWOYcH+tCeswHWz0qbageP5gHJRKTOs=
+	t=1705944951; cv=none; b=R87iEXBAFjo6RW2gI/Kdu59W/NwHJIPLvsnj+/hEp/RgN6zpxd43Vy0W3kLWI1FBrwv1NLBTl46lgYXbxlxHg8LQ/a7y4m7GfZ2/cYnFMTP/PcrXKNa2CCuevs+ZIkmzP0TSeY9pr11wTJryaK4FNZgGI5ZCbwyODI4ZLN+M2nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936085; c=relaxed/simple;
-	bh=4fYcXhWiSJkRIg6Ip7urrvrUSXMdsY9G0tmUF8/+f4s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NNfKb719+3M+hKu6+L5EljWn8dU0KL357DlyS7TqpQFZRwGZf8IQ1CB8RRk6uwHI8XUYxF/zZkQXLuU4AtD5cQ48uI1b1r6HKOcFggi4beyeKVLBjXecSFoadx7tActgTrcODiQriJ9DW1b5S5ZsbJLNqMf1eDNxpx45FI0ZzEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vt73Fi4M; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vt73Fi4M; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1705944951; c=relaxed/simple;
+	bh=2ezm21UhVsfWyVD0K7wIOdA+EFCXPwA1dLgFPeqrm8M=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hYWOXnYk7xKORT2JhvVjtPUqdI+aiO0tgPSd/fmw6dDolDCwO3B907R0IkW4JSahOSTiuDr3OJT9yD0A6/sofRIPhRzJNguibW5x32HyIlt+2IBe5GLzpoNEKtAchf1XCVFU2z3VZkljAcYBZAY7pfUagLu9qHkF1X+AvbGZW4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nlUvs5AI; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vt73Fi4M";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vt73Fi4M"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 065781FC07;
-	Mon, 22 Jan 2024 15:08:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705936080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4fYcXhWiSJkRIg6Ip7urrvrUSXMdsY9G0tmUF8/+f4s=;
-	b=Vt73Fi4MXs9fhjCF+W13yZlgGJsMKcIyp7vNlFUQs8CZf06PhXzd4sYXvo6iQLN3kdss75
-	yxXbdsT6u9j7YX1kBBdoamwNEMzhqOu9EoH0Z8OQg6fr+YxHO29NYuosqo/k3E9wic4q4b
-	ARFTkK7bq0IcHQE0Ka91kbR3qrm+tfI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705936080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4fYcXhWiSJkRIg6Ip7urrvrUSXMdsY9G0tmUF8/+f4s=;
-	b=Vt73Fi4MXs9fhjCF+W13yZlgGJsMKcIyp7vNlFUQs8CZf06PhXzd4sYXvo6iQLN3kdss75
-	yxXbdsT6u9j7YX1kBBdoamwNEMzhqOu9EoH0Z8OQg6fr+YxHO29NYuosqo/k3E9wic4q4b
-	ARFTkK7bq0IcHQE0Ka91kbR3qrm+tfI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACD86136A4;
-	Mon, 22 Jan 2024 15:07:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id s81AKM6ErmW9YgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Mon, 22 Jan 2024 15:07:58 +0000
-Date: Mon, 22 Jan 2024 16:07:57 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>, 
-	Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>, 
-	Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>, 
-	Nicolas Saenz Julienne <nsaenz@kernel.org>, Alex Gladkov <agladkov@redhat.com>, 
-	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>, 
-	Paul Gortmaker <paul.gortmaker@windriver.com>, Daniel Bristot de Oliveira <bristot@kernel.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
-References: <20240117163511.88173-1-longman@redhat.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nlUvs5AI"
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e7af5f618so3717170e87.1;
+        Mon, 22 Jan 2024 09:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705944948; x=1706549748; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/dqBSyIgv8sSm/20jSASMnqFiyWpISklvDh6ge1jYog=;
+        b=nlUvs5AIwwstM5JvvuG3N1ePBCnjREGPRCNZYZO8/TeCYJ10xmX3C/qxR2pJOvOIdQ
+         sRvsNRtyyWUVvjLiLZuw35FvqG9h+bW1X1beHTy6A1n0TsTOdTDwfaTh36reYx+Ouz9H
+         tYhrZmq77HiF977IdNYHU5qYu8VEF2dcOnfKXr/Mpn2zT712VMWov5mdBr7mruXUL+hb
+         FMokSNPRk4NCkpjtbs5QUO8saUdMDnuVyKlPscIPuFz5tfgp0fZWjSaQpucv2ATmLMiO
+         wOqnKmZLZcFljQ1gdPzUaka02pRQuZGZX0xgjr9dPQktJshWKlYp/qRcLMHRs6vAk0ih
+         ZgUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705944948; x=1706549748;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/dqBSyIgv8sSm/20jSASMnqFiyWpISklvDh6ge1jYog=;
+        b=JvqMmCvr5cMo4njAAP6AbR9VWAiiZxDqhiCXTULQgBazrK5U/rvRRlq4G/2ealImoZ
+         yqJv/HYhevVjNFY56lhG2mOZmTh8HlWL0q3ScD/f4ayNJPMbYVGOq8ZJA1ZPB4FONMXe
+         aYPgPT/D9Rg0IObCbXPdgGMlcerR+VAM5Ozqup8JQwPkNktMFe+yrKwfcIQEquynQIXD
+         iiwVHA7y+KXJIg1dG05fUWVW+6t3H6O7bj1JDit7SNzIzlRKFT97AZD+UfcNI+SI8vYd
+         Jjr1NTIQvU8MItKR60b7b/lXnuao5PpraW4iIJjuwbBut9orjJUmK4jok4kYOmpWqHFg
+         WciA==
+X-Gm-Message-State: AOJu0Yy18GXojL8U4bZJgqw58bFg3m77XqAz1sCV5U5F32EZWIjPYGBJ
+	Z0rX1ysg5N5gVxy/g/pQkOFbCGNjDDyv45LrAgY8dMnwETExHcmK
+X-Google-Smtp-Source: AGHT+IHu6QxNqFmdW+7H+WraW1Eyynq0iBKN4KUMQ1uJftnLW0BdFScxR57nlk1ISy8h6On0wKc4Vw==
+X-Received: by 2002:a05:6512:3c8c:b0:50e:e5be:af8d with SMTP id h12-20020a0565123c8c00b0050ee5beaf8dmr2292326lfv.25.1705944947362;
+        Mon, 22 Jan 2024 09:35:47 -0800 (PST)
+Received: from pc636 (host-90-235-23-195.mobileonline.telia.com. [90.235.23.195])
+        by smtp.gmail.com with ESMTPSA id a25-20020ac25e79000000b0050ffb24cf99sm436374lfr.101.2024.01.22.09.35.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 09:35:46 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 22 Jan 2024 18:35:44 +0100
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v4 1/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <Za6ncL59KPy3nuDF@pc636>
+References: <20240104162510.72773-1-urezki@gmail.com>
+ <20240104162510.72773-2-urezki@gmail.com>
+ <8edf32ff-ea10-43f3-8820-b67f1691bad2@paulmck-laptop>
+ <ZafHa37MS_eYMEr6@pc636>
+ <0280b920-65d0-4b95-ba5c-f533bc18d036@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="btekknw55nvxl4ky"
-Content-Disposition: inline
-In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.21 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.01)[51.13%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RL6j1h7wxugqfdyj8pnx7tibp9)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[36];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.org,bytedance.com,cmpxchg.org,lwn.net,quicinc.com,joelfernandes.org,joshtriplett.org,gmail.com,goodmis.org,efficios.com,stgolabs.net,vger.kernel.org,redhat.com,windriver.com,infradead.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.21
-
-
---btekknw55nvxl4ky
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <0280b920-65d0-4b95-ba5c-f533bc18d036@paulmck-laptop>
 
-Hello Waiman.
+On Fri, Jan 19, 2024 at 07:24:28AM -0800, Paul E. McKenney wrote:
+> On Wed, Jan 17, 2024 at 01:26:19PM +0100, Uladzislau Rezki wrote:
+> > > > +/*
+> > > > + * There are three lists for handling synchronize_rcu() users.
+> > > > + * A first list corresponds to new coming users, second for users
+> > > > + * which wait for a grace period and third is for which a grace
+> > > > + * period is passed.
+> > > > + */
+> > > > +static struct sr_normal_state {
+> > > > +	struct llist_head srs_next;	/* request a GP users. */
+> > > > +	struct llist_head srs_wait;	/* wait for GP users. */
+> > > > +	struct llist_head srs_done;	/* ready for GP users. */
+> > > > +
+> > > > +	/*
+> > > > +	 * In order to add a batch of nodes to already
+> > > > +	 * existing srs-done-list, a tail of srs-wait-list
+> > > > +	 * is maintained.
+> > > > +	 */
+> > > > +	struct llist_node *srs_wait_tail;
+> > > > +} sr;
+> > > 
+> > > Please put this in the rcu_state structure.  Having the separate structure
+> > > is fine (it does group the fields nicely, plus you can take a pointer
+> > > to it in the functions using this state), but it is good to have the
+> > > state in one place.
+> > > 
+> > > Also, please add the data structures in a separate patch.  This might
+> > > save someone a lot of time and effort should someone breaks the kernel
+> > > in a way that depends on data-structure size.  It would be much easier
+> > > for us if their bisection converged on the commit that adds the data
+> > > structures instead of the commit that also adds a lot of code.
+> > > 
+> > I put the data under rcu_state in the patch-3 in this series. But i can
+> > create a separate patch for this purpose. Should i split it or not?
+> 
+> Bisection is best if the data-structure changes come first, keeping in
+> mind the example where the change in data size triggers some unrelated
+> bug.  Better to have that bisection converge on a data-structure only
+> commit than on a more complex commit.
+> 
+> So it would be much better if the data started out in rcu_state.
+> 
+OK. Then i will also combine two patches into one:
 
-On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long <longman@redhat.com> wrote:
-> This patch series is based on the RFC patch from Frederic [1]. Instead
-> of offering RCU_NOCB as a separate option, it is now lumped into a
-> root-only cpuset.cpus.isolation_full flag that will enable all the
-> additional CPU isolation capabilities available for isolated partitions
-> if set. RCU_NOCB is just the first one to this party. Additional dynamic
-> CPU isolation capabilities will be added in the future.
+rcu: Improve handling of synchronize_rcu() users
+rcu: Reduce synchronize_rcu() latency
 
-IIUC this is similar to what I suggested back in the day and you didn't
-consider it [1]. Do I read this right that you've changed your mind?
+to reduce the mess.
 
-(It's fine if you did, I'm only asking to follow the heading of cpuset
-controller.)
+> > > > +	/* Finally. */
+> > > > +	complete(&rs->completion);
+> > > > +}
+> > > > +
+> > > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> > > > +{
+> > > > +	struct llist_node *done, *rcu, *next;
+> > > > +
+> > > > +	done = llist_del_all(&sr.srs_done);
+> > > > +	if (!done)
+> > > > +		return;
+> > > > +
+> > > > +	llist_for_each_safe(rcu, next, done)
+> > > > +		rcu_sr_normal_complete(rcu);
+> > > > +}
+> > > > +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
+> > > 
+> > > Why not put this into the sr_normal_state structure?  You can use
+> > > __WORK_INITIALIZER() to initialize it, as is done in a number of other
+> > > places in the kernel.
+> > > 
+> > It is not a big problem. I can move it under "rcu_state" also!
+> 
+> Very good, thank you!
+> 
+> > > > +/*
+> > > > + * Helper function for rcu_gp_cleanup().
+> > > > + */
+> > > > +static void rcu_sr_normal_gp_cleanup(void)
+> > > > +{
+> > > > +	struct llist_node *head, *tail;
+> > > > +
+> > > > +	if (llist_empty(&sr.srs_wait))
+> > > > +		return;
+> > > > +
+> > > > +	tail = READ_ONCE(sr.srs_wait_tail);
+> > > > +	head = __llist_del_all(&sr.srs_wait);
+> > > > +
+> > > > +	if (head) {
+> > > > +		/* Can be not empty. */
+> > > > +		llist_add_batch(head, tail, &sr.srs_done);
+> > > > +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+> > > > +	}
+> > > > +}
+> > > > +
+> > > > +/*
+> > > > + * Helper function for rcu_gp_init().
+> > > > + */
+> > > > +static void rcu_sr_normal_gp_init(void)
+> > > > +{
+> > > > +	struct llist_node *head, *tail;
+> > > > +
+> > > > +	if (llist_empty(&sr.srs_next))
+> > > > +		return;
+> > > > +
+> > > > +	tail = llist_del_all(&sr.srs_next);
+> > > > +	head = llist_reverse_order(tail);
+> > > 
+> > > Again, reversing the order is going to cause trouble on large systems.
+> > > Let's please not do that.  (I could have sworn that this was not present
+> > > in the last series...)
+> > > 
+> > > > +	/*
+> > > > +	 * A waiting list of GP should be empty on this step,
+> > > > +	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> > > > +	 * rolls it over. If not, it is a BUG, warn a user.
+> > > > +	 */
+> > > > +	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
+> > > > +
+> > > > +	WRITE_ONCE(sr.srs_wait_tail, tail);
+> > > > +	__llist_add_batch(head, tail, &sr.srs_wait);
+> > > > +}
+> > > > +
+> > > > +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+> > > > +{
+> > > > +	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
+> > > > +}
+> > > > +
+> > > >  /*
+> > > >   * Initialize a new grace period.  Return false if no grace period required.
+> > > >   */
+> > > > @@ -1456,6 +1556,7 @@ static noinline_for_stack bool rcu_gp_init(void)
+> > > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
+> > > >  	rcu_seq_start(&rcu_state.gp_seq);
+> > > >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > > > +	rcu_sr_normal_gp_init();
+> > > >  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+> > > >  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+> > > >  	raw_spin_unlock_irq_rcu_node(rnp);
+> > > > @@ -1825,6 +1926,9 @@ static noinline void rcu_gp_cleanup(void)
+> > > >  	}
+> > > >  	raw_spin_unlock_irq_rcu_node(rnp);
+> > > >  
+> > > > +	// Make synchronize_rcu() users aware of the end of old grace period.
+> > > > +	rcu_sr_normal_gp_cleanup();
+> > > > +
+> > > >  	// If strict, make all CPUs aware of the end of the old grace period.
+> > > >  	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
+> > > >  		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+> > > > @@ -3561,6 +3665,38 @@ static int rcu_blocking_is_gp(void)
+> > > >  	return true;
+> > > >  }
+> > > >  
+> > > > +/*
+> > > > + * Helper function for the synchronize_rcu() API.
+> > > > + */
+> > > > +static void synchronize_rcu_normal(void)
+> > > > +{
+> > > > +	struct rcu_synchronize rs;
+> > > > +
+> > > > +	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
+> > > > +		wait_rcu_gp(call_rcu_hurry);
+> > > > +		return;
+> > > > +	}
+> > > > +
+> > > > +	init_rcu_head_on_stack(&rs.head);
+> > > > +	init_completion(&rs.completion);
+> > > > +
+> > > > +	/*
+> > > > +	 * This code might be preempted, therefore take a GP
+> > > > +	 * snapshot before adding a request.
+> > > > +	 */
+> > > > +	if (IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP))
+> > > > +		rs.head.func = (void *) get_state_synchronize_rcu();
+> > > > +
+> > > > +	rcu_sr_normal_add_req(&rs);
+> > > > +
+> > > > +	/* Kick a GP and start waiting. */
+> > > > +	(void) start_poll_synchronize_rcu();
+> > > 
+> > > It is unfortunate that the debugging requires an extra timestamp.
+> > > The ways I can think of to avoid this have problems, though.  If this
+> > > thing was replicated per leaf rcu_node structure, the usual approach
+> > > would be to protect it with that structure's ->lock.
+> > > 
+> > Hmm.. a per-node approach can be deployed later. As discussed earlier :)
+> 
+> Agreed!
+> 
+> > Debugging part i do not follow, could you please elaborate a bit?
+> 
+> Let's not worry about this unless and until we need per-rcu_node lists
+> of tasks waiting on grace periods.  At that point, we will know more
+> and things will be more clear.
+> 
+Good and thank you :)
 
-Thanks,
-Michal
-
-[1] https://lore.kernel.org/r/58c87587-417b-1498-185f-1db6bb612c82@redhat.com/
-
---btekknw55nvxl4ky
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZa6EywAKCRAGvrMr/1gc
-jnziAQDeS/BPCM9qEVgM7AdJJ1sdTzQsMQ5YiQ3EnDS8nw0THQD+IlhGeiHOP8eY
-Fif9SqmbUs3GzGds3uUPWNBUWQDsjws=
-=EAx6
------END PGP SIGNATURE-----
-
---btekknw55nvxl4ky--
+--
+Uladzislau Rezki
