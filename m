@@ -1,115 +1,160 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81593107A6
-	for <rcu@vger.kernel.org>; Tue, 23 Jan 2024 05:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5075C8EC;
+	Tue, 23 Jan 2024 10:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705989056; cv=none; b=CXcThw1g7ABZlx9DUIFPhK7eVdmBG9+SLJ15Xxahh999RzU7HB7cGtzbDKyC7C8wk5g5L2QLfvIC5KIh7Tc+S3ArW9+T9cceeDSiQFCYmU714dChalUJGnN57Z5LQqxPO3WNebNqOGKr/89z3+M4rTxYW3swgsMIu76zKbF8y5g=
+	t=1706006900; cv=none; b=mDdnwNs4V94mwY/Vx0Uldb3xArlnyScAgNyBeJPAPtCcOtLVFOuFViRlAnbgAI6gMUsKQ3QIHjE1xMHIwDDwgrSnGOwllkaxyUYXEXX6qAYZ+dhxHwd9n5BJIIHVMjgkavgU7uz14gl2k0TtEQmOwQfoHqK8+8/APFba8p5YaE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705989056; c=relaxed/simple;
-	bh=uUGqYPWkqLqAuYLajkHeoiaksi8vyt5EtObg/cfEv0A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k/ZFF3117wQgfVPxs9Af4h0b4jZ8QmJVrTermEsdo3WgNJLM7uxfGhD/f9zEA5wX/YQPn0tHtJJL3LCEUnLHCytKJqSpgizjugdHpG8nDKL9xIBcC8H1T/kseyO4E5NI6JwsuBSpfPM7z6Gxunerm8TUIX7/LJz2mDDx1rwTKE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z0NbGXLf; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1706006900; c=relaxed/simple;
+	bh=zmfYVxjCmbNiHNYJis6esG2/wnNDvqtbQy6OBwYJ5a0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N8RDs34NX2hnhiCi4jq+G+NQV49NYAX5PkCuEzjba5ngwPriOdPGRgRtkaSDLR5VtUIjQr1wgKE61QaEzO2GUF+qLXYlwRYggv5AqlriRw6dyeQ7JAdJfTbGf4xooFe8kbeQ/8a1ZyWCsf6Trs6He5/77BcoOizOGqt++S0iFio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XdGtpJT8; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z0NbGXLf"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705989053;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H+rMK0KBBnQyaHb54gBf8clNL10ejkmGqcBgOHn7Pt4=;
-	b=Z0NbGXLfHmfSnJ4Ib+7PmS9MzkuzU/hlity5AKjJ3fE7qIACf13zD4U9D0ODZ898R6NMRe
-	vtP0b0cXbQ5jikgTKfqWNGyGsePiMWZPnz1taON9GUSCT2vezhdHI0qrGWezXYnyFtncwh
-	OSI6ausLgbFE0RW9N8d4i88SDuP8TJs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-375-JHn3VzyfMY6lUkIpG0Vk8Q-1; Tue, 23 Jan 2024 00:50:48 -0500
-X-MC-Unique: JHn3VzyfMY6lUkIpG0Vk8Q-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9386885A588;
-	Tue, 23 Jan 2024 05:50:46 +0000 (UTC)
-Received: from [10.22.8.107] (unknown [10.22.8.107])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D71B9492BC6;
-	Tue, 23 Jan 2024 05:50:40 +0000 (UTC)
-Message-ID: <8075b1d2-1260-4f1d-a757-dc991d95710c@redhat.com>
-Date: Mon, 22 Jan 2024 21:50:40 -0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XdGtpJT8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB004C433F1;
+	Tue, 23 Jan 2024 10:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706006899;
+	bh=zmfYVxjCmbNiHNYJis6esG2/wnNDvqtbQy6OBwYJ5a0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XdGtpJT8OW0WwhMS7XlCGN1rUpBE8r2650XTt4n7HECax67w6dFJtQaye9qMO3Rlf
+	 isJ7QHuekxqeH7U2pgHZeiqoXxKTZIirCGNqr6XRxl2bOzVWaSP5SUQ4mKhqY5VHLk
+	 SdoGe/fwJ20+m0frFWJZcK82K+vCi0u+S2ZaFAI+dSt+INA0jmbHJenWjcALf/QVoS
+	 5oMsWY81ngDqS7LHVibczC0tX9Z5+9wOxbJ2cdmY/BgRkdOjwotzGMgu6YSnoHyKb4
+	 22f5irm4HIwAaRps5MJ59uo48PwLl3SlCVm7Q4wbCzUChjQsHBRJCwSeSPgwErKI4Z
+	 Jifr00eCMz0+g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 69BE4CE1144; Tue, 23 Jan 2024 02:48:19 -0800 (PST)
+Date: Tue, 23 Jan 2024 02:48:19 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Zqiang <qiang.zhang1211@gmail.com>, quic_neeraju@quicinc.com,
+	joel@joelfernandes.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Check rdp_gp->nocb_timer in
+ __call_rcu_nocb_wake()
+Message-ID: <9e00f488-97bd-493a-8940-6ad63c263bb9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240117102616.18302-1-qiang.zhang1211@gmail.com>
+ <ZafC_YkTJKsOropE@localhost.localdomain>
+ <3b63cf39-3805-4c1d-b79b-fdd5aeb17db3@paulmck-laptop>
+ <Zart693B-klrEF5I@pavilion.home>
+ <2490b90d-ebce-42bf-8a83-1314e8272df8@paulmck-laptop>
+ <9a656d90-8297-4075-899f-41db8a43dce7@paulmck-laptop>
+ <3f4e50dd-dd16-444b-8b6a-3ab9cdc7ae26@paulmck-laptop>
+ <Za7g8O_zCnJ5THJx@pavilion.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Frederic Weisbecker <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
- Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
- Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Alex Gladkov <agladkov@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
- Phil Auld <pauld@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
- Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Costa Shulyupin <cshulyup@redhat.com>
-References: <20240117163511.88173-1-longman@redhat.com>
- <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+In-Reply-To: <Za7g8O_zCnJ5THJx@pavilion.home>
 
+On Mon, Jan 22, 2024 at 10:41:04PM +0100, Frederic Weisbecker wrote:
+> Le Mon, Jan 22, 2024 at 04:11:20AM -0800, Paul E. McKenney a écrit :
+> > On Mon, Jan 22, 2024 at 04:07:09AM -0800, Paul E. McKenney wrote:
+> > > On Fri, Jan 19, 2024 at 04:29:52PM -0800, Paul E. McKenney wrote:
+> > > > On Fri, Jan 19, 2024 at 10:47:23PM +0100, Frederic Weisbecker wrote:
+> > > > > Le Thu, Jan 18, 2024 at 06:51:57AM -0800, Paul E. McKenney a écrit :
+> > > > > > On Wed, Jan 17, 2024 at 01:07:25PM +0100, Frederic Weisbecker wrote:
+> > > > > > > Le Wed, Jan 17, 2024 at 06:26:16PM +0800, Zqiang a écrit :
+> > > > > > > > Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
+> > > > > > > > no-rdp_gp structure, the timer_pending() is always return false,
+> > > > > > > > this commit therefore need to check rdp_gp->nocb_timer in
+> > > > > > > > __call_rcu_nocb_wake().
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > > > > > > ---
+> > > > > > > >  kernel/rcu/tree_nocb.h | 3 ++-
+> > > > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > > > > > > index 54971afc3a9b..3f85577bddd4 100644
+> > > > > > > > --- a/kernel/rcu/tree_nocb.h
+> > > > > > > > +++ b/kernel/rcu/tree_nocb.h
+> > > > > > > > @@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > > > > > > >  	long lazy_len;
+> > > > > > > >  	long len;
+> > > > > > > >  	struct task_struct *t;
+> > > > > > > > +	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+> > > > > > > >  
+> > > > > > > >  	// If we are being polled or there is no kthread, just leave.
+> > > > > > > >  	t = READ_ONCE(rdp->nocb_gp_kthread);
+> > > > > > > > @@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+> > > > > > > >  		smp_mb(); /* Enqueue before timer_pending(). */
+> > > > > > > >  		if ((rdp->nocb_cb_sleep ||
+> > > > > > > >  		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
+> > > > > > > > -		    !timer_pending(&rdp->nocb_timer)) {
+> > > > > > > > +		    !timer_pending(&rdp_gp->nocb_timer)) {
+> > > > > > > 
+> > > > > > > Hehe, good eyes ;-)
+> > > > > > > 
+> > > > > > > I had that change in mind but while checking that area further I actually
+> > > > > > > wondered what is the actual purpose of this RCU_NOCB_WAKE_FORCE thing. If
+> > > > > > > we reach that place, it means that the nocb_gp kthread should be awaken
+> > > > > > > already (or the timer pending), so what does a force wake up solve in that
+> > > > > > > case?
+> > > > > > > 
+> > > > > > > Paul, any recollection of that?
+> > > > > > 
+> > > > > > Huh.  We never actually do RCU_NOCB_WAKE_FORCE in v6.7, if I followed
+> > > > > > all the code paths correctly.
+> > > > > > 
+> > > > > > Historically, I have been worried about lost wakeups.  Also, there
+> > > > > > used to be code paths in which a wakeup was not needed, for example,
+> > > > > > because we knew that the ending of the current grace period would take
+> > > > > > care of things.  Unless there was some huge pile of callbacks, in which
+> > > > > > case an immediate wakeup could avoid falling behind a callback flood.
+> > > > > 
+> > > > > Ok then looks like it's time for me to add RCU_NOCB_WAKE_FORCE removal in
+> > > > > my TODO list...unless Zqiang would like to give it a try? :-)
+> > > > > 
+> > > > > > Given that rcutorture does test callback flooding, we appear to be OK,
+> > > > > > but maybe it is time to crank up the flooding more.
+> > > > > > 
+> > > > > > On the other hand, I have started seeing the (very) occasional OOM
+> > > > > > on TREE03.
+> > > > > > (In addition to those that show up from time to time on the
+> > > > > > single-CPU TREE09 scenario.)
+> > > > > 
+> > > > > Interesting, are those recent? Bisectable?
+> > > > 
+> > > > Bisection in progress, got it down to 10 commits.  Yet again about
+> > > > ten hours per step on 20 systems...
+> > > > 
+> > > > Though maybe I should have put more time into making it happen faster.
+> > > > Except that I was on travel, so I doubt that I would have made all that
+> > > > much progress.  ;-)
+> > > 
+> > > And it hit this one, which you encountered earlier:
+> > > 
+> > > 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
+> > > 
+> > > Which you fixed with this guy:
+> > > 
+> > > 600310bd7ea8 ("rcu: Defer RCU kthreads wakeup when CPU is dying")
+> > > 
+> > > Which is not yet in -next.  Which means I have spent an embarrassing
+> > > amount of time bisecting a bug that you already fixed.  C'est la vie!
+> > > 
+> > > Given that v6.8-rc1 is now out, it is time to get a bunch of RCU
+> > > commits into -next, including that one!  ;-)
+> > 
+> > Now to test your fix on top of the bad commit, and also on top of
+> > next-20240110.  Just in case...
+> 
+> Thanks!
+> 
+> I may send a v2 at some point within next week. No big change, just a comment
+> and also expand the swake_up_one_online() logic to nocb kthreads as well.
 
-On 1/22/24 10:07, Michal KoutnÃ½ wrote:
-> Hello Waiman.
->
-> On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long <longman@redhat.com> wrote:
->> This patch series is based on the RFC patch from Frederic [1]. Instead
->> of offering RCU_NOCB as a separate option, it is now lumped into a
->> root-only cpuset.cpus.isolation_full flag that will enable all the
->> additional CPU isolation capabilities available for isolated partitions
->> if set. RCU_NOCB is just the first one to this party. Additional dynamic
->> CPU isolation capabilities will be added in the future.
-> IIUC this is similar to what I suggested back in the day and you didn't
-> consider it [1]. Do I read this right that you've changed your mind?
+Looking forward to it!
 
-I didn't said that we were not going to do this at the time. It's just 
-that more evaluation will need to be done before we are going to do 
-this. I was also looking to see if there were use cases where such 
-capabilities were needed. Now I am aware that such use cases do exist 
-and we should start looking into it.
-
->
-> (It's fine if you did, I'm only asking to follow the heading of cpuset
-> controller.)
-
-OK, the title of the cover-letter may be too specific. I will make it 
-more general in the next version.
-
-Cheers,
-Longman
-
+							Thanx, Paul
