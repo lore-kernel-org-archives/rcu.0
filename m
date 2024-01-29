@@ -1,162 +1,142 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A389D1EA78
-	for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 23:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13451524BE;
+	Mon, 29 Jan 2024 23:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706571423; cv=none; b=G+G3Y6Xaok1aDDyoEz2blIDxcSXFSpeY6bRKb394v2p+2n/zD6ZEL5edgVSe2DknUGwb9YsLQ9Dzq/0wd5gYZmDXW22wGIUGVFHVsJc2ym+xZMZg0zit35GqWmKuvTCtxI2FUCAhdkw1JDb9p1KZzbv+s3dz299KEUVqr/6u8+o=
+	t=1706572670; cv=none; b=Jv+xnHE9iMkiz2/UCxXAkoz8Laxy+4kHouehS6rO7tUtWl003dKepQl+6DdnUBPrSRQCkv3AOmurL0zgF/nkEUr/79BPA8pjxiDvNm045bNFUHN+r7DjJtvd2KyCEEB0AAGXLRVkM6gwuZgu9opk+Wna6A3Gs++w+Vs1Fzk5q6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706571423; c=relaxed/simple;
-	bh=iYDd2CCZaDTI0XXNpct8x2D9YVzhB8lenFO3FnIjIuM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a0fnr3CkSnviutwtnB1n6nHTWRUxFfMu4EMhSWMI4rWoEmT2+w3ujhpI1qttyMIUtMGq35uW9M1GA2Gej/heN+WRJHG8cQ/3CoCFYbfBOeLkJ9ey5nLrLNLY4jCdu5Cup5eNTDrPJ6aTQFlPMtjWoxXMmbUmBcQJp1c3RGH3DBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qerfqrgy; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1706572670; c=relaxed/simple;
+	bh=PBDXmdd3YDxYwPmfBhHPk0eaWyRH9yNEjDQBzLi2m+8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ftDN2zpi6E97N0mCp8KsU5TfAQcz4qL7X6fXgjYvtTzNgobPKr6vpriOdoBLD4u0o2bHS/SZItXoxEX/uGQqKbgC8iSL9R1ycmdCLD/8Q8ZprKl4MhMJXxUtQymfWPJD7P7H1EB3OLTxIxKcUMMIw4M9r6TjrWS+x2mXCXkC3Po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JAaIK0AY; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qerfqrgy"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40ef6c471d5so12905165e9.0
-        for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 15:37:01 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JAaIK0AY"
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-68009cb4669so26393436d6.1;
+        Mon, 29 Jan 2024 15:57:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706571420; x=1707176220; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aMMfKQ6I26UF15nzzYdczMe2owzvmAj5Hyu6Sc/yk60=;
-        b=qerfqrgy0U7c6y4k9AozkJ2OFrvf6icS9h1JvvlCo0G8KIsMWpzQwk9gn1Odqf8h0t
-         nvTjMPyw5+Bb0P4zTFlCBmRCgCruklVXcNK5wvCMd0QCrzza1zo4pZwyUqD+/WgyguN1
-         k/efaFNxezvtmOjVO2xmvlmszrSGvTvzs4DDw6sAcbX34Kouc13BbG/qV9d3RyfbUF+x
-         nLJrisqW4pjapPr3NuxtBt8qlsLKm13+LxwxZFAmzoe+W2iiFhIvlcbuvL5IOjbSlg99
-         hgY5zXsFoStp6epVevEVosh/VcNO4P7CqqDMoLyFMORjrUZrtVcGMH3lXxJka/AtfUp2
-         1QLQ==
+        d=gmail.com; s=20230601; t=1706572668; x=1707177468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=14qTSl6VfeinFYRyn647RZT0gaoCHxy/3Nvp5uLMb9s=;
+        b=JAaIK0AYVN6wECwc7tS/gRSRZEKI4REZWvvnIqZWImZ/bvx82lmbwIS71Uxsa5L9OA
+         w2ucAxGnyXuGRgDztGn5s6BRRU2U8HrOPSeLTfT6MrZF+G0+GKfvFNF/+YaXX7orM8GG
+         n8KfBYBRPgB3TGcHF9wQ35o9hU7zJZivZorxD1bku2DNF1+p4HO2gm/A6y/LgkoQVt3U
+         mA2NPYRDsgpl7LvK7z/wuC/SoZOW+HiOhcsr9kiEXc+vxLmXEVU5kuQUu1/RWi+RHv8o
+         kIMaYA80U2hdLmw2eB2BaZD3NjM8yb2vOPb+bpIYmcNRjprS/l50jifwWIzMiShRqgCR
+         c46A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706571420; x=1707176220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aMMfKQ6I26UF15nzzYdczMe2owzvmAj5Hyu6Sc/yk60=;
-        b=gmGr4av+9bGwekAvALa0fEc3zNjGVulQkl1mjYcVcmLo3SUmAp7J/KbGXEuZ38ZDuN
-         t7L2Vm/0V/l5VAE1I58tYC9DvlUvXRg1negTn9G6WyyXuKPeF68giytMhldfD68G9PuB
-         rvLOoJOlABTiCSauJczzWbixAruvyZhH0fQ/DmYfKMrzbSMQA+cleWoPHVFe3odgBuEf
-         UGeU6mqGE/hZT8ZWgU+Q0hlKBYGHfd+IqZqSUYixw6rAu7588IvcCtbS8k3XYSnPFow2
-         gCz7nS5fxC+jQtWVTfwEpPZEB0g64PSyzvDXL7BJYHmYIetx2zkZhOdp4HunP0usphMz
-         MU9g==
-X-Gm-Message-State: AOJu0Yze/cHDl/x86AU3kpvBcbFIbYa/cSZvILbW+XCLZuwHulS8OSJf
-	tn7Q81+WKhry+aOnJ7d6oG1oJ41aP/LvXExesArxdTYOppui0MRraphh7MiEmLtdOAQaBX62EQQ
-	ROAZKDWfpKNengytGi65dPE17jHWebgN38uOQ
-X-Google-Smtp-Source: AGHT+IE34Livvi1kq++P3AVLyAv2GVTd+sHd41ine0uFqHQdaQtKBFL2POCkTjNUgdyDKQ1iCP2+Xbyj3ffpmuwJDlY=
-X-Received: by 2002:a05:600c:1396:b0:40e:a569:3555 with SMTP id
- u22-20020a05600c139600b0040ea5693555mr6076286wmf.35.1706571419751; Mon, 29
- Jan 2024 15:36:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706572668; x=1707177468;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=14qTSl6VfeinFYRyn647RZT0gaoCHxy/3Nvp5uLMb9s=;
+        b=ITeucGGTPNGaFlGitbnhXEZyB5FXzx+T5+ocXSlp1wTVz7HRVB+Kb+7ns1sEaCssau
+         bXBUDnyg+9vlqv+FZvzyEsjgiTYXMstDgvk2tiE8YQLIPyj0Vtat3R/dryhAVnnehyl6
+         Myds3Ce4EIbHO/+1rDJ421uT6+DzoTOTG5UvLeSqx7A3MwsmSPDnSdYfWtkZq3FC6SWz
+         xLbozYbOMHeaeW4CTVkPMHIXbr4oJcl4k0Gz0WHJ3BRp4QeTI42f5u69frb9BRF/b0YU
+         Im4a2i9Zm4F1UPtJovl44RCagk+/6Wd6Zl40G8FrdFkXVS6nJhfdMCbMMaGSquXwIy0u
+         3eHA==
+X-Gm-Message-State: AOJu0YzxJ1KzTAqD9B0PfGUSuw1CXo3btFETJC0tuSv5SGFYKZW9laZK
+	unkNBvbWnbcUhsKF6bJVsmXukP7nMpwt9vDqXpLKKUejLrrWEbLgTHe8VvAR
+X-Google-Smtp-Source: AGHT+IHrKfz3NI4gVsaaT68ogyT0ew61errkO9fev8dG/RjOxrMAwCBGLsttIaGizWl44FqyMl653A==
+X-Received: by 2002:ad4:5d41:0:b0:681:14ff:3e82 with SMTP id jk1-20020ad45d41000000b0068114ff3e82mr8163338qvb.41.1706572667941;
+        Mon, 29 Jan 2024 15:57:47 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWsawbcW1WHIiDjg+6OI9e5bLE+byHpRwFzVaDVfv+BzD1TdKRd2NLldqOQMcVWLemNlCLFrl/piPX7XrzcFxLfJmJ7
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id kf4-20020a056214524400b006837a012417sm3920599qvb.51.2024.01.29.15.57.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 15:57:47 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailauth.nyi.internal (Postfix) with ESMTP id EDDE127C0061;
+	Mon, 29 Jan 2024 18:57:46 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 29 Jan 2024 18:57:46 -0500
+X-ME-Sender: <xms:eju4ZSAShUC_6pOjCbc6UWolo_OMJ56CK4WNaZBiPFQ-rB4Flgs-Dw>
+    <xme:eju4ZciTZ8TYUKypY19mfJkEVEYwFpmH55ml7qknGO-QU9OKSmcjche8rGsWwF1VN
+    9SAvc-APIR_Oo_XIw>
+X-ME-Received: <xmr:eju4ZVn0n1KFencSt60ulXeRaLaPepCu7ubElR--zPoUrX9IMG0k2IbRjkwjBw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhm
+    rghilhdrtghomheqnecuggftrfgrthhtvghrnheptdfftddtkeelvdefleeghfelleevge
+    ffteehheeljeejudehueejhefggeevfeetnecuffhomhgrihhnpehgihhthhhusgdrtgho
+    mhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:eju4ZQxskpiPA-yutd2d3ZbAyj-gC1Y_b0rukLbOHlA5kFoeUqg1SQ>
+    <xmx:eju4ZXSNvsJK2kFDQEhNN6LTioQu5F6bZ_vcy9VDTC9V_96Ttd9ETg>
+    <xmx:eju4ZbYOD573c8BL5uG2InVDTMxRtCTxCLSm7bGEv8n4iPEh5z1YLQ>
+    <xmx:eju4ZSdV-q7yQsguTsW2VOYLYIvTMoiPXPLsPTJUv5MjZwxe-XkO_w>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Jan 2024 18:57:46 -0500 (EST)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH 0/8] Misc RCU update for v6.9
+Date: Mon, 29 Jan 2024 15:56:33 -0800
+Message-ID: <20240129235646.3171983-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJWu+oo8w6zc=m7f9vkz66xYZnoCqs1FrgmLtcWxEpE5QCJgig@mail.gmail.com>
- <ZbgPL0Rg_on4kOBf@pc636> <b6672b7b-fed4-449b-90e5-216f8294c1c3@joelfernandes.org>
- <Zbgp_JJvdczGccV3@pavilion.home> <3753c8ea-f408-4e52-bcb8-9586c483f699@joelfernandes.org>
- <Zbgwl9x3wZ3xqtcW@pavilion.home>
-In-Reply-To: <Zbgwl9x3wZ3xqtcW@pavilion.home>
-From: Joel Fernandes <joelaf@google.com>
-Date: Mon, 29 Jan 2024 18:36:45 -0500
-Message-ID: <CAJWu+opvDMw99oUzkiz8oKktT5pme2+FckA_96wgWoDRGkLb9Q@mail.gmail.com>
-Subject: Re: Observation on NOHZ_FULL
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>, Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org, 
-	"Cc: Frederic Weisbecker" <fweisbec@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 29, 2024 at 6:11=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
-l.org> wrote:
->
-> Le Mon, Jan 29, 2024 at 05:53:50PM -0500, Joel Fernandes a =C3=A9crit :
-> >
-> >
-> > On 1/29/2024 5:43 PM, Frederic Weisbecker wrote:
-> > > Le Mon, Jan 29, 2024 at 05:20:23PM -0500, Joel Fernandes a =C3=A9crit=
- :
-> > >>> If i do not miss something
-> > >>> the NO_HZ_FULL will disable the timer if there is only one task on =
-CPU
-> > >>> so that running task benefits from not being interrupted thus gets =
-more
-> > >>> CPU time.
-> > >>
-> > >> Yes, that's right. I believe it is well known that HPC-type of workl=
-oads benefit
-> > >> from FULL, however it has led to want to try it out for constrained =
-system as
-> > >> well where CPU cycles are a premium, especially if the improvement i=
-s like what
-> > >> the report suggests (give or take the concerns/questions Paul raised=
-).
-> > >
-> > > I'll be unable to suggest anything related to that Bogomips calculati=
-on but
-> > > I must add something about HPC.
-> > >
-> > > I have long believed that HPC would benefit from nohz_full but I actu=
-ally never
-> > > heard of any user of that. The current known users of nohz_full are w=
-orkloads
-> > > that don't use the kernel once the application is launched and do the=
-ir own
-> > > stack of, for example, networking, talking directly to the device fro=
-m
-> > > userspace. Using DPDK for example. These usecases are for extremely l=
-ow latency
-> > > expectations (a single interrupt can make you lose).
-> > >
-> > > HPC looks to me different, making use of syscalls and kernel for I/O.=
- Nohz_full
-> > > may remove timer IRQs but it adds performance loss on kernel entry, m=
-aking it
-> > > probably unsuitable there. But I might be wrong.
-> > >
-> >
-> > Thanks for the insights!
-> >
-> > The kernel entry/exit overhead bit is an interesting point and also tra=
-cking
-> > state for RCU observation purposes. I wonder how much is the overhead i=
-n
-> > practical cases and curious to measure (especially the tradeoffs betwee=
-n that
-> > and the tick). Added note to my list ;)
->
-> And here is a summary of the added overhead with nohz_full:
->
-> * Use of RCU_NOCB
-> * Kernel entry/exit overhead (context_tracking/rcu/vtime)
-> * Unbound work reaffine (less distributed across CPUs): workqueues, timer=
-s, kthreads...
-> * Remote tick every 1Hz on CPU 0 (one day I would love to remove that but=
- that
->   requires too much scheduler knowledge)
->
-> The difference should be significantly measureable, even as compared to R=
-CU_NOCB
-> alone.
+Hi,
 
-Noted, thank you Frederic!
- - Joel
+This series contains miscellaneous updates and fixes from RCU v6.9.
+You can also find the series at:
 
->
-> Thanks.
->
-> >
-> > thanks,
-> >
-> > - Joel
-> >
-> >
-> >
-> > >>
-> > >> Thanks,
-> > >>
-> > >>  - Joel
-> > >>
+	https://github.com/fbq/linux.git rcu-misc.2024.01.29a
+
+The detailed list of the changes:
+
+Frederic Weisbecker (2):
+  rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+  hrtimer: Report offline hrtimer enqueue
+
+Jiri Wiesner (1):
+  clocksource: Skip watchdog check for large watchdog intervals
+
+Joel Fernandes (Google) (1):
+  srcu: Improve comments about acceleration leak
+
+Onkarnath (1):
+  rcu/sync: remove un-used rcu_sync_enter_start function
+
+Paul E. McKenney (2):
+  tsc: Check for sockets instead of CPUs to make code match comment
+  rcutorture: Suppress rtort_pipe_count warnings until after stalls
+
+Qais Yousef (1):
+  rcu: Provide a boot time parameter to control lazy RCU
+
+ .../admin-guide/kernel-parameters.txt         |  5 ++++
+ arch/x86/kernel/tsc.c                         |  2 +-
+ include/linux/hrtimer.h                       |  3 ++-
+ include/linux/rcu_sync.h                      |  1 -
+ kernel/rcu/Kconfig                            | 13 ++++++++++
+ kernel/rcu/rcu.h                              |  8 +++---
+ kernel/rcu/rcuscale.c                         |  6 ++---
+ kernel/rcu/rcutorture.c                       | 13 +++++++---
+ kernel/rcu/srcutree.c                         | 24 +++++++++++++++---
+ kernel/rcu/sync.c                             | 16 ------------
+ kernel/rcu/tree.c                             |  7 +++++-
+ kernel/rcu/tree_nocb.h                        | 22 ++++++++--------
+ kernel/time/clocksource.c                     | 25 ++++++++++++++++++-
+ kernel/time/hrtimer.c                         |  3 +++
+ 14 files changed, 101 insertions(+), 47 deletions(-)
+
+-- 
+2.43.0
+
