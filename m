@@ -1,114 +1,125 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D10A524A2
-	for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 23:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ED85103F;
+	Mon, 29 Jan 2024 23:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706569882; cv=none; b=KFiNwyupcLSA78LgMFM+DT/e7C7tPjEhFOhQ7z/tNAwJQ24Bbe6RIYkzP3dZs+IHg0JIyjAI95/UqbXODlXpxZHpr5MXW1ByrXtCC4W9o+7pA/lVrAHMihVK2MbL6VzUk45GnjF/+tF2xULWNoR8IIB6NrMkMixVYBvLyBVwF8k=
+	t=1706570713; cv=none; b=mxC5PXRvK/bwbicOx5uqJpuJI9BfWiMS8BnlMNEPvbw7TbIsvmz0JofJmE0DMiH+eG+ErYdveHLfiOC2I9RZYb/sVa0y/ARMOuD6Jq3bS001SAnEMLEaKybGlq0Y/ijRgSa1cZytQK0oUaK35TXFpC3ZbP5k5CiyNNC5pMlLUNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706569882; c=relaxed/simple;
-	bh=VyJjbcFldoUjg2lzu3QAIbuRl/pAo7pitpB9F6lgWZw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HW3oBov/k/DYfO6W6xALqUayMCkIiFYNmPYesSsWY8chAAt9CdaQBxBy5RXZYhBZAkvAbnDg2k7cLJa/jZXjFFB8lRx4RcQ+zAuMNM5/UrHy756lWpkz/lS5gGhgJ7daco9rOcrLp9qpifIQu/rRhV269sBd0fAz02iIJHw7CYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QEZTPSvh; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1706570713; c=relaxed/simple;
+	bh=13GmUzSo0OvnKed5uuQ3ajwvL+12lFg7NcgNcyPTeD0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pDTcVKT8d7lXXd7AF+Cn/CH1wvQQM/f9Q6/n1qlLj6rSb1xxjZb2r0mStm02WEqczYN6wgHdeSXp6eWSgZ5uBx6QKDDWU/1HGrR5ZrWhvl2ECcWn3U7oHT95d6mFophWCDYVMwr19R17lL90LZN9YBV7uXv4/FWBDv/zBmtX8YA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EnhfaDbH; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QEZTPSvh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF3F8C433C7;
-	Mon, 29 Jan 2024 23:11:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706569882;
-	bh=VyJjbcFldoUjg2lzu3QAIbuRl/pAo7pitpB9F6lgWZw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QEZTPSvh5TLU1eC3AIjLtNi31PSDd4/2XW88XAsjRr8d6L1oZjOANNl9btZNhnBBF
-	 DCRMgVZXp6ZTI0+GQyZOIRmXv4Jqgz5sgKDVymb185Y8Vgqh8el4ASH2PviBpCMKJT
-	 DpHLzmQUxQPCjhrDxN1vY71nz2g9H3mFZq2l/jk1bETYOuiqFlH65VPx1PVk3k7gha
-	 /1+jAtDKnhkUxPhFaO4ObymRWOoAlTiWZgpJCK6dr12QLVxustcaT3+2Y6c65Hle+U
-	 j9FFT3LpEsmqxm3c2f40yTzktP+rY5XiIAJVUVstTRTJqgmHkCh3b9Z/A8zqZ0suzs
-	 UA4Is2Ca2AymQ==
-Date: Tue, 30 Jan 2024 00:11:19 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>, Joel Fernandes <joelaf@google.com>,
-	rcu@vger.kernel.org, "Cc: Frederic Weisbecker" <fweisbec@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: Observation on NOHZ_FULL
-Message-ID: <Zbgwl9x3wZ3xqtcW@pavilion.home>
-References: <CAJWu+oo8w6zc=m7f9vkz66xYZnoCqs1FrgmLtcWxEpE5QCJgig@mail.gmail.com>
- <ZbgPL0Rg_on4kOBf@pc636>
- <b6672b7b-fed4-449b-90e5-216f8294c1c3@joelfernandes.org>
- <Zbgp_JJvdczGccV3@pavilion.home>
- <3753c8ea-f408-4e52-bcb8-9586c483f699@joelfernandes.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EnhfaDbH"
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-783f49811b2so133951685a.1;
+        Mon, 29 Jan 2024 15:25:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706570711; x=1707175511; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=0NexKjD7KMwrg1NWT5wkOObrAZDYheyKqGp/AuuOK68=;
+        b=EnhfaDbHup6K13FbGzJxRlOX7lS4g9xfNvwQ9SLtPcUcwhaYJcFdRWGIfgIpB8B7Aq
+         EbPQWBBpY+32purDoE+kVrmq87pkAvNKnXWqTzEpjV1ZCmBTwCA2g1URfkhvBd7YYb3v
+         2Ehed4teRE0AO8WulPGvSR6cTBTy1fagPZuh0W0fL8BRkjEnhukeDsYfnw1luIWvbKWl
+         XsU6bkBe4vPkHl1Z04Ey9NR9TH3KsR1uYO9sjsQkWdWtdbWS/ja9YfFrnkcAYbNFzDU5
+         YRhg/mbMdpW3eIBb4RSKULDU/pNedl91AlrPN9Xw3MPUGLlSd9g6TS6HWTB8QcOETRw4
+         lCxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706570711; x=1707175511;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0NexKjD7KMwrg1NWT5wkOObrAZDYheyKqGp/AuuOK68=;
+        b=ORd2LGA/GxQlzObDlXAX4nGUIOfOH3S+GRy+byh6tRTUKOXDjNYVmYQyLr+zPmzaJN
+         PavAW3gg/7aIy3ffzqoD99/Sa9Plj030XTLrotWWPmb9+YxOKHpMd2UAujivpt/cVC1q
+         XbQ70YFY83Q9dPFStmlBcZnFT9O3wn2F26K6HxswD3hzMQ8nIsr3EDOAo2Z0ZPeVBrLR
+         BIJ0OdBSnc0eeeTfGSSJgWttXfANFcQfg+++2M03bP82Oz5TXm84XQd9CurpOrZzz0jk
+         9yUAiFXgwHxYuGHreP7HemWsu547oyrB3X72vEoZgeUCzIV1r3a4bnKKJ3NJrQVsfeft
+         EKcA==
+X-Gm-Message-State: AOJu0Ywa+OufbrJZ40pBHkkSLOnnwQBm6XGrEI7ThI8+WwULzNw1/Acn
+	PHfRZ356isJvDxquRQz2XGMLaDnzJYsC3kySao1t76gzA8+5feDj39cwDrhX
+X-Google-Smtp-Source: AGHT+IGeWnvE867IQgfNfqZeXDse/FvvtSwE2/2pa2VKQxKAjo1uryEyh3BbfwUt0WQGT3uNASc8Qg==
+X-Received: by 2002:a05:6214:da1:b0:686:ae8f:3ed3 with SMTP id h1-20020a0562140da100b00686ae8f3ed3mr7934074qvh.66.1706570711077;
+        Mon, 29 Jan 2024 15:25:11 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXdCo0i6JM9l2b3q+7Tc6EtVCshzIDOgS3bmB27kdlMN0mFsse/IuB9j+xNOMCO5Gl5cd5N9G29hoPCh58ZXKXDQY9Y
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id lr7-20020a0562145bc700b00680c25f5f06sm3898272qvb.86.2024.01.29.15.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 15:25:10 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 52C0A1200066;
+	Mon, 29 Jan 2024 18:25:10 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 29 Jan 2024 18:25:10 -0500
+X-ME-Sender: <xms:1jO4ZcM1wUn8_VnRFbcznaxorKy5NEFjokqALZB5DDqAFk6KArxLXg>
+    <xme:1jO4ZS8yS-_raTCuFDxY3B1_2a-ttnONvptNgToCBjwEkwGt796atlbr1QndlyBN9
+    cIm9k0kCK3IKDXpig>
+X-ME-Received: <xmr:1jO4ZTTwzm6V0uLGrD1xSwYAXKXPKuNccGIE5NHtwziKjldfsdVJqtYK1M6Cgg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhm
+    rghilhdrtghomheqnecuggftrfgrthhtvghrnheptdfftddtkeelvdefleeghfelleevge
+    ffteehheeljeejudehueejhefggeevfeetnecuffhomhgrihhnpehgihhthhhusgdrtgho
+    mhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:1jO4ZUtqvuZRRcs2MiHRKq1OR_j3TPBE82TAYM6WM6bUZjyTa9cZJw>
+    <xmx:1jO4ZUdo-pW8meEw74NNVD6-KrDqmSlFLkgdJpl4m9tDfvsfAYJGVA>
+    <xmx:1jO4ZY3MqAkG8sqdDm6m3yb-VZWysh6ecAPyD4Zj3DI3GWygT4micQ>
+    <xmx:1jO4ZVqXGcR1hjAUjiDrQoSbiji1P6aXLJgHx-jQMfX1wefkJs_6WT7-kCo>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Jan 2024 18:25:09 -0500 (EST)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH 0/8] RCU exp updates for v6.9
+Date: Mon, 29 Jan 2024 15:23:38 -0800
+Message-ID: <20240129232349.3170819-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3753c8ea-f408-4e52-bcb8-9586c483f699@joelfernandes.org>
 
-Le Mon, Jan 29, 2024 at 05:53:50PM -0500, Joel Fernandes a écrit :
-> 
-> 
-> On 1/29/2024 5:43 PM, Frederic Weisbecker wrote:
-> > Le Mon, Jan 29, 2024 at 05:20:23PM -0500, Joel Fernandes a écrit :
-> >>> If i do not miss something
-> >>> the NO_HZ_FULL will disable the timer if there is only one task on CPU
-> >>> so that running task benefits from not being interrupted thus gets more
-> >>> CPU time.
-> >>
-> >> Yes, that's right. I believe it is well known that HPC-type of workloads benefit
-> >> from FULL, however it has led to want to try it out for constrained system as
-> >> well where CPU cycles are a premium, especially if the improvement is like what
-> >> the report suggests (give or take the concerns/questions Paul raised).
-> > 
-> > I'll be unable to suggest anything related to that Bogomips calculation but
-> > I must add something about HPC.
-> > 
-> > I have long believed that HPC would benefit from nohz_full but I actually never
-> > heard of any user of that. The current known users of nohz_full are workloads
-> > that don't use the kernel once the application is launched and do their own
-> > stack of, for example, networking, talking directly to the device from
-> > userspace. Using DPDK for example. These usecases are for extremely low latency
-> > expectations (a single interrupt can make you lose).
-> > 
-> > HPC looks to me different, making use of syscalls and kernel for I/O. Nohz_full
-> > may remove timer IRQs but it adds performance loss on kernel entry, making it
-> > probably unsuitable there. But I might be wrong.
-> > 
-> 
-> Thanks for the insights!
-> 
-> The kernel entry/exit overhead bit is an interesting point and also tracking
-> state for RCU observation purposes. I wonder how much is the overhead in
-> practical cases and curious to measure (especially the tradeoffs between that
-> and the tick). Added note to my list ;)
+Hi,
 
-And here is a summary of the added overhead with nohz_full:
+This series contains the updates and fixes of RCU expedited for v6.9.
+You can also find the series at:
 
-* Use of RCU_NOCB
-* Kernel entry/exit overhead (context_tracking/rcu/vtime)
-* Unbound work reaffine (less distributed across CPUs): workqueues, timers, kthreads...
-* Remote tick every 1Hz on CPU 0 (one day I would love to remove that but that
-  requires too much scheduler knowledge)
+	https://github.com/fbq/linux.git rcu-exp.2024.01.29a
 
-The difference should be significantly measureable, even as compared to RCU_NOCB
-alone.
+The detailed list of the changes:
 
-Thanks.
+Frederic Weisbecker (8):
+  rcu/exp: Remove full barrier upon main thread wakeup
+  rcu/exp: Fix RCU expedited parallel grace period kworker allocation
+    failure recovery
+  rcu/exp: Handle RCU expedited grace period kworker allocation failure
+  rcu: s/boost_kthread_mutex/kthread_mutex
+  rcu/exp: Move expedited kthread worker creation functions above
+    rcutree_prepare_cpu()
+  rcu/exp: Make parallel exp gp kworker per rcu node
+  rcu/exp: Handle parallel exp gp kworkers affinity
+  rcu/exp: Remove rcu_par_gp_wq
 
-> 
-> thanks,
-> 
-> - Joel
-> 
-> 
-> 
-> >>
-> >> Thanks,
-> >>
-> >>  - Joel
-> >>
+ kernel/rcu/rcu.h         |   5 --
+ kernel/rcu/tree.c        | 175 +++++++++++++++++++++++++++------------
+ kernel/rcu/tree.h        |  11 ++-
+ kernel/rcu/tree_exp.h    |  83 +++----------------
+ kernel/rcu/tree_plugin.h |  52 ++----------
+ 5 files changed, 144 insertions(+), 182 deletions(-)
+
+-- 
+2.43.0
+
