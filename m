@@ -1,55 +1,55 @@
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8AE15956B
-	for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 22:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B55A15956E
+	for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 22:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706566605; cv=none; b=dklXalsDTtn5NyklRpMasAluTR01wkV+mecAofrYqgNZV82xVzmMXxgd9siTa6L7WttQc7wnCxLBDgB5J/ES/35PJD8SsuiGIjSTYJq+Rs+PWas1acT45rbCyLqwNdc43DuThLYG2Sr9pFTWjqaIkdWmY/qnWDTLFbPQKjHtjjQ=
+	t=1706566830; cv=none; b=hbUHVOKlRojyLFafUpLdvgctV3VoVGG2lHWSyc91xJY9EIvssXNBekZtBu6Ro7qozya/Zb3I2R63cfMzM1AHSEJ5Q72EFnU4ropBi0yMo3b/RC7Byt3RuIjCeiDFqlQyGvpojEeo23DTdYg94hg2hgLbIW+hFNEMZwVGgBVPmS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706566605; c=relaxed/simple;
-	bh=/rpRGe5uAtWD5Yqxfiq2/227p7gFVYAgN+jbOl+myXM=;
+	s=arc-20240116; t=1706566830; c=relaxed/simple;
+	bh=jqYScOJGdFNrbrlnIlbguzFMcdwHEgAlYib6OKcFDeM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o7qk9YAtRndPkPkorgAHxByassgehyysaprLs/F9SMgKS+RHzyol3GQLVwp2/vUnDYSdUEHoWgbaDxQplvhN5RbXaQ/rHGekdeEJ6CXMY2XdyN2F8RppyAPfIgmoJ9esnkrjd5skaQWzdHAqRL/vjvuLYLA/kh27a30owR3PxKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=KXlQZPMt; arc=none smtp.client-ip=209.85.222.171
+	 In-Reply-To:Content-Type; b=WyIlIZiPY+kEfZ0VrcS1fD7a+bVlY0CgXKkZUSU50MBRwOqhZ5a1YzQHnS76pSsTJppWq6uq1U6DM7B+Emkm4rRNRkD+7kPtRWFRpDKmqwKMxAHhReYd5bT6ajik5rJsN4h9sJe/EOP4mwop+i76Hg6znls0bF68OetTrH2/tOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=nz6XPGeV; arc=none smtp.client-ip=209.85.160.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="KXlQZPMt"
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-783f27300b1so169162485a.1
-        for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 14:16:43 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="nz6XPGeV"
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42a9199cfd2so17480211cf.0
+        for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 14:20:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1706566603; x=1707171403; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1706566827; x=1707171627; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wZFT6XLd8FTGvS7HazmUMwsJRY1TMUKSaocssRKnZCo=;
-        b=KXlQZPMtsCpxKW0I2PNxXQGnZX7fNxLyAMrejey9iSLc6ui8FZnP11S9YIY66O7Ip+
-         VdBXJ6QZNlUQFM2RsRyLawC0d0wv0fLhQAQcTxfBerlgzUu8hB4zx98ZLhQz6hduGWIK
-         fbf/fleze69YdZqykqsRt4CI0zuwf6JYXrTeM=
+        bh=ogZKXJhaL0sF2JGgrXXUAUBzrvxhoufBqIT1JYQyqXI=;
+        b=nz6XPGeVrtrFZggAAL2EaLq8uRhHbQ8dQUNroytW+QBERrCQ1OchAae6HH0WKhu2eS
+         vBBjTZCspIvAFXhDBZ18z+S/e7nKg/vba2uCAUgyPXnRPwRZsLbCCqEd7ikifG1mhHcI
+         ktoPGgTuCodkWMaejXQ0pm5AS8A46m5xzkuFI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706566603; x=1707171403;
+        d=1e100.net; s=20230601; t=1706566827; x=1707171627;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZFT6XLd8FTGvS7HazmUMwsJRY1TMUKSaocssRKnZCo=;
-        b=ThALAGE8Cff0TegMoEV2z6YWI2Mi/pDxiYs+Bc6mw8Dt2MYFnv3gPrznfS7A1E3x1B
-         Wr88Zr+cgGicHD1etUi1k4joov7Iz+2IPbIW3rNGKKsAF4pZIrO6PIOK34li2qZk4qta
-         7CtXnZ0ISC01AcRnhICKebLRRsSVS2RgEM9xM3rG+eKcC+LCyYuLtkFrgkWmDpC8WMgX
-         Cb8m2zUV7ZTp2bDtP51U+/05C/curM4n3nh/b2j0q1ggHvmHwajPIkxG1/tW5zRyzqus
-         ibGdprBvMhBYG0cisWBcc4dBB2dk/V3os3NgVwVAxFYJFu6nK8KEIU17b7wjI06XM3Ct
-         5bsg==
-X-Gm-Message-State: AOJu0YxnugabF2maBZBjpHW2EX8XjMeKhYe+vcGVvpvTKEfd7ifktzjv
-	9d6tCFL2U2vOLxuuvWxXbSswiT7JdIctdmUkeaMcVdsWq81+9ydo9mHrwLXW5MY=
-X-Google-Smtp-Source: AGHT+IHlgaAfYcPt0KvYlCVTKPwHTs8AxD7kx1KveerSmqMCzOD2khP2/YKQJcu8cbQWCbI1810Jrw==
-X-Received: by 2002:a05:6214:5299:b0:68c:5b0b:5ec with SMTP id kj25-20020a056214529900b0068c5b0b05ecmr1387075qvb.38.1706566602796;
-        Mon, 29 Jan 2024 14:16:42 -0800 (PST)
+        bh=ogZKXJhaL0sF2JGgrXXUAUBzrvxhoufBqIT1JYQyqXI=;
+        b=JtJbuzPOfFhrUYnZSCkIGY+bAWnW9iuKvxtuIFdLrlj4/T75vofG7p7x/mO7CZMMfW
+         w0hsBqgl/N3AZQi5GG4BRka3b/xEoPBTFCFT2x+g9oYcJvNUWXyXgVgl9frLEUVpN5Pb
+         31cJqEUkqulLPtYiUfEeqbV4tWHIK+i6sTNx1PLHM95zGUdwtUyNIcwhjA2bPccwuMF3
+         3DjTd1Pz2wvX6vGCR1uVGe1IDUphFzkrx0ceDIX+Y+2wiFFAJVWQba8GSRpBiEvoFCDW
+         rJQJHx1DPfQpNAggpzdKurKj/8wVmslUToCwUX75flvBqh2CTosx9Uz3/tqB+1vhXUTy
+         GJHw==
+X-Gm-Message-State: AOJu0YwIGCyR+fMwc19/86+n8F0oRncqM6rrOphKused5cP98aeCEQ6k
+	1UndtWu7Jyi96jFxkvHtWX0nZ96abTjmPwUFOXwkC+ljaScd2K6LvelMDqUr2KM=
+X-Google-Smtp-Source: AGHT+IE4PfJ3bPoRoxgNYraMoDc78uaCueA9MSwXyWl5lHaiuDiw2I5gHDq1bqkjUjMmodrPtjAI7A==
+X-Received: by 2002:ac8:5bcd:0:b0:42a:aa7a:2f01 with SMTP id b13-20020ac85bcd000000b0042aaa7a2f01mr2410163qtb.48.1706566827208;
+        Mon, 29 Jan 2024 14:20:27 -0800 (PST)
 Received: from [10.5.0.2] ([45.88.220.198])
-        by smtp.gmail.com with ESMTPSA id di3-20020ad458e3000000b0068c4f1da09csm1380534qvb.120.2024.01.29.14.16.41
+        by smtp.gmail.com with ESMTPSA id hx3-20020a05622a668300b0042a0a0d4225sm3877719qtb.38.2024.01.29.14.20.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 14:16:42 -0800 (PST)
-Message-ID: <0e15e91e-da47-45dd-b7de-7f89b7b6002b@joelfernandes.org>
-Date: Mon, 29 Jan 2024 17:16:38 -0500
+        Mon, 29 Jan 2024 14:20:26 -0800 (PST)
+Message-ID: <b6672b7b-fed4-449b-90e5-216f8294c1c3@joelfernandes.org>
+Date: Mon, 29 Jan 2024 17:20:23 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -59,19 +59,19 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: Observation on NOHZ_FULL
 Content-Language: en-US
-To: paulmck@kernel.org, Joel Fernandes <joelaf@google.com>,
- andrea.righi@canonical.com
-Cc: rcu@vger.kernel.org, "Cc: Frederic Weisbecker" <fweisbec@gmail.com>
+To: Uladzislau Rezki <urezki@gmail.com>, Joel Fernandes <joelaf@google.com>
+Cc: rcu@vger.kernel.org, "Cc: Frederic Weisbecker" <fweisbec@gmail.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>
 References: <CAJWu+oo8w6zc=m7f9vkz66xYZnoCqs1FrgmLtcWxEpE5QCJgig@mail.gmail.com>
- <6a2b6857-57e7-4321-adae-132ba69a4fff@paulmck-laptop>
+ <ZbgPL0Rg_on4kOBf@pc636>
 From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <6a2b6857-57e7-4321-adae-132ba69a4fff@paulmck-laptop>
+In-Reply-To: <ZbgPL0Rg_on4kOBf@pc636>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi Paul,
 
-On 1/29/2024 3:41 PM, Paul E. McKenney wrote:
+
+On 1/29/2024 3:48 PM, Uladzislau Rezki wrote:
 > On Mon, Jan 29, 2024 at 05:47:39PM +0000, Joel Fernandes wrote:
 >> Hi Guys,
 >> Something caught my eye in [1] which a colleague pointed me to
@@ -87,53 +87,22 @@ On 1/29/2024 3:41 PM, Paul E. McKenney wrote:
 >> versus non-nohz_full ? (Confession: No idea if the baseline is
 >> nohz_idle or no nohz at all). If it is 30%, I may want to evaluate
 >> nohz_full on some of our limited-CPU devices :)
-> 
-> The usual questions.  ;-)
-> 
-> Is this repeatable?  Is it under the same conditions of temperature,
-> load, and so on?  Was it running on bare metal or on a guest OS?  If on a
-> guest OS, what was the load from other guest OSes on the same hypervisor
-> or on the hypervisor itself?
-> 
-> The bug report ad "CONFIG_HZ=250 : 17415.60 bogo ops/s", which makes
-> me wonder if someone enabled some heavy debug that is greatly
-> increasing the overhead of the scheduling-clock interrupt.
-> 
-> Now, if that was the case, I would expect the 250HZ number to have
-> three-quarters of the improvement of the nohz_full number compared
-> to the 1000HZ number:
->> 17415.60-14866.05=2549.55
-> 18505.52-14866.05=3639.47
-> 
-> 2549.55/3639.47=0.70
+>>
+> Timer overhead and its scheduler-callback?
 
-I wonder if the difference here could possibly also be because of CPU idle
-governor. It may behave differently at differently clock rates so perhaps has
-different overhead.
+Yes, quite possible.
 
-I have added trying nohz full to my list as well to evaluate. FWIW, when we
-moved from 250HZ to 1000HZ, it actually improved power because the CPUidle
-governor could put the CPUs in deeper idle states more quickly!
+> If i do not miss something
+> the NO_HZ_FULL will disable the timer if there is only one task on CPU
+> so that running task benefits from not being interrupted thus gets more
+> CPU time.
 
-> OK, 0.70 is not *that* far off of 0.75.  So what debugging does that
-> test have enabled?  Also, if you use tracing (or whatever) to measure
-> the typical duration of the scheduling-clock interrupt and related things
-> like softirq handlers, does it fit with these numbers?  Such a measurment
-> would look at how long it took to get back into userspace.
+Yes, that's right. I believe it is well known that HPC-type of workloads benefit
+from FULL, however it has led to want to try it out for constrained system as
+well where CPU cycles are a premium, especially if the improvement is like what
+the report suggests (give or take the concerns/questions Paul raised).
 
-Thanks for your detailed questions. I will add Andrea Righi to this list thread
-since he is the author of the bug report. Andrea do you mind clarifying a few
-things mentioned above? Also nice to see you are using CONFIG_RCU_LAZY for Ubuntu :)
-
-thanks,
+Thanks,
 
  - Joel
 
-
-> 
->> Cheers,
->>
->>  - Joel
->>
->> [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2051342
-> 
