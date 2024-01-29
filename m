@@ -1,105 +1,82 @@
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65A9155A22;
-	Mon, 29 Jan 2024 16:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B7176C8D
+	for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 17:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706545388; cv=none; b=oXyLu1uR8WXKBiuS2OD6buFUspPW8warOlr7sUYn4ARW3RkPWCBUu0FhDLxueSAghpc7KqShFwPbO/9+8xa/9/mc448tCq/IMHzzTajkrRpwD5eCntu4UdmaCHlx5yyCQKCCkupFjGoou7ocbxLSsx1C427ikkvNpOwRpt9/bUk=
+	t=1706550475; cv=none; b=Hb4vbnFgjQAuX+y/hRqv/GBLC1OcKY8nk87eRpyuYNnQRc9JM8k7YcDOvClSMyaDqUfEoGgGfDPKy8pYfbEcJSx8Y9LWx6rObmTexDu5YSFrC1nlQgedjCnfW4Xm0w5l9sZFE7JrrXqC+Zn0hcAVyoJ6zIMFGQyOz3OFHmJ+3II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706545388; c=relaxed/simple;
-	bh=OMqVP6ph42lDf1Ky7eApI1rvSIdCU1Rk3uR4ghXPe7s=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZv5OrEK1IyQwCPY6Pb0GmDFD4Ani7O87gV5phJQXKgEd+pDSIpvf27xqL33KJV6zHgMB+YmXqTVIj5fx2G+FLXCPdO8PPKxMtpEV3Z0UFkSKdzd2wQXWHIZjYfIejmxkeaVsK59QReZbmC1GEEwFmxhO/Ax0cM1dn/7f+J7dbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HKAyNdTb; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706550475; c=relaxed/simple;
+	bh=QXDkAeNurTjL7EBJvASewtl1foC1fp1hYHP1FuLXK8Y=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Bgxf4dlCnrMnlPRm1E7S/WxVUVFFllzrZsCEOPov7CKk0+mP6Z7ZDhjqL6Aa/c4BNhgqiXTdW7cJI1yUeKOs/OwEW6TNdvEArjA4H/TGjyoG2hRm/Miw1+UPRmylWEpEwEgx0ujycYda0SemWlL0FSUZxnLdf2YyWOOr33dOeBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t0NiaAPg; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HKAyNdTb"
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-510322d5275so2844909e87.1;
-        Mon, 29 Jan 2024 08:23:06 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t0NiaAPg"
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40ed3101ce3so45355105e9.2
+        for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 09:47:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706545385; x=1707150185; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=boQI9oYiK4uW55M3uxYeL65Mv+jSVBAg7WNoRgTbhwA=;
-        b=HKAyNdTbWgKsrVO1i5IwD/oEwiH5tvNi0SPGcQWdOGwZ0ZL91O25EcPLGms4faYZWQ
-         VJKv28JWFcdeCqxFXO/iHTi5CXR+LuRefwGE1iELbhHQva5Agg6N6NNiJjvKXlTaIjmm
-         ywxmAEGyxNqU789x+cYL7Y0wiTP96eFqgGOSJMJ+QiOFon5lsKEztU6QfszG627eIFWS
-         jkKxtMY8LI5bpFGhQ/1W3GyJvCuw5hrwCLkpV4ud0zOTsCuA45BR5OScfcndNrGmx1Pp
-         WaiTUnSQhabf7Wbnrih8IePaONNtvTiQ0/ZlGx0ol3y+hhJfx/lrM5uz08UCSmUfSO/2
-         cihw==
+        d=google.com; s=20230601; t=1706550472; x=1707155272; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QXDkAeNurTjL7EBJvASewtl1foC1fp1hYHP1FuLXK8Y=;
+        b=t0NiaAPg9fun12AIGFEKYU+FqDkdnmamouuUZ0wENUYdtOHk6G47KgMOYi0BnIHBRw
+         iMynpsJjy9kDwtYN7QKqdUxYvaFat+cv9rvBhNAag3XXDNo0cCUn2hWSQmav3o3VwgEO
+         jSu9YNDSZWvKEvBYWub0hoatf0MlwsQ5X7zt+UlSOMyLal+3dWfwBjexWVZFfGiUFOzX
+         /0he5dPgd3/rVZzbqwNpbnPFLioMHUledZZNw7vqKbxbruanUHZ+O7avStl7q9YnNqrw
+         ltS1d5BxHYPsW+Y4I1Qg3QbETZmrEAOw64En4BGO6RIs/BQjz90nYY6XF3qXNYdZs7Po
+         IuOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706545385; x=1707150185;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=boQI9oYiK4uW55M3uxYeL65Mv+jSVBAg7WNoRgTbhwA=;
-        b=SKzPPGUHF6eQoIUEiJdq6pBV9bdCyR9NTeUjjlMvAX0UYjtfmxZYFsksN3P6W7ipmt
-         ORTx3Ma1A6fz/i0RiphtiuH8QTpGVfrL8k9ja6g/FFhYzKugPA94+64K00o3snLM7JBc
-         8KUvuNTjbr57sS7wDsbRuNfpV6YVYdZ8sMUTHVyYdAPbH7AN7rG1ymQlxaXfsqI/b13h
-         JvoFPq5cjQkx1RYRsywn5T2C1VHRjJl6TMQMnmdtESQeF8j8jUr04XzlsCaO2aFDiJa+
-         vQovs4wh8XtSyprrygKtQf5abdArVBFwJHQknq8kUWtFDrZ0gBROvvnsAKK5wP9LSx81
-         JElw==
-X-Gm-Message-State: AOJu0YxyXIXEuKKBnLjBJ1iUn3L4m3e15HUKP5wUnrRiGKHzMtsuSsyA
-	tAWTdb435hB5LYgzpFTneYk4TJw175e41yOtYvtqpegqGVztIT3F
-X-Google-Smtp-Source: AGHT+IHMb/abY1Egka+gDUQktv39XD/3oc+K/jwDOtSEICdJqJJJ+HlM+QesxWLQLb5dtoB1kU12rw==
-X-Received: by 2002:a05:6512:3da8:b0:511:f33:4e4c with SMTP id k40-20020a0565123da800b005110f334e4cmr2859516lfv.40.1706545384364;
-        Mon, 29 Jan 2024 08:23:04 -0800 (PST)
-Received: from pc636 (host-90-233-198-33.mobileonline.telia.com. [90.233.198.33])
-        by smtp.gmail.com with ESMTPSA id 9-20020ac25f09000000b0050eacc0c80bsm1141544lfq.131.2024.01.29.08.23.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 08:23:03 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 29 Jan 2024 17:23:01 +0100
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v4 0/4] Reduce synchronize_rcu() latency(v4)
-Message-ID: <ZbfQ5cOkeReti7J0@pc636>
-References: <20240104162510.72773-1-urezki@gmail.com>
- <620b475d-eef8-4396-9d3a-d3dcf1d70f9a@paulmck-laptop>
+        d=1e100.net; s=20230601; t=1706550472; x=1707155272;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QXDkAeNurTjL7EBJvASewtl1foC1fp1hYHP1FuLXK8Y=;
+        b=CgQa9t0Rwp5OlNtOTFnVFpF0vN4W728MzGOP4jZ0Bnz4+tMMrV7qMY2dY5ohM8WnQ6
+         vyBAB/sh452fYqBKcNMzCKUu97sub58sM0RZomemzWfKleLI7KayAsDIjmkNarE+PBYU
+         F3TzQCC/d0MkDaSXW2uwKVb0tyuGOFJFiiWR5o4TzBYVakenmeeN85CJMBNmuKw9Cq5S
+         FE3UzVagDps/3cOEw7X0rav6jYD55C7J9SJ61RJCpsjQdTjmlRlTlwewgio4JYRaGFj/
+         m/Pq4x4RpvogtLdb5knSSlxCPFdNEvh83OXmAA/KRKW4MAaAT+ia2s+YIvpfl8XzVUa6
+         tEEQ==
+X-Gm-Message-State: AOJu0YyARO75/9RG1c8lM9jfb2Nn0SIFWTiPXJ5VFmQ+EB0h75HgliK8
+	8K5U3wMPN916RxLId33PDcRTpaLQTamBLr8CjGOFPVSHwUTQue5LWlmhMlYb98+ovFkKKGd1unw
+	0ugd0EgALUG5The4IR9H3fHKk5Ke4viZ1TgenSMJtweaMtQ0kefLQ
+X-Google-Smtp-Source: AGHT+IGqUktQWBWJOZEgghPJj6Hz+F94mDG34Ciy7DMUAuX1yF9ovLZxMTJFajyI1x3TnmonpFDIoa5W89FRcRNlFUY=
+X-Received: by 2002:a05:600c:5487:b0:40e:a7d2:5a51 with SMTP id
+ iv7-20020a05600c548700b0040ea7d25a51mr5369102wmb.29.1706550471909; Mon, 29
+ Jan 2024 09:47:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <620b475d-eef8-4396-9d3a-d3dcf1d70f9a@paulmck-laptop>
+From: Joel Fernandes <joelaf@google.com>
+Date: Mon, 29 Jan 2024 17:47:39 +0000
+Message-ID: <CAJWu+oo8w6zc=m7f9vkz66xYZnoCqs1FrgmLtcWxEpE5QCJgig@mail.gmail.com>
+Subject: Observation on NOHZ_FULL
+To: rcu@vger.kernel.org, "Cc: Frederic Weisbecker" <fweisbec@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 26, 2024 at 11:07:18PM -0800, Paul E. McKenney wrote:
-> On Thu, Jan 04, 2024 at 05:25:06PM +0100, Uladzislau Rezki (Sony) wrote:
-> > This is a v4 that tends to improve synchronize_rcu() call. To be more
-> > specific it is about reducing a waiting time(especially worst cases)
-> > of caller that blocks until a grace period is elapsed. 
-> > 
-> > In general, this series separates synchronize_rcu() callers from other
-> > callbacks. We keep a dedicated an independent queue, thus the processing
-> > of it starts as soon as grace period is over, so there is no need to wait
-> > until other callbacks are processed one by one. Please note, a number of
-> > callbacks can be 10K, 20K, 60K and so on. That is why this series maintain
-> > a separate track for this call that blocks a context.
-> 
-> And before I forget (again), a possible follow-on to this work is to
-> reduce cond_synchronize_rcu() and cond_synchronize_rcu_full() latency.
-> Right now, these wait for a full additional grace period (and maybe
-> more) when the required grace period has not elapsed.  In contrast,
-> this work might enable waiting only for the needed portion of a grace
-> period to elapse.
-> 
-Thanks. I see it. Probably we also need to move "sync" related
-functionality out of tree.c file to the sync.c or something similar
-to that name. IMO. 
+Hi Guys,
+Something caught my eye in [1] which a colleague pointed me to
+ - CONFIG_HZ=1000 : 14866.05 bogo ops/s
+ - CONFIG_HZ=1000+nohz_full : 18505.52 bogo ops/s
 
-Thanks!
+The test in concern is:
+stress-ng --matrix $(getconf _NPROCESSORS_ONLN) --timeout 5m --metrics-brief
 
---
-Uladzislau Rezki
+which is a CPU intensive test.
+
+Any thoughts on what else can attribute a 30% performance increase
+versus non-nohz_full ? (Confession: No idea if the baseline is
+nohz_idle or no nohz at all). If it is 30%, I may want to evaluate
+nohz_full on some of our limited-CPU devices :)
+
+Cheers,
+
+ - Joel
+
+[1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2051342
