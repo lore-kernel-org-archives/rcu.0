@@ -1,121 +1,118 @@
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38765524B1
-	for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 22:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2B5C51C28;
+	Mon, 29 Jan 2024 22:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706568836; cv=none; b=ZkORQda8wZ+mBfjN3d0xzACyz3E+zHBZArxowU8X3G0Tp5Ki3Af1LsdViEuNlWsxCpRIFjKsH5inOgGOjxkYDY3aFdD2QAa3RcT0LvMLLhDAzUV+wSyU88Bv/ECG4ZcID2M0+qmZZL2KrFEIE3jnkw6SecA0JlSEVbbF5IaZUEw=
+	t=1706569138; cv=none; b=mh0khap3eX6NDoouZnrwNuobCXtsuO/ydQbr0KKJaBBPMfraRElfk9z4KkdjE/0q6f5zwlRpwZyOEXqhs/mERb+JslTLvzfBffyibpAJW/r0ZFd1FJ8uMZkSbpC6IhJmYuvveA1iN1fWNDLIIHKovz3ISgZ5tFoLQ4Zx8ckPCh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706568836; c=relaxed/simple;
-	bh=E4XYKdOq+Xq3Jha/KaBWVmuT4kZPCNuFBBOqok8C8Qs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aVML28XNVEQllWKOkrEcM+cw4dSrF6ekrTdP2weJTfe+8xklWdZnDy6LsXWLpiXTNu6NLdZJp8Sj320wftOuvfNl2GjF+BgiaIbRquKDzeOksH+wKrRh3oqjdSeheMXfZHrcpED/zrNUy+tYZS+BUXltG/A1VwqovQwGLUVcZIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=q8vu9lHu; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1706569138; c=relaxed/simple;
+	bh=qS23eDY70akmM70VDnGqTtUWdP2J5XcCRDZiyee/T2U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bow+A2lP7iB24kpy05F6zadRuR7rKZPvuV1jU7ct1DoGo+gOIMwYiZQlYB/gJVMXysa4/3YrwEKSCfJfHVJ1Q54pKBYXOFHFWrJNv0laRCUrhdvw1tifqdZNPU2SGP2RlTQEZqZqAueB2YJjiGWR2/uSR24Kw3QK40cV4dkXoic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I+lnl2CG; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="q8vu9lHu"
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42a99cbb4bbso13443961cf.0
-        for <rcu@vger.kernel.org>; Mon, 29 Jan 2024 14:53:54 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I+lnl2CG"
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78407987510so31036285a.3;
+        Mon, 29 Jan 2024 14:58:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1706568834; x=1707173634; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0A4Y6is1iubUBsOkVnR3SIjBCyoO607e7/C+PpXigoA=;
-        b=q8vu9lHuc2FtZdh0eEaLisBm6n2cRPe0c8GtyQBfC1nRXRWn+IDsRCsCUifoNn17ch
-         uVHay+92P/sQ1yU0Acy/CXZXLf7Q1KO+c7W0G7bafyQy7R4QQOXuc5qvxMRmC06YP5EK
-         bbiCy4Ed+9wzgxBmlhjxFmkJWuVzlRJfagV8c=
+        d=gmail.com; s=20230601; t=1706569135; x=1707173935; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wthQQJasdY/xtJzaegSNHR3FbQOt8xCueJTLlZMyKNw=;
+        b=I+lnl2CGgqA+UmaygcbDBLJfZPTRK1umDUZe4p3Zx70jS5+3ato8l0Q+0FIM9TWjmb
+         VX8ZA+aMbP/tMZ6qLwV9QbK/S6xVaRxwYrgISqWm4FtXLSk4+v7tgcMFRcT79EnPwmZr
+         zXGlC5CdTeik9ovx+drat5ZElu4HgDYSFfK8NIfPJ4DkBxOpgYGD86e/dtt6ZOLS662h
+         FPe+DjPN5fNggCxYVLFuvvYEXrzBP8u0XPtEAi2YxAl1Wz2w9t8QiaCoOIJEH8MP3/n4
+         h5llh1lkBs7EgYVSGVhxj8nOBTE1qnAhRSNmyqFJz13OidDFD/Kh5QJTKbKXZbT/d5LW
+         eRLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706568834; x=1707173634;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0A4Y6is1iubUBsOkVnR3SIjBCyoO607e7/C+PpXigoA=;
-        b=pD+agBBf6qfvpaf0q9cHewG6RMoACMWWZWGEJh5Tv+UqtyBdkBhwHGpW+riYzgB53i
-         SGWl/ZGBzRdiZIFSzEsOhGsIoG6soQkwki4HgyriqiC+84HZQGrG94c155QTNI7b+h1w
-         Z5L/eGcnIWWe7tq3G0Wvv4IVb1J3zq2R3kOJMGwF7Yh+zvX1qz2DUf9Y48SDCRhFLc1v
-         uMUIRBO58xbWKGrvwMAk8EiFfADBCgUYEr5KJQdP3i1v5yfnwKsf43KdEvzHYMtGhTcI
-         r2ziEteQYLwmBFDEbMws8xxelSqVqXmpvqCFH3n/oBj9MDlOxMYzNme3EzL2vY/GZ1/z
-         gzLA==
-X-Gm-Message-State: AOJu0YyRME+TgHPgsaNeQVIdecb9mckVkLBQd19pKR8h2uFE3HoqxRCG
-	4dqGK2LIga1TLKrMaskOAyTUQ08RH5NJVWX7wi+Ys2+0iTZ3V0FU80L6kGv7HmY=
-X-Google-Smtp-Source: AGHT+IFWNIECYEEKhzQP8+P0aQepUzWLS1PvDykJHR8T/IDoVBdz0Hofbn83w9XExeDhS3I4Wny/oA==
-X-Received: by 2002:ad4:5942:0:b0:68c:4e75:91bf with SMTP id eo2-20020ad45942000000b0068c4e7591bfmr3417397qvb.59.1706568834069;
-        Mon, 29 Jan 2024 14:53:54 -0800 (PST)
-Received: from [10.5.0.2] ([45.88.220.198])
-        by smtp.gmail.com with ESMTPSA id oi8-20020a05621443c800b00685422c9e35sm3851453qvb.84.2024.01.29.14.53.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 14:53:53 -0800 (PST)
-Message-ID: <3753c8ea-f408-4e52-bcb8-9586c483f699@joelfernandes.org>
-Date: Mon, 29 Jan 2024 17:53:50 -0500
+        d=1e100.net; s=20230601; t=1706569135; x=1707173935;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wthQQJasdY/xtJzaegSNHR3FbQOt8xCueJTLlZMyKNw=;
+        b=qCETpls+9/7kiHSs33fuAtweCSaePNRDmbU0h+N8ZYmEdOFQpgr6IJ+VmjdhHRWYpj
+         hfdl71tGc4DAtZusRYQ3pjJy3EchXsTWn0bc+rQjSflD7Yq6xXa+jY7LK/JOXdrVkx5N
+         hhe+jDC9mNS6KbAQgoDdf3Ks6bwnZZLvEzV+XtupcHYdc0xvSozTNDcPPxPw/gx36UXX
+         bauRjmUNBq9o4BnamsC4nO2GQzJr48abhB3VK3/b1bjot6WDOvvYp50P+QPd0Vw1Je61
+         A9rOEXOs08vNLE7M0dHLVK59uP+eeP4tkYJhaw3gYbvecqadRF2pPGbzvqkNnOwAbOWD
+         ruCw==
+X-Gm-Message-State: AOJu0Ywjc9lJUbrQ6J3i+hrOLgowu7xYWVxeIrBU0nIoJJbNJbtTPBcV
+	1ML4qEFtWsCmPqLOFvO716faaKTAxeGxDR250o6giGp5l43JuJTl
+X-Google-Smtp-Source: AGHT+IG/SLTAX9urGP6GW8SUccff/hKTG4d7myXMaI9D2kvz5V7qmCmxkEjzsiergEXe7IxH4U8Whw==
+X-Received: by 2002:a05:620a:222b:b0:783:95fa:727c with SMTP id n11-20020a05620a222b00b0078395fa727cmr5924666qkh.3.1706569135722;
+        Mon, 29 Jan 2024 14:58:55 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWNG21MZ3XQk98KV1GwTNT3chbb4Hvrm/9yMoGfU+u5MXPbLFRdPTStsdY+fmzsinecocRpGGC3IvcV5I6+wQ9E6Xho3HcQyyOEpbAeQDfO4HsBH/xkgYw1JSqujbzM
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id f18-20020a05620a409200b00783f449f587sm2093117qko.80.2024.01.29.14.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 14:58:55 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailauth.nyi.internal (Postfix) with ESMTP id E9DBB27C0068;
+	Mon, 29 Jan 2024 17:58:54 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 29 Jan 2024 17:58:54 -0500
+X-ME-Sender: <xms:ri24ZV73zC8EOVx3sxuwJTfqjYdwO3f6O4kaExONiT-Wme1MO66n5g>
+    <xme:ri24ZS7jIVeQw4eqKMC1BUnkdGhBqmAzIQXjm0epLKzRp6FLIFwrKSV9rbj8r09nx
+    hX82h34FNZ4SJw2VA>
+X-ME-Received: <xmr:ri24ZcdmUdUkR6tIx-6epccSc80mLycR_Dn_PB5cTRyuAhhefSIdskw6LmfejQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedthedgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhm
+    rghilhdrtghomheqnecuggftrfgrthhtvghrnheptdfftddtkeelvdefleeghfelleevge
+    ffteehheeljeejudehueejhefggeevfeetnecuffhomhgrihhnpehgihhthhhusgdrtgho
+    mhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:ri24ZeL4Voy1mtrAorsCDl6VhWJA25xe2T2iixCDP8n3xJ5spi04IA>
+    <xmx:ri24ZZLIPo3Ha_G3nOXoUrSXeyq4WOWORt3dlzxyGl5kT9D19JbOzQ>
+    <xmx:ri24ZXwubY-wofDqXIoyRuuTPPD2CJ0CxAYEd8Se0LdGcTdFf40lDA>
+    <xmx:ri24ZZ1nhu4V_ve2s-hO1Gcsh9vrX5qFa8clKhGELcM-JIetpjyp1g>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Jan 2024 17:58:54 -0500 (EST)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH 0/2] RCU tasks fixes for v6.9
+Date: Mon, 29 Jan 2024 14:57:25 -0800
+Message-ID: <20240129225730.3168681-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Observation on NOHZ_FULL
-Content-Language: en-US
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>, Joel Fernandes <joelaf@google.com>,
- rcu@vger.kernel.org, "Cc: Frederic Weisbecker" <fweisbec@gmail.com>,
- "Paul E. McKenney" <paulmck@kernel.org>
-References: <CAJWu+oo8w6zc=m7f9vkz66xYZnoCqs1FrgmLtcWxEpE5QCJgig@mail.gmail.com>
- <ZbgPL0Rg_on4kOBf@pc636>
- <b6672b7b-fed4-449b-90e5-216f8294c1c3@joelfernandes.org>
- <Zbgp_JJvdczGccV3@pavilion.home>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <Zbgp_JJvdczGccV3@pavilion.home>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+Hi,
 
+This series contains the fixes of RCU tasks for v6.9. You can also find
+the series at:
 
-On 1/29/2024 5:43 PM, Frederic Weisbecker wrote:
-> Le Mon, Jan 29, 2024 at 05:20:23PM -0500, Joel Fernandes a écrit :
->>> If i do not miss something
->>> the NO_HZ_FULL will disable the timer if there is only one task on CPU
->>> so that running task benefits from not being interrupted thus gets more
->>> CPU time.
->>
->> Yes, that's right. I believe it is well known that HPC-type of workloads benefit
->> from FULL, however it has led to want to try it out for constrained system as
->> well where CPU cycles are a premium, especially if the improvement is like what
->> the report suggests (give or take the concerns/questions Paul raised).
-> 
-> I'll be unable to suggest anything related to that Bogomips calculation but
-> I must add something about HPC.
-> 
-> I have long believed that HPC would benefit from nohz_full but I actually never
-> heard of any user of that. The current known users of nohz_full are workloads
-> that don't use the kernel once the application is launched and do their own
-> stack of, for example, networking, talking directly to the device from
-> userspace. Using DPDK for example. These usecases are for extremely low latency
-> expectations (a single interrupt can make you lose).
-> 
-> HPC looks to me different, making use of syscalls and kernel for I/O. Nohz_full
-> may remove timer IRQs but it adds performance loss on kernel entry, making it
-> probably unsuitable there. But I might be wrong.
-> 
+	https://github.com/fbq/linux.git rcu-tasks.2024.01.24a
 
-Thanks for the insights!
+Th detailed list of the changes:
 
-The kernel entry/exit overhead bit is an interesting point and also tracking
-state for RCU observation purposes. I wonder how much is the overhead in
-practical cases and curious to measure (especially the tradeoffs between that
-and the tick). Added note to my list ;)
+Paul E. McKenney (2):
+  rcu-tasks: Repair RCU Tasks Trace quiescence check
+  rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
 
-thanks,
+ include/linux/rcupdate.h |  4 +-
+ include/linux/sched.h    |  2 +
+ init/init_task.c         |  1 +
+ kernel/fork.c            |  1 +
+ kernel/rcu/tasks.h       | 89 ++++++++++++++++++++++++++++------------
+ 5 files changed, 69 insertions(+), 28 deletions(-)
 
-- Joel
+-- 
+2.43.0
 
-
-
->>
->> Thanks,
->>
->>  - Joel
->>
