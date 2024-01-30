@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AE1EAC7;
-	Tue, 30 Jan 2024 15:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32486A32D;
+	Tue, 30 Jan 2024 15:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706629640; cv=none; b=WI6/5YnZvpg5MYa1/civgbYCb6E+xcYjOPIr1QNx3unXbH3GPk4c5+sJXoT21/1Mahcj2+yaxwHapCDXM6muFCwjn6QspX4903v0yygiAIp7Ei4/o1OtUWwOkrRfMp10UcPc4OfXamhY6b+ws5yk32e+EY3hg+ol9es7wcgebu4=
+	t=1706629725; cv=none; b=SEjGAt9fj2Y4MptGW1mP8wyC94u6BdFxQfLzHMO35FlsjH9oFgQuEtTEgS9z75RhgQMXYi+rLwCzQ1ML40dtT9c/7RaxYa7MDTrZ6ofysrzI7Dfv8q3vorBsnCIrlYXo33/9NdO1hiAFTvQ7nQVa0RMVzKH3yW5z6r3M5CY6RYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706629640; c=relaxed/simple;
-	bh=0hFwLWXv8l3iNEb/nuzAgNh+gJ5cbBJy4si1SQRC4bo=;
+	s=arc-20240116; t=1706629725; c=relaxed/simple;
+	bh=yTujMnql4yUMoznvweOoKBZMoA56VqLnJzwfD5oRz4s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QHSj2d/aRQAPADhNnD4Aa5KYs1ORvxraOgcz2Ble7JsGL5/WOVpU16vj2NGNmjJCuuRu/tk2jYCy4fwBCpjrNBah/Ur+qhRsjel9DXShOIwNvrHma40ct+REKWMuqNZ8XJlp2EYmfHfFSfD/2IKxN+RtSv95+logIbpYiuxYhUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ix0GOQRt; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=No91CywcAO4QA3Q52BDD5Z865tyFqQ+rcwvBpWH4u4yonu4YRLImjGo0rIQ0vQnq1yq89UtzPBi374t8stm2IAqvwzNgIyMSsu9zQexiHK3T6njbJkKyPvzJsqfPg/K2zbyEfQlIVaRqijfzg1Kos7mFBttQd+BYvDlAwWIE9BM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lUS5fZ58; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ix0GOQRt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 020B1C433F1;
-	Tue, 30 Jan 2024 15:47:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lUS5fZ58"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C6EEC433C7;
+	Tue, 30 Jan 2024 15:48:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706629639;
-	bh=0hFwLWXv8l3iNEb/nuzAgNh+gJ5cbBJy4si1SQRC4bo=;
+	s=k20201202; t=1706629724;
+	bh=yTujMnql4yUMoznvweOoKBZMoA56VqLnJzwfD5oRz4s=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ix0GOQRtOz7fneqJfzWP5PA2tQgzY2RdPx4tapT7pgubGixjlcwsCUFEh9+xAukWK
-	 yDyXrZvfWQd/YJCZAN2X7M9jSa2XLkwEI2CcVbuJqh/FRQXpA8R3Kj1uTWyHlYeh90
-	 k31hVH8QEgp31up2iWQKKydsr7FyQN94ln8O701m5a4yFVdlf5RhpRaqYWtZok3GOf
-	 qbCIzNCv2qBmnplDnP4wWKjnFj3vd80zyR4fXOgRRfUBsQA8QwKGBmpa7FWJsic8+e
-	 hLjUXbL9yvec8G7wGs9NPfgFQasFG7+mz/tUNkCLGkPLlhJYF6TLlIdbKL1jUWqOqO
-	 D9IQ6hyodnjwg==
-Date: Tue, 30 Jan 2024 16:47:16 +0100
+	b=lUS5fZ58kdH7Ue/vpJzExyh9NPNINmBBRVTB8leklIHb9m7ocPsDE7B+FMOXGsmk8
+	 iv/5s3LSC6JGOSQlJR+mcWfwBWBs7EK2fyDLm7BorgPsE0NiFkSXgxY6tzbVdTQiW3
+	 Jvghi1vX+bwCCscsHDrzChvzctsFqkY7BRAWQJzUAwTGsvwyqZtPBTEa8WNxcs0yEO
+	 GLfKc7CyiLEojwb1iOFByB4qMuSgu1tsj5AMR9Yg0R8E/MfXPHcZ7YD4Wx9UMeZNSZ
+	 4HySbmInYgcgeUlcrCKWKTqHPEKpq7cQ38Z0icnWmeAJ8+7mgNaCvqnMON8yk0GViP
+	 CA9Ii6T6XRjrQ==
+Date: Tue, 30 Jan 2024 16:48:41 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Boqun Feng <boqun.feng@gmail.com>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
@@ -39,9 +39,10 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
 Subject: Re: [PATCH 1/8] rcu/exp: Remove full barrier upon main thread wakeup
-Message-ID: <ZbkaBO99-6ZuNCcR@localhost.localdomain>
+Message-ID: <ZbkaWbpufZ6q-jLZ@localhost.localdomain>
 References: <20240129232349.3170819-1-boqun.feng@gmail.com>
  <20240129232349.3170819-2-boqun.feng@gmail.com>
+ <ZbkaBO99-6ZuNCcR@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -51,26 +52,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240129232349.3170819-2-boqun.feng@gmail.com>
+In-Reply-To: <ZbkaBO99-6ZuNCcR@localhost.localdomain>
 
-Le Mon, Jan 29, 2024 at 03:23:39PM -0800, Boqun Feng a écrit :
-> From: Frederic Weisbecker <frederic@kernel.org>
+Le Tue, Jan 30, 2024 at 04:47:16PM +0100, Frederic Weisbecker a écrit :
+> Le Mon, Jan 29, 2024 at 03:23:39PM -0800, Boqun Feng a écrit :
+> > From: Frederic Weisbecker <frederic@kernel.org>
+> > 
+> > When an expedited grace period is ending, care must be taken so that all
+> > the quiescent states propagated up to the root are correctly ordered
+> > against the wake up of the main expedited grace period workqueue.
+> > 
+> > This ordering is already carried through the root rnp locking augmented
+> > by an smp_mb__after_unlock_lock() barrier.
+> > 
+> > Therefore the explicit smp_mb() placed before the wake up is not needed
+> > and can be removed.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> When an expedited grace period is ending, care must be taken so that all
-> the quiescent states propagated up to the root are correctly ordered
-> against the wake up of the main expedited grace period workqueue.
-> 
-> This ordering is already carried through the root rnp locking augmented
-> by an smp_mb__after_unlock_lock() barrier.
-> 
-> Therefore the explicit smp_mb() placed before the wake up is not needed
-> and can be removed.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> [Offlist]
 
-[Offlist]
+And yes that was not offlist, my fingers betrayed me!
 
-For further posting, don't forget to add your own SoB while posting patches :-)
-
-Thanks!
+> 
+> For further posting, don't forget to add your own SoB while posting patches :-)
+> 
+> Thanks!
+> 
