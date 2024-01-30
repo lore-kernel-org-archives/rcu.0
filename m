@@ -1,66 +1,43 @@
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F796773B
-	for <rcu@vger.kernel.org>; Tue, 30 Jan 2024 11:41:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD4D6D1C4
+	for <rcu@vger.kernel.org>; Tue, 30 Jan 2024 13:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706614898; cv=none; b=JQOpCV7735BwejSWRUCcpaDC2JIhL2zg64DbI4hnOU0rm4ahZ761l/S82tQrry9FdH1Jrb/6o/gMnTJjwLy0HQr3ArLJoww53JVWGuTFRikA7Hl2WahJi1qnkpahc6xkGTI6Z/UPP/f/XRmC4WRos2mpTFUEC7zfHPZPJ6RJQx0=
+	t=1706621978; cv=none; b=d7pb49PDuMXcUO9WEK7Rcp0bKteFTF/IPcMBYsJ6fHxExT6YyPlMuRH4qXJpehX/dRi5QD/wHXgjyT2i7kq3NDywyysxsqvCWihtdxcCBTncJIo9Qop/c1lgq3yImPOZYdsYCyS4v+aDeVl5UaFAzkfLINXNUnL4ptwclHLm0uQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706614898; c=relaxed/simple;
-	bh=9WFEWGtPV1YgLsXl/S7dFUe/oO1BxPAblW71c//UeDg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rMgqYtsNpoe/mTJsLMy0QxRIjgNy79ZBeIKcWPVndd3PS7ATGZNkg3gE3FofmF6wLGsxofeMJhMQvj4ANWgdbbFujbmFst32E8QoDoe7WQ+fr1Y7c58zQujUyeeAmMIqIpq/+yEyTtGTKnget/oXj5Qxx3jOwXEk0x3lwsH6Ldw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PFNUSZio; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706621978; c=relaxed/simple;
+	bh=KMoi9Uk2vtkVwTOZo2bbV3VroMcycAeUb9TYmWOX2rM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QmK3o0zXh0kdeUcgdhP84obo1qbGsVBwfQaZ4U9SGMP/UVlHlAn0Z2PIqpBkQsy2g7JbMEeQOd0BgKWMNK3o1ggHuj/3/v+ytS/4Hpe3jR/OiiKn1wqrsLRucWFnUpRHF6ETrnEidq2XmcuOMAdPXqH4vSzLICi/hnZjgJd8JjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AWbeIkVr; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PFNUSZio"
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-510f37d673aso3157411e87.0
-        for <rcu@vger.kernel.org>; Tue, 30 Jan 2024 03:41:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706614895; x=1707219695; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1KMMiWTU5QAczq4jGjY/RQq+w9MjvGhYi7cwjapx/w=;
-        b=PFNUSZioPHn/xETSoh+R9EBHJMoPkIABiZO2B19gFuuZEcZXK+5lBBkyZa7eK5m/jv
-         joZjmeU4zUVspoeko6hAwKPCKjjf2HflGDudBGUzgFfw4xMmpWSCFd251KDRPLicFH58
-         K5ug4oyg8WxUa34tMfxNFAb0yeEvL1KZfg3aoWVYmAbuyM9IIJHdort3fme3vf+CH9hT
-         uUqf7JSxC9Nt0j7jMsw4X+4jnDOLdgzZr+JpRiMKx+yRnfsxWGQEhxaZClkVZeb865dE
-         TDE8yOkqucT/5jxdw8V22tCaJ9r8Qur0UELxE4VZ8harqoN0rO9qAW9857LOpKkh3NV2
-         KCiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706614895; x=1707219695;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P1KMMiWTU5QAczq4jGjY/RQq+w9MjvGhYi7cwjapx/w=;
-        b=c5kAovOWzMhbXRH9DdVM+VMVtbi9eXzhjHw/T7dR/OYtK0AjVO1NxVRpU3I4jLtAh/
-         2MUhojingqJwgfZPoH9P3xc3e4MEiNLj9STLsGzrUvDh4JIfOQ5RYEvqhsDh/K8bBwH6
-         VCqzzrqc9B0QGewl/9xPeZoNYNdizwtivh4gZfvcFeoKk1n/ECiXnr3JULGB/EwD+zcB
-         1Moat6YxYiTuTN/9O9Tfb2SLRlDR/dKyUhdSiD0AkzESDLFOxBTJDmHM31hIcmpNow0L
-         RBXZPCZeWtGmHuOL4WjLma1eJ72Em7ctIn1ZVenaOXKC1vsXaXg7KXQaauwDQxTPgUlP
-         o+CA==
-X-Gm-Message-State: AOJu0YzZSDVW3zdtMGzRbbvKdzEl/v0b4bewJkGqMJvKyvZnoZyOBiDn
-	66LKfK8DeP1DQvdAD/cxSTBjrmg9vJ44XDKTLRk89No+2T6rx0bd
-X-Google-Smtp-Source: AGHT+IGevp7yNDDK+E97OWQJDkVMDDZq2YDDcMJMDutkUkXaiTUPwabqwkqSDDNE5UdESmZ2/kMZ+w==
-X-Received: by 2002:ac2:4c0e:0:b0:50e:9f5f:a78e with SMTP id t14-20020ac24c0e000000b0050e9f5fa78emr6130438lfq.5.1706614894354;
-        Tue, 30 Jan 2024 03:41:34 -0800 (PST)
-Received: from pc636 (host-90-233-198-33.mobileonline.telia.com. [90.233.198.33])
-        by smtp.gmail.com with ESMTPSA id x23-20020a19e017000000b0050e758ee006sm1463794lfg.205.2024.01.30.03.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 03:41:34 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Tue, 30 Jan 2024 12:41:31 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AWbeIkVr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 432F6C433F1;
+	Tue, 30 Jan 2024 13:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706621978;
+	bh=KMoi9Uk2vtkVwTOZo2bbV3VroMcycAeUb9TYmWOX2rM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=AWbeIkVrMmCgSyiho7L5P90dkxMBQlvmbo3om1UAaxY1wEs65RUxtyo7cNYfIMw3j
+	 1/SMvMO1jZQ+ITnMP8wa5tygB9iQHbebY2loOA7yvdFG2WY0r7fA//vemoeh7UrZLn
+	 zH4AvdQpuHqqaA6A2UmTXMx+AoR+PI8mVZ4Fc1kno8Klyv1ZaNTK/l4oOAbpsKLu9K
+	 y16fDtPZ4/JJQUdpOvY1QE90wjlJXENglLxtHGHqGqnZcm1oCX/bwDFP3eN7dnn5mI
+	 umFTwZc63ET4RMRDQ/HV2gemwWZPknei6jitof2kzLyjqFnozDWXrpxUJCQu345fLI
+	 ljCri9HK1Dzqg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id ED97ECE0975; Tue, 30 Jan 2024 05:39:37 -0800 (PST)
+Date: Tue, 30 Jan 2024 05:39:37 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Andrea Righi <andrea.righi@canonical.com>
 Cc: Uladzislau Rezki <urezki@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Joel Fernandes <joelaf@google.com>, rcu@vger.kernel.org,
 	"Cc: Frederic Weisbecker" <fweisbec@gmail.com>
 Subject: Re: Observation on NOHZ_FULL
-Message-ID: <ZbjgawmDCuBMVob5@pc636>
+Message-ID: <b8d80604-18a5-4f82-b846-5c00c6aeae6f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <CAJWu+oo8w6zc=m7f9vkz66xYZnoCqs1FrgmLtcWxEpE5QCJgig@mail.gmail.com>
  <6a2b6857-57e7-4321-adae-132ba69a4fff@paulmck-laptop>
  <0e15e91e-da47-45dd-b7de-7f89b7b6002b@joelfernandes.org>
@@ -192,8 +169,7 @@ On Tue, Jan 30, 2024 at 12:27:43PM +0100, Andrea Righi wrote:
 > config enabled in the Ubuntu kernel, as correctly pointed by Paul. But
 > first of all I need to repeat the tests in a more isolated environment,
 > just to make sure we're looking at reasonable numbers here.
-> 
-That makes sense :)
 
---
-Uladzislau Rezki
+Very good, and looking forward to seeing what you come up with!
+
+							Thanx, Paul
