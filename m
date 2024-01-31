@@ -1,143 +1,157 @@
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D366378B5A;
-	Tue, 30 Jan 2024 18:43:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2679E2E646;
+	Wed, 31 Jan 2024 06:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706640201; cv=none; b=d8evCdu0U/6Aytw7Q569TsrXvSXfE223Y3bn+mxlLpo2hNTCwMAiTqUCZV28yvyPj6TU0NAtJSb/ojQEDpzE/znDzEefhbAZCidjtVl3vBnjzAjokzs7SuIK+w3byeJvGjbnBsK/iI8Sv2Cr4zEAfJJOxJAwLd2EUs9yxaCdAj0=
+	t=1706682930; cv=none; b=hFhrZ56AjA0vpy5RLQuZt5qqfhm5kungF1Z/RxEIv0+Wi+Hv9ZggDPlepku7RxAMiI5v0y+Fp1cHqQaE9plitbEiEs+zbcH88NqV+C2lVm2Lk9Wdh7D+W3vInlfmbCGRm9FFBkDdk0875HKKz/Tpt/5WLiU6fW4/kUViMHBIR70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706640201; c=relaxed/simple;
-	bh=LqSvJ7UGpq6hU47XuSN0B7qu7zyfXZR+0CJXRnVzil0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m8a3KfC1BeLL/BWi9J9/F8/0RCsWJXNqE2qCZAIm340LH/Stfa7ux7FyIdc5uA8AA/A2Pz5ybpc38A1AnYWQqkFFhvx097jMTN9jGDuVZB1vaCjWgN/GZdEZEYaZyecyby/gtDiKaGtei1q+3y8kQ+Yt9MPYZGMpwQAli9V6m4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UZnUm+cx; arc=none smtp.client-ip=209.85.166.179
+	s=arc-20240116; t=1706682930; c=relaxed/simple;
+	bh=yEjvk7Z6GPbDCyyGwiMHpYBOIdUYk+N36+w68bh6Hz8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=bcYQlJlO7WHikzN7J30fVVxhgZmzLUUHWhVtE5vdcLCbEDRgz5Fj4eZRf5GXw6UVqEv69cs0Gjw2BKq9ry0SzAya25UCCiI2QZmy8LdFg52r+AX+nWha6vt8v/JwBj8PYi+VqYiVDapmNfnt5fPhjW7y17NEmLP2y/KQVLLVwjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i2+y4S0i; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UZnUm+cx"
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3637e03eeccso7644935ab.1;
-        Tue, 30 Jan 2024 10:43:19 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i2+y4S0i"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d7354ba334so34632785ad.1;
+        Tue, 30 Jan 2024 22:35:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706640199; x=1707244999; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iemjl7GM0JK88Oll/0/tLzsl8zt7JP8BV/mn7VXCSjw=;
-        b=UZnUm+cxGmKVnkezkVSsa6tfX1QEV4FTAbYE02RH2x9g9jE4m1eMpTEd72W/EqdC4x
-         JGPztL11Qxpp7p4WA2KsbxdEFQC15giY382prAJvTw1Uwv+qi45MH2h8UdGC4Dzfly3b
-         zX73GU+DH8FLHiZZ48LCQSOBZDrFfS7azsfXxYTZbGfWyGuCsEUqB17GIuO78bJK0NIT
-         pTaBNirsLA5UaRfbwl7kz6KBikd5j9+E2LTvnWJttaEm2hM80Ls986GwJU/E4s09IRMc
-         X4rmw47faOmuZSTY/NAsRyFOK1zOw4BYM2f7NKJwbijpwpWMIy8gi3SJrwaGN1rrx29P
-         Fj0w==
+        d=gmail.com; s=20230601; t=1706682928; x=1707287728; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+FNDbQxqsKRXUiAiX60JWrb4aEqdgGBOkItcuuiOTjM=;
+        b=i2+y4S0iyZKc9hZnfdMIPNwTy6ysW06MgGA3ZNw0Q80UEnKyxGxiSmVd1OGSs0a1ja
+         hdSm5UdabSjaIeidLiuoUMh4pW3YLiMTQzg/5rIRqt254+kTqJ7JnAABwGQi8RsMV721
+         aSf3dTf3yZlt+DzWnKtKaws5cXjODWwwnIe+7MA+pmFRUcBi712cbhCyNG2/myH0RiK8
+         XsJXuyus4VprvIykvZ4FoDkb3HAPxDaRYs4PYQDC1d0Csk4q3igOjEukCa8Kgske6SdA
+         X1kvlKbOWIYVf1rJdj6gTgnFjVv043xfk5ueAm7dilcHK7NtSbCH96sAm4A1tcsw3Mst
+         XK2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706640199; x=1707244999;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Iemjl7GM0JK88Oll/0/tLzsl8zt7JP8BV/mn7VXCSjw=;
-        b=nzTwv8BAcKxt1ZKPFecprk4EFi9l2fWJJKz38g5GaVUzFMxiYHKIm0M5qhtMzXv0Lv
-         98c/dnCItk2mTbRqi207RUGNzZ2xEywdcNIJ5rO/QPrW5DbUtuU1y3qusiPwV5n4B3Wf
-         FuuiQbnh8qXAe9Fo+VDg2wOGXMKZFbvtx5qP/Yh8/H52raXaLAbn7zLRsE1C/bJJVbph
-         /6WZ04BElUkf1fxXB2FkyllvRNBrvcwGc3tLnzWzG2UzKaMTkJpB3e/y8ECrYEEDbwqt
-         i4Y6MXYfrOudK326Th09nQ7B/jJ8qnH2Asc3UU+a3AZUW0C8UtZdbqMcEODJkQIeCUz9
-         neeA==
-X-Gm-Message-State: AOJu0Yws/NvQcrJE+kBUtSgpCJ549f7uAcG54SB4tSy1yWvlkLiC4noY
-	ER0ZaBb9/HyWLvysB3Y2chSpyxCURYK75mzLUNi/s/U/OiJy8R8SwzLKGwNK
-X-Google-Smtp-Source: AGHT+IEHKo/9qd5ZiP7fxzeO07u4dZhNUbxfCVoIlp1tDUbOnnjHBv7koGmaUJ52fRSblwRmsim0ZA==
-X-Received: by 2002:a92:d284:0:b0:363:7eee:6e51 with SMTP id p4-20020a92d284000000b003637eee6e51mr6482075ilp.15.1706640198862;
-        Tue, 30 Jan 2024 10:43:18 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWiAb3TDUmue3nbcv7qMZPKQCTiNMQXkwgiBjTa9bXNZk68FGlbfPNJtVk69b9A56eCNe7b7FETkopC4hxPTn0v5uChLVUg2ctW+khCdZpp/aAT4RyG9Qj+ttTM9pj8wvNzSKU8X3Q2YrFFJPL93BXRh37Vn1ja3tjm3P+dkUX5IdS6/kZe0FHStJUTVzK1mZamh7GD1aWlB22kp8VuAcKqaDAu6YroX9lB0XqlZcIhHkVtfYh2PPihXzqptTnduhUrnMY5Y9/igRKPsUVjuwtMvWU1vf3u/4vg0EHKFunuQ9Nex9ypvSkxoF+vV4bXq1DS0z/0khMq484yBKlbUSRoCDZMXTpA43DhkCSBP0MmQ9QNRFCpFkSWFQ==
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id x13-20020a02970d000000b00470e96d4263sm98098jai.2.2024.01.30.10.43.17
+        d=1e100.net; s=20230601; t=1706682928; x=1707287728;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+FNDbQxqsKRXUiAiX60JWrb4aEqdgGBOkItcuuiOTjM=;
+        b=tAGA4OR19ZK+AwuzKeTY+ycClQM7beHDZz8EG9gVyxEaO8zDDd751+xtHgIojT3A4c
+         utldO25k+JMn1INrJjClK57woGAPUjG8GYaGsUbBluZOYJ7s62amt3FQAdPIBxhBtWMg
+         V54nIEXZNKByQNcOn0Ov8ITcsBm1B9S+jJrAJdtEpR/egLFqevxG9dPZf9+UvCq0n5xg
+         RuWZwlb41pj0TZ8/9VB79Gmr1QDbMqSvxUR3E/RUkfdQLFqAjUqX9ualWN1d1ChRL8b9
+         ytA7oGvoepQdm2oswKNqExjq4TU5MAwf1t+Q/hZNbKFLdjuXENyRII+R2eVmAvF2GPgl
+         RR4Q==
+X-Gm-Message-State: AOJu0Yy3ZHB9tWyiqkJR48/2wcpRG3EldXHu5VkmP6P3kiJrDShqtj1A
+	wW3jCeaoOS0mw6CxMqq8c9CJdMNmjX0gMeXo3M7jwiC6Id2Jfu8QG7fK4yllO4s=
+X-Google-Smtp-Source: AGHT+IHkKBojmMalCH1abnDqSb8OlKrQdwRV2VK6rsQwWqWt33sERj8ftB0n3bMtJsEZF1Wz/7WcSw==
+X-Received: by 2002:a17:902:6807:b0:1d7:8f44:45 with SMTP id h7-20020a170902680700b001d78f440045mr867077plk.0.1706682928204;
+        Tue, 30 Jan 2024 22:35:28 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWX7TgSI8BRheelh05ItqYsgn40g6hBRIaTo+VNnT8npGQO/npnJJ5Dbz62dk7zNVDFAZ4tfWXenrWD0hHK7rM4L32sfdLfwmzqwSrzg01Jr1lI3TlA39Mj0VnxD0QMvYtNlwsSpgcXs4dacuFxIzRSUd+6oOqGP14QLijAFDJ/pZBca/bb+OuOjo3gPtB/bOCmYqZjJ5SZs5zxGkzExHdZFe26qW1t5xb3b2KfVQUCTbSExOABcg==
+Received: from localhost.localdomain ([43.132.141.8])
+        by smtp.gmail.com with ESMTPSA id e20-20020a170902f1d400b001d8d1a2e5fesm5499160plc.196.2024.01.30.22.35.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 10:43:18 -0800 (PST)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 4DC5B27C0064;
-	Tue, 30 Jan 2024 13:43:17 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Tue, 30 Jan 2024 13:43:17 -0500
-X-ME-Sender: <xms:RUO5ZRtoTxGLtdN5ud_uMGq-pYVKYr3Pz5Ds1VPeehALvv0BwDsx1g>
-    <xme:RUO5ZaexMWHTRAKFqC_konfFXvg-vA3iiD1zq4AAQKueeOzIeKiZKKGjVKuAc92d3
-    S7cOQhmKsgMj0hYqA>
-X-ME-Received: <xmr:RUO5ZUwGGZdD0WsCl0Zp7rJkoLyDss7MUrudFoeRIL9rBB7AEZoYfSaM14U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtjedggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttddunecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnheptdegheelveffudejffegvdelgffhhfelkeeiieefgeevteejvdegveeu
-    ffeihefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:RUO5ZYNiQ8ylkAn7d7tJyyJ28sxfPGpfNr7aWY4sZ-oheJI05fwxgw>
-    <xmx:RUO5ZR9oOioFOQtSX34BFpQF6RBAictkW9iM59Tqlay1TU2sxI1ugg>
-    <xmx:RUO5ZYXL5NMel7nFD7R_zdgO0Ms3Bv1RGcwp_Ln-5iKP_DjhdhC3zg>
-    <xmx:RUO5ZYXJiO0NHMPMtbGHW0mjpvZbl4TJeWPPB2yrUYyKRDxAMMktjQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 30 Jan 2024 13:43:16 -0500 (EST)
-Date: Tue, 30 Jan 2024 10:42:16 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.iitr10@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH 1/8] rcu/exp: Remove full barrier upon main thread wakeup
-Message-ID: <ZblDCPrr9fPgEi2P@boqun-archlinux>
-References: <20240129232349.3170819-1-boqun.feng@gmail.com>
- <20240129232349.3170819-2-boqun.feng@gmail.com>
- <ZbkaBO99-6ZuNCcR@localhost.localdomain>
- <ZbkaWbpufZ6q-jLZ@localhost.localdomain>
+        Tue, 30 Jan 2024 22:35:27 -0800 (PST)
+From: Jinliang Zheng <alexjlzheng@gmail.com>
+X-Google-Original-From: Jinliang Zheng <alexjlzheng@tencent.com>
+To: david@fromorbit.com
+Cc: alexjlzheng@gmail.com,
+	bfoster@redhat.com,
+	djwong@kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	raven@themaw.net,
+	rcu@vger.kernel.org
+Subject: Re: About the conflict between XFS inode recycle and VFS rcu-walk
+Date: Wed, 31 Jan 2024 14:35:17 +0800
+Message-Id: <20240131063517.1812354-1-alexjlzheng@tencent.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <ZXJf6C0V1znU+ngP@dread.disaster.area>
+References: <ZXJf6C0V1znU+ngP@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZbkaWbpufZ6q-jLZ@localhost.localdomain>
 
-On Tue, Jan 30, 2024 at 04:48:41PM +0100, Frederic Weisbecker wrote:
-> Le Tue, Jan 30, 2024 at 04:47:16PM +0100, Frederic Weisbecker a écrit :
-> > Le Mon, Jan 29, 2024 at 03:23:39PM -0800, Boqun Feng a écrit :
-> > > From: Frederic Weisbecker <frederic@kernel.org>
-> > > 
-> > > When an expedited grace period is ending, care must be taken so that all
-> > > the quiescent states propagated up to the root are correctly ordered
-> > > against the wake up of the main expedited grace period workqueue.
-> > > 
-> > > This ordering is already carried through the root rnp locking augmented
-> > > by an smp_mb__after_unlock_lock() barrier.
-> > > 
-> > > Therefore the explicit smp_mb() placed before the wake up is not needed
-> > > and can be removed.
-> > > 
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Fri, 8 Dec 2023 11:14:32 +1100, david@fromorbit.com wrote:
+> On Tue, Dec 05, 2023 at 07:38:33PM +0800, alexjlzheng@gmail.com wrote:
+> > Hi, all
 > > 
-> > [Offlist]
+> > I would like to ask if the conflict between xfs inode recycle and vfs rcu-walk
+> > which can lead to null pointer references has been resolved?
+> > 
+> > I browsed through emails about the following patches and their discussions:
+> > - https://lore.kernel.org/linux-xfs/20220217172518.3842951-2-bfoster@redhat.com/
+> > - https://lore.kernel.org/linux-xfs/20220121142454.1994916-1-bfoster@redhat.com/
+> > - https://lore.kernel.org/linux-xfs/164180589176.86426.501271559065590169.stgit@mickey.themaw.net/
+> > 
+> > And then came to the conclusion that this problem has not been solved, am I
+> > right? Did I miss some patch that could solve this problem?
 > 
-> And yes that was not offlist, my fingers betrayed me!
+> We fixed the known problems this caused by turning off the VFS
+> functionality that the rcu pathwalks kept tripping over. See commit
+> 7b7820b83f23 ("xfs: don't expose internal symlink metadata buffers to
+> the vfs").
+
+Sorry for the delay.
+
+The problem I encountered in the production environment was that during the
+rcu walk process the ->get_link() pointer was NULL, which caused a crash.
+
+As far as I know, commit 7b7820b83f23 ("xfs: don't expose internal symlink
+metadata buffers to the vfs") first appeared in:
+- https://lore.kernel.org/linux-fsdevel/YZvvP9RFXi3%2FjX0q@bfoster/
+
+Does this commit solve the problem of NULL ->get_link()? And how?
+
 > 
+> Apart from that issue, I'm not aware of any other issues that the
+> XFS inode recycling directly exposes.
+> 
+> > According to my understanding, the essence of this problem is that XFS reuses
+> > the inode evicted by VFS, but VFS rcu-walk assumes that this will not happen.
+> 
+> It assumes that the inode will not change identity during the RCU
+> grace period after the inode has been evicted from cache. We can
+> safely reinstantiate an evicted inode without waiting for an RCU
+> grace period as long as it is the same inode with the same content
+> and same state.
+> 
+> Problems *may* arise when we unlink the inode, then evict it, then a
+> new file is created and the old slab cache memory address is used
+> for the new inode. I describe the issue here:
+> 
+> https://lore.kernel.org/linux-xfs/20220118232547.GD59729@dread.disaster.area/
 
-Thanks for the reminder anyway ;-)
+And judging from the relevant emails, the main reason why ->get_link() is set
+to NULL should be the lack of synchronize_rcu() before xfs_reinit_inode() when
+the inode is chosen to be reused.
 
-Regards,
-Boqun
+However, perhaps due to performance reasons, this solution has not been merged
+for a long time. How is it now? 
 
-> > 
-> > For further posting, don't forget to add your own SoB while posting patches :-)
-> > 
-> > Thanks!
-> > 
+Maybe I am missing something in the threads of mail?
+
+Thank you very much. :)
+Jinliang Zheng
+
+> 
+> That said, we have exactly zero evidence that this is actually a
+> problem in production systems. We did get systems tripping over the
+> symlink issue, but there's no evidence that the
+> unlink->close->open(O_CREAT) issues are manifesting in the wild and
+> hence there hasn't been any particular urgency to address it.
+> 
+> > Are there any recommended workarounds until an elegant and efficient solution
+> > can be proposed? After all, causing a crash is extremely unacceptable in a
+> > production environment.
+> 
+> What crashes are you seeing in your production environment?
+> 
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
