@@ -1,146 +1,144 @@
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B3F4C7B;
-	Thu,  1 Feb 2024 01:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA314C6A;
+	Fri,  2 Feb 2024 13:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706751743; cv=none; b=NVJGuMpcfFDwA6F7NnNYay3crQGsqyTHpDXLi3JkZW/EBFYrT7eO1aHCi5jULXv9zaDEZq5Pr80qeOJMmQfA9I92BGGHQxIvePfVjpX59vcyIYu5Jxm2QhPxHK8iKPDH+PkYu37BciMNYD47EfrMTOdWPjnbElKrJLgk+WOylRk=
+	t=1706879086; cv=none; b=TmBUmFJrumX42Gc5h0HEXtp3IgRiq329frOqxPuQfeyVJKsA512mitQmy1wbugbjKz8uZkRxGhXPrDt9mIomcZkgB/eQhlSy2ZfFlmv/MBeDWsEUBPTurVZ6hqvqSZ6GlWQXpFW8QDZ57xwcyVzv+IL/o66r9o5jBFgcBKA2WfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706751743; c=relaxed/simple;
-	bh=6oMVGx/JwGgsizKVfPO1lHIPkL1xgjV9NuMQhjvciWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tudURNa+bwSd/RYoc8m1Aer1fBOD6WtfD9FARAGJ32yVWeR2HYTbEG/RTACr+yteeqP7ZpC8ZgXD860HTyn5mpQaOf43jifIw0o3utbzPpKMQUb3Lnzf+wi6Ve2LGrcndr9tFPi9tRBvFrpVgZlmXuZtsD7mr+3jnKrBV0vqff8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZuLWh71B; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706879086; c=relaxed/simple;
+	bh=VHNzo62n2veQT6kzrf61FzcveAg/Vc9QAoX36epjdhA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=pNpZsqbD44mE2y8MfikfjkEOiZ41Qla0fRLi0/RnCLLIWWeO/j76mIM2ojFEgPW9uy8nkfAnVfDsZpgQEJ3hEkhqciXIta3257Rz+r6S4yFFm3XC3hUF2ojrQ8w/T6UATns3ITmqOv/ek9KljsCjca8bKw45hIvmneJbv+no+YI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sKse/JN6; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZuLWh71B"
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-783ced12f9bso19792585a.3;
-        Wed, 31 Jan 2024 17:42:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706751740; x=1707356540; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4WRKA+8oB7qFwtR1n75bKmIl1ybu1sGsFv65Z7DNMuk=;
-        b=ZuLWh71BL1EJNOFSk/gid87c2vx7R3bxoiGdyL8PffH0ma/Utl7wwCbs0PoXeed9X5
-         +wE0iMkAyMv2A7yysekrh88dGErbyN7rlV9/UZc868cRe74aYPxKswDl+LsvMU4FY62+
-         MzcIlBLHbwuK0KcWOpWqbGle/qniXSoNZfQNX+8Rxw8yRADYaLNxbSWjN9yi38euSb0E
-         MTgqxvu5Y9GTu3y31KssoK3YBqQLnSLVZtKTdC2jH2ORUl7Bs0wfAD6IjACaOUh8G7bo
-         TsoUZjC50SHX66/JE82hoZZA4UKSiWJCOOKwt29gqdECLI0KQDh/7sWNEaEXkR7RlTHT
-         R34A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706751740; x=1707356540;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4WRKA+8oB7qFwtR1n75bKmIl1ybu1sGsFv65Z7DNMuk=;
-        b=U8fb9UNf1hCOxXDd5X2KDpAoZJT2WaRcY8QJYIKyhaUQLJshAzgSraDz+86URiMvF4
-         ffZRCsA+thjJUr+n0si6AIOsy0pbk5haI6x/2koXaYSdB8f8z8Pgh70K14YRGXb6LBtl
-         6JWiiMlHakn03rV9CHbnJY8bgqTndXeApNmF6A9o1zUrYkqw3GdRdV0To4Pm/dZEEZgy
-         gRh6FykbyNvPzJhwcntBl/fXrI3Tn8rMFEzG9c+jdm2DWGScd0U19eCf3l56tYMs7JEF
-         kvBZJJL7BJYIgh4M91U0WUgVhUM8z/3tMKTC9oB6OX0+ddriUEC+O/xpanaqhLHP4vVj
-         9HXg==
-X-Gm-Message-State: AOJu0Yzltku3mK5WOrUL2olSJmBK50Ed1ah8qEFzxEKbdAnccuVF4NQM
-	HxLp2p9cRRrYGMCVtsdgmPEq2TrizdsoAGrSYcegbYfCBOr2JVPuy2qOXRpn
-X-Google-Smtp-Source: AGHT+IH7gXEnhRV6dQ/hlBl1ymm90ftsMLEZXl2lXUDTf5mMK0KACFhC6A6WDgvulzQq3n9XQg8mjw==
-X-Received: by 2002:a05:620a:124c:b0:783:4a89:f1d9 with SMTP id a12-20020a05620a124c00b007834a89f1d9mr1233836qkl.59.1706751740697;
-        Wed, 31 Jan 2024 17:42:20 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWHG9KQtwYecuVAw3zxj3CBVPr63QVPiot25Ti3U39+yLxoXmX2tiyTEzAMYm2wos+U1uG/a36SWyhSXx0T+NMz0XuoixOz4zXYn5QMYtMo8DQ4xhy1OYv1U2EyWVgWItmvawjkFZMDd822hmOW/ZBcZ/Jho9XnKLij7ig8pGhCnA0BVGlqKr9bF/LAEq7cffAh1q4siV6BVIttYaBaO3yGpyLnd92oFQ1z3rwwN5OXA5erZ8afTzxG+DS9KoWAplGRveeVz2MY4/p1XQ7w6RHbfPMZKlkRwpS1ktIiWZeMThX0t10Mp4k3K8fC/AMFVHncaHXI6k+ApnZkS7nXhRyYiccemfoIxRslq0PxKIwc5kJvDFNf8L4q
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id qp15-20020a05620a388f00b007840843f3b2sm2079154qkn.18.2024.01.31.17.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 17:42:20 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailauth.nyi.internal (Postfix) with ESMTP id E1BC627C005B;
-	Wed, 31 Jan 2024 20:42:19 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 31 Jan 2024 20:42:19 -0500
-X-ME-Sender: <xms:-_a6ZTyunmMp5e08Hf8LadfDVCQLdRrvUlxBOxCRTbySy_DXySaVmA>
-    <xme:-_a6ZbQzYOqNvPN7I1Vqu1EIwvJUWIsfDkS8FJtgRG68aJ86f8V9Sv4KvpMaFMBK7
-    rzRhICL_aPr_9rp-g>
-X-ME-Received: <xmr:-_a6ZdUTuvKRA0CNcsZPiRr1qJ31YqWSfQIEt1tJCvd8tVz9-6PlBEbcgtgVkA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedutddgfeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeegleejiedthedvheeggfejveefjeejkefgveffieeujefhueeigfegueeh
-    geeggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:-_a6Zdg7S8pGxEosGJb_EvN7056T2qoi79vujCfAV1Bx4Pl3mN1l5A>
-    <xmx:-_a6ZVBPMHHLG0AMgakkTFCJ40FO56HrFq7DLoP4OwveBDcDYPpcCg>
-    <xmx:-_a6ZWJBepdoeyf33FADW32vZFjKIWnvHvZvbiY-lqpq1hJAgAxk3g>
-    <xmx:-_a6ZaJwiwlPuyGFbBDN4Qnq3jWhBhXBta6xgytUXv6H4j-wIPTTUQ>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 Jan 2024 20:42:19 -0500 (EST)
-From: Boqun Feng <boqun.feng@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Zqiang <qiang.zhang1211@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sKse/JN6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 228E8C43390;
+	Fri,  2 Feb 2024 13:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706879086;
+	bh=VHNzo62n2veQT6kzrf61FzcveAg/Vc9QAoX36epjdhA=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=sKse/JN676bA5NZide99+MztzoAngiNHaHBrJtFzRH62D1u5E6R+3FQklBkF++I5N
+	 PcOVGesJho5Ib34+3T8GBWTTBBfiklACb4v9B7L+N9g6yCkIlqVOl4i0oCiRGvavMs
+	 uQQ6a64uLWESdPN6R4VyWAFV1KR0eb4wrLWEZpGdtnZXtU4awDjuxnIrk6gjOiLUUV
+	 UZtvn/gLYaKxe9z8ta+dNODgkusDTGiAe+6EAyvirnEsF7NrPBwhkNWdsh/7lR/wuy
+	 Zx5h7wAmjcXz+yXW7Xcb5I+b/VmW6TFU3lIxbSiEhJVHDsIALhhG1OEdfatM0BiDk3
+	 77EQWuVd01vqA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B3478CE1ECC; Fri,  2 Feb 2024 05:04:45 -0800 (PST)
+Date: Fri, 2 Feb 2024 05:04:45 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Petr Mladek <pmladek@suse.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH 6/6] rcu/nocb: Check rdp_gp->nocb_timer in __call_rcu_nocb_wake()
-Date: Wed, 31 Jan 2024 17:40:58 -0800
-Message-ID: <20240201014100.3204532-7-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240201014100.3204532-1-boqun.feng@gmail.com>
-References: <20240201014100.3204532-1-boqun.feng@gmail.com>
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: [BUG] workqueues and printk not playing nice since next-20240130
+Message-ID: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+Hello!
 
-Currently, only rdp_gp->nocb_timer is used, for nocb_timer of
-no-rdp_gp structure, the timer_pending() is always return false,
-this commit therefore need to check rdp_gp->nocb_timer in
-__call_rcu_nocb_wake().
+Starting with next-20240130 (and perhaps a bit earlier), rcutorture gets
+what initially looked like early-boot hangs, but only when running on
+dual-socket x86 systems [1], as it it works just fine on my x86 laptop [2].
+But when running on dual-socket systems, this happens all the time,
+perhaps because rcutorture works hard to split each guest OS across a
+socket boundary.
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- kernel/rcu/tree_nocb.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This is the reproducer:
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index ffa69a5e18f4..f124d4d45ce6 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -564,6 +564,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 	long lazy_len;
- 	long len;
- 	struct task_struct *t;
-+	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
- 
- 	// If we are being polled or there is no kthread, just leave.
- 	t = READ_ONCE(rdp->nocb_gp_kthread);
-@@ -608,7 +609,7 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
- 		smp_mb(); /* Enqueue before timer_pending(). */
- 		if ((rdp->nocb_cb_sleep ||
- 		     !rcu_segcblist_ready_cbs(&rdp->cblist)) &&
--		    !timer_pending(&rdp->nocb_timer)) {
-+		    !timer_pending(&rdp_gp->nocb_timer)) {
- 			rcu_nocb_unlock(rdp);
- 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_FORCE,
- 					   TPS("WakeOvfIsDeferred"));
--- 
-2.43.0
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "10*TREE01" --trust-make
 
+By "looked like early-boot hangs" I mean that qemu was quite happy,
+but there was absolutely no console output.
+
+Bisection identified this commit:
+
+5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+
+Reverting this commit made the problem go away.  Except that it is really
+hard to imagine this commit having any effect whatsoever on early boot
+execution.  Of course, this might be a failure of imagination on my part,
+so I enlisted the aid of gdb:
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "TREE01" --trust-make --gdb
+
+After following the resulting gdb startup instructions and waiting for
+about ten seconds, I hit control-C on the gdb window and then:
+
+	(gdb) bt
+	#0  default_idle () at arch/x86/kernel/process.c:743
+	#1  0xffffffff81e94d34 in default_idle_call () at kernel/sched/idle.c:97
+	#2  0xffffffff810d746d in cpuidle_idle_call () at kernel/sched/idle.c:170
+	#3  do_idle () at kernel/sched/idle.c:312
+	#4  0xffffffff810d76a4 in cpu_startup_entry (state=state@entry=CPUHP_ONLINE)
+	    at kernel/sched/idle.c:410
+	#5  0xffffffff81e95417 in rest_init () at init/main.c:730
+	#6  0xffffffff8329adf2 in start_kernel () at init/main.c:1067
+	#7  0xffffffff832a5038 in x86_64_start_reservations (
+	    real_mode_data=real_mode_data@entry=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:555
+	#8  0xffffffff832a513c in x86_64_start_kernel (
+	    real_mode_data=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:536
+	#9  0xffffffff810001d2 in secondary_startup_64 ()
+	    at arch/x86/kernel/head_64.S:461
+	#10 0x0000000000000000 in ?? ()
+	(gdb) print jiffies
+	$1 = 4294676330
+	(gdb) print system_state
+	$2 = SYSTEM_RUNNING
+
+In other words, the system really has booted, and at least one CPU is
+happily idling in the idle loop.  And another CPU is (maybe not quite
+so happily) running rcutorture:
+
+	(gdb) thread 6
+	[Switching to thread 6 (Thread 1.6)]
+	#0  0xffffffff8111160b in rcu_torture_one_read (
+	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+	    at kernel/rcu/rcutorture.c:2003
+	2003            completed = cur_ops->get_gp_seq();
+	(gdb) bt
+	#0  0xffffffff8111160b in rcu_torture_one_read (
+	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+	    at kernel/rcu/rcutorture.c:2003
+	#1  0xffffffff81111bef in rcu_torture_reader (arg=0x4 <fixed_percpu_data+4>)
+	    at kernel/rcu/rcutorture.c:2097
+	#2  0xffffffff810af3e0 in kthread (_create=0xffff8880047aa480)
+	    at kernel/kthread.c:388
+	#3  0xffffffff8103af1f in ret_from_fork (prev=<optimized out>,
+	    regs=0xffffc900004abf58, fn=0xffffffff810af300 <kthread>,
+	    fn_arg=0xffff8880047aa480) at arch/x86/kernel/process.c:147
+	#4  0xffffffff8100247a in ret_from_fork_asm () at arch/x86/entry/entry_64.S:242
+	#5  0x0000000000000000 in ?? ()
+
+So the system really did boot and is running just fine.  It is just that
+there is no console output.  Details, details!
+
+Is there anything I can do to some combination of workqueues and printk
+to help debug this?  Or that I can do to anything else, as I am not
+feeling all that picky.  ;-)
+
+							Thanx, Paul
+
+[1] The dual-socket system is an 80-hardware-thread (20 cores per socket)
+    system with model name Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz.
+    I get the same results when using either of these compilers:
+    gcc version 8.5.0 20210514 (Red Hat 8.5.0-21) (GCC)
+    gcc version 11.4.1 20230605 (Red Hat 11.4.1-2) (GCC)
+
+[2] My laptop is a 16-hardware-thread (8 cores) single-socket system with
+    model name "Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz" and
+    gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04).
