@@ -1,80 +1,195 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A4D7CF10;
-	Fri,  2 Feb 2024 14:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB50822071
+	for <rcu@vger.kernel.org>; Fri,  2 Feb 2024 14:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706883178; cv=none; b=R5blcnydWcaN98c2n1Jaz4+IBfFOe7aEL1J7smXb6hLzd5Zv4ekZnDFyELTj/YoinanK45Orf1XMrnsdbt9aLjC2R1k1Sz83WTCz166b+G7USlfC2i4LfE1+8A+EcfpiMf4JJPDMgqtwxSzgHbOT+Cmi/jELX/FwHi8hmsSft08=
+	t=1706884532; cv=none; b=V7vYDQj8+6xvz5mF+LxNI3SN1fePKB4rbG8hVDnLJilj1QJAeFWCatz0DBJtmnJc3VnFIEb5ablX0qouJWeIGaj+FdfNTK/da1piT+sFtbetxqopbq5byoBCHKH13FubaXf4AebXIZmhk0BWBCM6oVY0ssf1Ur7dNlIn9SoZauQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706883178; c=relaxed/simple;
-	bh=f5YKe3WMy628KgG7tbI3qgfPJacBwbHrVJ9RjrxaFGo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=G/tLstf5oiQbzHRKut6qlVG8XbiS/9nZHlekKdyDDDKjvNRS2WlYrXwb4gZxJRhtnMl1Ov+CUZcoER/sIszYzldMX6kXnT7mcmtVpvPSGqVaFywXy7bos+jDPTSOG5EGGZFBAmRJGUu1ViRB0D4khhdcLAfss3rCOisMjlUAM1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cyugpSWw; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RCALL4gs; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1706884532; c=relaxed/simple;
+	bh=4HTPW99u3wqlNp6Rv9yUxE8nx6RD09MRp/DTp8XNPyo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HNeDvy9tV7GL/2oze+pYityGWFrot5DNhEJEzuilEn1aQKWd5a7R9sSG3hmC5FHkHf1YClMkr0cy7Zi7UlEmtnUPcRkTkj28lQoUku+LlZYwuW8rBSnamMg1u6T5m4we2FLdfFTHOjA/JoPI7IZb8TewVu2cBtMtYel3Pg52umo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UjO9/ecV; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cyugpSWw";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RCALL4gs"
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706883173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ij6oDiAkJUq8zd7Ne/5DNIcQE+6hx5NUe30iVeKaeds=;
-	b=cyugpSWwEO0wfeMAT251N9WbpgpEJDip9egujvXj09IhlEWunJ6JVoKo+N81zbnuwhUZY5
-	AH14ryU2lrXdm+H0VzjAt7hDlX5Cutphup1qSJA6P1RpZABSfZHCiWI+mpatwaK0UXd1lJ
-	f5LPaOHZ9c1+oiJnmpZReYa5OW4o2qCqCS+LqxwGIhadJLcPSOJkp5MZEXZpO3aIboTbmc
-	uyHL8DqzqbaFd+lUyegACeoNpCvNE+tfkkc5szVnEVMDp1HgFJkUG/psjrVqmLXpih2mEM
-	k91jslZL5mQhlRj47ym8oGJeAxT4NKbSpjz5RHagq2n1Hd+JMvRg5v9n+FIHNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706883173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ij6oDiAkJUq8zd7Ne/5DNIcQE+6hx5NUe30iVeKaeds=;
-	b=RCALL4gszeocsYD5hgxqbJcFi8DLy4ZkwbKkxcCSJk11jZLxvKMo+lqdZBVPXzPJziCxPJ
-	oXjN9osEQbjUIoAw==
-To: paulmck@kernel.org, Tejun Heo <tj@kernel.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Petr Mladek <pmladek@suse.com>, Steven Rostedt
- <rostedt@goodmis.org>, Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UjO9/ecV"
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a30f7c9574eso310159366b.0
+        for <rcu@vger.kernel.org>; Fri, 02 Feb 2024 06:35:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1706884528; x=1707489328; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QTXW/IgMSjYbmMUv1HG2gfGoIaBkbzHe0l/jl6UZwLo=;
+        b=UjO9/ecVNR/RUm04u4QZKxgCHIA9a2v2SWleCJevZdtdE9voJWl1BHAMxwx+An0qaT
+         dQWWgU6dIJ8MQt2CgoWMJL+YRq0/jxRyTM+qgZ1Onf4wVLe31m6zvFFRUgYmQxwCv0YN
+         bPchINApGtEpAVoSEysAI6ZVB74NNKH1BqgU4tJsNRJugbBAVVfPIyqB0b/7h9w/FpPj
+         QZvn6rGBnWIkv9Bsvdpypz7F8S3La5f5SnYrUS4pflsRaNPApQB5uduf1YhgC69WtgCn
+         WQ2m4ngqgL1iakKye3WKhaBsopHA9vm+ZuA2GtlveOrDy1Wk5SMIvy1Dh9JiFAUVDeMz
+         7mfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706884528; x=1707489328;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QTXW/IgMSjYbmMUv1HG2gfGoIaBkbzHe0l/jl6UZwLo=;
+        b=umbizxHQveT/R6QtyoCyBZbuLQOomqir27arWk0hDHtEYgmo+Hn7Pwxidi1ouqgApz
+         iDIGEvytpxTZozsWq/HnA0IaDWpowsgqnvVrIuz5GNEsn6X7U4JAxaL+1wrLXIXhq/pJ
+         zz/uW5zV3QxqKQYhkPcHNmIr+/m/9DdAUNKNrNOgrSuvZ8QACHZkEnRQ28b5bf0B+b+d
+         jPdOg1mDNL4fK24znIJHoJ/WH+Adp6xOBd0ALsuC+OwNGDHMOrb9FUi9qgsvCLMbmiM7
+         7/vrhotY8S60KHyqOcuoNdxbk8pRoK4RdAfs9W+2C0W2xOf+eKlC3PaItZmUkD4/7Xcm
+         tgeg==
+X-Gm-Message-State: AOJu0YzLg57mp3NMH7kQiY3BlvI1riMeNBX7sS9nITefEtlSnyqFc0FZ
+	CHYUk2QHYSJb17U5boAwnPjsajRpf/mesCZNARnd26OypN9MbDy1SGIhyCLf0LSiGR0hKuDGILZ
+	d
+X-Google-Smtp-Source: AGHT+IFnvcF1Cgbp3auZh5Hvq7VVtHB9gdIUhyH3RjHaICfoQfPm9TKvtiW1TdbmnhPTjjxEN/xzcw==
+X-Received: by 2002:a17:906:5399:b0:a36:fc06:6f7b with SMTP id g25-20020a170906539900b00a36fc066f7bmr1294273ejo.44.1706884528064;
+        Fri, 02 Feb 2024 06:35:28 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCV3+2fQtHpjtsymH97+zaX2cVRDP0JvZtZ3prHAs/d0++TLMhL5qi+ITYLMFuhkLHeZ2QxJsvPpVrxMXdyNXt1U1yuU59BZkcijCPKsj1xAeB4j0NfUej06nU+S3NEO8ptT2KRNdG9s5v6/dkuRBKjLgjtZE0YGY5wC8eTwCeI77tedMJ7ndPZhX1sAnk/ro28jxc0KYcFbLI0NFy8wg2PlyhbDazwT+2j1+WJsctddRoip0+cNvcA5tnCgcdzZHNjTM9UkFNe2BUkfZfhzFveoD2kLh+CqjLbW
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id f14-20020a17090624ce00b00a3683b565fbsm924750ejb.187.2024.02.02.06.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 06:35:27 -0800 (PST)
+Date: Fri, 2 Feb 2024 15:35:26 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-In-Reply-To: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+Message-ID: <Zbz9rlGPbwBJMFLG@alley>
 References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
-Date: Fri, 02 Feb 2024 15:18:48 +0106
-Message-ID: <87le83ara7.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
 
-On 2024-02-02, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Fri 2024-02-02 05:04:45, Paul E. McKenney wrote:
+> Hello!
+> 
+> Starting with next-20240130 (and perhaps a bit earlier), rcutorture gets
+> what initially looked like early-boot hangs, but only when running on
+> dual-socket x86 systems [1], as it it works just fine on my x86 laptop [2].
+> But when running on dual-socket systems, this happens all the time,
+> perhaps because rcutorture works hard to split each guest OS across a
+> socket boundary.
+> 
+> This is the reproducer:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "10*TREE01" --trust-make
+> 
+> By "looked like early-boot hangs" I mean that qemu was quite happy,
+> but there was absolutely no console output.
+> 
+> Bisection identified this commit:
+> 
+> 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
+> 
+> Reverting this commit made the problem go away.  Except that it is really
+> hard to imagine this commit having any effect whatsoever on early boot
+> execution.  Of course, this might be a failure of imagination on my part,
+> so I enlisted the aid of gdb:
+> 
+> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "TREE01" --trust-make --gdb
+> 
+> After following the resulting gdb startup instructions and waiting for
+> about ten seconds, I hit control-C on the gdb window and then:
+> 
+> 	(gdb) bt
+> 	#0  default_idle () at arch/x86/kernel/process.c:743
+> 	#1  0xffffffff81e94d34 in default_idle_call () at kernel/sched/idle.c:97
+> 	#2  0xffffffff810d746d in cpuidle_idle_call () at kernel/sched/idle.c:170
+> 	#3  do_idle () at kernel/sched/idle.c:312
+> 	#4  0xffffffff810d76a4 in cpu_startup_entry (state=state@entry=CPUHP_ONLINE)
+> 	    at kernel/sched/idle.c:410
+> 	#5  0xffffffff81e95417 in rest_init () at init/main.c:730
+> 	#6  0xffffffff8329adf2 in start_kernel () at init/main.c:1067
+> 	#7  0xffffffff832a5038 in x86_64_start_reservations (
+> 	    real_mode_data=real_mode_data@entry=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:555
+> 	#8  0xffffffff832a513c in x86_64_start_kernel (
+> 	    real_mode_data=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:536
+> 	#9  0xffffffff810001d2 in secondary_startup_64 ()
+> 	    at arch/x86/kernel/head_64.S:461
+> 	#10 0x0000000000000000 in ?? ()
+> 	(gdb) print jiffies
+> 	$1 = 4294676330
+> 	(gdb) print system_state
+> 	$2 = SYSTEM_RUNNING
+> 
+> In other words, the system really has booted, and at least one CPU is
+> happily idling in the idle loop.  And another CPU is (maybe not quite
+> so happily) running rcutorture:
+> 
+> 	(gdb) thread 6
+> 	[Switching to thread 6 (Thread 1.6)]
+> 	#0  0xffffffff8111160b in rcu_torture_one_read (
+> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+> 	    at kernel/rcu/rcutorture.c:2003
+> 	2003            completed = cur_ops->get_gp_seq();
+> 	(gdb) bt
+> 	#0  0xffffffff8111160b in rcu_torture_one_read (
+> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
+> 	    at kernel/rcu/rcutorture.c:2003
+> 	#1  0xffffffff81111bef in rcu_torture_reader (arg=0x4 <fixed_percpu_data+4>)
+> 	    at kernel/rcu/rcutorture.c:2097
+> 	#2  0xffffffff810af3e0 in kthread (_create=0xffff8880047aa480)
+> 	    at kernel/kthread.c:388
+> 	#3  0xffffffff8103af1f in ret_from_fork (prev=<optimized out>,
+> 	    regs=0xffffc900004abf58, fn=0xffffffff810af300 <kthread>,
+> 	    fn_arg=0xffff8880047aa480) at arch/x86/kernel/process.c:147
+> 	#4  0xffffffff8100247a in ret_from_fork_asm () at arch/x86/entry/entry_64.S:242
+> 	#5  0x0000000000000000 in ?? ()
+> 
 > So the system really did boot and is running just fine.  It is just that
 > there is no console output.  Details, details!
->
+> 
 > Is there anything I can do to some combination of workqueues and printk
-> to help debug this?
+> to help debug this?  Or that I can do to anything else, as I am not
+> feeling all that picky.  ;-)
 
-The printk ringbuffer contents would certainly be interesting.
+It really sounds strange. Console drivers should not use workqueues
+at least for console->write() callbacks. The main reason is that
+workqueues do not work in panic(). But it might bring many problems
+even when the system is running "normally"
 
-If you build the GDB scripts (CONFIG_GDB_SCRIPTS) then you will have:
+You wrote above that there was absolutely no console output so the problem
+was from the very beginning.
 
-(gdb) lx-dmesg
+I looks like that the consoles get blocked either during registration
+of the first console or when trying to flush the first message.
 
-As an alternative, you could copy the contents of
-Documentation/admin-guide/kdump/gdbmacros.txt into your .gdbinit and
-then will have:
+Consoles, except for early consoles, are registered by
+console_initcall(). And init calls are proceed when the workqueues
+subsystem is already initialized. So, workqueues might
+somehow affect console driver initialization and registration.
 
-(gdb) dmesg
+My first though was that the workqueues change might somehow
+block synchronize_srcu() which is used when updating console_list.
+But it not called during console registration. It is called only
+during suspend, resume, and console unregistration. So, it should
+not block the first boot messages.
 
-There may be some hints in the kernel log as to why there is no console
-output.
+My current theory is that the change in workqueues might somehow
+block a console driver initialization. I think that some console
+drivers might use workqueues for some tasks even though they
+could not use them in the write() callback.
 
-John
+Could you please provide console log when the problematic patch
+is disabled? I wonder what consoles drivers are registered and when.
+
+Just to be sure. Does the rcu torture configuration modify the
+behavior of srcu_read_lock_nmisafe() which is used by
+console_srcu_read_lock()?
+
+Best Regards,
+Petr
