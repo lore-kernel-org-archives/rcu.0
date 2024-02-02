@@ -1,116 +1,101 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7837423BE;
-	Fri,  2 Feb 2024 16:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FC61487D0;
+	Fri,  2 Feb 2024 17:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706892992; cv=none; b=eXWKSUigGoJG6g/+PTUKYo3+mUpcFdkOt5FKTNARo5casbGaDsgSRvk7pQ5x+ryOoqHnc2mwFd0m2H/kBgVbDe5byKa2G8NCdXaH2qcDrzbiPIuoTxF72S+PvWEH3Lx10o5NYzO1KQ06idCIObm1VqYTdyFSQDXDDOIUYeUmBSQ=
+	t=1706893354; cv=none; b=jUVbQmEggjkjPGVRRiPjM7wSmaOCNUy7wesV9RxYxWxcyJ96z3QMTclLya/eJJ1gg4vZLZaJFW9hpC88SZFCnKXSb1Jf5uRB8brSY1jCtoj8CCyxM/7ZXWPgjPRVnKz09J2V3zY1aaYXDxZh34uNgsAQcgEnr3yFFwGYWgY0oHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706892992; c=relaxed/simple;
-	bh=wyOnNF8B4sb0b8JsxsVpaFTlI4g0+8evOPxcQxS/teA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vDVlpsB9msgJj4NQfZpMLof5mKv8bBnhwvj/sXuIdtrFWJq7UNtvOcytqPawB5On17lP2oNHdxX8A9LGGrCJYU1wk82kyux0ZfYjJ9QB3/8JhSFoBqCGgMrHj8isyURxrP3RXELB2kIOlfJCMIkf9HpLyoYVu4lhLW9hFm3MTCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=arSuH0au; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706893354; c=relaxed/simple;
+	bh=KoX8uvs6sRAFq3Wu/LCxCrn4njxS++aM7O+B0NSHNog=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PtjAzI7wxKq/Cq1dpX8t0snWqnZR+RKRXosba2IV69XlIn+RvfQ+RZtGpNDiYVlLzT3KKodvtD3E25DWh+xQJZa1WV3o91C++00CeZfHL/fNXWGptIkMMOtf1yiyDXgufcjno4xpJ0QqqHdPU8OSPQ8iqmuVdfpjRVir3o24a+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cMJIXxyu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dHqg+SZw; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="arSuH0au"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d7858a469aso17802295ad.2;
-        Fri, 02 Feb 2024 08:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706892991; x=1707497791; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Qe+TOmLaJxk957V8jGDLQ7fu9VgTnLFu/zh4WfVuOvY=;
-        b=arSuH0aupyVXAcxPsfa5xCg0wRgnYYOlROEDjxw0BKJKu7tYR0arckcqU2ImluJWHw
-         SHOPOibETWbrHVLo0h1LwTgnrbowU6V2s6nUjWNduXFBYcjebghL1UOcyyZm9rDrC0Qc
-         OKbGeLtpwJqoIYYzPO9l9AQA/XfPNoi3tCKOnO0qsTiQaOL3Yax62GlY8lbU0CUwpJbl
-         5QxXzVDl1IFESmZmYpno05aDz8dpkGxWUbV26g3hFmHjHajl6nl+LQF/F/3DlDWlvE2Q
-         8vDLNsk7LatHll7URRZOkb0qfE97p9gI2mgrhN2ALyzFagUMt3qUdxEh+QsqbFHC00Qh
-         U4Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706892991; x=1707497791;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qe+TOmLaJxk957V8jGDLQ7fu9VgTnLFu/zh4WfVuOvY=;
-        b=kEc5HUBnjFRzM7eLmLdY8sWCJPMbbId/bxW9/pweOGsSkUm6+VR0HJqOViMRJVJTHT
-         qUy+p+l3zd3of4ahse1CbsolXgTjBl6d8LJOdqxsEar5g767ye7Rs7Zlfq2eAuLmaohm
-         p4hVvt6hFt13xXiS/CCM8e0oAwo+mwhejCZ4vxemdutWC2JIbtLYcAeMzdrRjcE8TRPe
-         hCfAz6bhSud6YcFiryFcp0KRLKW5ZeAAFkNEnzUpTEnO9vK7LcmhWG1zPA6m52kVpqA5
-         jyeHV5W0vZe1Re0KRsaA8sPTw7CDnZcuCalvPpa9de4BwfDB8IyWf7fWIs7Uz9gRMcXq
-         N4nQ==
-X-Gm-Message-State: AOJu0Ywyx5amIcPcxGDdxEWujBZLW+BKRsq0m9m9LIn1mE86tUe922Yc
-	ZrAkUkh0QcnLMWLjFZK2MSIIMllA6YMxIxsW8lO5xuZ4XtY6i9zY
-X-Google-Smtp-Source: AGHT+IFVOr4HiW+sp+gB5p4t5//6Q+a6RWUzdnlakeWeXaYtXvRGKZLk/l5K6ixwFCQHdokYgLGmgw==
-X-Received: by 2002:a17:902:a5ca:b0:1d7:5eef:4d5 with SMTP id t10-20020a170902a5ca00b001d75eef04d5mr8048054plq.49.1706892990560;
-        Fri, 02 Feb 2024 08:56:30 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWEvERrDXE50CB9dVnuBFPPBoUo//KQRkoRGwT9G+p4eA1JV3u4GbJlx+aGCB5ZeW/L4vYD3wW8CNHIxN+segWas+rZ8ZWQOfhAuphaNXlMPNimAQrp34e/RrVfl3/XSz+iETWf0sAwyNeMifdeV0LRP0QP+c+l1F7JcWpfRgLmtzJPUbWumr5UMElgdgYy7gO1ZA9skITpIDT3oaYAFqvKRVO7zxxGpqpoFr2ARYVEiF1CM7/C4ofVk4+ib8fMVQdCMEht4tAAUIqXW17ACJ40ODl68+dvc/Pe9JtB3gU7cw37zeeNc2SaPv9rpEAc9bAfwFItHocSQazhE3ZH
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id kt5-20020a170903088500b001d8d1a2e5f2sm1806897plb.216.2024.02.02.08.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 08:56:30 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 2 Feb 2024 06:56:28 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cMJIXxyu";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dHqg+SZw"
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706893351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1UyVSWbQkjqdlMyzs2zo2iOAjvlC5wSsBEpWz41rzt8=;
+	b=cMJIXxyu3FpXaPwttxUh05Hh+nhzyRTB4D0oE+vmhuAvAMuykBxvo35/XrIf9s6KL4mMrk
+	f5JicRFyVO3XhZL5bBDyzuogKloWdsq0IdGjf/IG5lyCXYl3WvGwq5+zzrJwdk/1dapvHK
+	RkRv4q8JQKXwx6o+NWyap6baBaMiuccpor1la4mlJ6RaQUlW0z9EOk7A06JCOfrEhzUB1v
+	Reca1LorwafHL6429hzmM3tq428ytBATxPjP3pz7mni/msnuGEBstyzTbvlJOzDRlq2xsX
+	mbPRf/dOCWeUcbQW59cY2IDeEDNubFUWYx3qj/4qogskj77NmroAaBi1c09mvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706893351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1UyVSWbQkjqdlMyzs2zo2iOAjvlC5wSsBEpWz41rzt8=;
+	b=dHqg+SZwoxX+61PGRb+zoPhE99YYjNw6ZFYkAvMVeH12Ie5tb8vONXsRhnl2ODZwTes7lG
+	NBKClq6VpuD9LEDg==
+To: paulmck@kernel.org
+Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, Petr
+ Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>, Stephen Rothwell
+ <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-Message-ID: <Zb0evDquygkDI_8P@slm.duckdns.org>
+In-Reply-To: <7b5a386e-2dcf-49f1-a8e9-c46d2a9f8800@paulmck-laptop>
 References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
- <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
- <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
+ <87le83ara7.fsf@jogness.linutronix.de>
+ <7b5a386e-2dcf-49f1-a8e9-c46d2a9f8800@paulmck-laptop>
+Date: Fri, 02 Feb 2024 18:08:25 +0106
+Message-ID: <87zfwibxzy.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
+Content-Type: text/plain
 
-Hello,
+On 2024-02-02, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>> The printk ringbuffer contents would certainly be interesting.
+>> 
+>> If you build the GDB scripts (CONFIG_GDB_SCRIPTS) then you will have:
+>> 
+>> (gdb) lx-dmesg
+>
+> This says no such command even though I do have CONFIG_GDB_SCRIPTS=y
+> in my .config.
 
-On Fri, Feb 02, 2024 at 08:35:51AM -0800, Paul E. McKenney wrote:
-> Good point, and if this sort of thing happens frequently, perhaps there
-> should be an easy way of doing this.  One crude hack that might come
-> pretty close would be to redefine the barrier() macro to be smp_mb().
-> 
-> But as noted earlier, -ENOREPRODUCE on today's -next.  I will try the
-> next several -next releases.  But if they all get -ENOREPRODUCE, I owe
-> everyone on CC an apology for having sent this report out before trying
-> next-20240202.  :-/
+You actually need to build them as well. The target is "scripts_gdb"
 
-I think I saw that problem too but could reproduce it with or without the
-workqueue changes, so I did the lazy thing "oh well, somebody is gonna fix
-that" and just tested as-is. It's a bit worrying that ppl don't seem to
-already know what the culprit is. Hmm... I can't reproduce it anymore
-either.
+And you probably need to add:
 
-So, there is some chance that this may really be a subtle breakage. If you
-ever see it happening again, triggering sysrq-t and capturing the dmesg
-output (network should still work fine, so these shouldn't be too difficult)
-may help. sysrq-t has workqueue state dump at the end which should clearly
-indicate if anything is stalled in workqueue.
+add-auto-load-safe-path /path/to/your/kernel/build/directory
 
-That said, another data point. In my test setup, I use the earlyprintk boot
-option which enables console output way before than workqueue becomes
-operational, so having on console output at all is highly unlikely to be
-indicative of workqueue problem. My memory is hazy but it seems like I can
-no longer reproduce the problem on the same git commit. Maybe it was a
-problem on the qemu side?
+to your .gdbinit
 
-Thanks.
+(This is documented in Documentation/dev-tools/gdb-kernel-debugging.rst)
 
--- 
-tejun
+>> As an alternative, you could copy the contents of
+>> Documentation/admin-guide/kdump/gdbmacros.txt into your .gdbinit and
+>> then will have:
+>> 
+>> (gdb) dmesg
+>
+> This one hangs.
+
+:-/ I will look into this.
+
+> On the other hand, next-20240202 doesn't show the problem.  No idea
+> what might have changed.  :-/
+
+Did you check the backtrace on all the "threads"? I would expect one of
+them has tty in it and is probably deadlocked. There are known problems
+that if a WARN or lockdep triggers while holding the port lock, that CPU
+will deadlock itself. That has the effect that no output is generated,
+but all the other CPUs will run fine. And even printk() calls will
+happily store into the ringbuffer because they use trylock for printing
+and the deadlocked CPU will be holding the lock.
+
+John
