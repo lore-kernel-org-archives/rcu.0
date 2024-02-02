@@ -1,168 +1,86 @@
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B3620DFA;
-	Fri,  2 Feb 2024 14:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18AF179A5;
+	Fri,  2 Feb 2024 15:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706884956; cv=none; b=deF2gvgEj1j8ivZh+GnKZZiOK8ne5+M7M+eF8IFugRs8ATykRtQnh+8FAJw7DK0ah4S0HBwrPVfBSrizBypc50cg50qIWgukyOF9aRqTicMNcvdcqurLS2e6kMBiNaWMBn0tnMgakfBICao8UI9a35pXrqkM0fiPTrE+c5WnYSE=
+	t=1706889487; cv=none; b=TgnShTA+WMngeOtPWrw4B8yziL0TaMxnaETkXM1UHBAoktinyaxm6k5XGlNiW+6tp7REY8RhZ+86qKuW3rP65DYZaOrFdT6K/ddlidSxsgsFhNaibDr1z3/h8IwywT57+hE/tkvE0oCKc1uxB5BFMbzWB2Lyg5nFGgpbUDDOXGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706884956; c=relaxed/simple;
-	bh=2P+ZNughbw18nF0XEj47/8gcO7qDHTuHeliWPvBKGcE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fv66hovJgcF2JO/Fi4S78QjqZVUx3MlWyq5yIRYJj+6gioxBcQblAvKoRcFy9xTOROf3bIDgVIDWj74mNoJb3e393PKuuh4IPBp0P7C+y59csntCdOSBnbmeHY3VTN/3cxaaGhO4qSQgKiUNl923LZYf9cYQ1NjRQHrx87WvLDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TRHkl5ZTlz9xqpg;
-	Fri,  2 Feb 2024 22:11:27 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id B75331405F9;
-	Fri,  2 Feb 2024 22:26:28 +0800 (CST)
-Received: from [10.81.209.159] (unknown [10.81.209.159])
-	by APP1 (Coremail) with SMTP id LxC2BwBHPxiM+7xl22O9AQ--.55539S2;
-	Fri, 02 Feb 2024 15:26:28 +0100 (CET)
-Message-ID: <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
-Date: Fri, 2 Feb 2024 15:26:14 +0100
+	s=arc-20240116; t=1706889487; c=relaxed/simple;
+	bh=wJKT5sIxNf/D+z4BQh9AyVtHvq/XuXC9v+TH4SmaVhU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BONO3evOL9HHSXHoW5KyCvD0dAQ4fXrvx8iM2qIntBd2PkI7CHNwm8kds16tg4O3fHYg4/b9pWtb9HACOYuQ/SzRZlQIJDgCaJfuefHVZ//rYZBAG+jIGEM2RCYfyi2pCRH9+ponaDvw1BPC8gHZKz9fjHWFPVqVbV9ng7HP5mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sa/+sWZx; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sa/+sWZx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 335ABC433F1;
+	Fri,  2 Feb 2024 15:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706889487;
+	bh=wJKT5sIxNf/D+z4BQh9AyVtHvq/XuXC9v+TH4SmaVhU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=sa/+sWZx+x6EWbUZhTKUbEeWga1LllPF+PKpXaA6jjhJYhsyRmGgqOt0nil0iseSt
+	 uAjvqTlMbaz/vgUazGmnTdGkZs3wkbAUal3EU9RpC+ZQ91jTvjydsnTmNXqU4dJBs+
+	 9OyHu2vCoZYwZNIxYXZdtFXq6becbC7ILFgILCfswe4Zi0XX7XVcMq7OUh95TnLYvr
+	 omeS4n0GlPzljshXa5PL9lCGuVG8z6YzethzKmN0qqAEvTsKnEqaceTegRkbd1PPxg
+	 LOlCpZqI1hOKbMOC7892Z4Vw9JUKYi9E41b6fvQLQXcmjoizLRep4LG14YOIcg7fV5
+	 Py/sPFu+6fuEw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C214ACE2250; Fri,  2 Feb 2024 07:58:06 -0800 (PST)
+Date: Fri, 2 Feb 2024 07:58:06 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
+Message-ID: <7b5a386e-2dcf-49f1-a8e9-c46d2a9f8800@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
+ <87le83ara7.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-To: paulmck@kernel.org, Tejun Heo <tj@kernel.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Petr Mladek <pmladek@suse.com>,
- Steven Rostedt <rostedt@goodmis.org>, John Ogness
- <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org
-References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
-From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-In-Reply-To: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:LxC2BwBHPxiM+7xl22O9AQ--.55539S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr1UAF1xXry8uF45CFyDWrg_yoWrtryfpr
-	W5Gr4UWr4kG347ZF1kAw15Xa4Yy3Z0yay3JasxGr98Xw15KF1ayF1ftFW7ua4qvr4rCF1a
-	qF90v3y2qw1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
-	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87le83ara7.fsf@jogness.linutronix.de>
 
+On Fri, Feb 02, 2024 at 03:18:48PM +0106, John Ogness wrote:
+> On 2024-02-02, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > So the system really did boot and is running just fine.  It is just that
+> > there is no console output.  Details, details!
+> >
+> > Is there anything I can do to some combination of workqueues and printk
+> > to help debug this?
+> 
+> The printk ringbuffer contents would certainly be interesting.
+> 
+> If you build the GDB scripts (CONFIG_GDB_SCRIPTS) then you will have:
+> 
+> (gdb) lx-dmesg
 
-Am 2/2/2024 um 2:04 PM schrieb Paul E. McKenney:
-> Hello!
->
-> Starting with next-20240130 (and perhaps a bit earlier), rcutorture gets
-> what initially looked like early-boot hangs, but only when running on
-> dual-socket x86 systems [1], as it it works just fine on my x86 laptop [2].
-> But when running on dual-socket systems, this happens all the time,
-> perhaps because rcutorture works hard to split each guest OS across a
-> socket boundary.
->
-> This is the reproducer:
->
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "10*TREE01" --trust-make
->
-> By "looked like early-boot hangs" I mean that qemu was quite happy,
-> but there was absolutely no console output.
->
-> Bisection identified this commit:
->
-> 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
->
-> Reverting this commit made the problem go away.  Except that it is really
-> hard to imagine this commit having any effect whatsoever on early boot
-> execution.  Of course, this might be a failure of imagination on my part,
-> so I enlisted the aid of gdb:
->
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 1m --configs "TREE01" --trust-make --gdb
->
-> After following the resulting gdb startup instructions and waiting for
-> about ten seconds, I hit control-C on the gdb window and then:
->
-> 	(gdb) bt
-> 	#0  default_idle () at arch/x86/kernel/process.c:743
-> 	#1  0xffffffff81e94d34 in default_idle_call () at kernel/sched/idle.c:97
-> 	#2  0xffffffff810d746d in cpuidle_idle_call () at kernel/sched/idle.c:170
-> 	#3  do_idle () at kernel/sched/idle.c:312
-> 	#4  0xffffffff810d76a4 in cpu_startup_entry (state=state@entry=CPUHP_ONLINE)
-> 	    at kernel/sched/idle.c:410
-> 	#5  0xffffffff81e95417 in rest_init () at init/main.c:730
-> 	#6  0xffffffff8329adf2 in start_kernel () at init/main.c:1067
-> 	#7  0xffffffff832a5038 in x86_64_start_reservations (
-> 	    real_mode_data=real_mode_data@entry=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:555
-> 	#8  0xffffffff832a513c in x86_64_start_kernel (
-> 	    real_mode_data=0x13d50 <exception_stacks+32080> <error: Cannot access memory at address 0x13d50>) at arch/x86/kernel/head64.c:536
-> 	#9  0xffffffff810001d2 in secondary_startup_64 ()
-> 	    at arch/x86/kernel/head_64.S:461
-> 	#10 0x0000000000000000 in ?? ()
-> 	(gdb) print jiffies
-> 	$1 = 4294676330
-> 	(gdb) print system_state
-> 	$2 = SYSTEM_RUNNING
->
-> In other words, the system really has booted, and at least one CPU is
-> happily idling in the idle loop.  And another CPU is (maybe not quite
-> so happily) running rcutorture:
->
-> 	(gdb) thread 6
-> 	[Switching to thread 6 (Thread 1.6)]
-> 	#0  0xffffffff8111160b in rcu_torture_one_read (
-> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
-> 	    at kernel/rcu/rcutorture.c:2003
-> 	2003            completed = cur_ops->get_gp_seq();
-> 	(gdb) bt
-> 	#0  0xffffffff8111160b in rcu_torture_one_read (
-> 	    trsp=trsp@entry=0xffffc900004abe90, myid=myid@entry=4)
-> 	    at kernel/rcu/rcutorture.c:2003
-> 	#1  0xffffffff81111bef in rcu_torture_reader (arg=0x4 <fixed_percpu_data+4>)
-> 	    at kernel/rcu/rcutorture.c:2097
-> 	#2  0xffffffff810af3e0 in kthread (_create=0xffff8880047aa480)
-> 	    at kernel/kthread.c:388
-> 	#3  0xffffffff8103af1f in ret_from_fork (prev=<optimized out>,
-> 	    regs=0xffffc900004abf58, fn=0xffffffff810af300 <kthread>,
-> 	    fn_arg=0xffff8880047aa480) at arch/x86/kernel/process.c:147
-> 	#4  0xffffffff8100247a in ret_from_fork_asm () at arch/x86/entry/entry_64.S:242
-> 	#5  0x0000000000000000 in ?? ()
->
-> So the system really did boot and is running just fine.  It is just that
-> there is no console output.  Details, details!
->
-> Is there anything I can do to some combination of workqueues and printk
-> to help debug this?  Or that I can do to anything else, as I am not
-> feeling all that picky.  ;-)
+This says no such command even though I do have CONFIG_GDB_SCRIPTS=y
+in my .config.
 
+> As an alternative, you could copy the contents of
+> Documentation/admin-guide/kdump/gdbmacros.txt into your .gdbinit and
+> then will have:
+> 
+> (gdb) dmesg
 
-Just to exclude one source of troubles, have you tried turning all 
-atomics into full barriers and seen if the issue still reproduces?
+This one hangs.
 
-jonas
+> There may be some hints in the kernel log as to why there is no console
+> output.
 
+On the other hand, next-20240202 doesn't show the problem.  No idea
+what might have changed.  :-/
 
->
-> 							Thanx, Paul
->
-> [1] The dual-socket system is an 80-hardware-thread (20 cores per socket)
->      system with model name Intel(R) Xeon(R) Gold 6138 CPU @ 2.00GHz.
->      I get the same results when using either of these compilers:
->      gcc version 8.5.0 20210514 (Red Hat 8.5.0-21) (GCC)
->      gcc version 11.4.1 20230605 (Red Hat 11.4.1-2) (GCC)
->
-> [2] My laptop is a 16-hardware-thread (8 cores) single-socket system with
->      model name "Intel(R) Core(TM) i9-10885H CPU @ 2.40GHz" and
->      gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04).
-
+							Thanx, Paul
