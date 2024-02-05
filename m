@@ -1,56 +1,52 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF23605BB;
-	Mon,  5 Feb 2024 19:41:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D441292E3;
+	Mon,  5 Feb 2024 20:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707162073; cv=none; b=NPJg1GoHHMzsZfCUfLdQySeDqzAWW/i5kzmGygKb2WZvIfxjs/P5o9EQI2Ry64mxJpOkG1pn09kyyF57TgrwI0YDyvgma0p4PJZD/LOfXP+mEGfzlXONHqHG62P3x1t6kTlWz7Ht4353a2nQVqqosWMM0wGk5syh9VQclnM4K8I=
+	t=1707163416; cv=none; b=jZdHohbj4ysbUxFVCDGpbrqDDgRVS9F4ToBaIsRTcSxpvGB6WnXySSkunPqeTmuHqOEhESVVt0hawq1Ra58zX0lykB1wY+iwPtdlMLkt4v4HfOA/fzUOCm20QezKWWUmiucqnBQmAoAsUVZOhw2+ZgpzfGqpNETH9W7vdkpXKY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707162073; c=relaxed/simple;
-	bh=Tf5sWpsOVkaiiHhZyJvaTkhmhB8pV5gkbffdgP5l+YQ=;
+	s=arc-20240116; t=1707163416; c=relaxed/simple;
+	bh=4eZQWX6W/aYg6ERcF31vLpr9leduea34fMM6jYOWiz0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pp6UYbZS9p+20G9LhcDEh3B2EgbFF0IcZBhqXcANtBsKoLiwqlV/Hx/EGwe+EmQsGxL7/viCXl4XT6BrHbjOB6Ge2VpEfw4ATx1HgYDkQeQNPNG2j4xCQIxBhOK5pEJW7+PtogZ20gb8N+uGWNAXcj2UPD6V8L2C+7X/AGD1vAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TO6gwLqc; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=VV1TbiRRHAoJWm/2K3WWR+CNkOCnmcbZVQJYprvaBZftPM3CP8qd0Gge5ciWZJODMBHZUEk7bPg2/Gtbnhde6stGg1pS2Ti8Iukt2woDoOwjcLSRJxkdoSLWbwNCa365dOEROXb1yY9lCWHbVW/uH4cahPEkDm7WG/jlaC739cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NkkDVeH/; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TO6gwLqc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0028AC433F1;
-	Mon,  5 Feb 2024 19:41:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NkkDVeH/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76E30C433C7;
+	Mon,  5 Feb 2024 20:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707162073;
-	bh=Tf5sWpsOVkaiiHhZyJvaTkhmhB8pV5gkbffdgP5l+YQ=;
+	s=k20201202; t=1707163415;
+	bh=4eZQWX6W/aYg6ERcF31vLpr9leduea34fMM6jYOWiz0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=TO6gwLqc8U5N2Ivy6mGSl7A3/NxKlGglLF83+CwVMBzkPNGdlGIgtO7XoxICgMxnb
-	 o7BBGkwXPw60E6Dw1vI5O1u3GaK2HyQ2ziL2aArU+rTClRJTPEkPP92KYbUdSiTl4I
-	 3THaI47XGTboNOlVEcxz531MqcYWik4T3hFw9rBYdLpNOtgyIQ00JlhT0SS2hJTSuj
-	 MM/L+aKNDrLDyOlNKtqgQFyrVZouCvXB4H5J5Glb0ZEkq7eGDTVqvNfpuvUlgNxI3H
-	 GRLluizGBtCB4N19ZgS0NcoB7b+CJDK9cMI3hwfFmYZYIJO6tONX3yvNZHNiTQr0AV
-	 45I4Kfy7UeKvg==
+	b=NkkDVeH/dIz2ktshCpJBJNpZa2Zmcy8Ftdfmtxu/qnvvsw2YtCwimeSk7gGMT5XlV
+	 ASLc8mT1/uYmlIG053uc8ekPQXOOyQajn6sADUbL/3H/xcKhklAhf/8boApDBu2NuI
+	 awlbhSPajP05uUVHAWf3lOvcEIL7CQpHBIf56qA+o+fxueW6Uo6bhbKpsbNVvSInKI
+	 36bQvBz6pdrr60lBHP78+/X6kmjJbOIBYRrTfTxr6AFwEJY37NZPKmD33I/uCLHGKq
+	 6ishGzLNJQUQb1FoL4UNvsU6/zNgOZvxSCwyJvx11WKAhUJgJBJ+1hc5Xjj4OKEtBE
+	 GvdLi3pydaXMg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9D83CCE1C10; Mon,  5 Feb 2024 11:41:10 -0800 (PST)
-Date: Mon, 5 Feb 2024 11:41:10 -0800
+	id 69A21CE1C10; Mon,  5 Feb 2024 12:03:33 -0800 (PST)
+Date: Mon, 5 Feb 2024 12:03:33 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-Message-ID: <a8386e9d-39f6-4bd5-8329-30550fb2745a@paulmck-laptop>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Zhengxu Chen <zhxchen17@meta.com>,
+	Danielle Costantino <dcostantino@meta.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Feng Tang <feng.tang@intel.com>, Waiman Long <longman@redhat.com>,
+	John Stultz <jstultz@google.com>, x86@kernel.org
+Subject: Re: [PATCH 5/8] tsc: Check for sockets instead of CPUs to make code
+ match comment
+Message-ID: <1781cc76-aeee-427b-bc9e-b3d2b8f184f3@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
- <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
- <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
- <Zb0evDquygkDI_8P@slm.duckdns.org>
- <c5d5ad66-da86-447b-8014-820d2c67382d@paulmck-laptop>
- <ZcDdlRzpofn2cAuO@alley>
- <20240205132515.GF69174@google.com>
- <a6762ad5-62f2-41d4-bba7-c2d9dcb12498@paulmck-laptop>
- <ZcEfCM160K5cnzHx@slm.duckdns.org>
+References: <20240129235646.3171983-1-boqun.feng@gmail.com>
+ <20240129235646.3171983-6-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -59,90 +55,69 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcEfCM160K5cnzHx@slm.duckdns.org>
+In-Reply-To: <20240129235646.3171983-6-boqun.feng@gmail.com>
 
-On Mon, Feb 05, 2024 at 07:46:48AM -1000, Tejun Heo wrote:
-> On Mon, Feb 05, 2024 at 09:45:53AM -0800, Paul E. McKenney wrote:
-> > On Mon, Feb 05, 2024 at 10:25:15PM +0900, Sergey Senozhatsky wrote:
-> > > On (24/02/05 14:07), Petr Mladek wrote:
-> > > > > Good point, if it does recur, I could try it on bare metal.
-> > > > 
-> > > > Please, me, John, and Sergey know if anyone see this again. I do not
-> > > > feel comfortable when there is problem which might make consoles calm.
-> > > 
-> > > Agreed.
-> > > 
-> > > > Bisection identified this commit:
-> > > > 5797b1c18919 ("workqueue: Implement system-wide nr_active enforcement for unbound workqueues")
-> > > 
-> > > That commit triggered early boot use-after-free (per kasan) on
-> > > my system, which probably could derail some things.
-> > 
-> > And enabling KASAN on next-20240130 got me that same KASAN report and
-> > also suppressed the misbehavior, which is not surprising given that
-> > KASAN quarantines free memory for some time.  Plus enabling KASAN
-> > on recent -next does not trigger that KASAN report.
-> > 
-> > So my guess is that we can attribute my oddball test failures to
-> > that use after free.  But I will of course continue testing.
+On Mon, Jan 29, 2024 at 03:56:38PM -0800, Boqun Feng wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
 > 
-> Can someone paste the KASAN report?
+> The unsynchronized_tsc() eventually checks num_possible_cpus(), and
+> if the system is non-Intel and the number of possible CPUs is greater
+> than one, assumes that TSCs are unsynchronized.  This despite the
+> comment saying "assume multi socket systems are not synchronized",
+> that is, socket rather than CPU.  This behavior was preserved by
+> commit 8fbbc4b45ce3 ("x86: merge tsc_init and clocksource code") and
+> by the previous relevant commit 7e69f2b1ead2 ("clocksource: Remove the
+> update callback").
+> 
+> The clocksource drivers were added by commit 5d0cf410e94b ("Time: i386
+> Clocksource Drivers") back in 2006, and the comment still said "socket"
+> rather than "CPU".
+> 
+> Therefore, bravely (and perhaps foolishly) make the code match the
+> comment.
+> 
+> Note that it is possible to bypass both code and comment by booting
+> with tsc=reliable, but this also disables the clocksource watchdog,
+> which is undesirable when trust in the TSC is strictly limited.
+> 
+> Reported-by: Zhengxu Chen <zhxchen17@meta.com>
+> Reported-by: Danielle Costantino <dcostantino@meta.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Feng Tang <feng.tang@intel.com>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: <x86@kernel.org>
 
-Here you go!
+Hello, Boqun,
+
+Please drop this one, as I never got an ack from the maintainers, and
+quite possibly for good reason.  ;-)
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-[    0.316453] ==================================================================
-[    0.317646] BUG: KASAN: use-after-free in wq_update_node_max_active+0x123/0x810
-[    0.318851] Read of size 8 at addr ffff88802109d788 by task swapper/0/0
-[    0.319937] 
-[    0.320195] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc2-next-20240130 #7935
-[    0.321453] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[    0.323299] Call Trace:
-[    0.323700]  <TASK>
-[    0.324043]  dump_stack_lvl+0x37/0x50
-[    0.324653]  print_report+0xcb/0x620
-[    0.325249]  ? wq_update_node_max_active+0x123/0x810
-[    0.326066]  kasan_report+0xaf/0xe0
-[    0.326639]  ? wq_update_node_max_active+0x123/0x810
-[    0.327455]  kasan_check_range+0x39/0x1c0
-[    0.328119]  wq_update_node_max_active+0x123/0x810
-[    0.328903]  ? __pfx_mutex_lock+0x10/0x10
-[    0.329567]  apply_wqattrs_commit+0x4e4/0xb80
-[    0.330289]  ? __pfx_mutex_lock+0x10/0x10
-[    0.330946]  apply_workqueue_attrs_locked+0x9e/0x110
-[    0.331764]  alloc_workqueue+0xf76/0x18d0
-[    0.332432]  ? __pfx_alloc_workqueue+0x10/0x10
-[    0.333189]  ? kasan_unpoison+0x27/0x60
-[    0.333818]  ? kasan_unpoison+0x27/0x60
-[    0.334455]  ? __kasan_slab_alloc+0x30/0x70
-[    0.335147]  ? __pfx_mutex_unlock+0x10/0x10
-[    0.335831]  ? idr_alloc_u32+0x291/0x2c0
-[    0.336479]  ? mutex_unlock+0x7e/0xd0
-[    0.337085]  workqueue_init_early+0x69a/0xe70
-[    0.337800]  ? __pfx_workqueue_init_early+0x10/0x10
-[    0.338605]  ? kmem_cache_create_usercopy+0xcc/0x230
-[    0.339421]  start_kernel+0x141/0x380
-[    0.340023]  x86_64_start_reservations+0x18/0x30
-[    0.340788]  x86_64_start_kernel+0xcf/0xe0
-[    0.341465]  secondary_startup_64_no_verify+0x16d/0x17b
-[    0.342334]  </TASK>
-[    0.342703] 
-[    0.342954] The buggy address belongs to the physical page:
-[    0.343899] page:00000000a19a7ad3 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2109d
-[    0.345471] flags: 0x100000000000000(node=0|zone=1)
-[    0.346297] page_type: 0xffffffff()
-[    0.346882] raw: 0100000000000000 ffffea0000842748 ffffea0000842748 0000000000000000
-[    0.348184] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[    0.349518] page dumped because: kasan: bad access detected
-[    0.350457] 
-[    0.350706] Memory state around the buggy address:
-[    0.351532]  ffff88802109d680: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    0.352748]  ffff88802109d700: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    0.353968] >ffff88802109d780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    0.355221]                       ^
-[    0.355808]  ffff88802109d800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    0.357161]  ffff88802109d880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    0.358439] ==================================================================
+> ---
+>  arch/x86/kernel/tsc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> index 15f97c0abc9d..d45084c6a15e 100644
+> --- a/arch/x86/kernel/tsc.c
+> +++ b/arch/x86/kernel/tsc.c
+> @@ -1287,7 +1287,7 @@ int unsynchronized_tsc(void)
+>  	 */
+>  	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL) {
+>  		/* assume multi socket systems are not synchronized: */
+> -		if (num_possible_cpus() > 1)
+> +		if (nr_online_nodes > 1)
+>  			return 1;
+>  	}
+>  
+> -- 
+> 2.43.0
+> 
