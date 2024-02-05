@@ -1,81 +1,103 @@
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D7610A13;
-	Mon,  5 Feb 2024 20:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDCFC149006;
+	Mon,  5 Feb 2024 21:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707165028; cv=none; b=fL9XPz0ChPSu8iT7blJdLGob6iRmEydC9pooyBrFanGNUWb2QYA9Gtp31MJKIPR6ILcpfhQGO8vRmCu/UaWNsd+QoVor/rmq4aWWtSgZ8GXakl00/mkOXogkMFkDn2XEaYqlDJW55qpm9IZ4w9QEESQpwzpeGosyHX/bEHnktwM=
+	t=1707167345; cv=none; b=mg0/uwtj5To2bp2avZSfZlZOJYnWR+mSXiZPYt5iaZxHTYKJxyVn+nXmKi0yFGcNb/xLFij7T7nnuowXq0q4qtbAmYODQ8dVH4JhiFpmDFdrPf5WlXcqCqUNTkKlm1RWoG4xCmD5maesfGFUV7PNUC2aKwqai02vLHuD66KTfMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707165028; c=relaxed/simple;
-	bh=PR7kJfznAqKyyLfJ4TzyQlXG360gkSoUuEsYbizxlMQ=;
+	s=arc-20240116; t=1707167345; c=relaxed/simple;
+	bh=LXICrHdI8+SoqujeoVEgEy5+dC5zdaTlkmnQy8HtSeY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j/aIIZqmwQx/j5/Wbc07r0fMPSAGll4vqgd8zOsmxlmp0D8HqH7SaXJytKMK2/UiSfyIX9OJBuAzM7gWMfBVc5s+DASHbnGsTRw4Yl6Aamg64aRl+QPj/Ns6JD1FtclS8OMAbXWVH+LoODxRliCPWb2xFyQ1s/PbnzVdh+q7CHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IS1z3dSr; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=gILtzpQc3qQkzU7p6Qin9cu0jnl9Kv1jUPkuCNgYkU0z5s69W+ogOri15t+OCN+zNs7etL/7TkWBfaFrOpZQzYmjta4aHw6bOLA8pf6EQaClNUtz9xoeBOjR5TJ09S1fyqw5lEsjvBmCrBGLcrmgZWqOcPXty8aecHOD0oHIFEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LCbl2FgW; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IS1z3dSr"
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d8ef977f1eso36727925ad.0;
-        Mon, 05 Feb 2024 12:30:27 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LCbl2FgW"
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6818aa07d81so30095806d6.0;
+        Mon, 05 Feb 2024 13:09:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707165026; x=1707769826; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4nEYDnwbfwp2CbCbKu5LPjt6G/RAlxD+k28eQnqBHLg=;
-        b=IS1z3dSrDgGF/iy9x70TNt2B5WhR5N96GGMOJCAmIVeanhON41aqm3CO+xe4BWj5/c
-         w5nBeEVE7YZ0bUc0QQn+vnEIy19u9Xio8I8ZoRqw6Qw8IBfvPR5aJUe9qZO4mqpqRwi8
-         uhsVK41ZS53xt26q9BjhShr1bHO8WigUDkrDLJeWOtlM5x4rF3BQWNVsWEmic4SuCTWn
-         p1qQgXRaiTFnRxtOwAXHMYCrfi7r52HsBVu9LxRRLUBqeq0mp33uR37RyumyuTQRijDS
-         AdJEb9KDDxKVqUHmT+TjGWX/Aa+n7AmAaxr3l94zx3/+3KOSzKyhc8Gvg3heLLCSUqb9
-         THnw==
+        d=gmail.com; s=20230601; t=1707167343; x=1707772143; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=D4YotZgs5kEqRhdKzsQq2/ydXplQT/QOmw6gv422KoE=;
+        b=LCbl2FgWYLpaax0isYX8c67cnoaoHm178Vf18e70LtYNVVsKyfTagsCAKaKY+ewEWN
+         H5h/PGNzzlBscmKv0p7lKGWiM/49olMf/DtxeanFkwCyj8utGGrPURmiHJUF66kgSS+c
+         pVSdeI6hyLU5JVTCEGq5zgYMlg+SYyauAFPBlayPu+3uriJ7JqK+nspxVUsizzyPOaEJ
+         GmK64pN/I+0Zmybk+zikGeZmYTxZIfDSW4XCbnaP0cP5D6TcX3vK8W1bk8ZUhDGEqqL9
+         SJszEyw4DSzboklPBcaQlsS+Xk8zuHzcJc6pWgXlVMldlh+7vePRRE2xKgS/+QMk3P6s
+         sa+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707165026; x=1707769826;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4nEYDnwbfwp2CbCbKu5LPjt6G/RAlxD+k28eQnqBHLg=;
-        b=n2jZzs9n7gkdLKZEZGaNL6ByQ0ht7S94YJvut5l9Jbm089ppZJaETY9573cAL7GolV
-         KsdMR7+AibKadmDWDr5Fxav8U0VzHlfuruUh6qVOpHH4EjcSkFzdB079YEAWxYgT1iPC
-         3CAbN6m2X3qyFTHG3LidjDjD2KP6rtWGdiaAebqXEbbbLMrUstI18+PmaO1RHUMm2EQL
-         A4HEQtr0BR5OiQiG8rH3Jd7/dPOY/yEUvSdRL4k466Hn0zjRCT9Dudk9vUynQfxVFMh1
-         1WOp83fid+MbyFm6vBrMqrsmuj0TeYAh/bO57R6TqY4dvILUN9oVbUYrp7tf89aKjIAD
-         miFQ==
-X-Gm-Message-State: AOJu0YxRZE38B8v08JBz7L8P8EoPaNe2rgRy59lotHJgwD0gLmq3g6Wx
-	swbtv+o7NNpknxg8Z6QbiowzJvZGuhafjkUTLXK76uNWEH/5W7Vy
-X-Google-Smtp-Source: AGHT+IEQrRGIS8PLHZ7DpDSiIe169gLYWkACM8+b2FINHkIonG4cUNMZ84Wc2yxFr7gZSseHHH4Zog==
-X-Received: by 2002:a17:902:c24d:b0:1d8:fcac:efe5 with SMTP id 13-20020a170902c24d00b001d8fcacefe5mr186130plg.17.1707165026508;
-        Mon, 05 Feb 2024 12:30:26 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUARuTq2hArpiK63USZDpJyZn0citnrcJA7Y/hW00unWOvkeu6Y6fuFbjL4YEfCX+unDts2lQeqEr4k70el0MJp4EgjLikZ5g0xpc2YuQGLlJCzPJDQV14NHur8DLjLmgbdTZhMJeUnVnl/rfoSSp5hZDjXYcGIB+v5azQR8P4ugbmO+jp3LyT1w5oTzxQHvnOgf1qm4oD3RJszTEcBbrU7La+cxSKj6AfKMDdRIEaqg3ZywH3q0SZ03WmSEHAU8OWJQWgTAzoDs9rAAGtqEbUGLO7vUJ74QC8dpQpm30bO0y68UZJsniSF57CMt7WDhWooE1HFRe3saRTAu8f2bD/CvEyD1H4=
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id kj14-20020a17090306ce00b001d8e04de78asm282354plb.132.2024.02.05.12.30.25
+        d=1e100.net; s=20230601; t=1707167343; x=1707772143;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D4YotZgs5kEqRhdKzsQq2/ydXplQT/QOmw6gv422KoE=;
+        b=Urz29mQEq8EhzJkkF4c57CaEhy571kIeTxMWasGYWmhFumhCPgBMSdjmxwi+gSXyPc
+         TN7Jv5Bgwjg+APHmHSBC7TF+8GrElP8a/n6y1CZitq1IpaDbZWn3gfiE9yVXAyYsnngP
+         549W6uevOKppWXD0qmuOTdKpteAdMm60lJ1KRjJjeQZYlbkZz/fDuYy2KL5Y5g9Pc1YD
+         6CtsTQbllYTxHd9ofkT1duf9+WmcyYKpg8W8OEGN6Clh8yRr9s6Ohj4f85Ht1cDeHCAc
+         h2M/ZpWLDomnzAGY443YKxBnLwBHWIuUJWy/RzWIrl54AHkEo/pSaBKhQWgOEBMloXDl
+         qFxw==
+X-Gm-Message-State: AOJu0YwRwPntGGyqO2r4htIp3sbZtWRaWKODR8kvAReNswrfK6zP03j+
+	fBL0j55qmq2B6Elie07CLVCyPRFUW5D9PcQGDPLsC3c4P7DrVUYAXhkAP6JE
+X-Google-Smtp-Source: AGHT+IF0WTs1xnpL3mPy4qmO/mjfl5QxVwpk7rzwVkvJICBa2AgNfTT3rNEukGlBd25Yi3V3VknTLw==
+X-Received: by 2002:a0c:dd87:0:b0:68c:5583:a86f with SMTP id v7-20020a0cdd87000000b0068c5583a86fmr194489qvk.6.1707167342816;
+        Mon, 05 Feb 2024 13:09:02 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWgnXHWUu+nBQEGTX4ms/+NO1866vcJle38UryRtyJqXCXz+P2rwyWxWcDERZyvMaWVZZCpPWVGe/IRdVGQ7H4zKl0MEIo3SiWdvu7eV0Y35avZqRk/hZ1vr6qW1bVIbTAuPddd5JJHLGVbQGEA20F+GWB6uj/lgr0/ShqXGb8NEML1+8BCuFACmyhknHxCBD15G53GBHYu+bpeQc7wvdKIJZx3RALJ/jUywMSMSquVld+GgemZDemTgtaYxH2k7XJy2z3ZIG69MdTpqxXciiD2W3PqwcYeHTJhFpnq+BIUma3II15G6c9aW6CC2AfrS7YIIjITeBhxbSo1VVu0RUw9Fsu1wIzegxKcVVvhUY8Sg1krsY3TgEYJ7EEH66cehhFgfI/n2uSHoqNHt9Rbu2mAlcGUNCmQBny7kS8fa0GRp5+F
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id ks13-20020a056214310d00b0068c87d51529sm345579qvb.94.2024.02.05.13.09.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 12:30:26 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 5 Feb 2024 10:30:25 -1000
-From: Tejun Heo <tj@kernel.org>
+        Mon, 05 Feb 2024 13:09:02 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailauth.nyi.internal (Postfix) with ESMTP id BDF3027C005B;
+	Mon,  5 Feb 2024 16:09:01 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 05 Feb 2024 16:09:01 -0500
+X-ME-Sender: <xms:bE7BZVZoBAx-ztrg5qZD_emyQRpwIR2wPxQE3qdxLae89PUogKInDQ>
+    <xme:bE7BZcbM2x4vvxxbI8CeXxoejb-Cn4XlIQ67EgdP-jmL5kjxZgJjpgSJ5k6KaU5NM
+    W_8jrS_RddUlJBvAw>
+X-ME-Received: <xmr:bE7BZX9seA8V3qRtd5uX5WIA1VGXzTQSNP9J1lkZBWyG8B211YTRFaNvDpfz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvuddgheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhepgffhudetvdejueetieeijeejtdduhfdvffdvjeehffdtheevtdeuhfeu
+    heehiefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhht
+    hhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquh
+    hnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:bE7BZTq4tzM0G_cVvREXiqLwdRowCoDS9zC8X_PULZ3hWOa7DL5WYw>
+    <xmx:bE7BZQpReXLI1hpUGL767Gf7StHNl5Doeyd-BJvrzjd8fGvoxi6SbQ>
+    <xmx:bE7BZZQZlZ5kBpIjPKYf35Kn5PXk8QRfAWc6quPCRKT_P3LfjcS1Mg>
+    <xmx:bU7BZcZuMTop3oiqvLjaxCuQvxoM4nykEVcvWeuNCdBa7RugcZAzig>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 5 Feb 2024 16:09:00 -0500 (EST)
+Date: Mon, 5 Feb 2024 13:09:00 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
 To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [BUG] workqueues and printk not playing nice since next-20240130
-Message-ID: <ZcFFYR-JOrfp7kvn@slm.duckdns.org>
-References: <410d6a87-bf34-457e-b714-1e6149d48532@paulmck-laptop>
- <c6ce8816-c4ff-4668-8cbb-88285330057d@huaweicloud.com>
- <25fd8537-5a27-4b62-9bf9-1ee7ca59b5b8@paulmck-laptop>
- <Zb0evDquygkDI_8P@slm.duckdns.org>
- <c5d5ad66-da86-447b-8014-820d2c67382d@paulmck-laptop>
- <ZcDdlRzpofn2cAuO@alley>
- <20240205132515.GF69174@google.com>
- <a6762ad5-62f2-41d4-bba7-c2d9dcb12498@paulmck-laptop>
- <ZcEfCM160K5cnzHx@slm.duckdns.org>
- <a8386e9d-39f6-4bd5-8329-30550fb2745a@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Zhengxu Chen <zhxchen17@meta.com>,
+	Danielle Costantino <dcostantino@meta.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Feng Tang <feng.tang@intel.com>, Waiman Long <longman@redhat.com>,
+	John Stultz <jstultz@google.com>, x86@kernel.org
+Subject: Re: [PATCH 5/8] tsc: Check for sockets instead of CPUs to make code
+ match comment
+Message-ID: <ZcFObO-fcvq1_xj7@tardis>
+References: <20240129235646.3171983-1-boqun.feng@gmail.com>
+ <20240129235646.3171983-6-boqun.feng@gmail.com>
+ <1781cc76-aeee-427b-bc9e-b3d2b8f184f3@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -84,22 +106,80 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a8386e9d-39f6-4bd5-8329-30550fb2745a@paulmck-laptop>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1781cc76-aeee-427b-bc9e-b3d2b8f184f3@paulmck-laptop>
 
-Hello,
+On Mon, Feb 05, 2024 at 12:03:33PM -0800, Paul E. McKenney wrote:
+> On Mon, Jan 29, 2024 at 03:56:38PM -0800, Boqun Feng wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> >=20
+> > The unsynchronized_tsc() eventually checks num_possible_cpus(), and
+> > if the system is non-Intel and the number of possible CPUs is greater
+> > than one, assumes that TSCs are unsynchronized.  This despite the
+> > comment saying "assume multi socket systems are not synchronized",
+> > that is, socket rather than CPU.  This behavior was preserved by
+> > commit 8fbbc4b45ce3 ("x86: merge tsc_init and clocksource code") and
+> > by the previous relevant commit 7e69f2b1ead2 ("clocksource: Remove the
+> > update callback").
+> >=20
+> > The clocksource drivers were added by commit 5d0cf410e94b ("Time: i386
+> > Clocksource Drivers") back in 2006, and the comment still said "socket"
+> > rather than "CPU".
+> >=20
+> > Therefore, bravely (and perhaps foolishly) make the code match the
+> > comment.
+> >=20
+> > Note that it is possible to bypass both code and comment by booting
+> > with tsc=3Dreliable, but this also disables the clocksource watchdog,
+> > which is undesirable when trust in the TSC is strictly limited.
+> >=20
+> > Reported-by: Zhengxu Chen <zhxchen17@meta.com>
+> > Reported-by: Danielle Costantino <dcostantino@meta.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Feng Tang <feng.tang@intel.com>
+> > Cc: Waiman Long <longman@redhat.com>
+> > Cc: John Stultz <jstultz@google.com>
+> > Cc: <x86@kernel.org>
+>=20
+> Hello, Boqun,
+>=20
+> Please drop this one, as I never got an ack from the maintainers, and
+> quite possibly for good reason.  ;-)
+>=20
 
-On Mon, Feb 05, 2024 at 11:41:10AM -0800, Paul E. McKenney wrote:
-> [    0.316453] ==================================================================
-> [    0.317646] BUG: KASAN: use-after-free in wq_update_node_max_active+0x123/0x810
-> [    0.318851] Read of size 8 at addr ffff88802109d788 by task swapper/0/0
+Got it I will drop it in the PR, the topic branch has been updated:
 
-Ah, that one is fixed by 15930da42f89 ("workqueue: Don't call
-cpumask_test_cpu() with -1 CPU in wq_update_node_max_active()"). I have a
-hard time imagining that having anything to do with console being quiet tho.
-It's a cpumask bit test targeting cpu -1 and the result gets overwritten
-later during boot.
+	git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git rcu-misc.202=
+4.02.05a
 
-Thanks.
+Regards,
+Boqun
 
--- 
-tejun
+> 							Thanx, Paul
+>=20
+> > ---
+> >  arch/x86/kernel/tsc.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> > index 15f97c0abc9d..d45084c6a15e 100644
+> > --- a/arch/x86/kernel/tsc.c
+> > +++ b/arch/x86/kernel/tsc.c
+> > @@ -1287,7 +1287,7 @@ int unsynchronized_tsc(void)
+> >  	 */
+> >  	if (boot_cpu_data.x86_vendor !=3D X86_VENDOR_INTEL) {
+> >  		/* assume multi socket systems are not synchronized: */
+> > -		if (num_possible_cpus() > 1)
+> > +		if (nr_online_nodes > 1)
+> >  			return 1;
+> >  	}
+> > =20
+> > --=20
+> > 2.43.0
+> >=20
