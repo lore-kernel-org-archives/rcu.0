@@ -1,211 +1,178 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE2F200C3
-	for <rcu@vger.kernel.org>; Tue,  6 Feb 2024 18:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8A31426D
+	for <rcu@vger.kernel.org>; Tue,  6 Feb 2024 19:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707245076; cv=none; b=VbFAJ+6p0EjREouhULFM8MpuFaH5rgYJzKpKLu81zycaminLrLriI3S2o8M2o4qFLQIN1OXjUssgMyGYCeIWLvuBMU9kZ8w4eqUQ00ZMlga5bepdpSw+Sm/qncw4aCFSgsoBWhK2Tohb/6n87Q4HfaY2ugujqWxoU+xiD04ETok=
+	t=1707247783; cv=none; b=ovqD6OoKTKwzvam5pDRAm1KXWsYxYISxD+xnFPXB8IBL3lV/ImMlZIsVDC46RkLvPBsaRBczqzxEBlc85SmW2J/OPZa2ltU+HTelJX4Ozgsom604rE+e12kyxFuaKpdGGIyr0Ad6pvE4sAIrLRBluuntCquV1JE+bVQ+OaNI8iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707245076; c=relaxed/simple;
-	bh=1TLpM9VBd/UNID1rDJ0TtJBNTWRi5+7vHsCOepvvho4=;
+	s=arc-20240116; t=1707247783; c=relaxed/simple;
+	bh=XZkQUMsfnvjrmuHhGG32XgueQTUnlS3+DOH+pSVZ9V8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YCDFaJmNcayQzzBnrEGR8zu3bdnnm4DFv9FAlBbogVKOgdy0hErFwHryzSBeAIeGSZkwwvAHNUzZBADJA+Ok8JmF+5W6fCCj8WHp8yPHBNWd1M41GgS/gTjyfBSPqlIvWScqNuFOUmg+0zrcgCvdx8LjmDKlb9PRoRSFYAp0FE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PZ2dwnDp; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=tkxtRM9rSunFxxHo/gws+MLJm0mSx5EZIVLqAfQq6v+mWXUgua6p5T0EOHLSA9HqYiHPiqPiFzeJUW84HwKj9QYwn5k7wJ5KKDXQkvm+t8a2acUZqD77wQn4B26CG8+EP9DGx83RF195jyZJD72GAAxNKBBHzMyrEAMjDRdIYn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B6X7JVRZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PZ2dwnDp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC484C433C7;
-	Tue,  6 Feb 2024 18:44:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707245076;
-	bh=1TLpM9VBd/UNID1rDJ0TtJBNTWRi5+7vHsCOepvvho4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=PZ2dwnDpARMJvtVwkxYyQRnsakgKn8T3hPsWXOUxxRTSsiZLmbyEk34TPVNNeO6KF
-	 LpcPbbY6fmZaYbgy00d/cJfHB0v3ocSCJ/qqdGKUgIxAOW7VuAWGRVR5PBuXsudL7A
-	 uaqqT2czJG7szpsbqc7lKtEQ/vn1qX1qLn6VKwKcY3/0kxraqb3Ab+0mb38tBNWhzy
-	 yrq1U7VgBB6bLj9lk1fptvtPICImz7/TuP8Y5EUgEhKWj/i3eSDVq+rCbOhIcWVMVp
-	 e84hXbju7+OS1Ew5fVysARQ/S5qO/ycdz+YQiMNC9m5OekpCNzYWu81eECBd67Dyq+
-	 DHwWsXU5IcnsQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 01E83CE0AB0; Tue,  6 Feb 2024 10:44:34 -0800 (PST)
-Date: Tue, 6 Feb 2024 10:44:33 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B6X7JVRZ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707247781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0cVRs7KeAPV1Z6Jd/uVlTNTCTsZbLZD+HLSKeeEyC2I=;
+	b=B6X7JVRZY7OWKjCk67OUNR+imUKiSZZIHKOR3j2m9ibkuXZ5D5sLBe0QgnFPJgY8SLjqHz
+	Tw8Dyu0zIImiFEjBTmFF+YhMqpTcp27cpo05Aqwly5XkTX+yNfrIPXGktQvcJc9miCnN2p
+	PzatRXhozAXE09Ew8G4ulAFJQlayt9c=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-35--OZ5BSJwN7SNOU60aDZ1nA-1; Tue,
+ 06 Feb 2024 14:29:37 -0500
+X-MC-Unique: -OZ5BSJwN7SNOU60aDZ1nA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C9F401C060CE;
+	Tue,  6 Feb 2024 19:29:35 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 634C02026D08;
+	Tue,  6 Feb 2024 19:29:33 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 8DA37401E0C72; Tue,  6 Feb 2024 16:15:18 -0300 (-03)
+Date: Tue, 6 Feb 2024 16:15:18 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Joel Fernandes <joelaf@google.com>, rcu@vger.kernel.org,
-	"Cc: Frederic Weisbecker" <fweisbec@gmail.com>
-Subject: Re: Observation on NOHZ_FULL
-Message-ID: <92cba6df-01de-4daa-a0cb-5fa92c7374dd@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAJWu+oo8w6zc=m7f9vkz66xYZnoCqs1FrgmLtcWxEpE5QCJgig@mail.gmail.com>
- <6a2b6857-57e7-4321-adae-132ba69a4fff@paulmck-laptop>
- <0e15e91e-da47-45dd-b7de-7f89b7b6002b@joelfernandes.org>
- <ZbieCjYk8cIgZS8L@gpd>
- <cf1c60fc-6295-402e-b546-6f67cf0955b2@paulmck-laptop>
- <ZbjYSXhIrVyCpRNM@pc636>
- <ZbjdL04k2Z2ZdUyp@gpd>
- <b8d80604-18a5-4f82-b846-5c00c6aeae6f@paulmck-laptop>
- <ZcJxhoNpkTM7LnOr@gpd>
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Message-ID: <ZcKFRqrUh5tTbsaJ@tpad>
+References: <20240117163511.88173-1-longman@redhat.com>
+ <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
+ <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
+ <ZcIsd6fjgmsb2dxr@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZcJxhoNpkTM7LnOr@gpd>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcIsd6fjgmsb2dxr@localhost.localdomain>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Tue, Feb 06, 2024 at 06:51:02PM +0100, Andrea Righi wrote:
-> On Tue, Jan 30, 2024 at 05:39:37AM -0800, Paul E. McKenney wrote:
-> > On Tue, Jan 30, 2024 at 12:27:43PM +0100, Andrea Righi wrote:
-> > > On Tue, Jan 30, 2024 at 12:06:49PM +0100, Uladzislau Rezki wrote:
-> > > > On Tue, Jan 30, 2024 at 02:17:22AM -0800, Paul E. McKenney wrote:
-> > > > > On Tue, Jan 30, 2024 at 07:58:18AM +0100, Andrea Righi wrote:
-> > > > > > Hi Joel and Paul,
-> > > > > > 
-> > > > > > comments below.
-> > > > > > 
-> > > > > > On Mon, Jan 29, 2024 at 05:16:38PM -0500, Joel Fernandes wrote:
-> > > > > > > Hi Paul,
-> > > > > > > 
-> > > > > > > On 1/29/2024 3:41 PM, Paul E. McKenney wrote:
-> > > > > > > > On Mon, Jan 29, 2024 at 05:47:39PM +0000, Joel Fernandes wrote:
-> > > > > > > >> Hi Guys,
-> > > > > > > >> Something caught my eye in [1] which a colleague pointed me to
-> > > > > > > >>  - CONFIG_HZ=1000 : 14866.05 bogo ops/s
-> > > > > > > >>  - CONFIG_HZ=1000+nohz_full : 18505.52 bogo ops/s
-> > > > > > > >>
-> > > > > > > >> The test in concern is:
-> > > > > > > >> stress-ng --matrix $(getconf _NPROCESSORS_ONLN) --timeout 5m --metrics-brief
-> > > > > > > >>
-> > > > > > > >> which is a CPU intensive test.
-> > > > > > > >>
-> > > > > > > >> Any thoughts on what else can attribute a 30% performance increase
-> > > > > > > >> versus non-nohz_full ? (Confession: No idea if the baseline is
-> > > > > > > >> nohz_idle or no nohz at all). If it is 30%, I may want to evaluate
-> > > > > > > >> nohz_full on some of our limited-CPU devices :)
-> > > > > > > > 
-> > > > > > > > The usual questions.  ;-)
-> > > > > > > > 
-> > > > > > > > Is this repeatable?  Is it under the same conditions of temperature,
-> > > > > > > > load, and so on?  Was it running on bare metal or on a guest OS?  If on a
-> > > > > > > > guest OS, what was the load from other guest OSes on the same hypervisor
-> > > > > > > > or on the hypervisor itself?
-> > > > > > 
-> > > > > > That was the result of a quick test, so I expect it has some fuzzyness
-> > > > > > in there.
-> > > > > > 
-> > > > > > It's an average of 10 runs, it was bare metal (my laptop, 8 cores 11th
-> > > > > > Gen Intel(R) Core(TM) i7-1195G7 @ 2.90GHz), *but* I wanted to run the
-> > > > > > test with the default Ubuntu settings, that means having "power mode:
-> > > > > > balanced" enabled. I don't know exactly what it's doing (I'll check how
-> > > > > > it works in details), I think it's using intel p-states IIRC.
-> > > > > > 
-> > > > > > Also, the system was not completely isolated (my email client was
-> > > > > > running) but the system was mostly idle in general.
-> > > > > > 
-> > > > > > I was already planning to repeat the tests in a more "isolated"
-> > > > > > environment and add details to the bug tracker.
-> > > > > > 
-> > > > > > > > 
-> > > > > > > > The bug report ad "CONFIG_HZ=250 : 17415.60 bogo ops/s", which makes
-> > > > > > > > me wonder if someone enabled some heavy debug that is greatly
-> > > > > > > > increasing the overhead of the scheduling-clock interrupt.
-> > > > > > > > 
-> > > > > > > > Now, if that was the case, I would expect the 250HZ number to have
-> > > > > > > > three-quarters of the improvement of the nohz_full number compared
-> > > > > > > > to the 1000HZ number:
-> > > > > > > >> 17415.60-14866.05=2549.55
-> > > > > > > > 18505.52-14866.05=3639.47
-> > > > > > > > 
-> > > > > > > > 2549.55/3639.47=0.70
-> > > > > > > 
-> > > > > > > I wonder if the difference here could possibly also be because of CPU idle
-> > > > > > > governor. It may behave differently at differently clock rates so perhaps has
-> > > > > > > different overhead.
-> > > > > > 
-> > > > > > Could be, but, again, the balanced power mode could play a major role
-> > > > > > here.
-> > > > > > 
-> > > > > > > 
-> > > > > > > I have added trying nohz full to my list as well to evaluate. FWIW, when we
-> > > > > > > moved from 250HZ to 1000HZ, it actually improved power because the CPUidle
-> > > > > > > governor could put the CPUs in deeper idle states more quickly!
-> > > > > > 
-> > > > > > Interesting, another benefit to add to my proposal. :)
-> > > > > > 
-> > > > > > > 
-> > > > > > > > OK, 0.70 is not *that* far off of 0.75.  So what debugging does that
-> > > > > > > > test have enabled?  Also, if you use tracing (or whatever) to measure
-> > > > > > > > the typical duration of the scheduling-clock interrupt and related things
-> > > > > > > > like softirq handlers, does it fit with these numbers?  Such a measurment
-> > > > > > > > would look at how long it took to get back into userspace.
-> > > > > 
-> > > > > Just to emphasize...
-> > > > > 
-> > > > > The above calculations show that your measurements are close to what you
-> > > > > would expect if scheduling-clock interrupts took longer than one would
-> > > > > expect.  Here "scheduling-clock interrupts" includes softirq processing
-> > > > > (timers, networking, RCU, ...)  that piggybacks on each such interrupt.
-> > > > > 
-> > > > > Although softirq makes the most sense given the amount of time that must
-> > > > > be consumed, for the most part softirq work is conserved.  which suggests
-> > > > > that you should also at the rest of the system to check whether the
-> > > > > reported speedup is instead due to this work simply being moved to some
-> > > > > other CPU.
-> > > > > 
-> > > > > But maybe the fat softirqs are due to some debugging option that Ubuntu
-> > > > > enabled.  In which case checking up on the actual duration (perhaps
-> > > > > using some form of tracing) would provide useful information.  ;-)
-> > > > > 
-> > > > As a first step i would have a look at perf figures what is going on
-> > > > during a test run. For such purpose the "perf" tool can be used. As a
-> > > > basic step it can be run in a "top" mode:
-> > > > 
-> > > > perf top -a -g -e cycles:k 
-> > > > 
-> > > > Sorry for the noise :)
+On Tue, Feb 06, 2024 at 01:56:23PM +0100, Frederic Weisbecker wrote:
+> Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
+> > 
+> > On 1/17/24 12:07, Tejun Heo wrote:
+> > > Hello,
 > > > 
-> > > Yep, I'm planning to do better tests and collect more info (perf,
-> > > bpftrace). Also making sure that we don't have some crazy debugging
-> > > config enabled in the Ubuntu kernel, as correctly pointed by Paul. But
-> > > first of all I need to repeat the tests in a more isolated environment,
-> > > just to make sure we're looking at reasonable numbers here.
+> > > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
+> > > > The first 2 patches are adopted from Federic with minor twists to fix
+> > > > merge conflicts and compilation issue. The rests are for implementing
+> > > > the new cpuset.cpus.isolation_full interface which is essentially a flag
+> > > > to globally enable or disable full CPU isolation on isolated partitions.
+> > > I think the interface is a bit premature. The cpuset partition feature is
+> > > already pretty restrictive and makes it really clear that it's to isolate
+> > > the CPUs. I think it'd be better to just enable all the isolation features
+> > > by default. If there are valid use cases which can't be served without
+> > > disabling some isolation features, we can worry about adding the interface
+> > > at that point.
 > > 
-> > Very good, and looking forward to seeing what you come up with!
-> > 
-> > 							Thanx, Paul
+> > My current thought is to make isolated partitions act like isolcpus=domain,
+> > additional CPU isolation capabilities are optional and can be turned on
+> > using isolation_full. However, I am fine with making all these turned on by
+> > default if it is the consensus.
 > 
-> I repeated some tests in a more isolated environment and posted the
-> results here:
-> https://discourse.ubuntu.com/t/enable-low-latency-features-in-the-generic-ubuntu-kernel-for-24-04/42255
+> Right it was the consensus last time I tried. Along with the fact that mutating
+> this isolation_full set has to be done on offline CPUs to simplify the whole
+> picture.
 > 
-> Highlights:
+> So lemme try to summarize what needs to be done:
 > 
->  - stress-ng --matrix seems quite unpredictable to be used a benchmarks
->    in this scenario (the bogo-ops/s are very susceptible to any kind of
->    interference, so even if in the long runs NO_HZ_FULL still seems to
->    provide some benefits looking at the average, we also need to
->    consider that there might be a significant error in the measurements,
->    standard deviation was pretty high)
+> 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
+>   now. And if it ever proves needed, provide a way later for more finegrained
+>   tuning.
 > 
->  - fio doing short writes (in page cache) seems to perform like 2x
->    better in terms of iops with nohz_full, respect to the other cases
->    and it performs 2x slower with large IO writes (not sure why... need
->    to investigate more)
+> 2) This file must only apply to offline CPUs because it avoids migrations and
+>   stuff.
 > 
->  - with lazy RCU enabled hrtimer_interrupt() takes like 2x more to
->    return, respect to the other cases (is this expected?)
+> 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
+>    changes.
+> 
+> 4) HK_TYPE_TIMER:
+>    * Wrt. timers in general, not much needs to be done, the CPUs are
+>      offline. But:
+>    * arch/x86/kvm/x86.c does something weird
+>    * drivers/char/random.c might need some care
+>    * watchdog needs to be (de-)activated
+>    
+> 5) HK_TYPE_DOMAIN:
+>    * This one I fear is not mutable, this is isolcpus...
 
-This last is surprising at first glance, but I could be missing
-something.  Joel, Uladzislau, thoughts?
+Except for HK_TYPE_DOMAIN, i have never seen anyone use any of this
+flags.
 
-							Thanx, Paul
-
-> Let me know if you notice anything odd, if you need more information,
-> etc.
 > 
-> Thanks,
-> -Andrea
+> 6) HK_TYPE_MANAGED_IRQ:
+>    * I prefer not to think about it :-)
+> 
+> 7) HK_TYPE_TICK:
+>    * Maybe some tiny ticks internals to revisit, I'll check that.
+>    * There is a remote tick to take into consideration, but again the
+>      CPUs are offline so it shouldn't be too complicated.
+> 
+> 8) HK_TYPE_WQ:
+>    * Fortunately we already have all the mutable interface in place.
+>      But we must make it live nicely with the sysfs workqueue affinity
+>      files.
+> 
+> 9) HK_FLAG_SCHED:
+>    * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
+>    Should be removed?
+> 
+> 10) HK_TYPE_RCU:
+>     * That's point 3) and also some kthreads to affine, which leads us
+>      to the following in HK_TYPE_KTHREAD:
+> 
+> 11) HK_FLAG_KTHREAD:
+>     * I'm guessing it's fine as long as isolation_full is also an
+>       isolated partition. Then unbound kthreads shouldn't run there.
+> 
+> 12) HK_TYPE_MISC:
+>     * Should be fine as ILB isn't running on offline CPUs.
+> 
+> Thanks.
+> 
+> 
+
