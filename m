@@ -1,178 +1,272 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8A31426D
-	for <rcu@vger.kernel.org>; Tue,  6 Feb 2024 19:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA4B1D522;
+	Wed,  7 Feb 2024 11:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707247783; cv=none; b=ovqD6OoKTKwzvam5pDRAm1KXWsYxYISxD+xnFPXB8IBL3lV/ImMlZIsVDC46RkLvPBsaRBczqzxEBlc85SmW2J/OPZa2ltU+HTelJX4Ozgsom604rE+e12kyxFuaKpdGGIyr0Ad6pvE4sAIrLRBluuntCquV1JE+bVQ+OaNI8iY=
+	t=1707304176; cv=none; b=GAcDJDx0cSZSC8RRPRCPk8ed+aIrajC6iFRIpUJY4CRCzo05ykJ0mXXkEIsMQqkfuRteXOd0hOz99SbxGJnbLHXAI5aoq7tOWMYsL01HajNt4F7hFhj4ll9VlYYvyVnK/MO0/w3ur67gutQ8g/HbJwnJAlmYFULtbLi7/bAr/w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707247783; c=relaxed/simple;
-	bh=XZkQUMsfnvjrmuHhGG32XgueQTUnlS3+DOH+pSVZ9V8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tkxtRM9rSunFxxHo/gws+MLJm0mSx5EZIVLqAfQq6v+mWXUgua6p5T0EOHLSA9HqYiHPiqPiFzeJUW84HwKj9QYwn5k7wJ5KKDXQkvm+t8a2acUZqD77wQn4B26CG8+EP9DGx83RF195jyZJD72GAAxNKBBHzMyrEAMjDRdIYn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B6X7JVRZ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1707304176; c=relaxed/simple;
+	bh=w8IEyZYgI+PlGkveewllJkxeD/SQ1nwitaxnspS5aag=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Y0OnCbPWhQJCRtpfIy3j55l64kno3JU9f3gZhc48i8Rfc04HMxOPyrAbjMe7ycDnLCV0r735KXC5yV1rbIModpX1gmlzzPCRdMj1SKuXqTMpI4NxBXX2dRukDYv/voNvFxeXu9RuJoi8DHa5paGymSZfHr8yGxlpF2slkiKnPOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TVld9eVk; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B6X7JVRZ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707247781;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0cVRs7KeAPV1Z6Jd/uVlTNTCTsZbLZD+HLSKeeEyC2I=;
-	b=B6X7JVRZY7OWKjCk67OUNR+imUKiSZZIHKOR3j2m9ibkuXZ5D5sLBe0QgnFPJgY8SLjqHz
-	Tw8Dyu0zIImiFEjBTmFF+YhMqpTcp27cpo05Aqwly5XkTX+yNfrIPXGktQvcJc9miCnN2p
-	PzatRXhozAXE09Ew8G4ulAFJQlayt9c=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-35--OZ5BSJwN7SNOU60aDZ1nA-1; Tue,
- 06 Feb 2024 14:29:37 -0500
-X-MC-Unique: -OZ5BSJwN7SNOU60aDZ1nA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C9F401C060CE;
-	Tue,  6 Feb 2024 19:29:35 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 634C02026D08;
-	Tue,  6 Feb 2024 19:29:33 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 8DA37401E0C72; Tue,  6 Feb 2024 16:15:18 -0300 (-03)
-Date: Tue, 6 Feb 2024 16:15:18 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ZcKFRqrUh5tTbsaJ@tpad>
-References: <20240117163511.88173-1-longman@redhat.com>
- <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
- <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
- <ZcIsd6fjgmsb2dxr@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TVld9eVk"
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d8df34835aso404371a12.0;
+        Wed, 07 Feb 2024 03:09:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707304173; x=1707908973; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LSl+NodxA/S/Pr7QXlyQqY5IrblTGYv36N9WC5Iz9bs=;
+        b=TVld9eVkGbcstcfR2S0GjARiHna8eGb0LVEgIlo9pAVV+dPOjxIRaBGIWkoBuplpsD
+         6gDkd1tB3jMgskKsTFUIDjwcxUwgobkFOrsgcv7Rcwhly0KGKph3hGX30qsSUKWjW8qk
+         lD6zfokzp3zlUNsp4HyHYpNWbLaF0Iuol2HHlcxkRVetWwwH5k0Va7vr8zvl2DIAbb8Z
+         cup4nUwnmsN+bReAXxwa9+UlyCPiotwCy1k/Ns7NLk0lcWYUOWgrvENpPKtVl2Pfskh6
+         PTFg8ZmQGMELhnV9FdBjuRik5U8jD5YU1qXlbQ9mKp5aKpbTz3cVHNZ4wLwhKDMpfmko
+         j98g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707304173; x=1707908973;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LSl+NodxA/S/Pr7QXlyQqY5IrblTGYv36N9WC5Iz9bs=;
+        b=cW4KdM4eL0Ru7N0GPH9NWeuM7lnoYfujdmRHflDpAYTfmt3e8t3TyrmeLMjcusWssA
+         Lq6pJIqQdjVedzNka/tLt/xaPEUrvWOi+09Q3XvDlxfv5Cw39VT9JIfWvZNK/cfddf08
+         xUcH/PLu31oHEPGrvIb0JziaG/hylvbyhHhd4dlCcjlNuC4CVyBU95gPPB44bUJBM25l
+         585GMplp1ai1mn+QLchJwtJA39eeyQrlV5iPLK52f2+UdGxNJomApxWznDNExMefWZ1n
+         5u7xCrkO3DB3AC2WexV2zwAW7bzA4tMswHblg0qTvpYTB0RCE0YKCrpDu4jnN9a/h/0n
+         owtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWzyXaZy1cqjUkCqWC2pOr3ncFqYArKhUdoYSHw3TJ/11sDsMX5HZMrZwWpjk5MHBXiudwZ1hZhz/vZLAg/ShyKr844A8aP
+X-Gm-Message-State: AOJu0YwpQL/zMv0nSWTBWY63kq3nRKokItkRnhF1UX+O5nanknCnnldk
+	0PU8+VwBXEfgggEKZOkA0cYwlC0k67owwBb+j4PsdT6Y8IfmMwQo
+X-Google-Smtp-Source: AGHT+IGD4jMRQuxMXkhEMGe7RvY0Ffe6vAj8HgzJkuThxpa0fJu+l4r4U4nZVGFZhCgx6DmV9yRr8A==
+X-Received: by 2002:a05:6a20:d48e:b0:19e:a637:6162 with SMTP id im14-20020a056a20d48e00b0019ea6376162mr1782620pzb.26.1707304172518;
+        Wed, 07 Feb 2024 03:09:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVQ3EHD7Ds81swo/q2/AYJZJABKwyL975Wze4JdJDxPpHlw69huF8QTPxbA0vX2ry+xj0mM/MqnO/zNuZl1mFqXETkuw3otf/p/24E8rN9JIgZReiGDKiyA3Jzcf6NLTlbQGlo6yjLLjW2RgLVLB9LXcAskUOddz3NqsUHzwS8LSIBiQUuxdQk12ySTLrhYmfgmFVzlEHRSJOJWPJVcFJgvo+p+BB4P4bEjj54wLQY=
+Received: from localhost.localdomain ([120.244.140.254])
+        by smtp.gmail.com with ESMTPSA id ka5-20020a056a00938500b006e0381923f9sm1277675pfb.143.2024.02.07.03.09.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Feb 2024 03:09:32 -0800 (PST)
+From: Zqiang <qiang.zhang1211@gmail.com>
+To: paulmck@kernel.org,
+	joel@joelfernandes.org,
+	gregkh@linuxfoundation.org,
+	chenzhongjin@huawei.com
+Cc: rcu@vger.kernel.org,
+	stable@vger.kernel.org,
+	qiang.zhang1211@gmail.com
+Subject: [PATCH] linux-4.19/rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+Date: Wed,  7 Feb 2024 19:08:46 +0800
+Message-Id: <20240207110846.25168-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcIsd6fjgmsb2dxr@localhost.localdomain>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Tue, Feb 06, 2024 at 01:56:23PM +0100, Frederic Weisbecker wrote:
-> Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
-> > 
-> > On 1/17/24 12:07, Tejun Heo wrote:
-> > > Hello,
-> > > 
-> > > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> > > > The first 2 patches are adopted from Federic with minor twists to fix
-> > > > merge conflicts and compilation issue. The rests are for implementing
-> > > > the new cpuset.cpus.isolation_full interface which is essentially a flag
-> > > > to globally enable or disable full CPU isolation on isolated partitions.
-> > > I think the interface is a bit premature. The cpuset partition feature is
-> > > already pretty restrictive and makes it really clear that it's to isolate
-> > > the CPUs. I think it'd be better to just enable all the isolation features
-> > > by default. If there are valid use cases which can't be served without
-> > > disabling some isolation features, we can worry about adding the interface
-> > > at that point.
-> > 
-> > My current thought is to make isolated partitions act like isolcpus=domain,
-> > additional CPU isolation capabilities are optional and can be turned on
-> > using isolation_full. However, I am fine with making all these turned on by
-> > default if it is the consensus.
-> 
-> Right it was the consensus last time I tried. Along with the fact that mutating
-> this isolation_full set has to be done on offline CPUs to simplify the whole
-> picture.
-> 
-> So lemme try to summarize what needs to be done:
-> 
-> 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
->   now. And if it ever proves needed, provide a way later for more finegrained
->   tuning.
-> 
-> 2) This file must only apply to offline CPUs because it avoids migrations and
->   stuff.
-> 
-> 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
->    changes.
-> 
-> 4) HK_TYPE_TIMER:
->    * Wrt. timers in general, not much needs to be done, the CPUs are
->      offline. But:
->    * arch/x86/kvm/x86.c does something weird
->    * drivers/char/random.c might need some care
->    * watchdog needs to be (de-)activated
->    
-> 5) HK_TYPE_DOMAIN:
->    * This one I fear is not mutable, this is isolcpus...
+From: Paul E. McKenney <paulmck@kernel.org>
 
-Except for HK_TYPE_DOMAIN, i have never seen anyone use any of this
-flags.
+commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c upstream.
 
-> 
-> 6) HK_TYPE_MANAGED_IRQ:
->    * I prefer not to think about it :-)
-> 
-> 7) HK_TYPE_TICK:
->    * Maybe some tiny ticks internals to revisit, I'll check that.
->    * There is a remote tick to take into consideration, but again the
->      CPUs are offline so it shouldn't be too complicated.
-> 
-> 8) HK_TYPE_WQ:
->    * Fortunately we already have all the mutable interface in place.
->      But we must make it live nicely with the sysfs workqueue affinity
->      files.
-> 
-> 9) HK_FLAG_SCHED:
->    * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
->    Should be removed?
-> 
-> 10) HK_TYPE_RCU:
->     * That's point 3) and also some kthreads to affine, which leads us
->      to the following in HK_TYPE_KTHREAD:
-> 
-> 11) HK_FLAG_KTHREAD:
->     * I'm guessing it's fine as long as isolation_full is also an
->       isolated partition. Then unbound kthreads shouldn't run there.
-> 
-> 12) HK_TYPE_MISC:
->     * Should be fine as ILB isn't running on offline CPUs.
-> 
-> Thanks.
-> 
-> 
+Holding a mutex across synchronize_rcu_tasks() and acquiring
+that same mutex in code called from do_exit() after its call to
+exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
+results in deadlock.  This is by design, because tasks that are far
+enough into do_exit() are no longer present on the tasks list, making
+it a bit difficult for RCU Tasks to find them, let alone wait on them
+to do a voluntary context switch.  However, such deadlocks are becoming
+more frequent.  In addition, lockdep currently does not detect such
+deadlocks and they can be difficult to reproduce.
+
+In addition, if a task voluntarily context switches during that time
+(for example, if it blocks acquiring a mutex), then this task is in an
+RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
+just as well take advantage of that fact.
+
+This commit therefore eliminates these deadlock by replacing the
+SRCU-based wait for do_exit() completion with per-CPU lists of tasks
+currently exiting.  A given task will be on one of these per-CPU lists for
+the same period of time that this task would previously have been in the
+previous SRCU read-side critical section.  These lists enable RCU Tasks
+to find the tasks that have already been removed from the tasks list,
+but that must nevertheless be waited upon.
+
+The RCU Tasks grace period gathers any of these do_exit() tasks that it
+must wait on, and adds them to the list of holdouts.  Per-CPU locking
+and get_task_struct() are used to synchronize addition to and removal
+from these lists.
+
+Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
+
+Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ include/linux/sched.h |  1 +
+ init/init_task.c      |  1 +
+ kernel/fork.c         |  1 +
+ kernel/rcu/update.c   | 65 ++++++++++++++++++++++++++++++-------------
+ 4 files changed, 49 insertions(+), 19 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index fd4899236037..0b555d8e9d5e 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -679,6 +679,7 @@ struct task_struct {
+ 	u8				rcu_tasks_idx;
+ 	int				rcu_tasks_idle_cpu;
+ 	struct list_head		rcu_tasks_holdout_list;
++	struct list_head                rcu_tasks_exit_list;
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+ 
+ 	struct sched_info		sched_info;
+diff --git a/init/init_task.c b/init/init_task.c
+index 994ffe018120..f741cbfd891c 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -139,6 +139,7 @@ struct task_struct init_task
+ 	.rcu_tasks_holdout = false,
+ 	.rcu_tasks_holdout_list = LIST_HEAD_INIT(init_task.rcu_tasks_holdout_list),
+ 	.rcu_tasks_idle_cpu = -1,
++	.rcu_tasks_exit_list = LIST_HEAD_INIT(init_task.rcu_tasks_exit_list),
+ #endif
+ #ifdef CONFIG_CPUSETS
+ 	.mems_allowed_seq = SEQCNT_ZERO(init_task.mems_allowed_seq),
+diff --git a/kernel/fork.c b/kernel/fork.c
+index b65871600507..d416d16df62f 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1626,6 +1626,7 @@ static inline void rcu_copy_process(struct task_struct *p)
+ 	p->rcu_tasks_holdout = false;
+ 	INIT_LIST_HEAD(&p->rcu_tasks_holdout_list);
+ 	p->rcu_tasks_idle_cpu = -1;
++	INIT_LIST_HEAD(&p->rcu_tasks_exit_list);
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+ }
+ 
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 81688a133552..5227cb5c1bea 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -527,7 +527,8 @@ static DECLARE_WAIT_QUEUE_HEAD(rcu_tasks_cbs_wq);
+ static DEFINE_RAW_SPINLOCK(rcu_tasks_cbs_lock);
+ 
+ /* Track exiting tasks in order to allow them to be waited for. */
+-DEFINE_STATIC_SRCU(tasks_rcu_exit_srcu);
++static LIST_HEAD(rtp_exit_list);
++static DEFINE_RAW_SPINLOCK(rtp_exit_list_lock);
+ 
+ /* Control stall timeouts.  Disable with <= 0, otherwise jiffies till stall. */
+ #define RCU_TASK_STALL_TIMEOUT (HZ * 60 * 10)
+@@ -661,6 +662,17 @@ static void check_holdout_task(struct task_struct *t,
+ 	sched_show_task(t);
+ }
+ 
++static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
++{
++	if (t != current && READ_ONCE(t->on_rq) &&
++			!is_idle_task(t)) {
++		get_task_struct(t);
++		t->rcu_tasks_nvcsw = READ_ONCE(t->nvcsw);
++		WRITE_ONCE(t->rcu_tasks_holdout, true);
++		list_add(&t->rcu_tasks_holdout_list, hop);
++	}
++}
++
+ /* RCU-tasks kthread that detects grace periods and invokes callbacks. */
+ static int __noreturn rcu_tasks_kthread(void *arg)
+ {
+@@ -726,14 +738,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 		 */
+ 		rcu_read_lock();
+ 		for_each_process_thread(g, t) {
+-			if (t != current && READ_ONCE(t->on_rq) &&
+-			    !is_idle_task(t)) {
+-				get_task_struct(t);
+-				t->rcu_tasks_nvcsw = READ_ONCE(t->nvcsw);
+-				WRITE_ONCE(t->rcu_tasks_holdout, true);
+-				list_add(&t->rcu_tasks_holdout_list,
+-					 &rcu_tasks_holdouts);
+-			}
++			rcu_tasks_pertask(t, &rcu_tasks_holdouts);
+ 		}
+ 		rcu_read_unlock();
+ 
+@@ -744,8 +749,12 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 		 * where they have disabled preemption, allowing the
+ 		 * later synchronize_sched() to finish the job.
+ 		 */
+-		synchronize_srcu(&tasks_rcu_exit_srcu);
+-
++		raw_spin_lock_irqsave(&rtp_exit_list_lock, flags);
++		list_for_each_entry(t, &rtp_exit_list, rcu_tasks_exit_list) {
++			if (list_empty(&t->rcu_tasks_holdout_list))
++				rcu_tasks_pertask(t, &rcu_tasks_holdouts);
++		}
++		raw_spin_unlock_irqrestore(&rtp_exit_list_lock, flags);
+ 		/*
+ 		 * Each pass through the following loop scans the list
+ 		 * of holdout tasks, removing any that are no longer
+@@ -802,8 +811,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
+ 		 *
+ 		 * In addition, this synchronize_sched() waits for exiting
+ 		 * tasks to complete their final preempt_disable() region
+-		 * of execution, cleaning up after the synchronize_srcu()
+-		 * above.
++		 * of execution.
+ 		 */
+ 		synchronize_sched();
+ 
+@@ -834,20 +842,39 @@ static int __init rcu_spawn_tasks_kthread(void)
+ }
+ core_initcall(rcu_spawn_tasks_kthread);
+ 
+-/* Do the srcu_read_lock() for the above synchronize_srcu().  */
++/*
++ * Protect against tasklist scan blind spot while the task is exiting and
++ * may be removed from the tasklist.  Do this by adding the task to yet
++ * another list.
++ */
+ void exit_tasks_rcu_start(void)
+ {
++	unsigned long flags;
++	struct task_struct *t = current;
++
++	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
++	get_task_struct(t);
+ 	preempt_disable();
+-	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
++	raw_spin_lock_irqsave(&rtp_exit_list_lock, flags);
++	list_add(&t->rcu_tasks_exit_list, &rtp_exit_list);
++	raw_spin_unlock_irqrestore(&rtp_exit_list_lock, flags);
+ 	preempt_enable();
+ }
+ 
+-/* Do the srcu_read_unlock() for the above synchronize_srcu().  */
++/*
++ * Remove the task from the "yet another list" because do_exit() is now
++ * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
++ */
+ void exit_tasks_rcu_finish(void)
+ {
+-	preempt_disable();
+-	__srcu_read_unlock(&tasks_rcu_exit_srcu, current->rcu_tasks_idx);
+-	preempt_enable();
++	unsigned long flags;
++	struct task_struct *t = current;
++
++	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
++	raw_spin_lock_irqsave(&rtp_exit_list_lock, flags);
++	list_del_init(&t->rcu_tasks_exit_list);
++	raw_spin_unlock_irqrestore(&rtp_exit_list_lock, flags);
++	put_task_struct(t);
+ }
+ 
+ #endif /* #ifdef CONFIG_TASKS_RCU */
+-- 
+2.17.1
 
