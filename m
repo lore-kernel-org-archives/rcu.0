@@ -1,197 +1,204 @@
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167F279926
-	for <rcu@vger.kernel.org>; Thu,  8 Feb 2024 14:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5B176046
+	for <rcu@vger.kernel.org>; Fri,  9 Feb 2024 16:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707403872; cv=none; b=B4cZ5WrQARr9cyRVeQAKU5+jD5jFpjk09gx/n7S7Rz+GpZnsjYDZjSdjGQyRv9cwHgWtJrAzAZZGiRgt3WJJ9GF/NydFK8NYRSR8oeBxa+OuRK1bjdHjMGIEz/bdujjWAOdlKPPIp78RHY87M5t5o3UvhABRa9ihrYeE//oIQxo=
+	t=1707494952; cv=none; b=l69qBMRw2QZKGmlNgI0/zOccizoGnu/4M26pNEUpcsSTFAEbdj/RjWnqgJtVCQ9PssFQwIFb+taElo1VK4YjGizUA5fln8XYMbeglIZ6+C3fj77GKw94c7f68VJ5JtLWy54F6fGNj1l3Ee/FAfd09oI13pve7nciuC1iOmWhthw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707403872; c=relaxed/simple;
-	bh=Zu1zCD6k7M8shzYC7OO3X+lEBEVmH9A4kMKypbHXJTo=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qEtV2YqDYX+7dQn99J/yIdLCqOSXEaFi7GAsNTfFeJNK7mtvRqLx8Y3QQ5xDGPVTjgnxs5xyb0XMPjgjxG7mIUbNi4R/lmX7uzK+QVC1bVquxzbgQvNqoxY67w8PsDDRZdxC7gadp5GqFcQrkbXixyGtev/7gO1NfoXwdbRnGfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OpS9LbWp; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1707494952; c=relaxed/simple;
+	bh=q6wyummIqcmZDUbzboQvNIEztcMivzauItQGnEHzm+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nDnAVCF2sn4fQ6HKNjXcn4VeDxnq7H0M29iOJVhr0OcrJs8lQUkQssw8hnrsobn8JOGgk3CB6odeReL/AGVEz6cv1xsxcqVeVMq+dYxchzWYemEtFFtahn1idGF++lVqRnj2TMZBQMmBzyXoex8QQ1pKvHcsAPe3Mp7oHFU23mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FXYTYVEe; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OpS9LbWp"
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d0a0e40672so10180951fa.0
-        for <rcu@vger.kernel.org>; Thu, 08 Feb 2024 06:51:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707403869; x=1708008669; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DV06rcunBPBALIVlHenPv51cZhhW7Zimmh9/welqPzE=;
-        b=OpS9LbWpTCyzo96igMhe7zBxreXCTSGKD3j5q1TrFE0WInIJx27IWc8srokJljIUvD
-         sBKKmCcsCpcDrtVt2qPZlIikeQxTYa4WnkGikjuIj9JUuviK4u04ubjLPTXzdQApP94+
-         IRagQnD2Bg87UAK0HZ5MOX3YVH3uqBisaNbb0J+DxJWAduskAbhclOISniJ+T+GtZVC1
-         NKg8Zj39ck5vpjyMUe3c7/adZNmD2BtFDCu4Gm40MH7pgA0J8I8hhf1Wld+ymuCp81JJ
-         dcYlEwW0kboiJI8aF2vKXt8T0sbQACYDuVrGAUxY4rnHmw3OGhdSgwmQEXaLZYP7xAQY
-         jW0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707403869; x=1708008669;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DV06rcunBPBALIVlHenPv51cZhhW7Zimmh9/welqPzE=;
-        b=hxAwimBzj57HqK/7TZ53hjJdqthjqRV2KCQ3nBW4lTli+wT5WfcDp9HdyDIlPp55qZ
-         1ZMKmM/e+3djkvIGzUADkiPkSIVp3ILWFSeh9UabbMuuU9z0vBQLjDpD0xwUXfMjZ41f
-         RZPQ1JZpLrNRev5f3eHxvllj6U94IAVckDbIyBP3ZmJP1YA98COr3Y+c8OyS7Wcjwljh
-         Dgm48gTrHoM124U0dU8ZRalwW6ohKOgz092jWULjCUj0j/jKflfBgGs4XAqo7bgSn5V8
-         T27S4VCHYgJNLHVrFayo0nnBlD63+F9krtmCGquzfUjdEgdvTEGsytmuIb2eACcCv9HM
-         tkBg==
-X-Gm-Message-State: AOJu0YzPwVqO1ike0Kg+wbLFtktDqvygSYcGTiexdsMy7YQPCxOR1sxs
-	Mfobps00/HEnSW+B59fgw5KOGSiQQ231R2oMQwBXtYNLpCOazJzLct2RB+Ps
-X-Google-Smtp-Source: AGHT+IFL5hyaGGSXpOsAufIM2w8QLygmpL9W/RgkWuS9eQBlMHPZLqHAgDuialbPiAzKByweDywvsQ==
-X-Received: by 2002:a2e:9cc2:0:b0:2cf:1de7:1fd with SMTP id g2-20020a2e9cc2000000b002cf1de701fdmr1106420ljj.20.1707403868976;
-        Thu, 08 Feb 2024 06:51:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUmEJfKy9xm0TWS2dSV2jEqaI7lpRdkQtRmaLndcxQSt0j8d+jfESxSXX/upJWxwJiEwGomDpDhkIXCqwvxtWaHawxWe7LX26WyDIbz1kIBhP1ByGB70D2za2yIcSifXdT9hDo20tCFiu8AJceoKx9lvRems1WOHa6fV8nSQfhwLcXmXZFHjelAaNWm0qzHfv2qvEfBzWI=
-Received: from pc636 (host-90-233-221-0.mobileonline.telia.com. [90.233.221.0])
-        by smtp.gmail.com with ESMTPSA id e26-20020a2e8eda000000b002cf1cf44a00sm15177ljl.52.2024.02.08.06.51.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Feb 2024 06:51:08 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 8 Feb 2024 15:51:06 +0100
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Andrea Righi <andrea.righi@canonical.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FXYTYVEe"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707494949;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0KdzfFxuaAxTQegBPNRDPqdrZtFIwl4Nb3u77kWuWvE=;
+	b=FXYTYVEeGVWS/PyqgEe58ie2+ZxCaWokg3VDdXCIxkclNViDVMEYQ3e1weu4al6SYfOwed
+	4Xt23YYFdstJ5A0oxj3UZ0BF9WYotFQ6O2DH2p95IA0uaBPZoMKv5m/ryJ+aXMxFm1WRy+
+	MBeIgxfhyrELDlqQIqNEAgnkAHvlsus=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-494-58nEO-BdNnKrOcjPFr-AOQ-1; Fri,
+ 09 Feb 2024 11:09:06 -0500
+X-MC-Unique: 58nEO-BdNnKrOcjPFr-AOQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8651D38116E7;
+	Fri,  9 Feb 2024 16:09:04 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D61840C9444;
+	Fri,  9 Feb 2024 16:09:03 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 81307400E52ED; Wed,  7 Feb 2024 11:59:21 -0300 (-03)
+Date: Wed, 7 Feb 2024 11:59:21 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joelaf@google.com>, rcu@vger.kernel.org,
-	"Cc: Frederic Weisbecker" <fweisbec@gmail.com>
-Subject: Re: Observation on NOHZ_FULL
-Message-ID: <ZcTqWiCJXg4H1wxp@pc636>
-References: <ZbjdL04k2Z2ZdUyp@gpd>
- <b8d80604-18a5-4f82-b846-5c00c6aeae6f@paulmck-laptop>
- <ZcJxhoNpkTM7LnOr@gpd>
- <9f9b6885-6d9d-4f30-9635-49443e1615e9@joelfernandes.org>
- <ZcOwRsEhbQhGv9X2@gpd>
- <CAEXW_YQN=Dm4TXv+F=Q4bfnKWn1Tv52=8hz50JLkbufcM5hUpQ@mail.gmail.com>
- <ZcO4c6nxemyxRFz3@gpd>
- <1fcf7e8a-c245-4c5c-ac86-7f0a1531032d@joelfernandes.org>
- <ZcR66cxax008lPGv@gpd>
- <ZcTO5lKeZoJZH1Mp@pc636>
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+	Ryan Phillips <rphillips@redhat.com>,
+	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
+	Paul Gortmaker <paul.gortmaker@windriver.com>,
+	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Message-ID: <ZcOaybEOJrpLsU/2@tpad>
+References: <20240117163511.88173-1-longman@redhat.com>
+ <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
+ <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
+ <ZcIsd6fjgmsb2dxr@localhost.localdomain>
+ <ZcKFRqrUh5tTbsaJ@tpad>
+ <ZcOYEkHCoh75R-LA@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZcTO5lKeZoJZH1Mp@pc636>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcOYEkHCoh75R-LA@localhost.localdomain>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Thu, Feb 08, 2024 at 01:53:58PM +0100, Uladzislau Rezki wrote:
-> On Thu, Feb 08, 2024 at 07:55:37AM +0100, Andrea Righi wrote:
-> > On Thu, Feb 08, 2024 at 12:54:58AM -0500, Joel Fernandes wrote:
-> > ...
-> > > >> Slightly related, but one of the things we are wondering also is how
-> > > >> much of the overhead for your nohz-full and lazy-RCU test (on top of
-> > > >> baseline - that is just CONFIG_HZ=1000 without nohz-full or nocbs) is
-> > > >> because of just using NOCB. Uladsizlau mentioned he might run a test
-> > > >> for comparing along those lines as well.
+On Wed, Feb 07, 2024 at 03:47:46PM +0100, Frederic Weisbecker wrote:
+> Le Tue, Feb 06, 2024 at 04:15:18PM -0300, Marcelo Tosatti a écrit :
+> > On Tue, Feb 06, 2024 at 01:56:23PM +0100, Frederic Weisbecker wrote:
+> > > Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
 > > > > 
-> > > > Just to clarify, "lazy rcu on" results are just with rcu_nocb=all and
-> > > > lazy RCUs enabled (and HZ=1000), so without nohz_full.
+> > > > On 1/17/24 12:07, Tejun Heo wrote:
+> > > > > Hello,
+> > > > > 
+> > > > > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
+> > > > > > The first 2 patches are adopted from Federic with minor twists to fix
+> > > > > > merge conflicts and compilation issue. The rests are for implementing
+> > > > > > the new cpuset.cpus.isolation_full interface which is essentially a flag
+> > > > > > to globally enable or disable full CPU isolation on isolated partitions.
+> > > > > I think the interface is a bit premature. The cpuset partition feature is
+> > > > > already pretty restrictive and makes it really clear that it's to isolate
+> > > > > the CPUs. I think it'd be better to just enable all the isolation features
+> > > > > by default. If there are valid use cases which can't be served without
+> > > > > disabling some isolation features, we can worry about adding the interface
+> > > > > at that point.
 > > > > 
-> > > > If I enable only nohz_full=all (without rcu_nocb) I see something like
-> > > > this:
+> > > > My current thought is to make isolated partitions act like isolcpus=domain,
+> > > > additional CPU isolation capabilities are optional and can be turned on
+> > > > using isolation_full. However, I am fine with making all these turned on by
+> > > > default if it is the consensus.
 > > > 
-> > > Ok. I did want to mention nohz_full implies rcu_nocb on the same CPUs as well.
+> > > Right it was the consensus last time I tried. Along with the fact that mutating
+> > > this isolation_full set has to be done on offline CPUs to simplify the whole
+> > > picture.
 > > > 
-> > > Its also mentioned in the boot param docs on the last line of the description:
+> > > So lemme try to summarize what needs to be done:
 > > > 
-> > >         nohz_full=      [KNL,BOOT,SMP,ISOL]
-> > >                         The argument is a cpu list, as described above.
-> > >                         In kernels built with CONFIG_NO_HZ_FULL=y, set
-> > >                         the specified list of CPUs whose tick will be stopped
-> > >                         whenever possible. The boot CPU will be forced outside
-> > >                         the range to maintain the timekeeping.  Any CPUs
-> > >                         in this list will have their RCU callbacks offloaded,
-> > >                         just as if they had also been called out in the
-> > >                         rcu_nocbs= boot parameter.
+> > > 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
+> > >   now. And if it ever proves needed, provide a way later for more finegrained
+> > >   tuning.
+> > > 
+> > > 2) This file must only apply to offline CPUs because it avoids migrations and
+> > >   stuff.
+> > > 
+> > > 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
+> > >    changes.
+> > > 
+> > > 4) HK_TYPE_TIMER:
+> > >    * Wrt. timers in general, not much needs to be done, the CPUs are
+> > >      offline. But:
+> > >    * arch/x86/kvm/x86.c does something weird
+> > >    * drivers/char/random.c might need some care
+> > >    * watchdog needs to be (de-)activated
+> > >    
+> > > 5) HK_TYPE_DOMAIN:
+> > >    * This one I fear is not mutable, this is isolcpus...
 > > 
-> > Ah I didn't realize that, it definitely makes sense, thanks for
-> > clarifying it.
-> > 
-> > Then basically in the results that I posted the difference is
-> > "nohz_full=all+rcu_nocb=all" vs "rcu_nocb=all+lazy_RCU=on".
-> > 
-> So, you say that a hrtimer_interrupt() handler takes more time in case
-> of lazy + nocb + rcu_nocb=all and for nohz_full + rcu_nocb=all it faster?
-> Could you please clarify this? I will try to measure from my side!
+> > Except for HK_TYPE_DOMAIN, i have never seen anyone use any of this
+> > flags.
 > 
-> I have done some basic research about hrtimer_interrupt() latency on my
-> HW with latest Linux kernel. I have compared below cases:
-> 
-> case a: 1000HZ + lazy + nocb_all_cpus
-> case b: 1000HZ + nocb_all_cpus
-> 
-> I used "ftrace" to measure time(in microseconds). Steps:
-> 
-> echo 0 > tracing_on
-> echo function_graph > current_tracer
-> echo funcgraph-proc > trace_options
-> echo funcgraph-abstime > trace_options
-> echo hrtimer_interrupt > set_ftrace_filter
-> 
-> fio --rw=write --bs=1M --size=1G --numjobs=8 --name=worker --time_based --runtime=50&
-> 
-> echo 1 > tracing_on; sleep 10; echo 0 > tracing_on
-> 
-> data is based on 10 seconds collection:
-> 
-> <case a>
->      6  2102 ############################################################
->      8  2079 ############################################################
->     10  1464 ##########################################
->      7   897 ##########################
->      9   625 ##################
->     12   490 ##############
->     13   479 ##############
->     11   289 #########
->      5   249 ########
->     14   124 ####
->     15    72 ###
->     16    41 ##
->     17    24 #
->      4    22 #
->     18    12 #
->     22     2 #
->     19     1 #
-> <case a>
-> 
-> <case b>
->      9  1658 ############################################################
->     13  1308 ################################################
->     12  1224 #############################################
->     10   972 ####################################
->      8   703 ##########################
->     14   595 ######################
->     15   571 #####################
->     11   525 ###################
->     17   350 #############
->     16   235 #########
->      7   214 ########
->      4    73 ###
->      5    68 ###
->      6    54 ##
->     20     9 #
->     18     9 #
->     19     6 #
->     33     1 #
->      3     1 #
->     28     1 #
->     27     1 #
->     25     1 #
->     22     1 #
->     21     1 #
-> <case b>
-> 
-> I do not see the difference, there is a nose of 1/2/3 microseconds diff.
-> 
-Let me further have a look at what we use for lazy in terms on hrtimer though.
+> HK_TYPE_DOMAIN is used by isolcpus=domain,....
 
---
-Uladzislau Rezki
+> HK_TYPE_MANAGED_IRQ is used by isolcpus=managed_irq,...
+> 
+> All the others (except HK_TYPE_SCHED) are used by nohz_full=
+
+I mean i've never seen any use of the individual flags being set.
+
+You either want full isolation (nohz_full and all the flags together,
+except for HK_TYPE_DOMAIN which is sometimes enabled/disabled), or not.
+
+So why not group them all together ?
+
+Do you know of any separate uses of these flags (except for
+HK_TYPE_DOMAIN).
+
+> Thanks.
+> 
+> > 
+> > > 
+> > > 6) HK_TYPE_MANAGED_IRQ:
+> > >    * I prefer not to think about it :-)
+> > > 
+> > > 7) HK_TYPE_TICK:
+> > >    * Maybe some tiny ticks internals to revisit, I'll check that.
+> > >    * There is a remote tick to take into consideration, but again the
+> > >      CPUs are offline so it shouldn't be too complicated.
+> > > 
+> > > 8) HK_TYPE_WQ:
+> > >    * Fortunately we already have all the mutable interface in place.
+> > >      But we must make it live nicely with the sysfs workqueue affinity
+> > >      files.
+> > > 
+> > > 9) HK_FLAG_SCHED:
+> > >    * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
+> > >    Should be removed?
+> > > 
+> > > 10) HK_TYPE_RCU:
+> > >     * That's point 3) and also some kthreads to affine, which leads us
+> > >      to the following in HK_TYPE_KTHREAD:
+> > > 
+> > > 11) HK_FLAG_KTHREAD:
+> > >     * I'm guessing it's fine as long as isolation_full is also an
+> > >       isolated partition. Then unbound kthreads shouldn't run there.
+> > > 
+> > > 12) HK_TYPE_MISC:
+> > >     * Should be fine as ILB isn't running on offline CPUs.
+> > > 
+> > > Thanks.
+> > > 
+> > > 
+> > 
+> 
+> 
+
