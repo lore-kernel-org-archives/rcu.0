@@ -1,106 +1,91 @@
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67661130E40
-	for <rcu@vger.kernel.org>; Thu, 15 Feb 2024 14:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885EB12F5A0
+	for <rcu@vger.kernel.org>; Fri, 16 Feb 2024 15:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708005772; cv=none; b=dnsgJKKC7M6mExsf5e3OPovOHDJjsNsgH1+dsKTUW94M58b5n/KslkAXY3159z9VcwFshCnhOdDtFXBwp6ZBxOcTb7Xm9KVj09RS3hvDL8JM543/Q7VWIEpYFSRdb/cNH+qLQJKRldJLcz5lsZNSple4nl4NbySsJZRXv55Mitw=
+	t=1708098403; cv=none; b=XOvhQfexCTnSjV8ppiKQLvKEiU8cGANuhHWZcJj4IDgUKqulYaUXhJdirVDuAfjC4zTVlpcNUS5oJhs1JrTUEFmuczw2btjdEn9cxEhz+EZuhZYaDv6roXSTYNc51nkbdWsxwoCCWotL5tLlke65mDq8t6DK/zfnrNwtp1Xwi30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708005772; c=relaxed/simple;
-	bh=T/NORQPbfde0pbfntS4gQnCcisA7+9s2HYdGTGF6J8I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SXnIjtJrJ3zQOFlFh9DeaCblkzBkyw85b0K/3sW/6xhbLDbsLr3DzuLVi3ppnShw2dlg8kxUHc5Lh1Xvt4HoyVNVzN77ckAIbiOnsniwJyrnf3aA9OaA3IgQ86qLY/++NoxMLA83wojrxDb6un4OWpGbxrnFYrXmQRikryn0bXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=HnjxlD6z; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1708098403; c=relaxed/simple;
+	bh=EJcL3ayVx/+4LZ8p+1YLaepYD5JthmMhCsLuz49NPRM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uU28N/ogM0Tigd6gVDAv+R8fBmtMPNMJk4HQD3y/R3f/GkhxHnj+uXRjjIEdwngPrM0tBz4IwjU5LdVqKY2yZ73h4MhN7mj1zfV2PBiEbkJj7Sh00qQAnujfq46wL8wXVf9RSbulqxK+vM1aVio+HbpBojbcO/cJT+7c22otwBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BcA1dBeB; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="HnjxlD6z"
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d0d95e8133so11246031fa.1
-        for <rcu@vger.kernel.org>; Thu, 15 Feb 2024 06:02:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1708005769; x=1708610569; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5wzX7VbU5pQKW9L20pb1L2KrQ3nPSUU9D7ZhcjINoQo=;
-        b=HnjxlD6z9/3plw75zMNWGEyNdDyCQdYanK6kCUA3TBsvJ482CJ4MIkWqXRe0hPwHZi
-         tRXpnTBh6lhypMApPA1Gjl/D4qFZ29Ow2KeT7bVW6EHNtyfV5R9q9mQCGwCul0cfK3vj
-         07L+R9p8Kpo/oX8hG+O/6USCXnTGEysTP3jjM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708005769; x=1708610569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5wzX7VbU5pQKW9L20pb1L2KrQ3nPSUU9D7ZhcjINoQo=;
-        b=mLDlDOi+Ingnf4BMydQTDocoBIUYTcADjc3u1XJ6pAMCrr5DSVKfI03OLw+urvxpvF
-         Txloz1o5ZWMmF+A9dFxzdfYa4PTmFyfrH6Fu6OiAQs+ZpxPx2aphHQotI+PP+nZwbwDq
-         H/oU/5S8jeb7riKS7eTvxGDGO/Ojm9YMbFr+NDNUmXJxLf2S7wVfKr7zVf3ngPiYrEh6
-         WU5RaTr+4cvK4zu/QJO13YrMQMW6aYYPGjW0x8hdEsUrj+avyJqVC8VjUTu1UPqpsWSD
-         Ns2lZ0KFyjb+njYxZ+wrescH14Hk9j6Tkjb1h60VTGLTnGFvfww3LBE5bHc5FfAmMhcb
-         iHSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVHhuIiondKTi1ZDeLR6a13XFgYtkB6ADpXioS4gUWGcUIMLE5PaZ6M0Wd+foe938qCg9jubedDfLfxiDxe6l0TtZ39
-X-Gm-Message-State: AOJu0YwMoLHOe9iK1EdBWo9PNFvEIuZJ0I28zRPk4tp7zgfnEuhqu0gj
-	zIOXoDMHZoHb2V7RUk74yaQ+7As0XxreVOnTibBRXZZdbWRC2lxLTNVRNTB7TElTCWLgvwmWcOF
-	AU+UoY62ssWq95boIKSMu4Fica/OFcxSQ6qpVxw==
-X-Google-Smtp-Source: AGHT+IEH/d/YS0y6fFf74zBWi2xH7uBazxK7vnwiiHQ+kzoQTRZfXdKoJx5DlVs+Ia5b9y7cVZzKh2xV6HmsGXlBdJg=
-X-Received: by 2002:a2e:870f:0:b0:2d1:188b:c3fb with SMTP id
- m15-20020a2e870f000000b002d1188bc3fbmr1420796lji.34.1708005769338; Thu, 15
- Feb 2024 06:02:49 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BcA1dBeB"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708098398;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=oChCMUJBblwbWgGNEA6nPdDFOOQTJgcnMNy1ciDrlTg=;
+	b=BcA1dBeBbbEYTvHmit7FVdKDu9HlUJr2yP6uRL4i7pyPmSidN5CuuxIDuJExvol+Xgdwap
+	qpX5f0Df/SRG6jhdLPE87xF2/kcPZwhs9QRgLJJL4gtrRs7pdn/QMViyvEhQ0HUuOKS4RI
+	aOGxF4+rdsD8xRSY7o7MHmt5FFDHU7c=
+From: Zenghui Yu <zenghui.yu@linux.dev>
+To: rcu@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Cc: paulmck@kernel.org,
+	frederic@kernel.org,
+	quic_neeraju@quicinc.com,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	boqun.feng@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com,
+	corbet@lwn.net,
+	linux-kernel@vger.kernel.org,
+	Zenghui Yu <zenghui.yu@linux.dev>
+Subject: [PATCH] doc: Remove references to arrayRCU.rst
+Date: Fri, 16 Feb 2024 23:44:55 +0800
+Message-Id: <20240216154455.22327-1-zenghui.yu@linux.dev>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6a2b6857-57e7-4321-adae-132ba69a4fff@paulmck-laptop>
- <0e15e91e-da47-45dd-b7de-7f89b7b6002b@joelfernandes.org> <ZbieCjYk8cIgZS8L@gpd>
- <cf1c60fc-6295-402e-b546-6f67cf0955b2@paulmck-laptop> <ZbjYSXhIrVyCpRNM@pc636>
- <ZbjdL04k2Z2ZdUyp@gpd> <b8d80604-18a5-4f82-b846-5c00c6aeae6f@paulmck-laptop>
- <ZcJxhoNpkTM7LnOr@gpd> <92cba6df-01de-4daa-a0cb-5fa92c7374dd@paulmck-laptop>
- <Zc3CmvuD79umJXQv@gpd> <Zc4Ojw8LsYRGzo_y@pc636>
-In-Reply-To: <Zc4Ojw8LsYRGzo_y@pc636>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Thu, 15 Feb 2024 09:02:36 -0500
-Message-ID: <CAEXW_YQP4i_-fcypKuo+9=2NruYuKich5CHzLKdpBeENntd_xQ@mail.gmail.com>
-Subject: Re: Observation on NOHZ_FULL
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Andrea Righi <andrea.righi@canonical.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Joel Fernandes <joelaf@google.com>, rcu@vger.kernel.org, 
-	"Cc: Frederic Weisbecker" <fweisbec@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 15, 2024 at 8:16=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com>=
- wrote:
->
-> On Thu, Feb 15, 2024 at 08:51:54AM +0100, Andrea Righi wrote:
-> > On Tue, Feb 06, 2024 at 10:44:33AM -0800, Paul E. McKenney wrote:
-> > ...
-> > > >
-> > > >  - with lazy RCU enabled hrtimer_interrupt() takes like 2x more to
-> > > >    return, respect to the other cases (is this expected?)
-> > >
-> > > This last is surprising at first glance, but I could be missing
-> > > something.  Joel, Uladzislau, thoughts?
-> >
-> > On this specific point, I repeated the tests with the latest 6.8
-> > kernel and now I don't notice this difference anymore.
-> >
-> > hrtimer_interrupt() time is always in the range [4K, 16K) ns, both with
-> > lazy RCU off and lazy RCU on.
-> >
-> > I don't really know why I was getting different results, probably some
-> > noise triggered by something running in user-space...?
-> >
-> > In any case I will update my old post with these new results and I
-> > wouldn't consider this an issue for now.
-> >
-> Thank you for your confirmation, so our results are aligned in terms of
-> i also do not see the difference and issues with hrtimer_interrupt()
-> duration time.
->
+arrayRCU.rst has been removed since commit ef2555cf68c3 ("doc: Remove
+arrayRCU.rst") but is still referenced by whatisRCU.rst. Update it to
+reflect the current state of the documentation.
 
-Thanks Vlad and Andrea. That's a relief !!! ;-)
+Signed-off-by: Zenghui Yu <zenghui.yu@linux.dev>
+---
+ Documentation/RCU/whatisRCU.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- - Joel
+diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+index 60ce02475142..dce1678ec1f8 100644
+--- a/Documentation/RCU/whatisRCU.rst
++++ b/Documentation/RCU/whatisRCU.rst
+@@ -416,7 +416,7 @@ their assorted primitives.
+ 
+ This section shows a simple use of the core RCU API to protect a
+ global pointer to a dynamically allocated structure.  More-typical
+-uses of RCU may be found in listRCU.rst, arrayRCU.rst, and NMI-RCU.rst.
++uses of RCU may be found in listRCU.rst and NMI-RCU.rst.
+ ::
+ 
+ 	struct foo {
+@@ -499,8 +499,8 @@ So, to sum up:
+ 	data item.
+ 
+ See checklist.rst for additional rules to follow when using RCU.
+-And again, more-typical uses of RCU may be found in listRCU.rst,
+-arrayRCU.rst, and NMI-RCU.rst.
++And again, more-typical uses of RCU may be found in listRCU.rst
++and NMI-RCU.rst.
+ 
+ .. _4_whatisRCU:
+ 
+-- 
+2.34.1
+
