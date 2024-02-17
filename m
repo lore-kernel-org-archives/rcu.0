@@ -1,95 +1,146 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DD0130AF2;
-	Fri, 16 Feb 2024 16:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5D74C8F;
+	Sat, 17 Feb 2024 01:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708102404; cv=none; b=DUlKoAACX8Dir7hwrQhmZsur/kRQhKNcf4B+sxr+KUxmJMTfpkbtJEP86WdzZwpitybIVtrJhLeThll7uYKifZXRai913xjuRGwzMiVY/O5fYZq8cG/yFLnhTk+5XAFoJFw7dW6ofAOAl3AWeJBVY0q9efStcjuRKiGdRa9M/SI=
+	t=1708133280; cv=none; b=Hae704mcMC4M5q9G/2OpbadNvL7QbnqZ+tPBqkMkLdx5QSjFL8SBxXkbmg2MlzQIVxONMsDTbhwpvNkVfrk55srH9pij4DPzWuD4dTVGNOEiRc359ZB1v2glCLklbvU1rWMXOZv/rwyqc2u38wpwRDgLGR6QikhhSxSAsYJrgrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708102404; c=relaxed/simple;
-	bh=nYC9tAhN8sWaj6ctJMdhChNdc+F/U6vyfrCBNb2RCBg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P88UHdIIWh9mRVGfWIhQdSYL9FSrPAUt1QhMcTpghoPtAnsIvpk42dLtAUQ+Fn2jbghorAmgL0x0jwd7yl2HTcvEL2990waELj39TmFihqsBwQo0wwPn91xZqdZkzjftqfyYwSZjeAMpWmGPzfis4L0j+pcV5XqCHg6Ca3eFqRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AorK5vFC; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1708133280; c=relaxed/simple;
+	bh=IPhTwhd+sG/j2XT8YGeqy+Bq/Ymg/GX/lulfajzIek0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rJwFe0Qao+Xk4nNOYrsRgb74kSdgOBoim74lFi2OvTGZgeobEJFUdBZyGXWACYgNvJL9ikLG6KlhqEQVqu/CI3AqfNd40iXcL3xvqm+FE87I+qEHQC8nkShNWGLOkxThIy7QuEPhS0yATaNxK53675MFqJg7rHpA7U+C3aWZGoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XT9C+nFm; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AorK5vFC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E344C43390;
-	Fri, 16 Feb 2024 16:53:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708102404;
-	bh=nYC9tAhN8sWaj6ctJMdhChNdc+F/U6vyfrCBNb2RCBg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=AorK5vFCL5iGgCGbZxGq7IDfc7uEq2MD1fyegzaAFQnaAIsN9BwFmx3qnzfpcYtlq
-	 GJ7KBypk165BVliabLYHpR+tDs7A7Pp1C7IS35Wo3z2czb+BbzxjOB7HzuzrRW4Jg1
-	 YPVOc6ZvCU2kCw1GKGGGKLnzDf5Ac1t5G9iUjq/lJq02awIQeSEYgNs4oOccOD2nB2
-	 B0qJHtpwCla91J7fbqfJia54hPqoZaf9wJAPExLMZEiT4kMBNR3P3XVXNEwU3Y3JFF
-	 tcep1FRr+F5OVXu77IQotLh5gY/WXTvjzxoY6YrVMv2Hz05mfrsUF9vpNfG+pNumxV
-	 gqagKIvrD+v4w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9F286CE0B70; Fri, 16 Feb 2024 08:53:23 -0800 (PST)
-Date: Fri, 16 Feb 2024 08:53:23 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zenghui Yu <zenghui.yu@linux.dev>
-Cc: rcu@vger.kernel.org, linux-doc@vger.kernel.org, frederic@kernel.org,
-	quic_neeraju@quicinc.com, joel@joelfernandes.org,
-	josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com, corbet@lwn.net,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] doc: Remove references to arrayRCU.rst
-Message-ID: <6d77e811-30ec-44c7-87b3-177a3f5fe716@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240216154455.22327-1-zenghui.yu@linux.dev>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XT9C+nFm"
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-429d7896d35so15653621cf.3;
+        Fri, 16 Feb 2024 17:27:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708133277; x=1708738077; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eSS+leYgx/1CnoRDNP0u4WvLSnhQI+J7A/LTWeqZnSM=;
+        b=XT9C+nFmGsjUZelHvCh7UDqtDD42//xwV/56k6cCZLDvmYUkD9sDbV6YYbFcPS0dpZ
+         eDCWIvQcrse746JM2AtyG4xmO4C9A0+1zAy9dmO/R1RD+a40FYxABwdyaxrz36s/ZDSq
+         Y8PkUXjyD27O3h7ezsatIZAju3AktWYznlFTpELllRQk4BSDQDmaxAUk1XtuaR90dcEM
+         hDYzQvzGlIZ7Ugu1JwUUlpVddz8N//CNVquXmwyqIJDGdXPM4cc4go93yUWBVl0FgRj1
+         oUzayr8jEUsTOLDs9/gPoJqn0sSTiy6tbeMfLGqQgD8JTK5n+gnMqyc4L746qzXfeY1r
+         HYHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708133277; x=1708738077;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eSS+leYgx/1CnoRDNP0u4WvLSnhQI+J7A/LTWeqZnSM=;
+        b=Gmz1sDU+L0U/Mj1hsLwIgnqGPdOSI/UJcVQzch17WL72NeIlhOSH/XOVKaDLCmBhn7
+         QBx+YH/DjkjMrGykfIrNDjhdCfWbhRc1Q5JvO7rb2V7vacOh/Z20IdYwb4mvCyCV5ra+
+         BCc/kPNQg0TH1cIZchrNBUks7l4zvwTFSrwQ9NEXMGJ2hopa380pTkmkgQLvoTa0xt1f
+         jQqkO9G0I7tTUuHq4eXSSTBHwPKi4pcF8glmkQWWzOvNrPlmwMTSZVXAmUevESLGXXFG
+         LrPoDyKl5HSdWdqBRVmoja8hnmxn1diP6Q4fDVbpmnxU+VyUT+BKGvTdNlKuycnSikPr
+         +8GQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUU1Mb5O1oyfnRfKGK1mSbAf687DbAcfSxHqzrwM3SxG1yjE6D28x7e9+TcvVAZZXL/aX5mO4Mi3c0DQvBLBWjH8EXb
+X-Gm-Message-State: AOJu0YxhVuAjXoQOxCuI0IO4Mib4j6Wqv4Xm35HQUc5gGHUbE62+R9Cm
+	PuXRsnIn1cou8HO4oikDoQFlGVw5LDgnY2Q18YOffZFaVL7oAn/W
+X-Google-Smtp-Source: AGHT+IF9hnR8bSREogk3Hx7qKQPxYhV2naVJNGag3z7heJHOlNa3UknBb3TQfKVs7wDTqmEfBCFvaQ==
+X-Received: by 2002:a05:622a:316:b0:42a:9d03:1c1d with SMTP id q22-20020a05622a031600b0042a9d031c1dmr7243965qtw.63.1708133277533;
+        Fri, 16 Feb 2024 17:27:57 -0800 (PST)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 2-20020ac85742000000b0042d8bf105c7sm432772qtx.2.2024.02.16.17.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 17:27:56 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 77F1D1200064;
+	Fri, 16 Feb 2024 20:27:56 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 16 Feb 2024 20:27:56 -0500
+X-ME-Sender: <xms:mwvQZYQygqj-rtOrZi-ab66mGlPjsE-3KliRxk_hunsvGSvLemk2AA>
+    <xme:mwvQZVw2eAqIkr9diykZtOz57PHa3FpjG0kT3ygDFm4iVdJ5eprIe_osFTjF4FCDS
+    qYX7ICXqV0V4OQi1Q>
+X-ME-Received: <xmr:mwvQZV0lNlI2QX5hsTbWZJZ8PqDij6WOyRhbiatRuug-YeITCBlPztP_VG0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdefgdefgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfevffeiueejhfeuiefggeeuheeg
+    gefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:mwvQZcDiPgNJiiJbGRBDm_JEGN7TfizEkXIcdR6IuOCJVVxGj2pgDQ>
+    <xmx:mwvQZRjQwqZeRoc9H4xwEKffgxxLimmkgxdu2duRv_AP2GyFQjIeSg>
+    <xmx:mwvQZYrG7i49mhF4obfPXQ68SZf-pWsmusYBv1KxDEH_5qKzbUjzEw>
+    <xmx:nAvQZaY4Xh9UNsBJ6ulZFJf-QvALes8u2c1xbt8-wUn9cYYvL41D_vRn8l8>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 16 Feb 2024 20:27:55 -0500 (EST)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH v2 1/6] rcu-tasks: Repair RCU Tasks Trace quiescence check
+Date: Fri, 16 Feb 2024 17:27:36 -0800
+Message-ID: <20240217012745.3446231-2-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240217012745.3446231-1-boqun.feng@gmail.com>
+References: <20240217012745.3446231-1-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240216154455.22327-1-zenghui.yu@linux.dev>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 16, 2024 at 11:44:55PM +0800, Zenghui Yu wrote:
-> arrayRCU.rst has been removed since commit ef2555cf68c3 ("doc: Remove
-> arrayRCU.rst") but is still referenced by whatisRCU.rst. Update it to
-> reflect the current state of the documentation.
-> 
-> Signed-off-by: Zenghui Yu <zenghui.yu@linux.dev>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Good catch!  Queued for the v6.10 merge window, thank you!
+The context-switch-time check for RCU Tasks Trace quiescence expects
+current->trc_reader_special.b.need_qs to be zero, and if so, updates
+it to TRC_NEED_QS_CHECKED.  This is backwards, because if this value
+is zero, there is no RCU Tasks Trace grace period in flight, an thus
+no need for a quiescent state.  Instead, when a grace period starts,
+this field is set to TRC_NEED_QS.
 
-							Thanx, Paul
+This commit therefore changes the check from zero to TRC_NEED_QS.
 
-> ---
->  Documentation/RCU/whatisRCU.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> index 60ce02475142..dce1678ec1f8 100644
-> --- a/Documentation/RCU/whatisRCU.rst
-> +++ b/Documentation/RCU/whatisRCU.rst
-> @@ -416,7 +416,7 @@ their assorted primitives.
->  
->  This section shows a simple use of the core RCU API to protect a
->  global pointer to a dynamically allocated structure.  More-typical
-> -uses of RCU may be found in listRCU.rst, arrayRCU.rst, and NMI-RCU.rst.
-> +uses of RCU may be found in listRCU.rst and NMI-RCU.rst.
->  ::
->  
->  	struct foo {
-> @@ -499,8 +499,8 @@ So, to sum up:
->  	data item.
->  
->  See checklist.rst for additional rules to follow when using RCU.
-> -And again, more-typical uses of RCU may be found in listRCU.rst,
-> -arrayRCU.rst, and NMI-RCU.rst.
-> +And again, more-typical uses of RCU may be found in listRCU.rst
-> +and NMI-RCU.rst.
->  
->  .. _4_whatisRCU:
->  
-> -- 
-> 2.34.1
-> 
+Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ include/linux/rcupdate.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 0746b1b0b663..16f519914415 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -184,9 +184,9 @@ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
+ 	do {									\
+ 		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
+ 										\
+-		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
++		if (unlikely(READ_ONCE((t)->trc_reader_special.b.need_qs) == TRC_NEED_QS) &&	\
+ 		    likely(!___rttq_nesting)) {					\
+-			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
++			rcu_trc_cmpxchg_need_qs((t), TRC_NEED_QS, TRC_NEED_QS_CHECKED);	\
+ 		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
+ 			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
+ 			rcu_tasks_trace_qs_blkd(t);				\
+-- 
+2.43.0
+
