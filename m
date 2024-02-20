@@ -1,261 +1,180 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85EA71B33;
-	Sun, 18 Feb 2024 19:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A91B5C5F1
+	for <rcu@vger.kernel.org>; Tue, 20 Feb 2024 08:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708283075; cv=none; b=t0aod+SKS5KVr4bVOmVGdEl9LPHubvq8rDXkerJaIkQ2/Zy0lcwIG3d3ySKw26TKn8kaCG7dtaWGGAcKqjvTJ40+7GvzcQBEwxNHpz7vHV8kv/FlWLgvlxkBJ+Fb4ljT8vhSXhfGyCvxqqOViufo9k+FTeA58rdSppEOIzQb3BU=
+	t=1708416190; cv=none; b=PiC1R3j15okBlZWKPq647MfgbH1A2tLUJE15MmmpnSWu8hMKO+OUowwvX7QdIjxo7bWNdSSczABPh6zU0QjkfwDZ8lUCazPhto09oRNsJWoR7FCxNVlZrijmO75nf2hlJ520pPkBIKHC7Td8MSSY8QpJ7L1DVcEtgjqBa/kClzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708283075; c=relaxed/simple;
-	bh=uAuIZ9HfSiY/A0IYD728MeRHnJcUIl43QTwSldu9Elo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=i4p5L6UjtHmN61ubE3oBlgNR3LTW+Nb8UW0YeyPL3PIxDOYSFAuAWZslsRi7FUzDUOZKskDrW4DBqoEXL2AeB5+4C6Yh4cbPMRmahfAToQvC9NIdJJIBcVQvIdh/GgASpOG5I+XGX1d0X9jchhWP0/LqdSopCA8J0qF/rK69Mp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UbYkC9+r; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Swz/Gol/; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1708416190; c=relaxed/simple;
+	bh=9/tlsQMBkfjjKLI9eGKfgWphyzXWhPtK20nWQDbPC9k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zmy3f0mHzNg+52fP1yOuEOrKcjOckGre6bMbgZTFm1SLp8H+aH7kthnvKnz4rDzCd06yP2a8i2Qdrx9Cv96bgE7QJEqjUd0OZrrwiZFqmfXJtEjOBWkUb0Lx6fOVZKCp+7V4XcXX5RTa4GDLoj14lQ6j/x4uZVBTRZQflBq2mJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AphMDZig; arc=none smtp.client-ip=209.85.217.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UbYkC9+r";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Swz/Gol/"
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708282668;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CxyZZWvhSzq+VD25dSHunC8XqF+HGYq257sbHrx7tVc=;
-	b=UbYkC9+rrnE2knx+Jpd7AAc/5FGkoofSX8NvdgBLECyH65gS9y2IMZwsCGi9Dvfuis4YUb
-	4hqu9ybDvUNRUb2SHmUmjDIxTjbRSq0ej9qeFJm4FYb+eGKMAK+st5+fWH98ZmghdAqtRp
-	ukYxcAZelMhaPImfh49FsJ33pUn12UGsKtF0j5ZHmlNkkUJdip8vARJ03CcsGYiJXrwPEv
-	5GciViV2WooJ7PGufsROG6tJx5enDqphT3XZd7EnfzBANQVl1Y9W+jIEiBx4jImTeUjBjK
-	F18lnwmKmlPF0bOoM7kTHhmOB1wuPYYQeXz3EsjCKXX5iz2gSePSZL6lwxu9Xw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708282668;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CxyZZWvhSzq+VD25dSHunC8XqF+HGYq257sbHrx7tVc=;
-	b=Swz/Gol/1XZ9DEDonZSnv+eU/L3nfcDuegYEDQ9P3zYWgXm813efE7f8j3rg9YxE2XShrb
-	YKl1rpgrb5KjBxCg==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	linux-serial@vger.kernel.org,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Justin Chen <justin.chen@broadcom.com>,
-	Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Uros Bizjak <ubizjak@gmail.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH printk v2 00/26] wire up write_atomic() printing
-Date: Sun, 18 Feb 2024 20:03:00 +0106
-Message-Id: <20240218185726.1994771-1-john.ogness@linutronix.de>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AphMDZig"
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-4704f3e2a99so317447137.3
+        for <rcu@vger.kernel.org>; Tue, 20 Feb 2024 00:03:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708416187; x=1709020987; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q8cERgU0ZSCW6FWHFRH3BebgYcwtul5dolkTErrkCLA=;
+        b=AphMDZigfZQr+V0A0knT1VRg3CJHTWHGrG0zgkfnkxGssNVTK1wAi8dsglfSvn8tKR
+         WrkLUjOvkcOUVGQ8H3iW+L9P7uyuvfeJUu0AEeRixX+zKI/+Of4JoUzcPpZcXUagYwvG
+         JDeoxd4LhmRLjd35+f3BEWpQssgb1qbxZr1G0LjBWFylcphOOPA6Qn22ENl61JGKfMwY
+         HKel4K+2rOqtWSU0t5PUmnGrEaWPv0UyhijwG4I7KIQ5y65rENB7qCs1D5/fbt55BPcS
+         +/dgKnY8afmqPz36I11lNOkM05LEqejIutEzITntssrWNCjeSLxfv2s0gdT34ePqqOYI
+         mpNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708416187; x=1709020987;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q8cERgU0ZSCW6FWHFRH3BebgYcwtul5dolkTErrkCLA=;
+        b=ZF078efXH2VJx/wsJ1VyZGoDgJ31Q7UQfyCpPsDfs6OU63Yf5yWYIHXLAh/yAaquke
+         5qtaqhY5ed1HZWaf9gBeV//UZsV+9pJc7WqpXIQOM0SfNxay32yfY9aVb7b3lVbvFsQE
+         v1G5R4ya2HzqDJz+0BqiJ1rsxaFshoSwYTzl47Zjo7SKNHijZHX63pviMVXMyxgHiM8/
+         yoeZTKrf7coT2s58TpF6Ex0c2IrxoOaqDWc5R0yFcmOzd3dPrtArqQDT2v6l0K8daEts
+         ARsoUSCltz0eBLxGJ4U43YJnfA/uPWcLkXrxOmwPUUVEleKZfUqCuYzFBQtcPj+Apdex
+         7LEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOyrifapAvQsmpR4xgwJjT/tT89CcJp+y7AksEpQrCRpOEPABfFgB5AUM1hAFjD1+SZbKlpApj6PFXvDzCua4Zpe1x
+X-Gm-Message-State: AOJu0YxZi+/rGtYoct0teulrB+HHd0mXjdvANrn2WRNjY1TGk25uyEvf
+	3CkFom282Cn6ygY8VGfJiMWJEWZTxbAJdHEifDzK/kxeJUzc8bXV5v2H8Bxg3jcBO2MG73ssGcf
+	0qPOH4g65By57rrUxI6BfyG0EZlramiMr98Ke
+X-Google-Smtp-Source: AGHT+IHCY45ImoK8ekSyrT6/DLUYhFKBJDrM3udG68+Od7iJhRKR3MiCxjlUk1plcTgb4AuccfyMMculuYJkx51wdOo=
+X-Received: by 2002:a67:eb94:0:b0:46e:c865:6b4a with SMTP id
+ e20-20020a67eb94000000b0046ec8656b4amr11196789vso.34.1708416186959; Tue, 20
+ Feb 2024 00:03:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <202402201506.b7e4b9b6-oliver.sang@intel.com>
+In-Reply-To: <202402201506.b7e4b9b6-oliver.sang@intel.com>
+From: Marco Elver <elver@google.com>
+Date: Tue, 20 Feb 2024 09:02:28 +0100
+Message-ID: <CANpmjNNGCkfFBNiSsc+DOm1EDzXZoNLQy_jnEZjt9WuxP5aayw@mail.gmail.com>
+Subject: Re: [linux-next:master] [kasan] 187292be96: WARNING:suspicious_RCU_usage
+To: kernel test robot <oliver.sang@intel.com>, "Paul E. McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, 
+	Linux Memory Management List <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+On Tue, 20 Feb 2024 at 08:35, kernel test robot <oliver.sang@intel.com> wrote:
+>
+>
+>
+> Hello,
+>
+> we noticed this is a revert commit, below report is for an issue we observed
+> on this commit but not on its parent. just FYI.
+>
+> 113edefd366346b3 187292be96ae2be247807fac1c3
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :6          100%           6:6     dmesg.WARNING:suspicious_RCU_usage
+>
+>
+> kernel test robot noticed "WARNING:suspicious_RCU_usage" on:
+>
+> commit: 187292be96ae2be247807fac1c3a6d89a7cc2a84 ("kasan: revert eviction of stack traces in generic mode")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
 
-This is v3 of a series to wire up the nbcon consoles so that
-they actually perform printing using their write_atomic()
-callback. v2 is here [0]. For information about the motivation
-of the atomic consoles, please read the cover letter of v1 [1].
+This commit didn't touch rcutorture or the rcu subsystem in any way,
+so I currently don't understand how rcutorture would be affected.
+While stackdepot has started to use RCU, this already happened in a
+previous commit, and this particular commit actually reduced RCU usage
+(no more evictions and re-allocations of stacktraces).
 
-The main focus of this series:
+The only explanation I have is that it improved performance of a
+KASAN-enabled kernel (which the config here has enabled) so much that
+previously undiscovered issues have now become much more likely to
+occur.
 
-- For nbcon consoles, always call write_atomic() directly from
-  printk() caller context for the panic CPU.
+[+Cc rcu folks]
 
-- For nbcon consoles, call write_atomic() when unlocking the
-  console lock.
-
-- Only perform the console_lock()/_unlock() dance if legacy or
-  boot consoles are registered.
-
-- For legacy consoles, if nbcon consoles are registered, do not
-  attempt to print from printk() caller context for the panic
-  CPU until nbcon consoles have had a chance to print the most
-  significant messages.
-
-- Mark emergency sections. In these sections printk() calls
-  will only store the messages. Upon exiting the emergency
-  section, console flushing is triggered via irq_work.
-
-This series does _not_ include threaded printing or nbcon
-drivers. Those features will be added in separate follow-up
-series.
-
-Note1: With this series, a system with _only_ nbcon consoles
-       registered will not have any console printing except
-       on panic. This is on purpose. When nbcon kthreads are
-       introduced, they will fill this gap.
-
-Note2: Patches 1-3 are already mainline, but not yet in the
-       printk/for-next tree. They are included for
-       completeness, but are not actually part of this series.
-
-The changes since v2:
-
-- Eliminate CPU states (normal, emergency, panic) and instead
-  just track per-cpu emergency nesting.
-
-- Instead of talking about "atomic mode", talk about "using the
-  write_atomic() callback". This avoids confusion about what
-  "atomic mode" means (i.e. "atomic" always means the
-  write_atomic() callback is used).
-
-- Rename atomic_enter()/_exit() to
-  cpu_emergency_enter()/_exit().
-
-- When entering emergency mode for a CPU, disable preemption
-  rather than just migration to allow the warning to be
-  completely handled before permitting rescheduling.
-
-- Implement nbcon locking within the uart port lock wrappers.
-  This provides synchronization between write_atomic() and
-  non-printing driver activities (such as changing the baud
-  rate.)
-
-- Implement a one-way trigger printk_legacy_allow_panic_sync()
-  to allow legacy consoles to print from the printk() caller
-  context for the panic CPU. This allows the safe nbcon
-  consoles to print before falling back to legacy consoles.
-  Note that if no nbcon consoles are registered, legacy
-  consoles are always allowed to print from the printk() caller
-  context.
-
-- Perform unsafe nbcon flushing at the very end of panic before
-  going into the infinite loop.
-
-- Add nbcon_get_default_prio() helper to return the appropriate
-  prio for the current CPU.
-
-- Do not assume that if write_atomic() returns false that the
-  console has been released.
-
-- For nbcon_atomic_emit_one(), rely on @ctxt->backlog rather
-  than trying to read the next record.
-
-- Rename nbcon_console_emit_next_record() to
-  nbcon_legacy_emit_next_record() and have it use the same
-  procedure as console_emit_next_record() (enter printk_safe,
-  enable console_lock spinning, stop critical timings).
-
-- Add nbcon_atomic_flush_unsafe() to allow flushing nbcon
-  consoles in an unsafe manner.
-
-- For nbcon flushing, add @stop_seq argument limit how much to
-  print. This avoids a CPU getting stuck printing endlessly.
-
-- For nbcon flushing, disable irqs to avoid an interrupt
-  possibly calling into console code and deadlocking on nbcon
-  ownership.
-
-- The rules for allowing printing from the printk() caller
-  context are getting quite complex. Move all this logic into
-  vprintk_emit().
-
-- For console_init_seq(), also consider nbcon consoles.
-
-- For __pr_flush(), only take the console_lock if legacy or
-  boot consoles are registered.
-
-- For printk_trigger_flush(), do not flush nbcon consoles
-  directly.
-
-- For defer_console_output(), only trigger
-  console_lock()/unlock() if legacy or boot consoles are
-  registered.
-
-- Add detailed kerneldoc for the write_atomic() callback.
-
-- Fix kerneldoc for enum types (cons_flags, nbcon_prio).
-
-- Add extra check to printk_deferred_enter()/_exit() to ensure
-  it is called with migration disabled.
-
-[0] https://lore.kernel.org/lkml/20230919230856.661435-1-john.ogness@linutronix.de
-[1] https://lore.kernel.org/lkml/20230302195618.156940-1-john.ogness@linutronix.de
-
-John Ogness (19):
-  printk: Consider nbcon boot consoles on seq init
-  printk: Add notation to console_srcu locking
-  printk: nbcon: Ensure ownership release on failed emit
-  printk: nbcon: Implement processing in port->lock wrapper
-  printk: nbcon: Add detailed doc for write_atomic()
-  printk: nbcon: Fix kerneldoc for enums
-  printk: Make console_is_usable() available to nbcon
-  printk: Let console_is_usable() handle nbcon
-  printk: Add @flags argument for console_is_usable()
-  printk: Track registered boot consoles
-  printk: nbcon: Use nbcon consoles in console_flush_all()
-  printk: nbcon: Assign priority based on CPU state
-  printk: nbcon: Add unsafe flushing on panic
-  printk: Avoid console_lock dance if no legacy or boot consoles
-  printk: Track nbcon consoles
-  printk: Coordinate direct printing in panic
-  panic: Mark emergency section in oops
-  rcu: Mark emergency section in rcu stalls
-  lockdep: Mark emergency section in lockdep splats
-
-Randy Dunlap (1):
-  serial: core: fix kernel-doc for uart_port_unlock_irqrestore()
-
-Sebastian Andrzej Siewior (1):
-  printk: Check printk_deferred_enter()/_exit() usage
-
-Thomas Gleixner (5):
-  serial: core: Provide port lock wrappers
-  serial: core: Use lock wrappers
-  printk: nbcon: Provide function to flush using write_atomic()
-  printk: nbcon: Implement emergency sections
-  panic: Mark emergency section in warn
-
- drivers/tty/serial/8250/8250_port.c |   1 +
- include/linux/console.h             |  42 +++-
- include/linux/printk.h              |  30 ++-
- include/linux/serial_core.h         | 106 +++++++-
- kernel/locking/lockdep.c            |   5 +
- kernel/panic.c                      |   9 +
- kernel/printk/internal.h            |  57 +++++
- kernel/printk/nbcon.c               | 362 +++++++++++++++++++++++++++-
- kernel/printk/printk.c              | 248 +++++++++++++------
- kernel/printk/printk_safe.c         |  12 +
- kernel/rcu/tree_stall.h             |   5 +
- 11 files changed, 784 insertions(+), 93 deletions(-)
-
-
-base-commit: e7081d5a9d976b84f61f497316d7c940a4a2e67a
--- 
-2.39.2
-
+> in testcase: rcutorture
+> version:
+> with following parameters:
+>
+>         runtime: 300s
+>         test: cpuhotplug
+>         torture_type: busted_srcud
+>
+>
+>
+> compiler: clang-17
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+>
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>
+>
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202402201506.b7e4b9b6-oliver.sang@intel.com
+>
+>
+> [  292.513535][  T653] WARNING: suspicious RCU usage
+> [  292.514923][  T653] 6.8.0-rc4-00126-g187292be96ae #1 Not tainted
+> [  292.516369][  T653] -----------------------------
+> [  292.517743][  T653] kernel/rcu/rcutorture.c:1983 suspicious rcu_dereference_check() usage!
+> [  292.519310][  T653]
+> [  292.519310][  T653] other info that might help us debug this:
+> [  292.519310][  T653]
+> [  292.523130][  T653]
+> [  292.523130][  T653] rcu_scheduler_active = 2, debug_locks = 1
+> [  292.525644][  T653] no locks held by rcu_torture_rea/653.
+> [  292.526974][  T653]
+> [  292.526974][  T653] stack backtrace:
+> [  292.529271][  T653] CPU: 0 PID: 653 Comm: rcu_torture_rea Not tainted 6.8.0-rc4-00126-g187292be96ae #1
+> [  292.530780][  T653] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  292.532329][  T653] Call Trace:
+> [  292.533524][  T653]  <TASK>
+> [ 292.534696][ T653] dump_stack_lvl (lib/dump_stack.c:?)
+> [ 292.535941][ T653] ? __cfi_dump_stack_lvl (lib/dump_stack.c:98)
+> [ 292.537221][ T653] ? lockdep_rcu_suspicious (kernel/locking/lockdep.c:6712)
+> [ 292.538523][ T653] rcu_torture_one_read (kernel/rcu/rcutorture.c:?) rcutorture
+> [ 292.539887][ T653] ? __cfi_lockdep_hardirqs_on_prepare (kernel/locking/lockdep.c:4312)
+> [ 292.541226][ T653] ? rcu_torture_timer (kernel/rcu/rcutorture.c:1955) rcutorture
+> [ 292.542621][ T653] ? __cfi_rcu_torture_timer (kernel/rcu/rcutorture.c:2055) rcutorture
+> [ 292.544012][ T653] ? init_timer_key (include/linux/lockdep.h:135 include/linux/lockdep.h:142 include/linux/lockdep.h:148 kernel/time/timer.c:847 kernel/time/timer.c:867)
+> [ 292.545262][ T653] rcu_torture_reader (kernel/rcu/rcutorture.c:2093) rcutorture
+> [ 292.546579][ T653] ? __cfi_rcu_torture_reader (kernel/rcu/rcutorture.c:2076) rcutorture
+> [ 292.547872][ T653] ? __cfi__raw_spin_unlock_irqrestore (kernel/locking/spinlock.c:193)
+> [ 292.549108][ T653] ? __cfi_rcu_torture_timer (kernel/rcu/rcutorture.c:2055) rcutorture
+> [ 292.550341][ T653] ? __kthread_parkme (kernel/kthread.c:?)
+> [ 292.551425][ T653] ? __kthread_parkme (include/linux/instrumented.h:? include/asm-generic/bitops/instrumented-non-atomic.h:141 kernel/kthread.c:280)
+> [ 292.552489][ T653] kthread (kernel/kthread.c:390)
+> [ 292.553504][ T653] ? __cfi_rcu_torture_reader (kernel/rcu/rcutorture.c:2076) rcutorture
+> [ 292.554689][ T653] ? __cfi_kthread (kernel/kthread.c:341)
+> [ 292.555749][ T653] ret_from_fork (arch/x86/kernel/process.c:153)
+> [ 292.556792][ T653] ? __cfi_kthread (kernel/kthread.c:341)
+> [ 292.557852][ T653] ret_from_fork_asm (arch/x86/entry/entry_64.S:250)
+> [  292.558920][  T653]  </TASK>
+>
+>
+>
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20240220/202402201506.b7e4b9b6-oliver.sang@intel.com
+>
+>
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+>
