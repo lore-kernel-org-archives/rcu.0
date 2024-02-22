@@ -1,43 +1,56 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FF073F13;
-	Thu, 22 Feb 2024 22:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C13118046;
+	Thu, 22 Feb 2024 22:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708639758; cv=none; b=seOMFzM/zS2i9hpY9wkfcR5fbZ+DfvHWUnUN189jd5tT8O5Zn69jLHBHJjPcgjgexTxdGHxHnnDOh0CDKTr0CjGa97xNx8Sswefn4BG4mERiDi4eNxixCVqgdHLso+u3qL/m0Wx3K/+0KtIx0I/3LygsFNpLGgMSH3o0kk7lJUg=
+	t=1708642607; cv=none; b=sDBtWCYIWAIjXHoEYVg6h5MHEi1pvXt09iFsyv2Glp6mzjbzdc5SZrFST6EKJc4Xb/WoXGw1qxnGJsql/RgOInKbSsJL0uB1fAi/VtpX8QPjyHV3oW+3B9MmT5K0WP+61qVqwizluAtH+USA513T1EptEsNxliLq5wB253zbHNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708639758; c=relaxed/simple;
-	bh=l1/ezjl9EYeaWVpvN0u8fT88/5VTm9AGnH7HjTwqtiA=;
+	s=arc-20240116; t=1708642607; c=relaxed/simple;
+	bh=cknM0/4tXtPhyqko/AdQF0LnXQDz7Vadyz3mhIDH8pI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bW6968JHGNxijWuiskLJRTvu6YW9vs8zhQbHmr6/bdA7wyKlalaPKsiG96m4Z0UzKpMiCtiYx38gxzifCB1UxuX+vR2NzIjsEmkheqSYcoKpbEmM2h/ngUbL2Nd3iMajroA7rpSEbL5JMLCGVVdp/8cophHUf8DOpmN7k+TU534=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FqTBSYdN; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=VJ5w4wZFUKpb8y5or1b7EK86QUzrMw4WzuSGnCsFAHNXqkPdkZYRnNcnyNcFD38Rt57rSPYoflS7+C+z57RlFfZfqTyPX2NkhUCu3o80vlRK8Y3ExEhsIrxkK36waK9GDm8mRE7c/yIGKSvhNbpnGu/U9nrCES80NwhM6UB4u2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DElzBV7u; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FqTBSYdN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA03CC433C7;
-	Thu, 22 Feb 2024 22:09:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DElzBV7u"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDC2CC433F1;
+	Thu, 22 Feb 2024 22:56:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708639757;
-	bh=l1/ezjl9EYeaWVpvN0u8fT88/5VTm9AGnH7HjTwqtiA=;
+	s=k20201202; t=1708642606;
+	bh=cknM0/4tXtPhyqko/AdQF0LnXQDz7Vadyz3mhIDH8pI=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=FqTBSYdNMC4OQYqaJNjwK3wxZ25TIuDMcorlmS0nUEcfuuGpReshtX7RZ1r4iRuBM
-	 n2RpmlN0ygdXZrJ0AA6MmmHlz69lUbAtFIp7ro+Q4vB+Zh9sz7FZeNt5tBZ1ilUa9h
-	 zGgImhskFv1Xle+tJM5LYJvJL6RaThfi+fTkMdZ+TXo1pDCD2CES1hFfS5NlxtDvkU
-	 Aq3RrfI/hpRzt9fSfSzn/owXvjSZ2SnW9M9inNyFh3QFEroqPXWQQpw5yxjmg3EgJP
-	 fTHSyLUWWlB8hBuQBVe6Qz8GXTsDNJfq36eSel7hFteSHKh4sMPPV7uoZY31xEkbNE
-	 D+gBTCVY/0kfA==
+	b=DElzBV7ud0iWyLnjJlxPm+vIhILu8iYF7XrUJ3JqZ8TkcKt5Nu04HC344ao57UzY4
+	 +yt8OXvySo0pkSKU51erzBnuQgfo7xRILkv9md+SoWLIIoGyQGEANteOepLIhkbdRW
+	 DYpOQSzd7+87l1geaRDSXrWonlUGJvvNx6DTpPdUOlpsMk9uS+xhzGxVQ8tN59i/Uq
+	 f2WD0HUQp3j7ramXDMeyUzUCvU48cu9fEDKWnUb5fJBEWdtdnBgAzXJpnVKmIE2f1d
+	 3bFFtIf7G29AmgYS/AFfA+v1NxM3c/9QVomX278p37/hF+wH1D6bJbcv0fpSbQ1L6D
+	 32YVZCfu/8sbQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 87292CE0738; Thu, 22 Feb 2024 14:09:17 -0800 (PST)
-Date: Thu, 22 Feb 2024 14:09:17 -0800
+	id 675F4CE0B71; Thu, 22 Feb 2024 14:56:46 -0800 (PST)
+Date: Thu, 22 Feb 2024 14:56:46 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Frederic Weisbecker <frederic@kernel.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: Re: [PATCH v2 0/6] RCU tasks fixes for v6.9
-Message-ID: <cf84fb44-9620-40bc-a68d-051edf6823b8@paulmck-laptop>
+	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 6/6] rcu-tasks: Maintain real-time response in
+ rcu_tasks_postscan()
+Message-ID: <9a27f638-4eb0-42b3-b8a3-201d6ed9406b@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <Zdd7x4Rmy_-WDqfl@localhost.localdomain>
+ <20240217012745.3446231-7-boqun.feng@gmail.com>
+ <ZdeI_-RfdLR8jlsm@localhost.localdomain>
+ <e0472956-1b18-4a22-be6e-5dbbc11141eb@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,56 +60,102 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zdd7x4Rmy_-WDqfl@localhost.localdomain>
+In-Reply-To: <e0472956-1b18-4a22-be6e-5dbbc11141eb@paulmck-laptop>
 
-On Thu, Feb 22, 2024 at 05:52:23PM +0100, Frederic Weisbecker wrote:
-> Le Fri, Feb 16, 2024 at 05:27:35PM -0800, Boqun Feng a écrit :
-> > Hi,
+On Thu, Feb 22, 2024 at 12:52:24PM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 22, 2024 at 06:48:47PM +0100, Frederic Weisbecker wrote:
+> > Le Fri, Feb 16, 2024 at 05:27:41PM -0800, Boqun Feng a écrit :
+> > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > 
+> > > The current code will scan the entirety of each per-CPU list of exiting
+> > > tasks in ->rtp_exit_list with interrupts disabled.  This is normally just
+> > > fine, because each CPU typically won't have very many tasks in this state.
+> > > However, if a large number of tasks block late in do_exit(), these lists
+> > > could be arbitrarily long.  Low probability, perhaps, but it really
+> > > could happen.
+> > > 
+> > > This commit therefore occasionally re-enables interrupts while traversing
+> > > these lists, inserting a dummy element to hold the current place in the
+> > > list.  In kernels built with CONFIG_PREEMPT_RT=y, this re-enabling happens
+> > > after each list element is processed, otherwise every one-to-two jiffies.
+> > > 
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: Sebastian Siewior <bigeasy@linutronix.de>
+> > > Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > > ---
+> > >  kernel/rcu/tasks.h | 21 ++++++++++++++++++++-
+> > >  1 file changed, 20 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > index 4dc355b2ac22..866743e0796f 100644
+> > > --- a/kernel/rcu/tasks.h
+> > > +++ b/kernel/rcu/tasks.h
+> > > @@ -971,13 +971,32 @@ static void rcu_tasks_postscan(struct list_head *hop)
+> > >  	 */
+> > >  
+> > >  	for_each_possible_cpu(cpu) {
+> > > +		unsigned long j = jiffies + 1;
+> > >  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+> > >  		struct task_struct *t;
+> > > +		struct task_struct *t1;
+> > > +		struct list_head tmp;
+> > >  
+> > >  		raw_spin_lock_irq_rcu_node(rtpcp);
+> > > -		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
+> > > +		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
+> > >  			if (list_empty(&t->rcu_tasks_holdout_list))
+> > >  				rcu_tasks_pertask(t, hop);
+> > > +
+> > > +			// RT kernels need frequent pauses, otherwise
+> > > +			// pause at least once per pair of jiffies.
+> > > +			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
+> > > +				continue;
+> > > +
+> > > +			// Keep our place in the list while pausing.
+> > > +			// Nothing else traverses this list, so adding a
+> > > +			// bare list_head is OK.
+> > > +			list_add(&tmp, &t->rcu_tasks_exit_list);
 > > 
-> > This series contains the fixes of RCU tasks for v6.9. You can also find
-> > the series at:
+> > I'm a bit confused about what this does...
 > > 
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git rcu-tasks.2024.02.14a
+> > > +			raw_spin_unlock_irq_rcu_node(rtpcp);
+> > > +			cond_resched(); // For CONFIG_PREEMPT=n kernels
+> > > +			raw_spin_lock_irq_rcu_node(rtpcp);
+> > > +			list_del(&tmp);
 > > 
-> > Changes since v1:
-> > 
-> > *	Update with Paul's rework on "Eliminate deadlocks involving
-> > 	do_exit() and RCU task"
-> > 
-> > The detailed list of changes:
-> > 
-> > Paul E. McKenney (6):
-> >   rcu-tasks: Repair RCU Tasks Trace quiescence check
-> >   rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
-> >   rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
-> >   rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
-> >   rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+> > Isn't there a risk that t is reaped by then? If it was not observed on_rq
+> > while calling rcu_tasks_pertask() then there is no get_task_struct.
 > 
-> Food for later thoughts and further improvements: would it make sense to
-> call exit_rcu_tasks_start() on fork() instead and rely solely on
-> each CPUs' rtp_exit_list instead of the tasklist?
+> That is OK, courtesy of the _safe in list_for_each_entry_safe().
+> 
+> > And what about t1? Can't it be reaped as well?
+> 
+> It can, and that is a problem, good catch!
+> 
+> My current thought is to add this before the list_del(), which is
+> admittedly a bit crude:
+> 
+> 			t1 = tmp.next;
 
-It might well.
+OK, OK...  ;-)
 
-One big advantage of doing that is the ability to incrementally traverse
-the tasks.  But is there some good way of doing that to the full task
-lists?  If so, everyone could benefit.
+			t1 = list_entry(tmp.next, struct task_struct, rcu_tasks_exit_list);
+
+Is there still a better way?
 
 							Thanx, Paul
 
-> Thanks.
-> 
-> >   rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
-> > 
-> >  include/linux/rcupdate.h |   4 +-
-> >  include/linux/sched.h    |   2 +
-> >  init/init_task.c         |   1 +
-> >  kernel/fork.c            |   1 +
-> >  kernel/rcu/tasks.h       | 110 ++++++++++++++++++++++++++++++---------
-> >  5 files changed, 90 insertions(+), 28 deletions(-)
-> > 
-> > -- 
-> > 2.43.0
+> > Thanks.
 > > 
 > > 
-> 
+> > > +			j = jiffies + 1;
+> > > +		}
+> > >  		raw_spin_unlock_irq_rcu_node(rtpcp);
+> > >  	}
+> > >  
+> > > -- 
+> > > 2.43.0
+> > > 
