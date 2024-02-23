@@ -1,87 +1,91 @@
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7557142636
-	for <rcu@vger.kernel.org>; Fri, 23 Feb 2024 18:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C71191420B7
+	for <rcu@vger.kernel.org>; Fri, 23 Feb 2024 19:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708713667; cv=none; b=m34KtmNWC0YI4rOgAhURy0gRmHUg8ZATO+uUBofkWJ7BzpHDGjlJVRDzvOEyW11PMasUi05WzhcCRuMJgln0dzG4PnOS+qXc/zMvM2ixkco9NM5O8fmFGhR3RYzhQlvBEDBG2u62Pu6cBLDWsgyjzDqX4RBkey+KTyIDumiBjTE=
+	t=1708717015; cv=none; b=q7pWpyhJf/U4fsM/pqg4rAzAjACv8a//ZUxMYjeliRsBKJBBDp8gIRiY+u8qPL/aIViVL4BEEdxnIUrsH7rgXlr9tWo5IRgzydn7US7xtZCzA0PFk5Wl0+Tp3WYrDxbfSStRbxY5R2ZS78oYxnIyqkypNyLFZL9xGrxmEJG0yqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708713667; c=relaxed/simple;
-	bh=BKmU1ottIKZg7mi7mY2yCA6PoDkcs/iUSw4v0HQkrS8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AjNQ+ySfepPHG/yFVqjlo+RRgS9TTKQ6WFuvPl9w78sL9uvyboAfe0BUK6u+VDsDV6zlbEJw+viEOAxAJJxXlD8hR2Hc9bFPU2J0OOGksZ8gQcdNDZW6AxqatSE3V3i1TL1XkitXZDnluyz0QxpspzS2lMhwXAfELZAhGnPEzGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JVl01BxN; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1708717015; c=relaxed/simple;
+	bh=WNfkHchNYQlXF3zrF0ZpwFGveUd+gVRX739raeL2qM4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OQvlfU5gujaV/SxscFqidFeOQqIqwALAUtud3mvDbFAu+wTQ35oIbC335KhfLQ6uCKwmOw1A1sMW9FHn3tlh/atPYVxJ3yVP605oTKbwRp2iUhLNP3qI4R+IfGTwPRYUyKHqFsMBPx16cZ5X55JRHj2RYPFutaCWh/sviA0RFe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=YrSmxdmM; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JVl01BxN"
-Date: Fri, 23 Feb 2024 13:40:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708713660;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TtVW+3bSqdUyNHjHnisMJsaNnmBRav1E+zZ0KWEbo8k=;
-	b=JVl01BxN5WobZivCOUkRPMMLHVzo7x8aYNQ5FNsgndbGS+8V1ajGL4xF/JGkyBhLNcv+1J
-	A5HfAOu0GBXMAxAYhb6QderZu9l4gHgrz+KouVyM8vhplGKqmvbOJdld9YfMqiw4z25mfc
-	8MqWXIEpMqAooqsXLIPsEMOaOiWKlJo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Thomas Graf <tgraf@suug.ch>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	maple-tree@lists.infradead.org, rcu@vger.kernel.org
-Subject: Re: [PATCH 0/1] Rosebush, a new hash table
-Message-ID: <jqvbwntesw7rftdw5mibgy37k3lslgn77pul6kbawbvvpt5uck@dpuhhm33vdzy>
-References: <20240222203726.1101861-1-willy@infradead.org>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="YrSmxdmM"
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d1094b5568so8932411fa.1
+        for <rcu@vger.kernel.org>; Fri, 23 Feb 2024 11:36:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1708717012; x=1709321812; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WNfkHchNYQlXF3zrF0ZpwFGveUd+gVRX739raeL2qM4=;
+        b=YrSmxdmMWYpMCP7MFEpedL7P+r+lKBaYH8wa7V6aoBnK5Xl1l2+XUnHl91bpWSLsca
+         aJjyLc4lKOMHzdnlVyLF5z7Liv/hTQUYvhgFJPPKr37rctyzee5nX+VHeij1q+rviQVz
+         tJFGTPZ+lBQ1wAFkfErmP+QWifpmUnENrmblg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708717012; x=1709321812;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WNfkHchNYQlXF3zrF0ZpwFGveUd+gVRX739raeL2qM4=;
+        b=erC+61mO0FV9buD52yzIlIGesn2idTD2MxwvIiWlogmhrDGs+/aeiwzeyzcQYCRAbY
+         B4v+r0ljPXVpWlOcdAwt25awwtpa0NmU99T5adKxEBJplyA/kXyxMw7kVWLlOM9PKfps
+         6MLfT7sadGs2wtpznEc+DOt9GT16AL57WyffD5aqZgJwaLqsn56KkEF5DmcKbkk7CwRP
+         MdPjW49C/ZaJwQovh4ZDRxe0I+1eJ5tZBoiHA6AmWsViUQ3Q1iwF9NSbgL0XLfOg3ldz
+         WhNnlxx1SL6InN6cfcA8hkwBtOJfQquKgXQudr6YHV4hgU2W4+Sddzklv6eHT5j1ibfv
+         xq/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUjSnvPkxGsVpt9xMRuVQVum9U7j+whmgpLTAdevj43J3LAWRTTx6FTIANpmLzjZ4LaPba/ysJ1iFp6mCBgQ95WfhxO
+X-Gm-Message-State: AOJu0YwnlDLMaFcTF/usNFfNf7P9p+ADG72a1gY4bH269UN/bj0HC9Ky
+	UlENEDnUH/pA0gVNnl0jXCA4qYGEuhKj3JBZx1f3q2RYw5KW6owGYUA42HzB35KifYrv0/1jyLj
+	Fsrt+hhMT0n+IZ1C9BnOv/6F5qbAysvgAxp3hFQ==
+X-Google-Smtp-Source: AGHT+IFMr5HxHcowGDJxIZiF/4hzCTmVH2gW6bkX4Dn1NbwB2kzEAU63dqBByUz+Db5CZXCHyemXbkYWJsh90O/Y8tE=
+X-Received: by 2002:a2e:95d2:0:b0:2d2:796b:7e81 with SMTP id
+ y18-20020a2e95d2000000b002d2796b7e81mr54494ljh.46.1708717011665; Fri, 23 Feb
+ 2024 11:36:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222203726.1101861-1-willy@infradead.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240207110951.27831-1-qiang.zhang1211@gmail.com> <2024022359-busboy-empower-900c@gregkh>
+In-Reply-To: <2024022359-busboy-empower-900c@gregkh>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Fri, 23 Feb 2024 14:36:37 -0500
+Message-ID: <CAEXW_YSgDhXzxfrMceceuNBsYap+v-1nXsL4B=5_7s_wKYCWYw@mail.gmail.com>
+Subject: Re: [PATCH] linux-5.10/rcu-tasks: Eliminate deadlocks involving
+ do_exit() and RCU tasks
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Zqiang <qiang.zhang1211@gmail.com>, paulmck@kernel.org, chenzhongjin@huawei.com, 
+	rcu@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 08:37:23PM +0000, Matthew Wilcox (Oracle) wrote:
-> Rosebush is a resizing, scalable, cache-aware, RCU optimised hash table.
-> I've written a load of documentation about how it works, mostly in
-> Documentation/core-api/rosebush.rst but some is dotted through the
-> rosebush.c file too.
-> 
-> You can see this code as a further exploration of the "Linked lists are
-> evil" design space.  For the workloads which a hashtable is suited to,
-> it has lower overhead than either the maple tree or the rhashtable.
-> It cannot support ranges (so is not a replacement for the maple tree),
-> but it does have per-bucket locks so is more scalable for write-heavy
-> workloads.  I suspect one could reimplement the rhashtable API on top
-> of the rosebush, but I am not interested in doing that work myself.
-> 
-> The per-object overhead is 12 bytes, as opposed to 16 bytes for the
-> rhashtable and 32 bytes for the maple tree.  The constant overhead is also
-> small, being just 16 bytes for the struct rosebush.  The exact amount
-> of memory consumed for a given number of objects is going to depend on
-> the distribution of hashes; here are some estimated consumptions for
-> power-of-ten entries distributed evenly over a 32-bit hash space in the
-> various data structures:
-> 
-> number	xarray	maple	rhash	rosebush
-> 1	3472	272	280	256
-> 10	32272	784	424	256
-> 100	262kB	3600	1864	2080
-> 1000	[1]	34576	17224	16432
-> 10k	[1]	343k	168392	131344
-> 100k	[1]	3.4M	1731272	2101264
+On Fri, Feb 23, 2024 at 8:15=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Wed, Feb 07, 2024 at 07:09:51PM +0800, Zqiang wrote:
+> > From: Paul E. McKenney <paulmck@kernel.org>
+> >
+> > commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c upstream.
+>
+> This is not a valid commit in Linus's tree :(
+>
+> Also, what about 5.4?
 
-So I think the interesting numbers to see (besides performance numbers)
-are going to be the fill factor numbers under real world use.
+Hey Zqiang,
 
-It's an interesting technique, I've played around with it a bit
-(actually using it in bcachefs for the nocow locks hash table), but no
-idea if it makes sense as a general purpose thing yet...
+Do you mind resending these backports to stable once it lands in Linus
+tree, with the correct commit ID?
 
-you also mentioned that a motivation was API mismatch between rhashtable
-and dcache - could you elaborate on that?
+I will also apply it to my stable trees so it is not missed in the
+future but I appreciate if you can send.
+
+thanks,
+
+ - Joel
