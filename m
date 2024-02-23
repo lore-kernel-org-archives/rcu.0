@@ -1,83 +1,107 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821357B3F8;
-	Fri, 23 Feb 2024 12:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963237B3DA;
+	Fri, 23 Feb 2024 12:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708690785; cv=none; b=ii9caxFLO+sEjZ3h6PoVuUDmWl1fTh4kptu4bBynRfySLWI/GIYFSckna9G/Hs6FOtbEZiAjfA9+YxZrH/CAArn4RHFHI/oBFnfZTgvsmrAGbeW/JXR2gfHuQSY9zKuNJ4jHd+E2MZYIDrRVeZb3CLXhiWGwWCT0ptGcImnbzZ8=
+	t=1708691109; cv=none; b=N/9dLTmH4l+GwKH7i8yV9lnjufjLKVjpzYYOqRMWnCrrtNSPrdnBzq+OvWebKluM9VRXPrzQFvlJW1dnuTTxe+dKgDk0EFWURW4mZOp0b6m5n8Z6bXu8kO5IhXERbLQ56OE5JFcPrP2+iJhbWFWUkggZBZSTJEdywMcbX0pBuqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708690785; c=relaxed/simple;
-	bh=4gzU2byppYsDWyO3CpAa2LCcNsiLVRq34acY1QqQOvk=;
+	s=arc-20240116; t=1708691109; c=relaxed/simple;
+	bh=MaYmzslx1mf+A0NsaTa/pwiRoRWhmyCe7uHLHoWcvWk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qBRdcJvv5iKG6XYG2PyfDGrejrHUmtxi8Wdm4DJVAWfALJelL/60l/PDM8TLzoSyjc0GL9dNXaHw516+bYAtN/UlxkqHJfVVI05UPHuUJ46m7wMT4uM6v/Et/7CMvWc/2hh4wbdAfKxxKzSd8V+arlFHYWUzvIOXMXBF0GR5oiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pUk8JKLn; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZkwjT30xUU0zTpmw6Gq9anGn+5XcOCxN/stqJldOtLY4ok6mn3yNTKU6ZcSN+ZTA2Xf+0GZxqhMnVJloTGjjyW+4T5v/Rwazt+rU5DRDAU+zFDebka7vt6rQQ1lOsBwacceDZja8jyzW8Apc3DGN8jp2FBUIkcM5p/8wr0JdSKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QZzh6hfe; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pUk8JKLn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F692C433F1;
-	Fri, 23 Feb 2024 12:19:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QZzh6hfe"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA8AC433C7;
+	Fri, 23 Feb 2024 12:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708690785;
-	bh=4gzU2byppYsDWyO3CpAa2LCcNsiLVRq34acY1QqQOvk=;
+	s=k20201202; t=1708691109;
+	bh=MaYmzslx1mf+A0NsaTa/pwiRoRWhmyCe7uHLHoWcvWk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pUk8JKLnlasMOlnYTEAiosWhw2tzY138SY3MZmja683xK+dC80ACUvRFg8GpuwLNN
-	 eyJ3AmUU672gn0IaL2TUPnjPiahg2xUq02QrqA6guj9W0rJj5dSQfoUhRrmTTINGAn
-	 iRxmQ5baJWzcN/+adE/t9085cT7/pGxOfBViuQ8QtmftYIIUTIGXmjkavib20AxFqu
-	 JVuXSAlr0hOL0O+2MHPv/iAa9LkWhOANXjvWiXlCDg5baQOlvfrp256qMB/RFBapvQ
-	 s7VkrwTqupBmkPgl9cQsznbtz+ZmsMgLavtnyoQBcnf0ZYG5JAmBJIUlQg9q0c5yna
-	 6YWQGSU1rG/pg==
-Date: Fri, 23 Feb 2024 13:19:42 +0100
+	b=QZzh6hfeQeMNWZYdbqEaxioTBGZ+mJt/NHcqk+dArheg7i59OcGjeBTfZPmvFQE4d
+	 JdsZtv6LFy/0QAGQEFyiGAquMPB2JTsp4NVilxCKsoLE78YzNu9RT3/sgaYv6ROwu9
+	 hJO1OBBiuX1TVmdMwaCjr12HAHnq+9lOR392OElPmJPTx9TvoHhOGSOvY4BofL4+NL
+	 Lt72yrgSF6zPkSYE5jZO4WY3mVGHSSyPLV5b5zb44b3EukMiqd0EZgIKr8yFcKgSoL
+	 pVskg+jGQpmFMq+grGHvxhGKogtpNjgQrNVqHd8K/p9gY0Mrl/iKfQPobzpQDZWghu
+	 I0PCQlsfhY17Q==
+Date: Fri, 23 Feb 2024 13:25:06 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Chen Zhongjin <chenzhongjin@huawei.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 4/6] rcu-tasks: Maintain lists to eliminate
- RCU-tasks/do_exit() deadlocks
-Message-ID: <ZdiNXmO3wRvmzPsr@lothringen>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: Re: [PATCH v2 0/6] RCU tasks fixes for v6.9
+Message-ID: <ZdiOot2RJm1VuzSJ@lothringen>
 References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <20240217012745.3446231-5-boqun.feng@gmail.com>
+ <Zdd7x4Rmy_-WDqfl@localhost.localdomain>
+ <cf84fb44-9620-40bc-a68d-051edf6823b8@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240217012745.3446231-5-boqun.feng@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cf84fb44-9620-40bc-a68d-051edf6823b8@paulmck-laptop>
 
-On Fri, Feb 16, 2024 at 05:27:39PM -0800, Boqun Feng wrote:
-> -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
-> +void exit_tasks_rcu_start(void)
->  {
-> -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
-> +	unsigned long flags;
-> +	struct rcu_tasks_percpu *rtpcp;
-> +	struct task_struct *t = current;
-> +
-> +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
-> +	preempt_disable();
-> +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
-> +	t->rcu_tasks_exit_cpu = smp_processor_id();
-> +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> +	if (!rtpcp->rtp_exit_list.next)
+On Thu, Feb 22, 2024 at 02:09:17PM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 22, 2024 at 05:52:23PM +0100, Frederic Weisbecker wrote:
+> > Le Fri, Feb 16, 2024 at 05:27:35PM -0800, Boqun Feng a écrit :
+> > > Hi,
+> > > 
+> > > This series contains the fixes of RCU tasks for v6.9. You can also find
+> > > the series at:
+> > > 
+> > > 	git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git rcu-tasks.2024.02.14a
+> > > 
+> > > Changes since v1:
+> > > 
+> > > *	Update with Paul's rework on "Eliminate deadlocks involving
+> > > 	do_exit() and RCU task"
+> > > 
+> > > The detailed list of changes:
+> > > 
+> > > Paul E. McKenney (6):
+> > >   rcu-tasks: Repair RCU Tasks Trace quiescence check
+> > >   rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
+> > >   rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
+> > >   rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
+> > >   rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+> > 
+> > Food for later thoughts and further improvements: would it make sense to
+> > call exit_rcu_tasks_start() on fork() instead and rely solely on
+> > each CPUs' rtp_exit_list instead of the tasklist?
+> 
+> It might well.
+> 
+> One big advantage of doing that is the ability to incrementally traverse
+> the tasks.  But is there some good way of doing that to the full task
+> lists?  If so, everyone could benefit.
 
-And then you might want to turn that into a WARN_ONCE.
+What do you mean by incrementally? You mean being able to cond_resched()
+in the middle of the tasks iteration? Yeah not sure that's possible...
 
 Thanks.
 
-> +		INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
-> +	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
-> +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> +	preempt_enable();
->  }
+> 
+> 							Thanx, Paul
+> 
+> > Thanks.
+> > 
+> > >   rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
+> > > 
+> > >  include/linux/rcupdate.h |   4 +-
+> > >  include/linux/sched.h    |   2 +
+> > >  init/init_task.c         |   1 +
+> > >  kernel/fork.c            |   1 +
+> > >  kernel/rcu/tasks.h       | 110 ++++++++++++++++++++++++++++++---------
+> > >  5 files changed, 90 insertions(+), 28 deletions(-)
+> > > 
+> > > -- 
+> > > 2.43.0
+> > > 
+> > > 
+> > 
