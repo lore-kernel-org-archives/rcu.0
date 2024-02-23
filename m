@@ -1,73 +1,102 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C309F7F;
-	Fri, 23 Feb 2024 00:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D70C370;
+	Fri, 23 Feb 2024 00:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708647978; cv=none; b=EThgnE8O2V7kJhHnp+Qxx5rMKPbJenp5jB3tFaio952e49t/QusbP5kB3uszqSAteeRjkzRfJ4ks3+u0VYssOdmFyLvuWPdC9mXhlzS62+0b62HLdijq/3yvHLYGvJEp5/ILQ8NAN0uBm4yOUr+nTn84f82a4K2J8KqnlKUmXsc=
+	t=1708647989; cv=none; b=D4XwvoS07DwQCZ4eOJeuaT+IN34KSA/wgDE2Gv0HZ+NSla8ltUgbnopaqNxN9ohS9mx7d2vKVUxbz4pupUw2WnvX0s9oTBV1mpXYPjA6JoOIrtR9wuAyiZOd854wc27/Q35hf1iK7GNMBF85TH5rkHnclwVSj+gZTfOiu/dgu9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708647978; c=relaxed/simple;
-	bh=TGAs5tijV86Bh0/zpNxrYr2pad3N4E7e0hYjM8ykr9k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ptUesRQCxcZd8m0yFpnwvWMLR7Q0g4+q9mgw9l0QP7O4jZNOlGHtlY1N+6nQfKAVPn9kokkxHd0/0RDBZmXYy4/TlEENRgNUS9N2Cr9oveKpT0GLH0/e1iZIeeNvdNBUrjGasDQcUkyK9ckdh2mVf2TvQonCoH6yEKR69RhYBF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KXy4ozfP; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1708647989; c=relaxed/simple;
+	bh=2zq8t2w/MxvWtYHu7VdFtzRLQDoWQp7+hxBDYINDmR0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dzMuE7QhoUQlSihOXlqb+Gg+CNj+k52zpaoNSXhxVT/I+xJUm8LvDo/VLT4wTelP7n4VVs6u1zwberx1tAyL8FzjeCMwMC5vc6m7d9ZYjXezAPMXMCeiBuw4wVi+osJ5YAL2idrAsde22Yq07n+I6l7sFDu7XGx6/t+8YGFptnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gmI/c/Mi; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KXy4ozfP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A085CC43390;
-	Fri, 23 Feb 2024 00:26:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gmI/c/Mi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6720AC433B1;
+	Fri, 23 Feb 2024 00:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708647978;
-	bh=TGAs5tijV86Bh0/zpNxrYr2pad3N4E7e0hYjM8ykr9k=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=KXy4ozfPpXZ/Eixte90fdN8zPH+Km0ZxvoFm+1Svzhjr17BGIMuGEkmUp8HtnOcAO
-	 UVxcDTkPmKvquz4ajimzLD2Yt7Mm1Z1dXobcJh2tdMBJfAfufYh1P2mFL8s9w1vNp/
-	 n8JnASXAwYFqICpCJl9MHns8P8OOzGb8K59/eW1jzL4hZOd+ZKa0eMdMN479OQkWLH
-	 t/ou2GVjxFP3A8dwq4USTnREZ8fp5K0zyyknDv8xqYToJm2ZPuYQrxnfx3xA2Or1lc
-	 QELPM2C3GrQg0DXGnrLolxQFrnY3Cjf+HUdd/EX/ggHsQYb8PVwWVgHb4zQcngyNWX
-	 +db5fVoxJHIbA==
+	s=k20201202; t=1708647989;
+	bh=2zq8t2w/MxvWtYHu7VdFtzRLQDoWQp7+hxBDYINDmR0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=gmI/c/Miowmr1UpqRQQQoGics2HxdOzd8fXDF8ISzUC5IjbnXBd1ZybjLuCp1iIba
+	 4gU8Kshs121y8K7jCR7609eYif/bP7zqwCjA9oFYDsTG11FcwOyCft7EXNc3vn4paq
+	 8ID9r2qnpCHUdfeAMHBmn/7iA3AnRVbcHDBWEaKHRFjY3EVezdeu//7oP5Gvd+PIwn
+	 NBJfvHnT8Myev0TpkaX+Dcl66MVB5JYOz7MVJwWZapPIBSenFEDzRRdloVw0Yxq2d1
+	 nz1+q0vP3hAbBC3mRLQRSfhC/QJWOBI5pUvoWEglHQ62CkWRD5BPjwUxDJVLGHc8jJ
+	 1j1KmkuV50YNw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 46C75CE0B71; Thu, 22 Feb 2024 16:26:18 -0800 (PST)
-Date: Thu, 22 Feb 2024 16:26:18 -0800
+	id 0140ECE0DD4; Thu, 22 Feb 2024 16:26:28 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
-	ankur.a.arora@oracle.com, tglx@linutronix.de, mark.rutland@arm.com
-Subject: [PATCH rcu 0/4] Refactor TASKS_RCU for lazy preemption
-Message-ID: <8c938bd5-6d62-4eff-9289-13b0d7ae8e17@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-trace-kernel@vger.kernel.org,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH rcu 4/4] tracing: Select new NEED_TASKS_RCU Kconfig option
+Date: Thu, 22 Feb 2024 16:26:27 -0800
+Message-Id: <20240223002627.1987886-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <8c938bd5-6d62-4eff-9289-13b0d7ae8e17@paulmck-laptop>
+References: <8c938bd5-6d62-4eff-9289-13b0d7ae8e17@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+Currently, if a Kconfig option depends on TASKS_RCU, it conditionally does
+"select TASKS_RCU if PREEMPTION".  This works, but requires any change in
+this enablement logic to be replicated across all such "select" clauses.
+A new NEED_TASKS_RCU Kconfig option has been created to allow this
+enablement logic to be in one place in kernel/rcu/Kconfig.
 
-This series refactors the NEED_TASKS_RCU option so that the conditional
-processing is in one place in kernel/rcu/Kconfig.  This makes it easier
-to make sure that Tasks RCU is enabled in PREEMPT_AUTO kernels, given
-that such kernels are preemptible, even if only lazily so.  After all,
-it takes only one lazy preemption from a trampoline to significantly
-degrade your kernel's actuarial statistics.
+Therefore, select the new NEED_TASKS_RCU Kconfig option instead of the
+old TASKS_RCU option.
 
-1.	Create NEED_TASKS_RCU to factor out enablement logic.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: <linux-trace-kernel@vger.kernel.org>
+Cc: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Mark Rutland <mark.rutland@arm.com>
+---
+ kernel/trace/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-2.	Select new NEED_TASKS_RCU Kconfig option.
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index 61c541c36596d..6cdc5ff919b09 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -163,7 +163,7 @@ config TRACING
+ 	select BINARY_PRINTF
+ 	select EVENT_TRACING
+ 	select TRACE_CLOCK
+-	select TASKS_RCU if PREEMPTION
++	select NEED_TASKS_RCU
+ 
+ config GENERIC_TRACER
+ 	bool
+@@ -204,7 +204,7 @@ config FUNCTION_TRACER
+ 	select GENERIC_TRACER
+ 	select CONTEXT_SWITCH_TRACER
+ 	select GLOB
+-	select TASKS_RCU if PREEMPTION
++	select NEED_TASKS_RCU
+ 	select TASKS_RUDE_RCU
+ 	help
+ 	  Enable the kernel to trace every kernel function. This is done
+-- 
+2.40.1
 
-3.	Select new NEED_TASKS_RCU Kconfig option.
-
-4.	Select new NEED_TASKS_RCU Kconfig option.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- arch/Kconfig         |    4 ++--
- kernel/bpf/Kconfig   |    2 +-
- kernel/rcu/Kconfig   |    6 +++++-
- kernel/trace/Kconfig |    4 ++--
- 4 files changed, 10 insertions(+), 6 deletions(-)
