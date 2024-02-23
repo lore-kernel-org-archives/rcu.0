@@ -1,105 +1,174 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24343664D7;
-	Fri, 23 Feb 2024 11:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B46A2E417;
+	Fri, 23 Feb 2024 12:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708688388; cv=none; b=XwPzNV+Fjv4M9xt8W70e5T/Xh9TR6Y8EcpGG4Z9PlUTdBe2sYeZDOjHzNDEJL6k1p5aQS2KKtLFdlYGCfM8wld71jCs2HuYTROY8TC5SgzwAHtooamYv2osA13JNqfRmVPDrB5N7W5Pbs5a/6vP+xbq6+7bNvSJhyS5l8R+5+24=
+	t=1708690637; cv=none; b=W1d8LSTJVyNc1uV1cN23nzG5nppNYDHrHuml3S6EWiJsMYKFt2GdzYfE5EjRCujJPW5Fhs1OT+uzYGYvxAm4gXFBN8U7UVgK+GjmQM649QBOiCfLdjiQszIhFBMilMZ0WFcrCmXRzMpUkSZy+OZi/A5qCwbjkkQLEYrhr9xU8jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708688388; c=relaxed/simple;
-	bh=HYUQjAE4WdJ6K+bIyLr2HE5+D/keOdzS3+RV5vP2ak4=;
+	s=arc-20240116; t=1708690637; c=relaxed/simple;
+	bh=dD+Amox90za99RFzb8DfVKU4tgSGxx3W9Z7qT51AAcI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r1lYD++F4sfxFooEGInNXSxrBbpMatdACJUcAs9GRgdPeZKfh+Nht02IZsRru7U379zHOUBRAPxoJk+GFFTIaXp01L33ssRoefhJnMrkMyWM6gfQah2W6uHLbpYv+rD5ncyr6T7nAkhUU8urH/Qx6ZgcpHUrGLTGCRRcrbP3P3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sQrH7EoJ; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=N0Dolhad35Y147fDfApe2SqJ7V9iAEZ5GTne0urUPgIISJgUeVaNMIenp3u9kA+FbJ2tcs9GFwy54DmNVOAVZOTXF9EIEfSKOIqEKVPOLJqASV8mQGEMh2/RTwOyMmlWLkDDG79wrrph1wK5GEK4zsfaKkcNBQTX7EnGkXesUfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pxxS1kyc; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sQrH7EoJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18C90C433C7;
-	Fri, 23 Feb 2024 11:39:46 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pxxS1kyc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B05A0C433C7;
+	Fri, 23 Feb 2024 12:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708688387;
-	bh=HYUQjAE4WdJ6K+bIyLr2HE5+D/keOdzS3+RV5vP2ak4=;
+	s=k20201202; t=1708690637;
+	bh=dD+Amox90za99RFzb8DfVKU4tgSGxx3W9Z7qT51AAcI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sQrH7EoJhU78lDusZtSycgOB5TobF+XgA/Kc798Udpd52zFQ9BSZfvV7jUh+7WoW1
-	 vP9IGJiQWhgtajmsAKoYSEdiD4plLU7Km3hX4SkLFQOpavqVCArhgigdIbLbcRntli
-	 cdk+FTPZJqBLRv/t7KILVN73mhAUXjwIaKHUIhz2TqAUHyEqygu1d0twfsw7LIp/ha
-	 FEPFnpjignENeU8KLOkayxjgd74Vm/4qux1ZWQsuZR6IK6G4hdn7uGxSdRTihx+IqI
-	 bxBedPb5NXr5vIFYDTM/PVmdqqLrDuDEXfM5sRuAQHE5PVLXkFW2sCKqo3NkXkm87S
-	 HOHhnMJSQPR8g==
-Date: Fri, 23 Feb 2024 12:39:44 +0100
+	b=pxxS1kycaZswlj15eFxU59COD51PSZN2AXkjIUp8pTrNIf+p05WWq4T3No8ZuytQE
+	 S4rQrVDbJwPYHOde4GIgWD763DBD9v/zJZVH1Zo36B6Hrzkosc4Fyywo/kW1731sWb
+	 YV42CAn+KSrrxLaXVRHSR6gHm7/9Cpu8sZGMmoi0X0qWg+fXpJ0EdV6dbervfMTd1O
+	 nzCF9n7oaYWOiq5tnFQUM4+SpguW9DgKj7GX9Xo0Hn+9pG8ytEY5QcAwxBLqPpAQcF
+	 6wYBwzGJ2Yggj/Z67/xWqa/YaoXRa2lTS8Yn9pzMCDZcuoaft5cVMyfSKvaFQvs65N
+	 GYiWHUQbxU8mQ==
+Date: Fri, 23 Feb 2024 13:17:14 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Chen Zhongjin <chenzhongjin@huawei.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Oleg Nesterov <oleg@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Peng Zhang <zhangpeng.00@bytedance.com>
-Subject: Re: [PATCH v2 3/6] rcu-tasks: Initialize data to eliminate
- RCU-tasks/do_exit() deadlocks
-Message-ID: <ZdiEAPczZT+GVuxa@lothringen>
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 6/6] rcu-tasks: Maintain real-time response in
+ rcu_tasks_postscan()
+Message-ID: <ZdiMympnNOo6e+5T@lothringen>
 References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <20240217012745.3446231-4-boqun.feng@gmail.com>
- <Zdd0b3HI4uNAoc2P@localhost.localdomain>
- <1e265c80-2008-4419-8a21-d05c39e1e53e@paulmck-laptop>
+ <20240217012745.3446231-7-boqun.feng@gmail.com>
+ <ZdeI_-RfdLR8jlsm@localhost.localdomain>
+ <e0472956-1b18-4a22-be6e-5dbbc11141eb@paulmck-laptop>
+ <9a27f638-4eb0-42b3-b8a3-201d6ed9406b@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1e265c80-2008-4419-8a21-d05c39e1e53e@paulmck-laptop>
+In-Reply-To: <9a27f638-4eb0-42b3-b8a3-201d6ed9406b@paulmck-laptop>
 
-On Thu, Feb 22, 2024 at 12:41:55PM -0800, Paul E. McKenney wrote:
-> On Thu, Feb 22, 2024 at 05:21:03PM +0100, Frederic Weisbecker wrote:
-> > Le Fri, Feb 16, 2024 at 05:27:38PM -0800, Boqun Feng a écrit :
-> > > From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Feb 22, 2024 at 02:56:46PM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 22, 2024 at 12:52:24PM -0800, Paul E. McKenney wrote:
+> > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > > index 4dc355b2ac22..866743e0796f 100644
+> > > > --- a/kernel/rcu/tasks.h
+> > > > +++ b/kernel/rcu/tasks.h
+> > > > @@ -971,13 +971,32 @@ static void rcu_tasks_postscan(struct list_head *hop)
+> > > >  	 */
+> > > >  
+> > > >  	for_each_possible_cpu(cpu) {
+> > > > +		unsigned long j = jiffies + 1;
+> > > >  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+> > > >  		struct task_struct *t;
+> > > > +		struct task_struct *t1;
+> > > > +		struct list_head tmp;
+> > > >  
+> > > >  		raw_spin_lock_irq_rcu_node(rtpcp);
+> > > > -		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
+> > > > +		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
+> > > >  			if (list_empty(&t->rcu_tasks_holdout_list))
+> > > >  				rcu_tasks_pertask(t, hop);
+> > > > +
+> > > > +			// RT kernels need frequent pauses, otherwise
+> > > > +			// pause at least once per pair of jiffies.
+> > > > +			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
+> > > > +				continue;
+> > > > +
+> > > > +			// Keep our place in the list while pausing.
+> > > > +			// Nothing else traverses this list, so adding a
+> > > > +			// bare list_head is OK.
+> > > > +			list_add(&tmp, &t->rcu_tasks_exit_list);
 > > > 
-> > > Holding a mutex across synchronize_rcu_tasks() and acquiring
-> > > that same mutex in code called from do_exit() after its call to
-> > > exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
-> > > results in deadlock.  This is by design, because tasks that are far
-> > > enough into do_exit() are no longer present on the tasks list, making
-> > > it a bit difficult for RCU Tasks to find them, let alone wait on them
-> > > to do a voluntary context switch.  However, such deadlocks are becoming
-> > > more frequent.  In addition, lockdep currently does not detect such
-> > > deadlocks and they can be difficult to reproduce.
-> > > 
-> > > In addition, if a task voluntarily context switches during that time
-> > > (for example, if it blocks acquiring a mutex), then this task is in an
-> > > RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
-> > > just as well take advantage of that fact.
-> > > 
-> > > This commit therefore initializes the data structures that will be needed
-> > > to rely on these quiescent states and to eliminate these deadlocks.
-> > > 
-> > > Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
-> > > 
-> > > Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> > > Reported-by: Yang Jihong <yangjihong1@huawei.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Tested-by: Yang Jihong <yangjihong1@huawei.com>
-> > > Tested-by: Chen Zhongjin <chenzhongjin@huawei.com>
-> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > > I'm a bit confused about what this does...
 
-Looks good, thanks!
+Oh, ok now I see what you're doing! My fear was that t goes off but doesn't
+remove itself and then the list_del() crashes. But no actually tmp places itself
+after t and then if t exits, it removes itself before tmp and that's fine.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > > 
+> > > > +			raw_spin_unlock_irq_rcu_node(rtpcp);
+> > > > +			cond_resched(); // For CONFIG_PREEMPT=n kernels
+> > > > +			raw_spin_lock_irq_rcu_node(rtpcp);
+> > > > +			list_del(&tmp);
+> > > 
+> > > Isn't there a risk that t is reaped by then? If it was not observed on_rq
+> > > while calling rcu_tasks_pertask() then there is no get_task_struct.
+> > 
+> > That is OK, courtesy of the _safe in list_for_each_entry_safe().
+> > 
+> > > And what about t1? Can't it be reaped as well?
+> > 
+> > It can, and that is a problem, good catch!
+> > 
+> > My current thought is to add this before the list_del(), which is
+> > admittedly a bit crude:
+> > 
+> > 			t1 = tmp.next;
+> 
+> OK, OK...  ;-)
+> 
+> 			t1 = list_entry(tmp.next, struct task_struct, rcu_tasks_exit_list);
+> 
+> Is there still a better way?
+
+That should work.
+
+An (untested) alternative that fiddles a bit less with list internals could look like this:
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 866743e0796f..0ff2b554f5b5 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -973,12 +973,13 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 	for_each_possible_cpu(cpu) {
+ 		unsigned long j = jiffies + 1;
+ 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+-		struct task_struct *t;
+-		struct task_struct *t1;
+-		struct list_head tmp;
+ 
+ 		raw_spin_lock_irq_rcu_node(rtpcp);
+-		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
++		while (!list_empty(&rtpcp->rtp_exit_list)) {
++			struct task_struct *t;
++			t = list_first_entry(&rtpcp->rtp_exit_list, typeof(*t), rcu_tasks_exit_list);
++			list_del_init(&t->rcu_tasks_exit_list);
++
+ 			if (list_empty(&t->rcu_tasks_holdout_list))
+ 				rcu_tasks_pertask(t, hop);
+ 
+@@ -987,14 +988,9 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
+ 				continue;
+ 
+-			// Keep our place in the list while pausing.
+-			// Nothing else traverses this list, so adding a
+-			// bare list_head is OK.
+-			list_add(&tmp, &t->rcu_tasks_exit_list);
+ 			raw_spin_unlock_irq_rcu_node(rtpcp);
+ 			cond_resched(); // For CONFIG_PREEMPT=n kernels
+ 			raw_spin_lock_irq_rcu_node(rtpcp);
+-			list_del(&tmp);
+ 			j = jiffies + 1;
+ 		}
+ 		raw_spin_unlock_irq_rcu_node(rtpcp);
+@@ -1219,7 +1215,6 @@ void exit_tasks_rcu_stop(void)
+ 	struct rcu_tasks_percpu *rtpcp;
+ 	struct task_struct *t = current;
+ 
+-	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
+ 	rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, t->rcu_tasks_exit_cpu);
+ 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 	list_del_init(&t->rcu_tasks_exit_list);
