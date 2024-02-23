@@ -1,51 +1,76 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090667E777;
-	Fri, 23 Feb 2024 13:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B961862A;
+	Fri, 23 Feb 2024 13:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708694134; cv=none; b=qSaDmEk8rq1qdhNVLt/0Llye1l6cSIYOw2SuYQRj/PmnfLbrb7g4tfjEhzUlCxBtscsXygIJ9oLT9QUj4q9AjXMC/wJqWk56CKAJYZgh+ymn2N/RZvbokAiDqn41gVUliLQpBcaFkjuuBwXAb/4Xyqh8GfH7ZtqZMh8Odac63uI=
+	t=1708696509; cv=none; b=fjIAHSOWjeJG3ZYgd3+IvUTuRMh8CXB8MnjNShXFhbq680578i6HxzQc3uuEeGrHg+Ur8rVSWgsmCXg9nNMY5Hv0oPglVU13y4s11ZT2sySa/NY0yQRCpylRp/4TSjfiPHZ4AwhIybB/p2kdjskK6IC6jtQFxGoUAjjVvhOSLNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708694134; c=relaxed/simple;
-	bh=QEmz+DEv+wYIwWLTLObUJu7Rgtz4EV1cC1KA2e2teE4=;
+	s=arc-20240116; t=1708696509; c=relaxed/simple;
+	bh=QDOnvEHvmluOKUK80bI4w/1xdbotijfIQb6S7kHnNDc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GuVZ/G7bWnh7G6C7eFLDqDbcznBsWKEbUVVL6Qr1EuabLYrevLQEFGC3ipd5mfOy0PDm8gV4iOtINRc29uTyxR90v2ZETDMCyx+KnnV1dEHRA60RD4cO/5VPwfj/IWxgFcLPF0BOL5FW1f/9wd2c+lPVijl9BKTiGiXmcVNZ0C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=fY7JJSmi; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=U0hpIGLT5jMBbpeD/hlN5/6pWjwGE/zCMLitNmdmQmTPoBW1mXZJRcry3wkDotTQ6Njj1r7UuEfD3s4MgEVOBwXkicBr4B7hqErgFyECI1HZyIFWUtpzNPorIuAoKA2lqJevMM3c/3iGUVsxC07QQ/fk3grlAFPm8GbT71fVND8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=cRIp1DUH; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="fY7JJSmi"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F83CC433C7;
-	Fri, 23 Feb 2024 13:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708694133;
-	bh=QEmz+DEv+wYIwWLTLObUJu7Rgtz4EV1cC1KA2e2teE4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fY7JJSmiDJVIRS38KIdsUCjU0Vlcrpci4di1jK8PLA3Mp0KTKe9mjuhFT1TsiQAB1
-	 YZe3Z6xb6yD33rnKVq1O7gyu1GTdo32LkquM6jGUJiwt2NzrK3/upjsxZI4sHsI/BO
-	 0nzfBL7ZXEUNrKoa4/dwZTt8JFOocw/ZJLWgsb0A=
-Date: Fri, 23 Feb 2024 14:15:30 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: paulmck@kernel.org, joel@joelfernandes.org, chenzhongjin@huawei.com,
-	rcu@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] linux-4.19/rcu-tasks: Eliminate deadlocks involving
- do_exit() and RCU tasks
-Message-ID: <2024022323-profile-dreaded-3ac7@gregkh>
-References: <20240207110846.25168-1-qiang.zhang1211@gmail.com>
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="cRIp1DUH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A74C433C7;
+	Fri, 23 Feb 2024 13:55:07 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="cRIp1DUH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708696504;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QDOnvEHvmluOKUK80bI4w/1xdbotijfIQb6S7kHnNDc=;
+	b=cRIp1DUH1OZnz2MuPZPJ/UiMY9/nR3kOADJsJaXUW25oeLFyf5OrOvqoTyGpKxINe8ju7R
+	3WgoCuzHwjwrwb8eYV2LchI2xWGKX76P6Qk67wnIJNjy9Xa+zBTkEJvRdLhL1jyWs9YN6O
+	syvWGgDgZxQAcy58oxm+I4bDBjb5Syo=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 36363131 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Fri, 23 Feb 2024 13:55:04 +0000 (UTC)
+Date: Fri, 23 Feb 2024 14:55:01 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Thomas Graf <tgraf@suug.ch>,
+	Herbert Xu <herbert@gondor.apana.org.au>, netdev@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, maple-tree@lists.infradead.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH 0/1] Rosebush, a new hash table
+Message-ID: <ZdijtQNFuziHnqH2@zx2c4.com>
+References: <20240222203726.1101861-1-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240207110846.25168-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20240222203726.1101861-1-willy@infradead.org>
 
-On Wed, Feb 07, 2024 at 07:08:46PM +0800, Zqiang wrote:
-> From: Paul E. McKenney <paulmck@kernel.org>
-> 
-> commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c upstream.
+Hi Matthew,
 
-Again, not a valid commit id :(
+On Thu, Feb 22, 2024 at 08:37:23PM +0000, Matthew Wilcox (Oracle) wrote:
+> Rosebush is a resizing, scalable, cache-aware, RCU optimised hash table.
+> I've written a load of documentation about how it works, mostly in
+> Documentation/core-api/rosebush.rst but some is dotted through the
+> rosebush.c file too.
 
+If you're interested, WireGuard has some pretty primitive hashtables,
+for which maybe Rosebush would be an interesting replacement:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/wireguard/peerlookup.c
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/wireguard/peerlookup.h#n17
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/wireguard/ratelimiter.c#n167
+
+In peerlookup.c, note the "At the moment, we limit" comment for an idea
+of some of the hairy issues involved in replacing these. But I wouldn't
+be entirely opposed to it, if you see some interesting potential for
+Rosebush here. That's a very tentative interest -- maybe it won't work
+out in the end -- but nonetheless, seeing this piqued my curiosity. If
+you're looking to see how this behaves in a place beyond dcache, this
+might be something to play with.
+
+Jason
