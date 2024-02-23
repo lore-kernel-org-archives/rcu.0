@@ -1,49 +1,31 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7357A1119E;
-	Fri, 23 Feb 2024 04:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5F55D485;
+	Fri, 23 Feb 2024 10:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708664221; cv=none; b=VDt+628UhMb/Q5n2JC+KFlr6by0wTaYQLaE0Zm5tIlQ9UPtk+k5s7u9loUsgiqFtT0QEoFVy97vgYGefremZKn2VHlw61i7oRdtpG6vLqrKESyvvi249oR1Rws603M4m5yliJOOmvhn8QSAX1ztyoZOR/AdzkUWWxXOaNOLyyCI=
+	t=1708685675; cv=none; b=mXrVd7l7BkB9h9PqoLKic9xXXbGEulxBQqLxJd42mWLNP6IH3qbniEcxbuIf8OgZLsfyrwo+1/dWXkPyyxjvwOnFZJ9UqbqXQoQXY/nk3zcDTp6mUQ0tJHUM7flkRJqhxRBmix7eGMDvUKJ7Ip6y0vUDfr7GuROpNia+77y2AUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708664221; c=relaxed/simple;
-	bh=7x9O6YJuADgP4s+qZxFjc8202z6woBsZ+9FShLcBVi4=;
+	s=arc-20240116; t=1708685675; c=relaxed/simple;
+	bh=9dVfvruGdbgHremfgUv+pqbA8QF04s4I7tA2NqshGxU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cM2kIYG/Qq7u+dCgCxrksHkTt2VOMjhoCzUk66gxt99bRPn4baHgnbvYnOXGbq67U4sNye5ESWZpZKXO2JZgWxLgVwhojjXXP/HmkRHz0On9GDGD2yfvJ49iIp1ATo/k7lNU+XlNQlBvpv3gfzeySPjJJAdr+Y6bC0oN1YupZAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fm9Vb/ZA; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fm9Vb/ZA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7348C433F1;
-	Fri, 23 Feb 2024 04:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708664220;
-	bh=7x9O6YJuADgP4s+qZxFjc8202z6woBsZ+9FShLcBVi4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=fm9Vb/ZAMaDMDk8Z/RUM7GBOMS25QKtUcYkGxaG6+hk8ng3SBlwuGQCQ6HBJco0vI
-	 KXiZGSQTS9n7FzvmlRMQaYXQan2W/3AgpHTQlgU4dxPPDxro6lxgLsb6dwFs2rBkpm
-	 5t4cLZtfPU7l6yQN3YEJ2V2VkwIyxOU7m8r2z593H0e1n7gslBT7CgcfLnfASauJ4o
-	 A7iU1WkbOj+gROoeAaO6uVnICfGpckkv+0DJafCC8Ot+tr8ivhQWX0h9G2XTWhXVlr
-	 59kVKS0m6wiymigFw3708FyyRxsCP8cJFjsZcEf7t3x2G3741T+TR8P/2pZyCmilSt
-	 UwIMcST4FxeHA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7EE09CE0B71; Thu, 22 Feb 2024 20:57:00 -0800 (PST)
-Date: Thu, 22 Feb 2024 20:57:00 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZL87DyD6cXObvnHBLJGhxfAAKNFFgf+S2Bx5Rv55pFum3LZzxrp4x1Am++KSGpgDllF4/grdc9LaiK1ulwG4tATuItBdHEIfMlIQZzvERZ/vOI+sDsIF8Y9vRRCfCsHrF/OH/H1giUnAR57sSKW2VFsQfK/bXP9XQSWiJSf29yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E64B91596;
+	Fri, 23 Feb 2024 02:55:10 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.66.180])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A6DE3F762;
+	Fri, 23 Feb 2024 02:54:31 -0800 (PST)
+Date: Fri, 23 Feb 2024 10:54:28 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Heiko Carstens <hca@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
-	Douglas Anderson <dianders@chromium.org>,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH rcu 3/4] arch: Select new NEED_TASKS_RCU Kconfig option
-Message-ID: <e022d9c2-0c22-4708-8e69-06583785f1ed@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	rostedt@goodmis.org, ankur.a.arora@oracle.com, tglx@linutronix.de
+Subject: Re: [PATCH rcu 0/4] Refactor TASKS_RCU for lazy preemption
+Message-ID: <Zdh5ZIboTTQJjG1i@FVFF77S0Q05N>
 References: <8c938bd5-6d62-4eff-9289-13b0d7ae8e17@paulmck-laptop>
- <20240223002627.1987886-3-paulmck@kernel.org>
- <20240222203651.410151c9@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,63 +34,30 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240222203651.410151c9@gandalf.local.home>
+In-Reply-To: <8c938bd5-6d62-4eff-9289-13b0d7ae8e17@paulmck-laptop>
 
-On Thu, Feb 22, 2024 at 08:36:51PM -0500, Steven Rostedt wrote:
-> On Thu, 22 Feb 2024 16:26:26 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > Currently, if a Kconfig option depends on TASKS_RCU, it conditionally does
-> > "select TASKS_RCU if PREEMPTION".  This works, but requires any change in
-> > this enablement logic to be replicated across all such "select" clauses.
-> > A new NEED_TASKS_RCU Kconfig option has been created to allow this
-> > enablement logic to be in one place in kernel/rcu/Kconfig.
-> > 
-> > Therefore, select the new NEED_TASKS_RCU Kconfig option instead of the
-> > old TASKS_RCU option.
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Heiko Carstens <hca@linux.ibm.com>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Cc: Ankur Arora <ankur.a.arora@oracle.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> 
-> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On Thu, Feb 22, 2024 at 04:26:18PM -0800, Paul E. McKenney wrote:
+> Hello!
 
-Thank you!  I will apply on my next rebase.
+Hi!
 
-							Thanx, Paul
+> This series refactors the NEED_TASKS_RCU option so that the conditional
+> processing is in one place in kernel/rcu/Kconfig.  This makes it easier
+> to make sure that Tasks RCU is enabled in PREEMPT_AUTO kernels, given
+> that such kernels are preemptible, even if only lazily so.  After all,
+> it takes only one lazy preemption from a trampoline to significantly
+> degrade your kernel's actuarial statistics.
+> 
+> 1.	Create NEED_TASKS_RCU to factor out enablement logic.
+> 
+> 2.	Select new NEED_TASKS_RCU Kconfig option.
+> 
+> 3.	Select new NEED_TASKS_RCU Kconfig option.
+> 
+> 4.	Select new NEED_TASKS_RCU Kconfig option.
 
-> -- Steve
-> 
-> > ---
-> >  arch/Kconfig | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index c91917b508736..154f994547632 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -55,7 +55,7 @@ config KPROBES
-> >  	depends on MODULES
-> >  	depends on HAVE_KPROBES
-> >  	select KALLSYMS
-> > -	select TASKS_RCU if PREEMPTION
-> > +	select NEED_TASKS_RCU
-> >  	help
-> >  	  Kprobes allows you to trap at almost any kernel address and
-> >  	  execute a callback function.  register_kprobe() establishes
-> > @@ -104,7 +104,7 @@ config STATIC_CALL_SELFTEST
-> >  config OPTPROBES
-> >  	def_bool y
-> >  	depends on KPROBES && HAVE_OPTPROBES
-> > -	select TASKS_RCU if PREEMPTION
-> > +	select NEED_TASKS_RCU
-> >  
-> >  config KPROBES_ON_FTRACE
-> >  	def_bool y
-> 
+For the series:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
