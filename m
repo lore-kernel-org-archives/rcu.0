@@ -1,170 +1,105 @@
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8DC78B76
-	for <rcu@vger.kernel.org>; Fri, 23 Feb 2024 11:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24343664D7;
+	Fri, 23 Feb 2024 11:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708688263; cv=none; b=HZEgRAtLcge/GpyoSvtgZ/pqmKuKJCtX4qjYc4/s8OuQKRKpLt6PnWpd9iLuFiaTrte9F16FfjfeWxyIqMUzLUEK5utvzqpQaDgEwdFAWaDEaBWV0Z0xjrRV7diBDNSzFSZ0F9f7qWS2yVND0hVr6dBWFcaSyTZPGuM9jvGr5vM=
+	t=1708688388; cv=none; b=XwPzNV+Fjv4M9xt8W70e5T/Xh9TR6Y8EcpGG4Z9PlUTdBe2sYeZDOjHzNDEJL6k1p5aQS2KKtLFdlYGCfM8wld71jCs2HuYTROY8TC5SgzwAHtooamYv2osA13JNqfRmVPDrB5N7W5Pbs5a/6vP+xbq6+7bNvSJhyS5l8R+5+24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708688263; c=relaxed/simple;
-	bh=98rPOvnAYsubAtz6pjV4Z2L0dBtqB5ZBkhj2CgpLC/E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HsEjrt4hs188SvrxDGIcWhkmNQAuRRWEh/NmO3HSInrAitrWPDPoPBbcs/N8UYpbfrWOQi/pNlP9W7IWUKRzMoNJHCoC9qYKJ1JTTxf31Uso9RmiV8GlZtYNuOjEg6pwUA/V3S3gDCqIJwM/oi/MEik1vcQ6Er577BkgsqGn7gI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=eh4GeMbs; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1708688388; c=relaxed/simple;
+	bh=HYUQjAE4WdJ6K+bIyLr2HE5+D/keOdzS3+RV5vP2ak4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r1lYD++F4sfxFooEGInNXSxrBbpMatdACJUcAs9GRgdPeZKfh+Nht02IZsRru7U379zHOUBRAPxoJk+GFFTIaXp01L33ssRoefhJnMrkMyWM6gfQah2W6uHLbpYv+rD5ncyr6T7nAkhUU8urH/Qx6ZgcpHUrGLTGCRRcrbP3P3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sQrH7EoJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="eh4GeMbs"
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dc13fb0133so5223815ad.3
-        for <rcu@vger.kernel.org>; Fri, 23 Feb 2024 03:37:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708688260; x=1709293060; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AYojV14l/EO4ziKOz/Cae0jSZMr1ZjtiyuI8QAd/KG4=;
-        b=eh4GeMbsIaGgjLeTa4Vqzd9K9SLf0p2eoZn5nWWOxYAi+Axfl7QpegIhr0bnrLGJJ/
-         EyZq8s/uzVjsTBJLl9NPQmfav691GsagVTgkmVeVMhkHFax74HpT+hdFYktdVf96bPAI
-         fBbweadNe3ASS/ng+pZBioH6otZbA/4AZFnYXSNHVuqAXwrlyJSL+GIS1Ntafoj7fjbF
-         LS0a4HPeRmNPSSE7a1NUcu2wYaPv+wETywHuqbqY193WI6c6+kb0ipfCw21g8NHNKOGt
-         dkZzx0t1cHgXQC/YQfSvsLh2G6UdSGqBEFV8aBboTUuGbUL35KWJBnYI2CGVC/BjMoh+
-         3qnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708688260; x=1709293060;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AYojV14l/EO4ziKOz/Cae0jSZMr1ZjtiyuI8QAd/KG4=;
-        b=su93t1U3q7aZra9d1nS4dpxicA8EDiNr+aG8INw7dVcokK/+ksHxbl+OvQB0zRkaaB
-         ZgHmjVYMB1O05ZiuynI9rES+cQXfqyuLJj0xRq9f4RijPzlx9gBPzDKIV05uzxNYb4mM
-         gRGXQWxshLhcwwhNjLtQL0PX1Bge3OELVtMw6iipcfd4uxPZ2bd73ApKL91svmCDyDSQ
-         pZcjKwhNwnkfJNk0ECRZXQxvUMtyWTE1Me6YEP6YXV/xsdUUkmLu6f7ZEDB+2ilx/2fU
-         BISEgwsfqCpU3VQeERi6v9FRrf4EPlPHqFdLkh5eGKwIja7wJTdpYLf1txs0ksZWICh5
-         Yo5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWoOLSWumBBy014bVey0DObCwDH/dKq6Vqqrlcd3mxXurpUL3c2wtAE3ED/B1VabYArqIMGof3xCSdfDhB/Rf7H1hjI
-X-Gm-Message-State: AOJu0YwM/P1HtTbqwpZjLFu1XmCcOIY5aIj98Jyk+weh7FLd5V6j8BSe
-	HiCI5bcKpXuU98b+6kq03pOTsZ9JXbyt6qFsFFBZeZtyQ2WOLnmJTmExwyjNYZ0=
-X-Google-Smtp-Source: AGHT+IGs7KQxlDPJ6rVKmuuRL5lhG2zXTibsWX9m7dKXUX5N8EczSlq2CLx5XxM8WOJk61IbtRHvjw==
-X-Received: by 2002:a17:903:1111:b0:1dc:156c:a864 with SMTP id n17-20020a170903111100b001dc156ca864mr1471837plh.4.1708688246918;
-        Fri, 23 Feb 2024 03:37:26 -0800 (PST)
-Received: from [10.255.179.232] ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id m20-20020a170902f21400b001d8f6ae51aasm11471937plc.64.2024.02.23.03.37.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Feb 2024 03:37:26 -0800 (PST)
-Message-ID: <9c0aad2c-548a-4287-b3d5-c7932f40c96f@bytedance.com>
-Date: Fri, 23 Feb 2024 19:37:20 +0800
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sQrH7EoJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18C90C433C7;
+	Fri, 23 Feb 2024 11:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708688387;
+	bh=HYUQjAE4WdJ6K+bIyLr2HE5+D/keOdzS3+RV5vP2ak4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sQrH7EoJhU78lDusZtSycgOB5TobF+XgA/Kc798Udpd52zFQ9BSZfvV7jUh+7WoW1
+	 vP9IGJiQWhgtajmsAKoYSEdiD4plLU7Km3hX4SkLFQOpavqVCArhgigdIbLbcRntli
+	 cdk+FTPZJqBLRv/t7KILVN73mhAUXjwIaKHUIhz2TqAUHyEqygu1d0twfsw7LIp/ha
+	 FEPFnpjignENeU8KLOkayxjgd74Vm/4qux1ZWQsuZR6IK6G4hdn7uGxSdRTihx+IqI
+	 bxBedPb5NXr5vIFYDTM/PVmdqqLrDuDEXfM5sRuAQHE5PVLXkFW2sCKqo3NkXkm87S
+	 HOHhnMJSQPR8g==
+Date: Fri, 23 Feb 2024 12:39:44 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Chen Zhongjin <chenzhongjin@huawei.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Oleg Nesterov <oleg@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Peng Zhang <zhangpeng.00@bytedance.com>
+Subject: Re: [PATCH v2 3/6] rcu-tasks: Initialize data to eliminate
+ RCU-tasks/do_exit() deadlocks
+Message-ID: <ZdiEAPczZT+GVuxa@lothringen>
+References: <20240217012745.3446231-1-boqun.feng@gmail.com>
+ <20240217012745.3446231-4-boqun.feng@gmail.com>
+ <Zdd0b3HI4uNAoc2P@localhost.localdomain>
+ <1e265c80-2008-4419-8a21-d05c39e1e53e@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/1] Rosebush, a new hash table
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Thomas Graf <tgraf@suug.ch>, Herbert Xu <herbert@gondor.apana.org.au>,
- netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- maple-tree@lists.infradead.org, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240222203726.1101861-1-willy@infradead.org>
-From: Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20240222203726.1101861-1-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1e265c80-2008-4419-8a21-d05c39e1e53e@paulmck-laptop>
 
+On Thu, Feb 22, 2024 at 12:41:55PM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 22, 2024 at 05:21:03PM +0100, Frederic Weisbecker wrote:
+> > Le Fri, Feb 16, 2024 at 05:27:38PM -0800, Boqun Feng a �crit :
+> > > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > > 
+> > > Holding a mutex across synchronize_rcu_tasks() and acquiring
+> > > that same mutex in code called from do_exit() after its call to
+> > > exit_tasks_rcu_start() but before its call to exit_tasks_rcu_stop()
+> > > results in deadlock.  This is by design, because tasks that are far
+> > > enough into do_exit() are no longer present on the tasks list, making
+> > > it a bit difficult for RCU Tasks to find them, let alone wait on them
+> > > to do a voluntary context switch.  However, such deadlocks are becoming
+> > > more frequent.  In addition, lockdep currently does not detect such
+> > > deadlocks and they can be difficult to reproduce.
+> > > 
+> > > In addition, if a task voluntarily context switches during that time
+> > > (for example, if it blocks acquiring a mutex), then this task is in an
+> > > RCU Tasks quiescent state.  And with some adjustments, RCU Tasks could
+> > > just as well take advantage of that fact.
+> > > 
+> > > This commit therefore initializes the data structures that will be needed
+> > > to rely on these quiescent states and to eliminate these deadlocks.
+> > > 
+> > > Link: https://lore.kernel.org/all/20240118021842.290665-1-chenzhongjin@huawei.com/
+> > > 
+> > > Reported-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> > > Reported-by: Yang Jihong <yangjihong1@huawei.com>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Tested-by: Yang Jihong <yangjihong1@huawei.com>
+> > > Tested-by: Chen Zhongjin <chenzhongjin@huawei.com>
+> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
+Looks good, thanks!
 
-在 2024/2/23 04:37, Matthew Wilcox (Oracle) 写道:
-> Rosebush is a resizing, scalable, cache-aware, RCU optimised hash table.
-> I've written a load of documentation about how it works, mostly in
-> Documentation/core-api/rosebush.rst but some is dotted through the
-> rosebush.c file too.
-> 
-> You can see this code as a further exploration of the "Linked lists are
-> evil" design space.  For the workloads which a hashtable is suited to,
-> it has lower overhead than either the maple tree or the rhashtable.
-> It cannot support ranges (so is not a replacement for the maple tree),
-> but it does have per-bucket locks so is more scalable for write-heavy
-> workloads.  I suspect one could reimplement the rhashtable API on top
-> of the rosebush, but I am not interested in doing that work myself.
-> 
-> The per-object overhead is 12 bytes, as opposed to 16 bytes for the
-> rhashtable and 32 bytes for the maple tree.  The constant overhead is also
-> small, being just 16 bytes for the struct rosebush.  The exact amount
-> of memory consumed for a given number of objects is going to depend on
-> the distribution of hashes; here are some estimated consumptions for
-> power-of-ten entries distributed evenly over a 32-bit hash space in the
-> various data structures:
-> 
-> number	xarray	maple	rhash	rosebush
-> 1	3472	272	280	256
-> 10	32272	784	424	256
-> 100	262kB	3600	1864	2080
-> 1000	[1]	34576	17224	16432
-> 10k	[1]	343k	168392	131344
-> 100k	[1]	3.4M	1731272	2101264
-> 
-> As you can see, rosebush and rhashtable are close the whole way.
-> Rosebush moves in larger chunks because it doubles each time; there's
-> no actual need to double the bucket size, but that works well with
-> the slab allocator's existing slabs.  As noted in the documentation,
-> we could create our own slabs and get closer to the 12 bytes per object
-> minimum consumption. [2]
-> 
-> Where I expect rosebush to shine is on dependent cache misses.
-> I've assumed an average chain length of 10 for rhashtable in the above
-> memory calculations.  That means on average a lookup would take five cache
-> misses that can't be speculated.  Rosebush does a linear walk of 4-byte
-> hashes looking for matches, so the CPU can usefully speculate the entire
-> array of hash values (indeed, we tell it exactly how many we're going to
-> look at) and then take a single cache miss fetching the correct pointer.
-> Add that to the cache miss to fetch the bucket and that's just two cache
-> misses rather than five.
-> 
-> I have not yet converted any code to use the rosebush.  The API is
-> designed for use by the dcache, and I expect it will evolve as it actually
-Hello,
-
-It seems that the advantage of this hash table is that it does not need to
-traverse the linked list and has fewer cache misses. I want to know how
-much performance improvement is expected if it is applied to dcache?
-
-Thanks,
-Peng
-> gets used.  I think there's probably some more refactoring to be done.
-> I am not aware of any bugs, but the test suite is pitifully small.
-> The current algorithm grows the buckets more aggressively than the table;
-> that's probably exactly the wrong thing to do for good performance.
-> 
-> This version is full of debugging printks.  You should probably take
-> them out if you're going to try to benchmark it.  The regex '^print'
-> should find them all.  Contributions welcome; I really want to get back
-> to working on folios, but this felt like an urgent problem to be fixed.
-> 
-> [1] I stopped trying to estimate the memory costs for xarray; I couldn't
-> be bothered to as it's not a serious competitor for this use case.
-> 
-> [2] We have ideas for improving the maple tree memory consumption for
-> this kind of workload; a new node type for pivots that fit in 4 bytes and
-> sparse nodes to avoid putting a NULL entry after each occupied entry.
-> The maple tree really is optimised for densely packed ranges at the
-> moment.
-> 
-> Matthew Wilcox (Oracle) (1):
->    rosebush: Add new data structure
-> 
->   Documentation/core-api/index.rst    |   1 +
->   Documentation/core-api/rosebush.rst | 135 ++++++
->   MAINTAINERS                         |   8 +
->   include/linux/rosebush.h            |  41 ++
->   lib/Kconfig.debug                   |   3 +
->   lib/Makefile                        |   3 +-
->   lib/rosebush.c                      | 707 ++++++++++++++++++++++++++++
->   lib/test_rosebush.c                 | 135 ++++++
->   8 files changed, 1032 insertions(+), 1 deletion(-)
->   create mode 100644 Documentation/core-api/rosebush.rst
->   create mode 100644 include/linux/rosebush.h
->   create mode 100644 lib/rosebush.c
->   create mode 100644 lib/test_rosebush.c
-> 
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
