@@ -1,100 +1,108 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CBB1FAA;
-	Sat, 24 Feb 2024 05:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94728250EA;
+	Sat, 24 Feb 2024 12:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708752134; cv=none; b=QcfMG9OIwzHh4NYMiEZNakzWyY/hiWLefV4MiwrkEETZ2kJafSll8hqptFiyx2v1dF7SO2DXR38qJDhAltLkKtnksFaVtHM2Z5++OIUR15F2g3XbuHBaxrlJjqZ63we/LKv1/Ou1Z7e0lM6ftAFfWkgnFkaj6T/fpGC/J9Sue2w=
+	t=1708776358; cv=none; b=eInhgVpOj4ZgciKFR+3onGDSieos47YawAInXSmcrxRal4qvwk7TC5JsQb3ciJf65YAH5Ogdl2hhs77KVeB2FywliVTW20ohkJuZqyh9DN6vi9Ihc32rv2/meLM5BWBdV69O0kUZ5UWtiW+E5P7W86gVI5xS58priHKPZXAxTeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708752134; c=relaxed/simple;
-	bh=HHtLlzJRzglu7AQ6pOsFiUQ6vA11VIbiU2QckkHsOCE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FltVOfvUj8Imhl9FD5uRox1niJiRDT2hfpnxoH+NhzzY6QiZC6gX4oSoPf/Xn90yDGux7n1pHgF0blYUPIjmDuVbwOJb2dfJ8VX4R2yg6RWifudVfFoDBHFjovdkMcfHgnYVuK1UQqy+sIdxp2ZLxKaCrH5bEMer+oV+Ehj0A/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BGS3zr0D; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1708776358; c=relaxed/simple;
+	bh=WoeM9pkYScJ13mRMUgF7m5PiKSukf6CCH4U6G0G8quw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YKOnXvo6pNuVZhumb6icMXsHEV6gPxyWkBs7jPmGENZa2RRBYZzlLME7MNEcOzVuOaQ2yMlICngQ9W1Y4eXD59CrjxK/yBk3aa3joXOr2NvFflIUTlHuNYYK47/HAfCg2PQiSjAd1kpRBB909h1ixfE5/h9pcAoBjqHtbCaCNKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mgil4PCG; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BGS3zr0D"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AF8BC433C7;
-	Sat, 24 Feb 2024 05:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708752134;
-	bh=HHtLlzJRzglu7AQ6pOsFiUQ6vA11VIbiU2QckkHsOCE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=BGS3zr0Dc2B8CEcSjLJZWSAuMc7gjQc+c7Z6nUd6h8bEM/aYwFphEW6tNOjE9ykxv
-	 9EUnESBKrjJNbFdlI7d57A8D85/zOYGu3mMMKNWJh10iTdmJ4F/G7UhwOCbAPAifPO
-	 wr5TKwkNNlTW4johOgGw9xUrBzVjUkjunWXqHcdhRtyOVM+gBgc5fsUNtxio5WyWgX
-	 rTtf80OwPZNxaPmXjUNNqqf5QIsEwxcGkviNe9NS3bvJiWuATLuhBLAZTNUxAobGlw
-	 qqiVywhMfpqIv+Ar5f9YaYntvLaa1n2Re3ccW09mW7BV3uAB7ad9Rw1C3Jt6xKQai3
-	 OLz67S7C02KrQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E938ACE1113; Fri, 23 Feb 2024 21:22:13 -0800 (PST)
-Date: Fri, 23 Feb 2024 21:22:13 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: neeraj.upadhyay@kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
-	josh@joshtriplett.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Update Neeraj's email address
-Message-ID: <1e44377c-70f6-484d-895c-7ad17439fa09@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240224045730.29812-1-neeraj.upadhyay@kernel.org>
- <cfe9394d-8144-48d0-a8f1-de9fb54eabc5@joelfernandes.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgil4PCG"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc1ff58fe4so12046125ad.1;
+        Sat, 24 Feb 2024 04:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708776357; x=1709381157; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jVmIKF7lK0wpWcNGGxp8g+5cZLXrG8hwcYCFr/14wjo=;
+        b=mgil4PCG0HfpFGwHuJlmS43DmDumPMUSOq95djmprMQUbrzbFIaYMM8hi6Ezq1mhs5
+         NHs+dJhweJgytWCadYliw/nJHeO8lQh7Y8D5kwZCm4GNt1ftTHQlvnFsWhhbuAa7XG+E
+         KiSfJxTg36aEJjzjaqDU2V61oMfuz77ieak8SesPFfiu/PzBtcV10Jo4tKBjpzgJDe1A
+         8IFK0ey/8fZpfRjUGU35sLbeI/ysRV9hHl7TLjRcUIPAquuHPtpplfEswie3GK9Hl3bA
+         y59ham0BZkmKi5hpu0IMct754Mt7pMFcjz2EMcgwchH9E56iN8VKYu2w+tow8hyAhcvc
+         e+AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708776357; x=1709381157;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jVmIKF7lK0wpWcNGGxp8g+5cZLXrG8hwcYCFr/14wjo=;
+        b=DWjOTgLG0/iIerSpVGQGJkIlCYhDXrE/2hxnGZ9Re0xgAGDxxMy3Efr6E7IZIuw+yQ
+         ruZHD+ohHbG5r8GDe8JBWS0ySpK98VUHhlTjW4xmq1yXxS30k1+opbnMXkiGbCIBuw9d
+         ls2CseciCb1oJ2DS/YLu4ddLP0h7lqsfMapQL3Q3z534Jpf9tDdsQZLMK1EnQBkWH/cq
+         H+AjBkRfwEzxHjeUsN2yrDry5qi+Qj/IDyMgOauAvb4rJRiIBFOHwMusoZmkkkUQ4prM
+         lVORGiYYK5PnPreUAutbgckhryWRQbvpYF/fHD/qDVAgtO7vneNyddxs0gCpbql9jCSG
+         iCag==
+X-Forwarded-Encrypted: i=1; AJvYcCVSaWsA5jP8sjds53w1Pn2TnoamS/TqSzzNWTl65jjCllhIl+3BOnBqam5/TUq6Bq50v1yg9WqUzkcbQUJVOcVdLzyYlB52cRNVno8V4IeSaICRG75Z1PvWLP6z
+X-Gm-Message-State: AOJu0Yx/DW2XPukEcnRQebtObC8i2lGmXwMsGjiv8GCGNF3V+DHodb3+
+	OsDxFrtAqoBrTat9a4JpQjDEZAEJODTd+xPY+737E0txwhTkAnlN0CeCQ5Bdu9HC2d59UdXPnX6
+	LYtdentjEUpz8Q0lxQtcE34C+p1w=
+X-Google-Smtp-Source: AGHT+IEDf/CY21pXyW11YD3yAY4DigFTF2b7ry3qapyV/+CUjf53W5pQPLfPk/xW/mlArK4EmqKkKPZYMhxH5gVvgz8=
+X-Received: by 2002:a17:903:94e:b0:1dc:8507:e163 with SMTP id
+ ma14-20020a170903094e00b001dc8507e163mr1362318plb.28.1708776356696; Sat, 24
+ Feb 2024 04:05:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cfe9394d-8144-48d0-a8f1-de9fb54eabc5@joelfernandes.org>
+References: <20240207110846.25168-1-qiang.zhang1211@gmail.com>
+ <2024022323-profile-dreaded-3ac7@gregkh> <ec2482a6-a19b-4152-b51d-13c812eacf64@paulmck-laptop>
+ <2024022430-uninsured-zoom-f78c@gregkh>
+In-Reply-To: <2024022430-uninsured-zoom-f78c@gregkh>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Sat, 24 Feb 2024 20:05:45 +0800
+Message-ID: <CALm+0cWi0N41CuXsBS5NazxZjOgX1apGVQ-49Q2jD_SKP00G_g@mail.gmail.com>
+Subject: Re: [PATCH] linux-4.19/rcu-tasks: Eliminate deadlocks involving
+ do_exit() and RCU tasks
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, joel@joelfernandes.org, chenzhongjin@huawei.com, 
+	rcu@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 23, 2024 at 11:58:58PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 2/23/2024 11:57 PM, neeraj.upadhyay@kernel.org wrote:
-> > From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-> > 
-> > Update my email-address in MAINTAINERS and .mailmap entries to my
-> > kernel.org account.
-> > 
-> > Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-> > ---
-> >  .mailmap    | 3 ++-
-> >  MAINTAINERS | 2 +-
-> >  2 files changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/.mailmap b/.mailmap
-> > index 08f28f2999f0..dd6ea71c9271 100644
-> > --- a/.mailmap
-> > +++ b/.mailmap
-> > @@ -441,7 +441,8 @@ Mythri P K <mythripk@ti.com>
-> >  Nadia Yvette Chambers <nyc@holomorphy.com> William Lee Irwin III <wli@holomorphy.com>
-> >  Naoya Horiguchi <naoya.horiguchi@nec.com> <n-horiguchi@ah.jp.nec.com>
-> >  Nathan Chancellor <nathan@kernel.org> <natechancellor@gmail.com>
-> > -Neeraj Upadhyay <quic_neeraju@quicinc.com> <neeraju@codeaurora.org>
-> > +Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <quic_neeraju@quicinc.com>
-> > +Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <neeraju@codeaurora.org>
-> >  Neil Armstrong <neil.armstrong@linaro.org> <narmstrong@baylibre.com>
-> >  Nguyen Anh Quynh <aquynh@gmail.com>
-> >  Nicholas Piggin <npiggin@gmail.com> <npiggen@suse.de>
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 189184ecdb11..1006a6973320 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -18461,7 +18461,7 @@ F:	tools/testing/selftests/resctrl/
-> >  READ-COPY UPDATE (RCU)
-> >  M:	"Paul E. McKenney" <paulmck@kernel.org>
-> >  M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
-> > -M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
-> > +M:	Neeraj Upadhyay <neeraj.upadhyay@kernel.org> (kernel/rcu/tasks.h)
-> 
-> Reviewed-by: Joel Fernandes <joel@joelfernandes.org>
+>
+> On Fri, Feb 23, 2024 at 11:48:49AM -0800, Paul E. McKenney wrote:
+> > On Fri, Feb 23, 2024 at 02:15:30PM +0100, Greg KH wrote:
+> > > On Wed, Feb 07, 2024 at 07:08:46PM +0800, Zqiang wrote:
+> > > > From: Paul E. McKenney <paulmck@kernel.org>
+> > > >
+> > > > commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c upstream.
+> > >
+> > > Again, not a valid commit id :(
+> >
+> > Apologies!  With luck, there will be a valid ID next merge window.
+> > This one does not backport cleanly, so we were trying to get ahead of
+> > the game.  Also, some of the people testing needed the backport due
+> > to the usual issues.  :-/
+> >
+> > Any advice to handle this better next time around?  (Aside from us
+> > avoiding CCing stable too soon...)
+>
+> You can just wait until it hits Linus's tree, otherwise we do get
+> confused :)
 
-I have pulled this in, thank you both!
+Hi, all
 
-If someone else wants to take it:
+I will resend these backports to stable once they enter Linus's tree :) .
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Thanks
+Zqiang
 
-							Thanx, Paul
+>
+> Or if you don't want to wait, put it in the notes section below the ---
+> line and say "this isn't in Linus's tree yet, the git id mentioned is a
+> lie!" or something like that.  Give us a chance to figure it out
+> please...
+>
+> thanks,
+>
+> greg k-h
