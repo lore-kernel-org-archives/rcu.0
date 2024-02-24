@@ -1,59 +1,54 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBDD64A;
-	Sat, 24 Feb 2024 00:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D7310F2;
+	Sat, 24 Feb 2024 00:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708734211; cv=none; b=E7/h8EklqhyiGbwq7OUCh1RyhiTFGDyJh78sAd7DjFikEMMEzk3s50VHm6A4viBse8V78MHPAZTAYQqlGns1uVoFVSSxSF5xB3GpCv31cK2Qdn9y5/w93b/sTFltu566Ixb/q0xXM4lEg2SDOY3gmjEZMcny6BbB/8taZb1EG7M=
+	t=1708734505; cv=none; b=jjxLI0/nLGIsqNzCQyxvKlBOUlaQZ6XWrp4pUjQWN9o00LCT0a9QMx8f8ciRC+C6mfpQEvi8Mouyomq97cRRHMlkZGbJQCRW3xWCqs+N3jP5tlvsMt4KC+q1A9FO896SOyB1JwRLdnumTmhZWwvxUj8xqdBzOL+5DXjQZkgDylk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708734211; c=relaxed/simple;
-	bh=PSIjkioZV1XuZZmMdkSlReJ4zGEasuPJXjKQZZQaDp0=;
+	s=arc-20240116; t=1708734505; c=relaxed/simple;
+	bh=NfXtG/1GMXbQ2yBn2k0Gm8LXQ6d0gmiTwMDv0HaP6Y8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EmNnxNa6+7UNXDKM3LVPsn3z7gXvV/7bbO2upTIZbADFZK6QtrH1I6F/xw8mR9+yRWlgOACLqDAbMItCbC78/mjCBrV/A7goTw+BOhuUqg9iMR084jx8uJrm88/B2Xbh2GFSnbCqfw4sdwuzebbewbyFWP4wPRyUi65L2IF8D+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AenSVfPd; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=iMDyYpY+gq6jzARRClsDkZDsJz2dM1sAOj6sV9wY2PK1+cGQil+Q0Ydp6D67yPTT+ZtcFC4HpDQdoGC/mkCAm24fJnNZ41Q2rjBt0rV6GD7v0xEauGRuH4UUasEycfY3nuMaSzyitLuj2tc8aq/fFyRBnrJfAUNsxsLBP3z9q2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VRFq04Cv; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AenSVfPd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F04BC433F1;
-	Sat, 24 Feb 2024 00:23:30 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VRFq04Cv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F5DDC433C7;
+	Sat, 24 Feb 2024 00:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708734210;
-	bh=PSIjkioZV1XuZZmMdkSlReJ4zGEasuPJXjKQZZQaDp0=;
+	s=k20201202; t=1708734504;
+	bh=NfXtG/1GMXbQ2yBn2k0Gm8LXQ6d0gmiTwMDv0HaP6Y8=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=AenSVfPdBJqMSgmAINEhFiTWpP8PJMsi4E7o3cfmhEn0aLupM8N1hOzNx3uZAEOrJ
-	 ma7+b3yoqyW0+hLocVPVJqXKg4rlZDgE04LMk5eKIf/CjYih/pU90dP02yPGzQONyq
-	 hk8M2WM15wNw8joXbyRltfO3AFbRov8aBufj+caf+gJo+zLDIYQzCmqUdM7tTQ/Hiv
-	 wE+KYFdI2ESRuW7QuNXenCbgxM6zRwiXFPwyuYCS06qfl0E8UEVxhIqO8qI+9dpS+j
-	 D460uXA7woSJfx3oBfn2xA4tInb/Aj90ZMk427PRO2JrM0G6OMnivnYWg5ytWCrTpb
-	 r+7lGfA0f/S3Q==
+	b=VRFq04CvhZ3G0DEDfladC2Pth55Hp8itifcNJuADVOl65dYXrWqJgGghGyU5g/8wW
+	 wglNojhhmItEA2QXQDxJLNeuA7qPa0WAjTxytJRXd05+8VCE3hiBazML8nBhPo5Iri
+	 EAxSKfBcN4KoxXdOXooKVUSxpcb+kZb/psYzrl58GxusG+wTmvt176AwnL7CIwg0A7
+	 CgbSciL1mV2MBIw2RufWmoNG6NUrhyRZEwOl+tc5tcGyuje026XKMpil2NODz4bF8/
+	 AskIkeT1Ea0cTViK/hJ+2A061DM9JvpCJ5EOWBNOeV6OvNNgfw/h89c90z7xUhpR9E
+	 ezyYZ0SpPKr/Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 26D75CE1113; Fri, 23 Feb 2024 16:23:30 -0800 (PST)
-Date: Fri, 23 Feb 2024 16:23:30 -0800
+	id 290F5CE1113; Fri, 23 Feb 2024 16:28:19 -0800 (PST)
+Date: Fri, 23 Feb 2024 16:28:19 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Frederic Weisbecker <frederic@kernel.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>,
+	Chen Zhongjin <chenzhongjin@huawei.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 6/6] rcu-tasks: Maintain real-time response in
- rcu_tasks_postscan()
-Message-ID: <4741400a-b8e9-452c-a9a9-3a539868f1ef@paulmck-laptop>
+Subject: Re: [PATCH v2 4/6] rcu-tasks: Maintain lists to eliminate
+ RCU-tasks/do_exit() deadlocks
+Message-ID: <dcea0803-7f9d-4d27-af68-1efb9015dbff@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <20240217012745.3446231-7-boqun.feng@gmail.com>
- <ZdeI_-RfdLR8jlsm@localhost.localdomain>
- <e0472956-1b18-4a22-be6e-5dbbc11141eb@paulmck-laptop>
- <9a27f638-4eb0-42b3-b8a3-201d6ed9406b@paulmck-laptop>
- <ZdiMympnNOo6e+5T@lothringen>
- <Zdi2aXbgKdsmP/1O@lothringen>
+ <20240217012745.3446231-5-boqun.feng@gmail.com>
+ <ZdiNXmO3wRvmzPsr@lothringen>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -62,63 +57,38 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zdi2aXbgKdsmP/1O@lothringen>
+In-Reply-To: <ZdiNXmO3wRvmzPsr@lothringen>
 
-On Fri, Feb 23, 2024 at 04:14:49PM +0100, Frederic Weisbecker wrote:
-> On Fri, Feb 23, 2024 at 01:17:14PM +0100, Frederic Weisbecker wrote:
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 866743e0796f..0ff2b554f5b5 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -973,12 +973,13 @@ static void rcu_tasks_postscan(struct list_head *hop)
-> >  	for_each_possible_cpu(cpu) {
-> >  		unsigned long j = jiffies + 1;
-> >  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
-> > -		struct task_struct *t;
-> > -		struct task_struct *t1;
-> > -		struct list_head tmp;
-> >  
-> >  		raw_spin_lock_irq_rcu_node(rtpcp);
-> > -		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
-> > +		while (!list_empty(&rtpcp->rtp_exit_list)) {
-> > +			struct task_struct *t;
-> > +			t = list_first_entry(&rtpcp->rtp_exit_list, typeof(*t), rcu_tasks_exit_list);
-> > +			list_del_init(&t->rcu_tasks_exit_list);
+On Fri, Feb 23, 2024 at 01:19:42PM +0100, Frederic Weisbecker wrote:
+> On Fri, Feb 16, 2024 at 05:27:39PM -0800, Boqun Feng wrote:
+> > -void exit_tasks_rcu_start(void) __acquires(&tasks_rcu_exit_srcu)
+> > +void exit_tasks_rcu_start(void)
+> >  {
+> > -	current->rcu_tasks_idx = __srcu_read_lock(&tasks_rcu_exit_srcu);
+> > +	unsigned long flags;
+> > +	struct rcu_tasks_percpu *rtpcp;
+> > +	struct task_struct *t = current;
+> > +
+> > +	WARN_ON_ONCE(!list_empty(&t->rcu_tasks_exit_list));
+> > +	preempt_disable();
+> > +	rtpcp = this_cpu_ptr(rcu_tasks.rtpcpu);
+> > +	t->rcu_tasks_exit_cpu = smp_processor_id();
+> > +	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+> > +	if (!rtpcp->rtp_exit_list.next)
 > 
-> Oh no! The task has to stay in the list for subsequent grace periods! Please
-> forget that suggestion... Yours looks good!
+> And then you might want to turn that into a WARN_ONCE.
 
-You had me going for a bit, and I do know that feeling!  ;-)
+Excellent point, thank you!
 
-							Thanx, Paul
+I am queueing a separate patch for this with your Reported-by.  (This
+change can lag behind, just in case this series needs to go in quickly.)
+
+						Thanx, Paul
 
 > Thanks.
 > 
-> > +
-> >  			if (list_empty(&t->rcu_tasks_holdout_list))
-> >  				rcu_tasks_pertask(t, hop);
-> >  
-> > @@ -987,14 +988,9 @@ static void rcu_tasks_postscan(struct list_head *hop)
-> >  			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
-> >  				continue;
-> >  
-> > -			// Keep our place in the list while pausing.
-> > -			// Nothing else traverses this list, so adding a
-> > -			// bare list_head is OK.
-> > -			list_add(&tmp, &t->rcu_tasks_exit_list);
-> >  			raw_spin_unlock_irq_rcu_node(rtpcp);
-> >  			cond_resched(); // For CONFIG_PREEMPT=n kernels
-> >  			raw_spin_lock_irq_rcu_node(rtpcp);
-> > -			list_del(&tmp);
-> >  			j = jiffies + 1;
-> >  		}
-> >  		raw_spin_unlock_irq_rcu_node(rtpcp);
-> > @@ -1219,7 +1215,6 @@ void exit_tasks_rcu_stop(void)
-> >  	struct rcu_tasks_percpu *rtpcp;
-> >  	struct task_struct *t = current;
-> >  
-> > -	WARN_ON_ONCE(list_empty(&t->rcu_tasks_exit_list));
-> >  	rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, t->rcu_tasks_exit_cpu);
-> >  	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> >  	list_del_init(&t->rcu_tasks_exit_list);
-> > 
+> > +		INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
+> > +	list_add(&t->rcu_tasks_exit_list, &rtpcp->rtp_exit_list);
+> > +	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+> > +	preempt_enable();
+> >  }
