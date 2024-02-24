@@ -1,148 +1,227 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC5263D9;
-	Sat, 24 Feb 2024 00:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E76AD54
+	for <rcu@vger.kernel.org>; Sat, 24 Feb 2024 02:55:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708735386; cv=none; b=tsuGMjJ7fVMcvbkOOeC/oZOWjV9p1SIdOtldRyszeVgT24seCzkJVa7WVWNnmjPs0ARebkzPbuv9+f8YBLIrB38EMMq/3TxvJ4B5jTDYbH8B8DDDsUJZiwgX2yXNUca/8S9YM7VZ0ZX1uIm5gdLDukRl0/iUmFfIHxND0kiqdbI=
+	t=1708743341; cv=none; b=o2TCxQv4B9lGBEbqVUo1rJJgccVL93/lCh+yTu8V5gN08OhKa04jJdatAektA1odeWznhB0pFnHJUpQFnNb0QB56/pUqmPpHo5CNChQp0HVyOGF58cCOY/ieH6V08JjpfMUXDiZktRLV52yWKJsxPULiSW6fY2i4LXKCAA4kTpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708735386; c=relaxed/simple;
-	bh=m73mINAcBZK7KFtefy5Xad/poSVabUB+gIm8dOx4+qo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sxQsWy3esTQpJg9klmxdI68uvzlH34vp72u+OeBgwlNAbytaWDRq4rqq2Qraz3pKNjMzBsNVZ9vKY2V5NcNII4gvi0/qPRzsffANuCq7q0B23NJmOiaszuz/jj0crPORPk3o3+Z2+m2rkyJ4ipmJ0k0uns4ORp6/LzYN2DPdKPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rZKecjUV; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1708743341; c=relaxed/simple;
+	bh=s0+7DUkxC9v95WTMsMb6JK4YaSoyruhPTd6puPiPmmo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XTJ1iGi9hjZYN815SY4baXBDEakiWJK1a5rYc1DaK0nq+VfMhFSPzycJ3Skc8AxOHzqT9SUMlSf+9sX9vw46sExvWlgq94MdMKsTrxr1iXbk8VHG3y16o40mXT6DNeP8yHYKDGed+Lju3siGHAFCXptuTVLH34+0+MkRSJ2qmnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BFTfIApc; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rZKecjUV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CC19C433F1;
-	Sat, 24 Feb 2024 00:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708735385;
-	bh=m73mINAcBZK7KFtefy5Xad/poSVabUB+gIm8dOx4+qo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=rZKecjUV+6koNQRARM3ZkeptSR9GT33A4dL2+HzQZH7eTwLEudSRt+U3iVIL3bp3w
-	 gLd02m/ckOh8eZecdrA5RaHmkar+gAoUF0eLM6v2dv7z+XpW7RrA34F0Z0g4hdBFg/
-	 VL4YMYvzKtAT9+F5mcyH9trNoKXkmaJeiFksDZcY1G+WfAgC1AxE+9Y3fFfBVpZuH0
-	 d89dcNpLWwIVk5odteqqALf3YEwdrn/dS9TcBcaN2w3oX8c+kFGUgn7Li6X1841F0s
-	 THBlFs6W30YFWwfBI0IWIXA9I2wuvYSl9lAu7z9DKayUT3XM9EHzgVYgJa/bSj3Wi1
-	 VkrKPbYAUZnoQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id EC45CCE1113; Fri, 23 Feb 2024 16:43:04 -0800 (PST)
-Date: Fri, 23 Feb 2024 16:43:04 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: Re: [PATCH v2 0/6] RCU tasks fixes for v6.9
-Message-ID: <8f992601-153e-4cc1-8e7e-6684823cd590@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240217012745.3446231-1-boqun.feng@gmail.com>
- <Zdd7x4Rmy_-WDqfl@localhost.localdomain>
- <cf84fb44-9620-40bc-a68d-051edf6823b8@paulmck-laptop>
- <ZdiOot2RJm1VuzSJ@lothringen>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BFTfIApc"
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so2330976a12.2
+        for <rcu@vger.kernel.org>; Fri, 23 Feb 2024 18:55:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708743338; x=1709348138; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dKSTnM2v+jmLIpYPi1kbD+Pb1Qc9BSBN4XGZJPjFFPc=;
+        b=BFTfIApcesuZfo0fijYqV2OIduDGhyqXOp8tcjvtN/fhBu0ruO/fiumt+aixl0Rztv
+         8aiuSDdY04VK6p0Db9n/u2kJu/Yc1h24Bs4eJjs0bQtuDLF7q5mu1/zgPZ4nSCjlbh84
+         vZ0ostgpR+z1DIDQuERCA3mARebpH/V1zxblK2Xh2o/jeTlgBBtZPlRrMSGsSCqh9TV1
+         S/xBEAoz6MPHX+1v234zZeMlFA754oy0g9aYgdoPHbx+7/CdqE35Eb0+LX6Bi7LhDOY2
+         qjE1ebVmYzEdnWVXaedkl1m1O7QCIpLxSwueAz4KcUvnu11bFo7lhCkx3DgEE5i2Ab69
+         koeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708743338; x=1709348138;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dKSTnM2v+jmLIpYPi1kbD+Pb1Qc9BSBN4XGZJPjFFPc=;
+        b=fGwwpZoRQ/oLEMo4mGPQFUdhCaXlRVlEuTQYACZqnAFFKOE51+N+r9uCw/2QpA5o1L
+         GqqwtqqQP/O3eUwT65ergbOkwLpBaScle4s/PeCXb6rnTIu22QZ9n7Y1GBSQOFrF9a7m
+         tKjKV5kXjNxrrTALskNKpxUnDAL0uHdR2y+0xUVDLPAUL61KMaE1w8EUgQX4Sr12F0aK
+         5k7c1l5igKC32S9rggtLfEvLKGyKvMUb5f51bUazduwCo4j559dbOm8YQPbAgI82stOG
+         X2l++hRZVlP/d1W2njkvqXqyDdGVKz6t0eybVbGjwpv0BZ0WFES2b+9f5lUEYxxOJL1d
+         N6Rg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQQtjXjkD4ASwxB3UZNcARnGxQyx+zMimRDk6wUDS/bWAnmpEzJDz7KM8kRrYXFij3FHSDv9s2w8dVLxrUu070cw1D
+X-Gm-Message-State: AOJu0YzkEYusIMHQx/XiFkGToJAl/cxyPKGf6QqYIi1LWvYE2wFoe1/X
+	obkV8qS8t/ME0e4xibEU/mKL3dcJh/Zz8MrGhc5TG1d3zD7w6pUFDJT3gN+9wAsaK0m+dOxpObd
+	fmIMPTcqk8GIrnsghoBHU7V4D6s8=
+X-Google-Smtp-Source: AGHT+IHqimg10K1/L+NRQXdNA2GGrmNDOmgRLEkO8bWLdybN2k28avxqLXsoB1b3MUY5xGyvrKtcfZlp0iCGclsq5VA=
+X-Received: by 2002:a05:6402:5201:b0:565:a5e1:3a10 with SMTP id
+ s1-20020a056402520100b00565a5e13a10mr183414edd.36.1708743337653; Fri, 23 Feb
+ 2024 18:55:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdiOot2RJm1VuzSJ@lothringen>
+References: <202402201506.b7e4b9b6-oliver.sang@intel.com> <CANpmjNNGCkfFBNiSsc+DOm1EDzXZoNLQy_jnEZjt9WuxP5aayw@mail.gmail.com>
+In-Reply-To: <CANpmjNNGCkfFBNiSsc+DOm1EDzXZoNLQy_jnEZjt9WuxP5aayw@mail.gmail.com>
+From: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Date: Sat, 24 Feb 2024 08:25:24 +0530
+Message-ID: <CAFwiDX-tVTsNcbrzd63oCCat5DqzhouA_HQv4sd4xS=c-C01yQ@mail.gmail.com>
+Subject: Re: [linux-next:master] [kasan] 187292be96: WARNING:suspicious_RCU_usage
+To: Marco Elver <elver@google.com>
+Cc: kernel test robot <oliver.sang@intel.com>, "Paul E. McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	Linux Memory Management List <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024 at 01:25:06PM +0100, Frederic Weisbecker wrote:
-> On Thu, Feb 22, 2024 at 02:09:17PM -0800, Paul E. McKenney wrote:
-> > On Thu, Feb 22, 2024 at 05:52:23PM +0100, Frederic Weisbecker wrote:
-> > > Le Fri, Feb 16, 2024 at 05:27:35PM -0800, Boqun Feng a écrit :
-> > > > Hi,
-> > > > 
-> > > > This series contains the fixes of RCU tasks for v6.9. You can also find
-> > > > the series at:
-> > > > 
-> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git rcu-tasks.2024.02.14a
-> > > > 
-> > > > Changes since v1:
-> > > > 
-> > > > *	Update with Paul's rework on "Eliminate deadlocks involving
-> > > > 	do_exit() and RCU task"
-> > > > 
-> > > > The detailed list of changes:
-> > > > 
-> > > > Paul E. McKenney (6):
-> > > >   rcu-tasks: Repair RCU Tasks Trace quiescence check
-> > > >   rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
-> > > >   rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
-> > > >   rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
-> > > >   rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
-> > > 
-> > > Food for later thoughts and further improvements: would it make sense to
-> > > call exit_rcu_tasks_start() on fork() instead and rely solely on
-> > > each CPUs' rtp_exit_list instead of the tasklist?
-> > 
-> > It might well.
-> > 
-> > One big advantage of doing that is the ability to incrementally traverse
-> > the tasks.  But is there some good way of doing that to the full task
-> > lists?  If so, everyone could benefit.
-> 
-> What do you mean by incrementally? You mean being able to cond_resched()
-> in the middle of the tasks iteration? Yeah not sure that's possible...
+Hi,
 
-I do indeed mean doing cond_resched() mid-stream.
+On Tue, Feb 20, 2024 at 1:33=E2=80=AFPM Marco Elver <elver@google.com> wrot=
+e:
+>
+> On Tue, 20 Feb 2024 at 08:35, kernel test robot <oliver.sang@intel.com> w=
+rote:
+> >
+> >
+> >
+> > Hello,
+> >
+> > we noticed this is a revert commit, below report is for an issue we obs=
+erved
+> > on this commit but not on its parent. just FYI.
+> >
+> > 113edefd366346b3 187292be96ae2be247807fac1c3
+> > ---------------- ---------------------------
+> >        fail:runs  %reproduction    fail:runs
+> >            |             |             |
+> >            :6          100%           6:6     dmesg.WARNING:suspicious_=
+RCU_usage
+> >
+> >
+> > kernel test robot noticed "WARNING:suspicious_RCU_usage" on:
+> >
+> > commit: 187292be96ae2be247807fac1c3a6d89a7cc2a84 ("kasan: revert evicti=
+on of stack traces in generic mode")
+> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+>
+> This commit didn't touch rcutorture or the rcu subsystem in any way,
+> so I currently don't understand how rcutorture would be affected.
+> While stackdepot has started to use RCU, this already happened in a
+> previous commit, and this particular commit actually reduced RCU usage
+> (no more evictions and re-allocations of stacktraces).
+>
+> The only explanation I have is that it improved performance of a
+> KASAN-enabled kernel (which the config here has enabled) so much that
+> previously undiscovered issues have now become much more likely to
+> occur.
+>
+> [+Cc rcu folks]
+>
+> > in testcase: rcutorture
 
-One way to make this happen would be to do something like this:
+The rcutorture test type executed here is busted_srcud (torture_type:
+busted_srcud). The busted_srcud torture test creates bad reader critical
+section usages - in this case the rcu reader lock acquired was not
+srcu lock, which subsequently resulted in rcu_dereference_check() to
+cause a splat due to srcu read lock not being held.
 
-struct task_struct_anchor {
-	struct list_head tsa_list;
-	struct list_head tsa_adjust_list;
-	atomic_t tsa_ref;  // Or use an appropriate API.
-	bool tsa_is_anchor;
-}
+ So, this is expected behavior, and not a problem in either KASAN or RCU.
 
-Each task structure would contain one of these, though there are a
-number of ways to conserve space if needed.
 
-These anchors would be placed perhaps every 1,000 tasks or so.  When a
-traversal encountered one, it could atomic_inc_not_zero() the reference
-count, and if that succeeded, exit the RCU read-side critical section and
-do a cond_resched().  It could then enter a new RCU read-side critical
-section, drop the reference, and continue.
 
-A traveral might container_of() its way from ->tsa_list to the
-task_struct_anchor structure, then if ->tsa_is_anchor is false,
-container_of() its way to the enclosing task structure.
+Thanks
+Neeraj
 
-How to maintain proper spacing of the anchors?
-
-One way is to make the traversals do the checking.  If the space between a
-pair of anchors was to large or too small, it could add the first of the
-pair to a list to be adjusted.  This list could periodically be processed,
-perhaps with more urgency if a huge gap had opened up.
-
-Freeing an anchor requires decrementing the reference count, waiting for
-it to go to zero, removing the anchor, waiting for a grace period (perhaps
-asynchronously), and only then freeing the anchor.
-
-Anchors cannot be moved, only added or removed.
-
-So it is possible.  But is it reasonable?  ;-)
-
-							Thanx, Paul
-
-> > > Thanks.
-> > > 
-> > > >   rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
-> > > > 
-> > > >  include/linux/rcupdate.h |   4 +-
-> > > >  include/linux/sched.h    |   2 +
-> > > >  init/init_task.c         |   1 +
-> > > >  kernel/fork.c            |   1 +
-> > > >  kernel/rcu/tasks.h       | 110 ++++++++++++++++++++++++++++++---------
-> > > >  5 files changed, 90 insertions(+), 28 deletions(-)
-> > > > 
-> > > > -- 
-> > > > 2.43.0
-> > > > 
-> > > > 
-> > > 
+> > version:
+> > with following parameters:
+> >
+> >         runtime: 300s
+> >         test: cpuhotplug
+> >         torture_type: busted_srcud
+> >
+> >
+> >
+> > compiler: clang-17
+> > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m=
+ 16G
+> >
+> > (please refer to attached dmesg/kmsg for entire log/backtrace)
+> >
+> >
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
+rsion of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > | Closes: https://lore.kernel.org/oe-lkp/202402201506.b7e4b9b6-oliver.s=
+ang@intel.com
+> >
+> >
+> > [  292.513535][  T653] WARNING: suspicious RCU usage
+> > [  292.514923][  T653] 6.8.0-rc4-00126-g187292be96ae #1 Not tainted
+> > [  292.516369][  T653] -----------------------------
+> > [  292.517743][  T653] kernel/rcu/rcutorture.c:1983 suspicious rcu_dere=
+ference_check() usage!
+> > [  292.519310][  T653]
+> > [  292.519310][  T653] other info that might help us debug this:
+> > [  292.519310][  T653]
+> > [  292.523130][  T653]
+> > [  292.523130][  T653] rcu_scheduler_active =3D 2, debug_locks =3D 1
+> > [  292.525644][  T653] no locks held by rcu_torture_rea/653.
+> > [  292.526974][  T653]
+> > [  292.526974][  T653] stack backtrace:
+> > [  292.529271][  T653] CPU: 0 PID: 653 Comm: rcu_torture_rea Not tainte=
+d 6.8.0-rc4-00126-g187292be96ae #1
+> > [  292.530780][  T653] Hardware name: QEMU Standard PC (i440FX + PIIX, =
+1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [  292.532329][  T653] Call Trace:
+> > [  292.533524][  T653]  <TASK>
+> > [ 292.534696][ T653] dump_stack_lvl (lib/dump_stack.c:?)
+> > [ 292.535941][ T653] ? __cfi_dump_stack_lvl (lib/dump_stack.c:98)
+> > [ 292.537221][ T653] ? lockdep_rcu_suspicious (kernel/locking/lockdep.c=
+:6712)
+> > [ 292.538523][ T653] rcu_torture_one_read (kernel/rcu/rcutorture.c:?) r=
+cutorture
+> > [ 292.539887][ T653] ? __cfi_lockdep_hardirqs_on_prepare (kernel/lockin=
+g/lockdep.c:4312)
+> > [ 292.541226][ T653] ? rcu_torture_timer (kernel/rcu/rcutorture.c:1955)=
+ rcutorture
+> > [ 292.542621][ T653] ? __cfi_rcu_torture_timer (kernel/rcu/rcutorture.c=
+:2055) rcutorture
+> > [ 292.544012][ T653] ? init_timer_key (include/linux/lockdep.h:135 incl=
+ude/linux/lockdep.h:142 include/linux/lockdep.h:148 kernel/time/timer.c:847=
+ kernel/time/timer.c:867)
+> > [ 292.545262][ T653] rcu_torture_reader (kernel/rcu/rcutorture.c:2093) =
+rcutorture
+> > [ 292.546579][ T653] ? __cfi_rcu_torture_reader (kernel/rcu/rcutorture.=
+c:2076) rcutorture
+> > [ 292.547872][ T653] ? __cfi__raw_spin_unlock_irqrestore (kernel/lockin=
+g/spinlock.c:193)
+> > [ 292.549108][ T653] ? __cfi_rcu_torture_timer (kernel/rcu/rcutorture.c=
+:2055) rcutorture
+> > [ 292.550341][ T653] ? __kthread_parkme (kernel/kthread.c:?)
+> > [ 292.551425][ T653] ? __kthread_parkme (include/linux/instrumented.h:?=
+ include/asm-generic/bitops/instrumented-non-atomic.h:141 kernel/kthread.c:=
+280)
+> > [ 292.552489][ T653] kthread (kernel/kthread.c:390)
+> > [ 292.553504][ T653] ? __cfi_rcu_torture_reader (kernel/rcu/rcutorture.=
+c:2076) rcutorture
+> > [ 292.554689][ T653] ? __cfi_kthread (kernel/kthread.c:341)
+> > [ 292.555749][ T653] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 292.556792][ T653] ? __cfi_kthread (kernel/kthread.c:341)
+> > [ 292.557852][ T653] ret_from_fork_asm (arch/x86/entry/entry_64.S:250)
+> > [  292.558920][  T653]  </TASK>
+> >
+> >
+> >
+> > The kernel config and materials to reproduce are available at:
+> > https://download.01.org/0day-ci/archive/20240220/202402201506.b7e4b9b6-=
+oliver.sang@intel.com
+> >
+> >
+> >
+> > --
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
+> >
+>
