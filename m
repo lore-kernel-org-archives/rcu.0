@@ -1,92 +1,86 @@
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52FF12B71
-	for <rcu@vger.kernel.org>; Sun, 25 Feb 2024 14:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA8512E47;
+	Sun, 25 Feb 2024 19:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708872477; cv=none; b=p7BFd3AEbUhjwE2QvI8DKKfWymoWvkYMVs/kwJsHq0N7ZoCi5HL/CG2bYVWmmUmDTYOy8sFpiTKT0Jea6dYR7hypiPTEQwrYcMkP2qYT/rz94o7izv/2Mr02sM90mPasbn+AKeHjNN9lo3yjK9dMhTS3QMiWXshZk2Ec+RrM1FI=
+	t=1708887784; cv=none; b=G9N110w1opugjO+wD2T8inVBA92WcWcOueAeALwk99hz7/9YxjGqrPC4VGg7Q9eAokYwjrGDgvw27TimkasMv/YKG151Saj+LptwWKBqM6gxDAsl31Ok37NvLgnlGFiujQstUyu99nxYMxCMb+hcMbtDRyiRYumT/uISHqRiZ7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708872477; c=relaxed/simple;
-	bh=34Eq+uHp5yJqj4VGBsCh+xInlxIzSmCOpKaV0p3dL+M=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=NsadL2fVNrWzbKWI3xAoIecbTT1OtgwLDGMc5f+0Aj7JsaI0hIGI8HKlBIXGbuTYOlmGtPbAXzwlhjWk+GT4r0Vz+Wvpx/7WJENx0/YTmEGgupANtNaO0VnCNak7Icy2Sp9t2kJ9yp8EtB5VIIWd3nmQsEmNLq+/Lb6w4xeda2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-304-9wbhQDAnMhGhNXbq82bMeg-1; Sun, 25 Feb 2024 14:47:46 +0000
-X-MC-Unique: 9wbhQDAnMhGhNXbq82bMeg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
- 2024 14:47:45 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 25 Feb 2024 14:47:45 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Kent Overstreet' <kent.overstreet@linux.dev>
-CC: 'Herbert Xu' <herbert@gondor.apana.org.au>, "Matthew Wilcox (Oracle)"
-	<willy@infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Thomas Graf <tgraf@suug.ch>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: RE: [PATCH 0/1] Rosebush, a new hash table
-Thread-Topic: [PATCH 0/1] Rosebush, a new hash table
-Thread-Index: AQHaZrdg3OPv1gzlbEiBbQpUz0xlprEaCpvwgABak4CAAL43MA==
-Date: Sun, 25 Feb 2024 14:47:45 +0000
-Message-ID: <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
-References: <20240222203726.1101861-1-willy@infradead.org>
- <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
- <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
- <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
-In-Reply-To: <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1708887784; c=relaxed/simple;
+	bh=YMWzmRSDR5/7KrJEuHBsdbpOlJ8+aKpRaPXXeAxlbBc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LDGhfCRlt42gtP/xGEjqbqigz27CS5Fo4gG3N7V2wn4Qr21zQh5/gBDwt3T5ZExipTyAlCAnYyzRxgL/roN+HmYxI6qAelEJd6T3H87k56iKr3bwtpON31mfI7LF/4y1IrPhUBnkrpxiyWNms46Mue7TR3F7auGVmAoIU3VRrM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fU0aA9/K; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fU0aA9/K"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5272CC433F1;
+	Sun, 25 Feb 2024 19:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708887784;
+	bh=YMWzmRSDR5/7KrJEuHBsdbpOlJ8+aKpRaPXXeAxlbBc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=fU0aA9/KrpSIYqtSJCGjhvhw4ND7OuSGA6h+l3rCM8g9Hdgyd3rIruLiMg2pfkRO8
+	 Uzn56WSWjkB6imBhREv6qtUGHv96nLDDcVizipy8uh1cSc8Xf2SRI0ZxxRygQ6TRth
+	 3FdZXseN7aZlawrXi+vGNOrgjY317/pT9J1qeNm99cDqGv3sVBcXI1CT3FTkvwtAls
+	 +8F5zkVX9Ytj0nqx7WVF0FYJOcG13A7sWvDcpC2xqs7afRlMk1ZRdBReu4DXGXFuBL
+	 QdjsRzjmWjQoTBkugVIDrEBWeAeJ5v8zrDv7cducETJUJSPGPPlZInxoKZpsPFK+xn
+	 rfiJ+iMC2d3Fw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E38A3CE0CC1; Sun, 25 Feb 2024 11:03:03 -0800 (PST)
+Date: Sun, 25 Feb 2024 11:03:03 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Zqiang <qiang.zhang1211@gmail.com>, joel@joelfernandes.org,
+	chenzhongjin@huawei.com, rcu@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] linux-4.19/rcu-tasks: Eliminate deadlocks involving
+ do_exit() and RCU tasks
+Message-ID: <59861bc8-a651-4199-a60d-2cb39b3568a9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240207110846.25168-1-qiang.zhang1211@gmail.com>
+ <2024022323-profile-dreaded-3ac7@gregkh>
+ <ec2482a6-a19b-4152-b51d-13c812eacf64@paulmck-laptop>
+ <2024022430-uninsured-zoom-f78c@gregkh>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024022430-uninsured-zoom-f78c@gregkh>
 
-From: Kent Overstreet
-> Sent: 25 February 2024 03:19
-..
-> when I implemented cuckoo (which is more obviously sensitive to a weak
-> hash function), I had to go with siphash, even jhash wasn't giving me
-> great reslts. and looking at the code it's not hard to see why, it's all
-> adds, and the rotates are byte aligned... you want mixed adds and xors
-> and the rotates to be more prime-ish.
->=20
-> right idea, just old...
->=20
-> what would be ideal is something more like siphash, but with fewer
-> rounds, so same number of instructions as jhash. xxhash might fit the
-> bill, I haven't looked at the code yet...
+On Sat, Feb 24, 2024 at 06:16:24AM +0100, Greg KH wrote:
+> On Fri, Feb 23, 2024 at 11:48:49AM -0800, Paul E. McKenney wrote:
+> > On Fri, Feb 23, 2024 at 02:15:30PM +0100, Greg KH wrote:
+> > > On Wed, Feb 07, 2024 at 07:08:46PM +0800, Zqiang wrote:
+> > > > From: Paul E. McKenney <paulmck@kernel.org>
+> > > > 
+> > > > commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c upstream.
+> > > 
+> > > Again, not a valid commit id :(
+> > 
+> > Apologies!  With luck, there will be a valid ID next merge window.
+> > This one does not backport cleanly, so we were trying to get ahead of
+> > the game.  Also, some of the people testing needed the backport due
+> > to the usual issues.  :-/
+> > 
+> > Any advice to handle this better next time around?  (Aside from us
+> > avoiding CCing stable too soon...)
+> 
+> You can just wait until it hits Linus's tree, otherwise we do get
+> confused :)
+> 
+> Or if you don't want to wait, put it in the notes section below the ---
+> line and say "this isn't in Linus's tree yet, the git id mentioned is a
+> lie!" or something like that.  Give us a chance to figure it out
+> please...
 
-There is likely to be a point where scanning a list of values
-for the right hash value is faster than executing a hash function
-that is good enough to separate them to separate buckets.
+Thank you, and should this situation arise in the future, we will put
+the disclaimer after the "---", avoid CCing -stable, or similar.
 
-You don't want to scan a linked list because they have horrid
-cache footprints.
-The locking is equally horrid - especially for remove.
-Arrays of pointers ar ethe way forward :-)
+Again, apologies for the hassle!
 
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
-
+							Thanx, Paul
