@@ -1,47 +1,46 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA8512E47;
-	Sun, 25 Feb 2024 19:03:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26491B94D
+	for <rcu@vger.kernel.org>; Sun, 25 Feb 2024 21:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708887784; cv=none; b=G9N110w1opugjO+wD2T8inVBA92WcWcOueAeALwk99hz7/9YxjGqrPC4VGg7Q9eAokYwjrGDgvw27TimkasMv/YKG151Saj+LptwWKBqM6gxDAsl31Ok37NvLgnlGFiujQstUyu99nxYMxCMb+hcMbtDRyiRYumT/uISHqRiZ7c=
+	t=1708897713; cv=none; b=pWJOSwr5P3fvEf+/PyRE6Ki1aFQ1zp0SXl8aAc5fk2lJVSiCEUsXW/m2d2hZ+J3rnVYf5J1rPuqiP3uxGT9r2naebYxvQFAn/9WsvVfshXJESXP9ZaQ1u7Mu6GXzxUiPPyXRy97EJdstHHL1t8dJavBx/7OObpmk96Ie3QLzfjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708887784; c=relaxed/simple;
-	bh=YMWzmRSDR5/7KrJEuHBsdbpOlJ8+aKpRaPXXeAxlbBc=;
+	s=arc-20240116; t=1708897713; c=relaxed/simple;
+	bh=dvUDecwBMflNx4CehdCSDahY5V9l4jB2UPQiq5FVREc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LDGhfCRlt42gtP/xGEjqbqigz27CS5Fo4gG3N7V2wn4Qr21zQh5/gBDwt3T5ZExipTyAlCAnYyzRxgL/roN+HmYxI6qAelEJd6T3H87k56iKr3bwtpON31mfI7LF/4y1IrPhUBnkrpxiyWNms46Mue7TR3F7auGVmAoIU3VRrM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fU0aA9/K; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=PrGO3lKtdX8cNFIsxe3qkcJpl2fAp1yoZey4wcbRZpsCZb9YsekUILfwa8Ku/zyHxMKtJz02+jKGgURr9rF6K5YR5q0ZUj9A0FY+qkaHztyAXw3X8Rky9V8nnMljwYVejAAM4KC9+u8NTHK3Z8o61sD3yJ/qouZpX33gSEa8sto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mjt0ivCt; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fU0aA9/K"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5272CC433F1;
-	Sun, 25 Feb 2024 19:03:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708887784;
-	bh=YMWzmRSDR5/7KrJEuHBsdbpOlJ8+aKpRaPXXeAxlbBc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=fU0aA9/KrpSIYqtSJCGjhvhw4ND7OuSGA6h+l3rCM8g9Hdgyd3rIruLiMg2pfkRO8
-	 Uzn56WSWjkB6imBhREv6qtUGHv96nLDDcVizipy8uh1cSc8Xf2SRI0ZxxRygQ6TRth
-	 3FdZXseN7aZlawrXi+vGNOrgjY317/pT9J1qeNm99cDqGv3sVBcXI1CT3FTkvwtAls
-	 +8F5zkVX9Ytj0nqx7WVF0FYJOcG13A7sWvDcpC2xqs7afRlMk1ZRdBReu4DXGXFuBL
-	 QdjsRzjmWjQoTBkugVIDrEBWeAeJ5v8zrDv7cducETJUJSPGPPlZInxoKZpsPFK+xn
-	 rfiJ+iMC2d3Fw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E38A3CE0CC1; Sun, 25 Feb 2024 11:03:03 -0800 (PST)
-Date: Sun, 25 Feb 2024 11:03:03 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Zqiang <qiang.zhang1211@gmail.com>, joel@joelfernandes.org,
-	chenzhongjin@huawei.com, rcu@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] linux-4.19/rcu-tasks: Eliminate deadlocks involving
- do_exit() and RCU tasks
-Message-ID: <59861bc8-a651-4199-a60d-2cb39b3568a9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240207110846.25168-1-qiang.zhang1211@gmail.com>
- <2024022323-profile-dreaded-3ac7@gregkh>
- <ec2482a6-a19b-4152-b51d-13c812eacf64@paulmck-laptop>
- <2024022430-uninsured-zoom-f78c@gregkh>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mjt0ivCt"
+Date: Sun, 25 Feb 2024 16:48:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708897709;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hZLPGWILyQb0uie5XWZz0sri12gIiwEuygESDSHUCVk=;
+	b=Mjt0ivCt7EdkAJ/tpZ4vBCFUaqud0EetWM2nBfj0PDARbuDEYfLiwPCmO+8FQyUf1FXdfK
+	FVg/OoP8xi3mQ8sb+oDtygwMJ6YTysy3H6B6s8jKttLHwjCDctJ7K1/6COxMO8MIW170zO
+	y1pGGRjGU3Mg12gJagPvuo4QwPQgzCU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: David Laight <David.Laight@aculab.com>
+Cc: 'Herbert Xu' <herbert@gondor.apana.org.au>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	Thomas Graf <tgraf@suug.ch>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
+	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/1] Rosebush, a new hash table
+Message-ID: <22nvcwzzfq3ae2eva6m43wolfo3b3pit7xsauuux267hxciigi@52zuwg5yorg5>
+References: <20240222203726.1101861-1-willy@infradead.org>
+ <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
+ <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
+ <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
+ <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,37 +49,52 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024022430-uninsured-zoom-f78c@gregkh>
+In-Reply-To: <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Feb 24, 2024 at 06:16:24AM +0100, Greg KH wrote:
-> On Fri, Feb 23, 2024 at 11:48:49AM -0800, Paul E. McKenney wrote:
-> > On Fri, Feb 23, 2024 at 02:15:30PM +0100, Greg KH wrote:
-> > > On Wed, Feb 07, 2024 at 07:08:46PM +0800, Zqiang wrote:
-> > > > From: Paul E. McKenney <paulmck@kernel.org>
-> > > > 
-> > > > commit bc31e6cb27a9334140ff2f0a209d59b08bc0bc8c upstream.
-> > > 
-> > > Again, not a valid commit id :(
+On Sun, Feb 25, 2024 at 02:47:45PM +0000, David Laight wrote:
+> From: Kent Overstreet
+> > Sent: 25 February 2024 03:19
+> ..
+> > when I implemented cuckoo (which is more obviously sensitive to a weak
+> > hash function), I had to go with siphash, even jhash wasn't giving me
+> > great reslts. and looking at the code it's not hard to see why, it's all
+> > adds, and the rotates are byte aligned... you want mixed adds and xors
+> > and the rotates to be more prime-ish.
 > > 
-> > Apologies!  With luck, there will be a valid ID next merge window.
-> > This one does not backport cleanly, so we were trying to get ahead of
-> > the game.  Also, some of the people testing needed the backport due
-> > to the usual issues.  :-/
+> > right idea, just old...
 > > 
-> > Any advice to handle this better next time around?  (Aside from us
-> > avoiding CCing stable too soon...)
+> > what would be ideal is something more like siphash, but with fewer
+> > rounds, so same number of instructions as jhash. xxhash might fit the
+> > bill, I haven't looked at the code yet...
 > 
-> You can just wait until it hits Linus's tree, otherwise we do get
-> confused :)
-> 
-> Or if you don't want to wait, put it in the notes section below the ---
-> line and say "this isn't in Linus's tree yet, the git id mentioned is a
-> lie!" or something like that.  Give us a chance to figure it out
-> please...
+> There is likely to be a point where scanning a list of values
+> for the right hash value is faster than executing a hash function
+> that is good enough to separate them to separate buckets.
 
-Thank you, and should this situation arise in the future, we will put
-the disclaimer after the "---", avoid CCing -stable, or similar.
+Executing a bunch of alu ops that parallelize nicely is _fast_
+(it's all xors/adds/rotates, chacha20 is a good example of how
+the modern stuff works).
 
-Again, apologies for the hassle!
+Also, for 2-way cuckoo there's an xor trick so you don't need to compute
+a second hash.
 
-							Thanx, Paul
+But the key thing about cuckoo is that the loads on lookup _aren't
+dependent_ - they can run in parallel. Every cache miss that goes all
+the way to DRAM is stupidly expensive, remember - hundreds of
+instructions, had you been able to keep the pipeline fed.
+
+> You don't want to scan a linked list because they have horrid
+> cache footprints.
+> The locking is equally horrid - especially for remove.
+> Arrays of pointers ar ethe way forward :-)
+
+Well, maybe; I'm waiting to see fill factor numbers and benchmarks. Fill
+factor was my concern when I was playing around with the concept; I used
+it in a place where the hash table didn't need to be that big, and the
+point was to avoid having to separately allocate the entries (and it
+avoids the hassle of tombstone entries with linear/quadratic probing).
+
+The fact that it requires a second dependent load, because buckets are
+separately allocated, also looks like a big negative to me. I still
+think a good lockless cuckoo hashing implementation ought to beat it.
