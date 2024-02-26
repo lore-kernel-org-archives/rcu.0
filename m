@@ -1,95 +1,81 @@
-Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 868ED133429;
-	Mon, 26 Feb 2024 17:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4E5F12E1D5;
+	Mon, 26 Feb 2024 18:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966836; cv=none; b=hhlQRbgi9vqcTBihtF1YMM32PXXFQTv7FzAFQNHB98eJdPzTwXHzy8yq5diuU/lsHQ33WhtXKLhZq3iOH9UJI+oCzHUdLo66KLALvh7snEQevxFjjjLxnpcGkU4yFJvVNvi9GoTVRaSM812eIvb5zTwBcSM0Gf+McnJz0XZEjqY=
+	t=1708973697; cv=none; b=mZTSW7+VEGjdZvLvXdBoMSJjyS9ZRofBIkc60ZDDfVFFoWRWi2H9C+Ul5mB9trcbfMHYulgPeYX3kLH8RuYB0rQDmR7A5nZwBYJ9zg/NsoGdYrIsvFPoH9wCLH9mo5M6HntAyVW4pDulXSAW8qvBCkfAmP12BuH12MxM5fDuVoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966836; c=relaxed/simple;
-	bh=TJQajcvykBMBxUEeqy/MVrgfkPcyDTbvbZrHw1dY2c0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DAuNCR0gcAoHJ6QZnlAKHYlayDYYHesBlPlImpGgyQa7xYyqcHM3xWgbxYNRXwHhmL/SfN/GEI90IwgwUmt0KiG8lmfFMo5CrPEJpW3E1ACAP0bg1uCbFYdszuDr9iVkhitaUiApol8w3Vhp5eFdRjpJW5npu8rFYKyBM0+VrnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
-From: Daniil Dulov <d.dulov@aladdin.ru>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
-CC: Daniil Dulov <d.dulov@aladdin.ru>, Davidlohr Bueso <dave@stgolabs.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett
-	<josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
-	<jiangshanlai@gmail.com>, Joel Fernandes <joel@joelfernandes.org>,
-	<linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>, David Vernet <void@manifault.com>
-Subject: [PATCH 5.10 1/1] rcutorture: Add missing return and use __func__ in warning
-Date: Mon, 26 Feb 2024 20:00:11 +0300
-Message-ID: <20240226170011.22798-2-d.dulov@aladdin.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240226170011.22798-1-d.dulov@aladdin.ru>
-References: <20240226170011.22798-1-d.dulov@aladdin.ru>
+	s=arc-20240116; t=1708973697; c=relaxed/simple;
+	bh=5LGD1bbsX0ViNwsdm1xCwt95M1/zjN9a/re3ou5QDek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Do8tdMcIoO6ArH4kQR9dIMDUKNtCUcVAv/eJIuKSGuowC/cOQLy8eS9gc6qox070mdrs6XAVzNYOafoDySyw4zk/fdO5qk+UZ7YJ4aZa1IwLxDGwJmYzAZD0F2T1u8i8SsX2L/Y7tVST6UXAgoc96fme2bkbOOD87cR3BmPFUYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VD+ZlOMi; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VD+ZlOMi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4142BC433C7;
+	Mon, 26 Feb 2024 18:54:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708973697;
+	bh=5LGD1bbsX0ViNwsdm1xCwt95M1/zjN9a/re3ou5QDek=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=VD+ZlOMigOx0gFuFn0DyZNVhZgAbDnaBsEkjTBvsWHViraUaHzWuJoQFuZ5WtoS8O
+	 kTkNFq2NuqSd7fcBQy8GRIIwCUPKdmAiydzO3qaKcgd87Y+gpK6nZPsuLBu7g6C77p
+	 Ag6ay0Qkq+x6OfB4nosPVtBjcEirDcVsjMz5xVpvRVmfK42Xf1oMPktSgp/cGnVuOE
+	 Rf/NDjKqo9wOzgguPdibyhTLDlaAmDxhulXdRo5wCTdzAM9vZ1g5JvQtFaGOAl485L
+	 SwYV+sKnX1AJZvjGmgCzbwKXtLIA+mESPCdMJ2xYwFhWG8psUvItEH5q2lEQh019Rb
+	 7i7Y0Vu9AjHrw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D162CCE0E27; Mon, 26 Feb 2024 10:54:56 -0800 (PST)
+Date: Mon, 26 Feb 2024 10:54:56 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zqiang <qiang.zhang1211@gmail.com>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu-tasks: Fix the comments for
+ tasks_rcu_exit_srcu_stall_timer
+Message-ID: <4a8e281c-de4c-48e6-87dd-a26ec16b5f00@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240226032439.26359-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EXCH-2016-01.aladdin.ru (192.168.1.101) To
- EXCH-2016-01.aladdin.ru (192.168.1.101)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226032439.26359-1-qiang.zhang1211@gmail.com>
 
-From: David Vernet <void@manifault.com>
+On Mon, Feb 26, 2024 at 11:24:39AM +0800, Zqiang wrote:
+> The synchronize_srcu() has been removed by commit("rcu-tasks: Eliminate
+> deadlocks involving do_exit() and RCU tasks") in rcu_tasks_postscan.
+> This commit therefore fix the comments of tasks_rcu_exit_srcu_stall_timer.
+> 
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 
-commit 80dcee695143255261f30c7cc2a041ba413717a4 upstream.
+Queued, most likely for the v6.10 merge window, thank you!
 
-The rcutorture module has an rcu_torture_writer task that repeatedly
-performs writes, synchronizations, and deletes. There is a corner-case
-check in rcu_torture_writer() wherein if nsynctypes is 0, a warning is
-issued and the task waits to be stopped via a call to
-torture_kthread_stopping() rather than performing any work.
+							Thanx, Paul
 
-There should be a return statement following this call to
-torture_kthread_stopping(), as the intention with issuing the call to
-torture_kthread_stopping() in the first place is to avoid the
-rcu_torture_writer task from performing any work. Some of the work may even
-be dangerous to perform, such as potentially causing a #DE due to
-nsynctypes being used in a modulo operator when querying for sync updates
-to issue.
-
-This patch adds the missing return call.  As a bonus, it also fixes a
-checkpatch warning that was emitted due to the WARN_ONCE() call using the
-name of the function rather than __func__.
-
-Signed-off-by: David Vernet <void@manifault.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
----
- kernel/rcu/rcutorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 6c1aea48a79a..69856904838c 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1063,7 +1063,7 @@ rcu_torture_writer(void *arg)
- 		pr_alert("%s: gp_sync without primitives.\n", __func__);
- 	}
- 	if (WARN_ONCE(nsynctypes == 0,
--		      "rcu_torture_writer: No update-side primitives.\n")) {
-+		      "%s: No update-side primitives.\n", __func__)) {
- 		/*
- 		 * No updates primitives, so don't try updating.
- 		 * The resulting test won't be testing much, hence the
-@@ -1071,6 +1071,7 @@ rcu_torture_writer(void *arg)
- 		 */
- 		rcu_torture_writer_state = RTWS_STOPPING;
- 		torture_kthread_stopping("rcu_torture_writer");
-+		return 0;
- 	}
- 
- 	do {
--- 
-2.25.1
-
+> ---
+>  kernel/rcu/tasks.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 78d74c81cc24..d5319bbe8c98 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -150,7 +150,7 @@ static struct rcu_tasks rt_name =							\
+>  
+>  #ifdef CONFIG_TASKS_RCU
+>  
+> -/* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
+> +/* Report delay of scan exiting tasklist in rcu_tasks_postscan(). */
+>  static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+>  static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
+>  #endif
+> -- 
+> 2.17.1
+> 
