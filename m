@@ -1,101 +1,93 @@
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C660199B8;
-	Mon, 26 Feb 2024 03:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC53E7E570;
+	Mon, 26 Feb 2024 13:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708918151; cv=none; b=fvGJ/nILcHfM+G6nwD//rSF5/K9XiQRG0gyXzajFcR+8LkG64LT7lOF5j8dOybYwvJNne5fee+A3hdXw0pEVcY/bjZkAK/28WuqUnaNWbxq8I03q/heCxk+EPA2e6YoKEbtY4c7KvPgbJc3kS9WrS1WFaFEKvAghmZp+m7JUgoY=
+	t=1708955769; cv=none; b=rbSKhmjIUAge9QtiWVRT2oiKl0gK3DUv6xCR5JW/JJUukDJWG43tKJKr7PZGPQGCk0rV6b+1KfFUKiyg4y6LSwDCMPTepqEU7WslklakS662k1pfuhj3US9AXLTuaGUlw6F/RnSqiO0X+1/2ukT58aLgkR3/MnMV8Mur5+sTZkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708918151; c=relaxed/simple;
-	bh=x8zovaulEn/HAH7bnMcnnBNDnCrVZhsSYOA2M6ZtQdM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OORJyR8zKClTq7Pb9IcEKuJGz0iQLZu8++rGQ6BLtFwFl+9FG6dYB+UQLz+yuUp9Rua6TORmXnEuHshdgJA8XqSKwWCjguY+UjxPmE+mjtd0dMcRAcV8AbF04flA1B51FOAVmlobYvV5S97nbtRUK9n5TWtAwhFkM8C7s7AtYLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Waze6uPe; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1708955769; c=relaxed/simple;
+	bh=Z+YufZLQTF3twHN8Tt45XHdmDYZSZIos7wJ19PJBXBo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EIHh6v/cj3RxcavyYmRw20HVZP1Isr3/EbRMNlvRybS9eUMT7rdcOFTqhpPSTkSlt+Uve85hJLDLZBqWpNFUJnFIQHV4m96yVT989qRa3TpAV1Rm7pI7oB1XZlbgq8wmAqH4bJg2JTJa0T5wh6KmX30FoGIRJSk/7u4kVpndA4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PLZHVksw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Waze6uPe"
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so2055052a12.1;
-        Sun, 25 Feb 2024 19:29:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708918149; x=1709522949; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dX0LOLTCVBgnueFQ0+1Jh8NOec5bVPxQjq+vsdWNMPo=;
-        b=Waze6uPea5UYKpPvxc5h2kLqqUf/q/oH6CwtyYYVMUBXnau50kELx1PhQsRKAmM9nv
-         aqcBYl82m8uZejt8Jq4FHTGP36I9bPC5qQfTb0cAYMUKcYzn/PpYLlxCL8fCbTiA+4jD
-         lqWYE+qedkQ16C+MudhmKYNlJxx0J9qXYTcd7pVqDAMsBKnnG7GmTna5h65VPedhbNAy
-         q879GTToCFV7CmihrFlqM1m1F1hZeGlOgbxcbwYUeJ28KERHI6ZENKP+5DyBi2U3slDv
-         sSNX1DzPfbSmX+36ieSXX64mFAte3MNkphYCL34F9l6Jq1mFfeGnDI6z2EkCRd7LTSBy
-         /VIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708918149; x=1709522949;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dX0LOLTCVBgnueFQ0+1Jh8NOec5bVPxQjq+vsdWNMPo=;
-        b=MPN2ioPC4t0ionkk2r5EJdWr0s1muGK8A9I1E5g/ruNGR1LvtJ6a8H2y7ySuYX6UNU
-         /tQ7hZ9OhTCgrBWb+rF7cjOGlWRwW6/fGhBQG6OTNcRmSbPmJKYK6qfOOxjO5lZeEyVB
-         iPj+2zzXYgj2OGKBRNkOwIrByGrJfjvDb9OxMnVQjAe6Jdmo5jyBJJJPnVlaOLBFz5K+
-         uRzT3rbxr2OUV8ma+3xXc6C1RG3Nj1kMVeldVcm62lS65e+AupVN3puViP+r10uHaQGL
-         2hZ0FA0sGk1fUk184bHnYdl03UOToW8RyNjDjZiCM3Iy1LGst5+6eofuY1IYdAXwK/bd
-         zk8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWBApz36cdaCJQ6LlSnSla5TVAREv6bOeF20jqWDI/ZG7KLhg9ynn4L+jc5HdCZbPsaKWLvtqGzQ9FOyiS3jm4Ah+VnUtdnhfRtk5Re
-X-Gm-Message-State: AOJu0YwEWXT+vdjACjqcqqSjyz5J5UDEu18afdliaJV1rMyu5+j0wDOt
-	D8uFWlEFtdmEsJ82rX/oHHVodDa+X9cOZy4VFES7NbX0Z/11qHMgMdPGVZksFQTptF3ht9YEKip
-	J0wNJ4J2mVkUdK7sXpMXzhsNowB0=
-X-Google-Smtp-Source: AGHT+IEGiWfxPhpAJXl4R4BVI8PJmsNMNoSFGJRQFemsPm/bE/+hoNW9UPf873MzRrKPlHla7TRzIwYnBZMXABr01VU=
-X-Received: by 2002:a17:90a:d489:b0:299:3f45:bd57 with SMTP id
- s9-20020a17090ad48900b002993f45bd57mr2806327pju.30.1708918149411; Sun, 25 Feb
- 2024 19:29:09 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PLZHVksw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E989EC433F1;
+	Mon, 26 Feb 2024 13:56:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708955769;
+	bh=Z+YufZLQTF3twHN8Tt45XHdmDYZSZIos7wJ19PJBXBo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PLZHVkswvcvglQyfMOc3PRrvH2+yMEJzPecFowmBPlXbnHCpy8Jp4R10HCX2Gsf1t
+	 ppcZl86Gz7YnWCDdJkX2ZM2ONHtxeQMjD+krgIrMfYSAqUdcl6/Pr4fE5h4D/cpcdS
+	 gUuRZLjYcg0LYPmWNqe32YCUS97v8/QxFzbWAwswJel9gvfeVG+r31BqJ+INrN7+d8
+	 AhrcILGsnTCH3sqZhZAS9xfo8AHl4yTv6EFbYx89nqppq/7b6of5fwD3brVDHNUnfE
+	 AF4PxhPWMxykPYuFbmTRIjYIv85KeN/thbklOKvLjkP4fOzbsQBC5LfQWKk+Qg0vr/
+	 jey/s8zz7Dg+g==
+Date: Mon, 26 Feb 2024 14:56:06 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: Re: [PATCH v2 0/6] RCU tasks fixes for v6.9
+Message-ID: <ZdyYdhZtNuJp3h-a@localhost.localdomain>
+References: <20240217012745.3446231-1-boqun.feng@gmail.com>
+ <Zdd7x4Rmy_-WDqfl@localhost.localdomain>
+ <cf84fb44-9620-40bc-a68d-051edf6823b8@paulmck-laptop>
+ <ZdiOot2RJm1VuzSJ@lothringen>
+ <8f992601-153e-4cc1-8e7e-6684823cd590@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226032439.26359-1-qiang.zhang1211@gmail.com>
-In-Reply-To: <20240226032439.26359-1-qiang.zhang1211@gmail.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Mon, 26 Feb 2024 11:28:57 +0800
-Message-ID: <CALm+0cXvWG2cP2sECzF9JGyUvvp0bBgSXA8NbGf896iMQEcCuA@mail.gmail.com>
-Subject: Re: [PATCH] rcu-tasks: Fix the comments for tasks_rcu_exit_srcu_stall_timer
-To: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
-	joel@joelfernandes.org
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8f992601-153e-4cc1-8e7e-6684823cd590@paulmck-laptop>
 
->
-> The synchronize_srcu() has been removed by commit("rcu-tasks: Eliminate
-> deadlocks involving do_exit() and RCU tasks") in rcu_tasks_postscan.
-> This commit therefore fix the comments of tasks_rcu_exit_srcu_stall_timer.
->
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> ---
->  kernel/rcu/tasks.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 78d74c81cc24..d5319bbe8c98 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -150,7 +150,7 @@ static struct rcu_tasks rt_name =                                                   \
->
->  #ifdef CONFIG_TASKS_RCU
->
-> -/* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
-> +/* Report delay of scan exiting tasklist in rcu_tasks_postscan(). */
->  static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
->  static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
+Le Fri, Feb 23, 2024 at 04:43:04PM -0800, Paul E. McKenney a écrit :
+> I do indeed mean doing cond_resched() mid-stream.
+> 
+> One way to make this happen would be to do something like this:
+> 
+> struct task_struct_anchor {
+> 	struct list_head tsa_list;
+> 	struct list_head tsa_adjust_list;
+> 	atomic_t tsa_ref;  // Or use an appropriate API.
+> 	bool tsa_is_anchor;
+> }
+> 
+> Each task structure would contain one of these, though there are a
+> number of ways to conserve space if needed.
+> 
+> These anchors would be placed perhaps every 1,000 tasks or so.  When a
+> traversal encountered one, it could atomic_inc_not_zero() the reference
+> count, and if that succeeded, exit the RCU read-side critical section and
+> do a cond_resched().  It could then enter a new RCU read-side critical
+> section, drop the reference, and continue.
+> 
+> A traveral might container_of() its way from ->tsa_list to the
+> task_struct_anchor structure, then if ->tsa_is_anchor is false,
+> container_of() its way to the enclosing task structure.
+> 
+> How to maintain proper spacing of the anchors?
+> 
+> One way is to make the traversals do the checking.  If the space between a
+> pair of anchors was to large or too small, it could add the first of the
+> pair to a list to be adjusted.  This list could periodically be processed,
+> perhaps with more urgency if a huge gap had opened up.
+> 
+> Freeing an anchor requires decrementing the reference count, waiting for
+> it to go to zero, removing the anchor, waiting for a grace period (perhaps
+> asynchronously), and only then freeing the anchor.
+> 
+> Anchors cannot be moved, only added or removed.
+> 
+> So it is possible.  But is it reasonable?  ;-)
 
-Is this timer not necessary? any thoughts?
-
-Thanks
-Zqiang
-
-
->  #endif
-> --
-> 2.17.1
->
+Wow! And this will need to be done both for process leaders (p->tasks)
+and for threads (p->thread_node) :-)
