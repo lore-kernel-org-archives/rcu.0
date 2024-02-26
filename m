@@ -1,100 +1,94 @@
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26491B94D
-	for <rcu@vger.kernel.org>; Sun, 25 Feb 2024 21:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4140817;
+	Mon, 26 Feb 2024 03:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708897713; cv=none; b=pWJOSwr5P3fvEf+/PyRE6Ki1aFQ1zp0SXl8aAc5fk2lJVSiCEUsXW/m2d2hZ+J3rnVYf5J1rPuqiP3uxGT9r2naebYxvQFAn/9WsvVfshXJESXP9ZaQ1u7Mu6GXzxUiPPyXRy97EJdstHHL1t8dJavBx/7OObpmk96Ie3QLzfjM=
+	t=1708917892; cv=none; b=YpCVPh2jwMG15n1rRmXfP0YzRcRuV6XMsKlNb3Ty4U1tVFBpojzdzWnEkZvxRlOEvtfhFUih3fOBGyfdeSXDfldmxyzj1sya2HnrJmELpPHAeN3epHiAzs3gLGa9zJSxK9pj9h7WgFAFeSDhu6MRWmJuYZtGXWhTksGtbNWwyWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708897713; c=relaxed/simple;
-	bh=dvUDecwBMflNx4CehdCSDahY5V9l4jB2UPQiq5FVREc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PrGO3lKtdX8cNFIsxe3qkcJpl2fAp1yoZey4wcbRZpsCZb9YsekUILfwa8Ku/zyHxMKtJz02+jKGgURr9rF6K5YR5q0ZUj9A0FY+qkaHztyAXw3X8Rky9V8nnMljwYVejAAM4KC9+u8NTHK3Z8o61sD3yJ/qouZpX33gSEa8sto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Mjt0ivCt; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1708917892; c=relaxed/simple;
+	bh=Jp3jqtB6F7xaFyXjnSbJGnMf3tzGvIxIsZ5MZca7QiA=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=DK1Wg2FLfvShCe0pj6e9DImA/lAfeGQZ67J+m6WKlvazbgBmyVgsfH4Bwt/M28mHjalQTbx1ychFtHyX/TAgKBwlS4NQT9fuws0Xx3EWrlmcSOG1z4ie6TRFmgccTt0B+/VjjRbcUpoucww0u3tPlac31vicAx2HDb9YcEiIKcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TI+7F4xq; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Mjt0ivCt"
-Date: Sun, 25 Feb 2024 16:48:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708897709;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hZLPGWILyQb0uie5XWZz0sri12gIiwEuygESDSHUCVk=;
-	b=Mjt0ivCt7EdkAJ/tpZ4vBCFUaqud0EetWM2nBfj0PDARbuDEYfLiwPCmO+8FQyUf1FXdfK
-	FVg/OoP8xi3mQ8sb+oDtygwMJ6YTysy3H6B6s8jKttLHwjCDctJ7K1/6COxMO8MIW170zO
-	y1pGGRjGU3Mg12gJagPvuo4QwPQgzCU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: David Laight <David.Laight@aculab.com>
-Cc: 'Herbert Xu' <herbert@gondor.apana.org.au>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Thomas Graf <tgraf@suug.ch>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
-	"maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [PATCH 0/1] Rosebush, a new hash table
-Message-ID: <22nvcwzzfq3ae2eva6m43wolfo3b3pit7xsauuux267hxciigi@52zuwg5yorg5>
-References: <20240222203726.1101861-1-willy@infradead.org>
- <Zdk2YgIoAGOEvcJi@gondor.apana.org.au>
- <4a1416fcb3c547eb9612ce07da6a77ed@AcuMS.aculab.com>
- <2s73sed5n6kxg42xqceenjtcwxys4j2r5dc5x4fdtwkmhkw3go@7viy7qli43wd>
- <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TI+7F4xq"
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c19937913fso998155b6e.3;
+        Sun, 25 Feb 2024 19:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708917890; x=1709522690; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aqkuukQYWkULDM9YxCpCSWnr5A2uXAjWxG1aocPkSfI=;
+        b=TI+7F4xqAexSSmimJtZ2xBH1IJHhNF6q7OO02VO4JUePzuEZYXH2+eyocPE2+6ttdz
+         LUZOd4dWNxqIu43bXpVRnlX529Jh46xHjfSlkhmM9Q15DqJvy6vRFyj8PZiXJkiHhOo8
+         EaHWenTcPc+i48XMN+pVOkS6u3e+LOuRMBPnkeM3N15+7UHLo5xaN0+vy6kmt4cY8bYR
+         Q+2AdgAU4/WE0tgXRMsAcuRhRAGR/xtQhue4fmtVENoUzzHaK/ULckvfJtbcfJwNAD3O
+         81IV/ks03hD3SjOZLyUUpuv0noLv/0O8nKS3fRPjelRE0lN9zLa/X1o7TCjtAP5XgGCN
+         UCJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708917890; x=1709522690;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aqkuukQYWkULDM9YxCpCSWnr5A2uXAjWxG1aocPkSfI=;
+        b=sQhczKmTVo9SAz/NLCllmrjR2klvoFRbPbF33JTZv1Mpt52c7eb2TK2pUOedCypxl/
+         cri23Fz+e2hBUmtw0Cco/CroaekzU9qQKupy+34Aj9rdT31ehKHWq1ywHi3H78n7illY
+         e6OLulBuDPHpyRmg6mWtUefbB0u6DeQxLOiPzB9QrrRcOPCz9cFiJEJ3vKpQmOLH4XYF
+         zmckkNvuL6vg6ABYoT+1QPrdj/gnovR+nnwM8C9mLVQ+8gvt55ocu/eU9X83UygAPj0b
+         CnAdozVqDSaI6mpdrKlkTe1cWGWsIIBxXOZEVpydBa4iqUqeaw8Tnx8nnJUmWxJ2XnZX
+         aVwA==
+X-Forwarded-Encrypted: i=1; AJvYcCV6LySvrgCiOfbt09Wevkp6pD9rxg78eurYvDyjxGeDBoud6I9XAMposOBwjGgbzmIvBupZZAX3WXBArK+MdDT48laFDUK2R5n4AJfjihCgTZLRkkbCE6HCo9Z1xCU3c68B
+X-Gm-Message-State: AOJu0YwdWTz1bQln5a2KBMH8oDXuYsTX9BnoOdg2eEY5nnVEL1+dpxV/
+	20K6fOLJMDnrr4MWeRtPqWf/OJFqRe9AR+CN+UZIay0i1BkWI6aD
+X-Google-Smtp-Source: AGHT+IEl9Nr8OFjgMxUxl701ERytHKDwa7TONCAaxBVCpMr1WxwXM0nFILcrKrKt0JH8OCQfmhTjrQ==
+X-Received: by 2002:a05:6808:3988:b0:3c1:a1e8:aa56 with SMTP id gq8-20020a056808398800b003c1a1e8aa56mr2486270oib.17.1708917889715;
+        Sun, 25 Feb 2024 19:24:49 -0800 (PST)
+Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
+        by smtp.gmail.com with ESMTPSA id x29-20020a056a00189d00b006e50e79f155sm1227787pfh.60.2024.02.25.19.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 19:24:49 -0800 (PST)
+From: Zqiang <qiang.zhang1211@gmail.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org
+Cc: qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu-tasks: Fix the comments for tasks_rcu_exit_srcu_stall_timer
+Date: Mon, 26 Feb 2024 11:24:39 +0800
+Message-Id: <20240226032439.26359-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2a6001442b354c2fb5b881c2a9d75895@AcuMS.aculab.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Sun, Feb 25, 2024 at 02:47:45PM +0000, David Laight wrote:
-> From: Kent Overstreet
-> > Sent: 25 February 2024 03:19
-> ..
-> > when I implemented cuckoo (which is more obviously sensitive to a weak
-> > hash function), I had to go with siphash, even jhash wasn't giving me
-> > great reslts. and looking at the code it's not hard to see why, it's all
-> > adds, and the rotates are byte aligned... you want mixed adds and xors
-> > and the rotates to be more prime-ish.
-> > 
-> > right idea, just old...
-> > 
-> > what would be ideal is something more like siphash, but with fewer
-> > rounds, so same number of instructions as jhash. xxhash might fit the
-> > bill, I haven't looked at the code yet...
-> 
-> There is likely to be a point where scanning a list of values
-> for the right hash value is faster than executing a hash function
-> that is good enough to separate them to separate buckets.
+The synchronize_srcu() has been removed by commit("rcu-tasks: Eliminate
+deadlocks involving do_exit() and RCU tasks") in rcu_tasks_postscan.
+This commit therefore fix the comments of tasks_rcu_exit_srcu_stall_timer.
 
-Executing a bunch of alu ops that parallelize nicely is _fast_
-(it's all xors/adds/rotates, chacha20 is a good example of how
-the modern stuff works).
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also, for 2-way cuckoo there's an xor trick so you don't need to compute
-a second hash.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 78d74c81cc24..d5319bbe8c98 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -150,7 +150,7 @@ static struct rcu_tasks rt_name =							\
+ 
+ #ifdef CONFIG_TASKS_RCU
+ 
+-/* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
++/* Report delay of scan exiting tasklist in rcu_tasks_postscan(). */
+ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+ static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
+ #endif
+-- 
+2.17.1
 
-But the key thing about cuckoo is that the loads on lookup _aren't
-dependent_ - they can run in parallel. Every cache miss that goes all
-the way to DRAM is stupidly expensive, remember - hundreds of
-instructions, had you been able to keep the pipeline fed.
-
-> You don't want to scan a linked list because they have horrid
-> cache footprints.
-> The locking is equally horrid - especially for remove.
-> Arrays of pointers ar ethe way forward :-)
-
-Well, maybe; I'm waiting to see fill factor numbers and benchmarks. Fill
-factor was my concern when I was playing around with the concept; I used
-it in a place where the hash table didn't need to be that big, and the
-point was to avoid having to separately allocate the entries (and it
-avoids the hassle of tombstone entries with linear/quadratic probing).
-
-The fact that it requires a second dependent load, because buckets are
-separately allocated, also looks like a big negative to me. I still
-think a good lockless cuckoo hashing implementation ought to beat it.
