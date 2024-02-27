@@ -1,95 +1,114 @@
-Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D2213849F;
-	Tue, 27 Feb 2024 10:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB36817729;
+	Tue, 27 Feb 2024 14:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029601; cv=none; b=FwO8/XnsMtQMbO3nMQBLQql5b025gPMJuX2qw2Bn7ciRa00TSH/XY9V0cEhfYm/JZo7UFU2F/WM8zGSj++kfQHIF5+efFp66qRHQauuSD/JGO1e1IP0FlEOpL5T6VqtcqHQ/Yq5ksIl+Pl83UnipeP8pog9vG5i74l6sahLw7s4=
+	t=1709044650; cv=none; b=YbZOHU4kStzerV/yTtaxzuDMtMwcOawfsWXCe2ASWzb29Hvs7VNJxIN1H09eM1DV609GERm/eDTgMbzWsXlRYpxFqVaGBcGhu8mUSMDU77G0uk8Swt+AbnHEYy3pSnPLAF0tNKOOVUrlmy5Vx7qDgx5RLDCU0zKSlABLGZfyHsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029601; c=relaxed/simple;
-	bh=2V6msSSOGznnB/lFtzfEFRZx43Zk7T3DtjKa16ZisKg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rI6n4HaWk9zcqCVYJhGdoSrwYR8bDuy0Me4D46Pm4JIvDvaBkxNphD/+6cUD+gTURRE5Ya6xfGTNjRU+UniGOIOaj4BWgSmVi2NaJ4/BGBZg0cCrarpY/WESPCmd/BrZU4eg2ksc6N1XxdSYbrCv8ShrVkteLeBKf27vfZIArQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
-From: Daniil Dulov <d.dulov@aladdin.ru>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
-CC: Daniil Dulov <d.dulov@aladdin.ru>, Davidlohr Bueso <dave@stgolabs.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett
-	<josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
-	<jiangshanlai@gmail.com>, Joel Fernandes <joel@joelfernandes.org>,
-	<linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>, David Vernet <void@manifault.com>
-Subject: [PATCH 5.15 1/1] rcutorture: Add missing return and use __func__ in warning
-Date: Tue, 27 Feb 2024 13:22:22 +0300
-Message-ID: <20240227102222.29584-2-d.dulov@aladdin.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240227102222.29584-1-d.dulov@aladdin.ru>
-References: <20240227102222.29584-1-d.dulov@aladdin.ru>
+	s=arc-20240116; t=1709044650; c=relaxed/simple;
+	bh=1pmCi0aoLbtvh8q1FSw3S4VdL7lpSFQUAUvhYlx8DQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MPSddEKMCbsxXEIjnlF3TRT/sbp67uKnoM2Knd+oNcNZlirbXAZbRNa/eh8yR4YMaZ5gjNRbj2xo7O5ZI7KFg5qnWanx0wunF6byc/Abfz998IwjgoxxZUCfnF7buRRLiDTIMBJjFNj1lGhecIxl4c4vSSIEF82IFPx0mSJVXco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eyds4r/Z; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eyds4r/Z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 115DCC433C7;
+	Tue, 27 Feb 2024 14:37:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709044649;
+	bh=1pmCi0aoLbtvh8q1FSw3S4VdL7lpSFQUAUvhYlx8DQE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eyds4r/ZYIenIbutoup39KqYPbXB56SO2F35JRCZSjVTtSJxGVJG89S+bo9ql1XF2
+	 W08OHAMv1vbpPB/mnDzZCIUMAmWgX5ouXBJFdErfqqHb6ynI42M8+CIKItR2UmTW78
+	 aq5HXJIHAmBZJgfgWpMeLjma2znSWjbyhF63Gg/BldwGabFrL3vqba5PXIYFb5UakY
+	 i4CoHnfJLBnJkTc1OY3nUY6hRqllIPy1C2adpTQnQkujQt82AmJq3bUip9Fm+LEqUi
+	 wLWk+FHni3zxgl/5hHfhUu0fEZ8FYFkDFh7ELhLiDfxgyuEQioRTnYhnHR3/Plw8hJ
+	 cY5FAsZOqwOiw==
+Date: Tue, 27 Feb 2024 15:37:26 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Z qiang <qiang.zhang1211@gmail.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <Zd3zptTLlUDCg1L7@localhost.localdomain>
+References: <20240220183115.74124-1-urezki@gmail.com>
+ <20240220183115.74124-3-urezki@gmail.com>
+ <Zd0ZtNu+Rt0qXkfS@lothringen>
+ <CALm+0cUJ9tMsZpOGby_6B6c=XDBn_CJ6=o2WSFafaCwPzp6_4A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EXCH-2016-04.aladdin.ru (192.168.1.104) To
- EXCH-2016-01.aladdin.ru (192.168.1.101)
+In-Reply-To: <CALm+0cUJ9tMsZpOGby_6B6c=XDBn_CJ6=o2WSFafaCwPzp6_4A@mail.gmail.com>
 
-From: David Vernet <void@manifault.com>
+Le Tue, Feb 27, 2024 at 02:39:55PM +0800, Z qiang a écrit :
+> > Can the following race happen?
+> >
+> > CPU 0                                                   CPU 1
+> > -----                                                   -----
+> >
+> > // wait_tail == HEAD1
+> > rcu_sr_normal_gp_cleanup() {
+> >     // has passed SR_MAX_USERS_WAKE_FROM_GP
+> >     wait_tail->next = next;
+> >     // done_tail = HEAD1
+> >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> >     queue_work() {
+> >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> >         __queue_work()
+> >     }
+> > }
+> >
+> >                                                       set_work_pool_and_clear_pending()
+> >                                                       rcu_sr_normal_gp_cleanup_work() {
+> > // new GP, wait_tail == HEAD2
+> > rcu_sr_normal_gp_cleanup() {
+> >     // executes all completion, but stop at HEAD1
+> >     wait_tail->next = HEAD1;
+> >     // done_tail = HEAD2
+> >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> >     queue_work() {
+> >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> >         __queue_work()
+> >     }
+> > }
+> >                                                           // done = HEAD2
+> >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
+> >                                                           // head = HEAD1
+> >                                                           head = done->next;
+> >                                                           done->next = NULL;
+> >                                                           llist_for_each_safe() {
+> >                                                               // completes all callbacks, release HEAD1
+> >                                                           }
+> >                                                       }
+> >                                                       // Process second queue
+> >                                                       set_work_pool_and_clear_pending()
+> >                                                       rcu_sr_normal_gp_cleanup_work() {
+> >                                                           // done = HEAD2
+> >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
+> >
+> > // new GP, wait_tail == HEAD3
+> > rcu_sr_normal_gp_cleanup() {
+> >     // Finds HEAD2 with ->next == NULL at the end
+> >     rcu_sr_put_wait_head(HEAD2)
+> 
+> It seems that we should move rcu_sr_put_wait_head() from
+> rcu_sr_normal_gp_cleanup() to
+> rcu_sr_normal_gp_cleanup_work(), if find wait_head->next == NULL, invoke
+> rcu_sr_put_wait_head() to release wait_head.
 
-commit 80dcee695143255261f30c7cc2a041ba413717a4 upstream.
-
-The rcutorture module has an rcu_torture_writer task that repeatedly
-performs writes, synchronizations, and deletes. There is a corner-case
-check in rcu_torture_writer() wherein if nsynctypes is 0, a warning is
-issued and the task waits to be stopped via a call to
-torture_kthread_stopping() rather than performing any work.
-
-There should be a return statement following this call to
-torture_kthread_stopping(), as the intention with issuing the call to
-torture_kthread_stopping() in the first place is to avoid the
-rcu_torture_writer task from performing any work. Some of the work may even
-be dangerous to perform, such as potentially causing a #DE due to
-nsynctypes being used in a modulo operator when querying for sync updates
-to issue.
-
-This patch adds the missing return call.  As a bonus, it also fixes a
-checkpatch warning that was emitted due to the WARN_ONCE() call using the
-name of the function rather than __func__.
-
-Signed-off-by: David Vernet <void@manifault.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
----
- kernel/rcu/rcutorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index d820ef615475..a76399bd43b9 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1165,7 +1165,7 @@ rcu_torture_writer(void *arg)
- 			 " GP expediting controlled from boot/sysfs for %s.\n",
- 			 torture_type, cur_ops->name);
- 	if (WARN_ONCE(nsynctypes == 0,
--		      "rcu_torture_writer: No update-side primitives.\n")) {
-+		      "%s: No update-side primitives.\n", __func__)) {
- 		/*
- 		 * No updates primitives, so don't try updating.
- 		 * The resulting test won't be testing much, hence the
-@@ -1173,6 +1173,7 @@ rcu_torture_writer(void *arg)
- 		 */
- 		rcu_torture_writer_state = RTWS_STOPPING;
- 		torture_kthread_stopping("rcu_torture_writer");
-+		return 0;
- 	}
- 
- 	do {
--- 
-2.25.1
-
+Well, rcu_sr_normal_gp_cleanup_work() already put all the wait heads
+that are _after_ srs_done_tail. But it can't put the srs_done_tail itself
+without introducing even worse races...
