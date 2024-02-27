@@ -1,134 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB18B1859;
-	Tue, 27 Feb 2024 00:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4A4535A0;
+	Tue, 27 Feb 2024 06:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708993277; cv=none; b=dDYwd/bJo4q5msuCAU3svpd0lswqdqsWC312PUdvp2GzFdxSgIly3Ly27BmI1rj2RV51mJTkhKfmfarc8V8eefbPCfaozJMY4l5XLSK4mfL5Ima5aTN66p1jWv1vJHrvK1q5kVSGzyIC82edTxr2zyfkS5CWIQDgKDwWkpce+sY=
+	t=1709014093; cv=none; b=FCMywgxmozF8ODVjLbBGL2+YAAQnJ0RlpIrBH7uYjPTXhYvQ5XIWYkJu0vZJ2e6/iYahycun4EYcAmULhUdJ2JlFvDSCPOqvVtQn/NtdzoC6XCvdEsIST6ermFPoLWxDtJM+Pr5a7lkZLPq9d5+xr8M5LpjPNwSP+GIZ4so7jMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708993277; c=relaxed/simple;
-	bh=8NaJg0kgxbhEDKrN/5IITu2XOQzRyVbnI1VrY65Y4SI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qT3phgQi6/IUqSnpVEjhMHeoG0AR0KXUcTPP4HUZdi/qzXA9zyok8ke2KlJkDkHyi/eFzp/ohtDuYdNKO6Nh+Egvd0UGNzYYMpDJRXlMLARC/VowrNKoG87rpqNqXtQ1ZOEposguc4OHVCmu+oG4f8wZCOa9gXrgMZdzDV0EfMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kpt4X6zd; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1709014093; c=relaxed/simple;
+	bh=9qCOs1IBx6ELRDSNmZ3P9R6G4riYikUgqkqb3BP9i5A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WB900NWiFaNPZmFwkFNRDogFg2BIp5MAiCv10OlY6nYkHTAtVLOkx2ZfuxWQ9SsqrJlgivE+Vo66t3Y+QnVX9nmeHcTa3xJkPTc12HgWrSKE9J2I5rBh4BkIREPiW29iK7KKKV9Es2pbzdcheyxVHtF0JvCVK52ZKXLSOHb8Ar0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nGr12HtJ; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kpt4X6zd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE9EC433F1;
-	Tue, 27 Feb 2024 00:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708993277;
-	bh=8NaJg0kgxbhEDKrN/5IITu2XOQzRyVbnI1VrY65Y4SI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Kpt4X6zd6vBGkK34OLhy32XndWxyOgYCqRHFb+cPvtbSkooMCCdhP0/XOpLFGTgQG
-	 KXtFtojWCOS7qzr/uRY5fylOi+Is52NU7T+zDPAETFvZt/h/YKrFMjGPiOKC0GPvyW
-	 ljHUNRRMByzsXZXQAOoJCZvcW/7qQQytIqLptrgiRzBdMrEKYNX0y+X+uY3R7ym0zj
-	 ePqX4PiUi9qfoPMWJ7buWd56t6LRAARsJvDjHrqk2btCHkuCWVIKwANV7DSqC31Fmj
-	 m5uwN5xDJUtVT0qruNr60wckE8zuwWIYuSCGqIDZ5gSjfKG8v6FNY7IV+QuZILppWA
-	 lvBfyCGDCGW3w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BB9EFCE098C; Mon, 26 Feb 2024 16:21:16 -0800 (PST)
-Date: Mon, 26 Feb 2024 16:21:16 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	Marcus Seyfarth <m.seyfarth@gmail.com>,
-	Tor Vic <torvic9@mailbox.org>
-Subject: Re: [PATCH 5/6] rcu/nocb: Fix WARN_ON_ONCE() in the
- rcu_nocb_bypass_lock()
-Message-ID: <20c65121-3a78-4c48-87d8-adc7589f8f74@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240201014100.3204532-1-boqun.feng@gmail.com>
- <20240201014100.3204532-6-boqun.feng@gmail.com>
- <12387583.O9o76ZdvQC@natalenko.name>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nGr12HtJ"
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3342561a12.1;
+        Mon, 26 Feb 2024 22:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709014091; x=1709618891; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=G7jNaNu3KQ3lMgFqItSxvaLHpUG6FQQfqYbQAo7X+vY=;
+        b=nGr12HtJuDKz5WH0ShCMwqrirUFEChiRQKO6gOpoLjnidHIZDUlpW/wZqyIWbHBpDA
+         ssMD3A1JsrvmVl+EY2pyOjbYa5mZG9hnUu9brD0XxDC75bNP50TtnMlHPqqrkMcLMk16
+         +VW4j8jd5q/E3i3iFcVGT7Ew7FkzpM4ie9JkZvlS7q15HmqTHVUnGfp9S6TH0jH1WJA0
+         /hjNYQyTjNh9g7WD1aNvj7Kz3IGd7DSS7N7DP2JS7vZ8kQFNNhXCqU7BB+CTYRk14Qpj
+         UUo8CQC6J0XDtn9vfdERdDAEf+/PGHZ6hfLK27bcsxDDuHPltDGgvUZ4+XHU1g9qFzcL
+         dqyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709014091; x=1709618891;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G7jNaNu3KQ3lMgFqItSxvaLHpUG6FQQfqYbQAo7X+vY=;
+        b=UfrPmnAthiLucS9VstKrXdYDWtU64FGrklANFZvE6Ag02sIFR6oCxDajhk34IoNxi5
+         Bz10WlBmZwyNifRV5CYQ9WCdEwZGoPvxlz7eO/iCbjHmYkf86/jGqlI268ZDYGs5FVCQ
+         BTfZwu0bd2G11gCb3dKXHDkWVbY+Z3TVDauN3PQW4HE05IvkBhknSap8ErJgc6du0jwI
+         jbUOjl/Dk38uuYbNAySpPeX1f2BVskoBWeFRLssZE9ozFN5q/pKwzS4UC66fCCcQKASc
+         tJH+7dnnxenMlnNgzQemUjBXMd8hU+C9QTuN+DeK2KN2AvY/TsdrWPUa5BWteD7xEo7p
+         dQQw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8HYvaSFjej1cfF59c06swtrLHJNtyLKIM7c3FENTH6X+G2CVr9IxxBJlUpdRxbiGK+i19hyOCsQkh8GchvM/kJGvjYur4WvBZBWwV+/HOjvWQIbJW047la3FK7F6QDIqd
+X-Gm-Message-State: AOJu0YwqsV/X4RCaJUDOPLY04HDLn1yhg4DnDWuqPJ0+7xHSbgxFVIsL
+	I3ovb4w1AHTwE8cvBd0RqpvvClp9qioZl0nzN2VO2WSwqxs8dY5gYoekxd/pGBnPiuIS2dlhKJ+
+	Ue08fkrNuW37Z1VgL0BLA9eWKW/JRJlGfw70=
+X-Google-Smtp-Source: AGHT+IEGiqSye3NJtw1Bu20ESldnefsEoqZj3JgyLBM3O+Uw8pB7V55KDHTM1T3Lcd3dfblvaB63NFAE+xzK/Duz9IM=
+X-Received: by 2002:a05:6a20:d805:b0:19e:9adc:b274 with SMTP id
+ iv5-20020a056a20d80500b0019e9adcb274mr1418017pzb.41.1709014091592; Mon, 26
+ Feb 2024 22:08:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <12387583.O9o76ZdvQC@natalenko.name>
+References: <20240226032439.26359-1-qiang.zhang1211@gmail.com>
+ <CALm+0cXvWG2cP2sECzF9JGyUvvp0bBgSXA8NbGf896iMQEcCuA@mail.gmail.com> <ec57f86d-936c-4709-aeda-d9f57a8fd7aa@paulmck-laptop>
+In-Reply-To: <ec57f86d-936c-4709-aeda-d9f57a8fd7aa@paulmck-laptop>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Tue, 27 Feb 2024 14:08:00 +0800
+Message-ID: <CALm+0cWESKy4xCg9Eg4-6OoxPcQ102F4TY5C80jgugrmM3ptFA@mail.gmail.com>
+Subject: Re: [PATCH] rcu-tasks: Fix the comments for tasks_rcu_exit_srcu_stall_timer
+To: paulmck@kernel.org
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org, 
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Feb 24, 2024 at 05:30:29PM +0100, Oleksandr Natalenko wrote:
-> Hello.
-> 
-> On čtvrtek 1. února 2024 2:40:57 CET Boqun Feng wrote:
-> > From: Zqiang <qiang.zhang1211@gmail.com>
-> > 
-> > For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
-> > CONFIG_RCU_LAZY=y, the following scenarios will trigger WARN_ON_ONCE()
-> > in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended() functions:
-> > 
-> >         CPU2                                               CPU11
-> > kthread
-> > rcu_nocb_cb_kthread                                       ksys_write
-> > rcu_do_batch                                              vfs_write
-> > rcu_torture_timer_cb                                      proc_sys_write
-> > __kmem_cache_free                                         proc_sys_call_handler
-> > kmemleak_free                                             drop_caches_sysctl_handler
-> > delete_object_full                                        drop_slab
-> > __delete_object                                           shrink_slab
-> > put_object                                                lazy_rcu_shrink_scan
-> > call_rcu                                                  rcu_nocb_flush_bypass
-> > __call_rcu_commn                                            rcu_nocb_bypass_lock
-> >                                                             raw_spin_trylock(&rdp->nocb_bypass_lock) fail
-> >                                                             atomic_inc(&rdp->nocb_lock_contended);
-> > rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
-> >  WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
-> >                             |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
-> > 
-> > Reproduce this bug with "echo 3 > /proc/sys/vm/drop_caches".
-> > 
-> > This commit therefore uses rcu_nocb_try_flush_bypass() instead of
-> > rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan().  If the nocb_bypass
-> > queue is being flushed, then rcu_nocb_try_flush_bypass will return
-> > directly.
-> > 
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> >  kernel/rcu/tree_nocb.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index 9e8052ba14b9..ffa69a5e18f4 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -1391,7 +1391,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> >  			rcu_nocb_unlock_irqrestore(rdp, flags);
-> >  			continue;
-> >  		}
-> > -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
-> > +		rcu_nocb_try_flush_bypass(rdp, jiffies);
-> >  		rcu_nocb_unlock_irqrestore(rdp, flags);
-> >  		wake_nocb_gp(rdp, false);
-> >  		sc->nr_to_scan -= _count;
-> > 
-> 
-> Does this fix [1] [2]?
-> 
-> Thank you.
-> 
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=217948
-> [2] https://lore.kernel.org/lkml/8461340f-c7c8-4e1e-b7fa-a0e4b9a6c2a8@gmail.com/
+>
+> On Mon, Feb 26, 2024 at 11:28:57AM +0800, Z qiang wrote:
+> > >
+> > > The synchronize_srcu() has been removed by commit("rcu-tasks: Eliminate
+> > > deadlocks involving do_exit() and RCU tasks") in rcu_tasks_postscan.
+> > > This commit therefore fix the comments of tasks_rcu_exit_srcu_stall_timer.
+> > >
+> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > > ---
+> > >  kernel/rcu/tasks.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > > index 78d74c81cc24..d5319bbe8c98 100644
+> > > --- a/kernel/rcu/tasks.h
+> > > +++ b/kernel/rcu/tasks.h
+> > > @@ -150,7 +150,7 @@ static struct rcu_tasks rt_name =                                                   \
+> > >
+> > >  #ifdef CONFIG_TASKS_RCU
+> > >
+> > > -/* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
+> > > +/* Report delay of scan exiting tasklist in rcu_tasks_postscan(). */
+> > >  static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
+> > >  static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
+> >
+> > Is this timer not necessary? any thoughts?
+>
+> We have preemption points in the list traversals, and things like mutex
+> contention on the do_exit() path could result in extremely long lists,
+> so I believe we do need the timer.
+>
+> But what did you have in mind?
 
-It might, but why not apply it to the exact kernel version on which the
-bug appeared and see if it prevents it?
+Thanks for the explanation,  I ignored the scenario where the
+lists might be very long :)
 
-							Thanx, Paul
+Thanks
+Zqiang
+
+>
+>                                                         Thanx, Paul
+>
+> > Thanks
+> > Zqiang
+> >
+> >
+> > >  #endif
+> > > --
+> > > 2.17.1
+> > >
