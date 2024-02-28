@@ -1,163 +1,238 @@
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1106D36103;
-	Wed, 28 Feb 2024 09:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4895E7350F
+	for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 11:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112497; cv=none; b=arJn3KSLalsofvCC4ruXFpL7qKIynMLn4pZWX3dVyjpb/d1xppq4g34Ni8QFfs2qYVkOZgw7l4D2v4pDZiyLxLvz1u5/LwfDRbzYhDps5+RV0XlUqvKVfNuhfrKRmFWfzcauxEJBzofzy6EM4pZwRAdkJXf+gI5y1slAe5Qe9yc=
+	t=1709121061; cv=none; b=aqQnHC/INF5CaIUMdWrbuPPCrB1T06jpjuY8LAywVW/G2/G8rRoB5BK99rxDN+xa8tRDa+zGbVIRtx8PfoQMIitA1MRhkePKETftbZGOjnzWZwpRh5Hi04dxRf0zAFoGj9NnMy7Qc1QM9vWihPyx8NWBbpTirgA1hMulT3gUfZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112497; c=relaxed/simple;
-	bh=U9dihVgHrwLV647kosEhX6QDdv2LPSGr7BqD90UgUyg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q1hyc98FI2vjfx8YFQu/m9P/7N2u59OeagBJytgQA4OBAuR8FUEg6r+Mp35xQYWdQJbst2dMc7Uu5o6MrN5qeos7u7RLxmjD2gBB1N9lYUwSeFD2safqAP+YCycJM92NSOmHedtCSd9fBNekUhfTpbEfUOF5U0NPORZuT7ee4cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCDM0jy7; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1709121061; c=relaxed/simple;
+	bh=NUqRZXSlaPreveGzpaaoGjZfPnYAgtt8dJUE8yNdqGk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=BVKvMI3h3Aro9MvAufxujG2P+MxgnYL+iDCYQdeTZKnIfBDhXS4ufMfY6d1OYZuswKjqQKuj8XRlfE5L7Aulp/4FXY9Cjr6LaZN6FA5MCqxO1smvqzgbduPJoV+oDt+MAZSzGBGn39p6oY0Ky8JforHz86jW35Nh57XgPTYWU7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zxc6yBkh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCDM0jy7"
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so84943051fa.0;
-        Wed, 28 Feb 2024 01:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709112494; x=1709717294; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGK72162MdnLwFLf7GIA1kmtXhXPTiOIV5c3HATo7ik=;
-        b=nCDM0jy7giOGSP8eleXSuBhe5CScHUjXCDL+dM+xZ4rO2UXQpDk1SzMOhBhId36kYU
-         iYPS6Nu3pI2gTjrpP5zpSk+GiIq3YhS9gzDmO4p6YDqRt1nOqaUlf/It91+2W1wf/ZKn
-         qNxPBpD80S1ZWBvcYbHgp4tk09tRemomKHyWXAb5SgEFAIBtCOfHEHFJeG2ypCakrXjv
-         7AbROB13fWweAKsFXQJO21zVk2SvtWXamP1Uw9Zqyswckl2uNBmjxsTkFEksbUuxWIuy
-         Vq4NellXXB5ufaNFdL71T+ZI5GqVFVdQ+pt04/bPRDX4nosJFyip1y2c6Ptu+lBzvnYR
-         5DyQ==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zxc6yBkh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709121057;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u+waIFhwixtYlk9hyKlLzfQD0m8wRi5/b3f1cwvn4VQ=;
+	b=Zxc6yBkh4JP9qWBqR5O1oXFrf05g8Kx3Z/aPm3ss9zQcZnDRYlT+4TSLEexa0JSrdKBoJB
+	aHMw6tLSwbn6/Du9YAaXtmiIOd2aREmWDetpChaWqTF2ctVNWFqB/wDGn0WaNuX4kfWQ8y
+	tN0NLJfx/OQCp6qGU7+PRZvCDsslldo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-345-dJ9YS9hGNTGeGJqQu61pFQ-1; Wed, 28 Feb 2024 06:50:56 -0500
+X-MC-Unique: dJ9YS9hGNTGeGJqQu61pFQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a3ecd8d3a8dso253121866b.2
+        for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 03:50:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709112494; x=1709717294;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oGK72162MdnLwFLf7GIA1kmtXhXPTiOIV5c3HATo7ik=;
-        b=g8ZIzg2uCgnCaKOECbezBULtnuI7tTPLOiOzh0cfq5tMa86FSD6GXYioVWSlKZjgoU
-         6s5tL7jE6WMi3a2bfoBbGhTpeu8lqTcjb4GW0Vl7mINVSeutzp2b84MGeOirQl4d0LKV
-         ZENdTXbAjMpy14M52CUP71JySyAA3xBB++KZ0975BnPdP6M5SPV6aVjD4ssv5LsupIqz
-         nij/23NjAw6bdLEaweI1b6HfbQODoSxIuGEa8hGZmX6HTyOHkGcUPwg0vGD26fPuyOkr
-         VT9GecbC08c91AEcTbgHY5atR5T70kW/cQHBX8yy+V3lVuwFcwxMTZpwuby1k08+x3sb
-         vg/w==
-X-Forwarded-Encrypted: i=1; AJvYcCVAeeQIWcyJFjL4KxriryEyNaPG+ReVcdHZgNV2ZlWNlKTB6EqYCON5pfoRY1Vq3GoiXHDDkYfTIvn1pAmveta3a/P609IL4FCsOswk9I5C+EAHJ07n8MInVfW76I/14Cl5
-X-Gm-Message-State: AOJu0YwbzMnxFaPWxYd/P3I5hGCD39KupTQZji/YHp/f7ChKfeAt7DWd
-	F5nJdY3nR1pb75tSUvECMni0Zo0Bjb8h5ueAXs97l/CqOFAAyF4g
-X-Google-Smtp-Source: AGHT+IF7bSJ7qwbMinklPhUTqQyYaA8Y4QFrquCejoltWNYZsBBYAbcVEkNCwF2ZLB7WYDxGgTsP/Q==
-X-Received: by 2002:a05:651c:231d:b0:2d2:3db6:b168 with SMTP id bi29-20020a05651c231d00b002d23db6b168mr6531995ljb.14.1709112493868;
-        Wed, 28 Feb 2024 01:28:13 -0800 (PST)
-Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
-        by smtp.gmail.com with ESMTPSA id w18-20020a2ea3d2000000b002d25c81fb30sm1532737lje.94.2024.02.28.01.28.12
+        d=1e100.net; s=20230601; t=1709121055; x=1709725855;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u+waIFhwixtYlk9hyKlLzfQD0m8wRi5/b3f1cwvn4VQ=;
+        b=xTzxZQZakvjD/f6Rj56xySSMELgIn2NBDTGomcOgjNDeipz2mPIq6TG2uOgWupxti9
+         7Kkd9JYXSflXd6TUfI68Xiz+7+Otn0+FRQ01cuaTxhfHVul/Cdcq+DA34X6x2vYF3AQu
+         Zvd9vp5B7tjY344aEOg8As/Vs33I/k3RiLMv32PysIQfnTJUFpqQ97eiqOtj66oto4ki
+         lY3NrKSs/lUUD5ZWsxrePH5AlCN0IbsksjyPtEalxKhu6oQXGosAJW6PaIT7UCc6dUW9
+         NuAyZxqFZU6WOYSIvqywfpQILvmA4z1Cjf6hqIBaNuX4n6L5W/uqvBwcz96ikXukgVrJ
+         XzGg==
+X-Forwarded-Encrypted: i=1; AJvYcCVB4s7VUikruCheIGMbovN7lFSa+rSF9Z+ht8NipqkmRHMLmvHbJF4oAX7ARKr8TyOuclWuJlN9PjVGH1EmN2vsI4SP
+X-Gm-Message-State: AOJu0YxSYuxNlKIfxxmUAxQuf8b7BTL2MVx4/0IfBlJ/A2YTfwZPtNYH
+	bfx+4sDlf0sXLoc0SXVqwkg6Wvasy0MTIcKG4zLLi1cEMzXWgukSW470Cx6j5r3U2u/hy/H21ZM
+	quARMp4JGQASdlAsujEYoH9VGJJZLOVEamYT+0dW4iof7Y4XysQ==
+X-Received: by 2002:a17:906:38c2:b0:a43:2255:2241 with SMTP id r2-20020a17090638c200b00a4322552241mr6733853ejd.53.1709121055196;
+        Wed, 28 Feb 2024 03:50:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHQvZvyolhRnqLocsVj00UxJ4E1FTjOFdA2kV4qae3vZfPoEtr8rbrzi4ifxNrCaNvgxSYuzw==
+X-Received: by 2002:a17:906:38c2:b0:a43:2255:2241 with SMTP id r2-20020a17090638c200b00a4322552241mr6733843ejd.53.1709121054834;
+        Wed, 28 Feb 2024 03:50:54 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id vx6-20020a170907a78600b00a3edde33e7esm1765156ejc.99.2024.02.28.03.50.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 01:28:13 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 28 Feb 2024 10:28:11 +0100
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <Zd78qzAGeriKUxBi@pc636>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <c8182a5a-e804-4fcc-a6a5-bb121260e6a6@joelfernandes.org>
+        Wed, 28 Feb 2024 03:50:53 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 5EB1A112E709; Wed, 28 Feb 2024 12:50:53 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: paulmck@kernel.org, Eric Dumazet <edumazet@google.com>
+Cc: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, Simon Horman
+ <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang
+ <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>, Hannes
+ Frederic Sowa <hannes@stressinduktion.org>, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+In-Reply-To: <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+ <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+ <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 28 Feb 2024 12:50:53 +0100
+Message-ID: <87edcwerj6.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8182a5a-e804-4fcc-a6a5-bb121260e6a6@joelfernandes.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 03:51:03PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 2/20/2024 1:31 PM, Uladzislau Rezki (Sony) wrote:
-> > A call to a synchronize_rcu() can be optimized from a latency
-> > point of view. Workloads which depend on this can benefit of it.
-> > 
-> > The delay of wakeme_after_rcu() callback, which unblocks a waiter,
-> > depends on several factors:
-> > 
-> > - how fast a process of offloading is started. Combination of:
-> >     - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
-> >     - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
-> >     - other.
-> > - when started, invoking path is interrupted due to:
-> >     - time limit;
-> >     - need_resched();
-> >     - if limit is reached.
-> > - where in a nocb list it is located;
-> > - how fast previous callbacks completed;
-> > 
-> > Example:
-> > 
-> > 1. On our embedded devices i can easily trigger the scenario when
-> > it is a last in the list out of ~3600 callbacks:
-> > 
-> > <snip>
-> >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> > ...
-> >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-> >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-> >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> > <snip>
-> > 
-> > 2. We use cpuset/cgroup to classify tasks and assign them into
-> > different cgroups. For example "backgrond" group which binds tasks
-> > only to little CPUs or "foreground" which makes use of all CPUs.
-> > Tasks can be migrated between groups by a request if an acceleration
-> > is needed.
-> > 
-> > See below an example how "surfaceflinger" task gets migrated.
-> > Initially it is located in the "system-background" cgroup which
-> > allows to run only on little cores. In order to speed it up it
-> > can be temporary moved into "foreground" cgroup which allows
-> > to use big/all CPUs:
-> > 
-> > cgroup_attach_task():
-> >  -> cgroup_migrate_execute()
-> >    -> cpuset_can_attach()
-> >      -> percpu_down_write()
-> >        -> rcu_sync_enter()
-> >          -> synchronize_rcu()
-> 
-> We should do this patch but I wonder also if cgroup_attach_task() usage of
-> synchronize_rcu() should actually be using the _expedited() variant (via some
-> possible flag to the percpu rwsem / rcu_sync).
-> 
-> If the user assumes it a slow path, then usage of _expedited() should probably
-> be OK. If it is assumed a fast path, then it is probably hurting latency anyway
-> without the enablement of this patch's rcu_normal_wake_from_gp.
-> 
-> Thoughts?
-> 
-How i see it, the rcu_normal_wake_from_gp is disabled so far. We need to
-work on this further to have it on by default. But we will move toward
-this.
+"Paul E. McKenney" <paulmck@kernel.org> writes:
 
+> On Tue, Feb 27, 2024 at 05:44:17PM +0100, Eric Dumazet wrote:
+>> On Tue, Feb 27, 2024 at 4:44=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wr=
+ote:
+>> >
+>> > We noticed task RCUs being blocked when threaded NAPIs are very busy in
+>> > production: detaching any BPF tracing programs, i.e. removing a ftrace
+>> > trampoline, will simply block for very long in rcu_tasks_wait_gp. This
+>> > ranges from hundreds of seconds to even an hour, severely harming any
+>> > observability tools that rely on BPF tracing programs. It can be
+>> > easily reproduced locally with following setup:
+>> >
+>> > ip netns add test1
+>> > ip netns add test2
+>> >
+>> > ip -n test1 link add veth1 type veth peer name veth2 netns test2
+>> >
+>> > ip -n test1 link set veth1 up
+>> > ip -n test1 link set lo up
+>> > ip -n test2 link set veth2 up
+>> > ip -n test2 link set lo up
+>> >
+>> > ip -n test1 addr add 192.168.1.2/31 dev veth1
+>> > ip -n test1 addr add 1.1.1.1/32 dev lo
+>> > ip -n test2 addr add 192.168.1.3/31 dev veth2
+>> > ip -n test2 addr add 2.2.2.2/31 dev lo
+>> >
+>> > ip -n test1 route add default via 192.168.1.3
+>> > ip -n test2 route add default via 192.168.1.2
+>> >
+>> > for i in `seq 10 210`; do
+>> >  for j in `seq 10 210`; do
+>> >     ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport =
+5201
+>> >  done
+>> > done
+>> >
+>> > ip netns exec test2 ethtool -K veth2 gro on
+>> > ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
+>> > ip netns exec test1 ethtool -K veth1 tso off
+>> >
+>> > Then run an iperf3 client/server and a bpftrace script can trigger it:
+>> >
+>> > ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+>> > ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 1=
+00 >/dev/null&
+>> > bpftrace -e 'kfunc:__napi_poll{@=3Dcount();} interval:s:1{exit();}'
+>> >
+>> > Above reproduce for net-next kernel with following RCU and preempt
+>> > configuraitons:
+>> >
+>> > # RCU Subsystem
+>> > CONFIG_TREE_RCU=3Dy
+>> > CONFIG_PREEMPT_RCU=3Dy
+>> > # CONFIG_RCU_EXPERT is not set
+>> > CONFIG_SRCU=3Dy
+>> > CONFIG_TREE_SRCU=3Dy
+>> > CONFIG_TASKS_RCU_GENERIC=3Dy
+>> > CONFIG_TASKS_RCU=3Dy
+>> > CONFIG_TASKS_RUDE_RCU=3Dy
+>> > CONFIG_TASKS_TRACE_RCU=3Dy
+>> > CONFIG_RCU_STALL_COMMON=3Dy
+>> > CONFIG_RCU_NEED_SEGCBLIST=3Dy
+>> > # end of RCU Subsystem
+>> > # RCU Debugging
+>> > # CONFIG_RCU_SCALE_TEST is not set
+>> > # CONFIG_RCU_TORTURE_TEST is not set
+>> > # CONFIG_RCU_REF_SCALE_TEST is not set
+>> > CONFIG_RCU_CPU_STALL_TIMEOUT=3D21
+>> > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=3D0
+>> > # CONFIG_RCU_TRACE is not set
+>> > # CONFIG_RCU_EQS_DEBUG is not set
+>> > # end of RCU Debugging
+>> >
+>> > CONFIG_PREEMPT_BUILD=3Dy
+>> > # CONFIG_PREEMPT_NONE is not set
+>> > CONFIG_PREEMPT_VOLUNTARY=3Dy
+>> > # CONFIG_PREEMPT is not set
+>> > CONFIG_PREEMPT_COUNT=3Dy
+>> > CONFIG_PREEMPTION=3Dy
+>> > CONFIG_PREEMPT_DYNAMIC=3Dy
+>> > CONFIG_PREEMPT_RCU=3Dy
+>> > CONFIG_HAVE_PREEMPT_DYNAMIC=3Dy
+>> > CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=3Dy
+>> > CONFIG_PREEMPT_NOTIFIERS=3Dy
+>> > # CONFIG_DEBUG_PREEMPT is not set
+>> > # CONFIG_PREEMPT_TRACER is not set
+>> > # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+>> >
+>> > An interesting observation is that, while tasks RCUs are blocked,
+>> > related NAPI thread is still being scheduled (even across cores)
+>> > regularly. Looking at the gp conditions, I am inclining to cond_resched
+>> > after each __napi_poll being the problem: cond_resched enters the
+>> > scheduler with PREEMPT bit, which does not account as a gp for tasks
+>> > RCUs. Meanwhile, since the thread has been frequently resched, the
+>> > normal scheduling point (no PREEMPT bit, accounted as a task RCU gp)
+>> > seems to have very little chance to kick in. Given the nature of "busy
+>> > polling" program, such NAPI thread won't have task->nvcsw or task->on_=
+rq
+>> > updated (other gp conditions), the result is that such NAPI thread is
+>> > put on RCU holdouts list for indefinitely long time.
+>> >
+>> > This is simply fixed by mirroring the ksoftirqd behavior: after
+>> > NAPI/softirq work, raise a RCU QS to help expedite the RCU period. No
+>> > more blocking afterwards for the same setup.
+>> >
+>> > Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop supp=
+ort")
+>> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+>> > ---
+>> >  net/core/dev.c | 4 ++++
+>> >  1 file changed, 4 insertions(+)
+>> >
+>> > diff --git a/net/core/dev.c b/net/core/dev.c
+>> > index 275fd5259a4a..6e41263ff5d3 100644
+>> > --- a/net/core/dev.c
+>> > +++ b/net/core/dev.c
+>> > @@ -6773,6 +6773,10 @@ static int napi_threaded_poll(void *data)
+>> >                                 net_rps_action_and_irq_enable(sd);
+>> >                         }
+>> >                         skb_defer_free_flush(sd);
+>
+> Please put a comment here stating that RCU readers cannot cross
+> this point.
+>
+> I need to add lockdep to rcu_softirq_qs() to catch placing this in an
+> RCU read-side critical section.  And a header comment noting that from
+> an RCU perspective, it acts as a momentary enabling of preemption.
 
-> Then it becomes a matter of how to plumb the expeditedness down the stack.
-> 
-> Also, speaking of percpu rwsem, I noticed that percpu refcounts don't use
-> rcu_sync. I haven't looked closely why, but something I hope to get time to look
-> into is if it can be converted over and what benefits would that entail if any.
-> 
-> Also will continue reviewing the patch. Thanks.
-> 
-Thanks.
+OK, so one question here: for XDP, we're basically treating
+local_bh_disable/enable() as the RCU critical section, cf the discussion
+we had a few years ago that led to this being documented[0]. So why is
+it OK to have the rcu_softirq_qs() inside the bh disable/enable pair,
+but not inside an rcu_read_lock() section?
 
---
-Uladzislau Rezki
+Also, looking at the patch in question:
+
+>> > +                       if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+>> > +                               rcu_softirq_qs();
+>> > +
+>> >                         local_bh_enable();
+
+Why does that local_bh_enable() not accomplish the same thing as the qs?
+
+-Toke
+
+[0] https://lore.kernel.org/bpf/20210624160609.292325-6-toke@redhat.com/
+
