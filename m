@@ -1,174 +1,115 @@
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 761281E890
-	for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 16:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77E73FBB9;
+	Wed, 28 Feb 2024 17:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709138668; cv=none; b=qZ4Mks2OxU/fnYzz6CUdoSvW85whaaD1dLSIHYZb6ggA3YDmtvVFwHwr/ZKKWNvv7mO8PtYqcFkBjN9D5EgbyhmamqkvInRfIO1jEXARMApm/LhTK1lBB1gqCAfmMU6Gu9plTcndXYlu6D5pBrMds9Ma3O7iNOlDJJicixdV5qM=
+	t=1709140726; cv=none; b=JUi7WGAsQoPh2yzLn57yXqvuNPt8zQJrbVXhIb9YeDjYgIJgW5dMejqMjmDVsYadc0thg8epEeqs7pZ5k/9bXpvzAkGyfQRipFM+86u05dgo7a7QFqnVL/vQbmHslFJP/OjBG1HYk8W+mhK4M7pOu4Ibx4jvwJY7FcO/suzxDaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709138668; c=relaxed/simple;
-	bh=KJlhzIPR/vjW9vKySj9E3Vpnv5RoXvud7GTILjlLqx8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=mMqzgpwgcADzMVvrzUcTBlJPbCU5SGQxKtfYzZRJVn7trgQJUzGVmxuefMsE8j8kMIhCJsPdPJY+wN6hnenRmaWazzpdbycy/WIQfjej+R/bdcR3O1U9JgO+Kr5kCqz7vooUO7f3Fw49OltA7Ebkufm9hQQ0bVAAqWVzvzEkNm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yClr7yzr; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1709140726; c=relaxed/simple;
+	bh=7Np/zr7DLGjyYYuEcCZgtLSlELCkIkd/WVEd69z0kMc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hlNhS5cv4yPn2aaKHaYgbeTUSzgNAYC11WAM7qpT5Ze5wk9Lig2uUDIlUtOFAhW+LeJBDjxvVhsR7bwN5w6H/J9/dwa9ovm8df6gOObxeIJtoa3FJx3ZZ3uCoUFAOBeSebsxLNBSK9a1JL4MsH42zhEP8O/BdTvI22Kk4+LiGO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VAX+x29n; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yClr7yzr"
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7c79664c71fso34330939f.0
-        for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 08:44:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709138664; x=1709743464; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k4XRPdwxUwqws5YY4VvPNG/LxgQfuluLcLEsy4IUoCQ=;
-        b=yClr7yzrDC/SWzZyqDUnt3982p6KQZDRIsPI6bZTF/geYXuK4fIGinTnJ8z9IHVMDT
-         7ZRwm1Qa1Yy85NtRLSSQ2Ckug0Tm7zfk29oWofuPR4oTwMsTl5t4pgzLS+auIrjcXlIW
-         Z4fZyTquIOuTkQGpKKAbPShN9H8kJS+KPoFhY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709138664; x=1709743464;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k4XRPdwxUwqws5YY4VvPNG/LxgQfuluLcLEsy4IUoCQ=;
-        b=aEW/0oaD9P2A7hs2pfhsVzrNTqI1DTxL76ed6go2s3fTtc1miB2SnEaAKJGZ07gjUF
-         6pYES92muClnb2ql5c2NoRWaYw+pVnvXUMKsqRXJkY+utXdgR4yjHzp4XflOsqe1Z3wd
-         jt4h7xMFXgpy/B4274HSJ1HhD0FjpmYYOe69RbwjvuWlDDF+Btoqi1GYn+tt1ZzibooB
-         MLMetV5LrG0UbB9HCGgti4oLDrhxDjTkJUA9ETweiMBnn2u4BiEOHbFTPbtiwO8kb5mo
-         bnr1mh23YUCYWkLY2ZDkXbRG/h0DToHmbFNRH0FsVvwbTUIbNHQ7PE6oMZ/m1FbBlRJJ
-         3qyg==
-X-Gm-Message-State: AOJu0Yxam3vlnSv4VjVQez+eXtmEwqm0u+u7qnaEJrNLL8oEK+0+jUL6
-	KiMdYtP6NzfmmCfVfLJ0SJbnvekdmJXDrcUAqaA54H6oc2aFYBQYIPDEOWsuHBE=
-X-Google-Smtp-Source: AGHT+IEHOs4CxadxUk+QzF5PCarTAbEfy0WGLF1fUV8BDOqm/9M4WKn9+kuDXDQZhcNvB2495wtSKg==
-X-Received: by 2002:a5e:8345:0:b0:7c7:f993:8c55 with SMTP id y5-20020a5e8345000000b007c7f9938c55mr4747iom.2.1709138663699;
-        Wed, 28 Feb 2024 08:44:23 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.76])
-        by smtp.gmail.com with ESMTPSA id gw3-20020a0566381ee300b00474b2c54cf7sm156322jab.174.2024.02.28.08.44.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 08:44:23 -0800 (PST)
-Message-ID: <44dce4fb-6198-4ca3-9535-566655fa8e35@joelfernandes.org>
-Date: Wed, 28 Feb 2024 11:44:19 -0500
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VAX+x29n"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E491C433F1;
+	Wed, 28 Feb 2024 17:18:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709140726;
+	bh=7Np/zr7DLGjyYYuEcCZgtLSlELCkIkd/WVEd69z0kMc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=VAX+x29njD0xyB/7dX1OBluP0fZD01XLb/o6qWLQZ2NdW1DHt1rHYqynOg+cg78KY
+	 MdOE7NTHMQqZWU5MV7j2CL/6pBhnQVQYkThsu1lLFcoT9f6/oS+NE/iLkfE5MfmT5g
+	 APD05lDataW1ksboB3PUyNrEKksUgdQHHrz09vHuVrhpkr0i2ty2ZJdKY+qCL/859/
+	 R8a9UB3WItSLzZvXj2HRRqv0ydrN849cM1ZV75tfsT7nwMWfvN8vbakpXb6GqIT2bl
+	 MVOQ52AXKs/rtcGOtf7eX0I3gfZgZfcPWHQHBe6g8sjTE3fUUYT7uZJ2jM3wbTpUrM
+	 glSDi+5RaFrRQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id BEA77CE0350; Wed, 28 Feb 2024 09:18:45 -0800 (PST)
+Date: Wed, 28 Feb 2024 09:18:45 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>,
+	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	rostedt@goodmis.org, mark.rutland@arm.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <e592faa3-db99-4074-9492-3f9021b4350c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+ <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+ <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+ <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
+ <CAO3-Pboo32iQBBUHUELUkvvpSa=jZwUqefrwC-NBjDYx4yxYJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "Paul E . McKenney" <paulmck@kernel.org>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
- Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
- Frederic Weisbecker <frederic@kernel.org>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <572f9069-f79f-4432-b2ac-7f963a526c0b@joelfernandes.org>
-In-Reply-To: <572f9069-f79f-4432-b2ac-7f963a526c0b@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAO3-Pboo32iQBBUHUELUkvvpSa=jZwUqefrwC-NBjDYx4yxYJQ@mail.gmail.com>
 
-On 2/28/2024 9:32 AM, Joel Fernandes wrote:
-> 
-> 
-> On 2/20/2024 1:31 PM, Uladzislau Rezki (Sony) wrote:
-[...]
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index c8980d76f402..1328da63c3cd 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -75,6 +75,7 @@
->>  #define MODULE_PARAM_PREFIX "rcutree."
->>  
->>  /* Data structures. */
->> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
->>  
->>  static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
->>  	.gpwrap = true,
->> @@ -93,6 +94,8 @@ static struct rcu_state rcu_state = {
->>  	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
->>  	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
->>  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
->> +	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
->> +		rcu_sr_normal_gp_cleanup_work),
->>  };
->>  
->>  /* Dump rcu_node combining tree at boot to verify correct setup. */
->> @@ -1422,6 +1425,282 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->>  }
-> [..]
->> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
->> +{
->> +	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
->> +}
->> +
-> 
-> I'm a bit concerned from a memory order PoV about this llist_add() happening
-> possibly on a different CPU than the GP thread, and different than the kworker
-> thread. Basically we can have 3 CPUs simultaneously modifying and reading the
-> list, but only 2 CPUs have the acq-rel pair AFAICS.
-> 
-> Consider the following situation:
-> 
-> synchronize_rcu() user
-> ----------------------
-> llist_add the user U - update srs_next list
-> 
-> rcu_gp_init() and rcu_gp_cleanup (SAME THREAD)
-> --------------------
-> insert dummy node in front of U, call it S
-> update wait_tail to U
-> 
-> and then cleanup:
-> read wait_tail to W
-> set wait_tail to NULL
-> set done_tail to W (RELEASE) -- this release ensures U and S are seen by worker.
-> 
-> workqueue handler
-> -----------------
-> read done_tail (ACQUIRE)
-> disconnect rest of list -- disconnected list guaranteed to have U and S,
->                            if done_tail read was W.
-> ---------------------------------
-> 
-> So llist_add() does this (assume new_first and new_last are same):
-> 
-> 	struct llist_node *first = READ_ONCE(head->first);
-> 
-> 	do {
-> 		new_last->next = first;
-> 	} while (!try_cmpxchg(&head->first, &first, new_first));
-> 
-> 	return !first;
-> ---
-> 
-> It reads head->first, then writes the new_last->next (call it new_first->next)
-> to the old first, then sets head->first to the new_first if head->first did not
-> change in the meanwhile.
-> 
-> The problem I guess happens if the update the head->first is seen *after* the
-> update to the new_first->next.
-> 
-> This potentially means a corrupted list is seen in the workqueue handler..
-> because the "U" node is not yet seen pointing to the rest of the list
-> (previously added nodes), but is already seen the head of the list.
-> 
-> I am not sure if this can happen, but AFAIK try_cmpxchg() doesn't imply ordering
-> per-se. Maybe that try_cmpxchg() should be a try_cmpxchg_release() in llist_add() ?
+On Wed, Feb 28, 2024 at 10:37:51AM -0600, Yan Zhai wrote:
+> On Wed, Feb 28, 2024 at 9:37 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > Also optionally, I wonder if calling rcu_tasks_qs() directly is better
+> > (for documentation if anything) since the issue is Tasks RCU specific. Also
+> > code comment above the rcu_softirq_qs() call about cond_resched() not taking
+> > care of Tasks RCU would be great!
+> >
+> Yes it's quite surprising to me that cond_resched does not help here,
 
-Everyone in the internal RCU crew corrected me offline that try_cmpxchg() has
-full ordering if the cmpxchg succeeded.
+In theory, it would be possible to make cond_resched() take care of
+Tasks RCU.  In practice, the lazy-preemption work is looking to get rid
+of cond_resched().  But if for some reason cond_resched() needs to stay
+around, doing that work might make sense.
 
-So I don't think the issue I mentioned can occur, So we can park this.
+> I will include that comment. Raising just the task RCU QS seems
+> sufficient to the problem we encountered. But according to commit
+> d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched and RCU-preempt
+> when safe"), there might be additional threat factor in __do_softirq
+> that also applies to threaded poll.
 
-Thanks!
+We did look into more focused alternatives for Tasks RCU a few days ago,
+but they all had problems, for example, requiring that it be possible
+to get exact information on the instruction pointers for interrupts on
+any given CPU's stack.  The key point of Tasks RCU is to work out when
+an old tracing trampoline may safely be freed, so a better way of doing
+that would remove the need for this sort of addition to NAPI polling.
 
- - Joel
+(Adding Steve and Mark for their thoughts.)
 
+							Thanx, Paul
+
+> Yan
+> 
+> 
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> > thanks,
+> >
+> >  - Joel
+> > [1]
+> > @@ -381,8 +553,10 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+> >                 pending >>= softirq_bit;
+> >         }
+> >
+> > -       if (__this_cpu_read(ksoftirqd) == current)
+> > +       if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > +           __this_cpu_read(ksoftirqd) == current)
+> >                 rcu_softirq_qs();
+> > +
+> >         local_irq_disable();
