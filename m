@@ -1,113 +1,174 @@
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB6C6EEFC
-	for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 16:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 761281E890
+	for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 16:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709138285; cv=none; b=e6VHexFU8BDRXXmkNbaZ4P+dQdCC7PW+ChOfN5GzCSjC6mC9Nud5M8nD0BQab7q96svTGoWtTfiAjsDg8byTcH0yvryTuj3Ltj8JCA/IDjuyGU5sV2ATfc1NYCkzUb7leO0YPHBwvn+g1it1m9oqZTOATa5aKbPhdxamXV4yGN4=
+	t=1709138668; cv=none; b=qZ4Mks2OxU/fnYzz6CUdoSvW85whaaD1dLSIHYZb6ggA3YDmtvVFwHwr/ZKKWNvv7mO8PtYqcFkBjN9D5EgbyhmamqkvInRfIO1jEXARMApm/LhTK1lBB1gqCAfmMU6Gu9plTcndXYlu6D5pBrMds9Ma3O7iNOlDJJicixdV5qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709138285; c=relaxed/simple;
-	bh=9PTeAYYKh6BghzUQ5SY1FEoCFtAzge8LlEvtJa+/mwI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o+cYPMuC1yg6yBg/phcdbGOTR/2zXzwfdfmSa/NZiJzh0rTBLBVi+g64MjJ8nR7x+GtDNxxvxadiyAyUz0uxkTqbWPawwDrQnSTju3ngWMMzT18LO7mSzikxEN849XCI2UPS3NRKvyiI4LSKrMsdqU2vlVJq8g+tym7HCZxPKcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=LdkB87zd; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+	s=arc-20240116; t=1709138668; c=relaxed/simple;
+	bh=KJlhzIPR/vjW9vKySj9E3Vpnv5RoXvud7GTILjlLqx8=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=mMqzgpwgcADzMVvrzUcTBlJPbCU5SGQxKtfYzZRJVn7trgQJUzGVmxuefMsE8j8kMIhCJsPdPJY+wN6hnenRmaWazzpdbycy/WIQfjej+R/bdcR3O1U9JgO+Kr5kCqz7vooUO7f3Fw49OltA7Ebkufm9hQQ0bVAAqWVzvzEkNm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yClr7yzr; arc=none smtp.client-ip=209.85.166.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="LdkB87zd"
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so797923766b.2
-        for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 08:38:03 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yClr7yzr"
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7c79664c71fso34330939f.0
+        for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 08:44:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1709138282; x=1709743082; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EWAQpAUpfQCDhx0rGjR9Oel5LgwsLKY+ggnWMU654+8=;
-        b=LdkB87zd/3Ey/TszPdJTjeBQW0CD8ooalvGxGuuwIAZDzqDmWaj0B/AU3vvPUzguME
-         efMh/O1i1e4AdYTsJ3LCDduY7WErH+GOcYL3Ekt+sK6CmLuLTCFWegQfToCkq+bDYAjC
-         ExlXDdy4kn7Lo124FUzyhxciy7Avg9lImGOpWtlvlk2DK1rWKQR+3x8FfYJHE1mWw477
-         IjVO27AnTPrNXoYNbzQ0lKRhYwuSxcxok561LJwnPBBkVcNrAYGKF7vy11qiqQ56HaBN
-         WD60dlG3pOb5Q0iKZKsxGKSXPkiwcJeiOVS1+KjFR/wXicr3DWprGwOJwMT5FsaH4iBW
-         wFhA==
+        d=joelfernandes.org; s=google; t=1709138664; x=1709743464; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k4XRPdwxUwqws5YY4VvPNG/LxgQfuluLcLEsy4IUoCQ=;
+        b=yClr7yzrDC/SWzZyqDUnt3982p6KQZDRIsPI6bZTF/geYXuK4fIGinTnJ8z9IHVMDT
+         7ZRwm1Qa1Yy85NtRLSSQ2Ckug0Tm7zfk29oWofuPR4oTwMsTl5t4pgzLS+auIrjcXlIW
+         Z4fZyTquIOuTkQGpKKAbPShN9H8kJS+KPoFhY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709138282; x=1709743082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EWAQpAUpfQCDhx0rGjR9Oel5LgwsLKY+ggnWMU654+8=;
-        b=kZSl9q6cta3JDyu2vqYV0afkabL0/Lapcyj0DeI8iPIADp7z/K7ciSM++B9KtFhuzq
-         6Oid82o42nfhZrAKwr9R2T/TxuzjyJk5rBhlDwjjyAY5ZOZZDC2AZouV9K8umjfNtg5I
-         59lfTbX1f1XDLkicFvOpCotwab+yMFgywbj5AtBr67jwRSNxP7prLLtzCkC+DXW8gda6
-         Au2GZg+wDBuxoMEfPqX3LFMYvAJqqppxraeRAg0Mui2GJ9fDnSN1jJf4V06/gc1ZE1Iz
-         gtBt7NApIUFyhAHT0YAWIdm7pDZrt5Dfni+mgLbGpynTXv71N2rMCosarEL3GYCf2YJl
-         SV4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUj4VPcw+JrvnEJSEwQGMY1CApEknQnFdlKoEECzGc+KVcD6LbheVbyt8HcJxsIy0DwZYhQbOcMEF+l5IhSCNa/5cU9
-X-Gm-Message-State: AOJu0Yw9Sk+mfnDU8pXpZrDmPBVIBhfaGS5YOOznab085HvsrOKcO92r
-	u/mMRqWZz6nXI3kCbNpVm3DvM7TlSEM8LsbRTBBJ759CAEiWaA00Rg4hGFIK3a1jQJUM33s+6KU
-	B+aIy0EwVoHNX8Uxyv4IWDwOIznz85FSqi3UKqw==
-X-Google-Smtp-Source: AGHT+IH6HQq8hzqji91OJqqxN2VkP0/oD9hn7fSXzbwfcVbmFDthP3qt0d5uMMo2K+yS0zBkR2z5gsNJJobM1iVOpOM=
-X-Received: by 2002:a17:906:e8f:b0:a43:49ca:2473 with SMTP id
- p15-20020a1709060e8f00b00a4349ca2473mr193121ejf.0.1709138282075; Wed, 28 Feb
- 2024 08:38:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709138664; x=1709743464;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k4XRPdwxUwqws5YY4VvPNG/LxgQfuluLcLEsy4IUoCQ=;
+        b=aEW/0oaD9P2A7hs2pfhsVzrNTqI1DTxL76ed6go2s3fTtc1miB2SnEaAKJGZ07gjUF
+         6pYES92muClnb2ql5c2NoRWaYw+pVnvXUMKsqRXJkY+utXdgR4yjHzp4XflOsqe1Z3wd
+         jt4h7xMFXgpy/B4274HSJ1HhD0FjpmYYOe69RbwjvuWlDDF+Btoqi1GYn+tt1ZzibooB
+         MLMetV5LrG0UbB9HCGgti4oLDrhxDjTkJUA9ETweiMBnn2u4BiEOHbFTPbtiwO8kb5mo
+         bnr1mh23YUCYWkLY2ZDkXbRG/h0DToHmbFNRH0FsVvwbTUIbNHQ7PE6oMZ/m1FbBlRJJ
+         3qyg==
+X-Gm-Message-State: AOJu0Yxam3vlnSv4VjVQez+eXtmEwqm0u+u7qnaEJrNLL8oEK+0+jUL6
+	KiMdYtP6NzfmmCfVfLJ0SJbnvekdmJXDrcUAqaA54H6oc2aFYBQYIPDEOWsuHBE=
+X-Google-Smtp-Source: AGHT+IEHOs4CxadxUk+QzF5PCarTAbEfy0WGLF1fUV8BDOqm/9M4WKn9+kuDXDQZhcNvB2495wtSKg==
+X-Received: by 2002:a5e:8345:0:b0:7c7:f993:8c55 with SMTP id y5-20020a5e8345000000b007c7f9938c55mr4747iom.2.1709138663699;
+        Wed, 28 Feb 2024 08:44:23 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.76])
+        by smtp.gmail.com with ESMTPSA id gw3-20020a0566381ee300b00474b2c54cf7sm156322jab.174.2024.02.28.08.44.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 08:44:23 -0800 (PST)
+Message-ID: <44dce4fb-6198-4ca3-9535-566655fa8e35@joelfernandes.org>
+Date: Wed, 28 Feb 2024 11:44:19 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
- <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop> <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
-In-Reply-To: <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Wed, 28 Feb 2024 10:37:51 -0600
-Message-ID: <CAO3-Pboo32iQBBUHUELUkvvpSa=jZwUqefrwC-NBjDYx4yxYJQ@mail.gmail.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: paulmck@kernel.org, Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
-	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
-	kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+Content-Language: en-US
+From: Joel Fernandes <joel@joelfernandes.org>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+ Frederic Weisbecker <frederic@kernel.org>
+References: <20240220183115.74124-1-urezki@gmail.com>
+ <20240220183115.74124-3-urezki@gmail.com>
+ <572f9069-f79f-4432-b2ac-7f963a526c0b@joelfernandes.org>
+In-Reply-To: <572f9069-f79f-4432-b2ac-7f963a526c0b@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 9:37=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
-org> wrote:
-> Also optionally, I wonder if calling rcu_tasks_qs() directly is better
-> (for documentation if anything) since the issue is Tasks RCU specific. Al=
-so
-> code comment above the rcu_softirq_qs() call about cond_resched() not tak=
-ing
-> care of Tasks RCU would be great!
->
-Yes it's quite surprising to me that cond_resched does not help here,
-I will include that comment. Raising just the task RCU QS seems
-sufficient to the problem we encountered. But according to commit
-d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched and RCU-preempt
-when safe"), there might be additional threat factor in __do_softirq
-that also applies to threaded poll.
+On 2/28/2024 9:32 AM, Joel Fernandes wrote:
+> 
+> 
+> On 2/20/2024 1:31 PM, Uladzislau Rezki (Sony) wrote:
+[...]
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index c8980d76f402..1328da63c3cd 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -75,6 +75,7 @@
+>>  #define MODULE_PARAM_PREFIX "rcutree."
+>>  
+>>  /* Data structures. */
+>> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
+>>  
+>>  static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+>>  	.gpwrap = true,
+>> @@ -93,6 +94,8 @@ static struct rcu_state rcu_state = {
+>>  	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
+>>  	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
+>>  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+>> +	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+>> +		rcu_sr_normal_gp_cleanup_work),
+>>  };
+>>  
+>>  /* Dump rcu_node combining tree at boot to verify correct setup. */
+>> @@ -1422,6 +1425,282 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+>>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>>  }
+> [..]
+>> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+>> +{
+>> +	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+>> +}
+>> +
+> 
+> I'm a bit concerned from a memory order PoV about this llist_add() happening
+> possibly on a different CPU than the GP thread, and different than the kworker
+> thread. Basically we can have 3 CPUs simultaneously modifying and reading the
+> list, but only 2 CPUs have the acq-rel pair AFAICS.
+> 
+> Consider the following situation:
+> 
+> synchronize_rcu() user
+> ----------------------
+> llist_add the user U - update srs_next list
+> 
+> rcu_gp_init() and rcu_gp_cleanup (SAME THREAD)
+> --------------------
+> insert dummy node in front of U, call it S
+> update wait_tail to U
+> 
+> and then cleanup:
+> read wait_tail to W
+> set wait_tail to NULL
+> set done_tail to W (RELEASE) -- this release ensures U and S are seen by worker.
+> 
+> workqueue handler
+> -----------------
+> read done_tail (ACQUIRE)
+> disconnect rest of list -- disconnected list guaranteed to have U and S,
+>                            if done_tail read was W.
+> ---------------------------------
+> 
+> So llist_add() does this (assume new_first and new_last are same):
+> 
+> 	struct llist_node *first = READ_ONCE(head->first);
+> 
+> 	do {
+> 		new_last->next = first;
+> 	} while (!try_cmpxchg(&head->first, &first, new_first));
+> 
+> 	return !first;
+> ---
+> 
+> It reads head->first, then writes the new_last->next (call it new_first->next)
+> to the old first, then sets head->first to the new_first if head->first did not
+> change in the meanwhile.
+> 
+> The problem I guess happens if the update the head->first is seen *after* the
+> update to the new_first->next.
+> 
+> This potentially means a corrupted list is seen in the workqueue handler..
+> because the "U" node is not yet seen pointing to the rest of the list
+> (previously added nodes), but is already seen the head of the list.
+> 
+> I am not sure if this can happen, but AFAIK try_cmpxchg() doesn't imply ordering
+> per-se. Maybe that try_cmpxchg() should be a try_cmpxchg_release() in llist_add() ?
 
-Yan
+Everyone in the internal RCU crew corrected me offline that try_cmpxchg() has
+full ordering if the cmpxchg succeeded.
 
+So I don't think the issue I mentioned can occur, So we can park this.
 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->
-> thanks,
->
->  - Joel
-> [1]
-> @@ -381,8 +553,10 @@ asmlinkage __visible void __softirq_entry __do_softi=
-rq(void)
->                 pending >>=3D softirq_bit;
->         }
->
-> -       if (__this_cpu_read(ksoftirqd) =3D=3D current)
-> +       if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
-> +           __this_cpu_read(ksoftirqd) =3D=3D current)
->                 rcu_softirq_qs();
-> +
->         local_irq_disable();
+Thanks!
+
+ - Joel
+
