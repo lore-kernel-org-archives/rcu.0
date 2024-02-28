@@ -1,116 +1,126 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C69E1361D0;
-	Wed, 28 Feb 2024 22:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE3A7291B
+	for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 23:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709161134; cv=none; b=Xd5UrYVZMDdQJt3c4bftSdqjVWCDbBsjjyQOw0RGQ5w4v+KY92O2lV7lDPQaM8m0roXTLlfeZ7E4VqedVf3QHxhj+NGGw8Csf9vg1uHqhy06sFozIQUa63NNa7Vrb8WeSkuAndFuUyXN9r64f8FjgoZLH4lRCwVFDduNk+Y+ssc=
+	t=1709164427; cv=none; b=AgpcQ11GKxE/Vj19ObX98m9K/f/mDtjumssqjpAxL6M03LahCLRI5frkukYwPu8OmWmfKK6yyPrr444MA1iMNKs1Ec4zv1r/jSGsiSaeFanvIjISyIkEB9mDV5wVp/XaQzXYfHi6OSXBpK4/jNsBuQfZMsgCGiSKsjQpo/E8u54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709161134; c=relaxed/simple;
-	bh=JxkkjdGFf/rPehnVheEO5cySQ/MvnKPHAt51ceI+tUI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QrtRjNvz7kV3JBNP4mAcxuUMas3TfHs+gyduXILUT2jC8cpd/BvHnFMwln5CKuzQZV8Dlvuen0gZ1rXmP4aadtUxAn46A0FFbm2IAzBP0eyOmctLD4cviUYK3icOLrUi5c+GTQKCvpyiqGVJC1wmUsyWvM8DmwZrrNwR/cWJ8Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YILRbG+K; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1709164427; c=relaxed/simple;
+	bh=226C5h/Y1VCHHH/6rHYwB8j04u2Bj9Ng00Ye5vrzpe0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FtjobTTusCylTWEzEvq9uAEspC20J/tCEdlhZ6kPIKadqL/wBSOiQj9X4gmszQvWKmxna+Snc2AHA3WabZp2RNxzgXMRyfW69DtSbMt+VFrU/wA84SbLTC4ACfAzsr70nRY0rPEOO1bOmjF5nQIFTZO9tSNczzJHehEKm+BHlGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=b/WtlF+/; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YILRbG+K"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25CBDC433F1;
-	Wed, 28 Feb 2024 22:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709161134;
-	bh=JxkkjdGFf/rPehnVheEO5cySQ/MvnKPHAt51ceI+tUI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=YILRbG+Kodk7xTlswzoQEZ9TF6XCGKOlWutaj4rhKtSkMEjm4xXdSQjLSLwtYVAzA
-	 7qqEDv/OLK57bWSda4rfLtdQ/6gIA+A/k2SJA+h7fqxGv/FJupSq/95KQeppuZfo07
-	 eMhC6K6qSy2mapQst4KdNGsixHapSUtiXRtM2m3dprBMKwrdjdO2e9vjzeFjywUzP0
-	 gQMONVoFID9Bkdl3xbJ3UPC7UgxxbnW+YaHCjjKuhZviWzTXBRRhhnkWf1CdPY7B5U
-	 bP+YEPsMBuJ+MSrQ7f1guWJ3+/hXe08hS0mRthTPb0+vzjMqb+gtL3xLT/zxjJbuC8
-	 S3SqYbfb1O8xA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B8F37CE0F91; Wed, 28 Feb 2024 14:58:53 -0800 (PST)
-Date: Wed, 28 Feb 2024 14:58:53 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
-	Network Development <netdev@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	Hannes Frederic Sowa <hannes@stressinduktion.org>,
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-	bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Message-ID: <8ae889cb-ee1d-4c72-9414-e21258118ce3@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <02913b40-7b74-48b3-b15d-53133afd3ba6@paulmck-laptop>
- <3D27EFEF-0452-4555-8277-9159486B41BF@joelfernandes.org>
- <ba95955d-b63d-4670-b947-e77b740b1a49@paulmck-laptop>
- <20240228173307.529d11ee@gandalf.local.home>
- <CAADnVQ+szRDGaDJPoBFR9KyeMjwpuxOCNys=yxDaCLYZkSkyYw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="b/WtlF+/"
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563bb51c36eso461039a12.2
+        for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 15:53:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1709164424; x=1709769224; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LyTb/9u8Fut3XJA7s5sTKjASpumq9GMF8lzH2f5O968=;
+        b=b/WtlF+/cAuvq6M20JXmWz8A2nkQptPjwcnBQLZkV9kPBbnAW24f9bgh5o9TXc7veb
+         a3eOi5yMNeZ0hOuCQ3ljUOEqMjHWtp6/ScFlSp1ToC/hhPIiGktWzjz7Pdv3WAnYcinj
+         eCck83VpNb35lad8kW5Mqhr9VE5ZFzNOGWHUFbs76XLAQrQEScmGNMXDAz+j8u5YGIHO
+         R56D/9Cp+0iznOPm3kXRtfJh9YHYZhdss1n9vCIoVe4M5ivBNkgV0HDZyaRPF1N6UCFS
+         E9MKOTH213WGU0/R421/tyAuYheLu49B136cC2wpkd/ARaWY9L02tzb2vCoR9xRlVYaa
+         4uzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709164424; x=1709769224;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LyTb/9u8Fut3XJA7s5sTKjASpumq9GMF8lzH2f5O968=;
+        b=Uo2HaoS4XlBbdwwOfiHZIL3qrT4yICHg+deCVng2qLo7qcvus3TF2dykwlYOZH2Dsn
+         3RBDQPqqb6gbBwHlaUsJ1xFY7Qp//j3yxw9+VVZ/7iOGXL4H+QNXAnQxDYcG83OHOgXH
+         oncfcxBVc47gj2zKGiGSJ5qojvdfP42IBWWwnXp5odZHWa9aKkhQyECoPlrTpIhfgdih
+         eZMqe2FRjjg7zYhBAjR/kzdisPuRhxOE5CQ/P5aY1j0+MytMzjsDIeOLo+dYVB9SrRr1
+         /KDZdSdvPwA5uQtYXgHZuP1GG7p1waXsNy/gF9gNM5xiQGVYIe/5n2LBfo3qFTJ9g6WI
+         C9Mg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNgTT3EGUfzLglWatM0KGXn3ARJf0lt9c2VlJtWn4UaaGLihN8FH9LjzIAUj48UyTmdjNTL7FeclvoAopO/mYu6Rl0
+X-Gm-Message-State: AOJu0YxyP1HWn4QNcB5+B0GGxKZ7fBndty6w2Y/Rrgku26gYcB4KCoWb
+	mUO7kPemo/D/JPvvtP4ADlrjwAZjOFRUPgQihoaznwOY81oAW1Ts4zXvtmaH3jvN9gpE/7y7XcN
+	Jkve0mwsrpaz0ApEjii1zR13gYhA2+rztgwpk2A==
+X-Google-Smtp-Source: AGHT+IFWoAzwjRhf4ZRQtooisu3O7UmB386nUInSxafRbB0jMnEpyJq60SxptGuNyafKn0Mhr6ixAk9Zq1h7yoTNCaY=
+X-Received: by 2002:a05:6402:b57:b0:566:414d:d724 with SMTP id
+ bx23-20020a0564020b5700b00566414dd724mr253144edb.35.1709164424445; Wed, 28
+ Feb 2024 15:53:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+szRDGaDJPoBFR9KyeMjwpuxOCNys=yxDaCLYZkSkyYw@mail.gmail.com>
+References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+In-Reply-To: <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Wed, 28 Feb 2024 17:53:33 -0600
+Message-ID: <CAO3-Pbq4Fybyhodv5-36U=-rgttkjxFj6cRvAGcapvE8pZyWSQ@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
-> On Wed, Feb 28, 2024 at 2:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Wed, 28 Feb 2024 14:19:11 -0800
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >
-> > > > >
-> > > > > Well, to your initial point, cond_resched() does eventually invoke
-> > > > > preempt_schedule_common(), so you are quite correct that as far as
-> > > > > Tasks RCU is concerned, cond_resched() is not a quiescent state.
-> > > >
-> > > >  Thanks for confirming. :-)
-> > >
-> > > However, given that the current Tasks RCU use cases wait for trampolines
-> > > to be evacuated, Tasks RCU could make the choice that cond_resched()
-> > > be a quiescent state, for example, by adjusting rcu_all_qs() and
-> > > .rcu_urgent_qs accordingly.
-> > >
-> > > But this seems less pressing given the chance that cond_resched() might
-> > > go away in favor of lazy preemption.
-> >
-> > Although cond_resched() is technically a "preemption point" and not truly a
-> > voluntary schedule, I would be happy to state that it's not allowed to be
-> > called from trampolines, or their callbacks. Now the question is, does BPF
-> > programs ever call cond_resched()? I don't think they do.
-> >
-> > [ Added Alexei ]
-> 
-> I'm a bit lost in this thread :)
-> Just answering the above question.
-> bpf progs never call cond_resched() directly.
-> But there are sleepable (aka faultable) bpf progs that
-> can call some helper or kfunc that may call cond_resched()
-> in some path.
-> sleepable bpf progs are protected by rcu_tasks_trace.
-> That's a very different one vs rcu_tasks.
+Hi Eric,
 
-Suppose that the various cond_resched() invocations scattered throughout
-the kernel acted as RCU Tasks quiescent states, so that as soon as a
-given task executed a cond_resched(), synchronize_rcu_tasks() might
-return or call_rcu_tasks() might invoke its callback.
+On Tue, Feb 27, 2024 at 10:44=E2=80=AFAM Eric Dumazet <edumazet@google.com>=
+ wrote:
+>
+> Hmm....
+> Why napi_busy_loop() does not have a similar problem ?
+>
+I just tried and can reproduce similar behavior on sk busy poll.
+However, the interesting thing is, this can happen if I set a super
+high polling interval but just send rare packets. In my case I had a 5
+sec polling interval (unlikely to be realistic in prod but just for
+demonstration), then used nc to send a few packets. Here is what
+bpftrace react:
 
-Would that cause BPF any trouble?
+Normal:
+time sudo bpftrace -e 'kfunc:napi_busy_loop{@=3Dcount();}
+interval:s:1{exit();} kfunc:udp_recvmsg {printf("%ld\n",
+args->sk->sk_ll_usec);}'
+Attaching 3 probes...
 
-My guess is "no", because it looks like BPF is using RCU Tasks (as you
-say, as opposed to RCU Tasks Trace) only to wait for execution to leave a
-trampoline.  But I trust you much more than I trust myself on this topic!
+@: 0
 
-							Thanx, Paul
+real    0m1.527s
+user    0m0.073s
+sys     0m0.128s
+
+
+Extra wait when polling:
+time sudo bpftrace -e 'kfunc:napi_busy_loop{@=3Dcount();}
+interval:s:1{exit();} kfunc:udp_recvmsg {printf("%ld\n",
+args->sk->sk_ll_usec);}'
+Attaching 3 probes...
+5000000
+
+
+@: 16
+
+real    0m11.167s
+user    0m0.070s
+sys     0m0.120s
+
+So the symptoms are the same, bpftrace cannot exit despite having an
+1sec timeout. But the execution pattern for these two are probably
+different: NAPI threads would keep polling by itself, whereas sk poll
+program might only poll when there is no immediate data. When there
+are packets, it switches to process packets instead of polling any
+more.
+
+
+Yan
