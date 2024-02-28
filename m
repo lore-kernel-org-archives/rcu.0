@@ -1,303 +1,97 @@
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C51441C73
-	for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 14:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E00158D95;
+	Wed, 28 Feb 2024 14:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709130741; cv=none; b=Psv+3PjABlHYFZpuYKZ67wP2DGEuuldh20K8sWU9sjYdKVKmCcrSxqvYg1qdFthVu1KFaT4Yjn9qIJQ5hZFqZamPz37eZmrq6+2lEEmOgv8LX43su9o2YFd9ZnW9JzrIy7WNvn0V3VEIKi61SlhwsdELm2F0UzlHLXPYYKFFLB4=
+	t=1709131425; cv=none; b=FBS1RjeU33IPZQs0Bz725OCa3CxT77XuzOZK30x8LPrgUxp73OTgOSbCFjSD4N1mXCj405Y7BsDPGnRMoBHMVaF1RQkP+wU5Pu3ZtMUjXK4326V3mUYgINOmxg4oe97lpq6P1YCT6RvpuWAl5KTFgdEpXgtZ++TcXreIwlpAWqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709130741; c=relaxed/simple;
-	bh=15MoiuiISB93ItUXn/dMMVi2ONQU2BJzf8977IxO8RE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KTBbwLaUaTb47KsyYPG9OSRZScrhcdv92L5Oz7Oi5SsTzLt+AI7tNR7LYD5j4hd0K/6cGoCGptNH3G8IU8/Mwf5IbxYxJNxx1pDb3wrnvim0Z8qAJWYbBO+Cwluu50CtOEJNkXZg3tZ+m+wURxmGYkR1wo5CUcUmgdBz5Jwc8XU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=I9a1Eqv1; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1709131425; c=relaxed/simple;
+	bh=wvEapABnIlz3cWAlJclMlhGCT209K3a/fzamCpEyPdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ajcY4byRkY/3sh/tyiIwNyysZehxSJE8oV03pzV+ASrz3GNRKD6euPbQd1x950byC0Lo+ApIdvAcn5p5A+AJs2K1KctjFflaCPr6RvLjc9sWQl965gYDTqkMSscl1quxAilxJsMaxaC4zyiXi3WWJbj2rDHZzmII8YSdteVbdQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n4Z9GmA0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="I9a1Eqv1"
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c48e13e0d7so304072639f.1
-        for <rcu@vger.kernel.org>; Wed, 28 Feb 2024 06:32:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709130738; x=1709735538; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yUafWbf8Gqrdc1XkYunFZEFWTkiZ2ixMRNi+7B77x0M=;
-        b=I9a1Eqv1cilkMsvfefXLfpJYkZm227La7X1289ZcKL2ehikmZ+DKeqcE1hGe2F/YMD
-         YSIw24hibYW+CFwO5AAaDNrbI0IFpTtROVpPnRx5b9iIW0O7yQyToMEKvz/R1kZCc1Rz
-         t1C4/8fEnvRViZj4u7aLn9hZN3Z2Iz7GQdEa0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709130738; x=1709735538;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yUafWbf8Gqrdc1XkYunFZEFWTkiZ2ixMRNi+7B77x0M=;
-        b=K9MqjLbgzbvzLypqzU/ra8zhxDloXJPnsWGiNpL0iM/zCJoxR7/Md4BmxNBhScksLD
-         /3rZZ9KOG1IuAiAct6XCuZ/vjFf9BzhBuLViZYb6gSRM9NbS4l7cgrgPezWbmIl2xQqe
-         GKalUTyudkFkU0bMZWy/M3iyi+dL8/gOlqk9N/QelltMuXsFngWuEyW8GPQ8jo1t1WYF
-         9a4j2wsGBflD6uthuBX8FjbyFsj5QWhss4SHFPDu/JTalQMin0MzkIMU2RI+zzy/nqli
-         tBh9FuYzKgKZSqhOVry42BSwG9nxI4Zde9tV0xl9SC7Dofr1158cim2dzMM8w2xxypPb
-         lPEQ==
-X-Gm-Message-State: AOJu0YxaUWGM2uN/+z60JdsdgtETBFMprKXl63ekqS6/VvsFDRK/CeF0
-	ER10gaGfxwgM/B95aaH5lM2IYC4s5Btx2NpE+wY5HSERwcQZmqKanx039einDQQ=
-X-Google-Smtp-Source: AGHT+IHzIuRXX9W3uUuLUpzSzy3HfsCBnxCVoprN0zB2pTYV1pFfHLuiZpkLlTP8FaFF2sGzpHHYmA==
-X-Received: by 2002:a05:6602:1642:b0:7c7:2099:8bc0 with SMTP id y2-20020a056602164200b007c720998bc0mr17698169iow.2.1709130738179;
-        Wed, 28 Feb 2024 06:32:18 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.76])
-        by smtp.gmail.com with ESMTPSA id b21-20020a02a595000000b00474267973afsm2223464jam.36.2024.02.28.06.32.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 06:32:17 -0800 (PST)
-Message-ID: <572f9069-f79f-4432-b2ac-7f963a526c0b@joelfernandes.org>
-Date: Wed, 28 Feb 2024 09:32:15 -0500
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n4Z9GmA0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77D85C433C7;
+	Wed, 28 Feb 2024 14:43:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709131425;
+	bh=wvEapABnIlz3cWAlJclMlhGCT209K3a/fzamCpEyPdQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=n4Z9GmA0bQq97/493YJupgjJBZsDOPLYgiZML8s/f0fQ1rBOqUaSOR7in+Q3338N8
+	 o0Z2vXW1+8p9G14v+gzNL9hzT+MQCc0qRu9UqDdPD9ut88cgy/tp4ojSBggScSh5Xr
+	 V4dfQy6Ev21c5onwhuhpFpoQio/iQzzdIm3RWPVPTCBBA0+Z2hMkQrRQ99zCX+ZpLn
+	 vgeWznAeQ2hElj3Daj7RX5MvNNWnaQx4ionAbDW7p9cPlul2mxdTJMMXyp+lgpp78r
+	 PTGq4TcgNbb/yehJy0dc6eZgk6Kljka29fsGTO0eV3f4D6AiG1JeAKvZfloWAVYMlr
+	 62rumrOhqKlpA==
+Date: Wed, 28 Feb 2024 06:43:43 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>, Yan Zhai <yan@cloudflare.com>,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Paolo
+ Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, Simon Horman
+ <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang
+ <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>, Hannes
+ Frederic Sowa <hannes@stressinduktion.org>, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <20240228064343.578a5363@kernel.org>
+In-Reply-To: <66a81295-ab6f-41f4-a3da-8b5003634c6a@paulmck-laptop>
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+	<CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+	<d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+	<20240227191001.0c521b03@kernel.org>
+	<66a81295-ab6f-41f4-a3da-8b5003634c6a@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Content-Language: en-US
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "Paul E . McKenney" <paulmck@kernel.org>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
- Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
- Frederic Weisbecker <frederic@kernel.org>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20240220183115.74124-3-urezki@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Tue, 27 Feb 2024 20:42:24 -0800 Paul E. McKenney wrote:
+> On Tue, Feb 27, 2024 at 07:10:01PM -0800, Jakub Kicinski wrote:
+> > On Tue, 27 Feb 2024 10:32:22 -0800 Paul E. McKenney wrote:  
+> > > The theory is that PREEMPT_RCU kernels have preemption, and get their
+> > > quiescent states that way.  
+> > 
+> > But that doesn't work well enough?
+> > 
+> > Assuming that's the case why don't we add it with the inverse ifdef
+> > condition next to the cond_resched() which follows a few lines down?
+> > 
+> > 			skb_defer_free_flush(sd);
+> > +
+> > +			if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> > +				rcu_softirq_qs();
+> > +
+> > 			local_bh_enable();
+> > 
+> > 			if (!repoll)
+> > 				break;
+> > 
+> > 			cond_resched();
+> > 		}
+> > 
+> > We won't repoll majority of the time.  
+> 
+> I am not completely clear on what you are proposing, but one complication
+> is that We need preemption disabled across calls to rcu_softirq_qs()
+> and we cannot have preemption disabled across calls to cond_resched().
 
+I was thinking of using rcu_all_qs(), like cond_resched() does.
+Not sure how it compares in terms of functionality and cost.
 
-On 2/20/2024 1:31 PM, Uladzislau Rezki (Sony) wrote:
-> A call to a synchronize_rcu() can be optimized from a latency
-> point of view. Workloads which depend on this can benefit of it.
-> 
-> The delay of wakeme_after_rcu() callback, which unblocks a waiter,
-> depends on several factors:
-> 
-> - how fast a process of offloading is started. Combination of:
->     - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
->     - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
->     - other.
-> - when started, invoking path is interrupted due to:
->     - time limit;
->     - need_resched();
->     - if limit is reached.
-> - where in a nocb list it is located;
-> - how fast previous callbacks completed;
-> 
-> Example:
-> 
-> 1. On our embedded devices i can easily trigger the scenario when
-> it is a last in the list out of ~3600 callbacks:
-> 
-> <snip>
->   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> ...
->   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
->   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> <snip>
-> 
-> 2. We use cpuset/cgroup to classify tasks and assign them into
-> different cgroups. For example "backgrond" group which binds tasks
-> only to little CPUs or "foreground" which makes use of all CPUs.
-> Tasks can be migrated between groups by a request if an acceleration
-> is needed.
-> 
-> See below an example how "surfaceflinger" task gets migrated.
-> Initially it is located in the "system-background" cgroup which
-> allows to run only on little cores. In order to speed it up it
-> can be temporary moved into "foreground" cgroup which allows
-> to use big/all CPUs:
-> 
-> cgroup_attach_task():
->  -> cgroup_migrate_execute()
->    -> cpuset_can_attach()
->      -> percpu_down_write()
->        -> rcu_sync_enter()
->          -> synchronize_rcu()
->    -> now move tasks to the new cgroup.
->  -> cgroup_migrate_finish()
-> 
-> <snip>
->          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
->     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
->    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-> <snip>
-> 
-> "Boosting a task" depends on synchronize_rcu() latency:
-> 
-> - first trace shows a completion of synchronize_rcu();
-> - second shows attaching a task to a new group;
-> - last shows a final step when migration occurs.
-> 
-> 3. To address this drawback, maintain a separate track that consists
-> of synchronize_rcu() callers only. After completion of a grace period
-> users are deferred to a dedicated worker to process requests.
-> 
-> 4. This patch reduces the latency of synchronize_rcu() approximately
-> by ~30-40% on synthetic tests. The real test case, camera launch time,
-> shows(time is in milliseconds):
-> 
-> 1-run 542 vs 489 improvement 9%
-> 2-run 540 vs 466 improvement 13%
-> 3-run 518 vs 468 improvement 9%
-> 4-run 531 vs 457 improvement 13%
-> 5-run 548 vs 475 improvement 13%
-> 6-run 509 vs 484 improvement 4%
-> 
-> Synthetic test(no "noise" from other callbacks):
-> Hardware: x86_64 64 CPUs, 64GB of memory
-> Linux-6.6
-> 
-> - 10K tasks(simultaneous);
-> - each task does(1000 loops)
->      synchronize_rcu();
->      kfree(p);
-> 
-> default: CONFIG_RCU_NOCB_CPU: takes 54 seconds to complete all users;
-> patch: CONFIG_RCU_NOCB_CPU: takes 35 seconds to complete all users.
-> 
-> Running 60K gives approximately same results on my setup. Please note
-> it is without any interaction with another type of callbacks, otherwise
-> it will impact a lot a default case.
-> 
-> 5. By default it is disabled. To enable this perform one of the
-> below sequence:
-> 
-> echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-> or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
-> 
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> Co-developed-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  .../admin-guide/kernel-parameters.txt         |  14 +
->  kernel/rcu/tree.c                             | 331 +++++++++++++++++-
->  kernel/rcu/tree_exp.h                         |   2 +-
->  3 files changed, 345 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 2244aa0a013b..7ca84cf7b4f4 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5059,6 +5059,20 @@
->  			delay, memory pressure or callback list growing too
->  			big.
->  
-> +	rcutree.rcu_normal_wake_from_gp= [KNL]
-> +			Reduces a latency of synchronize_rcu() call. This approach
-> +			maintains its own track of synchronize_rcu() callers, so it
-> +			does not interact with regular callbacks because it does not
-> +			use a call_rcu[_hurry]() path. Please note, this is for a
-> +			normal grace period.
-> +
-> +			How to enable it:
-> +
-> +			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-> +			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
-> +
-> +			Default is 0.
-> +
->  	rcuscale.gp_async= [KNL]
->  			Measure performance of asynchronous
->  			grace-period primitives such as call_rcu().
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index c8980d76f402..1328da63c3cd 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -75,6 +75,7 @@
->  #define MODULE_PARAM_PREFIX "rcutree."
->  
->  /* Data structures. */
-> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
->  
->  static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
->  	.gpwrap = true,
-> @@ -93,6 +94,8 @@ static struct rcu_state rcu_state = {
->  	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
->  	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
->  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
-> +	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
-> +		rcu_sr_normal_gp_cleanup_work),
->  };
->  
->  /* Dump rcu_node combining tree at boot to verify correct setup. */
-> @@ -1422,6 +1425,282 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  }
-[..]
-> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> +{
-> +	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
-> +}
-> +
+> Another complication is that although CONFIG_PREEMPT_RT kernels are
+> built with CONFIG_PREEMPT_RCU, the reverse is not always the case.
+> And if we are not repolling, don't we have a high probability of doing
+> a voluntary context when we reach napi_thread_wait() at the beginning
+> of that loop?
 
-I'm a bit concerned from a memory order PoV about this llist_add() happening
-possibly on a different CPU than the GP thread, and different than the kworker
-thread. Basically we can have 3 CPUs simultaneously modifying and reading the
-list, but only 2 CPUs have the acq-rel pair AFAICS.
-
-Consider the following situation:
-
-synchronize_rcu() user
-----------------------
-llist_add the user U - update srs_next list
-
-rcu_gp_init() and rcu_gp_cleanup (SAME THREAD)
---------------------
-insert dummy node in front of U, call it S
-update wait_tail to U
-
-and then cleanup:
-read wait_tail to W
-set wait_tail to NULL
-set done_tail to W (RELEASE) -- this release ensures U and S are seen by worker.
-
-workqueue handler
------------------
-read done_tail (ACQUIRE)
-disconnect rest of list -- disconnected list guaranteed to have U and S,
-                           if done_tail read was W.
----------------------------------
-
-So llist_add() does this (assume new_first and new_last are same):
-
-	struct llist_node *first = READ_ONCE(head->first);
-
-	do {
-		new_last->next = first;
-	} while (!try_cmpxchg(&head->first, &first, new_first));
-
-	return !first;
----
-
-It reads head->first, then writes the new_last->next (call it new_first->next)
-to the old first, then sets head->first to the new_first if head->first did not
-change in the meanwhile.
-
-The problem I guess happens if the update the head->first is seen *after* the
-update to the new_first->next.
-
-This potentially means a corrupted list is seen in the workqueue handler..
-because the "U" node is not yet seen pointing to the rest of the list
-(previously added nodes), but is already seen the head of the list.
-
-I am not sure if this can happen, but AFAIK try_cmpxchg() doesn't imply ordering
-per-se. Maybe that try_cmpxchg() should be a try_cmpxchg_release() in llist_add() ?
-
-thanks,
-
- - Joel
+Very much so, which is why adding the cost of rcu_softirq_qs()
+for every NAPI run feels like an overkill.
