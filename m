@@ -1,211 +1,89 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C2C79D0
-	for <rcu@vger.kernel.org>; Sat,  2 Mar 2024 02:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8793EA8C
+	for <rcu@vger.kernel.org>; Sat,  2 Mar 2024 19:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709346274; cv=none; b=EKUQaeI5BR9VY/gQxRr1mscB/Mn+bau/sPzA5wwB2GiyCGOWKG1x3+hpFzIz/nvwK4SszrYSHEggA/VYkNxjRi0Q68qZy1k0rpbHXZTdDH9IG10MjH4LvlQRRUoCeo9IE851cnAjdnQDb8KIyEpGp2nrJvSWioItLO1QFQtrIxs=
+	t=1709408623; cv=none; b=QnrhvF/hRxI8IEMOfuFnDlFxWccHJHuYqQ03jhUIcHREqG/TbbG7p+X2j6RrfaWJblFmvS0dDIM4buYxeXFBgqqMu3u59/vor2mUTgGGuoylzE5KT/TbKZSjIy860DJZAId24u4ATdv6Vvdrozc2BSSbYoNEVBIPhhLOx/tbnzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709346274; c=relaxed/simple;
-	bh=ZbRjRfGgsE7JtMXZ7+GBMuqAIJuCRArBk/R4UQi4fa8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E5QnDjFncTZNW/aIoqBT4sN6xsqa7GzIe2ho7VUl58gcECrvx66v05Hn0FajTCmZVrt3NV4hll1nYyYuFiCbjOPrvGmpt8EB9pDwcCUKRaZNf1951pIhJqkmX1YEDqgyfhNMJ/CETvX/wCPDTqSDm1t6HPYQAfcI+j+pJoZhSH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=ndJiAJi0; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1709408623; c=relaxed/simple;
+	bh=MubbEwdSzMXjXRVmb/ZUmFJOCXi/+4qDvwdjGt7Xk1U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GZ6Mdj1wBPYvqectFmwf27JeLR/8wAcfcseSfu0YRLJa7DTbGfirEFWCsPQ5gMHHrj9MwfEY56P00VZmWWq2EM55YtyhO7rq36Y8nnYFJRxeZYUq/V8kVyK7JiSdpBC2usd9Vjy1EpOLXdD8EwcPDBdSGhm91ABLl8fdwo7/z9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4eWzcHP; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ndJiAJi0"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d228a132acso32959131fa.0
-        for <rcu@vger.kernel.org>; Fri, 01 Mar 2024 18:24:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709346271; x=1709951071; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0BPRTmka5fJv1/6kKHd7XoCtkBtwYqpJPZBGmWQG3Mo=;
-        b=ndJiAJi0ZLdzKkVqWLckKAG83dKa+i7ZKFjdJe0u7P+lBwSBg8A9ySV49jg0W+LXCr
-         jhS0IXEegG6x7obSBiB1C5eX0qcVW2NRK7Su0qxhn4iLl1Oix6ukPLVDGNtc5XPDXyrU
-         qgvwY52pPfR9IhbMgXGZvX+1Cn5WkakYmhBQQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709346271; x=1709951071;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0BPRTmka5fJv1/6kKHd7XoCtkBtwYqpJPZBGmWQG3Mo=;
-        b=uctu7vdl4lgj61URiIV68DOQD05XhfFUH4N7CivVnoIsTgTx+j9y61RLGAn3GdkTQB
-         L5I0iVf8CC5oZ8dskjCSNYIVnaIrpwIk57Mtj1kxDa38rMLmZ0Nn14uW+jdeCba2KrSv
-         DXbRyRBEkrPpQ3iL2GA0BSRIpfMH+Mt4I/acR5PckvS4YG5TGAUpH7UNhxFZwdhKhgYi
-         2i8AHPDaT78g7RduUR8jrMjViNWjvS40d70C1WwhcC9pVl18vmbvhxFDtf4lW8nytKZg
-         mOLU170fmxPzinQr5aiOhZH5grPQtEkWpCMUaGgYdMc0s5wLFAEvWaYfTZuAV86zSTrf
-         ezqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVL7feGpI5VorKJuzZo20yd3Zg5t06yZoI5NgxXtVHOFv4RdPUngc3tf+oKJw3NTjEdikTyZ8s1zwgx4rFBq1JBjMSt
-X-Gm-Message-State: AOJu0YzRJc4/KLmt3/6iAw7FSimNgOcPnoXCf/2x1GAIxM/cwzk1CevG
-	W6MBQK0Q2pEnRbL8GYuZuuEAuqVQMe2oGrifPWLaiM4YKj3RaEItbD8ggFAjyK4c6LmgfCdk+/D
-	xdih/vuN1OOkfKFrEaMWAUXJJQpYij2i/Rfv/ew==
-X-Google-Smtp-Source: AGHT+IH98YLZnMxBAG59okgQ+PyTSyL2rsPj7i9rV8TY6srfxIhgylxvaw0NdCb2O9sVvrFMBArv71G6Pgzuxs54Gso=
-X-Received: by 2002:a2e:a688:0:b0:2d2:a9d6:c435 with SMTP id
- q8-20020a2ea688000000b002d2a9d6c435mr2033116lje.34.1709346270566; Fri, 01 Mar
- 2024 18:24:30 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4eWzcHP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26068C433F1;
+	Sat,  2 Mar 2024 19:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709408623;
+	bh=MubbEwdSzMXjXRVmb/ZUmFJOCXi/+4qDvwdjGt7Xk1U=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=T4eWzcHPZ6oY7hyiD/kfQjkni96kzt0JgcooF7PqeiRs07nCSKKOf1TPdmbsVvVkG
+	 r00xlL8IomWpQdys/CNECE0Djr/+O9zslo4ufWOVbb2ECQR9l+QeK0B2K2Dp5ISCS4
+	 81Yp9Psxhy4xNFiqAutZBwtJIBV6WX552brKjg1YSV8HQTAtEiFTlxSbc0+YhHRvhG
+	 sSuUi/2T+dF3/cvKfvc4mdHAP9auM3RT+bW34CY2d8QM9D7cTauylRql4Zy4NEMFsv
+	 flpyJrRmYYLY7zWcmwZxXJyxjTfEnZK+/sJcVsQ31r0IKoKIlQ73jTlssUW2DE0CTM
+	 8FQ099aRlxDUA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B37EECE141F; Sat,  2 Mar 2024 11:43:42 -0800 (PST)
+Date: Sat, 2 Mar 2024 11:43:42 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Max Boone <contact@maxboone.com>
+Cc: boqun.feng@gmail.com, rcu@vger.kernel.org
+Subject: Re: Advice sought on RCU stalls on ARM64 WSL2
+Message-ID: <1a5d96d6-2057-44d9-a4b0-8771c46032fb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6a07-65e37700-1-4052b980@161649365>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
- <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org> <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
-In-Reply-To: <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Fri, 1 Mar 2024 21:24:15 -0500
-Message-ID: <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-To: paulmck@kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>, Network Development <netdev@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org, 
-	kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6a07-65e37700-1-4052b980@161649365>
 
-(Shrinking CC a bit)
+[ Adding Boqun and the rcu list on CC. ]
 
-On Thu, Feb 29, 2024 at 1:29=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Thu, Feb 29, 2024 at 12:41:55PM -0500, Joel Fernandes wrote:
-> > > On Feb 29, 2024, at 11:57=E2=80=AFAM, Paul E. McKenney <paulmck@kerne=
-l.org> wrote:
-> > > =EF=BB=BFOn Thu, Feb 29, 2024 at 09:21:48AM -0500, Joel Fernandes wro=
-te:
-> > >>> On 2/28/2024 5:58 PM, Paul E. McKenney wrote:
-> > >>> On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
-> > >>>> On Wed, Feb 28, 2024 at 2:31=E2=80=AFPM Steven Rostedt <rostedt@go=
-odmis.org> wrote:
-> > >>>>>
-> > >>>>> On Wed, 28 Feb 2024 14:19:11 -0800
-> > >>>>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > >>>>>
-> > >>>>>>>>
-> > >>>>>>>> Well, to your initial point, cond_resched() does eventually in=
-voke
-> > >>>>>>>> preempt_schedule_common(), so you are quite correct that as fa=
-r as
-> > >>>>>>>> Tasks RCU is concerned, cond_resched() is not a quiescent stat=
-e.
-> > >>>>>>>
-> > >>>>>>> Thanks for confirming. :-)
-> > >>>>>>
-> > >>>>>> However, given that the current Tasks RCU use cases wait for tra=
-mpolines
-> > >>>>>> to be evacuated, Tasks RCU could make the choice that cond_resch=
-ed()
-> > >>>>>> be a quiescent state, for example, by adjusting rcu_all_qs() and
-> > >>>>>> .rcu_urgent_qs accordingly.
-> > >>>>>>
-> > >>>>>> But this seems less pressing given the chance that cond_resched(=
-) might
-> > >>>>>> go away in favor of lazy preemption.
-> > >>>>>
-> > >>>>> Although cond_resched() is technically a "preemption point" and n=
-ot truly a
-> > >>>>> voluntary schedule, I would be happy to state that it's not allow=
-ed to be
-> > >>>>> called from trampolines, or their callbacks. Now the question is,=
- does BPF
-> > >>>>> programs ever call cond_resched()? I don't think they do.
-> > >>>>>
-> > >>>>> [ Added Alexei ]
-> > >>>>
-> > >>>> I'm a bit lost in this thread :)
-> > >>>> Just answering the above question.
-> > >>>> bpf progs never call cond_resched() directly.
-> > >>>> But there are sleepable (aka faultable) bpf progs that
-> > >>>> can call some helper or kfunc that may call cond_resched()
-> > >>>> in some path.
-> > >>>> sleepable bpf progs are protected by rcu_tasks_trace.
-> > >>>> That's a very different one vs rcu_tasks.
-> > >>>
-> > >>> Suppose that the various cond_resched() invocations scattered throu=
-ghout
-> > >>> the kernel acted as RCU Tasks quiescent states, so that as soon as =
-a
-> > >>> given task executed a cond_resched(), synchronize_rcu_tasks() might
-> > >>> return or call_rcu_tasks() might invoke its callback.
-> > >>>
-> > >>> Would that cause BPF any trouble?
-> > >>>
-> > >>> My guess is "no", because it looks like BPF is using RCU Tasks (as =
-you
-> > >>> say, as opposed to RCU Tasks Trace) only to wait for execution to l=
-eave a
-> > >>> trampoline.  But I trust you much more than I trust myself on this =
-topic!
-> > >>
-> > >> But it uses RCU Tasks Trace as well (for sleepable bpf programs), no=
-t just
-> > >> Tasks? Looks like that's what Alexei said above as well, and I confi=
-rmed it in
-> > >> bpf/trampoline.c
-> > >>
-> > >>        /* The trampoline without fexit and fmod_ret progs doesn't ca=
-ll original
-> > >>         * function and doesn't use percpu_ref.
-> > >>         * Use call_rcu_tasks_trace() to wait for sleepable progs to =
-finish.
-> > >>         * Then use call_rcu_tasks() to wait for the rest of trampoli=
-ne asm
-> > >>         * and normal progs.
-> > >>         */
-> > >>        call_rcu_tasks_trace(&im->rcu, __bpf_tramp_image_put_rcu_task=
-s);
-> > >>
-> > >> The code comment says it uses both.
-> > >
-> > > BPF does quite a few interesting things with these.
-> > >
-> > > But would you like to look at the update-side uses of RCU Tasks Rude
-> > > to see if lazy preemption affects them?  I don't believe that there
-> > > are any problems here, but we do need to check.
-> >
-> > Sure I will be happy to. I am planning look at it in detail over the 3 =
-day weekend. Too much fun! ;-)
->
-> Thank you, and looking forward to seeing what you come up with!
->
-> The canonical concern would be that someone somewhere is using either
-> call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() to wait for
-> non-preemptible regions of code that does not account for the possibility
-> of preemption in CONFIG_PREEMPT_NONE or PREEMPT_PREEMPT_VOLUNTARY kernels=
-.
->
-> I *think* that these are used only to handle the possibility
-> of tracepoints on functions on the entry/exit path and on the
-> RCU-not-watching portions of the idle loop.  If so, then there is no
-> difference in behavior for lazy preemption.  But who knows?
+On Sat, Mar 02, 2024 at 07:59:08PM +0100, Max Boone wrote:
+> 
+> Dear Dr. McKenney,
+> 
+> For a couple of years now I've been the sometimes frustrated owner of a Microsoft Surface Pro X ARM64 device, which has been getting progressively better as more vendors start targeting their builds at ARM64 architectures but since the introduction of the device there have been issues with the Windows Subsystem for Linux (not more than an opinionated Hyper-V VM with extensive tooling) locking up and hanging. 
+> 
+> When this happens, traces like the following are dumped in the kernel messages:
+> https://github.com/microsoft/WSL/issues/9454#issuecomment-1942222109
+> 
+> When watching your talk "Decoding Those Inscrutable RCU CPU Stall Warnings" you mentioned one can feel free reaching out when bumping into such issues. Building other kernel releases, switching off-and-on modules and playing with the RCU grace period times so far don't seem to work for me (or others in that thread).
+> 
+> Anyways, I don't really know where to start looking and the call stacks aren't very informative (to my eye) either. I'm hoping you might help me find the direction to look for the root of this problem.
 
-Hi Paul, regarding CONFIG_PREEMPT_AUTO, for Tasks RCU rude, I think
-the following patch will address your concern about quiescent states
-on CPUs spinning away in kernel mode:
+I am assuming that you have filed a bug with the Debian folks, and before
+doing that, searched for similar bug reports.
 
-"sched/fair: handle tick expiry under lazy preemption"
-Link: https://lore.kernel.org/all/20240213055554.1802415-24-ankur.a.arora@o=
-racle.com/
+At first glance, this is because things were stuck here:
 
-In this patch Ankur makes sure that the scheduling-clock interrupt
-will reschedule the CPU after a tick and not let queued tasks starve
-due to lazy re-scheduling. So my impression is the
-"schedule_on_each_cpu()" should schedule a worker thread in time to
-apply the implied Tasks RCU quiescent state even if the rescheduling
-was a LAZY-reschedule.
+[  967.115632]  clear_rseq_cs.isra.0+0x4c/0x60
+[  967.116433]  do_notify_resume+0xf8/0xeb0
+[  967.116960]  el0_svc+0x3c/0x50
+[  967.117537]  el0t_64_sync_handler+0x9c/0x120
+[  967.118323]  el0t_64_sync+0x158/0x15c
 
-Also, not sure if the "voluntary mode" of CONFIG_PREEMPT_AUTO behaves
-differently. My feeling is regardless of preemption mode,
-CONFIG_PREEMPT_AUTO should always preempt after a tick if something
-else needs to run. It just will not preempt immediately like before
-(although CFS did already have some wakeup preemption logic to slow it
-down a bit). I am reviewing Ankur's patches more to confirm that and
-also reviewing his patches more to see how it could affect.
+So including these function names (clear_rseq_cs() and so on) in your
+search for similar bug reports would be a good idea.
 
-thanks,
+I am unfamiliar with that code.
 
- - Joel
+So I added Boqun because he works with Linux on HyperV as part of his
+day job and has a great deal of experience with RCU.  He will likely
+have quite a number of questions for you including exact versions,
+Debian bug number, the results of your web search, and so on.  He might
+also know an ARM person to get involved in this.
+
+Or maybe he knows the solution off the top of his head!
+
+							Thanx, Paul
