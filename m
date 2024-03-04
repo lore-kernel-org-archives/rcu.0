@@ -1,75 +1,93 @@
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC1A4AECA;
-	Mon,  4 Mar 2024 16:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1903038DCC
+	for <rcu@vger.kernel.org>; Mon,  4 Mar 2024 16:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709569399; cv=none; b=g9EwRVU83iV7cKDAGnleAycAdI50+oDGdYIceIlHBor+4VMjIF++u6Qv3pB+4A2gKCxUlXygL/9mOCeZQ8mc2AqhSBMtGazK3PCx0yxqSGUd39fQ1WFpjfgiSo+I9W6UzozlUOfnMrbmXmLw1mrMiE6qi6KJUy3b9u4yTT6/k4k=
+	t=1709570016; cv=none; b=ndDnFaSQLYR5Z8M+ooXeDY461/ZDNfQv7/DG6mmb2GRiTYNbsTR0VNn7YjPP4yPrpQ1BIM5+XKx3qM0i3Z02+8YDTnmVgBYXrZTHEvY9FYVABGNp78zccjWSWrVNv0/pbDMLZjvCHWanmTm4KXbfftQxSPHBWYxFjKM2/cUag8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709569399; c=relaxed/simple;
-	bh=bhcQm9IVnLXYy1OPeiOKUbtZ95U8nYVEeR2LEzd9vU4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=siR4UEubsh/QrliXrGLUYZLWfx92qafiCwGW2E7+jlOs5sE4dw8IrjeoCcCyOQmeweuoAIdkRnkQ5xFRipzi1p44eLJs+bMpP5mMz0Sdg500d9iskc+oPcLctL7dL97moE3U9SApv5BVZnyrQGxvqYRLeD3LblwlCjFiUE5PUuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gvkna4Cn; arc=none smtp.client-ip=209.85.208.169
+	s=arc-20240116; t=1709570016; c=relaxed/simple;
+	bh=PEdDUWg7dGydDSmkTPDGbLYydFx5ClH6+MRqw3JPebk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Udb8MD9hhW6kgRLGgTn6A9Cwaljn1+tMzZVomAeO2oPukv7e/PZt3lJ/B3gotKT8bJqErYDscgoFbeSFgvN/WZ25UPzrlxmIoHHngF6vULYkCQsQ3necCl3vJr9XPC5lx6mLXLL/vaI3s5BLqv2bOD4R67Q3O9uV2ADHJJ/2S7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hk4lGpN5; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gvkna4Cn"
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d2628e81b8so54569121fa.0;
-        Mon, 04 Mar 2024 08:23:17 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hk4lGpN5"
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-78822e21a9dso52146685a.2
+        for <rcu@vger.kernel.org>; Mon, 04 Mar 2024 08:33:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709569396; x=1710174196; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709570014; x=1710174814; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LnSBxJC80Vj6IkqExQ+493ms5K7qx9z96ku+5T01XSU=;
-        b=Gvkna4CnpQB+z3aoYqIQh4FdyBn+VsSHAnYRql3W7YMdHzZHNlajXHkHHziFgGIdOw
-         WMwKxERySTYkM8jRFKtFbSB9WVuIuGRx8AgZMh2T4W/0haZ97wpL8hiWsPEcGV42A/FN
-         DyfsazquwOeoAqUX2gYMhmFC0qBS5AZkBNCvVG2nadnBN03VTs8aS3zIS7eLEbMjml6g
-         xqsOhYk4g4ZCjc1mfhkGg+SUdEkJTbCftnwfabBbf5SA1fIRMrrqZm/MOM24yfjXOJaG
-         2unqKn5bnTiNhHcl7jkEkwPxGOY7+oOWpXTtnIfMAmvBOLxr92cT9j/TG0ZdtcP2hkil
-         vSkA==
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=DcUO1lxMKpF0JBcplNZQH+WoHS8Rf7TjgwTIs09Ka8w=;
+        b=Hk4lGpN5R5qk+8M29SNbsWS6TxTXvRNjAZR7PRi62koPUAJ3cy4U8dvXa3f+ECGoSC
+         +faS0jxyp10D2rsvkrFP3WdMaMdVlD9a6eUA9R8Lxe3DwJF9c894MX8ruIOwr2084cqF
+         MeGldiOmVUvCKTE86CVFdh/W2jon9Jg9tXIpWMTDpx1exQfdRTTE/71OOT37v8XKwNij
+         T6M5wHJAbmuvHwWcKk31fkmaEv9zTRYy0JvPkgd9hXmEwB1WvOxRuc73XK0ISRa7Tnn4
+         wjFp4GdPXvJiSV1Xa74ptdl9Pz172q1goAsid7oxF95gH4vp53J6x0X3OsfVC4hmJwt6
+         /pCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709569396; x=1710174196;
+        d=1e100.net; s=20230601; t=1709570014; x=1710174814;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LnSBxJC80Vj6IkqExQ+493ms5K7qx9z96ku+5T01XSU=;
-        b=vnzw+DZ9Nu9zoh1rXSbkRjpx3aZPDUnEo7MLPPZa9tZuDIJecSxQ1i0C5zI+tdZuEj
-         kiQXeilawNTyEB1lGptxKUOxCOlthaRarLlh+C3szuhwaLAO/sI9jnLlAJtak1DpcxzM
-         lqyMBiLwSh/W7o7MoohM7usA4+spbqRR2zKOdATNEjYL306ECOK9ihPecAsheUFmZNtV
-         P5ZZ4585H01bNUWWHcqRcD9pEMHVzTOsJ1zBHyxzww5toWxonl9AGf7tCd6/TnU+9kw8
-         X49kJOuLQOAnUf936/QBZtxoHfQxC9OLxr5Akvrez8HeFWEsDrhbY8jJoPmO/P1eRVCd
-         idlw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/eLb3V4Cyj8gsexbho4xF/5x1GcXh0P8FsDzvj/ayPCmUB60a4yIL3NSmnUirG5HrvPyf98Elhp/NQuykXDXUIKv3Lr7dgYG1AULgXeFxhnGEc5wyyb9nh7E2PwFnlJym
-X-Gm-Message-State: AOJu0Yz9HBDq3H8w3YYhFiHjBKXOskOLTsbFuX51j/iD038JQnwkMjU1
-	58F45eVlwYxY+vq2qOWDyt/ngF/LQwOswORnGbLG4MeGqHHY4+EW
-X-Google-Smtp-Source: AGHT+IFlseYM9/Av3AeeMEWulX49lWqH5kgRVbhEM3OC0mBUVqyUY4xyyyWmucu/ME7DjRgpmB9W3A==
-X-Received: by 2002:a2e:94d7:0:b0:2d3:a45c:4390 with SMTP id r23-20020a2e94d7000000b002d3a45c4390mr1410745ljh.5.1709569395624;
-        Mon, 04 Mar 2024 08:23:15 -0800 (PST)
-Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id e20-20020a2eb1d4000000b002d292191b10sm1773244lja.36.2024.03.04.08.23.14
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DcUO1lxMKpF0JBcplNZQH+WoHS8Rf7TjgwTIs09Ka8w=;
+        b=mEh7JhujlCoxDHEDtSPcIw+24aWg2pk8+nNXBOYuQx9UKi2SmNvGaltKdSBS/VcLOI
+         B23TIGwJv/6XRFDwWEBMB0S0CNsIrVBEeaopkEDTRqm02V3PoPfg7Yd6xxR21uOBRDEx
+         sTA8Zx3xv7Ndu5J3VjEC2wQZEpktaxMUuW7Ep/lZ99/9a+gQr35wSWWtT5rAWSBeVEuc
+         m0/0W00nGUlDVCQDIzy/Tvegt5CGMwb+jGxz42CHn19nQJ/521e5+VJR3O5STaLtiKro
+         xrSKwNwc1NLQqmmXEyCSZkRwkUiDKcAddgxEcQSjwx37qo4bA8QQx8d/e/re3694GxWn
+         WW1A==
+X-Forwarded-Encrypted: i=1; AJvYcCVQkMZ+PU/noSr5onD3CuYH7ALP5919PgRrpmbkNUo11MU5luXfTqZOO2HKrucbiB/4llU6V/nnkk+qPG4SnHimVdZv
+X-Gm-Message-State: AOJu0YwShwaWH5ZJN4CgGfEMfZ7QZdtOnLl6h7AlfPdE/Hhq0zsjqeTo
+	Yrwzzj95e30nz+Cup11nT2elAYG/p148AWTBD5HTt5WyEUOl2n9UaqC3cWag
+X-Google-Smtp-Source: AGHT+IF6/7JP3RVluHDJvWpk3WODBdUL4FjnIEfpks4U84zIykaW1gVBpBWz0pMnndZ29HTLXPzzyw==
+X-Received: by 2002:a05:620a:1a1c:b0:788:4f8:ef80 with SMTP id bk28-20020a05620a1a1c00b0078804f8ef80mr12359059qkb.16.1709570013873;
+        Mon, 04 Mar 2024 08:33:33 -0800 (PST)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id o27-20020a05620a111b00b0078821c4207bsm1836561qkk.115.2024.03.04.08.33.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 08:23:15 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date: Mon, 4 Mar 2024 17:23:13 +0100
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <ZeX1cXWKv2kirDXg@pc638.lan>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <Zd0ZtNu+Rt0qXkfS@lothringen>
- <Zd91pR0fjiCUZTtP@pc636>
- <ZeW2w08WZo4yapQp@localhost.localdomain>
+        Mon, 04 Mar 2024 08:33:33 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 25E901200068;
+	Mon,  4 Mar 2024 11:33:33 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 04 Mar 2024 11:33:33 -0500
+X-ME-Sender: <xms:3PflZcq0nibiM_n6s2WNjiPli7MdWyqgqb_SZJ0GBJTh7g0ObXFoJA>
+    <xme:3PflZSqSLiZGFTiDssk2Yg5aitOvDKIaLb59UjC-8Q1PS-EV9eyUv3QSNO-1NGNka
+    SrDPWfGWAe7WIDaWQ>
+X-ME-Received: <xmr:3PflZRNQPjuADLPtNgIvslS0jcPRToBJMY27k5B5YOt-QYByDT0Xjawv1w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgdekkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeegkeegtedtleffkeeftdevleeuieduveejgeeikedvgeekudefteefieei
+    vdeuleenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:3PflZT6W4MUa1-QW1S4ARGV-KhDos5lGxdtKcia1c-SxRbklH8-6kw>
+    <xmx:3PflZb5wB4n-tqA9toQXH-YTr6Q6W-FkdO7FniIaCN0FOe9sHUj_4g>
+    <xmx:3PflZThRhDsHkoJAVU2CpKxryRMG8FLzqR1GKVlVeCmlGGG7KmN3og>
+    <xmx:3fflZdmlQEWIEDEXsoM1oujdECwWgO9IkTuc-kJ4FKttE9IMpuyB4RxkjRM>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Mar 2024 11:33:32 -0500 (EST)
+Date: Mon, 4 Mar 2024 08:33:31 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Max Boone <contact@maxboone.com>, rcu@vger.kernel.org
+Subject: Re: Advice sought on RCU stalls on ARM64 WSL2
+Message-ID: <ZeX327aMIrthOXbs@Boquns-Mac-mini.home>
+References: <1a5d96d6-2057-44d9-a4b0-8771c46032fb@paulmck-laptop>
+ <3718bb-65e38400-d-5cd53080@68830111>
+ <99a0fb2c-c936-405f-85bf-847c61531bd5@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -79,138 +97,78 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZeW2w08WZo4yapQp@localhost.localdomain>
+In-Reply-To: <99a0fb2c-c936-405f-85bf-847c61531bd5@paulmck-laptop>
 
-On Mon, Mar 04, 2024 at 12:55:47PM +0100, Frederic Weisbecker wrote:
-> Le Wed, Feb 28, 2024 at 07:04:21PM +0100, Uladzislau Rezki a écrit :
-> > On Tue, Feb 27, 2024 at 12:07:32AM +0100, Frederic Weisbecker wrote:
-> > > On Tue, Feb 20, 2024 at 07:31:13PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > > +{
-> > > > +	struct llist_node *done, *rcu, *next, *head;
-> > > > +
-> > > > +	/*
-> > > > +	 * This work execution can potentially execute
-> > > > +	 * while a new done tail is being updated by
-> > > > +	 * grace period kthread in rcu_sr_normal_gp_cleanup().
-> > > > +	 * So, read and updates of done tail need to
-> > > > +	 * follow acq-rel semantics.
-> > > > +	 *
-> > > > +	 * Given that wq semantics guarantees that a single work
-> > > > +	 * cannot execute concurrently by multiple kworkers,
-> > > > +	 * the done tail list manipulations are protected here.
-> > > > +	 */
-> > > > +	done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > > +	if (!done)
-> > > > +		return;
-> > > > +
-> > > > +	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-> > > > +	head = done->next;
-> > > > +	done->next = NULL;
-> > > 
-> > > Can the following race happen?
-> > > 
-> > > CPU 0                                                   CPU 1
-> > > -----                                                   -----
-> > > 
-> > > // wait_tail == HEAD1
-> > > rcu_sr_normal_gp_cleanup() {
-> > >     // has passed SR_MAX_USERS_WAKE_FROM_GP
-> > >     wait_tail->next = next;
-> > >     // done_tail = HEAD1
-> > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > >     queue_work() {
-> > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > >         __queue_work()
-> > >     }
-> > > }
-> > > 
-> > >                                                       set_work_pool_and_clear_pending()
-> > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > > // new GP, wait_tail == HEAD2
-> > > rcu_sr_normal_gp_cleanup() {
-> > >     // executes all completion, but stop at HEAD1
-> > >     wait_tail->next = HEAD1;
-> > >     // done_tail = HEAD2
-> > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > >     queue_work() {
-> > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > >         __queue_work()
-> > >     }
-> > > }
-> > >                                                           // done = HEAD2
-> > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > >                                                           // head = HEAD1
-> > >                                                           head = done->next;
-> > >                                                           done->next = NULL;
-> > >                                                           llist_for_each_safe() {
-> > >                                                               // completes all callbacks, release HEAD1
-> > >                                                           }
-> > >                                                       }
-> > >                                                       // Process second queue
-> > >                                                       set_work_pool_and_clear_pending()
-> > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > >                                                           // done = HEAD2
-> > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > 
-> > > // new GP, wait_tail == HEAD3
-> > > rcu_sr_normal_gp_cleanup() {
-> > >     // Finds HEAD2 with ->next == NULL at the end
-> > >     rcu_sr_put_wait_head(HEAD2)
-> > >     ...
-> > > 
-> > > // A few more GPs later
-> > > rcu_sr_normal_gp_init() {
-> > >      HEAD2 = rcu_sr_get_wait_head();
-> > >      llist_add(HEAD2, &rcu_state.srs_next);
-> > >                                                           // head == rcu_state.srs_next
-> > >                                                           head = done->next;
-> > >                                                           done->next = NULL;
-> > >                                                           llist_for_each_safe() {
-> > >                                                               // EXECUTE CALLBACKS TOO EARLY!!!
-> > >                                                           }
-> > >                                                       }
-> > Looks like that. To address this, we should not release the head in the GP
-> > > kthread.
+On Sat, Mar 02, 2024 at 04:19:17PM -0800, Paul E. McKenney wrote:
+> On Sat, Mar 02, 2024 at 08:53:54PM +0100, Max Boone wrote:
+> > 
+> > Thank you so much for the quick reply!
+> > 
+> > ​​​​​​I haven't filed a bug with Debian specifically as I'm running the linux kernel built and provided by Microsoft and Ubuntu as OS on top. If it helps with the search I'd gladly run Debian and file a bug there, but will still need to build my own kernel as WSL requires some modules (such as HyperV storage and sockets) to be built into the kernel instead (meaning =y) of as modules (meaning =m).
 > 
-> But then you have to unconditionally schedule the work, right? Otherwise the
-> HEADs are not released. And that means dropping this patch (right now I don't
-> have a better idea).
->
-The easiest way is to drop the patch. To address it we can go with:
+> Ah, if you built your own kernel, then you are your own distro as far
+> as kernel issues are concerned.  ;-)
+> 
+> 							Thanx, Paul
+> 
+> > I'll stick to using the rcu list from here on to avoid spam, thanks again!
+> > ​​​​​
+> > On Saturday, March 02, 2024 20:43 CET, "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> >  [ Adding Boqun and the rcu list on CC. ]
+> > 
 
-<snip>
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 31f3a61f9c38..9aa2cd46583e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1661,16 +1661,8 @@ static void rcu_sr_normal_gp_cleanup(void)
- 	 * wait-head is released if last. The worker is not kicked.
- 	 */
- 	llist_for_each_safe(rcu, next, wait_tail->next) {
--		if (rcu_sr_is_wait_head(rcu)) {
--			if (!rcu->next) {
--				rcu_sr_put_wait_head(rcu);
--				wait_tail->next = NULL;
--			} else {
--				wait_tail->next = rcu;
--			}
--
-+		if (rcu_sr_is_wait_head(rcu))
- 			break;
--		}
- 
- 		rcu_sr_normal_complete(rcu);
- 		// It can be last, update a next on this step.
-<snip>
+Thanks, Paul.
 
-i.e. the process of users from GP is still there. The work is triggered
-to perform a final complete(if there are users) + releasing wait-heads
-so we do not race anymore.
+> > On Sat, Mar 02, 2024 at 07:59:08PM +0100, Max Boone wrote:
+> > >
+> > > Dear Dr. McKenney,
+> > >
+> > > For a couple of years now I've been the sometimes frustrated owner of a Microsoft Surface Pro X ARM64 device, which has been getting progressively better as more vendors start targeting their builds at ARM64 architectures but since the introduction of the device there have been issues with the Windows Subsystem for Linux (not more than an opinionated Hyper-V VM with extensive tooling) locking up and hanging. 
+> > >
+> > > When this happens, traces like the following are dumped in the kernel messages:
+> > > https://github.com/microsoft/WSL/issues/9454#issuecomment-1942222109
+> > >
+> > > When watching your talk "Decoding Those Inscrutable RCU CPU Stall Warnings" you mentioned one can feel free reaching out when bumping into such issues. Building other kernel releases, switching off-and-on modules and playing with the RCU grace period times so far don't seem to work for me (or others in that thread).
+> > >
+> > > Anyways, I don't really know where to start looking and the call stacks aren't very informative (to my eye) either. I'm hoping you might help me find the direction to look for the root of this problem.
+> > 
+> > I am assuming that you have filed a bug with the Debian folks, and before
+> > doing that, searched for similar bug reports.
+> > 
+> > At first glance, this is because things were stuck here:
+> > 
+> > [ 967.115632] clear_rseq_cs.isra.0+0x4c/0x60
+> > [ 967.116433] do_notify_resume+0xf8/0xeb0
+> > [ 967.116960] el0_svc+0x3c/0x50
+> > [ 967.117537] el0t_64_sync_handler+0x9c/0x120
+> > [ 967.118323] el0t_64_sync+0x158/0x15c
+> > 
+> > So including these function names (clear_rseq_cs() and so on) in your
+> > search for similar bug reports would be a good idea.
+> > 
+> > I am unfamiliar with that code.
+> > 
+> > So I added Boqun because he works with Linux on HyperV as part of his
+> > day job and has a great deal of experience with RCU. He will likely
+> > have quite a number of questions for you including exact versions,
+> > Debian bug number, the results of your web search, and so on. He might
+> > also know an ARM person to get involved in this.
+> > 
+> > Or maybe he knows the solution off the top of his head!
+> > 
 
-I am OK with both cases. Dropping the patch will make it more simple
-for sure.
+I haven't seen this issue before, looks to me the stall is caused by
+clear_rseq_cs(), which is basically a put_user(), and I don't have an
+immediate theory, could you share the kernel repo and configuration you
+used, so that I can see if I can reproduce this? (Note I don't have the
+exact device as you do nor an ARM64 Windows system with the exact
+Windows build you are using).
 
---
-Uladzislau Rezki
+Regards,
+Boqun
 
+> > Thanx, Paul
+> > 
+> > 
+> >  
+> 
