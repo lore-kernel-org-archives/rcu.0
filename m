@@ -1,161 +1,119 @@
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E080E1B819
-	for <rcu@vger.kernel.org>; Mon,  4 Mar 2024 09:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBFCA1B814;
+	Mon,  4 Mar 2024 11:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543780; cv=none; b=RKu7fbpq/7J+ygfPogDR8CQgyxFhiEMeUDAVDmE4O3yeLKkBRfisaIGoJXpZTIAcwyYOif8WoubdTkutvkzYsDrliDnM0oaLiqwk/mOyxdVvpRW5zCgEy03Y7TH6YoL+/wh7VfidHeErDok5PUFglRiS9dxiLWUIxNydUGMz9m0=
+	t=1709550068; cv=none; b=BmdtvKPxdig2wWl+x6u6+0YPwvvg/XqJCbt0Y0DH+0veEdnfTtVamiJldjRPK8w2iR3SWZ+k/VsTDzO6nhU0+ft3MyFR6amPiB8ws2zp68P4Y9HAgCdgFdArAzo8HwA0/o1DmJ+QSZbtfsKXyJ4RPqa68jA79lBVm74hzstUTBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543780; c=relaxed/simple;
-	bh=7/Cg7bSkP3P3KzE9IpfjIHLKep/5j0YfikDfAl96988=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=q6n8/OxX6p1eY2sxjsg60XFMOBAulFMiYjnr9k/bMLxTQKPFfC7yO8cVRsThMi/xJN+vTLhaSMxbtI9ut4AeHC8ba2u5k5ch5scNSfTN49q19+QnQ4OroGltWtpmhMad4UfBQcHp6G8rl6A395BovTn/FTJpcy9uOPK4IcUisMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=S7cXE67V; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1709550068; c=relaxed/simple;
+	bh=/tWTG1VRLQN+1qsichV/pE5kKWXw53KAsrYYtmgyIu8=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=TeLAYNDZQDnPek7iifc7UtiM+dYDMrJrImFk7cddHwJ3suX6uQ/j0KOM6K8W0s8RfSe/lfTtpa7fNKQXToARaoPRrcwIfZD9KqAuyrzOgPHFbltd08lmP83zz+Gh0zymJAXpZhG5gB/fsSep5/IPfv3s7XQJIo1TkmuqDrfZsvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=hcoYEjrq; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="S7cXE67V"
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-69076df51daso3339106d6.3
-        for <rcu@vger.kernel.org>; Mon, 04 Mar 2024 01:16:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709543778; x=1710148578; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AWM0i1D+FispfxeIOLK4vZoGix8afRI2zst62UErbPs=;
-        b=S7cXE67VDKzOS8oEhk2wOe1+UYaku8agA6xf2gN9Dgis7hG8ysJyI/YR1VOG1ckm0E
-         /KgB3L9GeFOmeV/rzKIkN48qvIQNwU7QNz3vDm6xG0Lu1bttYm0m/rLorUbwD9pxXs8l
-         ewSL50KVriy9aY4RCmrSDB7OXDfDBmLnhFevU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709543778; x=1710148578;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AWM0i1D+FispfxeIOLK4vZoGix8afRI2zst62UErbPs=;
-        b=DCxYvDEeJUu4VtajGobxBn8Y8bAV/NJ4J93hiXumY29R0jK656o5Gzs5qqXrTvZ1l+
-         whRAU9v95Bkp/uIPj5Yix85AYorP82cUBE7AxAyeSpHuqmuqp02h3i9WBdDS3RxxSCBS
-         WspI4X+R0nsQOJ3WCfqekNfs3noNXZPrp/oyH1yOyyDRxKtAhaMC4LufyQc+qpQ8YWfl
-         rwPr64O3YTciiI4fzhGA0R4RxEMUvNGaCo/cVWQDsGBg6f9A/VLLBtufoULecL+AFIsH
-         IjeOvLBWsuK/rR+BBc/ya+xo6x4fMsAIGAO1vyjGXE5aIxOvtLfIL0+D3+kaP7g/Ctkk
-         0K1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV8i59lc0suVx7GycZY0Htz6QOYKQNM0CMFjfjbp/YAFeZcdJ253IWl58fFZPTUJlOztXeGNvUxRkUFVBHM2ycYy7jQ
-X-Gm-Message-State: AOJu0Yybi/GRS33Sor2kXAP57p3XiqyVt/dAncEnvoZ+IuEfC8P1lu5Q
-	V0sD4moFBcDykjYyvNoJGDLTFu9mDltihkkXZaTwB4lz3V+C51tYEz+G94yTNVc9vY57drgdFC3
-	5
-X-Google-Smtp-Source: AGHT+IEm2Vy+25KaOUe7GI3ZHCTzoChFZCEpmhFYzCFLr9pJjidCxyJ165Vuq1Ldu2K64+OPrluirA==
-X-Received: by 2002:a0c:c20a:0:b0:68f:43f6:4834 with SMTP id l10-20020a0cc20a000000b0068f43f64834mr8682070qvh.26.1709543777882;
-        Mon, 04 Mar 2024 01:16:17 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.189])
-        by smtp.gmail.com with ESMTPSA id b18-20020a0ccd12000000b0068f760929c0sm4898018qvm.71.2024.03.04.01.16.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 01:16:17 -0800 (PST)
-Message-ID: <f3ed94a9-e50e-4d4b-bede-cc3078d4acab@joelfernandes.org>
-Date: Mon, 4 Mar 2024 04:16:12 -0500
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="hcoYEjrq"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709550054; bh=sJKxYdRSOaImCb3LknsmQ+6dfHzPm1FfnhFjMeeoBU4=;
+	h=From:To:Cc:Subject:Date;
+	b=hcoYEjrqrLhGZDKii23tQJngBSKkcCu+TYXLupgh/TkuvNQJyzgwypZ9cKK5x7DB6
+	 K0xKh4Sd5KgZ/0gEkmw+Ky1znPcnk8G/xYLjUdSZZraQC2ruCTRo3gIlEUxyeFjviJ
+	 HbtxZblshINwJKzVtYxSwDxOi+48pi2mIMicH+YI=
+Received: from localhost.localdomain ([218.94.142.74])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id DB02C6D3; Mon, 04 Mar 2024 18:54:48 +0800
+X-QQ-mid: xmsmtpt1709549688tysp3hq2h
+Message-ID: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
+X-QQ-XMAILINFO: MIOa0ndEC0Bb0Dw3+QvYIBQLmDa4FNQ57dvlB9X9JLGoLNdLUi505MF+0f+BDP
+	 Q4drGGSIWkoY21yqYMKwkkxokup1iuVasFKR7+rI3kzSOoQk4Ko55sWSmK0gwXmTUb9sLF/Urbuo
+	 fV/+A81Dm9M33fGp48FuQYqj9llnJGFNH1ZnO6gcPxeeCwyG1GAdRygfvv00qb6XOyNggcnsG11A
+	 QI9vJi8TMz4KDAV1593eSTHwl23Hmbq4k+w3bVB58dJmrJ7Z0hL87uVL9feN2qvkBU/9sK3UXzNj
+	 ZTyOZNKY0otTeHigEevx4Oqn7G/X76fsgmr6pCtaLv0qEeZpEHKirhb1w99/eFSug+b1h97kfmEq
+	 mdmYicKMi5gOPXUOCbQ+Isl+mxz8Ag2cda2t2PX2meHF6jghSeowOXVIMDw1ZurCSYy9f6v4RX7N
+	 Q7omWZbghgwwjmeGLWRmHctilJWDyjBB+m3djLkBtHeF2zZ3emeFVTiXAljXJcBgna3+PCwIMjrs
+	 llEPSdt6M2FYWugvcaG1DwwHWZ0bsx+jxfsK1KDBQK/PeFAraLM1QiHldrItgo2o8r7rdVoAbZkW
+	 lQKbqLHtwnEBQcRmzaYX1Gj+bhS/GBmYGQNQwA4HXAHucZT28KxLt/vc9w9NRoAGW4GNN19Rw/C2
+	 qEC/DI/ebX81cfSHy2vOk4AHXBvTaEnKsrb3EwyOrkq3hZ47q1jEBQ8FanlHkIE9ItT/nGGMnSKN
+	 h3lJ6BcspWjDH7QnojL7XT9XlsI1tth8H7TnxU5BNHGd/kK76wKfk5FuarxhruU7sv5H7mLK/1nW
+	 8QKy67x+JGdJKWDsGAlZJ8sS39m3pdf5Aas1FxvQVYVhZb9knfrtgEFMgypC7SvCVBMyglL2ZYtf
+	 GOplBsrGpK9Gse1NHN1MOyMeArddh6R1Yi3Sg9CJ2vGyGJqCb32UsV5Rddl+zW3AJjadWXL2V3O/
+	 mtbNlIdH5RfcIkwaP4+awTZsP8RNMzQ1qYkZn9z0tqRJGh8q/a+buujsQ8m25/p1Qvgn7hWDLQsi
+	 PNnAoQVb9JvVfSRnURUOheiIjFioIr/IkioegauA==
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: linke li <lilinke99@qq.com>
+To: 
+Cc: lilinke99@qq.com,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: [PATCH] rcutorture: Fix rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency bug
+Date: Mon,  4 Mar 2024 18:54:46 +0800
+X-OQ-MSGID: <20240304105446.35673-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-To: paulmck@kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>,
- Network Development <netdev@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
- kernel-team <kernel-team@cloudflare.com>
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
- <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
- <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
- <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
- <f1e77cd2-18b2-4ab1-8ce3-da2c6babbd53@paulmck-laptop>
- <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
-In-Reply-To: <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Paul,
+Some changes are done to fix a data race in commit 202489101f2e ("rcutorture: Fix rcu_torture_one_read()/rcu_torture_writer() data race")
 
-On 3/2/2024 8:01 PM, Joel Fernandes wrote:
->> As you noted, one thing that Ankur's series changes is that preemption
->> can occur anywhere that it is not specifically disabled in kernels
->> built with CONFIG_PREEMPT_NONE=y or CONFIG_PREEMPT_VOLUNTARY=y.  This in
->> turn changes Tasks Rude RCU's definition of a quiescent state for these
->> kernels, adding all code regions where preemption is not specifically
->> disabled to the list of such quiescent states.
->>
->> Although from what I know, this is OK, it would be good to check the
->> calls to call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() are set
->> up so as to expect these new quiescent states.  One example where it
->> would definitely be OK is if there was a call to synchronize_rcu_tasks()
->> right before or after that call to synchronize_rcu_tasks_rude().
->>
->> Would you be willing to check the call sites to verify that they
->> are OK with this change in 
-> Yes, I will analyze and make sure those users did not unexpectedly
-> assume something about AUTO (i.e. preempt enabled sections using
-> readers).
+ {
+ 	int i;
 
-Other than RCU test code, there are just 3 call sites for RUDE right now, all in
-ftrace.c.
+-	i = rp->rtort_pipe_count;
++	i = READ_ONCE(rp->rtort_pipe_count);
+ 	if (i > RCU_TORTURE_PIPE_LEN)
+ 		i = RCU_TORTURE_PIPE_LEN;
+ 	atomic_inc(&rcu_torture_wcount[i]);
+-	if (++rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
++	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
++	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+ 		rp->rtort_mbtest = 0;
+ 		return true;
+ 	}
 
-(Long story short, PREEMPT_AUTO should not cause wreckage in TASKS_RCU_RUDE
-other than any preexisting wreckage that !PREEMPT_AUTO already had. Steve is on
-CC as well to CMIIW).
+But ++rp->rtort_pipe_count is meant to add itself by 1, not give i+1 to
+rp->rtort_pipe_count, because rp->rtort_pipe_count may write by
+rcu_torture_writer() concurrently.
 
-Case 1: For !CONFIG_DYNAMIC_FTRACE update of ftrace_trace_function
+Also, rp->rtort_pipe_count in the next line should be read using
+READ_ONCE() because of data race.
 
-This config is itself expected to be slow. However seeing what it does, it is
-trying to make sure the global function pointer "ftrace_trace_function" is
-updated and any readers of that pointers would have finished reading it. I don't
-personally think preemption has to be disabled across the entirety of the
-section that calls into this function. So sensitivity to preempt disabling
-should not be relevant for this case IMO, but lets see if ftrace folks disagree
-(on CC). It has more to do with, any callers of this function pointer are no
-longer calling into the old function.
+Signed-off-by: linke li <lilinke99@qq.com>
+---
+ kernel/rcu/rcutorture.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Case 2: Trampoline structures accessing
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 7567ca8e743c..00059ace4fd5 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -465,8 +465,8 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
+ 	if (i > RCU_TORTURE_PIPE_LEN)
+ 		i = RCU_TORTURE_PIPE_LEN;
+ 	atomic_inc(&rcu_torture_wcount[i]);
+-	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+-	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
++	WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
++	if (READ_ONCE(rp->rtort_pipe_count) >= RCU_TORTURE_PIPE_LEN) {
+ 		rp->rtort_mbtest = 0;
+ 		return true;
+ 	}
+-- 
+2.39.3 (Apple Git-145)
 
-For this there is a code comment that says preemption will disabled so it should
-not be dependent on any of the preemptiblity modes, because preempt_disable()
-should disable preempt with PREEMPT_AUTO.
-
-		/*
-		 * We need to do a hard force of sched synchronization.
-		 * This is because we use preempt_disable() to do RCU, but
-		 * the function tracers can be called where RCU is not watching
-		 * (like before user_exit()). We can not rely on the RCU
-		 * infrastructure to do the synchronization, thus we must do it
-		 * ourselves.
-		 */
-		synchronize_rcu_tasks_rude();
-		[...]
-		ftrace_trampoline_free(ops);
-
-Code comment probably needs update because it says 'can not rely on RCU..' ;-)
-
-My *guess* is the preempt_disable() mentioned in this case is
-ftrace_ops_trampoline() where trampoline-related datas tructures are accessed
-for stack unwinding purposes. This is a data structure protection thing AFAICS
-and nothing to do with "trampoline execution" itself which needs "Tasks RCU" to
-allow for preemption in trampolines.
-
-Case 3: This has to do with update of function graph tracing and there is the
-same comment as case 2, where preempt will be disabled in readers, so it should
-be safe for PREEMPT_AUTO (famous last words).
-
-Though I am not yet able to locate that preempt_disable() which is not an
-PREEMPT_AUTO-related issue anyway. Maybe its buried in function graph tracing
-logic somewhere?
-
-Finally, my thought also was, if any of these thread usages/cases of Tasks RCU
-RUDE assume working only on a CONFIG_PREEMPT_NONE=y or
-CONFIG_PREEMPT_VOLUNTARY=y kernel, that could be worrying but AFAICS, they don't
-assume anything related to that.
-
-thanks,
-
- - Joel
