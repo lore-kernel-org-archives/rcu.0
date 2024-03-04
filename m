@@ -1,85 +1,114 @@
-Received: from mail.ams.netpunt.systems (mail.ams.netpunt.systems [178.62.236.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423B11C6AB
-	for <rcu@vger.kernel.org>; Mon,  4 Mar 2024 21:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.62.236.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE25A7B3FA;
+	Mon,  4 Mar 2024 22:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709589309; cv=none; b=U7dFSATMenUtDVlMLX68GU7O0M1+LUvUAGQYZxaUCtH/8cRNahhpjpb5e8qj8USt3vv3EDypOek7EY0AkNA4VrGS0qOXYnLA9u5RITAFzptECadQcYQFZ0zg1H7Km/JSXZ26gODNeCyx1/hkxOVmMTW7mPGAFxruQol9Q+8YkKk=
+	t=1709592983; cv=none; b=HRgNmaIJwSLdhGdHVQ+QgGcHHC9NVcHXGHG1VgCEoVSNql/KdvkEaQNr03YQ5CzO83Cz20+RFgAakkIcfqVuxx+tpwTkIsyK3yWNBAU5VnCOWn+vCj4qjjAvMCcV7/8S7F58zHkjr+xkBOTuKQ9/8La1MakEreiGXsskewtmQqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709589309; c=relaxed/simple;
-	bh=jJO+b+fYZoRg89CLzeyzUZhE+YTn0Hc/Fss0W1IJK1o=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=jH3iySboOAhFep2l37SpQcB3c8AjKIr0i2vshWqzLcX6G3y1IcEc65Z31f8JL0m2UrlNeUJhHh29YX4gPcefNnVw1rahRBueeLRwwau2dFxy05CGoGGy7me62Spz8b0Uf0coFf50qUAx96TXa4WHJoTsjEVkg8ftggJaqxYM1sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxboone.com; spf=pass smtp.mailfrom=maxboone.com; dkim=fail (2048-bit key) header.d=maxboone.com header.i=@maxboone.com header.b=cissPHZ/ reason="signature verification failed"; arc=none smtp.client-ip=178.62.236.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxboone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maxboone.com
+	s=arc-20240116; t=1709592983; c=relaxed/simple;
+	bh=Rca8aMJHIqobe+2cMX0r2HJ1hKWMth39li8Jrzh0q+Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IdevH/pcmOR+PLvLsAx5ku9H3E+2pr6zfUsrlIdpv2nxaN03oWYizj+vqtUTQTyX2QED+pWxcS9PPQxPt0M1/u+HwfkM/Bp9jkALVBaAO6hlijqLIR8kqEkzTkw2ngRIas5Qww3PXaQiKUNWwWSVrDa5THVoIZPQ3DPLZrRKFPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=idzNyh1w; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=maxboone.com header.i=@maxboone.com header.b="cissPHZ/"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 55818AE860;
-	Mon,  4 Mar 2024 22:54:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxboone.com;
-	s=dkim; t=1709589296;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=jJO+b+fYZoRg89CLzeyzUZhE+YTn0Hc/Fss0W1IJK1o=;
-	b=cissPHZ/hbvesdrVtzSHpCd9Qwzf00HJwys1R5L4WLWyrdPf/QreWqTiOP9AQJjFQ1nFYI
-	5Upil4L7T+9qVV14Ao5DXkHN4lp+LK7Tk0vV0wQv/EEErf1xBPvEeaUKI5toXcIiY78ApA
-	UWGAcC8DRafF46JaU+i6h62Lefx+1vmLbgKCjBggxBBKOEaA+fMYCxRnFoS4JghGL6cz8A
-	Qs/UL6g7wnJAOt4tuQHyHoVymV0is9n/wY2s3MbqTy6bxMevLShuWvYExYbMA+noSMhT1R
-	RnP6U+ScZ+ZHDWElCKia1dvNuf59j936s/m1o3/T506Mr/X2PGMUrBb3vbQEOQ==
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="idzNyh1w"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0A81C433C7;
+	Mon,  4 Mar 2024 22:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709592982;
+	bh=Rca8aMJHIqobe+2cMX0r2HJ1hKWMth39li8Jrzh0q+Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=idzNyh1wbBFfPcAk+olSqkNX1veouQGtHnwbiW37ZtHp/r8KVR+WdaRL7YdT189KC
+	 BhTyV7818bJg4H2CuIRcu39XeBNhDi41dbkyvWF/vPaA1ZeRyldnykaAjNPNXmmNEX
+	 vAtViu02BG271a9Rf8zBWnrTyeV6/lsqUYfPT42bDr9pl98/TZ5I9FglR4R8yca76r
+	 8XLdmujf7FB5L/fF8uh1DPtY+ZBnvMFp4m5lhsMTdSHBPyiWN1mUKp2g4EJ6PRurhh
+	 RKUlOF63h6Sxx+fcfQ/iZYBypoXuF77PpO80F68zOXB+TP+bTas7po3FC1JrcXmAa+
+	 itVaciyyOGvGw==
+Date: Mon, 4 Mar 2024 23:56:19 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <ZeZRk-1Kx-s0Nz34@pavilion.home>
+References: <20240220183115.74124-1-urezki@gmail.com>
+ <20240220183115.74124-3-urezki@gmail.com>
+ <Zd0ZtNu+Rt0qXkfS@lothringen>
+ <Zd91pR0fjiCUZTtP@pc636>
+ <ZeW2w08WZo4yapQp@localhost.localdomain>
+ <ZeX1cXWKv2kirDXg@pc638.lan>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 04 Mar 2024 21:54:55 +0000
-Message-Id: <CZLATSBV6XDH.2WUG4D8VJHEQ5@maxboone.com>
-Cc: <rcu@vger.kernel.org>
-Subject: Re: Advice sought on RCU stalls on ARM64 WSL2
-From: "Max Boone" <contact@maxboone.com>
-To: "Boqun Feng" <boqun.feng@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>
-References: <1a5d96d6-2057-44d9-a4b0-8771c46032fb@paulmck-laptop>
- <3718bb-65e38400-d-5cd53080@68830111>
- <99a0fb2c-c936-405f-85bf-847c61531bd5@paulmck-laptop>
- <ZeX327aMIrthOXbs@Boquns-Mac-mini.home>
-In-Reply-To: <ZeX327aMIrthOXbs@Boquns-Mac-mini.home>
-X-Last-TLS-Session-Version: TLSv1.3
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZeX1cXWKv2kirDXg@pc638.lan>
 
-On Mon Mar 4, 2024 at 4:33 PM UTC, Boqun Feng wrote:
-> I haven't seen this issue before, looks to me the stall is caused by
-> clear_rseq_cs(), which is basically a put_user(), and I don't have an
-> immediate theory, could you share the kernel repo and configuration you
-> used, so that I can see if I can reproduce this? (Note I don't have the
-> exact device as you do nor an ARM64 Windows system with the exact
-> Windows build you are using).
->
-> Regards,
-> Boqun
+Le Mon, Mar 04, 2024 at 05:23:13PM +0100, Uladzislau Rezki a écrit :
+> On Mon, Mar 04, 2024 at 12:55:47PM +0100, Frederic Weisbecker wrote:
+> The easiest way is to drop the patch. To address it we can go with:
+> 
+> <snip>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 31f3a61f9c38..9aa2cd46583e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1661,16 +1661,8 @@ static void rcu_sr_normal_gp_cleanup(void)
+>  	 * wait-head is released if last. The worker is not kicked.
+>  	 */
+>  	llist_for_each_safe(rcu, next, wait_tail->next) {
+> -		if (rcu_sr_is_wait_head(rcu)) {
+> -			if (!rcu->next) {
+> -				rcu_sr_put_wait_head(rcu);
+> -				wait_tail->next = NULL;
+> -			} else {
+> -				wait_tail->next = rcu;
+> -			}
+> -
+> +		if (rcu_sr_is_wait_head(rcu))
+>  			break;
+> -		}
+>  
+>  		rcu_sr_normal_complete(rcu);
+>  		// It can be last, update a next on this step.
+> <snip>
+> 
+> i.e. the process of users from GP is still there. The work is triggered
+> to perform a final complete(if there are users) + releasing wait-heads
+> so we do not race anymore.
 
-This happens on the default Windows System for Linux 2 setup, thus the
-kernel built with the following sources:
-- https://github.com/microsoft/WSL2-Linux-Kernel/tree/linux-msft-wsl-5.15.y
+It's worth mentioning that this doesn't avoid scheduling the workqueue.
+Except perhaps for the very first time rcu_sr_normal_gp_cleanup() is called,
+the workqueue will always have to be scheduled at least in order to release the
+wait_tail of the previous rcu_sr_normal_gp_cleanup() call.
 
-It also happens when I build the kernel myself from a more recent
-release:
-- https://github.com/maxboone/SQ2-Linux-Kernel-Builds
+But indeed you keep the optimization that performs the completions themselves
+synchronously from the GP kthread if there aren't too many of them (which
+probably is the case most of the time).
 
-Microsoft should have a Development Kit (Volterra) with identical hardware=
-=20
-to mine (and other Surface Pro X, Surface Pro 9 users) that run into the=20
-same issue with WSL2.
+> I am OK with both cases. Dropping the patch will make it more simple
+> for sure.
 
-Moreover, the problem does not seem to occur on a regular Hyper-V VM=20
-(with a different / standard kernel though) at all, so reproduction=20
-might be difficult. The CPU that's shown by Hyper-V also differs from
-the one visible in WSL2, maybe colleagues over at Redmond know what
-CPU virtualization is used there?
-- https://github.com/microsoft/WSL/issues/9454#issuecomment-1976411786
+I am ok with both cases as well :-)
 
-Thanks,
-Max
+You choose. But note that the time spent doing the completions from the GP
+kthread may come at the expense of delaying the start of the next grace period,
+on which further synchronous RCU calls may in turn depend on...
+
+Thanks.
+
+> 
+> --
+> Uladzislau Rezki
+> 
+> 
