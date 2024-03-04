@@ -1,214 +1,85 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.ams.netpunt.systems (mail.ams.netpunt.systems [178.62.236.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58524947F;
-	Mon,  4 Mar 2024 20:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423B11C6AB
+	for <rcu@vger.kernel.org>; Mon,  4 Mar 2024 21:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.62.236.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709585269; cv=none; b=beg0pT2ylq3gPU9BlnAoLyeOqPMN+VTXzvN74Amn6WbccbApGvoPZqqKjFobbH5QrcacmxteTsfPNLtQlmcwwuc7rvVIO7P/CV3cZla3L4oWaGtCIEfwsMfUZzw5Ysu1ay+mAcVJjMG0mBLNbzfaCpm+Ztw1eShWHnkXXp3v1ns=
+	t=1709589309; cv=none; b=U7dFSATMenUtDVlMLX68GU7O0M1+LUvUAGQYZxaUCtH/8cRNahhpjpb5e8qj8USt3vv3EDypOek7EY0AkNA4VrGS0qOXYnLA9u5RITAFzptECadQcYQFZ0zg1H7Km/JSXZ26gODNeCyx1/hkxOVmMTW7mPGAFxruQol9Q+8YkKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709585269; c=relaxed/simple;
-	bh=IVDfZpj2i2Tsybj/sYKdWPPXRjam9p4bIaY7/Ooj62Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PILDPCuIz7kdIRa9tW/rCq5ldyL6rwDVqVvbAX+auMYKmuPK3AvjbwEzoyUIkh+XifXW0Qw98xbTSeLOQsZhAOpyoX8C044ZUqbWUGM9ZPvuwpL9ryuJzz4grfTyhx2HmUkTUT+Nu2139TUVMnZyZJMt3bYb9/uNDyB3WEO13+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LwTDU2b5; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1709589309; c=relaxed/simple;
+	bh=jJO+b+fYZoRg89CLzeyzUZhE+YTn0Hc/Fss0W1IJK1o=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=jH3iySboOAhFep2l37SpQcB3c8AjKIr0i2vshWqzLcX6G3y1IcEc65Z31f8JL0m2UrlNeUJhHh29YX4gPcefNnVw1rahRBueeLRwwau2dFxy05CGoGGy7me62Spz8b0Uf0coFf50qUAx96TXa4WHJoTsjEVkg8ftggJaqxYM1sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxboone.com; spf=pass smtp.mailfrom=maxboone.com; dkim=fail (2048-bit key) header.d=maxboone.com header.i=@maxboone.com header.b=cissPHZ/ reason="signature verification failed"; arc=none smtp.client-ip=178.62.236.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxboone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maxboone.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LwTDU2b5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D51C2C433C7;
-	Mon,  4 Mar 2024 20:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709585268;
-	bh=IVDfZpj2i2Tsybj/sYKdWPPXRjam9p4bIaY7/Ooj62Q=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=LwTDU2b5dVe6onrLXUUhM2seumF0aDAauZwHQQz7Hj4xMROt+PgjVKj3HZIvl9Ed4
-	 QlFQcZfP5drYsMwuUtNUyJJdbduwct98jbILOnxZWFBqO8uOwuW835uz4C1N2YB4MR
-	 NbOK/yq0FmOvHiEFre56CNYue2jTGMlfSjPHvsMqCfof75vw4nmvt5EIJaCD8edq/e
-	 hREyOy5y81BGnmYhoFVIjRCJL7hzUETkAeeaAWiNen3P6cG8exSjNH0Yr81eAKpBtL
-	 9Z4qBHTx2un21afZZkOdjN+z3CSZImQaTeDK/ROsuv+JsNtWOk+muL06aZ2ygmNINM
-	 +tG4QF+AiP0qw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8A7B7CE049E; Mon,  4 Mar 2024 12:47:48 -0800 (PST)
-Date: Mon, 4 Mar 2024 12:47:48 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: linke li <lilinke99@qq.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-Message-ID: <0640c3b9-fa19-4c2d-9158-a6aa5b398da3@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
- <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
- <4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop>
- <a8e9c84f-c354-4536-b676-d38043913d09@joelfernandes.org>
- <a9ff4787-1b07-4d47-b2a0-5eb1336d3710@paulmck-laptop>
- <51c4b25f-1cdc-4bcc-8b40-c98096bebacf@joelfernandes.org>
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=maxboone.com header.i=@maxboone.com header.b="cissPHZ/"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 55818AE860;
+	Mon,  4 Mar 2024 22:54:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxboone.com;
+	s=dkim; t=1709589296;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=jJO+b+fYZoRg89CLzeyzUZhE+YTn0Hc/Fss0W1IJK1o=;
+	b=cissPHZ/hbvesdrVtzSHpCd9Qwzf00HJwys1R5L4WLWyrdPf/QreWqTiOP9AQJjFQ1nFYI
+	5Upil4L7T+9qVV14Ao5DXkHN4lp+LK7Tk0vV0wQv/EEErf1xBPvEeaUKI5toXcIiY78ApA
+	UWGAcC8DRafF46JaU+i6h62Lefx+1vmLbgKCjBggxBBKOEaA+fMYCxRnFoS4JghGL6cz8A
+	Qs/UL6g7wnJAOt4tuQHyHoVymV0is9n/wY2s3MbqTy6bxMevLShuWvYExYbMA+noSMhT1R
+	RnP6U+ScZ+ZHDWElCKia1dvNuf59j936s/m1o3/T506Mr/X2PGMUrBb3vbQEOQ==
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51c4b25f-1cdc-4bcc-8b40-c98096bebacf@joelfernandes.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 04 Mar 2024 21:54:55 +0000
+Message-Id: <CZLATSBV6XDH.2WUG4D8VJHEQ5@maxboone.com>
+Cc: <rcu@vger.kernel.org>
+Subject: Re: Advice sought on RCU stalls on ARM64 WSL2
+From: "Max Boone" <contact@maxboone.com>
+To: "Boqun Feng" <boqun.feng@gmail.com>, "Paul E. McKenney"
+ <paulmck@kernel.org>
+References: <1a5d96d6-2057-44d9-a4b0-8771c46032fb@paulmck-laptop>
+ <3718bb-65e38400-d-5cd53080@68830111>
+ <99a0fb2c-c936-405f-85bf-847c61531bd5@paulmck-laptop>
+ <ZeX327aMIrthOXbs@Boquns-Mac-mini.home>
+In-Reply-To: <ZeX327aMIrthOXbs@Boquns-Mac-mini.home>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Mon, Mar 04, 2024 at 03:13:10PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 3/4/2024 2:44 PM, Paul E. McKenney wrote:
-> > On Mon, Mar 04, 2024 at 02:10:09PM -0500, Joel Fernandes wrote:
-> >>
-> >>
-> >> On 3/4/2024 12:14 PM, Paul E. McKenney wrote:
-> >>> On Mon, Mar 04, 2024 at 11:19:21AM -0500, Joel Fernandes wrote:
-> >>>>
-> >>>>
-> >>>> On 3/4/2024 5:54 AM, linke li wrote:
-> >>>>> Some changes are done to fix a data race in commit 202489101f2e ("rcutorture: Fix rcu_torture_one_read()/rcu_torture_writer() data race")
-> >>>>>
-> >>>>>  {
-> >>>>>  	int i;
-> >>>>>
-> >>>>> -	i = rp->rtort_pipe_count;
-> >>>>> +	i = READ_ONCE(rp->rtort_pipe_count);
-> >>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
-> >>>>>  		i = RCU_TORTURE_PIPE_LEN;
-> >>>>>  	atomic_inc(&rcu_torture_wcount[i]);
-> >>>>> -	if (++rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> >>>>> +	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> >>>>> +	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> >>>>>  		rp->rtort_mbtest = 0;
-> >>>>>  		return true;
-> >>>>>  	}
-> >>>>>
-> >>>>> But ++rp->rtort_pipe_count is meant to add itself by 1, not give i+1 to
-> >>>>> rp->rtort_pipe_count, because rp->rtort_pipe_count may write by
-> >>>>> rcu_torture_writer() concurrently.
-> >>>>>
-> >>>>> Also, rp->rtort_pipe_count in the next line should be read using
-> >>>>> READ_ONCE() because of data race.
-> >>>>>
-> >>>>> Signed-off-by: linke li <lilinke99@qq.com>
-> >>>>> ---
-> >>>>>  kernel/rcu/rcutorture.c | 4 ++--
-> >>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>>>
-> >>>>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> >>>>> index 7567ca8e743c..00059ace4fd5 100644
-> >>>>> --- a/kernel/rcu/rcutorture.c
-> >>>>> +++ b/kernel/rcu/rcutorture.c
-> >>>>> @@ -465,8 +465,8 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
-> >>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
-> >>>>>  		i = RCU_TORTURE_PIPE_LEN;
-> >>>>>  	atomic_inc(&rcu_torture_wcount[i]);
-> >>>>> -	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> >>>>> -	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> >>>>> +	WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
-> >>>>> +	if (READ_ONCE(rp->rtort_pipe_count) >= RCU_TORTURE_PIPE_LEN) {
-> >>>>
-> >>>> I want to say, I am not convinced with the patch because what's wrong with
-> >>>> writing to an old index?
-> >>>>
-> >>>> You win/lose the race anyway, say the CPU executed the WRITE_ONCE() a bit too
-> >>>> early/late and another WRITE_ONCE() lost/won, regardless of whether you wrote
-> >>>> the "incremented i" or "the increment from the latest value of pipe_count".
-> >>>>
-> >>>> Anyway, a slightly related/different question:
-> >>>>
-> >>>> Should that:
-> >>>> WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
-> >>>>
-> >>>> Be:
-> >>>> WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) + 1);
-> >>>>
-> >>>> ?
-> >>>
-> >>> Thank you both!
-> >>>
-> >>> At first glance, I would argue for something like this:
-> >>>
-> >>> ------------------------------------------------------------------------
-> >>>
-> >>> static bool
-> >>> rcu_torture_pipe_update_one(struct rcu_torture *rp)
-> >>> {
-> >>> 	int i;
-> >>> 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
-> >>>
-> >>> 	if (rtrcp) {
-> >>> 		WRITE_ONCE(rp->rtort_chkp, NULL);
-> >>> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
-> >>> 	}
-> >>> 	i = READ_ONCE(rp->rtort_pipe_count) + 1;
-> >>> 	if (i > RCU_TORTURE_PIPE_LEN)
-> >>> 		i = RCU_TORTURE_PIPE_LEN;
-> >>> 	atomic_inc(&rcu_torture_wcount[i]);
-> >>> 	WRITE_ONCE(rp->rtort_pipe_count, i);
-> >>> 	if (i >= RCU_TORTURE_PIPE_LEN) {
-> >>> 		rp->rtort_mbtest = 0;
-> >>> 		return true;
-> >>> 	}
-> >>> 	return false;
-> >>> }
-> >>>
-> >>> ------------------------------------------------------------------------
-> >>>
-> >>> That is, move the increment to the read and replace the re-read with
-> >>> the value "i" that was just written.
-> >>
-> >> But that changes the original logic as well? It looks like with the above
-> >> change, you're now writing to rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)
-> >> + 1] instead of rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)].
-> >>
-> >> I think that might break rcutorture, because there is an increment outside of
-> >> the first 2 entries in rcu_torture_wcount but not sure (need to look more).
-> > 
-> > Good point on never incrementing the zeroth entry!  Clearly I should
-> > have waited before replying.
-> > 
-> > How about the following?
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > static bool
-> > rcu_torture_pipe_update_one(struct rcu_torture *rp)
-> > {
-> > 	int i;
-> > 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
-> > 
-> > 	if (rtrcp) {
-> > 		WRITE_ONCE(rp->rtort_chkp, NULL);
-> > 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
-> > 	}
-> > 	i = READ_ONCE(rp->rtort_pipe_count);
-> > 	if (i > RCU_TORTURE_PIPE_LEN)
-> > 		i = RCU_TORTURE_PIPE_LEN;
-> > 	atomic_inc(&rcu_torture_wcount[i]);
-> > 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> > 	if (i + 1 >= RCU_TORTURE_PIPE_LEN) {
-> > 		rp->rtort_mbtest = 0;
-> > 		return true;
-> > 	}
-> > 	return false;
-> > }
-> 
-> Yes, this looks good to me. Thanks,
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Mon Mar 4, 2024 at 4:33 PM UTC, Boqun Feng wrote:
+> I haven't seen this issue before, looks to me the stall is caused by
+> clear_rseq_cs(), which is basically a put_user(), and I don't have an
+> immediate theory, could you share the kernel repo and configuration you
+> used, so that I can see if I can reproduce this? (Note I don't have the
+> exact device as you do nor an ARM64 Windows system with the exact
+> Windows build you are using).
+>
+> Regards,
+> Boqun
 
-Again, thank you.
+This happens on the default Windows System for Linux 2 setup, thus the
+kernel built with the following sources:
+- https://github.com/microsoft/WSL2-Linux-Kernel/tree/linux-msft-wsl-5.15.y
 
-linke li, does this approach work for you?  If so, would you be willing to
-send a new patch along these lines?  If it does not work, what additional
-problems do you see?
+It also happens when I build the kernel myself from a more recent
+release:
+- https://github.com/maxboone/SQ2-Linux-Kernel-Builds
 
-							Thanx, Paul
+Microsoft should have a Development Kit (Volterra) with identical hardware=
+=20
+to mine (and other Surface Pro X, Surface Pro 9 users) that run into the=20
+same issue with WSL2.
+
+Moreover, the problem does not seem to occur on a regular Hyper-V VM=20
+(with a different / standard kernel though) at all, so reproduction=20
+might be difficult. The CPU that's shown by Hyper-V also differs from
+the one visible in WSL2, maybe colleagues over at Redmond know what
+CPU virtualization is used there?
+- https://github.com/microsoft/WSL/issues/9454#issuecomment-1976411786
+
+Thanks,
+Max
