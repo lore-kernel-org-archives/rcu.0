@@ -1,194 +1,225 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0217995F;
-	Mon,  4 Mar 2024 20:07:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A347AE71
+	for <rcu@vger.kernel.org>; Mon,  4 Mar 2024 20:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709582864; cv=none; b=iSD4xRqi8ErxJWxJxMKLMUnBiVWYuOkSmbuJq9puFpDxtNrohoXbZ9WcJ9NV7zQFpMcWFKWXJqhibJupszC0kyLtRcQu3/MjqxqFhcMBAfmjSu1oeovQJeFaw6vJVZ1VU8jmFJ6x8R83wXvss8SkkykHavrK4iBOWqRSrKGJFJc=
+	t=1709583197; cv=none; b=W0p1mheQoEDv18RBt62iwVrksw6U012iyC/kbmxwQeR5MfdEqVmjb0TqyFqKmOuBWzeN6ka+fE3lDGRK0cGDwZ1kwoJ/sz4OzKwe0yiUUjqRIUeWaZTZdUMzlr3ofwd7GkSbmPTR34LarHMWAwK5HQVm1h4PSaBEDQS4Cl5XIMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709582864; c=relaxed/simple;
-	bh=rxDEV3N7EKQdsIQOLDUfRTkpb7cFIvo3F8fg01dVwRs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gkb/0+mEH4wuPYj3k5XVkvO8Dw4tbiryV2e6vClr25TlR4GCpMoYpF+82tbSNj6rmn+dyT2VZM9GYA5alRS1n9vLOOlxuRqo4hl7z5MWeeLmzwQM4dEnimn/K7o7gDsVk7rSlHPWYSyTjihUeIl1tmRe/Kmw9Tt9DZNyaoyKO68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zv8M//rr; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1709583197; c=relaxed/simple;
+	bh=97wLSRavPWpvj3qLgQpbHp3AjLHo4nR/4VmELoC2t0c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pjl88tq5U8ylJLwM5W0CSRHIRhcxlZ8tKcBitU+7zMO6+3kdKHFIieTg81Y0r4MSgPDMI5poyRFTwMvRiFaLy1m9KtuP/mbjT5EZNDI5KkMhpuR9gV+CU2QoaNulaETFBx/EsuT4QYm/ZRaLyb6hy0wADBPQ6xPoCf9HJL2sCVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=BlgCG/gT; arc=none smtp.client-ip=209.85.167.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zv8M//rr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC525C433C7;
-	Mon,  4 Mar 2024 20:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709582863;
-	bh=rxDEV3N7EKQdsIQOLDUfRTkpb7cFIvo3F8fg01dVwRs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Zv8M//rr2IL8nsFMGCvFoGPdtHjhU2LSfZiDzXCU8Q18POe7eD9orzOh/ZacOFMta
-	 aIRJImzgxiEp5EaYGojWJ/Osctuq3eBtYVKcIFqW8FJhrMFJbraGw58rV2iStfoQpb
-	 BnV69K8jFTt471YprBBuiqPCG5PDzrdIccBOwlbmilUqooBYpxVi9oycDkdX6mpZjm
-	 xUBeBftmQV8BBxY2sME5UojTpshHJxptPyCf8QGNfKaJ/wu3GWLDk1TgqeW5nzTufq
-	 ++ktAIfPGJgvZFh4XttGeCos0Jhn9nVXi0J0hHI14mdaL1zmU1i6OErHwSv2DOmbMd
-	 wjb4nswzxrFJg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 60D4BCE049E; Mon,  4 Mar 2024 12:07:43 -0800 (PST)
-Date: Mon, 4 Mar 2024 12:07:43 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <aa431a31-e9a3-4a6c-b2a7-f0e09794ca4c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <Zd0ZtNu+Rt0qXkfS@lothringen>
- <Zd91pR0fjiCUZTtP@pc636>
- <ZeW2w08WZo4yapQp@localhost.localdomain>
- <ZeX1cXWKv2kirDXg@pc638.lan>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="BlgCG/gT"
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c1e992f060so1005915b6e.0
+        for <rcu@vger.kernel.org>; Mon, 04 Mar 2024 12:13:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709583194; x=1710187994; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I9hBziy42Zp0Bftc0h2FFnVy55qMVWSrsliZ52+smLE=;
+        b=BlgCG/gTvqw4iGJbudPTSE3U7tbRR4M+KR/PUIpEiz8y9jlQUGByqfXFSbQqctqTBj
+         AWS7daZofN1bxuuFR2wcGIzduf3Sfl9BCCks+rMgQCVhfFuqOo7CkHtK7drgAvIcdzcb
+         U1d3xK65FD+IvenvohCapMV+F0e3w8aW7QhJU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709583194; x=1710187994;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I9hBziy42Zp0Bftc0h2FFnVy55qMVWSrsliZ52+smLE=;
+        b=joqav1mfqjQnqEUmq1B4FuCgafpyIjMDfBUxPsnc3hINnM2I5clc9ZFsLKGinezRek
+         gHTQjfTDiGH5+7odpI2WOdt3C/2eehmEPUyJKD8SbBguCgdOOSaA11D4QcCpz/ZBkE5C
+         c1Z9xQJozn0fMiJ4cWUBBfNm5XHxOR6wcdbjSl4nYeSu1yySCxK2ckNgNmQOrM79vdr/
+         IffpwuyXDa34rZmsRKan+1K60XTSBjMsUoXaElv04HgeDpTaExmeOM/Y36jw0Rsgf2AL
+         vu5MSmQoPqyrGngAocwQ7+rng08FtSkJHDV15WihaCqkRCBeDpxksDCOtprFlrbZPLXf
+         oCkg==
+X-Forwarded-Encrypted: i=1; AJvYcCU0Vywz18B2Kv4tW7chD3NZ10sI/wo/YBTLNaTdyyz6kNrvu7jqRioxgVhF+Zo9JXzpO1JC1z26EjO+N6Ul95WG66ao
+X-Gm-Message-State: AOJu0Ywj1rU7qi2V9UfmeLVTZPvMtv/bmiPiX5DlJxc2lLd0Km3EZ708
+	neo2jphp+rSLQBGLI4oh88QykYr8fL89h6Uu4eSK5YkRCq7uy1bWiE6Ly9dYpQs=
+X-Google-Smtp-Source: AGHT+IGtQl9c1Evpp18ocZ5q/QQVhqE2/ZBbSr3U58j9PI2E4HefdEbETjVpINqcX9TcLPGz+COSDA==
+X-Received: by 2002:a05:6808:201f:b0:3c1:cb2a:b7e with SMTP id q31-20020a056808201f00b003c1cb2a0b7emr13146894oiw.5.1709583193677;
+        Mon, 04 Mar 2024 12:13:13 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.189])
+        by smtp.gmail.com with ESMTPSA id w15-20020a05622a190f00b0042dce775a4bsm4729533qtc.3.2024.03.04.12.13.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 12:13:12 -0800 (PST)
+Message-ID: <51c4b25f-1cdc-4bcc-8b40-c98096bebacf@joelfernandes.org>
+Date: Mon, 4 Mar 2024 15:13:10 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZeX1cXWKv2kirDXg@pc638.lan>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Content-Language: en-US
+To: paulmck@kernel.org
+Cc: linke li <lilinke99@qq.com>, Davidlohr Bueso <dave@stgolabs.net>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+References: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
+ <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
+ <4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop>
+ <a8e9c84f-c354-4536-b676-d38043913d09@joelfernandes.org>
+ <a9ff4787-1b07-4d47-b2a0-5eb1336d3710@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <a9ff4787-1b07-4d47-b2a0-5eb1336d3710@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 04, 2024 at 05:23:13PM +0100, Uladzislau Rezki wrote:
-> On Mon, Mar 04, 2024 at 12:55:47PM +0100, Frederic Weisbecker wrote:
-> > Le Wed, Feb 28, 2024 at 07:04:21PM +0100, Uladzislau Rezki a écrit :
-> > > On Tue, Feb 27, 2024 at 12:07:32AM +0100, Frederic Weisbecker wrote:
-> > > > On Tue, Feb 20, 2024 at 07:31:13PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > > > +{
-> > > > > +	struct llist_node *done, *rcu, *next, *head;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * This work execution can potentially execute
-> > > > > +	 * while a new done tail is being updated by
-> > > > > +	 * grace period kthread in rcu_sr_normal_gp_cleanup().
-> > > > > +	 * So, read and updates of done tail need to
-> > > > > +	 * follow acq-rel semantics.
-> > > > > +	 *
-> > > > > +	 * Given that wq semantics guarantees that a single work
-> > > > > +	 * cannot execute concurrently by multiple kworkers,
-> > > > > +	 * the done tail list manipulations are protected here.
-> > > > > +	 */
-> > > > > +	done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > > > +	if (!done)
-> > > > > +		return;
-> > > > > +
-> > > > > +	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-> > > > > +	head = done->next;
-> > > > > +	done->next = NULL;
-> > > > 
-> > > > Can the following race happen?
-> > > > 
-> > > > CPU 0                                                   CPU 1
-> > > > -----                                                   -----
-> > > > 
-> > > > // wait_tail == HEAD1
-> > > > rcu_sr_normal_gp_cleanup() {
-> > > >     // has passed SR_MAX_USERS_WAKE_FROM_GP
-> > > >     wait_tail->next = next;
-> > > >     // done_tail = HEAD1
-> > > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > > >     queue_work() {
-> > > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > > >         __queue_work()
-> > > >     }
-> > > > }
-> > > > 
-> > > >                                                       set_work_pool_and_clear_pending()
-> > > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > > > // new GP, wait_tail == HEAD2
-> > > > rcu_sr_normal_gp_cleanup() {
-> > > >     // executes all completion, but stop at HEAD1
-> > > >     wait_tail->next = HEAD1;
-> > > >     // done_tail = HEAD2
-> > > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > > >     queue_work() {
-> > > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > > >         __queue_work()
-> > > >     }
-> > > > }
-> > > >                                                           // done = HEAD2
-> > > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > >                                                           // head = HEAD1
-> > > >                                                           head = done->next;
-> > > >                                                           done->next = NULL;
-> > > >                                                           llist_for_each_safe() {
-> > > >                                                               // completes all callbacks, release HEAD1
-> > > >                                                           }
-> > > >                                                       }
-> > > >                                                       // Process second queue
-> > > >                                                       set_work_pool_and_clear_pending()
-> > > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > > >                                                           // done = HEAD2
-> > > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > > 
-> > > > // new GP, wait_tail == HEAD3
-> > > > rcu_sr_normal_gp_cleanup() {
-> > > >     // Finds HEAD2 with ->next == NULL at the end
-> > > >     rcu_sr_put_wait_head(HEAD2)
-> > > >     ...
-> > > > 
-> > > > // A few more GPs later
-> > > > rcu_sr_normal_gp_init() {
-> > > >      HEAD2 = rcu_sr_get_wait_head();
-> > > >      llist_add(HEAD2, &rcu_state.srs_next);
-> > > >                                                           // head == rcu_state.srs_next
-> > > >                                                           head = done->next;
-> > > >                                                           done->next = NULL;
-> > > >                                                           llist_for_each_safe() {
-> > > >                                                               // EXECUTE CALLBACKS TOO EARLY!!!
-> > > >                                                           }
-> > > >                                                       }
-> > > Looks like that. To address this, we should not release the head in the GP
-> > > > kthread.
-> > 
-> > But then you have to unconditionally schedule the work, right? Otherwise the
-> > HEADs are not released. And that means dropping this patch (right now I don't
-> > have a better idea).
-> >
-> The easiest way is to drop the patch. To address it we can go with:
-> 
-> <snip>
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 31f3a61f9c38..9aa2cd46583e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1661,16 +1661,8 @@ static void rcu_sr_normal_gp_cleanup(void)
->  	 * wait-head is released if last. The worker is not kicked.
->  	 */
->  	llist_for_each_safe(rcu, next, wait_tail->next) {
-> -		if (rcu_sr_is_wait_head(rcu)) {
-> -			if (!rcu->next) {
-> -				rcu_sr_put_wait_head(rcu);
-> -				wait_tail->next = NULL;
-> -			} else {
-> -				wait_tail->next = rcu;
-> -			}
-> -
-> +		if (rcu_sr_is_wait_head(rcu))
->  			break;
-> -		}
->  
->  		rcu_sr_normal_complete(rcu);
->  		// It can be last, update a next on this step.
-> <snip>
-> 
-> i.e. the process of users from GP is still there. The work is triggered
-> to perform a final complete(if there are users) + releasing wait-heads
-> so we do not race anymore.
-> 
-> I am OK with both cases. Dropping the patch will make it more simple
-> for sure.
 
-Please feel free to repost a fixed-up patch series.  I can easily replace
-the commits currently in -rcu with new ones.  Just let me know.
 
-						Thanx, Paul
+On 3/4/2024 2:44 PM, Paul E. McKenney wrote:
+> On Mon, Mar 04, 2024 at 02:10:09PM -0500, Joel Fernandes wrote:
+>>
+>>
+>> On 3/4/2024 12:14 PM, Paul E. McKenney wrote:
+>>> On Mon, Mar 04, 2024 at 11:19:21AM -0500, Joel Fernandes wrote:
+>>>>
+>>>>
+>>>> On 3/4/2024 5:54 AM, linke li wrote:
+>>>>> Some changes are done to fix a data race in commit 202489101f2e ("rcutorture: Fix rcu_torture_one_read()/rcu_torture_writer() data race")
+>>>>>
+>>>>>  {
+>>>>>  	int i;
+>>>>>
+>>>>> -	i = rp->rtort_pipe_count;
+>>>>> +	i = READ_ONCE(rp->rtort_pipe_count);
+>>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
+>>>>>  		i = RCU_TORTURE_PIPE_LEN;
+>>>>>  	atomic_inc(&rcu_torture_wcount[i]);
+>>>>> -	if (++rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+>>>>> +	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+>>>>> +	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+>>>>>  		rp->rtort_mbtest = 0;
+>>>>>  		return true;
+>>>>>  	}
+>>>>>
+>>>>> But ++rp->rtort_pipe_count is meant to add itself by 1, not give i+1 to
+>>>>> rp->rtort_pipe_count, because rp->rtort_pipe_count may write by
+>>>>> rcu_torture_writer() concurrently.
+>>>>>
+>>>>> Also, rp->rtort_pipe_count in the next line should be read using
+>>>>> READ_ONCE() because of data race.
+>>>>>
+>>>>> Signed-off-by: linke li <lilinke99@qq.com>
+>>>>> ---
+>>>>>  kernel/rcu/rcutorture.c | 4 ++--
+>>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+>>>>> index 7567ca8e743c..00059ace4fd5 100644
+>>>>> --- a/kernel/rcu/rcutorture.c
+>>>>> +++ b/kernel/rcu/rcutorture.c
+>>>>> @@ -465,8 +465,8 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
+>>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
+>>>>>  		i = RCU_TORTURE_PIPE_LEN;
+>>>>>  	atomic_inc(&rcu_torture_wcount[i]);
+>>>>> -	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+>>>>> -	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+>>>>> +	WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
+>>>>> +	if (READ_ONCE(rp->rtort_pipe_count) >= RCU_TORTURE_PIPE_LEN) {
+>>>>
+>>>> I want to say, I am not convinced with the patch because what's wrong with
+>>>> writing to an old index?
+>>>>
+>>>> You win/lose the race anyway, say the CPU executed the WRITE_ONCE() a bit too
+>>>> early/late and another WRITE_ONCE() lost/won, regardless of whether you wrote
+>>>> the "incremented i" or "the increment from the latest value of pipe_count".
+>>>>
+>>>> Anyway, a slightly related/different question:
+>>>>
+>>>> Should that:
+>>>> WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
+>>>>
+>>>> Be:
+>>>> WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) + 1);
+>>>>
+>>>> ?
+>>>
+>>> Thank you both!
+>>>
+>>> At first glance, I would argue for something like this:
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> static bool
+>>> rcu_torture_pipe_update_one(struct rcu_torture *rp)
+>>> {
+>>> 	int i;
+>>> 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+>>>
+>>> 	if (rtrcp) {
+>>> 		WRITE_ONCE(rp->rtort_chkp, NULL);
+>>> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+>>> 	}
+>>> 	i = READ_ONCE(rp->rtort_pipe_count) + 1;
+>>> 	if (i > RCU_TORTURE_PIPE_LEN)
+>>> 		i = RCU_TORTURE_PIPE_LEN;
+>>> 	atomic_inc(&rcu_torture_wcount[i]);
+>>> 	WRITE_ONCE(rp->rtort_pipe_count, i);
+>>> 	if (i >= RCU_TORTURE_PIPE_LEN) {
+>>> 		rp->rtort_mbtest = 0;
+>>> 		return true;
+>>> 	}
+>>> 	return false;
+>>> }
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> That is, move the increment to the read and replace the re-read with
+>>> the value "i" that was just written.
+>>
+>> But that changes the original logic as well? It looks like with the above
+>> change, you're now writing to rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)
+>> + 1] instead of rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)].
+>>
+>> I think that might break rcutorture, because there is an increment outside of
+>> the first 2 entries in rcu_torture_wcount but not sure (need to look more).
+> 
+> Good point on never incrementing the zeroth entry!  Clearly I should
+> have waited before replying.
+> 
+> How about the following?
+> 
+> ------------------------------------------------------------------------
+> 
+> static bool
+> rcu_torture_pipe_update_one(struct rcu_torture *rp)
+> {
+> 	int i;
+> 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+> 
+> 	if (rtrcp) {
+> 		WRITE_ONCE(rp->rtort_chkp, NULL);
+> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+> 	}
+> 	i = READ_ONCE(rp->rtort_pipe_count);
+> 	if (i > RCU_TORTURE_PIPE_LEN)
+> 		i = RCU_TORTURE_PIPE_LEN;
+> 	atomic_inc(&rcu_torture_wcount[i]);
+> 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+> 	if (i + 1 >= RCU_TORTURE_PIPE_LEN) {
+> 		rp->rtort_mbtest = 0;
+> 		return true;
+> 	}
+> 	return false;
+> }
+
+Yes, this looks good to me. Thanks,
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
