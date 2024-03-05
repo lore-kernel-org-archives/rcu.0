@@ -1,264 +1,138 @@
-Received: from out203-205-251-80.mail.qq.com (out203-205-251-80.mail.qq.com [203.205.251.80])
+Received: from mail.ams.netpunt.systems (mail.ams.netpunt.systems [178.62.236.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E99729CFE;
-	Tue,  5 Mar 2024 03:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566047BAFE
+	for <rcu@vger.kernel.org>; Tue,  5 Mar 2024 05:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.62.236.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709609437; cv=none; b=OqDxGGxPGQRXiBNnNnDE8FhP2aELn+fIf7e47CeaNnupnej8IzIb6Q5307YPad3uhgMxuzBnJAgUSpQIsQuT4k056C8k/HJrFVQozf23iddw4iGlcNHkWITZwrHt/oJw9CyuSUyOGVlMVhmpGfOmpAuLY25AWCq7mdlUwNkRPOo=
+	t=1709618260; cv=none; b=e05lfyMXLrhuEFkNIGn6Fr94jtWMELZE0nwHQuiqSc6Cs8Jh3KsigDpnpy/1oTzXKnl3yPsYU8esqbc+dZMK5m+fdip4QWSRwVAfYdk01z2yjw7eJRW+pkrnLkSk9OqY2Grsm6MzRTXcTAz5yKw5i7HkPkfQZXI7Z0lmNL9NlgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709609437; c=relaxed/simple;
-	bh=lQ8Kjv0cR7uSFIU3UHCqcBAPrZckuBw+DO0qfNJIuk4=;
-	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
-	 Date:Cc:References:To; b=N/okfzd00k37tc48ICMMK6zGj+9acCY0QWRN2DNsSFAAx/fAjwncE5I82kOm1J+HSX3E74HWZ+CEgqWodkUYhA3E+eMuFquHGD+1rxSc9Z0r1vHDJ5zFHHgsUUa1FZqederJ6D7D9R2f5JuShK8SSayH56UxxH1ezrmIVnEYtt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=F6SSSykS; arc=none smtp.client-ip=203.205.251.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1709618260; c=relaxed/simple;
+	bh=kGjN01eBdxKgKM3QkoePQ2SjbyaBUiiB9x4r+77lQ+s=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=ZDmv9riLYO5gXowARuHYxNnj/+aDRWJ6WctYdK8QpBSzFKFPkTg6itlpsahKeNyVwlIEGOmwlIMpN1eRq0C4z4k6fI9W/32WdYog8u0F9Qx64pOS9sHWA8rp6kO5Dw5yv8L1mshixduHnaaAyUJDL1EYSQRo2q/FLFYIBhWPppE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxboone.com; spf=pass smtp.mailfrom=maxboone.com; dkim=fail (2048-bit key) header.d=maxboone.com header.i=@maxboone.com header.b=RQOcbuMh reason="signature verification failed"; arc=none smtp.client-ip=178.62.236.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxboone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maxboone.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="F6SSSykS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709609432; bh=XTTyZe6yfmWl5Yz80sSkDqdfIhQ7dsX0F5Wl3RTRwjg=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To;
-	b=F6SSSykSVHnXuCLJwg2pQdjhRaEzECRA6+LbQ7q+R3Sh7nD+TCafTXw3Wcr7WRMHy
-	 Y6HYPJgRkHh3mx0Enxej2aD2tfRZun1XjSnkngh4SNXjHWYzv01sp8er0BQhAxcr6z
-	 Fi57OkkR8c/udANl9fBl6kzm+8CrPvkAlbpym05U=
-Received: from smtpclient.apple ([218.94.142.74])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 79D3C2CC; Tue, 05 Mar 2024 11:30:29 +0800
-X-QQ-mid: xmsmtpt1709609429t6nn547dj
-Message-ID: <tencent_2E076343DA2D43D9B05F9DE3A01E0ACF2407@qq.com>
-X-QQ-XMAILINFO: MFdGPHhuqhNo8kGylBpk9VRGhycbdvPpiulEO06TXfpsLgRfCdXEs2JwyujlD9
-	 b5l75eoTXQB6bFZPWaFguZ5MSe099DyKGkaENtgsHOUkIhrdFNeYi6x7qF/rmzFqVNGEvMqPTHIq
-	 +5YerZH1R/5Fb5de40L6gZ9osP85m0eYsDVfF58vHoxPHNcH5eUI5VuDzHgmf5GfUax/QVHA8UvV
-	 DkP1msYXd83UZZSpRsE5CmbXeXPAKaF6NfgRQ4umHxf5NXwucIJhJKBdcRd5eLNvLP0LeGJC/sUa
-	 4W/kHDJrp0hgDKRjwyoJat8FwJXy7ve+lVcrhMa987gQ4hoMGoc+ljVuKEq2gxhYslETn509bI3O
-	 BBu4n75/oi/RcVtFDRZw1EhoueAbbpVp+BkqayUsDs5n0NgtC72LFYg3RWi4J0LMMKqMprdvPiai
-	 gF3EZ9lfNGk+e5lfag0PH4T7AbNnSL+B1kPh99RD4ZlZWBkuAhK4cpNWtTbdjJc5/Y42nm5+KMiu
-	 9R89Gb5z1YYyY9POBoh8dR6BJgvmnCOl03SN9/sHHKeQbtUn5VCrkq3jJRpEhEAQeZvlo05q/i6n
-	 kfA64c0ZNt5Sr3WVou0sRoSKG/rlLOWgOjEYge16nfmBKK6We6E3i6nn0jO9IEUrP2SrofN7hJhO
-	 bj7wFdjBd+v4DcQYTiN+fpqqFdFvDIMvikTR9XqclPwjSDapjAS74OuZkhXkdnmlqjdsi2/oLxx1
-	 lQ1PtOpVOEPZ8bYef6131E+rx402fTEe2s5hBPu/Nm63uTylpDXBfIILJsrKYxQ2q6HCKEZWw00Y
-	 OpKUsxkeLNlgSSJ4VBTqfUv0S4WBR4CKILeWzIGokuIIg0N5J+41ADlHLMbOUu0wqRUledI+esFy
-	 O9EqSqT1Ua6Z6jOrn7FFLF+tF01uA/28P+hPWOpEnZxQLiatFMN/8UxK3h8yM0X/VTE1+67m/6AF
-	 pA6wQJEvUGpem/f2L7Jw==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=maxboone.com header.i=@maxboone.com header.b="RQOcbuMh"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E3977AC4AB;
+	Tue,  5 Mar 2024 06:57:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxboone.com;
+	s=dkim; t=1709618254;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=rFyyG+TBTr1y/ApHec4EvDcXF3z4g0zGpiHb+l+61XE=;
+	b=RQOcbuMh4akOcXUQ3AgyeOR9gMWE1cB/8h8Gm/66om5cehdlOPFCQ2PgfD4KDGhkA+JOmK
+	xUq4KworUU0gaH4+CU6ah0XZf3Ry/uyu1BkzpBqw/4/JHE3QrEXwt7MWSiSgYf1+0mqwPJ
+	f2rV4Z2iMV38yvItlSVO4i2NYPvAZiS557dyOozE9kzY/k6lOn+0yitVxEj39Z4WLkTcHr
+	JQ8JioXRzOhlYI0YFQkOvgqNekVnB1DXcQPm0Ioh2Mb/747tcEdkhce8Ra/ErefqwPxGDK
+	KqIXx55JJ7HNGIRyZWBBp68mC8GshaMGiwpAliMjbG9IWdwpJDpzT3lHlv33eQ==
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.100.2.1.4\))
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-From: linke <lilinke99@qq.com>
-In-Reply-To: <0640c3b9-fa19-4c2d-9158-a6aa5b398da3@paulmck-laptop>
-Date: Tue, 5 Mar 2024 11:30:18 +0800
-Cc: Joel Fernandes <joel@joelfernandes.org>,
- Davidlohr Bueso <dave@stgolabs.net>,
- Josh Triplett <josh@joshtriplett.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>,
- linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-OQ-MSGID: <A2FCFD70-2D2B-4D23-A3C7-DE9D6C2DF064@qq.com>
-References: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
- <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
- <4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop>
- <a8e9c84f-c354-4536-b676-d38043913d09@joelfernandes.org>
- <a9ff4787-1b07-4d47-b2a0-5eb1336d3710@paulmck-laptop>
- <51c4b25f-1cdc-4bcc-8b40-c98096bebacf@joelfernandes.org>
- <0640c3b9-fa19-4c2d-9158-a6aa5b398da3@paulmck-laptop>
-To: paulmck@kernel.org
-X-Mailer: Apple Mail (2.3774.100.2.1.4)
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 05 Mar 2024 05:57:33 +0000
+Message-Id: <CZLL3BA2G8O8.1M5NNUFKOJDY6@maxboone.com>
+Cc: <rcu@vger.kernel.org>
+Subject: Re: Advice sought on RCU stalls on ARM64 WSL2
+From: "Max Boone" <contact@maxboone.com>
+To: "Joel Fernandes" <joel@joelfernandes.org>, "Boqun Feng"
+ <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>
+References: <1a5d96d6-2057-44d9-a4b0-8771c46032fb@paulmck-laptop>
+ <3718bb-65e38400-d-5cd53080@68830111>
+ <99a0fb2c-c936-405f-85bf-847c61531bd5@paulmck-laptop>
+ <ZeX327aMIrthOXbs@Boquns-Mac-mini.home>
+ <CZLATSBV6XDH.2WUG4D8VJHEQ5@maxboone.com>
+ <807b26d4-b55f-4b5e-932e-1252e1ff2446@joelfernandes.org>
+In-Reply-To: <807b26d4-b55f-4b5e-932e-1252e1ff2446@joelfernandes.org>
+X-Last-TLS-Session-Version: TLSv1.3
 
-Thank you both. This looks good to me. I will send a new patch.
+On Tue Mar 5, 2024 at 12:32 AM UTC, Joel Fernandes wrote:
+> FWIW, I use a Windows machine that has WSL2 (kernel version
+> 5.15.133.1-microsoft-standard-WSL2) and I have never experienced any kind=
+ of
+> hang. Though, this is a desktop and not a laptop or battery powered devic=
+e.
 
-> 2024=E5=B9=B43=E6=9C=885=E6=97=A5 04:47=EF=BC=8CPaul E. McKenney =
-<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Mon, Mar 04, 2024 at 03:13:10PM -0500, Joel Fernandes wrote:
->>=20
->>=20
->> On 3/4/2024 2:44 PM, Paul E. McKenney wrote:
->>> On Mon, Mar 04, 2024 at 02:10:09PM -0500, Joel Fernandes wrote:
->>>>=20
->>>>=20
->>>> On 3/4/2024 12:14 PM, Paul E. McKenney wrote:
->>>>> On Mon, Mar 04, 2024 at 11:19:21AM -0500, Joel Fernandes wrote:
->>>>>>=20
->>>>>>=20
->>>>>> On 3/4/2024 5:54 AM, linke li wrote:
->>>>>>> Some changes are done to fix a data race in commit 202489101f2e =
-("rcutorture: Fix rcu_torture_one_read()/rcu_torture_writer() data =
-race")
->>>>>>>=20
->>>>>>> {
->>>>>>> 	int i;
->>>>>>>=20
->>>>>>> -	i =3D rp->rtort_pipe_count;
->>>>>>> +	i =3D READ_ONCE(rp->rtort_pipe_count);
->>>>>>> 	if (i > RCU_TORTURE_PIPE_LEN)
->>>>>>> 		i =3D RCU_TORTURE_PIPE_LEN;
->>>>>>> 	atomic_inc(&rcu_torture_wcount[i]);
->>>>>>> -	if (++rp->rtort_pipe_count >=3D RCU_TORTURE_PIPE_LEN) {
->>>>>>> +	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
->>>>>>> +	if (rp->rtort_pipe_count >=3D RCU_TORTURE_PIPE_LEN) {
->>>>>>> 		rp->rtort_mbtest =3D 0;
->>>>>>> 		return true;
->>>>>>> 	}
->>>>>>>=20
->>>>>>> But ++rp->rtort_pipe_count is meant to add itself by 1, not give =
-i+1 to
->>>>>>> rp->rtort_pipe_count, because rp->rtort_pipe_count may write by
->>>>>>> rcu_torture_writer() concurrently.
->>>>>>>=20
->>>>>>> Also, rp->rtort_pipe_count in the next line should be read using
->>>>>>> READ_ONCE() because of data race.
->>>>>>>=20
->>>>>>> Signed-off-by: linke li <lilinke99@qq.com>
->>>>>>> ---
->>>>>>> kernel/rcu/rcutorture.c | 4 ++--
->>>>>>> 1 file changed, 2 insertions(+), 2 deletions(-)
->>>>>>>=20
->>>>>>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
->>>>>>> index 7567ca8e743c..00059ace4fd5 100644
->>>>>>> --- a/kernel/rcu/rcutorture.c
->>>>>>> +++ b/kernel/rcu/rcutorture.c
->>>>>>> @@ -465,8 +465,8 @@ rcu_torture_pipe_update_one(struct =
-rcu_torture *rp)
->>>>>>> 	if (i > RCU_TORTURE_PIPE_LEN)
->>>>>>> 		i =3D RCU_TORTURE_PIPE_LEN;
->>>>>>> 	atomic_inc(&rcu_torture_wcount[i]);
->>>>>>> -	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
->>>>>>> -	if (rp->rtort_pipe_count >=3D RCU_TORTURE_PIPE_LEN) {
->>>>>>> +	WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + =
-1);
->>>>>>> +	if (READ_ONCE(rp->rtort_pipe_count) >=3D =
-RCU_TORTURE_PIPE_LEN) {
->>>>>>=20
->>>>>> I want to say, I am not convinced with the patch because what's =
-wrong with
->>>>>> writing to an old index?
->>>>>>=20
->>>>>> You win/lose the race anyway, say the CPU executed the =
-WRITE_ONCE() a bit too
->>>>>> early/late and another WRITE_ONCE() lost/won, regardless of =
-whether you wrote
->>>>>> the "incremented i" or "the increment from the latest value of =
-pipe_count".
->>>>>>=20
->>>>>> Anyway, a slightly related/different question:
->>>>>>=20
->>>>>> Should that:
->>>>>> WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
->>>>>>=20
->>>>>> Be:
->>>>>> WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) =
-+ 1);
->>>>>>=20
->>>>>> ?
->>>>>=20
->>>>> Thank you both!
->>>>>=20
->>>>> At first glance, I would argue for something like this:
->>>>>=20
->>>>> =
-------------------------------------------------------------------------
->>>>>=20
->>>>> static bool
->>>>> rcu_torture_pipe_update_one(struct rcu_torture *rp)
->>>>> {
->>>>> 	int i;
->>>>> 	struct rcu_torture_reader_check *rtrcp =3D =
-READ_ONCE(rp->rtort_chkp);
->>>>>=20
->>>>> 	if (rtrcp) {
->>>>> 		WRITE_ONCE(rp->rtort_chkp, NULL);
->>>>> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with =
-smp_load_acquire().
->>>>> 	}
->>>>> 	i =3D READ_ONCE(rp->rtort_pipe_count) + 1;
->>>>> 	if (i > RCU_TORTURE_PIPE_LEN)
->>>>> 		i =3D RCU_TORTURE_PIPE_LEN;
->>>>> 	atomic_inc(&rcu_torture_wcount[i]);
->>>>> 	WRITE_ONCE(rp->rtort_pipe_count, i);
->>>>> 	if (i >=3D RCU_TORTURE_PIPE_LEN) {
->>>>> 		rp->rtort_mbtest =3D 0;
->>>>> 		return true;
->>>>> 	}
->>>>> 	return false;
->>>>> }
->>>>>=20
->>>>> =
-------------------------------------------------------------------------
->>>>>=20
->>>>> That is, move the increment to the read and replace the re-read =
-with
->>>>> the value "i" that was just written.
->>>>=20
->>>> But that changes the original logic as well? It looks like with the =
-above
->>>> change, you're now writing to =
-rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)
->>>> + 1] instead of =
-rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)].
->>>>=20
->>>> I think that might break rcutorture, because there is an increment =
-outside of
->>>> the first 2 entries in rcu_torture_wcount but not sure (need to =
-look more).
->>>=20
->>> Good point on never incrementing the zeroth entry!  Clearly I should
->>> have waited before replying.
->>>=20
->>> How about the following?
->>>=20
->>> =
-------------------------------------------------------------------------
->>>=20
->>> static bool
->>> rcu_torture_pipe_update_one(struct rcu_torture *rp)
->>> {
->>> 	int i;
->>> 	struct rcu_torture_reader_check *rtrcp =3D =
-READ_ONCE(rp->rtort_chkp);
->>>=20
->>> 	if (rtrcp) {
->>> 		WRITE_ONCE(rp->rtort_chkp, NULL);
->>> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with =
-smp_load_acquire().
->>> 	}
->>> 	i =3D READ_ONCE(rp->rtort_pipe_count);
->>> 	if (i > RCU_TORTURE_PIPE_LEN)
->>> 		i =3D RCU_TORTURE_PIPE_LEN;
->>> 	atomic_inc(&rcu_torture_wcount[i]);
->>> 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
->>> 	if (i + 1 >=3D RCU_TORTURE_PIPE_LEN) {
->>> 		rp->rtort_mbtest =3D 0;
->>> 		return true;
->>> 	}
->>> 	return false;
->>> }
->>=20
->> Yes, this looks good to me. Thanks,
->> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->=20
-> Again, thank you.
->=20
-> linke li, does this approach work for you?  If so, would you be =
-willing to
-> send a new patch along these lines?  If it does not work, what =
-additional
-> problems do you see?
->=20
-> 							Thanx, Paul
+Is that also an ARM64 machine, because I have never seen this happen on
+a x86_64 machine, there it runs like a charm. Out of curiousity, if you are=
+=20
+running an ARM64 Desktop. If I may as, which one, as the Volterra Developme=
+nt=20
+Kit is not available in the Netherlands.
 
+> >=20
+> > It also happens when I build the kernel myself from a more recent
+> > release:
+> > - https://github.com/maxboone/SQ2-Linux-Kernel-Builds
+> >=20
+> > Microsoft should have a Development Kit (Volterra) with identical hardw=
+are=20
+> > to mine (and other Surface Pro X, Surface Pro 9 users) that run into th=
+e=20
+> > same issue with WSL2.
+>
+> Right, so at least that's a data point, that its Surface-specific (?). Ha=
+ve you
+> tried to disable power management and see if it occurs? Like disable susp=
+end,
+> disable cpuidle, etc.
+
+It also happens on non-Surface (but indeed mobile) devices, such as
+Lenovo ThinkPads. However, the common denominator might be the Qualcomm
+8cx chip (that Microsoft uses as SQ{1,2,3} -> 8cx Gen{1,2,3} with a=20
+beefier GPU).
+
+Changes to power management settings in Windows don't seem to have
+effect other than stalls taking longer to occur when the device never
+sleeps. But the stalls also happen (often) when it doesn't sleep.
+
+Power management in WSL2 seems to be all but available:
+
+```
+root@ProX2024:~# uname -r
+6.7.7-WSL2-STABLE+
+root@ProX2024:~# echo freeze > /sys/power/state
+-bash: echo: write error: Function not implemented
+root@ProX2024:~# ls /sys/devices/system/cpu/
+cpu0  cpu2  cpu4  cpu6  cpufreq   kernel_max  offline  possible  present  v=
+ulnerabilities
+cpu1  cpu3  cpu5  cpu7  isolated  modalias    online   power     uevent
+```
+
+However available in Hyper-V:
+
+```
+root@ubuntu0:~# uname -r
+6.5.0-21-generic
+root@ubuntu0:~# echo freeze > /sys/power/state
+root@ubuntu0:~# ls /sys/devices/system/cpu
+cpu0  cpu2  cpufreq  hotplug   kernel_max  offline  possible  present  ueve=
+nt
+cpu1  cpu3  cpuidle  isolated  modalias    online   power     smt      vuln=
+erabilities
+```
+
+> Have you tried to reproduce the issue with CONFIG_RSEQ=3Dn and see if it =
+happens?
+
+Will build a new kernel today with that flag, and report back.
+
+> Also this github thread looks awfully similar to the github thread you po=
+inted
+> and has the same clear_rseq signature leading to the RCU stall. Over ther=
+e also
+> it is a hang, but they say the CPU usage is at 100%:
+> https://github.com/microsoft/WSL/issues/8529
+
+Indeed, when the RCU stalls occur, the CPU of the core that is stalling
+ramps up to 100%. I had thought that was an effect of the stall, but
+will check if the 100% usage is caused by the process that is stalling.
+
+Cheers,
+Max.
