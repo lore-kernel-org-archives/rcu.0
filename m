@@ -1,20 +1,20 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1E313E7F8;
-	Wed,  6 Mar 2024 19:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5223113F00A;
+	Wed,  6 Mar 2024 19:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709753261; cv=none; b=AP7V9MBnqENoyLvdgoeFIi1OIsuWIrvq7TTl4EAtERGN4i5zJBk6WvZHiUCe47+FCSQQix60+VWMA8K5qrCwIYAnD1duZvXEfEPcDPQk6u8T1E4fTl4NbngCx98nwW26aHWwQhv0ymLRh5EhFGmuxLiYmvmK7ZztYmgUAiq9V3M=
+	t=1709754322; cv=none; b=GJq3WUJg40WP4u1d4ctzMuOnJp5echoUzidsBu91VHyHeQuko2B2n8suXKTDv3/xrXrUOgNrAYPBEpHg8xTZwZT3voElf08wjSmdzKTZyiiyDrAvJ/CZnVmzf6G1dtT7hzsj37tSxoH2OOYkOeuxqvLofrcO63tR0N2dLkBfi4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709753261; c=relaxed/simple;
-	bh=HTU+jL9vOuCHuBXKseXN19zfCWcmKm8VdJ5lvTYj6QM=;
+	s=arc-20240116; t=1709754322; c=relaxed/simple;
+	bh=GoeNgILuYzw3RIt3lassJRpXKSoD4VrJVLzn63ESTBE=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=it9nPQb5MyiTXwEtOoq19ld/9m2geaBiYeybUW3jvmB3OYNSUOhtz9bxlCfBCOnDAKfok7VS4BkgcuF5AxXidRnWV/k4tgv0KqfS7Su2Jx9XG2NpvBzS9AJlx57WbkSIT1TTMordPUvXPF+BRtWHfup7Yc0cKiC5LgGXo77KoR0=
+	 MIME-Version:Content-Type; b=ARprUo6dFrxlMTxAzX3+UBQLVLg82YLAaA+TE4yVOjNUabWcXonOInQjOLCZWYxSyhaU3nB8u7Nvx/WGlijnkKj6KT3EsKQ8MS4+zJWx262WSfrSfVyuZPXtECs52+vjKMX5XvCuAit/uWesIa5yLu53Xrnua2uCyr3IFuKrOdQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B192C433F1;
-	Wed,  6 Mar 2024 19:27:39 +0000 (UTC)
-Date: Wed, 6 Mar 2024 14:27:38 -0500
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5201BC433C7;
+	Wed,  6 Mar 2024 19:45:20 +0000 (UTC)
+Date: Wed, 6 Mar 2024 14:47:13 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>, linke li <lilinke99@qq.com>,
@@ -25,8 +25,8 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>, linke li <lilinke99@qq.com>,
 Subject: Re: [PATCH] rcutorture: Fix
  rcu_torture_pipe_update_one()/rcu_torture_writer() data race and
  concurrency bug
-Message-ID: <20240306142738.7b66a716@rorschach.local.home>
-In-Reply-To: <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
+Message-ID: <20240306144713.2e1709ad@gandalf.local.home>
+In-Reply-To: <CAHk-=whvyzsbqLkw4kwEC-KzAMKFuy5VuMtJFn-mCerSYoRnqw@mail.gmail.com>
 References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
 	<tencent_9882B228F292088CDD68F10CF1C228742009@qq.com>
 	<20240306103719.1d241b93@gandalf.local.home>
@@ -35,7 +35,8 @@ References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
 	<CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
 	<20240306135504.2b3872ef@gandalf.local.home>
 	<CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	<CAHk-=whvyzsbqLkw4kwEC-KzAMKFuy5VuMtJFn-mCerSYoRnqw@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -45,63 +46,83 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 6 Mar 2024 11:01:55 -0800
+On Wed, 6 Mar 2024 11:27:04 -0800
 Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On Wed, 6 Mar 2024 at 10:53, Steven Rostedt <rostedt@goodmis.org> wrote:
+> On Wed, 6 Mar 2024 at 11:01, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 > >
-> > Now, are you OK with an addition of ADD_ONCE() and/or INC_ONCE()? So that we
-> > don't have to look at:
-> >
-> >         WRITE_ONCE(a, READ_ONCE(a) + 1);
-> >
-> > ?  
+> > In some individual tracing C file where it has a comment above it how
+> > it's braindamaged and unsafe and talking about why it's ok in that
+> > particular context? Go wild.  
 > 
-> In a generic header file under include/linux/?
+> Actually, I take that back.
 > 
-> Absolutely not. The above is a completely broken operation. There is
-> no way in hell we should expose it as a general helper.
+> Even in a random C file, the naming makes no sense. There's no "once" about it.
 > 
-> So there is no way we'd add that kind of sh*t-for-brains operation in
-> (for example) our <asm/rwonce.h> header file next to the normal
-> READ/WRITE_ONCE defines.
+> So if you want to do something like
 > 
-> In some individual tracing C file where it has a comment above it how
-> it's braindamaged and unsafe and talking about why it's ok in that
-> particular context? Go wild.
+>    #define UNSAFE_INCREMENTISH(x) (WRITE_ONCE(a, READ_ONCE(a) + 1))
+> 
+> then that's fine, I guess. Because that's what the operation is.
+> 
+> It's not safe, and it's not an increment, but it _approximates_ an
+> increment most of the time. So UNSAFE_INCREMENTISH() pretty much
+> perfectly describes what it is doing.
+> 
+> Note that you'll also almost certainly end up with worse code
+> generation, ie don't expect to see a single "inc" instruction (or "add
+> $1") for the above.
+> 
+> Because at least for gcc, the volatiles involved with those "ONCE"
+> operations end up often generating much worse code, so rather than an
+> "inc" instruction, you'll almost certainly get "load+add+store" and
+> the inevitable code expansion and extra register use.
+> 
+> I really don't know what you want to do, but it smells bad. A big
+> comment about why you'd want that "incrementish" operation will be
+> needed.
+> 
+> To me, this smells like "Steven did something fundamentally wrong
+> again, some tool is now complaining about it, and Steven doesn't want
+> to fix the problem but instead paper over it again".
+> 
+> Not a good look.
+> 
+> But I don't have a link to the original report, and I'm not thrilled
+> enough about this to go looking for it.
 
-Note this has nothing to do with tracing. This thread is in RCU. I just
-happen to receive the same patch "fix" for my code.
+Well, it's not the above, and I was afraid you would even think that.
 
-> 
-> But honestly, I do not see when a ADD_ONCE() would ever be a valid
-> thing to do, and *if* it's a valid thing to do, why you'd do it with
-> READ_ONCE and WRITE_ONCE.
-> 
-> If you don't care about races, just do a simple "++" and be done with
-> it. The end result is random.
+Here's the back story. I received the following patch:
 
-That was my feeling. But when I saw this going into RCU, I was thinking
-there was a more fundamental problem here.
+  https://lore.kernel.org/all/tencent_BA1473492BC618B473864561EA3AB1418908@qq.com/
 
-> 
-> Adding a "ADD_ONCE()" macro doesn't make it one whit less random. It
-> just makes a broken concept even uglier.
-> 
-> So honestly, I think the ADD_ONCE macro not only needs to be in some
-> tracing-specific C file, the comment needs to be pretty damn big too.
-> Because as a random number generator, it's not even a very good one.
-> So you need to explain *why* you want a particularly bad random number
-> generator in the first place.
+I didn't like it. My reply was:
 
-Again, this has nothing to do with tracing. The code here is solely in
-RCU. I did receive a patch in the tracing code, but that had to deal
-with wakeups of readers with respect to writers which is a common thing
-across the kernel and is not anything tracing specific.
+	> -	rbwork->wait_index++;
+	> +	WRITE_ONCE(rbwork->wait_index, READ_ONCE(rbwork->wait_index) + 1);
 
-I wasn't about to take the patch to my code, but when I saw the same
-changes in RCU, then I thought this might be something I need to worry
-about.
+	I mean the above is really ugly. If this is the new thing to do, we need
+	better macros.
+
+	If anything, just convert it to an atomic_t.
+
+Then because I'm a reviewer of RCU patches, I saw the same fix for RCU
+(this thread):
+
+  https://lore.kernel.org/all/tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com/
+
+Where it was recommended to do the same WRITE_ONCE(a, READ_ONCE(a) + 1),
+and this is when I Cc'd you into the conversation to get your view of the
+situation.
+
+Sounds like my original gut feeling that this is a non-issue is proving to
+be correct.
+
+I even argued against using the _ONCE() macros. If WRITE_ONCE(a, READ_ONCE(a) + 1)
+is a valid operation, I sure as hell don't want it in my code, but I would
+be OK if it had a macro wrapper. Which you seem to be against, so I'm
+against it too.
 
 -- Steve
-
