@@ -1,61 +1,61 @@
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A08D14037F
-	for <rcu@vger.kernel.org>; Wed,  6 Mar 2024 19:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2447142906
+	for <rcu@vger.kernel.org>; Wed,  6 Mar 2024 20:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709754393; cv=none; b=a6SJNigPuUqdd9w9waZ/cpQrOfteO1210kHCnvhziyyCgosfVSM/wmbsKrUjCbMd7CGb7ljWj7MUtCg/BANJPK96wTb36b7iEiSVSBgSBEot5IWTvrDCtZv5DVsSHZFoLaXXbiv8/xuITC0C80H3IGiNJqTovYDgUBYSF1rixMU=
+	t=1709755583; cv=none; b=flurSfut84aEwGkxwWf3qkr2b7Y8n4LkIknmffAToFiSRBP7iVDJ9jZBRjz/L2J+c0YPNwcJ+eojanVmlc2kgbSDY5VFP0//s7Y4R576qGHNxVISMM4fAWQLwDs2hPS23P93cUBzpQsyOWNudtdHVHbM5NkT78/uExhGGYMrBsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709754393; c=relaxed/simple;
-	bh=EsrOB7GWDfZEolkuh93kmRh+nny/GJZOQsiuqS+Npj4=;
+	s=arc-20240116; t=1709755583; c=relaxed/simple;
+	bh=SyrHb40N341DxXn2vMM7iLdQWShX0cFfOW4dnLdSUZ4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gP1zGJY5iGMjsssj3a9pI5RR2t8kk+0SP+XOkBj19yRtb2X6+59yFM2n/FQiou82s1RIEnK9hjdgTL33bSVaTzUhT4Fz26juEe1lQgxtaw6xw6hx8gXeGe+6DFOfcbeP04xlblyazykiGGoX7J9kvsseNpu1opVKsp0MXgtscNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=TXdhyUP0; arc=none smtp.client-ip=209.85.208.50
+	 To:Cc:Content-Type; b=Oq1Vsw/IRMvvncEd8Gl1WigMFHB4e4u7Pun8SjIRaohJD4G2By31Mv08qCH++ukmvZMt7NWhOAMgF0MByxvclgs25tJ/076oCBwFdATPUoJ8D6HWgCDpWJ6xmIsuk7vUZ0hcpGCejj5YZ4JlYe+G+a34jgVlysbOHJDq5AK7cl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=K0VFvWKr; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="TXdhyUP0"
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56682b85220so120342a12.1
-        for <rcu@vger.kernel.org>; Wed, 06 Mar 2024 11:46:31 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="K0VFvWKr"
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5645960cd56so162501a12.1
+        for <rcu@vger.kernel.org>; Wed, 06 Mar 2024 12:06:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709754390; x=1710359190; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1709755580; x=1710360380; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X5tv/bveZOleZ+h93PkvUkJXX+8+GRGSuEkqnAwfMmY=;
-        b=TXdhyUP0FB6RioX5Hy00f1H3cKYbNzZmcNmnQZgcS9ghEzIb6IVMpdfuHZOB+g4+Bf
-         7c862vbqQ+CPpNST6YaaUbT2X+eyBrJUrn4uOnlRUOrwnsEx/tiaHzMqVCIJztkGjs64
-         N3VokCsajNlNUQry+xjpBm/50Bta1dmkpcNyU=
+        bh=IFv5gaMBFA/PPhuhGbhdZFZpUSVHV/ywVciaghdbwWE=;
+        b=K0VFvWKrFalgsCR0hpdajtKHZgoxbBH2VC+Hi9l6tIO4zk21bPLaoXLBveVr0Vlmfv
+         ouJP8Ko/t4KgMOcBasIP7JgELIfQA3jTCK/J28ETMO6zoNPfHXFVW3/US/7Qrk7EkUK+
+         3lg2TAA2B/gSKfsHpQUpZON5kiIy7dXPttBzo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709754390; x=1710359190;
+        d=1e100.net; s=20230601; t=1709755580; x=1710360380;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X5tv/bveZOleZ+h93PkvUkJXX+8+GRGSuEkqnAwfMmY=;
-        b=Q9Urk+m5vcv7o5jQ+F3GuFBSS6ptlFbuawejbaIq2H7sIWkDW0eGIEaAbfJOHmVAgZ
-         3VvH7LI+jxbFqA9bfUhGVcEkddqVIqNKD8LwFzCzWz3lOe/RjMwjLN1/d25OaBcK6vQK
-         FyqTZPofA9aLZ6s65xkAJLNSiQ/3FOg12+fAG8wgL9ZuqiYTEAxqOUiRsPPlqWNOuW5j
-         aCMotMHssOgwsFUYvW0eYdct71kvUqxSLnx9oo0YoFtWAtdRkm5v0qkECBE3aL3b2fsm
-         bhsy8jfU7q43q643jtWxJw1YBkD//q3FoGI3qMXcOikV6uDTbgQKAsq7rFGTcIxEVZ+L
-         OTUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+lJnb53LzwMHjybkRAy0VmIULFlTyaqFMGeARCBMIki/YIp5XxjPki3sIx8CXpsD+XD3GxcqXiKnhZSZogS0QrzT9
-X-Gm-Message-State: AOJu0Yx7g4KK9NqUaQLTN8w4VBhjAlxnIb4DRMRVfWUq2f5C0/bAVqFy
-	meC8vomRzhchn1IeGU6eJlQszM0UEf2PXLR0ddNG6suTlO+BEU7X3H+IDew65sO6iQROiwPprN7
-	kOIFB8A==
-X-Google-Smtp-Source: AGHT+IGPLlzvI9hfCWBI6D9RJm3qvLB7nELXbFEtf3Z9+Zn35sarHe74+458Yhz9BteNTKF7Oa7Law==
-X-Received: by 2002:a17:906:40d0:b0:a44:9e7e:64c3 with SMTP id a16-20020a17090640d000b00a449e7e64c3mr11636006ejk.10.1709754389722;
-        Wed, 06 Mar 2024 11:46:29 -0800 (PST)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id r2-20020a170906c28200b00a412d3d509fsm7498999ejz.181.2024.03.06.11.46.27
+        bh=IFv5gaMBFA/PPhuhGbhdZFZpUSVHV/ywVciaghdbwWE=;
+        b=tb6e6CrdyFE0NDw44JPvGnWqmsWsWIOveV4jhOblGWzIVveNkazNHwqMVIJTwjhMmz
+         9fjqBNT+ifTqMZDOvoOJ0MoKjTFipgJ8fBj0FyCsu7X5reM1HwzDiXDC+UN4OpOpIJID
+         YVj67AgR8Lf1YW8Lj+BUUbCjdyUi+juJ3za3eo7zjZhRHGmLb+CHlYdTa2IOdgaczB2M
+         bPbxOR/4H72A7Yz++nGsAFCL3jAvy/RoS6zq+XMremD2mZsWE4U3XU0IUZtBeyzq2FSg
+         zRD0hRwM1dwgJvdatDb+qUKxreKl7X2o96awbOip2TQxUPtL+L4D8b+C5kz+SaC2T+s6
+         UUrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWMjbJoFi2o0c7C4mx51Csef9/lDio8o9PyX7sYA4ImlDWasAJ7wSNTiTEuZcLSkKUOtx2NExsLu3fpV16L0MKsJUmn
+X-Gm-Message-State: AOJu0YzG7UtvH4+uZQs1WoSKeiUJq9qf1rqx8rpPRYRAxlLnUcO5Ftwi
+	Tp6UcQD5Ey1OR39WQ1lYfRGizwL7EmA6vd71BDBKGcQTirG/WoXlIbnxTJ61sCbvoAzMkNlNCaM
+	Pjes5Uw==
+X-Google-Smtp-Source: AGHT+IFvVbOONdi8c3WlkJKFAL+Fmoe93twpcFP959bji1hDyPfSJqDXkQzgP0jR8IQ00JVWBLUC5g==
+X-Received: by 2002:a50:8e45:0:b0:566:7250:9ea2 with SMTP id 5-20020a508e45000000b0056672509ea2mr11704096edx.34.1709755579994;
+        Wed, 06 Mar 2024 12:06:19 -0800 (PST)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id n6-20020aa7c686000000b0056711540692sm5046188edq.79.2024.03.06.12.06.18
         for <rcu@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 11:46:28 -0800 (PST)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56647babfe6so115047a12.3
-        for <rcu@vger.kernel.org>; Wed, 06 Mar 2024 11:46:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX5Bh+qJ8PzDpdt0OnDap0EVmvq/YIAbf58ba4PsJekXXtDLCmO1T4SmHQAmWhSt3VSgZ08ESmdyI13kXV2izO5N9xy
-X-Received: by 2002:a17:906:fc16:b0:a44:3bec:20a8 with SMTP id
- ov22-20020a170906fc1600b00a443bec20a8mr10802569ejb.76.1709754387248; Wed, 06
- Mar 2024 11:46:27 -0800 (PST)
+        Wed, 06 Mar 2024 12:06:19 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a45b6fcd5e8so19884066b.1
+        for <rcu@vger.kernel.org>; Wed, 06 Mar 2024 12:06:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWecK1PNmSr7Fg89pEtZ0xPBKbagqdM0HIaNCJKOs0+17IArEvByY/pSDBevCq3bMvEpU4DSixzYsLLn/0ZbE19FZnC
+X-Received: by 2002:a17:906:364d:b0:a43:811b:71de with SMTP id
+ r13-20020a170906364d00b00a43811b71demr10393124ejb.38.1709755577715; Wed, 06
+ Mar 2024 12:06:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,12 +67,12 @@ References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
  <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop> <20240306130103.6da71ddf@gandalf.local.home>
  <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
  <20240306135504.2b3872ef@gandalf.local.home> <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home>
-In-Reply-To: <20240306142738.7b66a716@rorschach.local.home>
+ <CAHk-=whvyzsbqLkw4kwEC-KzAMKFuy5VuMtJFn-mCerSYoRnqw@mail.gmail.com> <20240306144713.2e1709ad@gandalf.local.home>
+In-Reply-To: <20240306144713.2e1709ad@gandalf.local.home>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 6 Mar 2024 11:46:10 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
-Message-ID: <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
+Date: Wed, 6 Mar 2024 12:06:00 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whs5MdtNjzFkTyaUy=vHi=qwWgPi0JgTe6OYUYMNSRZfg@mail.gmail.com>
+Message-ID: <CAHk-=whs5MdtNjzFkTyaUy=vHi=qwWgPi0JgTe6OYUYMNSRZfg@mail.gmail.com>
 Subject: Re: [PATCH] rcutorture: Fix rcu_torture_pipe_update_one()/rcu_torture_writer()
  data race and concurrency bug
 To: Steven Rostedt <rostedt@goodmis.org>
@@ -83,63 +83,70 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>, linke li <lilinke99@qq.com>, joel@j
 	quic_neeraju@quicinc.com, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 6 Mar 2024 at 11:27, Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, 6 Mar 2024 at 11:45, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Note this has nothing to do with tracing. This thread is in RCU. I just
-> happen to receive the same patch "fix" for my code.
+> Here's the back story. I received the following patch:
+>
+>   https://lore.kernel.org/all/tencent_BA1473492BC618B473864561EA3AB1418908@qq.com/
+>
+> I didn't like it. My reply was:
+>
+>         > -     rbwork->wait_index++;
+>         > +     WRITE_ONCE(rbwork->wait_index, READ_ONCE(rbwork->wait_index) + 1);
+>
+>         I mean the above is really ugly. If this is the new thing to do, we need
+>         better macros.
+>
+>         If anything, just convert it to an atomic_t.
 
-Ok, googling for rtort_pipe_count, I can only state that that code is
-complete garbage.
+The right thing is definitely to convert it to an atomic_t.
 
-And no amount of READ_ONCE/WRITE_ONCE will fix it.
+The memory barriers can probably also be turned into atomic ordering,
+although we don't always have all the variates.
 
-For one thing, we have this code:
+But for example, that
 
-        WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-        if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+                /* Make sure to see the new wait index */
+                smp_rmb();
+                if (wait_index != work->wait_index)
+                        break;
 
-which is broken by design. The compiler is allowed to (and probably
-does) turn that into just
+looks odd, and should probably do an "atomic_read_acquire()" instead
+of a rmb and a (non-atomic and non-READ_ONCE thing).
 
-        WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-        if (i + 1 >= RCU_TORTURE_PIPE_LEN) {
+The first READ_ONCE() should probably also be that atomic_read_acquire() op.
 
-which only results in the question "Why didn't the source code do that
-obvious simplification itself?"
+On the writing side, my gut feel is that the
 
-So that code is actively *STUPID*. It's randomly mixing READ_ONCE and
-regular reads in ways that just makes me go: "there's no saving this
-shit".
+        rbwork->wait_index++;
+        /* make sure the waiters see the new index */
+        smp_wmb();
 
-This needs fixing. Having tests that have random code in them only
-makes me doubt that the *TEST* itself is correct, rather than the code
-it is trying to actually test.
+should be an "atomic_inc_release(&rbwork->wait_index);" but we don't
+actually have that operation. We only have the "release" versions for
+things that return a value.
 
-And dammit, none of that makes sense anyway. This is not some
-performance-crticial code. Why is it not using proper atomics if there
-is an actual data race?
+So it would probably need to be either
 
-The reason to use READ_ONCE() and WRITE_ONCE() is that they can be a
-lot faster than atomics, or - more commonly - because you have some
-fundamental algorithm that doesn't do arithmetic, but cares about some
-"state at time X" (the RCU _pointer_ being one such obvious case, but
-doing an *increment* sure as hell isn't).
+        atomic_inc(&rbwork->wait_index);
+        /* make sure the waiters see the new index */
+        smp_wmb();
 
-So using those READ_ONCE/WRITE_ONCE macros for that thing is
-fundamntally wrong to begin with.
+or
 
-The question should not be "should we add another READ_ONCE()". The
-question should be "what drugs were people on when writing this code"?
+        atomic_inc_return_release(&rbwork->wait_index);
 
-People - please just stop writing garbage.
+or we'd need to add the "basic atomics with ordering semantics" (which
+we aren't going to do unless we end up with a lot more people who want
+them).
 
-That 'rtort_pipe_count' should be an atomic_t, and the "add one and
-return the old value" should be an "atomic_inc_return()-1" (the "-1"
-is because "inc_return" returns the *new* value).
+I dunno. I didn't look all *that* closely at the code. The above might
+be garbage too. Somebody who actually knows the code should think
+about what ordering they actually were looking for.
 
-And feel free to add "_relaxed()" to that atomic op because this code
-doesn't care about ordering of that counter. It will help on some
-architectures, but as mentioned, this is not performance-crticial code
-to begin with.
+(And I note that 'wait_index' is of type 'long' in 'struct
+rb_irq_work', so I guess it should be "atomic_long_t" instead -  just
+shows how little attention I paid on the first read-through, which
+should make everybody go "I need to double-check Linus here")
 
-                Linus
+               Linus
