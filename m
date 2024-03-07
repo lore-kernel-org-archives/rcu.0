@@ -1,53 +1,58 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442FE12FB12;
-	Thu,  7 Mar 2024 18:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F187F84A2B;
+	Thu,  7 Mar 2024 19:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709837921; cv=none; b=jOmjcYSe6ff0K9tqJXSynWY8Cq+bdBaoX8OTujW1yoDoYcrrw4fADeMIOsWQxvAK6U6rVobfLzq3rIhRtpDEdtJhOPo0vGHcTq2QmHZx1d9/bMvUDOmHtiVaVcJ0OekCIC8y9LXCzrfdT1JwqS5M+C09UbtXDPnbVjfDvxkCpZM=
+	t=1709838325; cv=none; b=jr9MC8eSAi5nSMJDaYsN25QeSEh6cqRU99Ahm6CEPUSvAdwiR5Ktu8JXZL8LV0SlmxuPYpInISW9pwBZ+M4pqlfhZ2s07h11Bg0brsYzWXginLDKR7oVWfGnVFrdC5ZStmZnLEYWWnaeS4v9WAQb86Pl7wkX3+E8efPyGwH6Tmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709837921; c=relaxed/simple;
-	bh=XrTXKV4fLLNZYeQ7K7P7tCKsNgQbgRtB2hmD8awyd7s=;
+	s=arc-20240116; t=1709838325; c=relaxed/simple;
+	bh=Dtyj/GEZbV1QYd6flisdfcwGNJw92gSRNVc1xTEnhKU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EbK8xj0Lb1w/ekv8yPRF7Jrc4A1MoDBaTehgQRf6I9iwquc+d9XLztCD/LlYJqa9oJSjkED2PWylJn7Fv1CzutyKt7lTgEI7Wmj1iLnFloDOJcBt/1cLRR951QkXZU6jrnZCgEQrK9FImOhYkm0ElMdjKkhFUV6gSrHVWuHVV7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4IgkS67; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=CIT/gqPaZpDukHqb6QQQLSxzu9I6bPo7TrRLoPXOtEYl4VCAvyz57GKuSOdF8/bLp2OPbixAlCYe0eWACkQNV5JHbNZ3T36GFP47s4wrhNgVaC7FJ7ngh/wPIxQ6m3Z5zd84V/uIJMT1DfkeHUw0+hTcZ1+glRh7ouG45pMmwb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhXvj25f; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4IgkS67"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7792C433F1;
-	Thu,  7 Mar 2024 18:58:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhXvj25f"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 717CAC43390;
+	Thu,  7 Mar 2024 19:05:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709837920;
-	bh=XrTXKV4fLLNZYeQ7K7P7tCKsNgQbgRtB2hmD8awyd7s=;
+	s=k20201202; t=1709838324;
+	bh=Dtyj/GEZbV1QYd6flisdfcwGNJw92gSRNVc1xTEnhKU=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=T4IgkS67qBXEryQUh1eyup04KKujuTcp1GpBVVC8GTfw7LhnS5cRcPmPxqiYX341X
-	 5QFzU5lVrQ12kfVjLceTo3j8L6pU1zxiiPM8ac8By9WBUnXdHr2MpO/YPOgfmLW3Cg
-	 ySkH7HplOBQpDXuSLQIgHouMTqeZ75dIiRrQ/U8AyBMQwSgq+0+ZNWNCq1UOpTSv4z
-	 pgh8FfKFzUQkrpM0mR58q4YLajIQA/XLGBeHqyV5n+zpgKQp/1o5jRYHPnc/GFvo/I
-	 cdvMvgqqMb8mPX1Q0pHfQ/RaDywZ3kQN3a4Q5iLAWl7XgBdj/u0ajJkvksWhg/rFT/
-	 X0KQ1Dfs8MAlQ==
+	b=HhXvj25fMOdgLTomS8Ug+BuZkYoRha981swQiZamm7uDuI7C1B5r048m7kk6uarOG
+	 Ww4Sc7af/0777HOCMR29aiiJuFJ/xmHdeS5pAqHRmiJemOh13om8iQPuKeb2bmN5FT
+	 yl47t2Na/Kvt36R1NWKccp4Ctr//cvS/sY4UsTmdFjXi6rzeEbRKc0dGGIbr5NUvpS
+	 CwFsGRUaH9SyCnf0BqCpsG95LSl8F2BUc7m8eVyhJ4QW+Hg97NMuwD5EjQykgdAp7Y
+	 2myjFRGJ/fPsgGQ+Q1QVjHL+uqtME9vHTk4rpa51ZrPQRWnlT2pDYhBph9tsZzyGSs
+	 X+0Bk/Uh+TSaQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5C49ACE0716; Thu,  7 Mar 2024 10:58:40 -0800 (PST)
-Date: Thu, 7 Mar 2024 10:58:40 -0800
+	id 026D8CE0716; Thu,  7 Mar 2024 11:05:23 -0800 (PST)
+Date: Thu, 7 Mar 2024 11:05:23 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Network Development <netdev@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-	kernel-team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Message-ID: <1165c893-b812-4f88-a1d6-fff85592657e@paulmck-laptop>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+	boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org,
+	jiangshanlai@gmail.com, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
+	quic_neeraju@quicinc.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Message-ID: <09fa751c-db5a-4c86-8e68-572bc9c107f6@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
- <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
- <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
- <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
- <f1e77cd2-18b2-4ab1-8ce3-da2c6babbd53@paulmck-laptop>
- <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
- <fcaf6cad-9959-4b6d-a6e4-05ae1b2fabdc@joelfernandes.org>
- <Zenx_Q0UiwMbSAdP@FVFF77S0Q05N>
- <20240307135215.7ba88d83@gandalf.local.home>
+References: <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
+ <20240306135504.2b3872ef@gandalf.local.home>
+ <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
+ <20240306142738.7b66a716@rorschach.local.home>
+ <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
+ <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+ <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
+ <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
+ <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
+ <30b8966b-b31b-41d2-823e-11e60378cfd7@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -56,29 +61,98 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307135215.7ba88d83@gandalf.local.home>
+In-Reply-To: <30b8966b-b31b-41d2-823e-11e60378cfd7@joelfernandes.org>
 
-On Thu, Mar 07, 2024 at 01:52:15PM -0500, Steven Rostedt wrote:
-> On Thu, 7 Mar 2024 16:57:33 +0000
-> Mark Rutland <mark.rutland@arm.com> wrote:
+On Thu, Mar 07, 2024 at 12:44:39AM -0500, Joel Fernandes wrote:
 > 
-> > * Use rcu_tasks_trace to synchronize updates?
 > 
-> Yes. I think I wanted both. The above to make sure it covers all cases
-> where something could be preempted, and a case for those covered when RCU
-> isn't watching (which always has preemption disabled).
+> On 3/6/2024 10:37 PM, Paul E. McKenney wrote:
+> > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
+> >> On 2024-03-06 21:43, Linus Torvalds wrote:
+> >> [...]
+> >>>
+> >>> Honestly, this all makes me think that we'd be *much* better off
+> >>> showing the real "handoff" with smp_store_release() and
+> >>> smp_load_acquire().
+> >>
+> >> We've done something similar in liburcu (userspace code) to allow
+> >> Thread Sanitizer to understand the happens-before relationships
+> >> within the RCU implementations and lock-free data structures.
+> >>
+> >> Moving to load-acquire/store-release (C11 model in our case)
+> >> allowed us to provide enough happens-before relationship for
+> >> Thread Sanitizer to understand what is happening under the
+> >> hood in liburcu and perform relevant race detection of user
+> >> code.
+> > 
+> > Good point!
+> > 
+> > In the kernel, though, KCSAN understands the Linux-kernel memory model,
+> > and so we don't get that sort of false positive.
+> > 
+> >> As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
+> >> is concerned, the only valid use-case I can think of is
+> >> split counters or RCU implementations where there is a
+> >> single updater doing the increment, and one or more
+> >> concurrent reader threads that need to snapshot a
+> >> consistent value with READ_ONCE().
+> > 
+> > It is wrong here.  OK, not wrong from a functional viewpoint, but it
+> > is at best very confusing.  I am applying patches to fix this.  I will
+> > push out a new "dev" branch on -rcu that will make this function appear
+> > as shown below.
+> > 
+> > So what would you use that pattern for?
+> > 
+> > One possibility is a per-CPU statistical counter in userspace on a
+> > fastpath, in cases where losing the occasional count is OK.  Then learning
+> > your CPU (and possibly being immediately migrated to some other CPU),
+> > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
+> > make sense.
+> > 
+> > I suppose the same in the kernel if there was a fastpath so extreme you
+> > could not afford to disable preemption.
+> > 
+> > At best, very niche.
+> > 
+> > Or am I suffering a failure of imagination yet again?  ;-)
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > static bool
+> > rcu_torture_pipe_update_one(struct rcu_torture *rp)
+> > {
+> > 	int i;
+> > 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+> > 
+> > 	if (rtrcp) {
+> > 		WRITE_ONCE(rp->rtort_chkp, NULL);
+> > 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+> > 	}
+> > 	i = rp->rtort_pipe_count;
+> > 	if (i > RCU_TORTURE_PIPE_LEN)
+> > 		i = RCU_TORTURE_PIPE_LEN;
+> > 	atomic_inc(&rcu_torture_wcount[i]);
+> > 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+> > 	ASSERT_EXCLUSIVE_WRITER(rp->rtort_pipe_count);
 > 
-> My mistake was I thought synchronize_rcu_tasks_rude() did both. But I just
-> found out recently that it is not a superset of synchronize_rcu_tasks().
-> 
-> But it really needs it in every location that synchronize_rcu_tasks_rude()
-> is called.
+> I was going to say to add a comment here for the future reader, that update-side
+> ->rtort_pipe_count READ/WRITE are already mutually exclusive, but this ASSERT
+> already documents it ;-)
 
-Should any RCU Tasks Rude grace-period request also wait for an RCU Tasks
-grace period?
+Plus KCSAN is way better at repeatedly inspecting code for this sort of
+issue than I am.  ;-)
 
-I would feel better about proposing this, especially for
-call_rcu_tasks_rude(), if RCU Tasks Rude was not supposed to be going
-away after all the noinstr tags are in place.
+> Also FWIW I confirmed after starting at code that indeed only one update-side
+> access is possible at a time! Thanks,
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+Thank you very much!  I will apply your Reviewed-by to these commits
+on my next rebase:
+
+28455c73b620 ("rcutorture: ASSERT_EXCLUSIVE_WRITER() for ->rtort_pipe_count updates")
+b0b99e7db12e ("rcutorture: Remove extraneous rcu_torture_pipe_update_one() READ_ONCE()")
 
 							Thanx, Paul
