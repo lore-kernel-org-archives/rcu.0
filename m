@@ -1,187 +1,91 @@
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238861D698
-	for <rcu@vger.kernel.org>; Thu,  7 Mar 2024 23:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA413C6BA
+	for <rcu@vger.kernel.org>; Thu,  7 Mar 2024 23:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709855340; cv=none; b=qGtPpr0Q4Q5TV4/KmVXI0sR0wVSnELMBVAVp1TEguDyPQyfZqqgjZxaDFdaO5DXym3KOjHMw2HG0WRLHkDF4A7tZNks8gwfGdowvYHMwptZWGadBYzAcbQR9ihszwbDbqdfgkMb7mb2GtYtis8/7Ki1VivjmOpApiDptczmVwX0=
+	t=1709855554; cv=none; b=GNr//qqiGQVMcOpIbwWQkvf2XtGjMWIie74biwAEduQnOYWUHU4V/DFip0cybkgdqimNkl1indAQ+KmtlD+Fj/oNH8sddMEm4M8b5Qdd5IC5icvl0+tqIDdAFqhG9EYiYVkcbQefF+Fzkz3XfvXdcykqc0/y31B9PeW2zGP6s8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709855340; c=relaxed/simple;
-	bh=RxrVHpsg2Dx2BK8X3581XvrwOzOq8HuNBnuD6LOVaeg=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=RmwpMg9HdpcH0S5bzrdwLsNNM+fsscSEasMRQGVBfSLWNeJQXX2IN9j8tn3qKwPRnoHFIHDuGw1N+kAyAPakR24CS0lJTOmNMvHDLKCDqJzfb1l1ceWGxzpYLQ6a6okYTooJ2hOV2qYmhviOVqBunruGEhFhJxsLoFBlpG52OjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=UqYhQJyU; arc=none smtp.client-ip=209.85.222.42
+	s=arc-20240116; t=1709855554; c=relaxed/simple;
+	bh=rrrE288GGqnOFkITVQ6l8vfzosgPyL+5gwpnGsNXtEM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=hEifRjr/Dc7TBg/zP6qqyYRdinZSDnm9P5VVSdRTUO8HZE6aa1u2V4RtnEsrVjRj8itDhfGNFO/QzrrZeI6c7DGG+hkAKv7QK03tF3xnP/HRE77LuCtxpwplxtpBX/y//k7KYFcmKN0UQT4bvS4I1aGBNSF7Qk97E3MJo7bqFnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=EhekeZZx; arc=none smtp.client-ip=209.85.208.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="UqYhQJyU"
-Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7dad83f225cso513595241.2
-        for <rcu@vger.kernel.org>; Thu, 07 Mar 2024 15:48:58 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="EhekeZZx"
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d269dc3575so14137551fa.1
+        for <rcu@vger.kernel.org>; Thu, 07 Mar 2024 15:52:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709855338; x=1710460138; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oYvliaxZHHBmxRsoWW/yY+ZGpMLYNfkC8wPuph2ba+I=;
-        b=UqYhQJyUXhxEkZLK/rHVtwYhsz2FtravUlbjPH0/ZdC3hlERktMkw7NZNlHbYeMPiL
-         otAvY5uW4OkY8BEY6CWBi1aX/XnfDWD+mCSr4cMzZa9JHNyf5sokwuC6rkxb7Ce1w/TY
-         KDizQH0P9VED4p+M2mGaLy0l9vtYLzWhMcbVY=
+        d=joelfernandes.org; s=google; t=1709855550; x=1710460350; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rrrE288GGqnOFkITVQ6l8vfzosgPyL+5gwpnGsNXtEM=;
+        b=EhekeZZx7ulzJXjlimX6cE7fVhGadcX+0+4wdR20hGsgBQbolvBe808ru1HQwlhFZ5
+         5v4/pFYBRZwas2MBdP6YMDU8r6/0SfztFwnfsFZFu5u9AWEfM7CLHMwvkU4aGiU/P5ZC
+         qxG4uUJyBLQ3QulPBIgLr2geOy3d8N9URj5tc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709855338; x=1710460138;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oYvliaxZHHBmxRsoWW/yY+ZGpMLYNfkC8wPuph2ba+I=;
-        b=kAxh2gDjCj3xdxtvk3tW85GmE3MKRNlboOvY1s942ZLieRp2GcP8pO/D/ZO078c1se
-         3ivWQqt+S8eMX5vj+UpuzvaJNvsk3p5Dpuh26boBx4d51i7hSnJcDZyxY7MJie77PnnP
-         Yg6Gg47R3b+hyYi0IZE2A15v/f4GIEj4xQ57a6nRTPotH2rzVuA0Fw5kyTLdSz46TzqB
-         6u72V6HYZ4WiiLanaSpp2RtWgDttdvElHgyFXJyjTSMBfo72jKCsSZf/Suu6l4etYxkI
-         kE+TY8YaYq2eI0X9G8UGTVewPFP4wY48dtP+Zzd8126nsey/6EQLkwqaBp5PDsZQc5aN
-         hfaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOe0oKuLOeHm7D41+HWTfVa1RFt3UXHiAF3agxpf+5e1izSbydCqzNMBQ+klbNtNA5SFaeozEiXmNbsQSqJUMJnfhM
-X-Gm-Message-State: AOJu0Yy/pjVcaO7gt0wLD2a1C4VGKsFuWzittISaTUGoiixGPk+l41v4
-	GGSb6XM7IBjt0BxJVAl1qumEbFnzRvtOn7J1cX+c3O5GAe1j4nGhpB2O6bGNFVw=
-X-Google-Smtp-Source: AGHT+IG80+aEd9lIN5B2HVx0CQ34g6WerPXfDJlUp6/m/zTDrrep9d6Wz39fnLHME4Zb74ahclhAbw==
-X-Received: by 2002:a05:6122:996:b0:4cd:44db:b24b with SMTP id g22-20020a056122099600b004cd44dbb24bmr9607129vkd.5.1709855337543;
-        Thu, 07 Mar 2024 15:48:57 -0800 (PST)
-Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id t4-20020ac865c4000000b0042f04d37e89sm2980907qto.10.2024.03.07.15.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 15:48:56 -0800 (PST)
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org,
-	frederic@kernel.org,
-	boqun.feng@gmail.com,
-	urezki@gmail.com,
-	neeraj.iitr10@gmail.com,
-	joel@joelfernandes.org,
-	rcu@vger.kernel.org,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH] [RFC] rcu/tree: Reduce wake up for synchronize_rcu() common case
-Date: Thu,  7 Mar 2024 18:48:51 -0500
-Message-Id: <20240307234852.2132637-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1709855550; x=1710460350;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rrrE288GGqnOFkITVQ6l8vfzosgPyL+5gwpnGsNXtEM=;
+        b=J+QUYyITWS3Q72pDkk5wqshLordzvmmEcYN5ONytc+wo45lfr/UO5X2GqDaYlyGdQJ
+         CptJI3qCoRp++0EapS1GRIA+4PdSqK98oUFRwp4AdsuBPlXjETplQCe3eIZPypq8Hj6j
+         hVBQtsnQpn7/dLJUG9fCxcfl5sgoWL8cIXYLeyIDbr2Iz1qfxwGZm9jWQZNfaQgjVZwz
+         5neAnrJ4+YG2N3029KHWiGCrMh+3DuDMEDAcbZuvp+HkgSeVwogDn46M2gCcu6HDIXLh
+         +2IjxTUvFd8PCsmFWBKqJepHbnLevmJGbEHj/eta/CxFB1W3Dv8bZxOWM2sqcNQi/6Ze
+         xT8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWhtWBgfQLPUbUEohYBTTG6SuFYVRHAFglemMmaozsHsfIdGiyVqVhVUZz5+zAmI2ZKMVygy3uEtwkRWBlmPNJGtOBi
+X-Gm-Message-State: AOJu0YyGAhJWP/HojqHLsNQH+hguJbMQjVps4+PzChunncmvcOmB7MKf
+	HqWO//yuzGLhCy7Osov8y/XgWolx+OOd9qf4AHr+8F15qIF71LT68SOJQ5eXhyQZZZJta4d44VL
+	jX+tJ4KUrMEjC2O1Jjf7hatNZCJjoCZ7OIwgFNw==
+X-Google-Smtp-Source: AGHT+IGwE8AFVxTKrwVEKeSVNA5fVRjhIMcv4GE0U3qh32bzUdIr8/Jz4yM8wQjU8QgMQHPbiKJux0YVFsOIeFz0iFI=
+X-Received: by 2002:a2e:7809:0:b0:2d3:ed17:1f53 with SMTP id
+ t9-20020a2e7809000000b002d3ed171f53mr1154509ljc.19.1709855549963; Thu, 07 Mar
+ 2024 15:52:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240307234852.2132637-1-joel@joelfernandes.org>
+In-Reply-To: <20240307234852.2132637-1-joel@joelfernandes.org>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Thu, 7 Mar 2024 18:52:14 -0500
+Message-ID: <CAEXW_YQ-TZB-1gpxvf7v+QAZhHtzV5waBA1VemtgEwNktSp=ww@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] rcu/tree: Reduce wake up for synchronize_rcu()
+ common case
+To: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com, 
+	urezki@gmail.com, neeraj.iitr10@gmail.com, joel@joelfernandes.org, 
+	rcu@vger.kernel.org, rostedt@goodmis.org, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In the synchronize_rcu() common case, we will have less than
-SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
-is pointless just to free the last injected wait head since at that point,
-all the users have already been awakened.
+On Thu, Mar 7, 2024 at 6:48=E2=80=AFPM Joel Fernandes (Google)
+<joel@joelfernandes.org> wrote:
+>
+> In the synchronize_rcu() common case, we will have less than
+> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+> is pointless just to free the last injected wait head since at that point=
+,
+> all the users have already been awakened.
+>
+> Introduce a new counter to track this and prevent the wakeup in the
+> common case.
+>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
 
-Introduce a new counter to track this and prevent the wakeup in the
-common case.
+Forgot to mention, this is based on the latest RCU -dev branch and
+passes light rcutorture testing on all configs. Heavier rcutorture
+testing (60 minutes) was performed on TREE03.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++-----
- kernel/rcu/tree.h |  1 +
- 2 files changed, 32 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 12978049cb99..cba3a82e9ed9 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
- 	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
- 	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
- 		rcu_sr_normal_gp_cleanup_work),
-+	.srs_cleanups_pending = ATOMIC_INIT(0),
- };
- 
- /* Dump rcu_node combining tree at boot to verify correct setup. */
-@@ -1641,8 +1642,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
- 	 * the done tail list manipulations are protected here.
- 	 */
- 	done = smp_load_acquire(&rcu_state.srs_done_tail);
--	if (!done)
-+	if (!done) {
-+		/* See comments below. */
-+		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
- 		return;
-+	}
- 
- 	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
- 	head = done->next;
-@@ -1665,6 +1669,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
- 
- 		rcu_sr_put_wait_head(rcu);
- 	}
-+
-+	/* Order list manipulations with atomic access. */
-+	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
- }
- 
- /*
-@@ -1672,7 +1679,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-  */
- static void rcu_sr_normal_gp_cleanup(void)
- {
--	struct llist_node *wait_tail, *next, *rcu;
-+	struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
- 	int done = 0;
- 
- 	wait_tail = rcu_state.srs_wait_tail;
-@@ -1698,16 +1705,35 @@ static void rcu_sr_normal_gp_cleanup(void)
- 			break;
- 	}
- 
--	// concurrent sr_normal_gp_cleanup work might observe this update.
--	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-+	/*
-+	 * Fast path, no more users to process. Remove the last wait head
-+	 * if no inflight-workers. If there are in-flight workers, let them
-+	 * remove the last wait head.
-+	 */
-+	WARN_ON_ONCE(!rcu);
- 	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
- 
-+	if (rcu && rcu_sr_is_wait_head(rcu) && rcu->next == NULL &&
-+		/* Order atomic access with list manipulation. */
-+		!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
-+		wait_tail->next = NULL;
-+		rcu_sr_put_wait_head(rcu);
-+		smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-+		return;
-+	}
-+
-+	/* Concurrent sr_normal_gp_cleanup work might observe this update. */
-+	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-+
- 	/*
- 	 * We schedule a work in order to perform a final processing
- 	 * of outstanding users(if still left) and releasing wait-heads
- 	 * added by rcu_sr_normal_gp_init() call.
- 	 */
--	queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
-+	atomic_inc(&rcu_state.srs_cleanups_pending);
-+	if (!queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work)) {
-+		atomic_dec(&rcu_state.srs_cleanups_pending);
-+	}
- }
- 
- /*
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 2832787cee1d..f162b947c5b6 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -420,6 +420,7 @@ struct rcu_state {
- 	struct llist_node *srs_done_tail; /* ready for GP users. */
- 	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
- 	struct work_struct srs_cleanup_work;
-+	atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
- };
- 
- /* Values for rcu_state structure's gp_flags field. */
--- 
-2.34.1
-
+Thanks.
