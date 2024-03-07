@@ -1,46 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE61256A;
-	Thu,  7 Mar 2024 03:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608101C6A5;
+	Thu,  7 Mar 2024 03:37:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709781675; cv=none; b=JL/wJKK6Ctz/tF4ptFOlH1uTEVZ6fOLRWopxMuHZyY18xuKcFfIE0As9LWCKTvBPo9qr69V1C2fxXavb+5HK0erdGO8SZp3J+WMWZUjuLIOW+jaDFBs3wvTJjK9Cu1e/J01L8zThIEJV8XE1dx9srWq4PCt6OWJSSpFuTQbBv/Y=
+	t=1709782634; cv=none; b=Q7fJ4zoLvZBRqCMow+bFnSiDfAgmlVUc+fRVDnpZo1uFkr8H8Ezo9j0eqKhjW5Qz6lR5OIcQzKRxnt/JDum+71b4Tmvp/8UMBOMCjeswilmUVkjbvS/MIfa2jWqnHjDcCVJH9RkpIJou1PgH2qqu/JKmeF8yzBFOqe0Ppn6O9hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709781675; c=relaxed/simple;
-	bh=R3r8aed7QQnLsT5x8UC68VMocsgE4tGhtiF86qynzQk=;
+	s=arc-20240116; t=1709782634; c=relaxed/simple;
+	bh=JpkBX6MHPZqlwpjx+IbTH/pg6POGPon5x6eqvGocBZE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YbT9hcAQzuib7q1UnXRcvGX8zHH3A4rfHiACP/xnukopjsPQeuzDgAuAIqPCop7j5LZ208qVrz6Rn7XFd/2nylz4STPPUufMd0GhliUXeH7OqWn8sR5bVo+Luqeh7sDibXrCY153qg86sJs48AYkcoiRPbjZWiPM4rId7CXshzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gII1qw7/; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=QbMFNHSx8dPhdp1aoP3DqnTy73Nobx8bj/s0sdftLQjv4CylcKZCwlG5dwKZGUR0JfRxC7AOuFxxFJozDcPm0OEjsfqbID78Mt1YkJTdT3DsvOOnjVqmjzyytwuaks8v0uK0J/y9xI8dSlv2slwDo25rTkPCO4Or8AgAucOlrUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OGPJ/FCD; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gII1qw7/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D695C433F1;
-	Thu,  7 Mar 2024 03:21:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OGPJ/FCD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 015F7C43390;
+	Thu,  7 Mar 2024 03:37:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709781674;
-	bh=R3r8aed7QQnLsT5x8UC68VMocsgE4tGhtiF86qynzQk=;
+	s=k20201202; t=1709782634;
+	bh=JpkBX6MHPZqlwpjx+IbTH/pg6POGPon5x6eqvGocBZE=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=gII1qw7/OvK7H92us4PBqkvP5TNQeqHnPIhAzmlWivD5rKSkuKVHTDVUiZ8s5Htl6
-	 /iony4IiJIYFjJY7uID2fRIef0BxEOoqT+ZUatPu50ppz5qwHCBDW0ye4sA4Hdc4E/
-	 02V0yVXS0456PzIM20hJ7DHT+ZaNi2ndnZfAc+KWtM/xPBHE/DNO214sIS/FNQJiSG
-	 +EyLCCe4BVffCDyaD/9BEIS6JiFm6x4hjvpVPf4pqjcsSKBHyuEfAlFKmJL/0gCrrf
-	 lx9ZNeCWindjbgm3NAUHbmwjIDnoGhxHjkPb5vUTly1uO7IklXFRIBrxFkcBiLTr4d
-	 5r7W+8Sxc1mdQ==
+	b=OGPJ/FCDV2u3aQ8hxjKb0kADh6zybOXV/zlsnCBTK7AwlgYDj/HDKZKgziLl7+n+q
+	 0eBQTYd86LZyhhu2mEvV03gEuaxe/WdzxIjbZvZlHSPtGukQoZFLgXNKoO3Gog2tEJ
+	 0dPQ2Tj2XOwoZG4frVZI3XIG5D90F6w1Zyggr9y8C80OgVsA+Dsd5RY6tRjROda1Um
+	 SMWY8hhHtUj2/X9odjCGTL5ENTkreTGweO4JACm6hWskTUtkJX5vrehCKUQYwtCj/j
+	 vClLlfKBou1t5YxNvgaH7tf/t4ALhu4po1R6G0i7hz4RoQGrBP6H9zdNjq0Nr3n08V
+	 38KrOpoY4xcng==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2C449CE10B8; Wed,  6 Mar 2024 19:21:14 -0800 (PST)
-Date: Wed, 6 Mar 2024 19:21:14 -0800
+	id 98D0FCE10B8; Wed,  6 Mar 2024 19:37:13 -0800 (PST)
+Date: Wed, 6 Mar 2024 19:37:13 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
 	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
 	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-	qiang.zhang1211@gmail.com, quic_neeraju@quicinc.com,
-	rcu@vger.kernel.org
+	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
+	quic_neeraju@quicinc.com, rcu@vger.kernel.org
 Subject: Re: [PATCH] rcutorture: Fix
  rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
  bug
-Message-ID: <29a20fd4-ac5e-44a3-bc8a-9f77aa6a3cf9@paulmck-laptop>
+Message-ID: <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop>
  <20240306130103.6da71ddf@gandalf.local.home>
@@ -51,7 +51,7 @@ References: <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop>
  <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
  <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
  <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
- <CAHk-=wi7rJ-eGq+xaxVfzFEgbL9tdf6Kc8Z89rCpfcQOKm74Tw@mail.gmail.com>
+ <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -60,71 +60,81 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wi7rJ-eGq+xaxVfzFEgbL9tdf6Kc8Z89rCpfcQOKm74Tw@mail.gmail.com>
+In-Reply-To: <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
 
-On Wed, Mar 06, 2024 at 06:49:38PM -0800, Linus Torvalds wrote:
-> On Wed, 6 Mar 2024 at 18:43, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > I dunno.
+On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
+> On 2024-03-06 21:43, Linus Torvalds wrote:
+> [...]
+> > 
+> > Honestly, this all makes me think that we'd be *much* better off
+> > showing the real "handoff" with smp_store_release() and
+> > smp_load_acquire().
 > 
-> Oh, and just looking at that patch, I still think the code is confused.
+> We've done something similar in liburcu (userspace code) to allow
+> Thread Sanitizer to understand the happens-before relationships
+> within the RCU implementations and lock-free data structures.
 > 
-> On the reading side, we have:
-> 
->     pipe_count = smp_load_acquire(&p->rtort_pipe_count);
->     if (pipe_count > RCU_TORTURE_PIPE_LEN) {
->         /* Should not happen, but... */
-> 
-> where that comment clearly says that the pipe_count we read (whether
-> with READ_ONCE() or with my smp_load_acquire() suggestion) should
-> never be larger than RCU_TORTURE_PIPE_LEN.
+> Moving to load-acquire/store-release (C11 model in our case)
+> allowed us to provide enough happens-before relationship for
+> Thread Sanitizer to understand what is happening under the
+> hood in liburcu and perform relevant race detection of user
+> code.
 
-I will fix that comment.  It should not happen *if* RCU is working
-correctly.  It can happen if you have an RCU that is so broken that a
-single RCU reader can span more than ten grace periods.  An example of
-an RCU that really is this broken can be selected using rcutorture's
-torture_type=busted module parameter.  No surprise, given that its
-implementation of call_rcu() invokes the callback function directly and
-its implementation of synchronize_rcu() is a complete no-op.  ;-)
+Good point!
 
-Of course, the purpose of that value of the torture_type module parameter
-(along with all other possible values containing the string "busted")
-is to test rcutorture itself.
+In the kernel, though, KCSAN understands the Linux-kernel memory model,
+and so we don't get that sort of false positive.
 
-> But the writing side very clearly did:
-> 
->     i = rp->rtort_pipe_count;
->     if (i > RCU_TORTURE_PIPE_LEN)
->         i = RCU_TORTURE_PIPE_LEN;
->     ...
->     smp_store_release(&rp->rtort_pipe_count, ++i);
-> 
-> (again, syntactically it could have been "i + 1" instead of my "++i" -
-> same value), so clearly the writing side *can* write a value that is >
-> RCU_TORTURE_PIPE_LEN.
-> 
-> So while the whole READ/WRITE_ONCE vs smp_load_acquire/store_release
-> is one thing that might be worth looking at, I think there are other
-> very confusing aspects here.
+> As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
+> is concerned, the only valid use-case I can think of is
+> split counters or RCU implementations where there is a
+> single updater doing the increment, and one or more
+> concurrent reader threads that need to snapshot a
+> consistent value with READ_ONCE().
 
-With this change in that comment, are things better?
+It is wrong here.  OK, not wrong from a functional viewpoint, but it
+is at best very confusing.  I am applying patches to fix this.  I will
+push out a new "dev" branch on -rcu that will make this function appear
+as shown below.
+
+So what would you use that pattern for?
+
+One possibility is a per-CPU statistical counter in userspace on a
+fastpath, in cases where losing the occasional count is OK.  Then learning
+your CPU (and possibly being immediately migrated to some other CPU),
+READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
+make sense.
+
+I suppose the same in the kernel if there was a fastpath so extreme you
+could not afford to disable preemption.
+
+At best, very niche.
+
+Or am I suffering a failure of imagination yet again?  ;-)
 
 							Thanx, Paul
 
 ------------------------------------------------------------------------
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 6b821a7037b03..0cb5452ecd945 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2000,7 +2000,8 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
- 	preempt_disable();
- 	pipe_count = READ_ONCE(p->rtort_pipe_count);
- 	if (pipe_count > RCU_TORTURE_PIPE_LEN) {
--		/* Should not happen, but... */
-+		// Should not happen in a correct RCU implementation,
-+		// happens quite often for torture_type=busted.
- 		pipe_count = RCU_TORTURE_PIPE_LEN;
- 	}
- 	completed = cur_ops->get_gp_seq();
+static bool
+rcu_torture_pipe_update_one(struct rcu_torture *rp)
+{
+	int i;
+	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+
+	if (rtrcp) {
+		WRITE_ONCE(rp->rtort_chkp, NULL);
+		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+	}
+	i = rp->rtort_pipe_count;
+	if (i > RCU_TORTURE_PIPE_LEN)
+		i = RCU_TORTURE_PIPE_LEN;
+	atomic_inc(&rcu_torture_wcount[i]);
+	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+	ASSERT_EXCLUSIVE_WRITER(rp->rtort_pipe_count);
+	if (i + 1 >= RCU_TORTURE_PIPE_LEN) {
+		rp->rtort_mbtest = 0;
+		return true;
+	}
+	return false;
+}
