@@ -1,120 +1,149 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33775C8B
-	for <rcu@vger.kernel.org>; Thu,  7 Mar 2024 02:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2DFD2EE;
+	Thu,  7 Mar 2024 03:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709779799; cv=none; b=VoQjaNphUTcLVTrBXiIiXs9I85W7PLf+zhqJrwxRnlvx/afWn1mXSbxDpCUH4uscazOy6w516oy2aKJ9MaUyma0sCQThOCbOTq6uPDIhzl/X9JGR0ZLzO+iorP8hvK8A5d0jBrUTJtuK8aRo4uiKTEW85VZ1VEquqqlLjBTgdBI=
+	t=1709780773; cv=none; b=FHwwrWPVjqAdNa52oTmYLZPBYPS4TB2ztiE6AV7tq2passSeiRtghjZXnj/7pekM4ko5ZSjQa0AviXPH1mGdceVt3f6MIZ939ukbe3OYCE0gH3WcM5PA8olHcePkzQ4ABm6DucMczGWuS1WyneoKyL9wHwlM7OOJOR0H9GTNsb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709779799; c=relaxed/simple;
-	bh=U/g3rd6umFaTxSMQeIcGcHvb8Y5daZVNnDFR/zjl5BE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D3khYXbaj9SqDy+vPc3xpVsN2UQ3xEjRRmn5lGM59M3qENAudStOC39WUAG21V+y5OgVJsn7lONL7O1nxDu2A2aaku2kLfK+GezFjC2XfU/wxLwWRbCnhaQSXoSUS5MzZAVoSUzmuCfiuswxmVHUMQgrrgoV/Tj+mAIshDFZ03o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cPqfQBFi; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1709780773; c=relaxed/simple;
+	bh=N9kJflOItiiyiMD797U6SwChZThaqOtj9TUdElbAYuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W/3zW0LPyzVo9AvbXSvSPpUvbllkeWxqHJUKhP/F1CFYCeAHHfy8BBpEMB3GTUTqQpxLZofKE6tc8nHh5pd9lU4XRX/ECBq7T8iVM7YEX43iwCV7zwH3BwnL66sypPC4vAjGkwXNZYhmtKVkIQOdiJSGBfZo5V+0TOHa37zzmm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GnigMk2J; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cPqfQBFi"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512e39226efso457234e87.0
-        for <rcu@vger.kernel.org>; Wed, 06 Mar 2024 18:49:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709779796; x=1710384596; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=W0NFNPBAo82DsOxwgtd1xvCB/a8TS3L7jSXLJGBJiaM=;
-        b=cPqfQBFizGjfEJeHEaEs0zKs7fXbIQv7UDAirBosrG/vDpvMjkrQkMpzsbT1wrwfb7
-         PYYDFszkQPlv/zRjuXSRsYAe4bWAKuTBl03UX7uF3xWguSwZUqXiiyIAKt2LtIYCnbkc
-         6bTTWjBH1mLW8gqpI/paz/rp2X2XZA5yBLEBM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709779796; x=1710384596;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W0NFNPBAo82DsOxwgtd1xvCB/a8TS3L7jSXLJGBJiaM=;
-        b=Pa8Rk/iamTk7HAJsgmTF+EYtj8jssFDE6molMHF7XRLf50mtB3Vs4FJE8+BEXX6WKq
-         qJ9bkvgBGH9hIq835JI6ce6HJ00M4IJMA2/m0Xa4Z9ErNAXrYRTR0ADUnDcghjF/k1Lv
-         DfnNJRiGFxxRzxOvqPNsxy7zkmj8qVQuWSJZjUdaEJPPLnk3kJWzr9WInTzJCPYZiMh5
-         bMQaIYm1VW5SS0pLUiMeqdEFLPzvNn/3fV8Utjv9Prrt30dFVQPLQR6YfU6y4erZwHFO
-         s0GT1MhQ56d9zsqjJIgaqAbQKDW5rXxraHhvgCbsK8pHIOEAEDO7mWVXIbicaTBJuPC1
-         jAOA==
-X-Forwarded-Encrypted: i=1; AJvYcCWACmJZRRza2CyZSF+t/ygUGscUBKVfWU98RF9feP7BVdomAt1mUAdOmi1imSHhS3UrofqYDhCO6V81RdWRSuEyBV55
-X-Gm-Message-State: AOJu0Yw7AJ/RGhLJdO5hWtcV8LnA/5d4p7ITyO7DjAv37N6lJonj2HpT
-	OOBYmasXgNti6bmYLRu4pH5aD4EAdZfnjpeUkAXg5CtYhR7VGdENZ6ojDNQF5A9Pk22GImzAmEb
-	FNISgjA==
-X-Google-Smtp-Source: AGHT+IELKmBiu1KDU+fqfhtzNHWzR5rvaRlLcppAFNarqYvQvlar6rA8LoFbNWroJoyTqQRhiQMzYA==
-X-Received: by 2002:ac2:5b44:0:b0:513:3e22:6e01 with SMTP id i4-20020ac25b44000000b005133e226e01mr455286lfp.16.1709779795791;
-        Wed, 06 Mar 2024 18:49:55 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id v11-20020ac2558b000000b0051325492ea3sm2848984lfg.203.2024.03.06.18.49.54
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 18:49:54 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5133bd7eb47so454178e87.3
-        for <rcu@vger.kernel.org>; Wed, 06 Mar 2024 18:49:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX/tc0DPlknsPRLF/K+aP1vdQCyy+9+dF08If5XkJRT99LgopNTXuo6T4FjavJQ+cStfg/zJAqGXoh9K87HyGKiDm8g
-X-Received: by 2002:a05:6512:510:b0:513:3b64:978b with SMTP id
- o16-20020a056512051000b005133b64978bmr456376lfb.23.1709779794360; Wed, 06 Mar
- 2024 18:49:54 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GnigMk2J"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA36C433F1;
+	Thu,  7 Mar 2024 03:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709780773;
+	bh=N9kJflOItiiyiMD797U6SwChZThaqOtj9TUdElbAYuc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=GnigMk2Jn9iy0BovuDqjApleSGC1ZCSdHViWgM2kd1bVNezHuhFrTBiHLpJOTAenc
+	 7O4oxrs/+aTTU48LOQ98btg0BK7Vm08Cz3nMUXQR/v58+BGy13RT90mYwXt6Z44YoD
+	 HPWYR7N0P1Anvw3Qik24yzbiFpwKvZpUXepUSe4u59reienDnjW31xHLA+fGMquOfr
+	 9bbOJF2zxg+S6WkJBzphCDOeVax8UmE1A+z7ods0bEfIehVGxmQW4pTXzMUwsz3zoP
+	 NyN1Vhshwku7mhSBxRAQUkmTMDT82kIsfDGKRNm6tlbrsVNBEyr7ASCyony9q9+ALs
+	 xh2B0sg/QVrAA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 92A05CE10B8; Wed,  6 Mar 2024 19:06:12 -0800 (PST)
+Date: Wed, 6 Mar 2024 19:06:12 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
+	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+	qiang.zhang1211@gmail.com, quic_neeraju@quicinc.com,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Message-ID: <f81db151-b617-4c98-8135-e3c8818cba0c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240306103719.1d241b93@gandalf.local.home>
+ <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop>
+ <20240306130103.6da71ddf@gandalf.local.home>
+ <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
+ <20240306135504.2b3872ef@gandalf.local.home>
+ <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
+ <20240306142738.7b66a716@rorschach.local.home>
+ <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
+ <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+ <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
- <tencent_9882B228F292088CDD68F10CF1C228742009@qq.com> <20240306103719.1d241b93@gandalf.local.home>
- <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop> <20240306130103.6da71ddf@gandalf.local.home>
- <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
- <20240306135504.2b3872ef@gandalf.local.home> <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home> <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
- <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop> <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 6 Mar 2024 18:49:38 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi7rJ-eGq+xaxVfzFEgbL9tdf6Kc8Z89rCpfcQOKm74Tw@mail.gmail.com>
-Message-ID: <CAHk-=wi7rJ-eGq+xaxVfzFEgbL9tdf6Kc8Z89rCpfcQOKm74Tw@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Fix rcu_torture_pipe_update_one()/rcu_torture_writer()
- data race and concurrency bug
-To: paulmck@kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>, joel@joelfernandes.org, 
-	boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org, 
-	jiangshanlai@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org, 
-	mathieu.desnoyers@efficios.com, qiang.zhang1211@gmail.com, 
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 6 Mar 2024 at 18:43, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
+On Wed, Mar 06, 2024 at 06:43:42PM -0800, Linus Torvalds wrote:
+> On Wed, 6 Mar 2024 at 18:29, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > TL;DR:  Those ->rtort_pipe_count increments cannot run concurrently
+> > with each other or any other update of that field, so that update-side
+> > READ_ONCE() call is unnecessary and the update-side plain C-language
+> > read is OK.  The WRITE_ONCE() calls are there for the benefit of the
+> > lockless read-side accesses to rtort_pipe_count.
+> 
+> Ahh. Ok. That makes a bit more sense.
+> 
+> So if that's the case, then the "updating side" should never use
+> READ_ONCE, because there's nothing else to protect against.
+> 
+> Honestly, this all makes me think that we'd be *much* better off
+> showing the real "handoff" with smp_store_release() and
+> smp_load_acquire().
+> 
+> IOW, something like this (TOTALLY UNTESTED!) patch, perhaps?
+> 
+> And please note that this patch is not only untested, it really is a
+> very handwavy patch.
+> 
+> I'm sending it as a patch just because it's a more precise way of
+> saying "I think the writers and readers could use the store-release ->
+> load-acquire not just to avoid any worries about accessing things
+> once, but also as a way to show the directional 'flow' of the data".
+> 
 > I dunno.
 
-Oh, and just looking at that patch, I still think the code is confused.
+Thank you for looking at this!
 
-On the reading side, we have:
+I will look carefully at this, but the reason I didn't do it this way
+to begin with is that I did not want false negatives that let weak-memory
+RCU bugs escape unnoticed due to that synchronization and its overhead.
 
-    pipe_count = smp_load_acquire(&p->rtort_pipe_count);
-    if (pipe_count > RCU_TORTURE_PIPE_LEN) {
-        /* Should not happen, but... */
+Of course on x86, that synchronization is (nearly) free.
 
-where that comment clearly says that the pipe_count we read (whether
-with READ_ONCE() or with my smp_load_acquire() suggestion) should
-never be larger than RCU_TORTURE_PIPE_LEN.
+							Thanx, Paul
 
-But the writing side very clearly did:
+>            Linus
 
-    i = rp->rtort_pipe_count;
-    if (i > RCU_TORTURE_PIPE_LEN)
-        i = RCU_TORTURE_PIPE_LEN;
-    ...
-    smp_store_release(&rp->rtort_pipe_count, ++i);
+>  kernel/rcu/rcutorture.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 7567ca8e743c..60b74df3eae2 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -461,12 +461,12 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
+>  		WRITE_ONCE(rp->rtort_chkp, NULL);
+>  		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+>  	}
+> -	i = READ_ONCE(rp->rtort_pipe_count);
+> +	i = rp->rtort_pipe_count;
+>  	if (i > RCU_TORTURE_PIPE_LEN)
+>  		i = RCU_TORTURE_PIPE_LEN;
+>  	atomic_inc(&rcu_torture_wcount[i]);
+> -	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+> -	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+> +	smp_store_release(&rp->rtort_pipe_count, ++i);
+> +	if (i >= RCU_TORTURE_PIPE_LEN) {
+>  		rp->rtort_mbtest = 0;
+>  		return true;
+>  	}
+> @@ -1408,8 +1408,7 @@ rcu_torture_writer(void *arg)
+>  			if (i > RCU_TORTURE_PIPE_LEN)
+>  				i = RCU_TORTURE_PIPE_LEN;
+>  			atomic_inc(&rcu_torture_wcount[i]);
+> -			WRITE_ONCE(old_rp->rtort_pipe_count,
+> -				   old_rp->rtort_pipe_count + 1);
+> +			smp_store_release(&old_rp->rtort_pipe_count, ++i);
+>  
+>  			// Make sure readers block polled grace periods.
+>  			if (cur_ops->get_gp_state && cur_ops->poll_gp_state) {
+> @@ -1991,7 +1990,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+>  	rcu_torture_reader_do_mbchk(myid, p, trsp);
+>  	rtrsp = rcutorture_loop_extend(&readstate, trsp, rtrsp);
+>  	preempt_disable();
+> -	pipe_count = READ_ONCE(p->rtort_pipe_count);
+> +	pipe_count = smp_load_acquire(&p->rtort_pipe_count);
+>  	if (pipe_count > RCU_TORTURE_PIPE_LEN) {
+>  		/* Should not happen, but... */
+>  		pipe_count = RCU_TORTURE_PIPE_LEN;
 
-(again, syntactically it could have been "i + 1" instead of my "++i" -
-same value), so clearly the writing side *can* write a value that is >
-RCU_TORTURE_PIPE_LEN.
-
-So while the whole READ/WRITE_ONCE vs smp_load_acquire/store_release
-is one thing that might be worth looking at, I think there are other
-very confusing aspects here.
-
-           Linus
