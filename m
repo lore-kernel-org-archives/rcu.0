@@ -1,60 +1,53 @@
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A353612B143;
-	Thu,  7 Mar 2024 18:54:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442FE12FB12;
+	Thu,  7 Mar 2024 18:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709837699; cv=none; b=WQOsGrD4jpQeC81r54n6JLg/jU43oXSPcCdOx/rUiEM4rSJKuhIDwQ3Cg3qo3PppuuERCuYqfC1PSCnfWOykEHN+kZ2941EHPXYPz7x502raQTuR79jDhITk++V5JHv2jl9UkQ2HiLxAOGcRA+tDPECokTTkFz5jJj4gC7XqwUw=
+	t=1709837921; cv=none; b=jOmjcYSe6ff0K9tqJXSynWY8Cq+bdBaoX8OTujW1yoDoYcrrw4fADeMIOsWQxvAK6U6rVobfLzq3rIhRtpDEdtJhOPo0vGHcTq2QmHZx1d9/bMvUDOmHtiVaVcJ0OekCIC8y9LXCzrfdT1JwqS5M+C09UbtXDPnbVjfDvxkCpZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709837699; c=relaxed/simple;
-	bh=IPI/16l0HW9qoe0SSsZfA8FdJBqoNMLGPnMIi/2JIMs=;
+	s=arc-20240116; t=1709837921; c=relaxed/simple;
+	bh=XrTXKV4fLLNZYeQ7K7P7tCKsNgQbgRtB2hmD8awyd7s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SHHAvSe97B/MsN4w1XtFds6s49wjI1lBZKfNhsdUyDnqhOUgrZWiegebVplPF4vmlDVu2Opw7AjFUv6Q8pJufhrUFAeCOig4TqdQg6E/g4bUj0Zwo836EqEgIPDWBR/kLnPHCltgeLeLMFsSzvKfj8MDK46wueAz6n+NYMxaLR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=cESIAX3T; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+	 Content-Type:Content-Disposition:In-Reply-To; b=EbK8xj0Lb1w/ekv8yPRF7Jrc4A1MoDBaTehgQRf6I9iwquc+d9XLztCD/LlYJqa9oJSjkED2PWylJn7Fv1CzutyKt7lTgEI7Wmj1iLnFloDOJcBt/1cLRR951QkXZU6jrnZCgEQrK9FImOhYkm0ElMdjKkhFUV6gSrHVWuHVV7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4IgkS67; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="cESIAX3T"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=NR0+Ie0LOl2eewPVHgTlvTXz4AW9q3B2J0v5cGLbxHY=; b=cESIAX3TafAWzXQgvkAgIo8lVm
-	ggFPD0RsJ0CkCIvZY2t6emcF/qxlOiKgwtIJdGKDK5LugTyeTR3AMMwHNuseATbCjJBvgMHFUrcQ/
-	+ol7BBfdRyWO+vFREBHq38pLTcxosZYvtGKxUrIEsrnRevpTezae1P4Y3cQ6TOpA9hBXruy2k1dpQ
-	xkO5e3U5HJwm0GDlWQ1i2kj4sIvVPzPUI6fVrztiPxORFN5JeHtBaivSczwMtSKOYfWDn26KD22rv
-	9PXxU7mmEzWhCG9jowBSw3gFeyZRIjZ3bx2a62RoBhfT9YdPkginRF95MOCF8M92o265gt+FmQX0A
-	JFDAcvVw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37862)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1riIt9-0001cn-0x;
-	Thu, 07 Mar 2024 18:54:43 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1riIt4-0007SD-PX; Thu, 07 Mar 2024 18:54:38 +0000
-Date: Thu, 7 Mar 2024 18:54:38 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Stefan Wiehler <stefan.wiehler@nokia.com>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4IgkS67"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7792C433F1;
+	Thu,  7 Mar 2024 18:58:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709837920;
+	bh=XrTXKV4fLLNZYeQ7K7P7tCKsNgQbgRtB2hmD8awyd7s=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=T4IgkS67qBXEryQUh1eyup04KKujuTcp1GpBVVC8GTfw7LhnS5cRcPmPxqiYX341X
+	 5QFzU5lVrQ12kfVjLceTo3j8L6pU1zxiiPM8ac8By9WBUnXdHr2MpO/YPOgfmLW3Cg
+	 ySkH7HplOBQpDXuSLQIgHouMTqeZ75dIiRrQ/U8AyBMQwSgq+0+ZNWNCq1UOpTSv4z
+	 pgh8FfKFzUQkrpM0mR58q4YLajIQA/XLGBeHqyV5n+zpgKQp/1o5jRYHPnc/GFvo/I
+	 cdvMvgqqMb8mPX1Q0pHfQ/RaDywZ3kQN3a4Q5iLAWl7XgBdj/u0ajJkvksWhg/rFT/
+	 X0KQ1Dfs8MAlQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 5C49ACE0716; Thu,  7 Mar 2024 10:58:40 -0800 (PST)
+Date: Thu, 7 Mar 2024 10:58:40 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Message-ID: <ZeoNbjTCAWYHgi4u@shell.armlinux.org.uk>
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
- <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
+	Network Development <netdev@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+	kernel-team <kernel-team@cloudflare.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <1165c893-b812-4f88-a1d6-fff85592657e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
+ <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
+ <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
+ <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
+ <f1e77cd2-18b2-4ab1-8ce3-da2c6babbd53@paulmck-laptop>
+ <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
+ <fcaf6cad-9959-4b6d-a6e4-05ae1b2fabdc@joelfernandes.org>
+ <Zenx_Q0UiwMbSAdP@FVFF77S0Q05N>
+ <20240307135215.7ba88d83@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -63,57 +56,29 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240307135215.7ba88d83@gandalf.local.home>
 
-On Thu, Mar 07, 2024 at 09:45:36AM -0800, Paul E. McKenney wrote:
-> > diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> > index 3431c0553f45..6875e2c5dd50 100644
-> > --- a/arch/arm/kernel/smp.c
-> > +++ b/arch/arm/kernel/smp.c
-> > @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
-> >  {
-> >  	unsigned int cpu = smp_processor_id();
-> >  
-> > +	/*
-> > +	 * Briefly report CPU as online again to avoid false positive
-> > +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
-> > +	 * spinlock.
-> > +	 */
-> > +	rcutree_report_cpu_starting(cpu);
-> >  	idle_task_exit();
-> > +	rcutree_report_cpu_dead();
-> >  
-> >  	local_irq_disable();
+On Thu, Mar 07, 2024 at 01:52:15PM -0500, Steven Rostedt wrote:
+> On Thu, 7 Mar 2024 16:57:33 +0000
+> Mark Rutland <mark.rutland@arm.com> wrote:
 > 
-> Both rcutree_report_cpu_starting() and rcutree_report_cpu_dead() complain
-> bitterly via lockdep if interrupts are enabled.  And the call sites have
-> interrupts disabled.  So I don't understand what this local_irq_disable()
-> is needed for.
+> > * Use rcu_tasks_trace to synchronize updates?
+> 
+> Yes. I think I wanted both. The above to make sure it covers all cases
+> where something could be preempted, and a case for those covered when RCU
+> isn't watching (which always has preemption disabled).
+> 
+> My mistake was I thought synchronize_rcu_tasks_rude() did both. But I just
+> found out recently that it is not a superset of synchronize_rcu_tasks().
+> 
+> But it really needs it in every location that synchronize_rcu_tasks_rude()
+> is called.
 
-I think that's a question for this commit:
+Should any RCU Tasks Rude grace-period request also wait for an RCU Tasks
+grace period?
 
-commit e78a7614f3876ac649b3df608789cb6ef74d0480
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Wed Jun 5 07:46:43 2019 -0700
+I would feel better about proposing this, especially for
+call_rcu_tasks_rude(), if RCU Tasks Rude was not supposed to be going
+away after all the noinstr tags are in place.
 
-Before this commit, arch_cpu_idle_dead() was called with IRQs enabled.
-This commit moved the local_irq_disable() before calling
-arch_cpu_idle_dead() but it seems no one looked at the various arch
-implementations to clean those up. Quite how arch people are supposed
-to spot this and clean up after such a commit, I'm not sure.
-
-The local_irq_disable() that you're asking about has been there ever
-since the inception of SMP on 32-bit ARM in this commit:
-
-commit a054a811597a17ffbe92bc4db04a4dc2f1b1ea55
-Author: Russell King <rmk@dyn-67.arm.linux.org.uk>
-Date:   Wed Nov 2 22:24:33 2005 +0000
-
-Where cpu_die() was later renamed to arch_cpu_idle_dead(). So it's
-purely a case of a change being made to core code and arch code not
-receiving any fixups for it.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+							Thanx, Paul
