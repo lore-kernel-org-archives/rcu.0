@@ -1,101 +1,60 @@
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1608112B143;
-	Thu,  7 Mar 2024 18:50:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A353612B143;
+	Thu,  7 Mar 2024 18:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709837452; cv=none; b=aDl0DK2LjtzIw1smhssDpJPP0IbKd0TLlZX0O0voCy+LuesHAkECDjN/nRml+vPHiPa36vi+wzZOothh7B+u++Xw83ZqrHfsYKrTrUc2+C3HABd4EDVl9Qzz3SU6+o5DBfyuaok5sLm8dC6K4GvbEjpcng+lkTzWX0QCLCAglEw=
+	t=1709837699; cv=none; b=WQOsGrD4jpQeC81r54n6JLg/jU43oXSPcCdOx/rUiEM4rSJKuhIDwQ3Cg3qo3PppuuERCuYqfC1PSCnfWOykEHN+kZ2941EHPXYPz7x502raQTuR79jDhITk++V5JHv2jl9UkQ2HiLxAOGcRA+tDPECokTTkFz5jJj4gC7XqwUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709837452; c=relaxed/simple;
-	bh=C4ALz/gmT5Hu/bUcKMkjaNwL0v5hOa6tSVJrGi+aSIw=;
+	s=arc-20240116; t=1709837699; c=relaxed/simple;
+	bh=IPI/16l0HW9qoe0SSsZfA8FdJBqoNMLGPnMIi/2JIMs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dhQ2x+RzmoNHYNwZAERNbL7whoWE8gxEw6mmcgvF++hZlhye3eM9Htj7c9DRnOJFxRT7+TKjAZdccC6QIshq9ZzpieZIgUOmd2Fk1Uj+QVEQGTyVWGHcEVFc8bmcAg6OKYcKHxTioQ3PrpJdv7s7lvibHX2wxXs1jS3YceY+se0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RFm3B1NS; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=SHHAvSe97B/MsN4w1XtFds6s49wjI1lBZKfNhsdUyDnqhOUgrZWiegebVplPF4vmlDVu2Opw7AjFUv6Q8pJufhrUFAeCOig4TqdQg6E/g4bUj0Zwo836EqEgIPDWBR/kLnPHCltgeLeLMFsSzvKfj8MDK46wueAz6n+NYMxaLR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=cESIAX3T; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RFm3B1NS"
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-78831914027so5950785a.1;
-        Thu, 07 Mar 2024 10:50:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709837450; x=1710442250; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sf/Mj3BzGZKpoiOTKx5KymXugzcLyy+NNEJ46ZQm6pc=;
-        b=RFm3B1NSopqkUEJIpMlgCqE1U6ymqq10CzbqSpTmBCBfwHu+xqAN8Y+psJOmrWJBCt
-         SAZ/FmXnt76yjSnojkjWplo36KPhO4avt90MWO96f4tfyO265ILc6t3z+T5DDF0cbUpc
-         zRi0Qov4z+gpP4Vrp+iGw/5eP4famtf4LyT/ll4gmnOTM1bbgls93n5k5ffxP111eSOd
-         GUlT3hxiNOag5DBBk7O0UKZKre+BV1TS75IVIMOrLLLbsYSAhrv09MbTqjOJZSsqx/i1
-         8cTb7AnercLLiZsIDDd8mraiRK3e9v1PdVom8p1VXYUswhG8rISEDeZpPTyUlcyICXjH
-         VAwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709837450; x=1710442250;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sf/Mj3BzGZKpoiOTKx5KymXugzcLyy+NNEJ46ZQm6pc=;
-        b=NuIow1kJjrXgY6lbwgx0bqNPxq11A9FwJmfxV8kTq6jPJ5Ftioc5F/iMnBt8IE9fa6
-         CBXlWbHkH+GUbGh1+Y5UjnEwTj7ENgVkQOnRt4FIvPIoz8zqX6Cj2NHukU6ZM433fvOe
-         jvG1fQCT5vZ7KOsKIQNvWYMB6ppwftdLDt1dC/d2cansE6ZdyEjz1ubWq6v7T62LNDHZ
-         uEzJfHL8Y0NT8Mdxj5IEAzKq+IZbuSK/4POpInjN2GqE6p4kYx2YCGBGX/patQGB3Et3
-         9IzeMcFQXkA4GANBObOn3HeSsYtZOW23pHcajqqCOdX5fKdRth3qaXB3MC5H+LP31xhF
-         zEbg==
-X-Forwarded-Encrypted: i=1; AJvYcCU8QzZjo9qchFT3a+VOvW4N23bpgih7i0e112IDPNxcNnDxIQkdvfqlJBWvf5hPDfxZcZ3Gn8x3h6x1Y4OM35UbfBUYGxa2EdCel7xDAqfAzFLO6Bf03p6bMZ4PAM8i0ges
-X-Gm-Message-State: AOJu0YzWsSUycYeS/5Eug3RZp66foinzDDBH/G0sTV6VkERBbWNQDQYk
-	RsAia1xihugSMeJZ6HVpxt1x+r1xLnEDgh5mk/Is4Z9p52JbX8eC
-X-Google-Smtp-Source: AGHT+IHJBaBGvoYxoVdhzF2YkImFqTt7kAT0cThOn47PelqcKokrA2FtS4u2q5ojr96oJ6JLK5cX1g==
-X-Received: by 2002:a05:620a:918:b0:788:1c6e:35c with SMTP id v24-20020a05620a091800b007881c6e035cmr8545244qkv.72.1709837449887;
-        Thu, 07 Mar 2024 10:50:49 -0800 (PST)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id 19-20020a05620a04d300b0078838c7acbfsm2810654qks.42.2024.03.07.10.50.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 10:50:49 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 9FB3B1200043;
-	Thu,  7 Mar 2024 13:50:48 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 07 Mar 2024 13:50:48 -0500
-X-ME-Sender: <xms:hwzqZXN4gUAn0pFrX-5JfRD2PrrSt7GACpowfAxkFxrbsMSxYTtd0g>
-    <xme:hwzqZR-3UdWEb0k4oa1lluTjweLs1bCUtiSQwlR0r9kFkhxSmQ1Ip7bizAgc8CRZP
-    xAEj3zwht2e7BROOw>
-X-ME-Received: <xmr:hwzqZWQqReg82vc6OsQNXlX0BxzdqFlNY79OKV3eALOYtRw_udRFnmmaFIg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieefgdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:iAzqZbtQnBpQbMIWyur65D1hbRHSuVR23X2SP20RUNcM96ZKvKYQqA>
-    <xmx:iAzqZfclvpd3mHb5lMDLsLuWNvJPE-DC-rk7qbD40nKlkcw2QnVxDw>
-    <xmx:iAzqZX2wrCRzbXhsRwGUzzvmE9d9QWmktdrsE3g_BYJ5lXWebN6JoA>
-    <xmx:iAzqZa8xExed_fgXLs2mkJw6LH2MM8ed9I8YrQ4gwl4rQDjnaaw6UQj-tVc>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Mar 2024 13:50:47 -0500 (EST)
-Date: Thu, 7 Mar 2024 10:49:41 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Stefan Wiehler <stefan.wiehler@nokia.com>
-Cc: Russell King <linux@armlinux.org.uk>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="cESIAX3T"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=NR0+Ie0LOl2eewPVHgTlvTXz4AW9q3B2J0v5cGLbxHY=; b=cESIAX3TafAWzXQgvkAgIo8lVm
+	ggFPD0RsJ0CkCIvZY2t6emcF/qxlOiKgwtIJdGKDK5LugTyeTR3AMMwHNuseATbCjJBvgMHFUrcQ/
+	+ol7BBfdRyWO+vFREBHq38pLTcxosZYvtGKxUrIEsrnRevpTezae1P4Y3cQ6TOpA9hBXruy2k1dpQ
+	xkO5e3U5HJwm0GDlWQ1i2kj4sIvVPzPUI6fVrztiPxORFN5JeHtBaivSczwMtSKOYfWDn26KD22rv
+	9PXxU7mmEzWhCG9jowBSw3gFeyZRIjZ3bx2a62RoBhfT9YdPkginRF95MOCF8M92o265gt+FmQX0A
+	JFDAcvVw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37862)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1riIt9-0001cn-0x;
+	Thu, 07 Mar 2024 18:54:43 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1riIt4-0007SD-PX; Thu, 07 Mar 2024 18:54:38 +0000
+Date: Thu, 7 Mar 2024 18:54:38 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Stefan Wiehler <stefan.wiehler@nokia.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>
+	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
  splat
-Message-ID: <ZeoMRfy9ISBOVMsV@boqun-archlinux>
+Message-ID: <ZeoNbjTCAWYHgi4u@shell.armlinux.org.uk>
 References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+ <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -104,90 +63,57 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+In-Reply-To: <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-[Cc Frederic]
+On Thu, Mar 07, 2024 at 09:45:36AM -0800, Paul E. McKenney wrote:
+> > diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> > index 3431c0553f45..6875e2c5dd50 100644
+> > --- a/arch/arm/kernel/smp.c
+> > +++ b/arch/arm/kernel/smp.c
+> > @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
+> >  {
+> >  	unsigned int cpu = smp_processor_id();
+> >  
+> > +	/*
+> > +	 * Briefly report CPU as online again to avoid false positive
+> > +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
+> > +	 * spinlock.
+> > +	 */
+> > +	rcutree_report_cpu_starting(cpu);
+> >  	idle_task_exit();
+> > +	rcutree_report_cpu_dead();
+> >  
+> >  	local_irq_disable();
+> 
+> Both rcutree_report_cpu_starting() and rcutree_report_cpu_dead() complain
+> bitterly via lockdep if interrupts are enabled.  And the call sites have
+> interrupts disabled.  So I don't understand what this local_irq_disable()
+> is needed for.
 
-On Thu, Mar 07, 2024 at 05:09:51PM +0100, Stefan Wiehler wrote:
-> With CONFIG_PROVE_RCU_LIST=y and by executing
-> 
->   $ echo 0 > /sys/devices/system/cpu/cpu1/online
-> 
-> one can trigger the following Lockdep-RCU splat on ARM:
-> 
->   =============================
->   WARNING: suspicious RCU usage
->   6.8.0-rc7-00001-g0db1d0ed8958 #10 Not tainted
->   -----------------------------
->   kernel/locking/lockdep.c:3762 RCU-list traversed in non-reader section!!
-> 
->   other info that might help us debug this:
-> 
->   RCU used illegally from offline CPU!
->   rcu_scheduler_active = 2, debug_locks = 1
->   no locks held by swapper/1/0.
-> 
->   stack backtrace:
->   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc7-00001-g0db1d0ed8958 #10
->   Hardware name: Allwinner sun8i Family
->    unwind_backtrace from show_stack+0x10/0x14
->    show_stack from dump_stack_lvl+0x60/0x90
->    dump_stack_lvl from lockdep_rcu_suspicious+0x150/0x1a0
->    lockdep_rcu_suspicious from __lock_acquire+0x11fc/0x29f8
->    __lock_acquire from lock_acquire+0x10c/0x348
->    lock_acquire from _raw_spin_lock_irqsave+0x50/0x6c
->    _raw_spin_lock_irqsave from check_and_switch_context+0x7c/0x4a8
->    check_and_switch_context from arch_cpu_idle_dead+0x10/0x7c
->    arch_cpu_idle_dead from do_idle+0xbc/0x138
->    do_idle from cpu_startup_entry+0x28/0x2c
->    cpu_startup_entry from secondary_start_kernel+0x11c/0x124
->    secondary_start_kernel from 0x401018a0
-> 
-> The CPU is already reported as offline from RCU perspective in
-> cpuhp_report_idle_dead() before arch_cpu_idle_dead() is invoked. Above
-> RCU-Lockdep splat is then triggered by check_and_switch_context() acquiring the
-> ASID spinlock.
-> 
-> Avoid the false-positive Lockdep-RCU splat by briefly reporting the CPU as
+I think that's a question for this commit:
 
-I'm not sure this is a false-positive: if you traverse an RCU-list
-without RCU watching the CPU, then a grace period may pass, the next
-list can be garbage and you can go anywhere from the list. Or am I
-missing something that a CPU hotplug can block a grace period?
+commit e78a7614f3876ac649b3df608789cb6ef74d0480
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Wed Jun 5 07:46:43 2019 -0700
 
-But codewise, it looks good to me. Although I hope we can avoid calling
-rcutree_report_cpu_{starting,dead}() here and use something simple,
-however after a few attempts, I don't find a better way.
+Before this commit, arch_cpu_idle_dead() was called with IRQs enabled.
+This commit moved the local_irq_disable() before calling
+arch_cpu_idle_dead() but it seems no one looked at the various arch
+implementations to clean those up. Quite how arch people are supposed
+to spot this and clean up after such a commit, I'm not sure.
 
-Regards,
-Boqun
+The local_irq_disable() that you're asking about has been there ever
+since the inception of SMP on 32-bit ARM in this commit:
 
-> online again while the spinlock is held.
-> 
-> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
-> ---
->  arch/arm/kernel/smp.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> index 3431c0553f45..6875e2c5dd50 100644
-> --- a/arch/arm/kernel/smp.c
-> +++ b/arch/arm/kernel/smp.c
-> @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
->  {
->  	unsigned int cpu = smp_processor_id();
->  
-> +	/*
-> +	 * Briefly report CPU as online again to avoid false positive
-> +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
-> +	 * spinlock.
-> +	 */
-> +	rcutree_report_cpu_starting(cpu);
->  	idle_task_exit();
-> +	rcutree_report_cpu_dead();
->  
->  	local_irq_disable();
->  
-> -- 
-> 2.42.0
-> 
+commit a054a811597a17ffbe92bc4db04a4dc2f1b1ea55
+Author: Russell King <rmk@dyn-67.arm.linux.org.uk>
+Date:   Wed Nov 2 22:24:33 2005 +0000
+
+Where cpu_die() was later renamed to arch_cpu_idle_dead(). So it's
+purely a case of a change being made to core code and arch code not
+receiving any fixups for it.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
