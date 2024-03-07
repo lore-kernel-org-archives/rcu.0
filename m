@@ -1,58 +1,53 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F187F84A2B;
-	Thu,  7 Mar 2024 19:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2548D13664E;
+	Thu,  7 Mar 2024 19:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838325; cv=none; b=jr9MC8eSAi5nSMJDaYsN25QeSEh6cqRU99Ahm6CEPUSvAdwiR5Ktu8JXZL8LV0SlmxuPYpInISW9pwBZ+M4pqlfhZ2s07h11Bg0brsYzWXginLDKR7oVWfGnVFrdC5ZStmZnLEYWWnaeS4v9WAQb86Pl7wkX3+E8efPyGwH6Tmo=
+	t=1709838484; cv=none; b=j5jKBpmNXUySKeIFtA6KVJSSa6e6uBvqFj8Gz0GMW52+xElwUvKOgp+CUVe/OUisiWN8Vzl54Z7IK2PbDKmJe5KOHOOWLaEUsXxTj+f2zNdr2aK0EIrZpMv43q46a97rIKoS5DIsWsqzVteonqrpElJmp5lqvbrPkKIZOZ+R938=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838325; c=relaxed/simple;
-	bh=Dtyj/GEZbV1QYd6flisdfcwGNJw92gSRNVc1xTEnhKU=;
+	s=arc-20240116; t=1709838484; c=relaxed/simple;
+	bh=yEOL18TbJDjwRAvn0qMrkNVx3ik8b1Q3Htm6MzV8i3g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CIT/gqPaZpDukHqb6QQQLSxzu9I6bPo7TrRLoPXOtEYl4VCAvyz57GKuSOdF8/bLp2OPbixAlCYe0eWACkQNV5JHbNZ3T36GFP47s4wrhNgVaC7FJ7ngh/wPIxQ6m3Z5zd84V/uIJMT1DfkeHUw0+hTcZ1+glRh7ouG45pMmwb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhXvj25f; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=NaJvuN2L8FuKxuBWqvVjVuFyhaNl/2ybpkTzPjHh1Ud9I+ryXLpoVZAF7BqKrjK2aCUVWTozBeu3Os692X/+6EACrUlXNQJx5zMMk0BAjuHxoWYa+qbXSa8H/BhFQDRg5OG3peA6IyPatgxYviv+SG/1Owv1jacqTNzKWARSzi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HJdJRGZy; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhXvj25f"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 717CAC43390;
-	Thu,  7 Mar 2024 19:05:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HJdJRGZy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B3B2C433F1;
+	Thu,  7 Mar 2024 19:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709838324;
-	bh=Dtyj/GEZbV1QYd6flisdfcwGNJw92gSRNVc1xTEnhKU=;
+	s=k20201202; t=1709838483;
+	bh=yEOL18TbJDjwRAvn0qMrkNVx3ik8b1Q3Htm6MzV8i3g=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=HhXvj25fMOdgLTomS8Ug+BuZkYoRha981swQiZamm7uDuI7C1B5r048m7kk6uarOG
-	 Ww4Sc7af/0777HOCMR29aiiJuFJ/xmHdeS5pAqHRmiJemOh13om8iQPuKeb2bmN5FT
-	 yl47t2Na/Kvt36R1NWKccp4Ctr//cvS/sY4UsTmdFjXi6rzeEbRKc0dGGIbr5NUvpS
-	 CwFsGRUaH9SyCnf0BqCpsG95LSl8F2BUc7m8eVyhJ4QW+Hg97NMuwD5EjQykgdAp7Y
-	 2myjFRGJ/fPsgGQ+Q1QVjHL+uqtME9vHTk4rpa51ZrPQRWnlT2pDYhBph9tsZzyGSs
-	 X+0Bk/Uh+TSaQ==
+	b=HJdJRGZyCRDcTmI2TLf3a9RuWEcViwOMyY5mYI8cUh4obB220U/FeLuF6A99W6Jvl
+	 IKETLpXHZRcZyURy8yqsf6OmsvNBgr9CIh1JLB/VeNgPsQEepgKeKp1k3KasNIFMTE
+	 gc2nFFC0XmEkQtCT/A0OvPJy6/IexoQ4MTIK77sd644Cr1sWSVuUul7BTX1aYYIqYj
+	 h39f+hu2ko9FYrvSgw9xSofJhBdAVTsn6Ua/Fo18pFWIvke5sk6aRFjpjEwiw4MQE1
+	 YmThMAWMyONtTKEEwJknndwrxu+9UAIh1vuf/BC8wpJhqc7ZGWB1NshLN2yC3qePgF
+	 v0wRqUtJRk/1A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 026D8CE0716; Thu,  7 Mar 2024 11:05:23 -0800 (PST)
-Date: Thu, 7 Mar 2024 11:05:23 -0800
+	id 21FD9CE0716; Thu,  7 Mar 2024 11:08:03 -0800 (PST)
+Date: Thu, 7 Mar 2024 11:08:03 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
-	boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org,
-	jiangshanlai@gmail.com, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-Message-ID: <09fa751c-db5a-4c86-8e68-572bc9c107f6@paulmck-laptop>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Stefan Wiehler <stefan.wiehler@nokia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+Message-ID: <293fbcc5-0c2d-4937-9026-a05236e1fc40@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
- <20240306135504.2b3872ef@gandalf.local.home>
- <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home>
- <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
- <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
- <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
- <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
- <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
- <30b8966b-b31b-41d2-823e-11e60378cfd7@joelfernandes.org>
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+ <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
+ <ZeoNbjTCAWYHgi4u@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,98 +56,59 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30b8966b-b31b-41d2-823e-11e60378cfd7@joelfernandes.org>
+In-Reply-To: <ZeoNbjTCAWYHgi4u@shell.armlinux.org.uk>
 
-On Thu, Mar 07, 2024 at 12:44:39AM -0500, Joel Fernandes wrote:
+On Thu, Mar 07, 2024 at 06:54:38PM +0000, Russell King (Oracle) wrote:
+> On Thu, Mar 07, 2024 at 09:45:36AM -0800, Paul E. McKenney wrote:
+> > > diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> > > index 3431c0553f45..6875e2c5dd50 100644
+> > > --- a/arch/arm/kernel/smp.c
+> > > +++ b/arch/arm/kernel/smp.c
+> > > @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
+> > >  {
+> > >  	unsigned int cpu = smp_processor_id();
+> > >  
+> > > +	/*
+> > > +	 * Briefly report CPU as online again to avoid false positive
+> > > +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
+> > > +	 * spinlock.
+> > > +	 */
+> > > +	rcutree_report_cpu_starting(cpu);
+> > >  	idle_task_exit();
+> > > +	rcutree_report_cpu_dead();
+> > >  
+> > >  	local_irq_disable();
+> > 
+> > Both rcutree_report_cpu_starting() and rcutree_report_cpu_dead() complain
+> > bitterly via lockdep if interrupts are enabled.  And the call sites have
+> > interrupts disabled.  So I don't understand what this local_irq_disable()
+> > is needed for.
 > 
+> I think that's a question for this commit:
 > 
-> On 3/6/2024 10:37 PM, Paul E. McKenney wrote:
-> > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
-> >> On 2024-03-06 21:43, Linus Torvalds wrote:
-> >> [...]
-> >>>
-> >>> Honestly, this all makes me think that we'd be *much* better off
-> >>> showing the real "handoff" with smp_store_release() and
-> >>> smp_load_acquire().
-> >>
-> >> We've done something similar in liburcu (userspace code) to allow
-> >> Thread Sanitizer to understand the happens-before relationships
-> >> within the RCU implementations and lock-free data structures.
-> >>
-> >> Moving to load-acquire/store-release (C11 model in our case)
-> >> allowed us to provide enough happens-before relationship for
-> >> Thread Sanitizer to understand what is happening under the
-> >> hood in liburcu and perform relevant race detection of user
-> >> code.
-> > 
-> > Good point!
-> > 
-> > In the kernel, though, KCSAN understands the Linux-kernel memory model,
-> > and so we don't get that sort of false positive.
-> > 
-> >> As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
-> >> is concerned, the only valid use-case I can think of is
-> >> split counters or RCU implementations where there is a
-> >> single updater doing the increment, and one or more
-> >> concurrent reader threads that need to snapshot a
-> >> consistent value with READ_ONCE().
-> > 
-> > It is wrong here.  OK, not wrong from a functional viewpoint, but it
-> > is at best very confusing.  I am applying patches to fix this.  I will
-> > push out a new "dev" branch on -rcu that will make this function appear
-> > as shown below.
-> > 
-> > So what would you use that pattern for?
-> > 
-> > One possibility is a per-CPU statistical counter in userspace on a
-> > fastpath, in cases where losing the occasional count is OK.  Then learning
-> > your CPU (and possibly being immediately migrated to some other CPU),
-> > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
-> > make sense.
-> > 
-> > I suppose the same in the kernel if there was a fastpath so extreme you
-> > could not afford to disable preemption.
-> > 
-> > At best, very niche.
-> > 
-> > Or am I suffering a failure of imagination yet again?  ;-)
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > static bool
-> > rcu_torture_pipe_update_one(struct rcu_torture *rp)
-> > {
-> > 	int i;
-> > 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
-> > 
-> > 	if (rtrcp) {
-> > 		WRITE_ONCE(rp->rtort_chkp, NULL);
-> > 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
-> > 	}
-> > 	i = rp->rtort_pipe_count;
-> > 	if (i > RCU_TORTURE_PIPE_LEN)
-> > 		i = RCU_TORTURE_PIPE_LEN;
-> > 	atomic_inc(&rcu_torture_wcount[i]);
-> > 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> > 	ASSERT_EXCLUSIVE_WRITER(rp->rtort_pipe_count);
+> commit e78a7614f3876ac649b3df608789cb6ef74d0480
+> Author: Peter Zijlstra <peterz@infradead.org>
+> Date:   Wed Jun 5 07:46:43 2019 -0700
 > 
-> I was going to say to add a comment here for the future reader, that update-side
-> ->rtort_pipe_count READ/WRITE are already mutually exclusive, but this ASSERT
-> already documents it ;-)
+> Before this commit, arch_cpu_idle_dead() was called with IRQs enabled.
+> This commit moved the local_irq_disable() before calling
+> arch_cpu_idle_dead() but it seems no one looked at the various arch
+> implementations to clean those up. Quite how arch people are supposed
+> to spot this and clean up after such a commit, I'm not sure.
 
-Plus KCSAN is way better at repeatedly inspecting code for this sort of
-issue than I am.  ;-)
+Telepathy?  ;-)
 
-> Also FWIW I confirmed after starting at code that indeed only one update-side
-> access is possible at a time! Thanks,
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> The local_irq_disable() that you're asking about has been there ever
+> since the inception of SMP on 32-bit ARM in this commit:
+> 
+> commit a054a811597a17ffbe92bc4db04a4dc2f1b1ea55
+> Author: Russell King <rmk@dyn-67.arm.linux.org.uk>
+> Date:   Wed Nov 2 22:24:33 2005 +0000
+> 
+> Where cpu_die() was later renamed to arch_cpu_idle_dead(). So it's
+> purely a case of a change being made to core code and arch code not
+> receiving any fixups for it.
 
-Thank you very much!  I will apply your Reviewed-by to these commits
-on my next rebase:
-
-28455c73b620 ("rcutorture: ASSERT_EXCLUSIVE_WRITER() for ->rtort_pipe_count updates")
-b0b99e7db12e ("rcutorture: Remove extraneous rcu_torture_pipe_update_one() READ_ONCE()")
+Thank you for the info!
 
 							Thanx, Paul
