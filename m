@@ -1,75 +1,170 @@
-Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682DF1B950
-	for <rcu@vger.kernel.org>; Thu,  7 Mar 2024 04:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543381B962
+	for <rcu@vger.kernel.org>; Thu,  7 Mar 2024 05:44:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709784665; cv=none; b=Hcx9+kvqVtF15yLANIq8KQdOYNR064zpuF3iUfePNRLxllc9jw04kNGCW3rerER41fj2yUlH89bhrgBLEw+DdaWywgQHbrhHMFA2ihBxj242++qGjxr9GBalvxFOMnFBIEtqiJ4EDVWrpGgee84IdxBqJAs09lj/6ZLEhdItq4I=
+	t=1709790290; cv=none; b=XMNtv7a5Sk8VGKE7TUO/6QcVTb0vwQvBtItLAICfRb0918o6RNDFdRg9iOekdsDx+PrgcJgQybAc2zY5v/BZR5Ox3KAndAj3bVzCIhA7uLnh9mLdBtw3Fp4dpZGROsbKGRaQpwgcvr2sfGN32PhSULpN3OC4klPMzBW8WdGNpIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709784665; c=relaxed/simple;
-	bh=G5xzXG3tmJ4O10paWZNuvW+7YeniVtjtDYCN8ZCDbJo=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=my6vPT/ycoXT2zGXtDQ89qPHvN5Ch9jwjphR8i7Tg+/iN/LjFMTVn+zBuIkfGQjHGv93LkImkFkLJtdoJFtZUuXs7xroUJ6T8H8DRlvPITznWc9BhEU3mn6jrijAZpYnMfCdGpX4kE8c9PiUNKrx28gPfVe6xl4bgAYwENAk4Wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=fXWtwH7o; arc=none smtp.client-ip=162.62.58.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1709790290; c=relaxed/simple;
+	bh=rfZKX7mfs7a+UYEYHLCSU28fLQqq430VuLhIefMPzGg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fYK/WoVwvXNzQoqqInvtxijnqfj/MhAeVhLVrfW7gjBinkbf2AxLZjntkh6DWSnBWVYwzSHjV5TxwR0zyYcZb2ikg0Wv7zRyuDCHdOSItpRFQ51C+HMylCb8qP7OjRWTWqlnK99zX962O/B/O9/4gJSscmKffLMxG6d1rZMokPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=smecX3B+; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="fXWtwH7o"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709784658; bh=G5xzXG3tmJ4O10paWZNuvW+7YeniVtjtDYCN8ZCDbJo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=fXWtwH7oDRKY3aQ4fZ52oX/ve48yMqaf7hzJ8hMu+xnKgNtaIP2nQ8rUBOhTEPk9C
-	 5Hf0muu3w4LQVjwNfmNnE+ifpbL9jj3wg24TaasFgl3X4bYxhTZ1d5vkaR3qcqAElR
-	 +jyJGwSZl/aYmY0U/aLoPK/iVzp5wbCXr6cy4a0U=
-Received: from localhost.localdomain ([218.94.142.74])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id 2B594042; Thu, 07 Mar 2024 12:10:53 +0800
-X-QQ-mid: xmsmtpt1709784653txrxhimiq
-Message-ID: <tencent_3DA771302DA0E15ED8BCCE4B902485585206@qq.com>
-X-QQ-XMAILINFO: MmpliBmRb3iC5tPQ5PBtKH2GdRobKXdFP6gisixfwHnwONJbWMKm7iF3ibqc6Y
-	 38t4Gc+baFdg65Zig0nvvZaEroDU6zZDSbWdLycYa7o+G482uSOtTewVUbMgFfciLkn72NAie0K3
-	 uIAL/p09R0QZ/rK4ZFHFLvhmnlYej0YJCj3bz08Lm5PXOGzQVxyOG3uJz8vckjDwmXoTgkIPIQLu
-	 Ro78DFT0dw8wuaXA1TMjXXZ8iOp9gbltZtjGuHAEfY0lbLEfHvtNPVFLH0zjC/skY241puP4+rW6
-	 EB/nkipwFjUoocnDTPjFk6psXkGdX+g3XDGv2Gq+cO7NltX2kJ0lOtPcutnLcfSfz5Vhg+4Fk0di
-	 ksDJXK5iFpXyEuS9snb2u58Oo2GIRrn2NB0w8yLEFUpRe/NTLCcgo3WOS6/zZ/fe7ZYFLeEwX+ks
-	 HHZQ1my/yJDnY40ybsQuQKOYusMzWlIGm+5ETTAlxAetKy1EZeHDVd51AQDXjWBbHY4xV1k9LDKW
-	 hgStaxPUoNDYJn6OBmFLLmzQZf2xJs6TFkHYmQ4DtHfD7YMDIC03mLRsrrVDXVuTr+D2XcKy22hN
-	 CE7KX4FMDeybDXy6Gkq+1vuGiFudlqgOKZiLkZ0srBR+z0zoKBrmYDYzAM6bV1ceGx+g9+ybcoD3
-	 8AbFJbf5OCh7zLQDaXivJ8rQdj6+PAjNNmrWOITbL0LVyfKmQaJr7bq0yhupyhPCKSzl+0Fi1Lld
-	 Wpztqp4mjRahCTXWkc/zk5ipsALSNVKf8j2NUM5RukBy2pdP+sACInt7QiWmQnLCXDtdaLmQKBo3
-	 cyLErH86wltpHWJ3AsCvvzv/wGLt/J7E7gFdcQJT+0Un215wb7JjzpU0Blt6i4qMPjEWuQzciJAk
-	 X0lZxWu4TsNPfGF1nvMzi8RSewNjW3IKLoLR443qu00be+Orc+N/3vxpj71GkjHjclhYN+/hxkwh
-	 +Ws7EkaP2ThI6l4Amzler5oLh07XpBqaA4H9AhqpuRArvHDI+Hr9PT/THN1exqetkr6wB1oHY=
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: linke li <lilinke99@qq.com>
-To: paulmck@kernel.org
-Cc: boqun.feng@gmail.com,
-	dave@stgolabs.net,
-	frederic@kernel.org,
-	jiangshanlai@gmail.com,
-	joel@joelfernandes.org,
-	josh@joshtriplett.org,
-	lilinke99@qq.com,
-	linux-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	qiang.zhang1211@gmail.com,
-	quic_neeraju@quicinc.com,
-	rcu@vger.kernel.org,
-	rostedt@goodmis.org
-Subject: Re: [PATCH v2] rcutorture: Reuse value read using READ_ONCE instead of re-reading it
-Date: Thu,  7 Mar 2024 12:10:52 +0800
-X-OQ-MSGID: <20240307041052.86803-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <b01c476a-64ee-4030-8bc9-3807704efacc@paulmck-laptop>
-References: <b01c476a-64ee-4030-8bc9-3807704efacc@paulmck-laptop>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="smecX3B+"
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-788303f317eso29040985a.2
+        for <rcu@vger.kernel.org>; Wed, 06 Mar 2024 21:44:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709790286; x=1710395086; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wMUEBg3aDzZSfvDUQdgnU/Cbl90aZubFUijFam4pZcM=;
+        b=smecX3B+FaGbzQxI5LHTna1JE5UNPjFxIMAw3AzQ9qpeUzJQUV0yY9W8CpJi3GZz5T
+         oaZXAGg23iTaguvMJ9HqP+EGawXkgfoHAoJiAAaPR1W/ytH/I7Gs9bOGLvEMmx3bQ+JX
+         ZazTElVx4vRofdZj9BjEiDYoG4354ZNpIHAJo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709790286; x=1710395086;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wMUEBg3aDzZSfvDUQdgnU/Cbl90aZubFUijFam4pZcM=;
+        b=u7jkFTuP88De/jAP0Ui2SOExQkcRKPEgSTrp6R8oPa880pWP0r3YDyofRagSqWB6Dr
+         nM7qa5clQQEGBkHFMZOSxiNRPkGAhHs8uYBGl5Td5jyoe8gXlMS0iX4/jT4PJxzX+65/
+         J3UQPsochBMf5bNCrSpX26nKtaQfEDXkRbSh5VRUzAOD1szcxao5jEhNSyOfU/xamycj
+         /ECXT9cqpYB5qzggaRhxCd2bQmZWc4w3D6p14iPgN4BlKG9C6S4V/4AnbhLzMIoJT557
+         2YB2y2DlIO0OAz8KTdx3Qqc64CSYeeFgaFtMtLUD2NdSHP18bbz9Kl7tYQjBe+efOBXc
+         g6sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWf6A1d/2PqPicwOQiMPJ2EHcx/Ggxra/0xIcvj06gnZt/VKXcihPpw38lBkY9A+yUawYYgVegCsGJt+jd0W2G0oJcZ
+X-Gm-Message-State: AOJu0Yxg0yKGyqkRCPn1/qBPcyj12CQ9sQwEGg+QWEJurhMhRijP0GwB
+	KPc2bJR2CSSkRRnG+3SGcDL7Jjog075rTYm73a/PFvtxNyfGxm/zFqBGu/vwHow=
+X-Google-Smtp-Source: AGHT+IHyaGrtgyp0eqgvwKvSbZaKu1BKChgcNJnN7kYQIofPr91KSX1kRZ3GE3ITwkv8hxPjna5+2Q==
+X-Received: by 2002:a05:620a:3b8c:b0:788:3187:f33c with SMTP id ye12-20020a05620a3b8c00b007883187f33cmr7007384qkn.13.1709790285961;
+        Wed, 06 Mar 2024 21:44:45 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.189])
+        by smtp.gmail.com with ESMTPSA id qs16-20020a05620a395000b007881f9c0397sm4931513qkn.60.2024.03.06.21.44.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 21:44:44 -0800 (PST)
+Message-ID: <30b8966b-b31b-41d2-823e-11e60378cfd7@joelfernandes.org>
+Date: Thu, 7 Mar 2024 00:44:39 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Content-Language: en-US
+To: paulmck@kernel.org, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+ boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org,
+ jiangshanlai@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+ qiang.zhang1211@gmail.com, quic_neeraju@quicinc.com, rcu@vger.kernel.org
+References: <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop>
+ <20240306130103.6da71ddf@gandalf.local.home>
+ <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
+ <20240306135504.2b3872ef@gandalf.local.home>
+ <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
+ <20240306142738.7b66a716@rorschach.local.home>
+ <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
+ <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+ <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
+ <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
+ <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Thank you for your work! This change log looks good to me.
+
+
+On 3/6/2024 10:37 PM, Paul E. McKenney wrote:
+> On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
+>> On 2024-03-06 21:43, Linus Torvalds wrote:
+>> [...]
+>>>
+>>> Honestly, this all makes me think that we'd be *much* better off
+>>> showing the real "handoff" with smp_store_release() and
+>>> smp_load_acquire().
+>>
+>> We've done something similar in liburcu (userspace code) to allow
+>> Thread Sanitizer to understand the happens-before relationships
+>> within the RCU implementations and lock-free data structures.
+>>
+>> Moving to load-acquire/store-release (C11 model in our case)
+>> allowed us to provide enough happens-before relationship for
+>> Thread Sanitizer to understand what is happening under the
+>> hood in liburcu and perform relevant race detection of user
+>> code.
+> 
+> Good point!
+> 
+> In the kernel, though, KCSAN understands the Linux-kernel memory model,
+> and so we don't get that sort of false positive.
+> 
+>> As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
+>> is concerned, the only valid use-case I can think of is
+>> split counters or RCU implementations where there is a
+>> single updater doing the increment, and one or more
+>> concurrent reader threads that need to snapshot a
+>> consistent value with READ_ONCE().
+> 
+> It is wrong here.  OK, not wrong from a functional viewpoint, but it
+> is at best very confusing.  I am applying patches to fix this.  I will
+> push out a new "dev" branch on -rcu that will make this function appear
+> as shown below.
+> 
+> So what would you use that pattern for?
+> 
+> One possibility is a per-CPU statistical counter in userspace on a
+> fastpath, in cases where losing the occasional count is OK.  Then learning
+> your CPU (and possibly being immediately migrated to some other CPU),
+> READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
+> make sense.
+> 
+> I suppose the same in the kernel if there was a fastpath so extreme you
+> could not afford to disable preemption.
+> 
+> At best, very niche.
+> 
+> Or am I suffering a failure of imagination yet again?  ;-)
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> static bool
+> rcu_torture_pipe_update_one(struct rcu_torture *rp)
+> {
+> 	int i;
+> 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+> 
+> 	if (rtrcp) {
+> 		WRITE_ONCE(rp->rtort_chkp, NULL);
+> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+> 	}
+> 	i = rp->rtort_pipe_count;
+> 	if (i > RCU_TORTURE_PIPE_LEN)
+> 		i = RCU_TORTURE_PIPE_LEN;
+> 	atomic_inc(&rcu_torture_wcount[i]);
+> 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+> 	ASSERT_EXCLUSIVE_WRITER(rp->rtort_pipe_count);
+
+I was going to say to add a comment here for the future reader, that update-side
+->rtort_pipe_count READ/WRITE are already mutually exclusive, but this ASSERT
+already documents it ;-)
+
+Also FWIW I confirmed after starting at code that indeed only one update-side
+access is possible at a time! Thanks,
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+ - Joel
 
