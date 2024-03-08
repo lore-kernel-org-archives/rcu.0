@@ -1,38 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCCD139E;
-	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61839219F0;
+	Fri,  8 Mar 2024 00:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709859309; cv=none; b=U5M0NJL4E27oE/7h6+0bv6Hq7xLkfPjvTzK/pscUgnPrawxeEKb6O31J6rXk3F6gi+cjAl8CaGZzCf8zJvyAvpUrS7ilUuTx2HkI1az2b4ApvvJMk4oETInaDP7O1Xi+pmgTm5wFhoDLDEb/a5o8UGRahs7UQEZSwCmDMhWdLZQ=
+	t=1709859531; cv=none; b=WjCX87rSzCx12UdP5Y/kvU2PbsmgUB7d7t9CInGVa5/c12INMN/LKCj65V6/xB5aTXM3+3HtTIO1OmK8g1+tp4CY6t5/RJ7/zZxe52T5J2Xyu3xy6ZvPEV/3j7mPlYXkzKVhRshacyw10yastFNOnwozMW7Gzb9vYYGSi0NTcIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709859309; c=relaxed/simple;
-	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
+	s=arc-20240116; t=1709859531; c=relaxed/simple;
+	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jjaMn52xPJdmrykH3bNhskjJyqMNxzlKTSKgFcF/sjVgnOUmUIcmjOS5ckGIpV9Uvfb0/oL4uEx7f6X9uNkJStOpDaUKQ0VpER8SEbj45TP/5QhmhNup2EZZZfXpm/5o7p4KRtvFpqO5wzL5bcImbaqrKaoe7vOAjYjXp0aSx4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ChQoYXcP; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=oGWubKew99022mTMS2qqNk84+L+R7ATCUbgdKJaPnhimX2cDNdOsb2+KBK2L+V3DjLJM6LAftOMdxImELLh7riLHkc1CBsDBznZ6TUFLfaybj/80LySazH5ZO3PMRLOn2vQrkwov6ZfwF8jqbzYS73nRwMBXc0pqGduR3cf7jDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JiwTGHVO; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ChQoYXcP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E44BC433F1;
-	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiwTGHVO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C65F8C433F1;
+	Fri,  8 Mar 2024 00:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709859308;
-	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
+	s=k20201202; t=1709859530;
+	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ChQoYXcPHNSJcbPbOm+q5p2knS/G6zVfeycEJtC8Vi7AqGJkfiDYx6Ur82DEPJ05o
-	 cGXi74OjU9LjfVNuZS742VXlzOkImZofiNGypL5eHAkq+1CSNzppcdnwmXXtTvWad0
-	 AH7OmuAkhX2BuNZ3CBv0bCL1ge3T8FNymLEGsbKgCswzjX2q5xfoSvPaQ2ePT26CjB
-	 Zz2Le+qJwzFxHNO5gJwDF7C7vFpEEcvUruZ7BXeIhXqntb+mCkFcwjps6PbUtT4ab+
-	 oLsfXZukF77+3jX27CI38ArI9Q7TKrwmE2xvAo5M6+KfuEDU2SHgRI22bsDlglgkup
-	 pf8stVrg5UCNg==
+	b=JiwTGHVOguV9FSNQ3ANzjq1D6UTnKbnaJQNIOVCH/xER5PeTG+JaUxQABsm2Mwx42
+	 PPxUQuNiZv6HWLrOzIj5/6V/ShiiB4Mhd1Ehlh7zLvprQLRiIPkzOjj/T4LfxxVY8V
+	 NM35WC+MxQRvwyS7aGtc1jeeMgtLOSIdQen6xcIOESgHunqq9mE2OLGkWJsOSETous
+	 pk8CVatOWHLjZDzSouDyikl8lCNRyLGEGGiePtKV7URo5KvRWjb/fotsoH+qw07maA
+	 wuD62nRBDbnstHtgTSwblP9Am2fbYo7BeZWu2om1PwmxKiZMx8LoZrclg5EdmDG+qC
+	 Lg63C/OnC+RDA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 103F1CE0716; Thu,  7 Mar 2024 16:55:08 -0800 (PST)
-Date: Thu, 7 Mar 2024 16:55:08 -0800
+	id 6D32ACE0716; Thu,  7 Mar 2024 16:58:50 -0800 (PST)
+Date: Thu, 7 Mar 2024 16:58:50 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Julia Lawall <julia.lawall@inria.fr>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
 	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
 	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
@@ -41,18 +40,18 @@ Cc: Julia Lawall <julia.lawall@inria.fr>,
 Subject: Re: [PATCH] rcutorture: Fix
  rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
  bug
-Message-ID: <7b11260c-ebed-4440-9d35-d6a788151888@paulmck-laptop>
+Message-ID: <c3b94335-cf11-456d-bec7-4e4262235868@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+References: <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
+ <20240306142738.7b66a716@rorschach.local.home>
+ <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
+ <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
  <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
  <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
  <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
  <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
  <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
- <CAHk-=wia769uoyVz3P7yZURhO8NNB7xeOLX07ZM2vWf1nTLYkQ@mail.gmail.com>
- <65a9665e-22d4-4f21-a1cb-7ef1c82ed078@paulmck-laptop>
- <alpine.DEB.2.22.394.2403072231130.3161@hadrien>
- <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
+ <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,69 +60,127 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
+In-Reply-To: <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
 
-On Thu, Mar 07, 2024 at 02:09:00PM -0800, Linus Torvalds wrote:
-> On Thu, 7 Mar 2024 at 13:40, Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> > I tried the following:
-> >
-> > @@
-> > expression x;
-> > @@
-> >
-> > *WRITE_ONCE(x,<+...READ_ONCE(x)...+>)
-> >
-> > This gave a number of results, shown below.  Let me know if some of them
-> > are undesirable.
+On Thu, Mar 07, 2024 at 02:53:43PM -0500, Mathieu Desnoyers wrote:
+> On 2024-03-07 14:47, Paul E. McKenney wrote:
+> > On Thu, Mar 07, 2024 at 08:53:05AM -0500, Mathieu Desnoyers wrote:
+> > > On 2024-03-06 22:37, Paul E. McKenney wrote:
+> > > > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
+> > > [...]
+> > > > 
+> > > > > As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
+> > > > > is concerned, the only valid use-case I can think of is
+> > > > > split counters or RCU implementations where there is a
+> > > > > single updater doing the increment, and one or more
+> > > > > concurrent reader threads that need to snapshot a
+> > > > > consistent value with READ_ONCE().
+> > > > 
+> > > [...]
+> > > > 
+> > > > So what would you use that pattern for?
+> > > > 
+> > > > One possibility is a per-CPU statistical counter in userspace on a
+> > > > fastpath, in cases where losing the occasional count is OK.  Then learning
+> > > > your CPU (and possibly being immediately migrated to some other CPU),
+> > > > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
+> > > > make sense.
+> > > > 
+> > > > I suppose the same in the kernel if there was a fastpath so extreme you
+> > > > could not afford to disable preemption.
+> > > > 
+> > > > At best, very niche.
+> > > > 
+> > > > Or am I suffering a failure of imagination yet again?  ;-)
+> > > 
+> > > The (niche) use-cases I have in mind are split-counters and RCU
+> > > grace period tracking, where precise counters totals are needed
+> > > (no lost count).
+> > > 
+> > > In the kernel, this could be:
+> > 
+> > Thank you for looking into this!
+> > 
+> > > - A per-cpu counter, each counter incremented from thread context with
+> > >    preemption disabled (single updater per counter), read concurrently by
+> > >    other threads. WRITE_ONCE/READ_ONCE is useful to make sure there
+> > >    is no store/load tearing there. Atomics on the update would be stronger
+> > >    than necessary on the increment fast-path.
+> > 
+> > But if preemption is disabled, the updater can read the value without
+> > READ_ONCE() without risk of concurrent update.  Or are you concerned about
+> > interrupt handlers?  This would have to be a read from the interrupt
+> > handler, given that an updated from the interrupt handler could result
+> > in a lost count.
 > 
-> Well, all the ones you list do look like garbage.
+> You are correct that the updater don't need READ_ONCE there. It would
+> however require a WRITE_ONCE() to match READ_ONCE() from concurrent
+> reader threads.
 > 
-> That said, quite often the garbage does seem to be "we don't actually
-> care about the result". Several of them look like statistics.
+> > 
+> > > - A per-thread counter (e.g. within task_struct), only incremented by the
+> > >    single thread, read by various threads concurrently.
+> > 
+> > Ditto.
+> 
+> Right, only WRITE_ONCE() on the single updater, READ_ONCE() on readers.
+> 
+> > 
+> > > - A counter which increment happens to be already protected by a lock, read
+> > >    by various threads without taking the lock. (technically doable, but
+> > >    I'm not sure I see a relevant use-case for it)
+> > 
+> > In that case, the lock would exclude concurrent updates, so the lock
+> > holder would not need READ_ONCE(), correct?
+> 
+> Correct.
+> 
+> > 
+> > > In user-space:
+> > > 
+> > > - The "per-cpu" counter would have to use rseq for increments to prevent
+> > >    inopportune migrations, which needs to be implemented in assembler anyway.
+> > >    The counter reads would have to use READ_ONCE().
+> > 
+> > Fair enough!
+> > 
+> > > - The per-thread counter (Thread-Local Storage) incremented by a single
+> > >    thread, read by various threads concurrently, is a good target
+> > >    for WRITE_ONCE()/READ_ONCE() pairing. This is actually what we do in
+> > >    various liburcu implementations which track read-side critical sections
+> > >    per-thread.
+> > 
+> > Agreed, but do any of these use WRITE_ONCE(x, READ_ONCE(x) + 1) or
+> > similar?
+> 
+> Not quite, I recall it's more like WRITE_ONCE(x, READ_ONCE(y)) or such,
+> so we can grab the value of the current gp counter and store it into a
+> TLS variable.
 
-[ . . . ]
+Good point, you could use that pattern to grab a shared snapshot.
 
-> > diff -u -p /home/julia/linux/kernel/rcu/tree.c /tmp/nothing/kernel/rcu/tree.c
-> > --- /home/julia/linux/kernel/rcu/tree.c
-> > +++ /tmp/nothing/kernel/rcu/tree.c
-> > @@ -1620,8 +1620,6 @@ static void rcu_gp_fqs(bool first_time)
-> >         /* Clear flag to prevent immediate re-entry. */
-> >         if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
-> >                 raw_spin_lock_irq_rcu_node(rnp);
-> > -               WRITE_ONCE(rcu_state.gp_flags,
-> > -                          READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
-> >                 raw_spin_unlock_irq_rcu_node(rnp);
-> 
-> This smells bad to me. The code is holding a lock, but apparently not
-> one that protects gp_flags.
-> 
-> And that READ_ONCE->WRITE_ONCE sequence can corrupt all the other flags.
-> 
-> Maybe it's fine for some reason (that reason being either that the
-> ONCE operations aren't actually needed at all, or because nobody
-> *really* cares about the flags), but it smells.
-> 
-> > @@ -1882,8 +1880,6 @@ static void rcu_report_qs_rsp(unsigned l
-> >  {
-> >         raw_lockdep_assert_held_rcu_node(rcu_get_root());
-> >         WARN_ON_ONCE(!rcu_gp_in_progress());
-> > -       WRITE_ONCE(rcu_state.gp_flags,
-> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
-> >         raw_spin_unlock_irqrestore_rcu_node(rcu_get_root(), flags);
-> 
-> Same field, same lock held, same odd smelly pattern.
-> 
-> > -       WRITE_ONCE(rcu_state.gp_flags,
-> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
-> >         raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
-> 
-> .. and again.
-
-In all three cases, the updates are protected by the lock, so the
-READ_ONCE() is unnecessary.  I have queued a commit to remove the
-READ_ONCE()s.
-
-Thanks to both of you (Julia and Linus) for spotting these!
+Still sounds niche, but you never know!  ;-)
 
 							Thanx, Paul
+
+> > > - Same as for the kernel, a counter increment protected by a lock which
+> > >    needs to be read from various threads concurrently without taking
+> > >    the lock could be a valid use-case, though I fail to see how it is
+> > >    useful due to lack of imagination on my part. ;-)
+> > 
+> > In RCU, we have "WRITE_ONCE(*sp, *sp + 1)" for this use case, though
+> > here we have the WRITE_ONCE() but not the READ_ONCE() because we hold
+> > the lock excluding any other updates.
+> 
+> You are right, the READ_ONCE() is not needed in this case for the
+> updater, only for the concurrent readers.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+> 
