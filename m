@@ -1,240 +1,112 @@
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD4825570;
-	Fri,  8 Mar 2024 17:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94BF36D;
+	Fri,  8 Mar 2024 17:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709918158; cv=none; b=dL07VAHBXsC2CvjHhT0Z9ilo1Syb4KXMfWSmMWKiszWzFAm564ShQPRBlPwLvl1yr+l0Ae7wEkwIwQwHT6XpbopIyNF2O2Dmee0jJ5MxdFBsfMIcnlnLZvYUKl0B+wbUN0UcsnW9wbo+LjldaUwPq8uHLoCxIzLASX0aBxVnpZw=
+	t=1709919256; cv=none; b=jCqL7uB2iiRR/Yz1+5EMr2JrmE8DRZfUkm68LEuzmhiHlwYRgHHuk/3GSOEEqXuUrCbQFmzaYfaYgTU18NuZ8sYCtAiz5TQhkV3AnTl5JgocXBZr+irbAytZdWIyObmBanL++wiRhkQC6FsdB0rvFGf47753crqGF1dJsohafrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709918158; c=relaxed/simple;
-	bh=6GuBU2MDif7sF819XGqAwoGuMINRtFdixtdfEd3c6P8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Skf7uvgdrzlARbuLN4ietDIy1L9r8zVlMAiiYZ36tkFiC+y4o8aCZ6rH0bk+lso3kgsULAH0HXcO9KB6zJELoa7dTZPGg4PRNLMp/pd0+cIANDDlYfClC1dCFgBQm911VGu7nvC/fo0mI3/tyxgiKy1wkSLHV9Ofl48PVB37Is8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrzyg+dP; arc=none smtp.client-ip=209.85.222.174
+	s=arc-20240116; t=1709919256; c=relaxed/simple;
+	bh=WoFOscuDpyEDpIlN2yM8YrqGAhCm1K6ezIayPoX8JFg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tCX1c1JXhazCnzGIfIV0/brJs4XqDz7ZZM4ThveHoWUTKNKhYa7BSWVK/AvJrtX+zcc9wOcF5QFIAoa8nWjKXXaSG8HDnA+jOL2hMquFsMq9Exqb4KVKXCzYnZz49r7wXwnCdGKPnOkWlmdRrU8Lg/vW4dDJu7/Wa4q4e4XD8Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jzrr+Z75; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrzyg+dP"
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78851160a10so72779285a.1;
-        Fri, 08 Mar 2024 09:15:56 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jzrr+Z75"
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512ed314881so2269500e87.2;
+        Fri, 08 Mar 2024 09:34:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709918156; x=1710522956; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=eg/6ZiZ+BqYM2RugqdnytHz98Dd7p5sKblhsba++MaY=;
-        b=lrzyg+dPX9qb7suyqzAgQH6rTDecmA258FQE91g27xXPIXobMD0y904ynoYRfQJ25k
-         eH/yXMogCstQrnXQ6GG1ZaIQi6t0Oxo8k+83vVToSgQUlLAICjLnwLEdGrpxZTQ1Ce82
-         YX99O62OsOd7Pjs3Xa03WnuD83hctENaoSC+PMVwpUalrK3zfXglTml0Dx2Yz+1AZ593
-         A70IW3dSOkzEBZA9z5WDoKo16h6wiS/4d7LmyOLsgWnDGMGDhzhrMn2u+/EukX9+dj7Y
-         lj3r282zu6OQaAmFADhN8FDKEvnLzDhLLLG71KLmrtOZYLtCeigHfWSNhgImqaWWAIju
-         bUuQ==
+        d=gmail.com; s=20230601; t=1709919253; x=1710524053; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YLEgHytLvHaZwqeMHCqC8Ki/7/3bQNN2P4aJjeTSI1o=;
+        b=jzrr+Z75Ek4cVAc5DJ8tWgPVxBjVXOGXvDLuuYLza3+bjT0Xg5fkjL48d+sEJfOLtK
+         JZzX7m4M86tzSPDMohnK6eTt+NRlyk7I8sBlgBpTNEbDN7ZXKF3nShJL+unvqfu7qTyX
+         spNp7bkncq7O6VCML7dbZ+FsIrPB2GpBkcSzpG7F7O5915d9LKxms3JjC1N7PAAvCWRe
+         FlXfYxBTKJKCMEMtc685buQ3e9rdGb3IA1JY2rRofcF6DNDTA7JwpbW05y0IysDW0nrL
+         04dS48zkb5VpY3YiVY7/ubZZ1ecT642JJ1/kc5LBWVyCDb6svD3UNY5BwUKMOrWVFCfU
+         Ky+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709918156; x=1710522956;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1709919253; x=1710524053;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eg/6ZiZ+BqYM2RugqdnytHz98Dd7p5sKblhsba++MaY=;
-        b=J2Tu3Dyhl6UMIXbT/Cl1LfPCROC8EiNZnNSH7wm2MVf7PWiHuVlJl1lUyFFNpA+eKT
-         Nymvx8S0WkHrEqAHGe2vJfAEfXZj2bZBkjIQce9FyibQA5CGiOv7PdtN3nF/sJz37YHV
-         Qy7c0WlTyAvHDTDmiK1x+b43eavX7wiOJSYI8r2xBoKgcB5pCRRumZVC2GozNYOO56cV
-         +H/XLtTsVdjoCzwp3MPucec2EsRIsg7MRMfOxexygXqh1bIvNDNAa8RBf647dIjqUIjL
-         Cj/vEc87cPQpNwhIykuIX4QC4D6mIUHBrKuiOeNfKQogbX/9RTpl75blb65dMTbBNAGU
-         oaog==
-X-Forwarded-Encrypted: i=1; AJvYcCWkU0S1E3ey5Sit97ihPAEeXBbheTOq7wsn5kx4+6FXajk3NgfxfL7ugJwMtTOlrNtCEKJfGHCIgV6MXjxuYtsYSo44
-X-Gm-Message-State: AOJu0YwFPTG6aZ0fDM+ZOD59iu+iXATdF/gxKQ06dNOKWtUrIZWjtFsl
-	2BmsaX6/bR+Won6Y0/X23nZj8lt+FS94HhjcwywRnJYZY/OyZUA1
-X-Google-Smtp-Source: AGHT+IG7d3scmZ1pnEvqmtpaYmtauh/0YkxCtyR6tNL/JC9w4GL0YnOeDyI1lZPm05SnEM9ax2e5Ng==
-X-Received: by 2002:a0c:ef05:0:b0:690:9e6d:efe9 with SMTP id t5-20020a0cef05000000b006909e6defe9mr1716089qvr.27.1709918155910;
-        Fri, 08 Mar 2024 09:15:55 -0800 (PST)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id o18-20020a056214181200b00690b43d39f0sm814547qvw.85.2024.03.08.09.15.54
+        bh=YLEgHytLvHaZwqeMHCqC8Ki/7/3bQNN2P4aJjeTSI1o=;
+        b=gzdKR7n/5I/GXACNjkh0xs78fgvEwyvUAx1ceIpTcGaDkZwB7jYYfriNRiyZwCu3O1
+         HI8K2eKjTqAvtWabOrT8Sq/pN2lKBGKgj5ozqcQPDuZiagQ0yQWw1/kL+6YLZVVR1a7O
+         bqVOwdaI9podVd9t4PwNqAS699NuM6oFsI1bFeZGsMv2rWWrxPQ4KzDbOx7FvtWYtdkV
+         U6Suhzgq+k6lUZcjh8ojKQRKEpygw7x0JJ7eA72jf36UH2cgnHflgRGRAHgz6QVqrbJm
+         4ZjtkceW6R5S1DBdgEfm9Fr6hTF+EJdS+Y7U+SIRRsIUJ6VXho/gt1ozUzP7v9wZgFDC
+         WiDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW56jLlVjyrHMII2OJCN52mf81QuzM+JPQ8fBCpiAEeorQPYLhstpq7lkqS82ZX2N5rZGsLAliIHyCR350XiU2u8tpWPwnbUIekfHOT
+X-Gm-Message-State: AOJu0YwCyoy211wfGYo9SoZa1QWbnPXn4HOW03GIh/aI8j8K2LHDKPFy
+	7M3h8gkLLA5/BXfoDhmgD/+CfKAoptGZGbukw7+lxXNwZHo/RhMW
+X-Google-Smtp-Source: AGHT+IFPsGVncVowsBADHGCgjO7LZWzXLR/FvOHuqAnst2eLGxsY1R3QZw9hsPjsf+LrGQgVet0PRQ==
+X-Received: by 2002:a05:6512:ac8:b0:513:8266:f5d7 with SMTP id n8-20020a0565120ac800b005138266f5d7mr4060066lfu.3.1709919252470;
+        Fri, 08 Mar 2024 09:34:12 -0800 (PST)
+Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
+        by smtp.gmail.com with ESMTPSA id a23-20020a195f57000000b0051333e2f55dsm3150504lfj.159.2024.03.08.09.34.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 09:15:55 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 69D231200068;
-	Fri,  8 Mar 2024 12:15:54 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 08 Mar 2024 12:15:54 -0500
-X-ME-Sender: <xms:yUfrZZypfgMBhKTxbtqVNubmCKG6mZXkwfRtUxBSA3jv-_w65Psbdg>
-    <xme:yUfrZZR7FjVIYNZFucMiV8Og04d-1uoSt1ti6rQGU-l7-Eju9gjLyXC3kyk86vz77
-    4PzWvXZyMgtn0AE_g>
-X-ME-Received: <xmr:yUfrZTXuaQkmyYU9Unz8wr60QVKKn7iOs-fn2AgjWj7h-CqEX1xl-Sd-Xw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieehgdelkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkgggtugesthdtredttd
-    dtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgr
-    ihhlrdgtohhmqeenucggtffrrghtthgvrhhnpeeltdefueegfefhuedtheefvdelhfefte
-    dvhfdtveelueegtdejjedvieettedugfenucffohhmrghinhepkhgvrhhnvghlrdhorhhg
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
-    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
-    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
-    drnhgrmhgv
-X-ME-Proxy: <xmx:yUfrZbh23QHbWBreZfymiiwQedkjdkLAzq7Iwjf_svVzhR_flbTk8A>
-    <xmx:yUfrZbCg2AFmKnSSAwy4Hj7OAdv1D6e8dh3KaIJURVg-gQSrEMsUBg>
-    <xmx:yUfrZUInwazUw30ZhdFEkbMjO1t1U2NZRKOg-6-Jv-xFmDXK5defuw>
-    <xmx:ykfrZT5Sm4JXaqO1d6DogFrDn7H9dyV_LkMfrNpKjZAm__A8pWqOuOR6TWw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Mar 2024 12:15:53 -0500 (EST)
-Date: Fri, 8 Mar 2024 09:15:46 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
-	mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
-	boqun.feng@gmail.com, joel@joelfernandes.org,
-	neeraj.upadhyay@amd.com, urezki@gmail.com,
-	qiang.zhang1211@gmail.com, frederic@kernel.org,
-	bigeasy@linutronix.de, anna-maria@linutronix.de,
-	chenzhongjin@huawei.com, yangjihong1@huawei.com,
-	rostedt@goodmis.org
-Subject: [GIT PULL] RCU changes for v6.9
-Message-ID: <ZetHwrCb0KXE0xFI@tardis>
+        Fri, 08 Mar 2024 09:34:12 -0800 (PST)
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH v6 0/6] Reduce synchronize_rcu() latency(v6)
+Date: Fri,  8 Mar 2024 18:34:03 +0100
+Message-Id: <20240308173409.335345-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hi Linus,
+This is v6. It is based on the Paul's "dev" branch:
 
-Please pull this for the RCU changes of v6.9:
+HEAD: f1bfe538c7970283040a7188a291aca9f18f0c42
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+please note, that patches should be applied from scratch,
+i.e. the v5 has to be dropped from the "dev".
 
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+v5 -> v6:
+ - Fix a race due to realising a wait-head from the gp-kthread;
+ - Use our own private workqueue with WQ_MEM_RECLAIM to have
+   at least one execution context.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git tags/rcu.next.v6.9
-
-for you to fetch changes up to 3add00be5fe5810d7aa5ec3af8b6a245ef33144b:
-
-  Merge branches 'rcu-doc.2024.02.14a', 'rcu-nocb.2024.02.14a', 'rcu-exp.2024.02.14a', 'rcu-tasks.2024.02.26a' and 'rcu-misc.2024.02.14a' into rcu.2024.02.26a (2024-02-26 17:37:25 -0800)
-
-
-Two merge conflicts were detected by linux-next:
-
-* https://lore.kernel.org/lkml/20240226135745.12ac854d@canb.auug.org.au/
-* https://lore.kernel.org/lkml/20240227125522.2bdbe6be@canb.auug.org.au/
-
-These conflict resolutions from linux-next look good to me, plus I made
-my own resolutions at branch merge/rcu.2024.02.27a for your reference.
+v5: https://lore.kernel.org/lkml/20240220183115.74124-1-urezki@gmail.com/
+v4: https://lore.kernel.org/lkml/ZZ2bi5iPwXLgjB-f@google.com/T/
+v3: https://lore.kernel.org/lkml/cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop/T/
+v2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
+v1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
 
 
-Some highlights of the changes:
+Uladzislau Rezki (Sony) (6):
+  rcu: Add data structures for synchronize_rcu()
+  rcu: Reduce synchronize_rcu() latency
+  rcu: Add a trace event for synchronize_rcu_normal()
+  rcu: Support direct wake-up of synchronize_rcu() users
+  rcu: Do not release a wait-head from a GP kthread
+  rcu: Allocate WQ with WQ_MEM_RECLAIM bit set
 
-* Eliminates deadlocks involving do_exit() and RCU tasks, by Paul:
-  Instead of SRCU read side critical sections, now a percpu list is used
-  in do_exit() for scaning yet-to-exit tasks.
+ .../admin-guide/kernel-parameters.txt         |  14 +
+ include/trace/events/rcu.h                    |  27 ++
+ kernel/rcu/tree.c                             | 361 +++++++++++++++++-
+ kernel/rcu/tree.h                             |  20 +
+ kernel/rcu/tree_exp.h                         |   2 +-
+ 5 files changed, 422 insertions(+), 2 deletions(-)
 
-* Fixes a deadlock due to the dependency between workqueue and RCU
-  expedited grace period, reported by Anna-Maria Behnsen and Thomas
-  Gleixner and fixed by Frederic: Now RCU expedited always uses its own
-  kthread worker instead of a workqueue.
+-- 
+2.39.2
 
-
-Regards,
-Boqun
-
-
-----------------------------------------------------------------
-RCU pull request for v6.9
-
-This pull request contains the following branches:
-
-rcu-doc.2024.02.14a: Documentation updates.
-
-rcu-nocb.2024.02.14a: RCU NOCB updates, code cleanups, unnecessary
-        barrier removals and minor bug fixes.
-
-rcu-exp.2024.02.14a: RCU exp, fixing a circular dependency between
-        workqueue and RCU expedited callback handling.
-
-rcu-tasks.2024.02.26a: RCU tasks, avoiding deadlocks in do_exit() when
-        calling synchronize_rcu_task() with a mutex hold, maintaining
-	real-time response in rcu_tasks_postscan() and a minor
-        fix for tasks trace quiescence check.
-
-rcu-misc.2024.02.14a: Misc updates, comments and readibility
-	improvement, boot time parameter for lazy RCU and rcutorture
-	improvement.
-
-----------------------------------------------------------------
-Boqun Feng (1):
-      Merge branches 'rcu-doc.2024.02.14a', 'rcu-nocb.2024.02.14a', 'rcu-exp.2024.02.14a', 'rcu-tasks.2024.02.26a' and 'rcu-misc.2024.02.14a' into rcu.2024.02.26a
-
-Frederic Weisbecker (13):
-      rcu/nocb: Remove needless LOAD-ACQUIRE
-      rcu/nocb: Remove needless full barrier after callback advancing
-      rcu/nocb: Make IRQs disablement symmetric
-      rcu/nocb: Re-arrange call_rcu() NOCB specific code
-      rcu/exp: Remove full barrier upon main thread wakeup
-      rcu/exp: Fix RCU expedited parallel grace period kworker allocation failure recovery
-      rcu/exp: Handle RCU expedited grace period kworker allocation failure
-      rcu: s/boost_kthread_mutex/kthread_mutex
-      rcu/exp: Move expedited kthread worker creation functions above rcutree_prepare_cpu()
-      rcu/exp: Make parallel exp gp kworker per rcu node
-      rcu/exp: Handle parallel exp gp kworkers affinity
-      rcu/exp: Remove rcu_par_gp_wq
-      rcu: Rename jiffies_till_flush to jiffies_lazy_flush
-
-Joel Fernandes (Google) (1):
-      srcu: Improve comments about acceleration leak
-
-Onkarnath (1):
-      rcu/sync: remove un-used rcu_sync_enter_start function
-
-Paul E. McKenney (16):
-      doc: Spinlocks are implied RCU readers
-      doc: Make whatisRCU.rst note that spinlocks are RCU readers
-      doc: Make checklist.rst note that spinlocks are implied RCU readers
-      doc: Add CONFIG_RCU_STRICT_GRACE_PERIOD to checklist.rst
-      doc: Add EARLY flag to early-parsed kernel boot parameters
-      context_tracking: Fix kerneldoc headers for __ct_user_{enter,exit}()
-      doc: Clarify use of slab constructors and SLAB_TYPESAFE_BY_RCU
-      doc: Update checklist.rst discussion of callback execution
-      rcutorture: Suppress rtort_pipe_count warnings until after stalls
-      rcu-tasks: Repair RCU Tasks Trace quiescence check
-      rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
-      rcu-tasks: Initialize callback lists at rcu_init() time
-      rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
-      rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
-      rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
-      rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
-
-Qais Yousef (1):
-      rcu: Provide a boot time parameter to control lazy RCU
-
-Zqiang (2):
-      rcu/nocb: Fix WARN_ON_ONCE() in the rcu_nocb_bypass_lock()
-      rcu/nocb: Check rdp_gp->nocb_timer in __call_rcu_nocb_wake()
-
- Documentation/RCU/checklist.rst                 |  32 +-
- Documentation/RCU/rcu_dereference.rst           |   5 +-
- Documentation/RCU/whatisRCU.rst                 |  19 +-
- Documentation/admin-guide/kernel-parameters.rst |   1 +
- Documentation/admin-guide/kernel-parameters.txt | 489 ++++++++++++------------
- include/linux/rcu_sync.h                        |   1 -
- include/linux/rcupdate.h                        |   4 +-
- include/linux/sched.h                           |   2 +
- init/init_task.c                                |   1 +
- kernel/context_tracking.c                       |   4 +
- kernel/fork.c                                   |   1 +
- kernel/rcu/Kconfig                              |  13 +
- kernel/rcu/rcu.h                                |  19 +-
- kernel/rcu/rcuscale.c                           |   6 +-
- kernel/rcu/rcutorture.c                         |  13 +-
- kernel/rcu/srcutree.c                           |  24 +-
- kernel/rcu/sync.c                               |  16 -
- kernel/rcu/tasks.h                              | 135 +++++--
- kernel/rcu/tiny.c                               |   1 +
- kernel/rcu/tree.c                               | 237 ++++++++----
- kernel/rcu/tree.h                               |  20 +-
- kernel/rcu/tree_exp.h                           |  83 +---
- kernel/rcu/tree_nocb.h                          |  69 ++--
- kernel/rcu/tree_plugin.h                        |  52 +--
- 24 files changed, 687 insertions(+), 560 deletions(-)
