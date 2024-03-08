@@ -1,146 +1,162 @@
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2085.outbound.protection.outlook.com [40.107.249.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462085380F;
-	Fri,  8 Mar 2024 10:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709893266; cv=fail; b=s/AmhSvnTPGNsbCO5lBu8PjPgPBA8twQ5SUqumXQDk/UEuTGDCYuOH/HCgidbPjPXCIZwlG9nyVvfrSixEsbFTTU+IYGRb2iSM1atWuo13dixSqIEsvhIQ9Uq+iWKszqZudE7JgQYIw6sin8mNIlhhWvhLGCHtl/Z445/0aLA2U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709893266; c=relaxed/simple;
-	bh=SmLp/zJwj4/bZCIFeQbbmnX2VI3Kwlh8WvwR3EC32vo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Wr78YYb7uzTig0RMP0Wl235GH12GI+4tdxBQWJNbfH4txMpb8vsK/dU/A8Bgs4naIGxHC7CNpuBgJQGf1yRBt1800yb0c3RykbtaQuN023rl+hKITE5EJJoMaW98EgQnmTfgh6bv+VF5phQ809Hi0HXAU5kfwbrDLRzb8wS1yfc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com; spf=fail smtp.mailfrom=nokia.com; dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b=OvPI/VYG; arc=fail smtp.client-ip=40.107.249.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B08210D
+	for <rcu@vger.kernel.org>; Fri,  8 Mar 2024 14:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709909868; cv=none; b=n3GSfI2PHZVHJ4bV5wBo2so9h3v8K5eYrq4duIfDD0XH1Se8mKBHEC41yx0aSnCKbwVnSPLLf8z4IYU0KB5Fet90y5rkbCIDdjRqGZUDhYhyoWgCAeKKbphaniturfyjmN34u2rygE2wBxGSE75VJfzfd6+7ZiJ04E9/HRk9NoI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709909868; c=relaxed/simple;
+	bh=nOGmeeP+S2YSHfBnNQyo6hO5u9KbbN1gVrn38SWkjnQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pbSb0NNrcaqSfQi2MU0eRILWM8uskgeOqwGYt0/3j5FdGo+D2emCcYGCOSCfDGrAob8r2pF+narPhzVMi+g6Y//IyKBipnlGAuKGNDD9o8oPc05vBuExhqoq60l6DCMBh03gKI+KHsDk4Se5W+VjW6YkiSxnoG8fMIxW43/uA/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=N4RJhAQR; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b="OvPI/VYG"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gQcrnemzTornTPjbDzUNWRM11nRU5aRd5TPp4NjIRMqf9ezF1k7vGHxTxJgdfR5JNIidhN5fa3x0mN+g1ew/D1L3aiHXBG+3Ufr2JhIW9/jSvg5dwcdOFPToSKdImD6q2WjPT7JcIPJxPNK7VW06FmzfoU9CGW1OLoR4Be1icW3GkVMSveTADdey/GKK5g9RehBaYyJz1uvXLgs5FANCZGDdNvNLqq3pbVsESerK90EWhVAqR/Azyfj/jgtkLyIIUDa5LpupzAUSiNCCgrd3TUqEraPUeotCtjNnPr3hL9erU57kd2/n1TM/Zp6mH4NfQkCINODO4blmjHOXT/RE0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SmLp/zJwj4/bZCIFeQbbmnX2VI3Kwlh8WvwR3EC32vo=;
- b=nssZCMgqFqGbkFRggYRdT02FWKGLyrSBFREQi3M524VMrxAkRHoTqGPDDyhUOs8P8UUeEOjJjs11rKvxrEjHKLThmv6xAKjW4iORjGtYSrVD1o+S+8/D2Y8mvzsfL/o/MauweLzlRtZVJvWJml+OCayOXppCg0rU9j6Nvy9eV2nP75T6YMUeYaSn5EyD9P5cfjG8erJo0i/ZhM3B8CqwoLXSm4jNduruFtBt+aky1S61z2TAwraYhZIS6pCGFMFLyIflx9NG+4KLFap26XO5/N3psFGJVTjzCnC6aths6KeV5p822oO6Urc4GzMLOc3RAa2UJsqMGfj1U7tOndx9Lw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SmLp/zJwj4/bZCIFeQbbmnX2VI3Kwlh8WvwR3EC32vo=;
- b=OvPI/VYGj72OMJ3HJH129hlT4XSa54SM+4CGAXTkq40T/7IXInB2hJD8oK5WcmPRj4WOTFw07cxIBSqDJIMOD3/+y7zpfTCgUj5W9XKOJjb88k5xWiM6F5FaV5wYiy7keUGK4aNxUalmmJo/JWo1TvGmdtvZ6j/7xLvAD2+xbUveWBHW0IMHO/JvKsj/WNIKgrF9501cpPkWk7K0qCflXN8Mn4u3BzTTebiCBNLk8SqU04svsCgEPwxPOrQ4J95ULNlICf+M+A9C3isMsyEwAFRbD29vse5zujsImI0FPQwlZN5reke/B6cyNDHZjUDhvu7dG8X9uc3rcqoqmX7u4A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia.com;
-Received: from PAWPR07MB9688.eurprd07.prod.outlook.com (2603:10a6:102:383::17)
- by AM8PR07MB8311.eurprd07.prod.outlook.com (2603:10a6:20b:32a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.28; Fri, 8 Mar
- 2024 10:21:01 +0000
-Received: from PAWPR07MB9688.eurprd07.prod.outlook.com
- ([fe80::995b:5be7:51dd:e540]) by PAWPR07MB9688.eurprd07.prod.outlook.com
- ([fe80::995b:5be7:51dd:e540%4]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
- 10:21:01 +0000
-Message-ID: <c567c622-1ee1-4828-8730-62bf6bfc2ecc@nokia.com>
-Date: Fri, 8 Mar 2024 11:20:58 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Content-Language: en-US
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
- <ZeoMRfy9ISBOVMsV@boqun-archlinux>
-From: Stefan Wiehler <stefan.wiehler@nokia.com>
-Organization: Nokia
-In-Reply-To: <ZeoMRfy9ISBOVMsV@boqun-archlinux>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0103.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a1::19) To PAWPR07MB9688.eurprd07.prod.outlook.com
- (2603:10a6:102:383::17)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="N4RJhAQR"
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-68f9c01a148so8475976d6.3
+        for <rcu@vger.kernel.org>; Fri, 08 Mar 2024 06:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709909865; x=1710514665; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zHs25ksJpqEeOp1pNTzGqltTuGv83hVjOZuwqlpctzQ=;
+        b=N4RJhAQRNYjprM5Oc/LTMkhucHpItkaaL3kdHBw/ASALJjUMcpIP8S1YjCfTV3jj2f
+         FXfe5D6VRNEgt2MyVANgmZn0WGN/7qdUNme9KAnUixDA8hKDd5An7/dz1ksJCkP5kJDi
+         Y/f4akqndp09xzE8xC5GWUc33S5m+BEPeR7Sw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709909865; x=1710514665;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zHs25ksJpqEeOp1pNTzGqltTuGv83hVjOZuwqlpctzQ=;
+        b=lfd+7BJDDbxSMdZ7o+ZeFa+G2ZVTXJI5H49GQ2LWwzJa2PI/Bt4BAP3hAEjIe/uoTu
+         dZjKQFCIm1+ty3DKLuyu/G+FTBs5YsamBsbjHUfRilzPl9iqoh9eBOs6bGBbgpcSq57p
+         t0tuwXh5T1GmW8aCZreCnpqJSfKkl42qy31yYOfNU2r8mEqrimkkQTRg2g1UfMBKA2eS
+         Mq+CpPbAtZGxL8COrbXM5btBRVlHX9IBvn/S16hR5IEGqcVLZ8s9M3LCKdtGwz7V/3GR
+         JMHQgnixUvZSFb8sfHLG3DyYe5jgWWNgUn2FSghqnBh2gOluTX7k/GKwsBLKRzXvNofE
+         3ouA==
+X-Forwarded-Encrypted: i=1; AJvYcCWrDHIGXf+mxoLRCzgmIcKCP9mNXBFyUbLlRapej99dwDNyntNswEl0Jpnl/7NJmooncfQEbjya/fX+HkytVEWNnSpq
+X-Gm-Message-State: AOJu0YzM/+JyzL5aiEeDfmZKPCuWUBVWr+RJTri43V7kJGomN7WrfrE1
+	zituVH0WkKa3gn9pkSjHRKHVMEZDAQtp5cIReIEXfxZotehIxoj3k3dshwEeEBo=
+X-Google-Smtp-Source: AGHT+IFgMYXjfmNrjnOEWaK0ByL3HTUskDb8AyXDaoxRYm0ZxLkEmiG2mFQnS6LbDZxo9RDmgpMRMQ==
+X-Received: by 2002:a05:6214:a63:b0:690:7dc5:a9bc with SMTP id ef3-20020a0562140a6300b006907dc5a9bcmr12454963qvb.29.1709909865438;
+        Fri, 08 Mar 2024 06:57:45 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.182])
+        by smtp.gmail.com with ESMTPSA id ld8-20020a056214418800b0068fef1264f6sm9765794qvb.101.2024.03.08.06.57.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 06:57:44 -0800 (PST)
+Message-ID: <bce79497-52c5-4241-aaf6-2a95dc459041@joelfernandes.org>
+Date: Fri, 8 Mar 2024 09:57:42 -0500
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAWPR07MB9688:EE_|AM8PR07MB8311:EE_
-X-MS-Office365-Filtering-Correlation-Id: a07696b3-0506-416e-fa55-08dc3f597425
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4HrW795lXSZXzhkupV0SMFzpzVZZDbtcJHCK3X1vlXpA40rOa5YFz+rdJbeJMDbRYKK+wZDASP23LsEkv+vE85WpvFleWCDAtoj0fxqZz1Kf8M0BEmLWdYKE+bWxZ3MdSlvw4V9ZEkfQ1KOCZKoKvq8O3BZX1bS99EPLdh1whUWTrMudkalaI7wdT31TncaAtT0/XgpRVeXmn0WrgxylAuDu8pgzcOIrVWoeGw13H0okBGgWyrD426SwiLy2XJ3f8DpcCp7zaKy9qNgmlQ5p05J59XVPtxg8Wcct2tSLRQFgx8R5iiVEp8LBObC8QkB+aMYJ7HX4mHpgq0EVFgGkuXuFjqhGG8NfZxjVz8UEx7bTwUzw1LT2MhWPhtzNd2hcVw0g5O/MDSF7kZ47AzYr8x38MXQ4oB/VlreWcstErZX2soCS1HgLUtEExaUhZVa0V6jdHko6DRpXXewaN+O6MJN5Kub4/LGPnXnGCX4tKaD29JX5m9f/8EyeEw290xfhgJoEk+2EBDXBgtKBJdihw90+HxRCGtP1Xf5+AdN56SYWgykHbVJ9F4WmXS7pV2KQMmB/UeiKObkbFxYj6aNu7IkoXRcK9C2SyubgY2WvhhNlWEAJALXQotgoDwNzSncTe7yCCMG8GE9Rptqu7gLw7zm26FRR5l69mVomJsQ5dTE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAWPR07MB9688.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dzhRN1JhMUplL1hLNzZ2MVFweXo4UXhuSXByQmJZOEpIbUJML0dpZERPN3E1?=
- =?utf-8?B?K3U5YWx3d2tMVnkzM2tXM1FocWdjV3ZpdjN2eDF4U21FQzRib21DUW9aZm00?=
- =?utf-8?B?WXJWaWRaczJHdTg0eWdSQmFiNTBIbEtLK0RPRG01TjlRTmUyT2lHRUZyMkgr?=
- =?utf-8?B?Wmg0UjFkbkVpalFJUEFpSnFWR0tvb0ZhdFhvdDNiNHdtN0ZNVEQ3RysxbGVM?=
- =?utf-8?B?MTdDalljbzljNlRNTFJJTDZaK0FVd3Nxd2l6VnJwejZPUnZkQXRFazN6SGJj?=
- =?utf-8?B?TnhCWjROQzl6a1ZRN1Q0TFpRRjRzSjIxODlqUXZOZTZkMkpEUUdRMXFmL0dE?=
- =?utf-8?B?K0t1M2JNcklZbS95cXFFaUFGdWg0SDk1ME5uT21Zc0VVRm8rOGdkSnRFbjVY?=
- =?utf-8?B?Z2lpNU5Sc1Y2Q1VZaEtKbFFrMks2OXZEOGk0eFhOQ0o0SnQ4V1VoNnVmcXZ0?=
- =?utf-8?B?dEI3ZEJOZVRhZnFveTlvTmRiWFhPeW8rU2YvbGdIeFIwUzlydXh0cE80Nm1n?=
- =?utf-8?B?YVZMMkFZUElNencvTXE5N3VlbGthbEMwWXU4d0VPeGhUSk84MGl0SmY0VzRm?=
- =?utf-8?B?Ny9HY0RjdzVFZjBhV0FTeDlnMFU0bFh2Sjd4czk4di9qS20wN3hwQ2VCV3pU?=
- =?utf-8?B?UmhkeTBXUm9acGNXQlR6N3FKL1FUZWlXQkVvZEcvczdBTXY1V0lVTk1oRkpQ?=
- =?utf-8?B?ZVNLY0hnRE41bWw3b01RRFlMcCtoYllHZm9ObjJxL3JuNUwyakV3OVhxOUs0?=
- =?utf-8?B?REVnK2VacVhtUmQ5Z1RlMjFCcXNsLzBxaXdUTERJclhWaFd6bTNsRjNNRDFV?=
- =?utf-8?B?ZWM1cFE3di9uVWtjc2pTR0RnZGJ5bW9iNTZIU0Exd2JiaCtwYkpjU2NvVWVx?=
- =?utf-8?B?WXl6ZnVRZ0NCbzJYd29iMTFqSFRLWjB2RGxJTHUzNzk2TXFySmVMQXlJUzJL?=
- =?utf-8?B?UmFBUmorY0lTR202elVRckd0MVVlQW05N2JHSnJXcElWaVdVME1Oblh0WGRo?=
- =?utf-8?B?aGxHNTl4SCtCMmFXRmtIdkp0bEdONzVaRWtwL3JrdlNMMXo0OXByVytoSnZo?=
- =?utf-8?B?ajROb2dOQmNPemVVOUxiN0xmdEYxNElXT1R3aktSbmdka09mMW0rRmlmUlM3?=
- =?utf-8?B?RnArazdXZ25oZml6elBHQmJoV1BlcTR0NlhMQ1dUSU1SaFU2dURXNGpRRGhK?=
- =?utf-8?B?RnplSkNENmc2RjcrblFxcGRuN0J3WkhReWNIRk9pSHJ1dVpJbkQxdkpqZDFx?=
- =?utf-8?B?RTZ0eERqc1VOMW1IOENWSE5tYVFWMC9tVW1aUGdreFFxajZRV1U0bSsvdVpK?=
- =?utf-8?B?S2xyZFdnR0h2ZyttN2MxYkk2MmRjNXV0UEFoYUE5QlhmSlkwYitQNkh2Tmhk?=
- =?utf-8?B?bE5MUWhyUmEySTRQcmpkSFUrUjVGSDdrMEN2N0srd1ZlcDlPMnp4Y0tJQmZP?=
- =?utf-8?B?NFY5eHNhSkhiblNmeE9jL0plaU42MnQ5aFV4azdsUVdJVmZwemFRUis5UmJh?=
- =?utf-8?B?ZFdjOC9NMG1OYWNiQzA4VGl1SzVZQmhNa01nTS9GNHBjZlZXWDF2NHQyTXRE?=
- =?utf-8?B?WFk0emJ0d0tmcmh1UmFtK2FoU3NVRXNTMTQvOTdJNEZtdEo4ZFpncFRDWWJJ?=
- =?utf-8?B?SkEwY3hWZmF1dng5ODcxNFYwa2VZU1lKMzN4aUxmVzBMVk9RWGFtUkRrTDlU?=
- =?utf-8?B?akZNYzMwNkRUZUE2YU1ZQnhZK0JwS3I4Y2xrT0cwd21obmk3RFJ1M0VtTTkx?=
- =?utf-8?B?RE83Zml6TFhnbU5FYXg3cnJLMmFGYy9sRktBbGJJOHFZRkplNG5ZRkFzQ0pS?=
- =?utf-8?B?b2tBazBRQU5MSE93U01nYjN2eUZSUlZ6d0VtTCtHZklCVzlMek9MWG5hSFBr?=
- =?utf-8?B?b3c4SGg1ams0K3ZKNTZZMFB4OWU5NGZrTndNZ0RseTE2cXRqRmhBU2RyUmpX?=
- =?utf-8?B?MW1SdnNINU0zWkw2YWdvVVN3UkZlSFA2ZStpSmZUdHBXeHAxNnIwWE0xMzN4?=
- =?utf-8?B?L0dpWEFwWENhYkR0MGkvVk5NY004czJJRnlnQXYxaGpDUkhUblFqSlA3SENh?=
- =?utf-8?B?N1RkSUZkRHhzNGdnR2dWL2dzUDNDZGhqbkIxRi84N2JwbDUxL0RDUWVpNHFm?=
- =?utf-8?B?eVB5b2w0endEWUVYZkpONGJKQkdjY1d3QlR0ODhkN1pIK1hBYTZORnE3MTB6?=
- =?utf-8?B?bTkwR1BzaEI1Y3FnK2JOYkhQZ2ZobGw5M3RPaHhrVlNwNzJPNjBwbEw4YTNC?=
- =?utf-8?B?SDNGN2ZIbEFuUjJYWFhJVHFSNzJnPT0=?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a07696b3-0506-416e-fa55-08dc3f597425
-X-MS-Exchange-CrossTenant-AuthSource: PAWPR07MB9688.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 10:21:01.3994
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T7X2MtWPTW4Oyg6nlcKbLfDClR1UhLAp2/88HQesh9cW+b4nJrm7+R92jyXxarR7/cgY9LMdi//H429nlVGfs0jI3GwiuLtlgZycbo9xMg4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR07MB8311
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+To: Stefan Wiehler <stefan.wiehler@nokia.com>,
+ Russell King <linux@armlinux.org.uk>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
+ Boqun Feng <boqun.feng@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+Content-Language: en-US
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> I'm not sure this is a false-positive: if you traverse an RCU-list
-> without RCU watching the CPU, then a grace period may pass, the next
-> list can be garbage and you can go anywhere from the list. Or am I
-> missing something that a CPU hotplug can block a grace period?
-Thanks for the feedback! Yes, calling it a false positive is probably not
-correct, I will remove that. However, as Russell has explained in a previous
-email, the spinlock is fundamental for ASID handling and cannot be removed.
 
-@Russell, I will submit to the patch tracking system then.
+
+On 3/7/2024 11:09 AM, Stefan Wiehler wrote:
+> With CONFIG_PROVE_RCU_LIST=y and by executing
+> 
+>   $ echo 0 > /sys/devices/system/cpu/cpu1/online
+> 
+> one can trigger the following Lockdep-RCU splat on ARM:
+> 
+>   =============================
+>   WARNING: suspicious RCU usage
+>   6.8.0-rc7-00001-g0db1d0ed8958 #10 Not tainted
+>   -----------------------------
+>   kernel/locking/lockdep.c:3762 RCU-list traversed in non-reader section!!
+> 
+>   other info that might help us debug this:
+> 
+>   RCU used illegally from offline CPU!
+>   rcu_scheduler_active = 2, debug_locks = 1
+>   no locks held by swapper/1/0.
+> 
+>   stack backtrace:
+>   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc7-00001-g0db1d0ed8958 #10
+>   Hardware name: Allwinner sun8i Family
+>    unwind_backtrace from show_stack+0x10/0x14
+>    show_stack from dump_stack_lvl+0x60/0x90
+>    dump_stack_lvl from lockdep_rcu_suspicious+0x150/0x1a0
+>    lockdep_rcu_suspicious from __lock_acquire+0x11fc/0x29f8
+>    __lock_acquire from lock_acquire+0x10c/0x348
+>    lock_acquire from _raw_spin_lock_irqsave+0x50/0x6c
+>    _raw_spin_lock_irqsave from check_and_switch_context+0x7c/0x4a8
+>    check_and_switch_context from arch_cpu_idle_dead+0x10/0x7c
+>    arch_cpu_idle_dead from do_idle+0xbc/0x138
+>    do_idle from cpu_startup_entry+0x28/0x2c
+>    cpu_startup_entry from secondary_start_kernel+0x11c/0x124
+>    secondary_start_kernel from 0x401018a0
+> 
+> The CPU is already reported as offline from RCU perspective in
+> cpuhp_report_idle_dead() before arch_cpu_idle_dead() is invoked. Above
+> RCU-Lockdep splat is then triggered by check_and_switch_context() acquiring the
+> ASID spinlock.
+> 
+> Avoid the false-positive Lockdep-RCU splat by briefly reporting the CPU as
+> online again while the spinlock is held.
+> 
+> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
+> ---
+>  arch/arm/kernel/smp.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> index 3431c0553f45..6875e2c5dd50 100644
+> --- a/arch/arm/kernel/smp.c
+> +++ b/arch/arm/kernel/smp.c
+> @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
+>  {
+>  	unsigned int cpu = smp_processor_id();
+>  
+> +	/*
+> +	 * Briefly report CPU as online again to avoid false positive
+> +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
+> +	 * spinlock.
+> +	 */
+> +	rcutree_report_cpu_starting(cpu);
+>  	idle_task_exit();
+> +	rcutree_report_cpu_dead();
+
+I agree with the problem but disagree with the patch because it feels like a
+terrible workaround.
+
+Can we just use arch_spin_lock() for the cpu_asid_lock? This might require
+acquiring the raw_lock within the raw_spinlock_t, but there is precedent:
+
+arch/powerpc/kvm/book3s_hv_rm_mmu.c:245:
+arch_spin_lock(&kvm->mmu_lock.rlock.raw_lock);
+
+IMO, lockdep tracking of this lock is not necessary or possible considering the
+hotplug situation.
+
+Or is there a reason you need lockdep working for the cpu_asid_lock?
+
+thanks,
+
+ - Joel
