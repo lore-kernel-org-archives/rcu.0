@@ -1,186 +1,146 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2085.outbound.protection.outlook.com [40.107.249.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61839219F0;
-	Fri,  8 Mar 2024 00:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709859531; cv=none; b=WjCX87rSzCx12UdP5Y/kvU2PbsmgUB7d7t9CInGVa5/c12INMN/LKCj65V6/xB5aTXM3+3HtTIO1OmK8g1+tp4CY6t5/RJ7/zZxe52T5J2Xyu3xy6ZvPEV/3j7mPlYXkzKVhRshacyw10yastFNOnwozMW7Gzb9vYYGSi0NTcIM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709859531; c=relaxed/simple;
-	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oGWubKew99022mTMS2qqNk84+L+R7ATCUbgdKJaPnhimX2cDNdOsb2+KBK2L+V3DjLJM6LAftOMdxImELLh7riLHkc1CBsDBznZ6TUFLfaybj/80LySazH5ZO3PMRLOn2vQrkwov6ZfwF8jqbzYS73nRwMBXc0pqGduR3cf7jDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JiwTGHVO; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462085380F;
+	Fri,  8 Mar 2024 10:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.85
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709893266; cv=fail; b=s/AmhSvnTPGNsbCO5lBu8PjPgPBA8twQ5SUqumXQDk/UEuTGDCYuOH/HCgidbPjPXCIZwlG9nyVvfrSixEsbFTTU+IYGRb2iSM1atWuo13dixSqIEsvhIQ9Uq+iWKszqZudE7JgQYIw6sin8mNIlhhWvhLGCHtl/Z445/0aLA2U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709893266; c=relaxed/simple;
+	bh=SmLp/zJwj4/bZCIFeQbbmnX2VI3Kwlh8WvwR3EC32vo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Wr78YYb7uzTig0RMP0Wl235GH12GI+4tdxBQWJNbfH4txMpb8vsK/dU/A8Bgs4naIGxHC7CNpuBgJQGf1yRBt1800yb0c3RykbtaQuN023rl+hKITE5EJJoMaW98EgQnmTfgh6bv+VF5phQ809Hi0HXAU5kfwbrDLRzb8wS1yfc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com; spf=fail smtp.mailfrom=nokia.com; dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b=OvPI/VYG; arc=fail smtp.client-ip=40.107.249.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nokia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nokia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiwTGHVO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C65F8C433F1;
-	Fri,  8 Mar 2024 00:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709859530;
-	bh=ZPyNgw50IlMj3ZZ9BFxPHhxLNMbM6ym6HoTafz/JF0c=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JiwTGHVOguV9FSNQ3ANzjq1D6UTnKbnaJQNIOVCH/xER5PeTG+JaUxQABsm2Mwx42
-	 PPxUQuNiZv6HWLrOzIj5/6V/ShiiB4Mhd1Ehlh7zLvprQLRiIPkzOjj/T4LfxxVY8V
-	 NM35WC+MxQRvwyS7aGtc1jeeMgtLOSIdQen6xcIOESgHunqq9mE2OLGkWJsOSETous
-	 pk8CVatOWHLjZDzSouDyikl8lCNRyLGEGGiePtKV7URo5KvRWjb/fotsoH+qw07maA
-	 wuD62nRBDbnstHtgTSwblP9Am2fbYo7BeZWu2om1PwmxKiZMx8LoZrclg5EdmDG+qC
-	 Lg63C/OnC+RDA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6D32ACE0716; Thu,  7 Mar 2024 16:58:50 -0800 (PST)
-Date: Thu, 7 Mar 2024 16:58:50 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
-	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
-	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-Message-ID: <c3b94335-cf11-456d-bec7-4e4262235868@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home>
- <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
- <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
- <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
- <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
- <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
- <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
- <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
- <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
+	dkim=pass (2048-bit key) header.d=nokia.com header.i=@nokia.com header.b="OvPI/VYG"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gQcrnemzTornTPjbDzUNWRM11nRU5aRd5TPp4NjIRMqf9ezF1k7vGHxTxJgdfR5JNIidhN5fa3x0mN+g1ew/D1L3aiHXBG+3Ufr2JhIW9/jSvg5dwcdOFPToSKdImD6q2WjPT7JcIPJxPNK7VW06FmzfoU9CGW1OLoR4Be1icW3GkVMSveTADdey/GKK5g9RehBaYyJz1uvXLgs5FANCZGDdNvNLqq3pbVsESerK90EWhVAqR/Azyfj/jgtkLyIIUDa5LpupzAUSiNCCgrd3TUqEraPUeotCtjNnPr3hL9erU57kd2/n1TM/Zp6mH4NfQkCINODO4blmjHOXT/RE0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SmLp/zJwj4/bZCIFeQbbmnX2VI3Kwlh8WvwR3EC32vo=;
+ b=nssZCMgqFqGbkFRggYRdT02FWKGLyrSBFREQi3M524VMrxAkRHoTqGPDDyhUOs8P8UUeEOjJjs11rKvxrEjHKLThmv6xAKjW4iORjGtYSrVD1o+S+8/D2Y8mvzsfL/o/MauweLzlRtZVJvWJml+OCayOXppCg0rU9j6Nvy9eV2nP75T6YMUeYaSn5EyD9P5cfjG8erJo0i/ZhM3B8CqwoLXSm4jNduruFtBt+aky1S61z2TAwraYhZIS6pCGFMFLyIflx9NG+4KLFap26XO5/N3psFGJVTjzCnC6aths6KeV5p822oO6Urc4GzMLOc3RAa2UJsqMGfj1U7tOndx9Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SmLp/zJwj4/bZCIFeQbbmnX2VI3Kwlh8WvwR3EC32vo=;
+ b=OvPI/VYGj72OMJ3HJH129hlT4XSa54SM+4CGAXTkq40T/7IXInB2hJD8oK5WcmPRj4WOTFw07cxIBSqDJIMOD3/+y7zpfTCgUj5W9XKOJjb88k5xWiM6F5FaV5wYiy7keUGK4aNxUalmmJo/JWo1TvGmdtvZ6j/7xLvAD2+xbUveWBHW0IMHO/JvKsj/WNIKgrF9501cpPkWk7K0qCflXN8Mn4u3BzTTebiCBNLk8SqU04svsCgEPwxPOrQ4J95ULNlICf+M+A9C3isMsyEwAFRbD29vse5zujsImI0FPQwlZN5reke/B6cyNDHZjUDhvu7dG8X9uc3rcqoqmX7u4A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia.com;
+Received: from PAWPR07MB9688.eurprd07.prod.outlook.com (2603:10a6:102:383::17)
+ by AM8PR07MB8311.eurprd07.prod.outlook.com (2603:10a6:20b:32a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.28; Fri, 8 Mar
+ 2024 10:21:01 +0000
+Received: from PAWPR07MB9688.eurprd07.prod.outlook.com
+ ([fe80::995b:5be7:51dd:e540]) by PAWPR07MB9688.eurprd07.prod.outlook.com
+ ([fe80::995b:5be7:51dd:e540%4]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
+ 10:21:01 +0000
+Message-ID: <c567c622-1ee1-4828-8730-62bf6bfc2ecc@nokia.com>
+Date: Fri, 8 Mar 2024 11:20:58 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+Content-Language: en-US
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+ <ZeoMRfy9ISBOVMsV@boqun-archlinux>
+From: Stefan Wiehler <stefan.wiehler@nokia.com>
+Organization: Nokia
+In-Reply-To: <ZeoMRfy9ISBOVMsV@boqun-archlinux>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0103.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a1::19) To PAWPR07MB9688.eurprd07.prod.outlook.com
+ (2603:10a6:102:383::17)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2721d70f-67a8-428f-903b-1c7c6c6da7f9@efficios.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAWPR07MB9688:EE_|AM8PR07MB8311:EE_
+X-MS-Office365-Filtering-Correlation-Id: a07696b3-0506-416e-fa55-08dc3f597425
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4HrW795lXSZXzhkupV0SMFzpzVZZDbtcJHCK3X1vlXpA40rOa5YFz+rdJbeJMDbRYKK+wZDASP23LsEkv+vE85WpvFleWCDAtoj0fxqZz1Kf8M0BEmLWdYKE+bWxZ3MdSlvw4V9ZEkfQ1KOCZKoKvq8O3BZX1bS99EPLdh1whUWTrMudkalaI7wdT31TncaAtT0/XgpRVeXmn0WrgxylAuDu8pgzcOIrVWoeGw13H0okBGgWyrD426SwiLy2XJ3f8DpcCp7zaKy9qNgmlQ5p05J59XVPtxg8Wcct2tSLRQFgx8R5iiVEp8LBObC8QkB+aMYJ7HX4mHpgq0EVFgGkuXuFjqhGG8NfZxjVz8UEx7bTwUzw1LT2MhWPhtzNd2hcVw0g5O/MDSF7kZ47AzYr8x38MXQ4oB/VlreWcstErZX2soCS1HgLUtEExaUhZVa0V6jdHko6DRpXXewaN+O6MJN5Kub4/LGPnXnGCX4tKaD29JX5m9f/8EyeEw290xfhgJoEk+2EBDXBgtKBJdihw90+HxRCGtP1Xf5+AdN56SYWgykHbVJ9F4WmXS7pV2KQMmB/UeiKObkbFxYj6aNu7IkoXRcK9C2SyubgY2WvhhNlWEAJALXQotgoDwNzSncTe7yCCMG8GE9Rptqu7gLw7zm26FRR5l69mVomJsQ5dTE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAWPR07MB9688.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dzhRN1JhMUplL1hLNzZ2MVFweXo4UXhuSXByQmJZOEpIbUJML0dpZERPN3E1?=
+ =?utf-8?B?K3U5YWx3d2tMVnkzM2tXM1FocWdjV3ZpdjN2eDF4U21FQzRib21DUW9aZm00?=
+ =?utf-8?B?WXJWaWRaczJHdTg0eWdSQmFiNTBIbEtLK0RPRG01TjlRTmUyT2lHRUZyMkgr?=
+ =?utf-8?B?Wmg0UjFkbkVpalFJUEFpSnFWR0tvb0ZhdFhvdDNiNHdtN0ZNVEQ3RysxbGVM?=
+ =?utf-8?B?MTdDalljbzljNlRNTFJJTDZaK0FVd3Nxd2l6VnJwejZPUnZkQXRFazN6SGJj?=
+ =?utf-8?B?TnhCWjROQzl6a1ZRN1Q0TFpRRjRzSjIxODlqUXZOZTZkMkpEUUdRMXFmL0dE?=
+ =?utf-8?B?K0t1M2JNcklZbS95cXFFaUFGdWg0SDk1ME5uT21Zc0VVRm8rOGdkSnRFbjVY?=
+ =?utf-8?B?Z2lpNU5Sc1Y2Q1VZaEtKbFFrMks2OXZEOGk0eFhOQ0o0SnQ4V1VoNnVmcXZ0?=
+ =?utf-8?B?dEI3ZEJOZVRhZnFveTlvTmRiWFhPeW8rU2YvbGdIeFIwUzlydXh0cE80Nm1n?=
+ =?utf-8?B?YVZMMkFZUElNencvTXE5N3VlbGthbEMwWXU4d0VPeGhUSk84MGl0SmY0VzRm?=
+ =?utf-8?B?Ny9HY0RjdzVFZjBhV0FTeDlnMFU0bFh2Sjd4czk4di9qS20wN3hwQ2VCV3pU?=
+ =?utf-8?B?UmhkeTBXUm9acGNXQlR6N3FKL1FUZWlXQkVvZEcvczdBTXY1V0lVTk1oRkpQ?=
+ =?utf-8?B?ZVNLY0hnRE41bWw3b01RRFlMcCtoYllHZm9ObjJxL3JuNUwyakV3OVhxOUs0?=
+ =?utf-8?B?REVnK2VacVhtUmQ5Z1RlMjFCcXNsLzBxaXdUTERJclhWaFd6bTNsRjNNRDFV?=
+ =?utf-8?B?ZWM1cFE3di9uVWtjc2pTR0RnZGJ5bW9iNTZIU0Exd2JiaCtwYkpjU2NvVWVx?=
+ =?utf-8?B?WXl6ZnVRZ0NCbzJYd29iMTFqSFRLWjB2RGxJTHUzNzk2TXFySmVMQXlJUzJL?=
+ =?utf-8?B?UmFBUmorY0lTR202elVRckd0MVVlQW05N2JHSnJXcElWaVdVME1Oblh0WGRo?=
+ =?utf-8?B?aGxHNTl4SCtCMmFXRmtIdkp0bEdONzVaRWtwL3JrdlNMMXo0OXByVytoSnZo?=
+ =?utf-8?B?ajROb2dOQmNPemVVOUxiN0xmdEYxNElXT1R3aktSbmdka09mMW0rRmlmUlM3?=
+ =?utf-8?B?RnArazdXZ25oZml6elBHQmJoV1BlcTR0NlhMQ1dUSU1SaFU2dURXNGpRRGhK?=
+ =?utf-8?B?RnplSkNENmc2RjcrblFxcGRuN0J3WkhReWNIRk9pSHJ1dVpJbkQxdkpqZDFx?=
+ =?utf-8?B?RTZ0eERqc1VOMW1IOENWSE5tYVFWMC9tVW1aUGdreFFxajZRV1U0bSsvdVpK?=
+ =?utf-8?B?S2xyZFdnR0h2ZyttN2MxYkk2MmRjNXV0UEFoYUE5QlhmSlkwYitQNkh2Tmhk?=
+ =?utf-8?B?bE5MUWhyUmEySTRQcmpkSFUrUjVGSDdrMEN2N0srd1ZlcDlPMnp4Y0tJQmZP?=
+ =?utf-8?B?NFY5eHNhSkhiblNmeE9jL0plaU42MnQ5aFV4azdsUVdJVmZwemFRUis5UmJh?=
+ =?utf-8?B?ZFdjOC9NMG1OYWNiQzA4VGl1SzVZQmhNa01nTS9GNHBjZlZXWDF2NHQyTXRE?=
+ =?utf-8?B?WFk0emJ0d0tmcmh1UmFtK2FoU3NVRXNTMTQvOTdJNEZtdEo4ZFpncFRDWWJJ?=
+ =?utf-8?B?SkEwY3hWZmF1dng5ODcxNFYwa2VZU1lKMzN4aUxmVzBMVk9RWGFtUkRrTDlU?=
+ =?utf-8?B?akZNYzMwNkRUZUE2YU1ZQnhZK0JwS3I4Y2xrT0cwd21obmk3RFJ1M0VtTTkx?=
+ =?utf-8?B?RE83Zml6TFhnbU5FYXg3cnJLMmFGYy9sRktBbGJJOHFZRkplNG5ZRkFzQ0pS?=
+ =?utf-8?B?b2tBazBRQU5MSE93U01nYjN2eUZSUlZ6d0VtTCtHZklCVzlMek9MWG5hSFBr?=
+ =?utf-8?B?b3c4SGg1ams0K3ZKNTZZMFB4OWU5NGZrTndNZ0RseTE2cXRqRmhBU2RyUmpX?=
+ =?utf-8?B?MW1SdnNINU0zWkw2YWdvVVN3UkZlSFA2ZStpSmZUdHBXeHAxNnIwWE0xMzN4?=
+ =?utf-8?B?L0dpWEFwWENhYkR0MGkvVk5NY004czJJRnlnQXYxaGpDUkhUblFqSlA3SENh?=
+ =?utf-8?B?N1RkSUZkRHhzNGdnR2dWL2dzUDNDZGhqbkIxRi84N2JwbDUxL0RDUWVpNHFm?=
+ =?utf-8?B?eVB5b2w0endEWUVYZkpONGJKQkdjY1d3QlR0ODhkN1pIK1hBYTZORnE3MTB6?=
+ =?utf-8?B?bTkwR1BzaEI1Y3FnK2JOYkhQZ2ZobGw5M3RPaHhrVlNwNzJPNjBwbEw4YTNC?=
+ =?utf-8?B?SDNGN2ZIbEFuUjJYWFhJVHFSNzJnPT0=?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a07696b3-0506-416e-fa55-08dc3f597425
+X-MS-Exchange-CrossTenant-AuthSource: PAWPR07MB9688.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 10:21:01.3994
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T7X2MtWPTW4Oyg6nlcKbLfDClR1UhLAp2/88HQesh9cW+b4nJrm7+R92jyXxarR7/cgY9LMdi//H429nlVGfs0jI3GwiuLtlgZycbo9xMg4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR07MB8311
 
-On Thu, Mar 07, 2024 at 02:53:43PM -0500, Mathieu Desnoyers wrote:
-> On 2024-03-07 14:47, Paul E. McKenney wrote:
-> > On Thu, Mar 07, 2024 at 08:53:05AM -0500, Mathieu Desnoyers wrote:
-> > > On 2024-03-06 22:37, Paul E. McKenney wrote:
-> > > > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
-> > > [...]
-> > > > 
-> > > > > As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
-> > > > > is concerned, the only valid use-case I can think of is
-> > > > > split counters or RCU implementations where there is a
-> > > > > single updater doing the increment, and one or more
-> > > > > concurrent reader threads that need to snapshot a
-> > > > > consistent value with READ_ONCE().
-> > > > 
-> > > [...]
-> > > > 
-> > > > So what would you use that pattern for?
-> > > > 
-> > > > One possibility is a per-CPU statistical counter in userspace on a
-> > > > fastpath, in cases where losing the occasional count is OK.  Then learning
-> > > > your CPU (and possibly being immediately migrated to some other CPU),
-> > > > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
-> > > > make sense.
-> > > > 
-> > > > I suppose the same in the kernel if there was a fastpath so extreme you
-> > > > could not afford to disable preemption.
-> > > > 
-> > > > At best, very niche.
-> > > > 
-> > > > Or am I suffering a failure of imagination yet again?  ;-)
-> > > 
-> > > The (niche) use-cases I have in mind are split-counters and RCU
-> > > grace period tracking, where precise counters totals are needed
-> > > (no lost count).
-> > > 
-> > > In the kernel, this could be:
-> > 
-> > Thank you for looking into this!
-> > 
-> > > - A per-cpu counter, each counter incremented from thread context with
-> > >    preemption disabled (single updater per counter), read concurrently by
-> > >    other threads. WRITE_ONCE/READ_ONCE is useful to make sure there
-> > >    is no store/load tearing there. Atomics on the update would be stronger
-> > >    than necessary on the increment fast-path.
-> > 
-> > But if preemption is disabled, the updater can read the value without
-> > READ_ONCE() without risk of concurrent update.  Or are you concerned about
-> > interrupt handlers?  This would have to be a read from the interrupt
-> > handler, given that an updated from the interrupt handler could result
-> > in a lost count.
-> 
-> You are correct that the updater don't need READ_ONCE there. It would
-> however require a WRITE_ONCE() to match READ_ONCE() from concurrent
-> reader threads.
-> 
-> > 
-> > > - A per-thread counter (e.g. within task_struct), only incremented by the
-> > >    single thread, read by various threads concurrently.
-> > 
-> > Ditto.
-> 
-> Right, only WRITE_ONCE() on the single updater, READ_ONCE() on readers.
-> 
-> > 
-> > > - A counter which increment happens to be already protected by a lock, read
-> > >    by various threads without taking the lock. (technically doable, but
-> > >    I'm not sure I see a relevant use-case for it)
-> > 
-> > In that case, the lock would exclude concurrent updates, so the lock
-> > holder would not need READ_ONCE(), correct?
-> 
-> Correct.
-> 
-> > 
-> > > In user-space:
-> > > 
-> > > - The "per-cpu" counter would have to use rseq for increments to prevent
-> > >    inopportune migrations, which needs to be implemented in assembler anyway.
-> > >    The counter reads would have to use READ_ONCE().
-> > 
-> > Fair enough!
-> > 
-> > > - The per-thread counter (Thread-Local Storage) incremented by a single
-> > >    thread, read by various threads concurrently, is a good target
-> > >    for WRITE_ONCE()/READ_ONCE() pairing. This is actually what we do in
-> > >    various liburcu implementations which track read-side critical sections
-> > >    per-thread.
-> > 
-> > Agreed, but do any of these use WRITE_ONCE(x, READ_ONCE(x) + 1) or
-> > similar?
-> 
-> Not quite, I recall it's more like WRITE_ONCE(x, READ_ONCE(y)) or such,
-> so we can grab the value of the current gp counter and store it into a
-> TLS variable.
+> I'm not sure this is a false-positive: if you traverse an RCU-list
+> without RCU watching the CPU, then a grace period may pass, the next
+> list can be garbage and you can go anywhere from the list. Or am I
+> missing something that a CPU hotplug can block a grace period?
+Thanks for the feedback! Yes, calling it a false positive is probably not
+correct, I will remove that. However, as Russell has explained in a previous
+email, the spinlock is fundamental for ASID handling and cannot be removed.
 
-Good point, you could use that pattern to grab a shared snapshot.
-
-Still sounds niche, but you never know!  ;-)
-
-							Thanx, Paul
-
-> > > - Same as for the kernel, a counter increment protected by a lock which
-> > >    needs to be read from various threads concurrently without taking
-> > >    the lock could be a valid use-case, though I fail to see how it is
-> > >    useful due to lack of imagination on my part. ;-)
-> > 
-> > In RCU, we have "WRITE_ONCE(*sp, *sp + 1)" for this use case, though
-> > here we have the WRITE_ONCE() but not the READ_ONCE() because we hold
-> > the lock excluding any other updates.
-> 
-> You are right, the READ_ONCE() is not needed in this case for the
-> updater, only for the concurrent readers.
-> 
-> Thanks,
-> 
-> Mathieu
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+@Russell, I will submit to the patch tracking system then.
