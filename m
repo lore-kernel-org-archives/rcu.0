@@ -1,82 +1,129 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 881BC364;
-	Fri,  8 Mar 2024 00:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCCD139E;
+	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709856367; cv=none; b=h838OpvpxFEvDCumQtYsdvosY7kLPIxNDohA8CWF1RvhhZ9SmPfOf4RfI1sFV/bqnjlFHF24wGp6Np74a/taTY90R6Bu5fALTZecmJmgW4GYgu6g8YNh1XwGTQrdf1XLT4qFutYduKb2ASlVUzKXn6DnfIxS7DbjRfy56w52i7E=
+	t=1709859309; cv=none; b=U5M0NJL4E27oE/7h6+0bv6Hq7xLkfPjvTzK/pscUgnPrawxeEKb6O31J6rXk3F6gi+cjAl8CaGZzCf8zJvyAvpUrS7ilUuTx2HkI1az2b4ApvvJMk4oETInaDP7O1Xi+pmgTm5wFhoDLDEb/a5o8UGRahs7UQEZSwCmDMhWdLZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709856367; c=relaxed/simple;
-	bh=44zl7rfKT4IfdYlB187fgWbtwbHF6PjnpC1W4yMdDIo=;
+	s=arc-20240116; t=1709859309; c=relaxed/simple;
+	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ktCpDfx7o91xQsWgRnV76vruz0KVXlsSHAu8UEkybP5H9fCbZisyIxBX+6y2X7ImqFqEVisTHobwVwj2DYmLgq60q/rx8YQRD8OcmwydJBIXbRB4uZqvRThr6vbA9lpLypJNkhzDFwG0lVRVfK7K15x4nhCKOyPTBtbjNkwQb/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mYGuQAF9; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=jjaMn52xPJdmrykH3bNhskjJyqMNxzlKTSKgFcF/sjVgnOUmUIcmjOS5ckGIpV9Uvfb0/oL4uEx7f6X9uNkJStOpDaUKQ0VpER8SEbj45TP/5QhmhNup2EZZZfXpm/5o7p4KRtvFpqO5wzL5bcImbaqrKaoe7vOAjYjXp0aSx4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ChQoYXcP; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mYGuQAF9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C7FDC433C7;
-	Fri,  8 Mar 2024 00:06:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ChQoYXcP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E44BC433F1;
+	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709856367;
-	bh=44zl7rfKT4IfdYlB187fgWbtwbHF6PjnpC1W4yMdDIo=;
+	s=k20201202; t=1709859308;
+	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=mYGuQAF9LhM6og9CvmxgVC8xHcPsqW774Ij+nj5CqQxJ6/Do8PvIJfkDdjuluPDtX
-	 zwEGbATBwQo/l5YDRq6+BQD/1Os6OpjKncJQQoGH+b6P64rdeEGvkFqSKHgATxDrB9
-	 1hcGg1S9+roihyx/2YAofMMOlu548z44+C20dAYPJ/h4eicGWBnSxS6AcGdcDH60WI
-	 4jafaUAybp6JiXmeCa5xu5ww5oXEVySGpyspvq6PdQZJ6BZOvTV4+ltJ5TVavZFcGv
-	 vIy2o3lAG4PcSH3sMsjj+JsvP4erEm8mikBrqLtb+TxvsG8tqriUt9tB2xHGVTpjur
-	 0fvFhXODBcK2Q==
+	b=ChQoYXcPHNSJcbPbOm+q5p2knS/G6zVfeycEJtC8Vi7AqGJkfiDYx6Ur82DEPJ05o
+	 cGXi74OjU9LjfVNuZS742VXlzOkImZofiNGypL5eHAkq+1CSNzppcdnwmXXtTvWad0
+	 AH7OmuAkhX2BuNZ3CBv0bCL1ge3T8FNymLEGsbKgCswzjX2q5xfoSvPaQ2ePT26CjB
+	 Zz2Le+qJwzFxHNO5gJwDF7C7vFpEEcvUruZ7BXeIhXqntb+mCkFcwjps6PbUtT4ab+
+	 oLsfXZukF77+3jX27CI38ArI9Q7TKrwmE2xvAo5M6+KfuEDU2SHgRI22bsDlglgkup
+	 pf8stVrg5UCNg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AB3B7CE0716; Thu,  7 Mar 2024 16:06:06 -0800 (PST)
-Date: Thu, 7 Mar 2024 16:06:06 -0800
+	id 103F1CE0716; Thu,  7 Mar 2024 16:55:08 -0800 (PST)
+Date: Thu, 7 Mar 2024 16:55:08 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
-	urezki@gmail.com, neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
-	rostedt@goodmis.org, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Julia Lawall <julia.lawall@inria.fr>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH] [RFC] rcu/tree: Reduce wake up for synchronize_rcu()
- common case
-Message-ID: <ccbdf4d4-6972-430c-a479-0d20b318213b@paulmck-laptop>
+	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
+	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
+	quic_neeraju@quicinc.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Message-ID: <7b11260c-ebed-4440-9d35-d6a788151888@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240307234852.2132637-1-joel@joelfernandes.org>
- <CAEXW_YQ-TZB-1gpxvf7v+QAZhHtzV5waBA1VemtgEwNktSp=ww@mail.gmail.com>
+References: <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+ <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
+ <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
+ <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
+ <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
+ <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
+ <CAHk-=wia769uoyVz3P7yZURhO8NNB7xeOLX07ZM2vWf1nTLYkQ@mail.gmail.com>
+ <65a9665e-22d4-4f21-a1cb-7ef1c82ed078@paulmck-laptop>
+ <alpine.DEB.2.22.394.2403072231130.3161@hadrien>
+ <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQ-TZB-1gpxvf7v+QAZhHtzV5waBA1VemtgEwNktSp=ww@mail.gmail.com>
+In-Reply-To: <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
 
-On Thu, Mar 07, 2024 at 06:52:14PM -0500, Joel Fernandes wrote:
-> On Thu, Mar 7, 2024 at 6:48 PM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
+On Thu, Mar 07, 2024 at 02:09:00PM -0800, Linus Torvalds wrote:
+> On Thu, 7 Mar 2024 at 13:40, Julia Lawall <julia.lawall@inria.fr> wrote:
 > >
-> > In the synchronize_rcu() common case, we will have less than
-> > SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
-> > is pointless just to free the last injected wait head since at that point,
-> > all the users have already been awakened.
+> > I tried the following:
 > >
-> > Introduce a new counter to track this and prevent the wakeup in the
-> > common case.
+> > @@
+> > expression x;
+> > @@
 > >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
+> > *WRITE_ONCE(x,<+...READ_ONCE(x)...+>)
+> >
+> > This gave a number of results, shown below.  Let me know if some of them
+> > are undesirable.
 > 
-> Forgot to mention, this is based on the latest RCU -dev branch and
-> passes light rcutorture testing on all configs. Heavier rcutorture
-> testing (60 minutes) was performed on TREE03.
+> Well, all the ones you list do look like garbage.
+> 
+> That said, quite often the garbage does seem to be "we don't actually
+> care about the result". Several of them look like statistics.
 
-Very good, thank you!
+[ . . . ]
 
-Uladzislau, could you please pull this into the next series you send?
-I can then replace your commits in -rcu with the updated series.
+> > diff -u -p /home/julia/linux/kernel/rcu/tree.c /tmp/nothing/kernel/rcu/tree.c
+> > --- /home/julia/linux/kernel/rcu/tree.c
+> > +++ /tmp/nothing/kernel/rcu/tree.c
+> > @@ -1620,8 +1620,6 @@ static void rcu_gp_fqs(bool first_time)
+> >         /* Clear flag to prevent immediate re-entry. */
+> >         if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
+> >                 raw_spin_lock_irq_rcu_node(rnp);
+> > -               WRITE_ONCE(rcu_state.gp_flags,
+> > -                          READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
+> >                 raw_spin_unlock_irq_rcu_node(rnp);
+> 
+> This smells bad to me. The code is holding a lock, but apparently not
+> one that protects gp_flags.
+> 
+> And that READ_ONCE->WRITE_ONCE sequence can corrupt all the other flags.
+> 
+> Maybe it's fine for some reason (that reason being either that the
+> ONCE operations aren't actually needed at all, or because nobody
+> *really* cares about the flags), but it smells.
+> 
+> > @@ -1882,8 +1880,6 @@ static void rcu_report_qs_rsp(unsigned l
+> >  {
+> >         raw_lockdep_assert_held_rcu_node(rcu_get_root());
+> >         WARN_ON_ONCE(!rcu_gp_in_progress());
+> > -       WRITE_ONCE(rcu_state.gp_flags,
+> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
+> >         raw_spin_unlock_irqrestore_rcu_node(rcu_get_root(), flags);
+> 
+> Same field, same lock held, same odd smelly pattern.
+> 
+> > -       WRITE_ONCE(rcu_state.gp_flags,
+> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
+> >         raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
+> 
+> .. and again.
+
+In all three cases, the updates are protected by the lock, so the
+READ_ONCE() is unnecessary.  I have queued a commit to remove the
+READ_ONCE()s.
+
+Thanks to both of you (Julia and Linus) for spotting these!
 
 							Thanx, Paul
