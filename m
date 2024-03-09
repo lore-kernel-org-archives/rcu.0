@@ -1,57 +1,57 @@
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9EA51DFE3
-	for <rcu@vger.kernel.org>; Sat,  9 Mar 2024 01:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FF91E526
+	for <rcu@vger.kernel.org>; Sat,  9 Mar 2024 01:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709946587; cv=none; b=OYVmD3Me0eFgsG+ajovSAQOEMQSaHfBOMC2ufP9s2OK78jgsIW84a2ANsjnUjU/xzZIySnmeXvP8Azt85roJDXjW4ofvrSfZ7VkLttFFxpkoVcuxs0BExQGs7OVuw1nIyfpzCoCkEMVz2iEm5QTAN5caKwKUCRVXGO8hiksURSM=
+	t=1709946590; cv=none; b=ZWm+qrGDSkG4ecLxCNZEq1wrw+v8OxjDDWD0VpxFOv521chzhd+dQr3RYPaxKAf+7qni6PUl3jDzMX94086F1f2ErDwc6Ox3Nworo1I6c+x32iN0/QVfjfjrk5GUsPQBn8kUDJJFRuoS0YqIo9iQlpwSmu4E1NJeByS21yqIcZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709946587; c=relaxed/simple;
-	bh=ycBchpSWHJX8l3+qZZZs50c8pkvQnvrnnxo1fe2hEZc=;
+	s=arc-20240116; t=1709946590; c=relaxed/simple;
+	bh=j5KgXER4nINsShPo8aYOrG+wphwo2SK+yLSChO3NEJA=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=HuA7ZyIW9utiMq3YGul1FR2LoGpvxskNx9FGLZj++YJW0pBi7rxJ272NFEdCRVOtulliRRKLewO+2tr/R7/CZfAaTQdqeP3tKEiIb4MNatldkj8moKunKnBkp2GNkEqZkd3MT4JEm/bjoG33qEPccMUH60kO+o0o9h/rftyBG3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2FT3jFrK; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=cjpREVL+KyejGSFr1142N8qA3edBlr8Mc9UzW5wHIdk//jfVjAhdypdSLRWBlbo9b8jDl5MJGGGzRsGTREsF5co3oYE2uaDzH9YObhX/KF0Z1/ckXEL01qLyqqFxOk0V7Y+7hwJ42E+bJoXjH5IZDMudTqym3o+yirb71NCLwrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sY2Wr5fp; arc=none smtp.client-ip=209.85.210.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2FT3jFrK"
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609ff5727f9so22500327b3.0
-        for <rcu@vger.kernel.org>; Fri, 08 Mar 2024 17:09:45 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sY2Wr5fp"
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e5323e15f2so2818458b3a.3
+        for <rcu@vger.kernel.org>; Fri, 08 Mar 2024 17:09:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709946585; x=1710551385; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709946588; x=1710551388; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=g4owpzTMykQxDUqiA6ej7g45orHQxXd/2WL2dIWa35k=;
-        b=2FT3jFrKAA7AuyqS+TGTMp9MsPHqm7nfNdjH2gI2DxkC+nmlNDEui/eS9thJOX3L5S
-         AzMQ3rFqqzsW2L7qbBnund07mHDuaEKVjKrvkYPDHCZXG0ur10H3cnx9atKyDG3p1MgU
-         tqvTarwQn0JLdGbaxq8kQyeUpzT1VeJQZJiRFWgNca0pp10U63YKD0HWAnTCWX1w7YTb
-         F9DEM4vZmuJ/sM/Q+Xk9GimlRSMfphtZQt5tJhFx5z4an4zE9fMBWPSYNP8SgYEN39s0
-         M7c/AbD+IijsH9oKNgd5nl8BpE7xcDg6qtDMYzwvW7/ZF6D39eBgg8UiKfaARAtWLOr0
-         g0NA==
+        bh=opv/pkYi5ZzIQaSkE1dFeCV7eMElrF9Hr2aQKt+M0LM=;
+        b=sY2Wr5fpg09RPtdj9bLKU8/33TfK9+4kvMkg+yjdPXkBUOAGFSFwROK/zC3s1MaL5z
+         DccWlFXW+bv30XCRIJI3T9WwVUNzT/i4gEKDrIn3WiGvPqUx+Q/u0KrgIlFtkHD26/n+
+         iBi2U1gxZD19BXWxqQYpCEYxA+CEnsthMty2FBd/yYK/0mWSfQ+AKDHlefDP1W1rEqta
+         IL5+m2rzJE8VqEiY41Cuwrtv5CmmUaDeYD7cy3scFSI7cuIuREvtoAw6WNhrwlnNURT1
+         jncNtTiLsnVh4uMa9LsptlRB+fePoL32YC2kMAs1yzfVi359kwFgktidNQAdgnr6O+9c
+         z+tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709946585; x=1710551385;
+        d=1e100.net; s=20230601; t=1709946588; x=1710551388;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=g4owpzTMykQxDUqiA6ej7g45orHQxXd/2WL2dIWa35k=;
-        b=FXOsYHdBBgTOv1h76nCGmOkJoo94iL/z+tUIf9rlO9JJ6rvmEh4GF1jB97vEt+EFXI
-         nV3dzc/oCnKS6yV7GUBo6Y8fIyfMKj2eUhH4wcTI7g7GM79iQnfLd0lbRM6EK5UJ6nQ8
-         Zrkpb3EG0YHytnC4/HSTMlm/WSGajcNZvnpJD39xbiAxm8BHzKsy+2upJ0gnl20MTvIw
-         2x0EGf6JgmQeGBFl+xonviOoLSmvBqsI/cSjNrOXzhkrDy+dWLt7bjGfzyXhpHVH8le2
-         W8RaNgTlx/hcx6MiOcEGnk9C1pw9G9th1UcqG0apO+Zgs2rM9tQsLtWt9ktT3Fbx1vR6
-         hfhA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMZjsOOSrFmhgRChrTG1ng3iLnDMIpoFW0tOFy8d+VWwkFIPiggiKkF7s/ymJW1ljjvKja70fYVLmpS3n+J5WFbhtT
-X-Gm-Message-State: AOJu0Yzwl7LqhxoQvDA903w3QeB3GZCEA9uBzOokWN/XJAzUL6AuNBC1
-	PUZNcYZ3RI+55iVROQQEtL+WUq0JDmn4WvKtG56N9zuTsD3Bu/jRA5Y9X3tCKs06wKOZPDiX4Za
-	eRQ==
-X-Google-Smtp-Source: AGHT+IG6WhzVfQfNxhkh6vO1oFttllHBGIxq53Aa6SsBcpq2DPCtMuTS0yWAgaYlxw31FNSJQ8BASJ/xVnw=
+        bh=opv/pkYi5ZzIQaSkE1dFeCV7eMElrF9Hr2aQKt+M0LM=;
+        b=BYYiJFcRT44uCJ9MJsFY/AGB/unxGLNFNvBum23Dt6VKaVOV92rUHGFPAXzVrNFS5E
+         hTmmcBb6Ay5oqdu7axGAlOOoncloiSnJjGOh9C7UdxunChwWIcYVY2A6xDZWvUHc+mvN
+         qrAOArMoLtDZjlEtLHJFRw4I+lGqIZGzrusXWDBTCklt7Z3A/B7nYuLkqRz6wZCLQsBt
+         ygFUYZdTmsWnW+wB3h1qJIAHtH1Fr8M/gTTKs/3FfQEQTAbgaexCCc5Kd1A3fYU6gtPh
+         WHETELF4BwunSea9ywT0CYBgV/WbxUYpG1aIhFCOZnfapgYHuYA2KS5K6pLlSf7Z90Ru
+         YEHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUdEvng/YHamFFUpfnhC1c9hM+00bLIQfWxKpQmjfarpHEj8mTmSvAEtA8A5nsRowso8yeB6eNkKwthcvMNCLt8e2EH
+X-Gm-Message-State: AOJu0YzxVffAwQ6wUDb7hLtTwg/9DPoZ7a7br4BL4GMCJL5NaXMavo9D
+	yopWme8lrupO9Tw4hmEIDYH6e6DoTw+kzfNyu12r7qs0EJ+K5k9zAuhs05N/tS08FOFzkynei+O
+	lLA==
+X-Google-Smtp-Source: AGHT+IEzPID2lPLBmutN4pY8hBZkktARYVaXQpGLwpt2q43XvRaJrXEizBq0sMzKUMMe8Z6+tvqhpC6gOYM=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:df93:0:b0:609:6150:da22 with SMTP id
- i141-20020a0ddf93000000b006096150da22mr217869ywe.1.1709946585045; Fri, 08 Mar
- 2024 17:09:45 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2291:b0:6e6:4f0a:422 with SMTP id
+ f17-20020a056a00229100b006e64f0a0422mr38978pfe.6.1709946588027; Fri, 08 Mar
+ 2024 17:09:48 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  8 Mar 2024 17:09:27 -0800
+Date: Fri,  8 Mar 2024 17:09:28 -0800
 In-Reply-To: <20240309010929.1403984-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -61,8 +61,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240309010929.1403984-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240309010929.1403984-4-seanjc@google.com>
-Subject: [PATCH 3/5] srcu: Add an API for a memory barrier after SRCU read lock
+Message-ID: <20240309010929.1403984-5-seanjc@google.com>
+Subject: [PATCH 4/5] KVM: x86: Ensure a full memory barrier is emitted in the
+ VM-Exit path
 From: Sean Christopherson <seanjc@google.com>
 To: Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
 	Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
@@ -74,17 +75,14 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Yan Zhao <yan.y.zhao@intel.com>
 
-To avoid redundant memory barriers, add smp_mb__after_srcu_read_lock() to
-pair with smp_mb__after_srcu_read_unlock() for use in paths that need to
-emit a memory barrier, but already do srcu_read_lock(), which includes a
-full memory barrier.  Provide an API, e.g. as opposed to having callers
-document the behavior via a comment, as the full memory barrier provided
-by srcu_read_lock() is an implementation detail that shouldn't bleed into
-random subsystems.
+Ensure a full memory barrier is emitted in the VM-Exit path, as a full
+barrier is required on Intel CPUs to evict WC buffers.  This will allow
+unconditionally honoring guest PAT on Intel CPUs that support self-snoop.
 
-KVM will use smp_mb__after_srcu_read_lock() in it's VM-Exit path to ensure
-a memory barrier is emitted, which is necessary to ensure correctness of
-mixed memory types on CPUs that support self-snoop.
+As srcu_read_lock() is always called in the VM-Exit path and it internally
+has a smp_mb(), call smp_mb__after_srcu_read_lock() to avoid adding a
+second fence and make sure smp_mb() is called without dependency on
+implementation details of srcu_read_lock().
 
 Cc: Paolo Bonzini <pbonzini@redhat.com>
 Cc: Sean Christopherson <seanjc@google.com>
@@ -93,34 +91,26 @@ Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 [sean: massage changelog]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- include/linux/srcu.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ arch/x86/kvm/x86.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 236610e4a8fa..1cb4527076de 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -343,6 +343,20 @@ static inline void smp_mb__after_srcu_read_unlock(void)
- 	/* __srcu_read_unlock has smp_mb() internally so nothing to do here. */
- }
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 276ae56dd888..69e815df1699 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11082,6 +11082,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
  
-+/**
-+ * smp_mb__after_srcu_read_lock - ensure full ordering after srcu_read_lock
-+ *
-+ * Converts the preceding srcu_read_lock into a two-way memory barrier.
-+ *
-+ * Call this after srcu_read_lock, to guarantee that all memory operations
-+ * that occur after smp_mb__after_srcu_read_lock will appear to happen after
-+ * the preceding srcu_read_lock.
-+ */
-+static inline void smp_mb__after_srcu_read_lock(void)
-+{
-+	/* __srcu_read_lock has smp_mb() internally so nothing to do here. */
-+}
+ 	kvm_vcpu_srcu_read_lock(vcpu);
+ 
++	/*
++	 * Call this to ensure WC buffers in guest are evicted after each VM
++	 * Exit, so that the evicted WC writes can be snooped across all cpus
++	 */
++	smp_mb__after_srcu_read_lock();
 +
- DEFINE_LOCK_GUARD_1(srcu, struct srcu_struct,
- 		    _T->idx = srcu_read_lock(_T->lock),
- 		    srcu_read_unlock(_T->lock, _T->idx),
+ 	/*
+ 	 * Profile KVM exit RIPs:
+ 	 */
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
