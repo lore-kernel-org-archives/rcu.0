@@ -1,57 +1,57 @@
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FF91E526
-	for <rcu@vger.kernel.org>; Sat,  9 Mar 2024 01:09:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC25F22F1E
+	for <rcu@vger.kernel.org>; Sat,  9 Mar 2024 01:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709946590; cv=none; b=ZWm+qrGDSkG4ecLxCNZEq1wrw+v8OxjDDWD0VpxFOv521chzhd+dQr3RYPaxKAf+7qni6PUl3jDzMX94086F1f2ErDwc6Ox3Nworo1I6c+x32iN0/QVfjfjrk5GUsPQBn8kUDJJFRuoS0YqIo9iQlpwSmu4E1NJeByS21yqIcZk=
+	t=1709946593; cv=none; b=jwttWwhuwgffkoVoJ5lG1HglNX/QwJ+u7s7LG6ADGqVMRZCSCM8N+1VlzNfwRchQeKGVznpUayxufWwkQNHz+vgrfwNSOKudAv7T7em2tLo5HA/8AdGgCMlQywjlNeiTY1138lyDnAXG4Ye06fMvQipaK5V0UxnrKecnwJSoOYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709946590; c=relaxed/simple;
-	bh=j5KgXER4nINsShPo8aYOrG+wphwo2SK+yLSChO3NEJA=;
+	s=arc-20240116; t=1709946593; c=relaxed/simple;
+	bh=pFTfX6iZ1Av6zueA4bsWCN2aQ5NYvSaaP8k39tdO/qM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=cjpREVL+KyejGSFr1142N8qA3edBlr8Mc9UzW5wHIdk//jfVjAhdypdSLRWBlbo9b8jDl5MJGGGzRsGTREsF5co3oYE2uaDzH9YObhX/KF0Z1/ckXEL01qLyqqFxOk0V7Y+7hwJ42E+bJoXjH5IZDMudTqym3o+yirb71NCLwrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sY2Wr5fp; arc=none smtp.client-ip=209.85.210.201
+	 To:Cc:Content-Type; b=bMiedLOsChcFyeLzNPErtKGKVmE0EZd+nM1SkDJDPnrKTFq/3hMcRyGRzdROu8LvDdIJInwS4XYyTlmvDfqd7krpZmn+4oe9HcRSR6Rm0Nnf7RMQCvP2d0eeYxJQx1UBSjQMaQ+sRDfQ1z6RGodEOzs8hsRsOw10aY2Y2k0ggDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DcDIPhkH; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sY2Wr5fp"
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e5323e15f2so2818458b3a.3
-        for <rcu@vger.kernel.org>; Fri, 08 Mar 2024 17:09:48 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DcDIPhkH"
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso5003724276.3
+        for <rcu@vger.kernel.org>; Fri, 08 Mar 2024 17:09:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709946588; x=1710551388; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709946590; x=1710551390; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=opv/pkYi5ZzIQaSkE1dFeCV7eMElrF9Hr2aQKt+M0LM=;
-        b=sY2Wr5fpg09RPtdj9bLKU8/33TfK9+4kvMkg+yjdPXkBUOAGFSFwROK/zC3s1MaL5z
-         DccWlFXW+bv30XCRIJI3T9WwVUNzT/i4gEKDrIn3WiGvPqUx+Q/u0KrgIlFtkHD26/n+
-         iBi2U1gxZD19BXWxqQYpCEYxA+CEnsthMty2FBd/yYK/0mWSfQ+AKDHlefDP1W1rEqta
-         IL5+m2rzJE8VqEiY41Cuwrtv5CmmUaDeYD7cy3scFSI7cuIuREvtoAw6WNhrwlnNURT1
-         jncNtTiLsnVh4uMa9LsptlRB+fePoL32YC2kMAs1yzfVi359kwFgktidNQAdgnr6O+9c
-         z+tw==
+        bh=KHsK4PsKTic4mEiyDeXzOn255RqCA20uAznQ1bSFzaA=;
+        b=DcDIPhkHUmysH3Y0TXJ6f42reNgGPRYwJ7d5pAArEpKw95XynkYbg3nX1HQDZnVJkT
+         MGUgkxpwSuRUez2tbDwENhrcl7iF6q39Rcg9wEW+GVMhLNBtbmyr5I1xA9deXRkt+Yn8
+         xKO5MZNOIy+O+zYQJWLD226t7dajg96OTSRLYNUvBqa7HSkzKEBCHqgLU69UGLhM+Ra+
+         z/wp4+DFk5h+7ETohk0ad/Fmm9FvHuLvYDqhPUIrtX0HniBUvwpSGr0yiO/Z2aobPufv
+         ZEueSir1eMJUljPUluh64QhcrpywZ8qAPg7JKiID/vQLEGiIaAlT25Nku5E4KBeiRIJL
+         Qf2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709946588; x=1710551388;
+        d=1e100.net; s=20230601; t=1709946590; x=1710551390;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=opv/pkYi5ZzIQaSkE1dFeCV7eMElrF9Hr2aQKt+M0LM=;
-        b=BYYiJFcRT44uCJ9MJsFY/AGB/unxGLNFNvBum23Dt6VKaVOV92rUHGFPAXzVrNFS5E
-         hTmmcBb6Ay5oqdu7axGAlOOoncloiSnJjGOh9C7UdxunChwWIcYVY2A6xDZWvUHc+mvN
-         qrAOArMoLtDZjlEtLHJFRw4I+lGqIZGzrusXWDBTCklt7Z3A/B7nYuLkqRz6wZCLQsBt
-         ygFUYZdTmsWnW+wB3h1qJIAHtH1Fr8M/gTTKs/3FfQEQTAbgaexCCc5Kd1A3fYU6gtPh
-         WHETELF4BwunSea9ywT0CYBgV/WbxUYpG1aIhFCOZnfapgYHuYA2KS5K6pLlSf7Z90Ru
-         YEHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdEvng/YHamFFUpfnhC1c9hM+00bLIQfWxKpQmjfarpHEj8mTmSvAEtA8A5nsRowso8yeB6eNkKwthcvMNCLt8e2EH
-X-Gm-Message-State: AOJu0YzxVffAwQ6wUDb7hLtTwg/9DPoZ7a7br4BL4GMCJL5NaXMavo9D
-	yopWme8lrupO9Tw4hmEIDYH6e6DoTw+kzfNyu12r7qs0EJ+K5k9zAuhs05N/tS08FOFzkynei+O
-	lLA==
-X-Google-Smtp-Source: AGHT+IEzPID2lPLBmutN4pY8hBZkktARYVaXQpGLwpt2q43XvRaJrXEizBq0sMzKUMMe8Z6+tvqhpC6gOYM=
+        bh=KHsK4PsKTic4mEiyDeXzOn255RqCA20uAznQ1bSFzaA=;
+        b=lX0nXGUhyCAPpZHUZZ/5eDKOVZgB23+7B2JFipTpIOawlbYYB3ULzuQw2s0gbzAixH
+         Pq/EwPdi+uRBuBn5Qi2dKDwny4MP/skiX3ctjFMrznT2nrpWkXsZhJKTUDWIJK69FF8o
+         lUK+uplriand5fAWp5ZqwQZsys7AK0crG04Wa5HkV4M9miOMB4siNRpQna9uqPTo5Djq
+         55dQ8j+82zT/MS9K3cx0fcidn9DFjvZa0g87Z4KJYrNI7DuG5qDLhTNX+J8zNPM6r+Mw
+         O/ofWf8le/9NlmuLlCLMPS1m6Um26OdwHrX6gNVcV9VBAYniEri3Y9ZHCrH7MG1WYv3N
+         7s5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXRg1FZpNgpE2NTo9hZDGT2yKD+aUjohZIlyZb+3LuLHj9qIhnEBilWFJ+tZZQDRU0X9jrpQslpD30ZqkJmdHvJ1zyV
+X-Gm-Message-State: AOJu0YxWYhlDK5GD7JtQdCkGO6+XhN6o0CGCd5zZww+2gK8515tt8iew
+	BUFOfKNYWo45B8+mSYcd0zxsd4zop4jf75JVnzDXDlxUrostAuqrCOOYNatGpzqjrYcWEdNFZyV
+	jFQ==
+X-Google-Smtp-Source: AGHT+IEIADztO63eqskrAmaEw3BTM/48kCGy4bKJDHmHBL7GXVDELSGrNLXpQbHi4xW5mpRDDxSqNyy9B8c=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2291:b0:6e6:4f0a:422 with SMTP id
- f17-20020a056a00229100b006e64f0a0422mr38978pfe.6.1709946588027; Fri, 08 Mar
- 2024 17:09:48 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1886:b0:dcd:3172:7279 with SMTP id
+ cj6-20020a056902188600b00dcd31727279mr118649ybb.8.1709946589958; Fri, 08 Mar
+ 2024 17:09:49 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  8 Mar 2024 17:09:28 -0800
+Date: Fri,  8 Mar 2024 17:09:29 -0800
 In-Reply-To: <20240309010929.1403984-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -61,9 +61,8 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240309010929.1403984-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240309010929.1403984-5-seanjc@google.com>
-Subject: [PATCH 4/5] KVM: x86: Ensure a full memory barrier is emitted in the
- VM-Exit path
+Message-ID: <20240309010929.1403984-6-seanjc@google.com>
+Subject: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
 From: Sean Christopherson <seanjc@google.com>
 To: Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
 	Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
@@ -73,44 +72,74 @@ Cc: kvm@vger.kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Yiwei Zhang <zzyiwei@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Yan Zhao <yan.y.zhao@intel.com>
+Unconditionally honor guest PAT on CPUs that support self-snoop, as
+Intel has confirmed that CPUs that support self-snoop always snoop caches
+and store buffers.  I.e. CPUs with self-snoop maintain cache coherency
+even in the presence of aliased memtypes, thus there is no need to trust
+the guest behaves and only honor PAT as a last resort, as KVM does today.
 
-Ensure a full memory barrier is emitted in the VM-Exit path, as a full
-barrier is required on Intel CPUs to evict WC buffers.  This will allow
-unconditionally honoring guest PAT on Intel CPUs that support self-snoop.
+Honoring guest PAT is desirable for use cases where the guest has access
+to non-coherent DMA _without_ bouncing through VFIO, e.g. when a virtual
+(mediated, for all intents and purposes) GPU is exposed to the guest, along
+with buffers that are consumed directly by the physical GPU, i.e. which
+can't be proxied by the host to ensure writes from the guest are performed
+with the correct memory type for the GPU.
 
-As srcu_read_lock() is always called in the VM-Exit path and it internally
-has a smp_mb(), call smp_mb__after_srcu_read_lock() to avoid adding a
-second fence and make sure smp_mb() is called without dependency on
-implementation details of srcu_read_lock().
-
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-[sean: massage changelog]
+Cc: Yiwei Zhang <zzyiwei@google.com>
+Suggested-by: Yan Zhao <yan.y.zhao@intel.com>
+Suggested-by: Kevin Tian <kevin.tian@intel.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/x86.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/kvm/mmu/mmu.c |  8 +++++---
+ arch/x86/kvm/vmx/vmx.c | 10 ++++++----
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 276ae56dd888..69e815df1699 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11082,6 +11082,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 
- 	kvm_vcpu_srcu_read_lock(vcpu);
- 
-+	/*
-+	 * Call this to ensure WC buffers in guest are evicted after each VM
-+	 * Exit, so that the evicted WC writes can be snooped across all cpus
-+	 */
-+	smp_mb__after_srcu_read_lock();
-+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 403cd8f914cd..7fa514830628 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4622,14 +4622,16 @@ static int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu,
+ bool kvm_mmu_may_ignore_guest_pat(void)
+ {
  	/*
- 	 * Profile KVM exit RIPs:
+-	 * When EPT is enabled (shadow_memtype_mask is non-zero), and the VM
++	 * When EPT is enabled (shadow_memtype_mask is non-zero), the CPU does
++	 * not support self-snoop (or is affected by an erratum), and the VM
+ 	 * has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is to
+ 	 * honor the memtype from the guest's PAT so that guest accesses to
+ 	 * memory that is DMA'd aren't cached against the guest's wishes.  As a
+ 	 * result, KVM _may_ ignore guest PAT, whereas without non-coherent DMA,
+-	 * KVM _always_ ignores guest PAT (when EPT is enabled).
++	 * KVM _always_ ignores or honors guest PAT, i.e. doesn't toggle SPTE
++	 * bits in response to non-coherent device (un)registration.
  	 */
+-	return shadow_memtype_mask;
++	return !static_cpu_has(X86_FEATURE_SELFSNOOP) && shadow_memtype_mask;
+ }
+ 
+ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 17a8e4fdf9c4..5dc4c24ae203 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7605,11 +7605,13 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+ 
+ 	/*
+ 	 * Force WB and ignore guest PAT if the VM does NOT have a non-coherent
+-	 * device attached.  Letting the guest control memory types on Intel
+-	 * CPUs may result in unexpected behavior, and so KVM's ABI is to trust
+-	 * the guest to behave only as a last resort.
++	 * device attached and the CPU doesn't support self-snoop.  Letting the
++	 * guest control memory types on Intel CPUs without self-snoop may
++	 * result in unexpected behavior, and so KVM's (historical) ABI is to
++	 * trust the guest to behave only as a last resort.
+ 	 */
+-	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
++	if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
++	    !kvm_arch_has_noncoherent_dma(vcpu->kvm))
+ 		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+ 
+ 	return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT);
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
