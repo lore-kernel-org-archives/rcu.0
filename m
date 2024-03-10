@@ -1,58 +1,49 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A488439846;
-	Sun, 10 Mar 2024 18:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBBA3A8C0;
+	Sun, 10 Mar 2024 19:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710096963; cv=none; b=ULZ5ZwkcF+397l2puM0qwVMG0Clomzdzr1mhnhQTG1Hc/zHh24xu9ecuHMCkZM++a3l7OTAjYXWwmht/1tnXt/fMACVimcObxDXhITE5CZ3rs2EIEqp3LV5yKdPF5y2//7ErVSkBSjlrdlEjRu5QMB6T14CbN8uiInKiBjk9YZM=
+	t=1710099821; cv=none; b=dQbIQTeZAn9LtkopSrIzDe94lTwBp45w2JN/E8aTYAAV6oke9hFBEQdWUuZNkTJpMgUW6PeIMLUVXbgWHgHtMkyzTliZBVTdkXhrMc8XEz27z8CLZVC5Fkjj9YT7uGFwHsRitu7P7Phl5434x/eayOMLasWvTQgZjxZZ0ylo4MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710096963; c=relaxed/simple;
-	bh=zWJfWBEp3dsUNUz7ef/tgjV61X9sOnNe47Uoh63sW0g=;
+	s=arc-20240116; t=1710099821; c=relaxed/simple;
+	bh=zeepOcvSOEeps6KjwQ75mbN3NbQDT42Kq3qUgI/PVQM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=crgEdQyiBBhkXgE3mhawlDcP5mGpp3pzXvowSongg+2E74JzesAfpD69n/FJug7nDf8dGiqICP2oMVJDXA0rtDPckY6ClJedhoyxCyAEhj+m7ZtM9prxKBH5Jeu7vR65YbvWvQ3CwpkOFudR/XwiDFHOnjP/rTxLgJ5ucLqo8h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XZpglDtM; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vb4I1CLRsO/tqz4DQi8SX+gRjUV4DwlxoVRA7BlopckVn3K1AAbQCIAEaRLdd7rnZP5G+jDahH6ZqLpTZXC+HHU13scbgVYcB8VdIRt/neB0WNVIYPUq/HEzfQrUL+2O8h/yhNgYfeQJICJ7RCFmNyoOYLmLvVdeAla4PlcU6uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZIyFtyG5; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XZpglDtM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2777BC433F1;
-	Sun, 10 Mar 2024 18:56:03 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZIyFtyG5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33936C433F1;
+	Sun, 10 Mar 2024 19:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710096963;
-	bh=zWJfWBEp3dsUNUz7ef/tgjV61X9sOnNe47Uoh63sW0g=;
+	s=k20201202; t=1710099821;
+	bh=zeepOcvSOEeps6KjwQ75mbN3NbQDT42Kq3qUgI/PVQM=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=XZpglDtMPrfS4nN0wSsZkIpmkFigyMpHYGb6G5RaOGxo7nLdNxRDNkgFpwiXSS105
-	 QpsOeIbknn2IQ3pOImrQbsGbYdTYspVtYugWk80JUK/bCMCazgBTS4VJ+Ik5C+pDwK
-	 2uuDo6b5tHHv4+8x3RLsK59lfYmdjJCCOTO6ddqzBTqp43dg5YQ0Hq/gF0pNatQG0I
-	 beFv1wO4ricatAB6iH5s6wlLl8xLkvyBxcuONIBoIy6OQfa6AkrnBCRQ03frL+MDuX
-	 0589hzLWyCIpGw7m1e74BpfkcfRXC5mxVK6UNtB3TlCDhej3kBsdugP1wPHX1WyIoK
-	 Cz31+30YLqXEg==
+	b=ZIyFtyG5P0do0VurNskvQWQUhiJWdyYaJU1XzKVDgap+j67101zTgeRUrXtfR16X0
+	 1FR+ULMrBgekAGGqV7+5FtmY6ERoszdlm/sJ3tmHIkNImU2KTWODuLAGUTmhTnvLv1
+	 Jx+Egtg+MNBTg4uhfA0C4rOu7JUXmMeDvll81v2eIUT94XpXTyZ6CMZnfAIUhV1c61
+	 LYX+QLJURgVEzLFjnEbEPY19mEfrzs/dW5TFUT7jcSk0RZ8jJe819tk49znwTXWHh7
+	 mlcXgZ6y/f/MOVDFoCrHYVZerMsuKV/8LL4Q4yCmyNr5d3j4fdNJhooSHcGT3u1kse
+	 0o4tSb70h6o0Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B7C82CE0556; Sun, 10 Mar 2024 11:56:02 -0700 (PDT)
-Date: Sun, 10 Mar 2024 11:56:02 -0700
+	id B12D7CE0556; Sun, 10 Mar 2024 12:43:40 -0700 (PDT)
+Date: Sun, 10 Mar 2024 12:43:40 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-	andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
-	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
-	mattst88@gmail.com, krypton@ulrich-teichert.org,
-	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
-	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com, rcu@vger.kernel.org
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
-Message-ID: <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+	urezki@gmail.com, neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
+	rostedt@goodmis.org, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 rcu/dev 2/2] rcu/tree: Add comments explaining
+ now-offline-CPU QS reports
+Message-ID: <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
+References: <20240308224439.281349-1-joel@joelfernandes.org>
+ <20240308224439.281349-2-joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,94 +52,114 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240310100330.GA2705505@joelbox2>
+In-Reply-To: <20240308224439.281349-2-joel@joelfernandes.org>
 
-On Sun, Mar 10, 2024 at 06:03:30AM -0400, Joel Fernandes wrote:
-> Hello Ankur and Paul,
+On Fri, Mar 08, 2024 at 05:44:38PM -0500, Joel Fernandes (Google) wrote:
+> This a confusing piece of code (rightfully so as the issue it deals with
+> is complex). Recent discussions brought up a question -- what prevents the
+> rcu_implicit_dyntick_qs() from warning about QS reports for offline
+> CPUs.
 > 
-> On Mon, Feb 12, 2024 at 09:55:39PM -0800, Ankur Arora wrote:
-> > With PREEMPT_RCU=n, cond_resched() provides urgently needed quiescent
-> > states for read-side critical sections via rcu_all_qs().
-> > One reason why this was necessary: lacking preempt-count, the tick
-> > handler has no way of knowing whether it is executing in a read-side
-> > critical section or not.
-> > 
-> > With PREEMPT_AUTO=y, there can be configurations with (PREEMPT_COUNT=y,
-> > PREEMPT_RCU=n). This means that cond_resched() is a stub which does
-> > not provide for quiescent states via rcu_all_qs().
-> > 
-> > So, use the availability of preempt_count() to report quiescent states
-> > in rcu_flavor_sched_clock_irq().
-> > 
-> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> > ---
-> >  kernel/rcu/tree_plugin.h | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 26c79246873a..9b72e9d2b6fe 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -963,13 +963,16 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
-> >   */
-> >  static void rcu_flavor_sched_clock_irq(int user)
-> >  {
-> > -	if (user || rcu_is_cpu_rrupt_from_idle()) {
-> > +	if (user || rcu_is_cpu_rrupt_from_idle() ||
-> > +	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
-> > +	     !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)))) {
+> QS reporting for now-offline CPUs should only happen from:
+> - gp_init()
+> - rcutree_cpu_report_dead()
 > 
-> I was wondering if it makes sense to even support !PREEMPT_RCU under
-> CONFIG_PREEMPT_AUTO.
+> Add some comments to this code explaining how QS reporting is not
+> missed when these functions are concurrently running.
 > 
-> AFAIU, this CONFIG_PREEMPT_AUTO series preempts the kernel on
-> the next tick boundary in the worst case, with all preempt modes including
-> the preempt=none mode.
-> 
-> Considering this, does it makes sense for RCU to be non-preemptible in
-> CONFIG_PREEMPT_AUTO=y? Because if that were the case, and a read-side critical
-> section extended beyond the tick, then it prevents the PREEMPT_AUTO preemption
-> from happening, because rcu_read_lock() would preempt_disable().
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Yes, it does make sense for RCU to be non-preemptible in kernels
-built with CONFIG_PREEMPT_AUTO=y and either CONFIG_PREEMPT_NONE=y or
-CONFIG_PREEMPT_VOLUNTARY=y.  As noted in earlier discussions, there are
-systems that are adequately but not abundantly endowed with memory.
-Such systems need non-preemptible RCU to avoid preempted-reader OOMs.
-Note well that non-preemptible RCU explicitly disables preemption across
-all RCU readers.
+Thank you for putting this together!
+
+A couple of questions below.
 
 							Thanx, Paul
 
+> ---
+>  kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 35 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index bd29fe3c76bf..f3582f843a05 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1917,7 +1917,22 @@ static noinline_for_stack bool rcu_gp_init(void)
 
-> To that end, I wonder if CONFIG_PREEMPT_AUTO should select CONFIG_PREEMPTION
-> (or CONFIG_PREEMPT_BUILD, not sure which) as well because it does cause
-> kernel preemption. That then forces selection of CONFIG_PREEMPT_RCU as well.
+Would it make sense to tag the earlier arch_spin_lock(&rcu_state.ofl_lock)
+as preventing grace period from starting concurrently with
+rcutree_report_cpu_dead()?
+
+>  		trace_rcu_grace_period_init(rcu_state.name, rnp->gp_seq,
+>  					    rnp->level, rnp->grplo,
+>  					    rnp->grphi, rnp->qsmask);
+> -		/* Quiescent states for tasks on any now-offline CPUs. */
+> +		/*
+> +		 * === Quiescent states for tasks on any now-offline CPUs. ===
+> +		 *
+> +		 * QS reporting for now-offline CPUs should only be performed from
+> +		 * either here, i.e., gp_init() or from rcutree_report_cpu_dead().
+> +		 *
+> +		 * Note that, when reporting quiescent states for now-offline CPUs,
+> +		 * the sequence of code doing those reports while also accessing
+> +		 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
+> +		 * that QS reporting is not missed! Otherwise it possible that
+> +		 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
+> +		 * the rnp->lock acquired throughout these QS-reporting
+> +		 * sequences, which is also acquired in
+> +		 * rcutree_report_cpu_dead(), so, acquiring ofl_lock is not
+> +		 * necessary here to synchronize with that function.
+> +		 */
+
+Would it be better to put the long-form description in the "Hotplug
+CPU" section of Documentation/RCU/Design/Requirements/Requirements.rst?
+I will be the first to admit that this section is not as detailed as it
+needs to be.  This section is already referenced by the block comment
+preceding the WARN_ON_ONCE() in rcu_implicit_dyntick_qs(), which is
+where people will look first if any of this gets messed up.
+
+Then these other places can refer to that comment or to that section of
+Requirements.rst, allowing them to focus on the corresponding piece of
+the puzzle.
+
+>  		mask = rnp->qsmask & ~rnp->qsmaskinitnext;
+>  		rnp->rcu_gp_init_mask = mask;
+>  		if ((mask || rnp->wait_blkd_tasks) && rcu_is_leaf_node(rnp))
+> @@ -5116,6 +5131,25 @@ void rcutree_report_cpu_dead(void)
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
+>  	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+>  	rdp->rcu_ofl_gp_state = READ_ONCE(rcu_state.gp_state);
+> +
+> +	/*
+> +	 * === Quiescent state reporting for now-offline CPUs ===
+> +	 *
+> +	 * QS reporting for now-offline CPUs should only be performed from
+> +	 * either here, i.e. rcutree_report_cpu_dead(), or gp_init().
+> +	 *
+> +	 * Note that, when reporting quiescent states for now-offline CPUs,
+> +	 * the sequence of code doing those reports while also accessing
+> +	 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
+> +	 * that QS reporting is not missed! Otherwise it possible that
+> +	 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
+> +	 * the rnp->lock acquired throughout these QS-reporting sequences, which
+> +	 * is also acquired in gp_init().
+> +	 * One slight change to this rule is below, where we release and
+> +	 * reacquire the lock after a QS report, but before we clear the
+> +	 * ->qsmaskinitnext bit. That is OK to do, because gp_init() report a
+> +	 * QS again, if it acquired the rnp->lock before we reacquired below.
+> +	 */
+
+And then this need only say what is happening right here, but possibly
+moved to within the following "if" statement, at which point we know that
+we are in a grace period that cannot end until we report the quiescent
+state (which releases the rcu_node structure's ->lock) and a new grace
+period cannot look at this rcu_node structure's ->qsmaskinitnext until
+we release rcu_state.ofl_lock.
+
+Thoughts?
+
+>  	if (rnp->qsmask & mask) { /* RCU waiting on outgoing CPU? */
+>  		/* Report quiescent state -before- changing ->qsmaskinitnext! */
+>  		rcu_disable_urgency_upon_qs(rdp);
+> -- 
+> 2.34.1
 > 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> >  
-> >  		/*
-> >  		 * Get here if this CPU took its interrupt from user
-> > -		 * mode or from the idle loop, and if this is not a
-> > -		 * nested interrupt.  In this case, the CPU is in
-> > -		 * a quiescent state, so note it.
-> > +		 * mode, from the idle loop without this being a nested
-> > +		 * interrupt, or while not holding a preempt count.
-> > +		 * In this case, the CPU is in a quiescent state, so note
-> > +		 * it.
-> >  		 *
-> >  		 * No memory barrier is required here because rcu_qs()
-> >  		 * references only CPU-local variables that other CPUs
-> > -- 
-> > 2.31.1
-> > 
