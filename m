@@ -1,56 +1,57 @@
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95424F8B1
-	for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 15:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184AC40870
+	for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 16:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170729; cv=none; b=NGOFPwz+F3iskDSgiQap7SpoQxCWwFkxYzaBiD1SZIjRIRwyJCznzz0Wge6/OAVpwCNVbDQjT0CFyq2qmtpkKLpZi/xcdrE/m21ccG0EYWJK9ExwPQB0K+0nQx9x8QgUKVQnhkRb1didVWs512ZZYShnmT67USOUJr+utjsHhDc=
+	t=1710172870; cv=none; b=SScBfdpZeiYkKEdyF8A4chrF3I5mHkYyLuE76iCyp7xhmGK0LpwEPZW9F6remXFSEUdEe7Q0UcOo2d3nhb0y065EgP9yCZBkCvUWRcgggtOrf417SjTBwI5c3/G+rihGfYEZEBgVr0E9Qtc0ing/6/x7Du8Lxs14H7aMNRUs/Qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170729; c=relaxed/simple;
-	bh=WqAq1R6yO6HvXBTzzPZ0POe3MSgm5MFe0edq/GBp6Dw=;
+	s=arc-20240116; t=1710172870; c=relaxed/simple;
+	bh=XNQK/9H9S/TRV1NaA5lRp99yrcK2KjfLQCczuJnqzks=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CQ+RF8h41I7fELC1+9bLoQVNpT+8DEFSLJ1/zxIJgrw/ZLeI/FGaT761nQlRKAzuVWy8L40Itbh5QXr/dPDwLWqZCk1VTBwR109swLIFJb8/YVFKoMwIOhj0egZquEfpxdn/3lnqJsepHcKj9zfmfHjfRg9oH/6u9u14Pnkj0AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=hagV4cUv; arc=none smtp.client-ip=209.85.219.47
+	 In-Reply-To:Content-Type; b=ablmmLPNriZIKzwvrRXe2VoMGyleEAsU7CzXq0CPNvreQ6heMCC++rmlgwQ28Wv24FggmVy8EoNi2hvhnOQ5oaUBT6zs4FP5cMYOMV+7jv50PiXAnDCgM/GhkiLHnNGqHpdWW7hkI3sVMqbdB1dj3ACLGPYKJra0XNgPUivX0+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=I3lQTwkg; arc=none smtp.client-ip=209.85.219.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="hagV4cUv"
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68ee2c0a237so29362276d6.1
-        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 08:25:27 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="I3lQTwkg"
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-690d103a16fso8331626d6.3
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 09:01:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710170727; x=1710775527; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1710172867; x=1710777667; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7goTOKHG5U20FH3hktlSLLPFkEuKqOdbocb84e8A6Ow=;
-        b=hagV4cUvrTixHkCRMKRLWAIAi88Z/r+TKcIfycWtf97i6o/qtWXIS9v9aqsfFjQXac
-         E7Ip5NtuLPAId1yXhTW25fJV/KsojCDmYvaOlZ/PKkd9OGiY46oDdcs0CPdXH0IWTBiB
-         MaI7+zx3u7gbt/FU4u3zSF5LvMYyxfogBV/Nw=
+        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
+        b=I3lQTwkgg3r+7fykGpEbuvampZ89nWaFoVpxl3TB282cE8mkcA6vkUEsCSpkOarspU
+         wga5UdxEA9nq9+PZUHw3xLWZ0bdkjV/9XBni5uJ0YY52yF8uigMpXgMcEIaYs7XKX4GG
+         lH2zfMLjwD0h/uxN86d4oIKzzRV+alIxl3sFQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710170727; x=1710775527;
+        d=1e100.net; s=20230601; t=1710172867; x=1710777667;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7goTOKHG5U20FH3hktlSLLPFkEuKqOdbocb84e8A6Ow=;
-        b=rQHRmaYLASrEdoDFRWnQ2qTHG2+bDxbSEE5n/VYXJ/xuMBZEsfc/AUJ0ispDP2IQWU
-         b/kNaKTJDZb5OxInATbGXxLTD6T5PsDgGTN8j4y0sIoXSjrhoNaM7uRxuqso89dAMN57
-         nJ4iDTu+d83aIvYJyrBNHlcL3MauGOeyTASWVUe2xCFB+cMNLjBN6TcHEGcF2mvdUJ5T
-         L4MCa4tguXGgOg5C4cgsllrNVFiQjvvgadz7tYAUON/EUiE4IiB41FPX7qfyk0UdC4eL
-         rA9GXrc8nRw98AIlNGiZQGko2i67qw11iP6HfIEfoUpAGbIvOXJy56v2ZDKls9D8E+zh
-         wrMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVco7bdntNScaSvyLmHNwkGi/78gOASlK7dhcHdbHw/oz6eKTUvoi58iJNhTYwuhRqtsc+NbUfKjGoQEPfm50ykuZXK
-X-Gm-Message-State: AOJu0YyJetE2e3TVi6byw0wiZjvsthmvvLOOAtwtBN2JkUv0vDyTHCje
-	D1Mxd30YtHxT6R09xgbxXtqKEcxUKnlbstBZtD2wZKtIEIAD+Y7J7N6yba/0Y0U=
-X-Google-Smtp-Source: AGHT+IF3FQmSHAmEeluwZPY3Ss33P+572AGSt88NnI997HJdkS9hnIbAo35OwjXzW0lv+yWyaziFJA==
-X-Received: by 2002:ad4:4eab:0:b0:68f:c83f:a5c8 with SMTP id ed11-20020ad44eab000000b0068fc83fa5c8mr13657818qvb.2.1710170726341;
-        Mon, 11 Mar 2024 08:25:26 -0700 (PDT)
+        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
+        b=Et/0zDlc4bkhm+pP0eYMNB6rpALCTT7FXkfgHJf0ZROhaVHDvHMFYqv6LHyjUGtgy7
+         7OjllslU40n915PoLQudyyWGEYOxFyzpjfpWeCdXZQ/6YVfGMvTXZWDQ7kcF6Ez+/83m
+         hqhqbeAVMP/iCd9p1VahxizXxYNkTNg3yMkzjfzeNxkQWNnSRwpts7XNsiErIbkLv7ai
+         46OpvqcEyVEzile5zCsSpx8H4bVH31FfON528oNFASfrO5or1oz+oVxdPJmoGAiZV2Qt
+         1fLkhGIcBJ17GTi4Qg6fpQttkO15m5jtut52pcM2U6wNkzdXCEGp81yzhGc0/vIIVS3I
+         BEYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWH7ubF7a7ZeskF/WEBWmwuzD+hTXgtzqLbnYQnpn4bAdxs4AeIPnD25G/5piJR3+AYkjKL6HrdmSoEJtdutu2ttGtC
+X-Gm-Message-State: AOJu0Yw5OONByHf8EY+7AU6a6z9dwjoRQJf9p/ZaI9Wd8YyZOBjkHwRV
+	r4Df/K2IYpnpj/OKCpsPjE48CpPku9/r5Jj6D08oNqkREkibd2Zm0Ph68DGvRcief4efSM475g2
+	Y
+X-Google-Smtp-Source: AGHT+IEedX26MR8qvP2/dUT7bPe3lDS7rpbDNaTSAZ7d+VClyScny+YtPHr9raeMpVjPgfxQIxx5PA==
+X-Received: by 2002:a05:6214:17c7:b0:690:cf9c:f568 with SMTP id cu7-20020a05621417c700b00690cf9cf568mr3778333qvb.14.1710172866793;
+        Mon, 11 Mar 2024 09:01:06 -0700 (PDT)
 Received: from [10.5.0.2] ([91.196.69.182])
-        by smtp.gmail.com with ESMTPSA id w18-20020a056214013200b0068fc5887c9fsm2747887qvs.97.2024.03.11.08.25.24
+        by smtp.gmail.com with ESMTPSA id g12-20020a0cf84c000000b00690b8a0e537sm2728405qvo.21.2024.03.11.09.01.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 08:25:25 -0700 (PDT)
-Message-ID: <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
-Date: Mon, 11 Mar 2024 11:25:23 -0400
+        Mon, 11 Mar 2024 09:01:05 -0700 (PDT)
+Message-ID: <4e66c40b-5ac9-4b39-b3f6-f963f90d2b33@joelfernandes.org>
+Date: Mon, 11 Mar 2024 12:01:04 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -58,196 +59,159 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
+Subject: Re: [PATCH v2 rcu/dev 2/2] rcu/tree: Add comments explaining
+ now-offline-CPU QS reports
 Content-Language: en-US
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
- peterz@infradead.org, torvalds@linux-foundation.org,
- akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
- dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
- juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
- mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
- andrew.cooper3@citrix.com, bristot@kernel.org,
- mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
- glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
- mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
- David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
- jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
- boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
- <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
- <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
- <87r0ghl51f.fsf@oracle.com>
+To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+ urezki@gmail.com, neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
+ rostedt@goodmis.org, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
+References: <20240308224439.281349-1-joel@joelfernandes.org>
+ <20240308224439.281349-2-joel@joelfernandes.org>
+ <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
 From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <87r0ghl51f.fsf@oracle.com>
+In-Reply-To: <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-On 3/11/2024 1:18 AM, Ankur Arora wrote:
-> 
-> Joel Fernandes <joel@joelfernandes.org> writes:
-> 
->> On 3/10/2024 2:56 PM, Paul E. McKenney wrote:
->>> On Sun, Mar 10, 2024 at 06:03:30AM -0400, Joel Fernandes wrote:
->>>> Hello Ankur and Paul,
->>>>
->>>> On Mon, Feb 12, 2024 at 09:55:39PM -0800, Ankur Arora wrote:
->>>>> With PREEMPT_RCU=n, cond_resched() provides urgently needed quiescent
->>>>> states for read-side critical sections via rcu_all_qs().
->>>>> One reason why this was necessary: lacking preempt-count, the tick
->>>>> handler has no way of knowing whether it is executing in a read-side
->>>>> critical section or not.
->>>>>
->>>>> With PREEMPT_AUTO=y, there can be configurations with (PREEMPT_COUNT=y,
->>>>> PREEMPT_RCU=n). This means that cond_resched() is a stub which does
->>>>> not provide for quiescent states via rcu_all_qs().
->>>>>
->>>>> So, use the availability of preempt_count() to report quiescent states
->>>>> in rcu_flavor_sched_clock_irq().
->>>>>
->>>>> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
->>>>> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
->>>>> ---
->>>>>  kernel/rcu/tree_plugin.h | 11 +++++++----
->>>>>  1 file changed, 7 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
->>>>> index 26c79246873a..9b72e9d2b6fe 100644
->>>>> --- a/kernel/rcu/tree_plugin.h
->>>>> +++ b/kernel/rcu/tree_plugin.h
->>>>> @@ -963,13 +963,16 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
->>>>>   */
->>>>>  static void rcu_flavor_sched_clock_irq(int user)
->>>>>  {
->>>>> -	if (user || rcu_is_cpu_rrupt_from_idle()) {
->>>>> +	if (user || rcu_is_cpu_rrupt_from_idle() ||
->>>>> +	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
->>>>> +	     !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)))) {
->>>>
->>>> I was wondering if it makes sense to even support !PREEMPT_RCU under
->>>> CONFIG_PREEMPT_AUTO.
->>>>
->>>> AFAIU, this CONFIG_PREEMPT_AUTO series preempts the kernel on
->>>> the next tick boundary in the worst case, with all preempt modes including
->>>> the preempt=none mode.
->>>>
->>>> Considering this, does it makes sense for RCU to be non-preemptible in
->>>> CONFIG_PREEMPT_AUTO=y? Because if that were the case, and a read-side critical
->>>> section extended beyond the tick, then it prevents the PREEMPT_AUTO preemption
->>>> from happening, because rcu_read_lock() would preempt_disable().
->>>
->>> Yes, it does make sense for RCU to be non-preemptible in kernels
->>> built with CONFIG_PREEMPT_AUTO=y and either CONFIG_PREEMPT_NONE=y or
->>> CONFIG_PREEMPT_VOLUNTARY=y.
->>> As noted in earlier discussions, there are
+On 3/10/2024 3:43 PM, Paul E. McKenney wrote:
+> On Fri, Mar 08, 2024 at 05:44:38PM -0500, Joel Fernandes (Google) wrote:
+>> This a confusing piece of code (rightfully so as the issue it deals with
+>> is complex). Recent discussions brought up a question -- what prevents the
+>> rcu_implicit_dyntick_qs() from warning about QS reports for offline
+>> CPUs.
 >>
->> Sorry if I missed a discussion, appreciate a link.
+>> QS reporting for now-offline CPUs should only happen from:
+>> - gp_init()
+>> - rcutree_cpu_report_dead()
 >>
->>> systems that are adequately but not abundantly endowed with memory.
->>> Such systems need non-preemptible RCU to avoid preempted-reader OOMs.
+>> Add some comments to this code explaining how QS reporting is not
+>> missed when these functions are concurrently running.
 >>
->> Then why don't such systems have a problem with CONFIG_PREEMPT_DYNAMIC=y and
->> preempt=none mode? CONFIG_PREEMPT_DYNAMIC forces CONFIG_PREEMPT_RCU=y. There's
->> no way to set CONFIG_PREEMPT_RCU=n with CONFIG_PREEMPT_DYNAMIC=y and
->> preempt=none boot parameter.  IMHO, if this feature is inconsistent with
->> CONFIG_PREEMPT_DYNAMIC, that makes it super confusing.  In fact, I feel
->> CONFIG_PREEMPT_AUTO should instead just be another "preempt=auto" boot parameter
->> mode added to CONFIG_PREEMPT_DYNAMIC feature, otherwise the proliferation of
->> CONFIG_PREEMPT config options is getting a bit insane. And likely going to be
->> burden to the users configuring the PREEMPT Kconfig option IMHO.
+>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> Thank you for putting this together!
+> 
+> A couple of questions below.
+> 
+> 							Thanx, Paul
+> 
+>> ---
+>>  kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 35 insertions(+), 1 deletion(-)
 >>
->>> Note well that non-preemptible RCU explicitly disables preemption across
->>> all RCU readers.
->>
->> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
->> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
->> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
->> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
->> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index bd29fe3c76bf..f3582f843a05 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -1917,7 +1917,22 @@ static noinline_for_stack bool rcu_gp_init(void)
 > 
-> I think that's a view from too close to the implementation. Someone
-> using the kernel is not necessarily concered with whether tasks are
-> preempted or not. They are concerned with throughput and latency.
+> Would it make sense to tag the earlier arch_spin_lock(&rcu_state.ofl_lock)
+> as preventing grace period from starting concurrently with
+> rcutree_report_cpu_dead()?
 
-No, we are not only talking about that (throughput/latency). We are also talking
-about the issue related to RCU reader-preemption causing OOM (well and that
-could hurt both throughput and latency as well).
-
-With CONFIG_PREEMPT_AUTO=y, you now preempt in the preempt=none mode. Something
-very different from the classical CONFIG_PREEMPT_NONE=y.
-
-Essentially this means preemption is now more aggressive from the point of view
-of a preempt=none user. I was suggesting that, a point of view could be RCU
-should always support preepmtiblity (don't give PREEEMPT_RCU=n option) because
-AUTO *does preempt* unlike classic CONFIG_PREEMPT_NONE. Otherwise it is
-inconsistent -- say with CONFIG_PREEMPT=y (another *preemption mode*) which
-forces CONFIG_PREEMPT_RCU. However to Paul's point, we need to worry about those
-users who are concerned with running out of memory due to reader preemption.
-
-In that vain, maybe we should also support CONFIG_PREEMPT_RCU=n for
-CONFIG_PREEMPT=y as well. There are plenty of popular systems with relatively
-low memory that need low latency (like some low-end devices / laptops :-)).
-
-> Framed thus:
-> 
-> preempt=none: tasks typically run to completion, might result in high latency
-> preempt=full: preempt at the earliest opportunity, low latency
-> preempt=voluntary: somewhere between these two
-> 
-> In that case you could argue that CONFIG_PREEMPT_NONE,
-> (CONFIG_PREEMPT_DYNAMIC, preempt=none) and (CONFIG_PREEMPT_AUTO,
-> preempt=none) have broadly similar behaviour.
-
-Yes, in that respect I agree.
+Yes, that makes sense.
 
 > 
->> the way. It is like saying, you want an option for CONFIG_PREEMPT_RCU to be set
->> to =n for CONFIG_PREEMPT=y kernels, sighting users who want a fully-preemptible
->> kernel but are worried about reader preemptions.
->>
->> That aside, as such, I do agree your point of view, that preemptible readers
->> presents a problem to folks using preempt=none in this series and we could
->> decide to keep CONFIG_PREEMPT_RCU optional for whoever wants it that way. I was
->> just saying that I want CONFIG_PREEMPT_AUTO's preempt=none mode to be somewhat
->> consistent with CONFIG_PREEMPT_DYNAMIC's preempt=none. Because I'm pretty sure a
+>>  		trace_rcu_grace_period_init(rcu_state.name, rnp->gp_seq,
+>>  					    rnp->level, rnp->grplo,
+>>  					    rnp->grphi, rnp->qsmask);
+>> -		/* Quiescent states for tasks on any now-offline CPUs. */
+>> +		/*
+>> +		 * === Quiescent states for tasks on any now-offline CPUs. ===
+>> +		 *
+>> +		 * QS reporting for now-offline CPUs should only be performed from
+>> +		 * either here, i.e., gp_init() or from rcutree_report_cpu_dead().
+>> +		 *
+>> +		 * Note that, when reporting quiescent states for now-offline CPUs,
+>> +		 * the sequence of code doing those reports while also accessing
+>> +		 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
+>> +		 * that QS reporting is not missed! Otherwise it possible that
+>> +		 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
+>> +		 * the rnp->lock acquired throughout these QS-reporting
+>> +		 * sequences, which is also acquired in
+>> +		 * rcutree_report_cpu_dead(), so, acquiring ofl_lock is not
+>> +		 * necessary here to synchronize with that function.
+>> +		 */
 > 
-> PREEMPT_DYNAMIC and PREEMPT_AUTO are trying to do different tasks.
-> 
-> PREEMPT_DYNAMIC: allow dynamic switching between the original
-> PREEMPT_NONE, PREEMPT_VOLUNTARY, PREEEMPT models.
-> 
-> PREEMPT_AUTO: remove the need for explicit preemption points, by
->  - bringing the scheduling model under complete control of the
->    scheduler
->  - always having unconditional preemption (and using it to varying
->    degrees of strictness based on the preemption model in effect.)
-> 
-> So, even though PREEMPT_AUTO does use PREEMPT_NONE, PREEMPT_VOLUNTARY,
-> PREEMPT options, those are just meant to loosely identify with Linux's
-> preemption models, and the intent is not to be identical to it -- they
-> can't be identical because the underlying implementation is completely
-> different.
-> 
-> The eventual hope is that we can get rid of explicit preemption points.
+> Would it be better to put the long-form description in the "Hotplug
+> CPU" section of Documentation/RCU/Design/Requirements/Requirements.rst?
 
-Sounds good.
+Yes, totally. In fact I see the following already in Requirements.rst Hotplug
+section:
 
->> week from now, no one will likely be able to tell the difference ;-). So IMHO
->> either CONFIG_PREEMPT_DYNAMIC should be changed to make CONFIG_PREEMPT_RCU
->> optional, or this series should be altered to force CONFIG_PREEMPT_RCU=y.
->>
-> I think that's a patch for CONFIG_PREEMPT_DYNAMIC :).
+During the checking/modification of RCU's hotplug bookkeeping, the
+corresponding CPU's leaf node lock is held. This avoids race conditions
+between RCU's hotplug notifier hooks, the grace period initialization
+code, and the FQS loop, all of which refer to or modify this bookkeeping.
+--
 
-Yes, I'm curious to explore it more. Specifically, with DYNAMIC=y, I'll explore
-during my free time about how different does preempt=none behave from an RCU PoV
-(say versus CONFIG_PREEMPT_NONE). I will also continue reviewing these patches.
+So I/we could just expand it there and refer to the .rst from the code.
 
-Thanks!
+> I will be the first to admit that this section is not as detailed as it
+> needs to be.  This section is already referenced by the block comment
+> preceding the WARN_ON_ONCE() in rcu_implicit_dyntick_qs(), which is
+> where people will look first if any of this gets messed up.
+
+Yes great point, and it is referenced in rcu_gp_init() as well.
+> 
+> Then these other places can refer to that comment or to that section of
+> Requirements.rst, allowing them to focus on the corresponding piece of
+> the puzzle.
+
+Makes sense.
+
+>>  		mask = rnp->qsmask & ~rnp->qsmaskinitnext;
+>>  		rnp->rcu_gp_init_mask = mask;
+>>  		if ((mask || rnp->wait_blkd_tasks) && rcu_is_leaf_node(rnp))
+>> @@ -5116,6 +5131,25 @@ void rcutree_report_cpu_dead(void)
+>>  	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
+>>  	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
+>>  	rdp->rcu_ofl_gp_state = READ_ONCE(rcu_state.gp_state);
+>> +
+>> +	/*
+>> +	 * === Quiescent state reporting for now-offline CPUs ===
+>> +	 *
+>> +	 * QS reporting for now-offline CPUs should only be performed from
+>> +	 * either here, i.e. rcutree_report_cpu_dead(), or gp_init().
+>> +	 *
+>> +	 * Note that, when reporting quiescent states for now-offline CPUs,
+>> +	 * the sequence of code doing those reports while also accessing
+>> +	 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
+>> +	 * that QS reporting is not missed! Otherwise it possible that
+>> +	 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
+>> +	 * the rnp->lock acquired throughout these QS-reporting sequences, which
+>> +	 * is also acquired in gp_init().
+>> +	 * One slight change to this rule is below, where we release and
+>> +	 * reacquire the lock after a QS report, but before we clear the
+>> +	 * ->qsmaskinitnext bit. That is OK to do, because gp_init() report a
+>> +	 * QS again, if it acquired the rnp->lock before we reacquired below.
+>> +	 */
+> 
+> And then this need only say what is happening right here, but possibly
+> moved to within the following "if" statement, at which point we know that
+> we are in a grace period that cannot end until we report the quiescent
+> state (which releases the rcu_node structure's ->lock) and a new grace
+> period cannot look at this rcu_node structure's ->qsmaskinitnext until
+> we release rcu_state.ofl_lock.
+
+Yes, it makes sense and we should mention the ofl_lock as well as you note.
+
+I have an trip starting in 2 weeks that goes on for 3 weeks shortly so I'm
+scrambling a bit for time, and may get to this only after. If Neeraj is
+interested in documenting this, he is more than welcome, especially since he
+also understands this code very well ;-).
+
+(See what I did there with the 'also' ? :P)
+
+thanks,
 
  - Joel
+
+
 
