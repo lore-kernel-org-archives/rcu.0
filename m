@@ -1,132 +1,226 @@
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4840210A12;
-	Mon, 11 Mar 2024 08:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA6141C7C
+	for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 15:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710146637; cv=none; b=d8SVhVpSa0oDdv0sEdl/yB0z/p1fJVtNzrHoYOGQTb4nnQ5JqoQr5X1rWLIeOU29tIp5kK/lDeSl9aArpdKQciz8p1k/SAGAWdUvzUivCVmQXwwpiE4UrxNgpXuZuCeYU4Znjf1dhnlGIr64IFI72mpIpaLB0a2vm7egYr7naDY=
+	t=1710169276; cv=none; b=HP9KLQVIY1uaVXGenFiE6Wt7MFaoUm3EXl+N2TuYKlSEsJhJ7Ze1uCEiCje3MWZJomAndCMlInHN7e9ZayvuZkcEOnUjqRlPS+tqR0rx4niyvETnE2W7Mou2guO+iuM7LGJr4qFHM/WfV/A1RDhwAvHuabm7FgDH2foKNaQfsx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710146637; c=relaxed/simple;
-	bh=DMSj5cmuBsoKykw6uGUbaLkFBI1jgIF1SZ9SEDJ21W8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cnh+/HH6RulqX3ER8f7uOE2X2vmopTlxbniBtJVKVhjQF3X3fEAmWOnu0D9xnezVNNBqoqSBAXn5jYT5NlDju8If/ZONzbfPtf5HjB8ni81MyH+3UTp64v6UueytxhTiy4egvhbdP+HlTMiRnOBKhyNWrd/p9wj2V9ybFQE1QLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UfsGcWzt; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1710169276; c=relaxed/simple;
+	bh=7caZxm5oRUPip8DjgnaZJstowj1S3O0C+usn9rSwLRM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uL4TVNZOlXPUo7wDqimK7CrdiCJT482dDBszWKM6lX5Za2tDfxcHWTUYGV43ae7yJxpF6ZV6WiRugSyvN7obVqDIEjx3O8IBfqi0E/m7iKakvW1XZQvktxs44j0pg/ncMIp+Ye9D1bzGhYVdyunmb8RDJ/DntmQnuS6U7ZKPo9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=PqbqpwId; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UfsGcWzt"
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a461e09ddddso97639766b.2;
-        Mon, 11 Mar 2024 01:43:55 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="PqbqpwId"
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e5343b915fso107171a34.1
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 08:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710146634; x=1710751434; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dj5dpR54wcm5Sr4YbGN4BuKlmyJ25gDgOaHgZt2KJyQ=;
-        b=UfsGcWztyuzkBedEXNK8RhmqWdipZIu8w9RDiN5XBsT08QPBAaYAZJ4iXcYxBM3kER
-         kJRPduofgXzHepxs5yznfKkz5QSiWrD3AeSWh4vQpVo2xvsDihoFo0TNVCGhNgWP/wKQ
-         qEPNrkRC4JrcLenUOn9XRHMYrtjHUNU6kmO/le7b8W5E4Us2AAP/GwoYWX4m0ZDPM986
-         rRoWpPWtbnymBRXdOcxm9bk7TfHvRsHKgPoZO7GDtRuM0AUfngmvb/aWmLh+IRc4sgM6
-         ng+EpmzT7NitMr0GLUFumSxAUBXFMGBFk3Ghl4sbujtCauTSi5RNvNgvfigX1KuPhtm0
-         F/nw==
+        d=joelfernandes.org; s=google; t=1710169273; x=1710774073; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BtQnc20NM3lOSEAeqOet44nWy2uDKmS2BQOyyOWHdiQ=;
+        b=PqbqpwIditKItjCUFztHNTD7MR5WZV5cdSP1ZE1qKEx27wLxJE46l9ErFy2L9cZOaX
+         gN0UD87daDoHPF0V4zytTLrk3qCk7TX2K6XTwvew48TNdsZCB7+eA+0GRGuKq4NpYAZl
+         gu6koDnn0Ag+CLtT+TdHMtWXfCQYDEoDlLLC0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710146634; x=1710751434;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dj5dpR54wcm5Sr4YbGN4BuKlmyJ25gDgOaHgZt2KJyQ=;
-        b=TjSQkEWeEQjTj7h7C2Aoknv0fGNaIrRg6bODlWJh17NSOoD6OuchRaj5Sf1fl4UoiM
-         XzOaQzTwk1VZJt+epPCKUYUquovHNXTtwuoN1uBxAV/TCr5s5j6B0WHXv3E/ymlt/h8y
-         N9/Sb4H8XfF324S5q2eab35Vn0wdRADmY/Hvp9NrzPhOjqXj6NgcV+a97riYdDLhWF7m
-         Dc9lTPeDn82jsuXNoBrOoZ9lfgFMBKjULiHmPCsYhWlXlX3swwvuTGZJmO2XPBdlAL/b
-         Iq5mhD+opXfmWoz1pKdl0odMBuhMHd0rvpH5Cc4mVMhS4a95LZdPdpsGDa22YUXWAz+W
-         obdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWxtHZtLviDJhQ/LAZjdH6IZyBx2s9liVIiF/Hp/+P7LZaoAFQpT9GcxLr/hDt7EZ9kNX6hXpLecW/FlgeX37bGeOlOI3M2ALJ8JRoRZUpzDfXAHDSpy9H13FXV+4Zgd6hf
-X-Gm-Message-State: AOJu0YzvVvWVoCooixsFK3CUdKlVKZLY1eg5T6MXCMAcFLR2U600LUBD
-	WgYi1bKd3jIPphIFRv/y067RAz4ZT+nfuL+0HIpuOXPmlZxehCP97iIBJW3h0WU=
-X-Google-Smtp-Source: AGHT+IGD0DwBnS5yBvanRv04hkOi2OU4yWio6L2mkhYQ8klNqN8cchsvZzI6ow2yjst+nfoYCZa0pw==
-X-Received: by 2002:a17:906:3b88:b0:a3f:9f38:ded with SMTP id u8-20020a1709063b8800b00a3f9f380dedmr3231779ejf.69.1710146634360;
-        Mon, 11 Mar 2024 01:43:54 -0700 (PDT)
-Received: from pc636 (host-87-9-234-71.retail.telecomitalia.it. [87.9.234.71])
-        by smtp.gmail.com with ESMTPSA id qx1-20020a170906fcc100b00a4597bbe213sm2638750ejb.164.2024.03.11.01.43.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 01:43:53 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 11 Mar 2024 09:43:51 +0100
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v6 0/6] Reduce synchronize_rcu() latency(v6)
-Message-ID: <Ze7ER232fPpvGssC@pc636>
-References: <20240308173409.335345-1-urezki@gmail.com>
- <63e54cb9-fd08-43c3-9f42-3627198634e8@paulmck-laptop>
+        d=1e100.net; s=20230601; t=1710169273; x=1710774073;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BtQnc20NM3lOSEAeqOet44nWy2uDKmS2BQOyyOWHdiQ=;
+        b=Q3HMy/RGKONlPd9gzfL7jz+T0Qtotxx6ZuRB+FuACw6huURMpcZsQfvcFeKXXKEPto
+         1p6Pj6pExbbKY5RjoXyoY0lMzEe+v4GyAHHbCWjv6pb2HRZrKtGfiS/VXrs+1E5ho+80
+         EFjdEyux8k0w2iHnM3DpoNYzQWxgcxw3YZiI4gG9+wos7NXmUI89jvyP8FEweL3FtOmf
+         Pw2II4Wff7bq9fM6ZYe53LSukhPALNYIHryREjpetkVekLAu2r1mEKL3jCoLBt4+W/0O
+         OANXzHn8IDyQ21+FY+xMcyPeApFndxe3BFevr/6mpxHFUDKpgNMrLb3kEKkNZ737Xpvr
+         PO4A==
+X-Forwarded-Encrypted: i=1; AJvYcCXjUqS7vozVjNrdjSrJy1iNTFLI1w71T6LF1F54D7t+z0mFeWUEIeya3B4QV9wFCpN5rnxKwe7o3BhzGVF58RFC9jNa
+X-Gm-Message-State: AOJu0YzBfbY4wei3c/l2B9+n4uFQLy4xUgT3nja7q/srWn5AN9E9l/51
+	ZAHD2msTwdAnTQgztpavSKUdVS21Ny8csgeodShTFab7B+biLsQPVV87psVc7oI=
+X-Google-Smtp-Source: AGHT+IHIAV7NYU1n8YWtuy70v1lVgGgS+NmFecGnQAq823xnfbVno7Q2jaNStfoWtEJ0Ez8V3kYUiQ==
+X-Received: by 2002:a05:6870:168a:b0:21e:e476:9170 with SMTP id j10-20020a056870168a00b0021ee4769170mr853729oae.43.1710169272940;
+        Mon, 11 Mar 2024 08:01:12 -0700 (PDT)
+Received: from [10.5.0.2] ([91.196.69.182])
+        by smtp.gmail.com with ESMTPSA id v24-20020ae9e318000000b00788357d6759sm2767749qkf.11.2024.03.11.08.01.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 08:01:11 -0700 (PDT)
+Message-ID: <ffc5019a-b593-4dd9-b4e1-4f7755040f23@joelfernandes.org>
+Date: Mon, 11 Mar 2024 11:01:09 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63e54cb9-fd08-43c3-9f42-3627198634e8@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
+ PREEMPT_COUNT=y
+To: paulmck@kernel.org
+Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, peterz@infradead.org, torvalds@linux-foundation.org,
+ akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
+ mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
+ andrew.cooper3@citrix.com, bristot@kernel.org,
+ mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+ glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+ mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
+ David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+ jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+ boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-16-ankur.a.arora@oracle.com>
+ <20240310100330.GA2705505@joelbox2>
+ <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
+ <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
+ <0965542e-80a7-4837-b14e-903c635aa828@paulmck-laptop>
+Content-Language: en-US
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <0965542e-80a7-4837-b14e-903c635aa828@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 08, 2024 at 01:51:29PM -0800, Paul E. McKenney wrote:
-> On Fri, Mar 08, 2024 at 06:34:03PM +0100, Uladzislau Rezki (Sony) wrote:
-> > This is v6. It is based on the Paul's "dev" branch:
-> > 
-> > HEAD: f1bfe538c7970283040a7188a291aca9f18f0c42
-> > 
-> > please note, that patches should be applied from scratch,
-> > i.e. the v5 has to be dropped from the "dev".
-> > 
-> > v5 -> v6:
-> >  - Fix a race due to realising a wait-head from the gp-kthread;
-> >  - Use our own private workqueue with WQ_MEM_RECLAIM to have
-> >    at least one execution context.
-> > 
-> > v5: https://lore.kernel.org/lkml/20240220183115.74124-1-urezki@gmail.com/
-> > v4: https://lore.kernel.org/lkml/ZZ2bi5iPwXLgjB-f@google.com/T/
-> > v3: https://lore.kernel.org/lkml/cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop/T/
-> > v2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
-> > v1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
+
+
+On 3/10/2024 11:56 PM, Paul E. McKenney wrote:
+> On Sun, Mar 10, 2024 at 08:48:28PM -0400, Joel Fernandes wrote:
+>> On 3/10/2024 2:56 PM, Paul E. McKenney wrote:
+>>> On Sun, Mar 10, 2024 at 06:03:30AM -0400, Joel Fernandes wrote:
+>>>> Hello Ankur and Paul,
+>>>>
+>>>> On Mon, Feb 12, 2024 at 09:55:39PM -0800, Ankur Arora wrote:
+>>>>> With PREEMPT_RCU=n, cond_resched() provides urgently needed quiescent
+>>>>> states for read-side critical sections via rcu_all_qs().
+>>>>> One reason why this was necessary: lacking preempt-count, the tick
+>>>>> handler has no way of knowing whether it is executing in a read-side
+>>>>> critical section or not.
+>>>>>
+>>>>> With PREEMPT_AUTO=y, there can be configurations with (PREEMPT_COUNT=y,
+>>>>> PREEMPT_RCU=n). This means that cond_resched() is a stub which does
+>>>>> not provide for quiescent states via rcu_all_qs().
+>>>>>
+>>>>> So, use the availability of preempt_count() to report quiescent states
+>>>>> in rcu_flavor_sched_clock_irq().
+>>>>>
+>>>>> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+>>>>> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+>>>>> ---
+>>>>>  kernel/rcu/tree_plugin.h | 11 +++++++----
+>>>>>  1 file changed, 7 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+>>>>> index 26c79246873a..9b72e9d2b6fe 100644
+>>>>> --- a/kernel/rcu/tree_plugin.h
+>>>>> +++ b/kernel/rcu/tree_plugin.h
+>>>>> @@ -963,13 +963,16 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
+>>>>>   */
+>>>>>  static void rcu_flavor_sched_clock_irq(int user)
+>>>>>  {
+>>>>> -	if (user || rcu_is_cpu_rrupt_from_idle()) {
+>>>>> +	if (user || rcu_is_cpu_rrupt_from_idle() ||
+>>>>> +	    (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
+>>>>> +	     !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)))) {
+>>>>
+>>>> I was wondering if it makes sense to even support !PREEMPT_RCU under
+>>>> CONFIG_PREEMPT_AUTO.
+>>>>
+>>>> AFAIU, this CONFIG_PREEMPT_AUTO series preempts the kernel on
+>>>> the next tick boundary in the worst case, with all preempt modes including
+>>>> the preempt=none mode.
+>>>>
+>>>> Considering this, does it makes sense for RCU to be non-preemptible in
+>>>> CONFIG_PREEMPT_AUTO=y? Because if that were the case, and a read-side critical
+>>>> section extended beyond the tick, then it prevents the PREEMPT_AUTO preemption
+>>>> from happening, because rcu_read_lock() would preempt_disable().
+>>>
+>>> Yes, it does make sense for RCU to be non-preemptible in kernels
+>>> built with CONFIG_PREEMPT_AUTO=y and either CONFIG_PREEMPT_NONE=y or
+>>> CONFIG_PREEMPT_VOLUNTARY=y.
+>>> As noted in earlier discussions, there are
+>>
+>> Sorry if I missed a discussion, appreciate a link.
 > 
-> Queued in place of your earlier series, thank you!
+> It is part of the discussion of the first version of this patch series,
+> if I recall correctly.
 > 
-Thank you!
-
->
-> Not urgent, but which rcutorture scenario should be pressed into service
-> testing this?
+>>> systems that are adequately but not abundantly endowed with memory.
+>>> Such systems need non-preemptible RCU to avoid preempted-reader OOMs.
+>>
+>> Then why don't such systems have a problem with CONFIG_PREEMPT_DYNAMIC=y and
+>> preempt=none mode? CONFIG_PREEMPT_DYNAMIC forces CONFIG_PREEMPT_RCU=y. There's
+>> no way to set CONFIG_PREEMPT_RCU=n with CONFIG_PREEMPT_DYNAMIC=y and
+>> preempt=none boot parameter.  IMHO, if this feature is inconsistent with
+>> CONFIG_PREEMPT_DYNAMIC, that makes it super confusing.  In fact, I feel
+>> CONFIG_PREEMPT_AUTO should instead just be another "preempt=auto" boot parameter
+>> mode added to CONFIG_PREEMPT_DYNAMIC feature, otherwise the proliferation of
+>> CONFIG_PREEMPT config options is getting a bit insane. And likely going to be
+>> burden to the users configuring the PREEMPT Kconfig option IMHO.
 > 
-I tested with setting '5*TREE01 5*TREE02 5*TREE03 5*TREE04' apart of that
-i used some private test cases. The rcutree.rcu_normal_wake_from_gp=1 has
-to be passed also.
+> Because such systems are built with CONFIG_PREEMPT_DYNAMIC=n.
+> 
+> You could argue that we should just build with CONFIG_PREEMPT_AUTO=n,
+> but the long-term goal of eliminating cond_resched() will make that
+> ineffective.
 
-Also, "rcuscale" can be used to stress the "cur_ops->sync()" path:
+I see what you mean. We/I could also highlight some of the differences in RCU
+between DYNAMIC vs AUTO.
 
-<snip>
-#! /usr/bin/env bash
+> 
+>>> Note well that non-preemptible RCU explicitly disables preemption across
+>>> all RCU readers.
+>>
+>> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
+>> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
+>> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
+>> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
+>> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
+>> the way. It is like saying, you want an option for CONFIG_PREEMPT_RCU to be set
+>> to =n for CONFIG_PREEMPT=y kernels, sighting users who want a fully-preemptible
+>> kernel but are worried about reader preemptions.
+> 
+> Such users can simply avoid building with either CONFIG_PREEMPT_NONE=y
+> or with CONFIG_PREEMPT_VOLUNTARY=y.  They might also experiment with
+> CONFIG_RCU_BOOST=y, and also with short timeouts until boosting.
+> If that doesn't do what they need, we talk with them and either help
+> them configure their kernels, make RCU do what they need, or help work
+> out some other way for them to get their jobs done.
 
-LOOPS=1
+Makes sense.
 
-for (( i=0; i<$LOOPS; i++ )); do
-        tools/testing/selftests/rcutorture/bin/kvm.sh --memory 10G --torture rcuscale \
-    --allcpus \
-      --kconfig CONFIG_NR_CPUS=64 \
-      --kconfig CONFIG_RCU_NOCB_CPU=y \
-      --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
-      --kconfig CONFIG_RCU_LAZY=n \
-      --bootargs "rcuscale.nwriters=200 rcuscale.nreaders=220 rcuscale.minruntime=50000 \
-                         torture.disable_onoff_at_boot rcutree.rcu_normal_wake_from_gp=1" --trust-make
-        echo "Done $i"
-done
-<snip>
+>> That aside, as such, I do agree your point of view, that preemptible readers
+>> presents a problem to folks using preempt=none in this series and we could
+>> decide to keep CONFIG_PREEMPT_RCU optional for whoever wants it that way. I was
+>> just saying that I want CONFIG_PREEMPT_AUTO's preempt=none mode to be somewhat
+>> consistent with CONFIG_PREEMPT_DYNAMIC's preempt=none. Because I'm pretty sure a
+>> week from now, no one will likely be able to tell the difference ;-). So IMHO
+>> either CONFIG_PREEMPT_DYNAMIC should be changed to make CONFIG_PREEMPT_RCU
+>> optional, or this series should be altered to force CONFIG_PREEMPT_RCU=y.
+>>
+>> Let me know if I missed something.
+> 
+> Why not key off of the value of CONFIG_PREEMPT_DYNAMIC?  That way,
+> if both CONFIG_PREEMPT_AUTO=y and CONFIG_PREEMPT_DYNAMIC=y, RCU is
+> always preemptible.  Then CONFIG_PREEMPT_DYNAMIC=y enables boot-time
+> (and maybe even run-time) switching between preemption flavors, while
+> CONFIG_PREEMPT_AUTO instead enables unconditional preemption of any
+> region of code that has not explicitly disabled preemption (or irq or
+> bh or whatever).
 
---
-Uladzislau Rezki
+That could be done. But currently, these patches disable DYNAMIC if AUTO is
+enabled in the config. I think the reason is the 2 features are incompatible.
+i.e. DYNAMIC wants to override the preemption mode at boot time, where as AUTO
+wants the scheduler to have a say in it using the need-resched LAZY bit.
+
+> But one way or another, we really do need non-preemptible RCU in
+> conjunction with CONFIG_PREEMPT_AUTO=y.
+
+Ok, lets go with that. Thanks,
+
+ - Joel
+
