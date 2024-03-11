@@ -1,138 +1,126 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F2C55E6A;
-	Mon, 11 Mar 2024 19:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D57056760;
+	Mon, 11 Mar 2024 19:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710184383; cv=none; b=DUNQ0r51hliAVcYO0CpdLQmMcvmLiJ7nVu2IfyENTG7m9MgMJBtNHyOt1RSUCBq9p++BKfp7wgcd9kDr/EK2BDbbz6EReJAu04ONLNPJ8CdCqblJGk/iwKAfg/54o/z5dUKnOYTRXJhRGaRb64EDiI9cSE4HhQgivLPa4kBONzY=
+	t=1710184800; cv=none; b=HK8Gv79RQd1r8io7CKm2AtQQ/JZtaczJd2+Ja8byMfDGRBEtXxdE7Uf0VuC5jNQrdRROWCA1x4dOoxeFV0sRdN5DPgmw09jk5XUv20VIsNojpHGNLu5IjLyhaTHbGyvdaDW5H2NP/lZy9C2HqKdwgEDJOuMR0dTvjKr3/8l1rM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710184383; c=relaxed/simple;
-	bh=Bm88F28x3u+fvlR01BxaHWKDVnqJ17W1hQeeNr24xyo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RH0kYHFwhTIVhjMUvgWDrdWFCnqQ7+VNKCatZM/DzOh6vKJyQmGJPJv/mggADOMnildexpS45rhv3GPNzTfw4wsekwg0XRlOhNYb2DbSQZw4k1u74ec3ymYe/kgNaJd4Xt2ltpZscFVa3PKJKzxRMvsgOndjFUKh9GK+fPPJrPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rgo65XpS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MgtS9rKg; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1710184800; c=relaxed/simple;
+	bh=W0QwnwhwBVdu31x4nz8XwRx+ENapwWcKDdC+Mp/Nmuk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Eo1NBc3MrOX9E68eKS8j5IF8lKU1gQ2yxBRzzHfA3e0hkLv81gPmuPCXCBQ/+sMO3WJNoQOPW6PDNnEjjA/KY9Gltnths9xiLNWbLNQs1CWMll97qF7V62vBGCye+krMaXX0ZsLBwmmr0rrMR3BbCfUCGLku7P+m9uAerYqXUn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S+l/Spf3; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rgo65XpS";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MgtS9rKg"
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710184379;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ojVF5KnTu9eflAVU8U0iQnMKfsuzwe1NcRF/4Nu1ku0=;
-	b=Rgo65XpSBswDXIVbhhr5JNjVSrbkGysrfzehxKTT6u+DAr7o88/XYdLRIeKGsKiCK9Tqx2
-	GHrb6l9AADDBymnfebyQ6s/ogzybtsiyHhg6n9Px50dsbrgtM4iqYgYsiEhc5ubaSF3fA6
-	zCzNzXpPax6YFRgH7a6FFuEFhT6DkR4NUNjaLBD8vJ39A1Q24ONjJnUzUawJ6mXDVr1V2r
-	0CFgc+aA5N8UYMVfYL7TckWMm5k78cr53BT9Lw3x2pHl7fe2lUIL4u8uvOo1u8JvY8Bos6
-	M86p+XNmf39CejcuMEfzpTon6jgItx2jakHnUtlGyUWf4G1DmZO1+dX+Xg5PlQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710184379;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ojVF5KnTu9eflAVU8U0iQnMKfsuzwe1NcRF/4Nu1ku0=;
-	b=MgtS9rKgX6BQX/+QeE+mXqbLr3cKXV3YAa/33pgzxOv+gdlDUcpltmPk+ADDcurJB/kUmi
-	dhNoMysWEdF+64BA==
-To: Joel Fernandes <joel@joelfernandes.org>, Ankur Arora
- <ankur.a.arora@oracle.com>
-Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org, luto@kernel.org,
- bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
- mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
- mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com,
- bristot@kernel.org, mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
- glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
- mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
- David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
- jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
- boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
-In-Reply-To: <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
- <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
- <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
- <87r0ghl51f.fsf@oracle.com>
- <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
-Date: Mon, 11 Mar 2024 20:12:58 +0100
-Message-ID: <87wmq8pop1.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S+l/Spf3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A484C433F1;
+	Mon, 11 Mar 2024 19:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710184800;
+	bh=W0QwnwhwBVdu31x4nz8XwRx+ENapwWcKDdC+Mp/Nmuk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=S+l/Spf3o/TjHQz6wvvV5qGRkOn6Xf1YXRVSw1ohbude9MQjByfGa+JMCGzsWUYJM
+	 MauoBQMW1M+W6v6ozgZQWpxg62CP8RJNtZrAPVi2k4cKTvfAJ9sgb9Tmtg9Y+2WukN
+	 DJJXsYwJEN/Fj7i5Fma55smmn/88gBAw/H+m6Uxr1i6hduSXLNBYFBwtcsyCSeFTBV
+	 RzaIMY4TXYVRgAhQjVfHnrzUttzEYoQJNCsdbii5Ic9Zg8/A/eqzsOEx74ulxweDnR
+	 7B8h4oVVpugby0r6E2Lkpk3VhPHe1qmCKSHCLUFgGrlivgyIqP18OTnZAscB9/HIoN
+	 DfN6IhFC2sWbw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D9BFBCE0B68; Mon, 11 Mar 2024 12:19:59 -0700 (PDT)
+Date: Mon, 11 Mar 2024 12:19:59 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v6 0/6] Reduce synchronize_rcu() latency(v6)
+Message-ID: <e055993f-9a1b-4c92-b093-7babed9ba58b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240308173409.335345-1-urezki@gmail.com>
+ <63e54cb9-fd08-43c3-9f42-3627198634e8@paulmck-laptop>
+ <Ze7ER232fPpvGssC@pc636>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ze7ER232fPpvGssC@pc636>
 
-On Mon, Mar 11 2024 at 11:25, Joel Fernandes wrote:
-> On 3/11/2024 1:18 AM, Ankur Arora wrote:
->>> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
->>> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
->>> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
->>> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
->>> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
->> 
->> I think that's a view from too close to the implementation. Someone
->> using the kernel is not necessarily concered with whether tasks are
->> preempted or not. They are concerned with throughput and latency.
->
-> No, we are not only talking about that (throughput/latency). We are also talking
-> about the issue related to RCU reader-preemption causing OOM (well and that
-> could hurt both throughput and latency as well).
+On Mon, Mar 11, 2024 at 09:43:51AM +0100, Uladzislau Rezki wrote:
+> On Fri, Mar 08, 2024 at 01:51:29PM -0800, Paul E. McKenney wrote:
+> > On Fri, Mar 08, 2024 at 06:34:03PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > This is v6. It is based on the Paul's "dev" branch:
+> > > 
+> > > HEAD: f1bfe538c7970283040a7188a291aca9f18f0c42
+> > > 
+> > > please note, that patches should be applied from scratch,
+> > > i.e. the v5 has to be dropped from the "dev".
+> > > 
+> > > v5 -> v6:
+> > >  - Fix a race due to realising a wait-head from the gp-kthread;
+> > >  - Use our own private workqueue with WQ_MEM_RECLAIM to have
+> > >    at least one execution context.
+> > > 
+> > > v5: https://lore.kernel.org/lkml/20240220183115.74124-1-urezki@gmail.com/
+> > > v4: https://lore.kernel.org/lkml/ZZ2bi5iPwXLgjB-f@google.com/T/
+> > > v3: https://lore.kernel.org/lkml/cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop/T/
+> > > v2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
+> > > v1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
+> > 
+> > Queued in place of your earlier series, thank you!
+> > 
+> Thank you!
+> 
+> >
+> > Not urgent, but which rcutorture scenario should be pressed into service
+> > testing this?
+> > 
+> I tested with setting '5*TREE01 5*TREE02 5*TREE03 5*TREE04' apart of that
+> i used some private test cases. The rcutree.rcu_normal_wake_from_gp=1 has
+> to be passed also.
+> 
+> Also, "rcuscale" can be used to stress the "cur_ops->sync()" path:
+> 
+> <snip>
+> #! /usr/bin/env bash
+> 
+> LOOPS=1
+> 
+> for (( i=0; i<$LOOPS; i++ )); do
+>         tools/testing/selftests/rcutorture/bin/kvm.sh --memory 10G --torture rcuscale \
+>     --allcpus \
+>       --kconfig CONFIG_NR_CPUS=64 \
+>       --kconfig CONFIG_RCU_NOCB_CPU=y \
+>       --kconfig CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y \
+>       --kconfig CONFIG_RCU_LAZY=n \
+>       --bootargs "rcuscale.nwriters=200 rcuscale.nreaders=220 rcuscale.minruntime=50000 \
+>                          torture.disable_onoff_at_boot rcutree.rcu_normal_wake_from_gp=1" --trust-make
+>         echo "Done $i"
+> done
+> <snip>
 
-That happens only when PREEMPT_RCU=y. For PREEMPT_RCU=n the read side
-critical sections still have preemption disabled.
+Very good, thank you!
 
-> With CONFIG_PREEMPT_AUTO=y, you now preempt in the preempt=none mode. Something
-> very different from the classical CONFIG_PREEMPT_NONE=y.
+Of those five options (TREE01, TREE02, TREE03, TREE04, and rcuscale),
+which one should be changed so that my own testing automatically covers
+the rcutree.rcu_normal_wake_from_gp=1 case?  I would guess that we should
+leave out TREE03, since it covers tall rcu_node trees.  TREE01 looks
+closest to the ChromeOS/Android use case, but you tell me!
 
-In PREEMPT_RCU=y and preempt=none mode this happens only when really
-required, i.e. when the task does not schedule out or returns to user
-space on time, or when a higher scheduling class task gets runnable. For
-the latter the jury is still out whether this should be done or just
-lazily defered like the SCHED_OTHER preemption requests.
+And it might be time to rework the test cases to better align with
+the use cases.  For example, I created TREE10 to cover Meta's fleet.
+But ChromeOS and Android have relatively small numbers of CPUs, so it
+should be possible to rework things a bit to make one of the existing
+tests cover that case, while modifying other tests to take up any
+situations that these changes exclude.
 
-In any case for that to matter this forced preemption would need to
-preempt a RCU read side critical section and then keep the preempted
-task away from the CPU for a long time.
+Thoughts?
 
-That's very different from the unconditional kernel preemption model which
-preempt=full provides and only marginally different from the existing
-PREEMPT_NONE model. I know there might be dragons, but I'm not convinced
-yet that this is an actual problem.
-
-OTOH, doesn't PREEMPT_RCU=y have mechanism to mitigate that already?
-
-> Essentially this means preemption is now more aggressive from the point of view
-> of a preempt=none user. I was suggesting that, a point of view could be RCU
-> should always support preepmtiblity (don't give PREEEMPT_RCU=n option) because
-> AUTO *does preempt* unlike classic CONFIG_PREEMPT_NONE. Otherwise it is
-> inconsistent -- say with CONFIG_PREEMPT=y (another *preemption mode*) which
-> forces CONFIG_PREEMPT_RCU. However to Paul's point, we need to worry about those
-> users who are concerned with running out of memory due to reader
-> preemption.
-
-What's wrong with the combination of PREEMPT_AUTO=y and PREEMPT_RCU=n?
-Paul and me agreed long ago that this needs to be supported.
-
-> In that vain, maybe we should also support CONFIG_PREEMPT_RCU=n for
-> CONFIG_PREEMPT=y as well. There are plenty of popular systems with relatively
-> low memory that need low latency (like some low-end devices / laptops
-> :-)).
-
-I'm not sure whether that's useful as the goal is to get rid of all the
-CONFIG_PREEMPT_FOO options, no?
-
-I'd rather spend brain cycles on figuring out whether RCU can be flipped
-over between PREEMPT_RCU=n/y at boot or obviously run-time.
-
-Thanks,
-
-        tglx
+							Thanx, Paul
