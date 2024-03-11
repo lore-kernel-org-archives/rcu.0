@@ -1,217 +1,120 @@
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184AC40870
-	for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 16:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A064E4E1C4;
+	Mon, 11 Mar 2024 16:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710172870; cv=none; b=SScBfdpZeiYkKEdyF8A4chrF3I5mHkYyLuE76iCyp7xhmGK0LpwEPZW9F6remXFSEUdEe7Q0UcOo2d3nhb0y065EgP9yCZBkCvUWRcgggtOrf417SjTBwI5c3/G+rihGfYEZEBgVr0E9Qtc0ing/6/x7Du8Lxs14H7aMNRUs/Qw=
+	t=1710173352; cv=none; b=ps20j/DN+3yHXdQrh1ZHODSRB5iTampoqm35MF/9VuzF8+KI25SHwospOjjWLh/5Ip2areWSVePKftvBfHkjwVWN5IhcoEQWaFg0/HaUJ85ykpILSUh+E5PgJsXUToQ/HbWvPSbexIkO0scQpzaaDMRjVUw4OP9WXfbVrhfADcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710172870; c=relaxed/simple;
-	bh=XNQK/9H9S/TRV1NaA5lRp99yrcK2KjfLQCczuJnqzks=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ablmmLPNriZIKzwvrRXe2VoMGyleEAsU7CzXq0CPNvreQ6heMCC++rmlgwQ28Wv24FggmVy8EoNi2hvhnOQ5oaUBT6zs4FP5cMYOMV+7jv50PiXAnDCgM/GhkiLHnNGqHpdWW7hkI3sVMqbdB1dj3ACLGPYKJra0XNgPUivX0+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=I3lQTwkg; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1710173352; c=relaxed/simple;
+	bh=kTp7lbSnNsLXpKG9Si9MQlEjAV3o+Nw/JNd9X+rl1zw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ht2eFDibDDlCwkVuBE9RsjyWh9qZopN7OmRyoipJNmWXn9Ue9Hh5LWVPRZYk1vOBsbX3gbxN44W7Pwas5ZGDDCgaJUTokWu9M77jUtjpuKqezoXzU1bIrxDQlA7xW1nKlNC4SJW9sfZfx570/jfvtG57obVp9YQ+ix5necckEiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=aH/jcMKr; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="I3lQTwkg"
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-690d103a16fso8331626d6.3
-        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 09:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710172867; x=1710777667; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
-        b=I3lQTwkgg3r+7fykGpEbuvampZ89nWaFoVpxl3TB282cE8mkcA6vkUEsCSpkOarspU
-         wga5UdxEA9nq9+PZUHw3xLWZ0bdkjV/9XBni5uJ0YY52yF8uigMpXgMcEIaYs7XKX4GG
-         lH2zfMLjwD0h/uxN86d4oIKzzRV+alIxl3sFQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710172867; x=1710777667;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D1N7co8NWWbrgWO/PhCUEvz9SlxrSNp3j8wIFjBPjv4=;
-        b=Et/0zDlc4bkhm+pP0eYMNB6rpALCTT7FXkfgHJf0ZROhaVHDvHMFYqv6LHyjUGtgy7
-         7OjllslU40n915PoLQudyyWGEYOxFyzpjfpWeCdXZQ/6YVfGMvTXZWDQ7kcF6Ez+/83m
-         hqhqbeAVMP/iCd9p1VahxizXxYNkTNg3yMkzjfzeNxkQWNnSRwpts7XNsiErIbkLv7ai
-         46OpvqcEyVEzile5zCsSpx8H4bVH31FfON528oNFASfrO5or1oz+oVxdPJmoGAiZV2Qt
-         1fLkhGIcBJ17GTi4Qg6fpQttkO15m5jtut52pcM2U6wNkzdXCEGp81yzhGc0/vIIVS3I
-         BEYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWH7ubF7a7ZeskF/WEBWmwuzD+hTXgtzqLbnYQnpn4bAdxs4AeIPnD25G/5piJR3+AYkjKL6HrdmSoEJtdutu2ttGtC
-X-Gm-Message-State: AOJu0Yw5OONByHf8EY+7AU6a6z9dwjoRQJf9p/ZaI9Wd8YyZOBjkHwRV
-	r4Df/K2IYpnpj/OKCpsPjE48CpPku9/r5Jj6D08oNqkREkibd2Zm0Ph68DGvRcief4efSM475g2
-	Y
-X-Google-Smtp-Source: AGHT+IEedX26MR8qvP2/dUT7bPe3lDS7rpbDNaTSAZ7d+VClyScny+YtPHr9raeMpVjPgfxQIxx5PA==
-X-Received: by 2002:a05:6214:17c7:b0:690:cf9c:f568 with SMTP id cu7-20020a05621417c700b00690cf9cf568mr3778333qvb.14.1710172866793;
-        Mon, 11 Mar 2024 09:01:06 -0700 (PDT)
-Received: from [10.5.0.2] ([91.196.69.182])
-        by smtp.gmail.com with ESMTPSA id g12-20020a0cf84c000000b00690b8a0e537sm2728405qvo.21.2024.03.11.09.01.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 09:01:05 -0700 (PDT)
-Message-ID: <4e66c40b-5ac9-4b39-b3f6-f963f90d2b33@joelfernandes.org>
-Date: Mon, 11 Mar 2024 12:01:04 -0400
+	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="aH/jcMKr"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=WxV7yBtzK9mHqXYf7INRFe7VyuknYzJqDnF8rARYuuw=; b=aH/jcMKr2anfzzBa3l1TDS7A17
+	sb/8qSMaWZSrxaZnGuefRe67F3Nbf1yynHQ7WZRjOmr+WiGYSSIu3CGqVuO/CG5EF4647VGuqhXJr
+	DuOei5PL7SLgcHhTZJcEPKOYx1UE6bESD/4bq2iIMOdpq2TajGQIcHdEKaJCb0Y5IouE1kq5uoFfI
+	dROfwL8BGaAp91Vt9L85/gIUtRDGignUMVkz0pmY5LGiaiLH7IgQQJoH9mGs1R9jMKAzDRUtCIODt
+	61vc+HIx/q1B9uYBMqJUWhhVLNkvfYHK4SU8/yaKuH83g484P3dfyAQjyYy8lgGciToNJyIxSwoi4
+	QnkKNCtA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60498)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rjiCw-0005QN-0o;
+	Mon, 11 Mar 2024 16:08:58 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rjiCt-0002iw-Ay; Mon, 11 Mar 2024 16:08:55 +0000
+Date: Mon, 11 Mar 2024 16:08:55 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Stefan Wiehler <stefan.wiehler@nokia.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+Message-ID: <Ze8sl01dgGTLcREs@shell.armlinux.org.uk>
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 rcu/dev 2/2] rcu/tree: Add comments explaining
- now-offline-CPU QS reports
-Content-Language: en-US
-To: paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
- urezki@gmail.com, neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
- rostedt@goodmis.org, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-References: <20240308224439.281349-1-joel@joelfernandes.org>
- <20240308224439.281349-2-joel@joelfernandes.org>
- <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <01b4d228-9416-43f8-a62e-124b92e8741a@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-
-
-On 3/10/2024 3:43 PM, Paul E. McKenney wrote:
-> On Fri, Mar 08, 2024 at 05:44:38PM -0500, Joel Fernandes (Google) wrote:
->> This a confusing piece of code (rightfully so as the issue it deals with
->> is complex). Recent discussions brought up a question -- what prevents the
->> rcu_implicit_dyntick_qs() from warning about QS reports for offline
->> CPUs.
->>
->> QS reporting for now-offline CPUs should only happen from:
->> - gp_init()
->> - rcutree_cpu_report_dead()
->>
->> Add some comments to this code explaining how QS reporting is not
->> missed when these functions are concurrently running.
->>
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Thu, Mar 07, 2024 at 05:09:51PM +0100, Stefan Wiehler wrote:
+> With CONFIG_PROVE_RCU_LIST=y and by executing
 > 
-> Thank you for putting this together!
+>   $ echo 0 > /sys/devices/system/cpu/cpu1/online
 > 
-> A couple of questions below.
+> one can trigger the following Lockdep-RCU splat on ARM:
 > 
-> 							Thanx, Paul
+>   =============================
+>   WARNING: suspicious RCU usage
+>   6.8.0-rc7-00001-g0db1d0ed8958 #10 Not tainted
+>   -----------------------------
+>   kernel/locking/lockdep.c:3762 RCU-list traversed in non-reader section!!
 > 
->> ---
->>  kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++++++-
->>  1 file changed, 35 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index bd29fe3c76bf..f3582f843a05 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -1917,7 +1917,22 @@ static noinline_for_stack bool rcu_gp_init(void)
+>   other info that might help us debug this:
 > 
-> Would it make sense to tag the earlier arch_spin_lock(&rcu_state.ofl_lock)
-> as preventing grace period from starting concurrently with
-> rcutree_report_cpu_dead()?
-
-Yes, that makes sense.
-
+>   RCU used illegally from offline CPU!
+>   rcu_scheduler_active = 2, debug_locks = 1
+>   no locks held by swapper/1/0.
 > 
->>  		trace_rcu_grace_period_init(rcu_state.name, rnp->gp_seq,
->>  					    rnp->level, rnp->grplo,
->>  					    rnp->grphi, rnp->qsmask);
->> -		/* Quiescent states for tasks on any now-offline CPUs. */
->> +		/*
->> +		 * === Quiescent states for tasks on any now-offline CPUs. ===
->> +		 *
->> +		 * QS reporting for now-offline CPUs should only be performed from
->> +		 * either here, i.e., gp_init() or from rcutree_report_cpu_dead().
->> +		 *
->> +		 * Note that, when reporting quiescent states for now-offline CPUs,
->> +		 * the sequence of code doing those reports while also accessing
->> +		 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
->> +		 * that QS reporting is not missed! Otherwise it possible that
->> +		 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
->> +		 * the rnp->lock acquired throughout these QS-reporting
->> +		 * sequences, which is also acquired in
->> +		 * rcutree_report_cpu_dead(), so, acquiring ofl_lock is not
->> +		 * necessary here to synchronize with that function.
->> +		 */
+>   stack backtrace:
+>   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc7-00001-g0db1d0ed8958 #10
+>   Hardware name: Allwinner sun8i Family
+>    unwind_backtrace from show_stack+0x10/0x14
+>    show_stack from dump_stack_lvl+0x60/0x90
+>    dump_stack_lvl from lockdep_rcu_suspicious+0x150/0x1a0
+>    lockdep_rcu_suspicious from __lock_acquire+0x11fc/0x29f8
+>    __lock_acquire from lock_acquire+0x10c/0x348
+>    lock_acquire from _raw_spin_lock_irqsave+0x50/0x6c
+>    _raw_spin_lock_irqsave from check_and_switch_context+0x7c/0x4a8
+>    check_and_switch_context from arch_cpu_idle_dead+0x10/0x7c
+>    arch_cpu_idle_dead from do_idle+0xbc/0x138
+>    do_idle from cpu_startup_entry+0x28/0x2c
+>    cpu_startup_entry from secondary_start_kernel+0x11c/0x124
+>    secondary_start_kernel from 0x401018a0
 > 
-> Would it be better to put the long-form description in the "Hotplug
-> CPU" section of Documentation/RCU/Design/Requirements/Requirements.rst?
-
-Yes, totally. In fact I see the following already in Requirements.rst Hotplug
-section:
-
-During the checking/modification of RCU's hotplug bookkeeping, the
-corresponding CPU's leaf node lock is held. This avoids race conditions
-between RCU's hotplug notifier hooks, the grace period initialization
-code, and the FQS loop, all of which refer to or modify this bookkeeping.
---
-
-So I/we could just expand it there and refer to the .rst from the code.
-
-> I will be the first to admit that this section is not as detailed as it
-> needs to be.  This section is already referenced by the block comment
-> preceding the WARN_ON_ONCE() in rcu_implicit_dyntick_qs(), which is
-> where people will look first if any of this gets messed up.
-
-Yes great point, and it is referenced in rcu_gp_init() as well.
+> The CPU is already reported as offline from RCU perspective in
+> cpuhp_report_idle_dead() before arch_cpu_idle_dead() is invoked. Above
+> RCU-Lockdep splat is then triggered by check_and_switch_context() acquiring the
+> ASID spinlock.
 > 
-> Then these other places can refer to that comment or to that section of
-> Requirements.rst, allowing them to focus on the corresponding piece of
-> the puzzle.
-
-Makes sense.
-
->>  		mask = rnp->qsmask & ~rnp->qsmaskinitnext;
->>  		rnp->rcu_gp_init_mask = mask;
->>  		if ((mask || rnp->wait_blkd_tasks) && rcu_is_leaf_node(rnp))
->> @@ -5116,6 +5131,25 @@ void rcutree_report_cpu_dead(void)
->>  	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
->>  	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
->>  	rdp->rcu_ofl_gp_state = READ_ONCE(rcu_state.gp_state);
->> +
->> +	/*
->> +	 * === Quiescent state reporting for now-offline CPUs ===
->> +	 *
->> +	 * QS reporting for now-offline CPUs should only be performed from
->> +	 * either here, i.e. rcutree_report_cpu_dead(), or gp_init().
->> +	 *
->> +	 * Note that, when reporting quiescent states for now-offline CPUs,
->> +	 * the sequence of code doing those reports while also accessing
->> +	 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
->> +	 * that QS reporting is not missed! Otherwise it possible that
->> +	 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
->> +	 * the rnp->lock acquired throughout these QS-reporting sequences, which
->> +	 * is also acquired in gp_init().
->> +	 * One slight change to this rule is below, where we release and
->> +	 * reacquire the lock after a QS report, but before we clear the
->> +	 * ->qsmaskinitnext bit. That is OK to do, because gp_init() report a
->> +	 * QS again, if it acquired the rnp->lock before we reacquired below.
->> +	 */
+> Avoid the false-positive Lockdep-RCU splat by briefly reporting the CPU as
+> online again while the spinlock is held.
 > 
-> And then this need only say what is happening right here, but possibly
-> moved to within the following "if" statement, at which point we know that
-> we are in a grace period that cannot end until we report the quiescent
-> state (which releases the rcu_node structure's ->lock) and a new grace
-> period cannot look at this rcu_node structure's ->qsmaskinitnext until
-> we release rcu_state.ofl_lock.
+> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
 
-Yes, it makes sense and we should mention the ofl_lock as well as you note.
+So what do I do about this? I see you submitted this to the patch system
+on the 8th March, but proposed a different approach on the 9th March. I
+don't see evidence that Paul is happy with the original approach either
+and there's no ack/r-b's on anything here.
 
-I have an trip starting in 2 weeks that goes on for 3 weeks shortly so I'm
-scrambling a bit for time, and may get to this only after. If Neeraj is
-interested in documenting this, he is more than welcome, especially since he
-also understands this code very well ;-).
-
-(See what I did there with the 'also' ? :P)
-
-thanks,
-
- - Joel
-
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
