@@ -1,87 +1,138 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B7155792;
-	Mon, 11 Mar 2024 19:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F2C55E6A;
+	Mon, 11 Mar 2024 19:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183681; cv=none; b=tDQ3VxHr4+6/tTcNRN86mvUTldbdgSn3jqNbyP0y3T7Rl4t2/a7TQwfe+WSUSpMcNfxJZnfeED/54wkUG84xDFSFHeUDByWPYKZ1PzA/r4U+qWBEtmHaaz4ECIL6rJPCO+y7Tkv7XWzeu3h2Kbel4tqgi72hyr8BA7hi8YVkiuU=
+	t=1710184383; cv=none; b=DUNQ0r51hliAVcYO0CpdLQmMcvmLiJ7nVu2IfyENTG7m9MgMJBtNHyOt1RSUCBq9p++BKfp7wgcd9kDr/EK2BDbbz6EReJAu04ONLNPJ8CdCqblJGk/iwKAfg/54o/z5dUKnOYTRXJhRGaRb64EDiI9cSE4HhQgivLPa4kBONzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183681; c=relaxed/simple;
-	bh=nJrp1Y9l6Y09y6DGb2hHKl38I+DRlu4uhl9A1sfZhp0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a1hzaj9cIgm8w/9J+A1OYvL5DkJuXD0n3ec2IfyNp6oI7m+td64MY/zsY1TUWoHAlPiyZ1TFmVf+/JVHXrpT1KZzTqGuUMxiKnzO11PF/cTS6ZxLTglu1NCLfCiAhqqNKWPMKVn3klSFCAZ+hF/FhVQkhvnGLaMO7AYuBtLKtv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tZULmN2V; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1710184383; c=relaxed/simple;
+	bh=Bm88F28x3u+fvlR01BxaHWKDVnqJ17W1hQeeNr24xyo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RH0kYHFwhTIVhjMUvgWDrdWFCnqQ7+VNKCatZM/DzOh6vKJyQmGJPJv/mggADOMnildexpS45rhv3GPNzTfw4wsekwg0XRlOhNYb2DbSQZw4k1u74ec3ymYe/kgNaJd4Xt2ltpZscFVa3PKJKzxRMvsgOndjFUKh9GK+fPPJrPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rgo65XpS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MgtS9rKg; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tZULmN2V"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2DFDC433F1;
-	Mon, 11 Mar 2024 19:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710183681;
-	bh=nJrp1Y9l6Y09y6DGb2hHKl38I+DRlu4uhl9A1sfZhp0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=tZULmN2V0fMkFqidHaZ9A7yEiIKNZjQ1U74oLWYftcP+26hLhqdgrjShqkYLzAX7n
-	 +vgwyE8WkMxMDMOJlSoxKAfike/K0jpmsewvrP1upZXEUWuVShp3hOqnld+TZ5Gal6
-	 X3+VAMK/8GmfIEwlVaE0yH0ndMHYg/movgK+YBp0CJkwKIht/VbkzWJjDMPjQKQnU8
-	 Lk4WglaIi2crRczw6Zc6Yj4WaVTdzmkYcb9QmFmTr3joRqc45KK9HUOkpJM3CIiLS8
-	 2WvWB2xMFK15qX0NYt5ZJ+Toc8d4/jhRzW3aqQ1Fp/h9yYitxD+PYm/QlwIzwJaVDr
-	 mlwYl14eqAdTQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 93F47CE0B68; Mon, 11 Mar 2024 12:01:20 -0700 (PDT)
-Date: Mon, 11 Mar 2024 12:01:20 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Stefan Wiehler <stefan.wiehler@nokia.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Message-ID: <d42e5844-5a53-4854-b464-b622686e9f8f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
- <Ze8sl01dgGTLcREs@shell.armlinux.org.uk>
- <c0001d35-a75a-4cdf-917b-8e1ec159502d@nokia.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rgo65XpS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MgtS9rKg"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710184379;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ojVF5KnTu9eflAVU8U0iQnMKfsuzwe1NcRF/4Nu1ku0=;
+	b=Rgo65XpSBswDXIVbhhr5JNjVSrbkGysrfzehxKTT6u+DAr7o88/XYdLRIeKGsKiCK9Tqx2
+	GHrb6l9AADDBymnfebyQ6s/ogzybtsiyHhg6n9Px50dsbrgtM4iqYgYsiEhc5ubaSF3fA6
+	zCzNzXpPax6YFRgH7a6FFuEFhT6DkR4NUNjaLBD8vJ39A1Q24ONjJnUzUawJ6mXDVr1V2r
+	0CFgc+aA5N8UYMVfYL7TckWMm5k78cr53BT9Lw3x2pHl7fe2lUIL4u8uvOo1u8JvY8Bos6
+	M86p+XNmf39CejcuMEfzpTon6jgItx2jakHnUtlGyUWf4G1DmZO1+dX+Xg5PlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710184379;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ojVF5KnTu9eflAVU8U0iQnMKfsuzwe1NcRF/4Nu1ku0=;
+	b=MgtS9rKgX6BQX/+QeE+mXqbLr3cKXV3YAa/33pgzxOv+gdlDUcpltmPk+ADDcurJB/kUmi
+	dhNoMysWEdF+64BA==
+To: Joel Fernandes <joel@joelfernandes.org>, Ankur Arora
+ <ankur.a.arora@oracle.com>
+Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org, luto@kernel.org,
+ bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+ mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+ mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com,
+ bristot@kernel.org, mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+ glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+ mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
+ David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+ jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+ boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
+Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
+ PREEMPT_COUNT=y
+In-Reply-To: <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-16-ankur.a.arora@oracle.com>
+ <20240310100330.GA2705505@joelbox2>
+ <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
+ <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
+ <87r0ghl51f.fsf@oracle.com>
+ <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
+Date: Mon, 11 Mar 2024 20:12:58 +0100
+Message-ID: <87wmq8pop1.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c0001d35-a75a-4cdf-917b-8e1ec159502d@nokia.com>
+Content-Type: text/plain
 
-On Mon, Mar 11, 2024 at 05:17:43PM +0100, Stefan Wiehler wrote:
-> > So what do I do about this? I see you submitted this to the patch system
-> > on the 8th March, but proposed a different approach on the 9th March. I
-> > don't see evidence that Paul is happy with the original approach either
-> > and there's no ack/r-b's on anything here.
-> 
-> I think we need to wait for feedback from Will Deacon regarding the new
-> arch_spin_lock() based approach. So please abandon the original proposal in the
-> patch system, at least for now…
+On Mon, Mar 11 2024 at 11:25, Joel Fernandes wrote:
+> On 3/11/2024 1:18 AM, Ankur Arora wrote:
+>>> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
+>>> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
+>>> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
+>>> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
+>>> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
+>> 
+>> I think that's a view from too close to the implementation. Someone
+>> using the kernel is not necessarily concered with whether tasks are
+>> preempted or not. They are concerned with throughput and latency.
+>
+> No, we are not only talking about that (throughput/latency). We are also talking
+> about the issue related to RCU reader-preemption causing OOM (well and that
+> could hurt both throughput and latency as well).
 
-I prefer the arch_spin_lock() version, but the other approach also works.
-I agree with Stefan that it would also be good to get Will's feedback.
+That happens only when PREEMPT_RCU=y. For PREEMPT_RCU=n the read side
+critical sections still have preemption disabled.
 
-The downside of the arch_spin_lock() approach is that, in theory, it
-prevents lockdep from seeing deadlocks involving that lock acquisition.
-But in practice, that is a problem only if additional locks can be
-acquired while that lock is held, and there are no such additional
-locks, right?
+> With CONFIG_PREEMPT_AUTO=y, you now preempt in the preempt=none mode. Something
+> very different from the classical CONFIG_PREEMPT_NONE=y.
 
-The downside of the original approach is that it further complicates
-RCU's interaction with offline CPUs, especially should people copy that
-approach in other pieces of offline code.
+In PREEMPT_RCU=y and preempt=none mode this happens only when really
+required, i.e. when the task does not schedule out or returns to user
+space on time, or when a higher scheduling class task gets runnable. For
+the latter the jury is still out whether this should be done or just
+lazily defered like the SCHED_OTHER preemption requests.
 
-So, again, I prefer the arch_spin_lock() approach.
+In any case for that to matter this forced preemption would need to
+preempt a RCU read side critical section and then keep the preempted
+task away from the CPU for a long time.
 
-							Thanx, Paul
+That's very different from the unconditional kernel preemption model which
+preempt=full provides and only marginally different from the existing
+PREEMPT_NONE model. I know there might be dragons, but I'm not convinced
+yet that this is an actual problem.
+
+OTOH, doesn't PREEMPT_RCU=y have mechanism to mitigate that already?
+
+> Essentially this means preemption is now more aggressive from the point of view
+> of a preempt=none user. I was suggesting that, a point of view could be RCU
+> should always support preepmtiblity (don't give PREEEMPT_RCU=n option) because
+> AUTO *does preempt* unlike classic CONFIG_PREEMPT_NONE. Otherwise it is
+> inconsistent -- say with CONFIG_PREEMPT=y (another *preemption mode*) which
+> forces CONFIG_PREEMPT_RCU. However to Paul's point, we need to worry about those
+> users who are concerned with running out of memory due to reader
+> preemption.
+
+What's wrong with the combination of PREEMPT_AUTO=y and PREEMPT_RCU=n?
+Paul and me agreed long ago that this needs to be supported.
+
+> In that vain, maybe we should also support CONFIG_PREEMPT_RCU=n for
+> CONFIG_PREEMPT=y as well. There are plenty of popular systems with relatively
+> low memory that need low latency (like some low-end devices / laptops
+> :-)).
+
+I'm not sure whether that's useful as the goal is to get rid of all the
+CONFIG_PREEMPT_FOO options, no?
+
+I'd rather spend brain cycles on figuring out whether RCU can be flipped
+over between PREEMPT_RCU=n/y at boot or obviously run-time.
+
+Thanks,
+
+        tglx
