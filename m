@@ -1,145 +1,150 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550975788F;
-	Mon, 11 Mar 2024 22:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008F159154
+	for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 22:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710195140; cv=none; b=UJ2VNHSgtL1rVhIp4874VkvLEuS4DWT5mAINDfJI5Qhi9Z0GpwLzHaupmpglTX/aYuBaH248ggVzB4mcSLSEKjQIk/XSX9MZnwVUKhuEBY/vXFiFlov/r5C+3wop3TlF3rI71FpUD+vDQAlHYSyhE0ODBYFKbrWRwWljaggUD9c=
+	t=1710197910; cv=none; b=DgV5yMVEU7kiAE4avfudjri7hV3TI3QudHJPdR05YPGdrr2vpGkJoMKd1znJswrbRO9JLfp1/IzeG5n0fMsf7FsUNqH7QN7D1HVAHfooDrOP3sRQ3Gc63vE89N9y8CGVYg6YgouSWirAcHMV9aZrFxlGf1gz3Hk8AQNsWUnlGfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710195140; c=relaxed/simple;
-	bh=i+hLVEeFHuIqkZa2pzGvHtLIEKGof99hp8p5L/COMVU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=svIWOnHChulk1/68r5IBWAPfDlO71tir0O7Ik4dWzDjbslOt5WK2NjZYkXzWSXL93LmTblhypHaKcEj2T0y3Wtp88IMOwoYagwZxwU3m9L63Iz9SkTNieKlUzATgMCzk0HRhaNBf/MK2SI4tzD7Zuw6AieaLguzL0rOKP0QVKi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Yb/sxm2M; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XwMUQs7y; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1710197910; c=relaxed/simple;
+	bh=Sy2ja+oWY4kLIoimKcOlUaKukJLyATY5SDDnWhA91Ac=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kC1aErXHhNTGEYAW2DL4PA7gac3cAgmtypmmxesrI41a2o+Vv+FlzwCSagxo2v3UIRtcK3c8a1r015mpcNI8MWtKl5y1rS9pm58GtHJ1t2IB+zhZwdvuuXLQxG+Pp2ttezFUwQUK7Hiepglnsz0CS/v8psIBmsAZccBYgbyfJlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=SP5Rpl6c; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Yb/sxm2M";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XwMUQs7y"
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710195135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GL9QhqGRTa3Rvq9zGWZJTH2RJZ51GuDbyPAMx/iVDUE=;
-	b=Yb/sxm2MWpIpDAKoobTntMEwRDMQqDuAOBUYInGETTXA/7urJex9q4ohJOaYTjDmyzIVno
-	G8vkRrr0Q8mi4UGlsH+o+dRx66q99K5/j7gBsQjVE6WohxjuQvo3rHFpyxYcC9EcTC9Bux
-	O0foUeyhfJ7JD+7Qun0nhV25zy6grFFMwXzL7mcCjOBcXdWO0I/GkYjEwBSgU/db81C1h0
-	GhvkO7Zb33tiYStEvwbJf9O0rLAxxAUxIEeKKyMGZykWg/cDRxkBGU2Bxerrnf9TTk0qUV
-	6pKLDm0yW+5B/LDHPjOnLQs743RFcDMwzlXW9Up5TIy7Q1IAozz6lq4GU6X9IQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710195135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GL9QhqGRTa3Rvq9zGWZJTH2RJZ51GuDbyPAMx/iVDUE=;
-	b=XwMUQs7ycRbC+VEBSIKrUnFIwx5xMwcOW50wSXzLMB98eaEyOu/QvZ+qWrciIEeIUGICHf
-	ubQWGXfC4rjWu3Dg==
-To: Ankur Arora <ankur.a.arora@oracle.com>, Joel Fernandes
- <joel@joelfernandes.org>
-Cc: paulmck@kernel.org, Ankur Arora <ankur.a.arora@oracle.com>,
- linux-kernel@vger.kernel.org, peterz@infradead.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org, luto@kernel.org,
- bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
- mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
- mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com,
- bristot@kernel.org, mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
- glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
- mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
- David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
- jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
- boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
-In-Reply-To: <877ci8h4pc.fsf@oracle.com>
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
- <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
- <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
- <0965542e-80a7-4837-b14e-903c635aa828@paulmck-laptop>
- <ffc5019a-b593-4dd9-b4e1-4f7755040f23@joelfernandes.org>
- <877ci8h4pc.fsf@oracle.com>
-Date: Mon, 11 Mar 2024 23:12:15 +0100
-Message-ID: <87il1spge8.ffs@tglx>
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="SP5Rpl6c"
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5685d46b199so2152880a12.3
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 15:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1710197907; x=1710802707; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nZU1Phb/CtBsFoY7di9Z4tKqixjDqwCWx89567ciR4U=;
+        b=SP5Rpl6czg4AU2txJ9pwoUIX+jKaWyTESCU8zziCpmLg+9os4JbkywPsfiptOmsE41
+         029+WB3JRQYltxioUHSXUIPGpDqv6LS2+PG1soznW2JfpV96EjfGnnzZzhcX32+gHYTo
+         M3HX78zmlGi2YrAZhv9a318L7vrIRrkom9wKuw0MK1EWC/yl9rjFYIvNrBA3RvgUN7m4
+         UX6bs5d8pA+o3VT2hffvfjZYRGBG/ScKy1aI2B9aEAE8UH1BZRx8S/zTp9nZohsb+gGQ
+         wPZBsijOHwmHJWmVSgeKpWvs+gw9dgEtQ3qzYK6EZ1piU5acpGjVdZt5dGaENkWC/1QT
+         0ksw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710197907; x=1710802707;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nZU1Phb/CtBsFoY7di9Z4tKqixjDqwCWx89567ciR4U=;
+        b=WNHWIbWr2hFP7czvne5h162jOW/3Yso+iPVxBaQ0QB6chjjtDJkpr7heEm3ewBYU9+
+         qq6TAG9WUlQVq0oifDsuttx/K8/xbtWkkVI31dOwQb3GknUWvEqRo0qLcIEPal/VRUDt
+         58ElDeX/Y6RbIHEDTWVkEHzI+NgqacHSs4NTMUKxatVERwo1GW+5ru71yu3GIjFxNMms
+         w2ZzKMmrn7MSkKkP00ZWKPpDO6WWq2nuxD3H7T4o3UD45V4D99fEbsk7oOWn2iMwgMvP
+         tRDYIRBUeiP1BcfGo+ftt3tQEpnXv9Che5eMcSOs7minbneSsGYJeuoe3VWyrLh5xuXw
+         7GqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX38yHvhyxAOZYiY2RR9b2dlEiincMeVkK5thoIeZ7JlrZR36eu3cSuehAM34ryg3S8EJrm/cXmDOBtiqk0KASwakyc
+X-Gm-Message-State: AOJu0Ywu/KYj360Z/1auyTxqQyP4cQJndk4bVsDdhBhymL5m5mn9yu7Y
+	4TGVB3VnnCCuWj+V5vdOFfSgN6NCsw5XZgt4/6sUZAec76+KFvFrSF+HUaurFVcJA3BZppQ1s0Q
+	RY6ulsBpasSBThEwIX/hIowK/VOnffsAahq1Bjw==
+X-Google-Smtp-Source: AGHT+IGITjDbeDqDL56Vs6ZKVYZbv/7Re4zuMWjQ1QwBopqmSC3CV4Fh/8ykwO7zXo4qD39wARjuqm67gf/TwkPnlqE=
+X-Received: by 2002:a50:cccb:0:b0:566:a235:9355 with SMTP id
+ b11-20020a50cccb000000b00566a2359355mr1211898edj.33.1710197907206; Mon, 11
+ Mar 2024 15:58:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <ZeFPz4D121TgvCje@debian.debian> <CAO3-PboqKqjqrAScqzu6aB8d+fOq97_Wuz8b7d5uoMKT-+-WvQ@mail.gmail.com>
+ <CANn89iLCv0f3vBYt8W+_ZDuNeOY1jDLDBfMbOj7Hzi8s0xQCZA@mail.gmail.com>
+ <CAO3-PboZwTiSmVxVFFfAm94o+LgK=rnm1vbJvMhzSGep+RYzaQ@mail.gmail.com> <ed57b5fa-8b44-48de-904e-fe8da1939292@paulmck-laptop>
+In-Reply-To: <ed57b5fa-8b44-48de-904e-fe8da1939292@paulmck-laptop>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Mon, 11 Mar 2024 17:58:16 -0500
+Message-ID: <CAO3-Pbp0Pxbbgmjf03wKo6MDrQYE7uiL+mUnheT9UA9Pjj5bUQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net: raise RCU qs after each threaded NAPI poll
+To: paulmck@kernel.org
+Cc: Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com, 
+	Jesper Brouer <jesper@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11 2024 at 13:51, Ankur Arora wrote:
-> Joel Fernandes <joel@joelfernandes.org> writes:
->>> Why not key off of the value of CONFIG_PREEMPT_DYNAMIC?  That way,
->>> if both CONFIG_PREEMPT_AUTO=y and CONFIG_PREEMPT_DYNAMIC=y, RCU is
->>> always preemptible.  Then CONFIG_PREEMPT_DYNAMIC=y enables boot-time
->>> (and maybe even run-time) switching between preemption flavors, while
->>> CONFIG_PREEMPT_AUTO instead enables unconditional preemption of any
->>> region of code that has not explicitly disabled preemption (or irq or
->>> bh or whatever).
+On Fri, Mar 1, 2024 at 4:29=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
 >
-> Currently CONFIG_PREEMPT_DYNAMIC does a few things:
+> On Fri, Mar 01, 2024 at 11:30:29AM -0600, Yan Zhai wrote:
+> > Hi Eric,
+> >
+> > On Fri, Mar 1, 2024 at 2:30=E2=80=AFAM Eric Dumazet <edumazet@google.co=
+m> wrote:
+> > >
+> > > I could not see the reason for 1sec (HZ) delays.
+> > >
+> > > Would calling rcu_softirq_qs() every ~10ms instead be a serious issue=
+ ?
+> > >
+> > The trouble scenarios are often when we need to detach an ad-hoc BPF
+> > tracing program, or restart a monitoring service. It is fine as long
+> > as they do not block for 10+ seconds or even completely stall under
+> > heavy traffic. Raising a QS every few ms or HZ both work in such
+> > cases.
+> >
+> > > In anycase, if this all about rcu_tasks, I would prefer using a macro
+> > > defined in kernel/rcu/tasks.h
+> > > instead of having a hidden constant in a networking core function.
+> >
+> > Paul E. McKenney was suggesting either current form or
+> >
+> >          local_bh_enable();
+> >          if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> >                  rcu_softirq_qs_enable(local_bh_enable());
+> >          else
+> >                  local_bh_enable();
+> >
+> > With an interval it might have to be
+> > "rcu_softirq_qs_enable(local_bh_enable(), &next_qs);" to avoid an
+> > unnecessary extern/static var. Will it make more sense to you?
 >
-> 1. dynamic selection of preemption model
-> 2. dynamically toggling explicit preemption points
-> 3. PREEMPT_RCU=y (though maybe this should be fixed to also
->    also allow PREEMPT_RCU=n)
+> I was thinking in terms of something like this (untested):
 >
-> Of these 3, PREEMPT_AUTO only really needs (1).
+>         #define rcu_softirq_qs_enable(enable_stmt, oldj) \
+>         do { \
+>                 if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
+>                     time_after(oldj + HZ / 10, jiffies) { \
+>                         rcu_softirq_qs(); \
+>                         (oldj) =3D jiffies; \
+>                 } \
+>                 do  { enable_stmt; } while (0) \
+>         } while (0)
 >
-> Maybe combining gives us the option of switching between the old and the
-> new models:
->   preempt=none | voluntary | full | auto-none | auto-voluntary
+> Then the call could be "rcu_softirq_qs_enable(local_bh_enable(), last_qs)=
+",
+> where last_qs is initialized by the caller to jiffies.
 >
-> Where the last two provide the new auto semantics. But, the mixture
-> seems too rich.
-> This just complicates all the CONFIG_PREEMPT_* configurations more than
-> they were before when the end goal is to actually reduce and simplify
-> the number of options.
+> The reason for putting "enable_stmt;" into anothor do-while loop is
+> in case someone typos an "else" as the first part of the "enable_stmt"
+> argument.
 >
->> That could be done. But currently, these patches disable DYNAMIC if AUTO is
->> enabled in the config. I think the reason is the 2 features are incompatible.
->> i.e. DYNAMIC wants to override the preemption mode at boot time, where as AUTO
->> wants the scheduler to have a say in it using the need-resched LAZY bit.
+> Would that work?
 >
-> Yeah exactly. That's why I originally made PREEMPT_AUTO and
-> PREEMPT_DYNAMIC exclusive of each other.
+Thanks Paul, just got time to continue this thread as I was
+travelling. I think it is probably better to move
+preempt_disable/enable into the macro to avoid the friction. And also
+since this can affect NAPI thread, NAPI busy loop and XDP cpu map
+thread (+Jesper who reminded me about this), let me send a v3 later to
+cover all of those places.
 
-Rightfully so. The purpose of PREEMPT_AUTO is to get rid of
-PREEMPT_DYNAMIC and not to proliferate the existance of it.
+Yan
 
-There is no point. All what AUTO wants to provide at configuration time
-is the default model. So what would DYNAMIC buy what AUTO does not
-provide trivially with a single sysfs knob which only affects the
-scheduler where the decisions are made and nothing else?
 
-The only extra config knob is PREEMPT_RCU which as we concluded long ago
-needs to support both no and yes when AUTO is selected up to the point
-where that model can be switched at boot time too.
-
-Seriously, keep this stuff simple and straight forward and keep the real
-goals in focus:
-
-   1) Simplify the preemption model zoo
-
-   2) Get rid of the ill defined cond_resched()/might_sleep() hackery
-
-All the extra - pardon my french - ivory tower wankery on top is not
-helpful at all. We can debate this forever on a theoretical base and
-never get anywhere and anything done.
-
-Please focus on getting the base mechanics in place with the required
-fixes for the fallout for preemptible and non-preemtible RCU (selected
-at compile time) and work it out from there.
-
-Perfect it the enemy of good. Especially when nobody can come up with a
-perfect definition what 'perfect' actually means.
-
-Thanks,
-
-        tglx
+>                                                         Thanx, Paul
