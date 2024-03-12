@@ -1,64 +1,103 @@
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08516BE7D;
-	Tue, 12 Mar 2024 22:39:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8855427456;
+	Tue, 12 Mar 2024 23:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710283191; cv=none; b=JyAUotztMXdF3i9nNJCj+nyHfTEepI7gmtxJa57kFNzlmQoXChjZAL6MqHxdDkZ9/lQNeQLYY9MxRbLsV1phom2Rn7SuN6mHi9UxSxe5S2UnCfa7vDintKLysTdOmGYAYYT7mYkMcAoU1WQRHteUpVL4D3Fp04N56FDr5JUh5xQ=
+	t=1710287304; cv=none; b=XWXr8k0ejoSt3A+c41d9Dh9A/llyiTm7bpbqcTMSxPtpYjAXluedBbQyxOxl6sBp5DQIW+SEo7Yeqt3g2t1hBogHMucDxqCYGa6JvpJEsVhvRc5KeY92ObIuUcKQ78q3HhTs0X5DwOh8nnwgIbLqF1hLrGgqAXUEckFg5JqMswE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710283191; c=relaxed/simple;
-	bh=lekLyCnOdnNs3oBm+2/covKa4A8rDcA1+veWI/xEDwk=;
+	s=arc-20240116; t=1710287304; c=relaxed/simple;
+	bh=mFqngeDFdujHoCNS5OxiCIBb8sQL6MyLaTdipFn0kxA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rzr2v7ldyyub2aOODz7f6UmurXO33xStngVirIOrn4Lv8KKktF/8+FtgFOKWPomQjMf9bh337aqMCA6rS8aL0p7k5adpRicki1xKWvRn3eGVNg8QxSW5eSzMDWCD56gZ/0TnQqDfYHD84rARNz0dquzR+WkssLMp5ycxqoeZl+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=c2HsHfC6; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+	 Content-Type:Content-Disposition:In-Reply-To; b=pIILnU8ZJ/bbD6INYFD22UIiuCm6ORftC0dQFhbe/V0/LnCAWOoXWf5KZEzZYRO3ayeD7hZy2lYYhw/78hie2EU6Q2mRDh0GREHoSm7MWRy4Yd+g1qNl0WxdFbWFceovUkuJLDnA5UPRoxa1IzKGf+fB+R81Bx1Mr/xkwC+07ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OEJLD5bY; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="c2HsHfC6"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=IW00bxPf22nPInwkJFq4lSI3c2JyJKalEpfx3FB1zio=; b=c2HsHfC6XSjDkTcQwXA2jzOKXe
-	LzloQp8SVaLEZtyEuGkEJapALmFdG04UCmtczVakGuFATt2K1heprGge0+y2Z+kBJMgmc8EgeEKp2
-	M4WKy/XAXnXwnibshvD+64inMS/ccfRe1uZ4gpIf543TGcFObvQY7BIFFyGXNqX2No0jk7eY1uqNM
-	y/zTSzWKlE6BONMolApzpEtxgoc6oLbC+nkWL1gmFHy6mEa6CmJSVsKhNpP0H1ZN6V678KOHA2Je7
-	/6FtbSlP5M8L2IbJq0rNP0GjkVfvneoxMOo6O3sRB+rxDidLXT/FpadKFLtj9tmHW4iNSoYh2E9bL
-	OqAOpAoA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45008)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rkAmV-00072y-1h;
-	Tue, 12 Mar 2024 22:39:35 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rkAmQ-0003uo-NL; Tue, 12 Mar 2024 22:39:30 +0000
-Date: Tue, 12 Mar 2024 22:39:30 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Will Deacon <will@kernel.org>
-Cc: Stefan Wiehler <stefan.wiehler@nokia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Message-ID: <ZfDZolTDQa76hhaS@shell.armlinux.org.uk>
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
- <bce79497-52c5-4241-aaf6-2a95dc459041@joelfernandes.org>
- <66fdce3a-c7f6-4ef4-ab56-7c9ece0b00e2@nokia.com>
- <ZewycILled+mZhwe@shell.armlinux.org.uk>
- <20240312221440.GA29419@willie-the-truck>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OEJLD5bY"
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60a15449303so35507867b3.0;
+        Tue, 12 Mar 2024 16:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710287301; x=1710892101; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dfLW9yYjxs0j0SPl+Eh0U8ksmTIet5mzavdLeQI0/cI=;
+        b=OEJLD5bY+sUlN1TDjsBChlG4gAJKyJVXxcL3PBBQrhWILCkeBMnjBb2SxJ7I+Yonco
+         NVerF6jPYSHC1xusPzoEIJdph7rQJia90GSosgrIXQI6VsemKqIFvvEJvbQyrUKZlR8U
+         L5O2h3whrZymD3MiFUhxpisNBL+RIYQFTKBpQCoWCiXkWDh7xPKxvoA68YnFeLG++Q/l
+         xbTRiRybhJ6dLdw+W9KgcFy/JYF8jzL763Z6QP4tzpyulzwfxlsDIzFH9WUIOozIKAjv
+         27VwLjpPxGGl31FFcPYX7VT1HgktC6xel19St2QFtahDaOEMNeQ1ZXmBcDYh8KHGPIOs
+         kHfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710287301; x=1710892101;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dfLW9yYjxs0j0SPl+Eh0U8ksmTIet5mzavdLeQI0/cI=;
+        b=Y7Txnr5P23DB03Mgc78z4HwhafpYJXrUYGqTwnN9vE4tf9kJ3ApYgCPpr0gDMn3HPo
+         yYYNZtz3OxMK3FJth6FDT6zbhKiwXZKuilYgxxPl2MI5rCv2FJmrZFrbNSMZQL1QmqDX
+         jN7WEubjrtbL3dD7e53a5z9wNvoXmOt5CWNiRrZr1W4fOZvEu6ZIqfTpFa073kn3D3PG
+         EV2lcXoy8HZreUa+d1UQ3+hjdt7UseMvur13hq4hX4qMiqJ4mhaxzKIW57IT8LxkVaIe
+         qtbmcRsMZYPMRjgTxiaGt1Ajm0+ASxwgQiPXX6tp2/2YggNy5xDmcjRpoIAbu/SAW2aU
+         lUEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVHXM+nSceX4rcLLuqWd6/11zlKjEH82jbeAac/dnzjKzp9sin1QvejZop7xSp52OeYxNozsXcfaGaeHAsiTjKIK/Cj9BEo064QobxBjJ2ueyTA95kqRfNFX5b0nVzDq3ih
+X-Gm-Message-State: AOJu0Yz3IpOanphnGC6y1gpXgiu49/VZIA0X2esFtkBJzopWmKLCnsji
+	34TJKDB25BBRKw+naGHltXVIrrUOilhmU0CqdDYb/27PwhAtpAyj
+X-Google-Smtp-Source: AGHT+IFVo+Wnio+Fy9gdu09sqmxUdejX4goakv5JZpr3o0mP/XGWs8DdbZY+/hAzXQNj8KEOxWgNmw==
+X-Received: by 2002:a0d:dc01:0:b0:609:f1c8:a61 with SMTP id f1-20020a0ddc01000000b00609f1c80a61mr1012892ywe.33.1710287301384;
+        Tue, 12 Mar 2024 16:48:21 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id q11-20020ac8450b000000b004308e46e815sm164553qtn.67.2024.03.12.16.48.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 16:48:20 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 3C69B1200043;
+	Tue, 12 Mar 2024 19:48:20 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 12 Mar 2024 19:48:20 -0400
+X-ME-Sender: <xms:w-nwZUuQSxcZ2RTM8giog4fnQv_IfklticeuWZxrZsDpvCpPRB1HZg>
+    <xme:w-nwZRfu6SVrbYUrIk1K7ycWrvI4DiOSIGhLbeYPX3ieDb1x4W5Y8quz7TNJRXJ6m
+    DNVIjiA9RJF4aROaA>
+X-ME-Received: <xmr:w-nwZfxhF7f_r0joMospCMk9fHg9AneIbGtRK5a8UepCP6CIMcK-LP9_kTA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeeggddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepffdtiefhieegtddvueeuffeiteevtdegjeeuhffhgfdugfefgefgfedtieeg
+    hedvnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:w-nwZXOMMBiP8kE2uADe1M3bPfqUUVSlq6nEev5Q2aPPdVsA8uA8Dg>
+    <xmx:w-nwZU_jIlu05-2jIDQ-DAHTKx735bdQe1WFGV736-JyvG_VRY2SoQ>
+    <xmx:w-nwZfVezrVXJsJSOxBOm_kOu2GR8IGQkKTfx0-OdM5sfJk9w6jEtw>
+    <xmx:w-nwZdcdqEQp2dFSJ-CyRyNWjOIwXa5JRncYoipqfTBoL-NfDShtNQ>
+    <xmx:xOnwZfgzw0r228_RGQBLko4fD7rKD1c1Iu7jIXqc33py0zlqwYEkEiKvd9c>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Mar 2024 19:48:18 -0400 (EDT)
+Date: Tue, 12 Mar 2024 16:48:05 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
+	tglx@linutronix.de, rcu@vger.kernel.org, joel@joelfernandes.org,
+	neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com, frederic@kernel.org,
+	bigeasy@linutronix.de, anna-maria@linutronix.de,
+	chenzhongjin@huawei.com, yangjihong1@huawei.com,
+	rostedt@goodmis.org
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
+ v6.9]
+Message-ID: <ZfDptafiK0jns050@boqun-archlinux>
+References: <ZetHwrCb0KXE0xFI@tardis>
+ <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux>
+ <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+ <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,61 +106,40 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240312221440.GA29419@willie-the-truck>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
 
-On Tue, Mar 12, 2024 at 10:14:40PM +0000, Will Deacon wrote:
-> Hi Russell,
+On Tue, Mar 12, 2024 at 02:44:14PM -0700, Linus Torvalds wrote:
+> On Tue, 12 Mar 2024 at 14:34, Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >
+> > and here is a log where this fails:
+> >
+> > https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
 > 
-> On Sat, Mar 09, 2024 at 09:57:04AM +0000, Russell King (Oracle) wrote:
-> > On Sat, Mar 09, 2024 at 08:45:35AM +0100, Stefan Wiehler wrote:
-> > > diff --git a/arch/arm/mm/context.c b/arch/arm/mm/context.c
-> > > index 4204ffa2d104..4fc2c559f1b6 100644
-> > > --- a/arch/arm/mm/context.c
-> > > +++ b/arch/arm/mm/context.c
-> > > @@ -254,7 +254,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
-> > >             && atomic64_xchg(&per_cpu(active_asids, cpu), asid))
-> > >                 goto switch_mm_fastpath;
-> > > 
-> > > -       raw_spin_lock_irqsave(&cpu_asid_lock, flags);
-> > > +       local_irq_save(flags);
-> > > +       arch_spin_lock(&cpu_asid_lock.raw_lock);
-> > >         /* Check that our ASID belongs to the current generation. */
-> > >         asid = atomic64_read(&mm->context.id);
-> > >         if ((asid ^ atomic64_read(&asid_generation)) >> ASID_BITS) {
-> > > @@ -269,7 +270,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
-> > > 
-> > >         atomic64_set(&per_cpu(active_asids, cpu), asid);
-> > >         cpumask_set_cpu(cpu, mm_cpumask(mm));
-> > > -       raw_spin_unlock_irqrestore(&cpu_asid_lock, flags);
-> > > +       arch_spin_unlock(&cpu_asid_lock.raw_lock);
-> > > +       local_irq_restore(flags);
-> > > 
-> > >  switch_mm_fastpath:
-> > >         cpu_switch_mm(mm->pgd, mm);
-> > > 
-> > > @Russell, what do you think?
-> > 
-> > I think this is Will Deacon's code, so we ought to hear from Will...
+> You could try the 'initcall_debug' kernel command line.
 > 
-> Thanks for adding me in.
-> 
-> Using arch_spin_lock() really feels like a bodge to me. This code isn't
-> run only on the hot-unplug path, but rather this is part of switch_mm()
-> and we really should be able to have lockdep work properly there for
-> the usual case.
-> 
-> Now, do we actually need to worry about the ASID when switching to the
-> init_mm? I'd have thought that would be confined to global (kernel)
-> mappings, so I wonder whether we could avoid this slow path code
-> altogether like we do on arm64 in __switch_mm(). But I must confess that
-> I don't recall the details of the pre-LPAE MMU configuration...
 
-As the init_mm shouldn't have any userspace mappings, isn't the ASID
-entirely redundant? Couldn't check_and_switch_context() just simply
-do the vmalloc seq check, set the reserved ASID, and then head to
-switch_mm_fastpath to call the mm switch code?
+Right, that'll be helpful.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Besides I took a look at the config Florian shared, no TASKS_RCU,
+RCU_LAZY or RCU nocb is enabled. So probably the only left changes in
+the PR are around RCU expedited. Florian, could you see if you can build
+and test with CONFIG_PROVE_RCU=y (you need to select
+CONFIG_PROVE_LOCKING for that)? That'll call synchronize_rcu() +
+synchronize_rcu_expedited() before and after we switch
+rcu_scheduler_active, and it may provide more information. Thanks!
+
+Regards,
+Boqun
+
+> It will make the above *much* noisier, but it might - thanks to all
+> the new noise - show exactly *what* is being crazy slow to initialize.
+> 
+> Because right now it's just radio silence in between those
+> 
+>   [    1.926435] bcmgenet f0480000.ethernet: GENET 5.0 EPHY: 0x0000
+>   [  162.148135] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
+> 
+> things, and that's presumably because some random initcall there just
+> takes forever to time out.
+> 
+>              Linus
