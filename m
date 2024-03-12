@@ -1,185 +1,174 @@
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B087CF09
-	for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 16:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172221386BA
+	for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 17:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710259635; cv=none; b=TWplKm7Qe+9jnKViElr0zuUIHeN/v9EjElt760cv4J2ZctMFa8jIcRsJhjLF+wGRtK5e2GXTRJUYE3f1cN72jiiszAskvo7GtL0Q58XSTYtHkiWWTqIen7uV1JcqT1n4ZNhSH+AxwBvsQz6TO81iob/szaS/9h1pR0CGJexBnBA=
+	t=1710263286; cv=none; b=iC/bHCgvbgwLWUCikCiFF2GPGEZ8O44kjHtddYBz9B7ZYDW3QPiByPi89UEshkZY3SscJb722VOE2ZJGv4nBo7O/LHwmr6Eag4NPHqeyt/xYuWuuRmFjISzPCH4RM8IORiTSzmCSsXSNHVHlHzV92uWLujiDQ4Fmlft5QvmRNxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710259635; c=relaxed/simple;
-	bh=47TghUwia3cDXWzAp+/WdYGMW2Xw4pp2SA8uGm+22R8=;
+	s=arc-20240116; t=1710263286; c=relaxed/simple;
+	bh=LCt3WWvGn4P8WKRrmZ370zHM2Olntl8aKMiYWPrEOpc=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=p6gJK+eWbeZFGoBeWl0BkvqN1P450H4doqcjPRpwR3IR/4V9eN52yt2EN6kfvO67jzpG+OO9uNMk95ZWZGLNVv/MT8NaHUOt/m4O9Jnj3xyy+iph1CczNS11GPnqX0VH8i4R0gWph5dX7U+YlkMgQzZMTMb7XT25bmsCVYMVQJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tuBTs/vq; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=OqOGpkyafyihWIXcaOp6wj0Q0K8mkaT01sddqBwk/dhonxXnrCRxvJ1rFPbw90sto76ftikn5pNthwe+qovBiA7dIartPd5yNKOsUZiSlDMn0jjrqUG9u9cfFuxGFGOXrL8WOcVe6QFH6PIG+/jRCEKVvdduRKdAmZPOWcLrr3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mdd623ZJ; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tuBTs/vq"
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd0ae66422fso337286276.0
-        for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 09:07:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mdd623ZJ"
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5c670f70a37so5220265a12.2
+        for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 10:08:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710259633; x=1710864433; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S7e0yop2/9+XMKAheD47D9K6LZNyzgq+q+UXRKcgLqk=;
-        b=tuBTs/vqIOggA55Pl4RnrzAr7JOJPFsO9whNKTNbbCzAQJyuK7gWcZafNs/qdAIyMi
-         pnlGSJ3D6Swr26/Y9+iymRe3Rb5GfdOhPg3lZrsPw8sILHf8+pG8bsVfOVNeOIIjhLng
-         XvQxEKYvWTO6oQXAo9DAEP4QgIFRGUcc10t+oW/vVF59jAr4nXukwko/IfTlVhXT6LR9
-         GP1Jm7VRDAoGkPSHGCSndw7MoEMzk3x3YEUajoV5UHyiDSybNVp07FjsIF8wMdyA5dTL
-         8QKjRJwvf4/MgUFs9WdMn1QrtADb/gwwUJ0jAutwlreIgT04pvkKrCnGLnPXV1lmPvwv
-         MCaQ==
+        d=google.com; s=20230601; t=1710263284; x=1710868084; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WE8e1Ziotl3mZ18Tc3buOFiIUh2+sqQFXIcFrXQVlYE=;
+        b=Mdd623ZJ8ozdBoWFRe/vQqSnLlmzGLbDodzEDOBX19UTcrKd+OgXfShY7GlxGT4RMv
+         +sFVjEy6MV4eiYg9SzXgmTdgoBYEY30sO6NXqm+DlNr+vjC1C5koOVqSPQD2DfmHLZTP
+         IQ03Af9ObWtSr6X3SiHkvLlYOhJVPVUESqOMzTuxsj8+RHXN5hOPeuFInzIv2S1rdwMO
+         KH7JIv3ccdGVKTwnCsvJRjcyq2YnQSNdbae46eDDWMumtOjJwOxavTsfoSGRMqZKJwHt
+         lwcihTYhkb3CPfl0MXCt5Aapw6+wIC8bj730pa5gaJYvC76M9EDncMO3u/gsxfkcXuWF
+         V5pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710259633; x=1710864433;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=S7e0yop2/9+XMKAheD47D9K6LZNyzgq+q+UXRKcgLqk=;
-        b=OUxp3AcbJ8mv0u1jTwHFwGSN3upk5rPPUqTosjtsn8IPUYAvR/41CY3GBRT6txruXU
-         jg6DAIzyPUnf95QWb7/Md+CvNWfMSqqG/4/ZfeEEFpVIBmo1rTUvuRD0yr8hSYS+OZes
-         iDxKt74kbHp1V0R0BaCi+ElxYXeMHSOPUK7utFsV1u87Lz4CM6K89ZZ8JDVXF/DtvCsE
-         Kqyqv/sW4NCxJ51MF4ittnRF9pF2t33wEiDN+43UaGQhNzQWdz6X95LEqg+UDQS51Jka
-         /+8rofjOUV7hD0Ze2+ZQIhA7zIsLFAPba7K0V+sl3dxGZ3uqZW8MsAlIegVjNfgj7fCM
-         7rAg==
-X-Forwarded-Encrypted: i=1; AJvYcCVuGApD3WBqYEMdhVfKSzJB77D0HtwFDBjKtuUmCBGLMcDNKXEbIIzPfbgBQr/abFfFHzhAHfIEWMHCHoiUiQ7lS2w8
-X-Gm-Message-State: AOJu0YweMtzkt0nZ7oVTHK4kNmriGzfhZhtOZJkGVZUl8s1ptvHhKDW8
-	sbQ0JXR7Cw5FPoCRyGnztKBZ6tCaOagfhMYL2D9mDvw0fblP4Qv3o1DfSgUpIKRyHxozppkwujb
-	3/w==
-X-Google-Smtp-Source: AGHT+IFwdZ9eOBSFBgjZo0PZa4mDo+kneFiPsNfkgVCecBExcgqHC6KVLvlgXd85cKUbVjuC6QrJ/n9KmJc=
+        d=1e100.net; s=20230601; t=1710263284; x=1710868084;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WE8e1Ziotl3mZ18Tc3buOFiIUh2+sqQFXIcFrXQVlYE=;
+        b=wroMJYqp0yc4/+4BiPbOJ8CAHImhJZpmmms0HQShSRvrbZ9+klfn0/rNjiSN2nH8V3
+         QVsRWJucKDBm60n2UJ/YSaCVq30XAv9sZGo/3YNCTFKPMutzIi6qGk87cE3Lsj+PSOYb
+         Rqpe/67RPXC+/H41yUtZqqPNpf+Ts7DyqkbxMyisUMI81wDCq/mP/75+vvvll+mDaWfZ
+         vdR2mYCKm0vM11Ono1mcHWXFo25Wx/jQDkP4DhPjWS7H/3QztC665rfk2uMwNqKSgCO8
+         TwzHbnFp9k+KeE7erYKkgqUjlxJPCeFewW69rPrGK2+/d4GA4rB7XYmTrDhGaiGhYLTJ
+         DEDA==
+X-Forwarded-Encrypted: i=1; AJvYcCWSgFf8wANkWu4p8ziXLWyrJ5zi0+LqL/joegFx53xxKU9EY5cCpADn4UiRoV4E8JheeZKPWRVnFGnpat5k/9JLVUZ9
+X-Gm-Message-State: AOJu0Yy5TNonowhWSfLi4kAmFbdUmgiQfYuPVIW39PYDuK0qBr0rCVrP
+	xSgauN1/qwNR+Due4bMHMX7Y8d4fah2NsKfIt41bJMO8AvKBQ6TdCENgzvm0QnRKffrPGhcGj1d
+	LQA==
+X-Google-Smtp-Source: AGHT+IE5t8MewLarAvjjhbmUaRutQbVD7rwK9cE51AMPD3wv7USN8MStB1z1W1pob50IpkZGEhvbJJKimsM=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:98c5:0:b0:dc6:e884:2342 with SMTP id
- m5-20020a2598c5000000b00dc6e8842342mr3079063ybo.5.1710259633210; Tue, 12 Mar
- 2024 09:07:13 -0700 (PDT)
-Date: Tue, 12 Mar 2024 09:07:11 -0700
-In-Reply-To: <BN9PR11MB527600EC915D668127B97E3C8C2B2@BN9PR11MB5276.namprd11.prod.outlook.com>
+ (user=seanjc job=sendgmr) by 2002:a63:e02:0:b0:5dc:6130:a914 with SMTP id
+ d2-20020a630e02000000b005dc6130a914mr26681pgl.7.1710263284174; Tue, 12 Mar
+ 2024 10:08:04 -0700 (PDT)
+Date: Tue, 12 Mar 2024 10:08:02 -0700
+In-Reply-To: <5ee34382-b45b-2069-ea33-ef58acacaa79@oracle.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-6-seanjc@google.com>
- <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com> <Ze-hC8NozVbOQQIT@google.com> <BN9PR11MB527600EC915D668127B97E3C8C2B2@BN9PR11MB5276.namprd11.prod.outlook.com>
-Message-ID: <ZfB9rzqOWmbaOeHd@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
+References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-2-seanjc@google.com>
+ <5ee34382-b45b-2069-ea33-ef58acacaa79@oracle.com>
+Message-ID: <ZfCL8mCmmEx5wGwv@google.com>
+Subject: Re: [PATCH 1/5] KVM: x86: Remove VMX support for virtualizing guest
+ MTRR memtypes
 From: Sean Christopherson <seanjc@google.com>
-To: Kevin Tian <kevin.tian@intel.com>
-Cc: Yan Y Zhao <yan.y.zhao@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Josh Triplett <josh@joshtriplett.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+To: Dongli Zhang <dongli.zhang@oracle.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, kvm@vger.kernel.org, 
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, 
+	Yiwei Zhang <zzyiwei@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Mar 12, 2024, Kevin Tian wrote:
-> > From: Sean Christopherson <seanjc@google.com>
-> > Sent: Tuesday, March 12, 2024 8:26 AM
-> >=20
-> > On Mon, Mar 11, 2024, Yan Zhao wrote:
-> > > For the case of !static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-> > > kvm_arch_has_noncoherent_dma(vcpu->kvm), I think we at least should w=
-arn
-> > > about unsafe before honoring guest memory type.
-> >=20
-> > I don't think it gains us enough to offset the potential pain such a
-> > message would bring.  Assuming the warning isn't outright ignored, the =
-most
-> > likely scenario is that the warning will cause random end users to worr=
-y
-> > that the setup they've been running for years is broken, when in realit=
-y
-> > it's probably just fine for their
-> > use case.
->=20
-> Isn't the 'worry' necessary to allow end users evaluate whether "it's
-> probably just fine for their use case"?
+On Mon, Mar 11, 2024, Dongli Zhang wrote:
+> 
+> 
+> On 3/8/24 17:09, Sean Christopherson wrote:
+> > Remove KVM's support for virtualizing guest MTRR memtypes, as full MTRR
+> > adds no value, negatively impacts guest performance, and is a maintenance
+> > burden due to it's complexity and oddities.
+> > 
+> > KVM's approach to virtualizating MTRRs make no sense, at all.  KVM *only*
+> > honors guest MTRR memtypes if EPT is enabled *and* the guest has a device
+> > that may perform non-coherent DMA access.  From a hardware virtualization
+> > perspective of guest MTRRs, there is _nothing_ special about EPT.  Legacy
+> > shadowing paging doesn't magically account for guest MTRRs, nor does NPT.
+> 
+> [snip]
+> 
+> >  
+> > -bool __kvm_mmu_honors_guest_mtrrs(bool vm_has_noncoherent_dma)
+> > +bool kvm_mmu_may_ignore_guest_pat(void)
+> >  {
+> >  	/*
+> > -	 * If host MTRRs are ignored (shadow_memtype_mask is non-zero), and the
+> > -	 * VM has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is
+> > -	 * to honor the memtype from the guest's MTRRs so that guest accesses
+> > -	 * to memory that is DMA'd aren't cached against the guest's wishes.
+> > -	 *
+> > -	 * Note, KVM may still ultimately ignore guest MTRRs for certain PFNs,
+> > -	 * e.g. KVM will force UC memtype for host MMIO.
+> > +	 * When EPT is enabled (shadow_memtype_mask is non-zero), and the VM
+> > +	 * has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is to
+> > +	 * honor the memtype from the guest's PAT so that guest accesses to
+> > +	 * memory that is DMA'd aren't cached against the guest's wishes.  As a
+> > +	 * result, KVM _may_ ignore guest PAT, whereas without non-coherent DMA,
+> > +	 * KVM _always_ ignores guest PAT (when EPT is enabled).
+> >  	 */
+> > -	return vm_has_noncoherent_dma && shadow_memtype_mask;
+> > +	return shadow_memtype_mask;
+> >  }
+> >  
+> 
+> Any special reason to use the naming 'may_ignore_guest_pat', but not
+> 'may_honor_guest_pat'?
 
-Realistically, outside of large scale deployments, no end user is going to =
-be able
-to make that evaluation, because practically speaking it requires someone w=
-ith
-quite low-level hardware knowledge to be able to make that judgment call.  =
-And
-counting by number of human end users (as opposed to number of VMs being ru=
-n), I
-am willing to bet that the overwhelming majority of KVM users aren't kernel=
- or
-systems engineers.
+Because which (after this series) is would either be misleading or outright wrong.
+If KVM returns true from the helper based solely on shadow_memtype_mask, then it's
+misleading because KVM will *always* honors guest PAT for such CPUs.  I.e. that
+name would yield this misleading statement.
 
-Understandably, users tend to be alarmed by (or suspicious of) new warnings=
- that
-show up.  E.g. see the ancient KVM_SET_TSS_ADDR pr_warn[*].  And recently, =
-we had
-an internal bug report filed against KVM because they observed a performanc=
-e
-regression when booting a KVM guest, and saw a new message about some CPU
-vulnerability being mitigated on VM-Exit that showed up in their *guest* ke=
-rnel.
+  If the CPU supports self-snoop, KVM may honor guest PAT.
 
-In short, my concern is that adding a new pr_warn() will generate noise for=
- end
-users *and* for KVM developers/maintainers, because even if we phrase the m=
-essage
-to talk specifically about "untrusted workloads", the majority of affected =
-users
-will not have the necessary knowledge to make an informed decision.
+If KVM returns true iff self-snoop is NOT available (as proposed in this series),
+then it's outright wrong as KVM would return false, i.e. would make this incorrect
+statement:
 
-[*] https://lore.kernel.org/all/f1afa6c0-cde2-ab8b-ea71-bfa62a45b956@tarent=
-.de
+  If the CPU supports self-snoop, KVM never honors guest PAT.
 
-> I saw the old comment already mentioned that doing so may lead to unexpec=
-ted
-> behaviors. But I'm not sure whether such code-level caveat has been visib=
-le
-> enough to end users.
+As saying that KVM may not or cannot do something is saying that KVM will never
+do that thing.
 
-Another point to consider: KVM is _always_ potentially broken on such CPUs,=
- as
-KVM forces WB for guest accesses.  I.e. KVM will create memory aliasing if =
-the
-host has guest memory mapped as non-WB in the PAT, without non-coherent DMA
-exposed to the guest.
+And because the EPT flag is "ignore guest PAT", not "honor guest PAT", but that's
+as much coincidence as it is anything else.
 
-> > I would be quite surprised if there are people running untrusted worklo=
-ads
-> > on 10+ year old silicon *and* have passthrough devices and non-coherent
-> > IOMMUs/DMA.
->=20
-> this is probably true.
->=20
-> > And anyone exposing a device directly to an untrusted workload really
-> > should have done their homework.
->=20
-> or they run trusted workloads which might be tampered by virus to
-> exceed the scope of their homework. =F0=9F=98=8A
+> Since it is also controlled by other cases, e.g., kvm_arch_has_noncoherent_dma()
+> at vmx_get_mt_mask(), it can be 'may_honor_guest_pat' too?
+> 
+> Therefore, why not directly use 'shadow_memtype_mask' (without the API), or some
+> naming like "ept_enabled_for_hardware".
 
-If a workload is being run in a KVM guest for host isolation/security purpo=
-ses,
-and a device was exposed to said workload, then I would firmly consider ana=
-lyzing
-the impact of a compromised guest to be part of their homework.
+Again, after this series, KVM will *always* honor guest PAT for CPUs with self-snoop,
+i.e. KVM will *never* ignore guest PAT.  But for CPUs without self-snoop (or with
+errata), KVM conditionally honors/ignores guest PAT.
 
-> > And it's not like we're going to change KVM's historical behavior at th=
-is point.
->=20
-> I agree with your point of not breaking userspace. But still think a warn=
-ing
-> might be informative to let users evaluate their setup against a newly
-> identified "unexpected behavior"  which has security implication beyond
-> the guest, while the previous interpretation of "unexpected behavior"=20
-> might be that the guest can at most shoot its own foot...
+> Even with the code from PATCH 5/5, we still have high chance that VM has
+> non-coherent DMA?
 
-If this issue weren't limited to 10+ year old hardware, I would be more inc=
-lined
-to add a message.  But at this point, realistically the only thing KVM woul=
-d be
-saying is "you're running old hardware, that might be unsafe in today's wor=
-ld".
+I don't follow.  On CPUs with self-snoop, whether or not the VM has non-coherent
+DMA (from VFIO!) is irrelevant.  If the CPU has self-snoop, then KVM can safely
+honor guest PAT at all times.
 
-For users that care about security, we'd be telling them something they alr=
-eady
-know (and if they don't know, they've got bigger problems).  And for everyo=
-ne
-else, it'd be scary noise without any meaningful benefit.
+>  bool kvm_mmu_may_ignore_guest_pat(void)
+>  {
+>  	/*
+> -	 * When EPT is enabled (shadow_memtype_mask is non-zero), and the VM
+> +	 * When EPT is enabled (shadow_memtype_mask is non-zero), the CPU does
+> +	 * not support self-snoop (or is affected by an erratum), and the VM
+>  	 * has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is to
+>  	 * honor the memtype from the guest's PAT so that guest accesses to
+>  	 * memory that is DMA'd aren't cached against the guest's wishes.  As a
+>  	 * result, KVM _may_ ignore guest PAT, whereas without non-coherent DMA,
+> -	 * KVM _always_ ignores guest PAT (when EPT is enabled).
+> +	 * KVM _always_ ignores or honors guest PAT, i.e. doesn't toggle SPTE
+> +	 * bits in response to non-coherent device (un)registration.
+>  	 */
+> -	return shadow_memtype_mask;
+> +	return !static_cpu_has(X86_FEATURE_SELFSNOOP) && shadow_memtype_mask;
+>  }
+> 
+> 
+> Thank you very much!
+> 
+> Dongli Zhang
