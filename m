@@ -1,158 +1,107 @@
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 312D7143732;
-	Tue, 12 Mar 2024 22:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB01C143753;
+	Tue, 12 Mar 2024 22:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710281143; cv=none; b=crbhxX/+i3hqgIRojH5qAz8Ha/cWjTdzaXmxwB0hBdY8mVeOih7OjzHCR0LpUVab6PNE80vlYme4VwIqD1DdgDj9yaHo2YN8Ppi+uOc2YLnykUnLPurw08yrV0+1rIt0KqNzCs2VJRKkndveeB6NDi+RpJyRbQS3ixGPefjF/wY=
+	t=1710281687; cv=none; b=joNKMGOPMO06nOarFKHC+wsU6yblbh3oKjqjj74vLnCHI5tHYceN/L53DmsK/COq8blLwfFmY8tfpNYXvrTDxQDgyyfdPeEUcZQ+n2rsRqoDzo8KPEkd6GxcAsaCx5Gefpx9wLHUjzg7O74qMSmYvG3kUodgUGCu0oKWSBG9NJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710281143; c=relaxed/simple;
-	bh=0uFWXlq/bPkrLYF9MHYq3kxPJG51I/NUMGv7dd4/IPw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=soUZLUyvrv1Oc9yXUjT6SLN3z+QYttW4XutWL9vzhmSfQdaHJMvxHZVNlTPfI2rgafVTs1P+Lt/XEmVKt00zWdNzJmxtUJuyQd1/h3M/cwdiYFuEWrdIKaYnr25X6N0EgfIFVfqKKdp6X2RqrvkErG9o4EGNxE7+hC9QJVV0I8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hi/htTON; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1710281687; c=relaxed/simple;
+	bh=4aUjgMILvjcV11Jnjg3n3Tf0x1z42XftzUW2VxACbeI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q97vhgFkBv4R0dkXhXTeL2fPkwfqZdZQaJY6b84/ISKZfupmrpGUU92b98dr6DAv0IP6WgjznuGypcBazdq+rUzYkI8HjqqsPF1/Ez4OKhT4Tl6Nnc8D3lwNG9iE1TiGVQzkLaw8W3D+pcpg37bmwXeCWvxLWxDlmAel2SA9cK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y11sc2Qx; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hi/htTON"
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-788412a4b2eso216000485a.1;
-        Tue, 12 Mar 2024 15:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710281141; x=1710885941; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EFwEP3ZSIH+k5Tq40d0y8R8so/J7WJ6iWYCwKAvVNhE=;
-        b=hi/htTONHJNN5uDoRAMR6byLUgrnGMiXpdPkv4Z/2VtxbgxJ/Rk99qEOPvNTUAdmtW
-         EaQAuAO+oMqLPGGaCiqzYSK2OxBa43d+8feMJwTPY1eosfj9R5+HFFVIbTdt90tSi3Rr
-         qRXJ92z/ls4IUOOVynReqPBn9pXRLVz6delkLxZpXnZhZATYYy+whQEagtHJzMOhIVNg
-         DHuZydW0sB3xKpkjagiuQmMkCyoo7OeE1CKG0KgEhmXBXPyTigdWLg7BBzpe8JHnvwUN
-         ypEKB4TumjzLzzUSnhtn5FEgBDoUhqdq/f6pArXv/3aUigKMaR7Fjy3GBxL//LsrTw8Q
-         N1/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710281141; x=1710885941;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EFwEP3ZSIH+k5Tq40d0y8R8so/J7WJ6iWYCwKAvVNhE=;
-        b=bP/PHgAxGifkf7LfYvA7eEA/rF9UHFDn9ThWOCQ8QOrFHOXlvMjIT9JFlC8HBhUhUT
-         XfU+o6dkwPSr22xDksfOX9q/U5YEBueS6Vz0b2RfTg4I08acce3ihRsTOakVePhVl+iX
-         m3kQKigHKtUz4yF0MPfMCkuaQusJmzRqHspdCJe364MkOfvKIfxhR6WrXxG1RlnZEAiq
-         koayXV3KwCr0tDQNKLzGblYtJRb5EsDIyEWycpSpks689flF0iY71LloZ9W/M74FJjGL
-         ktxEj+SRg4DAMXMRa5IodHcydDswDs294lEbqgX6Dd4vKABEg76aKW36HFvCkkRNNJRs
-         rygw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUrUUuZyeIac2NsLOK77Cl71HXU0KF/slw9wX4APPgwjSGI8CWNM9+og0IeIegY2uoSyIF2XVCatgXYozcy0d9q69y0WsI3VVFp4pCfYjfqPT5kc8P1Gm1nL7r8fx2hj5r
-X-Gm-Message-State: AOJu0Yy8d0L9PMUmgwZAZp4qyL+O1syKuW7E6QmZriD7ttvIdi4agVlt
-	GJvMVJ2rAR48LaQSXfym5mZL6IJTzqnXxZ0537JOirG6D2ysckQP
-X-Google-Smtp-Source: AGHT+IFm2bZH2s6BLeXvkZG2NAUvr59G8hwxJAq0jiQrOZyzOkVsxnmU1qt++9YFuIIpSwRFSRnrTw==
-X-Received: by 2002:a05:620a:1196:b0:788:41d6:14cb with SMTP id b22-20020a05620a119600b0078841d614cbmr1590529qkk.24.1710281140826;
-        Tue, 12 Mar 2024 15:05:40 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id h25-20020a05620a21d900b00788577fcee4sm4085454qka.91.2024.03.12.15.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 15:05:40 -0700 (PDT)
-Message-ID: <95467e67-16f1-4c75-a609-0295ac45db43@gmail.com>
-Date: Tue, 12 Mar 2024 15:05:37 -0700
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y11sc2Qx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3C44C433F1;
+	Tue, 12 Mar 2024 22:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710281687;
+	bh=4aUjgMILvjcV11Jnjg3n3Tf0x1z42XftzUW2VxACbeI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y11sc2Qxg4CC2tN7G5D3/b0N7NwRD+M/+MxAgC6/Ksh0pen1bLwvSBO4m+hLBh4sX
+	 ma8dAOg/x8ZdmaMPxmb+a2b9Naxgm8vjIOIsfPZyg4PjRZHcw5GP62WnTksV+Q3IBQ
+	 /WEQxfktpaDsy6fZ6uhc9KS+dyOVkoENt5w/sayVRbxdzu1nuzXC5V0k6aguddmi8A
+	 SUAo81OefwyMb/S8T9FokV9DioatMsgFl3AH2WmpAoEvU7VNRSQX4I1hGHw+4PLncJ
+	 o1PTrxU4uQKIpStN219soS6oeHusBmWMsuCc3gEPPb8LptMitjNGhY5K1be8SXsvED
+	 7m/Oziz1P5ZgQ==
+Date: Tue, 12 Mar 2024 22:14:40 +0000
+From: Will Deacon <will@kernel.org>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Stefan Wiehler <stefan.wiehler@nokia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+Message-ID: <20240312221440.GA29419@willie-the-truck>
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+ <bce79497-52c5-4241-aaf6-2a95dc459041@joelfernandes.org>
+ <66fdce3a-c7f6-4ef4-ab56-7c9ece0b00e2@nokia.com>
+ <ZewycILled+mZhwe@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
- v6.9]
-Content-Language: en-US
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, torvalds@linux-foundation.org,
- linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
- mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
- joel@joelfernandes.org, neeraj.upadhyay@amd.com, urezki@gmail.com,
- qiang.zhang1211@gmail.com, bigeasy@linutronix.de, anna-maria@linutronix.de,
- chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org
-References: <ZetHwrCb0KXE0xFI@tardis>
- <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
- <ZfDCjBFfyWpTK-I1@pavilion.home>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <ZfDCjBFfyWpTK-I1@pavilion.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZewycILled+mZhwe@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 3/12/24 14:01, Frederic Weisbecker wrote:
-> Le Tue, Mar 12, 2024 at 01:32:03PM -0700, Florian Fainelli a écrit :
->> Hi Boqun,
->>
->> On 3/8/24 09:15, Boqun Feng wrote:
->>> Hi Linus,
->>>
->>> Please pull this for the RCU changes of v6.9:
->>>
->>> The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
->>>
->>>     Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
->>>
->>> are available in the Git repository at:
->>>
->>>     git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git tags/rcu.next.v6.9
->>>
->>> for you to fetch changes up to 3add00be5fe5810d7aa5ec3af8b6a245ef33144b:
->>>
->>>     Merge branches 'rcu-doc.2024.02.14a', 'rcu-nocb.2024.02.14a', 'rcu-exp.2024.02.14a', 'rcu-tasks.2024.02.26a' and 'rcu-misc.2024.02.14a' into rcu.2024.02.26a (2024-02-26 17:37:25 -0800)
->>>
->>>
->>> Two merge conflicts were detected by linux-next:
->>>
->>> * https://lore.kernel.org/lkml/20240226135745.12ac854d@canb.auug.org.au/
->>> * https://lore.kernel.org/lkml/20240227125522.2bdbe6be@canb.auug.org.au/
->>>
->>> These conflict resolutions from linux-next look good to me, plus I made
->>> my own resolutions at branch merge/rcu.2024.02.27a for your reference.
->>>
->>>
->>> Some highlights of the changes:
->>>
->>> * Eliminates deadlocks involving do_exit() and RCU tasks, by Paul:
->>>     Instead of SRCU read side critical sections, now a percpu list is used
->>>     in do_exit() for scaning yet-to-exit tasks.
->>>
->>> * Fixes a deadlock due to the dependency between workqueue and RCU
->>>     expedited grace period, reported by Anna-Maria Behnsen and Thomas
->>>     Gleixner and fixed by Frederic: Now RCU expedited always uses its own
->>>     kthread worker instead of a workqueue.
->>
->> At least one device in my test farm (ARM 32-bit) has consistently shown a
->> very long boot, and some others are intermittently affected. This
->> consistently looks like this on most of my devices:
->>
->> [    2.450351] bcmgenet f0480000.ethernet: GENET 5.0 EPHY: 0x0000
->> [    2.547562] ata1: SATA link down (SStatus 0 SControl 300)
->> [  162.107264] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
->>
->> this gets flagged by my boot script as a boot failure since we exceeded the
->> 30 seconds timeout given to boot a kernel to a prompt.
->>
->> It has been somewhat difficult to get a reliable bisection going on, but
->> what I am sure of is that e5a3878c947ceef7b6ab68fdc093f3848059842c~1 does
->> not expose the problem for 10 consecutive boots, while I *might* see it at
->> e5a3878c947ceef7b6ab68fdc093f3848059842c and beyond.
->>
->> Any clues what is going on here?
-> 
-> I understand it doesn't reliably reproduce. But is there any chance you could
-> test that alone?
-> 
->       0bb11a372fc8 (rcu-tasks: Maintain real-time response in rcu_tasks_postscan())
-> 
-> And if it reproduces there try a bisection?
-> 
-> git bisect bad 0bb11a372fc8d7006b4d0f42a2882939747bdbff
-> git bisect good 41bccc98fb7931d63d03f326a746ac4d429c1dd3
+Hi Russell,
 
-None of them failed unfortunately, I need to narrow down the window 
-between v6.8 and 65d287c7eb1d14e0f4d56f19cec30d97fc7e8f66.
+On Sat, Mar 09, 2024 at 09:57:04AM +0000, Russell King (Oracle) wrote:
+> On Sat, Mar 09, 2024 at 08:45:35AM +0100, Stefan Wiehler wrote:
+> > diff --git a/arch/arm/mm/context.c b/arch/arm/mm/context.c
+> > index 4204ffa2d104..4fc2c559f1b6 100644
+> > --- a/arch/arm/mm/context.c
+> > +++ b/arch/arm/mm/context.c
+> > @@ -254,7 +254,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
+> >             && atomic64_xchg(&per_cpu(active_asids, cpu), asid))
+> >                 goto switch_mm_fastpath;
+> > 
+> > -       raw_spin_lock_irqsave(&cpu_asid_lock, flags);
+> > +       local_irq_save(flags);
+> > +       arch_spin_lock(&cpu_asid_lock.raw_lock);
+> >         /* Check that our ASID belongs to the current generation. */
+> >         asid = atomic64_read(&mm->context.id);
+> >         if ((asid ^ atomic64_read(&asid_generation)) >> ASID_BITS) {
+> > @@ -269,7 +270,8 @@ void check_and_switch_context(struct mm_struct *mm, struct task_struct *tsk)
+> > 
+> >         atomic64_set(&per_cpu(active_asids, cpu), asid);
+> >         cpumask_set_cpu(cpu, mm_cpumask(mm));
+> > -       raw_spin_unlock_irqrestore(&cpu_asid_lock, flags);
+> > +       arch_spin_unlock(&cpu_asid_lock.raw_lock);
+> > +       local_irq_restore(flags);
+> > 
+> >  switch_mm_fastpath:
+> >         cpu_switch_mm(mm->pgd, mm);
+> > 
+> > @Russell, what do you think?
+> 
+> I think this is Will Deacon's code, so we ought to hear from Will...
 
-Thanks!
--- 
-Florian
+Thanks for adding me in.
 
+Using arch_spin_lock() really feels like a bodge to me. This code isn't
+run only on the hot-unplug path, but rather this is part of switch_mm()
+and we really should be able to have lockdep work properly there for
+the usual case.
+
+Now, do we actually need to worry about the ASID when switching to the
+init_mm? I'd have thought that would be confined to global (kernel)
+mappings, so I wonder whether we could avoid this slow path code
+altogether like we do on arm64 in __switch_mm(). But I must confess that
+I don't recall the details of the pre-LPAE MMU configuration...
+
+Will
