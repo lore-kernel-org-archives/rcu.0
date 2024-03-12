@@ -1,104 +1,190 @@
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B172197
-	for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 00:08:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B38E370
+	for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 00:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710202126; cv=none; b=W62UmD6L21epAG5yD2PaNrlMctpWTXsVqOjm7tnllcxGyfqW3hYumxr7Fk8blzYB/Njr4jPz6VgMU4V3yUyKcu+2GN0diyq/kjPrrsob33IM6bPWWU6oeLUDGSmUtRPWNO5bqtEfkua4zYkZEbtxG7FPW7NrTc6YCzGPIgBxP00=
+	t=1710202127; cv=none; b=V0Y5XvyP1UzqakaNG0qt1jYD5odLvpT3OsXQHB0hwixYWNjOrg0rmYGvF8bbjT3Swr+tQI1phLh5ek53p8Hd13AoPXIik0806jSjb/xqabS2H4Il0j1vHzJxdtPhVUyymYgFtV0eDi+iVSOq6ReJbmZCqfb8UsRMGLO+m/gwKBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710202126; c=relaxed/simple;
-	bh=0Yb12pPEmKrsC1pLW8reJgDFPcWSOLnjlFPRgboKnzM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=GG4IS9FgKA/0JIbBTY1la2E5lFeXs1GflP/b40FeSWpG8REjOR7w84j3QYfmq7qRLBIg/TFHm3gH0JQeV59y60mGkQ1OULcF0DY1jcY/l+OSUPfjWsMxqSUdiqlcDQPkZVoivlTxDFhauDXmF+W9Pn/R3GXx2ewKqriL7uZNfDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=birIeGsB; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1710202127; c=relaxed/simple;
+	bh=sPJUPRkLLWUupASgHgwysbM0Te+sEh1Wss66TMfuj80=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IsXFGStf4R7bMOvuCfDSU7Xi668iM8+9VjQSiLv3aS27u6DoUTEY5zCeJrlSAlyLKjzRwlp5sPPGW+DN61E/XWq8533s6N1gFim004GF5eXj45vu3jdpYuYUD/1sD4591lCYbr+AWHQBW8n7KVPex5wDJ+AWy554H+PllBSw0O8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=wfdkeZUd; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="birIeGsB"
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so6902628276.2
-        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 17:08:44 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="wfdkeZUd"
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7883e1e01ddso215102085a.2
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 17:08:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710202124; x=1710806924; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+d74PXd4taKq/kej/o6mNWve0XFGzP2O6HVRwkMDONA=;
-        b=birIeGsBBaAQIffVUzrsSkdieJBLwk7eZdpIOPCXTqlADokw1+d/KcrsIhieBq67uH
-         xDVqBjEMll/LUgDtNKkYOfO/gkSQyGbHUVMMrXcPbN9GUyIIVeS7QdRFAFb9B/6wHysY
-         +ErhaYewCw0Q5kMAq7C4v33IM9CUgjBWLbizzanf8uRAFKzsRIqY8wPp7hXmF+H/4lWr
-         ZR2cSLBWJOug8HxXdYbP/RFd65BsDybx1OOYkaGlNpGyyjE5H20uFXRFhkG5Rm0ruFw1
-         cLlyRsVqRn9Z3Ljfubmk5U6Y0qSHoR9WoTr0kGtJnARq+dlOwbH7s+QoFfPnZY9aV7sC
-         mr7A==
+        d=joelfernandes.org; s=google; t=1710202124; x=1710806924; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RiGJ1zCalVle/3oiAR/5bP+S2NxnWCPmGdeUzwSDRpg=;
+        b=wfdkeZUdirdShH3Gqiy9bGUru0wRGvhf+CffuEupafHcXztNLLFPKNYJ9Kgg3VnwwN
+         n2zokoAJiEA5fOZ7IDbxOA2MZc4RZREI4s/r1OBh66wfnFx7YvkXRXCcepD8neVYobKq
+         39dZT1athUrhd/o498C4mN4XZ2QQwTnpWHYDs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1710202124; x=1710806924;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+d74PXd4taKq/kej/o6mNWve0XFGzP2O6HVRwkMDONA=;
-        b=mauoio5lmcGDzP3/TfPQqlUPkEK7uvSjRtPuiez8oIM9WI8p/KkCuYyeUdACBIM1zr
-         UC0i55AgHus29juXjzMLpJ5s8PIsICF/QOcx+4EzfJsIvvE/wXz1GJ/n15t1BFSCNA6e
-         pvFAixW/oa4EUmJNpSRDLdUEC2PpAJB9eQlzLIjK1Njhk2XW7pNN8zXgUbV64CfIM1UA
-         CARJxgSzlqLgcmuHw6sOR79SPK/ZUC3C7HXqfhLXCEkpPPeaFYUbpl9OVEdScccTEiJQ
-         L8WAAE1UXX2WDpvODvaA0wmZaYwEVUsOarAwmmYo5CvAJJVHgD/ghTka5chBu166bqei
-         gLNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUIVFAlR4P2cdrgEEVC6kQ7CswSKCxIhwKKugIpgOqo4FQKHj8jUxjk92D5FMKACtJQUn6e755/THEF7DNb9zWiCgBA
-X-Gm-Message-State: AOJu0YzeqSzY8BDUzzX3U41Vs3YkHcHwlInHWMbHupJ5yBPLjsgBXAYq
-	KEFddQmxkLiIh1yo4i8irwvrnJ/FkXehGrkBxDW3jsGQ72Y9I1ZZIw+Vc1kavib/GQj/2gmjvRd
-	4BQ==
-X-Google-Smtp-Source: AGHT+IFKY3pZHfuOr1Yij7OhUEHiSO8WW9VIgdjvPIWPfwcBwVP8Sm713pwSINrR33+2phQXB5qutd145N4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ab6f:0:b0:dcd:3a37:65 with SMTP id
- u102-20020a25ab6f000000b00dcd3a370065mr414308ybi.7.1710202124212; Mon, 11 Mar
- 2024 17:08:44 -0700 (PDT)
-Date: Mon, 11 Mar 2024 17:08:42 -0700
-In-Reply-To: <Ze62bqgWhbReg9wl@yzhao56-desk.sh.intel.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiGJ1zCalVle/3oiAR/5bP+S2NxnWCPmGdeUzwSDRpg=;
+        b=UEpr9Om9vmRQEmrjBuEkMXcJt0BruuT2QclQaC7LnEnlQdUafjezNDmat2rAMv0hz8
+         0c1Ah00cVKIAqfVCuJjrrDn+jP+YR1XgTTN2D712xAx87yvUKjOedE8ea9ck8DfH3vXQ
+         eewuoLflSG5dkbwACwCAcp/s5bcrOom1Jv9rS9rdCG8beA2cHrjTEveVn04fsRatP1Q3
+         EC3KUXmNRMDUFeKLVUpNgRxC9GcxNdVJ/fWGIkBMh1ILfvPf0LgKs3WIV4lIp5H5Kaor
+         UVJwvqKKRPj/S5j9ciYZ5NSf2RWyJX23QZDntHgi77Yqb1F7TFWd7vaMhEYR6GX6TzHo
+         nyWg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+0EW9/X9GjI7FebQ2AB27Y4hX1afqz0vS8AcJu5dDLAm6hTvdyaRJl2ywqVux7Az85mzUK6GW4UH17LK3UDs/g7uq
+X-Gm-Message-State: AOJu0YwFJoQPdC+4YOTLrrAFE2Me0cyj3BOMkpUipJ9znjoKDOjrKOZE
+	71JVY4vjbToobVeHVLwiSqYEb2TR31FCbbfi4isIoir44B0T0LSYjDijCDtv5/o=
+X-Google-Smtp-Source: AGHT+IGZT8pUuF369a7nLXopiLZPd2brRhJyNdKEebXGd4x5mdtO8++2jbGP037ZIbIsgy5MZDLoFg==
+X-Received: by 2002:a05:620a:1d90:b0:788:70fc:3a22 with SMTP id pj16-20020a05620a1d9000b0078870fc3a22mr2082211qkn.10.1710202123830;
+        Mon, 11 Mar 2024 17:08:43 -0700 (PDT)
+Received: from [10.5.0.2] ([91.196.69.182])
+        by smtp.gmail.com with ESMTPSA id dp1-20020a05620a2b4100b007881a59042dsm3166339qkb.66.2024.03.11.17.08.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Mar 2024 17:08:43 -0700 (PDT)
+Message-ID: <5b78a338-cb82-4ac4-8004-77a3eb150604@joelfernandes.org>
+Date: Mon, 11 Mar 2024 20:08:39 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-2-seanjc@google.com>
- <Ze62bqgWhbReg9wl@yzhao56-desk.sh.intel.com>
-Message-ID: <Ze-dCirMCOCsbsVJ@google.com>
-Subject: Re: [PATCH 1/5] KVM: x86: Remove VMX support for virtualizing guest
- MTRR memtypes
-From: Sean Christopherson <seanjc@google.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, kvm@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kevin Tian <kevin.tian@intel.com>, Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
+ PREEMPT_COUNT=y
+Content-Language: en-US
+To: Thomas Gleixner <tglx@linutronix.de>,
+ Ankur Arora <ankur.a.arora@oracle.com>
+Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org, luto@kernel.org,
+ bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
+ mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
+ andrew.cooper3@citrix.com, bristot@kernel.org,
+ mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+ glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+ mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
+ David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+ jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+ boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-16-ankur.a.arora@oracle.com>
+ <20240310100330.GA2705505@joelbox2>
+ <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
+ <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
+ <87r0ghl51f.fsf@oracle.com>
+ <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
+ <87wmq8pop1.ffs@tglx>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <87wmq8pop1.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 11, 2024, Yan Zhao wrote:
-> On Fri, Mar 08, 2024 at 05:09:25PM -0800, Sean Christopherson wrote:
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 7a74388f9ecf..66bf79decdad 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -7596,39 +7596,27 @@ static int vmx_vm_init(struct kvm *kvm)
-> >  
-> >  static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> >  {
-> > -	/* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
-> > -	 * memory aliases with conflicting memory types and sometimes MCEs.
-> > -	 * We have to be careful as to what are honored and when.
-> > -	 *
-> > -	 * For MMIO, guest CD/MTRR are ignored.  The EPT memory type is set to
-> > -	 * UC.  The effective memory type is UC or WC depending on guest PAT.
-> > -	 * This was historically the source of MCEs and we want to be
-> > -	 * conservative.
-> > -	 *
-> > -	 * When there is no need to deal with noncoherent DMA (e.g., no VT-d
-> > -	 * or VT-d has snoop control), guest CD/MTRR/PAT are all ignored.  The
-> > -	 * EPT memory type is set to WB.  The effective memory type is forced
-> > -	 * WB.
-> > -	 *
-> > -	 * Otherwise, we trust guest.  Guest CD/MTRR/PAT are all honored.  The
-> > -	 * EPT memory type is used to emulate guest CD/MTRR.
-> > +	/*
-> > +	 * Force UC for host MMIO regions, as allowing the guest to access MMIO
-> > +	 * with cacheable accesses will result in Machine Checks.
-> This does not always force UC. If guest PAT is WC, the effecitve one is WC.
+Hi, Thomas,
+Thanks for your reply! I replied below.
 
-Doh, right, I keep forgetting that KVM doesn't ignore guest PAT for MMIO.
+On 3/11/2024 3:12 PM, Thomas Gleixner wrote:
+> On Mon, Mar 11 2024 at 11:25, Joel Fernandes wrote:
+>> On 3/11/2024 1:18 AM, Ankur Arora wrote:
+>>>> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
+>>>> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
+>>>> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
+>>>> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
+>>>> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
+>>>
+>>> I think that's a view from too close to the implementation. Someone
+>>> using the kernel is not necessarily concered with whether tasks are
+>>> preempted or not. They are concerned with throughput and latency.
+>>
+>> No, we are not only talking about that (throughput/latency). We are also talking
+>> about the issue related to RCU reader-preemption causing OOM (well and that
+>> could hurt both throughput and latency as well).
+> 
+> That happens only when PREEMPT_RCU=y. For PREEMPT_RCU=n the read side
+> critical sections still have preemption disabled.
+
+Sorry, let me clarify. And please forgive my noise but it is just a point of
+view. CONFIG_PREEMPT_AUTO always preempts sooner or later, even for
+preempt=none. A point of view could be, if you are preempting anyway (like
+CONFIG_PREEMPT=y), then why bother with disabling CONFIG_PREEMPT_RCU or even
+give it as an option. After all, with CONFIG_PREEMPT=y, you cannot do
+CONFIG_PREEMPT_RCU=n.  It is just a point of view, while we are still discussing
+this patch series ahead of its potential merge.
+
+>> With CONFIG_PREEMPT_AUTO=y, you now preempt in the preempt=none mode. Something
+>> very different from the classical CONFIG_PREEMPT_NONE=y.
+> 
+> In PREEMPT_RCU=y and preempt=none mode this happens only when really
+> required, i.e. when the task does not schedule out or returns to user
+> space on time, or when a higher scheduling class task gets runnable. For
+> the latter the jury is still out whether this should be done or just
+> lazily defered like the SCHED_OTHER preemption requests.
+> 
+> In any case for that to matter this forced preemption would need to
+> preempt a RCU read side critical section and then keep the preempted
+> task away from the CPU for a long time.
+> 
+> That's very different from the unconditional kernel preemption model which
+> preempt=full provides and only marginally different from the existing
+> PREEMPT_NONE model. I know there might be dragons, but I'm not convinced
+> yet that this is an actual problem.
+
+Sure it is less aggressive than a full preemption, still a preemption
+nonetheless, so its quirky in the regard of whether or not RCU preemption is
+provided as an option (as I mentioned as a point-of-view above).
+
+> OTOH, doesn't PREEMPT_RCU=y have mechanism to mitigate that already?
+
+It does. But that sounds more in favor of forcing PREEMPT_RCU=y for AUTO since
+such mitigation will help those concerns that AUTO users would need
+PREEMPT_RCU=y (?).
+
+>> Essentially this means preemption is now more aggressive from the point of view
+>> of a preempt=none user. I was suggesting that, a point of view could be RCU
+>> should always support preepmtiblity (don't give PREEEMPT_RCU=n option) because
+>> AUTO *does preempt* unlike classic CONFIG_PREEMPT_NONE. Otherwise it is
+>> inconsistent -- say with CONFIG_PREEMPT=y (another *preemption mode*) which
+>> forces CONFIG_PREEMPT_RCU. However to Paul's point, we need to worry about those
+>> users who are concerned with running out of memory due to reader
+>> preemption.
+> 
+> What's wrong with the combination of PREEMPT_AUTO=y and PREEMPT_RCU=n?
+> Paul and me agreed long ago that this needs to be supported.
+
+There's nothing wrong with it. Its just a bit quirky (again just a point of
+view), that for a configuration that causes preemption (similar to
+CONFIG_PREEMPT=y), that PREEMPT_RCU can be disabled. After all, again with
+CONFIG_PREEMPT=y, PREEMPT_RCU cannot be currently disabled.
+
+>> In that vain, maybe we should also support CONFIG_PREEMPT_RCU=n for
+>> CONFIG_PREEMPT=y as well. There are plenty of popular systems with relatively
+>> low memory that need low latency (like some low-end devices / laptops
+>> :-)).
+> 
+> I'm not sure whether that's useful as the goal is to get rid of all the
+> CONFIG_PREEMPT_FOO options, no?
+
+I think I may have lost you here, how does forcing or not forcing
+CONFIG_PREEMPT_RCU relate to getting rid of CONFIG options? There's no new
+CONFIG options added one way or the other.
+
+> I'd rather spend brain cycles on figuring out whether RCU can be flipped
+> over between PREEMPT_RCU=n/y at boot or obviously run-time.
+
+Yes I agree with that actually, and I see Paul provided some detailed thoughts
+in a reply to you in your quest to get him to write a novel as you put it ;-). I
+am Ok with our providing preemptible-RCU as an option with AUTO and it could be
+documented well that this is possible. I am fully on board also with the
+sentiment of getting rid of the zoo of CONFIG_PREEMPT options!
+
+thanks,
+
+-  Joel
