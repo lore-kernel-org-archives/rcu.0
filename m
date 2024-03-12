@@ -1,45 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6AAA382;
-	Tue, 12 Mar 2024 21:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C5E14290A;
+	Tue, 12 Mar 2024 21:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710277264; cv=none; b=VzU/av6Vo4x4rxXkOeRaxn4yexJBHmmwSMeBwbLj5CSDEfECVQFuAtsD4VGz+8feGspUT/v8+izmo+yc3iz4V7i2wE2c15MSAKeo/V9gVqjs3i5rJwvIwPfgLjsVZ33VidkUSuwshl4IUhHoHeSKvtsdjhdtorYG1hyqziK5L6c=
+	t=1710277683; cv=none; b=HeDlN/Ax3pnwXXwab6dajBrKb5Ba6MyUCVcnmjfkanFLNwFIiwDbLNLc1ZgdbsL3N5pViCy5g4Rx2j6wif6XF4pwCjMDQPwFVe3OqtSomY4NGm6vZkLBfyywXa6qLfyHrpzB4UVdZTgZ+MqW2zApQiTU6drocRll9q2rQlo1GAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710277264; c=relaxed/simple;
-	bh=p8tj7jjYv8jmKpI6MLhxwY2+1wg9xJ/vMkpzOcmvroQ=;
+	s=arc-20240116; t=1710277683; c=relaxed/simple;
+	bh=jDDnRF2bY/5eqv27Q1U77QHqgiJOx52u8tdCMQ2RZ0Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uoOq0AildJpfByeEcpMtZ9vvKvxUQfxvOq/h7/LBstntfvxgUhzJSqEfQkWAapumhmhvVIydn7+eVqRmiWam2lrOUS14okjILQHrBCSNKgbre92m5BkEdcVOflzWYXeSvfXG15EZXodDCCFMdODg+7Fpvji0qZnqBXiiphSI4AI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fYyGe0Y0; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=XFLwjLAbZNTdV9UtRz035F/RU5/K7SdjA18wC/CiZji81uS6gTHZmfrXz6SfH4ka8vE1p1jA5jQiazMN84Boj2XlzcntBzpzNYsH/Ui8rXcXJC8qN3pqpzfklF54SwZEjGAU1Xjv9iEJ2okXULL5P0YuLstY7JMDCCE1vZ5aoEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dSuumzEy; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fYyGe0Y0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15C7CC433F1;
-	Tue, 12 Mar 2024 21:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710277263;
-	bh=p8tj7jjYv8jmKpI6MLhxwY2+1wg9xJ/vMkpzOcmvroQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fYyGe0Y0QB+llzTztj5GVgtZkfasxDkXReOQfvT+3fhU24UWwhgzr9LeGPV1pRsEr
-	 AgYO4pRg1PsLzSF/Tpi+06GnEDar7AM18fvUFjBQ7e7e4Rb8FptWLHW6sMGaEfp93t
-	 oRG+rIJVClvMYgmhNvw0KhkgxlZVTkLBJtCEXdtA1Q6LU4h0Z/4AQ9ioR8K4ZbXogz
-	 Kw2k5a8OGddmK5HX0gYsdfrgNhMCIonDjuTu7C22LaJDFSyF1F13x6wCa1769VcOLD
-	 jlZrA+R1sFHB/t9pimuTlC1PqBbNga9FTDe2HIgio5NyBb5oiJRUA5vtftPW3egNDN
-	 0RcmGnWiKCX0w==
-Date: Tue, 12 Mar 2024 22:01:00 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dSuumzEy"
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42ee7fa077bso1477011cf.3;
+        Tue, 12 Mar 2024 14:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710277681; x=1710882481; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pyNcAZZUniyc0w1gofbGaeJW0aTRysYzXES4SgvGCh4=;
+        b=dSuumzEyjR+IkswPbC2yzx/dpFfzx3bK09SDPbYFdAuTf7GiFi5fOY8TSNwysDRtEn
+         bIv7prB65EOFYxPdsQVCQgeeUyQYcXiNc71cUn+w6EKg6ZvD+7AiDwoa+Qv+KLfnRMDb
+         wdgFgOsIC/knYkAFBjAEZG89yXZS0bCtIeqodmZ4VbZvXxTsjrQ271P0EoFL2vbgPH8u
+         df1UEwVRfrVWoc2UghneFoMEBkdWWvrCPEgOW9I7BddYZN2caLgQlT78z8zOLUlI9u34
+         RZnwWdZh3cGPGrbEVg7354Ju7d6J8lWs+btR/aaEFOFuxv5W7Ef22xCIc2dTjEz9PvQz
+         Dm2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710277681; x=1710882481;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pyNcAZZUniyc0w1gofbGaeJW0aTRysYzXES4SgvGCh4=;
+        b=QTqYVAlDClTNe2nhADIoH+orxZWg3pq1p1P+UV1fjV87QoVe1AcEPVTNHUIwo5JZXp
+         YWOjLBkG+7anZl2Nk1cIY/cjeDNIFn2TI59GBY7SAmK2S+21vC9ISLUS8Ko20DUBDst4
+         o7n/46uYVBh/Mquq6UoNdgFdPo1lzCIwy70ohJl7DX4JEiTEeBp2i9I7O5LiAaBSMA5b
+         op87xykqVZxdOxntVbxu7WDo1W9Ch0h/+p67En/4uhorzJsjQ7vxnBIQPVnJ2W2FrHGf
+         zASUl7lCjFod/JK2lAE0dC8Y1K4Qrxkpq+XeAYcpYdj22h5IA+076JhetwsmTM+RectD
+         oiVw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFkzIhPoL/oos5Tfdqqp424Vub4ZoCIQM3hYDVAsCIxlwm6KjyMWqL3JoCvaUrAqvJdLGi7oKZKgM7YpJ0mrxMUYwt6WrAmeqSx9xIp6WXzl831yDVjjfsO211BbGQfKZK
+X-Gm-Message-State: AOJu0YzYR11OTNKBD3hXJMYLdOcCQRW9iryfto9PVWg0hRusyKXFt/7o
+	0RouQFjBJTaZZmUqGX+/D0UX+Ru/1RXiqdA+nuTSxPeqIHSC0K1q
+X-Google-Smtp-Source: AGHT+IHns0MTV3u8P/4nS6mjR+SAps/VTgRErWKnLfPKLt5tQulxsR+JdIq9R0vetXh9vy87NIOEfA==
+X-Received: by 2002:a05:622a:151:b0:42e:6de7:35e2 with SMTP id v17-20020a05622a015100b0042e6de735e2mr1612814qtw.25.1710277680833;
+        Tue, 12 Mar 2024 14:08:00 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id e15-20020ac845cf000000b0042f3882cd05sm3876062qto.42.2024.03.12.14.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Mar 2024 14:08:00 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id B3F671200068;
+	Tue, 12 Mar 2024 17:07:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 12 Mar 2024 17:07:59 -0400
+X-ME-Sender: <xms:L8TwZa2fKFNQVOE9ndVssDkdvYL47l0QwQ2_2pLw5GZZY3Y5v2nPKg>
+    <xme:L8TwZdGGM2nFeAc-wuPTCORTA6wgjBR5rt7KGoENyiJjxuQJW9tDaHJeKJ4ppLFKb
+    ExBy5qqViL_qPftzA>
+X-ME-Received: <xmr:L8TwZS6FHJSHcEz_nT0X9dCKyj8fQWI_LYSGlDS0Ino4iKHR-B6qLbMeZvfSZw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgddugeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpefhtedvgfdtueekvdekieetieetjeeihedvteehuddujedvkedtkeefgedv
+    vdehtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
+    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:L8TwZb10F5_rSpcsHOz5u5aqCQ3r_J_1X2FBG9JW_9Dr7jYxcGhnBA>
+    <xmx:L8TwZdFGXpB7aXHgEMGGweIJ_tx_vNRty9cMZ1pAv7XcSnUJU03rmA>
+    <xmx:L8TwZU-JVjNMdaVUAQH4L_pU7Dg2mACF_uBb3z1GQf1Yj0Chq7OYcA>
+    <xmx:L8TwZSkCpyT7MQDejJwOrRZ-H9u6yBVgspy1VnJESR7S_mlF8lRsOA>
+    <xmx:L8TwZRKqdoQaSUq7vS165mowZCkQXWGuNYe2Eb_1mvKHq3WILAXVM0tuVNI>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Mar 2024 17:07:58 -0400 (EDT)
+Date: Tue, 12 Mar 2024 14:07:46 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
 To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>, torvalds@linux-foundation.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	paulmck@kernel.org, mingo@kernel.org, tglx@linutronix.de,
-	rcu@vger.kernel.org, joel@joelfernandes.org,
+Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
+	tglx@linutronix.de, rcu@vger.kernel.org, joel@joelfernandes.org,
 	neeraj.upadhyay@amd.com, urezki@gmail.com,
-	qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
-	anna-maria@linutronix.de, chenzhongjin@huawei.com,
-	yangjihong1@huawei.com, rostedt@goodmis.org
+	qiang.zhang1211@gmail.com, frederic@kernel.org,
+	bigeasy@linutronix.de, anna-maria@linutronix.de,
+	chenzhongjin@huawei.com, yangjihong1@huawei.com,
+	rostedt@goodmis.org
 Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
  v6.9]
-Message-ID: <ZfDCjBFfyWpTK-I1@pavilion.home>
+Message-ID: <ZfDEIs63EBIYBJIC@boqun-archlinux>
 References: <ZetHwrCb0KXE0xFI@tardis>
  <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
 Precedence: bulk
@@ -48,12 +101,11 @@ List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
 
-Le Tue, Mar 12, 2024 at 01:32:03PM -0700, Florian Fainelli a écrit :
+On Tue, Mar 12, 2024 at 01:32:03PM -0700, Florian Fainelli wrote:
 > Hi Boqun,
 > 
 > On 3/8/24 09:15, Boqun Feng wrote:
@@ -111,15 +163,15 @@ Le Tue, Mar 12, 2024 at 01:32:03PM -0700, Florian Fainelli a écrit :
 > e5a3878c947ceef7b6ab68fdc093f3848059842c and beyond.
 > 
 > Any clues what is going on here?
+> 
 
-I understand it doesn't reliably reproduce. But is there any chance you could
-test that alone?
+Could you share the config file and your kernel parameters? Also could
+you share the whole log? Thanks!
 
-     0bb11a372fc8 (rcu-tasks: Maintain real-time response in rcu_tasks_postscan())
+Regards,
+Boqun
 
-And if it reproduces there try a bisection?
-
-git bisect bad 0bb11a372fc8d7006b4d0f42a2882939747bdbff
-git bisect good 41bccc98fb7931d63d03f326a746ac4d429c1dd3
-
-Thanks.
+> Thanks!
+> -- 
+> Florian
+> 
