@@ -1,101 +1,85 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4B4143C4A
-	for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 21:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE152143732;
+	Tue, 12 Mar 2024 22:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710279877; cv=none; b=U7Z3l3eQ6wfjNX4R30/lkedicJ/T9PQQT1ARP/zTAsw3lGko5cL1yrddd6JhWSmKiBEfH0WnaL6OthR2rMdhRz1ihRG6VkgQX+nii8x5NipdE4NXqi/CqZwOvvHxBfpqjkvylHUX57/hxUlK3B8sNdgk1j8bADR0y7Izp3jrg2w=
+	t=1710281123; cv=none; b=ksg5w1PebgIXv3bXjGqiJ0Dymomrgo3ZqkDCOngoUKKD+PyxTVfy1Y5xUm99/2YNUnfCUnEyZX9QJXbJohgx9ZK4MjM4/w2wg7jALNRkufTLCUSDvePlQ4akzdseV0uGwV9u9Ak3FQowfZ10cRy55XKJp2BrPrHiJU0SlIrFJ78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710279877; c=relaxed/simple;
-	bh=XwiL2+kAZDq+JSypY/KCkgWIbQMNeeVzIuxHI5gIcF4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pIPWq/xV85XO/Q4vm+ir8OtIGJ6VpqIF4g3zgnp5kIIcUTpz7YhNIVfFgne6jm9nscLjSnhTJ61hS+J6iKDi46bqKUSJj/kjygGtWJpcaC9enjPBoyrpN4ifXLGCOry3xL3RLIp6rfq6deN7anELQkFMiQyIu1G/gKORinj8fJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KKRfRaWe; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1710281123; c=relaxed/simple;
+	bh=94kWIXOlJLd1i+GSg4nJJloy882bkGtnVNLjrkLGM18=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FalcyHg+fHjH0Qq4XhJHyEjsTcs1ZrElZAGeV4x5oslAvzbJ/zFBcDe6XMWzknuDXRcW2Uks/mUML3G8KTMfO/T1GHjgv19EdwE+PEir3i/ONrgjss81yrlmX7Vscf/DtY9NNG0bCDXkNqC9U9LRwaaPzeJlvk5/pbM0731PPVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xu+JHrZg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KKRfRaWe"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5135486cfccso5908742e87.0
-        for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 14:44:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1710279873; x=1710884673; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+QBam0nDIK6OKPia5iCGv4lhBlNNZUHT9InuuVs5DM8=;
-        b=KKRfRaWeA6WSJdE01jClK/UZ9c6TbaidThWmnu5tE+bYqU3vaT19gg9q1g4EBuR2hW
-         PfrPpUU+cHjfITAphWWvAg/c2+9qxtNLlhQPJHmt0MoogdJ5WuLTFrkz3WbcTb0nRtCo
-         PX7RvAUAW8e2nmLuUzA2wIYw+qss/+WxynHU0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710279873; x=1710884673;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+QBam0nDIK6OKPia5iCGv4lhBlNNZUHT9InuuVs5DM8=;
-        b=XgXB21oR4OUA0FFdXUhngAVwoHaH57PlWuRcf75kq5knubAJB4vl23bmMbCzTHMZR5
-         MB9FMaidKKZNqDQu76IdEaoeryK0pxYKcpVJJtQCb0DCDjDxFt4OAzPm10TDDj/Rj8B7
-         8/TLz9iBWbt+cQTDSE2K0lDk5YTW5VCLl4Tkp9kTdBcQjYo5bxRKzjAjg5Aok2H/IhMK
-         pv9Jp0yDpCY8ZGGhVgSU2Ogg0demMx/6Kh1CTyQbYbpqqgCSnZ9n8dwsO1wFqA4QKSCb
-         eRuULWIcNPbfCbVbcGEjqtJeHCBNa7z5GMhpAdDDwLcQdDdhVp0ktOiob2HP4fXCULoE
-         eeRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCFEurRFP8quiyLl6vKdETlObLeRizBOfQAkbWX61q1JfQhrTDD9Yo1onwwpK/byIKkDQ8IvEVZwPcDCToFsduykts
-X-Gm-Message-State: AOJu0Yx3VEDHmrkHBQw4p5FxUeKAW20KyI3/saz7cpmAMBgqyyd2i7z+
-	bmdeeItuMXHLTxIjX5P9R/KMkU2OgWsDUN3oyluGhw2UKdogj37J2t51/vOKRqKaUMYKA3526wo
-	vYYAGpA==
-X-Google-Smtp-Source: AGHT+IG0c8E3qYP1lRjVTj82DLPTm2hkROsFD/8mbIMNH7CADi5AnP4ovcof9wadHYZQAdUdC0Zs2g==
-X-Received: by 2002:a19:9154:0:b0:513:9dba:f32e with SMTP id y20-20020a199154000000b005139dbaf32emr6723830lfj.20.1710279873253;
-        Tue, 12 Mar 2024 14:44:33 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id r10-20020ac25a4a000000b005132bf49f99sm1708474lfn.140.2024.03.12.14.44.30
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 14:44:31 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d3b93e992aso57705071fa.1
-        for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 14:44:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWlFyLhGW1sfK2C4PiTKoO8R8gJpersWK+8C9d5IYog3OdfcDlXc8g+3rOlLE/fUjSewVutoL9ESa0LjlvZtzddNGHn
-X-Received: by 2002:ac2:484a:0:b0:513:5a38:f545 with SMTP id
- 10-20020ac2484a000000b005135a38f545mr8283446lfy.62.1710279870592; Tue, 12 Mar
- 2024 14:44:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xu+JHrZg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61FBEC433C7;
+	Tue, 12 Mar 2024 22:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710281122;
+	bh=94kWIXOlJLd1i+GSg4nJJloy882bkGtnVNLjrkLGM18=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Xu+JHrZgO69R3xfqZKPbwMT5uA3/IweYZZRxuLz671QG//X6BPeei5WY3mhDZhcRF
+	 aN4b9lBFmD/Ady/xPFDzS6/T8tsDWjaWN7kaJeFxGvrezQWVjBPrKo/CtttJXZHtJ/
+	 P7BZJ3medWlBguplCEj8ATnGDZ5pldIeVOxCCrPZ66pyN1qABdk5ayO/lvQKHA3S/8
+	 JeMvCg8ymM7iVzXUbD296FhIoRg4DCcTQyhzoevUhvtOQTYCTtoUhRRRk28laqkMPE
+	 nYqOhRFIUr5G+R8tyCPcaAQ935J2k3QuNonwKcUi2btJY8SiUs2aWf0Cwjk6guTrW4
+	 iTNmBjKolcuEA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 051A6CE098C; Tue, 12 Mar 2024 15:05:22 -0700 (PDT)
+Date: Tue, 12 Mar 2024 15:05:22 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zqiang <qiang.zhang1211@gmail.com>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu-tasks: Remove unnecessary lazy_jiffies in
+ call_rcu_tasks_generic_timer()
+Message-ID: <d3762d8c-1996-4703-8fa2-f0b00febf2fb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240312113524.7654-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZetHwrCb0KXE0xFI@tardis> <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
- <ZfDEIs63EBIYBJIC@boqun-archlinux> <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
-In-Reply-To: <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 12 Mar 2024 14:44:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
-Message-ID: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
-Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for v6.9]
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org, 
-	kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org, 
-	tglx@linutronix.de, rcu@vger.kernel.org, joel@joelfernandes.org, 
-	neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com, 
-	frederic@kernel.org, bigeasy@linutronix.de, anna-maria@linutronix.de, 
-	chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240312113524.7654-1-qiang.zhang1211@gmail.com>
 
-On Tue, 12 Mar 2024 at 14:34, Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> and here is a log where this fails:
->
-> https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
+On Tue, Mar 12, 2024 at 07:35:24PM +0800, Zqiang wrote:
+> The rcu_tasks_percpu structure's->lazy_timer is queued only when
+> the rcu_tasks structure's->lazy_jiffies is not equal to zero in
+> call_rcu_tasks_generic(), if the lazy_timer callback is invoked,
+> that means the lazy_jiffes is not equal to zero, this commit
+> therefore remove lazy_jiffies check in call_rcu_tasks_generic_timer().
+> 
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>  kernel/rcu/tasks.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index b1254cf3c210..439e0b9a2656 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -299,7 +299,7 @@ static void call_rcu_tasks_generic_timer(struct timer_list *tlp)
+>  
+>  	rtp = rtpcp->rtpp;
+>  	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+> -	if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
+> +	if (!rcu_segcblist_empty(&rtpcp->cblist)) {
 
-You could try the 'initcall_debug' kernel command line.
+Good eyes!
 
-It will make the above *much* noisier, but it might - thanks to all
-the new noise - show exactly *what* is being crazy slow to initialize.
+But did you test with something like a WARN_ON_ONCE(rtp->lazy_jiffies)?
 
-Because right now it's just radio silence in between those
+						Thanx, Paul
 
-  [    1.926435] bcmgenet f0480000.ethernet: GENET 5.0 EPHY: 0x0000
-  [  162.148135] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
-
-things, and that's presumably because some random initcall there just
-takes forever to time out.
-
-             Linus
+>  		if (!rtpcp->urgent_gp)
+>  			rtpcp->urgent_gp = 1;
+>  		needwake = true;
+> -- 
+> 2.17.1
+> 
