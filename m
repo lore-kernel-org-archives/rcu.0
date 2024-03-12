@@ -1,190 +1,159 @@
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B38E370
-	for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 00:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5597365
+	for <rcu@vger.kernel.org>; Tue, 12 Mar 2024 00:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710202127; cv=none; b=V0Y5XvyP1UzqakaNG0qt1jYD5odLvpT3OsXQHB0hwixYWNjOrg0rmYGvF8bbjT3Swr+tQI1phLh5ek53p8Hd13AoPXIik0806jSjb/xqabS2H4Il0j1vHzJxdtPhVUyymYgFtV0eDi+iVSOq6ReJbmZCqfb8UsRMGLO+m/gwKBI=
+	t=1710203151; cv=none; b=Q5r23g8tQEmneVnmv5bHUkykNROjLLBig2Uc0nc1/c7sQTF4LkrkOQuk/PzXTueuIYcsTrr8pBt+mktS9AOxU2Bqe9mu3QdNCUOr0SpQGvYa51KitIyaCeMm03DBhJtCBu7op409f/iwi/feKEPpZlWPyTLI4dH4LQ/fKkbqm5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710202127; c=relaxed/simple;
-	bh=sPJUPRkLLWUupASgHgwysbM0Te+sEh1Wss66TMfuj80=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IsXFGStf4R7bMOvuCfDSU7Xi668iM8+9VjQSiLv3aS27u6DoUTEY5zCeJrlSAlyLKjzRwlp5sPPGW+DN61E/XWq8533s6N1gFim004GF5eXj45vu3jdpYuYUD/1sD4591lCYbr+AWHQBW8n7KVPex5wDJ+AWy554H+PllBSw0O8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=wfdkeZUd; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1710203151; c=relaxed/simple;
+	bh=DN4kgqkguxDqDuzpxWOfE0S71IXcgVo6miwC7b+9qOw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=bwMlUZanSC8uzDDh0VxbQ7SEE4jqFrfgHfepMGuzoEuWqexdLnc905K2ZoNKESDYyvVNj91Pp60WlVWmyMvyyKe2b8WRqtBtPE3HyRYWh7+f3SVy9ta5rpLVpcqYLQpccE+MpcDzBUxiDDdaOL6JRNqsLEJEF6lKF2OjHGlJJQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3/Xcn34j; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="wfdkeZUd"
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7883e1e01ddso215102085a.2
-        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 17:08:45 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3/Xcn34j"
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a20c33f06so25276867b3.2
+        for <rcu@vger.kernel.org>; Mon, 11 Mar 2024 17:25:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710202124; x=1710806924; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RiGJ1zCalVle/3oiAR/5bP+S2NxnWCPmGdeUzwSDRpg=;
-        b=wfdkeZUdirdShH3Gqiy9bGUru0wRGvhf+CffuEupafHcXztNLLFPKNYJ9Kgg3VnwwN
-         n2zokoAJiEA5fOZ7IDbxOA2MZc4RZREI4s/r1OBh66wfnFx7YvkXRXCcepD8neVYobKq
-         39dZT1athUrhd/o498C4mN4XZ2QQwTnpWHYDs=
+        d=google.com; s=20230601; t=1710203149; x=1710807949; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DSKE9dynpVDGdnjTP2PPz0UtHmW2LY6em1fpB/+NyBg=;
+        b=3/Xcn34j/nGHh3CzJjVJwx5sC5qPTQNUUoZAmSVL2XfV1iKowyqSj/WJLHalLEdYLr
+         BY3WjtBhABWunzDKuv0wI2AvencPnZNTZktMkF77HsreOXEcBuKzdSIYGlhT8uAb7N5n
+         kBnoFxXICP9tok1lvDDbeli/h4rcV8lCK9wBi4A63BbKYxguvs810DGY/L5fL0fiEnNE
+         NCIopgKPosSfAmu7Tg+E20YmGZq1BrsxvxgW6Keeyq0gDAuVRIihPVYqG4e8ffUMq6yX
+         apV1AHbYUGzbP4BQe8dBgB98WZ7EcQ2XUzVTq9YbM8wmx9pTtF8axl+XaeM6j+CdzT5h
+         vrAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710202124; x=1710806924;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RiGJ1zCalVle/3oiAR/5bP+S2NxnWCPmGdeUzwSDRpg=;
-        b=UEpr9Om9vmRQEmrjBuEkMXcJt0BruuT2QclQaC7LnEnlQdUafjezNDmat2rAMv0hz8
-         0c1Ah00cVKIAqfVCuJjrrDn+jP+YR1XgTTN2D712xAx87yvUKjOedE8ea9ck8DfH3vXQ
-         eewuoLflSG5dkbwACwCAcp/s5bcrOom1Jv9rS9rdCG8beA2cHrjTEveVn04fsRatP1Q3
-         EC3KUXmNRMDUFeKLVUpNgRxC9GcxNdVJ/fWGIkBMh1ILfvPf0LgKs3WIV4lIp5H5Kaor
-         UVJwvqKKRPj/S5j9ciYZ5NSf2RWyJX23QZDntHgi77Yqb1F7TFWd7vaMhEYR6GX6TzHo
-         nyWg==
-X-Forwarded-Encrypted: i=1; AJvYcCW+0EW9/X9GjI7FebQ2AB27Y4hX1afqz0vS8AcJu5dDLAm6hTvdyaRJl2ywqVux7Az85mzUK6GW4UH17LK3UDs/g7uq
-X-Gm-Message-State: AOJu0YwFJoQPdC+4YOTLrrAFE2Me0cyj3BOMkpUipJ9znjoKDOjrKOZE
-	71JVY4vjbToobVeHVLwiSqYEb2TR31FCbbfi4isIoir44B0T0LSYjDijCDtv5/o=
-X-Google-Smtp-Source: AGHT+IGZT8pUuF369a7nLXopiLZPd2brRhJyNdKEebXGd4x5mdtO8++2jbGP037ZIbIsgy5MZDLoFg==
-X-Received: by 2002:a05:620a:1d90:b0:788:70fc:3a22 with SMTP id pj16-20020a05620a1d9000b0078870fc3a22mr2082211qkn.10.1710202123830;
-        Mon, 11 Mar 2024 17:08:43 -0700 (PDT)
-Received: from [10.5.0.2] ([91.196.69.182])
-        by smtp.gmail.com with ESMTPSA id dp1-20020a05620a2b4100b007881a59042dsm3166339qkb.66.2024.03.11.17.08.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 17:08:43 -0700 (PDT)
-Message-ID: <5b78a338-cb82-4ac4-8004-77a3eb150604@joelfernandes.org>
-Date: Mon, 11 Mar 2024 20:08:39 -0400
+        d=1e100.net; s=20230601; t=1710203149; x=1710807949;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DSKE9dynpVDGdnjTP2PPz0UtHmW2LY6em1fpB/+NyBg=;
+        b=tv/zThgFop90fVRxaRMOAjHhUyXk6LDMSeoDAgP3aeshb0CTvPY0pHiAanM63r0Zz6
+         C7Y7cLj/zWijr9A6uIdoVU6MKJwndwoWYHkhCfiTAJ6vC1hI70NgdhtL6GdAggx+khjR
+         8syrFZtpcyStO4PXPTsoKwdfuDekjTgKq/AqKXjzSE73xRkflBC6GtNSNEM4NyUe3yoT
+         xk6LHbKRjHTjn4GS5rzNiPfQWnqlFvLhXFTwUvBhrlgzjESDQ1fiLSii5xx0akx/7vxa
+         OUI4Q7VCzNNAbwIwhsIsoQIK5tE9+iRfqEAeTb+Ld/tb2KzB5ep25QbmtRfG+eRk4Wrf
+         P9mA==
+X-Forwarded-Encrypted: i=1; AJvYcCV9x/eTbnM/EFZ3E2E2K3QyQPNxMlW37iT19etJpkWz5+DmH0mZHE5NCUi7NNigTviTlNArEWyb5VVt3tPAojey7x+A
+X-Gm-Message-State: AOJu0Yzo+tU4SFEAHArojmGM4lpzQice/IlO7kyE+LzrNwCmkDPDbI6w
+	p9cRkWNkOTdkVTd5BvG/NBGZPlJ19E2JYFk0udHtWxmKkk1uFJT9yZCt8/F/49IsBtGoBr7AMzg
+	CQg==
+X-Google-Smtp-Source: AGHT+IGzoNaeLD5UF6HPjQNHq3cJfFHLeuCdtnN3G+/43PHfTFE8knrmObKsB05Sk+y7M0LF1sr9r44xtTU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d486:0:b0:60a:2eb9:539a with SMTP id
+ w128-20020a0dd486000000b0060a2eb9539amr1057117ywd.2.1710203148785; Mon, 11
+ Mar 2024 17:25:48 -0700 (PDT)
+Date: Mon, 11 Mar 2024 17:25:47 -0700
+In-Reply-To: <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/30] rcu: handle quiescent states for PREEMPT_RCU=n,
- PREEMPT_COUNT=y
-Content-Language: en-US
-To: Thomas Gleixner <tglx@linutronix.de>,
- Ankur Arora <ankur.a.arora@oracle.com>
-Cc: paulmck@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org, luto@kernel.org,
- bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
- juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
- mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
- andrew.cooper3@citrix.com, bristot@kernel.org,
- mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
- glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
- mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
- David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
- jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
- boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, rcu@vger.kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-16-ankur.a.arora@oracle.com>
- <20240310100330.GA2705505@joelbox2>
- <da51dacc-cdf7-4129-b424-b32764736f48@paulmck-laptop>
- <fd48ea5c-bc74-4914-a621-d12c9741c014@joelfernandes.org>
- <87r0ghl51f.fsf@oracle.com>
- <66820daa-421b-469a-a7e8-ae7ae9dfa978@joelfernandes.org>
- <87wmq8pop1.ffs@tglx>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <87wmq8pop1.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-6-seanjc@google.com>
+ <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com>
+Message-ID: <Ze-hC8NozVbOQQIT@google.com>
+Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
+From: Sean Christopherson <seanjc@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, kvm@vger.kernel.org, 
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kevin Tian <kevin.tian@intel.com>, Yiwei Zhang <zzyiwei@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-Hi, Thomas,
-Thanks for your reply! I replied below.
-
-On 3/11/2024 3:12 PM, Thomas Gleixner wrote:
-> On Mon, Mar 11 2024 at 11:25, Joel Fernandes wrote:
->> On 3/11/2024 1:18 AM, Ankur Arora wrote:
->>>> Yes, I mentioned this 'disabling preemption' aspect in my last email. My point
->>>> being, unlike CONFIG_PREEMPT_NONE, CONFIG_PREEMPT_AUTO allows for kernel
->>>> preemption in preempt=none. So the "Don't preempt the kernel" behavior has
->>>> changed. That is, preempt=none under CONFIG_PREEMPT_AUTO is different from
->>>> CONFIG_PREEMPT_NONE=y already. Here we *are* preempting. And RCU is getting on
->>>
->>> I think that's a view from too close to the implementation. Someone
->>> using the kernel is not necessarily concered with whether tasks are
->>> preempted or not. They are concerned with throughput and latency.
->>
->> No, we are not only talking about that (throughput/latency). We are also talking
->> about the issue related to RCU reader-preemption causing OOM (well and that
->> could hurt both throughput and latency as well).
+On Mon, Mar 11, 2024, Yan Zhao wrote:
+> On Fri, Mar 08, 2024 at 05:09:29PM -0800, Sean Christopherson wrote:
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 17a8e4fdf9c4..5dc4c24ae203 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -7605,11 +7605,13 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+> >  
+> >  	/*
+> >  	 * Force WB and ignore guest PAT if the VM does NOT have a non-coherent
+> > -	 * device attached.  Letting the guest control memory types on Intel
+> > -	 * CPUs may result in unexpected behavior, and so KVM's ABI is to trust
+> > -	 * the guest to behave only as a last resort.
+> > +	 * device attached and the CPU doesn't support self-snoop.  Letting the
+> > +	 * guest control memory types on Intel CPUs without self-snoop may
+> > +	 * result in unexpected behavior, and so KVM's (historical) ABI is to
+> > +	 * trust the guest to behave only as a last resort.
+> >  	 */
+> > -	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
+> > +	if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
+> > +	    !kvm_arch_has_noncoherent_dma(vcpu->kvm))
+> >  		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
 > 
-> That happens only when PREEMPT_RCU=y. For PREEMPT_RCU=n the read side
-> critical sections still have preemption disabled.
+> For the case of !static_cpu_has(X86_FEATURE_SELFSNOOP) &&
+> kvm_arch_has_noncoherent_dma(vcpu->kvm), I think we at least should warn
+> about unsafe before honoring guest memory type.
 
-Sorry, let me clarify. And please forgive my noise but it is just a point of
-view. CONFIG_PREEMPT_AUTO always preempts sooner or later, even for
-preempt=none. A point of view could be, if you are preempting anyway (like
-CONFIG_PREEMPT=y), then why bother with disabling CONFIG_PREEMPT_RCU or even
-give it as an option. After all, with CONFIG_PREEMPT=y, you cannot do
-CONFIG_PREEMPT_RCU=n.  It is just a point of view, while we are still discussing
-this patch series ahead of its potential merge.
+I don't think it gains us enough to offset the potential pain such a message
+would bring.  Assuming the warning isn't outright ignored, the most likely scenario
+is that the warning will cause random end users to worry that the setup they've
+been running for years is broken, when in reality it's probably just fine for their
+use case.
 
->> With CONFIG_PREEMPT_AUTO=y, you now preempt in the preempt=none mode. Something
->> very different from the classical CONFIG_PREEMPT_NONE=y.
+I would be quite surprised if there are people running untrusted workloads on
+10+ year old silicon *and* have passthrough devices and non-coherent IOMMUs/DMA.
+And anyone exposing a device directly to an untrusted workload really should have
+done their homework.
+
+And it's not like we're going to change KVM's historical behavior at this point.
+
+> Though it's a KVM's historical ABI, it's not safe in the security perspective
+> because page aliasing without proper cache flush handling on CPUs without
+> self-snoop may open a door for guest to read uninitialized host data.
+> e.g. when there's a noncoherent DMA device attached, and if there's a memory
+> region that is not pinned in vfio/iommufd side, (e.g. memory region in vfio's
+> skipped section), then though the guest memory from this memory region is not
+> accessible to noncoherent DMAs, vCPUs can still access this part of guest memory.
+> Then if vCPUs use WC as guest type, it may bypass host's initialization data in
+> cache and read stale data in host, causing information leak.
 > 
-> In PREEMPT_RCU=y and preempt=none mode this happens only when really
-> required, i.e. when the task does not schedule out or returns to user
-> space on time, or when a higher scheduling class task gets runnable. For
-> the latter the jury is still out whether this should be done or just
-> lazily defered like the SCHED_OTHER preemption requests.
-> 
-> In any case for that to matter this forced preemption would need to
-> preempt a RCU read side critical section and then keep the preempted
-> task away from the CPU for a long time.
-> 
-> That's very different from the unconditional kernel preemption model which
-> preempt=full provides and only marginally different from the existing
-> PREEMPT_NONE model. I know there might be dragons, but I'm not convinced
-> yet that this is an actual problem.
+> My preference is still to force WB
+> (i.e. (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT) in case of
+> !static_cpu_has(X86_FEATURE_SELFSNOOP) && kvm_arch_has_noncoherent_dma(vcpu->kvm).
+> Firstly, it's because there're few CPUs with features VMX without self-snoop;
 
-Sure it is less aggressive than a full preemption, still a preemption
-nonetheless, so its quirky in the regard of whether or not RCU preemption is
-provided as an option (as I mentioned as a point-of-view above).
+This is unfortunately not true.  I don't know the details, but apparently all
+Intel CPUs before Ivy Bridge had a one or more related errata.
 
-> OTOH, doesn't PREEMPT_RCU=y have mechanism to mitigate that already?
+/*
+ * Processors which have self-snooping capability can handle conflicting
+ * memory type across CPUs by snooping its own cache. However, there exists
+ * CPU models in which having conflicting memory types still leads to
+ * unpredictable behavior, machine check errors, or hangs. Clear this
+ * feature to prevent its use on machines with known erratas.
+ */
+static void check_memory_type_self_snoop_errata(struct cpuinfo_x86 *c)
+{
+	switch (c->x86_model) {
+	case INTEL_FAM6_CORE_YONAH:
+	case INTEL_FAM6_CORE2_MEROM:
+	case INTEL_FAM6_CORE2_MEROM_L:
+	case INTEL_FAM6_CORE2_PENRYN:
+	case INTEL_FAM6_CORE2_DUNNINGTON:
+	case INTEL_FAM6_NEHALEM:
+	case INTEL_FAM6_NEHALEM_G:
+	case INTEL_FAM6_NEHALEM_EP:
+	case INTEL_FAM6_NEHALEM_EX:
+	case INTEL_FAM6_WESTMERE:
+	case INTEL_FAM6_WESTMERE_EP:
+	case INTEL_FAM6_SANDYBRIDGE:
+		setup_clear_cpu_cap(X86_FEATURE_SELFSNOOP);
+	}
+}
 
-It does. But that sounds more in favor of forcing PREEMPT_RCU=y for AUTO since
-such mitigation will help those concerns that AUTO users would need
-PREEMPT_RCU=y (?).
+> Secondly, security takes priority over functionality :)
 
->> Essentially this means preemption is now more aggressive from the point of view
->> of a preempt=none user. I was suggesting that, a point of view could be RCU
->> should always support preepmtiblity (don't give PREEEMPT_RCU=n option) because
->> AUTO *does preempt* unlike classic CONFIG_PREEMPT_NONE. Otherwise it is
->> inconsistent -- say with CONFIG_PREEMPT=y (another *preemption mode*) which
->> forces CONFIG_PREEMPT_RCU. However to Paul's point, we need to worry about those
->> users who are concerned with running out of memory due to reader
->> preemption.
-> 
-> What's wrong with the combination of PREEMPT_AUTO=y and PREEMPT_RCU=n?
-> Paul and me agreed long ago that this needs to be supported.
-
-There's nothing wrong with it. Its just a bit quirky (again just a point of
-view), that for a configuration that causes preemption (similar to
-CONFIG_PREEMPT=y), that PREEMPT_RCU can be disabled. After all, again with
-CONFIG_PREEMPT=y, PREEMPT_RCU cannot be currently disabled.
-
->> In that vain, maybe we should also support CONFIG_PREEMPT_RCU=n for
->> CONFIG_PREEMPT=y as well. There are plenty of popular systems with relatively
->> low memory that need low latency (like some low-end devices / laptops
->> :-)).
-> 
-> I'm not sure whether that's useful as the goal is to get rid of all the
-> CONFIG_PREEMPT_FOO options, no?
-
-I think I may have lost you here, how does forcing or not forcing
-CONFIG_PREEMPT_RCU relate to getting rid of CONFIG options? There's no new
-CONFIG options added one way or the other.
-
-> I'd rather spend brain cycles on figuring out whether RCU can be flipped
-> over between PREEMPT_RCU=n/y at boot or obviously run-time.
-
-Yes I agree with that actually, and I see Paul provided some detailed thoughts
-in a reply to you in your quest to get him to write a novel as you put it ;-). I
-am Ok with our providing preemptible-RCU as an option with AUTO and it could be
-documented well that this is possible. I am fully on board also with the
-sentiment of getting rid of the zoo of CONFIG_PREEMPT options!
-
-thanks,
-
--  Joel
+Yeah, but not breaking userspace for setups that have existed for 10+ years takes
+priority over all of that :-)
