@@ -1,59 +1,48 @@
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2435B698;
-	Wed, 13 Mar 2024 22:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 085F751016;
+	Wed, 13 Mar 2024 22:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710370168; cv=none; b=NGvEnXEU/kXMjJsuTlRZUYmab5tGpL8Xz8S8pr/S4BRfFS/XlqhA6jg/FFlzsVJcRjC9twTNl/Scq89WCZFne6A09gPgPdkcczu0GafVieitHVeZR1hJIrmqwDzecsDkAADmjEN4XApCcbuYiVSr7Ji6kt560JpUuxXlW9YyNyk=
+	t=1710370376; cv=none; b=YjXSjcEnerHP2iwBlWuXFH2MmJkUjKOK7yKiM139zBonPI67pu4cMwKh2bq7SD69hfZRX5K95/4Jk0HzX7jrZQQ8vdPurGaS9YdWerTvSdyd6mA4twIUEuJvw23ExqQfFAIGHh1nXaqIAdZGsA3opuHnH+l72FHv4wSbUJZgjaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710370168; c=relaxed/simple;
-	bh=nek76MaUd8CRieyJYFUDcAswrStRcG9fu+1l2HVMdP4=;
+	s=arc-20240116; t=1710370376; c=relaxed/simple;
+	bh=j8wizuNnMkBHpI1E8RbBcBOMbssfc76hVogMMDgT6ic=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fYfnfs00KJh2WyRGwC2bava4K30lFzap4N33Z4+hPi66AB4fHUUhh+aw3D9IAHpFNaRTEiQtDqlx3+ldBADAGEdUBvQQcDkpY6c1vhg8krI5QE3Tzb+cawnc0RSZNjNuxBzqTCE3vD7VfFiXR4m0xP2bLp3mSTKIhC+rOXfeHxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=sk+VCr55; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+	 Content-Type:Content-Disposition:In-Reply-To; b=l9ogsgOQEcDaD7K/M7Eesn1r0xjWdbsJL0W3R5WoxOFRS1Cb3NDpiU07RphJ4mu5c4vdQCEMdIpCv9BzBnD0PzOlXQ2bfXOK9rHpcIaYGYj94KAED24tAIKxWapno+isqDh/3nVzdSpZBdg41APElJmOYBKS9D4pi5HAdJ3uSQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BX9HwtAb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="sk+VCr55"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=kYJ36KwNuXIC2GGEAAYTQQ0oqxpqcrzztRKyJVrIE0Q=; b=sk+VCr555q40ixk8RZjak6MGdB
-	xNSbxmXeiNdfD4M9K81A5l7erbg5g8sowpdIf9UuYLa9YNiqDslHqEDwHEwd0bCfMmb9zGgM9psBZ
-	VCWcxKuney282w/+oPe0NP8r+p7VTHEiWzLu7Y4NMtrviQ7O/UqIHx6+c8WxnU1PHYf45AcfRm4X/
-	NHnh/1feE4w2U1waB2Ccsj3esWPg+jJJLAm+qz7rTgmJK7aKNczFfDH3L3Ctqh9FsiMctSXehBVxB
-	JsSr3LJXt9gXVIkom7RJ8/awSlLnjP6BUs8Vqz8XZqcLl0CqxJwJiFoEmjyETiuHsUAB3N+K0YdOy
-	RKQhzI1g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34448)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rkXPQ-0008G0-12;
-	Wed, 13 Mar 2024 22:49:16 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rkXPK-0004rD-PW; Wed, 13 Mar 2024 22:49:10 +0000
-Date: Wed, 13 Mar 2024 22:49:10 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BX9HwtAb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B2B8C43390;
+	Wed, 13 Mar 2024 22:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710370375;
+	bh=j8wizuNnMkBHpI1E8RbBcBOMbssfc76hVogMMDgT6ic=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BX9HwtAbUyVcVxvoMciVaTIGZ5UAdBQ9npWQLM1hzpNBMYkMT4InTnMYQCQI9rLJe
+	 35iG+6ygN12KmhHLV9npQbCA488YniIv5TCnqrTRhYor76tVNU/Rm/uj+NlhMoez1D
+	 67UwfsOx3eO1XMc9wUJ1kRLe1YwMGd2Qgzd+3OQq41ysmihlp7bx6+6rBwrHGMn9Ry
+	 jzULHqKDzhNNOxbwHy1esVl08I7AYhmNz3eaYmbnmyjaIkElrGa70wT1ecpqXh8fEY
+	 DMGl3mvDYC/GebANPxhn0LXPWkYbdm+lrAABXwbSgpsvqKoDJbGONs3f1LAFiT5eUp
+	 ZMh2BI7aypcLg==
+Date: Wed, 13 Mar 2024 23:52:52 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
 To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>,
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Joel Fernandes <joel@joelfernandes.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	paulmck@kernel.org, mingo@kernel.org, tglx@linutronix.de,
 	rcu@vger.kernel.org, neeraj.upadhyay@amd.com, urezki@gmail.com,
-	qiang.zhang1211@gmail.com, frederic@kernel.org,
-	bigeasy@linutronix.de, chenzhongjin@huawei.com,
-	yangjihong1@huawei.com, rostedt@goodmis.org,
-	Justin Chen <justin.chen@broadcom.com>
+	qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
+	chenzhongjin@huawei.com, yangjihong1@huawei.com,
+	rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
 Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
  v6.9]
-Message-ID: <ZfItZs756Bps2pFa@shell.armlinux.org.uk>
+Message-ID: <ZfIuRMo8oKbR08Af@lothringen>
 References: <ZetHwrCb0KXE0xFI@tardis>
  <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
  <ZfDEIs63EBIYBJIC@boqun-archlinux>
@@ -73,7 +62,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
 On Wed, Mar 13, 2024 at 03:04:26PM -0700, Florian Fainelli wrote:
 > On 3/13/24 14:59, Russell King (Oracle) wrote:
@@ -157,13 +145,40 @@ On Wed, Mar 13, 2024 at 03:04:26PM -0700, Florian Fainelli wrote:
 > and my earlier bisections somehow did not have ARM64 fail, so I thought it
 > was immune but it fails with about the same failure rate as ARM 32-bit.
 
-Okay, so if that's two architectures failing, it's probably not an
-architecture specific issue. It could still be a timer/interrupt driver
-issue though. It would be nice to have a reproducer on x86 which would
-confirm it.
+Can you please boot with:
 
-Do you know the frequency that the failure happens?
+    trace_event=timer_migration,timer_start,timer_expire_entry,timer_cancel
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+And add the following and give us the resulting output in dmesg?
+
+diff --git a/init/main.c b/init/main.c
+index d002f30f7f24..f3d548919868 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1233,13 +1233,24 @@ int __init_or_module do_one_initcall(initcall_t fn)
+ 	int count = preempt_count();
+ 	char msgbuf[64];
+ 	int ret;
++	long start;
+ 
+ 	if (initcall_blacklisted(fn))
+ 		return -EPERM;
+ 
+ 	do_trace_initcall_start(fn);
++	start = READ_ONCE(jiffies);
+ 	ret = fn();
+ 	do_trace_initcall_finish(fn, ret);
++	if (READ_ONCE(jiffies) - start > HZ * 20) {
++		static bool warned;
++
++		if (!warned) {
++			warned = 1;
++			ftrace_dump(DUMP_ALL);
++		}
++	}
++
+ 
+ 	msgbuf[0] = 0;
+ 
+
+
