@@ -1,157 +1,231 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2052.outbound.protection.outlook.com [40.107.102.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF54B481AA
-	for <rcu@vger.kernel.org>; Wed, 13 Mar 2024 16:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710345723; cv=none; b=JjIzLgkATJG7Z6ySPQmOZC+VDGhDfSiuGxza1J4gO3b0ke6TxFVW9v1nr1sxIjXujxf/nsLqdlXOowsmHqnobnZm52lYby/cax7Wfa/uazBT5nKXymDSjHeKub+EcQinO4hBCjdJE4gHlMbECgKUTBd1f0TEcaO+wHmnWKG9oug=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710345723; c=relaxed/simple;
-	bh=skEFlYVRbGKrwaoRI9SBnK72i4qW8cNFfPFUKmMt/V4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E/3JOSkXX+YpOXXnNBXNY/b0T4NzVijX4+O9VJ/2zPexJUZKTSbl/u3b+fJXRYpI5LB3s2KLGFpHTZgg2j44cVmC4cLlDaAjGRUbPvcsog0Rag3zKSYt4QxHQGtqJy5aZlLo725rKSv1SxLJX+KSyHG6Lav39c3P2c2aKMtjqgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=QnkD+bn7; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA85D482C6;
+	Wed, 13 Mar 2024 16:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710345860; cv=fail; b=dyu6jQpHpGbPDw4I1NrqZpn1Oti0KaiWiC+0lfzeKyr3XHhr2CxelUjq8yMcPth5NAxMSkqVW+I7HG/oXS7b2v86Uv6mIL8zYHGoxoka9AaUalE/5Y77OaGJDUju0Zk+3Pp4wOBUH/ogSXaUm+L8dqCTlN2ppBwwUdmdgo/+3PU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710345860; c=relaxed/simple;
+	bh=63L0bHE/Fwfqh4IWA5YlcKhs1N2qVR5idwQ6tB22RXo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=oFpz9SiWoyagNDICcFlK/l5N7G4WtmSwdX1tPdmMZQ8uVYv4tvd/t+EoEjz3pTxYEuIc8JZecahBUUttdr1a3qqHO87/uo0AU6EazNkWV2dx/Vw2SLu7bONMlbp+80HRI8tbezjgH/StErD8ck6ZrzKH/kIIT8Jj4yy/a1iDzeA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3BOczQ83; arc=fail smtp.client-ip=40.107.102.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QnkD+bn7"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d2505352e6so15675651fa.3
-        for <rcu@vger.kernel.org>; Wed, 13 Mar 2024 09:02:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710345719; x=1710950519; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PhI7fuOW7O94CdymJJXoJUrg+PQKoUQdDuMwFu4gOLk=;
-        b=QnkD+bn71GHRBfgc2+oSSOVxJjg7U9yLCwoek6EifD2I2yLHdXnWMA/utDeelZjPVS
-         3wBbvzkX+2tI82+N4Y2GQ4/JUz2q0VA9k5sLZ61XoZmid8cfkRR1QOAzQM1/xTwsDk6P
-         19ZqznP79EZXH9VUbFd/XBScIXpM7kSFSNdME=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710345719; x=1710950519;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PhI7fuOW7O94CdymJJXoJUrg+PQKoUQdDuMwFu4gOLk=;
-        b=u7inuAY7PvEdkK3pbuACsJ4llZN3U577Vv+uNWBsoFWNV56utxtdFG6AZ0BtF0Dtt3
-         /mhmAFN+ZgGXAgZvppIzstJAjl4flH0kPCci0Cv5YOBxNJj/+iqWOhuUDW8endBI5HD+
-         Zj8mYorfStNv66Ms/JuMM5NiZ7Yjk/KoUESjjuuFW3A9RAJ3WwRtRkARQaZfTxhe+Ybo
-         bTHyhZVn566zVajVJRnpxLtTSYlIMs64B5DyH63Cu2jn4nHtdNdSDFaisyWWJnyyoNtt
-         4w7OaTX8qdsLPPQGP1XaJS6PNXmZ6/KnhZ1RuD8dnF1PgOvhZZS6jaum7JJYINAYSytr
-         /KUA==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ89N2eCOrMhMjUwqTbhPoiy3rueuNDNsfGufMP0l1G0eCKWLRkoa0b8lSjiYfucaoICSZ712VfceUdFxO5z2W6/jO
-X-Gm-Message-State: AOJu0Yy6B7yTNeySbLlhzv5HRBVr1UjXh44EccmyU89GGsFAN8wAc66W
-	eAk477wqeP5rRYgJ+hsewA6BexeMoTIf6C0BP2drnX6shtHyMPWLXsygIi5w+SQQvfdfpN/na1L
-	RvMt8MA19Tk8f0zLrp/vBzgeqXd92jlVv0OLgYA==
-X-Google-Smtp-Source: AGHT+IEB+ypKw1227kSwoEpCb58giwsbWQ7T3kqHZKNM52jxhQC6RiCthXFaTfppDX19xNPkqW1S/iblz4CA4LMGbpA=
-X-Received: by 2002:a05:651c:3c9:b0:2d4:6e5:2cd6 with SMTP id
- f9-20020a05651c03c900b002d406e52cd6mr2361699ljp.25.1710345718592; Wed, 13 Mar
- 2024 09:01:58 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3BOczQ83"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K8OCI0rfwr+prh4cGl91XdaIeb0S/YGIqX475GXXbqAKDAM4y7PNqMqcf1ldWTPpzeDUSh0xBXzUC3t4FE3A2zdW9rC7ZJ9Tl/6YyV8VTbjc6WG1sPekogwNQVO0aiABWgjBNVeM6X03oXQdudvzNsiVez1OMzfYCb1A4foXv1m3i1yIUK5nriUej7BGcJ/IOhZmHBhKdF7owqbV1Q8BSpQoJBRYTVtddNtEWsfcWBDnQDrZzylMSVxmJVXdOuvMYSKXzdFCFa5gZ4fbi8EZjYFJ3MjGi0Zoxql0p2Mw0EtwUFP8h/bA5qRpLf1CZ9JtA0k2NwnZYRvdNJiA9oj0VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BRsb0rDOjUnnotUxINarqaONUDLAZ7dH4lsoxE4yLVQ=;
+ b=EJJ0p6zCyKirSvSbvXBqY7IU6ZElsAnheHlefPG45DDQY4ljXGE5Wsu2cS8E/hOztMZ5s7kqs4DdWcxBhvl03oa/8Sc1A+Dosa4GOo3zcWrKy1FFYuGIMOmVIsixTKPcc/3rDHz5ni0J3spoEqVGYQYQjjqX3h3H+u01Vpf9SobHcErcyCnQ1upFv9ZOV0g1ZBG5WPHxR6nt4vtL6jY/4wzp0ta6zAW5qRbrAmX2XBngCMrkRJw+Fgw1H4VdZW/5anSv/kthFDpROUeskAYkhSx2SYc1/7/Ttx6OVX+27CUolWQjpS02HsifhtcJnwoC8+rURxsogkGJspyTTaoRqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BRsb0rDOjUnnotUxINarqaONUDLAZ7dH4lsoxE4yLVQ=;
+ b=3BOczQ83vVuTMyiXATb2NGVHTen1EqLCSgNkAQEaQLJo5RF2XbTPk+cGlwXanxKSSr8NTI0lNUFns7xJlqfOJ3pbZUN/gHtB6oh7Vghw9uzKBTts4ScDYpRVFfLuuBY7I8smizaEUkST4FkqK0W0OdsCqa/2UvcYLdhsHhK40Zk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
+ DS0PR12MB7677.namprd12.prod.outlook.com (2603:10b6:8:136::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7362.26; Wed, 13 Mar 2024 16:04:15 +0000
+Received: from DS0PR12MB6608.namprd12.prod.outlook.com
+ ([fe80::1cea:ca41:bbe9:c22d]) by DS0PR12MB6608.namprd12.prod.outlook.com
+ ([fe80::1cea:ca41:bbe9:c22d%2]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
+ 16:04:15 +0000
+Message-ID: <6c1ac571-b758-4168-a992-3704c60dba61@amd.com>
+Date: Wed, 13 Mar 2024 21:34:05 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Reduce synchronize_rcu() delays when all wait heads
+ are in use
+To: Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+ frederic@kernel.org, josh@joshtriplett.org, boqun.feng@gmail.com,
+ rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+ qiang.zhang1211@gmail.com
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ neeraj.upadhyay@kernel.org
+References: <20240313083228.233247-1-Neeraj.Upadhyay@amd.com>
+ <aa221e99-bf08-4d36-aef1-07ffc5e71516@joelfernandes.org>
+Content-Language: en-US
+From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+In-Reply-To: <aa221e99-bf08-4d36-aef1-07ffc5e71516@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0193.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:be::22) To DS0PR12MB6608.namprd12.prod.outlook.com
+ (2603:10b6:8:d0::10)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZetHwrCb0KXE0xFI@tardis> <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
- <ZfDEIs63EBIYBJIC@boqun-archlinux> <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
- <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com> <ZfDptafiK0jns050@boqun-archlinux>
-In-Reply-To: <ZfDptafiK0jns050@boqun-archlinux>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Wed, 13 Mar 2024 12:01:45 -0400
-Message-ID: <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
-Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for v6.9]
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Florian Fainelli <f.fainelli@gmail.com>, 
-	linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org, 
-	mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org, 
-	neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com, 
-	frederic@kernel.org, bigeasy@linutronix.de, anna-maria@linutronix.de, 
-	chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|DS0PR12MB7677:EE_
+X-MS-Office365-Filtering-Correlation-Id: afbbbf0b-6ad5-4d42-3d9d-08dc43773b06
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	B0pqLa4ljEID9mfSOoFFw89lFdurkaRh1J3NobQdbS71ALieFuPhpzfDMzov1cw0Tpa/PuMD2pa0STC5WBxyVVYX+dW73qaRC2iZeTlQh5uPIcH8ngRa24Efaw2DxJfd7+6fGzLQ9ogo0TVGfFPSAJU6Ovnh9dNrc7sHlNngMb1hjRJnv5y1E9biXvfGT0Qov7YfJJrOxLXbIqTlE8A+nB2SPPe10CXGxEKbv31Rlya94NRRvDMCYSPe0LUhYNA9dQImD/l4tpz7//Y84wsH+ZM+EaMxi1UF5s1Fa7nPUfFywe4McNC8FDsjQ/e8lrJJn/8s++RmeKXjr5uUwbf2dV4kg3YvSKpZVSXmj4DRWmRgrWFcJpzY8Xzn7YDagHET98t7rCwnsF3frbkhQrWT97vz7vbCBDxZHgnf165JL76cNLkEyKyx0ZkJpQvO3V+sz9sHn0067+F9fXKpMgDNuvlE/PJjT6A15VZwOe5HM1mMA9nn0XdQ5qkTHYa/DgfdNUfh3eZhOAy7YgzgGQDApgoGE0EZDJOT1LyiWZOrF0FzKQWATJcW5xtZ9ZoO3Wy8ikO6yf80NgsDvDgRQ0SWAxuhRkEmcCnHQrAroiBsBe0=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?a1lqVkFINFBYUVc2eXhsWVpUSElWc1hQdUV2Wk5rQ3ViY0lLQUlHejFmVlox?=
+ =?utf-8?B?VTdHT1M3QjFmM1FFQ1o0OTZuZmhWL0txS2FVdFl1R0hJbEY1YXB5NkwvbHVZ?=
+ =?utf-8?B?c3N2UUFxVW56eHZHbW9xcVIxb1FXeGxiV3crU2QwMmN6UEdGSmxyaVQ5Tkta?=
+ =?utf-8?B?U1pteGYzck53VUw0M3hpT3NNSDdXc1NKZFBsaTdiUEtFd0E4NU1uNnZScVdn?=
+ =?utf-8?B?R1BVdFlYaG9DOGhPRTJjQStlTWhsK2paV2thRzVIM1ozckJ2TG1vNy9odmZJ?=
+ =?utf-8?B?bFpPQlJWUGpZYm9kOTExdm9VTVBrWTQ3MlJFSGo2VWpiMm5WQURXVERZYk5m?=
+ =?utf-8?B?eUVTMVMrTU5oVHpqcHl6SjIyRERuU3NPQ2JVMllTcUxBR1BVcEhtMURnaXBY?=
+ =?utf-8?B?aVFLTXkxY0hUNWJyVHJUK1hhdVU3YWJ5UzBrZHVuUlB1Ny9aYzNmNmRwcHpF?=
+ =?utf-8?B?bVhoWkphTDdPeVFoUytKeTZVY2taOFdQb0Y4ZUUxM1c0cFFITlhFdHIyaXBk?=
+ =?utf-8?B?UmtMSXpDK2h1ZUF5WmFYbWNSYVNQbHFDRnBBR2l5N1JpdS9vamJtMlpUcGRv?=
+ =?utf-8?B?ZWFHb1luVyswd2IrTEdsSXNwNll5Q2RGRTFJVTFXd2c1TUZCRFl2NEk1K2RQ?=
+ =?utf-8?B?L3k0d1crZE9aS21mWm9PMGUxUGFHYko3ZlQzQnA5RTlYTVh0SmVDVktUTlpa?=
+ =?utf-8?B?ZzBFbmljU043Zk5qVmIydDROelRaNG5mMk9Vd3lLMmIzdTRaTmtrWXlBcXBW?=
+ =?utf-8?B?QzRoaFkzaWRXVk5JS0dUbjBYWmorRVhwdUtIZk9Vd09YUXJic2RvVVZKQ2Za?=
+ =?utf-8?B?S2dRbVZ3TDlNOUZlZTJoV2ZESCtuOEQ4OFRTdE9NbU1HZ2RDak1NZFhaYmpL?=
+ =?utf-8?B?Qkwra2owbXV1QVgwN3laMDAvUjVtanluM05HVnZBK1lZY0JkS0k3RlRCOGVL?=
+ =?utf-8?B?N0JIZitmdGk5eUs1NWJkbXFyNUkwaWEzY2xsTE5XS2pkeWtDbU96eHkyRkky?=
+ =?utf-8?B?RFpCMzhkOW1MR2RoemJiVnFvYjM0YXduZndxNnpJMmN3MStsdUp2eGJmNlZz?=
+ =?utf-8?B?dkx1TjI4czBVSDE3dHpwRWl3YjF1YXUxZ0t5aGdlWGtsNlJQNlJua2ltU0p6?=
+ =?utf-8?B?Qk9NV1IrTFBudXNaN1hjTi9TWjMxSnhlS2pMbHcvOW5JM0NzWmNGUWM4bFM3?=
+ =?utf-8?B?bCtDNUFVZWZidU5hNDhJVTVTa3VWcU1WZTlnQ0dCYXFnbitrMXExV2VOUWJq?=
+ =?utf-8?B?cVV3UGVjRk41Q1BhRXBJUTJVTVFMZGpSb1pUMnZmOE5lNnBxK3lGOFZsOUZW?=
+ =?utf-8?B?eGFQZjdvekdLaHVKRzQ0dGpWUDd3aSt5NzZ6ZTRPN0NnMTNscmIrSmx4WitI?=
+ =?utf-8?B?MDBFdVlCV1RYcWRSL3lxR3NFMlZ1MVRCMmg0R2dScEhBL3RNQlBVUHA2RjdO?=
+ =?utf-8?B?dVFBK3B3M3pIZXdtdG0waWp6ZTNlY0RoWXd6ZTE3cjQzVmhhRlpHbnVmRlIv?=
+ =?utf-8?B?WDdzYTMwYnRNSFh2VVZhaHVjN09lYlN1UTdWRDdJL25UcTJwMllFWlpuclpB?=
+ =?utf-8?B?OW84b3VRcUZkb2NBUHBzRHFPMi84L0RFM1Vsd2l1a2tsRFlwVS9VOTY4d3B3?=
+ =?utf-8?B?VVRCSWR4dFBVNWcvMzQxMTl3dlFTZ1RYK2F6czdwbXcrREZ3SWlJZUU4d3VS?=
+ =?utf-8?B?NDJzUDN2TlZicVMrVHVyanJ3cTcvVXZybXRFMnc3c3FSK3VjZ3Y4TlRGaGFK?=
+ =?utf-8?B?N1d0RDdqa2RGVzB5eUVMR0NualNUNFFFRk1INFhJTjF3YXk1dEsxbzFKZHoy?=
+ =?utf-8?B?alVFQWRNR1RsdW5zZlNScFo4Mlc3SmlqNXFXbkN4cStnSTVQUVhFSFNiSkRJ?=
+ =?utf-8?B?WWRKYzdFYmlNd0hsRWptQ2lsUC9BTUhmRDVsa2lGb21wOXNITlc0cVJMVUxG?=
+ =?utf-8?B?eDIyV01IL2MrdXJKN210aFVJQnJocHloT0J6MzQ4cDR4bGdBVGFWMDI1bnNM?=
+ =?utf-8?B?ZFBXNXIxVXlaTjhSeS9Temw4K1dEVFFieDI5UTB0MFJybVZFQkxWN1lBbCtH?=
+ =?utf-8?B?bDdzUnNzaW9GVGRVeHI5ckN4MC9kQnV2WmVKVlF4RjdqR0xpaVpGZ0hFRm9j?=
+ =?utf-8?Q?J/oITAPKUgKCMuEs2t8GUvDr8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afbbbf0b-6ad5-4d42-3d9d-08dc43773b06
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 16:04:15.3986
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N+IXOpW0Jb/BjDdSCPUtb/zSUfu4uLtXyV2JI/H2PDdUxFDpZig4YE9osCNzfU9biqaUpXa6eQ37AjuQFlP36g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7677
 
-Hello Florian,
+Hi Joel,
 
-On Tue, Mar 12, 2024 at 7:48=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Tue, Mar 12, 2024 at 02:44:14PM -0700, Linus Torvalds wrote:
-> > On Tue, 12 Mar 2024 at 14:34, Florian Fainelli <f.fainelli@gmail.com> w=
-rote:
-> > >
-> > > and here is a log where this fails:
-> > >
-> > > https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
-> >
-> > You could try the 'initcall_debug' kernel command line.
-> >
->
-> Right, that'll be helpful.
->
-> Besides I took a look at the config Florian shared, no TASKS_RCU,
-> RCU_LAZY or RCU nocb is enabled. So probably the only left changes in
-> the PR are around RCU expedited. Florian, could you see if you can build
-> and test with CONFIG_PROVE_RCU=3Dy (you need to select
-> CONFIG_PROVE_LOCKING for that)? That'll call synchronize_rcu() +
-> synchronize_rcu_expedited() before and after we switch
-> rcu_scheduler_active, and it may provide more information. Thanks!
+On 3/13/2024 8:10 PM, Joel Fernandes wrote:
+> Hi Neeraj,
+> 
+> On 3/13/2024 4:32 AM, Neeraj Upadhyay wrote:
+>> When all wait heads are in use, which can happen when
+>> rcu_sr_normal_gp_cleanup_work()'s callback processing
+>> is slow, any new synchronize_rcu() user's rcu_synchronize
+>> node's processing is deferred to future GP periods. This
+>> can result in long list of synchronize_rcu() invocations
+>> waiting for full grace period processing, which can delay
+>> freeing of memory. Mitigate this problem by using first
+>> node in the list as wait tail when all wait heads are in use.
+>> While methods to speed up callback processing would be needed
+>> to recover from this situation, allowing new nodes to complete
+>> their grace period can help prevent delays due to a fixed
+>> number of wait head nodes.
+>>
+>> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+>> ---
+>>  kernel/rcu/tree.c | 27 +++++++++++++--------------
+>>  1 file changed, 13 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index 9fbb5ab57c84..bdccce1ed62f 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -1470,14 +1470,11 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+>>   * for this new grace period. Given that there are a fixed
+>>   * number of wait nodes, if all wait nodes are in use
+>>   * (which can happen when kworker callback processing
+>> - * is delayed) and additional grace period is requested.
+>> - * This means, a system is slow in processing callbacks.
+>> - *
+>> - * TODO: If a slow processing is detected, a first node
+>> - * in the llist should be used as a wait-tail for this
+>> - * grace period, therefore users which should wait due
+>> - * to a slow process are handled by _this_ grace period
+>> - * and not next.
+>> + * is delayed), first node in the llist is used as wait
+>> + * tail for this grace period. This means, the first node
+>> + * has to go through additional grace periods before it is
+>> + * part of the wait callbacks. This should be ok, as
+>> + * the system is slow in processing callbacks anyway.
+>>   *
+>>   * Below is an illustration of how the done and wait
+>>   * tail pointers move from one set of rcu_synchronize nodes
+>> @@ -1725,15 +1722,17 @@ static bool rcu_sr_normal_gp_init(void)
+>>  		return start_new_poll;
+>>  
+>>  	wait_head = rcu_sr_get_wait_head();
+>> -	if (!wait_head) {
+>> -		// Kick another GP to retry.
+>> +	if (wait_head) {
+>> +		/* Inject a wait-dummy-node. */
+>> +		llist_add(wait_head, &rcu_state.srs_next);
+>> +	} else {
+>> +		// Kick another GP for first node.
+>>  		start_new_poll = true;
+>> -		return start_new_poll;
+>> +		if (first == rcu_state.srs_done_tail)
+> 
+> small nit:
+> Does done_tail access here need smp_load_acquire() or READ_ONCE() to match the
+> other users?
+> 
 
-Adding to everyone's suggestions, could you also try booting with
-"rcupdate.rcu_normal=3D1" ? This will disable expedited RCU and help us
-further confirm that it is indeed expedited RCU (and then we can look
-into fixing that).
+As srs_done_tail is only updated in RCU GP thread context, I think it is not required.
+Please correct me if I am wrong here.
 
-Also there are 2 additional users of expedited RCU in this release I notice=
-d:
+> Also if you don't mind could you please rebase your patch on top of mine [1] ? I
+> think it will otherwise trigger this warning in my patch:
 
-78c3253f27e5 ("net: use synchronize_rcu_expedited in cleanup_net()")
-1ebb85f9c03d ("netfilter: conntrack: expedite rcu in
-nf_conntrack_cleanup_net_list")
+Sure!
 
-Could you also try reverting those patches as well, and see if the
-issue goes away?
 
-thanks,
+Thanks
+Neeraj
 
- - Joel
-
-On Tue, Mar 12, 2024 at 7:48=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Tue, Mar 12, 2024 at 02:44:14PM -0700, Linus Torvalds wrote:
-> > On Tue, 12 Mar 2024 at 14:34, Florian Fainelli <f.fainelli@gmail.com> w=
-rote:
-> > >
-> > > and here is a log where this fails:
-> > >
-> > > https://gist.github.com/ffainelli/ed08a2b3e853f59343786ebd20364fc8
-> >
-> > You could try the 'initcall_debug' kernel command line.
-> >
->
-> Right, that'll be helpful.
->
-> Besides I took a look at the config Florian shared, no TASKS_RCU,
-> RCU_LAZY or RCU nocb is enabled. So probably the only left changes in
-> the PR are around RCU expedited. Florian, could you see if you can build
-> and test with CONFIG_PROVE_RCU=3Dy (you need to select
-> CONFIG_PROVE_LOCKING for that)? That'll call synchronize_rcu() +
-> synchronize_rcu_expedited() before and after we switch
-> rcu_scheduler_active, and it may provide more information. Thanks!
->
-> Regards,
-> Boqun
->
-> > It will make the above *much* noisier, but it might - thanks to all
-> > the new noise - show exactly *what* is being crazy slow to initialize.
-> >
-> > Because right now it's just radio silence in between those
-> >
-> >   [    1.926435] bcmgenet f0480000.ethernet: GENET 5.0 EPHY: 0x0000
-> >   [  162.148135] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
-> >
-> > things, and that's presumably because some random initcall there just
-> > takes forever to time out.
-> >
-> >              Linus
+> 
+> WARN_ON_ONCE(!rcu);
+> 
+> Because I always assume there to be at least 2 wait heads at clean up time.
+> 
+> [1] https://lore.kernel.org/all/20240308224439.281349-1-joel@joelfernandes.org/
+> 
+> Thanks!
+> 
+>  - Joel
+> 
+> 
+>> +			return start_new_poll;
+>> +		wait_head = first;
+>>  	}
+>>  
+>> -	/* Inject a wait-dummy-node. */
+>> -	llist_add(wait_head, &rcu_state.srs_next);
+>> -
+>>  	/*
+>>  	 * A waiting list of rcu_synchronize nodes should be empty on
+>>  	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
