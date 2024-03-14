@@ -1,192 +1,148 @@
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200EB76414;
-	Thu, 14 Mar 2024 22:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62964DF59;
+	Thu, 14 Mar 2024 22:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710454252; cv=none; b=l9aGX+vgFlU/ncVReqlSHoHUx5BYMBAhan6l958EKs665USPadpbfE0lA1tRIsNKUJ4JbJgNA6dcZsJxppdnvQa3DIscUq/1zW2OztwjsXFkL4c8UsA5DiTXxEvyDENKzT1qbDxBbeeEKKSnPwrpQhVXW+tqVVazQt/SEcj3RxY=
+	t=1710456715; cv=none; b=AzXLD41PkpKp19sLcJJD9v+gxtRjJDpG2YAv+gahSsmWxvnlfbVqP6H7tyBhxcNrRo01BMAZmSj0zlMekfmXgCBfFhsmvUJECI5MHc1He0rQjx4HPyEPMiMhkEdLpGtBzfO1wY6X6mSh26GYRYGSh9TKKQpzBZCjPTN4fsoYxBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710454252; c=relaxed/simple;
-	bh=OkWcBnsiYG75IDHlAI5T+Gku1wq896+L4GdKgwLV3Po=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FWM3qTKDPLs/fGoT8UKoIhP7vbnYiAqW0PIRC5BaDfSSq5/bcCf0p5Kgx/Md1yL7Qw06guv2SBg8gPunTBX62ved4Wh2YlMeijMKLffrbwOON3ackvtcqeLQDm/BaZ9bmpk0mj5XmE8UI9U0GCVGiNU2SBP6GMmKxpd2/GTjCm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hma04Grk; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1710456715; c=relaxed/simple;
+	bh=lfE9bu5HRXF5tO0qg8xsCSrAQraK0qItLSvD6agDm7s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=UeFwnOZAnr9iJ/u4lnkwyP6N9k78Wjw8BQL3NG73U0Wvv3MGrkAdQxRBKiIDhYrRAD88r8szwo9oiDYDEgtnMIv4UeGh/OUJT9zAWOIKFegZpJbpysb9a803IhNbrPLYKzvNdszAtNpN+FHuWjTmROyxX64SDb//49NqAvyqKsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Pih3OuIG; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QJTzQ2Zl; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hma04Grk"
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42a029c8e62so9846201cf.1;
-        Thu, 14 Mar 2024 15:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710454250; x=1711059050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CCh3dqJRCdjU6eonAORaNe6PS7ViDsSNXUXdZHK162c=;
-        b=hma04Grk/aHg2NQgGryrLC7jmZvxOwTKtwApQZxuSZYiYC8EQ+cFz1n3do3n3F+KIK
-         9jEFHuDrp5p7rgCJl/6bozS1CAEbekwHA6+QjCP0RUEKszkJDFzlqwD0s8mmh5xtF4rJ
-         RSf4ex1E7VYoW6RPcczVS4KsxQ/ztkO1Q1u4ywkNZeUpwNI14twA04FfOJr0+1BfWsvt
-         YUoW+EQGtPXJBMuUt2HNeBqvVF7a52KTuY91mzljqqn3YRd702RQyylcdWbX3uokttWz
-         n30anQBIi6VsCQj3i0h+d7X6ZSosFANV6MY6s9pJhcKJ5kAozX2AEeSheG/Ab9UNk82W
-         tWkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710454250; x=1711059050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CCh3dqJRCdjU6eonAORaNe6PS7ViDsSNXUXdZHK162c=;
-        b=r7rpJN40bvUqCqUMMapFUGmTHj2M8LWa3smv15fqRyoPpjcqiZNbsxL/f2397x25UZ
-         ep0C0Ek0ix2iYstKqShHzjUF/KHhG8r9ALuqARby0BBvMG5oZIhHVsAmXvIEF2wkDLCM
-         X1xbNghg6pCrd6uc/S0Ql9AvLOI7Lr/qhEHl4YIWbeihr04zVfQ4/XTAGqOJ5iRwltDJ
-         gFdHuv5xmSdV0WdOxmT3gsCOLNadnge3jxhyQJx0zbf18JecFW5nwOMTi1UjPEixvV1S
-         VSElZxEedAn+fgrdv3k/wW59vHkJfRPLsgnI8Utj3s0xPIhPZaals7OZsKBWfNjudsT5
-         sjyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXqEsXdx1NxK2Rm4evKbEpaGaY32g+OTJPwzR5+4XwsF6WiEfnw4tZVgYiJ7HW3+ekFcYFv1KirT5OJhaXmiWKGdjX57jDLgLwSbC3I+knMQ8qjjtgc4OyWFy09Wp6YrNUT
-X-Gm-Message-State: AOJu0YwOX3W1NcKzL3e7QJXZZ3KmPk/GY8+/IlpIxHkDSiZ8i75Tzxyp
-	IxtrpiWHFWebWCbicwQYd8USOSl+f5TEGWlC4B+h2f2VK/yK2RO2
-X-Google-Smtp-Source: AGHT+IE0CbsFgYOBEfoVLEWYHMhDQvabiv4+OsU1OtIjElzhfjT3erU5yfwzKsrSDVb6SifHrw683Q==
-X-Received: by 2002:a05:622a:5807:b0:430:a089:a13d with SMTP id fg7-20020a05622a580700b00430a089a13dmr2619640qtb.2.1710454250038;
-        Thu, 14 Mar 2024 15:10:50 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id s15-20020a05622a178f00b00430a07fb03asm931440qtk.0.2024.03.14.15.10.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 15:10:49 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 0F3BD27C005B;
-	Thu, 14 Mar 2024 18:10:49 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 14 Mar 2024 18:10:49 -0400
-X-ME-Sender: <xms:6HXzZZkPcGQmgSCYsLvFHe0FkX4engivAvZCdvEj-Z4RnJ2fxMBvGQ>
-    <xme:6HXzZU02vMjD1VrEF3NygDuuqwuvIJAfEkw9KHlZVOoMVEdT9d2KxO4k113_d3usr
-    jPWEE1leRglhWnxlA>
-X-ME-Received: <xmr:6HXzZfqkSF3RQV_Xdre0RptylM2lNaMD1wXrxNVSeCt7wHHmPiUoS7ef86PUUw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeejgdduheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpefftdeihfeigedtvdeuueffieetvedtgeejuefhhffgudfgfeeggfeftdei
-    geehvdenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
-    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:6HXzZZlGgiMyv2mWdOXLhDJe9f_XC6W6-qcZqZ18UQosrnG6h9VhYQ>
-    <xmx:6HXzZX1JNSkrhckv7yW2F_Tq86x6M4v9kpav3E36SWaKobl1u86wCQ>
-    <xmx:6HXzZYs02RFHLAAXhk4hGOalQKTD3XhGKokykkG71XydqoxOVDCA3w>
-    <xmx:6HXzZbXScSv_kQi99E7mkUfmBnC0fvnhZGk_5yRpTtONLJG0dqkWxg>
-    <xmx:6XXzZe_0Wrw2kuk17cZjIPi18E4w4AAMr0jznbruP_JZTYzinujKFg>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Mar 2024 18:10:47 -0400 (EDT)
-Date: Thu, 14 Mar 2024 15:10:41 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	paulmck@kernel.org, mingo@kernel.org, rcu@vger.kernel.org,
-	neeraj.upadhyay@amd.com, urezki@gmail.com,
-	qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
-	chenzhongjin@huawei.com, yangjihong1@huawei.com,
-	rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
-Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
- v6.9]
-Message-ID: <ZfN14cRsXp0CS7KC@boqun-archlinux>
-References: <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Pih3OuIG";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QJTzQ2Zl"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710456711;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1x6BoiJ2R+wIuiaWxSk4Ux5uhLtUhIOpd/83aUhZwks=;
+	b=Pih3OuIGQcS61QjoP2KuiE3390kbeQpxn9jx224nSXAfiXm/DFAqs1gIdULtefF/IvhZaW
+	GzM1T0azw/jGvcVOobh4noA3MaieHLSPbdedWlIwKlBY6ZmDZvpVUHDN6TTrtXhzbTd7+n
+	itZndrmMsEwIvo5rjhuCf5gJxQoeppijU+FJ1GSAKtYo/Nul7e2tuOjDlLRZKmr4VLhzBN
+	xU/I3+wGyucQSX9IX8GnX9RQLIBOJmh27ZxQNmjqm6udQseFnXPljITNc1dKxrnQfV6l3T
+	mMuPtFDhg6lnleujOHsR/H9ffW3IMMV13tTqKLsv7HC87R1Wpoo61MPOhWwtQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710456711;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1x6BoiJ2R+wIuiaWxSk4Ux5uhLtUhIOpd/83aUhZwks=;
+	b=QJTzQ2ZluUTsc5i71qrPP987FUBaJDN+dSu+Hca8zgsZ1hJB2fR3pPrGD2lw4yfF/Fbsly
+	uGeLP0YHgtHjVSCQ==
+To: Florian Fainelli <f.fainelli@gmail.com>, Boqun Feng <boqun.feng@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, "Russell King (Oracle)"
+ <linux@armlinux.org.uk>, Joel Fernandes <joel@joelfernandes.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Linus Torvalds
+ <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
+ rcu@vger.kernel.org, neeraj.upadhyay@amd.com, urezki@gmail.com,
+ qiang.zhang1211@gmail.com, bigeasy@linutronix.de, chenzhongjin@huawei.com,
+ yangjihong1@huawei.com, rostedt@goodmis.org, Justin Chen
+ <justin.chen@broadcom.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes
+ for v6.9]
+In-Reply-To: <8f977bbb-d949-4e90-b3d2-b9815189b842@gmail.com>
+References: <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+ <ZfDptafiK0jns050@boqun-archlinux>
+ <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
+ <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
+ <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
+ <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
  <ZfIuRMo8oKbR08Af@lothringen>
  <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
  <ZfLUU+XuQC7W79tf@lothringen>
  <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
  <ZfNHNvzpqf8DOZd8@boqun-archlinux>
- <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com>
- <87v85olez3.ffs@tglx>
- <87sf0sldbi.ffs@tglx>
- <ZfN0wY41pU5UjP8T@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com> <87v85olez3.ffs@tglx>
+ <87sf0sldbi.ffs@tglx> <8f977bbb-d949-4e90-b3d2-b9815189b842@gmail.com>
+Date: Thu, 14 Mar 2024 23:51:50 +0100
+Message-ID: <87msr0l94p.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfN0wY41pU5UjP8T@boqun-archlinux>
+Content-Type: text/plain
 
-On Thu, Mar 14, 2024 at 03:05:53PM -0700, Boqun Feng wrote:
-> On Thu, Mar 14, 2024 at 10:21:21PM +0100, Thomas Gleixner wrote:
-> > On Thu, Mar 14 2024 at 21:45, Thomas Gleixner wrote:
-> > > On Thu, Mar 14 2024 at 12:09, Florian Fainelli wrote:
-> > >> https://gist.github.com/ffainelli/cb562c1a60ef8e0e69e7d42143c48e8f
-> > >>
-> > >> this one is does include the tmigr events. Thanks!
-> > >
-> > > You need 8ca1836769d758e4fbf5851bb81e181c52193f5d too.
-> > 
-> > So from the above trace it's clear where it goes south:
-> > 
-> > [  236.318158]   <idle>-0         3..s.. 2928466us : tmigr_handle_remote: group=aecb05cb lvl=0
-> > [  236.326526]   <idle>-0         3d.s.. 2928467us : tmigr_handle_remote_cpu: cpu=0 parent=aecb05cb wakeup=9223372036854775807
-> > [  236.357809]   <idle>-0         3d.s.. 2928469us : tmigr_update_events: child=00000000 group=aecb05cb group_lvl=0 child_active=0 group_active=8 nextevt=3103000000 next_expiry=2934000000 child_evt_expiry=0 child_evtcpu=0
-> > 
-> > [  236.377222]   <idle>-0         0dn... 2928471us : tmigr_cpu_active: cpu=0 parent=aecb05cb wakeup=9223372036854775807
-> > [  236.387765]   <idle>-0         0dn... 2928471us : tmigr_group_set_cpu_active: group=aecb05cb lvl=0 numa=0 active=9 migrator=8 parent=00000000 childmask=1
-> > 
-> > [  236.401526]   <idle>-0         0d.... 2928477us : tmigr_update_events: child=00000000 group=aecb05cb group_lvl=0 child_active=0 group_active=8 nextevt=3103000000 next_expiry=2934000000 child_evt_expiry=0 child_evtcpu=0
-> > [  236.420940]   <idle>-0         0d.... 2928478us : tmigr_group_set_cpu_inactive: group=aecb05cb lvl=0 numa=0 active=8 migrator=8 parent=00000000 childmask=1
-> > [  236.434874]   <idle>-0         0d.... 2928478us : tmigr_cpu_idle: cpu=0 parent=aecb05cb nextevt=3103000000 wakeup=9223372036854775807
-> > 
-> > [  236.446896]   <idle>-0         3d.... 2929469us : tmigr_group_set_cpu_inactive: group=aecb05cb lvl=0 numa=0 active=0 migrator=ff parent=00000000 childmask=8
-> > [  236.460916]   <idle>-0         3d.... 2929470us : tmigr_cpu_idle: cpu=3 parent=aecb05cb nextevt=9223372036854775807 wakeup=9223372036854775807
-> > [  236.473721]   <idle>-0         3d.... 2934471us : tmigr_cpu_new_timer_idle: cpu=3 parent=aecb05cb nextevt=9223372036854775807 wakeup=9223372036854775807
-> > 
-> > CPU3 is the last active CPU and goes idle. So it should take care of the
-> > pending events, but it does not.
-> > 
-> 
-> I notice CPU3 didn't have its own non-deferrable timer queued (local or
-> global), so could the following happen?
-> 
-> 	timer_base_try_to_set_idle():
-> 	  __get_next_timer_interrupt():
-> 	    fetch_next_timer_interrupt():
-> 	      // nextevt_local == nextevt_global == basej + NEXT_TIMER_MAX_DELTA
-> 	      // tevt->local == tevt->gloabl = KTIME_MAX
-> 	    timer_use_tmigr():
-> 	      tmigr_cpu_deactivate():
-> 	        __tmigr_cpu_deactivate():
-> 		  // tmc->cpuevt.ignore untouched still == true
-> 		  walk_groups(&tmigr_inactive_up, ...):
-> 		    tmigr_inactive_up():
-> 		      data->remote = true;
+On Thu, Mar 14 2024 at 14:53, Florian Fainelli wrote:
+> On 3/14/24 14:21, Thomas Gleixner wrote:
+>> 8ca1836769d758e4fbf5851bb81e181c52193f5d is related, but dos not fully
+>> explain the fail. I haven't yet spotted where this goes into lala land.
+>
+> It was a lot harder to generate the same issue on cold boot against 
+> 8ca1836769d758e4fbf5851bb81e181c52193f5d,
 
-this line is 
+That's good as it points into the exactly right direction as far as I
+can tell from the data we have, but I might be wrong at the end.
 
-		data->remote = false;
-	
-in the real code.
+> however, just like against 36e40df35d2c1891fe58241640c7c95de4aa739b,
+> it would happen resuming from suspend to DRAM whereby the CPU core(s)
+> lost their power and had to be re-initialized. Eventually I got a cold
+> boot log:
+>
+> https://gist.github.com/ffainelli/b5684585c78518a5492cbbf1c7dce16e
 
-> 		      tmigr_update_events():
-> 		        if (child) { // child is NULL
-> 			  ...
-> 			} else {
-> 			  first_childevt = evt = data->evt;
-> 
-> 			  if (evt->ignore && !remote)
-> 			    return true; // no remote tick is picked.
-> 			  ...
-> 			}
-> 
-> Regards,
-> Boqun
-> 
-> > This is the next trace entry where CPU0 magically comes back to life.
-> > 
-> > [  236.487393]   <idle>-0         0d.s.. 162001359us : timer_cancel: timer=8c725d84
-> > 
-> > 8ca1836769d758e4fbf5851bb81e181c52193f5d is related, but dos not fully
-> > explain the fail. I haven't yet spotted where this goes into lala land.
+The picture is similar to the one before:
+
+<idle>-0         2d.... 3016627us : tmigr_update_events: child=00000000 group=6b74d49d group_lvl=0 child_active=0 group_active=1 nextevt=3023000000 next_expiry=3023000000 child_evt_expiry=0 child_evtcpu=0
+<idle>-0         2d.... 3016628us : tmigr_group_set_cpu_inactive: group=6b74d49d lvl=0 numa=0 active=1 migrator=1 parent=00000000 childmask=4
+<idle>-0         2d.... 3016629us : tmigr_cpu_idle: cpu=2 parent=6b74d49d nextevt=3023000000 wakeup=9223372036854775807
+
+<idle>-0         0d.... 3016684us : tmigr_group_set_cpu_inactive: group=6b74d49d lvl=0 numa=0 active=0 migrator=ff parent=00000000 childmask=1
+<idle>-0         0d.... 3016685us : tmigr_cpu_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
+<idle>-0         0d.... 3024623us : tmigr_cpu_new_timer_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
+
+<idle>-0         1d.s.. 162080532us : timer_cancel: timer=2e281df7
+
+Just a different CPU this time.
+
+The first expiring timer:
+
+kcompact-42        1d.... 2552891us : timer_start: timer=2e281df7 function=process_timeout expires=4294670348 [timeout=500] bucket_expiry=4294670352 cpu=1 idx=66 flags=
+
+Last expiry before going south:
+
+   <idle>-0         1..s.. 3006620us : timer_expire_entry: timer=6f47b280 function=process_timeout now=4294670302 baseclk=4294670302
+
+4294670352 - 4294670302 = 50
+
+3006620us + 50*1000us = 3056620us
+
+So the previous observation of hitting the exact point of the last CPU
+going idle does not matter.
+
+What really bothers me is:
+
+<idle>-0         2d.... 3016629us : tmigr_cpu_idle: cpu=2 parent=6b74d49d nextevt=3023000000 wakeup=9223372036854775807
+
+which has an event between these events:
+
+<idle>-0         0d.... 3016685us : tmigr_cpu_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
+<idle>-0         0d.... 3024623us : tmigr_cpu_new_timer_idle: cpu=0 parent=6b74d49d nextevt=9223372036854775807 wakeup=9223372036854775807
+
+But that event is before the next expiring timer. Confused, but Frederic
+just told me on IRC he's on to something.
+
+> Does the consistent ~159s mean anything?
+
+I don't think so. It might be the limitation of the clockevent device,
+the maximum sleep time restriction or some other unrelated event (device
+interrupt, hrtimer) which happens to pop up after this time for some
+reason.
+
+But it's definitely not relevant to the problem itself. It's just the
+thing which brings the machine back to life. Otherwise it might sit
+there forever.
+
+Thanks,
+
+        tglx
