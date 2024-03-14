@@ -1,59 +1,59 @@
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90ACC4683;
-	Thu, 14 Mar 2024 01:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F0D8F5B;
+	Thu, 14 Mar 2024 03:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710379357; cv=none; b=L/eWyxbtkBacLb6h/5CPk1/7EjqePX5Me/iF5r8HA7Xj5VaOZls7mNHjWk8Br53GXY4/N+jhkTsUHygH3/6FEDdVTtLpodUWAJS20zB7sk9eNxcZWn+9spXtButFO9EP/TdDOHKUZoeu5GAeSDRQDPJzx8aIAmYGbJwhS8ls6PQ=
+	t=1710387854; cv=none; b=qu57xWZ6dOLEHkp9nRU+d/RX8q1ZzS05PiZb3T5SLbVevr9XW8y6Ou7KIQbPWTQEVlX4801AN3KDg1NhAGZ3nAhsQ29FWfItCgySCwSi/g4y8d7ZC6DEON8FfaxkpPEzKvD6wEyFfw3BSxLzYA8ceEsqczmLXAp5ZqxRFLaEADY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710379357; c=relaxed/simple;
-	bh=pAQkH+6DSDcb7CyxFZOp2uoilkQlP1D1yQ/yVjdP/fo=;
+	s=arc-20240116; t=1710387854; c=relaxed/simple;
+	bh=XkUhEBBXByTRjClPGLvc/LMxHGLjYuPwzv3F8uZf3EM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Vkto/7fkfI1veT1Ldl5hNc15psq1w8dpVOJtBpfBNagvPSYmYwBO97ihMHI7zCJbhY+SUqF1kv9D89FtLX6sNXsWsQYOvMXBUkeNYuOwNoq5zb9LfI4ok6IKoUT3RclUyPkcSunKRomihBV58alY7KGsKg/+Nl/X5K+aTBaWkHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XY81ZqTF; arc=none smtp.client-ip=209.85.219.48
+	 In-Reply-To:Content-Type; b=KmOmTs2kI7dRFewrAQgBlZnil1Z2N4DhcARjbqdNf+OtctZnPb7M9Zi+9BtBmpKLCe1rwn//KZd38+sKKktYQsP4YhbOaF/2xlXins8iO1UGLjO/GcHmU+p7xhQtRkW9E02OS3XkTyLtwVUXF9K4Chn3p6rhIPetevu0I+/tHtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qe0g8Z+o; arc=none smtp.client-ip=209.85.160.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XY81ZqTF"
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-690cffa8a0bso3556356d6.0;
-        Wed, 13 Mar 2024 18:22:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qe0g8Z+o"
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42f3d88bc20so2193111cf.1;
+        Wed, 13 Mar 2024 20:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710379354; x=1710984154; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710387851; x=1710992651; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4tTpJPpuoM2KgnH34jKTWoVcJvMq+ftI0Tp+y3kEoFg=;
-        b=XY81ZqTFmLHSNHa7cBz+jDFeS2pPxJaZh3evei4rYFLtwAl3eMglfs/iJQrpdyvjTQ
-         ohx/RswBXPJ+7lrqwZHZxvya2l6lHLOFqvzUynOezHoqL9T8mE3mXQtq88FbBIxD8sjP
-         6VQRRk4tXo3bqTO90OnpuhSHIjQgLEdMM1tQFfvSiHnI069/h7EMxl+1s6I9AUOUYe+7
-         SWEq88LuABvjVVKZFBdpMNuZYQZiJd3CVGm06CoDEuzUqsG5GGrH3WrtLfJbcGXehR4z
-         ip7n3XVmBoPzf9ujq6jcYfXb742VnDsGnWRBPh90LfyjgW++0QPrJr417JrfnpZd503u
-         nfLA==
+        bh=FxcCCcyJb5hckDgXHUgjpmd8n+vqjZwLDESuUfS2lhQ=;
+        b=Qe0g8Z+o71/ttI4YttW6Bbr25Lh6b7vzwrHZFxHUEjbPX1VpFwKf0jXjPfoXjYehaU
+         HCnk6OqbyXNAIepuwa88HpXP0fkOTQVrmlecij/d563cFNxm4HHxAeYNP/Zwor4khiv3
+         FMDifIELiBxqwCkTJIz1Bw1f94zGFDXqAr7QuBURQjGMirP5FsgjZkGS1TRZrs2emshe
+         2wZZWLlyL0i3I66kP7HKFQ820eXkwycoZMeLM0CEZrNB/hFKgyOXB68cmz3odjpqs2Gz
+         TxL9GxfVSrA1NgS69Ee1I5kYhP+9uikov3hg0ilZ+ulZ0JaAf3M8+S22e/eEmWWOJgV0
+         8RAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710379354; x=1710984154;
+        d=1e100.net; s=20230601; t=1710387851; x=1710992651;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4tTpJPpuoM2KgnH34jKTWoVcJvMq+ftI0Tp+y3kEoFg=;
-        b=Z40M7ssSNhGSj6DFWxMW2cXkqyS6tvO7hFYxqoP46VCKp8hCULfQSPb0vUh+my7Y5I
-         xhzx5Dq9Qwf08m0qAXAagdoyY8aHgQvkw5nB0NM1ZsrzlFf7oTGwex9rbRndRQEHM0Pj
-         Bq96H0gF34T/4+xkv+clHT83f29t8aj49qWkOJlfoUsAOfp7Sq5uMlWKgAqkgfn/zXY5
-         K68SxBKKQBmgB6RUdGifNj0fkxmP/HJUWUsLqIL7C/tC/hROWaY4rCfqxw4rmxfJypQe
-         GIlF8e0onsaZ/fZEQlQ+adh+tbtTDW3sJ1IeSAZBM5tNp8rRI9kSAKgFHOILEFB74+5T
-         tNpg==
-X-Forwarded-Encrypted: i=1; AJvYcCUHzWG4SRYIDbQ1m8fqcg87/ZWaRVQY2rQ0PFfmAgWvFQDLuz0X6NXh/ccWtphE4VLa5xby7/Yc7XRfJBTdqIvbMLyK+Q1rd1XHVmbRp2zQ1H/yixWHcH7kpnnMluMfjnw1
-X-Gm-Message-State: AOJu0YwcjT05/X3MHdmSh6/xXLpLuJnmsIgnTthQnP5yM+620gpHcWSW
-	S0AQk9biSR5lX9yl59jYSyJjOFe0Lhvnq1zJisR7u/CxlrqL+UWi
-X-Google-Smtp-Source: AGHT+IEYLAmZFX2XxFs4gOVqSnsnOPiM9kKIzm+VbHJXeySauJQhGYJuIviA0MVa/0O7S018IBLTnw==
-X-Received: by 2002:ad4:408f:0:b0:690:cc97:94b2 with SMTP id l15-20020ad4408f000000b00690cc9794b2mr398443qvp.9.1710379354380;
-        Wed, 13 Mar 2024 18:22:34 -0700 (PDT)
+        bh=FxcCCcyJb5hckDgXHUgjpmd8n+vqjZwLDESuUfS2lhQ=;
+        b=t1sdvnfhgJWkDlvE52OxqhEaSs6/DNM9vMTJtzG+q4ssafKZY+8t/aj56TPUA1t2kd
+         /GF6P7BCWgh5aBNeaW8SHGhrZ+pq7wX8PHJqlg4MSlv87aoUhLdSpzsdHDIr2uCtiZ0F
+         ZEBUj+CX1iqaxEYt71gSSa3YC+aPxc2293496r+CK5Nua1AQHOg7eQm0TQq+5yvLWZG9
+         vlKWQCeUfp8Spu1G42c0FzPPJf3qsF1n7liAWRziGsJell8GR0wVNyJUVszmxa2pp1hU
+         +ifrJvxGh+Dk/zq+4eI/NUe917uo4QlU7428B9/Gc2WATERQfk2I+fHo/QG0Hg3x2ujx
+         +fnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWBHxdYVcoJ/bc4irBZAsjRZRUMcpzwiopgm+NB+7hEOWofH2vE4Nwm+g8rBB6u5pYb2USnXqnAMnGT+qpMA4JWuLYMsgYumg3CyiMDnZ1SPz9Uw7yNm26IWZZqjCkCtUxN
+X-Gm-Message-State: AOJu0YxW9bEEce5TB5rBOPEnqc2cEOuHESu4ox9i88lPI8staT8PswEK
+	l6pZKOHk/8btgAVDM7+dh82KZ17JFaaiIqwF1FF2/eRZbjYO4BQg
+X-Google-Smtp-Source: AGHT+IGPDnDM29i5VG4Czn2ouF40dCxI5bsvS8gEKq3s367+LidGGxdDmlHXTzW7BTH9VYnAytTM+A==
+X-Received: by 2002:a05:620a:c93:b0:787:a83a:cfed with SMTP id q19-20020a05620a0c9300b00787a83acfedmr603309qki.70.1710387851414;
+        Wed, 13 Mar 2024 20:44:11 -0700 (PDT)
 Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id fv15-20020a056214240f00b0068f35e9e9a2sm267023qvb.8.2024.03.13.18.22.31
+        by smtp.gmail.com with ESMTPSA id dc33-20020a05620a522100b007885cd1c058sm287988qkb.103.2024.03.13.20.44.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Mar 2024 18:22:33 -0700 (PDT)
-Message-ID: <7e02744b-f8de-4d97-a72a-10d33265c1cb@gmail.com>
-Date: Wed, 13 Mar 2024 18:22:29 -0700
+        Wed, 13 Mar 2024 20:44:10 -0700 (PDT)
+Message-ID: <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+Date: Wed, 13 Mar 2024 20:44:07 -0700
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -64,13 +64,14 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for
  v6.9]
 Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: Frederic Weisbecker <frederic@kernel.org>
 Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
  Joel Fernandes <joel@joelfernandes.org>, Boqun Feng <boqun.feng@gmail.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, linux-kernel@vger.kernel.org,
- kernel-team@meta.com, paulmck@kernel.org, mingo@kernel.org,
- tglx@linutronix.de, rcu@vger.kernel.org, neeraj.upadhyay@amd.com,
- urezki@gmail.com, qiang.zhang1211@gmail.com, frederic@kernel.org,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+ mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
+ neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
  bigeasy@linutronix.de, chenzhongjin@huawei.com, yangjihong1@huawei.com,
  rostedt@goodmis.org, Justin Chen <justin.chen@broadcom.com>
 References: <ZetHwrCb0KXE0xFI@tardis>
@@ -83,9 +84,7 @@ References: <ZetHwrCb0KXE0xFI@tardis>
  <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com>
  <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
  <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com>
- <ZfItZs756Bps2pFa@shell.armlinux.org.uk>
- <337ad5f0-bd1b-4dbf-a94b-681a21f0df45@gmail.com>
- <CAHk-=widRkpp1NqpDWoOv7stHcjcDOwZ8monxu6f8VOWPDDdag@mail.gmail.com>
+ <ZfIuRMo8oKbR08Af@lothringen>
 From: Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -120,54 +119,107 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <CAHk-=widRkpp1NqpDWoOv7stHcjcDOwZ8monxu6f8VOWPDDdag@mail.gmail.com>
+In-Reply-To: <ZfIuRMo8oKbR08Af@lothringen>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 3/13/2024 6:15 PM, Linus Torvalds wrote:
-> On Wed, 13 Mar 2024 at 16:29, Florian Fainelli <f.fainelli@gmail.com> wrote:
+On 3/13/2024 3:52 PM, Frederic Weisbecker wrote:
+> On Wed, Mar 13, 2024 at 03:04:26PM -0700, Florian Fainelli wrote:
+>> On 3/13/24 14:59, Russell King (Oracle) wrote:
+>>> On Wed, Mar 13, 2024 at 02:30:43PM -0700, Florian Fainelli wrote:
+>>>> I will try to provide multiple answers for the sake of everyone having the
+>>>> same context. Responding to Linus' specifically and his suggestion to use
+>>>> "initcall_debug", this is what it gave me:
+>>>>
+>>>> [    6.970669] ata1: SATA link down (SStatus 0 SControl 300)
+>>>> [  166.136366] probe of unimac-mdio-0:01 returned 0 after 159216218 usecs
+>>>> [  166.142931] unimac-mdio unimac-mdio.0: Broadcom UniMAC MDIO bus
+>>>> [  166.148900] probe of unimac-mdio.0 returned 0 after 159243553 usecs
+>>>> [  166.155820] probe of f0480000.ethernet returned 0 after 159258794 usecs
+>>>> [  166.166427] ehci-brcm f0b00300.ehci_v2: EHCI Host Controller
+>>>>
+>>>> Also got another occurrence happening resuming from suspend to DRAM with:
+>>>>
+>>>> [   22.570667] brcmstb-dpfe 9932000.dpfe-cpu: PM: calling
+>>>> platform_pm_resume+0x0/0x54 @ 1574, parent: rdb
+>>>> [  181.643809] brcmstb-dpfe 9932000.dpfe-cpu: PM:
+>>>> platform_pm_resume+0x0/0x54 returned 0 after 159073134 usecs
+>>>>
+>>>> and also with the PCIe root complex driver:
+>>>>
+>>>> [   18.266279] brcm-pcie f0460000.pcie: PM: calling
+>>>> brcm_pcie_resume_noirq+0x0/0x164 @ 1597, parent: platform
+>>>> [  177.457219] brcm-pcie f0460000.pcie: clkreq-mode set to default
+>>>> [  177.457225] brcm-pcie f0460000.pcie: link up, 2.5 GT/s PCIe x1 (!SSC)
+>>>> [  177.457231] brcm-pcie f0460000.pcie: PM: brcm_pcie_resume_noirq+0x0/0x164
+>>>> returned 0 after 159190939 usecs
+>>>> [  177.457257] pcieport 0000:00:00.0: PM: calling
+>>>> pci_pm_resume_noirq+0x0/0x160 @ 33, parent: pci0000:00
+>>>>
+>>>> Surprisingly those drivers are consistently reproducing the failures I am
+>>>> seeing so at least this gave me a clue as to where the problem is.
+>>>>
+>>>> There were no changes to drivers/net/ethernet/broadcom/genet/, the two
+>>>> changes done to drivers/net/mdio/mdio-bcm-unimac.c are correct, especially
+>>>> the read_poll_timeout() conversion is correct, we properly break out of the
+>>>> loop. The initial delay looked like a good culprit for a little while, but
+>>>> it is not used on the affected platforms because instead we provide a
+>>>> callback and we have an interrupt to signal the completion of a MDIO
+>>>> operation, therefore unimac_mdio_poll() is not used at all. Finally
+>>>> drivers/memory/brcmstb_dpfe.c also received a single change which is not
+>>>> functional here (.remove function change do return void).
+>>>>
+>>>> I went back to a manual bisection and this time I believe that I have a more
+>>>> plausible candidate with:
+>>>>
+>>>> 7ee988770326fca440472200c3eb58935fe712f6 ("timers: Implement the
+>>>> hierarchical pull model")
+>>>
+>>> I haven't understood the code there yet, and how it would interact with
+>>> arch code, but one thing that immediately jumps out to me is this:
+>>>
+>>> "    As long as a CPU is busy it expires both local and global timers. When a
+>>>       CPU goes idle it arms for the first expiring local timer."
+>>>
+>>> So are local timers "armed" when they are enqueued while the cpu is
+>>> "busy" during initialisation, and will they expire, and will that
+>>> expiry be delivered in a timely manner?
+>>>
+>>> If not, this commit is basically broken, and would be the cause of the
+>>> issue you are seeing. For the mdio case, we're talking about 2ms
+>>> polling. For the dpfe case, it looks like we're talking about 1ms
+>>> sleeps. I'm guessing that these end up being local timers.
+>>>
+>>> Looking at pcie-brcmstb, there's a 100ms msleep(), and then a polling
+>>> for link up every 5ms - if the link was down and we msleep(5) I wonder
+>>> if that's triggering the same issue.
+>>>
+>>> Why that would manifest itself on 32-bit but not 64-bit Arm, I can't
+>>> say. I would imagine that the same hardware timer driver is being used
+>>> (may be worth checking DT.) The same should be true for the interrupt
+>>> driver as well. There's been no changes in that code.
 >>
->> On this specific commit 7ee988770326fca440472200c3eb58935fe712f6, there
->> is a 100% failure for at least 3 devices out of the 16 that are running
->> the test.
+>> I just had it happen with ARM64 I was plagued by:
+>>
+>> https://lore.kernel.org/lkml/87wmqrjg8n.fsf@somnus/T/
+>>
+>> and my earlier bisections somehow did not have ARM64 fail, so I thought it
+>> was immune but it fails with about the same failure rate as ARM 32-bit.
 > 
-> Hmm.  I have no idea what is going on, and the unimac-mdio probe
-> function (one of the things that seem to take forever on your setup)
-> looks fairly simple.
+> Can you please boot with:
 > 
-> There doesn't even seem to be any timers involved.
+>      trace_event=timer_migration,timer_start,timer_expire_entry,timer_cancel
 > 
-> That said - one of the things it does is
-> 
->    unimac_mdio_probe ->
->      unimac_mdio_clk_set ->
->        clk_prepare_enable
-> 
-> and maybe that's a pattern, because you report that
-> brcm_pcie_resume_noirq is another problem spot (on resume).
-> 
-> And guess what brcm_pcie_resume_noirq() does?
-> 
-> Yup. clk_prepare_enable().
-> 
-> So I'm wondering if there's some interaction with some clock driver?
-> That might explain why it shows up on some arm platforms but not
-> elsewhere.
-> 
-> I may be barking *entirely* up the wrong tree, though. I was just
-> looking at that unimac probe and going "there's absolutely _nothing_
-> timer-related here" and that clk thing looked like it might at least
-> have _some_ relevance.
+> And add the following and give us the resulting output in dmesg?
 
-FWIW, we use the clk-scmi.c driver and the implementation of the SCMI 
-platform/server resides in the ARM EL3 trusted firmware, that also has 
-not changed. Ultimately this results in an ARM SMC call made to the 
-firmware after having posted some SCMI message in a shared memory 
-region. None of that has changed or is new, but it does also require me 
-to look drivers/firmware/arm_scmi/ for possible changes.
+Here are two logs from two different systems that exposed the problem on 
+boot:
 
-Thanks!
+https://gist.github.com/ffainelli/f0834c52ef6320c9216d879ca29a4b81
+https://gist.github.com/ffainelli/dc838883edb925a77d8eb34c0fe95be0
+
+thanks!
 -- 
 Florian
