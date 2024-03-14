@@ -1,128 +1,123 @@
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BC6EDE
-	for <rcu@vger.kernel.org>; Thu, 14 Mar 2024 01:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB808BEC
+	for <rcu@vger.kernel.org>; Thu, 14 Mar 2024 01:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710378063; cv=none; b=iIVx4EIk8L4t/b2Hf4eq91NWO4pqIz2I4ZYypDsbwsmsJdyaudr6ylzJHvp5Hg4+aDZSBsuFj9nLTaEp0mF8BxQfKWGFlbB9lgOC6jwTv6YVTDq+Dh0h6x1/ZY9GkpBcNzYRiDK+eBuJTt+iTppxGx+6E49+X38fLC6XYlc1k2w=
+	t=1710378941; cv=none; b=up8ZJ2ZnQeFqj1uK8dFHd2nNJZZvWZM6OHi1KcwocW3egPck6/Xt2+sVLH2wdC7gMY+vefdoBedNILLH8fsmX7xZ6HVZBUoYhjmuVLjvjR2BKDTGXUzPQMn9l77K15bQkxMu1PC8z4P1XhBK4JHZW0itqB7wpoyPeqDN4hiSl6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710378063; c=relaxed/simple;
-	bh=NtwzHxfvcWxMXOxe3H7rgf2iCheFJhPEn3nXY32Pjhw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=fA0JVbcxArsvIItHkzI6fZ4H2w4apKWkc2PrNp9Ewfn67Ldw3+nt2T7902ZSoBKXJGXh2awzZ2ttRdouyasSH5WDKUWfHBSwnbIBuzOMnTHSkQutzCJU+y/W+WPGJVuedzybGxMoSNaoOO1pDF9rG6JL3DbTxxZ2v/3dE0Oqu7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ddw5jJVU; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1710378941; c=relaxed/simple;
+	bh=KrPxTNGdpWETrK+T9KbNRK7Qi4h2PE7esLmJ2xH0loE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=haZk3JZAjoJGfD5FumkM3XeirMnhiqbNHCwP0jt3rmltcAamZif6YKcsxlQYPTYmvCYpB/3wIdHU2n11vOMYeXUH+O6OuW7vzfHbnBV4R38DAVCSp+7gJ3wz6OO6o7FvMOYdToKvvK4qEx1M7XlGyvCpzyJmoNAyxVygZYYI8n8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FibtgZx0; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ddw5jJVU"
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1dd819f975aso4751095ad.3
-        for <rcu@vger.kernel.org>; Wed, 13 Mar 2024 18:01:02 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FibtgZx0"
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a466f89560eso20065666b.3
+        for <rcu@vger.kernel.org>; Wed, 13 Mar 2024 18:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710378062; x=1710982862; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EQTEleojd5viC5A5AYPDJGsPN8oibgqc8we/hfPKc/g=;
-        b=ddw5jJVUrsBidKHTIbrc9ZF4eb+CloaekevIZWK8oOc/foux+tTmIbBFPzzMrn+vUd
-         3XYJac/vhtQuid9nXvVln5S1tiIkjCEmdspZaNeZ6bNSdlzhGlgeHD3VHj+D9VIir0Hm
-         7Z8IZoduYPmQtu8lxa+WDyOBLRRcpUHEJBmnEUnwzorTAHt0FJVqvo+59Bj1zhQOn58G
-         fQahXV9fm2fTIND2CrRlkrretq7vZNDb+DEyW2flbFUZfIF/39yLObSDi08Ryc9LDH6F
-         0KN0qd429eFtESqTo0d8+P5VvGV15A9y5uJI0x9lLPvgo+wA/LN+vn1GpEV2TFNDdOPu
-         VMjA==
+        d=linux-foundation.org; s=google; t=1710378938; x=1710983738; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xi5Og+CbxdS4GgMBXpSqcHe7hFHRWvxTE989cCTSHJI=;
+        b=FibtgZx0eu4OATOCoGdH3BsRJaI31u8VOrexLqKTWcCNhPC2dcQ3dFnhfZNjmRFqNN
+         6KvB5zFdfQ4Jw6LlXJZSRtAselIKGjn9+QkS9zc+AYwmI+Zl5KJfjhWHxJ6X+geHbYgu
+         /ZNvBAd/RVGYpILlq7xF8yfPpC5VcbSof9mQM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710378062; x=1710982862;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EQTEleojd5viC5A5AYPDJGsPN8oibgqc8we/hfPKc/g=;
-        b=vR3cwqOYURq6kBnze1HSlE0qmFgYNGNycNPzLI4uOIpiYoApe1Fh7oulMkjezahfeQ
-         jXVZsE47I8Koh2opflI1iMA1FNnB3kvWnuQvB+amu7ztTDL2BUvqtqBO7BkdSCxdmEuH
-         PVR3ldUiYPyI7e84stYNWRWZpTfX+O8KykzUKCF6q9INRsZSFNyd9/qSdKAFWcY+NvRd
-         U/4tbTCxQrCTNVtxTDds48B3GwJkqxiPlk00j0ANsWhHd438ArTjExK90qt2Xy8p4lKe
-         dk5jxALD3V4xXVyOQ0tDyAgIOy2oTgJVozFc+vrE2mWJjMIbeRltgxluyJpaCFampj4/
-         qCQw==
-X-Forwarded-Encrypted: i=1; AJvYcCX6sYUm1391ZSQU6qRH1vn420Ha4fO01ik5DKlqf6yw7NGW5K1c896TltBrwGn7xbUMXogf6ZKTPjHXp+B4j8LN+ku9
-X-Gm-Message-State: AOJu0Yx5kLEylORPOO6lTjM9/0FtikOmk9IiTFT8tdENvxBOpZ2ExDxr
-	3odX1P0+HaTcRZR5hK/g9KPciuGlGDygxxtFkl7G5Z8DWZ4zYgFvV/XCn5sqdx4j/OqHEKBaC1a
-	k1Q==
-X-Google-Smtp-Source: AGHT+IEbfpQupzITGwOB3jYT6JWViwHBjL3w3EJsB6cDh5GZAUKltsAsyIQL3Y7yOWKCB7t0jXD1dXx+/7k=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:2309:b0:1dc:b333:f2a4 with SMTP id
- d9-20020a170903230900b001dcb333f2a4mr1246plh.12.1710378061383; Wed, 13 Mar
- 2024 18:01:01 -0700 (PDT)
-Date: Wed, 13 Mar 2024 18:00:59 -0700
-In-Reply-To: <ZfJA3AaLga5OXoL1@yzhao56-desk.sh.intel.com>
+        d=1e100.net; s=20230601; t=1710378938; x=1710983738;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xi5Og+CbxdS4GgMBXpSqcHe7hFHRWvxTE989cCTSHJI=;
+        b=ISbjxEm3YEqkDriY9ypbTdo7kGucwAzRDXpt1cvOyV/QPzHxHJBd37ns8Qoj2LD/Bn
+         r8hc+c9a2oYiAHhEDZjlrLeagpyL7aqeVaMrEKtDn783tF8svLsXaUXUsqDjiYQHBAEk
+         EErK91LkYLTs+epZ/zlyH1Gg1GBY27NY1bFzlEtyg6dqlvCet+kzFEPeZFoa1LUFGDW6
+         0nLOk9ZZYfgF5Dc5hxdzsffYeQV9ctSRzZXSOnz357mKafOQrnLI406dyD1CowBwsWC0
+         VKHKJA8gWB8FcfDNQzrDAIbisfeXw5AtxPY5lJM7+6qsCFvX8kFwmxWrorPwPAi2HWkt
+         xQGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV6dscBkQQrYjFGLQ2TrIuaUomxvFK8GRwK2SXwf0uVQKwshQvAXeKZLHyzIElgHnMtED1CZfeDGjouinFgboIv8PFo
+X-Gm-Message-State: AOJu0YwgY0XlwLiChJay8JbsIkUnwmMrqE2IOFuFl2vRiADCIc+1vNnd
+	fS3RC4PulKKw9F8r2DGJZgFllAXpa+DkA+Ww/QNHAjLgASNWj6OMwuWhXj1+/WYz0OOm/Pa7vBA
+	mQ0w6pg==
+X-Google-Smtp-Source: AGHT+IEhFbyzY8QTzf38fNl8Ghd/pdr1g3qwyGyC3hRTPpR8A1/MpC9jhgP/94BWvTLF65SCyx2UmQ==
+X-Received: by 2002:a17:906:bfe6:b0:a46:4c8e:1afd with SMTP id vr6-20020a170906bfe600b00a464c8e1afdmr122044ejb.6.1710378938085;
+        Wed, 13 Mar 2024 18:15:38 -0700 (PDT)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id h11-20020a1709062dcb00b00a466b8c2c72sm163190eji.162.2024.03.13.18.15.35
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 18:15:35 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a467322d52eso1267166b.2
+        for <rcu@vger.kernel.org>; Wed, 13 Mar 2024 18:15:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVzfC3/614G8jJNbgsLdQy3YnAl8Qq33j718XTj6Mo8GQ+G4XOUYVBC2S2IFN3tv+b2ShWNFf6iCjbEC/Ow8jLw3ktG
+X-Received: by 2002:a17:906:48d2:b0:a3f:1cb6:fb00 with SMTP id
+ d18-20020a17090648d200b00a3f1cb6fb00mr107160ejt.69.1710378935472; Wed, 13 Mar
+ 2024 18:15:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309010929.1403984-6-seanjc@google.com> <Ze5bee/qJ41IESdk@yzhao56-desk.sh.intel.com>
- <Ze-hC8NozVbOQQIT@google.com> <BN9PR11MB527600EC915D668127B97E3C8C2B2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZfB9rzqOWmbaOeHd@google.com> <ZfD++pl/3pvyi0xD@yzhao56-desk.sh.intel.com>
- <BN9PR11MB527688657D92896F1B19C2F98C2A2@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZfFp6HtYSmO4Q6sW@yzhao56-desk.sh.intel.com> <ZfHBqNzaoh36PXDn@google.com> <ZfJA3AaLga5OXoL1@yzhao56-desk.sh.intel.com>
-Message-ID: <ZfJMS9ac-MA8mV9u@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
-From: Sean Christopherson <seanjc@google.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, "jgg@nvidia.com" <jgg@nvidia.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <ZetHwrCb0KXE0xFI@tardis> <4274be61-60bd-4e1e-9c16-26e6e5e06f65@gmail.com>
+ <ZfDEIs63EBIYBJIC@boqun-archlinux> <c5f9c640-4c06-495e-9c7e-0c208b914fa7@gmail.com>
+ <CAHk-=wgP=9JxdOJ5oYtVO5yM6pFi5+3FPxfCQa4ezpagJuXq3g@mail.gmail.com>
+ <ZfDptafiK0jns050@boqun-archlinux> <CAEXW_YRvz8xf-6hpwpYqS=YNa-xkn4CsuJzELJxOH_2FP+6ptQ@mail.gmail.com>
+ <2fb110ed-ba04-4320-9ef0-8766c9df5578@gmail.com> <ZfIh33YAYkLaDeAS@shell.armlinux.org.uk>
+ <533151c9-afb5-453b-8014-9fbe7c3b26c2@gmail.com> <ZfItZs756Bps2pFa@shell.armlinux.org.uk>
+ <337ad5f0-bd1b-4dbf-a94b-681a21f0df45@gmail.com>
+In-Reply-To: <337ad5f0-bd1b-4dbf-a94b-681a21f0df45@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 13 Mar 2024 18:15:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=widRkpp1NqpDWoOv7stHcjcDOwZ8monxu6f8VOWPDDdag@mail.gmail.com>
+Message-ID: <CAHk-=widRkpp1NqpDWoOv7stHcjcDOwZ8monxu6f8VOWPDDdag@mail.gmail.com>
+Subject: Re: Unexplained long boot delays [Was Re: [GIT PULL] RCU changes for v6.9]
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Joel Fernandes <joel@joelfernandes.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org, 
+	mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org, 
+	neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com, 
+	frederic@kernel.org, bigeasy@linutronix.de, chenzhongjin@huawei.com, 
+	yangjihong1@huawei.com, rostedt@goodmis.org, 
+	Justin Chen <justin.chen@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 14, 2024, Yan Zhao wrote:
-> On Wed, Mar 13, 2024 at 08:09:28AM -0700, Sean Christopherson wrote:
-> > On Wed, Mar 13, 2024, Yan Zhao wrote:
-> > > > We'll certain fix the security hole on CPUs w/ self-snoop. In this case
-> > > > CPU accesses are guaranteed to be coherent and the vulnerability can
-> > > > only be exposed via non-coherent DMA which is supposed to be fixed
-> > > > by your coming series. 
-> > > > 
-> > > > But for old CPUs w/o self-snoop the hole can be exploited using either CPU
-> > > > or non-coherent DMA once the guest PAT is honored. As long as nobody
-> > > > is willing to actually fix the CPU path (is it possible?) I'm kind of convinced
-> > > We can cook a patch to check CPU self-snoop and force WB in EPT even for
-> > > non-coherent DMA if no self-snoop. Then back porting such a patch together
-> > > with the IOMMU side mitigation for non-coherent DMA.
-> > 
-> > Please don't.  This is a "let sleeping dogs lie" situation.
-> > 
-> >   let sleeping dogs lie - avoid interfering in a situation that is currently
-> >   causing no problems but might do so as a result of such interference.
-> > 
-> > Yes, there is technically a flaw, but we have zero evidence that anyone cares or
-> > that it is actually problematic in practice.  On the other hand, any functional
-> > change we make has a non-zero changes of breaking existing setups that have worked
-> > for many years. 
-> > 
-> > > Otherwise, IOMMU side mitigation alone is meaningless for platforms of CPU of
-> > > no self-snoop.
-> > > 
-> > > > by Sean that sustaining the old behavior is probably the best option...
-> > > Yes, as long as we think exposing secuirty hole on those platforms is acceptable. 
-> > 
-> > Yes, I think it's acceptable.  Obviously not ideal, but given the alternatives,
-> > I think it is a reasonable risk.
-> > 
-> > Being 100% secure is simply not possible.  Security is often about balancing the
-> > risk/threat against the cost.  In this case, the risk is low (old hardware,
-> > uncommon setup for untrusted guests, small window of opportunity, and limited
-> > data exposure), whereas the cost is high (decent chance of breaking existing VMs).
-> Ok, thanks for explanation!
-> I still have one last question: if in future there are CPUs with no selfsnoop
-> (for some unknown reason, or just paranoid),
+On Wed, 13 Mar 2024 at 16:29, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On this specific commit 7ee988770326fca440472200c3eb58935fe712f6, there
+> is a 100% failure for at least 3 devices out of the 16 that are running
+> the test.
 
-Don't jinx us :-)
+Hmm.  I have no idea what is going on, and the unimac-mdio probe
+function (one of the things that seem to take forever on your setup)
+looks fairly simple.
 
-> do we allow this unsafe honoring of guest memory type for non-coherent DMAs? 
+There doesn't even seem to be any timers involved.
 
-Hmm, no?  AIUI, the intent is that all future CPUs will support self-snoop.
-Assuming that's the case, then I think it's fair to put the onus on Intel to not
-have escapes, i.e. to not end up shipping CPUs with erratas.  Then, if an erratum
-does come along, we can make a decision, e.g. allow older CPUs by default, but
-require an admin opt-in for new CPUs.
+That said - one of the things it does is
 
-But let's just hope that's a problem we never have to deal with.  :-D
+  unimac_mdio_probe ->
+    unimac_mdio_clk_set ->
+      clk_prepare_enable
+
+and maybe that's a pattern, because you report that
+brcm_pcie_resume_noirq is another problem spot (on resume).
+
+And guess what brcm_pcie_resume_noirq() does?
+
+Yup. clk_prepare_enable().
+
+So I'm wondering if there's some interaction with some clock driver?
+That might explain why it shows up on some arm platforms but not
+elsewhere.
+
+I may be barking *entirely* up the wrong tree, though. I was just
+looking at that unimac probe and going "there's absolutely _nothing_
+timer-related here" and that clk thing looked like it might at least
+have _some_ relevance.
+
+            Linus
