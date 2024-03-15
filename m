@@ -1,100 +1,135 @@
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26943A1CA
-	for <rcu@vger.kernel.org>; Fri, 15 Mar 2024 14:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEAF1F19A
+	for <rcu@vger.kernel.org>; Fri, 15 Mar 2024 19:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710514463; cv=none; b=tum3yMqV/AzcX1XrK9eIPSphG1nwJQk8S4s/o0NxgB4r9mFuyUwGBrRvVAKoWsWQYdyYszy/qpfSUijtqXmInevQmqdB15BDLYEm+LSlU4+NGPSBG0nJmAGDHYQjF5NQrLVjCjTRHY1efx3sAWnlppxhDDoMUCjhIM4gkLPmh+c=
+	t=1710532506; cv=none; b=ho0uaq+Xrj6Myt1G4dzdrkIjCtf/PafMfF8/bqXxeq17J3YZ+QWfDWWsMBns5rnVbpT/GkDaP0p7uk0lx3DpG+xWP5/7s10+DbxZbty4Rm3cOj8J83O1Zf9jw8wNliN924U3ilgUjqmmXE7fys4AyeLxuyoca+F46k/qt1M07GM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710514463; c=relaxed/simple;
-	bh=q0sxlmWZ/FVV1zfz2VpYFEe+xwviTDIZ5JEWihPHwp8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VjRPGl3edZzxERAyj3jWAdvA6pmoAEDoIb1eqzPfkVLEXY4bBPMIgxWnR7oL7CxZIIdOKR9eDs9U5mTJ5ZHXScvm6nw7T1wO7Sj6+p6h/ZgSZ+r4OS9Rd3lj8kLXqUAyBHBQR3nkhWw6vKADaFiuE5FnXZmLWP5qdq7ApedyhWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=IgljK7aV; arc=none smtp.client-ip=209.85.208.49
+	s=arc-20240116; t=1710532506; c=relaxed/simple;
+	bh=CZwUyc/DMM0Uny3U5TTGXkC9yXTk8fyaov4ApURGlJU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=DiFxOD7COUbZF50wqIBOi02QLnC3sGOyC/7PaKMRqJf2qVaFCsnuYA2Ha+10sygqEDNJEIsFazFRa7cHKZuP+xYP2GfQF1Khx+e7Juak1vC1AXo3dsKn84bLZNW7mWQM+vY2V0PrpcRSzgx3++p35SAB+CyYWAtortROicS4FHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ZRc8at8i; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="IgljK7aV"
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-568a5114881so2087404a12.1
-        for <rcu@vger.kernel.org>; Fri, 15 Mar 2024 07:54:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ZRc8at8i"
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7887649cc6cso272829485a.1
+        for <rcu@vger.kernel.org>; Fri, 15 Mar 2024 12:55:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1710514460; x=1711119260; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q0sxlmWZ/FVV1zfz2VpYFEe+xwviTDIZ5JEWihPHwp8=;
-        b=IgljK7aVz7mWTeCcuJciOzy5qhMHo0og5Gm486qtN0CqfaqiZdxFRnuQIxm1SdsMD1
-         NqpjwVbyCCdFeV1w+/Q/BnnJM6lzny6BvB8ib+HeXGUS8fsnLTURXZtcWHb2of2fy9sT
-         mUI3Qr2TquspS7KBq1cLk6L6fW8jmCTsjXk3btZ2qFHGnW1KFwq4jq2VLq9pYeq2Kha5
-         FQ9X7wufb4zrVI0JebZNTjbZdIhkgqMw9qV5Cgfd/ey43GpHyEB1dcGeuCQOZebRqFWL
-         mDKINfC35wpiE1iK9qIRUH2W8CjUz9ySDfoEcw71A9WOWwYdg9EVSDqswajQVQKDUfEB
-         bBuQ==
+        d=cloudflare.com; s=google09082023; t=1710532503; x=1711137303; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hFCxDEQwJlvWrjzvbkqgNENtA83xO4o1dn3KyfRTRKA=;
+        b=ZRc8at8iONxvknmBCFFyHlu9gFSFLwBb453B9kYYGuRULPGhJLb37TucWku2c10dKs
+         hYOcYEnMKNGmKutNCt3x2hGlVlLo+cF/Ub+77ZN61SK1EsVO8qySOu5uFv1RwrqMAmi6
+         Di+lcr7tZdfpwR9qxa+bznu3bm4sRwLEJoVj1ARHfsZXbpHw9qDp8vopNJy7iAQeXn2t
+         OZq5n9oNy05qJz5prXOz+5b4gxmrwnLatar7jkcJ8l3KsgwurtQ8vWhDT2B8AWbbCbdw
+         sgS0M5tXyGkpxcTk4y2KUfEK2duQNKKaZpah0wD/nOFtU9acliHcH+SmbszcNxtbf/Gl
+         AB0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710514460; x=1711119260;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q0sxlmWZ/FVV1zfz2VpYFEe+xwviTDIZ5JEWihPHwp8=;
-        b=UoxGwMS7zMoSudGgCvfAshU0fvx7TXyXzsNUxgy6cnnXZlZmsgZSWQugLPQV86oCZN
-         iEVsFR/kE16SNbUqy3ZqnGWwI9LdE6YV6cht+0fpWBbC0N+Ty+B/CD3JdEzYgcrk35Lk
-         +bKZgb6TufliRrhLk0siAeAZXk9JXP4sOcx0x8uzErB8yyU1C65RNpoY5HtfA4RWENeO
-         G5L6iScfyzNsc0mkNSUUOxD5l8t+ERz6ZkKF0ugy6R7aAYEmDET2csz5G2gxPyY4Nc1+
-         K50F57z/fIvwHnc2j5GM8bdzYFvk2fMMN40WKak2A0EcHH2leOauQ2kbPl12tFWgYBGJ
-         oFmw==
-X-Forwarded-Encrypted: i=1; AJvYcCWoEk/K9OG1zxi8sKDO+VasPHPVlYmZOWKdZWrqsnmYQVYOFKfeCarLV5U2imywpYWOTLNnbfvBy+q4Kx6OaUYzQ6WC
-X-Gm-Message-State: AOJu0YwJnyW0dpmmESHcoW+JBqXztjCfxdDwEiPR16fFKUJn3hpHj+gb
-	SI47R6AaP2ZC6I7Uz3kZwQFwhjvYA62dj+OCTHcdJ3FfaGPibLSLCIw0baLEsHbeN9vT8jljhuW
-	NHNklhW4z5JIG7qu7T3ySuHkWS50n/5k6wP6nRA==
-X-Google-Smtp-Source: AGHT+IGAXuUW49fzljDaSHnEPf/5724NscYefKAehPQ4X765R6/8qKdPAaZTE8bvj8BPPDkeMk7rsijwG2UmAT6Fg4A=
-X-Received: by 2002:a05:6402:913:b0:568:b95e:8012 with SMTP id
- g19-20020a056402091300b00568b95e8012mr259127edz.14.1710514460320; Fri, 15 Mar
- 2024 07:54:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710532503; x=1711137303;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hFCxDEQwJlvWrjzvbkqgNENtA83xO4o1dn3KyfRTRKA=;
+        b=gF70IRife/tQtr9g9HSQvC+UTAV9reBfpx9MRs0YXheFdR5vjfjn90HBgfOi1LFgsW
+         fGchB8k4MA0+e5DN5qKXahbw4/HgVnTlWxl1HW73l8tc2gRw1t6GeRGlRVI9+90CZ3b1
+         Ry4ENI5njbpD/tk2fNZOsBuzzhVbroV/+7zCxzrog0BRFxM4b3lbKKrMy9d20XIvGJwk
+         gWDXmeZhkGffiiFbVBbfuf/Jf13/LOAGX9lcoYyBgT2bMUWiDgiITWZcOEoEx+h1pYU0
+         nY9bUAFjJeRzql7qT4g8PXqDOSTueIoKx1n2vAWrjwHWsBNx7P7MUYsE238NWMg/UJ5P
+         R/jg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+QHW4fLn+gQYHp9s6UuGYpmDh6mvd+d65DS5Pb/eYmoVNmLtFywJdG50MuPCbxmvpHNG46o03GK9UJVtyTdHyhZpo
+X-Gm-Message-State: AOJu0Ywuh12v0dAglzAOaSnjdAXf8HeeSBhLxa8ZdpT9MGK8pa8ct1WD
+	QRds7Kd0amhwFb9xyShHnz9iYWo9eXUce7a1dz9F4ZrIkpQjspR3LwzJOhHJJGY=
+X-Google-Smtp-Source: AGHT+IFjd6KHONFC5gxvbd85NmSgiMqQ0lkwBquMR6XDCX/5Tlz40CkSaVE6adtcrZ4M3JLDNtVK/g==
+X-Received: by 2002:a05:620a:158f:b0:788:49fd:a3de with SMTP id d15-20020a05620a158f00b0078849fda3demr8820691qkk.16.1710532503509;
+        Fri, 15 Mar 2024 12:55:03 -0700 (PDT)
+Received: from debian.debian ([2a09:bac5:7a49:1046::19f:c])
+        by smtp.gmail.com with ESMTPSA id d7-20020a05620a136700b0078863e0f829sm1405472qkl.12.2024.03.15.12.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 12:55:03 -0700 (PDT)
+Date: Fri, 15 Mar 2024 12:55:00 -0700
+From: Yan Zhai <yan@cloudflare.com>
+To: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	Joel Fernandes <joel@joelfernandes.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
+	Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: [PATCH v4 net 0/3] Report RCU QS for busy network kthreads
+Message-ID: <cover.1710525524.git.yan@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1710346410.git.yan@cloudflare.com> <f71214e6221c5c50b32a62a33697473c756e604e.1710346410.git.yan@cloudflare.com>
- <20240314145459.7b3aedf1@kernel.org>
-In-Reply-To: <20240314145459.7b3aedf1@kernel.org>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Fri, 15 Mar 2024 09:54:09 -0500
-Message-ID: <CAO3-PbqTzsTX9UBgdC2aV4pLdL6ddrSKHTXeYNoD_m5yK6qdrQ@mail.gmail.com>
-Subject: Re: [PATCH v3 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
-	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
-	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com, 
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, Mar 14, 2024 at 4:55=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Wed, 13 Mar 2024 09:25:49 -0700 Yan Zhai wrote:
-> > +/**
-> > + * rcu_softirq_qs_periodic - Periodically report consolidated quiescen=
-t states
->
-> > +#define rcu_softirq_qs_periodic(old_ts) \
->
-> scripts/kernel-doc says:
->
-TIL, thanks. Let me send v4 to amend the text.
+This changeset fixes a common problem for busy networking kthreads.
+These threads, e.g. NAPI threads, typically will do:
 
-Yan
+* polling a batch of packets
+* if there are more work, call cond_resched to allow scheduling
+* continue to poll more packets when rx queue is not empty
 
-> include/linux/rcupdate.h:271: warning: Function parameter or struct membe=
-r 'old_ts' not described in 'rcu_softirq_qs_periodic'
-> --
-> pw-bot: cr
+We observed this being a problem in production, since it can block RCU
+tasks from making progress under heavy load. Investigation indicates
+that just calling cond_resched is insufficient for RCU tasks to reach
+quiescent states. This at least affects NAPI threads, napi_busy_loop, and
+also cpumap kthread for now.
+
+By reporting RCU QSes in these kthreads periodically before
+cond_resched, the blocked RCU waiters can correctly progress. Instead of
+just reporting QS for RCU tasks, these code share the same concern as
+noted in the commit d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched
+and RCU-preempt when safe"). So report a consolidated QS for safety.
+
+It is worth noting that, although this problem is reproducible in
+napi_busy_loop, it only shows up when setting the polling interval to as
+high as 2ms, which is far larger than recommended 50us-100us in the
+documentation. So napi_busy_loop is left untouched.
+
+V3: https://lore.kernel.org/lkml/20240314145459.7b3aedf1@kernel.org/t/
+V2: https://lore.kernel.org/bpf/ZeFPz4D121TgvCje@debian.debian/
+V1: https://lore.kernel.org/lkml/Zd4DXTyCf17lcTfq@debian.debian/#t
+
+changes since v3:
+ * fixed kernel-doc errors
+
+changes since v2:
+ * created a helper in rcu header to abstract the behavior
+ * fixed cpumap kthread in addition
+
+changes since v1:
+ * disable preemption first as Paul McKenney suggested
+
+Yan Zhai (3):
+  rcu: add a helper to report consolidated flavor QS
+  net: report RCU QS on threaded NAPI repolling
+  bpf: report RCU QS in cpumap kthread
+
+ include/linux/rcupdate.h | 24 ++++++++++++++++++++++++
+ kernel/bpf/cpumap.c      |  3 +++
+ net/core/dev.c           |  3 +++
+ 3 files changed, 30 insertions(+)
+
+-- 
+2.30.2
+
+
