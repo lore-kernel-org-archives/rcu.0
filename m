@@ -1,47 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FDF20315;
-	Sun, 17 Mar 2024 20:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DB41B7F7
+	for <rcu@vger.kernel.org>; Sun, 17 Mar 2024 21:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710707288; cv=none; b=e0V/Os3DgSf86/E58QgtqItxvWTbJcwruDD58KDIIn+uzWHVu51qcZ/9AvVAoEepQvAWRT7Yjve++bWORY8cQeBfuYWPZFpvQJqp6MzcQExOFR/5gmYMoINZOuDZswc5MJaXarvFqraOPi/AbwkJx2241XZJ3hl7N4UCBOP0WTw=
+	t=1710712506; cv=none; b=ihSbmd3q/AEtQYG8tsi0vNGfzIMme2jrr05bqcDYPKx3Z1JrazZ5tpZTqs8U7uxNEb+UQYlhaYI/ZO8vctlbIYx6THpstpvDWPg29/BximyPP55wbirKyVKylRbpIGpcQNJTiFPmYvCrHeq52IqBSR3Nbh+VhslK4z4x22G9+EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710707288; c=relaxed/simple;
-	bh=rxI9ytld0UKrdtmy6bxfUL6Uq9vOul2rTgLxUBzkaK0=;
+	s=arc-20240116; t=1710712506; c=relaxed/simple;
+	bh=bmHPZnpEeh88KjQRhUANavCdLAiqBsQfZUBAtRHfOHs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZKLwONgASOZMI074d6D/Lkzcztc1s+akMh8rM5XEme+FkzEPTulPb9rrh81aW5stjSTRo07rF49KjuUeWNYSfNID9bjfFRv1+dNFC96AvEiyXKr6tuyCnfK7yJ8f2gcvU8dsBgS9cA+GewaM4614y5EAs8ySy/cKkm1t3SvFcU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cwVXuhBt; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZPbQzAaJeyXV865DGvAUdjrS9vJH7HyMiLPu6lE8xND8oau/GxwFF5k6xpDudTCKoPyE4NO6GlNlXZ4czLMQBKRZ1ktIBX13a3IqHVAsLdd5i28416SjWF1nUHIZcaaDDGrkDKXnzE/thry3eHAysqwG1JCbSxoEsBfuR1XFiFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eRal4fPo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cwVXuhBt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C230BC433F1;
-	Sun, 17 Mar 2024 20:28:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eRal4fPo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A35FC433F1;
+	Sun, 17 Mar 2024 21:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710707288;
-	bh=rxI9ytld0UKrdtmy6bxfUL6Uq9vOul2rTgLxUBzkaK0=;
+	s=k20201202; t=1710712505;
+	bh=bmHPZnpEeh88KjQRhUANavCdLAiqBsQfZUBAtRHfOHs=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=cwVXuhBt6ruNDC7u39KoWWE/c/ubyO6dr3aD7e8i+A2FB8iTo06iJRm7ZcnLXJpVF
-	 OM3QbdU1ihwaY2MKIRCqj+PDdANOk28+NxtzOc9LnsWM3OW9znBmBl7iQG/F36jAgg
-	 JoQxGTYP/q/sx3VHwgf0P+RAqlBf80QhkQBkDsKG3GH1H41AhBXpiKba5lN722BgKE
-	 nS8zqqZpkh5J13cySlLiNRRH8ZcWV7jpeQPDRmnsJMxABkC1WjYQA/bVCAoDBnZH9/
-	 lcWNmDt5NS0x/TmXxbXmKLrTlLcJDbA+ZleF7N0o9pXHA0KRoLc8HCxvxz1pJVUYjU
-	 fZtae2IJG+M6Q==
+	b=eRal4fPo79J6L5Qmvr5T7LAy3TaHD48cKgIBu9j/0DVejozZYhCkp3A/TzU0zMeux
+	 jh0fA3iDOrSfvzdvnCiv7ekysBX48HDKi07V5JYAEnd023w2UBE9goJlM/2gzkBhak
+	 Dy+gntx9IgBcZ0sEFKeVy6PGLtyD36KMS5eG4gy1EIEVZlBv6AGYO8A98ikSEPae1w
+	 /j/TnQD/vQTva/nIkizQ6euAOnXihZYCxDMDwOgSWgD7Y76ed/8BxldaubmUnVlyNq
+	 H0jeJOh/lU1Ufa9WlNmn2eLLlX6eOvoJIZCmAASLOq4jH42TPQQf1Bkk4w3UOcfiMJ
+	 W8NcltJHjJSxQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 778B2CE0D83; Sun, 17 Mar 2024 13:28:04 -0700 (PDT)
-Date: Sun, 17 Mar 2024 13:28:04 -0700
+	id E7745CE0D83; Sun, 17 Mar 2024 14:55:01 -0700 (PDT)
+Date: Sun, 17 Mar 2024 14:55:01 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Remove unnecessary lazy_jiffies in
- call_rcu_tasks_generic_timer()
-Message-ID: <ed220ce3-943f-4554-8f79-fd5da1dfb458@paulmck-laptop>
+To: Marco Elver <elver@google.com>
+Cc: rcu@vger.kernel.org, kasan-dev@googlegroups.com, dvyukov@google.com,
+	glider@google.com
+Subject: Re: [PATCH RFC rcu] Inform KCSAN of one-byte cmpxchg() in
+ rcu_trc_cmpxchg_need_qs()
+Message-ID: <67baae71-da4f-4eda-ace7-e4f61d2ced0c@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240312113524.7654-1-qiang.zhang1211@gmail.com>
- <d3762d8c-1996-4703-8fa2-f0b00febf2fb@paulmck-laptop>
- <CALm+0cVivqMsTi0P_4dSK5XSE1ZW_Xx=9_h61VapZTtuOoUwDw@mail.gmail.com>
- <986428d9-5d82-463c-908b-b88435d53e79@paulmck-laptop>
- <CALm+0cWf9ODsxodfm+3JHciuEAe4=0fA3R4n4rhjh7XZzHonNQ@mail.gmail.com>
+References: <0733eb10-5e7a-4450-9b8a-527b97c842ff@paulmck-laptop>
+ <CANpmjNO+0d82rPCQ22xrEEqW_3sk7T28Dv95k1jnB7YmG3amjA@mail.gmail.com>
+ <53a68e29-cd33-451e-8cf0-f6576da40ced@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,116 +48,172 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALm+0cWf9ODsxodfm+3JHciuEAe4=0fA3R4n4rhjh7XZzHonNQ@mail.gmail.com>
+In-Reply-To: <53a68e29-cd33-451e-8cf0-f6576da40ced@paulmck-laptop>
 
-On Sun, Mar 17, 2024 at 10:31:22PM +0800, Z qiang wrote:
-> > On Wed, Mar 13, 2024 at 12:49:50PM +0800, Z qiang wrote:
-> > > > On Tue, Mar 12, 2024 at 07:35:24PM +0800, Zqiang wrote:
-> > > > > The rcu_tasks_percpu structure's->lazy_timer is queued only when
-> > > > > the rcu_tasks structure's->lazy_jiffies is not equal to zero in
-> > > > > call_rcu_tasks_generic(), if the lazy_timer callback is invoked,
-> > > > > that means the lazy_jiffes is not equal to zero, this commit
-> > > > > therefore remove lazy_jiffies check in call_rcu_tasks_generic_timer().
-> > > > >
-> > > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > > > ---
-> > > > >  kernel/rcu/tasks.h | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > > index b1254cf3c210..439e0b9a2656 100644
-> > > > > --- a/kernel/rcu/tasks.h
-> > > > > +++ b/kernel/rcu/tasks.h
-> > > > > @@ -299,7 +299,7 @@ static void call_rcu_tasks_generic_timer(struct timer_list *tlp)
-> > > > >
-> > > > >       rtp = rtpcp->rtpp;
-> > > > >       raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> > > > > -     if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
-> > > > > +     if (!rcu_segcblist_empty(&rtpcp->cblist)) {
-> > > >
-> > > > Good eyes!
-> > > >
-> > > > But did you test with something like a WARN_ON_ONCE(rtp->lazy_jiffies)?
+On Fri, Mar 08, 2024 at 02:31:53PM -0800, Paul E. McKenney wrote:
+> On Fri, Mar 08, 2024 at 11:02:28PM +0100, Marco Elver wrote:
+> > On Fri, 8 Mar 2024 at 22:41, Paul E. McKenney <paulmck@kernel.org> wrote:
 > > >
-> > > Hi, Paul
-> > >
-> > > +  if (!rcu_segcblist_empty(&rtpcp->cblist) &&
-> > > !WARN_ON_ONCE(!rtp->lazy_jiffies))
-> > >
-> > > I've done tests like this:
-> > >
-> > > 1. runqemu nographic kvm slirp qemuparams="-smp 4 -m 2048M -drive
-> > > file=$PWD/share.img,if=virtio"
-> > > bootparams="rcupdate.rcu_tasks_trace_lazy_ms=0" -d
-> > >
-> > > 2.  insmod torture.ko
-> > >      insmod rcutorture.ko torture_type=tasks-tracing fwd_progress=4
-> > >
-> > > 3. bpftrace -e 't:timer:timer_expire_entry /args->function ==
-> > > kaddr("call_rcu_tasks_generic_timer")/
-> > >                                             {
-> > > printf("comm:%s,cpu:%d,stack:%s,func:%s\n", comm, cpu, kstack,
-> > > ksym(args->function)); }'
-> > >
-> > > The call_rcu_tasks_generic_timer() has never been executed.
-> >
-> > Very good!
-> >
-> > Then if we get a couple of acks or reviews from the others acknowledging
-> > that if they ever make ->lazy_jiffies be changeable at runtime, they
-> > will remember to do something to adjust this logic appropriately, I will
-> > take it.  ;-)
-> >
+> > > Tasks Trace RCU needs a single-byte cmpxchg(), but no such thing exists.
+> > 
+> > Because not all architectures support 1-byte cmpxchg?
+> > What prevents us from implementing it?
 > 
-> Hi, Paul
-> 
-> Would it be better to modify it as follows? set needwake not
-> depend on lazy_jiffies,  if  ->lazy_jiffies be changed at runtime,
-> and set it to zero, will miss the chance to wake up gp kthreads.
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index e7ac9138a4fd..aea2b71af36c 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -299,11 +299,12 @@ static void call_rcu_tasks_generic_timer(struct
-> timer_list *tlp)
-> 
->         rtp = rtpcp->rtpp;
->         raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> -       if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
-> +       if (!rcu_segcblist_empty(&rtpcp->cblist)) {
->                 if (!rtpcp->urgent_gp)
->                         rtpcp->urgent_gp = 1;
->                 needwake = true;
-> -               mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
-> +               if (rtp->lazy_jiffies)
-> +                       mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
->         }
->         raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
->         if (needwake)
+> Nothing that I know of, but I didn't want to put up with the KCSAN report
+> in the interim.
 
-Interesting approach!
+And here is a lightly tested patch to emulate one-byte and two-byte
+cmpxchg() for architectures that do not support it.  This is just the
+emulation, and would be followed up with patches to make the relevant
+architectures make use of it.
 
-But how does that avoid defeating laziness by doing the wakeup early?
+The one-byte emulation has been lightly tested on x86.
+
+Thoughts?
 
 							Thanx, Paul
 
-> Thanks
-> Zqiang
-> 
-> 
-> >                                                         Thanx, Paul
-> >
-> > > Thanks
-> > > Zqiang
-> > >
-> > >
-> > > >
-> > > >                                                 Thanx, Paul
-> > > >
-> > > > >               if (!rtpcp->urgent_gp)
-> > > > >                       rtpcp->urgent_gp = 1;
-> > > > >               needwake = true;
-> > > > > --
-> > > > > 2.17.1
-> > > > >
+------------------------------------------------------------------------
+
+commit d72e54166b56d8b373676e1e92a426a07d53899a
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Sun Mar 17 14:44:38 2024 -0700
+
+    lib: Add one-byte and two-byte cmpxchg() emulation functions
+    
+    Architectures are required to provide four-byte cmpxchg() and 64-bit
+    architectures are additionally required to provide eight-byte cmpxchg().
+    However, there are cases where one-byte and two-byte cmpxchg()
+    would be extremely useful.  Therefore, provide cmpxchg_emu_u8() and
+    cmpxchg_emu_u16() that emulated one-byte and two-byte cmpxchg() in terms
+    of four-byte cmpxchg().
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Marco Elver <elver@google.com>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+    Cc: Douglas Anderson <dianders@chromium.org>
+    Cc: Petr Mladek <pmladek@suse.com>
+    Cc: <linux-arch@vger.kernel.org>
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 154f994547632..eef11e9918ec7 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1506,4 +1506,7 @@ config FUNCTION_ALIGNMENT
+ 	default 4 if FUNCTION_ALIGNMENT_4B
+ 	default 0
+ 
++config ARCH_NEED_CMPXCHG_1_2_EMU
++	bool
++
+ endmenu
+diff --git a/include/linux/cmpxchg-emu.h b/include/linux/cmpxchg-emu.h
+new file mode 100644
+index 0000000000000..fee8171fa05eb
+--- /dev/null
++++ b/include/linux/cmpxchg-emu.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Emulated 1-byte and 2-byte cmpxchg operations for architectures
++ * lacking direct support for these sizes.  These are implemented in terms
++ * of 4-byte cmpxchg operations.
++ *
++ * Copyright (C) 2024 Paul E. McKenney.
++ */
++
++#ifndef __LINUX_CMPXCHG_EMU_H
++#define __LINUX_CMPXCHG_EMU_H
++
++uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new);
++uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new);
++
++#endif /* __LINUX_CMPXCHG_EMU_H */
+diff --git a/lib/Makefile b/lib/Makefile
+index 6b09731d8e619..fecd7b8c09cbd 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -238,6 +238,7 @@ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+ lib-$(CONFIG_GENERIC_BUG) += bug.o
+ 
+ obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
++obj-$(CONFIG_ARCH_NEED_CMPXCHG_1_2_EMU) += cmpxchg-emu.o
+ 
+ obj-$(CONFIG_DYNAMIC_DEBUG_CORE) += dynamic_debug.o
+ #ensure exported functions have prototypes
+diff --git a/lib/cmpxchg-emu.c b/lib/cmpxchg-emu.c
+new file mode 100644
+index 0000000000000..508b55484c2b6
+--- /dev/null
++++ b/lib/cmpxchg-emu.c
+@@ -0,0 +1,68 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Emulated 1-byte and 2-byte cmpxchg operations for architectures
++ * lacking direct support for these sizes.  These are implemented in terms
++ * of 4-byte cmpxchg operations.
++ *
++ * Copyright (C) 2024 Paul E. McKenney.
++ */
++
++#include <linux/types.h>
++#include <linux/export.h>
++#include <linux/instrumented.h>
++#include <linux/atomic.h>
++#include <asm-generic/rwonce.h>
++
++union u8_32 {
++	u8 b[4];
++	u32 w;
++};
++
++/* Emulate one-byte cmpxchg() in terms of 4-byte cmpxchg. */
++uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
++{
++	u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
++	int i = ((uintptr_t)p) & 0x3;
++	union u8_32 old32;
++	union u8_32 new32;
++	u32 ret;
++
++	old32.w = READ_ONCE(*p32);
++	do {
++		if (old32.b[i] != old)
++			return old32.b[i];
++		new32.w = old32.w;
++		new32.b[i] = new;
++		instrument_atomic_read_write(p, 1);
++		ret = cmpxchg(p32, old32.w, new32.w);
++	} while (ret != old32.w);
++	return old;
++}
++EXPORT_SYMBOL_GPL(cmpxchg_emu_u8);
++
++union u16_32 {
++	u16 h[2];
++	u32 w;
++};
++
++/* Emulate two-byte cmpxchg() in terms of 4-byte cmpxchg. */
++uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
++{
++	u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x1);
++	int i = ((uintptr_t)p) & 0x1;
++	union u16_32 old32;
++	union u16_32 new32;
++	u32 ret;
++
++	old32.w = READ_ONCE(*p32);
++	do {
++		if (old32.h[i] != old)
++			return old32.h[i];
++		new32.w = old32.w;
++		new32.h[i] = new;
++		instrument_atomic_read_write(p, 2);
++		ret = cmpxchg(p32, old32.w, new32.w);
++	} while (ret != old32.w);
++	return old;
++}
++EXPORT_SYMBOL_GPL(cmpxchg_emu_u16);
