@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51EAD14F98;
-	Sun, 17 Mar 2024 07:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F92B1BF35;
+	Sun, 17 Mar 2024 07:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710660669; cv=none; b=S7v/5FzrBMdtGHw7K5+y/YECS8/4Q4yAJnxjfkYnvkWBEijpqtnFhbk5lE5p6QRlYyoM3vXZgfRUhBgEnDbG2Vj0gI20FCKsuHuEaj0OPwW4eSIIm3JHt81zbJbgNlWmhzhg80WiZGhBTEcYlbZKLF5ytO/f2o5u5hg4Vxbri5g=
+	t=1710660699; cv=none; b=LdwOGvbzFejo0CHakh7ZXRvsqXGc2j46ZFaK3zfg/FSRvzVmXm6KH8I1GsTEoSKp8mUV6XzJpQgaLyKieZvo5fy6VbnsliRhK2atPpHcUehlg50Ol37vCxewEucYGycrJ9chEERedFp5/CdzarLQaoL5VDKAhXUCuRfPT3oS1TI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710660669; c=relaxed/simple;
-	bh=a/T8ct5y3sl7wBmjTZV15I56STW6/flrOAcEZ7oKA2Q=;
+	s=arc-20240116; t=1710660699; c=relaxed/simple;
+	bh=GPZRO/qP9OSJ8w4An6Tzpoe/JSgZlU+igzfSvXj73u0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cJFN9bEZ+3+XuxBCZk26453oTzKrJFCoE7Oki/Zos0ZkDatc9Fih3th3R0D6fUZ7HtSSHcfOP3ND+gUPQyuHjHyZaSMEicRhXwAd2JxxwzLWqAV2fl8wbaxwHqRE2zIVNKAkVwIPK2Cm+KwikJJh8KOIh7DThbVyslZGdRyTM+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ov40e0Da; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gk0PPlviODNJrUAHAV2Cj+MsP0Z0TmWC+jis6MmSzvBBJzKKzmjawTvZXLGJpkSk0DyFXOSghp30DgaUfrr8F1DJ8ba7RZUR06ZJD2uTfIzgXcMCTRxr8j6PhulYpdvehVc3Ev74wIL4M4pca0NNiuA346evWHZGylFh738fE80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hqAiaxzW; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ov40e0Da"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A401EC433C7;
-	Sun, 17 Mar 2024 07:31:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqAiaxzW"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81BA2C433F1;
+	Sun, 17 Mar 2024 07:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710660668;
-	bh=a/T8ct5y3sl7wBmjTZV15I56STW6/flrOAcEZ7oKA2Q=;
+	s=k20201202; t=1710660698;
+	bh=GPZRO/qP9OSJ8w4An6Tzpoe/JSgZlU+igzfSvXj73u0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ov40e0Daw5ymbjg7URE6xFFwSrQ0XWSk8ROY8qo6Cykx9qGfML7pelvByRLGJDDkU
-	 bhGFpXaKFvLCFq10XqWSyoG6oIcdtLT+vETSPnDoCJX4eBHcLpAhYWdVXB9OXc3BfV
-	 btMkzh0LYaT5ySeb2cswcGyRL0oGayblT1Lbycg43rcHbgfU/A4faC4W4Mw0JvnQtV
-	 RxOX4n38YZk2RMb15YFisS+8s0Kv9BLNCFBX0J/Q2DeWNrjZ0rEGE//kVE6L+zdjP4
-	 wi+1Tce4JF8XPpp9a2KaWKyEj+XMs8Dn41OpPOeAs9riJeiJXJge4fOpwQCihEnFAm
-	 hBn6zSHPHvDnw==
+	b=hqAiaxzWfPMUKmVgvC9AOct2lPFB2GORRMRvj9csQ5zNAODaQjujlGRgWwLSpyEN1
+	 +lz0ciCWzcrC4R7cvDnW/u3cqYWbAE7S0Ao22F/N3Z585SUb7YfY0vde0dz15q8Mhy
+	 mumVWoe7bGbyeHEjc3CpC4lS8GFWwoCMhg8WnqQAZOhBdwOun9JALg3iSiEMfDBbt/
+	 RPAUhNNxIlYI3CGXk95oN9XQHlqgnYiKW1jrlZm4OvCiVqxdDMvu6Nz4nRrgCq35qf
+	 RJNtIMcARtaFaF1FgAbRwvRNK6NLxinDJ8ptXPhihtr9mJkhhVmACusBQe9XrHtUMP
+	 pG9IPanbOucBw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 97D10CE0D83; Sun, 17 Mar 2024 00:31:05 -0700 (PDT)
-Date: Sun, 17 Mar 2024 00:31:05 -0700
+	id 0AF1CCE0D83; Sun, 17 Mar 2024 00:31:36 -0700 (PDT)
+Date: Sun, 17 Mar 2024 00:31:36 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, joel@joelfernandes.org, neeraj.upadhyay@kernel.org,
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
 	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Avoid rtp_irq_work triggering when the
- rcu-tasks GP is ongoing
-Message-ID: <58ca12cc-07a2-407e-b60a-cabeb227ea9c@paulmck-laptop>
+Subject: Re: [PATCH] rcutorture: Make rcutorture support print rcu-tasks gp
+ state
+Message-ID: <7060c4f6-a57c-45ea-bae2-fe515bcf01ff@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240311035502.7112-1-qiang.zhang1211@gmail.com>
- <49c73303-fdda-4912-b26a-75f2235b3a62@paulmck-laptop>
- <CALm+0cWeYcp4jKV2H=g5MOHOg6WJ7se0S1g6BhZrwPACiFWYDA@mail.gmail.com>
+References: <20240312072357.23517-1-qiang.zhang1211@gmail.com>
+ <40a4b0f3-b850-4d73-b514-ce5149abb465@paulmck-laptop>
+ <CALm+0cXCK5dj+a8YNe-etxVjJwChPtSeDDL3M7cZxDO1OCTR9Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -48,71 +48,44 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALm+0cWeYcp4jKV2H=g5MOHOg6WJ7se0S1g6BhZrwPACiFWYDA@mail.gmail.com>
+In-Reply-To: <CALm+0cXCK5dj+a8YNe-etxVjJwChPtSeDDL3M7cZxDO1OCTR9Q@mail.gmail.com>
 
-On Sun, Mar 17, 2024 at 03:12:59PM +0800, Z qiang wrote:
+On Sun, Mar 17, 2024 at 03:16:43PM +0800, Z qiang wrote:
 > >
-> > On Mon, Mar 11, 2024 at 11:55:02AM +0800, Zqiang wrote:
-> > > This commit generate rcu_task_gp_in_progress() to check whether
-> > > the rcu-tasks GP is ongoing, if is ongoing, avoid trigger
-> > > rtp_irq_work to wakeup rcu tasks kthreads in call_rcu_tasks_generic().
+> > On Tue, Mar 12, 2024 at 03:23:57PM +0800, Zqiang wrote:
+> > > This commit make rcu-tasks related rcutorture test support rcu-tasks
+> > > gp state printing when the writer stall occurs or the at the end of
+> > > rcutorture test.
 > > >
-> > > The test results are as follows:
+> > > The test is as follows:
+> > > [ 3872.548702] tasks-tracing:  Start-test grace-period state: g4560 f0x0
+> > > [ 4332.661283] tasks-tracing:  End-test grace-period state: g41540 f0x0 total-gps=36980
 > > >
-> > > echo call_rcu_tasks_iw_wakeup > /sys/kernel/debug/tracing/set_ftrace_filter
-> > > echo 1 > /sys/kernel/debug/tracing/function_profile_enabled
-> > > insmod rcutorture.ko torture_type=tasks-tracing fwd_progress=4
-> > > sleep 600
-> > > rmmod rcutorture.ko
-> > > echo 0 > /sys/kernel/debug/tracing/function_profile_enabled
-> > > echo > /sys/kernel/debug/tracing/set_ftrace_filter
+> > > [ 4401.381138] tasks:  Start-test grace-period state: g8 f0x0
+> > > [ 4565.619354] tasks:  End-test grace-period state: g1732 f0x0 total-gps=1724
 > > >
-> > > head /sys/kernel/debug/tracing/trace_stat/function*
-> > >
-> > > original: 56376  apply patch: 33521
+> > > [ 4589.006917] tasks-rude:  Start-test grace-period state: g8 f0x0
+> > > [ 5059.379321] tasks-rude:  End-test grace-period state: g8508 f0x0 total-gps=8500
 > > >
 > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 > >
-> > Note that rcu_seq_current() does not provide ordering.  So are you
-> > sure that this change is safe on weakly ordered systems such as ARM?
-> 
-> The  rcu_seq_current() provide implicit address-dependency barriers, or
-> did I miss something?
-
-It would be ordered after the last update of the grace-period sequence
-number, but that update has not happened yet.
-
-> > For example, consider the following sequence of events:
+> > Again, good eyes, and that fix would work.  But wouldn't it make more
+> > sense to create a new cur_ops function pointer for these functions?
+> > That might allow getting rid of the *_FLAVOR checks and values, plus
+> > simplify the code a bit.  To make the function signatures work out,
+> > there would need to be an intermediate SRCU function to supply the right
+> > rcu_struct pointer.
 > >
-> > o       The call_rcu_tasks_generic() function picks up the grace-period
-> >         sequence number, which shows that there is a grace period in
-> >         progress.
+> > This would shorten and simplify the code a bit.
+> >
+> > Or is there some reason that this won't work?
 > 
-> The rcu-callback has been enqueued to list before we pick up the
-> gp seq number.
-
-That is true, but what guarantees that the grace-period kthread will see
-the callback as having been enqueued?  In a kernel that was built with
-CONFIG_RCU_NOCB_CPU, rcu_segcblist_n_cbs() is just a READ_ONCE(), right?
-
-> > o       The grace period ends, and sees no reason to start a new grace
-> >         period.
+> Hi, Paul
 > 
-> the gp ends, the rcu_tasks_need_gpcb() will be invoked to check
-> whether to start a new gp.   find pending callback, the new gp
-> will start  or did I miss something?
+> Thanks for your suggestion, I will resend with reference to the
+> suggestions above.
 
-Maybe you aren't missing something, but in that case I need you to tell
-me exactly what guarantees the ordering.  Please keep in mind that even
-in x86, propagation delays can result in reads on one CPU returning the
-old value long after some other CPU wrote the new value.  And at least
-on the surface, this scenario involves each CPU doing an unordered read
-and getting the old value.  (The CPU queueing the new callback got an
-old value for the grace-period sequence number and the CPU ending the
-grace period got an old value for the number of callbacks queued at the
-other CPU.)
-
-So please tell me exactly what prevents that scenario from happening.
+Very good, looking forward to seeing it!
 
 							Thanx, Paul
 
@@ -121,88 +94,100 @@ So please tell me exactly what prevents that scenario from happening.
 > 
 > 
 > >
-> > o       The call_rcu_tasks_generic() function sees no reason to wake
-> >         up the grace-period kthread.  There are no more calls to
-> >         call_rcu_tasks*(), so the callback is never invoked.
-> >
-> > Or is there something that prevents this sequence of events from
-> > ever happening on weakly ordered systems?
+> > Why didn't I do that to start with?  Well, the various RCU flavors
+> > appeared one at a time over some years...  ;-)
 > >
 > >                                                         Thanx, Paul
 > >
 > > > ---
+> > >  kernel/rcu/rcu.h        |  8 ++++++++
+> > >  kernel/rcu/rcutorture.c |  3 +++
+> > >  kernel/rcu/tasks.h      | 25 +++++++++++++++++++++++++
+> > >  3 files changed, 36 insertions(+)
 > > >
-> > > original:
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function0 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup             13217    19292.52 us     1.459 us        8.834 us
+> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> > > index 86fce206560e..3353e3697645 100644
+> > > --- a/kernel/rcu/rcu.h
+> > > +++ b/kernel/rcu/rcu.h
+> > > @@ -556,6 +556,14 @@ static inline unsigned long rcu_get_jiffies_lazy_flush(void) { return 0; }
+> > >  static inline void rcu_set_jiffies_lazy_flush(unsigned long j) { }
+> > >  #endif
 > > >
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function1 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup             15146    22377.01 us     1.477 us        22.873 us
+> > > +#ifdef CONFIG_TASKS_RCU_GENERIC
+> > > +void rcutaskstorture_get_gp_data(enum rcutorture_type test_type, int *flags,
+> > > +                             unsigned long *gp_seq);
+> > > +#else
+> > > +static inline void rcutaskstorture_get_gp_data(enum rcutorture_type test_type, int *flags,
+> > > +                             unsigned long *gp_seq) { }
+> > > +#endif
+> > > +
+> > >  #if defined(CONFIG_TREE_RCU)
+> > >  void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
+> > >                           unsigned long *gp_seq);
+> > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > > index dd7d5ba45740..91c03f37fd97 100644
+> > > --- a/kernel/rcu/rcutorture.c
+> > > +++ b/kernel/rcu/rcutorture.c
+> > > @@ -2267,6 +2267,7 @@ rcu_torture_stats_print(void)
+> > >                                      &flags, &gp_seq);
+> > >               srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp,
+> > >                                       &flags, &gp_seq);
+> > > +             rcutaskstorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
+> > >               wtp = READ_ONCE(writer_task);
+> > >               pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
+> > >                        rcu_torture_writer_state_getname(),
+> > > @@ -3391,6 +3392,7 @@ rcu_torture_cleanup(void)
 > > >
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function2 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup             12561    18125.76 us     1.443 us        6.372 us
-> > >
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function3 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup             15452    21770.57 us     1.408 us        6.710 us
-> > >
-> > > apply patch:
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function0 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup              8334    15121.13 us     1.814 us        4.457 us
-> > >
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function1 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup              8355    15760.51 us     1.886 us        14.775 us
-> > >
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function2 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup              7219    14194.27 us     1.966 us        42.440 us
-> > >
-> > > ==> /sys/kernel/debug/tracing/trace_stat/function3 <==
-> > >   Function                               Hit    Time            Avg             s^2
-> > >   --------                               ---    ----            ---             ---
-> > >   call_rcu_tasks_iw_wakeup              9613    19850.04 us     2.064 us        91.023 us
-> > >
-> > >  kernel/rcu/tasks.h | 8 +++++++-
-> > >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > >
+> > >       rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
+> > >       srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
+> > > +     rcutaskstorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
+> > >       pr_alert("%s:  End-test grace-period state: g%ld f%#x total-gps=%ld\n",
+> > >                cur_ops->name, (long)gp_seq, flags,
+> > >                rcutorture_seq_diff(gp_seq, start_gp_seq));
+> > > @@ -3763,6 +3765,7 @@ rcu_torture_init(void)
+> > >       rcu_torture_print_module_parms(cur_ops, "Start of test");
+> > >       rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
+> > >       srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
+> > > +     rcutaskstorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
+> > >       start_gp_seq = gp_seq;
+> > >       pr_alert("%s:  Start-test grace-period state: g%ld f%#x\n",
+> > >                cur_ops->name, (long)gp_seq, flags);
 > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index 147b5945d67a..36c7e1d441d0 100644
+> > > index e83adcdb49b5..b1254cf3c210 100644
 > > > --- a/kernel/rcu/tasks.h
 > > > +++ b/kernel/rcu/tasks.h
-> > > @@ -317,6 +317,11 @@ static void call_rcu_tasks_iw_wakeup(struct irq_work *iwp)
-> > >       rcuwait_wake_up(&rtp->cbs_wait);
-> > >  }
+> > > @@ -2149,6 +2149,31 @@ late_initcall(rcu_tasks_verify_schedule_work);
+> > >  static void rcu_tasks_initiate_self_tests(void) { }
+> > >  #endif /* #else #ifdef CONFIG_PROVE_RCU */
 > > >
-> > > +static int rcu_task_gp_in_progress(struct rcu_tasks *rtp)
+> > > +void rcutaskstorture_get_gp_data(enum rcutorture_type test_type, int *flags,
+> > > +                             unsigned long *gp_seq)
 > > > +{
-> > > +     return rcu_seq_state(rcu_seq_current(&rtp->tasks_gp_seq));
+> > > +     switch (test_type) {
+> > > +     case RCU_TASKS_FLAVOR:
+> > > +#ifdef CONFIG_TASKS_RCU
+> > > +             *gp_seq = rcu_seq_current(&rcu_tasks.tasks_gp_seq);
+> > > +#endif
+> > > +             break;
+> > > +     case RCU_TASKS_RUDE_FLAVOR:
+> > > +#ifdef CONFIG_TASKS_RUDE_RCU
+> > > +             *gp_seq = rcu_seq_current(&rcu_tasks_rude.tasks_gp_seq);
+> > > +#endif
+> > > +             break;
+> > > +     case RCU_TASKS_TRACING_FLAVOR:
+> > > +#ifdef CONFIG_TASKS_TRACE_RCU
+> > > +             *gp_seq = rcu_seq_current(&rcu_tasks_trace.tasks_gp_seq);
+> > > +#endif
+> > > +             break;
+> > > +     default:
+> > > +             break;
+> > > +     }
 > > > +}
+> > > +EXPORT_SYMBOL_GPL(rcutaskstorture_get_gp_data);
 > > > +
-> > >  // Enqueue a callback for the specified flavor of Tasks RCU.
-> > >  static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
-> > >                                  struct rcu_tasks *rtp)
-> > > @@ -375,7 +380,8 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
-> > >       }
-> > >       rcu_read_unlock();
-> > >       /* We can't create the thread unless interrupts are enabled. */
-> > > -     if (needwake && READ_ONCE(rtp->kthread_ptr))
-> > > +     if (needwake && READ_ONCE(rtp->kthread_ptr) &&
-> > > +                     !rcu_task_gp_in_progress(rtp))
-> > >               irq_work_queue(&rtpcp->rtp_irq_work);
-> > >  }
-> > >
+> > >  void __init tasks_cblist_init_generic(void)
+> > >  {
+> > >       lockdep_assert_irqs_disabled();
 > > > --
 > > > 2.17.1
 > > >
