@@ -1,176 +1,142 @@
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5531367;
-	Sun, 17 Mar 2024 14:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B551CD3C;
+	Sun, 17 Mar 2024 17:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710685896; cv=none; b=Z2KukYCAUydeGPeJeU9/fjCpRUz3I5A09Ya/5KfZ77MZdkd3FbQxCK26lzoyQVhmPIrvmIwhWFtIn1xjKmIpbHMzZ+DqHGn50gKMM5XRB1ysDvV5yDoLqkq4n23rTqg2ziS/Akski86sDyD94z2WhrqnTSgaMlT7SsmgpUvHnGI=
+	t=1710697681; cv=none; b=mUBl/GrCLWCQTcm/tPRaoKY8GW9a5/v9Ua/Z3PD4tlJsuewGuKiJjhoMwhqF9fe6bzY4tuzD5PHfariBFIU84opiW9MuvkPit+RB4ChH7o53hicXgzMmnke9dh6AtKcKA/v04MghYGB2U45I7jjh2SSpjUtkF+oezuhUeMXvahU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710685896; c=relaxed/simple;
-	bh=4qtfH+7TI3C8v+2lQMgpX7BD1L9BxcTm8n2lOGhUO8A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MC7QHmH3rhuXAqr1wGuV6x0GgGXWYbututr0vsTsuBrofmZZ/6bfHeGbU0v0k8qS7mwr9+OB4dCjoHooB4HUK7UCNZoEnltXmTauC+iZvRsVK0YRQ+qhvcaRgnMgL0jgN4XkA/LRTklw1nxvIyy35APt7QiVeDWmwiLAfYGSiEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T1xjF1ih; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1710697681; c=relaxed/simple;
+	bh=iFgr+b97KAvPfCR6ghGNye2kCkDZc+J9IWrRuv7n9io=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To; b=Vh/R2Ki3QE9JVabIEWPEUayZ1Vu58t3/Nms0AxSkSZu307++WB2Q4IyG9A9Ndz96ZO10lfoBi1it/44R/8WgqZHyVbtpxuKllCw7cED8Orus9gh7LmzPNWZ1mKR6lZ8iHvG5y4niFe5D136N8S/nc9POcti7Pno6iHHVNwHNE1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CErTCt+h; arc=none smtp.client-ip=209.85.167.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T1xjF1ih"
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e6082eab17so3185827b3a.1;
-        Sun, 17 Mar 2024 07:31:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CErTCt+h"
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c37970b52aso1472491b6e.0;
+        Sun, 17 Mar 2024 10:47:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710685894; x=1711290694; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=03voW317BoL2q72KgiafRj9pewXFvRIQF0YvYjeYXSo=;
-        b=T1xjF1ihvGUQVUZc5KrBDo31KQVw3dx6mkRghDD0gcgYT8pnQ3HWWvmMbE0CarpQRK
-         DATOm18/MOHERH+kR6BnTJztS6p8ytGfM8QzC/2vTGzw5uS0dn1ZY7hcCLRGC3UBq27g
-         YenoD8QOeSGlZV7anBs26gdlY6KPn5WcwxOUv97/D1scD07XipLMFLEVSKGhqZZbimUv
-         elAESmf1sEzVbXr34Vk3J/fYRbrXpThxtCIkUygugmc1Ql1ZtUS4PkQODgwChD2T6Shq
-         T4yH2kBgcg+7956TKFGnDgHafP8IElVRRyFjJaTdW74ANXMwtAqobxnAsOL0QE0Tr4fn
-         73/A==
+        d=gmail.com; s=20230601; t=1710697678; x=1711302478; darn=vger.kernel.org;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/nUQ6ib1+zRvwxKYZbx2Zz20+PnydyUeEfxBg3tXRtk=;
+        b=CErTCt+hFtHB4HKizyA9CHMXN6cONeSohumsxv8EumhoK24/jESl1f2u15CMZcckn+
+         S0NUePM9tGz3kgAJlFPBtUpNuPjqGGwRb1HP//C4j1gLze5V5jRk80RXPFb1ZhGr637f
+         lpL6WNwfUGbeOczo4zXFnkpXKPc78Gjqs/TK/K5Hq66xhmFSCcgQ/JTKhB/OyXk3s3cN
+         2dncy84c7fbILGSLNXNETPGEkx9fWbK6ef28Er2yBGvK75BxcWsrmLvu3O89Gk+6vpIa
+         4Wf6Bj03HPXWcg4kpmgfiRzyt63VGw9F6qWUJoNVi/aQI6Ybbubyfeuw/UbhDglz4DDU
+         EYZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710685894; x=1711290694;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=03voW317BoL2q72KgiafRj9pewXFvRIQF0YvYjeYXSo=;
-        b=aIw6COcSRIBTRH4EoD3NYSCxom3itmfDKTe5ClM3tb2yd2/0MIUPvP5z/G+2nXT1LF
-         waReS4uatO/2I9qtK37hzUKboLNCsJekfKzJz+froX1Y2l4spSv3dAPabVc+R950TgHz
-         8OzV1vUIxqoiMe9py+/JH2q13V6CeOWyT61YGq1Mw1QEVzBveuvviBog7q5eRtBJ1tQr
-         hrdhbjloEzR4UvNoCd5t742U26dK3yHySQaCynEiOnT2iFC9pYLh+m9J3fD/ieEEaEGQ
-         VNzEI3y2jnMtWxmjFAZdMYNy0OWsKzA9rBzx6qx3Cxm8Kdely+k9cIKsDCh93DLgjIOH
-         /SSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUukWLYcrHKOkfuZ1H6kPYnRDm8N4YW7o6c9p5EbAF90gSN+IoHU8w8fS2RGDJ1ri0+n47zkNUxmbKjCOJzJonlTFLapP9FZHvLnYSZuqrwuRVinoYQzE1FvIrhVtIrW9qd
-X-Gm-Message-State: AOJu0YxZF1nRwEaDZpX2w1ItN+jvBH1dKvjdICHCAzkFZiaaVSRap1rs
-	K78tUXz2M3N6h5WM9I9fbQaW+MAJLJaX7fgZffEIP2DmOL3ImxnKhx05mBn8kfElEmI+zLwz6/8
-	9CVC/0nduNtkRH8VpA93RnxtqeIuWKICq+J8=
-X-Google-Smtp-Source: AGHT+IFwvgD4cg/hb+9NbZRNMf36dSepv7dAKi7hkB3B4K3BxIC/tB+a2EFlTICzZBSNMUa+HODWmYtL8jH35UWmsE4=
-X-Received: by 2002:a05:6a20:9f4f:b0:1a3:115b:acb5 with SMTP id
- ml15-20020a056a209f4f00b001a3115bacb5mr10339657pzb.21.1710685893763; Sun, 17
- Mar 2024 07:31:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710697678; x=1711302478;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/nUQ6ib1+zRvwxKYZbx2Zz20+PnydyUeEfxBg3tXRtk=;
+        b=LO11AQlWJh4+wZ1lEdjWxW1GRez1UWDgz9RrGWSlFfJPDTt0wJGJKRjrgbAt9Wm7so
+         SCgjaqLTmJ2tqA/m+kasiUQ2cnL4XcSZDSpDoZ3cwv+WumF3mztXFObgvROc3w94XSQO
+         GXYVL/b88s4bhSCHOn5jaMIx0GwejGKyPq/+oB0yn+/wJoBQnvnPqCr8dw+btGZewI0i
+         Fn4HZ+2kTkZYpVSVWp5UbVeJjZMTvw0rxsJUd7Ujmt/51KJozVd1iGwHGPgWK+BjGmqM
+         D/aO6XGuVmbCI6zmWBoo8JGzJlHKcG5i5TCl9rhXGe8pek4qhQfqE6KdBHlIJ9M9peJc
+         xZ2A==
+X-Forwarded-Encrypted: i=1; AJvYcCXRBTJ4rzJqdssCthT/cUby4k14kt9DZaTakjPqa2MxadJJSgMzmwDXYQOkZ3avnjn8vJA0bUOqXmGl0i07W1W/rUSRbZRJhp7WOeJ160v8jCUXw2sOrSwTxSjO9W4/qA==
+X-Gm-Message-State: AOJu0YwJYCwMkZxfuDrdcQOKS7GUVWiFEl2dzfFsPNx+pxyoFP4QV0o3
+	q8krcDHz+Ng5PWjV4pvZzIU3Owsbvh4BBjPQsU4+87zL1PqVfxOyShbPbbgeMNQ=
+X-Google-Smtp-Source: AGHT+IETYmdnuS52fXG2/Dt89v96pDkvRPSM6OlcsJ60BUTDT3kxBHZ0IX7t3LA+Shx4xVHhF0jpJg==
+X-Received: by 2002:a05:6871:60e:b0:220:be2c:6083 with SMTP id w14-20020a056871060e00b00220be2c6083mr12261987oan.49.1710697678171;
+        Sun, 17 Mar 2024 10:47:58 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id u22-20020a62d456000000b006e6c10fc87fsm6730122pfl.46.2024.03.17.10.47.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Mar 2024 10:47:57 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240312113524.7654-1-qiang.zhang1211@gmail.com>
- <d3762d8c-1996-4703-8fa2-f0b00febf2fb@paulmck-laptop> <CALm+0cVivqMsTi0P_4dSK5XSE1ZW_Xx=9_h61VapZTtuOoUwDw@mail.gmail.com>
- <986428d9-5d82-463c-908b-b88435d53e79@paulmck-laptop>
-In-Reply-To: <986428d9-5d82-463c-908b-b88435d53e79@paulmck-laptop>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Sun, 17 Mar 2024 22:31:22 +0800
-Message-ID: <CALm+0cWf9ODsxodfm+3JHciuEAe4=0fA3R4n4rhjh7XZzHonNQ@mail.gmail.com>
-Subject: Re: [PATCH] rcu-tasks: Remove unnecessary lazy_jiffies in call_rcu_tasks_generic_timer()
-To: paulmck@kernel.org
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Question about ISA2+pooncelock+pooncelock+pombonce litmus
+Message-Id: <12E5C279-ADB1-463E-83E2-0A4F5D193754@gmail.com>
+Date: Mon, 18 Mar 2024 01:47:43 +0800
+To: linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org,
+ rcu@vger.kernel.org
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
->
-> On Wed, Mar 13, 2024 at 12:49:50PM +0800, Z qiang wrote:
-> > >
-> > > On Tue, Mar 12, 2024 at 07:35:24PM +0800, Zqiang wrote:
-> > > > The rcu_tasks_percpu structure's->lazy_timer is queued only when
-> > > > the rcu_tasks structure's->lazy_jiffies is not equal to zero in
-> > > > call_rcu_tasks_generic(), if the lazy_timer callback is invoked,
-> > > > that means the lazy_jiffes is not equal to zero, this commit
-> > > > therefore remove lazy_jiffies check in call_rcu_tasks_generic_timer().
-> > > >
-> > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > > ---
-> > > >  kernel/rcu/tasks.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > index b1254cf3c210..439e0b9a2656 100644
-> > > > --- a/kernel/rcu/tasks.h
-> > > > +++ b/kernel/rcu/tasks.h
-> > > > @@ -299,7 +299,7 @@ static void call_rcu_tasks_generic_timer(struct timer_list *tlp)
-> > > >
-> > > >       rtp = rtpcp->rtpp;
-> > > >       raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> > > > -     if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
-> > > > +     if (!rcu_segcblist_empty(&rtpcp->cblist)) {
-> > >
-> > > Good eyes!
-> > >
-> > > But did you test with something like a WARN_ON_ONCE(rtp->lazy_jiffies)?
-> >
-> > Hi, Paul
-> >
-> > +  if (!rcu_segcblist_empty(&rtpcp->cblist) &&
-> > !WARN_ON_ONCE(!rtp->lazy_jiffies))
-> >
-> > I've done tests like this:
-> >
-> > 1. runqemu nographic kvm slirp qemuparams="-smp 4 -m 2048M -drive
-> > file=$PWD/share.img,if=virtio"
-> > bootparams="rcupdate.rcu_tasks_trace_lazy_ms=0" -d
-> >
-> > 2.  insmod torture.ko
-> >      insmod rcutorture.ko torture_type=tasks-tracing fwd_progress=4
-> >
-> > 3. bpftrace -e 't:timer:timer_expire_entry /args->function ==
-> > kaddr("call_rcu_tasks_generic_timer")/
-> >                                             {
-> > printf("comm:%s,cpu:%d,stack:%s,func:%s\n", comm, cpu, kstack,
-> > ksym(args->function)); }'
-> >
-> > The call_rcu_tasks_generic_timer() has never been executed.
->
-> Very good!
->
-> Then if we get a couple of acks or reviews from the others acknowledging
-> that if they ever make ->lazy_jiffies be changeable at runtime, they
-> will remember to do something to adjust this logic appropriately, I will
-> take it.  ;-)
->
+Hi,
 
-Hi, Paul
+I=E2=80=99m playing with the LKMM, then I saw the =
+ISA2+pooncelock+pooncelock+pombonce.
 
-Would it be better to modify it as follows? set needwake not
-depend on lazy_jiffies,  if  ->lazy_jiffies be changed at runtime,
-and set it to zero, will miss the chance to wake up gp kthreads.
+The original litmus is as follows:
+------------------------------------------------------
+P0(int *x, int *y, spinlock_t *mylock)
+{
+	spin_lock(mylock);
+	WRITE_ONCE(*x, 1);
+	WRITE_ONCE(*y, 1);
+	spin_unlock(mylock);
+}
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index e7ac9138a4fd..aea2b71af36c 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -299,11 +299,12 @@ static void call_rcu_tasks_generic_timer(struct
-timer_list *tlp)
+P1(int *y, int *z, spinlock_t *mylock)
+{
+	int r0;
 
-        rtp = rtpcp->rtpp;
-        raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
--       if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
-+       if (!rcu_segcblist_empty(&rtpcp->cblist)) {
-                if (!rtpcp->urgent_gp)
-                        rtpcp->urgent_gp = 1;
-                needwake = true;
--               mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
-+               if (rtp->lazy_jiffies)
-+                       mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
-        }
-        raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-        if (needwake)
+	spin_lock(mylock);
+	r0 =3D READ_ONCE(*y);
+	WRITE_ONCE(*z, 1);
+	spin_unlock(mylock);
+}
 
-Thanks
-Zqiang
+P2(int *x, int *z)
+{
+	int r1;
+	int r2;
 
+	r2 =3D READ_ONCE(*z);
+	smp_mb();
+	r1 =3D READ_ONCE(*x);
+}
 
->                                                         Thanx, Paul
->
-> > Thanks
-> > Zqiang
-> >
-> >
-> > >
-> > >                                                 Thanx, Paul
-> > >
-> > > >               if (!rtpcp->urgent_gp)
-> > > >                       rtpcp->urgent_gp = 1;
-> > > >               needwake = true;
-> > > > --
-> > > > 2.17.1
-> > > >
+exists (1:r0=3D1 /\ 2:r2=3D1 /\ 2:r1=3D0)
+------------------------------------------------------
+Of course, the result is Never.=20
+
+But when I delete P0=E2=80=99s spin_lock and P1=E2=80=99s spin_unlock:
+-------------------------------------------------------
+P0(int *x, int *y, spinlock_t *mylock)
+{
+	WRITE_ONCE(*x, 1);
+	WRITE_ONCE(*y, 1);
+	spin_unlock(mylock);
+}
+
+P1(int *y, int *z, spinlock_t *mylock)
+{
+	int r0;
+
+	spin_lock(mylock);
+	r0 =3D READ_ONCE(*y);
+	WRITE_ONCE(*z, 1);
+}
+
+P2(int *x, int *z)
+{
+	int r1;
+	int r2;
+
+	r2 =3D READ_ONCE(*z);
+	smp_mb();
+	r1 =3D READ_ONCE(*x);
+}
+
+exists (1:r0=3D1 /\ 2:r2=3D1 /\ 2:r1=3D0)
+------------------------------------------------------
+Then herd told me the result is Sometimes.
+
+Is this expected?=20
+
