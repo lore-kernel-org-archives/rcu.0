@@ -1,179 +1,209 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3C92E65B;
-	Mon, 18 Mar 2024 10:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B47C3BBE2;
+	Mon, 18 Mar 2024 11:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710759547; cv=none; b=bac1KPB3QVs8hN352MKiYEesJVE34X7/aro8S+ApGUOp3gfl64jNbyFJk/WQWnI2VXvxX/JCTvhcADYKewBTDd3M2slS8fmnkagzYeCFOggIqD3sDR5ZcUM+o7sgN6kE+l6/XWCNGoPwLIOXSw4vc4J3YR0Rbhkyn6BV7ZF4qUE=
+	t=1710760813; cv=none; b=iTNqqOq5SwkE0TvDOGiZqlzltESTsWD3EmwZ5qTWICJ6nc3BCTyon3s5VAjFWVXYkYf5WiI3O6nZjDUy7Ly2oDNJ/qeOLDPWFZ7MnqOhecaUeocuGJJBlcRlgVS9Ra5JsHZuEkzkQS+0MAK7li+kXWrc7BTyvgJ5PbLb+WScF/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710759547; c=relaxed/simple;
-	bh=m4C7IJM/lBOjxxuMNRxJEzICHUkxmZPvIn8SOjuKfPs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j2CGz57JgDer6HWjbHrOezesVwithqzh+mVhTrPzX+TYEr4PjxP+RTCyK1Ru3UsCTl+tut1w2BABAZidacPNBtlsdRqlYZGdZUDeKjfw1PEwFFpZbZLHcNIR5VGdtiaE9AhX+zcFR17A3ak1Y1li2dUdFyfJI65Y42fjRSTpwHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E971106F;
-	Mon, 18 Mar 2024 03:59:39 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.71.172])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42E1B3F762;
-	Mon, 18 Mar 2024 03:59:00 -0700 (PDT)
-Date: Mon, 18 Mar 2024 10:58:57 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	Hannes Frederic Sowa <hannes@stressinduktion.org>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Toke Hoiland-Jorgensen <toke@redhat.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH v4 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-Message-ID: <ZfgecVqd6p-ACSZ5@FVFF77S0Q05N>
-References: <cover.1710525524.git.yan@cloudflare.com>
- <491d3af6c7d66dfb3b60b2f210f38e843dfe6ed2.1710525524.git.yan@cloudflare.com>
- <790ce7e7-a8fd-4d28-aaf3-1b991a898be2@paulmck-laptop>
+	s=arc-20240116; t=1710760813; c=relaxed/simple;
+	bh=BL1bAqpLJmyZg3Nv7cSa0Llbm5MKvY0HFvK/cxp2F1s=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=MhfsD87kMLZfBaEF6ZSnb2wqLmKxpusXSmaClQ0lwczo5CLxM66N628Wq4xhL4tXFqumwN8rsm6Nq5JTLSWvLOt30Vn/wcnB2j/HX2IHCJwJu7d5lmcm4w/qeKYiz50cHx9UUivEAH8vxonkawyh2CxugnQ3Fvw9xIqF0zlOLm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jV8esOJk; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jV8esOJk"
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e6aa5c5a6fso4123876b3a.0;
+        Mon, 18 Mar 2024 04:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710760812; x=1711365612; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S4Mt4p7wAOdgiDEHZhgd4EK4q9C+aV5jj64LBCK23vI=;
+        b=jV8esOJkRaZErKopnzHJUVO1VxyMr7L5iRbvS+F8yWjK0SSusWg0Gz6GZJ4FRZYEdg
+         DuE7AakZoHllV9h74E52VLO/fP/gh7pBVXkv1UkEr8UOpRBEIn8uK+Bf+D8E4VI3MVeQ
+         4P2wgVQsJlv7CFX11+wt4eq9OhlRajmFsX4vwSWr+zepyIrRmSVNZLdQuMJWtg0QGBRG
+         vsJLs9RVno+CJKOti0Gn3oTo7oBg7mqn5HltKWtKpecDHPfxLB/zq4F3Uju22l4aVSO6
+         SAl/mFqFFxZj8lSFcQAzhkoCaVQTnTqOOrtiAk/8c1QmnYexDQD9BgnCBdleLOe1zMi5
+         94mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710760812; x=1711365612;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S4Mt4p7wAOdgiDEHZhgd4EK4q9C+aV5jj64LBCK23vI=;
+        b=R23chMUdlv7Ksv1NIIs+VVhaC5W7Mv7mFWaGD0XU9rswzUCTwX3mJj2yJasNdxwdq1
+         t8lRgvH6eNAMI2Ls4lvW/pOFvajB3fidXggx1AudeP9J5FKuOarP+QRFyenoPpVyL2Q7
+         /P2lWhM3nSPh2t1zpuSYvnhFZTvJnmaNuaU45pafBD21fcLILbX41ifsNApG3Vbgj6K7
+         AUUhmcm6uwrOvgf8G9K4oXdAms7/TnbvB5novxCaFlqBzkUUzYhXevlrCMSniYv0tJe8
+         J5dBsjWVH2Dn+2cGzO+4Rp+n44okAqZmu+yQhN8Q1/tYB30/kxZ/NdQfhAe0oXs323LC
+         mVVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUuQqbMJ77bhFu7iZz52oG/XMblpGky1AD64NwMeyxxyejKbD01VJfTdoLjTZIZHJYP3kyg/qzjsEnaoWimyIT+3rYEww8xWog+jsxaZqi+11WeZdky9jIX0oi5R+Dwaw==
+X-Gm-Message-State: AOJu0Yw2jU8uKstFW6sx0sA/6FUl0HBvHXnxKqfrmiGbgyo+AuUopoWz
+	moyzFH4C9IdQInzvzpSUy4iYiOY3Ph130sZmtV3S6FMnuSTYd8qZkcsbONuR/4w=
+X-Google-Smtp-Source: AGHT+IEdFUYWwwKy448XkqDQFgP4aaQCiDD4BnuDEW8jsHO74CNqSRvy4lZcAPVnSbc+0/+9tf/0Pw==
+X-Received: by 2002:a05:6a20:9f87:b0:1a3:6b56:d4d8 with SMTP id mm7-20020a056a209f8700b001a36b56d4d8mr704884pzb.48.1710760811728;
+        Mon, 18 Mar 2024 04:20:11 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id e11-20020a170902b78b00b001dd75d4b408sm8946380pls.302.2024.03.18.04.20.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Mar 2024 04:20:11 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <790ce7e7-a8fd-4d28-aaf3-1b991a898be2@paulmck-laptop>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: Question about ISA2+pooncelock+pooncelock+pombonce litmus
+From: Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <17ddc858-a926-4f12-beda-3f54cb91bfbb@paulmck-laptop>
+Date: Mon, 18 Mar 2024 19:19:56 +0800
+Cc: linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org,
+ rcu@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E73E4593-DFA7-4A46-924C-3867CC0B4807@gmail.com>
+References: <12E5C279-ADB1-463E-83E2-0A4F5D193754@gmail.com>
+ <17ddc858-a926-4f12-beda-3f54cb91bfbb@paulmck-laptop>
+To: "Paul E . McKenney" <paulmck@kernel.org>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-On Fri, Mar 15, 2024 at 10:40:56PM -0700, Paul E. McKenney wrote:
-> On Fri, Mar 15, 2024 at 12:55:03PM -0700, Yan Zhai wrote:
-> > There are several scenario in network processing that can run
-> > extensively under heavy traffic. In such situation, RCU synchronization
-> > might not observe desired quiescent states for indefinitely long period.
-> > Create a helper to safely raise the desired RCU quiescent states for
-> > such scenario.
-> > 
-> > Currently the frequency is locked at HZ/10, i.e. 100ms, which is
-> > sufficient to address existing problems around RCU tasks. It's unclear
-> > yet if there is any future scenario for it to be further tuned down.
-> 
-> I suggest something like the following for the commit log:
-> 
-> ------------------------------------------------------------------------
-> 
-> When under heavy load, network processing can run CPU-bound for many tens
-> of seconds.  Even in preemptible kernels, this can block RCU Tasks grace
-> periods, which can cause trace-event removal to take more than a minute,
-> which is unacceptably long.
-> 
-> This commit therefore creates a new helper function that passes
-> through both RCU and RCU-Tasks quiescent states every 100 milliseconds.
-> This hard-coded value suffices for current workloads.
 
-FWIW, this sounds good to me.
 
-> 
-> ------------------------------------------------------------------------
-> 
-> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > ---
-> > v3->v4: comment fixup
-> > 
-> > ---
-> >  include/linux/rcupdate.h | 24 ++++++++++++++++++++++++
-> >  1 file changed, 24 insertions(+)
-> > 
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index 0746b1b0b663..da224706323e 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -247,6 +247,30 @@ do { \
-> >  	cond_resched(); \
-> >  } while (0)
-> >  
-> > +/**
-> > + * rcu_softirq_qs_periodic - Periodically report consolidated quiescent states
-> > + * @old_ts: last jiffies when QS was reported. Might be modified in the macro.
-> > + *
-> > + * This helper is for network processing in non-RT kernels, where there could
-> > + * be busy polling threads that block RCU synchronization indefinitely.  In
-> > + * such context, simply calling cond_resched is insufficient, so give it a
-> > + * stronger push to eliminate all potential blockage of all RCU types.
-> > + *
-> > + * NOTE: unless absolutely sure, this helper should in general be called
-> > + * outside of bh lock section to avoid reporting a surprising QS to updaters,
-> > + * who could be expecting RCU read critical section to end at local_bh_enable().
-> > + */
-> 
-> How about something like this for the kernel-doc comment?
-> 
-> /**
->  * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
->  * @old_ts: jiffies at start of processing.
->  *
->  * This helper is for long-running softirq handlers, such as those
->  * in networking.  The caller should initialize the variable passed in
->  * as @old_ts at the beginning of the softirq handler.  When invoked
->  * frequently, this macro will invoke rcu_softirq_qs() every 100
->  * milliseconds thereafter, which will provide both RCU and RCU-Tasks
->  * quiescent states.  Note that this macro modifies its old_ts argument.
->  *
->  * Note that although cond_resched() provides RCU quiescent states,
->  * it does not provide RCU-Tasks quiescent states.
->  *
->  * Because regions of code that have disabled softirq act as RCU
->  * read-side critical sections, this macro should be invoked with softirq
->  * (and preemption) enabled.
->  *
->  * This macro has no effect in CONFIG_PREEMPT_RT kernels.
->  */
+> 2024=E5=B9=B43=E6=9C=8818=E6=97=A5 07:02=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> wrote=EF=BC=9A
+>=20
+> On Mon, Mar 18, 2024 at 01:47:43AM +0800, Alan Huang wrote:
+>> Hi,
+>>=20
+>> I=E2=80=99m playing with the LKMM, then I saw the =
+ISA2+pooncelock+pooncelock+pombonce.
+>>=20
+>> The original litmus is as follows:
+>> ------------------------------------------------------
+>> P0(int *x, int *y, spinlock_t *mylock)
+>> {
+>> spin_lock(mylock);
+>> WRITE_ONCE(*x, 1);
+>> WRITE_ONCE(*y, 1);
+>> spin_unlock(mylock);
+>> }
+>>=20
+>> P1(int *y, int *z, spinlock_t *mylock)
+>> {
+>> int r0;
+>>=20
+>> spin_lock(mylock);
+>> r0 =3D READ_ONCE(*y);
+>> WRITE_ONCE(*z, 1);
+>> spin_unlock(mylock);
+>> }
+>>=20
+>> P2(int *x, int *z)
+>> {
+>> int r1;
+>> int r2;
+>>=20
+>> r2 =3D READ_ONCE(*z);
+>> smp_mb();
+>> r1 =3D READ_ONCE(*x);
+>> }
+>>=20
+>> exists (1:r0=3D1 /\ 2:r2=3D1 /\ 2:r1=3D0)
+>> ------------------------------------------------------
+>> Of course, the result is Never.=20
+>>=20
+>> But when I delete P0=E2=80=99s spin_lock and P1=E2=80=99s =
+spin_unlock:
+>> -------------------------------------------------------
+>> P0(int *x, int *y, spinlock_t *mylock)
+>> {
+>> WRITE_ONCE(*x, 1);
+>> WRITE_ONCE(*y, 1);
+>> spin_unlock(mylock);
+>> }
+>>=20
+>> P1(int *y, int *z, spinlock_t *mylock)
+>> {
+>> int r0;
+>>=20
+>> spin_lock(mylock);
+>> r0 =3D READ_ONCE(*y);
+>> WRITE_ONCE(*z, 1);
+>> }
+>>=20
+>> P2(int *x, int *z)
+>> {
+>> int r1;
+>> int r2;
+>>=20
+>> r2 =3D READ_ONCE(*z);
+>> smp_mb();
+>> r1 =3D READ_ONCE(*x);
+>> }
+>>=20
+>> exists (1:r0=3D1 /\ 2:r2=3D1 /\ 2:r1=3D0)
+>> ------------------------------------------------------
+>> Then herd told me the result is Sometimes.
+>=20
+> You mean like this?
+>=20
+> Test ISA2+pooncelock+pooncelock+pombonce Allowed
+> States 8
+> 1:r0=3D0; 2:r1=3D0; 2:r2=3D0;
+> 1:r0=3D0; 2:r1=3D0; 2:r2=3D1;
+> 1:r0=3D0; 2:r1=3D1; 2:r2=3D0;
+> 1:r0=3D0; 2:r1=3D1; 2:r2=3D1;
+> 1:r0=3D1; 2:r1=3D0; 2:r2=3D0;
+> 1:r0=3D1; 2:r1=3D0; 2:r2=3D1;
+> 1:r0=3D1; 2:r1=3D1; 2:r2=3D0;
+> 1:r0=3D1; 2:r1=3D1; 2:r2=3D1;
+> Ok
+> Witnesses
+> Positive: 1 Negative: 7
+> Flag unmatched-unlock
+> Condition exists (1:r0=3D1 /\ 2:r2=3D1 /\ 2:r1=3D0)
+> Observation ISA2+pooncelock+pooncelock+pombonce Sometimes 1 7
+> Time ISA2+pooncelock+pooncelock+pombonce 0.01
+> Hash=3Df55b8515e48310f812aa676084f2cc88
+>=20
+>> Is this expected?=20
+>=20
+> There are no locks held initially, so why can't the following
+> sequence of events unfold:
+>=20
+> o P1() acquires the lock.
+>=20
+> o P0() does WRITE_ONCE(*y, 1). (Yes, out of order)
+>=20
+> o P1() does READ_ONCE(*y), and gets 1.
+>=20
+> o P1() does WRITE_ONCE(*z, 1).
+>=20
+> o P2() does READ_ONCE(*z) and gets 1.
+>=20
+> o P2() does smp_mb(), but there is nothing to order with.
+>=20
+> o P2() does READ_ONCE(*x) and gets 0.
+>=20
+> o P0() does WRITE_ONCE(*x, 1), but too late to affect P2().
+>=20
+> o P0() releases the lock that is does not hold, which is why you see
+> the "Flag unmatched-unlock" in the output.  LKMM is complaining
+> that the litmus test is not legitimate, and rightly so!
 
-Considering the note about cond_resched(), does does cond_resched() actually
-provide an RCU quiescent state for fully-preemptible kernels? IIUC for those
-cond_resched() expands to:
 
-	__might_resched();
-	klp_sched_try_switch()
+Oh! I missed that line, Thank you for pointing this out! :)
 
-... and AFAICT neither reports an RCU quiescent state.
+>=20
+> Or am I missing your point?
+>=20
+> Thanx, Paul
 
-So maybe it's worth dropping the note?
 
-Seperately, what's the rationale for not doing this on PREEMPT_RT? Does that
-avoid the problem through other means, or are people just not running effected
-workloads on that?
-
-Mark.
-
-> 
-> 							Thanx, Paul
-> 
-> > +#define rcu_softirq_qs_periodic(old_ts) \
-> > +do { \
-> > +	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
-> > +	    time_after(jiffies, (old_ts) + HZ / 10)) { \
-> > +		preempt_disable(); \
-> > +		rcu_softirq_qs(); \
-> > +		preempt_enable(); \
-> > +		(old_ts) = jiffies; \
-> > +	} \
-> > +} while (0)
-> > +
-> >  /*
-> >   * Infrastructure to implement the synchronize_() primitives in
-> >   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
-> > -- 
-> > 2.30.2
-> > 
-> > 
