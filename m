@@ -1,274 +1,202 @@
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E92053370
-	for <rcu@vger.kernel.org>; Mon, 18 Mar 2024 15:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9E825774;
+	Mon, 18 Mar 2024 18:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710776659; cv=none; b=TrBiR7R30jiB7J7/WkCWfWRPW0ZRXeW0XmYzormPuTmM7vXJRKfaics6qTHXV+Zd3zkqJhMgr5INUeLU9dr3Sx/WUQQu8EjTgx/9f5sXk5AeVnDf+xSm5JBcj0zWicgNSnWVUsnDYFlQ2dvXzXuSuA/BRwbeUAL7yAJMlaGC3Sw=
+	t=1710788297; cv=none; b=rWweqagPXr9QPA1eUGnxjcSTJLrmFKWQZvvMhHiHCJ2bFY9xmiZmXIRtJIlqJU43El5zwHTsdYR27x9Oto4Qx2se/HYCek2QdlpZtWgtWSAszwid4wCRCkEfJ9HOUT0uxUOyU6H+/SfaohonpRc9qlFn71IWG/9C8RiBPDm8nV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710776659; c=relaxed/simple;
-	bh=oR08WAKdXMlnDWICskmjHpHm/lh2Ma7Er2IVfOEhIyk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Uyq8XTJIkL++FPsMJmg9Qrf/cxFB3I8FQvu249BekgN4Y50+nB/7PlSbl95MpHgCLNMqpJ3Vm8RjOuAc+c0Qd+XNst9IpTvpcm2qdpcJuGZ1xPSuowSgfY0U7C5Q+jwmxfkHOHZ+qkRe9ro/Tj/FqlhSeACdueDdapqclVe8dYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tnGRLn9w; arc=none smtp.client-ip=209.85.222.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1710788297; c=relaxed/simple;
+	bh=avsXDYPINe5LmCPSFAn0dGYnmy2Rz3niYsfJVzEkgOI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TAPDy0zfmb35GupAn36t715aeFJk1e4dUSRiSQetY10ql68dfBy4BhvO2NsZ2QgHzug/VYx7vVu3C1AzzLZZ3JSBaeoBKgf21XiLsx6vmLaDzSP+X/mEZi8vw3Ih3XlRdwAupUs23BsoWpxVx1szRQPJ4TO3URzl+WszeX9LxF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hqsubnx3; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tnGRLn9w"
-Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7e0408f1c30so603813241.0
-        for <rcu@vger.kernel.org>; Mon, 18 Mar 2024 08:44:17 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hqsubnx3"
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513d717269fso4824716e87.0;
+        Mon, 18 Mar 2024 11:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710776656; x=1711381456; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jzbjB+Gs1Kwvcbil1vU+BLYNe1OnSHfExrWee+0iEgg=;
-        b=tnGRLn9w/8o+EqX2pSYGtGzYuNb+jPmgkCbmrVBAPEfwtBxAyIXd9ze1bBDuObELWy
-         qFE7txzRz4N3fRbFuU4M3jcf5QPRKbFX1vZxmbol0Q4kWutMFFiSPWl/8zyUL6OojSgA
-         nlqFYUfcaRarSCWhT5krlmA2A0bFAtiJiWzb27Ey8BvvVZ7AgM97Cz7PSfwks/FfgdI3
-         LKjV1FBLpxg1RHvcFb49F16MvplcYF1BzE7KZDMI5k5M9sUUFZHuf95UxGuZiVJ18w51
-         AtRtK0e8pnRU4b4kt+crgYkmxe+3MMMSuxLXCHa5vvglwhKO2o44bT2s8LHnfutIYL8N
-         FzUQ==
+        d=gmail.com; s=20230601; t=1710788293; x=1711393093; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dMtWXS3dtM0NMQkLB2HmFBiUuOO+4b3zQnUwksDT1wI=;
+        b=Hqsubnx3y0aJ/kh2W3Rrla+mn+4ylPUncb7QpZVbJqGl+H9umnwvEmpgapLXXy14yl
+         N7bAXDodC2LNKquCYVJkey0BB4apQ3kPBcuRCuUXgpKUHNls/qlxUduRpskA9DQpZsUG
+         3+WeW7cBwXb/HFybZbON0ekIFDAqH+6/fMCPP3nOINMc9XrTAfnVr1auBkBGFZE8hK/F
+         F0RSUkAf8/Vd0+ZeXa3EeXwlG/yJd1l9hhz6830buluSmT+aYHYq+KDEeimVxKTLQiqy
+         eDHVn7GTMfFmiZGULSku/hOHW9lo/805IsYFWN+lGpyW6Xei0jP2PoiNZfxNvHXaPSz5
+         RQBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710776656; x=1711381456;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jzbjB+Gs1Kwvcbil1vU+BLYNe1OnSHfExrWee+0iEgg=;
-        b=pNFAPBtqz5go0W8aJ54ElRbicybxjZBzUhSz6J2D3HEaqDsMiwWlbc1yVgyKvtuhRL
-         wn5v1WhhLJ3TnqYQsiXw751Q4AECwCsL6Qu1LFezoitRSnflEV5eQ5qYbuhj51i8Xxtz
-         mezKNaJ5BZvaA/hmxwFXoVbSwdo4WbflFf/tkL4YtaA82oPjWtAz4urWwNQfLMC/oIA6
-         QZfUy39DkIB2uHhOQefHcxxrmf6bV6KXLa+qkC+3mLWAg8rZM+tU7ZqVIfNy71w1HyZk
-         6G2Z8+F72dC/FireHRfFwpfz8VtBj11iGd0XgnFAdChYiUWyAclM7Zq3eRjTrKMyBdqL
-         BCkw==
-X-Gm-Message-State: AOJu0Yz5eh8CAk7t8GlCwAZL4GYmtUhNdIjfBV+yxfRE8Mc6VJ6heQ6I
-	v28tLUOcPJPHCNiK+XfzBlcWHRvwVvp6oSxOJ20BFrnkA0tNvWOLEpwC4DXHWdLAYu345MnwQTb
-	P+5x6VS3Kg9SaGNmmq3+k1uj1WcZPx2/1lb1w
-X-Google-Smtp-Source: AGHT+IE+8UwIpYfv/eJCFSYjxQo8zGGNx8l3OnqAqpy3HqYw8FLrusH1em5tXQYizIDnuPrXu4CAQD5a2OBoOAuQJX0=
-X-Received: by 2002:a05:6122:36a6:b0:4d3:362f:f9c1 with SMTP id
- ec38-20020a05612236a600b004d3362ff9c1mr8716909vkb.13.1710776656296; Mon, 18
- Mar 2024 08:44:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710788293; x=1711393093;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dMtWXS3dtM0NMQkLB2HmFBiUuOO+4b3zQnUwksDT1wI=;
+        b=LRsyC7aLBOqwd0o2LgG6KfcCfk+qg2LeTQ9VR0SrLmOFKYoKMyY1Jfy8E0kLe/5JAo
+         dtoiKDyMY33KB3Yyb7tYkUfyBPvrDtms8iSMPKu6ozisjL1998pypvSFrN2Y9auF5Z6D
+         oRPrDcC4Vnq3Txh03xoR4lUzgFIUFpvN7U/iknglyRd72YIRvdbbRjVp9RT+8qmjnV9u
+         BFDGwlt35Rma60Bl/BzFGB8SKpzkHhfsUFsCEwTs4q2dX4XI9t9LqFnBhYKbOR/PVc6W
+         96bw9579NCR6BW2ErhY09bxR/ahdHF6K4kMOLP6PmosrUk6byUoaO4HJr7gCICZfzwxi
+         5ZNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVY5xluoVKHy+Sk6TKTqN/AzNe+FrAnPQ7TH82QAM2rBWqNqbUmaRG1dYdkCkthuXcU99Cyz4+Lal+lXCRf9eneqM2B
+X-Gm-Message-State: AOJu0YyPUTlCJXI4GILIu/VfD9v+6oKGMdSyWZM1raQHRzKEuwtHNVeA
+	Xyqi00+3lV2iVrPKfzGQhc3NZgJnG5rj2wdNVT0RKQJb9skKaNF5
+X-Google-Smtp-Source: AGHT+IEjNoc3HDKsdhTnr5X7f4jx0Vo4SiPOJSkZrkKGfyW04NVHQgv+JFKtn1lpywWTX6ZnN7fYsQ==
+X-Received: by 2002:ac2:4649:0:b0:513:ba35:cacd with SMTP id s9-20020ac24649000000b00513ba35cacdmr7968211lfo.39.1710788293008;
+        Mon, 18 Mar 2024 11:58:13 -0700 (PDT)
+Received: from pc636 (host-90-235-3-101.mobileonline.telia.com. [90.235.3.101])
+        by smtp.gmail.com with ESMTPSA id m21-20020a194355000000b00513da68c536sm1264372lfj.152.2024.03.18.11.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 11:58:12 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 18 Mar 2024 19:58:10 +0100
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+	urezki@gmail.com, neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
+	rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 rcu/dev 1/2] rcu/tree: Reduce wake up for
+ synchronize_rcu() common case
+Message-ID: <ZfiOwtPfnxXW4JX3@pc636>
+References: <20240308224439.281349-1-joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0733eb10-5e7a-4450-9b8a-527b97c842ff@paulmck-laptop>
- <CANpmjNO+0d82rPCQ22xrEEqW_3sk7T28Dv95k1jnB7YmG3amjA@mail.gmail.com>
- <53a68e29-cd33-451e-8cf0-f6576da40ced@paulmck-laptop> <67baae71-da4f-4eda-ace7-e4f61d2ced0c@paulmck-laptop>
- <CANpmjNOmpOCfaFyMUnMtc3TT=VuTpWC4c85FW_u4dobmtikHtQ@mail.gmail.com>
-In-Reply-To: <CANpmjNOmpOCfaFyMUnMtc3TT=VuTpWC4c85FW_u4dobmtikHtQ@mail.gmail.com>
-From: Marco Elver <elver@google.com>
-Date: Mon, 18 Mar 2024 16:43:38 +0100
-Message-ID: <CANpmjNNLXR1kC8XAqFjEO3N0P3scRott8Z1OcW2yoKu5BEDaYQ@mail.gmail.com>
-Subject: Re: [PATCH RFC rcu] Inform KCSAN of one-byte cmpxchg() in rcu_trc_cmpxchg_need_qs()
-To: paulmck@kernel.org
-Cc: rcu@vger.kernel.org, kasan-dev@googlegroups.com, dvyukov@google.com, 
-	glider@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308224439.281349-1-joel@joelfernandes.org>
 
-On Mon, 18 Mar 2024 at 11:01, Marco Elver <elver@google.com> wrote:
->
-> On Sun, 17 Mar 2024 at 22:55, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Mar 08, 2024 at 02:31:53PM -0800, Paul E. McKenney wrote:
-> > > On Fri, Mar 08, 2024 at 11:02:28PM +0100, Marco Elver wrote:
-> > > > On Fri, 8 Mar 2024 at 22:41, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > >
-> > > > > Tasks Trace RCU needs a single-byte cmpxchg(), but no such thing exists.
-> > > >
-> > > > Because not all architectures support 1-byte cmpxchg?
-> > > > What prevents us from implementing it?
-> > >
-> > > Nothing that I know of, but I didn't want to put up with the KCSAN report
-> > > in the interim.
-> >
-> > And here is a lightly tested patch to emulate one-byte and two-byte
-> > cmpxchg() for architectures that do not support it.  This is just the
-> > emulation, and would be followed up with patches to make the relevant
-> > architectures make use of it.
-> >
-> > The one-byte emulation has been lightly tested on x86.
-> >
-> > Thoughts?
-> >
-> >                                                         Thanx, Paul
-> >
-> > ------------------------------------------------------------------------
-> >
-> > commit d72e54166b56d8b373676e1e92a426a07d53899a
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Sun Mar 17 14:44:38 2024 -0700
-> >
-> >     lib: Add one-byte and two-byte cmpxchg() emulation functions
-> >
-> >     Architectures are required to provide four-byte cmpxchg() and 64-bit
-> >     architectures are additionally required to provide eight-byte cmpxchg().
-> >     However, there are cases where one-byte and two-byte cmpxchg()
-> >     would be extremely useful.  Therefore, provide cmpxchg_emu_u8() and
-> >     cmpxchg_emu_u16() that emulated one-byte and two-byte cmpxchg() in terms
-> >     of four-byte cmpxchg().
-> >
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >     Cc: Marco Elver <elver@google.com>
-> >     Cc: Andrew Morton <akpm@linux-foundation.org>
-> >     Cc: Thomas Gleixner <tglx@linutronix.de>
-> >     Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> >     Cc: Douglas Anderson <dianders@chromium.org>
-> >     Cc: Petr Mladek <pmladek@suse.com>
-> >     Cc: <linux-arch@vger.kernel.org>
-> >
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index 154f994547632..eef11e9918ec7 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -1506,4 +1506,7 @@ config FUNCTION_ALIGNMENT
-> >         default 4 if FUNCTION_ALIGNMENT_4B
-> >         default 0
-> >
-> > +config ARCH_NEED_CMPXCHG_1_2_EMU
-> > +       bool
-> > +
-> >  endmenu
-> > diff --git a/include/linux/cmpxchg-emu.h b/include/linux/cmpxchg-emu.h
-> > new file mode 100644
-> > index 0000000000000..fee8171fa05eb
-> > --- /dev/null
-> > +++ b/include/linux/cmpxchg-emu.h
-> > @@ -0,0 +1,16 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ */
-> > +/*
-> > + * Emulated 1-byte and 2-byte cmpxchg operations for architectures
-> > + * lacking direct support for these sizes.  These are implemented in terms
-> > + * of 4-byte cmpxchg operations.
-> > + *
-> > + * Copyright (C) 2024 Paul E. McKenney.
-> > + */
-> > +
-> > +#ifndef __LINUX_CMPXCHG_EMU_H
-> > +#define __LINUX_CMPXCHG_EMU_H
-> > +
-> > +uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new);
-> > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new);
-> > +
-> > +#endif /* __LINUX_CMPXCHG_EMU_H */
-> > diff --git a/lib/Makefile b/lib/Makefile
-> > index 6b09731d8e619..fecd7b8c09cbd 100644
-> > --- a/lib/Makefile
-> > +++ b/lib/Makefile
-> > @@ -238,6 +238,7 @@ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-> >  lib-$(CONFIG_GENERIC_BUG) += bug.o
-> >
-> >  obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
-> > +obj-$(CONFIG_ARCH_NEED_CMPXCHG_1_2_EMU) += cmpxchg-emu.o
->
-> Since you add instrumentation explicitly, we need to suppress
-> instrumentation somehow. For the whole file this can be done with:
->
-> KCSAN_SANITIZE_cmpxchg-emu.o := n
+Hello, Joel!
 
-Hrm, I recall this doesn't actually work as-is because it also
-disables instrument_read_write() instrumentation.
+Sorry for late checking, see below few comments:
 
-So I think the most reliable would be to use data_race() after all.
-It'll be a bit slower because of double-instrumenting, but I think
-that's not a major concern with an instrumented build anyway.
+> In the synchronize_rcu() common case, we will have less than
+> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+> is pointless just to free the last injected wait head since at that point,
+> all the users have already been awakened.
+> 
+> Introduce a new counter to track this and prevent the wakeup in the
+> common case.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> Rebased on paul/dev of today.
+> 
+>  kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++-----
+>  kernel/rcu/tree.h |  1 +
+>  2 files changed, 32 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 9fbb5ab57c84..bd29fe3c76bf 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
+>  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+>  	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+>  		rcu_sr_normal_gp_cleanup_work),
+> +	.srs_cleanups_pending = ATOMIC_INIT(0),
+>  };
+>  
+>  /* Dump rcu_node combining tree at boot to verify correct setup. */
+> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>  	 * the done tail list manipulations are protected here.
+>  	 */
+>  	done = smp_load_acquire(&rcu_state.srs_done_tail);
+> -	if (!done)
+> +	if (!done) {
+> +		/* See comments below. */
+> +		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+>  		return;
+> +	}
+>  
+>  	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+>  	head = done->next;
+> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>  
+>  		rcu_sr_put_wait_head(rcu);
+>  	}
+> +
+> +	/* Order list manipulations with atomic access. */
+> +	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+>  }
+>  
+>  /*
+> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>   */
+>  static void rcu_sr_normal_gp_cleanup(void)
+>  {
+> -	struct llist_node *wait_tail, *next, *rcu;
+> +	struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
+>  	int done = 0;
+>  
+>  	wait_tail = rcu_state.srs_wait_tail;
+> @@ -1699,16 +1706,35 @@ static void rcu_sr_normal_gp_cleanup(void)
+>  			break;
+>  	}
+>  
+> -	// concurrent sr_normal_gp_cleanup work might observe this update.
+> -	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> +	/*
+> +	 * Fast path, no more users to process. Remove the last wait head
+> +	 * if no inflight-workers. If there are in-flight workers, let them
+> +	 * remove the last wait head.
+> +	 */
+> +	WARN_ON_ONCE(!rcu);
+>
+This assumption is not correct. An "rcu" can be NULL in fact. 
 
-> Note, since you use cmpxchg, which pulls in its own
-> instrument_read_write(), we can't use a function attribute (like
-> __no_kcsan) if the whole-file no-instrumentation seems like overkill.
-> Alternatively the cmpxchg could be wrapped into a data_race() (like
-> your original RCU use case was doing).
->
-> But I think "KCSAN_SANITIZE_cmpxchg-emu.o := n" would be my preferred way.
->
-> With the explicit "instrument_read_write()" also note that this would
-> do double-instrumentation with other sanitizers (KASAN, KMSAN). But I
-> think we actually want to instrument the whole real access with those
-> tools - would it be bad if we accessed some memory out-of-bounds, but
-> that memory isn't actually used? I don't have a clear answer to that.
->
-> Also, it might be useful to have an alignment check somewhere, because
-> otherwise we end up with split atomic accesses (or whatever other bad
-> thing the given arch does if that happens).
->
-> Thanks,
-> -- Marco
->
-> >  obj-$(CONFIG_DYNAMIC_DEBUG_CORE) += dynamic_debug.o
-> >  #ensure exported functions have prototypes
-> > diff --git a/lib/cmpxchg-emu.c b/lib/cmpxchg-emu.c
-> > new file mode 100644
-> > index 0000000000000..508b55484c2b6
-> > --- /dev/null
-> > +++ b/lib/cmpxchg-emu.c
-> > @@ -0,0 +1,68 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ */
-> > +/*
-> > + * Emulated 1-byte and 2-byte cmpxchg operations for architectures
-> > + * lacking direct support for these sizes.  These are implemented in terms
-> > + * of 4-byte cmpxchg operations.
-> > + *
-> > + * Copyright (C) 2024 Paul E. McKenney.
-> > + */
-> > +
-> > +#include <linux/types.h>
-> > +#include <linux/export.h>
-> > +#include <linux/instrumented.h>
-> > +#include <linux/atomic.h>
-> > +#include <asm-generic/rwonce.h>
-> > +
-> > +union u8_32 {
-> > +       u8 b[4];
-> > +       u32 w;
-> > +};
-> > +
-> > +/* Emulate one-byte cmpxchg() in terms of 4-byte cmpxchg. */
-> > +uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
-> > +{
-> > +       u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
-> > +       int i = ((uintptr_t)p) & 0x3;
-> > +       union u8_32 old32;
-> > +       union u8_32 new32;
-> > +       u32 ret;
-> > +
-> > +       old32.w = READ_ONCE(*p32);
-> > +       do {
-> > +               if (old32.b[i] != old)
-> > +                       return old32.b[i];
-> > +               new32.w = old32.w;
-> > +               new32.b[i] = new;
-> > +               instrument_atomic_read_write(p, 1);
-> > +               ret = cmpxchg(p32, old32.w, new32.w);
-> > +       } while (ret != old32.w);
-> > +       return old;
-> > +}
-> > +EXPORT_SYMBOL_GPL(cmpxchg_emu_u8);
-> > +
-> > +union u16_32 {
-> > +       u16 h[2];
-> > +       u32 w;
-> > +};
-> > +
-> > +/* Emulate two-byte cmpxchg() in terms of 4-byte cmpxchg. */
-> > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
-> > +{
-> > +       u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x1);
-> > +       int i = ((uintptr_t)p) & 0x1;
-> > +       union u16_32 old32;
-> > +       union u16_32 new32;
-> > +       u32 ret;
-> > +
-> > +       old32.w = READ_ONCE(*p32);
-> > +       do {
-> > +               if (old32.h[i] != old)
-> > +                       return old32.h[i];
-> > +               new32.w = old32.w;
-> > +               new32.h[i] = new;
-> > +               instrument_atomic_read_write(p, 2);
-> > +               ret = cmpxchg(p32, old32.w, new32.w);
-> > +       } while (ret != old32.w);
-> > +       return old;
-> > +}
-> > +EXPORT_SYMBOL_GPL(cmpxchg_emu_u16);
+>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+>  
+> +	if (rcu && rcu_sr_is_wait_head(rcu) && rcu->next == NULL &&
+> +		/* Order atomic access with list manipulation. */
+> +		!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
+> +		wait_tail->next = NULL;
+> +		rcu_sr_put_wait_head(rcu);
+> +		smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> +		return;
+> +	}
+> +
+> +	/* Concurrent sr_normal_gp_cleanup work might observe this update. */
+> +	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> +
+>  	/*
+>  	 * We schedule a work in order to perform a final processing
+>  	 * of outstanding users(if still left) and releasing wait-heads
+>  	 * added by rcu_sr_normal_gp_init() call.
+>  	 */
+> -	queue_work(sync_wq, &rcu_state.srs_cleanup_work);
+> +	atomic_inc(&rcu_state.srs_cleanups_pending);
+> +	if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work)) {
+> +		atomic_dec(&rcu_state.srs_cleanups_pending);
+> +	}
+>  }
+No need an extra "{}" pair.
+
+>  
+>  /*
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index bae7925c497f..affcb92a358c 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -420,6 +420,7 @@ struct rcu_state {
+>  	struct llist_node *srs_done_tail; /* ready for GP users. */
+>  	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
+>  	struct work_struct srs_cleanup_work;
+> +	atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
+>  };
+>  
+>  /* Values for rcu_state structure's gp_flags field. */
+> -- 
+> 2.34.1
+> 
