@@ -1,319 +1,238 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EADC64CCE
-	for <rcu@vger.kernel.org>; Tue, 19 Mar 2024 01:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8221317C2
+	for <rcu@vger.kernel.org>; Tue, 19 Mar 2024 02:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710813583; cv=none; b=bBU6lOUJ9WtDu1LoNuhggtLgqs9j0MABWAnfS0MVTyM14vDVVur1h8KFCtlMD4Z99uKSn+QfpFMGSOcT8OarhVmPyM2OxAgL4C8ndx86riiPld6cZYVKWP+xwWDhJVHgpCD0lg37ZuuAc1YUwqV8HgTprLpkFP4oIRWminPkme8=
+	t=1710815582; cv=none; b=S5WejXqEpA89wI7GfLVYy3iuK4RwXGTl+gvl6CaKCCIVj7vattd/TfvqM+jyd2pA1iIZNd1/3cfJeDjXxwFufkCwzWDHKsssz/W+JZ3wQxb3vqqpm2G49vMf2HL21bcc0K7TNMbyo7obJl4MlTyjIfJHpQNP6IdgB3wHpQvQOvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710813583; c=relaxed/simple;
-	bh=a/8DvZ9X8c9aNYGSZxTDSm7trB6UU+sFas83vgJM+eQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gXGSSsltE4EqJyTTWuUQj2OAgUFy1YsN6pih7UhUgisb+yo4iXini6UZEyYAblHFfIqquZQg8o62/IVoW+Sd0/HNXidgdwmqK9btQNHIrRlWlP4LygS1hDBkj1P5Mgvn1Af+tiTacHoKlTt+BcFszsxufN/ZDhiIoiyqky4ephM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pAp7+5Xn; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1710815582; c=relaxed/simple;
+	bh=ZvlzHmiqM0PBn3qAhl+WMIP+un56FpRYKp1adoqUp70=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vw/qR++hbG07kRvfhSjv0s/LpeaBKJBPwCemB4OT69Zix2H6gha36O3anx4ukwC9smvFCW8J3H/toOs15TGzTePtGrUACskenZR5PYL/s0L6opg1OfTVsVY7pS8mGIww7okDxUCMxXwdA5xBuX8R+2fPQ9fAgkOfRspNF5LoHFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=DdMzqcEA; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pAp7+5Xn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3631C433C7;
-	Tue, 19 Mar 2024 01:59:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710813583;
-	bh=a/8DvZ9X8c9aNYGSZxTDSm7trB6UU+sFas83vgJM+eQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=pAp7+5XnUGpY3k4gicPcZTlGcyPQVt7pdgXBE1ScOqZCdFrFsH6LyU07PFk/RXKLv
-	 OC61IdhDuBNCkLOnA89EJKjx5D8z4kPc0PsCiPr0RWaDEPQsCdG8GyBqDKFJ3XTDwj
-	 DektPzN0iFemUAD9QxB1CjGty9osvAfXsTbopc8Scvw4Z1uoNOdkholzj7yHAzalEK
-	 BezpvN99snLNhyVhTkeTWdnQmuTSueisbiWTarOYdoYmtTZhBR7cUl5nynbz1OFJIz
-	 P6kt3uwKSAevsaRBNNlAt3jKRfS+lHjcr3a9bAIykpScxBA9P+hiK0PPShi3K79B8s
-	 KjJmNx60dRpMg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 688EACE0D20; Mon, 18 Mar 2024 18:59:41 -0700 (PDT)
-Date: Mon, 18 Mar 2024 18:59:41 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Marco Elver <elver@google.com>
-Cc: rcu@vger.kernel.org, kasan-dev@googlegroups.com, dvyukov@google.com,
-	glider@google.com
-Subject: Re: [PATCH RFC rcu] Inform KCSAN of one-byte cmpxchg() in
- rcu_trc_cmpxchg_need_qs()
-Message-ID: <5e6fdf1d-e84c-463c-b47b-f42500930b28@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <0733eb10-5e7a-4450-9b8a-527b97c842ff@paulmck-laptop>
- <CANpmjNO+0d82rPCQ22xrEEqW_3sk7T28Dv95k1jnB7YmG3amjA@mail.gmail.com>
- <53a68e29-cd33-451e-8cf0-f6576da40ced@paulmck-laptop>
- <67baae71-da4f-4eda-ace7-e4f61d2ced0c@paulmck-laptop>
- <CANpmjNOmpOCfaFyMUnMtc3TT=VuTpWC4c85FW_u4dobmtikHtQ@mail.gmail.com>
- <CANpmjNNLXR1kC8XAqFjEO3N0P3scRott8Z1OcW2yoKu5BEDaYQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="DdMzqcEA"
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56b95efd37fso148862a12.0
+        for <rcu@vger.kernel.org>; Mon, 18 Mar 2024 19:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1710815579; x=1711420379; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1/ugjgSVKg/BMvJ6AYVxFTNZ2b8E1qURDrbsQiUbZk8=;
+        b=DdMzqcEAOW1rMXNBlPg7KR8wQBFyTu++Lrrhnzgy81v5I3E9jnIcwh6OTtCWrcHkLr
+         7+2BHbjbopQ2OhsOKFFfDTJYUs+UF37vRpavRU3Mno7L2KH8XSKl+TWw6pYVcMcBil1+
+         h8rGy/s9FNnTPcPef2pe//FIgxCKG3ueawVlVqFrNXr14HVQGgT/nU9zBGR8XQEDnXok
+         F/aQal8f29cTMdmEQpyvcTZUWp4Oz/ZSSgINiDhCF9Y13PJK+lKescMGdNu0S6dWlLIr
+         YokECc0hm45gPe9Jm9M1EskJbVaA5vHaMCNOMLHZXncszy6J0H5EB2p6uRnDMKWg9sdI
+         DpAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710815579; x=1711420379;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1/ugjgSVKg/BMvJ6AYVxFTNZ2b8E1qURDrbsQiUbZk8=;
+        b=ggjW9KEdoc4XxVbv8iI4lfOxgoQVFGQ8MPfRuc/bfys/cHaUFD+7oj7IeD66uNEHj/
+         Nv+c+W3Jy1tzMtW3B7tvAbt9Mwg4B6hJ06ztoRjyqV+E7AsKIXdHbalJyrJkoLNo/rQT
+         omsBDFDShH0Ch2YzHcqZgGhYBwKHFfeHU9jU9SiVNc+DlIeSRdkOs2f/tdZQx6HqYnxy
+         fOlPRzN8sM4Iz9wwME//gQ3mYf+Xe9d7u0vw6UVqbRBk1OJ8h6sl+K9YNYTVzNJbR7CS
+         NLMYJyP/gx2iryfrCdpKNhS8m23lY+b2r+NUKagVS5VjOJqjFjx3n21EmLt+i4kIxHqo
+         MIlA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhF1n8Rmsy7ZeCknuovM2MRTuXq+DKAZKSz5SIUs2Yub3W8cKpiCv+DgRApaLBXF/jrXwCXpNApji9258NTGzEpSm9
+X-Gm-Message-State: AOJu0YzY137qZhRrgkw4NOq7zmDDqFApnP9UD/6juIuQsksrQanPg0ea
+	pMCHHCtek5IaJmRtq87laITCL65e20uKGmvNoWHskNSzIDLBDDAX7p7Y8XbEW4Xluol3QhVzgOu
+	VV6Q+L20KNSMmdJfFtZhXpfzPC0LzKqK3+kvfPg==
+X-Google-Smtp-Source: AGHT+IHvclE+atGpCjbdPFGYgs5VD3VppiJOsondJO5t2uIPfOW/790Iy8kr+o7yx8R1UtGEsQwfHCPpLzwdhJuCkes=
+X-Received: by 2002:a05:6402:1f03:b0:568:b4c8:9af with SMTP id
+ b3-20020a0564021f0300b00568b4c809afmr7871934edb.17.1710815578912; Mon, 18 Mar
+ 2024 19:32:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNLXR1kC8XAqFjEO3N0P3scRott8Z1OcW2yoKu5BEDaYQ@mail.gmail.com>
+References: <cover.1710525524.git.yan@cloudflare.com> <491d3af6c7d66dfb3b60b2f210f38e843dfe6ed2.1710525524.git.yan@cloudflare.com>
+ <790ce7e7-a8fd-4d28-aaf3-1b991a898be2@paulmck-laptop> <ZfgecVqd6p-ACSZ5@FVFF77S0Q05N>
+In-Reply-To: <ZfgecVqd6p-ACSZ5@FVFF77S0Q05N>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Mon, 18 Mar 2024 21:32:47 -0500
+Message-ID: <CAO3-Pbp6fCayWeJ11U6JtqHn-Rs3OFXoZ9uMohUefSYUvSGUKA@mail.gmail.com>
+Subject: Re: [PATCH v4 net 1/3] rcu: add a helper to report consolidated
+ flavor QS
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
+	Toke Hoiland-Jorgensen <toke@redhat.com>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Jesper Dangaard Brouer <hawk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 04:43:38PM +0100, Marco Elver wrote:
-> On Mon, 18 Mar 2024 at 11:01, Marco Elver <elver@google.com> wrote:
+On Mon, Mar 18, 2024 at 5:59=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
+ wrote:
+>
+> On Fri, Mar 15, 2024 at 10:40:56PM -0700, Paul E. McKenney wrote:
+> > On Fri, Mar 15, 2024 at 12:55:03PM -0700, Yan Zhai wrote:
+> > > There are several scenario in network processing that can run
+> > > extensively under heavy traffic. In such situation, RCU synchronizati=
+on
+> > > might not observe desired quiescent states for indefinitely long peri=
+od.
+> > > Create a helper to safely raise the desired RCU quiescent states for
+> > > such scenario.
+> > >
+> > > Currently the frequency is locked at HZ/10, i.e. 100ms, which is
+> > > sufficient to address existing problems around RCU tasks. It's unclea=
+r
+> > > yet if there is any future scenario for it to be further tuned down.
 > >
-> > On Sun, 17 Mar 2024 at 22:55, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > I suggest something like the following for the commit log:
+> >
+> > -----------------------------------------------------------------------=
+-
+> >
+> > When under heavy load, network processing can run CPU-bound for many te=
+ns
+> > of seconds.  Even in preemptible kernels, this can block RCU Tasks grac=
+e
+> > periods, which can cause trace-event removal to take more than a minute=
+,
+> > which is unacceptably long.
+> >
+> > This commit therefore creates a new helper function that passes
+> > through both RCU and RCU-Tasks quiescent states every 100 milliseconds.
+> > This hard-coded value suffices for current workloads.
+>
+> FWIW, this sounds good to me.
+>
+> >
+> > -----------------------------------------------------------------------=
+-
+> >
+> > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > > ---
+> > > v3->v4: comment fixup
 > > >
-> > > On Fri, Mar 08, 2024 at 02:31:53PM -0800, Paul E. McKenney wrote:
-> > > > On Fri, Mar 08, 2024 at 11:02:28PM +0100, Marco Elver wrote:
-> > > > > On Fri, 8 Mar 2024 at 22:41, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > >
-> > > > > > Tasks Trace RCU needs a single-byte cmpxchg(), but no such thing exists.
-> > > > >
-> > > > > Because not all architectures support 1-byte cmpxchg?
-> > > > > What prevents us from implementing it?
-> > > >
-> > > > Nothing that I know of, but I didn't want to put up with the KCSAN report
-> > > > in the interim.
+> > > ---
+> > >  include/linux/rcupdate.h | 24 ++++++++++++++++++++++++
+> > >  1 file changed, 24 insertions(+)
 > > >
-> > > And here is a lightly tested patch to emulate one-byte and two-byte
-> > > cmpxchg() for architectures that do not support it.  This is just the
-> > > emulation, and would be followed up with patches to make the relevant
-> > > architectures make use of it.
+> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > index 0746b1b0b663..da224706323e 100644
+> > > --- a/include/linux/rcupdate.h
+> > > +++ b/include/linux/rcupdate.h
+> > > @@ -247,6 +247,30 @@ do { \
+> > >     cond_resched(); \
+> > >  } while (0)
 > > >
-> > > The one-byte emulation has been lightly tested on x86.
-> > >
-> > > Thoughts?
-> > >
-> > >                                                         Thanx, Paul
-> > >
-> > > ------------------------------------------------------------------------
-> > >
-> > > commit d72e54166b56d8b373676e1e92a426a07d53899a
-> > > Author: Paul E. McKenney <paulmck@kernel.org>
-> > > Date:   Sun Mar 17 14:44:38 2024 -0700
-> > >
-> > >     lib: Add one-byte and two-byte cmpxchg() emulation functions
-> > >
-> > >     Architectures are required to provide four-byte cmpxchg() and 64-bit
-> > >     architectures are additionally required to provide eight-byte cmpxchg().
-> > >     However, there are cases where one-byte and two-byte cmpxchg()
-> > >     would be extremely useful.  Therefore, provide cmpxchg_emu_u8() and
-> > >     cmpxchg_emu_u16() that emulated one-byte and two-byte cmpxchg() in terms
-> > >     of four-byte cmpxchg().
-> > >
-> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > >     Cc: Marco Elver <elver@google.com>
-> > >     Cc: Andrew Morton <akpm@linux-foundation.org>
-> > >     Cc: Thomas Gleixner <tglx@linutronix.de>
-> > >     Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> > >     Cc: Douglas Anderson <dianders@chromium.org>
-> > >     Cc: Petr Mladek <pmladek@suse.com>
-> > >     Cc: <linux-arch@vger.kernel.org>
-> > >
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index 154f994547632..eef11e9918ec7 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -1506,4 +1506,7 @@ config FUNCTION_ALIGNMENT
-> > >         default 4 if FUNCTION_ALIGNMENT_4B
-> > >         default 0
-> > >
-> > > +config ARCH_NEED_CMPXCHG_1_2_EMU
-> > > +       bool
-> > > +
-> > >  endmenu
-> > > diff --git a/include/linux/cmpxchg-emu.h b/include/linux/cmpxchg-emu.h
-> > > new file mode 100644
-> > > index 0000000000000..fee8171fa05eb
-> > > --- /dev/null
-> > > +++ b/include/linux/cmpxchg-emu.h
-> > > @@ -0,0 +1,16 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0+ */
-> > > +/*
-> > > + * Emulated 1-byte and 2-byte cmpxchg operations for architectures
-> > > + * lacking direct support for these sizes.  These are implemented in terms
-> > > + * of 4-byte cmpxchg operations.
+> > > +/**
+> > > + * rcu_softirq_qs_periodic - Periodically report consolidated quiesc=
+ent states
+> > > + * @old_ts: last jiffies when QS was reported. Might be modified in =
+the macro.
 > > > + *
-> > > + * Copyright (C) 2024 Paul E. McKenney.
-> > > + */
-> > > +
-> > > +#ifndef __LINUX_CMPXCHG_EMU_H
-> > > +#define __LINUX_CMPXCHG_EMU_H
-> > > +
-> > > +uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new);
-> > > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new);
-> > > +
-> > > +#endif /* __LINUX_CMPXCHG_EMU_H */
-> > > diff --git a/lib/Makefile b/lib/Makefile
-> > > index 6b09731d8e619..fecd7b8c09cbd 100644
-> > > --- a/lib/Makefile
-> > > +++ b/lib/Makefile
-> > > @@ -238,6 +238,7 @@ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-> > >  lib-$(CONFIG_GENERIC_BUG) += bug.o
-> > >
-> > >  obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
-> > > +obj-$(CONFIG_ARCH_NEED_CMPXCHG_1_2_EMU) += cmpxchg-emu.o
-> >
-> > Since you add instrumentation explicitly, we need to suppress
-> > instrumentation somehow. For the whole file this can be done with:
-> >
-> > KCSAN_SANITIZE_cmpxchg-emu.o := n
-> 
-> Hrm, I recall this doesn't actually work as-is because it also
-> disables instrument_read_write() instrumentation.
-> 
-> So I think the most reliable would be to use data_race() after all.
-> It'll be a bit slower because of double-instrumenting, but I think
-> that's not a major concern with an instrumented build anyway.
-
-And I have added data_race(), thank you!
-
-> > Note, since you use cmpxchg, which pulls in its own
-> > instrument_read_write(), we can't use a function attribute (like
-> > __no_kcsan) if the whole-file no-instrumentation seems like overkill.
-> > Alternatively the cmpxchg could be wrapped into a data_race() (like
-> > your original RCU use case was doing).
-> >
-> > But I think "KCSAN_SANITIZE_cmpxchg-emu.o := n" would be my preferred way.
-> >
-> > With the explicit "instrument_read_write()" also note that this would
-> > do double-instrumentation with other sanitizers (KASAN, KMSAN). But I
-> > think we actually want to instrument the whole real access with those
-> > tools - would it be bad if we accessed some memory out-of-bounds, but
-> > that memory isn't actually used? I don't have a clear answer to that.
-> >
-> > Also, it might be useful to have an alignment check somewhere, because
-> > otherwise we end up with split atomic accesses (or whatever other bad
-> > thing the given arch does if that happens).
-
-Excellent point, added.
-
-I also fixed an embarrassing pointer-arithmetic bug which the act of
-coding the alignment check uncovered, so two for one!  ;-)
-
-Please see below for a patch to the patched code.
-
-							Thanx, Paul
-
-> > Thanks,
-> > -- Marco
-> >
-> > >  obj-$(CONFIG_DYNAMIC_DEBUG_CORE) += dynamic_debug.o
-> > >  #ensure exported functions have prototypes
-> > > diff --git a/lib/cmpxchg-emu.c b/lib/cmpxchg-emu.c
-> > > new file mode 100644
-> > > index 0000000000000..508b55484c2b6
-> > > --- /dev/null
-> > > +++ b/lib/cmpxchg-emu.c
-> > > @@ -0,0 +1,68 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0+ */
-> > > +/*
-> > > + * Emulated 1-byte and 2-byte cmpxchg operations for architectures
-> > > + * lacking direct support for these sizes.  These are implemented in terms
-> > > + * of 4-byte cmpxchg operations.
+> > > + * This helper is for network processing in non-RT kernels, where th=
+ere could
+> > > + * be busy polling threads that block RCU synchronization indefinite=
+ly.  In
+> > > + * such context, simply calling cond_resched is insufficient, so giv=
+e it a
+> > > + * stronger push to eliminate all potential blockage of all RCU type=
+s.
 > > > + *
-> > > + * Copyright (C) 2024 Paul E. McKenney.
+> > > + * NOTE: unless absolutely sure, this helper should in general be ca=
+lled
+> > > + * outside of bh lock section to avoid reporting a surprising QS to =
+updaters,
+> > > + * who could be expecting RCU read critical section to end at local_=
+bh_enable().
 > > > + */
-> > > +
-> > > +#include <linux/types.h>
-> > > +#include <linux/export.h>
-> > > +#include <linux/instrumented.h>
-> > > +#include <linux/atomic.h>
-> > > +#include <asm-generic/rwonce.h>
-> > > +
-> > > +union u8_32 {
-> > > +       u8 b[4];
-> > > +       u32 w;
-> > > +};
-> > > +
-> > > +/* Emulate one-byte cmpxchg() in terms of 4-byte cmpxchg. */
-> > > +uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
-> > > +{
-> > > +       u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
-> > > +       int i = ((uintptr_t)p) & 0x3;
-> > > +       union u8_32 old32;
-> > > +       union u8_32 new32;
-> > > +       u32 ret;
-> > > +
-> > > +       old32.w = READ_ONCE(*p32);
-> > > +       do {
-> > > +               if (old32.b[i] != old)
-> > > +                       return old32.b[i];
-> > > +               new32.w = old32.w;
-> > > +               new32.b[i] = new;
-> > > +               instrument_atomic_read_write(p, 1);
-> > > +               ret = cmpxchg(p32, old32.w, new32.w);
-> > > +       } while (ret != old32.w);
-> > > +       return old;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cmpxchg_emu_u8);
-> > > +
-> > > +union u16_32 {
-> > > +       u16 h[2];
-> > > +       u32 w;
-> > > +};
-> > > +
-> > > +/* Emulate two-byte cmpxchg() in terms of 4-byte cmpxchg. */
-> > > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
-> > > +{
-> > > +       u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x1);
-> > > +       int i = ((uintptr_t)p) & 0x1;
-> > > +       union u16_32 old32;
-> > > +       union u16_32 new32;
-> > > +       u32 ret;
-> > > +
-> > > +       old32.w = READ_ONCE(*p32);
-> > > +       do {
-> > > +               if (old32.h[i] != old)
-> > > +                       return old32.h[i];
-> > > +               new32.w = old32.w;
-> > > +               new32.h[i] = new;
-> > > +               instrument_atomic_read_write(p, 2);
-> > > +               ret = cmpxchg(p32, old32.w, new32.w);
-> > > +       } while (ret != old32.w);
-> > > +       return old;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cmpxchg_emu_u16);
+> >
+> > How about something like this for the kernel-doc comment?
+> >
+> > /**
+> >  * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
+> >  * @old_ts: jiffies at start of processing.
+> >  *
+> >  * This helper is for long-running softirq handlers, such as those
+> >  * in networking.  The caller should initialize the variable passed in
+> >  * as @old_ts at the beginning of the softirq handler.  When invoked
+> >  * frequently, this macro will invoke rcu_softirq_qs() every 100
+> >  * milliseconds thereafter, which will provide both RCU and RCU-Tasks
+> >  * quiescent states.  Note that this macro modifies its old_ts argument=
+.
+> >  *
+> >  * Note that although cond_resched() provides RCU quiescent states,
+> >  * it does not provide RCU-Tasks quiescent states.
+> >  *
+> >  * Because regions of code that have disabled softirq act as RCU
+> >  * read-side critical sections, this macro should be invoked with softi=
+rq
+> >  * (and preemption) enabled.
+> >  *
+> >  * This macro has no effect in CONFIG_PREEMPT_RT kernels.
+> >  */
+>
+> Considering the note about cond_resched(), does does cond_resched() actua=
+lly
+> provide an RCU quiescent state for fully-preemptible kernels? IIUC for th=
+ose
+> cond_resched() expands to:
+>
+>         __might_resched();
+>         klp_sched_try_switch()
+>
+> ... and AFAICT neither reports an RCU quiescent state.
+>
+> So maybe it's worth dropping the note?
+>
+> Seperately, what's the rationale for not doing this on PREEMPT_RT? Does t=
+hat
+> avoid the problem through other means, or are people just not running eff=
+ected
+> workloads on that?
+>
+It's a bit anti-intuition but yes the RT kernel avoids the problem.
+This is because "schedule()" reports task RCU QS actually, and on RT
+kernel cond_resched() call won't call "__cond_resched()" or
+"__schedule(PREEMPT)" as you already pointed out, which would clear
+need-resched flag. This then allows "schedule()" to be called on hard
+IRQ exit time by time.
 
-diff --git a/lib/cmpxchg-emu.c b/lib/cmpxchg-emu.c
-index 508b55484c2b6..b904f954dd4fc 100644
---- a/lib/cmpxchg-emu.c
-+++ b/lib/cmpxchg-emu.c
-@@ -11,6 +11,8 @@
- #include <linux/export.h>
- #include <linux/instrumented.h>
- #include <linux/atomic.h>
-+#include <linux/panic.h>
-+#include <linux/bug.h>
- #include <asm-generic/rwonce.h>
- 
- union u8_32 {
-@@ -34,7 +36,7 @@ uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
- 		new32.w = old32.w;
- 		new32.b[i] = new;
- 		instrument_atomic_read_write(p, 1);
--		ret = cmpxchg(p32, old32.w, new32.w);
-+		ret = data_race(cmpxchg(p32, old32.w, new32.w));
- 	} while (ret != old32.w);
- 	return old;
- }
-@@ -48,12 +50,13 @@ union u16_32 {
- /* Emulate two-byte cmpxchg() in terms of 4-byte cmpxchg. */
- uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
- {
--	u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x1);
--	int i = ((uintptr_t)p) & 0x1;
-+	u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
-+	int i = (((uintptr_t)p) & 0x2) / 2;
- 	union u16_32 old32;
- 	union u16_32 new32;
- 	u32 ret;
- 
-+	WARN_ON_ONCE(((uintptr_t)p) & 0x1);
- 	old32.w = READ_ONCE(*p32);
- 	do {
- 		if (old32.h[i] != old)
-@@ -61,7 +64,7 @@ uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
- 		new32.w = old32.w;
- 		new32.h[i] = new;
- 		instrument_atomic_read_write(p, 2);
--		ret = cmpxchg(p32, old32.w, new32.w);
-+		ret = data_race(cmpxchg(p32, old32.w, new32.w));
- 	} while (ret != old32.w);
- 	return old;
- }
+Yan
+
+> Mark.
+>
+> >
+> >                                                       Thanx, Paul
+> >
+> > > +#define rcu_softirq_qs_periodic(old_ts) \
+> > > +do { \
+> > > +   if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
+> > > +       time_after(jiffies, (old_ts) + HZ / 10)) { \
+> > > +           preempt_disable(); \
+> > > +           rcu_softirq_qs(); \
+> > > +           preempt_enable(); \
+> > > +           (old_ts) =3D jiffies; \
+> > > +   } \
+> > > +} while (0)
+> > > +
+> > >  /*
+> > >   * Infrastructure to implement the synchronize_() primitives in
+> > >   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
+> > > --
+> > > 2.30.2
+> > >
+> > >
