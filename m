@@ -1,224 +1,198 @@
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601BB58132
-	for <rcu@vger.kernel.org>; Mon, 18 Mar 2024 21:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC2B847C
+	for <rcu@vger.kernel.org>; Tue, 19 Mar 2024 01:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710795947; cv=none; b=RJ7PNqICJmz3lBNicB4AQOUQeg/6pL2SR15DrZU/jnqzwfXcX2QSiQ3fufhIh07uJ8gkGGumhNnCBUdMb1bDEKtYSf2WMqN6c3vBOesf7Tcl1X3tm1+WqjhV9FhuLQrwck2g93esX9tbOviCKP/FVS+mx6zaxAVBu/7typDnVZQ=
+	t=1710811623; cv=none; b=nePKqGVkEb8LUASUrcpG+5Ua8PY95Mceq2bNUuEbGO8Hk1AfVyO15daCben7wGkFrAEO0wlQdjIZVP0NuFgLtivBSU2D8x/rR2zX0E4gYIs3bPYNUAWGJ+q/cY8+JEB+kkmae91sjVpWRAw+HLMcS3KPlmQkNSuf/HX7Svyd+zU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710795947; c=relaxed/simple;
-	bh=mhEDrR9C7YEoGmhM49MXiXEW0net0pIPpVQcSKsrjxU=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=l8zgP5k+9EE0lWeNcUT5fMtMPkeQnw41FYDZ/ju+geXNVnH/9kMTb+9znhV4mhxlNHbAo5zFx7q8rB/F01vlRiLMcSnm34Nrwpk9gwnW0M0lrj01wtmbrYHw2LkihRArTgu/XeqZ1bE9G05Kl1EIXTcML3TqP++nB32XGE+kF0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Cd2rvKxY; arc=none smtp.client-ip=209.85.160.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1710811623; c=relaxed/simple;
+	bh=uF1M09ZOHElrWt23+graGTrtLvlXtEJP/fROzFQdPf8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QNYO4tnFTYgt95f76IS3zx+2q3iV0IiO2j8ADsZdpQecOp82m8C8NYXTZWa+yzcqB7r76lRYFNN0YCzmmHerMVUYnqvtBmkztWtkpypIQbKN7l6Gy16xxWRVmLuJoTCLHTClZj6tbSvvlEDDla2wp15FyHunRehlm3DZjXz7LHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=WvymFvAW; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Cd2rvKxY"
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-221a9e5484aso3414841fac.0
-        for <rcu@vger.kernel.org>; Mon, 18 Mar 2024 14:05:45 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="WvymFvAW"
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56b85146589so1547428a12.0
+        for <rcu@vger.kernel.org>; Mon, 18 Mar 2024 18:27:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710795944; x=1711400744; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Oc7CYcOIjU7/6iBC8IZweQUGbpgg4UYyzRmGvk3Smcg=;
-        b=Cd2rvKxYH000We5oWwfC/L1x7/fjHAD0dldRas9UAjG8RGhSeqJ4TK3mQuNzLngwQq
-         YU5tWQRs5VRkoQmpWrQ9EtUASJiYIjlWTV9ISlriVG1x/ChL8GPPJOrUyFgaV6o3cOJR
-         ck+vauPMkjBNpRMNANtcOMW40AtcfSGJSDZSU=
+        d=cloudflare.com; s=google09082023; t=1710811619; x=1711416419; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YFSq6DTagALYbPcbIPuPh63ocgP8pwtxE9YIUg3PGiA=;
+        b=WvymFvAWtJ+EdPMGzeCRaH16xTdsoa4NE+LM08lNd5C79qCLs0H/Cz0F7uw6jqkhXq
+         cUi0TSAZrfXDjwqCWNWSmi9+kov0sgEkkvOmVEOCYOoStM15EsYIDcxq4Nf6ygZUbkL9
+         J06Gdt5z4Vz4g15NswGMna8l0ojUdRBlhhzDi448Rd3C9eJw3HkMoHCItu+a//Ssug4W
+         oyWBwk8v32NLA9TMj8HQv6AV4UtGjglWUxhIeaETnBJM68/snSHbLdT6syTz/rcxAwTQ
+         kINWQQM/DKdmlz+KnYrUBqvj+LNgskLpaaeEVmrwjL5su4cZnaQWcd8qNSISfc9fkbw1
+         G0UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710795944; x=1711400744;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1710811619; x=1711416419;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Oc7CYcOIjU7/6iBC8IZweQUGbpgg4UYyzRmGvk3Smcg=;
-        b=F0tTBqRcDKWV9LeU8UrPQ0TnlxELFjtQ9aCUNdGmHq2eRQjCZayBaS+S+0fdBnp6vB
-         J9wljLy09UGFhDOGAVw9fUT0PvmtrKKdnfdinUKWoicKA37DHuE/rw4t7Mw/mgz+2HIZ
-         ejUgBwF6M24Arwsa1OoJkBBY4YeNFXWldQfsDK9kzo+bKqM+IyaOBZ0bFlSrshxKXvxR
-         ZPriAsvVqJk/y3Swlug064yin2JHICIVMf/v+Brv/u16vT7rpsuEy5ykYoHRl8WYA4H2
-         Oa5txzlZ/5NfpEl4W2xBQ5X4xbPy6qNy9z7QHOfd+R/9ph6t3+eAFLtN9rq7fmowD8fp
-         Pq5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUMPyajLn7METmSTFMNC2LlCiocULG9OL/lYsbjj9Y8UMshmrx14F+xS++fxeb0oAo/iJBLmWdZVA5o6w0hQGjI3bXk
-X-Gm-Message-State: AOJu0YwEJecHb+yHzbQTgERDb2fkrzi2g+u0QQEksWM04sjHHG5Nhdvr
-	BtQRWtoAOseUz1YpsHCSfK9vBmyHNgwJQslhQ4g0bzXP/8kjtVH1e+JhlGOC888=
-X-Google-Smtp-Source: AGHT+IHW33l7BhtlKga5NrVN1zzblIpi1h58wHOlcqfnnpO0183ZjvtHvYrb1MW3aDsUS/gWGPIT/g==
-X-Received: by 2002:a05:6870:548e:b0:221:1c2f:23ee with SMTP id f14-20020a056870548e00b002211c2f23eemr14426318oan.22.1710795944325;
-        Mon, 18 Mar 2024 14:05:44 -0700 (PDT)
-Received: from smtpclient.apple ([192.145.116.24])
-        by smtp.gmail.com with ESMTPSA id u11-20020ad45aab000000b006942dcac56asm2755948qvg.103.2024.03.18.14.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 14:05:43 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+        bh=YFSq6DTagALYbPcbIPuPh63ocgP8pwtxE9YIUg3PGiA=;
+        b=kIrGDFAZVGNBLC029U8s3JA81tp57Cxa/UonAmJTPba2H9XASp4VbJFq55up1DsCH0
+         wr2H2IuHhFqa3DDK+ElJNZK6MVW3PvhQUNzhzj6ZjxcxiZ6B3Znb0vn8MMs4ngMDwPk3
+         q+txeque3NCRb5fGkTvADi4gPZT7dm0yyCWs6JdYXnRneJmLoFsiug/QpLGy2gCJg+gg
+         wL0f2L3Z1vYkO5FKFOAnZF/ICo2mzo3Kbw3GTpWNEBF/mWnPpIH75dFknx3VYL4KzO5s
+         tZGnpLLz7SFaYxuBECPbqwTgcgrfxr13uwPxUozM6q4ae3SqvqYp+0yjpTuDIlU+vRGD
+         6lBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUTjG9VSvQZBJQchHtdC7JD3AvJcKby/KiYpREs8FCJcD4g6f+lc28wlD9ywi+CqmK02FWL6MJtpEgF1xBTDw8aP1Ai
+X-Gm-Message-State: AOJu0YxYHLhD6TNvgkwVn4hk8/JnA+z0vC7RySJeN6P/j5IMDkC4rH9w
+	6zYs9CpiJXrJZewIsuWZ5rmJD3KzsV48Rj/fgF6dBdX6g/Vxf7YahKK4tRKMqgfcA8nwWofCrtx
+	Jl5dbl96jVkhqy1SGHdF8LZARtG9jf5dARVBbJw==
+X-Google-Smtp-Source: AGHT+IHdlISdIaT/ImAoSJpPeaXM5kRQ/Vqqlgzc8RUwbti7lxpVu6RejPXie1u1Hwn/85EmZ+Fd9ZqlSF6Hk1R0Nvs=
+X-Received: by 2002:a05:6402:388b:b0:566:59a2:7a10 with SMTP id
+ fd11-20020a056402388b00b0056659a27a10mr1226565edb.1.1710811619408; Mon, 18
+ Mar 2024 18:26:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 rcu/dev 1/2] rcu/tree: Reduce wake up for synchronize_rcu() common case
-Date: Mon, 18 Mar 2024 17:05:31 -0400
-Message-Id: <404E28F5-B018-4CE7-BE57-D0362B0C9969@joelfernandes.org>
-References: <ZfiOwtPfnxXW4JX3@pc636>
-Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
- neeraj.iitr10@gmail.com, rcu@vger.kernel.org, rostedt@goodmis.org,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-In-Reply-To: <ZfiOwtPfnxXW4JX3@pc636>
-To: Uladzislau Rezki <urezki@gmail.com>
-X-Mailer: iPhone Mail (21D61)
+MIME-Version: 1.0
+References: <cover.1710525524.git.yan@cloudflare.com> <491d3af6c7d66dfb3b60b2f210f38e843dfe6ed2.1710525524.git.yan@cloudflare.com>
+ <790ce7e7-a8fd-4d28-aaf3-1b991a898be2@paulmck-laptop>
+In-Reply-To: <790ce7e7-a8fd-4d28-aaf3-1b991a898be2@paulmck-laptop>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Mon, 18 Mar 2024 20:26:48 -0500
+Message-ID: <CAO3-PbqZ9L5XPAHhD3kojHJZ3RRHre_4AkTq=aERVtLD-SeJKw@mail.gmail.com>
+Subject: Re: [PATCH v4 net 1/3] rcu: add a helper to report consolidated
+ flavor QS
+To: paulmck@kernel.org
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com, 
+	Jesper Dangaard Brouer <hawk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Mar 16, 2024 at 12:41=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
+>
+> On Fri, Mar 15, 2024 at 12:55:03PM -0700, Yan Zhai wrote:
+> > There are several scenario in network processing that can run
+> > extensively under heavy traffic. In such situation, RCU synchronization
+> > might not observe desired quiescent states for indefinitely long period=
+.
+> > Create a helper to safely raise the desired RCU quiescent states for
+> > such scenario.
+> >
+> > Currently the frequency is locked at HZ/10, i.e. 100ms, which is
+> > sufficient to address existing problems around RCU tasks. It's unclear
+> > yet if there is any future scenario for it to be further tuned down.
+>
+> I suggest something like the following for the commit log:
+>
+> ------------------------------------------------------------------------
+>
+> When under heavy load, network processing can run CPU-bound for many tens
+> of seconds.  Even in preemptible kernels, this can block RCU Tasks grace
+> periods, which can cause trace-event removal to take more than a minute,
+> which is unacceptably long.
+>
+> This commit therefore creates a new helper function that passes
+> through both RCU and RCU-Tasks quiescent states every 100 milliseconds.
+> This hard-coded value suffices for current workloads.
+>
+> ------------------------------------------------------------------------
+>
+> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> > v3->v4: comment fixup
+> >
+> > ---
+> >  include/linux/rcupdate.h | 24 ++++++++++++++++++++++++
+> >  1 file changed, 24 insertions(+)
+> >
+> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > index 0746b1b0b663..da224706323e 100644
+> > --- a/include/linux/rcupdate.h
+> > +++ b/include/linux/rcupdate.h
+> > @@ -247,6 +247,30 @@ do { \
+> >       cond_resched(); \
+> >  } while (0)
+> >
+> > +/**
+> > + * rcu_softirq_qs_periodic - Periodically report consolidated quiescen=
+t states
+> > + * @old_ts: last jiffies when QS was reported. Might be modified in th=
+e macro.
+> > + *
+> > + * This helper is for network processing in non-RT kernels, where ther=
+e could
+> > + * be busy polling threads that block RCU synchronization indefinitely=
+.  In
+> > + * such context, simply calling cond_resched is insufficient, so give =
+it a
+> > + * stronger push to eliminate all potential blockage of all RCU types.
+> > + *
+> > + * NOTE: unless absolutely sure, this helper should in general be call=
+ed
+> > + * outside of bh lock section to avoid reporting a surprising QS to up=
+daters,
+> > + * who could be expecting RCU read critical section to end at local_bh=
+_enable().
+> > + */
+>
+> How about something like this for the kernel-doc comment?
+>
+> /**
+>  * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
+>  * @old_ts: jiffies at start of processing.
+>  *
+>  * This helper is for long-running softirq handlers, such as those
+>  * in networking.  The caller should initialize the variable passed in
+>  * as @old_ts at the beginning of the softirq handler.  When invoked
+>  * frequently, this macro will invoke rcu_softirq_qs() every 100
+>  * milliseconds thereafter, which will provide both RCU and RCU-Tasks
+>  * quiescent states.  Note that this macro modifies its old_ts argument.
+>  *
+>  * Note that although cond_resched() provides RCU quiescent states,
+>  * it does not provide RCU-Tasks quiescent states.
+>  *
+>  * Because regions of code that have disabled softirq act as RCU
+>  * read-side critical sections, this macro should be invoked with softirq
+>  * (and preemption) enabled.
+>  *
+>  * This macro has no effect in CONFIG_PREEMPT_RT kernels.
+>  */
+>
+It would be more accurate this way, I like it. Thanks!
 
+Yan
 
-> On Mar 18, 2024, at 2:58=E2=80=AFPM, Uladzislau Rezki <urezki@gmail.com> w=
-rote:
->=20
-> =EF=BB=BFHello, Joel!
->=20
-> Sorry for late checking, see below few comments:
->=20
->> In the synchronize_rcu() common case, we will have less than
->> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
->> is pointless just to free the last injected wait head since at that point=
-,
->> all the users have already been awakened.
->>=20
->> Introduce a new counter to track this and prevent the wakeup in the
->> common case.
->>=20
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> ---
->> Rebased on paul/dev of today.
->>=20
->> kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++-----
->> kernel/rcu/tree.h |  1 +
->> 2 files changed, 32 insertions(+), 5 deletions(-)
->>=20
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index 9fbb5ab57c84..bd29fe3c76bf 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state =3D {
->>    .ofl_lock =3D __ARCH_SPIN_LOCK_UNLOCKED,
->>    .srs_cleanup_work =3D __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
->>        rcu_sr_normal_gp_cleanup_work),
->> +    .srs_cleanups_pending =3D ATOMIC_INIT(0),
->> };
->>=20
->> /* Dump rcu_node combining tree at boot to verify correct setup. */
->> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct w=
-ork_struct *work)
->>     * the done tail list manipulations are protected here.
->>     */
->>    done =3D smp_load_acquire(&rcu_state.srs_done_tail);
->> -    if (!done)
->> +    if (!done) {
->> +        /* See comments below. */
->> +        atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
->>        return;
->> +    }
->>=20
->>    WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
->>    head =3D done->next;
->> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct wo=
-rk_struct *work)
->>=20
->>        rcu_sr_put_wait_head(rcu);
->>    }
->> +
->> +    /* Order list manipulations with atomic access. */
->> +    atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
->> }
->>=20
->> /*
->> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct wo=
-rk_struct *work)
->>  */
->> static void rcu_sr_normal_gp_cleanup(void)
->> {
->> -    struct llist_node *wait_tail, *next, *rcu;
->> +    struct llist_node *wait_tail, *next =3D NULL, *rcu =3D NULL;
->>    int done =3D 0;
->>=20
->>    wait_tail =3D rcu_state.srs_wait_tail;
->> @@ -1699,16 +1706,35 @@ static void rcu_sr_normal_gp_cleanup(void)
->>            break;
->>    }
->>=20
->> -    // concurrent sr_normal_gp_cleanup work might observe this update.
->> -    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->> +    /*
->> +     * Fast path, no more users to process. Remove the last wait head
->> +     * if no inflight-workers. If there are in-flight workers, let them
->> +     * remove the last wait head.
->> +     */
->> +    WARN_ON_ONCE(!rcu);
->>=20
-> This assumption is not correct. An "rcu" can be NULL in fact.
-
-Hmm I could never trigger that. Are you saying that is true after Neeraj rec=
-ent patch or something else? Note, after Neeraj patch to handle the lack of h=
-eads availability, it could be true so I requested him to rebase his patch o=
-n top of this one.
-
-However I will revisit my patch and look for if it could occur but please le=
-t me know if you knew of a sequence of events to make it NULL.
->=20
->>    ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
->>=20
->> +    if (rcu && rcu_sr_is_wait_head(rcu) && rcu->next =3D=3D NULL &&
->> +        /* Order atomic access with list manipulation. */
->> +        !atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
->> +        wait_tail->next =3D NULL;
->> +        rcu_sr_put_wait_head(rcu);
->> +        smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->> +        return;
->> +    }
->> +
->> +    /* Concurrent sr_normal_gp_cleanup work might observe this update. *=
-/
->> +    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->> +
->>    /*
->>     * We schedule a work in order to perform a final processing
->>     * of outstanding users(if still left) and releasing wait-heads
->>     * added by rcu_sr_normal_gp_init() call.
->>     */
->> -    queue_work(sync_wq, &rcu_state.srs_cleanup_work);
->> +    atomic_inc(&rcu_state.srs_cleanups_pending);
->> +    if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work)) {
->> +        atomic_dec(&rcu_state.srs_cleanups_pending);
->> +    }
->> }
-> No need an extra "{}" pair.
-
-I do prefer it for readability but I am ok with dropping it.
-
-Thanks!
-
- - Joel=20
-
-
->=20
->>=20
->> /*
->> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
->> index bae7925c497f..affcb92a358c 100644
->> --- a/kernel/rcu/tree.h
->> +++ b/kernel/rcu/tree.h
->> @@ -420,6 +420,7 @@ struct rcu_state {
->>    struct llist_node *srs_done_tail; /* ready for GP users. */
->>    struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
->>    struct work_struct srs_cleanup_work;
->> +    atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
->> };
->>=20
->> /* Values for rcu_state structure's gp_flags field. */
->> --
->> 2.34.1
->>=20
+>                                                         Thanx, Paul
+>
+> > +#define rcu_softirq_qs_periodic(old_ts) \
+> > +do { \
+> > +     if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
+> > +         time_after(jiffies, (old_ts) + HZ / 10)) { \
+> > +             preempt_disable(); \
+> > +             rcu_softirq_qs(); \
+> > +             preempt_enable(); \
+> > +             (old_ts) =3D jiffies; \
+> > +     } \
+> > +} while (0)
+> > +
+> >  /*
+> >   * Infrastructure to implement the synchronize_() primitives in
+> >   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
+> > --
+> > 2.30.2
+> >
+> >
