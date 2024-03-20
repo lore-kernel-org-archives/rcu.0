@@ -1,122 +1,201 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AFC51E48E;
-	Wed, 20 Mar 2024 10:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D96C405C1;
+	Wed, 20 Mar 2024 14:36:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710930628; cv=none; b=XRdzK1Ei13NYG3HaqFu5uw//kb/v2mlAoP5VoXmeZd6K1d2JSJSytqhnjssS9oAerYNK9ynqHpiYl7iP/BTmQKFz0b5jApfHBsk7KcFwCu2sS/SoPdV+nT1U25nBSYmPuc2LzqcMS/ZuxqVi22DQGaUKgOFVa6sr1gVwbMwfHMI=
+	t=1710945380; cv=none; b=Nee606jXlRfoD2c413sveuKOFvqzr2NJbKKpH/S6DtuWmtdWSOg5XIqkqkdWJRsBNxwf7YvTwSDAi69oKpCjf+0oSVliDiKg7CbBsI+gny62V5+uuHDmNBfCqCnsEwwGNDjVXU7yrV0jDppMoXnhIHHwcOEaaRFKgxNP2GtfGWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710930628; c=relaxed/simple;
-	bh=Ng5N4KT0SCm8Zb4mwGaTwyWKHKjaLEy2Wm0KyGEcEto=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aykgGPaDT4JDYFTpikBAJurw3JalHSw43vsltg4eG46i4KpPnVFG5UP3yIGOe5MCWOa0Gsc0AGVfPNyzGEapA4xlbhjOPyHHf/5UKULFWTiYZFObyjs7wyF+3xKXVW7iY4Iw97YacsutKWL0o1TXwj07gIXd34nbjBXZ0x3azW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ol7/ItQM; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1710945380; c=relaxed/simple;
+	bh=bkVh2hE6ECF8PpR1ujud01w+O393SFAoRTTeTz1knS8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M91Ky+kcMRlESoazwxyJX9lZ0O5OIWr2213Q/M1PHhNOdJtmdP01rYpxJWMlD+7HCQirFu2f2tNK1boml7SYlzP6oV04X/nRR/CTKHFTU1hlbGiHl+Ry8mEmj8SxVIU5A9wCCNFhcOWWhwUUk+TP5Ijs7O2Qqbkfi4RP2H8XUoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DTqA/ENs; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ol7/ItQM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 920B6C433C7;
-	Wed, 20 Mar 2024 10:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710930628;
-	bh=Ng5N4KT0SCm8Zb4mwGaTwyWKHKjaLEy2Wm0KyGEcEto=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Ol7/ItQM72RsqGXTgcikxJy4dTlaUDho4Kqr5tT+d6X3xM8PArvo61vgr5a1KFSSu
-	 QCjmG1YljRplfNm4JTZdB2xsYsks86a1/z/hL8c7Lsw/X3x6RuLLJ/6VQ25cWsSznv
-	 HyRsrTEIQPmSvit7T+Fj7A3tTy8+9TLd6vrU0J87HGRbeD+XJrEQVod323EJiUUzk+
-	 JIbajnxGaDABod60v59IdWD0zGBcjeSZxM0uVoDsL7UOVz6U2AD8X4NDTAtghd5esM
-	 sgVmRO2DateKvrWQrhbbjte8mLladypCMuXXtDYl39pSNLHVqzjS4Z1/41fOyjRmyA
-	 Fx6LA7Zqb842g==
-Message-ID: <4e251463-8cfb-4cc6-b9b6-ce1dcd7c7052@kernel.org>
-Date: Wed, 20 Mar 2024 11:30:21 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DTqA/ENs"
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-515830dc79cso1877258e87.1;
+        Wed, 20 Mar 2024 07:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710945377; x=1711550177; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jaEPTtQ4G833kyiwIGAF2QMWnjG7uctqKqKj19z3o3Y=;
+        b=DTqA/ENskc5+E85AO19L5ps6m8odiIhyUO6HRviSqOnQ6THzZPEY2ag/xXah/9L4tj
+         UY+/2tsi6sEfXCLNN60gbn6XpWW6Y231owh4EMjOVkD0SAMjFCpTjONbXKWSvlD3Cp9v
+         j3OxRoCJEL5uXY+XSsZnApIvEC7QWA2RBUSmt3gP0KS6MDdNQp9Kbb/xct5R/5WJdi2M
+         vOZNLJ6xyp62uLEB/Y5DZj4LS5IkaTllQ9XBjJVU9VYDHSICeiYbzUVHms9S7CNoWNn7
+         pzqvAPFhY3wevUR7m0riuJBxClvz7s4595GrRkFDm7+XmIrskTf82d+etEbyJDiXcnbA
+         dkQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710945377; x=1711550177;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jaEPTtQ4G833kyiwIGAF2QMWnjG7uctqKqKj19z3o3Y=;
+        b=E7OvjDcTeYP+qAFcHs4Nzu4hX7IREatlNO2FjTnJ4fzRGFy/WNb/pM0OizbByYtGjY
+         rX3KjL45g5WyBmfisPihMPHtUzdbBzT2cNuRv24UC2AT9zUPZwdN7c/JZp3W/Bda9/Li
+         QEbZgVPbeVpc80Pv96azMzZy03mOHRqV1KrKcIhzfqmNLRd/2DYHP8Ztr/6qaHKtWRC5
+         A406/CT1E99EYEv/U4i8iAX30c20N+1yRMbYgPBEjqftrAC60I26mG++44hWIngl9r5i
+         rgKHQQEoL2GBxWgOOW0+ilVTx/WVRwkSTE6ZIlKq6xzth3XjZYtM91FO9BGTOrjuFJUF
+         aRuw==
+X-Forwarded-Encrypted: i=1; AJvYcCX73fcuqts4PJGOueW9xMCH82gvigaxBhiWdMAq8eptuKXvp+Tx2cg2efJs9PJVs9RKvBr80ggChbglV5Ds9zQwmyDA
+X-Gm-Message-State: AOJu0YzxgdjhBwDoGH2Itk1f6bcMfg0ZPE39btDqjtx89l6aX/VyfP3N
+	/d62hPmtOBSyC/+ymj6YMyntBme0IC15Vhl9QYPKREosxZk6ex5+
+X-Google-Smtp-Source: AGHT+IG+9PIIaXQWJslKKJSlWtlLnPVxXHXMneebRguNfriDZvpod3E6/4CXz3xIiYaKcxNLWbP4ZA==
+X-Received: by 2002:a05:6512:470:b0:513:cf52:3c15 with SMTP id x16-20020a056512047000b00513cf523c15mr12275984lfd.49.1710945376406;
+        Wed, 20 Mar 2024 07:36:16 -0700 (PDT)
+Received: from pc636 (host-90-235-3-101.mobileonline.telia.com. [90.235.3.101])
+        by smtp.gmail.com with ESMTPSA id i6-20020ac25b46000000b00513a8da4592sm2288777lfp.74.2024.03.20.07.36.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 07:36:16 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 20 Mar 2024 15:36:13 +0100
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, urezki@gmail.com,
+	neeraj.iitr10@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH v4] rcu/tree: Reduce wake up for synchronize_rcu() common
+ case
+Message-ID: <Zfr0XVpgugTK8MMi@pc636>
+References: <20240319185458.3968308-1-joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 net 0/3] Report RCU QS for busy network kthreads
-To: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>,
- Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>,
- Wei Wang <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org,
- kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <cover.1710877680.git.yan@cloudflare.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <cover.1710877680.git.yan@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319185458.3968308-1-joel@joelfernandes.org>
 
+On Tue, Mar 19, 2024 at 02:54:57PM -0400, Joel Fernandes (Google) wrote:
+> In the synchronize_rcu() common case, we will have less than
+> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+> is pointless just to free the last injected wait head since at that point,
+> all the users have already been awakened.
+> 
+> Introduce a new counter to track this and prevent the wakeup in the
+> common case.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> ---
+> v1->v2: Rebase on paul/dev
+> v2->v3: Additional optimization for wait_tail->next == NULL case.
+> v3->v4: Apply clean ups from Vlad. Tested rcutorture all scenarios.
+> ---
+>  kernel/rcu/tree.c | 35 ++++++++++++++++++++++++++++++-----
+>  kernel/rcu/tree.h |  1 +
+>  2 files changed, 31 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 9fbb5ab57c84..f3193670fe42 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
+>  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+>  	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+>  		rcu_sr_normal_gp_cleanup_work),
+> +	.srs_cleanups_pending = ATOMIC_INIT(0),
+>  };
+>  
+>  /* Dump rcu_node combining tree at boot to verify correct setup. */
+> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>  	 * the done tail list manipulations are protected here.
+>  	 */
+>  	done = smp_load_acquire(&rcu_state.srs_done_tail);
+> -	if (!done)
+> +	if (!done) {
+> +		/* See comments below. */
+> +		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+>  		return;
+> +	}
+>  
+>  	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+>  	head = done->next;
+> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>  
+>  		rcu_sr_put_wait_head(rcu);
+>  	}
+> +
+> +	/* Order list manipulations with atomic access. */
+> +	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+>  }
+>  
+>  /*
+> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>   */
+>  static void rcu_sr_normal_gp_cleanup(void)
+>  {
+> -	struct llist_node *wait_tail, *next, *rcu;
+> +	struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
+>  	int done = 0;
+>  
+>  	wait_tail = rcu_state.srs_wait_tail;
+> @@ -1699,16 +1706,34 @@ static void rcu_sr_normal_gp_cleanup(void)
+>  			break;
+>  	}
+>  
+> -	// concurrent sr_normal_gp_cleanup work might observe this update.
+> -	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> +	/*
+> +	 * Fast path, no more users to process except putting the second last
+> +	 * wait head if no inflight-workers. If there are in-flight workers,
+> +	 * they will remove the last wait head.
+> +	 *
+> +	 * Note that the ACQUIRE orders atomic access with list manipulation.
+> +	 */
+> +	if (wait_tail->next && wait_tail->next->next == NULL &&
+> +	    rcu_sr_is_wait_head(wait_tail->next) &&
+> +	    !atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
+> +		rcu_sr_put_wait_head(wait_tail->next);
+> +		wait_tail->next = NULL;
+> +	}
+> +
+> +	/* Concurrent sr_normal_gp_cleanup work might observe this update. */
+>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+> +	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+>  
+>  	/*
+>  	 * We schedule a work in order to perform a final processing
+>  	 * of outstanding users(if still left) and releasing wait-heads
+>  	 * added by rcu_sr_normal_gp_init() call.
+>  	 */
+> -	queue_work(sync_wq, &rcu_state.srs_cleanup_work);
+> +	if (wait_tail->next) {
+> +		atomic_inc(&rcu_state.srs_cleanups_pending);
+> +		if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work))
+> +			atomic_dec(&rcu_state.srs_cleanups_pending);
+> +	}
+>  }
+>  
+>  /*
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index bae7925c497f..affcb92a358c 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -420,6 +420,7 @@ struct rcu_state {
+>  	struct llist_node *srs_done_tail; /* ready for GP users. */
+>  	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
+>  	struct work_struct srs_cleanup_work;
+> +	atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
+>  };
+>  
+>  /* Values for rcu_state structure's gp_flags field. */
+> -- 
+> 2.34.1
+> 
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-On 19/03/2024 21.44, Yan Zhai wrote:
-> This changeset fixes a common problem for busy networking kthreads.
-> These threads, e.g. NAPI threads, typically will do:
-> 
-> * polling a batch of packets
-> * if there are more work, call cond_resched() to allow scheduling
-> * continue to poll more packets when rx queue is not empty
-> 
-> We observed this being a problem in production, since it can block RCU
-> tasks from making progress under heavy load. Investigation indicates
-> that just calling cond_resched() is insufficient for RCU tasks to reach
-> quiescent states. This also has the side effect of frequently clearing
-> the TIF_NEED_RESCHED flag on voluntary preempt kernels. As a result,
-> schedule() will not be called in these circumstances, despite schedule()
-> in fact provides required quiescent states. This at least affects NAPI
-> threads, napi_busy_loop, and also cpumap kthread.
-> 
-> By reporting RCU QSes in these kthreads periodically before cond_resched, the
-> blocked RCU waiters can correctly progress. Instead of just reporting QS for
-> RCU tasks, these code share the same concern as noted in the commit
-> d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched and RCU-preempt when safe").
-> So report a consolidated QS for safety.
-> 
-> It is worth noting that, although this problem is reproducible in
-> napi_busy_loop, it only shows up when setting the polling interval to as high
-> as 2ms, which is far larger than recommended 50us-100us in the documentation.
-> So napi_busy_loop is left untouched.
-> 
-> Lastly, this does not affect RT kernels, which does not enter the scheduler
-> through cond_resched(). Without the mentioned side effect, schedule() will
-> be called time by time, and clear the RCU task holdouts.
-> 
-> V4: https://lore.kernel.org/bpf/cover.1710525524.git.yan@cloudflare.com/
-> V3: https://lore.kernel.org/lkml/20240314145459.7b3aedf1@kernel.org/t/
-> V2: https://lore.kernel.org/bpf/ZeFPz4D121TgvCje@debian.debian/
-> V1: https://lore.kernel.org/lkml/Zd4DXTyCf17lcTfq@debian.debian/#t
-> 
-> changes since v4:
->   * polished comments and docs for the RCU helper as Paul McKenney suggested
-> 
-> changes since v3:
->   * fixed kernel-doc errors
-> 
-> changes since v2:
->   * created a helper in rcu header to abstract the behavior
->   * fixed cpumap kthread in addition
-> 
-> changes since v1:
->   * disable preemption first as Paul McKenney suggested
-> 
-> Yan Zhai (3):
->    rcu: add a helper to report consolidated flavor QS
->    net: report RCU QS on threaded NAPI repolling
->    bpf: report RCU QS in cpumap kthread
-> 
->   include/linux/rcupdate.h | 31 +++++++++++++++++++++++++++++++
->   kernel/bpf/cpumap.c      |  3 +++
->   net/core/dev.c           |  3 +++
->   3 files changed, 37 insertions(+)
-> 
-
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+--
+Uladzislau Rezki
