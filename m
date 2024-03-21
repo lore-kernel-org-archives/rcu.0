@@ -1,85 +1,99 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E046FBF;
-	Thu, 21 Mar 2024 04:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3049F5820A;
+	Thu, 21 Mar 2024 08:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710996028; cv=none; b=Rnu8GrJcvaS8M+KuapW45OW3yHwIlvvydVFnbQsXad60/84DnLFFLdZ1b3K+IrVnV23no39+EiwGHJmWdPH12l+qzKcoRfW4ZTdfRhaI/kwhA9PbF3ipZNJA7QnPBLXc3UhdfB4Jw5dxDZCRFdmMIpkUSFsOIEv2Z9eTsGks7ow=
+	t=1711009744; cv=none; b=Inmb3Oa9kz42qrt/21gVni50phlxGM+m8mT1cOqzwhaBy1qMVMxYKzDppIfR+Wzt0g7p2TPeSDxq4Q+ZvYEdx0224TCBXg6U5jnMlpyQ9LHCKg84YTrg4SvbLbbISVFm19D9eu51tcM1I5/aTY6IcNYCNiZqZOOe2CBSyHFfrAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710996028; c=relaxed/simple;
-	bh=Stz/LtxZ0oNUWGPAkL2Gm2OiNn6QXW8wUeEfkZyKsoU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=nZPFDJnWVY65/wDXyFkQTCQmIEw2jlxOCflq2EiRewrclWCkNls8fBgpmsB0mcr1qDPCNXyID4+HQQBZ47Mwi82wTPAiJwb8vY/sIUh8J2gja5FPEsZhN3SJstJHKolAom8lIU51k3CxNkq2plVeBllDdZ1OTejjWGUH7anp7Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O+zbZA2p; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1711009744; c=relaxed/simple;
+	bh=O7U89RzaL527EY7aNrVQy/gmY9Ebh3baiEJlTjbRvS4=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=uiOtNH5qdxpPI3W/W63gFx4+cNuCXeORfw9I6MHoKZCU+zUNgbZimPF9ACoXhoW5sYR9J8a3UG7flXUBnrfIqzWkOFjnrVcJ6sFKhwYWzJiau7OPqeEkJf5+ftlwcgdRDtI8jBtNBsTT2vRTQx/CjgcwQJ/0Ph0gXzAOc0FLJTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SzbmQlIh; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O+zbZA2p"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 032DBC433F1;
-	Thu, 21 Mar 2024 04:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710996028;
-	bh=Stz/LtxZ0oNUWGPAkL2Gm2OiNn6QXW8wUeEfkZyKsoU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=O+zbZA2pqkmYFD/+/+lpoOlvB35mFNlw9t+ZWFMewtPpQMLzIXXtiMjV77SIowIQJ
-	 52zBlYz3bQbRL2I0vYZbVkDofZ477Pzs/ymzi2XUB/UKMrXA+dxoM+DINL/ZefSwSF
-	 sIT4pHnAIV6csAHBZEYfWIhpXhBTGe1SpFMuD1uoSWheIxSK/oKUxtYAduNylxNiDK
-	 VNWH6cUQfZCMTF2lZrxO5goILCMy14m4Q4DFy4D22LCQdzpjerGYwSTg5bHff8SzfY
-	 HZWbPCDmZWrfV49pEn06fnBOaPcdTCPozuSbw6tXeQtMJB7jio9FmRTFYPuYY+0TUM
-	 poAoYMWUGqFMg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E5818D982E3;
-	Thu, 21 Mar 2024 04:40:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SzbmQlIh"
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e0189323b4so4630945ad.1;
+        Thu, 21 Mar 2024 01:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711009741; x=1711614541; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lhm6r5ii2MnVoReh09l/GcQlftroxvx/BpXtnE9i4cM=;
+        b=SzbmQlIhkrmO268uG/EhpcTyWdAbOMAvVEJKzY1DlB1OGCJ+gGMnx4UZcNiCyCb0hn
+         COGccuPkzF4wSj81POp50jWIQGu1w/+vGGHBr1aMxmMHKGwyGqS8qfp/T3S3N4JCewpv
+         QiwjCUYJxYeZiHf1R2isuj+pBw4NgTuxMtZYCDR96LuKgBkfNCXTCiK88ntfDIvB3npX
+         j7MV0wMMPBGH5O7gHpdyja3E+XmZZuUCcLZZtbC5yN+YeavFJWsggK6tqpCCWvVqQF3b
+         Q0a55wyECuFp0/QlYYD24NT5MvCv0woHp6yQUgk+x5OQ+O3gqAHY53GJKIFmGE2PSIKZ
+         kVJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711009741; x=1711614541;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lhm6r5ii2MnVoReh09l/GcQlftroxvx/BpXtnE9i4cM=;
+        b=E+ua1P1pDpKYhls4lzrnjslFY3T6ARzGxW5Mz13QPreL1mrB9BLDKVmeLNYbnjXATX
+         8vJrrUBU50/JlLViYwbiBmuJMT9KcAnRcuHFT0S8jTp2fQfOZDtDRFD6NKrR26ELWub7
+         zy4keOkOU7dbAXqNXBtmcbIjVmPddmKtIbyfAuQg8k95rAVI2Z/tS5SUnP3FvB2gC+Gk
+         Q6U67xK/dXjeUevH8cO/PYKMXszUlccTHz7kOYeEO7bl5lmuVK3SElVY6MMGCvoHUZlG
+         Sc10qynvEQnA6LubMWrJmpccSSleLCjf3a2ygFrgJMMuODI5ioIc3osQ8ulv8cr/8abV
+         gDcg==
+X-Forwarded-Encrypted: i=1; AJvYcCWY02dYuAvbYSi16M1JbKZQLQI/wwAolp0rbIW3D6bnYWKU3MRnfLFJ1faKUJxCEU4swpSkQuDXxqI4FHhX/HWyve3EqxnS0PBQbpZmbNZRpRaBksMwYMWXieXV+EN1jAF/
+X-Gm-Message-State: AOJu0Yy5nR7dMfnBWETlQAjjT4xJdsEqFEDkZvSU/CKoO+tOxtFNxqFh
+	6O0I2vXYpydAaLLUbLVBfKPWJ41P336mhbpcKjJP9U8zjXXmtfHqxe1WRfbe
+X-Google-Smtp-Source: AGHT+IGzKiV5D6ELGwOpe4uQ08tTrLlmZl8i4ZN0By/Wx16wLkFGD/NaR9jADQ/O1EYlqg0ILWYw/g==
+X-Received: by 2002:a17:903:22c2:b0:1de:fe77:41e0 with SMTP id y2-20020a17090322c200b001defe7741e0mr5048192plg.64.1711009741208;
+        Thu, 21 Mar 2024 01:29:01 -0700 (PDT)
+Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
+        by smtp.gmail.com with ESMTPSA id u16-20020a1709026e1000b001e0410bfccasm5678306plk.126.2024.03.21.01.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 01:29:00 -0700 (PDT)
+From: Zqiang <qiang.zhang1211@gmail.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org
+Cc: qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcutorture: Make stall-tasks directly exit when rcutorture tests end
+Date: Thu, 21 Mar 2024 16:28:50 +0800
+Message-Id: <20240321082850.1756-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 net 0/3] Report RCU QS for busy network kthreads
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171099602793.26207.3374009714899466289.git-patchwork-notify@kernel.org>
-Date: Thu, 21 Mar 2024 04:40:27 +0000
-References: <cover.1710877680.git.yan@cloudflare.com>
-In-Reply-To: <cover.1710877680.git.yan@cloudflare.com>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, jiri@resnulli.us, horms@kernel.org,
- daniel@iogearbox.net, lorenzo@kernel.org, lixiaoyan@google.com,
- weiwan@google.com, alexanderduyck@fb.com, linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com,
- joel@joelfernandes.org, paulmck@kernel.org, toke@redhat.com,
- alexei.starovoitov@gmail.com, rostedt@goodmis.org, mark.rutland@arm.com,
- hawk@kernel.org, bigeasy@linutronix.de
 
-Hello:
+When the rcutorture tests start to exit, the rcu_torture_cleanup() is
+invoked to stop kthreads and release resources, if the stall-task
+kthreads exist, cpu-stall has started and the rcutorture.stall_cpu
+is set to a larger value, the rcu_torture_cleanup() will be blocked
+for a long time and the hung-task may occur, this commit therefore
+add kthread_should_stop() to the loop of cpu-stall operation, when
+rcutorture tests ends, no need to wait for cpu-stall to end, exit
+directly.
 
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Tue, 19 Mar 2024 13:44:30 -0700 you wrote:
-> This changeset fixes a common problem for busy networking kthreads.
-> These threads, e.g. NAPI threads, typically will do:
-> 
-> * polling a batch of packets
-> * if there are more work, call cond_resched() to allow scheduling
-> * continue to poll more packets when rx queue is not empty
-> 
-> [...]
-
-Here is the summary with links:
-  - [v5,net,1/3] rcu: add a helper to report consolidated flavor QS
-    https://git.kernel.org/netdev/net/c/1a77557d48cf
-  - [v5,net,2/3] net: report RCU QS on threaded NAPI repolling
-    https://git.kernel.org/netdev/net/c/d6dbbb11247c
-  - [v5,net,3/3] bpf: report RCU QS in cpumap kthread
-    https://git.kernel.org/netdev/net/c/00bf63122459
-
-You are awesome, thank you!
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 3f9c3766f52b..6a3cd6ed8b25 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2490,7 +2490,7 @@ static int rcu_torture_stall(void *args)
+ 		pr_alert("%s start on CPU %d.\n",
+ 			  __func__, raw_smp_processor_id());
+ 		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
+-				    stop_at))
++				    stop_at) && !kthread_should_stop())
+ 			if (stall_cpu_block) {
+ #ifdef CONFIG_PREEMPTION
+ 				preempt_schedule();
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.17.1
 
