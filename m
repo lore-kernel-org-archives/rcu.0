@@ -1,49 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C56A3D56B;
-	Sun, 24 Mar 2024 17:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDF8433C5;
+	Sun, 24 Mar 2024 17:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711299995; cv=none; b=G3o/dtWS4zy24OCiApfykAon+zG0gvkHlHnhoYOaWoLzswyo5NhgVAsmakrdsJPgo4/9Z3wQR5w/fSdObtPL51OFHKQrxksQ+pwJ9iEk0U7UF+AmMlsJY5nwSr8hop3EwkSttOWbOkPqxVya21ZLNnokQdNLvSItCgR9F9xNGzE=
+	t=1711299998; cv=none; b=Pa9HEmX/7CeUHXZ85vf7JoFxZ+J7lFUXBn/wcZiLkt03C+Gltf5xwbn0Bjmc8UjhUufquyWO0vD6t+S6JhOMNwmpnm9xc3FDKVCEPvWlY6h1lkAOIMLRkn9OLpmL2PpjNXFUQEfihMWUCHcCad4ngPzump7bp/T+X1A/ijNKXz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711299995; c=relaxed/simple;
-	bh=C13to/SVjuiO3F1cwxceJ1FGgcColPtf+/Pi7A6bgcI=;
+	s=arc-20240116; t=1711299998; c=relaxed/simple;
+	bh=M5KWR1kOnUHwDGq3v++7oLxZFhzioC3ac36tmPcpu1M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gAjnW+zhYc/5htOx6oanOeCTlgUbviXFrG6tSphiZ4q8a64p5METpBIxu2NmdmZ45VaKWkFYB4nQXses1GhH8385LMvkwK/WPn8RJR5h05HJrp/mkwa9Hh/AoEW1JpKtywHNqKuzK36pYKH+P4JtZ0Da1Z/PLGkAwKS42Z6fs04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fVOzQ/NT; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=SzsUWszg+7kvWY2UccjMZkjuK0Lnq+nRjSGexqBp9j3wpEwYBZvaQ9dDCqkoUaMJIVsXyq8VN1W50oLxW7W/lIo0l2k4wlX9n5b+h5pagmLcoGmoH67NOQNTobXK7FE0ykHRcG5hO2Z4d2Q3MacXPxsFSn+IuYUWYln2SWXOFnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ldnNVkVJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fVOzQ/NT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 309B6C43390;
-	Sun, 24 Mar 2024 17:06:33 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ldnNVkVJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78DF7C433C7;
+	Sun, 24 Mar 2024 17:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711299994;
-	bh=C13to/SVjuiO3F1cwxceJ1FGgcColPtf+/Pi7A6bgcI=;
+	s=k20201202; t=1711299998;
+	bh=M5KWR1kOnUHwDGq3v++7oLxZFhzioC3ac36tmPcpu1M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fVOzQ/NT89FdUzA0jesKZo+iPubuxf5uiPP5q7W1qeMIFREqCcnil0wX5DYPakd09
-	 RChUIAlf87vD5R1dxhJEhCOv4SRBhL6jpxiF+jytUZGx/SgaZ7U/GmmF6KotSQkdFB
-	 3dXdUsuPyYzLWXoFOtWJEV1qMhABM3wIruW7t2MEg+u1zxgRrJnA8HCe/+fKJ1m32n
-	 ig2QqqY5A5wYgk96lNJXMOz0+AhRsC4tcVzKNtmu9+fAUCxQXlFHOU1UI+EH4sEOOm
-	 RqklhxTNmsITbDMdAFEfyPfuANOjcDCp8pI0kGOPvwtIwlAyJM9iZiN4idd2AVFoBF
-	 5wEZgOJHRWubg==
+	b=ldnNVkVJ/r/Fm/rKM/gwTB6mOK604cCvqvfOh9tvhMyx5DH9NvTPFfGDTeA1p5NM5
+	 oWEb+z+lotQ+Z+BfZAvboxssnsJY1hDSwHMyRVJJR3SQurAnjf6ajolJILsQGdR2jv
+	 40uNmoeQaBzJFO6c/4d36iBHwzHe4GnRo2YU3IhkZQyuRwbk3rl8LDyYxzx5U447dX
+	 /ZG4X1aCXAC67W14MxFrxjibapjcPDCmyWGl+u7Z4JjvLkPgC8+Ta1xomLM3XDiihQ
+	 lzPMufy61QjlYjgaEgHzrc17F2PsvN4Lh/IffMQzPpbcsOaMxe/jboIvCwUtAWTYrw
+	 1wyyEso1oQTBA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>,
+Cc: Zqiang <qiang.zhang1211@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	frederic@kernel.org,
 	quic_neeraju@quicinc.com,
-	joel@joelfernandes.org,
 	josh@joshtriplett.org,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 07/11] rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
-Date: Sun, 24 Mar 2024 13:06:10 -0400
-Message-ID: <20240324170619.545975-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 10/11] rcu/nocb: Fix WARN_ON_ONCE() in the rcu_nocb_bypass_lock()
+Date: Sun, 24 Mar 2024 13:06:13 -0400
+Message-ID: <20240324170619.545975-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240324170619.545975-1-sashal@kernel.org>
 References: <20240324170619.545975-1-sashal@kernel.org>
@@ -58,76 +55,62 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.10
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zqiang <qiang.zhang1211@gmail.com>
 
-[ Upstream commit 0bb11a372fc8d7006b4d0f42a2882939747bdbff ]
+[ Upstream commit dda98810b552fc6bf650f4270edeebdc2f28bd3f ]
 
-The current code will scan the entirety of each per-CPU list of exiting
-tasks in ->rtp_exit_list with interrupts disabled.  This is normally just
-fine, because each CPU typically won't have very many tasks in this state.
-However, if a large number of tasks block late in do_exit(), these lists
-could be arbitrarily long.  Low probability, perhaps, but it really
-could happen.
+For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
+CONFIG_RCU_LAZY=y, the following scenarios will trigger WARN_ON_ONCE()
+in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended() functions:
 
-This commit therefore occasionally re-enables interrupts while traversing
-these lists, inserting a dummy element to hold the current place in the
-list.  In kernels built with CONFIG_PREEMPT_RT=y, this re-enabling happens
-after each list element is processed, otherwise every one-to-two jiffies.
+        CPU2                                               CPU11
+kthread
+rcu_nocb_cb_kthread                                       ksys_write
+rcu_do_batch                                              vfs_write
+rcu_torture_timer_cb                                      proc_sys_write
+__kmem_cache_free                                         proc_sys_call_handler
+kmemleak_free                                             drop_caches_sysctl_handler
+delete_object_full                                        drop_slab
+__delete_object                                           shrink_slab
+put_object                                                lazy_rcu_shrink_scan
+call_rcu                                                  rcu_nocb_flush_bypass
+__call_rcu_commn                                            rcu_nocb_bypass_lock
+                                                            raw_spin_trylock(&rdp->nocb_bypass_lock) fail
+                                                            atomic_inc(&rdp->nocb_lock_contended);
+rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
+ WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
+                            |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
 
-[ paulmck: Apply Frederic Weisbecker feedback. ]
+Reproduce this bug with "echo 3 > /proc/sys/vm/drop_caches".
 
-Link: https://lore.kernel.org/all/ZdeI_-RfdLR8jlsm@localhost.localdomain/
+This commit therefore uses rcu_nocb_try_flush_bypass() instead of
+rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan().  If the nocb_bypass
+queue is being flushed, then rcu_nocb_try_flush_bypass will return
+directly.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Siewior <bigeasy@linutronix.de>
-Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tasks.h | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_nocb.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 774408899e715..4af68107544d3 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -971,13 +971,33 @@ static void rcu_tasks_postscan(struct list_head *hop)
- 	 */
- 
- 	for_each_possible_cpu(cpu) {
-+		unsigned long j = jiffies + 1;
- 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
- 		struct task_struct *t;
-+		struct task_struct *t1;
-+		struct list_head tmp;
- 
- 		raw_spin_lock_irq_rcu_node(rtpcp);
--		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
-+		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
- 			if (list_empty(&t->rcu_tasks_holdout_list))
- 				rcu_tasks_pertask(t, hop);
-+
-+			// RT kernels need frequent pauses, otherwise
-+			// pause at least once per pair of jiffies.
-+			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
-+				continue;
-+
-+			// Keep our place in the list while pausing.
-+			// Nothing else traverses this list, so adding a
-+			// bare list_head is OK.
-+			list_add(&tmp, &t->rcu_tasks_exit_list);
-+			raw_spin_unlock_irq_rcu_node(rtpcp);
-+			cond_resched(); // For CONFIG_PREEMPT=n kernels
-+			raw_spin_lock_irq_rcu_node(rtpcp);
-+			t1 = list_entry(tmp.next, struct task_struct, rcu_tasks_exit_list);
-+			list_del(&tmp);
-+			j = jiffies + 1;
-+		}
- 		raw_spin_unlock_irq_rcu_node(rtpcp);
- 	}
- 
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 4efbf7333d4e1..d430b4656f59e 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1383,7 +1383,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 			rcu_nocb_unlock_irqrestore(rdp, flags);
+ 			continue;
+ 		}
+-		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
++		rcu_nocb_try_flush_bypass(rdp, jiffies);
+ 		rcu_nocb_unlock_irqrestore(rdp, flags);
+ 		wake_nocb_gp(rdp, false);
+ 		sc->nr_to_scan -= _count;
 -- 
 2.43.0
 
