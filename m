@@ -1,106 +1,171 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C49B47A6F;
-	Sat, 23 Mar 2024 23:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BA917559;
+	Sun, 24 Mar 2024 12:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711238003; cv=none; b=FaISh1LdmOEqUf83BLAP5x995HI6kjxdyDnLWxGePTuWqRnwSarZ+3QcAQGgdToelr81Glh4h1JK1VJCJYc+RCNJHn8Z010eMhTJtcpBa7a/7FAmK7xoY4HAenwjr/ybch9Lbslh/Er0aKlkgjIYEzFwTTYi6eTbRbs3/z7qcrY=
+	t=1711284157; cv=none; b=a79cFKuehMA3JlzhB4LIHfaLFwSDfy157NKLWKLV2HsE1ddUy4DTlFz+k9db9xcusBs1BR90DBE9CUB/3Ha29FQA7RS7vlek0mJD2HFdh9t2Kas6/j5bThgcv6db9QUH4Pl2hdyN/ROAu9eF7dVoilz/FUJLnEoRhJeFOKKnGEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711238003; c=relaxed/simple;
-	bh=vmFfvdVj18dU0VJ6Z1xEA713RcZpihuFHhAv0tF42TU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NB3K3AvQXNGyKjrLaYri1doA99NcFCuZZ8Lfz1Mz906G1rrxOM/v1UHitEIZl2uHtF1JqTmTj3T58IK9R/5l6ZCq8BIqLJt/WpBoCqoAU22TMNm7uBiwE4l/jVuxw+Bnj5qVWRdQF9qNpC5yFWSAVyCap8iMQUUHdehqZQwpR9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DmcewiPA; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1711284157; c=relaxed/simple;
+	bh=/LdDrqL1Wm8W/i5SpjqNyiuDEMlyviBCIQ+tYK2m1Tw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=EPJ+7dZaGgKzOcupWckORaOzdOS8vucAfhATGDdJvwUE48p/QJ0w70ju5kFRRCdJ/VnAOL1wrrc7/cqAjDE4J98inRtAiCNqJocpSxwICVp0aVsrhUjtrUB6V+ig3DMIOZArkTKolUFVZHo6O2cg6nWBy1dyujSk1eHauRqi/tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iaCp6Cao; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DmcewiPA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47FD8C433F1;
-	Sat, 23 Mar 2024 23:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711238002;
-	bh=vmFfvdVj18dU0VJ6Z1xEA713RcZpihuFHhAv0tF42TU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=DmcewiPAJNssNaXh3O36mkS5ROlx6MavFxQd0xjT68rtGghRsWh1UL4ogi7EEY4O4
-	 AZiBifCSWEQ+RAjEswHukfqQMrKeSYpmHqxSnT/PDDKAWtFMF+96ZO6Ua6mPVq5mdz
-	 5qVyE+Gwe46zqJevDKswhok98roJJm35xaF47ikfljopfv8ecle6PQK2CA19lsUZN3
-	 I07tNDfAJC7t4yqrzayWhXu7sh/IpzT4uhby/pZImQDRofWyIYUhbiK//dyTMVfj7A
-	 2H4OFPvJ7VbWQj8ukU0vGxJM8uD98Ahwy09vtouqLqlJkfCxmqVIK9RiW+NB2ixm0m
-	 T5ae6vytnszCw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DD192CE0738; Sat, 23 Mar 2024 16:53:21 -0700 (PDT)
-Date: Sat, 23 Mar 2024 16:53:21 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-Message-ID: <327fa73b-a7b3-4ad4-b170-d642c83e8764@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <cover.1710877680.git.yan@cloudflare.com>
- <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
- <20240322112413.1UZFdBq5@linutronix.de>
- <123ca494-dc8c-47cc-a6d5-3c529bc7f549@paulmck-laptop>
- <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iaCp6Cao"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1def59b537cso20382665ad.2;
+        Sun, 24 Mar 2024 05:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711284155; x=1711888955; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VwcQYoh+U3Qtxf8QLgv1iNR4Tar3oUHwb88w3qHC/DQ=;
+        b=iaCp6Caok/w7VDvVK6ccxTMRIDDkt/t7zW+5Ly08EXjVIzzacUBKxtxyelL5D5ZFtd
+         ohGZ7eyQA5nmaba2WyVir+Qv/kPP7v3KDXy+Mh8C8sld52VHyl1lON12K4uj8bIWl2Ye
+         6KVCq5flvWEmVWPqGdlc3VbarhMx0xAlBx+UdLWMlbpacEuXQyrtToHsYynUuB4Cvi9r
+         amvIllO4sglEi30EmQVOHMrTX+F3Dgw+5T+vbAzMx/0M83v1xVpsxaOPoBnzLfRhk9e2
+         fj236uUNN5uzhHPt4TvDA0wmcjVr+Rb5AX8v/SwxxsocCRw70HsWrSFPd+4uEXN3Kl6H
+         6ZRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711284155; x=1711888955;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VwcQYoh+U3Qtxf8QLgv1iNR4Tar3oUHwb88w3qHC/DQ=;
+        b=cO2hZ1yV4aFZljpcxQzqJQcElCBBi8fMDwd+ijPb0ZpQmbam5OsaKnBv0JeHDzyXB9
+         /wGiViJ9wYXlrsbr59DFFHs8hIMrVMH5cLyTZlRM7NO96D97dF8ybiHAKA2HANiO8nX/
+         Smcc2/krQy5h/Hja4Uk279jxQX3etIJWRZ2uxSbAFIDMe13YTCriT7WRlbgyOL0Wkzcc
+         9o4mDBAn+GQfyaDhaAVtVrnzk0GeTf+9JeZqoy1X2IzD/mh1820Gt7ZrpMlxeRMFBFo3
+         g2xh34nf3608YagnBbE4yzfWfOKiUZZupJlak2jL2AXmRW2dPl5rmTas8Is3eV5+iftQ
+         JPQw==
+X-Forwarded-Encrypted: i=1; AJvYcCXj2iSTcUc2ESVeBLJ/INHUsL5C3xeTchmbhbzLiB/ULSaenbp/C3AN02yBd2tc4ULZEionQNwjC6bGk08517m2s7f3SIctyWG6myOXYuhqkDfd4TaiL9ljXy0i0V7UapZ+
+X-Gm-Message-State: AOJu0YzSJB2pbRiJ8wGFuKOjqYyV4TJwGgP276xLVkKrkYBpDlgpXVch
+	bmAr7bI2yqAsId2PH8NOVuW1A7INQKp2RF0u+5/GSQ7ScSsN5hVb
+X-Google-Smtp-Source: AGHT+IHMjzefvxPOcEv9hVJfYlmRyEJEmQnm4OuMryHuGZmnO5GNRQYRjfLnWo/y2eDGCzy8nZdOhQ==
+X-Received: by 2002:a17:903:1208:b0:1dd:a108:b68b with SMTP id l8-20020a170903120800b001dda108b68bmr4928352plh.9.1711284154730;
+        Sun, 24 Mar 2024 05:42:34 -0700 (PDT)
+Received: from localhost.localdomain ([120.244.141.242])
+        by smtp.gmail.com with ESMTPSA id u6-20020a170902e80600b001e0adef698asm1798342plg.230.2024.03.24.05.42.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Mar 2024 05:42:34 -0700 (PDT)
+From: Zqiang <qiang.zhang1211@gmail.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org
+Cc: qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcutorture: Make rcutorture support srcu double call test
+Date: Sun, 24 Mar 2024 20:42:24 +0800
+Message-Id: <20240324124224.615-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
 
-On Fri, Mar 22, 2024 at 09:02:02PM -0500, Yan Zhai wrote:
-> On Fri, Mar 22, 2024 at 4:31 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Mar 22, 2024 at 12:24:13PM +0100, Sebastian Andrzej Siewior wrote:
-> > > On 2024-03-19 13:44:34 [-0700], Yan Zhai wrote:
-> > > > + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
-> > > > + * have more chance to invoke schedule() calls and provide necessary quiescent
-> > > > + * states. As a contrast, calling cond_resched() only won't achieve the same
-> > > > + * effect because cond_resched() does not provide RCU-Tasks quiescent states.
-> > > > + */
-> > >
-> > > Paul, so CONFIG_PREEMPTION is affected but CONFIG_PREEMPT_RT is not.
-> > > Why does RT have more scheduling points?
-> >
-> > In RT, isn't BH-disabled code preemptible?  But yes, this would not help
-> > RCU Tasks.
-> >
-> By "more chance to invoke schedule()", my thought was that
-> cond_resched becomes no op on RT or PREEMPT kernel. So it will not
-> call __schedule(SM_PEREEMPT), which clears the NEED_RESCHED flag. On a
-> normal irq exit like timer, when NEED_RESCHED is on,
-> schedule()/__schedule(0) can be called time by time then.
-> __schedule(0) is good for RCU tasks, __schedule(SM_PREEMPT) is not.
-> 
-> But I think this code comment does not take into account frequent
-> preempt_schedule and irqentry_exit_cond_resched on a PREEMPT kernel.
-> When returning to these busy kthreads, irqentry_exit_cond_resched is
-> in fact called now, not schedule(). So likely __schedule(PREEMPT) is
-> still called frequently, or even more frequently. So the code comment
-> looks incorrect on the RT argument part. We probably should remove the
-> "IS_ENABLED" condition really. Paul and Sebastian, does this sound
-> reasonable to you?
+This commit also allows rcutorture to support srcu double call test
+with CONFIG_DEBUG_OBJECTS_RCU_HEAD option enabled. since the spinlock
+will be called in call_srcu(), in RT-kernel, the spinlock is sleepable,
+therefore remove disable-irq and disable-preempt protection.
 
-Removing the "IS_ENABLED(CONFIG_PREEMPT_RT)" condition makes a great deal
-of sense to me, but I must defer to Sebastian for any RT implications.
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ kernel/rcu/rcutorture.c | 36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
 
-							Thanx, Paul
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 3f9c3766f52b..6571a69142f8 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -388,6 +388,7 @@ struct rcu_torture_ops {
+ 	int extendables;
+ 	int slow_gps;
+ 	int no_pi_lock;
++	int debug_objects;
+ 	const char *name;
+ };
+ 
+@@ -573,6 +574,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.irq_capable		= 1,
+ 	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
+ 	.extendables		= RCUTORTURE_MAX_EXTEND,
++	.debug_objects		= 1,
+ 	.name			= "rcu"
+ };
+ 
+@@ -743,6 +745,7 @@ static struct rcu_torture_ops srcu_ops = {
+ 	.cbflood_max	= 50000,
+ 	.irq_capable	= 1,
+ 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
++	.debug_objects	= 1,
+ 	.name		= "srcu"
+ };
+ 
+@@ -782,6 +785,7 @@ static struct rcu_torture_ops srcud_ops = {
+ 	.cbflood_max	= 50000,
+ 	.irq_capable	= 1,
+ 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
++	.debug_objects	= 1,
+ 	.name		= "srcud"
+ };
+ 
+@@ -3481,35 +3485,37 @@ static void rcu_test_debug_objects(void)
+ #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+ 	struct rcu_head rh1;
+ 	struct rcu_head rh2;
++	int idx;
++
++	if (!cur_ops->debug_objects || !cur_ops->call ||
++			!cur_ops->cb_barrier)
++		return;
++
+ 	struct rcu_head *rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
+ 
+ 	init_rcu_head_on_stack(&rh1);
+ 	init_rcu_head_on_stack(&rh2);
+-	pr_alert("%s: WARN: Duplicate call_rcu() test starting.\n", KBUILD_MODNAME);
++	pr_alert("%s: WARN: Duplicate call_%s() test starting.\n", KBUILD_MODNAME, cur_ops->name);
+ 
+ 	/* Try to queue the rh2 pair of callbacks for the same grace period. */
+-	preempt_disable(); /* Prevent preemption from interrupting test. */
+-	rcu_read_lock(); /* Make it impossible to finish a grace period. */
+-	call_rcu_hurry(&rh1, rcu_torture_leak_cb); /* Start grace period. */
+-	local_irq_disable(); /* Make it harder to start a new grace period. */
+-	call_rcu_hurry(&rh2, rcu_torture_leak_cb);
+-	call_rcu_hurry(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
++	idx = cur_ops->readlock(); /* Make it impossible to finish a grace period. */
++	cur_ops->call(&rh1, rcu_torture_leak_cb); /* Start grace period. */
++	cur_ops->call(&rh2, rcu_torture_leak_cb);
++	cur_ops->call(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
+ 	if (rhp) {
+-		call_rcu_hurry(rhp, rcu_torture_leak_cb);
+-		call_rcu_hurry(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
++		cur_ops->call(rhp, rcu_torture_leak_cb);
++		cur_ops->call(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
+ 	}
+-	local_irq_enable();
+-	rcu_read_unlock();
+-	preempt_enable();
++	cur_ops->readunlock(idx);
+ 
+ 	/* Wait for them all to get done so we can safely return. */
+-	rcu_barrier();
+-	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
++	cur_ops->cb_barrier();
++	pr_alert("%s: WARN: Duplicate call_%s() test complete.\n", KBUILD_MODNAME, cur_ops->name);
+ 	destroy_rcu_head_on_stack(&rh1);
+ 	destroy_rcu_head_on_stack(&rh2);
+ 	kfree(rhp);
+ #else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+-	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
++	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_%s()\n", KBUILD_MODNAME, cur_ops->name);
+ #endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+ }
+ 
+-- 
+2.17.1
+
