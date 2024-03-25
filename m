@@ -1,176 +1,203 @@
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69529130AC7;
-	Mon, 25 Mar 2024 07:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711353153; cv=none; b=TwFgFPsIaCk3FGOdRHNquyXGvvX5sSgrNIZaTFjVzO6JA9rY6QMg9icLyJu1TIFWiF13SvM8iIag7+wFPJ8CCNnBVYIJQ/T8vAcWf6aAyHJhMB0KIzyreNL0cxUZ1i+JMONP1iC3c9AjD740TTZ2xx9E6EkZJkLL/WWRqRK1EU4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711353153; c=relaxed/simple;
-	bh=MjfyfYcCyYAjuQHZD8oyWbkpOeFBIPh/wGU9UVWSSSU=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=pMtsOGfaV/0IoJa3hxuuV2xGcwSdskNH1FWgRCCjTt97MxZg0+5Hsou7NVfq0QOMBzDwnq01/wVDmbOqGkVPLmAMepKHZ+RZ1hgn2nQUy4u6/hAkFVqMJYAVoFjvsdJg7zsrAEHFvQRyETcIeg6Cg0lJq5znMBjKO65rEwAGNxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bhrMsC80; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7548F15CD41;
+	Mon, 25 Mar 2024 08:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711353754; cv=fail; b=pB+w9rNqYq8SLMed9yyf3i9lJYFApgUvzv6OuUZXZMiQqzqSPVV2dc8Xj1pTWbvXZYpZVAG0nvnMJDqedIRgJQLVnS0kOZmEqXo/iwJAsom2seV9BXc29VaU2Xa9y2csC7el8XXFADRyaxRSYaA1HHEknvwi40hl5j5fiOCzdW0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711353754; c=relaxed/simple;
+	bh=u3labdVuCyIxtPl/SeD1H8bExIIBXWqgn7GZ1L5leKc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=CtnN/cB1glCXwOWxx7UO0niy/9eHd46B9T3YUMTa0nCYpn8jVPQ2JKdDwGUu7Sg2goEwTzagoGLrqPcF90DcWBdp1hvPIf+S0Cz2DweH8Pi5pIdjHxT22wFiqRQDrpdtGslhFiaxq/uD2mLIZjjcv2MZ+Jp5HcsA1mkqHM2mdVA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HnxCLs9U; arc=fail smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhrMsC80"
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e6c0098328so2618054b3a.3;
-        Mon, 25 Mar 2024 00:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711353150; x=1711957950; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x6D18ET4Nwdf+JrfEWu/83Vhj2wPqTp5eZxfyge+5nI=;
-        b=bhrMsC80LZJoQ4cJxUkFiYIVczrhZPPm64c9b8pWJ74J5dgrmiw4yP57WTDUb8fGnM
-         aNJ2CuObJSwqIujUWHopLLU+S8Yt6ND3nR0rS+0kiLohEBOpIt4IUaIiUyUk2QQnUXup
-         Tn8vN4mTCovoRjFdKF1W1m6niLKYdFFnfX5o3TB25naPW8kDZakyeLPGlb/uVFS962rK
-         V4ggbvj6pzhp6ihuxPgyFr5+AlVVUkud2Zddnr13mXIVnLXuqt89vnas2igjgLdZTDp/
-         Z4+JYZ0yrF2G1vXKM6sq8S0C8WpKDGbB3X8thc5CR/UIkLnQn78A+7OLbRgSNn6jhRgb
-         +USw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711353150; x=1711957950;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x6D18ET4Nwdf+JrfEWu/83Vhj2wPqTp5eZxfyge+5nI=;
-        b=Q3AwGBT7Oc0biCcR1YF0ugw/pw1L1ei07ysHCYRetXb3XYRUzXth7enMUuAIFlbyuv
-         Wc1qGsgquuZqNpuJbQkYRYV/Rq3yRXFUIGi6o4pR6dZQh7p4+ghUSNEiletp42WHm8ne
-         7WojlCjlO3EyLaJvxCrS1RX9WEUCb/YRLQkm5cBSpMDcTA5Gpl0njPzAqXj6fTutAWY3
-         bCdtgFg6KOYU5i4ghx+1A5bbu35pkNSljS7yRLMlbpy4H6bswmNYEZjEC7PoR898Pn9u
-         pCu5x/ledqhCkkIOqOTjzB8HT9V890iXb/T0joYm0g1hnx8xZBaP4jWgQGzpEeo10/u5
-         kBUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWPvB18JmXCpCPYhhH6W9yJvxwyzMW5AMfFV4wLDs0D+QPVq2anOby1D43QWrjcqokEHnfMciAdcckvtiTdU04KPd3jp7JK5G8SCecnnJvm+WW+08C+HfCcU4Ce+Oe0URfH
-X-Gm-Message-State: AOJu0Yy+Ag4MnOLJhpWeFS7CgZj5DkQJGA6JbUHuOFGXu5jaHuhB8kwI
-	E/XUVFsy4LBUs4+HImdSYBVBn5sI/T/8GmttySh8qO3jTLt08l9kupVhOy7W
-X-Google-Smtp-Source: AGHT+IF3CJotqbKpv4V45t7yaKnAUbuI7CPEEOrIddzTOvsHsmn6aa6uT1AdE2lxHos93bCSZOie4A==
-X-Received: by 2002:a05:6a20:da85:b0:1a3:b625:7b0f with SMTP id iy5-20020a056a20da8500b001a3b6257b0fmr4621590pzb.57.1711353150456;
-        Mon, 25 Mar 2024 00:52:30 -0700 (PDT)
-Received: from localhost.localdomain ([120.244.140.47])
-        by smtp.gmail.com with ESMTPSA id u2-20020a17090ae00200b0029c693a1e6dsm6032550pjy.17.2024.03.25.00.52.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 00:52:30 -0700 (PDT)
-From: Zqiang <qiang.zhang1211@gmail.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org
-Cc: qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcutorture: Fix invalid context warning when enable srcu barrier testing
-Date: Mon, 25 Mar 2024 15:52:19 +0800
-Message-Id: <20240325075219.10367-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HnxCLs9U"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711353753; x=1742889753;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=u3labdVuCyIxtPl/SeD1H8bExIIBXWqgn7GZ1L5leKc=;
+  b=HnxCLs9URYvYowjqmUnt6AkQrTyj/7bdOvJHhKbkoThHkhWuhLJCnk1s
+   wC/DlisaHE/uga2VS2mstSc+sNucR82gm1RtV/SU1PlYGBNJs3Av50wcx
+   W74OPPE5IYdOUr7MR49WWfFSn7ETt7dyOQcolQ3Ogd93WC3RUu/qntnOy
+   /lXBfa2kLBqmtqdrE4O0fYA5alOtz49CX9qbNLA8YcFl3NZxT5KeIbdhc
+   aN2CVcZfl0FNd01l8zVzEItB6AeiPWEL9AyJS1ienmpcJ+tKxRIIxHdR3
+   il77IZyUlyy2gBP1bgISWbKa4gnoOCMRUdSfRG0/tb4e2EvJWRTkXqiqU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11023"; a="9298863"
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="9298863"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2024 01:02:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,152,1708416000"; 
+   d="scan'208";a="15413051"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Mar 2024 01:02:31 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 25 Mar 2024 01:02:29 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 25 Mar 2024 01:02:29 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 25 Mar 2024 01:02:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YanjN15O8SdXz1O0/ceAr56LTRg3gWbQTsH4wGrQD4tXShBzqZk1VPyqFyRHaGiuPTgmB9lOJe8WgeD7aTu/pTj4Ynv8c7hBug2e6ep0DeA00/i4WMlL8vrdIk/NHSkESGVJ/HuGQ5t440ZKgOb3Gx6+Zto1JiSEEI+mw20f77z57cpiYeSdXaDzITiR2CAuOEwNdzv5gXX2K+X56VMn6K8ruSn+1DYhoyjF5KbZLpz/BtPX/3ylnTvFTLPEjpZrnc5G68f3pfpINqU8GxoscKyeJkf6N4bivPXMjHq4JiPENQQcdXL8fXIhNRRFsuDc6m47/SzwRJzL92TctUPf/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u3labdVuCyIxtPl/SeD1H8bExIIBXWqgn7GZ1L5leKc=;
+ b=GkRe+ZkOE78M0sGUNSDV/Mia4RKqltsTRBvD8QxYv6ky0Jy+Kd9VbaRcHBKVolpYSo27hX1yUt9oJ7M5lLSah2vC0ac+ldW8kW7e18FVKv7R6vzDXTOMG1SfDuIpvdrTC2079RVsATCsLLrVxPMB4whA2NfSJG2TkXNrZFDWuoVV3U1PLFwe1+TFYj7EZbrZKEGyiT3ijA4V0qN0ylLIOKY8eOuTQ0GKo4Mq2JN5z0eIChQH+J9u1D7HuifQZ18qGRs3vL52Cn55Ga8Dqi3RODyYrOkecN8S7Nv18ipuNYmaUsh/KTqEk92h0r3oX+kU9SoWRPXd2Zvy49Neptvmsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ0PR11MB5940.namprd11.prod.outlook.com (2603:10b6:a03:42f::18)
+ by DM4PR11MB5326.namprd11.prod.outlook.com (2603:10b6:5:391::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
+ 2024 08:02:27 +0000
+Received: from SJ0PR11MB5940.namprd11.prod.outlook.com
+ ([fe80::75d7:cfc7:3a4e:e4]) by SJ0PR11MB5940.namprd11.prod.outlook.com
+ ([fe80::75d7:cfc7:3a4e:e4%6]) with mapi id 15.20.7409.010; Mon, 25 Mar 2024
+ 08:02:27 +0000
+From: "Ma, XiangfeiX" <xiangfeix.ma@intel.com>
+To: "Zhao, Yan Y" <yan.y.zhao@intel.com>, Sean Christopherson
+	<seanjc@google.com>, "Hao, Xudong" <xudong.hao@intel.com>
+CC: Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan
+	<jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Josh
+ Triplett" <josh@joshtriplett.org>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Tian, Kevin"
+	<kevin.tian@intel.com>, Yiwei Zhang <zzyiwei@google.com>
+Subject: RE: [PATCH 0/5] KVM: VMX: Drop MTRR virtualization, honor guest PAT
+Thread-Topic: [PATCH 0/5] KVM: VMX: Drop MTRR virtualization, honor guest PAT
+Thread-Index: AQHafFn+Bj7vmpQOcEW/PEjFxiybeLFIBhdAgAAFj6A=
+Date: Mon, 25 Mar 2024 08:02:27 +0000
+Message-ID: <SJ0PR11MB59405AEB55E33367E5104C0386362@SJ0PR11MB5940.namprd11.prod.outlook.com>
+References: <20240309010929.1403984-1-seanjc@google.com>
+ <Zf2CvBs7R3KN6rIl@yzhao56-desk.sh.intel.com>
+ <SJ0PR11MB594067997E7879AF927F264686362@SJ0PR11MB5940.namprd11.prod.outlook.com>
+In-Reply-To: <SJ0PR11MB594067997E7879AF927F264686362@SJ0PR11MB5940.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR11MB5940:EE_|DM4PR11MB5326:EE_
+x-ms-office365-filtering-correlation-id: 82b8fc8c-7476-425d-e0f8-08dc4ca1e9fa
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GxiSnIz9S5elinYhI0TkLd9u/RTPS4x5Iac7idYt4zSrcpdZ+3oyBnKjv71hUT6NRXmKJEMLpMIvjsXXn94UFtuDWX2zxhig2xG2qbmTeCX/gUoi+IrRlWm/MPYHuk8GzEEql0cK9Vpu0Y9efe2LiZxGwIOPkart9EcqFGdQmaaiXnft5evssYjqxMVy6KZxyisjK0LXlImvicQbEuGVHzbTZ+YrYMZl9eAuxDvKohOBI/s0av/CBxOy4i8GCaA2YTcR8N7hH/zJY6LTq8flHE47VDK+84HXLeb+fmf9dM83jEe3GMMuGOGl+i75I+MPPRj6UIeDYGKTK0JUM81s8nq/v1vZSF8cgRuncRCMijdma0P7G7fpteTipIkNvxu++RGM6jtE8JH5Dyu4dO3ZuSqsZxvkt3poUwSh+J8LP+yli2N/ZQh+OwInV8OBRyyuqV3EhSo781XuIIibjia5YHGFuEYTiDj9DCOxNK0EzIGPqw5+dmOY5RikC1QkddzdXk7LU8sOXdevgLShw0OeW/tXUlBPu+EOf4YPykhUeoC52e3904E/f2BY6ICeKwieokGAwI66xCUzz+mSO3CSyM6P8pWTgPUkvTmumol7L/myE3O5XE0I6p3y0OXOWVvU9dbckaHKYGSNuE0xk3hmFsxb+XFGZqOAmvVDkcg6fe8lIsnGltE0zQ8ZSEFNVeBzHxQJlQK2cDDFmfpDnj47xQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5940.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bl9hpmbs73s4suEElFpYF9ZpUWkGToCqiF5f0joDifKhDKypIHyZYwjBQ1gZ?=
+ =?us-ascii?Q?sz7b/Bf09QaJri+M8wFILKyxUsgzjabHgvUmocP6XLfrtFXdGwKPQkDLQ8z0?=
+ =?us-ascii?Q?tqTk0A8FBhR5iPSVQRy0+25u9Ae4SKt6x0OH8aWMbbEBDlATeZU4WKvn1Hrz?=
+ =?us-ascii?Q?iM4Avz3PeR2wuolKceAWKCZubtiLcNOqBefArQqpbLjndLQO6n3XbTQ5TnIQ?=
+ =?us-ascii?Q?OHeMmpg5O+FWUn8mro8O+SRNpiTh974BLWeJeIlVTBBsOe7yrra1BXmf/yVs?=
+ =?us-ascii?Q?UrY2eA1E5D7zFZlsyGErwsWU3Qip4zq4FyPFyl1phyTXLYO11JDWY4DTcLaX?=
+ =?us-ascii?Q?cZok/1l3n8hMaERto/CLP2d4TA1Q28ycF2zZl/NpQdlgDf4+5oqmpjb5NI25?=
+ =?us-ascii?Q?UoKtYsR4UkgrWQ/S89TJ4+eYD0r7LUWzS1TgA6udoT08isYAS+Lt4OjQtncy?=
+ =?us-ascii?Q?VZLElJ4YtDDvaOtH4VFCAA/hQBBH04dxDfF8m8SkikJVUD+InkDvFx1/bNr0?=
+ =?us-ascii?Q?yKJUAGWspzrtvtIdOXzvmxWAefzv4tnck6nMvfi410CfiVZMqnaHHVYW7Oiy?=
+ =?us-ascii?Q?7jS0voUQWpbzrxDCB2k9otW+44vd0ogN5hhu1/wFG3JuSg3Gs8e2a7LPR3Lv?=
+ =?us-ascii?Q?vpG+53m0aNOlZTQE3cOGOcrxWYknMr4hj90NgVceHAWLmj96WbQze19zB5Fd?=
+ =?us-ascii?Q?Fpm1hKMElMJcAxbCYX9E6sHNtvU1tnqUvBzvyowL3RXwEATQiA8WjhZv3yQd?=
+ =?us-ascii?Q?S5ajU1futrewKCMsoNVYoTUaWyhKNYrLrZ724QyjEJajh34PEUqE6oID+Uma?=
+ =?us-ascii?Q?WCIDq7ZUWw5oDLVZWpwURiSmopj0tk8/uh3V1DyAV8GZXajDPnmenrTag6lT?=
+ =?us-ascii?Q?nBvQQIjoqG7/+jpOo9S2XE0IqV5sy9XUe2H6Rgv70ReSUjsrNy/YEtQYuiTI?=
+ =?us-ascii?Q?5uAh70cSRiSokmOBCctkyN4RDTR339FECaUUDDtWM+gfIxjK0H7CVqJuPHSH?=
+ =?us-ascii?Q?vygYUvfWYzhyUgylNGG46b8iek7kARKu/UtMPCAIS+67lyYpdfJhyyOM20GS?=
+ =?us-ascii?Q?nnQICaD8B4wSIPLZ1vLxv0mc7zmqc2XMmB2wtaQ3e7CMmhP/ud5mtB0mxp0l?=
+ =?us-ascii?Q?Ls8Hd0+IzM56VAgqiQyvBc2A+gtSgF077moOYk4BxTZYkNSUL89GqEvfmOnB?=
+ =?us-ascii?Q?AjUGQbIn1NcmL4VKWPvDlPwtR+R6cDI7CqsLDaQoBywhdrM/zKRs/Q8MqXWx?=
+ =?us-ascii?Q?6V9mRY98W7wdhj7vtYkaDGYVk/WdmKLYYsHbq40mEfVLfiVZJnkQ4stAmF+W?=
+ =?us-ascii?Q?XXvC1WeA/uvMUy843pOxE0peYH+pAhFiiR93Wl+aoEt9GlfvPE81ClkY1X07?=
+ =?us-ascii?Q?5O+cx4XJU7TBNBndxPXVCnOmi8SrekzOvO5891D6WG4JCZi/H9v/DyTktHTp?=
+ =?us-ascii?Q?UwqeW1yHblPiGGvy8FmbXXLEqcFl0Ii+QuvehfwO7tkIivVyHWj1Uvo8QauZ?=
+ =?us-ascii?Q?LQvSBw7V8JR/xj9URv2jXMzmeHckKhQ28/adZJqGHW1TsjSZFDYQe3EpqXeE?=
+ =?us-ascii?Q?J8+6RAPB9FXXbkoPMytNxhRmbnWsnyNEyaSJO1f3?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5940.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82b8fc8c-7476-425d-e0f8-08dc4ca1e9fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2024 08:02:27.8286
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tXirRVpem8lqz6GSNthPvFcHErefwnpKZpegrxM6rVojA6MTME9XPCOgxrjQDQJWrMQkzsOGU+F42V22tH6zNg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5326
+X-OriginatorOrg: intel.com
 
-When the torture_type is set srcu or srcud and cb_barrier is
-non-zero, running the rcutorture test will trigger the
-following warning:
 
-[  163.910989][    C1] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-[  163.910994][    C1] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
-[  163.910999][    C1] preempt_count: 10001, expected: 0
-[  163.911002][    C1] RCU nest depth: 0, expected: 0
-[  163.911005][    C1] INFO: lockdep is turned off.
-[  163.911007][    C1] irq event stamp: 30964
-[  163.911010][    C1] hardirqs last  enabled at (30963): [<ffffffffabc7df52>] do_idle+0x362/0x500
-[  163.911018][    C1] hardirqs last disabled at (30964): [<ffffffffae616eff>] sysvec_call_function_single+0xf/0xd0
-[  163.911025][    C1] softirqs last  enabled at (0): [<ffffffffabb6475f>] copy_process+0x16ff/0x6580
-[  163.911033][    C1] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[  163.911038][    C1] Preemption disabled at:
-[  163.911039][    C1] [<ffffffffacf1964b>] stack_depot_save_flags+0x24b/0x6c0
-[  163.911063][    C1] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W          6.8.0-rc4-rt4-yocto-preempt-rt+ #3 1e39aa9a737dd024a3275c4f835a872f673a7d3a
-[  163.911071][    C1] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-[  163.911075][    C1] Call Trace:
-[  163.911078][    C1]  <IRQ>
-[  163.911080][    C1]  dump_stack_lvl+0x88/0xd0
-[  163.911089][    C1]  dump_stack+0x10/0x20
-[  163.911095][    C1]  __might_resched+0x36f/0x530
-[  163.911105][    C1]  rt_spin_lock+0x82/0x1c0
-[  163.911112][    C1]  spin_lock_irqsave_ssp_contention+0xb8/0x100
-[  163.911121][    C1]  srcu_gp_start_if_needed+0x782/0xf00
-[  163.911128][    C1]  ? _raw_spin_unlock_irqrestore+0x46/0x70
-[  163.911136][    C1]  ? debug_object_active_state+0x336/0x470
-[  163.911148][    C1]  ? __pfx_srcu_gp_start_if_needed+0x10/0x10
-[  163.911156][    C1]  ? __pfx_lock_release+0x10/0x10
-[  163.911165][    C1]  ? __pfx_rcu_torture_barrier_cbf+0x10/0x10
-[  163.911188][    C1]  __call_srcu+0x9f/0xe0
-[  163.911196][    C1]  call_srcu+0x13/0x20
-[  163.911201][    C1]  srcu_torture_call+0x1b/0x30
-[  163.911224][    C1]  rcu_torture_barrier1cb+0x4a/0x60
-[  163.911247][    C1]  __flush_smp_call_function_queue+0x267/0xca0
-[  163.911256][    C1]  ? __pfx_rcu_torture_barrier1cb+0x10/0x10
-[  163.911281][    C1]  generic_smp_call_function_single_interrupt+0x13/0x20
-[  163.911288][    C1]  __sysvec_call_function_single+0x7d/0x280
-[  163.911295][    C1]  sysvec_call_function_single+0x93/0xd0
-[  163.911302][    C1]  </IRQ>
-[  163.911304][    C1]  <TASK>
-[  163.911308][    C1]  asm_sysvec_call_function_single+0x1b/0x20
-[  163.911313][    C1] RIP: 0010:default_idle+0x17/0x20
-[  163.911326][    C1] RSP: 0018:ffff888001997dc8 EFLAGS: 00000246
-[  163.911333][    C1] RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffffae618b51
-[  163.911337][    C1] RDX: 0000000000000000 RSI: ffffffffaea80920 RDI: ffffffffaec2de80
-[  163.911342][    C1] RBP: ffff888001997dc8 R08: 0000000000000001 R09: ffffed100d740cad
-[  163.911346][    C1] R10: ffffed100d740cac R11: ffff88806ba06563 R12: 0000000000000001
-[  163.911350][    C1] R13: ffffffffafe460c0 R14: ffffffffafe460c0 R15: 0000000000000000
-[  163.911358][    C1]  ? ct_kernel_exit.constprop.3+0x121/0x160
-[  163.911369][    C1]  ? lockdep_hardirqs_on+0xc4/0x150
-[  163.911376][    C1]  arch_cpu_idle+0x9/0x10
-[  163.911383][    C1]  default_idle_call+0x7a/0xb0
-[  163.911390][    C1]  do_idle+0x362/0x500
-[  163.911398][    C1]  ? __pfx_do_idle+0x10/0x10
-[  163.911404][    C1]  ? complete_with_flags+0x8b/0xb0
-[  163.911416][    C1]  cpu_startup_entry+0x58/0x70
-[  163.911423][    C1]  start_secondary+0x221/0x280
-[  163.911430][    C1]  ? __pfx_start_secondary+0x10/0x10
-[  163.911440][    C1]  secondary_startup_64_no_verify+0x17f/0x18b
-[  163.911455][    C1]  </TASK>
+Tested-by: Xiangfei Ma <xiangfeix.ma@intel.com>
 
-This commit therefore use smp_call_on_cpu() instead of
-smp_call_function_single(), make rcu_torture_barrier1cb() invoked
-happens on task-context.
+Testing environment is based on the EMR-2S3 platform + CentOS 9(kernel vers=
+ion: 6.8.0-rc4).
+Test cases include cpu, amx, umip, ptvmx, IPIv, vtd, PMU, SGX, kmv-unit-tes=
+ts, kvm selftests, etc. And workload test on the guest using Netperf(bridge=
+) and SPECJBB(passthrough NIC).
+Except for the known issue and the previously mentioned "rdtsc_vmexit_diff_=
+test", no other issue found.
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/rcu/rcutorture.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+-----Original Message-----
+From: Ma, XiangfeiX=20
+Sent: Monday, March 25, 2024 2:56 PM
+To: Zhao, Yan Y <yan.y.zhao@intel.com>; Sean Christopherson <seanjc@google.=
+com>; Hao, Xudong <xudong.hao@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>; Lai Jiangshan <jiangshanlai@gmail.=
+com>; Paul E. McKenney <paulmck@kernel.org>; Josh Triplett <josh@joshtriple=
+tt.org>; kvm@vger.kernel.org; rcu@vger.kernel.org; linux-kernel@vger.kernel=
+.org; Tian, Kevin <kevin.tian@intel.com>; Yiwei Zhang <zzyiwei@google.com>
+Subject: RE: [PATCH 0/5] KVM: VMX: Drop MTRR virtualization, honor guest PA=
+T
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 48a9d47ec90e..498aae52333e 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -3041,11 +3041,12 @@ static void rcu_torture_barrier_cbf(struct rcu_head *rcu)
- }
- 
- /* IPI handler to get callback posted on desired CPU, if online. */
--static void rcu_torture_barrier1cb(void *rcu_void)
-+static int rcu_torture_barrier1cb(void *rcu_void)
- {
- 	struct rcu_head *rhp = rcu_void;
- 
- 	cur_ops->call(rhp, rcu_torture_barrier_cbf);
-+	return 0;
- }
- 
- /* kthread function to register callbacks used to test RCU barriers. */
-@@ -3071,11 +3072,9 @@ static int rcu_torture_barrier_cbs(void *arg)
- 		 * The above smp_load_acquire() ensures barrier_phase load
- 		 * is ordered before the following ->call().
- 		 */
--		if (smp_call_function_single(myid, rcu_torture_barrier1cb,
--					     &rcu, 1)) {
--			// IPI failed, so use direct call from current CPU.
-+		if (smp_call_on_cpu(myid, rcu_torture_barrier1cb, &rcu, 1))
- 			cur_ops->call(&rcu, rcu_torture_barrier_cbf);
--		}
-+
- 		if (atomic_dec_and_test(&barrier_cbs_count))
- 			wake_up(&barrier_wq);
- 	} while (!torture_must_stop());
--- 
-2.17.1
+Tested-by: Xiangfei Ma <xiangfeix.ma@intel.com>
+
+I have verified this method which can solve the issue.
+
+-----Original Message-----
+From: Zhao, Yan Y <yan.y.zhao@intel.com>=20
+Sent: Friday, March 22, 2024 9:08 PM
+To: Sean Christopherson <seanjc@google.com>; Ma, XiangfeiX <xiangfeix.ma@in=
+tel.com>; Hao, Xudong <xudong.hao@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>; Lai Jiangshan <jiangshanlai@gmail.=
+com>; Paul E. McKenney <paulmck@kernel.org>; Josh Triplett <josh@joshtriple=
+tt.org>; kvm@vger.kernel.org; rcu@vger.kernel.org; linux-kernel@vger.kernel=
+.org; Tian, Kevin <kevin.tian@intel.com>; Yiwei Zhang <zzyiwei@google.com>
+Subject: Re: [PATCH 0/5] KVM: VMX: Drop MTRR virtualization, honor guest PA=
+T
+
+Xiangfei found out an failure in kvm unit test rdtsc_vmexit_diff_test with =
+below error log:
+"FAIL: RDTSC to VM-exit delta too high in 100 of 100 iterations, last =3D 9=
+02
+FAIL: Guest didn't run to completion."
+
+Fixed it by adding below lines in the unit test rdtsc_vmexit_diff_test befo=
+re enter guest in my side.
+vmcs_write(HOST_PAT, 0x6);
+vmcs_clear_bits(EXI_CONTROLS, EXI_SAVE_PAT); vmcs_set_bits(EXI_CONTROLS, EX=
+I_LOAD_PAT);
 
