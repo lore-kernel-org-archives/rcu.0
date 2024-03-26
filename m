@@ -1,47 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F1617BA0;
-	Tue, 26 Mar 2024 17:21:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1C51B28D;
+	Tue, 26 Mar 2024 18:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473701; cv=none; b=c8HSqMcCBZuit11Mio3ue9Zur+4oRaYUwgJ67TUo9m5a4pVN6p5pfWxslv7E/d2ZaT+HamynyH+a5EIiOiPgo9C87LGWDv5ng+FlsGR+jYlsV3kB8d9TZru47GakxZZOf7gbUK9P+Bk8YSNBhbarHX7Lifrhsoz4NodLxJyx4js=
+	t=1711476186; cv=none; b=EyBMCxb1h800IHvA7vNcnSEw3gC05ouKvuE6HASKSadhmA3yzwNPFGeaNpgzJYSB260uWwEvtyf1KfVD/W1bMqd2BmtyyVmAkB38NKwT70o8TYhRBDj/wo0zX3RUuwxAvI3rmTqWwxYYxm82d57PdEr34P4qQLKD1ycKwcbydJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473701; c=relaxed/simple;
-	bh=Y2psVmmKz1IVlz2128aKGOfPLJwSPX4Xp8L0iyNSHXg=;
+	s=arc-20240116; t=1711476186; c=relaxed/simple;
+	bh=ECUAAK2Nxs/H86gKiGl0W7txBlcNCaLixR40Qr44fhw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WkxD6UD6C00107XOZId2QlYQYE3xJ9jVNB871yAg9Sf2dQtDlZYSXaaOpNBSxbADvDgYlj2EwlZnrD6FMW2ROWuk1hLqYOV39HexxTlydSSDzVyV+ssefY60Bp4nlSeSjp4eKIYvzpnWWzNnCu9H2yQ94DVtUnAa1tmthZgBSxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ria7CDjh; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=dmJycO8c0psMX4DloXSm20+Q7kdsfKv9Ejf2qE1eN+qVabKPrCP0HMN8j6+zd3zgk4m2Opx9J5puGjwtHIn22dFOYi2zKQQJId5HXkrWEHLW2ouT2f3zf643kGsL+yOk9d6LKDzVptmHZYuJBrvXDsMxl2sumoh9DRkB7aKJQ5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fS3m6FJy; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ria7CDjh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54CBDC433F1;
-	Tue, 26 Mar 2024 17:21:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fS3m6FJy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0809AC433F1;
+	Tue, 26 Mar 2024 18:03:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711473701;
-	bh=Y2psVmmKz1IVlz2128aKGOfPLJwSPX4Xp8L0iyNSHXg=;
+	s=k20201202; t=1711476186;
+	bh=ECUAAK2Nxs/H86gKiGl0W7txBlcNCaLixR40Qr44fhw=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Ria7CDjhdCEvJpQdokB9O8PlgR9VLZJzLYOIlMZCdtpy7kjHFDktOj9wx9xxoIxjY
-	 Drjm+nVZAgdaY/LGr7ruUXIkjlsrp+MCT24lwKVI5fyMgSiJGiVX/3MoF64X5SuZES
-	 LJaIWm6SA+hlbHxL09dvBETD4pq7NjxebfMaRofF4gKa8HevLZlo+gR1TDyLQdMlcU
-	 9W93oHL9OOu15RrBASTjhOxShjdWg55uEtbUWGPRQ2d0KtbdalOkugrFIbnqoK1tXm
-	 O24REZM2D/HXGmqhqQ7U54aqz6CEHd3gKGjkEg8nZUtT6iPaxRYm0yhgrU8P7Nmet6
-	 hqzlMflXAaDQw==
+	b=fS3m6FJyJInIyCiPC6QB1VIvgS6KX+/WPWDbPUOcKZXnmBogEmK1ve+rdUv4vSDR+
+	 OB34KGOHPcZHA9ZtwUKytXgL8JueBGM0UCMj9M/LtR2gANZS4kMJyB0x+ejQUVjE2W
+	 lTR18/+tR8TF1YCb0qp8ArWu4rQHgpcFlR6+xoI6z1nqWz955cvJQMG1CaI3Y3we5P
+	 Gx6MX2z1DET9n9ahwbYHZGDb0AQxpqQfgUZv7ObzDlNGUoKjqYs3pMzZWYcWmkxmIB
+	 ebK9jPjLy+kepfmgAmHHq/e8Oa9j1UtySl7x6xtnx9hf2lDek0rZTg0EQ5BbTJNwLA
+	 NJ+hnc3Rx2jWw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4B673CE129B; Tue, 26 Mar 2024 10:21:40 -0700 (PDT)
-Date: Tue, 26 Mar 2024 10:21:40 -0700
+	id 60DF4CE129B; Tue, 26 Mar 2024 11:03:05 -0700 (PDT)
+Date: Tue, 26 Mar 2024 11:03:05 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Johannes Berg <johannes.berg@intel.com>
-Subject: Re: [PATCH v2] rcu: mollify sparse with RCU guard
-Message-ID: <df1ecb31-fed2-4069-93bf-8773f30842b2@paulmck-laptop>
+To: Zqiang <qiang.zhang1211@gmail.com>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Make stall-tasks directly exit when
+ rcutorture tests end
+Message-ID: <ed5b00dd-77f8-4b51-b24c-d5bf2d335cc6@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240325183907.7205bf36489a.Ic3ac66ff5d6a9bd8a610858060117e1364641a3f@changeid>
- <ZgG3UC-x8wAIOdd3@boqun-archlinux>
+References: <20240321082850.1756-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,76 +46,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZgG3UC-x8wAIOdd3@boqun-archlinux>
+In-Reply-To: <20240321082850.1756-1-qiang.zhang1211@gmail.com>
 
-On Mon, Mar 25, 2024 at 10:41:36AM -0700, Boqun Feng wrote:
-> On Mon, Mar 25, 2024 at 06:39:08PM +0100, Johannes Berg wrote:
-> > From: Johannes Berg <johannes.berg@intel.com>
-> > 
-> > When using "guard(rcu)();" sparse will complain, because even
-> > though it now understands the cleanup attribute, it doesn't
-> > evaluate the calls from it at function exit, and thus doesn't
-> > count the context correctly.
-> > 
-> > Given that there's a conditional in the resulting code:
-> > 
-> >   static inline void class_rcu_destructor(class_rcu_t *_T)
-> >   {
-> >       if (_T->lock) {
-> >           rcu_read_unlock();
-> >       }
-> >   }
-> > 
-> > it seems that even trying to teach sparse to evalulate the
-> > cleanup attribute function it'd still be difficult to really
-> > make it understand the full context here.
-> > 
-> > Suppress the sparse warning by just releasing the context in
-> > the acquisition part of the function, after all we know it's
-> > safe with the guard, that's the whole point of it.
-> > 
-> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+On Thu, Mar 21, 2024 at 04:28:50PM +0800, Zqiang wrote:
+> When the rcutorture tests start to exit, the rcu_torture_cleanup() is
+> invoked to stop kthreads and release resources, if the stall-task
+> kthreads exist, cpu-stall has started and the rcutorture.stall_cpu
+> is set to a larger value, the rcu_torture_cleanup() will be blocked
+> for a long time and the hung-task may occur, this commit therefore
+> add kthread_should_stop() to the loop of cpu-stall operation, when
+> rcutorture tests ends, no need to wait for cpu-stall to end, exit
+> directly.
 > 
-> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 
-Queued, thank you both!
+Good eyes!
+
+Queued for testing and further review, thank you!
 
 							Thanx, Paul
 
-> Regards,
-> Boqun
+> ---
+>  kernel/rcu/rcutorture.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > ---
-> > v2: add a comment after discussion with Boqun
-> > 
-> > ---
-> >  include/linux/rcupdate.h | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index 0746b1b0b663..6a3c52b3c180 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -1059,6 +1059,18 @@ rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
-> >  extern int rcu_expedited;
-> >  extern int rcu_normal;
-> >  
-> > -DEFINE_LOCK_GUARD_0(rcu, rcu_read_lock(), rcu_read_unlock())
-> > +DEFINE_LOCK_GUARD_0(rcu,
-> > +		    do {
-> > +			rcu_read_lock();
-> > +			/*
-> > +			 * sparse doesn't call the cleanup function,
-> > +			 * so just release immediately and don't track
-> > +			 * the context. We don't need to anyway, since
-> > +			 * the whole point of the guard is to not need
-> > +			 * the explicit unlock.
-> > +			 */
-> > +			__release(RCU);
-> > +		    } while(0),
-> > +		    rcu_read_unlock())
-> >  
-> >  #endif /* __LINUX_RCUPDATE_H */
-> > -- 
-> > 2.44.0
-> > 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 3f9c3766f52b..6a3cd6ed8b25 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -2490,7 +2490,7 @@ static int rcu_torture_stall(void *args)
+>  		pr_alert("%s start on CPU %d.\n",
+>  			  __func__, raw_smp_processor_id());
+>  		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
+> -				    stop_at))
+> +				    stop_at) && !kthread_should_stop())
+>  			if (stall_cpu_block) {
+>  #ifdef CONFIG_PREEMPTION
+>  				preempt_schedule();
+> -- 
+> 2.17.1
+> 
