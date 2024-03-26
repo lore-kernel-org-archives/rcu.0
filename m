@@ -1,31 +1,37 @@
-Received: from relay161.nicmail.ru (relay161.nicmail.ru [91.189.117.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 824B0127B47;
-	Tue, 26 Mar 2024 18:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37FC8627B;
+	Tue, 26 Mar 2024 18:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711476374; cv=none; b=RYiUQigJhjcj7NmsnWtIKTuS6JHHTx0RFuKmcdxr662r2hZZZHqGAUfZfvms5CsRziIPGi9bvxVhPaBwiLaKOFcBoeGMyXoxQhvL5KugXCrGM1c8aiWobuXtyKeps4EAIu/rBQtt6X+swooqmiCG/rhiRFvoe9tdZOt36eUCLZM=
+	t=1711476383; cv=none; b=c9QR4VRRmvqZffs64gxqMzccKZtZE5T7nJWPtlfFULI+cqjZrmrratfuB7+coPUACW4hHEfxzIddTIvjKJ+3wZi0phpRV86nOZoahF5zZsELmAtbl4Ra55mdagcyaNEYLoi3y2UUKJQpP22n+aPLgU4yMmBqs+byauK8IXEe26w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711476374; c=relaxed/simple;
-	bh=1NprXnNucG4gNP4X723OkYkF5c9zIbC5pkXNXKegHoU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fW0Lc46usJeGrA82pnOMMJw2XdRf3CS7ozCDqu2sPBCQn9rO9XYp+veHRwtr7rkcSCQiJPBLtFnV6CKP9IeR/dHtAglfNp99Qcm5xSxw3YSiRGHswqUtb0QTfLEIiOnwKVdV+QBJ3zmkeH2ASATEBMKn6rewkjom3+NlXjMFX00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
-Received: from [10.28.136.255] (port=56066 helo=mitx-gfx..)
-	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
-	(envelope-from <kiryushin@ancud.ru>)
-	id 1rpAuy-0000Uc-4G;
-	Tue, 26 Mar 2024 20:49:00 +0300
-Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO mitx-gfx..)
-	by incarp1105.mail.hosting.nic.ru (Exim 5.55)
-	with id 1rpAuy-002Nej-0h;
-	Tue, 26 Mar 2024 20:49:00 +0300
-From: Nikita Kiryushin <kiryushin@ancud.ru>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
-	Frederic Weisbecker <frederic@kernel.org>,
+	s=arc-20240116; t=1711476383; c=relaxed/simple;
+	bh=R+ckB3TYv6IwSf20f1+w+thE5azs2bxJD7LoIcuqpXs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kK50oVYtPfUD32ggzQVnr5jom9F8HrsI6IkM+YAImGh4P1v2lSXELHQmE7Z4A4vDdXm0nlCm1qf0ZNQvqz5yrusmAUBPISmiY6NXEAg8Ss5pMWiY0PhAZCexxwEDfvLMj8ONlXOER4pVDw4vWN66dOlbkuTk8Ic4UWaMB8BW7uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kNIeew0y; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kNIeew0y"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46F1DC433F1;
+	Tue, 26 Mar 2024 18:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711476383;
+	bh=R+ckB3TYv6IwSf20f1+w+thE5azs2bxJD7LoIcuqpXs=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=kNIeew0yhEd9NtCJTXqE5tv9mSD+gUCgCjmGZT6wPwtlUecV9zJPATOOjwkFd7FW9
+	 BBUNZMYoMtM5vbiaxqdBc5GHqIk0Jc1ZaHM30U37r0eDAcJwkP6roONUmq2ODCDhJk
+	 3l4AaBpRC7jSQ953fc/vDqJ5yJrUG813hNeKm8Sikx1+qbiL/KK4iNC/Z0R3uoDdzL
+	 1Qpy2pSx+KzjgS5aQPdbgAudcBejKTbDp0yt75O3eBzujZbuq7aiQdB2iA7rnPvk+z
+	 yNH2H4ca566y+6riRawOsPelRLv6NfMGAGasePf9pIRkI15oPeHGAD5+Z8NFXNmxas
+	 Km9TBNW00Mm5Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C1D2CCE129B; Tue, 26 Mar 2024 11:06:22 -0700 (PDT)
+Date: Tue, 26 Mar 2024 11:06:22 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
@@ -33,53 +39,59 @@ Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] rcu-tasks: Update show_rcu_tasks_trace_gp_kthread buffer size
-Date: Tue, 26 Mar 2024 20:48:39 +0300
-Message-Id: <20240326174839.487582-1-kiryushin@ancud.ru>
-X-Mailer: git-send-email 2.34.1
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] rcu-tasks: Update show_rcu_tasks_trace_gp_kthread buffer
+ size
+Message-ID: <a6ad8ae1-40bf-41d0-a31c-30f4a5155b24@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240326174839.487582-1-kiryushin@ancud.ru>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MS-Exchange-Organization-SCL: -1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326174839.487582-1-kiryushin@ancud.ru>
 
-There is a possibility of buffer overflow in
-show_rcu_tasks_trace_gp_kthread() if counters, passed
-to sprintf() are huge. Counter numbers, needed for this
-are unrealistically high, but buffer overflow is still
-possible.
+On Tue, Mar 26, 2024 at 08:48:39PM +0300, Nikita Kiryushin wrote:
+> There is a possibility of buffer overflow in
+> show_rcu_tasks_trace_gp_kthread() if counters, passed
+> to sprintf() are huge. Counter numbers, needed for this
+> are unrealistically high, but buffer overflow is still
+> possible.
+> 
+> Update used buffer size for maximum needed size for
+> current format string.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
 
-Update used buffer size for maximum needed size for
-current format string.
+Good catch!  Applied for testing and further review.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+							Thanx, Paul
 
-Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
-Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
----
- kernel/rcu/tasks.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 147b5945d67a..13ac514489c0 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1992,7 +1992,7 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
- #if !defined(CONFIG_TINY_RCU)
- void show_rcu_tasks_trace_gp_kthread(void)
- {
--	char buf[64];
-+	char buf[87];
- 
- 	sprintf(buf, "N%lu h:%lu/%lu/%lu",
- 		data_race(n_trc_holdouts),
--- 
-2.34.1
-
+> ---
+>  kernel/rcu/tasks.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 147b5945d67a..13ac514489c0 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -1992,7 +1992,7 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
+>  #if !defined(CONFIG_TINY_RCU)
+>  void show_rcu_tasks_trace_gp_kthread(void)
+>  {
+> -	char buf[64];
+> +	char buf[87];
+>  
+>  	sprintf(buf, "N%lu h:%lu/%lu/%lu",
+>  		data_race(n_trc_holdouts),
+> -- 
+> 2.34.1
+> 
