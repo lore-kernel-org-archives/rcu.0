@@ -1,184 +1,231 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC1A12EBC4;
-	Wed, 27 Mar 2024 18:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB3F152168
+	for <rcu@vger.kernel.org>; Wed, 27 Mar 2024 23:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711564449; cv=none; b=glmXDwhRC8bq8jSv7vw69s/6thQ1AtckBM4/om3tyUNfYPM0NfK1DFftjeEJKHXG9ixpmjwlwwAPPftDPpPfdkQGAeNeGsemqLTAF6PxDG3518gOT7OM8DU75VxF5em59sgz7pR9iIg/vpKvsN+H8s3qffnTasRzVHHFv4c6CDQ=
+	t=1711582041; cv=none; b=ASEGwa4T3tPUwk89Avs/bc3Xdi9iy+TDn1OdcBz4gZ8b8/t2dAejt/x3L9zT/bm3LeXIGZF1F9UyN0PfsB9KzTTltxBXA1DwfsPqg0Tk/oDntw2EHdTtwRLFg8tvtX+b2fQ9NnUlbuAkJQt7TJN1fAhkjoxmFIxEUme8dZUfJHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711564449; c=relaxed/simple;
-	bh=7eFBescMyL+emvxUkie7Cz4ZX6idN7amqZZmxHioyzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FeZvNTEShvTUj+ABy5XtyFFUympmUqr+VU5l+4zsxI3lI00++jZ59S0jiK+vdzqg1bwOb+XER8n19yR/AET4ag2HN2MecKkhuWcxEbJA4iuF9yp4rzKEe4IU6fQZlpi6BTZWGZ4lLyKXnZKC6K22Jm+39tFdnWeXSXilWG+Lo4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gxwO5lRU; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gxwO5lRU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58D3BC433C7;
-	Wed, 27 Mar 2024 18:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711564449;
-	bh=7eFBescMyL+emvxUkie7Cz4ZX6idN7amqZZmxHioyzQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=gxwO5lRUnXIcrWlAZixFvZw/4eYw6KC/AlS9oz2vPrv1CJYVuLZ67gzfTzrBh/jSt
-	 Bsniw2nGCeqouZuxppz2TvpNd/+i69uGnSiUqWBwKa4UseG2SHejJIugMJMuePnvbz
-	 BpPLamj2yzDRP+Sn5WQUYXX1gx6L7zIg81/97HwWJs1xbsdynerORzk3URtsJSlgKD
-	 tD/erLPMOADFJmJuMdJv5A+sOWel+RsMFkfvUAuPyYh7CstwFPGzoqj2ZKpld+HEdP
-	 sss9aIDZ56ppn8kej8jahRh7K0Jy4eEyy/JYFlt8S3DLbJmuQXPKLXsZvDuJt1vElj
-	 1K/TklKHAx6OQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E0EFECE0D67; Wed, 27 Mar 2024 11:34:08 -0700 (PDT)
-Date: Wed, 27 Mar 2024 11:34:08 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix invalid context warning when enable srcu
- barrier testing
-Message-ID: <75730446-9de6-4240-b337-c3170fb405ba@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240325075219.10367-1-qiang.zhang1211@gmail.com>
- <ea12722c-772b-47de-ae3a-022fe1f8da3e@paulmck-laptop>
- <CALm+0cWRSFr=1tdYpvurHFMaB7B-u8geYRZEOztRFfmH42ZKhA@mail.gmail.com>
+	s=arc-20240116; t=1711582041; c=relaxed/simple;
+	bh=9iqRHXiosXnDRM27eD9CCRzZXsl0KVBbmd3Fx6Tf4PI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=C6Wfk4hUe7RU7PoKaybLo3FK3q1yNz401CdU3ERVLKdba+LDHJ4xiMjAAdBTTuY/YYACR7TcVmk7VTA8VKFLgY3gXcJi+zC8EmgxFs5muSyDv2HHCvYbotg/h80jtqqxeYLPQQRTFQbPBv76eIKgCldAg7EsFC1IJBgeSiGln+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cbef888187so29996739f.2
+        for <rcu@vger.kernel.org>; Wed, 27 Mar 2024 16:27:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711582039; x=1712186839;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zn+nNCI3Y9vT/+kIQMpjFCCQ/Pi1LaMfpKeNn5LCWpQ=;
+        b=vIDRiMSfgNfXxA9+yW8NgMHvItxFdb6EFDDXedDAkVI7v77RFvql6me3zGp57moPEe
+         DT18i6t8QtIam+RMIOSKDfNlX9ziM1ktQ7ATNNj1kNVpl5YRfFA1G7tZMqXfrd2W9aVT
+         28BsRr0CR5/Z6Er+2Uru8J5sQlR4vCkZcbREhaYbg6N7+nURxaTW2BG8vXLvN1pFtPuA
+         2r+wzm56cD9gaSsGZgqSZ2n2XggJ6xWV5rtMUS5TDDKSZwHj2TW+8EDOM8Gio//jCjv2
+         jHoBDZ73jYHCpmuCAG6G3UpAUeEp1MqduYcAff3R0bU8xgmRIykyXyDZLiYb1N0bK4UP
+         J50g==
+X-Forwarded-Encrypted: i=1; AJvYcCUQSflL530FEGkE2YzGHFiltWqTmkK7Dff5E9WEMX5KQG00mE9zDibnuee59Rjg3ysrMaTjgu1o8xbo/82ctTaAR3ze
+X-Gm-Message-State: AOJu0YybjnqapoRV8JMrKngJrBpxkFdfbSdvgZgdDYobIyEDJtfSzmb0
+	RZ0H45bM/4hHoe7tqtYMP/2digGNFGNzsLzeIRX//4JcRoH+o5ZGIOMJvG5mNvTQsrDQu9jVBRF
+	abxBAyeyMozrb9EP1FjXBKo/dY4Uzd7j4drqOXWx+8RlfJwIvAFWUVI0=
+X-Google-Smtp-Source: AGHT+IERbwZ4BLxARkUTyCkw4tqyzqdnMHsmqp2Zl+5+j/uvscpy2nMCHuAzBLQg7xTuCLPTapCsdk40HAFIfHGwvHNnMs9rZ7oO
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cWRSFr=1tdYpvurHFMaB7B-u8geYRZEOztRFfmH42ZKhA@mail.gmail.com>
+X-Received: by 2002:a05:6638:2415:b0:47c:12e6:7d13 with SMTP id
+ z21-20020a056638241500b0047c12e67d13mr38284jat.5.1711582039071; Wed, 27 Mar
+ 2024 16:27:19 -0700 (PDT)
+Date: Wed, 27 Mar 2024 16:27:19 -0700
+In-Reply-To: <000000000000f2f0c0061494e610@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000716bb60614acbf37@google.com>
+Subject: Re: [syzbot] [bpf?] possible deadlock in kvfree_call_rcu
+From: syzbot <syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com>
+To: alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com, 
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	netdev@vger.kernel.org, paulmck@kernel.org, rcu@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	urezki@gmail.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 27, 2024 at 05:40:07PM +0800, Z qiang wrote:
-> > On Mon, Mar 25, 2024 at 03:52:19PM +0800, Zqiang wrote:
-> > > When the torture_type is set srcu or srcud and cb_barrier is
-> > > non-zero, running the rcutorture test will trigger the
-> > > following warning:
-> > >
-> > > [  163.910989][    C1] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-> > > [  163.910994][    C1] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
-> > > [  163.910999][    C1] preempt_count: 10001, expected: 0
-> > > [  163.911002][    C1] RCU nest depth: 0, expected: 0
-> > > [  163.911005][    C1] INFO: lockdep is turned off.
-> > > [  163.911007][    C1] irq event stamp: 30964
-> > > [  163.911010][    C1] hardirqs last  enabled at (30963): [<ffffffffabc7df52>] do_idle+0x362/0x500
-> > > [  163.911018][    C1] hardirqs last disabled at (30964): [<ffffffffae616eff>] sysvec_call_function_single+0xf/0xd0
-> > > [  163.911025][    C1] softirqs last  enabled at (0): [<ffffffffabb6475f>] copy_process+0x16ff/0x6580
-> > > [  163.911033][    C1] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> > > [  163.911038][    C1] Preemption disabled at:
-> > > [  163.911039][    C1] [<ffffffffacf1964b>] stack_depot_save_flags+0x24b/0x6c0
-> > > [  163.911063][    C1] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W          6.8.0-rc4-rt4-yocto-preempt-rt+ #3 1e39aa9a737dd024a3275c4f835a872f673a7d3a
-> > > [  163.911071][    C1] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-> > > [  163.911075][    C1] Call Trace:
-> > > [  163.911078][    C1]  <IRQ>
-> > > [  163.911080][    C1]  dump_stack_lvl+0x88/0xd0
-> > > [  163.911089][    C1]  dump_stack+0x10/0x20
-> > > [  163.911095][    C1]  __might_resched+0x36f/0x530
-> > > [  163.911105][    C1]  rt_spin_lock+0x82/0x1c0
-> > > [  163.911112][    C1]  spin_lock_irqsave_ssp_contention+0xb8/0x100
-> > > [  163.911121][    C1]  srcu_gp_start_if_needed+0x782/0xf00
-> > > [  163.911128][    C1]  ? _raw_spin_unlock_irqrestore+0x46/0x70
-> > > [  163.911136][    C1]  ? debug_object_active_state+0x336/0x470
-> > > [  163.911148][    C1]  ? __pfx_srcu_gp_start_if_needed+0x10/0x10
-> > > [  163.911156][    C1]  ? __pfx_lock_release+0x10/0x10
-> > > [  163.911165][    C1]  ? __pfx_rcu_torture_barrier_cbf+0x10/0x10
-> > > [  163.911188][    C1]  __call_srcu+0x9f/0xe0
-> > > [  163.911196][    C1]  call_srcu+0x13/0x20
-> > > [  163.911201][    C1]  srcu_torture_call+0x1b/0x30
-> > > [  163.911224][    C1]  rcu_torture_barrier1cb+0x4a/0x60
-> > > [  163.911247][    C1]  __flush_smp_call_function_queue+0x267/0xca0
-> > > [  163.911256][    C1]  ? __pfx_rcu_torture_barrier1cb+0x10/0x10
-> > > [  163.911281][    C1]  generic_smp_call_function_single_interrupt+0x13/0x20
-> > > [  163.911288][    C1]  __sysvec_call_function_single+0x7d/0x280
-> > > [  163.911295][    C1]  sysvec_call_function_single+0x93/0xd0
-> > > [  163.911302][    C1]  </IRQ>
-> > > [  163.911304][    C1]  <TASK>
-> > > [  163.911308][    C1]  asm_sysvec_call_function_single+0x1b/0x20
-> > > [  163.911313][    C1] RIP: 0010:default_idle+0x17/0x20
-> > > [  163.911326][    C1] RSP: 0018:ffff888001997dc8 EFLAGS: 00000246
-> > > [  163.911333][    C1] RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffffae618b51
-> > > [  163.911337][    C1] RDX: 0000000000000000 RSI: ffffffffaea80920 RDI: ffffffffaec2de80
-> > > [  163.911342][    C1] RBP: ffff888001997dc8 R08: 0000000000000001 R09: ffffed100d740cad
-> > > [  163.911346][    C1] R10: ffffed100d740cac R11: ffff88806ba06563 R12: 0000000000000001
-> > > [  163.911350][    C1] R13: ffffffffafe460c0 R14: ffffffffafe460c0 R15: 0000000000000000
-> > > [  163.911358][    C1]  ? ct_kernel_exit.constprop.3+0x121/0x160
-> > > [  163.911369][    C1]  ? lockdep_hardirqs_on+0xc4/0x150
-> > > [  163.911376][    C1]  arch_cpu_idle+0x9/0x10
-> > > [  163.911383][    C1]  default_idle_call+0x7a/0xb0
-> > > [  163.911390][    C1]  do_idle+0x362/0x500
-> > > [  163.911398][    C1]  ? __pfx_do_idle+0x10/0x10
-> > > [  163.911404][    C1]  ? complete_with_flags+0x8b/0xb0
-> > > [  163.911416][    C1]  cpu_startup_entry+0x58/0x70
-> > > [  163.911423][    C1]  start_secondary+0x221/0x280
-> > > [  163.911430][    C1]  ? __pfx_start_secondary+0x10/0x10
-> > > [  163.911440][    C1]  secondary_startup_64_no_verify+0x17f/0x18b
-> > > [  163.911455][    C1]  </TASK>
-> > >
-> > > This commit therefore use smp_call_on_cpu() instead of
-> > > smp_call_function_single(), make rcu_torture_barrier1cb() invoked
-> > > happens on task-context.
-> > >
-> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> >
-> > Huh.  The use of non-raw spinlocks does constrain call_rcu() use, doesn't
-> > it?  Good catch!
-> 
-> Yes, This problem happens in the srcu rcutorture test under the
-> Preempt-RT kernel.
-> 
-> > Queued for testing and further review.  Are there any uses of call_srcu()
-> > out there that are unsafe on -rt?
-> 
-> I'm running rcutorture tests under the RT-kernel these days, and I haven't found
-> any others yet.  :)
+syzbot has found a reproducer for the following issue on:
 
-Very good, and glad that you are doing RT rcutorture testing.
+HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
+git tree:       bpf
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=146398f9180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=1fa663a2100308ab6eab
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12055cc6180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ca53c9180000
 
-							Thanx, Paul
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
 
-> Thanks
-> Zqiang
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > ---
-> > >  kernel/rcu/rcutorture.c | 9 ++++-----
-> > >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > > index 48a9d47ec90e..498aae52333e 100644
-> > > --- a/kernel/rcu/rcutorture.c
-> > > +++ b/kernel/rcu/rcutorture.c
-> > > @@ -3041,11 +3041,12 @@ static void rcu_torture_barrier_cbf(struct rcu_head *rcu)
-> > >  }
-> > >
-> > >  /* IPI handler to get callback posted on desired CPU, if online. */
-> > > -static void rcu_torture_barrier1cb(void *rcu_void)
-> > > +static int rcu_torture_barrier1cb(void *rcu_void)
-> > >  {
-> > >       struct rcu_head *rhp = rcu_void;
-> > >
-> > >       cur_ops->call(rhp, rcu_torture_barrier_cbf);
-> > > +     return 0;
-> > >  }
-> > >
-> > >  /* kthread function to register callbacks used to test RCU barriers. */
-> > > @@ -3071,11 +3072,9 @@ static int rcu_torture_barrier_cbs(void *arg)
-> > >                * The above smp_load_acquire() ensures barrier_phase load
-> > >                * is ordered before the following ->call().
-> > >                */
-> > > -             if (smp_call_function_single(myid, rcu_torture_barrier1cb,
-> > > -                                          &rcu, 1)) {
-> > > -                     // IPI failed, so use direct call from current CPU.
-> > > +             if (smp_call_on_cpu(myid, rcu_torture_barrier1cb, &rcu, 1))
-> > >                       cur_ops->call(&rcu, rcu_torture_barrier_cbf);
-> > > -             }
-> > > +
-> > >               if (atomic_dec_and_test(&barrier_cbs_count))
-> > >                       wake_up(&barrier_wq);
-> > >       } while (!torture_must_stop());
-> > > --
-> > > 2.17.1
-> > >
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-05236-g443574b03387 #0 Not tainted
+------------------------------------------------------
+syz-executor271/5074 is trying to acquire lock:
+ffff8880b9529470 (krc.lock){....}-{2:2}, at: krc_this_cpu_lock kernel/rcu/tree.c:2960 [inline]
+ffff8880b9529470 (krc.lock){....}-{2:2}, at: add_ptr_to_bulk_krc_lock kernel/rcu/tree.c:3359 [inline]
+ffff8880b9529470 (krc.lock){....}-{2:2}, at: kvfree_call_rcu+0x18a/0x790 kernel/rcu/tree.c:3444
+
+but task is already holding lock:
+ffff888029e171f8 (&trie->lock){-...}-{2:2}, at: trie_update_elem+0xcb/0xc10 kernel/bpf/lpm_trie.c:324
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&trie->lock){-...}-{2:2}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+       trie_delete_elem+0x96/0x6a0 kernel/bpf/lpm_trie.c:451
+       bpf_prog_2c29ac5cdc6b1842+0x42/0x46
+       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+       __bpf_prog_run include/linux/filter.h:657 [inline]
+       bpf_prog_run include/linux/filter.h:664 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+       bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+       trace_hrtimer_start include/trace/events/timer.h:222 [inline]
+       debug_activate kernel/time/hrtimer.c:479 [inline]
+       enqueue_hrtimer+0x335/0x3a0 kernel/time/hrtimer.c:1090
+       __hrtimer_start_range_ns kernel/time/hrtimer.c:1265 [inline]
+       hrtimer_start_range_ns+0xaa0/0xc60 kernel/time/hrtimer.c:1305
+       hrtimer_start_expires include/linux/hrtimer.h:289 [inline]
+       hrtimer_sleeper_start_expires kernel/time/hrtimer.c:1972 [inline]
+       schedule_hrtimeout_range_clock+0x277/0x480 kernel/time/hrtimer.c:2309
+       poll_schedule_timeout fs/select.c:244 [inline]
+       do_poll fs/select.c:965 [inline]
+       do_sys_poll+0xe40/0x1330 fs/select.c:1016
+       __do_sys_ppoll fs/select.c:1122 [inline]
+       __se_sys_ppoll+0x2a0/0x330 fs/select.c:1102
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #1 (hrtimer_bases.lock){-.-.}-{2:2}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+       lock_hrtimer_base kernel/time/hrtimer.c:175 [inline]
+       hrtimer_start_range_ns+0xdf/0xc60 kernel/time/hrtimer.c:1303
+       hrtimer_start include/linux/hrtimer.h:275 [inline]
+       run_page_cache_worker kernel/rcu/tree.c:3341 [inline]
+       kvfree_call_rcu+0x5e6/0x790 kernel/rcu/tree.c:3446
+       rtnl_register_internal+0x482/0x590 net/core/rtnetlink.c:265
+       rtnl_register+0x36/0x80 net/core/rtnetlink.c:315
+       ip_rt_init+0x2f5/0x3a0 net/ipv4/route.c:3719
+       ip_init+0xe/0x20 net/ipv4/ip_output.c:1664
+       inet_init+0x3d8/0x580 net/ipv4/af_inet.c:2022
+       do_one_initcall+0x238/0x830 init/main.c:1241
+       do_initcall_level+0x157/0x210 init/main.c:1303
+       do_initcalls+0x3f/0x80 init/main.c:1319
+       kernel_init_freeable+0x435/0x5d0 init/main.c:1557
+       kernel_init+0x1d/0x2a0 init/main.c:1446
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+-> #0 (krc.lock){....}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       krc_this_cpu_lock kernel/rcu/tree.c:2960 [inline]
+       add_ptr_to_bulk_krc_lock kernel/rcu/tree.c:3359 [inline]
+       kvfree_call_rcu+0x18a/0x790 kernel/rcu/tree.c:3444
+       trie_update_elem+0x819/0xc10 kernel/bpf/lpm_trie.c:385
+       bpf_map_update_value+0x4d3/0x540 kernel/bpf/syscall.c:203
+       generic_map_update_batch+0x60d/0x900 kernel/bpf/syscall.c:1876
+       bpf_map_do_batch+0x3e0/0x690 kernel/bpf/syscall.c:5145
+       __sys_bpf+0x377/0x810
+       __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+       __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+       __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+other info that might help us debug this:
+
+Chain exists of:
+  krc.lock --> hrtimer_bases.lock --> &trie->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&trie->lock);
+                               lock(hrtimer_bases.lock);
+                               lock(&trie->lock);
+  lock(krc.lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor271/5074:
+ #0: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #0: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+ #0: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_map_update_value+0x3c4/0x540 kernel/bpf/syscall.c:202
+ #1: ffff888029e171f8 (&trie->lock){-...}-{2:2}, at: trie_update_elem+0xcb/0xc10 kernel/bpf/lpm_trie.c:324
+
+stack backtrace:
+CPU: 1 PID: 5074 Comm: syz-executor271 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ krc_this_cpu_lock kernel/rcu/tree.c:2960 [inline]
+ add_ptr_to_bulk_krc_lock kernel/rcu/tree.c:3359 [inline]
+ kvfree_call_rcu+0x18a/0x790 kernel/rcu/tree.c:3444
+ trie_update_elem+0x819/0xc10 kernel/bpf/lpm_trie.c:385
+ bpf_map_update_value+0x4d3/0x540 kernel/bpf/syscall.c:203
+ generic_map_update_batch+0x60d/0x900 kernel/bpf/syscall.c:1876
+ bpf_map_do_batch+0x3e0/0x690 kernel/bpf/syscall.c:5145
+ __sys_bpf+0x377/0x810
+ __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f485af3c8e9
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc5f419378 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007ffc5f419548 RCX: 00007f485af3c8e9
+RDX: 0000000000000038 RSI: 0000000020000000 RDI: 000000000000001a
+RBP: 00007f485afaf610 R08: 00007ffc5f419548 R09: 00007ffc5f419548
+R10: 00007ffc5f419548 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffc5f419538 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
