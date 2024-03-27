@@ -1,28 +1,28 @@
-Received: from relay164.nicmail.ru (relay164.nicmail.ru [91.189.117.8])
+Received: from relay161.nicmail.ru (relay161.nicmail.ru [91.189.117.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765ED12A14C;
-	Wed, 27 Mar 2024 16:37:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325E2129E81;
+	Wed, 27 Mar 2024 16:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711557459; cv=none; b=hyRE8iFtGQoKOXb/bmuK2VRiIi4bo0k5Ui+zToNjK7NKmcnIcRQcAiFQe9p700AxXZCQeBGB8Q4xhNHpiVkY8eYYhZOBn2ICs1BhssCVyW57t39J+OTkkQB2D15dYzjfzG15Ssl5U1hcoJhwoRgqSXX+EA6Q97vb+kIobW7T+vs=
+	t=1711557997; cv=none; b=a2ds+7kVsys9q+EpXm5/pWcKzmt3wvAx10r9w6Cbu7LvpHQ+6Ionxwmj/F7nCWssXNDDg4APDBaDI9JJqOrT6/MNzBg/NKvc5HnMzoqRlQnn400JlK2i+vomGUQnkYNUxZx8ymTUkv5dOcjqvxhfJt7XQmWC3h6ML9h1EpBS4cY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711557459; c=relaxed/simple;
-	bh=5y86N3zhFqoBKloW781o02MUwINs71FpjLgTkfEec/g=;
+	s=arc-20240116; t=1711557997; c=relaxed/simple;
+	bh=tAFq/BzAW41RZG6c+Gm/2k78SjLKUSAXpNi+W+f4MRE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W1TwUnc2Tcqs2wCR+/noHnoKkm7kt/hVRUkw17QN0FF41olZ2lP6KWXd7rFOi8MP4F3ridbCBEd3cV8FDuFGRsD7cORmsnWHJ79Y2f2Q4ZxyrKtwcGvABMahgU2LyQDOrfK6BwJwLCvvvyEbeN+bmOYGuVGcszXYEyHmW/GMXp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.8
+	 MIME-Version; b=c6nm+kWYB1REE9qf95XirFejJZKIw/BsD47kSN5F6e1pDkZ+1uaAEnpZ0vlOcvKA0avmS4caYx2ApUBCx45D7pGuDUIPIstdslLd6xHhKLYZblcFXPWQRMbzRceF5RbI3HS2JCd/CmFWuHu1MdPg/xUJNWc/HJrbPOLXz3cCvII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
-Received: from [10.28.138.151] (port=43678 helo=mitx-gfx..)
+Received: from [10.28.138.149] (port=6700 helo=mitx-gfx..)
 	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
 	(envelope-from <kiryushin@ancud.ru>)
-	id 1rpWHF-0005Cr-Dk;
-	Wed, 27 Mar 2024 19:37:25 +0300
+	id 1rpWPy-0004wZ-40;
+	Wed, 27 Mar 2024 19:46:26 +0300
 Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO mitx-gfx..)
-	by incarp1103.mail.hosting.nic.ru (Exim 5.55)
-	with id 1rpWHF-007K9y-0T;
-	Wed, 27 Mar 2024 19:37:25 +0300
+	by incarp1102.mail.hosting.nic.ru (Exim 5.55)
+	with id 1rpWPy-005QOn-0Q;
+	Wed, 27 Mar 2024 19:46:26 +0300
 From: Nikita Kiryushin <kiryushin@ancud.ru>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
@@ -38,11 +38,11 @@ Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
 	rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lvc-project@linuxtesting.org
-Subject: [PATCH v2] rcu-tasks: Update show_rcu_tasks_trace_gp_kthread buffer size
-Date: Wed, 27 Mar 2024 19:36:56 +0300
-Message-Id: <20240327163657.606414-1-kiryushin@ancud.ru>
+Subject: [PATCH v3] rcu-tasks: Fix show_rcu_tasks_trace_gp_kthread buffer overflow
+Date: Wed, 27 Mar 2024 19:46:13 +0300
+Message-Id: <20240327164613.606851-1-kiryushin@ancud.ru>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240326152230.3e692d83@gandalf.local.home>
+In-Reply-To: <20240327163657.606414-1-kiryushin@ancud.ru>
 References: 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -66,6 +66,7 @@ Found by Linux Verification Center (linuxtesting.org) with SVACE.
 Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
 Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
 ---
+v3: Fixed commit message
 v2: Use snprintf() as
 Steven Rostedt <rostedt@goodmis.org> suggested.
  kernel/rcu/tasks.h | 2 +-
