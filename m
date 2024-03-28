@@ -1,56 +1,56 @@
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A30548FC;
-	Thu, 28 Mar 2024 07:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA545380D;
+	Thu, 28 Mar 2024 07:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711612292; cv=none; b=EmWRRoHODtu6zgkFd8NOfQ/r0VB3nlznIycNEDo6BOCJfvgR9qwc6HFAHy8NVTMBF3KgsAy/VvyXTw7yg+uRKODE22sVb6mxYk/NjOmgHS2Yl9ewki6Nb1jLs6OWVKxTMXfsdMIf6VRh7UR/QRx1v4vNfsgTK6CcnvvDEpYYaz4=
+	t=1711612299; cv=none; b=s+hz7s8WCUJghEhZakYWmOeAQQy2tUIsxSLYho/bTH3nvLJxNywO5SLeNzvzGY+Simqq3+PMCzJBoT+UPWS5y8QWOAANtzCQjMsWnKmW49F+WReK+mtwSGyY6ybyGveVY3ajgvqxPvd/rQ6N1HpW6Vj0UQ2AbHh5yBdRvmd9/V0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711612292; c=relaxed/simple;
-	bh=7bkBKLnD77zEWrwezIeGk/jY1nL8DIDPDOCksC6gLzk=;
+	s=arc-20240116; t=1711612299; c=relaxed/simple;
+	bh=1u4ClC0nXJYWtLmcNlGJ9Evf3oh4cLDO6utJlz4b/+Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=G2AdACTUprAcH+DwRFxXP/1c2npHUGqhQ51SWB74KxHj2VD6OYt7+MUDQywASfJ7UXT7TgOlkBpu/mAGV6xKfmqOvUzp8W63LyyYUqhVH2IbhQuVYiNLxot7QZIJveI572MolIE3y8aLcBS/kkbm+McpSg7+z8Bzrv/x2goiiMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZmXBrK4l; arc=none smtp.client-ip=209.85.215.179
+	 MIME-Version; b=jHamKHR6XA5k8dvzRKhJDuaj/5nSsSPSE+xYIwYZOviaqkCKyaHuQ9LYJlPJGQRceYwyIZ6O+SfeEnKTbYkLJ8Ia2wM0otNAMlcF6VpADZEvWBxKY+rltR1UOwaFC/DRmxODCw1QIdrtf4IUrvYVG7A/vmUEHB0FJL36w8gS2LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fcVj1oRu; arc=none smtp.client-ip=209.85.160.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZmXBrK4l"
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5e152c757a5so404467a12.2;
-        Thu, 28 Mar 2024 00:51:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fcVj1oRu"
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2282597eff5so478301fac.3;
+        Thu, 28 Mar 2024 00:51:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711612289; x=1712217089; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711612296; x=1712217096; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3Fu9XbKPcpXhQXu1sKcZUeWcfqfg6wDFC9Zk5mwxGOY=;
-        b=ZmXBrK4lB5+xwebUa8/R5c0/kIvTKbmfc/Rpd+KPtYdD2PAqswruXa+FlnhwWFxAE3
-         D91qt6RwsWFasVzdjxo6Smd1kGUIAKB71cbJVc92/SHpT5iggE62BfU/NGTcLhJbm3nO
-         CdB2W8EBW6rvnjVgHElKDhiwr9KgzUu/HTq9ecckzgCHQ5AFtYoeKzepuLLDc8cJXfC5
-         za66ni3WNLOyjNTWCyC45ePsHZovqqO53rugV9J9F1asb7KOEXYZC1drmZ3MmBswZRTu
-         +sgVAlGSAp8FNjUbGeqxQvlNIEiUVyk+GhJ494QflZDweNYds2GtlUIy7Yj8rRQqd15B
-         PJ7A==
+        bh=kb+0BwtXCOHTxNecM62LX9dxsLjU1SobPdBfLYOqsoE=;
+        b=fcVj1oRuCRVoGBClW2Kr66cb/PPnfdvEjmoYlR+lqG1c45efv+5Bs4iQOsZyxuZfcd
+         WWtpvEg3KsSKpBWDOw9Gr9zDsb67TfcwhorDJ3e42tVTdchSwwVhzqWiORAUjNSr7umk
+         EpKa4KZe70WUUuFNPzzyUih5BKM4QzGEfGVOwCZOru9BoeaBxZaWlSs0tNHl0AEcNtMw
+         2Qxu6fgQ8Ph3WIHLY0S2Algtq+GVCye8QoKmFvY5xN/Xupu+VOfFvbEkJtJ0tW+4aA50
+         hnWE/dDqTg+mwgNEkKloHMGiyHTC4uxVW+JH7QnfYQ3Djv57FQlscAf67ksw1lNUwIQQ
+         7epQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711612289; x=1712217089;
+        d=1e100.net; s=20230601; t=1711612296; x=1712217096;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3Fu9XbKPcpXhQXu1sKcZUeWcfqfg6wDFC9Zk5mwxGOY=;
-        b=sfU3Q5vhWuH+rdBbW2gVCRoTtzn6soXeCfY0SND9fXq+rdIMlqrPw9geeXxIX6zlqC
-         bw2HSuZrg9y1BfRZQrvfLs4qcC5DvHkmN4IJzmVtIEJhoIbLHcxXTCKj9DCiBfHojLNA
-         7eCLYXwvrW9rmNKVef+Pkd+Wx9tLhF1GK/9rkkQrqv8jpa5YokTuieTXMoCpLI5f0QRu
-         KKl+QA/qriKlTPOHTXWdLQFpND9ta5fAsyeuhkp6sfMl15VSx3yOvu5j0WGvjrxci8gN
-         DOhF0VNLpiypZYY44wZND2pkw8KePVSmqnI6H4qp4ZMlmW8rP7SEp9n72cIXOv5rYU+E
-         63uQ==
-X-Gm-Message-State: AOJu0Yy9yEtYrGWHJPehzhC1jweS+LMMgAvaFl3cpXIShirzN9RE1Z/0
-	+pEPruLilTw1QgA8ey/cHq/YDGgRakYdYjAbMkdLLBLR/lOgsyLQ22PMYcZ4
-X-Google-Smtp-Source: AGHT+IFHruU5tg3ltPttVZMCiIjCktbE25klSko7+N6nSsI7NgeSJznZIu5AsRBpBKsVYWkexqhY8w==
-X-Received: by 2002:a05:6a20:4c1e:b0:1a3:dfd2:949c with SMTP id fm30-20020a056a204c1e00b001a3dfd2949cmr1882329pzb.54.1711612289629;
-        Thu, 28 Mar 2024 00:51:29 -0700 (PDT)
+        bh=kb+0BwtXCOHTxNecM62LX9dxsLjU1SobPdBfLYOqsoE=;
+        b=W5inbw0NmiJCeCMRX+XX76CLiJnTSiKvJG1jJwIADhteLIY5TnjzX9ySAE5YgkO924
+         v+TBDg+7eyG0hiGFWazDHdGpwh4PS06voceE7NwJ9BLjGPN5hjmSz/WWHK0QrF4j4XhJ
+         jmc8O8ZwynKy4FESLNvBrO9RgBG9URy/b9R8xpdfwQZbfvH30PVTsZzJC5gX+Q3Yl5HX
+         AdwonZiy8DbG5nYIgSG9B5kLYLVhF9uyTDxVyGMEcsgcZrlpjMD75CNGtRaw5ucSQJGL
+         aYFB/f+RYuUX/nGV1UA7AQykdIuLBaiwXiSODHBp9iWHl7fJhs3WV4IsIc3k6GCbmFQi
+         DjCA==
+X-Gm-Message-State: AOJu0Yyz4XEasFhK2FbBydwSHHf9fcmWahYb7Ak05H/uBHHOAqadiqTL
+	nXLqpXNGtqLTi32fhoA/ISOQVEsyoUqzzTfA0lgjG7kxjDo+JPQcJcqpE/rg
+X-Google-Smtp-Source: AGHT+IEzqMx8djm+FHmNWfNhehJ+tHqeZFhrJJCl/Hxw+o3WO/76dLEGu+gqfnycvOWAL9IbEKWnGg==
+X-Received: by 2002:a05:6871:4406:b0:229:e636:921f with SMTP id nd6-20020a056871440600b00229e636921fmr2181447oab.49.1711612296343;
+        Thu, 28 Mar 2024 00:51:36 -0700 (PDT)
 Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001e0b863b815sm865604plf.96.2024.03.28.00.51.28
+        by smtp.gmail.com with ESMTPSA id e18-20020aa79812000000b006ea81423c65sm774667pfl.148.2024.03.28.00.51.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Mar 2024 00:51:29 -0700 (PDT)
+        Thu, 28 Mar 2024 00:51:35 -0700 (PDT)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: rcu@vger.kernel.org,
@@ -59,24 +59,15 @@ Cc: rcu@vger.kernel.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
 	Borislav Petkov <bp@alien8.de>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Uros Bizjak <ubizjak@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Nadav Amit <namit@vmware.com>,
-	Breno Leitao <leitao@debian.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>
-Subject: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
-Date: Thu, 28 Mar 2024 15:53:17 +0800
-Message-Id: <20240328075318.83039-10-jiangshanlai@gmail.com>
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH 10/10] x86/rcu: Add THUNK rcu_read_unlock_special_thunk
+Date: Thu, 28 Mar 2024 15:53:18 +0800
+Message-Id: <20240328075318.83039-11-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20240328075318.83039-1-jiangshanlai@gmail.com>
 References: <20240328075318.83039-1-jiangshanlai@gmail.com>
@@ -90,182 +81,51 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-Implement PCPU_RCU_PREEMPT_COUNT for x86.
-Mainly copied from asm/preempt.h
+Add rcu_read_unlock_special_thunk(), so that the inlined rcu_read_unlock()
+doesn't need any code to save the caller-saved registers.
 
-Make rcu_read_[un]lock() inlined for rcu-preempt.
-Make rcu_read_lock() only one instruction.
-Make rcu_read_unlock() only two instructions in the fast path.
+Make rcu_read_unlock() only two instructions in the slow path at the
+caller site.
 
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 ---
- arch/x86/Kconfig                   |   1 +
- arch/x86/include/asm/current.h     |   3 +
- arch/x86/include/asm/rcu_preempt.h | 107 +++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/common.c       |   7 +-
- 4 files changed, 115 insertions(+), 3 deletions(-)
- create mode 100644 arch/x86/include/asm/rcu_preempt.h
+ arch/x86/entry/thunk_64.S          | 5 +++++
+ arch/x86/include/asm/rcu_preempt.h | 4 +++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 78050d5d7fac..7eb17c12f7b7 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -257,6 +257,7 @@ config X86
- 	select HAVE_OBJTOOL			if X86_64
- 	select HAVE_OPTPROBES
- 	select HAVE_PAGE_SIZE_4KB
-+	select HAVE_PCPU_RCU_PREEMPT_COUNT
- 	select HAVE_PCSPKR_PLATFORM
- 	select HAVE_PERF_EVENTS
- 	select HAVE_PERF_EVENTS_NMI
-diff --git a/arch/x86/include/asm/current.h b/arch/x86/include/asm/current.h
-index bf5953883ec3..dcc2ef784120 100644
---- a/arch/x86/include/asm/current.h
-+++ b/arch/x86/include/asm/current.h
-@@ -24,6 +24,9 @@ struct pcpu_hot {
- 			unsigned long		top_of_stack;
- 			void			*hardirq_stack_ptr;
- 			u16			softirq_pending;
+diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
+index 119ebdc3d362..10c60369a67c 100644
+--- a/arch/x86/entry/thunk_64.S
++++ b/arch/x86/entry/thunk_64.S
+@@ -13,3 +13,8 @@ THUNK preempt_schedule_thunk, preempt_schedule
+ THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+ EXPORT_SYMBOL(preempt_schedule_thunk)
+ EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
++
 +#ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
-+			int			rcu_preempt_count;
-+#endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
- #ifdef CONFIG_X86_64
- 			bool			hardirq_stack_inuse;
- #else
++THUNK rcu_read_unlock_special_thunk, rcu_read_unlock_special
++EXPORT_SYMBOL_GPL(rcu_read_unlock_special_thunk)
++#endif /* #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT */
 diff --git a/arch/x86/include/asm/rcu_preempt.h b/arch/x86/include/asm/rcu_preempt.h
-new file mode 100644
-index 000000000000..cb25ebe038a5
---- /dev/null
+index cb25ebe038a5..acdd73b74c05 100644
+--- a/arch/x86/include/asm/rcu_preempt.h
 +++ b/arch/x86/include/asm/rcu_preempt.h
-@@ -0,0 +1,107 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_RCU_PREEMPT_H
-+#define __ASM_RCU_PREEMPT_H
-+
-+#include <asm/rmwcc.h>
-+#include <asm/percpu.h>
-+#include <asm/current.h>
-+
-+#ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
-+
-+/* We use the MSB mostly because its available */
-+#define RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED	0x80000000
-+
-+/*
-+ * We use the RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED bit as an inverted
-+ * current->rcu_read_unlock_special.s such that a decrement hitting 0
-+ * means we can and should call rcu_read_unlock_special().
-+ */
-+#define RCU_PREEMPT_INIT	(0 + RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED)
-+
-+/*
-+ * We mask the RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED bit so as not to
-+ * confuse all current users that think a non-zero value indicates we
-+ * are in a critical section.
-+ */
-+static inline int pcpu_rcu_preempt_count(void)
-+{
-+	return raw_cpu_read_4(pcpu_hot.rcu_preempt_count) & ~RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED;
-+}
-+
-+static inline void pcpu_rcu_preempt_count_set(int count)
-+{
-+	int old, new;
-+
-+	old = raw_cpu_read_4(pcpu_hot.rcu_preempt_count);
-+	do {
-+		new = (old & RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED) |
-+			(count & ~RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED);
-+	} while (!raw_cpu_try_cmpxchg_4(pcpu_hot.rcu_preempt_count, &old, new));
-+}
-+
-+/*
-+ * We fold the RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED bit into the RCU
-+ * preempt count such that rcu_read_unlock() can decrement and test for
-+ * the need of unlock-special handling with a single instruction.
-+ *
-+ * We invert the actual bit, so that when the decrement hits 0 we know
-+ * we both reach a quiescent state (no rcu preempt count) and need to
-+ * handle unlock-special (the bit is cleared), normally to report the
-+ * quiescent state immediately.
-+ */
-+
-+static inline void pcpu_rcu_preempt_special_set(void)
-+{
-+	raw_cpu_and_4(pcpu_hot.rcu_preempt_count, ~RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED);
-+}
-+
-+static inline void pcpu_rcu_preempt_special_clear(void)
-+{
-+	raw_cpu_or_4(pcpu_hot.rcu_preempt_count, RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED);
-+}
-+
-+static inline bool pcpu_rcu_preempt_special_test(void)
-+{
-+	return !(raw_cpu_read_4(pcpu_hot.rcu_preempt_count) & RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED);
-+}
-+
-+static inline void pcpu_rcu_preempt_switch(int count, bool special)
-+{
-+	if (likely(!special))
-+		raw_cpu_write(pcpu_hot.rcu_preempt_count, count | RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED);
-+	else
-+		raw_cpu_write(pcpu_hot.rcu_preempt_count, count);
-+}
-+
-+/*
-+ * The various rcu_preempt_count add/sub methods
-+ */
-+
-+static __always_inline void pcpu_rcu_preempt_count_add(int val)
-+{
-+	raw_cpu_add_4(pcpu_hot.rcu_preempt_count, val);
-+}
-+
-+static __always_inline void pcpu_rcu_preempt_count_sub(int val)
-+{
-+	raw_cpu_add_4(pcpu_hot.rcu_preempt_count, -val);
-+}
-+
-+/*
-+ * Because we keep RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED set when we do
-+ * _not_ need to handle unlock-special for a fast-path decrement.
-+ */
-+static __always_inline bool pcpu_rcu_preempt_count_dec_and_test(void)
-+{
-+	return GEN_UNARY_RMWcc("decl", __my_cpu_var(pcpu_hot.rcu_preempt_count), e,
-+			       __percpu_arg([var]));
-+}
-+
-+#define pcpu_rcu_read_unlock_special()						\
-+do {										\
-+	rcu_read_unlock_special();						\
-+} while (0)
-+
-+#endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
-+
-+#endif /* __ASM_RCU_PREEMPT_H */
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ba8cf5e9ce56..0b204a649442 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1992,9 +1992,10 @@ static __init int setup_clearcpuid(char *arg)
- __setup("clearcpuid=", setup_clearcpuid);
+@@ -97,9 +97,11 @@ static __always_inline bool pcpu_rcu_preempt_count_dec_and_test(void)
+ 			       __percpu_arg([var]));
+ }
  
- DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) = {
--	.current_task	= &init_task,
--	.preempt_count	= INIT_PREEMPT_COUNT,
--	.top_of_stack	= TOP_OF_INIT_STACK,
-+	.current_task		= &init_task,
-+	.preempt_count		= INIT_PREEMPT_COUNT,
-+	.top_of_stack		= TOP_OF_INIT_STACK,
-+	.rcu_preempt_count	= RCU_PREEMPT_INIT,
- };
- EXPORT_PER_CPU_SYMBOL(pcpu_hot);
- EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
++extern asmlinkage void rcu_read_unlock_special_thunk(void);
++
+ #define pcpu_rcu_read_unlock_special()						\
+ do {										\
+-	rcu_read_unlock_special();						\
++	asm volatile ("call rcu_read_unlock_special_thunk" : ASM_CALL_CONSTRAINT);\
+ } while (0)
+ 
+ #endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
 -- 
 2.19.1.6.gb485710b
 
