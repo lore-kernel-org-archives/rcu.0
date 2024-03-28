@@ -1,76 +1,82 @@
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA545380D;
-	Thu, 28 Mar 2024 07:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17375A780
+	for <rcu@vger.kernel.org>; Thu, 28 Mar 2024 17:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711612299; cv=none; b=s+hz7s8WCUJghEhZakYWmOeAQQy2tUIsxSLYho/bTH3nvLJxNywO5SLeNzvzGY+Simqq3+PMCzJBoT+UPWS5y8QWOAANtzCQjMsWnKmW49F+WReK+mtwSGyY6ybyGveVY3ajgvqxPvd/rQ6N1HpW6Vj0UQ2AbHh5yBdRvmd9/V0=
+	t=1711646405; cv=none; b=u7O2N7keLdnijPhOPbn8P6ANzUpNvB2Z0Vhmz89JG5c5G7Owg+zyLNnA7OmFOPbPAy3yQ7s3zYuyM8gGTfNREe9yzlk5kLQwgu1kokikdMkjNgccyG0W3Hw+5tuLvEAfVxBEgUX3KCVuyWkCOvvkF5pxAJmf/w1ShZOeATusECI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711612299; c=relaxed/simple;
-	bh=1u4ClC0nXJYWtLmcNlGJ9Evf3oh4cLDO6utJlz4b/+Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jHamKHR6XA5k8dvzRKhJDuaj/5nSsSPSE+xYIwYZOviaqkCKyaHuQ9LYJlPJGQRceYwyIZ6O+SfeEnKTbYkLJ8Ia2wM0otNAMlcF6VpADZEvWBxKY+rltR1UOwaFC/DRmxODCw1QIdrtf4IUrvYVG7A/vmUEHB0FJL36w8gS2LU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fcVj1oRu; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711646405; c=relaxed/simple;
+	bh=4fOayRX3S5Jxu3sgYNPny0lYFK450ICrctDD0gaS9/w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H+e77O4KXQrVE17oE/EWW1BSI5oSV8q3t3/SbUHkpN0+a3sCHeyGlvLGLRpJ86WzJRvQF/66POLYiRq17nARoQI+CBGT0eW9wna3LF9Tg8QkFOr6T7ATCbs38p1SHurq77KCDfDTmSnJUfaK5yYAqV4bGNqhUNiY9fmvQlC+ZNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JCPJwRD2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fcVj1oRu"
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2282597eff5so478301fac.3;
-        Thu, 28 Mar 2024 00:51:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711612296; x=1712217096; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kb+0BwtXCOHTxNecM62LX9dxsLjU1SobPdBfLYOqsoE=;
-        b=fcVj1oRuCRVoGBClW2Kr66cb/PPnfdvEjmoYlR+lqG1c45efv+5Bs4iQOsZyxuZfcd
-         WWtpvEg3KsSKpBWDOw9Gr9zDsb67TfcwhorDJ3e42tVTdchSwwVhzqWiORAUjNSr7umk
-         EpKa4KZe70WUUuFNPzzyUih5BKM4QzGEfGVOwCZOru9BoeaBxZaWlSs0tNHl0AEcNtMw
-         2Qxu6fgQ8Ph3WIHLY0S2Algtq+GVCye8QoKmFvY5xN/Xupu+VOfFvbEkJtJ0tW+4aA50
-         hnWE/dDqTg+mwgNEkKloHMGiyHTC4uxVW+JH7QnfYQ3Djv57FQlscAf67ksw1lNUwIQQ
-         7epQ==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JCPJwRD2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711646402;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FsmXoDAazFRAkcA6ArNgYSzB+6AfTdpq8nAX83CAIS4=;
+	b=JCPJwRD2SA+NUn+qBesqDGaxmBuE22hNgVXb90Sa4ELYgGeyWNQczdVm5DPafxYo59co0M
+	ru3JCt/0V1hyFzjB28Zz1eiCHOlcoDeU/0lI1Y4Ze9v06WeTD7iezQQE166/5W/PMXJN1X
+	g3Q6YZNXtM2WLXImYhQ94O/uV37Qgmk=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-107-B_F8zUZhPie5wVTqumqZPg-1; Thu, 28 Mar 2024 13:20:01 -0400
+X-MC-Unique: B_F8zUZhPie5wVTqumqZPg-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6965b4344b5so11202366d6.3
+        for <rcu@vger.kernel.org>; Thu, 28 Mar 2024 10:20:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711612296; x=1712217096;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kb+0BwtXCOHTxNecM62LX9dxsLjU1SobPdBfLYOqsoE=;
-        b=W5inbw0NmiJCeCMRX+XX76CLiJnTSiKvJG1jJwIADhteLIY5TnjzX9ySAE5YgkO924
-         v+TBDg+7eyG0hiGFWazDHdGpwh4PS06voceE7NwJ9BLjGPN5hjmSz/WWHK0QrF4j4XhJ
-         jmc8O8ZwynKy4FESLNvBrO9RgBG9URy/b9R8xpdfwQZbfvH30PVTsZzJC5gX+Q3Yl5HX
-         AdwonZiy8DbG5nYIgSG9B5kLYLVhF9uyTDxVyGMEcsgcZrlpjMD75CNGtRaw5ucSQJGL
-         aYFB/f+RYuUX/nGV1UA7AQykdIuLBaiwXiSODHBp9iWHl7fJhs3WV4IsIc3k6GCbmFQi
-         DjCA==
-X-Gm-Message-State: AOJu0Yyz4XEasFhK2FbBydwSHHf9fcmWahYb7Ak05H/uBHHOAqadiqTL
-	nXLqpXNGtqLTi32fhoA/ISOQVEsyoUqzzTfA0lgjG7kxjDo+JPQcJcqpE/rg
-X-Google-Smtp-Source: AGHT+IEzqMx8djm+FHmNWfNhehJ+tHqeZFhrJJCl/Hxw+o3WO/76dLEGu+gqfnycvOWAL9IbEKWnGg==
-X-Received: by 2002:a05:6871:4406:b0:229:e636:921f with SMTP id nd6-20020a056871440600b00229e636921fmr2181447oab.49.1711612296343;
-        Thu, 28 Mar 2024 00:51:36 -0700 (PDT)
-Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id e18-20020aa79812000000b006ea81423c65sm774667pfl.148.2024.03.28.00.51.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Mar 2024 00:51:35 -0700 (PDT)
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: rcu@vger.kernel.org,
-	x86@kernel.org,
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+        d=1e100.net; s=20230601; t=1711646401; x=1712251201;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FsmXoDAazFRAkcA6ArNgYSzB+6AfTdpq8nAX83CAIS4=;
+        b=Ni7rLRfDk9KyA08QxQFmgIZvLzb+YH6VMbL8Yj42ukWfcFxqlMTqbAFgDsdq0tY1/G
+         9iXmRikiWzu+8LxURzrJxVhdUQ+Ka9K9rt9CGBQ/a1wIJzQRVZqfazgWaHv+tbeb/6HX
+         BWYVshb/g6GZDtnWvH236tPOiqct/wggQWTlVSUIykASvgfuKRgraL+O6/w+s3/7T1in
+         w/75QAG+1fa/NH2+NTCwnyH0josREkKCQcXEmZfyrauwxXKx3kQ3/rE2zPsj9VJJkuQ4
+         otXtpuElw40LkpZqlRZ/AqwnyjlbbT1lIdFNuePyV7DQUnRmPcSl578Fs4ft6c9q0Uxr
+         Uo9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVaCt5+nIRgcRC2t6tq4oYz4C25tDzvja0GA7PqHgpt2fCmNvhhthyJLdwoK35v+2RbkBQa0Lq98tTUDam350e+8sl6
+X-Gm-Message-State: AOJu0Yzr1HdDi4lmKDMSfnrOago4AhngyzAGn6zTkF4optIFo0G36egu
+	zF+coXo2ZSKKN2QTd9iulD9yMOtjYO7vy8N4Nm70RLtRjdlkJiAtfa2PYDAxTZNrX7hfzhj/7lZ
+	9ApREnHn4YO1VcJwhpwR8tJnQd8k/nPAsfjY3rMWYZ0uPtTULnQ==
+X-Received: by 2002:a0c:e283:0:b0:696:533e:b003 with SMTP id r3-20020a0ce283000000b00696533eb003mr3622581qvl.18.1711646400883;
+        Thu, 28 Mar 2024 10:20:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+1wsa0IIYLVifTd3mmfaqBCTcpRrQtIhBo5V/XU7W0TxfgmUPDSlig2ELspzHcYJY7gn3jA==
+X-Received: by 2002:a0c:e283:0:b0:696:533e:b003 with SMTP id r3-20020a0ce283000000b00696533eb003mr3622550qvl.18.1711646400549;
+        Thu, 28 Mar 2024 10:20:00 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a801:d7ed:4b57:3fcd:d5e6:a613])
+        by smtp.gmail.com with ESMTPSA id m13-20020ad45dcd000000b00696944e3ce6sm809078qvh.74.2024.03.28.10.19.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Mar 2024 10:19:59 -0700 (PDT)
+From: Leonardo Bras <leobras@redhat.com>
+To: Paolo Bonzini <pbonzini@redhat.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 10/10] x86/rcu: Add THUNK rcu_read_unlock_special_thunk
-Date: Thu, 28 Mar 2024 15:53:18 +0800
-Message-Id: <20240328075318.83039-11-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20240328075318.83039-1-jiangshanlai@gmail.com>
-References: <20240328075318.83039-1-jiangshanlai@gmail.com>
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Date: Thu, 28 Mar 2024 14:19:45 -0300
+Message-ID: <20240328171949.743211-1-leobras@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -79,53 +85,75 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+I am dealing with a latency issue inside a KVM guest, which is caused by
+a sched_switch to rcuc[1].
 
-Add rcu_read_unlock_special_thunk(), so that the inlined rcu_read_unlock()
-doesn't need any code to save the caller-saved registers.
+During guest entry, kernel code will signal to RCU that current CPU was on
+a quiescent state, making sure no other CPU is waiting for this one.
 
-Make rcu_read_unlock() only two instructions in the slow path at the
-caller site.
+If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+issued somewhere since guest entry, there is a chance a timer interrupt
+will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
 
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
----
- arch/x86/entry/thunk_64.S          | 5 +++++
- arch/x86/include/asm/rcu_preempt.h | 4 +++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+rcu_sched_clock_irq() will check rcu_pending() which will return true,
+and cause invoke_rcu_core() to be called, which will (in current config)
+cause rcuc/N to be scheduled into the current cpu.
 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index 119ebdc3d362..10c60369a67c 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -13,3 +13,8 @@ THUNK preempt_schedule_thunk, preempt_schedule
- THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
- EXPORT_SYMBOL(preempt_schedule_thunk)
- EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
-+
-+#ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
-+THUNK rcu_read_unlock_special_thunk, rcu_read_unlock_special
-+EXPORT_SYMBOL_GPL(rcu_read_unlock_special_thunk)
-+#endif /* #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT */
-diff --git a/arch/x86/include/asm/rcu_preempt.h b/arch/x86/include/asm/rcu_preempt.h
-index cb25ebe038a5..acdd73b74c05 100644
---- a/arch/x86/include/asm/rcu_preempt.h
-+++ b/arch/x86/include/asm/rcu_preempt.h
-@@ -97,9 +97,11 @@ static __always_inline bool pcpu_rcu_preempt_count_dec_and_test(void)
- 			       __percpu_arg([var]));
- }
- 
-+extern asmlinkage void rcu_read_unlock_special_thunk(void);
-+
- #define pcpu_rcu_read_unlock_special()						\
- do {										\
--	rcu_read_unlock_special();						\
-+	asm volatile ("call rcu_read_unlock_special_thunk" : ASM_CALL_CONSTRAINT);\
- } while (0)
- 
- #endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
+On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+idle or userspace, since both are considered quiescent states.
+
+Since this is also true to guest context, my idea to solve this latency
+issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+
+On the other hand, I could not find a way of reliably saying the current
+cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+for keeping the time (jiffies) of the last guest exit.
+
+In patch #2 I compare current time to that time, and if less than a second
+has past, we just skip rcu_core() invocation, since there is a high chance
+it will just go back to the guest in a moment.
+
+What I know it's weird with this patch:
+1 - Not sure if this is the best way of finding out if the cpu was
+    running a guest recently.
+
+2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+    overhead, even though it's supposed to be in local cache. If that's
+    an issue, I would suggest having this part compiled out on 
+    !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+    enabled seems more expensive than just setting this out.
+
+3 - It checks if the guest exit happened over than 1 second ago. This 1
+    second value was copied from rcu_nohz_full_cpu() which checks if the
+    grace period started over than a second ago. If this value is bad,
+    I have no issue changing it.
+
+4 - Even though I could detect no issue, I included linux/kvm_host.h into 
+    rcu/tree_plugin.h, which is the first time it's getting included
+    outside of kvm or arch code, and can be weird. An alternative would
+    be to create a new header for providing data for non-kvm code.
+
+Please provide feedback.
+
+Thanks!
+Leo
+									...
+[1]: It uses a PREEMPT_RT kernel, with the guest cpus running on isolated,
+rcu_nocbs, nohz_full cpus.
+
+Leonardo Bras (2):
+  kvm: Implement guest_exit_last_time()
+  rcu: Ignore RCU in nohz_full cpus if it was running a guest recently
+
+ include/linux/kvm_host.h | 13 +++++++++++++
+ kernel/rcu/tree_plugin.h | 14 ++++++++++++++
+ kernel/rcu/tree.c        |  4 +++-
+ virt/kvm/kvm_main.c      |  3 +++
+ 4 files changed, 33 insertions(+), 1 deletion(-)
+
+
+base-commit: 8d025e2092e29bfd13e56c78e22af25fac83c8ec
 -- 
-2.19.1.6.gb485710b
+2.44.0
 
