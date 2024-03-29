@@ -1,49 +1,49 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F67317D222;
-	Fri, 29 Mar 2024 12:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609CF137934;
+	Fri, 29 Mar 2024 12:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716076; cv=none; b=N2J7V5rdOqn4KjMVU/lXoYz+PaMMf98JRXnOJhjKfyFaLq6iDcVL9d8BBTaQkc3EsAH3gcGunpdJ4RMoQCgSWuvTbDWcSSBrDp/0IYPhMfa4WDBLzvF791fIKV/NJGhqM2Khzs+qtKLz01UdB6qXDSSpqV60pFHi/TRgQk6ah0s=
+	t=1711716263; cv=none; b=hPn0mJIyulzoLsjx4TzL8B34Ijxa26W0RN2iAY+iP7sPjaGWp2o4pFGhFoXabqd8FpJMiqePKvROj5Yi/5q/rU9OdsFcvFqxM+rqmmbJs6hbd9zu5y4sWvEUYgF6bBXJMeJ4lfjZs7b9/2Gihv90M+K0fkKeNt6AvbkfA7QJros=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716076; c=relaxed/simple;
-	bh=bxVGzJ3AzIudmCa/MTstvcMBg6Yvgfv7mF2wpvMvwZg=;
+	s=arc-20240116; t=1711716263; c=relaxed/simple;
+	bh=VCCXhfkVpDlHi/MWHIArZQ+F57QUhCgl7o4dhhoMGhQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JhRQ9BGi2m1qT1AJ1ZY3LhtCUjPL1mFTTWWienKykO74B15gy4fOCeDIF45qFX9RLuXLN/EFq2SjCayhhTh/hiPKdtLzEE6OQcCjs8Mp75z8cjo3zY68UDR/2mDnaPpN6mn9xJZTpCV8z5EkAbpxAj63Ocgo5PP3KdRinLiV4O0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ktrxV8jT; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=EGbvRLhdkavWy5m+1eEysOi7Vkp1Fmw5MEjCzwFwZsudlAih5gsby02Itd7oWcB1zUGV3DLpD1geHmkRXL5GCUb95Yhq1CHq9H2HY3v3ZFyrQy5iMoK5qnMbhwv9ICyxdKIxs1RyKCoVI+4ahJsteS2N95stxx/xJMBaJ4UppaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UXR7gqUr; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ktrxV8jT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8544C43394;
-	Fri, 29 Mar 2024 12:41:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UXR7gqUr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19D24C433F1;
+	Fri, 29 Mar 2024 12:44:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716075;
-	bh=bxVGzJ3AzIudmCa/MTstvcMBg6Yvgfv7mF2wpvMvwZg=;
+	s=k20201202; t=1711716263;
+	bh=VCCXhfkVpDlHi/MWHIArZQ+F57QUhCgl7o4dhhoMGhQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ktrxV8jT4zq0rqCiFoyqXEC5CfAfRBHzGFm7HXBVpX9AJU/hfKUJazGyR5UnphNF4
-	 YvPSGfy+qEe2sn85gqpPxBog2PXhsd+7nDExoRq/IshrGFqlmC0eqTdKIMDc/vCQZv
-	 b7FYK45H3J9KJpCGDNpBAkNbbSOUitkddTBPMe2xh5m/Ek//Ce3MmVVVI7FPpz808r
-	 hH9iY6St0Yn17EHalTfNTx9qz+oaeYBbRb+htSKZ5aeIJr6lwuxO574dIplQxpAEAi
-	 UpD/0uvkARoRRkPy9IE2BNESNeg0x99G3PqUWtwbiP1mbRArnS13noXGceGWh18bWT
-	 P4H4o90v+LOBA==
+	b=UXR7gqUr2HocNRY72BWuQv71xDXJWgwyJkaboGdLThfA0mNuOl94JpGqgs3Q4/+aN
+	 2f73dkVOuzG4WWtaFlv9pccX73tRwWjF5qXuO8YuePIE88sHCji2ulvp36kS2LmKyg
+	 KO5ZHqHbxdg3TIGpXWhUZdZVO813/vRYSdBuQe48VsoeUhvXOXxXA3ur1XsdV1atV8
+	 aS8OHa7ELIdpG/h2o8s12H2LUwT0ics//jk2nexicGhKxd5F8+r3JGW2WmnbgjYaU/
+	 sF7JwuM/PN5J1ZzBeerce4i8USf47Dpcd//t+myC4zS6hgmFRB+Edmd4VGdYRR3xg+
+	 y0qKYbrVYpAEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
+Cc: Zqiang <qiang.zhang1211@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
-	frederic@kernel.org,
 	quic_neeraju@quicinc.com,
-	joel@joelfernandes.org,
 	josh@joshtriplett.org,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 41/98] rcu-tasks: Repair RCU Tasks Trace quiescence check
-Date: Fri, 29 Mar 2024 08:37:12 -0400
-Message-ID: <20240329123919.3087149-41-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 28/75] rcu/nocb: Fix WARN_ON_ONCE() in the rcu_nocb_bypass_lock()
+Date: Fri, 29 Mar 2024 08:42:09 -0400
+Message-ID: <20240329124330.3089520-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
-References: <20240329123919.3087149-1-sashal@kernel.org>
+In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
+References: <20240329124330.3089520-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,47 +52,65 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.8.2
+X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Zqiang <qiang.zhang1211@gmail.com>
 
-[ Upstream commit 2eb52fa8900e642b3b5054c4bf9776089d2a935f ]
+[ Upstream commit dda98810b552fc6bf650f4270edeebdc2f28bd3f ]
 
-The context-switch-time check for RCU Tasks Trace quiescence expects
-current->trc_reader_special.b.need_qs to be zero, and if so, updates
-it to TRC_NEED_QS_CHECKED.  This is backwards, because if this value
-is zero, there is no RCU Tasks Trace grace period in flight, an thus
-no need for a quiescent state.  Instead, when a grace period starts,
-this field is set to TRC_NEED_QS.
+For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
+CONFIG_RCU_LAZY=y, the following scenarios will trigger WARN_ON_ONCE()
+in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended() functions:
 
-This commit therefore changes the check from zero to TRC_NEED_QS.
+        CPU2                                               CPU11
+kthread
+rcu_nocb_cb_kthread                                       ksys_write
+rcu_do_batch                                              vfs_write
+rcu_torture_timer_cb                                      proc_sys_write
+__kmem_cache_free                                         proc_sys_call_handler
+kmemleak_free                                             drop_caches_sysctl_handler
+delete_object_full                                        drop_slab
+__delete_object                                           shrink_slab
+put_object                                                lazy_rcu_shrink_scan
+call_rcu                                                  rcu_nocb_flush_bypass
+__call_rcu_commn                                            rcu_nocb_bypass_lock
+                                                            raw_spin_trylock(&rdp->nocb_bypass_lock) fail
+                                                            atomic_inc(&rdp->nocb_lock_contended);
+rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
+ WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
+                            |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
 
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Tested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Reproduce this bug with "echo 3 > /proc/sys/vm/drop_caches".
+
+This commit therefore uses rcu_nocb_try_flush_bypass() instead of
+rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan().  If the nocb_bypass
+queue is being flushed, then rcu_nocb_try_flush_bypass will return
+directly.
+
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/rcupdate.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/tree_nocb.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 0746b1b0b6639..16f519914415e 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -184,9 +184,9 @@ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
- 	do {									\
- 		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
- 										\
--		if (likely(!READ_ONCE((t)->trc_reader_special.b.need_qs)) &&	\
-+		if (unlikely(READ_ONCE((t)->trc_reader_special.b.need_qs) == TRC_NEED_QS) &&	\
- 		    likely(!___rttq_nesting)) {					\
--			rcu_trc_cmpxchg_need_qs((t), 0,	TRC_NEED_QS_CHECKED);	\
-+			rcu_trc_cmpxchg_need_qs((t), TRC_NEED_QS, TRC_NEED_QS_CHECKED);	\
- 		} else if (___rttq_nesting && ___rttq_nesting != INT_MIN &&	\
- 			   !READ_ONCE((t)->trc_reader_special.b.blocked)) {	\
- 			rcu_tasks_trace_qs_blkd(t);				\
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 5598212d1f274..2b24405b9cd2b 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1383,7 +1383,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 			rcu_nocb_unlock_irqrestore(rdp, flags);
+ 			continue;
+ 		}
+-		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
++		rcu_nocb_try_flush_bypass(rdp, jiffies);
+ 		rcu_nocb_unlock_irqrestore(rdp, flags);
+ 		wake_nocb_gp(rdp, false);
+ 		sc->nr_to_scan -= _count;
 -- 
 2.43.0
 
