@@ -1,72 +1,55 @@
-Received: from relay163.nicmail.ru (relay163.nicmail.ru [91.189.117.7])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7F11C0DC2;
-	Fri, 29 Mar 2024 18:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4B4137903;
+	Fri, 29 Mar 2024 18:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711735679; cv=none; b=mxnGZfIb6z9l4mo1uIEjfE6/8K614KCuBd+sQQX45CBkpRl97DYWDrseMzo6ZkqhlqCSCJ2Oh6h75ZrxmEEwp++kdD8EKibht1c5faE9jjLitEHhuxylNPlJ7eKtSFZScWQzpFa2S+WW8MJ7nnIPFQH2JVxnKL8kLpv2HD5aGOc=
+	t=1711736961; cv=none; b=DfXU/k+4U5g3msx6KVbVhkDCjds+pZq68S0rkYRykpRy4/YEz7PITmMAOwx6ObHhECYrK3a9XVhaD64kz18HZ1TOLtu9lkOZp2CO5y4x8cAWWBLvQgGBNNdObPMPhctbvdY6Y2ICOhLDqZxA/lyx3Y4PhWDa5Rcq6u/L91U6zdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711735679; c=relaxed/simple;
-	bh=ppBkloHHT+Aybl1NsacD70/lnYVpAG0Gn8A6J+takWM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oKX3sajgA2lcPuh1yGL0snARYKKU5LnICu7zh0TAzy8BUI+N3VCsBfSnjLL85QmQ2aAUT/B81f0bAoLUUKqOEkDojnmXGyLlvwHL2Dq8GYWz5zMO6LJV7OkGm/IDBEKF15tDn0YXInnuwxsIOAPHWX40Xkn2Sm+OthBXi8DxQhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
-Received: from [10.28.138.151] (port=11284 helo=[192.168.95.111])
-	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
-	(envelope-from <kiryushin@ancud.ru>)
-	id 1rqGSh-0008QS-9o;
-	Fri, 29 Mar 2024 20:56:19 +0300
-Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO [192.168.95.111])
-	by incarp1103.mail.hosting.nic.ru (Exim 5.55)
-	with id 1rqGSg-002CSg-36;
-	Fri, 29 Mar 2024 20:56:19 +0300
-Message-ID: <a6e236f3-60a4-48da-840f-c38d7ba02475@ancud.ru>
-Date: Fri, 29 Mar 2024 20:56:16 +0300
+	s=arc-20240116; t=1711736961; c=relaxed/simple;
+	bh=SPUg+tRH5xvHEVcSWTYPv64Mi0EH+GD/KVONAzkIv9k=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CIr384VPq1zQUSEOLuQBdcd/63Ywpnhef0KkvL8FAOxVfJtrpv/q6waxqqJT5Mq17sD0+ojVOX1Xv1Z0ffbi+hd9DExOJMGBB18lHT+3W98q8fjodkyncQ2znZ+6qld+KW9MQ4JJFuYkV2jJm/UnGzZBCNbj/02TAw94OldhTrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0999DC433F1;
+	Fri, 29 Mar 2024 18:29:19 +0000 (UTC)
+Date: Fri, 29 Mar 2024 14:32:05 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: paulmck@kernel.org, Frederic Weisbecker <frederic@kernel.org>, Neeraj
+ Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
+ <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
+ <boqun.feng@gmail.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org
+Subject: Re: [PATCH] rcu: Fix buffer overlow in print_cpu_stall_info()
+Message-ID: <20240329143205.66c35f5f@gandalf.local.home>
+In-Reply-To: <a6e236f3-60a4-48da-840f-c38d7ba02475@ancud.ru>
+References: <20240328181914.869332-1-kiryushin@ancud.ru>
+	<e3d3a612-4751-48ac-82c1-8bf61e8f3cd1@paulmck-laptop>
+	<a6e236f3-60a4-48da-840f-c38d7ba02475@ancud.ru>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcu: Fix buffer overlow in print_cpu_stall_info()
-To: paulmck@kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
-References: <20240328181914.869332-1-kiryushin@ancud.ru>
- <e3d3a612-4751-48ac-82c1-8bf61e8f3cd1@paulmck-laptop>
-Content-Language: en-US
-From: Nikita Kiryushin <kiryushin@ancud.ru>
-In-Reply-To: <e3d3a612-4751-48ac-82c1-8bf61e8f3cd1@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-MS-Exchange-Organization-SCL: -1
 
+On Fri, 29 Mar 2024 20:56:16 +0300
+Nikita Kiryushin <kiryushin@ancud.ru> wrote:
 
-Thank you for the feedback!
-> would you like to resend keeping the buffer-overflow fix but leaving
-> out the signed-to-unsigned conversion?
->
-I will make a second version of the patch, without
-conversion as it is intentional.
-> However, the signed output is intentional.  The idea is that if the
-> timekeeping code is confused enough to run the jiffies counter backwards,
-> we see a small negative number rather than a huge positive number.
-> For example, -132 is immediately obvious, while the 64-bit unsigned
-> equivalent of 18446744073709551484 might not be.
-I had suspicions that was the case, however, I did not find the pointers
-in the code or in the commit message, that it was intentional, so I assumed
-a mistake.
-Maybe, it would be a good idea for me to add a comment with intent
-clarification, to reduce possibility of the same confusion in the future,
-while I am at it? If so, should I do it in the same patch, or make a separate one?
+> Maybe, it would be a good idea for me to add a comment with intent
+> clarification, to reduce possibility of the same confusion in the future,
+
+Yes please do.
+
+> while I am at it? If so, should I do it in the same patch, or make a separate one?
+
+I would keep it the same patch, but it really is Paul's decision.
+
+-- Steve
