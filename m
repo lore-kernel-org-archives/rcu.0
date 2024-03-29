@@ -1,51 +1,51 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69F740866;
-	Fri, 29 Mar 2024 07:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A4A40BEB;
+	Fri, 29 Mar 2024 07:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711697927; cv=none; b=qISOp775fgOP9BBlPqmBG1rJvr0TvxNaICkSwfEXdd2DXMuQ1z7YLpq6/g4Dr0D7cPI3W3IHsYGiRXurbi7/TOT7azu3Mo+V863dTQ5QqnCRf3tesEs2ZdrVSrcNIYVb8e150Gm2Qb5dsEhn5qs8B05aF64aSfZt6uv2s6y0OR8=
+	t=1711698530; cv=none; b=C11Z4Mvvawm9fX+GUrNyjTvN/IsRjR2nKDdAPRRyT71j+7z11jC9TkO2378S7EO/PgvhRMw9iyFJTjCvFZ50OwVf7gvGYwWxgOPM/A2eIEtFc9ppjyd5qd11YASdot/OOw/budVrEZRo+8OwWbr51hQQ5uWSsWLZVcQ1jVti8kA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711697927; c=relaxed/simple;
-	bh=OtiL7hYIGDS1cNsv/IDRa43LiaIOTcDvq0KTA6y72sA=;
+	s=arc-20240116; t=1711698530; c=relaxed/simple;
+	bh=K3lfruPLDXAgbRS/3QXJ1ZZTRwjGi8oDJ8bx0xAHDKY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DaD49fRh+ndr2+G6AtZGRrMEJ2/vSxpXK+EnX/B7MuI2IFlUOZ5f4LH+ibboNkU86dpTELUb2yleFtC2JRV5HaxDaOuQrCO/lH9ifuAawFyd8XjHvPnvpSYY52LuB8YVeTw4xgBbuovzykZppLlDesqG3mvUaxhnQGrcAs4lAOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eyGqzBo4; arc=none smtp.client-ip=192.198.163.13
+	 Content-Type:Content-Disposition:In-Reply-To; b=uGfqrMtoaCIEL2VO9yn+gQhTWyusilrvd+NgBpbZ5Ty8jJfQF1IjxnrsRcWYKydczt2j61dxsuACQunNtmkwqcrEnoNrd9u+jHtv/fLrYcJjIIRRMiBh2oW0gkZU0cNZ/Mg/zwFcR7qhGlumfBF43xGFMizWENXDpVXstKhwOAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dt+GALQx; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eyGqzBo4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dt+GALQx"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711697926; x=1743233926;
+  t=1711698527; x=1743234527;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=OtiL7hYIGDS1cNsv/IDRa43LiaIOTcDvq0KTA6y72sA=;
-  b=eyGqzBo4R9dvGgIgaVEzuCralb+Ma5RM9R7Y/TyET5lC33mm1pAxQyjr
-   PXpvYguMyq7USpOmWL/PbqHNQANQp4pqPgHh5MzkjWSVHV4H1RUvX+H/+
-   Qp9lSv0B2O9rxClL0FTxO84UcLiXB5IL81zaTAFHoaeH11H+m/eYy6Rlo
-   e1XCKDI1OM3+zJ3jSSUMwOpBBLv7eNLREJZooeRiVKZ53L3LXxVM+51QX
-   MHHd5iimEjIoeXKMhZlbhoSOlVb3FZ/l+5eRengVCMb4qEHGsSjmIZ9uD
-   GeMfZMGNMnm+yq2lFm3+WiO51FOFaGGBk8Aj/cK3JYpDh7YHLPbHWmjCH
-   g==;
-X-CSE-ConnectionGUID: uAo9vU6hRWWawPkJQozE+Q==
-X-CSE-MsgGUID: zSSfN6EEQCOoGJitWggWYg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="9837902"
+  bh=K3lfruPLDXAgbRS/3QXJ1ZZTRwjGi8oDJ8bx0xAHDKY=;
+  b=dt+GALQxZ24b9Vwdn0lBjl09bhsjJGoNktjBkqY1A8ozFeEHSFYW8Pfw
+   fhghEAu/BEsUCq2mpkWBhuLRBAk0mSQLt7K7urADpqJsSHG5ROJvsUc7g
+   wUw7WPN0S2o8sQd1Cv8ud0i4pF4PIlmUGwOivyZutwYEhdgH8M3eBjF92
+   bV9fgH4R3doTpLPcU0hkMy18tfKLDnAFTKCK2qDPgup027SLutKFPzVfV
+   wU/Wmq03sx1CSgMn+R204r/CDKu1YP1nHuQ4vQFQgGFRhNgSY0W5Y2UnD
+   pLwBX7AkEZOtqu5lu2KLXG2nfrOjjhvY4J+d8fugkVu5G+avVITzAMaqC
+   A==;
+X-CSE-ConnectionGUID: xSfZ5697SmS92VqckP2IYw==
+X-CSE-MsgGUID: PSG+9ogLQreyheNyFS0RlQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="24377002"
 X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="9837902"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:38:45 -0700
+   d="scan'208";a="24377002"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:48:46 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
-   d="scan'208";a="16962746"
+   d="scan'208";a="47876495"
 Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 29 Mar 2024 00:38:40 -0700
+  by orviesa002.jf.intel.com with ESMTP; 29 Mar 2024 00:48:40 -0700
 Received: from kbuild by be39aa325d23 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rq6ov-0002xC-1I;
-	Fri, 29 Mar 2024 07:38:37 +0000
-Date: Fri, 29 Mar 2024 15:37:54 +0800
+	id 1rq6yb-0002xm-2i;
+	Fri, 29 Mar 2024 07:48:37 +0000
+Date: Fri, 29 Mar 2024 15:48:11 +0800
 From: kernel test robot <lkp@intel.com>
 To: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
 Cc: oe-kbuild-all@lists.linux.dev, rcu@vger.kernel.org, x86@kernel.org,
@@ -66,7 +66,7 @@ Cc: oe-kbuild-all@lists.linux.dev, rcu@vger.kernel.org, x86@kernel.org,
 	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
 	Nikolay Borisov <nik.borisov@suse.com>
 Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
-Message-ID: <202403291422.SOVYexxO-lkp@intel.com>
+Message-ID: <202403291537.fHsEhtlq-lkp@intel.com>
 References: <20240328075318.83039-10-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -93,30 +93,30 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Lai-Jiangshan/lib-Use-rcu
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
 patch link:    https://lore.kernel.org/r/20240328075318.83039-10-jiangshanlai%40gmail.com
 patch subject: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
-config: x86_64-randconfig-161-20240328 (https://download.01.org/0day-ci/archive/20240329/202403291422.SOVYexxO-lkp@intel.com/config)
-compiler: gcc-10 (Ubuntu 10.5.0-1ubuntu1) 10.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403291422.SOVYexxO-lkp@intel.com/reproduce)
+config: i386-randconfig-141-20240328 (https://download.01.org/0day-ci/archive/20240329/202403291537.fHsEhtlq-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403291537.fHsEhtlq-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403291422.SOVYexxO-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403291537.fHsEhtlq-lkp@intel.com/
 
-All error/warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
->> arch/x86/kernel/cpu/common.c:1998:3: error: 'struct pcpu_hot' has no member named 'rcu_preempt_count'; did you mean 'preempt_count'?
-    1998 |  .rcu_preempt_count = RCU_PREEMPT_INIT,
-         |   ^~~~~~~~~~~~~~~~~
-         |   preempt_count
->> arch/x86/kernel/cpu/common.c:1998:23: error: 'RCU_PREEMPT_INIT' undeclared here (not in a function); did you mean 'RCUREF_INIT'?
-    1998 |  .rcu_preempt_count = RCU_PREEMPT_INIT,
-         |                       ^~~~~~~~~~~~~~~~
-         |                       RCUREF_INIT
->> arch/x86/kernel/cpu/common.c:1998:23: warning: excess elements in struct initializer
-   arch/x86/kernel/cpu/common.c:1998:23: note: (near initialization for 'pcpu_hot')
+>> arch/x86/kernel/cpu/common.c:1998:23: error: use of undeclared identifier 'RCU_PREEMPT_INIT'
+    1998 |         .rcu_preempt_count      = RCU_PREEMPT_INIT,
+         |                                   ^
+   1 error generated.
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for DRM_I915_DEBUG_GEM
+   Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=y] && EXPERT [=y] && DRM_I915_WERROR [=n]
+   Selected by [y]:
+   - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && DRM_I915 [=y] && EXPERT [=y] && !COMPILE_TEST [=n]
 
 
-vim +1998 arch/x86/kernel/cpu/common.c
+vim +/RCU_PREEMPT_INIT +1998 arch/x86/kernel/cpu/common.c
 
   1993	
   1994	DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) = {
