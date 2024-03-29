@@ -1,55 +1,76 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4B4137903;
-	Fri, 29 Mar 2024 18:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C597D79DF;
+	Fri, 29 Mar 2024 22:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711736961; cv=none; b=DfXU/k+4U5g3msx6KVbVhkDCjds+pZq68S0rkYRykpRy4/YEz7PITmMAOwx6ObHhECYrK3a9XVhaD64kz18HZ1TOLtu9lkOZp2CO5y4x8cAWWBLvQgGBNNdObPMPhctbvdY6Y2ICOhLDqZxA/lyx3Y4PhWDa5Rcq6u/L91U6zdg=
+	t=1711750865; cv=none; b=O+xt8/kircBU1baeD28yr8PknPi8CvnK3nXPqFn7y+7MwZFAvCgLwSbwC8IPZbbmGStt1mjW+6TliPK4VQbVRYRfKtiLpJxmh0GfpTl9NHFNCOHp4mt35/i/EuZ5kwgHmBIWe6Xvo8HeCN3cTW10Fs2b24IEWoR/F/6MMMsqYRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711736961; c=relaxed/simple;
-	bh=SPUg+tRH5xvHEVcSWTYPv64Mi0EH+GD/KVONAzkIv9k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CIr384VPq1zQUSEOLuQBdcd/63Ywpnhef0KkvL8FAOxVfJtrpv/q6waxqqJT5Mq17sD0+ojVOX1Xv1Z0ffbi+hd9DExOJMGBB18lHT+3W98q8fjodkyncQ2znZ+6qld+KW9MQ4JJFuYkV2jJm/UnGzZBCNbj/02TAw94OldhTrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0999DC433F1;
-	Fri, 29 Mar 2024 18:29:19 +0000 (UTC)
-Date: Fri, 29 Mar 2024 14:32:05 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Nikita Kiryushin <kiryushin@ancud.ru>
-Cc: paulmck@kernel.org, Frederic Weisbecker <frederic@kernel.org>, Neeraj
- Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
- <boqun.feng@gmail.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
+	s=arc-20240116; t=1711750865; c=relaxed/simple;
+	bh=/i0HXnhYBVObZiCX4pKS7aDYvx+uI5OD0a8v2q/VBh8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VioDGK1jWrAzcOzoI+GC2c9toUWQWchUefgMcbs01mgxURXnTPcZy/YLBwUUqfUUPc+C0Pex7YYvGAXAMlKA7mjEaY2oYuQL4mCd3dvE+UjJ7FHealB+0GWVuEdAZogWbdAgCYZ4m8DgswlEx65Y9sjTAc09L6g3aquL9O8Hj7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dWiOIBla; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dWiOIBla"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 945BAC433F1;
+	Fri, 29 Mar 2024 22:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711750865;
+	bh=/i0HXnhYBVObZiCX4pKS7aDYvx+uI5OD0a8v2q/VBh8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=dWiOIBlap43aT2z5Oks1llWwMzD0WZ2fiA6xgQLisx3AxFxwGUayqLBX5UWjqnUmP
+	 PU/xeLF7SO/kGcYbPfW8mfUQYu1Nq6bqn4sjywuvQd3bQVtJF5BqttMjECO7LdKz4H
+	 5XFAjd9Pb/T/XcXXk0t2BQjQA8I4N4fGxT5+IgEyOqtb73qGgm44YyrXT3onF24gY/
+	 cmypHORSVouPJiBDahh6rm28GNmCKLlhqr4r+nAN1DfbQ/4EdgIKIhaXhwuOpLBCTm
+	 X/UU6UkRy0/cV74+lUpSt0puamDGeQFLsBm06ahmStlvA1AALwavnXCAHjnE6A23/Q
+	 LtOn+BggtL4Vg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2E21BCE120B; Fri, 29 Mar 2024 15:21:05 -0700 (PDT)
+Date: Fri, 29 Mar 2024 15:21:05 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
 Subject: Re: [PATCH] rcu: Fix buffer overlow in print_cpu_stall_info()
-Message-ID: <20240329143205.66c35f5f@gandalf.local.home>
-In-Reply-To: <a6e236f3-60a4-48da-840f-c38d7ba02475@ancud.ru>
+Message-ID: <5a629a8e-5a70-4c7d-ab6a-f4a09e8c574c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20240328181914.869332-1-kiryushin@ancud.ru>
-	<e3d3a612-4751-48ac-82c1-8bf61e8f3cd1@paulmck-laptop>
-	<a6e236f3-60a4-48da-840f-c38d7ba02475@ancud.ru>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <e3d3a612-4751-48ac-82c1-8bf61e8f3cd1@paulmck-laptop>
+ <a6e236f3-60a4-48da-840f-c38d7ba02475@ancud.ru>
+ <20240329143205.66c35f5f@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329143205.66c35f5f@gandalf.local.home>
 
-On Fri, 29 Mar 2024 20:56:16 +0300
-Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+On Fri, Mar 29, 2024 at 02:32:05PM -0400, Steven Rostedt wrote:
+> On Fri, 29 Mar 2024 20:56:16 +0300
+> Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+> 
+> > Maybe, it would be a good idea for me to add a comment with intent
+> > clarification, to reduce possibility of the same confusion in the future,
+> 
+> Yes please do.
+> 
+> > while I am at it? If so, should I do it in the same patch, or make a separate one?
+> 
+> I would keep it the same patch, but it really is Paul's decision.
 
-> Maybe, it would be a good idea for me to add a comment with intent
-> clarification, to reduce possibility of the same confusion in the future,
+I am with Steve on both questions.
 
-Yes please do.
-
-> while I am at it? If so, should I do it in the same patch, or make a separate one?
-
-I would keep it the same patch, but it really is Paul's decision.
-
--- Steve
+								Thanx, Paul
