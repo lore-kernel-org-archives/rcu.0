@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58BE1B8853;
-	Fri, 29 Mar 2024 12:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B492609CE;
+	Fri, 29 Mar 2024 12:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716265; cv=none; b=GXKIjbmyP2K1oXKRJlHDDffcpniYKzEaZBvVKZu6SCyBqIxx6FXKgXjgY4M7HWE0l+ek6uP2Asd3yk5FCl64egCZaoGT1uTC7tSH2aTqW1f9UfP6kpE7Q6tWqjeU0vjLvSmeuua4DGzVZ14NLdzctcfiheSdSLwvTXaZBIWP6OQ=
+	t=1711716397; cv=none; b=NzvLP2CgZABDEHnoOtygJQUizSv2jG4dCBwPxj5BbdXJMKrGlLyZTydFJ0w3PyCnO6HfHyLoRYcGSRl+EEAWYLebWFyOzTip82KtHYGbJ4HIKDRsCpWpXH4f2or3DnL8GTUUsOa2fTIIEFKYgdejnEMaXwoZk3Zc+0RXwdhTRao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716265; c=relaxed/simple;
-	bh=slTNCGICSXhv0R9PYIlhq5xx5106itMekrzuvhanb7M=;
+	s=arc-20240116; t=1711716397; c=relaxed/simple;
+	bh=WPIjX/2qHFPCedFEYL9s01CISXiCP6wWXcAuXar04gU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RGL9TG7BiiySVwsTwpvufY4hbL38ZuopFSMY7/7mZmWxbQX5wS/p2htc86JKI5lPHXsPmol3XwT3JaBrTg9omCC7lXZlteG1pCOGUVo4ewIewk1VUTsg1s2lkM43xVL9l75Czz7NFKRvLjFdNjYK5ZljPxictkVfO/IKTZnl8hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c+Kz4QTs; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=tR2f+ANVOH9Lr23F+APO1Lzibbq7d7/pn31vZ9P8dMOVpPuWzWITDB2qOYdXf8/HY+I4iVi/LCJ2x4s9k5E8EHJEII4YVQ7u3X+Mi1yU09KzKoAazx/xAuJzUsfmF7qv/AmUVruU5M6AqHMV07Nro0zuwJZVZs/o3oZcB9gnej8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xa6M9Fy0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c+Kz4QTs"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1702C43330;
-	Fri, 29 Mar 2024 12:44:23 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xa6M9Fy0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A84CC43399;
+	Fri, 29 Mar 2024 12:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716264;
-	bh=slTNCGICSXhv0R9PYIlhq5xx5106itMekrzuvhanb7M=;
+	s=k20201202; t=1711716397;
+	bh=WPIjX/2qHFPCedFEYL9s01CISXiCP6wWXcAuXar04gU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c+Kz4QTsFlfd9P97Qxj7RXfWbLFiZNbfy3h2GajNbEuLYx5AOrqOoAF1RGtDXCEmx
-	 xOw4fb/tilNInjF619RdKEoxHjeYeu6VQ9uQun8YPPOIn7+3oNE7Q0Y1PFEkMchL5B
-	 iIgY73pQe87Y+BIEbC/TR2L93S/BwthjM28XOv5SniGHn1ST3hdUOjOai8z1CO8J7n
-	 TlwkM4dnDd/uyNLFK1gLk1uoNWU5qA51rGauEb9y5k0iCfgTK35kwWiLxpRY8O+K4L
-	 pGHYU1aRXG8o+T3B1f05G2EkzxiAc2rAITY1m93g8QssWfzmTkVP2qF4RStV6u9lYQ
-	 qFv/I4VksI+pA==
+	b=Xa6M9Fy0/W9SWHw7WEcLTfKnkR4PbZHdLvpkMjdFNkIpq3Z0JuM4dE9AZ1KV0snVq
+	 FnQQiGWOWtOj1G1B9h11gGorPIx5Vzbt8LR8G1BB3A/CZ+8dQUk86muSpAyqGuVOTI
+	 XlHOUduZboRobQhTZB6FZsHb5M7cpJ1nyvzWgmqzlwe4W/y92byaOtRAJO6p49FTR6
+	 2Erk52wSakRg4kCICrld7wg/LNgCpiV+vhNpEiyK/S6pxvQQeAe7GxbI7oIO5levbl
+	 JDTyAZUB+XxLIrBT10XHwXq7IQ6UyQd5DJHd5Ol6Xn8wz0Oyv+Mvyw6Ywd9TcEmVly
+	 quIvljZLZgTTw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -38,12 +38,12 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	joel@joelfernandes.org,
 	josh@joshtriplett.org,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 29/75] rcu-tasks: Repair RCU Tasks Trace quiescence check
-Date: Fri, 29 Mar 2024 08:42:10 -0400
-Message-ID: <20240329124330.3089520-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 17/52] rcu-tasks: Repair RCU Tasks Trace quiescence check
+Date: Fri, 29 Mar 2024 08:45:11 -0400
+Message-ID: <20240329124605.3091273-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
-References: <20240329124330.3089520-1-sashal@kernel.org>
+In-Reply-To: <20240329124605.3091273-1-sashal@kernel.org>
+References: <20240329124605.3091273-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,7 +52,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.23
+X-stable-base: Linux 6.1.83
 Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
@@ -78,10 +78,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 44aab5c0bd2c1..f9173b972c7e2 100644
+index d2507168b9c7b..e7474d7833424 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -189,9 +189,9 @@ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
+@@ -205,9 +205,9 @@ void rcu_tasks_trace_qs_blkd(struct task_struct *t);
  	do {									\
  		int ___rttq_nesting = READ_ONCE((t)->trc_reader_nesting);	\
  										\
