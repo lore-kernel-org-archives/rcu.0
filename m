@@ -1,139 +1,134 @@
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15F529D03;
-	Fri, 29 Mar 2024 04:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69F740866;
+	Fri, 29 Mar 2024 07:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711687978; cv=none; b=YymBkZPESxNTaXL7EwzpUyx4q/rMY8t0CbvtHF3AgJhb/ETnBEFJHkxWjw4Nk3fUzMN6nRH69MTxWfyGD7ShaBg6t5wnMz3boNLxIvHQ8ZYmTe4BEivXC0keey9DxTlq1+8ElAmiz78z8cVKP6RWJyJrzf04OHSEqZolPPAzGHY=
+	t=1711697927; cv=none; b=qISOp775fgOP9BBlPqmBG1rJvr0TvxNaICkSwfEXdd2DXMuQ1z7YLpq6/g4Dr0D7cPI3W3IHsYGiRXurbi7/TOT7azu3Mo+V863dTQ5QqnCRf3tesEs2ZdrVSrcNIYVb8e150Gm2Qb5dsEhn5qs8B05aF64aSfZt6uv2s6y0OR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711687978; c=relaxed/simple;
-	bh=CIcEZKqxws1zHHHiOpeJqBklDMNV6tDrjhMIohhqgg8=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Dcs9b/A/oMxxlc4r2OC/eXjyWVVpv0imp6zAtkcSyHkmhk4yCIip9BSDyoq3EASM1KZZbK7X+xAeaSWrbW3N44CscVpfkbbxwqB5sgTx4opa+z+YygqcuZodUna23GoMcXVTOT51CGyb5Uf/sXTXjdGFdYjJzUcC1wI/Ok0It8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c5lkIgYX; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711697927; c=relaxed/simple;
+	bh=OtiL7hYIGDS1cNsv/IDRa43LiaIOTcDvq0KTA6y72sA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DaD49fRh+ndr2+G6AtZGRrMEJ2/vSxpXK+EnX/B7MuI2IFlUOZ5f4LH+ibboNkU86dpTELUb2yleFtC2JRV5HaxDaOuQrCO/lH9ifuAawFyd8XjHvPnvpSYY52LuB8YVeTw4xgBbuovzykZppLlDesqG3mvUaxhnQGrcAs4lAOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eyGqzBo4; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c5lkIgYX"
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e6c0098328so1415132b3a.3;
-        Thu, 28 Mar 2024 21:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711687976; x=1712292776; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=63k6imC9+OqUKfMsPLAfCGeZ4j8bSZWpIL5nn2OEqcI=;
-        b=c5lkIgYXV6OQbFEgYLH20zsUhYJHmTxRhitab0n4WUn9LOjZbFANiSH+wHfl1VdzYZ
-         hWqwDaO8TePKZgcEaR+22wBIdB8dVVVcDwB2Ymckio9Xk3GBt8S8iLiJuXvOziVt2+/o
-         aIHUF0SzE4ZLkBo5RKYueVCzR2sZy1BaK518fCKvqKzGLsy1yrl1zAtgnadiuOC0PH9V
-         eZOsrDHWxHsGarBTFj+fcTNEvTWymJC/8vFikwTXX8u8GTsYtyR8uoa0Pl6+YfZ5QUa7
-         pHJA3ilqSjlc6lszv/Iy3to2rHNZ+L4Z/qq6TjtPoUIGWw3xn1l5dAB6DH3+ZuyO2TJ+
-         zYCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711687976; x=1712292776;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=63k6imC9+OqUKfMsPLAfCGeZ4j8bSZWpIL5nn2OEqcI=;
-        b=JD1+6CyYE7Vj5ptZF2Be6CTK87jk7q9j71l8ETMlpvv8FCoxrBp9uhKmQVxH3KMI3Z
-         gxwUXaXXejhoBJ34gsPcI4xFCKb7Zmy8sg3UjuooipVKjLPjgvwy3Zo/ES5LM5W0wSAn
-         /swAGpes1F5qzGa7rc0IIRkoKPpU17hd8QApv8qY5bvoxWDL/Gq1MJtc0Wv7dxlYRNYW
-         H8lWLKYaXWyx2TFPA8NuddOvEa5d1nZ00FYcDYWjFNsvrH+bq8g74npdo+MB0AWYNf0s
-         Xjxh5czYGiGxZu72wZRJi9L/IyC9KDRQi1tjh5dl388rnOsX8bHQ+OrO5wajxlKNRgMB
-         TCBA==
-X-Forwarded-Encrypted: i=1; AJvYcCXcCC6/F5YNWweMkQc+cKq4r6LG+Y115TQXv2GXvKEb1ZMdHgJAr2/Eh5+Vv60dNhSKXSD2sxjWxnWbpNIosnqFoLAw7AVVOLI+hxJCnAIwjRt4p9wbXzZ3YSiNDxJIAIWj
-X-Gm-Message-State: AOJu0Yz1UBedfcTHNv+xZe4KXY/6ZvuBKKUKa7JgDTGwFtPCThiOwpWE
-	rN0YO7PtQXgDXxz8tVsyHRTwDRLRdnWYMBDlxLe8stbdzk2QpjZA6pCQHWH8
-X-Google-Smtp-Source: AGHT+IGrgUgoe2TiMFuwvCXuU9Qq+yVGB6jV/beTX9hL/NoyT4GPQ2YQtctYISKqQkPb5gEARgccLw==
-X-Received: by 2002:aa7:8889:0:b0:6ea:d7b6:f4b4 with SMTP id z9-20020aa78889000000b006ead7b6f4b4mr1377115pfe.21.1711687975974;
-        Thu, 28 Mar 2024 21:52:55 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
-        by smtp.gmail.com with ESMTPSA id kq10-20020a056a004b0a00b006eae3aac040sm730526pfb.31.2024.03.28.21.52.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 21:52:55 -0700 (PDT)
-From: Zqiang <qiang.zhang1211@gmail.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org
-Cc: qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcutorture: Make the rcu_gp_slow_register/unregister() be used only for rcutype test
-Date: Fri, 29 Mar 2024 12:52:45 +0800
-Message-Id: <20240329045245.16456-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eyGqzBo4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711697926; x=1743233926;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OtiL7hYIGDS1cNsv/IDRa43LiaIOTcDvq0KTA6y72sA=;
+  b=eyGqzBo4R9dvGgIgaVEzuCralb+Ma5RM9R7Y/TyET5lC33mm1pAxQyjr
+   PXpvYguMyq7USpOmWL/PbqHNQANQp4pqPgHh5MzkjWSVHV4H1RUvX+H/+
+   Qp9lSv0B2O9rxClL0FTxO84UcLiXB5IL81zaTAFHoaeH11H+m/eYy6Rlo
+   e1XCKDI1OM3+zJ3jSSUMwOpBBLv7eNLREJZooeRiVKZ53L3LXxVM+51QX
+   MHHd5iimEjIoeXKMhZlbhoSOlVb3FZ/l+5eRengVCMb4qEHGsSjmIZ9uD
+   GeMfZMGNMnm+yq2lFm3+WiO51FOFaGGBk8Aj/cK3JYpDh7YHLPbHWmjCH
+   g==;
+X-CSE-ConnectionGUID: uAo9vU6hRWWawPkJQozE+Q==
+X-CSE-MsgGUID: zSSfN6EEQCOoGJitWggWYg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="9837902"
+X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
+   d="scan'208";a="9837902"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2024 00:38:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,164,1708416000"; 
+   d="scan'208";a="16962746"
+Received: from lkp-server01.sh.intel.com (HELO be39aa325d23) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 29 Mar 2024 00:38:40 -0700
+Received: from kbuild by be39aa325d23 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rq6ov-0002xC-1I;
+	Fri, 29 Mar 2024 07:38:37 +0000
+Date: Fri, 29 Mar 2024 15:37:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, rcu@vger.kernel.org, x86@kernel.org,
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Uros Bizjak <ubizjak@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, Nadav Amit <namit@vmware.com>,
+	Breno Leitao <leitao@debian.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
+Message-ID: <202403291422.SOVYexxO-lkp@intel.com>
+References: <20240328075318.83039-10-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328075318.83039-10-jiangshanlai@gmail.com>
 
-The rcu_gp_slow_register/unregister() is only valid for tests which
-the torture_type is rcu, this commit therefore generates gp_slow_register
-and gp_slow_unregister function pointers in rcu_torture_ops structures,
-and operates only when the function pointer exists.
+Hi Lai,
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/rcu/rcutorture.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 8654e99bd4a3..32f1c4e932eb 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -382,6 +382,8 @@ struct rcu_torture_ops {
- 	bool (*check_boost_failed)(unsigned long gp_state, int *cpup);
- 	int (*stall_dur)(void);
- 	void (*get_gp_data)(int *flags, unsigned long *gp_seq);
-+	void (*gp_slow_register)(atomic_t *rgssp);
-+	void (*gp_slow_unregister)(atomic_t *rgssp);
- 	long cbflood_max;
- 	int irq_capable;
- 	int can_boost;
-@@ -570,6 +572,8 @@ static struct rcu_torture_ops rcu_ops = {
- 	.check_boost_failed	= rcu_check_boost_fail,
- 	.stall_dur		= rcu_jiffies_till_stall_check,
- 	.get_gp_data		= rcutorture_get_gp_data,
-+	.gp_slow_register	= rcu_gp_slow_register,
-+	.gp_slow_unregister	= rcu_gp_slow_unregister,
- 	.irq_capable		= 1,
- 	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
- 	.extendables		= RCUTORTURE_MAX_EXTEND,
-@@ -3343,12 +3347,12 @@ rcu_torture_cleanup(void)
- 			pr_info("%s: Invoking %pS().\n", __func__, cur_ops->cb_barrier);
- 			cur_ops->cb_barrier();
- 		}
--		rcu_gp_slow_unregister(NULL);
-+		if (cur_ops->gp_slow_unregister)
-+			cur_ops->gp_slow_unregister(NULL);
- 		return;
- 	}
- 	if (!cur_ops) {
- 		torture_cleanup_end();
--		rcu_gp_slow_unregister(NULL);
- 		return;
- 	}
- 
-@@ -3447,7 +3451,8 @@ rcu_torture_cleanup(void)
- 	else
- 		rcu_torture_print_module_parms(cur_ops, "End of test: SUCCESS");
- 	torture_cleanup_end();
--	rcu_gp_slow_unregister(&rcu_fwd_cb_nodelay);
-+	if (cur_ops->gp_slow_unregister)
-+		cur_ops->gp_slow_unregister(NULL);
- }
- 
- #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
-@@ -3929,7 +3934,8 @@ rcu_torture_init(void)
- 	if (object_debug)
- 		rcu_test_debug_objects();
- 	torture_init_end();
--	rcu_gp_slow_register(&rcu_fwd_cb_nodelay);
-+	if (cur_ops->gp_slow_register)
-+		cur_ops->gp_slow_register(&rcu_fwd_cb_nodelay);
- 	return 0;
- 
- unwind:
+[auto build test ERROR on paulmck-rcu/dev]
+[also build test ERROR on tip/locking/core tip/sched/core tip/x86/asm tip/master linus/master v6.9-rc1 next-20240328]
+[cannot apply to tip/x86/core tip/auto-latest]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Lai-Jiangshan/lib-Use-rcu_preempt_depth-to-replace-current-rcu_read_lock_nesting/20240328-155513
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+patch link:    https://lore.kernel.org/r/20240328075318.83039-10-jiangshanlai%40gmail.com
+patch subject: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
+config: x86_64-randconfig-161-20240328 (https://download.01.org/0day-ci/archive/20240329/202403291422.SOVYexxO-lkp@intel.com/config)
+compiler: gcc-10 (Ubuntu 10.5.0-1ubuntu1) 10.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240329/202403291422.SOVYexxO-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403291422.SOVYexxO-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+>> arch/x86/kernel/cpu/common.c:1998:3: error: 'struct pcpu_hot' has no member named 'rcu_preempt_count'; did you mean 'preempt_count'?
+    1998 |  .rcu_preempt_count = RCU_PREEMPT_INIT,
+         |   ^~~~~~~~~~~~~~~~~
+         |   preempt_count
+>> arch/x86/kernel/cpu/common.c:1998:23: error: 'RCU_PREEMPT_INIT' undeclared here (not in a function); did you mean 'RCUREF_INIT'?
+    1998 |  .rcu_preempt_count = RCU_PREEMPT_INIT,
+         |                       ^~~~~~~~~~~~~~~~
+         |                       RCUREF_INIT
+>> arch/x86/kernel/cpu/common.c:1998:23: warning: excess elements in struct initializer
+   arch/x86/kernel/cpu/common.c:1998:23: note: (near initialization for 'pcpu_hot')
+
+
+vim +1998 arch/x86/kernel/cpu/common.c
+
+  1993	
+  1994	DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) = {
+  1995		.current_task		= &init_task,
+  1996		.preempt_count		= INIT_PREEMPT_COUNT,
+  1997		.top_of_stack		= TOP_OF_INIT_STACK,
+> 1998		.rcu_preempt_count	= RCU_PREEMPT_INIT,
+  1999	};
+  2000	EXPORT_PER_CPU_SYMBOL(pcpu_hot);
+  2001	EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
+  2002	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
