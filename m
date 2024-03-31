@@ -1,141 +1,154 @@
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AB72F2B
-	for <rcu@vger.kernel.org>; Sun, 31 Mar 2024 11:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757F6144D1B
+	for <rcu@vger.kernel.org>; Sun, 31 Mar 2024 14:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711883411; cv=none; b=q7JbnULGFqupXpg4jZlmft1ew3bluySDPeGfISLWjNQwy59drJGvGZWmzbJyN3YUMg60ZBW6kczo8SCs/muMsg7/8Y1YCcnO8H/Fzldfoxqyud/NH1iObcIHGY9abHyYJhMWJvINLxc4qLqTMQuiPPq4Xt1HpnkG6zYNeqp2jMM=
+	t=1711893864; cv=none; b=LNN21NN4MR1zTXjZbhBO8TVEImZlpnQTOoB1dJDo07zJd1/vkWWNvfoHODeDwDojbI//F353dH5CFBfFTuPWJQtGg0cU1MvrLNuAREaraeQkE4BTWrm7uUlvnrESXaCdmCIZUQmg5u3z9CLxoHEcL04veDQBVnl5LBVp2D/Wafs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711883411; c=relaxed/simple;
-	bh=7zwW9KIreH0IZYqQc72+PuaK6wUeWYwPE3MwUrTfPBQ=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=E74b1PXF8LlFF2DX6sp3UTsmLQhBUk+o8bGYI8jMKHxFvIBa4tMEQtGCLfrvbwELjnvaK6gLwZ8Au1PiVkl50rg3AAnJNZi7H1eBwWlSXyQUW0lwgq/EYAYsPPXJF5gePFFKuXkZALNNqvAPl2O6Xsb6TZxK82tqj/XjBYkDQfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=EWHkhytp; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1711893864; c=relaxed/simple;
+	bh=Yl/hO9EubYf60TyHNhxvgsw78fWTvK0Y4nh+ioTeohE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=sbKBevnJkXkBHqSiFhx7r9cSFydT7zUW7K8sKfWigcDa517IWd1XjejW602VuPQWRI3/RoLkGYr7QISMFPfs2QkD4PbhI9+ZDJOu1c86ylpBdjkMwujS4oKfG8LAd+XLAtwN6OOvvrmzYzMKpyei33JLX6NDWzfJOXhOlm9imRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=azb7MElH; arc=none smtp.client-ip=193.238.174.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="EWHkhytp"
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29df0ca87d1so2680406a91.2
-        for <rcu@vger.kernel.org>; Sun, 31 Mar 2024 04:10:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1711883409; x=1712488209; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cCydWgolwrTtyJElMVv/4E817DBWypE+K8apOjVOCB8=;
-        b=EWHkhytpOStWZTmuHHRX+d9jlvdxQCFVtEGzyJNjw5sZnzFoptagMd8Tw8laXxz2d4
-         dxywwGYBpnqPalsTwhAUyo+OwXQAVcSNpGJTV1bosHC33X0xhjSnqtCX26z1/iACeopX
-         bpomFer2FuCVMq9Lf5LGx04EWGs3NCgAbEebw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711883409; x=1712488209;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cCydWgolwrTtyJElMVv/4E817DBWypE+K8apOjVOCB8=;
-        b=jPLkEpeS7dlIrV4g71M8bAeVXpy/1gUMHDm1nifflJS1OmwmSIXzftsMkx7zSqg7cq
-         AibfBfMCWz39g7pFeVf2pX8KR6JyWdP8alTMtyVRC55BlcZccI5/Voa6hBaamzFL5P6i
-         GTfN4Z0ZPIhX+ItJLMlK05lZCl9Gs1Xff1V3bn7vSuEvzQ0F7tjfJJfWAulWv6CKC4lp
-         IXdBN5fYkocD40yoTH2A8WQLVESkyKv1+VbwmKOuXRptzOwui06po+a2owC6H0rkHDJk
-         sysd+JbXgsEMNJd1AYsxHT3zx0JOkctqnINl8y8gfS8pernffi1tEBrIJKEH/ca01EE5
-         XO+A==
-X-Forwarded-Encrypted: i=1; AJvYcCW9GE6NCv75/GdDSalu3QTuNuMZBMmQUCuc+KjLkO7010XreUpn3pyNu9lK+ZTN2pG/jrk8hlByUBtx+pvVl/LkwBAD
-X-Gm-Message-State: AOJu0YxiND04yWBeTAji57LZuFLMHb6LKPN2GuktVirVtqVTUWZVzfR2
-	Gpso7r0HducnR6gYOeHW8ybIO139ik/2PbsVcSlOen89Pz2M6xirTuC2fTOVppg=
-X-Google-Smtp-Source: AGHT+IG1sVtP+t66+BTUyvsM447XLas/FA1zNyHwyNsgSEc7sjBwEOGTHPm9yyCaNCRKw/yjIAbpbw==
-X-Received: by 2002:a17:90a:3fcf:b0:2a0:390e:f032 with SMTP id u15-20020a17090a3fcf00b002a0390ef032mr5398788pjm.32.1711883409289;
-        Sun, 31 Mar 2024 04:10:09 -0700 (PDT)
-Received: from smtpclient.apple ([185.216.231.131])
-        by smtp.gmail.com with ESMTPSA id cx14-20020a17090afd8e00b002a20b83bd46sm4998548pjb.41.2024.03.31.04.10.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Mar 2024 04:10:08 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="azb7MElH"
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+	by mg.ssi.bg (Proxmox) with ESMTP id 93A5231BCF
+	for <rcu@vger.kernel.org>; Sun, 31 Mar 2024 17:04:20 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mg.ssi.bg (Proxmox) with ESMTPS id D4B3D31CE5
+	for <rcu@vger.kernel.org>; Sun, 31 Mar 2024 17:04:19 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id 5EFCA900D8D;
+	Sun, 31 Mar 2024 17:04:06 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+	t=1711893846; bh=Yl/hO9EubYf60TyHNhxvgsw78fWTvK0Y4nh+ioTeohE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=azb7MElHGrQAEGikiQfhW0bHKyqBGhxTheY2U3xbOjZk8xMcuE6NcsM+DQlA3rk+A
+	 M8RdxpQIAH5uWoewrEm3STGmfbokj8c85U3AhewppDePXlWeU4z1IxAy95u7nrN94p
+	 MCHLM64+zmrXVaRNh8VLJaNbtQufm5hvtmwXO+oQ=
+Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 42VE4671077732;
+	Sun, 31 Mar 2024 17:04:06 +0300
+Received: (from root@localhost)
+	by ja.home.ssi.bg (8.17.1/8.17.1/Submit) id 42VE46CW077731;
+	Sun, 31 Mar 2024 17:04:06 +0300
+From: Julian Anastasov <ja@ssi.bg>
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Jiejian Wu <jiejian@linux.alibaba.com>, rcu@vger.kernel.org
+Subject: [PATCHv3 net-next 10/14] ipvs: show the current conn_tab size to users
+Date: Sun, 31 Mar 2024 17:03:57 +0300
+Message-ID: <20240331140401.77657-11-ja@ssi.bg>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240331140401.77657-1-ja@ssi.bg>
+References: <20240331140401.77657-1-ja@ssi.bg>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 02/10] rcu: Move rcu_preempt_depth_set() to rcupdate.h
-Date: Sun, 31 Mar 2024 16:39:54 +0530
-Message-Id: <769AEAAB-7DEA-4D94-8979-F01EDFD6EE46@joelfernandes.org>
-References: <20240328075318.83039-3-jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org,
- Lai Jiangshan <jiangshan.ljs@antgroup.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Zqiang <qiang.zhang1211@gmail.com>
-In-Reply-To: <20240328075318.83039-3-jiangshanlai@gmail.com>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-X-Mailer: iPhone Mail (21D61)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+As conn_tab is per-net, better to show the current hash table size
+to users instead of the ip_vs_conn_tab_size (max).
+
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
+---
+ net/netfilter/ipvs/ip_vs_ctl.c | 36 +++++++++++++++++++++++++++++-----
+ 1 file changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index a5a7d7027237..5e9babed6799 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -2742,10 +2742,16 @@ static void ip_vs_info_seq_stop(struct seq_file *seq, void *v)
+ 
+ static int ip_vs_info_seq_show(struct seq_file *seq, void *v)
+ {
++	struct net *net = seq_file_net(seq);
++	struct netns_ipvs *ipvs = net_ipvs(net);
++
+ 	if (v == SEQ_START_TOKEN) {
++		struct ip_vs_rht *tc = rcu_dereference(ipvs->conn_tab);
++		int csize = tc ? tc->size : 0;
++
+ 		seq_printf(seq,
+ 			"IP Virtual Server version %d.%d.%d (size=%d)\n",
+-			NVERSION(IP_VS_VERSION_CODE), ip_vs_conn_tab_size);
++			NVERSION(IP_VS_VERSION_CODE), csize);
+ 		seq_puts(seq,
+ 			 "Prot LocalAddress:Port Scheduler Flags\n");
+ 		seq_puts(seq,
+@@ -3423,10 +3429,17 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
+ 	switch (cmd) {
+ 	case IP_VS_SO_GET_VERSION:
+ 	{
++		struct ip_vs_rht *t;
++		int csize = 0;
+ 		char buf[64];
+ 
++		rcu_read_lock();
++		t = rcu_dereference(ipvs->conn_tab);
++		if (t)
++			csize = t->size;
++		rcu_read_unlock();
+ 		sprintf(buf, "IP Virtual Server version %d.%d.%d (size=%d)",
+-			NVERSION(IP_VS_VERSION_CODE), ip_vs_conn_tab_size);
++			NVERSION(IP_VS_VERSION_CODE), csize);
+ 		if (copy_to_user(user, buf, strlen(buf)+1) != 0) {
+ 			ret = -EFAULT;
+ 			goto out;
+@@ -3438,8 +3451,16 @@ do_ip_vs_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
+ 	case IP_VS_SO_GET_INFO:
+ 	{
+ 		struct ip_vs_getinfo info;
++		struct ip_vs_rht *t;
++		int csize = 0;
++
++		rcu_read_lock();
++		t = rcu_dereference(ipvs->conn_tab);
++		if (t)
++			csize = t->size;
++		rcu_read_unlock();
+ 		info.version = IP_VS_VERSION_CODE;
+-		info.size = ip_vs_conn_tab_size;
++		info.size = csize;
+ 		info.num_services =
+ 			atomic_read(&ipvs->num_services[IP_VS_AF_INET]);
+ 		if (copy_to_user(user, &info, sizeof(info)) != 0)
+@@ -4381,6 +4402,8 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
+ 	int ret, cmd, reply_cmd;
+ 	struct net *net = sock_net(skb->sk);
+ 	struct netns_ipvs *ipvs = net_ipvs(net);
++	struct ip_vs_rht *t;
++	int csize;
+ 
+ 	cmd = info->genlhdr->cmd;
+ 
+@@ -4448,10 +4471,13 @@ static int ip_vs_genl_get_cmd(struct sk_buff *skb, struct genl_info *info)
+ 	}
+ 
+ 	case IPVS_CMD_GET_INFO:
++		csize = 0;
++		t = rcu_dereference(ipvs->conn_tab);
++		if (t)
++			csize = t->size;
+ 		if (nla_put_u32(msg, IPVS_INFO_ATTR_VERSION,
+ 				IP_VS_VERSION_CODE) ||
+-		    nla_put_u32(msg, IPVS_INFO_ATTR_CONN_TAB_SIZE,
+-				ip_vs_conn_tab_size))
++		    nla_put_u32(msg, IPVS_INFO_ATTR_CONN_TAB_SIZE, csize))
+ 			goto nla_put_failure;
+ 		break;
+ 	}
+-- 
+2.44.0
 
 
-
-> On Mar 28, 2024, at 1:20=E2=80=AFPM, Lai Jiangshan <jiangshanlai@gmail.com=
-> wrote:
->=20
-> =EF=BB=BFFrom: Lai Jiangshan <jiangshan.ljs@antgroup.com>
->=20
-> Prepare for arch-specific-defined rcu_preempt_depth_set().
->=20
-> No functionality change intended, but it has to be defined as a macro
-> as rcupdate.h is a very low level header included from areas that don't
-> even know about the task struct "current".
-
-Sorry I did not follow changelog. If some rcupdate.h includers do not know
-about task_struct, how does adding a macro that uses current help?
-
-Thanks,
-
- - Joel
-
->=20
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
-> ---
-> include/linux/rcupdate.h | 1 +
-> kernel/rcu/tree_plugin.h | 5 -----
-> 2 files changed, 1 insertion(+), 5 deletions(-)
->=20
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 16f519914415..210f65baf47c 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -78,6 +78,7 @@ void __rcu_read_unlock(void);
->  * types of kernel builds, the rcu_read_lock() nesting depth is unknowable=
-.
->  */
-> #define rcu_preempt_depth() READ_ONCE(current->rcu_read_lock_nesting)
-> +#define rcu_preempt_depth_set(val) WRITE_ONCE(current->rcu_read_lock_nest=
-ing, (val))
->=20
-> #else /* #ifdef CONFIG_PREEMPT_RCU */
->=20
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 36a8b5dbf5b5..b1264096d03a 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -387,11 +387,6 @@ static int rcu_preempt_read_exit(void)
->    return ret;
-> }
->=20
-> -static void rcu_preempt_depth_set(int val)
-> -{
-> -    WRITE_ONCE(current->rcu_read_lock_nesting, val);
-> -}
-> -
-> /*
->  * Preemptible RCU implementation for rcu_read_lock().
->  * Just increment ->rcu_read_lock_nesting, shared state will be updated
-> --
-> 2.19.1.6.gb485710b
->=20
