@@ -1,146 +1,196 @@
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C474210F8;
-	Mon,  1 Apr 2024 11:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455C04CDEC;
+	Mon,  1 Apr 2024 15:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711972679; cv=none; b=mdv9eSlDgjqXTowWXSuiiLGUYlMvldRlM8TIA96WJ/vLzFBjimZ57ThoZ94ArZySJgobqaFqHqYTVuzNuWJ56KDQneRR3QoGwhG/eByrZF8wPQeXH4jv3fF+fn8klrER1FJrDOQb5Js90a2v3CXZBABhWSNF/Nzp6HPDAEtoZ4A=
+	t=1711986743; cv=none; b=OroiuCmroVElvS7YGl3RW+VD76LOEXW5O6caTs4ddjMGwUv1mX0yyo8T1gdp8ss0iykXVpYK3cp1vFAFfd6Qlx5DgeTKUQnY6aIgsxhbzkdFmE9lhfgZfVSQ5jc0LTEmLyKu8DRcCBOe+yP28sEm8zlRhGhc0qV501sCNxTOZFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711972679; c=relaxed/simple;
-	bh=mi4ERWJ5mQ9smqXixw6WRIR0rmjAkZ8wCu1qA/SAFRw=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=EfEofpyK8/tz3Uz6y9Mb9geHjReVuTrLnPvahG9SqbrhYKHKf0ILWYko5f7sGYtxX6Q3hBj9yxomwawy8W1XGTG7uszps77mm3PQArbOYMgj2MtTUPDFsB5Y/k5/76GTPhLmJDgx7yZJsDYFKUyYkbDvrYCDyNECmlmwEmKz+zA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZgEVMuqh; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711986743; c=relaxed/simple;
+	bh=uIutiB+eFvtzipMrxJvLjeiPeG6GFWVZ0ZS/y6LRjGU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iELN8PJUlEdb1Rb2sDOGaepP8gwSG5rW5wj0zyghbUXbOxwd/wyG6iobALQrfaHGHieN79tOz6NM9fQqls1hgRzUsl+rYVPFTrsxsaM5CexdO/oz3jUa3C0ATHhh9Iq/iLECJ8kKLRWn3bIG2vIkgEmTp4tfVlnMqpJ90siZ+OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=maCQSVj7; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZgEVMuqh"
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29df3333d30so2846940a91.1;
-        Mon, 01 Apr 2024 04:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711972677; x=1712577477; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mi4ERWJ5mQ9smqXixw6WRIR0rmjAkZ8wCu1qA/SAFRw=;
-        b=ZgEVMuqhiQ7kBnWtgZ9PUIdJfgs7a3jwMrqM8Y1m6/KQSQ9OYkOohyUDO6wri1ce/q
-         aog8gOhWWz0gWO7cwbPW3zVyztAmqLwH6ISYAIqftoEXu/LomqimsYkNJOBn/aYEIX7a
-         2mInudbBocpBQ5iumwiUDr+h1PeN92XNx+P6iOGj0ohuIh3ZswJ37bSgu2pbQ0PjyTO2
-         BLfWy8sfID1OeFobfjGDnH+FdoqHCD5nHrFNnfX2dyQaL1/YWPi+QKEoPid8jEbEn1Fz
-         hhghaEUFOXXVsZFh8fNxB6l3SNJ90wyISuCCThTkM8K2xxBrbDlitTINsEBKaJcdpt9v
-         ZoNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711972677; x=1712577477;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mi4ERWJ5mQ9smqXixw6WRIR0rmjAkZ8wCu1qA/SAFRw=;
-        b=UCFdoiZ2ABDVlTlmJspY3Lt52QcI3VEeHZWKS4XIeDB0IdydYzc2oR88z1AGRm05PA
-         PGX76CDDnmdxi23g0ENXNHCCb1d4YX+1GduHochOeH7nwe/RbHlQRfbduKzzr18PqDOK
-         C3zWD6Lw7ewWhJZ1XrI3fu2XEkvi61XjlsL5DlbDwqpg2aFj6WDbU3yebJF1iwMLRN0H
-         a5xWGVGFilc9Wuiwn9qOxyXdmOUc6km3aliL9P4LSe7YDauV8Nh/JLiEphXz7U2m4L+D
-         cO+5ztMjTE9A6RqV/VssgGyVHWI1D6eMIf9BdmopAmzg0dbmpvmQidwVWwjyK5vnM8w9
-         VsdA==
-X-Forwarded-Encrypted: i=1; AJvYcCUpUfcv4wpg6yT2n6KttVVyumDbiyWv3fwdVGSYNg9Pjim40SKTlZB0/RRvJ0x8CKQmUsMVQPnH0hmORAYgR7nJtv7ix31fdUS+HjG9v+ybVhiyV+NEB3Gn26zNZTemKlhR
-X-Gm-Message-State: AOJu0Yyt+6WqJX7cTQBb8Zc4G/2LWr2w+/63TXTbZtFL6cGWvBO4Cjuh
-	96lErTGUBtQhKwPSuUwum7BGTnf8DoWSO+w2f3vbxPzvIJaFATnE
-X-Google-Smtp-Source: AGHT+IHWtDFfkWPpfgWPi2RK084dpIArY9pwilbYhwUtopK5VQPVxIowOJREfK8vIyCBUSauGanG7g==
-X-Received: by 2002:a17:90a:d149:b0:29d:f1e9:a9d2 with SMTP id t9-20020a17090ad14900b0029df1e9a9d2mr6235728pjw.49.1711972677470;
-        Mon, 01 Apr 2024 04:57:57 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id oh3-20020a17090b3a4300b002a20c0dcebbsm3936802pjb.31.2024.04.01.04.57.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Apr 2024 04:57:56 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="maCQSVj7"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1527DC433C7;
+	Mon,  1 Apr 2024 15:52:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711986743;
+	bh=uIutiB+eFvtzipMrxJvLjeiPeG6GFWVZ0ZS/y6LRjGU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=maCQSVj7j4KkshiBSoREmRa4yq4iZt5uxfMsJkGTonSY3n/GY7KWRMQcANBFLHif1
+	 rvM8fOo4rvJL3owxfRJzk7Dit/OugetLeKm3FrjVgbTHoSy1lNNf3JlRvRsPbPQBj4
+	 J0sjdd+xgI1vQbuEy+n3dqwLNO0FMYyzLPhMiuRxlaAJPC+qaQqT9riuzQ4oVhVwIz
+	 J5g5jHiqD+sexrW+EzhJnH/YBKDOls2OvdzKbgV3NY82+pG064WikCinLrmVc8FDOh
+	 Tve5M4RStj9v9/OmJjakhVxaGvvBLVg+Q1j2eqn+UD3AuFebHEWfmZCl0WN0VqwgHD
+	 d1krplPPRuwnw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B2B10CE0738; Mon,  1 Apr 2024 08:52:22 -0700 (PDT)
+Date: Mon, 1 Apr 2024 08:52:22 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 2/2] rcu: Ignore RCU in nohz_full cpus if it was
+ running a guest recently
+Message-ID: <b616a57b-56bf-4cdd-abc3-f2064b14abf6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <20240328171949.743211-3-leobras@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH 02/10] rcu: Move rcu_preempt_depth_set() to rcupdate.h
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <073E72BD-63AF-4D88-95F8-9A002252C554@gmail.com>
-Date: Mon, 1 Apr 2024 19:57:40 +0800
-Cc: Joel Fernandes <joel@joelfernandes.org>,
- linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org,
- x86@kernel.org,
- Lai Jiangshan <jiangshan.ljs@antgroup.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Josh Triplett <josh@joshtriplett.org>,
- Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Zqiang <qiang.zhang1211@gmail.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <60BB1971-38D3-4FE2-BB45-2DE228C6F370@gmail.com>
-References: <20240328075318.83039-3-jiangshanlai@gmail.com>
- <769AEAAB-7DEA-4D94-8979-F01EDFD6EE46@joelfernandes.org>
- <CAJhGHyDjoQ3TrApksYJ5o1ooU4s8rzys2UnfF6EFzGwkaSVaKA@mail.gmail.com>
- <073E72BD-63AF-4D88-95F8-9A002252C554@gmail.com>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328171949.743211-3-leobras@redhat.com>
 
-2024=E5=B9=B44=E6=9C=881=E6=97=A5 19:40=EF=BC=8CAlan Huang =
-<mmpgouride@gmail.com> wrote=EF=BC=9A
->=20
-> 2024=E5=B9=B44=E6=9C=881=E6=97=A5 00:16=EF=BC=8CLai Jiangshan =
-<jiangshanlai@gmail.com> wrote=EF=BC=9A
->>=20
->> On Sun, Mar 31, 2024 at 7:10=E2=80=AFPM Joel Fernandes =
-<joel@joelfernandes.org> wrote:
->>>=20
->>>=20
->>>=20
->>>> On Mar 28, 2024, at 1:20=E2=80=AFPM, Lai Jiangshan =
-<jiangshanlai@gmail.com> wrote:
->>>>=20
->>>> =EF=BB=BFFrom: Lai Jiangshan <jiangshan.ljs@antgroup.com>
->>>>=20
->>>> Prepare for arch-specific-defined rcu_preempt_depth_set().
->>>>=20
->>>> No functionality change intended, but it has to be defined as a =
-macro
->>>> as rcupdate.h is a very low level header included from areas that =
-don't
->>>> even know about the task struct "current".
->>>=20
->>> Sorry I did not follow changelog. If some rcupdate.h includers do =
-not know
->>> about task_struct, how does adding a macro that uses current help?
->>>=20
->>=20
->> Hello
->>=20
->> This is how macro works and it expands blindly based on tokens on the
->> usage-sites.
->=20
-> But =E2=80=98current=E2=80=99 still needs to be expanded at last, it =
-seems to me that it only affects=20
-> the including order of the header files=EF=BC=9F
->=20
-> Or what am I missing?
+On Thu, Mar 28, 2024 at 02:19:47PM -0300, Leonardo Bras wrote:
+> In current code, we can ignore the RCU request on a nohz_full cpu for up to
+> a second if it has interrupted idle or userspace tasks, since those are
+> quiescent states, and will probably return to it soon thus not requiring
+> to run a softirq or a rcuc thread.
+> 
+> Running a guest is also considered to be a quiescent state, and will
+> follow the same logic, so it makes sense to also ignore the RCU request in
+> this case.
+> 
+> This solves a latency issue of a latency-sensitive workload running on a
+> guest pinned in nohz_full cpu: if the guest goes out for any reason, and a
+> synchronize_rcu() is requested between guest exit and a timer interrupt,
+> then invoke_rcu_core() is called, and introduce latency due to either a
+> softirq, or a reschedule to run rcuc, if the host is a PREEMPT_RT kernel.
+> 
+> Suggested-by: Marcelo Tosatti <mtosatti@redhat.com>
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
 
-Get the missing part: if the user don=E2=80=99t need to use =
-rcu_preempt_depth()=20
-and rcu_preempt_depth_set() but other parts of rcupdate.h, then the two
-has to be defined as a macro to avoid including linux/sched.h.
+Looks plausible to me!
 
-Sorry for the bother.
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
->=20
->>=20
->> And rcu_preempt_depth() & rcu_preempt_depth_set() are not universally
->> used wrappers, the user can simply also include linux/sched.h to make
->> they work.
->>=20
->> Thanks
->> Lai
+Or let me know if you would rather these go through -rcu.
 
+							Thanx, Paul
 
+> ---
+>  kernel/rcu/tree_plugin.h | 14 ++++++++++++++
+>  kernel/rcu/tree.c        |  4 +++-
+>  2 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 36a8b5dbf5b5..16f3cf2e15df 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -5,20 +5,21 @@
+>   * or preemptible semantics.
+>   *
+>   * Copyright Red Hat, 2009
+>   * Copyright IBM Corporation, 2009
+>   *
+>   * Author: Ingo Molnar <mingo@elte.hu>
+>   *	   Paul E. McKenney <paulmck@linux.ibm.com>
+>   */
+>  
+>  #include "../locking/rtmutex_common.h"
+> +#include "linux/kvm_host.h"
+>  
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+>  {
+>  	/*
+>  	 * In order to read the offloaded state of an rdp in a safe
+>  	 * and stable way and prevent from its value to be changed
+>  	 * under us, we must either hold the barrier mutex, the cpu
+>  	 * hotplug lock (read or write) or the nocb lock. Local
+>  	 * non-preemptible reads are also safe. NOCB kthreads and
+>  	 * timers have their own means of synchronization against the
+> @@ -1260,10 +1261,23 @@ static bool rcu_nohz_full_cpu(void)
+>  
+>  /*
+>   * Bind the RCU grace-period kthreads to the housekeeping CPU.
+>   */
+>  static void rcu_bind_gp_kthread(void)
+>  {
+>  	if (!tick_nohz_full_enabled())
+>  		return;
+>  	housekeeping_affine(current, HK_TYPE_RCU);
+>  }
+> +
+> +/*
+> + * true if for this cpu guest exit is at most over a second ago,
+> + * false otherwise
+> + */
+> +static bool rcu_recent_guest_exit(void)
+> +{
+> +#ifdef CONFIG_KVM
+> +	return time_before(jiffies, guest_exit_last_time() + HZ);
+> +#else
+> +	return false;
+> +#endif
+> +}
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d9642dd06c25..e5ce00bf1898 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -148,20 +148,21 @@ static void rcu_report_qs_rnp(unsigned long mask, struct rcu_node *rnp,
+>  static struct task_struct *rcu_boost_task(struct rcu_node *rnp);
+>  static void invoke_rcu_core(void);
+>  static void rcu_report_exp_rdp(struct rcu_data *rdp);
+>  static void sync_sched_exp_online_cleanup(int cpu);
+>  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+>  static bool rcu_rdp_cpu_online(struct rcu_data *rdp);
+>  static bool rcu_init_invoked(void);
+>  static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf);
+>  static void rcu_init_new_rnp(struct rcu_node *rnp_leaf);
+> +static bool rcu_recent_guest_exit(void);
+>  
+>  /*
+>   * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
+>   * real-time priority(enabling/disabling) is controlled by
+>   * the extra CONFIG_RCU_NOCB_CPU_CB_BOOST configuration.
+>   */
+>  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+>  module_param(kthread_prio, int, 0444);
+>  
+>  /* Delay in jiffies for grace-period initialization delays, debug only. */
+> @@ -3931,21 +3932,22 @@ static int rcu_pending(int user)
+>  	lockdep_assert_irqs_disabled();
+>  
+>  	/* Check for CPU stalls, if enabled. */
+>  	check_cpu_stall(rdp);
+>  
+>  	/* Does this CPU need a deferred NOCB wakeup? */
+>  	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
+>  		return 1;
+>  
+>  	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+> -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
+> +	if ((user || rcu_is_cpu_rrupt_from_idle() || rcu_recent_guest_exit()) &&
+> +	    rcu_nohz_full_cpu())
+>  		return 0;
+>  
+>  	/* Is the RCU core waiting for a quiescent state from this CPU? */
+>  	gp_in_progress = rcu_gp_in_progress();
+>  	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm && gp_in_progress)
+>  		return 1;
+>  
+>  	/* Does this CPU have callbacks ready to invoke? */
+>  	if (!rcu_rdp_is_offloaded(rdp) &&
+>  	    rcu_segcblist_ready_cbs(&rdp->cblist))
+> -- 
+> 2.44.0
+> 
