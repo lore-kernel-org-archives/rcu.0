@@ -1,63 +1,97 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay161.nicmail.ru (relay161.nicmail.ru [91.189.117.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9AA4CE13;
-	Mon,  1 Apr 2024 19:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A9217552;
+	Mon,  1 Apr 2024 19:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711998206; cv=none; b=kYgkBMj0uvgMCdHUZhWdZx0r7RbtUladC91g8/+aQd4468nS0wTHAz779/35T7HLRLdacyeicg83cBBUfpf5XK8SJypBE3E5DkdRwP49AVtOVfMZXtaVeg7kr80OW790HqTNl71y5gjeLTHu8Y1+tZzTUG9Wjc5ZQNei4WAbg/E=
+	t=1712000609; cv=none; b=SyRQJnEkIO3cCOkSBxV7q6KSI4aF77o1mRRTL1DqHFe2sZBmAxWU3Mhk9jmFUQafq4Nocsbr6OkFrKScr6KvCcNjCq2X7nzWpMGvtfI/NMjPDEF0EY66OZzT6zC7272/EJljNYz79iyxaaK3GdpluAvAIji4ru5mKg0Mo4qPTpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711998206; c=relaxed/simple;
-	bh=cExGv+FJE8UD0ApN8USdfLbi+102ExdtwV5jd7Wtldo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=azmBbYhAhe9xc6Lbr2OjtIGfyHFR29V3geg8DbEaf07cX6phhQLFqitVNTXRXkiYQbrlaqEgyEs4p8WpEVzuUC/aCupLMurEPjhp/vqxXVP4zaUldlPqkkqrmwTX6+Z2iyH41WnAQ2a8iktSG0KKcPqWXB5Q/Je+pA46MzNKYgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D252AC433C7;
-	Mon,  1 Apr 2024 19:03:24 +0000 (UTC)
-Date: Mon, 1 Apr 2024 15:05:40 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Nikita Kiryushin <kiryushin@ancud.ru>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel
- Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>,
- Boqun Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH v2] rcu: Fix buffer overlow in print_cpu_stall_info()
-Message-ID: <20240401150540.6dab14fc@gandalf.local.home>
-In-Reply-To: <20240401185454.361291-1-kiryushin@ancud.ru>
-References: <5a629a8e-5a70-4c7d-ab6a-f4a09e8c574c@paulmck-laptop>
-	<20240401185454.361291-1-kiryushin@ancud.ru>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712000609; c=relaxed/simple;
+	bh=1hhXYXzpBlVTWwZr+xCZLOOAx+sHm9NyPBQON64e5yI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=CyRnEX193EPNHBDhY9ksBQLoC9+iM1FDlKSjJJP/5JjZaksz8WuRGHYLrFcBRdjiqrztI8XCUXpWsx0e0s8EVS6V68UOtJ2dOvN0ifaQtJtw2fLrAQgNjLQER2glUKTILiZmQj1J16BbdMyC3stDbLLSfAx+WD9LnP0boSfHBiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
+Received: from [10.28.138.151] (port=35640 helo=mitx-gfx..)
+	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
+	(envelope-from <kiryushin@ancud.ru>)
+	id 1rrNYs-0004ov-5a;
+	Mon, 01 Apr 2024 22:43:19 +0300
+Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO mitx-gfx..)
+	by incarp1103.mail.hosting.nic.ru (Exim 5.55)
+	with id 1rrNYs-00FCtG-20;
+	Mon, 01 Apr 2024 22:43:18 +0300
+From: Nikita Kiryushin <kiryushin@ancud.ru>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH v3] rcu: Fix buffer overlow in print_cpu_stall_info()
+Date: Mon,  1 Apr 2024 22:43:15 +0300
+Message-Id: <20240401194315.362090-1-kiryushin@ancud.ru>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240401150540.6dab14fc@gandalf.local.home>
+References: 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-MS-Exchange-Organization-SCL: -1
 
-On Mon,  1 Apr 2024 21:54:54 +0300
-Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+rcuc info output in print_cpu_stall_info() contains
+posiible buffer overflow in the case of huge jiffies
+difference. The situation seems improbable, but, buffer
+overflow, still.
 
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -504,7 +504,8 @@ static void print_cpu_stall_info(int cpu)
->  			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
->  	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
->  	if (rcuc_starved)
-> -		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
-> +		/* %ld is intentional, for easier bug detection */
+Also, unsigned jiffies difference printed as (signed)
+%ld. This is intentional for debugging purposes, but
+it is not obvious from the code.
 
-The above still has assumptions of what is going on for the reviewer.
-I would suggest something a bit more obvious like:
+Change sprintf to snprintf and add clarifying comment
+about intention of %ld format.
 
-		/* Print signed value, as negative means it is likely a bug */
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
+Fixes: 245a62982502 ("rcu: Dump rcuc kthread status for CPUs not reporting quiescent state")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+---
+v3: Change intention comment wording as
+Steven Rostedt <rostedt@goodmis.org> suggested
+v2: Remove signed to unsigned print format change as
+Paul E. McKenney <paulmck@kernel.org> suggested, add format
+intention clarification comment
+ kernel/rcu/tree_stall.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> +		snprintf(buf, sizeof(buf), " rcuc=%ld jiffies(starved)", j);
->  	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 5d666428546b..320440b8384e 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -504,7 +504,8 @@ static void print_cpu_stall_info(int cpu)
+ 			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
+ 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
+ 	if (rcuc_starved)
+-		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
++		/* Print signed value, as negative means it is likely a bug */
++		snprintf(buf, sizeof(buf), " rcuc=%ld jiffies(starved)", j);
+ 	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
+ 	       cpu,
+ 	       "O."[!!cpu_online(cpu)],
+-- 
+2.34.1
 
--- Steve
