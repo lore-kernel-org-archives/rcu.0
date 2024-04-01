@@ -1,106 +1,125 @@
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4C4145339;
-	Sun, 31 Mar 2024 16:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBC41362
+	for <rcu@vger.kernel.org>; Mon,  1 Apr 2024 02:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711901819; cv=none; b=P6iXIuSodjSrrGZRpUuPAt41Dq2I1omq2j/kMXl3FJEzjwTPzNuecghECGYHKWZuDUB5/dJzA1XHVs0ATPi6nMh57u2c3KGMBHgevPiiNYejc1pdqKX7NjGrR5RjlSq64xJzNkNGGHe+wkYNJrkP5shxfppWRbeKsEbIQnqgzxU=
+	t=1711938492; cv=none; b=LR0SaRPc/pQw5xc9nDAM0iyYAHSZX5uV9XiJWt9Ix1RrBx7uXkrWtD8zoLTem2auFtgz38sdU0lX4XkHPLHMB1J6rTCFxuIhoJOq8NiTsNyO0zYhh9kHh+XTLWSVOJ55mNl8M7A/s5jdDAmDDo1ZSb6CcQcF+3UvM+D3k2LGbk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711901819; c=relaxed/simple;
-	bh=WsP/+lzMZQ2zP7XRmT3cZD7Gha/b4oecQDkkHYBNemw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m70Bw7gxZYq45YFGkQjdyS+WPqi3Yk7NweR/M52PhZX4USLL9nuRxwmeZw630IbOaVlteUF9HH1kBwkz7/HmT5c5ERZXyeRi6CsjsJ5oZbSiIXFCKULuqV94JX4ebyG2kfvj/JpurufjkDRKW3f9/hQLgfQWl8PDGKWVjHVcVOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kNblNQC2; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711938492; c=relaxed/simple;
+	bh=LfhO/ttDrHhRYeW84ygSeWSEB8losPLPFBPFAJz+dqo=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=fjOPQxefTQH9lyMPVqIEDiWMDfjPe7wPCP2gCIKuTVUc6M7i73RonXX42uVEZIh/ws0wj0CKIXSDOMfw6VCBxSOmjdlgQ922S7t9S1IDERV3zW2/CK3bO+LmolvvlHBbJL+kqNTf3u7rGs+YpZ839GKWTB//QNQfm3wutsBfFT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=NGJC7Tvj; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kNblNQC2"
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a07b092c4fso2502126a91.0;
-        Sun, 31 Mar 2024 09:16:55 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NGJC7Tvj"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6eaf7c97738so1048909b3a.2
+        for <rcu@vger.kernel.org>; Sun, 31 Mar 2024 19:28:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711901814; x=1712506614; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WsP/+lzMZQ2zP7XRmT3cZD7Gha/b4oecQDkkHYBNemw=;
-        b=kNblNQC2FYag6sQZc2aX37t+OzAYceglx/u5HxjkYUW5PbrfLcugVX2ljNrLGEYrZV
-         Ta/8tVDhpXF3cTkwZtCj5PI0+mjXIjAHftk25efDqQsvGj3QNxDyveDvYNhtlZcCXkzQ
-         uXwYRgzB2WO9T52xNvOK79+8gBCdOt+f0JlPla5eBiW3b3oHdB74O9dIwoXwrgsQj+PP
-         Vkkcep1wAjK9PO/rxQ6S1ph6fgAT1kRix8rL+A4J81f2Y/EL6c/oxV42Zc2AeMEBA6Nz
-         bKfv/g+3mkuPDwS112wspO8/sQFDb3cc0vy3+yi7YicdafQu0adj3M1nG+CxY3GcboXA
-         xaPQ==
+        d=joelfernandes.org; s=google; t=1711938490; x=1712543290; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LfhO/ttDrHhRYeW84ygSeWSEB8losPLPFBPFAJz+dqo=;
+        b=NGJC7TvjkbbUANZ68vwWACYvXSzt19xDrG1EtWchEK+0EY8D3h3IaJH0C/KTiu5W4l
+         ihqf4CHw49NrT103cuDil55C/J8q3Oxb/npu4Hf82NIAKE2OWCqjPSHb7bDo24Xw+CT/
+         JC0Tj5+IAusX1ZHMkYkGr1+pHmo/XvO/rKvZ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711901814; x=1712506614;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711938490; x=1712543290;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WsP/+lzMZQ2zP7XRmT3cZD7Gha/b4oecQDkkHYBNemw=;
-        b=NKn1F9igG6/qgRqww0gfeonbAxx9mX7l4SQfVq8v/j6wZM5TKDUml2TxNMGHKaOF/A
-         jrvFJxueuFtUmn/ZlztZjcCZ1CAvDCNIxfgjfBC8eJ64ScHZU8tUEbolsapl9AQZ4+cN
-         Klcw3Z6Ncz7OXHvc4pIM/cn8xjmR8LlnB/ZumCDHDxQWSGnueNdyhAhN+13oZ01F8oo7
-         ZN7ZPoCCTt9BXs5mBaNPP+vDQNUxwNm2wEcPw3ASu9JcBL/q7K5duMbaYXQ/PbVi1fmT
-         iulMlq6fiRjuCFEPakrO/oZMMElnzcDzfKrbVx3qb/fxOTHQEzVlVynh+nlnr58SG2xZ
-         /rMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1uu8bqBZipFAu6M2Lf4Hui2D06TvuQL27hZHAc8HYqbGGNL5n4/eNLHKz6enHJC2ZGjmrGUUBl2yHlen99clnc83G
-X-Gm-Message-State: AOJu0YycL+iZ6JZCDHvOWpk/+QsIRQpR9xWCd4iltylM7ytuKXeXM0a5
-	qix+xFeDUSBLMObbJZW2CnKi+CqXXGn2ANAbpTYUgtROwHN/IskO00uh4ElW8IH1WwvFtS69Psf
-	pwRAmQsGHUr2D419QfZTMsbeh6Pg=
-X-Google-Smtp-Source: AGHT+IF8YeeWFeO166tF2rV+DUV3+gt0CiY/eH4IJRBv6Ie8qP/0QWOsTlQr/sa+tHAx5YIwmZrKiVZDZz0dwrwsg8g=
-X-Received: by 2002:a17:903:987:b0:1e2:4093:5b28 with SMTP id
- mb7-20020a170903098700b001e240935b28mr5975393plb.3.1711901814191; Sun, 31 Mar
- 2024 09:16:54 -0700 (PDT)
+        bh=LfhO/ttDrHhRYeW84ygSeWSEB8losPLPFBPFAJz+dqo=;
+        b=A5m0x6Jk9I6UR/fOemaDdT8h1TUx8k+1wZJBwKimgzRGFd7ZUKtpd5UAFWIX7v/tUr
+         WDg3K3sRfYLCz5z1gw1yUeN1LQkXUzUGCRgj+fCNx9YgyRBzZADL513/Uyr4wmUUu9gm
+         HDq+HF0sj7PljuvOOXgtMdgTfMEJX74LBhjzbWbr53mU+Fi72A5tbMjxR9Zh3tv/M+Eb
+         Qygv7IOyJjl/RwYdaf9AG77i3RoihBKqO4Az7NX8f0JL1xTBD4e8I5FvQn/P+HyOrwHe
+         5wNbZSCmtthI5MZoDZPNJBnFBGypliJ3TfgratLwvWzgKfiD9wPeRQuASHbyJWsrMFjP
+         rjOg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSpvkMGFLCHMsek4o0mZaf6czaAp1eOkIiwn2HSR5bZ7dl4krjd38nk16YNBuz5cA8IRrDm4stiVdJBvI6jH7dmVJU
+X-Gm-Message-State: AOJu0Yy3ZP2CHd7iudGToFiO8DoD6Ja0xE+bvpxiAQr1wvCduz3ToHQ7
+	lFE1XjiMRLLt3aMG/BTQ8emFAvZo8xvCHU0/FA4LTHJGQ2ecXUaNhmtxQRnstn0=
+X-Google-Smtp-Source: AGHT+IEo7v0nQkkhmt17kaM/JYiwK7RoHw0U7Q9CpORk17x7Qn038TFiQedTaFsGabLvfukwIBvJPA==
+X-Received: by 2002:a05:6a20:ea8:b0:1a3:a092:5746 with SMTP id fk40-20020a056a200ea800b001a3a0925746mr5387679pzb.50.1711938489912;
+        Sun, 31 Mar 2024 19:28:09 -0700 (PDT)
+Received: from smtpclient.apple ([103.98.78.155])
+        by smtp.gmail.com with ESMTPSA id bi8-20020a170902bf0800b001e0b2851db7sm7592434plb.105.2024.03.31.19.28.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Mar 2024 19:28:09 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Joel Fernandes <joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240328075318.83039-3-jiangshanlai@gmail.com> <769AEAAB-7DEA-4D94-8979-F01EDFD6EE46@joelfernandes.org>
-In-Reply-To: <769AEAAB-7DEA-4D94-8979-F01EDFD6EE46@joelfernandes.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Mon, 1 Apr 2024 00:16:42 +0800
-Message-ID: <CAJhGHyDjoQ3TrApksYJ5o1ooU4s8rzys2UnfF6EFzGwkaSVaKA@mail.gmail.com>
+Mime-Version: 1.0 (1.0)
 Subject: Re: [PATCH 02/10] rcu: Move rcu_preempt_depth_set() to rcupdate.h
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date: Mon, 1 Apr 2024 07:57:56 +0530
+Message-Id: <B89CA77D-2E7C-4AE7-B4AA-06BF681A983A@joelfernandes.org>
+References: <CAJhGHyDjoQ3TrApksYJ5o1ooU4s8rzys2UnfF6EFzGwkaSVaKA@mail.gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org,
+ Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Zqiang <qiang.zhang1211@gmail.com>
+In-Reply-To: <CAJhGHyDjoQ3TrApksYJ5o1ooU4s8rzys2UnfF6EFzGwkaSVaKA@mail.gmail.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+X-Mailer: iPhone Mail (21D61)
 
-On Sun, Mar 31, 2024 at 7:10=E2=80=AFPM Joel Fernandes <joel@joelfernandes.=
-org> wrote:
->
->
->
-> > On Mar 28, 2024, at 1:20=E2=80=AFPM, Lai Jiangshan <jiangshanlai@gmail.=
+
+
+> On Mar 31, 2024, at 9:46=E2=80=AFPM, Lai Jiangshan <jiangshanlai@gmail.com=
+> wrote:
+>=20
+> =EF=BB=BFOn Sun, Mar 31, 2024 at 7:10=E2=80=AFPM Joel Fernandes <joel@joel=
+fernandes.org> wrote:
+>>=20
+>>=20
+>>=20
+>>>> On Mar 28, 2024, at 1:20=E2=80=AFPM, Lai Jiangshan <jiangshanlai@gmail.=
 com> wrote:
-> >
-> > =EF=BB=BFFrom: Lai Jiangshan <jiangshan.ljs@antgroup.com>
-> >
-> > Prepare for arch-specific-defined rcu_preempt_depth_set().
-> >
-> > No functionality change intended, but it has to be defined as a macro
-> > as rcupdate.h is a very low level header included from areas that don't
-> > even know about the task struct "current".
->
-> Sorry I did not follow changelog. If some rcupdate.h includers do not kno=
+>>>=20
+>>> =EF=BB=BFFrom: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+>>>=20
+>>> Prepare for arch-specific-defined rcu_preempt_depth_set().
+>>>=20
+>>> No functionality change intended, but it has to be defined as a macro
+>>> as rcupdate.h is a very low level header included from areas that don't
+>>> even know about the task struct "current".
+>>=20
+>> Sorry I did not follow changelog. If some rcupdate.h includers do not kno=
 w
-> about task_struct, how does adding a macro that uses current help?
->
+>> about task_struct, how does adding a macro that uses current help?
+>>=20
+>=20
+> Hello
+>=20
+> This is how macro works and it expands blindly based on tokens on the
+> usage-sites.
+>=20
+> And rcu_preempt_depth() & rcu_preempt_depth_set() are not universally
+> used wrappers, the user can simply also include linux/sched.h to make
+> they work.
 
-Hello
+Oh I see, so by hiding it in a macro, the code remains unexpanded. That make=
+s sense..
 
-This is how macro works and it expands blindly based on tokens on the
-usage-sites.
+Thanks.
 
-And rcu_preempt_depth() & rcu_preempt_depth_set() are not universally
-used wrappers, the user can simply also include linux/sched.h to make
-they work.
 
-Thanks
-Lai
+
+
+
+>=20
+> Thanks
+> Lai
