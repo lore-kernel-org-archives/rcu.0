@@ -1,126 +1,95 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay162.nicmail.ru (relay162.nicmail.ru [91.189.117.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84C2F1CA8F;
-	Mon,  1 Apr 2024 16:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6154F88B;
+	Mon,  1 Apr 2024 18:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711987754; cv=none; b=Q9wt5ON1BL9WPlJIxwsUiLsK+xa3SsDC8OSE3//nMLZIt2Wt9AG7IpX1bNGFAbrsVnZBBBSdLmpFHo+vPSUmt7SW0dCF8nVKMktJiN5ewnHCnVDKLCby3BbUcueR55kHlfhsSWQz+9yO4UhsLdpKgCFHF2cpUmRw6w4lxISS7hs=
+	t=1711997723; cv=none; b=TH+lSK8Bw9WVZri7kHfMOctMdBraXvM2RFZOdnhLs01muBn5JPOea1UoPeaswoqkUECf67+A+6VcNdxfxQRVPmxm4w5ma16A9zzp2y3FYw3bh9hEmWP152WE70wgs+u/QHJU86O+3e2M1Q9p2tmj/AWzIbCQS7C1l4Mn3sGuYPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711987754; c=relaxed/simple;
-	bh=h0f1QZU12xDzELX/ESgt04e2YtnmDFzqm36XGRsVg7w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fq/fHsrkUGGi/8UjZK8K0eu81nmrS8gh3WrkQLzAXaApZ06zRf3tZ2MRV03xJHchaFTa5wJ5iAllRB4kuvtnmo0Kw0eYQGP/CXM2PWck11GU9Mg8x8J6H4MxCm0o9PAqJYFXx5wRyHybF8TJ/zUq/TlLkU9rdw6ugyyWAFOUP40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c7Wj+joC; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c7Wj+joC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 494DEC43390;
-	Mon,  1 Apr 2024 16:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711987754;
-	bh=h0f1QZU12xDzELX/ESgt04e2YtnmDFzqm36XGRsVg7w=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=c7Wj+joC0bR9gxqC0smfVeJMV6DCGhASjvFbiWnxFCX4gwZUaAGI2Tz9GV3CA0t5C
-	 R2RGWwxrzh8dfTcSS5+zubHUGEdJUW8wldVRmMuEf6sU+eviovGfu7P2LRzUu5Cp7t
-	 kPEEZ1QNvAzqWEDokkTQNGLM0nkjDCqSp6I85yafzOVUTZ+2LLfj591fYVBYnPQbYy
-	 rT/p/9XXO2UbBP4gI6+NpwlvndSLJxmfd41UNpH9sCK+2/lHiBrnVmIXQV6nXIETGK
-	 zRd+fLOHcJIaYtPbcFstXOUv+u+YTscsvhhdZ3DfpTd7fL4+v2tZidISCJVXlsfB0O
-	 RTjN2yuNhRS1w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D5D5DCE0738; Mon,  1 Apr 2024 09:09:13 -0700 (PDT)
-Date: Mon, 1 Apr 2024 09:09:13 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Make the rcu_gp_slow_register/unregister()
- be used only for rcutype test
-Message-ID: <9c1624cf-5c7e-4717-9f0c-ba6cbbba08ff@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240329045245.16456-1-qiang.zhang1211@gmail.com>
+	s=arc-20240116; t=1711997723; c=relaxed/simple;
+	bh=4yV/6Rl53rOy1mtHIIWoR/s27gopoujP4rYp3U+jscQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=bZK8pH9LQrD/CsYqGLVLK6uuP/HLPnUf1Y74ofJfRVHz2wPcCXLgxdMIuRE6TolUNJuyotODvKeBhTSZSxiee7SRu4g3hhcIk8d7xqHF3uPsSXQMPmes4LvHxPk1q2hTaVkpNd+5PYuETp2ayDvIMo19Vv9k6w5cPKuPL6Cuv90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
+Received: from [10.28.138.148] (port=64432 helo=mitx-gfx..)
+	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
+	(envelope-from <kiryushin@ancud.ru>)
+	id 1rrMoE-0007tS-6T;
+	Mon, 01 Apr 2024 21:55:06 +0300
+Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO mitx-gfx..)
+	by incarp1101.mail.hosting.nic.ru (Exim 5.55)
+	with id 1rrMoD-009Nd0-2u;
+	Mon, 01 Apr 2024 21:55:05 +0300
+From: Nikita Kiryushin <kiryushin@ancud.ru>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH v2] rcu: Fix buffer overlow in print_cpu_stall_info()
+Date: Mon,  1 Apr 2024 21:54:54 +0300
+Message-Id: <20240401185454.361291-1-kiryushin@ancud.ru>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <5a629a8e-5a70-4c7d-ab6a-f4a09e8c574c@paulmck-laptop>
+References: 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329045245.16456-1-qiang.zhang1211@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-MS-Exchange-Organization-SCL: -1
 
-On Fri, Mar 29, 2024 at 12:52:45PM +0800, Zqiang wrote:
-> The rcu_gp_slow_register/unregister() is only valid for tests which
-> the torture_type is rcu, this commit therefore generates gp_slow_register
-> and gp_slow_unregister function pointers in rcu_torture_ops structures,
-> and operates only when the function pointer exists.
-> 
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+rcuc info output in print_cpu_stall_info() contains
+possible buffer overflow in the case of huge jiffies
+difference. The situation seems improbable, but, buffer
+overflow, still.
 
-Good point, queued, thank you!
+Also, unsigned jiffies difference printed as (signed)
+%ld. This is intentional for debugging purposes, but
+it is not obvious from the code.
 
-							Thanx, Paul
+Change sprintf to snprintf and add clarifying comment
+about intention of %ld format.
 
-> ---
->  kernel/rcu/rcutorture.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 8654e99bd4a3..32f1c4e932eb 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -382,6 +382,8 @@ struct rcu_torture_ops {
->  	bool (*check_boost_failed)(unsigned long gp_state, int *cpup);
->  	int (*stall_dur)(void);
->  	void (*get_gp_data)(int *flags, unsigned long *gp_seq);
-> +	void (*gp_slow_register)(atomic_t *rgssp);
-> +	void (*gp_slow_unregister)(atomic_t *rgssp);
->  	long cbflood_max;
->  	int irq_capable;
->  	int can_boost;
-> @@ -570,6 +572,8 @@ static struct rcu_torture_ops rcu_ops = {
->  	.check_boost_failed	= rcu_check_boost_fail,
->  	.stall_dur		= rcu_jiffies_till_stall_check,
->  	.get_gp_data		= rcutorture_get_gp_data,
-> +	.gp_slow_register	= rcu_gp_slow_register,
-> +	.gp_slow_unregister	= rcu_gp_slow_unregister,
->  	.irq_capable		= 1,
->  	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
->  	.extendables		= RCUTORTURE_MAX_EXTEND,
-> @@ -3343,12 +3347,12 @@ rcu_torture_cleanup(void)
->  			pr_info("%s: Invoking %pS().\n", __func__, cur_ops->cb_barrier);
->  			cur_ops->cb_barrier();
->  		}
-> -		rcu_gp_slow_unregister(NULL);
-> +		if (cur_ops->gp_slow_unregister)
-> +			cur_ops->gp_slow_unregister(NULL);
->  		return;
->  	}
->  	if (!cur_ops) {
->  		torture_cleanup_end();
-> -		rcu_gp_slow_unregister(NULL);
->  		return;
->  	}
->  
-> @@ -3447,7 +3451,8 @@ rcu_torture_cleanup(void)
->  	else
->  		rcu_torture_print_module_parms(cur_ops, "End of test: SUCCESS");
->  	torture_cleanup_end();
-> -	rcu_gp_slow_unregister(&rcu_fwd_cb_nodelay);
-> +	if (cur_ops->gp_slow_unregister)
-> +		cur_ops->gp_slow_unregister(NULL);
->  }
->  
->  #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
-> @@ -3929,7 +3934,8 @@ rcu_torture_init(void)
->  	if (object_debug)
->  		rcu_test_debug_objects();
->  	torture_init_end();
-> -	rcu_gp_slow_register(&rcu_fwd_cb_nodelay);
-> +	if (cur_ops->gp_slow_register)
-> +		cur_ops->gp_slow_register(&rcu_fwd_cb_nodelay);
->  	return 0;
->  
->  unwind:
-> -- 
-> 2.17.1
-> 
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 245a62982502 ("rcu: Dump rcuc kthread status for CPUs not reporting quiescent state")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+---
+v2: Remove signed to unsigned print format change as
+Paul E. McKenney <paulmck@kernel.org> suggested, add format
+intention clarification comment
+ kernel/rcu/tree_stall.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 5d666428546b..b972fe9f07a6 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -504,7 +504,8 @@ static void print_cpu_stall_info(int cpu)
+ 			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
+ 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
+ 	if (rcuc_starved)
+-		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
++		/* %ld is intentional, for easier bug detection */
++		snprintf(buf, sizeof(buf), " rcuc=%ld jiffies(starved)", j);
+ 	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
+ 	       cpu,
+ 	       "O."[!!cpu_online(cpu)],
+-- 
+2.34.1
+
