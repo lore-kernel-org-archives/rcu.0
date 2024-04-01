@@ -1,88 +1,146 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E713D9E;
-	Mon,  1 Apr 2024 20:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5D147A53
+	for <rcu@vger.kernel.org>; Mon,  1 Apr 2024 20:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712001658; cv=none; b=V+q5mATktvSGNj9izHL8YJJbMIdAqq1oHN0z8MQHfC1/JJAbHtrvEP8yqF28KI6Vtk3JHUOc/L1zNfHLu2MF003nV0EN5HXsnxMFLnEd9G2Ku703KCprVxtSOFUQk1NNKNPtfOf277rAi456Cn8p1MoICGpukou8+8vi6Dmgtt8=
+	t=1712002889; cv=none; b=A/icnrh69qFtaUSG3vfftFMEMrnbK41XH4v/WHOBR7bfw4RYU2N40bUyyFydYo+pX/ysyoys30lWo1OYlBXzV1fqdsMJpME61soh2jwC9QQapuYpZ9To422Gocjl2F2J2ZmhATKKYHgDnEPROvRcntpK5FYszzNq/IOJ21Rvvz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712001658; c=relaxed/simple;
-	bh=VOBnvpteYLOm2apkTlbfYOwoE5UU50XDzaYsVhOdiwM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uwZzNqils3Czf8XEe3xWYyEha0YmsZfvFPEB/5fz3oX9Cil1d9jf2zgyfT0MKP5bTSL1Qh9b6m+jdWBFIM6UfIYcgH3BfC1eS/9h3VpCVidhaltZiNBfeENa72HSCr5XkRtlAmUi6pjZbBcn5B0S5zVQlIIutd6Mh+Vz0uoOG/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 062C2C433F1;
-	Mon,  1 Apr 2024 20:00:56 +0000 (UTC)
-Date: Mon, 1 Apr 2024 16:03:12 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Nikita Kiryushin <kiryushin@ancud.ru>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel
- Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>,
- Boqun Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH v3] rcu: Fix buffer overlow in print_cpu_stall_info()
-Message-ID: <20240401160312.7b03e568@gandalf.local.home>
-In-Reply-To: <20240401194315.362090-1-kiryushin@ancud.ru>
-References: <20240401150540.6dab14fc@gandalf.local.home>
-	<20240401194315.362090-1-kiryushin@ancud.ru>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712002889; c=relaxed/simple;
+	bh=xi8fNfb+f7ixAYxOIg8qOE321OOUGkU+4oppUXoLRsU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WhfB65KVSLZgayJaXSOMHGWJRYqZpJ2C1Sii4nHJukISvQUoNobRkQYdGUYg08PeeXPIpVaJ1k4zBIdaLNXGDQLOEbL9GIMDLrSNZ7oZLWqrGps/qIVCACU9MXPLATxJ3jMzeV2QOVyvMwI8zPNWF6T9bwhRLz+RqoxQ8dfnwd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xq+anBcx; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xq+anBcx"
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dce775fa8adso7684853276.1
+        for <rcu@vger.kernel.org>; Mon, 01 Apr 2024 13:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712002886; x=1712607686; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EXuQrJxq8hh4Q4PrrL+1pUvmc/UlgSCH8mpU+iMNc/A=;
+        b=xq+anBcx66qyZQercVDaUpKLfhNQcMjDe9r/pF6FsIdAtQkudxq3maBQbSZorqZvmT
+         jKmG6Gdmtt0FGbFKmwiFqEc+TR7OcM484R2qtboyVX7xZ14iGnj1BB5wbRYnY6VVgxQF
+         6h1nBWVlrdqyMoijeIzIHwz5SvKaUSdg+bxs63BQqb7FqrpGcOwi1lXNVJzhqewhZLOs
+         w+ZyPSap7dXcSfBUopbT0wRr4yonEEQqtj/P6YUgAmZ9daRhXLEbM7+nF5qo8NYLRZmN
+         tPD4/sX4OHNKtHdz+l+mxNULNvUS2+HqqbJTy6lFUn+fFmbGPFKsqitnMosApJFCfHxf
+         nHYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712002886; x=1712607686;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EXuQrJxq8hh4Q4PrrL+1pUvmc/UlgSCH8mpU+iMNc/A=;
+        b=rCXljH5/Q4evfcp+jVbY/WH7OqZPZE/j8eODE4MejNcpj1ZWUWOU0CraozUb37RQjj
+         WMullg2ErRYKNWINwiVjQy86sGs8ZWynOpUjkbduN/xWxHIypWq9rgskW1gyBQWOLcOi
+         mSSUfktwqFChGZsLrw+NnhUapa1+jhhUZiZBwnCOz8yf9oOIIhtphPD5knhwCv/erDGv
+         uqEOXLvYZ9Do16RJI5+BpKSLPPPMLwaNybn9nAheB87dwfc+3HjRSmKrlZOCtInNOYsg
+         hWz2Yg4m8wvo+0fzw93qzfP3tgAYBXwccUJVEmK8ebKTmXGkgMAJCMB1pEAmNP7dMvko
+         BELw==
+X-Forwarded-Encrypted: i=1; AJvYcCUV8SU2vudOXpNn4A0g5ptBplDu+gTvtqtbg8q8nQBXlOM0B+XGh8u/oRvgwxPWHtbu/QnTT6DHm5PH11C5fUlDSA3X
+X-Gm-Message-State: AOJu0YxwOccQ8IldJzhpG22qfQk5dWAD3J3RdDpYeCHnJlHfbBUzJF7X
+	De9DcOjsiqaoseNv7GUd3P80f51gzw5O+CaOZ1wkMcbjM06kf6li6+qjKBTnkjiwOEyxKKCL5OO
+	bjQ==
+X-Google-Smtp-Source: AGHT+IF9bN9rMKRDiKGIJtYfo638VzxlHSURX9J2Qs9hT7nu5H17e7f7Ql/BLpIFbwZluzOjprKPqs6RiH8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1002:b0:dc9:5ef8:2b2d with SMTP id
+ w2-20020a056902100200b00dc95ef82b2dmr3291799ybt.4.1712002886627; Mon, 01 Apr
+ 2024 13:21:26 -0700 (PDT)
+Date: Mon, 1 Apr 2024 13:21:25 -0700
+In-Reply-To: <20240328171949.743211-1-leobras@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240328171949.743211-1-leobras@redhat.com>
+Message-ID: <ZgsXRUTj40LmXVS4@google.com>
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon,  1 Apr 2024 22:43:15 +0300
-Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+On Thu, Mar 28, 2024, Leonardo Bras wrote:
+> I am dealing with a latency issue inside a KVM guest, which is caused by
+> a sched_switch to rcuc[1].
+> 
+> During guest entry, kernel code will signal to RCU that current CPU was on
+> a quiescent state, making sure no other CPU is waiting for this one.
+> 
+> If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+> issued somewhere since guest entry, there is a chance a timer interrupt
+> will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> 
+> rcu_sched_clock_irq() will check rcu_pending() which will return true,
+> and cause invoke_rcu_core() to be called, which will (in current config)
+> cause rcuc/N to be scheduled into the current cpu.
+> 
+> On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+> rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+> idle or userspace, since both are considered quiescent states.
+> 
+> Since this is also true to guest context, my idea to solve this latency
+> issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> 
+> On the other hand, I could not find a way of reliably saying the current
+> cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+> for keeping the time (jiffies) of the last guest exit.
+> 
+> In patch #2 I compare current time to that time, and if less than a second
+> has past, we just skip rcu_core() invocation, since there is a high chance
+> it will just go back to the guest in a moment.
 
-> rcuc info output in print_cpu_stall_info() contains
-> posiible buffer overflow in the case of huge jiffies
-> difference. The situation seems improbable, but, buffer
-> overflow, still.
-> 
-> Also, unsigned jiffies difference printed as (signed)
-> %ld. This is intentional for debugging purposes, but
-> it is not obvious from the code.
-> 
-> Change sprintf to snprintf and add clarifying comment
-> about intention of %ld format.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 245a62982502 ("rcu: Dump rcuc kthread status for CPUs not reporting quiescent state")
-> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
-> ---
-> v3: Change intention comment wording as
-> Steven Rostedt <rostedt@goodmis.org> suggested
-> v2: Remove signed to unsigned print format change as
-> Paul E. McKenney <paulmck@kernel.org> suggested, add format
-> intention clarification comment
->  kernel/rcu/tree_stall.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 5d666428546b..320440b8384e 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -504,7 +504,8 @@ static void print_cpu_stall_info(int cpu)
->  			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
->  	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
->  	if (rcuc_starved)
-> -		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
-> +		/* Print signed value, as negative means it is likely a bug */
-> +		snprintf(buf, sizeof(buf), " rcuc=%ld jiffies(starved)", j);
->  	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
->  	       cpu,
->  	       "O."[!!cpu_online(cpu)],
+What's the downside if there's a false positive?
 
+> What I know it's weird with this patch:
+> 1 - Not sure if this is the best way of finding out if the cpu was
+>     running a guest recently.
+> 
+> 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+>     overhead, even though it's supposed to be in local cache. If that's
+>     an issue, I would suggest having this part compiled out on 
+>     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+>     enabled seems more expensive than just setting this out.
 
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
+imprecise, e.g. it'll be a full tick "behind" on many exits.
 
--- Steve
+> 3 - It checks if the guest exit happened over than 1 second ago. This 1
+>     second value was copied from rcu_nohz_full_cpu() which checks if the
+>     grace period started over than a second ago. If this value is bad,
+>     I have no issue changing it.
+
+IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+of what magic time threshold is used.  IIUC, what you want is a way to detect if
+a CPU is likely to _run_ a KVM vCPU in the near future.  KVM can provide that
+information with much better precision, e.g. KVM knows when when it's in the core
+vCPU run loop.
+
+> 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
+>     rcu/tree_plugin.h, which is the first time it's getting included
+>     outside of kvm or arch code, and can be weird.
+
+Heh, kvm_host.h isn't included outside of KVM because several architectures can
+build KVM as a module, which means referencing global KVM varibles from the kernel
+proper won't work.
+
+>     An alternative would be to create a new header for providing data for
+>     non-kvm code.
+
+I doubt a new .h or .c file is needed just for this, there's gotta be a decent
+landing spot for a one-off variable.  E.g. I wouldn't be at all surprised if there
+is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
+likely to do a VM-Enter in the near future, at which point you could probably make
+a good argument for adding a flag in "struct context_tracking".  Even without a
+separate use case, there's a good argument for adding that info to context_tracking.
