@@ -1,168 +1,116 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C68848A;
-	Thu,  4 Apr 2024 17:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1084133413;
+	Thu,  4 Apr 2024 20:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712252770; cv=none; b=jE8p+8T55rdf/L/B1rNzP3ZybILzO9pJKGcggOOev7MwZrGV6laLHk8xQ5V8vJ7gaw0iT5tP9ncGAxgQofxtvm325h+z91B64HYy3smyuhi4/7mclLUZrGsamPcNqgGQC+MbLMFYz18HQGQxJoKUN3JHWqTc5FgrwggR68xHFJs=
+	t=1712261955; cv=none; b=O2Z5Jze28+45JvPW83BLkr+39iD/qGStBb8oKFu/k49G1/zCuFOdL97YkBSqoyZUDFeqwMHSDFS6FI2wvSESlhmGL1RFcQ8mtff7Na9u7gV2Ua9Ya3kDxpvFrrVMD4d6VylofPmK2DOKx9xbZVxD4hi2PFWnHHtxGsFU67tXVcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712252770; c=relaxed/simple;
-	bh=7UwdsAlWPrt4EKzrLi44XH3NHYbA1Alrh9WETpxWTf8=;
+	s=arc-20240116; t=1712261955; c=relaxed/simple;
+	bh=NS25OfLBD8D7Z7nX6XcFM2Jj4Yv1a95IhOl67KbfY8g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IsgySFk7thdyNuSgRo2gK0Fw2YF7VcMcyHxCZkmIFUM/EZNFG8PnTTE7kQR4WL2QNPZQXSD/LCWCNoq95AuwYiTBjvBduxNwlXMAAC5zjlwQ6NOCtIN54kVwtLD7cTEoSnlc9R5ZwYqovfNwuLRyNgvYkcqpJuKswy4bTTxzz0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nw1DW6YC; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=slQyxlZacVSNLXRk3mbjbL2ENpJUaku7A0OHuG9etwJojSZaG9qjAogrRnbpEGUnIha7BfJiY9hH5G7hQY/vWJSgwvROHP8+sh0JRZ4XwcTNd//BbmJ9JRMvMORQEJbPObIYnyJOsGkRuP1zmYyJO6FuFeH1aFnT3wtzMkHPbC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oq4t3J+u; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nw1DW6YC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F9FDC433F1;
-	Thu,  4 Apr 2024 17:46:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oq4t3J+u"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32A99C433C7;
+	Thu,  4 Apr 2024 20:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712252770;
-	bh=7UwdsAlWPrt4EKzrLi44XH3NHYbA1Alrh9WETpxWTf8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Nw1DW6YCXIsiuXAuv2jlAmIg2MHfAp5cTbvXzB/v6iG4GbqygutIbMkfA9EjE3KyR
-	 Cd93D8gNXdZEsid+rua/UZgRotbE3B7lXrj6ICAExXCjwQ/JKKMlteBJOxpLjhrtCm
-	 VkBthNAmy5jdvVYlh+SrBI23gJcEYyc5y+1waN3CwXs2/dj+OJMzgGTxkjZv8p2eEg
-	 hx2juoiJ5dRCJVRtnxOHJbsDfcHZqEaaAUWvOLgzpl6rMjHhXfYEDZfUv47z54uJml
-	 Lz6F+WK/XeABtfuxbv8eYCAdVj10Cu9h8nUvfNhAdwchSw+b1agYn5LDT2L2Cjj9Yv
-	 eK8Cc7vIgsF3A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CF8E9CE0D0C; Thu,  4 Apr 2024 10:46:09 -0700 (PDT)
-Date: Thu, 4 Apr 2024 10:46:09 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: frederic@kernel.org, joel@joelfernandes.org, urezki@gmail.com,
-	josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org
-Subject: Re: [PATCH v2] rcu: Reduce synchronize_rcu() delays when all wait
- heads are in use
-Message-ID: <8d4e54ab-07b8-4a9b-a75c-afbe52929214@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240403105212.237354-1-Neeraj.Upadhyay@amd.com>
+	s=k20201202; t=1712261954;
+	bh=NS25OfLBD8D7Z7nX6XcFM2Jj4Yv1a95IhOl67KbfY8g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oq4t3J+uL/lSQwkTjpPBKJRUTrpFUuVCx8gq+Qqj+12XoNRw1sZnJscdV2aX7rnO0
+	 JQsx3KDDrp3U8SBI3hFYmHVvdEDydn4wRd5GavqwAATcJoks318K2sgQL5C+AtE/AA
+	 sh1vfmAcdHXHFuw6g+3OYugBJ4gs9HdU7mBZgUEEg38HYezWNnJCO4oZJaJ0Lf/dvi
+	 PEBMVwpVL+VcKxi3WAVA+bSvFe32yV5XRcHQRAaL8Q4SGPgKLcLXSUpd9HApV5s3nA
+	 2sn651qA28MYbMqAgtFBgWDOUAqlZnwNyG6zwoCb/lXNLE+IkxgVJkv7i5q/Eq0sBm
+	 jOCS5a0Wy2Hfg==
+Date: Thu, 4 Apr 2024 22:19:11 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, urezki@gmail.com,
+	neeraj.iitr10@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH v4] rcu/tree: Reduce wake up for synchronize_rcu() common
+ case
+Message-ID: <Zg8LP9fEHlDPeq5L@pavilion.home>
+References: <20240319185458.3968308-1-joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240403105212.237354-1-Neeraj.Upadhyay@amd.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240319185458.3968308-1-joel@joelfernandes.org>
 
-On Wed, Apr 03, 2024 at 04:22:12PM +0530, Neeraj Upadhyay wrote:
-> When all wait heads are in use, which can happen when
-> rcu_sr_normal_gp_cleanup_work()'s callback processing
-> is slow, any new synchronize_rcu() user's rcu_synchronize
-> node's processing is deferred to future GP periods. This
-> can result in long list of synchronize_rcu() invocations
-> waiting for full grace period processing, which can delay
-> freeing of memory. Mitigate this problem by using first
-> node in the list as wait tail when all wait heads are in use.
-> While methods to speed up callback processing would be needed
-> to recover from this situation, allowing new nodes to complete
-> their grace period can help prevent delays due to a fixed
-> number of wait head nodes.
+Le Tue, Mar 19, 2024 at 02:54:57PM -0400, Joel Fernandes (Google) a écrit :
+> In the synchronize_rcu() common case, we will have less than
+> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+> is pointless just to free the last injected wait head since at that point,
+> all the users have already been awakened.
 > 
-> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-
-Seeing no objections, I have queued this for testing and review alongside
-the other synchronize_rcu() speedup patches, thank you!
-
-							Thanx, Paul
-
+> Introduce a new counter to track this and prevent the wakeup in the
+> common case.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
-> Changes since v1:
-> * Fix use-after-free issue in rcu_sr_normal_gp_cleanup() (Frederic)
-> * Remove WARN_ON_ONCE(!rcu_sr_is_wait_head()) for wait and done tail
->   (Frederic)
-> * Rebase on top of commit 1c56d246027f ("rcu/tree: Reduce wake up
->   for synchronize_rcu() common case") (Joel)
+> v1->v2: Rebase on paul/dev
+> v2->v3: Additional optimization for wait_tail->next == NULL case.
+> v3->v4: Apply clean ups from Vlad. Tested rcutorture all scenarios.
 > ---
->  kernel/rcu/tree.c | 40 +++++++++++++++++++++++-----------------
->  1 file changed, 23 insertions(+), 17 deletions(-)
+>  kernel/rcu/tree.c | 35 ++++++++++++++++++++++++++++++-----
+>  kernel/rcu/tree.h |  1 +
+>  2 files changed, 31 insertions(+), 5 deletions(-)
 > 
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index a7c7a2b2b527..fe4a59d7cf61 100644
+> index 9fbb5ab57c84..f3193670fe42 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -1464,14 +1464,11 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->   * for this new grace period. Given that there are a fixed
->   * number of wait nodes, if all wait nodes are in use
->   * (which can happen when kworker callback processing
-> - * is delayed) and additional grace period is requested.
-> - * This means, a system is slow in processing callbacks.
-> - *
-> - * TODO: If a slow processing is detected, a first node
-> - * in the llist should be used as a wait-tail for this
-> - * grace period, therefore users which should wait due
-> - * to a slow process are handled by _this_ grace period
-> - * and not next.
-> + * is delayed), first node in the llist is used as wait
-> + * tail for this grace period. This means, the first node
-> + * has to go through additional grace periods before it is
-> + * part of the wait callbacks. This should be ok, as
-> + * the system is slow in processing callbacks anyway.
->   *
->   * Below is an illustration of how the done and wait
->   * tail pointers move from one set of rcu_synchronize nodes
-> @@ -1642,7 +1639,6 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
->  		return;
->  	}
+> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
+>  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+>  	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+>  		rcu_sr_normal_gp_cleanup_work),
+> +	.srs_cleanups_pending = ATOMIC_INIT(0),
+>  };
 >  
-> -	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
->  	head = done->next;
->  	done->next = NULL;
->  
-> @@ -1682,13 +1678,21 @@ static void rcu_sr_normal_gp_cleanup(void)
->  
->  	rcu_state.srs_wait_tail = NULL;
->  	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
-> -	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
->  
->  	/*
->  	 * Process (a) and (d) cases. See an illustration.
+>  /* Dump rcu_node combining tree at boot to verify correct setup. */
+> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>  	 * the done tail list manipulations are protected here.
 >  	 */
->  	llist_for_each_safe(rcu, next, wait_tail->next) {
-> -		if (rcu_sr_is_wait_head(rcu))
-> +		/*
-> +		 * The done tail may reference a rcu_synchronize node.
-> +		 * Stop at done tail, as using rcu_sr_normal_complete()
-> +		 * from this path can result in use-after-free. This
-> +		 * may occur if, following the wake-up of the synchronize_rcu()
-> +		 * wait contexts and freeing up of node memory,
-> +		 * rcu_sr_normal_gp_cleanup_work() accesses the done tail and
-> +		 * its subsequent nodes.
-> +		 */
-> +		if (wait_tail->next == rcu_state.srs_done_tail)
->  			break;
+>  	done = smp_load_acquire(&rcu_state.srs_done_tail);
+> -	if (!done)
+> +	if (!done) {
+
+Can this really happen? And if not should we warn?
+
+> +		/* See comments below. */
+> +		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+
+And if not should we really do that?
+
+>  		return;
+> +	}
 >  
->  		rcu_sr_normal_complete(rcu);
-> @@ -1743,15 +1747,17 @@ static bool rcu_sr_normal_gp_init(void)
->  		return start_new_poll;
+>  	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+>  	head = done->next;
+> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
 >  
->  	wait_head = rcu_sr_get_wait_head();
-> -	if (!wait_head) {
-> -		// Kick another GP to retry.
-> +	if (wait_head) {
-> +		/* Inject a wait-dummy-node. */
-> +		llist_add(wait_head, &rcu_state.srs_next);
-> +	} else {
-> +		// Kick another GP for first node.
->  		start_new_poll = true;
-> -		return start_new_poll;
-> +		if (first == rcu_state.srs_done_tail)
-> +			return start_new_poll;
-> +		wait_head = first;
+>  		rcu_sr_put_wait_head(rcu);
 >  	}
->  
-> -	/* Inject a wait-dummy-node. */
-> -	llist_add(wait_head, &rcu_state.srs_next);
-> -
->  	/*
->  	 * A waiting list of rcu_synchronize nodes should be empty on
->  	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-> -- 
-> 2.34.1
-> 
+> +
+> +	/* Order list manipulations with atomic access. */
+> +	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+
+Can we have a sanity check here ensuring this never goes negative?
+
+Thanks.
