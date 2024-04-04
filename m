@@ -1,78 +1,191 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CBF91272BB;
-	Thu,  4 Apr 2024 13:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BAA14A8B;
+	Thu,  4 Apr 2024 16:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712237923; cv=none; b=VL4awlCoXmIhuIPJkaOMIM5sFNAfEweXYmpqmZiuYBy0xTVHxgPPSYnr2wpqnozDkz/1yFj2KaVQT13IV58YHy8I15Cu/NLqkkG2cO2NNIY3HGaBikRzSu+b9Y5nFiLNl1d1TECfN3r8KWxdiDcarI5SFo5+vYekI1ndCOKDhfI=
+	t=1712249431; cv=none; b=Z7ePKZD4K+hbrBrquUKoPdeSq4iYoypxXClXGhO5X9TLt08FC+MU1MRqrMA+cIcHKfKnrMb5CD3BG+GLhwxEtIgWP8Cmt6RdPxKFPncQbfUWxeI2Zmm7bkK6EoEeZ8G5BitSH01shfVSu95FRl2EB84pI4yWim7niZDbdOczFwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712237923; c=relaxed/simple;
-	bh=Ytk+RYNnGOzswIfj2b5w7iQj6urpyLQzMSAFPdEwAfs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RHQRt95NaSDm0EZBvAtgHo1Q7EU9SfHg7KeaGrGUWXXOum8cTfHCK1SKt9GW8PcZpqMiw+pM0wfY9o4QvXgA+iMBzix3lnezKn39R5jYMBzxK4al17O0HOaUPHfsuhx8EI2TeY/9oLwxa10nrl74dDKAgYEQdi3IghVvKebApzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tZnIQx02; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1712249431; c=relaxed/simple;
+	bh=CHdsYPxN3bpXMJJkVR+dGGAWeCL/FsCZhntl8455uWA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=htaBFZKSI+seqFkI83mmrmyjf44EifK9UriSVAUgIVo3DwfMsKvYHLN6dru5ABozaFVah2YwRyt63Ouv0Xzn1LGkQHQD8HneTWkMv6I7mLwuZgCGUu6B3BEsA1QS5YncHyRLuggsngf3oDkaTJrF1klPMAjsynFEYkUULilFug0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K+ud700O; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4v3ZzVKh; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tZnIQx02"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE308C433F1;
-	Thu,  4 Apr 2024 13:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712237923;
-	bh=Ytk+RYNnGOzswIfj2b5w7iQj6urpyLQzMSAFPdEwAfs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tZnIQx02l4JDzme/JJPv3tMLIR5sot8N7vN2W3GzHp6bJs4aQAinpCR4YTZgCuDfe
-	 83qMi0HLp4xB90u+hHFyWLaaGr51cctA+uHzZW+sgMuM+UwM6zcHymzPFvCO98Vcbl
-	 CXKydJtRl3kP+P87AVz1wcIm/BFBJ5sNYLMFksvZ1oIVGAHC6lOoKIhlO84tVUCYww
-	 nzgyy4t+tsWmovha0Ewp6tZ/7CXdR7M1p+wp82/BDI1LtPSWz7AlPZEBuUe8BFyXc/
-	 kEhdRNCT/55G0WhqhIZXuajUdC9TegXAfvdTKRwnsnlbPdh1t6BZuWN5zeKviMo3XW
-	 XWeewjnZ/Z1mA==
-Date: Thu, 4 Apr 2024 15:38:40 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH 2/2] context_tracking, rcu: Rename RCU_DYNTICKS_IDX to
- CT_DYNTICKS_IDX
-Message-ID: <Zg6tYD-9AFPkOOsW@localhost.localdomain>
-References: <20240327112902.1184822-1-vschneid@redhat.com>
- <20240327112902.1184822-3-vschneid@redhat.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K+ud700O";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4v3ZzVKh"
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712249427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RIhVLHf/UkvLJ7KptHJFdF4HOgrXTkVv33D2+7H0p3E=;
+	b=K+ud700OCOVDYr7W5fBN476FnXp/Bn/gWMIBInbBxRCZi6Kr2BBqBrPZgA1WCGG55rx6cp
+	uO9FU0Jw/PIp1QbjZKjBcUNV2RYOi04sUfqxkxeZozALJ9GM75/cBh5eJ09GuiNHm19PV6
+	54ERePg+3IOYn79NHvq3xxn5HnLNTNXWA273xkIfdB9zoBFSCvfb7vY/IKq0GyvC17ktJY
+	j5Ek0HlkCvM/B+1DdBQ4HT8AUaFGDJeT+eojmcbxsKSSjJ3ydix8EoPEyP3pJfxwj0S/BZ
+	6+ZEUjlSv5CerCmf/1b2BSHKQ0iInmts6zFc1Wc0SCvX25w0e5ConYlceyDMVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712249427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RIhVLHf/UkvLJ7KptHJFdF4HOgrXTkVv33D2+7H0p3E=;
+	b=4v3ZzVKhoZgy6TyoZ/Q8cnb6+hU6cTba6VuNl51KhOXo6Xw9xgTTW5+pgTJZ1Sx5TMcaq4
+	itrsKp4MM7NMZdBQ==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, "Russell
+ King (Oracle)" <linux@armlinux.org.uk>, Joel Fernandes
+ <joel@joelfernandes.org>, Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+ mingo@kernel.org, rcu@vger.kernel.org, neeraj.upadhyay@amd.com,
+ urezki@gmail.com, qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
+ chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org,
+ Justin Chen <justin.chen@broadcom.com>
+Subject: [PATCH] timers/migration: Return early on deactivation
+In-Reply-To: <ZgMDcGOagCjfIB3i@localhost.localdomain>
+References: <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+ <ZfLUU+XuQC7W79tf@lothringen>
+ <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
+ <ZfNHNvzpqf8DOZd8@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com> <87v85olez3.ffs@tglx>
+ <87sf0sldbi.ffs@tglx> <ZfN0wY41pU5UjP8T@boqun-archlinux>
+ <ZfOhB9ZByTZcBy4u@lothringen> <87zfulrlnn.fsf@somnus>
+ <ZgMDcGOagCjfIB3i@localhost.localdomain>
+Date: Thu, 04 Apr 2024 18:50:26 +0200
+Message-ID: <87bk6pvzql.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240327112902.1184822-3-vschneid@redhat.com>
+Content-Type: text/plain
 
-Le Wed, Mar 27, 2024 at 12:29:02PM +0100, Valentin Schneider a écrit :
-> The symbols relating to the CT_STATE part of context_tracking.state are now
-> all prefixed with CT_STATE.
-> 
-> The RCU dynticks counter part of that atomic variable still involves
-> symbols with different prefixes, align them all to be prefixed with
-> CT_DYNTICKS, as CT_DYNTICKS_MASK already is.
-> 
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+Commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
+deactivation") removed the logic to return early in tmigr_update_events()
+on deactivation. With this the problem with a not properly updated first
+global event in a hierarchy containing only a single group was fixed.
 
-It used to be that RCU extended quiescent state and dynticks enter/exit
-were coupled. But this isn't the case anymore. Nowadays RCU stops watching
-some time later after dynticks is entered.
+But when having a look at this code path with a hierarchy with more than a
+single level, now unnecessary work is done (example is partially copied
+from the message of the commit mentioned above):
 
-I wonder if we shouldn't take advantage of that cleanup for a meaning that
-really reflect that RCU stops watching from there.
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = 0              migrator = NONE
+           active   = 0              active   = NONE
+           nextevt  = T0i, T1        nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+      active         idle            idle       idle
 
-Paul what do you think? CT_EQS_IDX ? CT_RCUEQS_IDX? CT_RCUOFF_IDX? ...?
+0) CPU 0 is active thus its event is ignored (the letter 'i') and so are
+upper levels' events. CPU 1 is idle and has the timer T1 enqueued.
+CPU 2 also has a timer. The expiry order is T0 (ignored) < T1 < T2
 
-Thanks.
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T1             nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
+
+1) CPU 0 goes idle without global event queued. Therefore KTIME_MAX is
+pushed as its next expiry and its own event kept as "ignore". Without this
+early return the following steps happen in tmigr_update_events() when
+child = null and group = GRP0:0 :
+
+  lock(GRP0:0->lock);
+  timerqueue_del(GRP0:0, T0i);
+  unlock(GRP0:0->lock);
+
+
+                            [GRP1:0]
+                         migrator = NONE
+                         active   = NONE
+                         nextevt  = T0:0, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T1             nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
+
+2) The change now propagates up to the top. Then tmigr_update_events()
+updates the group event of GRP0:0 and executes the following steps
+(child = GRP0:0 and group = GRP0:0):
+
+  lock(GRP0:0->lock);
+  lock(GRP1:0->lock);
+  evt = tmigr_next_groupevt(GRP0:0); -> this removes the ignored events
+					in GRP0:0
+  ... update GRP1:0 group event and timerqueue ...
+  unlock(GRP1:0->lock);
+  unlock(GRP0:0->lock);
+
+So the dance in 1) with locking the GRP0:0->lock and removing the T0i from
+the timerqueue is redundand as this is done nevertheless in 2) when
+tmigr_next_groupevt(GRP0:0) is executed.
+
+Revert commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
+deactivation") and add a condition into return path to skip the return
+only, when hierarchy contains a single group.
+
+Fixes: 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on deactivation")
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+---
+ kernel/time/timer_migration.c |   25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -751,6 +751,31 @@ bool tmigr_update_events(struct tmigr_gr
+ 
+ 		first_childevt = evt = data->evt;
+ 
++		/*
++		 * Walking the hierarchy is required in any case when a
++		 * remote expiry was done before. This ensures to not lose
++		 * already queued events in non active groups (see section
++		 * "Required event and timerqueue update after a remote
++		 * expiry" in the documentation at the top).
++		 *
++		 * The two call sites which are executed without a remote expiry
++		 * before, are not prevented from propagating changes through
++		 * the hierarchy by the return:
++		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
++		 *    is never set.
++		 *  - tmigr_inactive_up() takes care of the propagation by
++		 *    itself and ignores the return value. But an immediate
++		 *    return is required because nothing has to be done in this
++		 *    level as the event could be ignored.
++		 *
++		 * But, if the hierarchy has only a single level so @group is
++		 * the top level group, make sure first event information of the
++		 * group is updated properly and also handled properly, so skip
++		 * this fast return path.
++		 */
++		if (evt->ignore && !remote && group->parent)
++			return true;
++
+ 		raw_spin_lock(&group->lock);
+ 
+ 		childstate.state = 0;
