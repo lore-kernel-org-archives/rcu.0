@@ -1,193 +1,212 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E59E15FD04;
-	Fri,  5 Apr 2024 08:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B56512E5B
+	for <rcu@vger.kernel.org>; Fri,  5 Apr 2024 13:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307206; cv=none; b=HAw2qEZBTlQ8Uw3YkWILNmrTv/bVAGieRC8Axss15ZLTHndkvNFQ98pSqgV+pSwWOKOXJpJjas2KTSr73Jm69o0+V4s8raB62h+rxOGKeB5lPKgDM5BMFof6v/1NrS+e42Yc6nJce2fWRAle+1vgSNhc4IbPWMO+bXFGXRV0kds=
+	t=1712324769; cv=none; b=B7rKsPUccONGCFQuMErIY014whfidh8svTM5RQ5OdGomtQhXl6F0kIzG+jWvwTatkwl0eAV8nwU4DcQw+ayfs3ZJWB9C74dUgcXj/ok3PWOWEkJ83G5MJwPehjersLjjojSfaki/KJYTsOIIxxRbSBF2sUNOYT1Cw2ICVMLQY4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307206; c=relaxed/simple;
-	bh=TnYwP5yvNqnjcWreVYkWMt2UPBPBgIQJsFVyuIbmORE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Lw18L+8NiyWXVJHRCBA6JC+giEgUKBR/zz4YLlsvqw+fNY+beHFZmtQgUxlOpRl7Zd953uJJoE4bx8wRZ2dWGl/O58jP2mUCAzFK+V7iY4WiWLm2OxJztRFUjqv9ogJZK7rAGUREZr3gpXDazaqZklPpM0qpqyo8fIqmF/MB+W8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gV/9/Zoa; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WXvQe5FG; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1712324769; c=relaxed/simple;
+	bh=/zinqNVTVxNGsbsEheCpLj9G3tHSvBu/H2D25u/4YHs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UR2Q7xC1fqxV3gNdRP8Tv0h0lldfGcBjVpzIzK7Zy6Ih074DrfWDsfbIdxqXjblw2Z34pXjzx5H/tXzUYiv1I0dH55wWcFYkvT66NUZq0g7sySqVFW6h9BvpuV8lbxM31F/ZWiErkSkSOAThkH9y5vhnFfrN1eRqwUWJq/xoUT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Eqcn9UP2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gV/9/Zoa";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WXvQe5FG"
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712307202;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Eqcn9UP2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712324765;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=P41Z01goaraozDqj0xrujxPc5GUhupmm3onSXRgJ9RQ=;
-	b=gV/9/ZoaKxQKsgzhei66K52OI4DGLp6wJmlvBddmS74QP6aLkt06DU3DI+KhUMHIY6+PLb
-	2f0EumOqSHGos6Hj+vzzaBbH5bKWatU/EaDCNM7a+fJfo34qSLvc9fkdd6zAE6aTO9k0Se
-	7/JenpFL4j0HRPB1VIRDm869807UKi4eJu/3ktm9XnBcPxXivhw6PZI4krTReC8VBgguth
-	NB6Km2WXkxXbB2ZxZjbJHA3ohE3vOG/AJW/y1pTUc8e/0zgP5gwqimmiWhU1IvpdqKQFDX
-	i3k78UjQeXPb/ZmQatGPZuN2ll68/E1GFgH31aawjesivHXLvXbADP3MxlccEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712307202;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P41Z01goaraozDqj0xrujxPc5GUhupmm3onSXRgJ9RQ=;
-	b=WXvQe5FGvDbv721kEAC+Te5JltVJfpAtBFotTvMDyQC7ak7RwTepHkiNmzIsHF3zlZgvwg
-	nmDP0kTiSldG5lBA==
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>, Florian Fainelli
- <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, "Russell
- King (Oracle)" <linux@armlinux.org.uk>, Joel Fernandes
- <joel@joelfernandes.org>, Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
- mingo@kernel.org, rcu@vger.kernel.org, neeraj.upadhyay@amd.com,
- urezki@gmail.com, qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
- chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org,
- Justin Chen <justin.chen@broadcom.com>
-Subject: [PATCH v2] timers/migration: Return early on deactivation
-In-Reply-To: <Zg8nVbKHPhUJfmgc@pavilion.home>
-References: <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
- <ZfNHNvzpqf8DOZd8@boqun-archlinux>
- <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com> <87v85olez3.ffs@tglx>
- <87sf0sldbi.ffs@tglx> <ZfN0wY41pU5UjP8T@boqun-archlinux>
- <ZfOhB9ZByTZcBy4u@lothringen> <87zfulrlnn.fsf@somnus>
- <ZgMDcGOagCjfIB3i@localhost.localdomain> <87bk6pvzql.fsf@somnus>
- <Zg8nVbKHPhUJfmgc@pavilion.home>
-Date: Fri, 05 Apr 2024 10:53:21 +0200
-Message-ID: <87cyr49on2.fsf@somnus>
+	bh=Ds5HqRlcZsJw1NwtspBjr4yi/f3BIcikQYMcgYaEtiE=;
+	b=Eqcn9UP2Phr55IgH8Adll81u/3htCnVZbE3Rn+ASuYr4R0YxffcgGK7cg0YYCmg0UOiNnK
+	8lXfZRbhUGBXvBMLCDK8/hP1Yr1anLP89Uwrg029Bt2nXFz09Ssdrp6OG/GzZkZiGWBggC
+	WQM0f8EvSl6ZPd94NtHJWxvo/IFOiTI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-ZNe6GffuObSLTYpt4S8s6Q-1; Fri, 05 Apr 2024 09:45:58 -0400
+X-MC-Unique: ZNe6GffuObSLTYpt4S8s6Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25B8B811E81;
+	Fri,  5 Apr 2024 13:45:58 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.6])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4BEFB3C21;
+	Fri,  5 Apr 2024 13:45:57 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 43FF240135043; Fri,  5 Apr 2024 10:45:39 -0300 (-03)
+Date: Fri, 5 Apr 2024 10:45:39 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Message-ID: <ZhAAg8KNd8qHEGcO@tpad>
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <ZgsXRUTj40LmXVS4@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgsXRUTj40LmXVS4@google.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
-deactivation") removed the logic to return early in tmigr_update_events()
-on deactivation. With this the problem with a not properly updated first
-global event in a hierarchy containing only a single group was fixed.
+On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
+> On Thu, Mar 28, 2024, Leonardo Bras wrote:
+> > I am dealing with a latency issue inside a KVM guest, which is caused by
+> > a sched_switch to rcuc[1].
+> > 
+> > During guest entry, kernel code will signal to RCU that current CPU was on
+> > a quiescent state, making sure no other CPU is waiting for this one.
+> > 
+> > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+> > issued somewhere since guest entry, there is a chance a timer interrupt
+> > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> > 
+> > rcu_sched_clock_irq() will check rcu_pending() which will return true,
+> > and cause invoke_rcu_core() to be called, which will (in current config)
+> > cause rcuc/N to be scheduled into the current cpu.
+> > 
+> > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+> > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+> > idle or userspace, since both are considered quiescent states.
+> > 
+> > Since this is also true to guest context, my idea to solve this latency
+> > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> > 
+> > On the other hand, I could not find a way of reliably saying the current
+> > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+> > for keeping the time (jiffies) of the last guest exit.
+> > 
+> > In patch #2 I compare current time to that time, and if less than a second
+> > has past, we just skip rcu_core() invocation, since there is a high chance
+> > it will just go back to the guest in a moment.
+> 
+> What's the downside if there's a false positive?
 
-But when having a look at this code path with a hierarchy with more than a
-single level, now unnecessary work is done (example is partially copied
-from the message of the commit mentioned above):
+rcuc wakes up (which might exceed the allowed latency threshold
+for certain realtime apps).
 
-                            [GRP1:0]
-                         migrator = GRP0:0
-                         active   = GRP0:0
-                         nextevt  = T0:0i, T0:1
-                         /              \
-              [GRP0:0]                  [GRP0:1]
-           migrator = 0              migrator = NONE
-           active   = 0              active   = NONE
-           nextevt  = T0i, T1        nextevt  = T2
-           /         \                /         \
-          0 (T0i)     1 (T1)         2 (T2)      3
-      active         idle            idle       idle
+> > What I know it's weird with this patch:
+> > 1 - Not sure if this is the best way of finding out if the cpu was
+> >     running a guest recently.
+> > 
+> > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+> >     overhead, even though it's supposed to be in local cache. If that's
+> >     an issue, I would suggest having this part compiled out on 
+> >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+> >     enabled seems more expensive than just setting this out.
+> 
+> A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
+> imprecise, e.g. it'll be a full tick "behind" on many exits.
+> 
+> > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> >     grace period started over than a second ago. If this value is bad,
+> >     I have no issue changing it.
+> 
+> IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> of what magic time threshold is used.  
 
-0) CPU 0 is active thus its event is ignored (the letter 'i') and so are
-upper levels' events. CPU 1 is idle and has the timer T1 enqueued.
-CPU 2 also has a timer. The expiry order is T0 (ignored) < T1 < T2
+Why? It works for this particular purpose.
 
-                            [GRP1:0]
-                         migrator = GRP0:0
-                         active   = GRP0:0
-                         nextevt  = T0:0i, T0:1
-                         /              \
-              [GRP0:0]                  [GRP0:1]
-           migrator = NONE           migrator = NONE
-           active   = NONE           active   = NONE
-           nextevt  = T1             nextevt  = T2
-           /         \                /         \
-          0 (T0i)     1 (T1)         2 (T2)      3
-        idle         idle            idle         idle
+> IIUC, what you want is a way to detect if
+> a CPU is likely to _run_ a KVM vCPU in the near future.  KVM can provide that
+> information with much better precision, e.g. KVM knows when when it's in the core
+> vCPU run loop.
 
-1) CPU 0 goes idle without global event queued. Therefore KTIME_MAX is
-pushed as its next expiry and its own event kept as "ignore". Without this
-early return the following steps happen in tmigr_update_events() when
-child = null and group = GRP0:0 :
+ktime_t ktime_get(void)
+{
+        struct timekeeper *tk = &tk_core.timekeeper;
+        unsigned int seq;
+        ktime_t base;
+        u64 nsecs;
 
-  lock(GRP0:0->lock);
-  timerqueue_del(GRP0:0, T0i);
-  unlock(GRP0:0->lock);
+        WARN_ON(timekeeping_suspended);
 
+        do {
+                seq = read_seqcount_begin(&tk_core.seq);
+                base = tk->tkr_mono.base;
+                nsecs = timekeeping_get_ns(&tk->tkr_mono);
 
-                            [GRP1:0]
-                         migrator = NONE
-                         active   = NONE
-                         nextevt  = T0:0, T0:1
-                         /              \
-              [GRP0:0]                  [GRP0:1]
-           migrator = NONE           migrator = NONE
-           active   = NONE           active   = NONE
-           nextevt  = T1             nextevt  = T2
-           /         \                /         \
-          0 (T0i)     1 (T1)         2 (T2)      3
-        idle         idle            idle         idle
+        } while (read_seqcount_retry(&tk_core.seq, seq));
 
-2) The change now propagates up to the top. Then tmigr_update_events()
-updates the group event of GRP0:0 and executes the following steps
-(child = GRP0:0 and group = GRP0:0):
+        return ktime_add_ns(base, nsecs);
+}
+EXPORT_SYMBOL_GPL(ktime_get);
 
-  lock(GRP0:0->lock);
-  lock(GRP1:0->lock);
-  evt = tmigr_next_groupevt(GRP0:0); -> this removes the ignored events
-					in GRP0:0
-  ... update GRP1:0 group event and timerqueue ...
-  unlock(GRP1:0->lock);
-  unlock(GRP0:0->lock);
+ktime_get() is more expensive than unsigned long assignment.
 
-So the dance in 1) with locking the GRP0:0->lock and removing the T0i from
-the timerqueue is redundand as this is done nevertheless in 2) when
-tmigr_next_groupevt(GRP0:0) is executed.
+What is done is: If vcpu has entered guest mode in the past, then RCU
+extended quiescent state has been transitioned into the CPU, therefore
+it is not necessary to wake up rcu core.
 
-Revert commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
-deactivation") and add a condition into return path to skip the return
-only, when hierarchy contains a single group. Adapt comments accordingly.
+The logic is copied from:
 
-Fixes: 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on deactivation")
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/time/timer_migration.c |   27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+/*
+ * Is this CPU a NO_HZ_FULL CPU that should ignore RCU so that the
+ * grace-period kthread will do force_quiescent_state() processing?
+ * The idea is to avoid waking up RCU core processing on such a
+ * CPU unless the grace period has extended for too long.
+ *
+ * This code relies on the fact that all NO_HZ_FULL CPUs are also
+ * RCU_NOCB_CPU CPUs.
+ */
+static bool rcu_nohz_full_cpu(void)
+{
+#ifdef CONFIG_NO_HZ_FULL
+        if (tick_nohz_full_cpu(smp_processor_id()) &&
+            (!rcu_gp_in_progress() ||
+             time_before(jiffies, READ_ONCE(rcu_state.gp_start) + HZ)))
+                return true;
+#endif /* #ifdef CONFIG_NO_HZ_FULL */
+        return false;
+}
 
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -751,6 +751,33 @@ bool tmigr_update_events(struct tmigr_gr
- 
- 		first_childevt = evt = data->evt;
- 
-+		/*
-+		 * Walking the hierarchy is required in any case when a
-+		 * remote expiry was done before. This ensures to not lose
-+		 * already queued events in non active groups (see section
-+		 * "Required event and timerqueue update after a remote
-+		 * expiry" in the documentation at the top).
-+		 *
-+		 * The two call sites which are executed without a remote expiry
-+		 * before, are not prevented from propagating changes through
-+		 * the hierarchy by the return:
-+		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
-+		 *    is never set.
-+		 *  - tmigr_inactive_up() takes care of the propagation by
-+		 *    itself and ignores the return value. But an immediate
-+		 *    return is possible if there is a parent, sparing group
-+		 *    locking at this level, because the upper walking call to
-+		 *    the parent will take care about removing this event from
-+		 *    within the group and update next_expiry accordingly.
-+		 *
-+		 * However if there is no parent, ie: the hierarchy has only a
-+		 * single level so @group is the top level group, make sure the
-+		 * first event information of the group is updated properly and
-+		 * also handled properly, so skip this fast return path.
-+		 */
-+		if (evt->ignore && !remote && group->parent)
-+			return true;
-+
- 		raw_spin_lock(&group->lock);
- 
- 		childstate.state = 0;
+Note:
+
+avoid waking up RCU core processing on such a
+CPU unless the grace period has extended for too long.
+
+> > 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
+> >     rcu/tree_plugin.h, which is the first time it's getting included
+> >     outside of kvm or arch code, and can be weird.
+> 
+> Heh, kvm_host.h isn't included outside of KVM because several architectures can
+> build KVM as a module, which means referencing global KVM varibles from the kernel
+> proper won't work.
+> 
+> >     An alternative would be to create a new header for providing data for
+> >     non-kvm code.
+> 
+> I doubt a new .h or .c file is needed just for this, there's gotta be a decent
+> landing spot for a one-off variable.  E.g. I wouldn't be at all surprised if there
+> is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
+> likely to do a VM-Enter in the near future, at which point you could probably make
+> a good argument for adding a flag in "struct context_tracking".  Even without a
+> separate use case, there's a good argument for adding that info to context_tracking.
+
+Well, jiffies is cheap and just works. 
+
+Perhaps can add higher resolution later if required?
+
