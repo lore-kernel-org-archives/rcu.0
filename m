@@ -1,151 +1,275 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5AB2E401;
-	Fri,  5 Apr 2024 13:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590CC16D9B3
+	for <rcu@vger.kernel.org>; Fri,  5 Apr 2024 14:42:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712324992; cv=none; b=q99gJXGBkXYpAkYsXC5wDFNH3Pv3QJ7JBsXDqCtFCfc204p1B7JbSC2541QLiLoXindvbFOrdrjVucf/xHnpv5ShAXRMoQAa35t9rbsfnP5Sn5bYGDX5NWng8CZeiDEk23JKsgUXMq0A1E4Bq+1AbIzSv5/jYh81AGaV8NFyLdo=
+	t=1712328159; cv=none; b=M6xfYIko7P9QH4zr9N5R71SIVYhuwXBPtgUrqa0pIa+OeE/G8N3935346lvo0qNuYQ+7PDxXq7fKXGEqO2ihJeNsvG/HoRUEhXwBmXkrsKWjMsKeF+JaqTP4ZoO0Pu5ode7t5tCAmVVtMfxblIYyYbaOtHpWp0oHuVAy/AbtgYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712324992; c=relaxed/simple;
-	bh=Yh6tb71zvPKChuofRzQ+jAmdGm2HUzLM6pFKbvX9nEs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EBG+UqTPMsAEThxWMVEa18hWt5dXBTZ/UxZ1pppQZvmVXGCqiHCqjdC/eq+hAlLKjs0yDhuHjxjM+7VddA6a6IS1BB4JZ9CPpp1YTgBp3X1SUHA9EjzKUJhzOIDfPWJ/teahKPuMKnbm9KiSZp4yCWxeMJ1S1LQTiUXDn8f5NZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fxWS8vfT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vRvQnvnW; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1712328159; c=relaxed/simple;
+	bh=rJWQfu/YnSRY6XERT2o5HEtNNeUju6+bvYGSwNNeweY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=uT4tHkmNW1uq5Wkk+hfpMytmqAmL8Yhe0LODSBxiCiZhmajO3Dy9VMjR98U8nK0P9srKIxAROZPaM5vYZarIFuz/ZSwngL6jsHXxn1moX1/B6RJKwnr8hHPSGvC05zJ0ZYwPFBFgffj3BdhOPT/u9gqeZffkJJbrLU/K926uZeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LWMkDYoI; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fxWS8vfT";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vRvQnvnW"
-Date: Fri, 5 Apr 2024 15:49:46 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712324988;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KfinOOmRqv4TiYT3J4ii30g+NwwcvO6ie7kv9r4otrM=;
-	b=fxWS8vfThFgtVfNVrfxto+hy2vU3Cc4H2eBhmROJ8OHw+DRog7DYb4i7coSwQZSsWFAxGV
-	nETxmsR3lByOyCUdHItK90a5yxTqjf4c+oeJ9+ZNchI1mZind/YjdakyGsxiUZ6sC0VtC1
-	H7jw9BoKFT1R+Wio6Q4Etn+Vn+rQDrVDBwlvVEzAVBT9+cclOXSSIWoEQae/+c7VUF3e+g
-	vI/Up8UoJc8AryokLQfkgNfTf7IVy5UrHEVKppi3Py58a1/1I8AnoHyN1GWWAf8n5S3+uU
-	2Al7UE1uKNg+Au4lwPCiO3WfAeXMH++x9C6zr8Lo7KtdPAwHLLp3P6jDe7cDSw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712324988;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KfinOOmRqv4TiYT3J4ii30g+NwwcvO6ie7kv9r4otrM=;
-	b=vRvQnvnWLH1+h/yHjM4QKU6SVZhlNolDRNjj2oV+ctzgEuZeHyDtIuhBzZOmm8soM0eN16
-	6oPDnpSlQq2c3wDQ==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: paulmck@kernel.org, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-Message-ID: <20240405134946.NzqmEyX1@linutronix.de>
-References: <cover.1710877680.git.yan@cloudflare.com>
- <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
- <20240322112413.1UZFdBq5@linutronix.de>
- <123ca494-dc8c-47cc-a6d5-3c529bc7f549@paulmck-laptop>
- <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LWMkDYoI"
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e6fb338247so2166210b3a.3
+        for <rcu@vger.kernel.org>; Fri, 05 Apr 2024 07:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712328157; x=1712932957; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZyYnurtU73uHg6IQeQma8C3YR2WT84STcDWWD/M1a1o=;
+        b=LWMkDYoIAu0XBW6NEMh0r8tWiaoJpHvD2OELn49iTEdumtMO7hjHIcmG7vAiE1sNaF
+         ifFOYdP/KtpXyPLqQtHOaXcYT4DobzhVgNYYUKgJHAuhK8rZ8+Y2NBMkRL51dot0X00R
+         g5ZdkbkZeYOI7xev1zwimbsKBAXyWY5cOUjVA/QeF9805veDqVuprMT/h0CKwcPebGKh
+         k20sDegQtzTX7ZLyp23jeEcIwdthr2BoX58AAlR8QDMT5IIuvvCGVyw9gyltoVVityFW
+         5aFYOe4y5W3+gMF1OC2e9ik2bKIXKo5x7JznKW79TMzWsVhM13RlMQq5PhtQDgt5RGDG
+         CrBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712328157; x=1712932957;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZyYnurtU73uHg6IQeQma8C3YR2WT84STcDWWD/M1a1o=;
+        b=WrN8bj411akEgpQTn7vx0gcNRU8oP7Trri480U7Hy1nZM1ix/ivx23wOAnqm1gm883
+         uY1ko69BtXytl8KSz23wpTcJT5aXVBKSw9ldXly61/1XGFvJHHmPnP8QlT/VyBteexWc
+         4PATlA4h4p6Scf0jc+6rHEe7WUFzPReSR2A3SomLeupTh9yLI3S/AGJilwbkii77FLk8
+         ChwE8XkZipq1TLv0YYtDkDxD6QCqQ6K7lWClR+hq4orqaH5sDsoXI39gYJs9pB3k4xIG
+         U2rf63PSXjWJzaAsAUPF/TycOoECOqW3xi4oOyY4TO0KQXWRbIce9sBTeRYgU2Zj6vni
+         Flag==
+X-Forwarded-Encrypted: i=1; AJvYcCUD30/FeDAruB3kmWZxacQau1DTcXpNv1qah7Wq+6whu3cHSDinanYPZw1NWmt608j66vBHblGO52mevucc9gX2FRF/
+X-Gm-Message-State: AOJu0YxYp+mUalpYoUAzbzfm14C/hu5tN3mBLRtBSIhojgEQ+nbpgtUP
+	jjN4Zh8bfKNOirmaA7gw9jUYOjguz4HDno5TVLpiWpCqYPGdnXTzQUZNz0Fy+mL92SvvieStO3Q
+	mlw==
+X-Google-Smtp-Source: AGHT+IFZzAI5YHJ4GuFroUP31rDn7WEjwh0RSJNfXWW2SekjL9buA2AOsUO7OOZZHrNGXktXVssg9osoOjE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:124d:b0:6ec:fc60:b78d with SMTP id
+ u13-20020a056a00124d00b006ecfc60b78dmr227981pfi.1.1712328156680; Fri, 05 Apr
+ 2024 07:42:36 -0700 (PDT)
+Date: Fri, 5 Apr 2024 07:42:35 -0700
+In-Reply-To: <ZhAAg8KNd8qHEGcO@tpad>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
+Mime-Version: 1.0
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad>
+Message-ID: <ZhAN28BcMsfl4gm-@google.com>
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On 2024-03-22 21:02:02 [-0500], Yan Zhai wrote:
-> On Fri, Mar 22, 2024 at 4:31=E2=80=AFPM Paul E. McKenney <paulmck@kernel.=
-org> wrote:
-> >
-> > On Fri, Mar 22, 2024 at 12:24:13PM +0100, Sebastian Andrzej Siewior wro=
-te:
-> > > On 2024-03-19 13:44:34 [-0700], Yan Zhai wrote:
-> > > > + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT k=
-ernels would
-> > > > + * have more chance to invoke schedule() calls and provide necessa=
-ry quiescent
-> > > > + * states. As a contrast, calling cond_resched() only won't achiev=
-e the same
-> > > > + * effect because cond_resched() does not provide RCU-Tasks quiesc=
-ent states.
-> > > > + */
-> > >
-> > > Paul, so CONFIG_PREEMPTION is affected but CONFIG_PREEMPT_RT is not.
-> > > Why does RT have more scheduling points?
-> >
-> > In RT, isn't BH-disabled code preemptible?  But yes, this would not help
-> > RCU Tasks.
-Yes, it is but why does it matter? This is used in the NAPI thread which
-fully preemptible and does cond_resched(). This should be enough.
+On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
+> On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
+> > On Thu, Mar 28, 2024, Leonardo Bras wrote:
+> > > I am dealing with a latency issue inside a KVM guest, which is caused by
+> > > a sched_switch to rcuc[1].
+> > > 
+> > > During guest entry, kernel code will signal to RCU that current CPU was on
+> > > a quiescent state, making sure no other CPU is waiting for this one.
+> > > 
+> > > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+> > > issued somewhere since guest entry, there is a chance a timer interrupt
+> > > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> > > 
+> > > rcu_sched_clock_irq() will check rcu_pending() which will return true,
+> > > and cause invoke_rcu_core() to be called, which will (in current config)
+> > > cause rcuc/N to be scheduled into the current cpu.
+> > > 
+> > > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+> > > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+> > > idle or userspace, since both are considered quiescent states.
+> > > 
+> > > Since this is also true to guest context, my idea to solve this latency
+> > > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> > > 
+> > > On the other hand, I could not find a way of reliably saying the current
+> > > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+> > > for keeping the time (jiffies) of the last guest exit.
+> > > 
+> > > In patch #2 I compare current time to that time, and if less than a second
+> > > has past, we just skip rcu_core() invocation, since there is a high chance
+> > > it will just go back to the guest in a moment.
+> > 
+> > What's the downside if there's a false positive?
+> 
+> rcuc wakes up (which might exceed the allowed latency threshold
+> for certain realtime apps).
 
-> By "more chance to invoke schedule()", my thought was that
-> cond_resched becomes no op on RT or PREEMPT kernel. So it will not
-> call __schedule(SM_PEREEMPT), which clears the NEED_RESCHED flag. On a
-It will nop cond_resched(), correct. However once something sends
-NEED_RESCHED then the receiver of this flag will __schedule(SM_PEREEMPT)
-as soon as possible. That is either because the scheduler sends an IPI
-and the CPU will do it in the irq-exit path _or_ the thread does
-preempt_enable() (which includes local_bh_enable()) and the counter hits
-zero at which point the same context switch happens.
+Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
+a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
+enter a guest, but the CPU never does (at least, not in the immediate future).
 
-Therefore I don't see a difference between CONFIG_PREEMPT and
-CONFIG_PREEMPT_RT.
+Or am I just not understanding how RCU's kthreads work?
 
-> normal irq exit like timer, when NEED_RESCHED is on,
-> schedule()/__schedule(0) can be called time by time then.
+> > > What I know it's weird with this patch:
+> > > 1 - Not sure if this is the best way of finding out if the cpu was
+> > >     running a guest recently.
+> > > 
+> > > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+> > >     overhead, even though it's supposed to be in local cache. If that's
+> > >     an issue, I would suggest having this part compiled out on 
+> > >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+> > >     enabled seems more expensive than just setting this out.
+> > 
+> > A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
+> > imprecise, e.g. it'll be a full tick "behind" on many exits.
+> > 
+> > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> > >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> > >     grace period started over than a second ago. If this value is bad,
+> > >     I have no issue changing it.
+> > 
+> > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> > of what magic time threshold is used.  
+> 
+> Why? It works for this particular purpose.
 
-This I can not parse. __schedule(0) means the task gives up on its own
-and goes to sleep. This does not happen for the NAPI-thread loop,
-kworker loop or any other loop that consumes one work item after the
-other and relies on cond_resched() in between.
+Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
+against edge cases, and I'm pretty sure we can do better with about the same amount
+of effort/churn.
 
-> __schedule(0) is good for RCU tasks, __schedule(SM_PREEMPT) is not.
-Okay and that is why? This means you expect that every thread gives up
-on its own which may take some time depending on the workload. This
-should not matter.
+> > IIUC, what you want is a way to detect if a CPU is likely to _run_ a KVM
+> > vCPU in the near future.  KVM can provide that information with much better
+> > precision, e.g. KVM knows when when it's in the core vCPU run loop.
+> 
+> ktime_t ktime_get(void)
+> {
+>         struct timekeeper *tk = &tk_core.timekeeper;
+>         unsigned int seq;
+>         ktime_t base;
+>         u64 nsecs;
+> 
+>         WARN_ON(timekeeping_suspended);
+> 
+>         do {
+>                 seq = read_seqcount_begin(&tk_core.seq);
+>                 base = tk->tkr_mono.base;
+>                 nsecs = timekeeping_get_ns(&tk->tkr_mono);
+> 
+>         } while (read_seqcount_retry(&tk_core.seq, seq));
+> 
+>         return ktime_add_ns(base, nsecs);
+> }
+> EXPORT_SYMBOL_GPL(ktime_get);
+> 
+> ktime_get() is more expensive than unsigned long assignment.
 
-If I see this right, the only difference is rcu_tasks_classic_qs() and I
-didn't figure out yet what it does.
+Huh?  What does ktime_get() have to do with anything?  I'm suggesting something
+like the below (wants_to_run is from an in-flight patch,
+https://lore.kernel.org/all/20240307163541.92138-1-dmatlack@google.com).
 
-> But I think this code comment does not take into account frequent
-> preempt_schedule and irqentry_exit_cond_resched on a PREEMPT kernel.
-> When returning to these busy kthreads, irqentry_exit_cond_resched is
-> in fact called now, not schedule(). So likely __schedule(PREEMPT) is
-> still called frequently, or even more frequently. So the code comment
-> looks incorrect on the RT argument part. We probably should remove the
-> "IS_ENABLED" condition really. Paul and Sebastian, does this sound
-> reasonable to you?
+---
+ include/linux/context_tracking.h       | 12 ++++++++++++
+ include/linux/context_tracking_state.h |  3 +++
+ kernel/rcu/tree.c                      |  9 +++++++--
+ virt/kvm/kvm_main.c                    |  7 +++++++
+ 4 files changed, 29 insertions(+), 2 deletions(-)
 
-Can you walk me through it? Why is it so important for a task to give up
-voluntary? There is something wrong here with how RCU tasks works.
-We want to get rid of the sprinkled cond_resched(). This looks like a
-another variant of it that might be required in places with no
-explanation except it takes too long.=20
+diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+index 6e76b9dba00e..59bc855701c5 100644
+--- a/include/linux/context_tracking.h
++++ b/include/linux/context_tracking.h
+@@ -86,6 +86,16 @@ static __always_inline void context_tracking_guest_exit(void)
+ 		__ct_user_exit(CONTEXT_GUEST);
+ }
+ 
++static inline void context_tracking_guest_start_run_loop(void)
++{
++	__this_cpu_write(context_tracking.in_guest_run_loop, true);
++}
++
++static inline void context_tracking_guest_stop_run_loop(void)
++{
++	__this_cpu_write(context_tracking.in_guest_run_loop, false);
++}
++
+ #define CT_WARN_ON(cond) WARN_ON(context_tracking_enabled() && (cond))
+ 
+ #else
+@@ -99,6 +109,8 @@ static inline int ct_state(void) { return -1; }
+ static inline int __ct_state(void) { return -1; }
+ static __always_inline bool context_tracking_guest_enter(void) { return false; }
+ static __always_inline void context_tracking_guest_exit(void) { }
++static inline void context_tracking_guest_start_run_loop(void) { }
++static inline void context_tracking_guest_stop_run_loop(void) { }
+ #define CT_WARN_ON(cond) do { } while (0)
+ #endif /* !CONFIG_CONTEXT_TRACKING_USER */
+ 
+diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+index bbff5f7f8803..629ada1a4d81 100644
+--- a/include/linux/context_tracking_state.h
++++ b/include/linux/context_tracking_state.h
+@@ -25,6 +25,9 @@ enum ctx_state {
+ #define CT_DYNTICKS_MASK (~CT_STATE_MASK)
+ 
+ struct context_tracking {
++#if IS_ENABLED(CONFIG_KVM)
++	bool in_guest_run_loop;
++#endif
+ #ifdef CONFIG_CONTEXT_TRACKING_USER
+ 	/*
+ 	 * When active is false, probes are unset in order
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d9642dd06c25..303ae9ae1c53 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3937,8 +3937,13 @@ static int rcu_pending(int user)
+ 	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
+ 		return 1;
+ 
+-	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+-	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
++	/*
++	 * Is this a nohz_full CPU in userspace, idle, or likely to enter a
++	 * guest in the near future?  (Ignore RCU if so.)
++	 */
++	if ((user || rcu_is_cpu_rrupt_from_idle() ||
++	     __this_cpu_read(context_tracking.in_guest_run_loop)) &&
++	    rcu_nohz_full_cpu())
+ 		return 0;
+ 
+ 	/* Is the RCU core waiting for a quiescent state from this CPU? */
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index bfb2b52a1416..5a7efc669a0f 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -209,6 +209,9 @@ void vcpu_load(struct kvm_vcpu *vcpu)
+ {
+ 	int cpu = get_cpu();
+ 
++	if (vcpu->wants_to_run)
++		context_tracking_guest_start_run_loop();
++
+ 	__this_cpu_write(kvm_running_vcpu, vcpu);
+ 	preempt_notifier_register(&vcpu->preempt_notifier);
+ 	kvm_arch_vcpu_load(vcpu, cpu);
+@@ -222,6 +225,10 @@ void vcpu_put(struct kvm_vcpu *vcpu)
+ 	kvm_arch_vcpu_put(vcpu);
+ 	preempt_notifier_unregister(&vcpu->preempt_notifier);
+ 	__this_cpu_write(kvm_running_vcpu, NULL);
++
++	if (vcpu->wants_to_run)
++		context_tracking_guest_stop_run_loop();
++
+ 	preempt_enable();
+ }
+ EXPORT_SYMBOL_GPL(vcpu_put);
 
-> Yan
+base-commit: 619e56a3810c88b8d16d7b9553932ad05f0d4968
+-- 
 
-Sebastian
+
