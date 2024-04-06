@@ -1,276 +1,315 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380E3171085;
-	Fri,  5 Apr 2024 18:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84A5C208D0;
+	Sat,  6 Apr 2024 00:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712340781; cv=none; b=srFLwGx1P/b0X/mcrDdfjgsuemwMzGNc2bNj6UUhx5MHJMsG/iWHBP4pAfQnoYNkPpGi+I9B0frK4B26CNMQHeC/r3+4mCjDgECs2IKY7M0E1IHt+yhVF5AjQYbTxWHMMw/qFG0UMkv/bZYQiN53E6/Oqsvk0M9DA/q3liswPSY=
+	t=1712361819; cv=none; b=YkMWesKhr162tF/CFPHY29xy9L8sRF9RU2ylswjXL3/GbJcpCf5kh33eypz+7TWuDD+9TASOL+M6bGvLlNB9ypp84EMgjzOmy79HyG06XTaQKffzga2PN8B+xP6A29CZ33f/IONwB80ZIdHv1G82qDZiZuL1bw26cX2VWenBuyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712340781; c=relaxed/simple;
-	bh=Qk6MaV3BTwsT/DH2zdulQrDAO811Y7rsOBeA1xQ8Ndo=;
+	s=arc-20240116; t=1712361819; c=relaxed/simple;
+	bh=/8MwNaiRY+AmBAKuNcPjP93eohZNaFK95VdK7cN6V+E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H+HHp3aext5x579PE6mtSpcIbVrXxCqGPOMg5mkOfX6rpIEX7TuQpw+xRkHntXIUQKigThhNXyYujJ3r77m4+HoNy+r9NOCOUlWq9h8DyXgGaT9r0jg2U2ND37CdfCyswnhdaDEzd940GSt3j9RJxG9biovKjglmDoGYUaviZz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t5nZBAPp; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=sWiIJ8bGpdZbx49td+l8BlUBNT+veWDoRdLLg2E8ifAorjyfovdweB6LPRl8g4qMJWXHL10/KrxlP4le9w2nSFukEODTO8gli0uo8BD4U29VqDejEVK82yCYIaQLQah5nAp9x9X0FD8PRICn/s/H1cxjXUfkStZuYXkj562aTyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IIQMKTIg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t5nZBAPp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9281C433F1;
-	Fri,  5 Apr 2024 18:13:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IIQMKTIg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 132D7C433F1;
+	Sat,  6 Apr 2024 00:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712340780;
-	bh=Qk6MaV3BTwsT/DH2zdulQrDAO811Y7rsOBeA1xQ8Ndo=;
+	s=k20201202; t=1712361819;
+	bh=/8MwNaiRY+AmBAKuNcPjP93eohZNaFK95VdK7cN6V+E=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=t5nZBAPpgWgN9vnhf9sX290ojlxCEtvxlJtCpkSJ2RbjTXOTuaXrOqdNOk6x6H21i
-	 sYWWwhkmfYtsnnWTcbhgTtJ4+h0+PHApGJCISBvGKMnaKjw4FbM3AesPkmQLP6N/CF
-	 ez+cm+NQTqHshRb3yftKm+DzUee2YxuiX3iGsOrjW2Q32Lrza1lONOZYKDvM+ajz3H
-	 wc8qEYdgJYOs+qB2Ti1OrdXLPDAqIahgOpx0EahMwWXh+5CEZiQnkyR3ksER4c8XtB
-	 nF8fjmL4T+1iwTo2zLPHE2cRwYY7IUkjRfvny7GRSR8ywr/bbkeLVzYbYGXLw1Xntm
-	 Ifyxowevs9v+w==
+	b=IIQMKTIgJpMXLzgfTIzcQPwXLiLBv75hFu4LKHOsjVuDoGJS+oHcA4+PhJXbJT6V4
+	 VwaqzcbPhRv9l4hFHX30xqs47xmmVlXEFwDKk7ZB948iS0ywzSxjvwu3yukkcMMp3E
+	 WH6dwWijOLTlrSxkHnBXxUq00utZIR3Vfq1ZxscZYeIBBvT1LJosrtvs8b9Auu/sAc
+	 8RziOH04gfLgKm0QLGtBe7VckougpPn58E1aWpZPS9TEz3ZljO68TwJXceLBeQ4gA/
+	 OQyYBPKvwOhhNsL0S7Q/TBDxSTgvtoHX/0istF6vnVykpF4G9zWxUMKTdB/kLR9zAF
+	 CiisVfk35QMaA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 41C18CE11CE; Fri,  5 Apr 2024 11:13:00 -0700 (PDT)
-Date: Fri, 5 Apr 2024 11:13:00 -0700
+	id ACB84CE11CE; Fri,  5 Apr 2024 17:03:38 -0700 (PDT)
+Date: Fri, 5 Apr 2024 17:03:38 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+To: Sean Christopherson <seanjc@google.com>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-Message-ID: <b543d436-be5f-45f2-a89d-0de33e3da058@paulmck-laptop>
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Message-ID: <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <cover.1710877680.git.yan@cloudflare.com>
- <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
- <20240322112413.1UZFdBq5@linutronix.de>
- <123ca494-dc8c-47cc-a6d5-3c529bc7f549@paulmck-laptop>
- <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
- <20240405134946.NzqmEyX1@linutronix.de>
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad>
+ <ZhAN28BcMsfl4gm-@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240405134946.NzqmEyX1@linutronix.de>
+In-Reply-To: <ZhAN28BcMsfl4gm-@google.com>
 
-On Fri, Apr 05, 2024 at 03:49:46PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2024-03-22 21:02:02 [-0500], Yan Zhai wrote:
-> > On Fri, Mar 22, 2024 at 4:31 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Fri, Mar 22, 2024 at 12:24:13PM +0100, Sebastian Andrzej Siewior wrote:
-> > > > On 2024-03-19 13:44:34 [-0700], Yan Zhai wrote:
-> > > > > + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
-> > > > > + * have more chance to invoke schedule() calls and provide necessary quiescent
-> > > > > + * states. As a contrast, calling cond_resched() only won't achieve the same
-> > > > > + * effect because cond_resched() does not provide RCU-Tasks quiescent states.
-> > > > > + */
-> > > >
-> > > > Paul, so CONFIG_PREEMPTION is affected but CONFIG_PREEMPT_RT is not.
-> > > > Why does RT have more scheduling points?
-> > >
-> > > In RT, isn't BH-disabled code preemptible?  But yes, this would not help
-> > > RCU Tasks.
-> Yes, it is but why does it matter? This is used in the NAPI thread which
-> fully preemptible and does cond_resched(). This should be enough.
-
-By the time it gets to RCU, a cond_resched()-induced context switch looks
-like a preemption.  This is fine for normal RCU, but Tasks RCU needs
-a voluntary context switch for a quiescent state.  Which makes sense,
-given that code running in a trampoline that is invoked from preemptible
-code can itself be preempted.
-
-So that additional call to rcu_softirq_qs() is needed.  (Which invokes
-rcu_tasks_qs() which in turn invokes rcu_tasks_classic_qs().
-
-And maybe it is also needed for RT.  The argument against would be that
-RT applications have significant idle time on the one hand or spend lots
-of time in nohz_full userspace on the other, both of which are quiescent
-states for RCU Tasks.  But you tell me!
-
-> > By "more chance to invoke schedule()", my thought was that
-> > cond_resched becomes no op on RT or PREEMPT kernel. So it will not
-> > call __schedule(SM_PEREEMPT), which clears the NEED_RESCHED flag. On a
-> It will nop cond_resched(), correct. However once something sends
-> NEED_RESCHED then the receiver of this flag will __schedule(SM_PEREEMPT)
-> as soon as possible. That is either because the scheduler sends an IPI
-> and the CPU will do it in the irq-exit path _or_ the thread does
-> preempt_enable() (which includes local_bh_enable()) and the counter hits
-> zero at which point the same context switch happens.
+On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
+> On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
+> > On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
+> > > On Thu, Mar 28, 2024, Leonardo Bras wrote:
+> > > > I am dealing with a latency issue inside a KVM guest, which is caused by
+> > > > a sched_switch to rcuc[1].
+> > > > 
+> > > > During guest entry, kernel code will signal to RCU that current CPU was on
+> > > > a quiescent state, making sure no other CPU is waiting for this one.
+> > > > 
+> > > > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+> > > > issued somewhere since guest entry, there is a chance a timer interrupt
+> > > > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> > > > 
+> > > > rcu_sched_clock_irq() will check rcu_pending() which will return true,
+> > > > and cause invoke_rcu_core() to be called, which will (in current config)
+> > > > cause rcuc/N to be scheduled into the current cpu.
+> > > > 
+> > > > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+> > > > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+> > > > idle or userspace, since both are considered quiescent states.
+> > > > 
+> > > > Since this is also true to guest context, my idea to solve this latency
+> > > > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> > > > 
+> > > > On the other hand, I could not find a way of reliably saying the current
+> > > > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+> > > > for keeping the time (jiffies) of the last guest exit.
+> > > > 
+> > > > In patch #2 I compare current time to that time, and if less than a second
+> > > > has past, we just skip rcu_core() invocation, since there is a high chance
+> > > > it will just go back to the guest in a moment.
+> > > 
+> > > What's the downside if there's a false positive?
+> > 
+> > rcuc wakes up (which might exceed the allowed latency threshold
+> > for certain realtime apps).
 > 
-> Therefore I don't see a difference between CONFIG_PREEMPT and
-> CONFIG_PREEMPT_RT.
-
-True, but again RCU Tasks needs a voluntary context switch and the
-resulting preemption therefore does not qualify.
-
-> > normal irq exit like timer, when NEED_RESCHED is on,
-> > schedule()/__schedule(0) can be called time by time then.
+> Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
+> a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
+> enter a guest, but the CPU never does (at least, not in the immediate future).
 > 
-> This I can not parse. __schedule(0) means the task gives up on its own
-> and goes to sleep. This does not happen for the NAPI-thread loop,
-> kworker loop or any other loop that consumes one work item after the
-> other and relies on cond_resched() in between.
+> Or am I just not understanding how RCU's kthreads work?
+
+It is quite possible that the current rcu_pending() code needs help,
+given the possibility of vCPU preemption.  I have heard of people doing
+nested KVM virtualization -- or is that no longer a thing?
+
+But the help might well involve RCU telling the hypervisor that a given
+vCPU needs to run.  Not sure how that would go over, though it has been
+prototyped a couple times in the context of RCU priority boosting.
+
+> > > > What I know it's weird with this patch:
+> > > > 1 - Not sure if this is the best way of finding out if the cpu was
+> > > >     running a guest recently.
+> > > > 
+> > > > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+> > > >     overhead, even though it's supposed to be in local cache. If that's
+> > > >     an issue, I would suggest having this part compiled out on 
+> > > >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+> > > >     enabled seems more expensive than just setting this out.
+> > > 
+> > > A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
+> > > imprecise, e.g. it'll be a full tick "behind" on many exits.
+> > > 
+> > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> > > >     grace period started over than a second ago. If this value is bad,
+> > > >     I have no issue changing it.
+> > > 
+> > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> > > of what magic time threshold is used.  
+> > 
+> > Why? It works for this particular purpose.
 > 
-> > __schedule(0) is good for RCU tasks, __schedule(SM_PREEMPT) is not.
-> Okay and that is why? This means you expect that every thread gives up
-> on its own which may take some time depending on the workload. This
-> should not matter.
+> Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
+> against edge cases, and I'm pretty sure we can do better with about the same amount
+> of effort/churn.
+
+Beyond a certain point, we have no choice.  How long should RCU let
+a CPU run with preemption disabled before complaining?  We choose 21
+seconds in mainline and some distros choose 60 seconds.  Android chooses
+20 milliseconds for synchronize_rcu_expedited() grace periods.
+
+> > > IIUC, what you want is a way to detect if a CPU is likely to _run_ a KVM
+> > > vCPU in the near future.  KVM can provide that information with much better
+> > > precision, e.g. KVM knows when when it's in the core vCPU run loop.
+> > 
+> > ktime_t ktime_get(void)
+> > {
+> >         struct timekeeper *tk = &tk_core.timekeeper;
+> >         unsigned int seq;
+> >         ktime_t base;
+> >         u64 nsecs;
+> > 
+> >         WARN_ON(timekeeping_suspended);
+> > 
+> >         do {
+> >                 seq = read_seqcount_begin(&tk_core.seq);
+> >                 base = tk->tkr_mono.base;
+> >                 nsecs = timekeeping_get_ns(&tk->tkr_mono);
+> > 
+> >         } while (read_seqcount_retry(&tk_core.seq, seq));
+> > 
+> >         return ktime_add_ns(base, nsecs);
+> > }
+> > EXPORT_SYMBOL_GPL(ktime_get);
+> > 
+> > ktime_get() is more expensive than unsigned long assignment.
 > 
-> If I see this right, the only difference is rcu_tasks_classic_qs() and I
-> didn't figure out yet what it does.
+> Huh?  What does ktime_get() have to do with anything?  I'm suggesting something
+> like the below (wants_to_run is from an in-flight patch,
+> https://lore.kernel.org/all/20240307163541.92138-1-dmatlack@google.com).
 
-It marks the task as having passed through a Tasks RCU quiescent state.
-Which works because this is called from task level (as opposed to from
-irq, softirq, or NMI), so it cannot be returning to a trampoline that
-is protected by Tasks RCU.
+Interesting.  Some questions below, especially if we are doing nested
+virtualization.
 
-Later on, the Tasks RCU grace-period kthread will see the marking, and
-remove this task from the list that is blocking the current Tasks-RCU
-grace period.
-
-> > But I think this code comment does not take into account frequent
-> > preempt_schedule and irqentry_exit_cond_resched on a PREEMPT kernel.
-> > When returning to these busy kthreads, irqentry_exit_cond_resched is
-> > in fact called now, not schedule(). So likely __schedule(PREEMPT) is
-> > still called frequently, or even more frequently. So the code comment
-> > looks incorrect on the RT argument part. We probably should remove the
-> > "IS_ENABLED" condition really. Paul and Sebastian, does this sound
-> > reasonable to you?
+> ---
+>  include/linux/context_tracking.h       | 12 ++++++++++++
+>  include/linux/context_tracking_state.h |  3 +++
+>  kernel/rcu/tree.c                      |  9 +++++++--
+>  virt/kvm/kvm_main.c                    |  7 +++++++
+>  4 files changed, 29 insertions(+), 2 deletions(-)
 > 
-> Can you walk me through it? Why is it so important for a task to give up
-> voluntary? There is something wrong here with how RCU tasks works.
-> We want to get rid of the sprinkled cond_resched(). This looks like a
-> another variant of it that might be required in places with no
-> explanation except it takes too long. 
+> diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+> index 6e76b9dba00e..59bc855701c5 100644
+> --- a/include/linux/context_tracking.h
+> +++ b/include/linux/context_tracking.h
+> @@ -86,6 +86,16 @@ static __always_inline void context_tracking_guest_exit(void)
+>  		__ct_user_exit(CONTEXT_GUEST);
+>  }
+>  
+> +static inline void context_tracking_guest_start_run_loop(void)
+> +{
+> +	__this_cpu_write(context_tracking.in_guest_run_loop, true);
+> +}
+> +
+> +static inline void context_tracking_guest_stop_run_loop(void)
+> +{
+> +	__this_cpu_write(context_tracking.in_guest_run_loop, false);
+> +}
+> +
+>  #define CT_WARN_ON(cond) WARN_ON(context_tracking_enabled() && (cond))
+>  
+>  #else
+> @@ -99,6 +109,8 @@ static inline int ct_state(void) { return -1; }
+>  static inline int __ct_state(void) { return -1; }
+>  static __always_inline bool context_tracking_guest_enter(void) { return false; }
+>  static __always_inline void context_tracking_guest_exit(void) { }
+> +static inline void context_tracking_guest_start_run_loop(void) { }
+> +static inline void context_tracking_guest_stop_run_loop(void) { }
+>  #define CT_WARN_ON(cond) do { } while (0)
+>  #endif /* !CONFIG_CONTEXT_TRACKING_USER */
+>  
+> diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+> index bbff5f7f8803..629ada1a4d81 100644
+> --- a/include/linux/context_tracking_state.h
+> +++ b/include/linux/context_tracking_state.h
+> @@ -25,6 +25,9 @@ enum ctx_state {
+>  #define CT_DYNTICKS_MASK (~CT_STATE_MASK)
+>  
+>  struct context_tracking {
+> +#if IS_ENABLED(CONFIG_KVM)
+> +	bool in_guest_run_loop;
+> +#endif
+>  #ifdef CONFIG_CONTEXT_TRACKING_USER
+>  	/*
+>  	 * When active is false, probes are unset in order
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d9642dd06c25..303ae9ae1c53 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3937,8 +3937,13 @@ static int rcu_pending(int user)
+>  	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
+>  		return 1;
+>  
+> -	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+> -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
+> +	/*
+> +	 * Is this a nohz_full CPU in userspace, idle, or likely to enter a
+> +	 * guest in the near future?  (Ignore RCU if so.)
+> +	 */
+> +	if ((user || rcu_is_cpu_rrupt_from_idle() ||
+> +	     __this_cpu_read(context_tracking.in_guest_run_loop)) &&
 
-Hmmm...  I would normally point you at the Requirements.rst [1] document
-for a walkthrough, but it does not cover all of this.
+In the case of (user || rcu_is_cpu_rrupt_from_idle()), this CPU was in
+a quiescent just before the current scheduling-clock interrupt and will
+again be in a quiescent state right after return from this interrupt.
+This means that the grace-period kthread will be able to remotely sense
+this quiescent state, so that the current CPU need do nothing.
 
-How about the upgrade shown below?
+In constrast, it looks like context_tracking.in_guest_run_loop instead
+means that when we return from this interrupt, this CPU will still be
+in a non-quiescent state.
 
-I agree that it would be nice if Tasks RCU did not have to depend on
-voluntary context switches.  In theory, one alternative would be to
-examine each task's stack, looking for return addresses in trampolines.
-In practice, we recently took a look at this and other alternatives,
-but none were feasible [2].  If you know of a better way, please do not
-keep it a secret!
+Now, in the nested-virtualization case, your point might be that the
+lower-level hypervisor could preempt the vCPU in the interrupt handler
+just as easily as in the .in_guest_run_loop code.  Which is a good point.
+But I don't know of a way to handle this other than heuristics and maybe
+hinting to the hypervisor (which has been prototyped for RCU priority
+boosting).
 
-Note that kernel live patching has similar needs, and may need
-similar annotations/innovations.
+Maybe the time for such hinting has come?
+
+> +	    rcu_nohz_full_cpu())
+
+And rcu_nohz_full_cpu() has a one-second timeout, and has for quite
+some time.
+
+>  		return 0;
+>  
+>  	/* Is the RCU core waiting for a quiescent state from this CPU? */
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index bfb2b52a1416..5a7efc669a0f 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -209,6 +209,9 @@ void vcpu_load(struct kvm_vcpu *vcpu)
+>  {
+>  	int cpu = get_cpu();
+>  
+> +	if (vcpu->wants_to_run)
+> +		context_tracking_guest_start_run_loop();
+
+At this point, if this is a nohz_full CPU, it will no longer report
+quiescent states until the grace period is at least one second old.
+
+> +
+>  	__this_cpu_write(kvm_running_vcpu, vcpu);
+>  	preempt_notifier_register(&vcpu->preempt_notifier);
+>  	kvm_arch_vcpu_load(vcpu, cpu);
+> @@ -222,6 +225,10 @@ void vcpu_put(struct kvm_vcpu *vcpu)
+>  	kvm_arch_vcpu_put(vcpu);
+>  	preempt_notifier_unregister(&vcpu->preempt_notifier);
+>  	__this_cpu_write(kvm_running_vcpu, NULL);
+> +
+
+And also at this point, if this is a nohz_full CPU, it will no longer
+report quiescent states until the grace period is at least one second old.
+
+> +	if (vcpu->wants_to_run)
+> +		context_tracking_guest_stop_run_loop();
+> +
+>  	preempt_enable();
+>  }
+>  EXPORT_SYMBOL_GPL(vcpu_put);
+> 
+> base-commit: 619e56a3810c88b8d16d7b9553932ad05f0d4968
+
+All of which might be OK.  Just checking as to whether all of that was
+in fact the intent.
 
 							Thanx, Paul
-
-[1] Documentation/RCU/Design/Requirements/Requirements.rst
-[2] https://docs.google.com/document/d/1kZY6AX-AHRIyYQsvUX6WJxS1LsDK4JA2CHuBnpkrR_U/edit?usp=sharing
-
-------------------------------------------------------------------------
-As written:
-------------------------------------------------------------------------
-
-Tasks RCU
-~~~~~~~~~
-
-Some forms of tracing use “trampolines” to handle the binary rewriting
-required to install different types of probes. It would be good to be
-able to free old trampolines, which sounds like a job for some form of
-RCU. However, because it is necessary to be able to install a trace
-anywhere in the code, it is not possible to use read-side markers such
-as rcu_read_lock() and rcu_read_unlock(). In addition, it does
-not work to have these markers in the trampoline itself, because there
-would need to be instructions following rcu_read_unlock(). Although
-synchronize_rcu() would guarantee that execution reached the
-rcu_read_unlock(), it would not be able to guarantee that execution
-had completely left the trampoline. Worse yet, in some situations
-the trampoline's protection must extend a few instructions *prior* to
-execution reaching the trampoline.  For example, these few instructions
-might calculate the address of the trampoline, so that entering the
-trampoline would be pre-ordained a surprisingly long time before execution
-actually reached the trampoline itself.
-
-The solution, in the form of `Tasks
-RCU <https://lwn.net/Articles/607117/>`__, is to have implicit read-side
-critical sections that are delimited by voluntary context switches, that
-is, calls to schedule(), cond_resched(), and
-synchronize_rcu_tasks(). In addition, transitions to and from
-userspace execution also delimit tasks-RCU read-side critical sections.
-Idle tasks are ignored by Tasks RCU, and Tasks Rude RCU may be used to
-interact with them.
-
-Note well that involuntary context switches are *not* Tasks-RCU quiescent
-states.  After all, in preemptible kernels, a task executing code in a
-trampoline might be preempted.  In this case, the Tasks-RCU grace period
-clearly cannot end until that task resumes and its execution leaves that
-trampoline.  This means, among other things, that cond_resched() does
-not provide a Tasks RCU quiescent state.  (Instead, use rcu_softirq_qs()
-from softirq or rcu_tasks_classic_qs() otherwise.)
-
-The tasks-RCU API is quite compact, consisting only of
-call_rcu_tasks(), synchronize_rcu_tasks(), and
-rcu_barrier_tasks(). In ``CONFIG_PREEMPTION=n`` kernels, trampolines
-cannot be preempted, so these APIs map to call_rcu(),
-synchronize_rcu(), and rcu_barrier(), respectively. In
-``CONFIG_PREEMPTION=y`` kernels, trampolines can be preempted, and these
-three APIs are therefore implemented by separate functions that check
-for voluntary context switches.
-
-------------------------------------------------------------------------
-As patch:
-------------------------------------------------------------------------
-
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index cccafdaa1f849..f511476b45506 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2357,6 +2357,7 @@ section.
- #. `Sched Flavor (Historical)`_
- #. `Sleepable RCU`_
- #. `Tasks RCU`_
-+#. `Tasks Trace RCU`_
- 
- Bottom-Half Flavor (Historical)
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -2610,6 +2611,16 @@ critical sections that are delimited by voluntary context switches, that
- is, calls to schedule(), cond_resched(), and
- synchronize_rcu_tasks(). In addition, transitions to and from
- userspace execution also delimit tasks-RCU read-side critical sections.
-+Idle tasks are ignored by Tasks RCU, and Tasks Rude RCU may be used to
-+interact with them.
-+
-+Note well that involuntary context switches are *not* Tasks-RCU quiescent
-+states.  After all, in preemptible kernels, a task executing code in a
-+trampoline might be preempted.  In this case, the Tasks-RCU grace period
-+clearly cannot end until that task resumes and its execution leaves that
-+trampoline.  This means, among other things, that cond_resched() does
-+not provide a Tasks RCU quiescent state.  (Instead, use rcu_softirq_qs()
-+from softirq or rcu_tasks_classic_qs() otherwise.)
- 
- The tasks-RCU API is quite compact, consisting only of
- call_rcu_tasks(), synchronize_rcu_tasks(), and
-@@ -2632,6 +2643,11 @@ moniker.  And this operation is considered to be quite rude by real-time
- workloads that don't want their ``nohz_full`` CPUs receiving IPIs and
- by battery-powered systems that don't want their idle CPUs to be awakened.
- 
-+Once kernel entry/exit and deep-idle functions have been properly tagged
-+``noinstr``, Tasks RCU can start paying attention to idle tasks (except
-+those that are idle from RCU's perspective) and then Tasks Rude RCU can
-+be removed from the kernel.
-+
- The tasks-rude-RCU API is also reader-marking-free and thus quite compact,
- consisting of call_rcu_tasks_rude(), synchronize_rcu_tasks_rude(),
- and rcu_barrier_tasks_rude().
