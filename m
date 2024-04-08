@@ -1,197 +1,262 @@
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A13814A82;
-	Sun,  7 Apr 2024 11:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A29143880
+	for <rcu@vger.kernel.org>; Mon,  8 Apr 2024 17:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712489247; cv=none; b=ESfe7OPxgRJobe6u/4d8ucEonds8UWNx+5YtyxrE1TZSmCYA0FVy7FBlL/bGmDh70407Q8lsFvlfqagMgxVJdTfb81a0Eb3MQEuEOQ3wZgzFh9ECblTjn7F4F4kM6lwtZSIKx0mE7iYeRZ8lqTkjcCbXy3Mxzs5D+THY09BcYj8=
+	t=1712596588; cv=none; b=QGnKgEak/izMm0yepyqgGrnjK2qIu2tKlyUpJfKFS2UrVmmCqDysPQ9RyQBFhJCIWjha6CKhzfmF569xg0ULoBWfEahgxNgblayT2ZR399AGrlXYhETS3XpfvgaPEeDWDtn1KOeDvgGcEdR3cbv9OPgH8B/4JM0wAcxnjGWx7Jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712489247; c=relaxed/simple;
-	bh=mPjOByGRdi9tYDvVfm20AWGDd+BjqGuOOOEihcaV7PA=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=pK8X3XDXQ8+kh6QjB2/E4K4eGWm64X6291kPDiAPv5NkhqbeX4NXmrhErcB8/UNbOr87uV9n1DnwPVA5dOvhB0xCEJQ7rSMpbLa8pjp1EjaVwWfQkqz4xr5lozW3A5TUKQYsDSiw8Gkmf591+2z9CIA8bxQb1HdZVZ3gXy/d1mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mr7M1T8s; arc=none smtp.client-ip=209.85.161.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1712596588; c=relaxed/simple;
+	bh=vmPDnU2rbQte5MXl0eNshZbSVgsEa6yKXoSEo0wMagw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=p1WxqpKvnJjbvwK7RmkyEhDQN+FNNAEOThJVoCusUxXQuo7mHq2jDKe9lC/N170k5sfhs42p8cJFh1O2tagXUCGXjAOPWFZXNTS4Z14MXBzmGJezsFoVL73b8rl16Tpm9xH/rvBMOMDwyzBUaYnlhSvp5bTVmkoIpgRzKr9hnXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lid8DAZl; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mr7M1T8s"
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5aa17c29ba0so610343eaf.3;
-        Sun, 07 Apr 2024 04:27:25 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lid8DAZl"
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5c65e666609so4335913a12.1
+        for <rcu@vger.kernel.org>; Mon, 08 Apr 2024 10:16:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712489245; x=1713094045; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WlkcO0tcpZOYyrbltcj7aRutmJ90AlpBlkqeAVYv7Po=;
-        b=Mr7M1T8sTlZATXFKEuauLUSDKEHObxsjHSyNUbeyYuPnyZ+wBv6T/Xt6FqQKdo8Xcp
-         52W5113AutPgKeWHaUypEmKOznRybvFd9tVtLc9Bfa/hv6830/SUVikhNkHGBCG9VzSO
-         agWAG3pO3RsRqEKTc4hcwfawmTpPUhJQh6w4aHwO1BRdrhnB1ZOhJz0j9qkAOCzzm8pN
-         STdfUEwdF6hS8T8ay2WWXSFTWjVQx7pOiRfQ7cQ5BAvgkfndRgy+p0DdVv1vquE5lfo0
-         63GJ0x+5+/3ABNDkF8//4STCANGdGoxsZONCVaQ25dqa09BWlDBym53JIrXqKC/qj5mp
-         xvSw==
+        d=google.com; s=20230601; t=1712596586; x=1713201386; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XYkMSUzqJlpjQtSfhn57aIvoeBGIOTZt8KfeTsbtdM8=;
+        b=lid8DAZl+MQvmnSl6vAZQSIOyYwV20ybesJgzgN7BdSGtkm27tg8n3AoinKX72nytQ
+         ZPBperwVtyZV1qS5v4LsUfx8xK84t+mt1q7nSaArMv3hQbRxzmrL1nRQQN35kSTmIHtY
+         BS9GkMYzDexKnHFCxmXk+T+vyLMQ0bSGfELkNKZYgIePvcgYPrUAcHtB/fXsXzWDfEJp
+         88hqDUf7tOVMS3C8QwsV6VEHCeF/GvsYPMSj4JjHPvaORSo0Hh4bYOpSSSOJWz++omPB
+         RBWB8RWzdwwfKMj7vCb+jf1+A6Qj8b9KpxpAGWlwhmxqP7RaP4/V8pe8gXWD83LQ9Rh/
+         LWZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712489245; x=1713094045;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WlkcO0tcpZOYyrbltcj7aRutmJ90AlpBlkqeAVYv7Po=;
-        b=ekYZV0YefPb2mNKJYTKHtu7jItlQX2yJ6GGuVlly9OIgJVeGRv0h9FYiKhE85LFsnV
-         RoRLl8dbK3DqYG5ylrD8C/kRL9pFEjVaZZ7aGr4Up3R1roUVp0usU/ygUy2h3OfxUT0T
-         LZcMuuRIEry08kQ8jn2S8lPBbKlQYAlCUqPiERkKW7VsEJgyacqp8tkQtpI18BWL390o
-         EUt0eWbB6HZ4Q760AXvh6vWtZLoryRG0AGg3dZrIgpSec7Y7oub8CQ5IVqXgEdxFnPak
-         WVdYtMfSiQ8V4ZXQMcer839U9JSgfWd6PmkE0/OxEZ3NQ6ktu8DL4hG2VmgN+3B7NQoT
-         We6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVd+4lJWqh5JPol2W8lnbU8IE2Ycyu3ivasSu1vQwllVEf4soBVtBTgK14xwGWZpZ6nEnzWI+0Fw+zNhT29Nd7lLw4jDrXG0j5HZe0DCGge9nuVwdKBeRj284C1BgiiO4SF
-X-Gm-Message-State: AOJu0YzhWKIPZaarB21pgcxhJXFVJmRk6qsmx5SmMkiCA6qdgYkKwkIL
-	327WJf44KESt1AQTYQKK3zCcnAyGVwrZIKnHVrrzdkwqPS55E0RW
-X-Google-Smtp-Source: AGHT+IHb4DOS0Opv4WTmm45i3ajFrJNhmIpL+o4BTFEcJ0nvcu+ikSNaPDNprd24dAJgw0M5EJz7wg==
-X-Received: by 2002:a05:6359:5148:b0:17f:5797:b0ee with SMTP id oc8-20020a056359514800b0017f5797b0eemr7252910rwb.10.1712489245159;
-        Sun, 07 Apr 2024 04:27:25 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
-        by smtp.gmail.com with ESMTPSA id z187-20020a6333c4000000b005e438ea2a5asm4411336pgz.53.2024.04.07.04.27.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 04:27:24 -0700 (PDT)
-From: Zqiang <qiang.zhang1211@gmail.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org
-Cc: qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rcutorture: Make rcutorture support srcu double call test
-Date: Sun,  7 Apr 2024 19:27:14 +0800
-Message-Id: <20240407112714.24460-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        d=1e100.net; s=20230601; t=1712596586; x=1713201386;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XYkMSUzqJlpjQtSfhn57aIvoeBGIOTZt8KfeTsbtdM8=;
+        b=d65yfZYssEnlQVeO9iaddxEPgeCk8ECLfnEwT9j6jxePpTix+UzI9JDqibfrD8IGlS
+         29FgIz2DZPQS0zrnwjI48YOVZ/sujATe69qnUUHesNEQ0h1LcNnVp90JXReZOcK8gfVY
+         UgY/CkRs+H4R8Kf4Nv5ffAv/LoDP9h/VK4fgNP/5iHzfpVmYZxFETLqZIY9eE1NY/ddQ
+         5p56cjBlatDifySyKLdM6OzjgqQYuhGlRG/R73I5q6L9s3VqCkFxcsN7iBeIYNn2SWAn
+         0mFrLzvFWhddl8Tn78cJL6pGU0NnBsVtcb5ZZzFEMUDcOYLFOJA+ecDjE0WANjqdaEgb
+         encg==
+X-Forwarded-Encrypted: i=1; AJvYcCWC10orE49wl2a+P4nG67FxL4BKpKCj2yO7jLwl/AxsBqxaDDPgRPpYAVVpzKv3rwgytufMJ8LNYn9tbK7KqtFIpJKe
+X-Gm-Message-State: AOJu0YxnjRdxipLw8pbQOYP28SiiwQ5DroW2mn+8oJpzFO3p19Lwi+Nx
+	8WaLkXnNy9L/fBX8an+ylTGITCNBry3xhdNeaJGk02Lktvrp4LbgV6MLkxOetQSiJFNjoiLecYi
+	BoQ==
+X-Google-Smtp-Source: AGHT+IEJYPlJPYnaeEaKqg0inn5SvyUCCTx+EH/Fky3KdSYu/p528FxN5PdXbtyKRmTaVnUYnuZwfQUNgeg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:5006:0:b0:5dc:af76:f57d with SMTP id
+ e6-20020a635006000000b005dcaf76f57dmr30599pgb.7.1712596586030; Mon, 08 Apr
+ 2024 10:16:26 -0700 (PDT)
+Date: Mon, 8 Apr 2024 10:16:24 -0700
+In-Reply-To: <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad> <ZhAN28BcMsfl4gm-@google.com> <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+Message-ID: <ZhQmaEXPCqmx1rTW@google.com>
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>, Leonardo Bras <leobras@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-This commit also allows rcutorture to support srcu double call test
-with CONFIG_DEBUG_OBJECTS_RCU_HEAD option enabled. the non-raw sdp
-structure's->spinlock will be acquired in call_srcu(), in Preempt-RT
-kernels, this spinlock is sleepable, therefore remove disable-irq and
-disable-preempt protection.
+On Fri, Apr 05, 2024, Paul E. McKenney wrote:
+> On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
+> > On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
+> > > rcuc wakes up (which might exceed the allowed latency threshold
+> > > for certain realtime apps).
+> > 
+> > Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
+> > a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
+> > enter a guest, but the CPU never does (at least, not in the immediate future).
+> > 
+> > Or am I just not understanding how RCU's kthreads work?
+> 
+> It is quite possible that the current rcu_pending() code needs help,
+> given the possibility of vCPU preemption.  I have heard of people doing
+> nested KVM virtualization -- or is that no longer a thing?
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
----
- kernel/rcu/rcutorture.c | 46 +++++++++++++++++++++++------------------
- 1 file changed, 26 insertions(+), 20 deletions(-)
+Nested virtualization is still very much a thing, but I don't see how it is at
+all unique with respect to RCU grace periods and quiescent states.  More below.
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 807fbf6123a7..44cc455e1b61 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -390,6 +390,7 @@ struct rcu_torture_ops {
- 	int extendables;
- 	int slow_gps;
- 	int no_pi_lock;
-+	int debug_objects;
- 	const char *name;
- };
- 
-@@ -577,6 +578,7 @@ static struct rcu_torture_ops rcu_ops = {
- 	.irq_capable		= 1,
- 	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
- 	.extendables		= RCUTORTURE_MAX_EXTEND,
-+	.debug_objects		= 1,
- 	.name			= "rcu"
- };
- 
-@@ -747,6 +749,7 @@ static struct rcu_torture_ops srcu_ops = {
- 	.cbflood_max	= 50000,
- 	.irq_capable	= 1,
- 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-+	.debug_objects	= 1,
- 	.name		= "srcu"
- };
- 
-@@ -786,6 +789,7 @@ static struct rcu_torture_ops srcud_ops = {
- 	.cbflood_max	= 50000,
- 	.irq_capable	= 1,
- 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-+	.debug_objects	= 1,
- 	.name		= "srcud"
- };
- 
-@@ -3455,7 +3459,6 @@ rcu_torture_cleanup(void)
- 		cur_ops->gp_slow_unregister(NULL);
- }
- 
--#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
- static void rcu_torture_leak_cb(struct rcu_head *rhp)
- {
- }
-@@ -3473,7 +3476,6 @@ static void rcu_torture_err_cb(struct rcu_head *rhp)
- 	 */
- 	pr_alert("%s: duplicated callback was invoked.\n", KBUILD_MODNAME);
- }
--#endif /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
- 
- /*
-  * Verify that double-free causes debug-objects to complain, but only
-@@ -3482,39 +3484,43 @@ static void rcu_torture_err_cb(struct rcu_head *rhp)
-  */
- static void rcu_test_debug_objects(void)
- {
--#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
- 	struct rcu_head rh1;
- 	struct rcu_head rh2;
-+	int idx;
-+
-+	if (!IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD)) {
-+		pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_%s()\n",
-+					KBUILD_MODNAME, cur_ops->name);
-+		return;
-+	}
-+
-+	if (WARN_ON_ONCE(cur_ops->debug_objects &&
-+			(!cur_ops->call || !cur_ops->cb_barrier)))
-+		return;
-+
- 	struct rcu_head *rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
- 
- 	init_rcu_head_on_stack(&rh1);
- 	init_rcu_head_on_stack(&rh2);
--	pr_alert("%s: WARN: Duplicate call_rcu() test starting.\n", KBUILD_MODNAME);
-+	pr_alert("%s: WARN: Duplicate call_%s() test starting.\n", KBUILD_MODNAME, cur_ops->name);
- 
- 	/* Try to queue the rh2 pair of callbacks for the same grace period. */
--	preempt_disable(); /* Prevent preemption from interrupting test. */
--	rcu_read_lock(); /* Make it impossible to finish a grace period. */
--	call_rcu_hurry(&rh1, rcu_torture_leak_cb); /* Start grace period. */
--	local_irq_disable(); /* Make it harder to start a new grace period. */
--	call_rcu_hurry(&rh2, rcu_torture_leak_cb);
--	call_rcu_hurry(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
-+	idx = cur_ops->readlock(); /* Make it impossible to finish a grace period. */
-+	cur_ops->call(&rh1, rcu_torture_leak_cb); /* Start grace period. */
-+	cur_ops->call(&rh2, rcu_torture_leak_cb);
-+	cur_ops->call(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
- 	if (rhp) {
--		call_rcu_hurry(rhp, rcu_torture_leak_cb);
--		call_rcu_hurry(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
-+		cur_ops->call(rhp, rcu_torture_leak_cb);
-+		cur_ops->call(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
- 	}
--	local_irq_enable();
--	rcu_read_unlock();
--	preempt_enable();
-+	cur_ops->readunlock(idx);
- 
- 	/* Wait for them all to get done so we can safely return. */
--	rcu_barrier();
--	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
-+	cur_ops->cb_barrier();
-+	pr_alert("%s: WARN: Duplicate call_%s() test complete.\n", KBUILD_MODNAME, cur_ops->name);
- 	destroy_rcu_head_on_stack(&rh1);
- 	destroy_rcu_head_on_stack(&rh2);
- 	kfree(rhp);
--#else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
--	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
--#endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
- }
- 
- static void rcutorture_sync(void)
--- 
-2.17.1
+> But the help might well involve RCU telling the hypervisor that a given
+> vCPU needs to run.  Not sure how that would go over, though it has been
+> prototyped a couple times in the context of RCU priority boosting.
+>
+> > > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> > > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> > > > >     grace period started over than a second ago. If this value is bad,
+> > > > >     I have no issue changing it.
+> > > > 
+> > > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> > > > of what magic time threshold is used.  
+> > > 
+> > > Why? It works for this particular purpose.
+> > 
+> > Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
+> > against edge cases, and I'm pretty sure we can do better with about the same amount
+> > of effort/churn.
+> 
+> Beyond a certain point, we have no choice.  How long should RCU let
+> a CPU run with preemption disabled before complaining?  We choose 21
+> seconds in mainline and some distros choose 60 seconds.  Android chooses
+> 20 milliseconds for synchronize_rcu_expedited() grace periods.
 
+Issuing a warning based on an arbitrary time limit is wildly different than using
+an arbitrary time window to make functional decisions.  My objection to the "assume
+the CPU will enter a quiescent state if it exited a KVM guest in the last second"
+is that there are plenty of scenarios where that assumption falls apart, i.e. where
+_that_ physical CPU will not re-enter the guest.
+
+Off the top of my head:
+
+ - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
+   will get false positives, and the *new* pCPU will get false negatives (though
+   the false negatives aren't all that problematic since the pCPU will enter a
+   quiescent state on the next VM-Enter.
+
+ - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
+   won't re-enter the guest.  And so the pCPU will get false positives until the
+   vCPU gets a wake event or the 1 second window expires.
+
+ - If the VM terminates, the pCPU will get false positives until the 1 second
+   window expires.
+
+The false positives are solvable problems, by hooking vcpu_put() to reset
+kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
+scheduled in on a different pCPU, KVM would hook vcpu_load().
+
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index d9642dd06c25..303ae9ae1c53 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3937,8 +3937,13 @@ static int rcu_pending(int user)
+> >  	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
+> >  		return 1;
+> >  
+> > -	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+> > -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
+> > +	/*
+> > +	 * Is this a nohz_full CPU in userspace, idle, or likely to enter a
+> > +	 * guest in the near future?  (Ignore RCU if so.)
+> > +	 */
+> > +	if ((user || rcu_is_cpu_rrupt_from_idle() ||
+> > +	     __this_cpu_read(context_tracking.in_guest_run_loop)) &&
+> 
+> In the case of (user || rcu_is_cpu_rrupt_from_idle()), this CPU was in
+> a quiescent just before the current scheduling-clock interrupt and will
+> again be in a quiescent state right after return from this interrupt.
+> This means that the grace-period kthread will be able to remotely sense
+> this quiescent state, so that the current CPU need do nothing.
+>
+> In constrast, it looks like context_tracking.in_guest_run_loop instead
+> means that when we return from this interrupt, this CPU will still be
+> in a non-quiescent state.
+> 
+> Now, in the nested-virtualization case, your point might be that the
+> lower-level hypervisor could preempt the vCPU in the interrupt handler
+> just as easily as in the .in_guest_run_loop code.  Which is a good point.
+> But I don't know of a way to handle this other than heuristics and maybe
+> hinting to the hypervisor (which has been prototyped for RCU priority
+> boosting).
+
+Regarding nested virtualization, what exactly is your concern?  IIUC, you are
+worried about this code running at L1, i.e. as a nested hypervisor, and L0, i.e.
+the bare metal hypervisor, scheduling out the L1 CPU.  And because the L1 CPU
+doesn't get run "soon", it won't enter a quiescent state as expected by RCU.
+
+But that's 100% the case with RCU in a VM in general.  If an L1 CPU gets scheduled
+out by L0, that L1 CPU won't participate in any RCU stuff until it gets scheduled
+back in by L0.
+
+E.g. throw away all of the special case checks for rcu_nohz_full_cpu() in
+rcu_pending(), and the exact same problem exists.  The L1 CPU could get scheduled
+out while trying to run the RCU core kthread just as easily as it could get
+scheduled out while trying to run the vCPU task.  Or the L1 CPU could get scheduled
+out while it's still in the IRQ handler, before it even completes it rcu_pending().
+
+And FWIW, it's not just L0 scheduling that is problematic.  If something in L0
+prevents an L1 CPU (vCPU from L0's perspective) from making forward progress, e.g.
+due to a bug in L0, or severe resource contention, from the L1 kernel's perspective,
+the L1 CPU will appear stuck and trigger various warnings, e.g. soft-lockup,
+need_resched, RCU stalls, etc.
+ 
+> Maybe the time for such hinting has come?
+
+That's a largely orthogonal discussion.  As above, boosting the scheduling priority
+of a vCPU because that vCPU is in critical section of some form is not at all
+unique to nested virtualization (or RCU).
+
+For basic functional correctness, the L0 hypervisor already has the "hint" it 
+needs.  L0 knows that the L1 CPU wants to run by virtue of the L1 CPU being
+runnable, i.e. not halted, not in WFS, etc.
+
+> > +	    rcu_nohz_full_cpu())
+> 
+> And rcu_nohz_full_cpu() has a one-second timeout, and has for quite
+> some time.
+
+That's not a good reason to use a suboptimal heuristic for determining whether
+or not a CPU is likely to enter a KVM guest, it simply mitigates the worst case
+scenario of a false positive.
+
+> >  		return 0;
+> >  
+> >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index bfb2b52a1416..5a7efc669a0f 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -209,6 +209,9 @@ void vcpu_load(struct kvm_vcpu *vcpu)
+> >  {
+> >  	int cpu = get_cpu();
+> >  
+> > +	if (vcpu->wants_to_run)
+> > +		context_tracking_guest_start_run_loop();
+> 
+> At this point, if this is a nohz_full CPU, it will no longer report
+> quiescent states until the grace period is at least one second old.
+
+I don't think I follow the "will no longer report quiescent states" issue.  Are
+you saying that this would prevent guest_context_enter_irqoff() from reporting
+that the CPU is entering a quiescent state?  If so, that's an issue that would
+need to be resolved regardless of what heuristic we use to determine whether or
+not a CPU is likely to enter a KVM guest.
+
+> >  	__this_cpu_write(kvm_running_vcpu, vcpu);
+> >  	preempt_notifier_register(&vcpu->preempt_notifier);
+> >  	kvm_arch_vcpu_load(vcpu, cpu);
+> > @@ -222,6 +225,10 @@ void vcpu_put(struct kvm_vcpu *vcpu)
+> >  	kvm_arch_vcpu_put(vcpu);
+> >  	preempt_notifier_unregister(&vcpu->preempt_notifier);
+> >  	__this_cpu_write(kvm_running_vcpu, NULL);
+> > +
+> 
+> And also at this point, if this is a nohz_full CPU, it will no longer
+> report quiescent states until the grace period is at least one second old.
+> 
+> > +	if (vcpu->wants_to_run)
+> > +		context_tracking_guest_stop_run_loop();
+> > +
+> >  	preempt_enable();
+> >  }
+> >  EXPORT_SYMBOL_GPL(vcpu_put);
+> > 
+> > base-commit: 619e56a3810c88b8d16d7b9553932ad05f0d4968
+> 
+> All of which might be OK.  Just checking as to whether all of that was
+> in fact the intent.
+> 
+> 							Thanx, Paul
