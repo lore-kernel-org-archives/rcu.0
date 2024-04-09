@@ -1,92 +1,187 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA5C156C44;
-	Tue,  9 Apr 2024 19:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A06E566;
+	Tue,  9 Apr 2024 20:05:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712692384; cv=none; b=JRWeTvKGsAGpfha37mnXh6mkdHTtfT2b1QhFj10o8YT+aZpprM6+gKSYybDpBBAAk/uO4YBq3gex7Lg0AlvBisI26pF3ohNEAcaywZtfGLCRJKXbNmZshR8K+i0D+hvvNKB+ziq9u6RnA5LMizDggClFr0vPONBsCph7K7MqXfI=
+	t=1712693118; cv=none; b=lMeP9Q0sVIk18Wz7l2GxA4E8rkp1xQEP+U4cT8nuJ76KinUwtiYmCbrWTKrn+a/MNNlFgg4cWh/grlxm3U+6QxvDQsijxsZA2Vj22mNLrBoiyhjzgPwM8vFPfQSLHhifylfJn4Sl5BT+TPi6KuXz09wIlojuHnFg1CARibLn9y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712692384; c=relaxed/simple;
-	bh=XW+KtnYyyhPI+nxpRegjNzGJfSwl/U1i3kUtyx5Mep4=;
+	s=arc-20240116; t=1712693118; c=relaxed/simple;
+	bh=EMEDkiy24xdD1xBgPZ4U0NiuQEd7Oj7O/uHFBRj/yq0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KEneJRg8+aK+50nafH/8X3ztDPv5lPFxp7JldIwTQmm8Ix9BrC4P5qoL2kdZsovd+1xvg3NXsHreE2E8TKbkc2uhhvibzZkIiAAUJZUiWjMYpXxJHU6Vd1/owDm1zr/4QUhkRuUSLJ7BDm8zNSff97I5cz4JSsFn8B6rvigg6D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpTeG0tB; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=XiAfWQPre9TapyV5XBbYAvZdjlpcFaeuevk2ZA9IG7eO0pFJq1ba4RjSvP+M4cZtE1Km3R8TLB7kgNc+mpSa3sXo1J4m7xPeIZpCooG+6Zgndg4Sc5tNEZ6vdYR9z5fiIhshbWNdV2GQkWGHo81+Y5+KKB8ynsvY7YVANvuOm7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=daqan8zN; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpTeG0tB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88D8EC433F1;
-	Tue,  9 Apr 2024 19:53:03 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="daqan8zN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2CA6C433F1;
+	Tue,  9 Apr 2024 20:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712692383;
-	bh=XW+KtnYyyhPI+nxpRegjNzGJfSwl/U1i3kUtyx5Mep4=;
+	s=k20201202; t=1712693117;
+	bh=EMEDkiy24xdD1xBgPZ4U0NiuQEd7Oj7O/uHFBRj/yq0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=RpTeG0tBEIJTjuIq17x1R8gEc3WgxT1hNqmB7Zw3BjUyT2D+jENR3b8PajOZ8tlvq
-	 LrXaN0jRa4SWOhD7p5KWg5dFsuuDISROV6FSB8h2YtNG9D7foEXzGQS7YMP+efnKHV
-	 d0gY80uakOeyivvOuh8gn/6hzrdoIln1QPoMOz5clJuE60IqajEMI7xSqclQJIe02X
-	 isoNQS3iHjizmwUQyjNT9K9DT+bC6pJMU+dx6mR7cnYHq27h94LXXvMgdW3fpyFxCm
-	 eHTuoQWHXQpxJTfrw8kBg1gFDevmYrEua/n0OkDi/BMTe0/0c60nDWv0He3hmf/8s3
-	 74XYijkv+M+MA==
+	b=daqan8zNDBoK15VbmlIRo7PrcDZTG0EcT8TuNvqUQ35TtmUMf7bejJHI5baNMck77
+	 U2a0u06i8gOpxX4CzMaNPG7yX/vgZQircJiWfqk2Au7yWlzYHMEqEGGBWHgf5TU7S+
+	 1j+bUiaGlMDP3RDMK+xERaxKRtfExAC4UrZVhbfNgHEoQpvHSvtb70kOQvdyWodQZn
+	 SGBAEMPD8DqIW7AMXZh+SsH7kWRDXFGezOPrJNzuxaicBSkYOV3IMwZotXQ3wWw7p7
+	 zkrhBY8uypxT046yFgqUPFHg0fFuLs2YvMKbpg5C5bJqoBLZM0vePqYDeBzqk8RNcO
+	 o6Uz603WgtDNQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 25223CE2D22; Tue,  9 Apr 2024 12:53:03 -0700 (PDT)
-Date: Tue, 9 Apr 2024 12:53:03 -0700
+	id 81434CE2D22; Tue,  9 Apr 2024 13:05:17 -0700 (PDT)
+Date: Tue, 9 Apr 2024 13:05:17 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Valentin Schneider <vschneid@redhat.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH 2/2] context_tracking, rcu: Rename RCU_DYNTICKS_IDX to
- CT_DYNTICKS_IDX
-Message-ID: <1ef9d1f9-16a2-4ddc-abd5-6c3b7cde290f@paulmck-laptop>
+To: Zqiang <qiang.zhang1211@gmail.com>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rcutorture: Make rcutorture support srcu double call
+ test
+Message-ID: <a511e1a5-9218-4b21-9bb4-72b285397492@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240327112902.1184822-1-vschneid@redhat.com>
- <20240327112902.1184822-3-vschneid@redhat.com>
- <Zg6tYD-9AFPkOOsW@localhost.localdomain>
+References: <20240407112714.24460-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zg6tYD-9AFPkOOsW@localhost.localdomain>
+In-Reply-To: <20240407112714.24460-1-qiang.zhang1211@gmail.com>
 
-On Thu, Apr 04, 2024 at 03:38:40PM +0200, Frederic Weisbecker wrote:
-> Le Wed, Mar 27, 2024 at 12:29:02PM +0100, Valentin Schneider a écrit :
-> > The symbols relating to the CT_STATE part of context_tracking.state are now
-> > all prefixed with CT_STATE.
-> > 
-> > The RCU dynticks counter part of that atomic variable still involves
-> > symbols with different prefixes, align them all to be prefixed with
-> > CT_DYNTICKS, as CT_DYNTICKS_MASK already is.
-> > 
-> > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+On Sun, Apr 07, 2024 at 07:27:14PM +0800, Zqiang wrote:
+> This commit also allows rcutorture to support srcu double call test
+> with CONFIG_DEBUG_OBJECTS_RCU_HEAD option enabled. the non-raw sdp
+> structure's->spinlock will be acquired in call_srcu(), in Preempt-RT
+> kernels, this spinlock is sleepable, therefore remove disable-irq and
+> disable-preempt protection.
 > 
-> It used to be that RCU extended quiescent state and dynticks enter/exit
-> were coupled. But this isn't the case anymore. Nowadays RCU stops watching
-> some time later after dynticks is entered.
-
-I knew that consolidation of atomic operations was too good to last...
-
-> I wonder if we shouldn't take advantage of that cleanup for a meaning that
-> really reflect that RCU stops watching from there.
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>  kernel/rcu/rcutorture.c | 46 +++++++++++++++++++++++------------------
+>  1 file changed, 26 insertions(+), 20 deletions(-)
 > 
-> Paul what do you think? CT_EQS_IDX ? CT_RCUEQS_IDX? CT_RCUOFF_IDX? ...?
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 807fbf6123a7..44cc455e1b61 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -390,6 +390,7 @@ struct rcu_torture_ops {
+>  	int extendables;
+>  	int slow_gps;
+>  	int no_pi_lock;
+> +	int debug_objects;
+>  	const char *name;
+>  };
+>  
+> @@ -577,6 +578,7 @@ static struct rcu_torture_ops rcu_ops = {
+>  	.irq_capable		= 1,
+>  	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
+>  	.extendables		= RCUTORTURE_MAX_EXTEND,
+> +	.debug_objects		= 1,
+>  	.name			= "rcu"
+>  };
+>  
+> @@ -747,6 +749,7 @@ static struct rcu_torture_ops srcu_ops = {
+>  	.cbflood_max	= 50000,
+>  	.irq_capable	= 1,
+>  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+> +	.debug_objects	= 1,
+>  	.name		= "srcu"
+>  };
+>  
+> @@ -786,6 +789,7 @@ static struct rcu_torture_ops srcud_ops = {
+>  	.cbflood_max	= 50000,
+>  	.irq_capable	= 1,
+>  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+> +	.debug_objects	= 1,
+>  	.name		= "srcud"
+>  };
+>  
+> @@ -3455,7 +3459,6 @@ rcu_torture_cleanup(void)
+>  		cur_ops->gp_slow_unregister(NULL);
+>  }
+>  
+> -#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+>  static void rcu_torture_leak_cb(struct rcu_head *rhp)
+>  {
+>  }
+> @@ -3473,7 +3476,6 @@ static void rcu_torture_err_cb(struct rcu_head *rhp)
+>  	 */
+>  	pr_alert("%s: duplicated callback was invoked.\n", KBUILD_MODNAME);
+>  }
+> -#endif /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+>  
+>  /*
+>   * Verify that double-free causes debug-objects to complain, but only
+> @@ -3482,39 +3484,43 @@ static void rcu_torture_err_cb(struct rcu_head *rhp)
+>   */
+>  static void rcu_test_debug_objects(void)
+>  {
+> -#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+>  	struct rcu_head rh1;
+>  	struct rcu_head rh2;
+> +	int idx;
+> +
+> +	if (!IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD)) {
+> +		pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_%s()\n",
+> +					KBUILD_MODNAME, cur_ops->name);
+> +		return;
+> +	}
+> +
+> +	if (WARN_ON_ONCE(cur_ops->debug_objects &&
+> +			(!cur_ops->call || !cur_ops->cb_barrier)))
+> +		return;
+> +
+>  	struct rcu_head *rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
+>  
+>  	init_rcu_head_on_stack(&rh1);
+>  	init_rcu_head_on_stack(&rh2);
+> -	pr_alert("%s: WARN: Duplicate call_rcu() test starting.\n", KBUILD_MODNAME);
+> +	pr_alert("%s: WARN: Duplicate call_%s() test starting.\n", KBUILD_MODNAME, cur_ops->name);
+>  
+>  	/* Try to queue the rh2 pair of callbacks for the same grace period. */
+> -	preempt_disable(); /* Prevent preemption from interrupting test. */
+> -	rcu_read_lock(); /* Make it impossible to finish a grace period. */
+> -	call_rcu_hurry(&rh1, rcu_torture_leak_cb); /* Start grace period. */
+> -	local_irq_disable(); /* Make it harder to start a new grace period. */
+> -	call_rcu_hurry(&rh2, rcu_torture_leak_cb);
+> -	call_rcu_hurry(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
+> +	idx = cur_ops->readlock(); /* Make it impossible to finish a grace period. */
+> +	cur_ops->call(&rh1, rcu_torture_leak_cb); /* Start grace period. */
+> +	cur_ops->call(&rh2, rcu_torture_leak_cb);
+> +	cur_ops->call(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
+>  	if (rhp) {
+> -		call_rcu_hurry(rhp, rcu_torture_leak_cb);
+> -		call_rcu_hurry(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
+> +		cur_ops->call(rhp, rcu_torture_leak_cb);
+> +		cur_ops->call(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
+>  	}
+> -	local_irq_enable();
+> -	rcu_read_unlock();
+> -	preempt_enable();
+> +	cur_ops->readunlock(idx);
+>  
+>  	/* Wait for them all to get done so we can safely return. */
+> -	rcu_barrier();
+> -	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
+> +	cur_ops->cb_barrier();
+> +	pr_alert("%s: WARN: Duplicate call_%s() test complete.\n", KBUILD_MODNAME, cur_ops->name);
 
-"After what you just did?  You can just RCU off!!!"
+This will get us "call_srcud() test", but if there are complaints yet
+another string can be added to the nrcu_torture_ops structure.
 
-Sorry, couldn't resist...
-
-I am having a hard time getting too excited about the name.  I could
-suggest CT_RCU_WATCHING_IDX, but that isn't exactly the shortest
-possible name.
+So I have queued this for testing and further review.
 
 							Thanx, Paul
+
+>  	destroy_rcu_head_on_stack(&rh1);
+>  	destroy_rcu_head_on_stack(&rh2);
+>  	kfree(rhp);
+> -#else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+> -	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
+> -#endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+>  }
+>  
+>  static void rcutorture_sync(void)
+> -- 
+> 2.17.1
+> 
