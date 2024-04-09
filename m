@@ -1,43 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A06E566;
-	Tue,  9 Apr 2024 20:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85343156F2A
+	for <rcu@vger.kernel.org>; Tue,  9 Apr 2024 20:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712693118; cv=none; b=lMeP9Q0sVIk18Wz7l2GxA4E8rkp1xQEP+U4cT8nuJ76KinUwtiYmCbrWTKrn+a/MNNlFgg4cWh/grlxm3U+6QxvDQsijxsZA2Vj22mNLrBoiyhjzgPwM8vFPfQSLHhifylfJn4Sl5BT+TPi6KuXz09wIlojuHnFg1CARibLn9y0=
+	t=1712693439; cv=none; b=cZExLp8LyTY2NQ2zSemsMiecDIIL9iz/lObLOzuf8Chdv8/Occ0a3xqWLkfxMRP0L+68u/JVNx65BO3TFTV4aimfQL+ypAZ6HBWeAJSBCPZZ4NUL/CzlfEyKpAK6r9YdrsGqNlD+f5KQ1Le97VyTkdort1/9SfP7yvlsEWnHDkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712693118; c=relaxed/simple;
-	bh=EMEDkiy24xdD1xBgPZ4U0NiuQEd7Oj7O/uHFBRj/yq0=;
+	s=arc-20240116; t=1712693439; c=relaxed/simple;
+	bh=HLCnPYOHTGDd8k6Wynprq3f/l16A55JYcNPQFCkb9fE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XiAfWQPre9TapyV5XBbYAvZdjlpcFaeuevk2ZA9IG7eO0pFJq1ba4RjSvP+M4cZtE1Km3R8TLB7kgNc+mpSa3sXo1J4m7xPeIZpCooG+6Zgndg4Sc5tNEZ6vdYR9z5fiIhshbWNdV2GQkWGHo81+Y5+KKB8ynsvY7YVANvuOm7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=daqan8zN; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=gdtS05+UfLnqGrn1TB6q/dflu0KByRkQKGFc7GmCj6x4KbcnuGNK1WvlhtcZrRD7j2JZiAc+Od8nwjO5YlTh4eS9D2rZ0U7IsaPk2EZnPMu/DzKspKgsJ9Hj/FhP+mYc25mH6MtwpDv3a+i9npRb7iBHLDITh4ZSBmVBKXGLxo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t3hmNSLu; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="daqan8zN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2CA6C433F1;
-	Tue,  9 Apr 2024 20:05:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t3hmNSLu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E73ADC433F1;
+	Tue,  9 Apr 2024 20:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712693117;
-	bh=EMEDkiy24xdD1xBgPZ4U0NiuQEd7Oj7O/uHFBRj/yq0=;
+	s=k20201202; t=1712693439;
+	bh=HLCnPYOHTGDd8k6Wynprq3f/l16A55JYcNPQFCkb9fE=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=daqan8zNDBoK15VbmlIRo7PrcDZTG0EcT8TuNvqUQ35TtmUMf7bejJHI5baNMck77
-	 U2a0u06i8gOpxX4CzMaNPG7yX/vgZQircJiWfqk2Au7yWlzYHMEqEGGBWHgf5TU7S+
-	 1j+bUiaGlMDP3RDMK+xERaxKRtfExAC4UrZVhbfNgHEoQpvHSvtb70kOQvdyWodQZn
-	 SGBAEMPD8DqIW7AMXZh+SsH7kWRDXFGezOPrJNzuxaicBSkYOV3IMwZotXQ3wWw7p7
-	 zkrhBY8uypxT046yFgqUPFHg0fFuLs2YvMKbpg5C5bJqoBLZM0vePqYDeBzqk8RNcO
-	 o6Uz603WgtDNQ==
+	b=t3hmNSLukeOSBx83YX7aaZwh9g9Slblo4t+O9/oYxtITC2s/K6kRIgcGVUIaTjG7m
+	 OltllFKbErr/YWBskPgvinVsmbThqxCTWJ5Mqc2+zJDoOTILqPmPmXKjROoi7ZHiyF
+	 t/0WCmC2Qw+vkmo8rdxcekAbSd+UbpggnC3ZmkYu+FMuUCt0xMmERPsYk4b2iH6/Ma
+	 IBfS3uEejDD51Y4eLi8nOoD80AbULxZMyN27JhXobBsOd0NfgYo2n2PQEPsRAL6RK+
+	 aKAtBjvXaCcSkAZJYM5IJRq1QIN1pOilgpekU3hm2BUDAOEmkCQGF8DnqyGskJRXTe
+	 SeP7mfOafsakw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 81434CE2D22; Tue,  9 Apr 2024 13:05:17 -0700 (PDT)
-Date: Tue, 9 Apr 2024 13:05:17 -0700
+	id 88743CE2D22; Tue,  9 Apr 2024 13:10:38 -0700 (PDT)
+Date: Tue, 9 Apr 2024 13:10:38 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
+To: Alan Huang <mmpgouride@gmail.com>
 Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Make rcutorture support srcu double call
- test
-Message-ID: <a511e1a5-9218-4b21-9bb4-72b285397492@paulmck-laptop>
+	josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Remove unnecessary READ_ONCE in
+ rcu_preempt_read_enter/exit
+Message-ID: <beffedec-9952-414b-bfe5-bf6e49058107@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240407112714.24460-1-qiang.zhang1211@gmail.com>
+References: <20240331091932.129617-1-mmpgouride@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -46,142 +48,50 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240407112714.24460-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20240331091932.129617-1-mmpgouride@gmail.com>
 
-On Sun, Apr 07, 2024 at 07:27:14PM +0800, Zqiang wrote:
-> This commit also allows rcutorture to support srcu double call test
-> with CONFIG_DEBUG_OBJECTS_RCU_HEAD option enabled. the non-raw sdp
-> structure's->spinlock will be acquired in call_srcu(), in Preempt-RT
-> kernels, this spinlock is sleepable, therefore remove disable-irq and
-> disable-preempt protection.
-> 
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> ---
->  kernel/rcu/rcutorture.c | 46 +++++++++++++++++++++++------------------
->  1 file changed, 26 insertions(+), 20 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 807fbf6123a7..44cc455e1b61 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -390,6 +390,7 @@ struct rcu_torture_ops {
->  	int extendables;
->  	int slow_gps;
->  	int no_pi_lock;
-> +	int debug_objects;
->  	const char *name;
->  };
->  
-> @@ -577,6 +578,7 @@ static struct rcu_torture_ops rcu_ops = {
->  	.irq_capable		= 1,
->  	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
->  	.extendables		= RCUTORTURE_MAX_EXTEND,
-> +	.debug_objects		= 1,
->  	.name			= "rcu"
->  };
->  
-> @@ -747,6 +749,7 @@ static struct rcu_torture_ops srcu_ops = {
->  	.cbflood_max	= 50000,
->  	.irq_capable	= 1,
->  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-> +	.debug_objects	= 1,
->  	.name		= "srcu"
->  };
->  
-> @@ -786,6 +789,7 @@ static struct rcu_torture_ops srcud_ops = {
->  	.cbflood_max	= 50000,
->  	.irq_capable	= 1,
->  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-> +	.debug_objects	= 1,
->  	.name		= "srcud"
->  };
->  
-> @@ -3455,7 +3459,6 @@ rcu_torture_cleanup(void)
->  		cur_ops->gp_slow_unregister(NULL);
->  }
->  
-> -#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
->  static void rcu_torture_leak_cb(struct rcu_head *rhp)
->  {
->  }
-> @@ -3473,7 +3476,6 @@ static void rcu_torture_err_cb(struct rcu_head *rhp)
->  	 */
->  	pr_alert("%s: duplicated callback was invoked.\n", KBUILD_MODNAME);
->  }
-> -#endif /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
->  
->  /*
->   * Verify that double-free causes debug-objects to complain, but only
-> @@ -3482,39 +3484,43 @@ static void rcu_torture_err_cb(struct rcu_head *rhp)
->   */
->  static void rcu_test_debug_objects(void)
->  {
-> -#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
->  	struct rcu_head rh1;
->  	struct rcu_head rh2;
-> +	int idx;
-> +
-> +	if (!IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD)) {
-> +		pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_%s()\n",
-> +					KBUILD_MODNAME, cur_ops->name);
-> +		return;
-> +	}
-> +
-> +	if (WARN_ON_ONCE(cur_ops->debug_objects &&
-> +			(!cur_ops->call || !cur_ops->cb_barrier)))
-> +		return;
-> +
->  	struct rcu_head *rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
->  
->  	init_rcu_head_on_stack(&rh1);
->  	init_rcu_head_on_stack(&rh2);
-> -	pr_alert("%s: WARN: Duplicate call_rcu() test starting.\n", KBUILD_MODNAME);
-> +	pr_alert("%s: WARN: Duplicate call_%s() test starting.\n", KBUILD_MODNAME, cur_ops->name);
->  
->  	/* Try to queue the rh2 pair of callbacks for the same grace period. */
-> -	preempt_disable(); /* Prevent preemption from interrupting test. */
-> -	rcu_read_lock(); /* Make it impossible to finish a grace period. */
-> -	call_rcu_hurry(&rh1, rcu_torture_leak_cb); /* Start grace period. */
-> -	local_irq_disable(); /* Make it harder to start a new grace period. */
-> -	call_rcu_hurry(&rh2, rcu_torture_leak_cb);
-> -	call_rcu_hurry(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
-> +	idx = cur_ops->readlock(); /* Make it impossible to finish a grace period. */
-> +	cur_ops->call(&rh1, rcu_torture_leak_cb); /* Start grace period. */
-> +	cur_ops->call(&rh2, rcu_torture_leak_cb);
-> +	cur_ops->call(&rh2, rcu_torture_err_cb); /* Duplicate callback. */
->  	if (rhp) {
-> -		call_rcu_hurry(rhp, rcu_torture_leak_cb);
-> -		call_rcu_hurry(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
-> +		cur_ops->call(rhp, rcu_torture_leak_cb);
-> +		cur_ops->call(rhp, rcu_torture_err_cb); /* Another duplicate callback. */
->  	}
-> -	local_irq_enable();
-> -	rcu_read_unlock();
-> -	preempt_enable();
-> +	cur_ops->readunlock(idx);
->  
->  	/* Wait for them all to get done so we can safely return. */
-> -	rcu_barrier();
-> -	pr_alert("%s: WARN: Duplicate call_rcu() test complete.\n", KBUILD_MODNAME);
-> +	cur_ops->cb_barrier();
-> +	pr_alert("%s: WARN: Duplicate call_%s() test complete.\n", KBUILD_MODNAME, cur_ops->name);
+On Sun, Mar 31, 2024 at 09:19:32AM +0000, Alan Huang wrote:
+> The two READ_ONCEs here imply that there might be updater concurrently
+> modifies rcu_read_lock_nesting, although it's true there could be
+> interrupt handlers enter rcu RSCS, but rcu_read_lock_nesting should
+> remain unchanged after they finished. That is, READ_ONCE and then
+> WRITE_ONCE the same variable is not a valid pattern, this patch thus
+> removes the two READ_ONCEs.
 
-This will get us "call_srcud() test", but if there are complaints yet
-another string can be added to the nrcu_torture_ops structure.
+This is true, but I will take the READ_ONCE() calls over the KCSAN
+complaints.  So I must avoid taking this one.
 
-So I have queued this for testing and further review.
+Please note that RCU uses strict KCSAN configuration [1].
 
 							Thanx, Paul
 
->  	destroy_rcu_head_on_stack(&rh1);
->  	destroy_rcu_head_on_stack(&rh2);
->  	kfree(rhp);
-> -#else /* #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
-> -	pr_alert("%s: !CONFIG_DEBUG_OBJECTS_RCU_HEAD, not testing duplicate call_rcu()\n", KBUILD_MODNAME);
-> -#endif /* #else #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD */
+[1] https://docs.google.com/document/d/1FwZaXSg3A55ivVoWffA9iMuhJ3_Gmj_E494dLYjjyLQ/edit?usp=sharing
+
+> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+> ---
+>  kernel/rcu/tree_plugin.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 340bbefe5f65..c90edbb7fa40 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -376,12 +376,12 @@ static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp)
+>  
+>  static void rcu_preempt_read_enter(void)
+>  {
+> -	WRITE_ONCE(current->rcu_read_lock_nesting, READ_ONCE(current->rcu_read_lock_nesting) + 1);
+> +	WRITE_ONCE(current->rcu_read_lock_nesting, current->rcu_read_lock_nesting + 1);
 >  }
 >  
->  static void rcutorture_sync(void)
+>  static int rcu_preempt_read_exit(void)
+>  {
+> -	int ret = READ_ONCE(current->rcu_read_lock_nesting) - 1;
+> +	int ret = current->rcu_read_lock_nesting - 1;
+>  
+>  	WRITE_ONCE(current->rcu_read_lock_nesting, ret);
+>  	return ret;
 > -- 
-> 2.17.1
+> 2.34.1
+> 
 > 
