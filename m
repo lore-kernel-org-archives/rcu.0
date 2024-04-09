@@ -1,129 +1,123 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858751DA5E;
-	Mon,  8 Apr 2024 23:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC2C182DA;
+	Tue,  9 Apr 2024 08:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712618414; cv=none; b=hKH/FlZmPvy/tMJfvMfXcozybPmLa2OkKQGSA8VgNztM/Y1GIobGrDDMGhDkI3bK+xyTSDK+sUrt7JbETxfYyN0Lg7ehbByg7DCg+3XqJeZs/0gwfulBGAweXGwCkgH9EYBrfjL5KXgoZ6gVM21M9TlUNkqU8SBZ0OVT1oVDSCY=
+	t=1712652577; cv=none; b=RjvJ8rh6Npptd0m7g59rVAUsMwGg/qUxkBBqUuL2yo60DLxMngVUqtaFtnc7tL4l1D+436+1EvBwKfNf7vU/1vjIGNuIqAxoTMr7e/WqFcP0j2A/zr4Xxz3klxW2sjzQBVfthz4JsVu5M7Rq4kcyby9Le7dqFJ42fDO3fPXW/7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712618414; c=relaxed/simple;
-	bh=IfEtQ3E4nR5vHQBjwqTMc8kDx61wvIKdmTWG7x7WHzY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o4Mq69s+nLWuWirVC3idNvbE5aySkBmh7mWej6QnKJNWSQwvrUJ3sZGZZg4PYUBOGaQMnmAKyV2IHaZ3E53jBfkTIhwbTidLTyvA9Gj73uMgyickLDHharB8lHG43a4mNG7gbN/laaiavH8wcHyAESEXm5Pg3P2djQV1tt4IMCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a5YgRo2y; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1712652577; c=relaxed/simple;
+	bh=5e48eejQZK6FOt/mMCt57syL94/27zQykmcYhHebQFc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X+ClH/MRTd0O0ahJbchc5riRICKJbpN2AxoD7Y9a5ay6eHez0Ju17z+G6XmbOXI2YQWJDPfhfrrCFIaaX+WGuegathKEzVHd5QW5jWyKUyIl4Cg9wuNjN2EOudVSd1/5QhrcaNsa4YZwlAeKl6EC3Jupqr1SBvsV0ELffZVjCFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BGyFYf0q; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a5YgRo2y"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DF53C433C7;
-	Mon,  8 Apr 2024 23:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712618414;
-	bh=IfEtQ3E4nR5vHQBjwqTMc8kDx61wvIKdmTWG7x7WHzY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=a5YgRo2yr8x98V7V9NszagtKCxGxOsAZWMnB0RbGXRhbn8yfGJFvjL3quCjV6AbiE
-	 sDnGU10P5TunaqiS+WaJO84ONfyAI7MSzQ6+1KZvU9sfHQJlihy9llb5iPaAShOD6S
-	 zJs8+EoAXu4/wRBZIYlUXVk7LrpRYNov94dhvNhnANDUjKlVBQcdBbMhWNkdRLr6hM
-	 I2Ebz915JsAT4hXDxOPrWTwOJMXMz0jHPMkhAVX/uKA6IeHQ3/MjiA3C2tkA0cAimI
-	 5cE009USFsi1FZTV4EJH6A8yEOOO0w5OInDwsKTheDXEGqxAe7Q65YKCJQLFWMvNt+
-	 P7bcmKD9mazQg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id F15DFCE118A; Mon,  8 Apr 2024 16:20:13 -0700 (PDT)
-Date: Mon, 8 Apr 2024 16:20:13 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <f34ea327-bfb1-4014-8967-1429c2133e2d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ZhAAg8KNd8qHEGcO@tpad>
- <ZhAN28BcMsfl4gm-@google.com>
- <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com>
- <414eaf1e-ca22-43f3-8dfa-0a86f5b127f5@paulmck-laptop>
- <ZhROKK9dEPsNnH4t@google.com>
- <44eb0d36-7454-41e7-9a16-ce92a88e568c@paulmck-laptop>
- <ZhRoDfoz-YqsGhIB@google.com>
- <edc8b1ad-dee0-456f-89fb-47bd4709ff0e@paulmck-laptop>
- <ZhR4bnFLA08YgAgr@google.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BGyFYf0q"
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516d0162fa1so6341397e87.3;
+        Tue, 09 Apr 2024 01:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712652574; x=1713257374; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cfFaUeVcG6kokR+BF13mldCWzTlngHtffGZuZFNsyB4=;
+        b=BGyFYf0q5E6Rycp+2eVA4IEtdLtciUllWWrstHm7TYLUuLeDSRw0A7JIhGZBX2UQQ7
+         fprsFLGD3FUsIoz3n4plpNRMKlD+N5L1M5YNzCEnct1dbKWuatEbbMshaiC9NpsQmfR4
+         Z0DeQSHizCDTHzt55i3BeyAEcpqkBUDj9lB6NfFnoQAre70PlPrtoldUgn4RouqxkhZS
+         W1LybIPPw9ysMonuWI2BJqga8eFuERZFAiKDq6agOm6ujr/eL0KS46IOdbzd3C3cVGuK
+         4gFNOalSCd12+ri98r0Ouo4AOk0q7mktqgve1+IR3s+35a/3sJQzlDuUrnLQn2mbyU6O
+         /TIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712652574; x=1713257374;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cfFaUeVcG6kokR+BF13mldCWzTlngHtffGZuZFNsyB4=;
+        b=E7SKYFlXtN+Kc/5Rkq9C/9KTk+tJdkJsjdalVXMflVUslzmJUznP+QYWBNUeDCk562
+         D0rgeqfr5m5XRvBvauj9v6Llk3CKJajHGIKQ+FlS8wM4Q7DtwzGt4qPAa25cqGYsdlFw
+         uC7TsRiHxYUGBOxbX3LI5ACNejvvADu1vocANMKPJNHxpY6vRO7rYtzw4FVtQfkTbb5A
+         kXGpCw/sBTuvoWk0iUPe9v4sUz5ZpZYMWuGyIh11olaYZi/WeajlgWxse4OocEH8dC1L
+         y+tgfLeWmrJrBJdCzBpqjMlr70/3Wqo8DhCq0dAr8j/pQ8YnQf8Nqap09/hEct6xz3pD
+         4EYw==
+X-Forwarded-Encrypted: i=1; AJvYcCWsCNX6Px1y4xNERu8U2ukHDO+f+88wjkIhQpOA7hNVAJz6rbo3c8z38T8qkxdgkYSI0nrM/qqLMDfv/fA21ToP7Y7kJs0XAOXR5yZK1zi7Q4wZgTd6b00ZnBsRzPJYHjig
+X-Gm-Message-State: AOJu0YzhWSo5iDoNtusBVNW2Hx6rM/nsAtLIm62kAukQDZzxsyXtrkcb
+	K3LDTpWDl4tSYDkeeiNEsDbliEcI3roWpwAX88rga2YngDMSbb6n
+X-Google-Smtp-Source: AGHT+IFWrxPlTbCKC9q0gRfnujtk6qz2r/ccWDQQVZf4AHUpF3qXCJXeajsRSf9XkE6uG7qzhKIoqg==
+X-Received: by 2002:a19:2d0e:0:b0:515:9ee7:ce45 with SMTP id k14-20020a192d0e000000b005159ee7ce45mr7870477lfj.49.1712652573620;
+        Tue, 09 Apr 2024 01:49:33 -0700 (PDT)
+Received: from pc636 (host-90-233-217-142.mobileonline.telia.com. [90.233.217.142])
+        by smtp.gmail.com with ESMTPSA id e10-20020ac2546a000000b00516a21346e3sm1476697lfn.218.2024.04.09.01.49.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 01:49:33 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Tue, 9 Apr 2024 10:49:30 +0200
+To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, paulmck@kernel.org,
+	joel@joelfernandes.org, urezki@gmail.com, josh@joshtriplett.org,
+	boqun.feng@gmail.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org
+Subject: Re: [PATCH v2] rcu: Reduce synchronize_rcu() delays when all wait
+ heads are in use
+Message-ID: <ZhUBGkcab10QM_uU@pc636>
+References: <20240403105212.237354-1-Neeraj.Upadhyay@amd.com>
+ <Zg8ezv2vzylVwg2q@pavilion.home>
+ <0fae21aa-d9a1-48d1-85e1-ad746edae361@amd.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZhR4bnFLA08YgAgr@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0fae21aa-d9a1-48d1-85e1-ad746edae361@amd.com>
 
-On Mon, Apr 08, 2024 at 04:06:22PM -0700, Sean Christopherson wrote:
-> On Mon, Apr 08, 2024, Paul E. McKenney wrote:
-> > On Mon, Apr 08, 2024 at 02:56:29PM -0700, Sean Christopherson wrote:
-> > > > OK, then we can have difficulties with long-running interrupts hitting
-> > > > this range of code.  It is unfortunately not unheard-of for interrupts
-> > > > plus trailing softirqs to run for tens of seconds, even minutes.
-> > > 
-> > > Ah, and if that occurs, *and* KVM is slow to re-enter the guest, then there will
-> > > be a massive lag before the CPU gets back into a quiescent state.
+Hello, Neeraj, Frederic!
+
+> 
+> On 4/5/2024 3:12 AM, Frederic Weisbecker wrote:
+> > Le Wed, Apr 03, 2024 at 04:22:12PM +0530, Neeraj Upadhyay a écrit :
+> >> When all wait heads are in use, which can happen when
+> >> rcu_sr_normal_gp_cleanup_work()'s callback processing
+> >> is slow, any new synchronize_rcu() user's rcu_synchronize
+> >> node's processing is deferred to future GP periods. This
+> >> can result in long list of synchronize_rcu() invocations
+> >> waiting for full grace period processing, which can delay
+> >> freeing of memory. Mitigate this problem by using first
+> >> node in the list as wait tail when all wait heads are in use.
+> >> While methods to speed up callback processing would be needed
+> >> to recover from this situation, allowing new nodes to complete
+> >> their grace period can help prevent delays due to a fixed
+> >> number of wait head nodes.
+> >>
+> >> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 > > 
-> > Exactly!
-> 
-> ...
-> 
-> > OK, then is it possible to get some other indication to the
-> > rcu_sched_clock_irq() function that it has interrupted a guest OS?
-> 
-> It's certainly possible, but I don't think we want to go down that road.
-> 
-> Any functionality built on that would be strictly limited to Intel CPUs, because
-> AFAIK, only Intel VMX has the mode where an IRQ can be handled without enabling
-> IRQs (which sounds stupid when I write it like that).
-> 
-> E.g. on AMD SVM, if an IRQ interrupts the guest, KVM literally handles it by
-> doing:
-> 
-> 	local_irq_enable();
-> 	++vcpu->stat.exits;
-> 	local_irq_disable();
-> 
-> which means there's no way for KVM to guarantee that the IRQ that leads to
-> rcu_sched_clock_irq() is the _only_ IRQ that is taken (or that what RCU sees was
-> even the IRQ that interrupted the guest, though that probably doesn't matter much).
-> 
-> Orthogonal to RCU, I do think it makes sense to have KVM VMX handle IRQs in its
-> fastpath for VM-Exit, i.e. handle the IRQ VM-Exit and re-enter the guest without
-> ever enabling IRQs.  But that's purely a KVM optimization, e.g. to avoid useless
-> work when the host has already done what it needed to do.
-> 
-> But even then, to make it so RCU could safely skip invoke_rcu_core(), KVM would
-> need to _guarantee_ re-entry to the guest, and I don't think we want to do that.
-> E.g. if there is some work that needs to be done on the CPU, re-entering the guest
-> is a huge waste of cycles, as KVM would need to do some shenanigans to immediately
-> force a VM-Exit.  It'd also require a moderate amount of complexity that I wouldn't
-> want to maintain, particularly since it'd be Intel-only.
-
-Thank you for the analysis!
-
-It sounds like the current state, imperfect though it might be, is the
-best of the known possible worlds at the moment.
-
-But should anyone come up with something better, please do not keep it
-a secret!
-
-							Thanx, Paul
-
-> > Not an emergency, and maybe not even necessary, but it might well be
-> > one hole that would be good to stop up.
+> > Looking at it again, I'm not sure if it's a good idea to
+> > optimize the thing that far. It's already a tricky state machine
+> > to review and the workqueue has SR_NORMAL_GP_WAIT_HEAD_MAX - 1 = 4
+> > grace periods worth of time to execute. Such a tense situation may
+> > happen of course but, should we really work around that?
 > > 
-> > 							Thanx, Paul
+> > I let you guys judge. In the meantime, I haven't found correctness
+> 
+> I agree that this adds more complexity for handling a scenario
+> which is not expected to happen often. Also, this does not help
+> much to recover from the situation, as most of the callbacks are still
+> blocked on kworker execution. Intent was to keep the patch ready, in
+> case we see fixed SR_NORMAL_GP_WAIT_HEAD_MAX  as a blocking factor.
+> It's fine from my side if we want to hold off this one. Uladzislau
+> what do you think?
+> 
+I agree with Frederic and we discussed this patch with Neeraj! I think
+the state machine is a bit complex as of now. Let's hold off it so far.
+
+--
+Uladzislau Rezki
