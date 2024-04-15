@@ -1,178 +1,190 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BFB82D93;
-	Mon, 15 Apr 2024 21:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2928156F53
+	for <rcu@vger.kernel.org>; Mon, 15 Apr 2024 21:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713215307; cv=none; b=ok8XugK9jxHNUCQZInjsFPjT66ymRkUsez5cEMZWVdy7YPR1LHfvgkXWz0B3T3NcTFarXr5j3Rnc1b2UUBgj4w+9iGCSK+SDJ9+NHRS3aU4EYF95YB6lrGiBEx0ihkTWluYs+qZ1cqObp9rn0/V5Z5/YiKX6v/hUgf+EmWB03AA=
+	t=1713216577; cv=none; b=oBZaDencgzt+yJCSwZanKKgUkEEUNMj+cjyW7cNEA92nfDk6uI27zyFeq4GEC3h9miy/HDSuIC819/VSFvgSSiMX75gTOM6J4Qfd1wctAVuJgAdLm8+9/D1DrnZGR3lc+pqAjaes0jk9Y58n0OrYB/BXgajb8GJHUZnv7nurfeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713215307; c=relaxed/simple;
-	bh=YBb7sPjCuZy7QTFidxmPtSaTUjMukfRrUWRNfl89xUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PrxQOUvBiKtIKXWqdF8OZD/aRWad/pehxYK2fDKANRQuDBsGpakEEsGXSB7jLU//UpPremEAcT70uCugp2AYokI2BVL1c9xBg1T4Qr8TwyRRbTKwf9Q709Dh0OfImN6hhyPDM8pjSDUj6e9Mb/BB1EqdLx9nF4o3eTF+io7xH/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mh392K/+; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1713216577; c=relaxed/simple;
+	bh=wRzkoeM6izLth76xabB3423FrZn8Vm+DOCcwDXcNbOM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=hqadG44KcP4MaQq9L5KRwa6cGMIK5efgj/ZTN+wWATzKWprvgbdonIgcBUexaWB5YbltwRdjcICI9YQH9cHpx2+TZMxCDVuxXZBajG+MEadzxaSMcjXlP7Jh0YySK40CnrxVi29/2Jg/qEheuWrRFOE92+mvDYgdnYXtqHpO8IE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U9DsdJj6; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mh392K/+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E8FDC113CC;
-	Mon, 15 Apr 2024 21:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713215305;
-	bh=YBb7sPjCuZy7QTFidxmPtSaTUjMukfRrUWRNfl89xUs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mh392K/+eV4fnTxdDBL2hkZgVqtnZ+l5R6/Gy424hmIewmf56EAGgPSUnDww7XfrP
-	 h/EMGZlW+jRdJmL7bzI5SgyJO1/9KEeUdR6XjumPyAyEl5HX0ceRNNgU4jDGFB93HM
-	 nDWLDWEFtUG5bwvvexEm4emW2c7V3AwXnJjPb1TYSSLaxfpruUE26/0mzXuWyl+4ls
-	 rdkrG6isEK9o1Ttl20u8haKyBAQvTYBmZ+r/sxLQ4spO9P+fVYi4hFJkuvBARjttIK
-	 lBdfxrxLHkt2228D3f/jby+tFGjPNHCtJk3sEwVcPLpt/gUSFFIymS7nyE7NZtXuAh
-	 +owzyrxrKOWrw==
-Date: Mon, 15 Apr 2024 23:08:22 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH 2/2] context_tracking, rcu: Rename RCU_DYNTICKS_IDX to
- CT_DYNTICKS_IDX
-Message-ID: <Zh2XRgIGDILD6u7Q@pavilion.home>
-References: <20240327112902.1184822-1-vschneid@redhat.com>
- <20240327112902.1184822-3-vschneid@redhat.com>
- <Zg6tYD-9AFPkOOsW@localhost.localdomain>
- <1ef9d1f9-16a2-4ddc-abd5-6c3b7cde290f@paulmck-laptop>
- <ZhZqX0YqlzPoOK2b@localhost.localdomain>
- <af3eed7e-a889-4008-ba47-045483ab79fc@paulmck-laptop>
- <xhsmhjzky8tww.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U9DsdJj6"
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61890f3180aso43866297b3.2
+        for <rcu@vger.kernel.org>; Mon, 15 Apr 2024 14:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713216574; x=1713821374; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWnJ31RAOiIsD4AZ7h9ip2gzbbUemOLkRWGv/kx/CW8=;
+        b=U9DsdJj6YNqpvmhok4rzUZ4kYhujU4omV3ROuol0tg4XzvxRlBn3IUGLaqtNedKw+N
+         nroY9imcGpjs9aIfMiFCraaUSRwZ2DtC67KFSHrQJOofXd75BCA5jTWf50FEqiJMEhJK
+         OtRCSD0oHFWLzfPIEb76HbcnIDUpHfc31z22/H+eui1V9TgMuG66RHXFJXPZhL9dF1Wf
+         N8tLLxlLTr13ZD+gyHjIFB9xrpIaLRTtFgojHcD0mlx9Cokdqjt7Lvgb1V8XbQ+lLqG4
+         0VfgyQwzRWaNWmnB8+HigDe1koO1QLwBKO6L+M/FoPoLULqRKsT+A3Ed+9jSA71b8PP/
+         om4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713216574; x=1713821374;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWnJ31RAOiIsD4AZ7h9ip2gzbbUemOLkRWGv/kx/CW8=;
+        b=FLIMl43/7O7xx1RgH8hlgUuHXUOuEvDU6OmGycTL9OUqJmYNupRJRSC8gwSt9Foq7z
+         XZBK7Ce8V6f8ds/yvoBXY6zmFsvCd2Mgh3HwlpBBWoVLBswhxxFCu+MbO2VQJM4ikJRS
+         15eYF5/q1tdWuHrsBW5QCji4f4ZykmDtZYtzCOkCEE9mSUKSoSspKWKKZNaW4DghRUeX
+         olbfovU520IcPHS/j35ZedzQN1n0XR5JMbcwt6T/NnTzRUrA8Hcb/SBq77zT4hewwW9b
+         EaPNP1orbUii7U+ZQErTSUZ2k/kLESEWqFfwgGFJu9q7afM1xbR5ZKF8AiXidfHUtT/C
+         vhzw==
+X-Forwarded-Encrypted: i=1; AJvYcCXE3G4Wq9/vvlYJSmZA4SOIfRv1xVHwPd7AnGAtunwTB2DLmdZ3nOs31nF+/o1QH99i/P4Nn6x4s43kLzKzJAlEWrA1
+X-Gm-Message-State: AOJu0Yzd6qKYJPfkriZsgLO3CEorWCTY+pvBTHCzz2o0Mb80JeBx48Ex
+	E/ZzC0V0OrB/3DcHoRGSEf+Y1wD4p/otUrgJezv1zvKteRVe58cjIFty8PRjhjuTuTJPt8pnYxR
+	iNg==
+X-Google-Smtp-Source: AGHT+IE3/b7TziIFxD/Ow4GbbODncedy/vFF/TWvAxQy9bhIZvb4XcWZNu7Rfwpscf/cD7lGXstn93e74+8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:ef02:0:b0:61a:d420:3b3e with SMTP id
+ y2-20020a0def02000000b0061ad4203b3emr805971ywe.5.1713216574591; Mon, 15 Apr
+ 2024 14:29:34 -0700 (PDT)
+Date: Mon, 15 Apr 2024 14:29:32 -0700
+In-Reply-To: <Zh2EQVj5bC0z5R90@tpad>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <xhsmhjzky8tww.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Mime-Version: 1.0
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad> <ZhAN28BcMsfl4gm-@google.com> <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+ <ZhQmaEXPCqmx1rTW@google.com> <Zh2EQVj5bC0z5R90@tpad>
+Message-ID: <Zh2cPJ-5xh72ojzu@google.com>
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Leonardo Bras <leobras@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-Le Mon, Apr 15, 2024 at 06:36:31PM +0200, Valentin Schneider a écrit :
-> On 10/04/24 12:19, Paul E. McKenney wrote:
-> > On Wed, Apr 10, 2024 at 12:30:55PM +0200, Frederic Weisbecker wrote:
-> >> Le Tue, Apr 09, 2024 at 12:53:03PM -0700, Paul E. McKenney a écrit :
-> >> > I am having a hard time getting too excited about the name.  I could
-> >> > suggest CT_RCU_WATCHING_IDX, but that isn't exactly the shortest
-> >> > possible name.
-> >>
-> >> I really like CT_RCU_WATCHING. It says everything. The _IDX isn't even
-> >> needed after all. What do you think?
-> >
-> > Works for me!
-> >
+On Mon, Apr 15, 2024, Marcelo Tosatti wrote:
+> On Mon, Apr 08, 2024 at 10:16:24AM -0700, Sean Christopherson wrote:
+> > On Fri, Apr 05, 2024, Paul E. McKenney wrote:
+> > > Beyond a certain point, we have no choice.  How long should RCU let
+> > > a CPU run with preemption disabled before complaining?  We choose 21
+> > > seconds in mainline and some distros choose 60 seconds.  Android chooses
+> > > 20 milliseconds for synchronize_rcu_expedited() grace periods.
+> > 
+> > Issuing a warning based on an arbitrary time limit is wildly different than using
+> > an arbitrary time window to make functional decisions.  My objection to the "assume
+> > the CPU will enter a quiescent state if it exited a KVM guest in the last second"
+> > is that there are plenty of scenarios where that assumption falls apart, i.e. where
+> > _that_ physical CPU will not re-enter the guest.
+> > 
+> > Off the top of my head:
+> > 
+> >  - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
+> >    will get false positives, and the *new* pCPU will get false negatives (though
+> >    the false negatives aren't all that problematic since the pCPU will enter a
+> >    quiescent state on the next VM-Enter.
+> > 
+> >  - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
+> >    won't re-enter the guest.  And so the pCPU will get false positives until the
+> >    vCPU gets a wake event or the 1 second window expires.
+> > 
+> >  - If the VM terminates, the pCPU will get false positives until the 1 second
+> >    window expires.
+> > 
+> > The false positives are solvable problems, by hooking vcpu_put() to reset
+> > kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
+> > scheduled in on a different pCPU, KVM would hook vcpu_load().
 > 
-> Sounds good to me too, thanks for the suggestion :)
+> Hi Sean,
 > 
-> Now, what about ct_dynticks() & friends? I was about to do:
-> 
-> -static __always_inline int ct_dynticks(void)
-> +static __always_inline int ct_rcu_watching(void)
->  {
-> -	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_DYNTICKS_MASK;
-> +	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_RCU_WATCHING_MASK;
+> So this should deal with it? (untested, don't apply...).
+
+Not entirely.  As I belatedly noted, hooking vcpu_put() doesn't handle the case
+where the vCPU is preempted, i.e. kvm_sched_out() would also need to zero out
+kvm_last_guest_exit to avoid a false positive.  Going through the scheduler will
+note the CPU is quiescent for the current grace period, but after that RCU will
+still see a non-zero kvm_last_guest_exit even though the vCPU task isn't actively
+running.
+
+And snapshotting the VM-Exit time will get false negatives when the vCPU is about
+to run, but for whatever reason has kvm_last_guest_exit=0, e.g. if a vCPU was
+preempted and/or migrated to a different pCPU.
+
+I don't understand the motivation for keeping the kvm_last_guest_exit logic.  My
+understanding is that RCU already has a timeout to avoid stalling RCU.  I don't
+see what is gained by effectively duplicating that timeout for KVM.  Why not have
+KVM provide a "this task is in KVM_RUN" flag, and then let the existing timeout
+handle the (hopefully rare) case where KVM doesn't "immediately" re-enter the guest?
+
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 48f31dcd318a..be90d83d631a 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -477,6 +477,16 @@ static __always_inline void guest_state_enter_irqoff(void)
+>  	lockdep_hardirqs_on(CALLER_ADDR0);
 >  }
-
-Yup!
-
-> 
-> ... but then realised that there's more siblings to the rcu_dynticks*()
-> family;
-
-Ouch right, sorry I forgot there is so much of this namespace. But in case you're
-willing to clean that up:
-
-> 
-> AFAICT dynticks_nesting could also get the rcu_watching prefix treatment,
-> `rcu_dynticks_task_exit() -> rcu_watching_task_exit` doesn't sound as
-
-rcu_tasks_exit() ?
-
-But Paul, is there a reason why check_holdout_task() doesn't check
-ct_dynticks_cpu(task_cpu(t)) instead of maintaining this separate counter?
-
-> obvious though. The rcu_dyntick event probably can't be renamed either.
-
-I think we can rename trace_rcu_dyntick() to trace_rcu_watching()
-
-> 
-> I'm not sure how far to take the renaming; seeing things like:
-> 
->   notrace bool rcu_is_watching(void)
->   {
->           bool ret;
-> 
->           preempt_disable_notrace();
->           ret = !rcu_dynticks_curr_cpu_in_eqs();
->           preempt_enable_notrace();
->           return ret;
->   }
->   EXPORT_SYMBOL_GPL(rcu_is_watching);
-> 
-> makes me think most of the rcu_*dynticks / rcu_*eqs stuff could get an
-> rcu_watching facelift?
-
-The eqs part can stay as-is. But the *dynticks* needs an update.
-
-> 
-> Here are my current considerations for identifiers used in context_tracking
-> in decreasing order of confidence:
-> 
-> | Old                                   | New                                                           |
-> |---------------------------------------+---------------------------------------------------------------|
-> | RCU_DYNTICKS_IDX                      | CT_RCU_WATCHING                                               |
-> | RCU_DYNTICKS_MASK                     | CT_RCU_WATCHING_MASK                                          |
-> | context_tracking.dynticks_nesting     | context_tracking.rcu_watching_nesting                         |
-
-This can be context_tracking.nesting (and yes one day we might need to lock up
-context_tracking.nesting and context_tracking.recursion together in a room and see
-who wins after a day or two).
-
-> | context_tracking.dynticks_nmi_nesting | context_tracking.rcu_watching_nmi_nesting [bit of a mouthful] |
-
-context_tracking.nmi_nesting
-
-> | rcu_dynticks_curr_cpu_in_eqs()        | rcu_watching_curr_cpu() [with an added negation]              |
-
-Nice!
-
-> |---------------------------------------+---------------------------------------------------------------|
-> | TRACE_EVENT_RCU(rcu_dyntick,          | [Can't change?]                                               |
-
-It can change. Officially trace events aren't ABI. Unoficially I wouldn't dare
-changing the sched switch trace event but this one is fine.
-
-> |---------------------------------------+---------------------------------------------------------------|
-> | rcu_dynticks_task_enter()             | rcu_watching_task_enter()> | |
-
-rcu_tasks_enter() ?
-
-> | rcu_dynticks_task_exit()              | rcu_watching_task_exit()                                      |
-
-rcu_tasks_exit() ?
-
-> | rcu_dynticks_task_trace_enter()       | rcu_watching_task_trace_enter()                               |
-
-rcu_tasks_trace_enter()?
-
-> | rcu_dynticks_task_trace_exit()        | rcu_watching_task_trace_exit()                                |
-
-rcu_tasks_trace_exit() ?
-
-Thanks.
-
-> 
-> Thoughts?
+>  
+> +DECLARE_PER_CPU(unsigned long, kvm_last_guest_exit);
+> +
+> +/*
+> + * Returns time (jiffies) for the last guest exit in current cpu
+> + */
+> +static inline unsigned long guest_exit_last_time(void)
+> +{
+> +	return this_cpu_read(kvm_last_guest_exit);
+> +}
+> +
+>  /*
+>   * Exit guest context and exit an RCU extended quiescent state.
+>   *
+> @@ -488,6 +498,9 @@ static __always_inline void guest_state_enter_irqoff(void)
+>  static __always_inline void guest_context_exit_irqoff(void)
+>  {
+>  	context_tracking_guest_exit();
+> +
+> +	/* Keeps track of last guest exit */
+> +	this_cpu_write(kvm_last_guest_exit, jiffies);
+>  }
+>  
+>  /*
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index fb49c2a60200..231d0e4d2cf1 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -110,6 +110,9 @@ static struct kmem_cache *kvm_vcpu_cache;
+>  static __read_mostly struct preempt_ops kvm_preempt_ops;
+>  static DEFINE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
+>  
+> +DEFINE_PER_CPU(unsigned long, kvm_last_guest_exit);
+> +EXPORT_SYMBOL_GPL(kvm_last_guest_exit);
+> +
+>  struct dentry *kvm_debugfs_dir;
+>  EXPORT_SYMBOL_GPL(kvm_debugfs_dir);
+>  
+> @@ -210,6 +213,7 @@ void vcpu_load(struct kvm_vcpu *vcpu)
+>  	int cpu = get_cpu();
+>  
+>  	__this_cpu_write(kvm_running_vcpu, vcpu);
+> +	__this_cpu_write(kvm_last_guest_exit, 0);
+>  	preempt_notifier_register(&vcpu->preempt_notifier);
+>  	kvm_arch_vcpu_load(vcpu, cpu);
+>  	put_cpu();
+> @@ -222,6 +226,7 @@ void vcpu_put(struct kvm_vcpu *vcpu)
+>  	kvm_arch_vcpu_put(vcpu);
+>  	preempt_notifier_unregister(&vcpu->preempt_notifier);
+>  	__this_cpu_write(kvm_running_vcpu, NULL);
+> +	__this_cpu_write(kvm_last_guest_exit, 0);
+>  	preempt_enable();
+>  }
+>  EXPORT_SYMBOL_GPL(vcpu_put);
 > 
