@@ -1,132 +1,124 @@
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E8113DB8A
-	for <rcu@vger.kernel.org>; Tue, 23 Apr 2024 17:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A72113E02B
+	for <rcu@vger.kernel.org>; Tue, 23 Apr 2024 17:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713893183; cv=none; b=GlHNE++b7qJbB6k29sRnJ7rjYrNUD4XwSE9zNfnHtzcbXtZRsqy4BbajMjdqDFBUx9XlGk0lVNdietulG+bGULw3RK8K2We00sMiYaTQRMUhCc423M6cykXzuhZZPgAXFgSQoiMWtbJLDKlWj/XzWqJ3cwDy7kdtgktPVOxO4B4=
+	t=1713895099; cv=none; b=t33n53Db8ujpAmHNY3ZQjGrCnJnExxsuk5KFIW+R/6QATjVAR2vt7zW3V7kHQsO4IoD9SsRmf9tr0+lWs/cNgFE2UDBeUN0wQbgvsZ6YzPCEPWYCS3krC5aWk1Gn8d6NxmDXdg6MEaWD3a6W84d67jsCSj0DdTJwp8ObMVtjfqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713893183; c=relaxed/simple;
-	bh=y/gWDRg5azMor/2Aofxe6N4fri0YGxkZz2pXkN9ffwY=;
+	s=arc-20240116; t=1713895099; c=relaxed/simple;
+	bh=SRmMiVJNHY3dDe641SBcogYA9dhCnTJSpL2O3oo4uHo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LtomoJKXqx1JC1k1S4lQlaPu68PEhTPkYY6ULQBFKiJ+YhO5bFd0p8l3PS5EWArhd4VIO1l3J7S0VYvO3z+ItJPiX6CPv5IL0+T8lxxstceo/t1UcXrd1Vcepcd/53syZRfSzsQjg4fpWMj2IraIhoSnN7P8EcFQCpqvjxOGLdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=hhPWfmTr; arc=none smtp.client-ip=209.85.167.47
+	 To:Cc:Content-Type; b=U1JLDj6KIYYKwprQPYLRhkOf5cAbXHV2EHDeUuYZlgwNFTq82YU5FbbBWJns60UUVNaVQT0Au+2ZVeoak6pB7cVYDFjW473fLQR8WSHJVbZRaRX0WfLG12zPdc5dREcltLCrlxb7ID2Px78MkmuOC2b3YBfZDm+pRPdmOAAU15k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yc3o9Te7; arc=none smtp.client-ip=209.85.208.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="hhPWfmTr"
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d2b9cd69so7311158e87.2
-        for <rcu@vger.kernel.org>; Tue, 23 Apr 2024 10:26:21 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yc3o9Te7"
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2dd7e56009cso32143581fa.3
+        for <rcu@vger.kernel.org>; Tue, 23 Apr 2024 10:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1713893179; x=1714497979; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1713895095; x=1714499895; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4wSZEGJVi5OGysNr5Q/Szri9RMljTd9jL++xzWo19os=;
-        b=hhPWfmTrdLmwQ+mNgHGLcmO0qZwLEMcU3OZR228YDS5sQbWNJx8KKAZ1/XAsDx+QP6
-         FRnl8Kwh7e/DPDTfhbpirfaBGkSiWuiUU+6QqzJeQgNpXXzQECKg6bGPoWb4xxVjrRtZ
-         xY+4uw5zrj8r4qkv5PBSfK00+TO6wucF01c0U=
+        bh=9B8eXcmZ97ONLTtCWWjVm+MKijPPu4vhRh0ro3qBaWQ=;
+        b=yc3o9Te7o1q1T9NuPmYd2xd0TekiavwNYhjAndBweAyG38tJkqf3bObJTtimPaZLr3
+         w2OCYGSigvpKV2eHxl+lh/5Rsh4sIsTEVXsps6d1tD4XdZC3520sIYvTI1LNjC1OQGfN
+         UbgXeFRZq6MVKSjf8l7x64H0JD1IIKWq3hdZU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713893179; x=1714497979;
+        d=1e100.net; s=20230601; t=1713895095; x=1714499895;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4wSZEGJVi5OGysNr5Q/Szri9RMljTd9jL++xzWo19os=;
-        b=AeNx0jE0HlZIF88HCXEJxJuyFzF9ObZM8/E3Ms3LZinue141h8qC+h39R232IAu+sv
-         QcpQtfCepTZpjJU+6i1JU9z52WfWvaKmFB7WNb0+hncAtVrMvNPhWC4RYUy+RChi8vUv
-         4NRX36FR3On99izAdwfh01fLg3/wIupa+RU4yn7f+XPOeP2rfpMZhnDvUmUaYCPjWUJt
-         //CUDkx9uY/M2kBVlCViXyTFJLH5hedave+lfLyQuulb/WqUZ2QvfUauu1hupo+xg/aL
-         rNfzTEfET5RPWZpCs2WOunhDnYdh8a+YJyQym2meMQMz/g07988ytre7W5b3O6bYsH53
-         9ZNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUzjZWy/MNz+0LHr9+wtyXUX3ORCzZJEKf9qssK5ZuwJ5h1M0pqFHz4a3ZTGkygPm6wZ++NsJ9CEl8XlFXcyZddUcms
-X-Gm-Message-State: AOJu0YyOr6XIjXGv6pFdVq8+ON1IfY8UxmXfuWl8fFwghP5qAQv/vDXc
-	Vrn04jpRgdJMH8WLRCbVRNhpJxKQB9OPLO0DU948yYmZIiPAgQhLiK9Bj/00MMW7xDEwM4r4hZz
-	CMTAEVY2eX0CX15YGP68rLI7RBMRJ88r2tpdPHg==
-X-Google-Smtp-Source: AGHT+IFTjidO0k5EKPLIvs7WXJ7O7CNHELrOpC1ZJHG/CmlX8aqmFH/VYBuhcZc+PhjgSlzjogvyqemcBD41ZPsrb/0=
-X-Received: by 2002:a2e:9546:0:b0:2dd:74d3:7ca8 with SMTP id
- t6-20020a2e9546000000b002dd74d37ca8mr5055038ljh.27.1713893179140; Tue, 23 Apr
- 2024 10:26:19 -0700 (PDT)
+        bh=9B8eXcmZ97ONLTtCWWjVm+MKijPPu4vhRh0ro3qBaWQ=;
+        b=uG8osk0fEiSbA1op2CUJjdxLoXen3oIpGqu/JbhLoTpxg4XLS7qwa1kJccdBBzK//c
+         5SDYMe5xVCr3h4+0+FTxNv7zFzK2abHN1ywrrHiz6dIQsmm2se8prbv/iSWeinScAhD4
+         Ff8sk/0zvdgBPOyjq3OiFAfhadqiyhFGA8gSC6DYOLFYSB+t6aLrKUww6rDWk57rv+DH
+         i8UsDoT/e4FQ6GM7ZOeV4YMj0vPjmAABwilvSQkjxtjroGmfVVNzf3odAK2KH/eTNwBR
+         i+j7y0yaD66RAVvlROZgHFwa5NqOmf6JFDpYi3KtjyLVtOhLaMVjN8fliOPhC4b/zBeP
+         pwMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUMSWTn/pnJHERq60zcQkAvo6eY6yPGhyAZEaFYJAf+2/HeK9CrHRw6S37IFuuLu1NUkvqJ9zUf8l+jrNzPlj4mpZa4
+X-Gm-Message-State: AOJu0YwcuxhfwiPe+6LCSbuhXex5nGOI20OllINhUNXuQnA6vs+upvNM
+	OWD/G7qHMY0w0rL8Mp3WcbsVxBecDEE8RbJOFxQmVqRtpgqk6fpFHG7jibUnkBsSqZGEKFwZE1S
+	smDd9gwVliCBLzt8XuBgNgvHTOHrbDY39WhGmjN8qldgiiFXML9Tq8w==
+X-Google-Smtp-Source: AGHT+IEnSc1tfYpb0PQBfoKjTLLEnX1cTm3AcRcS0BsoOJGktTKN63BmrVbfDjW8YbOgCbVr5RVxz5VwqMYdrMi/9nw=
+X-Received: by 2002:a05:651c:c1:b0:2dc:e69a:fdbc with SMTP id
+ 1-20020a05651c00c100b002dce69afdbcmr8450ljr.1.1713895095197; Tue, 23 Apr 2024
+ 10:58:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-12-jiangshanlai@gmail.com>
-In-Reply-To: <20240407090558.3395-12-jiangshanlai@gmail.com>
+References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-4-jiangshanlai@gmail.com>
+In-Reply-To: <20240407090558.3395-4-jiangshanlai@gmail.com>
 From: Joel Fernandes <joel@joelfernandes.org>
-Date: Tue, 23 Apr 2024 13:26:06 -0400
-Message-ID: <CAEXW_YTin=EgjoypCD=eYh-NLRwxbhdr+B-jBO5TpC4qcef2_Q@mail.gmail.com>
-Subject: Re: [PATCH V2 11/11] x86/rcu: Add THUNK rcu_read_unlock_special_thunk
+Date: Tue, 23 Apr 2024 13:58:01 -0400
+Message-ID: <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
+Subject: Re: [PATCH V2 03/11] rcu: Reorder tree_exp.h after tree_plugin.h
 To: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
 	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
 	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hello Lai,
-
-On Sun, Apr 7, 2024 at 5:07=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.co=
+On Sun, Apr 7, 2024 at 5:03=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.co=
 m> wrote:
 >
 > From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 >
-> Add rcu_read_unlock_special_thunk(), so that the inlined rcu_read_unlock(=
-)
-> doesn't need any code to save the caller-saved registers.
->
-> Make rcu_read_unlock() only two instructions in the slow path at the
-> caller site.
+> Enable tree_exp.h using some rcu preempt macros introduced in
+> the next patch. The new macros touch core rcu-preempt fields
+> and are better to be implemented in tree_plugin.h.
 >
 > Cc: "Paul E. McKenney" <paulmck@kernel.org>
 > Cc: Peter Zijlstra <peterz@infradead.org>
 > Cc: Frederic Weisbecker <frederic@kernel.org>
 > Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 > ---
->  arch/x86/entry/thunk.S             | 5 +++++
->  arch/x86/include/asm/rcu_preempt.h | 4 +++-
->  2 files changed, 8 insertions(+), 1 deletion(-)
+>  kernel/rcu/tree.c        | 2 +-
+>  kernel/rcu/tree_plugin.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/x86/entry/thunk.S b/arch/x86/entry/thunk.S
-> index 119ebdc3d362..10c60369a67c 100644
-> --- a/arch/x86/entry/thunk.S
-> +++ b/arch/x86/entry/thunk.S
-> @@ -13,3 +13,8 @@ THUNK preempt_schedule_thunk, preempt_schedule
->  THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
->  EXPORT_SYMBOL(preempt_schedule_thunk)
->  EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
-> +
-> +#ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
-> +THUNK rcu_read_unlock_special_thunk, rcu_read_unlock_special
-> +EXPORT_SYMBOL_GPL(rcu_read_unlock_special_thunk)
-> +#endif /* #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT */
-> diff --git a/arch/x86/include/asm/rcu_preempt.h b/arch/x86/include/asm/rc=
-u_preempt.h
-> index cb25ebe038a5..acdd73b74c05 100644
-> --- a/arch/x86/include/asm/rcu_preempt.h
-> +++ b/arch/x86/include/asm/rcu_preempt.h
-> @@ -97,9 +97,11 @@ static __always_inline bool pcpu_rcu_preempt_count_dec=
-_and_test(void)
->                                __percpu_arg([var]));
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d9642dd06c25..57d1ae26861f 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -5245,6 +5245,6 @@ void __init rcu_init(void)
 >  }
 >
-> +extern asmlinkage void rcu_read_unlock_special_thunk(void);
-> +
->  #define pcpu_rcu_read_unlock_special()                                  =
-       \
->  do {                                                                    =
-       \
-> -       rcu_read_unlock_special();
+>  #include "tree_stall.h"
+> -#include "tree_exp.h"
+>  #include "tree_nocb.h"
+>  #include "tree_plugin.h"
+> +#include "tree_exp.h"
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index b1264096d03a..d899b4afc21c 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -103,6 +103,7 @@ static void __init rcu_bootup_announce_oddness(void)
+>  #ifdef CONFIG_PREEMPT_RCU
+>
+>  static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
+> +static bool sync_rcu_exp_done(struct rcu_node *rnp);
+>  static void rcu_read_unlock_special(struct task_struct *t);
 
-Instead, can you not use __no_caller_saved_registers attribute for
-definition of rcu_read_unlock_special() or does that not work for what
-you're trying to do here?
+OK with me, but not sure if the reordering of header inclusion is
+needed? You could get the same results by just adding declarations of
+the new helpers to tree_exp.h.
 
-Thanks,
+Not sure if tree_plugin.h needs to be included last, I for some reason
+thought it needed to be - but looks like not. I found a thread that
+shed some light into the header file including C code thing as well,
+which may or may not help:
+https://lore.kernel.org/all/8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-la=
+ptop/#t
 
- - Joel
+Thanks.
