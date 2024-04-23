@@ -1,161 +1,95 @@
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A200535DB;
-	Tue, 23 Apr 2024 09:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E8C7FBBF;
+	Tue, 23 Apr 2024 11:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862970; cv=none; b=REsfvcocK/DF95GvH3DNJ357me03DjFE2shmGkObiOr2B7rAFDqT5JSHVTRygxSeHiIVGLGFUlM/BYtalG2KTKEdqsn7yS25tPAA7OCZs626yID+L7iM7IhqdVjwpJ0Mvq/y/N4uztaLYDLzF7vaqXqHbPqMVInmgwZ9kJSel8g=
+	t=1713872028; cv=none; b=Pw8uA9cm0W0pWbSL9WnvmGJqNOiA473/FYCA3+wyXW88IvS1Ktcey8RXOUAst3an93mj+F3GvAUQletz8hzDS0Vbr9gT37PUetjuXGmvIffoW5sGXC4HKVshEf3ydbu0JfrS0//k6MY/KRnBc8hklnJKYmGbWXBVNOZSjS9LDII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862970; c=relaxed/simple;
-	bh=Tf1WAE083iqElmWUjgIU3qiP70v7umc//U+zy4dFFjw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JjyZMdUObff9i9O5nd5dQUIXPHv1X2cSeuj12ouCAcb61wOsvwKZ2m/+3bl1R11LNCeLuEk7k4xe9mehPOjAjtJK0AvRyJ9jk1xz8aNwVwoipTj5STSQH3HRhwEN/zV1Xo0dKxqEdgj5OOnzubDTkNJ5JDUpt/DQIemvJg3eJH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0W+v8/c; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1713872028; c=relaxed/simple;
+	bh=cC5/q/rDAJvbVMbrF1YBegWAnIa9bk1DnKTjp39vagY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VSsYJco78MWDmC2pIJhUP9lMgh1CbeOjZdH6qD+LR52WtFqnl+bGvdBFThti8VMdQRJkWGTHIZLCl8KKkuoUVk0syEx6Wt1Uk4KL1sz0Isesv1yxEzS/TS6NxTDfdoi3ptkepmUDwdl0XBgaS7sbvV9uSaBxSqG7HIcvkRXuzqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zo692RAm; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0W+v8/c"
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ae6c8745ffso802684a91.2;
-        Tue, 23 Apr 2024 02:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713862968; x=1714467768; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BXsOnG+unFLFOLCvhsKIlfWgz2bxnXfsLh7JooJSg6o=;
-        b=V0W+v8/cOLxU3jH/RQyn2sz/K7z2CWF4V6XxFi+NOhXaXCYcEk7iERWbWuVoIdzQqA
-         CkySKC/vvqtsVq8MJf9ieU8a1YPvmSp6A91VItbqHvTXst6KQxYdRTdg4JE52O15HJKq
-         zY3Sd54/Xa+jvADHeryDXkJNZDOB5TXGf9mDHSkdWMlegmhkIA00tI/a9jZVeuw1fVrI
-         MBh7R31n2F5oY5TAfFWh7eXDArFrrpN2lxdfEeQ0aI8bAw+00fpOl0f9jr0QC329PX/N
-         8yYzxu36phfm+F4sUKEUQrUgn+rtbcX53aqXQOjimjF1JBAomx91AxwCudb4fcuz2Fac
-         zYpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713862968; x=1714467768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BXsOnG+unFLFOLCvhsKIlfWgz2bxnXfsLh7JooJSg6o=;
-        b=daq8BQWQxdPDr0V+jxNTs3ufQ77AnXrwKXjcL6xLg1TYivd//uLEkIUtkZo7ES20/u
-         XPWp7p3VLNnJwVAADba4VG8QoeqAcNs4lcxGbVqvq6d15NUQtecqOdUTl/7Dv0LOlf8G
-         4pN8ou6oJlGQ+FQngBIGlIusLRKIS+GczHpUl+ns1sZ9y0MHkUa1Q9XdIOd4zgYL4F/u
-         NCH5oir8z3odEGLw27NetMSpSIic4aa45xPbCpddTn+5JxmY4hHMri9CNI36R361yVtl
-         v3iH1CR6fOEke8ZEtBdeWQQVoL/YZNgp8QVIgo+LhVsBgEg9MICFCFuqy7qGmrfYXXch
-         x+RA==
-X-Forwarded-Encrypted: i=1; AJvYcCV1m1j5kyYDbjyRo8QaeQ87QJrwLEOVZ7B7BelF/hCs8g9V455AHYikxbbwNZ6jekkQlxbR0mAHTIJ7mkr+yLaHCenB
-X-Gm-Message-State: AOJu0Yw5VzZZYUNYCbFohTTAMIlgsVrKsAW5qHXJJO5p8BGJZdVPpt+a
-	DW2M1VfQAMjKMMcNVuofsZ+gkJFq4Zzc3QW1W35QHzcXQjciq1asnPqXQzo3NV5MK1vadP+MRc9
-	zqtqSDGAfmU4BKBiI+7/cNC0yugo=
-X-Google-Smtp-Source: AGHT+IH6xJKCgpblnzG46n84QQ0mtRzKqpyXpmK/5Twj2PbdrB/ocRSHnvU7H4hol4gFBTRZ1F+F9NHe/J6n2w/pAls=
-X-Received: by 2002:a17:90a:5310:b0:2a2:97ce:24f5 with SMTP id
- x16-20020a17090a531000b002a297ce24f5mr12622248pjh.35.1713862968530; Tue, 23
- Apr 2024 02:02:48 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zo692RAm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609C9C116B1;
+	Tue, 23 Apr 2024 11:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713872027;
+	bh=cC5/q/rDAJvbVMbrF1YBegWAnIa9bk1DnKTjp39vagY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Zo692RAmsm1vLjhATemvFORhpgACbgV41af4TnLMOJADX9uv7UclWmvlJ+vvu2/wl
+	 o4tPRRJwNcLM0RAwdvldUp070gZPcWK5b+pOfcY1Ulj7yx6loKa1w3dJUzAQyoX2bc
+	 Zl259Nko9SuGT++XfEWLwD4XSIkVPsR9CHrPZZZQzUyZQULDmBM0JCKSvU8sOC/bjD
+	 AxFNkXugtAGl5qUbrAPUlVZC9NgzTtEVRw8Xe4frygrr4EWj/61NP5IfOtj4utOS27
+	 IsxGQOv/9XWMGr36zBeg8WQPijI3c1zsvwTKARs1lW/2UveoNvffDSqMdFF24PnLs7
+	 T94gAUNSvHpQA==
+Date: Tue, 23 Apr 2024 13:33:44 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org,
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Uros Bizjak <ubizjak@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, Nadav Amit <namit@vmware.com>,
+	Breno Leitao <leitao@debian.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
+Message-ID: <ZiecmBdOwHaaMufg@localhost.localdomain>
+References: <20240328075318.83039-1-jiangshanlai@gmail.com>
+ <20240328075318.83039-10-jiangshanlai@gmail.com>
+ <ZiZEcBEvK8NOQvwU@localhost.localdomain>
+ <CAJhGHyBMYDWbRYp86wBu3x6Ry8HM2yiZxNv_WATwhzV+OO+ZFA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328075318.83039-1-jiangshanlai@gmail.com>
- <20240328075318.83039-10-jiangshanlai@gmail.com> <ZiZEcBEvK8NOQvwU@localhost.localdomain>
-In-Reply-To: <ZiZEcBEvK8NOQvwU@localhost.localdomain>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Tue, 23 Apr 2024 17:02:35 +0800
-Message-ID: <CAJhGHyBMYDWbRYp86wBu3x6Ry8HM2yiZxNv_WATwhzV+OO+ZFA@mail.gmail.com>
-Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Uros Bizjak <ubizjak@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Nadav Amit <namit@vmware.com>, 
-	Breno Leitao <leitao@debian.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>, Nikolay Borisov <nik.borisov@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhGHyBMYDWbRYp86wBu3x6Ry8HM2yiZxNv_WATwhzV+OO+ZFA@mail.gmail.com>
 
-Hello, Frederic
-
-Thanks for reviewing.
-
-On Mon, Apr 22, 2024 at 7:05=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
-l.org> wrote:
-
-> > +
-> > +/* We use the MSB mostly because its available */
->
-> I think you can safely remove the "We " from all the comments :-)
-
-The file is mainly copied from arch/x86/include/asm/preempt.h.
-I will rephrase sentences in later iterations.
-
->
-> > +#define RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED  0x80000000
->
-> How about RCU_PREEMPT_UNLOCK_FASTPATH ?
-
-
-I'm not good at naming. But the MSB really means exactly the opposite
-of current->rcu_read_unlock_special and I think "UNLOCK_SPECIAL_INVERTED"
-fits the meaning.
-
->
-> > +
-> > +/*
-> > + * We use the RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED bit as an inverted
-> > + * current->rcu_read_unlock_special.s such that a decrement hitting 0
-> > + * means we can and should call rcu_read_unlock_special().
-> > + */
-> > +#define RCU_PREEMPT_INIT     (0 + RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED)
->
-> Or simply:
->
-> #define RCU_PREEMPT_INIT     RCU_PREEMPT_UNLOCK_FASTPATH
->
-> Or you can even remove RCU_PREEMPT_INIT and use RCU_PREEMPT_UNLOCK_FASTPA=
-TH directly.
-
-"0" means the initial rcu_preempt_count is 0 for the initial task.
-
-> > +
-> > +#endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
-> > +
-> > +#endif /* __ASM_RCU_PREEMPT_H */
-> > diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.=
-c
-> > index ba8cf5e9ce56..0b204a649442 100644
-> > --- a/arch/x86/kernel/cpu/common.c
-> > +++ b/arch/x86/kernel/cpu/common.c
-> > @@ -1992,9 +1992,10 @@ static __init int setup_clearcpuid(char *arg)
-> >  __setup("clearcpuid=3D", setup_clearcpuid);
+Le Tue, Apr 23, 2024 at 05:02:35PM +0800, Lai Jiangshan a écrit :
+> Hello, Frederic
+> 
+> Thanks for reviewing.
+> 
+> On Mon, Apr 22, 2024 at 7:05 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> 
+> > > +
+> > > +/* We use the MSB mostly because its available */
 > >
-> >  DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) =3D {
-> > -     .current_task   =3D &init_task,
-> > -     .preempt_count  =3D INIT_PREEMPT_COUNT,
-> > -     .top_of_stack   =3D TOP_OF_INIT_STACK,
-> > +     .current_task           =3D &init_task,
-> > +     .preempt_count          =3D INIT_PREEMPT_COUNT,
-> > +     .top_of_stack           =3D TOP_OF_INIT_STACK,
-> > +     .rcu_preempt_count      =3D RCU_PREEMPT_INIT,
->
-> #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT ?
->
-> Thanks.
-
-Fixed in V2:
-https://lore.kernel.org/lkml/20240407090558.3395-1-jiangshanlai@gmail.com/
-
-Thanks
-Lai
-
->
->
-> >  };
-> >  EXPORT_PER_CPU_SYMBOL(pcpu_hot);
-> >  EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
-> > --
-> > 2.19.1.6.gb485710b
+> > I think you can safely remove the "We " from all the comments :-)
+> 
+> The file is mainly copied from arch/x86/include/asm/preempt.h.
+> I will rephrase sentences in later iterations.
+> 
 > >
+> > > +#define RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED  0x80000000
+> >
+> > How about RCU_PREEMPT_UNLOCK_FASTPATH ?
+> 
+> 
+> I'm not good at naming. But the MSB really means exactly the opposite
+> of current->rcu_read_unlock_special and I think "UNLOCK_SPECIAL_INVERTED"
+> fits the meaning.
+
+Right but I tend to think a constant should tell what something is, not what
+something is not.
+
+FWIW, p->rcu_read_unlock_special could even be renamed to p->rcu_read_unlock_slowpath
+
+Thanks.
