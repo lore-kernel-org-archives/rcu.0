@@ -1,136 +1,133 @@
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BDADDD7;
-	Wed, 24 Apr 2024 02:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132C68F47;
+	Wed, 24 Apr 2024 02:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713926837; cv=none; b=HCEwtVxplBjC0hJj+Dje0Wsh9Rr49Eq4TR5UQBbqaLyCC/oi28qkQ8kxTxIBVX+SrlPycjt9uID20uVgp+iMTKGMWw9TkgUIwLJc/qY8hhgDkNwW5aPzsSQPUmV2meiaXr7Q65IljqOlWgDBE1S6g8w/8m3Mf5rl52sFskYsUj8=
+	t=1713927224; cv=none; b=M6aQxjup4gaTJ4jRfcS0zk+F+z+0VJmYeWJW6rIHXFaTWJ22x5IwHrwJRGcAwIygRFlchTYkWmm2tbOoYRThjxAUnX1P+vpMjkROXshpUa21cMY3zt990ALcSvpG54lvfogbfk/NVUvwqkEAvBAqZnL625FkYZ3v8N3h7h0N4mA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713926837; c=relaxed/simple;
-	bh=aW9QjOZxUq1CXz5OPtMFqXBshrzsl24lbOThqhik7eQ=;
+	s=arc-20240116; t=1713927224; c=relaxed/simple;
+	bh=yTCwB5MKwpTb9TeIS1+gfR/A4L8mMnu2aKsPl0GCDSA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rgyjfXERmFlMsprTrw7R2B+LDNVpBDelMia/pNz07eBUL2nLGK6iCXM7oDAE/ZOgy8WmC5hzMjU59BDUeGBWg61dxY6zy4mEF2yP5cjEerxMHxh91SW5XaVUpLsSRhMznXf6h2v/7XKRHNNHGuyV9T4hL2eVqaN5JhWGmhvzaF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJ1jgSca; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=I5PMTKafusSaU18az0f3ukwP9sPBxDztzq3nwTyMm8OuvQ86KVKiLz1e7YPFuSkJRhiDv8gH+4kXVxKOVGrGUDKiWRfSHligVJsYlxUfhE+ipRZmHBFABWnvecR7g64jQpDYNyjPgx+cLhoZxYIojTuX/ky0vItbHncTV89HKTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dUxePWuK; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJ1jgSca"
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a78c2e253aso5039396a91.3;
-        Tue, 23 Apr 2024 19:47:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dUxePWuK"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6f07de6ab93so5977539b3a.2;
+        Tue, 23 Apr 2024 19:53:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713926835; x=1714531635; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713927222; x=1714532022; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HXkLM1FkKW7lL5+iv6VksWN76QjCOZFWNl9wI9RaxME=;
-        b=EJ1jgScaAnIkBVR62GS3kZTnt8HgB0f6WTmKb+IX7eZ83AzhHKcSq1srwTDHvgSMxY
-         VBMRWcwxAJg0+HqJIxA+Fk4x6gLLSzoiv6cnnHInKnOcC2aBf6D0B8BavJCyC6B3namv
-         PAIUF3Cw4VC8olX9eaF8fdIdPJOtSEvYK5nKBKkMCjdo9x2XduI40dYT5nPW6DlaLYbQ
-         0xArKkhN3xMoNWLQIOoCpvjcGrhEsSXqanZqp8LhglO1WVjbNzmkoPg2Rjrc1UIdkiVo
-         +KrHIuqcTotvxyvxCNlhU0YWrjQj71EOU2aA5fnFOXVxHeQhywDEFHs29bJ/3oLaqTCj
-         Ki0A==
+        bh=TmqU0PrGd+2IylBkSE4S0tLQ+pmhWNt4mrMys0RAJYA=;
+        b=dUxePWuKWvnSAjVODpa5LgFO+cWfxMypOZ8i5fypb4IgDLf7vIz5csaGjpLcrR82uN
+         keUhijRsK3581771Mbve6O+AsQbbccDYbhiEIqC8N25+61THMJ+ckbGE3REOoRitzW+v
+         1t8wMgYXVD4vBtCyShBT5eHx33MlAKkM/PkOcls3nEH0siF0kONfBGMfmQ55XCNGgwcV
+         jdzMY0GgygJyIYKv0jDDANmv1Kr4jRIZPqM+oNkwSLmeYqsGAxSbDVX4yNSC8g+ecMwt
+         XfcQlIUz7l7bJaVXCEUUtbgQzn4nSamRZrRKuqyvZqAqm24teh9M3dm5klRikDtbSWVH
+         pZ/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713926835; x=1714531635;
+        d=1e100.net; s=20230601; t=1713927222; x=1714532022;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HXkLM1FkKW7lL5+iv6VksWN76QjCOZFWNl9wI9RaxME=;
-        b=o8ApYNe93QZoWqizpaNKWLWovmb+ddLtMpYRWszlCEkIik5h8PFHq9Tgz2SYmkzcrw
-         yeqylh5/SuPS5P0IkaPnpFJF2bvwacK3+YlITVh9jScbRqvzj9GrW7cWFga6C6sIPPq8
-         Mk8xsPhVcKQrVuOwMxuozKGQ5GMD6oNzhqvHbmAxgHaSXXEdaUq/gxSr7dynvNC92hUl
-         I/P94v89Iyt5zx6kMpiEoh156XwRcDIL1Ytx74HMU/OfctFi83OK5J9E3iVYzlTfBL4j
-         u1Ia8p6tmcPwCV6RjC91qjUEC2CBK/35NN/ZatgcM11I39m445Ag8XJ4jS+5ylvD/QkG
-         deHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVwgOoXQPMfg0rNMacz6yFizIZyjNwzSsqRej35KmE5XfVEcRYaWbvCLv7WbMlk3FEGOeR/3ax0FmUne5TXSvJdK9IU
-X-Gm-Message-State: AOJu0YyCnV4uQ5Km0DjaEOYR9LNUFWtKN52vBsu0guExUH0j90pfTWi8
-	7jj2AuKe3PnjkhR3Xf3aViqoQqcCpzzhAZ7naYKxFu57UUoHP6vaKPySQiYgvtQj3tNQ88aaeWN
-	Fu7ymcrIgvLRUIj/WnaAbc3N1snc=
-X-Google-Smtp-Source: AGHT+IF7B6IXhe6a4ebfZwzaKW3gv0klAJb12GGo4Nk4A7NGsGQwWr4sW20qyiqsST9CEu+82Inmukj+01hI6yO5mVU=
-X-Received: by 2002:a17:90b:3448:b0:2a4:ca45:ded1 with SMTP id
- lj8-20020a17090b344800b002a4ca45ded1mr999701pjb.28.1713926835270; Tue, 23 Apr
- 2024 19:47:15 -0700 (PDT)
+        bh=TmqU0PrGd+2IylBkSE4S0tLQ+pmhWNt4mrMys0RAJYA=;
+        b=Nuopk5gVFnTTJujBFDP6KNAC5No2ySB/0t/OOv+d1SmQCc1QUfX80V50d1fVLYW8+H
+         Rn/7o/gl2BlohwBDSC7zDcyOjMUOMDuWojuhHWiqC62AMy8iLJ7xy2UGo47mK/hVN2b9
+         oeacMhjbaRM1DpFsFjPyG2o+WpuuZmc8tMA2BcZdl6LD86d06BbfQCabzxCKmdlgbOfB
+         j6jLY4fIPP8mN5hjyCZ1EN5dNx/nmSmyhgGS6fi32sCFLM23bUnM8zyx6tJTXxFLc9+N
+         O0utjjYiqb2ilaHLGSvJOeJ5l5A4RcFKOQog5yYSOxN57z6cVNRxNYKclBiHbJwPpfDN
+         nfEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHncSzbcNWsJT1ZeRwA0HPXjfNbTb77s6Zw07/uyQNQ+XFgvTSQNK6WuE/yHyTIMc/D7puiobaTb7KjdtZU/B7Jl1n
+X-Gm-Message-State: AOJu0YxboyV4gcGLkfc2T5rTr+TryLmXxKjv0cp9SoAjqImBooNctPU3
+	BD8aChW9OvW+vqltSk+JCMpDqySxPhGXGt/MD1Ixpk2WXJGS9YtdEZxjKmsR8kLNzIQMGWAvgv8
+	4Y/hLnrzBY7smoNR0B70rR2c/BKY=
+X-Google-Smtp-Source: AGHT+IG+oc+vtI2bjeexO0jUWY9BDO/Wzwjc+RFH/CqhS6s0BkmVLznukrPZ3u6NgMcMqxbtUvmBpjx7vr4WHCb1uNU=
+X-Received: by 2002:a05:6a21:6802:b0:1aa:5fb4:87ff with SMTP id
+ wr2-20020a056a21680200b001aa5fb487ffmr1262636pzb.14.1713927222330; Tue, 23
+ Apr 2024 19:53:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-4-jiangshanlai@gmail.com>
- <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
-In-Reply-To: <CAEXW_YRjuWMLvmZ_oVHEe837gPAyjBs5OMvZc=T1PXYB0apNmQ@mail.gmail.com>
+References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-11-jiangshanlai@gmail.com>
+ <CAEXW_YQUuGazgpLbERz7Y3nOq5nEkR+kx_Us9E30x1diiE2-eQ@mail.gmail.com>
+In-Reply-To: <CAEXW_YQUuGazgpLbERz7Y3nOq5nEkR+kx_Us9E30x1diiE2-eQ@mail.gmail.com>
 From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Wed, 24 Apr 2024 10:47:03 +0800
-Message-ID: <CAJhGHyDrUu6g1J=ebVCUZDZBbL0FX0RZ-D6sPufs+Ek8_fkcSA@mail.gmail.com>
-Subject: Re: [PATCH V2 03/11] rcu: Reorder tree_exp.h after tree_plugin.h
+Date: Wed, 24 Apr 2024 10:53:30 +0800
+Message-ID: <CAJhGHyDyvUcXruA+kum_QPn-2pB1j+WjS-HyGCFJ8dYpW_vQFw@mail.gmail.com>
+Subject: Re: [PATCH V2 10/11] x86/rcu: Add rcu_preempt_count
 To: Joel Fernandes <joel@joelfernandes.org>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
 	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
 	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Uros Bizjak <ubizjak@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Breno Leitao <leitao@debian.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>, Nikolay Borisov <nik.borisov@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 1:58=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
+On Wed, Apr 24, 2024 at 2:09=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
 org> wrote:
 >
-> On Sun, Apr 7, 2024 at 5:03=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.=
+> On Sun, Apr 7, 2024 at 5:06=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.=
 com> wrote:
 > >
 > > From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 > >
-> > Enable tree_exp.h using some rcu preempt macros introduced in
-> > the next patch. The new macros touch core rcu-preempt fields
-> > and are better to be implemented in tree_plugin.h.
+> > Implement PCPU_RCU_PREEMPT_COUNT for x86.
+> > Mainly copied from asm/preempt.h
+> >
+> > Make rcu_read_[un]lock() inlined for rcu-preempt.
+>
+> Changelog is wrong. You inlined rcu_read_[un]lock in previous patch,
+> not this one?
+
+The previous patch just adds the non-arch framework code. The incline only
+happens when CONFIG_PCPU_RCU_PREEMPT_COUNT=3Dy.  This patch implements
+PCPU_RCU_PREEMPT_COUNT for x86, so rcu_read_[un]lock() was not made inlined
+for x86 for rcu-preempt until this patch.
+
+Thanks
+Lai
+
+>
+> - Joel
+>
+> > Make rcu_read_lock() only one instruction.
+> > Make rcu_read_unlock() only two instructions in the fast path.
 > >
 > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
 > > Cc: Peter Zijlstra <peterz@infradead.org>
 > > Cc: Frederic Weisbecker <frederic@kernel.org>
 > > Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 > > ---
-> >  kernel/rcu/tree.c        | 2 +-
-> >  kernel/rcu/tree_plugin.h | 1 +
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >  arch/x86/Kconfig                   |   1 +
+> >  arch/x86/include/asm/current.h     |   3 +
+> >  arch/x86/include/asm/rcu_preempt.h | 107 +++++++++++++++++++++++++++++
+> >  arch/x86/kernel/cpu/common.c       |   4 ++
+> >  4 files changed, 115 insertions(+)
+> >  create mode 100644 arch/x86/include/asm/rcu_preempt.h
 > >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index d9642dd06c25..57d1ae26861f 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -5245,6 +5245,6 @@ void __init rcu_init(void)
-> >  }
-> >
-> >  #include "tree_stall.h"
-> > -#include "tree_exp.h"
-> >  #include "tree_nocb.h"
-> >  #include "tree_plugin.h"
-> > +#include "tree_exp.h"
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index b1264096d03a..d899b4afc21c 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -103,6 +103,7 @@ static void __init rcu_bootup_announce_oddness(void=
-)
-> >  #ifdef CONFIG_PREEMPT_RCU
-> >
-> >  static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
-> > +static bool sync_rcu_exp_done(struct rcu_node *rnp);
-> >  static void rcu_read_unlock_special(struct task_struct *t);
->
-> OK with me, but not sure if the reordering of header inclusion is
-> needed? You could get the same results by just adding declarations of
-> the new helpers to tree_exp.h.
-
-The new macros (in later patch) touch core rcu-preempt fields
-and are better to be implemented in tree_plugin.h.
-
->
-> Not sure if tree_plugin.h needs to be included last, I for some reason
-> thought it needed to be - but looks like not. I found a thread that
-> shed some light into the header file including C code thing as well,
-> which may or may not help:
-> https://lore.kernel.org/all/8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-=
-laptop/#t
->
-> Thanks.
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 4fff6ed46e90..e805cac3763d 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -256,6 +256,7 @@ config X86
+> >         select HAVE_OBJTOOL                     if X86_64
+> >         select HAVE_OPTPROBES
+> >         select HAVE_PAGE_SIZE_4KB
+> > +       select HAVE_PCPU_RCU_PREEMPT_COUNT
+> >         select HAVE_PCSPKR_PLATFORM
+> >         select HAVE_PERF_EVENTS
+> >         select HAVE_PERF_EVENTS_NMI
