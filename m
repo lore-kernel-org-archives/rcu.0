@@ -1,147 +1,168 @@
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43A213E418
-	for <rcu@vger.kernel.org>; Tue, 23 Apr 2024 18:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC5A28DDA;
+	Wed, 24 Apr 2024 02:43:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713896391; cv=none; b=BlhRx7pKpUkGGWQDfoLsyxvQQDj8GSL6qbRIvelyyWhkgoBAcbcVbn8WZDTKzUEnkeVJw9E5Q0s/rw4nbhCjh1tkJyJEgcXixnCiSHFCo3FCf7tRw/GaDlUiy4Rw5kJGOCNJZNGmqzb0hg3x9TpJKDTFPg4KuNR35/oQMrmIyzo=
+	t=1713926599; cv=none; b=jmy2vUoB1wnsoIyjZ8s5xTTF90fw3tV0nC8iBr4CsyTV4ZAQa9xojSpvvNB9HG6H+bsqhqCrQUkJ6nOH+/jV8L25/3m27u0n9NDHC4x4h0TtG9H5cLd1mTxDV2OiE5LC8zo/5dW6USvlgv580ZQGb8DQ0JfLerA9riAK6YNhcrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713896391; c=relaxed/simple;
-	bh=oVSimOQFOxbjRp8F5hqap+KnKU7S2Ifth8z3iypX9Io=;
+	s=arc-20240116; t=1713926599; c=relaxed/simple;
+	bh=QZR2aHS7+AW6lzCqR7AodE3BpdZxWXr/i2FA4YX8x1g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=beWHM9rJJARN2MShUWcvn4YRzifZr6ClRDe/xdLsg2Im2/DRFpZ905PHyCIMfVS/8DHBZBvUvTYp7A95vIwZVj0jNhy1x3KFmDsTzas1qT7zyt5r0H1Oq/+fe558IjU+ip3Oiu4p1f68kG8Qq5tHP5ehXCbQrf28xqJ4JjYFFKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=kH2vBiAo; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	 To:Cc:Content-Type; b=Jk4BulAqxIfV85+MVr2aDcexRPU+gwCVohDorywVKPgkKbZzNNInqq9zzHP3wCnaRghQWzbAWUhuIzspcppRkwYcYsKRRU9KydOApPSUBrYDDsGfS848KJsqc7ohj6N47rvgrWG4Jl69mZNwf6a2eIrUxZ9GWuscgPe5AlcTUwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cy0TP06p; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="kH2vBiAo"
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2db17e8767cso77607841fa.3
-        for <rcu@vger.kernel.org>; Tue, 23 Apr 2024 11:19:49 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cy0TP06p"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6f2f6142d64so2373854b3a.2;
+        Tue, 23 Apr 2024 19:43:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1713896388; x=1714501188; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713926598; x=1714531398; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1o4Xoxam1hucE10zqLFgiDlF1FTTCxVt5NXIsVs9D4Y=;
-        b=kH2vBiAoYU4I4a48nQMOxkXSNcaplP9TKYcmePi0pFFTRWn+ClHS7k5hpv6TGZBW4R
-         jd1bcvwh46gheYUW3HMzyIItZTxijysKjdvTZxA+gYFcvisXd6cgRKS/8xdAoOAoH0Rj
-         sFe/Fwuec3Q28btGnEBJrqeNYo+L72qfXZDXI=
+        bh=cU+Gx/Z2QqbJeW/dEu6ETFyj9ZvH8Y+qoiAfHayNmPo=;
+        b=Cy0TP06pE/XW3Hn5UGhJOZALv+I30bb0ICUFoQd1aCxLbpZULnp8X+9RjJZXFE4wnD
+         C+5rexJJzBcGeAi/EK+3zZUd18eucEtDFCLnVrmCv/6ZT2yi4wdT8dh1iGy5ENtFgyZT
+         kYYNqij0CsTLXhTJ3I4h40mFAATHURI3oR41B9AYzCFFhcpe5Aga8Xnl1z20pcoGsckm
+         cWfoj7PgRUXRqNGT9SWeiw6j7WC+X9+6OZ5e5nAOTfLTAzGEY5vefuyQLp4MkxTkusfP
+         oi/Qs/yPMtUzO+5RWu1gehK3deBMs2bZ4xJqV3MtGHp3dsPro1Q+aTk6fVUbq5pxDl/I
+         lzrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713896388; x=1714501188;
+        d=1e100.net; s=20230601; t=1713926598; x=1714531398;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1o4Xoxam1hucE10zqLFgiDlF1FTTCxVt5NXIsVs9D4Y=;
-        b=HRPBDNoMN+lNmHGeiXlpUZH26UVXaBs2cqwdwphu+zMegJuefdS3rIwjXWonlqQI2F
-         yztBovzSdBzvBJr2owxbzZrwtv8zaW0Aoiepfm94UWKowJCUdMEdvTT1iL41KQ4h03Ya
-         TI4Npc1zA9Ve7Vnsu5Nw0JGQjm3jTeEhR7fwpH51qhvnAXARki/ZVric7rjdV1l6u6mb
-         RvEUw1In31T5uc2JinysH6E96lmsrCBbBTIRGBEQVVf4K2unY2XgdhJMCMaruAa97wIl
-         cEqfbbpjYcaVkhsbwXTeFKlc1a3B/HW7fOnBDNLBvQuZRSOsQxl7ir69DjMhMJesA1F4
-         GcaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWoD+RuD2Fy+hS0G59BMyCtGyWAQkNrP+fBOgJb7tM2x05WzB1wq5pgz8dzsYZ+sDJbsVhoIUNh+Ga57xgwurIVz4ep
-X-Gm-Message-State: AOJu0YyNjYS7mSYlscu+So7OD5yqN41AlTX2JN9ZJzgVQwptTUi/DgSa
-	AyL9fV9lJ+DzxOk+3wvhmM2ZdGoCh8zbJ5wKw0Qpga+ROpFqrYBIj88wnNzEbSAar8vzy2/VEoU
-	JRm+rt7UqXN9kDu8+51uee9S+DHuFGjeElV2R2Q==
-X-Google-Smtp-Source: AGHT+IEqhp8XrGJRoCvx3+YvYSEU09Kqd1S0AecrGPcXF71jLcBWLddQs2Xp/bjZ7Va6KcTLbDUrBNYTg2rIllmPXDM=
-X-Received: by 2002:a2e:868e:0:b0:2d7:10a1:481e with SMTP id
- l14-20020a2e868e000000b002d710a1481emr31854lji.31.1713896387696; Tue, 23 Apr
- 2024 11:19:47 -0700 (PDT)
+        bh=cU+Gx/Z2QqbJeW/dEu6ETFyj9ZvH8Y+qoiAfHayNmPo=;
+        b=KUowtbsZOFxt6eBEnOLqgcOWgFUF4Ul2LcC1ELf5s6V+qBaGoeANtoQnsYP2J4Xsum
+         823T61ohkf3YJnmHJtqIDueww/BQHffLX4DBYBJmuFdRWWSMiuIpNyMuztm3MSBSX/Ta
+         psXYxih4nf7QIgwYfjTPVGfQowYZkEguajAh0B4qE8zMLLUfLfedgADJAT7R054i9wZz
+         ifa8nwpBFW8nhrXv/JKmD1m4KKBa7ggazZ2Wowfc5JkAzUbJQDgxAWLMd7uk/MEX7S8L
+         ByX/rKf3q1PNPTlsPEngVj/uDiiLX8gpdY42tevSoHLpg7NDdFc0IE617hkpCslPwCKS
+         pPSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXKhbQTBsbIadPcTRbI/gnPuvGHetUDTw/+pclMYw/qBGeeS/i7wFvOX+PbDmrl6gK/a5v/oV0sk0Ovdy7G6e4EcXyl
+X-Gm-Message-State: AOJu0YwWDfP7erZXsauoNMNDe1v+hCJPMUJKMiZTh5nAt7t2pH6PT9aH
+	t1ZDngn+cmeuAApm53sNIIsBIjjfWXQuFS3a2IiKHQ2z7++LXuoUBmAenMTAlQWjLlayiJ+Y0TR
+	aDPlkLwyt2tNcRfuDr6PUujHNDEY=
+X-Google-Smtp-Source: AGHT+IFWC3huiok3Xjq2wWSe14p16VQxgpQU2Bl2Ka2eNo+7MVrOPBf2lCicJmLbYr5P2vcUYO6F85fCFzlUEu5fbAo=
+X-Received: by 2002:a05:6a20:d412:b0:1a9:eeef:f6b3 with SMTP id
+ il18-20020a056a20d41200b001a9eeeff6b3mr1040126pzb.53.1713926597666; Tue, 23
+ Apr 2024 19:43:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-10-jiangshanlai@gmail.com>
-In-Reply-To: <20240407090558.3395-10-jiangshanlai@gmail.com>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Tue, 23 Apr 2024 14:19:34 -0400
-Message-ID: <CAEXW_YSz8xD4WXO0dOyKC6X7BZeqMD2TOCm0=43=owLjJj=PVA@mail.gmail.com>
-Subject: Re: [PATCH V2 09/11] rcu: Implement PCPU_RCU_PREEMPT_COUNT framework
-To: Lai Jiangshan <jiangshanlai@gmail.com>
+References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-12-jiangshanlai@gmail.com>
+ <CAEXW_YTin=EgjoypCD=eYh-NLRwxbhdr+B-jBO5TpC4qcef2_Q@mail.gmail.com>
+In-Reply-To: <CAEXW_YTin=EgjoypCD=eYh-NLRwxbhdr+B-jBO5TpC4qcef2_Q@mail.gmail.com>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Wed, 24 Apr 2024 10:43:05 +0800
+Message-ID: <CAJhGHyBt8y46i9fkpCDS720khgZQhRD5NTfsW2X0U41Edcc=FA@mail.gmail.com>
+Subject: Re: [PATCH V2 11/11] x86/rcu: Add THUNK rcu_read_unlock_special_thunk
+To: Joel Fernandes <joel@joelfernandes.org>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
 	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
 	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Zqiang <qiang.zhang1211@gmail.com>
+	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 7, 2024 at 5:04=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.co=
-m> wrote:
+On Wed, Apr 24, 2024 at 1:26=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
 >
-> From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+> Hello Lai,
 >
-> When the arch code provides HAVE_PCPU_RCU_PREEMPT_COUNT and the
-> corresponding functions, rcu core uses the functions to implement
-> rcu_preempt_depth(), special bits, switching and so on.
+> On Sun, Apr 7, 2024 at 5:07=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.=
+com> wrote:
+> >
+> > From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+> >
+> > Add rcu_read_unlock_special_thunk(), so that the inlined rcu_read_unloc=
+k()
+> > doesn't need any code to save the caller-saved registers.
+> >
+> > Make rcu_read_unlock() only two instructions in the slow path at the
+> > caller site.
+> >
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+> > ---
+> >  arch/x86/entry/thunk.S             | 5 +++++
+> >  arch/x86/include/asm/rcu_preempt.h | 4 +++-
+> >  2 files changed, 8 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/entry/thunk.S b/arch/x86/entry/thunk.S
+> > index 119ebdc3d362..10c60369a67c 100644
+> > --- a/arch/x86/entry/thunk.S
+> > +++ b/arch/x86/entry/thunk.S
+> > @@ -13,3 +13,8 @@ THUNK preempt_schedule_thunk, preempt_schedule
+> >  THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+> >  EXPORT_SYMBOL(preempt_schedule_thunk)
+> >  EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
+> > +
+> > +#ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
+> > +THUNK rcu_read_unlock_special_thunk, rcu_read_unlock_special
+> > +EXPORT_SYMBOL_GPL(rcu_read_unlock_special_thunk)
+> > +#endif /* #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT */
+> > diff --git a/arch/x86/include/asm/rcu_preempt.h b/arch/x86/include/asm/=
+rcu_preempt.h
+> > index cb25ebe038a5..acdd73b74c05 100644
+> > --- a/arch/x86/include/asm/rcu_preempt.h
+> > +++ b/arch/x86/include/asm/rcu_preempt.h
+> > @@ -97,9 +97,11 @@ static __always_inline bool pcpu_rcu_preempt_count_d=
+ec_and_test(void)
+> >                                __percpu_arg([var]));
+> >  }
+> >
+> > +extern asmlinkage void rcu_read_unlock_special_thunk(void);
+> > +
+> >  #define pcpu_rcu_read_unlock_special()                                =
+         \
+> >  do {                                                                  =
+         \
+> > -       rcu_read_unlock_special();
 >
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
-> ---
->  include/linux/rcupdate.h | 33 +++++++++++++++++++++++++++++++++
->  kernel/rcu/Kconfig       |  8 ++++++++
->  kernel/rcu/rcu.h         |  4 ++++
->  kernel/rcu/tree_plugin.h |  8 ++++++++
->  4 files changed, 53 insertions(+)
+> Instead, can you not use __no_caller_saved_registers attribute for
+> definition of rcu_read_unlock_special() or does that not work for what
+> you're trying to do here?
 >
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 328667ae8086..e3e5ce44c7dc 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -70,6 +70,8 @@ static inline bool same_state_synchronize_rcu(unsigned =
-long oldstate1, unsigned
->
->  void rcu_read_unlock_special(void);
->
-> +#ifndef CONFIG_PCPU_RCU_PREEMPT_COUNT
-> +
->  void __rcu_read_lock(void);
->  void __rcu_read_unlock(void);
->
-> @@ -81,6 +83,37 @@ void __rcu_read_unlock(void);
->   */
->  #define rcu_preempt_depth() READ_ONCE(current->rcu_read_lock_nesting)
->  #define rcu_preempt_depth_set(val) WRITE_ONCE(current->rcu_read_lock_nes=
-ting, (val))
-> +#define pcpu_rcu_preempt_special_set() do { } while (0)
-> +#define pcpu_rcu_preempt_special_clear() do { } while (0)
-> +
-> +#else /* #ifndef CONFIG_PCPU_RCU_PREEMPT_COUNT */
-> +
-> +#include <asm/rcu_preempt.h>
-> +
-> +static __always_inline void __rcu_read_lock(void)
-> +{
-> +       pcpu_rcu_preempt_count_add(1);
-> +       barrier();
-> +}
-> +
-> +static __always_inline void __rcu_read_unlock(void)
-> +{
-> +       barrier();
-> +       if (unlikely(pcpu_rcu_preempt_count_dec_and_test()))
-> +               pcpu_rcu_read_unlock_special();
-> +}
 
-Previous code had comments about the barrier(); , can you add back
-those comments?
+I think it is paramount to make it the same as preempt_schedule[_thunk]()
+when it comes to avoiding the caller-saving-registers-procedures in the
+unlock paths.
 
-Also there was a compiler barrier in the body of the if() as well?
+I had no idea of 'no_caller_saved_registers' before, so I haven't tried it.
 
-For reference:
+And there are limits to 'no_caller_saved_registers' either:
 
-void __rcu_read_unlock(void)
-{
-        struct task_struct *t =3D current;
+https://clang.llvm.org/docs/AttributeReference.html#no-caller-saved-registe=
+rs:
 
-        barrier();  // critical section before exit code.
-        if (rcu_preempt_read_exit() =3D=3D 0) {
-                barrier();  // critical-section exit before .s check.
-                if (unlikely(READ_ONCE(t->rcu_read_unlock_special.s)))
-                        rcu_read_unlock_special(t);
-        }
+Functions specified with the =E2=80=98no_caller_saved_registers=E2=80=99 at=
+tribute
+should only call other functions with the =E2=80=98no_caller_saved_register=
+s=E2=80=99
+attribute, or should be compiled with the =E2=80=98-mgeneral-regs-only=E2=
+=80=99 flag
+to avoid saving unused non-GPR registers.
+
+https://gcc.gnu.org/onlinedocs/gcc/x86-Function-Attributes.html#index-no_00=
+5fcaller_005fsaved_005fregisters-function-attribute_002c-x86:
+
+Since GCC doesn=E2=80=99t preserve SSE, MMX nor x87 states, the GCC option
+-mgeneral-regs-only should be used to compile functions with
+no_caller_saved_registers attribute.
+
+And I don't think =E2=80=98-mgeneral-regs-only=E2=80=99 is being used in th=
+e kernel for x86.
+
+Thanks
+Lai
