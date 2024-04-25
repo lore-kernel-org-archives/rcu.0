@@ -1,31 +1,30 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55FB014C5A7;
-	Thu, 25 Apr 2024 14:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2827314A4F0;
+	Thu, 25 Apr 2024 14:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714054729; cv=none; b=SQwZQhBNZfwhOENNPUAKmxNcY/AlL4CvPSfP65sPzLwsUa9rO+lm6PAyHZAFAZUkdd3MTmbar/L2sY26LLp78IVs3aioDA1pmM38D1+Vj+I7tmBkK7HDYLU+0M6kIP+SwJwY8znWoRVKOYhXCCmC8DVqKSrLsmCrO8u9J2ZxErM=
+	t=1714055050; cv=none; b=FdQvw/wOCigWr1h3kcc1wZLWHz0E8KH3BdiSORNa6C1ZMKMWK7YDpyh+Ggn8lvmG5DAkougOFQ3Z4vGGt7ByDTqiybNVmXfl5YjCpgDPt0cJ/Y4TBLhjFjxulnhtBie2MFWM48gKwa2lcTASHbBc4dWvxE83Kuu79/8sN8FkbIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714054729; c=relaxed/simple;
-	bh=MvxRoCeeXZvIfMVE4DvQvwRjqjqxuplSAuThQ2Dcnrk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XV09dbzwsl/n1z+cSPUcrnYSDzGkOTxKb3wEfDF2T5VAS+lwtkma3YbWYOe7hN/+qy2nT6VYW4oJ5LCyOHbrSWdKBmg7xWrzCLhwJUeNpZ+Vfwy+QQKMtk8U0R1xFeMx95aGPgWT9+swbBF4sr5eij8wRX049nqb7Jny4j1zGvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+HiHCy+; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1714055050; c=relaxed/simple;
+	bh=qva/6Fv0XiO0LVG9iIShXhoXPvI6LttQFZoNgfBI9Wc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eNOWYDVkl+h5ptM0xUUeu2q8va14/poN5PuEiak3AOP0fnZBY0BPEskbUcorP6te27KGzVzIRbTByioDOsomVZ7VijOTI5rYFmpq+It83b18IGkdvlnXqwpX2R6f11AMvav6AIWaO4d7RQVUatw5EcZen1gp9a8/HjDPX3XS4gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pkilc+Ep; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+HiHCy+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F463C2BD10;
-	Thu, 25 Apr 2024 14:18:47 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pkilc+Ep"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C49C4AF07;
+	Thu, 25 Apr 2024 14:24:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714054729;
-	bh=MvxRoCeeXZvIfMVE4DvQvwRjqjqxuplSAuThQ2Dcnrk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=g+HiHCy+T8F1J6ImNH4nZyM4JsFHrWhNIoefTyPL0g1kmLHcLDJowuVoqc8sjFjTH
-	 1/pJypYvOvZ1iNrnKIyFi03Un9KYn9pJSUwezDp8o+vHJpBgcgXjKrjOlksr0aoOWr
-	 BMqZUOAlCMgeUj+1AjJD8m1tZxpI/bGNqD1DP1boSAJPnvYQALjuewFoVnX+NXzea5
-	 hz3Pg1k0zbizkJDQPsdaSqfQz57rgcAhij1NbToGZWlgX08/qi3nmh/yk8GjKSlPBm
-	 frVN7Qu6zQOAy6w16cPSwfHnMxfuNVS4IrznAynZOfAeVzHmOagk0OVPnAu3ITsw//
-	 NweGS3WuTTQcQ==
+	s=k20201202; t=1714055049;
+	bh=qva/6Fv0XiO0LVG9iIShXhoXPvI6LttQFZoNgfBI9Wc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Pkilc+EpkcWQdwLo3gpgV/koXF1h9fzPEGqTYN0rhyyVNZUyoA8ZSlMaFTPJJiwdf
+	 Wkd7a1QjB7DKiySvEnqENW2Qd1LiNzheBIHXexjOxpfVVkY8920iW1vV/HcGdvLSg0
+	 f70qLcebEFokvH2Mbdp+kJrTeXS0dlNG4SQLLv/lQOhVYVBoxjdWpShTjLDr73dwhp
+	 2csY/pZ1wp/jb2usZ2dRj5CRquofRPOVsh4+tmgZ/y+lfwGaWNK7YhWd8eVPpkYFRE
+	 d3eGjgN5gMR2sAkDxKkG0nixNP+T2GFFvVqTfvBc3sZWIyM3BDVOxp7pC3yANrrrOT
+	 YSMJG0UsS1T4Q==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -35,13 +34,14 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>
-Subject: [PATCH 4/4] rcu/nocb: Remove buggy bypass lock contention mitigation
-Date: Thu, 25 Apr 2024 16:18:35 +0200
-Message-ID: <20240425141835.19776-5-frederic@kernel.org>
+	rcu <rcu@vger.kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: [PATCH] Revert "rcu-tasks: Fix synchronize_rcu_tasks() VS zap_pid_ns_processes()"
+Date: Thu, 25 Apr 2024 16:24:04 +0200
+Message-ID: <20240425142404.19927-1-frederic@kernel.org>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240425141835.19776-1-frederic@kernel.org>
-References: <20240425141835.19776-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,132 +50,120 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The bypass lock contention mitigation assumes there can be at most
-2 contenders on the bypass lock, following this scheme:
+This reverts commit 28319d6dc5e2ffefa452c2377dd0f71621b5bff0. The race
+it fixed was subject to conditions that don't exist anymore since:
 
-1) One kthread takes the bypass lock
-2) Another one spins on it and increment the contended counter
-3) A third one (a bypass enqueuer) sees the contended counter on and
-  busy loops waiting on it to decrement.
+	1612160b9127 ("rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks")
 
-However this assumption is wrong. There can be only one CPU to find the
-lock contended because call_rcu() (the bypass enqueuer) is the only
-bypass lock acquire site that may not already hold the NOCB lock
-beforehand, all the other sites must first contend on the NOCB lock.
-Therefore step 2) is impossible.
-
-The other problem is that the mitigation assumes that contenders all
-belong to the same rdp CPU, which is also impossible for a raw spinlock.
-In theory the warning could trigger if the enqueuer holds the bypass
-lock and another CPU flushes the bypass queue concurrently but this is
-prevented from all flush users:
-
-1) NOCB kthreads only flush if they successfully _tried_ to lock the
-   bypass lock. So no contention management here.
-
-2) Flush on callbacks migration happen remotely when the CPU is offline.
-   No concurrency against bypass enqueue.
-
-3) Flush on deoffloading happen either locally with IRQs disabled or
-   remotely when the CPU is not yet online. No concurrency against
-   bypass enqueue.
-
-4) Flush on barrier entrain happen either locally with IRQs disabled or
-   remotely when the CPU is offline. No concurrency against
-   bypass enqueue.
-
-For those reasons, the bypass lock contention mitigation isn't needed
-and is even wrong. Remove it but keep the warning reporting a contended
-bypass lock on a remote CPU, to keep unexpected contention awareness.
+This latter commit removes the use of SRCU that used to cover the
+RCU-tasks blind spot on exit between the tasklist's removal and the
+final preemption disabling. The task is now placed instead into a
+temporary list inside which voluntary sleeps are accounted as RCU-tasks
+quiescent states. This would disarm the deadlock initially reported
+against PID namespace exit.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.h      |  1 -
- kernel/rcu/tree_nocb.h | 32 ++++++--------------------------
- 2 files changed, 6 insertions(+), 27 deletions(-)
+ include/linux/rcupdate.h |  2 --
+ kernel/pid_namespace.c   | 17 -----------------
+ kernel/rcu/tasks.h       | 16 +++-------------
+ 3 files changed, 3 insertions(+), 32 deletions(-)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index affcb92a358c..fcf2b4aa3441 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -223,7 +223,6 @@ struct rcu_data {
- 	struct swait_queue_head nocb_state_wq; /* For offloading state changes */
- 	struct task_struct *nocb_gp_kthread;
- 	raw_spinlock_t nocb_lock;	/* Guard following pair of fields. */
--	atomic_t nocb_lock_contended;	/* Contention experienced. */
- 	int nocb_defer_wakeup;		/* Defer wakeup of nocb_kthread. */
- 	struct timer_list nocb_timer;	/* Enforce finite deferral. */
- 	unsigned long nocb_gp_adv_time;	/* Last call_rcu() CB adv (jiffies). */
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 808c9a19fe1d..3ce30841119a 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -91,8 +91,7 @@ module_param(nocb_nobypass_lim_per_jiffy, int, 0);
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 8470a85f6563..be450a3477be 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -209,7 +209,6 @@ void synchronize_rcu_tasks_rude(void);
  
- /*
-  * Acquire the specified rcu_data structure's ->nocb_bypass_lock.  If the
-- * lock isn't immediately available, increment ->nocb_lock_contended to
-- * flag the contention.
-+ * lock isn't immediately available, perform minimal sanity check.
+ #define rcu_note_voluntary_context_switch(t) rcu_tasks_qs(t, false)
+ void exit_tasks_rcu_start(void);
+-void exit_tasks_rcu_stop(void);
+ void exit_tasks_rcu_finish(void);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ #define rcu_tasks_classic_qs(t, preempt) do { } while (0)
+@@ -218,7 +217,6 @@ void exit_tasks_rcu_finish(void);
+ #define call_rcu_tasks call_rcu
+ #define synchronize_rcu_tasks synchronize_rcu
+ static inline void exit_tasks_rcu_start(void) { }
+-static inline void exit_tasks_rcu_stop(void) { }
+ static inline void exit_tasks_rcu_finish(void) { }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+ 
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index 7ade20e95232..20a0b3ceb064 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -248,24 +248,7 @@ void zap_pid_ns_processes(struct pid_namespace *pid_ns)
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		if (pid_ns->pid_allocated == init_pids)
+ 			break;
+-		/*
+-		 * Release tasks_rcu_exit_srcu to avoid following deadlock:
+-		 *
+-		 * 1) TASK A unshare(CLONE_NEWPID)
+-		 * 2) TASK A fork() twice -> TASK B (child reaper for new ns)
+-		 *    and TASK C
+-		 * 3) TASK B exits, kills TASK C, waits for TASK A to reap it
+-		 * 4) TASK A calls synchronize_rcu_tasks()
+-		 *                   -> synchronize_srcu(tasks_rcu_exit_srcu)
+-		 * 5) *DEADLOCK*
+-		 *
+-		 * It is considered safe to release tasks_rcu_exit_srcu here
+-		 * because we assume the current task can not be concurrently
+-		 * reaped at this point.
+-		 */
+-		exit_tasks_rcu_stop();
+ 		schedule();
+-		exit_tasks_rcu_start();
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+ 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 445561ee4d22..8c9538b555e3 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -858,7 +858,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ //	not know to synchronize with this RCU Tasks grace period) have
+ //	completed exiting.  The synchronize_rcu() in rcu_tasks_postgp()
+ //	will take care of any tasks stuck in the non-preemptible region
+-//	of do_exit() following its call to exit_tasks_rcu_stop().
++//	of do_exit() following its call to exit_tasks_rcu_finish().
+ // check_all_holdout_tasks(), repeatedly until holdout list is empty:
+ //	Scans the holdout list, attempting to identify a quiescent state
+ //	for each task on the list.  If there is a quiescent state, the
+@@ -1220,7 +1220,7 @@ void exit_tasks_rcu_start(void)
+  * Remove the task from the "yet another list" because do_exit() is now
+  * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
   */
- static void rcu_nocb_bypass_lock(struct rcu_data *rdp)
- 	__acquires(&rdp->nocb_bypass_lock)
-@@ -100,29 +99,12 @@ static void rcu_nocb_bypass_lock(struct rcu_data *rdp)
- 	lockdep_assert_irqs_disabled();
- 	if (raw_spin_trylock(&rdp->nocb_bypass_lock))
- 		return;
--	atomic_inc(&rdp->nocb_lock_contended);
-+	/*
-+	 * Contention expected only when local enqueue collide with
-+	 * remote flush from kthreads.
-+	 */
- 	WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
--	smp_mb__after_atomic(); /* atomic_inc() before lock. */
- 	raw_spin_lock(&rdp->nocb_bypass_lock);
--	smp_mb__before_atomic(); /* atomic_dec() after lock. */
--	atomic_dec(&rdp->nocb_lock_contended);
+-void exit_tasks_rcu_stop(void)
++void exit_tasks_rcu_finish(void)
+ {
+ 	unsigned long flags;
+ 	struct rcu_tasks_percpu *rtpcp;
+@@ -1231,22 +1231,12 @@ void exit_tasks_rcu_stop(void)
+ 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 	list_del_init(&t->rcu_tasks_exit_list);
+ 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
 -}
--
+ 
 -/*
-- * Spinwait until the specified rcu_data structure's ->nocb_lock is
-- * not contended.  Please note that this is extremely special-purpose,
-- * relying on the fact that at most two kthreads and one CPU contend for
-- * this lock, and also that the two kthreads are guaranteed to have frequent
-- * grace-period-duration time intervals between successive acquisitions
-- * of the lock.  This allows us to use an extremely simple throttling
-- * mechanism, and further to apply it only to the CPU doing floods of
-- * call_rcu() invocations.  Don't try this at home!
+- * Contribute to protect against tasklist scan blind spot while the
+- * task is exiting and may be removed from the tasklist. See
+- * corresponding synchronize_srcu() for further details.
 - */
--static void rcu_nocb_wait_contended(struct rcu_data *rdp)
+-void exit_tasks_rcu_finish(void)
 -{
--	WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
--	while (WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended)))
--		cpu_relax();
+-	exit_tasks_rcu_stop();
+-	exit_tasks_rcu_finish_trace(current);
++	exit_tasks_rcu_finish_trace(t);
  }
  
- /*
-@@ -510,7 +492,6 @@ static bool rcu_nocb_try_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
- 	}
+ #else /* #ifdef CONFIG_TASKS_RCU */
+ void exit_tasks_rcu_start(void) { }
+-void exit_tasks_rcu_stop(void) { }
+ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU */
  
- 	// We need to use the bypass.
--	rcu_nocb_wait_contended(rdp);
- 	rcu_nocb_bypass_lock(rdp);
- 	ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
- 	rcu_segcblist_inc_len(&rdp->cblist); /* Must precede enqueue. */
-@@ -1631,12 +1612,11 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 
- 	sprintf(bufw, "%ld", rsclp->gp_seq[RCU_WAIT_TAIL]);
- 	sprintf(bufr, "%ld", rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
--	pr_info("   CB %d^%d->%d %c%c%c%c%c%c F%ld L%ld C%d %c%c%s%c%s%c%c q%ld %c CPU %d%s\n",
-+	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%c%s%c%s%c%c q%ld %c CPU %d%s\n",
- 		rdp->cpu, rdp->nocb_gp_rdp->cpu,
- 		nocb_next_rdp ? nocb_next_rdp->cpu : -1,
- 		"kK"[!!rdp->nocb_cb_kthread],
- 		"bB"[raw_spin_is_locked(&rdp->nocb_bypass_lock)],
--		"cC"[!!atomic_read(&rdp->nocb_lock_contended)],
- 		"lL"[raw_spin_is_locked(&rdp->nocb_lock)],
- 		"sS"[!!rdp->nocb_cb_sleep],
- 		".W"[swait_active(&rdp->nocb_cb_wq)],
 -- 
 2.44.0
 
