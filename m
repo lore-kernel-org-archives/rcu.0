@@ -1,47 +1,70 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2827314A4F0;
-	Thu, 25 Apr 2024 14:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADB725777;
+	Sat, 27 Apr 2024 00:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714055050; cv=none; b=FdQvw/wOCigWr1h3kcc1wZLWHz0E8KH3BdiSORNa6C1ZMKMWK7YDpyh+Ggn8lvmG5DAkougOFQ3Z4vGGt7ByDTqiybNVmXfl5YjCpgDPt0cJ/Y4TBLhjFjxulnhtBie2MFWM48gKwa2lcTASHbBc4dWvxE83Kuu79/8sN8FkbIE=
+	t=1714179409; cv=none; b=NXMNGUkE1iXMsDhC58E5p8QOoN4r6nXOgwH4ZcAFdkyrLy6Cj3CiPPwURW93kaS4ofBo/lqiQYtzWGb2IC6foG+avohKtDFHw0GFCDGlEksbDnHeJS5a+6wN4cCOgdW7JjqWbuPbVNSQXK1csrsMRDmvQDlyB4gtAOocyZ5qcnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714055050; c=relaxed/simple;
-	bh=qva/6Fv0XiO0LVG9iIShXhoXPvI6LttQFZoNgfBI9Wc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eNOWYDVkl+h5ptM0xUUeu2q8va14/poN5PuEiak3AOP0fnZBY0BPEskbUcorP6te27KGzVzIRbTByioDOsomVZ7VijOTI5rYFmpq+It83b18IGkdvlnXqwpX2R6f11AMvav6AIWaO4d7RQVUatw5EcZen1gp9a8/HjDPX3XS4gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pkilc+Ep; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1714179409; c=relaxed/simple;
+	bh=GnDwmsqjw2gFexBSuJVJeSDwlc8LJOSAPfHh9x1k0TE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h5T9YoSYTW5KumG15hMElGPIsygs1SbZaRD2JUFz8jJShKcmbgvg669oxytGiaSPIm3iCgRV0RHzOOtYaFgwqhDmXXsUd2vcNchZLKtlBExVv2xEQcDS7NMujvgYnGcnclYjSOXKJo1HAAyxuMemHZgcW8ccKpDmkWRf110eoWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FGwFRBVL; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pkilc+Ep"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C49C4AF07;
-	Thu, 25 Apr 2024 14:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714055049;
-	bh=qva/6Fv0XiO0LVG9iIShXhoXPvI6LttQFZoNgfBI9Wc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Pkilc+EpkcWQdwLo3gpgV/koXF1h9fzPEGqTYN0rhyyVNZUyoA8ZSlMaFTPJJiwdf
-	 Wkd7a1QjB7DKiySvEnqENW2Qd1LiNzheBIHXexjOxpfVVkY8920iW1vV/HcGdvLSg0
-	 f70qLcebEFokvH2Mbdp+kJrTeXS0dlNG4SQLLv/lQOhVYVBoxjdWpShTjLDr73dwhp
-	 2csY/pZ1wp/jb2usZ2dRj5CRquofRPOVsh4+tmgZ/y+lfwGaWNK7YhWd8eVPpkYFRE
-	 d3eGjgN5gMR2sAkDxKkG0nixNP+T2GFFvVqTfvBc3sZWIyM3BDVOxp7pC3yANrrrOT
-	 YSMJG0UsS1T4Q==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH] Revert "rcu-tasks: Fix synchronize_rcu_tasks() VS zap_pid_ns_processes()"
-Date: Thu, 25 Apr 2024 16:24:04 +0200
-Message-ID: <20240425142404.19927-1-frederic@kernel.org>
-X-Mailer: git-send-email 2.44.0
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FGwFRBVL"
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1eb24e3a2d9so8807105ad.1;
+        Fri, 26 Apr 2024 17:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714179407; x=1714784207; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R1VmVx/gXU8t7Rr/1hp4WucPVLLCCjDl+7oy93oAoNA=;
+        b=FGwFRBVLoklOcjab11V7OFvhhzuR/ot4IptOeXXN9zgW1+9EkpLR/x05PJ3LesPchZ
+         bCP+EKFrJ/T4ivnEBhgmyoYxXc7HagtueeCBwDvbp9m3MzCilIOmnRM+Raa5w/mQXlAk
+         9aF9MdK1aaHMEBFKN/4FGBrdZgmPhHrb2sG31G58PV/Zv5eIEXoQ2fhuQyrKc/4O1nU4
+         E0oZ+HK8VgisB6Xz8iAMLh+0rcU9ejzhlyLFcT/9nt1aI4uJppVpZhDR2akywCyfNUp7
+         Rh6rNjJE4CVdRBObtBrJ7gJF/7Zcj5LRPthU/lwTdyeMrHnVzDbOi1G/XjKFWRv7vgQo
+         WkmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714179407; x=1714784207;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R1VmVx/gXU8t7Rr/1hp4WucPVLLCCjDl+7oy93oAoNA=;
+        b=Fsqo1KcJ27s705QUAr3jUqfj6qBzqxsNQfgOZYThXyvwOrscQgUvLfS3zQM0qYmYvn
+         m6NRepdW5d0qvqRbnFxRXu7Fjd0E33PfeXMsKdraHgVreifwdcItNcRjZHHoT96YcyVV
+         duvNKAKb9M7WrYooKuj0ehA/4PJpv6DXuIYXuJp8JMG7PvMYUBkZmDyusyN/qC/iH2QK
+         dJVVPJsv8Ke3wRKjK6E+QIPckjHxwwNAfPY8ni3wyvUcs4KMVA2Z+wmCI6KjBT/Fx1k0
+         LPomQ2kB0R+x+0RU9eVLANA+RxZoAtWY9YySB9/RVRUt/cMu0JrQtnFWyLsLCDzMpAga
+         AMUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLVRn4EG7PUSfc/d9mwnYCb/xXDbLcC4d1ZJfsqnh1RJmzlT3HmGHf3YRzmzjrQyfPflLdKSGUhzbcBtJ6eUKxKXYA
+X-Gm-Message-State: AOJu0Yyc/dd1QDt6RWmtbSsc6ERTut5QkbWcj8gsq4bcVuEKyuRKsUYy
+	gBPzyY2z/sqjRXe3C4zsl95aJWZLMsWsqi+JNwDzuUYm0mjv4adnJ41G4VtZ
+X-Google-Smtp-Source: AGHT+IEuVHn3L7YCYGc8lyexE5wSS3enuQd1OF24X1QYCkhQvikdYwbmp88ie3iTFEmPjThszvKYiQ==
+X-Received: by 2002:a17:902:778a:b0:1e5:4f5:7fa7 with SMTP id o10-20020a170902778a00b001e504f57fa7mr4022755pll.21.1714179406933;
+        Fri, 26 Apr 2024 17:56:46 -0700 (PDT)
+Received: from localhost.localdomain (140-211-169-189-openstack.osuosl.org. [140.211.169.189])
+        by smtp.gmail.com with ESMTPSA id t2-20020a170902a5c200b001e26d572f9esm16018476plq.242.2024.04.26.17.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 17:56:46 -0700 (PDT)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	paulmck@kernel.org,
+	frederic@kernel.org,
+	boqun.feng@gmail.com,
+	joel@joelfernandes.org,
+	neeraj.upadhyay@amd.com,
+	qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org,
+	lance@osuosl.org
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] x86/rcutorture move CONFIG_HYPERVISOR_GUEST to kvm-test-1-run.sh
+Date: Sat, 27 Apr 2024 00:56:26 +0000
+Message-Id: <20240427005626.1365935-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -50,120 +73,45 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This reverts commit 28319d6dc5e2ffefa452c2377dd0f71621b5bff0. The race
-it fixed was subject to conditions that don't exist anymore since:
+CONFIG_HYPERVISOR_GUEST is a x86 specific kernel option, move to
+kvm-test-1-run.sh to avoid ConfigFragment.diags in non-x86 platforms.
 
-	1612160b9127 ("rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks")
+Tested in both PPC VM of Open Source lab of Oregon State University and
+local x86_64 server.
 
-This latter commit removes the use of SRCU that used to cover the
-RCU-tasks blind spot on exit between the tasklist's removal and the
-final preemption disabling. The task is now placed instead into a
-temporary list inside which voluntary sleeps are accounted as RCU-tasks
-quiescent states. This would disarm the deadlock initially reported
-against PID namespace exit.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options")
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 ---
- include/linux/rcupdate.h |  2 --
- kernel/pid_namespace.c   | 17 -----------------
- kernel/rcu/tasks.h       | 16 +++-------------
- 3 files changed, 3 insertions(+), 32 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 4 ++++
+ tools/testing/selftests/rcutorture/configs/rcu/CFcommon  | 1 -
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 8470a85f6563..be450a3477be 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -209,7 +209,6 @@ void synchronize_rcu_tasks_rude(void);
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index b33cd8753689..75774bc70be7 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -68,6 +68,10 @@ config_override_param "--gdb options" KcList "$TORTURE_KCONFIG_GDB_ARG"
+ config_override_param "--kasan options" KcList "$TORTURE_KCONFIG_KASAN_ARG"
+ config_override_param "--kcsan options" KcList "$TORTURE_KCONFIG_KCSAN_ARG"
+ config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_ARG"
++if uname -a | grep -q x86
++then
++	config_override_param "x86 specific option" KcList "CONFIG_HYPERVISOR_GUEST=y"
++fi
+ cp $T/KcList $resdir/ConfigFragment
  
- #define rcu_note_voluntary_context_switch(t) rcu_tasks_qs(t, false)
- void exit_tasks_rcu_start(void);
--void exit_tasks_rcu_stop(void);
- void exit_tasks_rcu_finish(void);
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
- #define rcu_tasks_classic_qs(t, preempt) do { } while (0)
-@@ -218,7 +217,6 @@ void exit_tasks_rcu_finish(void);
- #define call_rcu_tasks call_rcu
- #define synchronize_rcu_tasks synchronize_rcu
- static inline void exit_tasks_rcu_start(void) { }
--static inline void exit_tasks_rcu_stop(void) { }
- static inline void exit_tasks_rcu_finish(void) { }
- #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
- 
-diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
-index 7ade20e95232..20a0b3ceb064 100644
---- a/kernel/pid_namespace.c
-+++ b/kernel/pid_namespace.c
-@@ -248,24 +248,7 @@ void zap_pid_ns_processes(struct pid_namespace *pid_ns)
- 		set_current_state(TASK_INTERRUPTIBLE);
- 		if (pid_ns->pid_allocated == init_pids)
- 			break;
--		/*
--		 * Release tasks_rcu_exit_srcu to avoid following deadlock:
--		 *
--		 * 1) TASK A unshare(CLONE_NEWPID)
--		 * 2) TASK A fork() twice -> TASK B (child reaper for new ns)
--		 *    and TASK C
--		 * 3) TASK B exits, kills TASK C, waits for TASK A to reap it
--		 * 4) TASK A calls synchronize_rcu_tasks()
--		 *                   -> synchronize_srcu(tasks_rcu_exit_srcu)
--		 * 5) *DEADLOCK*
--		 *
--		 * It is considered safe to release tasks_rcu_exit_srcu here
--		 * because we assume the current task can not be concurrently
--		 * reaped at this point.
--		 */
--		exit_tasks_rcu_stop();
- 		schedule();
--		exit_tasks_rcu_start();
- 	}
- 	__set_current_state(TASK_RUNNING);
- 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 445561ee4d22..8c9538b555e3 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -858,7 +858,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- //	not know to synchronize with this RCU Tasks grace period) have
- //	completed exiting.  The synchronize_rcu() in rcu_tasks_postgp()
- //	will take care of any tasks stuck in the non-preemptible region
--//	of do_exit() following its call to exit_tasks_rcu_stop().
-+//	of do_exit() following its call to exit_tasks_rcu_finish().
- // check_all_holdout_tasks(), repeatedly until holdout list is empty:
- //	Scans the holdout list, attempting to identify a quiescent state
- //	for each task on the list.  If there is a quiescent state, the
-@@ -1220,7 +1220,7 @@ void exit_tasks_rcu_start(void)
-  * Remove the task from the "yet another list" because do_exit() is now
-  * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
-  */
--void exit_tasks_rcu_stop(void)
-+void exit_tasks_rcu_finish(void)
- {
- 	unsigned long flags;
- 	struct rcu_tasks_percpu *rtpcp;
-@@ -1231,22 +1231,12 @@ void exit_tasks_rcu_stop(void)
- 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
- 	list_del_init(&t->rcu_tasks_exit_list);
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
--}
- 
--/*
-- * Contribute to protect against tasklist scan blind spot while the
-- * task is exiting and may be removed from the tasklist. See
-- * corresponding synchronize_srcu() for further details.
-- */
--void exit_tasks_rcu_finish(void)
--{
--	exit_tasks_rcu_stop();
--	exit_tasks_rcu_finish_trace(current);
-+	exit_tasks_rcu_finish_trace(t);
- }
- 
- #else /* #ifdef CONFIG_TASKS_RCU */
- void exit_tasks_rcu_start(void) { }
--void exit_tasks_rcu_stop(void) { }
- void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
- #endif /* #else #ifdef CONFIG_TASKS_RCU */
- 
+ base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+index 0e92d85313aa..cf0387ae5358 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+@@ -1,6 +1,5 @@
+ CONFIG_RCU_TORTURE_TEST=y
+ CONFIG_PRINTK_TIME=y
+-CONFIG_HYPERVISOR_GUEST=y
+ CONFIG_PARAVIRT=y
+ CONFIG_KVM_GUEST=y
+ CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
 -- 
-2.44.0
+2.34.1
 
