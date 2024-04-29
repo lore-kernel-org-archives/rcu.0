@@ -1,142 +1,87 @@
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24ED12AAC8;
-	Mon, 29 Apr 2024 17:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB9F13AA3E;
+	Mon, 29 Apr 2024 18:57:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714413092; cv=none; b=clvlNZ5ZYcHYsySRr0RvV8wy7CtXxl2qGnwnaabJhaP2yl/HCCWseSqvQruYgULdU7J/vXHpj2IQNhvhcso4SkKIQmFpnLBHiaqZgaigDkozvlGyJpaQVXN9rpXK60FUHbliT4+dktEwoW52a8Z2cM3bmH6S6rfwcDBJme5re7U=
+	t=1714417033; cv=none; b=NCVRn0vR0DXpyYs8iNwIJC1kJ5xCIstqz5B0G/rUPid3nwIo9EQebWaXA5fC6adnlokPxej03CsnCA6Fo5Am6Uxv5GQwjM2VBqk4IYDP1TiD/CKgMunN9IOU67AuK5iZH4EHrpbi1+XPPZLkj+yx8sA9gB7ZZGgPLvX1GrCTnQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714413092; c=relaxed/simple;
-	bh=t19PgdJpK6QrPLPRYG83UaeAXKiRFqADD1jgilmOirc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dPKMPyG3GDkuvRCHH0r12OORooDCrWqfd/3UBrVU1fhilKVgfwO8TriZZGsm31dDsWxiKCfZnNQUTjoy/o52iOzMWrqm8ij/u/7y+aM683p5mB6ZPxAodhJ3ImIZ4aW4SzIPjnS0RgMemeodksWmz97/ZVhovVuME2xqOPCFIWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=paTPmGLj; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	s=arc-20240116; t=1714417033; c=relaxed/simple;
+	bh=JPhM08qiIm2VPcY/dT/N4bnCIIV5koeei+mRAeSp5+A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qh/Ll3Jia0XwXAuPBTmaEFjdUgsDiUvnB4y87a+5kDGrRKsH6hxG1GjO6taPFc8YHrG5dynSfJ48pAXEDvl9/Kblp82p4EL99EsL5vW5H6u8Y2CxIfacbH+tPO/w2nHNmjSufw873VsNI+K5WAZTRcJnfPJao8fBbuG7+TmoYhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RzN8xxuN; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="paTPmGLj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1714412575;
-	bh=t19PgdJpK6QrPLPRYG83UaeAXKiRFqADD1jgilmOirc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=paTPmGLjUVBSJVvGRn8VWTzBxVO2DJr2CsBGm24/SdSCKJdlnNxCE4mf3xkvqRx7u
-	 Oo5RY0ApG0ND7BBzzXYMQrZWB31Jdi8vedw1q1XP5QAzjAvO1Hya6B/8mrM2UPnYMU
-	 kNrMeYX77Px1UnphTDPy/BCJi1W5HZ36sPLrqyeEPSDPGKT8RqWEb3sSrYEsreS1KK
-	 ljsSDQmmvYGlOjRxY3KoOKj7noix9f/JmVEcXJ1oI82RLp3+LInCNAco5kVSpNzOOR
-	 YjfJk1/u9lagoB72wyEcZO1x8mBAQesHnSb6mMBfBXvnaWqx/U6oWt7n/vwzIpVRQz
-	 Bo1SyEyP/LeAA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4VSrJb0wQXzxfT;
-	Mon, 29 Apr 2024 13:42:55 -0400 (EDT)
-Message-ID: <bb48fdad-7a00-45da-b545-60517267a2c8@efficios.com>
-Date: Mon, 29 Apr 2024 13:43:10 -0400
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RzN8xxuN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EFC1C113CD;
+	Mon, 29 Apr 2024 18:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714417033;
+	bh=JPhM08qiIm2VPcY/dT/N4bnCIIV5koeei+mRAeSp5+A=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=RzN8xxuN+H8TkP+Zf+9rXYpOrXBA1MIsz5FBx73BTH8X5HMsX+qMi8rpL3yk01AUw
+	 nclIz63IYBCVz9DZBORvCvWuRx5H8A+MH/hOTbRYWd3cVEpmXw17n0BkYgzCCSLcYa
+	 lLADpCKKVO9yrsiPt1CVOBsifdxGw4sIZBDvHtN4hxWc4EUZ3PpA/OejwO02abNYEF
+	 u7eziIoEXhl6Tz+pFv0KCI8sPeUzQPYYdLsErfKIoh1LXy3TtL+pz0nRggrtNe7Wyn
+	 QEjJTzSBI/qqkDO1Zb+ay2tMOcDtbSXRvC8mu7L7B0fFDFC1RHkDReIiXA6Dcey/p9
+	 SkTk+Tvozaa/w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B6826CE0B6B; Mon, 29 Apr 2024 11:57:12 -0700 (PDT)
+Date: Mon, 29 Apr 2024 11:57:12 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] Revert "rcu-tasks: Fix synchronize_rcu_tasks() VS
+ zap_pid_ns_processes()"
+Message-ID: <c5111e49-613d-492b-aa51-1be4d6101aa0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240425142404.19927-1-frederic@kernel.org>
+ <20240429110328.GB1101@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcu: Remove unreachable logic
-To: Alan Huang <mmpgouride@gmail.com>, paulmck@kernel.org,
- frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
- josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
- jiangshanlai@gmail.com, qiang.zhang1211@gmail.com
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240429173439.1685274-1-mmpgouride@gmail.com>
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240429173439.1685274-1-mmpgouride@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240429110328.GB1101@redhat.com>
 
-On 2024-04-29 13:34, Alan Huang wrote:
-> call_rcu_core is only called from __call_rcu_common with interrupt
-> disabled. This patch thus removes the unreachable logic and the would-be
-> unused 'flags' parameter.
-
-Nack.
-
-call_rcu_core() receives a @flags parameter which are the _saved_ flags
-as they were prior to local_irq_save().
-
-This patch highlights a misunderstanding of what the code is actually
-doing.
-
-Thanks,
-
-Mathieu
-
+On Mon, Apr 29, 2024 at 01:03:28PM +0200, Oleg Nesterov wrote:
+> On 04/25, Frederic Weisbecker wrote:
+> >
+> > This reverts commit 28319d6dc5e2ffefa452c2377dd0f71621b5bff0. The race
+> > it fixed was subject to conditions that don't exist anymore since:
+> >
+> > 	1612160b9127 ("rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks")
+> >
+> > This latter commit removes the use of SRCU that used to cover the
+> > RCU-tasks blind spot on exit between the tasklist's removal and the
+> > final preemption disabling. The task is now placed instead into a
+> > temporary list inside which voluntary sleeps are accounted as RCU-tasks
+> > quiescent states. This would disarm the deadlock initially reported
+> > against PID namespace exit.
+> >
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  include/linux/rcupdate.h |  2 --
+> >  kernel/pid_namespace.c   | 17 -----------------
+> >  kernel/rcu/tasks.h       | 16 +++-------------
+> >  3 files changed, 3 insertions(+), 32 deletions(-)
 > 
-> Signed-off-by: Alan Huang <mmpgouride@gmail.com>
-> ---
->   kernel/rcu/tree.c | 35 ++---------------------------------
->   1 file changed, 2 insertions(+), 33 deletions(-)
+> LGTM. FWIW,
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index d5507ac1bbf1..b0ea2ebd7769 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2983,7 +2983,7 @@ static void rcutree_enqueue(struct rcu_data *rdp, struct rcu_head *head, rcu_cal
->    * Handle any core-RCU processing required by a call_rcu() invocation.
->    */
->   static void call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
-> -			  rcu_callback_t func, unsigned long flags)
-> +			  rcu_callback_t func)
->   {
->   	rcutree_enqueue(rdp, head, func);
->   	/*
-> @@ -2992,37 +2992,6 @@ static void call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
->   	 */
->   	if (!rcu_is_watching())
->   		invoke_rcu_core();
-> -
-> -	/* If interrupts were disabled or CPU offline, don't invoke RCU core. */
-> -	if (irqs_disabled_flags(flags) || cpu_is_offline(smp_processor_id()))
-> -		return;
-> -
-> -	/*
-> -	 * Force the grace period if too many callbacks or too long waiting.
-> -	 * Enforce hysteresis, and don't invoke rcu_force_quiescent_state()
-> -	 * if some other CPU has recently done so.  Also, don't bother
-> -	 * invoking rcu_force_quiescent_state() if the newly enqueued callback
-> -	 * is the only one waiting for a grace period to complete.
-> -	 */
-> -	if (unlikely(rcu_segcblist_n_cbs(&rdp->cblist) >
-> -		     rdp->qlen_last_fqs_check + qhimark)) {
-> -
-> -		/* Are we ignoring a completed grace period? */
-> -		note_gp_changes(rdp);
-> -
-> -		/* Start a new grace period if one not already started. */
-> -		if (!rcu_gp_in_progress()) {
-> -			rcu_accelerate_cbs_unlocked(rdp->mynode, rdp);
-> -		} else {
-> -			/* Give the grace period a kick. */
-> -			rdp->blimit = DEFAULT_MAX_RCU_BLIMIT;
-> -			if (READ_ONCE(rcu_state.n_force_qs) == rdp->n_force_qs_snap &&
-> -			    rcu_segcblist_first_pend_cb(&rdp->cblist) != head)
-> -				rcu_force_quiescent_state();
-> -			rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
-> -			rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
-> -		}
-> -	}
->   }
->   
->   /*
-> @@ -3121,7 +3090,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
->   	if (unlikely(rcu_rdp_is_offloaded(rdp)))
->   		call_rcu_nocb(rdp, head, func, flags, lazy);
->   	else
-> -		call_rcu_core(rdp, head, func, flags);
-> +		call_rcu_core(rdp, head, func);
->   	local_irq_restore(flags);
->   }
->   
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Queued, thank you both!
 
+							Thanx, Paul
