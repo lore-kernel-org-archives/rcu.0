@@ -1,96 +1,150 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD3122091
-	for <rcu@vger.kernel.org>; Mon, 29 Apr 2024 11:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942C48614C;
+	Mon, 29 Apr 2024 17:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714388706; cv=none; b=Jc5qUIbAv0TpkIorMzFDPN5Lb15aFPJIVnME4UzcKPRxrkZr2VdExkIdvqaXEBQzEphjyozROdU/VQ/lu5WvLvWgnGGwsitMBkzEb92peSraNenU8NqZlld+YdZj8BNqn3aITUkD9OC1FgTNh3cnZvYnomYk71Uz6R8psr4vIaE=
+	t=1714412085; cv=none; b=nRZAsAwruHdgbBCQ+NY/yMy9RLKzgd2zmhalxdijwZhjtCRjvVcNboPcizFoazJyCtYvPTLS7hHa+JqRYKU7MyEkqI3WCHaHvboHd3nMs7gWViCWs8aQ794ZpZ9FLq7cnQF7F1YOr0l6fk5Bi4LP1lUZxQxyGPoVF3KDcSVG/gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714388706; c=relaxed/simple;
-	bh=sTSSyBkKD7YDBb5NDHQWR7yiAGxYXMmKFxKGAunMYug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HKSWwQs1ftLqXS0AjxtbY91V8cWLbPCHp3Dd8xvSZav/7fE5rzSTYX+jCz/kNsPB1kfbsyR6ds8eAHeQWvFapM6renq+6jZQ1lwySblNNjzLZweGVzyygesG/pHtmZ7rkZaf+HhZawU3ScmWcjh3iYgpP74LtnFDdg7uT3uP+D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H4zF/jeM; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1714412085; c=relaxed/simple;
+	bh=ntX9J8fCuJN8fC2SaEziJX00Vjy7suIIGhjroo3PllM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J3MFFkPcdvc6dvtIsoQ8Txd3mL8AcUB1WmaZGjn+Xg2Ra11gBmjHJdk+i4O4B0AE2cYMN1pm1PCbB8opbtA98nhvGlpFOoSl47L4PAOuCcwTegO2dmFnNCmtiOur8D5YlyqCaGh9QhwSXV6jz+1iE8OfzSmltPSSPdNVqmBDTgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GRnJgN0X; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H4zF/jeM"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714388704;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6VS08W4Uz8/bxiSCCoDd/kVVFCwVeCdJq9V0dytDy1w=;
-	b=H4zF/jeM5ipBCwAqiYhNhYf/LPGMiHyZDGIOymKP0nUorR62QOY1fzNHUqdmerSKY+po6Q
-	QZwOBdmJi1U/TmqZrXyj4/B4IN0ggmkiZTcce+CZ+Lg6Yf5LeLtxx8Mbf6oBXtX3AA7mCK
-	dBwi+W43g7q1YjGGDdLhXQjejINUvi0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-665-uwHYflRGOua0fkQXp25JRA-1; Mon,
- 29 Apr 2024 07:04:58 -0400
-X-MC-Unique: uwHYflRGOua0fkQXp25JRA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5C07D380621F;
-	Mon, 29 Apr 2024 11:04:57 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.143])
-	by smtp.corp.redhat.com (Postfix) with SMTP id D4D7D1C060D0;
-	Mon, 29 Apr 2024 11:04:54 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 29 Apr 2024 13:03:32 +0200 (CEST)
-Date: Mon, 29 Apr 2024 13:03:28 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH] Revert "rcu-tasks: Fix synchronize_rcu_tasks() VS
- zap_pid_ns_processes()"
-Message-ID: <20240429110328.GB1101@redhat.com>
-References: <20240425142404.19927-1-frederic@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GRnJgN0X"
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f28bb6d747so4052495b3a.3;
+        Mon, 29 Apr 2024 10:34:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714412084; x=1715016884; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CO+NkCrpfnwH49W9ZtJCI89xJzJIO88DHQSp0dHkNEA=;
+        b=GRnJgN0X5Vd8TB0oW/JWrf7xsV+sGTMuhXoSxRJjltpUt6Zken9P2ETxWRWsYrPbGo
+         xOkt3h2wAOZbwlt3dPZyib9D2i2Ur/wGU1HqdSjW/VZmYlgFU4iipYGa+fdcxkD3JQ4C
+         vZRUPmjd1d2IhG7nnTkrZGZVKTnjo9FwhqdWSk66uhA2ZWKOjlo1rNfH+zpcFPwO/UM3
+         9blOcmuLBIlbYVgKLFcNy/2x9MA/O47pRLVmeS18BUHlBdOmfGn4gsacB4JXjsLfQa7B
+         0kuptzvzui9wg4ta7zAQEPg+pNfP45AZoWaD5tI70JolzxyQXARV7BgFQbKWeQAGWlm3
+         nNvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714412084; x=1715016884;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CO+NkCrpfnwH49W9ZtJCI89xJzJIO88DHQSp0dHkNEA=;
+        b=XLwUOmAVTxmRhgI5zr2YogYJw97gRWQvugvau4QUArN5IZhUCuqe+0Ds8+S235rpFh
+         kzKyT2MwscyhoFep2lqq/qaRcNswets0MYUaSLt2trgBJadeYBhWX2puJyIyhyar/ENu
+         gh/g1XA1fh/LTwwIYLl3MJqx3jWpcRdwqSim+EAEc5mjpFj8cSy3bgxM0DzmsOiCok7c
+         57wI3Bs066oP38ow2icuZK5Yw87R9xPMY2Lm+nWEtJfaWoe+f2YvmtD8BzdW/3QdHYP5
+         LICoza2ZQ/IEaUNVVA2YiM464bYsATs0+kJYLMlT4lpU54bLlve59JrLEXFcXW+7hV7j
+         bHVg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7BQ8ucC2mdZu8HkP+Rwa9yOKPjxliVJ+lQnEmp70zIw+wMPFh7//emuAQt11oJD1hvhs5yJ2ZG8wT2lugGat+62HKfdWPa48IJQ/s
+X-Gm-Message-State: AOJu0YxJtwvj6D5HnYrx1GZbSpAvhJGa0Q1i4CZzokziSzgLbHl2L3F4
+	22NgfJM5O5SRvpxmHwy1JrH9bAOnX5tcugkKjxqdVsKA5Phrh5ia
+X-Google-Smtp-Source: AGHT+IHdRm7q5pToyNs06sbv0HZ/O9dBs/dvwJVnYM3euRaPmE85WwfhS+k14FvoFBLsGlmF/5Ephg==
+X-Received: by 2002:a05:6a20:c90e:b0:1af:35c7:afb8 with SMTP id gx14-20020a056a20c90e00b001af35c7afb8mr9506202pzb.3.1714412083757;
+        Mon, 29 Apr 2024 10:34:43 -0700 (PDT)
+Received: from localhost ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id fh31-20020a056a00391f00b006f3ef025ed2sm4348053pfb.94.2024.04.29.10.34.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 10:34:43 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	boqun.feng@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com
+Cc: rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alan Huang <mmpgouride@gmail.com>
+Subject: [PATCH] rcu: Remove unreachable logic
+Date: Tue, 30 Apr 2024 01:34:39 +0800
+Message-ID: <20240429173439.1685274-1-mmpgouride@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425142404.19927-1-frederic@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Transfer-Encoding: 8bit
 
-On 04/25, Frederic Weisbecker wrote:
->
-> This reverts commit 28319d6dc5e2ffefa452c2377dd0f71621b5bff0. The race
-> it fixed was subject to conditions that don't exist anymore since:
->
-> 	1612160b9127 ("rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks")
->
-> This latter commit removes the use of SRCU that used to cover the
-> RCU-tasks blind spot on exit between the tasklist's removal and the
-> final preemption disabling. The task is now placed instead into a
-> temporary list inside which voluntary sleeps are accounted as RCU-tasks
-> quiescent states. This would disarm the deadlock initially reported
-> against PID namespace exit.
->
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  include/linux/rcupdate.h |  2 --
->  kernel/pid_namespace.c   | 17 -----------------
->  kernel/rcu/tasks.h       | 16 +++-------------
->  3 files changed, 3 insertions(+), 32 deletions(-)
+call_rcu_core is only called from __call_rcu_common with interrupt
+disabled. This patch thus removes the unreachable logic and the would-be
+unused 'flags' parameter.
 
-LGTM. FWIW,
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
+---
+ kernel/rcu/tree.c | 35 ++---------------------------------
+ 1 file changed, 2 insertions(+), 33 deletions(-)
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d5507ac1bbf1..b0ea2ebd7769 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2983,7 +2983,7 @@ static void rcutree_enqueue(struct rcu_data *rdp, struct rcu_head *head, rcu_cal
+  * Handle any core-RCU processing required by a call_rcu() invocation.
+  */
+ static void call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
+-			  rcu_callback_t func, unsigned long flags)
++			  rcu_callback_t func)
+ {
+ 	rcutree_enqueue(rdp, head, func);
+ 	/*
+@@ -2992,37 +2992,6 @@ static void call_rcu_core(struct rcu_data *rdp, struct rcu_head *head,
+ 	 */
+ 	if (!rcu_is_watching())
+ 		invoke_rcu_core();
+-
+-	/* If interrupts were disabled or CPU offline, don't invoke RCU core. */
+-	if (irqs_disabled_flags(flags) || cpu_is_offline(smp_processor_id()))
+-		return;
+-
+-	/*
+-	 * Force the grace period if too many callbacks or too long waiting.
+-	 * Enforce hysteresis, and don't invoke rcu_force_quiescent_state()
+-	 * if some other CPU has recently done so.  Also, don't bother
+-	 * invoking rcu_force_quiescent_state() if the newly enqueued callback
+-	 * is the only one waiting for a grace period to complete.
+-	 */
+-	if (unlikely(rcu_segcblist_n_cbs(&rdp->cblist) >
+-		     rdp->qlen_last_fqs_check + qhimark)) {
+-
+-		/* Are we ignoring a completed grace period? */
+-		note_gp_changes(rdp);
+-
+-		/* Start a new grace period if one not already started. */
+-		if (!rcu_gp_in_progress()) {
+-			rcu_accelerate_cbs_unlocked(rdp->mynode, rdp);
+-		} else {
+-			/* Give the grace period a kick. */
+-			rdp->blimit = DEFAULT_MAX_RCU_BLIMIT;
+-			if (READ_ONCE(rcu_state.n_force_qs) == rdp->n_force_qs_snap &&
+-			    rcu_segcblist_first_pend_cb(&rdp->cblist) != head)
+-				rcu_force_quiescent_state();
+-			rdp->n_force_qs_snap = READ_ONCE(rcu_state.n_force_qs);
+-			rdp->qlen_last_fqs_check = rcu_segcblist_n_cbs(&rdp->cblist);
+-		}
+-	}
+ }
+ 
+ /*
+@@ -3121,7 +3090,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+ 	if (unlikely(rcu_rdp_is_offloaded(rdp)))
+ 		call_rcu_nocb(rdp, head, func, flags, lazy);
+ 	else
+-		call_rcu_core(rdp, head, func, flags);
++		call_rcu_core(rdp, head, func);
+ 	local_irq_restore(flags);
+ }
+ 
+-- 
+2.44.0
 
