@@ -1,45 +1,45 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45561C8FC0
-	for <rcu@vger.kernel.org>; Tue, 30 Apr 2024 09:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC921C8FDD
+	for <rcu@vger.kernel.org>; Tue, 30 Apr 2024 09:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468763; cv=none; b=MurJ/TCZhqc8nd6J++AngdfbrFKwYKOIkSF/YIIxME6/G+6ppJRCE/HTXExclsYjasiDwydc1WBxhZkIiCi0vmUirbRhEcv9vHdGn2bss3unmNS+9h10WgkQkWtkjN4IZxe5+wvDaE1lS4rFmP+6Nen/XE0a4uftDIzoC35eVJs=
+	t=1714468764; cv=none; b=jrC6KJNl1QTQLQQR+b5qhFNVB2TUnU85kmruY3mC82W1wCV5Eg/B6SIsIZXfaj11iRxy9cr7P6e7Kweq18vJ9HF1us/UcrIr/Ch0NUSnINXNq/0I9ja8qdkpyfE4bOu9cuTuXorJK0o+rUY5kw75gtm8k1/bzLUVx2jCDDxgSt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468763; c=relaxed/simple;
-	bh=IOaoHCkzMuAirmGkG57WlQLrQtka+5wgy8w8O2/LKrQ=;
+	s=arc-20240116; t=1714468764; c=relaxed/simple;
+	bh=UDpOa6uq/0wige4xYCIveLrLekZbUFVMIPs9Q8uP2/A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tAP+fXv4zIB1h7rgepoz2hoiw3RVl3JYwpxre3eBWgdSXkEyyHGxTf5c0ftlTNVSIUT3KOnRnGzR3LO/Xt6BCibNRWyIjLAYtEFvAnXUGcAwFjkFu+KS8XJwJ3xEBkpS7+ixjQBzYOJ5iU4++v50a57+WjmF/Jz3EU40FfyKmsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e1zySCHq; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=eb0dCVCV5iCC1kM90o7ii6PMheKAnZ6O1JmDih0nx2UwAhcbqi9fPNgzLzsr8Z24/rjUnu4q6OtsY5R0DCCyzz4wZgVk61lVpVb5XkjUqWuxVP1yrdHwvMFfzHZULuHgIFXaBPx7nw6qL0s6y4MuMDA2s6UrLkniNhZtASYPdoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JNyqHcPQ; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e1zySCHq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JNyqHcPQ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714468760;
+	s=mimecast20190719; t=1714468762;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Qn791+67rWwiUJr/Ta/g1hShm4NiN4HCHRVNGLR9ND8=;
-	b=e1zySCHqbQFFoq17YoA6AmCGGwzeXsnxsT5U8retbxl8VBEQHsZubBl3qWZ+G9nH9lrDx9
-	2GNLqU0v8ijIDRKU8RJY5w1e/RMrS+1vd92dCdzGG7qSKNClUCTkHJyOVSM4izkYQkCng9
-	wyaER1wt0TBoSlzYio+AdsesyrvR2X4=
+	bh=hoUWjkUm7PdXxKYHB7R0MSsQHH4nwZT+HFgfi6OrWXU=;
+	b=JNyqHcPQKRHzpWtVhDWr3qHTKosv65/Fj6/dDJSCrODs6gEva8DwWbi13cdre/2hLBTsGL
+	xlXsN3IxPURYL+uqtR5gpHr5x/0XVPXj9qEm4LfmFCnJHF6yXM/6r+qhJZGsqF7tdRAsnJ
+	rTDq+9fngw/pSH2jlhS5dq0IYuWyWzQ=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-48-4tSKRNm5NqmgwJHW6HHx_Q-1; Tue, 30 Apr 2024 05:19:14 -0400
-X-MC-Unique: 4tSKRNm5NqmgwJHW6HHx_Q-1
+ us-mta-3-hqUChMk9PBWFLnTY8Yp-Tw-1; Tue, 30 Apr 2024 05:19:16 -0400
+X-MC-Unique: hqUChMk9PBWFLnTY8Yp-Tw-1
 Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A77E980B3DD;
-	Tue, 30 Apr 2024 09:19:13 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1745E80B3DD;
+	Tue, 30 Apr 2024 09:19:16 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.193.247])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1627540C5C2;
-	Tue, 30 Apr 2024 09:19:10 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F020492BC7;
+	Tue, 30 Apr 2024 09:19:13 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -54,9 +54,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v2 24/27] rcu: Rename rcu_momentary_dyntick_idle() into rcu_momentary_eqs()
-Date: Tue, 30 Apr 2024 11:17:28 +0200
-Message-ID: <20240430091740.1826862-25-vschneid@redhat.com>
+Subject: [PATCH v2 25/27] context_tracking, rcu: Rename stray ->dynticks comments
+Date: Tue, 30 Apr 2024 11:17:29 +0200
+Message-ID: <20240430091740.1826862-26-vschneid@redhat.com>
 In-Reply-To: <20240430091740.1826862-1-vschneid@redhat.com>
 References: <20240430091740.1826862-1-vschneid@redhat.com>
 Precedence: bulk
@@ -68,171 +68,85 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
-RCU_WATCHING, replace "dyntick_idle" into "eqs" to drop the dyntick
-reference.
+A few comments still mention a context_tracking .dynticks field, but that
+has been merged into the .state field as of:
+
+171476775d32 ("context_tracking: Convert state to atomic_t")
+
+Update these loose references.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- include/linux/rcutiny.h      | 2 +-
- include/linux/rcutree.h      | 2 +-
- kernel/rcu/rcutorture.c      | 4 ++--
- kernel/rcu/tree.c            | 4 ++--
- kernel/rcu/tree_nocb.h       | 2 +-
- kernel/rcu/tree_plugin.h     | 6 +++---
- kernel/stop_machine.c        | 2 +-
- kernel/trace/trace_osnoise.c | 4 ++--
- 8 files changed, 13 insertions(+), 13 deletions(-)
+ kernel/context_tracking.c | 8 ++++----
+ kernel/rcu/tree.c         | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index d9ac7b136aeab..cf2b5a188f783 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -158,7 +158,7 @@ void rcu_scheduler_starting(void);
- static inline void rcu_end_inkernel_boot(void) { }
- static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
- static inline bool rcu_is_watching(void) { return true; }
--static inline void rcu_momentary_dyntick_idle(void) { }
-+static inline void rcu_momentary_eqs(void) { }
- static inline void kfree_rcu_scheduler_running(void) { }
- static inline bool rcu_gp_might_be_stalled(void) { return false; }
+diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+index e82f19bab9ed9..dfa64f21d900d 100644
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -87,7 +87,7 @@ static noinstr void ct_kernel_exit_state(int offset)
+ 	 * critical sections, and we also must force ordering with the
+ 	 * next idle sojourn.
+ 	 */
+-	rcu_task_trace_enter();  // Before ->dynticks update!
++	rcu_task_trace_enter();  // Before CT state update!
+ 	seq = ct_state_inc(offset);
+ 	// RCU is no longer watching.  Better be in extended quiescent state!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & CT_RCU_WATCHING));
+@@ -109,7 +109,7 @@ static noinstr void ct_kernel_enter_state(int offset)
+ 	 */
+ 	seq = ct_state_inc(offset);
+ 	// RCU is now watching.  Better not be in an extended quiescent state!
+-	rcu_task_trace_exit();  // After ->dynticks update!
++	rcu_task_trace_exit();  // After CT state update!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & CT_RCU_WATCHING));
+ }
  
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 254244202ea97..7dbde2b6f714a 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -37,7 +37,7 @@ void synchronize_rcu_expedited(void);
- void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+@@ -207,7 +207,7 @@ void noinstr ct_nmi_exit(void)
  
- void rcu_barrier(void);
--void rcu_momentary_dyntick_idle(void);
-+void rcu_momentary_eqs(void);
- void kfree_rcu_scheduler_running(void);
- bool rcu_gp_might_be_stalled(void);
+ 	instrumentation_begin();
+ 	/*
+-	 * Check for ->nmi_nesting underflow and bad ->dynticks.
++	 * Check for ->nmi_nesting underflow and bad CT state.
+ 	 * (We are exiting an NMI handler, so RCU better be paying attention
+ 	 * to us!)
+ 	 */
+@@ -264,7 +264,7 @@ void noinstr ct_nmi_enter(void)
+ 	WARN_ON_ONCE(ct_nmi_nesting() < 0);
  
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index cafe047d046e8..dcd1f47748a2f 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2679,7 +2679,7 @@ static unsigned long rcu_torture_fwd_prog_cbfree(struct rcu_fwd *rfp)
- 		rcu_torture_fwd_prog_cond_resched(freed);
- 		if (tick_nohz_full_enabled()) {
- 			local_irq_save(flags);
--			rcu_momentary_dyntick_idle();
-+			rcu_momentary_eqs();
- 			local_irq_restore(flags);
- 		}
- 	}
-@@ -2829,7 +2829,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
- 		rcu_torture_fwd_prog_cond_resched(n_launders + n_max_cbs);
- 		if (tick_nohz_full_enabled()) {
- 			local_irq_save(flags);
--			rcu_momentary_dyntick_idle();
-+			rcu_momentary_eqs();
- 			local_irq_restore(flags);
- 		}
- 	}
+ 	/*
+-	 * If idle from RCU viewpoint, atomically increment ->dynticks
++	 * If idle from RCU viewpoint, atomically increment CT state
+ 	 * to mark non-idle and increment ->nmi_nesting by one.
+ 	 * Otherwise, increment ->nmi_nesting by two.  This means
+ 	 * if ->nmi_nesting is equal to one, we are guaranteed
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b375c6006ed6b..e4783a5d18e0d 100644
+index e4783a5d18e0d..11bd55f7ec398 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -355,7 +355,7 @@ bool rcu_watching_zero_in_eqs(int cpu, int *vp)
+@@ -286,7 +286,7 @@ void rcu_softirq_qs(void)
+  * to the next non-quiescent value.
   *
-  * The caller must have disabled interrupts and must not be idle.
+  * The non-atomic test/increment sequence works because the upper bits
+- * of the ->dynticks counter are manipulated only by the corresponding CPU,
++ * of the ->state variable are manipulated only by the corresponding CPU,
+  * or when the corresponding CPU is offline.
   */
--notrace void rcu_momentary_dyntick_idle(void)
-+notrace void rcu_momentary_eqs(void)
- {
- 	int seq;
+ static void rcu_watching_eqs_online(void)
+@@ -335,10 +335,10 @@ bool rcu_watching_zero_in_eqs(int cpu, int *vp)
  
-@@ -365,7 +365,7 @@ notrace void rcu_momentary_dyntick_idle(void)
- 	WARN_ON_ONCE(!(seq & CT_RCU_WATCHING));
- 	rcu_preempt_deferred_qs(current);
- }
--EXPORT_SYMBOL_GPL(rcu_momentary_dyntick_idle);
-+EXPORT_SYMBOL_GPL(rcu_momentary_eqs);
+ 	// If not quiescent, force back to earlier extended quiescent state.
+ 	snap = ct_rcu_watching_cpu(cpu) & ~CT_RCU_WATCHING;
+-	smp_rmb(); // Order ->dynticks and *vp reads.
++	smp_rmb(); // Order CT state and *vp reads.
+ 	if (READ_ONCE(*vp))
+ 		return false;  // Non-zero, so report failure;
+-	smp_rmb(); // Order *vp read and ->dynticks re-read.
++	smp_rmb(); // Order *vp read and CT state re-read.
  
- /**
-  * rcu_is_cpu_rrupt_from_idle - see if 'interrupted' from idle
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 3f85577bddd4e..2e0d2ff2ee8df 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -951,7 +951,7 @@ static void nocb_cb_wait(struct rcu_data *rdp)
- 
- 
- 	local_irq_save(flags);
--	rcu_momentary_dyntick_idle();
-+	rcu_momentary_eqs();
- 	local_irq_restore(flags);
- 	/*
- 	 * Disable BH to provide the expected environment.  Also, when
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 340bbefe5f652..903e70ec39fc6 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -859,7 +859,7 @@ static void rcu_qs(void)
- 
- /*
-  * Register an urgently needed quiescent state.  If there is an
-- * emergency, invoke rcu_momentary_dyntick_idle() to do a heavy-weight
-+ * emergency, invoke rcu_momentary_eqs() to do a heavy-weight
-  * dyntick-idle quiescent state visible to other CPUs, which will in
-  * some cases serve for expedited as well as normal grace periods.
-  * Either way, register a lightweight quiescent state.
-@@ -879,7 +879,7 @@ void rcu_all_qs(void)
- 	this_cpu_write(rcu_data.rcu_urgent_qs, false);
- 	if (unlikely(raw_cpu_read(rcu_data.rcu_need_heavy_qs))) {
- 		local_irq_save(flags);
--		rcu_momentary_dyntick_idle();
-+		rcu_momentary_eqs();
- 		local_irq_restore(flags);
- 	}
- 	rcu_qs();
-@@ -899,7 +899,7 @@ void rcu_note_context_switch(bool preempt)
- 		goto out;
- 	this_cpu_write(rcu_data.rcu_urgent_qs, false);
- 	if (unlikely(raw_cpu_read(rcu_data.rcu_need_heavy_qs)))
--		rcu_momentary_dyntick_idle();
-+		rcu_momentary_eqs();
- out:
- 	rcu_tasks_qs(current, preempt);
- 	trace_rcu_utilization(TPS("End context switch"));
-diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-index cedb17ba158a9..da821ce258ea7 100644
---- a/kernel/stop_machine.c
-+++ b/kernel/stop_machine.c
-@@ -251,7 +251,7 @@ static int multi_cpu_stop(void *data)
- 			 */
- 			touch_nmi_watchdog();
- 		}
--		rcu_momentary_dyntick_idle();
-+		rcu_momentary_eqs();
- 	} while (curstate != MULTI_STOP_EXIT);
- 
- 	local_irq_restore(flags);
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index a8e28f9b9271c..a41e8a8212647 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1535,7 +1535,7 @@ static int run_osnoise(void)
- 		 * This will eventually cause unwarranted noise as PREEMPT_RCU
- 		 * will force preemption as the means of ending the current
- 		 * grace period. We avoid this problem by calling
--		 * rcu_momentary_dyntick_idle(), which performs a zero duration
-+		 * rcu_momentary_eqs(), which performs a zero duration
- 		 * EQS allowing PREEMPT_RCU to end the current grace period.
- 		 * This call shouldn't be wrapped inside an RCU critical
- 		 * section.
-@@ -1547,7 +1547,7 @@ static int run_osnoise(void)
- 			if (!disable_irq)
- 				local_irq_disable();
- 
--			rcu_momentary_dyntick_idle();
-+			rcu_momentary_eqs();
- 
- 			if (!disable_irq)
- 				local_irq_enable();
+ 	// If still in the same extended quiescent state, we are good!
+ 	return snap == ct_rcu_watching_cpu(cpu);
 -- 
 2.43.0
 
