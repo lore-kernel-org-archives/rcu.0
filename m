@@ -1,45 +1,45 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FB2199E8A
-	for <rcu@vger.kernel.org>; Tue, 30 Apr 2024 09:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50639194C94
+	for <rcu@vger.kernel.org>; Tue, 30 Apr 2024 09:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714468724; cv=none; b=E2AXYV24jo4N6nV5WMGLdXJh+mmELc7FWAcwvKSFhd9fEgNRoZHeAwbWmgEm8PIxrCJ4IIkJjUj6ib9F2V7+rnktKPiXs+J3p+xr42bep9KkFHN756z7xvSI1M2wuYzOLY4LryjfAHcDU8Mk3LZB45J5m6JSmm/cbVws1FGQOrc=
+	t=1714468727; cv=none; b=Va9EDCdn/bEj5xdgSlH4MwDDwZquN2Lszaj5RMR13eiPkzlB3gAcbsl+IwIsYr29gsZNHcLa8jiORyRAgtCB0Ime7AY8fWvykF4vFTaHdmgTrtCNFvfNgtJoGYfEGQwiYhMIHlaAMrQNYzy0YKCmT5JjdqrqwnjxkGAuUQ2dIu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714468724; c=relaxed/simple;
-	bh=gLzeFeK7xoPYuYItjATa5D0M3vpYqdDQWtf+lxIjfQY=;
+	s=arc-20240116; t=1714468727; c=relaxed/simple;
+	bh=Pe8SeQspcQPq95W+iIrjpfycVYHkHPOSxqcBfu4GPzs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cn9tnF3VUJDw9Lt20BYv4u6sxCugwNqW9/lop/4zeTAAIg5hqOtcuHyxNoHnZ9LugD7I9oqvVBr0J1bD9oUNbDuylV0KxRzIVlHAIv3ym7ifcwYkDnieuzuwXWm09t9LYqtv7SrZxFepxwcoD62rVY0rVf7ckwY2TeDuIuB7OaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PHuZKbi/; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=mBxh/0CLuIB3yuA8yutmGAxQiA8NZtPiY09pNflwHl97wnkKpUDT/JUOrbUZVpu8nQVXvgWsruHpuFKHGp58KGSS6ftaF7DFo7sIrGBwWq6qbU/I310vIUEUVzxfHSe1dqb+jeCcSBL8oy/bX53U5noZrKIT1Xubi3dr+x8UE6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LGIP7zOZ; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PHuZKbi/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LGIP7zOZ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714468722;
+	s=mimecast20190719; t=1714468725;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qwvNVTB/8njt0PvzvkOv+IOpnsKs5zqtEj+q7KlChso=;
-	b=PHuZKbi/DfsRZ6w2DQWkE+TXfLgwRBmFP8qnFJvgWaYrvMDC+XOJtc/VZXssLiKzXeLqlk
-	tmaAv7r1jaJRuZu/1IXJUhSeeEKbVLPk0klc5cGnZ9XacZVSI92tUPi+a9tV1Ejj5Z0vFF
-	IZLtG4d+HgPGiDBpzjiQx2sFCXe4faU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-InFSlWZwNMumyKiKgxZz1g-1; Tue, 30 Apr 2024 05:18:38 -0400
-X-MC-Unique: InFSlWZwNMumyKiKgxZz1g-1
+	bh=d8awsJgtclw2OlTdFfSQcYC+8CDBAdIkV2xcq1bwbmE=;
+	b=LGIP7zOZYP9Im0awAib47+P9WxNfWzftjqzkOalJ3I4D9xRBjSu75KkOZu/5ZpIy06RFVs
+	iOP7QABJCMeUtttrhqPJEn5d8E+5/XTP60ZimkWyJMewmoEuV21YTrRsycfmTz97e2sH1V
+	tKEiGRIs50yN2OoKs7sgAbz+XcT1oYY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-352-0GGxrRm_N9y32oiF2ibSyg-1; Tue,
+ 30 Apr 2024 05:18:42 -0400
+X-MC-Unique: 0GGxrRm_N9y32oiF2ibSyg-1
 Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0A0461049C98;
-	Tue, 30 Apr 2024 09:18:37 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 38C523806729;
+	Tue, 30 Apr 2024 09:18:42 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.193.247])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 8294A40BAA2;
-	Tue, 30 Apr 2024 09:18:34 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9FDF6492BC7;
+	Tue, 30 Apr 2024 09:18:39 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -54,9 +54,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v2 11/27] context_tracking, rcu: Rename ct_dynticks_nmi_nesting_cpu() into ct_nmi_nesting_cpu()
-Date: Tue, 30 Apr 2024 11:17:15 +0200
-Message-ID: <20240430091740.1826862-12-vschneid@redhat.com>
+Subject: [PATCH v2 13/27] context_tracking, rcu: Rename rcu_dynticks_task*() into rcu_task*()
+Date: Tue, 30 Apr 2024 11:17:17 +0200
+Message-ID: <20240430091740.1826862-14-vschneid@redhat.com>
 In-Reply-To: <20240430091740.1826862-1-vschneid@redhat.com>
 References: <20240430091740.1826862-1-vschneid@redhat.com>
 Precedence: bulk
@@ -75,36 +75,103 @@ meaning.
 Suggested-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- include/linux/context_tracking_state.h | 2 +-
- kernel/rcu/tree_stall.h                | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/context_tracking.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
-index 8f32fe599c5c0..34fd504e53a86 100644
---- a/include/linux/context_tracking_state.h
-+++ b/include/linux/context_tracking_state.h
-@@ -92,7 +92,7 @@ static __always_inline long ct_nmi_nesting(void)
- 	return __this_cpu_read(context_tracking.nmi_nesting);
+diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+index 647939b0befd9..9c8f7b9191cd4 100644
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -39,7 +39,7 @@ EXPORT_SYMBOL_GPL(context_tracking);
+ #define TPS(x)  tracepoint_string(x)
+ 
+ /* Record the current task on dyntick-idle entry. */
+-static __always_inline void rcu_dynticks_task_enter(void)
++static __always_inline void rcu_task_enter(void)
+ {
+ #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+ 	WRITE_ONCE(current->rcu_tasks_idle_cpu, smp_processor_id());
+@@ -47,7 +47,7 @@ static __always_inline void rcu_dynticks_task_enter(void)
  }
  
--static __always_inline long ct_dynticks_nmi_nesting_cpu(int cpu)
-+static __always_inline long ct_nmi_nesting_cpu(int cpu)
+ /* Record no current task on dyntick-idle exit. */
+-static __always_inline void rcu_dynticks_task_exit(void)
++static __always_inline void rcu_task_exit(void)
  {
- 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+ #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+ 	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
+@@ -55,7 +55,7 @@ static __always_inline void rcu_dynticks_task_exit(void)
+ }
  
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index d8e5b49e65565..6cb346952e3e4 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -516,7 +516,7 @@ static void print_cpu_stall_info(int cpu)
- 				"!."[!delta],
- 	       ticks_value, ticks_title,
- 	       rcu_dynticks_snap(cpu) & 0xffff,
--	       ct_nesting_cpu(cpu), ct_dynticks_nmi_nesting_cpu(cpu),
-+	       ct_nesting_cpu(cpu), ct_nmi_nesting_cpu(cpu),
- 	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
- 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
- 	       rcuc_starved ? buf : "",
+ /* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+-static __always_inline void rcu_dynticks_task_trace_enter(void)
++static __always_inline void rcu_task_trace_enter(void)
+ {
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+@@ -64,7 +64,7 @@ static __always_inline void rcu_dynticks_task_trace_enter(void)
+ }
+ 
+ /* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+-static __always_inline void rcu_dynticks_task_trace_exit(void)
++static __always_inline void rcu_task_trace_exit(void)
+ {
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+@@ -87,7 +87,7 @@ static noinstr void ct_kernel_exit_state(int offset)
+ 	 * critical sections, and we also must force ordering with the
+ 	 * next idle sojourn.
+ 	 */
+-	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
++	rcu_task_trace_enter();  // Before ->dynticks update!
+ 	seq = ct_state_inc(offset);
+ 	// RCU is no longer watching.  Better be in extended quiescent state!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & CT_RCU_WATCHING));
+@@ -109,7 +109,7 @@ static noinstr void ct_kernel_enter_state(int offset)
+ 	 */
+ 	seq = ct_state_inc(offset);
+ 	// RCU is now watching.  Better not be in an extended quiescent state!
+-	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
++	rcu_task_trace_exit();  // After ->dynticks update!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & CT_RCU_WATCHING));
+ }
+ 
+@@ -149,7 +149,7 @@ static void noinstr ct_kernel_exit(bool user, int offset)
+ 	// RCU is watching here ...
+ 	ct_kernel_exit_state(offset);
+ 	// ... but is no longer watching here.
+-	rcu_dynticks_task_enter();
++	rcu_task_enter();
+ }
+ 
+ /*
+@@ -173,7 +173,7 @@ static void noinstr ct_kernel_enter(bool user, int offset)
+ 		ct->nesting++;
+ 		return;
+ 	}
+-	rcu_dynticks_task_exit();
++	rcu_task_exit();
+ 	// RCU is not watching here ...
+ 	ct_kernel_enter_state(offset);
+ 	// ... but is watching here.
+@@ -240,7 +240,7 @@ void noinstr ct_nmi_exit(void)
+ 	// ... but is no longer watching here.
+ 
+ 	if (!in_nmi())
+-		rcu_dynticks_task_enter();
++		rcu_task_enter();
+ }
+ 
+ /**
+@@ -274,7 +274,7 @@ void noinstr ct_nmi_enter(void)
+ 	if (rcu_dynticks_curr_cpu_in_eqs()) {
+ 
+ 		if (!in_nmi())
+-			rcu_dynticks_task_exit();
++			rcu_task_exit();
+ 
+ 		// RCU is not watching here ...
+ 		ct_kernel_enter_state(CT_RCU_WATCHING);
 -- 
 2.43.0
 
