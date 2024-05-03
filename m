@@ -1,66 +1,66 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09AE36B1C
-	for <rcu@vger.kernel.org>; Fri,  3 May 2024 18:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E25154C19
+	for <rcu@vger.kernel.org>; Fri,  3 May 2024 19:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714761778; cv=none; b=NFjKdW/DooX6XlEUjEjSVpIWksaZgXakRxYV2VzgnK9/QI3BJ0Nv5rl87tDpchfOtWlWpOUTqmJyv9e8uEdx2w1ohIpHibKPnYMebbYbjCDywROlWtSDbKywsJiiJgPNLj8ADX52glnu95dtAMNv/vs1s57fggJttRaXueFSD3k=
+	t=1714763372; cv=none; b=MUjDeLBpkbvmNcPcWIEunWfjuFjyDfYN3X02NLPWsay9l06IPWUEFPnv53f0QEUENn+IepanzoVBE7br4hhTvDfxZ5+wnBMxgNPgK1yjSiZmJDz6JANgZwZHZRukv4V2pJJCMphS9qY55PEpmexk+noOvv85IXcYw+q4kedpVVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714761778; c=relaxed/simple;
-	bh=tU6G7JYGWRkG+2O/O2roQvpxabuBZJxtfMZ8Pdnsff0=;
+	s=arc-20240116; t=1714763372; c=relaxed/simple;
+	bh=bsUrJhJStA4jT+oy/+6b0aay9cjl1X4e2u6wD2HnNMk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=GAJ5T4lOeAiuHsMojuLDOBlBsX2e4Z4DfL/Khw6i2XXqD5NLg8hfUk+9AL98ulJvH/IlZcVDenz2/d+XajCZLtiso1l89d6m8JKRHKIo+8vTHs8HaQcxvfAv3bWCyNC7KXYRxYM24voRP514MRrMYSCcsRZeA//h30UYk14pvsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JuLdIbmU; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type:Content-Disposition; b=VfMZe6u1OlLN3OhLOYhnpoC4h1yKTvJvwsQ4/tuKmoln8bBVjDfpjnAMuxyvPT7H50wSrAN+drZ2a3SguQ9XXnHwflpSfV/XNamHusd1DZzubEIe97fiS7Bn8rAAefPB5Q4byXHcFBDqdadDVesCyDb92x4CRqBa66yLNbBobTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fFr4cGmd; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JuLdIbmU"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fFr4cGmd"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714761775;
+	s=mimecast20190719; t=1714763369;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7jg1F0r+Luam104Y7UVnMDpQtCctuiu4jLX0tf0Er1I=;
-	b=JuLdIbmUOWthf/SfUfhZzbHmM8sbDv35ewFqCntRW8JzA5xdoFZXjhtGrrvceHccjfYqni
-	Ww4u41V/TZI3ndQdNBQKmEWFUDuNAQFGPTsLeUqu5ER5W62z6KGH3egaXQN+v9d6t0D8eF
-	htKso3kNlnZltOP4VhIYoR5/Ncki3Zg=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=UfZIeLovJ0OEc5o8V4rjdfq75IXpLSkl12OeDfEK/CA=;
+	b=fFr4cGmdC1BsP/P5ZNK1nF92Jz/S9EnSTO20+0LXCBbavG0neV2HKJv546aV2PmhLj6U9J
+	aNUQXZ8up/6VvHFkH4ihImO2YXMZU74gZDWbK6UN/s3BzzncTA1DKPonPRWPUBf1Zy5XB4
+	FcYLnHQzUcecdQ9kyxCd1lg3tpvFYC0=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-578-P8i1WP_uNnWSmlVUk_-rzg-1; Fri, 03 May 2024 14:42:54 -0400
-X-MC-Unique: P8i1WP_uNnWSmlVUk_-rzg-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1e41c665b99so101054895ad.1
-        for <rcu@vger.kernel.org>; Fri, 03 May 2024 11:42:54 -0700 (PDT)
+ us-mta-606-5asXmhPdMH6Rx3CGDVSPfA-1; Fri, 03 May 2024 15:09:28 -0400
+X-MC-Unique: 5asXmhPdMH6Rx3CGDVSPfA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-78eeb60e1fbso1361473685a.1
+        for <rcu@vger.kernel.org>; Fri, 03 May 2024 12:09:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714761773; x=1715366573;
+        d=1e100.net; s=20230601; t=1714763368; x=1715368168;
         h=content-transfer-encoding:content-disposition:mime-version
          :references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7jg1F0r+Luam104Y7UVnMDpQtCctuiu4jLX0tf0Er1I=;
-        b=BX+KKQjgZel46tV99Z2x4Sbhklj6VeYHkMpPe9/O2STCatEgmGyvXmYtF+fCCn+oBn
-         iTB6K+RunwjaUKTyXKB0FReFptuuZHBasyIV1ass3XhC4UbyZlugEGjGwTNe67hQoP46
-         K6Z3mEjzzRDvNldKJHDix08P5j5+bISvSPzTkW8aab0iToo+Z/3mxGyQeWqbqSjC0dZC
-         dr2SO0HBN4WSoAlnG1w6N0v2ecG7P+zhn/X3NPJnlm9yEr3+WtufvIHCn3KHhLqkD4iU
-         rLR7ZKBNeRJoeo1PTZNb6tIxL1vSUS3q92rV+Q6j9hQOjVEnH2JUCW4UKqK8pUWkQWIt
-         abqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVTFg9++Tj8sjsMdzdJBJJsTp6WNrVpTlmzHfq4tT3Lesg1S6/DRvvp5gGkTUl/3hlf/wt7905PtZkbUVYDVWB2z7tf
-X-Gm-Message-State: AOJu0YwRWL2lrYuzj2wgFRpEwaSPLujkDZV3XvqmoIOUjDnCI8GiMD/g
-	Q0IFADB+WMioBUlneWr/S6fzIs4MEM9kgtylSKm9X6PWyX+p/sWp/Y1DxbRe3Ix+w9y5pka45bL
-	h8hW7pP0gmB97INqXEl3eBUjy9DB25BGWcog6IwlWazVvhZWtmQ==
-X-Received: by 2002:a17:902:f70f:b0:1dd:81a3:8dc3 with SMTP id h15-20020a170902f70f00b001dd81a38dc3mr4364032plo.46.1714761773122;
-        Fri, 03 May 2024 11:42:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHO/B7NcxkkrJOjUeyFPE3oTYjTTOUH1HEefTB3GxhO5X3BJw+May4aWchCVGJZGF1h0o9dfQ==
-X-Received: by 2002:a17:902:f70f:b0:1dd:81a3:8dc3 with SMTP id h15-20020a170902f70f00b001dd81a38dc3mr4363995plo.46.1714761772691;
-        Fri, 03 May 2024 11:42:52 -0700 (PDT)
+        bh=UfZIeLovJ0OEc5o8V4rjdfq75IXpLSkl12OeDfEK/CA=;
+        b=DExlv2/P29iPc2qUGZ4UucjYwJ7xZPJU0gKyxgorETZPjJKq8HIVSgZZrGhc9/yArB
+         nN2Umz4/rwRU7gNrYyU4l8+/OsaABRYXuXq7QWOijFVyHYew6NZ/LbCh6rMIix2p4hVu
+         CIlTBYtCylPCncd8XgdcnUBxGJmZc90XvhRhngVrhYoGVGcBA8d9QccFiPL4WJHOAPYH
+         TvYcw6fR6LZlA+eBtvkCBYBJ4WOkVeWIRmnlRgBKpqvmdSNWyNxBrUz6N5IB8S45530K
+         8mCrdWDfix05MMtdgONVbws+IiHW4r7u0zo0M0yYSeNnzo5m2TOLcXtxAlMFP1Jnm6eP
+         DECA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZf2YMx5HP0v4CD8+WLpKSDlCHIMBPZAsGw+XpXP/ablYsr1qeUMdzhXSfd8CvcTe2IP6lxg5dbSgv9d4JfDwK4p8i
+X-Gm-Message-State: AOJu0YzGAlUxT7/FVCfMtoQwkZgMerDcbfNEnaTAGGPABsLGvvlhag88
+	01l1mFnVIKqv/+/zWd7pa8CdZXtl5AO/K7Qhv899RoD7SfVEBzCE89MBmb8WbrhTf82oqBxg6NU
+	c6CPFFjvny1pM6whPmwwvqjXditpx45hBKv/I06DWthZn62dm1A==
+X-Received: by 2002:a05:620a:94f:b0:790:889a:b0bf with SMTP id w15-20020a05620a094f00b00790889ab0bfmr3242110qkw.68.1714763367589;
+        Fri, 03 May 2024 12:09:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFTE830hUw/0R/ym9W+rRW5RyC1bGCw2240Vz0MzxC88ZmdjC2YDSooo47VCYmf1D/6skjp6w==
+X-Received: by 2002:a05:620a:94f:b0:790:889a:b0bf with SMTP id w15-20020a05620a094f00b00790889ab0bfmr3242072qkw.68.1714763367005;
+        Fri, 03 May 2024 12:09:27 -0700 (PDT)
 Received: from LeoBras.redhat.com ([2804:1b3:a800:4b0a:b7a4:5eb9:b8a9:508d])
-        by smtp.gmail.com with ESMTPSA id l16-20020a170903245000b001eb6280cb42sm3590633pls.11.2024.05.03.11.42.47
+        by smtp.gmail.com with ESMTPSA id b9-20020a05620a04e900b0078d5a756e61sm1464486qkh.60.2024.05.03.12.09.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 11:42:52 -0700 (PDT)
+        Fri, 03 May 2024 12:09:26 -0700 (PDT)
 From: Leonardo Bras <leobras@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>,
 	Paolo Bonzini <pbonzini@redhat.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
@@ -77,11 +77,11 @@ Cc: Leonardo Bras <leobras@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
 Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Date: Fri,  3 May 2024 15:42:38 -0300
-Message-ID: <ZjUwHvyvkM3lj80Q@LeoBras>
+Date: Fri,  3 May 2024 16:09:11 -0300
+Message-ID: <ZjU2VxZe3A9_Y7Yf@LeoBras>
 X-Mailer: git-send-email 2.45.0
-In-Reply-To: <ZgsXRUTj40LmXVS4@google.com>
-References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
+In-Reply-To: <ZjUwHvyvkM3lj80Q@LeoBras>
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com> <ZjUwHvyvkM3lj80Q@LeoBras>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -92,145 +92,172 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-Hello Sean, Marcelo and Paul,
-
-Thank you for your comments on this thread!
-I will try to reply some of the questions below:
-
-(Sorry for the delay, I was OOO for a while.)
-
-
-On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
-> On Thu, Mar 28, 2024, Leonardo Bras wrote:
-> > I am dealing with a latency issue inside a KVM guest, which is caused by
-> > a sched_switch to rcuc[1].
+On Fri, May 03, 2024 at 03:42:38PM -0300, Leonardo Bras wrote:
+> Hello Sean, Marcelo and Paul,
+> 
+> Thank you for your comments on this thread!
+> I will try to reply some of the questions below:
+> 
+> (Sorry for the delay, I was OOO for a while.)
+> 
+> 
+> On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
+> > On Thu, Mar 28, 2024, Leonardo Bras wrote:
+> > > I am dealing with a latency issue inside a KVM guest, which is caused by
+> > > a sched_switch to rcuc[1].
+> > > 
+> > > During guest entry, kernel code will signal to RCU that current CPU was on
+> > > a quiescent state, making sure no other CPU is waiting for this one.
+> > > 
+> > > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+> > > issued somewhere since guest entry, there is a chance a timer interrupt
+> > > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> > > 
+> > > rcu_sched_clock_irq() will check rcu_pending() which will return true,
+> > > and cause invoke_rcu_core() to be called, which will (in current config)
+> > > cause rcuc/N to be scheduled into the current cpu.
+> > > 
+> > > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+> > > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+> > > idle or userspace, since both are considered quiescent states.
+> > > 
+> > > Since this is also true to guest context, my idea to solve this latency
+> > > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> > > 
+> > > On the other hand, I could not find a way of reliably saying the current
+> > > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+> > > for keeping the time (jiffies) of the last guest exit.
+> > > 
+> > > In patch #2 I compare current time to that time, and if less than a second
+> > > has past, we just skip rcu_core() invocation, since there is a high chance
+> > > it will just go back to the guest in a moment.
 > > 
-> > During guest entry, kernel code will signal to RCU that current CPU was on
-> > a quiescent state, making sure no other CPU is waiting for this one.
+> > What's the downside if there's a false positive?
+> 
+> False positive being guest_exit without going back in this CPU, right?
+> If so in WSC, supposing no qs happens and there is a pending request, RCU 
+> will take a whole second to run again, possibly making other CPUs wait 
+> this long for a synchronize_rcu.
+
+Just to make sure it's clear:
+It will wait at most 1 second, if the grace period was requested just 
+before the last_guest_exit update. It will never make the grace period 
+be longer than the already defined 1 second. 
+
+That's because in the timer interrupt we have:
+
+	if (rcu_pending())
+		invoke_rcu_core();
+
+and on rcu_pending():
+
+	if ((user || rcu_is_cpu_rrupt_from_idle() || rcu_recent_guest_exit()) &&
+	    rcu_nohz_full_cpu())
+		return 0;
+
+Meaning that even if we allow 5 seconds after recent_guest_exit, it will 
+only make rcu_nohz_full_cpu() run, and it will check if the grace period is 
+younger than 1 second before skipping the rcu_core() invocation.
+
+
+
+> 
+> This value (1 second) could defined in .config or as a parameter if needed, 
+> but does not seem a big deal, 
+> 
 > > 
-> > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
-> > issued somewhere since guest entry, there is a chance a timer interrupt
-> > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> > > What I know it's weird with this patch:
+> > > 1 - Not sure if this is the best way of finding out if the cpu was
+> > >     running a guest recently.
+> > > 
+> > > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+> > >     overhead, even though it's supposed to be in local cache. If that's
+> > >     an issue, I would suggest having this part compiled out on 
+> > >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+> > >     enabled seems more expensive than just setting this out.
 > > 
-> > rcu_sched_clock_irq() will check rcu_pending() which will return true,
-> > and cause invoke_rcu_core() to be called, which will (in current config)
-> > cause rcuc/N to be scheduled into the current cpu.
+> > A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
+> > imprecise, e.g. it'll be a full tick "behind" on many exits.
+> 
+> That would not be a problem, as it would mean 1 tick less waiting in the 
+> false positive WSC, and the 1s amount is plenty.
+
+s/less/more/
+
+> 
 > > 
-> > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
-> > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
-> > idle or userspace, since both are considered quiescent states.
+> > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> > >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> > >     grace period started over than a second ago. If this value is bad,
+> > >     I have no issue changing it.
 > > 
-> > Since this is also true to guest context, my idea to solve this latency
-> > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> > of what magic time threshold is used.  IIUC, what you want is a way to detect if
+> > a CPU is likely to _run_ a KVM vCPU in the near future.
+> 
+> That's correct!
+> 
+> >  KVM can provide that
+> > information with much better precision, e.g. KVM knows when when it's in the core
+> > vCPU run loop.
+> 
+> That would not be enough.
+> I need to present the application/problem to make a point:
+> 
+> - There is multiple  isolated physical CPU (nohz_full) on which we want to 
+>   run KVM_RT vcpus, which will be running a real-time (low latency) task.
+> - This task should not miss deadlines (RT), so we test the VM to make sure 
+>   the maximum latency on a long run does not exceed the latency requirement
+> - This vcpu will run on SCHED_FIFO, but has to run on lower priority than
+>   rcuc, so we can avoid stalling other cpus.
+> - There may be some scenarios where the vcpu will go back to userspace
+>   (from KVM_RUN ioctl), and that does not mean it's good to interrupt the 
+>   this to run other stuff (like rcuc).
+> 
+> Now, I understand it will cover most of our issues if we have a context 
+> tracking around the vcpu_run loop, since we can use that to decide not to 
+> run rcuc on the cpu if the interruption hapenned inside the loop.
+> 
+> But IIUC we can have a thread that "just got out of the loop" getting 
+> interrupted by the timer, and asked to run rcu_core which will be bad for 
+> latency.
+> 
+> I understand that the chance may be statistically low, but happening once 
+> may be enough to crush the latency numbers.
+> 
+> Now, I can't think on a place to put this context trackers in kvm code that 
+> would avoid the chance of rcuc running improperly, that's why the suggested 
+> timeout, even though its ugly.
+> 
+> About the false-positive, IIUC we could reduce it if we reset the per-cpu 
+> last_guest_exit on kvm_put.
+> 
 > > 
-> > On the other hand, I could not find a way of reliably saying the current
-> > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
-> > for keeping the time (jiffies) of the last guest exit.
+> > > 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
+> > >     rcu/tree_plugin.h, which is the first time it's getting included
+> > >     outside of kvm or arch code, and can be weird.
 > > 
-> > In patch #2 I compare current time to that time, and if less than a second
-> > has past, we just skip rcu_core() invocation, since there is a high chance
-> > it will just go back to the guest in a moment.
-> 
-> What's the downside if there's a false positive?
-
-False positive being guest_exit without going back in this CPU, right?
-If so in WSC, supposing no qs happens and there is a pending request, RCU 
-will take a whole second to run again, possibly making other CPUs wait 
-this long for a synchronize_rcu.
-
-This value (1 second) could defined in .config or as a parameter if needed, 
-but does not seem a big deal, 
-
-> 
-> > What I know it's weird with this patch:
-> > 1 - Not sure if this is the best way of finding out if the cpu was
-> >     running a guest recently.
+> > Heh, kvm_host.h isn't included outside of KVM because several architectures can
+> > build KVM as a module, which means referencing global KVM varibles from the kernel
+> > proper won't work.
 > > 
-> > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
-> >     overhead, even though it's supposed to be in local cache. If that's
-> >     an issue, I would suggest having this part compiled out on 
-> >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
-> >     enabled seems more expensive than just setting this out.
+> > >     An alternative would be to create a new header for providing data for
+> > >     non-kvm code.
+> > 
+> > I doubt a new .h or .c file is needed just for this, there's gotta be a decent
+> > landing spot for a one-off variable.
 > 
-> A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
-> imprecise, e.g. it'll be a full tick "behind" on many exits.
-
-That would not be a problem, as it would mean 1 tick less waiting in the 
-false positive WSC, and the 1s amount is plenty.
-
+> You are probably right
 > 
-> > 3 - It checks if the guest exit happened over than 1 second ago. This 1
-> >     second value was copied from rcu_nohz_full_cpu() which checks if the
-> >     grace period started over than a second ago. If this value is bad,
-> >     I have no issue changing it.
+> >  E.g. I wouldn't be at all surprised if there
+> > is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
+> > likely to do a VM-Enter in the near future, at which point you could probably make
+> > a good argument for adding a flag in "struct context_tracking".  Even without a
+> > separate use case, there's a good argument for adding that info to context_tracking.
 > 
-> IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
-> of what magic time threshold is used.  IIUC, what you want is a way to detect if
-> a CPU is likely to _run_ a KVM vCPU in the near future.
-
-That's correct!
-
->  KVM can provide that
-> information with much better precision, e.g. KVM knows when when it's in the core
-> vCPU run loop.
-
-That would not be enough.
-I need to present the application/problem to make a point:
-
-- There is multiple  isolated physical CPU (nohz_full) on which we want to 
-  run KVM_RT vcpus, which will be running a real-time (low latency) task.
-- This task should not miss deadlines (RT), so we test the VM to make sure 
-  the maximum latency on a long run does not exceed the latency requirement
-- This vcpu will run on SCHED_FIFO, but has to run on lower priority than
-  rcuc, so we can avoid stalling other cpus.
-- There may be some scenarios where the vcpu will go back to userspace
-  (from KVM_RUN ioctl), and that does not mean it's good to interrupt the 
-  this to run other stuff (like rcuc).
-
-Now, I understand it will cover most of our issues if we have a context 
-tracking around the vcpu_run loop, since we can use that to decide not to 
-run rcuc on the cpu if the interruption hapenned inside the loop.
-
-But IIUC we can have a thread that "just got out of the loop" getting 
-interrupted by the timer, and asked to run rcu_core which will be bad for 
-latency.
-
-I understand that the chance may be statistically low, but happening once 
-may be enough to crush the latency numbers.
-
-Now, I can't think on a place to put this context trackers in kvm code that 
-would avoid the chance of rcuc running improperly, that's why the suggested 
-timeout, even though its ugly.
-
-About the false-positive, IIUC we could reduce it if we reset the per-cpu 
-last_guest_exit on kvm_put.
-
+> For the tracking solution, makes sense :)
+> Not sure if the 'timeout' alternative will be that useful outside rcu.
 > 
-> > 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
-> >     rcu/tree_plugin.h, which is the first time it's getting included
-> >     outside of kvm or arch code, and can be weird.
-> 
-> Heh, kvm_host.h isn't included outside of KVM because several architectures can
-> build KVM as a module, which means referencing global KVM varibles from the kernel
-> proper won't work.
-> 
-> >     An alternative would be to create a new header for providing data for
-> >     non-kvm code.
-> 
-> I doubt a new .h or .c file is needed just for this, there's gotta be a decent
-> landing spot for a one-off variable.
-
-You are probably right
-
->  E.g. I wouldn't be at all surprised if there
-> is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
-> likely to do a VM-Enter in the near future, at which point you could probably make
-> a good argument for adding a flag in "struct context_tracking".  Even without a
-> separate use case, there's a good argument for adding that info to context_tracking.
-
-For the tracking solution, makes sense :)
-Not sure if the 'timeout' alternative will be that useful outside rcu.
-
-Thanks!
-Leo
+> Thanks!
+> Leo
 
