@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2984F128372;
-	Mon,  6 May 2024 10:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E1A75815;
+	Mon,  6 May 2024 11:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714992536; cv=none; b=cFv/ioCuwoJLqoZOlnxr7J+DXp9YmaQIWdTKtAtnk/aMRdvpR6MuujuAPyyUNvVNGNg9y3CbUpnOr1Dq77TL/Kr/mRm8UQ8sxZXfoem42I69wfDFYwG03GKoJMeR6/BxRP1W0lIZNBtb7+yMTmKF0wT3ykPXQRPkF4TiUX1TZZI=
+	t=1714993284; cv=none; b=sHnlBtfClCq7YF6OrDS9ZzeSOzNOIEza/TplueizrgbfBvHu1zd+ErgbG32wcrUqVzPqX0FfNglJHLtluc2SkkdTViDR+SSFq1a0yF3kWW53r7yegqix7dc4lVW+eyWSmbpQDqoixb/nTjTL2iln+h0IAaIpfGB9ZPbD/9Ctjzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714992536; c=relaxed/simple;
-	bh=zKUXnO7Pk1vh1mfhbmxV+aR2BrGJ0AO3JRylRIvlojs=;
+	s=arc-20240116; t=1714993284; c=relaxed/simple;
+	bh=Xuss9Xm00J++0coXdMYhy2tC5vJmSIbccfKL7M8w924=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OAeKqq1rYgp/9IX1JRKXRdk2P8uc/G9Z3niA56og8c0ODijqrbZMblojucW3z4W3SgFICI1/OloZ8fuT7WQiFHz1TXyGEAPZPwt0riccwCP1u1HWySuZq03wsvizdmKkDnBEgM1cMaFe/XxxyRUm/pUgNyiBkTuLG+eQ0aTsBxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dPc3Gb40; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=RO2TnpyyuX3PVYA9fvg/s2Wpie5gbBuNKgkZ/8QLVwhkGhjDyxNfrFX5SRkB4TsVJLWjrbLwQpWpqHd225ZNskwRPfLqjA1UWRK1DXhzYxZwOSKkb0w/cA19jSJXM8F05WrIYQf8Ot8SjKwIJodl0IVMv2E7BtPL1FkyJJGYTaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kdg6oIJL; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dPc3Gb40"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F79C116B1;
-	Mon,  6 May 2024 10:48:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kdg6oIJL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F19D4C116B1;
+	Mon,  6 May 2024 11:01:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714992535;
-	bh=zKUXnO7Pk1vh1mfhbmxV+aR2BrGJ0AO3JRylRIvlojs=;
+	s=k20201202; t=1714993283;
+	bh=Xuss9Xm00J++0coXdMYhy2tC5vJmSIbccfKL7M8w924=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dPc3Gb401b+yTwA2oykq0GCkkle5whTKh//QMcYn1mldaUxIFvjIx331X9MIN6TJJ
-	 gV+rEk2J6TtbshQ/hIOFx4ywoKoqAFxI2Esp+iEyKAxfTQrcGC9tt/+s+pc6PAP6eL
-	 f+e4dFhAPt9R1ZJgYaQddSFjblThGo8++dqfprlatb9E2bnCE8RdrnQrLaQAfGAq8v
-	 WrnnGzvD+bKV32qIql2nKpGmnoFtPbX7+i5kuCpoJQdz6iyJGioLdNVGVGzAL0MzlK
-	 DM9lf5WPWj+nzFDD9ePNlZf8VciF/i8xnUOdWCtKXJ9r94DwIKAmLRq3LfISerlSPB
-	 EBgOUz2YxEvCw==
-Date: Mon, 6 May 2024 12:48:53 +0200
+	b=Kdg6oIJL4LzyMx7FVDQNHS4NEtlQXYZc7oYh1gdrolEMIUOyhW3BeE1aNMCAp89nx
+	 wil1/MXtu6dNUJse3hKBW8NzPwyRkoN7av6hIF6Hq5YcukV4pSbLIIBotS61t7eM0X
+	 Xt16QOBB8APdL5VDejp8iY+7CC25ZK37IgZUqEH3mZUvGIieM0QvgPdnOL3Hqpg2Fk
+	 LPwSnPyGr6uQCmyor1qyttpPYQ04kdVz8iy4PImd0IZ3fB4JWtmjRgHD2ZlwJv27Od
+	 N/uyyXArqT2KJLD2FNc0XjfzuOpy9H79A+o9d2ugFwkm1oD/598BLiOnJtywMGxjCr
+	 f02RcYy3/AmMg==
+Date: Mon, 6 May 2024 13:01:20 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Valentin Schneider <vschneid@redhat.com>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -40,11 +40,11 @@ Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 06/27] context_tracking, rcu: Rename struct
- context_tracking .dynticks_nesting into .nesting
-Message-ID: <Zji1lXBJJOiwEvN8@localhost.localdomain>
+Subject: Re: [PATCH v2 07/27] context_tracking, rcu: Rename
+ ct_dynticks_nesting() into ct_nesting()
+Message-ID: <Zji4gCgDswcV53dC@localhost.localdomain>
 References: <20240430091740.1826862-1-vschneid@redhat.com>
- <20240430091740.1826862-7-vschneid@redhat.com>
+ <20240430091740.1826862-8-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -54,9 +54,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240430091740.1826862-7-vschneid@redhat.com>
+In-Reply-To: <20240430091740.1826862-8-vschneid@redhat.com>
 
-Le Tue, Apr 30, 2024 at 11:17:10AM +0200, Valentin Schneider a écrit :
+Le Tue, Apr 30, 2024 at 11:17:11AM +0200, Valentin Schneider a écrit :
 > The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
 > RCU_WATCHING, reflect that change in the related helpers.
 > 
