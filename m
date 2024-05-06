@@ -1,53 +1,37 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35BF15884B
-	for <rcu@vger.kernel.org>; Mon,  6 May 2024 18:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FF215AAB1;
+	Mon,  6 May 2024 20:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715021330; cv=none; b=EoDehkIXaKDoUK5Z7S5LbShfogu7745n7+cnDFiDGc5tcM+yt9OHSkUPwdIVRr51BXmtuHXqDr3xPxGjNeZmQtRuAViXaqnD7QiZ2l9q379sZQeK9ktfzDlezr+AbtIDFbuwWQcP+6+streGcdQJLO6lcwXV4m8cJmoDM6xCrhQ=
+	t=1715026202; cv=none; b=m2kSIOaGFNDU1xzP4vBx/bEZfWZ3urqb0IS5GIP6psd/qaV/badlhst6/im/86KXWeyJT0wx+eFLnnIUOi6BzduAZyqoSyLE5h1kVSZSzfyHYavcX67qpfIofEjRSHRZTbB3rNfabhSZlglgRIS1PB+Aow8DV9ZY5Foxr8alqeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715021330; c=relaxed/simple;
-	bh=DdMY60eWYf7nFd2XjhGOmHWtIFWpG2Vu5/5hhugXBZ0=;
+	s=arc-20240116; t=1715026202; c=relaxed/simple;
+	bh=jlqVI/LUVHrNc8apztU92wxCO2bwDs1ydUhERRNugQA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dJ7hLm9CEq837ljh0ePpSB7pnD1ZKsyr3OWPfFLy5Qa5muRkbncKYgf7dzBDoSE+rakPsrI5r8WlvacsNrT7jQ79JpQRWlgTlEWHednic7R0DwUGKbP05/OMTnjxRnHzXAKwm99CzGfW+X/O55a9buTHeHQDnGfH4LBpz2sLnsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YPM15xWb; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=TagDEHX3OA+yOJTPIwP5TrzF3hrAeXkUXqV22Qvd04Bcu2CyXdB5D8T5OAUhDxoiYWH7HWyB4w70rfEpmJj6F5ZMNkoqJJZPDOyOHVh6bZoHKQ4BlsNj+LoIzEOeOPyCWp37HS+Pr24ypJ0mfOF5pCVuRGkgGuW6mSkzZZGDq10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OyAiVKs5; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YPM15xWb"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715021326;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aPOamX9LHTG5t3ZSBhvmzpDMv+bOSB81pKuh6fPgknw=;
-	b=YPM15xWbogDpgXPfE+nJG2wWiSLPr1T6vOalmLBIvuNWTrjEzXv23ggcrZc1YaezJec1ZX
-	y2tFxTdsUvEhEgzTntizr2o3oAMOVF3LkFeFUYpq59Bkrs09xIawtAISaDylnpbAU/u+OR
-	owum3zy1Z6HML3BA29mlYMmHFXwr8Dc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-618-JxgjRRKQNJC9G07zoB7YFg-1; Mon, 06 May 2024 14:48:43 -0400
-X-MC-Unique: JxgjRRKQNJC9G07zoB7YFg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 077BB8032FA;
-	Mon,  6 May 2024 18:48:43 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F3D42024513;
-	Mon,  6 May 2024 18:48:42 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 0AFB1400DCBB9; Mon,  6 May 2024 15:47:21 -0300 (-03)
-Date: Mon, 6 May 2024 15:47:21 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OyAiVKs5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46750C116B1;
+	Mon,  6 May 2024 20:10:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715026201;
+	bh=jlqVI/LUVHrNc8apztU92wxCO2bwDs1ydUhERRNugQA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OyAiVKs5H48xgjOfiPGBe/WtOmUGWVsjrt3mCcx9ac999uy0SaXWPDnXEdQI3Zzgj
+	 Hk54BkzdKDe4qhINFNTdynAfM4u79UnSEUnJILMLtdDK7usJQMUpWu5P6ZshxnyZxr
+	 P4XZLdJnTqfGz9z+VIsd/cxRcOLI/KGunp+YEGVz9CdM5n3pX3cJ7FXoAKD7GaJWAQ
+	 98PROqm93wEHlT5PlVIsP/ohbX2fdH+ZoZ7InR8gsqFbEuq/xBhxjV8ARAehbPp5oA
+	 E19mmj9560MlH3woxqLvNvW+necY5YWJ1+IoLzLSHNnVYdUxCRljRO8hszcJwZKlD7
+	 W9xnOQnka9AUg==
+Date: Mon, 6 May 2024 22:09:58 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
@@ -55,185 +39,29 @@ Cc: Sean Christopherson <seanjc@google.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <ZjkludR5wh0mKZ2H@tpad>
-References: <ZhAN28BcMsfl4gm-@google.com>
- <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com>
- <Zh2EQVj5bC0z5R90@tpad>
- <Zh2cPJ-5xh72ojzu@google.com>
- <Zh5w6rAWL+08a5lj@tpad>
- <Zh6GC0NRonCpzpV4@google.com>
- <Zh/1U8MtPWQ/yN2T@tpad>
- <ZiAFSlZwxyKzOTRL@google.com>
- <ZjVMpj7zcSf-JYd_@LeoBras>
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 08/27] context_tracking, rcu: Rename
+ ct_dynticks_nesting_cpu() into ct_nesting_cpu()
+Message-ID: <Zjk5Fn0CwoZxc8Ef@pavilion.home>
+References: <20240430091740.1826862-1-vschneid@redhat.com>
+ <20240430091740.1826862-9-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZjVMpj7zcSf-JYd_@LeoBras>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240430091740.1826862-9-vschneid@redhat.com>
 
-On Fri, May 03, 2024 at 05:44:22PM -0300, Leonardo Bras wrote:
-> On Wed, Apr 17, 2024 at 10:22:18AM -0700, Sean Christopherson wrote:
-> > On Wed, Apr 17, 2024, Marcelo Tosatti wrote:
-> > > On Tue, Apr 16, 2024 at 07:07:32AM -0700, Sean Christopherson wrote:
-> > > > On Tue, Apr 16, 2024, Marcelo Tosatti wrote:
-> > > > > > Why not have
-> > > > > > KVM provide a "this task is in KVM_RUN" flag, and then let the existing timeout
-> > > > > > handle the (hopefully rare) case where KVM doesn't "immediately" re-enter the guest?
-> > > > > 
-> > > > > Do you mean something like:
-> > > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index d9642dd06c25..0ca5a6a45025 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -3938,7 +3938,7 @@ static int rcu_pending(int user)
-> > > > >                 return 1;
-> > > > >  
-> > > > >         /* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
-> > > > > -       if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
-> > > > > +       if ((user || rcu_is_cpu_rrupt_from_idle() || this_cpu->in_kvm_run) && rcu_nohz_full_cpu())
-> > > > >                 return 0;
-> > > > 
-> > > > Yes.  This, https://lore.kernel.org/all/ZhAN28BcMsfl4gm-@google.com, plus logic
-> > > > in kvm_sched_{in,out}().
-> > > 
-> > > Question: where is vcpu->wants_to_run set? (or, where is the full series
-> > > again?).
-> > 
-> > Precisely around the call to kvm_arch_vcpu_ioctl_run().  I am planning on applying
-> > the patch that introduces the code for 6.10[*], I just haven't yet for a variety
-> > of reasons.
-> > 
-> > [*] https://lore.kernel.org/all/20240307163541.92138-1-dmatlack@google.com
-> > 
-> > > So for guest HLT emulation, there is a window between
-> > > 
-> > > kvm_vcpu_block -> fire_sched_out_preempt_notifiers -> vcpu_put 
-> > > and the idle's task call to ct_cpuidle_enter, where 
-> > > 
-> > > ct_dynticks_nesting() != 0 and vcpu_put has already executed.
-> > > 
-> > > Even for idle=poll, the race exists.
-> > 
-> > Is waking rcuc actually problematic?
+Le Tue, Apr 30, 2024 at 11:17:12AM +0200, Valentin Schneider a écrit :
+> The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
+> RCU_WATCHING, and the 'dynticks' prefix can be dropped without losing any
+> meaning.
 > 
-> Yeah, it may introduce a lot (30us) of latency in some cases, causing a 
-> missed deadline.
-> 
-> When dealing with RT tasks, missing a deadline can be really bad, so we 
-> need to make sure it will happen as rarely as possible.
-> 
-> >  I agree it's not ideal, but it's a smallish
-> > window, i.e. is unlikely to happen frequently, and if rcuc is awakened, it will
-> > effectively steal cycles from the idle thread, not the vCPU thread.
-> 
-> It would be fine, but sometimes the idle thread will run very briefly, and 
-> stealing microseconds from it will still steal enough time from the vcpu 
-> thread to become a problem.
-> 
-> >  If the vCPU
-> > gets a wake event before rcuc completes, then the vCPU could experience jitter,
-> > but that could also happen if the CPU ends up in a deep C-state.
-> 
-> IIUC, if the scenario calls for a very short HLT, which is kind of usual, 
-> then the CPU will not get into deep C-state. 
-> For the scenarios longer HLT happens, then it would be fine.
+> Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 
-And it might be that the chosen idle state has low latency.
-
-There is interest from customer in using realtime and saving energy as
-well.
-
-For example:
-
-https://doc.dpdk.org/guides/sample_app_ug/l3_forward_power_man.html
-
-> > And that race exists in general, i.e. any IRQ that arrives just as the idle task
-> > is being scheduled in will unnecessarily wakeup rcuc.
-> 
-> That's a race could be solved with the timeout (snapshot) solution, if we 
-> don't zero last_guest_exit on kvm_sched_out(), right?
-
-Yes.
-
-> > > > >         /* Is the RCU core waiting for a quiescent state from this CPU? */
-> > > > > 
-> > > > > The problem is:
-> > > > > 
-> > > > > 1) You should only set that flag, in the VM-entry path, after the point
-> > > > > where no use of RCU is made: close to guest_state_enter_irqoff call.
-> > > > 
-> > > > Why?  As established above, KVM essentially has 1 second to enter the guest after
-> > > > setting in_guest_run_loop (or whatever we call it).  In the vast majority of cases,
-> > > > the time before KVM enters the guest can probably be measured in microseconds.
-> > > 
-> > > OK.
-> > > 
-> > > > Snapshotting the exit time has the exact same problem of depending on KVM to
-> > > > re-enter the guest soon-ish, so I don't understand why this would be considered
-> > > > a problem with a flag to note the CPU is in KVM's run loop, but not with a
-> > > > snapshot to say the CPU recently exited a KVM guest.
-> > > 
-> > > See the race above.
-> > 
-> > Ya, but if kvm_last_guest_exit is zeroed in kvm_sched_out(), then the snapshot
-> > approach ends up with the same race.  And not zeroing kvm_last_guest_exit is
-> > arguably much more problematic as encountering a false positive doesn't require
-> > hitting a small window.
-> 
-> For the false positive (only on nohz_full) the maximum delay for the  
-> rcu_core() to be run would be 1s, and that would be in case we don't schedule out for 
-> some userspace task or idle thread, in which case we have a quiescent state 
-> without the need of rcu_core().
-> 
-> Now, for not being an userspace nor idle thread, it would need to be one or 
-> more kernel threads, which I suppose aren't usually many, nor usually 
-> take that long for completing, if we consider to be running on an isolated (nohz_full) cpu. 
-> 
-> So, for the kvm_sched_out() case, I don't actually think we are  
-> statistically introducing that much of a delay in the RCU mechanism.
-> 
-> (I may be missing some point, though)
-> 
-> Thanks!
-> Leo
-> 
-> > 
-> > > > > 2) While handling a VM-exit, a host timer interrupt can occur before that,
-> > > > > or after the point where "this_cpu->in_kvm_run" is set to false.
-> > > > >
-> > > > > And a host timer interrupt calls rcu_sched_clock_irq which is going to
-> > > > > wake up rcuc.
-> > > > 
-> > > > If in_kvm_run is false when the IRQ is handled, then either KVM exited to userspace
-> > > > or the vCPU was scheduled out.  In the former case, rcuc won't be woken up if the
-> > > > CPU is in userspace.  And in the latter case, waking up rcuc is absolutely the
-> > > > correct thing to do as VM-Enter is not imminent.
-> > > > 
-> > > > For exits to userspace, there would be a small window where an IRQ could arrive
-> > > > between KVM putting the vCPU and the CPU actually returning to userspace, but
-> > > > unless that's problematic in practice, I think it's a reasonable tradeoff.
-> > > 
-> > > OK, your proposal looks alright except these races.
-> > > 
-> > > We don't want those races to occur in production (and they likely will).
-> > > 
-> > > Is there any way to fix the races? Perhaps cmpxchg?
-> > 
-> > I don't think an atomic switch from the vCPU task to the idle task is feasible,
-> > e.g. KVM would somehow have to know that the idle task is going to run next.
-> > This seems like something that needs a generic solution, e.g. to prevent waking
-> > rcuc if the idle task is in the process of being scheduled in.
-> > 
-> 
-> 
-
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
