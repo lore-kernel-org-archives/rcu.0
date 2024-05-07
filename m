@@ -1,57 +1,57 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEA715E5AE;
-	Tue,  7 May 2024 09:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D956215E1E5;
+	Tue,  7 May 2024 09:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715074556; cv=none; b=hXlHrj9B9cYyUlihqAxjBYri4uNT5kof1i2bUHMyXX9WUTCAfKjAnbK2KhNy00ezgdzwsG/BERwmHABzov+rnCayWDxTnX5u8jyW9cDgWdFnQfn4IpoL3MgHQ/+4s8cU8m455yQ1+3Nyv1p3L8x+ShR/WjJHfL5/i5lT/X1xquo=
+	t=1715074556; cv=none; b=nVn11yL4sMRfK6uC/COz1SLknkI3rXb2ffkF1wdJxiAu1hPUjWJZ6efdtv7WhsJK69wdDtI2no4HrLpI6gudn1aAHuYXByIPjVR9VDtxsZ7Ru/Sb4oP51zXcVk9FUsdrDyNTrsHc/tUL1qewe8o5siaHiVOnLmjwETjFjezSkZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715074556; c=relaxed/simple;
-	bh=1h5PTnEjN3XTAEqeqf7c//E2/U6L7mwbdJGy/pN+PlU=;
+	bh=zfE0jzpc3gN4d7Fx9F2XDO5M9JRfm30TahjMHP8f+8Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=F8Tbde0AFir726XfPtjEUnwTlQ/Fhw0qf8zj7zUM5PdPTv77z+dJ0NlZXesZgxtgIt0vR8t4viTOjEtSbkpytBZGKXNf4OWE/v9QmA4Gf7sLUVFUuWXLvHYyxC0orSj7e66F2T2nVUoL4SoPjcmRroGpwYbg+/BuxCuyJM94sJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EOE9b1mN; arc=none smtp.client-ip=209.85.208.178
+	 MIME-Version; b=utBuqLiaXi3dFEACZfs5us/sMjeGcLN8jf7FZqx3FM/dppwaeKB3dtZszYtr2UXFeFkRX7czymW2T2g5bFMcq/qXMPcRnq03+0u+Lh34YpChv4JYTRz3f6mFE5TLq+NY373U9WN2jkUCf6xRnVwJSqiJ1VnNzaC4jWD0SFR29bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bQla54pN; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EOE9b1mN"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2df9af57b5eso38860561fa.2;
-        Tue, 07 May 2024 02:35:53 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQla54pN"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2e1d6166521so42221031fa.1;
+        Tue, 07 May 2024 02:35:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715074552; x=1715679352; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715074553; x=1715679353; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pp3uSRTGzyTrrsXKNuVnjxaJ4vNThArGqCT0EkGmYcg=;
-        b=EOE9b1mN729TAe548gtngGm6HviMcXY8bpaGi8vjIrTO9ETLmsDDAK0INMuNC7RtJA
-         GGfcJaiH5VKQjYl4m0c2W1RNsBDsA3kMh1u01XTGPfm2OxfM54Zm45GCaFzYtODF3tyX
-         bhETmzRc+hmNN37e6xB9g++MGHnidTQdB2GNdMReVZwI/AwBabI6v5CSsalu3nKb/KjL
-         suZG9gkbw8Yl1br5/LPIm7wD888/7dmb0iq8etXv+VopnEF4HHCSuqPPyODjvqRErTUH
-         N4/gfE7EBT5UE7BgLa1Ax7MHBu8NWEGC+2U3quHZGOYzdSrm0hwb2i/CUE3uxaohQBbY
-         Fi0Q==
+        bh=VAJsYakYPuzaiyx0tsxsRzlSG1LGaCLezN9z7sN3Trk=;
+        b=bQla54pNU/AWLRtf8gB4cUHCrmGsOZ9S1O/TUwWSSEv4NDyGqsVEK6tvZxViqQQKz+
+         2Un2jv4lB3zThS4ccNtPXIY6d8XmYz7ot9D+4/3q/KA1WsjoPHQMaRcb8ZFYaH/3Swy4
+         CSKnNP85PT03OTLt/X33KpMCpLmTjZzA7twWSydtXWjSy/tjN09/cqdx9i3OAHf4P6Sa
+         WggZlClAQPDMnMI/vDbpjk4IXOa8GbcIMYd/ZlxrVTjo+7tiTsZPuIosRz93i6dktMpI
+         ubsyHb9PzDGbiRVrECjOP8kqvv5nwSEV+wdbAgXQbC5OK0ok/MtpTVBcrNH1905rZMDx
+         Cbxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715074552; x=1715679352;
+        d=1e100.net; s=20230601; t=1715074553; x=1715679353;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pp3uSRTGzyTrrsXKNuVnjxaJ4vNThArGqCT0EkGmYcg=;
-        b=AWzs0qVSaYei5Ca5Jj39uEG+d6L1Ze86A6fAw2Tw+lGJcHBE8zfUN5MPhzNj/rt3qj
-         0EPeebyTfWNRgnsnJCJBR6C+YZN8O8Uj6t/MW/wjiQ41Qpvz7XtZbP3pur3X8vV+aRVR
-         zcGkX12NTnhWMUq+ZRsz9hIpaQD32WXieRYTbLpnElQPuYh9/aga2kYTud6jVIodqlUL
-         kOo1gDa69aj925f9rEwFSIIu9CxgseFr1o4PoLAb0w+6BhV66S7eMbojsRsVSckUjlvg
-         uFdTFa5L1vAP5whmUHHMnZIrnU9bGcY/6LYTzUovhPt+tfu3yRlfbEBgNEzYrf9YIbCJ
-         sMtA==
-X-Forwarded-Encrypted: i=1; AJvYcCVN194zQzSqj9eLv62CPiJ2ICQ1vYHOaT+WfHW/IKpeNl5qE4sMmmjDU6CP9VNvtwYLbeKteEy8KP0UtfHCpIPy6o2NYkoPBJvFDY3i
-X-Gm-Message-State: AOJu0YyBW1vNPyUTAH0fRvQMuznwXRt5/Ry8V8jRvj5lATHCijZnKlve
-	Ep/ZPmIg1SJ17s+/yxtQ4ec0+rJ787+FIWyrsJUhEUB2bMsTWM0Z
-X-Google-Smtp-Source: AGHT+IE97GB1z3q/6z5Vg5BApF0/HQT/0T3sW/RXQGwdM0BmQEs65+Yo/TSCby+tMP48EVe8SiCQ0A==
-X-Received: by 2002:a2e:be8e:0:b0:2dd:cb34:ddbc with SMTP id a14-20020a2ebe8e000000b002ddcb34ddbcmr12375237ljr.48.1715074552165;
-        Tue, 07 May 2024 02:35:52 -0700 (PDT)
+        bh=VAJsYakYPuzaiyx0tsxsRzlSG1LGaCLezN9z7sN3Trk=;
+        b=b7C1fHTPnmNrLQ5KieZ1ewjsIgVQsLpvfRFmx7mRbE9cAEW7gR9B8W+VuggWQXkHKb
+         DbOMgCaM5zgjdRfmmYYgQefecUDLkeB67/NnxLGbzFgOOJjKA0+NvTdlTPDrGmSzkscT
+         f9mYgQXM/yIwfJfsVLl+KuN3Eh5oVNRcmQQevCQw1a58T7XL8Cl/SW/Hyp82a9l3+kxR
+         YZTrNx1bRaAbjOQ9EXseXp+I9g1zh/LDeILds06it32xjy9MBdB0GNquFCAvznzGoYcx
+         pTFjpcMipTr3t1ZDKYHdN66p6Lk+8zXQCtgD7BWwFBUxYn4ApCNVa7LkD243Evew7nRk
+         hH5w==
+X-Forwarded-Encrypted: i=1; AJvYcCXlEA4BKO3RvM+j4VRnoBv07iaP/axORqco0KIMopcJpixhtrlOUn/2KLvlmHL/oIvd74tXflM0m5scHuju6jD/PFq+ARD7rrfvSHhL
+X-Gm-Message-State: AOJu0YxZ3+SO5yfMhXEPIc3w19LZweCQWismQPIiFUuxxJHo8q/+5iVg
+	ta+WepJXxD1U84iTKeGG+znKmL7DybIzM6hQagluOnjdiv50mSWkBL8bLbmn
+X-Google-Smtp-Source: AGHT+IFHkxQwlfbiNpBbu7tJ+xnduiAQ17o62nmnxK29X7BBRylBpjE6EC6cV1+IWSFFcZIOYcYNkQ==
+X-Received: by 2002:a2e:99d7:0:b0:2df:4bad:cb68 with SMTP id l23-20020a2e99d7000000b002df4badcb68mr709364ljj.16.1715074553013;
+        Tue, 07 May 2024 02:35:53 -0700 (PDT)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.51
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 02:35:51 -0700 (PDT)
+        Tue, 07 May 2024 02:35:52 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: RCU <rcu@vger.kernel.org>,
@@ -62,14 +62,10 @@ Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH 20/48] rcu: Create NEED_TASKS_RCU to factor out enablement logic
-Date: Tue,  7 May 2024 11:35:02 +0200
-Message-Id: <20240507093530.3043-21-urezki@gmail.com>
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 21/48] rcu: Remove redundant BH disabling in TINY_RCU
+Date: Tue,  7 May 2024 11:35:03 +0200
+Message-Id: <20240507093530.3043-22-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240507093530.3043-1-urezki@gmail.com>
 References: <20240507093530.3043-1-urezki@gmail.com>
@@ -83,46 +79,31 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, if a Kconfig option depends on TASKS_RCU, it conditionally does
-"select TASKS_RCU if PREEMPTION".  This works, but requires any change in
-this enablement logic to be replicated across all such "select" clauses.
-This commit therefore creates a new NEED_TASKS_RCU Kconfig option so
-that the default value of TASKS_RCU can depend on a combination of this
-new option and any needed enablement logic, so that this logic is in
-one place.
-
-While in the area, also anticipate a likely future change by adding
-PREEMPT_AUTO to that logic.
+The TINY_RCU rcu_process_callbacks() function is only ever invoked from
+a softirq handler, which means that BH is already disabled.  This commit
+therefore removes the redundant local_bh_disable() and local_bh_ennable()
+from this function.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/Kconfig | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/rcu/tiny.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index 7dca0138260c..3e079de0f5b4 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -85,9 +85,13 @@ config FORCE_TASKS_RCU
- 	  idle, and user-mode execution as quiescent states.  Not for
- 	  manual selection in most cases.
- 
--config TASKS_RCU
-+config NEED_TASKS_RCU
- 	bool
- 	default n
-+
-+config TASKS_RCU
-+	bool
-+	default NEED_TASKS_RCU && (PREEMPTION || PREEMPT_AUTO)
- 	select IRQ_WORK
- 
- config FORCE_TASKS_RUDE_RCU
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index 705c0d16850a..4470af926a34 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -130,9 +130,7 @@ static __latent_entropy void rcu_process_callbacks(struct softirq_action *unused
+ 		next = list->next;
+ 		prefetch(next);
+ 		debug_rcu_head_unqueue(list);
+-		local_bh_disable();
+ 		rcu_reclaim_tiny(list);
+-		local_bh_enable();
+ 		list = next;
+ 	}
+ }
 -- 
 2.39.2
 
