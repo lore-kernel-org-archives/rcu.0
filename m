@@ -1,55 +1,55 @@
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2614C156F36;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECFF158A37;
 	Tue,  7 May 2024 09:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715074548; cv=none; b=oxUnVqEU7lVrPQ3a6LZUB/8FMblrj+9EZdgcFMkLRKIyDfX8w6g2cli0ZkC5Wfhp9K9emq3/+CHtKpoW0dAuXvYxKtV+0ohN5mZxqcioK5rJfwEun+uPUNoqEU7HImYGmCDyQZgmKH8YerbCxLYPVcd66u0B61l6c2sKdkRTv8g=
+	t=1715074550; cv=none; b=Ki4PX7XjMl/CMLb+M2F1PpN1qqqMRhLbI8bqKml2KF4oCNbTxEbmqgGGhrvGZdp/WgHdPaHwL5RdIss5KeSJ1Vey0jFDQzk0HhFB47oYioLdA0eaCKz6lSMoDTQxU2LISEQTDyPLO8H5RdYaMudBjkVRGWk1SNZ/41TCfxNu+uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715074548; c=relaxed/simple;
-	bh=uI1wZYUdEsHG1vr/UD/ng0oR9crfeMvCEO8dnQg07kM=;
+	s=arc-20240116; t=1715074550; c=relaxed/simple;
+	bh=bHpVyST44tF4T9zshldUiiEXw2+O/L/8cC2lpkSqiIU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RbWAF6zOqdTbBWwde892XP+1ysZN4nlPAXhfGPOJFvX00+LH0iWSH6XeCbGugdjsvuRww8G6GFF4pm1CYyQYNftY93qgpOU2f26xRo/O17BdSpIYqACBsmnSL+betDSOYnHU0OF79LCL9+eb1K2/GibhBYo6XrN4JlL6MgTaemY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CLQDeegI; arc=none smtp.client-ip=209.85.208.173
+	 MIME-Version; b=hnuTpwclRP+OzmSjPhkNiqeCALZIQ61M1U9Ogk6zWF6HcDyRjPXYmjJiR8ILT5nfrryaNDvYpGhAE1FIMl769uOMiXxUjfkjRVQ/ZT+kewm1ys0ev5+dLKvrbUTGiXM+lrUDrsxJ/Fpfc0lOoXVLg+EGnuYM6fsloakseT+SUSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gmPCNE3M; arc=none smtp.client-ip=209.85.208.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CLQDeegI"
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2e0a0cc5e83so29085011fa.1;
-        Tue, 07 May 2024 02:35:46 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gmPCNE3M"
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2e3f6166e4aso7188491fa.1;
+        Tue, 07 May 2024 02:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715074545; x=1715679345; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715074546; x=1715679346; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9khWE7rlDVNG5sjle6yOolXySu0ObdFH96voTvp2Qf4=;
-        b=CLQDeegInkUSqAvqe+S8qHHa3bUS5VAhJUngZl6s5hA8v+wvH9BCKk8/Bk0lEtO5ku
-         svOZKolrB14Ivox+oWC2QVLfDudX3vLM3wdYPHP3jeLHs1ZbkugavmyGNGG8j3ckpwTv
-         yI7g6i5Q1FOi5/WKBpC0JTOqfKG+MK8/9U40t/X2lhIQF1g8KErpIlSKChTauDKQV7rr
-         WtHMDYo6vuLeHm9oDC8lz/oDi/NlTcqFZC7j93661wV3yXhK5MUOiQffFpfwHS0ucsmV
-         h0p/73k8cIWqJH/O2PSLRErtJjEyQEYTz7UJ4TyD9YTWUQiXGFZsqjYvzrwcJAYOTpa9
-         /m5w==
+        bh=Yj9chs7bm2QTr68OIU1XSJLLlP4/vHDWkmUWKji8NeI=;
+        b=gmPCNE3McolKMXC5ZYfscVhmcO1TvunGl3BJ1EymyBC4MWokKfNeRJACHZGBBVcGmh
+         XlyvZS7gY50kuHAxFNg2iCHi8+YFAar2vD8bheDU43pnSgnonLuDUHUUYhEU/JwQtZJo
+         OvQaBUYjhEHsxViMyo2vyhzICI1aq+gsw6Ju6eqiXdRSssdSEWfU3XwgwfaDSXprkMbM
+         Jo/RNNKeyYYMLWSLsNFdWl/m5zDFrvexbJwmLuDmSx6MmaTJSyVcTXXWh4kj1uxvISoo
+         bK9TAA4YmAZo6ugGzP1e/jL6qLHVWJqUpIiKCpsOE5IAoY4b7zKHIZSNVwhzCpOqyVOp
+         p7RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715074545; x=1715679345;
+        d=1e100.net; s=20230601; t=1715074546; x=1715679346;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9khWE7rlDVNG5sjle6yOolXySu0ObdFH96voTvp2Qf4=;
-        b=a9H1L+D24Qo/kRtoYL6h7e5M6bL0HkyvjCKyHXjmAYRRslZWC0EnPiWwn2IKTeW80M
-         0fiwAvexrQa8LgDphnSaP3Idw/QRfcZa3j8Gb2MX58rtxz/oker4VDEevCN4a2OUHcjo
-         hJ4q1kittb7jPxNq2QzXa0SOhlSZU9nIpAgqxFGh9GIFAlV9Gs7aQ0v8zPbOrXnChO2L
-         ToAPFoU4YsZdp27bx2wNjTYWfVe3GmXeOlV8EfrSawbAEXwty9uvOypjEZjCgMqkzi5r
-         Bir1R7HSLGaHip3KeH6+0Y9zBtGfB9V31snCQ0/DKcWPWqv0wDgNfDmyubGt9Xq8SA8e
-         oFJw==
-X-Forwarded-Encrypted: i=1; AJvYcCUi4mOFs6yPkNfPIpHe4YfQFFGMoP5X8RyAeODZMV/BMTY39KLeOcHsicLXQ8mgRBoOe88NHJHS8PhOn9Yj5arOjqZ/QDMtCKN/8XlD
-X-Gm-Message-State: AOJu0Yx+YXyLwQ9/Pcs53DXUGG6/KWXsQerT1U7ihfqczUekcwMArhOj
-	k7KPBIfbVQDCKeUb24EYXG7U2ikeD2qFAEtLzDi3HsyT36ksTblT
-X-Google-Smtp-Source: AGHT+IGz8XnvZ8KkknLMrsQ7bPyorVmuS3zglfZMTVnQ3etWj7zmuGV3RWijd25RAAzMNeZbT7uXpQ==
-X-Received: by 2002:a05:651c:604:b0:2e0:4cbb:858a with SMTP id k4-20020a05651c060400b002e04cbb858amr6192750lje.27.1715074545378;
-        Tue, 07 May 2024 02:35:45 -0700 (PDT)
+        bh=Yj9chs7bm2QTr68OIU1XSJLLlP4/vHDWkmUWKji8NeI=;
+        b=d8efuk23QaekLsj49Nm0XUrq6ifLP5V3GQEwUked1ODyUCo0ZHYqFrhVXV+EPkou3i
+         0DhVCmTv9eMcYp5Q5rLilxeXWUuHaFH5NxkDPZZCKEB0ioLR4w2KnoIUJ2zl5pVBfSIO
+         pi+whBhPoCK6zSCZq9iLJDLTbXf77RQQA2rKBWAhaHKT7XEMrveBVUf2E7ebx5jwxbJu
+         zByI7kRgDeLYrS79dVjt9tlNphZ55iBg1VtLdhYyoXCRdtC2jxDbnEbSkx4Ouo+xdfN5
+         zpxlyTcT+h05bQsiBnbMAEgN39LH8RSlWMTdUVh59cZT5nXg+wAxaWa9RkF67YTrfNO+
+         WiRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcIPcBTrq6rCSF+Uf59yDeY6geB9gctmgeB1FkViLChBv6uq6WX0lYjwVxo6WAymX24dpspzNSzEqBL8WVOce2PmtpLQkJOF5hoP07HcQBRfx/TrCcAGxOBWsyzxl18V4FjPxRlab6ijL9stK5Jylv
+X-Gm-Message-State: AOJu0YyYJ7IslmLk+YIaZGYphiE2pYl28q9lcTcBPAxt15Xz535PDdqI
+	hBPDreo7vFBIT6S/60FV5pWW8BpCyhgdUzZ6JaVujsp3j8AQeRpT
+X-Google-Smtp-Source: AGHT+IEOauf9hq+Z225wSpCSM8stmekpSw5GxESD2O7JL7gGXrziPe3FLkwTMOzEhMXKzlo+hwk88w==
+X-Received: by 2002:a2e:7a14:0:b0:2e1:c636:168a with SMTP id v20-20020a2e7a14000000b002e1c636168amr9523289ljc.24.1715074546347;
+        Tue, 07 May 2024 02:35:46 -0700 (PDT)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.44
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 07 May 2024 02:35:45 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
@@ -62,10 +62,17 @@ Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 13/48] rcu: Add data structures for synchronize_rcu()
-Date: Tue,  7 May 2024 11:34:55 +0200
-Message-Id: <20240507093530.3043-14-urezki@gmail.com>
+	Frederic Weisbecker <frederic@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-trace-kernel@vger.kernel.org,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH 14/48] tracing: Select new NEED_TASKS_RCU Kconfig option
+Date: Tue,  7 May 2024 11:34:56 +0200
+Message-Id: <20240507093530.3043-15-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240507093530.3043-1-urezki@gmail.com>
 References: <20240507093530.3043-1-urezki@gmail.com>
@@ -77,47 +84,52 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The synchronize_rcu() call is going to be reworked, thus
-this patch adds dedicated fields into the rcu_state structure.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Currently, if a Kconfig option depends on TASKS_RCU, it conditionally does
+"select TASKS_RCU if PREEMPTION".  This works, but requires any change in
+this enablement logic to be replicated across all such "select" clauses.
+A new NEED_TASKS_RCU Kconfig option has been created to allow this
+enablement logic to be in one place in kernel/rcu/Kconfig.
+
+Therefore, select the new NEED_TASKS_RCU Kconfig option instead of the
+old TASKS_RCU option.
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: <linux-trace-kernel@vger.kernel.org>
+Cc: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ kernel/trace/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index df48160b3136..b942b9437438 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -315,6 +315,13 @@ do {									\
- 	__set_current_state(TASK_RUNNING);				\
- } while (0)
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index 61c541c36596..6cdc5ff919b0 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -163,7 +163,7 @@ config TRACING
+ 	select BINARY_PRINTF
+ 	select EVENT_TRACING
+ 	select TRACE_CLOCK
+-	select TASKS_RCU if PREEMPTION
++	select NEED_TASKS_RCU
  
-+#define SR_NORMAL_GP_WAIT_HEAD_MAX 5
-+
-+struct sr_wait_node {
-+	atomic_t inuse;
-+	struct llist_node node;
-+};
-+
- /*
-  * RCU global state, including node hierarchy.  This hierarchy is
-  * represented in "heap" form in a dense array.  The root (first level)
-@@ -400,6 +407,13 @@ struct rcu_state {
- 						/* Synchronize offline with */
- 						/*  GP pre-initialization. */
- 	int nocb_is_setup;			/* nocb is setup from boot */
-+
-+	/* synchronize_rcu() part. */
-+	struct llist_head srs_next;	/* request a GP users. */
-+	struct llist_node *srs_wait_tail; /* wait for GP users. */
-+	struct llist_node *srs_done_tail; /* ready for GP users. */
-+	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
-+	struct work_struct srs_cleanup_work;
- };
- 
- /* Values for rcu_state structure's gp_flags field. */
+ config GENERIC_TRACER
+ 	bool
+@@ -204,7 +204,7 @@ config FUNCTION_TRACER
+ 	select GENERIC_TRACER
+ 	select CONTEXT_SWITCH_TRACER
+ 	select GLOB
+-	select TASKS_RCU if PREEMPTION
++	select NEED_TASKS_RCU
+ 	select TASKS_RUDE_RCU
+ 	help
+ 	  Enable the kernel to trace every kernel function. This is done
 -- 
 2.39.2
 
