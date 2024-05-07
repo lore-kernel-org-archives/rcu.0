@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EB916D4DF;
-	Tue,  7 May 2024 13:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D0213C3FA;
+	Tue,  7 May 2024 13:48:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715088760; cv=none; b=C9zGORXu2vhiYw+njxX1o/zBtWqoUKReQsqLFcFgYIrzNXsLuupYLl05paXLI4tTqT9Hjyo64bzg3q2cz2kx+om4UxHaSKl8PtbfBdp6kOcUPUpcU7lyNgSVC0Ru7809/zosmBEa+QuHmmiivdC0CkBcpI+41nY5FBzydhUitJg=
+	t=1715089701; cv=none; b=PHK54a8vTKe4rGCV6IwDAmeXb6OyXtgg+1vjQGVQN0dUIn1tyV/YQSJ5pEtP+IFNHtXyJF+ATmgFW+A1Kmwx9TGElvywGFW6UsWC7HETVFnlxvlPhW3je0rJ5htSpB6suxhXfNOoPvmD37ty4awlCIHXApCvrJVtUnRdhvGWfAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715088760; c=relaxed/simple;
-	bh=G6I17PDBQdLIDBAVhfjVBp/SrAW4GX4/wPzwmMQSKYw=;
+	s=arc-20240116; t=1715089701; c=relaxed/simple;
+	bh=+JnVkJ/DcmtF++oBXep2XfQOhJAgJTlRFNVTNBDM/Es=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JUUkJgWhEJthIC3d/V9DrS77A/h+VrgPWZAwdsl9/WaldqRteVND5FeaYP4cNk++k64HDNTmiyFgKd+h6vxUM2YQA0e6TsHpJSs1iXgUHf2DI2BReyzJPdj3Vk07OJu0jVHPWlZu3r8QXlAlCQU8uGITmNoBBoViGQt8Dupt6x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PPVM6tgY; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=IUadxnJ638Mm+kIcM49Z8G1FYkCXb9YtBRp7Q7lRSfaFZyjhkHpGhHMno7dd2DgUvn+PB4APva/A+/j+1HDy19A1pdu7psY4buzHSRRKynzb0VDGCpvtAl3DV026gDa9q3FG/n84TACOG/TpOvSA0y9aR+h/sO29r1fvMHnZ1bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uAjqF1d9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PPVM6tgY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 529E2C3277B;
-	Tue,  7 May 2024 13:32:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uAjqF1d9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75EC5C2BBFC;
+	Tue,  7 May 2024 13:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715088759;
-	bh=G6I17PDBQdLIDBAVhfjVBp/SrAW4GX4/wPzwmMQSKYw=;
+	s=k20201202; t=1715089700;
+	bh=+JnVkJ/DcmtF++oBXep2XfQOhJAgJTlRFNVTNBDM/Es=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PPVM6tgYD0JdV7kF9pFpuUUG/SmXrDjBL3V4gGBLj05sJH+TsGk/K2R7NAmMT/mrz
-	 oUN+ueHb1ZTrKScUeZVpBLk7NN7F5SOdGocLE162Qf5kDa+mpBSwBcYZVx1PBEUKY+
-	 OYzw8voqQymQyCxDuoim5dkWKd1wuCae0CfTcm1eABBTZUMaH4dZWG1Cu4mbLM6A6C
-	 k+1YhnWb5PrPrO1cA/LjjV8qvECmwFRyeCzxe3Hb3BPq1m6mnKAKMIC6dbazZigoJE
-	 3l3Urdk991Hoqjy2I/T9HHQNDvJuvktJAvKFAq0bwflwIqnUf9UFDiOK4FWFZ92qc7
-	 Lp+8/fNIywzAg==
-Date: Tue, 7 May 2024 15:32:36 +0200
+	b=uAjqF1d9EG9EYBgOPPCxw2xFDVNjHOr1ObHDHvILc1AkJJVvpNT7pwmazxkUmtlzR
+	 CpXw2Bekil7em9ppS4Od7qTonPrs0GQtxAzzM/rcvi5XpX6lb+r5jyA1UikMHbJBOU
+	 LaKbBArTAOtVAofLOVh0q2nFGOmsdk7eRPPSRSkVU2exICz5La/12Ye4328Ew2zIbB
+	 DzW5hlfPeapryWv2dkWxF/KHQhpoLsuym8OOgCaeNRABA7O1sVOm0eTuCzGIORLMda
+	 RbLiqAq62gtb6tU8GNk+7qWFieSm98tGBtK8gbMYT/wX5q/s5c2Yux7Zut7cI5iyag
+	 uDUdeVahFkNrg==
+Date: Tue, 7 May 2024 15:48:18 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Valentin Schneider <vschneid@redhat.com>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -40,11 +40,11 @@ Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 17/27] rcu: Rename rcu_dynticks_in_eqs() into
- rcu_watching_in_eqs()
-Message-ID: <ZjotdJwp3RXkrA7S@localhost.localdomain>
+Subject: Re: [PATCH v2 18/27] rcu: Rename rcu_dynticks_in_eqs_since() into
+ rcu_watching_changed_since()
+Message-ID: <ZjoxIhtCw4Pov0VH@localhost.localdomain>
 References: <20240430091740.1826862-1-vschneid@redhat.com>
- <20240430091740.1826862-18-vschneid@redhat.com>
+ <20240430091740.1826862-19-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -54,38 +54,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240430091740.1826862-18-vschneid@redhat.com>
+In-Reply-To: <20240430091740.1826862-19-vschneid@redhat.com>
 
-Le Tue, Apr 30, 2024 at 11:17:21AM +0200, Valentin Schneider a écrit :
+Le Tue, Apr 30, 2024 at 11:17:22AM +0200, Valentin Schneider a écrit :
 > The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
-> RCU_WATCHING, reflect that change in the related helpers.
+> RCU_WATCHING, the dynticks prefix can go.
 > 
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-> ---
->  kernel/rcu/tree.c       | 8 ++++----
->  kernel/rcu/tree_exp.h   | 2 +-
->  kernel/rcu/tree_stall.h | 2 +-
->  3 files changed, 6 insertions(+), 6 deletions(-)
+> Furthermore, the "in_eqs_since" part confuses me, as IIUC this only checks
+> for a change in watching/eqs state, not that RCU transitionned *into* a
+> EQS after the snapshot was taken.
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 857c2565efeac..d772755ccd564 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -308,9 +308,9 @@ static int rcu_watching_snap(int cpu)
->  
->  /*
->   * Return true if the snapshot returned from rcu_watching_snap()
-> - * indicates that RCU is in an extended quiescent state.
-> + * indicates that RCU in an extended quiescent state (not watching).
+> e.g. if
+>   snap = 0b1000 (EQS)
+> and the following rcu_watching_snap(CPU) is:
+> 	 0b1100 (watching)
+> then
+>   rcu_watching_in_eqs_since(rdp, snap) -> true
+> 
+> but because RCU was already in EQS at the time of the
+> snap - it hasn't entered EQS "since" the snap was taken.
+> 
+> Update the name to reflect that we're only looking at watching/EQS
+> transitions, not specifically transitions into EQS.
 
-*is in
+Indeed in practice the function only checks a change. But semantically it really
+checks a trip to eqs because this function is only ever called after a failing
+call to rcu_dynticks_in_eqs().
 
->   */
-> -static bool rcu_dynticks_in_eqs(int snap)
-> +static bool rcu_watching_in_eqs(int snap)
-
-I would be tempted to propose rcu_watching_snap_in_eqs() but the
-purpose is not to dissuade people from intoning RCU code after all.
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-
+So not sure about that one rename. Paul?
