@@ -1,57 +1,57 @@
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE5215E7F1;
-	Tue,  7 May 2024 09:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5BB15E818;
+	Tue,  7 May 2024 09:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715074557; cv=none; b=sJt1t994C94SXxgmGS/VITWnNtEwshaCiyLS9WmaSskc9OJ+Eb2IN5sV9wldY5CK/aesmcmBp8SnA6rK+mdWv/v5tuvazeICd/jE3gJUAxjNqklCNCvpua4t6weoqL3b/OvCWCwDeem3WDZvF0OojfT0KrD/6Mh2bJB2ud7ODV0=
+	t=1715074559; cv=none; b=V+fIsk8QHADVyT4fMGYbwsYb8d4n0puTtfeXoCHAem8OjmOQLHU9N2FK7Ef8b0WegvGewN0J5YeNGh3MP72LuLzPP7wC2L72xvXtIJCcrWVVgyTIHjWgLzQmBIX/haLmFHN7wYtvUrTPlv/OLkHTCRuWcBBYPrxHMPN+Jpj1B9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715074557; c=relaxed/simple;
-	bh=EOftjnAZd5uf9q9CC9tawmar6GdKcCD7no4cBP4OAig=;
+	s=arc-20240116; t=1715074559; c=relaxed/simple;
+	bh=UN+MaHfAdkJ1rWWOKXorY2bu4/QkrbWb/32kAy3Tizk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GEj/wOB1rFcDZ1oqMd6Y3lKvCa3P5YG34fH0UUoS44ih9+THIiJ9J7CUGYdLGy5QxzEMnzaRIPKdswuR7SAHRadwxL6d8NUveLRAxqhWWXK3OGjKADUz4oRuV1HvRVHLB5AOp50FzsJWUlJwnetx/A9ebTKwr81OBKd4GjbsOhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ivoADhJA; arc=none smtp.client-ip=209.85.208.174
+	 MIME-Version; b=tM6FzsWezZysHZMpgEbPsUwCrUaSPRZq7n8GJkfESNGZYXSQttvHFyvt3ewav1ONBBdn/sT+5Dha21LujDJ/uYBx31uej977Db9Tz3/Fz/WRAvRCH9f/Vh3RbMfnCdwGSa2ZQOar+EdbDJ7anONL8641M2Mt922RqD+oLUT53q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C/9ws5iR; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ivoADhJA"
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2e1fa2ff499so43173921fa.0;
-        Tue, 07 May 2024 02:35:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C/9ws5iR"
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2e0933d3b5fso37210831fa.2;
+        Tue, 07 May 2024 02:35:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715074554; x=1715679354; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715074555; x=1715679355; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vrZOUbT7E5D7zH88y+EQ1yyWhied5edZTEw8B++TWpw=;
-        b=ivoADhJAQYkMTBI44dD18gwueUHJBmXbpooAG2ZwLPM0U76IRebeWWosrtoqKOybVF
-         131JoLZMvZWPRzMUWdgEBr9dh2JYCuaySidwMWK8V1SpFFAo8WCAzIRmOFcHG1VrlkiO
-         M8DgG14dJaFX2hi2v7hzsH61GUV8UQqsZgw2eJRNNfbsGp1xjAh0tIqGT1LUXjZoQMOD
-         4GsD+n38b8yggflGUxFhxYlmB+7wYDEKzdN1ol6UrG/tlhI8vCckXrJ8u1t7oo3e/8fM
-         Cj1lPo2xMdtv7ae86nzNncxjBaNDrYSxxMPOa/BC9V/zJNYnmAJ0j15TAXXKvDDZ3d6d
-         qd0g==
+        bh=WDinHeFOFRoHZYFqFBiK+RU+jTH857k5hI4wyyJy1g4=;
+        b=C/9ws5iR8Fd7KKkeQ4Kn59FJN5sknAPLxGAfMJU2gJ+0U9rlCvyWfgE6CVG5/d3KI3
+         HX1b/Eq5/7pJpR//flWqXWVNvxZ3HlCmnmw8BadZ3G/Nsame69eM5URWCI/2SDl6/sHc
+         Zoq2Q8ubZt7wZ3VmBwPfE+ba/IIbprm+8djhwENN4XnQJKL7WaOLUQPZhYsccs4GXNTS
+         XeO941Ov2rhSfWjakwRuAgdonXdw38AV4N1JVx25HjAwdwfbstQhqhX0NOleyBK+LTtg
+         P7x3j5AaYpvS+tKNTWr3Y+xCB/GICTDJ1Y2UKe38N5gSG0LEAVYS+mCFqfjl0/+wtqNv
+         t9gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715074554; x=1715679354;
+        d=1e100.net; s=20230601; t=1715074555; x=1715679355;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vrZOUbT7E5D7zH88y+EQ1yyWhied5edZTEw8B++TWpw=;
-        b=n33f+dDFC/X2HSk06HW5uGbDVsgdyfSNiD/0lJ0ZwZSu4yvkYDsgV8Hk4xZLptMWRd
-         ob4jsf2/971Kd01hO+WMGHWCVInjgWR+6y6zR8HDGEl8pEGBUJEeCeoPmNftsd0gNM5p
-         rlQ3YjDC1qB/1EsU+sTVXF5nGlCyZYRZ2bt/sfWvsfOCQF6HYHYuFS7Z7fHtVljr1Otu
-         fk2Px+N8qw6b5FH41gAWApexyDodKAqtD9PmQTjChWUfJvmcvowpj2xdBvf7WLQ/cusf
-         k6LqAIOhEu7exyf22N8iiWhv5VHg4qBIzYR5IZ0HY10qc6UTQ8+q6MwfI4bVB+7ZL9Bq
-         6iKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVWzsGzwwHNnvq2kKrrQSluyHPOXNehgYTIGy57ooY0mgZnGJ0HbjJqilM8ajZDjacTojjG0xaIONV6KEAn97/uUxS1lXVko6J2Rcen
-X-Gm-Message-State: AOJu0YwKq8ZusZ/J0uM9ujB55isA+760gZlJfwaaVgiLpgffCbjoh/pz
-	G3ZE4rqFhkJfpdQCpFkUwJgoY0DDWB0KuzP6tnP/zRUnXj7NeBdK
-X-Google-Smtp-Source: AGHT+IHFbrIdKIIUDzFISLiWsY7z6rdJ3rfIId7xJWmLEY2K9EoZ3Iq9bHUjbOEGDS6bgMUUAeXUFg==
-X-Received: by 2002:a2e:874b:0:b0:2e2:6f90:8b84 with SMTP id 38308e7fff4ca-2e3d9b8bb94mr7233901fa.17.1715074553998;
-        Tue, 07 May 2024 02:35:53 -0700 (PDT)
+        bh=WDinHeFOFRoHZYFqFBiK+RU+jTH857k5hI4wyyJy1g4=;
+        b=sQqXiyKYuDIrzDIoeHBLatF7DUfMZTXNvn/loJ38aj0Ch7eIFzNIIwcVtKUhE3s47K
+         6anJkYw18C5SQXTDBrvZpaVlSwBypEz9/m6092I2Zha+6gZCDhB/Q7E4bu9fiScgb+ua
+         W7wt7xo09MpPYXpoSYbWH0LdyeWpZWNRHJAIW6Rbn7ymsiwaK9D/VN9Eq7ECmGIAhdYH
+         mhgSqnOY1nj7hq73kKfvJln3Ailwws1A/3lXJCSPNihndWfop6PYYrvdyvBxAmPSSlKN
+         qHoyNUnOSEoBxxmJ37dFfNS49X5y4hK64NfW3+6JRnrnm69vN3Ngbo1obYpoQSnhYInw
+         ym1w==
+X-Forwarded-Encrypted: i=1; AJvYcCU9XtaAStYvvUQCW9FchbTIra3Xj98+Cc7YmiH4tu44tKCD85156DuCrhzUcdgRy5GXxtawV64QI6LoahAw3Crrego7FYvWMXXCj56T
+X-Gm-Message-State: AOJu0YwrNzw7SXiUQbBBEW4SElOucbFYwKySlPDOAClfHBJ6vDUCQ7oI
+	sOGkmtKX0GGXB+YMsijP6O4I8svaV1apT0sZ5wYl5I9PioJYc4tr
+X-Google-Smtp-Source: AGHT+IGFwWHJtNfle5tH6dVJd1sPaxZAFj/yLFYo/LOxrHHE0mYRMwj1W/uNqv+wKea2tN1WaCwzXA==
+X-Received: by 2002:a2e:981a:0:b0:2dd:409:3b25 with SMTP id a26-20020a2e981a000000b002dd04093b25mr8529160ljj.4.1715074554889;
+        Tue, 07 May 2024 02:35:54 -0700 (PDT)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.53
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 02:35:53 -0700 (PDT)
+        Tue, 07 May 2024 02:35:54 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: RCU <rcu@vger.kernel.org>,
@@ -63,11 +63,11 @@ Cc: RCU <rcu@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 22/48] rcu: Make Tiny RCU explicitly disable preemption
-Date: Tue,  7 May 2024 11:35:04 +0200
-Message-Id: <20240507093530.3043-23-urezki@gmail.com>
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH 23/48] rcu: Remove redundant READ_ONCE() of rcu_state.gp_flags in tree.c
+Date: Tue,  7 May 2024 11:35:05 +0200
+Message-Id: <20240507093530.3043-24-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240507093530.3043-1-urezki@gmail.com>
 References: <20240507093530.3043-1-urezki@gmail.com>
@@ -81,39 +81,66 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Because Tiny RCU is used only in kernels built with either
-CONFIG_PREEMPT_NONE=y or CONFIG_PREEMPT_VOLUNTARY=y, there has not been
-any need for TINY RCU to explicitly disable preemption.  However, the
-prospect of lazy preemption changes that, and preemption means that
-the non-atomic increment in synchronize_rcu() can be preempted, with
-the possibility that one of the increments is lost.  This could cause
-failures for users of the APIs that poll RCU grace periods.
+Although it is functionally OK to do READ_ONCE() of a variable that
+cannot change, it is confusing and at best an accident waiting to happen.
+This commit therefore removes a number of READ_ONCE(rcu_state.gp_flags)
+instances from kernel/rcu/tree.c that are not needed due to updates
+to this field being excluded by virtue of holding the root rcu_node
+structure's ->lock.
 
-This commit therefore adds the needed preempt_disable() and
-preempt_enable() call to Tiny RCU.
-
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Closes: https://lore.kernel.org/lkml/4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop/T/#mccb23c2a4902da4d3c750165329f8de056903c58
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Closes: https://lore.kernel.org/lkml/4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop/T/#md1b5c026584f9c3c7b0fbc9240dd7de584597b73
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tiny.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/rcu/tree.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index 4470af926a34..4402d6f5f857 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -153,7 +153,9 @@ void synchronize_rcu(void)
- 			 lock_is_held(&rcu_lock_map) ||
- 			 lock_is_held(&rcu_sched_lock_map),
- 			 "Illegal synchronize_rcu() in RCU read-side critical section");
-+	preempt_disable();
- 	WRITE_ONCE(rcu_ctrlblk.gp_seq, rcu_ctrlblk.gp_seq + 2);
-+	preempt_enable();
- }
- EXPORT_SYMBOL_GPL(synchronize_rcu);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2795a1457acf..559f2d0d271f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1463,7 +1463,7 @@ static noinline_for_stack bool rcu_gp_init(void)
  
+ 	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+ 	raw_spin_lock_irq_rcu_node(rnp);
+-	if (!READ_ONCE(rcu_state.gp_flags)) {
++	if (!rcu_state.gp_flags) {
+ 		/* Spurious wakeup, tell caller to go back to sleep.  */
+ 		raw_spin_unlock_irq_rcu_node(rnp);
+ 		return false;
+@@ -1648,8 +1648,7 @@ static void rcu_gp_fqs(bool first_time)
+ 	/* Clear flag to prevent immediate re-entry. */
+ 	if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
+ 		raw_spin_lock_irq_rcu_node(rnp);
+-		WRITE_ONCE(rcu_state.gp_flags,
+-			   READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
++		WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags & ~RCU_GP_FLAG_FQS);
+ 		raw_spin_unlock_irq_rcu_node(rnp);
+ 	}
+ }
+@@ -1910,8 +1909,7 @@ static void rcu_report_qs_rsp(unsigned long flags)
+ {
+ 	raw_lockdep_assert_held_rcu_node(rcu_get_root());
+ 	WARN_ON_ONCE(!rcu_gp_in_progress());
+-	WRITE_ONCE(rcu_state.gp_flags,
+-		   READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
++	WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags | RCU_GP_FLAG_FQS);
+ 	raw_spin_unlock_irqrestore_rcu_node(rcu_get_root(), flags);
+ 	rcu_gp_kthread_wake();
+ }
+@@ -2426,8 +2424,7 @@ void rcu_force_quiescent_state(void)
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
+ 		return;  /* Someone beat us to it. */
+ 	}
+-	WRITE_ONCE(rcu_state.gp_flags,
+-		   READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
++	WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags | RCU_GP_FLAG_FQS);
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
+ 	rcu_gp_kthread_wake();
+ }
 -- 
 2.39.2
 
