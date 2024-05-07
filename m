@@ -1,57 +1,57 @@
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5BB15E818;
-	Tue,  7 May 2024 09:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8B915ECEE;
+	Tue,  7 May 2024 09:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715074559; cv=none; b=V+fIsk8QHADVyT4fMGYbwsYb8d4n0puTtfeXoCHAem8OjmOQLHU9N2FK7Ef8b0WegvGewN0J5YeNGh3MP72LuLzPP7wC2L72xvXtIJCcrWVVgyTIHjWgLzQmBIX/haLmFHN7wYtvUrTPlv/OLkHTCRuWcBBYPrxHMPN+Jpj1B9w=
+	t=1715074562; cv=none; b=Ull7cVf82cS9NcSwb+FSWxIflxJ4Sm7liXz7y5dmjI2kgflNUjDtEyXqHoSrJAYa4PJ7E0EodEYFgQDrLsJTg4ejtoPOOXiSQnGUXoQuLCDuWGvhHFCg0RPd6CICycwVZ7dOSnWCSI3VHNG/cUYp8UmaH6bRCJATXUIm3f7btmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715074559; c=relaxed/simple;
-	bh=UN+MaHfAdkJ1rWWOKXorY2bu4/QkrbWb/32kAy3Tizk=;
+	s=arc-20240116; t=1715074562; c=relaxed/simple;
+	bh=po1Bc4OlQN2l2sQd7lU08kIpHqYxLZA1VMA8exIsmUo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tM6FzsWezZysHZMpgEbPsUwCrUaSPRZq7n8GJkfESNGZYXSQttvHFyvt3ewav1ONBBdn/sT+5Dha21LujDJ/uYBx31uej977Db9Tz3/Fz/WRAvRCH9f/Vh3RbMfnCdwGSa2ZQOar+EdbDJ7anONL8641M2Mt922RqD+oLUT53q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C/9ws5iR; arc=none smtp.client-ip=209.85.208.170
+	 MIME-Version; b=UwGgjMryFtwQkF6npD0+BJiDCcjyna3s2v0LOj49w9rgsIYkC5rcBtZRaGdLBF3c7A6kLYL0A/l7wVOR/B3C3bMIUnuF+XL+h/pDg4VHLu7FcTROcZAhXjQQcxKkwFFpFkSgnP0AEb6djBxcoob9/zCY2sOeiJxel6Zo3iIcamA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UHZ24tCE; arc=none smtp.client-ip=209.85.208.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C/9ws5iR"
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2e0933d3b5fso37210831fa.2;
-        Tue, 07 May 2024 02:35:56 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UHZ24tCE"
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2db17e8767cso36154381fa.3;
+        Tue, 07 May 2024 02:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715074555; x=1715679355; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715074557; x=1715679357; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WDinHeFOFRoHZYFqFBiK+RU+jTH857k5hI4wyyJy1g4=;
-        b=C/9ws5iR8Fd7KKkeQ4Kn59FJN5sknAPLxGAfMJU2gJ+0U9rlCvyWfgE6CVG5/d3KI3
-         HX1b/Eq5/7pJpR//flWqXWVNvxZ3HlCmnmw8BadZ3G/Nsame69eM5URWCI/2SDl6/sHc
-         Zoq2Q8ubZt7wZ3VmBwPfE+ba/IIbprm+8djhwENN4XnQJKL7WaOLUQPZhYsccs4GXNTS
-         XeO941Ov2rhSfWjakwRuAgdonXdw38AV4N1JVx25HjAwdwfbstQhqhX0NOleyBK+LTtg
-         P7x3j5AaYpvS+tKNTWr3Y+xCB/GICTDJ1Y2UKe38N5gSG0LEAVYS+mCFqfjl0/+wtqNv
-         t9gg==
+        bh=WDR1Qmw00xm3OT7ACyqw6PuZVtuXarB9fOJED0vsuzo=;
+        b=UHZ24tCEUDvRXib+9H4EbocJrIM6EhhBlQ7hu1VHOdbwxs/FCbQZKW1om9ctEkpBzS
+         MvxpvLTRjKrT96iubo+O/B3I6XjAOYV1OknJnJasaJ11L0wOdS0T98tyE52Q4SpZ3zkx
+         2epBO7I5GApf/cI3OzCvV/3naLDtyrSCFbuyPFPc5wE0tTXNSzzvRBFX0a8RINXFtDNP
+         apgvnLlnJc4dlefkIhbPsjm7EkVyy8ia/c//E3q+1cCohBx0F+r36l53xRAf0QplcMgq
+         JuSZcXnNJoF+i012N/DFFd4VENvjTGUzRsMqba3st+EQqNmIu6XqlNAyGq3XRcDDzTPw
+         nczw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715074555; x=1715679355;
+        d=1e100.net; s=20230601; t=1715074557; x=1715679357;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WDinHeFOFRoHZYFqFBiK+RU+jTH857k5hI4wyyJy1g4=;
-        b=sQqXiyKYuDIrzDIoeHBLatF7DUfMZTXNvn/loJ38aj0Ch7eIFzNIIwcVtKUhE3s47K
-         6anJkYw18C5SQXTDBrvZpaVlSwBypEz9/m6092I2Zha+6gZCDhB/Q7E4bu9fiScgb+ua
-         W7wt7xo09MpPYXpoSYbWH0LdyeWpZWNRHJAIW6Rbn7ymsiwaK9D/VN9Eq7ECmGIAhdYH
-         mhgSqnOY1nj7hq73kKfvJln3Ailwws1A/3lXJCSPNihndWfop6PYYrvdyvBxAmPSSlKN
-         qHoyNUnOSEoBxxmJ37dFfNS49X5y4hK64NfW3+6JRnrnm69vN3Ngbo1obYpoQSnhYInw
-         ym1w==
-X-Forwarded-Encrypted: i=1; AJvYcCU9XtaAStYvvUQCW9FchbTIra3Xj98+Cc7YmiH4tu44tKCD85156DuCrhzUcdgRy5GXxtawV64QI6LoahAw3Crrego7FYvWMXXCj56T
-X-Gm-Message-State: AOJu0YwrNzw7SXiUQbBBEW4SElOucbFYwKySlPDOAClfHBJ6vDUCQ7oI
-	sOGkmtKX0GGXB+YMsijP6O4I8svaV1apT0sZ5wYl5I9PioJYc4tr
-X-Google-Smtp-Source: AGHT+IGFwWHJtNfle5tH6dVJd1sPaxZAFj/yLFYo/LOxrHHE0mYRMwj1W/uNqv+wKea2tN1WaCwzXA==
-X-Received: by 2002:a2e:981a:0:b0:2dd:409:3b25 with SMTP id a26-20020a2e981a000000b002dd04093b25mr8529160ljj.4.1715074554889;
-        Tue, 07 May 2024 02:35:54 -0700 (PDT)
+        bh=WDR1Qmw00xm3OT7ACyqw6PuZVtuXarB9fOJED0vsuzo=;
+        b=bhCrDP8gZwRVqzacWdWkv5L3Ht/Un9zpMmC2jEYi2yyGT6ru46YHh2fdmFMx7vBNh7
+         Xud1yO4/xg8drtW+BSRWITPecGM6842IYIEmC1+ikJMEFvVOkgItBsmqmQ7pMswKIOsy
+         cQhVRJf48yda4itmK1R9mo8K+SRU2a0R43Bcqox2zOzpNTZLXsqSp1deG3pfRtnXIQ9+
+         +ub9By9uNQENAp1bRe+UCDZnGbYi2fP93GaJDXwoAWDHUP0tvWlG9jaY0FAmiCBQ9Uqh
+         mPqaQ3Ltos9VMqj5VeqhAGgdikAOViwarrvyAv+LASpqniDlLParwjjmgJc9Hd/N0f6X
+         MmTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUyp5b/gCFlfNh6NG04U24PWpbu6n0kfu1nTMk5PNTf84yNPJur/yRKyRURwpuVS/qBrym+O5WpJYDrPXhqd/wVRUrXHCqhuE+IsB1q
+X-Gm-Message-State: AOJu0YzOQyYSBTYKQOtMQpTpI+Zcm6jQHP5BdZWHDbBUkHLp/E0wetyZ
+	huL3dWYcYQdokXEMs4PcoV8v9WrYV5KDrwwtdZ51+5wK6tWjBCod
+X-Google-Smtp-Source: AGHT+IGGQQ38KZ2VpG4c3sSrj1xA0S5pzEkwKFmmMks9ZmyND9PKewFv0bBW5uRGltNzXdTOUCk8Pw==
+X-Received: by 2002:a2e:9f45:0:b0:2e1:f591:a857 with SMTP id v5-20020a2e9f45000000b002e1f591a857mr8358944ljk.34.1715074557467;
+        Tue, 07 May 2024 02:35:57 -0700 (PDT)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.54
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 02:35:54 -0700 (PDT)
+        Tue, 07 May 2024 02:35:57 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: RCU <rcu@vger.kernel.org>,
@@ -62,12 +62,10 @@ Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH 23/48] rcu: Remove redundant READ_ONCE() of rcu_state.gp_flags in tree.c
-Date: Tue,  7 May 2024 11:35:05 +0200
-Message-Id: <20240507093530.3043-24-urezki@gmail.com>
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 26/48] rcu: Mark loads from rcu_state.n_online_cpus
+Date: Tue,  7 May 2024 11:35:08 +0200
+Message-Id: <20240507093530.3043-27-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240507093530.3043-1-urezki@gmail.com>
 References: <20240507093530.3043-1-urezki@gmail.com>
@@ -81,66 +79,72 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Although it is functionally OK to do READ_ONCE() of a variable that
-cannot change, it is confusing and at best an accident waiting to happen.
-This commit therefore removes a number of READ_ONCE(rcu_state.gp_flags)
-instances from kernel/rcu/tree.c that are not needed due to updates
-to this field being excluded by virtue of holding the root rcu_node
-structure's ->lock.
+The rcu_state.n_online_cpus value is only ever updated by CPU-hotplug
+operations, which are serialized.  However, this value is read locklessly.
+This commit therefore marks those reads.  While in the area, it also
+adds ASSERT_EXCLUSIVE_WRITER() calls just in case parallel CPU hotplug
+becomes a thing.
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Closes: https://lore.kernel.org/lkml/4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop/T/#mccb23c2a4902da4d3c750165329f8de056903c58
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Closes: https://lore.kernel.org/lkml/4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop/T/#md1b5c026584f9c3c7b0fbc9240dd7de584597b73
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ kernel/rcu/tree.c       | 4 +++-
+ kernel/rcu/tree_stall.h | 6 ++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2795a1457acf..559f2d0d271f 100644
+index 559f2d0d271f..7149b2d5cdd6 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1463,7 +1463,7 @@ static noinline_for_stack bool rcu_gp_init(void)
- 
- 	WRITE_ONCE(rcu_state.gp_activity, jiffies);
- 	raw_spin_lock_irq_rcu_node(rnp);
--	if (!READ_ONCE(rcu_state.gp_flags)) {
-+	if (!rcu_state.gp_flags) {
- 		/* Spurious wakeup, tell caller to go back to sleep.  */
- 		raw_spin_unlock_irq_rcu_node(rnp);
- 		return false;
-@@ -1648,8 +1648,7 @@ static void rcu_gp_fqs(bool first_time)
- 	/* Clear flag to prevent immediate re-entry. */
- 	if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
- 		raw_spin_lock_irq_rcu_node(rnp);
--		WRITE_ONCE(rcu_state.gp_flags,
--			   READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
-+		WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags & ~RCU_GP_FLAG_FQS);
- 		raw_spin_unlock_irq_rcu_node(rnp);
- 	}
- }
-@@ -1910,8 +1909,7 @@ static void rcu_report_qs_rsp(unsigned long flags)
+@@ -4328,7 +4328,7 @@ EXPORT_SYMBOL_GPL(rcu_lockdep_current_cpu_online);
+ // whether spinlocks may be acquired safely.
+ static bool rcu_init_invoked(void)
  {
- 	raw_lockdep_assert_held_rcu_node(rcu_get_root());
- 	WARN_ON_ONCE(!rcu_gp_in_progress());
--	WRITE_ONCE(rcu_state.gp_flags,
--		   READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
-+	WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags | RCU_GP_FLAG_FQS);
- 	raw_spin_unlock_irqrestore_rcu_node(rcu_get_root(), flags);
- 	rcu_gp_kthread_wake();
+-	return !!rcu_state.n_online_cpus;
++	return !!READ_ONCE(rcu_state.n_online_cpus);
  }
-@@ -2426,8 +2424,7 @@ void rcu_force_quiescent_state(void)
- 		raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
- 		return;  /* Someone beat us to it. */
- 	}
--	WRITE_ONCE(rcu_state.gp_flags,
--		   READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
-+	WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags | RCU_GP_FLAG_FQS);
- 	raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
- 	rcu_gp_kthread_wake();
- }
+ 
+ /*
+@@ -4538,6 +4538,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	rcu_spawn_rnp_kthreads(rnp);
+ 	rcu_spawn_cpu_nocb_kthread(cpu);
++	ASSERT_EXCLUSIVE_WRITER(rcu_state.n_online_cpus);
+ 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
+ 
+ 	return 0;
+@@ -4806,6 +4807,7 @@ void rcutree_migrate_callbacks(int cpu)
+  */
+ int rcutree_dead_cpu(unsigned int cpu)
+ {
++	ASSERT_EXCLUSIVE_WRITER(rcu_state.n_online_cpus);
+ 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus - 1);
+ 	// Stop-machine done, so allow nohz_full to disable tick.
+ 	tick_dep_clear(TICK_DEP_BIT_RCU);
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 62b2c4858028..8a2edf6a1ef5 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -628,7 +628,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_err("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu ncpus=%d)\n",
+ 	       smp_processor_id(), (long)(jiffies - gps),
+-	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
++	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen,
++	       data_race(rcu_state.n_online_cpus)); // Diagnostic read
+ 	if (ndetected) {
+ 		rcu_dump_cpu_stacks();
+ 
+@@ -689,7 +690,8 @@ static void print_cpu_stall(unsigned long gps)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_err("\t(t=%lu jiffies g=%ld q=%lu ncpus=%d)\n",
+ 		jiffies - gps,
+-		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen, rcu_state.n_online_cpus);
++		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen,
++		data_race(rcu_state.n_online_cpus)); // Diagnostic read
+ 
+ 	rcu_check_gp_kthread_expired_fqs_timer();
+ 	rcu_check_gp_kthread_starvation();
 -- 
 2.39.2
 
