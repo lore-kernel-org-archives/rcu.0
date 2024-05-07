@@ -1,57 +1,57 @@
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51EC114E2EA;
-	Tue,  7 May 2024 09:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DE114E2F1;
+	Tue,  7 May 2024 09:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715074539; cv=none; b=l6E/Sy3b5JHdI8A/uF7K05MoJVDYL+bfHmjRYTvdb2xzSSYTlR+3BagfZrCDWaFbwoR3HPNZX/hCHh3lLFHlNtZCDYG7HeIqZSeydVkBrMYBdZjuuVeGk36t9dOpPBgiW1xDeWXCp6elEGQL+M8Hlv5mSau9ASNpbUxkyKmGcH8=
+	t=1715074539; cv=none; b=iAUEYkj4r9Wdg/6whBMmefgoSDVttfoA5gfB/K/qH9mbxC76dVOWggg0cySJKR/GhBXDEiws/zYef37nujA/szWRSMilG3M/kaGRtj1ZiaXBboUnonT9Oq5a2jAgepIJdFdH+X27Hzi2Df1QCOZZG7uHK2/lyg8NxFPYdgixykU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715074539; c=relaxed/simple;
-	bh=iNxM3spYrH6jeXcFwXys+CzMIvg4TpaHf/M60KZ2Phg=;
+	bh=+/Wzimi9IDd0AOad7JCOBMX+aJPeFaceFPRoaZUd6JQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=leeZ/0vW3Afklv2V7Cl5ET+oebUEl2LEK0nGcoYifN9JGpjHFW+vDgcQTt0BobPTFiW4/c6EUUnivsbEVk/KND1XcWPcxQ/I/X+8Az+aoi4dL/1lU1Y3RZypKKI81O9bLkgTiSw+yrID4sXUbvcXg/lPXtSeBuJ0hPccp02eGHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dWX85Njf; arc=none smtp.client-ip=209.85.208.175
+	 MIME-Version; b=ZCWochjwwZwz9NztqWraIvMIuGg4l6idzMjg55a2fduCr/Z8Z1pg++R8NiPu+kSDJP5FZDpSJrB9qmijuq2h8K2u707NSmfl5RhXPjjFqoXgaz5XGzkaHAkgenyI97Jr3z8KKyk/vRrxCVFEA2qPRwpf5XnuCayIEZb7TqZ04Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qn9V5A0j; arc=none smtp.client-ip=209.85.208.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dWX85Njf"
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2e242b1df60so34978091fa.1;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qn9V5A0j"
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2db101c11beso36565341fa.0;
         Tue, 07 May 2024 02:35:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715074535; x=1715679335; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715074536; x=1715679336; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+/dZXNHdnJdCiQVj1yFaboz7N4dw9CdxnQ0QkyKzyjM=;
-        b=dWX85NjfDU1dLHmn/LnX0juXUVZ5dbtLev98m1MoocgMfX6NKRaBzA9srQ31mCpH3D
-         nmtLXmIH6+0C+5MOSDUlNSH5H5SWlFflJbo6OhZXcGxyn7o1G50KD8IcdiPaYGRurIzp
-         5VF65KpvN1PtoahnOUXzKYZFZFg0S6Zm/ATZVArHXJSflL5ydsPri9aIwdkT0Vyb/xpm
-         17Ej7Lfz5DkYjLIEZuVlD2EeMXF0eqQLO6okRXyKEYOXrbZ+SX/pmuRLBM+s9w2Ys35r
-         dgIpfjMica+E9aBoiKX+p2/gqMPvVGqVPfbzdB1v6a3w0OPlkNYeDk93XVHUeXk+CItH
-         HbbQ==
+        bh=tHQ3wThlCa+tmPm7RaR+qFcrkGfD7gzEvoOA5PrmsZ8=;
+        b=Qn9V5A0jesQZGCTXuVJHyqNGw/91oEXDjIgBz/SvXiZ9YgEOFnZ3GLIgWUxQi7Mkgi
+         IdLpfkgpBsad/tqUYMYMscuLuqDTdvb7fdrjzWPazXJRw8/8nPYNrvq4GJKoHRzihu3p
+         6GT23cNQY1Qloec5lS22UXhNQmVsQK9OIAeaz63upP/VZZg4tDalQ7glnDbRvqTCRE19
+         LgNTPKaFuKycCmarguyQmGTyPMveC/07wz3cnsSV9wQ6qoxqgmO+I95gpdG+pnS3H/Ta
+         1UvVfnvx7a7iGATudsuL3BwehWn+Z5ZSKMm+3ERzR1rZkLWoYTeWfRr2mUGwCRRXTBv9
+         e4rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715074535; x=1715679335;
+        d=1e100.net; s=20230601; t=1715074536; x=1715679336;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+/dZXNHdnJdCiQVj1yFaboz7N4dw9CdxnQ0QkyKzyjM=;
-        b=GBuyh7mBK9UDucaa3ih2hgZJ8gLPARFA8JqoUlHUsHueyKw6JnugHsKkj6MHwgC0KL
-         6QU7cK5ECwyVBNKHgLFHcgxNyFg8hbmMiZzIv78vodq/4W6sms83i+DulDpqCJLkQ41H
-         XcXdxiJTHz/rQLcPhvzsPob0VavgwAdtLJNLU6ToYAiHzJMbs8d9ilqyy1esjv/MZgQ0
-         9HfuAXphKx0j1hcWm47S5i2TkCKPGvRAKR42GSud1zaLluYm8c20AoOT88Z2dwDZNtoz
-         0HZTxcLdXB+OuMtd1CfOo4RfD6sO3zGlMgHNLazIHzEjbNFYXQ8qExkbBwfBLmSqbYL4
-         bvkA==
-X-Forwarded-Encrypted: i=1; AJvYcCX4cIBYFCZmRbQ0HkGD3J+N1427e1n+DkBuDiYjg8txDpFxyIZ5ZrUVs5bwE9p6bWyo4mEt5rKtv2V8D1HKFHssiZmFJX7xaB+7IG93
-X-Gm-Message-State: AOJu0YyBYf6KRu5Gy2YIslssswvgLIV7EvzIbvCYRZrTC5M2jCUwFvn5
-	brOtfe8IJtlPlB3w19KeG1jND5hpZWqwV1RbZfObcKbYF7J4CCeF
-X-Google-Smtp-Source: AGHT+IHGTGPMhUFWAjkriGKAKoiR1qDCoYN8/LSNdR+hMlhqCKcWYj/0UPIAVbRMNGNQEoL6wqkafw==
-X-Received: by 2002:a2e:800b:0:b0:2dd:ccb6:e836 with SMTP id j11-20020a2e800b000000b002ddccb6e836mr10197448ljg.25.1715074535187;
-        Tue, 07 May 2024 02:35:35 -0700 (PDT)
+        bh=tHQ3wThlCa+tmPm7RaR+qFcrkGfD7gzEvoOA5PrmsZ8=;
+        b=CXjPGBIQoCbgcXn7xVJu/XpAvOaif58H4PK87Gi+TlMk+289DJ2m2H2T8PfzgQX/jf
+         MWoVyZVAozg4fQz4xO+HUf25/DnXY0nKqbu2SMCs3ehSnax+BU4kkiVeQZ9qe+lPo+8j
+         ZON+W9eNMSIf4lo2ZzU1fEMfc4j5sS0KT9pEnQOy9mGkFV3KzBvDi+7G4Cyjd8m/FV2M
+         QD7dE5nwM4AGlDdlX2KwSmkgtWFYM0HjqbqN+2jjGvFTI3hppykGFKjUZDNIcKpwyvii
+         +heNTR9DFhrOCb8KsZ+mnxAo8GemcAJc+LN0vbWlajIZKC1jKaOLxM2X9MPmWSZ2Tetd
+         njvg==
+X-Forwarded-Encrypted: i=1; AJvYcCX1J+RbDqD9+y0rw6COw06z8VEGi5ub7/EWn1T2VMLrTIvxOZNv7rUOmg4wRnynzazsr0KYF1gpcp6nrOKVq0xCtSNO6pHdnhH/QlECOwA57LgK/crFnk7OpFUgi49tTmGg+Dzp
+X-Gm-Message-State: AOJu0Yzth5zG1sWevcu579UGoEjy0q0draT/MwMZmMTrZRUU3gB6xS3W
+	GJIEflqCsXSViVMphY3hFMPV769ryHnG5LsqkegdcXH/mXFd3OFz
+X-Google-Smtp-Source: AGHT+IH3kyXVRJ4PLiuJO5l/3kxoCLnD2cm+0pheedS9Aj4zvXVnedQGHMETTqwaLGYpsfRGaYHCpA==
+X-Received: by 2002:a2e:9585:0:b0:2df:b800:5bff with SMTP id w5-20020a2e9585000000b002dfb8005bffmr8142337ljh.7.1715074536291;
+        Tue, 07 May 2024 02:35:36 -0700 (PDT)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.34
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 02:35:34 -0700 (PDT)
+        Tue, 07 May 2024 02:35:35 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: RCU <rcu@vger.kernel.org>,
@@ -62,10 +62,15 @@ Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 02/48] rcutorture: Disable tracing to permit Tasks Rude RCU testing
-Date: Tue,  7 May 2024 11:34:44 +0200
-Message-Id: <20240507093530.3043-3-urezki@gmail.com>
+	Frederic Weisbecker <frederic@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Yan Zhai <yan@cloudflare.com>,
+	netdev@vger.kernel.org
+Subject: [PATCH 03/48] rcu: Add lockdep checks and kernel-doc header to rcu_softirq_qs()
+Date: Tue,  7 May 2024 11:34:45 +0200
+Message-Id: <20240507093530.3043-4-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240507093530.3043-1-urezki@gmail.com>
 References: <20240507093530.3043-1-urezki@gmail.com>
@@ -79,30 +84,64 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Now that the KPROBES, TRACING, BLK_DEV_IO_TRACE, and UPROBE_EVENTS
-Kconfig options select the TASKS_TRACE_RCU option, the torture.sh tests
-of enabling exactly one of the RCU Tasks flavors fail.  This commit
-therefore disables these options to allow this testing to succeed.
+There is some indications that rcu_softirq_qs() might be more generally
+used than anticipated.  This commit therefore adds some lockdep assertions
+and some cautionary tales in a new kernel-doc header.
+
+Link: https://lore.kernel.org/all/Zd4DXTyCf17lcTfq@debian.debian/
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Yan Zhai <yan@cloudflare.com>
+Cc: <netdev@vger.kernel.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 42f0aee09e51..13875ee7b050 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -391,7 +391,7 @@ __EOF__
- 		forceflavor="`echo $flavor | sed -e 's/^CONFIG/CONFIG_FORCE/'`"
- 		deselectedflavors="`grep -v $flavor $T/rcutasksflavors | tr '\012' ' ' | tr -s ' ' | sed -e 's/ *$//'`"
- 		echo " --- Running RCU Tasks Trace flavor $flavor `date`" >> $rtfdir/log
--		tools/testing/selftests/rcutorture/bin/kvm.sh --datestamp "$ds/results-rcutasksflavors/$flavor" --buildonly --configs "TINY01 TREE04" --kconfig "CONFIG_RCU_EXPERT=y CONFIG_RCU_SCALE_TEST=y $forceflavor=y $deselectedflavors" --trust-make > $T/$flavor.out 2>&1
-+		tools/testing/selftests/rcutorture/bin/kvm.sh --datestamp "$ds/results-rcutasksflavors/$flavor" --buildonly --configs "TINY01 TREE04" --kconfig "CONFIG_RCU_EXPERT=y CONFIG_RCU_SCALE_TEST=y CONFIG_KPROBES=n CONFIG_RCU_TRACE=n CONFIG_TRACING=n CONFIG_BLK_DEV_IO_TRACE=n CONFIG_UPROBE_EVENTS=n $forceflavor=y $deselectedflavors" --trust-make > $T/$flavor.out 2>&1
- 		retcode=$?
- 		if test "$retcode" -ne 0
- 		then
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index d9642dd06c25..2795a1457acf 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -240,8 +240,36 @@ static long rcu_get_n_cbs_cpu(int cpu)
+ 	return 0;
+ }
+ 
++/**
++ * rcu_softirq_qs - Provide a set of RCU quiescent states in softirq processing
++ *
++ * Mark a quiescent state for RCU, Tasks RCU, and Tasks Trace RCU.
++ * This is a special-purpose function to be used in the softirq
++ * infrastructure and perhaps the occasional long-running softirq
++ * handler.
++ *
++ * Note that from RCU's viewpoint, a call to rcu_softirq_qs() is
++ * equivalent to momentarily completely enabling preemption.  For
++ * example, given this code::
++ *
++ *	local_bh_disable();
++ *	do_something();
++ *	rcu_softirq_qs();  // A
++ *	do_something_else();
++ *	local_bh_enable();  // B
++ *
++ * A call to synchronize_rcu() that began concurrently with the
++ * call to do_something() would be guaranteed to wait only until
++ * execution reached statement A.  Without that rcu_softirq_qs(),
++ * that same synchronize_rcu() would instead be guaranteed to wait
++ * until execution reached statement B.
++ */
+ void rcu_softirq_qs(void)
+ {
++	RCU_LOCKDEP_WARN(lock_is_held(&rcu_bh_lock_map) ||
++			 lock_is_held(&rcu_lock_map) ||
++			 lock_is_held(&rcu_sched_lock_map),
++			 "Illegal rcu_softirq_qs() in RCU read-side critical section");
+ 	rcu_qs();
+ 	rcu_preempt_deferred_qs(current);
+ 	rcu_tasks_qs(current, false);
 -- 
 2.39.2
 
