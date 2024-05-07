@@ -1,130 +1,107 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82ADD17BA1;
-	Tue,  7 May 2024 17:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA1616C84E
+	for <rcu@vger.kernel.org>; Tue,  7 May 2024 17:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715103889; cv=none; b=H2azH4FsOyxU1OX/h87Ce4et/Nd9vvMKoS6Kih85IMnl/dWLhitvp9h9VC52o4Q0IkjP/Bjfp9It1TcV7pTb97H9qacMn75AsAOKwkogxNF+MU5uOzafD9VuhfLgkivlbgQYWIM8sXycOXKfrj69o2NrDv9bwQBRlRE4VDY4vAI=
+	t=1715104558; cv=none; b=S1CzjpB1gxSVe7sirtgKa4H//6pymVVUzyoFAwy+grIfr12NTZjcoyjj3vpNd136Zy26zhvueOAy1er9DtRzpPdih9D2Ecww5IJALcGpRzUB5i/sRlfWQMpLNa6nUjCV8UZrb0DIoUpJ8wseHpmNQKqIytYzBpPSFM2TPE9IZE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715103889; c=relaxed/simple;
-	bh=Gogk1VdeqklvN8V+Xf671pTC95Wvzn4UGS93Wm7/U1Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bS+KIr6xpl+70iDVQWJoYyYXBp5nKfDPBbl89a8LE0OwnUMhMyo411jBb5w5hwZXfqWVR7VgEGg4bhAgIduT2JycV0xI2lefO/UQM7iaaSYl7LV0zsEt+9neU4j3Kp4nyH/HJgmXzhNqUAl50wcuu+GP+/+03inw2T1qQSMGwoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ce6zh//P; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1715104558; c=relaxed/simple;
+	bh=i1B0BczLSo3SWF7MKkmZ007UspXePFGAXjtEUDsAbtE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=kMJ3yrVhElhjd7SAxsBi239phZ8Q+GYIgL31clJlk0DovMpS+p3I4QEYt6UvKXz8G/oNdqrGbNicFYgDpt5pZKSVWys4tbvLJE2/gT1thMq9poHoEKNdsGC0AAurSNiBdXbg7PKBcGEnyGMGnT4JGS9qhBfZ2AV9/MqegZ4x1YU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WGKgC/qL; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ce6zh//P"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 002F0C2BBFC;
-	Tue,  7 May 2024 17:44:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715103889;
-	bh=Gogk1VdeqklvN8V+Xf671pTC95Wvzn4UGS93Wm7/U1Q=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ce6zh//PwJaXHIO4sEZXJeSoFQcJUUIIjo7Xwh+/KhL25ylW61NDQqxGUbVctU3VY
-	 afEP5EFeyU8Damlq49jFg2ovH+9WqKD1oTJd7aOdUe1RYH1udtcVWTF8FgT2XEOiCi
-	 UfZXIXRfx6KyUetdePENZ2XuwJssYokK7+ZLNrUB3kUo0++IZWk2cg+6Qrv9NoT+72
-	 MX8Iu8dyyYph77peAObFKA4qW9RIPm/ulcIrxvPSsBC1BFkH5lJZ5m80u57IPVxlbx
-	 Lk1vqX+rwAPgXwiJDl9uQM1T1FSuB061L2y90AkWzME4xuVdzF7BgMS0g4/65WcJFS
-	 +SpfkndOqKX8Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8446ACE14CC; Tue,  7 May 2024 10:44:48 -0700 (PDT)
-Date: Tue, 7 May 2024 10:44:48 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 25/48] rcu: Mark writes to rcu_sync ->gp_count field
-Message-ID: <4c9e89b5-c981-4809-8bc2-247563ce04e9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240507093530.3043-1-urezki@gmail.com>
- <20240507093530.3043-26-urezki@gmail.com>
- <ZjpAsYJIfzYSKgdA@redhat.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WGKgC/qL"
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-61eea13e924so3844765a12.0
+        for <rcu@vger.kernel.org>; Tue, 07 May 2024 10:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1715104557; x=1715709357; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U/zdljaT58TeUovqBD+WPeAJgx4d8t4+C/lLtRXXISU=;
+        b=WGKgC/qLLGDzqckkvrqP7f1LsoRyBJ91zHpkQ75EQG/sElibpIdyYY7zGP23rKsK7X
+         YbR1/n4r2qJjORhPoCGFAC+WoMhQUStqt68dt0l8U0LwkDQGz3yHS4eWHGuqTGG2B72k
+         NL4OhYBy0Imjefoo9mC7p/5hEIF2yzH8HWGmD6Fjfv4tcLpe5lwGlnera88zxYWyRUs6
+         M1BS2OtHx23GDzJ1Z3/0kh9zRX3kaP+UD9rO4MycvZYvzPHeVJdTmwxIQcmXCsfWE+RC
+         1yM39swBkFGQpZ0iorAU7aWCQR5TRwUbCetfw7VkWGNYP28f7Bklsu657QI+9vL1GLWy
+         t4oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715104557; x=1715709357;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U/zdljaT58TeUovqBD+WPeAJgx4d8t4+C/lLtRXXISU=;
+        b=BhGiVHnNHJ5HggOvGRry/NEefkpxIio8zb7vYlEKYAtodpHrMTcN47Dvd8ez5XHlUx
+         aedaBsCFhE7QolJO3caFkxWqAbNxkDHuvRk1pM6CFDPMbM5Cf3Tp0JFo01D4E3eNF2+2
+         loFlVra8lZ5HctIuRAz/AHccr59d57fCb8zOtB+JfwuPdyIX7brMY3UpMUa+42XJNTyp
+         2tUZ0PasMJADrzFLgqROp6jgxZ/8fpF0JV/zIiqNE9DtYxW5yDm/YG2j98HbCrCyZmIu
+         xTfv72hK3LcZQSjL5pkZckwte7q7VuN5t1EjTmvVGDau3onxk9yOokhxiVIEReIvDbaO
+         6zYw==
+X-Forwarded-Encrypted: i=1; AJvYcCWT23wDZDxUXTYhwC233JmxcmG9XCTIW44GxBZgzgZEvQKQTDmphMlh8cT5qFF+VAQbumjYtFHs1bju+2UeRlJi2IPF
+X-Gm-Message-State: AOJu0YxtlEk22zxmjzBJwtKcTrIYSppOGCv7hAobIEqqz07nced6qJ6d
+	gjoyrXH8GnXc6tmUIgUtnzS/OrF5ZdzfAQ6sR/+ydQadYSa6MKEzFOvOJvO0j2yQcBv3OKvG7Lj
+	tUw==
+X-Google-Smtp-Source: AGHT+IFeM0B7my9SeMqYR5n+RtBG5AhiHXPGjV0Tz0oCPILMUffxAWA/E9oddAskv4XRf7h+1SVeBgTe8hc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:3ecb:0:b0:5f7:fca4:6d2f with SMTP id
+ 41be03b00d2f7-62f24b1978bmr1264a12.7.1715104556721; Tue, 07 May 2024 10:55:56
+ -0700 (PDT)
+Date: Tue, 7 May 2024 10:55:54 -0700
+In-Reply-To: <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjpAsYJIfzYSKgdA@redhat.com>
+Mime-Version: 1.0
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
+ <ZjUwHvyvkM3lj80Q@LeoBras> <ZjVXVc2e_V8NiMy3@google.com> <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop>
+Message-ID: <ZjprKm5jG3JYsgGB@google.com>
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, May 07, 2024 at 10:54:41AM -0400, Oleg Nesterov wrote:
-> Hello,
+On Fri, May 03, 2024, Paul E. McKenney wrote:
+> On Fri, May 03, 2024 at 02:29:57PM -0700, Sean Christopherson wrote:
+> > So if we're comfortable relying on the 1 second timeout to guard against a
+> > misbehaving userspace, IMO we might as well fully rely on that guardrail.  I.e.
+> > add a generic PF_xxx flag (or whatever flag location is most appropriate) to let
+> > userspace communicate to the kernel that it's a real-time task that spends the
+> > overwhelming majority of its time in userspace or guest context, i.e. should be
+> > given extra leniency with respect to rcuc if the task happens to be interrupted
+> > while it's in kernel context.
 > 
-> I feel I don't really like this patch but I am travelling without my working
-> laptop, can't read the source code ;) Quite possibly I am wrong, I'll return
-> to this when I get back on May 10.
+> But if the task is executing in host kernel context for quite some time,
+> then the host kernel's RCU really does need to take evasive action.
 
-By the stricter data-race rules used in RCU code [1], this is a bug that
-needs to be fixed.  This code is updating ->gp_count, which is read
-locklessly, which in turn results in a data race.  The fix is to mark
-the updates (as below) with WRITE_ONCE().
+Agreed, but what I'm saying is that RCU already has the mechanism to do so in the
+form of the 1 second timeout.
 
-Or is there something in one or the other of these updates to ->gp_count
-that excludes lockless readers?  (I am not seeing it, but you know this
-code way better than I do!)
+And while KVM does not guarantee that it will immediately resume the guest after
+servicing the IRQ, neither does the existing userspace logic.  E.g. I don't see
+anything that would prevent the kernel from preempting the interrupt task.
 
-							Thanx, Paul
-
-[1] https://docs.google.com/document/d/1FwZaXSg3A55ivVoWffA9iMuhJ3_Gmj_E494dLYjjyLQ/edit?usp=sharing
-
-> Oleg.
+> On the other hand, if that task is executing in guest context (either
+> kernel or userspace), then the host kernel's RCU can immediately report
+> that task's quiescent state.
 > 
-> On 05/07, Uladzislau Rezki (Sony) wrote:
-> >
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> >
-> > The rcu_sync structure's ->gp_count field is updated under the protection
-> > of ->rss_lock, but read locklessly, and KCSAN noted the data race.
-> > This commit therefore uses WRITE_ONCE() to do this update to clearly
-> > document its racy nature.
-> >
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Oleg Nesterov <oleg@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  kernel/rcu/sync.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
-> > index 86df878a2fee..6c2bd9001adc 100644
-> > --- a/kernel/rcu/sync.c
-> > +++ b/kernel/rcu/sync.c
-> > @@ -122,7 +122,7 @@ void rcu_sync_enter(struct rcu_sync *rsp)
-> >  		 * we are called at early boot time but this shouldn't happen.
-> >  		 */
-> >  	}
-> > -	rsp->gp_count++;
-> > +	WRITE_ONCE(rsp->gp_count, rsp->gp_count + 1);
-> >  	spin_unlock_irq(&rsp->rss_lock);
-> >
-> >  	if (gp_state == GP_IDLE) {
-> > @@ -151,11 +151,15 @@ void rcu_sync_enter(struct rcu_sync *rsp)
-> >   */
-> >  void rcu_sync_exit(struct rcu_sync *rsp)
-> >  {
-> > +	int gpc;
-> > +
-> >  	WARN_ON_ONCE(READ_ONCE(rsp->gp_state) == GP_IDLE);
-> >  	WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0);
-> >
-> >  	spin_lock_irq(&rsp->rss_lock);
-> > -	if (!--rsp->gp_count) {
-> > +	gpc = rsp->gp_count - 1;
-> > +	WRITE_ONCE(rsp->gp_count, gpc);
-> > +	if (!gpc) {
-> >  		if (rsp->gp_state == GP_PASSED) {
-> >  			WRITE_ONCE(rsp->gp_state, GP_EXIT);
-> >  			rcu_sync_call(rsp);
-> > --
-> > 2.39.2
-> >
-> 
+> Too much to ask for the host kernel's RCU to be able to sense the
+> difference?  ;-)
+
+KVM already notifies RCU when its entering/exiting an extended quiescent state,
+via __ct_user_{enter,exit}().
+
+When handling an IRQ that _probably_ triggered an exit from the guest, the CPU
+has already exited the quiescent state.  And AFAIK, that can't be safely changed,
+i.e. KVM must note the context switch before enabling IRQs.
