@@ -1,107 +1,140 @@
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA1616C84E
-	for <rcu@vger.kernel.org>; Tue,  7 May 2024 17:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E6216D33B
+	for <rcu@vger.kernel.org>; Tue,  7 May 2024 18:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715104558; cv=none; b=S1CzjpB1gxSVe7sirtgKa4H//6pymVVUzyoFAwy+grIfr12NTZjcoyjj3vpNd136Zy26zhvueOAy1er9DtRzpPdih9D2Ecww5IJALcGpRzUB5i/sRlfWQMpLNa6nUjCV8UZrb0DIoUpJ8wseHpmNQKqIytYzBpPSFM2TPE9IZE8=
+	t=1715105158; cv=none; b=UQRGuL4fSBK/NH4PO1HjoZ3wwxtSLzDhgBRHBduB2t3TMSQpWcWE/JawhA3fgtIKgEuLc6TtcEbECV6Zl4On/1ut4cDHZW4gJrFzGyBiFtQkzs/CgRxeIDLzp98YFgl7mpsyumblp35FOgYsiHs63eEqLbqwlNFxbM6w9/erwSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715104558; c=relaxed/simple;
-	bh=i1B0BczLSo3SWF7MKkmZ007UspXePFGAXjtEUDsAbtE=;
+	s=arc-20240116; t=1715105158; c=relaxed/simple;
+	bh=Xb5whRwDyx5E2riHjw3KTgP+9PH574imG/syxIYEytQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=kMJ3yrVhElhjd7SAxsBi239phZ8Q+GYIgL31clJlk0DovMpS+p3I4QEYt6UvKXz8G/oNdqrGbNicFYgDpt5pZKSVWys4tbvLJE2/gT1thMq9poHoEKNdsGC0AAurSNiBdXbg7PKBcGEnyGMGnT4JGS9qhBfZ2AV9/MqegZ4x1YU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WGKgC/qL; arc=none smtp.client-ip=209.85.215.201
+	 To:Cc:Content-Type; b=jk5Yi95ci5cmDUv2KW4GBphgfcN+9UKUMsGo1m74igecjYSWiwn1Cc+79YCZf86JF4cpECPUxHbg7wFBJPSNjERchrZYBT4nScjFHBdj7JLapXtl2/g4EmCveXDUkMk6CRjCh2nKixgRAKujT8hDONbyerJZkaoOncjJJhWZbIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jqwBqJye; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WGKgC/qL"
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-61eea13e924so3844765a12.0
-        for <rcu@vger.kernel.org>; Tue, 07 May 2024 10:55:57 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jqwBqJye"
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6f49fc7b5e6so8594b3a.3
+        for <rcu@vger.kernel.org>; Tue, 07 May 2024 11:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715104557; x=1715709357; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1715105157; x=1715709957; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U/zdljaT58TeUovqBD+WPeAJgx4d8t4+C/lLtRXXISU=;
-        b=WGKgC/qLLGDzqckkvrqP7f1LsoRyBJ91zHpkQ75EQG/sElibpIdyYY7zGP23rKsK7X
-         YbR1/n4r2qJjORhPoCGFAC+WoMhQUStqt68dt0l8U0LwkDQGz3yHS4eWHGuqTGG2B72k
-         NL4OhYBy0Imjefoo9mC7p/5hEIF2yzH8HWGmD6Fjfv4tcLpe5lwGlnera88zxYWyRUs6
-         M1BS2OtHx23GDzJ1Z3/0kh9zRX3kaP+UD9rO4MycvZYvzPHeVJdTmwxIQcmXCsfWE+RC
-         1yM39swBkFGQpZ0iorAU7aWCQR5TRwUbCetfw7VkWGNYP28f7Bklsu657QI+9vL1GLWy
-         t4oA==
+        bh=4B3b0fSHvBV0t0bfPLzBXODTqy0x2bXlGHdHOkNN940=;
+        b=jqwBqJye19do5EWiytzLlpVtzf0lqGFylsGNz8vZp1F1W6dQpp63id7T7FFAv8T+va
+         wbE7pnNA7j7Tgchl+Z9bOfbP9Xk3J4/J0acmfhkdDevlTFmrrUdMVj0b+2dHrzLvjG0s
+         EGSADrdL7krrzZtgIUSEnX8vjALX4YkuQ4ki/EFv0dPOoXjx0lfpyddRr1/YqjwbFS98
+         tjmhNfUyOk5yil79poH80o04VU4aoUaxVrnxirXTjsodm+v2gKDhTTDOUjEYHElSUQB1
+         VS+8Hk44RGPkiXa8LRzQRqIMV5fcOPjhEtp6+/lgkubmlh/bp7WcUPPKrzZosZcpga2q
+         ylVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715104557; x=1715709357;
+        d=1e100.net; s=20230601; t=1715105157; x=1715709957;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U/zdljaT58TeUovqBD+WPeAJgx4d8t4+C/lLtRXXISU=;
-        b=BhGiVHnNHJ5HggOvGRry/NEefkpxIio8zb7vYlEKYAtodpHrMTcN47Dvd8ez5XHlUx
-         aedaBsCFhE7QolJO3caFkxWqAbNxkDHuvRk1pM6CFDPMbM5Cf3Tp0JFo01D4E3eNF2+2
-         loFlVra8lZ5HctIuRAz/AHccr59d57fCb8zOtB+JfwuPdyIX7brMY3UpMUa+42XJNTyp
-         2tUZ0PasMJADrzFLgqROp6jgxZ/8fpF0JV/zIiqNE9DtYxW5yDm/YG2j98HbCrCyZmIu
-         xTfv72hK3LcZQSjL5pkZckwte7q7VuN5t1EjTmvVGDau3onxk9yOokhxiVIEReIvDbaO
-         6zYw==
-X-Forwarded-Encrypted: i=1; AJvYcCWT23wDZDxUXTYhwC233JmxcmG9XCTIW44GxBZgzgZEvQKQTDmphMlh8cT5qFF+VAQbumjYtFHs1bju+2UeRlJi2IPF
-X-Gm-Message-State: AOJu0YxtlEk22zxmjzBJwtKcTrIYSppOGCv7hAobIEqqz07nced6qJ6d
-	gjoyrXH8GnXc6tmUIgUtnzS/OrF5ZdzfAQ6sR/+ydQadYSa6MKEzFOvOJvO0j2yQcBv3OKvG7Lj
-	tUw==
-X-Google-Smtp-Source: AGHT+IFeM0B7my9SeMqYR5n+RtBG5AhiHXPGjV0Tz0oCPILMUffxAWA/E9oddAskv4XRf7h+1SVeBgTe8hc=
+        bh=4B3b0fSHvBV0t0bfPLzBXODTqy0x2bXlGHdHOkNN940=;
+        b=stxrbvGFpDj+1HOg6m35PuA3fM9yJ+/Sd/W7nmLymAY3fNiNG5DHH7b/8WBF4yvqUS
+         VK7O+nw3ZvOaILnxqzsvitoKojWUKHMJAN/M0jX0BrQykHygr/1ZCHB84QfmSLTRmuDf
+         mLyG9ZATbKeo6Eu7tT62VCWWlKujIWJ563BSr1GxOLJh5rqsXaAjXQQrYLIciyL0MGJI
+         diVATUVOwJjwjq7nqrHbA1ByfxJv6QTvEzX0MeW9sZBVx7/SGyCqk6qo4yHSt0L+7RfU
+         vP1c4spLbr34LGQww8+EfyUK0vOWZ4pwbcVdNVXZEEn/DyUT8aTBNATVN7XOAr8Dil1C
+         CtcA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIu7GRfX2aEP+Gb8VVrBS9koKBO2b7BiBBNeWOMbojE61ledfr3ycA792dkCjmQtX/d4sYZo1a3FgTRtGeHOgspWMr
+X-Gm-Message-State: AOJu0YwWvmo6zjnDpt6A4M5IhvSAK1hJJrEQBmPYrYW1OB2pD9jiZtid
+	c2lWaqUn66oAQa5imsoPzw4ta6ym5mZwWHtUO/3BidS8JOJsS1Nd1G4Iaqgk8T0yRaUPiRIaVft
+	Gxg==
+X-Google-Smtp-Source: AGHT+IHEZwm2ACyKJwy8891F9ZqV8QggRFcnt3bRT/yT7KZWsBFqpyB+AjiErMqKZ/bjCLkxY7pledYiulk=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3ecb:0:b0:5f7:fca4:6d2f with SMTP id
- 41be03b00d2f7-62f24b1978bmr1264a12.7.1715104556721; Tue, 07 May 2024 10:55:56
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2191:b0:6f4:9fc7:d21e with SMTP id
+ d2e1a72fcca58-6f49fc7d436mr734b3a.5.1715105156569; Tue, 07 May 2024 11:05:56
  -0700 (PDT)
-Date: Tue, 7 May 2024 10:55:54 -0700
-In-Reply-To: <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop>
+Date: Tue, 7 May 2024 11:05:55 -0700
+In-Reply-To: <ZjkludR5wh0mKZ2H@tpad>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
- <ZjUwHvyvkM3lj80Q@LeoBras> <ZjVXVc2e_V8NiMy3@google.com> <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop>
-Message-ID: <ZjprKm5jG3JYsgGB@google.com>
+References: <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+ <ZhQmaEXPCqmx1rTW@google.com> <Zh2EQVj5bC0z5R90@tpad> <Zh2cPJ-5xh72ojzu@google.com>
+ <Zh5w6rAWL+08a5lj@tpad> <Zh6GC0NRonCpzpV4@google.com> <Zh/1U8MtPWQ/yN2T@tpad>
+ <ZiAFSlZwxyKzOTRL@google.com> <ZjVMpj7zcSf-JYd_@LeoBras> <ZjkludR5wh0mKZ2H@tpad>
+Message-ID: <Zjptg53OzzKwImH5@google.com>
 Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
 From: Sean Christopherson <seanjc@google.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang1211@gmail.com>, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org, 
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Leonardo Bras <leobras@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 
-On Fri, May 03, 2024, Paul E. McKenney wrote:
-> On Fri, May 03, 2024 at 02:29:57PM -0700, Sean Christopherson wrote:
-> > So if we're comfortable relying on the 1 second timeout to guard against a
-> > misbehaving userspace, IMO we might as well fully rely on that guardrail.  I.e.
-> > add a generic PF_xxx flag (or whatever flag location is most appropriate) to let
-> > userspace communicate to the kernel that it's a real-time task that spends the
-> > overwhelming majority of its time in userspace or guest context, i.e. should be
-> > given extra leniency with respect to rcuc if the task happens to be interrupted
-> > while it's in kernel context.
+On Mon, May 06, 2024, Marcelo Tosatti wrote:
+> On Fri, May 03, 2024 at 05:44:22PM -0300, Leonardo Bras wrote:
+> > > And that race exists in general, i.e. any IRQ that arrives just as the idle task
+> > > is being scheduled in will unnecessarily wakeup rcuc.
+> > 
+> > That's a race could be solved with the timeout (snapshot) solution, if we 
+> > don't zero last_guest_exit on kvm_sched_out(), right?
 > 
-> But if the task is executing in host kernel context for quite some time,
-> then the host kernel's RCU really does need to take evasive action.
+> Yes.
 
-Agreed, but what I'm saying is that RCU already has the mechanism to do so in the
-form of the 1 second timeout.
+And if KVM doesn't zero last_guest_exit on kvm_sched_out(), then we're right back
+in the situation where RCU can get false positives (see below).
 
-And while KVM does not guarantee that it will immediately resume the guest after
-servicing the IRQ, neither does the existing userspace logic.  E.g. I don't see
-anything that would prevent the kernel from preempting the interrupt task.
+> > > > > >         /* Is the RCU core waiting for a quiescent state from this CPU? */
+> > > > > > 
+> > > > > > The problem is:
+> > > > > > 
+> > > > > > 1) You should only set that flag, in the VM-entry path, after the point
+> > > > > > where no use of RCU is made: close to guest_state_enter_irqoff call.
+> > > > > 
+> > > > > Why?  As established above, KVM essentially has 1 second to enter the guest after
+> > > > > setting in_guest_run_loop (or whatever we call it).  In the vast majority of cases,
+> > > > > the time before KVM enters the guest can probably be measured in microseconds.
+> > > > 
+> > > > OK.
+> > > > 
+> > > > > Snapshotting the exit time has the exact same problem of depending on KVM to
+> > > > > re-enter the guest soon-ish, so I don't understand why this would be considered
+> > > > > a problem with a flag to note the CPU is in KVM's run loop, but not with a
+> > > > > snapshot to say the CPU recently exited a KVM guest.
+> > > > 
+> > > > See the race above.
+> > > 
+> > > Ya, but if kvm_last_guest_exit is zeroed in kvm_sched_out(), then the snapshot
+> > > approach ends up with the same race.  And not zeroing kvm_last_guest_exit is
+> > > arguably much more problematic as encountering a false positive doesn't require
+> > > hitting a small window.
+> > 
+> > For the false positive (only on nohz_full) the maximum delay for the
+> > rcu_core() to be run would be 1s, and that would be in case we don't
+> > schedule out for some userspace task or idle thread, in which case we have
+> > a quiescent state without the need of rcu_core().
+> > 
+> > Now, for not being an userspace nor idle thread, it would need to be one or
+> > more kernel threads, which I suppose aren't usually many, nor usually take
+> > that long for completing, if we consider to be running on an isolated
+> > (nohz_full) cpu. 
+> > 
+> > So, for the kvm_sched_out() case, I don't actually think we are  
+> > statistically introducing that much of a delay in the RCU mechanism.
+> > 
+> > (I may be missing some point, though)
 
-> On the other hand, if that task is executing in guest context (either
-> kernel or userspace), then the host kernel's RCU can immediately report
-> that task's quiescent state.
-> 
-> Too much to ask for the host kernel's RCU to be able to sense the
-> difference?  ;-)
+My point is that if kvm_last_guest_exit is left as-is on kvm_sched_out() and
+vcpu_put(), then from a kernel/RCU safety perspective there is no meaningful
+difference between KVM setting kvm_last_guest_exit and userspace being allowed
+to mark a task as being exempt from being preempted by rcuc.  Userspace can
+simply do KVM_RUN once to gain exemption from rcuc until the 1 second timeout
+expires.
 
-KVM already notifies RCU when its entering/exiting an extended quiescent state,
-via __ct_user_{enter,exit}().
-
-When handling an IRQ that _probably_ triggered an exit from the guest, the CPU
-has already exited the quiescent state.  And AFAIK, that can't be safely changed,
-i.e. KVM must note the context switch before enabling IRQs.
+And if KVM does zero kvm_last_guest_exit on kvm_sched_out()/vcpu_put(), then the
+approach has the exact same window as my in_guest_run_loop idea, i.e. rcuc can be
+unnecessarily awakened in the time between KVM puts the vCPU and the CPU exits to
+userspace.
