@@ -1,55 +1,55 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B07515250D;
-	Tue,  7 May 2024 09:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB77152DE0;
+	Tue,  7 May 2024 09:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715074544; cv=none; b=XXicRjmZizo+aaniwKCnyXqFarkSwXEXuod4E0BYwRnRSR3TyWsYlT/iO0iWKI3SPi1mjmf/d2mcrXCEHbQEFVE4A8x+scLeZi+gCa0LRL0y+ANkXLsa9UxtdK6XqlaP/fTjmefYhC09wESKFIz6ERMm68L2Wuyg/ose13feNOY=
+	t=1715074546; cv=none; b=cNtWipDS2QbLXf7l9vMzZPTrCl/DeHzCNlKfocY0/fpqETcFEc5g4FUe1cgGkYSq1RkL6jZmc8SXYZP0X/QbI3c9j5FcRBvM55hXA8JfVMHSaY3+7++5VWkFinQKesh350OrUFeFR0vBRqxb6vMGgCl7QEGInm5Xbi8/Kox2Yg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715074544; c=relaxed/simple;
-	bh=Ul60Dz2Wb7t1suuj5txMkvljL21mKCYQ9LzjJSAVCpk=;
+	s=arc-20240116; t=1715074546; c=relaxed/simple;
+	bh=CEEiylPlq3j71LNCmuDby9KtGNd1YDAPS3GOOTnrKaA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XzvjvHKPpLa3esyowit5Uq8ILzJ6axFAXoIOps173qSqKxV4ptjTH2IVDxfYFKmEMGdgyLeTu2ULl5siKc2GqsG38TuzQpcHBvzfJnRpTuu+BjXGGnZ47J6Ko5iXhk7QWkHri1x2udKbTySfwOrgJtgLXbFeCut5BbU7vcGsiWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iK2Hot4e; arc=none smtp.client-ip=209.85.208.178
+	 MIME-Version; b=offROE2NN4JJU1Wt2DeckecRoqwGSZWovb4PLE09SHDGL/JiCH0gTPeyXGajjy2FuxTcHANf1P+BHIzV75nuWiC2V9JXle5x8DvwRj23ff53ySUdicYL4rcVBV/BkAX7YI4VjC3aKQfqzslDDpwG+6d4+OEUAG//necqxzlDALg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJ6BYvlH; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iK2Hot4e"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2e34e85ebf4so16678791fa.2;
-        Tue, 07 May 2024 02:35:42 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJ6BYvlH"
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2e1fa1f1d9bso55702661fa.0;
+        Tue, 07 May 2024 02:35:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715074541; x=1715679341; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715074542; x=1715679342; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0ODfneSlJwi5tq6mU5vRRHw3ltc4HQQLLdkqm9V0KGc=;
-        b=iK2Hot4e0cONi1/SDuL1u5yYoJa9G3HunmWZldrdXZ6qmAMOO25TkFMN6EXZjUkkBZ
-         wMSOm1yza8kSGEAfV0AGg+E6Wg+OtsRclXoDWAryUizo8pc0AGEcICFCRscjNKsj2zjo
-         xYX9UJhU/nrNX1Obcy1k9Mr31ePp7u8RsmtcRv003dXdEePO/kGd57rdTiNqOzec8TDF
-         w6BS884E0jz1u3o8WIkZbCuAobZJscI0LjfkMDngEMAg1PeRaMlcMOrWbzBqUBSUJWfh
-         +K1TNWhpLnJwbZHq3IavtUtodYozgdoD0ylc5vl2yuSgV8JF4yvJ/ItuBOeCaKNDPJAC
-         wV8w==
+        bh=k5OtpNZnclUijB37KVBOy2jnede7b3aa5kSGilAYif0=;
+        b=EJ6BYvlHjDC+UDFuWuAMNZoZ4B1hDP9GpfiYixJ7rs2gU4QQ6ucLJHNBRlbeGfR175
+         qGxmSOogECS0bfi81SrO6D9Ys5CJ9g8WvqX8dkavNkKHD5Naw4HDITo8iJYb8NGBO+ad
+         DXgfuSAjrJWBcFZjp40TSPgb+hszukNEx4hacv2K6/lAlJydDZYhFUv9yD062XBFLi8a
+         gsuFMVSX4jDba708+4U2dPwfBU19l/ls7wlh7r+AVuvbqjRGLb1FUH3xJxzRwabZRPpE
+         4PUCDkK4ZfAJxya4eqnUxRGPxIZCpCxvJOQb8TGB6iIXNwfe9cAm3lT+PC0mPHl/myFq
+         EC2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715074541; x=1715679341;
+        d=1e100.net; s=20230601; t=1715074542; x=1715679342;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0ODfneSlJwi5tq6mU5vRRHw3ltc4HQQLLdkqm9V0KGc=;
-        b=k0T6zUqTC94mZyTblolMWnnoKyVC17nyKh8HuNlBF/woiMq2Yt3uxNq08RufRPOlUz
-         aAH28ExgiPwBfLU3S02biAXsrdKHXpEV/vduJkZIpjLQuLzHjJJZmjKQQ4rK3OZBpO9a
-         wILRMyslbhya8/gLxfpYXU0W0a4dKOOA4v25OrPguLdDqZuU2BnOv3hg7qwVf2S3b4SG
-         NnsPn6++fRM3n1ooRBjH3uaduMJJ9m710Evc9i3vgmjvr5n6b3o9o0CeOhsNnYIAN2Lg
-         nz47EgPa9EqFoPY0XEuY/prOq1+jadrc4UsNry9oV6Wf+W8PDi+bfEbEsoQ+F1TvQxpy
-         AY/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUFpP4tDWoHZ7mvpdGqp4is+8L2rpZZXfPxSAaKv5KxZc5AMyutUFWIaAJyVRPUV2evqaIJHGrfvM2N3H3RxlPjmwzKb4t8gwFiLry0
-X-Gm-Message-State: AOJu0YyMgXyruHaLbPtqiFRsb2edTj/fSVbo5WdgxtTI1NrJEPaVAFdd
-	mDIt6GuqCzfGPqfr7d8plKbALR8V8nnb4ApP5OfUyIydeDA5pkmp
-X-Google-Smtp-Source: AGHT+IEhy9I6zK1bKc7Zlag8/vshhJpg+y7oa7zLYZLeeXFG9gFd1GEJa1QUDul2IKsFXRXWBZB0Jg==
-X-Received: by 2002:a2e:94d6:0:b0:2e0:37be:b70f with SMTP id r22-20020a2e94d6000000b002e037beb70fmr7454523ljh.26.1715074541347;
-        Tue, 07 May 2024 02:35:41 -0700 (PDT)
+        bh=k5OtpNZnclUijB37KVBOy2jnede7b3aa5kSGilAYif0=;
+        b=GtZFN72zVxKRT6aYRPj3LjnqLPZUijU5BTkT3hJKKGVfdIKTnOUuwbInNQHpKt3fSb
+         r+IZdK6GRPKB2yoojWutjeCX45Vr/OOAIyQFrDhuqz3TgAHfSQ79hNlIengjcwO+IyGr
+         S+zgvEBcl6w9wE88IFkrPN0xly7HJBBK8uhzoj5oLkN9beM9PwWvGxpmg24593fNrCSM
+         YypG6cqJxNnBlsuzM3sdWsbmkm17/3L8qvP94WVhC08PkDzogAANG3M7VLxsXOxFwb2H
+         RuGod8UivYIlF8BIY8PBMjTSA8WuvlY8e2cTrpLvGkhM5ZHjey8c+BQ0M3XZ75OVZD6z
+         wNGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1OuG17tc+6JrxyHhmLnzDg13CAyHysKkY/ssSKEO7jE1dGIp45+orrV6aF27/mdrrRN7Bdhg2tzqxZZ8Lxz409+eHuFsFTaq/9+xy
+X-Gm-Message-State: AOJu0YzbtptiNxAiyB2VCNtIUTQhEVMQuVLs39cKt82ajBrlXdp+fBrw
+	5Z6XQdCOxdtK3kxWJkSP6MnBGvJ6dm3t5TJrKXAGJXmNwdqoWTLq
+X-Google-Smtp-Source: AGHT+IGNPUx/C384/inFDXioDn+uBYnBPZRb4XAF3oX/NOg6AfZ61TvDJvKeDlg2PdGyJStq53z3kA==
+X-Received: by 2002:a2e:919a:0:b0:2e1:a2d5:62c2 with SMTP id f26-20020a2e919a000000b002e1a2d562c2mr10695933ljg.33.1715074542210;
+        Tue, 07 May 2024 02:35:42 -0700 (PDT)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.40
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002e29c50c4dcsm1335473lji.27.2024.05.07.02.35.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 07 May 2024 02:35:41 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
@@ -63,10 +63,10 @@ Cc: RCU <rcu@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Zenghui Yu <zenghui.yu@linux.dev>
-Subject: [PATCH 09/48] doc: Remove references to arrayRCU.rst
-Date: Tue,  7 May 2024 11:34:51 +0200
-Message-Id: <20240507093530.3043-10-urezki@gmail.com>
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+Subject: [PATCH 10/48] MAINTAINERS: Update Neeraj's email address
+Date: Tue,  7 May 2024 11:34:52 +0200
+Message-Id: <20240507093530.3043-11-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240507093530.3043-1-urezki@gmail.com>
 References: <20240507093530.3043-1-urezki@gmail.com>
@@ -78,43 +78,47 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zenghui Yu <zenghui.yu@linux.dev>
+From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 
-arrayRCU.rst has been removed since commit ef2555cf68c3 ("doc: Remove
-arrayRCU.rst") but is still referenced by whatisRCU.rst. Update it to
-reflect the current state of the documentation.
+Update my email-address in MAINTAINERS and .mailmap entries to my
+kernel.org account.
 
-Signed-off-by: Zenghui Yu <zenghui.yu@linux.dev>
+Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+Reviewed-by: Joel Fernandes <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- Documentation/RCU/whatisRCU.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .mailmap    | 3 ++-
+ MAINTAINERS | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index 872ac665223f..94838c65c7d9 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -427,7 +427,7 @@ their assorted primitives.
- 
- This section shows a simple use of the core RCU API to protect a
- global pointer to a dynamically allocated structure.  More-typical
--uses of RCU may be found in listRCU.rst, arrayRCU.rst, and NMI-RCU.rst.
-+uses of RCU may be found in listRCU.rst and NMI-RCU.rst.
- ::
- 
- 	struct foo {
-@@ -510,8 +510,8 @@ So, to sum up:
- 	data item.
- 
- See checklist.rst for additional rules to follow when using RCU.
--And again, more-typical uses of RCU may be found in listRCU.rst,
--arrayRCU.rst, and NMI-RCU.rst.
-+And again, more-typical uses of RCU may be found in listRCU.rst
-+and NMI-RCU.rst.
- 
- .. _4_whatisRCU:
- 
+diff --git a/.mailmap b/.mailmap
+index 59c9a841bf71..32e12c26bdda 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -445,7 +445,8 @@ Nadav Amit <nadav.amit@gmail.com> <namit@cs.technion.ac.il>
+ Nadia Yvette Chambers <nyc@holomorphy.com> William Lee Irwin III <wli@holomorphy.com>
+ Naoya Horiguchi <naoya.horiguchi@nec.com> <n-horiguchi@ah.jp.nec.com>
+ Nathan Chancellor <nathan@kernel.org> <natechancellor@gmail.com>
+-Neeraj Upadhyay <quic_neeraju@quicinc.com> <neeraju@codeaurora.org>
++Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <quic_neeraju@quicinc.com>
++Neeraj Upadhyay <neeraj.upadhyay@kernel.org> <neeraju@codeaurora.org>
+ Neil Armstrong <neil.armstrong@linaro.org> <narmstrong@baylibre.com>
+ Nguyen Anh Quynh <aquynh@gmail.com>
+ Nicholas Piggin <npiggin@gmail.com> <npiggen@suse.de>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7c121493f43d..0370e571f312 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18591,7 +18591,7 @@ F:	tools/testing/selftests/resctrl/
+ READ-COPY UPDATE (RCU)
+ M:	"Paul E. McKenney" <paulmck@kernel.org>
+ M:	Frederic Weisbecker <frederic@kernel.org> (kernel/rcu/tree_nocb.h)
+-M:	Neeraj Upadhyay <quic_neeraju@quicinc.com> (kernel/rcu/tasks.h)
++M:	Neeraj Upadhyay <neeraj.upadhyay@kernel.org> (kernel/rcu/tasks.h)
+ M:	Joel Fernandes <joel@joelfernandes.org>
+ M:	Josh Triplett <josh@joshtriplett.org>
+ M:	Boqun Feng <boqun.feng@gmail.com>
 -- 
 2.39.2
 
