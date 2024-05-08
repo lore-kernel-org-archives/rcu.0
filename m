@@ -1,68 +1,46 @@
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495D712A17D
-	for <rcu@vger.kernel.org>; Wed,  8 May 2024 17:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7151E89A
+	for <rcu@vger.kernel.org>; Wed,  8 May 2024 23:50:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715189893; cv=none; b=hYSv2KOiZ3dn79/Y1NqEOMrugx9Zv347XxKmJSMfydhBj+NW95eefDeZgZB3nDT4Ad5hXTX139tPa7E7V2R+20sAcpuzV/SuQ/ud6F1f1MwYKLbkbbqF/joKlajDlJOhYEEBEekk7Zyrxoo9eExmu5j6qfte61sZaMaXTfj87OE=
+	t=1715212247; cv=none; b=gv4YnDXjEpNIUH321s7NqqdfltltQZqX7xWkWE+Yd2nY0pUsMh1vsSQmrUEzFUU+YV44akLvqcV8YNSZ105l3FEzsLCDNgWIk8/PyaJe3qJICj6Yc8JpDJ5TfqIp2IW6nBS+JkmbC8jTsmL+uKlYWs3n2KHZWYNx/JBigFFcwCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715189893; c=relaxed/simple;
-	bh=qLqkJ7vbYlXoF5p9IsLuLIjK86ZU5yNUOyIaZ+74ZW8=;
+	s=arc-20240116; t=1715212247; c=relaxed/simple;
+	bh=RsuFMqDrLETJ6CHiIIVaA3b20KjWmlH6Wsw6FKjwp10=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ovGBiXNA5ef32QyqOS71Nj0MhTc9T5OYP4v/fx+CG9LI6f4VyfoQK8w1SvbRd/AKNMF9IPRdAY2RwpXnq+qNwNWF6rTYaCRfuqd4d5GWIvPOdmU7g9lDUx9/7SCUKPDgith7JugoYFfSSXPvoKkU0ZUBZUbOWK1GwTBms5kwtE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lbGuU9Ep; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZzQGoPw8aC+PkSsqrlejeJvsJePKlV7Ov4XH13eHJsyyddEC1RoQY3aIb3AvbeZ5B6EWiS2aRAsWqlCx1b3EOw1l+Sd4VdQTj/VUh/Rg6zycg3HmeNZS3FpQZROzA4UiHg81g/+49rvfuvFqOpIS39KwGl1ztJr1YSbM6QTp7CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=stBEDMB+; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lbGuU9Ep"
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a59cf8140d0so947698066b.3
-        for <rcu@vger.kernel.org>; Wed, 08 May 2024 10:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1715189890; x=1715794690; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gQot0/PkPori/dKh23nmNQqVvgxIkIrBnc3Ax9zhrcg=;
-        b=lbGuU9Ep42dE7VK8fj3SBj65GI/WbVFNOBrdVwlTHUBArzUgtP26kQ9QZDYkLvA1v0
-         IjCj6UNJkARsDQ/oYFs2011iWjWzX3Nhx2Q+aG1TTCe93L30X9XLe4G8QgIXlrkMP3Vm
-         P1rE17Hez2nUpQPx4x30RIApSGp3S1M80qGdsz7ETD/ybH8vC3kK6CARkQ/J2DMHwsKt
-         7n3bvZkyDu+yDA2wiCmpHQBZuoqi0r+0Y4li+6lyhrOICu8sH8U3Vty0mE+nICjdtQZ0
-         5jcO3ohx7/BTvPqRMKjqnuMsyBrxDUc28UrEOnMeu3QUMCEkRjDcj/ysDzZ63bAHdN7v
-         8mZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715189890; x=1715794690;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gQot0/PkPori/dKh23nmNQqVvgxIkIrBnc3Ax9zhrcg=;
-        b=FO0EL9/VyXi6y91sRP/zcFM/m70WF5kDy1x2DkxNpxKmJLs0jJAlcb+1KTqwuv5Y6P
-         hLfKo/BNPzpQMsgU4tCLOOeCblekRgeCRyMTUFH9k9htsm+qILO5fJ/HboRMO1dVT+HG
-         gV6cmN2ZQXx6Ivsnb36lyhHhwmAws3g2vF4+5IniuwoOq0pL262OdfJRdW5uzDsPmxNN
-         8fqGdiNzp9X1xMAwA+yspxqEZ6c0jwuEpx+4CPxxFvfos1zZ0xojsMd0FV5iY+9lEukl
-         vO1u2jcpBWexui2wu+eTziTLzymbx2c8ZNF1v+UUefPlNsOLWifuK0IzIfzgpAkXzwiY
-         mFGA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSdZNipTGs4e8bSHnp5hI1sP3rCUTD7MQU+i0VXV8kQBHXaChEDfvVq/E3boJi8ncBWTHmsr0x80NJN82LSiShA481
-X-Gm-Message-State: AOJu0Yx176iKmFqynEzaY5vRjYzBrqJhv4/8UBGccDaaNpJkRI09CD9C
-	A5f2KrAymo6O9rhzrBlY2cZ0262gkFAZdpNfmvFLyqxbWGm/8GBRvcv0Wf6yb9S/VaiV27I75Vr
-	3
-X-Google-Smtp-Source: AGHT+IGqeKoQKVAuJmw98o+dFPRXgEZ7/MR7ovgg47z7/WdPzgCk8x3UD+/98HCJx16qDb3HJQr2oQ==
-X-Received: by 2002:a50:cd49:0:b0:572:9bd2:9a90 with SMTP id 4fb4d7f45d1cf-5731da5b696mr2398595a12.31.1715189890417;
-        Wed, 08 May 2024 10:38:10 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id w26-20020aa7da5a000000b005722cb1dd6fsm7717208eds.27.2024.05.08.10.38.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 10:38:10 -0700 (PDT)
-Date: Wed, 8 May 2024 20:38:06 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="stBEDMB+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 144A3C113CC;
+	Wed,  8 May 2024 23:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715212247;
+	bh=RsuFMqDrLETJ6CHiIIVaA3b20KjWmlH6Wsw6FKjwp10=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=stBEDMB+XGBqELdbbm3MSBl+dbLYUs1EcWdnrBdIJLOA6BI12O2dvQVEWvCNN9KIV
+	 RzpY1mhgUxGn6NwVNZVVnlaXqhL5LhVEb0cBRgy5md7+eb6DhXbHRgPM1s1YyFSMA5
+	 LfVesreBziCCvixF5f1t89bAisfogh+iPVi0KM5zMRY09gVrobHTTT3YQZ5iHCrv71
+	 Q49dvYgiN95G24HSETsS7pPwg7XfETkqWIr4bAVytP/NU0doCIv3LzTw5S4lWcJB+g
+	 zpT16zGwvqHsEJADLrb1b0OhBKSN9CAOR4O8oSyPlrhw8t+WyaMS0IEZZl5mxksyWB
+	 Xg6W2XwGIiNXw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id A675CCE0A6A; Wed,  8 May 2024 16:50:46 -0700 (PDT)
+Date: Wed, 8 May 2024 16:50:46 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Dan Carpenter <dan.carpenter@linaro.org>
 Cc: dwmw@amazon.co.uk, rcu@vger.kernel.org
 Subject: Re: [bug report] rcu: Kill rnp->ofl_seq and use only
  rcu_state.ofl_lock for exclusion
-Message-ID: <2a5bc6d1-c45e-4cf2-81bd-49b55caa1478@moroto.mountain>
+Message-ID: <c18678f2-dff9-4d2b-9079-d77ab276ccf2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <febb13ab-a4bb-48b4-8e97-7e9f7749e6da@moroto.mountain>
  <cef46486-ac26-495d-bd2d-1e998a73a421@paulmck-laptop>
  <edfea2ff-d73e-48aa-83db-96daba77c500@moroto.mountain>
  <e775bd83-dfa3-4f09-9539-e0e655feda08@paulmck-laptop>
+ <2a5bc6d1-c45e-4cf2-81bd-49b55caa1478@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -71,23 +49,73 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e775bd83-dfa3-4f09-9539-e0e655feda08@paulmck-laptop>
+In-Reply-To: <2a5bc6d1-c45e-4cf2-81bd-49b55caa1478@moroto.mountain>
 
-On Wed, May 08, 2024 at 10:32:43AM -0700, Paul E. McKenney wrote:
+On Wed, May 08, 2024 at 08:38:06PM +0300, Dan Carpenter wrote:
+> On Wed, May 08, 2024 at 10:32:43AM -0700, Paul E. McKenney wrote:
+> > 
+> > Agreed, and please see below for the proposed cleanup in this case.
+> > 
+> > 							Thanx, Paul
 > 
-> Agreed, and please see below for the proposed cleanup in this case.
+> Thanks!  Did you see the other warning I mentioned?
 > 
-> 							Thanx, Paul
+>     kernel/rcu/srcutree.c:910 srcu_gp_end()
+>     warn: mixing irq and irqsave
 
-Thanks!  Did you see the other warning I mentioned?
+I did, but then I promptly forgot about it.  Thank you for the reminder.
 
-    kernel/rcu/srcutree.c:910 srcu_gp_end()
-    warn: mixing irq and irqsave
+> Btw, I'm mostly sending you these because I know you're interested in
+> these sorts of cleanups.  I didn't bother sending one to aacraid people,
+> for example.  :P
 
-Btw, I'm mostly sending you these because I know you're interested in
-these sorts of cleanups.  I didn't bother sending one to aacraid people,
-for example.  :P
+Maintainer's choice!  ;-)
 
-regards,
-dan carpenter
+How about the following?
 
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 75a3b18f319a1f06df94cfeef81d7dd6a38cd59b
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed May 8 16:47:16 2024 -0700
+
+    srcu: Disable interrupts directly in srcu_gp_end()
+    
+    Interrupts are enabled in srcu_gp_end(), so this commit switches from
+    spin_lock_irqsave_rcu_node() and spin_unlock_irqrestore_rcu_node()
+    to spin_lock_irq_rcu_node() and spin_unlock_irq_rcu_node().
+    
+    Link: https://lore.kernel.org/all/febb13ab-a4bb-48b4-8e97-7e9f7749e6da@moroto.mountain/
+    
+    Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 98f79ba01b0af..9a8b7ecd2ff45 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -846,7 +846,6 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+ 	bool cbs;
+ 	bool last_lvl;
+ 	int cpu;
+-	unsigned long flags;
+ 	unsigned long gpseq;
+ 	int idx;
+ 	unsigned long mask;
+@@ -908,12 +907,12 @@ static void srcu_gp_end(struct srcu_struct *ssp)
+ 	if (!(gpseq & counter_wrap_check))
+ 		for_each_possible_cpu(cpu) {
+ 			sdp = per_cpu_ptr(ssp->sda, cpu);
+-			spin_lock_irqsave_rcu_node(sdp, flags);
++			spin_lock_irq_rcu_node(sdp);
+ 			if (ULONG_CMP_GE(gpseq, sdp->srcu_gp_seq_needed + 100))
+ 				sdp->srcu_gp_seq_needed = gpseq;
+ 			if (ULONG_CMP_GE(gpseq, sdp->srcu_gp_seq_needed_exp + 100))
+ 				sdp->srcu_gp_seq_needed_exp = gpseq;
+-			spin_unlock_irqrestore_rcu_node(sdp, flags);
++			spin_unlock_irq_rcu_node(sdp);
+ 		}
+ 
+ 	/* Callback initiation done, allow grace periods after next. */
