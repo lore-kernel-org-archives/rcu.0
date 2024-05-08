@@ -1,174 +1,129 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FBB126F32;
-	Wed,  8 May 2024 14:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF69F8625D
+	for <rcu@vger.kernel.org>; Wed,  8 May 2024 14:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715180111; cv=none; b=ZLIUkUEFTt5V2zXebOLGlPLoOi7THCRcFdW7i/lPUpqxbPWPo3hG+4narOXAcTxMogJoxYbfNgJ9beoDHeUuvR4N2PUTw3B0DWJ+5WTldode7XLl2+1aX0cNJ8Et49DhuuPS7oFakzJHJC7lZqVTGLvueQwd8n3kyXYKP7fLE+U=
+	t=1715180146; cv=none; b=LpzOoL1lwiPH4uwy52w39UZmjJEh3MhplljYQjslQeQIZ8Sc4AF/tyq9w13OKyZOV0j5nBUxOaxPy3Z+d/eiHqmHgev59AJkknuG35HrY8HmgeGqHkMVEzzdkFRXmqPpEA1u4GRQKRF2alG55KMCbIiEYe5HnBlYJvUjpmILcnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715180111; c=relaxed/simple;
-	bh=e/Vq3mzFZvYVxvGvhb41dxlfmvKiC5BzmYJi9fjCl98=;
+	s=arc-20240116; t=1715180146; c=relaxed/simple;
+	bh=0sXRAeD+zWS3zc0mEn+opPlzS+BvgcmDIqaSwXibnDo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FfQl/9WGIzDSBhClFUlFuJcUm0Kgt93D1PwCjli8UUFDzsxrBOW3sz7F6hYuYivNNf0mBYyv877t3S6wnPyAVRsSd9mSkp2Zc7A8spuZ8h2sVW9XrO2i0aKjOdLoDawdTWw2c+mhAWy2nXnrYEccowywdO/HJ24cmjmKKIgTnBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CmY2I9Kn; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=crxRd626L1aajQ1eclN5WJPHvenXvOQqQPAfEYSdQUDqS9f9vF5/Fji2Eofj3Eh1nBdXtXDwP1cZSrMJUUQrPaao9OUkdLLibxPiTsUBu17PYX0i6vD4WrqfE0QyxGK+NA0i8donz8MmqtWftKTy5WE7rjObU6i2aWQQsnaSJnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QgELaaJJ; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CmY2I9Kn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED3D0C2BD10;
-	Wed,  8 May 2024 14:55:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715180111;
-	bh=e/Vq3mzFZvYVxvGvhb41dxlfmvKiC5BzmYJi9fjCl98=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CmY2I9KnV7WC332LXcYFBhEMd2AxtzU5THcs/Fwd9I1rkoQhNc1e4O3KwS1VPMcwB
-	 CL8+qcs+7C69y3bGCzRfz6D9d5nWELxwXPF35bQt9V+VIzx8WUeqpCvPlZwQ5pj0Uo
-	 KRh3RZWXyqVgs9cvugI4ZCGwo8pGXbL0v912ZJltUswrpEMtZihuj207vU5zElMma7
-	 AFJLBHaWpm/2nh5p2n0PMmNDg6nptIdq+IRiFn0w4CX33Arjl24DqCpL/Y+o4kpqcW
-	 oC7jQn9U1LlTwOHUL24ta6ok0ZXdrS1HrWXw0vrGuVb0G4iZ7IZKrJxR9ofZ+YZ4kD
-	 RShBXjXtex34Q==
-Date: Wed, 8 May 2024 16:55:08 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 26/27] rcu: Update stray documentation references to
- rcu_dynticks_eqs_{enter, exit}()
-Message-ID: <ZjuSTC0sZvuqx57r@localhost.localdomain>
-References: <20240430091740.1826862-1-vschneid@redhat.com>
- <20240430091740.1826862-27-vschneid@redhat.com>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QgELaaJJ"
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a5a0013d551so113379766b.2
+        for <rcu@vger.kernel.org>; Wed, 08 May 2024 07:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1715180143; x=1715784943; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bOFkQKLtVJwGAT68/GiH82uJIbWHRwsw2d7t/rwl000=;
+        b=QgELaaJJ++uvhnbCIw0cqcOymJp5PEoA+1heOIlCJkYZ2z9421hhPiWQvwbtZH2IzM
+         9VLhBm+Hpiku81XtI8DAh7oBl12u11hkLrE2GyKFsUs8uvou5aL9HWmuA4zlJ7jKbwwT
+         cSIJMrWUpSkG2vLK9kiya6+NfZmBix+Md3yf1DGRGaKPy6JzYrqHMAOMuDKV5GfjVAjZ
+         Fm+8lHQ6Oa7ooqEizgdmUErcyHjYKpWP0RP+9/DBBW5ISISHIGldQ0nOk8Xhr9aHlmiX
+         Yeh3xRIOLBU+WLtWj33Vn4kjU668oML4yGOC1SGqpAM8V1HdkvWTXZkmIuMSO4KKzbsW
+         sHeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715180143; x=1715784943;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bOFkQKLtVJwGAT68/GiH82uJIbWHRwsw2d7t/rwl000=;
+        b=ovXjVY9mvJ3ycnBNRk/pCjC0Ur2vx9B7dtyIu2qm3fFOFVuxYSytmJl6Iiggxnrqi5
+         du5I1HRz5+A6wAg+aa0M2VI+xkQVvWRrYqPCMrgv/HkNLsPVBOWTSl9ShgqnA1EKE+CD
+         2z8dPIls0ghXPOFrSb2Rgmlmq33MHDs9oAhp1PARcK2r5rvko3t4Z5LQSeYeL7mHIo9h
+         +NliBXRWYrPgrutw0I5ym6i2Vnirr3gpo8MtfgMtxHacT/XMLdcOIXAiHI2uyd0KqQbL
+         LBCkkAPXPf5mKdAXAnyOCMFUPncXiOea4tofTAo0/Zco3c4nashtSq5X6znmuolpwNcN
+         TWeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWspO/N7hLku1ystYOQjW9YE7yHUNd/sKz7B1zFq1/rUitPT75ZzQFD/DIkIE9MsyPv2kjMnJfVWGK1PHq1/PWREQng
+X-Gm-Message-State: AOJu0YwEetumnfsrglv9944gyYH7oLgOMzgxn/SOdD27/z6SksqjCQgC
+	sLBEEzT8aDr64woePz7YLuyzxqoa6lX0QPoElCQoWmsGBZrt5fzaICVVFz2WTGc=
+X-Google-Smtp-Source: AGHT+IGigxDBKq5sRrbe4HOOv1ZfmO3btgl9iP2nipR3ixL9sGi++QqEg6mFbH3HXLcvy7rs6zrttw==
+X-Received: by 2002:a50:d519:0:b0:572:d536:5d9a with SMTP id 4fb4d7f45d1cf-5731d9d1c87mr2574263a12.23.1715180142755;
+        Wed, 08 May 2024 07:55:42 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id e22-20020a056402105600b0057300ba262esm3587827edu.34.2024.05.08.07.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 May 2024 07:55:42 -0700 (PDT)
+Date: Wed, 8 May 2024 17:55:38 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: dwmw@amazon.co.uk, rcu@vger.kernel.org
+Subject: Re: [bug report] rcu: Kill rnp->ofl_seq and use only
+ rcu_state.ofl_lock for exclusion
+Message-ID: <edfea2ff-d73e-48aa-83db-96daba77c500@moroto.mountain>
+References: <febb13ab-a4bb-48b4-8e97-7e9f7749e6da@moroto.mountain>
+ <cef46486-ac26-495d-bd2d-1e998a73a421@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240430091740.1826862-27-vschneid@redhat.com>
+In-Reply-To: <cef46486-ac26-495d-bd2d-1e998a73a421@paulmck-laptop>
 
-Le Tue, Apr 30, 2024 at 11:17:30AM +0200, Valentin Schneider a écrit :
-> rcu_dynticks_eqs_{enter, exit}() have been replaced by their
-> context-tracking counterparts since commit:
+On Wed, May 08, 2024 at 07:33:38AM -0700, Paul E. McKenney wrote:
+> On Wed, May 08, 2024 at 03:29:12PM +0300, Dan Carpenter wrote:
+> > Hello David Woodhouse,
+> > 
+> > Commit 82980b1622d9 ("rcu: Kill rnp->ofl_seq and use only
+> > rcu_state.ofl_lock for exclusion") from Feb 16, 2021 (linux-next),
+> > leads to the following Smatch static checker warning:
+> > 
+> > 	kernel/rcu/tree.c:1844 rcu_gp_init()
+> > 	warn: mixing irq and irqsave
 > 
->   171476775d32 ("context_tracking: Convert state to atomic_t")
+> There are actually cases where this does make sense, one example being
+> where some called function (for example, rcu_report_qs_rnp() below)
+> needs a flags argument.
 > 
-> Update the stray documentation references.
-> 
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-> ---
->  .../RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst   | 4 ++--
->  Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg  | 4 ++--
->  Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg   | 4 ++--
->  Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg       | 4 ++--
->  4 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> index 0533814a1f69a..50fc99aba777f 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-> @@ -147,8 +147,8 @@ RCU read-side critical sections preceding and following the current
->  idle sojourn.
->  This case is handled by calls to the strongly ordered
->  ``atomic_add_return()`` read-modify-write atomic operation that
-> -is invoked within ``rcu_dynticks_eqs_enter()`` at idle-entry
-> -time and within ``rcu_dynticks_eqs_exit()`` at idle-exit time.
-> +is invoked within ``ct_kernel_enter_state()`` at idle-entry
 
-Looks like ct_kernel_exit_state().
+I only found one false positive which was kind of related to that in
+__run_hrtimer().
 
-> +time and within ``ct_kernel_exit_state()`` at idle-exit time.
+  1643  
+  1644  static void __run_hrtimer(struct hrtimer_cpu_base *cpu_base,
+  1645                            struct hrtimer_clock_base *base,
+  1646                            struct hrtimer *timer, ktime_t *now,
+  1647                            unsigned long flags) __must_hold(&cpu_base->lock)
+                                                ^^^^^
 
-And ct_kernel_enter_state()
+  1648  {
+....
 
->  The grace-period kthread invokes ``rcu_watching_snap()`` and
->  ``rcu_watching_changed_since()`` (both of which invoke
->  an ``atomic_add_return()`` of zero) to detect idle CPUs.
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg
-> index b57210ecd689e..c7d16b72f0973 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg
-> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg
-> @@ -607,7 +607,7 @@
->         font-weight="bold"
->         font-size="192"
->         id="text202-7-5-3-27-6"
-> -       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dynticks_eqs_enter()</text>
-> +       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_kernel_enter_state()</text>
+  1678          /*
+  1679           * The timer is marked as running in the CPU base, so it is
+  1680           * protected against migration to a different CPU even if the lock
+  1681           * is dropped.
+  1682           */
+  1683          raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
+                                                            ^^^^^
+We potentially enable IRQs.
 
-ct_kernel_exit_state()
+  1684          trace_hrtimer_expire_entry(timer, now);
+  1685          expires_in_hardirq = lockdep_hrtimer_enter(timer);
+  1686  
+  1687          restart = fn(timer);
+  1688  
+  1689          lockdep_hrtimer_exit(expires_in_hardirq);
+  1690          trace_hrtimer_expire_exit(timer);
+  1691          raw_spin_lock_irq(&cpu_base->lock);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Then disable them again.
 
->      <text
->         xml:space="preserve"
->         x="3745.7725"
-> @@ -638,7 +638,7 @@
->         font-weight="bold"
->         font-size="192"
->         id="text202-7-5-3-27-6-1"
-> -       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dynticks_eqs_exit()</text>
-> +       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_kernel_exit_state()</text>
+  1692  
 
-ct_kernel_enter_state()
+Of course the other warnings are mostly not "bugs" because the callers
+haven't disabled IRQs.  They're just in need of clean up.
 
-etc...
+regards,
+dan carpenter
 
-Thanks.
-
->      <text
->         xml:space="preserve"
->         x="3745.7725"
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg
-> index bd2b33e05447f..bcb71714b4197 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg
-> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg
-> @@ -977,7 +977,7 @@
->         font-weight="bold"
->         font-size="192"
->         id="text202-7-5-3-27-6"
-> -       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dynticks_eqs_enter()</text>
-> +       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_kernel_enter_state()</text>
->      <text
->         xml:space="preserve"
->         x="3745.7725"
-> @@ -1008,7 +1008,7 @@
->         font-weight="bold"
->         font-size="192"
->         id="text202-7-5-3-27-6-1"
-> -       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dynticks_eqs_exit()</text>
-> +       style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_kernel_exit_state()</text>
->      <text
->         xml:space="preserve"
->         x="3745.7725"
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> index 8ece2b559bd35..e110b0ac74ffe 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg
-> @@ -3107,7 +3107,7 @@
->           font-weight="bold"
->           font-size="192"
->           id="text202-7-5-3-27-6"
-> -         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dynticks_eqs_enter()</text>
-> +         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_kernel_enter_state()</text>
->        <text
->           xml:space="preserve"
->           x="3745.7725"
-> @@ -3138,7 +3138,7 @@
->           font-weight="bold"
->           font-size="192"
->           id="text202-7-5-3-27-6-1"
-> -         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dynticks_eqs_exit()</text>
-> +         style="font-size:192px;font-style:normal;font-weight:bold;text-anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_kernel_exit_state()</text>
->        <text
->           xml:space="preserve"
->           x="3745.7725"
-> -- 
-> 2.43.0
-> 
