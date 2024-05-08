@@ -1,145 +1,348 @@
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D145127B4D
-	for <rcu@vger.kernel.org>; Wed,  8 May 2024 15:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DAFA129E70;
+	Wed,  8 May 2024 16:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715182507; cv=none; b=u9khaANbJKTx9izxDGsj72dCjUmxmGBZiQpy4hkESmjei8LypxjVoBys0yVd4g6pdKIBKX3dznfTzChGZjxcH/tEqO3snbEr6aexRjp/ZGqCCPcMmEze+8AY6nIqDlK7KFYMREjUc14KF7MC1GoyRZ4kAPZy4A61Q+iPuKugJo0=
+	t=1715184865; cv=none; b=dXsuMhSjjSeozgtLcQz74YiwffcUECwUXqRU8KJ920Kv8sZ4N2Ar0RI5cgK7VXEjSAyKTtS4LkJMSvID+2YJ8L5G42RSeEi1dD2ApDilxlJBFH1FG/mFDKLMp/pM0GQdzTYHFRjjnnJpgwxcq572A6haeRAunqjEdYUNh/6mXYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715182507; c=relaxed/simple;
-	bh=YNwnw7x/Uo6NlKxdHmJmjTkvzz/xc3NOR1EbfVQ1Qdk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=bxW69+BnqnIFhOhMDKo8X3WWL9Yg/UdPPhhEgnn88eKC+gS73XxEldlrIOMCTkKNJke67W1K0WnaY1hYBqwQh162IF03cpquwu7Nw6fdM5A8YZkIYxgQqoBI8HN9Cy4/03s67U0tDictxYk2ZlzmQ2PkX7HFvuIMs9tWf3hXvpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xd8NFkCc; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1715184865; c=relaxed/simple;
+	bh=GicZfDMvAMacxnAAqU7f7Vgy/xZdxbVPIXZAlMBpEik=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UQL8XT1DJp0fSh25OaBHScgOYjGwXhfZSjGMcJ1oa2mZfGig0mFI2xqSqw+LgiWTlBXhsn6sAs7Jn/CGBDszxQIAunhrWR7cw4q9OTHd1KEnU9RL4LFuPECuF1FYkVJNN2s60RahNOfy830qvmPlPfi0xrzUt5i280L4/W4rceo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnvUgJph; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xd8NFkCc"
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5c65e666609so4577312a12.1
-        for <rcu@vger.kernel.org>; Wed, 08 May 2024 08:35:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715182505; x=1715787305; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zgF+FfCyif5jmmQvrN+Ij7wj3+WZfQYjh63u9JDeBL0=;
-        b=xd8NFkCc5uRmmg9BWiGkeXd81FmeWv95bsD91ua9LNqd2BJOus1sHuHAWNJjNo9jdR
-         1A0/j6lIji3UVVlW7RJTknyiVNHm1KHCSQ0EwMFbPsY9J8DLZqc63C+MBJf5SEPA6PuA
-         1IUIKKz5cHMucshl4W4bDv5Ukk95HANWdTI3fOd1Zq6r0r+fybv6d+3aua1CFAHmcdrb
-         EPPJCoPkAwWILLodkqCV668AL5PBygrQL5Po4dIt7OmBn/mOS6rkJ5nSHiQxKt1hD24B
-         gH2kVJd4Boc5vmQLyDvNt1O7HXQ6eyWhL+dbZFOMjFT3UN7VhUERJNrEGZaTUEHy5L/Q
-         2SKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715182505; x=1715787305;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zgF+FfCyif5jmmQvrN+Ij7wj3+WZfQYjh63u9JDeBL0=;
-        b=AJaQ/3DpLg8mUmILcS4QPGgMnbv3ymOW7coqLPAXz7O9N1mfirnnh9JZB2qJoZim9+
-         w8LVguFIOHHBKKNUnpON6/gzv5QYaZQbHz/WSPBFx4h/hzOSKbA6J6IMLWhss/7WxgW4
-         HBrpM5piJt44I4ivS+twSSAAnq3yUHeBeqnj5+N13pcTNBJu2Me2vRFhU/FFPm93wBuF
-         MtDRm4iuHsQTTn1nrRj1lPUp6taPRgBuafSIE1bncC5L11UbesuTzqAUhxBUrwyId8Kx
-         IIKwa2ffODKg5lbmCr+bED+2zTK6cNsfmqqZSM/w78c9rzKSkTWS+6x+V3LwyKNj/oGF
-         aHHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+G/gIauLTzrZH+eDTHMvP/D/dpMVVttWxvoGaypzvRXiRsSdGVcEcWyWk0pQ7MJQHB19mgl48cEh9WWCAdzx2b+3P
-X-Gm-Message-State: AOJu0Yz0RxjjwEOsZNceBdL8+5yVb9VmVjAWapCH66L1f6+m1ti95JvE
-	BgqGqBc5VIxNY4B5XSsfxY9cqW51yRhFalTclInTuQcekZDt5WdyJViHJ9sygTIZ9naryAC8kSN
-	JFg==
-X-Google-Smtp-Source: AGHT+IGnMl8b2DL5U8JgKn7vuhtLw31dGCqH0NqCNx0jQuIgeqpJ7VJDjS8TlyGz9TbXKbQbvpZPAFH5nNw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:65c1:0:b0:5dc:af76:f57d with SMTP id
- 41be03b00d2f7-62f223af825mr37896a12.7.1715182505319; Wed, 08 May 2024
- 08:35:05 -0700 (PDT)
-Date: Wed, 8 May 2024 08:35:03 -0700
-In-Reply-To: <ac66bb23-2955-41bf-b1f0-85adcc4628a0@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnvUgJph"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27911C113CC;
+	Wed,  8 May 2024 16:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715184864;
+	bh=GicZfDMvAMacxnAAqU7f7Vgy/xZdxbVPIXZAlMBpEik=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fnvUgJphJ0MLrjRBRpZsUJGSdBsT9pPbFUqP/6D6rmf9XNg3R4Z0VvHnu3MUNmYvZ
+	 3/rn3gJxjzgk0u66WZFYd/rTSDTSUDIEQoSbK1rOYmzGCGrYWSO+vc8+z30onc6+UF
+	 uG9gsJT/JLe+I1KCTb2XUb40qf0N2sJ/psD2nxvKdbNsQUKyda1KlMOeBjT5h/WeD5
+	 CXmy6rvFN/IaxmnXgI+98EsfJp+On5XGaS+F1oCbwAqcuICqHOwqVqUrBOsUQHWCel
+	 N19I802Fv5qI/9zthMJCY6aLoA5EOXQLPcIhq401l907SUgJaJCF17T2YyppGWt73q
+	 m7rq13S/GRFIQ==
+Date: Wed, 8 May 2024 18:14:21 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Z qiang <qiang.zhang1211@gmail.com>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, Linux Memory Management List <linux-mm@kvack.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Subject: Re: [linux-next:master] [rcu/nocb] 4c66bc7cac:
+ BUG:using_smp_processor_id()in_preemptible
+Message-ID: <Zjuk3UWYHEaD_vZC@localhost.localdomain>
+References: <202405072252.959dadc4-lkp@intel.com>
+ <CALm+0cViRh07e88uMrRp=5K0TgBVFwmwLiLnejc7puEMXrmFsA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZjUwHvyvkM3lj80Q@LeoBras> <ZjVXVc2e_V8NiMy3@google.com>
- <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop> <ZjprKm5jG3JYsgGB@google.com>
- <663a659d-3a6f-4bec-a84b-4dd5fd16c3c1@paulmck-laptop> <ZjqWXPFuoYWWcxP3@google.com>
- <0e239143-65ed-445a-9782-e905527ea572@paulmck-laptop> <Zjq9okodmvkywz82@google.com>
- <ZjrClk4Lqw_cLO5A@google.com> <ac66bb23-2955-41bf-b1f0-85adcc4628a0@paulmck-laptop>
-Message-ID: <Zjubp36yHVf01C16@google.com>
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-From: Sean Christopherson <seanjc@google.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang1211@gmail.com>, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALm+0cViRh07e88uMrRp=5K0TgBVFwmwLiLnejc7puEMXrmFsA@mail.gmail.com>
 
-On Tue, May 07, 2024, Paul E. McKenney wrote:
-> On Tue, May 07, 2024 at 05:08:54PM -0700, Sean Christopherson wrote:
-> > > > This is admittedly a bit indirect, but then again this is Linux-kernel
-> > > > RCU that we are talking about.
-> > > > 
-> > > > > And I'm arguing that, since the @user check isn't bombproof, there's no reason to
-> > > > > try to harden against every possible edge case in an equivalent @guest check,
-> > > > > because it's unnecessary for kernel safety, thanks to the guardrails.
-> > > > 
-> > > > And the same argument above would also apply to an equivalent check for
-> > > > execution in guest mode at the time of the interrupt.
-> > > 
-> > > This is partly why I was off in the weeds.  KVM cannot guarantee that the
-> > > interrupt that leads to rcu_pending() actually interrupted the guest.  And the
-> > > original patch didn't help at all, because a time-based check doesn't come
-> > > remotely close to the guarantees that the @user check provides.
+Le Wed, May 08, 2024 at 12:55:25PM +0800, Z qiang a écrit :
+> >
+> >
+> >
+> > Hello,
+> >
+> > kernel test robot noticed "BUG:using_smp_processor_id()in_preemptible" on:
+> >
+> > commit: 4c66bc7cacc08e8abcf5049d2b90bfd800904336 ("rcu/nocb: Use kthread parking instead of ad-hoc implementation")
+> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> >
+> > [test failed on linux-next/master 9221b2819b8a4196eecf5476d66201be60fbcf29]
+> >
+> > in testcase: boot
+> >
+> > compiler: gcc-13
+> > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> >
+> > (please refer to attached dmesg/kmsg for entire log/backtrace)
+> >
+> >
+> > +--------------------------------------------------------------+------------+------------+
+> > |                                                              | 6deb20902f | 4c66bc7cac |
+> > +--------------------------------------------------------------+------------+------------+
+> > | BUG:using_smp_processor_id()in_preemptible                   | 0          | 12         |
+> > +--------------------------------------------------------------+------------+------------+
+> >
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > | Closes: https://lore.kernel.org/oe-lkp/202405072252.959dadc4-lkp@intel.com
+> >
+> >
+> > [    4.099901][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.101313][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.102493][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.104098][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.104398][   T18] Call Trace:
+> > [    4.104398][   T18]  <TASK>
+> > [ 4.104398][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.104398][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.104398][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.104398][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.104398][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.104398][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
 > 
-> Nothing in the registers from the interrupted context permits that
-> determination?
-
-No, because the interrupt/call chain that reaches rcu_pending() actually originates
-in KVM host code, not guest code.  I.e. the eventual IRET will return control to
-KVM, not to the guest.
-
-On AMD, the interrupt quite literally interrupts the host, not the guest.  AMD
-CPUs don't actually acknowledge/consume the physical interrupt when the guest is
-running, the CPU simply generates a VM-Exit that says "there's an interrupt pending".
-It's up to software, i.e. KVM, to enable IRQs and handle (all!) pending interrupts.
-
-Intel CPUs have a mode where the CPU fully acknowledges the interrupt and reports
-the exact vector that caused the VM-Exit, but it's still up to software to invoke
-the interrupt handler, i.e. the interrupt trampolines through KVM.
-
-And before handling/forwarding the interrupt, KVM exits its quiescent state,
-leaves its no-instrumention region, invokes tracepoitnes, etc.  So even my PF_VCPU
-idea is _very_ different than the user/idle scenarios, where the interrupt really
-truly does original from an extended quiescent state.
-
-> > > > But if we do need RCU to be more aggressive about treating guest execution as
-> > > > an RCU quiescent state within the host, that additional check would be an
-> > > > excellent way of making that happen.
-> > > 
-> > > It's not clear to me that being more agressive is warranted.  If my understanding
-> > > of the existing @user check is correct, we _could_ achieve similar functionality
-> > > for vCPU tasks by defining a rule that KVM must never enter an RCU critical section
-> > > with PF_VCPU set and IRQs enabled, and then rcu_pending() could check PF_VCPU.
-> > > On x86, this would be relatively straightforward (hack-a-patch below), but I've
-> > > no idea what it would look like on other architectures.
 > 
-> At first glance, this looks plausible.  I would guess that a real patch
-> would have to be architecture dependent, and that could simply involve
-> a Kconfig option (perhaps something like CONFIG_RCU_SENSE_GUEST), so
-> that the check you add to rcu_pending is conditioned on something like
-> IS_ENABLED(CONFIG_RCU_SENSE_GUEST).
+> Please try the following modifications:
 > 
-> There would also need to be a similar check in rcu_sched_clock_irq(),
-> or maybe in rcu_flavor_sched_clock_irq(), to force a call to rcu_qs()
-> in this situation.
-> 
-> > > But the value added isn't entirely clear to me, probably because I'm still missing
-> > > something.  KVM will have *very* recently called __ct_user_exit(CONTEXT_GUEST) to
-> > > note the transition from guest to host kernel.  Why isn't that a sufficient hook
-> > > for RCU to infer grace period completion?
-> 
-> Agreed, unless we are sure we need the change, we should not make it.
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 340bbefe5f65..b93e40206621 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -28,8 +28,8 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+>                 !(lockdep_is_held(&rcu_state.barrier_mutex) ||
+>                   (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
+>                   rcu_lockdep_is_held_nocb(rdp) ||
+> -                 (rdp == this_cpu_ptr(&rcu_data) &&
+> -                  !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
+> +                  (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) &&
+> +                   rdp == this_cpu_ptr(&rcu_data)) ||
 
-+1.  And your comments about tracepoints, instrumentions, etc. makes me think
-that trying to force the issue with PF_VCPU would be a bad idea.
+Looks good, would you like to send a proper patch with changelog?
+
+Thanks.
+
+>                   rcu_current_is_nocb_kthread(rdp)),
+>                 "Unsafe read of RCU_NOCB offloaded state"
+
+
+
+>         );
+> 
+> Thanks
+> Zqiang
+> 
+> 
+> > [ 4.104398][ T18] ? __this_cpu_preempt_check (lib/smp_processor_id.c:67)
+> > [ 4.104398][ T18] ? lockdep_hardirqs_on (kernel/locking/lockdep.c:4421 (discriminator 16))
+> > [ 4.104398][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.104398][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.104398][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.104398][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.104398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.104398][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.104398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.104398][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.104398][   T18]  </TASK>
+> > [    4.106221][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.107796][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.108547][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.109667][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.111064][   T18] Call Trace:
+> > [    4.111064][   T18]  <TASK>
+> > [ 4.111064][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.111064][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.111064][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.111064][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.111064][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.111064][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.111064][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.111064][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.111064][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.111064][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.111064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.111064][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.111064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.111064][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.111064][   T18]  </TASK>
+> > [    4.132677][    T1] NMI watchdog: Perf NMI watchdog permanently disabled
+> > [    4.135331][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.137454][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.137849][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.139414][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.141064][   T18] Call Trace:
+> > [    4.141064][   T18]  <TASK>
+> > [ 4.141064][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.141064][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.141064][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.141064][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.141064][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.141064][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.141064][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.141064][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.141064][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.141064][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.141064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.141064][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.141064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.141064][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.141064][   T18]  </TASK>
+> > [    4.141391][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.143427][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.144497][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.146055][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.147731][   T18] Call Trace:
+> > [    4.147731][   T18]  <TASK>
+> > [ 4.147731][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.147731][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.147731][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.147731][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.147731][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.147731][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.147731][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.147731][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.147731][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.147731][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.147731][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.147731][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.147731][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.147731][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.147731][   T18]  </TASK>
+> > [    4.148538][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.150537][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.151144][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.152635][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.154398][   T18] Call Trace:
+> > [    4.154398][   T18]  <TASK>
+> > [ 4.154398][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.154398][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.154398][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.154398][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.154398][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.154398][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.154398][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.154398][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.154398][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.154398][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.154398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.154398][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.154398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.154398][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.154398][   T18]  </TASK>
+> > [    4.156100][    T1] smp: Bringing up secondary CPUs ...
+> > [    4.159421][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.161134][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.162569][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.164398][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.164398][   T18] Call Trace:
+> > [    4.164398][   T18]  <TASK>
+> > [ 4.164398][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.164398][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.164398][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.164398][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.164398][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.164398][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.164398][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.164398][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.164398][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.164398][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.164398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.164398][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.164398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.164398][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.164398][   T18]  </TASK>
+> > [    4.168016][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.170139][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.171170][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.173242][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.174398][   T18] Call Trace:
+> > [    4.174398][   T18]  <TASK>
+> > [ 4.174398][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.174398][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.174398][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.174398][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.174398][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.174398][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.174398][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.174398][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.174398][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.174398][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.174398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.174398][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.174398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.174398][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.174398][   T18]  </TASK>
+> > [    4.189949][    T1] smpboot: x86: Booting SMP configuration:
+> > [    4.191158][    T1] .... node  #0, CPUs:      #1
+> > [    1.668906][    T0] masked ExtINT on CPU#1
+> > [    4.202955][   T29] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/1/29
+> > [ 4.204471][ T29] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.205845][   T29] CPU: 0 PID: 29 Comm: rcuop/1 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.207731][   T29] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.207731][   T29] Call Trace:
+> > [    4.207731][   T29]  <TASK>
+> > [ 4.207731][ T29] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.207731][ T29] dump_stack (lib/dump_stack.c:124)
+> > [ 4.207731][ T29] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.207731][ T29] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.207731][ T29] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.207731][ T29] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.207731][ T29] ? __this_cpu_preempt_check (lib/smp_processor_id.c:67)
+> > [ 4.207731][ T29] ? lockdep_hardirqs_on (kernel/locking/lockdep.c:4421 (discriminator 16))
+> > [ 4.207731][ T29] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.207731][ T29] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.207731][ T29] kthread (kernel/kthread.c:388)
+> > [ 4.207731][ T29] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.207731][ T29] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.207731][ T29] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.207731][ T29] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.207731][ T29] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.207731][   T29]  </TASK>
+> > [    4.207989][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.209997][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.211188][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.212898][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.214398][   T18] Call Trace:
+> > [    4.214398][   T18]  <TASK>
+> > [ 4.214398][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.214398][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.214398][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.214398][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.214398][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.214398][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.214398][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.214398][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.214398][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.214398][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.214398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.214398][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.214398][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.214398][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.214398][   T18]  </TASK>
+> > [    4.215399][   T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> > [ 4.217064][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [    4.217772][   T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> > [    4.219363][   T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [    4.221064][   T18] Call Trace:
+> > [    4.221064][   T18]  <TASK>
+> > [ 4.221064][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> > [ 4.221064][ T18] dump_stack (lib/dump_stack.c:124)
+> > [ 4.221064][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> > [ 4.221064][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> > [ 4.221064][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> > [ 4.221064][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> > [ 4.221064][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> > [ 4.221064][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> > [ 4.221064][ T18] kthread (kernel/kthread.c:388)
+> > [ 4.221064][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> > [ 4.221064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.221064][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 4.221064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 4.221064][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> > [    4.221064][   T18]  </TASK>
+> >
+> >
+> >
+> > The kernel config and materials to reproduce are available at:
+> > https://download.01.org/0day-ci/archive/20240507/202405072252.959dadc4-lkp@intel.com
+> >
+> >
+> >
+> > --
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
+> >
+> >
