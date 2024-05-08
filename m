@@ -1,44 +1,68 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E1B127B5D
-	for <rcu@vger.kernel.org>; Wed,  8 May 2024 17:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495D712A17D
+	for <rcu@vger.kernel.org>; Wed,  8 May 2024 17:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715189564; cv=none; b=uxuy7wUe/eBco9n7OI5jkfNNY/SxNKckuwUHgBWl3Q7gfGcjMYRX+DJbZYEJv4GvqVx2K5R3WIbvgwbJo2L7753dNNnHzzC/rajJWVlinb4VK3mx6jkiqYkiZRQHQZcB4NDvZLQT59u/SRhClzsfmPA4Oed25jxJ2U03SoKsIi4=
+	t=1715189893; cv=none; b=hYSv2KOiZ3dn79/Y1NqEOMrugx9Zv347XxKmJSMfydhBj+NW95eefDeZgZB3nDT4Ad5hXTX139tPa7E7V2R+20sAcpuzV/SuQ/ud6F1f1MwYKLbkbbqF/joKlajDlJOhYEEBEekk7Zyrxoo9eExmu5j6qfte61sZaMaXTfj87OE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715189564; c=relaxed/simple;
-	bh=BC8sijRbFaCIzeW+8vEAZF9PyEVUHkeF2+Fkt7j6WdQ=;
+	s=arc-20240116; t=1715189893; c=relaxed/simple;
+	bh=qLqkJ7vbYlXoF5p9IsLuLIjK86ZU5yNUOyIaZ+74ZW8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LDKUdQioDmpq5h6rvj417GDxHbm6JfebKxyARdMRX3AYl2LDqAPqZjYZJEJ/22vNWfxDuqDlFJMX15XpKp1xe+U9B+EIxaXIScagvrB2GTEKHAPAjvBirwpbyz4wA0L/MylBUlo7LtScXWTfC/LkXKPO2sZFo2wqxW7SAsHv5Iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FHxZf86T; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ovGBiXNA5ef32QyqOS71Nj0MhTc9T5OYP4v/fx+CG9LI6f4VyfoQK8w1SvbRd/AKNMF9IPRdAY2RwpXnq+qNwNWF6rTYaCRfuqd4d5GWIvPOdmU7g9lDUx9/7SCUKPDgith7JugoYFfSSXPvoKkU0ZUBZUbOWK1GwTBms5kwtE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lbGuU9Ep; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FHxZf86T"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02DA4C113CC;
-	Wed,  8 May 2024 17:32:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715189564;
-	bh=BC8sijRbFaCIzeW+8vEAZF9PyEVUHkeF2+Fkt7j6WdQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=FHxZf86TWLmymIB6bq2uuwnBqw2zelLeKmm77w9fo6ZIX6Ff6lGHaLCRtpRIgc0st
-	 C/jJ4WD5mCPZxxNRKsqjwfPoScEMjaDjlhD2+eWA3CTzL2VDHJEzsld5np4LDQqxZl
-	 SBW3DNdE5c6fWyax7GMb5LQGm0Rxeb5S9ABKCVFhmj4TnWXcXjsn9INvtb9NdSb1/p
-	 HCWlVp87CdgDqogOdx1VSnTZZT2Po5sZ9GE6HZtCDoPACaADhwKj3zYG8xaeqhxDn6
-	 K6z5sidRtlZbulqcQydYCY63BEM0pj8kbDUQrls08k0pCGy2+Asu8q6lgBID63lDLx
-	 Lt+mq/tadj79Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8841BCE0448; Wed,  8 May 2024 10:32:43 -0700 (PDT)
-Date: Wed, 8 May 2024 10:32:43 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lbGuU9Ep"
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a59cf8140d0so947698066b.3
+        for <rcu@vger.kernel.org>; Wed, 08 May 2024 10:38:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1715189890; x=1715794690; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gQot0/PkPori/dKh23nmNQqVvgxIkIrBnc3Ax9zhrcg=;
+        b=lbGuU9Ep42dE7VK8fj3SBj65GI/WbVFNOBrdVwlTHUBArzUgtP26kQ9QZDYkLvA1v0
+         IjCj6UNJkARsDQ/oYFs2011iWjWzX3Nhx2Q+aG1TTCe93L30X9XLe4G8QgIXlrkMP3Vm
+         P1rE17Hez2nUpQPx4x30RIApSGp3S1M80qGdsz7ETD/ybH8vC3kK6CARkQ/J2DMHwsKt
+         7n3bvZkyDu+yDA2wiCmpHQBZuoqi0r+0Y4li+6lyhrOICu8sH8U3Vty0mE+nICjdtQZ0
+         5jcO3ohx7/BTvPqRMKjqnuMsyBrxDUc28UrEOnMeu3QUMCEkRjDcj/ysDzZ63bAHdN7v
+         8mZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715189890; x=1715794690;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gQot0/PkPori/dKh23nmNQqVvgxIkIrBnc3Ax9zhrcg=;
+        b=FO0EL9/VyXi6y91sRP/zcFM/m70WF5kDy1x2DkxNpxKmJLs0jJAlcb+1KTqwuv5Y6P
+         hLfKo/BNPzpQMsgU4tCLOOeCblekRgeCRyMTUFH9k9htsm+qILO5fJ/HboRMO1dVT+HG
+         gV6cmN2ZQXx6Ivsnb36lyhHhwmAws3g2vF4+5IniuwoOq0pL262OdfJRdW5uzDsPmxNN
+         8fqGdiNzp9X1xMAwA+yspxqEZ6c0jwuEpx+4CPxxFvfos1zZ0xojsMd0FV5iY+9lEukl
+         vO1u2jcpBWexui2wu+eTziTLzymbx2c8ZNF1v+UUefPlNsOLWifuK0IzIfzgpAkXzwiY
+         mFGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUSdZNipTGs4e8bSHnp5hI1sP3rCUTD7MQU+i0VXV8kQBHXaChEDfvVq/E3boJi8ncBWTHmsr0x80NJN82LSiShA481
+X-Gm-Message-State: AOJu0Yx176iKmFqynEzaY5vRjYzBrqJhv4/8UBGccDaaNpJkRI09CD9C
+	A5f2KrAymo6O9rhzrBlY2cZ0262gkFAZdpNfmvFLyqxbWGm/8GBRvcv0Wf6yb9S/VaiV27I75Vr
+	3
+X-Google-Smtp-Source: AGHT+IGqeKoQKVAuJmw98o+dFPRXgEZ7/MR7ovgg47z7/WdPzgCk8x3UD+/98HCJx16qDb3HJQr2oQ==
+X-Received: by 2002:a50:cd49:0:b0:572:9bd2:9a90 with SMTP id 4fb4d7f45d1cf-5731da5b696mr2398595a12.31.1715189890417;
+        Wed, 08 May 2024 10:38:10 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id w26-20020aa7da5a000000b005722cb1dd6fsm7717208eds.27.2024.05.08.10.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 May 2024 10:38:10 -0700 (PDT)
+Date: Wed, 8 May 2024 20:38:06 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: dwmw@amazon.co.uk, rcu@vger.kernel.org
 Subject: Re: [bug report] rcu: Kill rnp->ofl_seq and use only
  rcu_state.ofl_lock for exclusion
-Message-ID: <e775bd83-dfa3-4f09-9539-e0e655feda08@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <2a5bc6d1-c45e-4cf2-81bd-49b55caa1478@moroto.mountain>
 References: <febb13ab-a4bb-48b4-8e97-7e9f7749e6da@moroto.mountain>
  <cef46486-ac26-495d-bd2d-1e998a73a421@paulmck-laptop>
  <edfea2ff-d73e-48aa-83db-96daba77c500@moroto.mountain>
+ <e775bd83-dfa3-4f09-9539-e0e655feda08@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,112 +71,23 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <edfea2ff-d73e-48aa-83db-96daba77c500@moroto.mountain>
+In-Reply-To: <e775bd83-dfa3-4f09-9539-e0e655feda08@paulmck-laptop>
 
-On Wed, May 08, 2024 at 05:55:38PM +0300, Dan Carpenter wrote:
-> On Wed, May 08, 2024 at 07:33:38AM -0700, Paul E. McKenney wrote:
-> > On Wed, May 08, 2024 at 03:29:12PM +0300, Dan Carpenter wrote:
-> > > Hello David Woodhouse,
-> > > 
-> > > Commit 82980b1622d9 ("rcu: Kill rnp->ofl_seq and use only
-> > > rcu_state.ofl_lock for exclusion") from Feb 16, 2021 (linux-next),
-> > > leads to the following Smatch static checker warning:
-> > > 
-> > > 	kernel/rcu/tree.c:1844 rcu_gp_init()
-> > > 	warn: mixing irq and irqsave
-> > 
-> > There are actually cases where this does make sense, one example being
-> > where some called function (for example, rcu_report_qs_rnp() below)
-> > needs a flags argument.
-> > 
+On Wed, May 08, 2024 at 10:32:43AM -0700, Paul E. McKenney wrote:
 > 
-> I only found one false positive which was kind of related to that in
-> __run_hrtimer().
+> Agreed, and please see below for the proposed cleanup in this case.
 > 
->   1643  
->   1644  static void __run_hrtimer(struct hrtimer_cpu_base *cpu_base,
->   1645                            struct hrtimer_clock_base *base,
->   1646                            struct hrtimer *timer, ktime_t *now,
->   1647                            unsigned long flags) __must_hold(&cpu_base->lock)
->                                                 ^^^^^
-> 
->   1648  {
-> ....
-> 
->   1678          /*
->   1679           * The timer is marked as running in the CPU base, so it is
->   1680           * protected against migration to a different CPU even if the lock
->   1681           * is dropped.
->   1682           */
->   1683          raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
->                                                             ^^^^^
-> We potentially enable IRQs.
-> 
->   1684          trace_hrtimer_expire_entry(timer, now);
->   1685          expires_in_hardirq = lockdep_hrtimer_enter(timer);
->   1686  
->   1687          restart = fn(timer);
->   1688  
->   1689          lockdep_hrtimer_exit(expires_in_hardirq);
->   1690          trace_hrtimer_expire_exit(timer);
->   1691          raw_spin_lock_irq(&cpu_base->lock);
->                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Then disable them again.
-> 
->   1692  
-> 
-> Of course the other warnings are mostly not "bugs" because the callers
-> haven't disabled IRQs.  They're just in need of clean up.
+> 							Thanx, Paul
 
-Agreed, and please see below for the proposed cleanup in this case.
+Thanks!  Did you see the other warning I mentioned?
 
-							Thanx, Paul
+    kernel/rcu/srcutree.c:910 srcu_gp_end()
+    warn: mixing irq and irqsave
 
-------------------------------------------------------------------------
+Btw, I'm mostly sending you these because I know you're interested in
+these sorts of cleanups.  I didn't bother sending one to aacraid people,
+for example.  :P
 
-commit 43e96791e7d1605803093b34fb70217fe29ddaeb
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed May 8 10:28:43 2024 -0700
+regards,
+dan carpenter
 
-    rcu: Disable interrupts directly in rcu_gp_init()
-    
-    Interrupts are enabled in rcu_gp_init(), so this commit switches from
-    local_irq_save() and local_irq_restore() to local_irq_disable() and
-    local_irq_enable().
-    
-    Link: https://lore.kernel.org/all/febb13ab-a4bb-48b4-8e97-7e9f7749e6da@moroto.mountain/
-    
-    Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d5507ac1bbf19..7560e204198bb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1841,7 +1841,7 @@ static noinline_for_stack bool rcu_gp_init(void)
- 	WRITE_ONCE(rcu_state.gp_state, RCU_GP_ONOFF);
- 	/* Exclude CPU hotplug operations. */
- 	rcu_for_each_leaf_node(rnp) {
--		local_irq_save(flags);
-+		local_irq_disable();
- 		arch_spin_lock(&rcu_state.ofl_lock);
- 		raw_spin_lock_rcu_node(rnp);
- 		if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
-@@ -1849,7 +1849,7 @@ static noinline_for_stack bool rcu_gp_init(void)
- 			/* Nothing to do on this leaf rcu_node structure. */
- 			raw_spin_unlock_rcu_node(rnp);
- 			arch_spin_unlock(&rcu_state.ofl_lock);
--			local_irq_restore(flags);
-+			local_irq_enable();
- 			continue;
- 		}
- 
-@@ -1886,7 +1886,7 @@ static noinline_for_stack bool rcu_gp_init(void)
- 
- 		raw_spin_unlock_rcu_node(rnp);
- 		arch_spin_unlock(&rcu_state.ofl_lock);
--		local_irq_restore(flags);
-+		local_irq_enable();
- 	}
- 	rcu_gp_slow(gp_preinit_delay); /* Races with CPU hotplug. */
- 
