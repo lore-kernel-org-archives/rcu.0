@@ -1,68 +1,37 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493AE14A8D
-	for <rcu@vger.kernel.org>; Wed,  8 May 2024 02:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B65610A31;
+	Wed,  8 May 2024 03:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715136700; cv=none; b=qG7lJ70kCbU70Tje/2OsvIiLn7ysLhuqHMGittZYGiqlIB6ScdiOEh7K9dAsYXPsRyYBwJlVRj029XJYwx63xrJLMWAXZ++y93qJiHR4Cg8Mkhc6NWvqBDr8j2TlGUoam2GSP0Yc3UNH/h02Om5VRaxs/LasNWT8Of2BYXFOeUs=
+	t=1715138454; cv=none; b=MX2w8/XIPxNVCDE3t1FO1TOsjHNAtmHIEwLq2YuOLq3KCIO1Jl3s+n/Ks1tLNIDOTXE9IvkTaguqiASiSpst4binIapPcAw285lkvYVrodayYqpD5nqI5pLVvThKJIYKvsrc1aSwoJ2FuwrURmbnTHZfncpBUjsqju3XCYXyy70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715136700; c=relaxed/simple;
-	bh=96jLrpnO7xA+Xi8Fl73OQcTWlA1+oomeCJfeSICvHaw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=Urvr/zgK40vgf38iyQ69EMYuHCGOhgjpsFaG0YLbaSyFyt3Mmfa1upX0aT638p/pvhov2mTjZTjTsb8L5mRneI+Cj1yRECOw/fNk5CCELiitFaQ0oszawvq/xXTBLifaRbwI0ckXY0RNFDRw6gr3yo/T9omf54RkoVtkweLn+cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FBnApGR+; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1715138454; c=relaxed/simple;
+	bh=YLzdKHkoxEtOhqoq3SeLW5bg3uDOWGFmCX+W0iZlc0A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gk6dWCVWCbLKLT4gC4J6UU8xa6T0wIPbefr1is+xpyJEoz+QE2BHDE1+RoXV940Jul4pHvad4i8o8osMYk8YR0v2rrDI+32y6mR/K7ji2xnBpwN73ENTDmcy8m4WrgOFDZbMKwDUmKXB4LzdEthHagD0dO+5Uyb9b3AITHK4VOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/e2EDso; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FBnApGR+"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715136697;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wzghtbwC7fCwhqmIIbZDW0dMUUlzfhLtklhx6OArQF4=;
-	b=FBnApGR+WDH9U3tx1SnRrF+XQJLYorCqDdwp8Iz7ZPZabM4+IGBWDBEglLuC6KytHmao54
-	AC1oOdz+4tLwUm4mQz7cRM0uS3S6qcHfLqWP68eENXbzotIO1i/1PW3ilDbZAfzAqXj3UJ
-	L84Iq4UnsMey4yhWcPcXpwjQRSM5PI8=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-426-RxSoRwa3O9GRvfx7IbewLg-1; Tue, 07 May 2024 22:51:35 -0400
-X-MC-Unique: RxSoRwa3O9GRvfx7IbewLg-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1ec4c65a091so29300085ad.3
-        for <rcu@vger.kernel.org>; Tue, 07 May 2024 19:51:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715136694; x=1715741494;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wzghtbwC7fCwhqmIIbZDW0dMUUlzfhLtklhx6OArQF4=;
-        b=s8otl5tNrthfzPwv844LJN7xviceFHRn0V/5EPpBm//oodDtalNUvmg4B9yUuj+IMQ
-         M0S4QY3oXZlJ02PK03O5wMUVvAEaDBlt+Dro1jGYZjB83gJaf8J9hS1oKa2vYBDyx6Qs
-         8vQhZVFpkTsJkWZ8qRon/OFl5lgvU6Q8iYQrEAdd+N3OCtJcoxDpl4caf9mHmlc1HQgv
-         U030+Mr0IwC6vfcZli1Ugu6kwLB56JfRoEi8UtyrJ/4Ekh676Jm9Uumb/i/OKCYKavKx
-         WwwCfrcbtmhkEGpGgI29AYHxM8Q4WJPXHwFehnmInCNNDykYzJBR3ZVZ6qpmk4Mf+bfm
-         BAHA==
-X-Forwarded-Encrypted: i=1; AJvYcCX3EE/RTr4Hi2S84X8lIOSKWXOTAagijMje9U5tbfal6t6cRu0/bcsic/28xwdd/a5I31d86pB/6OytLeZAqFS3r/Y6
-X-Gm-Message-State: AOJu0Yy94MO5+FeN3gw80dzcilBGjMi2lCk354krU5gHv7UMj//e7gDG
-	gOGe/r58Mh3askMwFPnsaoAi9W9sjQLw8V8iB5Y/8AtcC8vOu7Md9QlGlg61ENiEL0mGe7voe42
-	pyoJARPaTrq3XdQFQtCTLXZ8pjIzu2IK0XR1/Q1aPxv3MppnMsw==
-X-Received: by 2002:a17:902:aa8e:b0:1eb:54b7:2724 with SMTP id d9443c01a7336-1eeb0bad67emr12695595ad.64.1715136694196;
-        Tue, 07 May 2024 19:51:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF6dF5z3NTCGB2Np9gpb1pWKKzHfNNQr6EvBR9bVSywVQJlhuuJPHAKfYXvfhKyBw3H22dhnQ==
-X-Received: by 2002:a17:902:aa8e:b0:1eb:54b7:2724 with SMTP id d9443c01a7336-1eeb0bad67emr12695315ad.64.1715136693642;
-        Tue, 07 May 2024 19:51:33 -0700 (PDT)
-Received: from localhost.localdomain ([2804:1b3:a800:4b0a:b7a4:5eb9:b8a9:508d])
-        by smtp.gmail.com with ESMTPSA id c4-20020a170903234400b001eb8fb27b59sm10727134plh.111.2024.05.07.19.51.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 19:51:32 -0700 (PDT)
-From: Leonardo Bras <leobras@redhat.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/e2EDso"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B21C2BBFC;
+	Wed,  8 May 2024 03:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715138454;
+	bh=YLzdKHkoxEtOhqoq3SeLW5bg3uDOWGFmCX+W0iZlc0A=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Y/e2EDsoB7U2R+MoUGeE6CSUQG3ZOq6itZXzlpDEX7o5jcaKBQye+6DdRIHCKDfXz
+	 fCgZwEjAGcI6feW5L2IGM5j81uMhgtTjbUCCnUFIUW2uzNWDX88sdC/DwP5qx4e6jF
+	 cjQ/FW0GvHTovXqkXIlTyPyC7darIKO7BRFluK0Zz65YwYYUg6s9aE9j3l6Wv1tFGG
+	 e8tNblHxtOFEU3JZCCZ9qMwqAwsOuamv6iGqp0i3KVisSGo75sG2R3EMyJPcrKzayF
+	 rEaDJhG3t3HsJMHV0S+cSxZrmA6p02fuoPCIF09seruLdipz/BqjOkfWtvAqhRrXR9
+	 ol3c4vOU0wcRw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 808A4CE0FF3; Tue,  7 May 2024 20:20:53 -0700 (PDT)
+Date: Tue, 7 May 2024 20:20:53 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Sean Christopherson <seanjc@google.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Paolo Bonzini <pbonzini@redhat.com>,
+Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
@@ -72,16 +41,21 @@ Cc: Leonardo Bras <leobras@redhat.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
+	Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Date: Tue,  7 May 2024 23:51:15 -0300
-Message-ID: <Zjroo8OsYcVJLsYO@LeoBras>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <ZjrClk4Lqw_cLO5A@google.com>
-References: <ZgsXRUTj40LmXVS4@google.com> <ZjUwHvyvkM3lj80Q@LeoBras> <ZjVXVc2e_V8NiMy3@google.com> <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop> <ZjprKm5jG3JYsgGB@google.com> <663a659d-3a6f-4bec-a84b-4dd5fd16c3c1@paulmck-laptop> <ZjqWXPFuoYWWcxP3@google.com> <0e239143-65ed-445a-9782-e905527ea572@paulmck-laptop> <Zjq9okodmvkywz82@google.com> <ZjrClk4Lqw_cLO5A@google.com>
+Message-ID: <ac66bb23-2955-41bf-b1f0-85adcc4628a0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZgsXRUTj40LmXVS4@google.com>
+ <ZjUwHvyvkM3lj80Q@LeoBras>
+ <ZjVXVc2e_V8NiMy3@google.com>
+ <3b2c222b-9ef7-43e2-8ab3-653a5ee824d4@paulmck-laptop>
+ <ZjprKm5jG3JYsgGB@google.com>
+ <663a659d-3a6f-4bec-a84b-4dd5fd16c3c1@paulmck-laptop>
+ <ZjqWXPFuoYWWcxP3@google.com>
+ <0e239143-65ed-445a-9782-e905527ea572@paulmck-laptop>
+ <Zjq9okodmvkywz82@google.com>
+ <ZjrClk4Lqw_cLO5A@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -90,7 +64,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZjrClk4Lqw_cLO5A@google.com>
 
 On Tue, May 07, 2024 at 05:08:54PM -0700, Sean Christopherson wrote:
 > On Tue, May 07, 2024, Sean Christopherson wrote:
@@ -150,7 +124,9 @@ On Tue, May 07, 2024 at 05:08:54PM -0700, Sean Christopherson wrote:
 > > 
 > > Ooh, that's where I'm off in the weeds.  I was viewing @user as "this CPU will be
 > > quiescent", but it really means "this CPU _was_ quiescent".
-> 
+
+Exactly!
+
 > Hrm, I'm still confused though.  That's rock solid for this check:
 > 
 > 	/* Is the RCU core waiting for a quiescent state from this CPU? */
@@ -158,11 +134,45 @@ On Tue, May 07, 2024 at 05:08:54PM -0700, Sean Christopherson wrote:
 > But I don't understand how it plays into the next three checks that can result in
 > rcuc being awakened.  I suspect it's these checks that Leo and Marcelo are trying
 > squash, and these _do_ seem like they are NOT 100% guaranteed by the @user check.
-> 
+
+The short answer is that RCU is a state machine.  These checks all
+indicate that there is something for that state machine to do, so
+rcu_core() (in the rcuc kthread in some configurations) is invoked to
+make the per-CPU portion of this state machine take a step.  The state
+machine's state will reject a quiescent-state report that does not
+apply to the current grace period.  It will also recognize the case
+where there is no quiescent-state report.
+
 > 	/* Does this CPU have callbacks ready to invoke? */
+
+If callbacks are not offloaded, then the state machine is in charge of
+invoking them.
+
 > 	/* Has RCU gone idle with this CPU needing another grace period? */
+
+If this CPU needs a grace period and there is currently on grace
+period in progress, the state machine will start a grace period.
+(Though grace periods can also be started from elsewhere.)
+
 > 	/* Have RCU grace period completed or started?  */
-> 
+
+If this CPU is not yet aware of a grace period's start or completion,
+the state machine takes care of it.
+
+This state machine has per-task, per-CPU, and global components.
+It optimizes to do its work locally.  This means that the implementation
+of this state machine is distributed across quite a bit of code.
+You won't likely understand it by looking at only a small piece of it.
+You will instead need to go line-by-line through much of the contents
+of kernel/rcu, starting with kernel/rcu/tree.c.
+
+If you are interested, we have done quite a bit of work documenting it,
+please see here:
+
+https://docs.google.com/document/d/1GCdQC8SDbb54W1shjEXqGZ0Rq8a6kIeYutdSIajfpLA/edit?usp=sharing
+
+If you do get a chance to look it over, feedback is welcome!
+
 > > > The reason that it suffices is that other RCU code such as rcu_qs() and
 > > > rcu_note_context_switch() ensure that this CPU does not pay attention to
 > > > the user-argument-induced quiescent state unless this CPU had previously
@@ -177,18 +187,35 @@ On Tue, May 07, 2024 at 05:08:54PM -0700, Sean Christopherson wrote:
 > > 
 > >   1. Acknowledging the current grace period means any future rcu_read_lock() on
 > >      the CPU will be accounted to the next grace period.
-> > 
+
+More or less.  Any uncertainty will cause RCU to err on the side of
+accounting that rcu_read_lock() to the current grace period.  Why any
+uncertainty?  Because certainty is exceedingly expensive in this game.
+See for example the video of my Kernel Recipes talk from last year.
+
 > >   2. A CPU can acknowledge a grace period without being quiescent.
-> > 
+
+Yes, and either the beginning or the end of that grace period.
+(It clearly cannot acknowledge both without going quiescent at some
+point in between times, because otherwise that grace period could not
+be permitted to end.)
+
 > >   3. Userspace can't acknowledge a grace period, because it doesn't run kernel
 > >      code (stating the obvious).
-> > 
+
+Agreed.
+
 > >   4. All RCU read-side critical sections must complete before exiting to usersepace.
-> > 
+
+Agreed.  Any that try not to will hear from lockdep.
+
 > > And so if an IRQ interrupts userspace, and the CPU previously acknowledged grace
 > > period N, RCU can infer that grace period N elapsed on the CPU, because all
 > > "locks" held on grace period N are guaranteed to have been dropped.
-> > 
+
+More precisely, previously noted the beginning of that grace period,
+but yes.
+
 > > > This is admittedly a bit indirect, but then again this is Linux-kernel
 > > > RCU that we are talking about.
 > > > 
@@ -203,12 +230,18 @@ On Tue, May 07, 2024 at 05:08:54PM -0700, Sean Christopherson wrote:
 > > interrupt that leads to rcu_pending() actually interrupted the guest.  And the
 > > original patch didn't help at all, because a time-based check doesn't come
 > > remotely close to the guarantees that the @user check provides.
-> > 
+
+Nothing in the registers from the interrupted context permits that
+determination?
+
 > > > Please understand that I am not saying that we absolutely need an
 > > > additional check (you tell me!).
 > > 
 > > Heh, I don't think I'm qualified to answer that question, at least not yet.
-> > 
+
+Me, I would assume that we don't unless something says otherwise.  One
+example of such a somthing is an RCU CPU stall warning.
+
 > > > But if we do need RCU to be more aggressive about treating guest execution as
 > > > an RCU quiescent state within the host, that additional check would be an
 > > > excellent way of making that happen.
@@ -219,30 +252,33 @@ On Tue, May 07, 2024 at 05:08:54PM -0700, Sean Christopherson wrote:
 > > with PF_VCPU set and IRQs enabled, and then rcu_pending() could check PF_VCPU.
 > > On x86, this would be relatively straightforward (hack-a-patch below), but I've
 > > no idea what it would look like on other architectures.
-> > 
+
+At first glance, this looks plausible.  I would guess that a real patch
+would have to be architecture dependent, and that could simply involve
+a Kconfig option (perhaps something like CONFIG_RCU_SENSE_GUEST), so
+that the check you add to rcu_pending is conditioned on something like
+IS_ENABLED(CONFIG_RCU_SENSE_GUEST).
+
+There would also need to be a similar check in rcu_sched_clock_irq(),
+or maybe in rcu_flavor_sched_clock_irq(), to force a call to rcu_qs()
+in this situation.
+
 > > But the value added isn't entirely clear to me, probably because I'm still missing
 > > something.  KVM will have *very* recently called __ct_user_exit(CONTEXT_GUEST) to
 > > note the transition from guest to host kernel.  Why isn't that a sufficient hook
 > > for RCU to infer grace period completion?
 
-This is one of the solutions I tested when I was trying to solve the bug:
-- Report quiescent state both in guest entry & guest exit.
+Agreed, unless we are sure we need the change, we should not make it.
+All I am going on is that I was sent a patch that looked to be intended to
+make RCU more aggressive about finding quiescent states from guest OSes.
+I suspect that some change like this might eventually be needed in the
+non-nohz_full case, something about a 2017 USENIX paper.
 
-It improves the bug, but has 2 issues compared to the timing alternative:
-1 - Saving jiffies to a per-cpu local variable is usually cheaper than 
-    reporting a quiescent state
-2 - If we report it on guest_exit() and some other cpu requests a grace 
-    period in the next few cpu cycles, there is chance a timer interrupt 
-    can trigger rcu_core() before the next guest_entry, which would 
-    introduce unnecessary latency, and cause be the issue we are trying to 
-    fix.
+But we should have hard evidence that we need a change before making one.
+And you are more likely to come across such evidence than am I.  ;-)
 
-I mean, it makes the bug reproduce less, but do not fix it.
+							Thanx, Paul
 
-Thx,
-Leo
-
-> > 
 > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
 > > index 1a9e1e0c9f49..259b60adaad7 100644
 > > --- a/arch/x86/kvm/x86.c
@@ -275,5 +311,3 @@ Leo
 > >         /* Is the RCU core waiting for a quiescent state from this CPU? */
 > > 
 > > 
-> 
-
