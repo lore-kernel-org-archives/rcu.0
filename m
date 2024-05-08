@@ -1,119 +1,245 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1E38172A;
-	Wed,  8 May 2024 10:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3AEF82C6B
+	for <rcu@vger.kernel.org>; Wed,  8 May 2024 12:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715165947; cv=none; b=hRF+n/uicCFKTZWOYlOHAG8s4vKMIhtWwLpgkB9DjC9feQeiPidemI3pkWOH00H7qP3raW6asUjohFvC4yB3sMGNdcpgk/ts8fDglyubI3eTZkcfJQJg55JP9+zAUdcc64NN3ZUgZs9EZNQ16/IXrSaidzsnBW7G5sc3QuuUZ5A=
+	t=1715171360; cv=none; b=o9CoJ1gylPx1bTY2WdtPuXWIYrc8Dv5iBWKaCvtWTUjIGsnRYH4lXDdWVg9EZxE/tk1bQ1MgDWjkEZO3zHfcNFWOiIpRjyTEy7YgFwD7x5hzkSwvaO2Vh0gaXPDMnkMpdt2OZKuXSalEY+KZuVbQBwwLM2JhxstluGBHCLKaKZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715165947; c=relaxed/simple;
-	bh=6VZ7r11vgmtx2F69LIOMPd3L9p0ehngsk+gDZpyp9lo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F/hXcgXtrBvWlja10N3U/FV4AXAymmI4EIvihIXKEIYnB0hrStdQAWr2U3eBJPtdaDITxWJNwnfhTBRVkoH8NAl2mdKJjiLX5gXMM0AOB8Ka9vlYU8N4wl8F4zG4bHXJmD4piHNtymfgv7aZsVPlJRVrqTDGN2m7rmo55BbBbsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4QZLng8; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1715171360; c=relaxed/simple;
+	bh=gO7H/QD3sCIUOOZ/wn6F6RmqRKoTzJ0NdLqYjmO+cwY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=BUEJE/VGUX3S/8t5FTqBE8y+gdMcHKWgzqzpnZJjlamudXVYUtpJ1UaZbzDWgfauV5tOkpPIT7lUqSkbjbdevZWb38bsuFP9YPKJMr7QKEWGf7nK0V0JFy8kgpM600KRKooXrmI8HADV1H/OskPh0BsY4rWAdpeSdPHXK9GPiYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jjrPmLD7; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4QZLng8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4580EC113CC;
-	Wed,  8 May 2024 10:59:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715165946;
-	bh=6VZ7r11vgmtx2F69LIOMPd3L9p0ehngsk+gDZpyp9lo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D4QZLng8qe62yhyqFmtJpj0LltREfFRz6Vfp0qvmRJBPjp6uh0iDWUslUZT5Y3LMh
-	 CbVilUqsouBVEmNYSJEqDdAgrn4lYW2qsI93uUhRiEKcDO4yq5ky93xkk38vDNgKrv
-	 j++AKQE2epqE0M+F+Dx5RNS4begnpFtE3K9D7H+b6nxVvqeUw1VDjslYXUmk/9/3Z7
-	 zdvqjQWOcdbzskcT1OLxQuNV2SmKbXzErEWrLs9GxututtNbU/SmCjulZPEeFZyxHS
-	 +s3rdrAIoN8aL5LrDkak/hly8ADJFOi0yYm3yGoN5koJnmdMHMNsekMe47k0OtWwco
-	 0GU86vKRbMfQg==
-Date: Wed, 8 May 2024 12:59:03 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Valentin Schneider <vschneid@redhat.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 18/27] rcu: Rename rcu_dynticks_in_eqs_since() into
- rcu_watching_changed_since()
-Message-ID: <Zjta9-jCNHmAAh6b@localhost.localdomain>
-References: <20240430091740.1826862-1-vschneid@redhat.com>
- <20240430091740.1826862-19-vschneid@redhat.com>
- <ZjoxIhtCw4Pov0VH@localhost.localdomain>
- <d3177337-51cd-4841-ba4b-8e0f8f5bbc84@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jjrPmLD7"
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a59a934ad50so1011310266b.1
+        for <rcu@vger.kernel.org>; Wed, 08 May 2024 05:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1715171357; x=1715776157; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0zEBhlNXwGWUDbnMH/rJ8ZBpKust/0cIB9pGhEH98Cw=;
+        b=jjrPmLD7MmNc0H6ja8rje7mtc7RjEZ4myOsa+gPib3+TboJkfPInz15OC+cDeA2hHt
+         MfvNntTo+QWmpMo2ZG2AORTJcBjTnsAQzt29Q2KZ6gAQVX6TXfc4PxuVh64sTyrLP5Cb
+         uiF0r98GA5z6vSFVnvAktzDj9rSI8AnLIZfLEYaPMCnXbn+rS+dbBv7uOWILxSegAeIH
+         KNj/r9JDfVUsDleh8UxzCegZFoODwGCcKtu1WfMQhF44LuRHUfpVoD1icGDVHgw8/GYK
+         60itUPl7M0D5N9o7tEaU31t2fB6oPR4jFTLvSiDAnS/KXOwlS3Gpn3nwtUHPHI3nrlXl
+         pqBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715171357; x=1715776157;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0zEBhlNXwGWUDbnMH/rJ8ZBpKust/0cIB9pGhEH98Cw=;
+        b=c/FM556eGL3rTl2KpNy+tsPGvgi5fk6iEIe1Vr5C0PfguoQ4w/nKT8ql01wB7qQHtt
+         8DZdKryIp3thRckRqkCC6erWYznX+Fh91Dw7HvBmENUyOAwMIInw7GGTx9I4y6K3aMri
+         EhKF9SIifQ+8G9N/9B+mwRJnhO5EkKKfbwnH9EDeglWU4ZdS7pRl0AnvzGh0D7zdzSMr
+         hUWXFlSuIBk3rOg1UUs6CpsWaPSdo+xoUU7AbFIq5tGCpM7VgmaU77IDGYasrCuMt+xb
+         tMnnhtm6/6pmpb/Z8luBasx427n7Zuu/JqwlPB027ldYap9iqkvkFh4sdxxqKNfnZRIl
+         GfuA==
+X-Gm-Message-State: AOJu0YxLqbK9oBUTiOOZ1NahGTfJKYwOdQMmbVdJWbYkHrETzdEUmcQd
+	lvgNtyPe7/O6OwZ6SiPwo6Y+kazEXJLog9yXMaWwsO/kcyjFV50XUxNg+j2F+IRWljVYmof7wJW
+	h
+X-Google-Smtp-Source: AGHT+IFLdWRfsMFpM5faK/7lvG7adj866tG7uSjGZxPDsrt/OacxecelGQS+k7X0Dn6FFCg66HI0mw==
+X-Received: by 2002:a17:906:c78c:b0:a59:ced4:25af with SMTP id a640c23a62f3a-a59fb95d55cmr143680466b.41.1715171356884;
+        Wed, 08 May 2024 05:29:16 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id w24-20020a17090652d800b00a59aa17f23fsm5275651ejn.203.2024.05.08.05.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 May 2024 05:29:16 -0700 (PDT)
+Date: Wed, 8 May 2024 15:29:12 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: dwmw@amazon.co.uk, paulmck@kernel.org
+Cc: rcu@vger.kernel.org
+Subject: [bug report] rcu: Kill rnp->ofl_seq and use only rcu_state.ofl_lock
+ for exclusion
+Message-ID: <febb13ab-a4bb-48b4-8e97-7e9f7749e6da@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3177337-51cd-4841-ba4b-8e0f8f5bbc84@paulmck-laptop>
 
-Le Tue, May 07, 2024 at 10:14:08AM -0700, Paul E. McKenney a écrit :
-> On Tue, May 07, 2024 at 03:48:18PM +0200, Frederic Weisbecker wrote:
-> > Le Tue, Apr 30, 2024 at 11:17:22AM +0200, Valentin Schneider a écrit :
-> > > The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
-> > > RCU_WATCHING, the dynticks prefix can go.
-> > > 
-> > > Furthermore, the "in_eqs_since" part confuses me, as IIUC this only checks
-> > > for a change in watching/eqs state, not that RCU transitionned *into* a
-> > > EQS after the snapshot was taken.
-> > > 
-> > > e.g. if
-> > >   snap = 0b1000 (EQS)
-> > > and the following rcu_watching_snap(CPU) is:
-> > > 	 0b1100 (watching)
-> > > then
-> > >   rcu_watching_in_eqs_since(rdp, snap) -> true
-> > > 
-> > > but because RCU was already in EQS at the time of the
-> > > snap - it hasn't entered EQS "since" the snap was taken.
-> > > 
-> > > Update the name to reflect that we're only looking at watching/EQS
-> > > transitions, not specifically transitions into EQS.
-> > 
-> > Indeed in practice the function only checks a change. But semantically it really
-> > checks a trip to eqs because this function is only ever called after a failing
-> > call to rcu_dynticks_in_eqs().
-> > 
-> > So not sure about that one rename. Paul?
-> 
-> As you say, Valentin is technically correct.  Me, I am having a hard
-> time getting too excited one way or the other.  ;-)
-> 
-> I suggest thinking in terms of rate-bounding the change.  If you do
-> change it, don't change it again for a few years.
+Hello David Woodhouse,
 
-Makes sense!
+Commit 82980b1622d9 ("rcu: Kill rnp->ofl_seq and use only
+rcu_state.ofl_lock for exclusion") from Feb 16, 2021 (linux-next),
+leads to the following Smatch static checker warning:
 
-> 
-> Either way, should comments be changed or added?
-> 
-> Of course, the scientific way to evaluate this is to whose a couple
-> dozen people the old code and a couple dozen other people the new code,
-> and see if one group or the other has statistically significantly lower
-> levels of confusion.  I don't see how this is feasible, but it is the
-> (painfully) correct way.  On the other hand, it would have the beneficial
-> side effect of getting more people exposed to Linux-kernel-RCU internals.
-> Unfortunately, it might also have the additional side effect of making
-> them (more) annoyed at RCU.  ;-)
+	kernel/rcu/tree.c:1844 rcu_gp_init()
+	warn: mixing irq and irqsave
 
-Sounds good!
+        kernel/rcu/srcutree.c:910 srcu_gp_end()
+        warn: mixing irq and irqsave
 
-I divided myself in two blank RCU subjects for a double blind study
-and locked those people up overnight with a paper containing both proposals.
+kernel/rcu/tree.c
+    1782 static noinline_for_stack bool rcu_gp_init(void)
+    1783 {
+    1784         unsigned long flags;
+    1785         unsigned long oldmask;
+    1786         unsigned long mask;
+    1787         struct rcu_data *rdp;
+    1788         struct rcu_node *rnp = rcu_get_root();
+    1789         bool start_new_poll;
+    1790 
+    1791         WRITE_ONCE(rcu_state.gp_activity, jiffies);
+    1792         raw_spin_lock_irq_rcu_node(rnp);
+    1793         if (!rcu_state.gp_flags) {
+    1794                 /* Spurious wakeup, tell caller to go back to sleep.  */
+    1795                 raw_spin_unlock_irq_rcu_node(rnp);
+    1796                 return false;
+    1797         }
+    1798         WRITE_ONCE(rcu_state.gp_flags, 0); /* Clear all flags: New GP. */
+    1799 
+    1800         if (WARN_ON_ONCE(rcu_gp_in_progress())) {
+    1801                 /*
+    1802                  * Grace period already in progress, don't start another.
+    1803                  * Not supposed to be able to happen.
+    1804                  */
+    1805                 raw_spin_unlock_irq_rcu_node(rnp);
+    1806                 return false;
+    1807         }
+    1808 
+    1809         /* Advance to a new grace period and initialize state. */
+    1810         record_gp_stall_check_time();
+    1811         /* Record GP times before starting GP, hence rcu_seq_start(). */
+    1812         rcu_seq_start(&rcu_state.gp_seq);
+    1813         ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+    1814         start_new_poll = rcu_sr_normal_gp_init();
+    1815         trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+    1816         rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+    1817         raw_spin_unlock_irq_rcu_node(rnp);
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Enables IRQs
 
-I opened the door five minutes ago and they both elected by mutual agreement
-rcu_watching_changed_since()! Also they are thirsty.
+    1818 
+    1819         /*
+    1820          * The "start_new_poll" is set to true, only when this GP is not able
+    1821          * to handle anything and there are outstanding users. It happens when
+    1822          * the rcu_sr_normal_gp_init() function was not able to insert a dummy
+    1823          * separator to the llist, because there were no left any dummy-nodes.
+    1824          *
+    1825          * Number of dummy-nodes is fixed, it could be that we are run out of
+    1826          * them, if so we start a new pool request to repeat a try. It is rare
+    1827          * and it means that a system is doing a slow processing of callbacks.
+    1828          */
+    1829         if (start_new_poll)
+    1830                 (void) start_poll_synchronize_rcu();
+    1831 
+    1832         /*
+    1833          * Apply per-leaf buffered online and offline operations to
+    1834          * the rcu_node tree. Note that this new grace period need not
+    1835          * wait for subsequent online CPUs, and that RCU hooks in the CPU
+    1836          * offlining path, when combined with checks in this function,
+    1837          * will handle CPUs that are currently going offline or that will
+    1838          * go offline later.  Please also refer to "Hotplug CPU" section
+    1839          * of RCU's Requirements documentation.
+    1840          */
+    1841         WRITE_ONCE(rcu_state.gp_state, RCU_GP_ONOFF);
+    1842         /* Exclude CPU hotplug operations. */
+    1843         rcu_for_each_leaf_node(rnp) {
+--> 1844                 local_irq_save(flags);
+                         ^^^^^^^^^^^^^^^^^^^^^
+It doesn't make sense to mix irq and irqsave.  Either it can be called
+with IRQs disabled or it can't...
 
-Congratulations Valentin! :-)
+    1845                 arch_spin_lock(&rcu_state.ofl_lock);
+    1846                 raw_spin_lock_rcu_node(rnp);
+    1847                 if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
+    1848                     !rnp->wait_blkd_tasks) {
+    1849                         /* Nothing to do on this leaf rcu_node structure. */
+    1850                         raw_spin_unlock_rcu_node(rnp);
+    1851                         arch_spin_unlock(&rcu_state.ofl_lock);
+    1852                         local_irq_restore(flags);
+    1853                         continue;
+    1854                 }
+    1855 
+    1856                 /* Record old state, apply changes to ->qsmaskinit field. */
+    1857                 oldmask = rnp->qsmaskinit;
+    1858                 rnp->qsmaskinit = rnp->qsmaskinitnext;
+    1859 
+    1860                 /* If zero-ness of ->qsmaskinit changed, propagate up tree. */
+    1861                 if (!oldmask != !rnp->qsmaskinit) {
+    1862                         if (!oldmask) { /* First online CPU for rcu_node. */
+    1863                                 if (!rnp->wait_blkd_tasks) /* Ever offline? */
+    1864                                         rcu_init_new_rnp(rnp);
+    1865                         } else if (rcu_preempt_has_tasks(rnp)) {
+    1866                                 rnp->wait_blkd_tasks = true; /* blocked tasks */
+    1867                         } else { /* Last offline CPU and can propagate. */
+    1868                                 rcu_cleanup_dead_rnp(rnp);
+    1869                         }
+    1870                 }
+    1871 
+    1872                 /*
+    1873                  * If all waited-on tasks from prior grace period are
+    1874                  * done, and if all this rcu_node structure's CPUs are
+    1875                  * still offline, propagate up the rcu_node tree and
+    1876                  * clear ->wait_blkd_tasks.  Otherwise, if one of this
+    1877                  * rcu_node structure's CPUs has since come back online,
+    1878                  * simply clear ->wait_blkd_tasks.
+    1879                  */
+    1880                 if (rnp->wait_blkd_tasks &&
+    1881                     (!rcu_preempt_has_tasks(rnp) || rnp->qsmaskinit)) {
+    1882                         rnp->wait_blkd_tasks = false;
+    1883                         if (!rnp->qsmaskinit)
+    1884                                 rcu_cleanup_dead_rnp(rnp);
+    1885                 }
+    1886 
+    1887                 raw_spin_unlock_rcu_node(rnp);
+    1888                 arch_spin_unlock(&rcu_state.ofl_lock);
+    1889                 local_irq_restore(flags);
+    1890         }
+    1891         rcu_gp_slow(gp_preinit_delay); /* Races with CPU hotplug. */
+    1892 
+    1893         /*
+    1894          * Set the quiescent-state-needed bits in all the rcu_node
+    1895          * structures for all currently online CPUs in breadth-first
+    1896          * order, starting from the root rcu_node structure, relying on the
+    1897          * layout of the tree within the rcu_state.node[] array.  Note that
+    1898          * other CPUs will access only the leaves of the hierarchy, thus
+    1899          * seeing that no grace period is in progress, at least until the
+    1900          * corresponding leaf node has been initialized.
+    1901          *
+    1902          * The grace period cannot complete until the initialization
+    1903          * process finishes, because this kthread handles both.
+    1904          */
+    1905         WRITE_ONCE(rcu_state.gp_state, RCU_GP_INIT);
+    1906         rcu_for_each_node_breadth_first(rnp) {
+    1907                 rcu_gp_slow(gp_init_delay);
+    1908                 raw_spin_lock_irqsave_rcu_node(rnp, flags);
+    1909                 rdp = this_cpu_ptr(&rcu_data);
+    1910                 rcu_preempt_check_blocked_tasks(rnp);
+    1911                 rnp->qsmask = rnp->qsmaskinit;
+    1912                 WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
+    1913                 if (rnp == rdp->mynode)
+    1914                         (void)__note_gp_changes(rnp, rdp);
+    1915                 rcu_preempt_boost_start_gp(rnp);
+    1916                 trace_rcu_grace_period_init(rcu_state.name, rnp->gp_seq,
+    1917                                             rnp->level, rnp->grplo,
+    1918                                             rnp->grphi, rnp->qsmask);
+    1919                 /* Quiescent states for tasks on any now-offline CPUs. */
+    1920                 mask = rnp->qsmask & ~rnp->qsmaskinitnext;
+    1921                 rnp->rcu_gp_init_mask = mask;
+    1922                 if ((mask || rnp->wait_blkd_tasks) && rcu_is_leaf_node(rnp))
+    1923                         rcu_report_qs_rnp(mask, rnp, rnp->gp_seq, flags);
+    1924                 else
+    1925                         raw_spin_unlock_irq_rcu_node(rnp);
+    1926                 cond_resched_tasks_rcu_qs();
+    1927                 WRITE_ONCE(rcu_state.gp_activity, jiffies);
+    1928         }
+    1929 
+    1930         // If strict, make all CPUs aware of new grace period.
+    1931         if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
+    1932                 on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
+    1933 
+    1934         return true;
+    1935 }
 
-> 							Thanx, Paul
+regards,
+dan carpenter
