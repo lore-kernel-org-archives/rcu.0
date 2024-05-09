@@ -1,63 +1,62 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5F115ECFF
-	for <rcu@vger.kernel.org>; Thu,  9 May 2024 15:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CA68129E76;
+	Thu,  9 May 2024 22:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715267701; cv=none; b=puVw9XHJoMoUB2eObWl56wyDoB1HVOBPjV2Ku9VpZBJoQrs94TZwG2nmckysFpnKqrj7AliOpQJXx133aaqEitZvOG+AJVV46ICXzxMDFmI7DortLYQF2KQ9LIwcD9A2TdwZLwvLsbRoZvv84gNoMdLY+xxUUzdvk+rTKN2AAzk=
+	t=1715294498; cv=none; b=uKO6T10Ma3NAhnnByCb2JK+Eb/OsCcfJlz2JCV0m5Jpw0zyqTFwq6oQ4qhiBJtciEKEm0oxar8FbCAhMF0DO4LbXkEICuiWFl+m7DqdBGO18b/lYjpVFre7uJqeHlq5Siz43K0JdBfg1zxN1fVcL+k8o/tkqNfMaiFga7lcQBEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715267701; c=relaxed/simple;
-	bh=sc74tBRMVvyTIdXQ9GqJohO+ywn2hU9eX2MnEwP3XK8=;
+	s=arc-20240116; t=1715294498; c=relaxed/simple;
+	bh=ZStfz+7SAPXBya+1cmR3OE1rs4ZUeYeuw7TPFCKi6Kw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ANkQfAnHbG5mHMgpVaDJNx3ZQ1Gwk+i3WKxkeR4cg/Eb6X/lAesjOzMSxnp3LKvxnQrC89v0kPnzYhYkO+xatf+9JUp38yDurYBVwkgL77JsbaqsR7zaigGXv+9CxFAKNVa/OjW57US1wLvi6Z1wmi6IpaFMHJ1VAs8efEl7cXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jMl7uTKY; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=mP+oIvF4+dEqgk/zFjnF+jJMQ5X5s7BR8wgsard5odMz5OZZFpBEc4fMbC9pFrn8QtZEK9Kn9ISSU3aCkquCCH1nWvq6jyicV2o9aBt6VHNmR2MqHza9w1a6pDqd/2eC2cJAzIe5/HW5au13CNnZ84QI+JMoCVx5o+1InXNnjww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g8JGIzqe; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jMl7uTKY"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715267688;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UYnzWWSL9wgQpzexR+ABGgs/vlGO/GpNcmd0n9BQDz0=;
-	b=jMl7uTKYlne4YUYRMi0XsDlzwUoJ2t3jzeNqDtvl+0fndXYaYjniH2HnvwMVJtNF2+jaTr
-	22ktfiAc4Yd+Tf8g4tQjHavSy/nJFfG6b4ikhCQg09SgPYRPbH5eOaEsMNvJ3WsvgvQMzC
-	IAfO6e/fzGQkI7RlOz38MScxbSFROCk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-416-DXZ-1WvIMXO1hQdBwgvjqw-1; Thu, 09 May 2024 11:14:42 -0400
-X-MC-Unique: DXZ-1WvIMXO1hQdBwgvjqw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0CD58857A81;
-	Thu,  9 May 2024 15:14:42 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.91])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 0F1C24A43EE;
-	Thu,  9 May 2024 15:14:38 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  9 May 2024 17:13:16 +0200 (CEST)
-Date: Thu, 9 May 2024 17:13:12 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g8JGIzqe"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3923C116B1;
+	Thu,  9 May 2024 22:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715294497;
+	bh=ZStfz+7SAPXBya+1cmR3OE1rs4ZUeYeuw7TPFCKi6Kw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=g8JGIzqe5O3hp560kRjTM4ectDADuWbG1WKs681FMOkIlloVNCFoVjf5/MeCCJxFb
+	 O7cj7E9oZN5QDfGoiP5XaqeDOlJ6kJ4H+heZsOI/YKOWUPlyezJjNahF5FCJyfFYIi
+	 angmgw7jglvr7e7GLnswev/RwslWe4k/ppsxB4ioggKfkf5G+CISCM8I6SxlcX6Ukl
+	 RUxvq/gSf7Y/Zuf30BxeBwNfK34upYsNRNfUdbNpv2i8y+KSeJOcz11fFssKugZ37f
+	 bTTpAdphLlYfEP/iXbgns9AIDkjp6+8DV+nDMTWl76JZY0pSRfIreSL46/mtoI3COB
+	 ZAM4tZoBZMBXA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 5D8BBCE04A9; Thu,  9 May 2024 15:41:37 -0700 (PDT)
+Date: Thu, 9 May 2024 15:41:37 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 25/48] rcu: Mark writes to rcu_sync ->gp_count field
-Message-ID: <20240509151312.GA22612@redhat.com>
-References: <20240507093530.3043-1-urezki@gmail.com>
- <20240507093530.3043-26-urezki@gmail.com>
- <ZjpAsYJIfzYSKgdA@redhat.com>
- <4c9e89b5-c981-4809-8bc2-247563ce04e9@paulmck-laptop>
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Message-ID: <4e368040-05b0-46ab-bafa-59710d5de549@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ZjqWXPFuoYWWcxP3@google.com>
+ <0e239143-65ed-445a-9782-e905527ea572@paulmck-laptop>
+ <Zjq9okodmvkywz82@google.com>
+ <ZjrClk4Lqw_cLO5A@google.com>
+ <Zjroo8OsYcVJLsYO@LeoBras>
+ <b44962dd-7b8a-4201-90b7-4c39ba20e28d@paulmck-laptop>
+ <ZjsZVUdmDXZOn10l@LeoBras>
+ <ZjuFuZHKUy7n6-sG@google.com>
+ <5fd66909-1250-4a91-aa71-93cb36ed4ad5@paulmck-laptop>
+ <ZjyGefTZ8ThZukNG@LeoBras>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -66,123 +65,226 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4c9e89b5-c981-4809-8bc2-247563ce04e9@paulmck-laptop>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+In-Reply-To: <ZjyGefTZ8ThZukNG@LeoBras>
 
-On 05/07, Paul E. McKenney wrote:
->
-> On Tue, May 07, 2024 at 10:54:41AM -0400, Oleg Nesterov wrote:
-> > Hello,
-> >
-> > I feel I don't really like this patch but I am travelling without my working
-> > laptop, can't read the source code ;) Quite possibly I am wrong, I'll return
-> > to this when I get back on May 10.
->
-> By the stricter data-race rules used in RCU code [1], this is a bug that
-> needs to be fixed.
+On Thu, May 09, 2024 at 05:16:57AM -0300, Leonardo Bras wrote:
+> On Wed, May 08, 2024 at 08:32:40PM -0700, Paul E. McKenney wrote:
+> > On Wed, May 08, 2024 at 07:01:29AM -0700, Sean Christopherson wrote:
+> > > On Wed, May 08, 2024, Leonardo Bras wrote:
+> > > > Something just hit me, and maybe I need to propose something more generic.
+> > > 
+> > > Yes.  This is what I was trying to get across with my complaints about keying off
+> > > of the last VM-Exit time.  It's effectively a broad stroke "this task will likely
+> > > be quiescent soon" and so the core concept/functionality belongs in common code,
+> > > not KVM.
+> > 
+> > OK, we could do something like the following wholly within RCU, namely
+> > to make rcu_pending() refrain from invoking rcu_core() until the grace
+> > period is at least the specified age, defaulting to zero (and to the
+> > current behavior).
+> > 
+> > Perhaps something like the patch shown below.
+> 
+> That's exactly what I was thinking :)
+> 
+> > 
+> > Thoughts?
+> 
+> Some suggestions below:
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit abc7cd2facdebf85aa075c567321589862f88542
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Wed May 8 20:11:58 2024 -0700
+> > 
+> >     rcu: Add rcutree.nocb_patience_delay to reduce nohz_full OS jitter
+> >     
+> >     If a CPU is running either a userspace application or a guest OS in
+> >     nohz_full mode, it is possible for a system call to occur just as an
+> >     RCU grace period is starting.  If that CPU also has the scheduling-clock
+> >     tick enabled for any reason (such as a second runnable task), and if the
+> >     system was booted with rcutree.use_softirq=0, then RCU can add insult to
+> >     injury by awakening that CPU's rcuc kthread, resulting in yet another
+> >     task and yet more OS jitter due to switching to that task, running it,
+> >     and switching back.
+> >     
+> >     In addition, in the common case where that system call is not of
+> >     excessively long duration, awakening the rcuc task is pointless.
+> >     This pointlessness is due to the fact that the CPU will enter an extended
+> >     quiescent state upon returning to the userspace application or guest OS.
+> >     In this case, the rcuc kthread cannot do anything that the main RCU
+> >     grace-period kthread cannot do on its behalf, at least if it is given
+> >     a few additional milliseconds (for example, given the time duration
+> >     specified by rcutree.jiffies_till_first_fqs, give or take scheduling
+> >     delays).
+> >     
+> >     This commit therefore adds a rcutree.nocb_patience_delay kernel boot
+> >     parameter that specifies the grace period age (in milliseconds)
+> >     before which RCU will refrain from awakening the rcuc kthread.
+> >     Preliminary experiementation suggests a value of 1000, that is,
+> >     one second.  Increasing rcutree.nocb_patience_delay will increase
+> >     grace-period latency and in turn increase memory footprint, so systems
+> >     with constrained memory might choose a smaller value.  Systems with
+> >     less-aggressive OS-jitter requirements might choose the default value
+> >     of zero, which keeps the traditional immediate-wakeup behavior, thus
+> >     avoiding increases in grace-period latency.
+> >     
+> >     Link: https://lore.kernel.org/all/20240328171949.743211-1-leobras@redhat.com/
+> >     
+> >     Reported-by: Leonardo Bras <leobras@redhat.com>
+> >     Suggested-by: Leonardo Bras <leobras@redhat.com>
+> >     Suggested-by: Sean Christopherson <seanjc@google.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 0a3b0fd1910e6..42383986e692b 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -4981,6 +4981,13 @@
+> >  			the ->nocb_bypass queue.  The definition of "too
+> >  			many" is supplied by this kernel boot parameter.
+> >  
+> > +	rcutree.nocb_patience_delay= [KNL]
+> > +			On callback-offloaded (rcu_nocbs) CPUs, avoid
+> > +			disturbing RCU unless the grace period has
+> > +			reached the specified age in milliseconds.
+> > +			Defaults to zero.  Large values will be capped
+> > +			at five seconds.
+> > +
+> >  	rcutree.qhimark= [KNL]
+> >  			Set threshold of queued RCU callbacks beyond which
+> >  			batch limiting is disabled.
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 7560e204198bb..6e4b8b43855a0 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -176,6 +176,8 @@ static int gp_init_delay;
+> >  module_param(gp_init_delay, int, 0444);
+> >  static int gp_cleanup_delay;
+> >  module_param(gp_cleanup_delay, int, 0444);
+> > +static int nocb_patience_delay;
+> > +module_param(nocb_patience_delay, int, 0444);
+> >  
+> >  // Add delay to rcu_read_unlock() for strict grace periods.
+> >  static int rcu_unlock_delay;
+> > @@ -4334,6 +4336,8 @@ EXPORT_SYMBOL_GPL(cond_synchronize_rcu_full);
+> >  static int rcu_pending(int user)
+> >  {
+> >  	bool gp_in_progress;
+> > +	unsigned long j = jiffies;
+> 
+> I think this is probably taken care by the compiler, but just in case I would move the 
+> j = jiffies;
+> closer to it's use, in order to avoid reading 'jiffies' if rcu_pending 
+> exits before the nohz_full testing.
 
-Now that I can read the code... Sorry, still can't understand.
+Good point!  I just removed j and used jiffies directly.
 
-> which is read locklessly,
+> > +	unsigned int patience = msecs_to_jiffies(nocb_patience_delay);
+> 
+> What do you think on processsing the new parameter in boot, and saving it 
+> in terms of jiffies already? 
+> 
+> It would make it unnecessary to convert ms -> jiffies every time we run 
+> rcu_pending.
+> 
+> (OOO will probably remove the extra division, but may cause less impact in 
+> some arch)
 
-Where???
+This isn't exactly a fastpath, but it is easy enough to do the conversion
+in rcu_bootup_announce_oddness() and place it into another variable
+(for the benefit of those using drgn or going through crash dumps).
 
-OK, OK, we have
+> >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+> >  	struct rcu_node *rnp = rdp->mynode;
+> >  
+> > @@ -4347,11 +4351,13 @@ static int rcu_pending(int user)
+> >  		return 1;
+> >  
+> >  	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+> > -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
+> > +	gp_in_progress = rcu_gp_in_progress();
+> > +	if ((user || rcu_is_cpu_rrupt_from_idle() ||
+> > +	     (gp_in_progress && time_before(j + patience, rcu_state.gp_start))) &&
+> 
+> I think you meant:
+> 	time_before(j, rcu_state.gp_start + patience)
+> 
+> or else this always fails, as we can never have now to happen before a 
+> previously started gp, right?
+> 
+> Also, as per rcu_nohz_full_cpu() we probably need it to be read with 
+> READ_ONCE():
+> 
+> 	time_before(j, READ_ONCE(rcu_state.gp_start) + patience)
 
-	// rcu_sync_exit()
-	WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0)
+Good catch on both counts, fixed!
 
-and
+> > +	    rcu_nohz_full_cpu())
+> >  		return 0;
+> >  
+> >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
+> > -	gp_in_progress = rcu_gp_in_progress();
+> >  	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm && gp_in_progress)
+> >  		return 1;
+> >  
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index 340bbefe5f652..174333d0e9507 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -93,6 +93,15 @@ static void __init rcu_bootup_announce_oddness(void)
+> >  		pr_info("\tRCU debug GP init slowdown %d jiffies.\n", gp_init_delay);
+> >  	if (gp_cleanup_delay)
+> >  		pr_info("\tRCU debug GP cleanup slowdown %d jiffies.\n", gp_cleanup_delay);
+> > +	if (nocb_patience_delay < 0) {
+> > +		pr_info("\tRCU NOCB CPU patience negative (%d), resetting to zero.\n", nocb_patience_delay);
+> > +		nocb_patience_delay = 0;
+> > +	} else if (nocb_patience_delay > 5 * MSEC_PER_SEC) {
+> > +		pr_info("\tRCU NOCB CPU patience too large (%d), resetting to %ld.\n", nocb_patience_delay, 5 * MSEC_PER_SEC);
+> > +		nocb_patience_delay = 5 * MSEC_PER_SEC;
+> > +	} else if (nocb_patience_delay) {
+> 
+> Here you suggest that we don't print if 'nocb_patience_delay == 0', 
+> as it's the default behavior, right?
 
-	// rcu_sync_dtor()
-	WARN_ON_ONCE(READ_ONCE(rsp->gp_count));
+Exactly, in keeping with the function name rcu_bootup_announce_oddness().
 
-other than that ->gp_count is always accessed under ->rss_lock.
+This approach allows easy spotting of deviations from default settings,
+which can be very helpful when debugging.
 
-And yes, at least WARN_ON_ONCE() in rcu_sync_exit() can obviously race with
-rcu_sync_enter/exit which update gp_count. I think this is fine correctness-wise.
+> I think printing on 0 could be useful to check if the feature exists, even 
+> though we are zeroing it, but this will probably add unnecessary verbosity.
 
-But OK, we need to please KCSAN (or is there another problem I missed ???)
+It could be quite useful to people learning the RCU implementation,
+and I encourage those people to remove all those "if" statements from
+rcu_bootup_announce_oddness() in order to get the full story.
 
-We can move these WARN_ON()'s into the ->rss_lock protected section.
+> > +		pr_info("\tRCU NOCB CPU patience set to %d milliseconds.\n", nocb_patience_delay);
+> > +	}
+> 
+> Here I suppose something like this can take care of not needing to convert 
+> ms -> jiffies every rcu_pending():
+> 
+> +	nocb_patience_delay = msecs_to_jiffies(nocb_patience_delay);
 
-Or perhaps we can use data_race(rsp->gp_count) ? To be honest I thought
-that READ_ONCE() should be enough...
+Agreed, but I used a separate variable to help people looking at crash
+dumps or using drgn.
 
-Or we can simply kill these WARN_ON_ONCE()'s.
+And thank you for your review and comments!  Applying these changes
+with attribution.
 
-I don't understand why should we add more WRITE_ONCE()'s into the critical
-section protected by ->rss_lock.
+							Thanx, Paul
 
-Help! ;)
-
-Oleg.
-
-
-which in turn results in a data race.  The fix is to mark
-> the updates (as below) with WRITE_ONCE().
->
-> Or is there something in one or the other of these updates to ->gp_count
-> that excludes lockless readers?  (I am not seeing it, but you know this
-> code way better than I do!)
->
-> 							Thanx, Paul
->
-> [1] https://docs.google.com/document/d/1FwZaXSg3A55ivVoWffA9iMuhJ3_Gmj_E494dLYjjyLQ/edit?usp=sharing
->
-> > Oleg.
-> >
-> > On 05/07, Uladzislau Rezki (Sony) wrote:
-> > >
-> > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > >
-> > > The rcu_sync structure's ->gp_count field is updated under the protection
-> > > of ->rss_lock, but read locklessly, and KCSAN noted the data race.
-> > > This commit therefore uses WRITE_ONCE() to do this update to clearly
-> > > document its racy nature.
-> > >
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Cc: Oleg Nesterov <oleg@redhat.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > ---
-> > >  kernel/rcu/sync.c | 8 ++++++--
-> > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
-> > > index 86df878a2fee..6c2bd9001adc 100644
-> > > --- a/kernel/rcu/sync.c
-> > > +++ b/kernel/rcu/sync.c
-> > > @@ -122,7 +122,7 @@ void rcu_sync_enter(struct rcu_sync *rsp)
-> > >  		 * we are called at early boot time but this shouldn't happen.
-> > >  		 */
-> > >  	}
-> > > -	rsp->gp_count++;
-> > > +	WRITE_ONCE(rsp->gp_count, rsp->gp_count + 1);
-> > >  	spin_unlock_irq(&rsp->rss_lock);
-> > >
-> > >  	if (gp_state == GP_IDLE) {
-> > > @@ -151,11 +151,15 @@ void rcu_sync_enter(struct rcu_sync *rsp)
-> > >   */
-> > >  void rcu_sync_exit(struct rcu_sync *rsp)
-> > >  {
-> > > +	int gpc;
-> > > +
-> > >  	WARN_ON_ONCE(READ_ONCE(rsp->gp_state) == GP_IDLE);
-> > >  	WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0);
-> > >
-> > >  	spin_lock_irq(&rsp->rss_lock);
-> > > -	if (!--rsp->gp_count) {
-> > > +	gpc = rsp->gp_count - 1;
-> > > +	WRITE_ONCE(rsp->gp_count, gpc);
-> > > +	if (!gpc) {
-> > >  		if (rsp->gp_state == GP_PASSED) {
-> > >  			WRITE_ONCE(rsp->gp_state, GP_EXIT);
-> > >  			rcu_sync_call(rsp);
-> > > --
-> > > 2.39.2
-> > >
-> >
->
-
+> >  	if (!use_softirq)
+> >  		pr_info("\tRCU_SOFTIRQ processing moved to rcuc kthreads.\n");
+> >  	if (IS_ENABLED(CONFIG_RCU_EQS_DEBUG))
+> > 
+> 
+> 
+> Thanks!
+> Leo
+> 
