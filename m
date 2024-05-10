@@ -1,381 +1,246 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D8A944F;
-	Fri, 10 May 2024 17:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEBF1173;
+	Fri, 10 May 2024 18:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715362914; cv=none; b=gaJgHEXa/bCpe0qjC7VnhMcadXrG5OXJC/ADo4EuoVtyhNxMFzQTDhUnB61i4dCzZUEauz4hIPN1tXd9saXGxwR9qJjn0yWmIJ5ODhazE1J3pc7/YQ/VVSZwTsIk64leVNS/+MSCe3AKQ6d3fS9gfMbRAobdFcUVb4ilN8B6XJY=
+	t=1715365858; cv=none; b=l9dNDvxGSj1xs17HwBPKDEFhvuTDP4XUj9pG1jlx42+aS0ZC7qTmLC0fJDHRTpiGkTwgOxTNJprZNgZcRn5LAqVUYOFvIq3BEbD5JFdXu+4NKVbVJoBPNJSkaCc0HRe0/BSneNuM716s9TqgnW1sG3KCxySrKPisp3xxldYpgeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715362914; c=relaxed/simple;
-	bh=c3cX3QrRwWze65iOU6930hmheCTEHtKrzvQs5bekEEA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sD4ANn/B/wfbJnZoO/FB8ryNOjAzm9WIhuMCFyxB9GYh0PKjdHavI2HpGv645YFWiK+EUTMNY/H4CvEoqbb1DPwHvTsM3ffkGEaLfKnsBSV4V0UdJTD3m/1YNGBw/udQ+BMPGtP20tqFQcaciBVuht8Rpt8lbFXoYUQjVC7Yu6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MofLSHU/; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1715365858; c=relaxed/simple;
+	bh=OssFYeY19duAuzmRM7/hkRjARkNJ6KRGC529+UldMfg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rs+AxMgcp7M2WkerasK30Ndyp2CAo86B5wKcrB+osH3o/n9SduU9ppLawz+ZQjMZVyV/eqdtaUjLQ6rbYhSklOBvDimByZeHpopX2CoQ1YLkHKwWG5CYdHtj7M1T/Q5r0phywuXJDuBgGaKxzphrALCKLXZrnt3BB8CapVUytJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=isBVwkKa; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MofLSHU/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61C97C113CC;
-	Fri, 10 May 2024 17:41:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715362914;
-	bh=c3cX3QrRwWze65iOU6930hmheCTEHtKrzvQs5bekEEA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=MofLSHU/Fh5ft65Ull1YxmQzYUAoQ1AaddhmF2UKmqtRg1A7NEYgisQ3JSEf+pmaG
-	 ECIDFD7YeZnQJbtR0tdPtAMTcWmmHbI3jGckjwiTdjCIg7Ay3XY/9CTuXssTdW3sk7
-	 m2JeagYkIEMITU7kX2a93Lv3HBBwnjC3bVCtBTcD2tYlGs/6DBPoIhmGps5GQH6vGe
-	 uwH8JtEGBrV6SsDvFQXZ9vaIOaCF8n8mWH4TR739H/Zt9uGe47sttAd8nKlkylfkxK
-	 DgU3cKqSDBneXfNrrXA9/ggmVyMZUGtROVCC43fI5Yyhag9TFF3Sj+37uvACT678YN
-	 c4o5JBNoL/nMQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 072BFCE094C; Fri, 10 May 2024 10:41:54 -0700 (PDT)
-Date: Fri, 10 May 2024 10:41:53 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="isBVwkKa"
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51f1e8eaee5so3132125e87.1;
+        Fri, 10 May 2024 11:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715365854; x=1715970654; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Or2cO1AFvNBZUQMsCspyrUBDKduERhim98CgiK0M+DM=;
+        b=isBVwkKaOY4HAEFhpsV9ItpLC9Ixv/Q9PpTKkMXNnbdHlVdIFbHXkhlRChJj5bi2Rd
+         UEpzu3eGuiWHz0hFQYrox/ido/ZIGH7rzrNoOuJHZWdbWzRVX/VrGmzcPEjOVc8antLU
+         l0qJXkvjFOT1cIR/YLBV035F/TYavwFD0DOAg3jUVTRzIaHfPIahxZWR2ntWV8Z0wnSE
+         EgnFlppHLCbPfiSu1KOg072sPAE7eNrBhWOIQShvzE4midp1zp6t33JhG10vakW+uri8
+         /Wz4t6MH8d17ViWHyMyxmH3YJH9KFbNvZSjXFUwTUwYBRMeZxsZgkGTybtEZPDuAnWWL
+         WOYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715365854; x=1715970654;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Or2cO1AFvNBZUQMsCspyrUBDKduERhim98CgiK0M+DM=;
+        b=P+gALhGRxGkXnrq50LDgwrC1rdU+nP/nGZycFFmJE828oWCJv7jNBSDeWXjhPJtCxR
+         RfeTfVgecI7A+9QdRboqxmxG7l0sSms7FomoNsEPJz2oXrxYT2Bcoe+YKjw8XqczISb4
+         Binb/+lIjaDOZ6vEX9wWyNUcZnSqs3PBaADCULbf6ePfjH9ElYzdlu1ybZtUOE38qTv0
+         CKMZb6vzLjaHodEdTNpOM2gDJouIcXcqhlEiKQFqdPHm6FnYHWlDqfgmQm9/V9dQ4iAa
+         AqRokdV9G1H+nbiasMOOTiytGphl1jeCsyCE/sko4Az7DCi0gaF+9gh9WB8Ct1Jt7649
+         bjzw==
+X-Forwarded-Encrypted: i=1; AJvYcCUWVFg2uXJdZbhcV+T0PIRRqCly+m3N6sX2mrEj4HInPkUs5v8kesVDeGRebbhNC26bZViqx+RltUYNrlMmQcsFLA9ZkdftVt4MFpgv
+X-Gm-Message-State: AOJu0YyX8Bt7m7iAauznZHOTFfEsCZH3QnqAfBAlDh9dz4+nEEYHKWnJ
+	F3jp1gUL0g9gp1TGNz5SiWGBpiaiT5u5OUArCmZ62JJnY60cmBMS
+X-Google-Smtp-Source: AGHT+IG3sue+L7v/KftWJNdI/q4CYYYZCPmzwCA10+1282QiT9ypKFc1iAx8T5o4vHwGKobv62l7jg==
+X-Received: by 2002:a05:6512:3281:b0:51f:72a2:c7f9 with SMTP id 2adb3069b0e04-521e1555c1amr1964417e87.29.1715365853562;
+        Fri, 10 May 2024 11:30:53 -0700 (PDT)
+Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2e4d0ce3113sm5994081fa.36.2024.05.10.11.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 May 2024 11:30:53 -0700 (PDT)
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Nikita Kiryushin <kiryushin@ancud.ru>,
+	linke li <lilinke99@qq.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <d5021b48-09d6-4a54-9874-740051aab574@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <b44962dd-7b8a-4201-90b7-4c39ba20e28d@paulmck-laptop>
- <ZjsZVUdmDXZOn10l@LeoBras>
- <ZjuFuZHKUy7n6-sG@google.com>
- <5fd66909-1250-4a91-aa71-93cb36ed4ad5@paulmck-laptop>
- <ZjyGefTZ8ThZukNG@LeoBras>
- <Zjyh-qRt3YewHsdP@LeoBras>
- <09a8f4f6-a692-4586-bb68-b0a524b7a5d8@paulmck-laptop>
- <Zj5GEK8bt3061TiD@LeoBras>
- <a5784417-d65d-45c2-a66f-310a494b9827@paulmck-laptop>
- <Zj5VgM_RzaDWQs1t@LeoBras>
+	Zenghui Yu <zenghui.yu@linux.dev>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: [GIT PULL] RCU changes for v6.10
+Date: Fri, 10 May 2024 20:30:49 +0200
+Message-Id: <20240510183049.312477-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zj5VgM_RzaDWQs1t@LeoBras>
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 10, 2024 at 02:12:32PM -0300, Leonardo Bras wrote:
-> On Fri, May 10, 2024 at 09:21:59AM -0700, Paul E. McKenney wrote:
-> > On Fri, May 10, 2024 at 01:06:40PM -0300, Leonardo Bras wrote:
-> > > On Thu, May 09, 2024 at 04:45:53PM -0700, Paul E. McKenney wrote:
-> > > > On Thu, May 09, 2024 at 07:14:18AM -0300, Leonardo Bras wrote:
-> > > > > On Thu, May 09, 2024 at 05:16:57AM -0300, Leonardo Bras wrote:
-> > > > 
-> > > > [ . . . ]
-> > > > 
-> > > > > > Here I suppose something like this can take care of not needing to convert 
-> > > > > > ms -> jiffies every rcu_pending():
-> > > > > > 
-> > > > > > +	nocb_patience_delay = msecs_to_jiffies(nocb_patience_delay);
-> > > > > > 
-> > > > > 
-> > > > > Uh, there is more to it, actually. We need to make sure the user 
-> > > > > understands that we are rounding-down the value to multiple of a jiffy 
-> > > > > period, so it's not a surprise if the delay value is not exactly the same 
-> > > > > as the passed on kernel cmdline.
-> > > > > 
-> > > > > So something like bellow diff should be ok, as this behavior is explained 
-> > > > > in the docs, and pr_info() will print the effective value.
-> > > > > 
-> > > > > What do you think?
-> > > > 
-> > > > Good point, and I have taken your advice on making the documentation
-> > > > say what it does.
-> > > 
-> > > Thanks :)
-> > > 
-> > > > 
-> > > > > Thanks!
-> > > > > Leo
-> > > > > 
-> > > > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > > > index 0a3b0fd1910e..9a50be9fd9eb 100644
-> > > > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > > > @@ -4974,20 +4974,28 @@
-> > > > >                         otherwise be caused by callback floods through
-> > > > >                         use of the ->nocb_bypass list.  However, in the
-> > > > >                         common non-flooded case, RCU queues directly to
-> > > > >                         the main ->cblist in order to avoid the extra
-> > > > >                         overhead of the ->nocb_bypass list and its lock.
-> > > > >                         But if there are too many callbacks queued during
-> > > > >                         a single jiffy, RCU pre-queues the callbacks into
-> > > > >                         the ->nocb_bypass queue.  The definition of "too
-> > > > >                         many" is supplied by this kernel boot parameter.
-> > > > >  
-> > > > > +       rcutree.nocb_patience_delay= [KNL]
-> > > > > +                       On callback-offloaded (rcu_nocbs) CPUs, avoid
-> > > > > +                       disturbing RCU unless the grace period has
-> > > > > +                       reached the specified age in milliseconds.
-> > > > > +                       Defaults to zero.  Large values will be capped
-> > > > > +                       at five seconds. Values rounded-down to a multiple
-> > > > > +                       of a jiffy period.
-> > > > > +
-> > > > >         rcutree.qhimark= [KNL]
-> > > > >                         Set threshold of queued RCU callbacks beyond which
-> > > > >                         batch limiting is disabled.
-> > > > >  
-> > > > >         rcutree.qlowmark= [KNL]
-> > > > >                         Set threshold of queued RCU callbacks below which
-> > > > >                         batch limiting is re-enabled.
-> > > > >  
-> > > > >         rcutree.qovld= [KNL]
-> > > > >                         Set threshold of queued RCU callbacks beyond which
-> > > > > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > > > > index fcf2b4aa3441..62ede401420f 100644
-> > > > > --- a/kernel/rcu/tree.h
-> > > > > +++ b/kernel/rcu/tree.h
-> > > > > @@ -512,20 +512,21 @@ do {                                                              \
-> > > > >         local_irq_save(flags);                                  \
-> > > > >         if (rcu_segcblist_is_offloaded(&(rdp)->cblist)) \
-> > > > >                 raw_spin_lock(&(rdp)->nocb_lock);               \
-> > > > >  } while (0)
-> > > > >  #else /* #ifdef CONFIG_RCU_NOCB_CPU */
-> > > > >  #define rcu_nocb_lock_irqsave(rdp, flags) local_irq_save(flags)
-> > > > >  #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
-> > > > >  
-> > > > >  static void rcu_bind_gp_kthread(void);
-> > > > >  static bool rcu_nohz_full_cpu(void);
-> > > > > +static bool rcu_on_patience_delay(void);
-> > > > 
-> > > > I don't think we need an access function, but will check below.
-> > > > 
-> > > > >  /* Forward declarations for tree_stall.h */
-> > > > >  static void record_gp_stall_check_time(void);
-> > > > >  static void rcu_iw_handler(struct irq_work *iwp);
-> > > > >  static void check_cpu_stall(struct rcu_data *rdp);
-> > > > >  static void rcu_check_gp_start_stall(struct rcu_node *rnp, struct rcu_data *rdp,
-> > > > >                                      const unsigned long gpssdelay);
-> > > > >  
-> > > > >  /* Forward declarations for tree_exp.h. */
-> > > > >  static void sync_rcu_do_polled_gp(struct work_struct *wp);
-> > > > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > > > index 340bbefe5f65..639243b0410f 100644
-> > > > > --- a/kernel/rcu/tree_plugin.h
-> > > > > +++ b/kernel/rcu/tree_plugin.h
-> > > > > @@ -5,20 +5,21 @@
-> > > > >   * or preemptible semantics.
-> > > > >   *
-> > > > >   * Copyright Red Hat, 2009
-> > > > >   * Copyright IBM Corporation, 2009
-> > > > >   *
-> > > > >   * Author: Ingo Molnar <mingo@elte.hu>
-> > > > >   *        Paul E. McKenney <paulmck@linux.ibm.com>
-> > > > >   */
-> > > > >  
-> > > > >  #include "../locking/rtmutex_common.h"
-> > > > > +#include <linux/jiffies.h>
-> > > > 
-> > > > This is already pulled in by the enclosing tree.c file, so it should not
-> > > > be necessary to include it again. 
-> > > 
-> > > Even better :)
-> > > 
-> > > > (Or did you get a build failure when
-> > > > leaving this out?)
-> > > 
-> > > I didn't, it's just that my editor complained the symbols were not getting 
-> > > properly resolved, so I included it and it was fixed. But since clangd is 
-> > > know to make some mistakes, I should have compile-test'd before adding it.
-> > 
-> > Ah, got it!  ;-)
-> > 
-> > > > >  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
-> > > > >  {
-> > > > >         /*
-> > > > >          * In order to read the offloaded state of an rdp in a safe
-> > > > >          * and stable way and prevent from its value to be changed
-> > > > >          * under us, we must either hold the barrier mutex, the cpu
-> > > > >          * hotplug lock (read or write) or the nocb lock. Local
-> > > > >          * non-preemptible reads are also safe. NOCB kthreads and
-> > > > >          * timers have their own means of synchronization against the
-> > > > > @@ -86,20 +87,33 @@ static void __init rcu_bootup_announce_oddness(void)
-> > > > >         if (rcu_kick_kthreads)
-> > > > >                 pr_info("\tKick kthreads if too-long grace period.\n");
-> > > > >         if (IS_ENABLED(CONFIG_DEBUG_OBJECTS_RCU_HEAD))
-> > > > >                 pr_info("\tRCU callback double-/use-after-free debug is enabled.\n");
-> > > > >         if (gp_preinit_delay)
-> > > > >                 pr_info("\tRCU debug GP pre-init slowdown %d jiffies.\n", gp_preinit_delay);
-> > > > >         if (gp_init_delay)
-> > > > >                 pr_info("\tRCU debug GP init slowdown %d jiffies.\n", gp_init_delay);
-> > > > >         if (gp_cleanup_delay)
-> > > > >                 pr_info("\tRCU debug GP cleanup slowdown %d jiffies.\n", gp_cleanup_delay);
-> > > > > +       if (nocb_patience_delay < 0) {
-> > > > > +               pr_info("\tRCU NOCB CPU patience negative (%d), resetting to zero.\n",
-> > > > > +                       nocb_patience_delay);
-> > > > > +               nocb_patience_delay = 0;
-> > > > > +       } else if (nocb_patience_delay > 5 * MSEC_PER_SEC) {
-> > > > > +               pr_info("\tRCU NOCB CPU patience too large (%d), resetting to %ld.\n",
-> > > > > +                       nocb_patience_delay, 5 * MSEC_PER_SEC);
-> > > > > +               nocb_patience_delay = msecs_to_jiffies(5 * MSEC_PER_SEC);
-> > > > > +       } else if (nocb_patience_delay) {
-> > > > > +               nocb_patience_delay = msecs_to_jiffies(nocb_patience_delay);
-> > > > > +               pr_info("\tRCU NOCB CPU patience set to %d milliseconds.\n",
-> > > > > +                       jiffies_to_msecs(nocb_patience_delay);
-> > > > > +       }
-> > > > 
-> > > > I just did this here at the end:
-> > > > 
-> > > > 	nocb_patience_delay_jiffies = msecs_to_jiffies(nocb_patience_delay);
-> > > > 
-> > > > Ah, you are wanting to print out the milliseconds after the rounding
-> > > > to jiffies.
-> > > 
-> > > That's right, just to make sure the user gets the effective patience time, 
-> > > instead of the before-rounding one, which was on input.
-> > > 
-> > > > I am going to hold off on that for the moment, but I hear your request
-> > > > and I have not yet said "no".  ;-)
-> > > 
-> > > Sure :)
-> > > It's just something I think it's nice to have (as a user).
-> > 
-> > If you would like to do a separate patch adding this, here are the
-> > requirements:
-> > 
-> > o	If the current code prints nothing, nothing additional should
-> > 	be printed.
-> > 
-> > o	If the rounding ended up with the same value (as it should in
-> > 	systems with HZ=1000), nothing additional should be printed.
-> > 
-> > o	Your choice as to whether or not you want to print out the
-> > 	jiffies value.
-> > 
-> > o	If the additional message is on a new line, it needs to be
-> > 	indented so that it is clear that it is subordinate to the
-> > 	previous message.
-> > 
-> > 	Otherwise, you can use pr_cont() to continue the previous
-> > 	line, of course being careful about "\n".
-> > 
-> > Probably also something that I am forgetting, but that is most of it.
-> 
-> Thanks!
-> I will work on a patch doing that :)
+Hi Linus,
 
-Very good, looking forward to seeing what you come up with!
+Please pull the latest RCU git tree from:
 
-My current state is on the "dev" branch of the -rcu tree, so please base
-on that.
+https://github.com/urezki/linux.git tags/rcu.next.v6.10
 
-> > > > >         if (!use_softirq)
-> > > > >                 pr_info("\tRCU_SOFTIRQ processing moved to rcuc kthreads.\n");
-> > > > >         if (IS_ENABLED(CONFIG_RCU_EQS_DEBUG))
-> > > > >                 pr_info("\tRCU debug extended QS entry/exit.\n");
-> > > > >         rcupdate_announce_bootup_oddness();
-> > > > >  }
-> > > > >  
-> > > > >  #ifdef CONFIG_PREEMPT_RCU
-> > > > >  
-> > > > >  static void rcu_report_exp_rnp(struct rcu_node *rnp, bool wake);
-> > > > > @@ -1260,10 +1274,29 @@ static bool rcu_nohz_full_cpu(void)
-> > > > >  
-> > > > >  /*
-> > > > >   * Bind the RCU grace-period kthreads to the housekeeping CPU.
-> > > > >   */
-> > > > >  static void rcu_bind_gp_kthread(void)
-> > > > >  {
-> > > > >         if (!tick_nohz_full_enabled())
-> > > > >                 return;
-> > > > >         housekeeping_affine(current, HK_TYPE_RCU);
-> > > > >  }
-> > > > > +
-> > > > > +/*
-> > > > > + * Is this CPU a NO_HZ_FULL CPU that should ignore RCU if the time since the
-> > > > > + * start of current grace period is smaller than nocb_patience_delay ?
-> > > > > + *
-> > > > > + * This code relies on the fact that all NO_HZ_FULL CPUs are also
-> > > > > + * RCU_NOCB_CPU CPUs.
-> > > > > + */
-> > > > > +static bool rcu_on_patience_delay(void)
-> > > > > +{
-> > > > > +#ifdef CONFIG_NO_HZ_FULL
-> > > > 
-> > > > You lost me on this one.  Why do we need the #ifdef instead of
-> > > > IS_ENABLED()?  Also, please note that rcu_nohz_full_cpu() is already a
-> > > > compile-time @false in CONFIG_NO_HZ_FULL=n kernels.
-> > > 
-> > > You are right. rcu_nohz_full_cpu() has a high chance of being inlined on
-> > > 	if ((...) && rcu_nohz_full_cpu())
-> > > And since it returns false, this whole statement will be compiled out, and 
-> > > the new function will not exist in CONFIG_NO_HZ_FULL=n, so there  is no 
-> > > need to test it.
-> > 
-> > Very good!  You had me going there for a bit.  ;-)
-> > 
-> > > > > +       if (!nocb_patience_delay)
-> > > > > +               return false;
-> > > > 
-> > > > We get this automatically with the comparison below, right?
-> > > 
-> > > Right
-> > > 
-> > > >   If so, we
-> > > > are not gaining much by creating the helper function.  Or am I missing
-> > > > some trick here?
-> > > 
-> > > Well, it's a fastpath. Up to here, we just need to read 
-> > > nocb_patience_delay{,_jiffies} from memory.
-> > 
-> > Just nocb_patience_delay_jiffies, correct?  Unless I am missing something,
-> > nocb_patience_delay is unused after boot.
-> 
-> Right, I used both because I was referring to the older version and the 
-> current version with _jiffies.
+# HEAD: 64619b283bb35b12a96129e82b40304f7e5551b7:
 
-Fair enough!
+Merge branches 'fixes.2024.04.15a', 'misc.2024.04.12a', 'rcu-sync-normal-improve.2024.04.15a', 'rcu-tasks.2024.04.15a' and 'rcutorture.2024.04.15a' into rcu-merge.2024.04.15a
 
-> > > If we don't include the fastpath we have to read jiffies and 
-> > > rcu_state.gp_start, which can take extra time: up to 2 cache misses.
-> > > 
-> > > I thought it could be relevant, as we reduce the overhead of the new 
-> > > parameter when it's disabled (patience=0). 
-> > > 
-> > > Do you think that could be relevant?
-> > 
-> > Well, the hardware's opinion is what matters.  ;-)
-> > 
-> > But the caller's code path reads jiffies a few times, so it should
-> > be hot in the cache, correct?
-> 
-> Right, but I wonder how are the chances of it getting updated between  
-> caller's use and this function's. Same for gp_start.
+fixes.2024.04.15a: RCU fixes
+misc.2024.04.12a: Miscellaneous fixes
+rcu-sync-normal-improve.2024.04.15a: Improving synchronize_rcu() call
+rcu-tasks.2024.04.15a: Tasks RCU updates
+rcutorture.2024.04.15a: Torture-test updates
 
-Well, jiffies is updated at most once per millisecond, and gp_start is
-updated at most once per few milliseconds.  So the chances of it being
-updated within that code sequence are quite small.
+One merge conflicts was detected by linux-next:
 
-> > But that does lead to another topic, namely the possibility of tagging
-> > nocb_patience_delay_jiffies with __read_mostly. 
-> 
-> Oh, right. This was supposed to be in the diff I sent earlier, but I 
-> completelly forgot to change before sending. So, yeah, I agree on 
-> nocb_patience_delay being __read_mostly; 
-> 
-> > And there might be
-> > a number of other of RCU's variables that could be similarly tagged
-> > in order to avoid false sharing.  (But is there any false sharing?
-> > This might be worth testing.)
-> 
-> Maybe there isn't, but I wonder if it would hurt performance if they were 
-> tagged as __read_only anyway. 
+* https://lore.kernel.org/linux-kernel/20240424134551.44531979@canb.auug.org.au/
 
-Let's be at least a little careful here.  It is just as easy to hurt
-performance by marking things __read_mostly or __read_only as it is
-to help performance.  ;-)
+The conflict resolution from linux-next look good to me, plus I make
+my own resolutions at branch merge/rcu.2024.04.30a for your reference.
 
-							Thanx, Paul
+----------------------------------------------------------------
+
+RCU pull request for v6.10
+
+This pull request contains the following branches:
+
+fixes.2024.04.15a: Fix a lockdep complain for lazy-preemptible kernel,
+remove redundant BH disable for TINY_RCU, remove redundant READ_ONCE()
+in tree.c, fix false positives KCSAN splat and fix buffer overflow in
+the print_cpu_stall_info().
+
+misc.2024.04.12a: Misc updates related to bpf, tracing and update the
+MAINTAINERS file.
+
+rcu-sync-normal-improve.2024.04.15a: An improvement of a normal
+synchronize_rcu() call in terms of latency. It maintains a separate
+track for sync. users only. This approach bypasses per-cpu nocb-lists
+thus sync-users do not depend on nocb-list length and how fast regular
+callbacks are processed. This is controlled by a default-off runtime
+option. See /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+parameter.
+
+rcu-tasks.2024.04.15a: RCU tasks, switch tasks RCU grace periods to
+sleep at TASK_IDLE priority, fix some comments, add some diagnostic
+warning to the exit_tasks_rcu_start() and fix a buffer overflow in
+the show_rcu_tasks_trace_gp_kthread().
+
+rcutorture.2024.04.15a: Functionality improvement for better usability
+and information of the tests, bug fixes, code cleanup and documention
+update.
+
+----------------------------------------------------------------
+
+Johannes Berg (1):
+  rcu: Mollify sparse with RCU guard
+
+Neeraj Upadhyay (1):
+  MAINTAINERS: Update Neeraj's email address
+
+Nikita Kiryushin (2):
+  rcu-tasks: Fix show_rcu_tasks_trace_gp_kthread buffer overflow
+  rcu: Fix buffer overflow in print_cpu_stall_info()
+
+Paul E. McKenney (29):
+  scftorture: Increase memory provided to guest OS
+  rcutorture: Disable tracing to permit Tasks Rude RCU testing
+  rcu: Add lockdep checks and kernel-doc header to rcu_softirq_qs()
+  rcutorture: Enable RCU priority boosting for TREE09
+  rcutorture: Dump # online CPUs on insufficient cb-flood laundering
+  rcutorture: Dump GP kthread state on insufficient cb-flood laundering
+  rcutorture: ASSERT_EXCLUSIVE_WRITER() for ->rtort_pipe_count updates
+  rcu-tasks: Make Tasks RCU wait idly for grace-period delays
+  bpf: Select new NEED_TASKS_RCU Kconfig option
+  arch: Select new NEED_TASKS_RCU Kconfig option
+  tracing: Select new NEED_TASKS_RCU Kconfig option
+  bpf: Choose RCU Tasks based on TASKS_RCU rather than PREEMPTION
+  ftrace: Choose RCU Tasks based on TASKS_RCU rather than PREEMPTION
+  rcu: Make TINY_RCU depend on !PREEMPT_RCU rather than !PREEMPTION
+  srcu: Make Tiny SRCU explicitly disable preemption
+  rcu: Create NEED_TASKS_RCU to factor out enablement logic
+  rcu: Remove redundant BH disabling in TINY_RCU
+  rcu: Make Tiny RCU explicitly disable preemption
+  rcu: Remove redundant READ_ONCE() of rcu_state.gp_flags in tree.c
+  rcu: Bring diagnostic read of rcu_state.gp_flags into alignment
+  rcu: Mark writes to rcu_sync ->gp_count field
+  rcu: Mark loads from rcu_state.n_online_cpus
+  rcu: Make hotplug operations track GP state, not flags
+  rcu: Inform KCSAN of one-byte cmpxchg() in rcu_trc_cmpxchg_need_qs()
+  rcu: Remove redundant CONFIG_PROVE_RCU #if condition
+  rcu-tasks: Replace exit_tasks_rcu_start() initialization with
+    WARN_ON_ONCE()
+  rcutorture: Remove extraneous rcu_torture_pipe_update_one()
+    READ_ONCE()
+  rcutorture: Fix rcu_torture_one_read() pipe_count overflow comment
+  torture: Scale --do-kvfree test time
+
+Uladzislau Rezki (Sony) (6):
+  rcu: Add data structures for synchronize_rcu()
+  rcu: Update lockdep while in RCU read-side critical section
+  rcu: Reduce synchronize_rcu() latency
+  rcu: Add a trace event for synchronize_rcu_normal()
+  rcu: Support direct wake-up of synchronize_rcu() users
+  rcu: Allocate WQ with WQ_MEM_RECLAIM bit set
+
+Zenghui Yu (1):
+  doc: Remove references to arrayRCU.rst
+
+Zqiang (7):
+  rcu-tasks: Fix the comments for tasks_rcu_exit_srcu_stall_timer
+  rcutorture: Use the gp_kthread_dbg operation specified by cur_ops
+  rcutorture: Make rcutorture support print rcu-tasks gp state
+  rcutorture: Removing redundant function pointer initialization
+  rcutorture: Make stall-tasks directly exit when rcutorture tests end
+  rcutorture: Fix invalid context warning when enable srcu barrier
+    testing
+  rcutorture: Use rcu_gp_slow_register/unregister() only for rcutype
+    test
+
+linke li (1):
+  rcutorture: Re-use value stored to ->rtort_pipe_count instead of
+    re-reading
+
+ .mailmap                                              |    3 -
+ Documentation/RCU/whatisRCU.rst                       |    6 +-
+ Documentation/admin-guide/kernel-parameters.txt       |   14 ++++
+ MAINTAINERS                                           |    2
+ arch/Kconfig                                          |    4 -
+ include/linux/rcupdate.h                              |    2
+ include/linux/rcupdate_wait.h                         |   18 +++---
+ include/linux/srcutiny.h                              |    2
+ include/trace/events/rcu.h                            |   27 +++++++++
+ kernel/bpf/Kconfig                                    |    2
+ kernel/bpf/trampoline.c                               |    2
+ kernel/rcu/Kconfig                                    |    2
+ kernel/rcu/rcu.h                                      |   20 +++---
+ kernel/rcu/rcutorture.c                               |    4 -
+ kernel/rcu/srcutiny.c                                 |   31 ++++++++--
+ kernel/rcu/srcutree.c                                 |    5 -
+ kernel/rcu/sync.c                                     |    8 ++
+ kernel/rcu/tasks.h                                    |    6 +-
+ kernel/rcu/tiny.c                                     |    2
+ kernel/rcu/tree.c                                     |   28 +++++++++
+ kernel/rcu/tree.h                                     |   14 ++++
+ kernel/rcu/tree_exp.h                                 |    2
+ kernel/rcu/tree_plugin.h                              |    4 -
+ kernel/rcu/tree_stall.h                               |    2
+ kernel/rcu/update.c                                   |    4 -
+ kernel/trace/Kconfig                                  |    4 -
+ kernel/trace/ftrace.c                                 |    3 -
+ tools/testing/selftests/rcutorture/bin/torture.sh     |    2
+ tools/testing/selftests/rcutorture/configs/rcu/TREE09 |    5 +
+ include/linux/rcupdate.h                              |   20 +++++-
+ kernel/rcu/Kconfig                                    |    6 +-
+ kernel/rcu/rcutorture.c                               |   81 +++++++++++++++------------
+ kernel/rcu/tasks.h                                    |   38 +++++++++++-
+ kernel/rcu/tiny.c                                     |    2
+ kernel/rcu/tree.c                                     |  408 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------
+ kernel/rcu/tree.h                                     |   10 ++-
+ kernel/rcu/tree_stall.h                               |    9 ++-
+ tools/testing/selftests/rcutorture/bin/torture.sh     |    4 -
+ 38 files changed, 666 insertions(+), 140 deletions(-)
