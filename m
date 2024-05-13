@@ -1,112 +1,101 @@
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BA6153817
-	for <rcu@vger.kernel.org>; Mon, 13 May 2024 14:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA7E1CD15
+	for <rcu@vger.kernel.org>; Mon, 13 May 2024 16:38:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715609656; cv=none; b=mjd0DCE+KXTGEmsNAK7nvvF1A/t74Pu9LrxwNu6YjobpsOMrZ8sYybeoF905fmRrrV1UImkZMDFX5FMKuIJeowzhSZ50zhTzgfq/hdN28PktV5YsA/QkDq6Ee77y/SazoMQreqyw4f5+GyPJcnIJx7Ewt58MibKG04TIJOIpeRg=
+	t=1715618312; cv=none; b=HSEL2/dxDFmzIyMhiTWM5A3EVErMrb2tLdPxp3WULR4muT+Okn8/o2Ok9wFsFut/cgu2MyySfuabcDC5RFGZ/zIS/fydupM3oqmSZk9/tl/j1QESJQusVnWzl8T5mpghQYYEdgRbKG3u2lteV/4sEJMgcjYuD7OBuleS76uj5y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715609656; c=relaxed/simple;
-	bh=FB9V+vs5E1VQUhmCPHB+F4habDJck32zqBLt199+I3Y=;
+	s=arc-20240116; t=1715618312; c=relaxed/simple;
+	bh=Ovx1j7MTjRL6Gty0o2yuKfyr21Xg0c7KZt7RCfRDmCU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rgi2T1egJaFFVSQe+iX6VlcIKD0SdBKrtrmnPAVObVGc0tx4PaB+QDFXuHZgtBFIdKgu+5BS9bn2ORpAEeDOU7YlFp5+4T+5beC0tvIP0aZYli5Qm5DAfMnQS5Dbce+xvbrjee3y9e/G/OtPbqIkbulwg9GwW1gUkGpsyQgMoxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z93enhUc; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 To:Cc:Content-Type; b=kSeA3DHIS+QogQiNKkQzLTA4rbQ/4lEc2je35tlF6tz92lsVW1ZkoWj0ayLljCRcv6Gxk2PYsAXqOjHp22X0ZDOcWGBB0RL+HRtXEYd7KEyLMqQMUiUms56x7zEczRXKvMaESxRmX3oS+usGccIPeHwu/ludIKHHRXF5/sRrcD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Lo7qVFB+; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z93enhUc"
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c99aec9598so1617108b6e.0
-        for <rcu@vger.kernel.org>; Mon, 13 May 2024 07:14:15 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Lo7qVFB+"
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51ef64d051bso5260107e87.1
+        for <rcu@vger.kernel.org>; Mon, 13 May 2024 09:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715609654; x=1716214454; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1715618309; x=1716223109; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2UOBn2IF+668KdrcZrqcrK14CUBpiCxB9sfNMBwRB7s=;
-        b=Z93enhUcs5q6v/kvwubU26jUlpt9p2dwds+1vZR8gA59/gBdWMBuMZD1ISXJcuiHJ5
-         N/2vjfRVI/uaaYEke6olAvOUmSVBbVBYSjDxOWKrJMNgHd3bQnB3O84ya2k9QQoBPCG9
-         5S7F24TctYrnjnomPyjVCwoAc41E8K9NZMybTtLDNHy6a8qe4NfLs5W5xMzmPcjo7zG6
-         nDysdj8izHJkmJ2e+KwFPQ9loPrL58c/NbBWflJjk3nV4BGYiP9zCzkc5I7dCmxBFUVr
-         qosV31JLKtd70CQgQm3SNvRl3MnjgO+nOhOSsKh9PY2KrxEZx1CpeTYXueKJzv6Ynkjp
-         d2+A==
+        bh=I1Wlf37+51HtjLRgNKMisfOzo70QDhMnfjuuCuIiDuk=;
+        b=Lo7qVFB+Jh7cpluQxnVMhaHCsj4WRipGnXSE1xtSvVEKXYIpx6lwZQ1L53APFYjH+p
+         au4MlXXjUekXGYIYnX1+3i5LWt+5fZSmovvUW4GBLyXX3Vj5M7wzMtsyZ+mw+3bdTRpN
+         tOTuGUpHgf9IZllzgvDR833VM2lv9FejDdOEQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715609654; x=1716214454;
+        d=1e100.net; s=20230601; t=1715618309; x=1716223109;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2UOBn2IF+668KdrcZrqcrK14CUBpiCxB9sfNMBwRB7s=;
-        b=Q/H2TLhQpTwLGwZAs85YOtcxaN1XwiEbKIQc0dZdl4lnAVjV2qKKeDZlrp/qwwrAWD
-         pMlc7xCnKE7DXYPgFhlFlMddxWMZ8rQf029PsTTJauUBFHIyb+cuXvA1dc6NHwQt8WMQ
-         WwF2dDZ8qtgjh+FOAzDm7gnrkv60PVdYmq2lvtGAdtcMEUoBODaYLxMO7K91m3x7Jtjn
-         3CcPwzzxaLCEFiJWp3Az1zkORW1NO6WaUu5kgYs0olNlHSgqED6ZGCSkRuaBiN9G+GOl
-         t6ZRsbsookiynsFF4f+e5efhiu+ERFBBBv8PRGS6t0cUEHKZv7A/OUnkE8gPSxZrXSQB
-         A6UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUIPFA71ux+YDieSMNA+a6/kvnlBLPuqqiiqqVBx7zZFYdVLqCC9hRtIa5MCXf4NBSEV2fXDbu3nSiyBnj1K7ydA/NG
-X-Gm-Message-State: AOJu0Ywl69ENhh+eYYd4T6s89K8Y+MwFKd5C92JdCDq1Y33+IL23XsWy
-	hsZ4wPKWdDLFBa1KYx04SY5xVzJf/JY7VD83GyoYvWnDKNoc4HWtF8QIFPE19Rp9Tnwv8Qpc/X+
-	X3bYLu04LWX0auI3y+Zm14GQyT1n888Bvq+b6
-X-Google-Smtp-Source: AGHT+IGu6SKrlKrLBVpI5R4Fi+Tdpwzzi1hi7Ih528iP/NR27zuc68FroGIgKA8luFoPZtoMcHDGZD3nlymLqxVlv+E=
-X-Received: by 2002:a05:6808:358:b0:3c9:66dc:1a7a with SMTP id
- 5614622812f47-3c99707247emr10272851b6e.32.1715609654266; Mon, 13 May 2024
- 07:14:14 -0700 (PDT)
+        bh=I1Wlf37+51HtjLRgNKMisfOzo70QDhMnfjuuCuIiDuk=;
+        b=TPO8LeUhu9FnIhGYijI5ie6rtsXLe7PzvHvq+M5lI8xC/tjGkPpJwlDMH30g9zaxJ1
+         EEaFkJA83xTtf92xqlkhcFjxUpvHFU1n3owp2jK5KXkFR87frh/p5XC0GkMN/wiijmAD
+         8efMDgDPHyrr268rbdQdtpau8b6eGuGrS5xzFvOaYS1EWxdSrlplqZjEjgZ7gmqxQf2r
+         RiCdRGNFhaHddMNjIDYDMM4SKV3HbYbflcue9YyUKaOKtCLLbt9mP/8oY8gv0pE7Mfzw
+         GmEWTOVXshOG/TEq5HkO1jbGymfLKRfYBHulpw7s/mnMq/GU7Ryzr2W8qzVk+0U8ZDgA
+         XEaw==
+X-Gm-Message-State: AOJu0Yys90bCSwOH5NuCizIrM40DM2ZSg+G2qN4b12NnukMqBot46ZNZ
+	W5yQoJCWqwXIdjiSLnJO/oPUyn/kGi5AZVj2AON1x9mwfXDwtBH6WXardNnhPOgR1wd4GMmlgow
+	Tnmo=
+X-Google-Smtp-Source: AGHT+IEPAcCpN47DPgBqID1bkMx7u3zTIAfkICl36XBmO2MII/xuknv0Obra62V5C9dj9XF94TzyDA==
+X-Received: by 2002:a05:6512:39c3:b0:51d:96be:b50 with SMTP id 2adb3069b0e04-5220fb7761amr7763699e87.31.1715618308726;
+        Mon, 13 May 2024 09:38:28 -0700 (PDT)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a17b17cc5sm610774566b.205.2024.05.13.09.38.28
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 May 2024 09:38:28 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a5a157a1cd1so1138069166b.0
+        for <rcu@vger.kernel.org>; Mon, 13 May 2024 09:38:28 -0700 (PDT)
+X-Received: by 2002:a17:906:f6da:b0:a59:a97b:5aff with SMTP id
+ a640c23a62f3a-a5a2d680c8fmr687211266b.73.1715618307800; Mon, 13 May 2024
+ 09:38:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240507093530.3043-1-urezki@gmail.com> <20240507093530.3043-26-urezki@gmail.com>
- <ZjpAsYJIfzYSKgdA@redhat.com> <4c9e89b5-c981-4809-8bc2-247563ce04e9@paulmck-laptop>
- <20240510131849.GB24764@redhat.com> <20240510135057.GC24764@redhat.com> <474ae55c-fe9e-4668-8f9b-23f819c76d10@paulmck-laptop>
-In-Reply-To: <474ae55c-fe9e-4668-8f9b-23f819c76d10@paulmck-laptop>
-From: Marco Elver <elver@google.com>
-Date: Mon, 13 May 2024 16:13:35 +0200
-Message-ID: <CANpmjNMUJ6UMwWAEHfm-7WZ=jKD56PH67Zp8dB6B=fEysiK=Hw@mail.gmail.com>
-Subject: Re: [PATCH 25/48] rcu: Mark writes to rcu_sync ->gp_count field
-To: paulmck@kernel.org
-Cc: Oleg Nesterov <oleg@redhat.com>, "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>, 
+References: <20240510183049.312477-1-urezki@gmail.com>
+In-Reply-To: <20240510183049.312477-1-urezki@gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 13 May 2024 09:38:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh=HgEeyKVKGXTKiLdhvs-5t9pFxUkK6ED+zsby=quBdA@mail.gmail.com>
+Message-ID: <CAHk-=wh=HgEeyKVKGXTKiLdhvs-5t9pFxUkK6ED+zsby=quBdA@mail.gmail.com>
+Subject: Re: [GIT PULL] RCU changes for v6.10
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"Paul E . McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Johannes Berg <johannes.berg@intel.com>, 
+	Nikita Kiryushin <kiryushin@ancud.ru>, linke li <lilinke99@qq.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, Zenghui Yu <zenghui.yu@linux.dev>, 
 	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Hillf Danton <hdanton@sina.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>
+	Joel Fernandes <joel@joelfernandes.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 10 May 2024 at 16:11, Paul E. McKenney <paulmck@kernel.org> wrote:
-[...]
-> > > Does this mean that KCSAN/etc treats the files in kernel/rcu/
-> > > differently than the "Rest of Kernel"? Or what?
-> > >
-> > > And how is it enforced?
-> >
-> > I can only find the strnstr(buf, "rcu") checks in skip_report(),
-> > but they only cover the KCSAN_REPORT_VALUE_CHANGE_ONLY case...
+[ I should have reacted to this earlier, but I just put all the "for
+6.10" pull requests in the queue without looking closer ]
+
+On Fri, 10 May 2024 at 11:30, Uladzislau Rezki (Sony) <urezki@gmail.com> wrote:
 >
-> Huh, new one on me!  When I run KCSAN, I set CONFIG_KCSAN_STRICT=y,
-> which implies CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n, which should
-> prevent skip_report() from even being invoked.
+> Please pull the latest RCU git tree from:
+>
+> https://github.com/urezki/linux.git tags/rcu.next.v6.10
 
-The strnstr hack goes back to the first version of KCSAN released in
-v5.8 [1]. It was added in response to Paul wanting the "stricter"
-treatment for RCU even while KCSAN was still in development, and back
-then syzbot was the first test system using KCSAN. Shortly after Paul
-added a KCSAN config for rcutorture with a laundry list of options to
-make KCSAN "strict" (before we eventually added CONFIG_KCSAN_STRICT
-which greatly simplified that).
+Hmm. I don't have your pgp key to check, but I do see that it's in the
+kernel.org repo of pgp keys so I know where to get it.
 
-While the strnstr(.., "rcu") rules are redundant when using the
-stricter rules (at least CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n is
-set), we're keeping the "rcu" special case around because there are
-test robots and fuzzers that use the default KCSAN config (unlike
-rcutorture). And because we know that RCU likes the stricter rules,
-the "value change only" filter is ignored in all KCSAN configs for
-rcu-related functions.
+HOWEVER - importantly - I also don't find any handoff emails from Paul
+or Boqun giving a heads up that I should expect pull requests from
+others.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/kcsan/report.c?id=v5.8
+Put another way: I really want to see proper heads-up and "yes, this
+was all intentional, nothing odd going on" when seeing pull requests
+from new people to core areas.
 
-Back then syzbot occasionally reported RCU data races, but these days
-rcutorture probably finds all of them before syzbot ever gets its
-hands on new code.
-
-Thanks,
--- Marco
+              Linus
