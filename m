@@ -1,167 +1,138 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19E2243154
-	for <rcu@vger.kernel.org>; Mon, 13 May 2024 18:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618C713D2B7;
+	Tue, 14 May 2024 10:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715625696; cv=none; b=gMqXg9cVhz4xHEC86wcYDYFFaNor/TawxGAhMqfLKOJdx6lFXIfoeTCKTK6sXpQhHruvKAuW9ulzicwBjc0uRePYCmTH055SvdfLywtWLxJgnFEUHLeZoxZz5LsdcLyDG/Pb3lUFHvXdZ839p+8YpkWy0mI3McvlQxxI+m09c0Y=
+	t=1715683331; cv=none; b=OYXaI1G6ic6a+H0j1OUrJr/bZIrjIgcUxoGYp2pcHob7v+YJNHavXYLR/W+qg59DLKFRgSIObyrKvBTJ+6a3ZNDroJk6tkXqPM/idbALV4lTXqcDvijKkfLfiCwsjYsoh9r7opgclWOws851wRJBF3klQh2sgLbh9g5uIbjHx94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715625696; c=relaxed/simple;
-	bh=wsS4m9jNroLUwgmcM5QQE60bNETQtMEKh5JkIRElsQM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=W1JFPCQPQ+81ZINefyUl2ExR7+ZpXgLAe7sXjscIMjtuiiTCCVmcTxkopoo0orXi3JsUoSVT5XswD1sSpA6SvXfK/zL9OU+AynBpY2CM5+zj9REdKxIB2t4V7Jdhubyzn9S9AUBZjtwaV3hLNj0BEmayrCuG5d+LkVMUS3Q8WlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X9zxvZKI; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1715683331; c=relaxed/simple;
+	bh=pgxgidgbUhrdnKoQE5fZ9bF+iQvru7SDM8rpvdWyrI0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YTme9VTUGdOCGWi9XutB4eKFqVRgeEJxiKUoWQRoO+mLNRxJthv5QnZggGDQUOlC8QTQFJ7CWpqH21TASP9NDl4Lu5UlS4PI1wr/oRjaOVnrvFYe0kjBBHt6gY6ud8RjiU+of8moGmnoEUEfCDr46eJwVMwx4W+eKTSwUcNhvKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YhRcCt1L; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X9zxvZKI"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715625694;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MFyeuVqyMFnhtNKuGHnJL7fY7DbMXwMj2UMfkdAHlY0=;
-	b=X9zxvZKIpPXzGbI0l7gdUs/vvLVZS/vGwkILAKSKYfrMRtcYAPNId+nU7K9L2bp0Uuou2l
-	Sn5XwJQ20etYk12x55Ld1Xeix1wCAQABsSt53r67pvZBCtP3hSWPB9tfKK8NNb+ME/NHiH
-	JAzYL8o0QhCvcDhG9Ykq7i4j1TnXUII=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-3xA3gerNMZWRFn9jjfJ3Rw-1; Mon, 13 May 2024 14:40:27 -0400
-X-MC-Unique: 3xA3gerNMZWRFn9jjfJ3Rw-1
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6f3efd63657so4279675b3a.2
-        for <rcu@vger.kernel.org>; Mon, 13 May 2024 11:40:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715625626; x=1716230426;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MFyeuVqyMFnhtNKuGHnJL7fY7DbMXwMj2UMfkdAHlY0=;
-        b=kUyIT208oyfj2rD3azD5wVkFOS06AJPQjXDhHX1PRsdDKaoxm5HWQ3dw4wy9SwiGcl
-         VK3fW6Vbsb9Q5tCQvrsvYABbHkhe1rvkLfSbyrEyGAQvGE+58l3X6dFlQSBJHLbXyFHb
-         s4bUgOZQhW9QzetkiKQCWWAtuyluPnFxzq/YJpBSDYohDNI3c0kNXA7z7gf0FDBSODcV
-         Scx8l1E0O1gtnV7WsFkBrxgM0Wgv9Ml60l1D0Gx1iJwiBGFjHduGwgOQefVLfwHP47Gk
-         NZaAfgRNV14cDCEyngpXf1xkDjDpNSP+DcN7tqJeht7ccvuit9hUaL/EN3m/Kg2mPFCy
-         UpgA==
-X-Gm-Message-State: AOJu0Yy7xjQoqTjcH56sz0CYDz2nkrkL989hjxYGXfC34kA51B6H7dKT
-	KdeG1S/4qIKyyd/8t2VVkmKmmqyR06ZyJLpp4o9SDJ/uM7y22lXZyi8CLJ6mBIJb7Xtiwfin09+
-	qoFpHpmvizeXvAGy5E3+TJiN3mYDsuj8RF1AO2Ui6pXxl3g48aw==
-X-Received: by 2002:a05:6a00:1312:b0:6ed:21cb:13f3 with SMTP id d2e1a72fcca58-6f4e02ecde9mr11814149b3a.17.1715625626293;
-        Mon, 13 May 2024 11:40:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGNpxkzGvp2/GZiIYnR8YzUJnMiG6aGHqRC6qc3D1Zm855T1dZqSO+sUiPeYbQB3ZyF0Ya2yg==
-X-Received: by 2002:a05:6a00:1312:b0:6ed:21cb:13f3 with SMTP id d2e1a72fcca58-6f4e02ecde9mr11814114b3a.17.1715625625812;
-        Mon, 13 May 2024 11:40:25 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2a66c54sm8035257b3a.40.2024.05.13.11.40.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 May 2024 11:40:24 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, "Paul E. McKenney"
- <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Neeraj
- Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
- Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 26/27] rcu: Update stray documentation references to
- rcu_dynticks_eqs_{enter, exit}()
-In-Reply-To: <ZjuSTC0sZvuqx57r@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YhRcCt1L"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EDF8C2BD10;
+	Tue, 14 May 2024 10:42:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715683331;
+	bh=pgxgidgbUhrdnKoQE5fZ9bF+iQvru7SDM8rpvdWyrI0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YhRcCt1L93FgX5qyjHoWbueo209p785xTZkBY4tkJbCnMxgQXxpoaADNk4I2Pjn4G
+	 a9da9vCHD/orTfWNFOhsU+V1UO4pdtPpG0+WeT/51BAxU35v55fOj33uKezAXvn5rO
+	 +qiAYmYbwfOZ7QHoACg9WY9HtvoYoDmZPOdI0h/9lsxcwE1UB6QDsNFlfGjCWk3k8y
+	 yqIG74nhvd77DMLYjbWApy54PDSB8XbDTQSw4DDqHay0cxSNvUWI1YNsbdvj4gDAHf
+	 PEnu0ZXNwaxSIg7H9J8+efc5QJWNsQYlLrAVaz7QqwK+XeWsr7zYnCDePLMfwJjalg
+	 aBL24pUb7kH5A==
+Date: Tue, 14 May 2024 12:42:08 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 18/27] rcu: Rename rcu_dynticks_in_eqs_since() into
+ rcu_watching_changed_since()
+Message-ID: <ZkNAABSASimEq8ho@localhost.localdomain>
 References: <20240430091740.1826862-1-vschneid@redhat.com>
- <20240430091740.1826862-27-vschneid@redhat.com>
- <ZjuSTC0sZvuqx57r@localhost.localdomain>
-Date: Mon, 13 May 2024 20:40:20 +0200
-Message-ID: <xhsmhseylh7xn.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20240430091740.1826862-19-vschneid@redhat.com>
+ <ZjoxIhtCw4Pov0VH@localhost.localdomain>
+ <d3177337-51cd-4841-ba4b-8e0f8f5bbc84@paulmck-laptop>
+ <Zjta9-jCNHmAAh6b@localhost.localdomain>
+ <xhsmhttj1h7xy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <xhsmhttj1h7xy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-On 08/05/24 16:55, Frederic Weisbecker wrote:
-> Le Tue, Apr 30, 2024 at 11:17:30AM +0200, Valentin Schneider a =C3=A9crit=
- :
->> rcu_dynticks_eqs_{enter, exit}() have been replaced by their
->> context-tracking counterparts since commit:
->>
->>   171476775d32 ("context_tracking: Convert state to atomic_t")
->>
->> Update the stray documentation references.
->>
->> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
->> ---
->>  .../RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst   | 4 ++--
->>  Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg  | 4 ++--
->>  Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp-fqs.svg   | 4 ++--
->>  Documentation/RCU/Design/Memory-Ordering/TreeRCU-gp.svg       | 4 ++--
->>  4 files changed, 8 insertions(+), 8 deletions(-)
->>
->> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Or=
-dering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Order=
-ing.rst
->> index 0533814a1f69a..50fc99aba777f 100644
->> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.=
-rst
->> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.=
-rst
->> @@ -147,8 +147,8 @@ RCU read-side critical sections preceding and follow=
-ing the current
->>  idle sojourn.
->>  This case is handled by calls to the strongly ordered
->>  ``atomic_add_return()`` read-modify-write atomic operation that
->> -is invoked within ``rcu_dynticks_eqs_enter()`` at idle-entry
->> -time and within ``rcu_dynticks_eqs_exit()`` at idle-exit time.
->> +is invoked within ``ct_kernel_enter_state()`` at idle-entry
->
-> Looks like ct_kernel_exit_state().
->
->> +time and within ``ct_kernel_exit_state()`` at idle-exit time.
->
-> And ct_kernel_enter_state()
->
->>  The grace-period kthread invokes ``rcu_watching_snap()`` and
->>  ``rcu_watching_changed_since()`` (both of which invoke
->>  an ``atomic_add_return()`` of zero) to detect idle CPUs.
->> diff --git a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.sv=
-g b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg
->> index b57210ecd689e..c7d16b72f0973 100644
->> --- a/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg
->> +++ b/Documentation/RCU/Design/Memory-Ordering/TreeRCU-dyntick.svg
->> @@ -607,7 +607,7 @@
->>         font-weight=3D"bold"
->>         font-size=3D"192"
->>         id=3D"text202-7-5-3-27-6"
->> -       style=3D"font-size:192px;font-style:normal;font-weight:bold;text=
--anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dy=
-nticks_eqs_enter()</text>
->> +       style=3D"font-size:192px;font-style:normal;font-weight:bold;text=
--anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_ker=
-nel_enter_state()</text>
->
-> ct_kernel_exit_state()
->
->>      <text
->>         xml:space=3D"preserve"
->>         x=3D"3745.7725"
->> @@ -638,7 +638,7 @@
->>         font-weight=3D"bold"
->>         font-size=3D"192"
->>         id=3D"text202-7-5-3-27-6-1"
->> -       style=3D"font-size:192px;font-style:normal;font-weight:bold;text=
--anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">rcu_dy=
-nticks_eqs_exit()</text>
->> +       style=3D"font-size:192px;font-style:normal;font-weight:bold;text=
--anchor:start;fill:#000000;stroke-width:0.025in;font-family:Courier">ct_ker=
-nel_exit_state()</text>
->
-> ct_kernel_enter_state()
->
-> etc...
+Le Mon, May 13, 2024 at 08:40:09PM +0200, Valentin Schneider a écrit :
+> On 08/05/24 12:59, Frederic Weisbecker wrote:
+> > Le Tue, May 07, 2024 at 10:14:08AM -0700, Paul E. McKenney a écrit :
+> >> On Tue, May 07, 2024 at 03:48:18PM +0200, Frederic Weisbecker wrote:
+> >> > Indeed in practice the function only checks a change. But semantically it really
+> >> > checks a trip to eqs because this function is only ever called after a failing
+> >> > call to rcu_dynticks_in_eqs().
+> >> >
+> >> > So not sure about that one rename. Paul?
+> >>
+> >> As you say, Valentin is technically correct.  Me, I am having a hard
+> >> time getting too excited one way or the other.  ;-)
+> >>
+> >> I suggest thinking in terms of rate-bounding the change.  If you do
+> >> change it, don't change it again for a few years.
+> >
+> > Makes sense!
+> >
+> >>
+> >> Either way, should comments be changed or added?
+> >>
+> >> Of course, the scientific way to evaluate this is to whose a couple
+> >> dozen people the old code and a couple dozen other people the new code,
+> >> and see if one group or the other has statistically significantly lower
+> >> levels of confusion.  I don't see how this is feasible, but it is the
+> >> (painfully) correct way.  On the other hand, it would have the beneficial
+> >> side effect of getting more people exposed to Linux-kernel-RCU internals.
+> >> Unfortunately, it might also have the additional side effect of making
+> >> them (more) annoyed at RCU.  ;-)
+> >
+> > Sounds good!
+> >
+> > I divided myself in two blank RCU subjects for a double blind study
+> > and locked those people up overnight with a paper containing both proposals.
+> >
+> > I opened the door five minutes ago and they both elected by mutual agreement
+> > rcu_watching_changed_since()! Also they are thirsty.
+> >
+> > Congratulations Valentin! :-)
+> 
+> :-)
+> 
+> Now, not that I like wasting everyone's time, but... I hadn't taken a step
+> back to realize the calling context implied this would always be used to
+> check an entry into EQS, per the waiting loop structures. With this in
+> mind, how about the following? 
+> 
+> 
+> /**
+>  * rcu_watching_stopped_since() - Has RCU stopped watching a given CPU since
+>  * the specified @snap?
+>  *
+>  * @rdp: The rcu_data corresponding to the CPU for which to check EQS.
+>  * @snap: rcu_watching snapshot taken when the CPU wasn't in an EQS.
+>  *
+>  * Returns true if the CPU corresponding to @rcu_data has spent some time in an
 
-Yes indeed, I shoved the sed the wrong way around :( Thanks!
+@rdp
 
+>  * extended quiescent state since @snap. Note that this doesn't check if it
+>  * /still/ is in an EQS, just that it went through one since @snap.
+>  *
+>  * This is meant to be used in a loop waiting for a CPU to go through an EQS.
+>  */
+> static bool rcu_watching_stopped_since(struct rcu_data *rdp, int snap)
+> {
+> 	if (WARN_ON_ONCE(rcu_watching_in_eqs(snap)))
+> 		return true;
+> 
+> 	return snap != rcu_dynticks_snap(rdp->cpu);
+> }
+> 
+>
+
+Yep, looks good to me!
+
+Thanks.
