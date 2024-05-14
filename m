@@ -1,161 +1,151 @@
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86EAF1448D2
-	for <rcu@vger.kernel.org>; Tue, 14 May 2024 13:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B939D1E487;
+	Tue, 14 May 2024 14:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715694999; cv=none; b=S6YEijQMdT+jGPNrfmx6N/1j+uhXxYYzcO5iamO1MeVDiFWAkJXMUNEspHRu7ck9JVYRuIOamtg3Pa9eJzjFFQa+BrBNZfPTTxuyg328Xarun5JhoRjep/9gYxxtSbWSBLQmTaYPWQ8j/axKfzR7Zi/xqfDE/4kBUlf2biUECIc=
+	t=1715698481; cv=none; b=mHoNvTulEG0w/XkT7E9WPK2JSd5CTpQ2C9T+JEHRqEGYvt8qKPgVCJZ+/WVcO8US8YxsIVj2hHf4Vqteu6OaD/NZrs0ZxmKqu9vp+H4IwvEHN4eesLGzdka1o5qrfP5liaeI49KQ1nbCE8yZBHqX/vzdekVw51EvX7jtwPip0w8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715694999; c=relaxed/simple;
-	bh=Sn7S+V4uXZsXYyY4EJOGhFcEPtvJpEmtg/hLN2fNzGc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=scpYPMEWx4+w6vqUACuCy1xq+7X4PitARJ/kCQ4gMscAiKly0vUEe+wQ/nJ7muYSRacrPI5r+4sgoM1J8aydQprHOenVqyGJHjRlBJjiRF/RaAu4gWmZ/TQzKeLwmGOg2+aJ/dRMmAwzy/yb+8puGhHbq0d6sF7dbtd1G5O7qWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7e1bcad7693so519671439f.1
-        for <rcu@vger.kernel.org>; Tue, 14 May 2024 06:56:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715694997; x=1716299797;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WnT30DvRJogkaW0YADlT7xatAc/1sAfrQePF7EBfRAk=;
-        b=fWTVb6SUagPARHnLcXIqV24GR568uh6bpXrge2V5KUHwewDrSG9lCQ+mXd5F1lKm5y
-         pVHjKJO2qmqjQ9bpYwC1DlfvgIj7PBb/WLMpDe3y61MxmeHAMUdOGrvjX/TUvyOUoUFq
-         V9yEbaEiOKbPnJp1w6h9LvwEUZSxsS9ssvDt7Gu5hDI9Y9MRZSscvwymeP3hYWwVEb+A
-         fv9f0SqAFkHOZgLBvDgCW/S1trjNTqwNEkfM+ZBY+hHPLZB2qycCOQ1SxW18y1qd41SO
-         GZNBWvc2qgLFzl61kO5v1A8G+NhIN8K8JIJXGXK1S9kx06lTzxhJydqPw/+3ybmBkl10
-         pQHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQj/FsfBnhEN7C4x+uotic7O9IuH9LMe0aptFaNhNw02svs5hWNlecfinJiJReC43AP0Qxsp0PiETWg/A/quxwjN6l
-X-Gm-Message-State: AOJu0YxGgnfs5Ut5Eyd/cco+8xDAukmtVpI6imW3NOz52qNIZAj/ieh0
-	Mw73spLarfSaMNR0FKH2LQlC/BIUm+WmSIi9XoQVeL13BCCmlQcCcFS7iDiyEEI/GeBoJF24u7N
-	9CWtggTMFxhJXy8pSGtYUlXg/HiuOX1Us4wo//lpPwEVE9bO3e6TCYfg=
-X-Google-Smtp-Source: AGHT+IHD0Yu2uE0z3DkHFtyjctSeLnLwno4ZUf7y5iKxYVCxNGFBwz0doH8a3bgchbMrsMfhmMlDrMr/wPHiSAIbtllNvK9c8iRj
+	s=arc-20240116; t=1715698481; c=relaxed/simple;
+	bh=HOwIRMzpnJvkClQKoEnwY3A/tf2uA45b0gQU7xVPuLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l/unLr5S6+CH8FjQexKx7id4h88oIRMskKBvzxh6vAaAJxMv1XGTrfut1UPJItOem5tO0Pj7lYYdXuH08biF+n9/hVMcqIv4w8M4hr4KRA61z8DfxmcOVIAwwagEp32GefXAoWiiM5YIZJhXkzZfeSrCMQuyG5wUPGYPS7d0pM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dbxi77x7; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dbxi77x7"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36722C2BD10;
+	Tue, 14 May 2024 14:54:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715698481;
+	bh=HOwIRMzpnJvkClQKoEnwY3A/tf2uA45b0gQU7xVPuLo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=dbxi77x7ysfb1XlxjZ53exVbupkB1lKBKAGyu5gPCO+gWdO0IPJ9g3nBOuXlP4KJ1
+	 ORTA3QQZSrD5VGgCSxRcJfFaKJo755kYtoyXWPSCIWnv0y9QdVowQK3mCd0S8Yjnln
+	 hq5nHXaFmz2o7sGYePrcmE281Ct+pxTWqPmM8bOzd285Ei+4vLlk2zgRtodj3L8YOC
+	 CYv2otGNxgulmhMO87qhCi2UK5WzRvD/rPUWpFbWccVimxxZq2vQo2f2g2KzDLNCQv
+	 v7FmKqwIkbM8xypuOi2KRAQ5NtdfdFuB8EpYhD7tsjaZ5j/aJCC1jvk/eGBlGl4ath
+	 reRyX8aZAT8WQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 98CA7CE0443; Tue, 14 May 2024 07:54:40 -0700 (PDT)
+Date: Tue, 14 May 2024 07:54:40 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zqiang <qiang.zhang1211@gmail.com>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Fix using smp_processor_id() in preemptible
+ warning
+Message-ID: <d2a9a579-ffcf-4812-a857-2f091f7c65b5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240509074046.15629-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:29cd:b0:7de:e10b:859f with SMTP id
- ca18e2360f4ac-7e1b519d499mr68383539f.1.1715694996781; Tue, 14 May 2024
- 06:56:36 -0700 (PDT)
-Date: Tue, 14 May 2024 06:56:36 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d38be106186a5e45@google.com>
-Subject: [syzbot] [bcachefs?] kernel panic: bch_dev->ref underflow, last put: bch2_get_next_dev
-From: syzbot <syzbot+a96175a4ea467a49c546@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, boqun.feng@gmail.com, frederic@kernel.org, 
-	jiangshanlai@gmail.com, joel@joelfernandes.org, josh@joshtriplett.org, 
-	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com, 
-	paulmck@kernel.org, qiang.zhang1211@gmail.com, quic_neeraju@quicinc.com, 
-	rcu@vger.kernel.org, rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240509074046.15629-1-qiang.zhang1211@gmail.com>
 
-Hello,
+On Thu, May 09, 2024 at 03:40:46PM +0800, Zqiang wrote:
+> Currently, the this_cpu_ptr(&rcu_data) in rcu_rdp_is_offloaded() is called
+> before the condition "!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())"
+> is checked, and occurs in preemptible task context, this will trigger the
+> following warning.
+> 
+> [ 4.106221][ T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+> [ 4.107796][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> [ 4.108547][ T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+> [ 4.109667][ T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [ 4.111064][ T18] Call Trace:
+> [ 4.111064][ T18]  <TASK>
+> [ 4.111064][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+> [ 4.111064][ T18] dump_stack (lib/dump_stack.c:124)
+> [ 4.111064][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+> [ 4.111064][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> [ 4.111064][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+> [ 4.111064][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+> [ 4.111064][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+> [ 4.111064][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+> [ 4.111064][ T18] kthread (kernel/kthread.c:388)
+> [ 4.111064][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+> [ 4.111064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> [ 4.111064][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+> [ 4.111064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> [ 4.111064][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+> [ 4.111064][ T18]  </TASK>
+> 
+> This commit fix this warning by priority check the condition 
+> "!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())" , to
+> ensure whether the this_cpu_ptr(&rcu_data) can be executed in
+> rcu_rdp_is_offloaded().
+> 
+> Fixes: 8feeeba60711 ("rcu/nocb: Use kthread parking instead of ad-hoc implementation")
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 
-syzbot found the following issue on:
+Hearing no objections, I have queued this wordsmithed version.  As always,
+please let me know if I have messed anything up.
 
-HEAD commit:    75fa778d74b7 Add linux-next specific files for 20240510
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1440d068980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ccdd3ebd6715749a
-dashboard link: https://syzkaller.appspot.com/bug?extid=a96175a4ea467a49c546
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=128cd23f180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15244970980000
+							Thanx, Paul
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ad9391835bcf/disk-75fa778d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d827b3da9a26/vmlinux-75fa778d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8f32f0182388/bzImage-75fa778d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/6a0d89f813ac/mount_0.gz
+------------------------------------------------------------------------
 
-The issue was bisected to:
+commit 5271ad1de0fbcf0bd9caebcf721670c164e5fa9c
+Author: Zqiang <qiang.zhang1211@gmail.com>
+Date:   Thu May 9 15:40:46 2024 +0800
 
-commit 552aa5486579c18b4f8e7ca03ef88fa573c517b5
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Fri May 3 22:07:40 2024 +0000
+    rcu/nocb: Don't use smp_processor_id() in preemptible code
+    
+    Currently, rcu_rdp_is_offloaded() invokes this_cpu_ptr(&rcu_data) before
+    the condition "!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())"
+    is checked.  When invoked in preemptible context in preemptible kernels,
+    this will trigger the following warning:
+    
+    [ 4.106221][ T18] BUG: using smp_processor_id() in preemptible [00000000] code: rcuop/0/18
+    [ 4.107796][ T18] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+    [ 4.108547][ T18] CPU: 0 PID: 18 Comm: rcuop/0 Not tainted 6.9.0-rc2-00079-g4c66bc7cacc0 #1
+    [ 4.109667][ T18] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+    [ 4.111064][ T18] Call Trace:
+    [ 4.111064][ T18]  <TASK>
+    [ 4.111064][ T18] dump_stack_lvl (lib/dump_stack.c:116)
+    [ 4.111064][ T18] dump_stack (lib/dump_stack.c:124)
+    [ 4.111064][ T18] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 (discriminator 15) lib/smp_processor_id.c:53 (discriminator 15))
+    [ 4.111064][ T18] debug_smp_processor_id (lib/smp_processor_id.c:61)
+    [ 4.111064][ T18] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:27 (discriminator 1))
+    [ 4.111064][ T18] nocb_cb_wait (kernel/rcu/tree_nocb.h:936 (discriminator 2))
+    [ 4.111064][ T18] rcu_nocb_cb_kthread (kernel/rcu/tree_nocb.h:983 (discriminator 1))
+    [ 4.111064][ T18] ? nocb_cb_wait (kernel/rcu/tree_nocb.h:976)
+    [ 4.111064][ T18] kthread (kernel/kthread.c:388)
+    [ 4.111064][ T18] ? kthread (kernel/kthread.c:373 (discriminator 2))
+    [ 4.111064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+    [ 4.111064][ T18] ret_from_fork (arch/x86/kernel/process.c:153)
+    [ 4.111064][ T18] ? kthread_complete_and_exit (kernel/kthread.c:341)
+    [ 4.111064][ T18] ret_from_fork_asm (arch/x86/entry/entry_64.S:256)
+    [ 4.111064][ T18]  </TASK>
+    
+    This commit therefore fixes this warning by checking the condition
+    "!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())" before invoking
+    this_cpu_ptr(), thus avoiding preemptible invocations.
+    
+    Fixes: 8feeeba60711 ("rcu/nocb: Use kthread parking instead of ad-hoc implementation")
+    Tested-by: kernel test robot <oliver.sang@intel.com>
+    Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-    bcachefs: Debug asserts for ca->ref
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10d08b5c980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12d08b5c980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d08b5c980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a96175a4ea467a49c546@syzkaller.appspotmail.com
-Fixes: 552aa5486579 ("bcachefs: Debug asserts for ca->ref")
-
-bucket 0:19 gen 51 different types of data in same bucket: (invalid data type), sb
-while marking sb, shutting down
-bcachefs (loop0): inconsistency detected - emergency read only at journal seq 10
-bcachefs (loop0): bch2_trans_mark_dev_sb(): error EIO
-Kernel panic - not syncing: bch_dev->ref underflow, last put: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
-Kernel panic - not syncing: bch_dev->ref underflow, last put: rcu_read_lock include/linux/rcupdate.h:781 [inline]
-Kernel panic - not syncing: bch_dev->ref underflow, last put: bch2_get_next_dev+0x26/0x500 fs/bcachefs/sb-members.h:126
-CPU: 1 PID: 5098 Comm: syz-executor215 Not tainted 6.9.0-rc7-next-20240510-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- panic+0x349/0x860 kernel/panic.c:347
- __bch2_dev_put fs/bcachefs/sb-members.h:109 [inline]
- bch2_dev_put fs/bcachefs/sb-members.h:121 [inline]
- bch2_trans_mark_dev_sbs_flags+0xaa7/0xab0 fs/bcachefs/buckets.c:1467
- bch2_run_recovery_pass+0xf0/0x1e0 fs/bcachefs/recovery_passes.c:182
- bch2_run_recovery_passes+0x19e/0x820 fs/bcachefs/recovery_passes.c:225
- bch2_fs_recovery+0x2370/0x3700 fs/bcachefs/recovery.c:804
- bch2_fs_start+0x356/0x5b0 fs/bcachefs/super.c:1031
- bch2_fs_open+0xa8d/0xdf0 fs/bcachefs/super.c:2123
- bch2_mount+0x71d/0x1320 fs/bcachefs/fs.c:1917
- legacy_get_tree+0xee/0x190 fs/fs_context.c:662
- vfs_get_tree+0x90/0x2a0 fs/super.c:1780
- do_new_mount+0x2be/0xb40 fs/namespace.c:3352
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f7f37cfa8ca
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff662e7d38 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fff662e7d50 RCX: 00007f7f37cfa8ca
-RDX: 0000000020011a00 RSI: 0000000020000200 RDI: 00007fff662e7d50
-RBP: 0000000000000004 R08: 00007fff662e7d90 R09: 00000000000119eb
-R10: 000000000120041c R11: 0000000000000282 R12: 000000000120041c
-R13: 00007fff662e7d90 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 31c539f09c150..475e20ebec5a5 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -28,8 +28,8 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+ 		!(lockdep_is_held(&rcu_state.barrier_mutex) ||
+ 		  (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
+ 		  rcu_lockdep_is_held_nocb(rdp) ||
+-		  (rdp == this_cpu_ptr(&rcu_data) &&
+-		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
++		   (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) &&
++		    rdp == this_cpu_ptr(&rcu_data)) ||
+ 		  rcu_current_is_nocb_kthread(rdp)),
+ 		"Unsafe read of RCU_NOCB offloaded state"
+ 	);
