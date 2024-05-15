@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C3D129E94;
-	Wed, 15 May 2024 12:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E45212AAD3;
+	Wed, 15 May 2024 12:53:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715777630; cv=none; b=hdZVnz4m72XBGr+kYTVJeC62+hk7BCRti17glPgJmgL1O9CgssekZSahaxxonZP3QRRUdMxdKb6tTVoHWPaBYVu4AJT3tQGlZQDu4u1AO+pgr5SuEeu9t7zMzlyNvDv/1/sfwuucilOVqGZMVqARuHx8PKzXzlgWSw5TKVLN+Rc=
+	t=1715777632; cv=none; b=YYwV/A3FgOGabnHZ9/1PlyFtxK/pMaAoaJUuVOki5ToqwGJKWJSHeiHqBXYVF9wPBRugvrHjkrawfO/YELj877t7+I1PkPHrECI/h3TLnLZYLWErLRmLv4YXrOZ7jUE/MBvYZbPFL0d4FY0fKbdZvosteHXhI8zfLl90D848DfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715777630; c=relaxed/simple;
-	bh=ZmJO5xL9+txZPsu8NViNS/0QQGVmcC4U2pZPeVVIfOw=;
+	s=arc-20240116; t=1715777632; c=relaxed/simple;
+	bh=61n4BvWS+RKXfIV6Crmix3uFCPd3dUP3naHmOjOk0/U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QxWDE2zAN92O2FSQAwSGTXPTKqOsrBsBpKdQXVZ9CEOsxew4zag0rmTN6fO9P/9JJpAFx+cpsJTgA0Q1AMMkcxxEDqQg9fMu0SvZ6vDOqZvKZMG1aikLUKvLkhnXceyxxdcJYS9dMgAMbBojS9WSEVC+3ho9ehrBIswet7U0mkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IGVsu+3a; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=uXkjGAX4+I7udrtJJyFk/6HeSZCKt1sYF0J9sGW0+fuDaASWn0WNZuyO2bqZeuhCQ4tvvj9+vyV8Y3biAJw978lyE2dLr/rM/MNlawFccTLlJ1JjnTtA7IBgOx7wyMycKwHGdVcqnoLuCA8SoeTdrH8DcmX+3jgCp/omW4uq5gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sOP210ma; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IGVsu+3a"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D55B4C32786;
-	Wed, 15 May 2024 12:53:47 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sOP210ma"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DB15C4AF07;
+	Wed, 15 May 2024 12:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715777629;
-	bh=ZmJO5xL9+txZPsu8NViNS/0QQGVmcC4U2pZPeVVIfOw=;
+	s=k20201202; t=1715777632;
+	bh=61n4BvWS+RKXfIV6Crmix3uFCPd3dUP3naHmOjOk0/U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IGVsu+3aCsyIiOIlpkiLdzOCbGYk+LDkdxQARmQngQjluzIT1ZYkSkojMP/KrlHNi
-	 ednrGvwKygBLy6+AAo0p+q0a5cIo6yr19B8aUa7b5WTohhobDRxa/HKdDWhCdH2J/y
-	 W+4kNqnCVb+qhRReQbnrQb+sgKaqz4JknqWHSODNdpFWMnm2B7vmMJ2YecUfrapFyX
-	 3fwqs28mthSsiytsrBtGGsBcEOXGDRw3dc+MogW/UNNGgJQ9vZLrHUfen5P6MFI2Kd
-	 yWT3Kh+IbQ/v0C5CbxygM/taJdJgy2XNt6HP/OK/W9CdzknjbMdoTpx2yhoTHTh7O9
-	 Stl2xck+TGX3A==
+	b=sOP210ma84aHUIqjdbTezTc6vStV8NonefdGSCfvpWLsE+X/49qBJg38k8b6KCPPC
+	 lafQb+1GJQ1YHBEHgkD5uSdi+Oify/E7brJF2l/rkO0jBjb65iFO+8mx++JcJW31p1
+	 MQDBjBGo+4HIF+BnHwBN0IU3QH/Zbva8io9toYEj6gWMuAcRP2O07erl1db3Ke++Z+
+	 U4U5WPdsBJeMysx67cBHP/UeS6pZ3+lK7zL8nIZNYN8mueyTCOgahEkkpMlgPbgBlp
+	 nBeVVCmzMdesWIkdMF1ODbtYpt62MqamVbmYM941LWarhvXdEEoH2a4atEx9KUNiwU
+	 gvJk320hR2TCw==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -37,9 +37,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>
-Subject: [PATCH 5/6] rcu: Remove full memory barrier on RCU stall printout
-Date: Wed, 15 May 2024 14:53:31 +0200
-Message-ID: <20240515125332.9306-6-frederic@kernel.org>
+Subject: [PATCH 6/6] rcu/exp: Remove redundant full memory barrier at the end of GP
+Date: Wed, 15 May 2024 14:53:32 +0200
+Message-ID: <20240515125332.9306-7-frederic@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240515125332.9306-1-frederic@kernel.org>
 References: <20240515125332.9306-1-frederic@kernel.org>
@@ -51,63 +51,51 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-RCU stall printout fetches the EQS state of a CPU with a preceding full
-memory barrier. However there is nothing to order this read against at
-this debugging stage. It is inherently racy when performed remotely.
+A full memory barrier is necessary at the end of the expedited grace
+period to order:
 
-Do a plain read instead.
+1) The grace period completion (pictured by the GP sequence
+   number) with all preceding accesses. This pairs with rcu_seq_end()
+   performed by the concurrent kworker.
 
-This was the last user of rcu_dynticks_snap().
+2) The grace period completion and subsequent post-GP update side
+   accesses. Pairs again against rcu_seq_end().
+
+This full barrier is already provided by the final sync_exp_work_done()
+test, making the subsequent explicit one redundant. Remove it and
+improve comments.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c       | 10 ----------
- kernel/rcu/tree_stall.h |  4 ++--
- 2 files changed, 2 insertions(+), 12 deletions(-)
+ kernel/rcu/tree_exp.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 02f6f3483482..04dde7473613 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -299,16 +299,6 @@ static void rcu_dynticks_eqs_online(void)
- 	ct_state_inc(RCU_DYNTICKS_IDX);
- }
- 
--/*
-- * Snapshot the ->dynticks counter with full ordering so as to allow
-- * stable comparison of this counter with past and future snapshots.
-- */
--static int rcu_dynticks_snap(int cpu)
--{
--	smp_mb();  // Fundamental RCU ordering guarantee.
--	return ct_dynticks_cpu_acquire(cpu);
--}
--
- /*
-  * Return true if the snapshot returned from rcu_dynticks_snap()
-  * indicates that RCU is in an extended quiescent state.
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 460efecd077b..4b0e9d7c4c68 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -501,7 +501,7 @@ static void print_cpu_stall_info(int cpu)
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index bec24ea6777e..721cb93b1fec 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -265,7 +265,12 @@ static bool sync_exp_work_done(unsigned long s)
+ {
+ 	if (rcu_exp_gp_seq_done(s)) {
+ 		trace_rcu_exp_grace_period(rcu_state.name, s, TPS("done"));
+-		smp_mb(); /* Ensure test happens before caller kfree(). */
++		/*
++		 * Order GP completion with preceding accesses. Order also GP
++		 * completion with post GP update side accesses. Pairs with
++		 * rcu_seq_end().
++		 */
++		smp_mb();
+ 		return true;
  	}
- 	delta = rcu_seq_ctr(rdp->mynode->gp_seq - rdp->rcu_iw_gp_seq);
- 	falsepositive = rcu_is_gp_kthread_starving(NULL) &&
--			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
-+			rcu_dynticks_in_eqs(ct_dynticks_cpu(cpu));
- 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
- 	if (rcuc_starved)
- 		// Print signed value, as negative values indicate a probable bug.
-@@ -515,7 +515,7 @@ static void print_cpu_stall_info(int cpu)
- 			rdp->rcu_iw_pending ? (int)min(delta, 9UL) + '0' :
- 				"!."[!delta],
- 	       ticks_value, ticks_title,
--	       rcu_dynticks_snap(cpu) & 0xffff,
-+	       ct_dynticks_cpu(cpu) & 0xffff,
- 	       ct_dynticks_nesting_cpu(cpu), ct_dynticks_nmi_nesting_cpu(cpu),
- 	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
- 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
+ 	return false;
+@@ -959,7 +964,6 @@ void synchronize_rcu_expedited(void)
+ 	rnp = rcu_get_root();
+ 	wait_event(rnp->exp_wq[rcu_seq_ctr(s) & 0x3],
+ 		   sync_exp_work_done(s));
+-	smp_mb(); /* Work actions happen before return. */
+ 
+ 	/* Let the next expedited grace period start. */
+ 	mutex_unlock(&rcu_state.exp_mutex);
 -- 
 2.44.0
 
