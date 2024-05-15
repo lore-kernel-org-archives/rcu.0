@@ -1,30 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD6381736;
-	Wed, 15 May 2024 12:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D228564F;
+	Wed, 15 May 2024 12:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715777618; cv=none; b=kN4mc+3p+BcpavI4CIrm38tZ7V5rZrFwrhRFezw9BcLkHEPMc7nLMXSkyz4fCQ/b4IVdNCVciuZjY7ZaDjGiFjC3LvrgiLNd986Jy7//w0uxyIcQ2qzMudFIArnz1bV3RvmPDsQmvd+eQrV0lnYN3+mM8veCxGSfhow9kK6LFsU=
+	t=1715777620; cv=none; b=pjzismJS9l0aciAu9zfqDmfvUARTcckJNDdblwkuOQb5NJpOSKlGYB3cwvuNy+YLwIZmv3e87cwqQ+jSbJixsbBB+eDcKdyTw1JVzp9eRIzquF62R7pkcSXzp0iZgvxMVpEhHsjpkgPMc9zUJu8Yn2Q95IkSvLUQFFgCWVGz3II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715777618; c=relaxed/simple;
-	bh=o2o8Nk3Mhul8sFHnLwOqUg9mPLkrOh+Fk9GAEIfikwY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aJRGA5sDajWvJnggnPvAjTcrxPbb9Bk3gL2fbVGBXxMzC6kFPF1OQCU2k65FlQCUCGxhKHTyn0DLmCZyqK0PgN6e4ugk11YTPks1KcHQW4kfb39gba1TQ7jEPtZrfzHAEOYxDL+n588crTLxl3Pg64CK3+dByahettBACAwuR8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MywxZ0+l; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1715777620; c=relaxed/simple;
+	bh=+Ijc3TFzSdS3MOMdPr/UmaBupSlN/ypWN9jGVIpDD2c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dqxKpwEuJsBOzXLHe3VI4njsjro1BZ8xerWHRaLLfyUTqOfYHGkLh1eF1X81MWe+i1eYgCH8Lh+er55lo5dSbXED80xmNwiWXkmJtHv2dRyf3oVO/Tjn+rNym2y0yEamVMT5ntSyb4ROR+2mZhZ/lUr6C+9lHlVFfSFmBjhi/t8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qsDVcVQw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MywxZ0+l"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E424AC116B1;
-	Wed, 15 May 2024 12:53:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qsDVcVQw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 535D4C4AF07;
+	Wed, 15 May 2024 12:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715777617;
-	bh=o2o8Nk3Mhul8sFHnLwOqUg9mPLkrOh+Fk9GAEIfikwY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=MywxZ0+lzR8pSkZXqU7n8np2PduEdofYB/JgM8TG4mASxZTQpM4To6TS2cTIDZdiO
-	 m4UNbhCJ7NCr2B+dlkpp1vm1asMNrV9U5mGyoYTqcQAZvRyC/b9zMZORJZRW1WzrcM
-	 KEQpNpJ++p07gPE2ZSm4hs0q3254ziz6eV7l/9E2nVVMviYFjUxhYIxRO5HRm6U8Im
-	 O42KerhKYtQfwZ4V7hdHP8L+WP9X1bmVUIWAGGAvkC5ARo8/V1rrz6DKvTpggAoG/D
-	 FwLJnadRIJqwk+5y5foWxWm0OirCe0OYewc6XOoeGkEb4I0rdKEjDli8tNPHx2WMlY
-	 mT8Kf1UnX9evw==
+	s=k20201202; t=1715777620;
+	bh=+Ijc3TFzSdS3MOMdPr/UmaBupSlN/ypWN9jGVIpDD2c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qsDVcVQwZYfLnq6Woi6YVeDig7BPG3NdiNj2USEC43sJM01981goiAoG5mhmMySPa
+	 vWYoUpvYeW3hHtGcQaO95p4DJUfOrsU+9fgzRd/ayLqSRCiu4CQSEprWrLbvXU8F7Y
+	 Gith46EPn1Yv8INVoMTuoqSpksIQgblNAWAR5yC4T+g6GaQA+i/awNxw1ejdwUkKpL
+	 OhrcazveQAOXr2wbFaMCu4e02REJpI/djlBt40LSHiuFlMl+IREJPAl3gjQQesAAnU
+	 QSPBSZ+jhuKZ5ba9NCfXccomLb4jNiAYOALiWfwn1mWMwpB7k6LUa56XQFlrNoqTCR
+	 NnhAHhoDoTmUQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -36,10 +37,12 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>
-Subject: [PATCH 0/6] rcu: Remove several redundant memory barriers
-Date: Wed, 15 May 2024 14:53:26 +0200
-Message-ID: <20240515125332.9306-1-frederic@kernel.org>
+Subject: [PATCH 1/6] rcu: Remove full ordering on second EQS snapshot
+Date: Wed, 15 May 2024 14:53:27 +0200
+Message-ID: <20240515125332.9306-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240515125332.9306-1-frederic@kernel.org>
+References: <20240515125332.9306-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -48,30 +51,75 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Reviewing Valentin's patchset made me stare at some memory barriers
-on the way. Here is some removal proposal. Some may be beneficial on
-runtime (fqs snapshot with potentially as many smp_mb() as the number
-of online CPUs for each GP). Some happen on more rare path. In any
-case they clarify code reviews so we don't stumble upon mysterious
-barriers.
+When the grace period kthread checks the extended quiescent state
+counter of a CPU, full ordering is necessary to ensure that either:
 
-Thanks.
+* If the GP kthread observes the remote target in an extended quiescent
+  state, then that target must observe all accesses prior to the current
+  grace period, including the current grace period sequence number, once
+  it exits that extended quiescent state. Also the GP kthread must
+  observe all accesses performed by the target prior it entering in
+  EQS.
 
-Frederic Weisbecker (6):
-  rcu: Remove full ordering on second EQS snapshot
-  rcu: Remove superfluous full memory barrier upon first EQS snapshot
-  rcu/exp: Remove superfluous full memory barrier upon first EQS
-    snapshot
-  rcu: Remove full memory barrier on boot time eqs sanity check
-  rcu: Remove full memory barrier on RCU stall printout
-  rcu/exp: Remove redundant full memory barrier at the end of GP
+or:
 
- .../Tree-RCU-Memory-Ordering.rst              |  6 +++---
- kernel/rcu/tree.c                             | 21 +++++++------------
- kernel/rcu/tree_exp.h                         | 16 +++++++++++---
- kernel/rcu/tree_stall.h                       |  4 ++--
- 4 files changed, 26 insertions(+), 21 deletions(-)
+* If the GP kthread observes the remote target NOT in an extended
+  quiescent state, then the target further entering in an extended
+  quiescent state must observe all accesses prior to the current
+  grace period, including the current grace period sequence number, once
+  it enters that extended quiescent state. Also the GP kthread later
+  observing that EQS must also observe all accesses performed by the
+  target prior it entering in EQS.
 
+This ordering is explicitly performed both on the first EQS snapshot
+and on the second one as well through the combination of a preceding
+full barrier followed by an acquire read. However the second snapshot's
+full memory barrier is redundant and not needed to enforce the above
+guarantees:
+
+    GP kthread                  Remote target
+    ----                        -----
+    // Access prior GP
+    WRITE_ONCE(A, 1)
+    // first snapshot
+    smp_mb()
+    x = smp_load_acquire(EQS)
+                               // Access prior GP
+                               WRITE_ONCE(B, 1)
+                               // EQS enter
+                               // implied full barrier by atomic_add_return()
+                               atomic_add_return(RCU_DYNTICKS_IDX, EQS)
+                               // implied full barrier by atomic_add_return()
+                               READ_ONCE(A)
+    // second snapshot
+    y = smp_load_acquire(EQS)
+    z = READ_ONCE(B)
+
+If the GP kthread above fails to observe the remote target in EQS
+(x not in EQS), the remote target will observe A == 1 after further
+entering in EQS. Then the second snapshot taken by the GP kthread only
+need to be an acquire read in order to observe z == 1.
+
+Therefore remove the needless full memory barrier on second snapshot.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 5e6828132007..58415cdc54f8 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -325,7 +325,7 @@ static bool rcu_dynticks_in_eqs(int snap)
+  */
+ static bool rcu_dynticks_in_eqs_since(struct rcu_data *rdp, int snap)
+ {
+-	return snap != rcu_dynticks_snap(rdp->cpu);
++	return snap != ct_dynticks_cpu_acquire(rdp->cpu);
+ }
+ 
+ /*
 -- 
 2.44.0
 
