@@ -1,115 +1,180 @@
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FA815FA84
-	for <rcu@vger.kernel.org>; Mon, 27 May 2024 20:36:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55EBB17E8FC
+	for <rcu@vger.kernel.org>; Mon, 27 May 2024 20:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716842176; cv=none; b=IvxhCQMfk9VGJlFNpMVVV4UVOrBO4nc+FjdporZntkheAfPE5gopfFjjgX7YNPIm46Lh6rlvn31GmjWkKWIjdp67NMvWQHY8KurptrZn4nMA+r2/o3zqRlE617zv/aF6/zP7exJizHj2VDrJnqiG+07vp1nbyoDW0O+1Jeny9CM=
+	t=1716842593; cv=none; b=Ip8DC7i21vUH3/mx5PknK0BoRwFa+piGXg2wtzm7uQZ1mWM6VpLt7JKq9dVw3OW9oUM7sFTM1YZc4YeOIQeu8aJFETc8UMt+Dfx8yAPVXbJSAIepzMIGsopjX5AQATmL7H5ao5398GKzuC8458h9jL8JUHci/H9Y01QfMvgHw9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716842176; c=relaxed/simple;
-	bh=m8WOzOB9v7pNpgudUYWkL0MpGbZxm84uIXIMDUHNAck=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=krXYiXo33cYTirCkcGVNFEX6/HtC4ODxHJXQfdYn4FHepDAyMBpImofcLyqhzg2Ek50rGElPz5AZC3znJ/FAvdAdSuB8Ti7cV+MwkoXhn1+FRHf84Q7qcpORZjPcC/kgF3Zn9Ss/9tY3U/kpw+QLjvqgSREwYjbLUW4xR1NVcdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i68c9k6O; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1716842593; c=relaxed/simple;
+	bh=QtgRTVE1OXoAW1zbzUsoR3UiSF98/9WD+Z5hZ0S5+FI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=a8IZcuNcOfrgk5zZ6Rdn/n3W2doa9FtIVtr7yB46DULdgAuGlTJ6eiK41TCVy2n3JKk07reKBQNZ+vNoWj0PaJJxbAv+qAOBOaccjDTMQ753CdnM/AdEAm17gLUayUkDr5wTN//8XEELc6sl9ETUmMTveAioOcnKBojoKum7RyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=uZDXkaD6; arc=none smtp.client-ip=192.134.164.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i68c9k6O"
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-529b4011070so163479e87.1
-        for <rcu@vger.kernel.org>; Mon, 27 May 2024 13:36:14 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="uZDXkaD6"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716842173; x=1717446973; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aOh10dbgxM2e8Aowe5HMEmqvNcOhtnTLTtTwACrVRLU=;
-        b=i68c9k6OWdoydXQF/dvU0jTzxpYSX3tnpY6g/pnbUCNem+mBt1h+/SMDZnFWfSNiCk
-         IExPiKVkXLnfIprWd4wiW0WehDUNdFpReIQX8fFqgqH26tVOxItMTBkvTMgz0XuG9Ie6
-         ZYeLVGW1tU2xQXNp3PlL5PBOpCACGxJER6IunzgVHh6d5pWAbAFytYWP8INc/UyopZdO
-         QkkHaloauTVFkBuw6x5cBX1y5bEycad8BUEBvi30bckuVn+ct/fCRN/lIrA+yZErMtjB
-         f78cKNiGHMPEE2nlh+V6aKfH8AeS/6sqEtff5wu4HbIKLSUf2tsZ7OLo2CZ8BBy9f1fK
-         HEBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716842173; x=1717446973;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aOh10dbgxM2e8Aowe5HMEmqvNcOhtnTLTtTwACrVRLU=;
-        b=HMkAoGUvHWIgupPeTyqmzx5yLeeR2gOvoWwhW/zXM3zEWDPMV467fHFPR2U/pr5LMj
-         Klgy7R7k6AtlNsBsqVcTNT9zkih3uPLzoDtuAERne6EcrIym1QUNCmP8joQxSvuKPT22
-         XnY7kjCTqnivSRv1g1clRYO8zmFHfcilRKlrG21cUhgo/8J/1JrLz6hCDFqSzW+fQJIU
-         /9Srwcbu3bofglS0wiytbbU7rKmGspoCQGE6dRkN5dal0WMxY5k5tQhTLfnNE213sJWT
-         mz2dDUmI/Pakxs0N9OnIOUZwDo+rBDXxiRyD/xnpWQG1Mmz0i9IwIYRb6iQPTvqkCnYf
-         tduw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQUHCn/egy+uKI4LFQ0HKMy8Elr99xnzauFXfub3P8k4KviurcA4g8YGTQo9KYO/CVnjXPSIYMnPWGI5VKl+rf2Ama
-X-Gm-Message-State: AOJu0Yyvu+3eftWTfWhnicML5F8ObEocXVEGDGvsW/JuYuBFtFP+cTex
-	+JJCiu3+aWVD06XZbeeXg3udAmPah8hxtUaD492wQ7Ruc1DPRbte
-X-Google-Smtp-Source: AGHT+IGB/FJQ/RZ2ky0gMGvUT0CEQmqqoXZyi4q2+DXHYIKGo5ql9EVgn7P7wWZjfxW1kRVtS1TDCw==
-X-Received: by 2002:a19:f70b:0:b0:523:9493:432c with SMTP id 2adb3069b0e04-529666d6f30mr6497708e87.59.1716842172424;
-        Mon, 27 May 2024 13:36:12 -0700 (PDT)
-Received: from pc636 (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5297066bce1sm766062e87.169.2024.05.27.13.36.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 13:36:12 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 27 May 2024 22:36:10 +0200
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	RCU <rcu@vger.kernel.org>, cocci@inria.fr
-Subject: Re: [cocci] patch idea: convert trivial call_rcu users to kfree_rcu
-Message-ID: <ZlTuuquwqGIiki6Y@pc636>
-References: <68b85796-c674-4691-936a-2051849f4692@suse.cz>
- <6b7e3ed9-d974-cb3b-6839-a6b7cf5f5a36@inria.fr>
- <a1f15e67-25f5-4a0b-a9d0-ebbc0555fb12@paulmck-laptop>
- <ZlTjIDrnPb25UTUn@pc636>
- <alpine.DEB.2.22.394.2405272151000.3330@hadrien>
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=I/DuBF9NBFZ7X+t6+KQw1LGWaST/A5P+IZjO18Zd+KM=;
+  b=uZDXkaD6dB3fe4+5zfYi4BPUNeyJVOeWKk6UstUBbnhmJtEpGVFSoWwg
+   anZW48tJebnlQuq148qnrgQ6Bs/porzsW4+Mlo25BjgF6gXq5W+3nnVfQ
+   6zlJJP1Pge9m/TJf6t4ARNPwJ0Rb7sAMVOhCW+au1lQ4DWT386H7Wv9AK
+   w=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.08,193,1712613600"; 
+   d="scan'208";a="167688958"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2024 22:43:08 +0200
+Date: Mon, 27 May 2024 22:43:08 +0200 (CEST)
+From: Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To: "Paul E. McKenney" <paulmck@kernel.org>
+cc: Vlastimil Babka <vbabka@suse.cz>, 
+    "linux-mm@kvack.org" <linux-mm@kvack.org>, RCU <rcu@vger.kernel.org>, 
+    cocci@inria.fr
+Subject: Re: [cocci] patch idea: convert trivial call_rcu users to
+ kfree_rcu
+In-Reply-To: <a1f15e67-25f5-4a0b-a9d0-ebbc0555fb12@paulmck-laptop>
+Message-ID: <alpine.DEB.2.22.394.2405272226510.3330@hadrien>
+References: <68b85796-c674-4691-936a-2051849f4692@suse.cz> <6b7e3ed9-d974-cb3b-6839-a6b7cf5f5a36@inria.fr> <a1f15e67-25f5-4a0b-a9d0-ebbc0555fb12@paulmck-laptop>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2405272151000.3330@hadrien>
+Content-Type: text/plain; charset=US-ASCII
 
-On Mon, May 27, 2024 at 09:51:35PM +0200, Julia Lawall wrote:
-> 
-> 
-> On Mon, 27 May 2024, Uladzislau Rezki wrote:
-> 
-> > On Mon, May 27, 2024 at 12:27:14PM -0700, Paul E. McKenney wrote:
-> > > On Mon, May 27, 2024 at 10:13:40AM +0200, Julia Lawall wrote:
-> > > >
-> > > >
-> > > > On Mon, 27 May 2024, Vlastimil Babka wrote:
-> > > >
-> > > > > Hi,
-> > > > >
-> > > > > one bit from LSF/MM discussions is that there might be call_rcu users with a
-> > > > > callback that only does a kmem_cache_free() to a specific cache. Since SLOB
-> > > > > was removed, it's always ok to use kfree() and thus also kfree_rcu() on
-> > > > > allocations from kmem_cache_alloc() in addition to kmalloc(). Thus, such
-> > > > > call_rcu() users might be simplified to kfree_rcu(). I found some cases
-> > > > > semi-manually, but I'd expect coccinelle could help here so if anyone wants
-> > > > > to take this task, feel free to.
-> > > >
-> > > > Thanks for the suggestion!  I will try to look into it.
+
+
+On Mon, 27 May 2024, Paul E. McKenney wrote:
+
+> On Mon, May 27, 2024 at 10:13:40AM +0200, Julia Lawall wrote:
+> >
+> >
+> > On Mon, 27 May 2024, Vlastimil Babka wrote:
+> >
+> > > Hi,
 > > >
-> > > Thank you both!
-> > >
-> > I wanted to take an action on it but Julia was first. So, please go ahead :)
-> 
-> If you want to try, please go ahead.  We can compare results.
-> 
-It is appreciated if you proceed. From my side i will keep an eye and if
-n it. If something is missed, which i can detect, i will let you know.
+> > > one bit from LSF/MM discussions is that there might be call_rcu users with a
+> > > callback that only does a kmem_cache_free() to a specific cache. Since SLOB
+> > > was removed, it's always ok to use kfree() and thus also kfree_rcu() on
+> > > allocations from kmem_cache_alloc() in addition to kmalloc(). Thus, such
+> > > call_rcu() users might be simplified to kfree_rcu(). I found some cases
+> > > semi-manually, but I'd expect coccinelle could help here so if anyone wants
+> > > to take this task, feel free to.
+> >
+> > Thanks for the suggestion!  I will try to look into it.
+>
+> Thank you both!
 
-Thanks.
+I found the following functions.  Do you want some other information, such
+as where they are called from?
 
---
-Uladzislau Rezki
+Ignore the -s at the beginning of some lines.  Those are for emphasis. not
+to suggest to remove the code.
+
+I checked that the functions are only used in calls to call_rcu.
+
+Without more effort, Coccinelle only looks for functions defined in the
+same file.  Here are the functions that are passed to call_rcu where the
+function is not defined in the same file:
+
+need definition for audit_free_rule_rcu
+need definition for __i915_gem_free_object_rcu
+need definition for io_eventfd_ops
+need definition for ip_vs_dest_dst_rcu_free
+need definition for __put_task_struct_rcu_cb
+need definition for radix_tree_node_rcu_free
+
+They all do something more, although radix_tree_node_rcu_free doesn't do
+much more (some memsets).
+
+julia
+
+diff -u -p /home/jll/linux/drivers/net/wireguard/allowedips.c /tmp/nothing/drivers/net/wireguard/allowedips.c
+--- /home/jll/linux/drivers/net/wireguard/allowedips.c
++++ /tmp/nothing/drivers/net/wireguard/allowedips.c
+@@ -50,7 +50,6 @@ static void push_rcu(struct allowedips_n
+
+ static void node_free_rcu(struct rcu_head *rcu)
+ {
+-	kmem_cache_free(node_cache, container_of(rcu, struct allowedips_node, rcu));
+ }
+
+ static void root_free_rcu(struct rcu_head *rcu)
+diff -u -p /home/jll/linux/fs/ecryptfs/dentry.c /tmp/nothing/fs/ecryptfs/dentry.c
+--- /home/jll/linux/fs/ecryptfs/dentry.c
++++ /tmp/nothing/fs/ecryptfs/dentry.c
+@@ -53,8 +53,6 @@ struct kmem_cache *ecryptfs_dentry_info_
+
+ static void ecryptfs_dentry_free_rcu(struct rcu_head *head)
+ {
+-	kmem_cache_free(ecryptfs_dentry_info_cache,
+-		container_of(head, struct ecryptfs_dentry_info, rcu));
+ }
+
+ /**
+diff -u -p /home/jll/linux/kernel/fork.c /tmp/nothing/kernel/fork.c
+--- /home/jll/linux/kernel/fork.c
++++ /tmp/nothing/kernel/fork.c
+@@ -378,7 +378,6 @@ static struct kmem_cache *thread_stack_c
+
+ static void thread_stack_free_rcu(struct rcu_head *rh)
+ {
+-	kmem_cache_free(thread_stack_cache, rh);
+ }
+
+ static void thread_stack_delayed_free(struct task_struct *tsk)
+diff -u -p /home/jll/linux/kernel/workqueue.c /tmp/nothing/kernel/workqueue.c
+--- /home/jll/linux/kernel/workqueue.c
++++ /tmp/nothing/kernel/workqueue.c
+@@ -5024,8 +5024,6 @@ fail:
+
+ static void rcu_free_pwq(struct rcu_head *rcu)
+ {
+-	kmem_cache_free(pwq_cache,
+-			container_of(rcu, struct pool_workqueue, rcu));
+ }
+
+ /*
+diff -u -p /home/jll/linux/net/ipv4/inetpeer.c /tmp/nothing/net/ipv4/inetpeer.c
+--- /home/jll/linux/net/ipv4/inetpeer.c
++++ /tmp/nothing/net/ipv4/inetpeer.c
+@@ -130,7 +130,6 @@ static struct inet_peer *lookup(const st
+
+ static void inetpeer_free_rcu(struct rcu_head *head)
+ {
+-	kmem_cache_free(peer_cachep, container_of(head, struct inet_peer, rcu));
+ }
+
+ /* perform garbage collect on all items stacked during a lookup */
+diff -u -p /home/jll/linux/net/ipv6/xfrm6_tunnel.c /tmp/nothing/net/ipv6/xfrm6_tunnel.c
+--- /home/jll/linux/net/ipv6/xfrm6_tunnel.c
++++ /tmp/nothing/net/ipv6/xfrm6_tunnel.c
+@@ -180,8 +180,6 @@ EXPORT_SYMBOL(xfrm6_tunnel_alloc_spi);
+
+ static void x6spi_destroy_rcu(struct rcu_head *head)
+ {
+-	kmem_cache_free(xfrm6_tunnel_spi_kmem,
+-			container_of(head, struct xfrm6_tunnel_spi, rcu_head));
+ }
+
+ static void xfrm6_tunnel_free_spi(struct net *net, xfrm_address_t *saddr)
+diff -u -p /home/jll/linux/security/security.c /tmp/nothing/security/security.c
+--- /home/jll/linux/security/security.c
++++ /tmp/nothing/security/security.c
+@@ -1599,7 +1599,6 @@ static void inode_free_by_rcu(struct rcu
+ 	/*
+ 	 * The rcu head is at the start of the inode blob
+ 	 */
+-	kmem_cache_free(lsm_inode_cache, head);
+ }
+
+ /**
