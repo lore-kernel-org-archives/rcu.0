@@ -1,211 +1,224 @@
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6D84501E
-	for <rcu@vger.kernel.org>; Tue, 28 May 2024 05:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B1C7441F
+	for <rcu@vger.kernel.org>; Tue, 28 May 2024 08:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716872988; cv=none; b=dsL/cYpzBYhTzjR3iPyF/k9W8XfPSog3EmlP54Us21Ra4JTSao8x7LAnReXHtmfUE20kt99BkH/5L+5jJUuCbrYwYp8+soqmOjD3Aiqv1h3YTByhfxeM0m6ckkUaIzP90+DIBnUOLMiZOf7c5WuLajHUaECYf/k+LVfXlrVc5f8=
+	t=1716883389; cv=none; b=qp5ailFMcy3BL0Da14W6HgZ29lfvmeruMzLrdYfF0b4ll4cyT8Yxfx17cKrrO7rrdYvU6TdOQmfV2gEjLgtzi8BYzth0iV+/3T9fXmaMlS0lpUjaa9SmvQIGmKuLfgHQCj1Bh6QKnKDrPLLCjIcCA3Y9zbonTT50vPaejadnbXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716872988; c=relaxed/simple;
-	bh=XvDKGA7lxWCJgI6PTd4JtmAGZXcl7ii+4v+f5slnzBQ=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Wx8z3LCwLmWygq3HKIVYsyC7G7/5uckhkuCrkCDVWM4QUNKP5jH4HPANDrxiQ37bHQ6zEVWd7F/7QmbmITXgEa2fgmic/L1nFjgJb6SiQZW6ZQPAFatuaYYJxF6y7HRwcp8PumMG03ELydt9YHVf3/U8VqmaDWQ5B92qqDrpm60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=VLMZWgZU; arc=none smtp.client-ip=192.134.164.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+	s=arc-20240116; t=1716883389; c=relaxed/simple;
+	bh=A94f+PqoCPa3oRSc8RRJdAVA8f/YNkLb3mhcS1IwVI4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=efgUBa+s++STgYlAuPsNEZJ78zBTEGony6BxTas7r6cMYRt2c3g9NsM0cuqMwZ/YLpcFM9d0oXfibpnMrq5Z8MbWDS1+F+Rwn9/wThexs1vnSS/Xed9Vw/vhfWqNy+eMPZ809p5qv0pqXPnD1uxgY1PxFodW99hSmaj0btuV3EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=ByQnVQPf; arc=none smtp.client-ip=193.238.174.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="VLMZWgZU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=hbb1TYxZuIfpukL9pRvV5HWVRdLiVb6cBG0WH8XBuNk=;
-  b=VLMZWgZUSAenFhYkmk5aYHI5d6fMdv0vFlmGNB1MqiqmxvgiZHNyWDrx
-   xskENNF6aS0eBdTXzqzn71lJa4cPwQaPcQ3wXWa0H8mbWwefzy3cdTx6R
-   YTC3IuGqV6OApM2H0gaM09Nswu8j5buRYSJXjxcXwTOsbNWIQ73grCHhx
-   s=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.08,194,1712613600"; 
-   d="scan'208";a="88117195"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2024 07:09:36 +0200
-Date: Tue, 28 May 2024 07:09:35 +0200 (CEST)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: "Paul E. McKenney" <paulmck@kernel.org>
-cc: Vlastimil Babka <vbabka@suse.cz>, 
-    "linux-mm@kvack.org" <linux-mm@kvack.org>, RCU <rcu@vger.kernel.org>, 
-    cocci@inria.fr, qiang.zhang1211@gmail.com
-Subject: Re: [cocci] patch idea: convert trivial call_rcu users to
- kfree_rcu
-In-Reply-To: <2a64cf68-2189-4553-88c9-fd73784c22ff@paulmck-laptop>
-Message-ID: <alpine.DEB.2.22.394.2405280708410.3709@hadrien>
-References: <68b85796-c674-4691-936a-2051849f4692@suse.cz> <6b7e3ed9-d974-cb3b-6839-a6b7cf5f5a36@inria.fr> <a1f15e67-25f5-4a0b-a9d0-ebbc0555fb12@paulmck-laptop> <alpine.DEB.2.22.394.2405272226510.3330@hadrien>
- <2a64cf68-2189-4553-88c9-fd73784c22ff@paulmck-laptop>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="ByQnVQPf"
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+	by mg.ssi.bg (Proxmox) with ESMTP id 08D1E862E
+	for <rcu@vger.kernel.org>; Tue, 28 May 2024 11:03:02 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mg.ssi.bg (Proxmox) with ESMTPS
+	for <rcu@vger.kernel.org>; Tue, 28 May 2024 11:03:00 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id 576BE9003B8;
+	Tue, 28 May 2024 11:02:53 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+	t=1716883374; bh=A94f+PqoCPa3oRSc8RRJdAVA8f/YNkLb3mhcS1IwVI4=;
+	h=From:To:Cc:Subject:Date;
+	b=ByQnVQPfjRNPg6eIe5ZKUwq26tF0vJhoPFRP4KCjorl5eRuHsEpGp8VlLEk2E0WCq
+	 YS1wwPNANt1hM97I0bJvoqjqUXjRrJOOy4sqr5jLAXyj5jB0NmCUHPqik62dZ1B4Yi
+	 2u/hU+PLFwxrXSHe9iq8NBWflJkCRFIJFNpM0Wl4=
+Received: from ja.home.ssi.bg (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.18.1/8.17.1) with ESMTP id 44S82rTf010178;
+	Tue, 28 May 2024 11:02:53 +0300
+Received: (from root@localhost)
+	by ja.home.ssi.bg (8.18.1/8.18.1/Submit) id 44S82prl010176;
+	Tue, 28 May 2024 11:02:51 +0300
+From: Julian Anastasov <ja@ssi.bg>
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Jiejian Wu <jiejian@linux.alibaba.com>, rcu@vger.kernel.org
+Subject: [PATCHv4 net-next 00/14] ipvs: per-net tables and optimizations
+Date: Tue, 28 May 2024 11:02:20 +0300
+Message-ID: <20240528080234.10148-1-ja@ssi.bg>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+
+	Hello,
+
+	This patchset targets more netns isolation when IPVS
+is used in large setups and also includes some optimizations.
+
+	First patch adds useful wrappers to rculist_bl, the
+hlist_bl methods IPVS will use in the following patches. The other
+patches are IPVS-specific.
+
+	The following patches will:
+
+* Convert the global __ip_vs_mutex to per-net service_mutex and
+  switch the service tables to be per-net, cowork by Jiejian Wu and
+  Dust Li
+
+* Convert some code that walks the service lists to use RCU instead of
+  the service_mutex
+
+* We used two tables for services (non-fwmark and fwmark), merge them
+  into single svc_table
+
+* The list for unavailable destinations (dest_trash) holds dsts and
+  thus dev references causing extra work for the ip_vs_dst_event() dev
+  notifier handler. Change this by dropping the reference when dest
+  is removed and saved into dest_trash. The dest_trash will need more
+  changes to make it light for lookups. TODO.
+
+* On new connection we can do multiple lookups for services by tryng
+  different fallback options. Add more counters for service types, so
+  that we can avoid unneeded lookups for services.
+
+* Add infrastructure for resizable hash tables based on hlist_bl
+  which we will use for services and connections: hlists with
+  per-bucket bit lock in the heads. The resizing delays RCU lookups
+  on a bucket level with seqcounts which are protected with spin locks.
+  The entries keep the table ID and the hash value which allows to
+  filter the entries without touching many cache lines and to
+  unlink the entries without lookup by keys.
+
+* Change the 256-bucket service hash table to be resizable in the
+  range of 4..20 bits depending on the added services and use jhash
+  hashing to reduce the collisions.
+
+* Change the global connection table to be per-net and resizable
+  in the range of 256..ip_vs_conn_tab_size. As the connections are
+  hashed by using remote addresses and ports, use siphash instead
+  of jhash for better security.
+
+* As the connection table is not with fixed size, show its current
+  size to user space
+
+* As the connection table is not global anymore, the no_cport and
+  dropentry counters can be per-net
+
+* Make the connection hashing more secure for setups with multiple
+  services. Hashing only by remote address and port (client info)
+  is not enough. To reduce the possible hash collisions add the
+  used virtual address/port (local info) into the hash and as a side
+  effect the MASQ connections will be double hashed into the
+  hash table to match the traffic from real servers:
+    OLD:
+    - all methods: c_list node: proto, caddr:cport
+    NEW:
+    - all methods: hn0 node (dir 0): proto, caddr:cport -> vaddr:vport
+    - MASQ method: hn1 node (dir 1): proto, daddr:dport -> caddr:cport
+
+* Add /proc/net/ip_vs_status to show current state of IPVS, per-net
+
+cat /proc/net/ip_vs_status
+Conns:	9401
+Conn buckets:	524288 (19 bits, lfactor -5)
+Conn buckets empty:	505633 (96%)
+Conn buckets len-1:	18322 (98%)
+Conn buckets len-2:	329 (1%)
+Conn buckets len-3:	3 (0%)
+Conn buckets len-4:	1 (0%)
+Services:	12
+Service buckets:	128 (7 bits, lfactor -3)
+Service buckets empty:	116 (90%)
+Service buckets len-1:	12 (100%)
+Stats thread slots:	1 (max 16)
+Stats chain max len:	16
+Stats thread ests:	38400
+
+It shows the table size, the load factor (2^n), how many are the empty
+buckets, with percents from the all buckets, the number of buckets
+with length 1..7 where len-7 catches all len>=7 (zero values are
+not shown). The len-N percents ignore the empty buckets, so they
+are relative among all len-N buckets. It shows that smaller lfactor
+is needed to achieve len-1 buckets to be ~98%. Only real tests can
+show if relying on len-1 buckets is a better option because the
+hash table becomes too large with multiple connections. And as
+every table uses random key, the services may not avoid collision
+in all cases.
+
+* add conn_lfactor and svc_lfactor sysctl vars, so that one can tune
+  the connection/service hash table sizing
+
+Changes in v4:
+Patch 14:
+* the load factor parameters will be read-only for unprivileged
+  namespaces while we do not account the allocated memory
+Patch 5:
+* resync with changes in main tree
+
+Changes in v3:
+Patch 7:
+* change the sign of the load factor parameter, so that
+  2^lfactor = load/size
+Patch 8:
+* change the sign of the load factor parameter
+* fix 'goto unlock_sem' in svc_resize_work_handler() after the last
+  mutex_trylock() call, should be goto unlock_m
+* now cond_resched_rcu() needs to include linux/rcupdate_wait.h
+Patch 9:
+* consider that the sign of the load factor parameter is changed
+Patch 12:
+* consider that the sign of the load factor parameter is changed
+Patch 14:
+* change the sign of the load factor parameters in docs
+
+Changes in v2:
+Patch 1:
+* add comments to hlist_bl_for_each_entry_continue_rcu and fix
+  sparse warnings
+Patch 9:
+* Simon Kirby reports that backup server crashes if conn_tab is not
+  created. Create it just to sync conns before any services are added.
+Patch 11:
+* kernel test robot reported for dropentry_counters problem when
+  compiling with !CONFIG_SYSCTL, so it is time to wrap todrop_entry,
+  ip_vs_conn_ops_mode and ip_vs_random_dropentry under CONFIG_SYSCTL
+Patch 13:
+* remove extra old_gen assignment at start of ip_vs_status_show()
+
+Jiejian Wu (1):
+  ipvs: make ip_vs_svc_table and ip_vs_svc_fwm_table per netns
+
+Julian Anastasov (13):
+  rculist_bl: add hlist_bl_for_each_entry_continue_rcu
+  ipvs: some service readers can use RCU
+  ipvs: use single svc table
+  ipvs: do not keep dest_dst after dest is removed
+  ipvs: use more counters to avoid service lookups
+  ipvs: add resizable hash tables
+  ipvs: use resizable hash table for services
+  ipvs: switch to per-net connection table
+  ipvs: show the current conn_tab size to users
+  ipvs: no_cport and dropentry counters can be per-net
+  ipvs: use more keys for connection hashing
+  ipvs: add ip_vs_status info
+  ipvs: add conn_lfactor and svc_lfactor sysctl vars
+
+ Documentation/networking/ipvs-sysctl.rst |   33 +
+ include/linux/rculist_bl.h               |   49 +-
+ include/net/ip_vs.h                      |  395 ++++++-
+ net/netfilter/ipvs/ip_vs_conn.c          | 1074 ++++++++++++++-----
+ net/netfilter/ipvs/ip_vs_core.c          |  177 +++-
+ net/netfilter/ipvs/ip_vs_ctl.c           | 1236 ++++++++++++++++------
+ net/netfilter/ipvs/ip_vs_est.c           |   18 +-
+ net/netfilter/ipvs/ip_vs_pe_sip.c        |    4 +-
+ net/netfilter/ipvs/ip_vs_sync.c          |   23 +
+ net/netfilter/ipvs/ip_vs_xmit.c          |   39 +-
+ 10 files changed, 2355 insertions(+), 693 deletions(-)
+
+-- 
+2.44.0
 
 
-
-On Mon, 27 May 2024, Paul E. McKenney wrote:
-
-> On Mon, May 27, 2024 at 10:43:08PM +0200, Julia Lawall wrote:
-> >
-> >
-> > On Mon, 27 May 2024, Paul E. McKenney wrote:
-> >
-> > > On Mon, May 27, 2024 at 10:13:40AM +0200, Julia Lawall wrote:
-> > > >
-> > > >
-> > > > On Mon, 27 May 2024, Vlastimil Babka wrote:
-> > > >
-> > > > > Hi,
-> > > > >
-> > > > > one bit from LSF/MM discussions is that there might be call_rcu users with a
-> > > > > callback that only does a kmem_cache_free() to a specific cache. Since SLOB
-> > > > > was removed, it's always ok to use kfree() and thus also kfree_rcu() on
-> > > > > allocations from kmem_cache_alloc() in addition to kmalloc(). Thus, such
-> > > > > call_rcu() users might be simplified to kfree_rcu(). I found some cases
-> > > > > semi-manually, but I'd expect coccinelle could help here so if anyone wants
-> > > > > to take this task, feel free to.
-> > > >
-> > > > Thanks for the suggestion!  I will try to look into it.
-> > >
-> > > Thank you both!
-> >
-> > I found the following functions.  Do you want some other information, such
-> > as where they are called from?
->
-> Thank you!
->
-> > Ignore the -s at the beginning of some lines.  Those are for emphasis. not
-> > to suggest to remove the code.
->
-> Well, the idea is to remove not only those lines, but the functions
-> containing them as well.  ;-)
->
-> Then each call_rcu() function becomes kfree_rcu().
-
-OK. I'll send a patch for your review accordingly.  If everything looks
-fine, I will send the patches to the maintainers.
-
-julia
-
-
->
-> > I checked that the functions are only used in calls to call_rcu.
->
-> Good point, I had forgotten about that possibility!
->
-> > Without more effort, Coccinelle only looks for functions defined in the
-> > same file.  Here are the functions that are passed to call_rcu where the
-> > function is not defined in the same file:
-> >
-> > need definition for audit_free_rule_rcu
-> > need definition for __i915_gem_free_object_rcu
-> > need definition for io_eventfd_ops
-> > need definition for ip_vs_dest_dst_rcu_free
-> > need definition for __put_task_struct_rcu_cb
-> > need definition for radix_tree_node_rcu_free
-> >
-> > They all do something more, although radix_tree_node_rcu_free doesn't do
-> > much more (some memsets).
->
-> Those might be important in order to handle the possibility of readers
-> holding a reference to a given block of memory across the time that it
-> is freed and then reallocated, but I cannot say for sure.
->
-> In most cases, the reinitialization at reallocation time suffices.
->
-> 							Thanx, Paul
->
-> > julia
-> >
-> > diff -u -p /home/jll/linux/drivers/net/wireguard/allowedips.c /tmp/nothing/drivers/net/wireguard/allowedips.c
-> > --- /home/jll/linux/drivers/net/wireguard/allowedips.c
-> > +++ /tmp/nothing/drivers/net/wireguard/allowedips.c
-> > @@ -50,7 +50,6 @@ static void push_rcu(struct allowedips_n
-> >
-> >  static void node_free_rcu(struct rcu_head *rcu)
-> >  {
-> > -	kmem_cache_free(node_cache, container_of(rcu, struct allowedips_node, rcu));
-> >  }
-> >
-> >  static void root_free_rcu(struct rcu_head *rcu)
-> > diff -u -p /home/jll/linux/fs/ecryptfs/dentry.c /tmp/nothing/fs/ecryptfs/dentry.c
-> > --- /home/jll/linux/fs/ecryptfs/dentry.c
-> > +++ /tmp/nothing/fs/ecryptfs/dentry.c
-> > @@ -53,8 +53,6 @@ struct kmem_cache *ecryptfs_dentry_info_
-> >
-> >  static void ecryptfs_dentry_free_rcu(struct rcu_head *head)
-> >  {
-> > -	kmem_cache_free(ecryptfs_dentry_info_cache,
-> > -		container_of(head, struct ecryptfs_dentry_info, rcu));
-> >  }
-> >
-> >  /**
-> > diff -u -p /home/jll/linux/kernel/fork.c /tmp/nothing/kernel/fork.c
-> > --- /home/jll/linux/kernel/fork.c
-> > +++ /tmp/nothing/kernel/fork.c
-> > @@ -378,7 +378,6 @@ static struct kmem_cache *thread_stack_c
-> >
-> >  static void thread_stack_free_rcu(struct rcu_head *rh)
-> >  {
-> > -	kmem_cache_free(thread_stack_cache, rh);
-> >  }
-> >
-> >  static void thread_stack_delayed_free(struct task_struct *tsk)
-> > diff -u -p /home/jll/linux/kernel/workqueue.c /tmp/nothing/kernel/workqueue.c
-> > --- /home/jll/linux/kernel/workqueue.c
-> > +++ /tmp/nothing/kernel/workqueue.c
-> > @@ -5024,8 +5024,6 @@ fail:
-> >
-> >  static void rcu_free_pwq(struct rcu_head *rcu)
-> >  {
-> > -	kmem_cache_free(pwq_cache,
-> > -			container_of(rcu, struct pool_workqueue, rcu));
-> >  }
-> >
-> >  /*
-> > diff -u -p /home/jll/linux/net/ipv4/inetpeer.c /tmp/nothing/net/ipv4/inetpeer.c
-> > --- /home/jll/linux/net/ipv4/inetpeer.c
-> > +++ /tmp/nothing/net/ipv4/inetpeer.c
-> > @@ -130,7 +130,6 @@ static struct inet_peer *lookup(const st
-> >
-> >  static void inetpeer_free_rcu(struct rcu_head *head)
-> >  {
-> > -	kmem_cache_free(peer_cachep, container_of(head, struct inet_peer, rcu));
-> >  }
-> >
-> >  /* perform garbage collect on all items stacked during a lookup */
-> > diff -u -p /home/jll/linux/net/ipv6/xfrm6_tunnel.c /tmp/nothing/net/ipv6/xfrm6_tunnel.c
-> > --- /home/jll/linux/net/ipv6/xfrm6_tunnel.c
-> > +++ /tmp/nothing/net/ipv6/xfrm6_tunnel.c
-> > @@ -180,8 +180,6 @@ EXPORT_SYMBOL(xfrm6_tunnel_alloc_spi);
-> >
-> >  static void x6spi_destroy_rcu(struct rcu_head *head)
-> >  {
-> > -	kmem_cache_free(xfrm6_tunnel_spi_kmem,
-> > -			container_of(head, struct xfrm6_tunnel_spi, rcu_head));
-> >  }
-> >
-> >  static void xfrm6_tunnel_free_spi(struct net *net, xfrm_address_t *saddr)
-> > diff -u -p /home/jll/linux/security/security.c /tmp/nothing/security/security.c
-> > --- /home/jll/linux/security/security.c
-> > +++ /tmp/nothing/security/security.c
-> > @@ -1599,7 +1599,6 @@ static void inode_free_by_rcu(struct rcu
-> >  	/*
-> >  	 * The rcu head is at the start of the inode blob
-> >  	 */
-> > -	kmem_cache_free(lsm_inode_cache, head);
-> >  }
-> >
-> >  /**
->
