@@ -1,109 +1,128 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B69217839D
-	for <rcu@vger.kernel.org>; Tue, 28 May 2024 20:12:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9656A13DDC9
+	for <rcu@vger.kernel.org>; Tue, 28 May 2024 22:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716927164; cv=none; b=Rr06HalwuKgod8eHYLOq6/7PWOnsCMi8VMGv3Cmwf+JXgp4CdPb5tnMGTYxlbbZgz9URUks+KXP+KsE0CuuydCF3QBHw/y5n7fNpQnOyybrGuiXmbREuWmsAY9xh05Opdxj7F5Pi0UfF7vz/EMGk19bSoH08JkWPcvpXEzlfxMY=
+	t=1716933740; cv=none; b=u6EcgHWyhImU5v4jIOjacv+UpBKvrIJYlJGFjZTwRrCxGycLTLTK5QcZ/orbLs1Za5tJ1pP1DZYZGAxwuH4N8csXjEozBlB11uyZWSDEpZS36UjZ4D+xsreGzPSEEe0EvFa1ga+7pTFdqe1Ot9xGgkCy58Wd0bs2wGr7Yc1MthA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716927164; c=relaxed/simple;
-	bh=QfYwzaux6gCZr6/xCy5BBH91hdMa5MXpiQizF3TFAEQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c9B76yHVyiJn7UQ2plqq/IUXmW6oMVJSV7264FwtgANYysSw3TUirT2GuCHQRkCJgk5C6b0yZ1bDyjPI7V/OPUD5NLPsLGicDplguhAJ0EhboMSk+cYfLRmzbV9XykCnaq75hLJsr+HAgmkxwx8CpdVIvBq/SD3HgQEx1P7fh0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Ig2JMeLU; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1716933740; c=relaxed/simple;
+	bh=EdcGUFN9AFccCismNanUEwL6FaHcN6tmwft2atRh2AM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DYoQZ1A58AdvKQrlLYw7TYkVqdWnY/uy4lsVSlMk9BYXHdqi5rbeXq/meOL8Rb+Vg8nISF62OcByBz2XkcSjciFnSLMpC49lPpc9mpU6QM0c/kXXpUww86oAgX8yjx0CL3TtZ38NsVPSqRrZXDfWL4Gbtr+DygicR5Ac7/Oqdog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=OvLFAPCI; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Ig2JMeLU"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-572c65cea55so330958a12.0
-        for <rcu@vger.kernel.org>; Tue, 28 May 2024 13:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1716927160; x=1717531960; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WiaHSzSrYbERoeBHoK0uviayD0kvIQWFwIWObmnXkLQ=;
-        b=Ig2JMeLUYnyCwUzDdWXlalGQ6j2N5DG2+Xpm9lR8sJch8cpb7aiT0Z+rzrelVEh4jM
-         sw7xe7tUG6yNBhDlCTkMAwruVXfoCcV4L9rlhOpVZcYvQHeamRYPsaYS2R1aMwPFeEAO
-         Ex8UXpgDkL2BoxKEoeOef/pC/WjAlYlyA/VIA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716927160; x=1717531960;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WiaHSzSrYbERoeBHoK0uviayD0kvIQWFwIWObmnXkLQ=;
-        b=M4yBoKRVcaVMI+eKTDh3eiBQvXDXKNxflV/AiDFeRuOqOO/JtU79W0m2MVXlTPUNc0
-         +FHLDBPUXgWXmzxANvhMc4d794bmhsmk1jaiiqcfjbRLRdjR0hOyg3kGMHyAwSG7OUO+
-         JzHphjWu4tjAAfhC6RFTdCdWnThumdWoMr/peKlZMZLH6MVT2GUptXjr7+OIBcNbL9dl
-         iZeh/lD0IyObuAf32cD3k/azBXVlNGB9dO4WY33J1/nCBSYImu05WWVnAFa/PIKvL0Ta
-         kuAfxUKaN7+fGuTpyiiVBAiceBNpe152DBuYck6RjbvteT+gb+OMF8GsCP3jgowpEzRY
-         7w3Q==
-X-Gm-Message-State: AOJu0Yw0clJOnROyVOlaUCCb7/CbEiRXarEbAWibKBfq8p4Y7xMPjWiU
-	TtD5CiJeIhZWAj6iAck7k0jFSLBQsETkEIwq6wRYPdpomxv/4pNykF48Nt6Xu13fTJDFgVbIh9c
-	PaM5fSA==
-X-Google-Smtp-Source: AGHT+IGMs3LFr5yvWO87bzZskuhxZQ6GVbx8IQH+2bbY99lbokozxtLPhQXg5wzN868T77oOcc5HMA==
-X-Received: by 2002:a50:d6c2:0:b0:578:d846:fc0a with SMTP id 4fb4d7f45d1cf-57a04028edamr69380a12.20.1716927160360;
-        Tue, 28 May 2024 13:12:40 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-578524bb5ddsm7531073a12.93.2024.05.28.13.12.39
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 May 2024 13:12:39 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a59a352bbd9so28870166b.1
-        for <rcu@vger.kernel.org>; Tue, 28 May 2024 13:12:39 -0700 (PDT)
-X-Received: by 2002:a17:906:1d50:b0:a5a:8cc0:8c23 with SMTP id
- a640c23a62f3a-a642d954de3mr9923966b.27.1716927159368; Tue, 28 May 2024
- 13:12:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="OvLFAPCI"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1716933735;
+	bh=5pguTA0sqJkiJzfGASVqyrEyfaeQoMUbbhfpb7WGRZU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OvLFAPCI1H9T3NC5BAbJSUbkQ08bHLIQ3d1bgcWXg94l8RvVjLcdzPZPHThfcdl2K
+	 Tqk3rcBR4AC452DVRG74AQYpJW3M9urui7KVDL1B7oiFlKkls97X0ZxfHYuIyszYmK
+	 rh3x47HwZwMGbmw2h5aZy58l+ZP1YLFJ8MHGsiPHFqb8YcUe2LkCmfHuFb+LgfZwLP
+	 62WjsyMWlZ6UUdp61VhQZLqBuLUg0NK6jBb5M+GP0i2SQZECrmUGgA+ZppzzVEb0ll
+	 RbzIkvrQXt5Yk5f4UlRkgLKnMmtACKfwxKBLoUp8wEJcwG+4qXZ4nqXD5yCa23FP1E
+	 RixPlzX066tsg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VpmhQ6C9Vz4wqM;
+	Wed, 29 May 2024 08:02:14 +1000 (AEST)
+Date: Wed, 29 May 2024 08:02:12 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+ urezki@gmail.com, neeraj.iitr10@gmail.com
+Subject: Re: Updated -next branch and repo for RCU commits
+Message-ID: <20240529080212.21a8ab42@canb.auug.org.au>
+In-Reply-To: <732c43ae-6d7a-4a98-995e-e96086a94678@paulmck-laptop>
+References: <9ad62150-b699-4662-9b7b-89bfdbf6a8e6@paulmck-laptop>
+	<732c43ae-6d7a-4a98-995e-e96086a94678@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <9ad62150-b699-4662-9b7b-89bfdbf6a8e6@paulmck-laptop>
-In-Reply-To: <9ad62150-b699-4662-9b7b-89bfdbf6a8e6@paulmck-laptop>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 28 May 2024 13:12:23 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjHY6hwMr-u8+yMY1HNaM6xDPZzXZkfTBOrFQd0WvJW1w@mail.gmail.com>
-Message-ID: <CAHk-=wjHY6hwMr-u8+yMY1HNaM6xDPZzXZkfTBOrFQd0WvJW1w@mail.gmail.com>
-Subject: Re: And the v6.11 pull request will come from me
-To: paulmck@kernel.org
-Cc: rcu@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com, 
-	urezki@gmail.com, neeraj.iitr10@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/R3i7VQHsHi2QrQvP+jA=PSh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Tue, 28 May 2024 at 10:09, Paul E. McKenney <paulmck@kernel.org> wrote:
+--Sig_/R3i7VQHsHi2QrQvP+jA=PSh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Paul,
+
+On Tue, 28 May 2024 11:54:44 -0700 "Paul E. McKenney" <paulmck@kernel.org> =
+wrote:
 >
-> Please let me know of any questions or concerns.
+> From here on, could you please pull from branch "next" in our shiny new
+> shared RCU tree?
+>=20
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux
 
-Ack, all sounds good.
+Do you want this to replace your current tree, or in addition?
 
-And it wasn't a problem last time either, I just wanted to make it
-clear that I don't want to randomly pull from new people without
-having some kind of hand-over.
+> Please let me know of any questions or concerns.  Or, for that matter, if
+> there is some automated way to do this that I have long since forgotten.
+>=20
+> I will still have non-RCU commits from my own tree for -next, and I must
+> confess that the name "rcu/next" seems entirely inappropriate (to say
+> nothing of confusing) for that purpose.  Would you be OK changing to a
+> branch named "non-rcu/next" or something similar?
 
-And everybody reacted very quickly with a "yup, all good" (which I
-obviously _expected_ it to be - I just wanted the explicit ack), so
-all it did was delay my pull request by literally a couple of minutes.
+I don't care what the branch is called as long as it is a stable name.
 
-I was going to write that it delayed things by "a few hours", but I
-went back and checked: I asked for a handoff confirmation email at
-9:38, and I got your reply at 9:46, and my merge commit is dated 9:49,
-all the same morning.
+I have done the following for now: added the new rcu tree as above and
+renamed the old rcu tree to be the paulmck tree (still fetching the
+rcu/next branch).  Let me know what you want the final set up to look
+like.  Also, do you have more contacts (preferable full email
+addresses) for the new rcu tree (currently I just have you)?
 
-So it literally delayed things by like 11 minutes on a pull request
-that was nice and timely.
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
 
-This was all the opposite of a problem. Just an oversight that worked
-out very quickly.
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
 
-In fact, even in my "I really want to see proper heads-up" email I also wrote:
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
 
-  [ I should have reacted to this earlier, but I just put all the "for
-    6.10" pull requests in the queue without looking closer ]
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
 
-so quite arguably even that 11-minute delay was my fault for not
-having reacted when the original pull request came in, and only
-reacting once the merge window started and I started processing it.
+--=20
+Cheers,
+Stephen Rothwell
 
-               Linus
+--Sig_/R3i7VQHsHi2QrQvP+jA=PSh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmZWVGQACgkQAVBC80lX
+0Gz2dwf/ThHHR+yDYYNAx+SrJxdb7/eySowsoJ+N+p0e3k9gNhjW3Mbcm+XviBek
+o71vIhwmwqNvSYW0WiAbgntRd7PNc6DthP2ilxGnSIw3le35WgvAusmWsmoxQ+np
+wRkcVsSmmDK039NIkNiAinXAJFkk2iAmu0oBaeJuL76uUj6OyeotacH1slhpIEVd
+4j4WaXXpeU0BLaeA4gJ04mpbxzx7yV57Bpuk61hd7ePbQ8MfcL55jL+sZtbgHaaW
+0XUE03z9VkxhRyPljIU5JiMiUaOerHJAFSiAlJ89Jv1SZa3wPc6xDVajEbdnCPE0
+ZddohGPyfSWpJ1OjRlyFFHJum6SB1A==
+=UfnW
+-----END PGP SIGNATURE-----
+
+--Sig_/R3i7VQHsHi2QrQvP+jA=PSh--
