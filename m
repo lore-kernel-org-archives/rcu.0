@@ -1,129 +1,122 @@
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8642315AAD1;
-	Wed, 29 May 2024 02:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7E015B0E6
+	for <rcu@vger.kernel.org>; Wed, 29 May 2024 22:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716948813; cv=none; b=SRV+bRoB9UPucdbHcMPsmdtz4GUfTRuK19oi8/zKrO40NHkKQBwGIXyQYoSLiUetDIlUGB998S0vVtqWnFkxvSv0K4Ed0Z8YUA2NZSsQUnuhKt0OEE94/Ec3qnvcfGdlbldXYU4+c4xSlw3kax8KD1JpFdbkucDNUa1IrqgVMIY=
+	t=1717021267; cv=none; b=pN53NlezTByX4a570yMLyXiRDfYxF8d5WhHzTzrXy5PR8rFD7UvV2f/GR1YL7VtDJoKyVSWM5a3VT66L/OaRK/ssoYrQnHBrZQbcbEHvvmo67O0md96sOXK4m/jjnbyCDNVF0q6gJnDgQytb/wWDGAVMUdbE3lZb1chvlNjJ7XA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716948813; c=relaxed/simple;
-	bh=fRmKL97jCVnuhOiBjDTdG6991F8Se0tI2EqwVSGt9+M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CbQCiw+XvwPJRbBvvsvWINktU0ZflxQCLY1rIa/obc90IaQyAdo3NNb7AVVpIb9sPIP2XNpRGNbHvll+Kcj7nh/kflhfBmJzxNHkmU4dJXY9WAQQ4oa2nInZQlX5evTv6RgB5zXlr445DdMdJJJqN1nu3LKI6Wp78VbTt2aJ7yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OJ/jcpaF; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1717021267; c=relaxed/simple;
+	bh=j0mSXA6tw9NOHSoZg51U+8F5V+RiVhiNY47IXnz8Kz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NqhyryXI4UxMALa3KgEx11W5TaL2OPMtAs/1OTwauUJh/s9FErL2Y+/Rn4NGbVOp8nfC4dWKlzNjMFQN7G9YylM77c3GR/kktH1MW1HOOIYFO35+vvrtc+i7iE6qOyr7kG7g8/0EYtH7eQO9533XnyNpgIStdSSqJWcKZ/fdjrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P4I7wZmZ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OJ/jcpaF"
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2bde007cc57so1231077a91.2;
-        Tue, 28 May 2024 19:13:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716948812; x=1717553612; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NuLrPrHjIynazzegpdQ4US6OLS1P3+gvAlmYCriGiGI=;
-        b=OJ/jcpaF2M2B7ZpcfXeBjFjONyIxS8D6DEyonWel6U9wY0d9nz16N+P0kt/eFNGtiU
-         1MbROljC3RqhF5w0oc3N47kNa1oJzGgGwAoHJVzSvTtBXSG78BB6LD9zUUJfoI3xaKTb
-         1zpmpqJMsGSW1j/Mg+e9E8GWaKKlERoAdiaK6xxTrqBueRNHzpgIXbqEXnlug93pq2TF
-         hW+GDvO5oN6UGn7cp44ifyWradePNP/gJHhRywwIAadtbqYZ9cSpwZX0wDXdZb0M1RxZ
-         zukVNkOcu/i/huvoXvDAfZCkGJTIIUKx+AuMTwD170yeLtreR2Yz36i0xYY1Bl3kw9mq
-         m/cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716948812; x=1717553612;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NuLrPrHjIynazzegpdQ4US6OLS1P3+gvAlmYCriGiGI=;
-        b=sOAreIM+apR0lMDJ4dear8BGmuwBAvTA1SAWXkEdMO/OyII6pbQYu3PgxR9RkEBiuZ
-         FcWpSkCnBy2f/yzuIkC+tkjLVLeZuRrTqorzMcczoH4kgYUB+PfoRshnmy2BY02RAZjT
-         gt9CdRYysTxJ5RSyFMCpP9RoTJjdsyhSQk11eNPIaLj01Ivmm3c4gI9coNwnpqVc5kYh
-         yYpphaozkWeSjvzLXpjOx8xaL87zExg1YSFz9+RNkqitRkp/oxkAFvJfQFfkTYZHI3kB
-         Y3iADfWf5msy4Tyo7RGslyDk7eFdG3UxjIULgUs1PNIIvhhms6IExrqKU1aGfL936kTF
-         oIig==
-X-Forwarded-Encrypted: i=1; AJvYcCUk+iOAHKmM4thmqD1TJGZA7Utbqg/nNJNkPA3czw6sl8mpopXbaOOEsqxvP2wJQai9rb0FUdYbIwKRs/mNwWlLKRpuwc/o5ZvYWHdoAKaGONfq4g5H+nEYhpF4MYb9T5eI
-X-Gm-Message-State: AOJu0Yzfykd9Zr7Y4AWoSJBSsYq81aCSen5oe/+xGYT9cCDjrDOYZrvF
-	MJ0qNeqUjP3OeRde6rnMTulukmNdonwjzV80Q+5T9RUN4cnZJnXRMIkNHmelWGw6JAFY1r8+iZd
-	hcs0bk+13fGzaJTeemHVlVAoAHe4=
-X-Google-Smtp-Source: AGHT+IEMBFmXy0UoQfNxKbQvbsq4lAJ6OsHHFfNUGwIAtLKFWy7hW1B5cLJDBIIVSgPV22u+VHDdWU97UI05ZwHRMN0=
-X-Received: by 2002:a17:90a:fb52:b0:2bd:db8b:ca78 with SMTP id
- 98e67ed59e1d1-2bf5f715405mr13010723a91.33.1716948811675; Tue, 28 May 2024
- 19:13:31 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P4I7wZmZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18E89C113CC;
+	Wed, 29 May 2024 22:21:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717021267;
+	bh=j0mSXA6tw9NOHSoZg51U+8F5V+RiVhiNY47IXnz8Kz4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=P4I7wZmZjzsngQ3SjxE7vv+tpNgDqRiO5o3ommrC9g+KuagjiKo6HQ2/wcONwC2t7
+	 fZU1OhzDr7twgzHl4EEXdJl/B1iaDF80KQCsFnKmFeYEdmu/MKNVmCqdnLfWnYAhHM
+	 SXueDho9nFI7GQzI4iliP27+B/ibwKStzrhLYNeeolQwq5YKAGCFaaBTIgBy/hi+Jh
+	 o5ihh7x0Bkuf3EYilW2ZezYN4G/d3T2VzExgEJS8uxVl1uaQPiUnvlKO73JXHHzp3i
+	 /vd++clSy80QOtSCnVQtJIi04fUBHK8PB/9R4Tr3l4eXPJLIx/4ip69Nus4T/nk7nR
+	 9K57YzZxXbB3g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9ED4ECE0EE0; Wed, 29 May 2024 15:21:05 -0700 (PDT)
+Date: Wed, 29 May 2024 15:21:05 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: rcu@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+	urezki@gmail.com, neeraj.iitr10@gmail.com
+Subject: Re: Updated -next branch and repo for RCU commits
+Message-ID: <0cb42d29-4c2e-412d-82af-0f2e42b40669@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <9ad62150-b699-4662-9b7b-89bfdbf6a8e6@paulmck-laptop>
+ <732c43ae-6d7a-4a98-995e-e96086a94678@paulmck-laptop>
+ <20240529080212.21a8ab42@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240528030054.4525-1-qiang.zhang1211@gmail.com> <1195a9a3-db87-465d-a3b0-ee92d67da954@paulmck-laptop>
-In-Reply-To: <1195a9a3-db87-465d-a3b0-ee92d67da954@paulmck-laptop>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Wed, 29 May 2024 10:13:20 +0800
-Message-ID: <CALm+0cVZ7GQC+v4Xe7nArh0DHKeax+ok_tYsKaB=JtG-BVgUag@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Skip debug object testing for cur_ops without
- ->debug_objects set
-To: paulmck@kernel.org
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org, 
-	urezki@gmail.com, rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240529080212.21a8ab42@canb.auug.org.au>
 
->
-> On Tue, May 28, 2024 at 11:00:54AM +0800, Zqiang wrote:
-> > This commit make rcu_test_debug_objects() early return when the
-> > specified cur_ops not set the ->debug_objects.
+On Wed, May 29, 2024 at 08:02:12AM +1000, Stephen Rothwell wrote:
+> Hi Paul,
+> 
+> On Tue, 28 May 2024 11:54:44 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > >
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  kernel/rcu/rcutorture.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index 08bf7c669dd3..9b8c277ab91a 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -3495,8 +3495,9 @@ static void rcu_test_debug_objects(void)
-> >               return;
-> >       }
-> >
-> > -     if (WARN_ON_ONCE(cur_ops->debug_objects &&
-> > -                     (!cur_ops->call || !cur_ops->cb_barrier)))
-> > +     if (!cur_ops->debug_objects ||
-> > +                     WARN_ON_ONCE(cur_ops->debug_objects &&
->
-> You lost me here.  Given that we have "!cur_ops->debug_objects" before
-> that WARN_ON_ONCE(), why do we need "cur_ops->debug_objects" inside of it?
->
-> Also, we don't get here unless the rcutorture.object_debug kernel boot
-> parameter is specified, don't we really want to WARN_ON_ONCE if the
-> current flavor does not support that?
+> > From here on, could you please pull from branch "next" in our shiny new
+> > shared RCU tree?
+> > 
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux
+> 
+> Do you want this to replace your current tree, or in addition?
 
-Hi, Paul
+Please add this one from the shared tree, and change my -rcu tree's branch
+from "rcu/next" to "non-rcu/next".  If the non-RCU stuff from my tree
+continues to be under "rcu/next", someone is going to get very confused,
+and there is an all-too-good chance that this someone will be me.  ;-)
 
-The rcutorture.object_debug is set true, but the tasks-tracing does not support
-duplicate cur_ops->call check, but the debug_objects test was still done.
+> > Please let me know of any questions or concerns.  Or, for that matter, if
+> > there is some automated way to do this that I have long since forgotten.
+> > 
+> > I will still have non-RCU commits from my own tree for -next, and I must
+> > confess that the name "rcu/next" seems entirely inappropriate (to say
+> > nothing of confusing) for that purpose.  Would you be OK changing to a
+> > branch named "non-rcu/next" or something similar?
+> 
+> I don't care what the branch is called as long as it is a stable name.
+> 
+> I have done the following for now: added the new rcu tree as above and
+> renamed the old rcu tree to be the paulmck tree (still fetching the
+> rcu/next branch).  Let me know what you want the final set up to look
+> like.  Also, do you have more contacts (preferable full email
+> addresses) for the new rcu tree (currently I just have you)?
 
-insmod rcutorture.ko torture_type=tasks-tracing fwd_progress=4
-n_barrier_cbs=4 object_debug=1
+Please make the newly renamed paulmck tree pull from "non-rcu/next".
 
-[  106.082416] rcutorture: WARN: Duplicate call_tasks-tracing() test starting.
-[  106.082533] tasks-tracing-torture: rcu_torture_read_exit: Start of test
-[  106.082543] tasks-tracing-torture: rcu_torture_read_exit: Start of episode
-[  106.105552] rcutorture: duplicated callback was invoked.
-[  106.105567] rcutorture: duplicated callback was invoked.
-[  106.111269] rcutorture: WARN: Duplicate call_tasks-tracing() test complete.
+The additional contacts for the new shared RCU tree are:
 
-Thanks
-Zqiang
+Frederic Weisbecker <frederic@kernel.org>
+Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+Boqun Feng <boqun.feng@gmail.com>
+Uladzislau Rezki <urezki@gmail.com>
 
->
-> Or do you have a use case that needs to silence these warnings?
->
->                                                         Thanx, Paul
->
-> > +                             (!cur_ops->call || !cur_ops->cb_barrier)))
-> >               return;
-> >
-> >       struct rcu_head *rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
-> > --
-> > 2.17.1
-> >
+							Thanx, Paul
+
+> Thanks for adding your subsystem tree as a participant of linux-next.  As
+> you may know, this is not a judgement of your code.  The purpose of
+> linux-next is for integration testing and to lower the impact of
+> conflicts between subsystems in the next merge window. 
+> 
+> You will need to ensure that the patches/commits in your tree/series have
+> been:
+>      * submitted under GPL v2 (or later) and include the Contributor's
+>         Signed-off-by,
+>      * posted to the relevant mailing list,
+>      * reviewed by you (or another maintainer of your subsystem tree),
+>      * successfully unit tested, and 
+>      * destined for the current or next Linux merge window.
+> 
+> Basically, this should be just what you would send to Linus (or ask him
+> to fetch).  It is allowed to be rebased if you deem it necessary.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell 
+> sfr@canb.auug.org.au
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
