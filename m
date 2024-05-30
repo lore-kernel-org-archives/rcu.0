@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4334E17622C;
-	Thu, 30 May 2024 13:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012C51856F2;
+	Thu, 30 May 2024 13:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717076788; cv=none; b=fpI1rGb2ISJG1ov6yQHKiKe0bZBFUcu/CbS8Yf7mPDx089WBRlWpIznJylu3/DLKKss2xOa2lmfLnb5l5SCHI1NQMbChvsSSmS2ih9xkOZkSH29mfd3gNFcwFwCuqzAm0wNbHgwryqICOpe0OA1gCT/Me7MPoqsAlOLAvXG/5fw=
+	t=1717076792; cv=none; b=g9v3R5Ll8wLSj9xlnMzZq8fIGhPYSR6BkwcLouI57VGcC3EJofKGCOcTpQ2P0CNEum1S2YQjkrwgUycx89mtDjuwO9qPlQTXgc5LsgW8cMqnqalojW05ASJt7pkTK1/axieE+NGVZj+SzCny9+rCDJqnUw9/iIb2r7GxRTEIj0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717076788; c=relaxed/simple;
-	bh=YrjH2xrWlC5tQJfhshKipi5vOU0pIegfL1JgGkSpqiY=;
+	s=arc-20240116; t=1717076792; c=relaxed/simple;
+	bh=IYODWsPK3Egb5SjCYr+mLUaF9VNJJZjEGwfR/HQi4pQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QSKSEk+p7ojElwihz1XQgs7wj+Nx0kvvsyhEhses+XAKQZqvaH9dRf3JVT7AxOAbJX520SPxJZk1Jx3i9es+MUdcOlIlaI/7WCjhZCxXB4XuU4OVoXVTm8L/rXW3TZUkWpXWp2B9TyQncjYQ65x9vyo7DmkVCJuvsWuXMj9+c/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pvridsxF; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=i2pcdtqB3TDn1I1QTvHVa3HRrb49HqBMxoSlP+XJ4CAqsFW9/H3TJK6gxrhy+n7RPCXXIjphhzGjT6unORa6fJwM9ugpOU4MOXfVxnxYnmEnWXq3GIOYX16pBlCOJO0k4jWaNeQwwjH8UQpUCPW360cVjGyUXOr/qkCjLbxOsAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nF3IR2Y4; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pvridsxF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 173DAC32786;
-	Thu, 30 May 2024 13:46:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nF3IR2Y4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D801BC32789;
+	Thu, 30 May 2024 13:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717076788;
-	bh=YrjH2xrWlC5tQJfhshKipi5vOU0pIegfL1JgGkSpqiY=;
+	s=k20201202; t=1717076791;
+	bh=IYODWsPK3Egb5SjCYr+mLUaF9VNJJZjEGwfR/HQi4pQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pvridsxFGYPGdCvjw4uR9ikDEKtbn6JbSWdwpDSAq4MUevfM09TdB6WsG80RYlm8D
-	 JolTqbMQnjEOglV5slSWbVq0I3kJzlf7CTEjBVrRWcyjvmoWShS103G0fkjr5V/yxY
-	 Api5ogA1947XtziYfZUIfeQI3JlxmkTTcIHt0Iw5WJMCGxgulq8g7+3IakOCy73Ey+
-	 vpMUIa+LRycoDeHQwFhnMDSpAd5qSMfs7ijEEveEUYUMOLEI8cHbpMVgnApr+Uoikf
-	 AbhdGULzRjD5cV/jDFfBYG+BWnJmCXnbNQBRSutubv+ClTUP0j3wZSZpoHkY61ol9a
-	 kHJSu1zA67V0A==
+	b=nF3IR2Y4ZsVtVOhtrklXrjfW9q+U4wyf1DTBOrh537kQjoAIyZX/BQPIMdv8vOV11
+	 LRBm9Nh/CK2+uBbReS4QVLWtDPgvEere/pa9irp2SCWQ0SLOl2s+Dr8muiW6/6Hg4n
+	 9k/XXQFiZM49jP19yvJm/N3wdNeIr5BJEplMaiijLTpO9iHyqEF2mC+9SUZHh0hDhW
+	 PaK/m6UY+2ne58Wlr/7wjb9vdk2jZVnTnzDdclfgdDdRUb0q5jzv5W3LMXJXOTnFh4
+	 IFqgWHf/+/vz+PApa1FytNayieKKRNOhJF50bY3VKAGU+jzFHM1FbFRC0t6kJ6FkhU
+	 BYDxTDw08XgVQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -36,9 +36,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>
-Subject: [PATCH 08/11] rcu/nocb: Remove halfway (de-)offloading handling from rcu_core
-Date: Thu, 30 May 2024 15:45:49 +0200
-Message-ID: <20240530134552.5467-9-frederic@kernel.org>
+Subject: [PATCH 09/11] rcu/nocb: Remove SEGCBLIST_RCU_CORE
+Date: Thu, 30 May 2024 15:45:50 +0200
+Message-ID: <20240530134552.5467-10-frederic@kernel.org>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240530134552.5467-1-frederic@kernel.org>
 References: <20240530134552.5467-1-frederic@kernel.org>
@@ -53,65 +53,104 @@ Content-Transfer-Encoding: 8bit
 RCU core can't be running anymore while in the middle of (de-)offloading
 since this sort of transition now only applies to offline CPUs.
 
-The locked callback acceleration handling during the transition can
-therefore be removed, along with concurrent batch execution.
+The SEGCBLIST_RCU_CORE state can therefore be removed.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+ include/linux/rcu_segcblist.h | 9 ++++-----
+ kernel/rcu/rcu_segcblist.h    | 9 ---------
+ kernel/rcu/tree.c             | 3 ---
+ kernel/rcu/tree_nocb.h        | 9 ---------
+ 4 files changed, 4 insertions(+), 26 deletions(-)
 
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index ba95c06675e1..5469c54cd778 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -185,11 +185,10 @@ struct rcu_cblist {
+  *  ----------------------------------------------------------------------------
+  */
+ #define SEGCBLIST_ENABLED	BIT(0)
+-#define SEGCBLIST_RCU_CORE	BIT(1)
+-#define SEGCBLIST_LOCKING	BIT(2)
+-#define SEGCBLIST_KTHREAD_CB	BIT(3)
+-#define SEGCBLIST_KTHREAD_GP	BIT(4)
+-#define SEGCBLIST_OFFLOADED	BIT(5)
++#define SEGCBLIST_LOCKING	BIT(1)
++#define SEGCBLIST_KTHREAD_CB	BIT(2)
++#define SEGCBLIST_KTHREAD_GP	BIT(3)
++#define SEGCBLIST_OFFLOADED	BIT(4)
+ 
+ struct rcu_segcblist {
+ 	struct rcu_head *head;
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 4fe877f5f654..7a0962dfee86 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -95,15 +95,6 @@ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+ 	return false;
+ }
+ 
+-static inline bool rcu_segcblist_completely_offloaded(struct rcu_segcblist *rsclp)
+-{
+-	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+-	    !rcu_segcblist_test_flags(rsclp, SEGCBLIST_RCU_CORE))
+-		return true;
+-
+-	return false;
+-}
+-
+ /*
+  * Are all segments following the specified segment of the specified
+  * rcu_segcblist structure empty of callbacks?  (The specified
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c502a38dc5f3..4f1863a0536d 100644
+index 4f1863a0536d..8bec3c0c9636 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2776,24 +2776,6 @@ static __latent_entropy void rcu_core(void)
- 	unsigned long flags;
- 	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
+@@ -79,9 +79,6 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
+ 
+ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+ 	.gpwrap = true,
+-#ifdef CONFIG_RCU_NOCB_CPU
+-	.cblist.flags = SEGCBLIST_RCU_CORE,
+-#endif
+ };
+ static struct rcu_state rcu_state = {
+ 	.level = { &rcu_state.node[0] },
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index af44e75eb0cd..24daf606de0c 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -1060,7 +1060,6 @@ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ 	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist));
+ 
+-	rcu_segcblist_set_flags(cblist, SEGCBLIST_RCU_CORE);
+ 	wake_gp = rdp_offload_toggle(rdp, false, flags);
+ 
+ 	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
+@@ -1168,13 +1167,6 @@ static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+ 			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
+ 
 -	/*
--	 * On RT rcu_core() can be preempted when IRQs aren't disabled.
--	 * Therefore this function can race with concurrent NOCB (de-)offloading
--	 * on this CPU and the below condition must be considered volatile.
--	 * However if we race with:
--	 *
--	 * _ Offloading:   In the worst case we accelerate or process callbacks
--	 *                 concurrently with NOCB kthreads. We are guaranteed to
--	 *                 call rcu_nocb_lock() if that happens.
--	 *
--	 * _ Deoffloading: In the worst case we miss callbacks acceleration or
--	 *                 processing. This is fine because the early stage
--	 *                 of deoffloading invokes rcu_core() after setting
--	 *                 SEGCBLIST_RCU_CORE. So we guarantee that we'll process
--	 *                 what could have been dismissed without the need to wait
--	 *                 for the next rcu_pending() check in the next jiffy.
+-	 * All kthreads are ready to work, we can finally enable nocb bypass.
 -	 */
--	const bool do_batch = !rcu_segcblist_completely_offloaded(&rdp->cblist);
+-	rcu_nocb_lock_irqsave(rdp, flags);
+-	rcu_segcblist_clear_flags(cblist, SEGCBLIST_RCU_CORE);
+-	rcu_nocb_unlock_irqrestore(rdp, flags);
+-
+ 	return 0;
+ }
  
- 	if (cpu_is_offline(smp_processor_id()))
- 		return;
-@@ -2813,17 +2795,17 @@ static __latent_entropy void rcu_core(void)
- 
- 	/* No grace period and unregistered callbacks? */
- 	if (!rcu_gp_in_progress() &&
--	    rcu_segcblist_is_enabled(&rdp->cblist) && do_batch) {
--		rcu_nocb_lock_irqsave(rdp, flags);
-+	    rcu_segcblist_is_enabled(&rdp->cblist) && !rcu_rdp_is_offloaded(rdp)) {
-+		local_irq_save(flags);
- 		if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
- 			rcu_accelerate_cbs_unlocked(rnp, rdp);
--		rcu_nocb_unlock_irqrestore(rdp, flags);
-+		local_irq_restore(flags);
+@@ -1350,7 +1342,6 @@ void __init rcu_init_nohz(void)
+ 			rcu_segcblist_init(&rdp->cblist);
+ 		rcu_segcblist_offload(&rdp->cblist, true);
+ 		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_KTHREAD_GP);
+-		rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_RCU_CORE);
  	}
- 
- 	rcu_check_gp_start_stall(rnp, rdp, rcu_jiffies_till_stall_check());
- 
- 	/* If there are callbacks ready, invoke them. */
--	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
-+	if (!rcu_rdp_is_offloaded(rdp) && rcu_segcblist_ready_cbs(&rdp->cblist) &&
- 	    likely(READ_ONCE(rcu_scheduler_fully_active))) {
- 		rcu_do_batch(rdp);
- 		/* Re-invoke RCU core processing if there are callbacks remaining. */
+ 	rcu_organize_nocb_kthreads();
+ }
 -- 
 2.45.1
 
