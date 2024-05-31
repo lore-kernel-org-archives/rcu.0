@@ -1,46 +1,58 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71D44A35
-	for <rcu@vger.kernel.org>; Fri, 31 May 2024 00:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7925D4C98;
+	Fri, 31 May 2024 00:35:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717115668; cv=none; b=q4M6UKH+BkCKjYh77QxWYykEuSthsTrDiBfzy0HO6RGnZZXXd6XarfkgX1pCG6gPG7tllsdu2R9ubE0k8wGda9EKbYXxF6J/JIxhAmaqU2NA47BmFyH8Rsa0q3EEwM04yNkkRcjuQU0WZ0SfpyeVhPngvNCgTvrtyblLMDjpl5c=
+	t=1717115745; cv=none; b=p//1caKdNFbpXpuvExUr9ZBkr1m2g0nL6gjJu2urLo8mlsWEk47LhHm4zDx6pllv80+MvqRp5HE2xUaQasdhEWZy0MrlrHotp9uZhciofIwDyPG/DQ10HY76lTE89H/qjsNWnu2bheGW2SwawrZxFN3Xrp9wVSjLiUzJG/PMiEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717115668; c=relaxed/simple;
-	bh=ZOeyOCs/E/avRdUX3VpiefkGkWNjFVSrU5AAVygwg2o=;
+	s=arc-20240116; t=1717115745; c=relaxed/simple;
+	bh=Gy/JnciJhe5Dw470c+ZEo/a9cuF+y5OZIqMUQ5HDt9E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=reDUp3CZkhe5LsT324O0yEHfJub0vwCMt7CZHFhlisQncHzD+s2Xjs1DRm3sk9zBvV0i63OGeB4Kf474j7YUPLODPexHyB92p/rVGY8xXbMrBogkoGuMjMW+SUej0eIFqJLuS790wMNi1ZrQ5TC/B4D9C+cQKE5Jvypb4L1pvog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezFzSlZg; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=IdFDKuUc+vk6B2kI9KGs/QYWhK+dBk4fVWkpeGHEDy0YdGrYMn1aAOdOmXU9M/xrEs8twk4e8a7uBM0S4u0cHX3j0TYRQbI8GJoZdCsB+XEFK5zD6skaIfN0xJ6n29YMEbgOdicXTJhzfXgimENR/STujDAtPb371C8K59Bj5kI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vjv6cAn/; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezFzSlZg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D49EC2BBFC;
-	Fri, 31 May 2024 00:34:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vjv6cAn/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2261C2BBFC;
+	Fri, 31 May 2024 00:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717115667;
-	bh=ZOeyOCs/E/avRdUX3VpiefkGkWNjFVSrU5AAVygwg2o=;
+	s=k20201202; t=1717115745;
+	bh=Gy/JnciJhe5Dw470c+ZEo/a9cuF+y5OZIqMUQ5HDt9E=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ezFzSlZgqHRmzcXg7Ddcns8Iou4D8m9BtuXtkKOg7kZe9fefoT9v4wKEfcPDDFJ2X
-	 YwM45vttPR8ondn3Hv0iSRqDeE6bLox4aPYfFtHHVEQfKB6r/oqQ7gnpilaSrViJRK
-	 XebFahxXvSB+2NPq008DGTgOku4zVK0u0oG0Ymkbq6JX/RUDxNeM3uBdaVf/5wfL+7
-	 zRRq+7yMil3oPN5/ItX4lkF9rvfye9lNFzbkmNlda4IOdWW2dGXuioBwZDv8UF1pa4
-	 LX67QCuHN9SOdMFPL5rOG/2PRZryJMjQGNFdJ8M1S/WfRyyArdvXBvhPCs1YdecmJn
-	 ujq/932GHdy0g==
+	b=Vjv6cAn/+8UwW97eP2xNnGyEgnK46LMImrvY3alPlMe6zJB3YqyfMbRnz6ZUh0QTH
+	 MFbPrdPpamwGfCBmghdDDBya3ZV5RloAI59bf61J1jr5pdJRmuAVtJJCk8lxJMjh3U
+	 TosgA4htaHDx1Nxp9IXkdLn5KeYshOTz/H45ZcufQ7v8rsuKjtm2F/kp1mK/lXB3C5
+	 JeC9DLO0iDeaHHDxvDFobXBa2Q3pWZ6BUdUStHQcgtdWPNlepQCfsx2hBuYTejITBp
+	 YztEeDXYPGW3jjqQfVBhHC1sXlSq7D1dO2GouwAXxYZFCfxn4TJCenCbUgYXekdatd
+	 V5N4tDacITCQg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B32E4CE0B6F; Thu, 30 May 2024 17:34:26 -0700 (PDT)
-Date: Thu, 30 May 2024 17:34:26 -0700
+	id 548E7CE0B6F; Thu, 30 May 2024 17:35:44 -0700 (PDT)
+Date: Thu, 30 May 2024 17:35:44 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: rcu@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
-	urezki@gmail.com, neeraj.iitr10@gmail.com
-Subject: Re: Updated -next branch and repo for RCU commits
-Message-ID: <0bfe0a90-76f3-493e-91ba-7997b6da43d4@paulmck-laptop>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	lkft-triage@lists.linaro.org,
+	Linux Regressions <regressions@lists.linux.dev>,
+	rcu <rcu@vger.kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>,
+	Joel Fernandes <joel@joelfernandes.org>, neeraj.upadhyay@kernel.org,
+	John Ogness <john.ogness@linutronix.de>, broonie@kernel.org
+Subject: Re: arm-linux-gnueabihf-ld:
+ kernel/rcu/update.o:update.c:(.text+0x1cc4): more undefined references to
+ `__bad_cmpxchg' follow
+Message-ID: <3ce74da3-0b21-439b-af72-e80bfe0e9f02@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <9ad62150-b699-4662-9b7b-89bfdbf6a8e6@paulmck-laptop>
- <732c43ae-6d7a-4a98-995e-e96086a94678@paulmck-laptop>
- <20240529080212.21a8ab42@canb.auug.org.au>
- <0cb42d29-4c2e-412d-82af-0f2e42b40669@paulmck-laptop>
- <20240531100550.664ec884@canb.auug.org.au>
+References: <CA+G9fYuZ+pf6p8AXMZWtdFtX-gbG8HMaBKp=XbxcdzA_QeLkxQ@mail.gmail.com>
+ <Zlhwe5owmbzI3jJK@shell.armlinux.org.uk>
+ <7f61cc11-7afe-46ac-9f07-62e0b9ab429f@app.fastmail.com>
+ <5426b25f-9c25-4938-99e8-5cdea75e4d3b@paulmck-laptop>
+ <214a33ac-d4fa-4d48-ad3c-ad8b00ae1a5e@paulmck-laptop>
+ <20240530215153.GA466604@thelio-3990X>
+ <583e2476-50c5-4f9c-85af-f4489a53083b@paulmck-laptop>
+ <20240530233053.GA1601862@thelio-3990X>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,22 +61,108 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240531100550.664ec884@canb.auug.org.au>
+In-Reply-To: <20240530233053.GA1601862@thelio-3990X>
 
-On Fri, May 31, 2024 at 10:05:50AM +1000, Stephen Rothwell wrote:
-> Hi Paul,
+On Thu, May 30, 2024 at 04:30:53PM -0700, Nathan Chancellor wrote:
+> On Thu, May 30, 2024 at 03:05:21PM -0700, Paul E. McKenney wrote:
+> > On Thu, May 30, 2024 at 02:52:48PM -0700, Nathan Chancellor wrote:
+> > > On Thu, May 30, 2024 at 10:24:05AM -0700, Paul E. McKenney wrote:
+> > > > And for an untested first attempt at a fix.
+> > > > 
+> > > > What did I mess up this time?  ;-)
+> > > 
+> > > An include for cmpxchg-emu.h ;)
+> > > 
+> > >   In file included from arch/arm/include/asm/atomic.h:16,
+> > >                    from include/linux/atomic.h:7,
+> > >                    from include/asm-generic/bitops/lock.h:5,
+> > >                    from arch/arm/include/asm/bitops.h:245,
+> > >                    from include/linux/bitops.h:63,
+> > >                    from include/linux/log2.h:12,
+> > >                    from kernel/bounds.c:13:
+> > >   arch/arm/include/asm/cmpxchg.h: In function '__cmpxchg':
+> > >   arch/arm/include/asm/cmpxchg.h:167:26: error: implicit declaration of function 'cmpxchg_emu_u8' [-Werror=implicit-function-declaration]
+> > >     167 |                 oldval = cmpxchg_emu_u8((volatile u8 *)ptr, old, new);
+> > >         |                          ^~~~~~~~~~~~~~
+> > >   cc1: some warnings being treated as errors
+> > 
+> > Good catch, and thank you for testing this!  Does the updated version
+> > shown below do better?
 > 
-> On Wed, 29 May 2024 15:21:05 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
-> > Please make the newly renamed paulmck tree pull from "non-rcu/next".
-> > 
-> > The additional contacts for the new shared RCU tree are:
-> > 
-> > Frederic Weisbecker <frederic@kernel.org>
-> > Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-> > Boqun Feng <boqun.feng@gmail.com>
-> > Uladzislau Rezki <urezki@gmail.com>
+> Yes, that matches what I tested locally before I replied initially.
 
-Thank you, Stephen!
+Very good!  May I please add your Tested-by?
 
 							Thanx, Paul
+
+> Thanks for the quick fix!
+> 
+> Cheers,
+> Nathan
+> 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit 74e3470afacaa9d2f37db4773a5fef887ac4ef56
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Thu May 30 10:11:31 2024 -0700
+> > 
+> >     ARM: Emulate one-byte cmpxchg
+> >     
+> >     Use the new cmpxchg_emu_u8() to emulate one-byte cmpxchg() on ARM systems
+> >     with ARCH < ARMv6K.
+> >     
+> >     [ paulmck: Apply Arnd Bergmann and Nathan Chancellor feedback. ]
+> >     
+> >     Reported-by: Mark Brown <broonie@kernel.org>
+> >     Closes: https://lore.kernel.org/all/54798f68-48f7-4c65-9cba-47c0bf175143@sirena.org.uk/
+> >     Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> >     Closes: https://lore.kernel.org/all/CA+G9fYuZ+pf6p8AXMZWtdFtX-gbG8HMaBKp=XbxcdzA_QeLkxQ@mail.gmail.com/
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >     Cc: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+> >     Cc: Arnd Bergmann <arnd@arndb.de>
+> >     Cc: Andrew Davis <afd@ti.com>
+> >     Cc: Andrew Morton <akpm@linux-foundation.org>
+> >     Cc: Linus Walleij <linus.walleij@linaro.org>
+> >     Cc: Eric DeVolder <eric.devolder@oracle.com>
+> >     Cc: Rob Herring <robh@kernel.org>
+> >     Cc: <linux-arm-kernel@lists.infradead.org>
+> > 
+> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> > index ee5115252aac4..a867a7d967aa5 100644
+> > --- a/arch/arm/Kconfig
+> > +++ b/arch/arm/Kconfig
+> > @@ -34,6 +34,7 @@ config ARM
+> >  	select ARCH_MIGHT_HAVE_PC_PARPORT
+> >  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+> >  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT if CPU_V7
+> > +	select ARCH_NEED_CMPXCHG_1_EMU if CPU_V6
+> >  	select ARCH_SUPPORTS_ATOMIC_RMW
+> >  	select ARCH_SUPPORTS_CFI_CLANG
+> >  	select ARCH_SUPPORTS_HUGETLBFS if ARM_LPAE
+> > diff --git a/arch/arm/include/asm/cmpxchg.h b/arch/arm/include/asm/cmpxchg.h
+> > index 44667bdb4707a..a428e06fe94ee 100644
+> > --- a/arch/arm/include/asm/cmpxchg.h
+> > +++ b/arch/arm/include/asm/cmpxchg.h
+> > @@ -5,6 +5,7 @@
+> >  #include <linux/irqflags.h>
+> >  #include <linux/prefetch.h>
+> >  #include <asm/barrier.h>
+> > +#include <linux/cmpxchg-emu.h>
+> >  
+> >  #if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110)
+> >  /*
+> > @@ -162,7 +163,11 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+> >  	prefetchw((const void *)ptr);
+> >  
+> >  	switch (size) {
+> > -#ifndef CONFIG_CPU_V6	/* min ARCH >= ARMv6K */
+> > +#ifdef CONFIG_CPU_V6	/* min ARCH < ARMv6K */
+> > +	case 1:
+> > +		oldval = cmpxchg_emu_u8((volatile u8 *)ptr, old, new);
+> > +		break;
+> > +#else /* min ARCH >= ARMv6K */
+> >  	case 1:
+> >  		do {
+> >  			asm volatile("@ __cmpxchg1\n"
