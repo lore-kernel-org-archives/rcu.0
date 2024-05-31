@@ -1,171 +1,157 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8187E788;
-	Fri, 31 May 2024 19:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B27168DA;
+	Fri, 31 May 2024 23:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717184547; cv=none; b=BPa6L/qwMkf6Vkebs3C83oCVHjl3QBnPYgOsJgvXGQajwC1Hl1J6qlzoGeCI6JlaueaDxqBQ1/p2S4Lu1qEHbt/c4bBmFXiLkmKBQw9HBElpqkIawFHY2p2I13JpN6AvAQWkcTNstbhQUF05bd2HDzTpNz4wJj9AeqB8BkxvYC4=
+	t=1717199650; cv=none; b=sdutHGOUBHpnGD/uu2FyKgfMFz97Wfg2SVDnYiZE91hWGH6ZuoCOyyk13AWvU6XdRxMVIDprjA+8bWolGhqu0YNY/ZrdxmAjHvHCu4UGvGuTBXcki2xErC3RY6ZFjKka9bPiyogpUagODimb83W5T8P1efY9UJWOiGUxghz65no=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717184547; c=relaxed/simple;
-	bh=IHtY4B5fyvO4/kzwdP0+z8rMYAMuQ09eRmDS4pTYFTc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NTHEFPv5Cs+6tRaYiTQM4PteQ4YU8O42FtqIMzYPPQtcP+uQIZShpnLZiMBmMIzw8pHWP6BTequ0wfs2JdUIYRGAx4uccVOnP+CaHF0mApiGA5rUV0umCfncDmljZyiKPh0zpJ6UI6Z+CWVJW2MAVyv+VMCKsOAN/vtebUAttug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EpsfUyDE; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1717199650; c=relaxed/simple;
+	bh=VlJJGuQ/INt5Twxrps3pJWq5cUDg6Be/kjaj9j/3Akc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FM7DP+aoGo1YMLGSQ3qjDwm/NvqgsbnLf04Ncw5KdF7gg4E4ksEDCBj7PLKqZk+Vg/Wc8tcE538zeFYc/Ptn0TP/WxzxxNBE0pv2L8zNyysnBwib6BHHSVbfPTZ6lmGDrawlrAiMbJNLVGRZZU3EgyDZbVpH6ZBZ3CvA7u7xbIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lAt2F2Lz; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EpsfUyDE"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B2DCC116B1;
-	Fri, 31 May 2024 19:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717184546;
-	bh=IHtY4B5fyvO4/kzwdP0+z8rMYAMuQ09eRmDS4pTYFTc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=EpsfUyDEfoc4GlQNr5/qC/rYJf8CRPzzKGQUfTc7IU9IUTZNp1q98+3dTDuKCbEnn
-	 YhDUZX2XNqj92hNk46/RoBzz9kFPMjVDY+EcvUwnMP4zR89qq3CE6XunMvcQrA+i08
-	 mV/cg9CuzC/VYHdMpIROINmHesTgSjKTeswUg2sqTR6wOXFQqte+LFmMIz15BWKnOv
-	 pCJpZVwn3dCxyNUVq+I/tdZGueAKlR9dS1WNaRwjnNELnVyagDeH4pzKrVKZweDhI2
-	 tBNmnY7jP9EdESxwaMjqdzXV977X1qU04SbJEoc2oReu1WJP4nRa/rH8LKJe56WUFV
-	 ceQL5p5ID2uFA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 42BADCE3ED6; Fri, 31 May 2024 12:42:26 -0700 (PDT)
-Date: Fri, 31 May 2024 12:42:26 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	lkft-triage@lists.linaro.org,
-	Linux Regressions <regressions@lists.linux.dev>,
-	rcu <rcu@vger.kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>,
-	Joel Fernandes <joel@joelfernandes.org>, neeraj.upadhyay@kernel.org,
-	John Ogness <john.ogness@linutronix.de>, broonie@kernel.org
-Subject: Re: arm-linux-gnueabihf-ld:
- kernel/rcu/update.o:update.c:(.text+0x1cc4): more undefined references to
- `__bad_cmpxchg' follow
-Message-ID: <fb84bb7f-a621-406a-8d1a-51be17caa712@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CA+G9fYuZ+pf6p8AXMZWtdFtX-gbG8HMaBKp=XbxcdzA_QeLkxQ@mail.gmail.com>
- <Zlhwe5owmbzI3jJK@shell.armlinux.org.uk>
- <7f61cc11-7afe-46ac-9f07-62e0b9ab429f@app.fastmail.com>
- <5426b25f-9c25-4938-99e8-5cdea75e4d3b@paulmck-laptop>
- <214a33ac-d4fa-4d48-ad3c-ad8b00ae1a5e@paulmck-laptop>
- <20240530215153.GA466604@thelio-3990X>
- <583e2476-50c5-4f9c-85af-f4489a53083b@paulmck-laptop>
- <20240530233053.GA1601862@thelio-3990X>
- <3ce74da3-0b21-439b-af72-e80bfe0e9f02@paulmck-laptop>
- <20240531162722.GA1457604@thelio-3990X>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lAt2F2Lz"
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-6c5bcb8e8edso723776a12.2;
+        Fri, 31 May 2024 16:54:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717199648; x=1717804448; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GFMiJ7E5LpCWaF4kYeMHqCEjQOyhSVH+OwE9eYErSSc=;
+        b=lAt2F2LzZeGo+hfJLesFZgSdvUlOFwOdj6gmrKZooXPnhBKyd+4WDHMl91rvtVoHfj
+         q9PbYsaA7hPBW7dCCXM8eiKxOlg1+ImBXS324pDdf74GiU6Lcdu6XZqqIjgk1hcm3QfG
+         qw70P38KDPFYP68Rn1wpWSD1t5Tg4JYWc8pLl3Tn+jxpfbU7jqKHXl93yVre65tXfKc5
+         1wnV23y7AsG9ZyEwT6JRLJlQPzTx+JFknk8hFw6i619edCk37hXfUVTPAyRvRIQmI/+p
+         9o4PyraMeX/3Ax208sYC3zTvuJuAhzdEyMRsA/79q5Z1GhKBcuTh9qNdEiXPZZg5bxjy
+         pIaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717199648; x=1717804448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GFMiJ7E5LpCWaF4kYeMHqCEjQOyhSVH+OwE9eYErSSc=;
+        b=ttAe2sF1R9/MhPzSVfAO3d8X1JWDqNyvIXpF1coZtLyYgPet+acvvJMnUARYIKRHmh
+         xLCwib5+GP7c+PU3EA6qrIEBEG0c0NYIWgyI5hZR5WdD3emd7WIiyl0HaP/A63Gw9XzG
+         kvkEhyk+dyg0wazd6KYVGLyeJQisjVEm5dh6/p3+cMRaYY4Ex8ki+lJSoQlkg8YmSpjo
+         HN83bj/TNeU92xzo3hdxmF8ds8qenmbyH2SMrhiPwuUjs15AITmh90mFC/SlDCfcJ8CA
+         qzAfj/jQQ2AqSit3SWZ31PhYOkfzR207y645/VvuofpElOTE8C+RV0ODdNrKybT3bb1t
+         qDWg==
+X-Forwarded-Encrypted: i=1; AJvYcCVg0yKbRcsaFCVhRz9sA+8EMQC/5DCvttF+kmWp6YiuStrTLEQ0ab+y05AI4woUlmhfdkNknOb1wKBYgwDnmWPX7mVWNZT18I5z7OIFaCrmbyelDC7Q7D0K1fckQMM/CBAk8NO2kKa1OJCn0B5P9u/jExlq3eU8SDy4P/i0G4GOFc1A
+X-Gm-Message-State: AOJu0YyI3JzEnoC2/owxWlwqyJ5R50Zi3VpKm3kHMxfTFbaaeKaAQ5EJ
+	frLsnbvG8/KMVQMJ5blqkCfx8prcL1x5EifziD8xkxffkdJwHszA
+X-Google-Smtp-Source: AGHT+IHNmspc6tPXm8RMsasak9EMHsw+2m9yjctxLXP1JVTV0cBXIFMy2CZ6XOsBGF0nhgM5ShRUJQ==
+X-Received: by 2002:a17:903:2311:b0:1f4:6057:99fd with SMTP id d9443c01a7336-1f6370a0c02mr36478215ad.42.1717199648050;
+        Fri, 31 May 2024 16:54:08 -0700 (PDT)
+Received: from localhost.localdomain (140-211-169-189-openstack.osuosl.org. [140.211.169.189])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f632416d7asm22553065ad.286.2024.05.31.16.54.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 May 2024 16:54:07 -0700 (PDT)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: paulmck@kernel.org,
+	linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	lance@osuosl.org
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH V2] rcutorture: Add CFcommon.arch for the various arch's need
+Date: Fri, 31 May 2024 23:53:47 +0000
+Message-Id: <20240531235347.1118612-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240531162722.GA1457604@thelio-3990X>
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 31, 2024 at 09:27:22AM -0700, Nathan Chancellor wrote:
-> On Thu, May 30, 2024 at 05:35:44PM -0700, Paul E. McKenney wrote:
-> > On Thu, May 30, 2024 at 04:30:53PM -0700, Nathan Chancellor wrote:
-> > > On Thu, May 30, 2024 at 03:05:21PM -0700, Paul E. McKenney wrote:
-> > > > On Thu, May 30, 2024 at 02:52:48PM -0700, Nathan Chancellor wrote:
-> > > > > On Thu, May 30, 2024 at 10:24:05AM -0700, Paul E. McKenney wrote:
-> > > > > > And for an untested first attempt at a fix.
-> > > > > > 
-> > > > > > What did I mess up this time?  ;-)
-> > > > > 
-> > > > > An include for cmpxchg-emu.h ;)
-> > > > > 
-> > > > >   In file included from arch/arm/include/asm/atomic.h:16,
-> > > > >                    from include/linux/atomic.h:7,
-> > > > >                    from include/asm-generic/bitops/lock.h:5,
-> > > > >                    from arch/arm/include/asm/bitops.h:245,
-> > > > >                    from include/linux/bitops.h:63,
-> > > > >                    from include/linux/log2.h:12,
-> > > > >                    from kernel/bounds.c:13:
-> > > > >   arch/arm/include/asm/cmpxchg.h: In function '__cmpxchg':
-> > > > >   arch/arm/include/asm/cmpxchg.h:167:26: error: implicit declaration of function 'cmpxchg_emu_u8' [-Werror=implicit-function-declaration]
-> > > > >     167 |                 oldval = cmpxchg_emu_u8((volatile u8 *)ptr, old, new);
-> > > > >         |                          ^~~~~~~~~~~~~~
-> > > > >   cc1: some warnings being treated as errors
-> > > > 
-> > > > Good catch, and thank you for testing this!  Does the updated version
-> > > > shown below do better?
-> > > 
-> > > Yes, that matches what I tested locally before I replied initially.
-> > 
-> > Very good!  May I please add your Tested-by?
-> 
-> Sure thing.
-> 
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
+Add CFcommon.arch for the various arch's need for rcutorture.
 
-Thank you!  I will apply this on my next rebase.
+According to [1] and [2], this patch
+Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options") by moving
+x86 specific kernel option CONFIG_HYPERVISOR_GUEST to CFcommon.x86
 
-							Thanx, Paul
+[1] https://lore.kernel.org/all/20240427005626.1365935-1-zhouzhouyi@gmail.com/
+[2] https://lore.kernel.org/all/059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop/
 
-> > > > ------------------------------------------------------------------------
-> > > > 
-> > > > commit 74e3470afacaa9d2f37db4773a5fef887ac4ef56
-> > > > Author: Paul E. McKenney <paulmck@kernel.org>
-> > > > Date:   Thu May 30 10:11:31 2024 -0700
-> > > > 
-> > > >     ARM: Emulate one-byte cmpxchg
-> > > >     
-> > > >     Use the new cmpxchg_emu_u8() to emulate one-byte cmpxchg() on ARM systems
-> > > >     with ARCH < ARMv6K.
-> > > >     
-> > > >     [ paulmck: Apply Arnd Bergmann and Nathan Chancellor feedback. ]
-> > > >     
-> > > >     Reported-by: Mark Brown <broonie@kernel.org>
-> > > >     Closes: https://lore.kernel.org/all/54798f68-48f7-4c65-9cba-47c0bf175143@sirena.org.uk/
-> > > >     Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > > >     Closes: https://lore.kernel.org/all/CA+G9fYuZ+pf6p8AXMZWtdFtX-gbG8HMaBKp=XbxcdzA_QeLkxQ@mail.gmail.com/
-> > > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >     Cc: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-> > > >     Cc: Arnd Bergmann <arnd@arndb.de>
-> > > >     Cc: Andrew Davis <afd@ti.com>
-> > > >     Cc: Andrew Morton <akpm@linux-foundation.org>
-> > > >     Cc: Linus Walleij <linus.walleij@linaro.org>
-> > > >     Cc: Eric DeVolder <eric.devolder@oracle.com>
-> > > >     Cc: Rob Herring <robh@kernel.org>
-> > > >     Cc: <linux-arm-kernel@lists.infradead.org>
-> > > > 
-> > > > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> > > > index ee5115252aac4..a867a7d967aa5 100644
-> > > > --- a/arch/arm/Kconfig
-> > > > +++ b/arch/arm/Kconfig
-> > > > @@ -34,6 +34,7 @@ config ARM
-> > > >  	select ARCH_MIGHT_HAVE_PC_PARPORT
-> > > >  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
-> > > >  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT if CPU_V7
-> > > > +	select ARCH_NEED_CMPXCHG_1_EMU if CPU_V6
-> > > >  	select ARCH_SUPPORTS_ATOMIC_RMW
-> > > >  	select ARCH_SUPPORTS_CFI_CLANG
-> > > >  	select ARCH_SUPPORTS_HUGETLBFS if ARM_LPAE
-> > > > diff --git a/arch/arm/include/asm/cmpxchg.h b/arch/arm/include/asm/cmpxchg.h
-> > > > index 44667bdb4707a..a428e06fe94ee 100644
-> > > > --- a/arch/arm/include/asm/cmpxchg.h
-> > > > +++ b/arch/arm/include/asm/cmpxchg.h
-> > > > @@ -5,6 +5,7 @@
-> > > >  #include <linux/irqflags.h>
-> > > >  #include <linux/prefetch.h>
-> > > >  #include <asm/barrier.h>
-> > > > +#include <linux/cmpxchg-emu.h>
-> > > >  
-> > > >  #if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110)
-> > > >  /*
-> > > > @@ -162,7 +163,11 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
-> > > >  	prefetchw((const void *)ptr);
-> > > >  
-> > > >  	switch (size) {
-> > > > -#ifndef CONFIG_CPU_V6	/* min ARCH >= ARMv6K */
-> > > > +#ifdef CONFIG_CPU_V6	/* min ARCH < ARMv6K */
-> > > > +	case 1:
-> > > > +		oldval = cmpxchg_emu_u8((volatile u8 *)ptr, old, new);
-> > > > +		break;
-> > > > +#else /* min ARCH >= ARMv6K */
-> > > >  	case 1:
-> > > >  		do {
-> > > >  			asm volatile("@ __cmpxchg1\n"
+Tested in x86_64 and PPC VM of Open Source Lab of Oregon State University.
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+Hi Paul,
+
+I tried very hard to find in Linux kernel on how to dig out
+the x86 specific kernel option CONFIG_HYPERVISOR_GUEST before configcheck.sh
+generates ConfigFragment.diags.
+
+I can only find this functionality in scripts/kconfig/conf which travels
+the Kconfig hierarchy.
+
+But the output of scripts/kconfig/conf, which is .config
+is also one of the input of configcheck.sh:
+```
+kvm-recheck.sh:	configcheck.sh $i/.config $i/ConfigFragment > $i/ConfigFragment.diags 2>&1
+```
+
+I feel some logic paradox in it ;-)
+
+So, I pick the simplest way.
+
+One more thing, recent change in include/linux/bitmap.h cause the make
+of allmodconfig fail because of warning on both x86 platforms, I am
+going to do research on it.
+
+Thank your for your guidance
+Zhouyi
+--
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 9 +++++++++
+ tools/testing/selftests/rcutorture/configs/rcu/CFcommon  | 1 -
+ .../selftests/rcutorture/configs/rcu/CFcommon.x86        | 1 +
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index b33cd8753689..5332224238ba 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -62,6 +62,15 @@ config_override_param () {
+ }
+ 
+ echo > $T/KcList
++if uname -m | grep -q 86
++# TODO: add other architecture-specific common configuration when needed
++then
++	if test -f $config_dir/CFcommon.x86
++	then
++		config_override_param "$config_dir/CFcommon.x86" KcList\
++			"`cat $config_dir/CFcommon.x86 2> /dev/null`"
++	fi
++fi
+ config_override_param "$config_dir/CFcommon" KcList "`cat $config_dir/CFcommon 2> /dev/null`"
+ config_override_param "$config_template" KcList "`cat $config_template 2> /dev/null`"
+ config_override_param "--gdb options" KcList "$TORTURE_KCONFIG_GDB_ARG"
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+index 0e92d85313aa..cf0387ae5358 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+@@ -1,6 +1,5 @@
+ CONFIG_RCU_TORTURE_TEST=y
+ CONFIG_PRINTK_TIME=y
+-CONFIG_HYPERVISOR_GUEST=y
+ CONFIG_PARAVIRT=y
+ CONFIG_KVM_GUEST=y
+ CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86 b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86
+new file mode 100644
+index 000000000000..2770560d56a0
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86
+@@ -0,0 +1 @@
++CONFIG_HYPERVISOR_GUEST=y
+-- 
+2.25.1
+
