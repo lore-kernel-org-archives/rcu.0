@@ -1,73 +1,177 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DEC136E1C
-	for <rcu@vger.kernel.org>; Mon,  3 Jun 2024 17:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154B1137902
+	for <rcu@vger.kernel.org>; Mon,  3 Jun 2024 19:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717435526; cv=none; b=q3nzkmLCDVALFWpqgvGFfbtTsSpNQ5pOLqNO3YYHYsJbCb8iBFG61UBWBniIAptzxNIFY9CbiGZcqjxAG9A9d50O/xi/yrA0pvyeBPxt8B82ldDyHy0c0ymNXEsstCAjqXHbcpJrv1K56XLdGk1pL+BObn5mmzVUqBlHHAOWpZ4=
+	t=1717443002; cv=none; b=Jcq6YWzJLU1ByyyJuLH0gQ1a9AGKMt3P+MzBnMIqw9Km897Cp7ZV0SRjsH7KKIjpSD2UIIJ8d4hDpL1TxxImage3TNWUom3CA0jetFOHuDE/syM4RKWmozxuI0EqdNZiiBNoqN2LEMVTEh3RnKNUODE2dhLyc0wfjgNHH1hBor0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717435526; c=relaxed/simple;
-	bh=jJcdPLWyD0mnNpvbb/A3/zNixHBWdas5Xn71CQtlREk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NMgZuqhWjdCqwPQimw+t8jAxZcc7j67buiWlP1u3YuoDpQa7AJXuOfjWvIgG/o3gLxnJgsgVAX0A8X/7B3RoezQLDqDnqqO1/KayeBjcFjC5+7Mlzkfcl0p1GaiAvopwgfb5IurbuAkpfhxr9GjkXLVdlP+X+xgBXx6ZHF7eP5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vt+gmB92; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1717443002; c=relaxed/simple;
+	bh=H/7JEN6IScULIL9Wpk7kGKhPRvoLj62jMuUe4z9Kip0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VJHMa4URpAW3uNHHpvHvLY0m8/qsZboaST3fLEEqMwyYOipFjCiaC2VVHeARsk+2FKX/JCgFIMCyb8J21I85NuQZSZZqgX2p8h9jLqMkuevhbQYaJhFnVyiZuC4CKZYtPqf8Dy1rMiEA4DJTxFi2s1o0/kezKlYz3TyWlv4AtKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LSIiXLjB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CwW2G3MQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=S4CMpX2Y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=s5BvYGK+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vt+gmB92"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DEA8C2BD10;
-	Mon,  3 Jun 2024 17:25:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717435526;
-	bh=jJcdPLWyD0mnNpvbb/A3/zNixHBWdas5Xn71CQtlREk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Vt+gmB92L1ggrGSUpQtuCT3Z2LiF657xcMhFt5Q/ChifgwRdmXfDvo3uD2loJTLua
-	 olg6UCmSPry2csn/niMQPeMarv+g10wHQ+hnlK8zULTUFheR6/HTTxbL0I7XGW/7Nw
-	 A2c7+9mCMJ6KD/aJTAdGCAM+6FHUS/2npFZCvSS2wl0xBuHIKpxFIU3lWjebOjtcr7
-	 AZlvtr6dMxj+eSVFBRcumZfZPRaqQGh5VWb9QqvZ2yUoG5U3J9C0iE42RNGMKwzHh4
-	 mrIOE3lW5jRvZmA8/8tvfAaAseiXCL3sbOI+O3nUzWWqgU2LE1+fXwzww60aEtYGzd
-	 Epkrme28yaVrg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3AC5CCE3B76; Mon,  3 Jun 2024 10:25:26 -0700 (PDT)
-Date: Mon, 3 Jun 2024 10:25:26 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Uladzislau Rezki <urezki@gmail.com>, Vlastimil Babka <vbabka@suse.cz>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	RCU <rcu@vger.kernel.org>, cocci@inria.fr
-Subject: Re: [cocci] patch idea: convert trivial call_rcu users to kfree_rcu
-Message-ID: <e7a76ed1-6a38-45f2-8be3-04f8b524eeb7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <68b85796-c674-4691-936a-2051849f4692@suse.cz>
- <6b7e3ed9-d974-cb3b-6839-a6b7cf5f5a36@inria.fr>
- <a1f15e67-25f5-4a0b-a9d0-ebbc0555fb12@paulmck-laptop>
- <alpine.DEB.2.22.394.2405272226510.3330@hadrien>
- <ZlXIDZLMNPc7E7XE@pc636>
- <2dd5bafb-ceb1-238d-2f51-83ebf135b73@inria.fr>
- <ZlXaPuA4lC2ANTdN@pc636>
- <2ec7eb0f-0950-4d65-b33a-64df7c5f89c9@paulmck-laptop>
- <77531e55-3418-d4be-f538-7ddc904ed88f@inria.fr>
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LSIiXLjB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CwW2G3MQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="S4CMpX2Y";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="s5BvYGK+"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C971E219D5;
+	Mon,  3 Jun 2024 19:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717442998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nbsQrh+DSBljWYQA/9pDPkgkAK2YnszO65H1IZOBFLM=;
+	b=LSIiXLjBegb5XUf+ugtNjAz3/RJbVQBhWRYfkvwQrc8UZxVYQuJE6qLz7YRgJcvFUktOG0
+	asniVcVaUJJxvXTl2upkuRCVZQ6K1qvZezijg7ggARChwOa0BTKjuEsltI644cKZaIOIss
+	j/TrX5YDT29Vjv0twa680p1rHRvdwwo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717442998;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nbsQrh+DSBljWYQA/9pDPkgkAK2YnszO65H1IZOBFLM=;
+	b=CwW2G3MQ5mEY6ZyHvfeDduDBoFotqDPkpWsqqynPhcwb70Lf60p+fVCxJ5vPMN+Pl/vXI9
+	dei+1N5CONYEgGAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717442997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nbsQrh+DSBljWYQA/9pDPkgkAK2YnszO65H1IZOBFLM=;
+	b=S4CMpX2YbVPGpWE6QzcC3XFe5PPNRW4IaPt/qd5ML1HZ46Xp4dH7zhyfFbwdwhHtZL4fdj
+	tQKE0c9NAUT6qsT9nW8X5qGtKIFnOKkJBcomV5kroyU6hIL/ggCwRpr6tBgPa1dgbvA1Cs
+	a17fRVBCFxg4dMbLS1LaBM/cPnRyBbE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717442997;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nbsQrh+DSBljWYQA/9pDPkgkAK2YnszO65H1IZOBFLM=;
+	b=s5BvYGK+aOJHgGjmcQDmuz8/svosd/YpEOg/bHeGCE7P37ueEHSA+GgaIehh863r/EnYRB
+	IiCqQECf572GUPAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B282A13A93;
+	Mon,  3 Jun 2024 19:29:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Uk23KrUZXmbfQgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 03 Jun 2024 19:29:57 +0000
+Message-ID: <45d8e64e-aecc-4f5e-9c1c-6da0ddcd5d7c@suse.cz>
+Date: Mon, 3 Jun 2024 21:29:57 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [cocci] patch idea: convert trivial call_rcu users to kfree_rcu
+Content-Language: en-US
+To: Julia Lawall <julia.lawall@inria.fr>,
+ "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>, RCU <rcu@vger.kernel.org>,
+ cocci@inria.fr
+References: <68b85796-c674-4691-936a-2051849f4692@suse.cz>
+ <6b7e3ed9-d974-cb3b-6839-a6b7cf5f5a36@inria.fr>
+ <a1f15e67-25f5-4a0b-a9d0-ebbc0555fb12@paulmck-laptop>
+ <alpine.DEB.2.22.394.2405272226510.3330@hadrien> <ZlXIDZLMNPc7E7XE@pc636>
+ <2dd5bafb-ceb1-238d-2f51-83ebf135b73@inria.fr> <ZlXaPuA4lC2ANTdN@pc636>
+ <2ec7eb0f-0950-4d65-b33a-64df7c5f89c9@paulmck-laptop>
+ <77531e55-3418-d4be-f538-7ddc904ed88f@inria.fr>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
 In-Reply-To: <77531e55-3418-d4be-f538-7ddc904ed88f@inria.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.29
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,kvack.org,vger.kernel.org,inria.fr];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo]
 
-On Fri, May 31, 2024 at 06:02:01PM +0200, Julia Lawall wrote:
+On 5/31/24 6:02 PM, Julia Lawall wrote:
 > Here are the changes proposed by Coccinelle.
 > 
 > I didn't succeed to compile the powerpc code, but the rest has been
 > compile tested.
-
-Thank you, Julia!
-
-For the set:
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
+> 
 > julia
 > 
 > commit 1881f31fe3ad693d07ecff45985dd0e87534923f
@@ -75,7 +179,15 @@ Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 > Date:   Wed May 29 18:54:41 2024 +0200
 > 
 >     misc
-> 
+
+Looks great, thanks!
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+Now comes the hard part, how to submit this. One patch (to rcu or linux-mm?)
+with many Cc's, or multiple per-subsystem patches. There's always someone
+who wants the other way that was chosen...
+
 > diff --git a/arch/powerpc/kvm/book3s_mmu_hpte.c b/arch/powerpc/kvm/book3s_mmu_hpte.c
 > index ce79ac33e8d3..d904e13e069b 100644
 > --- a/arch/powerpc/kvm/book3s_mmu_hpte.c
@@ -571,4 +683,4 @@ Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 >  	ht->count--;
 >  }
 >  static void htable_gc(struct work_struct *work);
-> 
+
