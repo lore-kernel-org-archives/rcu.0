@@ -1,68 +1,106 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00C128DC7;
-	Tue,  4 Jun 2024 22:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654AB14D439;
+	Tue,  4 Jun 2024 22:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717540587; cv=none; b=B1IXZmxZwWlU6VQVkWsZ8Svt+cUUAuk3UY6LpeNrUiKKOMApfRbp8qzjeQPgb8gurPkLqckveqs/uKwzuruVGzJ8wTNlhbZ6uhuYxTSex860juew1U0GKgNm3EA/VvYdlIzpUxIJKfgOz+6JPQPPU/DS7RQBoK+i0L4xQDTjtCg=
+	t=1717540595; cv=none; b=OxlXw03aIYlYgc4NiYQrhoosbcYMDHTvjgsOJDp5O2d2+ETPxc0AknQSB9v+LS40OmgEGG8MiZUFephdLVNKtJETXUHyFS1hK/GikIv0XNbDtWI3JySCreNBjkt/nCb5/NzBkFSjG7hKy4nSoj4L8cWIDs3UomrJarBpuEaM4/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717540587; c=relaxed/simple;
-	bh=9Bn48OKZlqwf9LNsqYGIsbAU20Y/V6Nb+Uy1v4Lwyu4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=X2DyNdPxZfE/x2fy4mts5FexE1lY4wSov/j9ypA7VeDJuFsJcJ71kv+9DOtaeZsmdrXKRxAg5Aq6vQo8PsDGve3z5la1YGBxRs9HfoTywtIWYJZh8zQhnfXoXiO9qb8Vmnw//HwtG/FBzdjJsJIhPWIXL5NOW7vWjA2M9xpEfYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQc/+Ogn; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1717540595; c=relaxed/simple;
+	bh=3W1hLX3CDpcxFpIRjKB9LG1doeFsN5iCPTpoG6MXxYo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Rrd9ivCrBQigqOr4CGxYBe4hXjQQxFKQrEuDQ3aQixq0sVe33K7ciBiUcDmfEeUp3RAwMeM6MQCw/6UK7xb1jx3dIkJeZxW/1O1uaOjU54N2VpIhgJl80++FK5SeCngIROuntxFLa6lwzEs7bvltGzOZYHzghHSqO83mY6Egg/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=laGrPfry; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQc/+Ogn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48F51C3277B;
-	Tue,  4 Jun 2024 22:36:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="laGrPfry"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429D1C4AF07;
+	Tue,  4 Jun 2024 22:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717540587;
-	bh=9Bn48OKZlqwf9LNsqYGIsbAU20Y/V6Nb+Uy1v4Lwyu4=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=hQc/+OgnRppaSrW5W812wwHZeuoXW9jtyj762VxpsEMKJWDTi+Jsc0iTesSZ5psJw
-	 srCxSNFMVaASZ4PAMTVukhdH51EVN9j8XzQ8ZcMj89hXfSek8epAiAhQ8yk/KmxgUR
-	 iWwgxn8fKFq6KJW79EZ69xDu+oNYvIL4RK9HN3hSy2TYAEln4P6hSl17G+IpzC9l0e
-	 CfAPX/BC5I6emxSM26iFFHXxRasuPBT26+Yut4fDZVHVWHVtipeD2ok/Cp4x6LIyAd
-	 OlqfdQX5iB+BSA7QvzKqZ4kQdxLbyBrBzBGkXV+HGVgDHQ+kDvGGn78D+rSZHAdMZa
-	 xDjQh9UUIqWhA==
+	s=k20201202; t=1717540595;
+	bh=3W1hLX3CDpcxFpIRjKB9LG1doeFsN5iCPTpoG6MXxYo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=laGrPfry+NoKRkhCtXFlV7rexL+lJdX+qFMm6Aqd2wpb1eHc4g7LZbh3D4g4HMPfB
+	 oYB/CrbXxcK77v4TuWd/2am9tNpJotqOdPaZABoYmXxipwyK383HdDXylqXEEMDdgE
+	 VfrkKKlu/Ndle6RFR//qbeFwCZ3EVVc01jLCpNfQ4T1ZOze+uFVlF0Kzo56AlVGE3u
+	 SlOGQ+j3IHhfr6exRiy/TwvWIU2YiCB9UtjFJvfFGNk0FrZZLQTgNnzpYKnt6F5M7F
+	 dSQydJKPDw/Ue+BJ3NAO2LUciZdW1Zt1kZWo36cYLreyQgeSaAZG3UfPFZ66qSJ5gt
+	 6jy4beKCEQXOQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 00DBECE3ED6; Tue,  4 Jun 2024 15:36:26 -0700 (PDT)
-Date: Tue, 4 Jun 2024 15:36:26 -0700
+	id E2CCACE3F26; Tue,  4 Jun 2024 15:36:34 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH rcu 0/4] Torture-test updates for v6.11
-Message-ID: <e14ba19e-53aa-4ec1-b58d-6444ffec07c6@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 3/4] rcutorture: Add missing MODULE_DESCRIPTION() macros
+Date: Tue,  4 Jun 2024 15:36:32 -0700
+Message-Id: <20240604223633.2371664-3-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <e14ba19e-53aa-4ec1-b58d-6444ffec07c6@paulmck-laptop>
+References: <e14ba19e-53aa-4ec1-b58d-6444ffec07c6@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-This series contains RCU torture-test updates:
+Fix the following 'make W=1' warnings:
 
-1.	Make rcutorture support srcu double call test, courtesy of Zqiang.
+WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/rcu/rcutorture.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/rcu/rcuscale.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in kernel/rcu/refscale.o
 
-2.	Fix rcu_torture_fwd_cb_cr() data race.
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcuscale.c   | 1 +
+ kernel/rcu/rcutorture.c | 1 +
+ kernel/rcu/refscale.c   | 1 +
+ 3 files changed, 3 insertions(+)
 
-3.	Add missing MODULE_DESCRIPTION() macros, courtesy of Jeff Johnson.
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 8db4fedaaa1eb..b53a9e8f5904f 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -42,6 +42,7 @@
+ 
+ #include "rcu.h"
+ 
++MODULE_DESCRIPTION("Read-Copy Update module-based scalability-test facility");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
+ 
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index cafe047d046e8..08bf7c669dd3d 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -51,6 +51,7 @@
+ 
+ #include "rcu.h"
+ 
++MODULE_DESCRIPTION("Read-Copy Update module-based torture test facility");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@joshtriplett.org>");
+ 
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 2c2648a3ad306..f4ea5b1ec068a 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -63,6 +63,7 @@ do {											\
+ 
+ #define SCALEOUT_ERRSTRING(s, x...) pr_alert("%s" SCALE_FLAG "!!! " s "\n", scale_type, ## x)
+ 
++MODULE_DESCRIPTION("Scalability test for object reference mechanisms");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Joel Fernandes (Google) <joel@joelfernandes.org>");
+ 
+-- 
+2.40.1
 
-4.	Add rcu-updaters.sh script.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/rcu/rcuscale.c     |    1 
- b/kernel/rcu/rcutorture.c   |   46 ++++++++++++++++++++++----------------
- b/kernel/rcu/refscale.c     |    1 
- b/tools/rcu/rcu-updaters.sh |   52 ++++++++++++++++++++++++++++++++++++++++++++
- kernel/rcu/rcutorture.c     |    3 +-
- 5 files changed, 82 insertions(+), 21 deletions(-)
