@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F1714B07B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F6414B092;
 	Tue,  4 Jun 2024 22:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717540014; cv=none; b=MwZ1GWg/gf1ZrfphJ0ceSlsRVa6L/CcldBZc1P6LIpqLuuOry37T5YLbPL+2rpvvBuIaioYqidTMgPg0v+0MHQBPPMjGzfs180zx2syg0U/d7LrUm7S5H297bG2g7p0LWCO8NiA9mQbywtVeDf/WgfwLFzSifWvMvIkxt5vAdq8=
+	t=1717540014; cv=none; b=nzVjG/877BLyfo6Y6U7w3KVgGFR/Dl9OOwirqxEtZDjMJRfXxRCwmsqanLontfIYJFJm6PyV9YtQu2THlBFxfN8uhUnXB2UgC+O9tEpVhrCtWbFtRdGNeDZYRejq1WjGj4kTm+iUOjpj1aUUs2C57AonrV047EzI0Pz5/fHdZCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717540014; c=relaxed/simple;
-	bh=eTYCEt4S09cbBIvwTWJRKuNdHno4GV8Da6nEtMiRHjQ=;
+	bh=TioFm82Snd8j9pH8jLZE3PHQ5qk2yV0osr+xyGd7g+c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Z5/FdJT2z31+NJ53focm491XWppSkokGQjKEmWXjZhi0ReGHvBLtdoelMTyigzcTOjvwUKvNvXH4FXe0fLg7ick8D+HEqpiceYrKa9yniVe63Q9b9G2O1Mt9j0B2bnzGbvoNWIM59zHcv/2RLvhCc1484Hbe8MacDJQlZ3lyEhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uAWo6mlb; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=atJgD3z4OlRkCA1NYNDOGafuHOtIjFTj3QCKMF9aOwmFf5LhTk7H93IpIOkw21RvXYvnOd/ZKTSCO7qYv4GJMMA7jhwsV8pzejG8jYiv2alKejhaBayzNrK33xtctaciiogbQ6rrwGM4CwEWiD6j407pFd52ym+U0vMr+j3dCkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sGai/H0a; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uAWo6mlb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BED1C3277B;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sGai/H0a"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5631BC4AF08;
 	Tue,  4 Jun 2024 22:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1717540014;
-	bh=eTYCEt4S09cbBIvwTWJRKuNdHno4GV8Da6nEtMiRHjQ=;
+	bh=TioFm82Snd8j9pH8jLZE3PHQ5qk2yV0osr+xyGd7g+c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uAWo6mlbDhfzDWNpWWScNcWSR5t5VJjBGdLPbUTLhzKQPUB6xgnFv3Pkw2fjANkGf
-	 KBnEd95v9S+5oS4dmvUbGK6pRJh7Ud6ULW95udpU7SNUzrK7Tg3DQna6pG50RxRnr8
-	 TVMLO7k9kCM5EJAI/zZZsgEFoAv60N+lFufHoJ7Gftcuqas5i+Wf0wK/pwpruv7v9+
-	 n5naJIYMOBb+xMVqkVn1bSnsjDcpeH0/d1Y3C7HL/B1x482eGpkomdnV2KZiO/aHtb
-	 5AosWwwxV+cs3avkEbCD1V2J5vwJ1yEDLeyVN5b3e+q6whrkWPzIA1ND1mu9gvo2rg
-	 2rMFN2HCt1AXQ==
+	b=sGai/H0ahb0euEOElAvwYeBDGe9Jz07a85uy4SPB+l6ilTdewzdtN5Ae4hLz4OI+j
+	 I2GqRslKomd29+Tmkzt6rrykXqrevKlx5MJnvHL5bOROOoBT8k4kBeGGv8FCJgF3OG
+	 YBFxN5on/nWq/stc5hGRnSuOhvyl1YQDKE/VcgYOIbxfqbWQIN+kYk51IYMcCYvkg3
+	 Y8k4H6jedHeqI3RYTeXCltZM6pwzXrla3xfHIo8jHnCjgCrAsnHc+Kg5A1i6tNJ5jw
+	 zNoGl1Gk27gYNYooerRsbrmx909YHi1YeiXdB994wWE8uY3VqchImLi18fEtViVyUG
+	 TodZ+5mr+0Ixg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id EE455CE3F0F; Tue,  4 Jun 2024 15:26:53 -0700 (PDT)
+	id F0EB8CE3F26; Tue,  4 Jun 2024 15:26:53 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -35,9 +35,9 @@ Cc: linux-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
 	Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 2/6] rcu: Remove superfluous full memory barrier upon first EQS snapshot
-Date: Tue,  4 Jun 2024 15:26:48 -0700
-Message-Id: <20240604222652.2370998-2-paulmck@kernel.org>
+Subject: [PATCH rcu 3/6] rcu/exp: Remove superfluous full memory barrier upon first EQS snapshot
+Date: Tue,  4 Jun 2024 15:26:49 -0700
+Message-Id: <20240604222652.2370998-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
 References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
@@ -79,45 +79,28 @@ comment about the implicit barrier newly relied upon here.
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst    | 6 +++---
- kernel/rcu/tree.c                                          | 7 ++++++-
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ kernel/rcu/tree_exp.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-index 5750f125361b0..728b1e690c646 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -149,9 +149,9 @@ This case is handled by calls to the strongly ordered
- ``atomic_add_return()`` read-modify-write atomic operation that
- is invoked within ``rcu_dynticks_eqs_enter()`` at idle-entry
- time and within ``rcu_dynticks_eqs_exit()`` at idle-exit time.
--The grace-period kthread invokes ``rcu_dynticks_snap()`` and
--``rcu_dynticks_in_eqs_since()`` (both of which invoke
--an ``atomic_add_return()`` of zero) to detect idle CPUs.
-+The grace-period kthread invokes first ``ct_dynticks_cpu_acquire()``
-+(preceded by a full memory barrier) and ``rcu_dynticks_in_eqs_since()``
-+(both of which rely on acquire semantics) to detect idle CPUs.
- 
- +-----------------------------------------------------------------------+
- | **Quick Quiz**:                                                       |
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index f07b8bff4621b..1a6ef9c5c949e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -769,7 +769,12 @@ static void rcu_gpnum_ovf(struct rcu_node *rnp, struct rcu_data *rdp)
-  */
- static int dyntick_save_progress_counter(struct rcu_data *rdp)
- {
--	rdp->dynticks_snap = rcu_dynticks_snap(rdp->cpu);
-+	/*
-+	 * Full ordering against accesses prior current GP and also against
-+	 * current GP sequence number is enforced by current rnp locking
-+	 * with chained smp_mb__after_unlock_lock().
-+	 */
-+	rdp->dynticks_snap = ct_dynticks_cpu_acquire(rdp->cpu);
- 	if (rcu_dynticks_in_eqs(rdp->dynticks_snap)) {
- 		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
- 		rcu_gpnum_ovf(rdp->mynode, rdp);
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 8a1d9c8bd9f74..bec24ea6777e8 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -357,7 +357,13 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+ 		    !(rnp->qsmaskinitnext & mask)) {
+ 			mask_ofl_test |= mask;
+ 		} else {
+-			snap = rcu_dynticks_snap(cpu);
++			/*
++			 * Full ordering against accesses prior current GP and
++			 * also against current GP sequence number is enforced
++			 * by current rnp locking with chained
++			 * smp_mb__after_unlock_lock().
++			 */
++			snap = ct_dynticks_cpu_acquire(cpu);
+ 			if (rcu_dynticks_in_eqs(snap))
+ 				mask_ofl_test |= mask;
+ 			else
 -- 
 2.40.1
 
