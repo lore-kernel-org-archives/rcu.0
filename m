@@ -1,43 +1,48 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B0681736;
-	Mon,  3 Jun 2024 23:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CA837C;
+	Tue,  4 Jun 2024 00:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717458326; cv=none; b=RTy8khruhE8nA1Zo9PtZKsYpFhuedRmhD5k2b8Ybqi9TtjA/GXDLTbKc4SwU9fyYyNOv/3CanJDX3yDoWUhSONTeStUsYt8hAT+t4LVryXObuwAO/G75JC9mHeEKCxzq/hWairr/95x7F3O7IbVgsJ4crd0M9ToSvXQqiwyWie0=
+	t=1717459855; cv=none; b=YgXDxzCmnPu63S/F+YW1ctwA4lPLOwX/i0/U5rMp57BLpifeqXH3QdL+N3RRZ/sRZnBOnRAMHb/vga8sVGUhxr4AMQoFCIpSaCPxNkOXj6F5sxVUou9+2MnvQkC0Kg3SQ4/SNGl5T5zWL8yppzuoKrdwjtcEZKcINluhWdwOLpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717458326; c=relaxed/simple;
-	bh=DbU+XQ/XkYtbTmKjV5hcCfjQrOxiNIptXpeRmytd4Aw=;
+	s=arc-20240116; t=1717459855; c=relaxed/simple;
+	bh=PY1+D0GVG5kZRRDKKyxIm4TEVwjORk0BV4O9hhADL/4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SI1ioK2NFRPCXTdgpgWcNTzLD7JbYtl6jhODFIc1FAU4plKnhn02BF6KdhbsdVUkY7m815vkT6Iqt5GcYTSYFomf7jiZJbA7Vi/Yre05uRUBH6HtwIKisV3aepka8f68fx+rSOo75gXZUt51ClWc4bmfuOh+YLBMf4jXoE6kwiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PWUBDTTB; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=IUYbjTLgmJiJ4Ed3kqkqLk4pgv+tuDAqJ6G6bZNxdmMFyx9bihI22oLn6PSMqz9bkVoYQdowwqIBPZdVVAz9UBXtGxRBevpFGIV/+RdPZr43czYiKcwlQKtTnp8fnjMK5Ta4WQOUWdGOmruAvyGyBYcAly1RcJlJjkImf7W7d2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nHNNGFlF; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PWUBDTTB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A1CC2BD10;
-	Mon,  3 Jun 2024 23:45:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nHNNGFlF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 453C2C2BD10;
+	Tue,  4 Jun 2024 00:10:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717458325;
-	bh=DbU+XQ/XkYtbTmKjV5hcCfjQrOxiNIptXpeRmytd4Aw=;
+	s=k20201202; t=1717459855;
+	bh=PY1+D0GVG5kZRRDKKyxIm4TEVwjORk0BV4O9hhADL/4=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=PWUBDTTBIowKAZchLW/zgOSAEjSpS5hSZw7PsHFb3HC+2vGzJfK5/SebdPTdlhBMe
-	 H8600XOkzf6cx8AG88BqfaTPfX7Xw96PD/FHlryBvlM4vxucDuacW6/w9/gacie0qh
-	 GHSaonHawrO6ZbyagS4yddUAEN5RHdWBeMNY4IzdgICiBN5vTAX08qPyRa3pMUb9xA
-	 oQ7HtudS8lEYyTGlGGFB56p6F8pBK5LiJMGhxjgNHnYW8yhQqRJJ/MxqpBHblzKobh
-	 VLw1LsL7xWNHETsVpdV1HHuCkPaE1+h4SKYrf7XzMnyZNQSNz3/O18EKDch6a+6a9L
-	 hvNY3CElk2cZw==
+	b=nHNNGFlFD1eLsDquaGgbZ0iUe9rNarXs8gOtuEMA14qN2gCThN24zsDq88tMUb4SU
+	 BvQcA/OR07vTNjH82vP0v/qAVUSTvSOophbqZFHNEQZFYOFu0+rzwVN5+W38Cn16ka
+	 iz1VysAiJFxaXKgod5mrJWKuxxfOTeqEk6XuMeRY8CEcEQCy4naGssepc71n+lc/87
+	 rZtuv8gKNN4gCbEFj8YJBR9QOmQo6whxqYEOysGoHzudNYW/3M2gHOz8PvSJ6v7O/W
+	 BFyqS658h4IGN6TKgyD0nym25bYTHCXjwcHXDqEKJon0+oaTwNz93Ypm6g8WaC7/M6
+	 pg751Wu84QdWg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3E038CE0886; Mon,  3 Jun 2024 16:45:25 -0700 (PDT)
-Date: Mon, 3 Jun 2024 16:45:25 -0700
+	id E6BD3CE0886; Mon,  3 Jun 2024 17:10:54 -0700 (PDT)
+Date: Mon, 3 Jun 2024 17:10:54 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	urezki@gmail.com, rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Fix access non-existent percpu rtpcp variable
- in rcu_tasks_need_gpcb()
-Message-ID: <aa68fcdf-10c8-45bc-bd63-2c38a0b94d16@paulmck-laptop>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 5/6] rcu: Remove full memory barrier on RCU stall printout
+Message-ID: <5bc2d72a-ae27-43f0-893e-afb202abd61b@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240603055229.23601-1-qiang.zhang1211@gmail.com>
+References: <20240515125332.9306-1-frederic@kernel.org>
+ <20240515125332.9306-6-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -46,224 +51,82 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240603055229.23601-1-qiang.zhang1211@gmail.com>
+In-Reply-To: <20240515125332.9306-6-frederic@kernel.org>
 
-On Mon, Jun 03, 2024 at 01:52:29PM +0800, Zqiang wrote:
-> For kernels built with CONFIG_FORCE_NR_CPUS=y, the nr_cpu_ids is
-> defined as NR_CPUS instead of the number of possible cpus, this
-> will cause the following system panic:
+On Wed, May 15, 2024 at 02:53:31PM +0200, Frederic Weisbecker wrote:
+> RCU stall printout fetches the EQS state of a CPU with a preceding full
+> memory barrier. However there is nothing to order this read against at
+> this debugging stage. It is inherently racy when performed remotely.
+> 
+> Do a plain read instead.
+> 
+> This was the last user of rcu_dynticks_snap().
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Nice change, thank you!
+I went through all of these, and the look good.  Though I am a bit
+nervous about this one.  The RCU CPU stall warning code used to be
+completely unordered, but the hardware taught me better.  I did not
+add these in response to a problem (just lazily used the existing fully
+ordered primitive), but you never know.  Me, I would have kept the extra
+memory barriers in all six patches because they are not on a fastpath,
+but you are quite correct that they are redundant.
 
-There is one issue with it on large systems.  Please see the comments
-near the end of this patch.
+So I have queued these, and intend to send them into the next merge
+window.  However, you now own vanilla RCU grace-period memory ordering,
+both normal and expedited.  As in if someone else breaks it, you already
+bought it.  ;-)
 
 							Thanx, Paul
 
-> [    0.015349][    T0] smpboot: Allowing 4 CPUs, 0 hotplug CPUs
-> ...
-> [    0.021342][    T0] setup_percpu: NR_CPUS:512 nr_cpumask_bits:512 nr_cpu_ids:512 nr_node_ids:1
-> ...
-> [    3.681252][   T15] BUG: unable to handle page fault for address: ffffffff9911c8c8
-> [    3.689415][   T45] ehci-pci 0000:00:1a.0: debug port 2
-> [    3.697008][   T15] #PF: supervisor read access in kernel mode
-> [    3.697009][   T15] #PF: error_code(0x0000) - not-present page
-> [    3.706233][   T45] ehci-pci 0000:00:1a.0: irq 16, io mem 0xf7e3c000
-> [    3.708152][   T15] PGD 40fa24067 P4D 40fa24067 PUD 40fa25063 PMD 410bff063
-> [    3.720380][   T45] ehci-pci 0000:00:1a.0: USB 2.0 started, EHCI 1.00
-> [    3.720430][   T15] PTE 800ffffbefee3062
-> [    3.720431][   T15] Oops: 0000 [#1] PREEMPT SMP PTI
-> [    3.727873][   T45] usb usb2: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.06
-> [    3.734009][   T15] CPU: 0 PID: 15 Comm: rcu_tasks_trace Tainted: G W          6.6.21 #1 5dc7acf91a5e8e9ac9dcfc35bee0245691283ea6
-> [    3.734011][   T15] Hardware name: Dell Inc. OptiPlex 9020/005T15, BIOS A14 09/14/2015
-> [    3.734012][   T15] RIP: 0010:rcu_tasks_need_gpcb+0x25d/0x2c0
-> [    3.737962][   T45] usb usb2: New USB device strings: Mfr=3, Product=2, SerialNumber=1
-> [    3.742877][   T15] RSP: 0018:ffffa371c00a3e60 EFLAGS: 00010082
-> [    3.751891][   T45] usb usb2: Product: EHCI Host Controller
-> [    3.764495][   T15]
-> [    3.764496][   T15] RAX: ffffffff98929ca0 RBX: ffffffff98b3b328 RCX: 0000000000021880
-> [    3.764497][   T15] RDX: ffffffff9911c880 RSI: 0000000000000000 RDI: 0000000000000000
-> [    3.772461][   T45] usb usb2: Manufacturer: Linux 6.6.21 ehci_hcd
-> [    3.778248][   T15] RBP: 0000000000000202 R08: 0000000000000000 R09: 0000000000000000
-> [    3.778249][   T15] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000003
-> [    3.778249][   T15] R13: 0000000000000000 R14: 0000000000000001 R15: ffffffff98b3b320
-> [    3.786216][   T45] usb usb2: SerialNumber: 0000:00:1a.0
-> [    3.805811][   T15] FS:  0000000000000000(0000) GS:ffff8c781ea00000(0000) knlGS:0000000000000000
-> [    3.805813][   T15] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    3.811993][   T45] hub 2-0:1.0: USB hub found
-> [    3.817383][   T15] CR2: ffffffff9911c8c8 CR3: 000000040fa20005 CR4: 00000000001706f0
-> [    3.817385][   T15] Call Trace:
-> [    3.817386][   T15]  <TASK>
-> [    3.817388][   T15]  ? __die+0x23/0x80
-> [    3.819643][   T45] hub 2-0:1.0: 2 ports detected
-> [    3.827481][   T15]  ? page_fault_oops+0xa4/0x180
-> [    3.827485][   T15]  ? exc_page_fault+0x152/0x180
-> [    3.922376][   T15]  ? asm_exc_page_fault+0x26/0x40
-> [    3.927289][   T15]  ? rcu_tasks_need_gpcb+0x25d/0x2c0
-> [    3.932459][   T15]  ? __pfx_rcu_tasks_kthread+0x40/0x40
-> [    3.937806][   T15]  rcu_tasks_one_gp+0x69/0x180
-> [    3.942451][   T15]  rcu_tasks_kthread+0x94/0xc0
-> [    3.947096][   T15]  kthread+0xe8/0x140
-> [    3.950956][   T15]  ? __pfx_kthread+0x40/0x40
-> [    3.955425][   T15]  ret_from_fork+0x34/0x80
-> [    3.959721][   T15]  ? __pfx_kthread+0x40/0x40
-> [    3.964192][   T15]  ret_from_fork_asm+0x1b/0x80
-> [    3.968841][   T15]  </TASK>
-> 
-> Consider that there may be holes in the CPU numbers, this commit
-> use the maxcpu variable to store the CPU numbers after traversing
-> possible cpu, and generate the rcu_task_cpu_ids variable and assign
-> it to (maxcpu +1) instead of nr_cpu_ids.
-> 
-> Closes: https://lore.kernel.org/linux-input/CALMA0xaTSMN+p4xUXkzrtR5r6k7hgoswcaXx7baR_z9r5jjskw@mail.gmail.com/T/#u
-> Reported-by: Zhixu Liu <zhixu.liu@gmail.com>
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 > ---
->  kernel/rcu/tasks.h | 54 ++++++++++++++++++++++++----------------------
->  1 file changed, 28 insertions(+), 26 deletions(-)
+>  kernel/rcu/tree.c       | 10 ----------
+>  kernel/rcu/tree_stall.h |  4 ++--
+>  2 files changed, 2 insertions(+), 12 deletions(-)
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index e362f72bb65d..8428440e0fa4 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -182,6 +182,8 @@ module_param(rcu_task_collapse_lim, int, 0444);
->  static int rcu_task_lazy_lim __read_mostly = 32;
->  module_param(rcu_task_lazy_lim, int, 0444);
->  
-> +static int rcu_task_cpu_ids;
-> +
->  /* RCU tasks grace-period state for debugging. */
->  #define RTGS_INIT		 0
->  #define RTGS_WAIT_WAIT_CBS	 1
-> @@ -245,6 +247,7 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->  	int cpu;
->  	int lim;
->  	int shift;
-> +	int maxcpu;
->  
->  	if (rcu_task_enqueue_lim < 0) {
->  		rcu_task_enqueue_lim = 1;
-> @@ -254,14 +257,6 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->  	}
->  	lim = rcu_task_enqueue_lim;
->  
-> -	if (lim > nr_cpu_ids)
-> -		lim = nr_cpu_ids;
-> -	shift = ilog2(nr_cpu_ids / lim);
-> -	if (((nr_cpu_ids - 1) >> shift) >= lim)
-> -		shift++;
-> -	WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
-> -	WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> -	smp_store_release(&rtp->percpu_enqueue_lim, lim);
->  	for_each_possible_cpu(cpu) {
->  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
->  
-> @@ -277,10 +272,21 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->  			INIT_LIST_HEAD(&rtpcp->rtp_blkd_tasks);
->  		if (!rtpcp->rtp_exit_list.next)
->  			INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
-> +		maxcpu = cpu;
->  	}
->  
-> -	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
-> -			data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim), rcu_task_cb_adjust);
-> +	rcu_task_cpu_ids = maxcpu + 1;
-> +	if (lim > rcu_task_cpu_ids)
-> +		lim = rcu_task_cpu_ids;
-> +	shift = ilog2(rcu_task_cpu_ids / lim);
-> +	if (((rcu_task_cpu_ids - 1) >> shift) >= lim)
-> +		shift++;
-> +	WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
-> +	WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> +	smp_store_release(&rtp->percpu_enqueue_lim, lim);
-> +	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d rcu_task_cpu_ids=%d.\n",
-> +			rtp->name, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim),
-> +			rcu_task_cb_adjust, rcu_task_cpu_ids);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 02f6f3483482..04dde7473613 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -299,16 +299,6 @@ static void rcu_dynticks_eqs_online(void)
+>  	ct_state_inc(RCU_DYNTICKS_IDX);
 >  }
 >  
->  // Compute wakeup time for lazy callback timer.
-> @@ -348,7 +354,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->  			rtpcp->rtp_n_lock_retries = 0;
->  		}
->  		if (rcu_task_cb_adjust && ++rtpcp->rtp_n_lock_retries > rcu_task_contend_lim &&
-> -		    READ_ONCE(rtp->percpu_enqueue_lim) != nr_cpu_ids)
-> +		    READ_ONCE(rtp->percpu_enqueue_lim) != rcu_task_cpu_ids)
->  			needadjust = true;  // Defer adjustment to avoid deadlock.
+> -/*
+> - * Snapshot the ->dynticks counter with full ordering so as to allow
+> - * stable comparison of this counter with past and future snapshots.
+> - */
+> -static int rcu_dynticks_snap(int cpu)
+> -{
+> -	smp_mb();  // Fundamental RCU ordering guarantee.
+> -	return ct_dynticks_cpu_acquire(cpu);
+> -}
+> -
+>  /*
+>   * Return true if the snapshot returned from rcu_dynticks_snap()
+>   * indicates that RCU is in an extended quiescent state.
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 460efecd077b..4b0e9d7c4c68 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -501,7 +501,7 @@ static void print_cpu_stall_info(int cpu)
 >  	}
->  	// Queuing callbacks before initialization not yet supported.
-> @@ -368,10 +374,10 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->  	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
->  	if (unlikely(needadjust)) {
->  		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-> -		if (rtp->percpu_enqueue_lim != nr_cpu_ids) {
-> +		if (rtp->percpu_enqueue_lim != rcu_task_cpu_ids) {
->  			WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
-> -			WRITE_ONCE(rtp->percpu_dequeue_lim, nr_cpu_ids);
-> -			smp_store_release(&rtp->percpu_enqueue_lim, nr_cpu_ids);
-> +			WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
-> +			smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
->  			pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
->  		}
->  		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-> @@ -481,7 +487,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
->  	if (rcu_task_cb_adjust && ncbs <= rcu_task_collapse_lim) {
->  		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
->  		if (rtp->percpu_enqueue_lim > 1) {
-> -			WRITE_ONCE(rtp->percpu_enqueue_shift, order_base_2(nr_cpu_ids));
-> +			WRITE_ONCE(rtp->percpu_enqueue_shift, order_base_2(rcu_task_cpu_ids));
->  			smp_store_release(&rtp->percpu_enqueue_lim, 1);
->  			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
->  			gpdone = false;
-> @@ -496,7 +502,9 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
->  			pr_info("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
->  		}
->  		if (rtp->percpu_dequeue_lim == 1) {
-> -			for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
-> +			for (cpu = rtp->percpu_dequeue_lim; cpu < rcu_task_cpu_ids; cpu++) {
-> +				if (!cpu_possible(cpu))
-> +					continue;
->  				struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
->  
->  				WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
-> @@ -520,21 +528,15 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
->  	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
->  	struct rcu_tasks_percpu *rtpcp_next;
->  
-> -	cpu = rtpcp->cpu;
-> -	cpunext = cpu * 2 + 1;
-> -	if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-
-The purpose here is to parallelize the callback invocation, which looks to
-me to be lost given the change below.  This parallelization is important
-given that the Linux kernel runs on systems with thousands of CPUs.
-Admittedly not often, but we nevertheless do need to make Linux run well
-on such systems.
-
-But you are right that the parallelization assumed that per-CPU data
-existed for all CPUs from zero to the maximum-numbered CPU.  Perhaps a
-good fix would be to make cblist_init_generic() construct a dense array
-containing the numbers of the possible CPUs, then index into that array
-to fan out the parallization.
-
-> +	cpu = rtpcp->cpu + 1;
-> +	if (cpu < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> +		cpunext = cpumask_next(cpu - 1, cpu_possible_mask);
->  		rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
->  		cpuwq = rcu_cpu_beenfullyonline(cpunext) ? cpunext : WORK_CPU_UNBOUND;
->  		queue_work_on(cpuwq, system_wq, &rtpcp_next->rtp_work);
-> -		cpunext++;
-> -		if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> -			rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
-> -			cpuwq = rcu_cpu_beenfullyonline(cpunext) ? cpunext : WORK_CPU_UNBOUND;
-> -			queue_work_on(cpuwq, system_wq, &rtpcp_next->rtp_work);
-> -		}
->  	}
->  
-> -	if (rcu_segcblist_empty(&rtpcp->cblist) || !cpu_possible(cpu))
-> +	if (rcu_segcblist_empty(&rtpcp->cblist))
->  		return;
->  	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
->  	rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
+>  	delta = rcu_seq_ctr(rdp->mynode->gp_seq - rdp->rcu_iw_gp_seq);
+>  	falsepositive = rcu_is_gp_kthread_starving(NULL) &&
+> -			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
+> +			rcu_dynticks_in_eqs(ct_dynticks_cpu(cpu));
+>  	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
+>  	if (rcuc_starved)
+>  		// Print signed value, as negative values indicate a probable bug.
+> @@ -515,7 +515,7 @@ static void print_cpu_stall_info(int cpu)
+>  			rdp->rcu_iw_pending ? (int)min(delta, 9UL) + '0' :
+>  				"!."[!delta],
+>  	       ticks_value, ticks_title,
+> -	       rcu_dynticks_snap(cpu) & 0xffff,
+> +	       ct_dynticks_cpu(cpu) & 0xffff,
+>  	       ct_dynticks_nesting_cpu(cpu), ct_dynticks_nmi_nesting_cpu(cpu),
+>  	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
+>  	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
 > -- 
-> 2.17.1
+> 2.44.0
 > 
