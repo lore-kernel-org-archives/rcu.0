@@ -1,43 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B2CA5F;
-	Tue,  4 Jun 2024 22:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C08B13777A;
+	Tue,  4 Jun 2024 22:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717539718; cv=none; b=EfxdU/kXG0HxzbRIBzCXqfhsZfopZrHpQeKAIKpI1IYKbDIBem1Vu2mfFZOAQzDgPtEPmp9czwIsWpc4gAynh6wm6+2ParP80ZkyqEdvjHSWeFDEEmVzBU/sCECVv1bio2PmF8zPCnm/CeZq8SuhPseLoNPKHLZbt2vzV3SNnqY=
+	t=1717539718; cv=none; b=uh06qRZbZBKbat68ZGcJ3NiYrsq39W9oZQDoDLP9PYpV2RZF4SuRPJFd7E8jKtdt32RSCSyfsZE03gtOeXUT1VqBxFRzPpp88ZLkqJz4iBhkztzDVPISV3zVXsaRjfMzvfDi9OxpFyfT2sgiH5q6m8SpvpKJsHRv+Xb4Razfako=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717539718; c=relaxed/simple;
-	bh=miADrXP78rcihw0Pzcipac84PpQR6U3LGdRSUZbgACA=;
+	bh=CuXVALkORaJs+PqG5WX2Eg3IMr6JUZzWBMU3JPWUmF8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TNxDHvBowab0wj3iTezlTZ52ldEeLqdNNnesXhmASmK5uG2/H7XK+D2Lj7BYVrCphVZzSDaAZMHg7AHXx+/ziywiIjLv5wigQb4C9qhVEZ5Cq4B+VFmGqLo3PWYUkL7iCFLpsj70/Ewgn6FuZNTktcpLFWfCtAT219uk19K8Wm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JktfB5Ic; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=VSm5qYLnYMcNDaGbxjzZf/owcC48oPqliDKHxqmO3xVGAqjbClYLy5W2O1tjPOh688KNjiUgAYm5uilUo7A2j16j0Le8K3pDJ1ceD13AYsxXhsYG19XcxbJu04kjFT6FwKEhN/TZOHIbKGoM+eg021+tuNMmD+O4wc1KdRVPj+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nzC72Mkg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JktfB5Ic"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD1AAC2BBFC;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nzC72Mkg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC7B4C3277B;
 	Tue,  4 Jun 2024 22:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1717539717;
-	bh=miADrXP78rcihw0Pzcipac84PpQR6U3LGdRSUZbgACA=;
+	bh=CuXVALkORaJs+PqG5WX2Eg3IMr6JUZzWBMU3JPWUmF8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JktfB5IcwYSjsYBWlP0OV9QVc/5t8jTmiXmrccSFHYZcUUxI9AdXxAXJbng1BQf2S
-	 I5ilTb+UmXdiVXoWQp5ipqHdOVcH4nLd5Gpxmone5KPlPgolvuem33eHhXedrtoZbB
-	 Nu0W5oqh9e+3qjBk4OjdpWBv4n97BlxpgdmbWkJKO1opm3jsZ6dG6z3326bdLfkEHS
-	 H6vEQyhLjtdxK6wRI14UtACBrN65sIO4vD4yWoOaKL5jde+a3Xvri7vFDkvIk6s62c
-	 WHp97KDxlsQfbMhpq7r5LTG2uD1OfSWx1vAtaoEPMDrkrb8ZPRl5+XyxPZKNLgmwSQ
-	 kD5nzw6m+RFow==
+	b=nzC72MkgI40MmdAy+a5Hc+L0zUpGCRcdQNi0mZ7aE0OQebJYZ7NSOu9DhXMmoZ/e6
+	 Xq5o5BgAJtoNJs3yBa86pwWfCkOkgUxs+46WbB9movXVoEioPFceQlNgvTNngmWAL4
+	 Kw1EwyW4XWtVRJ0r9emdImWskZtKTe+VhYlheW+KjYCGxzR4A+p7gIbWAJNzo9axAp
+	 b8W7uA0+Yrv2rAt5DJ9+uxtTa/bBakiUNeRp7Xu0/xqcGFxpfyElV7hWdQhF5+ADvb
+	 76Rq+UOJ0X4p9rlQJQ0vw+P+bmnQKUAhLtX97XdWuvwGBE3EiAwZN34+8UUgSabFfE
+	 Ay21pHsqH4xrA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 80251CE3ED6; Tue,  4 Jun 2024 15:21:57 -0700 (PDT)
+	id 89832CE3F0F; Tue,  4 Jun 2024 15:21:57 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH rcu 1/2] doc: Update Tasks RCU and Tasks Rude RCU description in Requirements.rst
-Date: Tue,  4 Jun 2024 15:21:54 -0700
-Message-Id: <20240604222155.2370541-1-paulmck@kernel.org>
+	Rao Shoaib <rao.shoaib@oracle.com>
+Subject: [PATCH rcu 2/2] doc: Clarify rcu_assign_pointer() and rcu_dereference() ordering
+Date: Tue,  4 Jun 2024 15:21:55 -0700
+Message-Id: <20240604222155.2370541-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <e5dc5f14-04c1-494b-9044-e837279a7bcd@paulmck-laptop>
 References: <e5dc5f14-04c1-494b-9044-e837279a7bcd@paulmck-laptop>
@@ -49,57 +49,68 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds more detail to the Tasks RCU and Tasks Rude RCU
-descriptions in Requirements.rst.  While in the area, add Tasks Trace
-RCU to the Tasks-RCU table of contents.
+This commit expands on the ordering properties of rcu_assign_pointer()
+and rcu_dereference(), outlining their constraints on CPUs and compilers.
 
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reported-by: Rao Shoaib <rao.shoaib@oracle.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../RCU/Design/Requirements/Requirements.rst     | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ Documentation/RCU/whatisRCU.rst | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index cccafdaa1f849..f511476b45506 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2357,6 +2357,7 @@ section.
- #. `Sched Flavor (Historical)`_
- #. `Sleepable RCU`_
- #. `Tasks RCU`_
-+#. `Tasks Trace RCU`_
+diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+index 94838c65c7d97..d585a5490aeec 100644
+--- a/Documentation/RCU/whatisRCU.rst
++++ b/Documentation/RCU/whatisRCU.rst
+@@ -250,21 +250,25 @@ rcu_assign_pointer()
+ ^^^^^^^^^^^^^^^^^^^^
+ 	void rcu_assign_pointer(p, typeof(p) v);
  
- Bottom-Half Flavor (Historical)
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -2610,6 +2611,16 @@ critical sections that are delimited by voluntary context switches, that
- is, calls to schedule(), cond_resched(), and
- synchronize_rcu_tasks(). In addition, transitions to and from
- userspace execution also delimit tasks-RCU read-side critical sections.
-+Idle tasks are ignored by Tasks RCU, and Tasks Rude RCU may be used to
-+interact with them.
+-	Yes, rcu_assign_pointer() **is** implemented as a macro, though it
+-	would be cool to be able to declare a function in this manner.
+-	(Compiler experts will no doubt disagree.)
++	Yes, rcu_assign_pointer() **is** implemented as a macro, though
++	it would be cool to be able to declare a function in this manner.
++	(And there has been some discussion of adding overloaded functions
++	to the C language, so who knows?)
+ 
+ 	The updater uses this spatial macro to assign a new value to an
+ 	RCU-protected pointer, in order to safely communicate the change
+ 	in value from the updater to the reader.  This is a spatial (as
+ 	opposed to temporal) macro.  It does not evaluate to an rvalue,
+-	but it does execute any memory-barrier instructions required
+-	for a given CPU architecture.  Its ordering properties are that
+-	of a store-release operation.
+-
+-	Perhaps just as important, it serves to document (1) which
+-	pointers are protected by RCU and (2) the point at which a
+-	given structure becomes accessible to other CPUs.  That said,
++	but it does provide any compiler directives and memory-barrier
++	instructions required for a given compile or CPU architecture.
++	Its ordering properties are that of a store-release operation,
++	that is, any prior loads and stores required to initialize the
++	structure are ordered before the store that publishes the pointer
++	to that structure.
 +
-+Note well that involuntary context switches are *not* Tasks-RCU quiescent
-+states.  After all, in preemptible kernels, a task executing code in a
-+trampoline might be preempted.  In this case, the Tasks-RCU grace period
-+clearly cannot end until that task resumes and its execution leaves that
-+trampoline.  This means, among other things, that cond_resched() does
-+not provide a Tasks RCU quiescent state.  (Instead, use rcu_softirq_qs()
-+from softirq or rcu_tasks_classic_qs() otherwise.)
++	Perhaps just as important, rcu_assign_pointer() serves to document
++	(1) which pointers are protected by RCU and (2) the point at which
++	a given structure becomes accessible to other CPUs.  That said,
+ 	rcu_assign_pointer() is most frequently used indirectly, via
+ 	the _rcu list-manipulation primitives such as list_add_rcu().
  
- The tasks-RCU API is quite compact, consisting only of
- call_rcu_tasks(), synchronize_rcu_tasks(), and
-@@ -2632,6 +2643,11 @@ moniker.  And this operation is considered to be quite rude by real-time
- workloads that don't want their ``nohz_full`` CPUs receiving IPIs and
- by battery-powered systems that don't want their idle CPUs to be awakened.
+@@ -283,7 +287,11 @@ rcu_dereference()
+ 	executes any needed memory-barrier instructions for a given
+ 	CPU architecture.  Currently, only Alpha needs memory barriers
+ 	within rcu_dereference() -- on other CPUs, it compiles to a
+-	volatile load.
++	volatile load.	However, no mainstream C compilers respect
++	address dependencies, so rcu_dereference() uses volatile casts,
++	which, in combination with the coding guidelines listed in
++	rcu_dereference.rst, prevent current compilers from breaking
++	these dependencies.
  
-+Once kernel entry/exit and deep-idle functions have been properly tagged
-+``noinstr``, Tasks RCU can start paying attention to idle tasks (except
-+those that are idle from RCU's perspective) and then Tasks Rude RCU can
-+be removed from the kernel.
-+
- The tasks-rude-RCU API is also reader-marking-free and thus quite compact,
- consisting of call_rcu_tasks_rude(), synchronize_rcu_tasks_rude(),
- and rcu_barrier_tasks_rude().
+ 	Common coding practice uses rcu_dereference() to copy an
+ 	RCU-protected pointer to a local variable, then dereferences
 -- 
 2.40.1
 
