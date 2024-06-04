@@ -1,43 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBEE14D28F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBC214D28E;
 	Tue,  4 Jun 2024 22:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717539837; cv=none; b=aWS+i2xMEcFyKeM7Edn9iPbmBFrypC+/ItQ0rUl9lhnEdkjN6uHON+Th9J1CGOG9KpHpM8bZltNuNlp4wmXeOT+NoGSm4+XtsPUqQFwnby95Dl82YN1dlxguj/SxPbWL/iiXzyunkWS3PU1spjxR+iQeK0/yX3bZV8vPZda1BC4=
+	t=1717539837; cv=none; b=q5EFIMNJucwSD+VVEBmPloCLIsCLtJbbway3ysqw9SD62rL2iQZy5QdCibv1b52wObXs4cpL4DcaOT6dmts5WvAFgqAdxBViX38agZ+pKtnCZky0ixsuSiC65/7csFHYCesWJOIVEQmQrQ5irLvg7Apv0Jnhog7akfOOi5eDHKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717539837; c=relaxed/simple;
-	bh=yXmNx6GGZHORzw+Gi/ligi9zPZy9C9j2+D0gbKw6Oec=;
+	bh=3cxpJfoy8T/KbD5i0taeL255jR0v95FOadtBWaxfrUc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RwzeMZ0TCK19l6PNYMkyGYyu9wguOx11fZyhEkJ/5vjfUozD7gXKE6q3zIJ8hOwjQ78kTbyH0UMeoOQBhjZNcD5wDL+sUaqu2WVRlMafykIU79OoollDvNLqJYYPZE3NWtOyEaeHW0teGj6LKw8T7GFmPMhHaZLt+p76lpg3TpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oU6xBh0V; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=UY605izIvreICRcG8oharWEfuUzZ1fr6Ibetrynuy8XFbnaojK6WQELQ7PSoCfSj1Z52uAxggcNLaHrhpSl+id0x9V3oE6dGowHXUmJ7D8V9Q4+QFz/bzDc1TWnPrMPJ9QO7DHF1hxQ95NeYfNBRTTEmMTjQwIyzl++LsmhTgas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CZ1l9DSb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oU6xBh0V"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D17EC4AF09;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CZ1l9DSb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16E48C4AF12;
 	Tue,  4 Jun 2024 22:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1717539837;
-	bh=yXmNx6GGZHORzw+Gi/ligi9zPZy9C9j2+D0gbKw6Oec=;
+	bh=3cxpJfoy8T/KbD5i0taeL255jR0v95FOadtBWaxfrUc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oU6xBh0VDGe7iMxicBoLC3QF6WQmFzOSJtugKtOUFyrrHafO+M+Y3cBp0yNCHOKbs
-	 SAxgBt0nbSN4vSDr2TCJ4u5ZGIz/E+HiCslFN52DUwsc/Dl14I4K/M8v1dbXSEeIu4
-	 fD6UkNzVcucXXz0kCzGy1O/I/lu2z8pOYSykXfLTN3A/2jNKB4ku+bfGlQfuTalaDJ
-	 MToyertvOMNHwHaSS/2vDoUoP6BCIJmgcj2urVR84N7m7BSxAMnyCtLDaNpuLie7qx
-	 wsOfz2lVGdpaPDk6hJ4vawC70JgXUd2MCkT0BYA4azl40xWEjzUhPhb5VCKBmNDAXL
-	 U0AUr7aV+nbQQ==
+	b=CZ1l9DSbH/RQScpO9KFYfapGQp/GOEMXcSGIh/NWdipN1ejmD3EzK8bvwfQ9aX6pE
+	 GCTh1c6SILCZWHSWQQDTEDIkNTFP36HuGJeAApSYDUiRiuL31N90sZT7atwP0E3o5E
+	 i/FbeHtk27KBcBLm4rWlOeqUgPLxlVs0DjCQntGLeZG7p5QDuNOJnhf01bZZ9QwlA7
+	 3oXNRFkF7dcQoiI92REbWdCYtv3ccFXQszoRmYqC8RG27rbuzsPUzRBL9gDPo7L8RP
+	 kADVu5B0IYyeYHlD0UWphkYOUaNklI7MxuTMe/Ik3UZX4BsLV57TVnY6vDa5XPlWbp
+	 3Fzu4swDy011g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6ECB1CE3F35; Tue,  4 Jun 2024 15:23:56 -0700 (PDT)
+	id 6C4EFCE3F34; Tue,  4 Jun 2024 15:23:56 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Frederic Weisbecker <frederic@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 9/9] rcu: Fix rcu_barrier() VS post CPUHP_TEARDOWN_CPU invocation
-Date: Tue,  4 Jun 2024 15:23:55 -0700
-Message-Id: <20240604222355.2370768-9-paulmck@kernel.org>
+Subject: [PATCH rcu 8/9] rcu: Eliminate lockless accesses to rcu_sync->gp_count
+Date: Tue,  4 Jun 2024 15:23:54 -0700
+Message-Id: <20240604222355.2370768-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
 References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
@@ -49,115 +49,66 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Oleg Nesterov <oleg@redhat.com>
 
-When rcu_barrier() calls rcu_rdp_cpu_online() and observes a CPU off
-rnp->qsmaskinitnext, it means that all accesses from the offline CPU
-preceding the CPUHP_TEARDOWN_CPU are visible to RCU barrier, including
-callbacks expiration and counter updates.
+The rcu_sync structure's ->gp_count field is always accessed under the
+protection of that same structure's ->rss_lock field, with the exception
+of a pair of WARN_ON_ONCE() calls just prior to acquiring that lock in
+functions rcu_sync_exit() and rcu_sync_dtor().  These lockless accesses
+are unnecessary and impair KCSAN's ability to catch bugs that might be
+inserted via other lockless accesses.
 
-However interrupts can still fire after stop_machine() re-enables
-interrupts and before rcutree_report_cpu_dead(). The related accesses
-happening between CPUHP_TEARDOWN_CPU and rnp->qsmaskinitnext clearing
-are _NOT_ guaranteed to be seen by rcu_barrier() without proper
-ordering, especially when callbacks are invoked there to the end, making
-rcutree_migrate_callback() bypass barrier_lock.
+This commit therefore moves those WARN_ON_ONCE() calls under the lock.
 
-The following theoretical race example can make rcu_barrier() hang:
-
-CPU 0                                               CPU 1
------                                               -----
-//cpu_down()
-smpboot_park_threads()
-//ksoftirqd is parked now
-<IRQ>
-rcu_sched_clock_irq()
-   invoke_rcu_core()
-do_softirq()
-   rcu_core()
-      rcu_do_batch()
-         // callback storm
-         // rcu_do_batch() returns
-         // before completing all
-         // of them
-   // do_softirq also returns early because of
-   // timeout. It defers to ksoftirqd but
-   // it's parked
-</IRQ>
-stop_machine()
-   take_cpu_down()
-                                                    rcu_barrier()
-                                                        spin_lock(barrier_lock)
-                                                        // observes rcu_segcblist_n_cbs(&rdp->cblist) != 0
-<IRQ>
-do_softirq()
-   rcu_core()
-      rcu_do_batch()
-         //completes all pending callbacks
-         //smp_mb() implied _after_ callback number dec
-</IRQ>
-
-rcutree_report_cpu_dead()
-   rnp->qsmaskinitnext &= ~rdp->grpmask;
-
-rcutree_migrate_callback()
-   // no callback, early return without locking
-   // barrier_lock
-                                                        //observes !rcu_rdp_cpu_online(rdp)
-                                                        rcu_barrier_entrain()
-                                                           rcu_segcblist_entrain()
-                                                              // Observe rcu_segcblist_n_cbs(rsclp) == 0
-                                                              // because no barrier between reading
-                                                              // rnp->qsmaskinitnext and rsclp->len
-                                                              rcu_segcblist_add_len()
-                                                                 smp_mb__before_atomic()
-                                                                 // will now observe the 0 count and empty
-                                                                 // list, but too late, we enqueue regardless
-                                                                 WRITE_ONCE(rsclp->len, rsclp->len + v);
-                                                        // ignored barrier callback
-                                                        // rcu barrier stall...
-
-This could be solved with a read memory barrier, enforcing the message
-passing between rnp->qsmaskinitnext and rsclp->len, matching the full
-memory barrier after rsclp->len addition in rcu_segcblist_add_len()
-performed at the end of rcu_do_batch().
-
-However the rcu_barrier() is complicated enough and probably doesn't
-need too many more subtleties. CPU down is a slowpath and the
-barrier_lock seldom contended. Solve the issue with unconditionally
-locking the barrier_lock on rcutree_migrate_callbacks(). This makes sure
-that either rcu_barrier() sees the empty queue or its entrained
-callback will be migrated.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ kernel/rcu/sync.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 408b020c9501f..c58fc10fb5969 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -5147,11 +5147,15 @@ void rcutree_migrate_callbacks(int cpu)
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 	bool needwake;
+diff --git a/kernel/rcu/sync.c b/kernel/rcu/sync.c
+index 6c2bd9001adcd..da60a9947c005 100644
+--- a/kernel/rcu/sync.c
++++ b/kernel/rcu/sync.c
+@@ -122,7 +122,7 @@ void rcu_sync_enter(struct rcu_sync *rsp)
+ 		 * we are called at early boot time but this shouldn't happen.
+ 		 */
+ 	}
+-	WRITE_ONCE(rsp->gp_count, rsp->gp_count + 1);
++	rsp->gp_count++;
+ 	spin_unlock_irq(&rsp->rss_lock);
  
--	if (rcu_rdp_is_offloaded(rdp) ||
--	    rcu_segcblist_empty(&rdp->cblist))
--		return;  /* No callbacks to migrate. */
-+	if (rcu_rdp_is_offloaded(rdp))
-+		return;
+ 	if (gp_state == GP_IDLE) {
+@@ -151,15 +151,11 @@ void rcu_sync_enter(struct rcu_sync *rsp)
+  */
+ void rcu_sync_exit(struct rcu_sync *rsp)
+ {
+-	int gpc;
+-
+ 	WARN_ON_ONCE(READ_ONCE(rsp->gp_state) == GP_IDLE);
+-	WARN_ON_ONCE(READ_ONCE(rsp->gp_count) == 0);
  
- 	raw_spin_lock_irqsave(&rcu_state.barrier_lock, flags);
-+	if (rcu_segcblist_empty(&rdp->cblist)) {
-+		raw_spin_unlock_irqrestore(&rcu_state.barrier_lock, flags);
-+		return;  /* No callbacks to migrate. */
-+	}
-+
- 	WARN_ON_ONCE(rcu_rdp_cpu_online(rdp));
- 	rcu_barrier_entrain(rdp);
- 	my_rdp = this_cpu_ptr(&rcu_data);
+ 	spin_lock_irq(&rsp->rss_lock);
+-	gpc = rsp->gp_count - 1;
+-	WRITE_ONCE(rsp->gp_count, gpc);
+-	if (!gpc) {
++	WARN_ON_ONCE(rsp->gp_count == 0);
++	if (!--rsp->gp_count) {
+ 		if (rsp->gp_state == GP_PASSED) {
+ 			WRITE_ONCE(rsp->gp_state, GP_EXIT);
+ 			rcu_sync_call(rsp);
+@@ -178,10 +174,10 @@ void rcu_sync_dtor(struct rcu_sync *rsp)
+ {
+ 	int gp_state;
+ 
+-	WARN_ON_ONCE(READ_ONCE(rsp->gp_count));
+ 	WARN_ON_ONCE(READ_ONCE(rsp->gp_state) == GP_PASSED);
+ 
+ 	spin_lock_irq(&rsp->rss_lock);
++	WARN_ON_ONCE(rsp->gp_count);
+ 	if (rsp->gp_state == GP_REPLAY)
+ 		WRITE_ONCE(rsp->gp_state, GP_EXIT);
+ 	gp_state = rsp->gp_state;
 -- 
 2.40.1
 
