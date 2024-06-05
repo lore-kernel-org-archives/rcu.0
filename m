@@ -1,132 +1,108 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44CD1373;
-	Wed,  5 Jun 2024 18:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2107315FA6E
+	for <rcu@vger.kernel.org>; Wed,  5 Jun 2024 23:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717613083; cv=none; b=OUN2Y17zDMT110UMYAZJqXsw2OKO+j38oXySENYE+YJS77UmibE5ioDCZHqCvCxZkR+F935Bkh6e48FTOKCE9Zo50fU+G6gv7GhA72Q7F7fxxkveT2Nb2BOue+cXoBIDsVO62VgwgFGFJKPMZ/f7IhqEAOd130ntcp+fclsQAkE=
+	t=1717629663; cv=none; b=C5IOL/y5Cl6q8YCB0LxNLrScIIhjYYDn3auX0tICVxESrcfmFsVDXTvsBFqyol20Emv94NyQf6xy3r4G6LMPoKetTpq9JDSWRyQB17CdS6BgBjagVeSQEvB9GocmFQaVQTA1lhnm1pFvOq99P7OgIeL1qtURPxOP9JaOA5vxn8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717613083; c=relaxed/simple;
-	bh=0m5eIs/1rxlE59oOvJmnITWMmk/piq0bn0tD1cPS7UU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L0mY/6NzBKKaoKbXSRabDNd3IIbOnTGUTg3zdlPMNBqRhQVyjhuvKBKZLxQ5JCA5j/vcgl3JklYQNkDLq+Yv5gj31wPgeAbBoBwikyWc417zS35A0hG7rfhppDpnOb/piHmHfcIPODO/mZqVKBPYQy0mLcoqNYUw6G345u79WjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EwaGHNCw; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1717629663; c=relaxed/simple;
+	bh=frkyJZ2vGbdRl5sjkeJ5Q3ZNjnaMVWE/xmToLpR8sCw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=CyfygaO+iK1z0QGjKmb1Sic7jndJZrLimB7U8d/Z1rABqPlj4Xpc6m45RU9D4bdX0Q8AQlcyWv7iFG89GlSooUAc5E03vgVBmyEly0+jJ0RXcmfZPvCZ4lWvF+5DjH4Fseb9dJcUVIxHu+VjCqH41MkWUYExBtcJlKrtWJkh6wA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RF328UpJ; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EwaGHNCw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F17C2BD11;
-	Wed,  5 Jun 2024 18:44:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717613083;
-	bh=0m5eIs/1rxlE59oOvJmnITWMmk/piq0bn0tD1cPS7UU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=EwaGHNCwm6XPOsDFjuee+XjEYaDFzREHFUt4EBfTceIYALq+4ajRvgvURmnwqWJ53
-	 GLnSHSb9CSIG6J8S2+e78/XCYq/F09t9ECVgzfDld4Ji9DGGV7yI/TZcmLefVT0eUJ
-	 gleJrN7M1Pn1xrRjI9mHuY2EoxioWiomLSWyNus+7CEYFus7v95C9pxq2msfXidtUy
-	 vdkoMDsoaebjq7CKvYIhretFbEpxZWfifxP4bfuh1nKDx586BObPk2mYotn1an+Sgt
-	 TcoCN+E2KWDqmCnRC+jB2/uKZ+Fm6MV8DMJGEUPZeax3ePNfQ7KBKNqPPk00Wg3Q5Z
-	 1xwuBWVceZWTA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id EAD04CE0A73; Wed,  5 Jun 2024 11:44:42 -0700 (PDT)
-Date: Wed, 5 Jun 2024 11:44:42 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH rcu 1/6] rcu: Remove full ordering on second EQS snapshot
-Message-ID: <26b85288-dd54-4ace-978d-39681de8fcad@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
- <20240604222652.2370998-1-paulmck@kernel.org>
- <ZmBYOaQQQKapFGZo@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RF328UpJ"
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-627e4afa326so4669717b3.2
+        for <rcu@vger.kernel.org>; Wed, 05 Jun 2024 16:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1717629660; x=1718234460; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=p+vQOFeRAu3mXSVWVZ+hPFVZiGSzjjVFszB9/MUxbxI=;
+        b=RF328UpJqYfvaxWzQ2Y/mv0myDNDwNCxGRZQkabASVGhDBWNYNji5MrwiDliJaKlSH
+         CBc//7uANJHY0NYJ4QPa5/I+Ay5cwyrRd0uYx9qPPLtgAh3/jqsEGmdCeg8SvwQRYGRn
+         xxHuP8iGZF/0cAhQL60ZzqJSN5AFf987ijU+EJp9+K+F8iAtwr3BbSB5wCKaqjshNk/M
+         cw5IwFL8Fc3AuvmNw97sYnYmJcBGyr/fQjVjp+otFMK4EPaMFR5THrEvFA5GKR7fEYWT
+         JqutOO429hJRokZxa2ZryuAvmt9pQ13Qhfy1YvufnFoX+yBI0WsrhUWNiFk4YAZtL7+C
+         v0iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717629660; x=1718234460;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p+vQOFeRAu3mXSVWVZ+hPFVZiGSzjjVFszB9/MUxbxI=;
+        b=uVQtWzB6Mk5hF9aaiUs6dxkiwHoZC/8iSzctVseKz2m3JQjRu8tqOLxXBHEiF+Csoi
+         3hOa8gVp0FpkdPnDY9VEV9drcvHNcJI5r4WtT/B/jGcL0hvlAQjxte+J77uRiUzdqo/j
+         bHJI+5DZmKIs2/ioTLUcbilc/SCjPgrpmlz7HU+ZQe7MlM+Cjyp+LuFNjDzTMc2X+33F
+         +Os1juDNWA93seziaGMuYO4hupiyI9RpSceL/oBF5nVg8+gW85Ec7G0IoQ5OAJzZy5d5
+         aRJtrBumM6+5s6h/NtiJjHjQw1mUuZ8YdsyuQouFtLdtPhKl3QfllTfKNxy6LEhrAQpQ
+         wEkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXJuRHw9C9iDm8z/rybZVzbsvwHdRj6krV2wnnXsqJNv3kdLWYVq3qn+G+Vsl5Yykp4LIwwFfTMdOlF24hJqycSabao
+X-Gm-Message-State: AOJu0Yw954cGTjolMG2wQFvXpoZLjoe5gm9USlgnQCL+GRP06Mce+CQo
+	OXG5hSItJZ9BfxgbQDMKDdG/wO/HUKnRgTU80BBBjgvDMW1KCLvbzlx3MyuMi/CIeAMlq3y+9/Y
+	QIg==
+X-Google-Smtp-Source: AGHT+IFIb+lmg+90fxq0vcczmWL2ENusQSCK4vmMn5+0aophPMSG6qAJzirTbvdVzpQeXIXgS+ORvjRcmyQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:707:b0:dee:659a:f58c with SMTP id
+ 3f1490d57ef6-dfacac4264dmr405513276.4.1717629660054; Wed, 05 Jun 2024
+ 16:21:00 -0700 (PDT)
+Date: Wed,  5 Jun 2024 16:20:34 -0700
+In-Reply-To: <20240309010929.1403984-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZmBYOaQQQKapFGZo@localhost.localdomain>
+Mime-Version: 1.0
+References: <20240309010929.1403984-1-seanjc@google.com>
+X-Mailer: git-send-email 2.45.1.467.gbab1589fc0-goog
+Message-ID: <171762600665.2901886.14234246510506582276.b4-ty@google.com>
+Subject: Re: [PATCH 0/5] KVM: VMX: Drop MTRR virtualization, honor guest PAT
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>
+Cc: kvm@vger.kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, 
+	Yiwei Zhang <zzyiwei@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Wed, Jun 05, 2024 at 02:21:13PM +0200, Frederic Weisbecker wrote:
-> Le Tue, Jun 04, 2024 at 03:26:47PM -0700, Paul E. McKenney a écrit :
-> > From: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > When the grace period kthread checks the extended quiescent state
-> > counter of a CPU, full ordering is necessary to ensure that either:
-> > 
-> > * If the GP kthread observes the remote target in an extended quiescent
-> >   state, then that target must observe all accesses prior to the current
-> >   grace period, including the current grace period sequence number, once
-> >   it exits that extended quiescent state. Also the GP kthread must
-> >   observe all accesses performed by the target prior it entering in
-> >   EQS.
-> > 
-> > or:
-> > 
-> > * If the GP kthread observes the remote target NOT in an extended
-> >   quiescent state, then the target further entering in an extended
-> >   quiescent state must observe all accesses prior to the current
-> >   grace period, including the current grace period sequence number, once
-> >   it enters that extended quiescent state. Also the GP kthread later
-> >   observing that EQS must also observe all accesses performed by the
-> >   target prior it entering in EQS.
-> > 
-> > This ordering is explicitly performed both on the first EQS snapshot
-> > and on the second one as well through the combination of a preceding
-> > full barrier followed by an acquire read. However the second snapshot's
-> > full memory barrier is redundant and not needed to enforce the above
-> > guarantees:
-> > 
-> >     GP kthread                  Remote target
-> >     ----                        -----
-> >     // Access prior GP
-> >     WRITE_ONCE(A, 1)
-> >     // first snapshot
-> >     smp_mb()
-> >     x = smp_load_acquire(EQS)
-> >                                // Access prior GP
-> >                                WRITE_ONCE(B, 1)
-> >                                // EQS enter
-> >                                // implied full barrier by atomic_add_return()
-> >                                atomic_add_return(RCU_DYNTICKS_IDX, EQS)
-> >                                // implied full barrier by atomic_add_return()
-> >                                READ_ONCE(A)
-> >     // second snapshot
-> >     y = smp_load_acquire(EQS)
-> >     z = READ_ONCE(B)
-> > 
-> > If the GP kthread above fails to observe the remote target in EQS
-> > (x not in EQS), the remote target will observe A == 1 after further
-> > entering in EQS. Then the second snapshot taken by the GP kthread only
-> > need to be an acquire read in order to observe z == 1.
-> > 
-> > Therefore remove the needless full memory barrier on second snapshot.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/rcu/tree.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 28c7031711a3f..f07b8bff4621b 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -321,7 +321,7 @@ static bool rcu_dynticks_in_eqs(int snap)
-> >   */
-> >  static bool rcu_dynticks_in_eqs_since(struct rcu_data *rdp, int snap)
-> >  {
-> > -	return snap != rcu_dynticks_snap(rdp->cpu);
-> > +	return snap != ct_dynticks_cpu_acquire(rdp->cpu);
+On Fri, 08 Mar 2024 17:09:24 -0800, Sean Christopherson wrote:
+> First, rip out KVM's support for virtualizing guest MTRRs on VMX.  The
+> code is costly to main, a drag on guest boot performance, imperfect, and
+> not required for functional correctness with modern guest kernels.  Many
+> details in patch 1's changelog.
 > 
-> I guess I'm going to add a comment here to elaborate on the fact
-> it relies on the ordering enforced before the first snapshot. Would
-> you prefer a delta patch or an updated patch?
+> With MTRR virtualization gone, always honor guest PAT on Intel CPUs that
+> support self-snoop, as such CPUs are guaranteed to maintain coherency
+> even if the guest is aliasing memtypes, e.g. if the host is using WB but
+> the guest is using WC.  Honoring guest PAT is desirable for use cases
+> where the guest must use WC when accessing memory that is DMA'd from a
+> non-coherent device that does NOT bounce through VFIO, e.g. for mediated
+> virtual GPUs.
+> 
+> [...]
 
-Either works, just tell me which you are doing when you submit the patch.
-Either way, I will arrange for there to be a single combined commit.
+Applied to kvm-x86 mtrrs, to get as much testing as possible before a potential
+merge in 6.11.
 
-							Thanx, Paul
+Paul, if you can take a gander at patch 3, it would be much appreciated.
+
+Thanks!
+
+[1/5] KVM: x86: Remove VMX support for virtualizing guest MTRR memtypes
+      https://github.com/kvm-x86/linux/commit/0a7b73559b39
+[2/5] KVM: VMX: Drop support for forcing UC memory when guest CR0.CD=1
+      https://github.com/kvm-x86/linux/commit/e1548088ff54
+[3/5] srcu: Add an API for a memory barrier after SRCU read lock
+      https://github.com/kvm-x86/linux/commit/fcfe671e0879
+[4/5] KVM: x86: Ensure a full memory barrier is emitted in the VM-Exit path
+      https://github.com/kvm-x86/linux/commit/eb8d8fc29286
+[5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
+      https://github.com/kvm-x86/linux/commit/95200f24b862
+
+--
+https://github.com/kvm-x86/linux/tree/next
