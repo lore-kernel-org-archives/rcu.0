@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6705228;
-	Wed,  5 Jun 2024 18:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBF87345D;
+	Wed,  5 Jun 2024 18:38:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717612581; cv=none; b=Hi6FHmtkhQ+s+TdVmhR2IetEGNb1kwcuDnAgfxbbv69sBFlh1O/4T+kTj8yVb14yU+TkF/AdIeEbR3NHtw0cpy+EHwavk75PxkRImmob2hy9m97YKuXsqdlDvHHmhklCotp9UNwNJgW2vysz0Nnf/CVKDOIzLNG1S+feOL4h144=
+	t=1717612731; cv=none; b=Np9Uw+Pr30mwz9S5F7oGZESiy7S+881S9EkEPskszHj2UJdTvFc0YnY0eFDs2NrVJiWsEj4vWE5Xv2vIGOQOuK5gcbLh7e/Q3i9lCHFryIEF31DsCjPQfL6EO6xVARri7pIBuOMxcDvmdKsOj3B4zLz462i0+tg8DEKOQBcMoGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717612581; c=relaxed/simple;
-	bh=U8Pum04kWJiOrMbd7F2SoV1BMtOhRMWdgkflF0DyIpQ=;
+	s=arc-20240116; t=1717612731; c=relaxed/simple;
+	bh=rJZv5S1T81gAQR2GyAwP+apEECmT/s44XmdQwBJ6HAQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p+XPSbf7+1KWGfV6MrctLW8WvpM7LAfrRot4syXXOrx0sbmMaawN0zFEpn9yFR2knNdO1NTviz69gxp9MQWJVBUEt185oTRu3LjElSAT9e5Fu0UbihOmA/Lp6yiCBNY8jIs/JQgeOhnEtZudeLoHaUhubrCLcVgniqKMX+CrzbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JQqaYyME; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=n/UWCZKW2c6IMOCXW9yE57T0QnmXaVx5mzjX2/OKuLA+Hzw7qKFPs0rgJHjk88D0+TsBGbBM3wCep68Nc8DXa7pvDRkdoOQLoFPO2s1b9AQfGXhou0hMh5O5Yiu10PVyQkJRNGppcBLMXERE03WI7THh3r64eXdi9aH9NpAt3ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lTn9fSEh; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JQqaYyME"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F80EC2BD11;
-	Wed,  5 Jun 2024 18:36:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lTn9fSEh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0B60C2BD11;
+	Wed,  5 Jun 2024 18:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717612581;
-	bh=U8Pum04kWJiOrMbd7F2SoV1BMtOhRMWdgkflF0DyIpQ=;
+	s=k20201202; t=1717612730;
+	bh=rJZv5S1T81gAQR2GyAwP+apEECmT/s44XmdQwBJ6HAQ=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JQqaYyMEqg9hpPKg5pYntV5U+OuriptEh6SxpJLi6zXZr+R5/OzZML1IjXO5hbz71
-	 JbkbxnyBmikiw750xEPHjoUdtVaf2oWES2k4w6USStNe/2g56Qo+fLWZvr1yNAf3+U
-	 uIPHjKuOaS2Zs6QMqLddi/bhjXxml1qU9W8ejvITtXA8OnzFUnTOEPhpxlFCjvJqBo
-	 J3kmURpLuTHqn5atmRaV0w8EIOMN8UalfguhHrlUrwZcyTDOuYQeTm373Jvamqdxzp
-	 0hWQg7HOyy/NjPXMcMbMTqk0VJtiRYH+niIbSZm2c0sLkhuzkg79PWYhr5SuhADCuo
-	 hjlOLBjMY07mg==
+	b=lTn9fSEhDboHizyyo0aTNVR+Rw1sp0gFplDnsg5DX6zWCEhPwaoctK0t1sMgCvtR/
+	 Dh8SCFvDkKmzrCIoX7qqnj15SOsZ3zLWALjT2sc8nV5ug7uTSgxnx9S6z4yvtFUxKL
+	 I6utdc5An8Kj847U0mOgCzDiyT4vS8GZz+eJfemqFcZbvJSHto8gDv6c32yuCaKM+8
+	 9BRs03mlRFjk/JZCSYdvAfTbwKqrhA0OY81s2G0Ix3/786mpFD/utBlCWciBUuoG0h
+	 C1688xCDXPnFloKQjy3s+H5Bjb1BgQDg/VL6IAwWQeWG9U7NJ8jhQhr43QHY3nTeiR
+	 gtL4JSL5dixog==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id ABAC3CE0A73; Wed,  5 Jun 2024 11:36:15 -0700 (PDT)
-Date: Wed, 5 Jun 2024 11:36:15 -0700
+	id 88A1BCE0A73; Wed,  5 Jun 2024 11:38:50 -0700 (PDT)
+Date: Wed, 5 Jun 2024 11:38:50 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Frederic Weisbecker <frederic@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Rao Shoaib <rao.shoaib@oracle.com>
-Subject: Re: [PATCH rcu 2/2] doc: Clarify rcu_assign_pointer() and
- rcu_dereference() ordering
-Message-ID: <4035a57f-9873-4178-8d60-3ab07f709e2e@paulmck-laptop>
+	rostedt@goodmis.org, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: Re: [PATCH rcu 2/9] rcu: Reduce synchronize_rcu() delays when all
+ wait heads are in use
+Message-ID: <c7d07e5d-34a0-4874-8e7e-1c576c14c8e6@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <e5dc5f14-04c1-494b-9044-e837279a7bcd@paulmck-laptop>
- <20240604222155.2370541-2-paulmck@kernel.org>
- <ZmBSZ3AAp9TN5YaP@localhost.localdomain>
+References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
+ <20240604222355.2370768-2-paulmck@kernel.org>
+ <ZmBVfpyEZeTIAHJn@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,71 +49,39 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZmBSZ3AAp9TN5YaP@localhost.localdomain>
+In-Reply-To: <ZmBVfpyEZeTIAHJn@localhost.localdomain>
 
-On Wed, Jun 05, 2024 at 01:56:23PM +0200, Frederic Weisbecker wrote:
-> Le Tue, Jun 04, 2024 at 03:21:55PM -0700, Paul E. McKenney a écrit :
-> > This commit expands on the ordering properties of rcu_assign_pointer()
-> > and rcu_dereference(), outlining their constraints on CPUs and compilers.
+On Wed, Jun 05, 2024 at 02:09:34PM +0200, Frederic Weisbecker wrote:
+> Le Tue, Jun 04, 2024 at 03:23:48PM -0700, Paul E. McKenney a écrit :
+> > From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 > > 
-> > Reported-by: Rao Shoaib <rao.shoaib@oracle.com>
+> > When all wait heads are in use, which can happen when
+> > rcu_sr_normal_gp_cleanup_work()'s callback processing
+> > is slow, any new synchronize_rcu() user's rcu_synchronize
+> > node's processing is deferred to future GP periods. This
+> > can result in long list of synchronize_rcu() invocations
+> > waiting for full grace period processing, which can delay
+> > freeing of memory. Mitigate this problem by using first
+> > node in the list as wait tail when all wait heads are in use.
+> > While methods to speed up callback processing would be needed
+> > to recover from this situation, allowing new nodes to complete
+> > their grace period can help prevent delays due to a fixed
+> > number of wait head nodes.
+> > 
+> > Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  Documentation/RCU/whatisRCU.rst | 30 +++++++++++++++++++-----------
-> >  1 file changed, 19 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> > index 94838c65c7d97..d585a5490aeec 100644
-> > --- a/Documentation/RCU/whatisRCU.rst
-> > +++ b/Documentation/RCU/whatisRCU.rst
-> > @@ -250,21 +250,25 @@ rcu_assign_pointer()
-> >  ^^^^^^^^^^^^^^^^^^^^
-> >  	void rcu_assign_pointer(p, typeof(p) v);
-> >  
-> > -	Yes, rcu_assign_pointer() **is** implemented as a macro, though it
-> > -	would be cool to be able to declare a function in this manner.
-> > -	(Compiler experts will no doubt disagree.)
-> > +	Yes, rcu_assign_pointer() **is** implemented as a macro, though
-> > +	it would be cool to be able to declare a function in this manner.
-> > +	(And there has been some discussion of adding overloaded functions
-> > +	to the C language, so who knows?)
-> >  
-> >  	The updater uses this spatial macro to assign a new value to an
-> >  	RCU-protected pointer, in order to safely communicate the change
-> >  	in value from the updater to the reader.  This is a spatial (as
-> >  	opposed to temporal) macro.  It does not evaluate to an rvalue,
-> > -	but it does execute any memory-barrier instructions required
-> > -	for a given CPU architecture.  Its ordering properties are that
-> > -	of a store-release operation.
-> > -
-> > -	Perhaps just as important, it serves to document (1) which
-> > -	pointers are protected by RCU and (2) the point at which a
-> > -	given structure becomes accessible to other CPUs.  That said,
-> > +	but it does provide any compiler directives and memory-barrier
-> > +	instructions required for a given compile or CPU architecture.
-> > +	Its ordering properties are that of a store-release operation,
-> > +	that is, any prior loads and stores required to initialize the
-> > +	structure are ordered before the store that publishes the pointer
-> > +	to that structure.
 > 
-> About that, why rcu_dereference() isn't a matching load-acquire?
+> IIRC we agreed that this patch could be a step too far that
+> made an already not so simple state machine even less simple,
+> breaking the wait_head based flow.
 
-Here is an example showing the difference:
+True, which is why we agreed not to submit it into the v6.10 merge window.
 
-	p = rcu_dereference(gp);
-	r1 = READ_ONCE(x);
-	r2 = p->a;
+And I don't recall us saying what merge window to send it to.
 
-The READ_ONCE() is not ordered against the rcu_dereference(), only the
-read from p->a.  In contrast, if that rcu_dereference() was instead an
-smp_load_acquire(), both of the two later statements would be ordered.
+> Should we postpone this change until it is observed that a workqueue
+> not being scheduled for 5 grace periods is a real issue?
 
-Ah.  You are suggesting that this be added to the description of
-rcu_dereference()?
-
-Or are you asking that this documentation state that an rcu_dereference()
-memory-barrier-pairs with an rcu_assign_pointer()?
-
-Or something else completely?
+Neeraj, thoughts?  Or, better yet, test results?  ;-)
 
 							Thanx, Paul
