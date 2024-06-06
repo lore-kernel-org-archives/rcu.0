@@ -1,102 +1,133 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D3E198E88;
-	Thu,  6 Jun 2024 16:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8494A196C97
+	for <rcu@vger.kernel.org>; Thu,  6 Jun 2024 17:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717692600; cv=none; b=WwOaUKXeclN9obyHduYSEO/bmQ6JeTpEMbXabr1dTo5xu6dpyjMm1/AU53yr9QBp4C7gR/pO2VmaD25DbJfp48aemIAgU8HrGGSYFJxwmplUcarDUYusiEzgnhExKdjZ8xEtl9W9AdKBof6F6GVrZpVJ1CJNt6VVcIpYeCF6F8s=
+	t=1717695036; cv=none; b=EcHzfX3h0kdJiiek0vwIRN8fZ/OZ6m98kpAhI7GULJbCcZCWgRp1jq3A9aQlYd4rmtAfQJ+o2sTD0lmolNT0kNGl094hkIYUhLlp5as6J/bVEeTvqCTEbspcGf3HiZy2g+Bg5tMh5K/I1ovm/sk7E9dMjESAnpe/S1AdibewYK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717692600; c=relaxed/simple;
-	bh=Hg4pytPcshJ5Vzw0x241oxxxQys6HoLuHWw6mFPLn8E=;
+	s=arc-20240116; t=1717695036; c=relaxed/simple;
+	bh=EYlgpxPA80geN9LevgcDmS0gk8V4/XcgnBIobbz9TH4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SWhIiDaJuuBVMT6fRHBFGdV6YI37uyHdb+RLz2Fjf3x4ZpjL7O45oQvtSK/TEgbyHpOSNN49XobWUg7IOQrk/zAfJ0jcFN3IVNQS1VZ3+zdJKqToFrGPlfmrpbkD3gQYqra1+P/dbdvMnvdEL7vy8G2E6yG6Ehva37+eP8T2VqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e3yfbXCA; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=lVy7WZ9Vr2VcPGrspMx3r9K3jAVzeoaJZ0MYkMm/QGmgFQwtjIdJ6kID9GWlwkGNigUghs4D5zRfv5Mka1OuPPOhiLoXHG1X8ybae8/2PbyZeONbxZv3dGkzLLwJ4/j4JM5pRe1EZgofDn6/KfEpNvMnrWKIZztDbqtKONaXQvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SZhF2r/X; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e3yfbXCA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED54DC2BD10;
-	Thu,  6 Jun 2024 16:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717692600;
-	bh=Hg4pytPcshJ5Vzw0x241oxxxQys6HoLuHWw6mFPLn8E=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=e3yfbXCAXuC3R6OV8jc4OSsJCSGMdLDXIpC9Mg5QkQkblbPsf/ViCa/8PdzjmhzBN
-	 e9hVL3PeCaJCFkn00KUNpywqYQhDaXS1WOTriYDioxkcEI4cpbEaL2aiSzEq72MqQR
-	 CTrlnQ1RQKL5rI+kqUL8zSTJkVz6mF+P11dl+XpVOnSh/m1nR/z79qUID/TEZaJzT+
-	 zfhYkqgAmlnbbNWZu9wAtkxJzMBfMYeb5y1aZSRUsvPMTmdkxm1GeSSSHfU9y3JNX1
-	 MOZP8/42JlzXe2uy5WxvHNn9D+HDxzDGtakyXjG0Z0gAAUu8LSoYgq/xO1XBRLW6HU
-	 LOzr8KkKPkzYw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 88570CE3F34; Thu,  6 Jun 2024 09:49:59 -0700 (PDT)
-Date: Thu, 6 Jun 2024 09:49:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH rcu 2/9] rcu: Reduce synchronize_rcu() delays when all
- wait heads are in use
-Message-ID: <a0aa3d5e-006c-475d-bd2f-b15fca47deee@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
- <20240604222355.2370768-2-paulmck@kernel.org>
- <ZmBVfpyEZeTIAHJn@localhost.localdomain>
- <c7d07e5d-34a0-4874-8e7e-1c576c14c8e6@paulmck-laptop>
- <fbc30c3a-ecd3-4525-9434-307c7769bb4c@amd.com>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SZhF2r/X"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717695033;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GOXhki6j2BQvamjk/NXsbVjbyb5r0aobhW6sKmuuMxA=;
+	b=SZhF2r/XYh/q0tJKTiNhUCRbJcgF5O2t9AmxhwUfu8h9c0VEbm3JXWnQp5Fb41YyjaZSpq
+	RIGV41Pf9Ixow6UeHsDoT8vQKgW8k5h/hZtGPFXDC2hb2mMtbqCGwpXYxSiZNWyCDK8qiB
+	ql8okOLPWmsob1pXIRCg938MXVEn7JQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-422-bGoqTFl5OM-mZzo2n1jvJw-1; Thu, 06 Jun 2024 13:30:26 -0400
+X-MC-Unique: bGoqTFl5OM-mZzo2n1jvJw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79DFC8007A1;
+	Thu,  6 Jun 2024 17:30:25 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.19])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 825BA20232CB;
+	Thu,  6 Jun 2024 17:30:19 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu,  6 Jun 2024 19:28:56 +0200 (CEST)
+Date: Thu, 6 Jun 2024 19:28:49 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Wei Fu <fuweid89@gmail.com>
+Cc: Sudhanva.Huruli@microsoft.com, akpm@linux-foundation.org,
+	apais@linux.microsoft.com, axboe@kernel.dk, boqun.feng@gmail.com,
+	brauner@kernel.org, ebiederm@xmission.com, frederic@kernel.org,
+	j.granados@samsung.com, jiangshanlai@gmail.com,
+	joel@joelfernandes.org, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+	michael.christie@oracle.com, mjguzik@gmail.com,
+	neeraj.upadhyay@kernel.org, paulmck@kernel.org,
+	qiang.zhang1211@gmail.com, rachelmenge@linux.microsoft.com,
+	rcu@vger.kernel.org, rostedt@goodmis.org, weifu@microsoft.com
+Subject: Re: [RCU] zombie task hung in synchronize_rcu_expedited
+Message-ID: <20240606172848.GC22450@redhat.com>
+References: <20240606111051.GA22450@redhat.com>
+ <20240606154553.53514-1-fuweid89@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fbc30c3a-ecd3-4525-9434-307c7769bb4c@amd.com>
+In-Reply-To: <20240606154553.53514-1-fuweid89@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Thu, Jun 06, 2024 at 09:16:08AM +0530, Neeraj Upadhyay wrote:
-> 
-> 
-> On 6/6/2024 12:08 AM, Paul E. McKenney wrote:
-> > On Wed, Jun 05, 2024 at 02:09:34PM +0200, Frederic Weisbecker wrote:
-> >> Le Tue, Jun 04, 2024 at 03:23:48PM -0700, Paul E. McKenney a écrit :
-> >>> From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> >>>
-> >>> When all wait heads are in use, which can happen when
-> >>> rcu_sr_normal_gp_cleanup_work()'s callback processing
-> >>> is slow, any new synchronize_rcu() user's rcu_synchronize
-> >>> node's processing is deferred to future GP periods. This
-> >>> can result in long list of synchronize_rcu() invocations
-> >>> waiting for full grace period processing, which can delay
-> >>> freeing of memory. Mitigate this problem by using first
-> >>> node in the list as wait tail when all wait heads are in use.
-> >>> While methods to speed up callback processing would be needed
-> >>> to recover from this situation, allowing new nodes to complete
-> >>> their grace period can help prevent delays due to a fixed
-> >>> number of wait head nodes.
-> >>>
-> >>> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> >>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >>
-> >> IIRC we agreed that this patch could be a step too far that
-> >> made an already not so simple state machine even less simple,
-> >> breaking the wait_head based flow.
-> > 
-> > True, which is why we agreed not to submit it into the v6.10 merge window.
-> > 
-> > And I don't recall us saying what merge window to send it to.
-> > 
-> >> Should we postpone this change until it is observed that a workqueue
-> >> not being scheduled for 5 grace periods is a real issue?
-> > 
-> > Neeraj, thoughts?  Or, better yet, test results?  ;-)
-> 
-> Yes I agree that we postpone this change until we see it as a real
-> problem. I had run a test to invoke synchronize_rcu() from all CPUs
-> on a 96 core system in parallel. I didn't specifically check if this
-> scenario was hit. Will run RCU torture test with this change.
+Hi Wei, thanks for more info.
 
-Very well, I will drop this patch with the expectation that you will
-re-post it if a problem does arise.
+On 06/06, Wei Fu wrote:
+>
+> > Well, due to unfortunate design zap_pid_ns_processes() can hang "forever"
+> > if this namespace has a (zombie) task injected from the parent ns, this
+> > task should be reaped by its parent.
+>
+> That zombie task was cloned by pid-1 process in that pid namespace. In my last
+> reproduced log, the process tree in that pid namespace looks like
 
-							Thanx, Paul
+OK,
+
+> ```
+> # unshare(CLONE_NEWPID | CLONE_NEWNS)
+>
+> npm start (pid 2522045)
+>     |__npm run zombie (pid 2522605)
+>        |__ sh -c "whle true; do echo zombie; sleep 1; done" (pid 2522869)
+> ```
+
+only 3 processes? nothing is running? Is the last process 2522869 a
+zombie too?
+
+Could you show your .config? In particular, CONFIG_PREEMPT...
+
+> The `npm start (pid 2522045)` was stuck in kernel_wait4. And its child,
+
+so this is the init task in this namespace,
+
+> `npm run zombie (pid 2522605)`, has two threads. One of them was in D status.
+...
+> $ sudo cat /proc/2522605/task/*/stack
+> [<0>] synchronize_rcu_expedited+0x177/0x1f0
+> [<0>] namespace_unlock+0xd6/0x1b0
+> [<0>] put_mnt_ns+0x73/0xa0
+> [<0>] free_nsproxy+0x1c/0x1b0
+> [<0>] switch_task_namespaces+0x5d/0x70
+> [<0>] exit_task_namespaces+0x10/0x20
+> [<0>] do_exit+0x2ce/0x500
+> [<0>] io_sq_thread+0x48e/0x5a0
+> [<0>] ret_from_fork+0x3c/0x60
+> [<0>] ret_from_fork_asm+0x1b/0x30
+
+so I guess this is the trace of its sub-thread 2522645.
+
+What about the process 2522605? Has it exited too?
+
+> > But zap_pid_ns_processes() shouldn't cause the soft-lockup, it should
+> > sleep in kernel_wait4().
+>
+> I run `cat /proc/2522045/status` and found that the status was kept switching
+> between running and sleeping.
+
+OK, this shouldn't happen in this case. So it really looks like it spins
+in a busy-wait loop because TIF_NOTIFY_SIGNAL is not cleared. It can be
+reported as sleeping because do_wait() sets/clears TASK_INTERRUPTIBLE,
+although the window is small...
+
+Oleg.
+
