@@ -1,133 +1,142 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8494A196C97
-	for <rcu@vger.kernel.org>; Thu,  6 Jun 2024 17:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404A3199389;
+	Thu,  6 Jun 2024 18:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717695036; cv=none; b=EcHzfX3h0kdJiiek0vwIRN8fZ/OZ6m98kpAhI7GULJbCcZCWgRp1jq3A9aQlYd4rmtAfQJ+o2sTD0lmolNT0kNGl094hkIYUhLlp5as6J/bVEeTvqCTEbspcGf3HiZy2g+Bg5tMh5K/I1ovm/sk7E9dMjESAnpe/S1AdibewYK8=
+	t=1717697523; cv=none; b=hUVBed2hGeFvxN1LQPJ8YwEIH4JMgtk4+p4RimIS3cdjSjgme/+8PZYOYTQ7zv/Rrf6R7ZiQ3QKoG/J9J0gvxm2Xb76hn4GcqOFd78nw3BXSxMnAvrqAxAQ9Og0ZqGHj13XXRLie8nrGR5uY6WbBxX5kdw8/N00kBUzCCbuUPSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717695036; c=relaxed/simple;
-	bh=EYlgpxPA80geN9LevgcDmS0gk8V4/XcgnBIobbz9TH4=;
+	s=arc-20240116; t=1717697523; c=relaxed/simple;
+	bh=rahIpKZsGpZl2GO/jcg+ZxtQQuJCfpWo2UtJ417xTUw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lVy7WZ9Vr2VcPGrspMx3r9K3jAVzeoaJZ0MYkMm/QGmgFQwtjIdJ6kID9GWlwkGNigUghs4D5zRfv5Mka1OuPPOhiLoXHG1X8ybae8/2PbyZeONbxZv3dGkzLLwJ4/j4JM5pRe1EZgofDn6/KfEpNvMnrWKIZztDbqtKONaXQvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SZhF2r/X; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=QMqMYLvd7MWssRBwVq3yLhXSws57WJWiVAANLXrpfFiJsJU557I01fnD+MqU54iQQd64bMyqo/byZg/99NCnLhtjox5y4gp4Wm7ChbRVNiki+RS2gFV0OCF0b9zANPGEpb/u7n+LN5ODOfirLxgZ9ujnxnSwuLeG/FHwvixNHM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=octv4Whv; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SZhF2r/X"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717695033;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GOXhki6j2BQvamjk/NXsbVjbyb5r0aobhW6sKmuuMxA=;
-	b=SZhF2r/XYh/q0tJKTiNhUCRbJcgF5O2t9AmxhwUfu8h9c0VEbm3JXWnQp5Fb41YyjaZSpq
-	RIGV41Pf9Ixow6UeHsDoT8vQKgW8k5h/hZtGPFXDC2hb2mMtbqCGwpXYxSiZNWyCDK8qiB
-	ql8okOLPWmsob1pXIRCg938MXVEn7JQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-422-bGoqTFl5OM-mZzo2n1jvJw-1; Thu, 06 Jun 2024 13:30:26 -0400
-X-MC-Unique: bGoqTFl5OM-mZzo2n1jvJw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79DFC8007A1;
-	Thu,  6 Jun 2024 17:30:25 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.19])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 825BA20232CB;
-	Thu,  6 Jun 2024 17:30:19 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  6 Jun 2024 19:28:56 +0200 (CEST)
-Date: Thu, 6 Jun 2024 19:28:49 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Wei Fu <fuweid89@gmail.com>
-Cc: Sudhanva.Huruli@microsoft.com, akpm@linux-foundation.org,
-	apais@linux.microsoft.com, axboe@kernel.dk, boqun.feng@gmail.com,
-	brauner@kernel.org, ebiederm@xmission.com, frederic@kernel.org,
-	j.granados@samsung.com, jiangshanlai@gmail.com,
-	joel@joelfernandes.org, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-	michael.christie@oracle.com, mjguzik@gmail.com,
-	neeraj.upadhyay@kernel.org, paulmck@kernel.org,
-	qiang.zhang1211@gmail.com, rachelmenge@linux.microsoft.com,
-	rcu@vger.kernel.org, rostedt@goodmis.org, weifu@microsoft.com
-Subject: Re: [RCU] zombie task hung in synchronize_rcu_expedited
-Message-ID: <20240606172848.GC22450@redhat.com>
-References: <20240606111051.GA22450@redhat.com>
- <20240606154553.53514-1-fuweid89@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="octv4Whv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C271EC2BD10;
+	Thu,  6 Jun 2024 18:12:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717697522;
+	bh=rahIpKZsGpZl2GO/jcg+ZxtQQuJCfpWo2UtJ417xTUw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=octv4WhvBePeFZZ7velpQzLtev96q76IfX8815xAMcWB094Tr6JRjwZ7nR4LPR9Xs
+	 53zumoRdLP7y38JHxw3o6f9GxytjeiC1is8PNEz1zhgkz+I7MAEIjH+cjkZui3gQpc
+	 TWom6+lJO94GhpTjiUI33wEbgothq1eDMFQOE5oS6zIkkLUpvSJfOVulwr1fcu86ju
+	 rEgU91FGQHRzyOiIHOr/2csuQQm4Y6XSvMxqoVLNw9jY8/7+PlPrKieWhyJ91PVovI
+	 EMfmq4Cp9bkzYypKi7UpyMdhu363uhDXrtpF4nNez52jO0l1S/3BAqKUdRRVHFEcQW
+	 Fms/kBSgmutGg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 47419CE3F34; Thu,  6 Jun 2024 11:12:02 -0700 (PDT)
+Date: Thu, 6 Jun 2024 11:12:02 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH rcu 3/9] rcu/tree: Reduce wake up for synchronize_rcu()
+ common case
+Message-ID: <beb31a51-253e-4bc4-a73c-456f2bf2fd06@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
+ <20240604222355.2370768-3-paulmck@kernel.org>
+ <ZmCTvMVlOMFv0-zd@localhost.localdomain>
+ <CAFwiDX8yGCEiZE-VC0i=VoGByQArQkwG7beVvQO5wRGsK8rdPQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240606154553.53514-1-fuweid89@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFwiDX8yGCEiZE-VC0i=VoGByQArQkwG7beVvQO5wRGsK8rdPQ@mail.gmail.com>
 
-Hi Wei, thanks for more info.
+On Thu, Jun 06, 2024 at 11:28:07AM +0530, Neeraj upadhyay wrote:
+> On Wed, Jun 5, 2024 at 10:05 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> >
+> > Le Tue, Jun 04, 2024 at 03:23:49PM -0700, Paul E. McKenney a écrit :
+> > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> > >
+> > > In the synchronize_rcu() common case, we will have less than
+> > > SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+> > > is pointless just to free the last injected wait head since at that point,
+> > > all the users have already been awakened.
+> > >
+> > > Introduce a new counter to track this and prevent the wakeup in the
+> > > common case.
+> > >
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >  kernel/rcu/tree.c | 35 ++++++++++++++++++++++++++++++-----
+> > >  kernel/rcu/tree.h |  1 +
+> > >  2 files changed, 31 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 6ba36d9c09bde..2fe08e6186b4d 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
+> > >       .ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+> > >       .srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+> > >               rcu_sr_normal_gp_cleanup_work),
+> > > +     .srs_cleanups_pending = ATOMIC_INIT(0),
+> > >  };
+> > >
+> > >  /* Dump rcu_node combining tree at boot to verify correct setup. */
+> > > @@ -1633,8 +1634,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> > >        * the done tail list manipulations are protected here.
+> > >        */
+> > >       done = smp_load_acquire(&rcu_state.srs_done_tail);
+> > > -     if (!done)
+> > > +     if (!done) {
+> > > +             /* See comments below. */
+> > > +             atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+> >
+> > This condition is not supposed to happen. If the work is scheduled,
+> > there has to be a wait_queue in rcu_state.srs_done_tail. And decrementing
+> > may make things worse.
+> >
+> 
+> I also don't see a scenario where this can happen. However, if we are
+> returning from here, given that for every queued work we do an
+> increment of rcu_state.srs_cleanups_pending, I think it's safer to
+> decrement in this
+> case, as that counter tracks only the work queuing and execution counts.
+> 
+>     atomic_inc(&rcu_state.srs_cleanups_pending);
+>     if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work))
+>         atomic_dec(&rcu_state.srs_cleanups_pending);
 
-On 06/06, Wei Fu wrote:
->
-> > Well, due to unfortunate design zap_pid_ns_processes() can hang "forever"
-> > if this namespace has a (zombie) task injected from the parent ns, this
-> > task should be reaped by its parent.
->
-> That zombie task was cloned by pid-1 process in that pid namespace. In my last
-> reproduced log, the process tree in that pid namespace looks like
+Linus Torvald's general rule is that if you cannot imagine how a bug
+can happen, don't attempt to clean up after it.  His rationale (which
+is *almost* always a good one) is that not knowing how the bug happens
+means that attempts to clean up will usually just make matters worse.
+And all too often, the clean-up code makes debugging more difficult.
 
-OK,
+One example exception to this rule is when debug-objects detects a
+duplicate call_rcu().  In that case, we ignore that second call_rcu().
+But the reason is that experience has shown that the usual cause really
+is someone doing a duplicate call_rcu(), and also that ignoring the
+second call_rcu() makes debugging easier.
 
-> ```
-> # unshare(CLONE_NEWPID | CLONE_NEWNS)
->
-> npm start (pid 2522045)
->     |__npm run zombie (pid 2522605)
->        |__ sh -c "whle true; do echo zombie; sleep 1; done" (pid 2522869)
-> ```
+So what is it that Frederic and I are missing here?
 
-only 3 processes? nothing is running? Is the last process 2522869 a
-zombie too?
+							Thanx, Paul
 
-Could you show your .config? In particular, CONFIG_PREEMPT...
-
-> The `npm start (pid 2522045)` was stuck in kernel_wait4. And its child,
-
-so this is the init task in this namespace,
-
-> `npm run zombie (pid 2522605)`, has two threads. One of them was in D status.
-...
-> $ sudo cat /proc/2522605/task/*/stack
-> [<0>] synchronize_rcu_expedited+0x177/0x1f0
-> [<0>] namespace_unlock+0xd6/0x1b0
-> [<0>] put_mnt_ns+0x73/0xa0
-> [<0>] free_nsproxy+0x1c/0x1b0
-> [<0>] switch_task_namespaces+0x5d/0x70
-> [<0>] exit_task_namespaces+0x10/0x20
-> [<0>] do_exit+0x2ce/0x500
-> [<0>] io_sq_thread+0x48e/0x5a0
-> [<0>] ret_from_fork+0x3c/0x60
-> [<0>] ret_from_fork_asm+0x1b/0x30
-
-so I guess this is the trace of its sub-thread 2522645.
-
-What about the process 2522605? Has it exited too?
-
-> > But zap_pid_ns_processes() shouldn't cause the soft-lockup, it should
-> > sleep in kernel_wait4().
->
-> I run `cat /proc/2522045/status` and found that the status was kept switching
-> between running and sleeping.
-
-OK, this shouldn't happen in this case. So it really looks like it spins
-in a busy-wait loop because TIF_NOTIFY_SIGNAL is not cleared. It can be
-reported as sleeping because do_wait() sets/clears TASK_INTERRUPTIBLE,
-although the window is small...
-
-Oleg.
-
+> Thanks
+> Neeraj
+> 
+> > So this should be:
+> >
+> > if (WARN_ON_ONCE(!done))
+> >    return;
+> >
+> > Thanks.
+> >
+> 
