@@ -1,190 +1,229 @@
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754864C76;
-	Fri,  7 Jun 2024 01:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E978DDC9;
+	Fri,  7 Jun 2024 03:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717725132; cv=none; b=owgFUFV5Lvo5litYoxhaibJ1FWxt2BNiScBW8xuDhWtuKOo/mYqiXt8B3bJle8okBWHaXlj076pypPfkFJQG7cHUr97epL7K+AgOGgLzVunDQLw0EMqahAQzEPGvhlPovYxqnMWos8eBD4Xzl9gcz/05djgl5a5FWvF8qOn8nAc=
+	t=1717729357; cv=none; b=e9eXDns3g2FJsx+zQ/PbNbpeT7I6WKSArNVvW3KW1XYPNaM1D2X+c8ZiG09BxAjCz6GdlImeAYylZiZKPZFj22Htc8ErbZGaKAqmHLIiDcFAVeWLpzb6Kh/cGqAB3dQb2MubMVwdfe9H7vS9vEepoR5ttxoM4ynrw7AS51gHZrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717725132; c=relaxed/simple;
-	bh=Ft9K5tqBcGHPfK6ue+b6pgSwXcSkS7vdLQtR+6Ntohs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cZMFIAVVxgKNmM3lnvcKAisVGot0Izdu/YNZfbzuexRSVX+68zu+t2Asay03pdfqffcksQwbKT6B3rZz4GU1uJQhAX03sGER2A3/l2d5l2+Pnq6eAU2GqdNsr+CBN+aZ4EJGGyllsKG57wwSif1yXBQD9vLmvjfxal3O9FF+XSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TuuQ7iwo; arc=none smtp.client-ip=209.85.167.48
+	s=arc-20240116; t=1717729357; c=relaxed/simple;
+	bh=L1aAF7dAtjWnPMFqXiNyLMDHxg94N0lBQFrlvDFtYzc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kYKfX/Lz6J+sAyyYtHcJEFeAEinqHIHO9HYziEzg4Xoeme1E9AT8Cej5KBdKqtPV5OFhypogjUNEOqi2wfvgN2/yIFk3EiJzKxtV21HhujzPd9jt6OskliHYYJI6hA4S9ybOPVPyLkgcsd3E36s+wC2NFbu6t8l+XatC04lXsRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ic+Jp31N; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TuuQ7iwo"
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-52b962c4bb6so2291845e87.3;
-        Thu, 06 Jun 2024 18:52:10 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ic+Jp31N"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-704140292c2so39745b3a.1;
+        Thu, 06 Jun 2024 20:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717725128; x=1718329928; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1717729356; x=1718334156; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=feKQLMNR2OCkrvMLmagnriZF6/TtRYUMMPipPVIqagk=;
-        b=TuuQ7iwoKs8fSj8EWyKJjvo2Vyq2L7DQejYwXan4A3sKRkD0+stHxCAJkNo7fRwTNC
-         gCHwEMrLoXw6ah3hTJTH5aBIqm5QArtkDsSRVRwLyLGghjllLdM1NiJIR25A+Bu40iZ4
-         7yJGDWjZF1Ae1Vlg4DXHKoGEq47/4GXnfCEUHENtygA7PUA94noSxcDxVUHlpG/Q82tJ
-         cANqzfYmWwiSCxRgiYzWFeIc9LnPESLRdWIyaUfPkUxFd/2gqTECn1asoxKx0KAGEh3B
-         ahUhRRLFCGvGkOEoaL6JptkDrE0bEPLuQttCR+oe3jngYoguBaP17RQG5TCm4eY+nEc6
-         0Tnw==
+        bh=ejDXcxSpP9icVx/1EuiWyrQGyl9TpRx/2egbprYsM3E=;
+        b=ic+Jp31N9C5VrFFm+RXin4t1+adZH1+5WIQBcy+AUqRNAcHrDGPeM21WNdU5N9xm2P
+         oHtQLEthwOrRL21s45jEJK19D3CfkMZJhmEhu6ijQwN2NwUHMfEE6v50SRfzGYBlk2aw
+         4v7TS87mRs2MWO1tp79QZyXmmp4IyB+op81r0H/nurtvvzN/O9yO26w1kGghxUrbhqNy
+         YZtumFVvrCKhX+GIjR4TAHbADoIOatp2O2gKKxcsPPZ6Jel6H2B3+7LtUUoJyIsBQCJ2
+         uer1VXyC67b+ELbP6GFz+W4XVxRfJTrl0XktVeWs2+J9fsEJj9cFGd+XJ0MLWqvzpISK
+         BlVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717725128; x=1718329928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1717729356; x=1718334156;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=feKQLMNR2OCkrvMLmagnriZF6/TtRYUMMPipPVIqagk=;
-        b=nTMrr2mK5o0Q2I6JbVJSQC3NOv3AqTbt/8UWh/LzjgDRDl5/fymiqRSmoEwCK9Oan6
-         TCLTkbZNoiVwDhf4BKHVkPp7ZRUQQPu2ygQKj/pVtXaIsn+eX+tdwheX/RwfluTXR7zW
-         zZeVyrFSAbBh5Y91HugLgTOmzfIamEIM3Q2BOTHpuDz1xEFWn3P0bUyqheCt1WO2mhct
-         WbZ83P+0sHuNgTEDKBPBokcbxbjcNU92tQv+y/lWOquQhsdaW04eae7rPRlrR/aK4UPR
-         v4zHrZ75O9scFNSd3gcpBNrZJxa3r4XYvxRNivoaIgwaSBtu7lxANg7Y64ka4xKDY+/J
-         ZuQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/uKl9HZ3B7qsJOUyiPsNwGAXmE2vDIWptiQUTC51/yJspjRdVhBUQ6UGY67rWAMKh07vU9HwKZMevzUrYcs6zaJB4ZrbCB4q1YuKIRJFo5Svuj3Nx34gc2vf3wXW7XzMh
-X-Gm-Message-State: AOJu0Yw4JdVvBapra4lOOrMEUoJ0g40GF5RngYcQCnULmMZmEQOInrff
-	C4QrW0bOZ+s3MdLtZRVFcJO5Rcg3IApw53r1w9xHr6IjMj0ooc0IPI+khywprt2DIWmNcaNjJQu
-	Z6kXMkR+pQBbuTfFGpwK61UlHTIs=
-X-Google-Smtp-Source: AGHT+IE70XrJkjRuPIhSRl0W6yWUryDU1Bd4WSoWyxJjq2t0jbQIcSTuI5G78mq3z9NseE8K6bZD1urRowmDxy21wPs=
-X-Received: by 2002:ac2:4c25:0:b0:52b:940d:b3d with SMTP id
- 2adb3069b0e04-52bb9fc62f4mr869612e87.50.1717725128163; Thu, 06 Jun 2024
- 18:52:08 -0700 (PDT)
+        bh=ejDXcxSpP9icVx/1EuiWyrQGyl9TpRx/2egbprYsM3E=;
+        b=L2phxaLso1GtXZX8ZZAE2a1jgO3nFTCuqbRp/XooRofO75M8fHz6rlLIvKddPndrwb
+         XGRoFfkqT1m1pE1ITCx1zoARIY4QnKZVo9jLZlLxg7UyOBJSxNh1Pg/CWx6teHCU6Wvl
+         jMxN1aIJ7zCb5ueIU5fD+qHRqsalwkMUPLPyBuzb+lzgL7fL4OSsffQiY6obH+7piqO4
+         qqzGtTD5bdNmjUvTnRRmGmkKzLzozXV1B5zzuTaKkJcA+n56zRJzZMVlz4+xW5txf0Po
+         PIU3XRqM0l+dQpf+OM+issgdIAm2+f5+PJS1madVb9DBe56BmwKLMfX1ZJcfU1O3ZFVS
+         rnOw==
+X-Forwarded-Encrypted: i=1; AJvYcCVn4WZZmtiMJozBdauVpM9olnTWOnU7yOQ1BSEsLPCSqlk45rSxpZVewbDoDsphbbZWYVZqgIbo3AUIiALxtnhJV/MxEkwZfd6FAsJFXaXHOKCYc+5ijFsXPWLMQKpkHJz/
+X-Gm-Message-State: AOJu0YxpNkOOL74T3ipH+E5cfKMLSUeC3ulc/7OyQj1zOhOB6v6C5brK
+	Fzm6mbTpak8HefIHvT2uGLpAEI5JqcxnDJXli8uJ2atGlemsRSc9
+X-Google-Smtp-Source: AGHT+IEhKraLWJQ16qpMEO3KRgHYMvSBWq5cqen0fVttn2vamXfceNIRqH+V2oFSHMdiJoCtgZr/fA==
+X-Received: by 2002:a05:6a20:3c8a:b0:1ad:7e4d:2ea2 with SMTP id adf61e73a8af0-1b2f969ee1bmr1666829637.4.1717729355532;
+        Thu, 06 Jun 2024 20:02:35 -0700 (PDT)
+Received: from localhost.localdomain ([91.199.84.25])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c29c4a574bsm2429371a91.56.2024.06.06.20.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jun 2024 20:02:35 -0700 (PDT)
+From: Wei Fu <fuweid89@gmail.com>
+To: oleg@redhat.com
+Cc: Sudhanva.Huruli@microsoft.com,
+	akpm@linux-foundation.org,
+	apais@linux.microsoft.com,
+	axboe@kernel.dk,
+	boqun.feng@gmail.com,
+	brauner@kernel.org,
+	ebiederm@xmission.com,
+	frederic@kernel.org,
+	fuweid89@gmail.com,
+	j.granados@samsung.com,
+	jiangshanlai@gmail.com,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org,
+	mathieu.desnoyers@efficios.com,
+	michael.christie@oracle.com,
+	mjguzik@gmail.com,
+	neeraj.upadhyay@kernel.org,
+	paulmck@kernel.org,
+	qiang.zhang1211@gmail.com,
+	rachelmenge@linux.microsoft.com,
+	rcu@vger.kernel.org,
+	rostedt@goodmis.org,
+	weifu@microsoft.com
+Subject: Re: [RCU] zombie task hung in synchronize_rcu_expedited
+Date: Fri,  7 Jun 2024 11:02:19 +0800
+Message-ID: <20240607030219.2990306-1-fuweid89@gmail.com>
+X-Mailer: git-send-email 2.45.1
+In-Reply-To: <20240606172848.GC22450@redhat.com>
+References: <20240606172848.GC22450@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
- <20240604222355.2370768-3-paulmck@kernel.org> <ZmCTvMVlOMFv0-zd@localhost.localdomain>
- <CAFwiDX8yGCEiZE-VC0i=VoGByQArQkwG7beVvQO5wRGsK8rdPQ@mail.gmail.com> <beb31a51-253e-4bc4-a73c-456f2bf2fd06@paulmck-laptop>
-In-Reply-To: <beb31a51-253e-4bc4-a73c-456f2bf2fd06@paulmck-laptop>
-From: Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Date: Fri, 7 Jun 2024 07:21:55 +0530
-Message-ID: <CAFwiDX-x4=_N2szD2QZhAEkU+kx_eTscz2bcyHqikHq7m=rkpQ@mail.gmail.com>
-Subject: Re: [PATCH rcu 3/9] rcu/tree: Reduce wake up for synchronize_rcu()
- common case
-To: paulmck@kernel.org
-Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel-team@meta.com, rostedt@goodmis.org, 
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>, Uladzislau Rezki <urezki@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 6, 2024 at 11:42=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Thu, Jun 06, 2024 at 11:28:07AM +0530, Neeraj upadhyay wrote:
-> > On Wed, Jun 5, 2024 at 10:05=E2=80=AFPM Frederic Weisbecker <frederic@k=
-ernel.org> wrote:
-> > >
-> > > Le Tue, Jun 04, 2024 at 03:23:49PM -0700, Paul E. McKenney a =C3=A9cr=
-it :
-> > > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > > >
-> > > > In the synchronize_rcu() common case, we will have less than
-> > > > SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kwo=
-rker
-> > > > is pointless just to free the last injected wait head since at that=
- point,
-> > > > all the users have already been awakened.
-> > > >
-> > > > Introduce a new counter to track this and prevent the wakeup in the
-> > > > common case.
-> > > >
-> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >  kernel/rcu/tree.c | 35 ++++++++++++++++++++++++++++++-----
-> > > >  kernel/rcu/tree.h |  1 +
-> > > >  2 files changed, 31 insertions(+), 5 deletions(-)
-> > > >
-> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > index 6ba36d9c09bde..2fe08e6186b4d 100644
-> > > > --- a/kernel/rcu/tree.c
-> > > > +++ b/kernel/rcu/tree.c
-> > > > @@ -96,6 +96,7 @@ static struct rcu_state rcu_state =3D {
-> > > >       .ofl_lock =3D __ARCH_SPIN_LOCK_UNLOCKED,
-> > > >       .srs_cleanup_work =3D __WORK_INITIALIZER(rcu_state.srs_cleanu=
-p_work,
-> > > >               rcu_sr_normal_gp_cleanup_work),
-> > > > +     .srs_cleanups_pending =3D ATOMIC_INIT(0),
-> > > >  };
-> > > >
-> > > >  /* Dump rcu_node combining tree at boot to verify correct setup. *=
-/
-> > > > @@ -1633,8 +1634,11 @@ static void rcu_sr_normal_gp_cleanup_work(st=
-ruct work_struct *work)
-> > > >        * the done tail list manipulations are protected here.
-> > > >        */
-> > > >       done =3D smp_load_acquire(&rcu_state.srs_done_tail);
-> > > > -     if (!done)
-> > > > +     if (!done) {
-> > > > +             /* See comments below. */
-> > > > +             atomic_dec_return_release(&rcu_state.srs_cleanups_pen=
-ding);
-> > >
-> > > This condition is not supposed to happen. If the work is scheduled,
-> > > there has to be a wait_queue in rcu_state.srs_done_tail. And decremen=
-ting
-> > > may make things worse.
-> > >
+> 
+> > ```
+> > # unshare(CLONE_NEWPID | CLONE_NEWNS)
 > >
-> > I also don't see a scenario where this can happen. However, if we are
-> > returning from here, given that for every queued work we do an
-> > increment of rcu_state.srs_cleanups_pending, I think it's safer to
-> > decrement in this
-> > case, as that counter tracks only the work queuing and execution counts=
-.
+> > npm start (pid 2522045)
+> >     |__npm run zombie (pid 2522605)
+> >        |__ sh -c "whle true; do echo zombie; sleep 1; done" (pid 2522869)
+> > ```
+> 
+> only 3 processes? nothing is running? Is the last process 2522869 a
+> zombie too?
+
+Yes. The pid-2522045 sent SIGKILL to all the processes in that pid namespace,
+when it exited. The last process 2522869 was zombie as well. Sometimes, 
+`npm start` could exit before `npm run zombie` forks `sh`. You might see there
+are only two processes in that pid namespace.
+
+
+> 
+> Could you show your .config? In particular, CONFIG_PREEMPT...
+
+I'm using [6.5.0-1021-azure][1] kernel and preempt is disabled.
+Highlight part of .config.
+
+```
+$ cat /boot/config-6.5.0-1021-azure | grep _RCU
+CONFIG_TREE_RCU=y
+# CONFIG_RCU_EXPERT is not set
+CONFIG_TASKS_RCU_GENERIC=y
+CONFIG_TASKS_RUDE_RCU=y
+CONFIG_TASKS_TRACE_RCU=y
+CONFIG_RCU_STALL_COMMON=y
+CONFIG_RCU_NEED_SEGCBLIST=y
+CONFIG_RCU_NOCB_CPU=y
+# CONFIG_RCU_NOCB_CPU_DEFAULT_ALL is not set
+# CONFIG_RCU_LAZY is not set
+CONFIG_MMU_GATHER_RCU_TABLE_FREE=y
+# CONFIG_RCU_SCALE_TEST is not set
+# CONFIG_RCU_TORTURE_TEST is not set
+# CONFIG_RCU_REF_SCALE_TEST is not set
+CONFIG_RCU_CPU_STALL_TIMEOUT=60
+CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=0
+CONFIG_RCU_CPU_STALL_CPUTIME=y
+# CONFIG_RCU_TRACE is not set
+# CONFIG_RCU_EQS_DEBUG is not set
+
+$ cat /boot/config-6.5.0-1021-azure | grep _PREEMPT
+CONFIG_PREEMPT_VOLUNTARY_BUILD=y
+# CONFIG_PREEMPT_NONE is not set
+CONFIG_PREEMPT_VOLUNTARY=y
+# CONFIG_PREEMPT is not set
+# CONFIG_PREEMPT_DYNAMIC is not set
+CONFIG_HAVE_PREEMPT_DYNAMIC=y
+CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=y
+CONFIG_PREEMPT_NOTIFIERS=y
+CONFIG_DRM_I915_PREEMPT_TIMEOUT=640
+CONFIG_DRM_I915_PREEMPT_TIMEOUT_COMPUTE=7500
+# CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+
+$ cat /boot/config-6.5.0-1021-azure | grep HZ
+CONFIG_NO_HZ_COMMON=y
+# CONFIG_HZ_PERIODIC is not set
+# CONFIG_NO_HZ_IDLE is not set
+CONFIG_NO_HZ_FULL=y
+CONFIG_NO_HZ=y
+# CONFIG_HZ_100 is not set
+CONFIG_HZ_250=y
+# CONFIG_HZ_300 is not set
+# CONFIG_HZ_1000 is not set
+CONFIG_HZ=250
+CONFIG_MACHZ_WDT=m
+```
+
+> 
+> > The `npm start (pid 2522045)` was stuck in kernel_wait4. And its child,
+> 
+> so this is the init task in this namespace,
+
+Yes~
+
+> 
+> > `npm run zombie (pid 2522605)`, has two threads. One of them was in D status.
+> ...
+> > $ sudo cat /proc/2522605/task/*/stack
+> > [<0>] synchronize_rcu_expedited+0x177/0x1f0
+> > [<0>] namespace_unlock+0xd6/0x1b0
+> > [<0>] put_mnt_ns+0x73/0xa0
+> > [<0>] free_nsproxy+0x1c/0x1b0
+> > [<0>] switch_task_namespaces+0x5d/0x70
+> > [<0>] exit_task_namespaces+0x10/0x20
+> > [<0>] do_exit+0x2ce/0x500
+> > [<0>] io_sq_thread+0x48e/0x5a0
+> > [<0>] ret_from_fork+0x3c/0x60
+> > [<0>] ret_from_fork_asm+0x1b/0x30
+> 
+> so I guess this is the trace of its sub-thread 2522645.
+
+Sorry for unclear message.
+Yes~
+
+> 
+> What about the process 2522605? Has it exited too?
+
+The process-2522605 has two threads. The main thread-2522605 was in zombie
+status. Yes. That main thread has exited as well. Only thread-2522645 was
+stuck in synchronize_rcu_expedited.
+
+> 
+> > > But zap_pid_ns_processes() shouldn't cause the soft-lockup, it should
+> > > sleep in kernel_wait4().
 > >
-> >     atomic_inc(&rcu_state.srs_cleanups_pending);
-> >     if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work))
-> >         atomic_dec(&rcu_state.srs_cleanups_pending);
->
-> Linus Torvald's general rule is that if you cannot imagine how a bug
-> can happen, don't attempt to clean up after it.  His rationale (which
-> is *almost* always a good one) is that not knowing how the bug happens
-> means that attempts to clean up will usually just make matters worse.
-> And all too often, the clean-up code makes debugging more difficult.
->
+> > I run `cat /proc/2522045/status` and found that the status was kept switching
+> > between running and sleeping.
+> 
+> OK, this shouldn't happen in this case. So it really looks like it spins
+> in a busy-wait loop because TIF_NOTIFY_SIGNAL is not cleared. It can be
+> reported as sleeping because do_wait() sets/clears TASK_INTERRUPTIBLE,
+> although the window is small...
+> 
 
-Ok. Thanks for sharing this info!
+I can reproduce this issue in v5.15, v6.1, v6.5, v6.8, v6.9 and v6.10-rc2.
+All the kernels disable CONFIG_PREEMPT and PREEMPT_RCU. And it's very easy to
+reproduce this in v5.15.x with 8 vcores in few minutes. For the other versions
+of kernel, it could take 30 minutes or few hours.
 
-> One example exception to this rule is when debug-objects detects a
-> duplicate call_rcu().  In that case, we ignore that second call_rcu().
-> But the reason is that experience has shown that the usual cause really
-> is someone doing a duplicate call_rcu(), and also that ignoring the
-> second call_rcu() makes debugging easier.
->
-> So what is it that Frederic and I are missing here?
->
+Rachel provides [golang-repro][2] which is similar to docker repro. It can be
+built as static binary which is friendly to reproduce.
 
-Maybe nothing. As kworker context does not modify srs_done_tail and
-invalid values
-of srs_done_tail  can only be caused by the GP kthread manipulations
-of  srs_done_tail , my thought here was, we can keep the pending
-rcu_sr_normal_gp_cleanup_work count consistent with the number of
-queue_work() and kworker executions, even when we see unexpected
-srs_done_tail values like these. However, as you described the general rule
-is to not attempt any clean up for such scenarios.
+Hope this information can help.
 
-Thanks
-Neeraj
+Thanks,
+Wei
 
-
-
->                                                         Thanx, Paul
->
-> > Thanks
-> > Neeraj
-> >
-> > > So this should be:
-> > >
-> > > if (WARN_ON_ONCE(!done))
-> > >    return;
-> > >
-> > > Thanks.
-> > >
-> >
+[1]: https://gist.github.com/fuweid/ae8bad349fee3e00a4f1ce82397831ac
+[2]: https://github.com/rlmenge/rcu-soft-lock-issue-repro?tab=readme-ov-file#golang-repro
