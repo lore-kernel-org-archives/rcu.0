@@ -1,36 +1,36 @@
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971CC1CAB3
-	for <rcu@vger.kernel.org>; Sun,  9 Jun 2024 08:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF11629
+	for <rcu@vger.kernel.org>; Sun,  9 Jun 2024 10:01:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717921932; cv=none; b=SdFkHXLVpZjwLRCM4Vy7f3E9j2sV4vukNeyBM7H8r/YtS4c9KpYbzi3wiEXM+sbpRHYJh7Izrk62BIEsHcm6BuTsMilVlNg9JSpTBJ2+b9LGPHkkLSy4WJhoCvUbpScZoz247CsWK4U/2OyH9/bX9mZ7lSrWaEjTncNJyIIOteM=
+	t=1717927264; cv=none; b=DX3fmGC5AtqGZLQW8cL0mU9kRkXPHdRTr5hUUc2cpn88xX6Juh2evSuJcqb7kAEzqn9RMblPdVHkGPciJi3NU6BiZAwZu0EgOxblgJfW8o8BYL0bLpx8KagzZaJrqHpGwQTne1Pg3YQ8H1qXf+hLhyIp3cxG3zEaYPULr0EMIcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717921932; c=relaxed/simple;
-	bh=op9PEHDYbjofoSh6b0VW5jG43Sq5dvqFNFIU9H9sR0w=;
+	s=arc-20240116; t=1717927264; c=relaxed/simple;
+	bh=guYeJXhYa6FWRMHd83tb0SLa1IFu+zPZjhTwGSWu8vI=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=angdPC17GYfICQyS9SP15fyPKdR3Oz2+0pjtVsCp2GXR/q7mAyQyZVYHdsvCcRWHZdWsvzaTU4iY23lJz8J07SPQvKs/0tCclL+oL8xKlR1AM4ypjWfOJp7mNLdFBZKPqXCANG+MZT7WUAbeNRWXQnVevkXrRIVD2QzEWjNx4wA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=PKirY1mH; arc=none smtp.client-ip=192.134.164.104
+	 MIME-Version:Content-Type; b=YYYIU0k2nxnQzdfAPo8o7liDT6xpChq1bCCNXjjHUzHoc55tjKKZzcLUXuLfxXlUCYoCW/MbnM262tMtkxsaIOaTDEKiyFVVhd+VnaHbYHFflPB9jQEfW1uBSCS95Mrr2NJrin6015MVlWRS00VhHoy2PUCfbGHd9UpX3D3rVew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=tRwwMqtl; arc=none smtp.client-ip=192.134.164.83
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="PKirY1mH"
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="tRwwMqtl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=inria.fr; s=dc;
   h=date:from:to:cc:subject:in-reply-to:message-id:
    references:mime-version;
-  bh=3OnS7bTMzg9MrVeT6de/BPlcGur14FkZ3nS9wq9ryDk=;
-  b=PKirY1mHVBbj1jOFUj3eZoX/Ad3rdeNCGqvKKSmvrVI+4T2+r/37Qi8J
-   jzTjPIIkK4b2RbHRuaLPkY9qIqsXXZZ4eNXVPPJ4x+ffv1xzn9xbt/qP/
-   yukjY+B9VBXUu886EIrfLqK20Z/m2EXgQS7bpbMwzG2ql6IK8HHRcG3Oh
-   o=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+  bh=ox+EVNmCnoc2enI2j6GZHXoQFfQNYcmYlWqiZuc/AGI=;
+  b=tRwwMqtl3x/29q7HxcLiVDN8C9P3vD9Jtgo1sDrb/FZq/YFSXpWt40r7
+   6V8HmJIz5pBOIQuba6OcbB9b3VxsmfZbORnG1ciyIv4mghy5StfQ2dmYK
+   W0zcbbjhY+1/vAtTJF8PMo0+M/B9cll2LZZWPuuvCufz7qzaOmkX/uTYS
+   8=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
 X-IronPort-AV: E=Sophos;i="6.08,225,1712613600"; 
-   d="scan'208";a="89188818"
+   d="scan'208";a="169702404"
 Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2024 10:32:03 +0200
-Date: Sun, 9 Jun 2024 10:32:01 +0200 (CEST)
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2024 12:00:59 +0200
+Date: Sun, 9 Jun 2024 12:00:58 +0200 (CEST)
 From: Julia Lawall <julia.lawall@inria.fr>
 X-X-Sender: jll@hadrien
 To: Uladzislau Rezki <urezki@gmail.com>
@@ -40,7 +40,7 @@ cc: "Paul E. McKenney" <paulmck@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
 Subject: Re: [cocci] patch idea: convert trivial call_rcu users to
  kfree_rcu
 In-Reply-To: <Zl76AZ_0H5xb1cFl@pc638.lan>
-Message-ID: <alpine.DEB.2.22.394.2406091029250.3474@hadrien>
+Message-ID: <alpine.DEB.2.22.394.2406091158420.3474@hadrien>
 References: <68b85796-c674-4691-936a-2051849f4692@suse.cz> <6b7e3ed9-d974-cb3b-6839-a6b7cf5f5a36@inria.fr> <a1f15e67-25f5-4a0b-a9d0-ebbc0555fb12@paulmck-laptop> <alpine.DEB.2.22.394.2405272226510.3330@hadrien> <ZlXIDZLMNPc7E7XE@pc636>
  <2dd5bafb-ceb1-238d-2f51-83ebf135b73@inria.fr> <ZlXaPuA4lC2ANTdN@pc636> <2ec7eb0f-0950-4d65-b33a-64df7c5f89c9@paulmck-laptop> <77531e55-3418-d4be-f538-7ddc904ed88f@inria.fr> <Zl76AZ_0H5xb1cFl@pc638.lan>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
@@ -565,15 +565,6 @@ On Tue, 4 Jun 2024, Uladzislau Rezki wrote:
 > >  	ht->count--;
 > >  }
 > >  static void htable_gc(struct work_struct *work);
-
-I have sent out patches for the above changes.  There remain the ones
-cited below, ones where the release function is used in other ways, and
-ones where the first argument to call_rcu does not have the form &e->f.  I
-will check on these remaining cases.
-
-julia
-
-
 > Looks good. What is about extra below useres:
 >
 > lima_sched.c
@@ -635,7 +626,22 @@ julia
 > <snip>
 >
 > ?
->
-> --
-> Uladzislau Rezki
->
+
+These look ok to me.  In the last two cases, the callback function is also
+stored in a data structure, eg:
+
+static struct mfc6_cache *ip6mr_cache_alloc(void)
+{
+	struct mfc6_cache *c = kmem_cache_zalloc(mrt_cachep, GFP_KERNEL);
+	if (!c)
+		return NULL;
+	c->_c.mfc_un.res.last_assert = jiffies - MFC_ASSERT_THRESH - 1;
+	c->_c.mfc_un.res.minvif = MAXMIFS;
+	c->_c.free = ip6mr_cache_free_rcu;
+	refcount_set(&c->_c.mfc_un.res.refcount, 1);
+	return c;
+}
+
+Should that be left as it is?
+
+julia
