@@ -1,197 +1,163 @@
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F8B36B;
-	Sun,  9 Jun 2024 00:32:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1F61C01
+	for <rcu@vger.kernel.org>; Sun,  9 Jun 2024 00:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717893131; cv=none; b=pZD/hOBTbLXmmSXKg3XjYQpb8EgthYkNCbFlRtMlyl/sV/qBUhfE9XL4XbaBdgkYgC3iXueDn6ChPBXeO814522stkd+vpqt5xkKPX5EWL+jY9i2kgNXOFswUvEWTLxEf865PJnWw9QcWLaRHuoWWzlGcCj2YdqsikVCE7pJxsQ=
+	t=1717893815; cv=none; b=fYCRAh4C1yjOx5u2fqUg1GVs1tdct6Z0vCMZ+QDwiAhtRf1KQyF1Yus16qJUM/B+RFfIFc2Jpmz//ug/6lBhSOpGQuNWRMtbOL78FE6DK18GDf7e7rUfxVe5kkogfCYz7Qup67SI+4yA/hnuz1GoeI8kGs1mvvv13Jw9KotHmwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717893131; c=relaxed/simple;
-	bh=1dBgvwA68O2a7a6xUnCh4IVR05yvJKnzfljSAnRi0oI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=A0N3P8H13aCqKqQaKywpIquCUrxpopNavXYEUSdKT4gnyOtbvTc8iMA9cKjrXYAiUTHFkYWqjzDhMA/P0qbje35vDdLslt2BnGMkMAB0dCiy0F9vvGj7tePwfQV/Oy36IdiEp3PlAiQWJdP7XfaLMmEULu7BNrKnxpYmVm2SfNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IkpHcd3H; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1717893815; c=relaxed/simple;
+	bh=a44StvyeWnvLvVb8D5x5bGdS0D0jg8hdGQQPGz8g0b4=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=IR9v2irsds4eNC4gqWwNQd5MaWDl7FBLdOgFZ+ygn1jzFgbJ7lHf+04a8wSaUPdvoKTELGOrCgWx/whUQUmQUPWckvOG5YEoBPMhh9xKyFEniyxRfw+LPUyFrZGDezfalXAKLNspMMAiGABxRGX3B/VY07TyyLwUiswRpYK/6E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cSIBDtRs; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IkpHcd3H"
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2c2eb5b1917so406982a91.2;
-        Sat, 08 Jun 2024 17:32:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717893129; x=1718497929; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RnCHxXfWcDE9oW7NN5xGODtfi1ZsBpKLcmpR2EsiBZU=;
-        b=IkpHcd3HCIz90WNgurqZf0GfhnaX/SuQGcu61dZZD3pROypFSQeSf0QV63IbFYDcEQ
-         kajZY8nWEmGmx5QIBx7vnrGnu804X9cASbg9QbqAlXX7h78S9RC/0fRhLtNEZiASmbwQ
-         WfC2ASO7sEW5unEIyngJiWUwY1F/xmo0JnpQdRyKF3EzHn5epxOhl0rT1kj/jJBhDNWB
-         OKSOg5QZG/dS2cPQZ7pJ8Qn1/ynPlcAEVmUOqQibatz0nwcbyVcuBj1CEibs6rZWa/Fa
-         Vf3n2Yrdct4bwGZtavu8KcBhtaSxYfq5QR/l0Y1o2TkrOEwW6j03BJlLjucLd2+L3XIw
-         pDUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717893129; x=1718497929;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RnCHxXfWcDE9oW7NN5xGODtfi1ZsBpKLcmpR2EsiBZU=;
-        b=uy3M4jfDHEJ6vLQex5ybCh9481FR2WwQpCw2TDSDw1yNDjHeN4Gv2NY/I05EIkoVvs
-         HYAii6R+dv9oVzDFdCgWiKo+z/fEC7O3MnL5tHdb/2i7lwg3jp7ZnBUlcgjBnH5+xZbF
-         up7bVj86p9F0hNz7lTuSdVztX+1cvmhgWs8JoSBZFV88YsljQaR9GWwqLdZeLhq6Sofh
-         L45YbvzMmrmnItRReivgkBHj/ppMbaYORQOrFQmj/uL3MynThscb7ceMp31GWrly2RB0
-         +kPVdqDj99D3UVxOkSmVGg030OycM56KRCpVEyYkbJlr32Q+2Xlgzwlx3+4C2WUggAWb
-         BqHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVnpfGm+x9lBTbTnup98Td9ui7qNBxJrrOGCoCPwKZsJtvS7sRhfMauCSMqWKcOZycXA7510ZQG19hRAJEfC6oidWePbz9YroXSq007WkukMCkdfpfEP1fyQWsyJ65bU327
-X-Gm-Message-State: AOJu0Yzo/IOstoFtKOI+IT4Ews8OJ8slESUE6oNL+ueQ9skwyiNrjeBc
-	n2S7q/vc4v7OFUrRjrZofWczFXgxLIpMpPtlGqAV5IcZoZrequqK3TRIrzOqzBD93R8JbWEVpbr
-	0ydL5RKnjBABeGvAPX2VhW0B4fTg=
-X-Google-Smtp-Source: AGHT+IECZKvgBg3lFZxwTgu/32De3poDCZTUfCYYjHO6ipviQTSuqFyflkaBKpE730DFvxTdyjfnwI/hYlit6H5JFz8=
-X-Received: by 2002:a17:90a:990b:b0:2bf:8ce5:dc51 with SMTP id
- 98e67ed59e1d1-2c2bcc6536dmr6182966a91.35.1717893129142; Sat, 08 Jun 2024
- 17:32:09 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cSIBDtRs"
+X-Envelope-To: paulmck@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717893809;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=NNT6Ss8/cc0eS3r5pYUkNSTCimTskG5kKOwUANorJUY=;
+	b=cSIBDtRsW42zYArQiWpZRYm33dMjnpbN74HIfC9EnPeGrDiQlz+XwYDJyulWDtcNOZry7y
+	H1jxSlYDzOxGMBqk93yxyA29aW+W8P6lfjMACTCLwUGBVKLHDkt2GBKI5hY4Ic8fg2j/j9
+	A7ijo5hhFFtb2tDmYuBNSvXmCC36thY=
+X-Envelope-To: rcu@vger.kernel.org
+Date: Sat, 8 Jun 2024 20:43:25 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Subject: srcu_cleanup warning
+Message-ID: <y5hi7x5w3yi4i5sh2b5hgk7xu2mghkthabc7adrqteg3muc5y4@pbnkp7yyxcrp>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240608014027.1118686-1-zhouzhouyi@gmail.com>
-In-Reply-To: <20240608014027.1118686-1-zhouzhouyi@gmail.com>
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date: Sun, 9 Jun 2024 08:31:58 +0800
-Message-ID: <CAABZP2y+6C4vWQr7BP3Om3MTMd1oOqH4h8Lnm8tzyo3zrEJ_Ew@mail.gmail.com>
-Subject: Re: [PATCH] init/Kconfig: lower to GCC version 9 check for -Warray-bounds
-To: akpm@linux-foundation.org, pmladek@suse.com, masahiroy@kernel.org, 
-	yoann.congal@smile.fr, rdunlap@infradead.org, gustavoars@kernel.org, 
-	nphamcs@gmail.com, vincent.guittot@linaro.org, linux-kernel@vger.kernel.org, 
-	rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-the patch is incorrect
+syzbot's been hitting this, and I just started hitting it in my CI (so I
+can finally repro), but I have no idea what's going on.
 
-On Sat, Jun 8, 2024 at 9:40=E2=80=AFAM Zhouyi Zhou <zhouzhouyi@gmail.com> w=
-rote:
->
-> commit 3e00f5802fab ("init/Kconfig: lower GCC version check for -Warray-b=
-ounds")
-> lowers GCC version check for -Warray-bounds, but I continue to see false =
-positives
-> from -Warray-bounds in GCC 9.4.
-They are not false positives, GCC 9.4.0 did report the out of bound
-array access!
->
-> This happens after
-> commit b44759705f7d ("bitmap: make bitmap_{get,set}_value8() use bitmap_{=
-read,write}()")
->
-> During the rcuturture test in Ubuntu 20.04 GCC 9.4.0 x86_64, the compilin=
-g of
-rcutorture test
-> drivers/gpio/gpio-pca953x.c issues following warning:
->
-> ```
->   CC      drivers/gpio/gpio-pca953x.o
-> In file included from drivers/gpio/gpio-pca953x.c:12:
-> drivers/gpio/gpio-pca953x.c: In function =E2=80=98pca953x_probe=E2=80=99:
-> ./include/linux/bitmap.h:799:17: error: array subscript [1, 1024] is outs=
-ide array bounds of =E2=80=98long unsigned int[1]=E2=80=99 [-Werror=3Darray=
--bounds]
->   799 |  map[index + 1] &=3D BITMAP_FIRST_WORD_MASK(start + nbits);
->       |                 ^~
-> In file included from ./include/linux/atomic.h:5,
->                  from drivers/gpio/gpio-pca953x.c:11:
-> drivers/gpio/gpio-pca953x.c:1015:17: note: while referencing =E2=80=98val=
-=E2=80=99
->  1015 |  DECLARE_BITMAP(val, MAX_LINE);
->       |                 ^~~
-> ./include/linux/types.h:11:16: note: in definition of macro =E2=80=98DECL=
-ARE_BITMAP=E2=80=99
->    11 |  unsigned long name[BITS_TO_LONGS(bits)]
->       |                ^~~~
-> In file included from drivers/gpio/gpio-pca953x.c:12:
-> ./include/linux/bitmap.h:800:17: error: array subscript [1, 1024] is outs=
-ide array bounds of =E2=80=98long unsigned int[1]=E2=80=99 [-Werror=3Darray=
--bounds]
->   800 |  map[index + 1] |=3D (value >> space);
->       |  ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
-> In file included from ./include/linux/atomic.h:5,
->                  from drivers/gpio/gpio-pca953x.c:11:
-> drivers/gpio/gpio-pca953x.c:1015:17: note: while referencing =E2=80=98val=
-=E2=80=99
->  1015 |  DECLARE_BITMAP(val, MAX_LINE);
->       |                 ^~~
-> ./include/linux/types.h:11:16: note: in definition of macro =E2=80=98DECL=
-ARE_BITMAP=E2=80=99
->    11 |  unsigned long name[BITS_TO_LONGS(bits)]
-> ```
->
-In device_pca957x_init:
-```
-DECLARE_BITMAP(val, MAX_LINE);
-for (i =3D 0; i < NBANK(chip); i++)
-         bitmap_set_value8(val, 0x02, i * BANK_SZ);
-```
-We can't ensure "i*BANK_SZ" is within "MAX_LINE".
-After setting the boundary, GCC no longer emits warnings:
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index 77a2812f2974..e40bbd7c83ec 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -1021,7 +1021,7 @@ static int device_pca957x_init(struct pca953x_chip *c=
-hip)
-                return ret;
+it seems the srcu struct is still in use? but there's no readers, we're
+not hitting that warning - and I've got my own asserts for leaking
+btree_trans objects, which are what take srcu read locks.
 
-        /* To enable register 6, 7 to control pull up and pull down */
--       for (i =3D 0; i < NBANK(chip); i++)
-+       for (i =3D 0; i < NBANK(chip) && i < MAX_BANK; i++)
-                bitmap_set_value8(val, 0x02, i * BANK_SZ);
+so there seems to be an outstanding grace period, but I can't follow the
+code to see how that's supposed to end - and adding an explicit
+srcu_barrier() to my shutdown path doesn't fix it...
 
-The case is similar in drivers/pinctrl/pinctrl-cy8c95x0.c.
+00458 ========= TEST   rereplicate
+00458 
+00458 WATCHDOG 60
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): mounting version 1.9: disk_accounting_v2
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): initializing new filesystem
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): going read-write
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): marking superblocks
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): initializing freespace
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): done initializing freespace
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): reading snapshots table
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): reading snapshots done
+00458 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): done starting filesystem
+00459 1024+0 records in
+00459 1024+0 records out
+00459 1073741824 bytes (1.1 GB, 1.0 GiB) copied, 0.927488 s, 1.2 GB/s
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): shutting down
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): going read-only
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): finished waiting for writes to stop
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): flushing journal and stopping allocators, journal seq 72
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): flushing journal and stopping allocators complete, journal seq 75
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): shutdown complete, journal seq 76
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): marking filesystem clean
+00459 bcachefs (5c0b0c7e-1883-4f8a-abde-8f223546d087): shutdown complete
+00459 ------------[ cut here ]------------
+00459 WARNING: CPU: 1 PID: 1577 at kernel/rcu/srcutree.c:664 cleanup_srcu_struct+0x168/0x1c0
+00459 Modules linked in:
+00459 CPU: 1 PID: 1577 Comm: umount Not tainted 6.10.0-rc2-ktest-g45acc58a039a #23170
+00459 Hardware name: linux,dummy-virt (DT)
+00459 pstate: 00001005 (nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+00459 pc : cleanup_srcu_struct+0x168/0x1c0
+00459 lr : cleanup_srcu_struct+0x80/0x1c0
+00459 sp : ffff0000c72efc10
+00459 x29: ffff0000c72efc10 x28: ffff0000d8d8ae80 x27: 0000000000000000
+00459 x26: 0000000000000010 x25: ffff0000f7183738 x24: ffff0000c1e73e00
+00459 x23: ffff800080cc92a8 x22: ffff800080993010 x21: ffff0000f7183730
+00459 x20: ffff800080cc8a30 x19: ffff0000fbdfeb40 x18: 00000000fffffffe
+00459 x17: 656c706d6f63206e x16: 776f647475687320 x15: 0000000000000001
+00459 x14: dead000000000122 x13: 0000000000000001 x12: 00000000f0000000
+00459 x11: 0000000000000040 x10: ffff800080cdf538 x9 : ffff800080049624
+00459 x8 : ffff0000c0400028 x7 : 0000000000000000 x6 : 0000000000000000
+00459 x5 : ffff0000c0400000 x4 : 0000000000000000 x3 : 0000000000000000
+00459 x2 : 0000000000000010 x1 : 0000000000000010 x0 : 000000000000023d
+00459 Call trace:
+00459  cleanup_srcu_struct+0x168/0x1c0
+00459  bch2_fs_btree_iter_exit+0x1a0/0x1c8
+00459  bch2_fs_release+0xf8/0x2f0
+00459  kobject_put+0xa4/0xf0
+00459  bch2_fs_free+0xf4/0x110
+00459  bch2_kill_sb+0x24/0x38
+00459  deactivate_locked_super+0x54/0xb0
+00459  deactivate_super+0x70/0x90
+00459  cleanup_mnt+0xa0/0x130
+00459  __cleanup_mnt+0x18/0x28
+00459  task_work_run+0xa8/0xf0
+00459  do_notify_resume+0x120/0x130
+00459  el0_svc+0x44/0x58
+00459  el0t_64_sync_handler+0xb8/0xc0
+00459  el0t_64_sync+0x14c/0x150
+00459 ---[ end trace 0000000000000000 ]---
+00459 rcu: cleanup_srcu_struct: Active srcu_struct 000000006c688d30 read state: 1 gp state: 573/576
+00459 Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
+00459 Mem abort info:
+00459   ESR = 0x0000000096000004
+00459   EC = 0x25: DABT (current EL), IL = 32 bits
+00459   SET = 0, FnV = 0
+00459   EA = 0, S1PTW = 0
+00459   FSC = 0x04: level 0 translation fault
+00459 Data abort info:
+00459   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+00459   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+00459   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+00459 user pgtable: 4k pages, 48-bit VAs, pgdp=000000011c75a000
+00459 [0000000000000070] pgd=0000000000000000, p4d=0000000000000000
+00459 Internal error: Oops: 0000000096000004 [#1] SMP
+00459 Modules linked in:
+00459 CPU: 0 PID: 1157 Comm: kworker/0:2 Tainted: G        W          6.10.0-rc2-ktest-g45acc58a039a #23170
+00459 Hardware name: linux,dummy-virt (DT)
+00459 Workqueue: rcu_gp srcu_invoke_callbacks
+00459 pstate: 600010c5 (nZCv daIF -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+00459 pc : srcu_invoke_callbacks+0x74/0x210
+00459 lr : srcu_invoke_callbacks+0x30/0x210
+00459 sp : ffff00006ca5fd10
+00459 x29: ffff00006ca5fd10 x28: ffff0000fbc5ac40 x27: ffff000005d71100
+00459 x26: ffff800080cc6000 x25: ffff800080a98008 x24: ffff0000fbc5ab80
+00459 x23: ffff0000fbc5ab40 x22: ffff0000fbc5ab88 x21: ffff0000fbc512c0
+00459 x20: ffff0000fbc5ac40 x19: ffff0000f7183730 x18: 00000000e8d092ee
+00459 x17: 000000006ba30620 x16: 00000000cf2823e1 x15: 00000000d2643b66
+00459 x14: 0000000000000000 x13: ffff0000c17f9f00 x12: ffff0000c17f9da8
+00459 x11: 0000000000000000 x10: 0000000000000940 x9 : ffff8000800a4968
+00459 x8 : fefefefefefefeff x7 : 0000000000000018 x6 : ffff000005d71100
+00459 x5 : 000070675f756372 x4 : 000070675f756372 x3 : 0000000000000000
+00459 x2 : 0000000000000001 x1 : 0000000000000000 x0 : ffff0000fbc5ab88
+00459 Call trace:
+00459  srcu_invoke_callbacks+0x74/0x210
+00459  process_scheduled_works+0x184/0x3d0
+00459  worker_thread+0x174/0x318
+00459  kthread+0xe8/0x100
+00459  ret_from_fork+0x10/0x20
+00459 Code: 54000be1 f9400a61 910122f6 aa1603e0 (f9403821) 
+00459 ---[ end trace 0000000000000000 ]---
+00459 Kernel panic - not syncing: Oops: Fatal exception
+00459 SMP: stopping secondary CPUs
+00459 Kernel Offset: disabled
+00459 CPU features: 0x00,00000003,80000008,4240500b
+00459 Memory Limit: none
+00459 ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+00464 ========= FAILED TIMEOUT rereplicate in 60s
 
-I will send another patch to set array access boundaries in the above
-two source files.
-
-Sorry for the inconvenience that I brought,
-Sorry for the trouble.
-
-Regards
-Zhouyi
-
-> Disable gcc-9+ array-bounds avoid above warning.
->
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> ---
->  init/Kconfig | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 72404c1f2157..27ce2ded95b6 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -876,14 +876,14 @@ config CC_IMPLICIT_FALLTHROUGH
->         default "-Wimplicit-fallthrough=3D5" if CC_IS_GCC && $(cc-option,=
--Wimplicit-fallthrough=3D5)
->         default "-Wimplicit-fallthrough" if CC_IS_CLANG && $(cc-option,-W=
-unreachable-code-fallthrough)
->
-> -# Currently, disable gcc-10+ array-bounds globally.
-> +# Currently, disable gcc-9+ array-bounds globally.
->  # It's still broken in gcc-13, so no upper bound yet.
-> -config GCC10_NO_ARRAY_BOUNDS
-> +config GCC9_NO_ARRAY_BOUNDS
->         def_bool y
->
->  config CC_NO_ARRAY_BOUNDS
->         bool
-> -       default y if CC_IS_GCC && GCC_VERSION >=3D 100000 && GCC10_NO_ARR=
-AY_BOUNDS
-> +       default y if CC_IS_GCC && GCC_VERSION >=3D 90000 && GCC9_NO_ARRAY=
-_BOUNDS
->
->  # Currently, disable -Wstringop-overflow for GCC globally.
->  config GCC_NO_STRINGOP_OVERFLOW
-> --
-> 2.25.1
->
