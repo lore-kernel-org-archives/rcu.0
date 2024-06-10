@@ -1,135 +1,98 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36325181;
-	Mon, 10 Jun 2024 00:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89226A29
+	for <rcu@vger.kernel.org>; Mon, 10 Jun 2024 00:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717978061; cv=none; b=DH5qOjUi1/TREoG1XWxktSEv9GvRVWDvR/mbmXxkwvo2HmjRfP5vKvPApUJiRgNBUJqTiy+q9398eghMgaUWRxq5cP35B/DQm4Zy+HYwzdpd1xM54YeHtaD6+ogCAB2EnAdnzqD6N8yObEqzHk2G5H1pTGNOKZ1YeErn4whobgo=
+	t=1717980741; cv=none; b=BQFsGEJ3ogUTHGE3ABYj7b+LMq1TsW+ZdWi6neU0VNI5OFlNdVHyA0doItN7QD51gon3/UkwOCU0IjuoP2ng9Zm+RF/0dMhAdGJ3pdmtrkI48/vb2Gz6p16syVeQfIOklDKEE4ex18KrQsjkBm8WK6qd95/mP3rMMvURrGh8ip8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717978061; c=relaxed/simple;
-	bh=yNPZXjraPFoWf2B2xycBBK4l0qItoibdC+m6L6zX3Ck=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oRl2yUbwestB2ZwulrbQAhtiTpRN33SDEYyfTvsMhj3FUOhn6sJHd99ExG6l2cphhbV7ON3/4pBsicXTqy259nC3KgfBeTbq5Smu6xCNRNq9aqMguvn3k5uEpqqZodAkYMvAtZWf1172mNmjBPZXu7TTMdTb+CQNa+YyQ2GDqdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ENQi7gMc; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1717980741; c=relaxed/simple;
+	bh=PpPAfIrSPTpwoT/qKPUT/AS1frojMNS524vqZzA9ToM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=toIn8Soc1R2ibSYtXmpOWiVXZT9jN1IkOSaYvowkFahTOdasrCzgMjw0BLxeBG2Kn6l2ZZf2tRbzkoicceFpLU81Zp94VewCu35fyNqKecoXI2e6zqYS56jPmvIkO1TdxR6L0gbhATh+58KRCwmue774cm8/YHDduVqvO5Ws8d4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TAF+WkG4; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ENQi7gMc"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1f6559668e1so31975335ad.3;
-        Sun, 09 Jun 2024 17:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717978059; x=1718582859; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5FynuwZtpDYUJAG2SjU3LA4RZtEXueend7py2Rk3AHE=;
-        b=ENQi7gMcxp98K+htKu0DxHRpkJiteoDlGc/7QaTX3vmgk0sSY9p7Xg6YiOkDy80qAX
-         +JTQznH4b0sVOMxFZPJ3pl2KVWqklJfoXmFz7sWGlZlKGXDc2in9CkR1Bk1YzKplXAfY
-         xWbBOPtI+l0za860ApgYl9IWq5100G7P10JeB2dUX1zCA+Iqo+TdSSDJKkQF8oz7Wg3A
-         MtJcnRhlVpmG93TsNoyViQJhkE+lrzW8dDRzOo1Nvb+c38kb2aSZB8I+wlmyntv8unjg
-         QWmBRqcf1I9lckhNJ76rDvUDjVx8yq607AqGc71PRQVOPofWu6z8WitTCDPxXDgPOr6U
-         uWjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717978059; x=1718582859;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5FynuwZtpDYUJAG2SjU3LA4RZtEXueend7py2Rk3AHE=;
-        b=PteeS0fxDVCpJMGQhgV1iu4i6AUhF2ZRfP/E+vd4COPZ/zfGd7bX3c0Nj67+MXyzql
-         AO57wTkGe14f8mB+AcTmWC+1NmV5D0LkRHAzU+Ng5/YwtzyIhKucSNe5QzTCxONz4ji0
-         F80d9rayUejAh4ytNWAnx0KWOYULDCHrH7lsIEkEEEw2mrX0g5fL6CQ3jdhE8u5ivGop
-         MaHzgBFvUD7iDUHVpVQNES8VNGlfJxDQkRZ2zb75uzQfmLtyH+rn8odWTOLMsqBTYXln
-         wtAaVxc+VJuY5czHG65uWJPFwvU9JLdkvO6gDdJSjgNsIYdOo1FJX4NRzTaWOcX1MIWH
-         BSdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXHs3kXm4F7rLPtIj/nLG4q4yE0u/AKy/4N2vCQruDcK/5afWmQZEnKfUMFsMS09r5z1k2bshEaTBvaYB1cc7ocpYVvxUf/kj+Ue8iO/IEC5346KsH3o8uuqgnOhg0j615j
-X-Gm-Message-State: AOJu0YwIkR9aQMZaVXNIEwO7ssPBMx+cQTP+J0n/VntmZLIGuOu0vkd8
-	1QUWFyUuCgkcDYZmbn4h0D+HrkYlWno6TRJOQZCqHC/g1gcA1A0U
-X-Google-Smtp-Source: AGHT+IHkgHhlxIjcMwVqd9xbh+aWsrktaeoffRbMkIrdWhNmOrFx6ZZEWLa2fJP+zqR9Sit2r89HBQ==
-X-Received: by 2002:a17:902:db05:b0:1f6:9010:1cb8 with SMTP id d9443c01a7336-1f6d03ce036mr78495325ad.65.1717978059441;
-        Sun, 09 Jun 2024 17:07:39 -0700 (PDT)
-Received: from localhost.localdomain ([91.199.84.25])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6bd7ededasm70188305ad.254.2024.06.09.17.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Jun 2024 17:07:39 -0700 (PDT)
-From: Wei Fu <fuweid89@gmail.com>
-To: oleg@redhat.com
-Cc: Sudhanva.Huruli@microsoft.com,
-	akpm@linux-foundation.org,
-	apais@linux.microsoft.com,
-	axboe@kernel.dk,
-	boqun.feng@gmail.com,
-	brauner@kernel.org,
-	ebiederm@xmission.com,
-	frederic@kernel.org,
-	fuweid89@gmail.com,
-	j.granados@samsung.com,
-	jiangshanlai@gmail.com,
-	joel@joelfernandes.org,
-	josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	michael.christie@oracle.com,
-	mjguzik@gmail.com,
-	neeraj.upadhyay@kernel.org,
-	paulmck@kernel.org,
-	qiang.zhang1211@gmail.com,
-	rachelmenge@linux.microsoft.com,
-	rcu@vger.kernel.org,
-	rostedt@goodmis.org,
-	weifu@microsoft.com
-Subject: Re: [RCU] zombie task hung in synchronize_rcu_expedited
-Date: Mon, 10 Jun 2024 08:07:26 +0800
-Message-ID: <20240610000726.146177-1-fuweid89@gmail.com>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <20240608124237.GC7947@redhat.com>
-References: <20240608124237.GC7947@redhat.com>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TAF+WkG4"
+X-Envelope-To: paulmck@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717980737;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z8e/nZx2clS5oTz8ovHQHA3tx0aMmiEyC6dg3QhyZo0=;
+	b=TAF+WkG4VJOxlUYAV0XBorySC5vvvWRAtswWB9oLQHE7Wz9JAodQ3v+57Pn0+U93qOUb7o
+	AWMD1hzkhZzoJnV7YyeLNC2OFR8VlH7EN2ngm/cc59LaKHo/t2a7Cvay6ZFgrR2yrQ4Mmf
+	CttBCXBHxuPgMVe8Y3YJxOSNK5WDBks=
+X-Envelope-To: rcu@vger.kernel.org
+Date: Sun, 9 Jun 2024 20:52:14 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org
+Subject: Re: srcu_cleanup warning
+Message-ID: <irycqy4sinjdgm2hkyix2bffunpcmuwgeufsx6nlljvqme3wiu@ify3zdnrmzph>
+References: <y5hi7x5w3yi4i5sh2b5hgk7xu2mghkthabc7adrqteg3muc5y4@pbnkp7yyxcrp>
+ <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
+ <lfqpkn4ailnaa3da45cnk33yorufv63accbrtnzf7chqa56lyc@jg6ldk4wexzz>
+ <d21f257a-4056-43d9-80f5-f07f1285c7fa@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d21f257a-4056-43d9-80f5-f07f1285c7fa@paulmck-laptop>
+X-Migadu-Flow: FLOW_OUT
 
+On Sun, Jun 09, 2024 at 09:55:30AM -0700, Paul E. McKenney wrote:
+> On Sun, Jun 09, 2024 at 11:37:45AM -0400, Kent Overstreet wrote:
+> > On Sat, Jun 08, 2024 at 08:25:53PM -0700, Paul E. McKenney wrote:
+> > > Could you please try something like this just before the call to
+> > > cleanup_srcu_struct()?
+> > > 
+> > > 	WARN_ON_ONCE(poll_state_synchronize_srcu(&c->btree_trans_barrier, ck->btree_trans_barrier_seq);
+> > 
+> > Which seq was this supposed to be? All keys have been freed by this
+> > point...
 > 
-> On 06/07, Oleg Nesterov wrote:
-> >
-> > On 06/07, Wei Fu wrote:
-> > >
-> > > Yes. I applied your patch on v5.15.160 and run reproducer for 5 hours.
-> > > I didn't see this issue. Currently, it looks good!. I will continue that test
-> > > on this weekend.
-> >
-> > Great, thanks!
-> >
-> > > In last reply, you mentioned TIF_NOTIFY_SIGNAL related to busy-wait loop.
-> > > Would you please explain why flag-clear works here?
-> >
-> > Sure, I'll write the changelog with the explanation and send the patch on
-> > weekend. If it passes your testing.
+> Or, alternatively, where in the code is this supposed to be?
 > 
-> Please see the patch I've sent. The changelog doesn't bother to describe this
-> particular problem because busy-waiting can obviously cause multiple problems,
-> especially without CONFIG_PREEMPT or if rt_task().
+> If there is no convenient point in the code to grab the most recent
+> return value from start_poll_synchronize_srcu(), another thing to do
+> is to invoke either synchronize_srcu() or synchronize_srcu_expedited()
+> just before the call to cleanup_srcu_struct().
 > 
-> So let me add more details about this particular deadlock here.
+> Another approach is to use get_state_synchronize_srcu() instead of
+> start_poll_synchronize_srcu(), and have a self-reposting SRCU callback
+> to keep the grace periods going.  Then you would set a flag that
+> stopped it from self-posting, then do srcu_barrier().  With careful
+> memory ordering.
 > 
-> The sub-namespace init task T spins in a tight loop calling kernel_wait4()
-> which returns -EINTR without sleeping because its child C has not exited
-> yet and signal_pending(T) is true due to TIF_NOTIFY_SIGNAL.
+> There are quite a few techniques to shut down the self-reposting SRCU
+> callback when there is nothing for it to do and to restart it if need be.
 > 
-> The exiting child C sleeps in synchronize_rcu() which hangs exactly because
-> T never calls schedule/rcu_note_context_switch, it can't be preempted because
-> CONFIG_PREEMPT is not enabled.
-> 
-> Note also that without PREEMPT_RCU __rcu_read_lock() is just preempt_disable()
-> which is nop without CONFIG_PREEMPT.
-> 
-> Oleg.
-> 
-> 
+> But just doing a synchronize_srcu() or synchronize_srcu_expedited() is
+> a lot simpler and probably does the job.
 
-Thanks for the update. That's really helpful!
+synchronize_srcu_expedited() seems like the simplest solution, yeah.
 
-Wei
+Thanks, I think I'm starting (hazily) to get an idea of how the RCU code
+is structured, but I'll have to dig more when I have more time, this is
+interesting :)
+
+I am wondering why you couldn't just have cleanup_srcu_struct() do the
+appropriate cleanup (synchronize_srcu_expedited?) in this instance; if
+the caller is tearing down the srcu struct they don't need srcu
+synchronization anymore, I would think the only safety issue that would
+need a warning would be leaked read locks.
+
+Another question for you: is there a limit to the number of pending
+sequence numbers from start_poll_synchronize_srcu()? (e.g. 2?)
+
+That affects the data structure I use for redoing this "track pending
+frees" code.
