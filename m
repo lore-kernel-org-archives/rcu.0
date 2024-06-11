@@ -1,51 +1,74 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EFC13D2A2;
-	Mon, 10 Jun 2024 15:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E0517836F;
+	Tue, 11 Jun 2024 10:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718032379; cv=none; b=Glze2DhD7m60e16bHb2g3J656FYXoehoGXzuTzmiAWo7qVEn3tVNHJN4nrZhWeRQkts8BgnsQAveSQKJWygj35mrNOabABcus1hymWRzA8HpoEoPR7AzRtqreN4igQo340j5DxhavdHjP98AnePbAavRpk7hEWbQo8PkLr/plOA=
+	t=1718100768; cv=none; b=OKqE4oTDbcY5yAaf6LIaTZIJRMZ103yU3Wepw9nfw8EOFxsBoHMWEEz7zDJ5QHLW0Sim9Cuoza10jRLdhTvUqbv9xqF+TFQGLsjWlpPBsMjVJH3cGGRpq+XGzZmD51Qk4T9IHGRVveoCpszM63HtGTUYD7I7OlDqhGj7CNQ9Ku4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718032379; c=relaxed/simple;
-	bh=V7GYawRo5XZ8bJwwWXYg1kOKgGFBMi/WhHM5W4k7Zvk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BbdM+YXUbytVh74PzE09XNNaXRz0oqXfenelqJTmsbzgRe84bSGj9HZz2dx+rdPQiGwdAUBQY03qNP0J0lLqbKam6BsagN/ufdc9AfReknh0TnswRHfotCuhKyOAczEV7pAgl7NcHLsId36/mWe6t8IT7i34l+rHoUiqsaSWPR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=po5IksS3; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1718100768; c=relaxed/simple;
+	bh=hHq7rsBFDq0EqNnuYPQ1CAP+SGwfC+85cs43Miwvbwk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AX3cB7kGtIQnyxvTwbWQR+GLDNtN0VYm9jWf6swl1j63tFnrysmsBoDSEKjFG/txv9wIsjeotTQ/dTX1oXCeg6WYAjHrV9oWSJ1Ruw0GobyRMDK4mMcOIvL4YeF2JBPqMp78ubZQItiUOhzJ3L+mxTNo9tdV87iscY7I7gK9Zrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XF5tygky; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="po5IksS3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D8ADC2BBFC;
-	Mon, 10 Jun 2024 15:12:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718032378;
-	bh=V7GYawRo5XZ8bJwwWXYg1kOKgGFBMi/WhHM5W4k7Zvk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=po5IksS3tIroV4rnfdyyEU2pW0qGmO2jOqRXsCWOi6kHQqhpQEy6bUyq9ZXNzW5mL
-	 w7y3Bc9F/1OyD6Lr0rJ/LrSLjsykpNXkZAE8VMTQkdVskF+CDfVSuy41VQUKa1wkTS
-	 p0KoPex2eUkJSERqg2OykwqhJuZbCLJ9GzxiWzPZf/g66W42xrk96SULynfS+hINt8
-	 HARm1YIWwoivlrAyiZt2e4ZaEnNLNK3BsehmxSCb+J8ygE2V5SktZuYa+nkEVRtfoU
-	 S+1AjTAq/U87A/PDXkOrlNz5QWUBQQTXbPt38OjDF1uLPStWzQXwtxToOgK+l+2iHY
-	 sN1XtvRhSB8jg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2BA4FCE2373; Mon, 10 Jun 2024 08:12:58 -0700 (PDT)
-Date: Mon, 10 Jun 2024 08:12:58 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XF5tygky"
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ebd95f136bso9059821fa.0;
+        Tue, 11 Jun 2024 03:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718100765; x=1718705565; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2FKak35VIiYwM8SAujbX9oYKzoQLHlkNtzmJ5k52VYs=;
+        b=XF5tygkyT1RbLf0yFFfzpjBEjpmvSHWL6DDTiK6rJt0Gt4Ydgz8ky+FHjPfZk8d7C8
+         a6kLqA+An1P8fXeICCxFJdwyEymX5x/UQfrHhOVaG7Pb92rnNkrfq+FpWoHlFXgYpHiz
+         7HUAknBP/iqc3lf0NfjrrFMQHoAU+ALrd8v4mVXDxdHj1wgQJwXZ04CCMDcC2O0/ACDp
+         7lVyvUPr/WNW0DYQyfnnvTbPGADYbd1KHGt+TH405MU9sgv2sdCjZKhdl/XqZRLbFQh2
+         UvrdAfmK5otvjqLCKqV8zXg26uhTGpNBKZf2Q5mkd/Y/Slmy5vTBuoXPrLCaSxrgVUMY
+         Jw7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718100765; x=1718705565;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2FKak35VIiYwM8SAujbX9oYKzoQLHlkNtzmJ5k52VYs=;
+        b=p2kWx616qP87C7DdC2GCLq6cF6M1Fld7xdRTXEhBphtiEHAlE44zkWIy8aDSPKfUZH
+         MthuKT3GnRNHKnIU9wUeP5XRvelx7VHbV3+Vpduk8d2uBUdhQ3RrelA1h2tedLkLsH18
+         KxwxgTPeR0j3cP0sqS1qL5Ij3ivlJu0cPfOVITBnVpykLtom7LmNoj5c3a+ICjUVCnMC
+         qmgzD26TTwul6y+PgXEeMB1gleGnkAV925rZc19bACZIu63RHpRRs5Sw+xJLS/Mb7Gzq
+         TmjOjXt+jT821r4smQwPxzVpGDZ+CwU72J7+p3slFqqFbbp1ikUTdT1i045pQt2GXtzM
+         hT8A==
+X-Forwarded-Encrypted: i=1; AJvYcCU3YhD4mfgBJTivljzNFgzyr3So6jDQqp2NyX1gKYmh9KB7sJZea84CJiilMQcRHQzcg9fgH6Dymt2u3p6mJhNm9wHuWhtF/art+IGftXBNlAJQWUdnd03aQQBUgis7kZ0z
+X-Gm-Message-State: AOJu0YxF5plPd5rEolu8XON1Zn4LUn9kM0L07wGZ4vtLKcYGb/48bOyy
+	5zX0dElczSWqFZIN/pH1em6Rj5qDXYWOmDgKfvPlW6UyYH3qwIy1
+X-Google-Smtp-Source: AGHT+IFqxkEHeFSRbrMxnPFKPJEiNaoRvYCebSTK4U7KrRNNGFlGxa8V+twgJbUCwSME/kpyvOOKGQ==
+X-Received: by 2002:a2e:3603:0:b0:2e9:6e43:c897 with SMTP id 38308e7fff4ca-2eadce82d72mr71336111fa.48.1718100764800;
+        Tue, 11 Jun 2024 03:12:44 -0700 (PDT)
+Received: from pc636 (host-90-233-193-23.mobileonline.telia.com. [90.233.193.23])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2ebee031c95sm6061191fa.101.2024.06.11.03.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jun 2024 03:12:44 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Tue, 11 Jun 2024 12:12:41 +0200
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH rcu 3/9] rcu/tree: Reduce wake up for synchronize_rcu()
- common case
-Message-ID: <3900dfd9-f2e7-4206-930b-2247186a37db@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	rostedt@goodmis.org
+Subject: Re: [PATCH rcu 2/9] rcu: Reduce synchronize_rcu() delays when all
+ wait heads are in use
+Message-ID: <ZmgjGdRLCg3tnuBC@pc636>
 References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
- <20240604222355.2370768-3-paulmck@kernel.org>
- <ZmCTvMVlOMFv0-zd@localhost.localdomain>
- <CAFwiDX8yGCEiZE-VC0i=VoGByQArQkwG7beVvQO5wRGsK8rdPQ@mail.gmail.com>
- <beb31a51-253e-4bc4-a73c-456f2bf2fd06@paulmck-laptop>
- <CAFwiDX-x4=_N2szD2QZhAEkU+kx_eTscz2bcyHqikHq7m=rkpQ@mail.gmail.com>
+ <20240604222355.2370768-2-paulmck@kernel.org>
+ <ZmBVfpyEZeTIAHJn@localhost.localdomain>
+ <c7d07e5d-34a0-4874-8e7e-1c576c14c8e6@paulmck-laptop>
+ <fbc30c3a-ecd3-4525-9434-307c7769bb4c@amd.com>
+ <a0aa3d5e-006c-475d-bd2f-b15fca47deee@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,97 +78,57 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFwiDX-x4=_N2szD2QZhAEkU+kx_eTscz2bcyHqikHq7m=rkpQ@mail.gmail.com>
+In-Reply-To: <a0aa3d5e-006c-475d-bd2f-b15fca47deee@paulmck-laptop>
 
-On Fri, Jun 07, 2024 at 07:21:55AM +0530, Neeraj upadhyay wrote:
-> On Thu, Jun 6, 2024 at 11:42 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Jun 06, 2024 at 11:28:07AM +0530, Neeraj upadhyay wrote:
-> > > On Wed, Jun 5, 2024 at 10:05 PM Frederic Weisbecker <frederic@kernel.org> wrote:
-> > > >
-> > > > Le Tue, Jun 04, 2024 at 03:23:49PM -0700, Paul E. McKenney a écrit :
-> > > > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > > > >
-> > > > > In the synchronize_rcu() common case, we will have less than
-> > > > > SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
-> > > > > is pointless just to free the last injected wait head since at that point,
-> > > > > all the users have already been awakened.
-> > > > >
-> > > > > Introduce a new counter to track this and prevent the wakeup in the
-> > > > > common case.
-> > > > >
-> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > ---
-> > > > >  kernel/rcu/tree.c | 35 ++++++++++++++++++++++++++++++-----
-> > > > >  kernel/rcu/tree.h |  1 +
-> > > > >  2 files changed, 31 insertions(+), 5 deletions(-)
-> > > > >
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index 6ba36d9c09bde..2fe08e6186b4d 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
-> > > > >       .ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
-> > > > >       .srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
-> > > > >               rcu_sr_normal_gp_cleanup_work),
-> > > > > +     .srs_cleanups_pending = ATOMIC_INIT(0),
-> > > > >  };
-> > > > >
-> > > > >  /* Dump rcu_node combining tree at boot to verify correct setup. */
-> > > > > @@ -1633,8 +1634,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > > >        * the done tail list manipulations are protected here.
-> > > > >        */
-> > > > >       done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > > > -     if (!done)
-> > > > > +     if (!done) {
-> > > > > +             /* See comments below. */
-> > > > > +             atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
-> > > >
-> > > > This condition is not supposed to happen. If the work is scheduled,
-> > > > there has to be a wait_queue in rcu_state.srs_done_tail. And decrementing
-> > > > may make things worse.
-> > > >
-> > >
-> > > I also don't see a scenario where this can happen. However, if we are
-> > > returning from here, given that for every queued work we do an
-> > > increment of rcu_state.srs_cleanups_pending, I think it's safer to
-> > > decrement in this
-> > > case, as that counter tracks only the work queuing and execution counts.
-> > >
-> > >     atomic_inc(&rcu_state.srs_cleanups_pending);
-> > >     if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work))
-> > >         atomic_dec(&rcu_state.srs_cleanups_pending);
-> >
-> > Linus Torvald's general rule is that if you cannot imagine how a bug
-> > can happen, don't attempt to clean up after it.  His rationale (which
-> > is *almost* always a good one) is that not knowing how the bug happens
-> > means that attempts to clean up will usually just make matters worse.
-> > And all too often, the clean-up code makes debugging more difficult.
-> >
+On Thu, Jun 06, 2024 at 09:49:59AM -0700, Paul E. McKenney wrote:
+> On Thu, Jun 06, 2024 at 09:16:08AM +0530, Neeraj Upadhyay wrote:
+> > 
+> > 
+> > On 6/6/2024 12:08 AM, Paul E. McKenney wrote:
+> > > On Wed, Jun 05, 2024 at 02:09:34PM +0200, Frederic Weisbecker wrote:
+> > >> Le Tue, Jun 04, 2024 at 03:23:48PM -0700, Paul E. McKenney a écrit :
+> > >>> From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> > >>>
+> > >>> When all wait heads are in use, which can happen when
+> > >>> rcu_sr_normal_gp_cleanup_work()'s callback processing
+> > >>> is slow, any new synchronize_rcu() user's rcu_synchronize
+> > >>> node's processing is deferred to future GP periods. This
+> > >>> can result in long list of synchronize_rcu() invocations
+> > >>> waiting for full grace period processing, which can delay
+> > >>> freeing of memory. Mitigate this problem by using first
+> > >>> node in the list as wait tail when all wait heads are in use.
+> > >>> While methods to speed up callback processing would be needed
+> > >>> to recover from this situation, allowing new nodes to complete
+> > >>> their grace period can help prevent delays due to a fixed
+> > >>> number of wait head nodes.
+> > >>>
+> > >>> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> > >>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > >>
+> > >> IIRC we agreed that this patch could be a step too far that
+> > >> made an already not so simple state machine even less simple,
+> > >> breaking the wait_head based flow.
+> > > 
+> > > True, which is why we agreed not to submit it into the v6.10 merge window.
+> > > 
+> > > And I don't recall us saying what merge window to send it to.
+> > > 
+> > >> Should we postpone this change until it is observed that a workqueue
+> > >> not being scheduled for 5 grace periods is a real issue?
+> > > 
+> > > Neeraj, thoughts?  Or, better yet, test results?  ;-)
+> > 
+> > Yes I agree that we postpone this change until we see it as a real
+> > problem. I had run a test to invoke synchronize_rcu() from all CPUs
+> > on a 96 core system in parallel. I didn't specifically check if this
+> > scenario was hit. Will run RCU torture test with this change.
 > 
-> Ok. Thanks for sharing this info!
+> Very well, I will drop this patch with the expectation that you will
+> re-post it if a problem does arise.
 > 
-> > One example exception to this rule is when debug-objects detects a
-> > duplicate call_rcu().  In that case, we ignore that second call_rcu().
-> > But the reason is that experience has shown that the usual cause really
-> > is someone doing a duplicate call_rcu(), and also that ignoring the
-> > second call_rcu() makes debugging easier.
-> >
-> > So what is it that Frederic and I are missing here?
-> 
-> Maybe nothing. As kworker context does not modify srs_done_tail and
-> invalid values
-> of srs_done_tail  can only be caused by the GP kthread manipulations
-> of  srs_done_tail , my thought here was, we can keep the pending
-> rcu_sr_normal_gp_cleanup_work count consistent with the number of
-> queue_work() and kworker executions, even when we see unexpected
-> srs_done_tail values like these. However, as you described the general rule
-> is to not attempt any clean up for such scenarios.
+Thank you! We discussed it before and came to conclusion that it adds an
+extra complexity. Once we hit an issue with delays, we can introduce it
+and explain a workload which triggers it.
 
-So "if (WARN_ON_ONCE(!done) return;"?
-
-Or is there a better way?
-
-							Thanx, Paul
+--
+Uladzislau Rezki
