@@ -1,44 +1,92 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B894A1B;
-	Wed, 12 Jun 2024 02:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA041C2D;
+	Wed, 12 Jun 2024 05:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718161051; cv=none; b=GIB+rUGTEHpiZ+/KD5SmLJHGyqnw5/ySpiRqfwHjLmNrviEqhmGi1SM0eWV9tSgJRel8SGzOdJZDPShnjOEZyQzbThOsQA4j99dhmEHDv4tnm0DuhtEB9/0UVQ5WtJ6JVsbfUo6CcZ2QRoIgs+ox1QNGxIoODxJka9UlW7/+tWE=
+	t=1718169721; cv=none; b=Z0BrEpUP8MXTH2peVm5uAlDQsBSpW+gWOoIm7ZjzdYMu5yI1TXSgm2t18hgzFtNIdLOZoHcBi0XKSfgGNREiDIaPDbJacuU9eOvjvk79m6xyN/wXK+Dw0GEH7nIcmPAqK0FlxIgGvp2FWnwKNLiJayaF27OKuwSySM4pGgbo1nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718161051; c=relaxed/simple;
-	bh=Lx1//KtDjXhN3gOtqkYpZDXLlUXymjn1NFe3pPMA3JQ=;
+	s=arc-20240116; t=1718169721; c=relaxed/simple;
+	bh=8SGOda8tYPcw0wzFjbPUAUG2mv09WHxbpDwu0cNWIFc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KXZvNEkshQ3L/UBZRN0Gzf4kNVWhneg3dJewfgEw6m/hgpxFH94gdQ3pgiaDPZhQ0FY4Z+6vkiuJtMwTAJkvFFChHRiwYh3nUSBj1DqznV+UsLdbLz5jIAZN4kK49I7BmombnT7h1vHxpFjPmteQHvyh8pDtw6w47hI8j2PNpXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b7X9r7QQ; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ml2166lDugBjm/EL2ajqF0bxCUR2z61W15m7gJFNOv8KD1CcvnlVdPH9GtwnHxYe0PAanA9BVZmHtIhOG5UcYjMDAUKZmPQHRRE9bO1OZJ66GuklIttK7HCRUMU6RpIYowMXRhWnQa/b9A862ZyRgyFtdFN9WqSMKPTfHbsfuek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XJzKow9T; arc=none smtp.client-ip=209.85.217.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b7X9r7QQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54DCBC2BD10;
-	Wed, 12 Jun 2024 02:57:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718161050;
-	bh=Lx1//KtDjXhN3gOtqkYpZDXLlUXymjn1NFe3pPMA3JQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=b7X9r7QQPvMEpHtSYVEHEXtaF9ZCNUKgVw6Bvxx8q6uNxa6N0Giu0UPXGVWXNlcH+
-	 Mr5QpelutejxQc9GY0lz8FFPHiBEqbzdDL5lbcs+mnhLPM34fVvJtiSH26y0Nb7Scp
-	 3a7cTWe80szAn1LFrIuSc9EGgm+9kTBclYY3cIGnAZWir8iQTpg8UscGHS2E0n0apH
-	 OYA7HHyS7Cb6L1W5nZPed6SHtFnF30fM1kEo2F1EJ5fZXE+yVMD79gBXgiwOQZsfM6
-	 TJusoauNwVJi9mwkVQFJxs1hHxHA7Wqroc+i0s91vg1Mg/DjXdoUalRx0k4maDuiT3
-	 neDpi6F5H8tCQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 024F1CE250F; Tue, 11 Jun 2024 19:57:29 -0700 (PDT)
-Date: Tue, 11 Jun 2024 19:57:29 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, lance@osuosl.org,
-	mark.rutland@arm.com
-Subject: Re: [PATCH V3] rcutorture: Add CFcommon.arch for the various arch's
- need
-Message-ID: <def32dd4-b205-45b8-a5ed-e6e28a0ac4f4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240612013527.1325751-1-zhouzhouyi@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XJzKow9T"
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-48c4a821d76so1015381137.2;
+        Tue, 11 Jun 2024 22:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718169719; x=1718774519; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fjEwJgRoG92FC9Vw5huQBkdZy2fxtlgBnuBKB/008U0=;
+        b=XJzKow9TKqUCW9TmDa5rKNQxTtDpSNeVcSt6QWMhIkRzm/zQ90nWoZa/w5xw6RVmwz
+         2p3ABsv2oCNQkIP//1cvDC2mNCeXFwbcE6bv1C6WQBVHFvLCLQNp2xgV4RC6lb1vCdk1
+         jxqBpojj3DIlgYbIQnc/lxTv9Ut/YSiRL36duXOYAA0cdwZ5bEDdQ/yfVr+0GrB6VNo4
+         N+/BllgyLD2CLVeluJddcdMY907nAyxB52dzUAOy6JcGvsjLOqPmlqYrrhaF1oYPKp3M
+         2Scnug70Gr/XJFCOf/WOp8wET8Xce27/AhfpHhH9522MB5oYaIbaguI8mszk8kAAi6te
+         KjPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718169719; x=1718774519;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fjEwJgRoG92FC9Vw5huQBkdZy2fxtlgBnuBKB/008U0=;
+        b=D/BO4D1LGzsQDFSHkCbYQXHf1c5cFGyDCvpz7TBSf0cMheYHsUselzsrOCbvHk4hP+
+         /ewKgDIHbJ18ebTLDB3BvTeYahnwIj7zTIwx1pFftAg0wYI58GoRzHpPny+uyh3bzSLq
+         CAfXRWmofFBuAv1mlf0OAAJYI474o4edw0zJ1jfRs4vEutaYFfOoAAXEtiDnUY3wVSPg
+         nu+UtP+HDu5S2jevb9hFPArEdMIVVVa+pcR7i08lDUyivosvxoIz8d3piSxFBSEDXg3Q
+         wHV3cRiSqfTDDtuR3XkMLZc1UXNl9EWwljyn7XaEKqaqJKM40R53hIoJ98tB88/0Kk3f
+         Z1bQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJzdieaVpq9Aj3C8/Tfm8stcTPcxwr37x3qhfwtnmXG9R9j5H+5ODzFwc2I+tWgXsbCK/wd9CT7BD6uIGhLzREwnlQSiFwcrrUnZN4
+X-Gm-Message-State: AOJu0YxaSKl4eg5JtCqr+jjzUUz3vbeILHzFyJJnePFlE6ztSy2yU0KT
+	VhTdlwV4T5xK3ZXfTpLC+Sk4DswdO3RfrjkRMEptFKsTOaw/yLx6
+X-Google-Smtp-Source: AGHT+IFDvF86CuK3Kg24+xx5dBk2/UDjJk+sWB47rTKVHiKT+QQs97LesjLepl9XawzJSkfEe8TcLw==
+X-Received: by 2002:a67:b641:0:b0:48c:4d59:6295 with SMTP id ada2fe7eead31-48d91de3080mr974801137.19.1718169719138;
+        Tue, 11 Jun 2024 22:21:59 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-797a2b7f956sm186654985a.6.2024.06.11.22.21.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jun 2024 22:21:58 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 2893D1200043;
+	Wed, 12 Jun 2024 01:21:58 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 12 Jun 2024 01:21:58 -0400
+X-ME-Sender: <xms:djBpZjepV48rA8difPCs5QQIvsblVI7GqyooEM7GVBuLcH16ihDHFQ>
+    <xme:djBpZpOSBMMS1yv7MEuoR35VjkeF488ge73Jx5kJkC22K4G57GbHOnZgXqssf0WWB
+    LlpdvgelIy0Snt0_w>
+X-ME-Received: <xmr:djBpZsjShrWrBibnu9O0Z5xGTsFQUDKh4aBvdzdl2xYg3fHO5SgeEPA-Iw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedufedgledvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:djBpZk_bCnEb_qh7jne4GYOzjhOCd-swKy33lBc1UEW6ZbCk2qtrLA>
+    <xmx:djBpZvsewM13dmMZPARhg3iAt4WCJZFI0JeqkrOkJGXIIwT-aoIvfg>
+    <xmx:djBpZjFP7fB-7itURqGUpDkD_-jG_qeF881mb10M5DIalgYd3C57Fw>
+    <xmx:djBpZmNP-rupTPcCkq3RtbEC-2Lk_76CXmNW5bi2IfkV9fzr5J-n7g>
+    <xmx:djBpZgOM2_4tEuUKI0CjzbgPmeiKi1FhZDowT24t05GD5MTbv4HMNHp5>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 12 Jun 2024 01:21:57 -0400 (EDT)
+Date: Tue, 11 Jun 2024 22:21:56 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org
+Subject: Re: [PATCH rcu 0/6] Grace-period memory-barrier adjustments for v6.11
+Message-ID: <ZmkwdFhXK2SsVWa4@Boquns-Mac-mini.home>
+References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -47,96 +95,47 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240612013527.1325751-1-zhouzhouyi@gmail.com>
+In-Reply-To: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
 
-On Wed, Jun 12, 2024 at 01:35:27AM +0000, Zhouyi Zhou wrote:
-> Add CFcommon.arch for the various arch's need for rcutorture.
+On Tue, Jun 04, 2024 at 03:26:46PM -0700, Paul E. McKenney wrote:
+> Hello!
 > 
-> According to [1] and [2], this patch
-> Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options") by moving
-> x86 specific kernel option CONFIG_HYPERVISOR_GUEST to CFcommon.arch
+> This series removes redundant memory barriers from the grace-period
+> code paths:
 > 
-> The patch has been revised and improved under
-> Paul E. McKenney's guidance [3].
+> 1.	Remove full ordering on second EQS snapshot, courtesy of Frederic
+> 	Weisbecker.
 > 
-> [1] https://lore.kernel.org/all/20240427005626.1365935-1-zhouzhouyi@gmail.com/
-> [2] https://lore.kernel.org/all/059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop/
-> [3] https://lore.kernel.org/lkml/cd3709dc-2c08-4ac2-a19b-d8edb66195e3@paulmck-laptop/T/
+> 2.	Remove superfluous full memory barrier upon first EQS snapshot,
+> 	courtesy of Frederic Weisbecker.
 > 
-> Tested in x86_64 and PPC VM of Open Source Lab of Oregon State University.
+> 3.	rcu/exp: Remove superfluous full memory barrier upon first EQS
+> 	snapshot, courtesy of Frederic Weisbecker.
 > 
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> 4.	Remove full memory barrier on boot time eqs sanity check,
+> 	courtesy of Frederic Weisbecker.
+> 
+> 5.	Remove full memory barrier on RCU stall printout, courtesy of
+> 	Frederic Weisbecker.
+> 
+> 6.	rcu/exp: Remove redundant full memory barrier at the end of GP,
+> 	courtesy of Frederic Weisbecker.
+> 
 
-Much better, thank you!
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-I queued and pushed for review and testing with the usual editing,
-so please let me know if I messed anything up.
+Regards,
+Boqun
 
-I added Mark on CC in case he has thoughts from an ARM perspective.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 29cf4c63d04b9752a32e33d46a57717121353ef7
-Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Wed Jun 12 01:35:27 2024 +0000
-
-    rcutorture: Add CFcommon.arch for the various arch's need
-    
-    Add CFcommon.arch for the various arch's need for rcutorture.
-    
-    In accordance with [1] and [2], this patch moves x86 specific kernel
-    option CONFIG_HYPERVISOR_GUEST to CFcommon.arch
-    
-    [1] https://lore.kernel.org/all/20240427005626.1365935-1-zhouzhouyi@gmail.com/
-    [2] https://lore.kernel.org/all/059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop/
-    
-    Tested in x86_64 and PPC VM of Open Source Lab of Oregon State University.
-    
-    Link: https://lore.kernel.org/lkml/cd3709dc-2c08-4ac2-a19b-d8edb66195e3@paulmck-laptop/T/
-    
-    Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options")
-    Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-    Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index b33cd87536899..ad79784e552d2 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -68,6 +68,8 @@ config_override_param "--gdb options" KcList "$TORTURE_KCONFIG_GDB_ARG"
- config_override_param "--kasan options" KcList "$TORTURE_KCONFIG_KASAN_ARG"
- config_override_param "--kcsan options" KcList "$TORTURE_KCONFIG_KCSAN_ARG"
- config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_ARG"
-+config_override_param "$config_dir/CFcommon.$(uname -m)" KcList \
-+		      "`cat $config_dir/CFcommon.$(uname -m) 2> /dev/null`"
- cp $T/KcList $resdir/ConfigFragment
- 
- base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-index 0e92d85313aa7..cf0387ae53584 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-@@ -1,6 +1,5 @@
- CONFIG_RCU_TORTURE_TEST=y
- CONFIG_PRINTK_TIME=y
--CONFIG_HYPERVISOR_GUEST=y
- CONFIG_PARAVIRT=y
- CONFIG_KVM_GUEST=y
- CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686 b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686
-new file mode 100644
-index 0000000000000..2770560d56a0c
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686
-@@ -0,0 +1 @@
-+CONFIG_HYPERVISOR_GUEST=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64 b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64
-new file mode 100644
-index 0000000000000..2770560d56a0c
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64
-@@ -0,0 +1 @@
-+CONFIG_HYPERVISOR_GUEST=y
+> 						Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+>  b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst |    6 +--
+>  b/kernel/rcu/tree.c                                                     |    2 -
+>  b/kernel/rcu/tree_exp.h                                                 |    8 +++-
+>  b/kernel/rcu/tree_stall.h                                               |    4 +-
+>  kernel/rcu/tree.c                                                       |   19 +++-------
+>  kernel/rcu/tree_exp.h                                                   |    8 +++-
+>  6 files changed, 26 insertions(+), 21 deletions(-)
+> 
