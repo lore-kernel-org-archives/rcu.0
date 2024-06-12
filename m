@@ -1,91 +1,65 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.aperture-lab.de (mail.aperture-lab.de [116.203.183.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC6D17F368;
-	Wed, 12 Jun 2024 14:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BC517F37B;
+	Wed, 12 Jun 2024 14:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.183.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718203582; cv=none; b=qqsGPPMTFgO+V+zgyECXL9Y2LA45DqdxA/YMpte97X+Rik66+V3+NRhPdYE06GxehkSemUKnFlHuNovpkC3L6HK10WWnzuLJfFtbdpBkdtp+rpeuIAxWidKEvM7i04BkyrTv2Xez9mR3/OezS7Lfgu97PvjPEji9cnhcJzdEVA8=
+	t=1718204095; cv=none; b=NI9CaB68Sc/Ijm87Yibe5mG7tYTNeUoCHTgPDB+WpMQNLHH1MdsVEiOjjJHzMTruk6FnGGhtd1jCh62f1Y1IIBd7exram6wywlyFbSA2jE5tsbrDhAT+4a+6+RXc6Is5u51Poxl8VhL0eTIXUlrlUDp90fKmr/JcJ2vgd2vEFsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718203582; c=relaxed/simple;
-	bh=L4ejhDpo8Ae0Wo67dQYTHciD4sD7a4I/kmaobkPCv5c=;
+	s=arc-20240116; t=1718204095; c=relaxed/simple;
+	bh=abvfzkYnK5q5eDVAAFXS5olkGiZ15PozttMlbU2dBMs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XsVAAvFuBqnlCTmY2bLYYIoR0GF0sRpFHZY9ic2dPf9lPefYES2anP14NoCb5aogBysp+YYE0hKzlsJLlf/vzs4WoU/0aecmsgjRAIBFvRCK4R/h5oetNvT/p1nqQ75YuOHvKZX9zRfkJV+0/8ioj8qh4kdzWtb+GaQJ6CBFEkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qjcufpq2; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qjcufpq2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2DBC116B1;
-	Wed, 12 Jun 2024 14:46:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718203582;
-	bh=L4ejhDpo8Ae0Wo67dQYTHciD4sD7a4I/kmaobkPCv5c=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=qjcufpq2759iQMb5gznpH3AesHahwPKiRRPnTBV/XRZKDw113/0E9227ookW9hNoP
-	 sUJIbhvz8xA0QZzIaohcfZBAOmK+wpQN8ECFFXSSZbX1+enuT/fOaaJtcMDk0IbvYt
-	 nXqMlse5vLNA5H4Axrp52/piuuPD2F6ZyrkQwqslVd/RFvDiyaGfep/gtqLqk3EW4n
-	 0fkgNja5nknPX0U/ptpALb/9mt91D3sRro9Hke47jm5GY14biqRDzHJmO65WYoLrqz
-	 QRZBECEmbe0pQkPhFibs2+a5JfGHsFO8hMB/ijPREXBPwtt9Zzj+a92mGK74fjt8F3
-	 WdvHtf88CEa9Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C1FD5CE0886; Wed, 12 Jun 2024 07:46:21 -0700 (PDT)
-Date: Wed, 12 Jun 2024 07:46:21 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH rcu 0/6] Grace-period memory-barrier adjustments for v6.11
-Message-ID: <39815e48-a035-4701-9a88-f3b753551b28@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
- <20240612094207.GA418202@neeraj.linux>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gfK7rqYLWtu+5fkaFRmB7OqYQ9zgrcw4kSiglKFrCmM6cyi9veS6hQgDKCweYGYmWGozIL/oYLrwIGa6/vDU92hDU9hD+7YseCFWYt04KVXjW97JOa/DucQBsMxdmUiIHKOxkUoXhQd2bTTlOq+PUCjjNlx6/h/Dsdrzly8xXbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue; spf=pass smtp.mailfrom=c0d3.blue; arc=none smtp.client-ip=116.203.183.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c0d3.blue
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 13C193EDE0;
+	Wed, 12 Jun 2024 16:54:44 +0200 (CEST)
+Date: Wed, 12 Jun 2024 16:54:49 +0200
+From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: b.a.t.m.a.n@lists.open-mesh.org, Dmitry Antipov <dmantipov@yandex.ru>,
+	netdev@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] Revert "batman-adv: prefer kfree_rcu() over call_rcu()
+ with free-only callbacks"
+Message-ID: <Zmm2uTHTge-i3eCM@sellars>
+References: <20240612133357.2596-1-linus.luessing@c0d3.blue>
+ <e36490a1-32af-4090-83a7-47563bce88bc@paulmck-laptop>
+ <ZmmzE6Przj0pCHek@sellars>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240612094207.GA418202@neeraj.linux>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZmmzE6Przj0pCHek@sellars>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On Wed, Jun 12, 2024 at 03:12:07PM +0530, Neeraj Upadhyay wrote:
-> On Tue, Jun 04, 2024 at 03:26:46PM -0700, Paul E. McKenney wrote:
-> > Hello!
+On Wed, Jun 12, 2024 at 04:39:15PM +0200, Linus Lüssing wrote:
+> On Wed, Jun 12, 2024 at 07:06:04AM -0700, Paul E. McKenney wrote:
+> > Let me make sure that I understand...
 > > 
-> > This series removes redundant memory barriers from the grace-period
-> > code paths:
+> > You need rcu_barrier() to wait for any memory passed to kfree_rcu()
+> > to actually be freed?  If so, please explain why you need this, as
+> > in what bad thing happens if the actual kfree() happens later.
 > > 
-> > 1.	Remove full ordering on second EQS snapshot, courtesy of Frederic
-> > 	Weisbecker.
+> > (I could imagine something involving OOM avoidance, but I need to
+> > hear your code's needs rather than my imaginations.)
 > > 
-> > 2.	Remove superfluous full memory barrier upon first EQS snapshot,
-> > 	courtesy of Frederic Weisbecker.
-> > 
-> > 3.	rcu/exp: Remove superfluous full memory barrier upon first EQS
-> > 	snapshot, courtesy of Frederic Weisbecker.
-> > 
-> > 4.	Remove full memory barrier on boot time eqs sanity check,
-> > 	courtesy of Frederic Weisbecker.
-> > 
-> > 5.	Remove full memory barrier on RCU stall printout, courtesy of
-> > 	Frederic Weisbecker.
-> > 
-> > 6.	rcu/exp: Remove redundant full memory barrier at the end of GP,
-> > 	courtesy of Frederic Weisbecker.
-> > 
-> 
-> Reviewed-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+> > 							Thanx, Paul
+> [...]
+> As far as I understand before calling kmem_cache_destroy()
+> we need to ensure that all previously allocated objects on this
+> kmem-cache were free'd. At least we get this kernel splat
+> (from Slub?) otherwise. I'm not quite sure if any other bad things
+> other than this noise in dmesg would occur though. Other than a
+> [...]
 
-I will apply yours and Boqun's tag on the next rebase, thank you both!
-
-						Thanx, Paul
-
-> > ------------------------------------------------------------------------
-> > 
-> >  b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst |    6 +--
-> >  b/kernel/rcu/tree.c                                                     |    2 -
-> >  b/kernel/rcu/tree_exp.h                                                 |    8 +++-
-> >  b/kernel/rcu/tree_stall.h                                               |    4 +-
-> >  kernel/rcu/tree.c                                                       |   19 +++-------
-> >  kernel/rcu/tree_exp.h                                                   |    8 +++-
-> >  6 files changed, 26 insertions(+), 21 deletions(-)
+I guess, without knowing the details of RCU and Slub, that at
+least nothing super serious, like a segfault, can happen when
+the remaining execution is just a kfree(), which won't need
+access to batman-adv internal functions anymore.
