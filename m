@@ -1,102 +1,102 @@
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D6B180A65
-	for <rcu@vger.kernel.org>; Wed, 12 Jun 2024 16:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958883A1BB;
+	Wed, 12 Jun 2024 18:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.160.73.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718211457; cv=none; b=kP8KzUJ5+WeE4ROnQ5ePAl/pu49vHAjF+csJRHaC/rUlMiv4jvQgBjcH7RCZjnO7Vyul05RHM+/D0gI+n2H9D5crWnTclXq1Rns3kV8x3zJQSY7i9cU6Wnv07GyWR3WG9utdvm8cP11iEE9dha2ZIQ47jnmKCMkePmdj8rxnATs=
+	t=1718216583; cv=none; b=gsRuEKmiHutLoOc4dQ4kSnx00T1Kn+usgn2U8dV8LuKkhx4GFObw6zS1K8YLLSjk+rV90j6ZpcOjdlnw6rrnhlR/vL/UaC5w3LfujfhbdUoadE6OLfu7JXJhI0v+SbTLn0av/0xML3yvPsPqfyR/UiwEGEApfTd01W/ZCUZnbuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718211457; c=relaxed/simple;
-	bh=vebMEaW02jolhLdtvQPmHMC1OEEbWYTVGy+Bor5wYMg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DL9hFKU6RG5pmCFrccmny0V16dcBmUWU7fVlYIUG4PgQ6BN3B1f6wRZ5XKcrcCXbaBVZ5Jj5TPLA3MEogAZyIonPnm9VrUs5H3hvRbsEZbcAbR3M1yuX5gDUqugp9AgfXBSUxTd9lQGj/Nt1XJa+Frsm3nII6iCZ1K3w8bnlJLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=d+l1Ih95; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+	s=arc-20240116; t=1718216583; c=relaxed/simple;
+	bh=S/fn4KpsKyYIb7wyOqQFmHywMa1Mz95vU/XpulFss3s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RS2ooC/e0SAmuiOAzlAyXVdq4FCcXRXp0LO0UqPiBw51GreX+UiyS1hgZUOJAkVEdu+s4Wsk1KKcrxlBinJit1voScVUtjQt4tHRvVxH2G+YqDLDy3tk67PQfxYpdvQMTTUvTeAuS2gXx6BA/p/6jOWOnYe6RrvwHPW9ujKhI4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org; spf=pass smtp.mailfrom=narfation.org; dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b=iX4SAKjS; arc=none smtp.client-ip=213.160.73.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=narfation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="d+l1Ih95"
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-250aa23752dso340fac.3
-        for <rcu@vger.kernel.org>; Wed, 12 Jun 2024 09:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1718211454; x=1718816254; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pAftVLKn20HbmalpH3Tni7KQXwsU3yAXAUhGqIphnu0=;
-        b=d+l1Ih95QeAlRyz0HNZpXALgmOEuWDHQFwfysCuMSY3ZA40F08jSQrUmTx2gl8Mbi+
-         qAETXqgkSFv7duiRBXhNNElzK1VVoCXfv2y/XbbyBeN+a1ELF6YOq1oisGmpkBIKFg0C
-         lJs+G9IaBI2Jo3r42Kh5/Q+/2ekT/FTHoR3aMcSN7Ct9U9td6I34ihp3783vBaahWA1a
-         xRNBvWtFrMdMiIQXMR1HdrW+t68KdtxtXG7LqNhNB7eEyyv2SnHKIax2Eegwp140t4Z3
-         cJqKx4WWpXv2EYYO9vP5miFNt2qW9C3Ff04UoqH73lraY9p+yp4q3CJdltjhgBC0WfKW
-         px5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718211454; x=1718816254;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pAftVLKn20HbmalpH3Tni7KQXwsU3yAXAUhGqIphnu0=;
-        b=jPRdR77RkS7PmRm/OlEzEgDuNTFoHg5tQdwOIjLCIDXG5gbMxHR+BqmKh/3rmfxClp
-         D9mI68nA62oIyxxdpg27TaF6HVJbtXmP7zz00D5MTcSCDBasQILk8tv6kniLyt0EZiwq
-         PajsihItJkkj6/zKfbZrTyYzdNkrok3V+KwJlhCXSYdOb7d9KgiR+r+/LxKfIpxs3bwq
-         Ev1ZMNhIGQcKvTjSRRvN6FRIxIUYS35gch7u0vQoTo5lI7GAo24GmWWAvesKhNO0cfvr
-         F/66u4Fh+hmi4I3KLx9kII+tEM/ObY5sOx7A3weQjmRD7zvPmcqsAutugGZ6bKIjIUmK
-         QPHg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLbKv2SbDMHdHGjV1vzcSyNvoul+3MOCPdNfxL67R5LsPKDzDxYEEs1181cOU28UJMT6M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwP1hPU9sOvJXHEqSJiV2NXvrM8mlsp6AZhCiIc30/rITGskI/n
-	e/GwmcS1c4h0tTKTQiyAdqoWS8dHHnKeJawOMHqjn3cmv9XvPCJIBaH9RVdmwJU=
-X-Google-Smtp-Source: AGHT+IE5gURtOYtjCbJQWtUubvSvxNRA1uBWwaFjKaz5/Y4ebMHZrD+Oj4sfPGkerxg+PybPLlQnIg==
-X-Received: by 2002:a05:6870:818f:b0:254:affe:5a08 with SMTP id 586e51a60fabf-25514c7026emr2515800fac.2.1718211454633;
-        Wed, 12 Jun 2024 09:57:34 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-254d96e5e7fsm1377401fac.26.2024.06.12.09.57.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jun 2024 09:57:34 -0700 (PDT)
-Message-ID: <ec203c0e-13a9-4163-94dd-a8a8d6d2c070@kernel.dk>
-Date: Wed, 12 Jun 2024 10:57:30 -0600
+	dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="iX4SAKjS"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+	s=20121; t=1718216572;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r2DIMPyxXsUsx3z3UHNDfQvmHitGXJiStJK05XL6M2Q=;
+	b=iX4SAKjS85UNGwt2lkaEQqSxCKTvFY5YqaV5lR5uo6cmb3yqiPqSy0QTNp06jX/47CgtUt
+	gAs50cZL2EXRva9Xf0iAnCBIhRpgC+JEqUqNnjqVVm/4Kb3sCo4e2qiroY/jdGH1zwk4e7
+	fzTxXeRhTjT6C0prhAE+4lu0OZ+Sxu0=
+From: Sven Eckelmann <sven@narfation.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>, b.a.t.m.a.n@lists.open-mesh.org
+Cc: b.a.t.m.a.n@lists.open-mesh.org, Dmitry Antipov <dmantipov@yandex.ru>,
+ netdev@vger.kernel.org, rcu@vger.kernel.org,
+ Linus =?ISO-8859-1?Q?L=FCssing?= <linus.luessing@c0d3.blue>
+Subject:
+ Re: [PATCH] Revert "batman-adv: prefer kfree_rcu() over call_rcu() with
+ free-only callbacks"
+Date: Wed, 12 Jun 2024 20:22:49 +0200
+Message-ID: <2328482.ElGaqSPkdT@sven-l14>
+In-Reply-To: <ZmnNfU44NekafjA_@sellars>
+References:
+ <20240612133357.2596-1-linus.luessing@c0d3.blue>
+ <020489fa-26a3-422c-8924-7dc71f23422c@paulmck-laptop>
+ <ZmnNfU44NekafjA_@sellars>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] zap_pid_ns_processes: clear TIF_NOTIFY_SIGNAL along with
- TIF_SIGPENDING
-To: Oleg Nesterov <oleg@redhat.com>, Andrew Morton
- <akpm@linux-foundation.org>, Rachel Menge <rachelmenge@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- Wei Fu <fuweid89@gmail.com>, apais@linux.microsoft.com,
- Sudhanva Huruli <Sudhanva.Huruli@microsoft.com>,
- Christian Brauner <brauner@kernel.org>,
- Mike Christie <michael.christie@oracle.com>,
- Joel Granados <j.granados@samsung.com>, Mateusz Guzik <mjguzik@gmail.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-References: <1386cd49-36d0-4a5c-85e9-bc42056a5a38@linux.microsoft.com>
- <20240608120616.GB7947@redhat.com>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240608120616.GB7947@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="nextPart4898629.GXAFRqVoOG";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-On 6/8/24 6:06 AM, Oleg Nesterov wrote:
-> kernel_wait4() doesn't sleep and returns -EINTR if there is no
-> eligible child and signal_pending() is true.
-> 
-> That is why zap_pid_ns_processes() clears TIF_SIGPENDING but this is not
-> enough, it should also clear TIF_NOTIFY_SIGNAL to make signal_pending()
-> return false and avoid a busy-wait loop.
+--nextPart4898629.GXAFRqVoOG
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+Date: Wed, 12 Jun 2024 20:22:49 +0200
+Message-ID: <2328482.ElGaqSPkdT@sven-l14>
+In-Reply-To: <ZmnNfU44NekafjA_@sellars>
+MIME-Version: 1.0
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
+On Wednesday, 12 June 2024 18:31:57 CEST Linus L=FCssing wrote:
+> On Wed, Jun 12, 2024 at 09:06:25AM -0700, Paul E. McKenney wrote:
+> > We are looking into nice ways of solving this, but in the meantime,
+> > yes, if you are RCU-freeing slab objects into a slab that is destroyed
+> > at module-unload time, you currently need to stick with call_rcu()
+> > and rcu_barrier().
+> >
+> > We do have some potential solutions to allow use of kfree_rcu() with
+> > this sort of slab, but they are still strictly potential.
+> >
+> > Apologies for my having failed to foresee this particular trap!
+>=20
+> No worries, thanks for the help and clarification! This at least
+> restored my sanity, was starting to doubt my understanding of RCU
+> and the batman-adv code the longer I tried to find the issue in
+> batman-adv :D.
 
--- 
-Jens Axboe
+Thanks Linus and Paul. I've queued up the revert. But feel free to submit a=
+=20
+version with updated text in case you want to incorporate information from=
+=20
+this thread.
+
+Kind regards,
+	Sven
+--nextPart4898629.GXAFRqVoOG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQS81G/PswftH/OW8cVND3cr0xT1ywUCZmnnegAKCRBND3cr0xT1
+y/2ZAQCJLtdWIbCPUrkTqkI9mv1ThzM/ZcLceVmbFSKhVCSe8AEAtVQx2GE9aUCk
+S1OPFkU0m5zCxxMHHIygDnw3SwaMvAA=
+=mD28
+-----END PGP SIGNATURE-----
+
+--nextPart4898629.GXAFRqVoOG--
+
+
 
