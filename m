@@ -1,68 +1,68 @@
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92C854FB5;
-	Wed, 12 Jun 2024 08:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B233816D322;
+	Wed, 12 Jun 2024 08:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718180861; cv=none; b=p1QtSxPesO3FdvZnbhg4L8PoSJjhpFvSvPMv5rxMLDcjPYlFEF9qw7fUdL77arl4R9UmI61/xOX1XBDAl8fBqLz+fEsHka0DlGhsSkw+pFSHC53H8jXL2LiqAafKSq+KwbTFXclWWLNao8ew92TofF8OPZkSGyEykKtRXxjmYOA=
+	t=1718181875; cv=none; b=d3lrmrfyMgDxmP4A0KuPPB9ZRDjMl8Fq8oiebslkqkiXGLxl6OBlxuyVIZA3FV27aKFNgI0N/t/jbUKyGd7Ei75nm+2pf/OYlyok3SeayX+TdyAqGaDCg3chvr8Gm9sdL5dRq9Pfatqnf3rSSgoFtYog7Hr+B+YKJTT1CTWFqGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718180861; c=relaxed/simple;
-	bh=PwU2Gl1KBzn204l0FuhpWCGgDnHFdB5ybjTdvk7XpCw=;
+	s=arc-20240116; t=1718181875; c=relaxed/simple;
+	bh=VtnH5r07oHwCXgPKPUmmalAK4r10T2BQ53NAmBH4yzA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZpVOAG4LF0CB2V/OvRf+JYnv424OlJm1iuLKbjwhXlt9SPvhLb85DBF3fJLkQD8nh91mWOImsmiyKdUzbMdnqbKM86kfeGtIKgwx4UQVH3yNOTciKu4dS+KAlS8b8UojJN626tDrDexpZkfHBsD43/Ut6AgOaS54W4tQaxUYuwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XiBudH/Z; arc=none smtp.client-ip=209.85.208.51
+	 To:Cc:Content-Type; b=c6c+yx5RzmFnnf9Zu+pU6X/XipmFC5Br52x8OjnfK8IOvUPpdPGfW7giQC8ec4mOxHUmVqw0o/GUEZvzYdN2Hk21J2wGP1m39HQ74/PpoIjuosE+EmSGXc9xqIY7gYEh4Zq3+GmrZPr4s9Ap6vixEKYxhwDBvhe0PEHrdV7f1P8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BSMB4G+n; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XiBudH/Z"
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-57c778b5742so4399155a12.2;
-        Wed, 12 Jun 2024 01:27:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BSMB4G+n"
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-57c68c3f8adso2504080a12.1;
+        Wed, 12 Jun 2024 01:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718180858; x=1718785658; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718181872; x=1718786672; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mwBHLuJXZXJ/sxu7Sz5T+qFIUs6Se3+i9MmuUqp0tm4=;
-        b=XiBudH/Z4FFV7aASOGwTHp+P4Pe76+yjNHhhqFgk2T2e5ibOBKwCfF9yTcTyFGEGbk
-         sPhKasnlIdU3GC6foda/vODvXRZKNO8ifBkOWqkqT2+C0T9XGZCGydrLfV5FYQwGTq+6
-         2QkMwR3rcOP+QNef/tZp16FijDQx2wMPCRpEPzJP0D5WDCMlssRVnb3TUwGjK6C5rUsR
-         FR0iayDBwcgJlEx3RcSskk5Vi/r7FGCkGOLMAFaQb+NO3InpbLwTPzGGKSMpztNJfudg
-         MG2xP8coU1VfHpoBXv86mZfrkIK7zXtYzr+LQsCqxc6RO5+WsRtBfmsGozUfqlBbma6j
-         EiwQ==
+        bh=5R/crdg/bH5NOXHm4IuEIPF/jeUwqU5TAij5q8JMQEI=;
+        b=BSMB4G+naCOi1OESM5tEgci6l09H1QUAeMbtvVObz5oib+saZLinxiOp9S/kNTNkXZ
+         s22jgioomObCKSafQxkZ61CzYTK6+Utie0LjWY+INwuTvGtQB2vqgmWPuyyUyQ55vaWE
+         Ua1e4OYxR0yFALrC+C9TuQ3dqpTSTYTlATEUPvJSbQdbcHW2eQtG9y+3WgqvSZ3g7JjU
+         x47G2W1YTDcJ7/ird4v34EiYahZcS5/FXgTgXz0UMn7rlDx+WuFAvFCIH8qIZiGlhtl4
+         Yz9gzSNGiFWnrM8DUAuzxrnDijLKL4BepvwvMLAEMoTG2S8mBYrhBhFULbz6YwvO9mH+
+         qA+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718180858; x=1718785658;
+        d=1e100.net; s=20230601; t=1718181872; x=1718786672;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mwBHLuJXZXJ/sxu7Sz5T+qFIUs6Se3+i9MmuUqp0tm4=;
-        b=offiPUCaGY5AZPPD6wGBOEJKZmyUWitphjVF8qr3pg4cBL8uSNC0RXhgIpz3p9oB6k
-         cD6t/zJuuQAEsnnQHu73Iqk7jdFfs5Lq14zwAcWmKbMlk0z1nW5SGpMf6ZnkVArImy0u
-         GHbrgfvsiyjeC3XrukBfpOg089lrTTVMPmSFeMMrpnkVVkvcFV6+ZmazFGL2FzmzTkYp
-         qtpjXQVMeVYTk3bcUlDLuEovDyR+efHeJZOBt+EtBK/mj3z0yJTNdz02kJszTJkIpFWI
-         2en6vfVp/VIrdDzqqK4qR7KCVH1K7gZsWNb/68TIq2i5fF2XeWZOHpR6XOGOctXD555G
-         oLmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWEWZKshJFicbuTNLc2xVE4ts479yjnOmV30Mtq21FpVhTCo8DJ0QaGoqCuQIZ4gwIN4jNgraOocb8vtnb3AIFGxcrjis1+UOPQPSng
-X-Gm-Message-State: AOJu0Yw5QXjye2rEdG5bMDZqvadzD3EjDGU5ta+Fl6oT/kAy2z+GCl+M
-	KRnqer2n12Ix/bdnega8Q9LxMc4o6juhvX9COV9ZxVUytLL8A+378qKjQixMWnG5TKGxPiyv8Iv
-	sm3bX2msiF2awV6iHLPIdELw25vw=
-X-Google-Smtp-Source: AGHT+IErh0x3Pm5np4qJe2wVyW/HJxAYB2W24/K+A8obzCtbP5fifWOzJ5EPqKu6agXA4fMAcnBVxBhGUcMmkkVMjUo=
-X-Received: by 2002:a50:8d47:0:b0:57c:5fcf:b570 with SMTP id
- 4fb4d7f45d1cf-57caaab44aamr619566a12.32.1718180857854; Wed, 12 Jun 2024
- 01:27:37 -0700 (PDT)
+        bh=5R/crdg/bH5NOXHm4IuEIPF/jeUwqU5TAij5q8JMQEI=;
+        b=GqU3F4AByYui6PuQC+wD8izz8LF4WXZXn8riO4mOIVDIlK6LJNd+Nk1yQNSL77RE9r
+         VTs/ZMkeAKlQ1JQgE025P2l4J5xXxuky370JxvVddloebThKQ6hJh3R7WgKB8VAMceaN
+         r5yuuETVpKXXZjeB7CQA5F3KSvB9uqpXR+aAvrOaA0fKhsu5bg3aXoU2a1W4RNgiCcF1
+         hf3Ra7DWjXWDUks/LbeeRlLEgmyrT0BUBWaoTS6ZzE7B4RQiHwXV6sjudkLCZEgRWm6h
+         DtSnsGnVOlTspMG7ozIbvBjREFDqUCmAzKi791IP+r7BhI6rK0xfcdZxsjwXsQNH+gqe
+         k9ig==
+X-Forwarded-Encrypted: i=1; AJvYcCU6+IrsxIwWHhiDCglmmnfOOSBqap3XZYeFfugQ5JL4rIaiGBLcGCQcRVfq8d3MUyRaTjImmDWHIWHF7Hv5QITYQQFJg/iO8i9Br7Pu
+X-Gm-Message-State: AOJu0Yxt7BX8ahbGyhvm552bMN9Krmn8pXb95PdRWvktmjmcdmaBt7X5
+	bcbsJqTaCVYW7iLCR+7FO0lZ/A7lVVJk4IUMcGrppOiAImr1ZBI/NO87AEuXj5J2IBQPM9HQP6q
+	RAYspwgJyfoMcNWckUn4ZbRQ9nw/k4VnWTZk=
+X-Google-Smtp-Source: AGHT+IGA+0ik2h1nxDzzkd7iE0W7VGJkTtRkZ1lPBcItOshN/drhpi+flXzCvmsgow2P9VffsB/NcvGeMfDZtWmcO2E=
+X-Received: by 2002:a17:906:d8ab:b0:a6f:2d9a:c956 with SMTP id
+ a640c23a62f3a-a6f47d4eefamr90803466b.3.1718181871598; Wed, 12 Jun 2024
+ 01:44:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop> <20240604222652.2370998-2-paulmck@kernel.org>
-In-Reply-To: <20240604222652.2370998-2-paulmck@kernel.org>
+References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop> <20240604222652.2370998-3-paulmck@kernel.org>
+In-Reply-To: <20240604222652.2370998-3-paulmck@kernel.org>
 From: Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Date: Wed, 12 Jun 2024 13:57:20 +0530
-Message-ID: <CAFwiDX9ynNpmU_Au=J7geJYjE8NLLM-p2x8QDyjmZ1qNBkLXZQ@mail.gmail.com>
-Subject: Re: [PATCH rcu 2/6] rcu: Remove superfluous full memory barrier upon
- first EQS snapshot
+Date: Wed, 12 Jun 2024 14:14:14 +0530
+Message-ID: <CAFwiDX_5BZ9e0odyJKTPJJ9BDkHJ6fcEzSwgs9rnjhuRk4qhhw@mail.gmail.com>
+Subject: Re: [PATCH rcu 3/6] rcu/exp: Remove superfluous full memory barrier
+ upon first EQS snapshot
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
 	rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>
@@ -102,63 +102,39 @@ On Wed, Jun 5, 2024 at 3:58=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->  .../Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst    | 6 +++---
->  kernel/rcu/tree.c                                          | 7 ++++++-
->  2 files changed, 9 insertions(+), 4 deletions(-)
+>  kernel/rcu/tree_exp.h | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 >
-> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ord=
-ering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Orderi=
-ng.rst
-> index 5750f125361b0..728b1e690c646 100644
-> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.r=
-st
-> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.r=
-st
-> @@ -149,9 +149,9 @@ This case is handled by calls to the strongly ordered
->  ``atomic_add_return()`` read-modify-write atomic operation that
->  is invoked within ``rcu_dynticks_eqs_enter()`` at idle-entry
->  time and within ``rcu_dynticks_eqs_exit()`` at idle-exit time.
-> -The grace-period kthread invokes ``rcu_dynticks_snap()`` and
-> -``rcu_dynticks_in_eqs_since()`` (both of which invoke
-> -an ``atomic_add_return()`` of zero) to detect idle CPUs.
-> +The grace-period kthread invokes first ``ct_dynticks_cpu_acquire()``
-> +(preceded by a full memory barrier) and ``rcu_dynticks_in_eqs_since()``
-> +(both of which rely on acquire semantics) to detect idle CPUs.
->
->  +-----------------------------------------------------------------------=
-+
->  | **Quick Quiz**:                                                       =
-|
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index f07b8bff4621b..1a6ef9c5c949e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -769,7 +769,12 @@ static void rcu_gpnum_ovf(struct rcu_node *rnp, stru=
-ct rcu_data *rdp)
->   */
->  static int dyntick_save_progress_counter(struct rcu_data *rdp)
->  {
-> -       rdp->dynticks_snap =3D rcu_dynticks_snap(rdp->cpu);
-> +       /*
-> +        * Full ordering against accesses prior current GP and also again=
-st
-> +        * current GP sequence number is enforced by current rnp locking
-> +        * with chained smp_mb__after_unlock_lock().
-> +        */
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index 8a1d9c8bd9f74..bec24ea6777e8 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -357,7 +357,13 @@ static void __sync_rcu_exp_select_node_cpus(struct r=
+cu_exp_work *rewp)
+>                     !(rnp->qsmaskinitnext & mask)) {
+>                         mask_ofl_test |=3D mask;
+>                 } else {
+> -                       snap =3D rcu_dynticks_snap(cpu);
+> +                       /*
+> +                        * Full ordering against accesses prior current G=
+P and
+> +                        * also against current GP sequence number is enf=
+orced
+> +                        * by current rnp locking with chained
+> +                        * smp_mb__after_unlock_lock().
 
-It might be worth mentioning that this chained smp_mb__after_unlock_lock()
-is provided by rnp leaf node locking in rcu_gp_init() and rcu_gp_fqs_loop()=
- ?
+Again, worth mentioning the chaining sites sync_exp_reset_tree() and
+this function?
 
 
 Thanks
 Neeraj
 
-> +       rdp->dynticks_snap =3D ct_dynticks_cpu_acquire(rdp->cpu);
->         if (rcu_dynticks_in_eqs(rdp->dynticks_snap)) {
->                 trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS(=
-"dti"));
->                 rcu_gpnum_ovf(rdp->mynode, rdp);
+> +                        */
+> +                       snap =3D ct_dynticks_cpu_acquire(cpu);
+>                         if (rcu_dynticks_in_eqs(snap))
+>                                 mask_ofl_test |=3D mask;
+>                         else
 > --
 > 2.40.1
 >
