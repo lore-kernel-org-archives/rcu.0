@@ -1,141 +1,165 @@
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA041C2D;
-	Wed, 12 Jun 2024 05:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92C854FB5;
+	Wed, 12 Jun 2024 08:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718169721; cv=none; b=Z0BrEpUP8MXTH2peVm5uAlDQsBSpW+gWOoIm7ZjzdYMu5yI1TXSgm2t18hgzFtNIdLOZoHcBi0XKSfgGNREiDIaPDbJacuU9eOvjvk79m6xyN/wXK+Dw0GEH7nIcmPAqK0FlxIgGvp2FWnwKNLiJayaF27OKuwSySM4pGgbo1nQ=
+	t=1718180861; cv=none; b=p1QtSxPesO3FdvZnbhg4L8PoSJjhpFvSvPMv5rxMLDcjPYlFEF9qw7fUdL77arl4R9UmI61/xOX1XBDAl8fBqLz+fEsHka0DlGhsSkw+pFSHC53H8jXL2LiqAafKSq+KwbTFXclWWLNao8ew92TofF8OPZkSGyEykKtRXxjmYOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718169721; c=relaxed/simple;
-	bh=8SGOda8tYPcw0wzFjbPUAUG2mv09WHxbpDwu0cNWIFc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ml2166lDugBjm/EL2ajqF0bxCUR2z61W15m7gJFNOv8KD1CcvnlVdPH9GtwnHxYe0PAanA9BVZmHtIhOG5UcYjMDAUKZmPQHRRE9bO1OZJ66GuklIttK7HCRUMU6RpIYowMXRhWnQa/b9A862ZyRgyFtdFN9WqSMKPTfHbsfuek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XJzKow9T; arc=none smtp.client-ip=209.85.217.53
+	s=arc-20240116; t=1718180861; c=relaxed/simple;
+	bh=PwU2Gl1KBzn204l0FuhpWCGgDnHFdB5ybjTdvk7XpCw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZpVOAG4LF0CB2V/OvRf+JYnv424OlJm1iuLKbjwhXlt9SPvhLb85DBF3fJLkQD8nh91mWOImsmiyKdUzbMdnqbKM86kfeGtIKgwx4UQVH3yNOTciKu4dS+KAlS8b8UojJN626tDrDexpZkfHBsD43/Ut6AgOaS54W4tQaxUYuwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XiBudH/Z; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XJzKow9T"
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-48c4a821d76so1015381137.2;
-        Tue, 11 Jun 2024 22:22:00 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XiBudH/Z"
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-57c778b5742so4399155a12.2;
+        Wed, 12 Jun 2024 01:27:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718169719; x=1718774519; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1718180858; x=1718785658; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fjEwJgRoG92FC9Vw5huQBkdZy2fxtlgBnuBKB/008U0=;
-        b=XJzKow9TKqUCW9TmDa5rKNQxTtDpSNeVcSt6QWMhIkRzm/zQ90nWoZa/w5xw6RVmwz
-         2p3ABsv2oCNQkIP//1cvDC2mNCeXFwbcE6bv1C6WQBVHFvLCLQNp2xgV4RC6lb1vCdk1
-         jxqBpojj3DIlgYbIQnc/lxTv9Ut/YSiRL36duXOYAA0cdwZ5bEDdQ/yfVr+0GrB6VNo4
-         N+/BllgyLD2CLVeluJddcdMY907nAyxB52dzUAOy6JcGvsjLOqPmlqYrrhaF1oYPKp3M
-         2Scnug70Gr/XJFCOf/WOp8wET8Xce27/AhfpHhH9522MB5oYaIbaguI8mszk8kAAi6te
-         KjPA==
+        bh=mwBHLuJXZXJ/sxu7Sz5T+qFIUs6Se3+i9MmuUqp0tm4=;
+        b=XiBudH/Z4FFV7aASOGwTHp+P4Pe76+yjNHhhqFgk2T2e5ibOBKwCfF9yTcTyFGEGbk
+         sPhKasnlIdU3GC6foda/vODvXRZKNO8ifBkOWqkqT2+C0T9XGZCGydrLfV5FYQwGTq+6
+         2QkMwR3rcOP+QNef/tZp16FijDQx2wMPCRpEPzJP0D5WDCMlssRVnb3TUwGjK6C5rUsR
+         FR0iayDBwcgJlEx3RcSskk5Vi/r7FGCkGOLMAFaQb+NO3InpbLwTPzGGKSMpztNJfudg
+         MG2xP8coU1VfHpoBXv86mZfrkIK7zXtYzr+LQsCqxc6RO5+WsRtBfmsGozUfqlBbma6j
+         EiwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718169719; x=1718774519;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1718180858; x=1718785658;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fjEwJgRoG92FC9Vw5huQBkdZy2fxtlgBnuBKB/008U0=;
-        b=D/BO4D1LGzsQDFSHkCbYQXHf1c5cFGyDCvpz7TBSf0cMheYHsUselzsrOCbvHk4hP+
-         /ewKgDIHbJ18ebTLDB3BvTeYahnwIj7zTIwx1pFftAg0wYI58GoRzHpPny+uyh3bzSLq
-         CAfXRWmofFBuAv1mlf0OAAJYI474o4edw0zJ1jfRs4vEutaYFfOoAAXEtiDnUY3wVSPg
-         nu+UtP+HDu5S2jevb9hFPArEdMIVVVa+pcR7i08lDUyivosvxoIz8d3piSxFBSEDXg3Q
-         wHV3cRiSqfTDDtuR3XkMLZc1UXNl9EWwljyn7XaEKqaqJKM40R53hIoJ98tB88/0Kk3f
-         Z1bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXJzdieaVpq9Aj3C8/Tfm8stcTPcxwr37x3qhfwtnmXG9R9j5H+5ODzFwc2I+tWgXsbCK/wd9CT7BD6uIGhLzREwnlQSiFwcrrUnZN4
-X-Gm-Message-State: AOJu0YxaSKl4eg5JtCqr+jjzUUz3vbeILHzFyJJnePFlE6ztSy2yU0KT
-	VhTdlwV4T5xK3ZXfTpLC+Sk4DswdO3RfrjkRMEptFKsTOaw/yLx6
-X-Google-Smtp-Source: AGHT+IFDvF86CuK3Kg24+xx5dBk2/UDjJk+sWB47rTKVHiKT+QQs97LesjLepl9XawzJSkfEe8TcLw==
-X-Received: by 2002:a67:b641:0:b0:48c:4d59:6295 with SMTP id ada2fe7eead31-48d91de3080mr974801137.19.1718169719138;
-        Tue, 11 Jun 2024 22:21:59 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-797a2b7f956sm186654985a.6.2024.06.11.22.21.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jun 2024 22:21:58 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 2893D1200043;
-	Wed, 12 Jun 2024 01:21:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 12 Jun 2024 01:21:58 -0400
-X-ME-Sender: <xms:djBpZjepV48rA8difPCs5QQIvsblVI7GqyooEM7GVBuLcH16ihDHFQ>
-    <xme:djBpZpOSBMMS1yv7MEuoR35VjkeF488ge73Jx5kJkC22K4G57GbHOnZgXqssf0WWB
-    LlpdvgelIy0Snt0_w>
-X-ME-Received: <xmr:djBpZsjShrWrBibnu9O0Z5xGTsFQUDKh4aBvdzdl2xYg3fHO5SgeEPA-Iw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedufedgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
-    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:djBpZk_bCnEb_qh7jne4GYOzjhOCd-swKy33lBc1UEW6ZbCk2qtrLA>
-    <xmx:djBpZvsewM13dmMZPARhg3iAt4WCJZFI0JeqkrOkJGXIIwT-aoIvfg>
-    <xmx:djBpZjFP7fB-7itURqGUpDkD_-jG_qeF881mb10M5DIalgYd3C57Fw>
-    <xmx:djBpZmNP-rupTPcCkq3RtbEC-2Lk_76CXmNW5bi2IfkV9fzr5J-n7g>
-    <xmx:djBpZgOM2_4tEuUKI0CjzbgPmeiKi1FhZDowT24t05GD5MTbv4HMNHp5>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 12 Jun 2024 01:21:57 -0400 (EDT)
-Date: Tue, 11 Jun 2024 22:21:56 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH rcu 0/6] Grace-period memory-barrier adjustments for v6.11
-Message-ID: <ZmkwdFhXK2SsVWa4@Boquns-Mac-mini.home>
-References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
+        bh=mwBHLuJXZXJ/sxu7Sz5T+qFIUs6Se3+i9MmuUqp0tm4=;
+        b=offiPUCaGY5AZPPD6wGBOEJKZmyUWitphjVF8qr3pg4cBL8uSNC0RXhgIpz3p9oB6k
+         cD6t/zJuuQAEsnnQHu73Iqk7jdFfs5Lq14zwAcWmKbMlk0z1nW5SGpMf6ZnkVArImy0u
+         GHbrgfvsiyjeC3XrukBfpOg089lrTTVMPmSFeMMrpnkVVkvcFV6+ZmazFGL2FzmzTkYp
+         qtpjXQVMeVYTk3bcUlDLuEovDyR+efHeJZOBt+EtBK/mj3z0yJTNdz02kJszTJkIpFWI
+         2en6vfVp/VIrdDzqqK4qR7KCVH1K7gZsWNb/68TIq2i5fF2XeWZOHpR6XOGOctXD555G
+         oLmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEWZKshJFicbuTNLc2xVE4ts479yjnOmV30Mtq21FpVhTCo8DJ0QaGoqCuQIZ4gwIN4jNgraOocb8vtnb3AIFGxcrjis1+UOPQPSng
+X-Gm-Message-State: AOJu0Yw5QXjye2rEdG5bMDZqvadzD3EjDGU5ta+Fl6oT/kAy2z+GCl+M
+	KRnqer2n12Ix/bdnega8Q9LxMc4o6juhvX9COV9ZxVUytLL8A+378qKjQixMWnG5TKGxPiyv8Iv
+	sm3bX2msiF2awV6iHLPIdELw25vw=
+X-Google-Smtp-Source: AGHT+IErh0x3Pm5np4qJe2wVyW/HJxAYB2W24/K+A8obzCtbP5fifWOzJ5EPqKu6agXA4fMAcnBVxBhGUcMmkkVMjUo=
+X-Received: by 2002:a50:8d47:0:b0:57c:5fcf:b570 with SMTP id
+ 4fb4d7f45d1cf-57caaab44aamr619566a12.32.1718180857854; Wed, 12 Jun 2024
+ 01:27:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
+References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop> <20240604222652.2370998-2-paulmck@kernel.org>
+In-Reply-To: <20240604222652.2370998-2-paulmck@kernel.org>
+From: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Date: Wed, 12 Jun 2024 13:57:20 +0530
+Message-ID: <CAFwiDX9ynNpmU_Au=J7geJYjE8NLLM-p2x8QDyjmZ1qNBkLXZQ@mail.gmail.com>
+Subject: Re: [PATCH rcu 2/6] rcu: Remove superfluous full memory barrier upon
+ first EQS snapshot
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com, 
+	rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 04, 2024 at 03:26:46PM -0700, Paul E. McKenney wrote:
-> Hello!
-> 
-> This series removes redundant memory barriers from the grace-period
-> code paths:
-> 
-> 1.	Remove full ordering on second EQS snapshot, courtesy of Frederic
-> 	Weisbecker.
-> 
-> 2.	Remove superfluous full memory barrier upon first EQS snapshot,
-> 	courtesy of Frederic Weisbecker.
-> 
-> 3.	rcu/exp: Remove superfluous full memory barrier upon first EQS
-> 	snapshot, courtesy of Frederic Weisbecker.
-> 
-> 4.	Remove full memory barrier on boot time eqs sanity check,
-> 	courtesy of Frederic Weisbecker.
-> 
-> 5.	Remove full memory barrier on RCU stall printout, courtesy of
-> 	Frederic Weisbecker.
-> 
-> 6.	rcu/exp: Remove redundant full memory barrier at the end of GP,
-> 	courtesy of Frederic Weisbecker.
-> 
+On Wed, Jun 5, 2024 at 3:58=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> From: Frederic Weisbecker <frederic@kernel.org>
+>
+> When the grace period kthread checks the extended quiescent state
+> counter of a CPU, full ordering is necessary to ensure that either:
+>
+> * If the GP kthread observes the remote target in an extended quiescent
+>   state, then that target must observe all accesses prior to the current
+>   grace period, including the current grace period sequence number, once
+>   it exits that extended quiescent state.
+>
+> or:
+>
+> * If the GP kthread observes the remote target NOT in an extended
+>   quiescent state, then the target further entering in an extended
+>   quiescent state must observe all accesses prior to the current
+>   grace period, including the current grace period sequence number, once
+>   it enters that extended quiescent state.
+>
+> This ordering is enforced through a full memory barrier placed right
+> before taking the first EQS snapshot. However this is superfluous
+> because the snapshot is taken while holding the target's rnp lock which
+> provides the necessary ordering through its chain of
+> smp_mb__after_unlock_lock().
+>
+> Remove the needless explicit barrier before the snapshot and put a
+> comment about the implicit barrier newly relied upon here.
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  .../Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst    | 6 +++---
+>  kernel/rcu/tree.c                                          | 7 ++++++-
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ord=
+ering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Orderi=
+ng.rst
+> index 5750f125361b0..728b1e690c646 100644
+> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.r=
+st
+> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.r=
+st
+> @@ -149,9 +149,9 @@ This case is handled by calls to the strongly ordered
+>  ``atomic_add_return()`` read-modify-write atomic operation that
+>  is invoked within ``rcu_dynticks_eqs_enter()`` at idle-entry
+>  time and within ``rcu_dynticks_eqs_exit()`` at idle-exit time.
+> -The grace-period kthread invokes ``rcu_dynticks_snap()`` and
+> -``rcu_dynticks_in_eqs_since()`` (both of which invoke
+> -an ``atomic_add_return()`` of zero) to detect idle CPUs.
+> +The grace-period kthread invokes first ``ct_dynticks_cpu_acquire()``
+> +(preceded by a full memory barrier) and ``rcu_dynticks_in_eqs_since()``
+> +(both of which rely on acquire semantics) to detect idle CPUs.
+>
+>  +-----------------------------------------------------------------------=
++
+>  | **Quick Quiz**:                                                       =
+|
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index f07b8bff4621b..1a6ef9c5c949e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -769,7 +769,12 @@ static void rcu_gpnum_ovf(struct rcu_node *rnp, stru=
+ct rcu_data *rdp)
+>   */
+>  static int dyntick_save_progress_counter(struct rcu_data *rdp)
+>  {
+> -       rdp->dynticks_snap =3D rcu_dynticks_snap(rdp->cpu);
+> +       /*
+> +        * Full ordering against accesses prior current GP and also again=
+st
+> +        * current GP sequence number is enforced by current rnp locking
+> +        * with chained smp_mb__after_unlock_lock().
+> +        */
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+It might be worth mentioning that this chained smp_mb__after_unlock_lock()
+is provided by rnp leaf node locking in rcu_gp_init() and rcu_gp_fqs_loop()=
+ ?
 
-Regards,
-Boqun
 
-> 						Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
->  b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst |    6 +--
->  b/kernel/rcu/tree.c                                                     |    2 -
->  b/kernel/rcu/tree_exp.h                                                 |    8 +++-
->  b/kernel/rcu/tree_stall.h                                               |    4 +-
->  kernel/rcu/tree.c                                                       |   19 +++-------
->  kernel/rcu/tree_exp.h                                                   |    8 +++-
->  6 files changed, 26 insertions(+), 21 deletions(-)
-> 
+Thanks
+Neeraj
+
+> +       rdp->dynticks_snap =3D ct_dynticks_cpu_acquire(rdp->cpu);
+>         if (rcu_dynticks_in_eqs(rdp->dynticks_snap)) {
+>                 trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS(=
+"dti"));
+>                 rcu_gpnum_ovf(rdp->mynode, rdp);
+> --
+> 2.40.1
+>
+>
