@@ -1,173 +1,145 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB401824A6
-	for <rcu@vger.kernel.org>; Thu, 13 Jun 2024 03:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79244142E86;
+	Thu, 13 Jun 2024 12:41:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718250521; cv=none; b=rUgXnn3JZjVwuYqiCn5id7m9/9s/Rn0FjhjAOxJxN4pYFCyQhaF7Djr3r9Rb+ZG65bhMkry+qA053agjVxnzCPLcaiGSEOWtr9LhQ8LWxhRf/Yhs3eozYDCxdeUrJCropOTz5UuEyxBD30cNzsVV2KAOnqmF/LAU1/srlztVXUw=
+	t=1718282474; cv=none; b=p4NeXDRiMReNUy2LdhEqI4ad884axB0Y+8qSAfBR+MGaOOeDExWDvgxbdPaAeGOqCCPKeNuutNqy6FY8BB0Zg0kwWA9OQ97N2XqOMCdWr+CEr1urnBO08AtiGna6FpMcLR3nXjiXtqUHDq301UcccFS1yo0ZHiAOvZYg/954nvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718250521; c=relaxed/simple;
-	bh=UatiIni9GA0Wv7hUFG4BNbtpwD1pJNginzPo6nGt8gQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T52wFANuH+pCpEAXUqNbGxVUaQnSEj+sdl2BhMChr5n+V4UYfJjfLUzDZQTTaHh0UfsK8YzUJ4FAMdiSzt0uSMYek2NGTblc8eO/z1cdWoXvQkx/tSqWEytzWzVMVSNgQt+IsWr18yheTlK34hcd+UuwmweiCA1TKxeZx0hhAy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LKYPZTqz; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LKYPZTqz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46E5FC2BBFC;
-	Thu, 13 Jun 2024 03:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718250521;
-	bh=UatiIni9GA0Wv7hUFG4BNbtpwD1pJNginzPo6nGt8gQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=LKYPZTqzAnIbUXC8SrRuacq423oSf/5G2uXyYB6gFbNiOLFAFvUCcPBlto5nKj0bI
-	 JkYgkva7i8dshpI5AGHDaJAALif9vTFu2AUkKBKcYoLO+uoLTW81uyUdTWu7pj/Isu
-	 U7hgn2fG8M/t8IGQpHv1rU2XFVtXCyGODKB8Lf1g9wVygYd3q2GN10e0iW7f0Y9nhb
-	 WW2mj5dnGSq2ufIOFvXC6FCikN/4Aj1S8VBUSe8+G8dfD9WqUnY2eosrproLgTHVTq
-	 izTFPmwvsHHNJQigLESO7aChvD/nGxnGL+ou0oI9g5GEzITCEVLPcsjKJEfM1rZoi7
-	 hJy2jGpk3HrAA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id DD824CE0DEA; Wed, 12 Jun 2024 20:48:40 -0700 (PDT)
-Date: Wed, 12 Jun 2024 20:48:40 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: rcu@vger.kernel.org
-Subject: Re: srcu_cleanup warning
-Message-ID: <dbc11a6a-175d-42ca-b962-8ad0062d6ba8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <y5hi7x5w3yi4i5sh2b5hgk7xu2mghkthabc7adrqteg3muc5y4@pbnkp7yyxcrp>
- <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
- <lfqpkn4ailnaa3da45cnk33yorufv63accbrtnzf7chqa56lyc@jg6ldk4wexzz>
- <d21f257a-4056-43d9-80f5-f07f1285c7fa@paulmck-laptop>
- <irycqy4sinjdgm2hkyix2bffunpcmuwgeufsx6nlljvqme3wiu@ify3zdnrmzph>
- <9195be6e-69a0-4c8a-8a60-5611a822cbe3@paulmck-laptop>
- <clrfcpickuk7mss7tbwdhy2krjlxic7ivcczq7vkmqtte2xrp4@rfjd57exzx2k>
+	s=arc-20240116; t=1718282474; c=relaxed/simple;
+	bh=dD6ShW76KbkH42bBEwPS/NzvqunFMNOkDf05maEapns=;
+	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type:Subject; b=eKm54VnWexO94MaXEgrA4IikZs6reFx7HwJyIg1asDbbw2YJPxhEM075y6y46gGGk6gsr8tgUK+qg1KXQVLEbFBr7yoNZs4titM3yYJb1+2oK19Ycx2Rv3MEPorYvbhqSOXj3DZwi7dhmcGBeIVQS5ngtykbWh2Mo9/P4dussA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in02.mta.xmission.com ([166.70.13.52]:35548)
+	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1sHjlH-00DJUt-DE; Thu, 13 Jun 2024 06:41:03 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:41526 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1sHjlE-003eVV-7O; Thu, 13 Jun 2024 06:41:03 -0600
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  Rachel Menge
+ <rachelmenge@linux.microsoft.com>,  linux-kernel@vger.kernel.org,
+  rcu@vger.kernel.org,  Wei Fu <fuweid89@gmail.com>,
+  apais@linux.microsoft.com,  Sudhanva Huruli
+ <Sudhanva.Huruli@microsoft.com>,  Jens Axboe <axboe@kernel.dk>,  Christian
+ Brauner <brauner@kernel.org>,  Mike Christie
+ <michael.christie@oracle.com>,  Joel Granados <j.granados@samsung.com>,
+  Mateusz Guzik <mjguzik@gmail.com>,  "Paul E. McKenney"
+ <paulmck@kernel.org>,  Frederic Weisbecker <frederic@kernel.org>,  Neeraj
+ Upadhyay <neeraj.upadhyay@kernel.org>,  Joel Fernandes
+ <joel@joelfernandes.org>,  Josh Triplett <josh@joshtriplett.org>,  Boqun
+ Feng <boqun.feng@gmail.com>,  Steven Rostedt <rostedt@goodmis.org>,
+  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,  Lai Jiangshan
+ <jiangshanlai@gmail.com>,  Zqiang <qiang.zhang1211@gmail.com>
+References: <1386cd49-36d0-4a5c-85e9-bc42056a5a38@linux.microsoft.com>
+	<20240608120616.GB7947@redhat.com>
+Date: Thu, 13 Jun 2024 07:40:06 -0500
+In-Reply-To: <20240608120616.GB7947@redhat.com> (Oleg Nesterov's message of
+	"Sat, 8 Jun 2024 14:06:16 +0200")
+Message-ID: <87a5jpqamx.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <clrfcpickuk7mss7tbwdhy2krjlxic7ivcczq7vkmqtte2xrp4@rfjd57exzx2k>
+Content-Type: text/plain
+X-XM-SPF: eid=1sHjlE-003eVV-7O;;;mid=<87a5jpqamx.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18qLrVAX1hXXj2C18cuMCIcy/jiniNxzDk=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Level: *
+X-Spam-Virus: No
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+	*      [score: 0.4998]
+	*  0.7 XMSubLong Long Subject
+	*  0.5 XMGappySubj_01 Very gappy subject
+	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 358 ms - load_scoreonly_sql: 0.03 (0.0%),
+	signal_user_changed: 3.8 (1.1%), b_tie_ro: 2.6 (0.7%), parse: 0.69
+	(0.2%), extract_message_metadata: 2.9 (0.8%), get_uri_detail_list:
+	1.43 (0.4%), tests_pri_-2000: 2.8 (0.8%), tests_pri_-1000: 2.7 (0.7%),
+	tests_pri_-950: 1.04 (0.3%), tests_pri_-900: 0.80 (0.2%),
+	tests_pri_-90: 71 (19.9%), check_bayes: 70 (19.6%), b_tokenize: 7
+	(1.9%), b_tok_get_all: 8 (2.3%), b_comp_prob: 1.88 (0.5%),
+	b_tok_touch_all: 51 (14.2%), b_finish: 0.61 (0.2%), tests_pri_0: 259
+	(72.2%), check_dkim_signature: 0.39 (0.1%), check_dkim_adsp: 2.2
+	(0.6%), poll_dns_idle: 0.93 (0.3%), tests_pri_10: 1.73 (0.5%),
+	tests_pri_500: 6 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] zap_pid_ns_processes: clear TIF_NOTIFY_SIGNAL along
+ with TIF_SIGPENDING
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 
-On Wed, Jun 12, 2024 at 09:32:26PM -0400, Kent Overstreet wrote:
-> On Sun, Jun 09, 2024 at 07:10:53PM -0700, Paul E. McKenney wrote:
-> > On Sun, Jun 09, 2024 at 08:52:14PM -0400, Kent Overstreet wrote:
-> > > On Sun, Jun 09, 2024 at 09:55:30AM -0700, Paul E. McKenney wrote:
-> > > > On Sun, Jun 09, 2024 at 11:37:45AM -0400, Kent Overstreet wrote:
-> > > > > On Sat, Jun 08, 2024 at 08:25:53PM -0700, Paul E. McKenney wrote:
-> > > > > > Could you please try something like this just before the call to
-> > > > > > cleanup_srcu_struct()?
-> > > > > > 
-> > > > > > 	WARN_ON_ONCE(poll_state_synchronize_srcu(&c->btree_trans_barrier, ck->btree_trans_barrier_seq);
-> > > > > 
-> > > > > Which seq was this supposed to be? All keys have been freed by this
-> > > > > point...
-> > > > 
-> > > > Or, alternatively, where in the code is this supposed to be?
-> > > > 
-> > > > If there is no convenient point in the code to grab the most recent
-> > > > return value from start_poll_synchronize_srcu(), another thing to do
-> > > > is to invoke either synchronize_srcu() or synchronize_srcu_expedited()
-> > > > just before the call to cleanup_srcu_struct().
-> > > > 
-> > > > Another approach is to use get_state_synchronize_srcu() instead of
-> > > > start_poll_synchronize_srcu(), and have a self-reposting SRCU callback
-> > > > to keep the grace periods going.  Then you would set a flag that
-> > > > stopped it from self-posting, then do srcu_barrier().  With careful
-> > > > memory ordering.
-> > > > 
-> > > > There are quite a few techniques to shut down the self-reposting SRCU
-> > > > callback when there is nothing for it to do and to restart it if need be.
-> > > > 
-> > > > But just doing a synchronize_srcu() or synchronize_srcu_expedited() is
-> > > > a lot simpler and probably does the job.
-> > > 
-> > > synchronize_srcu_expedited() seems like the simplest solution, yeah.
-> > > 
-> > > Thanks, I think I'm starting (hazily) to get an idea of how the RCU code
-> > > is structured, but I'll have to dig more when I have more time, this is
-> > > interesting :)
-> > > 
-> > > I am wondering why you couldn't just have cleanup_srcu_struct() do the
-> > > appropriate cleanup (synchronize_srcu_expedited?) in this instance; if
-> > > the caller is tearing down the srcu struct they don't need srcu
-> > > synchronization anymore, I would think the only safety issue that would
-> > > need a warning would be leaked read locks.
-> > 
-> > Starting a grace period and then invoking cleanup_srcu_struct() before
-> > it has had a chance to finish seems worth a warning.  And preferable to
-> > having something like poll_state_synchronize_rcu() segfault later on,
-> > for example.
-> > 
-> > > Another question for you: is there a limit to the number of pending
-> > > sequence numbers from start_poll_synchronize_srcu()? (e.g. 2?)
-> > > 
-> > > That affects the data structure I use for redoing this "track pending
-> > > frees" code.
-> > 
-> > Yes, there is, and you are right, the number is two.  Would something
-> > like the patch shown below help?
-> 
-> If I look at the sequence number from start_poll_synchronize_srcu() vs.
-> the last uncompleted one, I see a difference of 4 (so far?)
+Oleg Nesterov <oleg@redhat.com> writes:
 
-The number two is the number of distinct values, which will not be
-consecutive numbers.  As you noticed, they currently are always multiples
-of four, but that is an accident of implementation that is subject to
-change.
+> kernel_wait4() doesn't sleep and returns -EINTR if there is no
+> eligible child and signal_pending() is true.
+>
+> That is why zap_pid_ns_processes() clears TIF_SIGPENDING but this is not
+> enough, it should also clear TIF_NOTIFY_SIGNAL to make signal_pending()
+> return false and avoid a busy-wait loop.
 
-> I could use a doubly linked list for tracking all uncompleted objects,
-> but I'm hoping use a darray per sequence number. Is it a max of two
-> sequence numbers that had objects/callbacks/were requested pulling,
-> or...?
+I took a look through the code.  It used to be that TIF_NOTIFY_SIGNAL
+was all about waking up a task so that task_work_run can be used.
+io_uring still mostly uses it that way.  There is also a use in
+kthread_stop that just uses it as a TIF_SIGPENDING without having a
+pending signal.
 
-Agreed, an array should work.  Each array element would need a field
-recording its cookie.  Right, so you likely need a few more simple
-functions:
+At the point in do_exit where exit_notify and thus zap_pid_ns_processes
+is called I can't possibly see a use for TIF_NOTIFY_SIGNAL.
+exit_task_work, exit_signals, and io_uring_cancel have all been called.
 
-	same_state_synchronize_srcu(): Equality comparison of the
-		pair of cookies passed in.
-	get_completed_synchronize_srcu(): Return a special cookie
-		that, when passed to poll_state_synchronize_srcu(),
-		always results in a @true return value.
+So TIF_NOTIFY_SIGNAL should be spurious at this point and safe to clear.
+Why it remains set is a mystery to me.
 
-Or maybe not, you tell me.
 
-> Also, I'm wondering if this code might be worth turning into something
-> generic...
-> 
-> What I'm sketching out is:
-> 
-> struct btree_key_cache_freelist {
-> 	spinlock_t		lock;
-> 	bool			rcu_armed;
+If I had infinite time and energy the ideal is to rework the pid
+namespace exit logic so that waiting for everything to exit works like
+delay_group_leader in wait_task_consider.  Simply blocking reaping of
+the pid namespace leader until everything in the pid namespace have been
+reaped.  I think acct_exit_ns is the only piece of code that needs
+to be moved to allow that, and acct_exit_ns is purely bookkeeping so
+does not affect userspace visible semantics.
 
-This says whether or not the callback corresponding to ->rcu is in
-flight?
+This active waiting is weird and non-standard in the kernel and winds up
+causeing a problem every couple of years because of that.
 
-> 	unsigned long		seq;
-
-You store the get_state_synchronize_srcu() return value in ->seq?
-
-> 	struct bkey_cached	*free[2]; /* singly linked list for now,
-> 					   * perhaps darray/vector later
-> 					   */
-
-If ->free[] is the array, then you also need an array to hold the cookies.
-Unless you are placing them in the objects themselves, which would
-also work.
-
-By "darray" you mean distributed array?
-
-> 	struct rcu_head		rcu; /* rearming callback to free objects */
-> };
-> 
-> and these are percpu. Thoughts?
-
-This definitely looks to be moving in a good direction, give or take
-the accuracy of my guesses above.
-
-							Thanx, Paul
+>
+> Fixes: 12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
+> Reported-by: Rachel Menge <rachelmenge@linux.microsoft.com>
+> Closes: https://lore.kernel.org/all/1386cd49-36d0-4a5c-85e9-bc42056a5a38@linux.microsoft.com/
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/pid_namespace.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+> index dc48fecfa1dc..25f3cf679b35 100644
+> --- a/kernel/pid_namespace.c
+> +++ b/kernel/pid_namespace.c
+> @@ -218,6 +218,7 @@ void zap_pid_ns_processes(struct pid_namespace *pid_ns)
+>  	 */
+>  	do {
+>  		clear_thread_flag(TIF_SIGPENDING);
+> +		clear_thread_flag(TIF_NOTIFY_SIGNAL);
+>  		rc = kernel_wait4(-1, NULL, __WALL, NULL);
+>  	} while (rc != -ECHILD);
