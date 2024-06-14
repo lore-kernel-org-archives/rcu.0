@@ -1,40 +1,39 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF05D6FB1
-	for <rcu@vger.kernel.org>; Fri, 14 Jun 2024 14:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D8F15ECC0
+	for <rcu@vger.kernel.org>; Fri, 14 Jun 2024 15:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718374310; cv=none; b=lxnz8V/mVtq7EWKucdOvuuZ2FdsX5TKHMWtQZJtqyhCMsMGVjzvFA7q6FoEqwncWp/3h50UINJ1bF7p2crzj6IZCmVFIxS8rl5r4qqxDDV9mLypA9+HeUGQVhrleBnYJ1oXavDpNNEGw7twVww3ugtNsYcsl6EmZAYxLGy0iEig=
+	t=1718377959; cv=none; b=gLsU3zwGqtl305cgbsTt0WCD6weGFw3jyyPN5ZdtV4du5XZD7E7eFphe3nnOR7y7yMtxG5pHHgfvfCvk6t28HigB96yxbiLMymZZswYO5lqwxFS6Bbv6PEd/MwUkmkX6cGPqoINlsKpf9U9DCnw8ZtUNln53DId3qs6GX7dkybE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718374310; c=relaxed/simple;
-	bh=Op23UnGLbA3BGHWzY0J9AKLr//RqLWDwn6E+X+rOAIw=;
+	s=arc-20240116; t=1718377959; c=relaxed/simple;
+	bh=NpUsp7KvzJQhSQW6WQWeg2+Ue60hROhEqiOOr/zGJd0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FoU5tv6fm6Bth/y4ELD7ShTyTvHEJIklSUrkqawSC8Op7V+FY55KHY4osyF11MUhWshYVCd62+UyGHrXY4ASpGXlDRGfMw9BklBnpMWoVFgax8v0GauuI6mWUQx8h4Catxe11ozsb2OOVK2P5cGNUzsizVYtiZ3nzx1461NrxVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NT/gWKC1; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=USMA66C43VJky3S3j+loonWE25HgHrDJaILDDuibdUf0oAmtq/aKGA7EFiFQhda0gibPIegTBNTgzVDzdtuNTzl/IPavMN07eCRkzWVQKz/0jz/18YZTpgfHzsV9xucmG633q9ID9hLNskKo1AhDO90WQxxkKjIPuq7H7k5Nw2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZQOMGU1W; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NT/gWKC1"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96EE7C2BD10;
-	Fri, 14 Jun 2024 14:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718374310;
-	bh=Op23UnGLbA3BGHWzY0J9AKLr//RqLWDwn6E+X+rOAIw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=NT/gWKC1l7xrTiO7kz+OXFNq+RJ2jUcq0ASilcLLgQjDNw9GbXnTIRdoVgQJcLnHG
-	 4zWRqSE/JN3cTZU6EBNXU8LNqKzK9U9j6C8izBVlHCgvVtteuAPvxwxmeNfzby6X+w
-	 6ullzX+r7pZIEJimOLwAwOP2k3mzfReP0IeS34rh80/YNGFEKZk4GsmDkYU/QUBw7i
-	 xaeLYKREd30ik3AKLWkYrHD3dWLbH9KIOlj3ifMYAjZCrrf50ypEHdpDupglxyyH0j
-	 gEg9HptVDcZlGdTwNMzA87KJBa+rFt1Yak/iFRSVZLK8OcvYC7xyafojOwRFVUQWt0
-	 uVgUxDkq37V7A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2F269CE0551; Fri, 14 Jun 2024 07:11:50 -0700 (PDT)
-Date: Fri, 14 Jun 2024 07:11:50 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZQOMGU1W"
+X-Envelope-To: paulmck@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1718377955;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fDLpgSue07O9nGnKQzyJ8WcOiJHqf2z0FUwM//R5L/Q=;
+	b=ZQOMGU1WYX5oYVuAxbPh7IbtRGuJXmHTPOC+xDgg+fpo9DnjW7QMCt0LiYwG1p68Jfr3Rl
+	pbjO5U34vG76YVqQiKXDYrm47eLiTl8ZdEl4R+B0O2Bdrj3AhdRIkXDun9/ZPKFos/e0BA
+	SmyfgbfZa9CFRkA5oU6Z3RMEQ+BZOcw=
+X-Envelope-To: rcu@vger.kernel.org
+Date: Fri, 14 Jun 2024 11:12:30 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org
 Subject: Re: srcu_cleanup warning
-Message-ID: <7321411a-b19e-49e5-a56f-563e688de395@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <zychjrhasgxz7gwhah6egognnqepcdyoubby6gog645mn6n4gt@zprp3rhtyfx3>
 References: <y5hi7x5w3yi4i5sh2b5hgk7xu2mghkthabc7adrqteg3muc5y4@pbnkp7yyxcrp>
  <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
  <lfqpkn4ailnaa3da45cnk33yorufv63accbrtnzf7chqa56lyc@jg6ldk4wexzz>
@@ -54,371 +53,132 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <07c43946-7e63-42ed-8d56-67f3146a6dbb@paulmck-laptop>
+X-Migadu-Flow: FLOW_OUT
 
 On Thu, Jun 13, 2024 at 08:22:19PM -0700, Paul E. McKenney wrote:
 > On Thu, Jun 13, 2024 at 02:32:27PM -0400, Kent Overstreet wrote:
-
-[ . . . ]
-
-After sleeping on it, backing up a level of abstraction, and thus perhaps
-responding a bit more constructively...
-
-And also, thank you very much for looking into this!
-
-> > commit 3bb5d34d6d6e2d5433cce5d248fd81211afedec0
-> > Author: Kent Overstreet <kent.overstreet@linux.dev>
-> > Date:   Mon Jun 10 20:47:03 2024 -0400
+> > On Wed, Jun 12, 2024 at 08:48:40PM -0700, Paul E. McKenney wrote:
+> > > The number two is the number of distinct values, which will not be
+> > > consecutive numbers.  As you noticed, they currently are always multiples
+> > > of four, but that is an accident of implementation that is subject to
+> > > change.
 > > 
-> >     bcachefs: pending_rcu_items
-> >     
-> >     Generic (?) data structure for explicitly tracking pending SRCU items
-> >     
-> >     - Can we make this generic across other RCU flavors?
+> > I take it you're stuffing something else into the low bits and masking
+> > it off, and you can't shift that off because that would break
+> > comparisons. That's a tiny bit unfortunate; it would be nicer if we
+> > could do array indexing based on the sequence number.
+> 
+> That was my initial thought as well, and so there was in fact a time
+> when RCU grace periods were numbered consecutively.  The problem with
+> that was that it was necessary to maintain a separate indication of
+> whether or not a grace period was in progress.  It is often necessary
+> to atomically determine both the grace-period number and whether that
+> grace period is still in progress, which required acquiring a lock,
+> which necessitated a number of contention-reduction workarounds which
+> eventually became problematic.
+> 
+> When led to the next phase, which reserved the bottom bit to indicate
+> whether a grace period was in progress and left the remaining bits to
+> count the grace periods.  This greatly simplified the code and likely
+> also improve performance and scalability.
+> 
+> Then I implemented Tree SRCU, which requires multiple grace-period phases,
+> hence the current state with the two bottom bits indicating grace=-period
+> phase and the remaining bits counting the grace periods.  Hence your
+> seeing get_state_synchronize_srcu() always returning a multiple of
+> four ("grace period N has not yet started").
 
-It should be possible, at least for current RCU and SRCU.  I think I owe
-you SRCU variants of a couple of existing RCU functions.  Later today!
+I've been wondering about your tree algorithm, ever since I realized
+there's an elegant algorithm for ticking a counter when every counter in
+a tree of sub counters has ticked.
 
-> >     - Do we need to add a fallback to linked lists when darray allocation
-> >       fails?
-
-In general, as in kfree_rcu(), yes.  In your specific case here, maybe not.
-
-> >     - We wish to avoid the overhead of start_poll_synchronize_srcu() if we
-> >       already have items for a given sequence number, but it appears
-> >       get_poll_synchronize_srcu(); start_poll_synchronize_srcu() can
-> >       actually return differert sequence numbers within the same read-side
-> >       critical section. Is this the correct way of doing this?
-
-You can always buffer up items that have not yet been assigned a sequence
-number, then after you have enough or after enough time has passed, do a
-single get_poll_synchronize_srcu() for the group.
-
-> >     - Do we need to ensure the rearming RCU callback is correctly flushed
-> >       when exiting? (Probably)
-
-I believe so, and setting a flag then doing an srcu_barrier() should suffice.
-
-> >     Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > What if we added something like this?
 > > 
-> > diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
-> > index ebed60a43647..46f7fa549d59 100644
-> > --- a/fs/bcachefs/btree_key_cache.c
-> > +++ b/fs/bcachefs/btree_key_cache.c
-> > @@ -83,18 +83,109 @@ static bool bkey_cached_evict(struct btree_key_cache *c,
-> >  	return ret;
-> >  }
-> >  
-> > -static void __bkey_cached_free(struct rcu_head *rcu)
-> > +#define RCU_SEQ_SKIP_SHIFT	2
-> > +
-> > +static void pending_rcu_items_exit(struct pending_rcu_items *pending)
-> > +{
-> > +	darray_exit(&pending->objs[0]);
-> > +	darray_exit(&pending->objs[1]);
-> > +}
-> > +
-> > +static void pending_rcu_items_init(struct pending_rcu_items *pending,
-> > +				   struct srcu_struct *srcu,
-> > +				   pending_rcu_item_process_fn process)
-> > +{
-> > +	memset(pending, 0, sizeof(*pending));
-> > +	pending->srcu		= srcu;
-> > +	pending->process	= process;
-> > +	spin_lock_init(&pending->lock);
-> > +}
-> > +
-> > +static bool pending_rcu_has_items(struct pending_rcu_items *pending)
-> > +{
-> > +	return pending->objs[0].nr || pending->objs[1].nr;
-> > +}
-> > +
-> > +static void pending_rcu_items_process(struct pending_rcu_items *pending)
-> >  {
-> > -	struct bkey_cached *ck = container_of(rcu, struct bkey_cached, rcu);
-> > +	while (pending_rcu_has_items(pending) &&
-> > +	       poll_state_synchronize_srcu(pending->srcu, pending->seq)) {
-> > +		darray_for_each(pending->objs[0], i)
-> > +			pending->process(pending, *i);
+> > #define RCU_SEQ_SKIP_SHIFT	2
+> 
+> Right now, get_state_synchronize_srcu() returns the grace-period sequence
+> number from the root of the tree.  This has been working fine thus far,
+> but it is quite possible that memory-contention issues will force me to
+> get the value from the leaves of this tree.  If that happens, the value
+> of NUM_ACTIVE_SRCU_POLL_OLDSTATE will change from 2 to 3.
+> 
+> In addition, vanilla RCU users are looking for reduced synchronize_rcu()
+> latency, which in the past resulted in the addition of expedited
+> grace periods, which have their own counter.  Similar pressure on SRCU
+> could result in overlapping computed grace periods, which would use
+> additional bits and make the cookies only partially ordered (as the RCU
+> rcu_gp_oldstate structure variant of cookie already is).
+> 
+> And those are just a couple of changes that I can foresee.  There might
+> be others.
+> 
+> So, annoying thought it might be, we really need for this to remain an
+> opaque cookie.
 
-Given that you have interrupts and/or bh disabled, there needs to be a
-third set of callbacks, those whose grace periods are already elapsed.
+Ok, I can live with that.
 
-Unioning one of the ->objs[] sets onto this third set, leaving the source
-->objs[] set empty, should strongly be O(1) without the need for memory
-allocation.  I might be missing something, but at first glance darray
-does not support this.
+> > > > I could use a doubly linked list for tracking all uncompleted objects,
+> > > > but I'm hoping use a darray per sequence number. Is it a max of two
+> > > > sequence numbers that had objects/callbacks/were requested pulling,
+> > > > or...?
+> > > 
+> > > Agreed, an array should work.  Each array element would need a field
+> > > recording its cookie.  Right, so you likely need a few more simple
+> > > functions:
+> > > 
+> > > 	same_state_synchronize_srcu(): Equality comparison of the
+> > > 		pair of cookies passed in.
+> > > 	get_completed_synchronize_srcu(): Return a special cookie
+> > > 		that, when passed to poll_state_synchronize_srcu(),
+> > > 		always results in a @true return value.
+> > > 
+> > > Or maybe not, you tell me.
+> > 
+> > I don't think so, but I'm not sure what your intended use is.
+> 
+> For same_state_synchronize_srcu(), places where you likely planned to
+> instead use C-language comparisons.  For get_completed_synchronize_srcu(),
+> as a way of marking an unused entry, for which it looks like you are
+> currently using ->rcu_armed.
 
-The pages-of-pointers structure named kvfree_rcu_bulk_data, along with
-the associated structures in kernel/rcu/tree.c does this work, but (1)
-is open-coded and (2) has to deal with the full range of what the kernel
-can throw at it.  It falls back to an embedded rcu_head structure, in
-response to your second question in the commit log.
+I'm definitely not following how you want that done then :)
 
-But perhaps this code could be generalized?  Or maybe darray can be
-appropriately extended?
+> > dynamic array, basically a c++ vector - fs/bcachefs/darray.h
+> 
+> So the darray is to hold the callbacks themselves as opposed to
+> the per-unexpired-cookie-value groups of callbacks?
 
-And one thing that I missed the first time around is that you are using
-a single ->seq for two sets of objects (->objs[0] and ->objs[1]).
-Each set needs its own sequence number.
+For my intended use case, a struct pending_rcu_items is only for objects
+of the same type that all have the same callback (otherwise, allocating
+from pending objects would have to search for an object of a given
+type).
 
-> > +		darray_exit(&pending->objs[0]);
-> > +		swap(pending->objs[0], pending->objs[1]);
-> > +		pending->seq += 1 << RCU_SEQ_SKIP_SHIFT;
-> > +	}
-> > +}
-> > +
-> > +static void pending_rcu_items_rcu_cb(struct rcu_head *rcu)
-> > +{
-> > +	struct pending_rcu_items *pending =
-> > +		container_of(rcu, struct pending_rcu_items, rcu);
-> > +
-> > +	unsigned long flags;
-> > +	spin_lock_irqsave(&pending->lock, flags);
-> > +	pending_rcu_items_process(pending);
-> 
-> SRCU callbacks execute in softirq context.  You therefore might need to
-> push this call to pending_rcu_items_process() to a workqueue handler,
-> at least if there are very many objects in need of processing.
+But if we want to use this for the call_rcu()/call_srcu() mechanism,
+then yes - the darray would have elements of type
 
-Plus you have irqs disabled, which I somehow missed on the first pass.
+struct rcu_pending_cb {
+	void (*func)(struct rcu_head *);
+	struct rcu_head *obj;
+};
 
-Again, please union the objects whose grace period has ended into a set
-that is ready to be processed, and then do the processing in a workqueue
-handler, kthread, or similar.  This avoids causing real-time latency
-problems, or, in extreme cases, softlockups or RCU CPU stall warnings.
+which would save us a dependent load on processing callbacks.
 
-> > -	kmem_cache_free(bch2_key_cache, ck);
-> > +	pending->rcu_armed = pending_rcu_has_items(pending);
-> > +	if (pending->rcu_armed)
-> > +		call_srcu(pending->srcu, &pending->rcu, pending_rcu_items_rcu_cb);
-> > +	spin_unlock_irqrestore(&pending->lock, flags);
-> > +}
-> > +
-> > +static void pending_rcu_item_enqueue(struct pending_rcu_items *pending, void *obj)
-> > +{
-> > +	darray_voidp preallocated = {};
-> > +retry:
-> > +	spin_lock_irq(&pending->lock);
-> > +	pending_rcu_items_process(pending);
+> > Think this would be worth factoring out and turning into something
+> > generic? If RCU wanted to use this internally for tracking pending
+> > callbacks, we could get rid of linked list overhead there...
 > 
-> Suppose that poll_state_synchronize_srcu() returns false so that
-> start_poll_synchronize_srcu() does nothing...
-> 
-> ... then we get vCPU preemption here so that some number of SRCU grace
-> periods elapse (which looks to be limited to just one of them, but that
-> is enough because we might already have requested the next one courtesy of
-> the previous call to either call_srcu() or start_poll_synchronize_srcu()) ...
-> 
-> > +	unsigned long seq = start_poll_synchronize_srcu(pending->srcu);
-> 
-> ... so that we get a seq that is 8 or 12 larger than pending->seq ...
-> 
-> > +	if (!pending_rcu_has_items(pending))
-> > +		pending->seq = seq;
-> 
-> ... and we don't update pending->seq because there are still items there ...
-> 
-> > +	unsigned idx = (seq - pending->seq) >> RCU_SEQ_SKIP_SHIFT;
-> > +	BUG_ON(idx > ARRAY_SIZE(pending->objs));
+> For the kfree_rcu() path, we have a pages-of-pointers approach.  For the
+> call_rcu() path, the callbacks almost always access the memory, so it
+> is not clear that the linked-list overhead is an issue.  You get that
+> cold-cache miss either way.
 
-And more on this later today.
+So kfree_rcu() is basically implementing the same thing? yes,
+add_ptr_to_bulk_krc_lock().
 
-							Thanx, Paul
+The pages-of-pointers does avoid the realloc/memcpy() overhead - which
+implies I'll want to switch mine from a darray to a generic radix tree.
 
-> ... then can't this BUG_ON() trigger?
-> 
-> And why this ugly reliance on the cookie format?  Why not just have
-> the pending_rcu_items structure's ->seq be a two-element array?
-> 
-> Then all you need to do is to check each ->seq[] element to see if it
-> is equal to seq, while remembering the index of the first that is empty.
-> If you find a ->seq[] match, just enqueue into the corresponding ->objs[]
-> element.  Otherwise, you are guaranteed to have found an empty ->obj[],
-> at least if you move the start_poll_synchronize_srcu() to precede
-> the pending_rcu_items_process().
-> 
-> *Much* looser coupling with SRCU and rather simpler.
-> 
-> > +	darray_voidp *objs = pending->objs + idx;
-> > +
-> > +	if (!darray_room(*objs)) {
-> > +		if (preallocated.size > objs->size) {
-> > +			memcpy(preallocated.data,
-> > +			       objs->data,
-> > +			       sizeof(objs->data[0]) * objs->nr);
-> > +			swap(preallocated.data, objs->data);
-> > +			swap(preallocated.size, objs->size);
-> > +		} else if (darray_make_room_gfp(objs, 1, GFP_ATOMIC|__GFP_NOWARN)) {
-> > +			spin_unlock_irq(&pending->lock);
-> > +			darray_exit(&preallocated);
-> > +			darray_make_room_gfp(&preallocated, objs->nr + 1, GFP_KERNEL|__GFP_NOFAIL);
-> > +			goto retry;
-> > +		}
-> > +	}
-> > +
-> > +	BUG_ON(darray_push(objs, obj)); /* preallocated */
-> > +
-> > +	if (!pending->rcu_armed)
-> > +		call_srcu(pending->srcu, &pending->rcu, pending_rcu_items_rcu_cb);
-> 
-> The start_poll_synchronize_srcu() above might have started a new
-> SRCU grace period.  If so, this call_srcu() will start another one.
-> Which should not be a problem.  If it does prove to be, you might use
-> get_state_synchronize_srcu() instead, depending.
-> 
-> On the other hand, if this code is prone to bkey_cached_free() floods, the
-> current combination of start_poll_synchronize_srcu() and call_srcu()
-> might avoid OOM, given that this function checks for pending objects
-> whose grace period has ended.
-> 
-> > +	pending->rcu_armed = true;
-> > +	spin_unlock_irq(&pending->lock);
-> > +
-> > +	darray_exit(&preallocated);
-> > +}
-> > +
-> > +static void __bkey_cached_free(struct pending_rcu_items *pending, void *obj)
-> > +{
-> > +	struct bch_fs *c = container_of(pending->srcu, struct bch_fs, btree_trans_barrier);
-> > +
-> > +	this_cpu_dec(*c->btree_key_cache.nr_pending);
-> > +	kmem_cache_free(bch2_key_cache, obj);
-> >  }
-> >  
-> >  static void bkey_cached_free(struct btree_key_cache *bc,
-> >  			     struct bkey_cached *ck)
-> >  {
-> > -	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
-> > -
-> >  	kfree(ck->k);
-> >  	ck->k		= NULL;
-> >  	ck->u64s	= 0;
-> > @@ -102,7 +193,15 @@ static void bkey_cached_free(struct btree_key_cache *bc,
-> >  	six_unlock_write(&ck->c.lock);
-> >  	six_unlock_intent(&ck->c.lock);
-> >  
-> > -	call_srcu(&c->btree_trans_barrier, &ck->rcu, __bkey_cached_free);
-> > +	preempt_disable();
-> > +	struct pending_rcu_items *pending = this_cpu_ptr(bc->pending);
-> > +	preempt_enable();
-> > +	/*
-> > +	 * pending is protected by a lock, we don't need preemption disabled -
-> > +	 * and it expects to run in sleepable context:
-> > +	 */
-> > +	pending_rcu_item_enqueue(pending, ck);
-> > +	this_cpu_inc(*bc->nr_pending);
-> >  }
-> >  
-> >  static struct bkey_cached *
-> > @@ -778,6 +877,13 @@ void bch2_fs_btree_key_cache_exit(struct btree_key_cache *bc)
-> >  
-> >  	if (bc->table_init_done)
-> >  		rhashtable_destroy(&bc->table);
-> > +
-> > +	free_percpu(bc->nr_pending);
-> > +
-> > +	int cpu;
-> > +	for_each_possible_cpu(cpu)
-> > +		pending_rcu_items_exit(per_cpu_ptr(bc->pending, cpu));
-> > +	free_percpu(bc->pending);
-> >  }
-> >  
-> >  void bch2_fs_btree_key_cache_init_early(struct btree_key_cache *c)
-> > @@ -789,6 +895,20 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
-> >  	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
-> >  	struct shrinker *shrink;
-> >  
-> > +#ifdef __KERNEL__
-> > +	bc->pending = alloc_percpu(struct pending_rcu_items);
-> > +	if (!bc->pending)
-> > +		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
-> > +#endif
-> > +	int cpu;
-> > +	for_each_possible_cpu(cpu)
-> > +		pending_rcu_items_init(per_cpu_ptr(bc->pending, cpu),
-> > +				       &c->btree_trans_barrier, __bkey_cached_free);
-> > +
-> > +	bc->nr_pending = alloc_percpu(size_t);
-> > +	if (!bc->nr_pending)
-> > +		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
-> > +
-> >  	if (rhashtable_init(&bc->table, &bch2_btree_key_cache_params))
-> >  		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
-> >  
-> > @@ -815,13 +935,15 @@ void bch2_btree_key_cache_to_text(struct printbuf *out, struct btree_key_cache *
-> >  	prt_printf(out, "keys:\t%lu\r\n",		atomic_long_read(&bc->nr_keys));
-> >  	prt_printf(out, "dirty:\t%lu\r\n",		atomic_long_read(&bc->nr_dirty));
-> >  	prt_printf(out, "table size:\t%u\r\n",		bc->table.tbl->size);
-> > -
-> > -	prt_printf(out, "\nshrinker:\n");
-> > +	prt_newline(out);
-> > +	prt_printf(out, "shrinker:\n");
-> >  	prt_printf(out, "requested_to_free:\t%lu\r\n",	bc->requested_to_free);
-> >  	prt_printf(out, "freed:\t%lu\r\n",		bc->freed);
-> >  	prt_printf(out, "skipped_dirty:\t%lu\r\n",	bc->skipped_dirty);
-> >  	prt_printf(out, "skipped_accessed:\t%lu\r\n",	bc->skipped_accessed);
-> >  	prt_printf(out, "skipped_lock_fail:\t%lu\r\n",	bc->skipped_lock_fail);
-> > +	prt_newline(out);
-> > +	prt_printf(out, "pending:\t%lu\r\n",		per_cpu_sum(bc->nr_pending));
-> >  }
-> >  
-> >  void bch2_btree_key_cache_exit(void)
-> > diff --git a/fs/bcachefs/btree_key_cache_types.h b/fs/bcachefs/btree_key_cache_types.h
-> > index e026c65f54e1..8d11cbac4c37 100644
-> > --- a/fs/bcachefs/btree_key_cache_types.h
-> > +++ b/fs/bcachefs/btree_key_cache_types.h
-> > @@ -2,12 +2,29 @@
-> >  #ifndef _BCACHEFS_BTREE_KEY_CACHE_TYPES_H
-> >  #define _BCACHEFS_BTREE_KEY_CACHE_TYPES_H
-> >  
-> > +#include "darray.h"
-> > +
-> > +struct pending_rcu_items;
-> > +typedef void (*pending_rcu_item_process_fn)(struct pending_rcu_items *, void *);
-> > +
-> > +struct pending_rcu_items {
-> > +	struct srcu_struct		*srcu;
-> > +	pending_rcu_item_process_fn	process;
-> > +	spinlock_t			lock;
-> > +	bool				rcu_armed;
-> > +	unsigned long			seq;
-> > +	darray_voidp			objs[2];
-> > +	struct rcu_head			rcu;
-> > +};
-> > +
-> >  struct btree_key_cache {
-> >  	struct rhashtable	table;
-> >  	bool			table_init_done;
-> >  
-> >  	struct shrinker		*shrink;
-> >  	unsigned		shrink_iter;
-> > +	struct pending_rcu_items __percpu *pending;
-> > +	size_t __percpu		*nr_pending;
-> >  
-> >  	atomic_long_t		nr_keys;
-> >  	atomic_long_t		nr_dirty;
-> > diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
-> > index 67f3efd9a007..56046f09ac65 100644
-> > --- a/fs/bcachefs/btree_types.h
-> > +++ b/fs/bcachefs/btree_types.h
-> > @@ -396,8 +396,6 @@ struct bkey_cached {
-> >  	u64			seq;
-> >  
-> >  	struct bkey_i		*k;
-> > -
-> > -	struct rcu_head		rcu;
-> >  };
-> >  
-> >  static inline struct bpos btree_node_pos(struct btree_bkey_cached_common *b)
-> > diff --git a/fs/bcachefs/darray.h b/fs/bcachefs/darray.h
-> > index 4b340d13caac..cdace10f4572 100644
-> > --- a/fs/bcachefs/darray.h
-> > +++ b/fs/bcachefs/darray.h
-> > @@ -19,6 +19,7 @@ struct {								\
-> >  
-> >  #define DARRAY(_type) DARRAY_PREALLOCATED(_type, 0)
-> >  
-> > +typedef DARRAY(void *)	darray_voidp;
-> >  typedef DARRAY(char)	darray_char;
-> >  typedef DARRAY(char *) darray_str;
-> >  
+I think call_rcu() would benefit from this approach as well - it's true
+that we can't avoid cache misses, but linked lists are completely
+serialized, so those cache misses hurt; using a vector or radix tree
+means we can prefetch.
