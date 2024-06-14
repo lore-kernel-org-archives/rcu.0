@@ -1,39 +1,39 @@
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F61178CE2
-	for <rcu@vger.kernel.org>; Fri, 14 Jun 2024 20:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294641487F4
+	for <rcu@vger.kernel.org>; Fri, 14 Jun 2024 20:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718396078; cv=none; b=bZDbfHFW2e/j693lp8H5NrHaDDL8uZ/0QuMyVfd/Wcv60H0KT9P2hrN7BxLVbO5fIv3+u4NsAu3D0qu2Yehx3ww+D+4FYwYUwAsMYdAdegj4TTEkGawNwKUgu7xy1zXt5GbSJtsUybrA3n/C1fAFlK4DlHdqbYM9t16p/ZdxSrw=
+	t=1718396904; cv=none; b=rh6GEpBcOTQLH7ZOePWu+NBOR+5QQj6uufzPdtlMq8AnVLujxMzVBX6EeGioj6NB/XCDfeLXkFnfmS3IskccJ5CbDVZnPbqKsA7jIjzcLmabl8KDizCvXMhSZt4stS1/DLKfdR1ojs+aYPtlEKcxfZmParxTvqOX5VvLqAhu/UI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718396078; c=relaxed/simple;
-	bh=4FL4RwLnAA7fMGpvozCMxu4+8gY9nv4ErsvLi8P9S/U=;
+	s=arc-20240116; t=1718396904; c=relaxed/simple;
+	bh=x54EcQozxO/y0UiAbMpmAL8JYeWOtMAdjTo6+5RMPpM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U3qtfI+yqBEH95RB3z6VzxZ8LaCSr2DKmuLN4wtY/8iPLsgqCBs3Ulk0sQk2uqXcmOISKX2hHR9lorAhN71kJ8Ymrq2i2w3x0xcIRNcscnPUPNuICas1fkJ4lfCL6pqlPz0Ghvgm0nCJ9ByK7ecPxSdohZfr7A8j6AhDQbRB/i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HTFjNfSi; arc=none smtp.client-ip=95.215.58.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=a/dKgFGp6z+x9qLSwW4U2Jp0DJ/LnCzUFZYpK9gh1cmHU1DGRRcSSF0o4Bc5bwpl7cIIuBiqKc30hnVQpo7gPrYdcNtM6CVqpBvu4Tp5SW/4VnacP4mfMdvy0Svy2aEpx6EYW1uQDB8Y1Ccyp7jr01SFegkXsdpGVcJFvx0PTvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oGtaUE33; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HTFjNfSi"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oGtaUE33"
 X-Envelope-To: paulmck@kernel.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718396074;
+	t=1718396901;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=svI/1QUvtdNI+kxxrg+LAfwazaI15rMTnDqrPHCQnUY=;
-	b=HTFjNfSiPKzWJ8DWHtG9JjXFZQFLXMPTeCyTS2v0ebKjpU50avqu+pqZjubRSMYdrTAsLw
-	i45vCHFhD/aCGb2qpRmQ6FmyM5MdRsJDJh7+XFure92cl6IZvc+/j+Vj1vBLZKmBTNJjYh
-	IsNAiJniyKvr4OcUCXyD/5k+4F1F6bk=
+	bh=xgm9iXF3NSSEIZ8sHMm1y6IBrGvYZES8HtZ1U4ooCT0=;
+	b=oGtaUE33QVKzuLOn3GSzzDfj5bqVvLRHHTnKvTRe8oVU3QmLJF+1AgQRo8gcfNthF7fkmp
+	mOzPSZZDc3YOXFeI4Tx0i9iTGzJqHOYFpSgkShAvj3Wdz6tu4LqLZEFKnFiQpuACa28x+c
+	Bqgf27/iHeaE2hPxS5pk/B+FfNGNRck=
 X-Envelope-To: rcu@vger.kernel.org
-Date: Fri, 14 Jun 2024 16:14:29 -0400
+Date: Fri, 14 Jun 2024 16:28:14 -0400
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org
-Subject: Re: srcu_cleanup warning
-Message-ID: <mbdjlkg74rgxvyb3mv5yl3hrmdiy3kpu3u3qgky7gvw5o445l2@f6uqrfgpcmfy>
+Subject: [PATCH] bcachefs: pending_rcu_items
+Message-ID: <xharqajk2o7xkpdk7mpd3jzj2suztubbqfms5xva367pcli5ny@6gjjjdbjo7om>
 References: <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
  <lfqpkn4ailnaa3da45cnk33yorufv63accbrtnzf7chqa56lyc@jg6ldk4wexzz>
  <d21f257a-4056-43d9-80f5-f07f1285c7fa@paulmck-laptop>
@@ -55,99 +55,356 @@ Content-Disposition: inline
 In-Reply-To: <7321411a-b19e-49e5-a56f-563e688de395@paulmck-laptop>
 X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jun 14, 2024 at 07:11:50AM -0700, Paul E. McKenney wrote:
-> On Thu, Jun 13, 2024 at 08:22:19PM -0700, Paul E. McKenney wrote:
-> > On Thu, Jun 13, 2024 at 02:32:27PM -0400, Kent Overstreet wrote:
-> 
-> [ . . . ]
-> 
-> After sleeping on it, backing up a level of abstraction, and thus perhaps
-> responding a bit more constructively...
-> 
-> And also, thank you very much for looking into this!
-> 
-> > > commit 3bb5d34d6d6e2d5433cce5d248fd81211afedec0
-> > > Author: Kent Overstreet <kent.overstreet@linux.dev>
-> > > Date:   Mon Jun 10 20:47:03 2024 -0400
-> > > 
-> > >     bcachefs: pending_rcu_items
-> > >     
-> > >     Generic (?) data structure for explicitly tracking pending SRCU items
-> > >     
-> > >     - Can we make this generic across other RCU flavors?
-> 
-> It should be possible, at least for current RCU and SRCU.  I think I owe
-> you SRCU variants of a couple of existing RCU functions.  Later today!
+This should incorporate everything we've covered so far; the one thing I
+still have to look at is making it work as a kvfree_rcu() backend.
 
-I was wondering how much commonality there is between the core data
-structures of RCU and SRCU. If RCU internally has something analagous to
-srcu_struct, and we could refer to that object without caring if it's
-for RCU or SRCU, that would be cool... otherwise, we can just do it a
-level up with switch statements.
+I decided not to do the "store the callback in the radix tree"
+optimization for generic use - it made the code fairly ugly, and just
+replacing the linked list with a radix tree should already be a
+significant improvement.
 
-> > >     - Do we need to add a fallback to linked lists when darray allocation
-> > >       fails?
-> 
-> In general, as in kfree_rcu(), yes.  In your specific case here, maybe not.
-> 
-> > >     - We wish to avoid the overhead of start_poll_synchronize_srcu() if we
-> > >       already have items for a given sequence number, but it appears
-> > >       get_poll_synchronize_srcu(); start_poll_synchronize_srcu() can
-> > >       actually return differert sequence numbers within the same read-side
-> > >       critical section. Is this the correct way of doing this?
-> 
-> You can always buffer up items that have not yet been assigned a sequence
-> number, then after you have enough or after enough time has passed, do a
-> single get_poll_synchronize_srcu() for the group.
+Thoughts?
 
-I don't think we'd want to do that, since that would be delaying the
-point at which objects get reclaimed. Have a look at my latest version
-and tell me if you think that works? It seems to work in my testing.
+-- >8 --
 
-> > >     - Do we need to ensure the rearming RCU callback is correctly flushed
-> > >       when exiting? (Probably)
-> 
-> I believe so, and setting a flag then doing an srcu_barrier() should suffice.
+Generic data structure for explicitly tracking pending RCU items,
+allowing items to be dequeued (i.e. allocate from items pending
+freeing).
 
-Is the only difference between srcu_barrier() and synchronize_srcu()
-that srcu_barrier() is a noop if callbacks weren't enqueued?
+- Works with conventional RCU and SRCU; pass in NULL for the srcu_struct
+  for regular RCU
 
-> > > +static void pending_rcu_items_process(struct pending_rcu_items *pending)
-> > >  {
-> > > -	struct bkey_cached *ck = container_of(rcu, struct bkey_cached, rcu);
-> > > +	while (pending_rcu_has_items(pending) &&
-> > > +	       poll_state_synchronize_srcu(pending->srcu, pending->seq)) {
-> > > +		darray_for_each(pending->objs[0], i)
-> > > +			pending->process(pending, *i);
-> 
-> Given that you have interrupts and/or bh disabled, there needs to be a
-> third set of callbacks, those whose grace periods are already elapsed.
+- Tracks pending items in a radix tree; falls back to linked list if
+  radix tree allocation fails
 
-Not following? The pending->process() is exactly that callback.
+todo: add support for being a kvfree_rcu() backend
 
-Also, the new version does processing in proccess context, without the
-lock.
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-> Unioning one of the ->objs[] sets onto this third set, leaving the source
-> ->objs[] set empty, should strongly be O(1) without the need for memory
-> allocation.  I might be missing something, but at first glance darray
-> does not support this.
-> 
-> The pages-of-pointers structure named kvfree_rcu_bulk_data, along with
-> the associated structures in kernel/rcu/tree.c does this work, but (1)
-> is open-coded and (2) has to deal with the full range of what the kernel
-> can throw at it.  It falls back to an embedded rcu_head structure, in
-> response to your second question in the commit log.
-> 
-> But perhaps this code could be generalized?  Or maybe darray can be
-> appropriately extended?
-
-Not sure what you mean by "unioning onto a third set"?
-
-> And one thing that I missed the first time around is that you are using
-> a single ->seq for two sets of objects (->objs[0] and ->objs[1]).
-> Each set needs its own sequence number.
-
-I've got this changed in my latest version, but - I did see one BUG_ON()
-where we seem to have three sequence numbers in flight. Any idea what
-might be up with that?
+diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
+index 0ab533a2b03b..c8394ec6f22f 100644
+--- a/fs/bcachefs/Makefile
++++ b/fs/bcachefs/Makefile
+@@ -68,6 +68,7 @@ bcachefs-y		:=	\
+ 	opts.o			\
+ 	printbuf.o		\
+ 	quota.o			\
++	rcu_pending.o		\
+ 	rebalance.o		\
+ 	recovery.o		\
+ 	recovery_passes.o	\
+diff --git a/fs/bcachefs/rcu_pending.c b/fs/bcachefs/rcu_pending.c
+new file mode 100644
+index 000000000000..9b2f4da94425
+--- /dev/null
++++ b/fs/bcachefs/rcu_pending.c
+@@ -0,0 +1,278 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/generic-radix-tree.h>
++#include <linux/percpu.h>
++#include <linux/srcu.h>
++#include "rcu_pending.h"
++
++static inline unsigned long __get_state_synchronize_rcu(struct srcu_struct *ssp)
++{
++	return ssp
++		? get_state_synchronize_srcu(ssp)
++		: get_state_synchronize_rcu();
++}
++
++static inline unsigned long __start_poll_synchronize_rcu(struct srcu_struct *ssp)
++{
++	return ssp
++		? start_poll_synchronize_srcu(ssp)
++		: start_poll_synchronize_rcu();
++}
++
++static inline void __rcu_barrier(struct srcu_struct *ssp)
++{
++	return ssp
++		? srcu_barrier(ssp)
++		: rcu_barrier();
++}
++
++struct pending_rcu_items_seq {
++	GENRADIX(struct rcu_head *)	objs;
++	size_t				nr;
++	struct rcu_head			*list;
++	unsigned long			seq;
++};
++
++struct pending_rcu_items_pcpu {
++	struct pending_rcu_items	*parent;
++	spinlock_t			lock;
++	bool				rcu_armed;
++	struct pending_rcu_items_seq	objs[2];
++	struct rcu_head			rcu;
++	struct work_struct		work;
++};
++
++static bool get_finished_items(struct pending_rcu_items *pending,
++			       struct pending_rcu_items_pcpu *p,
++			       struct pending_rcu_items_seq *out)
++{
++	for (struct pending_rcu_items_seq *objs = p->objs;
++	     objs < p->objs + ARRAY_SIZE(p->objs); objs++)
++		if ((objs->nr || objs->list) &&
++		    poll_state_synchronize_srcu(pending->srcu, objs->seq)) {
++			*out = (struct pending_rcu_items_seq) {
++				/*
++				 * the genradix can only be modified with atomic instructions,
++				 * since we allocate new nodes without
++				 * pending_rcu_items_pcpu.lock
++				 */
++				.objs.tree.root	= xchg(&objs->objs.tree.root, NULL),
++				.nr		= objs->nr,
++				.list		= objs->list,
++			};
++			objs->nr	= 0;
++			objs->list	= NULL;
++			return true;
++		}
++	return false;
++}
++
++static void process_finished_items(struct pending_rcu_items *pending,
++				   struct pending_rcu_items_seq *objs)
++{
++	for (size_t i = 0; i < objs->nr; i++)
++		pending->process(pending, *genradix_ptr(&objs->objs, i));
++	genradix_free(&objs->objs);
++
++	while (objs->list) {
++		struct rcu_head *obj = objs->list;
++		objs->list = obj->next;
++		pending->process(pending, obj);
++	}
++}
++
++static void pending_rcu_items_rcu_cb(struct rcu_head *rcu)
++{
++	struct pending_rcu_items_pcpu *p =
++		container_of(rcu, struct pending_rcu_items_pcpu, rcu);
++
++	schedule_work(&p->work);
++}
++
++static bool __pending_rcu_items_has_pending(struct pending_rcu_items_pcpu *p)
++{
++	for (struct pending_rcu_items_seq *objs = p->objs;
++	     objs < p->objs + ARRAY_SIZE(p->objs); objs++)
++		if (objs->nr || objs->list)
++			return true;
++	return false;
++}
++
++static void pending_rcu_items_work(struct work_struct *work)
++{
++	struct pending_rcu_items_pcpu *p =
++		container_of(work, struct pending_rcu_items_pcpu, work);
++	struct pending_rcu_items *pending = p->parent;
++again:
++	spin_lock_irq(&p->lock);
++	struct pending_rcu_items_seq finished;
++	while (get_finished_items(pending, p, &finished)) {
++		spin_unlock_irq(&p->lock);
++		process_finished_items(pending, &finished);
++		goto again;
++	}
++
++	BUG_ON(!p->rcu_armed);
++	p->rcu_armed = __pending_rcu_items_has_pending(p);
++	if (p->rcu_armed)
++		call_srcu(pending->srcu, &p->rcu, pending_rcu_items_rcu_cb);
++	spin_unlock_irq(&p->lock);
++}
++
++void bch2_pending_rcu_item_enqueue(struct pending_rcu_items *pending, struct rcu_head *obj)
++{
++	struct pending_rcu_items_pcpu *p = raw_cpu_ptr(pending->p);
++	bool alloc_failed = false;
++	unsigned long flags;
++retry:
++	spin_lock_irqsave(&p->lock, flags);
++
++	struct pending_rcu_items_seq finished;
++	while (get_finished_items(pending, p, &finished)) {
++		spin_unlock_irqrestore(&p->lock, flags);
++		process_finished_items(pending, &finished);
++		goto retry;
++	}
++
++	struct pending_rcu_items_seq *objs;
++
++	unsigned long seq = __get_state_synchronize_rcu(pending->srcu);
++	for (objs = p->objs; objs < p->objs + ARRAY_SIZE(p->objs); objs++)
++		if (objs->nr && objs->seq == seq)
++			goto add;
++
++	seq = __start_poll_synchronize_rcu(pending->srcu);
++	for (objs = p->objs; objs < p->objs + ARRAY_SIZE(p->objs); objs++)
++		if (!objs->nr) {
++			objs->seq = seq;
++			goto add;
++		}
++
++	BUG();
++	struct rcu_head **entry;
++add:
++	entry = genradix_ptr_alloc(&objs->objs, objs->nr, GFP_ATOMIC|__GFP_NOWARN);
++	if (likely(entry)) {
++		*entry = obj;
++		objs->nr++;
++	} else if (likely(!alloc_failed)) {
++		spin_unlock_irqrestore(&p->lock, flags);
++		alloc_failed = !genradix_ptr_alloc(&objs->objs, objs->nr, GFP_KERNEL);
++		goto retry;
++	} else {
++		obj->next = objs->list;
++		objs->list = obj;
++	}
++
++	if (!p->rcu_armed) {
++		call_srcu(pending->srcu, &p->rcu, pending_rcu_items_rcu_cb);
++		p->rcu_armed = true;
++	}
++	spin_unlock_irqrestore(&p->lock, flags);
++}
++
++static struct rcu_head *pending_rcu_item_pcpu_dequeue(struct pending_rcu_items_pcpu *p)
++{
++	struct rcu_head *ret = NULL;
++
++	spin_lock_irq(&p->lock);
++	unsigned idx = p->objs[1].seq > p->objs[0].seq;
++
++	for (unsigned i = 0; i < 2; i++, idx ^= 1) {
++		struct pending_rcu_items_seq *objs = p->objs + idx;
++
++		if (objs->nr) {
++			ret = *genradix_ptr(&objs->objs, --objs->nr);
++			break;
++		}
++
++		if (objs->list) {
++			ret = objs->list;
++			objs->list = ret->next;
++			break;
++		}
++	}
++	spin_unlock_irq(&p->lock);
++
++	return ret;
++}
++
++struct rcu_head *bch2_pending_rcu_item_dequeue(struct pending_rcu_items *pending)
++{
++	return pending_rcu_item_pcpu_dequeue(raw_cpu_ptr(pending->p));
++}
++
++struct rcu_head *bch2_pending_rcu_item_dequeue_from_all(struct pending_rcu_items *pending)
++{
++	struct rcu_head *ret = NULL;
++	int cpu;
++	for_each_possible_cpu(cpu) {
++		ret = pending_rcu_item_pcpu_dequeue(per_cpu_ptr(pending->p, cpu));
++		if (ret)
++			break;
++	}
++	return ret;
++}
++
++static bool pending_rcu_items_has_pending(struct pending_rcu_items *pending)
++{
++	int cpu;
++	for_each_possible_cpu(cpu) {
++		struct pending_rcu_items_pcpu *p = per_cpu_ptr(pending->p, cpu);
++		spin_lock_irq(&p->lock);
++		if (__pending_rcu_items_has_pending(p)) {
++			spin_unlock_irq(&p->lock);
++			return true;
++		}
++		spin_unlock_irq(&p->lock);
++	}
++
++	return false;
++}
++
++void bch2_pending_rcu_items_exit(struct pending_rcu_items *pending)
++{
++	if (!pending->p)
++		return;
++
++	while (pending_rcu_items_has_pending(pending))
++		__rcu_barrier(pending->srcu);
++
++	int cpu;
++	for_each_possible_cpu(cpu) {
++		struct pending_rcu_items_pcpu *p = per_cpu_ptr(pending->p, cpu);
++
++		flush_work(&p->work);
++
++		WARN_ON(p->objs[0].nr);
++		WARN_ON(p->objs[1].nr);
++		WARN_ON(p->objs[0].list);
++		WARN_ON(p->objs[1].list);
++
++		genradix_free(&p->objs[0].objs);
++		genradix_free(&p->objs[1].objs);
++	}
++	free_percpu(pending->p);
++}
++
++int bch2_pending_rcu_items_init(struct pending_rcu_items *pending,
++				struct srcu_struct *srcu,
++				pending_rcu_item_process_fn process)
++{
++	pending->p = alloc_percpu(struct pending_rcu_items_pcpu);
++	if (!pending->p)
++		return -ENOMEM;
++
++	int cpu;
++	for_each_possible_cpu(cpu) {
++		struct pending_rcu_items_pcpu *p = per_cpu_ptr(pending->p, cpu);
++		p->parent	= pending;
++		spin_lock_init(&p->lock);
++		INIT_WORK(&p->work, pending_rcu_items_work);
++	}
++
++	pending->srcu = srcu;
++	pending->process = process;
++
++	return 0;
++}
+diff --git a/fs/bcachefs/rcu_pending.h b/fs/bcachefs/rcu_pending.h
+new file mode 100644
+index 000000000000..e45ede074443
+--- /dev/null
++++ b/fs/bcachefs/rcu_pending.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _BCACHEFS_RCU_PENDING_H
++#define _BCACHEFS_RCU_PENDING_H
++
++struct pending_rcu_items;
++typedef void (*pending_rcu_item_process_fn)(struct pending_rcu_items *, struct rcu_head *);
++
++struct pending_rcu_items_pcpu;
++
++struct pending_rcu_items {
++	struct pending_rcu_items_pcpu __percpu *p;
++	struct srcu_struct		*srcu;
++	pending_rcu_item_process_fn	process;
++};
++
++void bch2_pending_rcu_item_enqueue(struct pending_rcu_items *pending, struct rcu_head *obj);
++struct rcu_head *bch2_pending_rcu_item_dequeue(struct pending_rcu_items *pending);
++struct rcu_head *bch2_pending_rcu_item_dequeue_from_all(struct pending_rcu_items *pending);
++
++void bch2_pending_rcu_items_exit(struct pending_rcu_items *pending);
++int bch2_pending_rcu_items_init(struct pending_rcu_items *pending,
++				struct srcu_struct *srcu,
++				pending_rcu_item_process_fn process);
++
++#endif /* _BCACHEFS_RCU_PENDING_H */
