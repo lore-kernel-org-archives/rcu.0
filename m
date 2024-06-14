@@ -1,41 +1,40 @@
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D8F15ECC0
-	for <rcu@vger.kernel.org>; Fri, 14 Jun 2024 15:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F61178CE2
+	for <rcu@vger.kernel.org>; Fri, 14 Jun 2024 20:14:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718377959; cv=none; b=gLsU3zwGqtl305cgbsTt0WCD6weGFw3jyyPN5ZdtV4du5XZD7E7eFphe3nnOR7y7yMtxG5pHHgfvfCvk6t28HigB96yxbiLMymZZswYO5lqwxFS6Bbv6PEd/MwUkmkX6cGPqoINlsKpf9U9DCnw8ZtUNln53DId3qs6GX7dkybE=
+	t=1718396078; cv=none; b=bZDbfHFW2e/j693lp8H5NrHaDDL8uZ/0QuMyVfd/Wcv60H0KT9P2hrN7BxLVbO5fIv3+u4NsAu3D0qu2Yehx3ww+D+4FYwYUwAsMYdAdegj4TTEkGawNwKUgu7xy1zXt5GbSJtsUybrA3n/C1fAFlK4DlHdqbYM9t16p/ZdxSrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718377959; c=relaxed/simple;
-	bh=NpUsp7KvzJQhSQW6WQWeg2+Ue60hROhEqiOOr/zGJd0=;
+	s=arc-20240116; t=1718396078; c=relaxed/simple;
+	bh=4FL4RwLnAA7fMGpvozCMxu4+8gY9nv4ErsvLi8P9S/U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=USMA66C43VJky3S3j+loonWE25HgHrDJaILDDuibdUf0oAmtq/aKGA7EFiFQhda0gibPIegTBNTgzVDzdtuNTzl/IPavMN07eCRkzWVQKz/0jz/18YZTpgfHzsV9xucmG633q9ID9hLNskKo1AhDO90WQxxkKjIPuq7H7k5Nw2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZQOMGU1W; arc=none smtp.client-ip=91.218.175.189
+	 Content-Type:Content-Disposition:In-Reply-To; b=U3qtfI+yqBEH95RB3z6VzxZ8LaCSr2DKmuLN4wtY/8iPLsgqCBs3Ulk0sQk2uqXcmOISKX2hHR9lorAhN71kJ8Ymrq2i2w3x0xcIRNcscnPUPNuICas1fkJ4lfCL6pqlPz0Ghvgm0nCJ9ByK7ecPxSdohZfr7A8j6AhDQbRB/i0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HTFjNfSi; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZQOMGU1W"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HTFjNfSi"
 X-Envelope-To: paulmck@kernel.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718377955;
+	t=1718396074;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fDLpgSue07O9nGnKQzyJ8WcOiJHqf2z0FUwM//R5L/Q=;
-	b=ZQOMGU1WYX5oYVuAxbPh7IbtRGuJXmHTPOC+xDgg+fpo9DnjW7QMCt0LiYwG1p68Jfr3Rl
-	pbjO5U34vG76YVqQiKXDYrm47eLiTl8ZdEl4R+B0O2Bdrj3AhdRIkXDun9/ZPKFos/e0BA
-	SmyfgbfZa9CFRkA5oU6Z3RMEQ+BZOcw=
+	bh=svI/1QUvtdNI+kxxrg+LAfwazaI15rMTnDqrPHCQnUY=;
+	b=HTFjNfSiPKzWJ8DWHtG9JjXFZQFLXMPTeCyTS2v0ebKjpU50avqu+pqZjubRSMYdrTAsLw
+	i45vCHFhD/aCGb2qpRmQ6FmyM5MdRsJDJh7+XFure92cl6IZvc+/j+Vj1vBLZKmBTNJjYh
+	IsNAiJniyKvr4OcUCXyD/5k+4F1F6bk=
 X-Envelope-To: rcu@vger.kernel.org
-Date: Fri, 14 Jun 2024 11:12:30 -0400
+Date: Fri, 14 Jun 2024 16:14:29 -0400
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org
 Subject: Re: srcu_cleanup warning
-Message-ID: <zychjrhasgxz7gwhah6egognnqepcdyoubby6gog645mn6n4gt@zprp3rhtyfx3>
-References: <y5hi7x5w3yi4i5sh2b5hgk7xu2mghkthabc7adrqteg3muc5y4@pbnkp7yyxcrp>
- <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
+Message-ID: <mbdjlkg74rgxvyb3mv5yl3hrmdiy3kpu3u3qgky7gvw5o445l2@f6uqrfgpcmfy>
+References: <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
  <lfqpkn4ailnaa3da45cnk33yorufv63accbrtnzf7chqa56lyc@jg6ldk4wexzz>
  <d21f257a-4056-43d9-80f5-f07f1285c7fa@paulmck-laptop>
  <irycqy4sinjdgm2hkyix2bffunpcmuwgeufsx6nlljvqme3wiu@ify3zdnrmzph>
@@ -44,6 +43,7 @@ References: <y5hi7x5w3yi4i5sh2b5hgk7xu2mghkthabc7adrqteg3muc5y4@pbnkp7yyxcrp>
  <dbc11a6a-175d-42ca-b962-8ad0062d6ba8@paulmck-laptop>
  <cvxzve5m6xlttd2peimzfkh7bklxakjm4cjbx5xohbfl3uwyks@jhbstfvkhcm5>
  <07c43946-7e63-42ed-8d56-67f3146a6dbb@paulmck-laptop>
+ <7321411a-b19e-49e5-a56f-563e688de395@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,133 +52,102 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <07c43946-7e63-42ed-8d56-67f3146a6dbb@paulmck-laptop>
+In-Reply-To: <7321411a-b19e-49e5-a56f-563e688de395@paulmck-laptop>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jun 13, 2024 at 08:22:19PM -0700, Paul E. McKenney wrote:
-> On Thu, Jun 13, 2024 at 02:32:27PM -0400, Kent Overstreet wrote:
-> > On Wed, Jun 12, 2024 at 08:48:40PM -0700, Paul E. McKenney wrote:
-> > > The number two is the number of distinct values, which will not be
-> > > consecutive numbers.  As you noticed, they currently are always multiples
-> > > of four, but that is an accident of implementation that is subject to
-> > > change.
-> > 
-> > I take it you're stuffing something else into the low bits and masking
-> > it off, and you can't shift that off because that would break
-> > comparisons. That's a tiny bit unfortunate; it would be nicer if we
-> > could do array indexing based on the sequence number.
+On Fri, Jun 14, 2024 at 07:11:50AM -0700, Paul E. McKenney wrote:
+> On Thu, Jun 13, 2024 at 08:22:19PM -0700, Paul E. McKenney wrote:
+> > On Thu, Jun 13, 2024 at 02:32:27PM -0400, Kent Overstreet wrote:
 > 
-> That was my initial thought as well, and so there was in fact a time
-> when RCU grace periods were numbered consecutively.  The problem with
-> that was that it was necessary to maintain a separate indication of
-> whether or not a grace period was in progress.  It is often necessary
-> to atomically determine both the grace-period number and whether that
-> grace period is still in progress, which required acquiring a lock,
-> which necessitated a number of contention-reduction workarounds which
-> eventually became problematic.
+> [ . . . ]
 > 
-> When led to the next phase, which reserved the bottom bit to indicate
-> whether a grace period was in progress and left the remaining bits to
-> count the grace periods.  This greatly simplified the code and likely
-> also improve performance and scalability.
+> After sleeping on it, backing up a level of abstraction, and thus perhaps
+> responding a bit more constructively...
 > 
-> Then I implemented Tree SRCU, which requires multiple grace-period phases,
-> hence the current state with the two bottom bits indicating grace=-period
-> phase and the remaining bits counting the grace periods.  Hence your
-> seeing get_state_synchronize_srcu() always returning a multiple of
-> four ("grace period N has not yet started").
-
-I've been wondering about your tree algorithm, ever since I realized
-there's an elegant algorithm for ticking a counter when every counter in
-a tree of sub counters has ticked.
-
-> > What if we added something like this?
-> > 
-> > #define RCU_SEQ_SKIP_SHIFT	2
+> And also, thank you very much for looking into this!
 > 
-> Right now, get_state_synchronize_srcu() returns the grace-period sequence
-> number from the root of the tree.  This has been working fine thus far,
-> but it is quite possible that memory-contention issues will force me to
-> get the value from the leaves of this tree.  If that happens, the value
-> of NUM_ACTIVE_SRCU_POLL_OLDSTATE will change from 2 to 3.
-> 
-> In addition, vanilla RCU users are looking for reduced synchronize_rcu()
-> latency, which in the past resulted in the addition of expedited
-> grace periods, which have their own counter.  Similar pressure on SRCU
-> could result in overlapping computed grace periods, which would use
-> additional bits and make the cookies only partially ordered (as the RCU
-> rcu_gp_oldstate structure variant of cookie already is).
-> 
-> And those are just a couple of changes that I can foresee.  There might
-> be others.
-> 
-> So, annoying thought it might be, we really need for this to remain an
-> opaque cookie.
-
-Ok, I can live with that.
-
-> > > > I could use a doubly linked list for tracking all uncompleted objects,
-> > > > but I'm hoping use a darray per sequence number. Is it a max of two
-> > > > sequence numbers that had objects/callbacks/were requested pulling,
-> > > > or...?
+> > > commit 3bb5d34d6d6e2d5433cce5d248fd81211afedec0
+> > > Author: Kent Overstreet <kent.overstreet@linux.dev>
+> > > Date:   Mon Jun 10 20:47:03 2024 -0400
 > > > 
-> > > Agreed, an array should work.  Each array element would need a field
-> > > recording its cookie.  Right, so you likely need a few more simple
-> > > functions:
-> > > 
-> > > 	same_state_synchronize_srcu(): Equality comparison of the
-> > > 		pair of cookies passed in.
-> > > 	get_completed_synchronize_srcu(): Return a special cookie
-> > > 		that, when passed to poll_state_synchronize_srcu(),
-> > > 		always results in a @true return value.
-> > > 
-> > > Or maybe not, you tell me.
-> > 
-> > I don't think so, but I'm not sure what your intended use is.
+> > >     bcachefs: pending_rcu_items
+> > >     
+> > >     Generic (?) data structure for explicitly tracking pending SRCU items
+> > >     
+> > >     - Can we make this generic across other RCU flavors?
 > 
-> For same_state_synchronize_srcu(), places where you likely planned to
-> instead use C-language comparisons.  For get_completed_synchronize_srcu(),
-> as a way of marking an unused entry, for which it looks like you are
-> currently using ->rcu_armed.
+> It should be possible, at least for current RCU and SRCU.  I think I owe
+> you SRCU variants of a couple of existing RCU functions.  Later today!
 
-I'm definitely not following how you want that done then :)
+I was wondering how much commonality there is between the core data
+structures of RCU and SRCU. If RCU internally has something analagous to
+srcu_struct, and we could refer to that object without caring if it's
+for RCU or SRCU, that would be cool... otherwise, we can just do it a
+level up with switch statements.
 
-> > dynamic array, basically a c++ vector - fs/bcachefs/darray.h
+> > >     - Do we need to add a fallback to linked lists when darray allocation
+> > >       fails?
 > 
-> So the darray is to hold the callbacks themselves as opposed to
-> the per-unexpired-cookie-value groups of callbacks?
-
-For my intended use case, a struct pending_rcu_items is only for objects
-of the same type that all have the same callback (otherwise, allocating
-from pending objects would have to search for an object of a given
-type).
-
-But if we want to use this for the call_rcu()/call_srcu() mechanism,
-then yes - the darray would have elements of type
-
-struct rcu_pending_cb {
-	void (*func)(struct rcu_head *);
-	struct rcu_head *obj;
-};
-
-which would save us a dependent load on processing callbacks.
-
-> > Think this would be worth factoring out and turning into something
-> > generic? If RCU wanted to use this internally for tracking pending
-> > callbacks, we could get rid of linked list overhead there...
+> In general, as in kfree_rcu(), yes.  In your specific case here, maybe not.
 > 
-> For the kfree_rcu() path, we have a pages-of-pointers approach.  For the
-> call_rcu() path, the callbacks almost always access the memory, so it
-> is not clear that the linked-list overhead is an issue.  You get that
-> cold-cache miss either way.
+> > >     - We wish to avoid the overhead of start_poll_synchronize_srcu() if we
+> > >       already have items for a given sequence number, but it appears
+> > >       get_poll_synchronize_srcu(); start_poll_synchronize_srcu() can
+> > >       actually return differert sequence numbers within the same read-side
+> > >       critical section. Is this the correct way of doing this?
+> 
+> You can always buffer up items that have not yet been assigned a sequence
+> number, then after you have enough or after enough time has passed, do a
+> single get_poll_synchronize_srcu() for the group.
 
-So kfree_rcu() is basically implementing the same thing? yes,
-add_ptr_to_bulk_krc_lock().
+I don't think we'd want to do that, since that would be delaying the
+point at which objects get reclaimed. Have a look at my latest version
+and tell me if you think that works? It seems to work in my testing.
 
-The pages-of-pointers does avoid the realloc/memcpy() overhead - which
-implies I'll want to switch mine from a darray to a generic radix tree.
+> > >     - Do we need to ensure the rearming RCU callback is correctly flushed
+> > >       when exiting? (Probably)
+> 
+> I believe so, and setting a flag then doing an srcu_barrier() should suffice.
 
-I think call_rcu() would benefit from this approach as well - it's true
-that we can't avoid cache misses, but linked lists are completely
-serialized, so those cache misses hurt; using a vector or radix tree
-means we can prefetch.
+Is the only difference between srcu_barrier() and synchronize_srcu()
+that srcu_barrier() is a noop if callbacks weren't enqueued?
+
+> > > +static void pending_rcu_items_process(struct pending_rcu_items *pending)
+> > >  {
+> > > -	struct bkey_cached *ck = container_of(rcu, struct bkey_cached, rcu);
+> > > +	while (pending_rcu_has_items(pending) &&
+> > > +	       poll_state_synchronize_srcu(pending->srcu, pending->seq)) {
+> > > +		darray_for_each(pending->objs[0], i)
+> > > +			pending->process(pending, *i);
+> 
+> Given that you have interrupts and/or bh disabled, there needs to be a
+> third set of callbacks, those whose grace periods are already elapsed.
+
+Not following? The pending->process() is exactly that callback.
+
+Also, the new version does processing in proccess context, without the
+lock.
+
+> Unioning one of the ->objs[] sets onto this third set, leaving the source
+> ->objs[] set empty, should strongly be O(1) without the need for memory
+> allocation.  I might be missing something, but at first glance darray
+> does not support this.
+> 
+> The pages-of-pointers structure named kvfree_rcu_bulk_data, along with
+> the associated structures in kernel/rcu/tree.c does this work, but (1)
+> is open-coded and (2) has to deal with the full range of what the kernel
+> can throw at it.  It falls back to an embedded rcu_head structure, in
+> response to your second question in the commit log.
+> 
+> But perhaps this code could be generalized?  Or maybe darray can be
+> appropriately extended?
+
+Not sure what you mean by "unioning onto a third set"?
+
+> And one thing that I missed the first time around is that you are using
+> a single ->seq for two sets of objects (->objs[0] and ->objs[1]).
+> Each set needs its own sequence number.
+
+I've got this changed in my latest version, but - I did see one BUG_ON()
+where we seem to have three sequence numbers in flight. Any idea what
+might be up with that?
