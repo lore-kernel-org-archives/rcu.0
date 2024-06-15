@@ -1,39 +1,40 @@
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294641487F4
-	for <rcu@vger.kernel.org>; Fri, 14 Jun 2024 20:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E288173
+	for <rcu@vger.kernel.org>; Sat, 15 Jun 2024 00:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718396904; cv=none; b=rh6GEpBcOTQLH7ZOePWu+NBOR+5QQj6uufzPdtlMq8AnVLujxMzVBX6EeGioj6NB/XCDfeLXkFnfmS3IskccJ5CbDVZnPbqKsA7jIjzcLmabl8KDizCvXMhSZt4stS1/DLKfdR1ojs+aYPtlEKcxfZmParxTvqOX5VvLqAhu/UI=
+	t=1718409866; cv=none; b=OZLVsDFR7P0i72Fx5QIiiCsn30daxNHOrUb4b1Lvqs9mR/07Mt2NmrDH7PDkRzPfVWlxOnX9QXWV+RYljdm3I0E64UweMyGiNLzZSCb6vPQzPH2Cn5EzNbZUHQG9dgQr009vtFxBt/JiPsJKlL3XfEe8Pk0hF8PdGh+a6TDPWg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718396904; c=relaxed/simple;
-	bh=x54EcQozxO/y0UiAbMpmAL8JYeWOtMAdjTo6+5RMPpM=;
+	s=arc-20240116; t=1718409866; c=relaxed/simple;
+	bh=u4Gkg2/uQL258fWl+T5PMgpWMIsmOZ5sCT8RcxfUAjk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a/dKgFGp6z+x9qLSwW4U2Jp0DJ/LnCzUFZYpK9gh1cmHU1DGRRcSSF0o4Bc5bwpl7cIIuBiqKc30hnVQpo7gPrYdcNtM6CVqpBvu4Tp5SW/4VnacP4mfMdvy0Svy2aEpx6EYW1uQDB8Y1Ccyp7jr01SFegkXsdpGVcJFvx0PTvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oGtaUE33; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 Content-Type:Content-Disposition:In-Reply-To; b=JZoOwN7JUtginXtdwr9Y7NiRoUUVAcZvlw3Xfun2ZJVJoBLqrDbBdOur3ytQrRBMgATmADbb8HK9Aqqzk8yBLASn6Q97cYd9EoLdJIVEVHh1QzOHDWcURuSA16oWkE2f0Djg7+jLgGb9np1ckxnaOXgyTgQvDj916dlKl9lTi4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDZke2EG; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oGtaUE33"
-X-Envelope-To: paulmck@kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718396901;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xgm9iXF3NSSEIZ8sHMm1y6IBrGvYZES8HtZ1U4ooCT0=;
-	b=oGtaUE33QVKzuLOn3GSzzDfj5bqVvLRHHTnKvTRe8oVU3QmLJF+1AgQRo8gcfNthF7fkmp
-	mOzPSZZDc3YOXFeI4Tx0i9iTGzJqHOYFpSgkShAvj3Wdz6tu4LqLZEFKnFiQpuACa28x+c
-	Bqgf27/iHeaE2hPxS5pk/B+FfNGNRck=
-X-Envelope-To: rcu@vger.kernel.org
-Date: Fri, 14 Jun 2024 16:28:14 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDZke2EG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05921C2BD10;
+	Sat, 15 Jun 2024 00:04:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718409866;
+	bh=u4Gkg2/uQL258fWl+T5PMgpWMIsmOZ5sCT8RcxfUAjk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=kDZke2EG79I15DHaurI5WAwFaEnmzqdJxAHMfHlxnxIHygD6KcVJHsy1yDxiEuMfC
+	 K5aNVQnE3lWH2oBj7zKJ87MScHKWekjAUtUeLdUCUx5Tykd6rShAF6h97zLqqjRGcZ
+	 HGPWij8PpdDD81DlZVGu7Uaa8AO65ZH3M9OckKSovHy0GFrZjFwMfM+eMNB8iDeiDs
+	 pHj/Xu6vXWly0x9V8kna8TeLr/0szRE8VOLO3mvLz9Z1AGRS9BCgtBVlC6m0WupjxN
+	 NVnF1KbFkpF+XjxFhe5n/Fz+WYvAC7iBvKacZ7+QNfNgU2c+iIjb67MiDMt7CHW4ct
+	 TeGw+gCEI+Pig==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9C844CE0738; Fri, 14 Jun 2024 17:04:25 -0700 (PDT)
+Date: Fri, 14 Jun 2024 17:04:25 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: rcu@vger.kernel.org
-Subject: [PATCH] bcachefs: pending_rcu_items
-Message-ID: <xharqajk2o7xkpdk7mpd3jzj2suztubbqfms5xva367pcli5ny@6gjjjdbjo7om>
+Subject: Re: srcu_cleanup warning
+Message-ID: <e95f88a0-ce44-4274-a7a0-c5a1eb672a97@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
  <lfqpkn4ailnaa3da45cnk33yorufv63accbrtnzf7chqa56lyc@jg6ldk4wexzz>
  <d21f257a-4056-43d9-80f5-f07f1285c7fa@paulmck-laptop>
@@ -43,7 +44,7 @@ References: <e7d313d4-04a7-4f24-bec6-8ade82e3be3b@paulmck-laptop>
  <dbc11a6a-175d-42ca-b962-8ad0062d6ba8@paulmck-laptop>
  <cvxzve5m6xlttd2peimzfkh7bklxakjm4cjbx5xohbfl3uwyks@jhbstfvkhcm5>
  <07c43946-7e63-42ed-8d56-67f3146a6dbb@paulmck-laptop>
- <7321411a-b19e-49e5-a56f-563e688de395@paulmck-laptop>
+ <zychjrhasgxz7gwhah6egognnqepcdyoubby6gog645mn6n4gt@zprp3rhtyfx3>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,359 +53,165 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7321411a-b19e-49e5-a56f-563e688de395@paulmck-laptop>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <zychjrhasgxz7gwhah6egognnqepcdyoubby6gog645mn6n4gt@zprp3rhtyfx3>
 
-This should incorporate everything we've covered so far; the one thing I
-still have to look at is making it work as a kvfree_rcu() backend.
+On Fri, Jun 14, 2024 at 11:12:30AM -0400, Kent Overstreet wrote:
+> On Thu, Jun 13, 2024 at 08:22:19PM -0700, Paul E. McKenney wrote:
+> > On Thu, Jun 13, 2024 at 02:32:27PM -0400, Kent Overstreet wrote:
+> > > On Wed, Jun 12, 2024 at 08:48:40PM -0700, Paul E. McKenney wrote:
+> > > > The number two is the number of distinct values, which will not be
+> > > > consecutive numbers.  As you noticed, they currently are always multiples
+> > > > of four, but that is an accident of implementation that is subject to
+> > > > change.
+> > > 
+> > > I take it you're stuffing something else into the low bits and masking
+> > > it off, and you can't shift that off because that would break
+> > > comparisons. That's a tiny bit unfortunate; it would be nicer if we
+> > > could do array indexing based on the sequence number.
+> > 
+> > That was my initial thought as well, and so there was in fact a time
+> > when RCU grace periods were numbered consecutively.  The problem with
+> > that was that it was necessary to maintain a separate indication of
+> > whether or not a grace period was in progress.  It is often necessary
+> > to atomically determine both the grace-period number and whether that
+> > grace period is still in progress, which required acquiring a lock,
+> > which necessitated a number of contention-reduction workarounds which
+> > eventually became problematic.
+> > 
+> > When led to the next phase, which reserved the bottom bit to indicate
+> > whether a grace period was in progress and left the remaining bits to
+> > count the grace periods.  This greatly simplified the code and likely
+> > also improve performance and scalability.
+> > 
+> > Then I implemented Tree SRCU, which requires multiple grace-period phases,
+> > hence the current state with the two bottom bits indicating grace=-period
+> > phase and the remaining bits counting the grace periods.  Hence your
+> > seeing get_state_synchronize_srcu() always returning a multiple of
+> > four ("grace period N has not yet started").
+> 
+> I've been wondering about your tree algorithm, ever since I realized
+> there's an elegant algorithm for ticking a counter when every counter in
+> a tree of sub counters has ticked.
 
-I decided not to do the "store the callback in the radix tree"
-optimization for generic use - it made the code fairly ugly, and just
-replacing the linked list with a radix tree should already be a
-significant improvement.
+One name for it is "combining tree".  If you want to dig deeper, there
+are some (admittely ad hoc) design documents here:
 
-Thoughts?
+https://docs.google.com/document/d/1GCdQC8SDbb54W1shjEXqGZ0Rq8a6kIeYutdSIajfpLA/edit?usp=sharing
 
--- >8 --
+Perhaps most relevant, my 2016 LCA presentation covers this for expedited
+grace periods:
 
-Generic data structure for explicitly tracking pending RCU items,
-allowing items to be dequeued (i.e. allocate from items pending
-freeing).
+http://www2.rdrop.com/~paulmck/RCU/4096CPU.2016.02.03i.pdf
+https://www.youtube.com/watch?v=1nfpjHTWaUc
 
-- Works with conventional RCU and SRCU; pass in NULL for the srcu_struct
-  for regular RCU
+> > > What if we added something like this?
+> > > 
+> > > #define RCU_SEQ_SKIP_SHIFT	2
+> > 
+> > Right now, get_state_synchronize_srcu() returns the grace-period sequence
+> > number from the root of the tree.  This has been working fine thus far,
+> > but it is quite possible that memory-contention issues will force me to
+> > get the value from the leaves of this tree.  If that happens, the value
+> > of NUM_ACTIVE_SRCU_POLL_OLDSTATE will change from 2 to 3.
+> > 
+> > In addition, vanilla RCU users are looking for reduced synchronize_rcu()
+> > latency, which in the past resulted in the addition of expedited
+> > grace periods, which have their own counter.  Similar pressure on SRCU
+> > could result in overlapping computed grace periods, which would use
+> > additional bits and make the cookies only partially ordered (as the RCU
+> > rcu_gp_oldstate structure variant of cookie already is).
+> > 
+> > And those are just a couple of changes that I can foresee.  There might
+> > be others.
+> > 
+> > So, annoying thought it might be, we really need for this to remain an
+> > opaque cookie.
+> 
+> Ok, I can live with that.
+> 
+> > > > > I could use a doubly linked list for tracking all uncompleted objects,
+> > > > > but I'm hoping use a darray per sequence number. Is it a max of two
+> > > > > sequence numbers that had objects/callbacks/were requested pulling,
+> > > > > or...?
+> > > > 
+> > > > Agreed, an array should work.  Each array element would need a field
+> > > > recording its cookie.  Right, so you likely need a few more simple
+> > > > functions:
+> > > > 
+> > > > 	same_state_synchronize_srcu(): Equality comparison of the
+> > > > 		pair of cookies passed in.
+> > > > 	get_completed_synchronize_srcu(): Return a special cookie
+> > > > 		that, when passed to poll_state_synchronize_srcu(),
+> > > > 		always results in a @true return value.
+> > > > 
+> > > > Or maybe not, you tell me.
+> > > 
+> > > I don't think so, but I'm not sure what your intended use is.
+> > 
+> > For same_state_synchronize_srcu(), places where you likely planned to
+> > instead use C-language comparisons.  For get_completed_synchronize_srcu(),
+> > as a way of marking an unused entry, for which it looks like you are
+> > currently using ->rcu_armed.
+> 
+> I'm definitely not following how you want that done then :)
 
-- Tracks pending items in a radix tree; falls back to linked list if
-  radix tree allocation fails
+I need to adapt this (if needed) to your latest code.
 
-todo: add support for being a kvfree_rcu() backend
+> > > dynamic array, basically a c++ vector - fs/bcachefs/darray.h
+> > 
+> > So the darray is to hold the callbacks themselves as opposed to
+> > the per-unexpired-cookie-value groups of callbacks?
+> 
+> For my intended use case, a struct pending_rcu_items is only for objects
+> of the same type that all have the same callback (otherwise, allocating
+> from pending objects would have to search for an object of a given
+> type).
+> 
+> But if we want to use this for the call_rcu()/call_srcu() mechanism,
+> then yes - the darray would have elements of type
+> 
+> struct rcu_pending_cb {
+> 	void (*func)(struct rcu_head *);
+> 	struct rcu_head *obj;
+> };
+> 
+> which would save us a dependent load on processing callbacks.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+OK.  But please see my comments about sets, O(1) union operations,
+and soforth.
 
-diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
-index 0ab533a2b03b..c8394ec6f22f 100644
---- a/fs/bcachefs/Makefile
-+++ b/fs/bcachefs/Makefile
-@@ -68,6 +68,7 @@ bcachefs-y		:=	\
- 	opts.o			\
- 	printbuf.o		\
- 	quota.o			\
-+	rcu_pending.o		\
- 	rebalance.o		\
- 	recovery.o		\
- 	recovery_passes.o	\
-diff --git a/fs/bcachefs/rcu_pending.c b/fs/bcachefs/rcu_pending.c
-new file mode 100644
-index 000000000000..9b2f4da94425
---- /dev/null
-+++ b/fs/bcachefs/rcu_pending.c
-@@ -0,0 +1,278 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/generic-radix-tree.h>
-+#include <linux/percpu.h>
-+#include <linux/srcu.h>
-+#include "rcu_pending.h"
-+
-+static inline unsigned long __get_state_synchronize_rcu(struct srcu_struct *ssp)
-+{
-+	return ssp
-+		? get_state_synchronize_srcu(ssp)
-+		: get_state_synchronize_rcu();
-+}
-+
-+static inline unsigned long __start_poll_synchronize_rcu(struct srcu_struct *ssp)
-+{
-+	return ssp
-+		? start_poll_synchronize_srcu(ssp)
-+		: start_poll_synchronize_rcu();
-+}
-+
-+static inline void __rcu_barrier(struct srcu_struct *ssp)
-+{
-+	return ssp
-+		? srcu_barrier(ssp)
-+		: rcu_barrier();
-+}
-+
-+struct pending_rcu_items_seq {
-+	GENRADIX(struct rcu_head *)	objs;
-+	size_t				nr;
-+	struct rcu_head			*list;
-+	unsigned long			seq;
-+};
-+
-+struct pending_rcu_items_pcpu {
-+	struct pending_rcu_items	*parent;
-+	spinlock_t			lock;
-+	bool				rcu_armed;
-+	struct pending_rcu_items_seq	objs[2];
-+	struct rcu_head			rcu;
-+	struct work_struct		work;
-+};
-+
-+static bool get_finished_items(struct pending_rcu_items *pending,
-+			       struct pending_rcu_items_pcpu *p,
-+			       struct pending_rcu_items_seq *out)
-+{
-+	for (struct pending_rcu_items_seq *objs = p->objs;
-+	     objs < p->objs + ARRAY_SIZE(p->objs); objs++)
-+		if ((objs->nr || objs->list) &&
-+		    poll_state_synchronize_srcu(pending->srcu, objs->seq)) {
-+			*out = (struct pending_rcu_items_seq) {
-+				/*
-+				 * the genradix can only be modified with atomic instructions,
-+				 * since we allocate new nodes without
-+				 * pending_rcu_items_pcpu.lock
-+				 */
-+				.objs.tree.root	= xchg(&objs->objs.tree.root, NULL),
-+				.nr		= objs->nr,
-+				.list		= objs->list,
-+			};
-+			objs->nr	= 0;
-+			objs->list	= NULL;
-+			return true;
-+		}
-+	return false;
-+}
-+
-+static void process_finished_items(struct pending_rcu_items *pending,
-+				   struct pending_rcu_items_seq *objs)
-+{
-+	for (size_t i = 0; i < objs->nr; i++)
-+		pending->process(pending, *genradix_ptr(&objs->objs, i));
-+	genradix_free(&objs->objs);
-+
-+	while (objs->list) {
-+		struct rcu_head *obj = objs->list;
-+		objs->list = obj->next;
-+		pending->process(pending, obj);
-+	}
-+}
-+
-+static void pending_rcu_items_rcu_cb(struct rcu_head *rcu)
-+{
-+	struct pending_rcu_items_pcpu *p =
-+		container_of(rcu, struct pending_rcu_items_pcpu, rcu);
-+
-+	schedule_work(&p->work);
-+}
-+
-+static bool __pending_rcu_items_has_pending(struct pending_rcu_items_pcpu *p)
-+{
-+	for (struct pending_rcu_items_seq *objs = p->objs;
-+	     objs < p->objs + ARRAY_SIZE(p->objs); objs++)
-+		if (objs->nr || objs->list)
-+			return true;
-+	return false;
-+}
-+
-+static void pending_rcu_items_work(struct work_struct *work)
-+{
-+	struct pending_rcu_items_pcpu *p =
-+		container_of(work, struct pending_rcu_items_pcpu, work);
-+	struct pending_rcu_items *pending = p->parent;
-+again:
-+	spin_lock_irq(&p->lock);
-+	struct pending_rcu_items_seq finished;
-+	while (get_finished_items(pending, p, &finished)) {
-+		spin_unlock_irq(&p->lock);
-+		process_finished_items(pending, &finished);
-+		goto again;
-+	}
-+
-+	BUG_ON(!p->rcu_armed);
-+	p->rcu_armed = __pending_rcu_items_has_pending(p);
-+	if (p->rcu_armed)
-+		call_srcu(pending->srcu, &p->rcu, pending_rcu_items_rcu_cb);
-+	spin_unlock_irq(&p->lock);
-+}
-+
-+void bch2_pending_rcu_item_enqueue(struct pending_rcu_items *pending, struct rcu_head *obj)
-+{
-+	struct pending_rcu_items_pcpu *p = raw_cpu_ptr(pending->p);
-+	bool alloc_failed = false;
-+	unsigned long flags;
-+retry:
-+	spin_lock_irqsave(&p->lock, flags);
-+
-+	struct pending_rcu_items_seq finished;
-+	while (get_finished_items(pending, p, &finished)) {
-+		spin_unlock_irqrestore(&p->lock, flags);
-+		process_finished_items(pending, &finished);
-+		goto retry;
-+	}
-+
-+	struct pending_rcu_items_seq *objs;
-+
-+	unsigned long seq = __get_state_synchronize_rcu(pending->srcu);
-+	for (objs = p->objs; objs < p->objs + ARRAY_SIZE(p->objs); objs++)
-+		if (objs->nr && objs->seq == seq)
-+			goto add;
-+
-+	seq = __start_poll_synchronize_rcu(pending->srcu);
-+	for (objs = p->objs; objs < p->objs + ARRAY_SIZE(p->objs); objs++)
-+		if (!objs->nr) {
-+			objs->seq = seq;
-+			goto add;
-+		}
-+
-+	BUG();
-+	struct rcu_head **entry;
-+add:
-+	entry = genradix_ptr_alloc(&objs->objs, objs->nr, GFP_ATOMIC|__GFP_NOWARN);
-+	if (likely(entry)) {
-+		*entry = obj;
-+		objs->nr++;
-+	} else if (likely(!alloc_failed)) {
-+		spin_unlock_irqrestore(&p->lock, flags);
-+		alloc_failed = !genradix_ptr_alloc(&objs->objs, objs->nr, GFP_KERNEL);
-+		goto retry;
-+	} else {
-+		obj->next = objs->list;
-+		objs->list = obj;
-+	}
-+
-+	if (!p->rcu_armed) {
-+		call_srcu(pending->srcu, &p->rcu, pending_rcu_items_rcu_cb);
-+		p->rcu_armed = true;
-+	}
-+	spin_unlock_irqrestore(&p->lock, flags);
-+}
-+
-+static struct rcu_head *pending_rcu_item_pcpu_dequeue(struct pending_rcu_items_pcpu *p)
-+{
-+	struct rcu_head *ret = NULL;
-+
-+	spin_lock_irq(&p->lock);
-+	unsigned idx = p->objs[1].seq > p->objs[0].seq;
-+
-+	for (unsigned i = 0; i < 2; i++, idx ^= 1) {
-+		struct pending_rcu_items_seq *objs = p->objs + idx;
-+
-+		if (objs->nr) {
-+			ret = *genradix_ptr(&objs->objs, --objs->nr);
-+			break;
-+		}
-+
-+		if (objs->list) {
-+			ret = objs->list;
-+			objs->list = ret->next;
-+			break;
-+		}
-+	}
-+	spin_unlock_irq(&p->lock);
-+
-+	return ret;
-+}
-+
-+struct rcu_head *bch2_pending_rcu_item_dequeue(struct pending_rcu_items *pending)
-+{
-+	return pending_rcu_item_pcpu_dequeue(raw_cpu_ptr(pending->p));
-+}
-+
-+struct rcu_head *bch2_pending_rcu_item_dequeue_from_all(struct pending_rcu_items *pending)
-+{
-+	struct rcu_head *ret = NULL;
-+	int cpu;
-+	for_each_possible_cpu(cpu) {
-+		ret = pending_rcu_item_pcpu_dequeue(per_cpu_ptr(pending->p, cpu));
-+		if (ret)
-+			break;
-+	}
-+	return ret;
-+}
-+
-+static bool pending_rcu_items_has_pending(struct pending_rcu_items *pending)
-+{
-+	int cpu;
-+	for_each_possible_cpu(cpu) {
-+		struct pending_rcu_items_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+		spin_lock_irq(&p->lock);
-+		if (__pending_rcu_items_has_pending(p)) {
-+			spin_unlock_irq(&p->lock);
-+			return true;
-+		}
-+		spin_unlock_irq(&p->lock);
-+	}
-+
-+	return false;
-+}
-+
-+void bch2_pending_rcu_items_exit(struct pending_rcu_items *pending)
-+{
-+	if (!pending->p)
-+		return;
-+
-+	while (pending_rcu_items_has_pending(pending))
-+		__rcu_barrier(pending->srcu);
-+
-+	int cpu;
-+	for_each_possible_cpu(cpu) {
-+		struct pending_rcu_items_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+
-+		flush_work(&p->work);
-+
-+		WARN_ON(p->objs[0].nr);
-+		WARN_ON(p->objs[1].nr);
-+		WARN_ON(p->objs[0].list);
-+		WARN_ON(p->objs[1].list);
-+
-+		genradix_free(&p->objs[0].objs);
-+		genradix_free(&p->objs[1].objs);
-+	}
-+	free_percpu(pending->p);
-+}
-+
-+int bch2_pending_rcu_items_init(struct pending_rcu_items *pending,
-+				struct srcu_struct *srcu,
-+				pending_rcu_item_process_fn process)
-+{
-+	pending->p = alloc_percpu(struct pending_rcu_items_pcpu);
-+	if (!pending->p)
-+		return -ENOMEM;
-+
-+	int cpu;
-+	for_each_possible_cpu(cpu) {
-+		struct pending_rcu_items_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+		p->parent	= pending;
-+		spin_lock_init(&p->lock);
-+		INIT_WORK(&p->work, pending_rcu_items_work);
-+	}
-+
-+	pending->srcu = srcu;
-+	pending->process = process;
-+
-+	return 0;
-+}
-diff --git a/fs/bcachefs/rcu_pending.h b/fs/bcachefs/rcu_pending.h
-new file mode 100644
-index 000000000000..e45ede074443
---- /dev/null
-+++ b/fs/bcachefs/rcu_pending.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _BCACHEFS_RCU_PENDING_H
-+#define _BCACHEFS_RCU_PENDING_H
-+
-+struct pending_rcu_items;
-+typedef void (*pending_rcu_item_process_fn)(struct pending_rcu_items *, struct rcu_head *);
-+
-+struct pending_rcu_items_pcpu;
-+
-+struct pending_rcu_items {
-+	struct pending_rcu_items_pcpu __percpu *p;
-+	struct srcu_struct		*srcu;
-+	pending_rcu_item_process_fn	process;
-+};
-+
-+void bch2_pending_rcu_item_enqueue(struct pending_rcu_items *pending, struct rcu_head *obj);
-+struct rcu_head *bch2_pending_rcu_item_dequeue(struct pending_rcu_items *pending);
-+struct rcu_head *bch2_pending_rcu_item_dequeue_from_all(struct pending_rcu_items *pending);
-+
-+void bch2_pending_rcu_items_exit(struct pending_rcu_items *pending);
-+int bch2_pending_rcu_items_init(struct pending_rcu_items *pending,
-+				struct srcu_struct *srcu,
-+				pending_rcu_item_process_fn process);
-+
-+#endif /* _BCACHEFS_RCU_PENDING_H */
+> > > Think this would be worth factoring out and turning into something
+> > > generic? If RCU wanted to use this internally for tracking pending
+> > > callbacks, we could get rid of linked list overhead there...
+> > 
+> > For the kfree_rcu() path, we have a pages-of-pointers approach.  For the
+> > call_rcu() path, the callbacks almost always access the memory, so it
+> > is not clear that the linked-list overhead is an issue.  You get that
+> > cold-cache miss either way.
+> 
+> So kfree_rcu() is basically implementing the same thing? yes,
+> add_ptr_to_bulk_krc_lock().
+> 
+> The pages-of-pointers does avoid the realloc/memcpy() overhead - which
+> implies I'll want to switch mine from a darray to a generic radix tree.
+> 
+> I think call_rcu() would benefit from this approach as well - it's true
+> that we can't avoid cache misses, but linked lists are completely
+> serialized, so those cache misses hurt; using a vector or radix tree
+> means we can prefetch.
+
+I would need to see evidence.  I agree that a CPU could prefetch in this
+situation, but do they really?  If so, do they really prefetch often
+enough to justify the added complexity?
+
+Why the worry about complexity?  The RCU callback processing has lots
+of moving parts, and will soon be getting more as we make it so that
+RCU callbacks can take advantage of expedited grace period.  (I have
+been wanting to make this work for more than ten years to better handle
+callback floods and OOM conditions, and we finally have the tools in
+place to make it at least semi-feasible!)
+
+But if it really does provide significant benefit, then yes, it is
+clearly on the list.
+
+						Thanx, Paul
