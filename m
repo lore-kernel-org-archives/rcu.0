@@ -1,50 +1,34 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE12A1361
-	for <rcu@vger.kernel.org>; Sat, 15 Jun 2024 00:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81349847A;
+	Mon, 17 Jun 2024 16:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718411223; cv=none; b=kZrUG45VUEIk7chj/rZ2rlKUxwgBqsiJs9fxV2ynzB6CBJM3Y8EYN7qrIc7WmnCyUkDa9aCkHik1107hLtJPO0cBUdw15mYBVkVpAbed3S1d8Ybebd7V0ah+GBvAJSRVp3oiuOPiV2+ag/2CRevL9/4uunUbkz/60a9T03W9OCA=
+	t=1718641704; cv=none; b=g170PkX2Z8EaB3IQKwMqpoj4nDu9b3tC+wauCr1k/CHiaxzbTwvsKGZeReFrR9IUfiJsznauJSjIpTpe7rQidZ5R3qf2p33dTOFDzPc0Tz8TSORO8hESlLm56DgeHKM8qpwLj+OKc4vVziWmHgIciLgPnH3drunPesI8Fi4jk3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718411223; c=relaxed/simple;
-	bh=X8Lpzj4zrEXVnr0Hm00durDw3dNX1jMnb6YhEpBk320=;
+	s=arc-20240116; t=1718641704; c=relaxed/simple;
+	bh=uHcLS7kwXtHKKhg0768IzJSfiDSCIBNCfhKdJ+TtzH8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hoI/tV/MTGuXPllD7qaWw0k5QdFgxT3itS0Antwu7jELrbFrThoh2uAZuMNs/vW2bA3eN3NToEVknNeXbay7NHU/LKrKP1V8wDjRv5toCQg7KM3qwchuyhCXBBYMhF59HLttWsaGqTPCe5a0Z9pttuJBsr5cOEasLMA9ZEkMmBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D87m0JpW; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D87m0JpW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D6CBC2BD10;
-	Sat, 15 Jun 2024 00:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718411222;
-	bh=X8Lpzj4zrEXVnr0Hm00durDw3dNX1jMnb6YhEpBk320=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=D87m0JpW1ZVKVRm1HxtXniDy/bpS6YEjv3xRlcDGBQHzmYrPLCMcWftDV7O4MR/A9
-	 T8YWEjpKNiso/T+TwnPZRyKGYlPrswGzLY/mYr6CUWiSIk2YtI/FzvynKo9dF5SRTL
-	 6Am+9oP/Y1fMBBK60bTLW3joP1Y6p4ARpscXtMufRvgt1bmze5WlosClOvUqre2QGW
-	 8D8ieE9uz4XZd5ENqj0MPyzaS0gUMUHRT10QkTxaq+V6+curC0qHVnI/bLfljyal2x
-	 PSUG/1Zx9PWs+iqs/U8TuN+WYXxn24xn/PymlNMUvqIfIAw9CwYQD09I7MIiPHhOkH
-	 lIeWFTAn8RrsQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E7E43CE0738; Fri, 14 Jun 2024 17:27:01 -0700 (PDT)
-Date: Fri, 14 Jun 2024 17:27:01 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: rcu@vger.kernel.org
-Subject: Re: srcu_cleanup warning
-Message-ID: <6e7c822f-f03c-4586-80b4-ff6444b35be9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <lfqpkn4ailnaa3da45cnk33yorufv63accbrtnzf7chqa56lyc@jg6ldk4wexzz>
- <d21f257a-4056-43d9-80f5-f07f1285c7fa@paulmck-laptop>
- <irycqy4sinjdgm2hkyix2bffunpcmuwgeufsx6nlljvqme3wiu@ify3zdnrmzph>
- <9195be6e-69a0-4c8a-8a60-5611a822cbe3@paulmck-laptop>
- <clrfcpickuk7mss7tbwdhy2krjlxic7ivcczq7vkmqtte2xrp4@rfjd57exzx2k>
- <dbc11a6a-175d-42ca-b962-8ad0062d6ba8@paulmck-laptop>
- <cvxzve5m6xlttd2peimzfkh7bklxakjm4cjbx5xohbfl3uwyks@jhbstfvkhcm5>
- <07c43946-7e63-42ed-8d56-67f3146a6dbb@paulmck-laptop>
- <7321411a-b19e-49e5-a56f-563e688de395@paulmck-laptop>
- <mbdjlkg74rgxvyb3mv5yl3hrmdiy3kpu3u3qgky7gvw5o445l2@f6uqrfgpcmfy>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DYWSF2aqIrMRD26dC8EsorOfmNvz9xd5shYnFIvrGvn7odj+tUlOcrNvP/eYws38anBA+dwtvO3AF5hnkWl9doHbZJKY85pAGoKGeK9AQbbNIqlR5/Yj7L2w3Ul/kZq249CiKezpGAvX/axyVmnrnAT7c65wFXsEjMvZvWm7Xfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DB42DA7;
+	Mon, 17 Jun 2024 09:28:45 -0700 (PDT)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B25E83F64C;
+	Mon, 17 Jun 2024 09:28:19 -0700 (PDT)
+Date: Mon, 17 Jun 2024 17:28:14 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Zhouyi Zhou <zhouzhouyi@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	lance@osuosl.org
+Subject: Re: [PATCH V3] rcutorture: Add CFcommon.arch for the various arch's
+ need
+Message-ID: <ZnBkHosMDhsh4H8g@J2N7QTR9R3>
+References: <20240612013527.1325751-1-zhouzhouyi@gmail.com>
+ <def32dd4-b205-45b8-a5ed-e6e28a0ac4f4@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -53,160 +37,109 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <mbdjlkg74rgxvyb3mv5yl3hrmdiy3kpu3u3qgky7gvw5o445l2@f6uqrfgpcmfy>
+In-Reply-To: <def32dd4-b205-45b8-a5ed-e6e28a0ac4f4@paulmck-laptop>
 
-On Fri, Jun 14, 2024 at 04:14:29PM -0400, Kent Overstreet wrote:
-> On Fri, Jun 14, 2024 at 07:11:50AM -0700, Paul E. McKenney wrote:
-> > On Thu, Jun 13, 2024 at 08:22:19PM -0700, Paul E. McKenney wrote:
-> > > On Thu, Jun 13, 2024 at 02:32:27PM -0400, Kent Overstreet wrote:
+On Tue, Jun 11, 2024 at 07:57:29PM -0700, Paul E. McKenney wrote:
+> On Wed, Jun 12, 2024 at 01:35:27AM +0000, Zhouyi Zhou wrote:
+> > Add CFcommon.arch for the various arch's need for rcutorture.
 > > 
-> > [ . . . ]
+> > According to [1] and [2], this patch
+> > Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options") by moving
+> > x86 specific kernel option CONFIG_HYPERVISOR_GUEST to CFcommon.arch
 > > 
-> > After sleeping on it, backing up a level of abstraction, and thus perhaps
-> > responding a bit more constructively...
+> > The patch has been revised and improved under
+> > Paul E. McKenney's guidance [3].
 > > 
-> > And also, thank you very much for looking into this!
+> > [1] https://lore.kernel.org/all/20240427005626.1365935-1-zhouzhouyi@gmail.com/
+> > [2] https://lore.kernel.org/all/059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop/
+> > [3] https://lore.kernel.org/lkml/cd3709dc-2c08-4ac2-a19b-d8edb66195e3@paulmck-laptop/T/
 > > 
-> > > > commit 3bb5d34d6d6e2d5433cce5d248fd81211afedec0
-> > > > Author: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > Date:   Mon Jun 10 20:47:03 2024 -0400
-> > > > 
-> > > >     bcachefs: pending_rcu_items
-> > > >     
-> > > >     Generic (?) data structure for explicitly tracking pending SRCU items
-> > > >     
-> > > >     - Can we make this generic across other RCU flavors?
+> > Tested in x86_64 and PPC VM of Open Source Lab of Oregon State University.
 > > 
-> > It should be possible, at least for current RCU and SRCU.  I think I owe
-> > you SRCU variants of a couple of existing RCU functions.  Later today!
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 > 
-> I was wondering how much commonality there is between the core data
-> structures of RCU and SRCU. If RCU internally has something analagous to
-> srcu_struct, and we could refer to that object without caring if it's
-> for RCU or SRCU, that would be cool... otherwise, we can just do it a
-> level up with switch statements.
-
-There is a lot of commonality at the conceptual level, but lots of
-differences due to radically different design tradeoffs.  And don't
-forget about the Tiny variants of both RCU and SRCU.  (With the current
-API, you shouldn't need to care.)  Things will get more fun if any of
-the three RCU Tasks variants need polling interfaces.  Not a big deal,
-though, either a pointer for SRCU or a small-integer enum for the others.
-
-And I haven't heard any hint of a need for polled interfaces for any of
-the Tasks RCU variants.
-
-> > > >     - Do we need to add a fallback to linked lists when darray allocation
-> > > >       fails?
-> > 
-> > In general, as in kfree_rcu(), yes.  In your specific case here, maybe not.
-> > 
-> > > >     - We wish to avoid the overhead of start_poll_synchronize_srcu() if we
-> > > >       already have items for a given sequence number, but it appears
-> > > >       get_poll_synchronize_srcu(); start_poll_synchronize_srcu() can
-> > > >       actually return differert sequence numbers within the same read-side
-> > > >       critical section. Is this the correct way of doing this?
-> > 
-> > You can always buffer up items that have not yet been assigned a sequence
-> > number, then after you have enough or after enough time has passed, do a
-> > single get_poll_synchronize_srcu() for the group.
+> Much better, thank you!
 > 
-> I don't think we'd want to do that, since that would be delaying the
-> point at which objects get reclaimed. Have a look at my latest version
-> and tell me if you think that works? It seems to work in my testing.
-
-Ah, it did arrive.  I will take a look by the end of Monday (maybe
-sooner, depending).
-
-If a grace period is currently in progress, there is no penalty for
-batching.  Huh.  If the overhead of that get_poll_synchronize_srcu()
-becomes a problem, there are some tricks we can play.  But let's get
-the basics working well first.
-
-> > > >     - Do we need to ensure the rearming RCU callback is correctly flushed
-> > > >       when exiting? (Probably)
-> > 
-> > I believe so, and setting a flag then doing an srcu_barrier() should suffice.
+> I queued and pushed for review and testing with the usual editing,
+> so please let me know if I messed anything up.
 > 
-> Is the only difference between srcu_barrier() and synchronize_srcu()
-> that srcu_barrier() is a noop if callbacks weren't enqueued?
+> I added Mark on CC in case he has thoughts from an ARM perspective.
 
-They are orthogonal.  Keep in mind that synchronize_srcu() does not
-necessarily wait on any callbacks, just like srcu_barrier() does not
-necessarily wait on any grace period.
+Ah, thanks!
 
-Now, as you might have noticed, as an accident of implementation on
-systems with fewer than 128 CPUs, if a given srcu_struct never has
-had significant grace-period activity, there will be a single list
-of callbacks, so synchronize_srcu() will wait for all pre-existing
-callbacks.  But if there are more CPUs or if there is heavy update-side
-load, then there will be one callback queue per CPU, and in that case
-synchronize_srcu() will wait only for pre-existing callbacks on its CPU.
+From a quick scan, the only thing I spot is that CONFIG_KVM_GUEST is
+also not an arm64 thing, and only exists on x86 & powerpc, so pulling
+that out too would be nice.
 
-And recent work means that synchronize_rcu() does not necessarily ever
-wait on callbacks, and perhaps some day that same optimization will be
-applied to SRCU.
+That aside, this looks good to me; having the infrastructure to do this
+per-arch is nice!
 
-> > > > +static void pending_rcu_items_process(struct pending_rcu_items *pending)
-> > > >  {
-> > > > -	struct bkey_cached *ck = container_of(rcu, struct bkey_cached, rcu);
-> > > > +	while (pending_rcu_has_items(pending) &&
-> > > > +	       poll_state_synchronize_srcu(pending->srcu, pending->seq)) {
-> > > > +		darray_for_each(pending->objs[0], i)
-> > > > +			pending->process(pending, *i);
-> > 
-> > Given that you have interrupts and/or bh disabled, there needs to be a
-> > third set of callbacks, those whose grace periods are already elapsed.
+Mark.
+
 > 
-> Not following? The pending->process() is exactly that callback.
+> 							Thanx, Paul
 > 
-> Also, the new version does processing in proccess context, without the
-> lock.
-
-OK, I will look at the new version.
-
-In the meantime, I am guessing that there is some delay between the end
-of a grace period and the processing of that grace period's callbacks,
-and if that delay is perceptible, those callbacks will need to be gotten
-out of the way of new callbacks.
-
-> > Unioning one of the ->objs[] sets onto this third set, leaving the source
-> > ->objs[] set empty, should strongly be O(1) without the need for memory
-> > allocation.  I might be missing something, but at first glance darray
-> > does not support this.
-> > 
-> > The pages-of-pointers structure named kvfree_rcu_bulk_data, along with
-> > the associated structures in kernel/rcu/tree.c does this work, but (1)
-> > is open-coded and (2) has to deal with the full range of what the kernel
-> > can throw at it.  It falls back to an embedded rcu_head structure, in
-> > response to your second question in the commit log.
-> > 
-> > But perhaps this code could be generalized?  Or maybe darray can be
-> > appropriately extended?
+> ------------------------------------------------------------------------
 > 
-> Not sure what you mean by "unioning onto a third set"?
-
-Huge piles of objects are coming into this system.  As grace periods a
-goodly chunk of them need to be processed.  This processing would take
-significant time, quite possible multiple SRCU grace periods worth
-of time.  Unless the arrival of new callbacks can be blocked while
-these callbacks are being processed, you need a place to accumulate the
-callbacks as their grace periods expire.
-
-> > And one thing that I missed the first time around is that you are using
-> > a single ->seq for two sets of objects (->objs[0] and ->objs[1]).
-> > Each set needs its own sequence number.
+> commit 29cf4c63d04b9752a32e33d46a57717121353ef7
+> Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> Date:   Wed Jun 12 01:35:27 2024 +0000
 > 
-> I've got this changed in my latest version, but - I did see one BUG_ON()
-> where we seem to have three sequence numbers in flight. Any idea what
-> might be up with that?
-
-Although at any given time, there will be at most two unexpired cookie
-values, time delays can make it appear as if there are more.  If you
-have three, one of them has expired, but the problem is that you might
-have already checked it, but before it got around to expiring.
-
-That explanation might or might not make sense, but I will look at your
-new code and see what is up.
-
-							Thanx, Paul
+>     rcutorture: Add CFcommon.arch for the various arch's need
+>     
+>     Add CFcommon.arch for the various arch's need for rcutorture.
+>     
+>     In accordance with [1] and [2], this patch moves x86 specific kernel
+>     option CONFIG_HYPERVISOR_GUEST to CFcommon.arch
+>     
+>     [1] https://lore.kernel.org/all/20240427005626.1365935-1-zhouzhouyi@gmail.com/
+>     [2] https://lore.kernel.org/all/059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop/
+>     
+>     Tested in x86_64 and PPC VM of Open Source Lab of Oregon State University.
+>     
+>     Link: https://lore.kernel.org/lkml/cd3709dc-2c08-4ac2-a19b-d8edb66195e3@paulmck-laptop/T/
+>     
+>     Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options")
+>     Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+>     Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+>     Cc: Mark Rutland <mark.rutland@arm.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+> index b33cd87536899..ad79784e552d2 100755
+> --- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+> @@ -68,6 +68,8 @@ config_override_param "--gdb options" KcList "$TORTURE_KCONFIG_GDB_ARG"
+>  config_override_param "--kasan options" KcList "$TORTURE_KCONFIG_KASAN_ARG"
+>  config_override_param "--kcsan options" KcList "$TORTURE_KCONFIG_KCSAN_ARG"
+>  config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_ARG"
+> +config_override_param "$config_dir/CFcommon.$(uname -m)" KcList \
+> +		      "`cat $config_dir/CFcommon.$(uname -m) 2> /dev/null`"
+>  cp $T/KcList $resdir/ConfigFragment
+>  
+>  base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+> index 0e92d85313aa7..cf0387ae53584 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
+> @@ -1,6 +1,5 @@
+>  CONFIG_RCU_TORTURE_TEST=y
+>  CONFIG_PRINTK_TIME=y
+> -CONFIG_HYPERVISOR_GUEST=y
+>  CONFIG_PARAVIRT=y
+>  CONFIG_KVM_GUEST=y
+>  CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686 b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686
+> new file mode 100644
+> index 0000000000000..2770560d56a0c
+> --- /dev/null
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686
+> @@ -0,0 +1 @@
+> +CONFIG_HYPERVISOR_GUEST=y
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64 b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64
+> new file mode 100644
+> index 0000000000000..2770560d56a0c
+> --- /dev/null
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64
+> @@ -0,0 +1 @@
+> +CONFIG_HYPERVISOR_GUEST=y
