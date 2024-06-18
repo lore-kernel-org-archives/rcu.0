@@ -1,100 +1,115 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9191553A0;
-	Tue, 18 Jun 2024 14:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB7B4DA0C;
+	Tue, 18 Jun 2024 16:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718721640; cv=none; b=GZINVMaVUqtSpBdFIuVGvLjHDjH0z41mh+icbdFqHv1pi61BDiT7wG1dNVu2KUnwbvJ7nautocyH4H0Hcham7QAwYseYpe+bxnJwFjW8506bGtU73Q5037NlAeZVA8I03mxWTSIm9VWk7X1tJk4TaQ4861PPNCn/WH7XeKqccBs=
+	t=1718727436; cv=none; b=eNSn78icOM5DSAjTVuHz4UMa6gRuSq75af4ohJEvZUFtx42aHdNxdr3e7IMHzY6dp0TEEdW8a1rRE3otSV6WajthmpCRYYRRslTDSk7FbMvwPdeCJPBM+pO8Nz0o6XqZMh+L4IxQ992jdb1j+hle9zOney6DLwU44CC6Xdg7F8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718721640; c=relaxed/simple;
-	bh=SoQgjwKNmNPrQpd4eSgDp5k6ZpYXww/VUXvzfmyNfXo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NZLQLgFwh87FGJZPFBxSv5vtGV1smlTujJC/ChGfKQBbVTkiAVRcNGGp/pDdWQm3InF0rnEJCRrlpapZ3Tgq1jutA2eta4SPv48AZaUO6nTMXcG98W+kOjv1FJqXfecy5rlQDtTUVhZTYRWvtdCDrxw8+YU8oRPlT25B+0fPJVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=POZmKsOP; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1718727436; c=relaxed/simple;
+	bh=J8CJg3AQX6/+YCMM4VPINTXSUq4309ev+F5vJuFFj4c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KDTkpByxgHC9RGkDu2xg7xkuIWN52YojrhzEIiVK7UBlTUFW/2e1H0ugTWbX+CtHXUAhF4NODF9NRWIFy4ml0fGsNI6Z288S+wyIUynPu9ADVR3umQY9qrYv6kiFIj+F6Dg3S6sxZKzKhowLtnN18PlVgEONiMeVe7C2p2um348=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yf6HOU8I; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="POZmKsOP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE49BC4AF1C;
-	Tue, 18 Jun 2024 14:40:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yf6HOU8I"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DC0AC3277B;
+	Tue, 18 Jun 2024 16:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718721638;
-	bh=SoQgjwKNmNPrQpd4eSgDp5k6ZpYXww/VUXvzfmyNfXo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=POZmKsOPxOkHeCjOBjSPUo+8cYLN4xVmaB/UA2Jl4G1eo7ZIyAdpmuKgc3/MbkPTD
-	 W6sm4kykRc7IFPx2yemUsXGtlqybVXSBpPwovooCUDBkOF5T+lbMTKM3+feuJ/7JF0
-	 1G5w60SfYByMdG75Uvm5uvcff8KBYswZus1+NqaRwQm1ZNiK1mVulbZWnspsTFb5y8
-	 vd96sGJwbxy+HVGT3eTdW9DhLHhoVrAciatVay+p2l8CPWS0fazkj0ig5dbdzjw3ia
-	 UuQTx3Y7DmqgxzmEECaQ78vBQksp/jjXuC/PwnzqGd8B6uN8ZHchJVpXdACuHOrE6k
-	 e950yuPplSytg==
-Date: Tue, 18 Jun 2024 07:40:37 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, rcu@vger.kernel.org
+	s=k20201202; t=1718727435;
+	bh=J8CJg3AQX6/+YCMM4VPINTXSUq4309ev+F5vJuFFj4c=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Yf6HOU8IlMW3bD0MaM/hC7BYy/LaSdzLASP0RGrZA2aMsc7ZWivuz/fvXReJidzlK
+	 4rNwMHSsLLfCZzy1cRDnJyKlnw2gIgkSZSmDkTVnT2mRDBJ/8DMZO0fJTtoqhza4be
+	 GWCYhXALsi/9vp356LOL4Q7L6jaSg2sFk6A266lOKjp3A6O/OMmjiZYyEJ9TrsScRZ
+	 EHFj4GZAPcxGJ8qaS65NqLhLvON5+DaqHUMjtz84htRVdViis17eVnK2NFdqTOJgL4
+	 2JtErY8e3iurCtVGRVTr7XvUJNQVeWtmTAwZivnefa/VB6UDF62HYGPLunSyRXs8Qj
+	 48xuHiwJ/v8gg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 34CB2CE04AF; Tue, 18 Jun 2024 09:17:15 -0700 (PDT)
+Date: Tue, 18 Jun 2024 09:17:15 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	rcu@vger.kernel.org
 Subject: Re: [TEST] TCP MD5 vs kmemleak
-Message-ID: <20240618074037.66789717@kernel.org>
-In-Reply-To: <CAJwJo6ZjhLLSiBUntdGT8a6-d5pjdXyVv9AAQ3Yx1W01Nq=dwg@mail.gmail.com>
+Message-ID: <ccd20867-1688-40f3-a5f4-b5c5ac50719a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20240617072451.1403e1d2@kernel.org>
-	<CAJwJo6ZjhLLSiBUntdGT8a6-d5pjdXyVv9AAQ3Yx1W01Nq=dwg@mail.gmail.com>
+ <CAJwJo6ZjhLLSiBUntdGT8a6-d5pjdXyVv9AAQ3Yx1W01Nq=dwg@mail.gmail.com>
+ <20240618074037.66789717@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240618074037.66789717@kernel.org>
 
-On Tue, 18 Jun 2024 04:24:08 +0100 Dmitry Safonov wrote:
-> Hi Jakub,
+On Tue, Jun 18, 2024 at 07:40:37AM -0700, Jakub Kicinski wrote:
+> On Tue, 18 Jun 2024 04:24:08 +0100 Dmitry Safonov wrote:
+> > Hi Jakub,
+> > 
+> > thanks for pinging,
+> > 
+> > On Mon, 17 Jun 2024 at 15:24, Jakub Kicinski <kuba@kernel.org> wrote:
+> > >
+> > > Hi Dmitry!
+> > >
+> > > We added kmemleak checks to the selftest runners, TCP AO/MD5 tests seem
+> > > to trip it:
+> > >
+> > > https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/643761/4-unsigned-md5-ipv6/stdout
+> > >
+> > > Could you take a look? kmemleak is not infallible, it could be a false
+> > > positive.  
+> > 
+> > Sure, that seems somewhat interesting, albeit at this moment not from
+> > the TCP side :D
+> > 
+> > There is some pre-history to the related issue here:
+> > https://lore.kernel.org/lkml/0000000000004d83170605e16003@google.com/
+> > 
+> > Which I was quite sure being addressed with what now is
+> > https://git.kernel.org/linus/5f98fd034ca6
+> > 
+> > But now that I look at that commit, I see that kvfree_call_rcu() is
+> > defined to __kvfree_call_rcu() under CONFIG_KASAN_GENERIC=n. And I
+> > don't see the same kmemleak_ignore() on that path.
+> > 
+> > To double-check, you don't have kasan enabled on netdev runners, right?
 > 
-> thanks for pinging,
+> We do:
 > 
-> On Mon, 17 Jun 2024 at 15:24, Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > Hi Dmitry!
-> >
-> > We added kmemleak checks to the selftest runners, TCP AO/MD5 tests seem
-> > to trip it:
-> >
-> > https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/643761/4-unsigned-md5-ipv6/stdout
-> >
-> > Could you take a look? kmemleak is not infallible, it could be a false
-> > positive.  
+> CONFIG_KASAN=y
+> CONFIG_KASAN_GENERIC=y
 > 
-> Sure, that seems somewhat interesting, albeit at this moment not from
-> the TCP side :D
+> here's the full config:
+> https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/645202/config
 > 
-> There is some pre-history to the related issue here:
-> https://lore.kernel.org/lkml/0000000000004d83170605e16003@google.com/
+> > And then straight away to another thought: the leak-report that you
+> > get currently is ao_info, which should not happen if kfree_rcu() is
+> > properly fixed.
+> > But I'd expect kmemleak to be unhappy with ao keys freeing as well:
+> > they are currently released with call_rcu(&key->rcu,
+> > tcp_ao_key_free_rcu), which doesn't have a hint for kmemleak, too.
+> > 
+> > I'm going to take a look at it this week. Just to let you know, I'm
+> > also looking at fixing those somewhat rare flakes on tcp-ao counters
+> > checks (but that may be net-next material together with tracepoint
+> > selftests).
 > 
-> Which I was quite sure being addressed with what now is
-> https://git.kernel.org/linus/5f98fd034ca6
-> 
-> But now that I look at that commit, I see that kvfree_call_rcu() is
-> defined to __kvfree_call_rcu() under CONFIG_KASAN_GENERIC=n. And I
-> don't see the same kmemleak_ignore() on that path.
-> 
-> To double-check, you don't have kasan enabled on netdev runners, right?
+> Let me add rcu@ to CC, perhaps folks there can guide us on known false
+> positives with KASAN + kmemleak?
 
-We do:
+I myself don't run KASAN with kmemleak, but maybe some of the others
+on this list do.
 
-CONFIG_KASAN=y
-CONFIG_KASAN_GENERIC=y
+What sort of hint should be we add to call_rcu()?  The memory is still
+reachable in the garbage-collector sense.
 
-here's the full config:
-https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/645202/config
-
-> And then straight away to another thought: the leak-report that you
-> get currently is ao_info, which should not happen if kfree_rcu() is
-> properly fixed.
-> But I'd expect kmemleak to be unhappy with ao keys freeing as well:
-> they are currently released with call_rcu(&key->rcu,
-> tcp_ao_key_free_rcu), which doesn't have a hint for kmemleak, too.
-> 
-> I'm going to take a look at it this week. Just to let you know, I'm
-> also looking at fixing those somewhat rare flakes on tcp-ao counters
-> checks (but that may be net-next material together with tracepoint
-> selftests).
-
-Let me add rcu@ to CC, perhaps folks there can guide us on known false
-positives with KASAN + kmemleak?
+							Thanx, Paul
