@@ -1,144 +1,87 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A741B1514;
-	Thu, 20 Jun 2024 16:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA451AF6A1;
+	Thu, 20 Jun 2024 17:02:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718899904; cv=none; b=t4gPFNxBXsML8ZwYJ2yDl/scmwCLGm2r4/kU36kDxgmiERTX3ItDpaimxgVJKjbbZN+0lOwksB5MUd39PLf54Sghu29yVJz49MdMdb5etNnC5G9MbP9i76uv98/H53pCBc+Jbh+BFnxkDasXzgIMiuyyKiiqyQ0m/EkrdkADxgA=
+	t=1718902961; cv=none; b=M0AGgOwqA/Jh/y2dQybtNUM8MtJSYIWllQLTWx2U4uzBJ96FOgNPyJ7qfaGsNK3YsEh3Cr7El+rO9EI9Ed2QDtO4n2P7ZOjPxa4952/pwexSQvAxwLqsGNeTifa7zobSQDsEB8r+s8teC6SZCGInwM3DnFMPATTxLsvmjyVgAyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718899904; c=relaxed/simple;
-	bh=moqkrVqx95CFhHpEKKGXhdPr5fPQ9IbFq3m1fia5tT4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XCq880x7/fpH3NaVzdDgQqtTLubt73f8Um60tdqVTpX6zt2vF/BW2gyhJE1Ly5OnQ3nCgPuD9gfyKcl33N2XlwFxpWgWrkbnOewpfZvzDv5gBvQWsGWTst8PdANXHZ3JqdVbaBmu5LAZy8ILYX+qZt3/j2ZoPNTyorLsmttB1nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hVwCxk7m; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1718902961; c=relaxed/simple;
+	bh=bwJ1YENtAarquyAe2FkBNTz+MTY6Iif2pm1iV8RXTZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f3C/f9iWK5qCUefnW5grCKpwz26BWKT3GPrW4kQ+tR8QImZjxGZJCvaKu0EE4FMg/hn6zF7qHYA2QoqHfdkyuUVuXXfFHIZIvckvtPBy6x72G7pDMjHs9IXMl7AOCVcow/WMccMqxM1Qh0HVEV+XQRCrIFdjzkZB5dshiE7p27U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T6qp7Koe; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hVwCxk7m"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A72BBC4AF0A;
-	Thu, 20 Jun 2024 16:11:43 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6qp7Koe"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A171DC2BD10;
+	Thu, 20 Jun 2024 17:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718899903;
-	bh=moqkrVqx95CFhHpEKKGXhdPr5fPQ9IbFq3m1fia5tT4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hVwCxk7mflF3ByQBM3cGd6r6Lu94QLOknEe7PvZUcLYt/uiaYTUVGaBrYhS5FiwX7
-	 kfxUJf0r2xhcRrcncw9rKnIFWR5uJYwGU75mAfaNh03kwBUohSctZqml6YJ2IJVamJ
-	 8iS+ifUihbHnTvvpuDxtuOnTgSMnu7I1HQXHLIMp+k0an2KolZDorsHzU6dlX+KsqS
-	 M0OJEohb1TewF4FNja9lXSQzxhXycxtESiGBAqSF+VRCB55gDBaYDQ12WUClGPr1Vt
-	 ERCF0ISiIJGjFfxtIBYXSczhNjQ657rscHBlwAjCoXXdx5zMAuC6IdV9KFc8nUhkqp
-	 w5nHDytpDwrTw==
+	s=k20201202; t=1718902960;
+	bh=bwJ1YENtAarquyAe2FkBNTz+MTY6Iif2pm1iV8RXTZ4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=T6qp7KoeqbY2YVHJUtcAyUAsnIE632b7bsoNqFMWmw/WlKKvfuJ05dNYpXICtz20S
+	 V3LsDtC587hP0tbGKb6sVkXIPM+yhjxOLapXZUV7QQONpOgisD+99KRUbKVLbgmi4E
+	 pVYfZdYPLoAMLLGiFiXPLvMPlftiMRRwtLTj7PtB8SoRdt98t0EbWGLY5vq3uVHZXa
+	 RCZzVqHam4NR2GlqWRK+vYotqTbOrnRBZP7Csx99dZf7+hvfsgeLXepWA+cEhW9fLs
+	 TiWrioscjup9g3ZHu4JZyu94R7Ic9bltPPilzERF9EISYN51283oeEyyiCaq8m3JxX
+	 TDRBVjfiNqPpQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 540D9CE0D11; Thu, 20 Jun 2024 09:11:43 -0700 (PDT)
+	id 3AAC7CE0B67; Thu, 20 Jun 2024 10:02:40 -0700 (PDT)
+Date: Thu, 20 Jun 2024 10:02:40 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH rcu 3/3] srcu: Fill out polled grace-period APIs
-Date: Thu, 20 Jun 2024 09:11:42 -0700
-Message-Id: <20240620161142.2057652-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <8ec14282-a768-49eb-b870-c2ee51e91f8b@paulmck-laptop>
-References: <8ec14282-a768-49eb-b870-c2ee51e91f8b@paulmck-laptop>
+To: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	rcu@vger.kernel.org
+Subject: Re: [TEST] TCP MD5 vs kmemleak
+Message-ID: <37d3ca22-2dac-4088-94f5-54a07403dd27@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240617072451.1403e1d2@kernel.org>
+ <CAJwJo6ZjhLLSiBUntdGT8a6-d5pjdXyVv9AAQ3Yx1W01Nq=dwg@mail.gmail.com>
+ <20240618074037.66789717@kernel.org>
+ <fae8f7191d50797a435936d41f08df9c83a9d092.camel@redhat.com>
+ <ee5a9d15-deaf-40c9-a559-bbc0f11fbe76@paulmck-laptop>
+ <20240618100210.16c028e1@kernel.org>
+ <53632733-ef55-496b-8980-27213da1ac05@paulmck-laptop>
+ <CAJwJo6bnh_2=Bg7jajQ3qJAErMegDjp0F-aQP7yCENf_zBiTaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJwJo6bnh_2=Bg7jajQ3qJAErMegDjp0F-aQP7yCENf_zBiTaw@mail.gmail.com>
 
-This commit adds the get_completed_synchronize_srcu() and the
-same_state_synchronize_srcu() functions.  The first returns a cookie
-that is always interpreted as corresponding to an expired grace period.
-The second does an equality comparison of a pair of cookies.
+On Wed, Jun 19, 2024 at 01:33:36AM +0100, Dmitry Safonov wrote:
+> On Tue, 18 Jun 2024 at 18:47, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Tue, Jun 18, 2024 at 10:02:10AM -0700, Jakub Kicinski wrote:
+> > > On Tue, 18 Jun 2024 09:42:35 -0700 Paul E. McKenney wrote:
+> [..]
+> > >
+> > > Dmitry mentioned this commit, too, but we use the same config for MPTCP
+> > > tests, and while we repro TCP AO failures quite frequently, mptcp
+> > > doesn't seem to have failed once.
+> [..]
+> > >
+> > > To be clear I think Dmitry was suspecting kfree_rcu(), he mentioned
+> > > call_rcu() as something he was expecting to have a similar issue but
+> > > it in fact appeared immune.
+> >
+> > Whew!!!  ;-)
+> 
+> I'm sorry guys, that was me being inadequate.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
----
- include/linux/srcu.h  | 31 +++++++++++++++++++++++++++++++
- kernel/rcu/srcutiny.c |  3 ++-
- kernel/rcu/srcutree.c |  3 ++-
- 3 files changed, 35 insertions(+), 2 deletions(-)
+I know that feeling!
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index f664cba7a80c2..6f6cb5fc12424 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -57,6 +57,20 @@ void cleanup_srcu_struct(struct srcu_struct *ssp);
- int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
- void __srcu_read_unlock(struct srcu_struct *ssp, int idx) __releases(ssp);
- void synchronize_srcu(struct srcu_struct *ssp);
-+
-+#define SRCU_GET_STATE_COMPLETED 0x1
-+
-+/**
-+ * get_completed_synchronize_srcu - Return a pre-completed polled state cookie
-+ *
-+ * Returns a value that poll_state_synchronize_srcu() will always treat
-+ * as a cookie whose grace period has already completed.
-+ */
-+static inline unsigned long get_completed_synchronize_srcu(void)
-+{
-+	return SRCU_GET_STATE_COMPLETED;
-+}
-+
- unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp);
- unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp);
- bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
-@@ -65,6 +79,23 @@ bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
- // not-yet-completed SRCU grace periods.
- #define NUM_ACTIVE_SRCU_POLL_OLDSTATE 2
- 
-+/**
-+ * same_state_synchronize_srcu - Are two old-state values identical?
-+ * @oldstate1: First old-state value.
-+ * @oldstate2: Second old-state value.
-+ *
-+ * The two old-state values must have been obtained from either
-+ * get_state_synchronize_srcu(), start_poll_synchronize_srcu(), or
-+ * get_completed_synchronize_srcu().  Returns @true if the two values are
-+ * identical and @false otherwise.  This allows structures whose lifetimes
-+ * are tracked by old-state values to push these values to a list header,
-+ * allowing those structures to be slightly smaller.
-+ */
-+static inline bool same_state_synchronize_srcu(unsigned long oldstate1, unsigned long oldstate2)
-+{
-+	return oldstate1 == oldstate2;
-+}
-+
- #ifdef CONFIG_NEED_SRCU_NMI_SAFE
- int __srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp);
- void __srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx) __releases(ssp);
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 5afd5cf494dba..549c03336ee97 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -277,7 +277,8 @@ bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
- 	unsigned long cur_s = READ_ONCE(ssp->srcu_idx);
- 
- 	barrier();
--	return ULONG_CMP_GE(cur_s, cookie) || ULONG_CMP_LT(cur_s, cookie - 3);
-+	return cookie == SRCU_GET_STATE_COMPLETED ||
-+	       ULONG_CMP_GE(cur_s, cookie) || ULONG_CMP_LT(cur_s, cookie - 3);
- }
- EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
- 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 15dc22a8ff5ab..d6a4047719cb0 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1543,7 +1543,8 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
-  */
- bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
- {
--	if (!rcu_seq_done(&ssp->srcu_sup->srcu_gp_seq, cookie))
-+	if (cookie != SRCU_GET_STATE_COMPLETED &&
-+	    !rcu_seq_done(&ssp->srcu_sup->srcu_gp_seq, cookie))
- 		return false;
- 	// Ensure that the end of the SRCU grace period happens before
- 	// any subsequent code that the caller might execute.
--- 
-2.40.1
+> That's a real issue, rather than a false-positive:
+> https://lore.kernel.org/netdev/20240619-tcp-ao-required-leak-v1-1-6408f3c94247@gmail.com/
 
+So we need call_rcu() to mark memory flowing through it?  If so, we
+need help from callers of call_rcu() in the case where more than one
+object is being freed.
+
+							Thanx, Paul
