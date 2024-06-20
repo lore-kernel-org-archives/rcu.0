@@ -1,144 +1,87 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685F336126
-	for <rcu@vger.kernel.org>; Thu, 20 Jun 2024 22:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD4F43ABC;
+	Thu, 20 Jun 2024 23:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718923107; cv=none; b=P48OyuFPhwFHz8VNrOZYISLaEXBiMacyAoD+fCqe7ZjfbqXqQcJ1XG+zV1McWdcyQWCdkoc/jlS+NpKfuOTKl/6fdlX79nqmmowcpesbr5JlfoT4oplmW1+l4/1hgI4TyyMKnDZJSzUqyIVJPbWq6RQ8Gy8tnC3DNM3QzYZhMrw=
+	t=1718926922; cv=none; b=nPnhpXPbk6RBV90qAjVe6fcd8UAE/9JvlN8G0oC8OScQLaB2QlZF5VW9LfipadVcJhd5uBFOSrMBUDev80L91YfNCDyztVXPpM1xNS9n5QtqzVmu3o9DsxJhk1j1JljdRey44Ps8uvnO+Z6Tcl1mG+xdo6B/dtSeFzEZwa5cl9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718923107; c=relaxed/simple;
-	bh=VOuCa+MPCCl3givMRzpSCjpRslsZff9GQepro4NAr6I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gNh2SHi5TRFi1NpDsrzALaOoK6mkogjC/suFrl26apksEsLFWUbxQNKRks6df6uypxZyr/xlXxK7LMnWOR9TdShv/wMPlj90Kp0HNO58dQaRJ8ibWPrv8K0pgTvm8IVw8hYiZIbfxfxidmX/VXtxojctYQSczTGooDNqZBEQ5UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KZsaEMas; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1718926922; c=relaxed/simple;
+	bh=tKagk+Ry0Xq7y1gXPupJbJ8JJufaVprFCQxwG+QH9Do=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K5vHU6EB19qRj5d6Gcv6Qk5IUQT/mGO87VQQXQ59qOm3Mb6m16/4nLxMbP0LhK8UeS6i3PGAzuiQWz+dNww16MNimipjV3bbVdo1Z8PLeNKEWoIhv8/aJAIpNyez0Nc/spB1aJ1VvuBAq4UYLMdZzY1mSrUellL8Xae1Sxl19mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kY6xJHMY; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KZsaEMas"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1718923105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=t8D3dmzG19niJdL2hQsK7/5l5eZyzfyE93p8lztrR+c=;
-	b=KZsaEMasP4NBT63ByNlHpO1tMyY+VKkSdHpXRRmvU2Zj60YZrQnP6eMQBnUcMOYUAQ3HX/
-	TdowX61ZMxd0rS8dXMxDOAoydF6yI0tlgQ7zXBgqArv3eRdMSHGNQsV7/43WIMIGbms/2T
-	1CKQcBsriZSiR/7HulSD3g+lYqSCSUE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-jCF4M_AgPJK77ZfQEatBQA-1; Thu, 20 Jun 2024 18:38:24 -0400
-X-MC-Unique: jCF4M_AgPJK77ZfQEatBQA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3643d0e3831so976856f8f.0
-        for <rcu@vger.kernel.org>; Thu, 20 Jun 2024 15:38:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718923103; x=1719527903;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t8D3dmzG19niJdL2hQsK7/5l5eZyzfyE93p8lztrR+c=;
-        b=hA6CAw3NurL+QlBmGNK2yjykgeKPzmc1R3uPbfOXKhD6Jfb1X2GO149GliUFuQd0gH
-         cBOzf7Ue0YmzpVYhM3ezfhGjFalKcqxnvVQ26cLLQL4W3jM+ckSr2x9bSedKbsfgf/Zp
-         vMtixR82kL9KKkJ7iK+yqc9NgEF45i3BW255rSH4mE7rmUdT8nufctFGEattZ1lM6Szv
-         gePuUSocvWVwh0uSzORkh5qgWCU/GlhMCA96bX2f/FG7FsnvegU7+StXerbMFCE3PjuX
-         bQA3rS1Nab5CWHifcwx9wnyXKAILaL3C0r/4+27okJNdemoJSbZXvxZBTUM6cmRspvDq
-         FrAg==
-X-Forwarded-Encrypted: i=1; AJvYcCW/vHWpOFxIEqyIaJy5HQ0u60MsHrpFBbSnWih+hy8A0gzXsBpn7/q0r3x6A0tj+o1UXltWGHP7axLGLB/kmI5phspz
-X-Gm-Message-State: AOJu0YxsJQ9RmPo4SUxoIM1syNN+1r8PM9d9J+SOXnnOxWrtoFBt5NtO
-	cp1x7I9HpQRfODHdg7z/BTDghTCanIVvJObIHf1R0+EtZR5a3SHr+XRRp8hFZ1xj/9kZquueC54
-	U8Zfba+Ts4GxEm2QurARYJcdcc1lXXQYtIL56Dn1c5P9+2L5Ljw==
-X-Received: by 2002:a5d:452d:0:b0:355:230:e2d3 with SMTP id ffacd0b85a97d-363177a3d04mr5005666f8f.20.1718923102932;
-        Thu, 20 Jun 2024 15:38:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGpv8Gz8XlnT3+hH/f//Vbpx5NsdgRvBQ/T9v2WZfpjdrlEaO0H7Ue+ITy+SKzENggG57KoxQ==
-X-Received: by 2002:a5d:452d:0:b0:355:230:e2d3 with SMTP id ffacd0b85a97d-363177a3d04mr5005659f8f.20.1718923102557;
-        Thu, 20 Jun 2024 15:38:22 -0700 (PDT)
-Received: from [192.168.10.81] ([151.62.196.71])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-a6fcf5605aesm16068866b.151.2024.06.20.15.38.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jun 2024 15:38:22 -0700 (PDT)
-Message-ID: <45dade46-c45f-47f0-bfae-ae526d02651a@redhat.com>
-Date: Fri, 21 Jun 2024 00:38:21 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kY6xJHMY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F9EBC2BD10;
+	Thu, 20 Jun 2024 23:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718926922;
+	bh=tKagk+Ry0Xq7y1gXPupJbJ8JJufaVprFCQxwG+QH9Do=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=kY6xJHMYYjrm7A43Jv1pB3VNhB8nuGh9pa3ZQ2aZO/YfsbfHNuXNsBa2K/w0qGZ0M
+	 oTKSG4sefxW08qbFrgSCI1qH4fTG2N6b8UFE1GYYEvSxGM2BERZuU7CdE/xNoI4Boz
+	 C6IWhvV3etDXLDINWbwoxfM5OxLZyE7ePmLa3Budko+LfUIoLpVk0q0OGSqEOmg0rD
+	 WdekJt0+yFokykcMA6qhhDBXvLEeozDzVuQdiFkolRoDx7XUYvfLTc09rlKDw1EI/T
+	 PbhlN4ElUTaDGLyTEG2nj5kTb9qDHWfFqU0cvzd/nKtpDl74PhiWd36iVD2UuEy4Gh
+	 X2akEb2Gw9Wmw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id CECCDCE0973; Thu, 20 Jun 2024 16:42:01 -0700 (PDT)
+Date: Thu, 20 Jun 2024 16:42:01 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>, kvm@vger.kernel.org,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>,
+	Yiwei Zhang <zzyiwei@google.com>
+Subject: Re: [PATCH 4/5] KVM: x86: Ensure a full memory barrier is emitted in
+ the VM-Exit path
+Message-ID: <b6d6e576-92dd-4708-93d1-372559b39818@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240309010929.1403984-1-seanjc@google.com>
+ <20240309010929.1403984-5-seanjc@google.com>
+ <45dade46-c45f-47f0-bfae-ae526d02651a@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] KVM: x86: Ensure a full memory barrier is emitted in
- the VM-Exit path
-To: Sean Christopherson <seanjc@google.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>
-Cc: kvm@vger.kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>,
- Yiwei Zhang <zzyiwei@google.com>
-References: <20240309010929.1403984-1-seanjc@google.com>
- <20240309010929.1403984-5-seanjc@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20240309010929.1403984-5-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45dade46-c45f-47f0-bfae-ae526d02651a@redhat.com>
 
-On 3/9/24 02:09, Sean Christopherson wrote:
-> From: Yan Zhao <yan.y.zhao@intel.com>
+On Fri, Jun 21, 2024 at 12:38:21AM +0200, Paolo Bonzini wrote:
+> On 3/9/24 02:09, Sean Christopherson wrote:
+> > From: Yan Zhao <yan.y.zhao@intel.com>
+> > 
+> > Ensure a full memory barrier is emitted in the VM-Exit path, as a full
+> > barrier is required on Intel CPUs to evict WC buffers.  This will allow
+> > unconditionally honoring guest PAT on Intel CPUs that support self-snoop.
+> > 
+> > As srcu_read_lock() is always called in the VM-Exit path and it internally
+> > has a smp_mb(), call smp_mb__after_srcu_read_lock() to avoid adding a
+> > second fence and make sure smp_mb() is called without dependency on
+> > implementation details of srcu_read_lock().
 > 
-> Ensure a full memory barrier is emitted in the VM-Exit path, as a full
-> barrier is required on Intel CPUs to evict WC buffers.  This will allow
-> unconditionally honoring guest PAT on Intel CPUs that support self-snoop.
+> Do you really need mfence or is a locked operation enough?  mfence is mb(),
+> not smp_mb().
+
+We only need smp_mb(), which is supplied by the srcu_read_lock()
+function.  For now, anyway.  If we ever figure out how to get by with
+lighter-weight ordering for srcu_read_lock(), then we will add an smp_mb()
+to smp_mb__after_srcu_read_lock() to compensate.
+
+							Thanx, Paul
+
+> Paolo
 > 
-> As srcu_read_lock() is always called in the VM-Exit path and it internally
-> has a smp_mb(), call smp_mb__after_srcu_read_lock() to avoid adding a
-> second fence and make sure smp_mb() is called without dependency on
-> implementation details of srcu_read_lock().
-
-Do you really need mfence or is a locked operation enough?  mfence is 
-mb(), not smp_mb().
-
-Paolo
-
-> +	/*
-> +	 * Call this to ensure WC buffers in guest are evicted after each VM
-> +	 * Exit, so that the evicted WC writes can be snooped across all cpus
-> +	 */
-> +	smp_mb__after_srcu_read_lock();
-
+> > +	/*
+> > +	 * Call this to ensure WC buffers in guest are evicted after each VM
+> > +	 * Exit, so that the evicted WC writes can be snooped across all cpus
+> > +	 */
+> > +	smp_mb__after_srcu_read_lock();
+> 
