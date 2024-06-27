@@ -1,40 +1,41 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52DA148FED;
-	Thu, 27 Jun 2024 11:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097D814E2F0;
+	Thu, 27 Jun 2024 11:32:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719487680; cv=none; b=FpOJOr2One9N0GWK69t6kLWUZLZ/41vopWZpOe3SW8tXpn44UJMATjOvwvdBl77nsJ1kJSR238VL1GIiCFH7NwhsiwMk6cHm3u2EKaqt/lUf/6NgdPXF+X1Msp+oERwzevQtWYvqXVZZ0LIkidPSG5QGjLplMNKjRpqSu69eOXQ=
+	t=1719487960; cv=none; b=H7bpQCIQ1oIr0vjwLZsT0XyEcYsOk0uYWaE5rYLM5OlcdD9JR5hjvE4Z4/F4PztKH4osf/m2f4VW5XlNsxdo76hkA7tKm+GRRHvp3lwUVrTvdXGvSVt2M9p/UkD890ZvNpaR+kPN482LkrOPj39VBq18/EjFPjCuy+M5XTM47/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719487680; c=relaxed/simple;
-	bh=5AGW7pZM39ka5fK1CF7IYjzVqdaHxNVUi7SSr7A3uxw=;
+	s=arc-20240116; t=1719487960; c=relaxed/simple;
+	bh=+OWvDyEAjOJEtaF0XfV1bIbidjX9/4pe6n3R8+6xKAk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UU1oxyqWZAeAr+sZSMVCDROfVWlTyHLseeYacTkmvcXW7/ZA5xElqsv5KJcFhiwpU4EoX33UY7Qg4029J+Pe9JEO+lBFkXom3nLhW9R4LRk/CoJ/OUSeFL4zIGPxKckV+ETec+lO+dVen1l/fFm06yJNWM4Jb5MQIyKn46HIevE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V0aJSBxl; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=HYhSPkaef8z93FymsmpludAqzF9arqKzMzFfrlwRfuNurWWgTCBrcwGy1yohbLyFv7Xk/Yjb6y/iM8pGxKDvBO+acb2i8rJXtA7ZEG1qrBYdFMsMEpyyhtlkcMCQLgnWzkWmN7KP6FihyomWv70HmJmfnj+SwLrANDu44pt1VU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IcAgABDi; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V0aJSBxl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1C7CC2BBFC;
-	Thu, 27 Jun 2024 11:27:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IcAgABDi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48681C2BBFC;
+	Thu, 27 Jun 2024 11:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719487680;
-	bh=5AGW7pZM39ka5fK1CF7IYjzVqdaHxNVUi7SSr7A3uxw=;
+	s=k20201202; t=1719487959;
+	bh=+OWvDyEAjOJEtaF0XfV1bIbidjX9/4pe6n3R8+6xKAk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V0aJSBxlNp072UP0ITDI5kx4tWkppIZJlsT8pbpfBIYt4oAmjkOeNqdkzwSvPHHZf
-	 RNnoM0or5OzVYYLf2ToRrj7G/bCfdcdAx76lRt2RH6bqnEicwRHp3xQLhHyoeAw/vg
-	 pxE4Y5NsTW22y6m/eOUQfgLBVtp+UVl/zg3iJEXXxolBuPIQzjd9uS2rjn9VNI4mEr
-	 vGMG4GkFmD0WPupOmz1mqZJNliv0QDCxy0NcNKVgExvlgpzys3VoLX3j75YwCtR6cZ
-	 tlmDn150fGE/TTYjK/4HAmoXoX5Q3MjsFpQWJfYxhIgDEBK4MWc/Px+o5zPB50vmY8
-	 27q6qtDir0S9g==
-Date: Thu, 27 Jun 2024 13:27:57 +0200
+	b=IcAgABDisu2CeFuWzt2UeC09J/nTODipIopGgk7RZD4sY6ZAScZ1KJV+/1vDWzmQ5
+	 OlAdxC7XUpwqyFDSLXwvDBCEuQ/WDe2mWXiKGWbWTkyZxYfbtz/mYL0oGe3cSNVpU2
+	 1gI6I7R8dIjd2+3pBu+zQB5hc7ifH1lcB/wIkOPz19oRcRjHdCoDa2ndMna3i0QFM5
+	 k9IASaJQ1lKnVWLv5rOXS3LITuAEy+rOZJjIvNgptSTcVzHR8Ia8q7vJOmfbETqIL8
+	 C/Hc2xHJR6200PPNz7v0M1+EidlfnprVYX5kvoP/sKahCNqix1yUtmN+29spWhb2oZ
+	 iNv0BwEPGlfsg==
+Date: Thu, 27 Jun 2024 13:32:36 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	rostedt@goodmis.org
-Subject: [PATCH rcu 1/6 v2] rcu: Remove full ordering on second EQS snapshot
-Message-ID: <Zn1Mvcl8r5WC6u-r@pavilion.home>
+Subject: [PATCH rcu 2/6 v2] rcu: Remove superfluous full memory barrier upon
+ first EQS snapshot
+Message-ID: <Zn1N1IJNsAOEPgdF@pavilion.home>
 References: <81f4e616-8125-4934-a8e2-fd5beae90995@paulmck-laptop>
- <20240604222652.2370998-1-paulmck@kernel.org>
+ <20240604222652.2370998-2-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -43,7 +44,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240604222652.2370998-1-paulmck@kernel.org>
+In-Reply-To: <20240604222652.2370998-2-paulmck@kernel.org>
 
 When the grace period kthread checks the extended quiescent state
 counter of a CPU, full ordering is necessary to ensure that either:
@@ -51,9 +52,7 @@ counter of a CPU, full ordering is necessary to ensure that either:
 * If the GP kthread observes the remote target in an extended quiescent
   state, then that target must observe all accesses prior to the current
   grace period, including the current grace period sequence number, once
-  it exits that extended quiescent state. Also the GP kthread must
-  observe all accesses performed by the target prior it entering in
-  EQS.
+  it exits that extended quiescent state.
 
 or:
 
@@ -61,70 +60,67 @@ or:
   quiescent state, then the target further entering in an extended
   quiescent state must observe all accesses prior to the current
   grace period, including the current grace period sequence number, once
-  it enters that extended quiescent state. Also the GP kthread later
-  observing that EQS must also observe all accesses performed by the
-  target prior it entering in EQS.
+  it enters that extended quiescent state.
 
-This ordering is explicitly performed both on the first EQS snapshot
-and on the second one as well through the combination of a preceding
-full barrier followed by an acquire read. However the second snapshot's
-full memory barrier is redundant and not needed to enforce the above
-guarantees:
+This ordering is enforced through a full memory barrier placed right
+before taking the first EQS snapshot. However this is superfluous
+because the snapshot is taken while holding the target's rnp lock which
+provides the necessary ordering through its chain of
+smp_mb__after_unlock_lock().
 
-    GP kthread                  Remote target
-    ----                        -----
-    // Access prior GP
-    WRITE_ONCE(A, 1)
-    // first snapshot
-    smp_mb()
-    x = smp_load_acquire(EQS)
-                               // Access prior GP
-                               WRITE_ONCE(B, 1)
-                               // EQS enter
-                               // implied full barrier by atomic_add_return()
-                               atomic_add_return(RCU_DYNTICKS_IDX, EQS)
-                               // implied full barrier by atomic_add_return()
-                               READ_ONCE(A)
-    // second snapshot
-    y = smp_load_acquire(EQS)
-    z = READ_ONCE(B)
-
-If the GP kthread above fails to observe the remote target in EQS
-(x not in EQS), the remote target will observe A == 1 after further
-entering in EQS. Then the second snapshot taken by the GP kthread only
-need to be an acquire read in order to observe z == 1.
-
-Therefore remove the needless full memory barrier on second snapshot.
+Remove the needless explicit barrier before the snapshot and put a
+comment about the implicit barrier newly relied upon here.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 Reviewed-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/tree.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ .../Memory-Ordering/Tree-RCU-Memory-Ordering.rst    |  6 +++---
+ kernel/rcu/tree.c                                   | 13 ++++++++++++-
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
+diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+index 5750f125361b..728b1e690c64 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+@@ -149,9 +149,9 @@ This case is handled by calls to the strongly ordered
+ ``atomic_add_return()`` read-modify-write atomic operation that
+ is invoked within ``rcu_dynticks_eqs_enter()`` at idle-entry
+ time and within ``rcu_dynticks_eqs_exit()`` at idle-exit time.
+-The grace-period kthread invokes ``rcu_dynticks_snap()`` and
+-``rcu_dynticks_in_eqs_since()`` (both of which invoke
+-an ``atomic_add_return()`` of zero) to detect idle CPUs.
++The grace-period kthread invokes first ``ct_dynticks_cpu_acquire()``
++(preceded by a full memory barrier) and ``rcu_dynticks_in_eqs_since()``
++(both of which rely on acquire semantics) to detect idle CPUs.
+ 
+ +-----------------------------------------------------------------------+
+ | **Quick Quiz**:                                                       |
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 28c7031711a3..b7d943e98a9a 100644
+index b7d943e98a9a..da5718da280d 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -321,7 +321,15 @@ static bool rcu_dynticks_in_eqs(int snap)
+@@ -777,7 +777,18 @@ static void rcu_gpnum_ovf(struct rcu_node *rnp, struct rcu_data *rdp)
   */
- static bool rcu_dynticks_in_eqs_since(struct rcu_data *rdp, int snap)
+ static int dyntick_save_progress_counter(struct rcu_data *rdp)
  {
--	return snap != rcu_dynticks_snap(rdp->cpu);
+-	rdp->dynticks_snap = rcu_dynticks_snap(rdp->cpu);
 +	/*
-+	 * The first failing snapshot is already ordered against the accesses
-+	 * performed by the remote CPU after it exits idle.
++	 * Full ordering between remote CPU's post idle accesses and updater's
++	 * accesses prior to current GP (and also the started GP sequence number)
++	 * is enforced by rcu_seq_start() implicit barrier and even further by
++	 * smp_mb__after_unlock_lock() barriers chained all the way throughout the
++	 * rnp locking tree since rcu_gp_init() and up to the current leaf rnp
++	 * locking.
 +	 *
-+	 * The second snapshot therefore only needs to order against accesses
-+	 * performed by the remote CPU prior to entering idle and therefore can
-+	 * rely solely on acquire semantics.
++	 * Ordering between remote CPU's pre idle accesses and post grace period
++	 * updater's accesses is enforced by the below acquire semantic.
 +	 */
-+	return snap != ct_dynticks_cpu_acquire(rdp->cpu);
- }
- 
- /*
++	rdp->dynticks_snap = ct_dynticks_cpu_acquire(rdp->cpu);
+ 	if (rcu_dynticks_in_eqs(rdp->dynticks_snap)) {
+ 		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
+ 		rcu_gpnum_ovf(rdp->mynode, rdp);
 -- 
 2.45.2
 
