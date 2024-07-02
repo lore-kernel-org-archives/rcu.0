@@ -1,198 +1,170 @@
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A437BC129;
-	Tue,  2 Jul 2024 02:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459941DA30B;
+	Tue,  2 Jul 2024 23:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719886137; cv=none; b=Yv7uNgUDNk3A2vCo+OMOlsGfB0j1m67st3MamVr35/LNyjmpfHI4MtdbSwPO/lu4q5VxkOo6/Ic+5XPmtiQgyArx5QplPRioBYNIZBKIly5ffkSiQn4RPt5rhegbhln9XJecMY3sY2pjMVs/fQ9XoewRntAPhZ3yMqFswf1IcNw=
+	t=1719962439; cv=none; b=L71GPbRRBJ2bIdQHZkxxIwGjUp6G+8PP4sbQrB3M+AwqBhssTjsBWHKcrs5a61t8QmK+MKmxrr2ypruxJIFUvFKRHupjgV+Z7Ulhezpq6O2R+WB3xcsfK9YgH83a4MaiyU0cEONksEJJaQaGBvJb+xBvMviWN5yh1IH74c7rPHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719886137; c=relaxed/simple;
-	bh=q2dQRzE+aINYiLlUDRwYF0sHgWIJl6eq3nw5CuDIAEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R4m+D+6Fd36Bus9wvkm/MbMi8cytE9yI9ap5pi8IjKxbXtpPiMiQaeI5Xh+D54Tolknt+xMmkHWCABr96C6SylGEDVbjNwGXGyS8KR+Q1gwtwrjXVqoBZEvpabYsIwx3YlZKLRkLIAh7SbHxMqDw0RcPFUhpo2vzzvKUwQza7l0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LSH0KMR4; arc=none smtp.client-ip=209.85.216.42
+	s=arc-20240116; t=1719962439; c=relaxed/simple;
+	bh=bpyJm8lxbDc2q85IMQqnT9fTV06FGhkC9f0cwxjqP4s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d1gWpZMh2JLcJhORhAut/6/eEQcHdIrz0DoJlq7YgW1PzKWTCgy4Hxy4R+SIYYeUUInIJ0z9WkD4g1Sd0L1R2dggjvgb05e1aLDtPBJ3Q6GotCVfIOcnPuHrMY7ZQ+LxI1cZnGRpn++jSLRpnn1epe+/zmZNAAWlzzQE71Gj8RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BRtUbb+y; arc=none smtp.client-ip=209.85.222.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LSH0KMR4"
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2c7bf925764so2669263a91.0;
-        Mon, 01 Jul 2024 19:08:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BRtUbb+y"
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-79d5e61704eso288530285a.3;
+        Tue, 02 Jul 2024 16:20:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719886135; x=1720490935; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3iPlmzgUkKMFHH6EFR/RoC05ho1mABcPgvKqXMWiosA=;
-        b=LSH0KMR4eo77d6KP9tuOR8ps7wddKaQw8GigESc0qEG5KZKLQz3vAhcrkrLD5gg8/A
-         fS28tgd+D31pRDbck5XKeJ0WU80G2Mw8cf3Hy931CUclf3Dj+JUaJb8soVzVM8GdeqXU
-         BZtQ40WmGRiTSvvCgYGZ/a4U0rqMCE8fYIirbT3ErHNunsELhP5fsul8/Kg3b6wwdW3P
-         xopKxORDHPrmR2IfpTYf7m+hKjCuFSYZq6eEsOddQzAhDLaqozotqvNtiS6xU7lLSH9G
-         8Y1KUBVFt2qNgTek2ti/NCaK2K4aEA9YQL3qJzikn1a5hk4ni+NSHMvpYluLl1IViX6h
-         4o6A==
+        d=gmail.com; s=20230601; t=1719962437; x=1720567237; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qjSB7hLGu+RSjy1F3pz8TY7vKbIQRE/DZkSdMM026z4=;
+        b=BRtUbb+ykfZUrSEL9umUEI2KM8eFl2huOCL6QKKvDeiNvAWzXGEOVmftj4ApJDzSvr
+         Ksq2AljB56Mseqqdgv4hY3ZqiCyofKA9DTgOcpmRGmF1H9GI81egtkhDZ5PJQ+gLHy0P
+         mQBUm3f/2MGndCZe6zIxvqymawbDa9vQwiyGhmbEyEVWGgPAJ1oeYf7YYX0m/pHxbVUT
+         KRLQjhrLtAzQkK1yC5S3eLZAju1eFCDilrLZH9hCCooWiSOmdPwH1+C6Gdf8fyD1tpDJ
+         toI8qqlLNHgwrmXMhfG1Kg9EQVAqse+nRJ+Cu3WseLuTMHwdq1upAs072ZP+5BrlBgP/
+         TBrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719886135; x=1720490935;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3iPlmzgUkKMFHH6EFR/RoC05ho1mABcPgvKqXMWiosA=;
-        b=ZacxsGGRZ0+N6SOSVVdzDzfJ4DeWrWY/kOQIowICdRVjvQeRi0b0Pjm4Ql+xJjIADC
-         XeKAXahmPNz68UKR58bhjEvpx/UyM+xZOGYOoumC+DSmZp85ewNagQY4lKw6aKAABk1t
-         dxYHVRDKE9KXN3dCTQBwP6VfhNmNK/KYtrGyU6gpcY7lXO7joFJG1j8hro7WJUpCiRIY
-         ZHTYlNZiUc85Az151vNkh5n/GSyhpAGJmEd7ogWusGMe4W35HLxF0+1zyt8ZpXbiz7NO
-         iKuDJmIpsAZCM7B777L1bYJiJEonmMO9cns2ywAKAM867SvJ99amV41Hv4JeaH5mRqoM
-         Byjw==
-X-Forwarded-Encrypted: i=1; AJvYcCXjnLygUY/dBWKlZHE2qYqgNCnxmySQ51rppwKHCaumGqrLJnk19+jNQvTlh5EhhG3ma9N2b38UCz92iJH76j9MQmordJyV3yDO0GuqUZVlSI9tNlwGwEG7RrAT
-X-Gm-Message-State: AOJu0YwlCxpHKd+wONLVBlgb/SSKFhKKc167s4mRO1CC2+SZO7Vs0nOY
-	qCY8HqJHPQOiZbTD4Es7UoRlIk0K6C0q8UvqPK6Ozwv4PaGBxvJmvkyTIHNy4L/O5bG/65esacx
-	aO2lsMiSXE90/ty5BsNiPtg0IB1I=
-X-Google-Smtp-Source: AGHT+IFuHFs79uSz4c57ZsoyFVPORwa70gmeiK1+Nqnse2Zgj8pSKhvSLrGTdcae9Puv50+y6ig07dVud6Z1pPSA3xY=
-X-Received: by 2002:a17:90a:6c90:b0:2c4:aa78:b48b with SMTP id
- 98e67ed59e1d1-2c93d775c23mr6297581a91.38.1719886134790; Mon, 01 Jul 2024
- 19:08:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1719962437; x=1720567237;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qjSB7hLGu+RSjy1F3pz8TY7vKbIQRE/DZkSdMM026z4=;
+        b=Z8bQtUlFdUfUJ+cEDPlr6F545pH825GaHjpFy27n9ZSh3mKdr5WtAke90Wm0nnKelN
+         I13LNixzJA4R7sTbGaPiliPo+img062rNMBPryfy3F7ADwzhaZc6b2jhyl+pV0QvxSiS
+         1G+ENV4DBG3Df1loSc8cJHbXv9mLKjkPsPUs0HOwM+HwxlEk6qx3BRookl1h9hdh7VoP
+         x0lwfwYdZWF4VfXCHaupgpyXzz72B8UMpnN2e6k70Aed/rlZI+BKOo/3WR6WNSJXgi/h
+         4N38KiCN/ilp9awamgaE5iGdCDH+bBhvMAQG3ChEIQ9iX73m0iB7yt/Pnguq1rEf/BhJ
+         VTBw==
+X-Forwarded-Encrypted: i=1; AJvYcCV94uduIReQ2U33+aWaJxvA2JtPP24M+WE+kFnGh7+1Wr7+mgzGFb4SPaMiMRyRPBoUzK4KjwJ1XKNt/2Q4+qzB49r7
+X-Gm-Message-State: AOJu0YxUAInSwhDg1EyV2FeGtv/lxyqS4v+4ot1bMVod0Sg1/SVUMSgf
+	oYluTSbLOWmrkUQXV83vELIVXnvpII6gctzr+WfqBXFquPH9TlAl
+X-Google-Smtp-Source: AGHT+IFqzoEArcUNqIvbViixR0/Meat25i/cKIFz+5YuJrxKNDABNkuzD0s7fM8Q0BGMt4VIrPUnhw==
+X-Received: by 2002:a05:620a:558c:b0:79d:5ff2:c39f with SMTP id af79cd13be357-79d7b9f1ae6mr1024818185a.33.1719962437039;
+        Tue, 02 Jul 2024 16:20:37 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-446641f7ea9sm31907881cf.26.2024.07.02.16.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jul 2024 16:20:36 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id E59071200043;
+	Tue,  2 Jul 2024 19:20:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 02 Jul 2024 19:20:35 -0400
+X-ME-Sender: <xms:Q4uEZkm1NoVNEzPbXq1ErwORQiyzbDwEcx2609ZDvYOtecv3mJJSGQ>
+    <xme:Q4uEZj3ibJSoHOF4lwGlkl84Wql-RZFMkmzQHZahWdWrVRp6HLFDEBmKLQy6nSTLu
+    NEO_f56Kw2abOV4sQ>
+X-ME-Received: <xmr:Q4uEZip6O3MXqtdMwvkodohl1UPEdpKFgwl_wVuBubL7fQzOHkrWcCN1B8ql1g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeigddvudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:Q4uEZgkssM8md12s09nu65YHtUX9VLe3_B3-2PzXgwYlP3HT-ZVrIA>
+    <xmx:Q4uEZi2aIliUa_2ftBtkVeX8INBfqEgu-NUlQ4dkFbrffLoWdv8IQw>
+    <xmx:Q4uEZnuvokUU2BBYKMWHgqW8Rg8D-DOP9XaS7i54A4CLUkgyix6Ydg>
+    <xmx:Q4uEZuXK7rFTGA7BZR3APzjhXMxCgnB5gQsE0EbwuSJqFURlm4-atA>
+    <xmx:Q4uEZl3uwvaVGiM1iLnQ_8eaka8t8oVN4wQwMFZabcdrk9LMSKke863z>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 2 Jul 2024 19:20:35 -0400 (EDT)
+Date: Tue, 2 Jul 2024 16:19:36 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 11/11] rcu/nocb: Simplify (de-)offloading state machine
+Message-ID: <ZoSLCHWKXAOvd5Zl@boqun-archlinux>
+References: <20240530134552.5467-1-frederic@kernel.org>
+ <20240530134552.5467-12-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240617072451.1403e1d2@kernel.org> <CAJwJo6ZjhLLSiBUntdGT8a6-d5pjdXyVv9AAQ3Yx1W01Nq=dwg@mail.gmail.com>
- <20240618074037.66789717@kernel.org> <fae8f7191d50797a435936d41f08df9c83a9d092.camel@redhat.com>
- <ee5a9d15-deaf-40c9-a559-bbc0f11fbe76@paulmck-laptop> <20240618100210.16c028e1@kernel.org>
- <53632733-ef55-496b-8980-27213da1ac05@paulmck-laptop> <CAJwJo6bnh_2=Bg7jajQ3qJAErMegDjp0F-aQP7yCENf_zBiTaw@mail.gmail.com>
- <37d3ca22-2dac-4088-94f5-54a07403dd27@paulmck-laptop>
-In-Reply-To: <37d3ca22-2dac-4088-94f5-54a07403dd27@paulmck-laptop>
-From: Dmitry Safonov <0x7f454c46@gmail.com>
-Date: Tue, 2 Jul 2024 03:08:42 +0100
-Message-ID: <CAJwJo6Y0hfB5royz0D8QPkgpRMxz9G5s81ktZbtHPBdt8EYdEQ@mail.gmail.com>
-Subject: Re: [TEST] TCP MD5 vs kmemleak
-To: paulmck@kernel.org
-Cc: Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, rcu@vger.kernel.org, 
-	Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240530134552.5467-12-frederic@kernel.org>
 
-Hi Paul,
+On Thu, May 30, 2024 at 03:45:52PM +0200, Frederic Weisbecker wrote:
+> Now that the (de-)offloading process can only apply to offline CPUs,
+> there is no more concurrency between rcu_core and nocb kthreads. Also
+> the mutation now happens on empty queues.
+> 
+> Therefore the state machine can be reduced to a single bit called
+> SEGCBLIST_OFFLOADED. Simplify the transition as follows:
+> 
+> * Upon offloading: queue the rdp to be added to the rcuog list and
+>   wait for the rcuog kthread to set the SEGCBLIST_OFFLOADED bit. Unpark
+>   rcuo kthread.
+> 
+> * Upon de-offloading: Park rcuo kthread. Queue the rdp to be removed
+>   from the rcuog list and wait for the rcuog kthread to clear the
+>   SEGCBLIST_OFFLOADED bit.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+[...]
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 24daf606de0c..72a2990d2087 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+[...]
+> @@ -1079,29 +1080,14 @@ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+>  		 * but we stick to paranoia in this rare path.
+>  		 */
+>  		rcu_nocb_lock_irqsave(rdp, flags);
+> -		rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_KTHREAD_GP);
+> -		rcu_nocb_unlock_irqrestore(rdp, flags);
+> +		rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
+> +		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+>  
 
-Sorry for the delayed answer, I got a respiratory infection, so was in
-bed last week,
+Dropping rdp->nocb_lock unconditionally means we are the holder of it,
+right? If so, I think we better replace the above
+rcu_nocb_lock_irqsave() with raw_spin_lock_irqsave().
 
-On Thu, 20 Jun 2024 at 18:02, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Wed, Jun 19, 2024 at 01:33:36AM +0100, Dmitry Safonov wrote:
-[..]
-> > I'm sorry guys, that was me being inadequate.
->
-> I know that feeling!
+Regards,
+Boqun
 
-Thanks :)
-
-[adding/quoting back the context of the thread that I cut previously]
-
-> On Tue, Jun 18, 2024 at 10:02:10AM -0700, Jakub Kicinski wrote:
-> > On Tue, 18 Jun 2024 09:42:35 -0700 Paul E. McKenney wrote:
-> > > > FTR, with mptcp self-tests we hit a few kmemleak false positive on RCU
-> > > > freed pointers, that where addressed by to this patch:
-> > > >
-> > > > commit 5f98fd034ca6fd1ab8c91a3488968a0e9caaabf6
-> > > > Author: Catalin Marinas <catalin.marinas@arm.com>
-> > > > Date:   Sat Sep 30 17:46:56 2023 +0000
-> > > >
-> > > >     rcu: kmemleak: Ignore kmemleak false positives when RCU-freeing objects
-> > > >
-> > > > I'm wondering if this is hitting something similar? Possibly due to
-> > > > lazy RCU callbacks invoked after MSECS_MIN_AGE???
-> >
-> > Dmitry mentioned this commit, too, but we use the same config for MPTCP
-> > tests, and while we repro TCP AO failures quite frequently, mptcp
-> > doesn't seem to have failed once.
-> >
-> > > Fun!  ;-)
-> > >
-> > > This commit handles memory passed to kfree_rcu() and friends, but
-> > > not memory passed to call_rcu() and friends.  Of course, call_rcu()
-> > > does not necessarily know the full extent of the memory passed to it,
-> > > for example, if passed a linked list, call_rcu() will know only about
-> > > the head of that list.
-> > >
-> > > There are similar challenges with synchronize_rcu() and friends.
-> >
-> > To be clear I think Dmitry was suspecting kfree_rcu(), he mentioned
-> > call_rcu() as something he was expecting to have a similar issue but
-> > it in fact appeared immune.
-
-On Thu, 20 Jun 2024 at 18:02, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > That's a real issue, rather than a false-positive:
-> > https://lore.kernel.org/netdev/20240619-tcp-ao-required-leak-v1-1-6408f3c94247@gmail.com/
->
-> So we need call_rcu() to mark memory flowing through it?  If so, we
-> need help from callers of call_rcu() in the case where more than one
-> object is being freed.
-
-Not sure, I think one way to avoid explicitly marking pointers for
-call_rcu() or even avoiding the patch above would be a hackery like
-this:
-
-diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-index d5b6fba44fc9..7a5eb55a155c 100644
---- a/mm/kmemleak.c
-+++ b/mm/kmemleak.c
-@@ -1587,6 +1587,7 @@ static void kmemleak_cond_resched(struct
-kmemleak_object *object)
- static void kmemleak_scan(void)
- {
-        struct kmemleak_object *object;
-+       unsigned long gp_start_state;
-        struct zone *zone;
-        int __maybe_unused i;
-        int new_leaks = 0;
-@@ -1630,6 +1631,7 @@ static void kmemleak_scan(void)
-                        kmemleak_cond_resched(object);
-        }
-        rcu_read_unlock();
-+       gp_start_state = get_state_synchronize_rcu();
-
- #ifdef CONFIG_SMP
-        /* per-cpu sections scanning */
-@@ -1690,6 +1692,13 @@ static void kmemleak_scan(void)
-         */
-        scan_gray_list();
-
-+       /*
-+        * Wait for the greylist objects potentially migrating from
-+        * RCU callbacks or maybe getting freed.
-+        */
-+       cond_synchronize_rcu(gp_start_state);
-+       rcu_barrier();
-+
-        /*
-         * Check for new or unreferenced objects modified since the previous
-         * scan and color them gray until the next scan.
-
-
--->8--
-
-Not quite sure if this makes sense, my first time at kmemleak code,
-adding Catalin.
-But then if I didn't mess up, it's going to work only for one RCU
-period, so in case some object calls rcu/kfree_rcu() from the
-callback, it's going to be yet a false-positive.
-
-Some other options/ideas:
-- more RCU-invasive option which would be adding a mapping function to
-segmented lists of callbacks, which would allow kmemleak to request
-from RCU if the pointer is yet referenced by RCU.
-- the third option is for kmemleak to trust RCU and generalize the
-commit above, adding kmemleak_object::flags of OBJECT_RCU, which will
-be set by call_rcu()/kfree_rcu() and unset once the callback is
-invoked for RCU_DONE_TAIL.
-- add kmemleak_object::update_jiffies or just directly touch
-kmemleak_object::jiffies whenever the object has been modified (see
-update_checksum()), that will ignore recently changed objects. As
-rcu_head should be updated, that is going to automagically ignore
-those deferred to RCU objects.
-
-Not sure if I mis-looked anything and it seems there is no hurry in
-fixing anything yet, as this is a theoretical issue at this moment.
-
-Hopefully, these ideas don't look like a nonsense,
-             Dmitry
+>  		list_del(&rdp->nocb_entry_rdp);
+>  	}
+> +
+>  	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
+>  
+> -	/*
+> -	 * Lock one last time to acquire latest callback updates from kthreads
+> -	 * so we can later handle callbacks locally without locking.
+> -	 */
+> -	rcu_nocb_lock_irqsave(rdp, flags);
+> -	/*
+> -	 * Theoretically we could clear SEGCBLIST_LOCKING after the nocb
+> -	 * lock is released but how about being paranoid for once?
+> -	 */
+> -	rcu_segcblist_clear_flags(cblist, SEGCBLIST_LOCKING);
+> -	/*
+> -	 * Without SEGCBLIST_LOCKING, we can't use
+> -	 * rcu_nocb_unlock_irqrestore() anymore.
+> -	 */
+> -	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+> -
+>  	return 0;
+>  }
+>  
+[...]
