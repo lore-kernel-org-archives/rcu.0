@@ -1,206 +1,362 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B8117A920;
-	Wed,  3 Jul 2024 17:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A85194A48;
+	Wed,  3 Jul 2024 22:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720027558; cv=none; b=CGcbRrmKN3t4pIjUzykH0eT4IaFsZuGZLfcdleND2XEcE3qCrUOtQn3Fru6bqbj9Xd+LqzY4dhQtj7xYDdK+YE4YY0JvFaA6jSFjH48Eq6PE2NxVkJdSxigMl/Q20FKpVbpldH5m7qDE3UWXNIEOBjbi/mqGjnT6+RajIHw+PIM=
+	t=1720047403; cv=none; b=M1/O/pbPX+JgJhcW8/gvYz85bAm9aw7TQtBEQQix1aR9LOmuit7vaLNI/kn4FV6h7x2aanC7rHIr2pUKeuy+nVcbqT0iheUwG/5oUxRWJ002w800VO+fUiFbM395yATB/sSzliJd+lO6OWt9EbE8xRHMvf8JRXjpRz6ux3v0pO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720027558; c=relaxed/simple;
-	bh=GKWsfZ3JkGnImqG9xr2UDgiql3Y2XhC7wKS7w5wfqZc=;
+	s=arc-20240116; t=1720047403; c=relaxed/simple;
+	bh=YoX0UyhmtGUXrU8PsCeGIJBdgk+p1V3F6yLw/yVYcXE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iJXODXVmM+rBH+Fp2UGEGkAk4GC69goDicR8hi7zs9fm9CQlo1JQev04BFSR3CW3tuJib4c3m65TtbrXsziRfi/YRAWIHhE+0MdM62Ry6K88uQcY5PsC1g5K1IiwN1CNHDWUqC3W1QZ8zItT6AEukoIdOnCNcTEgwkXh3IAjm8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zk6r5fyN; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=cy4CgQgIWG7thu3UfKiJJF1wHg7zhsxaQ9Djq26RDLV6cOYCHwy1Gspt9QWXhSJiy5GZvwIObUO1KmqUg2QMD8Q0tQIq8Zc7JLodwXF7L59u7hCVjLuP6ydyxTccQrdXcnpoxi0x11ADi2lGLMWuoDzgTpM2qtoRzI3L8qEqCEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kYmeMSxb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zk6r5fyN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A11C2BD10;
-	Wed,  3 Jul 2024 17:25:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kYmeMSxb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D317BC2BD10;
+	Wed,  3 Jul 2024 22:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720027557;
-	bh=GKWsfZ3JkGnImqG9xr2UDgiql3Y2XhC7wKS7w5wfqZc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Zk6r5fyN7M21W9Cxin/FS9JIdfXdNW+alHi2PIwOyfu8d33AnrhBo3tJi/1496G6F
-	 bG2SJrpIAMUXRVKpatNmQVq2LivJNNYYZLr9uEa8Ulzhm1QV+6xGZBGD/REHNWUyjE
-	 QzMwkIyx40HgQnfFfnlj99pGqQHHj+mBf+ymYZ/qJ3ZCIgFaNcPf+yVVkVk5zw19x+
-	 FK2teckVt2wXq/mz5nIG8e++lozUmSva+sBrGjzP/OW3H+oFLEUGtUxuEIHpTr+O+n
-	 hxN0fmJPEjSlxV9AnuIXP6dbsoDrZSEuo6AC8ojgP/ZgysQy7HkgDTXZ12AJuHExa0
-	 SBY0LmOnes1aw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 39BFECE0BC3; Wed,  3 Jul 2024 10:25:57 -0700 (PDT)
-Date: Wed, 3 Jul 2024 10:25:57 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Leonardo Bras <leobras@redhat.com>,
-	Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH rcu 6/9] rcu: Add rcutree.nocb_patience_delay to reduce
- nohz_full OS jitter
-Message-ID: <99721e1b-8752-4381-af2d-526f9b5c325c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
- <20240604222355.2370768-6-paulmck@kernel.org>
- <ZoV6bTj0xvGopEao@localhost.localdomain>
+	s=k20201202; t=1720047403;
+	bh=YoX0UyhmtGUXrU8PsCeGIJBdgk+p1V3F6yLw/yVYcXE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kYmeMSxbjfylKFK/THvmaZ5GtrJKziiHPcMtT9VegGQVBZEGM7s6pblU7ej18LNNQ
+	 ewUPYQqJUOTmM4FzI1dLOPo0rr4w84aTnrV7d7G/0g7KwF/oczc98vtMUe0aYQVNp5
+	 oycEF5AmuXVcl8zz/BxPk0vbSNoJyoUAKD+0MNzTxIDq8VnCRzSwKg8HJY8BpKl+vC
+	 l6MSPbfUcB88SePsq8phlLvkf11BF2sjzJYS4fqKLWR9PdCalnImHtglblwzIRPTiT
+	 f45JqcNMd2ew4fHV2T3EuByCCaK+OZvcheKrny+9r+7+W7RDizSZHSxa9w5ATQNHQK
+	 3zZHef+U85iSQ==
+Date: Thu, 4 Jul 2024 00:56:40 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: [PATCH 11/11 v2] rcu/nocb: Simplify (de-)offloading state machine
+Message-ID: <ZoXXKHzaV9Xof4G+@lothringen>
+References: <20240530134552.5467-1-frederic@kernel.org>
+ <20240530134552.5467-12-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZoV6bTj0xvGopEao@localhost.localdomain>
+In-Reply-To: <20240530134552.5467-12-frederic@kernel.org>
 
-On Wed, Jul 03, 2024 at 06:21:01PM +0200, Frederic Weisbecker wrote:
-> Le Tue, Jun 04, 2024 at 03:23:52PM -0700, Paul E. McKenney a écrit :
-> > If a CPU is running either a userspace application or a guest OS in
-> > nohz_full mode, it is possible for a system call to occur just as an
-> > RCU grace period is starting.  If that CPU also has the scheduling-clock
-> > tick enabled for any reason (such as a second runnable task), and if the
-> > system was booted with rcutree.use_softirq=0, then RCU can add insult to
-> > injury by awakening that CPU's rcuc kthread, resulting in yet another
-> > task and yet more OS jitter due to switching to that task, running it,
-> > and switching back.
-> > 
-> > In addition, in the common case where that system call is not of
-> > excessively long duration, awakening the rcuc task is pointless.
-> > This pointlessness is due to the fact that the CPU will enter an extended
-> > quiescent state upon returning to the userspace application or guest OS.
-> > In this case, the rcuc kthread cannot do anything that the main RCU
-> > grace-period kthread cannot do on its behalf, at least if it is given
-> > a few additional milliseconds (for example, given the time duration
-> > specified by rcutree.jiffies_till_first_fqs, give or take scheduling
-> > delays).
-> > 
-> > This commit therefore adds a rcutree.nocb_patience_delay kernel boot
-> > parameter that specifies the grace period age (in milliseconds)
-> > before which RCU will refrain from awakening the rcuc kthread.
-> > Preliminary experiementation suggests a value of 1000, that is,
-> > one second.  Increasing rcutree.nocb_patience_delay will increase
-> > grace-period latency and in turn increase memory footprint, so systems
-> > with constrained memory might choose a smaller value.  Systems with
-> > less-aggressive OS-jitter requirements might choose the default value
-> > of zero, which keeps the traditional immediate-wakeup behavior, thus
-> > avoiding increases in grace-period latency.
-> > 
-> > [ paulmck: Apply Leonardo Bras feedback.  ]
-> > 
-> > Link: https://lore.kernel.org/all/20240328171949.743211-1-leobras@redhat.com/
-> > 
-> > Reported-by: Leonardo Bras <leobras@redhat.com>
-> > Suggested-by: Leonardo Bras <leobras@redhat.com>
-> > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reviewed-by: Leonardo Bras <leobras@redhat.com>
-> > ---
-> >  Documentation/admin-guide/kernel-parameters.txt |  8 ++++++++
-> >  kernel/rcu/tree.c                               | 10 ++++++++--
-> >  kernel/rcu/tree_plugin.h                        | 10 ++++++++++
-> >  3 files changed, 26 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > index 500cfa7762257..2d4a512cf1fc6 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -5018,6 +5018,14 @@
-> >  			the ->nocb_bypass queue.  The definition of "too
-> >  			many" is supplied by this kernel boot parameter.
-> >  
-> > +	rcutree.nocb_patience_delay= [KNL]
-> > +			On callback-offloaded (rcu_nocbs) CPUs, avoid
-> > +			disturbing RCU unless the grace period has
-> > +			reached the specified age in milliseconds.
-> > +			Defaults to zero.  Large values will be capped
-> > +			at five seconds.  All values will be rounded down
-> > +			to the nearest value representable by jiffies.
-> > +
-> >  	rcutree.qhimark= [KNL]
-> >  			Set threshold of queued RCU callbacks beyond which
-> >  			batch limiting is disabled.
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 35bf4a3736765..408b020c9501f 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -176,6 +176,9 @@ static int gp_init_delay;
-> >  module_param(gp_init_delay, int, 0444);
-> >  static int gp_cleanup_delay;
-> >  module_param(gp_cleanup_delay, int, 0444);
-> > +static int nocb_patience_delay;
-> > +module_param(nocb_patience_delay, int, 0444);
-> > +static int nocb_patience_delay_jiffies;
-> >  
-> >  // Add delay to rcu_read_unlock() for strict grace periods.
-> >  static int rcu_unlock_delay;
-> > @@ -4344,11 +4347,14 @@ static int rcu_pending(int user)
-> >  		return 1;
-> >  
-> >  	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
-> > -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
-> > +	gp_in_progress = rcu_gp_in_progress();
-> > +	if ((user || rcu_is_cpu_rrupt_from_idle() ||
-> > +	     (gp_in_progress &&
-> > +	      time_before(jiffies, READ_ONCE(rcu_state.gp_start) + nocb_patience_delay_jiffies))) &&
-> > +	    rcu_nohz_full_cpu())
-> 
-> The rcu_nohz_full_cpu() test should go before anything in order to benefit from
-> the static key in tick_nohz_full_cpu().
+Now that the (de-)offloading process can only apply to offline CPUs,
+there is no more concurrency between rcu_core and nocb kthreads. Also
+the mutation now happens on empty queues.
 
-That has had the wrong order since forever.  ;-)
+Therefore the state machine can be reduced to a single bit called
+SEGCBLIST_OFFLOADED. Simplify the transition as follows:
 
-But good to fix.  I will queue a separate patch for Neeraj to consider
-for the v6.12 merge window.
+* Upon offloading: queue the rdp to be added to the rcuog list and
+  wait for the rcuog kthread to set the SEGCBLIST_OFFLOADED bit. Unpark
+  rcuo kthread.
 
-> And since it only applies to nohz_full, should it be called
-> nohz_full_patience_delay ?
-> 
-> Or do we want to generalize it to all nocb uses
-> (which means only rely on rcu_is_cpu_rrupt_from_idle() if not nohz_full). Not
-> sure if that would make sense...
+* Upon de-offloading: Park rcuo kthread. Queue the rdp to be removed
+  from the rcuog list and wait for the rcuog kthread to clear the
+  SEGCBLIST_OFFLOADED bit.
 
-I don't believe that this makes sense except for nohz_full guest OSes.
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/rcu_segcblist.h |   4 +-
+ kernel/rcu/rcu_segcblist.c    |  11 ---
+ kernel/rcu/rcu_segcblist.h    |   2 +-
+ kernel/rcu/tree_nocb.h        | 131 ++++++++++++++++------------------
+ 4 files changed, 62 insertions(+), 86 deletions(-)
 
-I am good with nohz_full_patience_delay_jiffies.  (Or did you really
-want to drop "_jiffies", and if so, did you also want some other units?)
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index 1ef1bb54853d..2fdc2208f1ca 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -185,9 +185,7 @@ struct rcu_cblist {
+  *  ----------------------------------------------------------------------------
+  */
+ #define SEGCBLIST_ENABLED	BIT(0)
+-#define SEGCBLIST_LOCKING	BIT(1)
+-#define SEGCBLIST_KTHREAD_GP	BIT(2)
+-#define SEGCBLIST_OFFLOADED	BIT(3)
++#define SEGCBLIST_OFFLOADED	BIT(1)
+ 
+ struct rcu_segcblist {
+ 	struct rcu_head *head;
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 1693ea22ef1b..298a2c573f02 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -260,17 +260,6 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+ 	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+-/*
+- * Mark the specified rcu_segcblist structure as offloaded (or not)
+- */
+-void rcu_segcblist_offload(struct rcu_segcblist *rsclp, bool offload)
+-{
+-	if (offload)
+-		rcu_segcblist_set_flags(rsclp, SEGCBLIST_LOCKING | SEGCBLIST_OFFLOADED);
+-	else
+-		rcu_segcblist_clear_flags(rsclp, SEGCBLIST_OFFLOADED);
+-}
+-
+ /*
+  * Does the specified rcu_segcblist structure contain callbacks that
+  * are ready to be invoked?
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 7a0962dfee86..259904075636 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -89,7 +89,7 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+ {
+ 	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+-	    rcu_segcblist_test_flags(rsclp, SEGCBLIST_LOCKING))
++	    rcu_segcblist_test_flags(rsclp, SEGCBLIST_OFFLOADED))
+ 		return true;
+ 
+ 	return false;
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 24daf606de0c..c8fc2f37c9ed 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -604,37 +604,33 @@ static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
+ 	}
+ }
+ 
+-static int nocb_gp_toggle_rdp(struct rcu_data *rdp)
++static void nocb_gp_toggle_rdp(struct rcu_data *rdp_gp, struct rcu_data *rdp)
+ {
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
+-	int ret;
+ 
+-	rcu_nocb_lock_irqsave(rdp, flags);
+-	if (rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED) &&
+-	    !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP)) {
++	/*
++	 * Locking orders future de-offloaded callbacks enqueue against previous
++	 * handling of this rdp. Ie: Make sure rcuog is done with this rdp before
++	 * deoffloaded callbacks can be enqueued.
++	 */
++	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++	if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED)) {
+ 		/*
+ 		 * Offloading. Set our flag and notify the offload worker.
+ 		 * We will handle this rdp until it ever gets de-offloaded.
+ 		 */
+-		rcu_segcblist_set_flags(cblist, SEGCBLIST_KTHREAD_GP);
+-		ret = 1;
+-	} else if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED) &&
+-		   rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP)) {
++		list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
++		rcu_segcblist_set_flags(cblist, SEGCBLIST_OFFLOADED);
++	} else {
+ 		/*
+ 		 * De-offloading. Clear our flag and notify the de-offload worker.
+ 		 * We will ignore this rdp until it ever gets re-offloaded.
+ 		 */
+-		rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_GP);
+-		ret = 0;
+-	} else {
+-		WARN_ON_ONCE(1);
+-		ret = -1;
++		list_del(&rdp->nocb_entry_rdp);
++		rcu_segcblist_clear_flags(cblist, SEGCBLIST_OFFLOADED);
+ 	}
+-
+-	rcu_nocb_unlock_irqrestore(rdp, flags);
+-
+-	return ret;
++	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ }
+ 
+ static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
+@@ -841,14 +837,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	}
+ 
+ 	if (rdp_toggling) {
+-		int ret;
+-
+-		ret = nocb_gp_toggle_rdp(rdp_toggling);
+-		if (ret == 1)
+-			list_add_tail(&rdp_toggling->nocb_entry_rdp, &my_rdp->nocb_head_rdp);
+-		else if (ret == 0)
+-			list_del(&rdp_toggling->nocb_entry_rdp);
+-
++		nocb_gp_toggle_rdp(my_rdp, rdp_toggling);
+ 		swake_up_one(&rdp_toggling->nocb_state_wq);
+ 	}
+ 
+@@ -1018,16 +1007,11 @@ void rcu_nocb_flush_deferred_wakeup(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_flush_deferred_wakeup);
+ 
+-static int rdp_offload_toggle(struct rcu_data *rdp,
+-			       bool offload, unsigned long flags)
+-	__releases(rdp->nocb_lock)
++static int rcu_nocb_queue_toggle_rdp(struct rcu_data *rdp)
+ {
+-	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+ 	bool wake_gp = false;
+-
+-	rcu_segcblist_offload(cblist, offload);
+-	rcu_nocb_unlock_irqrestore(rdp, flags);
++	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+ 	// Queue this rdp for add/del to/from the list to iterate on rcuog
+@@ -1041,9 +1025,25 @@ static int rdp_offload_toggle(struct rcu_data *rdp,
+ 	return wake_gp;
+ }
+ 
++static bool rcu_nocb_rdp_deoffload_wait_cond(struct rcu_data *rdp)
++{
++	unsigned long flags;
++	bool ret;
++
++	/*
++	 * Locking makes sure rcuog is done handling this rdp before deoffloaded
++	 * enqueue can happen. Also it keeps the SEGCBLIST_OFFLOADED flag stable
++	 * while the ->nocb_lock is held.
++	 */
++	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++	ret = !rcu_segcblist_test_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
++	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
++
++	return ret;
++}
++
+ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ {
+-	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
+ 	int wake_gp;
+ 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+@@ -1059,48 +1059,34 @@ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+ 	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist));
++	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 
+-	wake_gp = rdp_offload_toggle(rdp, false, flags);
++	wake_gp = rcu_nocb_queue_toggle_rdp(rdp);
+ 
+ 	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
+ 	if (rdp_gp->nocb_gp_kthread) {
+ 		if (wake_gp)
+ 			wake_up_process(rdp_gp->nocb_gp_kthread);
+ 
+-		swait_event_exclusive(rdp->nocb_state_wq,
+-				      !rcu_segcblist_test_flags(cblist,
+-								SEGCBLIST_KTHREAD_GP));
+ 		if (rdp->nocb_cb_kthread)
+ 			kthread_park(rdp->nocb_cb_kthread);
++
++		swait_event_exclusive(rdp->nocb_state_wq,
++				      rcu_nocb_rdp_deoffload_wait_cond(rdp));
+ 	} else {
+ 		/*
+ 		 * No kthread to clear the flags for us or remove the rdp from the nocb list
+ 		 * to iterate. Do it here instead. Locking doesn't look stricly necessary
+ 		 * but we stick to paranoia in this rare path.
+ 		 */
+-		rcu_nocb_lock_irqsave(rdp, flags);
+-		rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_KTHREAD_GP);
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++		rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
++		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 
+ 		list_del(&rdp->nocb_entry_rdp);
+ 	}
+-	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
+ 
+-	/*
+-	 * Lock one last time to acquire latest callback updates from kthreads
+-	 * so we can later handle callbacks locally without locking.
+-	 */
+-	rcu_nocb_lock_irqsave(rdp, flags);
+-	/*
+-	 * Theoretically we could clear SEGCBLIST_LOCKING after the nocb
+-	 * lock is released but how about being paranoid for once?
+-	 */
+-	rcu_segcblist_clear_flags(cblist, SEGCBLIST_LOCKING);
+-	/*
+-	 * Without SEGCBLIST_LOCKING, we can't use
+-	 * rcu_nocb_unlock_irqrestore() anymore.
+-	 */
+-	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
++	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
+ 
+ 	return 0;
+ }
+@@ -1129,10 +1115,20 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_deoffload);
+ 
+-static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
++static bool rcu_nocb_rdp_offload_wait_cond(struct rcu_data *rdp)
+ {
+-	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
++	bool ret;
++
++	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++	ret = rcu_segcblist_test_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
++	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
++
++	return ret;
++}
++
++static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
++{
+ 	int wake_gp;
+ 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+ 
+@@ -1152,20 +1148,14 @@ static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ 	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist));
+ 
+-	/*
+-	 * Can't use rcu_nocb_lock_irqsave() before SEGCBLIST_LOCKING
+-	 * is set.
+-	 */
+-	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
+-
+-	wake_gp = rdp_offload_toggle(rdp, true, flags);
++	wake_gp = rcu_nocb_queue_toggle_rdp(rdp);
+ 	if (wake_gp)
+ 		wake_up_process(rdp_gp->nocb_gp_kthread);
+ 
+-	kthread_unpark(rdp->nocb_cb_kthread);
+-
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+-			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
++			      rcu_nocb_rdp_offload_wait_cond(rdp));
++
++	kthread_unpark(rdp->nocb_cb_kthread);
+ 
+ 	return 0;
+ }
+@@ -1340,8 +1330,7 @@ void __init rcu_init_nohz(void)
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
+ 		if (rcu_segcblist_empty(&rdp->cblist))
+ 			rcu_segcblist_init(&rdp->cblist);
+-		rcu_segcblist_offload(&rdp->cblist, true);
+-		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_KTHREAD_GP);
++		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
+ 	}
+ 	rcu_organize_nocb_kthreads();
+ }
+-- 
+2.34.1
 
-Last chance to object to the name.  ;-)
-
-And next time we go through the patches a bit longer before the merge
-window!
-
-							Thanx, Paul
-
-> Thanks.
-> 
-> >  		return 0;
-> >  
-> >  	/* Is the RCU core waiting for a quiescent state from this CPU? */
-> > -	gp_in_progress = rcu_gp_in_progress();
-> >  	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm && gp_in_progress)
-> >  		return 1;
-> >  
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 340bbefe5f652..31c539f09c150 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -93,6 +93,16 @@ static void __init rcu_bootup_announce_oddness(void)
-> >  		pr_info("\tRCU debug GP init slowdown %d jiffies.\n", gp_init_delay);
-> >  	if (gp_cleanup_delay)
-> >  		pr_info("\tRCU debug GP cleanup slowdown %d jiffies.\n", gp_cleanup_delay);
-> > +	if (nocb_patience_delay < 0) {
-> > +		pr_info("\tRCU NOCB CPU patience negative (%d), resetting to zero.\n", nocb_patience_delay);
-> > +		nocb_patience_delay = 0;
-> > +	} else if (nocb_patience_delay > 5 * MSEC_PER_SEC) {
-> > +		pr_info("\tRCU NOCB CPU patience too large (%d), resetting to %ld.\n", nocb_patience_delay, 5 * MSEC_PER_SEC);
-> > +		nocb_patience_delay = 5 * MSEC_PER_SEC;
-> > +	} else if (nocb_patience_delay) {
-> > +		pr_info("\tRCU NOCB CPU patience set to %d milliseconds.\n", nocb_patience_delay);
-> > +	}
-> > +	nocb_patience_delay_jiffies = msecs_to_jiffies(nocb_patience_delay);
-> >  	if (!use_softirq)
-> >  		pr_info("\tRCU_SOFTIRQ processing moved to rcuc kthreads.\n");
-> >  	if (IS_ENABLED(CONFIG_RCU_EQS_DEBUG))
-> > -- 
-> > 2.40.1
-> > 
-> > 
