@@ -1,102 +1,86 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8534B2B9B9
-	for <rcu@vger.kernel.org>; Fri,  5 Jul 2024 16:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E00C2B9B9
+	for <rcu@vger.kernel.org>; Fri,  5 Jul 2024 16:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720195812; cv=none; b=j29R4cC7w/HzTJyZZ3qtY24JseYggUUJsgxWUS/aKupDZlIwpAyJBzFs8pmpcz41bFoKvm7wUhLlXiXqn0H2HJlNd2lmcng49UX4JelEbfs/BEL9s8SiLxn3J8QiDbaThU0QrKVXvWEBWOQti9d2nfl9TJhlBozQaHys6d++iK8=
+	t=1720195964; cv=none; b=qbxfv8rILeIlShxqKcuqopAXyiGNLXraI7mqxlV9JXwPznrY6XiAF2NWGc+ksAJWTQCqFENoZLUlFLGtu3sg34yR16jtAIpWWhjkPmS1RxLihoRVqBbHuL+VcSjqmh1YOYlLeRVX9LM4RBIg6wHJ1lTQBbl2BLEb5DWkXL3jaWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720195812; c=relaxed/simple;
-	bh=Dt14CO6nqTeJOKkkPfWE85lOabdCJ0iOs4fa/9fzW6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bVbPvo9UBLI/eCdaiV2Mylt+gpkFE3bGMXpwavAdvcEFr3op3xXaMZwEFiPuJh8FeuTSUU1a7WnA+NBnJm66JMRiFYJEdYNRyuzGR36U9Voc5CSHT6WRSmEetgKBr9e1Mv2Vx3R55pM8w77tnGY8bMy40/tcT07Np0aJ6mU/ybQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WpLK+oEp; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1720195964; c=relaxed/simple;
+	bh=FWWA5vWPWEnwEMej04dnaHYkX7pc5lbg596pR/SZems=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Jp9Q2QJRVpH2UwHx2pRUVasukwyaY6nCDiUkh4OLwzMcXFpmKrua5pvvdqyOB7/eIl+9CuUqMBZhGXMSWzqITvnZ6XPnmFzcQdDQnopYxTmSVH38AgoMMG2Cb4jG6aazQWuleMCG9P7QycsbYeaj8jxpDMd5NyzM9ml1v/zzsHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2Yshwr+D; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qFY12wX4; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WpLK+oEp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720195809;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2Yshwr+D";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qFY12wX4"
+Date: Fri, 5 Jul 2024 18:12:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1720195961;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Dt14CO6nqTeJOKkkPfWE85lOabdCJ0iOs4fa/9fzW6Y=;
-	b=WpLK+oEp+YwcMtH28dOMwfDreIXjSffKyymbFovSspPMpPTmpA9RsVqQxNrfShEemJwODw
-	Q/jrTg5dysiixjC6e13pFcdq/TUeNIxVX1vnyPfNyUp1ZFDtPkIzko1fabdCx1XbstbT9j
-	S+/4tVfGAR2tbxgHCn5DP1LCdGCwi9E=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-230-hSyND49yNdatSSZMFY85Ug-1; Fri,
- 05 Jul 2024 12:10:05 -0400
-X-MC-Unique: hSyND49yNdatSSZMFY85Ug-1
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D35E5196CDF1;
-	Fri,  5 Jul 2024 16:10:01 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.9])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 923C61955F3B;
-	Fri,  5 Jul 2024 16:09:53 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri,  5 Jul 2024 18:08:26 +0200 (CEST)
-Date: Fri, 5 Jul 2024 18:08:17 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Rachel Menge <rachelmenge@linux.microsoft.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Wei Fu <fuweid89@gmail.com>, apais@linux.microsoft.com,
-	Sudhanva Huruli <Sudhanva.Huruli@microsoft.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Christian Brauner <brauner@kernel.org>,
-	Mike Christie <michael.christie@oracle.com>,
-	Joel Granados <j.granados@samsung.com>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=P4mPrHKOv0gyj1s+Guj02SaDEFIs272Atvl/z5dKV+k=;
+	b=2Yshwr+DcwdFxQ9uLJRA86xH3/xTK1nwLxJXRVfM4viN8bW9pUck4jQS3NY+EZ/XjqVEzH
+	Dw1OtWeV49aykyLT1SToiA6wx8HDQnFr8YLE1eC85gPMjyqN2tBF9b71I/r2eMAtjWWSUH
+	SfLnQlYW6kLjWYxvtmgIG2xrSdtS9a9FvIYEs5NpkJVJS9Vf1FqmeNY0EY4VSurKvjOBoR
+	3qUV3e1QSeQK3e9P5cjRUBHQAiA8nvUy4yii7zI0QNeWlZtLUMWF+p2od4LtkvHYywgZyy
+	nxIegsHyEnIsce6rGOqUeWcCRxyhdfFqXDXN6x+mDOaRYyG49EytimFG7MyQNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1720195961;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=P4mPrHKOv0gyj1s+Guj02SaDEFIs272Atvl/z5dKV+k=;
+	b=qFY12wX4qW5CrYWRRHDblpsPcwYER3TobBDPNO888m/DNJLR4DT2jNuNNF+uW+eVa0AyTS
+	9+b43jpjxjXe2QAA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: rcu@vger.kernel.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH] zap_pid_ns_processes: don't send SIGKILL to sub-threads
-Message-ID: <20240705160816.GC18551@redhat.com>
-References: <1386cd49-36d0-4a5c-85e9-bc42056a5a38@linux.microsoft.com>
- <20240608154835.GD7947@redhat.com>
- <87msnpov2z.fsf@email.froward.int.ebiederm.org>
- <20240613150001.GB18218@redhat.com>
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Wakes of the rcuc/ thread on isolated CPUs.
+Message-ID: <20240705161240.HiOFN5hH@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240613150001.GB18218@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On 06/13, Oleg Nesterov wrote:
->
-> Well, if SIGNAL_GROUP_EXIT is set we do not care if this process was
-> killed or not. It (the whole thread group) is going to exit, that is all.
+Hi,
 
-OOPS. I forgot again that you removed SIGNAL_GROUP_COREDUMP and thus
-we can't rely on SIGNAL_GROUP_EXIT in this case.
+I noticed this on an older kernel and reproduced it on -rc6: I boot the
+(RT) kernel with
+	isolcpus=4-15 nohz=on nohz_full=4-15 rcu_nocbs=4-15 rcu_nocb_poll
 
-I still think this was not right, but it is too late to complain.
+and compiled a NOHZ_FULL kernel. If I pin a shell onto the isolated CPU
+and do nothing then everything seems fine. If I issue commands, this
+happens:
+   tick_nohz_handler() -> update_process_times() -> rcu_sched_clock_irq()
 
-Andrew, please drop this patch.
+rcu_sched_clock_irq() invokes rcu_pending() which returns true due to
+|         /* Have RCU grace period completed or started?  */
+|         if (rcu_seq_current(&rnp->gp_seq) != rdp->gp_seq ||
+|             unlikely(READ_ONCE(rdp->gpwrap))) /* outside lock */
+|                 return 1;
 
-Currently zap_pid_ns_processes() kills the coredumping tasks, with this
-patch it doesn't.
+And it is the first check of the two. Later I see 
+|         /* Is the RCU core waiting for a quiescent state from this CPU? */
+|         gp_in_progress = rcu_gp_in_progress();
+|         if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm && gp_in_progress)
+|                 return 1;
 
-Oleg.
+which triggers it but then "later" it fallbacks to the first case again.
+In both cases it wakes the rcuc/ thread on the isolated CPU.
 
+Is this something that needs to happen on the isolated CPU or can this
+be excluded for rcu_rdp_is_offloaded() CPUs?
+
+Sebastian
