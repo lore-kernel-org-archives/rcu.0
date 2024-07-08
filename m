@@ -1,140 +1,143 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A8914A96
-	for <rcu@vger.kernel.org>; Mon,  8 Jul 2024 06:38:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1569E1DA4E;
+	Mon,  8 Jul 2024 11:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720420724; cv=none; b=Yc0txZiIJ61iwwEOQSNJhSgPYl6eWStsDCKay8cQQd8qwWcI2KA5K4QCQ066yPHbbp6juT8qzagiAATGo3a/lUAj7umqQopp/899HRcfB420f1NA/OmBQAqbAmFitUIMGGQhd4txP0pzJxg7MbHVKrgPbCH0zwMl+kY0nhNOpU0=
+	t=1720436721; cv=none; b=EoZ7ctpqJAej18vryyyBB7azy8VNRQse9V+/t+Hl/NFyIFb9UMKn84PWNuM/pRZwZ1dDLpZGCv8+sD38tOQdofd1inl8MaDNHMEePJQdBqni6fshpja28MQa2Y6aIsTBPATwV/cEE5DnKY6Yj4Jpyn2KGKeKqQdDI3V7EnB1sJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720420724; c=relaxed/simple;
-	bh=hmMiEwNzP8YW/qBqD6vb83A+wSHPB3hqJHStCKgK7aU=;
+	s=arc-20240116; t=1720436721; c=relaxed/simple;
+	bh=4cksyngzOKfg1d3c6HnQF1tc8f/36Wo2YfYt5vqpB74=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V+PMmtA6DGA2PHoxOacl6cBxLlvWL5bH+MROc7UoX6WLSdB1tkEm5WOueTqzq5LRcG2GuZ/huEqb4QhLnKZIjZZIIn/D3nHJEvWR5MawyTEOX3GL2sORPfrUBoRAoVX9ckNpaU7RmBEtzBVrJXnC+fPBYAue13qIN9GwccSw2uU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rJ1o3nNo; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=m2VCVSMu; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rJ1o3nNo";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="m2VCVSMu"
-Date: Mon, 8 Jul 2024 08:38:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1720420720;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yg0hdi13AWMetr4lZulKocsd2G+RMt32gvsCUoyAkn0=;
-	b=rJ1o3nNoHT/EldBfuM4La1HPfWjcezg1oaev4oWQw73zvAbqFKTYHb+6Rq7512SYhiJtHb
-	CHwpLUSPUKtbfy36fTuyYW6ktnPqq3ecBkA7XAjrwogCHFe93UHU8EBv+d0Wqt3dfHREoj
-	2B3YQGmvkSiert8STFr0fVn2w1lu38dC0lnoMz7k48vdwMBQU2IcsMLQOe0zcI9cvN59He
-	Jdvn8cl5d1Qs1sIZNqrhIqqNKG+t64vM2wsjb22tbWB5BQUCOBpZZ41SYYbFJPXgFDFDXh
-	kiEzKL/SxYmVob3sZXHxiQz7w28WJzsNwwEhNc1UgSuol2JCa9yMY/Unv4rCSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1720420720;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yg0hdi13AWMetr4lZulKocsd2G+RMt32gvsCUoyAkn0=;
-	b=m2VCVSMuN3zRvPGdjv28LxJO4V8nqElXOKEDEl2TFOKdUnvd5J3ZRPGhFK2YuDhKts3+i+
-	8/aF7/mlWCFCToBA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Wakes of the rcuc/ thread on isolated CPUs.
-Message-ID: <20240708063838.WeB_3jv2@linutronix.de>
-References: <20240705161240.HiOFN5hH@linutronix.de>
- <b73f21c1-cee8-405f-8eb2-52d79320052f@paulmck-laptop>
- <20240705181035.XauAhLGH@linutronix.de>
- <b8a58665-2f9c-4ad5-b8a2-9608b5aba9b5@paulmck-laptop>
+	 Content-Type:Content-Disposition:In-Reply-To; b=o950+mzOr12D0Al7/n9h79X0W/AV8jYjEzwvwcKdk7kEMJCbHe7q36/gU1Fgh/DWEwktzyNhMUm4zCqRuKZv3bzS/+R3CdKVNKUHxp3Pqo3O1Cwm5YGBhIBKQp/WdszfSKTdx92zTqVNsfO6EaJn7NQi22lvv6BsIKTej4MTGxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C3A1C116B1;
+	Mon,  8 Jul 2024 11:05:19 +0000 (UTC)
+Date: Mon, 8 Jul 2024 12:05:17 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: paulmck@kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	rcu@vger.kernel.org
+Subject: Re: [TEST] TCP MD5 vs kmemleak
+Message-ID: <ZovH7cWlw9SGcWoJ@arm.com>
+References: <20240617072451.1403e1d2@kernel.org>
+ <CAJwJo6ZjhLLSiBUntdGT8a6-d5pjdXyVv9AAQ3Yx1W01Nq=dwg@mail.gmail.com>
+ <20240618074037.66789717@kernel.org>
+ <fae8f7191d50797a435936d41f08df9c83a9d092.camel@redhat.com>
+ <ee5a9d15-deaf-40c9-a559-bbc0f11fbe76@paulmck-laptop>
+ <20240618100210.16c028e1@kernel.org>
+ <53632733-ef55-496b-8980-27213da1ac05@paulmck-laptop>
+ <CAJwJo6bnh_2=Bg7jajQ3qJAErMegDjp0F-aQP7yCENf_zBiTaw@mail.gmail.com>
+ <37d3ca22-2dac-4088-94f5-54a07403dd27@paulmck-laptop>
+ <CAJwJo6Y0hfB5royz0D8QPkgpRMxz9G5s81ktZbtHPBdt8EYdEQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <b8a58665-2f9c-4ad5-b8a2-9608b5aba9b5@paulmck-laptop>
+In-Reply-To: <CAJwJo6Y0hfB5royz0D8QPkgpRMxz9G5s81ktZbtHPBdt8EYdEQ@mail.gmail.com>
 
-On 2024-07-05 18:15:25 [-0700], Paul E. McKenney wrote:
-> > Looking at the patch, there would be a delay up to 5 secs which would
->=20
-> I would have said "up to 1 sec", so what am I missing?
+On Tue, Jul 02, 2024 at 03:08:42AM +0100, Dmitry Safonov wrote:
+> On Thu, 20 Jun 2024 at 18:02, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > So we need call_rcu() to mark memory flowing through it?  If so, we
+> > need help from callers of call_rcu() in the case where more than one
+> > object is being freed.
+> 
+> Not sure, I think one way to avoid explicitly marking pointers for
+> call_rcu() or even avoiding the patch above would be a hackery like
+> this:
+> 
+> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+> index d5b6fba44fc9..7a5eb55a155c 100644
+> --- a/mm/kmemleak.c
+> +++ b/mm/kmemleak.c
+> @@ -1587,6 +1587,7 @@ static void kmemleak_cond_resched(struct
+> kmemleak_object *object)
+>  static void kmemleak_scan(void)
+>  {
+>         struct kmemleak_object *object;
+> +       unsigned long gp_start_state;
+>         struct zone *zone;
+>         int __maybe_unused i;
+>         int new_leaks = 0;
+> @@ -1630,6 +1631,7 @@ static void kmemleak_scan(void)
+>                         kmemleak_cond_resched(object);
+>         }
+>         rcu_read_unlock();
+> +       gp_start_state = get_state_synchronize_rcu();
+> 
+>  #ifdef CONFIG_SMP
+>         /* per-cpu sections scanning */
+> @@ -1690,6 +1692,13 @@ static void kmemleak_scan(void)
+>          */
+>         scan_gray_list();
+> 
+> +       /*
+> +        * Wait for the greylist objects potentially migrating from
+> +        * RCU callbacks or maybe getting freed.
+> +        */
+> +       cond_synchronize_rcu(gp_start_state);
+> +       rcu_barrier();
+> +
+>         /*
+>          * Check for new or unreferenced objects modified since the previous
+>          * scan and color them gray until the next scan.
+> 
+> 
+> -->8--
+> 
+> Not quite sure if this makes sense, my first time at kmemleak code,
+> adding Catalin.
+> But then if I didn't mess up, it's going to work only for one RCU
+> period, so in case some object calls rcu/kfree_rcu() from the
+> callback, it's going to be yet a false-positive.
 
-The patch description said that there is 5 sec upper limit. Yes, default
-1 sec.
+Yeah, I don't think this fully solves the problem.
 
-> > mean if the task consumes 100% of the CPU then it doesn't change a
-> > thing.
->=20
-> As long as RCU's grace-period kthread gets some CPU and as long as
-> the CPU-bound task executes often in userspace, that task's CPU's rcuc
-> kthread need never run.  The grace-period kthread would see that the CPU
-> has been in an extended quiescent state, and would report that quiescent
-> state on that CPU's behalf.
+> Some other options/ideas:
+> - more RCU-invasive option which would be adding a mapping function to
+> segmented lists of callbacks, which would allow kmemleak to request
+> from RCU if the pointer is yet referenced by RCU.
 
-Okay. So the 100% usage is the problem indeed.
+This looks too invasive to me plus additional scanning cost.
 
-> > Thank you Paul for the pointers.
-> >=20
-> > > This is again a workaround.  Clearly, it would be better if we could
-> > > eliminate that second rcuc wakeup.  I tried something similar some ti=
-me
-> > > back, and there was a problem with it.  I will see if I can reconstit=
-ute
-> > > the corresponding brain cells.
-> >=20
-> > Is my assumption correct, in order to push the grace period forward,
-> > otherwise the whole is stuck?
->=20
-> Again, if the CPU running the CPU-bound task executes in nohz_full
-> userspace context, that CPU's rcuc kthread need never run.
->=20
-> Of course, if you tried the patch and it didn't help, that is another
-> story.  Hardware facts beat human theories, now as always.
+> - the third option is for kmemleak to trust RCU and generalize the
+> commit above, adding kmemleak_object::flags of OBJECT_RCU, which will
+> be set by call_rcu()/kfree_rcu() and unset once the callback is
+> invoked for RCU_DONE_TAIL.
 
-of course.
+This could work, the downside being a kmemleak object lookup every time
+call_rcu() is invoked. Well, we do this now for kfree_rcu() already,
+though we just mark the object as ignored once.
 
-> > > But in the meantime, one advantage of the workaround is that in the
-> > > common case, it would reduce the number of rcuc wakeups to zero, rath=
-er
-> > > than to just one.
-> > >=20
-> > > Thoughts?
-> >=20
-> > I *think* if what I just wrote is correct, I will either have to raise
-> > the priority of rcuc/ or make the thread, that consumes 100% of the CPU
-> > lose its RT priority. Then with the limited number of wakeups it should
-> > be doable.
->=20
-> You can:  (1) Raise the rcuc kthread's priority, as you say, (2) Ensure
-> that the CPU-bound task runs frequently (or even always) in nohz_full
-> usermode context, or (3) #2 and also apply the patch, which would in
-> addition prevent the wakeups.
->=20
-> I think.  After all, I could easily be missing something here.
+> - add kmemleak_object::update_jiffies or just directly touch
+> kmemleak_object::jiffies whenever the object has been modified (see
+> update_checksum()), that will ignore recently changed objects. As
+> rcu_head should be updated, that is going to automagically ignore
+> those deferred to RCU objects.
 
-Let me backport and see what happens in the end.
+This looks the simplest, reset the jiffies every time it detected the
+object being touched. However, I wonder whether we should introduce a
+new variable to track this. 'jiffies' currently stores the creation time
+(or thereabouts). We can change the 'age' reported in the sysfs as long
+as no user script parses that.
 
-Thank you.
+I added the min age to kmemleak to avoid the early object being added to
+some lists and getting reported as false positive. It looks like we have
+a similar scenario when the object is getting freed: it is added to RCU
+lists, disappears temporarily from kmemleak's view. So it does make
+sense to employ similar delay as for creation.
 
-> > PS: I do remember the RCU-task thread we had. I did have an idea but I
-> > need check if this is feasible first. So I did not forget, just slow=E2=
-=80=A6
->=20
-> I must confess that I have been wondering about how much tracing goes
-> on withing real-time systems running in production...
+That said, for the default kmemleak operation with scanning every 10min,
+this wouldn't be needed. During one scan it detects the checksum changed
+due to the rcu_head update. 10min later it should have been freed
+already.
 
-This is little I know. However, it is used during testing of production
-systems to see what is going on due to its little overhead.
-
-> 							Thanx, Paul
-
-Sebastian
+-- 
+Catalin
