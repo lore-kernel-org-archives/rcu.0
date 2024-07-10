@@ -1,455 +1,312 @@
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0140DDDB3;
-	Wed, 10 Jul 2024 02:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC402C859
+	for <rcu@vger.kernel.org>; Wed, 10 Jul 2024 03:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720579036; cv=none; b=bjXi5ujE+w9APDhlch9XlwJeUx7WMwKV8wnEMNnha88qI0QllADHZXagm1YG+4nwRlAO8YeWsiSyeU/mHucuONYGrS7PvzRJ0u0nznsYTvbJQIZBfAfzU2U68bo4XSU1+QDiy4iBZqEDs0GVgU786unuUedED4HZzzgiPwgRQ8A=
+	t=1720581095; cv=none; b=Jd4Na08qiOUwxnQFDct4aI6IGgT14uysPGOT+HneYlm5GmQLv05bRjLXpuAmM5QQ0ihnU91DzTMzAP+GFCPH2AIJ/8+o/FUfLE3qI9k1O7EGL62vooFV6L66jl9icgC4RmiN0TH54C1rLqt6lBo1jcXAfaeNj3If/D1PTA4be3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720579036; c=relaxed/simple;
-	bh=WuUNTlhlzlZJm+8Sex0Pzzz6svc/ZPXwVugQwFuGOSw=;
+	s=arc-20240116; t=1720581095; c=relaxed/simple;
+	bh=9iAjbDUsI/zhA0vvsjprTEYjwvHRrCaeF74Z8TO9kE4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OtEgyl8PQof6/t4PM/tFCD86OKm0SLM4Qt8Y0NbEBO9YL9eiuJRqwjhSxjnV0lTCI3rjSLa9hWfk0Y/b2Rqa8Ma5DR4FW3CcFqKDx1LZ/61uFh3NNSiqel2Yn7FvUsmaXwLNoSJNyRpgjw8s5i9NHMSiK5lehGg4MJzR2bI7ZGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m2mP2Ubw; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 To:Cc:Content-Type; b=PmdMOT+QO2gmEUfQ2J/DfW/D9NI7u6MViYzSbe6WmJp1+HV2fOGtlpAElQYpmq0xlA8MfF3ynvbT6QzPPHNd/PKw3ty5Mvn37zOuXdeOrmeWe82sduN4R9XIOSOHK/im3GzkH2jBQ98h2Yh7kl4Bwg3/rhSJ/H6vHpOqMHbV15o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rdZ7i90Y; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m2mP2Ubw"
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-70b0428f793so3429590b3a.3;
-        Tue, 09 Jul 2024 19:37:14 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rdZ7i90Y"
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-81021667125so1663715241.1
+        for <rcu@vger.kernel.org>; Tue, 09 Jul 2024 20:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720579034; x=1721183834; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1720581092; x=1721185892; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZA5T+tyF5N5OtHuFi3mjHRjh9V4EiOpFrvKinGPqQfo=;
-        b=m2mP2UbwU1sWzTZaNWbHO5jK9aAy1hq/qlmCtDnikuifOqmzrCec/lMPr1pcJCjZIa
-         /hB9BOIppxb2i8BZwVqH2MfCjAzZbz9muIh/mUSNtfXorTGGV3sFUIhggimm4ZCCH34S
-         XdKeDFGgL4hapWL9ogDATRNFkUBuImr0UkLliR6vraHIPICSqyQVKwIPay8S0zmoANrd
-         9jB/xI9wlDViGY6Ap6+pSROyTKOdH+jRuEo2sdQ7wp+z0e3eqTh6j/+CjTScX/fbbyDy
-         8LakFuqwBd16uTV+q0DFwN1SfWnHPSJ4JRrQJif4+TTtUgf5ZeSnjbDSCVvrrI9JM5LY
-         BNSw==
+        bh=6XIMdkfppqyP8G+FM/MdMhJ0bX3EL1i/c4IN0WSrWSw=;
+        b=rdZ7i90YHjAfli1TqMlmNo24sY4dDqNT+DdEOyMdGbMWnlF3JV4neaGD7/45LNB011
+         vzeMaArT9VTP/cS25d3OmpRw56+bd0uAiC8mJiQyOB+p9uGDgAfc+bZd+bQgQb5NeArX
+         F4voNhqkvMRRuNXkMcO6LC8FvYBex3pOJq/6MlouDjRw4x21xquz+d8Q3vJyEOrBEyxG
+         9qhehpXYkX6FNz2c2yms32GY/TEA661NjM26tJYi78uVSYFmAXqBichHABjHmfPI6nLv
+         FWwo3RHzDS5j429q2OqB4xSUn8qy1KrAz0UJuBx1GAqhE/v8TC01n/YWQn6bVAe8g2xq
+         cD5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720579034; x=1721183834;
+        d=1e100.net; s=20230601; t=1720581092; x=1721185892;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZA5T+tyF5N5OtHuFi3mjHRjh9V4EiOpFrvKinGPqQfo=;
-        b=Xa+vmFmGAYe+tKftD90PEYmOKvHho60BOi+NSM/7/mIcioSqparwhVzQw/d3Rkpl1a
-         /eYvhY8aDyo4pM1Nw1agxrlD+kkO70yzliddIdrnl1zc6W3qMw+Ho3BkEzNXteIgL5Pj
-         syfKIegfvD7nyl6cIvnvT02Omk9IMunS2da+vE1VmpqnQBbN+5lV+hjNdFsLLndZ3/0m
-         jgJfjvUiqPeD/3XitCRW2e+GSxQOtepS9MX7YXWOXna8l88sqXRYqdVFQ4/mJZGrzWyR
-         G7j4+koqbjyJLBtyu2aR/TETySDpZKuFY3+smkKwfJSLED6D0W8bVeaVB+4ARwmDvDKh
-         gQIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUEVBAtYDlsPz3ievvnd5ybdIn0yEW9rBM7imY/b++LTi8JTdygkAqgdo9gdNZTGMik0ZbG17qmtEbqZI1dW56RY1I+S4qhtQyvVqOn2Ot+gjMYB4uD0PqGfQx5cFTeJtnT
-X-Gm-Message-State: AOJu0Yz/vMNL8mETV+3zpwV2SmZfiUBohhyYQe4xOUGp4qG97tQr8KsR
-	2pMS/OqkL08jXJhKeNPu6+4o3qOdpffX+mlq2VpICMl2s2kwummlTye8Ou6fWYC1ONAAavzs2FB
-	L5JDnif+TPzxjo7GZRnN9/oMgYAU=
-X-Google-Smtp-Source: AGHT+IGe8ELkVP7jWOhNW0AhJcVWX46mUW2dBu6yN8QXnPVBysuGQwotIPVyho0g/WWK7jauhgLATF5u+NiBMwYz+wI=
-X-Received: by 2002:a05:6a21:3398:b0:1b4:2f6:62b3 with SMTP id
- adf61e73a8af0-1c29822860amr5001660637.26.1720579033944; Tue, 09 Jul 2024
- 19:37:13 -0700 (PDT)
+        bh=6XIMdkfppqyP8G+FM/MdMhJ0bX3EL1i/c4IN0WSrWSw=;
+        b=hBMWhLe2vKMJJ+0UlBA2kXCfJlc+bDP38Fds3BfhP71DFx9PlzE67F2qRrWdCIiwDa
+         C7hfW40DTTDEb7+97IPPJC4opcWY5WP+AdxMCb7eLgFmWa1ypeUfVrkyktMbMzrY8l1U
+         mGknw8oiF/X2prUP/bgKWRnYyvZErGtjudmtAQfcKVGvy0ocs+8X4R43fEQzfvCt2ayG
+         dymix3Jcwdfp2Ji6KGACq2OjJpu+plZtlwtCu6lOGK8ofMfk10yIAB1mtmriv/hD/Wiv
+         IzgJLf+FRzG9sKw5rs1MSvo6YTLge3vbIuIo3TrKj/lQMkAgwMqnNCqmus6bOvNz5e+e
+         L+MA==
+X-Forwarded-Encrypted: i=1; AJvYcCUxsRT4O6ZWxFgEIOSQB6BACNJUGpFZN0VkQ/ntbj1CBpHXF5nuLYsWzy+ntgflhYFD9yn9xDN9V+ektL0orC4Z0dhc
+X-Gm-Message-State: AOJu0YyT03741AEd6dnZAFksbm+ywv+cApZYVoZ2S7i/l0ND9DBmZw18
+	WfzbSFxe3V+iS90KJmFWW8fJSax6/JUUzIDz5C+N/pnDDGReantEFWOTBBoKQDIdrlc2a6xJt0w
+	yK4UDNowAZ96nFPcaq332iEAluaNhGF3Z08Zy3A==
+X-Google-Smtp-Source: AGHT+IEMEZ1PvfeDqTx8SuS+zx9EDRB6rW1s9H1rbATcOiobIk2cxUBMvcJeODpR6jQKmwdMkxhLWeAXs9BOMVS9U+E=
+X-Received: by 2002:a05:6102:3906:b0:48f:143a:d8e9 with SMTP id
+ ada2fe7eead31-490321597afmr4549583137.20.1720581092076; Tue, 09 Jul 2024
+ 20:11:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240709070317.24876-1-qiang.zhang1211@gmail.com> <CAFwiDX_=KbtLyJXkiXb_UKYCzLR+5-zUh=CG1WvwZq3xOmK-SA@mail.gmail.com>
-In-Reply-To: <CAFwiDX_=KbtLyJXkiXb_UKYCzLR+5-zUh=CG1WvwZq3xOmK-SA@mail.gmail.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Wed, 10 Jul 2024 10:37:01 +0800
-Message-ID: <CALm+0cWsv5U+AfHzvVRchxWiMBWaA_+8nhCOPZ31Ge=kkdontA@mail.gmail.com>
-Subject: Re: [PATCH v2] rcu-tasks: Fix access non-existent percpu rtpcp
- variable in rcu_tasks_need_gpcb()
-To: Neeraj upadhyay <neeraj.iitr10@gmail.com>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
-	joel@joelfernandes.org, urezki@gmail.com, boqun.feng@gmail.com, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240709110708.903245467@linuxfoundation.org>
+In-Reply-To: <20240709110708.903245467@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 10 Jul 2024 08:41:20 +0530
+Message-ID: <CA+G9fYsqkB4=pVZyELyj3YqUc9jXFfgNULsPk9t8q-+P1w_G6A@mail.gmail.com>
+Subject: Re: [PATCH 6.9 000/197] 6.9.9-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, Anders Roxell <anders.roxell@linaro.org>, 
+	Mike Christie <michael.christie@oracle.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	rcu <rcu@vger.kernel.org>, gnstark@salutedevices.com, 
+	linux-mm <linux-mm@kvack.org>, Jinliang Zheng <alexjlzheng@tencent.com>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+On Tue, 9 Jul 2024 at 16:49, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi Zqiang,
+> This is the start of the stable review cycle for the 6.9.9 release.
+> There are 197 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> I don't see any functional issue with the patch. Few style comments below=
-:
+> Responses should be made by Thu, 11 Jul 2024 11:06:25 +0000.
+> Anything received after that time might be too late.
 >
-> On Tue, Jul 9, 2024 at 12:33=E2=80=AFPM Zqiang <qiang.zhang1211@gmail.com=
-> wrote:
-> >
-> > For kernels built with CONFIG_FORCE_NR_CPUS=3Dy, the nr_cpu_ids is
-> > defined as NR_CPUS instead of the number of possible cpus, this
-> > will cause the following system panic:
-> >
-> > [    0.015349][    T0] smpboot: Allowing 4 CPUs, 0 hotplug CPUs
-> > ...
-> > [    0.021342][    T0] setup_percpu: NR_CPUS:512 nr_cpumask_bits:512 nr=
-_cpu_ids:512 nr_node_ids:1
-> > ...
-> > [    3.681252][   T15] BUG: unable to handle page fault for address: ff=
-ffffff9911c8c8
-> > [    3.689415][   T45] ehci-pci 0000:00:1a.0: debug port 2
-> > [    3.697008][   T15] #PF: supervisor read access in kernel mode
-> > [    3.697009][   T15] #PF: error_code(0x0000) - not-present page
-> > [    3.706233][   T45] ehci-pci 0000:00:1a.0: irq 16, io mem 0xf7e3c000
-> > [    3.708152][   T15] PGD 40fa24067 P4D 40fa24067 PUD 40fa25063 PMD 41=
-0bff063
-> > [    3.720380][   T45] ehci-pci 0000:00:1a.0: USB 2.0 started, EHCI 1.0=
-0
-> > [    3.720430][   T15] PTE 800ffffbefee3062
-> > [    3.720431][   T15] Oops: 0000 [#1] PREEMPT SMP PTI
-> > [    3.727873][   T45] usb usb2: New USB device found, idVendor=3D1d6b,=
- idProduct=3D0002, bcdDevice=3D 6.06
-> > [    3.734009][   T15] CPU: 0 PID: 15 Comm: rcu_tasks_trace Tainted: G =
-W          6.6.21 #1 5dc7acf91a5e8e9ac9dcfc35bee0245691283ea6
-> > [    3.734011][   T15] Hardware name: Dell Inc. OptiPlex 9020/005T15, B=
-IOS A14 09/14/2015
-> > [    3.734012][   T15] RIP: 0010:rcu_tasks_need_gpcb+0x25d/0x2c0
-> > [    3.737962][   T45] usb usb2: New USB device strings: Mfr=3D3, Produ=
-ct=3D2, SerialNumber=3D1
-> > [    3.742877][   T15] RSP: 0018:ffffa371c00a3e60 EFLAGS: 00010082
-> > [    3.751891][   T45] usb usb2: Product: EHCI Host Controller
-> > [    3.764495][   T15]
-> > [    3.764496][   T15] RAX: ffffffff98929ca0 RBX: ffffffff98b3b328 RCX:=
- 0000000000021880
-> > [    3.764497][   T15] RDX: ffffffff9911c880 RSI: 0000000000000000 RDI:=
- 0000000000000000
-> > [    3.772461][   T45] usb usb2: Manufacturer: Linux 6.6.21 ehci_hcd
-> > [    3.778248][   T15] RBP: 0000000000000202 R08: 0000000000000000 R09:=
- 0000000000000000
-> > [    3.778249][   T15] R10: 0000000000000000 R11: 0000000000000000 R12:=
- 0000000000000003
-> > [    3.778249][   T15] R13: 0000000000000000 R14: 0000000000000001 R15:=
- ffffffff98b3b320
-> > [    3.786216][   T45] usb usb2: SerialNumber: 0000:00:1a.0
-> > [    3.805811][   T15] FS:  0000000000000000(0000) GS:ffff8c781ea00000(=
-0000) knlGS:0000000000000000
-> > [    3.805813][   T15] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003=
-3
-> > [    3.811993][   T45] hub 2-0:1.0: USB hub found
-> > [    3.817383][   T15] CR2: ffffffff9911c8c8 CR3: 000000040fa20005 CR4:=
- 00000000001706f0
-> > [    3.817385][   T15] Call Trace:
-> > [    3.817386][   T15]  <TASK>
-> > [    3.817388][   T15]  ? __die+0x23/0x80
-> > [    3.819643][   T45] hub 2-0:1.0: 2 ports detected
-> > [    3.827481][   T15]  ? page_fault_oops+0xa4/0x180
-> > [    3.827485][   T15]  ? exc_page_fault+0x152/0x180
-> > [    3.922376][   T15]  ? asm_exc_page_fault+0x26/0x40
-> > [    3.927289][   T15]  ? rcu_tasks_need_gpcb+0x25d/0x2c0
-> > [    3.932459][   T15]  ? __pfx_rcu_tasks_kthread+0x40/0x40
-> > [    3.937806][   T15]  rcu_tasks_one_gp+0x69/0x180
-> > [    3.942451][   T15]  rcu_tasks_kthread+0x94/0xc0
-> > [    3.947096][   T15]  kthread+0xe8/0x140
-> > [    3.950956][   T15]  ? __pfx_kthread+0x40/0x40
-> > [    3.955425][   T15]  ret_from_fork+0x34/0x80
-> > [    3.959721][   T15]  ? __pfx_kthread+0x40/0x40
-> > [    3.964192][   T15]  ret_from_fork_asm+0x1b/0x80
-> > [    3.968841][   T15]  </TASK>
-> >
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.9.9-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.9.y
+> and the diffstat can be found below.
 >
-> For stacktraces, timestamps, process names and extra information should b=
-e
-> avoided.
+> thanks,
+>
+> greg k-h
 
-OK, I didn't notice this before, thanks for reminding me :)
+Results from Linaro=E2=80=99s test farm.
+The following kernel panic was noticed while running kunit tests.
 
->
-> smpboot: Allowing 4 CPUs, 0 hotplug CPUs
-> ...
-> setup_percpu: NR_CPUS:512 nr_cpumask_bits:512 nr_cpu_ids:512 nr_node_ids:=
-1
-> ...
-> BUG: unable to handle page fault for address: ffffffff9911c8c8
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> CPU: 0 PID: 15 Comm: rcu_tasks_trace Tainted: G W          6.6.21 #1
-> 5dc7acf91a5e8e9ac9dcfc35bee0245691283ea6
-> RIP: 0010:rcu_tasks_need_gpcb+0x25d/0x2c0
-> CR2: ffffffff9911c8c8 CR3: 000000040fa20005 CR4: 00000000001706f0
-> Call Trace:
->  <TASK>
->  ? __die+0x23/0x80
->  ? page_fault_oops+0xa4/0x180
->  ? exc_page_fault+0x152/0x180
->  ? asm_exc_page_fault+0x26/0x40
->  ? rcu_tasks_need_gpcb+0x25d/0x2c0
->  ? __pfx_rcu_tasks_kthread+0x40/0x40
->  rcu_tasks_one_gp+0x69/0x180
->  rcu_tasks_kthread+0x94/0xc0
->  kthread+0xe8/0x140
->  ? __pfx_kthread+0x40/0x40
->  ret_from_fork+0x34/0x80
->  ? __pfx_kthread+0x40/0x40
->  ret_from_fork_asm+0x1b/0x80
->  </TASK>
->
-> > Consider that there may be holes in the CPU numbers, this commit
->
-> s/this commit//  [1]
-> You can avoid specific details like below?
->
-> Considering that there may be holes in the CPU numbers, use the
-> maximum possible cpu number, instead of nr_cpu_ids, for configuring
-> enqueue and dequeue limits.
+First seen on
+git commit id: 2471237b27c681c22e5f2b7175584aa7d5c89bfc
+date: on July 9th 2024.
 
-Will update :)
+  GOOD: v6.9.7-223-g03247eed042d
+  BAD: v6.9.8-198-g2471237b27c6
 
-Thanks
-Zqiang
+Always reproduce: yes.
 
->
-> [1] https://docs.kernel.org/process/submitting-patches.html#submittingpat=
-ches
->
->
-> Thanks
-> Neeraj
->
-> > use the maxcpu variable to store the CPU numbers after traversing
-> > possible cpu, and generate the rcu_task_cpu_ids variable and assign
-> > it to (maxcpu +1) instead of nr_cpu_ids.
-> >
-> > Closes: https://lore.kernel.org/linux-input/CALMA0xaTSMN+p4xUXkzrtR5r6k=
-7hgoswcaXx7baR_z9r5jjskw@mail.gmail.com/T/#u
-> > Reported-by: Zhixu Liu <zhixu.liu@gmail.com>
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  kernel/rcu/tasks.h | 80 +++++++++++++++++++++++++++++-----------------
-> >  1 file changed, 51 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 2b1d6abf3ba3..12d63ce84cc9 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -49,6 +49,7 @@ struct rcu_tasks_percpu {
-> >         struct list_head rtp_blkd_tasks;
-> >         struct list_head rtp_exit_list;
-> >         int cpu;
-> > +       int index;
-> >         struct rcu_tasks *rtpp;
-> >  };
-> >
-> > @@ -110,6 +111,7 @@ struct rcu_tasks {
-> >         call_rcu_func_t call_func;
-> >         unsigned int wait_state;
-> >         struct rcu_tasks_percpu __percpu *rtpcpu;
-> > +       struct rcu_tasks_percpu **rtpcp_array;
-> >         int percpu_enqueue_shift;
-> >         int percpu_enqueue_lim;
-> >         int percpu_dequeue_lim;
-> > @@ -182,6 +184,8 @@ module_param(rcu_task_collapse_lim, int, 0444);
-> >  static int rcu_task_lazy_lim __read_mostly =3D 32;
-> >  module_param(rcu_task_lazy_lim, int, 0444);
-> >
-> > +static int rcu_task_cpu_ids;
-> > +
-> >  /* RCU tasks grace-period state for debugging. */
-> >  #define RTGS_INIT               0
-> >  #define RTGS_WAIT_WAIT_CBS      1
-> > @@ -245,6 +249,8 @@ static void cblist_init_generic(struct rcu_tasks *r=
-tp)
-> >         int cpu;
-> >         int lim;
-> >         int shift;
-> > +       int maxcpu;
-> > +       int index =3D 0;
-> >
-> >         if (rcu_task_enqueue_lim < 0) {
-> >                 rcu_task_enqueue_lim =3D 1;
-> > @@ -254,14 +260,9 @@ static void cblist_init_generic(struct rcu_tasks *=
-rtp)
-> >         }
-> >         lim =3D rcu_task_enqueue_lim;
-> >
-> > -       if (lim > nr_cpu_ids)
-> > -               lim =3D nr_cpu_ids;
-> > -       shift =3D ilog2(nr_cpu_ids / lim);
-> > -       if (((nr_cpu_ids - 1) >> shift) >=3D lim)
-> > -               shift++;
-> > -       WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
-> > -       WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> > -       smp_store_release(&rtp->percpu_enqueue_lim, lim);
-> > +       rtp->rtpcp_array =3D kcalloc(num_possible_cpus(), sizeof(struct=
- rcu_tasks_percpu *), GFP_KERNEL);
-> > +       BUG_ON(!rtp->rtpcp_array);
-> > +
-> >         for_each_possible_cpu(cpu) {
-> >                 struct rcu_tasks_percpu *rtpcp =3D per_cpu_ptr(rtp->rtp=
-cpu, cpu);
-> >
-> > @@ -273,14 +274,29 @@ static void cblist_init_generic(struct rcu_tasks =
-*rtp)
-> >                 INIT_WORK(&rtpcp->rtp_work, rcu_tasks_invoke_cbs_wq);
-> >                 rtpcp->cpu =3D cpu;
-> >                 rtpcp->rtpp =3D rtp;
-> > +               rtpcp->index =3D index;
-> > +               rtp->rtpcp_array[index] =3D rtpcp;
-> > +               index++;
-> >                 if (!rtpcp->rtp_blkd_tasks.next)
-> >                         INIT_LIST_HEAD(&rtpcp->rtp_blkd_tasks);
-> >                 if (!rtpcp->rtp_exit_list.next)
-> >                         INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
-> > +               maxcpu =3D cpu;
-> >         }
-> >
-> > -       pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adju=
-st=3D%d.\n", rtp->name,
-> > -                       data_race(rtp->percpu_enqueue_shift), data_race=
-(rtp->percpu_enqueue_lim), rcu_task_cb_adjust);
-> > +       rcu_task_cpu_ids =3D maxcpu + 1;
-> > +       if (lim > rcu_task_cpu_ids)
-> > +               lim =3D rcu_task_cpu_ids;
-> > +       shift =3D ilog2(rcu_task_cpu_ids / lim);
-> > +       if (((rcu_task_cpu_ids - 1) >> shift) >=3D lim)
-> > +               shift++;
-> > +       WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
-> > +       WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> > +       smp_store_release(&rtp->percpu_enqueue_lim, lim);
-> > +
-> > +       pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adju=
-st=3D%d rcu_task_cpu_ids=3D%d.\n",
-> > +                       rtp->name, data_race(rtp->percpu_enqueue_shift)=
-, data_race(rtp->percpu_enqueue_lim),
-> > +                       rcu_task_cb_adjust, rcu_task_cpu_ids);
-> >  }
-> >
-> >  // Compute wakeup time for lazy callback timer.
-> > @@ -348,7 +364,7 @@ static void call_rcu_tasks_generic(struct rcu_head =
-*rhp, rcu_callback_t func,
-> >                         rtpcp->rtp_n_lock_retries =3D 0;
-> >                 }
-> >                 if (rcu_task_cb_adjust && ++rtpcp->rtp_n_lock_retries >=
- rcu_task_contend_lim &&
-> > -                   READ_ONCE(rtp->percpu_enqueue_lim) !=3D nr_cpu_ids)
-> > +                   READ_ONCE(rtp->percpu_enqueue_lim) !=3D rcu_task_cp=
-u_ids)
-> >                         needadjust =3D true;  // Defer adjustment to av=
-oid deadlock.
-> >         }
-> >         // Queuing callbacks before initialization not yet supported.
-> > @@ -368,10 +384,10 @@ static void call_rcu_tasks_generic(struct rcu_hea=
-d *rhp, rcu_callback_t func,
-> >         raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> >         if (unlikely(needadjust)) {
-> >                 raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-> > -               if (rtp->percpu_enqueue_lim !=3D nr_cpu_ids) {
-> > +               if (rtp->percpu_enqueue_lim !=3D rcu_task_cpu_ids) {
-> >                         WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
-> > -                       WRITE_ONCE(rtp->percpu_dequeue_lim, nr_cpu_ids)=
-;
-> > -                       smp_store_release(&rtp->percpu_enqueue_lim, nr_=
-cpu_ids);
-> > +                       WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cp=
-u_ids);
-> > +                       smp_store_release(&rtp->percpu_enqueue_lim, rcu=
-_task_cpu_ids);
-> >                         pr_info("Switching %s to per-CPU callback queui=
-ng.\n", rtp->name);
-> >                 }
-> >                 raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-> > @@ -444,6 +460,8 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rt=
-p)
-> >
-> >         dequeue_limit =3D smp_load_acquire(&rtp->percpu_dequeue_lim);
-> >         for (cpu =3D 0; cpu < dequeue_limit; cpu++) {
-> > +               if (!cpu_possible(cpu))
-> > +                       continue;
-> >                 struct rcu_tasks_percpu *rtpcp =3D per_cpu_ptr(rtp->rtp=
-cpu, cpu);
-> >
-> >                 /* Advance and accelerate any new callbacks. */
-> > @@ -481,7 +499,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rt=
-p)
-> >         if (rcu_task_cb_adjust && ncbs <=3D rcu_task_collapse_lim) {
-> >                 raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-> >                 if (rtp->percpu_enqueue_lim > 1) {
-> > -                       WRITE_ONCE(rtp->percpu_enqueue_shift, order_bas=
-e_2(nr_cpu_ids));
-> > +                       WRITE_ONCE(rtp->percpu_enqueue_shift, order_bas=
-e_2(rcu_task_cpu_ids));
-> >                         smp_store_release(&rtp->percpu_enqueue_lim, 1);
-> >                         rtp->percpu_dequeue_gpseq =3D get_state_synchro=
-nize_rcu();
-> >                         gpdone =3D false;
-> > @@ -496,7 +514,9 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rt=
-p)
-> >                         pr_info("Completing switch %s to CPU-0 callback=
- queuing.\n", rtp->name);
-> >                 }
-> >                 if (rtp->percpu_dequeue_lim =3D=3D 1) {
-> > -                       for (cpu =3D rtp->percpu_dequeue_lim; cpu < nr_=
-cpu_ids; cpu++) {
-> > +                       for (cpu =3D rtp->percpu_dequeue_lim; cpu < rcu=
-_task_cpu_ids; cpu++) {
-> > +                               if (!cpu_possible(cpu))
-> > +                                       continue;
-> >                                 struct rcu_tasks_percpu *rtpcp =3D per_=
-cpu_ptr(rtp->rtpcpu, cpu);
-> >
-> >                                 WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp=
-->cblist));
-> > @@ -511,30 +531,32 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *=
-rtp)
-> >  // Advance callbacks and invoke any that are ready.
-> >  static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tas=
-ks_percpu *rtpcp)
-> >  {
-> > -       int cpu;
-> > -       int cpunext;
-> >         int cpuwq;
-> >         unsigned long flags;
-> >         int len;
-> > +       int index;
-> >         struct rcu_head *rhp;
-> >         struct rcu_cblist rcl =3D RCU_CBLIST_INITIALIZER(rcl);
-> >         struct rcu_tasks_percpu *rtpcp_next;
-> >
-> > -       cpu =3D rtpcp->cpu;
-> > -       cpunext =3D cpu * 2 + 1;
-> > -       if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> > -               rtpcp_next =3D per_cpu_ptr(rtp->rtpcpu, cpunext);
-> > -               cpuwq =3D rcu_cpu_beenfullyonline(cpunext) ? cpunext : =
-WORK_CPU_UNBOUND;
-> > -               queue_work_on(cpuwq, system_wq, &rtpcp_next->rtp_work);
-> > -               cpunext++;
-> > -               if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim=
-)) {
-> > -                       rtpcp_next =3D per_cpu_ptr(rtp->rtpcpu, cpunext=
-);
-> > -                       cpuwq =3D rcu_cpu_beenfullyonline(cpunext) ? cp=
-unext : WORK_CPU_UNBOUND;
-> > +       index =3D rtpcp->index * 2 + 1;
-> > +       if (index < num_possible_cpus()) {
-> > +               rtpcp_next =3D rtp->rtpcp_array[index];
-> > +               if (rtpcp_next->cpu < smp_load_acquire(&rtp->percpu_deq=
-ueue_lim)) {
-> > +                       cpuwq =3D rcu_cpu_beenfullyonline(rtpcp_next->c=
-pu) ? rtpcp_next->cpu : WORK_CPU_UNBOUND;
-> >                         queue_work_on(cpuwq, system_wq, &rtpcp_next->rt=
-p_work);
-> > +                       index++;
-> > +                       if (index < num_possible_cpus()) {
-> > +                               rtpcp_next =3D rtp->rtpcp_array[index];
-> > +                               if (rtpcp_next->cpu < smp_load_acquire(=
-&rtp->percpu_dequeue_lim)) {
-> > +                                       cpuwq =3D rcu_cpu_beenfullyonli=
-ne(rtpcp_next->cpu) ? rtpcp_next->cpu : WORK_CPU_UNBOUND;
-> > +                                       queue_work_on(cpuwq, system_wq,=
- &rtpcp_next->rtp_work);
-> > +                               }
-> > +                       }
-> >                 }
-> >         }
-> >
-> > -       if (rcu_segcblist_empty(&rtpcp->cblist) || !cpu_possible(cpu))
-> > +       if (rcu_segcblist_empty(&rtpcp->cblist))
-> >                 return;
-> >         raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> >         rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tas=
-ks_gp_seq));
-> > --
-> > 2.17.1
-> >
+* qemu-arm64, Juno-r2, rk3399-rock-pi-4b and qemu-x86_64 the kunit-boot fai=
+led.
+  - gcc-13-defconfig-kunit
+  - clang-18-defconfig-kunit
+  - clang-nightly-defconfig-kunit
+  - gcc-8-defconfig-kunit
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Crash log [1]:
+---------
+<4>[ 63.601683] kernel_init_freeable (init/main.c:1559)
+<4>[ 63.602335] kernel_init (init/main.c:1446)
+<4>[ 63.602980] ret_from_fork (arch/arm64/kernel/entry.S:861)
+<3>[   63.603703]
+<3>[   63.604057] The buggy address belongs to the object at fff00000c07582=
+e8
+<3>[   63.604057]  which belongs to the cache inode_cache of size 616
+<3>[   63.605281] The buggy address is located 80 bytes to the right of
+<3>[   63.605281]  allocated 616-byte region [fff00000c07582e8,
+fff00000c0758550)
+<3>[   63.606592]
+<3>[   63.607294] The buggy address belongs to the physical page:
+<4>[   63.607948] page: refcount:1 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x100758
+<4>[   63.608830] head: order:2 entire_mapcount:0 nr_pages_mapped:0 pincoun=
+t:0
+<4>[   63.609593] flags:
+0xbfffe0000000840(slab|head|node=3D0|zone=3D2|lastcpupid=3D0x1ffff)
+<4>[   63.610449] page_type: 0xffffffff()
+<4>[   63.611934] raw: 0bfffe0000000840 fff00000c08d2dc0
+dead000000000122 0000000000000000
+<4>[   63.612810] raw: 0000000000000000 0000000080160016
+00000001ffffffff 0000000000000000
+<4>[   63.613668] head: 0bfffe0000000840 fff00000c08d2dc0
+dead000000000122 0000000000000000
+<4>[   63.614525] head: 0000000000000000 0000000080160016
+00000001ffffffff 0000000000000000
+<4>[   63.615694] head: 0bfffe0000000002 ffffc1ffc301d601
+ffffc1ffc301d648 00000000ffffffff
+<4>[   63.616583] head: 0000000400000000 0000000000000000
+00000000ffffffff 0000000000000000
+<4>[   63.617391] page dumped because: kasan: bad access detected
+<3>[   63.618034]
+<3>[   63.618354] Memory state around the buggy address:
+<3>[   63.619281]  fff00000c0758480: 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00
+<3>[   63.620086]  fff00000c0758500: 00 00 00 00 00 00 00 00 00 00 fc
+fc fc fc fc fc
+<3>[   63.620886] >fff00000c0758580: fc fc fc fc fc fc fc fc fc fc 00
+00 00 00 00 00
+<3>[   63.621664]                                ^
+<3>[   63.622235]  fff00000c0758600: 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00
+<3>[   63.623362]  fff00000c0758680: 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00
+<3>[   63.624138]
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<6>[   63.645148]         not ok 1 block_bits=3D10 cluster_bits=3D3
+blocks_per_group=3D8192 group_count=3D4 desc_size=3D64
+<6>[   63.658504]         ok 2 block_bits=3D12 cluster_bits=3D3
+blocks_per_group=3D8192 group_count=3D4 desc_size=3D64
+<1>[   63.674531] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000008
+<1>[   63.675691] Mem abort info:
+<1>[   63.676527]   ESR =3D 0x000000009600006b
+<1>[   63.677658]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+<1>[   63.678274]   SET =3D 0, FnV =3D 0
+<1>[   63.678906]   EA =3D 0, S1PTW =3D 0
+<1>[   63.679880]   FSC =3D 0x2b: level -1 translation fault
+<1>[   63.680879] Data abort info:
+<1>[   63.681606]   ISV =3D 0, ISS =3D 0x0000006b, ISS2 =3D 0x00000000
+<1>[   63.682544]   CM =3D 0, WnR =3D 1, TnD =3D 0, TagAccess =3D 0
+<1>[   63.683493]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+<1>[   63.684732] [0000000000000008] user address but active_mm is swapper
+<0>[   63.686080] Internal error: Oops: 000000009600006b [#1] PREEMPT SMP
+<4>[   63.688843] Modules linked in:
+<4>[   63.689662] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B
+    N 6.9.9-rc1 #1
+<4>[   63.690522] Hardware name: linux,dummy-virt (DT)
+<4>[   63.691532] pstate: 224000c9 (nzCv daIF +PAN -UAO +TCO -DIT
+-SSBS BTYPE=3D--)
+<4>[ 63.692423] pc : _raw_spin_lock_irq
+(arch/arm64/include/asm/atomic_lse.h:271
+arch/arm64/include/asm/cmpxchg.h:120
+arch/arm64/include/asm/cmpxchg.h:169
+include/linux/atomic/atomic-arch-fallback.h:2055
+include/linux/atomic/atomic-arch-fallback.h:2173
+include/linux/atomic/atomic-instrumented.h:1302
+include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187
+include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170)
+<4>[ 63.693097] lr : _raw_spin_lock_irq
+(include/linux/atomic/atomic-arch-fallback.h:2172 (discriminator 1)
+include/linux/atomic/atomic-instrumented.h:1302 (discriminator 1)
+include/asm-generic/qspinlock.h:111 (discriminator 1)
+include/linux/spinlock.h:187 (discriminator 1)
+include/linux/spinlock_api_smp.h:120 (discriminator 1)
+kernel/locking/spinlock.c:170 (discriminator 1))
+<4>[   63.693714] sp : ffff800080087620
+<4>[   63.694519] x29: ffff800080087680 x28: 1ffff00010010f45 x27:
+ffff800080087a20
+<4>[   63.696315] x26: 1ffff00010010f47 x25: ffff800080087a00 x24:
+fff00000c99f0028
+<4>[   63.697334] x23: 0000000000000000 x22: dfff800000000000 x21:
+ffff800080087640
+<4>[   63.698333] x20: 1ffff00010010ec4 x19: 0000000000000008 x18:
+000000004b9fd0a9
+<4>[   63.699711] x17: 0000000000000000 x16: fff00000da13e180 x15:
+ffffaa8e3330c4c4
+<4>[   63.700732] x14: ffffaa8e33312508 x13: ffffaa8e3583b0ec x12:
+ffff700010010ec9
+<4>[   63.701734] x11: 1ffff00010010ec8 x10: ffff700010010ec8 x9 :
+dfff800000000000
+<4>[   63.702792] x8 : 0000000000000003 x7 : 0000000000000001 x6 :
+ffff700010010ec8
+<4>[   63.704539] x5 : ffff800080087640 x4 : ffff700010010ec8 x3 :
+ffffaa8e3585c520
+<4>[   63.705529] x2 : 0000000000000001 x1 : 0000000000000000 x0 :
+0000000000000000
+<4>[   63.706625] Call trace:
+<4>[ 63.707408] _raw_spin_lock_irq
+(arch/arm64/include/asm/atomic_lse.h:271
+arch/arm64/include/asm/cmpxchg.h:120
+arch/arm64/include/asm/cmpxchg.h:169
+include/linux/atomic/atomic-arch-fallback.h:2055
+include/linux/atomic/atomic-arch-fallback.h:2173
+include/linux/atomic/atomic-instrumented.h:1302
+include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187
+include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170)
+<4>[ 63.708130] wait_for_completion_timeout
+(kernel/sched/completion.c:84 kernel/sched/completion.c:116
+kernel/sched/completion.c:127 kernel/sched/completion.c:167)
+<4>[ 63.708902] kunit_try_catch_run (lib/kunit/try-catch.c:85)
+<4>[ 63.709710] kunit_run_case_catch_errors (lib/kunit/test.c:544)
+<4>[ 63.710558] kunit_run_tests (lib/kunit/test.c:649)
+<4>[ 63.711555] __kunit_test_suites_init (lib/kunit/test.c:732
+(discriminator 1))
+<4>[ 63.712489] kunit_run_all_tests (lib/kunit/executor.c:276
+lib/kunit/executor.c:392)
+<4>[ 63.713317] kernel_init_freeable (init/main.c:1559)
+<4>[ 63.713971] kernel_init (init/main.c:1446)
+<4>[ 63.714503] ret_from_fork (arch/arm64/kernel/entry.S:861)
+<0>[ 63.716154] Code: 93407c02 d503201f 2a0003e1 52800022 (88e17e62)
+All code
+=3D=3D=3D=3D=3D=3D=3D=3D
+   0: 93407c02 sxtw x2, w0
+   4: d503201f nop
+   8: 2a0003e1 mov w1, w0
+   c: 52800022 mov w2, #0x1                    // #1
+  10:* 88e17e62 casa w1, w2, [x19] <-- trapping instruction
+
+Code starting with the faulting instruction
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+   0: 88e17e62 casa w1, w2, [x19]
+<4>[   63.717705] ---[ end trace 0000000000000000 ]---
+<6>[   63.718649] note: swapper/0[1] exited with irqs disabled
+<6>[   63.720758] note: swapper/0[1] exited with preempt_count 1
+<0>[   63.722091] Kernel panic - not syncing: Attempted to kill init!
+exitcode=3D0x0000000b
+<2>[   63.724608] SMP: stopping secondary CPUs
+<0>[   63.725877] Kernel Offset: 0x2a8db2200000 from 0xffff800080000000
+<0>[   63.726534] PHYS_OFFSET: 0x40000000
+<0>[   63.727664] CPU features: 0x0,00000006,8f17bd7c,6766773f
+<0>[   63.729291] Memory Limit: none
+<0>[   63.731074] ---[ end Kernel panic - not syncing: Attempted to
+kill init! exitcode=3D0x0000000b ]---
+
+Steps to reproduce on qemu-arm64 link provided [2].
+Build artifacts arm64 link provided [3].
+The Kconfig is built with defconfig+Kunit and the config link provided [4].
+This occurred on following Toolchain builds gcc-13, clang-18,
+clang-nightly and gcc-8.
+
+Reproducible always on following devices and emulators,
+ * rk3399-rock-pi-4b
+ * qemu-arm64
+ * qemu-x86_64
+
+I am bisecting this reported issue.
+Please let me know if you need more information.
+
+Links:
+[1] https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.9.y/build/v6=
+.9.8-198-g2471237b27c6/testrun/24552495/suite/boot/test/gcc-13-lkftconfig-k=
+unit/log
+[2] https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2j0YCw=
+foW0D9nrPUAeDspHG0iFE/reproducer
+[3] https://storage.tuxsuite.com/public/linaro/lkft/builds/2j0Y8lX6zRNGTiGT=
+ZmteMwzwHj2/
+[4] https://storage.tuxsuite.com/public/linaro/lkft/builds/2j0Y8lX6zRNGTiGT=
+ZmteMwzwHj2/config
+
+--
+Linaro LKFT
+https://lkft.linaro.org
