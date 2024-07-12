@@ -1,54 +1,42 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CAA14B978
-	for <rcu@vger.kernel.org>; Fri, 12 Jul 2024 10:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39F58821;
+	Fri, 12 Jul 2024 15:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720780664; cv=none; b=GaEhUcISRe6iP4NXo+u70ZC+3jskh39WYJqYsvABKMyT0N83BHql0F0L9sIzIVfqRqevIL9oGeknixScMIwTAybJUqUjui1imzMrJnvcFbQRmEqOcWaH2qA5C0tTxTEOaj8B0F9iphTzjUNAin1/1IGYKShoV9foHuKI1DHJv40=
+	t=1720797365; cv=none; b=p+7HKlBlyEi5ry6X83jgAMotfeaX2CzbNJH1InmFY0PLX3JBKXHhmfkpSdsKLWyoQ1BwEzQec+OYKBudWoQ1+ZkA/fu3XhNwG3tv6je+pePDLdF78S+RD88xSudg3IMwg0xui+B7CWRJBI6NJJIcZGiBILvgKabNoMppFw3Gt6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720780664; c=relaxed/simple;
-	bh=qz2O/MprPmBzNSiPtCWHRajDdNanqFOrS14tWtMM04Q=;
+	s=arc-20240116; t=1720797365; c=relaxed/simple;
+	bh=3Uyra+I9gWVUZYDdJEtl/V22Ithv/zIGafIIIUAr6hw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=beiitCT9jRiowxi2iO9lNmzCiOHbTkiLse2iw816XeOTyulUSRcs148L6tWTODWJ7hpFQ5DzO0v8oZA/Qouo6h5RvVP+pMYnaB/cF2Z/F3mc3s18IlkXWkUtOdpgUZcEpFKJp+CyFV0ZKcjZL/jAmvgYXcT5yHyN/TUUWLFfR3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EzwEmmUk; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=iIDYFKmzpZUy6j1ODiAIO7d3NIFTcOTHKfQWm5To4pTm/qVmnU8buGtt++7FHrqWZF9UajiJnsNKhONS6Uvt4nD4P2bZ8MdmVs8D1kecyClmziXYxudgoqZFxoG1S3bnn6cMTfY3pDL2+ichZRKghiTLXbPJ3TNFJSsXIIN52RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LBIQXUS/; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EzwEmmUk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720780662;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GxLBBwSqa+0c5TKVpHyNF//OUvkQJIf+ltYzYVrXt3E=;
-	b=EzwEmmUkhjryzCTu5kBzV3sj+vTsCgcee5FBRsuIzIFtZfntMel05W+NrE2buvN1jiVQOT
-	ggLJVUK9xB2NapYK7gt8Ju2AlSAR0zZ6WJ0Ul03tp1A8u2D6wTSFaEEzxZBBvIJF/xzmye
-	tqd4qy9MVEqEVGJUr9oOAsdwRWULv/4=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-523-8EXkAw8vOXOxbx0nUEOgqQ-1; Fri,
- 12 Jul 2024 06:37:39 -0400
-X-MC-Unique: 8EXkAw8vOXOxbx0nUEOgqQ-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D774B1955BCE;
-	Fri, 12 Jul 2024 10:37:34 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.173])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id D146D19560AA;
-	Fri, 12 Jul 2024 10:37:23 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 12 Jul 2024 12:35:57 +0200 (CEST)
-Date: Fri, 12 Jul 2024 12:35:45 +0200
-From: Oleg Nesterov <oleg@redhat.com>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LBIQXUS/"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=N7v6IM1e3THcsoa2stJs8cQaeqgO74WfVYjt6lw/o48=; b=LBIQXUS/5IqKEWICRHIe/zpbTn
+	zJewW8BCB3O4JT40rtI/KJ9IA0KIfT77u1kzk1GUoB9XQ0Q+Pvn1+pP1+hB04AUSr7p1ORhtWTqLU
+	znDFJ2UPJxfx9kEWh9HGSopz0t+F2v8mZ/J8PKRTBKcfp2O9T4AyIJcXBLssPWQ8pIq8+6aJ58/lC
+	6ldh3ylzYqmnJiqb7C5ck/Yl9vhwRwtLxoSGTOFMZu2lWTaijNHNMYB4BS3b6ho2VSsesNXtDm7Q7
+	DFX/AxWu9BwvZytvp8DG+2QXgi8UOqcXDnplJ/qXyvSx/gxYIzT3maV6PIYTF6/ZqG4rYJUtKeOMo
+	D7cBMOeQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sSHzw-0000000CbNA-014h;
+	Fri, 12 Jul 2024 15:15:48 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id A29E630050D; Fri, 12 Jul 2024 17:15:47 +0200 (CEST)
+Date: Fri, 12 Jul 2024 17:15:47 +0200
+From: Peter Zijlstra <peterz@infradead.org>
 To: Valentin Schneider <vschneid@redhat.com>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
+	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
 	Dietmar Eggemann <dietmar.eggemann@arm.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -69,12 +57,12 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
 	Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
 	Palmer Dabbelt <palmer@rivosinc.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC PATCH v3 03/10] task_work, sched: Add a _locked variant to
- task_work_cancel()
-Message-ID: <20240712103544.GB31100@redhat.com>
+	Oleg Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [RFC PATCH v3 01/10] rcuwait: Split type definition to its own
+ header
+Message-ID: <20240712151547.GP27299@noisy.programming.kicks-ass.net>
 References: <20240711130004.2157737-1-vschneid@redhat.com>
- <20240711130004.2157737-4-vschneid@redhat.com>
+ <20240711130004.2157737-2-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -83,27 +71,71 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240711130004.2157737-4-vschneid@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+In-Reply-To: <20240711130004.2157737-2-vschneid@redhat.com>
 
-On 07/11, Valentin Schneider wrote:
->
-> Later commits will need to issue a task_work_cancel() from within the
-> scheduler with the task's ->pi_lock held.
->
-> Add a _locked variant that expects p->pi_lock to be held. Expose it in a
-> separate scheduler header file, as this really is a scheduler-only
-> interface.
->
+On Thu, Jul 11, 2024 at 02:59:55PM +0200, Valentin Schneider wrote:
+> A later commit will add a struct irq_work member to struct task_struct, which
+> would require <linux/sched.h> to include the definition of struct
+> irq_work.
+> 
+> Thanks to header dependency hell, incudling <linux/irq_work.h> in <linux/sched.h>
+> results in defining inline helpers using not-yet-defined fields (mm_struct,
+> task_struct, various task states...).
+> 
+> Break off the definition of struct rcuwait into its own header file.
+> 
 > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 > ---
->  kernel/sched/task_work_sched.h | 14 +++++++
->  kernel/task_work.c             | 67 ++++++++++++++++++++++++++--------
->  2 files changed, 66 insertions(+), 15 deletions(-)
->  create mode 100644 kernel/sched/task_work_sched.h
+>  include/linux/rcuwait.h       |  9 ++-------
+>  include/linux/rcuwait_types.h | 16 ++++++++++++++++
+>  2 files changed, 18 insertions(+), 7 deletions(-)
+>  create mode 100644 include/linux/rcuwait_types.h
+> 
+> diff --git a/include/linux/rcuwait.h b/include/linux/rcuwait.h
+> index 27343424225cf..1f1ca7d38cdf8 100644
+> --- a/include/linux/rcuwait.h
+> +++ b/include/linux/rcuwait.h
+> @@ -5,17 +5,12 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/sched/signal.h>
+>  
+> +#include <linux/rcuwait_types.h>
+> +
+>  /*
+>   * rcuwait provides a way of blocking and waking up a single
+>   * task in an rcu-safe manner.
+> - *
+> - * The only time @task is non-nil is when a user is blocked (or
+> - * checking if it needs to) on a condition, and reset as soon as we
+> - * know that the condition has succeeded and are awoken.
+>   */
+> -struct rcuwait {
+> -	struct task_struct __rcu *task;
+> -};
+>  
+>  #define __RCUWAIT_INITIALIZER(name)		\
+>  	{ .task = NULL, }
+> diff --git a/include/linux/rcuwait_types.h b/include/linux/rcuwait_types.h
+> new file mode 100644
+> index 0000000000000..60a4385a2c368
+> --- /dev/null
+> +++ b/include/linux/rcuwait_types.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_RCUWAIT_TYPES_H_
+> +#define _LINUX_RCUWAIT_TYPES_H_
+> +
+> +#include <linux/sched.h>
+> +
+> +/*
+> + * The only time @task is non-nil is when a user is blocked (or
+> + * checking if it needs to) on a condition, and reset as soon as we
+> + * know that the condition has succeeded and are awoken.
+> + */
+> +struct rcuwait {
+> +	struct task_struct __rcu *task;
+> +};
+> +
+> +#endif
 
-I am not sure the new task_work_sched.h makes sense, but I won't argue.
-
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-
+Can't we simplu stick this in include/linux/types.h ?
