@@ -1,169 +1,109 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950331C2E
-	for <rcu@vger.kernel.org>; Fri, 12 Jul 2024 00:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CAA14B978
+	for <rcu@vger.kernel.org>; Fri, 12 Jul 2024 10:37:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720745812; cv=none; b=SXDyVAmYDGgGggrhuIoFOOXOxN0uxwH+X75mtSWK8Eo0d0K06U56WYH29lFAuyGoHL4bu7mqXKBjcJ8MZhem1vwrydoqwzZhigvB5FqX76p8/f4Vi00W086aoMSLILl8yL6qJhVOCn9g7+CYNXRs6Ks4OrDmf5eKcV8+N/G5nr0=
+	t=1720780664; cv=none; b=GaEhUcISRe6iP4NXo+u70ZC+3jskh39WYJqYsvABKMyT0N83BHql0F0L9sIzIVfqRqevIL9oGeknixScMIwTAybJUqUjui1imzMrJnvcFbQRmEqOcWaH2qA5C0tTxTEOaj8B0F9iphTzjUNAin1/1IGYKShoV9foHuKI1DHJv40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720745812; c=relaxed/simple;
-	bh=o4KE0eSAF1Z+i16D9k2fb7T5EhISeKW0bbW/IwJMFRc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Pwwb9Bq4qswU7GrnNEbvemP90lPr728btYCEJ/4q/BwIZbl2Y8DzNO108Lno1a0ZG6STXgbrN3of4A9R4AdNAwYZefh6n3mBaGxvWC1bahiGTlec9CKXgUUOoaj2+ppE5PgERsXJBc9DzXsoasuol9von/1I9yq2FnU4ne3TeJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MUaprB+6; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1720780664; c=relaxed/simple;
+	bh=qz2O/MprPmBzNSiPtCWHRajDdNanqFOrS14tWtMM04Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=beiitCT9jRiowxi2iO9lNmzCiOHbTkiLse2iw816XeOTyulUSRcs148L6tWTODWJ7hpFQ5DzO0v8oZA/Qouo6h5RvVP+pMYnaB/cF2Z/F3mc3s18IlkXWkUtOdpgUZcEpFKJp+CyFV0ZKcjZL/jAmvgYXcT5yHyN/TUUWLFfR3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EzwEmmUk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MUaprB+6"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1fb70169c23so13618985ad.1
-        for <rcu@vger.kernel.org>; Thu, 11 Jul 2024 17:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720745810; x=1721350610; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jrM7Czli+kAVh1Xo7kDMa5N0NWe0q42unvcsrT2Aezg=;
-        b=MUaprB+6mznZHFksSR1RZsLEOnx1g4heKAAcu6QRyXSkqxYlaWGMoSceAc/xX8W8qO
-         420IrCTnAq0IJhTIr6zTsLRZEFJkAEmbEUYMbCv+XyaSejlCQNv9zJGCZPOHhjmB64Hl
-         g/sJFAjX3HdHljeGb3fdZRXIM0lOc5b9fC2vQx6pcNx9Jm2LW7f2/K0HY6j1zkLbfLvZ
-         avE9Y38PPGPpFcIB8YTucvdlhb0h/TurKswdS+fibwJEdLjnD6X2Cnwpyh6N9kZmKf2W
-         kYuNsS30Rm1fOLb/VZkNNi+RBCsH5Y+i/R1F/mKh5gjF18xS00Jkd+XG7uck1PsbY/u/
-         dH6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720745810; x=1721350610;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jrM7Czli+kAVh1Xo7kDMa5N0NWe0q42unvcsrT2Aezg=;
-        b=e4wvsYZCwkYdcfqgTdMfnfdpe3obInf0ZZWTo7uLNx5OhBAN2JQYCtEqs7Td4Ty3fX
-         T1ntjgoUVTCKCqModuRFDb6TukbP7zLidarn7N78/jP/++6h8ICEfrRNFEA/ImRCXhMh
-         ZInv7f/wtSsW3NAqhtzJQzH8gPMP9Bp//9OXOIQdF0h7Z2Uh60CqIpkgxJqKJs3hjwaz
-         KePYgv3hHdyByrbyhUVFEXDsrB+/05fKtia4CJ8txCUx03ps55lw0Ct5JD24fmZpnXgg
-         73malrZ5LR8G1/54Cd/52F14kZ1BCDtd2ewxyNpJPqR/fUMGfp0UH41Vioe2kSg8/Nrq
-         Xgew==
-X-Forwarded-Encrypted: i=1; AJvYcCW2W4cT0IUY4mkBY5a5vFv0F+AtqU/MLOfcNw0/5CRywm7S77ht1eQd1NSc6RtUa3aEuMH540mLQo8+8SyRZGc8evOO
-X-Gm-Message-State: AOJu0YxtgyHViyNZWo4kMcgy2E4UPbt9UwoF5vGu2NyaZ+m6OPdhgoyU
-	I4SXzKfUXwNhMpJJk9QOuWzw0Fo7aLS63yTCx7sWL8Q0L/0DodTI
-X-Google-Smtp-Source: AGHT+IF4K65Rw8cKbgD/4pWgBG8FUS25hTsdwhp1d953L74aZ36xLimxAOjyfBuJvKOm9/Y1r9/+jQ==
-X-Received: by 2002:a17:903:32d0:b0:1fb:6ea1:35 with SMTP id d9443c01a7336-1fbb6ee1e47mr93628375ad.69.1720745809737;
-        Thu, 11 Jul 2024 17:56:49 -0700 (PDT)
-Received: from saturn.. (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ac8c84sm56272185ad.246.2024.07.11.17.56.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jul 2024 17:56:49 -0700 (PDT)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: paulmck@kernel.org,
-	rcu@vger.kernel.org
-Subject: [PATCH] srcu: faster srcu gp seq wrap-around
-Date: Thu, 11 Jul 2024 17:56:29 -0700
-Message-ID: <20240712005629.2980-1-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.45.2
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EzwEmmUk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1720780662;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GxLBBwSqa+0c5TKVpHyNF//OUvkQJIf+ltYzYVrXt3E=;
+	b=EzwEmmUkhjryzCTu5kBzV3sj+vTsCgcee5FBRsuIzIFtZfntMel05W+NrE2buvN1jiVQOT
+	ggLJVUK9xB2NapYK7gt8Ju2AlSAR0zZ6WJ0Ul03tp1A8u2D6wTSFaEEzxZBBvIJF/xzmye
+	tqd4qy9MVEqEVGJUr9oOAsdwRWULv/4=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-523-8EXkAw8vOXOxbx0nUEOgqQ-1; Fri,
+ 12 Jul 2024 06:37:39 -0400
+X-MC-Unique: 8EXkAw8vOXOxbx0nUEOgqQ-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D774B1955BCE;
+	Fri, 12 Jul 2024 10:37:34 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.173])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id D146D19560AA;
+	Fri, 12 Jul 2024 10:37:23 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri, 12 Jul 2024 12:35:57 +0200 (CEST)
+Date: Fri, 12 Jul 2024 12:35:45 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Phil Auld <pauld@redhat.com>, Clark Williams <williams@redhat.com>,
+	Tomas Glozar <tglozar@redhat.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: Re: [RFC PATCH v3 03/10] task_work, sched: Add a _locked variant to
+ task_work_cancel()
+Message-ID: <20240712103544.GB31100@redhat.com>
+References: <20240711130004.2157737-1-vschneid@redhat.com>
+ <20240711130004.2157737-4-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240711130004.2157737-4-vschneid@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-Using a higher value for the initial gp sequence counter values allows for
-wrapping to occur faster. It can help with surfacing any issues that may be
-happening as a result of the wrap around.
+On 07/11, Valentin Schneider wrote:
+>
+> Later commits will need to issue a task_work_cancel() from within the
+> scheduler with the task's ->pi_lock held.
+>
+> Add a _locked variant that expects p->pi_lock to be held. Expose it in a
+> separate scheduler header file, as this really is a scheduler-only
+> interface.
+>
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> ---
+>  kernel/sched/task_work_sched.h | 14 +++++++
+>  kernel/task_work.c             | 67 ++++++++++++++++++++++++++--------
+>  2 files changed, 66 insertions(+), 15 deletions(-)
+>  create mode 100644 kernel/sched/task_work_sched.h
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- include/linux/rcupdate.h |  3 +++
- include/linux/srcutree.h | 15 ++++++++++++++-
- kernel/rcu/rcu.h         |  3 ---
- kernel/rcu/srcutree.c    |  6 ++++--
- 4 files changed, 21 insertions(+), 6 deletions(-)
+I am not sure the new task_work_sched.h makes sense, but I won't argue.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index dfd2399f2cde..c148674b9e09 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -35,6 +35,9 @@
- #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
- #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
- 
-+#define RCU_SEQ_CTR_SHIFT    2
-+#define RCU_SEQ_STATE_MASK   ((1 << RCU_SEQ_CTR_SHIFT) - 1)
-+
- /* Exported common interfaces */
- void call_rcu(struct rcu_head *head, rcu_callback_t func);
- void rcu_barrier_tasks(void);
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index 8f3f72480e78..ed57598394de 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -129,10 +129,23 @@ struct srcu_struct {
- #define SRCU_STATE_SCAN1	1
- #define SRCU_STATE_SCAN2	2
- 
-+/*
-+ * Values for initializing gp sequence fields. Higher values allow wrap arounds to
-+ * occur earlier.
-+ * The second value with state is useful in the case of static initialization of
-+ * srcu_usage where srcu_gp_seq_needed is expected to have some state value in its
-+ * lower bits (or else it will appear to be already initialized within
-+ * the call check_init_srcu_struct()).
-+ */
-+#define SRCU_GP_SEQ_INITIAL_VAL ((0UL - 100UL) << RCU_SEQ_CTR_SHIFT)
-+#define SRCU_GP_SEQ_INITIAL_VAL_WITH_STATE (SRCU_GP_SEQ_INITIAL_VAL - 1)
-+
- #define __SRCU_USAGE_INIT(name)									\
- {												\
- 	.lock = __SPIN_LOCK_UNLOCKED(name.lock),						\
--	.srcu_gp_seq_needed = -1UL,								\
-+	.srcu_gp_seq = SRCU_GP_SEQ_INITIAL_VAL,							\
-+	.srcu_gp_seq_needed = SRCU_GP_SEQ_INITIAL_VAL_WITH_STATE,				\
-+	.srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL,					\
- 	.work = __DELAYED_WORK_INITIALIZER(name.work, NULL, 0),					\
- }
- 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 38238e595a61..2bfed9855d67 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -54,9 +54,6 @@
-  *					grace-period sequence number.
-  */
- 
--#define RCU_SEQ_CTR_SHIFT	2
--#define RCU_SEQ_STATE_MASK	((1 << RCU_SEQ_CTR_SHIFT) - 1)
--
- /* Low-order bit definition for polled grace-period APIs. */
- #define RCU_GET_STATE_COMPLETED	0x1
- 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index bc4b58b0204e..2209dd0589de 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -247,7 +247,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	mutex_init(&ssp->srcu_sup->srcu_cb_mutex);
- 	mutex_init(&ssp->srcu_sup->srcu_gp_mutex);
- 	ssp->srcu_idx = 0;
--	ssp->srcu_sup->srcu_gp_seq = 0;
-+	ssp->srcu_sup->srcu_gp_seq = SRCU_GP_SEQ_INITIAL_VAL;
- 	ssp->srcu_sup->srcu_barrier_seq = 0;
- 	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
- 	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
-@@ -258,7 +258,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	if (!ssp->sda)
- 		goto err_free_sup;
- 	init_srcu_struct_data(ssp);
--	ssp->srcu_sup->srcu_gp_seq_needed_exp = 0;
-+	ssp->srcu_sup->srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL;
- 	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
- 	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
- 		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
-@@ -267,6 +267,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
- 	}
- 	ssp->srcu_sup->srcu_ssp = ssp;
- 	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
-+	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed,
-+		SRCU_GP_SEQ_INITIAL_VAL); /* Init done. */
- 	return 0;
- 
- err_free_sda:
--- 
-2.45.2
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
