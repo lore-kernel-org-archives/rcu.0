@@ -1,38 +1,38 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741BC440C;
-	Fri, 12 Jul 2024 15:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E090173343;
+	Fri, 12 Jul 2024 15:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720797462; cv=none; b=eSlzFwGNHripWmOxbdKQhKGGOcm4L7WbLjLzAiM5HXB4TUvj6lySjlDdzx33C92Vu2K5F4qtyCznkqojdcUetRDPuKzc10b+/iOfUWCfNikpSY94Bj79numhJw/MCgESgzEX2w5LpufJ0RF0z8BG9rfPaviSsKLEcr35eAEUHTY=
+	t=1720797633; cv=none; b=aC5jxQ0pNvBQjR/AGdcht35ZtGlcOmUu4Pf5pXSfqagsC1Px11et8cc8i+mW3NgqYUmSxRyEMENtFd+ypbgVJrlsMrQjRkS8/p5rYlvbiDNWhK5OLVnx5laRb37zliJKz5IZm3jhoea/HIVUesNuu/cf/44BaVMLSwjUW57GdPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720797462; c=relaxed/simple;
-	bh=mnhCRqO2PZx6WI2111F6Qo7KzuZY9QNIjNpFSIP3YRI=;
+	s=arc-20240116; t=1720797633; c=relaxed/simple;
+	bh=nvcLfmmtRTNLzyLmqu+KOrZedlfhy3Um77GnvO0gRMA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=khZPtUpZQhZ+u9dZoWw4CKZnmw6Bj1NAVCWAKRkpv2aw8fcvUAVaZDBYgK6Yxfvbv/XFm9DTYWKw/c1+NINRZbgFXtgbcBaBcFnkZHPTNRAUvQTIhdf7z312u2Bww51Hf8nbq7wGraxL2vTCryXxZtBRnftDQf97bXdVSJtABqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T6cmDhn5; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=nQe/7snQ4sevbmQAuBrmdtAFnlaaHuUaP+ypebcZRWvMmHZuP9wC1K+Iwyq6haMDLESvFUDd70ojIbFlLJRdbaZqZQJ0jqWqUVBWhObjnxPI+fnoF7QKVNZg/DqsAyUZKpwPqSq0u6X7vavz9B+8MXrniXgRicOk2GmT7bdSsJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qcBtCw+v; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T6cmDhn5"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="qcBtCw+v"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=KgAgHjkNVVrh+oOOmdhTy+ri84P0GulqGbUwPI3o38A=; b=T6cmDhn5T5pbn5Zdf/mstAjnmF
-	CSIAZW7+RPwR1MDsZbEe1KPdJUT3LavA1pcv/gGIf7ECZI5F84vOjm3fv0g9XoO8ikRP58fuPFvF4
-	McYqgOzGqlbslM7LSVltgYI83EF/A42BSmNz9nbVOWXjUUpsx1PQvhvXv9Hi1y/7Apk2YzCy8wLSB
-	QSVunGnsHvUjTbDML3Q4BF859lJmlE9w1pM99ZD0UINfq5bUZGbiVKge2/R1IiZNSo8JStGa91D7L
-	z4A9peWH+71vLrKp2X0v5NfhpF0JSZi5q3ZqD9kMTWIZy0r8w6onTNshVX05YbpBT8c3vibZ6KJLR
-	CvVJzIWw==;
+	bh=yFOSfw59CiTTN0H3xVZks2pDZosjWrgrRj4r2pLl3K8=; b=qcBtCw+vAhRixTf52pCIhw1Irt
+	TDVPz0nNUzGGMN7qmh+4dmGtzwt0jX6fJdH4AIFykCTVTPPyytKfh8pdwOT9vvliqBJDb4TNlQuJv
+	Oi12YUIASAYOVPDSFEENyaBpMl+G0pJ9jE9XewES1GdaUN4TCwBjD4NWhi6OflP0UTyY2gePTyY8B
+	1k4zNmjVy3W4bXvToPJ9YeQHFnnOoySeSr1SywX2Pp2DQ8IRSv4KyBXc2G47D5TYQZfpANo9CKtku
+	ztLS0APDqgMuSntG0i7pbtrxtnRzEowvP0fRvauoFmMoSpvWSDzGmQEb0oxcsVhwCEfhgmedEdbmH
+	kO4OFg9A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSI1c-0000000CbSH-3VHD;
-	Fri, 12 Jul 2024 15:17:32 +0000
+	id 1sSI4M-0000000Cbbg-1OIy;
+	Fri, 12 Jul 2024 15:20:22 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 4F97630050D; Fri, 12 Jul 2024 17:17:32 +0200 (CEST)
-Date: Fri, 12 Jul 2024 17:17:32 +0200
+	id E7D1B30050D; Fri, 12 Jul 2024 17:20:21 +0200 (CEST)
+Date: Fri, 12 Jul 2024 17:20:21 +0200
 From: Peter Zijlstra <peterz@infradead.org>
 To: Valentin Schneider <vschneid@redhat.com>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
@@ -58,11 +58,11 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
 	Palmer Dabbelt <palmer@rivosinc.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Oleg Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC PATCH v3 02/10] irq_work: Split type definition to its own
- header
-Message-ID: <20240712151732.GQ27299@noisy.programming.kicks-ass.net>
+Subject: Re: [RFC PATCH v3 03/10] task_work, sched: Add a _locked variant to
+ task_work_cancel()
+Message-ID: <20240712152021.GR27299@noisy.programming.kicks-ass.net>
 References: <20240711130004.2157737-1-vschneid@redhat.com>
- <20240711130004.2157737-3-vschneid@redhat.com>
+ <20240711130004.2157737-4-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -71,72 +71,125 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240711130004.2157737-3-vschneid@redhat.com>
+In-Reply-To: <20240711130004.2157737-4-vschneid@redhat.com>
 
-On Thu, Jul 11, 2024 at 02:59:56PM +0200, Valentin Schneider wrote:
-> A later commit will add a struct irq_work member to struct task_struct, which
-> would require <linux/sched.h> to include the definition of struct
-> irq_work.
+On Thu, Jul 11, 2024 at 02:59:57PM +0200, Valentin Schneider wrote:
+> Later commits will need to issue a task_work_cancel() from within the
+> scheduler with the task's ->pi_lock held.
 > 
-> Thanks to header dependency hell, incudling <linux/irq_work.h> in <linux/sched.h>
-> results in defining inline helpers using not-yet-defined fields (mm_struct,
-> task_struct, various task states...).
-> 
-> Break off the definition of struct irq_work into its own header file.
+> Add a _locked variant that expects p->pi_lock to be held. Expose it in a
+> separate scheduler header file, as this really is a scheduler-only
+> interface.
 > 
 > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 > ---
->  include/linux/irq_work.h       |  8 ++------
->  include/linux/irq_work_types.h | 14 ++++++++++++++
->  2 files changed, 16 insertions(+), 6 deletions(-)
->  create mode 100644 include/linux/irq_work_types.h
+>  kernel/sched/task_work_sched.h | 14 +++++++
+>  kernel/task_work.c             | 67 ++++++++++++++++++++++++++--------
+>  2 files changed, 66 insertions(+), 15 deletions(-)
+>  create mode 100644 kernel/sched/task_work_sched.h
 > 
-> diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
-> index 136f2980cba30..7f6d2af360d91 100644
-> --- a/include/linux/irq_work.h
-> +++ b/include/linux/irq_work.h
-> @@ -5,6 +5,8 @@
->  #include <linux/smp_types.h>
->  #include <linux/rcuwait.h>
->  
-> +#include <linux/irq_work_types.h>
-> +
->  /*
->   * An entry can be in one of four states:
->   *
-> @@ -14,12 +16,6 @@
->   * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
->   */
->  
-> -struct irq_work {
-> -	struct __call_single_node node;
-> -	void (*func)(struct irq_work *);
-> -	struct rcuwait irqwait;
-> -};
-> -
->  #define __IRQ_WORK_INIT(_func, _flags) (struct irq_work){	\
->  	.node = { .u_flags = (_flags), },			\
->  	.func = (_func),					\
-> diff --git a/include/linux/irq_work_types.h b/include/linux/irq_work_types.h
+> diff --git a/kernel/sched/task_work_sched.h b/kernel/sched/task_work_sched.h
 > new file mode 100644
-> index 0000000000000..108cbc514733b
+> index 0000000000000..e235da456427f
 > --- /dev/null
-> +++ b/include/linux/irq_work_types.h
+> +++ b/kernel/sched/task_work_sched.h
 > @@ -0,0 +1,14 @@
 > +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_IRQ_WORK_TYPES_H
-> +#define _LINUX_IRQ_WORK_TYPES_H
+> +/*
+> + * Scheduler internal task_work methods
+> + */
+> +#ifndef _KERNEL_TASK_WORK_SCHED_H
+> +#define _KERNEL_TASK_WORK_SCHED_H
 > +
-> +#include <linux/smp_types.h>
-> +#include <linux/rcuwait_types.h>
+> +#include <linux/task_work.h>
+> +#include <linux/sched.h>
 > +
-> +struct irq_work {
-> +	struct __call_single_node node;
-> +	void (*func)(struct irq_work *);
-> +	struct rcuwait irqwait;
-> +};
+> +struct callback_head *
+> +task_work_cancel_locked(struct task_struct *task, task_work_func_t func);
 > +
 > +#endif
 
-Since smp_types.h already mentions IRQ_WORK, given how I tangled the
-whole things together, should we just put this struct there as well?
+
+Do we really need that exposed? Can't we squirrel that way in
+kernel/sched/sched.h and forget about it?
+
+
+> @@ -74,33 +76,20 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+>  	return 0;
+>  }
+>  
+> -/**
+> - * task_work_cancel_match - cancel a pending work added by task_work_add()
+> - * @task: the task which should execute the work
+> - * @match: match function to call
+> - * @data: data to be passed in to match function
+> - *
+> - * RETURNS:
+> - * The found work or NULL if not found.
+> - */
+> -struct callback_head *
+> -task_work_cancel_match(struct task_struct *task,
+> +static struct callback_head *
+> +task_work_cancel_match_locked(struct task_struct *task,
+>  		       bool (*match)(struct callback_head *, void *data),
+>  		       void *data)
+>  {
+>  	struct callback_head **pprev = &task->task_works;
+>  	struct callback_head *work;
+> -	unsigned long flags;
+>  
+> -	if (likely(!task_work_pending(task)))
+> -		return NULL;
+>  	/*
+>  	 * If cmpxchg() fails we continue without updating pprev.
+>  	 * Either we raced with task_work_add() which added the
+>  	 * new entry before this work, we will find it again. Or
+>  	 * we raced with task_work_run(), *pprev == NULL/exited.
+>  	 */
+> -	raw_spin_lock_irqsave(&task->pi_lock, flags);
+>  	work = READ_ONCE(*pprev);
+>  	while (work) {
+>  		if (!match(work, data)) {
+> @@ -109,6 +98,32 @@ task_work_cancel_match(struct task_struct *task,
+>  		} else if (try_cmpxchg(pprev, &work, work->next))
+>  			break;
+>  	}
+> +
+> +	return work;
+> +}
+
+> @@ -136,6 +151,28 @@ task_work_cancel(struct task_struct *task, task_work_func_t func)
+>  	return task_work_cancel_match(task, task_work_func_match, func);
+>  }
+>  
+> +/**
+> + * task_work_cancel - cancel a pending work added by task_work_add()
+> + * @task: the task which should execute the work
+> + * @func: identifies the work to remove
+> + *
+> + * Find the last queued pending work with ->func == @func and remove
+> + * it from queue.
+> + *
+> + * RETURNS:
+> + * The found work or NULL if not found.
+> + */
+> +struct callback_head *
+> +task_work_cancel_locked(struct task_struct *task, task_work_func_t func)
+> +{
+> +	lockdep_assert_held(&task->pi_lock);
+
+I'm thinking that lockde_assert wants to live in your _locked function
+above.
+
+> +	if (likely(!task_work_pending(task)))
+> +		return NULL;
+> +
+> +	return task_work_cancel_match_locked(task, task_work_func_match, func);
+> +}
+> +
+>  /**
+>   * task_work_run - execute the works added by task_work_add()
+>   *
+> -- 
+> 2.43.0
+> 
