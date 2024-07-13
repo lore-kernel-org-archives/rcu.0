@@ -1,68 +1,38 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4609043AA9;
-	Fri, 12 Jul 2024 17:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7B28BFF
+	for <rcu@vger.kernel.org>; Sat, 13 Jul 2024 14:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720806205; cv=none; b=iiP1d0R50ZRfKOxGbCujRzOBuLNEu+O5tFKL3e0EKLiHVGu4dVH4AsjncOIzEdEfpT+lKg8v9IEpPyxY/gi3Xmiq3Ex6JEp5thXX1kJwpj7CnHmngEN4wdGDXof0HFxZM+xNTavvZAMm/gsdYuoN0IPOv5w81wnB4ys9d5fnKAI=
+	t=1720879666; cv=none; b=upR72R8tHMmNxOa+grHw/M6LEUkTp2PNwY5FylGfQx+1X7GXJAMxDwK56sllOoM2DQBAuMKgQ0L9RQctHkrxtbJ+kqOtrX0epRMph2LnChQpwNtQ18Xj4W58JtH349scc4Q+b/bRbr/z4DEkEP6vgNW2aenjb6Bz+1uAxCZr8d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720806205; c=relaxed/simple;
-	bh=qqDxsW8JKNo4pUvPxIdtXjmqmRm9U7qlNWm3bk3xRVc=;
+	s=arc-20240116; t=1720879666; c=relaxed/simple;
+	bh=RioQiY7v+Pob1xmc0oDtN8cBrFxzOrUrI82X1bx712E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UsHTatK0cAU33ZKZ1ezQlLVeQnQkMe3senGDwIen4K173/kfilxLAHE1K+xKK1izusaYs7Dr1lQAbbfJ9X0wmtmCgghARdU5jlty2rUCO+sbo89pd7J3r7E2E9Q5t5WC85nUyls9pu0wYAyqXLOz/0xTsKrnTvIi7IQpZ8dD5jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=epiI7NKn; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=edN0IO8CQ7chwHmpAV+7Zdaixx95xI6EExg74xqAfH2k4JHk1reYRgZt8FcVnpwVTPYO2o7ctxozd3er/z+6kZOS7KqTekekOTDLgtt7IhWjYWRw0vcYs95hv34YRRRPauk3YqcEmqcKqaWPrpVAyOqKY04vaE5YA5sLpdim/N0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nPABCNY0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="epiI7NKn"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=BaNbiP+w4TmaIHZFkKIxIGkit2bo/A0i+pALN4QBZkI=; b=epiI7NKnu3BMCNcQ1ZGCpK4wNO
-	oGOBbczEzsofAerhLjb+5E9D5xUZZv6sSvh0ZOr4JpEH7aIxNNb2lskWvheFGtnOlVYMvNJXRZKN4
-	e7XbYBhGixpAevHHnasnaBx2CtueoVwgnrCoFIeTl3jh69wR/td8oq9SZcPc9TYWwaNlfhDVYNSdQ
-	pzltnW/EoXIKLStkdD2r7oDKZ4dgSZlSDt8u+gp+byhdpLXok1zl6/TlT+2sriz9fw8ULPp3g6XTe
-	59cl7/TT9i42qnKhMp7cIzBSvrxZqJy0i4IAKAYLPB93htn+ydqZLmatZj0SQyP+aBUxPMuM4+w2V
-	uhplDG6Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sSKIb-0000000Cjju-2X8w;
-	Fri, 12 Jul 2024 17:43:13 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 1E93D30050D; Fri, 12 Jul 2024 19:43:13 +0200 (CEST)
-Date: Fri, 12 Jul 2024 19:43:13 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Phil Auld <pauld@redhat.com>, Clark Williams <williams@redhat.com>,
-	Tomas Glozar <tglozar@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Oleg Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC PATCH v3 10/10] sched/fair: Throttle CFS tasks on return to
- userspace
-Message-ID: <20240712174313.GW27299@noisy.programming.kicks-ass.net>
-References: <20240711130004.2157737-1-vschneid@redhat.com>
- <20240711130004.2157737-11-vschneid@redhat.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nPABCNY0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE42AC32781;
+	Sat, 13 Jul 2024 14:07:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720879666;
+	bh=RioQiY7v+Pob1xmc0oDtN8cBrFxzOrUrI82X1bx712E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nPABCNY0gzrN1AmzsnjE7303pB4ccF9Cr/Fvy2j7zs3i7i348rQXK7G5+UK2L378P
+	 ykc75flaf4CgzrhPB9e75IkxXPdMVTCLHKYXuR2raxaGHrNkkqpV+R1f3HtVAJplLb
+	 5JpZwbEJwMW3YZuZrN+N67zRc0VDKc76Ct3CX44k/LBAcQ7fgLhPp/WmYFZmbot7yX
+	 SsboQ9oPTa+spfsesSDbLqBUThQluF5A2jsVAHijaCeYf3TRPsiBEoZ9qGOuA1w3SQ
+	 Vh/vtIwsXxvXN42PFqcKnyIMTl1TbhM6G5YC8uZ3LZwbzoCVp3IW5n8/70ggp7LYVL
+	 tUzRNDPldrH9A==
+Date: Sat, 13 Jul 2024 19:37:41 +0530
+From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: paulmck@kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] srcu: faster srcu gp seq wrap-around
+Message-ID: <20240713140741.GB163340@neeraj.linux>
+References: <20240712005629.2980-1-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -71,102 +41,126 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240711130004.2157737-11-vschneid@redhat.com>
+In-Reply-To: <20240712005629.2980-1-inwardvessel@gmail.com>
 
-On Thu, Jul 11, 2024 at 03:00:04PM +0200, Valentin Schneider wrote:
-
-> +static void throttle_one_task(struct cfs_rq *cfs_rq, struct task_struct *p)
->  {
-> +	long task_delta, idle_task_delta;
-> +	struct sched_entity *se = &p->se;
-> +
-> +	list_add(&p->throttle_node, &cfs_rq->throttled_limbo_list);
+Hi,
+ 
+On Thu, Jul 11, 2024 at 05:56:29PM -0700, JP Kobryn wrote:
+> Using a higher value for the initial gp sequence counter values allows for
+> wrapping to occur faster. It can help with surfacing any issues that may be
+> happening as a result of the wrap around.
+> 
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> ---
+>  include/linux/rcupdate.h |  3 +++
+>  include/linux/srcutree.h | 15 ++++++++++++++-
+>  kernel/rcu/rcu.h         |  3 ---
+>  kernel/rcu/srcutree.c    |  6 ++++--
+>  4 files changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index dfd2399f2cde..c148674b9e09 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -35,6 +35,9 @@
+>  #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
+>  #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
 >  
-> +	task_delta = 1;
-> +	idle_task_delta = cfs_rq_is_idle(cfs_rq) ? 1 : 0;
+> +#define RCU_SEQ_CTR_SHIFT    2
+> +#define RCU_SEQ_STATE_MASK   ((1 << RCU_SEQ_CTR_SHIFT) - 1)
 > +
-> +	for_each_sched_entity(se) {
-> +		cfs_rq = cfs_rq_of(se);
+>  /* Exported common interfaces */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func);
+>  void rcu_barrier_tasks(void);
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 8f3f72480e78..ed57598394de 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -129,10 +129,23 @@ struct srcu_struct {
+>  #define SRCU_STATE_SCAN1	1
+>  #define SRCU_STATE_SCAN2	2
+>  
+> +/*
+> + * Values for initializing gp sequence fields. Higher values allow wrap arounds to
+> + * occur earlier.
+> + * The second value with state is useful in the case of static initialization of
+> + * srcu_usage where srcu_gp_seq_needed is expected to have some state value in its
+> + * lower bits (or else it will appear to be already initialized within
+> + * the call check_init_srcu_struct()).
+> + */
+> +#define SRCU_GP_SEQ_INITIAL_VAL ((0UL - 100UL) << RCU_SEQ_CTR_SHIFT)
+> +#define SRCU_GP_SEQ_INITIAL_VAL_WITH_STATE (SRCU_GP_SEQ_INITIAL_VAL - 1)
 > +
-> +		if (!se->on_rq)
-> +			return;
-> +
-> +		dequeue_entity(cfs_rq, se, DEQUEUE_SLEEP);
-> +		cfs_rq->h_nr_running -= task_delta;
-> +		cfs_rq->idle_h_nr_running -= idle_task_delta;
-> +
-> +		if (cfs_rq->load.weight) {
-> +			/* Avoid re-evaluating load for this entity: */
-> +			se = parent_entity(se);
-> +			break;
-> +		}
-> +	}
-> +
-> +	for_each_sched_entity(se) {
-> +		cfs_rq = cfs_rq_of(se);
-> +		/* throttled entity or throttle-on-deactivate */
-> +		if (!se->on_rq)
-> +			goto throttle_done;
-> +
-> +		update_load_avg(cfs_rq, se, 0);
-> +		se_update_runnable(se);
-> +		cfs_rq->h_nr_running -= task_delta;
-> +		cfs_rq->h_nr_running -= idle_task_delta;
-> +	}
-> +
-> +throttle_done:
-> +	/* At this point se is NULL and we are at root level*/
-> +	sub_nr_running(rq_of(cfs_rq), 1);
+>  #define __SRCU_USAGE_INIT(name)									\
+>  {												\
+>  	.lock = __SPIN_LOCK_UNLOCKED(name.lock),						\
+> -	.srcu_gp_seq_needed = -1UL,								\
+
+As srcu_gp_seq* counters are initialized before first use, if we do
+not modify this file, we can move the SRCU_GP_SEQ_INITIAL_VAL and
+SRCU_GP_SEQ_INITIAL_VAL_WITH_STATE macros to srcutree.c. We then
+also don't need to move RCU_SEQ_CTR_SHIFT and RCU_SEQ_STATE_MASK
+from rcu.h (keeping them internal to RCU). Is there a scenario
+where that won't work?
+
+
+> +	.srcu_gp_seq = SRCU_GP_SEQ_INITIAL_VAL,							\
+> +	.srcu_gp_seq_needed = SRCU_GP_SEQ_INITIAL_VAL_WITH_STATE,				\
+> +	.srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL,					\
+>  	.work = __DELAYED_WORK_INITIALIZER(name.work, NULL, 0),					\
 >  }
+>  
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 38238e595a61..2bfed9855d67 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -54,9 +54,6 @@
+>   *					grace-period sequence number.
+>   */
+>  
+> -#define RCU_SEQ_CTR_SHIFT	2
+> -#define RCU_SEQ_STATE_MASK	((1 << RCU_SEQ_CTR_SHIFT) - 1)
+> -
+>  /* Low-order bit definition for polled grace-period APIs. */
+>  #define RCU_GET_STATE_COMPLETED	0x1
+>  
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index bc4b58b0204e..2209dd0589de 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -247,7 +247,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  	mutex_init(&ssp->srcu_sup->srcu_cb_mutex);
+>  	mutex_init(&ssp->srcu_sup->srcu_gp_mutex);
+>  	ssp->srcu_idx = 0;
+> -	ssp->srcu_sup->srcu_gp_seq = 0;
+> +	ssp->srcu_sup->srcu_gp_seq = SRCU_GP_SEQ_INITIAL_VAL;
+>  	ssp->srcu_sup->srcu_barrier_seq = 0;
+>  	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
+>  	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+> @@ -258,7 +258,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  	if (!ssp->sda)
+>  		goto err_free_sup;
+>  	init_srcu_struct_data(ssp);
+> -	ssp->srcu_sup->srcu_gp_seq_needed_exp = 0;
+> +	ssp->srcu_sup->srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL;
+>  	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
+>  	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
+>  		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
+> @@ -267,6 +267,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  	}
+>  	ssp->srcu_sup->srcu_ssp = ssp;
+>  	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
 
-I know you're just moving code around, but we should look if we can
-share code between this and dequeue_task_fair().
+Remove this line?
 
-I have patches around this in that eevdf series I should send out again,
-I'll try and have a stab.
 
-> -static void task_throttle_cancel_irq_work_fn(struct irq_work *work)
-> +static void throttle_cfs_rq_work(struct callback_head *work)
->  {
-> -       /* Write me */
-> +	struct task_struct *p = container_of(work, struct task_struct, sched_throttle_work);
-> +	struct sched_entity *se;
-> +	struct rq *rq;
-> +	struct cfs_rq *cfs_rq;
-> +
-> +	WARN_ON_ONCE(p != current);
-> +	p->sched_throttle_work.next = &p->sched_throttle_work;
-> +	/*
-> +	 * If task is exiting, then there won't be a return to userspace, so we
-> +	 * don't have to bother with any of this.
-> +	 */
-> +	if ((p->flags & PF_EXITING))
-> +		return;
-> +
-> +	CLASS(task_rq_lock, rq_guard)(p);
-> +	rq = rq_guard.rq;
 
-The other way to write this is:
+- Neeraj
 
-	scoped_guard (task_rq_lock, p) {
-		struct rq *rq = scope.rq;
-
-> +	se = &p->se;
-> +	cfs_rq = cfs_rq_of(se);
-> +
-> +	/*
-> +	 * If not in limbo, then either replenish has happened or this task got
-> +	 * migrated out of the throttled cfs_rq, move along
-> +	 */
-> +	if (!cfs_rq->throttle_count)
-> +		return;
-> +
-> +	update_rq_clock(rq);
-> +
-> +	throttle_one_task(cfs_rq, p);
-> +
-> +	resched_curr(rq);
-
-	}
-
->  }
+> +	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed,
+> +		SRCU_GP_SEQ_INITIAL_VAL); /* Init done. */
+>  	return 0;
+>  
+>  err_free_sda:
+> -- 
+> 2.45.2
