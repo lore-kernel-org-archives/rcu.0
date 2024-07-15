@@ -1,61 +1,61 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0654A4D8AE
-	for <rcu@vger.kernel.org>; Mon, 15 Jul 2024 17:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1695589A
+	for <rcu@vger.kernel.org>; Mon, 15 Jul 2024 17:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721066291; cv=none; b=WWKtU/93MiYp9Xo+z3CMPerQBnhmzYc2imgTYPKo9tPyF+8FB7mN6k5n0BkYJvphqN78e2oR0BMqfRfJFIUHmvo6WYqkH+jLAYUm/PVnNwj68dHG7sXcML1Vpia4uVY5EJeBXYe11nLelHkNet+sXKzgnjdjWTNoCJSmkvCKYk8=
+	t=1721066299; cv=none; b=YU4Mx1cvJsMXzisqSlwzFM1Cd8Fg5neHTdvRLCsTbiqgplnGsMGrD52mrkw5SAt668yLAmt59guFicbbKTtB694VMSGz3YIReboWAxf0XbEmcHi8gcDXhphXj+RWvXnT+v4WU+cXvwXOIJTDJ5EX34XgSG6+Jg/im4dU+2lc284=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721066291; c=relaxed/simple;
-	bh=Ain5nSPiw7lNbJABKbWUNj9bz6NYPkehR1zADRdCQoU=;
+	s=arc-20240116; t=1721066299; c=relaxed/simple;
+	bh=AvF80KexMQDpk2JmVtnfZ8FRWCV5QwoiXFtn4yq56xw=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=HpafWzS/XKEwDFPQBLZxSciVYHwV8ToStB8ZVOYZP3HNrv5zbSyF2aZF5b0kAbifaE8tQgrETdsDkQ7yfpibPBOL7e5ScN2hs2o4u+O/ephve2BwopBO8eNt8RlA6+S5mxQbBRIJT0MtUjWwQPUmdWF+R1OedcL9mcw85z7hpQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X4p6krJH; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=YLDnhorD8iv3j+zCtWm5t485/usHXyRk7C3YvJ+1oz1hRFtGrCvmsGAi6qv7CgXY4dGJA8u2/Kd5pATjR3KYDtFW0R+2cQT7grN+JADwR/K8iDMIshXIVNFAwG1kuAG9FdKSSXNRUbqQFSjDV/OuWEmCX1SSfsdolk6twIfDtzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ajra8A6Z; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X4p6krJH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ajra8A6Z"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721066288;
+	s=mimecast20190719; t=1721066297;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NyVNluZIssgAn1o8oMq9PDVu4RkJuOP1nUmOEKmGOcU=;
-	b=X4p6krJHPw4PmKJBcgzP6cZwrv3Be7aYOfQGEYFwyeSSauEj3Xd0S4DHrcC8ZSgwNngwjy
-	9MnL1R2sntO/kxfozU0a+z/8Bff8deKwKEY4dV971CxmQOexNL8h/afZ6H27hhhZCySuia
-	MYcrsXxva7+9w5hjq+YvUkoyrXaw5kk=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=m56+rxvwF7PS34zi6GKHWHULJ2zyJfG14sY0J2ksKZc=;
+	b=Ajra8A6Zw53RZ+aoMPrDYvxInD4MrPQ8vZo4r/5E7s1SEpwSZKFcy9/Ak+27ElTVRPJ+05
+	92jIYSdjw+JoSw2/tdc7pl1E0XmrNs6hX5khlemORoXrYzNv9kYRMxCmr9xx/5Y9GWsTJD
+	npKITkjUBbhAC132Q2NY6MoZM3b4ros=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-454-IMI7jYx8N7qE_rEE0PkYsg-1; Mon, 15 Jul 2024 13:58:06 -0400
-X-MC-Unique: IMI7jYx8N7qE_rEE0PkYsg-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3d9da3f8b28so3699214b6e.0
-        for <rcu@vger.kernel.org>; Mon, 15 Jul 2024 10:58:06 -0700 (PDT)
+ us-mta-628-s6LxNgkQNvqsAsLkClCLcQ-1; Mon, 15 Jul 2024 13:58:16 -0400
+X-MC-Unique: s6LxNgkQNvqsAsLkClCLcQ-1
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-5ce44027232so1371149eaf.2
+        for <rcu@vger.kernel.org>; Mon, 15 Jul 2024 10:58:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721066286; x=1721671086;
+        d=1e100.net; s=20230601; t=1721066295; x=1721671095;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NyVNluZIssgAn1o8oMq9PDVu4RkJuOP1nUmOEKmGOcU=;
-        b=jQTEwq/qjSayVDMeaTPrlHQlBCS/ZSt/IjB7YccgGGN2//fLYgLv5JcQhC2/nzVxsN
-         poL81QLGPRSN7OFgaORrxBmTaY/bW1dTWuEosSd+RAkqiEzh1aogwPKOHzaPcW02ZX88
-         f25XmzOijYUKAW6WS7Q8sQRKdM0P+zV5UvndJoOVhA57R1hhy33IzS6dwj7w3p2PjuIw
-         UWVDXe3kH6PTC4uK9l4Ak6VrX7NhBcI5KYGm6Q+zbe3CPCwulV1YfaEe/4MQA+ZzId1b
-         lN5Qe1P7WOPK1MZcYI8RcV/ucXtPIBnmmcgHmaY6JuP9fp9jkyE6PTLO5tH5MLKmD1/7
-         Qekg==
-X-Forwarded-Encrypted: i=1; AJvYcCWXDYZIH8K9OmXygj58q6P5tewGOsUlLoNTC2TAfuiPQIZ1n8cNQ8Zlra+/8xhMu7Wb36tsfQ86+VfY/CK3/RH8wbwh
-X-Gm-Message-State: AOJu0YyIhhqADqEihoWdy5Grx+fBaVFDp1S5qhcPTxHu92FIFdV5VNGr
-	ajxKFKLt3VgMeJzW5hzpn6/RPgGOmBvLAAt2zoVZA/8CbK0LUvutzoEVn/A3JlUFlQfCJatddw8
-	PRZIFw6VywWbiVogfHMloj77vEipmxefzqrG9B3nGKG61eihCmQ==
-X-Received: by 2002:a05:6808:2225:b0:3d9:3e48:8b13 with SMTP id 5614622812f47-3dac632346cmr362254b6e.10.1721066286031;
-        Mon, 15 Jul 2024 10:58:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFVCU8MN7DhrLsiuwZc963RljtvATaJVy4fNJFEYXFUGjmBmJoDfzyTAMTP0WdwPNOir3nLCg==
-X-Received: by 2002:a05:6808:2225:b0:3d9:3e48:8b13 with SMTP id 5614622812f47-3dac632346cmr362221b6e.10.1721066285770;
-        Mon, 15 Jul 2024 10:58:05 -0700 (PDT)
+        bh=m56+rxvwF7PS34zi6GKHWHULJ2zyJfG14sY0J2ksKZc=;
+        b=Xw2gOEH9eTgZH8Dop+AvxF8GBwOTvV/RSmyPIhhyGMzZ6vpfyrZapdBTsj7XCkpCt7
+         GMY0O8PbV/QoB99/StwrZdJ2Lz2ulrYuEMKQC9FBcLHqrjBEuTKne0uz+fH2VwDV51QO
+         1zT90TODZSzs9FrockYMXuVyPafA3IR+CLvIku5QT/gBzoUt43sF5VmNedYIJYBv8etV
+         devS1peDKvx6f4S6IAVkqatkz43pFqEG15VZpes8+UuyqBzPe51omH7ZuDTrwIlKK/Pf
+         SUlIhCovEx3S6x7OYToq7N+u6bAwXktnYq6YGzfRYc8Pcg13Xc3+iWP4b4+yz8aQ82y5
+         8G6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUZzcP7udUTrSyRcIVpbGiMraQWvBRl1NtVSkHNoH5TJNmra+DJlbDNpPwRS2F12/zVof7um9aAyCjK8EuQa8Fqh+01
+X-Gm-Message-State: AOJu0YzQuufg/GeBXBrsuuLWnLM9caPHTLKQJYXgoWHGBvuHfgO7dnXo
+	O8K9SRNQQJzmUk4sz23WYePnwqZDBOx0f34RnMuBrtiRXK2bf4gdwHLnDNPPPtC8F3N9G2EritB
+	9kq61dGyk1OD0KR/j/8eNcrtr5O6YGxHPjrajDRrSP9TXZi0V1Q==
+X-Received: by 2002:a05:6820:1f04:b0:5ba:f20c:3629 with SMTP id 006d021491bc7-5d2550e856dmr375065eaf.4.1721066295741;
+        Mon, 15 Jul 2024 10:58:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEG5CzS5J/7JXwEverR0AO7CeHZPjLkM66rbdlkFDHt3Eox0nNIENp/ISPHEY2JS1AuyliWBQ==
+X-Received: by 2002:a05:6820:1f04:b0:5ba:f20c:3629 with SMTP id 006d021491bc7-5d2550e856dmr375021eaf.4.1721066295343;
+        Mon, 15 Jul 2024 10:58:15 -0700 (PDT)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a160b908c3sm221471585a.25.2024.07.15.10.58.00
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b761a53ffdsm23438616d6.119.2024.07.15.10.58.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 10:58:04 -0700 (PDT)
+        Mon, 15 Jul 2024 10:58:13 -0700 (PDT)
 From: Valentin Schneider <vschneid@redhat.com>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, Ingo Molnar
@@ -74,14 +74,13 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, Ingo Molnar
  Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>, Palmer Dabbelt
  <palmer@rivosinc.com>, Andrew Morton <akpm@linux-foundation.org>, Oleg
  Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC PATCH v3 03/10] task_work, sched: Add a _locked variant to
- task_work_cancel()
-In-Reply-To: <20240712152021.GR27299@noisy.programming.kicks-ass.net>
+Subject: Re: [RFC PATCH v3 04/10] sched/fair: Introduce sched_throttle_work
+In-Reply-To: <20240712152158.GS27299@noisy.programming.kicks-ass.net>
 References: <20240711130004.2157737-1-vschneid@redhat.com>
- <20240711130004.2157737-4-vschneid@redhat.com>
- <20240712152021.GR27299@noisy.programming.kicks-ass.net>
-Date: Mon, 15 Jul 2024 19:57:59 +0200
-Message-ID: <xhsmhle221qs8.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20240711130004.2157737-5-vschneid@redhat.com>
+ <20240712152158.GS27299@noisy.programming.kicks-ass.net>
+Date: Mon, 15 Jul 2024 19:58:08 +0200
+Message-ID: <xhsmhjzhm1qrz.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -90,59 +89,21 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-On 12/07/24 17:20, Peter Zijlstra wrote:
-> On Thu, Jul 11, 2024 at 02:59:57PM +0200, Valentin Schneider wrote:
->> Later commits will need to issue a task_work_cancel() from within the
->> scheduler with the task's ->pi_lock held.
->> 
->> Add a _locked variant that expects p->pi_lock to be held. Expose it in a
->> separate scheduler header file, as this really is a scheduler-only
->> interface.
->> 
->> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
->> ---
->>  kernel/sched/task_work_sched.h | 14 +++++++
->>  kernel/task_work.c             | 67 ++++++++++++++++++++++++++--------
->>  2 files changed, 66 insertions(+), 15 deletions(-)
->>  create mode 100644 kernel/sched/task_work_sched.h
->> 
->> diff --git a/kernel/sched/task_work_sched.h b/kernel/sched/task_work_sched.h
->> new file mode 100644
->> index 0000000000000..e235da456427f
->> --- /dev/null
->> +++ b/kernel/sched/task_work_sched.h
->> @@ -0,0 +1,14 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Scheduler internal task_work methods
->> + */
->> +#ifndef _KERNEL_TASK_WORK_SCHED_H
->> +#define _KERNEL_TASK_WORK_SCHED_H
->> +
->> +#include <linux/task_work.h>
->> +#include <linux/sched.h>
->> +
->> +struct callback_head *
->> +task_work_cancel_locked(struct task_struct *task, task_work_func_t func);
->> +
->> +#endif
+On 12/07/24 17:21, Peter Zijlstra wrote:
+> On Thu, Jul 11, 2024 at 02:59:58PM +0200, Valentin Schneider wrote:
 >
->
-> Do we really need that exposed? Can't we squirrel that way in
-> kernel/sched/sched.h and forget about it?
->
-
-Nah that's not required, I thought a clean cut header would be neater but
-given its single user, tossing that to sched.h looks better.
-
->> +struct callback_head *
->> +task_work_cancel_locked(struct task_struct *task, task_work_func_t func)
+>> +void init_cfs_throttle_work(struct task_struct *p)
 >> +{
->> +	lockdep_assert_held(&task->pi_lock);
+>> +	/* Protect against double add, see throttle_cfs_rq() and throttle_cfs_rq_work() */
+>> +	p->sched_throttle_work.next = &p->sched_throttle_work;
+>> +	init_task_work(&p->sched_throttle_work, throttle_cfs_rq_work);
 >
-> I'm thinking that lockde_assert wants to live in your _locked function
-> above.
+> Yes, init_task_work() does not write .next, but can we please flip these
+> two statements and avoid me having to double check that every time I
+> seem them? :-)
 >
 
-Quite so!
+Easy enough :)
+
+>> +}
 
