@@ -1,196 +1,82 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890BB610C;
-	Mon, 22 Jul 2024 06:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D8E1D696;
+	Mon, 22 Jul 2024 13:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721630964; cv=none; b=EPv9zIDeyHh18g2xgt+q6md39Gdnnjh7Ogtq4xGKfTDhcZiEqR9I1dK/TR4vMrL8Ch/tI09VVTOXPrWLfOKvH7SkgPcbXeQaSYrJeQOwfXMOTIccKfMsHjOyR/jo73sYhilwEV3NJpwHVMcjmDguqQ79fHlgg8AP504eGYeKvN8=
+	t=1721655367; cv=none; b=J22GneOUiXcnRweyzoiTbAKQ524mnrkPFutb5yuJA7mHOQojI/FZjc6L44tl5qeay5ENEctM//DQnXbkmFmGXs9FqQNIpAcTTHh7DW/cZLr9tlONTCXlkQKR90Eka5sqacSZSuvuz0f8Qm4pQoZrkGPxdLtoBVlv/NhyXH3QaPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721630964; c=relaxed/simple;
-	bh=VsiKPTDpaAXqgDvTx1ADZpZJ/s0smMbqeDySWx49iqs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xb7ohspo0nNw6bn01fA1XL1SnZ6hzYPmDmzoj7zEcPZUY7YibeLzhDydM0CaDpgcKqaxvZ0M6/8UV4gIVGzRbE2zxpfHvfGl8+Dpn4jUaJeWdRKdxmrbIY8476sK9Y5TVeBb4+fCK7BSKhLEc1grb4UBBXyqG4GBmNP8BEDt/DM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HIJ96TKC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UYgR713h; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HIJ96TKC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UYgR713h; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1721655367; c=relaxed/simple;
+	bh=MBcKMmj///koLCjVVpBkTwdG8B4gnhcwZgCVB6UeiGg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=rwJlr/ir4sfFiwBMD4BG0ClgEqnf5Jd5S6/dn7Pt4kwrFvdTM6VViPw8TfKNaPC9HKjs0RCMzJcS4TfL0yb/AIJomxT8Quud7a2sB+xSzDxyXFK3nTwRlWQVerpBDPmVN0TKLxjX5VeIrLp7BVuXEtL8j8FV0HQ29KEGTHOnMMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZ9WrF6I; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HIJ96TKC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UYgR713h";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HIJ96TKC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UYgR713h"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D95401FB5A;
-	Mon, 22 Jul 2024 06:49:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721630960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QiQAxlYrDbro8ha37LS6x4ZVge0sFSQm1eMwvY+gC2k=;
-	b=HIJ96TKC0Uamohiy/2MZ5B2uAY8P4ETvn33eOE1V7muL/W3Q0VPtGCaamsgs6x9CcPUhsf
-	2M5Ds2FIOpWr93+bx49izRvdz1TnokmyLG31LQJQWw8Hw4ozT9qg+hl1t8aVAI6MkWAfRi
-	PDh+CYcO+HWcx3uDnLsRLfC1MEEEnhE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721630960;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QiQAxlYrDbro8ha37LS6x4ZVge0sFSQm1eMwvY+gC2k=;
-	b=UYgR713hG5f/EkgxrsJvazPh8EuhHuK1q+DfcV+6S546WUivCSub+GsZHpWc1OCSHrjWfI
-	/d3jF9E8aBN5TQCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721630960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QiQAxlYrDbro8ha37LS6x4ZVge0sFSQm1eMwvY+gC2k=;
-	b=HIJ96TKC0Uamohiy/2MZ5B2uAY8P4ETvn33eOE1V7muL/W3Q0VPtGCaamsgs6x9CcPUhsf
-	2M5Ds2FIOpWr93+bx49izRvdz1TnokmyLG31LQJQWw8Hw4ozT9qg+hl1t8aVAI6MkWAfRi
-	PDh+CYcO+HWcx3uDnLsRLfC1MEEEnhE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721630960;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QiQAxlYrDbro8ha37LS6x4ZVge0sFSQm1eMwvY+gC2k=;
-	b=UYgR713hG5f/EkgxrsJvazPh8EuhHuK1q+DfcV+6S546WUivCSub+GsZHpWc1OCSHrjWfI
-	/d3jF9E8aBN5TQCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABB8A136A9;
-	Mon, 22 Jul 2024 06:49:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sfMtKfAAnmaCPQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 22 Jul 2024 06:49:20 +0000
-Message-ID: <7a7a05cf-17f6-43c2-acf2-b17f76e1d81d@suse.cz>
-Date: Mon, 22 Jul 2024 08:49:20 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZ9WrF6I"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DFBC116B1;
+	Mon, 22 Jul 2024 13:36:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721655366;
+	bh=MBcKMmj///koLCjVVpBkTwdG8B4gnhcwZgCVB6UeiGg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=AZ9WrF6IP0QvO0SBo1dPHmmJH54w04o8BAi71Gte5a6VK2oMFaV7oZZLLTMQTyXJr
+	 Z5bOy0sZFOI5SFXJTCjIy4dgHXkTC8cLnl5WK7kT4ICEBTK4HDWGILfnSBG3UkrDiJ
+	 ZiifoE+oyvCrMb2A9+1+3OH75MVLnqrszM31YUGstN2aqWQLt1ga+9nMDcZzbHZShi
+	 QHOS6YRd+qLCV9mhuaF+LaEN3tPRNaYlJRChngufg8RMFOxb9O5B/A4z/ax0Iv/OBM
+	 soFiSDeRprhQfR7HdXL9g4NI72diRQiJNf65lofRHS7PCt2lNPn/fVxkOK0ridoYaW
+	 CpFRWrqi/QYvQ==
+Date: Mon, 22 Jul 2024 19:05:59 +0530
+From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: mingo@kernel.org, peterz@infradead.org, paulmck@kernel.org,
+	rostedt@goodmis.org, kernel-team@meta.com, leobras@redhat.com,
+	imran.f.khan@oracle.com, riel@surriel.com, rcu@vger.kernel.org,
+	neeraj.upadhyay@kernel.org, tglx@linutronix.de
+Subject: [PATCH v2 0/3]  CSD-lock diagnostics enhancements
+Message-ID: <20240722133559.GA667117@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/6] mm, slub: handle pending kfree_rcu() in
- kmem_cache_destroy()
-Content-Language: en-US
-To: David Rientjes <rientjes@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Christoph Lameter <cl@linux.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Julia Lawall <Julia.Lawall@inria.fr>, Jakub Kicinski <kuba@kernel.org>,
- "Jason A. Donenfeld" <Jason@zx2c4.com>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-References: <20240715-b4-slab-kfree_rcu-destroy-v1-0-46b2984c2205@suse.cz>
- <607f42cd-868b-28d0-8e94-819323557c09@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <607f42cd-868b-28d0-8e94-819323557c09@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.59
-X-Spamd-Result: default: False [-2.59 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,joelfernandes.org,joshtriplett.org,gmail.com,linux.com,goodmis.org,efficios.com,inria.fr,zx2c4.com,linux-foundation.org,linux.dev,kvack.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 7/21/24 4:39 AM, David Rientjes wrote:
-> On Mon, 15 Jul 2024, Vlastimil Babka wrote:
-> 
->> First RFC, feel free to ignore for now if too busy with merge window.
->> Also in git:
->> https://git.kernel.org/vbabka/l/slab-kfree_rcu-destroy-v1r0
->> 
->> Based on slab/for-next:
->> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=slab/for-next
->> 
-> 
-> Thanks Vlastimil, do you see value in testing of this series right now or 
-> should we wait for another series to be posted?
-> 
-> I'm happy to run this through testing on a few different architectures, 
-> but not sure if you have an update baking in the oven that would supersede 
-> it.
+Hello!
 
-Thanks, but such testing would quickly fail until the following is resolved
-in patch 5/6 with the help of RCU experts :)
+This series adds following changes to the CSD-lock diagnostics (rebased on v6.10):
 
-+	// XXX use the real kmem_cache_free_barrier() or similar thing here
-+	rcu_barrier();
+1.      locking/csd_lock: Print large numbers as negatives.
 
+2.      locking/csd_lock: Provide an indication of ongoing CSD-lock stall.
+
+3.      locking/csd-lock: Use backoff for repeated reports of same
+        incident.
+
+This is the second version of this patchset. Previous version can be found at [1]
+
+Changes since v1:
+- Rebase on v6.10
+- Fix n_csd_lock_stuck atomic op in csd_lock_wait_toolong (Rik van Riel)
+- Apply Rik van Riel's Reviewed-by.
+
+Once reviewed/acked, current plan is to take this through RCU tree during v6.12 merge window,
+as RCU commit "7d2ba698ad85 rcu: Summarize RCU CPU stall warnings during CSD-lock stalls" [2]
+has dependency on these changes. If there are any concerns with taking these through RCU tree,
+please raise those concerns.
+
+
+
+[1] https://lore.kernel.org/lkml/20240713165642.GA215331@neeraj.linux/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/commit/?h=rcustall.13.07.24a&id=7d2ba698ad85984656e9732d87b8e040a23baa55
+
+Thanks
+Neeraj
+
+------------------------------------------------------------------------
+
+ include/linux/smp.h |  6 ++++++
+ kernel/smp.c        | 30 +++++++++++++++++++++++++-----
+ 2 files changed, 31 insertions(+), 5 deletions(-)
