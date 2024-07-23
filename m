@@ -1,128 +1,184 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5107C158D86
-	for <rcu@vger.kernel.org>; Tue, 23 Jul 2024 18:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB26D13D628
+	for <rcu@vger.kernel.org>; Tue, 23 Jul 2024 19:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721758271; cv=none; b=tcrjQbpL0T3KaC99teQOr3W2aOeTElbu7hlt/98tuRaDEkHfYGRrYx5/tujz72Z+x6ZQx65C7jZ0FuUYcIq8q/a2vPS3KNTyiLwDOlAbaPsL4wcq6U64zJGnKPs8GUAFme/pwgFpSVa/FGiyVj2CtbL3+mPRFgvXgnypAnKtHUI=
+	t=1721763516; cv=none; b=ASfnWFbt7GGsFWbQIWvC/OakvNMECJc98Dw5pnuLAqdXvQPXtSG+4itk06J94weECyCJgt0xN67f6X0WzV8/wYgMjVIMDSWVdBVGGTYGtkN4i3x4TkTiKy3TBQbdZJRcedA99yHwZUyDtMu0I0Wgf3WFABKYeANyT2YU4oePITc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721758271; c=relaxed/simple;
-	bh=VRBTGVO9finuATEk7IeKaKm67Vfc4trallaTRuvxj0w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=inOfbptB9bL+MGKmJbnYMvHlcbwfn1EauQz5q+OpMQsYq5CoJHFpPQG8wvOt8RiDPtGF+DjXVJzJzvOQreATztxBDW0TWGb7v5EGdTf16LTXZror7R04xySXSohuKnUa/2EhJDZCcKFuzNiF9H2i5CmHhxISD66kexG5HN+BU4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TeO67aWx; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1721763516; c=relaxed/simple;
+	bh=jRj2pvqyU4imS/IXBIM7W3TnKWnbZpbvxO22rhcAebQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qgDLYSVi1akSJLOqN92nM8kqdlChdCrg76ieSZh82mKd+/Z1NexQLsUQ9TTlxKIMzh+GWlYXvOxJBEFwd64u+xPbJ9U0cEX6ju2ArW9XeM46805sIxvOYBeWesMY2WrkuX0EYLN7aegRstiUD8W+4DbCw5Tw3NhuOSEl6Fdbojo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NDrDiIj2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TeO67aWx"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721758268;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ffMpgOtmXBm5a0CfOpLwlrEzFuWrHbIAzPb58NyTvMU=;
-	b=TeO67aWxq6D2P5ESjesT5v24rTd3hNgT6uOgtxx8WyFA/VM2vA9tddb/eWCRLFWq2nT6HO
-	m7VulfkTISuWEV4eKYycKbwhFETOe9vNY57wyO39UhIvQLboypvwRJuA0Sc0ew/DQObvGB
-	w+RiAvxb54UWxbknSYWMhli9k2/C8+Y=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-312-1qFj8Yq0PJOa3RqrCV5low-1; Tue,
- 23 Jul 2024 14:11:04 -0400
-X-MC-Unique: 1qFj8Yq0PJOa3RqrCV5low-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 996131955D42;
-	Tue, 23 Jul 2024 18:11:02 +0000 (UTC)
-Received: from llong.com (unknown [10.22.33.107])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 072BC1955E7D;
-	Tue, 23 Jul 2024 18:10:58 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Cc: rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Vratislav Bendel <vbendel@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH] rcu: Use system_unbound_wq to avoid disturbing isolated CPUs
-Date: Tue, 23 Jul 2024 14:10:25 -0400
-Message-ID: <20240723181025.187413-1-longman@redhat.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDrDiIj2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23358C4AF0A;
+	Tue, 23 Jul 2024 19:38:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721763516;
+	bh=jRj2pvqyU4imS/IXBIM7W3TnKWnbZpbvxO22rhcAebQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=NDrDiIj2TnU00sASm4x1JEs6Y5gQWtwpQckluQqDTdbHxJvbH6TfwoxJ2jse5E0Xw
+	 On70zOdEPOTCU2Vu467k/uhPSBpGOo7Ux2E4hZUqqZLLCM7aarpSMLBsW8zUuFvtPO
+	 a8mlLrs8fI+PXXKnmwVpMIpqyvNBinh/lF1t0ehsYDhYQsxRclAMC8Dc/8/dydW4FN
+	 Mt/VFFbLXcKS2vI7L4FVM9QTOk0Od3PPhd0cwsZOtPoaRsc+LfdwEQ3AyiegbRZdRP
+	 Y17rVjHRuYAOryTRL879Us5PHidPbKQGk7+b35/CYiG4Qs6QMKoJa5QgUQobdH27qy
+	 UDZQp5c+Q988Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id AE2B7CE0EA6; Tue, 23 Jul 2024 12:38:35 -0700 (PDT)
+Date: Tue, 23 Jul 2024 12:38:35 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: Neeraj.Upadhyay@kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2] srcu: faster gp seq wrap-around
+Message-ID: <191db3ea-f1aa-4e13-b919-0ca4a00dc89e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240715232324.52384-1-inwardvessel@gmail.com>
+ <62700706-bf21-489b-b956-7947a9b1886f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+In-Reply-To: <62700706-bf21-489b-b956-7947a9b1886f@paulmck-laptop>
 
-It was discovered that isolated CPUs could sometimes be disturbed by
-kworkers processing kfree_rcu() works causing higher than expected
-latency. It is because the RCU core uses "system_wq" which doesn't have
-the WQ_UNBOUND flag to handle all its work items. Fix this violation of
-latency limits by using "system_unbound_wq" in the RCU core instead.
-This will ensure that those work items will not be run on CPUs marked
-as isolated.
+On Thu, Jul 18, 2024 at 03:04:49PM -0700, Paul E. McKenney wrote:
+> On Mon, Jul 15, 2024 at 04:23:24PM -0700, JP Kobryn wrote:
+> > Using a higher value for the initial gp sequence counters allows for
+> > wrapping to occur faster. It can help with surfacing any issues that may
+> > be happening as a result of the wrap around.
+> > 
+> > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> 
+> Much nicer, thank you!
+> 
+> Tested-by: Paul E. McKenney <paulmck@kernel.org>
 
-Beside the WQ_UNBOUND flag, the other major difference between system_wq
-and system_unbound_wq is their max_active count. The system_unbound_wq
-has a max_active of WQ_MAX_ACTIVE (512) while system_wq's max_active
-is WQ_DFL_ACTIVE (256) which is half of WQ_MAX_ACTIVE.
+Unfortunately, extended testing [1] triggered this warning:
 
-Reported-by: Vratislav Bendel <vbendel@redhat.com>
-Closes: https://issues.redhat.com/browse/RHEL-50220
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/rcu/tasks.h | 4 ++--
- kernel/rcu/tree.c  | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+do_rtws_sync: Cookie check 3 failed srcu_torture_synchronize+0x0/0x10() online 0-3.
+WARNING: CPU: 2 PID: 57 at kernel/rcu/rcutorture.c:1347 do_rtws_sync.constprop.0+0x1e3/0x250
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e641cc681901..494aa9513d0b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3539,10 +3539,10 @@ schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
- 	if (delayed_work_pending(&krcp->monitor_work)) {
- 		delay_left = krcp->monitor_work.timer.expires - jiffies;
- 		if (delay < delay_left)
--			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
-+			mod_delayed_work(system_unbound_wq, &krcp->monitor_work, delay);
- 		return;
- 	}
--	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
-+	queue_delayed_work(system_unbound_wq, &krcp->monitor_work, delay);
- }
- 
- static void
-@@ -3634,7 +3634,7 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 			// be that the work is in the pending state when
- 			// channels have been detached following by each
- 			// other.
--			queue_rcu_work(system_wq, &krwp->rcu_work);
-+			queue_rcu_work(system_unbound_wq, &krwp->rcu_work);
- 		}
- 	}
- 
-@@ -3704,7 +3704,7 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
- 			!atomic_xchg(&krcp->work_in_progress, 1)) {
- 		if (atomic_read(&krcp->backoff_page_cache_fill)) {
--			queue_delayed_work(system_wq,
-+			queue_delayed_work(system_unbound_wq,
- 				&krcp->page_cache_work,
- 					msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
- 		} else {
--- 
-2.43.5
+This is in the following code:
 
+  1 dopoll = cur_ops->get_gp_state && cur_ops->poll_gp_state && !(r & 0x300); 
+  2 dopoll_full = cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full && !(r & 0xc00);
+  3 if (dopoll || dopoll_full)
+  4         cpus_read_lock();
+  5 if (dopoll)     
+  6         cookie = cur_ops->get_gp_state();
+  7 if (dopoll_full)
+  8         cur_ops->get_gp_state_full(&cookie_full);
+  9 if (cur_ops->poll_need_2gp && cur_ops->poll_need_2gp(dopoll, dopoll_full))
+ 10         sync();
+ 11 sync();
+ 12 WARN_ONCE(dopoll && !cur_ops->poll_gp_state(cookie),
+ 13           "%s: Cookie check 3 failed %pS() online %*pbl.",
+ 14           __func__, sync, cpumask_pr_args(cpu_online_mask));
+ 15 WARN_ONCE(dopoll_full && !cur_ops->poll_gp_state_full(&cookie_full),
+ 16           "%s: Cookie check 4 failed %pS() online %*pbl",
+ 17           __func__, sync, cpumask_pr_args(cpu_online_mask));
+ 18 if (dopoll || dopoll_full)
+ 19         cpus_read_unlock();
+
+The cookie collected from get_state_synchronize_srcu() at line 6
+apparently had not yet expired by line 12.
+
+Adding some debugging got me this:
+
+do_rtws_sync: Cookie 4/-388 check 3 failed srcu_torture_synchronize+0x0/0x10() online 0-3.
+WARNING: CPU: 2 PID: 57 at kernel/rcu/rcutorture.c:1347 do_rtws_sync.constprop.0+0x1e3/0x250
+
+The "4/-388" is the value returned by get_state_synchronize_srcu()
+(which that ->->get_gp_state() points to) at line 6, namely "4", and that
+returned by another call to that same function at line 12, namely -388.
+
+What is happening is that this rcutorture scenario uses an srcu_struct
+structure from DEFINE_STATIC_SRCU(), which initializes the various
+grace-period sequence numbers to zero.  Therefore, the first call to
+get_state_synchronize_srcu() returns 4 (the number of the first grace
+period following the mythical grace period #0).  But the intervening
+call to synchronize_srcu() (which that sync() points to) invokes
+check_init_srcu_struct(), which initializes all of those grace-period
+squence numbers to negative numbers.  Which means that the call to
+poll_state_synchronize_srcu() on line 12 (which ->poll_gp_state() points
+to) sees a negative grace-period sequence number, and concludes that the
+grace period corresponding to that positive-4-values cookie corresponds
+to a grace period that has not yet expired.
+
+My guess is that we will have to do this the hard way, by making
+DEFINE_STATIC_SRCU() another counter to an impossible value, for example,
+->srcu_gp_seq_needed_exp to 0x1.  Then get_state_synchronize_srcu()
+can check for that value, returning (SRCU_GP_SEQ_INITIAL_VAL +
+RCU_SEQ_STATE_MASK + 1) or similar.
+
+Note that start_poll_synchronize_rcu() does not (repeat, *not*) need
+adjustment because it already invokes check_init_srcu_struct().
+
+But is there a better way?
+
+For more detail, there is [2].  And welcome to the exciting world of RCU!
+This is why we have long and repeated rcutorture runs.  Though "long"
+does not help here because this happens at boot or not at all.  ;-)
+
+						Thanx, Paul
+
+[1] tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 90s --configs "400*SRCU-N" --bootargs "rcutorture.gp_sync=1 rcutorture.nfakewriters=70"
+[2] https://docs.google.com/document/d/1FHVI1-kjCgLWajSVq8MlBtoc0xxoZNsZYuQsUzW7SIY/edit?usp=sharing
+
+> > ---
+> >  kernel/rcu/srcutree.c | 10 +++++++---
+> >  1 file changed, 7 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index bc4b58b0204e..907c4a484503 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -30,6 +30,9 @@
+> >  #include "rcu.h"
+> >  #include "rcu_segcblist.h"
+> >  
+> > +/* Start with a gp sequence value that allows wrapping to occur faster. */
+> > +#define SRCU_GP_SEQ_INITIAL_VAL ((0UL - 100UL) << RCU_SEQ_CTR_SHIFT)
+> > +
+> >  /* Holdoff in nanoseconds for auto-expediting. */
+> >  #define DEFAULT_SRCU_EXP_HOLDOFF (25 * 1000)
+> >  static ulong exp_holdoff = DEFAULT_SRCU_EXP_HOLDOFF;
+> > @@ -247,7 +250,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> >  	mutex_init(&ssp->srcu_sup->srcu_cb_mutex);
+> >  	mutex_init(&ssp->srcu_sup->srcu_gp_mutex);
+> >  	ssp->srcu_idx = 0;
+> > -	ssp->srcu_sup->srcu_gp_seq = 0;
+> > +	ssp->srcu_sup->srcu_gp_seq = SRCU_GP_SEQ_INITIAL_VAL;
+> >  	ssp->srcu_sup->srcu_barrier_seq = 0;
+> >  	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
+> >  	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+> > @@ -258,7 +261,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> >  	if (!ssp->sda)
+> >  		goto err_free_sup;
+> >  	init_srcu_struct_data(ssp);
+> > -	ssp->srcu_sup->srcu_gp_seq_needed_exp = 0;
+> > +	ssp->srcu_sup->srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL;
+> >  	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
+> >  	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
+> >  		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
+> > @@ -266,7 +269,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> >  		WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
+> >  	}
+> >  	ssp->srcu_sup->srcu_ssp = ssp;
+> > -	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
+> > +	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed,
+> > +			SRCU_GP_SEQ_INITIAL_VAL); /* Init done. */
+> >  	return 0;
+> >  
+> >  err_free_sda:
+> > -- 
+> > 2.45.2
+> > 
+> 
