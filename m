@@ -1,290 +1,205 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10491BF38;
-	Wed, 24 Jul 2024 16:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8F715B0FE
+	for <rcu@vger.kernel.org>; Wed, 24 Jul 2024 16:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721837431; cv=none; b=rOgnWSXIV1JubXJDhNgVbVbHwvsLf98K+h31wjWyA0egG11NP7L2F/6VPDGLw5vPHMHTIpauUYpyHhi5ivcE5Nh5hRnC3EZsAhHzUZfdfPMlOMFyp6p5RAxldaRjya8V8NoIgYMLRPXOpyH8L1xWBvnNgZtYl+2axrQrbZE+KmE=
+	t=1721837650; cv=none; b=fUf6KtodRTBpRtJIKOmpECZPtjDLXdv2CqUlHFFV0XtGDYpp033hU1TKln59EskXhYCo2AYPYm+Mw42KnnGiVlcB3TQb1K7c52xpAxGuUtYSCoPLE0DYLFkvVfAdbaTqZJ0w9Opo2UMjOZo9O4hOq0tmBn6loZP1YVWOwZrj4pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721837431; c=relaxed/simple;
-	bh=FsMcoZ4BemPCMLrrdySSCIthF4dj7vNJ19BQvP/sYqA=;
+	s=arc-20240116; t=1721837650; c=relaxed/simple;
+	bh=rEdH4eGQMcyc5EPsB7d9U8p/157TtRW1lF10ioAHDU8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ewbrr4mdSLu7O06STJlPy+IzfI3/n3G+wwjZ2XvhNv/zfPwFcV2VZGp2ouGfdp54erOjaDu9Q/cDF9ztq6+gKyOA5EtYCHmGau7gO8DiswWWDMTqtoH4P0D6vyoRC+DH1Qwgf/UVyAQSWU/QODF8Vg5eKaeOfQURkfsRi6UXRGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IzurkySj; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=QzlEe4dQzKydfoiNT3H26eY7sCGTC0E+eQxnq4eK9WsOs/2/5LW2GhdMjGiXNmNNxn16oBuQb5Obr/m/ktrT2gTHhiVLwzJuPZbPky0Ol820/aGwJpOpB7PQd9ZJs0IB9hpUrkSLXxVs/xalvfZB+hSm+EC1XyoYC47EJmDXhYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sVeyivmi; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IzurkySj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADE16C32781;
-	Wed, 24 Jul 2024 16:10:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sVeyivmi"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F04C32781;
+	Wed, 24 Jul 2024 16:14:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721837431;
-	bh=FsMcoZ4BemPCMLrrdySSCIthF4dj7vNJ19BQvP/sYqA=;
+	s=k20201202; t=1721837649;
+	bh=rEdH4eGQMcyc5EPsB7d9U8p/157TtRW1lF10ioAHDU8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IzurkySjj9PD4I2WS1wqKfjRt2ri978xFaKt7mc6Pj/FFiJ6wFUtsCRvSlhDed+Qz
-	 RCqjCjwZnmxSsXSprI/QG54AZVm8BayANakZm724+xopkzUrtHaDc2EId4OI8wwN7Q
-	 8vy8xpMwr7Yngmd0GJ1Ix2FnJfz6/WSYeE31iCRPfiXaWYv5fzy25BFvxLRSTlEKYC
-	 c6Q5U+wVokHHR0r0P/CZNqgSS1Q6f9NMaOvXIQG2iTt85JEYzYSLfpIP+1Jzp4j7HA
-	 ko4aBpyg3q10za91e1cVSyckvdJouPK8hEbrXHJJK5/qWkENbhQLLCTTro3tVpEKwe
-	 M6LYuigZh7yGg==
-Date: Wed, 24 Jul 2024 21:40:21 +0530
+	b=sVeyivmiWT1TBU83d/X4wSRiSeslf9u6Freeg1ChxkQyglVTwwGK4GXqk+EJ9hgNv
+	 E9cXAK5T/AbUS3o0Plsc3aZ0+Bl7eyJaGrPMOesDPLWKP9t1HubmhxIxwYdaX7zyVt
+	 CagH6oQ5eoYunG8rhD7s6YnY1q6Nor59EPkJbY9aOhS1N1tz+8JZd68pw4mkqsnk/R
+	 fwQRhnJ5VV1izA4NPPCPYp4iU0vyF+v0zYIkNe6e9CDScl7ZkH23V6/Ts+wDm2Pyj8
+	 L3NOFSG2mwp9poEBQCe2/RpcpO0GSQjFb37AK+yuN9eVh65R80AqaNqVIj8ed+WS4S
+	 oHa/AibG6JPUg==
+Date: Wed, 24 Jul 2024 21:44:02 +0530
 From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org, urezki@gmail.com, boqun.feng@gmail.com,
-	qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] rcu-tasks: Fix access non-existent percpu rtpcp
- variable in rcu_tasks_need_gpcb()
-Message-ID: <20240724161021.GA787377@neeraj.linux>
-References: <20240710044542.444-1-qiang.zhang1211@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>, inwardvessel@gmail.com
+Cc: rcu@vger.kernel.org
+Subject: Re: [PATCH v2] srcu: faster gp seq wrap-around
+Message-ID: <20240724161402.GA796182@neeraj.linux>
+References: <20240715232324.52384-1-inwardvessel@gmail.com>
+ <62700706-bf21-489b-b956-7947a9b1886f@paulmck-laptop>
+ <191db3ea-f1aa-4e13-b919-0ca4a00dc89e@paulmck-laptop>
+ <20240724023845.GB668268@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240710044542.444-1-qiang.zhang1211@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240724023845.GB668268@neeraj.linux>
 
-On Wed, Jul 10, 2024 at 12:45:42PM +0800, Zqiang wrote:
-> For kernels built with CONFIG_FORCE_NR_CPUS=y, the nr_cpu_ids is
-> defined as NR_CPUS instead of the number of possible cpus, this
-> will cause the following system panic:
+On Wed, Jul 24, 2024 at 08:08:45AM +0530, Neeraj Upadhyay wrote:
+> On Tue, Jul 23, 2024 at 12:38:35PM -0700, Paul E. McKenney wrote:
+> > On Thu, Jul 18, 2024 at 03:04:49PM -0700, Paul E. McKenney wrote:
+> > > On Mon, Jul 15, 2024 at 04:23:24PM -0700, JP Kobryn wrote:
+> > > > Using a higher value for the initial gp sequence counters allows for
+> > > > wrapping to occur faster. It can help with surfacing any issues that may
+> > > > be happening as a result of the wrap around.
+> > > > 
+> > > > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> > > 
+> > > Much nicer, thank you!
+> > > 
+> > > Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > Unfortunately, extended testing [1] triggered this warning:
+> > 
+> > do_rtws_sync: Cookie check 3 failed srcu_torture_synchronize+0x0/0x10() online 0-3.
+> > WARNING: CPU: 2 PID: 57 at kernel/rcu/rcutorture.c:1347 do_rtws_sync.constprop.0+0x1e3/0x250
+> > 
+> > This is in the following code:
+> > 
+> >   1 dopoll = cur_ops->get_gp_state && cur_ops->poll_gp_state && !(r & 0x300); 
+> >   2 dopoll_full = cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full && !(r & 0xc00);
+> >   3 if (dopoll || dopoll_full)
+> >   4         cpus_read_lock();
+> >   5 if (dopoll)     
+> >   6         cookie = cur_ops->get_gp_state();
+> >   7 if (dopoll_full)
+> >   8         cur_ops->get_gp_state_full(&cookie_full);
+> >   9 if (cur_ops->poll_need_2gp && cur_ops->poll_need_2gp(dopoll, dopoll_full))
+> >  10         sync();
+> >  11 sync();
+> >  12 WARN_ONCE(dopoll && !cur_ops->poll_gp_state(cookie),
+> >  13           "%s: Cookie check 3 failed %pS() online %*pbl.",
+> >  14           __func__, sync, cpumask_pr_args(cpu_online_mask));
+> >  15 WARN_ONCE(dopoll_full && !cur_ops->poll_gp_state_full(&cookie_full),
+> >  16           "%s: Cookie check 4 failed %pS() online %*pbl",
+> >  17           __func__, sync, cpumask_pr_args(cpu_online_mask));
+> >  18 if (dopoll || dopoll_full)
+> >  19         cpus_read_unlock();
+> > 
+> > The cookie collected from get_state_synchronize_srcu() at line 6
+> > apparently had not yet expired by line 12.
+> > 
+> > Adding some debugging got me this:
+> > 
+> > do_rtws_sync: Cookie 4/-388 check 3 failed srcu_torture_synchronize+0x0/0x10() online 0-3.
+> > WARNING: CPU: 2 PID: 57 at kernel/rcu/rcutorture.c:1347 do_rtws_sync.constprop.0+0x1e3/0x250
+> > 
+> > The "4/-388" is the value returned by get_state_synchronize_srcu()
+> > (which that ->->get_gp_state() points to) at line 6, namely "4", and that
+> > returned by another call to that same function at line 12, namely -388.
+> > 
+> > What is happening is that this rcutorture scenario uses an srcu_struct
+> > structure from DEFINE_STATIC_SRCU(), which initializes the various
+> > grace-period sequence numbers to zero.  Therefore, the first call to
+> > get_state_synchronize_srcu() returns 4 (the number of the first grace
+> > period following the mythical grace period #0).  But the intervening
+> > call to synchronize_srcu() (which that sync() points to) invokes
+> > check_init_srcu_struct(), which initializes all of those grace-period
+> > squence numbers to negative numbers.  Which means that the call to
+> > poll_state_synchronize_srcu() on line 12 (which ->poll_gp_state() points
+> > to) sees a negative grace-period sequence number, and concludes that the
+> > grace period corresponding to that positive-4-values cookie corresponds
+> > to a grace period that has not yet expired.
+> > 
+> > My guess is that we will have to do this the hard way, by making
+> > DEFINE_STATIC_SRCU() another counter to an impossible value, for example,
+> > ->srcu_gp_seq_needed_exp to 0x1.  Then get_state_synchronize_srcu()
+> > can check for that value, returning (SRCU_GP_SEQ_INITIAL_VAL +
+> > RCU_SEQ_STATE_MASK + 1) or similar.
+> > 
+> > Note that start_poll_synchronize_rcu() does not (repeat, *not*) need
+> > adjustment because it already invokes check_init_srcu_struct().
+> > 
+> > But is there a better way?
+> > 
 > 
-> smpboot: Allowing 4 CPUs, 0 hotplug CPUs
-> ...
-> setup_percpu: NR_CPUS:512 nr_cpumask_bits:512 nr_cpu_ids:512 nr_node_ids:1
-> ...
-> BUG: unable to handle page fault for address: ffffffff9911c8c8
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> Oops: 0000 [#1] PREEMPT SMP PTI
-> CPU: 0 PID: 15 Comm: rcu_tasks_trace Tainted: G W
-> 6.6.21 #1 5dc7acf91a5e8e9ac9dcfc35bee0245691283ea6
-> RIP: 0010:rcu_tasks_need_gpcb+0x25d/0x2c0
-> RSP: 0018:ffffa371c00a3e60 EFLAGS: 00010082
-> CR2: ffffffff9911c8c8 CR3: 000000040fa20005 CR4: 00000000001706f0
-> Call Trace:
-> <TASK>
-> ? __die+0x23/0x80
-> ? page_fault_oops+0xa4/0x180
-> ? exc_page_fault+0x152/0x180
-> ? asm_exc_page_fault+0x26/0x40
-> ? rcu_tasks_need_gpcb+0x25d/0x2c0
-> ? __pfx_rcu_tasks_kthread+0x40/0x40
-> rcu_tasks_one_gp+0x69/0x180
-> rcu_tasks_kthread+0x94/0xc0
-> kthread+0xe8/0x140
-> ? __pfx_kthread+0x40/0x40
-> ret_from_fork+0x34/0x80
-> ? __pfx_kthread+0x40/0x40
-> ret_from_fork_asm+0x1b/0x80
-> </TASK>
+> Though exporting the RCU_SEQ_CTR macros and initial values isn't great,
+> given this scenario, maybe we can go back to the approach taken by JP in his
+> initial patch [1], to initialize the static SRCU initial gp_seq state with
+> SRCU_GP_SEQ_INITIAL_VAL. Does that work?
 > 
-> Considering that there may be holes in the CPU numbers, use the
-> maximum possible cpu number, instead of nr_cpu_ids, for configuring
-> enqueue and dequeue limits.
-> 
-> Closes: https://lore.kernel.org/linux-input/CALMA0xaTSMN+p4xUXkzrtR5r6k7hgoswcaXx7baR_z9r5jjskw@mail.gmail.com/T/#u
-> Reported-by: Zhixu Liu <zhixu.liu@gmail.com>
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> ---
+>
 
-Thanks! Pulled this for further review and testing [1]
+Based on discussion with Paul, I have pulled the v1 version here [1] for
+further review and testing. Thanks!
 
 
 [1] https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/log/?h=next
 
->  kernel/rcu/tasks.h | 80 +++++++++++++++++++++++++++++-----------------
->  1 file changed, 51 insertions(+), 29 deletions(-)
+- Neeraj
+
+> - Neeraj
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 2b1d6abf3ba3..12d63ce84cc9 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -49,6 +49,7 @@ struct rcu_tasks_percpu {
->  	struct list_head rtp_blkd_tasks;
->  	struct list_head rtp_exit_list;
->  	int cpu;
-> +	int index;
->  	struct rcu_tasks *rtpp;
->  };
->  
-> @@ -110,6 +111,7 @@ struct rcu_tasks {
->  	call_rcu_func_t call_func;
->  	unsigned int wait_state;
->  	struct rcu_tasks_percpu __percpu *rtpcpu;
-> +	struct rcu_tasks_percpu **rtpcp_array;
->  	int percpu_enqueue_shift;
->  	int percpu_enqueue_lim;
->  	int percpu_dequeue_lim;
-> @@ -182,6 +184,8 @@ module_param(rcu_task_collapse_lim, int, 0444);
->  static int rcu_task_lazy_lim __read_mostly = 32;
->  module_param(rcu_task_lazy_lim, int, 0444);
->  
-> +static int rcu_task_cpu_ids;
-> +
->  /* RCU tasks grace-period state for debugging. */
->  #define RTGS_INIT		 0
->  #define RTGS_WAIT_WAIT_CBS	 1
-> @@ -245,6 +249,8 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->  	int cpu;
->  	int lim;
->  	int shift;
-> +	int maxcpu;
-> +	int index = 0;
->  
->  	if (rcu_task_enqueue_lim < 0) {
->  		rcu_task_enqueue_lim = 1;
-> @@ -254,14 +260,9 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->  	}
->  	lim = rcu_task_enqueue_lim;
->  
-> -	if (lim > nr_cpu_ids)
-> -		lim = nr_cpu_ids;
-> -	shift = ilog2(nr_cpu_ids / lim);
-> -	if (((nr_cpu_ids - 1) >> shift) >= lim)
-> -		shift++;
-> -	WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
-> -	WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> -	smp_store_release(&rtp->percpu_enqueue_lim, lim);
-> +	rtp->rtpcp_array = kcalloc(num_possible_cpus(), sizeof(struct rcu_tasks_percpu *), GFP_KERNEL);
-> +	BUG_ON(!rtp->rtpcp_array);
-> +
->  	for_each_possible_cpu(cpu) {
->  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
->  
-> @@ -273,14 +274,29 @@ static void cblist_init_generic(struct rcu_tasks *rtp)
->  		INIT_WORK(&rtpcp->rtp_work, rcu_tasks_invoke_cbs_wq);
->  		rtpcp->cpu = cpu;
->  		rtpcp->rtpp = rtp;
-> +		rtpcp->index = index;
-> +		rtp->rtpcp_array[index] = rtpcp;
-> +		index++;
->  		if (!rtpcp->rtp_blkd_tasks.next)
->  			INIT_LIST_HEAD(&rtpcp->rtp_blkd_tasks);
->  		if (!rtpcp->rtp_exit_list.next)
->  			INIT_LIST_HEAD(&rtpcp->rtp_exit_list);
-> +		maxcpu = cpu;
->  	}
->  
-> -	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d.\n", rtp->name,
-> -			data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim), rcu_task_cb_adjust);
-> +	rcu_task_cpu_ids = maxcpu + 1;
-> +	if (lim > rcu_task_cpu_ids)
-> +		lim = rcu_task_cpu_ids;
-> +	shift = ilog2(rcu_task_cpu_ids / lim);
-> +	if (((rcu_task_cpu_ids - 1) >> shift) >= lim)
-> +		shift++;
-> +	WRITE_ONCE(rtp->percpu_enqueue_shift, shift);
-> +	WRITE_ONCE(rtp->percpu_dequeue_lim, lim);
-> +	smp_store_release(&rtp->percpu_enqueue_lim, lim);
-> +
-> +	pr_info("%s: Setting shift to %d and lim to %d rcu_task_cb_adjust=%d rcu_task_cpu_ids=%d.\n",
-> +			rtp->name, data_race(rtp->percpu_enqueue_shift), data_race(rtp->percpu_enqueue_lim),
-> +			rcu_task_cb_adjust, rcu_task_cpu_ids);
->  }
->  
->  // Compute wakeup time for lazy callback timer.
-> @@ -348,7 +364,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->  			rtpcp->rtp_n_lock_retries = 0;
->  		}
->  		if (rcu_task_cb_adjust && ++rtpcp->rtp_n_lock_retries > rcu_task_contend_lim &&
-> -		    READ_ONCE(rtp->percpu_enqueue_lim) != nr_cpu_ids)
-> +		    READ_ONCE(rtp->percpu_enqueue_lim) != rcu_task_cpu_ids)
->  			needadjust = true;  // Defer adjustment to avoid deadlock.
->  	}
->  	// Queuing callbacks before initialization not yet supported.
-> @@ -368,10 +384,10 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
->  	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
->  	if (unlikely(needadjust)) {
->  		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
-> -		if (rtp->percpu_enqueue_lim != nr_cpu_ids) {
-> +		if (rtp->percpu_enqueue_lim != rcu_task_cpu_ids) {
->  			WRITE_ONCE(rtp->percpu_enqueue_shift, 0);
-> -			WRITE_ONCE(rtp->percpu_dequeue_lim, nr_cpu_ids);
-> -			smp_store_release(&rtp->percpu_enqueue_lim, nr_cpu_ids);
-> +			WRITE_ONCE(rtp->percpu_dequeue_lim, rcu_task_cpu_ids);
-> +			smp_store_release(&rtp->percpu_enqueue_lim, rcu_task_cpu_ids);
->  			pr_info("Switching %s to per-CPU callback queuing.\n", rtp->name);
->  		}
->  		raw_spin_unlock_irqrestore(&rtp->cbs_gbl_lock, flags);
-> @@ -444,6 +460,8 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
->  
->  	dequeue_limit = smp_load_acquire(&rtp->percpu_dequeue_lim);
->  	for (cpu = 0; cpu < dequeue_limit; cpu++) {
-> +		if (!cpu_possible(cpu))
-> +			continue;
->  		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
->  
->  		/* Advance and accelerate any new callbacks. */
-> @@ -481,7 +499,7 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
->  	if (rcu_task_cb_adjust && ncbs <= rcu_task_collapse_lim) {
->  		raw_spin_lock_irqsave(&rtp->cbs_gbl_lock, flags);
->  		if (rtp->percpu_enqueue_lim > 1) {
-> -			WRITE_ONCE(rtp->percpu_enqueue_shift, order_base_2(nr_cpu_ids));
-> +			WRITE_ONCE(rtp->percpu_enqueue_shift, order_base_2(rcu_task_cpu_ids));
->  			smp_store_release(&rtp->percpu_enqueue_lim, 1);
->  			rtp->percpu_dequeue_gpseq = get_state_synchronize_rcu();
->  			gpdone = false;
-> @@ -496,7 +514,9 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
->  			pr_info("Completing switch %s to CPU-0 callback queuing.\n", rtp->name);
->  		}
->  		if (rtp->percpu_dequeue_lim == 1) {
-> -			for (cpu = rtp->percpu_dequeue_lim; cpu < nr_cpu_ids; cpu++) {
-> +			for (cpu = rtp->percpu_dequeue_lim; cpu < rcu_task_cpu_ids; cpu++) {
-> +				if (!cpu_possible(cpu))
-> +					continue;
->  				struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
->  
->  				WARN_ON_ONCE(rcu_segcblist_n_cbs(&rtpcp->cblist));
-> @@ -511,30 +531,32 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
->  // Advance callbacks and invoke any that are ready.
->  static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu *rtpcp)
->  {
-> -	int cpu;
-> -	int cpunext;
->  	int cpuwq;
->  	unsigned long flags;
->  	int len;
-> +	int index;
->  	struct rcu_head *rhp;
->  	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
->  	struct rcu_tasks_percpu *rtpcp_next;
->  
-> -	cpu = rtpcp->cpu;
-> -	cpunext = cpu * 2 + 1;
-> -	if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> -		rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
-> -		cpuwq = rcu_cpu_beenfullyonline(cpunext) ? cpunext : WORK_CPU_UNBOUND;
-> -		queue_work_on(cpuwq, system_wq, &rtpcp_next->rtp_work);
-> -		cpunext++;
-> -		if (cpunext < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> -			rtpcp_next = per_cpu_ptr(rtp->rtpcpu, cpunext);
-> -			cpuwq = rcu_cpu_beenfullyonline(cpunext) ? cpunext : WORK_CPU_UNBOUND;
-> +	index = rtpcp->index * 2 + 1;
-> +	if (index < num_possible_cpus()) {
-> +		rtpcp_next = rtp->rtpcp_array[index];
-> +		if (rtpcp_next->cpu < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> +			cpuwq = rcu_cpu_beenfullyonline(rtpcp_next->cpu) ? rtpcp_next->cpu : WORK_CPU_UNBOUND;
->  			queue_work_on(cpuwq, system_wq, &rtpcp_next->rtp_work);
-> +			index++;
-> +			if (index < num_possible_cpus()) {
-> +				rtpcp_next = rtp->rtpcp_array[index];
-> +				if (rtpcp_next->cpu < smp_load_acquire(&rtp->percpu_dequeue_lim)) {
-> +					cpuwq = rcu_cpu_beenfullyonline(rtpcp_next->cpu) ? rtpcp_next->cpu : WORK_CPU_UNBOUND;
-> +					queue_work_on(cpuwq, system_wq, &rtpcp_next->rtp_work);
-> +				}
-> +			}
->  		}
->  	}
->  
-> -	if (rcu_segcblist_empty(&rtpcp->cblist) || !cpu_possible(cpu))
-> +	if (rcu_segcblist_empty(&rtpcp->cblist))
->  		return;
->  	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
->  	rcu_segcblist_advance(&rtpcp->cblist, rcu_seq_current(&rtp->tasks_gp_seq));
-> -- 
-> 2.17.1
+> [1] https://lore.kernel.org/rcu/20240712005629.2980-1-inwardvessel@gmail.com/
 > 
+> > For more detail, there is [2].  And welcome to the exciting world of RCU!
+> > This is why we have long and repeated rcutorture runs.  Though "long"
+> > does not help here because this happens at boot or not at all.  ;-)
+> > 
+> > 						Thanx, Paul
+> > 
+> > [1] tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 90s --configs "400*SRCU-N" --bootargs "rcutorture.gp_sync=1 rcutorture.nfakewriters=70"
+> > [2] https://docs.google.com/document/d/1FHVI1-kjCgLWajSVq8MlBtoc0xxoZNsZYuQsUzW7SIY/edit?usp=sharing
+> > 
+> > > > ---
+> > > >  kernel/rcu/srcutree.c | 10 +++++++---
+> > > >  1 file changed, 7 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > index bc4b58b0204e..907c4a484503 100644
+> > > > --- a/kernel/rcu/srcutree.c
+> > > > +++ b/kernel/rcu/srcutree.c
+> > > > @@ -30,6 +30,9 @@
+> > > >  #include "rcu.h"
+> > > >  #include "rcu_segcblist.h"
+> > > >  
+> > > > +/* Start with a gp sequence value that allows wrapping to occur faster. */
+> > > > +#define SRCU_GP_SEQ_INITIAL_VAL ((0UL - 100UL) << RCU_SEQ_CTR_SHIFT)
+> > > > +
+> > > >  /* Holdoff in nanoseconds for auto-expediting. */
+> > > >  #define DEFAULT_SRCU_EXP_HOLDOFF (25 * 1000)
+> > > >  static ulong exp_holdoff = DEFAULT_SRCU_EXP_HOLDOFF;
+> > > > @@ -247,7 +250,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> > > >  	mutex_init(&ssp->srcu_sup->srcu_cb_mutex);
+> > > >  	mutex_init(&ssp->srcu_sup->srcu_gp_mutex);
+> > > >  	ssp->srcu_idx = 0;
+> > > > -	ssp->srcu_sup->srcu_gp_seq = 0;
+> > > > +	ssp->srcu_sup->srcu_gp_seq = SRCU_GP_SEQ_INITIAL_VAL;
+> > > >  	ssp->srcu_sup->srcu_barrier_seq = 0;
+> > > >  	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
+> > > >  	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+> > > > @@ -258,7 +261,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> > > >  	if (!ssp->sda)
+> > > >  		goto err_free_sup;
+> > > >  	init_srcu_struct_data(ssp);
+> > > > -	ssp->srcu_sup->srcu_gp_seq_needed_exp = 0;
+> > > > +	ssp->srcu_sup->srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL;
+> > > >  	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
+> > > >  	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
+> > > >  		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
+> > > > @@ -266,7 +269,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> > > >  		WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
+> > > >  	}
+> > > >  	ssp->srcu_sup->srcu_ssp = ssp;
+> > > > -	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
+> > > > +	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed,
+> > > > +			SRCU_GP_SEQ_INITIAL_VAL); /* Init done. */
+> > > >  	return 0;
+> > > >  
+> > > >  err_free_sda:
+> > > > -- 
+> > > > 2.45.2
+> > > > 
+> > > 
