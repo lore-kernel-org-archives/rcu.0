@@ -1,194 +1,124 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7963517547
-	for <rcu@vger.kernel.org>; Wed, 24 Jul 2024 02:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3FA4C84
+	for <rcu@vger.kernel.org>; Wed, 24 Jul 2024 07:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721788731; cv=none; b=c1hmGvsyv+BY4YaW7x2n/EtHJLuwP7KvpV1rExySwzIhSMCwmSsfKfYhQ8rv1hUCOGzk/W5oGqDvMwomr9E7WoofRana1BLA+jQQwDu5j22KWVCD21pRgk+H6pT7L9LO2qTYhGTm0pJ0Qjud1QX7p9pGOAV/gg1sufkhN/tStzM=
+	t=1721805808; cv=none; b=LOUYOE3+7E9GlMpJ1Z25MvV92nv1iJDnAzAh7PyM5blt+a8zJPCEJcD2PB+ARKOGlM8r55XMe5hc7M7mxSrIkytk9gRCnUzLrmUGZVADSIZ1MwLxpWCXm5VzAwEvornmb6C5guiyXvcFy06BSwBWDlixb2zyzgbujISZESXM8yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721788731; c=relaxed/simple;
-	bh=AfMAYCIH4VyLBLpuyPZWGhZxKpHifpL/x4Htyndgujo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rKYM3qXu8sM2XJ8+Gp7q5WOxKgrFTxCovUxV3R5HOTttW1RJmhD1CcNj6bjvPX6CTGDksRbpheQRMRL2S0QgBkt9kzU9mEyxXEwbIecznm5IrIeu4oeLA97KjHtuCYKtLIWWPRKjt4uUNOXjQUQS3aZRkmsb6UzsupCWnd6KO30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nrdXXIeH; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1721805808; c=relaxed/simple;
+	bh=i+3Dw5TJO9f+FsTkSAq+Gt5Tp0i9wBPk/hzAx7812HA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YijA+NR+XzoG+2OSfGRauIKpI7ziFmEp2qXA4oJJNeu1TA9UY/FLoWHwCz7Fo0AWckbKetsPmHNdQ76m7rPUDCWKVEsUpvX29/NIxFeB8tkQ/Vz9SEdkj7W92zeQGLgDTMCXux72cMTgEeZnvD0qrkZgM+vXfl0PsXUOT413jM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VmyvbAsG; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nrdXXIeH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4647C4AF09;
-	Wed, 24 Jul 2024 02:38:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721788731;
-	bh=AfMAYCIH4VyLBLpuyPZWGhZxKpHifpL/x4Htyndgujo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nrdXXIeH5+vEHFHZnt5JDPpYceHiXdMX75EM/i/44fqoXdJZzB4UK1fcodsdDuHLe
-	 dZikg//ppn1oQQqE3tP+fhwOq0QIwtz6MtsnWHddP4I7zW6hkTN5GjLnin/Q85Gdxd
-	 w2Y6jsD4rHQ+NDlbbjMYMmIQVPVZcKQohArud33kOrtI21RQyQHLx3vbGAvXXgdvkE
-	 RbpFi3kil+sns98PjcfK8E0ZW0gAbVoDu45pQML3vgO3vSSG8ATKw74zkj9qXEi97M
-	 5vO8ty/Ug37iAVd7kXxK/cbvouY1R/Tf6TuUAXfu3Z6WWJuNssEA824tQWQQckwg/c
-	 1CNzzXkZCoolg==
-Date: Wed, 24 Jul 2024 08:08:45 +0530
-From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: JP Kobryn <inwardvessel@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] srcu: faster gp seq wrap-around
-Message-ID: <20240724023845.GB668268@neeraj.linux>
-References: <20240715232324.52384-1-inwardvessel@gmail.com>
- <62700706-bf21-489b-b956-7947a9b1886f@paulmck-laptop>
- <191db3ea-f1aa-4e13-b919-0ca4a00dc89e@paulmck-laptop>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VmyvbAsG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721805803;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i+3Dw5TJO9f+FsTkSAq+Gt5Tp0i9wBPk/hzAx7812HA=;
+	b=VmyvbAsGU9dtzATXJIqwgw1BuGgSdriWbPvICdybf8ulXpQ7Bfk9MqGkp+BIioXMH7XWPi
+	6aycuOvSD1x2BvrMbVC26RpX3DGf2Sjo7vksX2IaZTWuAZlFsnhqgM59mQzcG6LrwYk0sq
+	vVsi/IrhUoI0gwCRCauKyMxC85dMkk0=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-639-JMfpP_5JPVi_QdLj-h2IUg-1; Wed, 24 Jul 2024 03:20:47 -0400
+X-MC-Unique: JMfpP_5JPVi_QdLj-h2IUg-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-44f4e1569fcso83804491cf.2
+        for <rcu@vger.kernel.org>; Wed, 24 Jul 2024 00:20:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721805647; x=1722410447;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i+3Dw5TJO9f+FsTkSAq+Gt5Tp0i9wBPk/hzAx7812HA=;
+        b=aivuuIUTHCzjNueNTnb/DOI5x8CZsBIelyqqGGgZIMPyIiE8Sf+FkA4rGsYjx1R7IY
+         Ws4AQ9LpKlRBaZjmZvJMBnzJ+u6L8ltmwcxTeu4ooZNmP32RdMK3zSVpfiVM1Dl0DLD7
+         XRhKXPDvGoJad8MEoPMu+pcm5axT6sZlEoEgb1pj8N7grigAz1egdGBtCzMldLuQZtOv
+         BeXgiUv7u0fd4iy17V5GBCkm1q1J6kYXGDJijfwchJ9Q2gkVVLcUavndsvIk4L+lmL0H
+         4NpSRuP1XOC2m3YS1ZIjK1K6VurOIngew47y8XE90YCFk0UjFidDVrR72/T50ShNRxMR
+         aBMA==
+X-Forwarded-Encrypted: i=1; AJvYcCXulx24a/G9a1DPJgbWH/qinPF3zsOjB1YVF6nNlkcc4kGKTgajCjxA5JHkzyx3wxR4v8Q2kUxcBRXaLww+Q4jSgU3O
+X-Gm-Message-State: AOJu0YzW/BqDEjZwz3sF5puh9T6JVWR5tdqtLW0WGCnGfA5xn61JSvDY
+	pOuw98Omt4IhV1E7emBoysKa3lfnEEOcwHFWOUhAL5uDhWBYrU+Y2IAMlLPcxbWCcniwZClz0+6
+	3cEQpeJ5cFwjNFlAoCZioz1SiMdQHnYtKnwJs0j/AH+cfZXYHTQ==
+X-Received: by 2002:ac8:5fd2:0:b0:447:e3a5:27a4 with SMTP id d75a77b69052e-44fd690c70bmr13334971cf.52.1721805646801;
+        Wed, 24 Jul 2024 00:20:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG3hwHQDyxNrmuz8DJLgtMTsUP1m4eqMytdEyB3bMxyRU0LAKgTsDlpFKTWSObfLA3s1kZhxA==
+X-Received: by 2002:ac8:5fd2:0:b0:447:e3a5:27a4 with SMTP id d75a77b69052e-44fd690c70bmr13334821cf.52.1721805646451;
+        Wed, 24 Jul 2024 00:20:46 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-44f9cdc17f1sm51065571cf.91.2024.07.24.00.20.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jul 2024 00:20:45 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Benjamin Segall <bsegall@google.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, Peter Zijlstra
+ <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Juri Lelli
+ <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Mel Gorman <mgorman@suse.de>, Phil Auld
+ <pauld@redhat.com>, Clark Williams <williams@redhat.com>, Tomas Glozar
+ <tglozar@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>, Frederic
+ Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Alexander
+ Gordeev <agordeev@linux.ibm.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Arnd Bergmann <arnd@arndb.de>, Guo Ren
+ <guoren@kernel.org>, Palmer
+ Dabbelt <palmer@rivosinc.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Oleg Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [RFC PATCH v3 10/10] sched/fair: Throttle CFS tasks on return
+ to userspace
+In-Reply-To: <xm26a5i7zi7g.fsf@google.com>
+References: <20240711130004.2157737-1-vschneid@redhat.com>
+ <20240711130004.2157737-11-vschneid@redhat.com>
+ <xm26y15yz0q8.fsf@google.com>
+ <xhsmhikwwyw8r.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <xm26a5i7zi7g.fsf@google.com>
+Date: Wed, 24 Jul 2024 09:20:39 +0200
+Message-ID: <xhsmhfrrzz260.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <191db3ea-f1aa-4e13-b919-0ca4a00dc89e@paulmck-laptop>
+Content-Type: text/plain
 
-On Tue, Jul 23, 2024 at 12:38:35PM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 18, 2024 at 03:04:49PM -0700, Paul E. McKenney wrote:
-> > On Mon, Jul 15, 2024 at 04:23:24PM -0700, JP Kobryn wrote:
-> > > Using a higher value for the initial gp sequence counters allows for
-> > > wrapping to occur faster. It can help with surfacing any issues that may
-> > > be happening as a result of the wrap around.
-> > > 
-> > > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> > 
-> > Much nicer, thank you!
-> > 
-> > Tested-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Unfortunately, extended testing [1] triggered this warning:
-> 
-> do_rtws_sync: Cookie check 3 failed srcu_torture_synchronize+0x0/0x10() online 0-3.
-> WARNING: CPU: 2 PID: 57 at kernel/rcu/rcutorture.c:1347 do_rtws_sync.constprop.0+0x1e3/0x250
-> 
-> This is in the following code:
-> 
->   1 dopoll = cur_ops->get_gp_state && cur_ops->poll_gp_state && !(r & 0x300); 
->   2 dopoll_full = cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full && !(r & 0xc00);
->   3 if (dopoll || dopoll_full)
->   4         cpus_read_lock();
->   5 if (dopoll)     
->   6         cookie = cur_ops->get_gp_state();
->   7 if (dopoll_full)
->   8         cur_ops->get_gp_state_full(&cookie_full);
->   9 if (cur_ops->poll_need_2gp && cur_ops->poll_need_2gp(dopoll, dopoll_full))
->  10         sync();
->  11 sync();
->  12 WARN_ONCE(dopoll && !cur_ops->poll_gp_state(cookie),
->  13           "%s: Cookie check 3 failed %pS() online %*pbl.",
->  14           __func__, sync, cpumask_pr_args(cpu_online_mask));
->  15 WARN_ONCE(dopoll_full && !cur_ops->poll_gp_state_full(&cookie_full),
->  16           "%s: Cookie check 4 failed %pS() online %*pbl",
->  17           __func__, sync, cpumask_pr_args(cpu_online_mask));
->  18 if (dopoll || dopoll_full)
->  19         cpus_read_unlock();
-> 
-> The cookie collected from get_state_synchronize_srcu() at line 6
-> apparently had not yet expired by line 12.
-> 
-> Adding some debugging got me this:
-> 
-> do_rtws_sync: Cookie 4/-388 check 3 failed srcu_torture_synchronize+0x0/0x10() online 0-3.
-> WARNING: CPU: 2 PID: 57 at kernel/rcu/rcutorture.c:1347 do_rtws_sync.constprop.0+0x1e3/0x250
-> 
-> The "4/-388" is the value returned by get_state_synchronize_srcu()
-> (which that ->->get_gp_state() points to) at line 6, namely "4", and that
-> returned by another call to that same function at line 12, namely -388.
-> 
-> What is happening is that this rcutorture scenario uses an srcu_struct
-> structure from DEFINE_STATIC_SRCU(), which initializes the various
-> grace-period sequence numbers to zero.  Therefore, the first call to
-> get_state_synchronize_srcu() returns 4 (the number of the first grace
-> period following the mythical grace period #0).  But the intervening
-> call to synchronize_srcu() (which that sync() points to) invokes
-> check_init_srcu_struct(), which initializes all of those grace-period
-> squence numbers to negative numbers.  Which means that the call to
-> poll_state_synchronize_srcu() on line 12 (which ->poll_gp_state() points
-> to) sees a negative grace-period sequence number, and concludes that the
-> grace period corresponding to that positive-4-values cookie corresponds
-> to a grace period that has not yet expired.
-> 
-> My guess is that we will have to do this the hard way, by making
-> DEFINE_STATIC_SRCU() another counter to an impossible value, for example,
-> ->srcu_gp_seq_needed_exp to 0x1.  Then get_state_synchronize_srcu()
-> can check for that value, returning (SRCU_GP_SEQ_INITIAL_VAL +
-> RCU_SEQ_STATE_MASK + 1) or similar.
-> 
-> Note that start_poll_synchronize_rcu() does not (repeat, *not*) need
-> adjustment because it already invokes check_init_srcu_struct().
-> 
-> But is there a better way?
-> 
+On 23/07/24 18:34, Benjamin Segall wrote:
+> Valentin Schneider <vschneid@redhat.com> writes:
+>
+>> On 18/07/24 17:25, Benjamin Segall wrote:
+>>> Valentin Schneider <vschneid@redhat.com> writes:
+>>>
+>>>> I've tested a 10ms runtime / 100ms period cgroup with an always running
+>>>> task: upstream gets a "clean" periodic pattern of 10ms runtime every 100ms,
+>>>> whereas this gets something more like 40ms runtime every 400ms.
+>>>
+>>> Hmm, this seems a little odd since TWA_RESUME does a kick_process.
+>>
+>> I didn't ponder too much on the workload used here, but the point I wanted
+>> to bring up is: if you give a cgroup X amount of runtime, it may still
+>> consume more than that within a single period because execution in
+>> kernelspace isn't immediately stopped/throttled.
+>>
+>> It means the "standard" bandwidth control behaviour becomes a bit more
+>> bursty.
+>
+> Yeah, more bursty behavior when doing cpu-burning syscalls is expected.
+> With the check on exit to user I wouldn't expect anything worse than the
+> duration of the syscall though, so it depends on what your test was.
+>
 
-Though exporting the RCU_SEQ_CTR macros and initial values isn't great,
-given this scenario, maybe we can go back to the approach taken by JP in his
-initial patch [1], to initialize the static SRCU initial gp_seq state with
-SRCU_GP_SEQ_INITIAL_VAL. Does that work?
+That would also be my expectations. That was rt-app, so the userspace part
+is mostly floating point operations IIRC. I'll do a bit of tracing to make
+sure nothing funny is happening in the kernel.
 
-
-- Neeraj
-
-[1] https://lore.kernel.org/rcu/20240712005629.2980-1-inwardvessel@gmail.com/
-
-> For more detail, there is [2].  And welcome to the exciting world of RCU!
-> This is why we have long and repeated rcutorture runs.  Though "long"
-> does not help here because this happens at boot or not at all.  ;-)
-> 
-> 						Thanx, Paul
-> 
-> [1] tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 90s --configs "400*SRCU-N" --bootargs "rcutorture.gp_sync=1 rcutorture.nfakewriters=70"
-> [2] https://docs.google.com/document/d/1FHVI1-kjCgLWajSVq8MlBtoc0xxoZNsZYuQsUzW7SIY/edit?usp=sharing
-> 
-> > > ---
-> > >  kernel/rcu/srcutree.c | 10 +++++++---
-> > >  1 file changed, 7 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > index bc4b58b0204e..907c4a484503 100644
-> > > --- a/kernel/rcu/srcutree.c
-> > > +++ b/kernel/rcu/srcutree.c
-> > > @@ -30,6 +30,9 @@
-> > >  #include "rcu.h"
-> > >  #include "rcu_segcblist.h"
-> > >  
-> > > +/* Start with a gp sequence value that allows wrapping to occur faster. */
-> > > +#define SRCU_GP_SEQ_INITIAL_VAL ((0UL - 100UL) << RCU_SEQ_CTR_SHIFT)
-> > > +
-> > >  /* Holdoff in nanoseconds for auto-expediting. */
-> > >  #define DEFAULT_SRCU_EXP_HOLDOFF (25 * 1000)
-> > >  static ulong exp_holdoff = DEFAULT_SRCU_EXP_HOLDOFF;
-> > > @@ -247,7 +250,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
-> > >  	mutex_init(&ssp->srcu_sup->srcu_cb_mutex);
-> > >  	mutex_init(&ssp->srcu_sup->srcu_gp_mutex);
-> > >  	ssp->srcu_idx = 0;
-> > > -	ssp->srcu_sup->srcu_gp_seq = 0;
-> > > +	ssp->srcu_sup->srcu_gp_seq = SRCU_GP_SEQ_INITIAL_VAL;
-> > >  	ssp->srcu_sup->srcu_barrier_seq = 0;
-> > >  	mutex_init(&ssp->srcu_sup->srcu_barrier_mutex);
-> > >  	atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
-> > > @@ -258,7 +261,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
-> > >  	if (!ssp->sda)
-> > >  		goto err_free_sup;
-> > >  	init_srcu_struct_data(ssp);
-> > > -	ssp->srcu_sup->srcu_gp_seq_needed_exp = 0;
-> > > +	ssp->srcu_sup->srcu_gp_seq_needed_exp = SRCU_GP_SEQ_INITIAL_VAL;
-> > >  	ssp->srcu_sup->srcu_last_gp_end = ktime_get_mono_fast_ns();
-> > >  	if (READ_ONCE(ssp->srcu_sup->srcu_size_state) == SRCU_SIZE_SMALL && SRCU_SIZING_IS_INIT()) {
-> > >  		if (!init_srcu_struct_nodes(ssp, GFP_ATOMIC))
-> > > @@ -266,7 +269,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
-> > >  		WRITE_ONCE(ssp->srcu_sup->srcu_size_state, SRCU_SIZE_BIG);
-> > >  	}
-> > >  	ssp->srcu_sup->srcu_ssp = ssp;
-> > > -	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed, 0); /* Init done. */
-> > > +	smp_store_release(&ssp->srcu_sup->srcu_gp_seq_needed,
-> > > +			SRCU_GP_SEQ_INITIAL_VAL); /* Init done. */
-> > >  	return 0;
-> > >  
-> > >  err_free_sda:
-> > > -- 
-> > > 2.45.2
-> > > 
-> > 
