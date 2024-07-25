@@ -1,131 +1,209 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4C48468
-	for <rcu@vger.kernel.org>; Thu, 25 Jul 2024 14:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D671993AE;
+	Thu, 25 Jul 2024 15:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721918850; cv=none; b=JYPXbhjgTirle1jGqImGOXB9G9cwSh92gV4dUZSd6pFafaHJKkEQwXXlVGJFzRBJbiiWmvlERU5GrR32fc2Ip+v4d6PdTtTdqsihypNJ800RCPdzDBj12qQoecGdo2i3ggMLhHsn+19hE/HyAJ84MitW410fvN8Y5liWijdtuv4=
+	t=1721920941; cv=none; b=gAuDkTfobPz4pVkF+EkaKZTKM3d3eKoCBD5Rt/6qhovZGKPrChlTDjMae7Q5oxLGk5dlcjIrLGY2AkuDLzi6qSKxubg+M+CDvUAdim/md3dgwNofJRWuvGkk7Jo/ETDdLVEhS1i1k8WCfNC5N9JZlQzx6CAMgDUM0K+cu9BwTMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721918850; c=relaxed/simple;
-	bh=QnER8odTLOmeL5f+urUHq6SnfROq/GUN1kFA+FI+lYs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=euSJT3IvzBD62wMDXp/ucYIZFoDpoETYQrH8BIjYgm43eKOclpHbkBdxhJbJTVY8oW8OyZq/h/w8IcQLLkL93GlgMUuC3MbRiH35E3z19IXoK2L6j7ofW8No97n07Ht/grhGsZjzrxJeNNLvX9PQ0gx4fqrlrPNyPPxlEe3zF8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CUr0/ST1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1721920941; c=relaxed/simple;
+	bh=gAWZqpgLpw/cslZTppcs196uMtnC5f1eZdrcRvgrq0Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GRxVa2n4lZHfUgQ+9ryl5/wcz4UUglaC7R6BN8gEpucCj6LdTwwQbgrGBaCNRLsMUUHwhzGPHheBflHG5ND7PMPy/tegLwtVIQ2OyxMaRSNz1MYdIi0yvBFcH5zhJYLiuVNUZbrDmJ5brq6W/EUwPzU/HmpaIsjExqewEjXwt3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y6blw3LG; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CUr0/ST1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721918848;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IXyZO9/KMzTlbY41LF3SQxG+wYDU6IMhQ0gKwsrX1JA=;
-	b=CUr0/ST1itUL5gx9SBaDnZ5vEHa3yQYNxzfUfDIbtZV3A/FiPLhO6ex5gbSffR3dUYaMpk
-	iWtISmIStJ3tuipsbZJvojkYZKkx8XuwZoEToS0zIenhDQcNy5gEf60UAYQOLGnRb8rxWh
-	RxbkODEqafvtaOHdZae+qZy/VrHcbD4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-481-bWqQUntvNUm1ToKKYfS_3w-1; Thu, 25 Jul 2024 10:47:26 -0400
-X-MC-Unique: bWqQUntvNUm1ToKKYfS_3w-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3687f4f9fecso745157f8f.1
-        for <rcu@vger.kernel.org>; Thu, 25 Jul 2024 07:47:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721918845; x=1722523645;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IXyZO9/KMzTlbY41LF3SQxG+wYDU6IMhQ0gKwsrX1JA=;
-        b=pCM7KFjgyPTACFolno5Zd0MoTsYkl0Egton3fbmCSGoTk9cuxpsz7fB4TGZSH7zL8/
-         gSI88jUncoekSJADcLlh3Zx8Ngz3d7ND/RyelY1GbxALmomFOo8zK/8c470SZzgIAVTk
-         qhAHtUPEWZ3s2yBf7j94nH87cTf3xTcWGipfpGxWhn8X+vmRJlHo0nxCH0LVGAm692Cx
-         ucy8MZ22X85FNKGfWdWdCMWOBQq1t2j401a71+zKdQBmiCq8oYycY1DIoILFbQLUbURU
-         0JXR8/ub/SRiUONxJkA5PHPJ4Cg/rLfWEVwj9fB87KHIa1MlAGMXYnPxH0gqcRQX2dk/
-         JOyw==
-X-Gm-Message-State: AOJu0YwBe1KHIG2B09QxHlt3F9P+FQGkN42c/OkqWA6XBYGViKS90YUw
-	DcJsXX7ewgML+gfQn0wKJ5EUzX/E+oyPxejch1zfVNlAKJ5mzixx2fAXld58XlDKdqLluSubB3U
-	xD331U6T9YqOU0tRbAjnmINjqVdrIY83CknNacs+pcz+3nbvihw==
-X-Received: by 2002:adf:fec6:0:b0:367:9114:4693 with SMTP id ffacd0b85a97d-36b363d6995mr2433664f8f.31.1721918845616;
-        Thu, 25 Jul 2024 07:47:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFY7SCU7fqeXp6yE3DeJg2PdjZIcxm6VAqEtOFCslLYwHBG2stEnSHtd13fnU4rlruOM/8JBQ==
-X-Received: by 2002:adf:fec6:0:b0:367:9114:4693 with SMTP id ffacd0b85a97d-36b363d6995mr2433651f8f.31.1721918845322;
-        Thu, 25 Jul 2024 07:47:25 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36b367fc7c3sm2427349f8f.49.2024.07.25.07.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jul 2024 07:47:24 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, "Paul E. McKenney"
- <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Neeraj
- Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
- Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v3 25/25] context_tracking, rcu: Rename rcu_dyntick
- trace event into rcu_watching
-In-Reply-To: <ZqJHeTE52cn1-4p4@localhost.localdomain>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y6blw3LG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B23B6C116B1;
+	Thu, 25 Jul 2024 15:22:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721920941;
+	bh=gAWZqpgLpw/cslZTppcs196uMtnC5f1eZdrcRvgrq0Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y6blw3LGVh4qrB5AXwaTsh92xrwezBsfddhhJ18CaZZjCKk18fyND5fWS6jxAXe88
+	 vVWgPqoy161CYTPnttncrx+Ghv1i7Yi15f6gjIf4FW9MM2RdHRP2h/YYakTS1+myMT
+	 SfxuOnK8NgA3HymDhzKIeRVlUSOiEY7k/JyLKTTJrWe4qygwGlXkLA7f5tJhCGHgxk
+	 jHT3gMrykfrztimHyZxm9suhznx2NBrcJAElBtRMvWgLMU0388oJ2QaI/qQfzbz4U6
+	 MAuQgfAtWkq+Erkxv2rutXoa+kMgthXswersZYh3LC2dhaH/2E5BoXryroOxbB+rPD
+	 rV4aQqAIR2/ng==
+Date: Thu, 25 Jul 2024 20:52:12 +0530
+From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v3 00/25] context_tracking, rcu: Spring cleaning of
+ dynticks references
+Message-ID: <20240725152212.GA927726@neeraj.linux>
 References: <20240724144325.3307148-1-vschneid@redhat.com>
- <20240724144325.3307148-26-vschneid@redhat.com>
- <ZqJHeTE52cn1-4p4@localhost.localdomain>
-Date: Thu, 25 Jul 2024 16:47:24 +0200
-Message-ID: <xhsmha5i5zfyb.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240724144325.3307148-1-vschneid@redhat.com>
 
-On 25/07/24 14:39, Frederic Weisbecker wrote:
-> Le Wed, Jul 24, 2024 at 04:43:25PM +0200, Valentin Schneider a =C3=A9crit=
- :
->> The "rcu_dyntick" naming convention has been turned into "rcu_watching" =
-for
->> all helpers now, align the trace event to that.
->>
->> To add to the confusion, the strings passed to the trace event are now
->> reversed: when RCU "starts" the dyntick / EQS state, it "stops" watching.
->>
->> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
->> ---
->>  include/trace/events/rcu.h | 16 ++++++++--------
->>  kernel/context_tracking.c  | 10 +++++-----
->>  2 files changed, 13 insertions(+), 13 deletions(-)
->>
->> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
->> index 4066b6d51e46a..e51ef658437f0 100644
->> --- a/include/trace/events/rcu.h
->> +++ b/include/trace/events/rcu.h
->> @@ -466,40 +466,40 @@ TRACE_EVENT(rcu_stall_warning,
->>  /*
->>   * Tracepoint for dyntick-idle entry/exit events.  These take 2 strings
->>   * as argument:
->> - * polarity: "Start", "End", "StillNonIdle" for entering, exiting or st=
-ill not
->> + * polarity: "Start", "End", "StillWatching" for entering, exiting or s=
-till not
->>   *            being in dyntick-idle mode.
->>   * context: "USER" or "IDLE" or "IRQ".
->
-> So that should be:
->
->  * polarity: "Start", "End", "StillWatching" for exiting, entering or sti=
-ll not
->              being in EQS mode.
->
-> Right?
+On Wed, Jul 24, 2024 at 04:43:00PM +0200, Valentin Schneider wrote:
+> Git info
+> ========
+> 
+> The series is based on rcu/next at:
+> f395ae346be5 ("Merge branches 'doc.2024.06.06a', 'fixes.2024.06.06a', 'mb.2024.06.03a', 'nocb.2024.06.03a', 'rcu-tasks.2024.06.06a' and 'rcutorture.2024.06.06a' into HEAD")
 >
 
-Yep that's better, thanks!
+Hi Valentin,
 
-> Other than that:
->
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+I see that this series is based on paulmck/linux-rcu.git next branch,
+whereas the RCU tree has moved to shared tree now [1] and the next
+branch there is pulled for v6.11 (tag: rcu.2024.07.12a). I get merge
+conflicts while applying it. Can you please rebase?
 
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git/log/?h=next
+
+
+- Neeraj
+
+> It's also available as a git tree at:
+> https://gitlab.com/vschneid/linux.git -b redhat/isolirq/defer/v3-rcu-v3
+> 
+> 
+> Series description
+> ==================
+> 
+> I've done one patch per renaming for my own sanity, a lot of these probably
+> deserve to be squashed together (e.g. all of the nmi_nesting into one).
+> 
+> At the end of the renaming exercise, the remaining RCU references to "dyntick"
+> are:
+> - Comments in core RCU code:
+>   kernel/rcu/:
+>   tree.h:208:8:	/* 3) dynticks interface. */
+>   tree.h:209:46:	int  watching_snap;		/* Per-GP tracking for dynticks. */
+>   tree_nocb.h:55:19: * about entering dyntick-idle mode.
+>   tree_plugin.h:873:4: * dyntick-idle quiescent state visible to other CPUs, which will in
+>   Kconfig:11:4:	# Dynticks-idle tracking
+>   tree.c:358:56: * We inform the RCU core by emulating a zero-duration dyntick-idle period.
+>   tree.c:773:10: * is in dynticks idle mode, which is an extended quiescent state.
+>   tree.c:793:54: * by virtue of being in or having passed through an dynticks idle state since
+>   tree.c:808:44:	 * If the CPU passed through or entered a dynticks idle phase with
+>   tree.c:1986:14:		/* Collect dyntick-idle snapshots. */
+>   tree.c:1989:13:		/* Handle dyntick-idle and offline CPUs. */
+>   tree.c:2683:54: * Otherwise, invoke the specified function to check dyntick state for
+>   tree.c:2743:16: * CPUs are in dyntick-idle mode.
+> 
+> 
+> - Stale documentation in RCU/Design/Data-Structures/Data-Structures.rst
+>   referencing fields that have been moved out of RCU after
+>   904e600e60f4 ("rcu/context_tracking: Move dynticks_nesting to context tracking")
+> 
+> Testing
+> =======
+> 
+> Ran through TREE01 and TREE04.
+> 
+> Revisions
+> =========
+> 
+> v2 -> v3
+> ++++++++
+> 
+> o Collected Reviewed-By
+> o Rebased onto latest rcu/next
+> 
+> o Made it clear rcu_dynticks_in_eqs_since() is to be used in wait-for-EQS loops
+> o Slight rename variations following v2 suggestions
+> 
+> Cheers,
+> Valentin
+> 
+> 
+> Valentin Schneider (25):
+>   treewide: context_tracking: Rename CONTEXT_* into CT_STATE_*
+>   context_tracking, rcu: Rename RCU_DYNTICKS_IDX into CT_RCU_WATCHING
+>   context_tracking, rcu: Rename ct_dynticks() into ct_rcu_watching()
+>   context_tracking, rcu: Rename ct_dynticks_cpu() into
+>     ct_rcu_watching_cpu()
+>   context_tracking, rcu: Rename ct_dynticks_cpu_acquire() into
+>     ct_rcu_watching_cpu_acquire()
+>   context_tracking, rcu: Rename struct context_tracking
+>     .dynticks_nesting into .nesting
+>   context_tracking, rcu: Rename ct_dynticks_nesting() into ct_nesting()
+>   context_tracking, rcu: Rename ct_dynticks_nesting_cpu() into
+>     ct_nesting_cpu()
+>   context_tracking, rcu: Rename struct context_tracking
+>     .dynticks_nmi_nesting into .nmi_nesting
+>   context_tracking, rcu: Rename ct_dynticks_nmi_nesting() into
+>     ct_nmi_nesting()
+>   context_tracking, rcu: Rename ct_dynticks_nmi_nesting_cpu() into
+>     ct_nmi_nesting_cpu()
+>   context_tracking, rcu: Rename DYNTICK_IRQ_NONIDLE into
+>     CT_NESTING_IRQ_NONIDLE
+>   context_tracking, rcu: Rename rcu_dynticks_task*() into rcu_task*()
+>   context_tracking, rcu: Rename rcu_dynticks_curr_cpu_in_eqs() into
+>     rcu_watching_curr_cpu()
+>   rcu: Rename rcu_dynticks_eqs_online() into rcu_watching_online()
+>   rcu: Rename rcu_dynticks_in_eqs() into rcu_watching_snap_in_eqs()
+>   rcu: Rename rcu_dynticks_in_eqs_since() into
+>     rcu_watching_snap_stopped_since()
+>   rcu: Rename rcu_dynticks_zero_in_eqs() into rcu_watching_zero_in_eqs()
+>   rcu: Rename struct rcu_data .dynticks_snap into .watching_snap
+>   rcu: Rename struct rcu_data .exp_dynticks_snap into .exp_watching_snap
+>   rcu: Rename dyntick_save_progress_counter() into
+>     rcu_watching_snap_save()
+>   rcu: Rename rcu_implicit_dynticks_qs() into rcu_implicit_eqs()
+>   rcu: Rename rcu_momentary_dyntick_idle() into rcu_momentary_eqs()
+>   rcu: Update stray documentation references to rcu_dynticks_eqs_{enter,
+>     exit}()
+>   context_tracking, rcu: Rename rcu_dyntick trace event into
+>     rcu_watching
+> 
+>  .../Data-Structures/Data-Structures.rst       |  28 ++--
+>  .../Tree-RCU-Memory-Ordering.rst              |   8 +-
+>  .../Memory-Ordering/TreeRCU-dyntick.svg       |   8 +-
+>  .../Design/Memory-Ordering/TreeRCU-gp-fqs.svg |   8 +-
+>  .../RCU/Design/Memory-Ordering/TreeRCU-gp.svg |   8 +-
+>  .../Memory-Ordering/TreeRCU-hotplug.svg       |   4 +-
+>  arch/Kconfig                                  |   2 +-
+>  arch/arm64/kernel/entry-common.c              |   2 +-
+>  arch/powerpc/include/asm/interrupt.h          |   6 +-
+>  arch/powerpc/kernel/interrupt.c               |   6 +-
+>  arch/powerpc/kernel/syscall.c                 |   2 +-
+>  arch/x86/entry/common.c                       |   2 +-
+>  include/linux/context_tracking.h              |  32 ++--
+>  include/linux/context_tracking_state.h        |  58 ++++----
+>  include/linux/entry-common.h                  |   2 +-
+>  include/linux/rcutiny.h                       |   2 +-
+>  include/linux/rcutree.h                       |   2 +-
+>  include/trace/events/rcu.h                    |  18 +--
+>  kernel/context_tracking.c                     | 140 +++++++++---------
+>  kernel/entry/common.c                         |   2 +-
+>  kernel/rcu/rcu.h                              |   4 +-
+>  kernel/rcu/rcutorture.c                       |   4 +-
+>  kernel/rcu/tasks.h                            |   2 +-
+>  kernel/rcu/tree.c                             | 111 +++++++-------
+>  kernel/rcu/tree.h                             |   4 +-
+>  kernel/rcu/tree_exp.h                         |   8 +-
+>  kernel/rcu/tree_nocb.h                        |   2 +-
+>  kernel/rcu/tree_plugin.h                      |   6 +-
+>  kernel/rcu/tree_stall.h                       |   6 +-
+>  kernel/sched/core.c                           |   4 +-
+>  kernel/stop_machine.c                         |   2 +-
+>  kernel/trace/trace_osnoise.c                  |   4 +-
+>  32 files changed, 256 insertions(+), 241 deletions(-)
+> 
+> --
+> 2.43.0
+> 
