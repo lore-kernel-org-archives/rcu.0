@@ -1,86 +1,102 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8913917588;
-	Thu, 25 Jul 2024 16:44:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD9719DF97
+	for <rcu@vger.kernel.org>; Thu, 25 Jul 2024 17:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721925899; cv=none; b=MlYWJZm54k6Fl4gm+Qdlx/aysMO0r1+fmc4NV2mXCeGeuVQjnbTIi/M+v62Gq+YIGt8BRELHCbW+QSLaqi8ElB5r4/2Kwbq5Vo/U2GSL/B7khL9HccdikjAxCmmwLtkP+PUvGXx2ueI5Wbu/GP9h4RutL3w45HcM3BSmm+kFFRc=
+	t=1721926939; cv=none; b=Uq0swuMafnpZOxgCxdzvf9sBoKLGItF2g0o9s5wliXL/gRJUPRQhZti+yGo7XPp6CaLEKxIsu1LbvqsaIyeVQ+TYJYQXmEEyZjTGms0DWxp36n1iPx00zpGFZddoZ7RXY4l4ddEMk5AgJQx8vwF4juP6BWwgtvSSgnX4LTY41LM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721925899; c=relaxed/simple;
-	bh=KxRx72ateMaI4xu7M+ZExqKdzDNiRMXyhKZ1ha9nx6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ecp786mtY0PxUXBvl1xpM0ClOJanWDFdAgHlPRUA9FZlKahFUXmhCRZy1rakMVxcKgbuIeFcvjH4aZRGgCGwCV5lY9UcGuA41tnMmyKGoUUSNTh6cBSUiTyc1wYgW7alZ9mDHpE9p2FyFhMLskxCR20UOJHnUIDT980iemeWFuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGHa5k/Y; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1721926939; c=relaxed/simple;
+	bh=kTokRip6+zG139kcI4R3CFeRyk8ffJ8yT6wEqIiNPgA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AOulG8Pp0ZvVV6rGEyh9E4nCZM85Q5VS7gHkhZtoy0PTKL5iqvC5LKkjrBEy+M0uM49AbqcE0ehnkPwJg6s/T0tosib1xa1GJ6lOHS5F7nrlcqgRjHiqPwGuYZZf/F4iRZ5iMKrSGUdbmI/hGlD5yh8MycDXE1q6qhh1HGHAGT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dzhQejrL; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGHa5k/Y"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB06C116B1;
-	Thu, 25 Jul 2024 16:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721925899;
-	bh=KxRx72ateMaI4xu7M+ZExqKdzDNiRMXyhKZ1ha9nx6M=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=NGHa5k/YUFPEiGX/7TFbP/z4zUlqTF3qDaQpP0nNg0sBHZ2K9+9Gk2Cp5+Ax10O4n
-	 NaZhR1YepYdlbeTXqqNR5iDVgdbg1aaGuR733E6Ca2PhFyXKFBrgXzg2UcL/9ZDT+u
-	 SyLEksxD7zLunYAgh5o/sooo81t1GDEa4XWr0QAIm4uoSGJ2dHpuhI93v+S1lAoJnD
-	 oNDDFvFKzv6/rg5omZAL3TjxO36QxJwTz8xf+Leap+EBpiCxU3MURD/FaiC6iNvbxm
-	 jSWWR8HLCWbMaTO9uijTRVjnNCVK6wjQo70ex9ZKDCE6iIQKKF9HzgQ90e0DLOC/DP
-	 +4GDcgKRUqxCg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E9127CE0ECD; Thu, 25 Jul 2024 09:44:58 -0700 (PDT)
-Date: Thu, 25 Jul 2024 09:44:58 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v3 00/25] context_tracking, rcu: Spring cleaning of
- dynticks references
-Message-ID: <969ccb24-e022-4e8c-805b-cf47c8b15f33@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240724144325.3307148-1-vschneid@redhat.com>
- <20240725152212.GA927726@neeraj.linux>
- <xhsmh7cd9zc8a.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dzhQejrL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721926937;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WBSxPgh64JOs+4ms35CG8zRXGEwO0ju9A2tPRKm0s4E=;
+	b=dzhQejrLs6vPEzMRRUK3QpbKwwHrETxudHos6xURy+tgjr3feV1oJVEBq/NCisR+mbKQ9e
+	RxN7aHd4XmG2z/E2acDX0SEWjw2C19gglfMXnOne29CSdjR4/P3lJxRqu9CUITpeBiwqD5
+	ltm2rA+h3RrQl+WDd7v7nP5+XU6d9l0=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-640-27ytda8vNNiDWsx6fWT4XQ-1; Thu,
+ 25 Jul 2024 13:02:10 -0400
+X-MC-Unique: 27ytda8vNNiDWsx6fWT4XQ-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7FE7F1955BF2;
+	Thu, 25 Jul 2024 17:02:08 +0000 (UTC)
+Received: from [10.2.16.78] (unknown [10.2.16.78])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8335D1955D42;
+	Thu, 25 Jul 2024 17:02:03 +0000 (UTC)
+Message-ID: <96aec91c-aa5c-4352-b93c-323b22011370@redhat.com>
+Date: Thu, 25 Jul 2024 13:02:01 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xhsmh7cd9zc8a.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Use system_unbound_wq to avoid disturbing isolated
+ CPUs
+To: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Vratislav Bendel <vbendel@redhat.com>
+References: <20240723181025.187413-1-longman@redhat.com>
+ <20240725153552.GA927762@neeraj.linux>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240725153552.GA927762@neeraj.linux>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On Thu, Jul 25, 2024 at 06:07:49PM +0200, Valentin Schneider wrote:
-> On 25/07/24 20:52, Neeraj Upadhyay wrote:
-> > On Wed, Jul 24, 2024 at 04:43:00PM +0200, Valentin Schneider wrote:
-> >> Git info
-> >> ========
-> >>
-> >> The series is based on rcu/next at:
-> >> f395ae346be5 ("Merge branches 'doc.2024.06.06a', 'fixes.2024.06.06a', 'mb.2024.06.03a', 'nocb.2024.06.03a', 'rcu-tasks.2024.06.06a' and 'rcutorture.2024.06.06a' into HEAD")
-> >>
-> >
-> > Hi Valentin,
-> >
-> > I see that this series is based on paulmck/linux-rcu.git next branch,
-> > whereas the RCU tree has moved to shared tree now [1] and the next
-> > branch there is pulled for v6.11 (tag: rcu.2024.07.12a). I get merge
-> > conflicts while applying it. Can you please rebase?
-> 
-> My bad, thanks for pointing this out!
+On 7/25/24 11:35, Neeraj Upadhyay wrote:
+> On Tue, Jul 23, 2024 at 02:10:25PM -0400, Waiman Long wrote:
+>> It was discovered that isolated CPUs could sometimes be disturbed by
+>> kworkers processing kfree_rcu() works causing higher than expected
+>> latency. It is because the RCU core uses "system_wq" which doesn't have
+>> the WQ_UNBOUND flag to handle all its work items. Fix this violation of
+>> latency limits by using "system_unbound_wq" in the RCU core instead.
+>> This will ensure that those work items will not be run on CPUs marked
+>> as isolated.
+>>
+> Alternative approach here could be, in case we want to keep per CPU worker
+> pools, define a wq with WQ_CPU_INTENSIVE flag. Are there cases where
+> WQ_CPU_INTENSIVE wq won't be sufficient for the problem this patch
+> is fixing?
 
-Actually my bad, as I haven't done much of anything to inform people of
-this change.  Huh.  I do have this LWN RCU API article in preparation,
-and that sounds like as good a place to announce this as any.  ;-)
+What exactly will we gain by defining a WQ_CPU_INTENSIVE workqueue? Or 
+what will we lose by using system_unbound_wq? All the calls that are 
+modified to use system_unbound_wq are using WORK_CPU_UNBOUND as their 
+cpu. IOW, they doesn't care which CPUs are used to run the work items. 
+The only downside I can see is the possible loss of some cache locality.
 
-							Thanx, Paul
+In fact, WQ_CPU_INTENSIVE can be considered a subset of WQ_UNBOUND. An 
+WQ_UNBOUND workqueue will avoid using isolated CPUs, but not a 
+WQ_CPU_INTENSIVE workqueue.
+
+Cheers,
+Longman
+
+
