@@ -1,32 +1,32 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 069051428E5;
-	Thu, 25 Jul 2024 12:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C696AA93A;
+	Thu, 25 Jul 2024 12:32:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721910442; cv=none; b=cr4CVLMmEu5nZTXm/8+Ot77huZYXOGAhYlwVX9wlfvlf5GZsJF0T/En8Qt+6wtWIarT/x2Kv5cTqEl07vYLHTY75NLue8hEwlRB4u32rZvFSu6Ej8ixXERUrJVXxa4jwchDTleW7HudT0fxZTVIPuRxXf/YMmvq1R4640X5rEZw=
+	t=1721910747; cv=none; b=RBniJstDrN8HCQmom58sj5uZYevZv569NX4HJXBDUSzasBqAolhYMepOgbzLWtWbo67V+fL1f5XhP29KfnPhy0exjNjWZu80r5lqfKOODSkjQNSWcdWY8LEx20ph5Z9lBHmVD+rr6wlIWMGjOwycWStoLtkeWgNsZHisxLbtNRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721910442; c=relaxed/simple;
-	bh=/ZuJY8/qXUR8TY+MFLL7+3PJfKaL0XQ6IMLMm67nFW8=;
+	s=arc-20240116; t=1721910747; c=relaxed/simple;
+	bh=IlVUQnBfI+tK2Ugzsl+I4CGCrhCC9yDN0Rz9CTi9/6Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ph72RYOPDFRIxHC31qLgPwc5q3Nd5/6usph58dPSU1kvUMGn1V7rQmCMb4r8MFW32Ms2qr4H3tnXUeZ8tO15Dlw8ds5AzOkvdG3lJ6/qT5IDZpPmMzTQbI1CSGFyl7LAHiR0wR2Yms6AhnrtRuwQnjljzlguNodfUwIDYyqdvzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FoHzsbi2; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=o6APNEvSdSek63r4Qlppysdc6SXTt4m1u80kIxN2Q89sIcvZAmaeIf8rYQrXyDRex3UGun9bTS9gIvLb+k+T6R++CCzZ44+RuxPX8IREA7eiKfIPZuOpXq+HpjNCdWeTdOJiU5YuTuZLvhil6NOTNUMOa3Yy0mIQN/+/mimgKtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EVs7dkUc; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FoHzsbi2"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A967C116B1;
-	Thu, 25 Jul 2024 12:27:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EVs7dkUc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D14FC116B1;
+	Thu, 25 Jul 2024 12:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721910441;
-	bh=/ZuJY8/qXUR8TY+MFLL7+3PJfKaL0XQ6IMLMm67nFW8=;
+	s=k20201202; t=1721910747;
+	bh=IlVUQnBfI+tK2Ugzsl+I4CGCrhCC9yDN0Rz9CTi9/6Y=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FoHzsbi2vsp0vvmNnY8HT+3p6NElOL1lRek6zwtIndNQWcIj+1+tCFNqlD9otkGx4
-	 PBGfVHPUDc+u5jryNJYZVJRsp29Ak61U+XQsiBTQkLloaJi8SrmGLFHktxkkYioloz
-	 s8BKI4jZtJ0rAXuFPhnySgKSh77oFJcExAjlytTOtGHk7xbr9aeRPQEk0Vnu4T1Ktc
-	 UaQwyp9NRFFqp3FV7RXk4/3JOhZavf1UghJkYnVr6FrJFG1kVWIsEg36Uo8Ar3U4I6
-	 vYmLK8V4ZcA4TyXYrKBTYNFFoOcCUkbqqCqda81ZNssbBSUYfCeIZWHsBRtH7lY3h5
-	 qxH4PcS1rkEyA==
-Date: Thu, 25 Jul 2024 14:27:19 +0200
+	b=EVs7dkUcHPL4h0NXk1aGQC8gb8svZjVjUUtCU1+OrrRK7HtL1xuavkdXFywXV02jk
+	 dOan+znK+IzxgqGo5ol866bTEeT7hpqwUoUwoucvLKn3EfAMJwp4I9ofGJruAuSCTh
+	 Fats8ec8YbtF+p1jyB2YYH9HVjKFeNzQRVTfu+VWUFKRYbT+4JSBRQuDV/AG5/Fpio
+	 mwl/OyfRepLDuAYrA1jQ/kQhNTttU+QOd4fS5JaFu4Ti9x8BuuVC6+H7t0zAsfszgJ
+	 TQBTqp0j8dpkn5DR0GOJnOQiZLKPSnNiwiw5mSP+DMlUUOHnUpkSYHKKOoJf7Us+ry
+	 DkdUkneDHikNw==
+Date: Thu, 25 Jul 2024 14:32:24 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Valentin Schneider <vschneid@redhat.com>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -40,11 +40,11 @@ Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v3 22/25] rcu: Rename rcu_implicit_dynticks_qs() into
- rcu_implicit_eqs()
-Message-ID: <ZqJEpy1D5LZA6fgi@localhost.localdomain>
+Subject: Re: [PATCH v3 24/25] rcu: Update stray documentation references to
+ rcu_dynticks_eqs_{enter, exit}()
+Message-ID: <ZqJF2Ev4QIWbR-Cq@localhost.localdomain>
 References: <20240724144325.3307148-1-vschneid@redhat.com>
- <20240724144325.3307148-23-vschneid@redhat.com>
+ <20240724144325.3307148-25-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -54,16 +54,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240724144325.3307148-23-vschneid@redhat.com>
+In-Reply-To: <20240724144325.3307148-25-vschneid@redhat.com>
 
-Le Wed, Jul 24, 2024 at 04:43:22PM +0200, Valentin Schneider a écrit :
-> The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
-> RCU_WATCHING, replace "dynticks_qs" into "eqs" to drop the dyntick
-> reference.
+Le Wed, Jul 24, 2024 at 04:43:24PM +0200, Valentin Schneider a écrit :
+> rcu_dynticks_eqs_{enter, exit}() have been replaced by their
+> context-tracking counterparts since commit:
+> 
+>   171476775d32 ("context_tracking: Convert state to atomic_t")
+> 
+> Update the stray documentation references.
 > 
 > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-
-You'll need to update the patch title and changelog for this one.
-Other than that:
 
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
