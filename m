@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C49814535A;
-	Sun, 28 Jul 2024 00:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1318A1482E6;
+	Sun, 28 Jul 2024 00:49:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722127734; cv=none; b=Xx37dpt/ISFF8RsRFT3+lrnnJylrKjx9B6w+PcXOlEVsTZZylkxerbzKsE7wxMB51OIOFdfj93Z7K8wT/1VUbTl3bN3gDZRcCMRfs7M2fQJnv3AWf7FfMZQmDIRLg5EKZEBg8VIyUbO+7C+vIOiJZyakj+o5Asy3PwIuJLhdJoU=
+	t=1722127747; cv=none; b=T6pxC7/L0wSya3BYt8lnzSoSNmfkbLkY25qe7UxGarGBNA/KCB5sMnvt96LrFtAAlZ0Z7UTDFFdOPUlg8jougJIgJridvwL+6nsYSnsgkhRW6RQXLDCRgo2PKBLeMGwNejhq95n0WZ8vwRID75aKQKbkxQEjbLLEzElj6KpbBbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722127734; c=relaxed/simple;
-	bh=7fN9jg+/l4OO5UkJTs3sgHOIzQ1RQVJB3UDHsdzEKos=;
+	s=arc-20240116; t=1722127747; c=relaxed/simple;
+	bh=DQ3EGMYH3xEK71gRrN+2pTzCzyUMW+9aupaJNbPi4vM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iVJ6tiB6IoiKiL35eR/OnlBYywv+btOLtEdKJvltxMwGGWPGnEfbTjZePJoM/GQJyz9N0SlXfUihP1iNkJ3jEZdxg7RTriMAf3OwHic9AoUk2zDBEyoj4FDVazsaShQSdaw4G4zIsTQSDVEbsjalCxDei7EfFzzoZkbPzL/NAOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mYW2Oh1k; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=bfE4apUVe5kcqwg9VDJ1aVwRv06z5MTipHfumg6WV882YDj4r5f6JbvGEyxwQcE2HjLFplJ4A50tEcIT0LEiIIrmkn/i/Bu7sirTT4zTAiB4ehSmBBaxmwD89F04Y8eRe/Tg0WgBGViVL9ahpF3GOsk1/KUfvcm2GlizTn9XKQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=loQTUp7I; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mYW2Oh1k"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1828CC32781;
-	Sun, 28 Jul 2024 00:48:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="loQTUp7I"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C89E8C4AF07;
+	Sun, 28 Jul 2024 00:49:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722127733;
-	bh=7fN9jg+/l4OO5UkJTs3sgHOIzQ1RQVJB3UDHsdzEKos=;
+	s=k20201202; t=1722127746;
+	bh=DQ3EGMYH3xEK71gRrN+2pTzCzyUMW+9aupaJNbPi4vM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mYW2Oh1kQezyYizXtbeGm8+CDg0Ny7aCX4O9KTd1E/cSVU1TxDopNhnKAnRZzTqS9
-	 pvmpX6TplHBq98oxjvpttGpzW4Djq//z5T750F6aF2Sy7t15A4ohUyhNxqX0SIhjM/
-	 jqy8xtDxyUZ9+HhzBLW5wddDkEPFKiSSneiZMEuvnbOHWJkyq/d7/BZnYyD0kNn3rp
-	 tKwt8HLIm0YBbItmotVLj/n7WZQqTuPaYB/SvKW3FOUFtco9CB/jwgAmWzkpedRXfG
-	 Z4T18JOjvqVX5RXunKcRbu4RDl90UaVNN46qo+K0uxFRpboHvssJQgQYUksaKVtz6L
-	 S+xBnxQ79Qebg==
+	b=loQTUp7I6rRegQ8slmO+nABJ72fDmTDNcxBnR841Pf8fZvSNp5f4L8EiWSTwdk2cr
+	 qpO4egM1h+CjlQuOMcA2T74DSH+k4MctF4J0nZrp24AGWmmLrcboGCO6SO1aq6gnSV
+	 5gn0ENZDXM/ccLg48niVjm8kyamJYj1y3L2QGSPTATbSmrqm5PZ+YMQUpWQe53n5Qr
+	 j51dQ540kndpkZIg8WRtB/PqYekbu435Pjh9Zsb5+/3zPYrklMSPyQZ3VK7z2Shx9Q
+	 NXmoY6Pe8+HUjxWx96DYvjzus0mNdEb8tOEKnukgNzU/eZpX8Q8pVXUYO1SS42HDRq
+	 CcvdSQSiHhlaQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -42,12 +42,12 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	boqun.feng@gmail.com,
 	urezki@gmail.com,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 2/6] rcutorture: Fix rcu_torture_fwd_cb_cr() data race
-Date: Sat, 27 Jul 2024 20:48:43 -0400
-Message-ID: <20240728004848.1703616-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 2/6] rcutorture: Fix rcu_torture_fwd_cb_cr() data race
+Date: Sat, 27 Jul 2024 20:48:55 -0400
+Message-ID: <20240728004901.1704470-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240728004848.1703616-1-sashal@kernel.org>
-References: <20240728004848.1703616-1-sashal@kernel.org>
+In-Reply-To: <20240728004901.1704470-1-sashal@kernel.org>
+References: <20240728004901.1704470-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.164
+X-stable-base: Linux 5.10.223
 Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
@@ -89,10 +89,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 9d8d1f233d7bd..a3bab6af4028f 100644
+index 9f505688291e5..5c4bdbe76df04 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -2186,7 +2186,7 @@ static void rcu_torture_fwd_cb_cr(struct rcu_head *rhp)
+@@ -1867,7 +1867,7 @@ static void rcu_torture_fwd_cb_cr(struct rcu_head *rhp)
  	spin_lock_irqsave(&rfp->rcu_fwd_lock, flags);
  	rfcpp = rfp->rcu_fwd_cb_tail;
  	rfp->rcu_fwd_cb_tail = &rfcp->rfc_next;
