@@ -1,229 +1,187 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96255149E1D;
-	Fri, 26 Jul 2024 22:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E8B1EB2A;
+	Sun, 28 Jul 2024 00:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722033659; cv=none; b=eXsq4ilkmcijjwzxP4My3DmTi1XoPWU0WydUHrM22QxQYZRvzVkOQpkyy4cAhQ/b8M34qQPrhiK2GPHpp+aL+V7shMItYyv+8WooQ9YPgc1nzuFKCsp867rXSB96NG4vVOOII01FutcgFDDa+JBgzgxtPfPG2Q1v86Rx09LtwHw=
+	t=1722127671; cv=none; b=r/DDi0gWzk5ObqgoPrLMpgIIGSTMxg1Th4YH5tbgsaZQAQv7ksx7+OwTEA2H85JDMoGMOcXIbTIJX0uI9Ao1YpeML4qTaA8Dn7ncCkJWka62IlkzytkhFkS4m5J+uGLafwn1Ds/3L9qs6HBWIkkQHPd8etELSSt/8aOt5UPcHHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722033659; c=relaxed/simple;
-	bh=TQ9lohRa2QJoVt7ObZqSokbS/JdwhTgCvCBZ8u69srs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gY+JNh+UFXZmqsyhE/OqmlUJ9ld/8EiesgLmArbNeK2OuEiB1G6EjBfrd7HQyGfwR01LkHdd5q9j5raLmQHsJZuKUPTwdNh0RAH1d97ll0qPTNu3pWbVWvL/pSPvi+i9EzjFGDUs6B5pYDM02B78Nf1VFMT5G8qTv9Wcyj+SEww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D26PbP65; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1722127671; c=relaxed/simple;
+	bh=2/8PERBmInLBugE1Jf8UdzfJ7qpT5FeuBgq5xNY2UpA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=evvfW41FaxzL7vobXR0R1JdKBxmtW2RVPk7epQMn3JRbtgH+QWLApKCFIvdbwhiBIrKSUelTQ/0Bjn3UIJ/ZmKcVtSda8KlZbZcy0R27kQ6FLLqUP48JGhQDODzXCSLrQ4WFImGtLIpbNPVL/J2CiE0Xa4VA/9C7bkNbLN9ACZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nf8GTKLG; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D26PbP65"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EA79C32782;
-	Fri, 26 Jul 2024 22:40:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nf8GTKLG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69072C4AF07;
+	Sun, 28 Jul 2024 00:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722033659;
-	bh=TQ9lohRa2QJoVt7ObZqSokbS/JdwhTgCvCBZ8u69srs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=D26PbP65t+dxWMBZI/5/le9DTBGroSNdIPxylRvd7Aq7n4lVgA/bioXRxlO/KGYVL
-	 rTowmtkmrOHER0pGrGaygj/KIaAtfdlWXOr894BftKROPzFRC21M0j8GXH0SeQd5H6
-	 pg9mlAFJZ36vLthog+GNrhxeHFs/wBSaG1yM564E8dF1/Ub/5vJ5kSbZ1o7fku9ovn
-	 rXxeOxF3J7Udza/fOOV0DmShyP8d0kFtIG8JTuo5gUg060YEApfxuL6UBYKMUjSKzF
-	 dbR/1LOJB6mswxKmO3cuG0qVBMpzsxAgYn3rzAcdsqWXBKdv+8kONpoANvl7CvYIRF
-	 v9U6ftuLGLZCA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 089B7CE0B34; Fri, 26 Jul 2024 15:40:59 -0700 (PDT)
-Date: Fri, 26 Jul 2024 15:40:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH 20/20] rcu: Use kthread preferred affinity for RCU
- exp kworkers
-Message-ID: <7734a2b6-2cc9-4133-adbe-ac34fabebc7a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240726215701.19459-1-frederic@kernel.org>
- <20240726215701.19459-21-frederic@kernel.org>
+	s=k20201202; t=1722127671;
+	bh=2/8PERBmInLBugE1Jf8UdzfJ7qpT5FeuBgq5xNY2UpA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Nf8GTKLG9y4LgRRBVEDc5MSYTSLF5moPyR9DLkFH/3TuL+oQk/17JTELfKZa5xRYg
+	 bx1x0/vzBY4cvN7cVn6KB887JBcI02/lOpU0VkUZUiO1Ns1S5j0hBl2yRtf+CiWjpW
+	 ldAGpel6TfBwofsic8l/IqG6yLde/gTLji+o5sDd1rRKP/4Tx3zUDOAJGsfkQE8GU1
+	 ZnAn17WCqh95ZkFU6FSSA3Ce2W2cxmw201QLFUpGZivp5IXfOyzLT0pIxEof+5wTTv
+	 itGEEpm971Njg2YM/bcVx95Yk5nbuizpsf/3GMLXQ4CKjfssrcF6GF7HO0ehVRcIYI
+	 bCCOGKon1Q3tQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	boqun.feng@gmail.com,
+	urezki@gmail.com,
+	akpm@linux-foundation.org,
+	j.granados@samsung.com,
+	cyphar@cyphar.com,
+	rongtao@cestc.cn,
+	willy@infradead.org,
+	rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.10 05/16] Revert "rcu-tasks: Fix synchronize_rcu_tasks() VS zap_pid_ns_processes()"
+Date: Sat, 27 Jul 2024 20:47:22 -0400
+Message-ID: <20240728004739.1698541-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240728004739.1698541-1-sashal@kernel.org>
+References: <20240728004739.1698541-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240726215701.19459-21-frederic@kernel.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.10.2
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 26, 2024 at 11:56:56PM +0200, Frederic Weisbecker wrote:
-> Now that kthreads have an infrastructure to handle preferred affinity
-> against CPU hotplug and housekeeping cpumask, convert RCU exp workers to
-> use it instead of handling all the constraints by itself.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-Nice consolidation of troublesome code!
+[ Upstream commit 9855c37edf0009cc276cecfee09f7e76e2380212 ]
 
-For this one and 17/20:
+This reverts commit 28319d6dc5e2ffefa452c2377dd0f71621b5bff0. The race
+it fixed was subject to conditions that don't exist anymore since:
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+	1612160b9127 ("rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks")
 
-> ---
->  kernel/rcu/tree.c | 105 +++++++++-------------------------------------
->  1 file changed, 19 insertions(+), 86 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index e038f4abb872..f3e40a1dea65 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4777,6 +4777,22 @@ rcu_boot_init_percpu_data(int cpu)
->  	rcu_boot_init_nocb_percpu_data(rdp);
->  }
->  
-> +static void rcu_thread_affine_rnp(struct task_struct *t, struct rcu_node *rnp)
-> +{
-> +	cpumask_var_t affinity;
-> +	int cpu;
-> +
-> +	if (!zalloc_cpumask_var(&affinity, GFP_KERNEL))
-> +		return;
-> +
-> +	for_each_leaf_node_possible_cpu(rnp, cpu)
-> +		cpumask_set_cpu(cpu, affinity);
-> +
-> +	kthread_affine_preferred(t, affinity);
-> +
-> +	free_cpumask_var(affinity);
-> +}
-> +
->  struct kthread_worker *rcu_exp_gp_kworker;
->  
->  static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
-> @@ -4789,7 +4805,7 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
->  	if (rnp->exp_kworker)
->  		return;
->  
-> -	kworker = kthread_run_worker(0, name, rnp_index);
-> +	kworker = kthread_create_worker(0, name, rnp_index);
->  	if (IS_ERR_OR_NULL(kworker)) {
->  		pr_err("Failed to create par gp kworker on %d/%d\n",
->  		       rnp->grplo, rnp->grphi);
-> @@ -4799,16 +4815,9 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
->  
->  	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
->  		sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
-> -}
->  
-> -static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
-> -{
-> -	struct kthread_worker *kworker = READ_ONCE(rnp->exp_kworker);
-> -
-> -	if (!kworker)
-> -		return NULL;
-> -
-> -	return kworker->task;
-> +	rcu_thread_affine_rnp(kworker->task, rnp);
-> +	wake_up_process(kworker->task);
->  }
->  
->  static void __init rcu_start_exp_gp_kworker(void)
-> @@ -4893,79 +4902,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
->  	return 0;
->  }
->  
-> -static void rcu_thread_affine_rnp(struct task_struct *t, struct rcu_node *rnp)
-> -{
-> -	cpumask_var_t affinity;
-> -	int cpu;
-> -
-> -	if (!zalloc_cpumask_var(&affinity, GFP_KERNEL))
-> -		return;
-> -
-> -	for_each_leaf_node_possible_cpu(rnp, cpu)
-> -		cpumask_set_cpu(cpu, affinity);
-> -
-> -	kthread_affine_preferred(t, affinity);
-> -
-> -	free_cpumask_var(affinity);
-> -}
-> -
-> -/*
-> - * Update kthreads affinity during CPU-hotplug changes.
-> - *
-> - * Set the per-rcu_node kthread's affinity to cover all CPUs that are
-> - * served by the rcu_node in question.  The CPU hotplug lock is still
-> - * held, so the value of rnp->qsmaskinit will be stable.
-> - *
-> - * We don't include outgoingcpu in the affinity set, use -1 if there is
-> - * no outgoing CPU.  If there are no CPUs left in the affinity set,
-> - * this function allows the kthread to execute on any CPU.
-> - *
-> - * Any future concurrent calls are serialized via ->kthread_mutex.
-> - */
-> -static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
-> -{
-> -	cpumask_var_t cm;
-> -	unsigned long mask;
-> -	struct rcu_data *rdp;
-> -	struct rcu_node *rnp;
-> -	struct task_struct *task_exp;
-> -
-> -	rdp = per_cpu_ptr(&rcu_data, cpu);
-> -	rnp = rdp->mynode;
-> -
-> -	task_exp = rcu_exp_par_gp_task(rnp);
-> -
-> -	/*
-> -	 * If CPU is the boot one, this task is created later from early
-> -	 * initcall since kthreadd must be created first.
-> -	 */
-> -	if (!task_exp)
-> -		return;
-> -
-> -	if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
-> -		return;
-> -
-> -	mutex_lock(&rnp->kthread_mutex);
-> -	mask = rcu_rnp_online_cpus(rnp);
-> -	for_each_leaf_node_possible_cpu(rnp, cpu)
-> -		if ((mask & leaf_node_cpu_bit(rnp, cpu)) &&
-> -		    cpu != outgoingcpu)
-> -			cpumask_set_cpu(cpu, cm);
-> -	cpumask_and(cm, cm, housekeeping_cpumask(HK_TYPE_RCU));
-> -	if (cpumask_empty(cm)) {
-> -		cpumask_copy(cm, housekeeping_cpumask(HK_TYPE_RCU));
-> -		if (outgoingcpu >= 0)
-> -			cpumask_clear_cpu(outgoingcpu, cm);
-> -	}
-> -
-> -	if (task_exp)
-> -		set_cpus_allowed_ptr(task_exp, cm);
-> -
-> -	mutex_unlock(&rnp->kthread_mutex);
-> -
-> -	free_cpumask_var(cm);
-> -}
-> -
->  /*
->   * Has the specified (known valid) CPU ever been fully online?
->   */
-> @@ -4994,7 +4930,6 @@ int rcutree_online_cpu(unsigned int cpu)
->  	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
->  		return 0; /* Too early in boot for scheduler work. */
->  	sync_sched_exp_online_cleanup(cpu);
-> -	rcutree_affinity_setting(cpu, -1);
->  
->  	// Stop-machine done, so allow nohz_full to disable tick.
->  	tick_dep_clear(TICK_DEP_BIT_RCU);
-> @@ -5207,8 +5142,6 @@ int rcutree_offline_cpu(unsigned int cpu)
->  	rnp->ffmask &= ~rdp->grpmask;
->  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  
-> -	rcutree_affinity_setting(cpu, cpu);
-> -
->  	// nohz_full CPUs need the tick for stop-machine to work quickly
->  	tick_dep_set(TICK_DEP_BIT_RCU);
->  	return 0;
-> -- 
-> 2.45.2
-> 
+This latter commit removes the use of SRCU that used to cover the
+RCU-tasks blind spot on exit between the tasklist's removal and the
+final preemption disabling. The task is now placed instead into a
+temporary list inside which voluntary sleeps are accounted as RCU-tasks
+quiescent states. This would disarm the deadlock initially reported
+against PID namespace exit.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/rcupdate.h |  2 --
+ kernel/pid_namespace.c   | 17 -----------------
+ kernel/rcu/tasks.h       | 16 +++-------------
+ 3 files changed, 3 insertions(+), 32 deletions(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index dfd2399f2cde0..61cb3de236af1 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -209,7 +209,6 @@ void synchronize_rcu_tasks_rude(void);
+ 
+ #define rcu_note_voluntary_context_switch(t) rcu_tasks_qs(t, false)
+ void exit_tasks_rcu_start(void);
+-void exit_tasks_rcu_stop(void);
+ void exit_tasks_rcu_finish(void);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ #define rcu_tasks_classic_qs(t, preempt) do { } while (0)
+@@ -218,7 +217,6 @@ void exit_tasks_rcu_finish(void);
+ #define call_rcu_tasks call_rcu
+ #define synchronize_rcu_tasks synchronize_rcu
+ static inline void exit_tasks_rcu_start(void) { }
+-static inline void exit_tasks_rcu_stop(void) { }
+ static inline void exit_tasks_rcu_finish(void) { }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+ 
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index 25f3cf679b358..bdf0087d64423 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -249,24 +249,7 @@ void zap_pid_ns_processes(struct pid_namespace *pid_ns)
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		if (pid_ns->pid_allocated == init_pids)
+ 			break;
+-		/*
+-		 * Release tasks_rcu_exit_srcu to avoid following deadlock:
+-		 *
+-		 * 1) TASK A unshare(CLONE_NEWPID)
+-		 * 2) TASK A fork() twice -> TASK B (child reaper for new ns)
+-		 *    and TASK C
+-		 * 3) TASK B exits, kills TASK C, waits for TASK A to reap it
+-		 * 4) TASK A calls synchronize_rcu_tasks()
+-		 *                   -> synchronize_srcu(tasks_rcu_exit_srcu)
+-		 * 5) *DEADLOCK*
+-		 *
+-		 * It is considered safe to release tasks_rcu_exit_srcu here
+-		 * because we assume the current task can not be concurrently
+-		 * reaped at this point.
+-		 */
+-		exit_tasks_rcu_stop();
+ 		schedule();
+-		exit_tasks_rcu_start();
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+ 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index e1bf33018e6d5..4dc56b6e27c04 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -858,7 +858,7 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ //	not know to synchronize with this RCU Tasks grace period) have
+ //	completed exiting.  The synchronize_rcu() in rcu_tasks_postgp()
+ //	will take care of any tasks stuck in the non-preemptible region
+-//	of do_exit() following its call to exit_tasks_rcu_stop().
++//	of do_exit() following its call to exit_tasks_rcu_finish().
+ // check_all_holdout_tasks(), repeatedly until holdout list is empty:
+ //	Scans the holdout list, attempting to identify a quiescent state
+ //	for each task on the list.  If there is a quiescent state, the
+@@ -1220,7 +1220,7 @@ void exit_tasks_rcu_start(void)
+  * Remove the task from the "yet another list" because do_exit() is now
+  * non-preemptible, allowing synchronize_rcu() to wait beyond this point.
+  */
+-void exit_tasks_rcu_stop(void)
++void exit_tasks_rcu_finish(void)
+ {
+ 	unsigned long flags;
+ 	struct rcu_tasks_percpu *rtpcp;
+@@ -1231,22 +1231,12 @@ void exit_tasks_rcu_stop(void)
+ 	raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
+ 	list_del_init(&t->rcu_tasks_exit_list);
+ 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+-}
+ 
+-/*
+- * Contribute to protect against tasklist scan blind spot while the
+- * task is exiting and may be removed from the tasklist. See
+- * corresponding synchronize_srcu() for further details.
+- */
+-void exit_tasks_rcu_finish(void)
+-{
+-	exit_tasks_rcu_stop();
+-	exit_tasks_rcu_finish_trace(current);
++	exit_tasks_rcu_finish_trace(t);
+ }
+ 
+ #else /* #ifdef CONFIG_TASKS_RCU */
+ void exit_tasks_rcu_start(void) { }
+-void exit_tasks_rcu_stop(void) { }
+ void exit_tasks_rcu_finish(void) { exit_tasks_rcu_finish_trace(current); }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU */
+ 
+-- 
+2.43.0
+
