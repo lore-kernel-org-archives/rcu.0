@@ -1,159 +1,92 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E433E130A7D
-	for <rcu@vger.kernel.org>; Mon, 29 Jul 2024 08:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D9C84DFE
+	for <rcu@vger.kernel.org>; Mon, 29 Jul 2024 09:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722241688; cv=none; b=cCKeLpce+yRg6L+c++tTorrPiAY9nKSMm3CKXXvkjPwY4R6xtUrPOXOsEdQnf0PUCz0Ybw7aFotA/HWY+PEqlX/XhVBeeQMxrstSj7wLnelpmEiNfOFmE/EQwFJtAQrnHcG34Ovpji6IFgSUUot2mFdj+/cf1pYQ1XWKaWbV0k0=
+	t=1722243784; cv=none; b=bgkTIrsZEcc41c4WMuwiSD/XCevhj9S3a29uPtfrxBcxVgc1oRYHf93SZjWDhhiO0jC5XnfhaZChjh8LRZtejer5sNRrhS6rE5lA8QSLldNb5nXsK60YazdBfEEJC6COfBARzKpb33WWziPptMrT8fdFtHJG/7fDiBUbEx2CYrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722241688; c=relaxed/simple;
-	bh=kEIAHE+1zNG2fxIXg0V96b/zU5D7wc7578eXAWr2oz8=;
+	s=arc-20240116; t=1722243784; c=relaxed/simple;
+	bh=800qYSGSMNQ3LHuAs6sM3rxDUIN/JKq9quuYxlASpSw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sDTQ3qysqIwtk6SiGoCX7ndPyv2FJCpmXFVclquf5tjuih8fWwiAnlC0DZMOc+dQpR3jhc0lhHAGQu9pvDrg0CDuZ7LP0O70UCohAHNoJS+kq/ykKwRa1CUQAQ7BgaBn3TmW27nAlKuVGApLbasYyFW/kpBG2/fHvyt6tZchsis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DByehIzN; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=myblO2McqNHEUaaQklU+dQT70Eyotp5AN+p0LOAvnh4KRIEDUGx16mYbOYyvXhnjZ1OSN8Jz4cb+18fnmdq98L+KvFe7Ha/O2BG1C7Adt0PZnaT2WO+6hWNhKZjFB9L9+yjWHeF82uC3BRyPNZzL9eQ6vqR2dM9l/CqzR2/2yis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cnwIW2/d; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DByehIzN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D311FC32786;
-	Mon, 29 Jul 2024 08:28:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722241687;
-	bh=kEIAHE+1zNG2fxIXg0V96b/zU5D7wc7578eXAWr2oz8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DByehIzN9RY2aJj2PhK6eAgdDBcat7lsk/5hVUjBsCiK7iiHm+JnxTBnDZ0LUf8Wo
-	 0OFrijY6bDUxE5z8JP/lW1LdNC0TxBDhxxJBxSryvWs/Y/plsTi0MQXfDiwzcADwbQ
-	 pLbwYjb6Y1KGCqIQd3zX22bW23w9+1qfe1ud099q9I1sGTDRG/DKr1NEeG2OpNtFaR
-	 S8tSp8F1hvcjdc657AWgZazoPvkrPP+byLfBzXF5tv5fnwWlTI2jeAvyYyiD01oN/N
-	 Jhot7hvrplCNCygpfaG+NtLLMunlgnEKpd/PgaA/lCKvFKAvb6xNyNO4DTs6boUBhK
-	 7CKIf6awu5TWA==
-Date: Mon, 29 Jul 2024 10:28:03 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: paulmck@kernel.org, Oleg Nesterov <oleg@redhat.com>, 
-	rcu@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cnwIW2/d"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1722243781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=800qYSGSMNQ3LHuAs6sM3rxDUIN/JKq9quuYxlASpSw=;
+	b=cnwIW2/dfcr0aB6ASDkEfks/Rr8u8VnNDUNc1Fn2anC6bkhr8QcjGCxwSXySnNMydylBTD
+	CJq3Hj3THfNhPmt9Pf7jbx2sO3tBJuHUYX4gHSUyyWpa8kw/1IjBS6JeEBwDqqJV8Cmg8S
+	n4TM4hcW9CFT8tdAzWtxzlui6QkYXCY=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-27-4zojY9fQPIGt3SZ2N5mGWQ-1; Mon,
+ 29 Jul 2024 05:02:57 -0400
+X-MC-Unique: 4zojY9fQPIGt3SZ2N5mGWQ-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 469471955EB3;
+	Mon, 29 Jul 2024 09:02:56 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.232])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id A3F771955D54;
+	Mon, 29 Jul 2024 09:02:53 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 29 Jul 2024 11:02:56 +0200 (CEST)
+Date: Mon, 29 Jul 2024 11:02:52 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Mateusz Guzik <mjguzik@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	paulmck@kernel.org, rcu@vger.kernel.org
 Subject: Re: rcu_sync_dtor() warning question
-Message-ID: <20240729-atelier-einreden-aac41d1211bf@brauner>
+Message-ID: <20240729090226.GB8691@redhat.com>
 References: <20240726-ansonsten-piste-c4f04d4909fc@brauner>
  <f4d23fa4-b324-4666-aeb3-ace5c0384e07@paulmck-laptop>
  <CAGudoHHn4bmdR0LetX_bJ1PMtuc6cEYd=hZFutXmqaMG1H+rCg@mail.gmail.com>
  <CAGudoHGznS_Br2gxu=BWsDaCbHmMWRTCmoZDniyFFrDOs9VD5A@mail.gmail.com>
+ <20240728134101.GA8691@redhat.com>
+ <20240729-imponieren-webstuhl-8ed39923df25@brauner>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGudoHGznS_Br2gxu=BWsDaCbHmMWRTCmoZDniyFFrDOs9VD5A@mail.gmail.com>
+In-Reply-To: <20240729-imponieren-webstuhl-8ed39923df25@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On Fri, Jul 26, 2024 at 08:43:01PM GMT, Mateusz Guzik wrote:
-> On Fri, Jul 26, 2024 at 8:39 PM Mateusz Guzik <mjguzik@gmail.com> wrote:
+On 07/29, Christian Brauner wrote:
+>
+> On Sun, Jul 28, 2024 at 03:41:01PM GMT, Oleg Nesterov wrote:
 > >
-> > On Fri, Jul 26, 2024 at 8:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Fri, Jul 26, 2024 at 03:54:28PM +0200, Christian Brauner wrote:
-> > > > Hey,
-> > > >
-> > > > I could use some help with understanding a bug related to rcu that was
-> > > > reported today. It first seems to have shown up on the 25th of July:
-> > > >
-> > > > https://syzkaller.appspot.com/bug?extid=20d7e439f76bbbd863a7
-> > > >
-> > > > We seem to be hitting the WARN_ON_ONCE() in:
-> > > >
-> > > > void rcu_sync_dtor(struct rcu_sync *rsp)
-> > > > {
-> > > >         int gp_state;
-> > > >
-> > > >         WARN_ON_ONCE(READ_ONCE(rsp->gp_state) == GP_PASSED);
-> > > >
-> > > > from destroy_super_work() which gets called when a superblock is really freed.
-> > > >
-> > > > If the superblock has been visible in userspace we do it via call_rcu():
-> > > >
-> > > > static void destroy_super_work(struct work_struct *work)
-> > > > {
-> > > >         struct super_block *s = container_of(work, struct super_block,
-> > > >                                                         destroy_work);
-> > > >         fsnotify_sb_free(s);
-> > > >         security_sb_free(s);
-> > > >         put_user_ns(s->s_user_ns);
-> > > >         kfree(s->s_subtype);
-> > > >         for (int i = 0; i < SB_FREEZE_LEVELS; i++)
-> > > >                 percpu_free_rwsem(&s->s_writers.rw_sem[i]);
-> > > >         kfree(s);
-> > > > }
-> > > >
-> > > > static void destroy_super_rcu(struct rcu_head *head)
-> > > > {
-> > > >         struct super_block *s = container_of(head, struct super_block, rcu);
-> > > >         INIT_WORK(&s->destroy_work, destroy_super_work);
-> > > >         schedule_work(&s->destroy_work);
-> > > > }
-> > > >
-> > > > And I'm really confused because I don't understand the details for sync
-> > > > rcu enough to come up with a clear problem statement even. Could someone
-> > > > please explain what the WARN_ON_ONCE() is about?
-> > >
-> > > If I am not too confused (and Oleg will correct me if I am), this is
-> > > checking a use-after-free error.  A given rcu_sync structure normally
-> > > transitions from GP_IDLE->GP_ENTER->GP_PASSED->GP_EXIT->GP_IDLE, with
-> > > possible side-trips from the GP_EXIT state through GP_REPLAY and back
-> > > to GP_EXIT in special cases such as during early boot.
-> > >
-> >
-> > use-after-free? In that case I have a candidate for a culprit.
-> >
-> > Code prior to any of my changes was doing the following in iget_locked():
-> >         spin_lock(&inode_hash_lock);
-> >         inode = find_inode_fast(sb, head, ino);
-> >         spin_unlock(&inode_hash_lock);
-> >         if (inode) {
-> >                 if (IS_ERR(inode))
-> >                         return NULL;
-> >                 wait_on_inode(inode);
-> >                 if (unlikely(inode_unhashed(inode))) {
-> >                         iput(inode);
-> >                         goto again;
-> >                 }
-> >                 return inode;
-> >         }
-> >
-> > My patch removed the spinlock acquire and made it significantly more
-> > likely for the code to end up doing the wait_on_inode + inode_unhashed
-> > combo when racing against inode teardown.
-> >
-> > Now that you bring up use-after-free I'm not particularly confident
-> > the stock code is correct.
-> >
-> > For example evict_inodes() -> evict() can mess with the inode and
-> > result in the iput() call in iget_locked(), which then will invoke
-> > evict() again. And I'm not particularly confident the routine +
-> > everything it calls is idempotent.
-> >
-> > That's from a quick poke around, maybe I missed something.
-> >
-> > syzkaller claims to have a reproducer. Trivial usage in my debug vm
-> > does not result in anything, so I may need to grab their entire setup
-> > to reproduce.
-> >
-> > I'm going to look into it.
-> 
-> Welp.
-> 
-> syzbot did the bisect, it's not any of the above, instead:
-> 
-> commit b62e71be2110d8b52bf5faf3c3ed7ca1a0c113a5
-> Author: Chao Yu <chao@kernel.org>
-> Date:   Sun Apr 23 15:49:15 2023 +0000
-> 
->     f2fs: support errors=remount-ro|continue|panic mountoption
-> 
-> https://lore.kernel.org/linux-fsdevel/0000000000004ff2dc061e281637@google.com/T/#m90c03813e12e5cdff1eeada8f9ab581d5f039c76
-> 
-> That said, the stuff I mentioned still looks highly suspicious so I
-> have to something to investigate regardless.
+> > So in this case thaw_super_locked() just clears sb->s_writers.frozen and
+> > goes to the "out_deactivate" label bypassing sb_freeze_unlock().
 
-Thanks for looking into this! 
+...
+
+> So that would mean freeze_super() would've indeed acquired
+> percpu_down_write(SB_FREEZE_WRITE+SB_FREEZE_PAGEFAULT+SB_FREEZE_FS) but
+> thaw_super() would skip calling
+> sb_freeze_unlock(SB_FREEZE_FS+SB_FREEZE_PAGEFAULT+SB_FREEZE_WRITE) and
+> destroying the superblock during umount with an imbalance that gets
+> noticed in rcu_sync_dtor().
+>
+> So afaict this would mean that we never called rcu_sync_exit() and thus
+> never set GP_EXIT and notice that imbalance during rcu_sync_dtor().
+
+Yes, yes, this is what I meant.
+
+Oleg.
+
