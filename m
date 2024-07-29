@@ -1,104 +1,113 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98512B9D2
-	for <rcu@vger.kernel.org>; Mon, 29 Jul 2024 03:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F15130A7D
+	for <rcu@vger.kernel.org>; Mon, 29 Jul 2024 08:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722222417; cv=none; b=XDKGN4mDqN8RFgMwzV4FFrUTknKMHDINRlr5dLHITLsY8YxK1wrCcpoi2zfw8zX2VXIdVMYfM9b+026CR+33s5h/FjSgT1LK1fymPSl79LhW6JyhkZkrPhJ/Bhban1E2nmvgRharQH1SMeJAmazrQVXVfYEYQPL6k0VRTPyyEoA=
+	t=1722241545; cv=none; b=KszmWdXyglPUeGIJSgFIt4wMBnI99Xu7CqUqVLNtA2zwlrqYHq+8N2dodjOOu+hSjqIG6zNJzo+JWSV1HYhZ75aIAPYfpcEWF4xyKSYkdWJuaA0GI/5uW/GT+xMBTkU4NIvI0aME0imbtWnuqkC3Y2KvHQOtYz8lPiwn6G2IYyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722222417; c=relaxed/simple;
-	bh=VSu+Q6VDVMHczqzgavruOTErYzI9fPXtiuF5BFZeoYU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QjVxL1eM6nvCvFyE8D6LZVHHf6Rik9OpxoLQedSu7qOR9BbfWBIVzZ9D843f0E579LgJTL6jhH2igA9pwnteqvFlIlUhD2idzcunYIasktz5DaCQuxYKE6FKdz83042eOJPBQ2S/3LASVSKKc2jFMfkJx5hYowqFjKPs3oHfik8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AX7ZgDEK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1722241545; c=relaxed/simple;
+	bh=PURHL43L2kM4p2Y8RudvzBafp3DO3GObN0EgL/pJfkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gzVSBaecP2jjS/3zXEohEaSHKnp9qEy8YSy4ytzD33dtXnHRNmMydslPWHjFqiHshiobYSkbrVw3CvwXCILaKaKxg0UGEzHe3PhNQYFd+QwBh3eo2abXkfJYVA/3V0Jn++ARHwwXp/hy1seaxmIZcLHbbJTfs9P7n3axjnUCVPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qgEh4Va1; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AX7ZgDEK"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722222414;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jgW4F+8OnYfABRaUBkoY4QdpxE7k/jonJUbzCNjd0j0=;
-	b=AX7ZgDEKXmGOuV+S468tbMS6XvpfByvviel6mkdSoKn59JRIP3Sv5YZfF5IX5bav1Zrt5T
-	sYyXMeH0arClIx72WbCmplQUTTxBCk2Ec9Mm0Traz2N18jal5dmXkqjE330o+GCaUhEvBE
-	zT7wFbMjwo6NO9f2hsEmf0SLw6tF6oE=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-542-dPfwVbksOBmIwo9Pzie6WQ-1; Sun,
- 28 Jul 2024 23:06:51 -0400
-X-MC-Unique: dPfwVbksOBmIwo9Pzie6WQ-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D53071955D45;
-	Mon, 29 Jul 2024 03:06:48 +0000 (UTC)
-Received: from [10.2.16.25] (unknown [10.2.16.25])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 953F619560AE;
-	Mon, 29 Jul 2024 03:06:45 +0000 (UTC)
-Message-ID: <1d011339-364b-42ce-9c7a-fc99f7be0e1c@redhat.com>
-Date: Sun, 28 Jul 2024 23:06:44 -0400
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qgEh4Va1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD749C32786;
+	Mon, 29 Jul 2024 08:25:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722241544;
+	bh=PURHL43L2kM4p2Y8RudvzBafp3DO3GObN0EgL/pJfkA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qgEh4Va1aWYI0KeqZubByiItSHPUbDJQWE9RJPkcpKPcp9UORuSq63nnnpHwADeIN
+	 0QfTKKpwEnRaH7AG9SCvASKTyg/juVufeK0DDJvtxHAumlJRMcmxqY4ElX9fA0Tth9
+	 d/i4wq04w4CCTI5M+xoX6d1hGXD6shb6n4dxje9zixRiKW5EwsiC5NX8bNnnDAueOG
+	 5hH2OFZ+g6P4XrcikGEed/7WBwuvkxC8lb3M03mKDH1/xrhL6Y4N2gbSjvnXgzrfu3
+	 vht7J0/ODZmUVrrb6KxtvYizisvfONVrCjYGK6VI7PS0y/MJ+TtVkBTSIPslwjEeuw
+	 9Qu4CAmAgGXxg==
+Date: Mon, 29 Jul 2024 10:25:39 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Mateusz Guzik <mjguzik@gmail.com>, Hillf Danton <hdanton@sina.com>, 
+	paulmck@kernel.org, rcu@vger.kernel.org
+Subject: Re: rcu_sync_dtor() warning question
+Message-ID: <20240729-imponieren-webstuhl-8ed39923df25@brauner>
+References: <20240726-ansonsten-piste-c4f04d4909fc@brauner>
+ <f4d23fa4-b324-4666-aeb3-ace5c0384e07@paulmck-laptop>
+ <CAGudoHHn4bmdR0LetX_bJ1PMtuc6cEYd=hZFutXmqaMG1H+rCg@mail.gmail.com>
+ <CAGudoHGznS_Br2gxu=BWsDaCbHmMWRTCmoZDniyFFrDOs9VD5A@mail.gmail.com>
+ <20240728134101.GA8691@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcu: Use system_unbound_wq to avoid disturbing isolated
- CPUs
-To: Breno Leitao <leitao@debian.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- Vratislav Bendel <vbendel@redhat.com>
-References: <20240723181025.187413-1-longman@redhat.com>
- <ZqEB9Yz0womtmDRg@gmail.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZqEB9Yz0womtmDRg@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240728134101.GA8691@redhat.com>
 
-On 7/24/24 09:30, Breno Leitao wrote:
-> On Tue, Jul 23, 2024 at 02:10:25PM -0400, Waiman Long wrote:
->> It was discovered that isolated CPUs could sometimes be disturbed by
->> kworkers processing kfree_rcu() works causing higher than expected
->> latency. It is because the RCU core uses "system_wq" which doesn't have
->> the WQ_UNBOUND flag to handle all its work items. Fix this violation of
->> latency limits by using "system_unbound_wq" in the RCU core instead.
->> This will ensure that those work items will not be run on CPUs marked
->> as isolated.
->>
->> Beside the WQ_UNBOUND flag, the other major difference between system_wq
->> and system_unbound_wq is their max_active count. The system_unbound_wq
->> has a max_active of WQ_MAX_ACTIVE (512) while system_wq's max_active
->> is WQ_DFL_ACTIVE (256) which is half of WQ_MAX_ACTIVE.
->>
->> Reported-by: Vratislav Bendel <vbendel@redhat.com>
-> I've seen this problem a while ago and reported to the list:
->
-> 	https://lore.kernel.org/all/Zp906X7VJGNKl5fW@gmail.com/
->
-> I've just applied this test, and run my workload for 2 hours without
-> hitting this issue. Thanks for solving it.
->
-> Tested-by: Breno Leitao <leitao@debian.org>
+On Sun, Jul 28, 2024 at 03:41:01PM GMT, Oleg Nesterov wrote:
+> Sorry for late reply.
+> 
+> You do not need my help, I know nothing about fs ;)  but just in case...
+> 
+> On 07/26, Mateusz Guzik wrote:
+> >
+> > Welp.
+> >
+> > syzbot did the bisect, it's not any of the above, instead:
+> >
+> > commit b62e71be2110d8b52bf5faf3c3ed7ca1a0c113a5
+> > Author: Chao Yu <chao@kernel.org>
+> > Date:   Sun Apr 23 15:49:15 2023 +0000
+> >
+> >     f2fs: support errors=remount-ro|continue|panic mountoption
+> >
+> > https://lore.kernel.org/linux-fsdevel/0000000000004ff2dc061e281637@google.com/T/#m90c03813e12e5cdff1eeada8f9ab581d5f039c76
+> >
+> > That said, the stuff I mentioned still looks highly suspicious so I
+> > have to something to investigate regardless.
+> 
+> Did you see the patch from Hillf ?
+> https://lore.kernel.org/all/20240727011616.2144-1-hdanton@sina.com/
+> it seems to fix the problem...
 
-Thank for testing this patch. So it is just us that saw this problem.
+I only skimmed the bisect while I was entertaining a toddler during a
+trainride. :)
 
-Cheers,
-Longman
+> 
+> Of course I don't understand this patch, but afaics SB_RDONLY can confuse
+> thaw_super_locked(). If sb_rdonly() is true, thaw_super_locked() assumes
+> that freeze_super() didn't call sb_wait_write() -> percpu_down_write().
+> 
+> So in this case thaw_super_locked() just clears sb->s_writers.frozen and
+> goes to the "out_deactivate" label bypassing sb_freeze_unlock().
 
+So the thing is that remounting a superblock read-only directly without
+going through the VFS first is pretty risky and is likely to cause
+trouble. The order of operations to transition rw->ro:
+
+(1) Check that the filsystem is unfrozen. If not, fail with EBUSY.
+(2) Mark all mounts of that filesystem as read-only. Fail with EBUSY if
+    there are any active writers on any of the mounts.
+(3) Call into ->reconfigure() method of the filesystem so it can do it's
+    internal thing to mount read-only.
+
+All of that requires sb->s_umount semaphore to be held. But f2fs
+seems to transition rw->ro without holding sb->s_umount in various
+callsites of:
+
+f2fs_stop_checkpoint()
+-> f2fs_handle_critical_error()
+
+So that would mean freeze_super() would've indeed acquired
+percpu_down_write(SB_FREEZE_WRITE+SB_FREEZE_PAGEFAULT+SB_FREEZE_FS) but
+thaw_super() would skip calling
+sb_freeze_unlock(SB_FREEZE_FS+SB_FREEZE_PAGEFAULT+SB_FREEZE_WRITE) and
+destroying the superblock during umount with an imbalance that gets
+noticed in rcu_sync_dtor().
+
+So afaict this would mean that we never called rcu_sync_exit() and thus
+never set GP_EXIT and notice that imbalance during rcu_sync_dtor().
