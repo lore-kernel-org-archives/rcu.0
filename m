@@ -1,43 +1,40 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F15130A7D
-	for <rcu@vger.kernel.org>; Mon, 29 Jul 2024 08:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5789F130A7D
+	for <rcu@vger.kernel.org>; Mon, 29 Jul 2024 08:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722241545; cv=none; b=KszmWdXyglPUeGIJSgFIt4wMBnI99Xu7CqUqVLNtA2zwlrqYHq+8N2dodjOOu+hSjqIG6zNJzo+JWSV1HYhZ75aIAPYfpcEWF4xyKSYkdWJuaA0GI/5uW/GT+xMBTkU4NIvI0aME0imbtWnuqkC3Y2KvHQOtYz8lPiwn6G2IYyM=
+	t=1722241623; cv=none; b=Y+apXr6QZiUX9+Ex3Sb3HoW2k1SQHlWLHot7BilgRy7n+gJBQ72MImMAn3CfQEUjS4LS+XhDEqd6jY8e2X3gSK0k+YCu5Vrw3giPeOjz4y3LjoFnuQRP+MyxrdFw8gTjtQoCk/VkC/YRcpIcc7wc2+ZgkshN4lVHgwDa5Ody1No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722241545; c=relaxed/simple;
-	bh=PURHL43L2kM4p2Y8RudvzBafp3DO3GObN0EgL/pJfkA=;
+	s=arc-20240116; t=1722241623; c=relaxed/simple;
+	bh=n8cC2D6l/JLz8rhiw6r4T+MWP0qMhz6r/SX462mrOKU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gzVSBaecP2jjS/3zXEohEaSHKnp9qEy8YSy4ytzD33dtXnHRNmMydslPWHjFqiHshiobYSkbrVw3CvwXCILaKaKxg0UGEzHe3PhNQYFd+QwBh3eo2abXkfJYVA/3V0Jn++ARHwwXp/hy1seaxmIZcLHbbJTfs9P7n3axjnUCVPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qgEh4Va1; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ad+eKXIwbf1PKNY8it5xe8FICsxRJQFIu8Af23CPHg55kqQtA6Z76q37S2SKwVHN2IaWKihGFWEGcr+7NpbHhZU70TzyTJvxpsLBAFdMJS6z8BcVMsLkfR0FQp+5WCY3Ik9FGvVX7BjZRNofr2kvANMmtl/6V5VA9BhJN+Qfr/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CrV7UFTI; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qgEh4Va1"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD749C32786;
-	Mon, 29 Jul 2024 08:25:42 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CrV7UFTI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C0DBC32786;
+	Mon, 29 Jul 2024 08:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722241544;
-	bh=PURHL43L2kM4p2Y8RudvzBafp3DO3GObN0EgL/pJfkA=;
+	s=k20201202; t=1722241622;
+	bh=n8cC2D6l/JLz8rhiw6r4T+MWP0qMhz6r/SX462mrOKU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qgEh4Va1aWYI0KeqZubByiItSHPUbDJQWE9RJPkcpKPcp9UORuSq63nnnpHwADeIN
-	 0QfTKKpwEnRaH7AG9SCvASKTyg/juVufeK0DDJvtxHAumlJRMcmxqY4ElX9fA0Tth9
-	 d/i4wq04w4CCTI5M+xoX6d1hGXD6shb6n4dxje9zixRiKW5EwsiC5NX8bNnnDAueOG
-	 5hH2OFZ+g6P4XrcikGEed/7WBwuvkxC8lb3M03mKDH1/xrhL6Y4N2gbSjvnXgzrfu3
-	 vht7J0/ODZmUVrrb6KxtvYizisvfONVrCjYGK6VI7PS0y/MJ+TtVkBTSIPslwjEeuw
-	 9Qu4CAmAgGXxg==
-Date: Mon, 29 Jul 2024 10:25:39 +0200
+	b=CrV7UFTIai7xSZ9Y907cA2q9jm6IT+ehpuV6nzkCEvIu/P84mIKHYdXPvzjglglui
+	 3bB/7f6p1dLlT/USXrZzsZJD1wwxbEp7lx8uBhAAurPWW9hwqZmMQ9xmjeFMr8PHSD
+	 35vO3Alq8AFfs4JauGIyc3n5YjVpFoh6nF3ads832SkGALuHgmI2BFELPaVxnJ6ldF
+	 wkvLc7pzpVrooixXw2rlQLt7E31Ye41QGzC3FvGEIObv7AtBXLTIl+vfs/sefTtkSk
+	 UE2NG29oQ8Y/XV8xgrePDmpDm58uR/kGSiBzPwY2A7fdEVZXRK0oVBu7e1ExmWQr5/
+	 tb0P0XmKLo9SA==
+Date: Mon, 29 Jul 2024 10:26:58 +0200
 From: Christian Brauner <brauner@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Mateusz Guzik <mjguzik@gmail.com>, Hillf Danton <hdanton@sina.com>, 
-	paulmck@kernel.org, rcu@vger.kernel.org
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Mateusz Guzik <mjguzik@gmail.com>, Oleg Nesterov <oleg@redhat.com>, 
+	rcu@vger.kernel.org
 Subject: Re: rcu_sync_dtor() warning question
-Message-ID: <20240729-imponieren-webstuhl-8ed39923df25@brauner>
+Message-ID: <20240729-gastieren-gassen-819d78e3e2eb@brauner>
 References: <20240726-ansonsten-piste-c4f04d4909fc@brauner>
  <f4d23fa4-b324-4666-aeb3-ace5c0384e07@paulmck-laptop>
- <CAGudoHHn4bmdR0LetX_bJ1PMtuc6cEYd=hZFutXmqaMG1H+rCg@mail.gmail.com>
- <CAGudoHGznS_Br2gxu=BWsDaCbHmMWRTCmoZDniyFFrDOs9VD5A@mail.gmail.com>
- <20240728134101.GA8691@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -46,68 +43,78 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240728134101.GA8691@redhat.com>
+In-Reply-To: <f4d23fa4-b324-4666-aeb3-ace5c0384e07@paulmck-laptop>
 
-On Sun, Jul 28, 2024 at 03:41:01PM GMT, Oleg Nesterov wrote:
-> Sorry for late reply.
+On Fri, Jul 26, 2024 at 11:02:35AM GMT, Paul E. McKenney wrote:
+> On Fri, Jul 26, 2024 at 03:54:28PM +0200, Christian Brauner wrote:
+> > Hey,
+> > 
+> > I could use some help with understanding a bug related to rcu that was
+> > reported today. It first seems to have shown up on the 25th of July:
+> > 
+> > https://syzkaller.appspot.com/bug?extid=20d7e439f76bbbd863a7
+> > 
+> > We seem to be hitting the WARN_ON_ONCE() in:
+> > 
+> > void rcu_sync_dtor(struct rcu_sync *rsp)
+> > {
+> >         int gp_state;
+> > 
+> >         WARN_ON_ONCE(READ_ONCE(rsp->gp_state) == GP_PASSED);
+> > 
+> > from destroy_super_work() which gets called when a superblock is really freed.
+> > 
+> > If the superblock has been visible in userspace we do it via call_rcu():
+> > 
+> > static void destroy_super_work(struct work_struct *work)
+> > {
+> >         struct super_block *s = container_of(work, struct super_block,
+> >                                                         destroy_work);
+> >         fsnotify_sb_free(s);
+> >         security_sb_free(s);
+> >         put_user_ns(s->s_user_ns);
+> >         kfree(s->s_subtype);
+> >         for (int i = 0; i < SB_FREEZE_LEVELS; i++)
+> >                 percpu_free_rwsem(&s->s_writers.rw_sem[i]);
+> >         kfree(s);
+> > }
+> > 
+> > static void destroy_super_rcu(struct rcu_head *head)
+> > {
+> >         struct super_block *s = container_of(head, struct super_block, rcu);
+> >         INIT_WORK(&s->destroy_work, destroy_super_work);
+> >         schedule_work(&s->destroy_work);
+> > }
+> > 
+> > And I'm really confused because I don't understand the details for sync
+> > rcu enough to come up with a clear problem statement even. Could someone
+> > please explain what the WARN_ON_ONCE() is about?
 > 
-> You do not need my help, I know nothing about fs ;)  but just in case...
+> If I am not too confused (and Oleg will correct me if I am), this is
+> checking a use-after-free error.  A given rcu_sync structure normally
+> transitions from GP_IDLE->GP_ENTER->GP_PASSED->GP_EXIT->GP_IDLE, with
+> possible side-trips from the GP_EXIT state through GP_REPLAY and back
+> to GP_EXIT in special cases such as during early boot.
 > 
-> On 07/26, Mateusz Guzik wrote:
-> >
-> > Welp.
-> >
-> > syzbot did the bisect, it's not any of the above, instead:
-> >
-> > commit b62e71be2110d8b52bf5faf3c3ed7ca1a0c113a5
-> > Author: Chao Yu <chao@kernel.org>
-> > Date:   Sun Apr 23 15:49:15 2023 +0000
-> >
-> >     f2fs: support errors=remount-ro|continue|panic mountoption
-> >
-> > https://lore.kernel.org/linux-fsdevel/0000000000004ff2dc061e281637@google.com/T/#m90c03813e12e5cdff1eeada8f9ab581d5f039c76
-> >
-> > That said, the stuff I mentioned still looks highly suspicious so I
-> > have to something to investigate regardless.
-> 
-> Did you see the patch from Hillf ?
-> https://lore.kernel.org/all/20240727011616.2144-1-hdanton@sina.com/
-> it seems to fix the problem...
+> One way that this can happen is calling percpu_free_rwsem() without
+> having previously done the percpu_up_write() needed to match an earlier
+> percpu_down_write().  I don't see any other way that this can happen
+> right off-hand, but someone might have added something, or I might be
+> suffering a failure of imagination.
 
-I only skimmed the bisect while I was entertaining a toddler during a
-trainride. :)
+And you were spot on of course!
 
 > 
-> Of course I don't understand this patch, but afaics SB_RDONLY can confuse
-> thaw_super_locked(). If sb_rdonly() is true, thaw_super_locked() assumes
-> that freeze_super() didn't call sb_wait_write() -> percpu_down_write().
+> > (I had been wondering if this is related to commit 7180f8d91fcb ("vfs:
+> > add rcu-based find_inode variants for iget ops") and the fix in commit
+> > 5bc9ad78c2f8 ("vfs: handle __wait_on_freeing_inode() and evict() race")
+> > but I don't see how.)
 > 
-> So in this case thaw_super_locked() just clears sb->s_writers.frozen and
-> goes to the "out_deactivate" label bypassing sb_freeze_unlock().
+> I don't see how either, unless it introduced some timing change
+> that made the scenario above more probable.
+> 
+> > Thanks for taking a look!
+> 
+> Hope this helps!  If not, you know where to find me.  ;-)
 
-So the thing is that remounting a superblock read-only directly without
-going through the VFS first is pretty risky and is likely to cause
-trouble. The order of operations to transition rw->ro:
-
-(1) Check that the filsystem is unfrozen. If not, fail with EBUSY.
-(2) Mark all mounts of that filesystem as read-only. Fail with EBUSY if
-    there are any active writers on any of the mounts.
-(3) Call into ->reconfigure() method of the filesystem so it can do it's
-    internal thing to mount read-only.
-
-All of that requires sb->s_umount semaphore to be held. But f2fs
-seems to transition rw->ro without holding sb->s_umount in various
-callsites of:
-
-f2fs_stop_checkpoint()
--> f2fs_handle_critical_error()
-
-So that would mean freeze_super() would've indeed acquired
-percpu_down_write(SB_FREEZE_WRITE+SB_FREEZE_PAGEFAULT+SB_FREEZE_FS) but
-thaw_super() would skip calling
-sb_freeze_unlock(SB_FREEZE_FS+SB_FREEZE_PAGEFAULT+SB_FREEZE_WRITE) and
-destroying the superblock during umount with an imbalance that gets
-noticed in rcu_sync_dtor().
-
-So afaict this would mean that we never called rcu_sync_exit() and thus
-never set GP_EXIT and notice that imbalance during rcu_sync_dtor().
+Thank you for taking the time, Paul. That was indeed helpful!
