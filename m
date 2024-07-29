@@ -1,58 +1,52 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70CB3FB1B
-	for <rcu@vger.kernel.org>; Sun, 28 Jul 2024 13:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5E17CF39;
+	Mon, 29 Jul 2024 02:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722174075; cv=none; b=imGf6jjIb8gxbmNRofRlZM+hAJcPDoX2bIjS+Y0XehbpdUV/ScHbf1snkgCr/YEOZ29hklfE3aFcEOd04FZmysCriF4j89pZ6ftMDQMcMBqi0ylJj1Zjv5A25hXRoo7EhKMAd77sJG6Wwrgg39BA/Wr3PJk85tOMysv5MJyMo5Y=
+	t=1722220984; cv=none; b=Kd+Ndtq7JVOPSo6L+CT2KOgaMQb3r71b2NUGffMrXyTxT/q4Hrn1deOhC7rlYUVw4cEc6BhY6/sMwAhna4WgeuoofaS9eOFeAHB33VT5R/vaouGdhyJIuCcWy1LTqpGTQDTpWY6looUZQzylxxSan1XEHu6PAGJGywLxCDMeguw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722174075; c=relaxed/simple;
-	bh=wb4+K2jfFCFJm7Q0XiElSQSTmr+5cRu6tJRMaxHh720=;
+	s=arc-20240116; t=1722220984; c=relaxed/simple;
+	bh=/J9X9cTXpjkzJ4gmht/FCGx5HSMtviqHuUp+nsPY85Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WX2gx18okiEgXbmFoLGdhbn40X0J3aTcUGOG/bT9M9umNu6Sev4Z0nrsdACxyT+CJskjrSmF/vsJPM8pUDDG7ZVDdfQOXonUZFYGBRI1gZ4Zh/vNl7e7/1hFCCfYem801Z+6W8uBJBoHjHvv0xsYCwrqAP6Ab+23VERK06bf+2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X7sFfT1C; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=R2h23Gk6mVTzqq7OhnC8qD1THVmcTklRZB3COw9keiH0iybOQeCqZ3FyUQFadGcuMTvkb6jdNvGLvV/H+yh+cg2tp4/aTZBdZTY2CkBOc0PsiG+zPV6f9TSMr9z4sZVJXIB8Ly6gKUjd6QxUXu5g7YVML8CDg1VA4Hu77k5fHps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hh2HE0f4; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X7sFfT1C"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722174070;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XJS8UcnJOB/j9GcsBVriXkTBQzfHbx96+YQU+0aGTwY=;
-	b=X7sFfT1CjTT0Q1lkpWzRVDdZvGpIE5T7phSqNf9uq1zywv91OR7HROIhOe+UY7bpBAFk4m
-	L2fYWVchwYhQGI+9AxVTKwzq7z16InRt6VnVIOuW/uYG9JL2go2u+RnBHO24/yqj2iE9gj
-	8NaLLAFFSwJitLiLzyLFgzxdxr2UUT8=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-104-KazrzR4NO8y_Q0he9wBSug-1; Sun,
- 28 Jul 2024 09:41:06 -0400
-X-MC-Unique: KazrzR4NO8y_Q0he9wBSug-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 04F3B1955D45;
-	Sun, 28 Jul 2024 13:41:05 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.13])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 36239300018D;
-	Sun, 28 Jul 2024 13:41:01 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun, 28 Jul 2024 15:41:05 +0200 (CEST)
-Date: Sun, 28 Jul 2024 15:41:01 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Mateusz Guzik <mjguzik@gmail.com>, Hillf Danton <hdanton@sina.com>
-Cc: paulmck@kernel.org, Christian Brauner <brauner@kernel.org>,
-	rcu@vger.kernel.org
-Subject: Re: rcu_sync_dtor() warning question
-Message-ID: <20240728134101.GA8691@redhat.com>
-References: <20240726-ansonsten-piste-c4f04d4909fc@brauner>
- <f4d23fa4-b324-4666-aeb3-ace5c0384e07@paulmck-laptop>
- <CAGudoHHn4bmdR0LetX_bJ1PMtuc6cEYd=hZFutXmqaMG1H+rCg@mail.gmail.com>
- <CAGudoHGznS_Br2gxu=BWsDaCbHmMWRTCmoZDniyFFrDOs9VD5A@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hh2HE0f4"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77537C116B1;
+	Mon, 29 Jul 2024 02:42:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722220982;
+	bh=/J9X9cTXpjkzJ4gmht/FCGx5HSMtviqHuUp+nsPY85Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hh2HE0f4BHMHgxqCfvVLysy51EM/iwDRQltyxUTYukRmx09SoMv1sxWeHQpvIi4b7
+	 aX25vVS/BlcJS1VoT4Obd3U0SjQ1eYW2Agk8SnCvP1y2B681aO+2cpfhnZQDrJGZh5
+	 7rPLGE+wdpUcfkk80bJjFCC2pH7g7c9hurm/MQsSoAl220Oan7og5QGdstJ6eCDS41
+	 gOodgxQsZZQ+m00Cp4d0gf2XxJ7qKJY2A+bDVpZKsljIQqJKM94rsKBpSkwJZ4gUUz
+	 uN9tPSl0uTYXO/YU3zVkWys1rsAjSqIRFd6DHreulSc0/qMvp0+TUm2qC8tr0nl96J
+	 2kBHw5ozp6dtA==
+Date: Mon, 29 Jul 2024 08:12:55 +0530
+From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v3 00/25] context_tracking, rcu: Spring cleaning of
+ dynticks references
+Message-ID: <20240729024255.GA210579@neeraj.linux>
+References: <20240724144325.3307148-1-vschneid@redhat.com>
+ <20240725152212.GA927726@neeraj.linux>
+ <xhsmhed7gciye.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,41 +55,32 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGudoHGznS_Br2gxu=BWsDaCbHmMWRTCmoZDniyFFrDOs9VD5A@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+In-Reply-To: <xhsmhed7gciye.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-Sorry for late reply.
+On Fri, Jul 26, 2024 at 04:43:21PM +0200, Valentin Schneider wrote:
+> On 25/07/24 20:52, Neeraj Upadhyay wrote:
+> > On Wed, Jul 24, 2024 at 04:43:00PM +0200, Valentin Schneider wrote:
+> >> Git info
+> >> ========
+> >>
+> >> The series is based on rcu/next at:
+> >> f395ae346be5 ("Merge branches 'doc.2024.06.06a', 'fixes.2024.06.06a', 'mb.2024.06.03a', 'nocb.2024.06.03a', 'rcu-tasks.2024.06.06a' and 'rcutorture.2024.06.06a' into HEAD")
+> >>
+> >
+> > Hi Valentin,
+> >
+> > I see that this series is based on paulmck/linux-rcu.git next branch,
+> > whereas the RCU tree has moved to shared tree now [1] and the next
+> > branch there is pulled for v6.11 (tag: rcu.2024.07.12a). I get merge
+> > conflicts while applying it. Can you please rebase?
+> >
+> 
+> FYI I've stashed what will be v4 at the below, based on rcu.2024.07.12a:
+> 
+> https://gitlab.com/vschneid/linux.git -b redhat/isolirq/defer/v3-rcu-v4
 
-You do not need my help, I know nothing about fs ;)  but just in case...
+Thanks!
 
-On 07/26, Mateusz Guzik wrote:
->
-> Welp.
->
-> syzbot did the bisect, it's not any of the above, instead:
->
-> commit b62e71be2110d8b52bf5faf3c3ed7ca1a0c113a5
-> Author: Chao Yu <chao@kernel.org>
-> Date:   Sun Apr 23 15:49:15 2023 +0000
->
->     f2fs: support errors=remount-ro|continue|panic mountoption
->
-> https://lore.kernel.org/linux-fsdevel/0000000000004ff2dc061e281637@google.com/T/#m90c03813e12e5cdff1eeada8f9ab581d5f039c76
->
-> That said, the stuff I mentioned still looks highly suspicious so I
-> have to something to investigate regardless.
+- Neeraj
 
-Did you see the patch from Hillf ?
-https://lore.kernel.org/all/20240727011616.2144-1-hdanton@sina.com/
-it seems to fix the problem...
-
-Of course I don't understand this patch, but afaics SB_RDONLY can confuse
-thaw_super_locked(). If sb_rdonly() is true, thaw_super_locked() assumes
-that freeze_super() didn't call sb_wait_write() -> percpu_down_write().
-
-So in this case thaw_super_locked() just clears sb->s_writers.frozen and
-goes to the "out_deactivate" label bypassing sb_freeze_unlock().
-
-Oleg.
-
+> 
