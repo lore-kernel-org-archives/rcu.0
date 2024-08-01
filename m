@@ -1,38 +1,37 @@
 Received: from cloud48395.mywhc.ca (cloud48395.mywhc.ca [173.209.37.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A394143883
-	for <rcu@vger.kernel.org>; Thu,  1 Aug 2024 18:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A67148FFC
+	for <rcu@vger.kernel.org>; Thu,  1 Aug 2024 19:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.209.37.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722538393; cv=none; b=ZkryCDBCKBPhwgG7Cz2O3JmC282t7zwTzpei29azyWnuEi5CeX3WXuA6gVI4D19gBn6Cmu9HXXe6BvIOe5aOrg3m160HfSGy4nkcCO877L2JrqqipCLJuhJi9T2HZ1kR3k396xvpbgJ3ePqoXoaKVWC+I1ru1MmAkC+sWh0UXJA=
+	t=1722540341; cv=none; b=QpbQI28uzQbNTcO8mLjfuwYJI5c0bd6Za2POW/6/lCKeMoCASpMYetzVBHo278lHL1X2aDbyXpn2xiOjvsrdmuI/VaQbeUwT4+yQ60YNCAbcBGrzUxHIVGRn8jQVotaOduKOFdvihssvEyPNl9ewohwgIZIo/4bHer1F86SHtLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722538393; c=relaxed/simple;
-	bh=yYV/QnerrAwAIkteKQTy3rbdozx4ITXdrlyITvfyRRs=;
+	s=arc-20240116; t=1722540341; c=relaxed/simple;
+	bh=L/hQx7+B5OppO9gQYEncr9c06jcDoogxQeGXX8cclU0=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nc0D+FYeRe6eadf0/58fo5kBKCywzUMhmgCgDKnq5las9rFmmrTo1yf9TB0DM4qLvVwH0l/opC8MlGymWyyYZrVRYiNO9tMvhQild3zAnduKO2ThnDuBnZHCXqswZR2ogKj/s2szCZQFyvykJVoYAUUFGdoiMnhikaZL2Y0waOs=
+	 Content-Type:MIME-Version; b=QIwg0pwkEY1zOPe1LMt9CveJQto/T5uiXC4WGDXX6E88nR/Ys/WcGcz9nL2s9ujpIh5ZGoXCMd2A3ooDnWPi2RiGMOrBi1cq3J6VpVHsjGpXG87zYHDFuAAJAwvUro/pkJWtv5kr1GmUQycUkL5hMc3JBTo9t4j+KrqNYc3BDdU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com; spf=pass smtp.mailfrom=trillion01.com; arc=none smtp.client-ip=173.209.37.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trillion01.com
-Received: from [45.44.224.220] (port=49524 helo=[192.168.1.177])
+Received: from [45.44.224.220] (port=50874 helo=[192.168.1.177])
 	by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96.2)
 	(envelope-from <olivier@trillion01.com>)
-	id 1sZavG-0007Dc-0v;
-	Thu, 01 Aug 2024 14:53:10 -0400
-Message-ID: <600f3c00593d7e67cd2ada9a2622da1548b9e695.camel@trillion01.com>
+	id 1sZbQg-0000nu-0S;
+	Thu, 01 Aug 2024 15:25:38 -0400
+Message-ID: <367dc07b740637f2ce0298c8f19f8aec0bdec123.camel@trillion01.com>
 Subject: Re: unexpected result with rcu_nocbs option
 From: Olivier Langlois <olivier@trillion01.com>
 To: paulmck@kernel.org
 Cc: rcu@vger.kernel.org
-Date: Thu, 01 Aug 2024 14:53:09 -0400
-In-Reply-To: <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
+Date: Thu, 01 Aug 2024 15:25:37 -0400
+In-Reply-To: <fd5cedd3-d956-4a99-a50f-1fbc14fa208b@paulmck-laptop>
 References: <f6d3bb877aab5ac35c3b994596354fc28c8f4f95.camel@trillion01.com>
 	 <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
 	 <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
 	 <1684cb34f67618cff63b24da9864a23815e7f6e0.camel@trillion01.com>
-	 <dbb43d66fc1642d57c71d1908dd4513dda0d55bd.camel@trillion01.com>
-	 <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
+	 <fd5cedd3-d956-4a99-a50f-1fbc14fa208b@paulmck-laptop>
 Autocrypt: addr=olivier@trillion01.com; prefer-encrypt=mutual;
  keydata=mQINBFYd0ycBEAC53xedP1NExPwtBnDkVuMZgRiLmWoQQ8U7vEwt6HVGSsMRHx9smD76i
  5rO/iCT6tDIpZoyJsTOh1h2NTn6ZkoFSn9lNOJksE77/n7HNaNxiBfvZHsuNuI53CkYFix9JhzP3t
@@ -76,61 +75,81 @@ X-Source:
 X-Source-Args: 
 X-Source-Dir: 
 
-On Thu, 2024-08-01 at 10:56 -0700, Paul E. McKenney wrote:
-> This presentation might be helpful:
+On Thu, 2024-08-01 at 10:48 -0700, Paul E. McKenney wrote:
+> >=20
+> > yes I do.
+> >=20
+> > $ ps -eo pid,cpuid,comm | grep rcu
+> > =A0=A0=A0=A0=A0 4=A0=A0=A0=A0 0 kworker/R-rcu_gp
+> > =A0=A0=A0=A0=A0 8=A0=A0=A0=A0 0 kworker/0:0-rcu_gp
+> > =A0=A0=A0=A0 14=A0=A0=A0=A0 0 rcu_tasks_rude_kthread
+> > =A0=A0=A0=A0 15=A0=A0=A0=A0 0 rcu_tasks_trace_kthread
+> > =A0=A0=A0=A0 17=A0=A0=A0=A0 3 rcu_sched
+> > =A0=A0=A0=A0 18=A0=A0=A0=A0 3 rcuog/0
+> > =A0=A0=A0=A0 19=A0=A0=A0=A0 0 rcuos/0
+> > =A0=A0=A0=A0 20=A0=A0=A0=A0 0 rcu_exp_par_gp_kthread_worker/0
+> > =A0=A0=A0=A0 21=A0=A0=A0=A0 3 rcu_exp_gp_kthread_worker
+> > =A0=A0=A0=A0 31=A0=A0=A0=A0 3 rcuos/1
+> > =A0=A0=A0=A0 38=A0=A0=A0=A0 3 rcuog/2
+> > =A0=A0=A0=A0 39=A0=A0=A0=A0 3 rcuos/2
+> > =A0=A0=A0=A0 46=A0=A0=A0=A0 0 rcuos/3
 >=20
-> 	https://www.youtube.com/watch?v=3D5yTf7u5J_kc
+> This looks like you had either nohz_full=3D0-3 or rcu_nocbs=3D0-3, given
+> that you have rcuos kthreads for all four of your CPUs.=A0 Or perhaps
+> some
+> other setting that implied one or the other of these.
+
+the exact setting is:
+isolcpus=3D0,1,2 nohz_full=3D1,2 rcu_nocbs=3D1,2 rcutree.rcu_nocb_gp_stride=
+=3D4
+irqaffinity=3D3
+
+maybe you can quickly confirm this but by reading rcu/tree_nocb.h
+but I have been under the impression that nohz_full=3D1,2 is implying
+rcu_nocbs=3D1,2, therefore I could remove the rcu_nocbs parameter and it
+would not change anything. (is there other ktread implications coming
+along with isolcpus?).
+
+I want to have control over what is run on cpu0 so it is enumerated in
+isolcpus.
+
+It is, however, not nohz_full. As I have mentionned in 1-2 emails ago.
+cpu0 is where the networking I/O is made. net/core is such a big RCU
+user + NIC driver interrupts (I am trying hard to eliminate them with
+napi_busy_poll), that I have figured out making cpu0 nohz_full
+efficiently was a lost battle before it even started.
+
+maybe something somewhere is not used to see isolcpus and nohz_full
+having different values and does something unexpected as a result...
+
 >=20
-thx for the link. I will sure make time to watch it to improve my
-understanding of RCU.
-
-> > you didn't seem concerned that rcuog was missing for cpu1.
-> > rcutree.rcu_nocb_gp_stride sets the group size (stride) and there
-> > is 1
-> > rcuog per group. I guess if I wanted to see a rcuog/1, I would need
-> > to
-> > set rcutree.rcu_nocb_gp_stride=3D1
+> > > > > the absence of of rcuog/1 is causing rcu_irq_work_resched()
+> > > > > to
+> > > > > raise
+> > > > > an
+> > > > > interrupt every 2-3 seconds on cpu1.
+> > >=20
+> > > Did you build with CONFIG_LAZY_RCU=3Dy?
+> >=20
+> > no. I was not even aware that it was existing. I left alone the
+> > default
+> > setting!
 >=20
-> The grace-period functions of the lead rcuos kthreads have been
-> pushed
-> off into a smaller number of rcuog kthreads.=A0 Which is why you do not
-> (repeat, *not*) have an rcuog kthread for each CPU.
->=20
-> > it is probably not best possible setting but it is easy and simple
-> > to
-> > try out to see if it fix my problem.
->=20
-> You probably do not want an rcuog kthread for each CPU, but it cannot
-> hurt to try it.
->=20
-> 							Thanx, Paul
-so the og in the rcuog name means Offloading Grace-period?
+> Worth a try, as this is what it is designed for.
 
-just with this little exchange, there is a big layer of mystery that
-got removed in my mind!
+Ok, I will but when I read what it is doing, I was under the impression
+that the main objective was to trade low-latency with reduced power
+consumption...
 
-my big take-away of your last 2 emails, is that you do not think that
-the interrupts that I am seeing are originating from RCU...
+I am not seeing how batching callbacks would help in eliminating the
+interrupts that I am seeing. At best, they will be less frequent...
 
-I'll try to figure out how with ftrace, bpftrace can track down the
-interrupt origin...
+and most importantly, I am going through all these loops to reduce my
+system latency by few uSecs... power consumption is my last worry...
 
-possibly that there is a way to ask them to record the stack when a
-specific function is called...
+the only way that I would consider it, is if increasing RCU latency is
+improving my program latency...
 
-I will look into Brendan Gregg's blog for more ideas on how this can
-done
+All options are considered... I will take a look at this suggestion.
 
-but this is not something that I have never done before... I am
-definitely outside my comfort zone in the last 7 days, it is very
-challenging but at the same time very rewarding...
-
-I did a quick search to who was calling irq_work_queue().
-
-The call made by rcu_irq_work_resched(void) seemed to be so tailered to
-my config settings and what I was seeing that I did assume that it was
-the one but maybe not...
-
-worse case scenario, I'll add a printk there to convince myself. Worse
-case scenario, the trace will show up once ever 3 seconds.
 
