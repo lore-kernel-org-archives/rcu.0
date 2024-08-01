@@ -1,128 +1,126 @@
-Received: from cloud48395.mywhc.ca (cloud48395.mywhc.ca [173.209.37.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34AF1A8C1D
-	for <rcu@vger.kernel.org>; Thu,  1 Aug 2024 14:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.209.37.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C2C1B0106
+	for <rcu@vger.kernel.org>; Thu,  1 Aug 2024 15:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722523938; cv=none; b=EfZardJ5kxOTfltg24J/sSBeEj7wV5EF6NxBvrIA0SB1TuqHq34YtztMS14XT1MBT381EonwbAYbN+BEFpc0NY7a4wLq+XF1JlxOFwZ1JwB7K6oBzJD14JLYJxwqVQpyzuZ4Ea9OOXbzjPC46H/g7IWA8na1I/at9x7OqDawjh4=
+	t=1722526129; cv=none; b=SkxnG4bG1QCXP/ilDSV86nyeilRpZ0NXhJUaa1u6zAqgoOcpt3wkxR4M4KiHpEwZg6EAW4tNYTMxjSTCYIWY4TddRI/sD84jCejIZuMrTJ/WebOk9bWvYxLB9DplSMLnxV6txVHHysOWAs3cYuAGNd+rxXBag3/mKjBD7I3eM6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722523938; c=relaxed/simple;
-	bh=nDIBiadEEPJ36gGyZuGUrjbDzck52BmempfIB7datVc=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qTruWiG2MynVt3PViarx9VivHMcHJSsBnUEcF255CDzMSU9pK+3KgR/eozjs+B++YCAZEQ8AnkiKZNvv6CqFiNS/HqxUDVIYbO7i9tAI972BYDzntKdLANQ5Sb2NjolmaYP9tKfh2Tn7QsSaXBbvrN6CUxtqHFziQJDPID3h7Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com; spf=pass smtp.mailfrom=trillion01.com; arc=none smtp.client-ip=173.209.37.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trillion01.com
-Received: from [45.44.224.220] (port=38728 helo=[192.168.1.177])
-	by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <olivier@trillion01.com>)
-	id 1sZXA7-0001Ca-2f
-	for rcu@vger.kernel.org;
-	Thu, 01 Aug 2024 10:52:15 -0400
-Message-ID: <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
+	s=arc-20240116; t=1722526129; c=relaxed/simple;
+	bh=yYzeQ/x/pmRvSd7sVZDbOOF7S935c2LjkrTducM5ys8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fPtdsJADKrefyp40kD/zA6W4PTgXKnCcTScDYzSbiMSl7Rz6yz9rPf5f6+GLBviE4ziHAFM/ENbA4/2xKNqDtqkUqkxEwufcsqj5RI9yeP/9Bv/ZOFh+gVLuI1pMa3pAeNRc5nIFurubZ7kxyeMnCHFFRgenSyQKtDE9o6bd+u0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KFB9JEEX; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFB9JEEX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D07C4C32786;
+	Thu,  1 Aug 2024 15:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722526128;
+	bh=yYzeQ/x/pmRvSd7sVZDbOOF7S935c2LjkrTducM5ys8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=KFB9JEEXDGcLFQ3Js7ihDRiPk3i3MiweyeBrvMPVO+tnctp6gYOAImez5BeiOdzyn
+	 BRo8ZsmI6eNtHLoJDBd5oodu+OwL3YGT97wPQZSnAibW+kAhE+2F9n99rfcdocILSm
+	 ns0mCOqUG6+SW5P/95RW2pss9b8zGPWVDHLnOOa797tFOquUT4MjMMWN75/5XKy09P
+	 D/DrNXrUjPBmohlvYYtkgjwPVoYgB5FnLv/zfpSeqKKqS7hLa6VPB5jdcf2ftdgOxt
+	 hyCJaox5RhbfLCD+dY/V/e1hW0686F1VoOt7WQo4KP22iTWHCB50ltRfDa9JidvKXT
+	 qiK7XFpQ5O70w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 777F5CE08A5; Thu,  1 Aug 2024 08:28:48 -0700 (PDT)
+Date: Thu, 1 Aug 2024 08:28:48 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Olivier Langlois <olivier@trillion01.com>
+Cc: rcu@vger.kernel.org
 Subject: Re: unexpected result with rcu_nocbs option
-From: Olivier Langlois <olivier@trillion01.com>
-To: rcu@vger.kernel.org
-Date: Thu, 01 Aug 2024 10:52:15 -0400
-In-Reply-To: <f6d3bb877aab5ac35c3b994596354fc28c8f4f95.camel@trillion01.com>
+Message-ID: <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <f6d3bb877aab5ac35c3b994596354fc28c8f4f95.camel@trillion01.com>
-Autocrypt: addr=olivier@trillion01.com; prefer-encrypt=mutual;
- keydata=mQINBFYd0ycBEAC53xedP1NExPwtBnDkVuMZgRiLmWoQQ8U7vEwt6HVGSsMRHx9smD76i
- 5rO/iCT6tDIpZoyJsTOh1h2NTn6ZkoFSn9lNOJksE77/n7HNaNxiBfvZHsuNuI53CkYFix9JhzP3t
- g5nV/401re30kRfA8OPivpnj6mZhU/9RTwjbVPPb8dPlm2gFLXwGPeDITgSRs+KJ0mM37fW8EatJs
- 0a8J1Nk8wBvT7ce+S2lOrxDItra9pW3ukze7LMirwvdMRC5bdlw2Lz03b5NrOUq+Wxv7szn5Xr9f/
- HdaCH7baWNAO6H/O5LbJ3zndewokEmKk+oCIcXjaH0U6QK5gJoO+3Yt5dcTo92Vm3VMxzK2NPFXgp
- La7lR9Ei0hzQ0zptyFFyftt9uV71kMHldaQaSfUTsu9dJbnS2kI/j+F2S1q6dgKi3DEm0ZRGvjsSG
- rkgPJ5T16GI1cS2iQntawdr0A1vfXiB9xZ1SMGxL/l6js9BVlIx/CBGOJ4L190QmxJlcAZ2VnQzrl
- ramRUv01xb00IPJ5TBft5IJ+SY0FnY9pIERIl6w9khwLt/oGuKNmUHmzJGYoJHYfh72Mm8RQ1R/JS
- o6v85ULBGdEC3pQq1j//OPyH3egiXIwFq6BtULH5CvsxQkSqgj1MpjwfgVJ8VbjNwqwBXHjooEORj
- vFQqWQki6By3QARAQABtDJPbGl2aWVyIExhbmdsb2lzIChNeSBrZXkpIDxvbGl2aWVyQHRyaWxsaW
- 9uMDEuY29tPokCNwQTAQgAIQUCVh3TJwIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAAKCRBlaka
- GGsWHEI1AD/9sbj+vnFU29WemVqB4iW+9RrHIcbXI4Jg8WaffTQ8KvVeCJ4otzgVT2nHC2A82t4PF
- 0tp21Ez17CKDNilMvOt8zq6ZHx36CPjoqUVjAdozOiBDpC4qB6ZKYn+gqSENO4hqmmaOW57wT9vII
- v6mtHmnFvgpOEJl6wbs8ArHDt0BLSjc8QQfvBhoKoWs+ijQTyvFGlQl0oWxEbUkR1J3gdft9Oj9xQ
- G4OFo73WaSEK/L9IalU2ulCBC+ucSP9McoDxy1i1u8HUDrV5wBY1zafc9zVBcMNH6+ZjxwQmZXqtz
- ATzB3RbSFHAdmvxl8q6MeS2yx7Atk0CXgW9z5k2KeuZhz5rVV5A+D19SSGzW11uYXsibZx/Wjr9xB
- KHB6U7qh5sRHaQS191NPonKcsXXAziR+vxwQTP7ZKfy+g5N/e6uivoUnQrl9uvUDDPXEpwVNSoVws
- Vn4tNyrGEdN11pHDbH5fSGzdpbY8+yczUoxMmsEQe/fpVwRBZUqafRn2TVUhV0qqzsUuQcTNw1zIZ
- JgvkqrHgd4ivd2b1bXBczmu/wMGpEnF6cWzSQDiwC1NF3i+gHCuD8IX1ujThWtzXsn0VtrMkrRCbn
- ponVQ6HcbRYYXPuK0HRRjCSuAKo5porVONepiOSmu0FBrpGqBkpBtLrzKXoi1yt/7a/wGdMcVhYGg
- vA==
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 
+ <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
 
-the initial parsing is fine...
+On Thu, Aug 01, 2024 at 10:52:15AM -0400, Olivier Langlois wrote:
+> the initial parsing is fine...
+> 
+> Aug 01 14:05:51 aws-dublin kernel: rcu: Hierarchical RCU
+> implementation.
+> Aug 01 14:05:51 aws-dublin kernel: rcu:         RCU restricting CPUs
+> from NR_CPUS=128 to nr_cpu_ids=4.
+> Aug 01 14:05:51 aws-dublin kernel:         Rude variant of Tasks RCU
+> enabled.
+> Aug 01 14:05:51 aws-dublin kernel:         Tracing variant of Tasks RCU
+> enabled.
+> Aug 01 14:05:51 aws-dublin kernel: rcu: RCU calculated value of
+> scheduler-enlistment delay is 10 jiffies.
+> Aug 01 14:05:51 aws-dublin kernel: rcu: Adjusting geometry for
+> rcu_fanout_leaf=16, nr_cpu_ids=4
+> Aug 01 14:05:51 aws-dublin kernel: RCU Tasks Rude: Setting shift to 2
+> and lim to 1 rcu_task_cb_adjust=1.
+> Aug 01 14:05:51 aws-dublin kernel: RCU Tasks Trace: Setting shift to 2
+> and lim to 1 rcu_task_cb_adjust=1.
+> Aug 01 14:05:51 aws-dublin kernel: NR_IRQS: 8448, nr_irqs: 456,
+> preallocated irqs: 16
+> Aug 01 14:05:51 aws-dublin kernel: NO_HZ: Full dynticks CPUs: 1-2.
+> Aug 01 14:05:51 aws-dublin kernel: rcu:         Offload RCU callbacks
+> from CPUs: 1-2.
+> Aug 01 14:05:51 aws-dublin kernel: rcu: srcu_init: Setting srcu_struct
+> sizes based on contention.
+> 
+> On Thu, 2024-08-01 at 10:28 -0400, Olivier Langlois wrote:
+> > this is with kernel 6.10.2
+> > 
+> > I have these options set on the boot command line:
+> > isolcpus=0,1,2 nohz_full=1,2 rcu_nocbs=1,2
+> > 
+> > $ ps -eo pid,cpuid,comm | grep rcuog
+> >      18     3 rcuog/0
+> >      38     0 rcuog/2
+> > 
+> > I do not understand why a rcuog task is spawn for cpu0.
+> > I would have expected to have one for cpu1.
 
-Aug 01 14:05:51 aws-dublin kernel: rcu: Hierarchical RCU
-implementation.
-Aug 01 14:05:51 aws-dublin kernel: rcu:         RCU restricting CPUs
-from NR_CPUS=3D128 to nr_cpu_ids=3D4.
-Aug 01 14:05:51 aws-dublin kernel:         Rude variant of Tasks RCU
-enabled.
-Aug 01 14:05:51 aws-dublin kernel:         Tracing variant of Tasks RCU
-enabled.
-Aug 01 14:05:51 aws-dublin kernel: rcu: RCU calculated value of
-scheduler-enlistment delay is 10 jiffies.
-Aug 01 14:05:51 aws-dublin kernel: rcu: Adjusting geometry for
-rcu_fanout_leaf=3D16, nr_cpu_ids=3D4
-Aug 01 14:05:51 aws-dublin kernel: RCU Tasks Rude: Setting shift to 2
-and lim to 1 rcu_task_cb_adjust=3D1.
-Aug 01 14:05:51 aws-dublin kernel: RCU Tasks Trace: Setting shift to 2
-and lim to 1 rcu_task_cb_adjust=3D1.
-Aug 01 14:05:51 aws-dublin kernel: NR_IRQS: 8448, nr_irqs: 456,
-preallocated irqs: 16
-Aug 01 14:05:51 aws-dublin kernel: NO_HZ: Full dynticks CPUs: 1-2.
-Aug 01 14:05:51 aws-dublin kernel: rcu:         Offload RCU callbacks
-from CPUs: 1-2.
-Aug 01 14:05:51 aws-dublin kernel: rcu: srcu_init: Setting srcu_struct
-sizes based on contention.
+These handle grace periods, each for a group of CPUs.  You should have one
+rcuog kthread for each group of roughly sqrt(nr_cpu_ids) that contains at
+least one offloaded CPU, in your case, sqrt(4), which is 2.  You could
+use the rcutree.rcu_nocb_gp_stride kernel boot parameter to override
+this default, for example, you might want rcutree.rcu_nocb_gp_stride=4
+in your case.
 
-On Thu, 2024-08-01 at 10:28 -0400, Olivier Langlois wrote:
-> this is with kernel 6.10.2
->=20
-> I have these options set on the boot command line:
-> isolcpus=3D0,1,2 nohz_full=3D1,2 rcu_nocbs=3D1,2
->=20
-> $ ps -eo pid,cpuid,comm | grep rcuog
-> =A0=A0=A0=A0 18=A0=A0=A0=A0 3 rcuog/0
-> =A0=A0=A0=A0 38=A0=A0=A0=A0 0 rcuog/2
->=20
-> I do not understand why a rcuog task is spawn for cpu0.
-> I would have expected to have one for cpu1.
->=20
-> I do have a
-> =A0=A0=A0=A0 31=A0=A0=A0=A0 3 rcuos/1
->=20
-> I am not familiar enough with rcu to know what rcuos is for.
->=20
-> the absence of of rcuog/1 is causing rcu_irq_work_resched() to raise
-> an
-> interrupt every 2-3 seconds on cpu1.
->=20
-> I am currently reading rcu/tree_nocb.h to try to make sense of what I
-> am seeing but I am pinging the rcu list just in case what I am seeing
-> would be immediately obvious to one of you...
->=20
-> thank you,
->=20
+> > I do have a
+> >      31     3 rcuos/1
+> > 
+> > I am not familiar enough with rcu to know what rcuos is for.
 
+This is the kthread that invokes the callbacks for CPU 1, assuming you
+have a non-preemptible kernel (otherwise rcuop/1 for historical reasons
+that seemed like a good idea at the time).  Do you also have an rcuos/2?
+(See the help text for CONFIG_RCU_NOCB_CPU.)
+
+> > the absence of of rcuog/1 is causing rcu_irq_work_resched() to raise
+> > an
+> > interrupt every 2-3 seconds on cpu1.
+
+Did you build with CONFIG_LAZY_RCU=y?
+
+Did you use something like taskset to confine the rcuog and rcuos
+kthreads to CPUs 0 and 3 (you seem to have 4 CPUs)?
+
+Might that interrupt be due to a call_rcu() on CPU 1?  If so, can the
+work causing that call_rcu() be placed on some other CPU?
+
+> > I am currently reading rcu/tree_nocb.h to try to make sense of what I
+> > am seeing but I am pinging the rcu list just in case what I am seeing
+> > would be immediately obvious to one of you...
+
+Others might have more suggestions...
+
+							Thanx, Paul
