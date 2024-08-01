@@ -1,126 +1,213 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from cloud48395.mywhc.ca (cloud48395.mywhc.ca [173.209.37.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C2C1B0106
-	for <rcu@vger.kernel.org>; Thu,  1 Aug 2024 15:28:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E101B9B2D
+	for <rcu@vger.kernel.org>; Thu,  1 Aug 2024 16:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.209.37.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722526129; cv=none; b=SkxnG4bG1QCXP/ilDSV86nyeilRpZ0NXhJUaa1u6zAqgoOcpt3wkxR4M4KiHpEwZg6EAW4tNYTMxjSTCYIWY4TddRI/sD84jCejIZuMrTJ/WebOk9bWvYxLB9DplSMLnxV6txVHHysOWAs3cYuAGNd+rxXBag3/mKjBD7I3eM6U=
+	t=1722529975; cv=none; b=jWDVxK5xl6JFHIKtDJCkGPebiLQFEVsXF1iPcX87PVBA3Zg3kHkqrUe4Q3x+7iqaaHdnq01mCZXZzG5k5jx4uoGvgl219RWwpOaLk85KdmVHk1bB8lBKu2o9XY2zliHFSfTrerjZHR3c8o43KZZjxRfanTyKifXn2Ph7Gv3kPOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722526129; c=relaxed/simple;
-	bh=yYzeQ/x/pmRvSd7sVZDbOOF7S935c2LjkrTducM5ys8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fPtdsJADKrefyp40kD/zA6W4PTgXKnCcTScDYzSbiMSl7Rz6yz9rPf5f6+GLBviE4ziHAFM/ENbA4/2xKNqDtqkUqkxEwufcsqj5RI9yeP/9Bv/ZOFh+gVLuI1pMa3pAeNRc5nIFurubZ7kxyeMnCHFFRgenSyQKtDE9o6bd+u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KFB9JEEX; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFB9JEEX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D07C4C32786;
-	Thu,  1 Aug 2024 15:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722526128;
-	bh=yYzeQ/x/pmRvSd7sVZDbOOF7S935c2LjkrTducM5ys8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=KFB9JEEXDGcLFQ3Js7ihDRiPk3i3MiweyeBrvMPVO+tnctp6gYOAImez5BeiOdzyn
-	 BRo8ZsmI6eNtHLoJDBd5oodu+OwL3YGT97wPQZSnAibW+kAhE+2F9n99rfcdocILSm
-	 ns0mCOqUG6+SW5P/95RW2pss9b8zGPWVDHLnOOa797tFOquUT4MjMMWN75/5XKy09P
-	 D/DrNXrUjPBmohlvYYtkgjwPVoYgB5FnLv/zfpSeqKKqS7hLa6VPB5jdcf2ftdgOxt
-	 hyCJaox5RhbfLCD+dY/V/e1hW0686F1VoOt7WQo4KP22iTWHCB50ltRfDa9JidvKXT
-	 qiK7XFpQ5O70w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 777F5CE08A5; Thu,  1 Aug 2024 08:28:48 -0700 (PDT)
-Date: Thu, 1 Aug 2024 08:28:48 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Olivier Langlois <olivier@trillion01.com>
-Cc: rcu@vger.kernel.org
+	s=arc-20240116; t=1722529975; c=relaxed/simple;
+	bh=R4ZonyL9RLFk/QcIe+dpPpQkyHPPkQb/mhSw9lto3UE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=tMluSCkGVeiXJPikToXSBgtZQqx8q+7gpdzSpU+m/Ebsu0AsoRZLtEiTacErfQUDIBX7hcUCaiTp6ed/KbnInkGXRmaDL3dN6h6+ZrocMpcidRPPAj/vGpvUDILdOsU4ItsB/4g5U4PZD7gO3SUJhUYRP1szlGvuoIZnB0Lqbhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com; spf=pass smtp.mailfrom=trillion01.com; arc=none smtp.client-ip=173.209.37.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trillion01.com
+Received: from [45.44.224.220] (port=44628 helo=[192.168.1.177])
+	by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <olivier@trillion01.com>)
+	id 1sZYjU-0007J4-2Q;
+	Thu, 01 Aug 2024 12:32:52 -0400
+Message-ID: <1684cb34f67618cff63b24da9864a23815e7f6e0.camel@trillion01.com>
 Subject: Re: unexpected result with rcu_nocbs option
-Message-ID: <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+From: Olivier Langlois <olivier@trillion01.com>
+To: paulmck@kernel.org
+Cc: rcu@vger.kernel.org
+Date: Thu, 01 Aug 2024 12:32:52 -0400
+In-Reply-To: <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
 References: <f6d3bb877aab5ac35c3b994596354fc28c8f4f95.camel@trillion01.com>
- <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
+	 <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
+	 <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
+Autocrypt: addr=olivier@trillion01.com; prefer-encrypt=mutual;
+ keydata=mQINBFYd0ycBEAC53xedP1NExPwtBnDkVuMZgRiLmWoQQ8U7vEwt6HVGSsMRHx9smD76i
+ 5rO/iCT6tDIpZoyJsTOh1h2NTn6ZkoFSn9lNOJksE77/n7HNaNxiBfvZHsuNuI53CkYFix9JhzP3t
+ g5nV/401re30kRfA8OPivpnj6mZhU/9RTwjbVPPb8dPlm2gFLXwGPeDITgSRs+KJ0mM37fW8EatJs
+ 0a8J1Nk8wBvT7ce+S2lOrxDItra9pW3ukze7LMirwvdMRC5bdlw2Lz03b5NrOUq+Wxv7szn5Xr9f/
+ HdaCH7baWNAO6H/O5LbJ3zndewokEmKk+oCIcXjaH0U6QK5gJoO+3Yt5dcTo92Vm3VMxzK2NPFXgp
+ La7lR9Ei0hzQ0zptyFFyftt9uV71kMHldaQaSfUTsu9dJbnS2kI/j+F2S1q6dgKi3DEm0ZRGvjsSG
+ rkgPJ5T16GI1cS2iQntawdr0A1vfXiB9xZ1SMGxL/l6js9BVlIx/CBGOJ4L190QmxJlcAZ2VnQzrl
+ ramRUv01xb00IPJ5TBft5IJ+SY0FnY9pIERIl6w9khwLt/oGuKNmUHmzJGYoJHYfh72Mm8RQ1R/JS
+ o6v85ULBGdEC3pQq1j//OPyH3egiXIwFq6BtULH5CvsxQkSqgj1MpjwfgVJ8VbjNwqwBXHjooEORj
+ vFQqWQki6By3QARAQABtDJPbGl2aWVyIExhbmdsb2lzIChNeSBrZXkpIDxvbGl2aWVyQHRyaWxsaW
+ 9uMDEuY29tPokCNwQTAQgAIQUCVh3TJwIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAAKCRBlaka
+ GGsWHEI1AD/9sbj+vnFU29WemVqB4iW+9RrHIcbXI4Jg8WaffTQ8KvVeCJ4otzgVT2nHC2A82t4PF
+ 0tp21Ez17CKDNilMvOt8zq6ZHx36CPjoqUVjAdozOiBDpC4qB6ZKYn+gqSENO4hqmmaOW57wT9vII
+ v6mtHmnFvgpOEJl6wbs8ArHDt0BLSjc8QQfvBhoKoWs+ijQTyvFGlQl0oWxEbUkR1J3gdft9Oj9xQ
+ G4OFo73WaSEK/L9IalU2ulCBC+ucSP9McoDxy1i1u8HUDrV5wBY1zafc9zVBcMNH6+ZjxwQmZXqtz
+ ATzB3RbSFHAdmvxl8q6MeS2yx7Atk0CXgW9z5k2KeuZhz5rVV5A+D19SSGzW11uYXsibZx/Wjr9xB
+ KHB6U7qh5sRHaQS191NPonKcsXXAziR+vxwQTP7ZKfy+g5N/e6uivoUnQrl9uvUDDPXEpwVNSoVws
+ Vn4tNyrGEdN11pHDbH5fSGzdpbY8+yczUoxMmsEQe/fpVwRBZUqafRn2TVUhV0qqzsUuQcTNw1zIZ
+ JgvkqrHgd4ivd2b1bXBczmu/wMGpEnF6cWzSQDiwC1NF3i+gHCuD8IX1ujThWtzXsn0VtrMkrRCbn
+ ponVQ6HcbRYYXPuK0HRRjCSuAKo5porVONepiOSmu0FBrpGqBkpBtLrzKXoi1yt/7a/wGdMcVhYGg
+ vA==
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-On Thu, Aug 01, 2024 at 10:52:15AM -0400, Olivier Langlois wrote:
-> the initial parsing is fine...
-> 
-> Aug 01 14:05:51 aws-dublin kernel: rcu: Hierarchical RCU
-> implementation.
-> Aug 01 14:05:51 aws-dublin kernel: rcu:         RCU restricting CPUs
-> from NR_CPUS=128 to nr_cpu_ids=4.
-> Aug 01 14:05:51 aws-dublin kernel:         Rude variant of Tasks RCU
-> enabled.
-> Aug 01 14:05:51 aws-dublin kernel:         Tracing variant of Tasks RCU
-> enabled.
-> Aug 01 14:05:51 aws-dublin kernel: rcu: RCU calculated value of
-> scheduler-enlistment delay is 10 jiffies.
-> Aug 01 14:05:51 aws-dublin kernel: rcu: Adjusting geometry for
-> rcu_fanout_leaf=16, nr_cpu_ids=4
-> Aug 01 14:05:51 aws-dublin kernel: RCU Tasks Rude: Setting shift to 2
-> and lim to 1 rcu_task_cb_adjust=1.
-> Aug 01 14:05:51 aws-dublin kernel: RCU Tasks Trace: Setting shift to 2
-> and lim to 1 rcu_task_cb_adjust=1.
-> Aug 01 14:05:51 aws-dublin kernel: NR_IRQS: 8448, nr_irqs: 456,
-> preallocated irqs: 16
-> Aug 01 14:05:51 aws-dublin kernel: NO_HZ: Full dynticks CPUs: 1-2.
-> Aug 01 14:05:51 aws-dublin kernel: rcu:         Offload RCU callbacks
-> from CPUs: 1-2.
-> Aug 01 14:05:51 aws-dublin kernel: rcu: srcu_init: Setting srcu_struct
-> sizes based on contention.
-> 
-> On Thu, 2024-08-01 at 10:28 -0400, Olivier Langlois wrote:
-> > this is with kernel 6.10.2
-> > 
-> > I have these options set on the boot command line:
-> > isolcpus=0,1,2 nohz_full=1,2 rcu_nocbs=1,2
-> > 
-> > $ ps -eo pid,cpuid,comm | grep rcuog
-> >      18     3 rcuog/0
-> >      38     0 rcuog/2
-> > 
-> > I do not understand why a rcuog task is spawn for cpu0.
-> > I would have expected to have one for cpu1.
+On Thu, 2024-08-01 at 08:28 -0700, Paul E. McKenney wrote:
+> These handle grace periods, each for a group of CPUs.=A0 You should
+> have one
+> rcuog kthread for each group of roughly sqrt(nr_cpu_ids) that
+> contains at
+> least one offloaded CPU, in your case, sqrt(4), which is 2.=A0 You
+> could
+> use the rcutree.rcu_nocb_gp_stride kernel boot parameter to override
+> this default, for example, you might want
+> rcutree.rcu_nocb_gp_stride=3D4
+> in your case.
 
-These handle grace periods, each for a group of CPUs.  You should have one
-rcuog kthread for each group of roughly sqrt(nr_cpu_ids) that contains at
-least one offloaded CPU, in your case, sqrt(4), which is 2.  You could
-use the rcutree.rcu_nocb_gp_stride kernel boot parameter to override
-this default, for example, you might want rcutree.rcu_nocb_gp_stride=4
-in your case.
+oh, thanks. I will look into it to see it change anything to my
+situation and if it does, I will report it back here.
 
-> > I do have a
-> >      31     3 rcuos/1
-> > 
-> > I am not familiar enough with rcu to know what rcuos is for.
+with your explanation, it makes more sense what I am seeing.
 
-This is the kthread that invokes the callbacks for CPU 1, assuming you
-have a non-preemptible kernel (otherwise rcuop/1 for historical reasons
-that seemed like a good idea at the time).  Do you also have an rcuos/2?
-(See the help text for CONFIG_RCU_NOCB_CPU.)
+>=20
+> > > I do have a
+> > > =A0=A0=A0=A0 31=A0=A0=A0=A0 3 rcuos/1
+> > >=20
+> > > I am not familiar enough with rcu to know what rcuos is for.
+>=20
+> This is the kthread that invokes the callbacks for CPU 1, assuming
+> you
+> have a non-preemptible kernel (otherwise rcuop/1 for historical
+> reasons
+> that seemed like a good idea at the time).=A0 Do you also have an
+> rcuos/2?
+> (See the help text for CONFIG_RCU_NOCB_CPU.)
 
-> > the absence of of rcuog/1 is causing rcu_irq_work_resched() to raise
-> > an
-> > interrupt every 2-3 seconds on cpu1.
+yes I do.
 
-Did you build with CONFIG_LAZY_RCU=y?
+$ ps -eo pid,cpuid,comm | grep rcu
+      4     0 kworker/R-rcu_gp
+      8     0 kworker/0:0-rcu_gp
+     14     0 rcu_tasks_rude_kthread
+     15     0 rcu_tasks_trace_kthread
+     17     3 rcu_sched
+     18     3 rcuog/0
+     19     0 rcuos/0
+     20     0 rcu_exp_par_gp_kthread_worker/0
+     21     3 rcu_exp_gp_kthread_worker
+     31     3 rcuos/1
+     38     3 rcuog/2
+     39     3 rcuos/2
+     46     0 rcuos/3
 
-Did you use something like taskset to confine the rcuog and rcuos
-kthreads to CPUs 0 and 3 (you seem to have 4 CPUs)?
+and yes my kernel is built without CONFIG_PREEMPT. Since my system
+consists of 3 isolated cpus out of 4, I have figured that there was not
+much to preempt for the overhead coming along with the feature.
 
-Might that interrupt be due to a call_rcu() on CPU 1?  If so, can the
-work causing that call_rcu() be placed on some other CPU?
+but here again, I am thankful for the cue... If all else fail, running
+the setup with CONFIG_PREEMPT enabled to see if it change anything,
+this might be something interesting to try.
 
-> > I am currently reading rcu/tree_nocb.h to try to make sense of what I
-> > am seeing but I am pinging the rcu list just in case what I am seeing
-> > would be immediately obvious to one of you...
+>=20
+> > > the absence of of rcuog/1 is causing rcu_irq_work_resched() to
+> > > raise
+> > > an
+> > > interrupt every 2-3 seconds on cpu1.
+>=20
+> Did you build with CONFIG_LAZY_RCU=3Dy?
 
-Others might have more suggestions...
+no. I was not even aware that it was existing. I left alone the default
+setting!
+>=20
+> Did you use something like taskset to confine the rcuog and rcuos
+> kthreads to CPUs 0 and 3 (you seem to have 4 CPUs)?
 
-							Thanx, Paul
+I have:
+tuna move -t rcu* -c 3
+
+in some bash script launched at startup by systemctl.
+
+I was a bit suspicious to some of these kernel threads still on CPU0...
+
+I did try to move them manually with taskset ie:
+
+19     0 rcuos/0
+
+$ sudo taskset -pc 3 19
+pid 19's current affinity list: 3
+pid 19's new affinity list: 3
+
+so it appears that tuna does its job correctly. I guess that the
+setting is effective only when the scheduler has something to do with
+that task.
+
+>=20
+> Might that interrupt be due to a call_rcu() on CPU 1?=A0 If so, can the
+> work causing that call_rcu() be placed on some other CPU?
+> > >=20
+I am really shooting in the dark with this glitch. I don't know for
+sure how to find out where these interrupts are originating from.
+
+2 threads from the same process are assigned to cpu1 and cpu2.
+
+It is very satisfying to see zero interrupts occuring on cpu2!
+I have been struggling very hard for about a week to reach this state.
+
+I have tried to find out what could be happening on cpu1 to see the IWI
+and LOC counts slowly grow on CPU1...
+
+the only task running on CPU1 is my thread. I have enabled
+/sys/kernel/tracing/events/syscalls
+
+the only 3 syscalls happening on this cpu are:
+1. gettid()
+2. futex()
+
+from a glibc pthread_mutex used with a pthread_cond
+
+3. madvise(MADV_DONTNEED)
+(from tcmalloc, I think. I am even not sure if madvise(MADV_DONTNEED)
+can trigger RCU. some part of mm do but I could not tell if this
+specific call could)
+
+all the memory allocation, I think is coming from openssl processing
+about 20 TCP data streams. (Network I/O is done on cpu0)
+
+beside that, I use clock_gettime() to benchmark the execution time of a
+function of mine but it does not show up in the syscalls trace. I guess
+this has something to do with vDSO.
+
+here are my measurements (in nanosecs):
+
+avg:125.080, max:27188
+
+The function is simple. A C++ virtual function + a 16 bytes
+Boost::atomic::load(std::memory_order::acquire) that is alone on a
+cacheline to avoid any chance of false sharing.
+(Boost support DWCAS. gcc std::atomic does not)
+
+I think that the 27uSec monstruosity is because of those pesky
+interrupts...=20
+
+> >=20
