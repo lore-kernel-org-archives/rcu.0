@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B7DF9EC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BDD10A24;
 	Fri,  2 Aug 2024 00:34:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722558868; cv=none; b=bzcUObm2zv3PnOiV6ibToOPdghoa48ca/c+W41CzUY7UlDCPYAh7cCp3dlB9EkifvU7mVNIDcrHdeWfp2FWN8nYmY668mN7CN7/kZJL2bq0dsvXiGeoMAmROGqSC78NeIwoJF4UsUp/Rjvni2B6nx3p64uIPP0lO0q5ZpI7cuLw=
+	t=1722558868; cv=none; b=sJHOzR1ODLVVd6vYLtUAAgkcx1k1Cfu/HbnNy0istKKBUPd+jFMpWBLycxJg5yL8xVqrLWrveQ8TiX3ZbqedxV2v89Mzzbqao7ma8NwoQQxHW8NZWlWzgEaAexfCJ0cTw8L9c7Jvp8tPuM7CP1rm1F7HTIxiZj4f8PfdYTphRRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1722558868; c=relaxed/simple;
-	bh=X9aHmvddPuSA+i4410NgEvfsaBk41rG80LyCQw3wKdg=;
+	bh=Bs6t1S51lhnIfRf7LZhnT/4oX7/PDkMznq5WhI41PoQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XayUtcAVu+uj5tUQc9B7UqMGKDFMscTXdwBysljclPZghYlsCT8c3BH1zm1BZ48/EkhruuG4cJVIZbjFYKuU+w8Qk2Cqx/RDfgvWwyhdk7kDTQcORzvnYn1hy65DAPUjZN3BRmaoHsGfHD5muDkkZYfwOAFxGsBvEm2v5lfx+w4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMnq8Etj; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=cLz3M11COXkT4Oej3J2E06cmm9nns5i6M8nCk81/OZyaC7/013st3esm0+wQZjkGAYHKiBVGMUhc3y2WbBGMADIBjuOBTSmDpF12Qb3E6Q2zAAXcpGnjvqhYPY5t5OPWm8nN80+WXim7kXRzAfXxQ3cxfjbZcn45i5z9FBVjBIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dY2TyUYS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMnq8Etj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520C1C4AF0D;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dY2TyUYS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35B41C32786;
 	Fri,  2 Aug 2024 00:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1722558868;
-	bh=X9aHmvddPuSA+i4410NgEvfsaBk41rG80LyCQw3wKdg=;
+	bh=Bs6t1S51lhnIfRf7LZhnT/4oX7/PDkMznq5WhI41PoQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vMnq8Etjy6vct9F/udWnJEKAOwphoo0Ri5n/MWEWd2HYszyCcdf3Xb+ldFzA2J3Dc
-	 UAkf8QzVvaz1YInuoCvoJfCk4VQG0b0nfCS/kXO5bmFYXtk/Kx4KpwUWuqdWS+p/1D
-	 64Xl8j9UqFeaNypZPzQ5T7JrPyy5LXj2Sb5pTFxKwCDqKJF+AC3N/FmFiQh6mW3YFZ
-	 tq7L4ulKEUy4NvpkBlJWtkwhyyOoIxWVwrK1/L/bwOP4j6Vs76fZjoxZZylTYEgzPj
-	 avFslSZyMAlM8k6Y3ZVKpduMAIGYF59zPRmMh4KG5gZQRVGPhanERUdwo9BZQvN01b
-	 l17UNRYNMBjmA==
+	b=dY2TyUYSoX3gzVYa2usg91lrH/mRiL+T9is4/2zCw7rke6ahHg9rjhCCcYPv0n6lE
+	 QobqxTAsGzyXhBKXZOXq8lq0EnKOwG9uicJzohd0seNr1tMLwV3zlctKRdD5e/PpNb
+	 uBNRY1JT1jO1aOoW789XWI0g0VUisAFhObTXULB9EoUt1A9IcKmyRfHI1VTsSZssP4
+	 uK7FhbTuPI4OkYbqLtoO/WEkcoL1hwf+U6oUa1GCjmuYnXFLqh5jur3nIhpvV9rVXo
+	 IriTwfwVvwVpNKqAkeSYTCsXX6AT+d5zohYrtXNz6prMy2ZiNjGfMpLv6qiOzTdEiW
+	 Mly/w0bDOfFJA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E7438CE0BC3; Thu,  1 Aug 2024 17:34:27 -0700 (PDT)
+	id E01F9CE09F8; Thu,  1 Aug 2024 17:34:27 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/6] rcu: Provide rcu_barrier_cb_is_done() to check rcu_barrier() CBs
-Date: Thu,  1 Aug 2024 17:34:23 -0700
-Message-Id: <20240802003426.4134196-3-paulmck@kernel.org>
+Subject: [PATCH rcu 1/6] rcu/tasks: Check processor-ID assumptions
+Date: Thu,  1 Aug 2024 17:34:21 -0700
+Message-Id: <20240802003426.4134196-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <41c68c6b-2c55-4c2d-ab70-f2a5b38eb374@paulmck-laptop>
 References: <41c68c6b-2c55-4c2d-ab70-f2a5b38eb374@paulmck-laptop>
@@ -48,31 +48,27 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit provides a rcu_barrier_cb_is_done() function that returns
-true if the *rcu_barrier*() callback passed in is done.  This will be
-used when printing grace-period debugging information.
+The current mapping of smp_processor_id() to a CPU processing Tasks-RCU
+callbacks makes some assumptions about layout.  This commit therefore
+adds a WARN_ON() to check these assumptions.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/tasks.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index f035fd4e579b4..feb3ac1dc5d59 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -252,6 +252,11 @@ static inline void debug_rcu_head_callback(struct rcu_head *rhp)
- 		kmem_dump_obj(rhp);
- }
- 
-+static inline bool rcu_barrier_cb_is_done(struct rcu_head *rhp)
-+{
-+	return rhp->next == rhp;
-+}
-+
- extern int rcu_cpu_stall_suppress_at_boot;
- 
- static inline bool rcu_stall_is_suppressed_at_boot(void)
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index b6fcf744af75d..d473846a572aa 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -355,6 +355,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+ 	rcu_read_lock();
+ 	ideal_cpu = smp_processor_id() >> READ_ONCE(rtp->percpu_enqueue_shift);
+ 	chosen_cpu = cpumask_next(ideal_cpu - 1, cpu_possible_mask);
++	WARN_ON_ONCE(chosen_cpu >= nr_cpu_ids);
+ 	rtpcp = per_cpu_ptr(rtp->rtpcpu, chosen_cpu);
+ 	if (!raw_spin_trylock_rcu_node(rtpcp)) { // irqs already disabled.
+ 		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
 -- 
 2.40.1
 
