@@ -1,120 +1,109 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from cloud48395.mywhc.ca (cloud48395.mywhc.ca [173.209.37.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81DA18E06;
-	Fri,  2 Aug 2024 00:43:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F86B79F0
+	for <rcu@vger.kernel.org>; Fri,  2 Aug 2024 01:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.209.37.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722559391; cv=none; b=aeh3zrVxtt5TFgXjqSERqV/Cni6TMdX5qjz++eyvERNUL/WBjiPH/pPXFQ+bMNoYfpcxQtg+SjaLcTAawBA47HckDAD2ysnYGP7JBHtGfFjOy9mhkl82pOzxVV+tyEbsK+6goPZmJENuxV5SVxzVNYHKl0EkWjMW9er73ge8TNg=
+	t=1722563329; cv=none; b=k1Gv0VcswimVSmwxoONhaIR7mHHzhrdpr6Y+grgced2Rgi21Lzls7HEeLYcpXg26q8aGsZfFf006/+0MxilvYvRojT0Xwek9EV6B1OIKV+5WSB9J3oTKG4x0vMEfg3yTpqbk55Rz24DbiXbJqrbnvD4XKUnY+OQOjQ13lGWHQm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722559391; c=relaxed/simple;
-	bh=0uXJ7XpqMMOTU5D9L7DX8BbJ/THNXMlQczyB3O6xc1c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q6MpY4pBnTk04hdDNcrjUKySPIrMw8NM2TtGL19DMZ0UX0PzY498jQlcnUi7AoTeFsUaOZ5dpWao4B6RGNWD3NCVlO6ki+3D+3nPY67SD0Gk2o7j96PkGWUjUqO5MuZXvy8pj+BPcg3Wz7qKy+w9U9TV1U/AlyOxLYp6AfkWC4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OIqaK0Xk; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OIqaK0Xk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8251FC4AF17;
-	Fri,  2 Aug 2024 00:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722559391;
-	bh=0uXJ7XpqMMOTU5D9L7DX8BbJ/THNXMlQczyB3O6xc1c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OIqaK0XkfevEFyIoWZ+h2IqA31zqlYISem5Wb/IElhq3wvGBRVM0hFZDUNkb6UKjC
-	 c5ckoYj31+3opPDh5z9cGrQaGmgPetTc6TuyVC7W/Zxux6hRNTPENrPnukR7l+gtrD
-	 8iw9Lc2kDbbotzikFwHm51fFi4EGFmUGKrIUACQeVcIDU9waFpviRWQDzOst+A9kYP
-	 g2jCzi1rFQW0KNniIT+i8iHyxDm+2Rc/wpX+dNkzvTkMLzVHGvLtMpZNnyda6YaUR+
-	 j5WmyzvrG2pI478uSPMln9zNfkecs/pzwzo9roGRl7gZQsTKlruMo7OTGsbFNW4S0k
-	 6GKRYfsQZhD5A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D8C1BCE11CD; Thu,  1 Aug 2024 17:43:10 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH rcu 11/11] rcuscale: Count outstanding callbacks per-task rather than per-CPU
-Date: Thu,  1 Aug 2024 17:43:08 -0700
-Message-Id: <20240802004308.4134731-11-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <917e8cc8-8688-428a-9122-25544c5cc101@paulmck-laptop>
-References: <917e8cc8-8688-428a-9122-25544c5cc101@paulmck-laptop>
+	s=arc-20240116; t=1722563329; c=relaxed/simple;
+	bh=ie0NJUwtFUJGCB7Rpuxoh9dP4uF0HtqZ/ixohp3mxkM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=LLqCgeFX5GQQ2wn2crLzIv5uUFabIlrvv2FDjCPMWgKpqO6enRlgbUcuOU7MmF6Gvp2k0WmGax2kE0sg3dYJ/bW1hIBs5rPKJebwoJzPjOYRcsJr67lvmORDMSbbs9GtxdL93OS0AgPJxpMT0OWM3OuagUVrjL5vMAG7F3PgVIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com; spf=pass smtp.mailfrom=trillion01.com; arc=none smtp.client-ip=173.209.37.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trillion01.com
+Received: from [45.44.224.220] (port=33872 helo=[192.168.1.177])
+	by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <olivier@trillion01.com>)
+	id 1sZhPS-0006rT-0x;
+	Thu, 01 Aug 2024 21:48:46 -0400
+Message-ID: <f7b2ea1fd826c502963d574e4c229de4427440a7.camel@trillion01.com>
+Subject: Re: unexpected result with rcu_nocbs option
+From: Olivier Langlois <olivier@trillion01.com>
+To: paulmck@kernel.org
+Cc: rcu@vger.kernel.org
+Date: Thu, 01 Aug 2024 21:48:45 -0400
+In-Reply-To: <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
+References: <f6d3bb877aab5ac35c3b994596354fc28c8f4f95.camel@trillion01.com>
+	 <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
+	 <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
+	 <1684cb34f67618cff63b24da9864a23815e7f6e0.camel@trillion01.com>
+	 <dbb43d66fc1642d57c71d1908dd4513dda0d55bd.camel@trillion01.com>
+	 <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
+Autocrypt: addr=olivier@trillion01.com; prefer-encrypt=mutual;
+ keydata=mQINBFYd0ycBEAC53xedP1NExPwtBnDkVuMZgRiLmWoQQ8U7vEwt6HVGSsMRHx9smD76i
+ 5rO/iCT6tDIpZoyJsTOh1h2NTn6ZkoFSn9lNOJksE77/n7HNaNxiBfvZHsuNuI53CkYFix9JhzP3t
+ g5nV/401re30kRfA8OPivpnj6mZhU/9RTwjbVPPb8dPlm2gFLXwGPeDITgSRs+KJ0mM37fW8EatJs
+ 0a8J1Nk8wBvT7ce+S2lOrxDItra9pW3ukze7LMirwvdMRC5bdlw2Lz03b5NrOUq+Wxv7szn5Xr9f/
+ HdaCH7baWNAO6H/O5LbJ3zndewokEmKk+oCIcXjaH0U6QK5gJoO+3Yt5dcTo92Vm3VMxzK2NPFXgp
+ La7lR9Ei0hzQ0zptyFFyftt9uV71kMHldaQaSfUTsu9dJbnS2kI/j+F2S1q6dgKi3DEm0ZRGvjsSG
+ rkgPJ5T16GI1cS2iQntawdr0A1vfXiB9xZ1SMGxL/l6js9BVlIx/CBGOJ4L190QmxJlcAZ2VnQzrl
+ ramRUv01xb00IPJ5TBft5IJ+SY0FnY9pIERIl6w9khwLt/oGuKNmUHmzJGYoJHYfh72Mm8RQ1R/JS
+ o6v85ULBGdEC3pQq1j//OPyH3egiXIwFq6BtULH5CvsxQkSqgj1MpjwfgVJ8VbjNwqwBXHjooEORj
+ vFQqWQki6By3QARAQABtDJPbGl2aWVyIExhbmdsb2lzIChNeSBrZXkpIDxvbGl2aWVyQHRyaWxsaW
+ 9uMDEuY29tPokCNwQTAQgAIQUCVh3TJwIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAAKCRBlaka
+ GGsWHEI1AD/9sbj+vnFU29WemVqB4iW+9RrHIcbXI4Jg8WaffTQ8KvVeCJ4otzgVT2nHC2A82t4PF
+ 0tp21Ez17CKDNilMvOt8zq6ZHx36CPjoqUVjAdozOiBDpC4qB6ZKYn+gqSENO4hqmmaOW57wT9vII
+ v6mtHmnFvgpOEJl6wbs8ArHDt0BLSjc8QQfvBhoKoWs+ijQTyvFGlQl0oWxEbUkR1J3gdft9Oj9xQ
+ G4OFo73WaSEK/L9IalU2ulCBC+ucSP9McoDxy1i1u8HUDrV5wBY1zafc9zVBcMNH6+ZjxwQmZXqtz
+ ATzB3RbSFHAdmvxl8q6MeS2yx7Atk0CXgW9z5k2KeuZhz5rVV5A+D19SSGzW11uYXsibZx/Wjr9xB
+ KHB6U7qh5sRHaQS191NPonKcsXXAziR+vxwQTP7ZKfy+g5N/e6uivoUnQrl9uvUDDPXEpwVNSoVws
+ Vn4tNyrGEdN11pHDbH5fSGzdpbY8+yczUoxMmsEQe/fpVwRBZUqafRn2TVUhV0qqzsUuQcTNw1zIZ
+ JgvkqrHgd4ivd2b1bXBczmu/wMGpEnF6cWzSQDiwC1NF3i+gHCuD8IX1ujThWtzXsn0VtrMkrRCbn
+ ponVQ6HcbRYYXPuK0HRRjCSuAKo5porVONepiOSmu0FBrpGqBkpBtLrzKXoi1yt/7a/wGdMcVhYGg
+ vA==
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-The current rcu_scale_writer() asynchronous grace-period testing uses a
-per-CPU counter to track the number of outstanding callbacks.  This is
-subject to CPU-imbalance errors when tasks migrate from one CPU to another
-between the time that the counter is incremented and the callback is
-queued, and additionally in kernels configured such that callbacks can
-be invoked on some CPU other than the one that queued it.
+fyi,
 
-This commit therefore arranges for per-task callback counts, thus avoiding
-any issues with migration of either tasks or callbacks.
+I have found the source!!!
 
-Reported-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcuscale.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+     test_kraken-695     [001] d.h.. 21957.157432: timer_start:
+timer=3D0000000076c6a349 function=3Dmix_interrupt_randomness
+expires=3D4297132992 [timeout=3D0] bucket_expiry=3D4297132993 cpu=3D1 idx=
+=3D1
+flags=3DP
+     test_kraken-695     [001] d.h.. 21964.197366: timer_start:
+timer=3D000000006ea403de function=3Ddo_nocb_deferred_wakeup_timer
+expires=3D4297133697 [timeout=3D1] bucket_expiry=3D4297133698 cpu=3D1 idx=
+=3D2
+flags=3D
+     test_kraken-695     [001] d.h.. 21964.197368: timer_start:
+timer=3D0000000076c6a349 function=3Dmix_interrupt_randomness
+expires=3D4297133696 [timeout=3D0] bucket_expiry=3D4297133697 cpu=3D1 idx=
+=3D1
+flags=3DP
 
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 13d379c179248..b1c50df142eba 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -114,6 +114,7 @@ struct writer_mblock {
- 
- struct writer_freelist {
- 	struct llist_head ws_lhg;
-+	atomic_t ws_inflight;
- 	struct llist_head ____cacheline_internodealigned_in_smp ws_lhp;
- 	struct writer_mblock *ws_mblocks;
- };
-@@ -136,7 +137,6 @@ static u64 t_rcu_scale_writer_started;
- static u64 t_rcu_scale_writer_finished;
- static unsigned long b_rcu_gp_test_started;
- static unsigned long b_rcu_gp_test_finished;
--static DEFINE_PER_CPU(atomic_t, n_async_inflight);
- 
- #define MAX_MEAS 10000
- #define MIN_MEAS 100
-@@ -520,8 +520,9 @@ static void rcu_scale_free(struct writer_mblock *wmbp)
- static void rcu_scale_async_cb(struct rcu_head *rhp)
- {
- 	struct writer_mblock *wmbp = container_of(rhp, struct writer_mblock, wmb_rh);
-+	struct writer_freelist *wflp = wmbp->wmb_wfl;
- 
--	atomic_dec(this_cpu_ptr(&n_async_inflight));
-+	atomic_dec(&wflp->ws_inflight);
- 	rcu_scale_free(wmbp);
- }
- 
-@@ -541,6 +542,7 @@ rcu_scale_writer(void *arg)
- 	DEFINE_TORTURE_RANDOM(tr);
- 	u64 *wdp;
- 	u64 *wdpp = writer_durations[me];
-+	struct writer_freelist *wflp = &writer_freelists[me];
- 	struct writer_mblock *wmbp = NULL;
- 
- 	VERBOSE_SCALEOUT_STRING("rcu_scale_writer task started");
-@@ -584,8 +586,8 @@ rcu_scale_writer(void *arg)
- 		if (gp_async && !WARN_ON_ONCE(!cur_ops->async)) {
- 			if (!wmbp)
- 				wmbp = rcu_scale_alloc(me);
--			if (wmbp && atomic_read(this_cpu_ptr(&n_async_inflight)) < gp_async_max) {
--				atomic_inc(this_cpu_ptr(&n_async_inflight));
-+			if (wmbp && atomic_read(&wflp->ws_inflight) < gp_async_max) {
-+				atomic_inc(&wflp->ws_inflight);
- 				cur_ops->async(&wmbp->wmb_rh, rcu_scale_async_cb);
- 				wmbp = NULL;
- 				gp_succeeded = true;
--- 
-2.40.1
+enqueue_timer() is calling trigger_dyntick_cpu()...
+
+the vast majority of these timers are from mix_interrupt_randomness but
+there is also the occasional do_nocb_deferred_wakeup_timer...
+
+every time I see a trace, at the same time, I see the interrupt count
+increment... there is possible doubt...
+
+Now, it is time to find a solution or a workaround but I was so happy
+of my discovery that I wanted to share!
 
