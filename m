@@ -1,109 +1,94 @@
-Received: from cloud48395.mywhc.ca (cloud48395.mywhc.ca [173.209.37.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F86B79F0
-	for <rcu@vger.kernel.org>; Fri,  2 Aug 2024 01:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.209.37.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F03B21EB4AB
+	for <rcu@vger.kernel.org>; Fri,  2 Aug 2024 03:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722563329; cv=none; b=k1Gv0VcswimVSmwxoONhaIR7mHHzhrdpr6Y+grgced2Rgi21Lzls7HEeLYcpXg26q8aGsZfFf006/+0MxilvYvRojT0Xwek9EV6B1OIKV+5WSB9J3oTKG4x0vMEfg3yTpqbk55Rz24DbiXbJqrbnvD4XKUnY+OQOjQ13lGWHQm0=
+	t=1722567681; cv=none; b=W7qx16VU+H2FDzp35HJfeGdzmr6Bgw8jLbXwUCFTBwVeiwpZsL0Jv2ivm+oCfs5v72C73IIncGovurxyxuqcN+MHjgHBZyiIdjWZSKM1L+MYFBWPDfjgpCxBQ7X2taJ0YEUhLUyW3DmFnyXoQVssokc7B07AaFfx7+1aU1B0EvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722563329; c=relaxed/simple;
-	bh=ie0NJUwtFUJGCB7Rpuxoh9dP4uF0HtqZ/ixohp3mxkM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LLqCgeFX5GQQ2wn2crLzIv5uUFabIlrvv2FDjCPMWgKpqO6enRlgbUcuOU7MmF6Gvp2k0WmGax2kE0sg3dYJ/bW1hIBs5rPKJebwoJzPjOYRcsJr67lvmORDMSbbs9GtxdL93OS0AgPJxpMT0OWM3OuagUVrjL5vMAG7F3PgVIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com; spf=pass smtp.mailfrom=trillion01.com; arc=none smtp.client-ip=173.209.37.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trillion01.com
-Received: from [45.44.224.220] (port=33872 helo=[192.168.1.177])
-	by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <olivier@trillion01.com>)
-	id 1sZhPS-0006rT-0x;
-	Thu, 01 Aug 2024 21:48:46 -0400
-Message-ID: <f7b2ea1fd826c502963d574e4c229de4427440a7.camel@trillion01.com>
-Subject: Re: unexpected result with rcu_nocbs option
-From: Olivier Langlois <olivier@trillion01.com>
-To: paulmck@kernel.org
+	s=arc-20240116; t=1722567681; c=relaxed/simple;
+	bh=oYJkLj89UCyzyGgF62Sb26I22RTfMZyRd7vlYxmXY7E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TK1F8UemeBbA/lQ09F8AXRTomeOS2uxfTINgZMeLpS1TNXGCrcqd32q6WP4a+kfOaoHfGSNUf50NbeE36klkHnbiQ2tM/3oqfZm5GajehdKN1MN7RGKPaEY4uNGZEXTruIUbDmZR0XmKIhudsZ4+/V90E8bjk2ZeSeAQKFCU/zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mb7Rzdsn; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mb7Rzdsn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E973C32786;
+	Fri,  2 Aug 2024 03:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722567680;
+	bh=oYJkLj89UCyzyGgF62Sb26I22RTfMZyRd7vlYxmXY7E=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Mb7Rzdsn5IsTtlrxfOVsOJTXt5IGUDF9CuHcAyd8SUfeo+YcTTxYiAnPQUvone5UV
+	 b3M8G//X2EWqhh69W4gxqZT6uAFGVIF+z3Du76G5AtrYTigmDxsujnSvJj3eZghonU
+	 8kFaWRW7yRfN60Yg53rBwwPFRub/BoXi8HQJOkpoVAKcirWQeWdtgwd058Rfc8XCwI
+	 SPljw6KTIHzCmYPHoqIhTkD2PTymQt90kJpGTXya7BsRrrlPdIkxQCCRxhYzjaUsi3
+	 ODlnz9TF5MBVxra6+tDJb5n10QAX85MRLpESn+tAMhDo3XtjmHCVWeutFh3ILy/rUh
+	 xlNi8K8begoOA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 24A24CE09F8; Thu,  1 Aug 2024 20:01:20 -0700 (PDT)
+Date: Thu, 1 Aug 2024 20:01:20 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Olivier Langlois <olivier@trillion01.com>
 Cc: rcu@vger.kernel.org
-Date: Thu, 01 Aug 2024 21:48:45 -0400
-In-Reply-To: <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
+Subject: Re: unexpected result with rcu_nocbs option
+Message-ID: <70ef45ee-2547-496a-aed3-27cec933c671@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <f6d3bb877aab5ac35c3b994596354fc28c8f4f95.camel@trillion01.com>
-	 <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
-	 <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
-	 <1684cb34f67618cff63b24da9864a23815e7f6e0.camel@trillion01.com>
-	 <dbb43d66fc1642d57c71d1908dd4513dda0d55bd.camel@trillion01.com>
-	 <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
-Autocrypt: addr=olivier@trillion01.com; prefer-encrypt=mutual;
- keydata=mQINBFYd0ycBEAC53xedP1NExPwtBnDkVuMZgRiLmWoQQ8U7vEwt6HVGSsMRHx9smD76i
- 5rO/iCT6tDIpZoyJsTOh1h2NTn6ZkoFSn9lNOJksE77/n7HNaNxiBfvZHsuNuI53CkYFix9JhzP3t
- g5nV/401re30kRfA8OPivpnj6mZhU/9RTwjbVPPb8dPlm2gFLXwGPeDITgSRs+KJ0mM37fW8EatJs
- 0a8J1Nk8wBvT7ce+S2lOrxDItra9pW3ukze7LMirwvdMRC5bdlw2Lz03b5NrOUq+Wxv7szn5Xr9f/
- HdaCH7baWNAO6H/O5LbJ3zndewokEmKk+oCIcXjaH0U6QK5gJoO+3Yt5dcTo92Vm3VMxzK2NPFXgp
- La7lR9Ei0hzQ0zptyFFyftt9uV71kMHldaQaSfUTsu9dJbnS2kI/j+F2S1q6dgKi3DEm0ZRGvjsSG
- rkgPJ5T16GI1cS2iQntawdr0A1vfXiB9xZ1SMGxL/l6js9BVlIx/CBGOJ4L190QmxJlcAZ2VnQzrl
- ramRUv01xb00IPJ5TBft5IJ+SY0FnY9pIERIl6w9khwLt/oGuKNmUHmzJGYoJHYfh72Mm8RQ1R/JS
- o6v85ULBGdEC3pQq1j//OPyH3egiXIwFq6BtULH5CvsxQkSqgj1MpjwfgVJ8VbjNwqwBXHjooEORj
- vFQqWQki6By3QARAQABtDJPbGl2aWVyIExhbmdsb2lzIChNeSBrZXkpIDxvbGl2aWVyQHRyaWxsaW
- 9uMDEuY29tPokCNwQTAQgAIQUCVh3TJwIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAAKCRBlaka
- GGsWHEI1AD/9sbj+vnFU29WemVqB4iW+9RrHIcbXI4Jg8WaffTQ8KvVeCJ4otzgVT2nHC2A82t4PF
- 0tp21Ez17CKDNilMvOt8zq6ZHx36CPjoqUVjAdozOiBDpC4qB6ZKYn+gqSENO4hqmmaOW57wT9vII
- v6mtHmnFvgpOEJl6wbs8ArHDt0BLSjc8QQfvBhoKoWs+ijQTyvFGlQl0oWxEbUkR1J3gdft9Oj9xQ
- G4OFo73WaSEK/L9IalU2ulCBC+ucSP9McoDxy1i1u8HUDrV5wBY1zafc9zVBcMNH6+ZjxwQmZXqtz
- ATzB3RbSFHAdmvxl8q6MeS2yx7Atk0CXgW9z5k2KeuZhz5rVV5A+D19SSGzW11uYXsibZx/Wjr9xB
- KHB6U7qh5sRHaQS191NPonKcsXXAziR+vxwQTP7ZKfy+g5N/e6uivoUnQrl9uvUDDPXEpwVNSoVws
- Vn4tNyrGEdN11pHDbH5fSGzdpbY8+yczUoxMmsEQe/fpVwRBZUqafRn2TVUhV0qqzsUuQcTNw1zIZ
- JgvkqrHgd4ivd2b1bXBczmu/wMGpEnF6cWzSQDiwC1NF3i+gHCuD8IX1ujThWtzXsn0VtrMkrRCbn
- ponVQ6HcbRYYXPuK0HRRjCSuAKo5porVONepiOSmu0FBrpGqBkpBtLrzKXoi1yt/7a/wGdMcVhYGg
- vA==
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 
+ <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
+ <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
+ <1684cb34f67618cff63b24da9864a23815e7f6e0.camel@trillion01.com>
+ <dbb43d66fc1642d57c71d1908dd4513dda0d55bd.camel@trillion01.com>
+ <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
+ <f7b2ea1fd826c502963d574e4c229de4427440a7.camel@trillion01.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7b2ea1fd826c502963d574e4c229de4427440a7.camel@trillion01.com>
 
-fyi,
+On Thu, Aug 01, 2024 at 09:48:45PM -0400, Olivier Langlois wrote:
+> fyi,
+> 
+> I have found the source!!!
+> 
+>      test_kraken-695     [001] d.h.. 21957.157432: timer_start:
+> timer=0000000076c6a349 function=mix_interrupt_randomness
+> expires=4297132992 [timeout=0] bucket_expiry=4297132993 cpu=1 idx=1
+> flags=P
+>      test_kraken-695     [001] d.h.. 21964.197366: timer_start:
+> timer=000000006ea403de function=do_nocb_deferred_wakeup_timer
+> expires=4297133697 [timeout=1] bucket_expiry=4297133698 cpu=1 idx=2
+> flags=
+>      test_kraken-695     [001] d.h.. 21964.197368: timer_start:
+> timer=0000000076c6a349 function=mix_interrupt_randomness
+> expires=4297133696 [timeout=0] bucket_expiry=4297133697 cpu=1 idx=1
+> flags=P
+> 
+> enqueue_timer() is calling trigger_dyntick_cpu()...
+> 
+> the vast majority of these timers are from mix_interrupt_randomness but
+> there is also the occasional do_nocb_deferred_wakeup_timer...
+> 
+> every time I see a trace, at the same time, I see the interrupt count
+> increment... there is possible doubt...
+> 
+> Now, it is time to find a solution or a workaround but I was so happy
+> of my discovery that I wanted to share!
 
-I have found the source!!!
+Very good!!!
 
-     test_kraken-695     [001] d.h.. 21957.157432: timer_start:
-timer=3D0000000076c6a349 function=3Dmix_interrupt_randomness
-expires=3D4297132992 [timeout=3D0] bucket_expiry=3D4297132993 cpu=3D1 idx=
-=3D1
-flags=3DP
-     test_kraken-695     [001] d.h.. 21964.197366: timer_start:
-timer=3D000000006ea403de function=3Ddo_nocb_deferred_wakeup_timer
-expires=3D4297133697 [timeout=3D1] bucket_expiry=3D4297133698 cpu=3D1 idx=
-=3D2
-flags=3D
-     test_kraken-695     [001] d.h.. 21964.197368: timer_start:
-timer=3D0000000076c6a349 function=3Dmix_interrupt_randomness
-expires=3D4297133696 [timeout=3D0] bucket_expiry=3D4297133697 cpu=3D1 idx=
-=3D1
-flags=3DP
+The do_nocb_deferred_wakeup_timer() is due to call_rcu() being invoked
+in a context where it might not be safe to do a wakeup().  RCU doesn't
+have a lot of choice in this situation, so the usual approach is to
+figure out what is invoking call_rcu() on your nohz_full CPUs and to
+make it run elsewhere.
 
-enqueue_timer() is calling trigger_dyntick_cpu()...
+I don't know what is happening with mix_interrupt_randomness().
 
-the vast majority of these timers are from mix_interrupt_randomness but
-there is also the occasional do_nocb_deferred_wakeup_timer...
-
-every time I see a trace, at the same time, I see the interrupt count
-increment... there is possible doubt...
-
-Now, it is time to find a solution or a workaround but I was so happy
-of my discovery that I wanted to share!
-
+							Thanx, Paul
