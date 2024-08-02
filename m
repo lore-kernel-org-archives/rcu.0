@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF45317BD3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF42317BB7;
 	Fri,  2 Aug 2024 00:43:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722559391; cv=none; b=r/jfvWkZo/lXIYZsymbnyB4NiA/dVBftjNCB0WRTYrDZj5QpZbm+bVrjaUgSGm6Mqf+Z/sWxDrInNJMCgxGWjMnKxWb2nb3OVG0kJfldGGwlgOjx4ZNv/RCa66NNv63X5CHN/KeI6qDU0UnrIqYYHaVjWZG666KJBu0zqtpjfyo=
+	t=1722559391; cv=none; b=EaO2StBo4fsM5udS4rjJrKFVm8gWGE69l5FtVmHX4j+aMFxkcETvjVC1uK4TAjeIlG3X5rQ9vnAstdjcG/LF054BO+esi+GSYydprOKjd7U4aAf9izQpgCMLBsuOEVhmb3jRJSS42JFdNssPOwxtV8WPuZMYpJk6agQzm7Zeh+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1722559391; c=relaxed/simple;
-	bh=kxIQmbcr9Bs4WnWw6UbzaEHba/xrsV4JB7mQCevE2OM=;
+	bh=AEzkTPCKcNGzv5Un7TZuguhoYqpHfaG2unUtIDA5KrA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TYN/voCFcj5nX/8p732mqz13fCfrTY4FCD380YCy/UVhiFVijuTxqb4ie5rHHUy6RF/6IYeHUqocrd9p/3nfIdQrSR6FjHYaUH0t8L98H9CG6gXEVh/J8633rUQP649N/9ZptSk9Gqm12k1swKmZh8VLxlHqb0som7Yd8gsAAwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhvWbTD4; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=JSfGwciN5yq7XWr1Tw/2vVBlJuvKqfZbH6iu2QI/l2vAl7EKroXqAZDmIeXx8ulbG8xkHNL9fZ45T867NYKBRgk2vu8V5XHhKdbUl3+rixQT/be2KF1hnmDWkiS+m71XYiDVRwz/uejpDjl48XojLmjQTOAwEqT83xhyBKmxMDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UEzGCdj3; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhvWbTD4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79D50C4AF16;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UEzGCdj3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6564CC4AF11;
 	Fri,  2 Aug 2024 00:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1722559391;
-	bh=kxIQmbcr9Bs4WnWw6UbzaEHba/xrsV4JB7mQCevE2OM=;
+	bh=AEzkTPCKcNGzv5Un7TZuguhoYqpHfaG2unUtIDA5KrA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bhvWbTD4Z9rNhhvFIR9TzST0qkP+o2j2AWZEJEoEJWSpRiV2C0Ua0bEYBUivxm50x
-	 wqy13tCfS1rrVnxlg8eR9JHh4Y9MRokrq7AGtxry4G8pMDdAcIHDcfE37Ey+gZjNC6
-	 1nkl9MBPCADmOTWvd9AZ4pLcz6UBHEE4LI7E7vJgTIMFTAecAeq/yN7f4nOrt9wMeX
-	 TJA8mYjZr/AI+fODSY8OAaARwn//V9P2GOy70lz6shaYBOoUAh2gjcB8lYwk7G3UvJ
-	 AB2CkFvPViYNwaoBMQfXTC4GxpPlZduJuepmqZUZFf7+8z5zEQSbe7rFjQ9ieBkvC0
-	 FQRb06jWyBkuQ==
+	b=UEzGCdj3zGWsz6VSJzTbOsaxJUwMoKotUWDArHHs2FuhtYnnF1l5Lp88f9+8nBbt6
+	 P/TRaFkM5RgnTzSe9fA/JeiIIFflq9jfyZO7aVOFhGIjozs2qudAOC4Jzf70b3gCOw
+	 N7o+6kDaF4uTVQhtdBRgdZVxBZterodI9/ARJ1zBohjXKfIDgYSsaQwmO9ThBDJjSA
+	 fikkQcgErkv6CMrU136FHmEf615Ee+GKYl2PFxQ6HZ55VDUbqQWqpUEpAlL83V3z0h
+	 YQyghbRlaen5yseQa5c0KSXuu7xwZJGEyfMq9SCiZo0jYXQSu//yS96sNPpHh3CxAE
+	 YGKMbmxEYO+IQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D0FEFCE1073; Thu,  1 Aug 2024 17:43:10 -0700 (PDT)
+	id CB57ECE0FA1; Thu,  1 Aug 2024 17:43:10 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 08/11] rcuscale: Make rcu_scale_writer() tolerate repeated GFP_KERNEL failure
-Date: Thu,  1 Aug 2024 17:43:05 -0700
-Message-Id: <20240802004308.4134731-8-paulmck@kernel.org>
+Subject: [PATCH rcu 06/11] rcuscale: Provide clear error when async specified without primitives
+Date: Thu,  1 Aug 2024 17:43:03 -0700
+Message-Id: <20240802004308.4134731-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <917e8cc8-8688-428a-9122-25544c5cc101@paulmck-laptop>
 References: <917e8cc8-8688-428a-9122-25544c5cc101@paulmck-laptop>
@@ -48,75 +48,39 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Under some conditions, kmalloc(GFP_KERNEL) allocations have been
-observed to repeatedly fail.  This situation has been observed to
-cause one of the rcu_scale_writer() instances to loop indefinitely
-retrying memory allocation for an asynchronous grace-period primitive.
-The problem is that if memory is short, all the other instances will
-allocate all available memory before the looping task is awakened from
-its rcu_barrier*() call.  This in turn results in hangs, so that rcuscale
-fails to complete.
-
-This commit therefore removes the tight retry loop, so that when this
-condition occurs, the affected task is still passing through the full
-loop with its full set of termination checks.  This spreads the risk
-of indefinite memory-allocation retry failures across all instances of
-rcu_scale_writer() tasks, which in turn prevents the hangs.
+Currently, if the rcuscale module's async module parameter is specified
+for RCU implementations that do not have sync primitives such as
+call_rcu(), there will be a series of splats due to calls to a NULL
+pointer.  This commit therefore warns of this situation, but switches
+to non-async testing.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcuscale.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/rcu/rcuscale.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index a820f11b19444..01d48eb753b41 100644
+index 933014b381ec0..315ced63ec105 100644
 --- a/kernel/rcu/rcuscale.c
 +++ b/kernel/rcu/rcuscale.c
-@@ -520,6 +520,8 @@ rcu_scale_writer(void *arg)
- 
- 	jdone = jiffies + minruntime * HZ;
- 	do {
-+		bool gp_succeeded = false;
-+
- 		if (writer_holdoff)
- 			udelay(writer_holdoff);
- 		if (writer_holdoff_jiffies)
-@@ -527,23 +529,24 @@ rcu_scale_writer(void *arg)
+@@ -525,7 +525,7 @@ rcu_scale_writer(void *arg)
+ 			schedule_timeout_idle(torture_random(&tr) % writer_holdoff_jiffies + 1);
  		wdp = &wdpp[i];
  		*wdp = ktime_get_mono_fast_ns();
- 		if (gp_async && !WARN_ON_ONCE(!cur_ops->async)) {
--retry:
+-		if (gp_async) {
++		if (gp_async && !WARN_ON_ONCE(!cur_ops->async)) {
+ retry:
  			if (!rhp)
  				rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
- 			if (rhp && atomic_read(this_cpu_ptr(&n_async_inflight)) < gp_async_max) {
- 				atomic_inc(this_cpu_ptr(&n_async_inflight));
- 				cur_ops->async(rhp, rcu_scale_async_cb);
- 				rhp = NULL;
-+				gp_succeeded = true;
- 			} else if (!kthread_should_stop()) {
- 				cur_ops->gp_barrier();
--				goto retry;
- 			} else {
- 				kfree(rhp); /* Because we are stopping. */
- 			}
- 		} else if (gp_exp) {
- 			cur_ops->exp_sync();
-+			gp_succeeded = true;
- 		} else {
- 			cur_ops->sync();
-+			gp_succeeded = true;
- 		}
- 		t = ktime_get_mono_fast_ns();
- 		*wdp = t - *wdp;
-@@ -599,7 +602,7 @@ rcu_scale_writer(void *arg)
- 				__func__, me, started, done, writer_done[me], atomic_read(&n_rcu_scale_writer_finished), i, jiffies - jdone);
- 			selfreport = true;
- 		}
--		if (started && !alldone && i < MAX_MEAS - 1)
-+		if (gp_succeeded && started && !alldone && i < MAX_MEAS - 1)
+@@ -597,7 +597,7 @@ rcu_scale_writer(void *arg)
  			i++;
  		rcu_scale_wait_shutdown();
  	} while (!torture_must_stop());
+-	if (gp_async) {
++	if (gp_async && cur_ops->async) {
+ 		cur_ops->gp_barrier();
+ 	}
+ 	writer_n_durations[me] = i_max + 1;
 -- 
 2.40.1
 
