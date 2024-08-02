@@ -1,42 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3313A282FD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330F226AC2;
 	Fri,  2 Aug 2024 00:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722559073; cv=none; b=oVrLde2rg23so9OITRWJQirxUZRWbKXq9L+1cGKm1wpO1Dv1Ca1Ois+1cJWlHIwadj7J3nnmaGHwVt6dWHU+B4pyJdQ1n2QPWKA2uQYAH9dn1Ee9AdwvGA78TgYzYs7DTzdKSi3QT5k7R5hH0xojM8dYaKu2BkIi0Qleaf5xBTg=
+	t=1722559073; cv=none; b=qEALoHYVf2xVZ8NC7hOKffAPMJLDTWpLQhqmuciViWRgcRu5cZFUAgOEhv3iHvmsBwnV5IMEkQGGV4ZEIGceGW0YSySoHVpYp9UlrhVBP25eHtimek49tTCL7KjBEDBINNjqyrDF7OThl6YUPn8qKCb+BhjjZmbD0bLnKfTPMM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1722559073; c=relaxed/simple;
-	bh=ORPsIKilCO2aukBgqnmuWKArS6fdjcdYNMJJxLt6Zz8=;
+	bh=rG1LYuhBJekOp6wqHDJn7PtOPxnpbi4tnOcI0lklMZ8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TqA2WEgskaEJLBSCOc3EIKKE2JZM8j0bCdIShXGUYBm+ZbZNV/oQTHGnq8s5iPGx8iRZd3IcIcBWKpOUUjbIqTm4CUT6XnP83rtdP1i0cOdY/6miPj+hWlFVqs4/wwc9yByR/zNYSFR/vR4fQrsm8gFOHB0Y+3eBA9hXWOCH/gQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h3jDwwYW; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=JN8/8S81nwnntVxZuEcQx5ghBsb2nxZl7t58hVmDQaXnfe1ec9vYNg2gcSSRtHLsxOFEqcWmKTvaoHwsrQBvxkqx0amlEnhU3OjeGW25zI9bflFfOXzu/X+UY0O7VkAJPDLeJ6SPz9nDJ3TA6u8GCyp2GEkRIoC1UJTKuK1FGYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bePHb2Tc; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h3jDwwYW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5D60C4AF0D;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bePHb2Tc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0BE4C32786;
 	Fri,  2 Aug 2024 00:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1722559072;
-	bh=ORPsIKilCO2aukBgqnmuWKArS6fdjcdYNMJJxLt6Zz8=;
+	bh=rG1LYuhBJekOp6wqHDJn7PtOPxnpbi4tnOcI0lklMZ8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=h3jDwwYWgRcbA4Yp0Kf8ALb+Xg8JrV2pKnbHcSRsoSfWOq1ss4dH5PlhddnHo0+kF
-	 h/qeP9nhZMWYvZMlITxhowKY9vcuNB6uzY7NFl4llJSu4dmo3PCTW42dCnEbzfGKBb
-	 Sgcc5ZLYDDu6T4OzEpehiC1b1wmi71hhjEZ6QLQPHHbfZtOqlwUemYm4Q+rskZQRht
-	 KGd6ml8WqhRcANTwQ6bw25H2cw2Pt7atn3vTk5KrTI5NEcyzpe4aGBqJInQ8+9uEaG
-	 EBWbMmNmc1PzSdJVdERA1vlJRQJjS/QOphDig9mvw4Dn+C5eKgstoqhDWy5mPmbUn/
-	 bcUhcUglx1Pfw==
+	b=bePHb2Tc9TIE3FOnqgMyNXpOV3/HEnXWahJexwER97fWsxgCKSXVheYQeN9BlgsPx
+	 LzQZsaqipxMJl9T+iW1X+uvmR8ibpuAIt6dg/KdBe9Basq+gEKhwxzgPEUql6wXqYc
+	 jMif/a+OsxC1Ja+/rLy9S+2cow8fcYDxkRKBtz0LxaY1ys926cqfhmSC0AcOY4FftU
+	 ax3UII4FtI9q6cQCX+tytSMw/YpvJ03zP60OT3dXWfPpcF4zUlzZ05owTMKawjRFj2
+	 gPtD04/gMlstlI5DVWp3OpZVMIQn+QPoXI8O8Oj52hhDGRAT/2S/IZW4hjUuxOk2sZ
+	 laAvzcaAwFfvg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6C41FCE0BC3; Thu,  1 Aug 2024 17:37:52 -0700 (PDT)
+	id 690D9CE0A01; Thu,  1 Aug 2024 17:37:52 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/3] torture: Add torture.sh --guest-cpu-limit argument for limited hosts
-Date: Thu,  1 Aug 2024 17:37:50 -0700
-Message-Id: <20240802003750.4134451-3-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>
+Subject: [PATCH rcu 2/3] rcutorture: Add a stall_cpu_repeat module parameter
+Date: Thu,  1 Aug 2024 17:37:49 -0700
+Message-Id: <20240802003750.4134451-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <22c4b040-7b7b-45ff-8fa5-41b741c7cd7e@paulmck-laptop>
 References: <22c4b040-7b7b-45ff-8fa5-41b741c7cd7e@paulmck-laptop>
@@ -48,109 +49,160 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some servers have limitations on the number of CPUs a given guest OS
-can use.  In my earlier experience, such limitations have been at least
-half of the host's CPUs, but in a recent example, this limit is less
-than 40%.  This commit therefore adds a --guest-cpu-limit argument that
-allows such low limits to be made known to torture.sh.
+This commit adds an stall_cpu_repeat kernel, which is also the
+rcutorture.stall_cpu_repeat boot parameter, to test repeated CPU stalls.
+Note that only the first stall will pay attention to the stall_cpu_irqsoff
+module parameter.  For the second and subsequent stalls, interrupts will
+be enabled.  This is helpful when testing the interaction between RCU
+CPU stall warnings and CSD-lock stall warnings.
 
+Reported-by: Rik van Riel <riel@surriel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../selftests/rcutorture/bin/torture.sh       | 38 +++++++++++++------
- 1 file changed, 27 insertions(+), 11 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |  8 ++-
+ kernel/rcu/rcutorture.c                       | 56 +++++++++++++------
+ 2 files changed, 47 insertions(+), 17 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 990d24696fd34..0447c4a00cc4d 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -19,10 +19,10 @@ PATH=${RCUTORTURE}/bin:$PATH; export PATH
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 35dd1e69b14d0..d30b81e693f9c 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5388,7 +5388,13 @@
+ 			Time to wait (s) after boot before inducing stall.
  
- TORTURE_ALLOTED_CPUS="`identify_qemu_vcpus`"
- MAKE_ALLOTED_CPUS=$((TORTURE_ALLOTED_CPUS*2))
--HALF_ALLOTED_CPUS=$((TORTURE_ALLOTED_CPUS/2))
--if test "$HALF_ALLOTED_CPUS" -lt 1
-+SCALE_ALLOTED_CPUS=$((TORTURE_ALLOTED_CPUS/2))
-+if test "$SCALE_ALLOTED_CPUS" -lt 1
- then
--	HALF_ALLOTED_CPUS=1
-+	SCALE_ALLOTED_CPUS=1
- fi
- VERBOSE_BATCH_CPUS=$((TORTURE_ALLOTED_CPUS/16))
- if test "$VERBOSE_BATCH_CPUS" -lt 2
-@@ -90,6 +90,7 @@ usage () {
- 	echo "       --do-scftorture / --do-no-scftorture / --no-scftorture"
- 	echo "       --do-srcu-lockdep / --do-no-srcu-lockdep / --no-srcu-lockdep"
- 	echo "       --duration [ <minutes> | <hours>h | <days>d ]"
-+	echo "       --guest-cpu-limit N"
- 	echo "       --kcsan-kmake-arg kernel-make-arguments"
- 	exit 1
- }
-@@ -203,6 +204,21 @@ do
- 		duration_base=$(($ts*mult))
- 		shift
- 		;;
-+	--guest-cpu-limit|--guest-cpu-lim)
-+		checkarg --guest-cpu-limit "(number)" "$#" "$2" '^[0-9]*$' '^--'
-+		if (("$2" <= "$TORTURE_ALLOTED_CPUS" / 2))
-+		then
-+			SCALE_ALLOTED_CPUS="$2"
-+			VERBOSE_BATCH_CPUS="$((SCALE_ALLOTED_CPUS/8))"
-+			if (("$VERBOSE_BATCH_CPUS" < 2))
-+			then
-+				VERBOSE_BATCH_CPUS=0
-+			fi
-+		else
-+			echo "Ignoring value of $2 for --guest-cpu-limit which is greater than (("$TORTURE_ALLOTED_CPUS" / 2))."
-+		fi
-+		shift
-+		;;
- 	--kcsan-kmake-arg|--kcsan-kmake-args)
- 		checkarg --kcsan-kmake-arg "(kernel make arguments)" $# "$2" '.*' '^error$'
- 		kcsan_kmake_args="`echo "$kcsan_kmake_args $2" | sed -e 's/^ *//' -e 's/ *$//'`"
-@@ -425,9 +441,9 @@ fi
- if test "$do_scftorture" = "yes"
- then
- 	# Scale memory based on the number of CPUs.
--	scfmem=$((3+HALF_ALLOTED_CPUS/16))
--	torture_bootargs="scftorture.nthreads=$HALF_ALLOTED_CPUS torture.disable_onoff_at_boot csdlock_debug=1"
--	torture_set "scftorture" tools/testing/selftests/rcutorture/bin/kvm.sh --torture scf --allcpus --duration "$duration_scftorture" --configs "$configs_scftorture" --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --memory ${scfmem}G --trust-make
-+	scfmem=$((3+SCALE_ALLOTED_CPUS/16))
-+	torture_bootargs="scftorture.nthreads=$SCALE_ALLOTED_CPUS torture.disable_onoff_at_boot csdlock_debug=1"
-+	torture_set "scftorture" tools/testing/selftests/rcutorture/bin/kvm.sh --torture scf --allcpus --duration "$duration_scftorture" --configs "$configs_scftorture" --kconfig "CONFIG_NR_CPUS=$SCALE_ALLOTED_CPUS" --memory ${scfmem}G --trust-make
- fi
+ 	rcutorture.stall_cpu_irqsoff= [KNL]
+-			Disable interrupts while stalling if set.
++			Disable interrupts while stalling if set, but only
++			on the first stall in the set.
++
++	rcutorture.stall_cpu_repeat= [KNL]
++			Number of times to repeat the stall sequence,
++			so that rcutorture.stall_cpu_repeat=3 will result
++			in four stall sequences.
  
- if test "$do_rt" = "yes"
-@@ -471,8 +487,8 @@ for prim in $primlist
- do
- 	if test -n "$firsttime"
- 	then
--		torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
--		torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "refscale.verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
-+		torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$SCALE_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
-+		torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$SCALE_ALLOTED_CPUS" --bootargs "refscale.verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
- 		mv $T/last-resdir-nodebug $T/first-resdir-nodebug || :
- 		if test -f "$T/last-resdir-kasan"
- 		then
-@@ -520,8 +536,8 @@ for prim in $primlist
- do
- 	if test -n "$firsttime"
- 	then
--		torture_bootargs="rcuscale.scale_type="$prim" rcuscale.nwriters=$HALF_ALLOTED_CPUS rcuscale.holdoff=20 torture.disable_onoff_at_boot"
--		torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
-+		torture_bootargs="rcuscale.scale_type="$prim" rcuscale.nwriters=$SCALE_ALLOTED_CPUS rcuscale.holdoff=20 torture.disable_onoff_at_boot"
-+		torture_set "rcuscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$SCALE_ALLOTED_CPUS" --trust-make
- 		mv $T/last-resdir-nodebug $T/first-resdir-nodebug || :
- 		if test -f "$T/last-resdir-kasan"
- 		then
-@@ -559,7 +575,7 @@ do_kcsan="$do_kcsan_save"
- if test "$do_kvfree" = "yes"
- then
- 	torture_bootargs="rcuscale.kfree_rcu_test=1 rcuscale.kfree_nthreads=16 rcuscale.holdoff=20 rcuscale.kfree_loops=10000 torture.disable_onoff_at_boot"
--	torture_set "rcuscale-kvfree" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration $duration_rcutorture --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --memory 2G --trust-make
-+	torture_set "rcuscale-kvfree" tools/testing/selftests/rcutorture/bin/kvm.sh --torture rcuscale --allcpus --duration $duration_rcutorture --kconfig "CONFIG_NR_CPUS=$SCALE_ALLOTED_CPUS" --memory 2G --trust-make
- fi
+ 	rcutorture.stall_gp_kthread= [KNL]
+ 			Duration (s) of forced sleep within RCU
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 3dc7ef4af0eca..9dd6764e25f3d 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -115,6 +115,7 @@ torture_param(int, stall_cpu_holdoff, 10, "Time to wait before starting stall (s
+ torture_param(bool, stall_no_softlockup, false, "Avoid softlockup warning during cpu stall.");
+ torture_param(int, stall_cpu_irqsoff, 0, "Disable interrupts while stalling.");
+ torture_param(int, stall_cpu_block, 0, "Sleep while stalling.");
++torture_param(int, stall_cpu_repeat, 0, "Number of additional stalls after the first one.");
+ torture_param(int, stall_gp_kthread, 0, "Grace-period kthread stall duration (s).");
+ torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
+ torture_param(int, stutter, 5, "Number of seconds to run/halt test");
+@@ -1385,7 +1386,8 @@ rcu_torture_writer(void *arg)
  
- if test "$do_clocksourcewd" = "yes"
+ 	// If a new stall test is added, this must be adjusted.
+ 	if (stall_cpu_holdoff + stall_gp_kthread + stall_cpu)
+-		stallsdone += (stall_cpu_holdoff + stall_gp_kthread + stall_cpu + 60) * HZ;
++		stallsdone += (stall_cpu_holdoff + stall_gp_kthread + stall_cpu + 60) *
++			      HZ * (stall_cpu_repeat + 1);
+ 	VERBOSE_TOROUT_STRING("rcu_torture_writer task started");
+ 	if (!can_expedite)
+ 		pr_alert("%s" TORTURE_FLAG
+@@ -2383,7 +2385,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 "test_boost=%d/%d test_boost_interval=%d "
+ 		 "test_boost_duration=%d shutdown_secs=%d "
+ 		 "stall_cpu=%d stall_cpu_holdoff=%d stall_cpu_irqsoff=%d "
+-		 "stall_cpu_block=%d "
++		 "stall_cpu_block=%d stall_cpu_repeat=%d "
+ 		 "n_barrier_cbs=%d "
+ 		 "onoff_interval=%d onoff_holdoff=%d "
+ 		 "read_exit_delay=%d read_exit_burst=%d "
+@@ -2395,7 +2397,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 test_boost, cur_ops->can_boost,
+ 		 test_boost_interval, test_boost_duration, shutdown_secs,
+ 		 stall_cpu, stall_cpu_holdoff, stall_cpu_irqsoff,
+-		 stall_cpu_block,
++		 stall_cpu_block, stall_cpu_repeat,
+ 		 n_barrier_cbs,
+ 		 onoff_interval, onoff_holdoff,
+ 		 read_exit_delay, read_exit_burst,
+@@ -2473,19 +2475,11 @@ static struct notifier_block rcu_torture_stall_block = {
+  * induces a CPU stall for the time specified by stall_cpu.  If a new
+  * stall test is added, stallsdone in rcu_torture_writer() must be adjusted.
+  */
+-static int rcu_torture_stall(void *args)
++static void rcu_torture_stall_one(int rep, int irqsoff)
+ {
+ 	int idx;
+-	int ret;
+ 	unsigned long stop_at;
+ 
+-	VERBOSE_TOROUT_STRING("rcu_torture_stall task started");
+-	if (rcu_cpu_stall_notifiers) {
+-		ret = rcu_stall_chain_notifier_register(&rcu_torture_stall_block);
+-		if (ret)
+-			pr_info("%s: rcu_stall_chain_notifier_register() returned %d, %sexpected.\n",
+-				__func__, ret, !IS_ENABLED(CONFIG_RCU_STALL_COMMON) ? "un" : "");
+-	}
+ 	if (stall_cpu_holdoff > 0) {
+ 		VERBOSE_TOROUT_STRING("rcu_torture_stall begin holdoff");
+ 		schedule_timeout_interruptible(stall_cpu_holdoff * HZ);
+@@ -2505,12 +2499,12 @@ static int rcu_torture_stall(void *args)
+ 		stop_at = ktime_get_seconds() + stall_cpu;
+ 		/* RCU CPU stall is expected behavior in following code. */
+ 		idx = cur_ops->readlock();
+-		if (stall_cpu_irqsoff)
++		if (irqsoff)
+ 			local_irq_disable();
+ 		else if (!stall_cpu_block)
+ 			preempt_disable();
+-		pr_alert("%s start on CPU %d.\n",
+-			  __func__, raw_smp_processor_id());
++		pr_alert("%s start stall episode %d on CPU %d.\n",
++			  __func__, rep + 1, raw_smp_processor_id());
+ 		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(), stop_at) &&
+ 		       !kthread_should_stop())
+ 			if (stall_cpu_block) {
+@@ -2522,12 +2516,42 @@ static int rcu_torture_stall(void *args)
+ 			} else if (stall_no_softlockup) {
+ 				touch_softlockup_watchdog();
+ 			}
+-		if (stall_cpu_irqsoff)
++		if (irqsoff)
+ 			local_irq_enable();
+ 		else if (!stall_cpu_block)
+ 			preempt_enable();
+ 		cur_ops->readunlock(idx);
+ 	}
++}
++
++/*
++ * CPU-stall kthread.  Invokes rcu_torture_stall() once, and then as many
++ * additional times as specified by the stall_cpu_repeat module parameter.
++ * Note that stall_cpu_irqsoff is ignored on the second and subsequent
++ * stall.
++ */
++static int rcu_torture_stall(void *args)
++{
++	int i;
++	int repeat = stall_cpu_repeat;
++	int ret;
++
++	VERBOSE_TOROUT_STRING("rcu_torture_stall task started");
++	if (repeat < 0) {
++		repeat = 0;
++		WARN_ON_ONCE(IS_BUILTIN(CONFIG_RCU_TORTURE_TEST));
++	}
++	if (rcu_cpu_stall_notifiers) {
++		ret = rcu_stall_chain_notifier_register(&rcu_torture_stall_block);
++		if (ret)
++			pr_info("%s: rcu_stall_chain_notifier_register() returned %d, %sexpected.\n",
++				__func__, ret, !IS_ENABLED(CONFIG_RCU_STALL_COMMON) ? "un" : "");
++	}
++	for (i = 0; i <= repeat; i++) {
++		if (kthread_should_stop())
++			break;
++		rcu_torture_stall_one(i, i == 0 ? stall_cpu_irqsoff : 0);
++	}
+ 	pr_alert("%s end.\n", __func__);
+ 	if (rcu_cpu_stall_notifiers && !ret) {
+ 		ret = rcu_stall_chain_notifier_unregister(&rcu_torture_stall_block);
 -- 
 2.40.1
 
