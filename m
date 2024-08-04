@@ -1,202 +1,233 @@
-Received: from cloud48395.mywhc.ca (cloud48395.mywhc.ca [173.209.37.211])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C857EEC3
-	for <rcu@vger.kernel.org>; Sat,  3 Aug 2024 22:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.209.37.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BB8A2A;
+	Sun,  4 Aug 2024 00:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722725207; cv=none; b=jEur9t5o7PqIv8FN6Vh10UT9kF3+uSJSHmH5xUD5J4MMjD59j6lFKWpW51VKXr70aFifZ1KyL9E2KwxO+aURT/RNCThPx3jjw+iju/6TK9Z1zZbndWhrUsmDp0N7ys6dyL0466Wnss7oeZnAysv0cAF6qqKtMGnAUVdwUNZpwAA=
+	t=1722732709; cv=none; b=ltjOuQnieX/jcLX3/qGxFlrpRnCj8dd9c9rArW5qL/m6vToKYxPUXqerJMprtzBw39XEL2+cJmDWUpSV9iBytjAOoM/0Qfxa/GTdM1GlTOLiw/DLh/8zrLZago51PRoR6RzFA7jFIeNnlUmHP/x4FCR6ABfi009qgsr0/U1IY5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722725207; c=relaxed/simple;
-	bh=jzZQX0uzGE9cPi53jD4VBjFBZzgw21Ey7phf/+Kuy4E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dgxXkQhg7O3wJ1w3JZol4r6czwohe32G4UIGCR6aM+S5bcz5DPJQYM0J5iAUdFUOSgg7DyOgJTf98HafwJPYMvKcJes8UDptV7mDvQt3JWgfLHmLpanTTdf0zVwWLd4W/eQedPzEBTJ/1J5GgmbB2G1znMTPWmYhIEOl3rVgpO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com; spf=pass smtp.mailfrom=trillion01.com; arc=none smtp.client-ip=173.209.37.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=trillion01.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trillion01.com
-Received: from [45.44.224.220] (port=34888 helo=[192.168.1.177])
-	by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <olivier@trillion01.com>)
-	id 1saNWO-0008Pr-1d;
-	Sat, 03 Aug 2024 18:46:44 -0400
-Message-ID: <0378062f00156325f18fa683f5504772c4b4956f.camel@trillion01.com>
-Subject: Re: unexpected result with rcu_nocbs option
-From: Olivier Langlois <olivier@trillion01.com>
-To: paulmck@kernel.org
-Cc: rcu@vger.kernel.org
-Date: Sat, 03 Aug 2024 18:46:44 -0400
-In-Reply-To: <2b9f8637-2d91-4981-980f-87e4aeb4c1b2@paulmck-laptop>
-References: <1b5bb521bc49347bf17789b50a3c4fa5e21891ad.camel@trillion01.com>
-	 <df1278ca-10c6-4687-bc86-ebb0293123ab@paulmck-laptop>
-	 <1684cb34f67618cff63b24da9864a23815e7f6e0.camel@trillion01.com>
-	 <dbb43d66fc1642d57c71d1908dd4513dda0d55bd.camel@trillion01.com>
-	 <358ab93d-7354-42cf-9498-0fc18a9d49d6@paulmck-laptop>
-	 <f7b2ea1fd826c502963d574e4c229de4427440a7.camel@trillion01.com>
-	 <70ef45ee-2547-496a-aed3-27cec933c671@paulmck-laptop>
-	 <560ef22942010a3f0ea4ad43e0dea048fe967369.camel@trillion01.com>
-	 <383ce0ce-fe27-46a5-ac1e-2dd2ea2be4fe@paulmck-laptop>
-	 <a38775aa4f97b50844e482ab05a51b13a8f11aa5.camel@trillion01.com>
-	 <2b9f8637-2d91-4981-980f-87e4aeb4c1b2@paulmck-laptop>
-Autocrypt: addr=olivier@trillion01.com; prefer-encrypt=mutual;
- keydata=mQINBFYd0ycBEAC53xedP1NExPwtBnDkVuMZgRiLmWoQQ8U7vEwt6HVGSsMRHx9smD76i
- 5rO/iCT6tDIpZoyJsTOh1h2NTn6ZkoFSn9lNOJksE77/n7HNaNxiBfvZHsuNuI53CkYFix9JhzP3t
- g5nV/401re30kRfA8OPivpnj6mZhU/9RTwjbVPPb8dPlm2gFLXwGPeDITgSRs+KJ0mM37fW8EatJs
- 0a8J1Nk8wBvT7ce+S2lOrxDItra9pW3ukze7LMirwvdMRC5bdlw2Lz03b5NrOUq+Wxv7szn5Xr9f/
- HdaCH7baWNAO6H/O5LbJ3zndewokEmKk+oCIcXjaH0U6QK5gJoO+3Yt5dcTo92Vm3VMxzK2NPFXgp
- La7lR9Ei0hzQ0zptyFFyftt9uV71kMHldaQaSfUTsu9dJbnS2kI/j+F2S1q6dgKi3DEm0ZRGvjsSG
- rkgPJ5T16GI1cS2iQntawdr0A1vfXiB9xZ1SMGxL/l6js9BVlIx/CBGOJ4L190QmxJlcAZ2VnQzrl
- ramRUv01xb00IPJ5TBft5IJ+SY0FnY9pIERIl6w9khwLt/oGuKNmUHmzJGYoJHYfh72Mm8RQ1R/JS
- o6v85ULBGdEC3pQq1j//OPyH3egiXIwFq6BtULH5CvsxQkSqgj1MpjwfgVJ8VbjNwqwBXHjooEORj
- vFQqWQki6By3QARAQABtDJPbGl2aWVyIExhbmdsb2lzIChNeSBrZXkpIDxvbGl2aWVyQHRyaWxsaW
- 9uMDEuY29tPokCNwQTAQgAIQUCVh3TJwIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAAKCRBlaka
- GGsWHEI1AD/9sbj+vnFU29WemVqB4iW+9RrHIcbXI4Jg8WaffTQ8KvVeCJ4otzgVT2nHC2A82t4PF
- 0tp21Ez17CKDNilMvOt8zq6ZHx36CPjoqUVjAdozOiBDpC4qB6ZKYn+gqSENO4hqmmaOW57wT9vII
- v6mtHmnFvgpOEJl6wbs8ArHDt0BLSjc8QQfvBhoKoWs+ijQTyvFGlQl0oWxEbUkR1J3gdft9Oj9xQ
- G4OFo73WaSEK/L9IalU2ulCBC+ucSP9McoDxy1i1u8HUDrV5wBY1zafc9zVBcMNH6+ZjxwQmZXqtz
- ATzB3RbSFHAdmvxl8q6MeS2yx7Atk0CXgW9z5k2KeuZhz5rVV5A+D19SSGzW11uYXsibZx/Wjr9xB
- KHB6U7qh5sRHaQS191NPonKcsXXAziR+vxwQTP7ZKfy+g5N/e6uivoUnQrl9uvUDDPXEpwVNSoVws
- Vn4tNyrGEdN11pHDbH5fSGzdpbY8+yczUoxMmsEQe/fpVwRBZUqafRn2TVUhV0qqzsUuQcTNw1zIZ
- JgvkqrHgd4ivd2b1bXBczmu/wMGpEnF6cWzSQDiwC1NF3i+gHCuD8IX1ujThWtzXsn0VtrMkrRCbn
- ponVQ6HcbRYYXPuK0HRRjCSuAKo5porVONepiOSmu0FBrpGqBkpBtLrzKXoi1yt/7a/wGdMcVhYGg
- vA==
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.3 
+	s=arc-20240116; t=1722732709; c=relaxed/simple;
+	bh=BElM5kN4NGcPM6CIbpKvwy3muagmkVeZTOOo4gZkdzc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=h1+Nn2NXn+HGLbHlqu5K4vzh9CYfFsHMwL5tN9vIgJcb49iRK+oPIDnp3M1AcEEfaCQkBdLAGAEpwceAD9QYqwiuDYp4dS3C63QyKgtxYO7dWyBjlJUK13nJ+5hOZhvvlyRGsv9blDzZNK9vQtOMReuBMS58Yi3MK7OhAlh5zGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Vn9Sgbe+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BJemqaWo; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Vn9Sgbe+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BJemqaWo"
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1722732700;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XTIdufvm6rkgNOfIjWBy6iG2aYC9jWJdtdOC9sZs9Zg=;
+	b=Vn9Sgbe+p35tZSmGeTuTz52Z6yOHhsFLeUTJAK15GUQJqVkkHjn9vwgNLxgFkcQKXzYXt3
+	t2sAxAoiDvUQKQD+NUhFljYvQErdo9T07WkbrQCSMmZs2p2yP0RONPvGLtOk7lxaPWU+Pe
+	E05qDDMtHR0LKOkMGcB8Yxge8s+VpH9uly/G498fSndh4Oy0A0C29S/T2ABRu38xWpqcNn
+	TLxNGP4DlpPINnbP71whVJWFd2me/l4F8mkZAqtSWlom5T/E4mbAxW/366Zd4XsCjCGOWt
+	3hQ0+3s60O0tFNI8EIsB5CkrALfBZeHEIXqhPZ+6G0GLpNI/CaHDiWpALji5dA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1722732700;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XTIdufvm6rkgNOfIjWBy6iG2aYC9jWJdtdOC9sZs9Zg=;
+	b=BJemqaWofWYkWVNno/Mt7ZiS9edxmbIUpZfC4SjSsv94WFqyHImNljYP5sPt/M/SxPqgJA
+	xS3vyRgCQ/PdBkDQ==
+To: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org,
+	Miguel Ojeda <ojeda@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	linux-serial@vger.kernel.org,
+	Russell King <linux@armlinux.org.uk>,
+	Tony Lindgren <tony@atomide.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Joel Granados <j.granados@samsung.com>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Baoquan He <bhe@redhat.com>,
+	Lukas Wunner <lukas@wunner.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	rcu@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH printk v7 00/35] wire up write_atomic() printing
+Date: Sun,  4 Aug 2024 02:57:03 +0206
+Message-Id: <20240804005138.3722656-1-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 2024-08-02 at 16:57 -0700, Paul E. McKenney wrote:
-> > I signal pthread condition variable
-> > that calls:
-> >=20
-> > - gettid()
-> > - futex()
-> >=20
-> > and madvise(MADV_DONTNEED)
-> > (I believe this comes from tcmalloc)
-> >=20
-> > you are opening up my horizons and I think you are right. If the
-> > nohz_full thread does not enter the kernel, it cannot interfere
-> > with
-> > your nohz_full setup.
->=20
-> Exactly!
->=20
-> One approach is to have real-time threads used lockless shared-memory
-> mechanism to communicate asynchronously with non-real-time threads.
-> The Linux-kernel llist is one example of such a mechanism.
->=20
-> Many projects do all their allocation during initialization, thus
-> avoiding run-time issues from the memory allocator.=A0 Some use
-> memlock()
-> or memlockall() at initialization time to avoid page faults.
->=20
+Hi,
 
-I want to bring this discussion to closure because I feel like I am
-spamming your list with off topic stuff but my NOHZ_FULL issue has
-experienced a happy ending so I wanted to share the outcome since you
-have helped me a lot!
+This is v7 of a series to wire up the nbcon consoles so that
+they actually perform printing using their write_atomic()
+callback. v6 is here [0]. For information about the motivation
+of the atomic consoles, please read the cover letter of v1 [1].
 
-the mix_interrupt_randomness() was a symptom only. The only thing that
-can make char device random mix interrupt randomness is if a processor
-receives interrupts.
+The main focus of this series:
 
-It turns out that some file i/o was initated without my awareness from
-cpu0 or 1. I got a quick crash course from Jens Axboe about nvme device
-driver anatomy. It creates 2 i/o requests queues and split the cpus in
-2 balanced groups.
+- For nbcon consoles, always call write_atomic() directly from
+  printk() caller context for the panic CPU.
 
-not sure exactly why irqs are still sent to different cpus since I
-provide irqaffinity=3D3 in my boot params line but the solution has been
-to hack the nvme driver code:
+- For nbcon consoles, call write_atomic() when unlocking the
+  console lock.
 
-drivers/nvme/host/pci.c
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 6cd9395ba9ec..70b7ca84ee21 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2299,7 +2299,7 @@ static unsigned int nvme_max_io_queues(struct
-nvme_dev *dev)
-         */
-        if (dev->ctrl.quirks & NVME_QUIRK_SHARED_TAGS)
-                return 1;
--       return num_possible_cpus() + dev->nr_write_queues + dev-
->nr_poll_queues;
-+       return 1 + dev->nr_write_queues + dev->nr_poll_queues;
- }
-=20
- static int nvme_setup_io_queues(struct nvme_dev *dev)
+- Only perform the console lock/unlock dance if legacy or boot
+  consoles are registered.
 
-the end result is that my nvme device now only have 1 io queue managing
-requests coming from all 4 cpus and the irqs are all sent to cpu3!
+- For legacy consoles, if nbcon consoles are registered, do not
+  attempt to print from printk() caller context for the panic
+  CPU until nbcon consoles have had a chance to print the most
+  significant messages.
 
-about eliminating syscalls, it will not be necessary but I am keeping
-this new trick into my bag of tricks... I might need it sometime...
+- Mark emergency sections. In these sections, every printk()
+  call will attempt to directly flush to the consoles using the
+  EMERGENCY priority.
 
-that being said, turning my attention to this has allowed me to realize
-that I was using tcmalloc untweaked and I can squeeze much more
-performance out of it with some minimal effort...
+This series does _not_ include threaded printing or nbcon
+drivers. Those features will be added in separate follow-up
+series.
 
-1. It use Transparent Huge Pages and recommends some system settings
-for optimal performance that I have not set yet.
-2. It offers a hook to offload memory housekeeping to a background
-thread (including the madvise(MADV_DONTNEED) syscall I suppose).
+The changes since v6:
 
-this is clearly something that I will look into that I would not have
-thought looking at without your suggestion!
+- When a CPU is in an emergency state, printk() calls will now
+  flush directly to all consoles using the EMERGENCY priority.
 
-all in all, it is an amazing experience to be a Linux Kernel user!
+- Remove usage and implementation of
+  nbcon_cpu_emergency_flush().
 
-I now have practically 2 CPUs ot of 4 that runs at 100% with almost no
-interrupts... this is a very cool and satisfying achievement!
+- Add printk_get_console_flush_type() to query available flush
+  types and use it at all flushing call sites.
 
-If I stare long enough at 'watch -n1 cat /proc/interrupts'
+- In vprintk_emit(), always use nbcon_atomic flushing if it is
+  available.
 
-I am seeing occasional CAL and TLB (TLB is a totally new concept to me)
-CAL:       1726        803        784     300814   Function call
-interrupts
-TLB:         44          0         43          0   TLB shootdowns
+- When exiting nbcon_device_release(), flush using the legacy
+  loop if nbcon_atomic flushing is not available.
 
-something else to understand and master another day...
+- In console_flush_on_panic(), make sure nbcon_atomic flushing
+  is allowed before flushing.
 
-> > I need to take a break from this project to take care of other
-> > stuff
-> > that I have neglected while being absorbed by this never-ending
-> > challenge... but I'll definitely return to it with this new angle
-> > of
-> > attack...
-> >=20
-> > with the little amount of syscalls, it seems feasible to avoid them
-> > in
-> > one way or the other.
-> >=20
-> > at some point, it might be much easier to avoid the kernel than
-> > trying
-> > to fight with it to do what you want it to do.
->=20
-> These things go on a syscall-by-syscall basis, and much depends on
-> your deadlines.=A0 For example, if you had one-millisecond deadlines,
-> those 27-microsecond interrupts might not be a concern.=A0 ;-)
+- In pr_flush(), always take the console_lock because there is
+  no synchronization against register_console() and legacy
+  consoles could register while waiting.
 
-this is for a small crypto arbitrage trading client project of mine,
-the trader that react the fastest wins... 27usec is a big deal. It is
-the difference between winning or losing a trade
+- In __wake_up_klogd(), remove check if PENDING_OUTPUT is
+  needed. If PENDING_OUTPUT is set, it is needed.
 
-https://x.com/lano1106/status/1771345949320737183
+- Rename is_printk_deferred() to is_printk_legacy_deferred().
+
+- Remove nbcon_init(), consolidate it into nbcon_alloc().
+
+- Improve documentation about nbcon owner/waiter matching
+  rules.
+
+- Allow nbcon_get_cpu_emergency_nesting() to run without
+  migration disabled.
+
+- Clarify that nbcon_get_default_prio() can run without
+  migration disabled.
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/20240527063749.391035-1-john.ogness@linutronix.de
+[1] https://lore.kernel.org/lkml/20230302195618.156940-1-john.ogness@linutronix.de
+
+John Ogness (30):
+  printk: Add notation to console_srcu locking
+  printk: nbcon: Consolidate alloc() and init()
+  printk: nbcon: Clarify rules of the owner/waiter matching
+  printk: nbcon: Remove return value for write_atomic()
+  printk: nbcon: Add detailed doc for write_atomic()
+  printk: nbcon: Add callbacks to synchronize with driver
+  printk: nbcon: Use driver synchronization while (un)registering
+  serial: core: Provide low-level functions to lock port
+  serial: core: Introduce wrapper to set @uart_port->cons
+  console: Improve console_srcu_read_flags() comments
+  nbcon: Add API to acquire context for non-printing operations
+  serial: core: Acquire nbcon context in port->lock wrapper
+  printk: nbcon: Do not rely on proxy headers
+  printk: Make console_is_usable() available to nbcon.c
+  printk: Let console_is_usable() handle nbcon
+  printk: Add @flags argument for console_is_usable()
+  printk: nbcon: Add helper to assign priority based on CPU state
+  printk: Track registered boot consoles
+  printk: nbcon: Use nbcon consoles in console_flush_all()
+  printk: Add is_printk_legacy_deferred()
+  printk: nbcon: Flush new records on device_release()
+  printk: Flush nbcon consoles first on panic
+  printk: nbcon: Add unsafe flushing on panic
+  printk: Avoid console_lock dance if no legacy or boot consoles
+  printk: Track nbcon consoles
+  printk: Coordinate direct printing in panic
+  printk: Add helper for flush type logic
+  panic: Mark emergency section in oops
+  rcu: Mark emergency sections in rcu stalls
+  lockdep: Mark emergency sections in lockdep splats
+
+Petr Mladek (1):
+  printk: Properly deal with nbcon consoles on seq init
+
+Sebastian Andrzej Siewior (1):
+  printk: Check printk_deferred_enter()/_exit() usage
+
+Thomas Gleixner (3):
+  printk: nbcon: Provide function to flush using write_atomic()
+  printk: nbcon: Implement emergency sections
+  panic: Mark emergency section in warn
+
+ drivers/tty/serial/8250/8250_core.c |   6 +-
+ drivers/tty/serial/amba-pl011.c     |   2 +-
+ drivers/tty/serial/serial_core.c    |  16 +-
+ include/linux/console.h             | 110 +++++-
+ include/linux/printk.h              |  33 +-
+ include/linux/serial_core.h         | 117 +++++-
+ kernel/locking/lockdep.c            |  83 +++-
+ kernel/panic.c                      |   9 +
+ kernel/printk/internal.h            | 130 ++++++-
+ kernel/printk/nbcon.c               | 565 +++++++++++++++++++++++++---
+ kernel/printk/printk.c              | 250 +++++++++---
+ kernel/printk/printk_ringbuffer.h   |   2 +
+ kernel/printk/printk_safe.c         |  23 +-
+ kernel/rcu/tree_exp.h               |   7 +
+ kernel/rcu/tree_stall.h             |   9 +
+ 15 files changed, 1211 insertions(+), 151 deletions(-)
+
+
+base-commit: 8bf100092d60bf586bbc1a3a2cd833bb212d9d53
+-- 
+2.39.2
 
