@@ -1,270 +1,234 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1F415C15A;
-	Mon,  5 Aug 2024 17:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7223115B56E;
+	Mon,  5 Aug 2024 18:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722877441; cv=none; b=lQpycWlVWn2RgUX74kvtpm95ctwd6aqjduda6MMv4hrId2XkAWOW1rXPb2gj8dK46DBGwJF0fjizD//zTncCuMF1Q8pN2dTcv6tCabES43DZK3IxYafj5DxdmmcaHJbVe4x3wpmMVXQMZtOiOgmnNGKmYny+kfjHWf3LQTT5XM0=
+	t=1722884298; cv=none; b=IcU76fYmUgypDgMHBRd9NAlEcAfX5fAeGTeSX7ZGtxqFSmaZteDbyuRVacm8+rUnm/bO1o+Qvx2zqDcQt7Cv41rsGZiGhvhA782iaolPOt3CMWLruPvdDzPYvzuNOAlirl/IvF5+soN5deqnW0eANWBQhLlVwRYro7Lluxxq5D4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722877441; c=relaxed/simple;
-	bh=fNwSB7o8YKcGU7ZIAibAAIr/+RmBBJ46AIfJJkGAwi8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VYxonPvhTDvfbOof/cHk3uRTFCdrVc9S4NoMvU4p5TQCPTZhovczb3L/wEW72q2INkCpfRafPraJyZ7X69cuShS2/YSGRuY1YD/rNJpgzPrY8cFNnRBswYwnyxqZa7dOhQ9d8tUt/hRksZI0bR5H+kY9XyRVpezIdr+JTtQYPUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Selayysz; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1722884298; c=relaxed/simple;
+	bh=njd0DJogPG55X9yTYiWrnv7QjYuFPWUq73N4p708nK8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iei8383pD8fwxiimORBTSjiwo5hPrFjimzxdBUv9gc8NVWCGQU11TiohDziw32ZzmbL5Qy3px8NjlRtJTzzmNyZMAvw9D4OU1uabh9qKuPeRyqVPL5w345AcRR/xYz+ahtKxhUo2oPM2rvM4GMBu75Lu5oKeWX6/FUoO7Q1LcGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YmD6aXkb; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Selayysz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24494C4AF12;
-	Mon,  5 Aug 2024 17:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722877441;
-	bh=fNwSB7o8YKcGU7ZIAibAAIr/+RmBBJ46AIfJJkGAwi8=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=SelayyszznRBWfBuyru9dNOToPiw0kgtAhZis+KeP7BSGT1lKGVl7IOfevPCUT4Ug
-	 9/RTwHZxi1w0WxMhq431dsHBXYZUtMmwmP6nLvSSDGSnQDFN+jBpZ+1/Z0J47nwr2F
-	 Z7FJjGCVQFpCJizI76s1Qm1Ef9w51O2FTvSaqvKUqiBzrD4VrcnN9u1GrHCPqp5OmK
-	 K9DtIRa187VI9BVa+iMM6UB9s5DS21osoW7HzJTuqXvyxS3iqE9k6WH5WsA/XWYxyx
-	 jWDcjXJVkdAil3CfeJJhyhp1sAbnzHOkXL8H9IGgIhvZIztVzNujBshH9xu1/pTrpJ
-	 MIHxrVP6isH0A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BDEF2CE09EE; Mon,  5 Aug 2024 10:04:00 -0700 (PDT)
-Date: Mon, 5 Aug 2024 10:04:00 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Valentin Schneider <vschneid@redhat.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YmD6aXkb"
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-52efc60a6e6so16680165e87.1;
+        Mon, 05 Aug 2024 11:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722884294; x=1723489094; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6zOpbKZlyyEpf7p8saMgrewPpCPBh0IVajsvpl6fDWM=;
+        b=YmD6aXkbxH3ptr0yEr4ZnnPEWvhO8PbukxxhDOALxy4DdC8az7m7YOOmV6gs/HjBTt
+         7xQ3CG7mzAboWvEz3vKASK/ew97g1gCZwT5aBYMyByrYlvpc1FB0EWWjdJyHA/g6DQLO
+         YVZBJdei0qFXO5o0pczhgZ99yn1FpV4PHJ62FC4FlslYz8VQAd++HXBpsuIkPHRiKEso
+         /4Lm9w5vLxvq/fevQ42Q+rEzRUFf0MqoapZwMoCvreVt/d0VwCIzxeANsq5CM9jCKT5K
+         EiAbwym7VOGQ/rI0J7dpItofr3marMTsHZ5Jt67q41SwA0UTSDfkVh6mNA26/VHqcy2O
+         ObXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722884294; x=1723489094;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6zOpbKZlyyEpf7p8saMgrewPpCPBh0IVajsvpl6fDWM=;
+        b=useLUNiR0MzAdMC0hJX5S1pBjpxnQM5DflZiJrATwWGUiltExHqUe+fdRKOwDm53A2
+         JFHvaoSsavpOue9eFv82/9eSsyIkAnTuMqX4YyMEgbzBTPwy+AXR7a/8KmJIbubD9iK1
+         S+NSkh/H4pMGPyHyJx5w9m/tJj2Fd7rzu75DiAUfdAS/YJF5UjPMlcioeNtvE5lbvqf7
+         PNrJAb6XaGHasTOq85vdTDQkDvl9lHunGWA7WfllrUrb/IzbEVA+4Q3h0GwVrT+DIe8O
+         L2QuxKwAf5QkYfTHYbvoL4vI8sOKyJytixjB54iO14WwWBnHfVnXHJZhtja+kHXSIGrH
+         sb2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXPojvXrJDJal1BO8EIuiWyduEUatl5JqMlXPkoAAQ3z7WnyJeFZjWXUHa4bahhiyWOWF/yWqsDmVvPdbyksnqtYNghU6D/PHyeySXhz2+zlnkfpzfzfw4hUpcma9Q/+Psl
+X-Gm-Message-State: AOJu0YwrGZoQbHQPlKmX/zGyu7jjBiM7TzQDgJF5oO5dwKn87hpbBVAE
+	2U5ebfyRJlgg8sAo0QyGQEySQ/vzGOPtK3zyMiZp/Hj+wE4G7Ck+
+X-Google-Smtp-Source: AGHT+IEc8MlyYYOOdN/Lw9mR/eN3RKaNgkaPfoixAQD508JuVKM3fH7Rh3OJiSf2nvwvdIs0CWBCjA==
+X-Received: by 2002:a05:6512:1243:b0:52c:df6f:a66 with SMTP id 2adb3069b0e04-530bb3b189cmr6793022e87.58.1722884294023;
+        Mon, 05 Aug 2024 11:58:14 -0700 (PDT)
+Received: from pc636 (84-217-131-213.customers.ownit.se. [84.217.131.213])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-530bba10eeasm1215135e87.95.2024.08.05.11.58.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Aug 2024 11:58:13 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 5 Aug 2024 20:58:11 +0200
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: RCU-Task[-Trace] VS EQS (was Re: [PATCH v3 13/25]
- context_tracking, rcu: Rename rcu_dynticks_task*() into rcu_task*())
-Message-ID: <aceda0ba-dac3-4adc-bdc0-a2f63338a52e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240724144325.3307148-1-vschneid@redhat.com>
- <20240724144325.3307148-14-vschneid@redhat.com>
- <ZqJiDlKtD4wvsv1j@localhost.localdomain>
- <31d78183-4526-41e8-90df-d03c95fdb9b2@paulmck-laptop>
- <ZqlmjVyWXIneklCm@pavilion.home>
- <30c6d4aa-7598-4dc1-8592-7533d64714c2@paulmck-laptop>
- <Zqot4NpepOORtNzv@localhost.localdomain>
- <6c915a8d-983a-4cbb-8d89-01e326a16876@paulmck-laptop>
- <ZrDTDkdq6iJvHDWX@localhost.localdomain>
+	Frederic Weisbecker <frederic@kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH] rcu/kvfree: Add kvfree_rcu_barrier() API
+Message-ID: <ZrEgwyQFnmToTNvl@pc636>
+References: <20240801111039.79656-1-urezki@gmail.com>
+ <ZrD537_itA2sWQoA@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZrDTDkdq6iJvHDWX@localhost.localdomain>
+In-Reply-To: <ZrD537_itA2sWQoA@boqun-archlinux>
 
-On Mon, Aug 05, 2024 at 03:26:38PM +0200, Frederic Weisbecker wrote:
-> Le Fri, Aug 02, 2024 at 09:32:08PM -0700, Paul E. McKenney a écrit :
-> > On Wed, Jul 31, 2024 at 02:28:16PM +0200, Frederic Weisbecker wrote:
-> > > Le Tue, Jul 30, 2024 at 03:39:44PM -0700, Paul E. McKenney a écrit :
-> > > > On Wed, Jul 31, 2024 at 12:17:49AM +0200, Frederic Weisbecker wrote:
-> > > > > Le Tue, Jul 30, 2024 at 07:23:58AM -0700, Paul E. McKenney a écrit :
-> > > > > > On Thu, Jul 25, 2024 at 04:32:46PM +0200, Frederic Weisbecker wrote:
-> > > > > > > Le Wed, Jul 24, 2024 at 04:43:13PM +0200, Valentin Schneider a écrit :
-> > > > > > > > -/* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
-> > > > > > > > -static __always_inline void rcu_dynticks_task_trace_enter(void)
-> > > > > > > > +/* Turn on heavyweight RCU tasks trace readers on kernel exit. */
-> > > > > > > > +static __always_inline void rcu_task_trace_exit(void)
-> > > > > > > 
-> > > > > > > Before I proceed on this last one, a few questions for Paul and others:
-> > > > > > > 
-> > > > > > > 1) Why is rcu_dynticks_task_exit() not called while entering in NMI?
-> > > > > > >    Does that mean that NMIs aren't RCU-Task read side critical sections?
-> > > > > > 
-> > > > > > Because Tasks RCU Rude handles that case currently.  So good catch,
-> > > > > > because this might need adjustment when we get rid of Tasks RCU Rude.
-> > > > > > And both rcu_dynticks_task_enter() and rcu_dynticks_task_exit() look safe
-> > > > > > to invoke from NMI handlers.  Memory ordering needs checking, of course.
-> > > > > > 
-> > > > > > Except that on architectures defining CONFIG_ARCH_WANTS_NO_INSTR, Tasks
-> > > > > > RCU should instead check the ct_kernel_enter_state(RCU_DYNTICKS_IDX)
-> > > > > > state, right?  And on those architectures, I believe that
-> > > > > > rcu_dynticks_task_enter() and rcu_dynticks_task_exit() can just be no-ops.
-> > > > > > Or am I missing something here?
-> > > > > 
-> > > > > I think rcu_dynticks_task_enter() and rcu_dynticks_task_exit() are
-> > > > > still needed anyway because the target task can migrate. So unless the rq is locked,
-> > > > > it's hard to match a stable task_cpu() with the corresponding RCU_DYNTICKS_IDX.
-> > > > 
-> > > > Can it really migrate while in entry/exit or deep idle code?  Or am I
-> > > > missing a trick here?
-> > > 
-> > > No but it can migrate before or after EQS. So we need to handle situations like:
-> > > 
-> > >  == CPU 0 ==                      == CPU 1 ==
-> > >                                   // TASK A is on rq
-> > >                                   set_task_cpu(TASK A, 0)
-> > > // TASK B runs
-> > > ct_user_enter()
-> > > ct_user_exit()
-> > > 
-> > > //TASK A runs
-> > > 
-> > > 
-> > > It could be something like the following:
-> > > 
-> > > 
-> > > int rcu_tasks_nohz_full_holdout(struct task_struct *t)
-> > > {
-> > > 	int cpu;
-> > > 	int snap;
-> > > 
-> > > 	cpu = task_cpu(t);
-> > > 
-> > > 	/* Don't miss EQS exit if the task migrated out and in */
-> > > 	smp_rmb()
-> > > 
-> > > 	snap = ct_dynticks_cpu(cpu);
-> > > 	if (snap & RCU_DYNTICKS_IDX)
-> > > 		return true;
-> > > 
-> > > 	/* Check if it's the actual task running */
-> > > 	smp_rmb()
-> > > 
-> > > 	if (rcu_dereference_raw(cpu_curr(cpu)) != t)
-> > > 		return true;
-> > > 
-> > > 	/* Make sure the task hasn't migrated in after the above EQS */
-> > > 	smp_rmb()
-> > > 
-> > > 	
-> > > 	return ct_dynticks_cpu(cpu) != snap;
-> > > }
-> > > 
-> > > But there is still a risk that ct_dynticks wraps before the last test. So
-> > > we would need task_call_func() if task_cpu() is in nohz_full mode.
+On Mon, Aug 05, 2024 at 09:12:15AM -0700, Boqun Feng wrote:
+> On Thu, Aug 01, 2024 at 01:10:39PM +0200, Uladzislau Rezki (Sony) wrote:
+> > Add a kvfree_rcu_barrier() function. It waits until all
+> > in-flight pointers are freed over RCU machinery. It does
+> > not wait any GP completion and it is within its right to
+> > return immediately if there are no outstanding pointers.
 > > 
-> > Good point, migration just before or just after can look much the same
-> > as migrating during..
+> > This function is useful when there is a need to guarantee
+> > that a memory is fully freed before destroying memory caches.
+> > For example, during unloading a kernel module.
 > > 
-> > > > > > > 2) Looking further into CONFIG_TASKS_TRACE_RCU_READ_MB=y, it seems to
-> > > > > > >    allow for uses of rcu_read_[un]lock_trace() while RCU is not watching
-> > > > > > >    (EQS). Is it really a good idea to support that? Are we aware of any
-> > > > > > >    such potential usecase?
-> > > > > > 
-> > > > > > I hope that in the longer term, there will be no reason to support this.
-> > > > > > Right now, architectures not defining CONFIG_ARCH_WANTS_NO_INSTR must
-> > > > > > support this because tracers really can attach probes where RCU is
-> > > > > > not watching.
-> > > > > > 
-> > > > > > And even now, in architectures defining CONFIG_ARCH_WANTS_NO_INSTR, I
-> > > > > > am not convinced that the early incoming and late outgoing CPU-hotplug
-> > > > > > paths are handled correctly.  RCU is not watching them, but I am not so
-> > > > > > sure that they are all marked noinstr as needed.
-> > > > > 
-> > > > > Ok I see...
-> > > > 
-> > > > If need be, the outgoing-CPU transition to RCU-not-watching could be
-> > > > delayed into arch-specific code.  We already allow this for the incoming
-> > > > transition.
-> > > 
-> > > That's a lot of scary architectures code to handle :-)
-> > > And how do we determine which place is finally safe to stop watching?
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  include/linux/rcutiny.h |   5 ++
+> >  include/linux/rcutree.h |   1 +
+> >  kernel/rcu/tree.c       | 103 ++++++++++++++++++++++++++++++++++++----
+> >  3 files changed, 101 insertions(+), 8 deletions(-)
 > > 
-> > Huh.  One reason for the current smp_call_function_single() in
-> > cpuhp_report_idle_dead() was some ARM32 CPUs that shut down caching on
-> > their way out.  this made it impossible to use shared-variable-based
-> > CPU-dead notification.  I wonder if Arnd's deprecation schedule
-> > for ARM32-based platforms will allow us to go back to shared-memory
-> > notification, which might make this sort of thing easier.
+> > diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> > index d9ac7b136aea..522123050ff8 100644
+> > --- a/include/linux/rcutiny.h
+> > +++ b/include/linux/rcutiny.h
+> > @@ -111,6 +111,11 @@ static inline void __kvfree_call_rcu(struct rcu_head *head, void *ptr)
+> >  	kvfree(ptr);
+> >  }
+> >  
+> > +static inline void kvfree_rcu_barrier(void)
+> > +{
+> > +	rcu_barrier();
+> > +}
+> > +
+> >  #ifdef CONFIG_KASAN_GENERIC
+> >  void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+> >  #else
+> > diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+> > index 254244202ea9..58e7db80f3a8 100644
+> > --- a/include/linux/rcutree.h
+> > +++ b/include/linux/rcutree.h
+> > @@ -35,6 +35,7 @@ static inline void rcu_virt_note_context_switch(void)
+> >  
+> >  void synchronize_rcu_expedited(void);
+> >  void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+> > +void kvfree_rcu_barrier(void);
+> >  
+> >  void rcu_barrier(void);
+> >  void rcu_momentary_dyntick_idle(void);
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 28c7031711a3..1423013f9fe6 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3550,18 +3550,15 @@ kvfree_rcu_drain_ready(struct kfree_rcu_cpu *krcp)
+> >  }
+> >  
+> >  /*
+> > - * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+> > + * Return: %true if a work is queued, %false otherwise.
+> >   */
+> > -static void kfree_rcu_monitor(struct work_struct *work)
+> > +static bool
+> > +kvfree_rcu_queue_batch(struct kfree_rcu_cpu *krcp)
+> >  {
+> > -	struct kfree_rcu_cpu *krcp = container_of(work,
+> > -		struct kfree_rcu_cpu, monitor_work.work);
+> >  	unsigned long flags;
+> > +	bool queued = false;
+> >  	int i, j;
+> >  
+> > -	// Drain ready for reclaim.
+> > -	kvfree_rcu_drain_ready(krcp);
+> > -
+> >  	raw_spin_lock_irqsave(&krcp->lock, flags);
+> >  
+> >  	// Attempt to start a new batch.
+> > @@ -3600,11 +3597,27 @@ static void kfree_rcu_monitor(struct work_struct *work)
+> >  			// be that the work is in the pending state when
+> >  			// channels have been detached following by each
+> >  			// other.
+> > -			queue_rcu_work(system_wq, &krwp->rcu_work);
+> > +			queued = queue_rcu_work(system_wq, &krwp->rcu_work);
+> >  		}
+> >  	}
+> >  
+> >  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > +	return queued;
+> > +}
+> > +
+> > +/*
+> > + * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+> > + */
+> > +static void kfree_rcu_monitor(struct work_struct *work)
+> > +{
+> > +	struct kfree_rcu_cpu *krcp = container_of(work,
+> > +		struct kfree_rcu_cpu, monitor_work.work);
+> > +
+> > +	// Drain ready for reclaim.
+> > +	kvfree_rcu_drain_ready(krcp);
+> > +
+> > +	// Queue a batch for a rest.
+> > +	kvfree_rcu_queue_batch(krcp);
+> >  
+> >  	// If there is nothing to detach, it means that our job is
+> >  	// successfully done here. In case of having at least one
+> > @@ -3825,6 +3838,80 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+> >  
+> > +/**
+> > + * kvfree_rcu_barrier - Wait until all in-flight kvfree_rcu() complete.
+> > + *
+> > + * Note that a single argument of kvfree_rcu() call has a slow path that
+> > + * triggers synchronize_rcu() following by freeing a pointer. It is done
+> > + * before the return from the function. Therefore for any single-argument
+> > + * call that will result in a kfree() to a cache that is to be destroyed
+> > + * during module exit, it is developer's responsibility to ensure that all
+> > + * such calls have returned before the call to kmem_cache_destroy().
+> > + */
+> > +void kvfree_rcu_barrier(void)
+> > +{
+> > +	struct kfree_rcu_cpu_work *krwp;
+> > +	struct kfree_rcu_cpu *krcp;
+> > +	bool queued;
+> > +	int i, cpu;
+> > +
+> > +	/*
+> > +	 * Firstly we detach objects and queue them over an RCU-batch
+> > +	 * for all CPUs. Finally queued works are flushed for each CPU.
+> > +	 *
+> > +	 * Please note. If there are outstanding batches for a particular
+> > +	 * CPU, those have to be finished first following by queuing a new.
+> > +	 */
+> > +	for_each_possible_cpu(cpu) {
+> > +		krcp = per_cpu_ptr(&krc, cpu);
+> > +
+> > +		/*
+> > +		 * Check if this CPU has any objects which have been queued for a
+> > +		 * new GP completion. If not(means nothing to detach), we are done
+> > +		 * with it. If any batch is pending/running for this "krcp", below
+> > +		 * per-cpu flush_rcu_work() waits its completion(see last step).
+> > +		 */
+> > +		if (!need_offload_krc(krcp))
 > 
-> git blame retrieved that:
+> Still trying to figure out the locking inside kfree_rcu(), but don't you
+> need holding krcp->lock to performance these checks?
 > 
-> 71f87b2fc64c (cpu/hotplug: Plug death reporting race)
-> 
-> For the reason why using smp_call_function_single():
-> 
->     """
->     We cant call complete after rcu_report_dead(), so instead of going back to
->     busy polling, simply issue a function call to do the completion.
->     """
-> 
-> This doesn't state exactly why as I don't see obvious use of RCU there. But
-> RCU-TASK-TRACE definetly doesn't want to stop watching while complete() is
-> called.
+Here we just need answer the question, "need" or not "need" in order to
+bail out _early_ for this CPU. We are interested in _already_ in-flight
+objects, i.e. the ones before entry to barrier function.
 
-With lockdep, the lock acquisition and release in complete_with_flags()
-would splat, though this could be handled by using a low-level lock
-acquisition and release that didn't mess with lockdep.  With the resulting
-risks of missed deadlock detection, of course!
+The reason why we have it is - it does not cost. In fact we could eliminate
+it and directly queue a batch but it requires locking and more CPU cycles.
 
-With tracing enabled, there is the trace_sched_waking() within
-try_to_wake_up() along with the trace_sched_wakeup() within
-ttwu_do_wakeup().  And more beyond that, but I am lazy this morning.  ;-)
+That is why there is such check :)
 
-> Another thing to consider is that rcutree_migrate_callbacks() may execute
-> concurrently with rcutree_report_cpu_dead() otherwise. This might work ok,
-> despite the WARN_ON_ONCE(rcu_rdp_cpu_online(rdp)) in
-> rcutree_migrate_callbacks(). But that's doesn't make it more a good idea :-)
-> 
-> As for the reason why calling complete() _after_ rcutree_report_cpu_dead():
-> 
->     """
->     Paul noticed that the conversion of the death reporting introduced a race
->     where the outgoing cpu might be delayed after waking the controll processor,
->     so it might not be able to call rcu_report_dead() before being physically
->     removed, leading to RCU stalls.
->     """
-
-There were also ARM32 splats that have aged out of my mental cache.
-
-> I'm lacking details but perhaps the call to __cpu_die() by the control CPU on
-> some archs may kill the CPU before it used to reach rcu_report_dead() ? No idea.
-> But we need to know if __cpu_die() can kill the CPU before it reaches
-> arch_cpu_idle_dead(). If it's not the case, then we can do something like this:
-> 
-> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-> index 24b1e1143260..fb5b866c2fb3 100644
-> --- a/kernel/context_tracking.c
-> +++ b/kernel/context_tracking.c
-> @@ -31,7 +31,6 @@ DEFINE_PER_CPU(struct context_tracking, context_tracking) = {
->  	.dynticks_nesting = 1,
->  	.dynticks_nmi_nesting = DYNTICK_IRQ_NONIDLE,
->  #endif
-> -	.state = ATOMIC_INIT(RCU_DYNTICKS_IDX),
-
-Don't you still need the initial state for the boot CPU?
-
->  };
->  EXPORT_SYMBOL_GPL(context_tracking);
->  
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index 6e78d071beb5..7ebaf04af37a 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -307,6 +307,7 @@ static void do_idle(void)
->  
->  		if (cpu_is_offline(cpu)) {
->  			cpuhp_report_idle_dead();
-> +			ct_state_inc(RCU_DYNTICKS_IDX);
->  			arch_cpu_idle_dead();
->  		}
->  
-> This mirrors rcutree_report_cpu_starting() -> rcu_dynticks_eqs_online()
-> And then we can make RCU-TASKS not worry about rcu_cpu_online() anymore
-> and only care about the context tracking.
-
-For that to work, we need all architectures to be OK for Tasks Rude RCU
-being removed, right?  Plus that would make all of arch_cpu_idle_dead()
-untraceable.  Is that a good thing?
-
-> The CPU up path looks saner with rcutree_report_cpu_starting() called early
-> enough on sane archs... Otherwise it's easy to fix case by case.
-> 
-> Thoughts?
-
-Not entirly sure yet, but I agree some fix would be good!
-
-							Thanx, Paul
+--
+Uladzislau Rezki
