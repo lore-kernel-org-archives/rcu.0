@@ -1,243 +1,296 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C12913C8F9;
-	Mon,  5 Aug 2024 14:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0661514E1;
+	Mon,  5 Aug 2024 16:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722869635; cv=none; b=GrdAys9JFm1tQiSPGpNk1X+lu+K+uf6oEr0dZG5k3vPSXGevCEOwprj3CDzeBX6zx9xGAaWFR8iZjjp+EgvvBqNhj4uTvMUgft7QoVkBxFe3unXWHvvVrQ+G8bzGxIw4kWKcNpOIDD0O9fqdN1Jsxol8eqcRTf8qgo89rXXNnFE=
+	t=1722874400; cv=none; b=Avs2HlZByKa9YRzTsJRZ9l5tiAe0Fj5HboUSM4lWjO0KXdCyL4ogM/Z3Hm9uyuVv0IOft6YneF1KGsyStI8Yz1PRxhaH1/ExU7wrjR3MIULxv42TuLnDoo68emRAQIhz9PznZ9oZ1apRK/EVXXiU5nfEyJYvTm6PRl5yr+gbFE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722869635; c=relaxed/simple;
-	bh=AFKkK9wMtt0ZdpSsvOJbRBLYQvbBfWYor76BBMLpY24=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gt83J5AZ0+C/FTdphI7p1dgSUy37r01BGzfaxKtxJAFxYv5gEhklUpb5JZbu4WRWeWw+gKrX8C133t1BNSMJJ4fN0HcO/bcG0FDR60e4Y7lu+ZNHHo6yMaJL5M2SUP5HZfIFO8nfoNGXyZ4wySem60GR4ArE30221Yl6E+5hZm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tWJzkcjL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ELgkofOV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tWJzkcjL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ELgkofOV; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1722874400; c=relaxed/simple;
+	bh=heTlOsnvrlkYyRenUAvoRgHep2KthxBZvpaFf043SUM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OZXY5XHCj5ldzOf11rlTT+AQGn8pAWdyAfjf7gLOW7/tsAlUt7zYgq+7JXc9h84tw7cnrV/9OeQlL/HQYjHGskZqJsxOv1vdIrDqZMG71deD/qDnetYjX+Vb9GOCDY89jifz1/H+CjGRyNcfV3aVgWT4B+28KCek8teVBUzwFCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=doipdU9i; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tWJzkcjL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ELgkofOV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tWJzkcjL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ELgkofOV"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 13D5F1F842;
-	Mon,  5 Aug 2024 14:53:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722869632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=bvNbJoamxu2M7+IQIldidNtyEfetX5P75wnrRRF3zi4=;
-	b=tWJzkcjLGsnnViO0e/yHXPkVFnVOz8ywCedF8Tv88h5EHM9dLZtfcwnxnTdi5oujbvYbKF
-	wq24RZU126X317bAlF38LjGi0N0nteEU8eaYlU0YMux4SND6Ua8T1tY385QL3g54xVGDIw
-	QKUxtxdNa9s2bjfQgWVzTFaXDUePeAA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722869632;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=bvNbJoamxu2M7+IQIldidNtyEfetX5P75wnrRRF3zi4=;
-	b=ELgkofOVCZ3V9w7xtC5B87rQDsueOQunXmqpFeaIoPKcEket4kZN7/YqpAfH9JqqtxwEfb
-	3fcB84h9dJVO2IBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722869632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=bvNbJoamxu2M7+IQIldidNtyEfetX5P75wnrRRF3zi4=;
-	b=tWJzkcjLGsnnViO0e/yHXPkVFnVOz8ywCedF8Tv88h5EHM9dLZtfcwnxnTdi5oujbvYbKF
-	wq24RZU126X317bAlF38LjGi0N0nteEU8eaYlU0YMux4SND6Ua8T1tY385QL3g54xVGDIw
-	QKUxtxdNa9s2bjfQgWVzTFaXDUePeAA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722869632;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=bvNbJoamxu2M7+IQIldidNtyEfetX5P75wnrRRF3zi4=;
-	b=ELgkofOVCZ3V9w7xtC5B87rQDsueOQunXmqpFeaIoPKcEket4kZN7/YqpAfH9JqqtxwEfb
-	3fcB84h9dJVO2IBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7E8013ACF;
-	Mon,  5 Aug 2024 14:53:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id g4cVOH/nsGaMVQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 05 Aug 2024 14:53:51 +0000
-Message-ID: <00914d25-f0ae-4b00-9608-2457821c071c@suse.cz>
-Date: Mon, 5 Aug 2024 16:53:51 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="doipdU9i"
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-66599ca3470so91491287b3.2;
+        Mon, 05 Aug 2024 09:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722874397; x=1723479197; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tmwnsEoHbAY87EuQU9lnZlUpz9Uh5Ddif/oMnbsSZCc=;
+        b=doipdU9im6m2U+XjKD/M7GV9KmCTstrcf3Fsc6+Irn+R2M7J5l6RFllt7s0l8VMcrU
+         6IEDwsnV79kJ8ULdUhwDB+pdRTvIZEXFakPdH0x5ovy6XBtHqIyUGeA+rwv0eXMnyG3E
+         mpeGv+vRREuICDPgyH9OV7Rc7o+Iphabe4uWJbVAWsY6NWwlrNPuP0Nqx60R2+hDuLUu
+         bxVSl2Et/VfGMsc/JktqPvJG75293M711zhelDmttU2tZVdPZ8xbES+PczbxpvqQrnl/
+         C1iseOe77eBvY+GLrj38jk6nDv5ePc8CtvnM0IdMuqx1La0tc7mxlHbcgiJJ/BulTPlH
+         nzCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722874397; x=1723479197;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tmwnsEoHbAY87EuQU9lnZlUpz9Uh5Ddif/oMnbsSZCc=;
+        b=vw+Ht9StBNYMOr5nKfrFbBpZkTDyzIV45/YB3RD5lzXIsE/G+GfNkQ5KI4KQAp2Zdl
+         mOcNm6GnzuGrvYDZ+ABKl/ppfOJpBqwhZqAdIscD7HMUabPGeml2VeGn5lDxDS+Xl6UC
+         rx90P8SjE+vdnfKqLtQ0qYJ4qzDU8UIbr5UbgFcezMilje9X2FTwoK3lD4xuyIRyQhl9
+         Ne5uCwKOckxIX4XqCJaOrhaPQ0evsZHwXarHu+b7c6NYLaVWAEjgJ1lvxEZHafLoFsru
+         kX6XWPwsfvT9z8GKjtLsDT4dNNF+xK7Nb6M/FtGowXJ5gDb7H48ZH32mts+8Tgpj7J96
+         g+uA==
+X-Forwarded-Encrypted: i=1; AJvYcCV+Qal95+gvxoBxUcTz5BaSKRqfv2NixsUo686HPCyY9/llRcNmYBCEyR6dEom2BDOViGNInXaVAkL6Txt8ridn5h5aGC4WFZa79DDPFtF9Vo4cRjpEc0IIdLa124VYNusa
+X-Gm-Message-State: AOJu0YzoKL9Pk7OAB7OaOH99mRusNP9ojYlHEVueQvHqoehOz7ClWOmx
+	icYV7zw/SG0Nmfb6owMPthcpuKegEo7kW8/Hi4hAFFYA90WgKc5G
+X-Google-Smtp-Source: AGHT+IHN3aad2Wyqnis/9hpIDfEq15oOWP/Hvs90/pTbu/WCdAywybczz/U+ppOhRgHVP++FthyJXg==
+X-Received: by 2002:a05:690c:2a44:b0:689:d89a:ecf4 with SMTP id 00721157ae682-689d89af2ddmr108995887b3.36.1722874397350;
+        Mon, 05 Aug 2024 09:13:17 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb9c78abfbsm36977226d6.30.2024.08.05.09.13.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Aug 2024 09:13:16 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 52025120006B;
+	Mon,  5 Aug 2024 12:13:16 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 05 Aug 2024 12:13:16 -0400
+X-ME-Sender: <xms:HPqwZvDcH4cf2qvne7gC_agaKuGUFXu8F1Ei-Js6JgwDlST-yIIbEw>
+    <xme:HPqwZljORj7vtem-pDM-ZW5bbBJ0XjQC1x0Qo-U-Ku_mDC8AR5n8HC19xfLpd7UmM
+    EhIc4Oe4nkKzYRaRA>
+X-ME-Received: <xmr:HPqwZqlDCaLdot984MvKnxqZJXYl88CGpx6rQGNUHtZJyEOj9Z7sHCvuYH8gAA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrkeeigddutddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvgdpnhgspghrtghpthhtoheptd
+X-ME-Proxy: <xmx:HPqwZhwRa4OGviHAfyV0KH6QhBpbQuiER-RV7dvKabM4T6OL3SBNCQ>
+    <xmx:HPqwZkQ1CXCUxLIPqpaV6uzT7HB8hdRlb5q36eXbSTm5hFeE3DcOxg>
+    <xmx:HPqwZkZiXY1moWhy4QID3hrsVwUkV7w42HOqH6yOv--FzREYaHcMHA>
+    <xmx:HPqwZlRNM9bkdeqNS88xC2lkAF5nTVIlgqtGMAoEumFpGYFyVobd7w>
+    <xmx:HPqwZqAxcnUdC2C4pcBYcg4ciysDwZRderxj7Ch_8Arscep7kRCyroWT>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 5 Aug 2024 12:13:15 -0400 (EDT)
+Date: Mon, 5 Aug 2024 09:12:15 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH] rcu/kvfree: Add kvfree_rcu_barrier() API
+Message-ID: <ZrD537_itA2sWQoA@boqun-archlinux>
+References: <20240801111039.79656-1-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 12/20] kthread: Implement preferred affinity
-Content-Language: en-US
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Kees Cook <kees@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>, Boqun Feng <boqun.feng@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-References: <20240726215701.19459-1-frederic@kernel.org>
- <20240726215701.19459-13-frederic@kernel.org>
- <4e9d1f6d-9cd8-493c-9440-b46a99f1c8af@suse.cz>
- <ZrDhp3TLz6Kp93BJ@localhost.localdomain>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <ZrDhp3TLz6Kp93BJ@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.79 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,kernel.org,infradead.org,linutronix.de,kvack.org,joelfernandes.org,gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
-X-Spam-Score: -2.79
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240801111039.79656-1-urezki@gmail.com>
 
-On 8/5/24 16:28, Frederic Weisbecker wrote:
-> Le Tue, Jul 30, 2024 at 05:49:51PM +0200, Vlastimil Babka a écrit :
->> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->> 
->> Nit:
->> 
->> > +int kthread_affine_preferred(struct task_struct *p, const struct cpumask *mask)
->> > +{
->> > +	struct kthread *kthread = to_kthread(p);
->> > +	cpumask_var_t affinity;
->> > +	unsigned long flags;
->> > +	int ret;
->> > +
->> > +	if (!wait_task_inactive(p, TASK_UNINTERRUPTIBLE) || kthread->started) {
->> > +		WARN_ON(1);
->> > +		return -EINVAL;
->> > +	}
->> > +
->> 
->> Should we also fail if kthread->preferred_affinity already exist? In
->> case somebody calls this twice.
+On Thu, Aug 01, 2024 at 01:10:39PM +0200, Uladzislau Rezki (Sony) wrote:
+> Add a kvfree_rcu_barrier() function. It waits until all
+> in-flight pointers are freed over RCU machinery. It does
+> not wait any GP completion and it is within its right to
+> return immediately if there are no outstanding pointers.
 > 
-> Good point!
+> This function is useful when there is a need to guarantee
+> that a memory is fully freed before destroying memory caches.
+> For example, during unloading a kernel module.
 > 
->> 
->> Also for some of the use cases (kswapd, kcompactd) it would make sense
->> to be able to add cpus of a node as they are onlined. Which seems we
->> didn't do, except some corner case handling in kcompactd, but maybe we
->> should? I wonder if the current implementation of onlining a completely
->> new node with cpus does the right thing as a result of the individual
->> onlining operations, or we end up with being affined to a single cpu (or
->> none).
->> 
->> But that would need some kind of kthread_affine_preferred_update()
->> implementation?
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  include/linux/rcutiny.h |   5 ++
+>  include/linux/rcutree.h |   1 +
+>  kernel/rcu/tree.c       | 103 ++++++++++++++++++++++++++++++++++++----
+>  3 files changed, 101 insertions(+), 8 deletions(-)
 > 
-> So you mean that the "for_each_node_state()" loop in kcompactd doesn't
-> handle all possible nodes but only those online when it's called? Or
-> am I confused?
+> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> index d9ac7b136aea..522123050ff8 100644
+> --- a/include/linux/rcutiny.h
+> +++ b/include/linux/rcutiny.h
+> @@ -111,6 +111,11 @@ static inline void __kvfree_call_rcu(struct rcu_head *head, void *ptr)
+>  	kvfree(ptr);
+>  }
+>  
+> +static inline void kvfree_rcu_barrier(void)
+> +{
+> +	rcu_barrier();
+> +}
+> +
+>  #ifdef CONFIG_KASAN_GENERIC
+>  void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+>  #else
+> diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+> index 254244202ea9..58e7db80f3a8 100644
+> --- a/include/linux/rcutree.h
+> +++ b/include/linux/rcutree.h
+> @@ -35,6 +35,7 @@ static inline void rcu_virt_note_context_switch(void)
+>  
+>  void synchronize_rcu_expedited(void);
+>  void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+> +void kvfree_rcu_barrier(void);
+>  
+>  void rcu_barrier(void);
+>  void rcu_momentary_dyntick_idle(void);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 28c7031711a3..1423013f9fe6 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3550,18 +3550,15 @@ kvfree_rcu_drain_ready(struct kfree_rcu_cpu *krcp)
+>  }
+>  
+>  /*
+> - * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+> + * Return: %true if a work is queued, %false otherwise.
+>   */
+> -static void kfree_rcu_monitor(struct work_struct *work)
+> +static bool
+> +kvfree_rcu_queue_batch(struct kfree_rcu_cpu *krcp)
+>  {
+> -	struct kfree_rcu_cpu *krcp = container_of(work,
+> -		struct kfree_rcu_cpu, monitor_work.work);
+>  	unsigned long flags;
+> +	bool queued = false;
+>  	int i, j;
+>  
+> -	// Drain ready for reclaim.
+> -	kvfree_rcu_drain_ready(krcp);
+> -
+>  	raw_spin_lock_irqsave(&krcp->lock, flags);
+>  
+>  	// Attempt to start a new batch.
+> @@ -3600,11 +3597,27 @@ static void kfree_rcu_monitor(struct work_struct *work)
+>  			// be that the work is in the pending state when
+>  			// channels have been detached following by each
+>  			// other.
+> -			queue_rcu_work(system_wq, &krwp->rcu_work);
+> +			queued = queue_rcu_work(system_wq, &krwp->rcu_work);
+>  		}
+>  	}
+>  
+>  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +	return queued;
+> +}
+> +
+> +/*
+> + * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+> + */
+> +static void kfree_rcu_monitor(struct work_struct *work)
+> +{
+> +	struct kfree_rcu_cpu *krcp = container_of(work,
+> +		struct kfree_rcu_cpu, monitor_work.work);
+> +
+> +	// Drain ready for reclaim.
+> +	kvfree_rcu_drain_ready(krcp);
+> +
+> +	// Queue a batch for a rest.
+> +	kvfree_rcu_queue_batch(krcp);
+>  
+>  	// If there is nothing to detach, it means that our job is
+>  	// successfully done here. In case of having at least one
+> @@ -3825,6 +3838,80 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+>  }
+>  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+>  
+> +/**
+> + * kvfree_rcu_barrier - Wait until all in-flight kvfree_rcu() complete.
+> + *
+> + * Note that a single argument of kvfree_rcu() call has a slow path that
+> + * triggers synchronize_rcu() following by freeing a pointer. It is done
+> + * before the return from the function. Therefore for any single-argument
+> + * call that will result in a kfree() to a cache that is to be destroyed
+> + * during module exit, it is developer's responsibility to ensure that all
+> + * such calls have returned before the call to kmem_cache_destroy().
+> + */
+> +void kvfree_rcu_barrier(void)
+> +{
+> +	struct kfree_rcu_cpu_work *krwp;
+> +	struct kfree_rcu_cpu *krcp;
+> +	bool queued;
+> +	int i, cpu;
+> +
+> +	/*
+> +	 * Firstly we detach objects and queue them over an RCU-batch
+> +	 * for all CPUs. Finally queued works are flushed for each CPU.
+> +	 *
+> +	 * Please note. If there are outstanding batches for a particular
+> +	 * CPU, those have to be finished first following by queuing a new.
+> +	 */
+> +	for_each_possible_cpu(cpu) {
+> +		krcp = per_cpu_ptr(&krc, cpu);
+> +
+> +		/*
+> +		 * Check if this CPU has any objects which have been queued for a
+> +		 * new GP completion. If not(means nothing to detach), we are done
+> +		 * with it. If any batch is pending/running for this "krcp", below
+> +		 * per-cpu flush_rcu_work() waits its completion(see last step).
+> +		 */
+> +		if (!need_offload_krc(krcp))
 
-If you mean the loop in kcompactd_init() then indeed, but we also have a
-hook in online_pages() to start new threads on newly onlined nodes, so
-that's not a problem.
+Still trying to figure out the locking inside kfree_rcu(), but don't you
+need holding krcp->lock to performance these checks?
 
-The problem (I think) I see is cpumask_of_node(pgdat->node_id) is a snapshot
-of cpus running on the NUMA node the time, and is never updated later as new
-cpus might be brought up.
+Regards,
+Boqun
 
-kcompactd_cpu_online() does try to update that when cpus are onlined (in a
-clumsy way), there was nothing like that for kswapd and after your series
-this update is also removed for kcompactd.
-
-> If all users of preferred affinity were to use NUMA nodes, it could be
-> a good idea to do a flavour of kernel/smpboot.c which would handle
-> per-node kthreads instead of per-cpu kthreads. I initially thought
-> about that. It would have handled all the lifecycle of those kthreads,
-> including creation, against hotplug. Unfortunately RCU doesn't rely on
-> per-NUMA nodes but rather use its own tree.
+> +			continue;
+> +
+> +		while (1) {
+> +			/*
+> +			 * If we are not able to queue a new RCU work it means:
+> +			 * - batches for this CPU are still in flight which should
+> +			 *   be flushed first and then repeat;
+> +			 * - no objects to detach, because of concurrency.
+> +			 */
+> +			queued = kvfree_rcu_queue_batch(krcp);
+> +
+> +			/*
+> +			 * Bail out, if there is no need to offload this "krcp"
+> +			 * anymore. As noted earlier it can run concurrently.
+> +			 */
+> +			if (queued || !need_offload_krc(krcp))
+> +				break;
+> +
+> +			/* There are ongoing batches. */
+> +			for (i = 0; i < KFREE_N_BATCHES; i++) {
+> +				krwp = &(krcp->krw_arr[i]);
+> +				flush_rcu_work(&krwp->rcu_work);
+> +			}
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * Now we guarantee that all objects are flushed.
+> +	 */
+> +	for_each_possible_cpu(cpu) {
+> +		krcp = per_cpu_ptr(&krc, cpu);
+> +
+> +		for (i = 0; i < KFREE_N_BATCHES; i++) {
+> +			krwp = &(krcp->krw_arr[i]);
+> +			flush_rcu_work(&krwp->rcu_work);
+> +		}
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
+> +
+>  static unsigned long
+>  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+>  {
+> -- 
+> 2.39.2
 > 
-> If there be more users of real per NUMA nodes kthreads than kswapd and
-> kcompactd, of course that would be much worth considering.
-
-Yeah it's not that compelling, but a way to update the preferred affine mask
-in response to cpu hotplug events, that kswapd and kcompactd could use,
-would be sufficient. And maybe more widely useful.
-
-I guess there could be a callback defined for kthread to provide a new
-preferred_affinity, that you'd call from kthreads_hotplug_update() ?
-And kcompactd and kswapd could both use the same callback that interprets
-kthread_data() as pgdat and fetches a new cpumask of it?
-
-> Thanks.
-
