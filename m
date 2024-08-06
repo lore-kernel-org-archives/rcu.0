@@ -1,248 +1,236 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E08173355
-	for <rcu@vger.kernel.org>; Tue,  6 Aug 2024 06:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F01143C4B;
+	Tue,  6 Aug 2024 11:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722924570; cv=none; b=Z7XwX96fgyLMn5tOUIIK0+/vSYfngMJ4cxlqiDiA41ZzhKoDS93fKemqom9KQr7KneS1cmn7n4iZjBdIV8U6DNyHny8xJT+73AAE8B1wEAoNjDjFylFSKyk2niM9WxzWG9SmV740J2/6ovxMF8t3KqSAU7GVITtA2PH1dtQhaHA=
+	t=1722942523; cv=none; b=eklTzOYYsb22qeQciTWVc9N9IHF6p/CNUElKtI1ewM28gcynnhwcP6Akzk3+ptMVUpcIkZeDm0lOPvoNgJzK0cGIvHd0stodqmtbZS0oFYG2UZnaCD3FZgYh/PRfPoijOpjmilJOXndS1A/P2Yw4rPCT8KA37UNcqjJP8TYoxvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722924570; c=relaxed/simple;
-	bh=ZsefIYStrGDb9k8xax2Vyy8z1RQ3FSStZHl5YNa9OPc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=TLav8H2nzB8VywGUqO503onu9Rxtxs9WUtNSsgTJe4aCLnsZA+i/Jl/qtMHet4U3BN7Fxflw1bijF8xq2HwXaJ39BiKImggOqJIaGPcf+2wN+Dk9YFEvFcpPN4tay3MP+ui3YbmBEkCQJDGCguXXRyJWAYmhkI1ag1dUoHIp5fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RhcXKv1W; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1722942523; c=relaxed/simple;
+	bh=kqjd1RndqoKtsQOhXiT5G5GjYhb1LlW7HBnhRJnm26U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eD98YI9kxUqMldXEnpO84++s6vUHdP448Kka148XLHG4aRv2YhT+rMMsQHVJXyMG8J2mvLT/O2eso/m5rKJ5j2/9DIwPqlxyeE/SEymUPi1uAF25brdShsQMbQH/rF386MG32w11kn0D+Rej154ERkusxJHDw7wH7O/sCLJImow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q5CaJ0td; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MykqE4Bh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q5CaJ0td; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MykqE4Bh; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RhcXKv1W"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722924567;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q5CaJ0td";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MykqE4Bh";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q5CaJ0td";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MykqE4Bh"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8B91D21C86;
+	Tue,  6 Aug 2024 11:08:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1722942519; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4SFTgS3RSxMXnR79gxMgVDPeEdFnu+n/zpjK6NCgI6U=;
-	b=RhcXKv1Wgjl2ew1qFd9X+r228qxlLOTNKAFTaAkVh6Z3tkjo5bBTqhVVT7MP31BNV2IdR9
-	4WScEGngeTTq4d9fnVitaMgmUcx+PR5K3oPoNcyxJCNRf3vD+E69Kx729dBTcJOCwpuwHL
-	snWcAcXjozPIJvAV0SFqEw3zHO93WZ0=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-JfrThn2GNNCzqja2cpGrog-1; Tue, 06 Aug 2024 02:09:24 -0400
-X-MC-Unique: JfrThn2GNNCzqja2cpGrog-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-70ac9630e3aso659667a12.1
-        for <rcu@vger.kernel.org>; Mon, 05 Aug 2024 23:09:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722924563; x=1723529363;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4SFTgS3RSxMXnR79gxMgVDPeEdFnu+n/zpjK6NCgI6U=;
-        b=Zq5bq0XDopZQeWGWHimaWLsF3qrb/ZNGMz/s7OjLfg71ctlZwxXuIAbLYL46VJjXB2
-         HoHvlCFoQdhM5IT9yhdYCunonnGXzqvmnDVFtQzL0R9w9sZ9l2DaNHrxlZmDwd2fw4oc
-         /Lxy+hxqVtHfZsZn309lkNKTxm0lfI1tqwLJJo4sIeJpM1fLx5iik4z6cKiyQ+lRUKuB
-         0lZT0FNE35BLALIHR8tGJ1FobOzpZLzgM900Av7Bit4oxElx8KWTn9PIQxVKstNCUuWN
-         53vvYi3w1yKmPCqolfhZo4616MyzpCwRS1cs5ddWcG1dm8g33UWCDdYy/2wDr2Na0CY+
-         qQTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXCIdz0+r3DzmA1gMOPTaiosZPqz9V4REHgFA32dXENUGIaeZjPoOMI70XkO3+LCyv3Cxn8nuI3+SHw5gi03W4iPsw8
-X-Gm-Message-State: AOJu0YxJvlx+zpr1lbVRvy1Bp5mep8a5aC5QpTFrcPl8XKCuMrMUJmxo
-	I0lHGMpanXd3WMtmHnOq73anlAxUum9Q0dMUSx5OPJV//FubumxXzoBpm8Z8UKMWT6/1Lm3++EE
-	lk0YImVylhT6ieN/MBMlDqSPR5vh8w+NijLeReBrvuGbWSBi4Uw==
-X-Received: by 2002:a05:6a21:a4c1:b0:1c4:dae8:c72f with SMTP id adf61e73a8af0-1c699559d86mr13937334637.19.1722924563213;
-        Mon, 05 Aug 2024 23:09:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEFAB4iDFaLVVFzQSknryXyAqbAibTwTchg6n6ZX0voJ3rtXiQO8ekPM1EV6qpN/RcplUFTmQ==
-X-Received: by 2002:a05:6a21:a4c1:b0:1c4:dae8:c72f with SMTP id adf61e73a8af0-1c699559d86mr13937320637.19.1722924562815;
-        Mon, 05 Aug 2024 23:09:22 -0700 (PDT)
-Received: from LeoBras.redhat.com ([2804:431:c7ed:e5a3:54cb:9e69:eacc:b949])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7106ec3eb7bsm6387179b3a.48.2024.08.05.23.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Aug 2024 23:09:22 -0700 (PDT)
-From: Leonardo Bras <leobras@redhat.com>
-To: neeraj.upadhyay@kernel.org
-Cc: Leonardo Bras <leobras@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	mingo@kernel.org,
-	peterz@infradead.org,
-	paulmck@kernel.org,
-	imran.f.khan@oracle.com,
-	riel@surriel.com,
-	tglx@linutronix.de
-Subject: Re: [PATCH v2 4/3] smp: print only local CPU info when sched_clock goes backward
-Date: Tue,  6 Aug 2024 03:09:11 -0300
-Message-ID: <ZrG-B5JKw5rboCHX@LeoBras>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240724170652.809939-1-neeraj.upadhyay@kernel.org>
-References: <20240722133559.GA667117@neeraj.linux> <20240724170652.809939-1-neeraj.upadhyay@kernel.org>
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=74A2Gq5YchB9c5c4oXkZu7v/z59QVoU6ktEL0jehpUA=;
+	b=Q5CaJ0tdnTriVIY1SHKoH0JXKN8iQ80mTnFT4P3Fg207nUmmGh8LDq0eBizOh7lCWPD6lc
+	DChKhh93/xJQVH/PfNZdQtX+ZLy6oCigXQ8ShmbRU0kYCfbzW+pLRgk/xzJNIEPMJxPWg9
+	KnRg3fLoQLlxa5jcPjXnQMCZpXk6GlA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1722942519;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=74A2Gq5YchB9c5c4oXkZu7v/z59QVoU6ktEL0jehpUA=;
+	b=MykqE4Bh96QBwI7ukg2vjMp23P0DAOCPL08u8fKFj7zRl8C1Fv+YCZ5IBy9pXalTV4jzzt
+	sO2t8jVjOTF8/wDw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Q5CaJ0td;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MykqE4Bh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1722942519; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=74A2Gq5YchB9c5c4oXkZu7v/z59QVoU6ktEL0jehpUA=;
+	b=Q5CaJ0tdnTriVIY1SHKoH0JXKN8iQ80mTnFT4P3Fg207nUmmGh8LDq0eBizOh7lCWPD6lc
+	DChKhh93/xJQVH/PfNZdQtX+ZLy6oCigXQ8ShmbRU0kYCfbzW+pLRgk/xzJNIEPMJxPWg9
+	KnRg3fLoQLlxa5jcPjXnQMCZpXk6GlA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1722942519;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=74A2Gq5YchB9c5c4oXkZu7v/z59QVoU6ktEL0jehpUA=;
+	b=MykqE4Bh96QBwI7ukg2vjMp23P0DAOCPL08u8fKFj7zRl8C1Fv+YCZ5IBy9pXalTV4jzzt
+	sO2t8jVjOTF8/wDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 69A6B13770;
+	Tue,  6 Aug 2024 11:08:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VWxvGTcEsmb1HQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 06 Aug 2024 11:08:39 +0000
+Message-ID: <8f5d3a92-f90c-4a0d-bd24-10dc49235afe@suse.cz>
+Date: Tue, 6 Aug 2024 13:08:39 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 12/20] kthread: Implement preferred affinity
+Content-Language: en-US
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Kees Cook <kees@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+References: <20240726215701.19459-1-frederic@kernel.org>
+ <20240726215701.19459-13-frederic@kernel.org>
+ <4e9d1f6d-9cd8-493c-9440-b46a99f1c8af@suse.cz>
+ <ZrDhp3TLz6Kp93BJ@localhost.localdomain>
+ <00914d25-f0ae-4b00-9608-2457821c071c@suse.cz>
+ <ZrD8kmRw73bS3Lj6@localhost.localdomain>
+ <b358e42e-e8aa-40e9-9fca-90ae28cfdfaa@suse.cz> <ZrFncpgfJj9sWuDO@lothringen>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <ZrFncpgfJj9sWuDO@lothringen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.00 / 50.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,kernel.org,infradead.org,linutronix.de,kvack.org,joelfernandes.org,gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: 8B91D21C86
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: 0.00
 
-On Wed, Jul 24, 2024 at 10:36:52PM +0530, neeraj.upadhyay@kernel.org wrote:
-> From: Rik van Riel <riel@surriel.com>
+On 8/6/24 01:59, Frederic Weisbecker wrote:
+> On Mon, Aug 05, 2024 at 11:25:59PM +0200, Vlastimil Babka wrote:
+>> > It's too bad we don't have a way to have a cpumask_possible_of_node(). I've
+>> > looked into the guts of numa but that doesn't look easy to do.
+>> 
+>> That was my impression as well. Maybe not even possible because exact cpu
+>> ids might not be pre-determined like this?
 > 
-> About 40% of all csd_lock warnings observed in our fleet appear to
-> be due to sched_clock() going backward in time (usually only a little
-> bit), resulting in ts0 being larger than ts2.
+> Probably.
 > 
-> When the local CPU is at fault, we should print out a message reflecting
-> that, rather than trying to get the remote CPU's stack trace.
+>> 
+>> > Or there could be kthread_set_preferred_node()... ?
+>> 
+>> Possible instead of the callback idea suggested above?
+>> kthreads_hotplug_update() could check if this is set and construct the mask
+>> accordingly.
 > 
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> Tested-by: "Paul E. McKenney" <paulmck@kernel.org>
-> Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-> ---
->  kernel/smp.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> Or even better, callers of kthread_create_on_node() with actual node passed
+> (!NUMA_NO_NODE) can be preferrably affined to the corresponding node by default
+> unless told otherwise (that is unless kthread_bind() or
+> kthread_set_preferred_affinity() has been called before the first wake up, and
+> that includes kthread_create_on_cpu()).
+
+Sounds logical and great!
+
+> There are a few callers concerned: kswapd, kcompactd, some drivers:
+> drivers/block/mtip32xx/mtip32xx.c, drivers/firmware/stratix10-svc.c,
+> kernel/dma/map_benchmark.c, net/sunrpc/svc.c
 > 
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index dfcde438ef63..143ae26f96a2 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -253,6 +253,14 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
->  		   csd_lock_timeout_ns == 0))
->  		return false;
->
+> After all kthread_create_on_cpu() affines to the corresponding CPU. So
+> it sounds natural that kthread_create_on_node() affines to the corresponding
+> node.
 
-Hello Rik,
-Thanks for this contribution!
-Seems a really nice bug you found here :)
+Yes.
 
-Your solution seems very efficient, but I noticed a few (possible) issues here:
-  
-> +	if (ts0 > ts2) {
-> +		/* Our own sched_clock went backward; don't blame another CPU. */
-> +		ts_delta = ts0 - ts2;
-> +		pr_alert("sched_clock on CPU %d went backward by %llu ns\n", raw_smp_processor_id(), ts_delta);
+> And then it's handled on hotplug just as a special case of preferred affinity.
+> 
+> Or is there something that wouldn't make that work?
 
-This ns number is not necessarely correct, since a few calls to 
-csd_lock_wait_toolong() may have happened before the clock going backwards.
+Hopefully not.
 
-As an example we could have, for a 15ms backwards movement
-05ms: csd: [...] waiting 5000 ns for CPU#X
-10ms: csd: [...] waiting 10000 ns for CPU#X
-12ms: sched_clock on CPU X went backward by 3000 ns
-						^ wrong
-17ms: csd: [...] waiting 5000 ns for CPU#X
-			  ^reset waiting.
-
-> +		*ts1 = ts2;
-
-Second point here, above line just resets the counter, so we start printing 
-messages again, with the wrong waiting time. (see 17ms above)
-
-> +		return false;
-> +	}
-> +
-
-
-Suggestion A: Save the last ts2 it succeeds, and in case of 
-the clock going backwards, adjust ts0 and ts1 to the new clock.
-This way the waiting time does not reset, and the backwards amount is 
-correct:
-
-########
-diff --git a/kernel/smp.c b/kernel/smp.c
-index aaffecdad319..e8788f7e1a78 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -213,7 +213,8 @@ static int csd_lock_wait_getcpu(call_single_data_t *csd)
-  * the CSD_TYPE_SYNC/ASYNC types provide the destination CPU,
-  * so waiting on other types gets much less information.
-  */
--static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, int *bug_id)
-+static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 *ts0, u64 *ts1, u64 *ts_save,
-+                                 int *bug_id)
- {
-        int cpu = -1;
-        int cpux;
-@@ -233,10 +234,21 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
-        }
- 
-        ts2 = sched_clock();
-+
-        /* How long since we last checked for a stuck CSD lock.*/
-        ts_delta = ts2 - *ts1;
--       if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0))
-+       if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0)) {
-+               *ts_save = ts2;
-                return false;
-+       }
-+
-+       if (unlikely((s64)ts_delta < 0)) {
-+		/* How much clock went backwards */
-+               ts_delta = *ts_save - ts2;
-+               pr_alert("sched_clock on CPU %d went backward by %llu ns\n",
-+                        raw_smp_processor_id(), ts_delta);
-+               *ts0 -= ts_delta;
-+               *ts1 -= ts_delta;
-+       }
-+	*ts_save = ts2;
- 
-        firsttime = !*bug_id;
-        if (firsttime)
-@@ -248,7 +260,7 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
-                cpux = cpu;
-        cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
-        /* How long since this CSD lock was stuck. */
--       ts_delta = ts2 - ts0;
-+       ts_delta = ts2 - *ts0;
-        pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
-                 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts_delta,
-                 cpu, csd->func, csd->info);
-@@ -291,11 +303,11 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
- static void __csd_lock_wait(call_single_data_t *csd)
- {
-        int bug_id = 0;
--       u64 ts0, ts1;
-+       u64 ts0, ts1, ts_s = 0;
- 
-        ts1 = ts0 = sched_clock();
-        for (;;) {
--               if (csd_lock_wait_toolong(csd, ts0, &ts1, &bug_id))
-+               if (csd_lock_wait_toolong(csd, &ts0, &ts1, &ts_s, &bug_id))
-                        break;
-                cpu_relax();
-        }
-##########
-
-Suggestion B: Compare to ts_save to ts2 before calculating ts_delta.
-Pros: 	Much better detection of clock goin backwards
-Cons: 	Overhead for the fastpath
-	More detections -> more messages, which is not necessarily good.
-
-##########
-+++ b/kernel/smp.c
-@@ -234,6 +234,15 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 *ts0, u64 *ts1, u
-        }
- 
-        ts2 = sched_clock();
-+       if (unlikely(*ts_save > ts2)){
-+               /* How much clock went backwards */
-+               ts_delta = *ts_save - ts2;
-+               pr_alert("sched_clock on CPU %d went backward by %llu ns\n",
-+                       raw_smp_processor_id(), ts_delta);
-+               *ts0 -= ts_delta;
-+               *ts1 -= ts_delta;
-+       }
-+       *ts_save = ts2;
- 
-        /* How long since we last checked for a stuck CSD lock.*/
-        ts_delta = ts2 - *ts1;
-##########
-
-
-What do you think?
-
-Thanks!
-Leo
+> Thanks.
+> 
+> 
+>> 
+>> > Thanks.
+>> > 
+>> >> 
+>> >> > Thanks.
+>> >> 
+>> 
 
