@@ -1,120 +1,137 @@
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C4C12C7F9;
-	Wed,  7 Aug 2024 15:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AFD14375A;
+	Wed,  7 Aug 2024 16:03:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723044957; cv=none; b=NLPIVf3OLIBISZpcYvFop85szviRRjpIdSx4iasad+M4tofrznlR5uX4KzOXzgolKv+fNCG+6zC6WgohbDCSs754BfKOwXFey8oQUMoDIN1We8UdGVfJ/5umkMKG/izGzKllqLPDsacdmn3JqbVcPqiimipIjlG2BNRGRM83FGI=
+	t=1723046587; cv=none; b=Vuko3T7EBZk+rLiLYJRKRd2RcZzM09gZt8RnEsYeHZVmdHWs731DZNspsJ7dx/qMvJfaKIVoBFz766Ot9XjNNyVLRwhwDIM1JqjkSTTnd0L5sj1o8pcPLSNxlVvuJTuDRirzq0KGRQUUxcp/sCdgXIjNfBrocL1ThfiXOK9Yyoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723044957; c=relaxed/simple;
-	bh=k3PxtIupHrNQW/bsUgAZepWEXJnKAcFYhPNWDBP92IQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XhPZjp6Smmf63vawJbz2E4mY5MokcLTgGcSkg5Xy82ByXc0Pvd6ldbZsEwkOiY8B5B8ClUfMkrMH/puCgAN8uqmgUg+v06ICYLaz+WCGyTeCVpDNWN0uV/WX5rDPaCUcLskoIUdrJpS2AU7QIwhNMLz+4EdZryPgO2L4dsegSA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ti4KAV3N; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1723046587; c=relaxed/simple;
+	bh=ZmzCkFGiO4uVOjClN5Ffq3kFJzGfD03UONhdrDRJsTk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=pEwoqNdiSMww/phz3cyPpVrOagYl8uuEPOi50gRwPqva0YnqpY2DuhGdR9FXvAvrA7fM9xhdUi+XDRuWWjkG00x8vinZkXJ30J32OSLNPaq5EGZMO0GDnjK5XA2yHoYwBMbB4CdW9yzK9ZFV0V2qa7K3DQIMLgMJODOeI5ed1+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9esigVt; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ti4KAV3N"
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2ef7fef3ccfso20413061fa.3;
-        Wed, 07 Aug 2024 08:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723044953; x=1723649753; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cVEr0aO0K/x06b8dUZVTgdXp92deBtWSxvrc97+JRvw=;
-        b=Ti4KAV3NKbL3sg9q7fUZBcBDlZM7MQ033H2SjvLq3s+FFeuOhmAuf/ug3nkgXR8DXE
-         dI27JVc2vEK98s1xSwNY75XZBNZZwUfL2IZV0chWNBkG+6tQwMZFsXK3KMhimHNRS9eH
-         xp/FMuej4BdaiC8lGj+elEk10bMZPrBvIBKK5cV5I4eYr0QD8VQyz7J/jyPGD5mtqkiO
-         SawgG1qgvRqH0vLySSAXd/mHQJivUGQy6zq425f5V0stuecRpjupXywhRnR1ZGjExwVK
-         L0GMJPoPTUTDud8uZGcaghpGpu6fwjxxV86ELphldAbd4biHU1R/kMrOhOpag2CdhRCL
-         fjvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723044953; x=1723649753;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cVEr0aO0K/x06b8dUZVTgdXp92deBtWSxvrc97+JRvw=;
-        b=ZFHRvXWyR4yphOG0gENdIieavBKCWth7fcGc17yVmJ/QVwhb/8QSjDGHXTW4seN9yK
-         JqfucXmr+CHJTdAeAmoWvMwQugDJA7r2J+kj77EDydavFS5O/PoaysEZZomI6PeIwY/e
-         6jUIYRw0xi3EWZ0eUVEHRHVBCLjcwli+d/daEhHxbj/u1JXEt4fjKbA3YDWP+LoRHF/L
-         zlyVoxSNMNhH1ru+h53lTF/lXIVqL/WugetkfChYhKDnqL8rZccmxF5tJGPELyRYg4h9
-         feK5m+HJxvM9/gGNUcrdhzCjvcco0bqOKpJ3buZoKHWbelA5T3OmMbNbzoNoibw3uC24
-         imTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXbLRpdIhAPuB43Ry+mrzZ3j2ueDTUZrXh1GuO8USEGVc6Q0E2E8NWdKgVsYqINQywDF8fB0x1Oyv8EhvZkf6fZDWEG/6mSpcjQpfTA9OrD/hW1hVFCRI3okUpxgdp3QU3tWHKfF8w4G7ZCl01f8DqW8Zsf7ZMeNMKsgHJpHjpoK4lw
-X-Gm-Message-State: AOJu0YzkpoIbtXdr7PdtJ4JvnZGU9iFuCD/XhNuuoh+Z1L66bx1ng3JZ
-	58bPC1jCVBIP0K0aHuOSmeXXAQ//uxASC26TLSzg9lNppTrSka7A
-X-Google-Smtp-Source: AGHT+IF5cwkOGr4PC3JjvT3xqb3AwVylKmWlo8FQKOAQAJ0PDJEQOKNSQ6aV29gaPSxcFErnVVCjaw==
-X-Received: by 2002:a05:6512:1310:b0:52c:d943:300f with SMTP id 2adb3069b0e04-530bb3bd90cmr13986276e87.38.1723044953047;
-        Wed, 07 Aug 2024 08:35:53 -0700 (PDT)
-Received: from pc636 (host-90-235-1-92.mobileonline.telia.com. [90.235.1.92])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-530de3e2e7esm288517e87.51.2024.08.07.08.35.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Aug 2024 08:35:52 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 7 Aug 2024 17:35:49 +0200
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org, josh@joshtriplett.org, boqun.feng@gmail.com,
-	urezki@gmail.com, rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com, kees@kernel.org, gustavoars@kernel.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] rcu: Annotate struct kvfree_rcu_bulk_data with
- __counted_by()
-Message-ID: <ZrOUVWMRQ5q-4Xpn@pc636>
-References: <20240807095459.1400-2-thorsten.blum@toblux.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9esigVt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B64BC4AF0E;
+	Wed,  7 Aug 2024 16:03:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723046586;
+	bh=ZmzCkFGiO4uVOjClN5Ffq3kFJzGfD03UONhdrDRJsTk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=u9esigVtaNkWaPmmPvQ6OxFME/PuYU8prUzvVEQ/DiH4Ak6Pojoi+lLOfQtPX3vPM
+	 t3/arDejOOyBdaKNAxEJ0Z0hjwhMCDGLKdUbPQGNRyAH8nQRnXCSE9MbhRo3Lm5PXX
+	 w9v0xh44sRaqnxgqyTf3WU5wFaTfBbLIUgLIg7hB6wDRbBQGZEJjOzyQs3RGEbV2xv
+	 5gTZM9Iu7uXB/xQrTrQXhUmLN2bvwensqNmNXFEoQmOy84l0NOC9GS7gvu9mbMg4zn
+	 hphW3nif5vh4tAu4LUPva9fU/XGSfy6f8Oe2BKcudPpxCRWO6wvhlD2JfCoT75Yi9T
+	 heeFkQmGbt8hw==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Michal Hocko <mhocko@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	linux-mm@kvack.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	rcu@vger.kernel.org
+Subject: [PATCH 11/19] kthread: Make sure kthread hasn't started while binding it
+Date: Wed,  7 Aug 2024 18:02:17 +0200
+Message-ID: <20240807160228.26206-12-frederic@kernel.org>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240807160228.26206-1-frederic@kernel.org>
+References: <20240807160228.26206-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240807095459.1400-2-thorsten.blum@toblux.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 07, 2024 at 11:55:00AM +0200, Thorsten Blum wrote:
-> Add the __counted_by compiler attribute to the flexible array member
-> records to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-> CONFIG_FORTIFY_SOURCE.
-> 
-> Increment nr_records before adding a new pointer to the records array.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
->  kernel/rcu/tree.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index e641cc681901..76d8d75dd8b3 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3227,7 +3227,7 @@ struct kvfree_rcu_bulk_data {
->  	struct list_head list;
->  	struct rcu_gp_oldstate gp_snap;
->  	unsigned long nr_records;
-> -	void *records[];
-> +	void *records[] __counted_by(nr_records);
->  };
->  
->  /*
-> @@ -3767,7 +3767,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->  	}
->  
->  	// Finally insert and update the GP for this page.
-> -	bnode->records[bnode->nr_records++] = ptr;
-> +	bnode->nr_records++;
-> +	bnode->records[bnode->nr_records - 1] = ptr;
->  	get_state_synchronize_rcu_full(&bnode->gp_snap);
->  	atomic_inc(&(*krcp)->bulk_count[idx]);
->  
-> -- 
-> 2.45.2
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Make sure the kthread is sleeping in the schedule_preempt_disabled()
+call before calling its handler when kthread_bind[_mask]() is called
+on it. This provides a sanity check verifying that the task is not
+randomly blocked later at some point within its function handler, in
+which case it could be just concurrently awaken, leaving the call to
+do_set_cpus_allowed() without any effect until the next voluntary sleep.
 
---
-Uladzislau Rezki
+Rely on the wake-up ordering to ensure that the newly introduced "started"
+field returns the expected value:
+
+    TASK A                                   TASK B
+    ------                                   ------
+READ kthread->started
+wake_up_process(B)
+   rq_lock()
+   ...
+   rq_unlock() // RELEASE
+                                           schedule()
+                                              rq_lock() // ACQUIRE
+                                              // schedule task B
+                                              rq_unlock()
+                                              WRITE kthread->started
+
+Similarly, writing kthread->started before subsequent voluntary sleeps
+will be visible after calling wait_task_inactive() in
+__kthread_bind_mask(), reporting potential misuse of the API.
+
+Upcoming patches will make further use of this facility.
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/kthread.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index f7be976ff88a..ecb719f54f7a 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -53,6 +53,7 @@ struct kthread_create_info
+ struct kthread {
+ 	unsigned long flags;
+ 	unsigned int cpu;
++	int started;
+ 	int result;
+ 	int (*threadfn)(void *);
+ 	void *data;
+@@ -382,6 +383,8 @@ static int kthread(void *_create)
+ 	schedule_preempt_disabled();
+ 	preempt_enable();
+ 
++	self->started = 1;
++
+ 	ret = -EINTR;
+ 	if (!test_bit(KTHREAD_SHOULD_STOP, &self->flags)) {
+ 		cgroup_kthread_ready();
+@@ -540,7 +543,9 @@ static void __kthread_bind(struct task_struct *p, unsigned int cpu, unsigned int
+ 
+ void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
+ {
++	struct kthread *kthread = to_kthread(p);
+ 	__kthread_bind_mask(p, mask, TASK_UNINTERRUPTIBLE);
++	WARN_ON_ONCE(kthread->started);
+ }
+ 
+ /**
+@@ -554,7 +559,9 @@ void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
+  */
+ void kthread_bind(struct task_struct *p, unsigned int cpu)
+ {
++	struct kthread *kthread = to_kthread(p);
+ 	__kthread_bind(p, cpu, TASK_UNINTERRUPTIBLE);
++	WARN_ON_ONCE(kthread->started);
+ }
+ EXPORT_SYMBOL(kthread_bind);
+ 
+-- 
+2.45.2
+
