@@ -1,30 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787D72209B;
-	Wed,  7 Aug 2024 16:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C832209B;
+	Wed,  7 Aug 2024 16:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723048516; cv=none; b=TxIinaWRE9aw07o08fjoSD96zV2QCq3oXwZEjc9QTSm33i4KrB4WcGC+59P8U+HELH/oOi5pveTTSQeTBFhcwagh1z1j2N2KtHxcXZ09zHiw2EbLPWcwzCTnOIe6uqdZo+rxGGLNQeMwTsI8vOiOxMnJHHTBq/02a9u3SzUeAKc=
+	t=1723048522; cv=none; b=sJfdzn7jAtbZFG7d7Iy+WWDxlIb3LJa/MQ4P6knj7u2TzPy7LXSDZvLhHOt5VjioTj8q7ZxaIibVh5ydDm6vezHRcugufFmxbcL/XgxR3b51jbTXEQpd84TWI95dA5nBe+X0m4ZmcDu0eFTk6PgSY9WiD6P4UrbwhJ9sTsBRiUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723048516; c=relaxed/simple;
-	bh=RCZCL7h5UkWNj58Vaysmd73SIQcercRo3wSY7LzStdc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bwd1VPC8hOVaWmqzOD9SwDxaN+ijRTQQ4tQZSmZ6FKNewU5SPfKDWi0FZNTeYWt3Tv6/fgZC68D42dNmtg7lD2dNltY5PEUYjNMy01GodWUDkhY1SfQsFdel/jySgbXdyKQ55IF+Dtd2aJV6QZVe+A7p8KBVDxD5V4UxGa73iFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pacQHUzn; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1723048522; c=relaxed/simple;
+	bh=YGXKpyiz2oqforJExEBds7DqYOCDlr1w1fpOqMNWp8M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=o5k7h0nBLoSNPNLdNoWr6QXXIVA8eh9EkKozx+uAhdFtDlOivM/M/G0SBxTVYjQRp2uUvOon65Te3j1nJBfjZFBMQpZbjRkVKq8MkvOwZUp3oGRceN8GW3tsiseybtT2Y1lI9UdaY7BNaLE6CiYrlyLrwJVrfUBY7hkE+VakiL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TpPcXkE8; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pacQHUzn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F0F1C32781;
-	Wed,  7 Aug 2024 16:35:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TpPcXkE8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53C62C32781;
+	Wed,  7 Aug 2024 16:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723048516;
-	bh=RCZCL7h5UkWNj58Vaysmd73SIQcercRo3wSY7LzStdc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pacQHUznhGIVVG7B+bEKUuI0XOPjLktoc1SwfysdDQWmc7GiGHxwLKmWPzkT8qAmY
-	 Z6crHfc/rfCN3m/HMvj3AarAS9YynSoNSnbVpAjZGU/yH6cUXKmV1APD7zii5SvaMf
-	 cNCiD3qDzoOV5veTmztKVAy0BzTxe/mII84QPdRpdDcsDSGt+qd/U5u/Aljl+yqNMo
-	 aKYrSBAlncINIidGlmW1WPpfCHKiXO2n8FVBL2Mco9Td3Ie+UdlLla7oL5UGRIxDBW
-	 qtfPKdJp9WZj+Vn/VY2z+Vf3WL/ijvQxsrgOv8Ax0dR29X3X7g1OIW+iKdK5XVFK+K
-	 O8m1qeTG5FtSg==
+	s=k20201202; t=1723048522;
+	bh=YGXKpyiz2oqforJExEBds7DqYOCDlr1w1fpOqMNWp8M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TpPcXkE8MTrU53O6U+9lmXL5tJxzNmlEt/LSLmNeP70PR1Y655hOOduWJX1OnaMrd
+	 sgsZfbr28WT9fAWAE0jXm2FAe79q3/6eCVBIQJUKlgEh6IomQeRNmrjPXYkIXLTGOD
+	 4zcndlcx3HeJOSCxf/9Jbh7x6brREl6RUIPfboXLQ0W1WrfO9lflMuFT7RbT4yTfKa
+	 PoueWr1IdFrqgYdfQYUXA4mdSbKmyHf7QABjsnMxThYVSROL3XoR1qMHpo6XGvqJf8
+	 diptmziORqIIFNzD5PwFG0tki0OYkJ9CCnr1DPKuChYuSYjQjy5Tqume8TZHovEb3f
+	 dsi8weOnvbh2g==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,10 +40,12 @@ Cc: linux-kernel@vger.kernel.org,
 	qiang.zhang1211@gmail.com,
 	neeraj.iitr10@gmail.com,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-Subject: [PATCH 0/2] Modify RCU Tasks to scan idle tasks
-Date: Wed,  7 Aug 2024 22:05:04 +0530
-Message-Id: <20240807163506.434885-1-neeraj.upadhyay@kernel.org>
+Subject: [PATCH 1/2] rcu-tasks: Make RCU-Tasks pay attention to idle tasks
+Date: Wed,  7 Aug 2024 22:05:05 +0530
+Message-Id: <20240807163506.434885-2-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240807163506.434885-1-neeraj.upadhyay@kernel.org>
+References: <20240807163506.434885-1-neeraj.upadhyay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -53,33 +56,335 @@ Content-Transfer-Encoding: 8bit
 
 From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 
-Architectures for which all deep-idle and entry-exit functions are
-marked noinstr, synchronize_rcu_tasks_rude() is not required. However,
-disabling synchronize_rcu_tasks_rude() for such architectures require
-RCU-tasks to pay attention to idle tasks until they enter the context
-where RCU is not watching. In addition, NMI context need to track RCU-tasks
-entry/exit for NO_HZ_FULL CPUs. This series adds changes for both of
-these requirements.
+Currently, idle tasks are ignored by Tasks RCU and idle tasks
+are in RCU-Tasks quiescent state for Tasks RCU. Change this to
+start paying attention to idle tasks except in deep-idle functions
+where RCU is not watching. With this, for architectures where
+kernel entry/exit and deep-idle functions have been properly tagged
+noinstr, Tasks Rude RCU can be disabled.
 
-The series is available in git tree at:
-https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/log/?h=rcu-tasks-watch-idle.07.08.24a
+[ neeraj.upadhyay: Frederic Weisbecker and Paul E. McKenney feedback. ]
 
-
-- Neeraj
-
-
-Neeraj Upadhyay (2):
-  rcu-tasks: Make RCU-Tasks pay attention to idle tasks
-  context_tracking: Invoke Tasks-RCU enter/exit for NMI context
-
+Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+---
  .../RCU/Design/Requirements/Requirements.rst  |  12 +-
- kernel/context_tracking.c                     |   6 +-
  kernel/rcu/rcu.h                              |   4 +
  kernel/rcu/tasks.h                            | 107 ++++++++++++------
  kernel/rcu/tree.c                             |  12 +-
  kernel/rcu/tree_exp.h                         |   2 +-
- 6 files changed, 91 insertions(+), 52 deletions(-)
+ 5 files changed, 89 insertions(+), 48 deletions(-)
 
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index 6125e7068d2c..5016b85d53d7 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -2611,8 +2611,8 @@ critical sections that are delimited by voluntary context switches, that
+ is, calls to schedule(), cond_resched(), and
+ synchronize_rcu_tasks(). In addition, transitions to and from
+ userspace execution also delimit tasks-RCU read-side critical sections.
+-Idle tasks are ignored by Tasks RCU, and Tasks Rude RCU may be used to
+-interact with them.
++Idle tasks which are idle from RCU's perspective are ignored by Tasks RCU,
++and Tasks Rude RCU may be used to interact with them.
+ 
+ Note well that involuntary context switches are *not* Tasks-RCU quiescent
+ states.  After all, in preemptible kernels, a task executing code in a
+@@ -2643,10 +2643,10 @@ moniker.  And this operation is considered to be quite rude by real-time
+ workloads that don't want their ``nohz_full`` CPUs receiving IPIs and
+ by battery-powered systems that don't want their idle CPUs to be awakened.
+ 
+-Once kernel entry/exit and deep-idle functions have been properly tagged
+-``noinstr``, Tasks RCU can start paying attention to idle tasks (except
+-those that are idle from RCU's perspective) and then Tasks Rude RCU can
+-be removed from the kernel.
++As Tasks RCU now pays attention to idle tasks (except those that are idle
++from RCU's perspective), once kernel entry/exit and deep-idle functions have
++been properly tagged ``noinstr``, Tasks Rude RCU can be removed from the
++kernel.
+ 
+ The tasks-rude-RCU API is also reader-marking-free and thus quite compact,
+ consisting solely of synchronize_rcu_tasks_rude().
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index feb3ac1dc5d5..5fec1b52039c 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -609,6 +609,8 @@ void srcutorture_get_gp_data(struct srcu_struct *sp, int *flags,
+ 
+ #ifdef CONFIG_TINY_RCU
+ static inline bool rcu_watching_zero_in_eqs(int cpu, int *vp) { return false; }
++static inline bool rcu_watching_snap_in_eqs(int snap) { return false; }
++static inline bool rcu_watching_snap_stopped_since(int cpu, int snap) { return false; }
+ static inline unsigned long rcu_get_gp_seq(void) { return 0; }
+ static inline unsigned long rcu_exp_batches_completed(void) { return 0; }
+ static inline unsigned long
+@@ -622,6 +624,8 @@ static inline void rcu_gp_slow_register(atomic_t *rgssp) { }
+ static inline void rcu_gp_slow_unregister(atomic_t *rgssp) { }
+ #else /* #ifdef CONFIG_TINY_RCU */
+ bool rcu_watching_zero_in_eqs(int cpu, int *vp);
++bool rcu_watching_snap_in_eqs(int snap);
++bool rcu_watching_snap_stopped_since(int cpu, int snap);
+ unsigned long rcu_get_gp_seq(void);
+ unsigned long rcu_exp_batches_completed(void);
+ unsigned long srcu_batches_completed(struct srcu_struct *sp);
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 2f8d6c8e3c4c..0c0367c8f5c8 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -35,6 +35,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+  * @rtp_exit_list: List of tasks in the latter portion of do_exit().
+  * @cpu: CPU number corresponding to this entry.
+  * @rtpp: Pointer to the rcu_tasks structure.
++ * @rcu_watching_snap: Per-GP rcu watching tracking for idle tasks.
+  */
+ struct rcu_tasks_percpu {
+ 	struct rcu_segcblist cblist;
+@@ -51,6 +52,7 @@ struct rcu_tasks_percpu {
+ 	int cpu;
+ 	int index;
+ 	struct rcu_tasks *rtpp;
++	int rcu_watching_snap;
+ };
+ 
+ /**
+@@ -902,14 +904,15 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ ////////////////////////////////////////////////////////////////////////
+ //
+ // Simple variant of RCU whose quiescent states are voluntary context
+-// switch, cond_resched_tasks_rcu_qs(), user-space execution, and idle.
+-// As such, grace periods can take one good long time.  There are no
+-// read-side primitives similar to rcu_read_lock() and rcu_read_unlock()
+-// because this implementation is intended to get the system into a safe
+-// state for some of the manipulations involved in tracing and the like.
+-// Finally, this implementation does not support high call_rcu_tasks()
+-// rates from multiple CPUs.  If this is required, per-CPU callback lists
+-// will be needed.
++// switch, cond_resched_tasks_rcu_qs(), user-space execution, and idle
++// tasks which are in RCU-idle context. As such, grace periods can take
++// one good long time.  There are no read-side primitives similar to
++// rcu_read_lock() and rcu_read_unlock() because this implementation is
++// intended to get the system into a safe state for some of the
++// manipulations involved in tracing and the like. Finally, this
++// implementation does not support high call_rcu_tasks() rates from
++// multiple CPUs.  If this is required, per-CPU callback lists will be
++// needed.
+ //
+ // The implementation uses rcu_tasks_wait_gp(), which relies on function
+ // pointers in the rcu_tasks structure.  The rcu_spawn_tasks_kthread()
+@@ -920,11 +923,13 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ //	Invokes synchronize_rcu() in order to wait for all in-flight
+ //	t->on_rq and t->nvcsw transitions to complete.	This works because
+ //	all such transitions are carried out with interrupts disabled.
+-// rcu_tasks_pertask(), invoked on every non-idle task:
+-//	For every runnable non-idle task other than the current one, use
+-//	get_task_struct() to pin down that task, snapshot that task's
+-//	number of voluntary context switches, and add that task to the
+-//	holdout list.
++// rcu_tasks_pertask(), invoked on every task:
++//	For idle task, snapshot the task's CPU's dynticks counter. If
++//	the CPU is in RCU-idle context, do not add it to the holdout list.
++//	For every runnable non-idle task other than the current one and
++//	idle tasks which are not in RCU-idle context, use get_task_struct()
++//	to pin down that task, snapshot that task's number of voluntary
++//	context switches, and add that task to the holdout list.
+ // rcu_tasks_postscan():
+ //	Gather per-CPU lists of tasks in do_exit() to ensure that all
+ //	tasks that were in the process of exiting (and which thus might
+@@ -983,27 +988,58 @@ static bool rcu_tasks_is_holdout(struct task_struct *t)
+ 	if (!READ_ONCE(t->on_rq))
+ 		return false;
+ 
+-	/*
+-	 * Idle tasks (or idle injection) within the idle loop are RCU-tasks
+-	 * quiescent states. But CPU boot code performed by the idle task
+-	 * isn't a quiescent state.
+-	 */
+-	if (is_idle_task(t))
+-		return false;
+-
+ 	cpu = task_cpu(t);
+ 
+-	/* Idle tasks on offline CPUs are RCU-tasks quiescent states. */
+-	if (t == idle_task(cpu) && !rcu_cpu_online(cpu))
++
++	if (t == idle_task(cpu)) {
++		/* Idle tasks on offline CPUs are RCU-tasks quiescent states. */
++		if (!rcu_cpu_online(cpu))
++			return false;
++#ifdef CONFIG_SMP
++		/*
++		 * As idle tasks cannot be involuntary preempted, non-running idle tasks
++		 * are not in RCU-tasks critical section.
++		 * synchronize_rcu() calls in rcu_tasks_pregp_step() and rcu_tasks_postgp()
++		 * ensure that all ->on_cpu transitions are complete.
++		 */
++		if (!t->on_cpu)
++			return false;
++#else
++		/*
++		 * We are in rcu_tasks_kthread() context. Idle thread would
++		 * have done a voluntary context switch.
++		 */
+ 		return false;
++#endif
++	}
+ 
+ 	return true;
+ }
+ 
++void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
++DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
++
+ /* Per-task initial processing. */
+ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
+ {
+ 	if (t != current && rcu_tasks_is_holdout(t)) {
++#ifndef CONFIG_TINY_RCU
++		int cpu = task_cpu(t);
++
++		if (t == idle_task(cpu)) {
++			struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
++
++			/*
++			 * Do plain access. Ordering between remote CPU's pre idle accesses
++			 * and post rcu-tasks grace period is provided by synchronize_rcu()
++			 * in rcu_tasks_postgp().
++			 */
++			rtpcp->rcu_watching_snap = ct_rcu_watching_cpu(cpu);
++			/* RCU-idle contexts are RCU-tasks quiescent state for idle tasks. */
++			if (rcu_watching_snap_in_eqs(rtpcp->rcu_watching_snap))
++				return;
++		}
++#endif // #ifndef CONFIG_TINY_RCU
+ 		get_task_struct(t);
+ 		t->rcu_tasks_nvcsw = READ_ONCE(t->nvcsw);
+ 		WRITE_ONCE(t->rcu_tasks_holdout, true);
+@@ -1011,9 +1047,6 @@ static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
+ 	}
+ }
+ 
+-void call_rcu_tasks(struct rcu_head *rhp, rcu_callback_t func);
+-DEFINE_RCU_TASKS(rcu_tasks, rcu_tasks_wait_gp, call_rcu_tasks, "RCU Tasks");
+-
+ /* Processing between scanning taskslist and draining the holdout list. */
+ static void rcu_tasks_postscan(struct list_head *hop)
+ {
+@@ -1082,10 +1115,13 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ static void check_holdout_task(struct task_struct *t,
+ 			       bool needreport, bool *firstreport)
+ {
+-	int cpu;
++	int cpu = task_cpu(t);
++	struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+ 
+ 	if (!READ_ONCE(t->rcu_tasks_holdout) ||
+ 	    t->rcu_tasks_nvcsw != READ_ONCE(t->nvcsw) ||
++	    ((t == idle_task(cpu)) &&
++	     rcu_watching_snap_stopped_since(cpu, rtpcp->rcu_watching_snap)) ||
+ 	    !rcu_tasks_is_holdout(t) ||
+ 	    (IS_ENABLED(CONFIG_NO_HZ_FULL) &&
+ 	     !is_idle_task(t) && READ_ONCE(t->rcu_tasks_idle_cpu) >= 0)) {
+@@ -1101,7 +1137,6 @@ static void check_holdout_task(struct task_struct *t,
+ 		pr_err("INFO: rcu_tasks detected stalls on tasks:\n");
+ 		*firstreport = false;
+ 	}
+-	cpu = task_cpu(t);
+ 	pr_alert("%p: %c%c nvcsw: %lu/%lu holdout: %d idle_cpu: %d/%d\n",
+ 		 t, ".I"[is_idle_task(t)],
+ 		 "N."[cpu < 0 || !tick_nohz_full_cpu(cpu)],
+@@ -1171,11 +1206,12 @@ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
+  * period elapses, in other words after all currently executing RCU
+  * read-side critical sections have completed. call_rcu_tasks() assumes
+  * that the read-side critical sections end at a voluntary context
+- * switch (not a preemption!), cond_resched_tasks_rcu_qs(), entry into idle,
+- * or transition to usermode execution.  As such, there are no read-side
+- * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
+- * this primitive is intended to determine that all tasks have passed
+- * through a safe state, not so much for data-structure synchronization.
++ * switch (not a preemption!), cond_resched_tasks_rcu_qs(), entry into
++ * RCU-idle context or transition to usermode execution. As such, there
++ * are no read-side primitives analogous to rcu_read_lock() and
++ * rcu_read_unlock() because this primitive is intended to determine
++ * that all tasks have passed through a safe state, not so much for
++ * data-structure synchronization.
+  *
+  * See the description of call_rcu() for more detailed information on
+  * memory ordering guarantees.
+@@ -1193,8 +1229,9 @@ EXPORT_SYMBOL_GPL(call_rcu_tasks);
+  * grace period has elapsed, in other words after all currently
+  * executing rcu-tasks read-side critical sections have elapsed.  These
+  * read-side critical sections are delimited by calls to schedule(),
+- * cond_resched_tasks_rcu_qs(), idle execution, userspace execution, calls
+- * to synchronize_rcu_tasks(), and (in theory, anyway) cond_resched().
++ * cond_resched_tasks_rcu_qs(), idle execution within RCU-idle context,
++ * userspace execution, calls to synchronize_rcu_tasks(), and (in theory,
++ * anyway) cond_resched().
+  *
+  * This is a very specialized primitive, intended only for a few uses in
+  * tracing and other situations requiring manipulation of function
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 930846f06bee..1f1574200bea 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -303,7 +303,7 @@ static void rcu_watching_online(void)
+  * Return true if the snapshot returned from ct_rcu_watching()
+  * indicates that RCU is in an extended quiescent state.
+  */
+-static bool rcu_watching_snap_in_eqs(int snap)
++bool rcu_watching_snap_in_eqs(int snap)
+ {
+ 	return !(snap & CT_RCU_WATCHING);
+ }
+@@ -312,16 +312,16 @@ static bool rcu_watching_snap_in_eqs(int snap)
+  * rcu_watching_snap_stopped_since() - Has RCU stopped watching a given CPU
+  * since the specified @snap?
+  *
+- * @rdp: The rcu_data corresponding to the CPU for which to check EQS.
++ * @cpu: The CPU for which to check EQS.
+  * @snap: rcu_watching snapshot taken when the CPU wasn't in an EQS.
+  *
+- * Returns true if the CPU corresponding to @rdp has spent some time in an
++ * Returns true if the CPU corresponding has spent some time in an
+  * extended quiescent state since @snap. Note that this doesn't check if it
+  * /still/ is in an EQS, just that it went through one since @snap.
+  *
+  * This is meant to be used in a loop waiting for a CPU to go through an EQS.
+  */
+-static bool rcu_watching_snap_stopped_since(struct rcu_data *rdp, int snap)
++bool rcu_watching_snap_stopped_since(int cpu, int snap)
+ {
+ 	/*
+ 	 * The first failing snapshot is already ordered against the accesses
+@@ -334,7 +334,7 @@ static bool rcu_watching_snap_stopped_since(struct rcu_data *rdp, int snap)
+ 	if (WARN_ON_ONCE(rcu_watching_snap_in_eqs(snap)))
+ 		return true;
+ 
+-	return snap != ct_rcu_watching_cpu_acquire(rdp->cpu);
++	return snap != ct_rcu_watching_cpu_acquire(cpu);
+ }
+ 
+ /*
+@@ -826,7 +826,7 @@ static int rcu_watching_snap_recheck(struct rcu_data *rdp)
+ 	 * read-side critical section that started before the beginning
+ 	 * of the current RCU grace period.
+ 	 */
+-	if (rcu_watching_snap_stopped_since(rdp, rdp->watching_snap)) {
++	if (rcu_watching_snap_stopped_since(rdp->cpu, rdp->watching_snap)) {
+ 		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
+ 		rcu_gpnum_ovf(rnp, rdp);
+ 		return 1;
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index c3266bf709d5..6202d321b2bb 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -400,7 +400,7 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+ 		unsigned long mask = rdp->grpmask;
+ 
+ retry_ipi:
+-		if (rcu_watching_snap_stopped_since(rdp, rdp->exp_watching_snap)) {
++		if (rcu_watching_snap_stopped_since(rdp->cpu, rdp->exp_watching_snap)) {
+ 			mask_ofl_test |= mask;
+ 			continue;
+ 		}
 -- 
 2.40.1
 
