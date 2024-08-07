@@ -1,118 +1,263 @@
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE831CCB35
-	for <rcu@vger.kernel.org>; Wed,  7 Aug 2024 10:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82311C823D;
+	Wed,  7 Aug 2024 10:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723024850; cv=none; b=jTQJOd12243w6pGOK701srycJjdi+bRAy5dpqDSGXiz4m5l9DijI8jM+3yefZCBIvf9jV9Ow6xxLY8rTCPYky8NeoTjO0Djo7bGsbagA9vJidGW6aiebxmY8NHR/o3kvbxKaB4CVPDHajHsTkAL7haPFAK3SL+WemNqUunmpNf4=
+	t=1723026703; cv=none; b=K0zLRhccWozs5JnCZ2C3vGEVfvHlqcrqLorTK3JpgXODiOaOVBHrc3gmU+E0lEgMnF15CGWP21SMRfx0KMDNFxEfE9AZ1dXjGE3qhNbGuRle6iF7OJvN8P/dJoANTDMS26i91JJWy+2M6VHcnLMCROzeFj8v02TGUz38gBWJrSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723024850; c=relaxed/simple;
-	bh=JFeEg6KS1tps0Hdi+bU03Q7DXumXvmBP/um59ZL2G9c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RNKOMK0G/1ZIMN0VCRKch8ewQQAvZjNQZei4uFQwdVifFGlP4m4EAH7knFamt8gjravsX34wMbP8RIjmtaG+MCInWrGsUQmTT/QDMR8OZPtNfpmf55ymvKMAi44Mpabe4cR4TzSLqbtCOrlau/6jI+eRp47LHes13yOHeEVQVmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=ad+i+6Wj; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+	s=arc-20240116; t=1723026703; c=relaxed/simple;
+	bh=f1UN3sUNh+9LBaSZt6eaV0/ZDh2ZO0Hxr7n+OHWD/3g=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IEcu8xAjZNeQj2PMwhtqz3I9bHywoHZqZt7TByRNd9PO49yeVLnSxaRQe3651fJ6SL9ysYmqa4LO/t/Aguzp9r6bAWOzukK0NBmCDoWdLTUc/yUFOlSDrS1ZEL6N5IYQ86VU0mu3jSnLIH1/JkTG7XYo5N0xL9CS00ualpkXpnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cLY3/utF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aKb3bOME; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cLY3/utF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aKb3bOME; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="ad+i+6Wj"
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a7a94478a4eso115009166b.1
-        for <rcu@vger.kernel.org>; Wed, 07 Aug 2024 03:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1723024847; x=1723629647; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DP4grgcwBnNDkabKnZ/UoFhQsHN4IHhDNvWB2Kwa3HQ=;
-        b=ad+i+6Wjp/W+GrsjIeQXGUpHDjM0IHW3NXIu4YGc2vDcBTAZd5cNQ1IDNjg3l+9Eam
-         Mx5aWVzsWYePeBs1eLlB/5CAoBvUA72ppHZr6RtPl1d0zpe4SOUrccrQ2I5Iu2pRD62o
-         mXOp8JJNzD0ZVwlmbzAUfTEzPzIDf8KGugPORlQwK+7Y79sjILM9uvu+jzZthsoeKX0y
-         aTU4AuALdRos80QzmHpo+J0zJyMbahiKiQ9txrgm2c9b3dK7EuuRzSbgu60suTENU1z8
-         B+dFaBQOG26DdPChrz8a1nTZPvRpvwJr3vvz9GSYEw7nWREfhRvHL3Gatv9O3Jm6vgvA
-         /vGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723024847; x=1723629647;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DP4grgcwBnNDkabKnZ/UoFhQsHN4IHhDNvWB2Kwa3HQ=;
-        b=nFpdf1+6TtBfmwSdGUWfyhv2H9orocvzgIel0BSbwUMQa7ay/rzFXya3LLuXdQRKxq
-         rjKtUY5cnFVvCsICGwPTiRuX7vffxbHzCDehtw8iXxauwxljN8vWGLXLK5QBxSsAcWh9
-         hhTdlJ+8WMu3nGiLXF5LbWgGgIbLrYRLUWoTMKxzDx0dQbIhys82Qn/m+y7ybjyXwaCQ
-         0hib5Xlldkqx1Oxrlv/cfbSSZp/REF6u3oJfBQvAP84UsLoSI6n7TquGt2MN6Xm9DFgy
-         pa2d+Vp0HTk8ZMFGfq1+gL/qKh+SW+ax9KC9sICXVQxulW3UXFtVU1Jzj6DYF3wCY5KG
-         Z5Lw==
-X-Gm-Message-State: AOJu0YwyohDDDfUP2Mefl775E90GSOZsq35VRoZ4tAlJDmVgtfGgfYsD
-	ma++YPGfAecJ8+bbwz0sRu/24bbbUn/lla9N+rpkxV7pq2u0Ntk2mTweeP9yXhw=
-X-Google-Smtp-Source: AGHT+IEKOsNBlWol3pZuzwoRWU5Ks5wtno2ZLUGOAKgnsV2/zLCuNitPlkJsmivU+bMoZuYZaD8oqA==
-X-Received: by 2002:a17:906:fe06:b0:a7a:a33e:47bf with SMTP id a640c23a62f3a-a807905171fmr121374166b.18.1723024846497;
-        Wed, 07 Aug 2024 03:00:46 -0700 (PDT)
-Received: from fedora.fritz.box (pd9e1640a.dip0.t-ipconnect.de. [217.225.100.10])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7de4e7f336sm492467166b.131.2024.08.07.03.00.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Aug 2024 03:00:45 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org,
-	josh@joshtriplett.org,
-	boqun.feng@gmail.com,
-	urezki@gmail.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com,
-	kees@kernel.org,
-	gustavoars@kernel.org
-Cc: rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] rcu: Annotate struct kvfree_rcu_bulk_data with __counted_by()
-Date: Wed,  7 Aug 2024 11:55:00 +0200
-Message-ID: <20240807095459.1400-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.45.2
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cLY3/utF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aKb3bOME";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cLY3/utF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aKb3bOME"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9D1BE21B30;
+	Wed,  7 Aug 2024 10:31:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723026693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MYAQdZfiQ9b2HS7QQayr4v2PzJCMJBGtNuCobIJ9kog=;
+	b=cLY3/utFzR5G3V/XxZK66w1hKI7zztrmY2agOcJq2AtoIbw0KWSjpeZCldsX94i4eEQSV4
+	KoTs0wdmYXemgTm1TPUpfcr782fz/9E9l4YQLA8wvpn4zbENmVTG8Kk9Uj7JBHCBZhpcAD
+	lWxbMEzL60zqw5BIi3i4FvJE3gPz3eY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723026693;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MYAQdZfiQ9b2HS7QQayr4v2PzJCMJBGtNuCobIJ9kog=;
+	b=aKb3bOMEXUnsdzgDug3GWG+Gfd26M4sIVpomf1zjqE4sNJKZax0GGgM3p4N7i13iwnmkq0
+	cjtKorDtNeDJ2tBg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="cLY3/utF";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=aKb3bOME
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723026693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MYAQdZfiQ9b2HS7QQayr4v2PzJCMJBGtNuCobIJ9kog=;
+	b=cLY3/utFzR5G3V/XxZK66w1hKI7zztrmY2agOcJq2AtoIbw0KWSjpeZCldsX94i4eEQSV4
+	KoTs0wdmYXemgTm1TPUpfcr782fz/9E9l4YQLA8wvpn4zbENmVTG8Kk9Uj7JBHCBZhpcAD
+	lWxbMEzL60zqw5BIi3i4FvJE3gPz3eY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723026693;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MYAQdZfiQ9b2HS7QQayr4v2PzJCMJBGtNuCobIJ9kog=;
+	b=aKb3bOMEXUnsdzgDug3GWG+Gfd26M4sIVpomf1zjqE4sNJKZax0GGgM3p4N7i13iwnmkq0
+	cjtKorDtNeDJ2tBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7078B13297;
+	Wed,  7 Aug 2024 10:31:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id KnTUGgVNs2YsHwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 07 Aug 2024 10:31:33 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v2 0/7] mm, slub: handle pending kfree_rcu() in
+ kmem_cache_destroy()
+Date: Wed, 07 Aug 2024 12:31:13 +0200
+Message-Id: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPFMs2YC/42NQQ6CMBBFr2Jm7ZgyKQquvIchhraDNBowM0BEw
+ t2tnMDle8l/fwFliaxw3i0gPEWNfZeA9jvwbd3dGWNIDGTImlOWo7Ooz9rhoxHmm/gRA+sg/Yx
+ FHgI5ChxKgrR/CTfxvbWvVeI26tDLvF1N2c/+U50yNGiPjsrCeiKTX3RUPvgPVOu6fgGMaZPzw
+ AAAAA==
+To: "Paul E. McKenney" <paulmck@kernel.org>, 
+ Joel Fernandes <joel@joelfernandes.org>, 
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+ Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+ Julia Lawall <Julia.Lawall@inria.fr>, Jakub Kicinski <kuba@kernel.org>, 
+ "Jason A. Donenfeld" <Jason@zx2c4.com>, 
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Roman Gushchin <roman.gushchin@linux.dev>, 
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
+ Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
+ Jann Horn <jannh@google.com>, Mateusz Guzik <mjguzik@gmail.com>, 
+ Vlastimil Babka <vbabka@suse.cz>
+X-Mailer: b4 0.14.1
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 9D1BE21B30
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_TO(0.00)[kernel.org,joelfernandes.org,joshtriplett.org,gmail.com,linux.com,google.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_CC(0.00)[goodmis.org,efficios.com,gmail.com,inria.fr,kernel.org,zx2c4.com,linux-foundation.org,linux.dev,kvack.org,vger.kernel.org,google.com,googlegroups.com,suse.cz];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLsm9p66qmnckghmjmpccdnq6s)];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-Add the __counted_by compiler attribute to the flexible array member
-records to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-CONFIG_FORTIFY_SOURCE.
+Also in git:
+https://git.kernel.org/vbabka/l/slab-kfree_rcu-destroy-v2r2
 
-Increment nr_records before adding a new pointer to the records array.
+Since SLOB was removed, we have allowed kfree_rcu() for objects
+allocated from any kmem_cache in addition to kmalloc().
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+Recently we have attempted to replace existing call_rcu() usage with
+kfree_rcu() where the callback is a plain kmem_cache_free(), in a series
+by Julia Lawall [1].
+
+Jakub Kicinski pointed out [2] this was tried already in batman-adv but
+had to be reverted due to kmem_cache_destroy() failing due to objects
+remaining in the cache, despite rcu_barrier() being used.
+
+Jason Donenfeld found the culprit [3] being a35d16905efc ("rcu: Add
+basic support for kfree_rcu() batching") causing rcu_barrier() to be
+insufficient.
+
+This was never a problem for kfree_rcu() usage on kmalloc() objects as
+the kmalloc caches are never destroyed, but arbitrary caches can be,
+e.g. due to module unload.
+
+Out of the possible solutions collected by Paul McKenney [4] the most
+appealing to me is "kmem_cache_destroy() lingers for kfree_rcu()" as
+it adds no additional concerns to kfree_rcu() users.
+
+We already have the precedence in some parts of the kmem_cache cleanup
+being done asynchronously for SLAB_TYPESAFE_BY_RCU caches. The v1 of
+this RFC took the same approach for asynchronously waiting for pending
+kfree_rcu(). Mateusz Guzik on IRC questioned this approach, and it turns
+out the rcu_barrier() used to be synchronous before commit 657dc2f97220
+("slab: remove synchronous rcu_barrier() call in memcg cache release
+path") and the motivation for that is no longer applicable. So instead
+in v2 the existing barrier is reverted to be synchronous, and the new
+barrier for kfree_rcu() is also called sychronously.
+
+The new kvfree_rcu_barrier() was provided by Uladzislau Rezki in a patch
+[5] carried now by this series.
+
+There is also a bunch of preliminary cleanup steps. The potentially
+visible one is that sysfs and debugfs directories, as well as
+/proc/slabinfo record of the cache are now removed immediately during
+kmem_cache_destroy() - previously this would be delayed for
+SLAB_TYPESAFE_BY_RCU caches or left around forever if leaked objects
+were detected. Even though we no longer have the delayed removal, leaked
+objects should not prevent the cache to be recreated including its sysfs
+and debugfs directories, so it's better to make this cleanup anyway.
+The immediate removal is the simplest solution (compared to e.g.
+renaming the directories) and should not make debugging harder - while
+it won't be possible to check debugfs for allocation traces of leaked
+objects, they are listed with more detail in dmesg anyway.
+
+[1] https://lore.kernel.org/all/20240609082726.32742-1-Julia.Lawall@inria.fr/
+[2] https://lore.kernel.org/all/20240612143305.451abf58@kernel.org/
+[3] https://lore.kernel.org/all/Zmo9-YGraiCj5-MI@zx2c4.com/
+[4] https://docs.google.com/document/d/1v0rcZLvvjVGejT3523W0rDy_sLFu2LWc_NR3fQItZaA/edit
+[5] https://lore.kernel.org/all/20240801111039.79656-1-urezki@gmail.com/
+
+To: Paul E. McKenney <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+To: Josh Triplett <josh@joshtriplett.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+CC: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Zqiang <qiang.zhang1211@gmail.com>
+Cc: Julia Lawall <Julia.Lawall@inria.fr>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+To: Christoph Lameter <cl@linux.com>
+To: David Rientjes <rientjes@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: rcu@vger.kernel.org
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: kasan-dev@googlegroups.com
+Cc: Jann Horn <jannh@google.com>
+Cc: Mateusz Guzik <mjguzik@gmail.com>
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- kernel/rcu/tree.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Changes in v2:
+- Include the necessary barrier implementation (by Uladzislau Rezki)
+- Switch to synchronous barriers (Mateusz Guzik)
+- Moving of kfence_shutdown_cache() outside slab_mutex done in a
+  separate step for review and bisectability.
+- Additional kunit test for destroying a cache with leaked object.
+- Link to v1: https://lore.kernel.org/r/20240715-b4-slab-kfree_rcu-destroy-v1-0-46b2984c2205@suse.cz
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e641cc681901..76d8d75dd8b3 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3227,7 +3227,7 @@ struct kvfree_rcu_bulk_data {
- 	struct list_head list;
- 	struct rcu_gp_oldstate gp_snap;
- 	unsigned long nr_records;
--	void *records[];
-+	void *records[] __counted_by(nr_records);
- };
- 
- /*
-@@ -3767,7 +3767,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 	}
- 
- 	// Finally insert and update the GP for this page.
--	bnode->records[bnode->nr_records++] = ptr;
-+	bnode->nr_records++;
-+	bnode->records[bnode->nr_records - 1] = ptr;
- 	get_state_synchronize_rcu_full(&bnode->gp_snap);
- 	atomic_inc(&(*krcp)->bulk_count[idx]);
- 
+---
+Uladzislau Rezki (Sony) (1):
+      rcu/kvfree: Add kvfree_rcu_barrier() API
+
+Vlastimil Babka (6):
+      mm, slab: dissolve shutdown_cache() into its caller
+      mm, slab: unlink slabinfo, sysfs and debugfs immediately
+      mm, slab: move kfence_shutdown_cache() outside slab_mutex
+      mm, slab: reintroduce rcu_barrier() into kmem_cache_destroy()
+      mm, slab: call kvfree_rcu_barrier() from kmem_cache_destroy()
+      kunit, slub: add test_kfree_rcu() and test_leak_destroy()
+
+ include/linux/rcutiny.h |   5 +++
+ include/linux/rcutree.h |   1 +
+ kernel/rcu/tree.c       | 103 ++++++++++++++++++++++++++++++++++++++++----
+ lib/slub_kunit.c        |  31 ++++++++++++++
+ mm/slab_common.c        | 111 ++++++++++++++----------------------------------
+ 5 files changed, 163 insertions(+), 88 deletions(-)
+---
+base-commit: 8400291e289ee6b2bf9779ff1c83a291501f017b
+change-id: 20240715-b4-slab-kfree_rcu-destroy-85dd2b2ded92
+
+Best regards,
 -- 
-2.45.2
+Vlastimil Babka <vbabka@suse.cz>
 
