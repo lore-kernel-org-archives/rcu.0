@@ -1,268 +1,118 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A70481D5;
-	Tue,  6 Aug 2024 18:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE831CCB35
+	for <rcu@vger.kernel.org>; Wed,  7 Aug 2024 10:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722967865; cv=none; b=IELFzdLVdtE3zUEtF+6HsBHlhtx8Ug2xbv8qgAlo8i7byKwcfX9wvurvq4KIerzxGBbyjUoth2vdgmsq6ugAUMG8vBm/1iJlVkdImlBwiLORkH+xysAKK/dygn8BjGHeXGuwSWMFhW8Q6rs3oOsUfjeAesD8FesG3K5+pwPmNaQ=
+	t=1723024850; cv=none; b=jTQJOd12243w6pGOK701srycJjdi+bRAy5dpqDSGXiz4m5l9DijI8jM+3yefZCBIvf9jV9Ow6xxLY8rTCPYky8NeoTjO0Djo7bGsbagA9vJidGW6aiebxmY8NHR/o3kvbxKaB4CVPDHajHsTkAL7haPFAK3SL+WemNqUunmpNf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722967865; c=relaxed/simple;
-	bh=3di6R+nkCndRgrAqvkZqbc0TKP4ULxAxRH2e/8MBJCg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h0c+SgQwENn5Wp5I/ynNzbeSMnJ8H5kbFZcdqy/1aSKFjCShXMpD5MI6dUHQzi9SmluyPiP+l+IyR2v1HUwieTpleTSiE2UIbO0n4Jz3QIXGm4nbZxK9d+HTMGgTLI5sosYGIRY9lSyeNvEFgs5e02qz9zwtTeYSPOoGBDoaTJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FWZZqhb/; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1723024850; c=relaxed/simple;
+	bh=JFeEg6KS1tps0Hdi+bU03Q7DXumXvmBP/um59ZL2G9c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RNKOMK0G/1ZIMN0VCRKch8ewQQAvZjNQZei4uFQwdVifFGlP4m4EAH7knFamt8gjravsX34wMbP8RIjmtaG+MCInWrGsUQmTT/QDMR8OZPtNfpmf55ymvKMAi44Mpabe4cR4TzSLqbtCOrlau/6jI+eRp47LHes13yOHeEVQVmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=ad+i+6Wj; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWZZqhb/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C4A0C32786;
-	Tue,  6 Aug 2024 18:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722967864;
-	bh=3di6R+nkCndRgrAqvkZqbc0TKP4ULxAxRH2e/8MBJCg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=FWZZqhb//UQU1wHXRAjXaAsb+dT05/gACCIhSUpcMLDrhC6KmP+ixHxYgjnfn4Tpa
-	 NXd3X2/VapefKueUsoXM1AoPBBm4oCGVI2+d148Kl4YAdF/VC0anWVlZ778QBgwkri
-	 HOBMsTG4NCsC9jFhtjL8GOh3pgYjxvaltE9eZ16RtzQYTlwVoySvqsuYQas/u54TwK
-	 bEYkzBkAv0B3qZjeLHvOQk9LaZqhngbWJDLyc+L8eL0XIEz9IONQZbWKfwQTHYb0Dv
-	 G5duhkqehx/i6LZC5lv1VC7E43ykn+MEWcIupzkkx1OJ3WltnWYNfdBXbIWBjiJhBZ
-	 l33kkuahnEZUA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 33EABCE0A72; Tue,  6 Aug 2024 11:10:59 -0700 (PDT)
-Date: Tue, 6 Aug 2024 11:10:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] refscale: Constify struct ref_scale_ops
-Message-ID: <86dbcaa7-db16-4a90-9022-eb7b6e736ed7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <46cd762aeef493d8655e8a053bfd591f849d27ec.1722951006.git.christophe.jaillet@wanadoo.fr>
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="ad+i+6Wj"
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a7a94478a4eso115009166b.1
+        for <rcu@vger.kernel.org>; Wed, 07 Aug 2024 03:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1723024847; x=1723629647; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DP4grgcwBnNDkabKnZ/UoFhQsHN4IHhDNvWB2Kwa3HQ=;
+        b=ad+i+6Wjp/W+GrsjIeQXGUpHDjM0IHW3NXIu4YGc2vDcBTAZd5cNQ1IDNjg3l+9Eam
+         Mx5aWVzsWYePeBs1eLlB/5CAoBvUA72ppHZr6RtPl1d0zpe4SOUrccrQ2I5Iu2pRD62o
+         mXOp8JJNzD0ZVwlmbzAUfTEzPzIDf8KGugPORlQwK+7Y79sjILM9uvu+jzZthsoeKX0y
+         aTU4AuALdRos80QzmHpo+J0zJyMbahiKiQ9txrgm2c9b3dK7EuuRzSbgu60suTENU1z8
+         B+dFaBQOG26DdPChrz8a1nTZPvRpvwJr3vvz9GSYEw7nWREfhRvHL3Gatv9O3Jm6vgvA
+         /vGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723024847; x=1723629647;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DP4grgcwBnNDkabKnZ/UoFhQsHN4IHhDNvWB2Kwa3HQ=;
+        b=nFpdf1+6TtBfmwSdGUWfyhv2H9orocvzgIel0BSbwUMQa7ay/rzFXya3LLuXdQRKxq
+         rjKtUY5cnFVvCsICGwPTiRuX7vffxbHzCDehtw8iXxauwxljN8vWGLXLK5QBxSsAcWh9
+         hhTdlJ+8WMu3nGiLXF5LbWgGgIbLrYRLUWoTMKxzDx0dQbIhys82Qn/m+y7ybjyXwaCQ
+         0hib5Xlldkqx1Oxrlv/cfbSSZp/REF6u3oJfBQvAP84UsLoSI6n7TquGt2MN6Xm9DFgy
+         pa2d+Vp0HTk8ZMFGfq1+gL/qKh+SW+ax9KC9sICXVQxulW3UXFtVU1Jzj6DYF3wCY5KG
+         Z5Lw==
+X-Gm-Message-State: AOJu0YwyohDDDfUP2Mefl775E90GSOZsq35VRoZ4tAlJDmVgtfGgfYsD
+	ma++YPGfAecJ8+bbwz0sRu/24bbbUn/lla9N+rpkxV7pq2u0Ntk2mTweeP9yXhw=
+X-Google-Smtp-Source: AGHT+IEKOsNBlWol3pZuzwoRWU5Ks5wtno2ZLUGOAKgnsV2/zLCuNitPlkJsmivU+bMoZuYZaD8oqA==
+X-Received: by 2002:a17:906:fe06:b0:a7a:a33e:47bf with SMTP id a640c23a62f3a-a807905171fmr121374166b.18.1723024846497;
+        Wed, 07 Aug 2024 03:00:46 -0700 (PDT)
+Received: from fedora.fritz.box (pd9e1640a.dip0.t-ipconnect.de. [217.225.100.10])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7de4e7f336sm492467166b.131.2024.08.07.03.00.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Aug 2024 03:00:45 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	boqun.feng@gmail.com,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com,
+	kees@kernel.org,
+	gustavoars@kernel.org
+Cc: rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] rcu: Annotate struct kvfree_rcu_bulk_data with __counted_by()
+Date: Wed,  7 Aug 2024 11:55:00 +0200
+Message-ID: <20240807095459.1400-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46cd762aeef493d8655e8a053bfd591f849d27ec.1722951006.git.christophe.jaillet@wanadoo.fr>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 06, 2024 at 03:30:16PM +0200, Christophe JAILLET wrote:
-> 'struct ref_scale_ops' are not modified in these drivers.
-> 
-> Constifying this structure moves some data to a read-only section, so
-> increase overall security.
-> 
-> On a x86_64, with allmodconfig:
-> Before:
-> ======
->    text	   data	    bss	    dec	    hex	filename
->   34231	   4167	    736	  39134	   98de	kernel/rcu/refscale.o
-> 
-> After:
-> =====
->    text	   data	    bss	    dec	    hex	filename
->   35175	   3239	    736	  39150	   98ee	kernel/rcu/refscale.o
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Compile tested-only.
+Add the __counted_by compiler attribute to the flexible array member
+records to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+CONFIG_FORTIFY_SOURCE.
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Increment nr_records before adding a new pointer to the records array.
 
-> ---
->  kernel/rcu/refscale.c | 42 +++++++++++++++++++++---------------------
->  1 file changed, 21 insertions(+), 21 deletions(-)
-> 
-> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-> index cfec0648e141..0db9db73f57f 100644
-> --- a/kernel/rcu/refscale.c
-> +++ b/kernel/rcu/refscale.c
-> @@ -135,7 +135,7 @@ struct ref_scale_ops {
->  	const char *name;
->  };
->  
-> -static struct ref_scale_ops *cur_ops;
-> +static const struct ref_scale_ops *cur_ops;
->  
->  static void un_delay(const int udl, const int ndl)
->  {
-> @@ -171,7 +171,7 @@ static bool rcu_sync_scale_init(void)
->  	return true;
->  }
->  
-> -static struct ref_scale_ops rcu_ops = {
-> +static const struct ref_scale_ops rcu_ops = {
->  	.init		= rcu_sync_scale_init,
->  	.readsection	= ref_rcu_read_section,
->  	.delaysection	= ref_rcu_delay_section,
-> @@ -205,7 +205,7 @@ static void srcu_ref_scale_delay_section(const int nloops, const int udl, const
->  	}
->  }
->  
-> -static struct ref_scale_ops srcu_ops = {
-> +static const struct ref_scale_ops srcu_ops = {
->  	.init		= rcu_sync_scale_init,
->  	.readsection	= srcu_ref_scale_read_section,
->  	.delaysection	= srcu_ref_scale_delay_section,
-> @@ -232,7 +232,7 @@ static void rcu_tasks_ref_scale_delay_section(const int nloops, const int udl, c
->  		un_delay(udl, ndl);
->  }
->  
-> -static struct ref_scale_ops rcu_tasks_ops = {
-> +static const struct ref_scale_ops rcu_tasks_ops = {
->  	.init		= rcu_sync_scale_init,
->  	.readsection	= rcu_tasks_ref_scale_read_section,
->  	.delaysection	= rcu_tasks_ref_scale_delay_section,
-> @@ -271,7 +271,7 @@ static void rcu_trace_ref_scale_delay_section(const int nloops, const int udl, c
->  	}
->  }
->  
-> -static struct ref_scale_ops rcu_trace_ops = {
-> +static const struct ref_scale_ops rcu_trace_ops = {
->  	.init		= rcu_sync_scale_init,
->  	.readsection	= rcu_trace_ref_scale_read_section,
->  	.delaysection	= rcu_trace_ref_scale_delay_section,
-> @@ -310,7 +310,7 @@ static void ref_refcnt_delay_section(const int nloops, const int udl, const int
->  	}
->  }
->  
-> -static struct ref_scale_ops refcnt_ops = {
-> +static const struct ref_scale_ops refcnt_ops = {
->  	.init		= rcu_sync_scale_init,
->  	.readsection	= ref_refcnt_section,
->  	.delaysection	= ref_refcnt_delay_section,
-> @@ -347,7 +347,7 @@ static void ref_rwlock_delay_section(const int nloops, const int udl, const int
->  	}
->  }
->  
-> -static struct ref_scale_ops rwlock_ops = {
-> +static const struct ref_scale_ops rwlock_ops = {
->  	.init		= ref_rwlock_init,
->  	.readsection	= ref_rwlock_section,
->  	.delaysection	= ref_rwlock_delay_section,
-> @@ -384,7 +384,7 @@ static void ref_rwsem_delay_section(const int nloops, const int udl, const int n
->  	}
->  }
->  
-> -static struct ref_scale_ops rwsem_ops = {
-> +static const struct ref_scale_ops rwsem_ops = {
->  	.init		= ref_rwsem_init,
->  	.readsection	= ref_rwsem_section,
->  	.delaysection	= ref_rwsem_delay_section,
-> @@ -419,7 +419,7 @@ static void ref_lock_delay_section(const int nloops, const int udl, const int nd
->  	preempt_enable();
->  }
->  
-> -static struct ref_scale_ops lock_ops = {
-> +static const struct ref_scale_ops lock_ops = {
->  	.readsection	= ref_lock_section,
->  	.delaysection	= ref_lock_delay_section,
->  	.name		= "lock"
-> @@ -454,7 +454,7 @@ static void ref_lock_irq_delay_section(const int nloops, const int udl, const in
->  	preempt_enable();
->  }
->  
-> -static struct ref_scale_ops lock_irq_ops = {
-> +static const struct ref_scale_ops lock_irq_ops = {
->  	.readsection	= ref_lock_irq_section,
->  	.delaysection	= ref_lock_irq_delay_section,
->  	.name		= "lock-irq"
-> @@ -490,7 +490,7 @@ static void ref_acqrel_delay_section(const int nloops, const int udl, const int
->  	preempt_enable();
->  }
->  
-> -static struct ref_scale_ops acqrel_ops = {
-> +static const struct ref_scale_ops acqrel_ops = {
->  	.readsection	= ref_acqrel_section,
->  	.delaysection	= ref_acqrel_delay_section,
->  	.name		= "acqrel"
-> @@ -524,7 +524,7 @@ static void ref_clock_delay_section(const int nloops, const int udl, const int n
->  	stopopts = x;
->  }
->  
-> -static struct ref_scale_ops clock_ops = {
-> +static const struct ref_scale_ops clock_ops = {
->  	.readsection	= ref_clock_section,
->  	.delaysection	= ref_clock_delay_section,
->  	.name		= "clock"
-> @@ -556,7 +556,7 @@ static void ref_jiffies_delay_section(const int nloops, const int udl, const int
->  	stopopts = x;
->  }
->  
-> -static struct ref_scale_ops jiffies_ops = {
-> +static const struct ref_scale_ops jiffies_ops = {
->  	.readsection	= ref_jiffies_section,
->  	.delaysection	= ref_jiffies_delay_section,
->  	.name		= "jiffies"
-> @@ -706,9 +706,9 @@ static void refscale_typesafe_ctor(void *rtsp_in)
->  	preempt_enable();
->  }
->  
-> -static struct ref_scale_ops typesafe_ref_ops;
-> -static struct ref_scale_ops typesafe_lock_ops;
-> -static struct ref_scale_ops typesafe_seqlock_ops;
-> +static const struct ref_scale_ops typesafe_ref_ops;
-> +static const struct ref_scale_ops typesafe_lock_ops;
-> +static const struct ref_scale_ops typesafe_seqlock_ops;
->  
->  // Initialize for a typesafe test.
->  static bool typesafe_init(void)
-> @@ -769,7 +769,7 @@ static void typesafe_cleanup(void)
->  }
->  
->  // The typesafe_init() function distinguishes these structures by address.
-> -static struct ref_scale_ops typesafe_ref_ops = {
-> +static const struct ref_scale_ops typesafe_ref_ops = {
->  	.init		= typesafe_init,
->  	.cleanup	= typesafe_cleanup,
->  	.readsection	= typesafe_read_section,
-> @@ -777,7 +777,7 @@ static struct ref_scale_ops typesafe_ref_ops = {
->  	.name		= "typesafe_ref"
->  };
->  
-> -static struct ref_scale_ops typesafe_lock_ops = {
-> +static const struct ref_scale_ops typesafe_lock_ops = {
->  	.init		= typesafe_init,
->  	.cleanup	= typesafe_cleanup,
->  	.readsection	= typesafe_read_section,
-> @@ -785,7 +785,7 @@ static struct ref_scale_ops typesafe_lock_ops = {
->  	.name		= "typesafe_lock"
->  };
->  
-> -static struct ref_scale_ops typesafe_seqlock_ops = {
-> +static const struct ref_scale_ops typesafe_seqlock_ops = {
->  	.init		= typesafe_init,
->  	.cleanup	= typesafe_cleanup,
->  	.readsection	= typesafe_read_section,
-> @@ -1026,7 +1026,7 @@ static int main_func(void *arg)
->  }
->  
->  static void
-> -ref_scale_print_module_parms(struct ref_scale_ops *cur_ops, const char *tag)
-> +ref_scale_print_module_parms(const struct ref_scale_ops *cur_ops, const char *tag)
->  {
->  	pr_alert("%s" SCALE_FLAG
->  		 "--- %s:  verbose=%d verbose_batched=%d shutdown=%d holdoff=%d lookup_instances=%ld loops=%ld nreaders=%d nruns=%d readdelay=%d\n", scale_type, tag,
-> @@ -1081,7 +1081,7 @@ ref_scale_init(void)
->  {
->  	long i;
->  	int firsterr = 0;
-> -	static struct ref_scale_ops *scale_ops[] = {
-> +	static const struct ref_scale_ops *scale_ops[] = {
->  		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
->  		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
->  		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
-> -- 
-> 2.45.2
-> 
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ kernel/rcu/tree.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index e641cc681901..76d8d75dd8b3 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3227,7 +3227,7 @@ struct kvfree_rcu_bulk_data {
+ 	struct list_head list;
+ 	struct rcu_gp_oldstate gp_snap;
+ 	unsigned long nr_records;
+-	void *records[];
++	void *records[] __counted_by(nr_records);
+ };
+ 
+ /*
+@@ -3767,7 +3767,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 	}
+ 
+ 	// Finally insert and update the GP for this page.
+-	bnode->records[bnode->nr_records++] = ptr;
++	bnode->nr_records++;
++	bnode->records[bnode->nr_records - 1] = ptr;
+ 	get_state_synchronize_rcu_full(&bnode->gp_snap);
+ 	atomic_inc(&(*krcp)->bulk_count[idx]);
+ 
+-- 
+2.45.2
+
