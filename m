@@ -1,195 +1,139 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3AB1E2103;
-	Wed,  7 Aug 2024 10:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF722F3E
+	for <rcu@vger.kernel.org>; Wed,  7 Aug 2024 15:29:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723026708; cv=none; b=YtDuceL/KlvVKwl/ECUw/19Qyd3QXknDDONZS9xYWtNTsxPqRoLmR+LPACZNJ+QlFv4YtmgwtBidn1fscT1PRF/9M4JPkd965xSzot91e7Zav5tjb5RMgbboRXwztSVbO6OHaE8c/s5Yje4pn33j9mLlCCfovwX4h4jAB7vOkfQ=
+	t=1723044562; cv=none; b=KhgPJFG1EhuPKduDm+ho3/GQ713ON1AgE/c6LQI1TF+Pds1iBfsy11xq8KTdhfpAPRjOfJtLOb3I8M6vsa3zu8b35L/ytEYL5um93q9BC19vEnav1jXFMbnfsuvegRKZnHtJ9saQwHF2+pdL6tXxwEn9rLb38ap/vcq6d8lq6CY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723026708; c=relaxed/simple;
-	bh=odcOPsl7Np+e6W0q9bc8BGObw3TeQehB272xRz/S2bw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SHip7bJFc35t22Dh3cVT5pHmUGk3aJIjLkwmuFA1uq4NZI2O530dB/mRLQx/zxR77qu7MkPh6mwljjtu22/Pqg2DyPLMZUEmFgy9b5XZ9CA+ypZgI06xZ3qAjsbPuKovl93pWdXNcV8e6//WG62xubZFRAaFNVOyXR4HFEw/whI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=G9cWwfVr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K+AeEX2G; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=G9cWwfVr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K+AeEX2G; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1723044562; c=relaxed/simple;
+	bh=W/j7ofAjp4lBil8BOqJhV6WZEhxedjS2h6klOSbHmqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WeIc0FAKE8PHOCq4MjU06fColsiSnpsk5wY6aFBvNM8ZZ6uW3cK+D7Ov+vsKb2E8aYJf1vvuWClJjDLCgFqtd47nYXZmfrESZPGII+eBfpH2X+jtXEPzJTus5FQEbQ3JIedMmPHyf9AK+SLKlvvuvg94CkvG+S4fIVEnx691fto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=oR6kY+5M; arc=none smtp.client-ip=35.89.44.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="G9cWwfVr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K+AeEX2G";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="G9cWwfVr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K+AeEX2G"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 98D2D21CF7;
-	Wed,  7 Aug 2024 10:31:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723026694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=foIdXKngemBlbTDIsFcIDdiOSQLvnJzh8edzRJqHuXI=;
-	b=G9cWwfVrm6JkmFYpoZ79hf1LRv8wfwCYrhj5x8KhYvHgPmR/Q8EoYbtVH8/cCiskxZYvvd
-	E5icluLF+y0nv2ZVZL45wecJWESrbLKXcAvpFFq/iioLssYkIZYfITiIc/vSSC+Eb9IE1R
-	+5ATK74aL1BUYbZYiE9eWHfEhcPz4xY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723026694;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=foIdXKngemBlbTDIsFcIDdiOSQLvnJzh8edzRJqHuXI=;
-	b=K+AeEX2G13kP7EZPoVKdShS1QkNC45172PSLvkDCLjgwVmS0cE6LRJjxTbf7bshybHTxvm
-	PYcwtsP7pO28nBCQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=G9cWwfVr;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=K+AeEX2G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723026694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=foIdXKngemBlbTDIsFcIDdiOSQLvnJzh8edzRJqHuXI=;
-	b=G9cWwfVrm6JkmFYpoZ79hf1LRv8wfwCYrhj5x8KhYvHgPmR/Q8EoYbtVH8/cCiskxZYvvd
-	E5icluLF+y0nv2ZVZL45wecJWESrbLKXcAvpFFq/iioLssYkIZYfITiIc/vSSC+Eb9IE1R
-	+5ATK74aL1BUYbZYiE9eWHfEhcPz4xY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723026694;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=foIdXKngemBlbTDIsFcIDdiOSQLvnJzh8edzRJqHuXI=;
-	b=K+AeEX2G13kP7EZPoVKdShS1QkNC45172PSLvkDCLjgwVmS0cE6LRJjxTbf7bshybHTxvm
-	PYcwtsP7pO28nBCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 629DA13B09;
-	Wed,  7 Aug 2024 10:31:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GD/NFwZNs2YsHwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 07 Aug 2024 10:31:34 +0000
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Wed, 07 Aug 2024 12:31:19 +0200
-Subject: [PATCH v2 6/7] mm, slab: call kvfree_rcu_barrier() from
- kmem_cache_destroy()
+	dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="oR6kY+5M"
+Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
+	by cmsmtp with ESMTPS
+	id bgrosjT4XumtXbibCs5R8Z; Wed, 07 Aug 2024 15:29:14 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id bibCsd8XKYa78bibCsWDQM; Wed, 07 Aug 2024 15:29:14 +0000
+X-Authority-Analysis: v=2.4 cv=Db4RqOtW c=1 sm=1 tr=0 ts=66b392ca
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=frY+GlAHrI6frpeK1MvySw==:17
+ a=IkcTkHD0fZMA:10 a=yoJbH4e0A30A:10 a=ZI_cG6RJAAAA:8 a=VwQbUJbxAAAA:8
+ a=T5MvzxAiUVsB-E4yPXoA:9 a=QEXdDO2ut3YA:10 a=CiASUvFRIoiJKylo2i9u:22
+ a=AjGcO6oz07-iQ99wixmX:22 a=Xt_RvD8W3m28Mn_h3AK8:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=59150sAKwGxpaYJCN77m/MKm7XHRkgxuo8ao1z77FlU=; b=oR6kY+5MtJW2lfQQH8jwxz/n+p
+	ld81JKyBLNDPwW+Cml04V8/YNZ+m9EbK5fYlWqkS0DRw06/eEgGGUPTtx3nWFQyZpzaojkyN1PZa9
+	9q/6p2pNuzRgaxr1FKfrxYzuDnBBB1FXNnjn6AY9BaqaDoS+8awdi3FOxFb2eZWIe8u8yTNvanslK
+	0+zoFCavSaelECC3pbjxZKOwO0Lwyoe3rpXYgP/FOTsELsFK6xrG8w+rraBprKCIUUaiX5pNx63jx
+	eE2ASEnOyS5h8EGLvwM1SA6TMbQHbC2AoP2EG1nXMde48ypRIC0zac58hZ7JFoqf4df5RPez/EtMp
+	HzQUZgyA==;
+Received: from [201.172.173.139] (port=60294 helo=[192.168.15.5])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1sbib9-003NZG-27;
+	Wed, 07 Aug 2024 10:29:11 -0500
+Message-ID: <bcb88692-a384-4da8-b2b9-a116ecb17530@embeddedor.com>
+Date: Wed, 7 Aug 2024 09:29:09 -0600
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcu: Annotate struct kvfree_rcu_bulk_data with
+ __counted_by()
+To: Thorsten Blum <thorsten.blum@toblux.com>, paulmck@kernel.org,
+ frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+ josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
+ rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+ qiang.zhang1211@gmail.com, kees@kernel.org, gustavoars@kernel.org
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20240807095459.1400-2-thorsten.blum@toblux.com>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240807095459.1400-2-thorsten.blum@toblux.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240807-b4-slab-kfree_rcu-destroy-v2-6-ea79102f428c@suse.cz>
-References: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
-In-Reply-To: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
-To: "Paul E. McKenney" <paulmck@kernel.org>, 
- Joel Fernandes <joel@joelfernandes.org>, 
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
- Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
- Julia Lawall <Julia.Lawall@inria.fr>, Jakub Kicinski <kuba@kernel.org>, 
- "Jason A. Donenfeld" <Jason@zx2c4.com>, 
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
- Jann Horn <jannh@google.com>, Mateusz Guzik <mjguzik@gmail.com>, 
- Vlastimil Babka <vbabka@suse.cz>
-X-Mailer: b4 0.14.1
-X-Spam-Level: 
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 98D2D21CF7
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[kernel.org,joelfernandes.org,joshtriplett.org,gmail.com,linux.com,google.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_CC(0.00)[goodmis.org,efficios.com,gmail.com,inria.fr,kernel.org,zx2c4.com,linux-foundation.org,linux.dev,kvack.org,vger.kernel.org,google.com,googlegroups.com,suse.cz];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLsm9p66qmnckghmjmpccdnq6s)];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.173.139
+X-Source-L: No
+X-Exim-ID: 1sbib9-003NZG-27
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.5]) [201.172.173.139]:60294
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHJc0yCIC1ifOdKAKguN3Bs3E/EfpHMh15d0424zzRVMd4xn4nM+cE5/7WZ1iF37WnW0v8Mdts+aH0kPXQ8EKCRcy+UDOSO7eogA/rd16QmsZd2KBxuT
+ uzqc41ZcUWBfL4W/uEY0rPMfI8j6fFpkkaIP5BpklzLLE6fVZkvvJwV+gh3NMU8RbkGhJ232dhmzIHg+RZmDle/4pMxg0tIlAYA=
 
-We would like to replace call_rcu() users with kfree_rcu() where the
-existing callback is just a kmem_cache_free(). However this causes
-issues when the cache can be destroyed (such as due to module unload).
 
-Currently such modules should be issuing rcu_barrier() before
-kmem_cache_destroy() to have their call_rcu() callbacks processed first.
-This barrier is however not sufficient for kfree_rcu() in flight due
-to the batching introduced by a35d16905efc ("rcu: Add basic support for
-kfree_rcu() batching").
 
-This is not a problem for kmalloc caches which are never destroyed, but
-since removing SLOB, kfree_rcu() is allowed also for any other cache,
-that might be destroyed.
+On 07/08/24 03:55, Thorsten Blum wrote:
+> Add the __counted_by compiler attribute to the flexible array member
+> records to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+> CONFIG_FORTIFY_SOURCE.
+> 
+> Increment nr_records before adding a new pointer to the records array.
+> 
 
-In order not to complicate the API, put the responsibility for handling
-outstanding kfree_rcu() in kmem_cache_destroy() itself. Use the newly
-introduced kvfree_rcu_barrier() to wait before destroying the cache.
-This is similar to how we issue rcu_barrier() for SLAB_TYPESAFE_BY_RCU
-caches, but has to be done earlier, as the latter only needs to wait for
-the empty slab pages to finish freeing, and not objects from the slab.
+Looks good.
 
-Users of call_rcu() with arbitrary callbacks should still issue
-rcu_barrier() before destroying the cache and unloading the module, as
-kvfree_rcu_barrier() is not a superset of rcu_barrier() and the
-callbacks may be invoking module code or performing other actions that
-are necessary for a successful unload.
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/slab_common.c | 3 +++
- 1 file changed, 3 insertions(+)
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index c40227d5fa07..1a2873293f5d 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -508,6 +508,9 @@ void kmem_cache_destroy(struct kmem_cache *s)
- 	if (unlikely(!s) || !kasan_check_byte(s))
- 		return;
- 
-+	/* in-flight kfree_rcu()'s may include objects from our cache */
-+	kvfree_rcu_barrier();
-+
- 	cpus_read_lock();
- 	mutex_lock(&slab_mutex);
- 
+Thanks
+--
+Gustavo
 
--- 
-2.46.0
-
+> ---
+>   kernel/rcu/tree.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index e641cc681901..76d8d75dd8b3 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3227,7 +3227,7 @@ struct kvfree_rcu_bulk_data {
+>   	struct list_head list;
+>   	struct rcu_gp_oldstate gp_snap;
+>   	unsigned long nr_records;
+> -	void *records[];
+> +	void *records[] __counted_by(nr_records);
+>   };
+>   
+>   /*
+> @@ -3767,7 +3767,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+>   	}
+>   
+>   	// Finally insert and update the GP for this page.
+> -	bnode->records[bnode->nr_records++] = ptr;
+> +	bnode->nr_records++;
+> +	bnode->records[bnode->nr_records - 1] = ptr;
+>   	get_state_synchronize_rcu_full(&bnode->gp_snap);
+>   	atomic_inc(&(*krcp)->bulk_count[idx]);
+>   
