@@ -1,380 +1,207 @@
-Received: from mail-pg1-f227.google.com (mail-pg1-f227.google.com [209.85.215.227])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8679416BE34
-	for <rcu@vger.kernel.org>; Tue, 13 Aug 2024 23:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716DB13D51D;
+	Wed, 14 Aug 2024 12:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723591975; cv=none; b=o5lMgBgJalFoRS25YRe7V5SG1ILjlHwRKbHjXiJsX1Dcchw+MtWgd4PXUdv1Q/FIPFJuV9QRRm5ZFbvxcMlH87Dl9BzJbXNQhF0+MEYtJ7TVhtjpVQaVsFRr2gI1cV2bYxsiPom/FXOtMRZjfKK5bNH5ono5sy1bwTLJUYz+W94=
+	t=1723637231; cv=none; b=fuiK5iFI5tqBbNsFKVhYZX6MZRlCQDsWvGwLJ6nBSyfvl3NbFzRy6hjFwJlLou+n/VQmTA6nmz+W7B3553wqFiV0p9rslGPotXOXBrpj6UhKZwXbfTkICAn0+eKDaBwd9pyHtLTaGuzpO4KknwihFFBpb/FuZMO9cTEWE3c7dBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723591975; c=relaxed/simple;
-	bh=qRzKqTnUFYFZMO87/XmBCeuiDiFz0pf9bjswxn5jQak=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uz9nSPbLauD5HUlYOhkKfcYxDIZuh9u6VPC8ICmsI7MCKYGxsG2Z77Jtpooq7RmCVVU8ssxODjsIHluu94x5yEQhAW4YE4cto99VADbTHCxQ7m3eZHnq1BIcsSD5H+4sL0PVL8EZ0aGcMylzj92jbUQmJ6DHc3Vsd4pn4162WA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=QzmQQl2g; arc=none smtp.client-ip=209.85.215.227
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+	s=arc-20240116; t=1723637231; c=relaxed/simple;
+	bh=ia32pWQM/q7KG1yROuoWfq1IU8rNC89OopuCn7Z/cyk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bqaRoFj9nHOLOtefAOYoSJHvOPj2TzUkuazh2y/PQRXhaB4KDJOeF35PjoZP4zzOwU0dx/Nt5cXhiTZYWtLpOgxqRx+JQJwIw2hNICZNH+nzgd9IaCiTKRUHK6d+71ipWeVWDHQkuLl0mouic7GuBwEp/9UPA4dZ1x52+M1j/y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T6sHUAau; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="QzmQQl2g"
-Received: by mail-pg1-f227.google.com with SMTP id 41be03b00d2f7-70b2421471aso3772164a12.0
-        for <rcu@vger.kernel.org>; Tue, 13 Aug 2024 16:32:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1723591973; x=1724196773; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hAOs/0xIclPNgef8mjiCwphqIRBJxolwj+ut1KAkjhU=;
-        b=QzmQQl2gOnOkZo+7CYHwv0odBUCOTPDTTcM8wnv3m6qI5V8923ui0/3uyVOps1JZy4
-         pR3+W6GaT2K+WdhqjwqIHr3A8Vxd16CCo5X8votxry0VePghw+XZBKFs5X6huLBV+F5M
-         acc26RGazVElj/iP2zoFvhZyCRLR4514rnSRbvau5/yCEnwoc/zAN/QN19RoiZC3WnWL
-         r5hpRA+2diLqbUm032SH4fqTJuAzVJOJkqESPxzhwDvTLaTJPUuevKzOkqBUos/xbZYN
-         OHLzIbNc2RJk4tmhN5nprYe0j8JHXvDaAU9lUewLP6twQZtYts73idPnemW1BWziIl5p
-         TBAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723591973; x=1724196773;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hAOs/0xIclPNgef8mjiCwphqIRBJxolwj+ut1KAkjhU=;
-        b=OcaGIDGFnI9eoqNu7ESi4e+QKtj9MuAoWkMOmGKDPHjF9bsRpt9gTmWRM5J7xNJeU+
-         dW3YTSeHBFQBxEqbGar0PAuZe6h+TBSitoKXV2iISQeNjb780aMQrSthdRVGqoOQQF4a
-         l2wLUA3TQiiAKwVqbOES1iHcY6suhSyf7GPujwsfDm3ax7+ARfsrjHmci3xmD6xRcKM7
-         MsGPsIG+gSl+tzWk+UdkwYuh9VNYEDK8V2WnoBew5QKS3i7adTtWuD/B1U/XUUpE0Tcz
-         rhRRdTdXxda53Qf8ur2M+m2zLjny14OMuDQRwVJEWTPudbJWxsSPZwVN0VQG0yJ4m7yd
-         oQtg==
-X-Forwarded-Encrypted: i=1; AJvYcCUGkaGNK+Ls5FSdlreTPIKkY952jOzvouN8i8MJoHllkRmHVLOctkU74xyaZtanc7V1J40=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9kP7Az26j1C4KYGNaPU6j0z1fODmMIExHFNP9ramC2l8BvDa2
-	tDSdcMZQLThV5so4nMSZj9y4DSF7z3sk6DtxgR3Yi6zs3yfhs18Zk87nlJLgzZUkR7Q5vfeFVBr
-	MBO6BcneZZ2ZCK4j9q6EU7v+bWQILSR8el8wXjZgO1j5xoEYy
-X-Google-Smtp-Source: AGHT+IG2JxsAI9q4hYaDiVS1k439q1FR8mnCk3ezbEPjuo4/ZcUUZlgBDTgGLPzGMcmdXNYSB5/6G7Aivuyz
-X-Received: by 2002:a17:90b:e06:b0:2c9:a3ca:cc8b with SMTP id 98e67ed59e1d1-2d3aa87ea28mr1260888a91.0.1723591972668;
-        Tue, 13 Aug 2024 16:32:52 -0700 (PDT)
-Received: from c7-smtp-2023.dev.purestorage.com ([2620:125:9017:12:36:3:5:0])
-        by smtp-relay.gmail.com with ESMTPS id 98e67ed59e1d1-2d3ac7ca349sm18291a91.4.2024.08.13.16.32.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2024 16:32:52 -0700 (PDT)
-X-Relaying-Domain: purestorage.com
-Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
-	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id B79233402D7;
-	Tue, 13 Aug 2024 17:32:51 -0600 (MDT)
-Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
-	id B0F88E40C6E; Tue, 13 Aug 2024 17:32:51 -0600 (MDT)
-From: Caleb Sander Mateos <csander@purestorage.com>
-To: Jens Axboe <axboe@kernel.dk>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6sHUAau"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6294AC32786;
+	Wed, 14 Aug 2024 12:07:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723637231;
+	bh=ia32pWQM/q7KG1yROuoWfq1IU8rNC89OopuCn7Z/cyk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T6sHUAaus4f5gwCGoEVjywd3bapaHqNRltn5uTPsX4H9NuKSG/aU4qLMu0JL6iywI
+	 mvGkFD/7K+iq3nqqr2sXLRIZNTrCsMQ+QKIay1JvVbncheMTAELRZvjRzspdBXja74
+	 qataFqnkj0RiIEQmNRFEmgqaA5+uGvmbcNJ+xHaXTkeZT0sQDpcAkUKXziS3eHyaAS
+	 0cUGen+MjhQZKAd6ttUZZXzp2P4VecDD0zX1iTpkDl4qmmdhS+YLaHSPuaNlwQ1bff
+	 KmfDfrMMcW8G7KdAc06N+U0e5q3oobZKFlsscFPVWOn9iF2ZdgVqqTlDdyJutoQXPi
+	 EBBV9oBIkZB/Q==
+Date: Wed, 14 Aug 2024 17:36:55 +0530
+From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Caleb Sander Mateos <csander@purestorage.com>,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH] softirq: remove parameter from action callback
-Date: Tue, 13 Aug 2024 17:31:58 -0600
-Message-ID: <20240813233202.2836511-1-csander@purestorage.com>
-X-Mailer: git-send-email 2.45.2
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v3 13/25] context_tracking, rcu: Rename
+ rcu_dynticks_task*() into rcu_task*()
+Message-ID: <20240814120655.GA1412760@neeraj.linux>
+References: <20240724144325.3307148-1-vschneid@redhat.com>
+ <20240724144325.3307148-14-vschneid@redhat.com>
+ <ZqphRBrI4mlSdER4@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZqphRBrI4mlSdER4@localhost.localdomain>
 
-When softirq actions are called, they are passed a pointer to the
-entry in the softirq_vec table containing the action's function pointer.
-This pointer isn't very useful, as the action callback already knows
-what function it is. And since each callback handles a specific softirq,
-the callback also knows which softirq number is running.
+On Wed, Jul 31, 2024 at 06:07:32PM +0200, Frederic Weisbecker wrote:
+> Le Wed, Jul 24, 2024 at 04:43:13PM +0200, Valentin Schneider a écrit :
+> > The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
+> > RCU_WATCHING, and the 'dynticks' prefix can be dropped without losing any
+> > meaning.
+> > 
+> > While at it, flip the suffixes of these helpers. We are not telling
+> > that we are entering dynticks mode from an RCU-task perspective anymore; we
+> > are telling that we are exiting RCU-tasks because we are in eqs mode.
+> > 
+> > Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> > ---
+> >  kernel/context_tracking.c | 28 ++++++++++++++--------------
+> >  1 file changed, 14 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+> > index 8262f57a43636..1c16a7336360f 100644
+> > --- a/kernel/context_tracking.c
+> > +++ b/kernel/context_tracking.c
+> > @@ -38,24 +38,24 @@ EXPORT_SYMBOL_GPL(context_tracking);
+> >  #ifdef CONFIG_CONTEXT_TRACKING_IDLE
+> >  #define TPS(x)  tracepoint_string(x)
+> >  
+> > -/* Record the current task on dyntick-idle entry. */
+> > -static __always_inline void rcu_dynticks_task_enter(void)
+> > +/* Record the current task on exiting RCU-tasks (dyntick-idle entry). */
+> > +static __always_inline void rcu_task_exit(void)
+> 
+> So this makes sense.
+> 
+> >  {
+> >  #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+> >  	WRITE_ONCE(current->rcu_tasks_idle_cpu, smp_processor_id());
+> >  #endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
+> >  }
+> >  
+> > -/* Record no current task on dyntick-idle exit. */
+> > -static __always_inline void rcu_dynticks_task_exit(void)
+> > +/* Record no current task on entering RCU-tasks (dyntick-idle exit). */
+> > +static __always_inline void rcu_task_enter(void)
+> 
+> That too.
+> 
+> >  {
+> >  #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL)
+> >  	WRITE_ONCE(current->rcu_tasks_idle_cpu, -1);
+> >  #endif /* #if defined(CONFIG_TASKS_RCU) && defined(CONFIG_NO_HZ_FULL) */
+> >  }
+> >  
+> > -/* Turn on heavyweight RCU tasks trace readers on idle/user entry. */
+> > -static __always_inline void rcu_dynticks_task_trace_enter(void)
+> > +/* Turn on heavyweight RCU tasks trace readers on kernel exit. */
+> > +static __always_inline void rcu_task_trace_exit(void)
+> 
+> But that eventually doesn't, because it's not about not wathing anymore from
+> an RCU-TASKS-TRACE perspective. It's actually about adding more heavyweight
+> ordering to track down RCU-TASKS-TRACE read side while traditional RCU is not
+> watching. Sorry for understanding it that late.
+> 
+> Oh well. So a more accurate name here would be rcu_task_trace_heavyweight_enter().
+> 
+> >  {
+> >  #ifdef CONFIG_TASKS_TRACE_RCU
+> >  	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+> > @@ -63,8 +63,8 @@ static __always_inline void rcu_dynticks_task_trace_enter(void)
+> >  #endif /* #ifdef CONFIG_TASKS_TRACE_RCU */
+> >  }
+> >  
+> > -/* Turn off heavyweight RCU tasks trace readers on idle/user exit. */
+> > -static __always_inline void rcu_dynticks_task_trace_exit(void)
+> > +/* Turn off heavyweight RCU tasks trace readers on kernel entry. */
+> > +static __always_inline void rcu_task_trace_enter(void)
+> 
+> And rcu_task_trace_heavyweight_exit().
+> 
 
-No softirq action callbacks actually use this parameter,
-so remove it from the function pointer signature.
-This clarifies that softirq actions are global routines
-and makes it slightly cheaper to call them.
+I have updated it here [1]. Please let me know if something looks
+incorrect.
 
-Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
----
- block/blk-mq.c            |  2 +-
- include/linux/interrupt.h |  4 ++--
- kernel/rcu/tiny.c         |  2 +-
- kernel/rcu/tree.c         |  2 +-
- kernel/sched/fair.c       |  2 +-
- kernel/softirq.c          | 15 +++++++--------
- kernel/time/hrtimer.c     |  2 +-
- kernel/time/timer.c       |  2 +-
- lib/irq_poll.c            |  2 +-
- net/core/dev.c            |  4 ++--
- 10 files changed, 18 insertions(+), 19 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index e3c3c0c21b55..aa28157b1aaf 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1126,11 +1126,11 @@ static void blk_complete_reqs(struct llist_head *list)
- 
- 	llist_for_each_entry_safe(rq, next, entry, ipi_list)
- 		rq->q->mq_ops->complete(rq);
- }
- 
--static __latent_entropy void blk_done_softirq(struct softirq_action *h)
-+static __latent_entropy void blk_done_softirq(void)
- {
- 	blk_complete_reqs(this_cpu_ptr(&blk_cpu_done));
- }
- 
- static int blk_softirq_cpu_dead(unsigned int cpu)
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 3f30c88e0b4c..694de61e0b38 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -592,11 +592,11 @@ extern const char * const softirq_to_name[NR_SOFTIRQS];
-  * asm/hardirq.h to get better cache usage.  KAO
-  */
- 
- struct softirq_action
- {
--	void	(*action)(struct softirq_action *);
-+	void	(*action)(void);
- };
- 
- asmlinkage void do_softirq(void);
- asmlinkage void __do_softirq(void);
- 
-@@ -607,11 +607,11 @@ static inline void do_softirq_post_smp_call_flush(unsigned int unused)
- {
- 	do_softirq();
- }
- #endif
- 
--extern void open_softirq(int nr, void (*action)(struct softirq_action *));
-+extern void open_softirq(int nr, void (*action)(void));
- extern void softirq_init(void);
- extern void __raise_softirq_irqoff(unsigned int nr);
- 
- extern void raise_softirq_irqoff(unsigned int nr);
- extern void raise_softirq(unsigned int nr);
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index 4402d6f5f857..b3b3ce34df63 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -103,11 +103,11 @@ static inline bool rcu_reclaim_tiny(struct rcu_head *head)
- 	rcu_lock_release(&rcu_callback_map);
- 	return false;
- }
- 
- /* Invoke the RCU callbacks whose grace period has elapsed.  */
--static __latent_entropy void rcu_process_callbacks(struct softirq_action *unused)
-+static __latent_entropy void rcu_process_callbacks(void)
- {
- 	struct rcu_head *next, *list;
- 	unsigned long flags;
- 
- 	/* Move the ready-to-invoke callbacks to a local list. */
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index e641cc681901..93bd665637c0 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2853,11 +2853,11 @@ static __latent_entropy void rcu_core(void)
- 	// If strict GPs, schedule an RCU reader in a clean environment.
- 	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
- 		queue_work_on(rdp->cpu, rcu_gp_wq, &rdp->strict_work);
- }
- 
--static void rcu_core_si(struct softirq_action *h)
-+static void rcu_core_si(void)
- {
- 	rcu_core();
- }
- 
- static void rcu_wake_cond(struct task_struct *t, int status)
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9057584ec06d..8dc9385f6da4 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12481,11 +12481,11 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
-  * - directly from the local scheduler_tick() for periodic load balancing
-  *
-  * - indirectly from a remote scheduler_tick() for NOHZ idle balancing
-  *   through the SMP cross-call nohz_csd_func()
-  */
--static __latent_entropy void sched_balance_softirq(struct softirq_action *h)
-+static __latent_entropy void sched_balance_softirq(void)
- {
- 	struct rq *this_rq = this_rq();
- 	enum cpu_idle_type idle = this_rq->idle_balance;
- 	/*
- 	 * If this CPU has a pending NOHZ_BALANCE_KICK, then do the
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 02582017759a..d082e7840f88 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -549,11 +549,11 @@ static void handle_softirqs(bool ksirqd)
- 		prev_count = preempt_count();
- 
- 		kstat_incr_softirqs_this_cpu(vec_nr);
- 
- 		trace_softirq_entry(vec_nr);
--		h->action(h);
-+		h->action();
- 		trace_softirq_exit(vec_nr);
- 		if (unlikely(prev_count != preempt_count())) {
- 			pr_err("huh, entered softirq %u %s %p with preempt_count %08x, exited with %08x?\n",
- 			       vec_nr, softirq_to_name[vec_nr], h->action,
- 			       prev_count, preempt_count());
-@@ -698,11 +698,11 @@ void __raise_softirq_irqoff(unsigned int nr)
- 	lockdep_assert_irqs_disabled();
- 	trace_softirq_raise(nr);
- 	or_softirq_pending(1UL << nr);
- }
- 
--void open_softirq(int nr, void (*action)(struct softirq_action *))
-+void open_softirq(int nr, void (*action)(void))
- {
- 	softirq_vec[nr].action = action;
- }
- 
- /*
-@@ -758,12 +758,11 @@ static bool tasklet_clear_sched(struct tasklet_struct *t)
- 		  t->use_callback ? (void *)t->callback : (void *)t->func);
- 
- 	return false;
- }
- 
--static void tasklet_action_common(struct softirq_action *a,
--				  struct tasklet_head *tl_head,
-+static void tasklet_action_common(struct tasklet_head *tl_head,
- 				  unsigned int softirq_nr)
- {
- 	struct tasklet_struct *list;
- 
- 	local_irq_disable();
-@@ -803,20 +802,20 @@ static void tasklet_action_common(struct softirq_action *a,
- 		__raise_softirq_irqoff(softirq_nr);
- 		local_irq_enable();
- 	}
- }
- 
--static __latent_entropy void tasklet_action(struct softirq_action *a)
-+static __latent_entropy void tasklet_action(void)
- {
- 	workqueue_softirq_action(false);
--	tasklet_action_common(a, this_cpu_ptr(&tasklet_vec), TASKLET_SOFTIRQ);
-+	tasklet_action_common(this_cpu_ptr(&tasklet_vec), TASKLET_SOFTIRQ);
- }
- 
--static __latent_entropy void tasklet_hi_action(struct softirq_action *a)
-+static __latent_entropy void tasklet_hi_action(void)
- {
- 	workqueue_softirq_action(true);
--	tasklet_action_common(a, this_cpu_ptr(&tasklet_hi_vec), HI_SOFTIRQ);
-+	tasklet_action_common(this_cpu_ptr(&tasklet_hi_vec), HI_SOFTIRQ);
- }
- 
- void tasklet_setup(struct tasklet_struct *t,
- 		   void (*callback)(struct tasklet_struct *))
- {
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index b8ee320208d4..836157e09e25 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1755,11 +1755,11 @@ static void __hrtimer_run_queues(struct hrtimer_cpu_base *cpu_base, ktime_t now,
- 				hrtimer_sync_wait_running(cpu_base, flags);
- 		}
- 	}
- }
- 
--static __latent_entropy void hrtimer_run_softirq(struct softirq_action *h)
-+static __latent_entropy void hrtimer_run_softirq(void)
- {
- 	struct hrtimer_cpu_base *cpu_base = this_cpu_ptr(&hrtimer_bases);
- 	unsigned long flags;
- 	ktime_t now;
- 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 64b0d8a0aa0f..760bbeb1f331 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -2438,11 +2438,11 @@ static void run_timer_base(int index)
- }
- 
- /*
-  * This function runs timers and the timer-tq in bottom half context.
-  */
--static __latent_entropy void run_timer_softirq(struct softirq_action *h)
-+static __latent_entropy void run_timer_softirq(void)
- {
- 	run_timer_base(BASE_LOCAL);
- 	if (IS_ENABLED(CONFIG_NO_HZ_COMMON)) {
- 		run_timer_base(BASE_GLOBAL);
- 		run_timer_base(BASE_DEF);
-diff --git a/lib/irq_poll.c b/lib/irq_poll.c
-index 2d5329a42105..08b242bbdbdf 100644
---- a/lib/irq_poll.c
-+++ b/lib/irq_poll.c
-@@ -73,11 +73,11 @@ void irq_poll_complete(struct irq_poll *iop)
- 	__irq_poll_complete(iop);
- 	local_irq_restore(flags);
- }
- EXPORT_SYMBOL(irq_poll_complete);
- 
--static void __latent_entropy irq_poll_softirq(struct softirq_action *h)
-+static void __latent_entropy irq_poll_softirq(void)
- {
- 	struct list_head *list = this_cpu_ptr(&blk_cpu_iopoll);
- 	int rearm = 0, budget = irq_poll_budget;
- 	unsigned long start_time = jiffies;
- 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 751d9b70e6ad..3ac02b0ca29e 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5246,11 +5246,11 @@ int netif_rx(struct sk_buff *skb)
- 		local_bh_enable();
- 	return ret;
- }
- EXPORT_SYMBOL(netif_rx);
- 
--static __latent_entropy void net_tx_action(struct softirq_action *h)
-+static __latent_entropy void net_tx_action(void)
- {
- 	struct softnet_data *sd = this_cpu_ptr(&softnet_data);
- 
- 	if (sd->completion_queue) {
- 		struct sk_buff *clist;
-@@ -6919,11 +6919,11 @@ static int napi_threaded_poll(void *data)
- 		napi_threaded_poll_loop(napi);
- 
- 	return 0;
- }
- 
--static __latent_entropy void net_rx_action(struct softirq_action *h)
-+static __latent_entropy void net_rx_action(void)
- {
- 	struct softnet_data *sd = this_cpu_ptr(&softnet_data);
- 	unsigned long time_limit = jiffies +
- 		usecs_to_jiffies(READ_ONCE(net_hotdata.netdev_budget_usecs));
- 	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
--- 
-2.45.2
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/commit/?h=next.14.08.24a&id=cfc22b9f1572b137dd9f36da831dd7b69c9fe352
 
+- Neeraj
+
+> Thanks!
+> 
+> >  {
+> >  #ifdef CONFIG_TASKS_TRACE_RCU
+> >  	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB))
+> > @@ -87,7 +87,7 @@ static noinstr void ct_kernel_exit_state(int offset)
+> >  	 * critical sections, and we also must force ordering with the
+> >  	 * next idle sojourn.
+> >  	 */
+> > -	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
+> > +	rcu_task_trace_exit();  // Before CT state update!
+> >  	seq = ct_state_inc(offset);
+> >  	// RCU is no longer watching.  Better be in extended quiescent state!
+> >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & CT_RCU_WATCHING));
+> > @@ -109,7 +109,7 @@ static noinstr void ct_kernel_enter_state(int offset)
+> >  	 */
+> >  	seq = ct_state_inc(offset);
+> >  	// RCU is now watching.  Better not be in an extended quiescent state!
+> > -	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
+> > +	rcu_task_trace_enter();  // After CT state update!
+> >  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & CT_RCU_WATCHING));
+> >  }
+> >  
+> > @@ -149,7 +149,7 @@ static void noinstr ct_kernel_exit(bool user, int offset)
+> >  	// RCU is watching here ...
+> >  	ct_kernel_exit_state(offset);
+> >  	// ... but is no longer watching here.
+> > -	rcu_dynticks_task_enter();
+> > +	rcu_task_exit();
+> >  }
+> >  
+> >  /*
+> > @@ -173,7 +173,7 @@ static void noinstr ct_kernel_enter(bool user, int offset)
+> >  		ct->nesting++;
+> >  		return;
+> >  	}
+> > -	rcu_dynticks_task_exit();
+> > +	rcu_task_enter();
+> >  	// RCU is not watching here ...
+> >  	ct_kernel_enter_state(offset);
+> >  	// ... but is watching here.
+> > @@ -240,7 +240,7 @@ void noinstr ct_nmi_exit(void)
+> >  	// ... but is no longer watching here.
+> >  
+> >  	if (!in_nmi())
+> > -		rcu_dynticks_task_enter();
+> > +		rcu_task_exit();
+> >  }
+> >  
+> >  /**
+> > @@ -274,7 +274,7 @@ void noinstr ct_nmi_enter(void)
+> >  	if (rcu_dynticks_curr_cpu_in_eqs()) {
+> >  
+> >  		if (!in_nmi())
+> > -			rcu_dynticks_task_exit();
+> > +			rcu_task_enter();
+> >  
+> >  		// RCU is not watching here ...
+> >  		ct_kernel_enter_state(CT_RCU_WATCHING);
+> > -- 
+> > 2.43.0
+> > 
