@@ -1,45 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3B51B3F32;
-	Wed, 14 Aug 2024 15:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DD81B9B3C;
+	Wed, 14 Aug 2024 16:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723648145; cv=none; b=QSJazv3Uv696gtVaOKqPZ1u/1qoGq/gXnevnM6ioacyRjsG14Qyb2b/dHGNIlJ4G+V5RrKpKk27hufgY1HqU9GlVe6ujzOQyqWJ4yBwm2dcIR5Ly6p6RGrqkdktHG/MKv0qxBCexPRFlpcXXxitkRRb66uQ3zd7swMtoqR06+8s=
+	t=1723652003; cv=none; b=eJNOOYZjBS/tstm489T7Se/IAcH49yR3M+tkZFAJPdUYuItOQpM/IpBsG1aw8LRp3SegRPS9oxKDreEwm8lEz8O0/Ic4K44q3U2g8ewHrQ6iBXzyH5a9XDeChucEi29Vvb+4/pVJ9ttHXI7Jn97vhJZVTTK4JxVyJ12ZG93DE2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723648145; c=relaxed/simple;
-	bh=e6sAMiUX3GtLQq9riJitTJsvMdsIIIcPjPpZ2JAVQ2c=;
+	s=arc-20240116; t=1723652003; c=relaxed/simple;
+	bh=8TLQNOFxBRqk82caBG73gqzzPaLL9rUL9a4SwMQA6Lg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=usv2V1EWUYgRB/8HRfJBsXlZPL9SocKH6W9DWIMBuz0SvuCZrlu3xehXBMSLFNJvCjsfnXx+I3QBoeFf1yvHp68DmhlK9YEjWGxfECR+3r/YmF0nx9b66S3PtLB1Bb7n2N4nxpNEqjVoZur5hQwLfGcr7E9/V7ph1Q8x+t2FlmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lZ58epVN; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=izJsGjDHG/QdSpZANtTQUhz1w4bY4mEpinHKvY5CFgS0gHksAdVvxUfP23+7LrwtBLhKffhkr5G3TaS7dhBZ5z/EoPAIx9ex2Ay+sr6GfABsdF6pFSZp00yW9BwgdaJzQ3Depyrqv4K3QMK0EeP87YuZxJasnsiqe5xL1zYchNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9LriaXj; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lZ58epVN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E9DC4AF09;
-	Wed, 14 Aug 2024 15:09:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9LriaXj"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A98C4AF0A;
+	Wed, 14 Aug 2024 16:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723648144;
-	bh=e6sAMiUX3GtLQq9riJitTJsvMdsIIIcPjPpZ2JAVQ2c=;
+	s=k20201202; t=1723652003;
+	bh=8TLQNOFxBRqk82caBG73gqzzPaLL9rUL9a4SwMQA6Lg=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=lZ58epVNPQS7W9qTq31xFecYgDHivNV3NMB7tmltxyfhTJr7D50TPuioi8o5kWNbz
-	 yZhan4PrpyylwDmKbt519CA4y00OIv2a8G3CVgw32gq6P+qXvidXoGRxx6CuNh73NJ
-	 DpyibF2c8BJGxenQbQBEhzBEG1EU2HyaTE98PqYxTX8qTrRMS6xBLONz9nG/x5mkNn
-	 gc6p19d5lHJNU1hEp31FyyiYEsuBXneRv1pQVk+KKqLzTGMGae0AO9t5NiJTFxCuQm
-	 8pVBDi8VBbXpUeMvT/ghUwGX9lsrImUGLxCIWX6fMH+tufqaJ9eqcyszt7Z3tq16Et
-	 dgPvc0a2UaiYA==
+	b=C9LriaXjE6UYtbLp14XkcrzQGfi8AJr7xUvFpSIj1lzFgoimVn/b60RSPHoWT9W9+
+	 VE7qbxtH4E4jTsULNhFIDu9ow3vjDCHfiGHwTJl+M8kMvTZQm9N+8Bi0b5ryY67uR9
+	 ktMQSHPLVE7bAmaqSE5TMkX6KlkGpn+aJH4NQsxXZwGmEfIE3b0416bq1lvx0hDfO+
+	 h2nE3WmkpQ1kprrXuYnJNh55isDDPvGv4QxZ8MLpshdm95Pj408a/wOsIZ4X4MOgYC
+	 uvSSIv9MDU529Mo1iSpt6UEz356h0DYU+46pXjm5m3Y5UwBxv7wcrkAk9eHrE29ieW
+	 XHYXLDplp7DJQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5E1B1CE0ACD; Wed, 14 Aug 2024 08:09:04 -0700 (PDT)
-Date: Wed, 14 Aug 2024 08:09:04 -0700
+	id 9B63BCE0ACD; Wed, 14 Aug 2024 09:13:22 -0700 (PDT)
+Date: Wed, 14 Aug 2024 09:13:22 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH rcu 06/11] rcuscale: Provide clear error when async
- specified without primitives
-Message-ID: <dfcc1432-6230-42ae-b3d4-0081918bc979@paulmck-laptop>
+	rostedt@goodmis.org, Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH rcu 1/6] rcu/tasks: Check processor-ID assumptions
+Message-ID: <af7db745-97c6-467d-9ed2-798ef8b686ba@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <917e8cc8-8688-428a-9122-25544c5cc101@paulmck-laptop>
- <20240802004308.4134731-6-paulmck@kernel.org>
- <20240814124915.GA1412840@neeraj.linux>
+References: <41c68c6b-2c55-4c2d-ab70-f2a5b38eb374@paulmck-laptop>
+ <20240802003426.4134196-1-paulmck@kernel.org>
+ <20240814121654.GA1412801@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -48,68 +47,47 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240814124915.GA1412840@neeraj.linux>
+In-Reply-To: <20240814121654.GA1412801@neeraj.linux>
 
-On Wed, Aug 14, 2024 at 06:19:15PM +0530, Neeraj Upadhyay wrote:
-> On Thu, Aug 01, 2024 at 05:43:03PM -0700, Paul E. McKenney wrote:
-> > Currently, if the rcuscale module's async module parameter is specified
-> > for RCU implementations that do not have sync primitives such as
-> > call_rcu(), there will be a series of splats due to calls to a NULL
-> > pointer.  This commit therefore warns of this situation, but switches
-> > to non-async testing.
+On Wed, Aug 14, 2024 at 05:46:54PM +0530, Neeraj Upadhyay wrote:
+> Hi Paul,
+> 
+> On Thu, Aug 01, 2024 at 05:34:21PM -0700, Paul E. McKenney wrote:
+> > The current mapping of smp_processor_id() to a CPU processing Tasks-RCU
+> > callbacks makes some assumptions about layout.  This commit therefore
+> > adds a WARN_ON() to check these assumptions.
 > > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  kernel/rcu/tasks.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index b6fcf744af75d..d473846a572aa 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -355,6 +355,7 @@ static void call_rcu_tasks_generic(struct rcu_head *rhp, rcu_callback_t func,
+> >  	rcu_read_lock();
+> >  	ideal_cpu = smp_processor_id() >> READ_ONCE(rtp->percpu_enqueue_shift);
+> >  	chosen_cpu = cpumask_next(ideal_cpu - 1, cpu_possible_mask);
+> > +	WARN_ON_ONCE(chosen_cpu >= nr_cpu_ids);
 > 
-> I have changed this to below here [1]. Please let me know if I got it
-> wrong.
+> I have changed this s/nr_cpu_ids/rcu_task_cpu_ids/ , as there is a
+> another commit 	fd70e9f1d85f "rcu-tasks: Fix access non-existent percpu
+> rtpcp variable in rcu_tasks_need_gpcb()" which is included in the tree
+> here [1]. Please let me know if something looks incorrect.
 > 
-> Currently, if the rcuscale module's async module parameter is specified
-> for RCU implementations that do not have async primitives such as
-> RCU Tasks Rude, there will be a series of splats due to calls to a NULL
-> pointer.  This commit therefore warns of this situation, but switches to
-> non-async testing.
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/log/?h=next.14.08.24a
 
-How about something like this, but perhaps wordsmithed a bit?
-
-	"Currently, if the rcuscale module's async module parameter
-	is specified for RCU implementations that do not have
-	async primitives such as RCU Tasks Rude (which now lacks
-	a call_rcu_tasks_rude() function), there will be a series of
-	splats due to calls to a NULL pointer.	This commit therefore
-	warns of this situation, but switches to non-async testing."
+Good catch, looks good, and thank you!
 
 							Thanx, Paul
 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/commit/?h=next.14.08.24b&id=22d36840adbcab8fd826a7ca827fd60b708f03de
-> 
 > - Neeraj
 > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/rcu/rcuscale.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> > index 933014b381ec0..315ced63ec105 100644
-> > --- a/kernel/rcu/rcuscale.c
-> > +++ b/kernel/rcu/rcuscale.c
-> > @@ -525,7 +525,7 @@ rcu_scale_writer(void *arg)
-> >  			schedule_timeout_idle(torture_random(&tr) % writer_holdoff_jiffies + 1);
-> >  		wdp = &wdpp[i];
-> >  		*wdp = ktime_get_mono_fast_ns();
-> > -		if (gp_async) {
-> > +		if (gp_async && !WARN_ON_ONCE(!cur_ops->async)) {
-> >  retry:
-> >  			if (!rhp)
-> >  				rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
-> > @@ -597,7 +597,7 @@ rcu_scale_writer(void *arg)
-> >  			i++;
-> >  		rcu_scale_wait_shutdown();
-> >  	} while (!torture_must_stop());
-> > -	if (gp_async) {
-> > +	if (gp_async && cur_ops->async) {
-> >  		cur_ops->gp_barrier();
-> >  	}
-> >  	writer_n_durations[me] = i_max + 1;
+> >  	rtpcp = per_cpu_ptr(rtp->rtpcpu, chosen_cpu);
+> >  	if (!raw_spin_trylock_rcu_node(rtpcp)) { // irqs already disabled.
+> >  		raw_spin_lock_rcu_node(rtpcp); // irqs already disabled.
 > > -- 
 > > 2.40.1
 > > 
