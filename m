@@ -1,100 +1,112 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2BE225762;
-	Wed, 14 Aug 2024 12:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CC81B32D0
+	for <rcu@vger.kernel.org>; Wed, 14 Aug 2024 14:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723639761; cv=none; b=i6nmVmryfMduX0SmltwbCfhnD3fP+QD+K/QHLfhaJRg9jZbVS1reTMq5XTLc6X74zPPCF2FzrHATzHYBicNetNIO9fhijt3oxVCQ4Z01L07x8MABPu+TO7Y5yByBTvPaCSRjYC5900KY8hVlnrDCgOS/O6fq7d/sG8jV6XsjEGQ=
+	t=1723644025; cv=none; b=CvRUuKY7w/f9tyHBJOGVmHPbx5e6wbK1a1OZwvCEycAqRWb1tIZvbSV3fJdGD6XHd++akJ107I47xNBs+V+AG6GUC7NmfWAgPjUHXYZc1a/RK/YkFOD6hluAiJBP6AhwZgCltm2I1JoLQq21yJNojenTCXWvsVEOBrQv+4fTpBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723639761; c=relaxed/simple;
-	bh=wT4tPFHaUc06gnduj7f0EPAn+I5NgncsA6Mwfo5IE+I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IESXlMuHHggwh50hHWAioLgo9PQ/hgaCjdwFfUYGdJH+m9HuQHKz0Zf+UmGsLfBUusbwtTLVVsN+RBkMsBDx/PIfiiDfByuKGFhp8VDdHCU+b1yke+VCdHtJdQTDmMDZUMaZQAb1fHVXeoTt8LKBhWLbfwLoiU5C3PkZr/0P3vQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L9zakBuw; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1723644025; c=relaxed/simple;
+	bh=Rm/3lW+0YffOquvhbtAmA9ex5ArcP5gTJnxyJkmvq/0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oUZ+SO9aDLi4sPWB3f1F0OjtmrphzHoHGzbAqj2abSLU57r1lexLMScTPch4fygs48Z3csdUlOrlm/x/jXeGXKtW+K9kc3CR9YLuYSzPUUyMp/WPoCddPI5D28kSXLcSjksAVIeR+yGCKYtVYqu6M5o7/izCyWdG25Nw0wKK/Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=GPEMgoXs; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L9zakBuw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F056AC32786;
-	Wed, 14 Aug 2024 12:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723639761;
-	bh=wT4tPFHaUc06gnduj7f0EPAn+I5NgncsA6Mwfo5IE+I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L9zakBuwl+yri2rTm0dlVRZGtPXbteslzFTUhE0q5jrThwP6r4foqUtg6eJ7lnt4l
-	 /6DA4Hnr/BKnLeCgDhRE1t+gxm2wdFFQ5Lno/JvbG5HXvJ9t+Eg1HUdwVorbhDUMtq
-	 ViBbj2VVujdGQMlozbdVYw88tQoazmStghDOSsB5an2/xRltLWvjZ9gcPIcUICUq7N
-	 TxE17f/l568mo7oVzFv5kOWYYKetZZVjSEPIndoQBsfMNA+g4eCMZUVMdOzSnEqI39
-	 OJJd0fJvNg8fdvSnT0u0XtRvlk0q546GD6nVDomDtVv+6vKoJ4dP3G2Ip53tPc8F/U
-	 a0v+RgTPAfGSw==
-Date: Wed, 14 Aug 2024 18:19:15 +0530
-From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH rcu 06/11] rcuscale: Provide clear error when async
- specified without primitives
-Message-ID: <20240814124915.GA1412840@neeraj.linux>
-References: <917e8cc8-8688-428a-9122-25544c5cc101@paulmck-laptop>
- <20240802004308.4134731-6-paulmck@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="GPEMgoXs"
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7c3d415f85eso36510a12.0
+        for <rcu@vger.kernel.org>; Wed, 14 Aug 2024 07:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1723644023; x=1724248823; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pPPbcnH9ElDp0HrPGBFxxmp8KGuGyOIeFoZaRnlkCRk=;
+        b=GPEMgoXsSmAEvWDQVhP2rFop9ZJNj/3fFNafVSOWaTwYSBOlJuKNzKXFQ9KwxG2bsL
+         MczgC/FPJ8/gK9YONMDqMXYAhE9phmsVUK2C8Z5BQKKYipxOef2+wgIlXFjniDg1IccP
+         kMNg5iFv6ARx+mU8XPwGQK9oFPTRIBbxadeHjetJ3Mxp+yZFsxMSiC8hUOkEEuoulVF0
+         /qvVLc8bZk1RXo4s/y+YPWm1rokwlGI88+jTXLXqIgPq9tTjl8gWENDDSbLVyW0zOMuz
+         JjLEgL4NKbq/X1de6faEUlJFErtODtoA9Z/t+6fKaEPDUExdBo9pt9n0/DLXbqppdYsN
+         OKLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723644023; x=1724248823;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pPPbcnH9ElDp0HrPGBFxxmp8KGuGyOIeFoZaRnlkCRk=;
+        b=pBy2zon4cdbm5Vq/SZL3+NyGQVTjsfoCUlVQvMeZTgRa0I4XvWEszvMPzcpPk1E1yR
+         owzAUNST/yBXfrPRXNo7mcfj4hYLbI2bFKBydfUrDBPL0ZAn0hVjV9irP6Npkm3MHvL3
+         6V2rTm50yaJ5zFsgG5l0SL0mAIXejWFBIUaMeTkZVrThzzYpHJ866YAFnDlszkuqbM1/
+         Sl/02BvPdkXEanudyxwCDLuGtyKeDDQqqf0TuHw2dlpk6RyVzzFlVCKRR/to1B+VM+fS
+         JewGxgIiMqAqC6LtcwgXmqy50f/Z5a1DQ1YU0rOnHgg39hxr1h5UX6BpzxPiHgYyHr2X
+         nw9w==
+X-Forwarded-Encrypted: i=1; AJvYcCVYzGvuH24t+H+7PfmOY/5On8Q5BVxF5awWDV4iE90cZ/XP4+crvgDk5WzxIx5b3coG+cgyvQK5bIQOKCnmU+AMrqec
+X-Gm-Message-State: AOJu0YzIMHRZgeutN4MrtNJODDcSZeOLFWyARgUEaTyIe8mZqvHFs9qB
+	jSqlzaSmadDEZ0YJkmqBwNCKww6LGNERlgMHw/lY0res0VBxW10jVa+jePv3u70=
+X-Google-Smtp-Source: AGHT+IFej6G9ENKms8sCLz4PlMZguobfmGkOJPwW8ux5QRbbPWvSalJ7KlkeiZXZ2VIdS4yhHVtNqA==
+X-Received: by 2002:a05:6a00:3915:b0:704:173c:5111 with SMTP id d2e1a72fcca58-712673ee118mr2053455b3a.3.1723644022755;
+        Wed, 14 Aug 2024 07:00:22 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e58a0b5dsm7350482b3a.47.2024.08.14.07.00.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Aug 2024 07:00:22 -0700 (PDT)
+Message-ID: <0f19dd9a-e2fd-4221-aaf5-bafc516f9c32@kernel.dk>
+Date: Wed, 14 Aug 2024 08:00:19 -0600
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240802004308.4134731-6-paulmck@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] softirq: remove parameter from action callback
+To: Caleb Sander Mateos <csander@purestorage.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, netdev@vger.kernel.org
+References: <20240813233202.2836511-1-csander@purestorage.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240813233202.2836511-1-csander@purestorage.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Aug 01, 2024 at 05:43:03PM -0700, Paul E. McKenney wrote:
-> Currently, if the rcuscale module's async module parameter is specified
-> for RCU implementations that do not have sync primitives such as
-> call_rcu(), there will be a series of splats due to calls to a NULL
-> pointer.  This commit therefore warns of this situation, but switches
-> to non-async testing.
+On 8/13/24 5:31 PM, Caleb Sander Mateos wrote:
+> When softirq actions are called, they are passed a pointer to the
+> entry in the softirq_vec table containing the action's function pointer.
+> This pointer isn't very useful, as the action callback already knows
+> what function it is. And since each callback handles a specific softirq,
+> the callback also knows which softirq number is running.
 > 
+> No softirq action callbacks actually use this parameter,
+> so remove it from the function pointer signature.
+> This clarifies that softirq actions are global routines
+> and makes it slightly cheaper to call them.
 
-I have changed this to below here [1]. Please let me know if I got it
-wrong.
+Commit message should use ~72 char line lengths, but outside of that:
 
-Currently, if the rcuscale module's async module parameter is specified
-for RCU implementations that do not have async primitives such as
-RCU Tasks Rude, there will be a series of splats due to calls to a NULL
-pointer.  This commit therefore warns of this situation, but switches to
-non-async testing.
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
+-- 
+Jens Axboe
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/commit/?h=next.14.08.24b&id=22d36840adbcab8fd826a7ca827fd60b708f03de
-
-- Neeraj
-
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  kernel/rcu/rcuscale.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index 933014b381ec0..315ced63ec105 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -525,7 +525,7 @@ rcu_scale_writer(void *arg)
->  			schedule_timeout_idle(torture_random(&tr) % writer_holdoff_jiffies + 1);
->  		wdp = &wdpp[i];
->  		*wdp = ktime_get_mono_fast_ns();
-> -		if (gp_async) {
-> +		if (gp_async && !WARN_ON_ONCE(!cur_ops->async)) {
->  retry:
->  			if (!rhp)
->  				rhp = kmalloc(sizeof(*rhp), GFP_KERNEL);
-> @@ -597,7 +597,7 @@ rcu_scale_writer(void *arg)
->  			i++;
->  		rcu_scale_wait_shutdown();
->  	} while (!torture_must_stop());
-> -	if (gp_async) {
-> +	if (gp_async && cur_ops->async) {
->  		cur_ops->gp_barrier();
->  	}
->  	writer_n_durations[me] = i_max + 1;
-> -- 
-> 2.40.1
-> 
