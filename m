@@ -1,90 +1,70 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D8124211
-	for <rcu@vger.kernel.org>; Thu, 15 Aug 2024 04:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087BB29CFB;
+	Thu, 15 Aug 2024 08:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723697849; cv=none; b=q/p3MSESu9MV9wwhrIvtR7ib+wpv9mSQYP+0jyiP1KiDBAjGzy0Z7fQvBYaIsne4I/L5in9u9z7vGu7OrXix1hTbg94i4t6sUJTE1vs/R0FsH33EHwpGEfIxNbbD4h+uiIzvIzHwUAynKROVanIjZacESHDRCbNG0fJgHEu7Gnc=
+	t=1723712024; cv=none; b=OqSZCtG8xcEn5oik+KI79lnOKUwMPIzsnMpBhCdrmd5J2+venqJwBVYEEHzCBUFxkBTlm/tMXmEXJImgnlLmN48vF951iiki+yw09Xqrp+epqLTAYTLSlqf8DAOB8SUZw8foSukVyjPCfqeAUPEWqHjDak/sgVyBdJoUXb0lqRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723697849; c=relaxed/simple;
-	bh=71U3VpB9u3RN6iYWTjaE8CjugtAumKutA2rogJJchek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gRgQnCM8crDpKIi6uPogoHYo1qKfFmGKrKPFCMGjLZoNd2TAZU/1BaXEhZ0O4qpuRXVh70ILM1N1+J6Ka6ob88P4TPi7XeiKwWvZbSfNiyuDvkbrjtgIOTBs/o0y9ek5rSWydqdd+b9x181bkLXD3aM/IG48vwXHIDhsBDneFqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RrTUMnwe; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RrTUMnwe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC453C4AF09;
-	Thu, 15 Aug 2024 04:57:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723697848;
-	bh=71U3VpB9u3RN6iYWTjaE8CjugtAumKutA2rogJJchek=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=RrTUMnwexNPOI9CvB4D8Ol9aklyeUIXDGuHdeWGtYw64cnRzQpkjFwEw9adLcvkzr
-	 UZZ76eyKmWe2iGTrCtRLdfHY6Gqwrgp1GEafKD0CsLoQitvzC5YnfDYI7br4XLXScQ
-	 bBvCdWrH0InjFYPlxi0x2WZ2tNl18t2T+ZbuA60KiGl4f4jeSULusxpoSdBx1zH6a6
-	 aQhNCWVqxvaTeKCvjGbsBApaP+or+I43f6spAKlmfYhZhfZsFNe7zFYBN8yyAeVTu1
-	 3T4zT++sEEXVNO5gA2MvyVNQNP0zkD/dqKChzOJu4Aeftm5BuVr6PXYEtmlLlQddxG
-	 uP4NKWnfaC1rA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4AF27CE0E02; Wed, 14 Aug 2024 21:57:28 -0700 (PDT)
-Date: Wed, 14 Aug 2024 21:57:28 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: neeraj.iitr10@gmail.com, frederic@kernel.org, rcu@vger.kernel.org
-Subject: Re: Neeraj Upadhyay will do v6.12 RCU pull request, Frederic
- Weisbecker v6.13
-Message-ID: <9b6adb62-aa70-41f9-b3e2-45e829d9d590@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <08c365a6-e382-4a0c-b1c6-89e57b87f6de@paulmck-laptop>
- <CAHk-=wg18amRv=vszzVZMo8L1C-jEExCQaVbjOCTDYFq_L1KOA@mail.gmail.com>
+	s=arc-20240116; t=1723712024; c=relaxed/simple;
+	bh=U9At60163l5+UDakQ+rjMaFnvCoPHnPpJALKVDN+rpU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AX5bPcGFcaLM7gLG4xC6+lFPwMMLbJoztWIwaLg670J0WTA7tekHGGZ1f9Ak6YDsnT+58XO+rVCHNFlKOXBnPPd7kflLk54yeOg3aIdUDVqoPMBa8Au1WOSK38QL7Cb6OgwTRIjF1mzKGFyt4dY7Yscp4MTC43FwymQe1WVYCTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WkzPm4491zhXn2;
+	Thu, 15 Aug 2024 16:51:40 +0800 (CST)
+Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3C96E1400D4;
+	Thu, 15 Aug 2024 16:53:38 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpemf500002.china.huawei.com
+ (7.185.36.57) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 15 Aug
+ 2024 16:53:37 +0800
+From: Yue Haibing <yuehaibing@huawei.com>
+To: <paulmck@kernel.org>, <frederic@kernel.org>, <neeraj.upadhyay@kernel.org>,
+	<joel@joelfernandes.org>, <josh@joshtriplett.org>, <boqun.feng@gmail.com>,
+	<urezki@gmail.com>, <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
+	<jiangshanlai@gmail.com>, <qiang.zhang1211@gmail.com>
+CC: <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<yuehaibing@huawei.com>
+Subject: [PATCH -next] rcu: Remove unused declaration rcu_segcblist_offload()
+Date: Thu, 15 Aug 2024 16:50:53 +0800
+Message-ID: <20240815085053.4157590-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg18amRv=vszzVZMo8L1C-jEExCQaVbjOCTDYFq_L1KOA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemf500002.china.huawei.com (7.185.36.57)
 
-On Wed, Aug 14, 2024 at 06:11:48PM -0700, Linus Torvalds wrote:
-> On Wed, 14 Aug 2024 at 09:32, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > Just to let you know that Neeraj Upadhyay will be sending you the RCU
-> > pull request for the v6.12 merge window.
-> >
-> > Frederic Weisbecker will be doing this for the v6.13 merge window.
-> 
-> Ack.
-> 
-> > Please let us know if you have any questions or concerns.
-> 
-> My goldfish-like memory *may* just barely remember this during the
-> 6.12 merge window, but by the 6.13 one I will have completely
-> forgotten.
-> 
-> That said, I use my email an extended memory bank, so when I get a
-> pull request and wonder "was I ever informed about this", I'll
-> _priobably_ just search my mailbox before I start making a fool of
-> myself publicly by admitting that I'd completely forgotten that you
-> told me the plan.
-> 
-> But if I *do* end up wondering aloud, just roll your eyes and point at
-> this email, ok?
+Commit 17351eb59abd ("rcu/nocb: Simplify (de-)offloading state machine")
+removed the implementation but leave declaration.
 
-My plan is that we send you another email about Frederic after the v6.12
-merge window closes.  So just trying to demonstrate that we are capable
-of thinking more than one merge window ahead.  Perhaps I am overly proud
-of this.  ;-)
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ kernel/rcu/rcu_segcblist.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Neeraj doing the v6.12 merge window, you have been remembering (or
-looking up your email) fine for the five or so !me RCU pull requests
-thus far.
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 259904075636..fadc08ad4b7b 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -120,7 +120,6 @@ void rcu_segcblist_inc_len(struct rcu_segcblist *rsclp);
+ void rcu_segcblist_add_len(struct rcu_segcblist *rsclp, long v);
+ void rcu_segcblist_init(struct rcu_segcblist *rsclp);
+ void rcu_segcblist_disable(struct rcu_segcblist *rsclp);
+-void rcu_segcblist_offload(struct rcu_segcblist *rsclp, bool offload);
+ bool rcu_segcblist_ready_cbs(struct rcu_segcblist *rsclp);
+ bool rcu_segcblist_pend_cbs(struct rcu_segcblist *rsclp);
+ struct rcu_head *rcu_segcblist_first_cb(struct rcu_segcblist *rsclp);
+-- 
+2.34.1
 
-But it is easy for us to remind you if need be, so no worries either way!
-
-Longer term, should we be thinking in terms of a web page somewhere that
-says who is doing what merge window?  Or is there a better way?
-
-							Thanx, Paul
