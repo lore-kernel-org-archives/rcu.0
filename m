@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 046F278C6D;
-	Fri, 16 Aug 2024 04:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9E782488;
+	Fri, 16 Aug 2024 04:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723781128; cv=none; b=Qs7/bp2M7B9OtbLobojhC0HJem3hh/EdqsQd+ajnw+hPokRCNxNpAmQv5jATfW7EZ6JIwLwyLHfHkMcLEQa2FTbkOjapqlbW52O7ThdLlDc4DHRAT6wWsepb8F+oCJSVIJhjxQ0P6ZhjpEfbJB8mTBTdD7y3De4O+oQ+MOmdRaM=
+	t=1723781136; cv=none; b=FX9nKy89w2SsocVCaOotRqRadwn2YKW8PSsUaLxzdte1Q7rNb7mnHR49DC5VHvKTuJMle/nthMsGYwVEthddmcnE74kMzzTw8jUAuk8pzPCLf1Q9wa320awziwyT/X/5mj1+xSS2OLAFhKYoFkwZEl7IvFWGyhqtUhzwbkk/EEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723781128; c=relaxed/simple;
-	bh=pdYpSdwEaOBgNhubrdJXez5sTv6oyOsjgknZPbrT68k=;
+	s=arc-20240116; t=1723781136; c=relaxed/simple;
+	bh=+Mo5q7GWPN7t00hvEjG+UUC6SUC5HOsEA7aWBEXTzsU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JqyBym9w+fwlJeHMdIa5YH+kDb0x/nxZTp25NLpeasAXMERJH8m5UhTi6MQRcnIrXxW9GuyDDMOjEadP3wwxJLoO+WH4jHtsmNVcb15Po9EAmZR7V2HeOEVKZtgGtAqPHzYLzxDfLkXghJtoIDW5TntdqZfnDLckRDtbzSmtQ1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vIzXlMhb; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=rDW/CoU/AhVCag2jcewjCpiDZTpqYDmWnJG9PU+ki/b+zPeSTzfG44gqaknpsTGArHhnsWCVouWnqhuZXQ/zwg3VbDUG90Y5wP21h9H5jN4x9frKouYjibgjwrHhBwU6BWkY/TwFm+QfYyYUAjIdcDbDvbQHnFsY2+EJb/STlZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c7mD8cd1; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vIzXlMhb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D550C32782;
-	Fri, 16 Aug 2024 04:05:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c7mD8cd1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC5E0C4AF09;
+	Fri, 16 Aug 2024 04:05:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723781127;
-	bh=pdYpSdwEaOBgNhubrdJXez5sTv6oyOsjgknZPbrT68k=;
+	s=k20201202; t=1723781136;
+	bh=+Mo5q7GWPN7t00hvEjG+UUC6SUC5HOsEA7aWBEXTzsU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vIzXlMhb0J2GP9xF6ZNzMRBHdvVHGmQGpSsYVbuD/attf0hAGX0Jd1fYUVeXnJx+S
-	 Bm0Das7XGiuXpKBIgVjHoIWmQXyXic+cR5dxrl/v7rcecxuh2iffjTY6+NqnA854mW
-	 cEBMkbviS/t3irDril6AiOZV4m9/5ShgpkiOLlBRhCrNKjEQbtwBClzBI0qnfm5Zv6
-	 Eqfc0wtvb6u7U4IsvV6KaIQ15mKDxu58iqgb4IiVir1KWjmm9yZ4x/qnpIq60Iu47W
-	 NYQReYSdFEtcL/sjc1q8qc8Vg5YWhjdObvVIV8RZhlxESfxcxEzB3IQD8jdNCcDGoj
-	 iwnf3ykCc5X4Q==
+	b=c7mD8cd1wS1kVA4uCzXB07gAdF9jgv8mZ8Mkm/YVcBOQrMaIrbExGsIR2piAIuB0M
+	 VNgOtC9fOZgI0I05g0Ao1XjXRhAcY+xZUNIQqgq7Nlg3Gvu0NDzVr06GmW4tfkBi1y
+	 CV70aFdtdyLOp6BfhQZvc3P5l1nnPtyjphtN+UR+rktkdAc3JCiDy7F1Vs/3Ba71js
+	 YZZq0H2OtNyxJ96ma9viOhjgYM6sJZhziq4jFo6vcVUN20lozB7G1yFsZbFEuXzyd7
+	 se1sM+KGWBSwMEVoH8s7F1cA8j3bGKDfzh7NZKfFwNpI8MVnPT7g/LNzRUoZsE8oqr
+	 eHqaCy1SVZdcw==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	urezki@gmail.com,
 	frederic@kernel.org,
 	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH rcu 15/26] rcu: Rename rcu_dynticks_eqs_online() into rcu_watching_online()
-Date: Fri, 16 Aug 2024 09:32:30 +0530
-Message-Id: <20240816040241.17776-15-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 16/26] rcu: Rename rcu_dynticks_in_eqs() into rcu_watching_snap_in_eqs()
+Date: Fri, 16 Aug 2024 09:32:31 +0530
+Message-Id: <20240816040241.17776-16-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240816040030.GA16986@neeraj.linux>
 References: <20240816040030.GA16986@neeraj.linux>
@@ -58,46 +58,81 @@ From: Valentin Schneider <vschneid@redhat.com>
 The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
 RCU_WATCHING, reflect that change in the related helpers.
 
+While at it, update a comment that still refers to rcu_dynticks_snap(),
+which was removed by commit:
+
+  7be2e6323b9b ("rcu: Remove full memory barrier on RCU stall printout")
+
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/tree.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c       | 8 ++++----
+ kernel/rcu/tree_exp.h   | 2 +-
+ kernel/rcu/tree_stall.h | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 68eca7d3fdd1..47ec9f2daaed 100644
+index 47ec9f2daaed..73516d76b70a 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -283,16 +283,16 @@ void rcu_softirq_qs(void)
+@@ -300,10 +300,10 @@ static void rcu_watching_online(void)
  }
  
  /*
-- * Reset the current CPU's ->dynticks counter to indicate that the
-+ * Reset the current CPU's RCU_WATCHING counter to indicate that the
-  * newly onlined CPU is no longer in an extended quiescent state.
-  * This will either leave the counter unchanged, or increment it
-  * to the next non-quiescent value.
-  *
-  * The non-atomic test/increment sequence works because the upper bits
-- * of the ->dynticks counter are manipulated only by the corresponding CPU,
-+ * of the ->state variable are manipulated only by the corresponding CPU,
-  * or when the corresponding CPU is offline.
+- * Return true if the snapshot returned from rcu_dynticks_snap()
++ * Return true if the snapshot returned from ct_rcu_watching()
+  * indicates that RCU is in an extended quiescent state.
   */
--static void rcu_dynticks_eqs_online(void)
-+static void rcu_watching_online(void)
+-static bool rcu_dynticks_in_eqs(int snap)
++static bool rcu_watching_snap_in_eqs(int snap)
  {
- 	if (ct_rcu_watching() & CT_RCU_WATCHING)
- 		return;
-@@ -5058,7 +5058,7 @@ void rcutree_report_cpu_starting(unsigned int cpu)
- 	rnp = rdp->mynode;
- 	mask = rdp->grpmask;
- 	arch_spin_lock(&rcu_state.ofl_lock);
--	rcu_dynticks_eqs_online();
-+	rcu_watching_online();
- 	raw_spin_lock(&rcu_state.barrier_lock);
- 	raw_spin_lock_rcu_node(rnp);
- 	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+ 	return !(snap & CT_RCU_WATCHING);
+ }
+@@ -783,7 +783,7 @@ static int dyntick_save_progress_counter(struct rcu_data *rdp)
+ 	 * updater's accesses is enforced by the below acquire semantic.
+ 	 */
+ 	rdp->dynticks_snap = ct_rcu_watching_cpu_acquire(rdp->cpu);
+-	if (rcu_dynticks_in_eqs(rdp->dynticks_snap)) {
++	if (rcu_watching_snap_in_eqs(rdp->dynticks_snap)) {
+ 		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
+ 		rcu_gpnum_ovf(rdp->mynode, rdp);
+ 		return 1;
+@@ -4805,7 +4805,7 @@ rcu_boot_init_percpu_data(int cpu)
+ 	rdp->grpmask = leaf_node_cpu_bit(rdp->mynode, cpu);
+ 	INIT_WORK(&rdp->strict_work, strict_work_handler);
+ 	WARN_ON_ONCE(ct->nesting != 1);
+-	WARN_ON_ONCE(rcu_dynticks_in_eqs(ct_rcu_watching_cpu(cpu)));
++	WARN_ON_ONCE(rcu_watching_snap_in_eqs(ct_rcu_watching_cpu(cpu)));
+ 	rdp->barrier_seq_snap = rcu_state.barrier_sequence;
+ 	rdp->rcu_ofl_gp_seq = rcu_state.gp_seq;
+ 	rdp->rcu_ofl_gp_state = RCU_GP_CLEANED;
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index daa87fec703f..137559c84309 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -377,7 +377,7 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+ 			 * below acquire semantic.
+ 			 */
+ 			snap = ct_rcu_watching_cpu_acquire(cpu);
+-			if (rcu_dynticks_in_eqs(snap))
++			if (rcu_watching_snap_in_eqs(snap))
+ 				mask_ofl_test |= mask;
+ 			else
+ 				rdp->exp_dynticks_snap = snap;
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index ec49f0155bec..e933c6a58d5f 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -501,7 +501,7 @@ static void print_cpu_stall_info(int cpu)
+ 	}
+ 	delta = rcu_seq_ctr(rdp->mynode->gp_seq - rdp->rcu_iw_gp_seq);
+ 	falsepositive = rcu_is_gp_kthread_starving(NULL) &&
+-			rcu_dynticks_in_eqs(ct_rcu_watching_cpu(cpu));
++			rcu_watching_snap_in_eqs(ct_rcu_watching_cpu(cpu));
+ 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
+ 	if (rcuc_starved)
+ 		// Print signed value, as negative values indicate a probable bug.
 -- 
 2.40.1
 
