@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D2D12C549;
-	Fri, 16 Aug 2024 07:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB17132117;
+	Fri, 16 Aug 2024 07:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723791845; cv=none; b=KOPTXQvLofi5gziYwwr8qZH9d3uDAlTjlWzY4QPpNR8yIIFyhIII9aa4u53ORZ3gK2U9y8a0KqT7gOwAXi464/MWd4T+EKahARMn0sfjd+gYXlORIMJGnqonNhX9dgT39hKFWcIOWczumzNMVNEpMw9sXhrMvmdEN1Xaa9RJ+8Y=
+	t=1723791851; cv=none; b=Qsb++ECBXW3SpkTDioifA7ObQ5lIMrgVNsV51bzoViyHaghwSU0I/GP4eJV7xGZXEXt3n8YT5bKev40DBvAB93kRusowK1Ekmpy02IVVCyHKQixdaG0v+oXPJV3F4iT45tewinIMkw7R8NTfCVEfpPm79hGfr0+wasVy43LqGd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723791845; c=relaxed/simple;
-	bh=Onny6ymZLcW/+CIvxBmp98gGmBO/rcJMG4CCHHJNEDs=;
+	s=arc-20240116; t=1723791851; c=relaxed/simple;
+	bh=JlWfWfOshVrjXO5oIEB2X3rEfPtzchaaADjnIcIzEFE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ox6l4+QT9Vzr9xYM6Rri12p6EUsKb4KlKRGy4rREYV53bwnRW8PgejFnlzsJP5+rbAAdKwXVa8WRmFEBTGU0Cgz3FzIfiPp1VNhlEXDohZa1BVz4Ih2ynlnvFqfSjy9MglZ8igdb1kPOYleb810LPuTunAJFDwSEkUzdEpcH9Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PdRvd0na; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Q822B4Lzt6ZTp74WZsvnumM7fAELZefymk7UI7Na6CzzQMUOB5aULxJ+rHh+a1TegDA3uhK+uA63rMVCQbvauQDizZbZSqqikRAPc2XQhy+3AYyue4IyLZZt5+BiZ0UROMhseVL0BxqGOftZ0SZfG/YVnwTZbK4bwpSyLwWlRYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BKxhLb1M; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PdRvd0na"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C72C4AF0B;
-	Fri, 16 Aug 2024 07:03:58 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BKxhLb1M"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B94C4AF0E;
+	Fri, 16 Aug 2024 07:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723791845;
-	bh=Onny6ymZLcW/+CIvxBmp98gGmBO/rcJMG4CCHHJNEDs=;
+	s=k20201202; t=1723791850;
+	bh=JlWfWfOshVrjXO5oIEB2X3rEfPtzchaaADjnIcIzEFE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PdRvd0naZTFrNDqaNb1PcQccdXC9bogemPuXvicl9+yAfMPedxU+eqhlmR12yq/T6
-	 MSIeTDOLFtYQPo3/Fe3iuTonEy4jxSeYzgN+47KUiTicdYgZIrkUw3+3Mg4rXh33Bs
-	 j29ybHk2uGZDcm06wod/6wkd2tFszlfYaOC2V+JjgkwNd5ps+RsFEy/6epad5fvVwg
-	 pFVC83JvaW4DtS1ycVk37ugo1FMd2I9iEkW0ynVS50yvFJRPw1Iv1PfX3KO4s0GiXL
-	 htU/c5SkhBVJg63ke/agO7JFKxf4GKNEKvIkibtU+uGEVfA8ZptIdwSwB5HAxc9qk8
-	 f1jwae3fwM8+w==
+	b=BKxhLb1MY75/OZAGComEnwRS/pBf3jgL8bSzOGUDa3prPQPZ75ELbgohuZmkekMtF
+	 8+Z/kQLolrRA8FOj/Y6KbdoR1Yb38MXsnij00tmV5i6oDRiOaFCiE2PCAEYrkXnzwf
+	 54eMY26vl2xr2VqCoTGcIxvMjZ4U+6xXaAqU3m8W92aNf2zeXuj7mVzSikjtwHIOhC
+	 i0QHXQjKnylX7W9Gw3jSdmjLDBF1sXIVP8a6OfyxWxb32vgG0g1zT7QPD3gT+SP/7F
+	 dE0kA9ZFYJkjS+sX3KaPvraDbCMv5HoKd2lOY72iV8GaaO0cFq5xGn91P1r4JZTHdm
+	 J4UO/XrivHi+w==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -37,12 +37,10 @@ Cc: linux-kernel@vger.kernel.org,
 	boqun.feng@gmail.com,
 	joel@joelfernandes.org,
 	urezki@gmail.com,
-	frederic@kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Davidlohr Bueso <dave@stgolabs.net>
-Subject: [PATCH rcu 02/14] refscale: Optimize process_durations()
-Date: Fri, 16 Aug 2024 12:32:44 +0530
-Message-Id: <20240816070256.60993-2-neeraj.upadhyay@kernel.org>
+	frederic@kernel.org
+Subject: [PATCH rcu 03/14] rcuscale: Save a few lines with whitespace-only change
+Date: Fri, 16 Aug 2024 12:32:45 +0530
+Message-Id: <20240816070256.60993-3-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240816070209.GA60666@neeraj.linux>
 References: <20240816070209.GA60666@neeraj.linux>
@@ -54,80 +52,38 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-process_durations() is not a hot path, but there is no good reason to
-iterate over and over the data already in 'buf'.
+This whitespace-only commit fuses a few lines of code, taking advantage
+of the newish 100-character-per-line limit to save a few lines of code.
 
-Using a seq_buf saves some useless strcat() and the need of a temp buffer.
-Data is written directly at the correct place.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Tested-by: "Paul E. McKenney" <paulmck@kernel.org>
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+Signed-off-by: "Paul E. McKenney" <paulmck@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/refscale.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+ kernel/rcu/rcuscale.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index f4ea5b1ec068..cfec0648e141 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -28,6 +28,7 @@
- #include <linux/rcupdate_trace.h>
- #include <linux/reboot.h>
- #include <linux/sched.h>
-+#include <linux/seq_buf.h>
- #include <linux/spinlock.h>
- #include <linux/smp.h>
- #include <linux/stat.h>
-@@ -891,32 +892,34 @@ static u64 process_durations(int n)
- {
- 	int i;
- 	struct reader_task *rt;
--	char buf1[64];
-+	struct seq_buf s;
- 	char *buf;
- 	u64 sum = 0;
- 
- 	buf = kmalloc(800 + 64, GFP_KERNEL);
- 	if (!buf)
- 		return 0;
--	buf[0] = 0;
--	sprintf(buf, "Experiment #%d (Format: <THREAD-NUM>:<Total loop time in ns>)",
--		exp_idx);
-+	seq_buf_init(&s, buf, 800 + 64);
-+
-+	seq_buf_printf(&s, "Experiment #%d (Format: <THREAD-NUM>:<Total loop time in ns>)",
-+		       exp_idx);
- 
- 	for (i = 0; i < n && !torture_must_stop(); i++) {
- 		rt = &(reader_tasks[i]);
--		sprintf(buf1, "%d: %llu\t", i, rt->last_duration_ns);
- 
- 		if (i % 5 == 0)
--			strcat(buf, "\n");
--		if (strlen(buf) >= 800) {
--			pr_alert("%s", buf);
--			buf[0] = 0;
-+			seq_buf_putc(&s, '\n');
-+
-+		if (seq_buf_used(&s) >= 800) {
-+			pr_alert("%s", seq_buf_str(&s));
-+			seq_buf_clear(&s);
- 		}
--		strcat(buf, buf1);
-+
-+		seq_buf_printf(&s, "%d: %llu\t", i, rt->last_duration_ns);
- 
- 		sum += rt->last_duration_ns;
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index d534d4ec2314..3269dd9c639f 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -1015,13 +1015,9 @@ rcu_scale_init(void)
  	}
--	pr_alert("%s\n", buf);
-+	pr_alert("%s\n", seq_buf_str(&s));
- 
- 	kfree(buf);
- 	return sum;
+ 	while (atomic_read(&n_rcu_scale_reader_started) < nrealreaders)
+ 		schedule_timeout_uninterruptible(1);
+-	writer_tasks = kcalloc(nrealwriters, sizeof(reader_tasks[0]),
+-			       GFP_KERNEL);
+-	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations),
+-				   GFP_KERNEL);
+-	writer_n_durations =
+-		kcalloc(nrealwriters, sizeof(*writer_n_durations),
+-			GFP_KERNEL);
++	writer_tasks = kcalloc(nrealwriters, sizeof(reader_tasks[0]), GFP_KERNEL);
++	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations), GFP_KERNEL);
++	writer_n_durations = kcalloc(nrealwriters, sizeof(*writer_n_durations), GFP_KERNEL);
+ 	if (!writer_tasks || !writer_durations || !writer_n_durations) {
+ 		SCALEOUT_ERRSTRING("out of memory");
+ 		firsterr = -ENOMEM;
 -- 
 2.40.1
 
