@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD8B82488;
-	Fri, 16 Aug 2024 04:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3EA183CD2;
+	Fri, 16 Aug 2024 04:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723781078; cv=none; b=Lm2wqOxBGahuTJkc+KpLe/VStNnRJQ6uorOKfPscQQ3BOCULoYWhDuqePe8fidUPSPmEAWFg+pVKvMF/UdxBTFQJ6FXX6bicBt9e4V2hkpWO1Uo77/RtO7R2P3TTOkMlMN43l8ZtnISnF65BB7MU1vtT7V6qeQhwjx0A1BbJlzw=
+	t=1723781089; cv=none; b=XrgZAG3/ALCS7kis4K8p9hq45RM7cXg36DURtIbX63urUvfNewExtVTq1BqnKnvBDF53n7j+YYMBIjDJIgmw687jG1+WqOSDXxtqGB8r5mN9edAgUkY7Tpe/BigZGIrxqADpE9i50GBEbUDoNxV/sJ2Pb6pUbxTFjUVf4ioq4Ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723781078; c=relaxed/simple;
-	bh=GRWciJuVIN13exrIEry43JWRpUFvmg9EQQUVwxm6HNI=;
+	s=arc-20240116; t=1723781089; c=relaxed/simple;
+	bh=7Y5L9kQlhh/suY4IvkdPD01biH3wXCMEYqTW+T86dAU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uvyTTpHDRp53D9JQQX8lO86gtDIK85S1bvvwERfE037Wg+3vXYLkK5ArqmlrxweqFvliXBzPj3IyxkLoYC5UvmXCt0ebDo/k0st+UY4L6ySTbZrrQM+kFiZMPKmIokMIbDg+1Bqocxm0eSlqZ1xSKJHK+RGeMgO80g4v0gdNj1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fRpOi3hS; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=tvo2ulKxno1UWcFXx43+YpR8wPkBfFxp4GhEqkGK3mzWGgNiLPkhSW0wAKA8VhbB7MCgVBNAN8dHnqe/kTuuljTV0IgO2PzPXbMnx0SxZxCGp7y8Pp1W0m51GLr6sP893BLjFQN26aIsvNb/npGVgGm/vUqm4H+ugxOtbjyRtfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rb5sJcYb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRpOi3hS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BAE0C32782;
-	Fri, 16 Aug 2024 04:04:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rb5sJcYb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D218BC4AF10;
+	Fri, 16 Aug 2024 04:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723781078;
-	bh=GRWciJuVIN13exrIEry43JWRpUFvmg9EQQUVwxm6HNI=;
+	s=k20201202; t=1723781088;
+	bh=7Y5L9kQlhh/suY4IvkdPD01biH3wXCMEYqTW+T86dAU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fRpOi3hSopzo/Xx/+yXZ4yiEXJ5G5Oy/tdeM7y4kNUbd2JB07Ku0telDMj9Y9ohNp
-	 4Glvt3oJiyjsvjQ4BbinZ5sWW2quNfrnDHH2cmh1Z95RYcXQ2vuwDRT0tgLppSXTw7
-	 J/PpFXTd+w9Iz5YYnsmptbNiC2qvNceULEhqAcA9aWxYcQHsSTuwOrdsURKq07ze1b
-	 A/55MkE7oacPqA4V+vmZexvCpRXYEChWjy1UbtW18y2RCR3k70N3mZVOB/R81e0A0r
-	 zlYzjZO5ERzrSTE9we0GHC4GoHfqM6giIwOI81fIbSMzUNPOeZSvHya744ERc21M+I
-	 sWin8xkwdqX3g==
+	b=rb5sJcYbosa1IBgN8WnGGRBd0IXRW6iLl1J9N2jlwrkO+9zdo5balWdKoNVxjQ6dN
+	 iok41qibjtjV5nkQruK9Kj2cFLD1D5PkCGW3c6jBLUrWUYwX/9mx6l3mFchAkYS+95
+	 W3XiuwJdOWKCRDvr7IzySEsnUUXd3msQ2TXmjSQJtJeHfkIC7bmI4WvYO3BHADT6Ve
+	 r6gk3mUaKpd5q5HvH6ScQX1keIXJksjS2XPI1dJxmrrO8TwVHR7qb6a3Vpn7PRoG/g
+	 2eEpj+NUCOnbc8ZD4+WuQvtVFRIGlgqFF5Z3Me1n2A8GChBIF4iwrrziYVO45E8mv4
+	 TSpZD2lJvD9BA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	urezki@gmail.com,
 	frederic@kernel.org,
 	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH rcu 10/26] context_tracking, rcu: Rename ct_dynticks_nmi_nesting() into ct_nmi_nesting()
-Date: Fri, 16 Aug 2024 09:32:25 +0530
-Message-Id: <20240816040241.17776-10-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 11/26] context_tracking, rcu: Rename ct_dynticks_nmi_nesting_cpu() into ct_nmi_nesting_cpu()
+Date: Fri, 16 Aug 2024 09:32:26 +0530
+Message-Id: <20240816040241.17776-11-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240816040030.GA16986@neeraj.linux>
 References: <20240816040030.GA16986@neeraj.linux>
@@ -64,132 +64,36 @@ Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- include/linux/context_tracking_state.h |  2 +-
- kernel/context_tracking.c              | 24 ++++++++++++------------
- kernel/rcu/tree.c                      |  6 +++---
- 3 files changed, 16 insertions(+), 16 deletions(-)
+ include/linux/context_tracking_state.h | 2 +-
+ kernel/rcu/tree_stall.h                | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
-index 12d00adf29e1..8f32fe599c5c 100644
+index 8f32fe599c5c..34fd504e53a8 100644
 --- a/include/linux/context_tracking_state.h
 +++ b/include/linux/context_tracking_state.h
-@@ -87,7 +87,7 @@ static __always_inline long ct_nesting_cpu(int cpu)
- 	return ct->nesting;
- }
- 
--static __always_inline long ct_dynticks_nmi_nesting(void)
-+static __always_inline long ct_nmi_nesting(void)
- {
+@@ -92,7 +92,7 @@ static __always_inline long ct_nmi_nesting(void)
  	return __this_cpu_read(context_tracking.nmi_nesting);
  }
-diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-index ae94215aa132..115843eeb030 100644
---- a/kernel/context_tracking.c
-+++ b/kernel/context_tracking.c
-@@ -125,7 +125,7 @@ static void noinstr ct_kernel_exit(bool user, int offset)
+ 
+-static __always_inline long ct_dynticks_nmi_nesting_cpu(int cpu)
++static __always_inline long ct_nmi_nesting_cpu(int cpu)
  {
- 	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
+ 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
  
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
-+	WARN_ON_ONCE(ct_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
- 	WRITE_ONCE(ct->nmi_nesting, 0);
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
- 		     ct_nesting() == 0);
-@@ -185,7 +185,7 @@ static void noinstr ct_kernel_enter(bool user, int offset)
- 	trace_rcu_dyntick(TPS("End"), ct_nesting(), 1, ct_rcu_watching());
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
- 	WRITE_ONCE(ct->nesting, 1);
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting());
-+	WARN_ON_ONCE(ct_nmi_nesting());
- 	WRITE_ONCE(ct->nmi_nesting, DYNTICK_IRQ_NONIDLE);
- 	instrumentation_end();
- }
-@@ -207,28 +207,28 @@ void noinstr ct_nmi_exit(void)
- 
- 	instrumentation_begin();
- 	/*
--	 * Check for ->nmi_nesting underflow and bad ->dynticks.
-+	 * Check for ->nmi_nesting underflow and bad CT state.
- 	 * (We are exiting an NMI handler, so RCU better be paying attention
- 	 * to us!)
- 	 */
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting() <= 0);
-+	WARN_ON_ONCE(ct_nmi_nesting() <= 0);
- 	WARN_ON_ONCE(rcu_dynticks_curr_cpu_in_eqs());
- 
- 	/*
- 	 * If the nesting level is not 1, the CPU wasn't RCU-idle, so
- 	 * leave it in non-RCU-idle state.
- 	 */
--	if (ct_dynticks_nmi_nesting() != 1) {
--		trace_rcu_dyntick(TPS("--="), ct_dynticks_nmi_nesting(), ct_dynticks_nmi_nesting() - 2,
-+	if (ct_nmi_nesting() != 1) {
-+		trace_rcu_dyntick(TPS("--="), ct_nmi_nesting(), ct_nmi_nesting() - 2,
- 				  ct_rcu_watching());
- 		WRITE_ONCE(ct->nmi_nesting, /* No store tearing. */
--			   ct_dynticks_nmi_nesting() - 2);
-+			   ct_nmi_nesting() - 2);
- 		instrumentation_end();
- 		return;
- 	}
- 
- 	/* This NMI interrupted an RCU-idle CPU, restore RCU-idleness. */
--	trace_rcu_dyntick(TPS("Startirq"), ct_dynticks_nmi_nesting(), 0, ct_rcu_watching());
-+	trace_rcu_dyntick(TPS("Startirq"), ct_nmi_nesting(), 0, ct_rcu_watching());
- 	WRITE_ONCE(ct->nmi_nesting, 0); /* Avoid store tearing. */
- 
- 	// instrumentation for the noinstr ct_kernel_exit_state()
-@@ -261,7 +261,7 @@ void noinstr ct_nmi_enter(void)
- 	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
- 
- 	/* Complain about underflow. */
--	WARN_ON_ONCE(ct_dynticks_nmi_nesting() < 0);
-+	WARN_ON_ONCE(ct_nmi_nesting() < 0);
- 
- 	/*
- 	 * If idle from RCU viewpoint, atomically increment CT state
-@@ -295,11 +295,11 @@ void noinstr ct_nmi_enter(void)
- 	}
- 
- 	trace_rcu_dyntick(incby == 1 ? TPS("Endirq") : TPS("++="),
--			  ct_dynticks_nmi_nesting(),
--			  ct_dynticks_nmi_nesting() + incby, ct_rcu_watching());
-+			  ct_nmi_nesting(),
-+			  ct_nmi_nesting() + incby, ct_rcu_watching());
- 	instrumentation_end();
- 	WRITE_ONCE(ct->nmi_nesting, /* Prevent store tearing. */
--		   ct_dynticks_nmi_nesting() + incby);
-+		   ct_nmi_nesting() + incby);
- 	barrier();
- }
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 934f6b34a551..14cc314eedad 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -390,11 +390,11 @@ static int rcu_is_cpu_rrupt_from_idle(void)
- 	/* Check for counter underflows */
- 	RCU_LOCKDEP_WARN(ct_nesting() < 0,
- 			 "RCU nesting counter underflow!");
--	RCU_LOCKDEP_WARN(ct_dynticks_nmi_nesting() <= 0,
-+	RCU_LOCKDEP_WARN(ct_nmi_nesting() <= 0,
- 			 "RCU nmi_nesting counter underflow/zero!");
- 
- 	/* Are we at first interrupt nesting level? */
--	nesting = ct_dynticks_nmi_nesting();
-+	nesting = ct_nmi_nesting();
- 	if (nesting > 1)
- 		return false;
- 
-@@ -598,7 +598,7 @@ void rcu_irq_exit_check_preempt(void)
- 
- 	RCU_LOCKDEP_WARN(ct_nesting() <= 0,
- 			 "RCU nesting counter underflow/zero!");
--	RCU_LOCKDEP_WARN(ct_dynticks_nmi_nesting() !=
-+	RCU_LOCKDEP_WARN(ct_nmi_nesting() !=
- 			 DYNTICK_IRQ_NONIDLE,
- 			 "Bad RCU  nmi_nesting counter\n");
- 	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 59b1d84a4749..ec49f0155bec 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -516,7 +516,7 @@ static void print_cpu_stall_info(int cpu)
+ 				"!."[!delta],
+ 	       ticks_value, ticks_title,
+ 	       ct_rcu_watching_cpu(cpu) & 0xffff,
+-	       ct_nesting_cpu(cpu), ct_dynticks_nmi_nesting_cpu(cpu),
++	       ct_nesting_cpu(cpu), ct_nmi_nesting_cpu(cpu),
+ 	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
+ 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
+ 	       rcuc_starved ? buf : "",
 -- 
 2.40.1
 
