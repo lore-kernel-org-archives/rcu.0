@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08055823DF;
-	Fri, 16 Aug 2024 05:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7455B12E1E9;
+	Fri, 16 Aug 2024 05:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723787604; cv=none; b=NGpUm7XLcSW1NXZnWpVz2I3llMUDjHykErCdzMItrVnFVa/iYXrd7qcAvL/pGm4MbpW3L+ioCwLuQIZ8ixtBmXIHzraquHjuLs/OdHwlxWlrc9vrLE8leqZ/i3O0WnbS9kWQNoLekeIIF6DCi5dwtTEdKg2jG6MHnid/NqMhGuU=
+	t=1723787614; cv=none; b=DdrN3eLz1jHaoZQr21CSvO+ONyFM2u/q/AjSaRzGJPxyta3c6KGbtG0XSTNwpKDs+U7QqfKWzp5SLg1eUcj6k3iUONlLUVMZpZaOKG5kg6352hNZ4G9cbjcNylMsgIbMBu6OxKH8fdJeMOOcuPXIDVGyw2+ejgsW/hsyPAqASNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723787604; c=relaxed/simple;
-	bh=CYu7Ctlkux75sJ6jQTgFF9TptqNclQ2VfjFauJ+V82k=;
+	s=arc-20240116; t=1723787614; c=relaxed/simple;
+	bh=J/SOWYNC0DQ9Ec9glAI6uTGfbMLi8t5ZrCUq3XXmHRQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZPAT4hSfCjqA88/3T6RFwCan4E0PahWuRvHECXWEck6A9l3QA0rgaLUzh/3pTeh4qG3ZD875wGPrqp91yK6v14DeME2fXJrKnfis1sNVZGyIvBCM1Ibc8bCbnFgm5/AyrBPKXskXncXQ7Qx3dxVMIkTfEfj67MC0ehbkRvN3LOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CToieIgR; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=QrNNTbWHdLi6cdQBtLUDLyHSkAIxsKQjuN3n0xWL4Zf7ESpR5MGZYnQUXEBScYUxujLG0U/O1JpGNFhxVAW+SEZUAkfAXwkZn+PjUjPasJXrN5lLQlC40GJFV1iaL/nY3NJYBRj6v8T+YTldiAmy042c/jL35gMo4UWI1Q0fA+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XrHBsr2T; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CToieIgR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0D44C4AF0B;
-	Fri, 16 Aug 2024 05:53:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XrHBsr2T"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0714DC4AF0B;
+	Fri, 16 Aug 2024 05:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723787603;
-	bh=CYu7Ctlkux75sJ6jQTgFF9TptqNclQ2VfjFauJ+V82k=;
+	s=k20201202; t=1723787614;
+	bh=J/SOWYNC0DQ9Ec9glAI6uTGfbMLi8t5ZrCUq3XXmHRQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CToieIgR9NhQRrOXB0CVHKqwu+taG0VgWsSPgRz7Y8FOJ5HRpy6INHW3lk8WfLy59
-	 TEqpa8Fv+NAMQO0qX/9IPAm7meQ2rR2zNfJWPjt23jdtATJFjgoONxHiB0oxu5tMX7
-	 pLDeRewaJsJtvvaJT4IThLXSCWg2m0Df6/TeWPhBHapKEW/FVXIvAjbs+Irc+Dl4yN
-	 TlSfAF1VAKzLiLhO3W9F8nh4iR62zThZcOPlUymrzrXdmKTd4CHttDPpJWzrhGyxk1
-	 pflwmUotOVppbgBLwK7BjcUtNIS3b9HXy5bery7XOiVpap/HNO6lIa4n1OGkE1l8EH
-	 rrYTsT3eg80rw==
+	b=XrHBsr2TkfxYYBPD0iiMJ5J08EY/k8QHLR9ZXf9pV7tuu4rkkhVJxaNW5zR7q/7nj
+	 LPQFEu9ZFM8986lrTXnTO8oQNzJK8AndSJZhj/gnbM9bW0VvReyFwTs5UG3382AR6K
+	 lLszUpbbr0hhCG2foPlMuXyhxhK/hVPMSKrolBAgxLw7g4tEIylaeI9S5jW5kyqbot
+	 xmPYDheZwNa4fcmqLCQ9UojPq22gKX+fJBzY2ePU2kdGNyibfbSLsqA2b+ap4ifObj
+	 VJ6v4AX9EfyYjmVVsXpVrYl9pLJ5YPojlRvfEKsMmgUb41gfd1jAtQF3d/5XK+Daq7
+	 hvKZsuKb2dwiA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -37,12 +37,10 @@ Cc: linux-kernel@vger.kernel.org,
 	boqun.feng@gmail.com,
 	joel@joelfernandes.org,
 	urezki@gmail.com,
-	frederic@kernel.org,
-	Zhouyi Zhou <zhouzhouyi@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH rcu 4/8] rcutorture: Add CFcommon.arch for arch-specific Kconfig options
-Date: Fri, 16 Aug 2024 11:21:59 +0530
-Message-Id: <20240816055203.43784-5-neeraj.upadhyay@kernel.org>
+	frederic@kernel.org
+Subject: [PATCH rcu 5/8] rcutorture: Make rcu_torture_write_types() print number of update types
+Date: Fri, 16 Aug 2024 11:22:00 +0530
+Message-Id: <20240816055203.43784-6-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240816055203.43784-1-neeraj.upadhyay@kernel.org>
 References: <20240816055203.43784-1-neeraj.upadhyay@kernel.org>
@@ -54,89 +52,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Add CFcommon.arch for arch-specific Kconfig options.
+This commit follows the list of update types with their count, resulting
+in console output like this:
 
-In accordance with [1], [2] and [3], move the x86-specific kernel option
-CONFIG_HYPERVISOR_GUEST to CFcommon.i686 and CFcommon.x86_64, and also
-move the x86/PowerPC CONFIG_KVM_GUEST Kconfig option to CFcommon.i686,
-CFcommon.x86_64, and CFcommon.ppc64le.
+	rcu_torture_write_types: Testing conditional GPs.
+	rcu_torture_write_types: Testing conditional expedited GPs.
+	rcu_torture_write_types: Testing conditional full-state GPs.
+	rcu_torture_write_types: Testing expedited GPs.
+	rcu_torture_write_types: Testing asynchronous GPs.
+	rcu_torture_write_types: Testing polling GPs.
+	rcu_torture_write_types: Testing polling full-state GPs.
+	rcu_torture_write_types: Testing polling expedited GPs.
+	rcu_torture_write_types: Testing polling full-state expedited GPs.
+	rcu_torture_write_types: Testing normal GPs.
+	rcu_torture_write_types: Testing 10 update types
 
-The "arch" in CFcommon.arch is taken from the "uname -m" command.
+This commit adds the final line giving the count.
 
-[1] https://lore.kernel.org/all/20240427005626.1365935-1-zhouzhouyi@gmail.com/
-[2] https://lore.kernel.org/all/059d36ce-6453-42be-a31e-895abd35d590@paulmck-laptop/
-[3] https://lore.kernel.org/all/ZnBkHosMDhsh4H8g@J2N7QTR9R3/
-
-Tested in x86_64 and PPC VM of Open Source Lab of Oregon State University.
-
-Fixes: a6fda6dab93c ("rcutorture: Tweak kvm options")
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh        | 2 ++
- tools/testing/selftests/rcutorture/configs/rcu/CFcommon         | 2 --
- tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686    | 2 ++
- tools/testing/selftests/rcutorture/configs/rcu/CFcommon.ppc64le | 1 +
- tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64  | 2 ++
- 5 files changed, 7 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/CFcommon.ppc64le
- create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64
+ kernel/rcu/rcutorture.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index b33cd8753689..ad79784e552d 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -68,6 +68,8 @@ config_override_param "--gdb options" KcList "$TORTURE_KCONFIG_GDB_ARG"
- config_override_param "--kasan options" KcList "$TORTURE_KCONFIG_KASAN_ARG"
- config_override_param "--kcsan options" KcList "$TORTURE_KCONFIG_KCSAN_ARG"
- config_override_param "--kconfig argument" KcList "$TORTURE_KCONFIG_ARG"
-+config_override_param "$config_dir/CFcommon.$(uname -m)" KcList \
-+		      "`cat $config_dir/CFcommon.$(uname -m) 2> /dev/null`"
- cp $T/KcList $resdir/ConfigFragment
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index acf9f9945d2b..9a2ecb8b88ec 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1324,6 +1324,7 @@ static void rcu_torture_write_types(void)
+ 	} else if (gp_sync && !cur_ops->sync) {
+ 		pr_alert("%s: gp_sync without primitives.\n", __func__);
+ 	}
++	pr_alert("%s: Testing %d update types.\n", __func__, nsynctypes);
+ }
  
- base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-index 0e92d85313aa..217597e84905 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon
-@@ -1,7 +1,5 @@
- CONFIG_RCU_TORTURE_TEST=y
- CONFIG_PRINTK_TIME=y
--CONFIG_HYPERVISOR_GUEST=y
- CONFIG_PARAVIRT=y
--CONFIG_KVM_GUEST=y
- CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n
- CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686 b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686
-new file mode 100644
-index 000000000000..d8b2f555686f
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.i686
-@@ -0,0 +1,2 @@
-+CONFIG_HYPERVISOR_GUEST=y
-+CONFIG_KVM_GUEST=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.ppc64le b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.ppc64le
-new file mode 100644
-index 000000000000..133da04247ee
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.ppc64le
-@@ -0,0 +1 @@
-+CONFIG_KVM_GUEST=y
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64 b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64
-new file mode 100644
-index 000000000000..d8b2f555686f
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFcommon.x86_64
-@@ -0,0 +1,2 @@
-+CONFIG_HYPERVISOR_GUEST=y
-+CONFIG_KVM_GUEST=y
+ /*
 -- 
 2.40.1
 
