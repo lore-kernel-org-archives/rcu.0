@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3EA183CD2;
-	Fri, 16 Aug 2024 04:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0DF84DE4;
+	Fri, 16 Aug 2024 04:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723781089; cv=none; b=XrgZAG3/ALCS7kis4K8p9hq45RM7cXg36DURtIbX63urUvfNewExtVTq1BqnKnvBDF53n7j+YYMBIjDJIgmw687jG1+WqOSDXxtqGB8r5mN9edAgUkY7Tpe/BigZGIrxqADpE9i50GBEbUDoNxV/sJ2Pb6pUbxTFjUVf4ioq4Ko=
+	t=1723781096; cv=none; b=Gnok/U565D4djiRDCOERHdozJ8OzcTN+q215lqNRkk8ZjIo9GEMWaaeEjFFnZVbatG8bnd6z4nU4lC2XIPJf7s+ucXY2pHyLvulCxbJmWkP4UNV21qVSz3BqNxgBSe98l2c1IpTq7YI7t2TMcCb6rS40Y/O0prxDc+7mIBNIE7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723781089; c=relaxed/simple;
-	bh=7Y5L9kQlhh/suY4IvkdPD01biH3wXCMEYqTW+T86dAU=;
+	s=arc-20240116; t=1723781096; c=relaxed/simple;
+	bh=THKTu+qqZwMD5L0kBlzwGcrwFIAlx/sAcIbij6QiS+4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tvo2ulKxno1UWcFXx43+YpR8wPkBfFxp4GhEqkGK3mzWGgNiLPkhSW0wAKA8VhbB7MCgVBNAN8dHnqe/kTuuljTV0IgO2PzPXbMnx0SxZxCGp7y8Pp1W0m51GLr6sP893BLjFQN26aIsvNb/npGVgGm/vUqm4H+ugxOtbjyRtfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rb5sJcYb; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=b1GVFGsCvgtgMpixs0zlyxO1SfFeIXvm655ZWzmcw1tNXYqktQtqvfzXnFLIBrpgsJKGwe/L4D0BuA3cIrsL0auZeeMMkFbrHljymAcCK62xR/QZDkPxFTj5LxFLWczTXMt0320G2TG4+JGcWSUutkRmPdiA1/kk9771Nm7DQHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H7ZTaUJ1; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rb5sJcYb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D218BC4AF10;
-	Fri, 16 Aug 2024 04:04:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H7ZTaUJ1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 738EBC4AF0B;
+	Fri, 16 Aug 2024 04:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723781088;
-	bh=7Y5L9kQlhh/suY4IvkdPD01biH3wXCMEYqTW+T86dAU=;
+	s=k20201202; t=1723781096;
+	bh=THKTu+qqZwMD5L0kBlzwGcrwFIAlx/sAcIbij6QiS+4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rb5sJcYbosa1IBgN8WnGGRBd0IXRW6iLl1J9N2jlwrkO+9zdo5balWdKoNVxjQ6dN
-	 iok41qibjtjV5nkQruK9Kj2cFLD1D5PkCGW3c6jBLUrWUYwX/9mx6l3mFchAkYS+95
-	 W3XiuwJdOWKCRDvr7IzySEsnUUXd3msQ2TXmjSQJtJeHfkIC7bmI4WvYO3BHADT6Ve
-	 r6gk3mUaKpd5q5HvH6ScQX1keIXJksjS2XPI1dJxmrrO8TwVHR7qb6a3Vpn7PRoG/g
-	 2eEpj+NUCOnbc8ZD4+WuQvtVFRIGlgqFF5Z3Me1n2A8GChBIF4iwrrziYVO45E8mv4
-	 TSpZD2lJvD9BA==
+	b=H7ZTaUJ1d5wA92LmRxQ/7LnW83Eaz2keopv7OXCO9ZBMf7LAVSMv+D4uV9reH1OLx
+	 ZbKqNsql38TNYfAX2HnpPKhRt1bw49TwlMU2LHAQqxvbcT011U3SbMkI8NNA5aWXnU
+	 QT4m8ObktHWkL1c4ocPeysmlhOQdf8cdtwfMyv0Zwp5OwKfZ347TfcJiKegNT7XrNU
+	 gyzK7T/KsiQS4WJwmGETyZefM0gzCBfCTc1G7cZhssufSqAa+hIrrAvAUEqJkjTpEl
+	 /BAdm0b8Rv+sOdN2r9Fvk5aS8cZuB3diuzIpl0bd3uZtTm+K3eg1DL2xNZbT9jNz/p
+	 VIcNkcNprYP4A==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	urezki@gmail.com,
 	frederic@kernel.org,
 	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH rcu 11/26] context_tracking, rcu: Rename ct_dynticks_nmi_nesting_cpu() into ct_nmi_nesting_cpu()
-Date: Fri, 16 Aug 2024 09:32:26 +0530
-Message-Id: <20240816040241.17776-11-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 12/26] context_tracking, rcu: Rename DYNTICK_IRQ_NONIDLE into CT_NESTING_IRQ_NONIDLE
+Date: Fri, 16 Aug 2024 09:32:27 +0530
+Message-Id: <20240816040241.17776-12-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240816040030.GA16986@neeraj.linux>
 References: <20240816040030.GA16986@neeraj.linux>
@@ -59,41 +59,81 @@ The context_tracking.state RCU_DYNTICKS subvariable has been renamed to
 RCU_WATCHING, and the 'dynticks' prefix can be dropped without losing any
 meaning.
 
-Suggested-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
  include/linux/context_tracking_state.h | 2 +-
- kernel/rcu/tree_stall.h                | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/context_tracking.c              | 8 ++++----
+ kernel/rcu/tree.c                      | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
-index 8f32fe599c5c..34fd504e53a8 100644
+index 34fd504e53a8..0dbda59c9f37 100644
 --- a/include/linux/context_tracking_state.h
 +++ b/include/linux/context_tracking_state.h
-@@ -92,7 +92,7 @@ static __always_inline long ct_nmi_nesting(void)
- 	return __this_cpu_read(context_tracking.nmi_nesting);
+@@ -7,7 +7,7 @@
+ #include <linux/context_tracking_irq.h>
+ 
+ /* Offset to allow distinguishing irq vs. task-based idle entry/exit. */
+-#define DYNTICK_IRQ_NONIDLE	((LONG_MAX / 2) + 1)
++#define CT_NESTING_IRQ_NONIDLE	((LONG_MAX / 2) + 1)
+ 
+ enum ctx_state {
+ 	CT_STATE_DISABLED	= -1,	/* returned by ct_state() if unknown */
+diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+index 115843eeb030..8262f57a4363 100644
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -29,7 +29,7 @@
+ DEFINE_PER_CPU(struct context_tracking, context_tracking) = {
+ #ifdef CONFIG_CONTEXT_TRACKING_IDLE
+ 	.nesting = 1,
+-	.nmi_nesting = DYNTICK_IRQ_NONIDLE,
++	.nmi_nesting = CT_NESTING_IRQ_NONIDLE,
+ #endif
+ 	.state = ATOMIC_INIT(CT_RCU_WATCHING),
+ };
+@@ -125,7 +125,7 @@ static void noinstr ct_kernel_exit(bool user, int offset)
+ {
+ 	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
+ 
+-	WARN_ON_ONCE(ct_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
++	WARN_ON_ONCE(ct_nmi_nesting() != CT_NESTING_IRQ_NONIDLE);
+ 	WRITE_ONCE(ct->nmi_nesting, 0);
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+ 		     ct_nesting() == 0);
+@@ -156,7 +156,7 @@ static void noinstr ct_kernel_exit(bool user, int offset)
+  * Exit an RCU extended quiescent state, which can be either the
+  * idle loop or adaptive-tickless usermode execution.
+  *
+- * We crowbar the ->nmi_nesting field to DYNTICK_IRQ_NONIDLE to
++ * We crowbar the ->nmi_nesting field to CT_NESTING_IRQ_NONIDLE to
+  * allow for the possibility of usermode upcalls messing up our count of
+  * interrupt nesting level during the busy period that is just now starting.
+  */
+@@ -186,7 +186,7 @@ static void noinstr ct_kernel_enter(bool user, int offset)
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	WRITE_ONCE(ct->nesting, 1);
+ 	WARN_ON_ONCE(ct_nmi_nesting());
+-	WRITE_ONCE(ct->nmi_nesting, DYNTICK_IRQ_NONIDLE);
++	WRITE_ONCE(ct->nmi_nesting, CT_NESTING_IRQ_NONIDLE);
+ 	instrumentation_end();
  }
  
--static __always_inline long ct_dynticks_nmi_nesting_cpu(int cpu)
-+static __always_inline long ct_nmi_nesting_cpu(int cpu)
- {
- 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
- 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 59b1d84a4749..ec49f0155bec 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -516,7 +516,7 @@ static void print_cpu_stall_info(int cpu)
- 				"!."[!delta],
- 	       ticks_value, ticks_title,
- 	       ct_rcu_watching_cpu(cpu) & 0xffff,
--	       ct_nesting_cpu(cpu), ct_dynticks_nmi_nesting_cpu(cpu),
-+	       ct_nesting_cpu(cpu), ct_nmi_nesting_cpu(cpu),
- 	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
- 	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
- 	       rcuc_starved ? buf : "",
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 14cc314eedad..4778c873f4ac 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -599,7 +599,7 @@ void rcu_irq_exit_check_preempt(void)
+ 	RCU_LOCKDEP_WARN(ct_nesting() <= 0,
+ 			 "RCU nesting counter underflow/zero!");
+ 	RCU_LOCKDEP_WARN(ct_nmi_nesting() !=
+-			 DYNTICK_IRQ_NONIDLE,
++			 CT_NESTING_IRQ_NONIDLE,
+ 			 "Bad RCU  nmi_nesting counter\n");
+ 	RCU_LOCKDEP_WARN(rcu_dynticks_curr_cpu_in_eqs(),
+ 			 "RCU in extended quiescent state!");
 -- 
 2.40.1
 
