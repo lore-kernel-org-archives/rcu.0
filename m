@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB17132117;
-	Fri, 16 Aug 2024 07:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B0113A256;
+	Fri, 16 Aug 2024 07:04:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723791851; cv=none; b=Qsb++ECBXW3SpkTDioifA7ObQ5lIMrgVNsV51bzoViyHaghwSU0I/GP4eJV7xGZXEXt3n8YT5bKev40DBvAB93kRusowK1Ekmpy02IVVCyHKQixdaG0v+oXPJV3F4iT45tewinIMkw7R8NTfCVEfpPm79hGfr0+wasVy43LqGd8=
+	t=1723791857; cv=none; b=A9CbfHBtr4aPp1urUmaeOA0y0oxvL6ZXoBzQ+YGLfzipuOLSQT984IG2SjljB4e0tNfC40NPTtdd0Ttl/6OT6V5GwS+TfwJJrgpJJWFXoGljaaMGD/v39afhhydecJ7nMa8Vk6sZ0+X/0c1ja/gd3NeeedSoqNc61HrHfgQNU+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723791851; c=relaxed/simple;
-	bh=JlWfWfOshVrjXO5oIEB2X3rEfPtzchaaADjnIcIzEFE=;
+	s=arc-20240116; t=1723791857; c=relaxed/simple;
+	bh=vtELkXCUFMg5oRqM2b92OFdwmNazPUkHQIvr96CsLRI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q822B4Lzt6ZTp74WZsvnumM7fAELZefymk7UI7Na6CzzQMUOB5aULxJ+rHh+a1TegDA3uhK+uA63rMVCQbvauQDizZbZSqqikRAPc2XQhy+3AYyue4IyLZZt5+BiZ0UROMhseVL0BxqGOftZ0SZfG/YVnwTZbK4bwpSyLwWlRYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BKxhLb1M; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=GYgxMTNCzcil2jHvkaOWibrv6+8LjPlMi+sZ6oxY2H0FbhTCnU9+sdDCgyClURwJnOTNZsAeNgvibycrlOVjTm8tqC4t+lyqObz+HBtfBs5Sgeoj6Hn13ug2J7dwm3lb3qEE0XHO71UqlnKrpYFUglXwHU3TrDKcFwpxIMrlU9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J3RtWp/h; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BKxhLb1M"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B94C4AF0E;
-	Fri, 16 Aug 2024 07:04:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J3RtWp/h"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8441FC4AF13;
+	Fri, 16 Aug 2024 07:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723791850;
-	bh=JlWfWfOshVrjXO5oIEB2X3rEfPtzchaaADjnIcIzEFE=;
+	s=k20201202; t=1723791856;
+	bh=vtELkXCUFMg5oRqM2b92OFdwmNazPUkHQIvr96CsLRI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BKxhLb1MY75/OZAGComEnwRS/pBf3jgL8bSzOGUDa3prPQPZ75ELbgohuZmkekMtF
-	 8+Z/kQLolrRA8FOj/Y6KbdoR1Yb38MXsnij00tmV5i6oDRiOaFCiE2PCAEYrkXnzwf
-	 54eMY26vl2xr2VqCoTGcIxvMjZ4U+6xXaAqU3m8W92aNf2zeXuj7mVzSikjtwHIOhC
-	 i0QHXQjKnylX7W9Gw3jSdmjLDBF1sXIVP8a6OfyxWxb32vgG0g1zT7QPD3gT+SP/7F
-	 dE0kA9ZFYJkjS+sX3KaPvraDbCMv5HoKd2lOY72iV8GaaO0cFq5xGn91P1r4JZTHdm
-	 J4UO/XrivHi+w==
+	b=J3RtWp/h57Ally7NN/Jk6EZGMseop72P0G6LKxEWPJbjtEC7pxtLnccf59tfmZJ9d
+	 a7+GVSIV8BiHOW2hUKDIVmPeXja6kS4EjuXrYGyHwlsnKwUBjtNQzCAxh6jhSJd+G7
+	 0XuHQk6GqiZ48sRZTXXaQhDAI7h8YI+54h3Dmfx2W90streaJ4aSoPjtwITa+mbdJB
+	 ltPd5KuDTzT09UvdFnzHmhEjs8ZHdSKnCpcu2WVgwQ7rIWfEnIVUGKZdqzfPI9KEkh
+	 ESJL+69ZFXqHO/QKIvWcCqLhCP5G6MeN8JhxVufLGy+vrM/0fkLnTj0oFJAyuEId4F
+	 MATMb47OazoAA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -38,9 +38,9 @@ Cc: linux-kernel@vger.kernel.org,
 	joel@joelfernandes.org,
 	urezki@gmail.com,
 	frederic@kernel.org
-Subject: [PATCH rcu 03/14] rcuscale: Save a few lines with whitespace-only change
-Date: Fri, 16 Aug 2024 12:32:45 +0530
-Message-Id: <20240816070256.60993-3-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 04/14] rcuscale: Dump stacks of stalled rcu_scale_writer() instances
+Date: Fri, 16 Aug 2024 12:32:46 +0530
+Message-Id: <20240816070256.60993-4-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240816070209.GA60666@neeraj.linux>
 References: <20240816070209.GA60666@neeraj.linux>
@@ -54,36 +54,91 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This whitespace-only commit fuses a few lines of code, taking advantage
-of the newish 100-character-per-line limit to save a few lines of code.
+This commit improves debuggability by dumping the stacks of
+rcu_scale_writer() instances that have not completed in a reasonable
+timeframe.  These stacks are dumped remotely, but they will be accurate
+in the thus-far common case where the stalled rcu_scale_writer() instances
+are blocked.
+
+[ paulmck: Apply kernel test robot feedback. ]
 
 Signed-off-by: "Paul E. McKenney" <paulmck@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/rcuscale.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ kernel/rcu/rcuscale.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index d534d4ec2314..3269dd9c639f 100644
+index 3269dd9c639f..5087ca7062d9 100644
 --- a/kernel/rcu/rcuscale.c
 +++ b/kernel/rcu/rcuscale.c
-@@ -1015,13 +1015,9 @@ rcu_scale_init(void)
+@@ -39,6 +39,7 @@
+ #include <linux/torture.h>
+ #include <linux/vmalloc.h>
+ #include <linux/rcupdate_trace.h>
++#include <linux/sched/debug.h>
+ 
+ #include "rcu.h"
+ 
+@@ -111,6 +112,7 @@ static struct task_struct **reader_tasks;
+ static struct task_struct *shutdown_task;
+ 
+ static u64 **writer_durations;
++static bool *writer_done;
+ static int *writer_n_durations;
+ static atomic_t n_rcu_scale_reader_started;
+ static atomic_t n_rcu_scale_writer_started;
+@@ -524,6 +526,7 @@ rcu_scale_writer(void *arg)
+ 			started = true;
+ 		if (!done && i >= MIN_MEAS && time_after(jiffies, jdone)) {
+ 			done = true;
++			WRITE_ONCE(writer_done[me], true);
+ 			sched_set_normal(current, 0);
+ 			pr_alert("%s%s rcu_scale_writer %ld has %d measurements\n",
+ 				 scale_type, SCALE_FLAG, me, MIN_MEAS);
+@@ -549,6 +552,19 @@ rcu_scale_writer(void *arg)
+ 		if (done && !alldone &&
+ 		    atomic_read(&n_rcu_scale_writer_finished) >= nrealwriters)
+ 			alldone = true;
++		if (done && !alldone && time_after(jiffies, jdone + HZ * 60)) {
++			static atomic_t dumped;
++			int i;
++
++			if (!atomic_xchg(&dumped, 1)) {
++				for (i = 0; i < nrealwriters; i++) {
++					if (writer_done[i])
++						continue;
++					pr_info("%s: Task %ld flags writer %d:\n", __func__, me, i);
++					sched_show_task(writer_tasks[i]);
++				}
++			}
++		}
+ 		if (started && !alldone && i < MAX_MEAS - 1)
+ 			i++;
+ 		rcu_scale_wait_shutdown();
+@@ -921,6 +937,8 @@ rcu_scale_cleanup(void)
+ 		kfree(writer_tasks);
+ 		kfree(writer_durations);
+ 		kfree(writer_n_durations);
++		kfree(writer_done);
++		writer_done = NULL;
+ 	}
+ 
+ 	/* Do torture-type-specific cleanup operations.  */
+@@ -1015,10 +1033,11 @@ rcu_scale_init(void)
  	}
  	while (atomic_read(&n_rcu_scale_reader_started) < nrealreaders)
  		schedule_timeout_uninterruptible(1);
--	writer_tasks = kcalloc(nrealwriters, sizeof(reader_tasks[0]),
--			       GFP_KERNEL);
--	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations),
--				   GFP_KERNEL);
--	writer_n_durations =
--		kcalloc(nrealwriters, sizeof(*writer_n_durations),
--			GFP_KERNEL);
-+	writer_tasks = kcalloc(nrealwriters, sizeof(reader_tasks[0]), GFP_KERNEL);
-+	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations), GFP_KERNEL);
-+	writer_n_durations = kcalloc(nrealwriters, sizeof(*writer_n_durations), GFP_KERNEL);
- 	if (!writer_tasks || !writer_durations || !writer_n_durations) {
+-	writer_tasks = kcalloc(nrealwriters, sizeof(reader_tasks[0]), GFP_KERNEL);
++	writer_tasks = kcalloc(nrealwriters, sizeof(writer_tasks[0]), GFP_KERNEL);
+ 	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations), GFP_KERNEL);
+ 	writer_n_durations = kcalloc(nrealwriters, sizeof(*writer_n_durations), GFP_KERNEL);
+-	if (!writer_tasks || !writer_durations || !writer_n_durations) {
++	writer_done = kcalloc(nrealwriters, sizeof(writer_done[0]), GFP_KERNEL);
++	if (!writer_tasks || !writer_durations || !writer_n_durations || !writer_done) {
  		SCALEOUT_ERRSTRING("out of memory");
  		firsterr = -ENOMEM;
+ 		goto unwind;
 -- 
 2.40.1
 
