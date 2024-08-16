@@ -1,31 +1,30 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECB4178C7F;
-	Fri, 16 Aug 2024 04:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AC98489;
+	Fri, 16 Aug 2024 04:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723783217; cv=none; b=UElgKUQZ8XYejqfYJONQFz6y7Dv/ikCdSJilmVRz4a+HkCamEJe9NQN175wS8gpeIUHNNCSteV+QqCEi2wAtc/sgQpFZSp2MXmcfLJ5R6Fu6HfDc8Kjb1eET92piNgOJdOr/m+Xz4UrMlyRMXUt2XtYtx/taGKfnZGd8DzzM2rY=
+	t=1723784208; cv=none; b=iar8MOIH6ZVQP9vEFvcNXtrnqzsZegZ0xiYy4A5KHg4ioPNj+yVLlCLPL87W+3ETmnEuPpTwyJfzmAFIbVFlPLEOyFmHNunJea8D2AktE+Y6/gCkbkln+ePg3d3ODHXNXW0oFGjb6dGFlEJgy/zF60IVVRGrdFRdnO/WEOOlf1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723783217; c=relaxed/simple;
-	bh=Hm+00HyEo0NUhcopTYyewIN1gBN8VeHMjOGtWEtmn+E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cpJRtpUeJGNG4PmEqJSBKDpWftKa3+8eq4Oluz4d4sMQNka07AcEpRJltzme2icavuWXH8UqPKVLz6/Qo7jRFwVL2QbqTPhLqNVhLO6bPDzided7TpEy/kw+7XS53XRF+FqhHrqDEKMbCDu9FZxXZNmSryEu7Nnmlx5IuvlxGy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nk33G0lY; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1723784208; c=relaxed/simple;
+	bh=ZoyRo/tyseF652lJUasxSfc5hrvMgjk/ZV2qAotF3O4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WFTrPZCtnM+8u4UXVUA+Afyxc+y+LEJhcq0hA5fsneChsfEhCqU9C7PeVEioLVREULsNxnskG6iGpcpaYUwQJ5qFL62MkdBvl3Tqe36RL+GOV3d7JDS4Q3Ool9ngUE4bTlwePK4oLAysjhXTgbDkH1iN6xoNFGEQko63i2z4V0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n0Twf9N6; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nk33G0lY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C706FC4AF0F;
-	Fri, 16 Aug 2024 04:40:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0Twf9N6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC8B6C32782;
+	Fri, 16 Aug 2024 04:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723783216;
-	bh=Hm+00HyEo0NUhcopTYyewIN1gBN8VeHMjOGtWEtmn+E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Nk33G0lY9gQjk/vtyj3QlMfl2o3aPhX7CXOBrPpbNloWYwkabivJjm5QFzO+L2ahO
-	 Qpt5WShIRKJsUpfxsYEJvrK1EapfX9p65jzbVnuFyGY4+hc+eXirAHa52tH7tVy3Ah
-	 Ie9o+ZTAp+oxKlUOt7sXZBeGR0ta2/cUB7OQgZ0xPSc+L6SMB0tyG7m+A3eGLnnxqy
-	 Mh9LxtPLxKFA8JojoJyspGyrG7o27nvHT1InFbE1z1cxCzT5XyrOXevIhBzcZ87Cbg
-	 v+mBCKAVbF2xKJ3E56pAwV4z6V51FugnF7fm+Y39JdbV4AJcM2LXqbyIH8Mbnp73+g
-	 2WOmNRNg/gFuw==
+	s=k20201202; t=1723784208;
+	bh=ZoyRo/tyseF652lJUasxSfc5hrvMgjk/ZV2qAotF3O4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=n0Twf9N6SzQifxo75tc4zBmYyZ7lw0zl0HPmf0ypS8pdHoBidwMQs0jE9VcWwym/u
+	 ocxVPMZ47A1EKFEHeHt3b19Yw0ZqpPwWP0goDjyeqOgMnt1k/IVKRZdcT09zP8WDXP
+	 WNiW2yGR2yC9QNbiUNhFHKadnU2FAD9V9Z9ucoUB0wxt+dt9gGe/s0faYralxHGSCm
+	 b8EEQxZfGBbzS1sGiPIso27T8jbv5TSPaeMRNUEEz4MvucNU4OvxLxOv+Itt9BbRxZ
+	 tYN7pvR/54M5hWR1pd8ofiw1wslcGCkNMX6eDrhrUXKj23rltereRhAS2DXxDa6Rkn
+	 ABcnPFMubzwDA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -37,19 +36,11 @@ Cc: linux-kernel@vger.kernel.org,
 	boqun.feng@gmail.com,
 	joel@joelfernandes.org,
 	urezki@gmail.com,
-	frederic@kernel.org,
-	mingo@kernel.org,
-	peterz@infradead.org,
-	leobras@redhat.com,
-	imran.f.khan@oracle.com,
-	riel@surriel.com,
-	tglx@linutronix.de
-Subject: [PATCH rcu 4/4] smp: print only local CPU info when sched_clock goes backward
-Date: Fri, 16 Aug 2024 10:09:17 +0530
-Message-Id: <20240816043917.26537-4-neeraj.upadhyay@kernel.org>
+	frederic@kernel.org
+Subject: [PATCH rcu 00/11] Nocb updates for v6.12
+Date: Fri, 16 Aug 2024 10:25:57 +0530
+Message-Id: <20240816045608.30564-1-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240816043600.GA25206@neeraj.linux>
-References: <20240816043600.GA25206@neeraj.linux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -58,41 +49,42 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Rik van Riel <riel@surriel.com>
+From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 
-About 40% of all csd_lock warnings observed in our fleet appear to
-be due to sched_clock() going backward in time (usually only a little
-bit), resulting in ts0 being larger than ts2.
+This series contains various updates and simplifications to RCU
+nocb code to handle (de-)offloading of callbacks only for offline
+CPUs, courtesy of Frederic Weisbecker.
 
-When the local CPU is at fault, we should print out a message reflecting
-that, rather than trying to get the remote CPU's stack trace.
 
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Tested-by: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
----
- kernel/smp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Git tree: https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/log/?h=nocb.29.07.24a
 
-diff --git a/kernel/smp.c b/kernel/smp.c
-index b484ee6dcaf6..f25e20617b7e 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -254,6 +254,14 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
- 		   csd_lock_timeout_ns == 0))
- 		return false;
- 
-+	if (ts0 > ts2) {
-+		/* Our own sched_clock went backward; don't blame another CPU. */
-+		ts_delta = ts0 - ts2;
-+		pr_alert("sched_clock on CPU %d went backward by %llu ns\n", raw_smp_processor_id(), ts_delta);
-+		*ts1 = ts2;
-+		return false;
-+	}
-+
- 	firsttime = !*bug_id;
- 	if (firsttime)
- 		*bug_id = atomic_inc_return(&csd_bug_count);
+
+- Neeraj
+
+Frederic Weisbecker (11):
+  rcu/nocb: Introduce RCU_NOCB_LOCKDEP_WARN()
+  rcu/nocb: Move nocb field at the end of state struct
+  rcu/nocb: Assert no callbacks while nocb kthread allocation fails
+  rcu/nocb: Introduce nocb mutex
+  rcu/nocb: (De-)offload callbacks on offline CPUs only
+  rcu/nocb: Remove halfway (de-)offloading handling from bypass
+  rcu/nocb: Remove halfway (de-)offloading handling from rcu_core()'s QS
+    reporting
+  rcu/nocb: Remove halfway (de-)offloading handling from rcu_core
+  rcu/nocb: Remove SEGCBLIST_RCU_CORE
+  rcu/nocb: Remove SEGCBLIST_KTHREAD_CB
+  rcu/nocb: Simplify (de-)offloading state machine
+
+ include/linux/rcu_segcblist.h |   6 +-
+ include/linux/rcupdate.h      |   7 +
+ kernel/rcu/rcu_segcblist.c    |  11 --
+ kernel/rcu/rcu_segcblist.h    |  11 +-
+ kernel/rcu/tree.c             |  45 +-----
+ kernel/rcu/tree.h             |   6 +-
+ kernel/rcu/tree_nocb.h        | 268 +++++++++++++---------------------
+ kernel/rcu/tree_plugin.h      |   5 +-
+ 8 files changed, 123 insertions(+), 236 deletions(-)
+
 -- 
 2.40.1
 
