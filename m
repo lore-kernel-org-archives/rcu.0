@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713F97BB01;
-	Fri, 16 Aug 2024 04:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D478287E;
+	Fri, 16 Aug 2024 04:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723781161; cv=none; b=lGZvX/+zvqJEwztfUjotFOlNIGzj4O8cMkr+Mm9ZNhfuUBFwHDbi7sOqAMKg78GDY9meFJGcOzlSOYzUmcFWX5VSYQG/Psybv67YkMiFOTmAr0udwXYb62DqsRDHQ+npwJ8itDvgnqSBewrsgTFE4iD22jNdOr93mj4CULsNSNc=
+	t=1723781168; cv=none; b=mh182Wxs0Dpafbc+hl2LK205HXt6aEPD2uJ0nx4j1gseSUGv2slDUY83nkln5XoIyq22kj24K87JTFTL3blhQ+ySMDjuCXq017tKQTTewEFdVL7jqAE92yKHuSJ1oYxhOvRZC5IPHA7zZANR2YY0U46I6xNH2rwqR3Vr23pKqxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723781161; c=relaxed/simple;
-	bh=eezzsYtU0JEgacHwaXnRZKwm2QxEqloqluBFnlXLfZw=;
+	s=arc-20240116; t=1723781168; c=relaxed/simple;
+	bh=/alW98fFIxhaforztOaK21XXuT5F3kiWNzbUR3+Uyto=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=d1ULUtNDSbMtlUrRpZ2YevDcWUQmRLu66OtGxTM04aLEQ8kQclsElyPg6163Lr1VGYSX9JTN2K7O0c5zLCIqgtoiB7quRFLePyhGiGPsTRK5xRqfUvoaPbFWT1cz3nI//KYZRQLYgeiZZtShFL3ah0AX8vgf10svA1/U43QYJ6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ryEuqN1b; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=cpJ3Mc1AZmn8BZJP/ej6XQZ4xYxxZBRKukx/JTbcwvY3Hn7MrigdxySmkoVcuZvpet45gBOWyAMiR06Ev0RW8vHPbGHN2uJ+xKZu+Vs4U2izAK6USK6MoHwOt1RHW6e08/bg2Clf+RWv/EImS+h/ZB8m3wusgGRxGPdQkJOnGEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pEZz02E2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ryEuqN1b"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE434C32782;
-	Fri, 16 Aug 2024 04:05:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pEZz02E2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6F61C32782;
+	Fri, 16 Aug 2024 04:06:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723781161;
-	bh=eezzsYtU0JEgacHwaXnRZKwm2QxEqloqluBFnlXLfZw=;
+	s=k20201202; t=1723781168;
+	bh=/alW98fFIxhaforztOaK21XXuT5F3kiWNzbUR3+Uyto=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ryEuqN1boUtjAxV2kmP11XcJQ0NX4LcJFiAEIKO5N075HWyEBhbx2VdTPXbgCKDSI
-	 aGu0VNDKGbawUCbgtGoTg+nWrONg2MXF2sb8njL66hjK8xblcGv/17PF06c8sceqml
-	 XoxlOLkOmtX3+aa2WZrtmdzkv2GpitxKxWSCPz+UH/PsXiP3xAs1T9yGwi60lOMaXQ
-	 r+koiGRJAhiu74ueQrk0iYws8el41a+RQhNS3Da2Bx5bpFIZnScld9Gflk3hifS0mt
-	 5AcsXWuw4XRJz1Ktypgn+5/DZ2jFsf4f/xa2pQKSFOjBKqbwumTsRm0h4oU6fGcCRj
-	 oaDUpeijjca6Q==
+	b=pEZz02E27heWMWQ1tZ3OA81pbUt700h5ptXZPzMjpt01h16T8Bzr6r77x+cquS0cy
+	 gFIrMXkuaFmBjf1/0OZRng3y+Pl7cCcvYuXfG9Q+Y0fxQ+dBB3aYWbZ4MC2FCucdsE
+	 YehIXfC57wlbbRq6CDtsBXsHf1IPwkshETl0lWP6abOxfWvK/xC4+LrtPHTV6LIovi
+	 fqusDHaDmEhYg92MtVZion5ujKFnh4H9rB8+Ygz01WikBPc0opvUsJCBApM8/NzwvP
+	 ZqMdd8cwVFbtspGwlloHc4sil9oDA6TtZYk52XNmINyTwtKUJQn/89ZC95L6VXoKvr
+	 3xEm1EnpYzrfA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	urezki@gmail.com,
 	frederic@kernel.org,
 	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH rcu 19/26] rcu: Rename struct rcu_data .dynticks_snap into .watching_snap
-Date: Fri, 16 Aug 2024 09:32:34 +0530
-Message-Id: <20240816040241.17776-19-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 20/26] rcu: Rename struct rcu_data .exp_dynticks_snap into .exp_watching_snap
+Date: Fri, 16 Aug 2024 09:32:35 +0530
+Message-Id: <20240816040241.17776-20-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240816040030.GA16986@neeraj.linux>
 References: <20240816040030.GA16986@neeraj.linux>
@@ -64,65 +64,45 @@ Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- .../RCU/Design/Data-Structures/Data-Structures.rst          | 4 ++--
- kernel/rcu/tree.c                                           | 6 +++---
- kernel/rcu/tree.h                                           | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.h     | 2 +-
+ kernel/rcu/tree_exp.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Data-Structures/Data-Structures.rst b/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
-index 28d9f9e1783f..04e16775c752 100644
---- a/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
-+++ b/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
-@@ -921,10 +921,10 @@ This portion of the ``rcu_data`` structure is declared as follows:
- 
- ::
- 
--     1   int dynticks_snap;
-+     1   int watching_snap;
-      2   unsigned long dynticks_fqs;
- 
--The ``->dynticks_snap`` field is used to take a snapshot of the
-+The ``->watching_snap`` field is used to take a snapshot of the
- corresponding CPU's dyntick-idle state when forcing quiescent states,
- and is therefore accessed from other CPUs. Finally, the
- ``->dynticks_fqs`` field is used to count the number of times this CPU
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ac3577ac10bd..a969d8ddc58e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -793,8 +793,8 @@ static int dyntick_save_progress_counter(struct rcu_data *rdp)
- 	 * Ordering between remote CPU's pre idle accesses and post grace period
- 	 * updater's accesses is enforced by the below acquire semantic.
- 	 */
--	rdp->dynticks_snap = ct_rcu_watching_cpu_acquire(rdp->cpu);
--	if (rcu_watching_snap_in_eqs(rdp->dynticks_snap)) {
-+	rdp->watching_snap = ct_rcu_watching_cpu_acquire(rdp->cpu);
-+	if (rcu_watching_snap_in_eqs(rdp->watching_snap)) {
- 		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
- 		rcu_gpnum_ovf(rdp->mynode, rdp);
- 		return 1;
-@@ -826,7 +826,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 	 * read-side critical section that started before the beginning
- 	 * of the current RCU grace period.
- 	 */
--	if (rcu_watching_snap_stopped_since(rdp, rdp->dynticks_snap)) {
-+	if (rcu_watching_snap_stopped_since(rdp, rdp->watching_snap)) {
- 		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
- 		rcu_gpnum_ovf(rnp, rdp);
- 		return 1;
 diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index fcf2b4aa3441..f5361a7d7269 100644
+index f5361a7d7269..13fdcc2aa081 100644
 --- a/kernel/rcu/tree.h
 +++ b/kernel/rcu/tree.h
-@@ -206,7 +206,7 @@ struct rcu_data {
- 	long		blimit;		/* Upper limit on a processed batch */
+@@ -215,7 +215,7 @@ struct rcu_data {
+ 	/* 4) rcu_barrier(), OOM callbacks, and expediting. */
+ 	unsigned long barrier_seq_snap;	/* Snap of rcu_state.barrier_sequence. */
+ 	struct rcu_head barrier_head;
+-	int exp_dynticks_snap;		/* Double-check need for IPI. */
++	int exp_watching_snap;		/* Double-check need for IPI. */
  
- 	/* 3) dynticks interface. */
--	int dynticks_snap;		/* Per-GP tracking for dynticks. */
-+	int  watching_snap;		/* Per-GP tracking for dynticks. */
- 	bool rcu_need_heavy_qs;		/* GP old, so heavy quiescent state! */
- 	bool rcu_urgent_qs;		/* GP old need light quiescent state. */
- 	bool rcu_forced_tick;		/* Forced tick to provide QS. */
+ 	/* 5) Callback offloading. */
+ #ifdef CONFIG_RCU_NOCB_CPU
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 48ad8b868d83..eec42df0c018 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -380,7 +380,7 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+ 			if (rcu_watching_snap_in_eqs(snap))
+ 				mask_ofl_test |= mask;
+ 			else
+-				rdp->exp_dynticks_snap = snap;
++				rdp->exp_watching_snap = snap;
+ 		}
+ 	}
+ 	mask_ofl_ipi = rnp->expmask & ~mask_ofl_test;
+@@ -400,7 +400,7 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+ 		unsigned long mask = rdp->grpmask;
+ 
+ retry_ipi:
+-		if (rcu_watching_snap_stopped_since(rdp, rdp->exp_dynticks_snap)) {
++		if (rcu_watching_snap_stopped_since(rdp, rdp->exp_watching_snap)) {
+ 			mask_ofl_test |= mask;
+ 			continue;
+ 		}
 -- 
 2.40.1
 
