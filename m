@@ -1,99 +1,91 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DDBB12D758;
-	Fri, 16 Aug 2024 07:23:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFB2145FF8
+	for <rcu@vger.kernel.org>; Fri, 16 Aug 2024 09:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723793036; cv=none; b=NL8qopQF7nirYSV9zV+TkjuxNdAa2PYGTnixdb6mxSr8iLv/oHVUi859tpv7vFdidewakjxrTvk2jY23RCnOwDfEJymLZebYGJHO0WBFTqJGBlLsLvC8AMnK+bnUKF/ce02rxgNTb1TYwDrPujteoRopN6MBrX7MSUoHvfXIOVw=
+	t=1723800898; cv=none; b=Mqlv3ao9Ro4PQ2rC044ZlWE9pUQb1sIiCVTBKyiaySGuuW8J4OEAHtmLLPTzsUBdE3ZTiCd5pEHxZXWoFllAp7I+Xd4IbjKlJ/RUsL7QA2aIQLKI2UyIL3y7PRDbLABzyNJbrgq34UuKmYzG5JwwrtgYMnzE+5l+ehdtsVuX7AE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723793036; c=relaxed/simple;
-	bh=eGmgAaZh6wSDvQDRjeeZIys0lYofLe7O5SLfEHYjDpk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=omQ9lc9TYaI/BSjyh4kcSijsZkEi+0k5YirY0dgjIHxrWQmanfPPYvt8Ttefm9frtkYkZxREL1U40qJq/KWp5s0tDkTEy63cJ5nvu4oqXjz54QwL8/vRpXV8QiSgHu9kW1Yd5E4S/8UnLWTaGjeSYDHMNnzRgBkU69O5LlUD86M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d0XzHVcx; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1723800898; c=relaxed/simple;
+	bh=3mU1OVgd6Iz1WhkIgmr++niTplyFb7Sc9EauQdcqylI=;
+	h=MIME-Version:From:To:Subject:Content-Type:Date:Message-ID; b=GSLVtaMqSlLKbkopFPR0yw849bMXFziFTor/AhBLY8OD0DDV0zOe3K6KOZ4TCdXQtDmoBnlq05lGoeRX75saby8NzcNhfxKmY9LtzpG1dGJbJyVYhitdQntpL1qJ3+qDSPBgfXwk9a0oqRh+uPIaRexXPnXRgOgQtv7Ttdbl1m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=livemylinks.com; spf=pass smtp.mailfrom=livemylinks.com; dkim=pass (2048-bit key) header.d=livemylinks.com header.i=@livemylinks.com header.b=Cmw1VrzL; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=livemylinks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=livemylinks.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d0XzHVcx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1211EC32782;
-	Fri, 16 Aug 2024 07:23:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723793035;
-	bh=eGmgAaZh6wSDvQDRjeeZIys0lYofLe7O5SLfEHYjDpk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=d0XzHVcx8eso+SzlLhod7g/ZK8KJGMOJvNiR8rZI+vm7vAqrL0IgFSnddRJenK5NH
-	 UKZJC10sYLpY0kfForJv43RFjcNuZ8QafXOe+RCrTuDD3/E/QDieg9OuF3mv/vSVLt
-	 wUcPeMtMmRz7Oxo4V+Buiq1WbYX93maqUWajlDzNJ1vnh0r/eGbo4plM6YJU15Gg+n
-	 rhvLnJMVy9CsZ5xHCQb3rgCWkOlwgJMf/rjONOP9tPlvYiorQml1O+2V8JSIYWCy5x
-	 fz/rZGG6LLv8HS7F2MvdTerMdEod8ErJhZ6odE1a0Sms/qgHmseO279KZ9ZmTFUIhA
-	 ZLgF3nndg7YrQ==
-From: neeraj.upadhyay@kernel.org
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	paulmck@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	neeraj.upadhyay@amd.com,
-	boqun.feng@gmail.com,
-	joel@joelfernandes.org,
-	urezki@gmail.com,
-	frederic@kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH rcu 3/3] rcu: Annotate struct kvfree_rcu_bulk_data with __counted_by()
-Date: Fri, 16 Aug 2024 12:52:54 +0530
-Message-Id: <20240816072254.65928-3-neeraj.upadhyay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240816072210.GA65644@neeraj.linux>
-References: <20240816072210.GA65644@neeraj.linux>
+	dkim=pass (2048-bit key) header.d=livemylinks.com header.i=@livemylinks.com header.b="Cmw1VrzL"
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-42802ddfaa6so2335955e9.1
+        for <rcu@vger.kernel.org>; Fri, 16 Aug 2024 02:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=livemylinks.com; s=google; t=1723800894; x=1724405694; darn=vger.kernel.org;
+        h=message-id:date:content-transfer-encoding:subject:to:reply-to:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3mU1OVgd6Iz1WhkIgmr++niTplyFb7Sc9EauQdcqylI=;
+        b=Cmw1VrzLpBKWIWGQp+eu7R1gW7Fi6DvNvQgNZNuX4RBOGVIVV0iRlegPnsdlNqqqCs
+         GGdmcUn9Ip1+7uOiaib+Nk8HIyKXX1Mlr5LGUoZ0dozxPLss2ImAFpzdkbw2PEONPrHK
+         KEi+mR68VgXgwpbFfloHZYnKmoQWTezL/ZMUD/5qy4sEm2TTXgzkcnahF2zjTm1kH+jD
+         hw9vshE2zENjaWdm3JXMxu+GlHUNFura/ZNdXcoOGDKo5ircUXtqIMsSdm0uCHLZowu5
+         nXqFT6UlsdhLtOTFr2y9URuoeHM8yKODx/tS62EZlYzyXDB+0AM2zBhxbuSuabNasMlA
+         LiEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723800894; x=1724405694;
+        h=message-id:date:content-transfer-encoding:subject:to:reply-to:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3mU1OVgd6Iz1WhkIgmr++niTplyFb7Sc9EauQdcqylI=;
+        b=DGqnvGykaxIREgrMlrDoLyVmxozkx8sZwi05XlZxN9eL7nBhHUYwo6Zp3cD4zkX6Rs
+         ZWoxuN9INAWPqA4hEjxvCy13ZhBpvu8G3OqErAoXzyAdj1brZWOMv2XaGdPP+mVtdFQn
+         gZL3AP6kd/7fdifEkleix5BUxYMARBXPHx3veev5tNTskvTKQbb9+C6L96HmlwcB9CvH
+         QwlvdoK3J+bktCNO50DhV/PXCdD5iTiK8PeUpHWiPuumwzjhZeZO96GZZryevtDwF3sD
+         NWwoBXw7zVXKDO0wdeIe1IVtmirRMA/YDZV9mGKGHpDYQWCVh6XorLp/s9oq5Z8UlR0e
+         +sIw==
+X-Gm-Message-State: AOJu0YwYCBpKlkmXHTcGvL1EfXDWCXArALAcnkhktG+OGx4fGLtyO/35
+	S237qfPQpN50gCho+2+gXbztMtcJxQqImV3VQzDrsWO+9deMOvqv4uqY0TXRhNQ5WEx04zvTQoB
+	CPmA=
+X-Google-Smtp-Source: AGHT+IFtPAiYD0CVnWR+wW5M3ueEXqdxHOuEkRlYs2ODqvU69wFewlg/0Cm4HjPx9HwGgcODhRSzmg==
+X-Received: by 2002:a05:6000:1a8b:b0:368:4c5:b68 with SMTP id ffacd0b85a97d-371946bc4e0mr780230f8f.9.1723800894145;
+        Fri, 16 Aug 2024 02:34:54 -0700 (PDT)
+Received: from 139.135.36.114 ([139.135.36.114])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-371898aabf5sm3189601f8f.97.2024.08.16.02.34.52
+        for <rcu@vger.kernel.org>
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Fri, 16 Aug 2024 02:34:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: "Emma wills" <info@livemylinks.com>
+Reply-To: info@livemylinks.com
+To: rcu@vger.kernel.org
+Subject: Sponsored Post
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Smart_Send_3_1_6
+Date: Fri, 16 Aug 2024 14:34:51 +0500
+Message-ID: <5676389092096542127434@DESKTOP-JOGVNTP>
 
-From: Thorsten Blum <thorsten.blum@toblux.com>
+Hi,
 
-Add the __counted_by compiler attribute to the flexible array member
-records to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-CONFIG_FORTIFY_SOURCE.
+My name is Miranda Nik, and I hope you=92re reading this.=20
 
-Increment nr_records before adding a new pointer to the records array.
+I=92m reaching out to see if you=92re interested in sponsoring posts for us=
+.=20
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-Reviewed-by: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Reviewed-by: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
----
- kernel/rcu/tree.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+We=92re looking for relevant websites and blogs that our clients can use.=20
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0f41a81138dc..d5bf824159da 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3227,7 +3227,7 @@ struct kvfree_rcu_bulk_data {
- 	struct list_head list;
- 	struct rcu_gp_oldstate gp_snap;
- 	unsigned long nr_records;
--	void *records[];
-+	void *records[] __counted_by(nr_records);
- };
- 
- /*
-@@ -3767,7 +3767,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 	}
- 
- 	// Finally insert and update the GP for this page.
--	bnode->records[bnode->nr_records++] = ptr;
-+	bnode->nr_records++;
-+	bnode->records[bnode->nr_records - 1] = ptr;
- 	get_state_synchronize_rcu_full(&bnode->gp_snap);
- 	atomic_inc(&(*krcp)->bulk_count[idx]);
- 
--- 
-2.40.1
+You=92ll receive 100% high-quality content with one do follow link that=92s=
+ relevant to your site=92s niche.=20
 
+Let me know how much you charge per post.=20
+
+Once our article is published, we=92ll pay you through PayPal/Payoneer gate=
+way.=20
+
+I look forward to working with you to build long-term business relationship=
+s.=20
+
+Regards,
+Emma Wills
