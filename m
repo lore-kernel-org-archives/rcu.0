@@ -1,40 +1,40 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823A1187843
-	for <rcu@vger.kernel.org>; Mon, 19 Aug 2024 16:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025A61891C0;
+	Mon, 19 Aug 2024 17:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724086803; cv=none; b=snAjSkfnJ9iBV5cWmQXtIa5qhrOSJ8WA1dQAk4jbdCPJiRszcenxzWeDCTVQWlGUe0tWBsY1kalJ4VPN2KO/cAL2taNA1/ASsHDdDhdExOI+3EyyE57E1HZ65FDOGTT2RY1sRkEvO79INac8/l17JprRLSAB1dpHjsZjxoGqj5A=
+	t=1724086806; cv=none; b=uKw885NXAN/M1dfWm/tU/apovfNpo3B0zQwvYDYUzgJDUsySxGHLLWKhsNrJCeiVRDJv6IqV3zWluxCI70J5SKXq6tr0Duuylv5oqzyGRfa93oudRbC/Id9Oj9Zl1iCCKCKfRuBrdfAVU8N/RzvzLZQPr1EfM/worcR2Scx+SYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724086803; c=relaxed/simple;
-	bh=pgv1l393B0by42SiqMGb59U4E7RXDVUhMFTAQktcsBE=;
+	s=arc-20240116; t=1724086806; c=relaxed/simple;
+	bh=FyD2Cpb4OTFup8rJppDDO2lZC+c2yWfKkmLb/g8oBcc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CT6yPkgzlv8rToGZbw/RVCiYk9F0FY9leOgBJSHlJwfFkzOJrTQALDXApTT105c65169+g2mMFvceV6MyjC0AzDCQxwu3blTuikoXuRRbbQg5cnVbd3545g7N7B0nu7u2Yy4ILZIxHpdFYHML1HTtplsWZD0QKVxAXZbqnTlpJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H+gBgc8N; arc=none smtp.client-ip=91.218.175.177
+	 MIME-Version; b=TqJz7uAMXkTlOKhC7/0aF0/r+3NIor0FqXukmaXti/XnS6miJxYkqCrB3lcyphXjILuVuFxgvOSpenJoKj7PUTtNwxTfkLxKi1Q+2DnbAbOD3xzmxIIiLygR+E/UTsc2nQms8X9nbYi4WYpQFO6Jn1zGKMOQl3NyHmeZbOFKz6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ED1eBYT1; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H+gBgc8N"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ED1eBYT1"
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724086796;
+	t=1724086799;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ni5HbLiknOx6sLPUcsUxyw+sGHaVdXeBnNZEciF7GTI=;
-	b=H+gBgc8NOnTab0mxiLNUVQXTye2cI9XLNrKblbZ6Rmvf82+hHFBdU0C5HKYlOS65WpMv3B
-	3iz6yMz1uAQzq/E0t5vgnUyUf1W+jiiqriZdIago0aChaN2QLMw90UaLv1BxytALXX5MdQ
-	1O9KlXUE2UfBExGJEwYYZ96Zogjb08I=
+	bh=6SAhTb9ppWesVdXmNBBYAwCQxLFepr/p0dV890VSrpc=;
+	b=ED1eBYT1Z8VAqDP3iDI+DWca9c9om3a9o4lMCrnjrdZt1ppA9fV4lvwZdCFCkhsnhNJbcE
+	vhZL78igQO3nuRHLuHhuulH+CMZMY4w1PWnYM9qU5xcIST4Bnv9s6QwZOqO0QAESjEVopo
+	P9gqNAjtwPuf1v12SBX+uzmrGOiydtY=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: rcu@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
 	paulmck@kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/9] rcu: rcu_pending
-Date: Mon, 19 Aug 2024 12:59:32 -0400
-Message-ID: <20240819165939.745801-7-kent.overstreet@linux.dev>
+Subject: [PATCH 9/9] rcu: Switch kvfree_rcu() to new rcu_pending
+Date: Mon, 19 Aug 2024 12:59:35 -0400
+Message-ID: <20240819165939.745801-10-kent.overstreet@linux.dev>
 In-Reply-To: <20240819165939.745801-1-kent.overstreet@linux.dev>
 References: <20240819165939.745801-1-kent.overstreet@linux.dev>
 Precedence: bulk
@@ -46,715 +46,862 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Generic data structure for explicitly tracking pending RCU items,
-allowing items to be dequeued (i.e. allocate from items pending
-freeing). Works with conventional RCU and SRCU, and possibly other RCU
-flavors in the future, meaning this can serve as a more generic
-replacement for SLAB_TYPESAFE_BY_RCU.
+This nets us a slight performance increase, and converts to common
+code.
 
-Pending items are tracked in radix trees; if memory allocation fails, we
-fall back to linked lists.
-
-A rcu_pending is initialized with a callback, which is invoked when
-pending items's grace periods have expired. Two types of callback
-processing are handled specially:
-
-- RCU_PENDING_KVFREE_FN
-
-  New backend for kvfree_rcu(). Slightly faster, and eliminates the
-  synchronize_rcu() slowpath in kvfree_rcu_mightsleep() - instead, an
-  rcu_head is allocated if we don't have one and can't use the radix
-  tree
-
-  TODO:
-  - add a shrinker (as in the existing kvfree_rcu implementation) so that
-    memory reclaim can free expired objects if callback processing isn't
-    keeping up, and to expedite a grace period if we're under memory
-    pressure and too much memory is stranded by RCU
-
-  - add a counter for amount of memory pending
-
-- RCU_PENDING_CALL_RCU_FN
-
-  Accelerated backend for call_rcu() - pending callbacks are tracked in
-  a radix tree to eliminate linked list overhead.
-
-to serve as replacement backends for kvfree_rcu() and call_rcu(); these
-may be of interest to other uses (e.g. SLAB_TYPESAFE_BY_RCU users).
-
-Note:
-
-Internally, we're using a single rearming call_rcu() callback for
-notifications from the core RCU subsystem for notifications when objects
-are ready to be processed.
-
-Ideally we would be getting a callback every time a grace period
-completes for which we have objects, but that would require multiple
-rcu_heads in flight, and since the number of gp sequence numbers with
-uncompleted callbacks is not bounded, we can't do that yet.
+Todo - re-add the shrinker, so that memory reclaim can free expired
+objects and expedite a grace period when necessary.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- include/linux/rcu_pending.h |  25 ++
- kernel/rcu/Makefile         |   2 +-
- kernel/rcu/pending.c        | 603 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 629 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/rcu_pending.h
- create mode 100644 kernel/rcu/pending.c
+ include/linux/rcu_pending.h |   2 +
+ init/main.c                 |   2 +
+ kernel/rcu/pending.c        |  20 +
+ kernel/rcu/tree.c           | 746 ------------------------------------
+ kernel/rcu/update.c         |   1 -
+ 5 files changed, 24 insertions(+), 747 deletions(-)
 
 diff --git a/include/linux/rcu_pending.h b/include/linux/rcu_pending.h
-new file mode 100644
-index 000000000000..a875c640da8d
---- /dev/null
+index a875c640da8d..5ef6392ce180 100644
+--- a/include/linux/rcu_pending.h
 +++ b/include/linux/rcu_pending.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_RCU_PENDING_H
-+#define _LINUX_RCU_PENDING_H
-+
-+struct rcu_pending;
-+typedef void (*rcu_pending_process_fn)(struct rcu_pending *, struct rcu_head *);
-+
-+struct rcu_pending_pcpu;
-+
-+struct rcu_pending {
-+	struct rcu_pending_pcpu __percpu *p;
-+	struct srcu_struct		*srcu;
-+	rcu_pending_process_fn		process;
-+};
-+
-+void rcu_pending_enqueue(struct rcu_pending *pending, struct rcu_head *obj);
-+struct rcu_head *rcu_pending_dequeue(struct rcu_pending *pending);
-+struct rcu_head *rcu_pending_dequeue_from_all(struct rcu_pending *pending);
-+
-+void rcu_pending_exit(struct rcu_pending *pending);
-+int rcu_pending_init(struct rcu_pending *pending,
-+		     struct srcu_struct *srcu,
-+		     rcu_pending_process_fn process);
-+
-+#endif /* _LINUX_RCU_PENDING_H */
-diff --git a/kernel/rcu/Makefile b/kernel/rcu/Makefile
-index 0cfb009a99b9..2582f0324a11 100644
---- a/kernel/rcu/Makefile
-+++ b/kernel/rcu/Makefile
-@@ -7,7 +7,7 @@ ifeq ($(CONFIG_KCSAN),y)
- KBUILD_CFLAGS += -g -fno-omit-frame-pointer
- endif
+@@ -22,4 +22,6 @@ int rcu_pending_init(struct rcu_pending *pending,
+ 		     struct srcu_struct *srcu,
+ 		     rcu_pending_process_fn process);
  
--obj-y += update.o sync.o
-+obj-y += update.o sync.o pending.o
- obj-$(CONFIG_TREE_SRCU) += srcutree.o
- obj-$(CONFIG_TINY_SRCU) += srcutiny.o
- obj-$(CONFIG_RCU_TORTURE_TEST) += rcutorture.o
-diff --git a/kernel/rcu/pending.c b/kernel/rcu/pending.c
-new file mode 100644
-index 000000000000..c0e2351ba198
---- /dev/null
-+++ b/kernel/rcu/pending.c
-@@ -0,0 +1,603 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define pr_fmt(fmt) "%s() " fmt "\n", __func__
++void __init kvfree_rcu_pending_init(void);
 +
-+#include <linux/darray.h>
-+#include <linux/generic-radix-tree.h>
-+#include <linux/mm.h>
-+#include <linux/percpu.h>
+ #endif /* _LINUX_RCU_PENDING_H */
+diff --git a/init/main.c b/init/main.c
+index 206acdde51f5..a3f0fd6ec3da 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -43,6 +43,7 @@
+ #include <linux/profile.h>
+ #include <linux/kfence.h>
+ #include <linux/rcupdate.h>
 +#include <linux/rcu_pending.h>
-+#include <linux/slab.h>
-+#include <linux/srcu.h>
-+#include <linux/vmalloc.h>
+ #include <linux/srcu.h>
+ #include <linux/moduleparam.h>
+ #include <linux/kallsyms.h>
+@@ -993,6 +994,7 @@ void start_kernel(void)
+ 	workqueue_init_early();
+ 
+ 	rcu_init();
++	kvfree_rcu_pending_init();
+ 
+ 	/* Trace events are available after this */
+ 	trace_init();
+diff --git a/kernel/rcu/pending.c b/kernel/rcu/pending.c
+index c0e2351ba198..9c57f373d494 100644
+--- a/kernel/rcu/pending.c
++++ b/kernel/rcu/pending.c
+@@ -601,3 +601,23 @@ int rcu_pending_init(struct rcu_pending *pending,
+ 
+ 	return 0;
+ }
 +
-+#include "rcu.h"
++#ifndef CONFIG_TINY_RCU
++/* kvfree_rcu */
 +
-+#define static_array_for_each(_a, _i)			\
-+	for (typeof(&(_a)[0]) _i = _a;			\
-+	     _i < (_a) + ARRAY_SIZE(_a);		\
-+	     _i++)
++static struct rcu_pending kvfree_rcu_pending;
 +
-+enum rcu_pending_special {
-+	RCU_PENDING_KVFREE	= 1,
-+	RCU_PENDING_CALL_RCU	= 2,
-+};
-+
-+#define RCU_PENDING_KVFREE_FN		((rcu_pending_process_fn) (ulong) RCU_PENDING_KVFREE)
-+#define RCU_PENDING_CALL_RCU_FN		((rcu_pending_process_fn) (ulong) RCU_PENDING_CALL_RCU)
-+
-+static inline unsigned long __get_state_synchronize_rcu(struct srcu_struct *ssp)
++void kvfree_call_rcu(struct rcu_head *head, void *ptr)
 +{
-+	return ssp
-+		? get_state_synchronize_srcu(ssp)
-+		: get_state_synchronize_rcu();
-+}
++	BUG_ON(!ptr);
 +
-+static inline unsigned long __start_poll_synchronize_rcu(struct srcu_struct *ssp)
++	__rcu_pending_enqueue(&kvfree_rcu_pending, head, ptr, head == NULL);
++}
++EXPORT_SYMBOL_GPL(kvfree_call_rcu);
++
++void __init kvfree_rcu_pending_init(void)
 +{
-+	return ssp
-+		? start_poll_synchronize_srcu(ssp)
-+		: start_poll_synchronize_rcu();
++	if (rcu_pending_init(&kvfree_rcu_pending, NULL, RCU_PENDING_KVFREE_FN))
++		panic("%s failed\n", __func__);
 +}
-+
-+static inline bool __poll_state_synchronize_rcu(struct srcu_struct *ssp, unsigned long cookie)
-+{
-+	return ssp
-+		? poll_state_synchronize_srcu(ssp, cookie)
-+		: poll_state_synchronize_rcu(cookie);
-+}
-+
-+static inline void __rcu_barrier(struct srcu_struct *ssp)
-+{
-+	return ssp
-+		? srcu_barrier(ssp)
-+		: rcu_barrier();
-+}
-+
-+static inline void __call_rcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-+			      rcu_callback_t func)
-+{
-+	if (ssp)
-+		call_srcu(ssp, rhp, func);
-+	else
-+		call_rcu(rhp, func);
-+}
-+
-+struct rcu_pending_seq {
-+	/*
-+	 * We're using a radix tree like a vector - we're just pushing elements
-+	 * onto the end; we're using a radix tree instead of an actual vector to
-+	 * avoid reallocation overhead
-+	 */
-+	GENRADIX(struct rcu_head *)	objs;
-+	size_t				nr;
-+	struct rcu_head			**cursor;
-+	unsigned long			seq;
-+};
-+
-+struct rcu_pending_list {
-+	struct rcu_head			*head;
-+	struct rcu_head			*tail;
-+	unsigned long			seq;
-+};
-+
-+struct rcu_pending_pcpu {
-+	struct rcu_pending		*parent;
-+	spinlock_t			lock;
-+	int				cpu;
-+
-+	/*
-+	 * We can't bound the number of unprocessed gp sequence numbers, and we
-+	 * can't efficiently merge radix trees for expired grace periods, so we
-+	 * need darray/vector:
-+	 */
-+	DARRAY_PREALLOCATED(struct rcu_pending_seq, 4) objs;
-+
-+	/* Third entry is for expired objects: */
-+	struct rcu_pending_list		lists[NUM_ACTIVE_RCU_POLL_OLDSTATE + 1];
-+
-+	struct rcu_head			cb;
-+	bool				cb_armed;
-+	struct work_struct		work;
-+};
-+
-+static bool __rcu_pending_has_pending(struct rcu_pending_pcpu *p)
-+{
-+	if (p->objs.nr)
-+		return true;
-+
-+	static_array_for_each(p->lists, i)
-+		if (i->head)
-+			return true;
-+
-+	return false;
-+}
-+
-+static void rcu_pending_list_merge(struct rcu_pending_list *l1,
-+				   struct rcu_pending_list *l2)
-+{
-+	if (!l1->head)
-+		l1->head = l2->head;
-+	else
-+		l1->tail->next = l2->head;
-+	l1->tail = l2->tail;
-+
-+	l2->head = l2->tail = NULL;
-+}
-+
-+static void rcu_pending_list_add(struct rcu_pending_list *l,
-+				 struct rcu_head *n)
-+{
-+	if (!l->head)
-+		l->head = n;
-+	else
-+		l->tail->next = n;
-+	l->tail = n;
-+	n->next = NULL;
-+}
-+
-+static void merge_expired_lists(struct rcu_pending_pcpu *p)
-+{
-+	struct rcu_pending_list *expired = &p->lists[NUM_ACTIVE_RCU_POLL_OLDSTATE];
-+
-+	for (struct rcu_pending_list *i = p->lists; i < expired; i++)
-+		if (i->head && __poll_state_synchronize_rcu(p->parent->srcu, i->seq))
-+			rcu_pending_list_merge(expired, i);
-+}
-+
-+static noinline void __process_finished_items(struct rcu_pending *pending,
-+					      struct rcu_pending_pcpu *p,
-+					      unsigned long flags)
-+{
-+	struct rcu_pending_list *expired = &p->lists[NUM_ACTIVE_RCU_POLL_OLDSTATE];
-+	struct rcu_pending_seq objs = {};
-+	struct rcu_head *list = NULL;
-+
-+	if (p->objs.nr &&
-+	    __poll_state_synchronize_rcu(pending->srcu, p->objs.data[0].seq)) {
-+		objs = p->objs.data[0];
-+		darray_remove_item(&p->objs, p->objs.data);
-+	}
-+
-+	merge_expired_lists(p);
-+
-+	list = expired->head;
-+	expired->head = expired->tail = NULL;
-+
-+	spin_unlock_irqrestore(&p->lock, flags);
-+
-+	switch ((ulong) pending->process) {
-+	case RCU_PENDING_KVFREE:
-+		for (size_t i = 0; i < objs.nr; ) {
-+			size_t nr_this_node = min(GENRADIX_NODE_SIZE / sizeof(void *), objs.nr - i);
-+
-+			kfree_bulk(nr_this_node, (void **) genradix_ptr(&objs.objs, i));
-+			i += nr_this_node;
-+		}
-+		genradix_free(&objs.objs);
-+
-+		while (list) {
-+			struct rcu_head *obj = list;
-+			list = obj->next;
-+
-+			/*
-+			 * low bit of pointer indicates whether rcu_head needs
-+			 * to be freed - kvfree_rcu_mightsleep()
-+			 */
-+			BUILD_BUG_ON(ARCH_SLAB_MINALIGN == 0);
-+
-+			void *ptr = (void *)(((unsigned long) obj->func) & ~1UL);
-+			kvfree(ptr);
-+
-+			bool free_head = ((unsigned long) obj->func) & 1UL;
-+			if (free_head)
-+				kfree(obj);
-+		}
-+
-+		break;
-+
-+	case RCU_PENDING_CALL_RCU:
-+		for (size_t i = 0; i < objs.nr; i++) {
-+			struct rcu_head *obj = *genradix_ptr(&objs.objs, i);
-+			obj->func(obj);
-+		}
-+		genradix_free(&objs.objs);
-+
-+		while (list) {
-+			struct rcu_head *obj = list;
-+			list = obj->next;
-+			obj->func(obj);
-+		}
-+		break;
-+
-+	default:
-+		for (size_t i = 0; i < objs.nr; i++)
-+			pending->process(pending, *genradix_ptr(&objs.objs, i));
-+		genradix_free(&objs.objs);
-+
-+		while (list) {
-+			struct rcu_head *obj = list;
-+			list = obj->next;
-+			pending->process(pending, obj);
-+		}
-+		break;
-+	}
-+}
-+
-+static bool process_finished_items(struct rcu_pending *pending,
-+				   struct rcu_pending_pcpu *p,
-+				   unsigned long flags)
-+{
-+	/*
-+	 * XXX: we should grab the gp seq once and avoid multiple function
-+	 * calls, this is called from __rcu_pending_enqueue() fastpath in
-+	 * may_sleep==true mode
-+	 */
-+	if ((p->objs.nr && __poll_state_synchronize_rcu(pending->srcu, p->objs.data[0].seq)) ||
-+	    (p->lists[0].head && __poll_state_synchronize_rcu(pending->srcu, p->lists[0].seq)) ||
-+	    (p->lists[1].head && __poll_state_synchronize_rcu(pending->srcu, p->lists[1].seq)) ||
-+	    p->lists[2].head) {
-+		__process_finished_items(pending, p, flags);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void rcu_pending_work(struct work_struct *work)
-+{
-+	struct rcu_pending_pcpu *p =
-+		container_of(work, struct rcu_pending_pcpu, work);
-+	struct rcu_pending *pending = p->parent;
-+	unsigned long flags;
-+
-+	do {
-+		spin_lock_irqsave(&p->lock, flags);
-+	} while (process_finished_items(pending, p, flags));
-+
-+	spin_unlock_irqrestore(&p->lock, flags);
-+}
-+
-+static void rcu_pending_rcu_cb(struct rcu_head *rcu)
-+{
-+	struct rcu_pending_pcpu *p = container_of(rcu, struct rcu_pending_pcpu, cb);
-+
-+	schedule_work_on(p->cpu, &p->work);
-+
-+	unsigned long flags;
-+	spin_lock_irqsave(&p->lock, flags);
-+	if (__rcu_pending_has_pending(p))
-+		__call_rcu(p->parent->srcu, &p->cb, rcu_pending_rcu_cb);
-+	else
-+		p->cb_armed = false;
-+	spin_unlock_irqrestore(&p->lock, flags);
-+}
-+
-+static __always_inline struct rcu_pending_seq *
-+get_object_radix(struct rcu_pending_pcpu *p, unsigned long seq)
-+{
-+	darray_for_each_reverse(p->objs, objs)
-+		if (objs->seq == seq)
-+			return objs;
-+
-+	if (darray_push_gfp(&p->objs, ((struct rcu_pending_seq) { .seq = seq }), GFP_ATOMIC))
-+		return NULL;
-+
-+	return &darray_last(p->objs);
-+}
-+
-+static noinline bool
-+rcu_pending_enqueue_list(struct rcu_pending_pcpu *p, unsigned long seq,
-+			 struct rcu_head *head, void *ptr,
-+			 unsigned long *flags)
-+{
-+	if (ptr) {
-+		if (!head) {
-+			/*
-+			 * kvfree_rcu_mightsleep(): we weren't passed an
-+			 * rcu_head, but we need one: use the low bit of the
-+			 * ponter to free to flag that the head needs to be
-+			 * freed as well:
-+			 */
-+			ptr = (void *)(((unsigned long) ptr)|1UL);
-+			head = kmalloc(sizeof(*head), __GFP_NOWARN);
-+			if (!head) {
-+				spin_unlock_irqrestore(&p->lock, *flags);
-+				head = kmalloc(sizeof(*head), GFP_KERNEL|__GFP_NOFAIL);
-+				/*
-+				 * dropped lock, did GFP_KERNEL allocation,
-+				 * check for gp expiration
-+				 */
-+				if (unlikely(__poll_state_synchronize_rcu(p->parent->srcu, seq))) {
-+					kvfree(--ptr);
-+					kfree(head);
-+					spin_lock_irqsave(&p->lock, *flags);
-+					return false;
-+				}
-+			}
-+		}
-+
-+		head->func = ptr;
-+	}
-+again:
-+	for (struct rcu_pending_list *i = p->lists;
-+	     i < p->lists + NUM_ACTIVE_RCU_POLL_OLDSTATE; i++) {
-+		if (i->seq == seq) {
-+			rcu_pending_list_add(i, head);
-+			return false;
-+		}
-+	}
-+
-+	for (struct rcu_pending_list *i = p->lists;
-+	     i < p->lists + NUM_ACTIVE_RCU_POLL_OLDSTATE; i++) {
-+		if (!i->head) {
-+			i->seq = seq;
-+			rcu_pending_list_add(i, head);
-+			return true;
-+		}
-+	}
-+
-+	merge_expired_lists(p);
-+	goto again;
-+}
-+
-+/*
-+ * __rcu_pending_enqueue: enqueue a pending RCU item, to be processed (via
-+ * pending->pracess) once grace period elapses.
-+ *
-+ * Attempt to enqueue items onto a radix tree; if memory allocation fails, fall
-+ * back to a linked list.
-+ *
-+ * - If @ptr is NULL, we're enqueuing an item for a generic @pending with a
-+ *   process callback
-+ *
-+ * - If @ptr and @head are both not NULL, we're kvfree_rcu()
-+ *
-+ * - If @ptr is not NULL and @head is, we're kvfree_rcu_mightsleep()
-+ *
-+ * - If @may_sleep is true, will do GFP_KERNEL memory allocations and process
-+ *   expired items.
-+ */
-+static __always_inline void
-+__rcu_pending_enqueue(struct rcu_pending *pending, struct rcu_head *head,
-+		      void *ptr, bool may_sleep)
-+{
-+
-+	struct rcu_pending_pcpu *p;
-+	struct rcu_pending_seq *objs;
-+	struct genradix_node *new_node = NULL;
-+	unsigned long seq, flags;
-+	bool start_gp = false;
-+
-+	BUG_ON((ptr != NULL) != (pending->process == RCU_PENDING_KVFREE_FN));
-+
-+	local_irq_save(flags);
-+	p = this_cpu_ptr(pending->p);
-+	spin_lock(&p->lock);
-+	seq = __get_state_synchronize_rcu(pending->srcu);
-+restart:
-+	if (may_sleep &&
-+	    unlikely(process_finished_items(pending, p, flags)))
-+		goto check_expired;
-+
-+	/*
-+	 * In kvfree_rcu() mode, the radix tree is only for slab pointers so
-+	 * that we can do kfree_bulk() - vmalloc pointers always use the linked
-+	 * list:
-+	 */
-+	if (ptr && unlikely(is_vmalloc_addr_inlined(ptr)))
-+		goto list_add;
-+
-+	objs = get_object_radix(p, seq);
-+	if (unlikely(!objs))
-+		goto list_add;
-+
-+	if (unlikely(!objs->cursor)) {
-+		/*
-+		 * New radix tree nodes must be added under @p->lock because the
-+		 * tree root is in a darray that can be resized (typically,
-+		 * genradix supports concurrent unlocked allocation of new
-+		 * nodes) - hence preallocation and the retry loop:
-+		 */
-+		objs->cursor = genradix_ptr_alloc_preallocated_inlined(&objs->objs,
-+						objs->nr, &new_node, GFP_ATOMIC|__GFP_NOWARN);
-+		if (unlikely(!objs->cursor)) {
-+			if (may_sleep) {
-+				spin_unlock_irqrestore(&p->lock, flags);
-+
-+				gfp_t gfp = GFP_KERNEL;
-+				if (!head)
-+					gfp |= __GFP_NOFAIL;
-+
-+				new_node = genradix_alloc_node(gfp);
-+				if (!new_node)
-+					may_sleep = false;
-+				goto check_expired;
-+			}
-+list_add:
-+			start_gp = rcu_pending_enqueue_list(p, seq, head, ptr, &flags);
-+			goto start_gp;
-+		}
-+	}
-+
-+	*objs->cursor++ = ptr ?: head;
-+	/* zero cursor if we hit the end of a radix tree node: */
-+	if (!(((ulong) objs->cursor) & (GENRADIX_NODE_SIZE - 1)))
-+		objs->cursor = NULL;
-+	start_gp = !objs->nr;
-+	objs->nr++;
-+start_gp:
-+	if (unlikely(start_gp)) {
-+		/*
-+		 * We only have one callback (ideally, we would have one for
-+		 * every outstanding graceperiod) - so if our callback is
-+		 * already in flight, we may still have to start a grace period
-+		 * (since we used get_state() above, not start_poll())
-+		 */
-+		if (!p->cb_armed) {
-+			p->cb_armed = true;
-+			__call_rcu(pending->srcu, &p->cb, rcu_pending_rcu_cb);
-+		} else {
-+			__start_poll_synchronize_rcu(pending->srcu);
-+		}
-+	}
-+	spin_unlock_irqrestore(&p->lock, flags);
-+free_node:
-+	if (new_node)
-+		genradix_free_node(new_node);
-+	return;
-+check_expired:
-+	if (unlikely(__poll_state_synchronize_rcu(pending->srcu, seq))) {
-+		switch ((ulong) pending->process) {
-+		case RCU_PENDING_KVFREE:
-+			kvfree(ptr);
-+			break;
-+		case RCU_PENDING_CALL_RCU:
-+			head->func(head);
-+			break;
-+		default:
-+			pending->process(pending, head);
-+			break;
-+		}
-+		goto free_node;
-+	}
-+
-+	local_irq_save(flags);
-+	p = this_cpu_ptr(pending->p);
-+	spin_lock(&p->lock);
-+	goto restart;
-+}
-+
-+void rcu_pending_enqueue(struct rcu_pending *pending, struct rcu_head *obj)
-+{
-+	__rcu_pending_enqueue(pending, obj, NULL, true);
-+}
-+
-+static struct rcu_head *rcu_pending_pcpu_dequeue(struct rcu_pending_pcpu *p)
-+{
-+	struct rcu_head *ret = NULL;
-+
-+	spin_lock_irq(&p->lock);
-+	darray_for_each(p->objs, objs)
-+		if (objs->nr) {
-+			ret = *genradix_ptr(&objs->objs, --objs->nr);
-+			objs->cursor = NULL;
-+			if (!objs->nr)
-+				genradix_free(&objs->objs);
-+			goto out;
-+		}
-+
-+	static_array_for_each(p->lists, i)
-+		if (i->head) {
-+			ret = i->head;
-+			i->head = ret->next;
-+			if (!i->head)
-+				i->tail = NULL;
-+			goto out;
-+		}
-+out:
-+	spin_unlock_irq(&p->lock);
-+
-+	return ret;
-+}
-+
-+struct rcu_head *rcu_pending_dequeue(struct rcu_pending *pending)
-+{
-+	return rcu_pending_pcpu_dequeue(raw_cpu_ptr(pending->p));
-+}
-+
-+struct rcu_head *rcu_pending_dequeue_from_all(struct rcu_pending *pending)
-+{
-+	struct rcu_head *ret = rcu_pending_dequeue(pending);
-+
-+	if (ret)
-+		return ret;
-+
-+	int cpu;
-+	for_each_possible_cpu(cpu) {
-+		ret = rcu_pending_pcpu_dequeue(per_cpu_ptr(pending->p, cpu));
-+		if (ret)
-+			break;
-+	}
-+	return ret;
-+}
-+
-+static bool rcu_pending_has_pending_or_armed(struct rcu_pending *pending)
-+{
-+	int cpu;
-+	for_each_possible_cpu(cpu) {
-+		struct rcu_pending_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+		spin_lock_irq(&p->lock);
-+		if (__rcu_pending_has_pending(p) || p->cb_armed) {
-+			spin_unlock_irq(&p->lock);
-+			return true;
-+		}
-+		spin_unlock_irq(&p->lock);
-+	}
-+
-+	return false;
-+}
-+
-+void rcu_pending_exit(struct rcu_pending *pending)
-+{
-+	int cpu;
-+
-+	if (!pending->p)
-+		return;
-+
-+	while (rcu_pending_has_pending_or_armed(pending)) {
-+		__rcu_barrier(pending->srcu);
-+
-+		for_each_possible_cpu(cpu) {
-+			struct rcu_pending_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+			flush_work(&p->work);
-+		}
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		struct rcu_pending_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+		flush_work(&p->work);
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		struct rcu_pending_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+
-+		static_array_for_each(p->lists, i)
-+			WARN_ON(i->head);
-+		WARN_ON(p->objs.nr);
-+		darray_exit(&p->objs);
-+	}
-+	free_percpu(pending->p);
-+}
-+
-+/**
-+ * rcu_pending_init: - initialize a rcu_pending
-+ *
-+ * @pending:	Object to init
-+ * @srcu:	May optionally be used with an srcu_struct; if NULL, uses normal
-+ *		RCU flavor
-+ * @process:	Callback function invoked on objects once their RCU barriers
-+ *		have completed; if NULL, kvfree() is used.
-+ */
-+int rcu_pending_init(struct rcu_pending *pending,
-+		     struct srcu_struct *srcu,
-+		     rcu_pending_process_fn process)
-+{
-+	pending->p = alloc_percpu(struct rcu_pending_pcpu);
-+	if (!pending->p)
-+		return -ENOMEM;
-+
-+	int cpu;
-+	for_each_possible_cpu(cpu) {
-+		struct rcu_pending_pcpu *p = per_cpu_ptr(pending->p, cpu);
-+		p->parent	= pending;
-+		p->cpu		= cpu;
-+		spin_lock_init(&p->lock);
-+		darray_init(&p->objs);
-+		INIT_WORK(&p->work, rcu_pending_work);
-+	}
-+
-+	pending->srcu = srcu;
-+	pending->process = process;
-+
-+	return 0;
-+}
++#endif
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 52f9f0bf1b8e..3bb6c81e2d30 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3216,702 +3216,6 @@ EXPORT_SYMBOL_GPL(call_rcu);
+ #define KFREE_N_BATCHES 2
+ #define FREE_N_CHANNELS 2
+ 
+-/**
+- * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
+- * @list: List node. All blocks are linked between each other
+- * @gp_snap: Snapshot of RCU state for objects placed to this bulk
+- * @nr_records: Number of active pointers in the array
+- * @records: Array of the kvfree_rcu() pointers
+- */
+-struct kvfree_rcu_bulk_data {
+-	struct list_head list;
+-	struct rcu_gp_oldstate gp_snap;
+-	unsigned long nr_records;
+-	void *records[];
+-};
+-
+-/*
+- * This macro defines how many entries the "records" array
+- * will contain. It is based on the fact that the size of
+- * kvfree_rcu_bulk_data structure becomes exactly one page.
+- */
+-#define KVFREE_BULK_MAX_ENTR \
+-	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
+-
+-/**
+- * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
+- * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
+- * @head_free: List of kfree_rcu() objects waiting for a grace period
+- * @head_free_gp_snap: Grace-period snapshot to check for attempted premature frees.
+- * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
+- * @krcp: Pointer to @kfree_rcu_cpu structure
+- */
+-
+-struct kfree_rcu_cpu_work {
+-	struct rcu_work rcu_work;
+-	struct rcu_head *head_free;
+-	struct rcu_gp_oldstate head_free_gp_snap;
+-	struct list_head bulk_head_free[FREE_N_CHANNELS];
+-	struct kfree_rcu_cpu *krcp;
+-};
+-
+-/**
+- * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
+- * @head: List of kfree_rcu() objects not yet waiting for a grace period
+- * @head_gp_snap: Snapshot of RCU state for objects placed to "@head"
+- * @bulk_head: Bulk-List of kvfree_rcu() objects not yet waiting for a grace period
+- * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
+- * @lock: Synchronize access to this structure
+- * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+- * @initialized: The @rcu_work fields have been initialized
+- * @head_count: Number of objects in rcu_head singular list
+- * @bulk_count: Number of objects in bulk-list
+- * @bkvcache:
+- *	A simple cache list that contains objects for reuse purpose.
+- *	In order to save some per-cpu space the list is singular.
+- *	Even though it is lockless an access has to be protected by the
+- *	per-cpu lock.
+- * @page_cache_work: A work to refill the cache when it is empty
+- * @backoff_page_cache_fill: Delay cache refills
+- * @work_in_progress: Indicates that page_cache_work is running
+- * @hrtimer: A hrtimer for scheduling a page_cache_work
+- * @nr_bkv_objs: number of allocated objects at @bkvcache.
+- *
+- * This is a per-CPU structure.  The reason that it is not included in
+- * the rcu_data structure is to permit this code to be extracted from
+- * the RCU files.  Such extraction could allow further optimization of
+- * the interactions with the slab allocators.
+- */
+-struct kfree_rcu_cpu {
+-	// Objects queued on a linked list
+-	// through their rcu_head structures.
+-	struct rcu_head *head;
+-	unsigned long head_gp_snap;
+-	atomic_t head_count;
+-
+-	// Objects queued on a bulk-list.
+-	struct list_head bulk_head[FREE_N_CHANNELS];
+-	atomic_t bulk_count[FREE_N_CHANNELS];
+-
+-	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
+-	raw_spinlock_t lock;
+-	struct delayed_work monitor_work;
+-	bool initialized;
+-
+-	struct delayed_work page_cache_work;
+-	atomic_t backoff_page_cache_fill;
+-	atomic_t work_in_progress;
+-	struct hrtimer hrtimer;
+-
+-	struct llist_head bkvcache;
+-	int nr_bkv_objs;
+-};
+-
+-static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+-	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
+-};
+-
+-static __always_inline void
+-debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
+-{
+-#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+-	int i;
+-
+-	for (i = 0; i < bhead->nr_records; i++)
+-		debug_rcu_head_unqueue((struct rcu_head *)(bhead->records[i]));
+-#endif
+-}
+-
+-static inline struct kfree_rcu_cpu *
+-krc_this_cpu_lock(unsigned long *flags)
+-{
+-	struct kfree_rcu_cpu *krcp;
+-
+-	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
+-	krcp = this_cpu_ptr(&krc);
+-	raw_spin_lock(&krcp->lock);
+-
+-	return krcp;
+-}
+-
+-static inline void
+-krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
+-{
+-	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-}
+-
+-static inline struct kvfree_rcu_bulk_data *
+-get_cached_bnode(struct kfree_rcu_cpu *krcp)
+-{
+-	if (!krcp->nr_bkv_objs)
+-		return NULL;
+-
+-	WRITE_ONCE(krcp->nr_bkv_objs, krcp->nr_bkv_objs - 1);
+-	return (struct kvfree_rcu_bulk_data *)
+-		llist_del_first(&krcp->bkvcache);
+-}
+-
+-static inline bool
+-put_cached_bnode(struct kfree_rcu_cpu *krcp,
+-	struct kvfree_rcu_bulk_data *bnode)
+-{
+-	// Check the limit.
+-	if (krcp->nr_bkv_objs >= rcu_min_cached_objs)
+-		return false;
+-
+-	llist_add((struct llist_node *) bnode, &krcp->bkvcache);
+-	WRITE_ONCE(krcp->nr_bkv_objs, krcp->nr_bkv_objs + 1);
+-	return true;
+-}
+-
+-static int
+-drain_page_cache(struct kfree_rcu_cpu *krcp)
+-{
+-	unsigned long flags;
+-	struct llist_node *page_list, *pos, *n;
+-	int freed = 0;
+-
+-	if (!rcu_min_cached_objs)
+-		return 0;
+-
+-	raw_spin_lock_irqsave(&krcp->lock, flags);
+-	page_list = llist_del_all(&krcp->bkvcache);
+-	WRITE_ONCE(krcp->nr_bkv_objs, 0);
+-	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
+-	llist_for_each_safe(pos, n, page_list) {
+-		free_page((unsigned long)pos);
+-		freed++;
+-	}
+-
+-	return freed;
+-}
+-
+-static void
+-kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
+-	struct kvfree_rcu_bulk_data *bnode, int idx)
+-{
+-	unsigned long flags;
+-	int i;
+-
+-	if (!WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&bnode->gp_snap))) {
+-		debug_rcu_bhead_unqueue(bnode);
+-		rcu_lock_acquire(&rcu_callback_map);
+-		if (idx == 0) { // kmalloc() / kfree().
+-			trace_rcu_invoke_kfree_bulk_callback(
+-				rcu_state.name, bnode->nr_records,
+-				bnode->records);
+-
+-			kfree_bulk(bnode->nr_records, bnode->records);
+-		} else { // vmalloc() / vfree().
+-			for (i = 0; i < bnode->nr_records; i++) {
+-				trace_rcu_invoke_kvfree_callback(
+-					rcu_state.name, bnode->records[i], 0);
+-
+-				vfree(bnode->records[i]);
+-			}
+-		}
+-		rcu_lock_release(&rcu_callback_map);
+-	}
+-
+-	raw_spin_lock_irqsave(&krcp->lock, flags);
+-	if (put_cached_bnode(krcp, bnode))
+-		bnode = NULL;
+-	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
+-	if (bnode)
+-		free_page((unsigned long) bnode);
+-
+-	cond_resched_tasks_rcu_qs();
+-}
+-
+-static void
+-kvfree_rcu_list(struct rcu_head *head)
+-{
+-	struct rcu_head *next;
+-
+-	for (; head; head = next) {
+-		void *ptr = (void *) head->func;
+-		unsigned long offset = (void *) head - ptr;
+-
+-		next = head->next;
+-		debug_rcu_head_unqueue((struct rcu_head *)ptr);
+-		rcu_lock_acquire(&rcu_callback_map);
+-		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
+-
+-		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
+-			kvfree(ptr);
+-
+-		rcu_lock_release(&rcu_callback_map);
+-		cond_resched_tasks_rcu_qs();
+-	}
+-}
+-
+-/*
+- * This function is invoked in workqueue context after a grace period.
+- * It frees all the objects queued on ->bulk_head_free or ->head_free.
+- */
+-static void kfree_rcu_work(struct work_struct *work)
+-{
+-	unsigned long flags;
+-	struct kvfree_rcu_bulk_data *bnode, *n;
+-	struct list_head bulk_head[FREE_N_CHANNELS];
+-	struct rcu_head *head;
+-	struct kfree_rcu_cpu *krcp;
+-	struct kfree_rcu_cpu_work *krwp;
+-	struct rcu_gp_oldstate head_gp_snap;
+-	int i;
+-
+-	krwp = container_of(to_rcu_work(work),
+-		struct kfree_rcu_cpu_work, rcu_work);
+-	krcp = krwp->krcp;
+-
+-	raw_spin_lock_irqsave(&krcp->lock, flags);
+-	// Channels 1 and 2.
+-	for (i = 0; i < FREE_N_CHANNELS; i++)
+-		list_replace_init(&krwp->bulk_head_free[i], &bulk_head[i]);
+-
+-	// Channel 3.
+-	head = krwp->head_free;
+-	krwp->head_free = NULL;
+-	head_gp_snap = krwp->head_free_gp_snap;
+-	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
+-	// Handle the first two channels.
+-	for (i = 0; i < FREE_N_CHANNELS; i++) {
+-		// Start from the tail page, so a GP is likely passed for it.
+-		list_for_each_entry_safe(bnode, n, &bulk_head[i], list)
+-			kvfree_rcu_bulk(krcp, bnode, i);
+-	}
+-
+-	/*
+-	 * This is used when the "bulk" path can not be used for the
+-	 * double-argument of kvfree_rcu().  This happens when the
+-	 * page-cache is empty, which means that objects are instead
+-	 * queued on a linked list through their rcu_head structures.
+-	 * This list is named "Channel 3".
+-	 */
+-	if (head && !WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&head_gp_snap)))
+-		kvfree_rcu_list(head);
+-}
+-
+-static bool
+-need_offload_krc(struct kfree_rcu_cpu *krcp)
+-{
+-	int i;
+-
+-	for (i = 0; i < FREE_N_CHANNELS; i++)
+-		if (!list_empty(&krcp->bulk_head[i]))
+-			return true;
+-
+-	return !!READ_ONCE(krcp->head);
+-}
+-
+-static bool
+-need_wait_for_krwp_work(struct kfree_rcu_cpu_work *krwp)
+-{
+-	int i;
+-
+-	for (i = 0; i < FREE_N_CHANNELS; i++)
+-		if (!list_empty(&krwp->bulk_head_free[i]))
+-			return true;
+-
+-	return !!krwp->head_free;
+-}
+-
+-static int krc_count(struct kfree_rcu_cpu *krcp)
+-{
+-	int sum = atomic_read(&krcp->head_count);
+-	int i;
+-
+-	for (i = 0; i < FREE_N_CHANNELS; i++)
+-		sum += atomic_read(&krcp->bulk_count[i]);
+-
+-	return sum;
+-}
+-
+-static void
+-schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
+-{
+-	long delay, delay_left;
+-
+-	delay = krc_count(krcp) >= KVFREE_BULK_MAX_ENTR ? 1:KFREE_DRAIN_JIFFIES;
+-	if (delayed_work_pending(&krcp->monitor_work)) {
+-		delay_left = krcp->monitor_work.timer.expires - jiffies;
+-		if (delay < delay_left)
+-			mod_delayed_work(system_wq, &krcp->monitor_work, delay);
+-		return;
+-	}
+-	queue_delayed_work(system_wq, &krcp->monitor_work, delay);
+-}
+-
+-static void
+-kvfree_rcu_drain_ready(struct kfree_rcu_cpu *krcp)
+-{
+-	struct list_head bulk_ready[FREE_N_CHANNELS];
+-	struct kvfree_rcu_bulk_data *bnode, *n;
+-	struct rcu_head *head_ready = NULL;
+-	unsigned long flags;
+-	int i;
+-
+-	raw_spin_lock_irqsave(&krcp->lock, flags);
+-	for (i = 0; i < FREE_N_CHANNELS; i++) {
+-		INIT_LIST_HEAD(&bulk_ready[i]);
+-
+-		list_for_each_entry_safe_reverse(bnode, n, &krcp->bulk_head[i], list) {
+-			if (!poll_state_synchronize_rcu_full(&bnode->gp_snap))
+-				break;
+-
+-			atomic_sub(bnode->nr_records, &krcp->bulk_count[i]);
+-			list_move(&bnode->list, &bulk_ready[i]);
+-		}
+-	}
+-
+-	if (krcp->head && poll_state_synchronize_rcu(krcp->head_gp_snap)) {
+-		head_ready = krcp->head;
+-		atomic_set(&krcp->head_count, 0);
+-		WRITE_ONCE(krcp->head, NULL);
+-	}
+-	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
+-	for (i = 0; i < FREE_N_CHANNELS; i++) {
+-		list_for_each_entry_safe(bnode, n, &bulk_ready[i], list)
+-			kvfree_rcu_bulk(krcp, bnode, i);
+-	}
+-
+-	if (head_ready)
+-		kvfree_rcu_list(head_ready);
+-}
+-
+-/*
+- * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+- */
+-static void kfree_rcu_monitor(struct work_struct *work)
+-{
+-	struct kfree_rcu_cpu *krcp = container_of(work,
+-		struct kfree_rcu_cpu, monitor_work.work);
+-	unsigned long flags;
+-	int i, j;
+-
+-	// Drain ready for reclaim.
+-	kvfree_rcu_drain_ready(krcp);
+-
+-	raw_spin_lock_irqsave(&krcp->lock, flags);
+-
+-	// Attempt to start a new batch.
+-	for (i = 0; i < KFREE_N_BATCHES; i++) {
+-		struct kfree_rcu_cpu_work *krwp = &(krcp->krw_arr[i]);
+-
+-		// Try to detach bulk_head or head and attach it, only when
+-		// all channels are free.  Any channel is not free means at krwp
+-		// there is on-going rcu work to handle krwp's free business.
+-		if (need_wait_for_krwp_work(krwp))
+-			continue;
+-
+-		// kvfree_rcu_drain_ready() might handle this krcp, if so give up.
+-		if (need_offload_krc(krcp)) {
+-			// Channel 1 corresponds to the SLAB-pointer bulk path.
+-			// Channel 2 corresponds to vmalloc-pointer bulk path.
+-			for (j = 0; j < FREE_N_CHANNELS; j++) {
+-				if (list_empty(&krwp->bulk_head_free[j])) {
+-					atomic_set(&krcp->bulk_count[j], 0);
+-					list_replace_init(&krcp->bulk_head[j],
+-						&krwp->bulk_head_free[j]);
+-				}
+-			}
+-
+-			// Channel 3 corresponds to both SLAB and vmalloc
+-			// objects queued on the linked list.
+-			if (!krwp->head_free) {
+-				krwp->head_free = krcp->head;
+-				get_state_synchronize_rcu_full(&krwp->head_free_gp_snap);
+-				atomic_set(&krcp->head_count, 0);
+-				WRITE_ONCE(krcp->head, NULL);
+-			}
+-
+-			// One work is per one batch, so there are three
+-			// "free channels", the batch can handle. It can
+-			// be that the work is in the pending state when
+-			// channels have been detached following by each
+-			// other.
+-			queue_rcu_work(system_wq, &krwp->rcu_work);
+-		}
+-	}
+-
+-	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
+-	// If there is nothing to detach, it means that our job is
+-	// successfully done here. In case of having at least one
+-	// of the channels that is still busy we should rearm the
+-	// work to repeat an attempt. Because previous batches are
+-	// still in progress.
+-	if (need_offload_krc(krcp))
+-		schedule_delayed_monitor_work(krcp);
+-}
+-
+-static enum hrtimer_restart
+-schedule_page_work_fn(struct hrtimer *t)
+-{
+-	struct kfree_rcu_cpu *krcp =
+-		container_of(t, struct kfree_rcu_cpu, hrtimer);
+-
+-	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+-	return HRTIMER_NORESTART;
+-}
+-
+-static void fill_page_cache_func(struct work_struct *work)
+-{
+-	struct kvfree_rcu_bulk_data *bnode;
+-	struct kfree_rcu_cpu *krcp =
+-		container_of(work, struct kfree_rcu_cpu,
+-			page_cache_work.work);
+-	unsigned long flags;
+-	int nr_pages;
+-	bool pushed;
+-	int i;
+-
+-	nr_pages = atomic_read(&krcp->backoff_page_cache_fill) ?
+-		1 : rcu_min_cached_objs;
+-
+-	for (i = READ_ONCE(krcp->nr_bkv_objs); i < nr_pages; i++) {
+-		bnode = (struct kvfree_rcu_bulk_data *)
+-			__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+-
+-		if (!bnode)
+-			break;
+-
+-		raw_spin_lock_irqsave(&krcp->lock, flags);
+-		pushed = put_cached_bnode(krcp, bnode);
+-		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+-
+-		if (!pushed) {
+-			free_page((unsigned long) bnode);
+-			break;
+-		}
+-	}
+-
+-	atomic_set(&krcp->work_in_progress, 0);
+-	atomic_set(&krcp->backoff_page_cache_fill, 0);
+-}
+-
+-static void
+-run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+-{
+-	// If cache disabled, bail out.
+-	if (!rcu_min_cached_objs)
+-		return;
+-
+-	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+-			!atomic_xchg(&krcp->work_in_progress, 1)) {
+-		if (atomic_read(&krcp->backoff_page_cache_fill)) {
+-			queue_delayed_work(system_wq,
+-				&krcp->page_cache_work,
+-					msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
+-		} else {
+-			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-			krcp->hrtimer.function = schedule_page_work_fn;
+-			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+-		}
+-	}
+-}
+-
+-// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+-// state specified by flags.  If can_alloc is true, the caller must
+-// be schedulable and not be holding any locks or mutexes that might be
+-// acquired by the memory allocator or anything that it might invoke.
+-// Returns true if ptr was successfully recorded, else the caller must
+-// use a fallback.
+-static inline bool
+-add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+-	unsigned long *flags, void *ptr, bool can_alloc)
+-{
+-	struct kvfree_rcu_bulk_data *bnode;
+-	int idx;
+-
+-	*krcp = krc_this_cpu_lock(flags);
+-	if (unlikely(!(*krcp)->initialized))
+-		return false;
+-
+-	idx = !!is_vmalloc_addr(ptr);
+-	bnode = list_first_entry_or_null(&(*krcp)->bulk_head[idx],
+-		struct kvfree_rcu_bulk_data, list);
+-
+-	/* Check if a new block is required. */
+-	if (!bnode || bnode->nr_records == KVFREE_BULK_MAX_ENTR) {
+-		bnode = get_cached_bnode(*krcp);
+-		if (!bnode && can_alloc) {
+-			krc_this_cpu_unlock(*krcp, *flags);
+-
+-			// __GFP_NORETRY - allows a light-weight direct reclaim
+-			// what is OK from minimizing of fallback hitting point of
+-			// view. Apart of that it forbids any OOM invoking what is
+-			// also beneficial since we are about to release memory soon.
+-			//
+-			// __GFP_NOMEMALLOC - prevents from consuming of all the
+-			// memory reserves. Please note we have a fallback path.
+-			//
+-			// __GFP_NOWARN - it is supposed that an allocation can
+-			// be failed under low memory or high memory pressure
+-			// scenarios.
+-			bnode = (struct kvfree_rcu_bulk_data *)
+-				__get_free_page(GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+-			raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
+-		}
+-
+-		if (!bnode)
+-			return false;
+-
+-		// Initialize the new block and attach it.
+-		bnode->nr_records = 0;
+-		list_add(&bnode->list, &(*krcp)->bulk_head[idx]);
+-	}
+-
+-	// Finally insert and update the GP for this page.
+-	bnode->records[bnode->nr_records++] = ptr;
+-	get_state_synchronize_rcu_full(&bnode->gp_snap);
+-	atomic_inc(&(*krcp)->bulk_count[idx]);
+-
+-	return true;
+-}
+-
+-/*
+- * Queue a request for lazy invocation of the appropriate free routine
+- * after a grace period.  Please note that three paths are maintained,
+- * two for the common case using arrays of pointers and a third one that
+- * is used only when the main paths cannot be used, for example, due to
+- * memory pressure.
+- *
+- * Each kvfree_call_rcu() request is added to a batch. The batch will be drained
+- * every KFREE_DRAIN_JIFFIES number of jiffies. All the objects in the batch will
+- * be free'd in workqueue context. This allows us to: batch requests together to
+- * reduce the number of grace periods during heavy kfree_rcu()/kvfree_rcu() load.
+- */
+-void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+-{
+-	unsigned long flags;
+-	struct kfree_rcu_cpu *krcp;
+-	bool success;
+-
+-	/*
+-	 * Please note there is a limitation for the head-less
+-	 * variant, that is why there is a clear rule for such
+-	 * objects: it can be used from might_sleep() context
+-	 * only. For other places please embed an rcu_head to
+-	 * your data.
+-	 */
+-	if (!head)
+-		might_sleep();
+-
+-	// Queue the object but don't yet schedule the batch.
+-	if (debug_rcu_head_queue(ptr)) {
+-		// Probable double kfree_rcu(), just leak.
+-		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+-			  __func__, head);
+-
+-		// Mark as success and leave.
+-		return;
+-	}
+-
+-	kasan_record_aux_stack_noalloc(ptr);
+-	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+-	if (!success) {
+-		run_page_cache_worker(krcp);
+-
+-		if (head == NULL)
+-			// Inline if kvfree_rcu(one_arg) call.
+-			goto unlock_return;
+-
+-		head->func = ptr;
+-		head->next = krcp->head;
+-		WRITE_ONCE(krcp->head, head);
+-		atomic_inc(&krcp->head_count);
+-
+-		// Take a snapshot for this krcp.
+-		krcp->head_gp_snap = get_state_synchronize_rcu();
+-		success = true;
+-	}
+-
+-	/*
+-	 * The kvfree_rcu() caller considers the pointer freed at this point
+-	 * and likely removes any references to it. Since the actual slab
+-	 * freeing (and kmemleak_free()) is deferred, tell kmemleak to ignore
+-	 * this object (no scanning or false positives reporting).
+-	 */
+-	kmemleak_ignore(ptr);
+-
+-	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+-	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
+-		schedule_delayed_monitor_work(krcp);
+-
+-unlock_return:
+-	krc_this_cpu_unlock(krcp, flags);
+-
+-	/*
+-	 * Inline kvfree() after synchronize_rcu(). We can do
+-	 * it from might_sleep() context only, so the current
+-	 * CPU can pass the QS state.
+-	 */
+-	if (!success) {
+-		debug_rcu_head_unqueue((struct rcu_head *) ptr);
+-		synchronize_rcu();
+-		kvfree(ptr);
+-	}
+-}
+-EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+-
+-static unsigned long
+-kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+-{
+-	int cpu;
+-	unsigned long count = 0;
+-
+-	/* Snapshot count of all CPUs */
+-	for_each_possible_cpu(cpu) {
+-		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+-
+-		count += krc_count(krcp);
+-		count += READ_ONCE(krcp->nr_bkv_objs);
+-		atomic_set(&krcp->backoff_page_cache_fill, 1);
+-	}
+-
+-	return count == 0 ? SHRINK_EMPTY : count;
+-}
+-
+-static unsigned long
+-kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+-{
+-	int cpu, freed = 0;
+-
+-	for_each_possible_cpu(cpu) {
+-		int count;
+-		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+-
+-		count = krc_count(krcp);
+-		count += drain_page_cache(krcp);
+-		kfree_rcu_monitor(&krcp->monitor_work.work);
+-
+-		sc->nr_to_scan -= count;
+-		freed += count;
+-
+-		if (sc->nr_to_scan <= 0)
+-			break;
+-	}
+-
+-	return freed == 0 ? SHRINK_STOP : freed;
+-}
+-
+-void __init kfree_rcu_scheduler_running(void)
+-{
+-	int cpu;
+-
+-	for_each_possible_cpu(cpu) {
+-		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+-
+-		if (need_offload_krc(krcp))
+-			schedule_delayed_monitor_work(krcp);
+-	}
+-}
+-
+ /*
+  * During early boot, any blocking grace-period wait automatically
+  * implies a grace period.
+@@ -5567,62 +4871,12 @@ static void __init rcu_dump_rcu_node_tree(void)
+ 
+ struct workqueue_struct *rcu_gp_wq;
+ 
+-static void __init kfree_rcu_batch_init(void)
+-{
+-	int cpu;
+-	int i, j;
+-	struct shrinker *kfree_rcu_shrinker;
+-
+-	/* Clamp it to [0:100] seconds interval. */
+-	if (rcu_delay_page_cache_fill_msec < 0 ||
+-		rcu_delay_page_cache_fill_msec > 100 * MSEC_PER_SEC) {
+-
+-		rcu_delay_page_cache_fill_msec =
+-			clamp(rcu_delay_page_cache_fill_msec, 0,
+-				(int) (100 * MSEC_PER_SEC));
+-
+-		pr_info("Adjusting rcutree.rcu_delay_page_cache_fill_msec to %d ms.\n",
+-			rcu_delay_page_cache_fill_msec);
+-	}
+-
+-	for_each_possible_cpu(cpu) {
+-		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+-
+-		for (i = 0; i < KFREE_N_BATCHES; i++) {
+-			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+-			krcp->krw_arr[i].krcp = krcp;
+-
+-			for (j = 0; j < FREE_N_CHANNELS; j++)
+-				INIT_LIST_HEAD(&krcp->krw_arr[i].bulk_head_free[j]);
+-		}
+-
+-		for (i = 0; i < FREE_N_CHANNELS; i++)
+-			INIT_LIST_HEAD(&krcp->bulk_head[i]);
+-
+-		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+-		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+-		krcp->initialized = true;
+-	}
+-
+-	kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
+-	if (!kfree_rcu_shrinker) {
+-		pr_err("Failed to allocate kfree_rcu() shrinker!\n");
+-		return;
+-	}
+-
+-	kfree_rcu_shrinker->count_objects = kfree_rcu_shrink_count;
+-	kfree_rcu_shrinker->scan_objects = kfree_rcu_shrink_scan;
+-
+-	shrinker_register(kfree_rcu_shrinker);
+-}
+-
+ void __init rcu_init(void)
+ {
+ 	int cpu = smp_processor_id();
+ 
+ 	rcu_early_boot_tests();
+ 
+-	kfree_rcu_batch_init();
+ 	rcu_bootup_announce();
+ 	sanitize_kthread_prio();
+ 	rcu_init_geometry();
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index f8436969e0c8..82ca9f490d7c 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -273,7 +273,6 @@ static int __init rcu_set_runtime_mode(void)
+ {
+ 	rcu_test_sync_prims();
+ 	rcu_scheduler_active = RCU_SCHEDULER_RUNNING;
+-	kfree_rcu_scheduler_running();
+ 	rcu_test_sync_prims();
+ 	return 0;
+ }
 -- 
 2.45.2
 
