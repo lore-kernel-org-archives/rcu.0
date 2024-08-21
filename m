@@ -1,166 +1,147 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EB05672;
-	Wed, 21 Aug 2024 01:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A227B1E8629
+	for <rcu@vger.kernel.org>; Wed, 21 Aug 2024 09:21:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724202014; cv=none; b=HlHvBflw1UnMOfHjkhUDKzHDsiQ5Mmiz+bLdrPNbHBVJrMYvoEh2OnNteVwhydWTBpQA0OKvX5EctmZ1Xb1/Vc1MrS18XSGbzNt3y+xchLW1Cj88dCnqCUgyAP5NrFl4qKY9nx9dFb5JMjCzs9jST4omymQwZlVJEkIAhkyp6gA=
+	t=1724232108; cv=none; b=ftFO5WGMUbm2ZZMtkUBIW/8fgC2F17nJeCw8hX203KERl9+Hu+O9F9aOGPYJ4s4eYewXNZsk+oz7gh9bD/1cWhIEh0xXKcZyEshXRLlSaRpuBFnjLDsbMWVA2FALpOqvyuMsz47/BW0INOk56v5NGfUBf6fKXZY3sl8QB6Q0dSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724202014; c=relaxed/simple;
-	bh=BwnFs+ky9dP3dSEkc3Oxo2bJr4RqkZJE05LBXfWzL0w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=N8h3WaX+urx0IdL7y3oAXKNXflUzYO9y151aQn3nnpLUC8tJgfk/t7ZHzHN6yDzAj3pCrPqh1RmKfhbS3zOfy2Y/eXwNsPUhrcvj2XW/wTpCTcA9ZKK/QH1gKABBRwXxXWSPnHRELLs5L15JgXasmBOP4xu7nhPEsvSDDNjoiIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=W8JaGEDw; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+	s=arc-20240116; t=1724232108; c=relaxed/simple;
+	bh=zTrmrwvcnsUQONnVX7bXvpZTK4JkDDsBtO5iwajA6aE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r8Co19B43f+fcIL6ZlOUEmM+uuJH2UXVoj4//QD1xETPK9hjL1QfIQmiGvgWPjlgfAza+1e3Q193skxI/pMju4oizxocDr0uCvcHBMcYGi+uAr00LHV4ywFYIEZ4ly9xziglR2P7tUv1V9DdIu1Y0hEQYBaWXY4TezAU0MBVe3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gydyfXgW; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="W8JaGEDw"
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47KMBmjT011352;
-	Wed, 21 Aug 2024 01:00:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	ZhOeF01KrVEz6V+Vra3QRgsNEqktXvI30DN9G5l2idQ=; b=W8JaGEDwOO1TfQlf
-	e4XOC3VLjlT5yRv3d9ppvqfCd4ZkrW74thjA/cEmc9nrqZiauD6zZtkuFCBoZH2c
-	3Rx8QoSuK7rVjHAa06pfk5cA2Qhc0VTKlerfO0ULkwgLSMr3t9gFg7YVdRKlDtXp
-	9cNPLxVGREhnYDgHSbbSsGNsNlQGkLJU3a+J5U/j6jvzllCwGdXYhqCJjf4ZpefJ
-	XijaolbtV/G+G7ZHTI2sZDrmn3mhqDDWRfZAeowxYoI35hArL5g7R5Mzr06i4Xw/
-	dv1igFm9qfhUo8Y+eXZE3d7ZSr8Jk2rVqn1CDsKDArNHE8AuCkBNMHq9eDDnKjaa
-	SqI7Ag==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 414j573a48-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Aug 2024 01:00:05 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 47L104H9032708
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Aug 2024 01:00:04 GMT
-Received: from [10.81.24.74] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 20 Aug
- 2024 18:00:04 -0700
-Message-ID: <ef1347e4-64e3-4068-89cb-cb6038972b9e@quicinc.com>
-Date: Tue, 20 Aug 2024 18:00:04 -0700
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gydyfXgW"
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a8374e6a6fbso774424766b.3
+        for <rcu@vger.kernel.org>; Wed, 21 Aug 2024 02:21:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1724232105; x=1724836905; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mEERTRPjJTEkA5X/eKpaMzz4m2QDKwkJiDLjgwX79HU=;
+        b=gydyfXgWCjgdhmXEJ4TLl1S96HDbpmtjq0t8wKUZevFdXl37E7zw8AnxLg4sGZxHDH
+         AMBUloEgvdF349cbtZ7EiCweev08Y3cHJBpp8dSV14rBBokqf8O1G+Cawb//jLFxfWEW
+         MTjVtg2zl1o+7Y9yqXq1STMBdBH5lBHka5DUo8NLEXy0wP/OKl4z5b1jepWAQG7KF1HV
+         gB0PFI5D7RaQELYsPOgmSt12YyL9k4MfpYQvpMFtsZcR1NDe179fz7sx0tZgJ04mKorB
+         qwjyFl2ZoxlMM6jK02ucNbXAT+JPgJzjJlUGcknYulfvvIv7+INmntW7Q1Ezhq1lEmWD
+         XNSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724232105; x=1724836905;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mEERTRPjJTEkA5X/eKpaMzz4m2QDKwkJiDLjgwX79HU=;
+        b=PfjdA2z5xkXbgcHzE1qUZRr1NZc1r/XHSX96Ava9wMZu3lP80LqJ7miIDdLgy9XVwu
+         WOQ1PA9w+Etj8JqciXI42epclwBBGDoJi12fUnQvNkYJ4NrJi5ZpcZcVcyu31dOgByFn
+         7pj+VFBIoqJAzkMbG3UqmuOigsqGwf0wCBk421pryLuu9IajEsoJS2EowlXHhVCXMRD+
+         KxGJ6UVqbtFP+II9yOlrM2ZDBSVl5aUFNMYo+aXFU6uqjNnT0t2/qEcw7s2fGzQx7jgd
+         6DB1ws3SIHyKBkCb7UCdq676U5xMQ6RgK/oB1trWx+W+brwuOulcxHh5WEFBaoLb1Pw+
+         ZX3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUoubKncH9gV7oD+1e9MsS9tg4VF6p0HPLAi7Ex+GrKJju3gkxfraVh0OBUSyTu5VDVA3A=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1S4kxZDDelqwEHSGTsPTlJgA/HMjpYS5ypCR3tY5j6eOo+ff7
+	Bq9EyyMcDeuNr6tZ/DMW8JuOdt6EnrVD2b80qWP9M6miz6umFJ4uKw4Tdxo3+Bw=
+X-Google-Smtp-Source: AGHT+IHTKefgAMslcV1Cs0upS9eDIaDmi87CvvZ8H7V6d6k0M6zSoNhCt8tI49NL7kOCx/S0LuujdA==
+X-Received: by 2002:a17:906:bc27:b0:a7a:ab1a:2d65 with SMTP id a640c23a62f3a-a866f9c83f1mr128643166b.67.1724232104806;
+        Wed, 21 Aug 2024 02:21:44 -0700 (PDT)
+Received: from pathway.suse.cz ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8383946898sm881723966b.174.2024.08.21.02.21.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 02:21:44 -0700 (PDT)
+Date: Wed, 21 Aug 2024 11:21:41 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Miguel Ojeda <ojeda@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+	Russell King <linux@armlinux.org.uk>,
+	Tony Lindgren <tony@atomide.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Ryo Takakura <takakura@valinux.co.jp>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Joel Granados <j.granados@samsung.com>,
+	Lukas Wunner <lukas@wunner.de>, Feng Tang <feng.tang@intel.com>,
+	Baoquan He <bhe@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH printk v8 00/35] wire up write_atomic() printing
+Message-ID: <ZsWxpVG8uZ9Nq26h@pathway.suse.cz>
+References: <20240820063001.36405-1-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/9] darray: lift from bcachefs
-To: Kent Overstreet <kent.overstreet@linux.dev>, <rcu@vger.kernel.org>
-CC: <paulmck@kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240819165939.745801-1-kent.overstreet@linux.dev>
- <20240819165939.745801-4-kent.overstreet@linux.dev>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <20240819165939.745801-4-kent.overstreet@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 1KUvgS38UYLGuCyQvOjnZwsRt1BEk888
-X-Proofpoint-GUID: 1KUvgS38UYLGuCyQvOjnZwsRt1BEk888
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-20_19,2024-08-19_03,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 clxscore=1011 bulkscore=0 phishscore=0 impostorscore=0
- adultscore=0 suspectscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408210005
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240820063001.36405-1-john.ogness@linutronix.de>
 
-On 8/19/24 09:59, Kent Overstreet wrote:
-> dynamic arrays - inspired from CCAN darrays, basically c++ stl vectors.
+On Tue 2024-08-20 08:35:26, John Ogness wrote:
+> Hi,
 > 
-> Used by thread_with_stdio, which is also being lifted from bcachefs for
-> xfs.
+> This is v8 of a series to wire up the nbcon consoles so that
+> they actually perform printing using their write_atomic()
+> callback. v7 is here [0]. For information about the motivation
+> of the atomic consoles, please read the cover letter of v1 [1].
 > 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> ---
->  MAINTAINERS                             |  7 +++
->  fs/bcachefs/Makefile                    |  1 -
->  fs/bcachefs/btree_node_scan_types.h     |  2 +-
->  fs/bcachefs/btree_types.h               |  2 +-
->  fs/bcachefs/btree_update.c              |  2 +
->  fs/bcachefs/btree_write_buffer_types.h  |  2 +-
->  fs/bcachefs/disk_accounting_types.h     |  2 +-
->  fs/bcachefs/fsck.c                      |  2 +-
->  fs/bcachefs/journal_io.h                |  2 +-
->  fs/bcachefs/journal_sb.c                |  2 +-
->  fs/bcachefs/sb-downgrade.c              |  3 +-
->  fs/bcachefs/sb-errors_types.h           |  2 +-
->  fs/bcachefs/sb-members.h                |  2 +-
->  fs/bcachefs/subvolume.h                 |  1 -
->  fs/bcachefs/subvolume_types.h           |  2 +-
->  fs/bcachefs/thread_with_file_types.h    |  2 +-
->  fs/bcachefs/util.h                      | 29 +-----------
->  {fs/bcachefs => include/linux}/darray.h | 59 ++++++++++++++++---------
->  include/linux/darray_types.h            | 22 +++++++++
->  lib/Makefile                            |  2 +-
->  {fs/bcachefs => lib}/darray.c           | 12 ++++-
->  21 files changed, 96 insertions(+), 64 deletions(-)
->  rename {fs/bcachefs => include/linux}/darray.h (66%)
->  create mode 100644 include/linux/darray_types.h
->  rename {fs/bcachefs => lib}/darray.c (57%)
+> The main focus of this series:
+> 
+> - For nbcon consoles, always call write_atomic() directly from
+>   printk() caller context for the panic CPU.
+> 
+> - For nbcon consoles, call write_atomic() when unlocking the
+>   console lock.
+> 
+> - Only perform the console lock/unlock dance if legacy or boot
+>   consoles are registered.
+> 
+> - For legacy consoles, if nbcon consoles are registered, do not
+>   attempt to print from printk() caller context for the panic
+>   CPU until nbcon consoles have had a chance to print the most
+>   significant messages.
+> 
+> - Mark emergency sections. In these sections, every printk()
+>   call will attempt to directly flush to the consoles using the
+>   EMERGENCY priority.
+> 
+> This series does _not_ include threaded printing or nbcon
+> drivers. Those features will be added in separate follow-up
+> series.
 
-...
+The series seems to be ready for linux-next from my POV.
 
-> diff --git a/fs/bcachefs/darray.c b/lib/darray.c
-> similarity index 57%
-> rename from fs/bcachefs/darray.c
-> rename to lib/darray.c
-> index b7d223f85873..b6868db7f956 100644
-> --- a/fs/bcachefs/darray.c
-> +++ b/lib/darray.c
-> @@ -1,10 +1,14 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * (C) 2022-2024 Kent Overstreet <kent.overstreet@linux.dev>
-> + */
->  
-> +#include <linux/darray.h>
->  #include <linux/log2.h>
-> +#include <linux/module.h>
->  #include <linux/slab.h>
-> -#include "darray.h"
->  
-> -int __bch2_darray_resize(darray_char *d, size_t element_size, size_t new_size, gfp_t gfp)
-> +int __darray_resize_slowpath(darray_char *d, size_t element_size, size_t new_size, gfp_t gfp)
->  {
->  	if (new_size > d->size) {
->  		new_size = roundup_pow_of_two(new_size);
-> @@ -23,3 +27,7 @@ int __bch2_darray_resize(darray_char *d, size_t element_size, size_t new_size, g
->  
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(__darray_resize_slowpath);
-> +
-> +MODULE_AUTHOR("Kent Overstreet");
-> +MODULE_LICENSE("GPL");
+I am going to push it there once I get approval from John about
+the proposed update of the commit message for the 30th patch,
+see https://lore.kernel.org/r/ZsWvRETyuh1Yq80j@pathway.suse.cz
 
-Since commit 1fffe7a34c89 ("script: modpost: emit a warning when the
-description is missing"), a module without a MODULE_DESCRIPTION() will
-result in a warning when built with make W=1. Recently, multiple
-developers, including myself, have been eradicating these warnings
-treewide, and to prevent new instances from being introduced I scan lore
-for patches which contain a MODULE_LICENSE but do not contain a
-MODULE_DESCRIPTION(). This patch was flagged.
-
-Normally I just ask that a MODULE_DESCRIPTION() be added. But in this
-case I don't see how this can ever be built as a module since it is part
-of an obj-y rule, and hence, unless I'm missing something, will always
-be built-in. So in this case I would suggest removing the MODULE_AUTHOR
-and MODULE_LICENSE.
-
-However, if you do anticipate this could be built as a module in the
-future, please just add the MODULE_DESCRIPTION().
-
-/jeff
-
-
+Best Regards,
+Petr
