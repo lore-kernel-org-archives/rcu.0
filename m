@@ -1,46 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F7942AAF;
-	Sun, 25 Aug 2024 15:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7F218E02B;
+	Mon, 26 Aug 2024 14:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724599575; cv=none; b=upm00ESFvl4FAuV7GCWctxfFsVl7ow5jjSW6TfZ2hbJWKolEb/mof9p7iO75z2Xk40rYE3GbMamhbwzfBV+Qp13SUFOXOs2I9pOUpcbA0WPZe1uknVlkVE9eAnYItW+4egck1HC18QLJ+9zBeB5iY2vOzBI/bRDfCNcBV2oT0Ro=
+	t=1724683453; cv=none; b=KY8KuXAEDov7Js930P4EgXTQHhFWF8T0qGE5TF9LtHF4poBh1XZGNiWKtfq835+DQLjs4DULdCBKKclw/QtFJc0k2Md5zpfnIy8++3pSS9u1TPCuYB7JvBnP0CiavWeZ40XOlIxnkUT9F9z3WkmRHV2/DgKL/ldcrtix/3umsxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724599575; c=relaxed/simple;
-	bh=bpdqsN5Snv5qMzYPRU9n2lN5PpYWqYE5YI8Y07rdr/g=;
+	s=arc-20240116; t=1724683453; c=relaxed/simple;
+	bh=R24rO8QyB/mfy6Pzm5Ayl8reM44/jIqYjQkOFcfvCyI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XJEhWaFBYLEfZVEGKjtD4pZNe/Xk8cHtdtQwFaDXTPlSSTNSdOJ+8nmBrXyvD6kV4tFWGEb1+Re53goLiMF9Pay9UZ6Gk/d5ybaBkH00nul6OYkVzYLbvHMIIJEPhxQSXs784ToShVfMsYVPkTL6ZeIctkzwv1aAp5sT10TvGKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nZKyX7V9; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=NTwR3u1ZSmy+xysN3WBuBfcueEBeThkLQbjdyOFHuk/SzwksHscuXPi3hA6n53AP4xIUFSu8MwM6nCdyz7ggwidQzzz0q4lhfdlUXAHJ2kTnF5v2HQ96Lqz5Dc+USOLLTIK8l75nuK/PGtaIt4xzli3mm+Hn0veVEms0pIm6Az8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qMxODaIW; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nZKyX7V9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26B1EC32782;
-	Sun, 25 Aug 2024 15:26:15 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qMxODaIW"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03109C52FCC;
+	Mon, 26 Aug 2024 14:44:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724599575;
-	bh=bpdqsN5Snv5qMzYPRU9n2lN5PpYWqYE5YI8Y07rdr/g=;
+	s=k20201202; t=1724683453;
+	bh=R24rO8QyB/mfy6Pzm5Ayl8reM44/jIqYjQkOFcfvCyI=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=nZKyX7V9paYE0+FlIHLkMpaNdSxOVhVcmBv19/+4iTFPaPQmxubWTTUBf2yKljz4t
-	 mJfccIAPwbdiY8nxXbxG8Wz8AnIProUSfRtrEbgT5fJ8YHfFjf5UY/teRLFlaOUKy3
-	 u5y2AniMrXuDeRBnlf0/aSc/F38l8fRPsYq/nzxEQFn65bOtosd5OebXpmjBwkrDBD
-	 U2L/2TcxNs1bW0a+BMX6szvTZdyUcg9BQPy6Jr9ON5aEQDrId4aytyx4WFpc5BQNK8
-	 Rg/IqL2leNAn7gOEx25r80Q2M71VKUibU2SoDmOmdLvp4/sZSiMZkpONLlNaxG+Rv4
-	 amdA8tEVT6tpw==
+	b=qMxODaIW6NHnBNweZq1/T5V6cRsG7wcQXdAugEwnx/oGw5oyRdZh/jCCfmq1jmHhM
+	 z0FczjHhcnJWk+eq7aSeur6vKpWKON4tP+qkfbkQDzeiRh5fOSt1X94oFKmApz7ekY
+	 TTuveL0ztxJCPF9qyb31ixMNauiOkhIDGdlP8CtzHmF3JY4Eu4sYSjl6CGmEAHT/oT
+	 MCx+A6qwpCsilVi+tmwhKh8ocIKGO8moNhcGpHkRziu7QlQ7/j13aJC0/9Ql5n80LG
+	 dZu0WSIzkh5ittjCataMcgdJs3HXh30d5LeEKi4dHHd05ajzAVTXQ/mCeFUn0WeiOU
+	 okJBxaXgCVSOQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C1319CE0BC7; Sun, 25 Aug 2024 08:26:14 -0700 (PDT)
-Date: Sun, 25 Aug 2024 08:26:14 -0700
+	id A10D0CE0B78; Mon, 26 Aug 2024 07:44:12 -0700 (PDT)
+Date: Mon, 26 Aug 2024 07:44:12 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Xingyu Li <xli399@ucr.edu>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	"qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: WARNING in rcu_core
-Message-ID: <92758b9c-6934-4796-9822-28c78bee2ccc@paulmck-laptop>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, vbabka@suse.cz,
+	roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+	akpm@linux-foundation.org, cl@linux.com, mhocko@kernel.org,
+	urezki@gmail.com, neeraj.upadhyay@kernel.org
+Subject: Re: [PATCH 6/9] rcu: rcu_pending
+Message-ID: <f7266ab4-aa29-4cbc-a63e-fa582e266864@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <CALAgD-7hbfOzovnPqVqo6bqb1nHZ2WciUOTsz0Dtwsgr+yx04w@mail.gmail.com>
+References: <20240819165939.745801-1-kent.overstreet@linux.dev>
+ <20240819165939.745801-7-kent.overstreet@linux.dev>
+ <adc8b09e-5f66-44de-845b-e615069c2e20@paulmck-laptop>
+ <yfhctftdn4itupt735u7dnu2zt2aarm3lzvmyf6bs7hkv4radc@ndw4nsinxhqx>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,142 +50,139 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALAgD-7hbfOzovnPqVqo6bqb1nHZ2WciUOTsz0Dtwsgr+yx04w@mail.gmail.com>
+In-Reply-To: <yfhctftdn4itupt735u7dnu2zt2aarm3lzvmyf6bs7hkv4radc@ndw4nsinxhqx>
 
-On Sat, Aug 24, 2024 at 10:30:23PM -0700, Xingyu Li wrote:
-> Hi,
+On Mon, Aug 19, 2024 at 07:59:34PM -0400, Kent Overstreet wrote:
+> On Mon, Aug 19, 2024 at 03:58:26PM GMT, Paul E. McKenney wrote:
+> > I still remain quite skeptical of this one, but it has improved since
+> > June's version.
+> > 
+> > Responses inline.
+> > 
+> > 							Thanx, Paul
+> > 
+> > In the meantime, thank you for avoiding reaching into RCU's and SRCU's
+> > innards.  This makes it reasonable to have you put this file into your
+> > code, at least initially.  That way, you get what you want *now* and us
+> > RCU guys are not committing to maintain it before it is ready for us to
+> > do so.
 > 
-> We found a bug in Linux 6.10. It is probably a use-after-free bug.
-> Its error message "ODEBUG: active_state not available (active state
-> 0)" indicates that the object in question (rcu_head) is in an
-> unexpected state. The expected states are typically something like
-> STATE_RCU_HEAD_QUEUED or STATE_RCU_HEAD_READY, but the object is
-> instead in state 0, which generally means it has either not been
-> initialized correctly or has been freed and is being accessed again.
+> The RCU interfaces do force a lot of function calls for things that
+> should be inlined though, and the gratuitious interface fragmentation
+> between RCU and SRCU is... annoying.
+
+I have gotten requests for a variant of SRCU that dispenses with the
+read-side memory barriers, which would allow you to dispense with RCU.
+Maybe an srcu_read_lock_lite() and srcu_read_unlock_lite(), similar to
+the _nmisafe() variants.  There is always a price, and in this case the
+price would be that srcu_read_lock_lite() and srcu_read_unlock_lite()
+be restricted to code regions where RCU is watching.  But from what I
+know, fs code must already abide by that restriction.
+
+Would that help?
+
+> > I still have strong misgivings about radix trees and cache locality.
+> > Poor cache locality on the other side of the grace period can result
+> > in OOMs during callback-flooding events, hence the move of kfree_rcu()
+> > and friends to pages of pointers.  And, as you note below, radix trees
+> > don't merge nicely.
 > 
-> The bug report and syzkaller reproducer are as follows.
+> Cache locality where?
+> 
+> On the enqueue side, which is the fastpath, this uses a cursor - we're
+> not walking the radix tree every time.
+> 
+> On the processing side, where we're kfree_bulk()ing entire radix tree
+> nodes, the radix tree is going to have better cache locality than a list
+> of pages.
 
-One way to track this is to trace call_rcu(), for example, using the
-rcu_callback() trace event.  The resulting trace messages would likely
-need to be fished out of a kernel core dump.
+Interesting.  What testing or analysis did you do in the course of
+arriving at this conclusion?  In the meantime I will assume that the
+analysis involves your radix-tree nodes being more than one page in size.
 
-Someone more familiar with tracing and core dumps might be able to give
-more specific advice.
+> > The advantage of synchronize_rcu() is that it can proceed without
+> > memory allocation.  If you block on allocation, even of a 16-byte
+> > rcu_head structure, you can go into OOM-induced deadlock.
+> > 
+> > It might well make sense to do an rcu_head allocation with GFP flags
+> > that try reasonably hard, but still allow failure before falling all
+> > the way back to synchronize_rcu().  (And for all I know, this might have
+> > been tested and found wanting, but Uladzislau Rezki (CCed) would know.)
+> > But a hard wait on that allocation is asking for trouble.
+> 
+> That's reasonable - as long as we're trying the 16 byte allocation
+> before doing a synchronize_rcu().
+
+It might or might not be reasonable, depending on what is going on in the
+rest of the system.  The current kfree_rcu() code can run the system out
+of full pages, but it won't impede other code allocating smaller blocks
+of memory.  We could easily change it to allocate individual rcu_head
+structures, but doing so would not necessarily be a win in OOM conditions,
+again, depending on what else is going on.
+
+We are very likely to add this, but also very likely to have a "chicken
+switch" to allow the system administrator to control it.
+
+But I freely concede that if your radix tree is using multi-page nodes,
+then your code might well have greater need to allocate individual
+rcu_head structures than does the current kfree_rcu() implementation.
+
+> > There is work underway to make the current callback lists take advantage
+> > of expedited grace periods, transparent to the caller.  This allows
+> > the shrinker (or whatever) to speed up everything by simply invoking
+> > synchronize_rcu_expedited().  This speedup includes callback processing
+> > because it avoids "bubbles" in the callback processing that can occur
+> > when the next grace period has not yet completed, but all callbacks from
+> > earlier grace periods have been invoked.
+> 
+> Glad to here, that was first on my list when adding a shrinker to this
+> code.
+
+Glad you approve.
+
+This has been on my list for quite some time, and we now have thing in
+place to make it easy.  Well, easier, anyway.
+
+> > > - RCU_PENDING_CALL_RCU_FN
+> > > 
+> > >   Accelerated backend for call_rcu() - pending callbacks are tracked in
+> > >   a radix tree to eliminate linked list overhead.
+> > 
+> > But to add radix-tree overhead.  And to eliminate the ability to do O(1)
+> > list merges.  Is this really a win?
+> 
+> As mentioned, there's a cursor so we're not adding radix-tree overhead
+> to the fast path, and there's no need to merge lists for expired objects
+> - that's all handled fine.
+
+I took a quick look at __rcu_pending_enqueue() and my eyes are still
+bleeding.  Concatenating linked list of pages is way simpler, way faster,
+and way more robust.
+
+> But yes, using it for call_rcu() would need more performance
+> justification. I haven't seen workloads where call_rcu() performance
+> particularly matters, so it's not something I'm pushing for - I included
+> that because it's minimal code and other people might know of workloads
+> where we do want it.
+
+Plus, unlike kfree_rcu() post-grace-period handling, call_rcu() callback
+functions usually access the memory block passed to them, which means
+that they are incurring that per-element cache miss in any case.
+
+> > > Ideally we would be getting a callback every time a grace period
+> > > completes for which we have objects, but that would require multiple
+> > > rcu_heads in flight, and since the number of gp sequence numbers with
+> > > uncompleted callbacks is not bounded, we can't do that yet.
+> > 
+> > Doesn't the call from __rcu_pending_enqueue() to process_finished_items()
+> > serve this purpose?  After all, the case that causes trouble is the one
+> > where lots of things are being very frequently queued.
+> 
+> No, because that's unpredictable, and we don't process pending items in
+> enqueue() unless we know we can sleep (i.e., we don't do it if the
+> caller is latency sensitive).
+
+It is possible to do this in an extremely lightweight fashion in the
+common case.
 
 							Thanx, Paul
-
-> Bug report:
-> 
-> ODEBUG: active_state not available (active state 0) object:
-> ffffea0000a3f710 object type: rcu_head hint: 0x0
-> WARNING: CPU: 0 PID: 0 at lib/debugobjects.c:517 debug_print_object
-> lib/debugobjects.c:514 [inline]
-> WARNING: CPU: 0 PID: 0 at lib/debugobjects.c:517
-> debug_object_active_state+0x2b0/0x360 lib/debugobjects.c:954
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.10.0 #13
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> RIP: 0010:debug_print_object lib/debugobjects.c:514 [inline]
-> RIP: 0010:debug_object_active_state+0x2b0/0x360 lib/debugobjects.c:954
-> Code: d7 95 fd 4d 8b 0c 24 48 c7 c7 a0 61 a9 8b 48 c7 c6 60 5e a9 8b
-> 48 89 ea 8b 4c 24 04 49 89 d8 41 57 e8 24 1b f7 fc 48 83 c4 08 <0f> 0b
-> ff 05 88 0c c6 0a 48 83 c4 28 5b 41 5c 41 5d 41 5e 41 5f 5d
-> RSP: 0018:ffffc90000007ba0 EFLAGS: 00010296
-> RAX: de43a67fd8b9f500 RBX: ffffea0000a3f710 RCX: ffffffff8d893bc0
-> RDX: 0000000000000101 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffffffff8ba96360 R08: ffffffff8155a25a R09: 1ffff1100c74519a
-> R10: dffffc0000000000 R11: ffffed100c74519b R12: ffffffff8b4de5c0
-> R13: 0000000000000005 R14: dffffc0000000000 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055555e016868 CR3: 000000000d932000 CR4: 0000000000350ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <IRQ>
->  debug_rcu_head_unqueue kernel/rcu/rcu.h:236 [inline]
->  rcu_do_batch kernel/rcu/tree.c:2527 [inline]
->  rcu_core+0xa5c/0x17f0 kernel/rcu/tree.c:2809
->  handle_softirqs+0x272/0x750 kernel/softirq.c:554
->  __do_softirq kernel/softirq.c:588 [inline]
->  invoke_softirq kernel/softirq.c:428 [inline]
->  __irq_exit_rcu+0xf0/0x1b0 kernel/softirq.c:637
->  irq_exit_rcu+0x5/0x20 kernel/softirq.c:649
->  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
->  sysvec_apic_timer_interrupt+0xa0/0xc0 arch/x86/kernel/apic/apic.c:1043
->  </IRQ>
->  <TASK>
->  asm_sysvec_apic_timer_interrupt+0x16/0x20 arch/x86/include/asm/idtentry.h:702
-> RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
-> RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
-> RIP: 0010:default_idle+0xb/0x10 arch/x86/kernel/process.c:743
-> Code: 07 76 e7 48 89 07 49 c7 c0 08 00 00 00 4d 29 c8 4c 01 c7 4c 29
-> c2 e9 72 ff ff ff cc cc cc cc 66 90 0f 00 2d c7 a4 4e 00 fb f4 <fa> c3
-> 0f 1f 00 e9 eb ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 90 65
-> RSP: 0018:ffffffff8d807d68 EFLAGS: 000002c2
-> RAX: de43a67fd8b9f500 RBX: ffffffff816928eb RCX: 0000000000022a19
-> RDX: 0000000000000001 RSI: ffffffff8b4c89c0 RDI: ffffffff8ba956e0
-> RBP: ffffffff8d807eb8 R08: ffff888063a37d0b R09: 1ffff1100c746fa1
-> R10: dffffc0000000000 R11: ffffed100c746fa2 R12: 1ffffffff1b00fc6
-> R13: 1ffffffff1b12778 R14: 0000000000000000 R15: dffffc0000000000
->  default_idle_call+0x6e/0xa0 kernel/sched/idle.c:117
->  cpuidle_idle_call kernel/sched/idle.c:191 [inline]
->  do_idle+0x22b/0x5c0 kernel/sched/idle.c:332
->  cpu_startup_entry+0x3d/0x60 kernel/sched/idle.c:430
->  rest_init+0x2db/0x300 init/main.c:747
->  start_kernel+0x486/0x500 init/main.c:1103
->  x86_64_start_reservations+0x26/0x30 arch/x86/kernel/head64.c:507
->  x86_64_start_kernel+0x5c/0x60 arch/x86/kernel/head64.c:488
->  common_startup_64+0x13e/0x147
->  </TASK>
-> ----------------
-> Code disassembly (best guess), 1 bytes skipped:
->    0: 76 e7                 jbe    0xffffffe9
->    2: 48 89 07             mov    %rax,(%rdi)
->    5: 49 c7 c0 08 00 00 00 mov    $0x8,%r8
->    c: 4d 29 c8             sub    %r9,%r8
->    f: 4c 01 c7             add    %r8,%rdi
->   12: 4c 29 c2             sub    %r8,%rdx
->   15: e9 72 ff ff ff       jmp    0xffffff8c
->   1a: cc                   int3
->   1b: cc                   int3
->   1c: cc                   int3
->   1d: cc                   int3
->   1e: 66 90                 xchg   %ax,%ax
->   20: 0f 00 2d c7 a4 4e 00 verw   0x4ea4c7(%rip)        # 0x4ea4ee
->   27: fb                   sti
->   28: f4                   hlt
-> * 29: fa                   cli <-- trapping instruction
->   2a: c3                   ret
->   2b: 0f 1f 00             nopl   (%rax)
->   2e: e9 eb ff ff ff       jmp    0x1e
->   33: 66 2e 0f 1f 84 00 00 cs nopw 0x0(%rax,%rax,1)
->   3a: 00 00 00
->   3d: 90                   nop
->   3e: 65                   gs
-> 
-> 
-> Syzkaller reproducer:
-> # {Threaded:true Repeat:true RepeatTimes:0 Procs:1 Slowdown:1
-> Sandbox:none SandboxArg:0 Leak:false NetInjection:true NetDevices:true
-> NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false
-> DevlinkPCI:false NicVF:false USB:true VhciInjection:false Wifi:false
-> IEEE802154:true Sysctl:false Swap:false UseTmpDir:true HandleSegv:true
-> Trace:false LegacyOptions:{Collide:false Fault:false FaultCall:0
-> FaultNth:0}}
-> openat$ptmx(0xffffffffffffff9c, &(0x7f0000000340), 0x183401, 0x0)
-> ioctl$TCSETSF(0xffffffffffffffff, 0x5404, 0x0)
-> syz_open_dev$evdev(&(0x7f0000000000), 0x8000207, 0x20c40)
-> ioctl$TCSETSF2(0xffffffffffffffff, 0x402c542d,
-> &(0x7f0000000080)={0xffffffff, 0x6, 0x200009, 0x5, 0x1,
-> "4e0040029e35bca140d58427392b336889f0cc", 0x2, 0x101})
-> r0 = syz_open_dev$sg(&(0x7f0000000200), 0x140000000000, 0x8000)
-> ioctl$syz_spec_1724254976_2866(r0, 0x1, &(0x7f0000000080)={0x0, 0x2,
-> [0x85, 0x8, 0x15, 0xd]})
-> ioctl$syz_spec_18446744073163555329_24(0xffffffffffffffff, 0xc0104320, 0x0)
-> ioctl$syz_spec_18446744072138818634_137(0xffffffffffffffff, 0x402c542d, 0x0)
-> 
-> -- 
-> Yours sincerely,
-> Xingyu
-> 
