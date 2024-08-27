@@ -1,143 +1,136 @@
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D999919306C
-	for <rcu@vger.kernel.org>; Mon, 26 Aug 2024 17:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF581C68BD
+	for <rcu@vger.kernel.org>; Tue, 27 Aug 2024 15:39:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724692175; cv=none; b=P7gIWtXNq9JY8WTjvd9tlS/2rSjLNyTu/QBfXd++CMrCbqptGQXkDtyhe7pCRORSyxE18TeGm8ag0lWHZ0zPrEEAk4lOwd01zzLc8X4YRHEFcIvljAt1ou6tdhO9HmTolukDIIY0QJrP0zrQEUbgo6odDhjJEhcNch1Pz64Sn4E=
+	t=1724773188; cv=none; b=R4YCNb93VzhVcsC1Hr7lNnypDp6unXuugPm+Z53lrw5gJ1e3xOOnaz7/PGEsemD4BYYSTvtxSHbWaCmESld3H7+IjRrcpl9b5UtW4bHVnsI/njPG+YwMoLpmVV/bud2T+DXlzYAmWXJ3dMUg12ehz90Oor/WGkDeWSlXHl5FUus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724692175; c=relaxed/simple;
-	bh=UkMKhXbxUysCKnginI4+ViBJH9lR3aoTZZDC0L1LmJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PkHWvaffmt/m29OMGuclekP33PnZ6/B4K9vGNwhsLcUJP0OljRMa6VimIDy+hA5FiRyAotfWG+y/ZWyw8CH13A7OWCVNVSEnXjbXuEaQPZbysDqIZoA4Fym+li/aZU5U787tqkK654RN6QRLR9QTUTbJC3ugzIAOe5lLRKc3gPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p8d/OM50; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1724773188; c=relaxed/simple;
+	bh=J8i0Lb2oWbc6JBapK1BY0lUoCq02D7GVagTSdbkqv1Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hV4VQaq/PRgGKDGTTdjD0MXfAqSQCisPwQzz+o5HTJnuQGqaHYyvrLN24ycIi7DuaiBbwYAoHgypXB3pRQ48AqAzhgJLvyq+GLxLVBEUcUntOlKsSuI3LxTttSNmvE/DQ4ju2vKA+5y7uhTIpgHYg0s1u2u706Im2F7nsyhSL3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cshmBU59; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p8d/OM50"
-Date: Mon, 26 Aug 2024 13:09:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724692170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U2AMIywTyKt2xwzTJWAd9krzomxqoEAnx2EiULkeoSA=;
-	b=p8d/OM50msHKVzPngdMQXX0eCpLZKmh4oIrsEBNxBngJ54eLjKpoxnPc0CG1nZrIQSUzHM
-	4dvUdiM/Mr5ylqaIljmWmNqlmY5DAkizfkqUBeWpkYIDJg5bU82lGZj+jFQ4i4qtoYdPXO
-	j0MkUSuBt59dpfEhNlfPIQuYHDxVp80=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, vbabka@suse.cz, 
-	roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, akpm@linux-foundation.org, cl@linux.com, 
-	mhocko@kernel.org, urezki@gmail.com, neeraj.upadhyay@kernel.org
-Subject: Re: [PATCH 6/9] rcu: rcu_pending
-Message-ID: <gqgocomsljkn5sw2jvm432peesjuclfjwd2sasec3kg6tofk5t@ry7rkoo2auek>
-References: <20240819165939.745801-1-kent.overstreet@linux.dev>
- <20240819165939.745801-7-kent.overstreet@linux.dev>
- <adc8b09e-5f66-44de-845b-e615069c2e20@paulmck-laptop>
- <yfhctftdn4itupt735u7dnu2zt2aarm3lzvmyf6bs7hkv4radc@ndw4nsinxhqx>
- <f7266ab4-aa29-4cbc-a63e-fa582e266864@paulmck-laptop>
- <4zkfyn2shwot2zxiahn7zt7k2gpnoavyrldzzwo23qqxr6fvfh@xqlz4vehkln5>
- <4e4a5c89-e9ec-421e-8245-f076044866c9@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cshmBU59"
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-7091558067eso3369111a34.3
+        for <rcu@vger.kernel.org>; Tue, 27 Aug 2024 08:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1724773185; x=1725377985; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ABrGPaQeXTHEpHj1nG5eL4qDwA/TNxf5sECkQr9qYBQ=;
+        b=cshmBU59B8Y5XavgvLSrMfF/g+ab0w0/qNjaBmPn8DOLpyzD5OfHW28NZoxO+y/oTC
+         BrJSIy0yTwDQX7gSxm81rMLhIk1MTNjXSx51UHSRZuE8VxYP5IE4EeJFMOL4FR2/51jP
+         6fejy1vw2Q1cIQz3hekKQqAjtD2xRdcfl0IdLNyd/fJVP+6hLH9D2bDNJFicZvbFF/b8
+         jlxBTQdCHX43+sQ/2rGVN1RH1SY1RJcYYrwV1WQl+wdrAwGiEiVS8epmlrjbWSFnOJHe
+         w/P9zdhuWd4r+18VLvYdph2jW4Ml7UYQXD6el0w4QvHnNdGBN0Y/NKFShBbs03paQD++
+         dwGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724773185; x=1725377985;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ABrGPaQeXTHEpHj1nG5eL4qDwA/TNxf5sECkQr9qYBQ=;
+        b=NHEv7VzwiUf4gzcmwrgPS8Y5FmmQ0055jGZeQKGslasDCIbXB8D6pyJdMFqusbSxMv
+         Y5UMYEv+oUMUBrn5TYuln+n6OIaUOuWyJffW/v/uURTP2G7rrFjv9yO+W0tPBjND5Lxw
+         7nSpr0Gc08jOkCAbF+eFRA9pnJc27+gkrT0oivRyWFyJVUKfSrWgVXNzkmejEDKaY9NE
+         8+oF7PuFrf5kP054QhmC2Yv0Hg/jISzOCrzjqqutRspYHhaXuw7Ovh+5awpqpOg9Z/LG
+         VqrDtfzCtigEAEdcFODkXQ1veFnTXXDsnlGO8ruGphhFM2V0H9veTEtseW7dciLRn+Ya
+         co4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWuwxZgvvaCYDwD+oLX026dK3CFOzJIK2M7tkFPymvHQRRntePKsJv+HlwiXnkj4+Cwa/Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvUtjRpsK+2OHyz6IMbxWIUHxzkrf724OQ4l1AmkQlnk4VSU6+
+	UJ/bxIZntpaBRZIsDHbXlH9JjkA0umBqTUBMYo1EEKbZJ3A7sb3ePMCTmLF50LWk6cgB++FxkUK
+	97TvRZW4lpvV51rMkuzDU4WFiIWPeB1kofGmb8Q==
+X-Google-Smtp-Source: AGHT+IE+kcBunpFXfOGpuNdas/X5FdTgaWsUmcSrsoP0VkiG4IG6IRfZg8+GgGc5TZDGinb+7wjme3MyFaQZ0qKWfPE=
+X-Received: by 2002:a05:6358:430f:b0:1aa:c49e:587d with SMTP id
+ e5c5f4694b2df-1b5c215d7efmr1740185555d.18.1724773185173; Tue, 27 Aug 2024
+ 08:39:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e4a5c89-e9ec-421e-8245-f076044866c9@paulmck-laptop>
-X-Migadu-Flow: FLOW_OUT
+References: <20240827143843.399359062@linuxfoundation.org>
+In-Reply-To: <20240827143843.399359062@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 27 Aug 2024 21:09:33 +0530
+Message-ID: <CA+G9fYuibSowhidTVByMzSRdqudz1Eg_aYBs9rVS3bYEBesiUA@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/341] 6.6.48-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, rcu <rcu@vger.kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Zhen Lei <thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Aug 26, 2024 at 09:01:54AM GMT, Paul E. McKenney wrote:
-> But get_state_synchronize_srcu() is still a function call.  But the
-> offer of a function that checks multiple grace-period-state cookies in
-> one call still stands.
+On Tue, 27 Aug 2024 at 20:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.48 release.
+> There are 341 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 29 Aug 2024 14:37:36 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.48-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-It shouldn't be though, it's just reading a sequence number - I'd much
-prefer if it could be at least a static inline.
+The tinyconfig builds failed due to following build warnings / errors on the
+stable-rc linux.6.6.y.
 
-Which you won't want to do, because it would mean exposing RCU private
-data structures; hence my approach of exposing an RCU-only api for
-getting a pointer to the sequence number.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> 
-> > In my current version of the code, we call __get_state_synchronize_rcu()
-> > after we've disabled interrupts; we know the rcu gp seq isn't going to
-> > tick while we're in the critical path. But this doesn't apply if it's
-> > for SRCU, and I don't want to add if (src) srcu_read_lock() branches to
-> > it.
-> 
-> Actually, disabling interrupts does *not* prevent RCU's grace-period 
-> sequence number from changing.  For example, the following really can
-> happen:
-> 
-> o	RCU notices that the current grace period can end.
-> 
-> o	A CPU disables interrupts here.
-> 
-> o	A call to get_state_synchronize_rcu() returns a cookie
-> 	corresponding to the end of the grace period following the
-> 	current one.
-> 
-> o	RCU ends the current grace period, therefore updating the
-> 	grace-period sequence number.
-> 
-> o	RCU starts a new grace period, therefore updating the
-> 	grace-period sequence number once again.
-> 
-> o	RCU cannot complete this new grace period until that CPU
-> 	re-enables interrupts, but it has already updated its grace-period
-> 	sequence number not once, but twice.
-> 
-> So if your code knows that RCU's grace-period sequence number cannot
-> change while a given CPU has interrupts disabled, that code has a bug.
-> A low-probability bug, perhaps, but if your code is running on enough
-> systems, it will make its presence known.
+Build error:
+-------
+kernel/rcu/update.c:49:
+kernel/rcu/rcu.h: In function 'debug_rcu_head_callback':
+/kernel/rcu/rcu.h:255:17: error: implicit declaration of function
+'kmem_dump_obj'; did you mean 'mem_dump_obj'?
+[-Werror=implicit-function-declaration]
+  255 |                 kmem_dump_obj(rhp);
+      |                 ^~~~~~~~~~~~~
+      |                 mem_dump_obj
+cc1: some warnings being treated as errors
 
-Ok, good to know
+Build log links,
+------
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2lFMi7HOL2XF8hQWViw6CjE3NAF/
 
-> 
-> > Not at all essential, the races that result from this are harmless, but
-> > if we e.g. decide it's worthwhile to only kick off a gp if it hasn't
-> > ticked (i.e. only kick rcu if we're still on seq of the object being
-> > enqueued) it'd be nice.
-> 
-> Why not call get_state_synchronize_rcu(), and ask for a new grace period
-> if the value returned is different than that from the previous call?
+ metadata:
+----
+  git describe: v6.6.47-342-g0ec2cf1e20ad
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  git sha: 0ec2cf1e20adc2c8dcc5f58f3ebd40111c280944
+  kernel config:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2lFMi7HOL2XF8hQWViw6CjE3NAF/config
+  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2lFMi7HOL2XF8hQWViw6CjE3NAF/
+  toolchain: clang-18 and gcc-13
+  config: tinyconfig
 
-We don't want to falsely think the object expires later than it actually
-does, and have more accumulated work than we need to.
 
-> > Funny, I had the same thoughts trying to read your code... :)
-> 
-> Amazing how much easier it is to generate new code than to understand
-> existing code, isn't it?  ;-)
+steps to reproduce:
+------
+# tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13
+--kconfig tinyconfig
 
-I would have much preferred if your existing code worked with SRCU. You
-think I'm doing this for fun?
-
-> > > Plus, unlike kfree_rcu() post-grace-period handling, call_rcu() callback
-> > > functions usually access the memory block passed to them, which means
-> > > that they are incurring that per-element cache miss in any case.
-> > 
-> > True. But this would allow us to prefetch those objects (several
-> > iterations in advance).
-> 
-> I need to see a CPU on which this actually make a significant difference
-> before adding this sort of complexity.
-
-We would of course want benchmarks to show that this was worthwhile
-before switching call_rcu(), since absent a performance improvement we'd
-want to stick with the approach that doesn't allocate memory.
-
-> > Just processing a few items? hmm, would we want to though, when
-> > otherwise we'd be calling kfree_bulk()? I think icache locality means
-> > we'd generally prefer not to.
-> 
-> You might not want to yet, but you eventually would want this.
-
-Because?
+--
+Linaro LKFT
+https://lkft.linaro.org
