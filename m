@@ -1,136 +1,151 @@
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF581C68BD
-	for <rcu@vger.kernel.org>; Tue, 27 Aug 2024 15:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6B21D2786
+	for <rcu@vger.kernel.org>; Tue, 27 Aug 2024 18:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724773188; cv=none; b=R4YCNb93VzhVcsC1Hr7lNnypDp6unXuugPm+Z53lrw5gJ1e3xOOnaz7/PGEsemD4BYYSTvtxSHbWaCmESld3H7+IjRrcpl9b5UtW4bHVnsI/njPG+YwMoLpmVV/bud2T+DXlzYAmWXJ3dMUg12ehz90Oor/WGkDeWSlXHl5FUus=
+	t=1724781787; cv=none; b=plA5yNKq3MgHLmFvrIBCdCl2Ty/isie9B83PSwQ42C5K2TlN41zGu8zP7gAJ9S4IZHWAtj0zuTEEnipgDp2bIPiHV8HD67x352UMf5R8K/kU1d8MZjy2WVGLNhVk3XoR7zP2N+NyYu4WqAJxxUDMCvoSxhE2oKdRR5Zi/HENbsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724773188; c=relaxed/simple;
-	bh=J8i0Lb2oWbc6JBapK1BY0lUoCq02D7GVagTSdbkqv1Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hV4VQaq/PRgGKDGTTdjD0MXfAqSQCisPwQzz+o5HTJnuQGqaHYyvrLN24ycIi7DuaiBbwYAoHgypXB3pRQ48AqAzhgJLvyq+GLxLVBEUcUntOlKsSuI3LxTttSNmvE/DQ4ju2vKA+5y7uhTIpgHYg0s1u2u706Im2F7nsyhSL3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cshmBU59; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1724781787; c=relaxed/simple;
+	bh=oR96iOXx+rs3wrdkJBENkx2GGB/C+AMxImmsvKqiHvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kZI4o9/45CbCz/gDkkzg9a0yxxVoB+EVtqp5+VI+5om+8pl4+h8c2c/Ggqur2KWtqtjqORJr486b0LCqaNUWfTMdID+4SEJvQ9gdCDQYvanck4YBkodRxbDHLJAd8fHaP9QLh2UVpelHwj9KkFUizLnrECr8PXNPapb8XfrzHDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jp/Ok7Cp; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cshmBU59"
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-7091558067eso3369111a34.3
-        for <rcu@vger.kernel.org>; Tue, 27 Aug 2024 08:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1724773185; x=1725377985; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ABrGPaQeXTHEpHj1nG5eL4qDwA/TNxf5sECkQr9qYBQ=;
-        b=cshmBU59B8Y5XavgvLSrMfF/g+ab0w0/qNjaBmPn8DOLpyzD5OfHW28NZoxO+y/oTC
-         BrJSIy0yTwDQX7gSxm81rMLhIk1MTNjXSx51UHSRZuE8VxYP5IE4EeJFMOL4FR2/51jP
-         6fejy1vw2Q1cIQz3hekKQqAjtD2xRdcfl0IdLNyd/fJVP+6hLH9D2bDNJFicZvbFF/b8
-         jlxBTQdCHX43+sQ/2rGVN1RH1SY1RJcYYrwV1WQl+wdrAwGiEiVS8epmlrjbWSFnOJHe
-         w/P9zdhuWd4r+18VLvYdph2jW4Ml7UYQXD6el0w4QvHnNdGBN0Y/NKFShBbs03paQD++
-         dwGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724773185; x=1725377985;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ABrGPaQeXTHEpHj1nG5eL4qDwA/TNxf5sECkQr9qYBQ=;
-        b=NHEv7VzwiUf4gzcmwrgPS8Y5FmmQ0055jGZeQKGslasDCIbXB8D6pyJdMFqusbSxMv
-         Y5UMYEv+oUMUBrn5TYuln+n6OIaUOuWyJffW/v/uURTP2G7rrFjv9yO+W0tPBjND5Lxw
-         7nSpr0Gc08jOkCAbF+eFRA9pnJc27+gkrT0oivRyWFyJVUKfSrWgVXNzkmejEDKaY9NE
-         8+oF7PuFrf5kP054QhmC2Yv0Hg/jISzOCrzjqqutRspYHhaXuw7Ovh+5awpqpOg9Z/LG
-         VqrDtfzCtigEAEdcFODkXQ1veFnTXXDsnlGO8ruGphhFM2V0H9veTEtseW7dciLRn+Ya
-         co4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWuwxZgvvaCYDwD+oLX026dK3CFOzJIK2M7tkFPymvHQRRntePKsJv+HlwiXnkj4+Cwa/Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvUtjRpsK+2OHyz6IMbxWIUHxzkrf724OQ4l1AmkQlnk4VSU6+
-	UJ/bxIZntpaBRZIsDHbXlH9JjkA0umBqTUBMYo1EEKbZJ3A7sb3ePMCTmLF50LWk6cgB++FxkUK
-	97TvRZW4lpvV51rMkuzDU4WFiIWPeB1kofGmb8Q==
-X-Google-Smtp-Source: AGHT+IE+kcBunpFXfOGpuNdas/X5FdTgaWsUmcSrsoP0VkiG4IG6IRfZg8+GgGc5TZDGinb+7wjme3MyFaQZ0qKWfPE=
-X-Received: by 2002:a05:6358:430f:b0:1aa:c49e:587d with SMTP id
- e5c5f4694b2df-1b5c215d7efmr1740185555d.18.1724773185173; Tue, 27 Aug 2024
- 08:39:45 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jp/Ok7Cp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724781785;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=p8/cxNE6VJvsneEbrGqWQbWsphVxB+ixn/SyQ/i73Rc=;
+	b=Jp/Ok7CpU8YXgnJrPlW5S4brcJUgv5uWezpD2HDFTsebFC8KqAo6XCG2iExPgHYh2qtExo
+	tXkjBydTG+ZZoHRW5uq774PEveC957CWcgud9x3KBbdkO3TY5lOOunlC8xAD6HMlaNM2i1
+	Pfl7EJmOptI715Boi4ABTamICD0Yjxc=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-86-x4bboJ_cMxOfXXcFMjZ1oA-1; Tue,
+ 27 Aug 2024 14:03:03 -0400
+X-MC-Unique: x4bboJ_cMxOfXXcFMjZ1oA-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E8B2C1955D48;
+	Tue, 27 Aug 2024 18:02:58 +0000 (UTC)
+Received: from fs-i40c-03.mgmt.fast.eng.rdu2.dc.redhat.com (fs-i40c-03.mgmt.fast.eng.rdu2.dc.redhat.com [10.6.24.150])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id EAE651955F1B;
+	Tue, 27 Aug 2024 18:02:53 +0000 (UTC)
+From: Alexander Aring <aahringo@redhat.com>
+To: teigland@redhat.com
+Cc: gfs2@lists.linux.dev,
+	song@kernel.org,
+	yukuai3@huawei.com,
+	agruenba@redhat.com,
+	mark@fasheh.com,
+	jlbec@evilplan.org,
+	joseph.qi@linux.alibaba.com,
+	gregkh@linuxfoundation.org,
+	rafael@kernel.org,
+	akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev,
+	netdev@vger.kernel.org,
+	vvidic@valentin-vidic.from.hr,
+	heming.zhao@suse.com,
+	lucien.xin@gmail.com,
+	paulmck@kernel.org,
+	rcu@vger.kernel.org,
+	juri.lelli@redhat.com,
+	williams@redhat.com,
+	aahringo@redhat.com
+Subject: [RFC 0/7] dlm: the ultimate verifier for DLM lock correctness
+Date: Tue, 27 Aug 2024 14:02:29 -0400
+Message-ID: <20240827180236.316946-1-aahringo@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240827143843.399359062@linuxfoundation.org>
-In-Reply-To: <20240827143843.399359062@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 27 Aug 2024 21:09:33 +0530
-Message-ID: <CA+G9fYuibSowhidTVByMzSRdqudz1Eg_aYBs9rVS3bYEBesiUA@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/341] 6.6.48-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org, rcu <rcu@vger.kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Zhen Lei <thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On Tue, 27 Aug 2024 at 20:12, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.48 release.
-> There are 341 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Aug 2024 14:37:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.48-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi,
 
-The tinyconfig builds failed due to following build warnings / errors on the
-stable-rc linux.6.6.y.
+I send this rfc patch series to show a (for me) usable use-case for the
+DLM net-namespace functionality that is currently pending, see [0]. This
+patch-series introduce the DLM verifier to check on DLM correctness on
+any workload running on DLM with net-namespace feature. E.g. on gfs2 you
+can just run some filesystem benchmark tests and see if DLM works as
+aspected.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This comes very useful when DLM recovery kicks in e.g. when nodes
+leaving the lockspace due e.g. fencing and recovery solves lock
+dependencies transparently from the user. However there is no "fake
+fencing switch" yet for DLM net-namespaces, but might be an idea for
+future functionality.
 
-Build error:
--------
-kernel/rcu/update.c:49:
-kernel/rcu/rcu.h: In function 'debug_rcu_head_callback':
-/kernel/rcu/rcu.h:255:17: error: implicit declaration of function
-'kmem_dump_obj'; did you mean 'mem_dump_obj'?
-[-Werror=implicit-function-declaration]
-  255 |                 kmem_dump_obj(rhp);
-      |                 ^~~~~~~~~~~~~
-      |                 mem_dump_obj
-cc1: some warnings being treated as errors
+There could be bugs in the verifier, that I don't care if they exists...
+We need to check whats happening when the verifier complains but so far
+everything looks fine. It just an issue if the verifier doesn't say
+anything but a small bug introduced in DLM and the verifier will
+complain a lot.
 
-Build log links,
-------
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2lFMi7HOL2XF8hQWViw6CjE3NAF/
+There might be still improvements in the DLM verifier. I needed to
+change a little bit the python scripts to generate the code but I did
+not add them here to this patch series. Also checkpatch complains about
+some things in the verifier code but I oriented myself mostly to the
+other existing verifiers. There is a printout of all holders if those
+violates the DLM compatible locking states. I might improve them when I
+actually try to figure out an existing problem, but for now this
+printout is very minimal.
 
- metadata:
-----
-  git describe: v6.6.47-342-g0ec2cf1e20ad
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-  git sha: 0ec2cf1e20adc2c8dcc5f58f3ebd40111c280944
-  kernel config:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2lFMi7HOL2XF8hQWViw6CjE3NAF/config
-  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2lFMi7HOL2XF8hQWViw6CjE3NAF/
-  toolchain: clang-18 and gcc-13
-  config: tinyconfig
+I mainly do this work because I prepare more changes in the DLM recovery
+code in future to scale with lockspaces with a lot of members that we
+can easily try out with the net-namespace functionality.
 
+I cc here the rcu people, may they also get some ideas to check on lock
+correctness using tracing kernel verifier subsystem.
 
-steps to reproduce:
-------
-# tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13
---kconfig tinyconfig
+- Alex
 
---
-Linaro LKFT
-https://lkft.linaro.org
+[0] https://lore.kernel.org/gfs2/20240814143414.1877505-1-aahringo@redhat.com/
+
+Alexander Aring (7):
+  dlm: fix possible lkb_resource null dereference
+  dlm: fix swapped args sb_flags vs sb_status
+  dlm: make add_to_waiters() that is can't fail
+  dlm: add our_nodeid to tracepoints
+  dlm: add lkb rv mode to ast tracepoint
+  dlm: add more tracepoints for DLM kernel verifier
+  rv: add dlm compatible lock state kernel verifier
+
+ Documentation/trace/rv/monitor_dlm.rst |  77 +++++
+ fs/dlm/ast.c                           |  30 +-
+ fs/dlm/dlm_internal.h                  |   3 +
+ fs/dlm/lock.c                          |  64 ++--
+ fs/dlm/lockspace.c                     |   4 +
+ fs/dlm/user.c                          |   9 +-
+ include/trace/events/dlm.h             | 121 ++++++-
+ include/trace/events/rv.h              |   9 +
+ kernel/trace/rv/Kconfig                |  18 +
+ kernel/trace/rv/Makefile               |   1 +
+ kernel/trace/rv/monitors/dlm/dlm.c     | 445 +++++++++++++++++++++++++
+ kernel/trace/rv/monitors/dlm/dlm.h     |  38 +++
+ kernel/trace/rv/monitors/dlm/dlm_da.h  | 143 ++++++++
+ tools/verification/models/dlm.dot      |  14 +
+ 14 files changed, 907 insertions(+), 69 deletions(-)
+ create mode 100644 Documentation/trace/rv/monitor_dlm.rst
+ create mode 100644 kernel/trace/rv/monitors/dlm/dlm.c
+ create mode 100644 kernel/trace/rv/monitors/dlm/dlm.h
+ create mode 100644 kernel/trace/rv/monitors/dlm/dlm_da.h
+ create mode 100644 tools/verification/models/dlm.dot
+
+-- 
+2.43.0
+
