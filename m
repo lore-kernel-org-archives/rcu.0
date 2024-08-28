@@ -1,45 +1,40 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08A611CA0;
-	Wed, 28 Aug 2024 01:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D2E7288B1
+	for <rcu@vger.kernel.org>; Wed, 28 Aug 2024 02:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724808098; cv=none; b=Joi3S/PaArvtqKCWNXZadoKK7Vme4ZkvmR7Juij/fGFz2voLA7csQ9xxossr2Yiz31rGlOYlNabL5IuLB4p4Kj/DoasgFHh/FWkDnQa53GaRTWUqFXvtiX275XnAlvD+TIGm3HHe83ff5D30HGTFqynpua98R12B88aFCIT39JM=
+	t=1724812450; cv=none; b=s3Z5ke2cP8A5WVOQL6e5VtgcVA38H5xAj970IDPySU2wSii4ruXW3UGZIQeY7k+NHwJAaY8u29KqkChYLjDBKQ2IueGjkJPc9FlUn9K5FSE+L6p1AAjXuRjQdKETYgABiTD7+VxDq9BGA6N3U9GxM8xLA0+8pxoUU1Q2XFbs4Yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724808098; c=relaxed/simple;
-	bh=4LN/Km+EfvQOVLr9BjgfNavvXCC/cTwWSej7GwdvX8g=;
+	s=arc-20240116; t=1724812450; c=relaxed/simple;
+	bh=2EqepTn95G1dTtq/yFyQ3VC4F2GlUfZEU+ywRVMaV1k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VPtKkrpZa9LbLH2vtr3DWNxVmPHeg+Sz7fK5D30qqxVrj43gSuyrQ1XR49QPVAzw2a8kyn26mXIsuhF2P6CToPt5UA7IT/jkpSU4Mi2ObjL8OFRC4wz/Nr3W7CaRfowmwSNG7u5DJogam2lejN2C6+wJH5cE8rNsssF2L70pSdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gcHT/LHP; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=HA3evH0eLEnxy1x6EgiAx7r7yPvBOywNAfPcXWhMcOjQbDkPiAMV8d6jPJkc+yRGpINQXjXNnMrzy+pjPr2xOG7S0h/0JExn/2Csy4uuuhSBnGKyZkgXfh5p15rH/cT3aFiapYCnZ6MLa2/hXPyx1IYJ+hVRVVydD/JhmyVutG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6JW0Vpk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gcHT/LHP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C1BEC4AF0C;
-	Wed, 28 Aug 2024 01:21:37 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6JW0Vpk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A007C32782;
+	Wed, 28 Aug 2024 02:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724808097;
-	bh=4LN/Km+EfvQOVLr9BjgfNavvXCC/cTwWSej7GwdvX8g=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=gcHT/LHPoHdoDyp8jRwQ/4K1j964dZEaDeDNaT/2FsZal+t2HNobgTyea136iD00R
-	 ggicnRTmD1dTgNx9Olr4gvX0F170v7uRTgpNtoBqfw/2w6BJi1TTaMO9qCgoV2SkA6
-	 rIeTqY41pPXkLCnsJBDlHPnYeFS5mSRH3v7wUN/G1hv7EgOVTtFz/Tp42hqBZKDYVJ
-	 hTK1N/G+2rVACyV8MgsJTQm9duYIFyysB9Q3FzujxiuW+y5GZDsJAXtyL5XbqNZ8Z9
-	 tHBmCvPjfzMlTmkjKqgLNPYN5q+s+ABZZKrABrNsWVe8kNTPyWOmR6MZ22+Dw441G/
-	 b/5hOxYE8m6Tw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0939ACE0D9B; Tue, 27 Aug 2024 18:21:37 -0700 (PDT)
-Date: Tue, 27 Aug 2024 18:21:37 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
+	s=k20201202; t=1724812450;
+	bh=2EqepTn95G1dTtq/yFyQ3VC4F2GlUfZEU+ywRVMaV1k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F6JW0VpkTFrwCmasJ4xADPLYGIzi/8kyG3UMo0q+2E8rsnJAQRgU8anjjgiy56ze7
+	 uDOh+Oj70GPtYUIQTebBsF9yNIBfGyYgvmAVRbcZPRMpuktIctz8avIoiMMyxn/0Cl
+	 UKfgubzPX1W6KNjsFP9wKVOXbmck1POQxy8MlBQdb8uKwo5lcCOPMvVVIRTqPdQanc
+	 lvWFGEzDiX2l6l3bT7x/9N8byE9i3xDK7u17EdkJclUHq9Jev9TgTNlsWQ45i62u9u
+	 rOf762wOm+vk/ddWHkc+W5jcruRObzqo5nvg0KlhYCDvtJDCYa2xr01j77RCu//ek5
+	 iH+OS0r+XBUJw==
+Date: Wed, 28 Aug 2024 08:03:53 +0530
+From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
 To: Jon Kohler <jon@nutanix.com>
-Cc: "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+Cc: "paulmck@kernel.org" <paulmck@kernel.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
 	"jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-	"josh@joshtriplett.org" <josh@joshtriplett.org>,
-	"jack@suse.cz" <jack@suse.cz>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	Z qiang <qiang.zhang1211@gmail.com>
+	"josh@joshtriplett.org" <josh@joshtriplett.org>
 Subject: Re: SRCU hung task on 5.10.y on synchronize_srcu(&fsnotify_mark_srcu)
-Message-ID: <2701726a-4552-4f63-9a75-3a7c93571072@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <20240828023353.GA72517@neeraj.linux>
 References: <1E829024-48BF-4647-A1DD-AC7E8BFA0FA2@nutanix.com>
  <95fbe7cc-8752-4e38-8c2e-5df5e544a3cc@paulmck-laptop>
  <C8864F22-A875-41B1-8293-9EF0D8495E12@nutanix.com>
@@ -98,28 +93,10 @@ On Tue, Aug 27, 2024 at 11:33:32PM +0000, Jon Kohler wrote:
 > 
 > That or somehow wakeme_after_rcu() fires *before* wait_for_completion()
 > is setup, causing the wait to hang forever?
-
-There is no problem with that misordering -- in that case, the call to
-wait_for_completion() simply won't wait.
-
-But that would be a good path to trace.  After all, you might have
-noticed that what we believe software will do does not always match what
-it actually does.
-
-
+> 
 > Is it possible for wakeme_after_rcu() to race, such that it fires somewhere
 > else *before* wait_for_completion gets all the way to schedule()?
-
-That should also work just fine, but it is still a good assumption to
-check.
-
-Good list below, but I must focus on mainline.  Apologies!
-
-Plus this assumes that v5.10 worked for you -- has that been tested?
-So again, what version has worked for you?
-
-							Thanx, Paul
-
+> 
 > [rcu]$ pwd
 > /kernel/kernel/rcu
 > [rcu]$ git remote -v
@@ -195,7 +172,17 @@ So again, what version has worked for you?
 > 4540e84bd8a9 rcu: Allow rcu_irq_enter_check_tick() from NMI <<<< this is the first kernel/rcu backport for 5.10.y branch >>>>
 > ...
 > 2c85ebc57b3e (tag: v5.10) Linux 5.10 <<<< this is the divergence point from mainline to 5.10.y >>>> 
-> 
+>
+
+Can you check if this commit [1] is present in your tree. If not, please
+try with it.
+
+Also, you might want to check the state of the kworker running
+process_srcu() work fn, to see where the worker thread corresponding
+to this SRCU domain is waiting.
+
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=5573fdbc3423475aae4b0c2e3b0076d6216e9ed1
 > > 
 > >> in fsnotify_connector_destroy_workfn / fsnotify_mark_destroy_workfn,
 > >> where two kernel threads are both calling synchronize_srcu, then
