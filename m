@@ -1,55 +1,57 @@
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD8815530C;
-	Wed, 28 Aug 2024 11:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C9B15B96E;
+	Wed, 28 Aug 2024 11:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724843375; cv=none; b=fUme3eENBjilKBkzt/IzKTC59zns73QAXzaPRzRiD3UsY30ap2MZKXBsv27fkKZXXOt7iLPLuH+yxNnjl3MJxy4Ro+tmGVSc76FdsV+tjHVIVvOJx+ZBg1pktUBDY4eXLH4/hPt3z6biromdIVAgXyYBYIqGAtTxfFlOD0ChcVE=
+	t=1724843376; cv=none; b=D99WNJL33GVngu1JF7XD1iM+HQq1fRrF2FdjVQH58Vf+wJvyuauDD6E19hV9Ikr6/apKt5SnqNhuJCfgwSWqY/BEx8QBlEiiuMNzbhgO5JWIz956U51BCD7dH+2fgRwDHu1Xlm4L9xNkwRqrhi7aPWBtAQhF/thTRvEYklUnpsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724843375; c=relaxed/simple;
-	bh=tH5AVuZaz/SBuoF41LI0/mhbZ9VYmt+O9y2koTLDQwg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qXxnQ31KdZ94p0NFBdqOcc9Nxotf9GWCaeJYxyUlDniGHzavG1xoTkQD5sTHOg29I+mCOX94SRkRbQuZ2yvXptyDxnldOyymk8XfRYm79dciXO2N6gcYHy3KRr8+6i/Wxj53Vbt46HgSjYVy7UJqPV1yy1lP5l2W45rapCvlSJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ju0TJd4C; arc=none smtp.client-ip=209.85.167.49
+	s=arc-20240116; t=1724843376; c=relaxed/simple;
+	bh=rJJSGflVEsvyegqM2xzslX9R1V3V8wlyxq1WlJTXKyw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=fc9FRzake8S+1Fq1jgNhlarxNDpyXLxoKkq8uO8NPcqziqTbxVos3rfwmin+jTZcI6Le3c5YU2/xQkuQqigo5xIQKGPKrT0LOn8VFaOCa/IWDjjUebD3bTwRkhY8/i0QpQk+3/66T1d/HFhfkxDIrAQK4icQZV5xSr/DuzpzYtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ghjv7ONl; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ju0TJd4C"
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-533462b9428so11132504e87.3;
-        Wed, 28 Aug 2024 04:09:33 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ghjv7ONl"
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5343617fdddso9877002e87.0;
+        Wed, 28 Aug 2024 04:09:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724843372; x=1725448172; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=APgBV8G9YmayHbdpoOGlYHq23hZ8pxfAdj4J5HwI9Jg=;
-        b=ju0TJd4C3K/XPl/8aUKdXG///gYcJH0hrfmgKmvlSLLfVTWCa8TAeGCenxvnPDNfh5
-         hwEpgFggJ4pi5kfiu7KYcOFZOy9KQad6I64OS06E3UsH7ilqF96VDYd1DnQMBwa0LOXJ
-         s9yXuuTR+1h6GZ+CQzizoDy0CJMo33C0VKhbh7TGGHMb/sOBaQ1xejUvk3UR4gIFTVSk
-         jtVKqQsim6lx6ZW4+l/B8L8f0KpXVJoRESL7ZNuRTXXpr7KROWsiNmX25T526wm8Vlju
-         eGDaKoc+IDbxIDbmAL1AfK5nDuBgWWluF12ilP06/MyiMyCnnI2ORky2uWoCR2pGHJd+
-         X1zQ==
+        d=gmail.com; s=20230601; t=1724843373; x=1725448173; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Qxc5i9kYwybQ5di4V7uU+5XJm5+s4ugo63m8+R6Bkc=;
+        b=Ghjv7ONl0L2b6BZAbBRQS1lTBrDYRn5Lsx0KeYNeaa5ZzRu2KcYBSJxeDp0YIpVsPr
+         lUT48QDreL4rkHnTZwrTDJ7ursZ4920kBcPT0XncVM7RmvhnrbgQyLCiapT+e9OsVPX5
+         rnIqaa9TP1rHWub+IbK/Idyauf1JN4vT8C5Cl6OEjj6XoeqP+q97G+PEMM2ykAUkVedE
+         NCAjYKQAmNGEXj9Esmmp6B608Ws+W/tzIG7fBMCyBlE57+AxyhDbD40OIP6m/bwm7I+f
+         y3KpWAcjyDhJRY4FXShqfNpHlUaG/wghXuK8qJlgETti4Hvbg/hI38F9+T+gOZ39DCTF
+         Wsfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724843372; x=1725448172;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=APgBV8G9YmayHbdpoOGlYHq23hZ8pxfAdj4J5HwI9Jg=;
-        b=q+7lHZvTTmaeni60HiOVdqfvi48YPxfr+QD7HGMjugX2ZQFWGwBZ5zZPrIzHYxZcqq
-         ajT6W2GNr+Or00gtQe+FVxYb0z0woVS93eTJN1P/kzKo67Q12rTBs8dPDJdFfGQBnX1c
-         KV7w3XUCRSHtNXzp4+RXBv65PaR7acytvbJLWaJsr2ibFgMSn6u5DKQtkViqRexye3um
-         glOGhdQ5G3yZZkj4ax5+0/sYSxr0W+UT+Ym8F9Ed0pSG2fsoF5URtySLi6r/B7nxIEuZ
-         qPJxAU1TefBrZ72z0PAF7b7Y01TrlSlY3dvDmzpmYgfECwRRlUJvzEkOn/hRNT4DSvsa
-         ZfPw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMfPiOSk8ysJmh9vzVigv6KLd6jCqfJXY7zsprBBwgoep1avYnXmZCYwZDVjbxWNPNAaNXbT2y8SWvfw4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyExB0tXarjg3zvhVx49nP4UoBUrNGDr6y7c5uJ3RQrmySeFpJr
-	5b/qLmM1k6PFnsBMvYPFtpwoJv9xgVYap/LYbPVaAoJLh+MRAIYS
-X-Google-Smtp-Source: AGHT+IEwrZjfzGPiUUcd0oy9ve5M3+k155o6iB3Qt18BMKOUcB5vJW9DYhSPs+vbkqgWQiJIYGZe9w==
-X-Received: by 2002:a05:6512:3d20:b0:52e:73f5:b7c4 with SMTP id 2adb3069b0e04-5343887e063mr12923255e87.37.1724843371157;
+        d=1e100.net; s=20230601; t=1724843373; x=1725448173;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Qxc5i9kYwybQ5di4V7uU+5XJm5+s4ugo63m8+R6Bkc=;
+        b=deL4TjLzbXe1EbkcvthH8RFaFuQjv5PGSVZiVa55QIaTD/AJXJucoVdtTwcaG3mY4W
+         k0l4daIZ2AS8m3w3aeyDJ/TLj/WhW1DtQYA9CO/UHT4kRRfD8xvNJkdY69GeiAj2iXgO
+         QKnfNz5J0+Erjn/Zf3Kl1UFNhRH0wXjKR/4MV09WJlQ6kV1wc2201mHGaJjcbAw8PfDS
+         YbbdpLN3htqM1vbfWrhNabEEVEO3Wa+4OQ3fkwcoKMRaLIb4vzH1b9GzxBSX+IZEsLZX
+         VHfj3g2KaxQv2NKQtAjAzG3X2JV3/Cb8GkQKLFFEboUW9vWgGUdHou34lJ9rbvKv/O27
+         J5dw==
+X-Forwarded-Encrypted: i=1; AJvYcCXRenSHkmeOVi+5ez3s3kUCsnoXzNtCPD96v3uOeGuutmEJtf6wK0yeXU0MGGkU0a/xQp9I30fuRvDTwos=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywnnl9qwseG4pe/geD+HsuzeGsQxgajwE6Q3Sezqqln/xQh+kfC
+	vELYlGaQHt2ID8hlf5i3Va5FDQmuD6bcSEa7d3M2x01yaoVZtzrugLh4GQ==
+X-Google-Smtp-Source: AGHT+IF1Jz16avNF0tBfsqqNv73DT3YAtTjwrKxBCnHISd7IwnrF5cCs3LhuWbZOlMsZJ+2wtXek/w==
+X-Received: by 2002:a05:6512:2243:b0:52c:e091:66e4 with SMTP id 2adb3069b0e04-5343887e244mr13519428e87.44.1724843371945;
         Wed, 28 Aug 2024 04:09:31 -0700 (PDT)
 Received: from pc638.lan (84-217-131-213.customers.ownit.se. [84.217.131.213])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5334ea5d6bdsm2154922e87.208.2024.08.28.04.09.30
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5334ea5d6bdsm2154922e87.208.2024.08.28.04.09.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 04:09:30 -0700 (PDT)
+        Wed, 28 Aug 2024 04:09:31 -0700 (PDT)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>,
 	Vlastimil Babka <vbabka@suse.cz>
@@ -61,10 +63,12 @@ Cc: RCU <rcu@vger.kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH 1/4] rcu/kvfree: Support dynamic rcu_head for single argument objects
-Date: Wed, 28 Aug 2024 13:09:26 +0200
-Message-Id: <20240828110929.3713-1-urezki@gmail.com>
+Subject: [PATCH 2/4] rcu/kvfree: Add a switcher for dynamic rcu_head
+Date: Wed, 28 Aug 2024 13:09:27 +0200
+Message-Id: <20240828110929.3713-2-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240828110929.3713-1-urezki@gmail.com>
+References: <20240828110929.3713-1-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -73,112 +77,41 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a support of dynamically attaching an rcu_head to an object
-which gets freed via the single argument of kvfree_rcu(). This is
-used in the path, when a page allocation fails due to a high memory
-pressure.
+Add a sysfs attribute to control whether a dynamically
+rcu_head should be attached or not. It can be controlled
+via "/sys/module/rcutree/parameters/use_dyn_rcu_head".
 
-The basic idea behind of this is to minimize a hit of slow path
-which requires a caller to wait until a grace period is passed.
+By default it is OFF.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 53 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 49 insertions(+), 4 deletions(-)
+ kernel/rcu/tree.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index be00aac5f4e7..0124411fecfb 100644
+index 0124411fecfb..893ee69d4a4b 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3425,6 +3425,11 @@ kvfree_rcu_bulk(struct kfree_rcu_cpu *krcp,
- 	cond_resched_tasks_rcu_qs();
- }
+@@ -206,6 +206,9 @@ module_param(rcu_min_cached_objs, int, 0444);
+ static int rcu_delay_page_cache_fill_msec = 5000;
+ module_param(rcu_delay_page_cache_fill_msec, int, 0444);
  
-+struct dyn_rcu_head {
-+	unsigned long *ptr;
-+	struct rcu_head rh;
-+};
++static bool use_dyn_rcu_head __read_mostly;
++module_param(use_dyn_rcu_head, bool, 0444);
 +
- static void
- kvfree_rcu_list(struct rcu_head *head)
+ /* Retrieve RCU kthreads priority for rcutorture */
+ int rcu_get_gp_kthreads_prio(void)
  {
-@@ -3433,15 +3438,32 @@ kvfree_rcu_list(struct rcu_head *head)
- 	for (; head; head = next) {
- 		void *ptr = (void *) head->func;
- 		unsigned long offset = (void *) head - ptr;
-+		struct dyn_rcu_head *drhp = NULL;
-+
-+		/*
-+		 * For dynamically attached rcu_head, a ->func field
-+		 * points to _offset_, i.e. not to a pointer which has
-+		 * to be freed. For such objects, adjust an offset and
-+		 * pointer.
-+		 */
-+		if (__is_kvfree_rcu_offset((unsigned long) ptr)) {
-+			drhp = container_of(head, struct dyn_rcu_head, rh);
-+			offset = (unsigned long) drhp->rh.func;
-+			ptr = drhp->ptr;
-+		}
+@@ -3814,6 +3817,9 @@ attach_rcu_head_to_object(void *obj)
+ {
+ 	struct dyn_rcu_head *rhp;
  
- 		next = head->next;
- 		debug_rcu_head_unqueue((struct rcu_head *)ptr);
- 		rcu_lock_acquire(&rcu_callback_map);
- 		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
- 
--		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
-+		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset))) {
- 			kvfree(ptr);
- 
-+			if (drhp)
-+				kvfree(drhp);
-+		}
-+
- 		rcu_lock_release(&rcu_callback_map);
- 		cond_resched_tasks_rcu_qs();
- 	}
-@@ -3787,6 +3809,21 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- 	return true;
- }
- 
-+static struct rcu_head *
-+attach_rcu_head_to_object(void *obj)
-+{
-+	struct dyn_rcu_head *rhp;
-+
-+	rhp = kmalloc(sizeof(struct dyn_rcu_head), GFP_KERNEL |
-+		__GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-+
-+	if (!rhp)
++	if (!use_dyn_rcu_head)
 +		return NULL;
 +
-+	rhp->ptr = obj;
-+	return &rhp->rh;
-+}
-+
- /*
-  * Queue a request for lazy invocation of the appropriate free routine
-  * after a grace period.  Please note that three paths are maintained,
-@@ -3830,9 +3867,17 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- 	if (!success) {
- 		run_page_cache_worker(krcp);
+ 	rhp = kmalloc(sizeof(struct dyn_rcu_head), GFP_KERNEL |
+ 		__GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
  
--		if (head == NULL)
--			// Inline if kvfree_rcu(one_arg) call.
--			goto unlock_return;
-+		if (!head) {
-+			krc_this_cpu_unlock(krcp, flags);
-+			head = attach_rcu_head_to_object(ptr);
-+			krcp = krc_this_cpu_lock(&flags);
-+
-+			if (!head)
-+				// Inline if kvfree_rcu(one_arg) call.
-+				goto unlock_return;
-+
-+			ptr = (rcu_callback_t) offsetof(struct dyn_rcu_head, rh);
-+		}
- 
- 		head->func = ptr;
- 		head->next = krcp->head;
 -- 
 2.39.2
 
