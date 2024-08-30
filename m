@@ -1,100 +1,178 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E4C199923
-	for <rcu@vger.kernel.org>; Fri, 30 Aug 2024 11:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E97A199FDC
+	for <rcu@vger.kernel.org>; Fri, 30 Aug 2024 12:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725015918; cv=none; b=YPgEhbLYv1Jz+NFOf9rYGoLkrj+jSu6L8AuNyFgRdpTP9fMNZIjFetEDbYOGFmX7J303/RzOQXzWyOE2vhCorBt0eKGaxup5X9v1SUl6hK/ch0UaCIubyz50MXophPEvtNwNMWGJcghLkPtbhQiIx+Df/rUIP2KEvfpPiX34MD4=
+	t=1725022550; cv=none; b=SJmTaQUFtT5fipRGa5MDYPUwqAdOw2bh9HTlzPEq3DpFRWekEuSFlTslapJpVDBL6Ne4X8jJsuz445RXKBNjUY3UiVZ2h89r+XLrePq6uuf/R4xfSKePy4WysBb/8px4fFMGGNeok/vbb3FsiUKRETwff0MktMTNc1jao391SUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725015918; c=relaxed/simple;
-	bh=kOIpmlYJb8ft6Y2rN58XGcZtgztFV91lYJqhTSPV0c0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VN2puHB5zeUCJtSzr1TRtg3r7iRbXAb/2bI7PcHgFVIfLbd6etv+xFlM+nDyfGu1beMYy5177vh9kMwiXEgh0RkpG/PlRjKudZgnEqKwTrfZ/4/xzOg9uOv/OBgSDAA5xkx3KxIFDvhc8Q1p/ibIa0KtpBAoA5lYM5q1HbLcUgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ya4vmu2O; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1725022550; c=relaxed/simple;
+	bh=irInylxAEO/g9EEQKtW8LWQ6H19qdYnMKqIM2kBnrlI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YltUWMOZAe3MgFOmpKK0KG/pP1PtIEwpslFwDucxoxmK12qnBljQqsFQDKX+/+eOTq6VLEsDwuqpdyBQT7GwGjvDMHtXe5G9K+a+EgFymob0YS/Qg28WGJ0ZZUohz2PombuHufD8VpIygWPZkFkB21qV0YsREZsS5Rx0Ce/UIC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b+DkUzC6; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ya4vmu2O"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b+DkUzC6"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725015916;
+	s=mimecast20190719; t=1725022548;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=l0tSha6adNMlOrHuzQyVeK84z60qmOVbtCpMu1nyGv4=;
-	b=Ya4vmu2O4FL8mAnPAY6QfAi4k0kG7tVEdqukb56MDW+gCYPZxF/Oaxw8PMaCOmKfhRaj13
-	+lqLPW0HS4OIm8WOyOEh5GY3XtxzQKL5krNBsx/8TG462x1S6xqFcXzLr5PEjvDsGn2u3s
-	x1JK9MxGrhx+JiMcDrE6ltqee4dKNXg=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-263-tzY--79qN_6mAMQY2I00NQ-1; Fri,
- 30 Aug 2024 07:05:13 -0400
-X-MC-Unique: tzY--79qN_6mAMQY2I00NQ-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 841861955D54;
-	Fri, 30 Aug 2024 11:05:11 +0000 (UTC)
-Received: from sirius.home.kraxel.org (unknown [10.39.193.45])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D418B19560A3;
-	Fri, 30 Aug 2024 11:05:10 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-	id B3E191800D40; Fri, 30 Aug 2024 13:05:08 +0200 (CEST)
-Date: Fri, 30 Aug 2024 13:05:08 +0200
-From: Gerd Hoffmann <kraxel@redhat.com>
-To: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>, 
-	Yan Zhao <yan.y.zhao@intel.com>, Yiwei Zhang <zzyiwei@google.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
- support self-snoop
-Message-ID: <vuwlkftomgsnzsywjyxw6rcnycg3bve3o53svvxg3vd6xpok7o@k4ktmx5tqtmz>
-References: <20240309010929.1403984-1-seanjc@google.com>
- <20240309010929.1403984-6-seanjc@google.com>
- <877cbyuzdn.fsf@redhat.com>
+	bh=C4rwbSvsPY1zfudmMK7sUCyGMbzPRJgaFLcgZLVvf1s=;
+	b=b+DkUzC67mXFbKvArDvoEQmKBDabqbVRBkMqs4zh6inqzfn6O8jrw3c7GesSYZRYuoZa+B
+	owwztgB78Y/xqJQYdo0yPQmbzl7SQma/uevJ2ZrFi9MllVDwH1CrbFPJbYzcrmox6fLqGK
+	dnaSYq5eBqBd+vHRthtlRlIULBmJkP0=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-153-Q1XdWkSsMdWcOIPhDM5WJw-1; Fri, 30 Aug 2024 08:55:45 -0400
+X-MC-Unique: Q1XdWkSsMdWcOIPhDM5WJw-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2f3eaab2d0aso20888481fa.1
+        for <rcu@vger.kernel.org>; Fri, 30 Aug 2024 05:55:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725022544; x=1725627344;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C4rwbSvsPY1zfudmMK7sUCyGMbzPRJgaFLcgZLVvf1s=;
+        b=V/wIRSYgu6MJ/GPtHFAw+L3T64uP80gW+B/2+CJrLAff3D2AvI5BUwvjoGUOCEzF3u
+         EGT4XrTD1R3kYJlVKXxYbRJIAxh44sfMdnUajGM147JCJom+Zg41F/rq5/AQisbQZfHn
+         TtHukXOhKWFOlcWWAcVr1ZzVbdEkW5pPmlRpO50hgZlnKNmP5hz0dGnJ+YGRWLQ/jq0y
+         b3o0mylbOuIe96AQ2v66C5lyJu0SSV3IQM45BmciZ3/O1ZAUgYIZdPncHnLoVOCaZAvG
+         JAi/JawwXLD3P6axhVw9hmS1gDmtdoVqPi0ZFWRQkVew5hiZjG+n3H6Pi+2DHfY7ZOrB
+         pMqw==
+X-Forwarded-Encrypted: i=1; AJvYcCVqjDf+RwVG44qVBAejRe7fXqoRmYC/++5Xb/QdrH4Zu3l7ANfj+ZBpLl9XDI9Hf/IPIZc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUsnywRociNdBioo6xUAZlwtkFRhXpJUKoDVkdXenUsgwTkrOC
+	uFuV2AN6ndK+D3jsK4h0+O0ED33PZlZwQFREKoP2wixYJSpirLIjVSRlpUEDdlummQph+MjPivr
+	POUf3A/iylRGh2NXZYkXXx9G2i1dhwiOgb6KFw85ZfFnzJndvg7VqnEu8joQSIzyZ5xPQPVcNXO
+	MuE/6kp+mjqBUaeabtpZADaI5J
+X-Received: by 2002:a2e:b88b:0:b0:2f4:1d7:e286 with SMTP id 38308e7fff4ca-2f61e0adffdmr7465221fa.18.1725022543575;
+        Fri, 30 Aug 2024 05:55:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHFsPt6iJVHKK5Qe3E63G1+0fcVq/myUtd8Ucirw56OZNhL5CDzG8T2QsadK401r4Oy8yyJ1qR5wybXoJiHALQ=
+X-Received: by 2002:a2e:b88b:0:b0:2f4:1d7:e286 with SMTP id
+ 38308e7fff4ca-2f61e0adffdmr7465161fa.18.1725022543034; Fri, 30 Aug 2024
+ 05:55:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877cbyuzdn.fsf@redhat.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+References: <20240827180236.316946-1-aahringo@redhat.com> <20240827180236.316946-8-aahringo@redhat.com>
+In-Reply-To: <20240827180236.316946-8-aahringo@redhat.com>
+From: Alexander Aring <aahringo@redhat.com>
+Date: Fri, 30 Aug 2024 08:55:31 -0400
+Message-ID: <CAK-6q+iedvC_b3_dO+7C6S15y2o9uuqwDaNJ=a0wZE3hW=+G1g@mail.gmail.com>
+Subject: Re: [RFC 7/7] rv: add dlm compatible lock state kernel verifier
+To: teigland@redhat.com
+Cc: gfs2@lists.linux.dev, song@kernel.org, yukuai3@huawei.com, 
+	agruenba@redhat.com, mark@fasheh.com, jlbec@evilplan.org, 
+	joseph.qi@linux.alibaba.com, gregkh@linuxfoundation.org, rafael@kernel.org, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-raid@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
+	netdev@vger.kernel.org, vvidic@valentin-vidic.from.hr, heming.zhao@suse.com, 
+	lucien.xin@gmail.com, paulmck@kernel.org, rcu@vger.kernel.org, 
+	juri.lelli@redhat.com, williams@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Necroposting!
-> 
-> Turns out that this change broke "bochs-display" driver in QEMU even
-> when the guest is modern (don't ask me 'who the hell uses bochs for
-> modern guests', it was basically a configuration error :-). E.g:
+Hi,
 
-qemu stdvga (the default display device) is affected too.
+On Tue, Aug 27, 2024 at 2:03=E2=80=AFPM Alexander Aring <aahringo@redhat.co=
+m> wrote:
+...
+> +       set_holder_state(lk, our_nodeid, mode);
+> +       rv =3D check_valid_lock_holders(lk, mode, our_nodeid);
+> +       if (rv) {
+> +               /* the whole validation process, this event signals
+> +                * everything is fine and DLM works correctly there
+> +                * are no cluster-wide locks that violates DLM locking.
+> +                */
+> +               da_handle_event_dlm(lk, with_others_compatible_dlm);
+> +       } else {
+> +               /* print all holders of the lock when a invalid lock stat=
+e is entered */
+> +               console_lock();
 
-bochs-display is effectively stdvga minus the vga compatibility: no text
-mode, no silly planar video modes.  Only linear framebuffers in xrgb
-format are supported.
+I can't hold this lock in some contexts the ast callback can be called from=
+.
+I will drop this lock as I don't care.
 
-Both devices are handled by the bochs drm driver.
+It would be nice to use this msg callback from the refactor but then I
+somehow need to pass the lk pointer to it.
 
-> The CPU where this reproduces is fairly modern too (Intel(R) Xeon(R)
-> Silver 4410Y, Sapphire Rapids). I wish I could give additional details
-> to what exactly happens in the guest but I can't find anything useful in
-> the logs ("WARNING: Application 'org.gnome.Shell.desktop' killed by
-> signal 9") and I know too little (nothing?) about how modern Linux
-> graphics stack is organized :-( Cc: Gerd just in case.
+This however works for me that I know at least which nodes/modes are
+incompatible if it hits.
 
-The device has an (purely virtual) pci memory bar for video memory.
-The drm driver allocates buffer objects in this video memory.  They
-are either used by the kernel directly (fbcon case, which works fine)
-or mapped into userspace so the wayland / X11 display server can
-software-render into the buffer (which breaks).
+> +               pr_info("---\n");
+> +               pr_info("ls_id %u lkb_id: 0x%08x\n", ls_id, lkb_id);
+> +               pr_info("holders:\n");
+> +               list_for_each_entry(hl, &lk->holders, list) {
+> +                       pr_info("\tnodeid: %u mode: %d\n", hl->nodeid,
+> +                               hl->mode);
+> +               }
+> +               pr_info("---\n");
+> +               console_unlock();
+> +
+> +               /* move into an invalid state change, we don't have a edg=
+e for that
+> +                * so we just use event_max_dlm.
+> +                */
+> +               da_handle_event_dlm(lk, event_max_dlm);
+> +       }
+> +       spin_unlock_bh(&dlm_rv_hash_lock);
+> +}
+> +
+> +/* set the holder to transition state as lock downgrades can issue
+> + * grant messages to other nodes we need to ignore if a lock on a
+> + * specific node is in state transition. From point of DLM API
+> + * the user cannot assume to still hold the lock at this point
+> + * anyway.
+> + */
+> +static void set_holder_transition(uint32_t ls_id, const char *res_name,
+> +                                 size_t res_length, uint32_t our_nodeid)
+> +{
+> +       struct dlm_rv_holder *hl;
+> +       struct dlm_rv_lock *lk;
+> +
+> +       spin_lock_bh(&dlm_rv_hash_lock);
+> +       lk =3D lookup_lock(ls_id, res_name, res_length);
+> +       if (lk) {
+> +               hl =3D lookup_holder(lk, our_nodeid);
+> +               if (hl)
+> +                       hl->mode =3D STATE_MODE_IN_TRANSITION;
+> +       }
+> +       spin_unlock_bh(&dlm_rv_hash_lock);
+> +}
+> +
+> +/* after a lock request got validated it cannot fail */
+> +static void handle_dlm_lock_validated(void *data, struct dlm_ls *ls,
+> +                                     struct dlm_lkb *lkb,
+> +                                     struct dlm_args *args,
+> +                                     const char *res_name, size_t res_le=
+ngth)
+> +{
+> +       set_holder_transition(ls->ls_global_id, res_name,
+> +                             res_length, ls->ls_dn->our_node->id);
+> +}
+> +
+> +static void handle_dlm_unlock_validated(void *data, struct dlm_ls *ls,
+> +                                       struct dlm_lkb *lkb,
+> +                                       struct dlm_args *args)
+> +{
 
-take care,
-  Gerd
+we need to ignore unlock(CANCEL) requests.
+
+> +       set_holder_transition(ls->ls_global_id,
+> +                             lkb->lkb_resource->res_name,
+> +                             lkb->lkb_resource->res_length,
+> +                             ls->ls_dn->our_node->id);
+> +}
+> +
+
+- Alex
 
