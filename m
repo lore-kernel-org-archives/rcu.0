@@ -1,169 +1,182 @@
-Received: from mx-lax3-1.ucr.edu (mx-lax3-1.ucr.edu [169.235.156.35])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A46818F2D1
-	for <rcu@vger.kernel.org>; Thu, 29 Aug 2024 23:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=169.235.156.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5D616D4CB
+	for <rcu@vger.kernel.org>; Fri, 30 Aug 2024 09:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724974206; cv=none; b=pKvrh3W67MtzHmLif7uNseHjM98X8vo/PBDo3aOpzTsAgXDlpRyTYK0d6HJ7jC2KMNwGGySnXKStoh6LtZHBUGZ5ZwtRILqIR6EFoeRDVSTjELELjtb78bKMI6PrwXHdotZvsrRJo51wXnJJFwF9Fjnyc4TwipWPSPQ41AMcklQ=
+	t=1725010542; cv=none; b=omakUDWedjY/SB+PAo0r3EGa+7YRV7af3X/Q++ncnpYFFgkYFyyOVsSJ9pnfkc2/xejZGCwqXG8hmSYDCq6w2ufN0Q4lHKxVXGriOeUZl9Qf1qOm5P41nzjqNnpH1sB7zRBJrLzeMAOdYyRx4Gr07Ww4IaNR8ovDWBVpGfjxuLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724974206; c=relaxed/simple;
-	bh=T+j7RRKzuWmA1q1ZqCVTtLsVcebKArnx6jNOTkQeqxQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oZ3atGPT8n9K2sF8DnpagmHCu2NjZgv1Yvnj2XZkJ4SYH9oa7y5bELCQlZ9Up21Nkgy6CozbzVXrkbGh3wpNl3rPqOMJ9ixMLbUmhnE6Zgd0dCg/4UwA5qJ5maLadxpLHbeclAubcAFMM4SNyqy7cg6CZQRnN82I5bCSTgnY2z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ucr.edu; spf=pass smtp.mailfrom=ucr.edu; dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu header.b=ncpYIMTK; dkim=pass (1024-bit key) header.d=ucr.edu header.i=@ucr.edu header.b=avsyoLbL; arc=none smtp.client-ip=169.235.156.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ucr.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucr.edu
+	s=arc-20240116; t=1725010542; c=relaxed/simple;
+	bh=/4AcU+5mrCpQ2UoZHnX2vYZ7xGUajTi/DEYXF9Kh1RQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=T66sgcNdpp06tZgmzK0DP/ALUpM0EVU3P0b9FpBZkturkQLeD0+ZhtOw0nAMKzxnh82PP3lGyg3ml/f6IX7Kv7hHgKcFnjopyDcqvY1FvfQ23Q6cUJKOHhd3hIPp/voOOCjG5Dy27CohmdLtExx/86lun/zfFzy3WmNGnQ6c/0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CZC/DR/M; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="ncpYIMTK";
-	dkim=pass (1024-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="avsyoLbL"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1724974205; x=1756510205;
-  h=dkim-signature:x-google-dkim-signature:
-   x-forwarded-encrypted:x-gm-message-state:
-   x-google-smtp-source:mime-version:references:in-reply-to:
-   from:date:message-id:subject:to:cc:content-type:
-   content-transfer-encoding:x-cse-connectionguid:
-   x-cse-msgguid;
-  bh=T+j7RRKzuWmA1q1ZqCVTtLsVcebKArnx6jNOTkQeqxQ=;
-  b=ncpYIMTKgsnNZusq4b8+cM9tAQBnzofEmwx3S0NNEAtyvBW1XmS4NbFQ
-   UgyZ86ZOuBt5GhEe4iYLWbzlSqKTB7S5W+S76PYLdAJ8QdGJPQLy7lazP
-   cow/493RIHAOa2Yg6JLLKmbrkwxClePsVEZ2LIweKeSK8DjREwwm16lgK
-   2uYlN0/gVOdxrNuQsuCHR5nfBzehe/HpmvuChWTkkpHJL9RY+3q1HQiTV
-   Eh0jm6mo7uwEDcJRcNll9SU6I2wuPozHi0Dp768reeVJBTh6vvFxsmClr
-   cNMz8k7HixOmr++Qd4aLE5NNguaudDzOr6Et7ihHI/wn4SgTFYb/RByEx
-   Q==;
-X-CSE-ConnectionGUID: 5vbap7jJSZ2B3czSKAjCNg==
-X-CSE-MsgGUID: MS2CNoGsQtSxKXCDGVHz9g==
-Received: from mail-pj1-f70.google.com ([209.85.216.70])
-  by smtp-lax3-1.ucr.edu with ESMTP/TLS/TLS_AES_256_GCM_SHA384; 29 Aug 2024 16:30:02 -0700
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2d3bd8a0bd4so1336580a91.0
-        for <rcu@vger.kernel.org>; Thu, 29 Aug 2024 16:30:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ucr.edu; s=rmail; t=1724974202; x=1725579002; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dG6xO0A35GPbOYxBbex6zJAAI0IdJmPbZ/QkQuyWeEI=;
-        b=avsyoLbLukH8WLwAXUnYSJuF80whLx2PNYSvGo+G/qcXYLSAab9te1LC4pWlkVnQz8
-         riHzNsnLuYn31GkdHFznsMxrVl1tMrC51DdZZZa2dogJSPPvy3HaT3wtF8eq8+8Yi5p4
-         1EbcXzj0yQzdl5vrjVft0oqb69ijhyXqm8zYI=
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CZC/DR/M"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1725010539;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gOLHpXbrDu4AZVBfm8LLHD5ogMcE5R5Aph6RTHz3h88=;
+	b=CZC/DR/M7nKW5w5hlTieihh8xLsbPoq+cm1K0UX0c3JwVTC25eM4faVlwRkbUrM+HAc+pD
+	9I7B/LXastpQqIFxWns1tmOPLb8qQ4l9Pj4DSjQQQKXBtJPjYrgi/IC/zpFHkOzuWgmu63
+	lozDLKZOkg7Up+/XSIuXHPutNQo3rMk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-564-KR1UVH2UOeWjBu-SDYCmcQ-1; Fri, 30 Aug 2024 05:35:35 -0400
+X-MC-Unique: KR1UVH2UOeWjBu-SDYCmcQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-42bbe908365so1643155e9.2
+        for <rcu@vger.kernel.org>; Fri, 30 Aug 2024 02:35:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724974202; x=1725579002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dG6xO0A35GPbOYxBbex6zJAAI0IdJmPbZ/QkQuyWeEI=;
-        b=ZD1AC29eIQRj56NreOSyjZDEwd3YDzQQ1QuBBzH8RKDUewL5dhYfqMDp9CmGG8ZFHX
-         LOOEYA5gFgl9BNmHuCqJFI2Ni7yCtissKZxH+OcZh2Rvycn4uiJbWwoQrOAG0rOTMioA
-         TiMa0HoM0zIzEfwzN0UqIViwSfpyd8tiUm/lOmOwoEp6nRD9BF2HRSwC88RQBJg6uoo2
-         264AMpLY4gy9P/mYhip/H7ruZPt+yg1e91yc21b82r9Jg8be5MR1BR5K/qr4Aufk/eCE
-         fMdJHYW+c/GFzRQDJa6RxNIz/wo8SqOOcdMErWkWrK1BfgLxBibH8T853Juf8uIMONVA
-         +9EA==
-X-Forwarded-Encrypted: i=1; AJvYcCX6pbRqtglLQGlBdJp8pSLU0igHUBQLCNAitHQrlEtnQ0Z3oHfWZfB5Rgn+vBo0234Tvsw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyzmsvvSSORtad6jIpbQTeOG3jeVjo5Wy+9JVgZjoyUNyVYn8VT
-	hoANXkJ1s/qhW58zxvSjHpiKrEq1x2yFTCL2VXIZKXJPyepxQEwfwFFKoXHvfTm91wjBdzhnbQt
-	cKjkx5KNnrwfOuUIZX6Afz+Or3OqUrqm9U4xROFxOMyKXShjsggucOBtO54RjAFcmFx4817Wvha
-	4AMDh2ic9DkY/tBvGEsTzT0YK5sg==
-X-Received: by 2002:a17:90a:b009:b0:2d3:d7b9:2c7e with SMTP id 98e67ed59e1d1-2d8561e2311mr5153831a91.24.1724974202149;
-        Thu, 29 Aug 2024 16:30:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFf4IbX8pjDuJ17LiI0JESNcEAoJRqhux2YvDF/r066A854/JgY5hubPEp2jNebzjXmKDOTnfmPI6BBhhT4kJo=
-X-Received: by 2002:a17:90a:b009:b0:2d3:d7b9:2c7e with SMTP id
- 98e67ed59e1d1-2d8561e2311mr5153811a91.24.1724974201770; Thu, 29 Aug 2024
- 16:30:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1725010534; x=1725615334;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gOLHpXbrDu4AZVBfm8LLHD5ogMcE5R5Aph6RTHz3h88=;
+        b=r4hfGr/7ecyXI6VW5q64G0KdJ0P24fG2qHR1M6WZgetSN+JSCREhvc9GIswvFOuikQ
+         DaLOq3olE8zDjhjA1ge1K79t2LHUb+cFr23f0kboofFBUD/pVCBxhSrSqZ0AMW4wyZG7
+         hWdMTUYxGgeugsT7b79ypKhIRr1DRCH7GPluQjVbx/TwRPnmyra8FjSv4o/63xQhLy3z
+         gGLGBX3L4bHlLyFH58X3i3bzKMkpjX15R2uEMBWypKTa6Sn2aOnwFi4XXByb1w3gXTqP
+         qKC3luIh8yOYsakaQ5gkpq5Hk+e3Jp3vv7G/IleeihU5FWCAxkdgFBPR8vbcg0uo7E/f
+         M/3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWRNXC4q+1BJLWig3tnAlst2uHU9jnf7+Acr3VA1/WtT88kVv5VZPJzBg5Dob2Fmh6RGeQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZtuQ+auDUYQAry5PD62Y7DSxfHONB288PBu5pwWS7zqtafBFQ
+	IybdELPCdco6V5Qtw5CU9DizQXSYBuv/18Hf9ikRFZHRK/JXOCt6kXfVlHQrFkdjwSskw+1cXl7
+	zEmaLF1C1R7+BW/NSKi+fE/UTbYEt0gSfOrDTo4UPKjGVj5lZWA==
+X-Received: by 2002:a05:600c:4f42:b0:427:9a8f:9717 with SMTP id 5b1f17b1804b1-42bb0137641mr48082385e9.0.1725010534366;
+        Fri, 30 Aug 2024 02:35:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFAXdxCbGrEOrDzUMeJDkQaCX59o438yNucxDqSfAGGWzdvpKi8o3/65PT380tdrco4sEffaA==
+X-Received: by 2002:a05:600c:4f42:b0:427:9a8f:9717 with SMTP id 5b1f17b1804b1-42bb0137641mr48082115e9.0.1725010533790;
+        Fri, 30 Aug 2024 02:35:33 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bb6df0a0asm40473115e9.13.2024.08.30.02.35.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Aug 2024 02:35:33 -0700 (PDT)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, Yiwei
+ Zhang <zzyiwei@google.com>, Lai Jiangshan <jiangshanlai@gmail.com>, "Paul
+ E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
+ Gerd Hoffmann <kraxel@redhat.com>
+Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
+ support self-snoop
+In-Reply-To: <20240309010929.1403984-6-seanjc@google.com>
+References: <20240309010929.1403984-1-seanjc@google.com>
+ <20240309010929.1403984-6-seanjc@google.com>
+Date: Fri, 30 Aug 2024 11:35:32 +0200
+Message-ID: <877cbyuzdn.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALAgD-7JNKw5m0wpGAN+ezCL-qn7LcTL5vgyBmQZKbf5BTNUCw@mail.gmail.com>
- <ZtAunXBPC4WElcez@pc636>
-In-Reply-To: <ZtAunXBPC4WElcez@pc636>
-From: Xingyu Li <xli399@ucr.edu>
-Date: Thu, 29 Aug 2024 16:29:50 -0700
-Message-ID: <CALAgD-4kr9MLE6jSF7pXFX9msd-NWFL8mrscvJAOecNWAYL4RQ@mail.gmail.com>
-Subject: Re: BUG: WARNING in kvfree_rcu_bulk
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
-	joel@joelfernandes.org, josh@joshtriplett.org, boqun.feng@gmail.com, 
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
-	qiang.zhang1211@gmail.com, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yu Hao <yhao016@ucr.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Here is the config file:
-https://gist.github.com/TomAPU/64f5db0fe976a3e94a6dd2b621887cdd
+Sean Christopherson <seanjc@google.com> writes:
 
-On Thu, Aug 29, 2024 at 1:17=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com>=
- wrote:
+> Unconditionally honor guest PAT on CPUs that support self-snoop, as
+> Intel has confirmed that CPUs that support self-snoop always snoop caches
+> and store buffers.  I.e. CPUs with self-snoop maintain cache coherency
+> even in the presence of aliased memtypes, thus there is no need to trust
+> the guest behaves and only honor PAT as a last resort, as KVM does today.
 >
-> Hello!
+> Honoring guest PAT is desirable for use cases where the guest has access
+> to non-coherent DMA _without_ bouncing through VFIO, e.g. when a virtual
+> (mediated, for all intents and purposes) GPU is exposed to the guest, along
+> with buffers that are consumed directly by the physical GPU, i.e. which
+> can't be proxied by the host to ensure writes from the guest are performed
+> with the correct memory type for the GPU.
 >
-> > Hi,
-> >
-> > We found a bug in Linux 6.10 using syzkaller. It is possibly a  task hu=
-ng bug.
-> > The reprodcuer is
-> > https://gist.github.com/freexxxyyy/67172235de920ccf2f282f9e1179354d
-> >
-> > The bug report is:
-> >
-> > ------------[ cut here ]------------
-> > ODEBUG: active_state not available (active state 0) object:
-> > ffff88802526c180 object type: rcu_head hint: 0x0
-> > WARNING: CPU: 0 PID: 4497 at lib/debugobjects.c:517 debug_print_object
-> > lib/debugobjects.c:514 [inline]
-> > WARNING: CPU: 0 PID: 4497 at lib/debugobjects.c:517
-> > debug_object_active_state+0x2b0/0x360 lib/debugobjects.c:954
-> > Modules linked in:
-> > CPU: 0 PID: 4497 Comm: kworker/0:3 Not tainted 6.10.0 #13
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
-/01/2014
-> > Workqueue: events kfree_rcu_work
-> > RIP: 0010:debug_print_object lib/debugobjects.c:514 [inline]
-> > RIP: 0010:debug_object_active_state+0x2b0/0x360 lib/debugobjects.c:954
-> > Code: d7 95 fd 4d 8b 0c 24 48 c7 c7 a0 61 a9 8b 48 c7 c6 60 5e a9 8b
-> > 48 89 ea 8b 4c 24 04 49 89 d8 41 57 e8 24 1b f7 fc 48 83 c4 08 <0f> 0b
-> > ff 05 88 0c c6 0a 48 83 c4 28 5b 41 5c 41 5d 41 5e 41 5f 5d
-> > RSP: 0018:ffffc90002cc7a10 EFLAGS: 00010292
-> > RAX: f9c69a923cadb800 RBX: ffff88802526c180 RCX: ffff88801e3cbc00
-> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> > RBP: ffffffff8ba96360 R08: ffffffff8155a25a R09: 1ffff1100c74519a
-> > R10: dffffc0000000000 R11: ffffed100c74519b R12: ffffffff8b4de5c0
-> > R13: 0000000000000005 R14: dffffc0000000000 R15: 0000000000000000
-> > FS:  0000000000000000(0000) GS:ffff888063a00000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007fa7a316ef78 CR3: 000000000d932000 CR4: 0000000000350ef0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  <TASK>
-> >  debug_rcu_head_unqueue kernel/rcu/rcu.h:236 [inline]
-> >  debug_rcu_bhead_unqueue kernel/rcu/tree.c:3287 [inline]
-> >  kvfree_rcu_bulk+0xc5/0x4d0 kernel/rcu/tree.c:3364
-> >  kfree_rcu_work+0x443/0x500 kernel/rcu/tree.c:3450
-> >  process_one_work kernel/workqueue.c:3248 [inline]
-> >  process_scheduled_works+0x977/0x1410 kernel/workqueue.c:3329
-> >  worker_thread+0xaa0/0x1020 kernel/workqueue.c:3409
-> >  kthread+0x2eb/0x380 kernel/kthread.c:389
-> >  ret_from_fork+0x49/0x80 arch/x86/kernel/process.c:147
-> >  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:244
-> >  </TASK>
-> >
-> Is your kernel configuration special? I mean should i have something
-> truly enabled in the .config to reproduce it?
+> Cc: Yiwei Zhang <zzyiwei@google.com>
+> Suggested-by: Yan Zhao <yan.y.zhao@intel.com>
+> Suggested-by: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c |  8 +++++---
+>  arch/x86/kvm/vmx/vmx.c | 10 ++++++----
+>  2 files changed, 11 insertions(+), 7 deletions(-)
 >
-> Thank you for the report!
->
-> --
-> Uladzislau Rezki
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 403cd8f914cd..7fa514830628 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4622,14 +4622,16 @@ static int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu,
+>  bool kvm_mmu_may_ignore_guest_pat(void)
+>  {
+>  	/*
+> -	 * When EPT is enabled (shadow_memtype_mask is non-zero), and the VM
+> +	 * When EPT is enabled (shadow_memtype_mask is non-zero), the CPU does
+> +	 * not support self-snoop (or is affected by an erratum), and the VM
+>  	 * has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's ABI is to
+>  	 * honor the memtype from the guest's PAT so that guest accesses to
+>  	 * memory that is DMA'd aren't cached against the guest's wishes.  As a
+>  	 * result, KVM _may_ ignore guest PAT, whereas without non-coherent DMA,
+> -	 * KVM _always_ ignores guest PAT (when EPT is enabled).
+> +	 * KVM _always_ ignores or honors guest PAT, i.e. doesn't toggle SPTE
+> +	 * bits in response to non-coherent device (un)registration.
+>  	 */
+> -	return shadow_memtype_mask;
+> +	return !static_cpu_has(X86_FEATURE_SELFSNOOP) && shadow_memtype_mask;
+>  }
+>  
+>  int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 17a8e4fdf9c4..5dc4c24ae203 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7605,11 +7605,13 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+>  
+>  	/*
+>  	 * Force WB and ignore guest PAT if the VM does NOT have a non-coherent
+> -	 * device attached.  Letting the guest control memory types on Intel
+> -	 * CPUs may result in unexpected behavior, and so KVM's ABI is to trust
+> -	 * the guest to behave only as a last resort.
+> +	 * device attached and the CPU doesn't support self-snoop.  Letting the
+> +	 * guest control memory types on Intel CPUs without self-snoop may
+> +	 * result in unexpected behavior, and so KVM's (historical) ABI is to
+> +	 * trust the guest to behave only as a last resort.
+>  	 */
+> -	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
+> +	if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
+> +	    !kvm_arch_has_noncoherent_dma(vcpu->kvm))
+>  		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+>  
+>  	return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT);
 
+Necroposting!
 
+Turns out that this change broke "bochs-display" driver in QEMU even
+when the guest is modern (don't ask me 'who the hell uses bochs for
+modern guests', it was basically a configuration error :-). E.g:
 
---=20
-Yours sincerely,
-Xingyu
+$ qemu-kvm -name c10s -nodefaults -smp 4 -machine
+q35,smm=on,accel=kvm,kernel-irqchip=split -global
+driver=cfi.pflash01,property=secure,value=on -cpu host -drive
+id=drive_image2,if=none,snapshot=off,aio=threads,cache=none,format=qcow2,file=/var/lib/libvirt/images/c10s.qcow2
+-device virtio-blk-pci,id=image2,drive=drive_image2,bootindex=3,bus=pcie.0,addr=0x8
+-drive file=/usr/share/OVMF/OVMF_CODE.secboot.fd,if=pflash,format=raw,readonly=on,unit=0
+-drive file=/tmp/OVMF_VARS.secboot.fd,if=pflash,format=raw,unit=1
+-device ahci,id=ahci0 -vnc :0 -device bochs-display -m 8G -monitor stdio
+
+The failure looks like Wayland starting and failing right away, this
+repeats multiple times but after a number of restarts it may try to
+pretend to work but then it crashes again. Things go back to normal when
+the commit is reverted in the host kernel.
+
+The CPU where this reproduces is fairly modern too (Intel(R) Xeon(R)
+Silver 4410Y, Sapphire Rapids). I wish I could give additional details
+to what exactly happens in the guest but I can't find anything useful in
+the logs ("WARNING: Application 'org.gnome.Shell.desktop' killed by
+signal 9") and I know too little (nothing?) about how modern Linux
+graphics stack is organized :-( Cc: Gerd just in case.
+
+-- 
+Vitaly
+
