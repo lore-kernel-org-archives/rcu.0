@@ -1,160 +1,217 @@
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF801B7909
-	for <rcu@vger.kernel.org>; Fri, 30 Aug 2024 16:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C8C33CD1;
+	Fri, 30 Aug 2024 19:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725034388; cv=none; b=PMLEp95JYRVSYfyiltbCmlrGyPVLIY4iacsNd6NVhOoqrGptmK1nscxPLDlFk0LsE9Es5eGYINyhODN6vnKRgcEsWZ5lCmXD7gkcIiZlIaR2wKpKd8nf+HwFRNChm934Bw0if8WX+xd79DBFcmljQey7NhkYBFxvEjW37/zfY0o=
+	t=1725044487; cv=none; b=KyLfFug/lalo+lcK8K8OBN5Ee7jBxJyAozEKBxLKKli18fjEtDXevlqOzrNzbCNc/gIYmCBZa90debjiI2eBTiFW78WRNmTOLF71rpUJ0dua/349xAI4GOEqulRcQ2zyBa0cWmKANdJI2VETptoh1Oq4lNdGJcIMJsmRexzOzk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725034388; c=relaxed/simple;
-	bh=GBW0OUkfNOg6jUGnbPNWRKROaH/VSriIJgC2jITV0XA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UQPlqJzgqPz/uXV0XEZVWHmztdrPc8ytt0k8LVRyjcIAcoK1Ir3HITndB0OcmYZTUUGNKmAdeRBfa9kBNZzwcRRTDW920pesmt5yglSrsURf0Myp/x707TFhPPJ6aQa2LSooUMamKJvp5GFZmXc++bn/YBD/4yKOnFNdTjkKw/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=utARIRH2; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1725044487; c=relaxed/simple;
+	bh=KfVE6P8urjsnp6ddpaVy6aYisx5jn6Zrub0+Da8TYP4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=saUqpitvzVwh3p8r5h8hwh7UZpC8+ir7VUD+472LHMj0P2m5NtJ71KQ1VuOCs7nR2HQYtHZDEySKUTf0zapsGYdcbPW5tOvhUpP7XpmdvPr7fbuQdTUoFXfVxwQPPj7Kyj5cqMw3cXFtKiP/t4kkTRs9T58phBakyhTNrQ1V5V4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NfwyXnnQ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="utARIRH2"
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6b46d8bc153so39443717b3.2
-        for <rcu@vger.kernel.org>; Fri, 30 Aug 2024 09:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725034385; x=1725639185; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B8wKzeaoF86EzgRdZ5mXtZV5B8jehTSk9n/aFQzfv58=;
-        b=utARIRH2MFeEQSa3VlPb4WL+3sTKRQZduClJcswl9FncywwMI1iGMmAw4WxSgTr/gf
-         BWTP0lr6+hoLod9o0x0EdkL5Khba/h52MQZrssPhHldAK0mryLvcic/8m2ueU30IA4k3
-         KcHjO+A4/S96Kfyfw4dFdjQi/7isOsFco/aont2o1eh25eRgF1sikhjjHf8SmAZqoz0i
-         suL6G2dhdYTWwcpzxLTs9e/nxbQ08y8i4OVkvHtxHQjIJqJsxzoDzaPvUV9TfdvZSmN4
-         o49M56NsDgWKlAbui5Aj1dRcPHZxw17zyzGm8rKYxMG4Xum1WCaN2GVZEw6wGvXbpF2B
-         687g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725034385; x=1725639185;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B8wKzeaoF86EzgRdZ5mXtZV5B8jehTSk9n/aFQzfv58=;
-        b=K3TEqr1Y7mntjKtpwub+1dFEgDTQFSXR8/lpNo/JEpI0/gCLY+NuJdFz6mjBbvFF2k
-         yutIxd57klWg+e381gNNh1b/COOnALgktWmE0t5k4GN3zkkIREdI6P8zWDGYaHHW37pk
-         wTiQ/GlmsBFkILg4/S/jbpN8qu/aIumfXiRs3si/qxACOitdc6xx8bWqbV2J+Ppw5s1O
-         FpOuaHH41+OTlEydUEV/jIuzSfhJ/hYdIS6t1JjW2eNXAKP1Lxpw8gfxdjG1mlVxcvRn
-         R1nhVeZ4lNYqQuHOJQeHASG9TnLVH9msuFulVF5Jk2Z4IPOMqR6hZO89WVg0X1j6anr6
-         0bXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUkJnyEe/womJO+EdcpUon9YW7RLyXYkTXwrIcT0/gJf2QcpyWYs1N6q/Yf+WZh1VyWN+k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNqROgdMOkOn78WSRR+pBERZdYNAcfWelEgOOpLjD8Vm+SsKxf
-	O6Ek8bcyp16Vux/j6JuxB57wLHtb9xS8uEOYoq9+RhdXDrEmLYCsUa+djZii2CZyevhTmwMpghW
-	xlA==
-X-Google-Smtp-Source: AGHT+IEMDNHweiA16k7gDHYb4p0wHpx39yD8IKXuwa99sr0oK8AtMZWM3VLmiFaMmPW/1iktaQ/NFFz+fLg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:5608:b0:6d4:d6de:3e35 with SMTP id
- 00721157ae682-6d4d6de43aamr16677b3.8.1725034385169; Fri, 30 Aug 2024 09:13:05
- -0700 (PDT)
-Date: Fri, 30 Aug 2024 09:13:03 -0700
-In-Reply-To: <87plpqt6uh.fsf@redhat.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NfwyXnnQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34FC4C4CEC2;
+	Fri, 30 Aug 2024 19:01:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725044487;
+	bh=KfVE6P8urjsnp6ddpaVy6aYisx5jn6Zrub0+Da8TYP4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=NfwyXnnQyzGm1mW0InEIA+pwxUksxisfHTt0nbofNzrUEqn8YbwrPG2szu+mTjtVD
+	 JF1rtvmesRjgfMkG33RTfNwVsQwg5zSoxVVrMFHWhrqrClMm5xYgKVCV4YpIcxAk/A
+	 K+Rn4ogo2JI7ewD4T8fbQnPRaJhgNEUql9NxsCFZzOBYDI6e4CQgI6q6hyQGxZY8Lo
+	 D/TOv3XgkZJgbKsATUGW3ZWa1xDpFao85QHNo/y266hn7kh0uZFCKi6WmrzuKIsVgR
+	 VeqWLkMjQCjtPf/p6wYAv2BfiotRPh2szowQOUZxxKYr3bjVVpdoVC63KWkYl9ubhm
+	 xXKEgFa4XjH1Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id CF3C5CE114C; Fri, 30 Aug 2024 12:01:26 -0700 (PDT)
+Date: Fri, 30 Aug 2024 12:01:26 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, vbabka@suse.cz,
+	roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+	akpm@linux-foundation.org, cl@linux.com, mhocko@kernel.org,
+	urezki@gmail.com, neeraj.upadhyay@kernel.org
+Subject: Re: [PATCH 6/9] rcu: rcu_pending
+Message-ID: <ab35ac12-23ac-40a1-b98b-5b4d91ec44b9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240819165939.745801-1-kent.overstreet@linux.dev>
+ <20240819165939.745801-7-kent.overstreet@linux.dev>
+ <adc8b09e-5f66-44de-845b-e615069c2e20@paulmck-laptop>
+ <yfhctftdn4itupt735u7dnu2zt2aarm3lzvmyf6bs7hkv4radc@ndw4nsinxhqx>
+ <f7266ab4-aa29-4cbc-a63e-fa582e266864@paulmck-laptop>
+ <4zkfyn2shwot2zxiahn7zt7k2gpnoavyrldzzwo23qqxr6fvfh@xqlz4vehkln5>
+ <4e4a5c89-e9ec-421e-8245-f076044866c9@paulmck-laptop>
+ <gqgocomsljkn5sw2jvm432peesjuclfjwd2sasec3kg6tofk5t@ry7rkoo2auek>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-6-seanjc@google.com>
- <877cbyuzdn.fsf@redhat.com> <vuwlkftomgsnzsywjyxw6rcnycg3bve3o53svvxg3vd6xpok7o@k4ktmx5tqtmz>
- <871q26unq8.fsf@redhat.com> <ZtHOr-kCqvCdUc_A@google.com> <87seumt89u.fsf@redhat.com>
- <87plpqt6uh.fsf@redhat.com>
-Message-ID: <ZtHvjzBFUbG3fcMc@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
-From: Sean Christopherson <seanjc@google.com>
-To: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Gerd Hoffmann <kraxel@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, 
-	Yiwei Zhang <zzyiwei@google.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <gqgocomsljkn5sw2jvm432peesjuclfjwd2sasec3kg6tofk5t@ry7rkoo2auek>
 
-On Fri, Aug 30, 2024, Vitaly Kuznetsov wrote:
-> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+On Mon, Aug 26, 2024 at 01:09:15PM -0400, Kent Overstreet wrote:
+> On Mon, Aug 26, 2024 at 09:01:54AM GMT, Paul E. McKenney wrote:
+> > But get_state_synchronize_srcu() is still a function call.  But the
+> > offer of a function that checks multiple grace-period-state cookies in
+> > one call still stands.
 > 
-> > Sean Christopherson <seanjc@google.com> writes:
-> >
-> >> On Fri, Aug 30, 2024, Vitaly Kuznetsov wrote:
-> >>> Gerd Hoffmann <kraxel@redhat.com> writes:
-> >>> 
-> >>> >> Necroposting!
-> >>> >> 
-> >>> >> Turns out that this change broke "bochs-display" driver in QEMU even
-> >>> >> when the guest is modern (don't ask me 'who the hell uses bochs for
-> >>> >> modern guests', it was basically a configuration error :-). E.g:
-> >>> >
-> >>> > qemu stdvga (the default display device) is affected too.
-> >>> >
-> >>> 
-> >>> So far, I was only able to verify that the issue has nothing to do with
-> >>> OVMF and multi-vcpu, it reproduces very well with
-> >>> 
-> >>> $ qemu-kvm -machine q35,accel=kvm,kernel-irqchip=split -name guest=c10s
-> >>> -cpu host -smp 1 -m 16384 -drive file=/var/lib/libvirt/images/c10s-bios.qcow2,if=none,id=drive-ide0-0-0
-> >>> -device ide-hd,bus=ide.0,unit=0,drive=drive-ide0-0-0,id=ide0-0-0,bootindex=1
-> >>> -vnc :0 -device VGA -monitor stdio --no-reboot
-> >>> 
-> >>> Comparing traces of working and broken cases, I couldn't find anything
-> >>> suspicious but I may had missed something of course. For now, it seems
-> >>> like a userspace misbehavior resulting in a segfault.
-> >>
-> >> Guest userspace?
-> >>
-> >
-> > Yes? :-) As Gerd described, video memory is "mapped into userspace so
-> > the wayland / X11 display server can software-render into the buffer"
-> > and it seems that wayland gets something unexpected in this memory and
-> > crashes. 
+> It shouldn't be though, it's just reading a sequence number - I'd much
+> prefer if it could be at least a static inline.
 > 
-> Also, I don't know if it helps or not, but out of two hunks in
-> 377b2f359d1f, it is the vmx_get_mt_mask() one which brings the
-> issue. I.e. the following is enough to fix things:
+> Which you won't want to do, because it would mean exposing RCU private
+> data structures; hence my approach of exposing an RCU-only api for
+> getting a pointer to the sequence number.
+
+True enough.
+
+In addition, I have not yet been able to come up with any safe use of
+this sequence number that does not require memory ordering.  And -that-
+I most emphatically won't want to export to the caller.
+
+Hence my offer of a function taking multiple grace-period-state cookies
+in one go, allowing the memory-ordering overhead to be amortized over
+the set of cookies.
+
+> > > In my current version of the code, we call __get_state_synchronize_rcu()
+> > > after we've disabled interrupts; we know the rcu gp seq isn't going to
+> > > tick while we're in the critical path. But this doesn't apply if it's
+> > > for SRCU, and I don't want to add if (src) srcu_read_lock() branches to
+> > > it.
+> > 
+> > Actually, disabling interrupts does *not* prevent RCU's grace-period 
+> > sequence number from changing.  For example, the following really can
+> > happen:
+> > 
+> > o	RCU notices that the current grace period can end.
+> > 
+> > o	A CPU disables interrupts here.
+> > 
+> > o	A call to get_state_synchronize_rcu() returns a cookie
+> > 	corresponding to the end of the grace period following the
+> > 	current one.
+> > 
+> > o	RCU ends the current grace period, therefore updating the
+> > 	grace-period sequence number.
+> > 
+> > o	RCU starts a new grace period, therefore updating the
+> > 	grace-period sequence number once again.
+> > 
+> > o	RCU cannot complete this new grace period until that CPU
+> > 	re-enables interrupts, but it has already updated its grace-period
+> > 	sequence number not once, but twice.
+> > 
+> > So if your code knows that RCU's grace-period sequence number cannot
+> > change while a given CPU has interrupts disabled, that code has a bug.
+> > A low-probability bug, perhaps, but if your code is running on enough
+> > systems, it will make its presence known.
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index f18c2d8c7476..733a0c45d1a6 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7659,13 +7659,11 @@ u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
->  
->         /*
->          * Force WB and ignore guest PAT if the VM does NOT have a non-coherent
-> -        * device attached and the CPU doesn't support self-snoop.  Letting the
-> -        * guest control memory types on Intel CPUs without self-snoop may
-> -        * result in unexpected behavior, and so KVM's (historical) ABI is to
-> -        * trust the guest to behave only as a last resort.
-> +        * device attached.  Letting the guest control memory types on Intel
-> +        * CPUs may result in unexpected behavior, and so KVM's ABI is to trust
-> +        * the guest to behave only as a last resort.
->          */
-> -       if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-> -           !kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> +       if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
->                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
->  
->         return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT);
+> Ok, good to know
+> 
+> > > Not at all essential, the races that result from this are harmless, but
+> > > if we e.g. decide it's worthwhile to only kick off a gp if it hasn't
+> > > ticked (i.e. only kick rcu if we're still on seq of the object being
+> > > enqueued) it'd be nice.
+> > 
+> > Why not call get_state_synchronize_rcu(), and ask for a new grace period
+> > if the value returned is different than that from the previous call?
+> 
+> We don't want to falsely think the object expires later than it actually
+> does, and have more accumulated work than we need to.
 
-Hmm, that suggests the guest kernel maps the buffer as WC.  And looking at the
-bochs driver, IIUC, the kernel mappings via ioremap() are UC-, not WC.  So it
-could be that userspace doesn't play nice with WC, but could it also be that the
-QEMU backend doesn't play nice with WC (on Intel)?
+Yes, that can happen, but grace periods are long and that race window
+will normally be very short.  It will not matter in actual practice.
 
-Given that this is a purely synthetic device, is there any reason to use UC or WC?
-I.e. can the bochs driver configure its VRAM buffers to be WB?  It doesn't look
-super easy (the DRM/TTM code has so. many. layers), but it appears doable.  Since
-the device only exists in VMs, it's possible the bochs driver has never run on
-Intel CPUs with WC memtype.
+> > > Funny, I had the same thoughts trying to read your code... :)
+> > 
+> > Amazing how much easier it is to generate new code than to understand
+> > existing code, isn't it?  ;-)
+> 
+> I would have much preferred if your existing code worked with SRCU. You
+> think I'm doing this for fun?
 
-The one thing that confuses and concerns me is that this broke in the first place.
-KVM has honored guest PAT on SVM since forever, which is why I/we had decent
-confidence KVM could honor guest PAT on VMX without breaking anything.  SVM (NPT)
-has an explicitlyed document special "WC+" memtype, where guest=WC && host=WB == WC+,
-and WC+ accesses snoop caches on all CPUs.
+To be fair, the "for fun" reason seemed to me to be one of the more
+positive explanations for your providing an unsolicited rip-and-replace
+patch for kfree_rcu() without prior consultation. ;-)
 
-But per Intel engineers, Intel CPUs with self-snoop are supposed to snoop caches
-on all processors too.
+But, to your point, why haven't we already implemented kfree_srcu()?
 
-I assume this same setup works fine on AMD/SVM?  If so, we probably need to do
-more digging before fudging around this in the guest.
+Because in v6.10, there are six use cases for it, and they appear to have
+infrequent updates.  Thus, kfree_srcu() is not yet not worth its weight.
+
+> > > > Plus, unlike kfree_rcu() post-grace-period handling, call_rcu() callback
+> > > > functions usually access the memory block passed to them, which means
+> > > > that they are incurring that per-element cache miss in any case.
+> > > 
+> > > True. But this would allow us to prefetch those objects (several
+> > > iterations in advance).
+> > 
+> > I need to see a CPU on which this actually make a significant difference
+> > before adding this sort of complexity.
+> 
+> We would of course want benchmarks to show that this was worthwhile
+> before switching call_rcu(), since absent a performance improvement we'd
+> want to stick with the approach that doesn't allocate memory.
+
+Agreed.
+
+Furthermore, any approach that does allocate memory needs a non-allocating
+fallback.  Out-of-memory deadlocks are not fun.
+
+> > > Just processing a few items? hmm, would we want to though, when
+> > > otherwise we'd be calling kfree_bulk()? I think icache locality means
+> > > we'd generally prefer not to.
+> > 
+> > You might not want to yet, but you eventually would want this.
+> 
+> Because?
+
+TL;DR:  Lessons learned from bitter experience.
+
+For more detail, please read on.
+
+Because certain inconvenient laws of physics (and I am looking at *you*,
+finite speed of light and atomic nature of matter!) mean that global
+agreement across a computer system is expensive.  This is especially
+a problem if synchronous global agreement is required, which is one
+reason why reader-writer locking is so slow, one way or another.
+(You can either make readers slow or you can make updaters *really* slow.)
+
+RCU does not completely avoid the cost of global agreement.  After all,
+at the end of a grace period, there must be global agreement that all
+pre-existing readers have completed.  But the computation of that global
+agreement can be (and is) spread over time.  This spreading has two
+good effects: First, it permits CPUs and tasks to use lighter-weight
+operations for high-frequency operations such as rcu_read_lock(), and
+second, the grace-period requests that arrived during one grace-period
+computation can all be satisfied by the next grace-period computation,
+in turn permitting the overhead of that next computation to be amortized
+over all those requests.  Which is one reason why grace periods are not
+unconditionally expedited.
+
+But it is all high-amortization fun and games only until there is risk
+of exhausting memory.  At that point, RCU takes steps to expedite
+the current grace period, albeit in a light-weight fashion compared
+to synchronize_rcu_expedited().  It has proven unwise to wait for mm
+to complain to RCU (for example, via a shrinker), so RCU does this
+lightweight expediting using heuristics based on the number and rate of
+callbacks on each CPU.  And yes, RCU also uses shrinkers, just not as
+the first line of defense.
+
+So why don't we have such heuristics in SRCU?
+
+Because SRCU has not yet been subjected to workloads that flood SRCU with
+callbacks, so it has not yet proven necessary.  Obviously, should SRCU
+start getting flooded, SRCU will start taking whatever forms of evasive
+action are indicated by the situation at hand, quite likely including
+expediting the current SRCU grace period.
+
+Until that time, we keep it simple.  Or simpler, anyway.
+
+							Thanx, Paul
