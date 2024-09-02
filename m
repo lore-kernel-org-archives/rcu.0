@@ -1,124 +1,143 @@
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F9F17C9B3
-	for <rcu@vger.kernel.org>; Mon,  2 Sep 2024 08:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20461D2795
+	for <rcu@vger.kernel.org>; Mon,  2 Sep 2024 09:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725266139; cv=none; b=k1bo7cYpMPOPJBU8UHI5oolljEBJzpKqBwEZV3jJizMluVQ8hXWu9HUAq9uDOgeY6Ai90eemU+7UXJxPQ5VOiQhndFv0zrFnyAjRtC749xgViHlpj9e+Wx0jlU+incBVzugkPuXJdptOiVN3I3xLMVJg9EEjv9iWK29ZOPJ1USU=
+	t=1725270590; cv=none; b=fjyVhU3ylhFrLFUFHl4MnfZuzlpViUUdMJb4Ffqzm1OWu+XTGBlEhdIWg2clAl0TO3XgquuDYaRWmMbmDM+RWcs9Duv/C2oZT2qxtRkKXOHKDMI+rMAuI/4gYrDD77cdtbocsbD60HSBNkuTVET8LVxvmJzHRPjZQxIVCD3ZxFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725266139; c=relaxed/simple;
-	bh=1yKUWgG168kIrumQ4E/lNDOE3dBsj4G/DSSmNyd+u94=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M9xQactJIUVvtBMTdXBKF1rTyF2/7tim62b4hvCtix2dtzftTH/o04FpFlwBjbWw8SpgrBpAhY3Lp6GpR4EdcvA0Liql6shalvnl3j5pjXK6OuhnWdpB4mgySdR8p4XJMs/3wdeXGxEDu5Z58qAlZS+1GdQ+pE58XIAF+Ca3E8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DX2Btwpt; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+	s=arc-20240116; t=1725270590; c=relaxed/simple;
+	bh=KZv12tXQ7Ae+zRYsrJ68sOXS+Y6FjYoLo/QTKqzXC7c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=h2PKRPCUpPI82WPKD+VbWJTh/nsEM3KvML8uDw3IuaEQB0UdotI/HH0cpvjMts0zbLxlrQMiPSLZYMtEFomtiVkuz5BkpA8vD5Nk95v3c/BVeGli41AjNj+6FGQeLAHnZ/+J71Ub9v/vRmmxYf137Mg3QdLQhhNWsodqt5mZIyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gD2DI/t2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DX2Btwpt"
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2d8fa2ca5b1so64292a91.3
-        for <rcu@vger.kernel.org>; Mon, 02 Sep 2024 01:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1725266137; x=1725870937; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wx+Ngpcz5KS+uT4ExH5gnibO/Q2OSWyZ6WFtEESiF1s=;
-        b=DX2BtwptwtS4S4LBkTC5TJtMYYPfTtxYEzIl6ZwsNPN42edbg1+oW35RQKCxFMV1zd
-         XMToc86V+mqsYsBiCq6dAc01qN+xl13lufgCZBS+g9Wau+9Cb42CD/MMuSuvPgieTI1V
-         wuoxWYJy1SP58CHZi8WnaGxhsLahSEEXhVZ90=
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gD2DI/t2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1725270587;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xwvb2AWA7eVmy/sHZX0Bb9r5Lm4OndnUkdzBfReb458=;
+	b=gD2DI/t2n68SGne8gbyscaZ/iihhgamujY5x7bDVmDa4RmxWUh41EPQn0V5dzIDqZmUSad
+	nwz2ABGf/8m1DKr5uopsh3birz4YzpwuuhWJOsKkiMvTI5PCh9rOBqsVZ1IMgTquI5Qkvj
+	NJ8V3XIC07P6zEe2szeMHTq+Z3DBZNY=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-284-i-ULW2g9MoGjIZRvieCGmw-1; Mon, 02 Sep 2024 05:49:46 -0400
+X-MC-Unique: i-ULW2g9MoGjIZRvieCGmw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-42bbadffbbdso30777425e9.0
+        for <rcu@vger.kernel.org>; Mon, 02 Sep 2024 02:49:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725266137; x=1725870937;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wx+Ngpcz5KS+uT4ExH5gnibO/Q2OSWyZ6WFtEESiF1s=;
-        b=We9fDsNCrXW25gvCQoKkTKk7oLUweklgn5P2nj0dTLP52YTv2ZV7di7ACDWFtmql3O
-         +A/o9sXXTQ94I3muh+iKe2g8saVBhCUD8AFt3GgwpVrVZIStMwEncjyBktInCCf05HZQ
-         HK2HBi+ZTr57bKHoiwLF6+r3K9uCmoyxN72AHKotyUgEGVdn5CTDDLmBb7Nghg7noaB9
-         JXgPyXlVX4U7QIVp4KBHdBPc5eOdZutCvaaSxvL6USaNIhnO+WBFxgkfs3+tYFXm+4kl
-         jQM4hWEZKJkcIDP45vnjy8UJq3ox9xw0fwC7KGTXGU32g2h1QRpmJ7Oh5ErC2AJ4vLIb
-         GuNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmCn3Cskky/PxcTODGp+VDkkl74hhDn5USwbCzhKdVBFHFpzNMeNwTYL9yuugm59eNm4w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEturvGtLwXcJk3xbwhy1bR4/W3OamqhWsY5+JmiIsmn7rdLFa
-	HeWywVTFDWJfwV2Yfj/Dokx9D7QijbOmeiWGT4aFdj9+FF5WsSoQfeqmDOaE+g==
-X-Google-Smtp-Source: AGHT+IF4/GEqSbXqoxRakIqILSzbtpCjeIMTeUiOM4xZC1PMAowJYIU5DaWRW0ooWvdCC6o+o1UIWQ==
-X-Received: by 2002:a17:90a:558f:b0:2c9:81fd:4c27 with SMTP id 98e67ed59e1d1-2d88d6a0b9fmr7246707a91.14.1725266136913;
-        Mon, 02 Sep 2024 01:35:36 -0700 (PDT)
-Received: from fedora.. ([66.170.99.2])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d85b3b95e8sm8511509a91.54.2024.09.02.01.35.34
+        d=1e100.net; s=20230601; t=1725270585; x=1725875385;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xwvb2AWA7eVmy/sHZX0Bb9r5Lm4OndnUkdzBfReb458=;
+        b=ba4/bX7hK2aCqJF9CaKKsRUfhwsJZH+oY1LHerqw/cTNQDypcVeoxJTz6g0Op8Nxi/
+         rx2WTMMFWU94sDmM852/GrMVJbSAJwC6calq2zWY/eNMEEtHFMY+2mYtBA6rJXa+AWWK
+         aqVdKiQEivCMOEZ0VLgtoVfjbOo0QkZPEDJhHOyjY2xmSALhDlF3d7S9mw/z5zGK6Avl
+         MoaCMbPpNIT6Lxc5TILO5/0S2Jra5A8MGjs7iyj+Ck9xPvBSr5bqyLHByaJYcRMtTx3Q
+         QdUH8kAsxniyMTcrO39KLvrTlaP60AC+apdsnGtXXa7sizAQG9ty61z38vUBSZypk3xJ
+         cWJg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNk+HawWsqVbEn188nnDeGqpeqU8HuPPB+BmVpxrYnEaeTrSWGGviRn37TcnhK3XoxtmU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzInLYDgQMGodZk9wU1me4JEhEVtKg1RW6eMHoB/Iad4kodmuXu
+	VD8Yfg+XTRbGtD4i1MNmEXFdtyBVlGZgjTPgLK/y3h8FW9zbrex+/6DCFdbdBba0tltd58JNNS0
+	W7zmYvTWtmAos0JcHYpYGOPkuzMT3DBIBa/eEjR0+lsQ4XRWHcQ==
+X-Received: by 2002:a05:600c:3b10:b0:427:d8f2:5dee with SMTP id 5b1f17b1804b1-42bb01bb04dmr111112195e9.15.1725270585150;
+        Mon, 02 Sep 2024 02:49:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFoisozxrjMiMstc04ii3IHXZ5avpiUSmtW6ilZT9rJxbJYQH/vbEz5NOB2xaZIwZYx1LEn0g==
+X-Received: by 2002:a05:600c:3b10:b0:427:d8f2:5dee with SMTP id 5b1f17b1804b1-42bb01bb04dmr111112025e9.15.1725270584587;
+        Mon, 02 Sep 2024 02:49:44 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bacaac810sm151114855e9.33.2024.09.02.02.49.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Sep 2024 01:35:36 -0700 (PDT)
-From: Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org,
-	josh@joshtriplett.org,
-	boqun.feng@gmail.com,
-	urezki@gmail.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	vasavi.sirnapalli@broadcom.com,
-	Nikita Kiryushin <kiryushin@ancud.ru>,
-	Sasha Levin <sashal@kernel.org>,
-	Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
-Subject: [PATCH v5.10-v5.15] rcu-tasks: Fix show_rcu_tasks_trace_gp_kthread buffer overflow
-Date: Mon,  2 Sep 2024 03:33:55 -0500
-Message-ID: <20240902083422.1095022-2-vamsi-krishna.brahmajosyula@broadcom.com>
-X-Mailer: git-send-email 2.45.2
+        Mon, 02 Sep 2024 02:49:44 -0700 (PDT)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>, Gerd Hoffmann
+ <kraxel@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ kvm@vger.kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Kevin Tian <kevin.tian@intel.com>, Yiwei Zhang <zzyiwei@google.com>, Lai
+ Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
+ support self-snoop
+In-Reply-To: <ZtUYZE6t3COCwvg0@yzhao56-desk.sh.intel.com>
+References: <20240309010929.1403984-1-seanjc@google.com>
+ <20240309010929.1403984-6-seanjc@google.com> <877cbyuzdn.fsf@redhat.com>
+ <vuwlkftomgsnzsywjyxw6rcnycg3bve3o53svvxg3vd6xpok7o@k4ktmx5tqtmz>
+ <871q26unq8.fsf@redhat.com> <ZtUYZE6t3COCwvg0@yzhao56-desk.sh.intel.com>
+Date: Mon, 02 Sep 2024 11:49:43 +0200
+Message-ID: <87jzfutmfc.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-From: Nikita Kiryushin <kiryushin@ancud.ru>
+Yan Zhao <yan.y.zhao@intel.com> writes:
 
-[ Upstream commit cc5645fddb0ce28492b15520306d092730dffa48 ]
+> On Fri, Aug 30, 2024 at 03:47:11PM +0200, Vitaly Kuznetsov wrote:
+>> Gerd Hoffmann <kraxel@redhat.com> writes:
+>> 
+>> >> Necroposting!
+>> >> 
+>> >> Turns out that this change broke "bochs-display" driver in QEMU even
+>> >> when the guest is modern (don't ask me 'who the hell uses bochs for
+>> >> modern guests', it was basically a configuration error :-). E.g:
+>> >
+>> > qemu stdvga (the default display device) is affected too.
+>> >
+>> 
+>> So far, I was only able to verify that the issue has nothing to do with
+>> OVMF and multi-vcpu, it reproduces very well with
+>> 
+>> $ qemu-kvm -machine q35,accel=kvm,kernel-irqchip=split -name guest=c10s
+>> -cpu host -smp 1 -m 16384 -drive file=/var/lib/libvirt/images/c10s-bios.qcow2,if=none,id=drive-ide0-0-0
+>> -device ide-hd,bus=ide.0,unit=0,drive=drive-ide0-0-0,id=ide0-0-0,bootindex=1
+>> -vnc :0 -device VGA -monitor stdio --no-reboot
+>> 
+>> Comparing traces of working and broken cases, I couldn't find anything
+>> suspicious but I may had missed something of course. For now, it seems
+>> like a userspace misbehavior resulting in a segfault.
+> Could you please share steps launch the broken guest desktop?
+> (better also with guest kernel version, name of desktop processes,
+>  name of X server)
 
-There is a possibility of buffer overflow in
-show_rcu_tasks_trace_gp_kthread() if counters, passed
-to sprintf() are huge. Counter numbers, needed for this
-are unrealistically high, but buffer overflow is still
-possible.
+I think the easiest would be to download the latest Centos Stream 10
+iso, e.g:
 
-Use snprintf() with buffer size instead of sprintf().
+https://composes.stream.centos.org/stream-10/development/CentOS-Stream-10-20240902.d.0/compose/BaseOS/x86_64/iso/CentOS-Stream-10-20240902.d.0-x86_64-dvd1.iso
+(the link is probably not eternal but should work for a couple weeks,
+check https://composes.stream.centos.org/stream-10/development/ it it
+doesn't work anymore).
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Then, just run it:
+$ /usr/libexec/qemu-kvm -machine q35,accel=kvm,kernel-irqchip=split -name guest=c10s -cpu host -smp 1 -m 16384 -cdrom CentOS-Stream-10-20240902.d.0-x86_64-dvd1.iso -vnc :0 -device VGA -monitor stdio --no-reboot
 
-Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
-Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
----
- kernel/rcu/tasks.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+and connect to VNC console. To speed things up, pick 'Install Centos
+Stream 10' in the boot menu to avoid ISO integrity check.
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 105fdc2bb004..bede3a4f108e 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1240,7 +1240,7 @@ static void show_rcu_tasks_trace_gp_kthread(void)
- {
- 	char buf[64];
- 
--	sprintf(buf, "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
-+	snprintf(buf, sizeof(buf), "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
- 		data_race(n_heavy_reader_ofl_updates),
- 		data_race(n_heavy_reader_updates),
- 		data_race(n_heavy_reader_attempts));
+With "KVM: VMX: Always honor guest PAT on CPUs that support self-snoop"
+commit included, you will see the following on the VNC console:
+installer tries starting Wayland, crashes and drops back into text
+console. If you revert the commit and start over, Wayland will normally
+start and you will see the installer.
+
+If the installer environment is inconvenient for debugging, then you can
+install in text mode (or with the commit reverted :-) and then the same
+problem will be observed when gdm starts.
+
+FWIW, I use QEMU-9.0 from the same C10S (qemu-kvm-9.0.0-7.el10.x86_64)
+but I don't think it matters in this case. My CPU is "Intel(R) Xeon(R)
+Silver 4410Y".
+
 -- 
-2.45.2
+Vitaly
 
