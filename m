@@ -1,71 +1,94 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A36D14A4E0
-	for <rcu@vger.kernel.org>; Mon,  2 Sep 2024 10:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B4B19E96D
+	for <rcu@vger.kernel.org>; Mon,  2 Sep 2024 12:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725274716; cv=none; b=Kz3FIefbYGk+iJkS63j8av6vSpetKuyZZZk+Cvr6nOBYf9TWqwvEFW3Ke4+jHgoEqIfS0Lzb3SOflTNXwgDlSS3y1jm6Eb8m2G22I5ApZp3zV0XEH/TT0A57hMtfLzaRyG/1ArKPvS5Ise4HKQbAJmQAO4N+Q1FE4vfTtIyR6f8=
+	t=1725279439; cv=none; b=ZHeyz5Z4UdG8sJprnfUhHtjLHqrYwzmDmX8l7kymsNQeJoqpp3+RdRsB5XKRqb5AYQkyFWT3ja18D9JkcsGf0sKxenpQCuQQySfHmvErVi33ChzejTnujyAE7oX/ygAItDubZqFwAJEMYa7DyvTczS4/ZPWWSmCpqTB13QjbX9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725274716; c=relaxed/simple;
-	bh=wSdt3Wx7vZ4oPK76dfa7OFVYWIb88NvhXStlzaDH/Tc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hz0Sk1eqiUFGHJO3LNwsyH1qnyGIFVtuJuDV31r5/xBu7TKzKqV5++LETzCMfy1XSgk0jIjj1xXVz79BUYfk6N7ChmjlewHUbtN7yWgzQhJpqaupwtk02A5D1aXeE4hqt3Nif1S1IxETwyvqh4Tm4+P5m+7AfSYuskOjprH34uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Wy5MT4m9xz2DbYZ;
-	Mon,  2 Sep 2024 18:58:13 +0800 (CST)
-Received: from kwepemh500013.china.huawei.com (unknown [7.202.181.146])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6B3D1140360;
-	Mon,  2 Sep 2024 18:58:31 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemh500013.china.huawei.com
- (7.202.181.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 2 Sep
- 2024 18:58:30 +0800
-From: Jinjie Ruan <ruanjinjie@huawei.com>
-To: <paulmck@kernel.org>, <frederic@kernel.org>, <neeraj.upadhyay@kernel.org>,
-	<joel@joelfernandes.org>, <josh@joshtriplett.org>, <boqun.feng@gmail.com>,
-	<urezki@gmail.com>, <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-	<jiangshanlai@gmail.com>, <qiang.zhang1211@gmail.com>, <rcu@vger.kernel.org>
-CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next] rcu: Use the BITS_PER_LONG macro
-Date: Mon, 2 Sep 2024 19:06:54 +0800
-Message-ID: <20240902110654.2685917-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1725279439; c=relaxed/simple;
+	bh=N+2vNMITDQcU8VD3fB8pzfJ3amsb2MwR3lK5OrpWSlc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CjT6D7z2AEod4X17F656YQDcFewKTNPpwYt0ehmDZl0/PbJh21/E6zSgn2JhfltuH3ysgiHzGrwbRhj85+YaV3vSPA9WRTep/9eVfbilGPEWo9mdQF2gu4oNNjfBQ97GIehWjH8CfFUJljOLnSEgf23056IfWWZ8UrZN+fSPmT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=B2Kx6WpX; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="B2Kx6WpX"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1725279427;
+	bh=N+2vNMITDQcU8VD3fB8pzfJ3amsb2MwR3lK5OrpWSlc=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=B2Kx6WpXYoF99wBka2UZWbuvcPPgY5igkha7fUJDLUEmXST0GBjJcOjfXFKP+Ub7M
+	 T9uDfWkmi9suHoRH9kALzC5VLCjfGFF74cTISlStY3nbbrEXmJDai5qbVLFIrNcXqK
+	 7/dpaTyxCWE4OFLnX2aTfLoTbGonxXauapgZjhsLXHuJOWS1RWDEtmlAHEeBlIwUM/
+	 SWlxgNp7ACO+TDxsQ9/9pZT0E4gyGuqxyvc3jmVRfuEyOV7KjOQq+qjd08FmT5YDwV
+	 yumsU+OhyC1ITGhFqXUu9VKcQTHtQ1xK/1ZvvHQGyRPeQBBOoBdT5VGjDPBwQCgGrn
+	 tfaa050pVOGww==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Wy76W2HZXz1Jrx;
+	Mon,  2 Sep 2024 08:17:07 -0400 (EDT)
+Message-ID: <5ff34e5e-dbeb-4ea3-820c-8def6a723133@efficios.com>
+Date: Mon, 2 Sep 2024 08:16:46 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemh500013.china.huawei.com (7.202.181.146)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] rcu: Use the BITS_PER_LONG macro
+To: Jinjie Ruan <ruanjinjie@huawei.com>, paulmck@kernel.org,
+ frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+ josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
+ rostedt@goodmis.org, jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+ rcu@vger.kernel.org
+References: <20240902110654.2685917-1-ruanjinjie@huawei.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <20240902110654.2685917-1-ruanjinjie@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-sizeof(unsigned long) * 8 is the number of bits in an unsigned long
-variable, replace it with BITS_PER_LONG macro to make it simpler.
+On 2024-09-02 07:06, Jinjie Ruan wrote:
+> sizeof(unsigned long) * 8 is the number of bits in an unsigned long
+> variable, replace it with BITS_PER_LONG macro to make it simpler.
 
-Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
----
- kernel/rcu/tree.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+An alternative would be:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a60616e69b66..b48864df415c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -5579,8 +5579,7 @@ void rcu_init_geometry(void)
- 	 * Complain and fall back to the compile-time values if this
- 	 * limit is exceeded.
- 	 */
--	if (rcu_fanout_leaf < 2 ||
--	    rcu_fanout_leaf > sizeof(unsigned long) * 8) {
-+	if (rcu_fanout_leaf < 2 || rcu_fanout_leaf > BITS_PER_LONG) {
- 		rcu_fanout_leaf = RCU_FANOUT_LEAF;
- 		WARN_ON(1);
- 		return;
+if (rcu_fanout_leaf < 2 || sizeof_field(struct rcu_node, qsmask) * CHAR_BIT) {
+
+which would then tie the check to validated member type. But it's
+slightly more verbose, so it's up to the maintainer really.
+
+Thanks,
+
+Mathieu
+
+> 
+> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+> ---
+>   kernel/rcu/tree.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index a60616e69b66..b48864df415c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -5579,8 +5579,7 @@ void rcu_init_geometry(void)
+>   	 * Complain and fall back to the compile-time values if this
+>   	 * limit is exceeded.
+>   	 */
+> -	if (rcu_fanout_leaf < 2 ||
+> -	    rcu_fanout_leaf > sizeof(unsigned long) * 8) {
+> +	if (rcu_fanout_leaf < 2 || rcu_fanout_leaf > BITS_PER_LONG) {
+>   		rcu_fanout_leaf = RCU_FANOUT_LEAF;
+>   		WARN_ON(1);
+>   		return;
+
 -- 
-2.34.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
