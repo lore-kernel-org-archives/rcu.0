@@ -1,139 +1,124 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2107F18660D
-	for <rcu@vger.kernel.org>; Mon,  2 Sep 2024 08:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F9F17C9B3
+	for <rcu@vger.kernel.org>; Mon,  2 Sep 2024 08:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725265448; cv=none; b=qoWO5PRYTa9u7pI5z1tBtzww2pfjFMScE5p+l4/D0uBkZ1I0TR+CNKvER3NgMPJOxuaZ6F+XBkBf79jxQH1fUCoGTYgNFsiGXJcefD9RhfPuAec64bG60030qfwsfmn+kG8J3HZIxJd0AIOz/Bl7YNUq0lS/kFLYNducWdBVtq0=
+	t=1725266139; cv=none; b=k1bo7cYpMPOPJBU8UHI5oolljEBJzpKqBwEZV3jJizMluVQ8hXWu9HUAq9uDOgeY6Ai90eemU+7UXJxPQ5VOiQhndFv0zrFnyAjRtC749xgViHlpj9e+Wx0jlU+incBVzugkPuXJdptOiVN3I3xLMVJg9EEjv9iWK29ZOPJ1USU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725265448; c=relaxed/simple;
-	bh=mZRrDh8uuKRsFRJ76qarUXgzkV9FOvu93vZjcmsedWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FS7vuY9kCUwe8B+dP1OrSsihMdXhWSEWUmlmJLza+Ax8KBVb5t/kkZXPf+k0JqbgiZCqpWXtYpAMJVkBS6dxzt1UDl16yDdtST13e3x/Ll2pdtpxKOHEE0c/EM53n9GafiyNWZ1ia4y43zXQh30jQzzjLGkjZMjoqp/wtwyLRyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Rzqrri4A; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1725266139; c=relaxed/simple;
+	bh=1yKUWgG168kIrumQ4E/lNDOE3dBsj4G/DSSmNyd+u94=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M9xQactJIUVvtBMTdXBKF1rTyF2/7tim62b4hvCtix2dtzftTH/o04FpFlwBjbWw8SpgrBpAhY3Lp6GpR4EdcvA0Liql6shalvnl3j5pjXK6OuhnWdpB4mgySdR8p4XJMs/3wdeXGxEDu5Z58qAlZS+1GdQ+pE58XIAF+Ca3E8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DX2Btwpt; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rzqrri4A"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725265445;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k+0fISnzt5wuQd1CIsLkBQW6Py4x2XcKBx/mXvJpRkU=;
-	b=Rzqrri4A4QNrE1oMlYuLkyZ0NsJZDnEKs9dX1sGAOFusYlbTIlaKaHwo/FV9QatIIpn3WO
-	zmAm05uRsYQC7pwqJrj3qgMf6bI7bo7NkhUU1Xv/o3cx+5PHmAk7dyj27rMrsfrrcY3ZZI
-	1+r6z/DP57kf61TJJzNbWe87uqxW9ZM=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-563-Tye3jLkHN06lTCJ1PNjL4g-1; Mon,
- 02 Sep 2024 04:24:01 -0400
-X-MC-Unique: Tye3jLkHN06lTCJ1PNjL4g-1
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DEB5F1955D57;
-	Mon,  2 Sep 2024 08:23:59 +0000 (UTC)
-Received: from sirius.home.kraxel.org (unknown [10.39.193.45])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 194341955F1B;
-	Mon,  2 Sep 2024 08:23:59 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-	id C61CF1800639; Mon,  2 Sep 2024 10:23:56 +0200 (CEST)
-Date: Mon, 2 Sep 2024 10:23:56 +0200
-From: Gerd Hoffmann <kraxel@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>, 
-	Yan Zhao <yan.y.zhao@intel.com>, Yiwei Zhang <zzyiwei@google.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
- support self-snoop
-Message-ID: <fjlo4brtf32dciwubnrmqa3h3yzjxuv3t6sxpz4tsi6mj6xelx@bb66nmwxw3m2>
-References: <20240309010929.1403984-1-seanjc@google.com>
- <20240309010929.1403984-6-seanjc@google.com>
- <877cbyuzdn.fsf@redhat.com>
- <vuwlkftomgsnzsywjyxw6rcnycg3bve3o53svvxg3vd6xpok7o@k4ktmx5tqtmz>
- <871q26unq8.fsf@redhat.com>
- <ZtHOr-kCqvCdUc_A@google.com>
- <87seumt89u.fsf@redhat.com>
- <87plpqt6uh.fsf@redhat.com>
- <ZtHvjzBFUbG3fcMc@google.com>
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DX2Btwpt"
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2d8fa2ca5b1so64292a91.3
+        for <rcu@vger.kernel.org>; Mon, 02 Sep 2024 01:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1725266137; x=1725870937; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wx+Ngpcz5KS+uT4ExH5gnibO/Q2OSWyZ6WFtEESiF1s=;
+        b=DX2BtwptwtS4S4LBkTC5TJtMYYPfTtxYEzIl6ZwsNPN42edbg1+oW35RQKCxFMV1zd
+         XMToc86V+mqsYsBiCq6dAc01qN+xl13lufgCZBS+g9Wau+9Cb42CD/MMuSuvPgieTI1V
+         wuoxWYJy1SP58CHZi8WnaGxhsLahSEEXhVZ90=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725266137; x=1725870937;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wx+Ngpcz5KS+uT4ExH5gnibO/Q2OSWyZ6WFtEESiF1s=;
+        b=We9fDsNCrXW25gvCQoKkTKk7oLUweklgn5P2nj0dTLP52YTv2ZV7di7ACDWFtmql3O
+         +A/o9sXXTQ94I3muh+iKe2g8saVBhCUD8AFt3GgwpVrVZIStMwEncjyBktInCCf05HZQ
+         HK2HBi+ZTr57bKHoiwLF6+r3K9uCmoyxN72AHKotyUgEGVdn5CTDDLmBb7Nghg7noaB9
+         JXgPyXlVX4U7QIVp4KBHdBPc5eOdZutCvaaSxvL6USaNIhnO+WBFxgkfs3+tYFXm+4kl
+         jQM4hWEZKJkcIDP45vnjy8UJq3ox9xw0fwC7KGTXGU32g2h1QRpmJ7Oh5ErC2AJ4vLIb
+         GuNg==
+X-Forwarded-Encrypted: i=1; AJvYcCWmCn3Cskky/PxcTODGp+VDkkl74hhDn5USwbCzhKdVBFHFpzNMeNwTYL9yuugm59eNm4w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEturvGtLwXcJk3xbwhy1bR4/W3OamqhWsY5+JmiIsmn7rdLFa
+	HeWywVTFDWJfwV2Yfj/Dokx9D7QijbOmeiWGT4aFdj9+FF5WsSoQfeqmDOaE+g==
+X-Google-Smtp-Source: AGHT+IF4/GEqSbXqoxRakIqILSzbtpCjeIMTeUiOM4xZC1PMAowJYIU5DaWRW0ooWvdCC6o+o1UIWQ==
+X-Received: by 2002:a17:90a:558f:b0:2c9:81fd:4c27 with SMTP id 98e67ed59e1d1-2d88d6a0b9fmr7246707a91.14.1725266136913;
+        Mon, 02 Sep 2024 01:35:36 -0700 (PDT)
+Received: from fedora.. ([66.170.99.2])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d85b3b95e8sm8511509a91.54.2024.09.02.01.35.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Sep 2024 01:35:36 -0700 (PDT)
+From: Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
+To: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Cc: paulmck@kernel.org,
+	frederic@kernel.org,
+	neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org,
+	josh@joshtriplett.org,
+	boqun.feng@gmail.com,
+	urezki@gmail.com,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vasavi.sirnapalli@broadcom.com,
+	Nikita Kiryushin <kiryushin@ancud.ru>,
+	Sasha Levin <sashal@kernel.org>,
+	Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
+Subject: [PATCH v5.10-v5.15] rcu-tasks: Fix show_rcu_tasks_trace_gp_kthread buffer overflow
+Date: Mon,  2 Sep 2024 03:33:55 -0500
+Message-ID: <20240902083422.1095022-2-vamsi-krishna.brahmajosyula@broadcom.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZtHvjzBFUbG3fcMc@google.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+Content-Transfer-Encoding: 8bit
 
-> > > Yes? :-) As Gerd described, video memory is "mapped into userspace so
-> > > the wayland / X11 display server can software-render into the buffer"
-> > > and it seems that wayland gets something unexpected in this memory and
-> > > crashes. 
-> > 
-> > Also, I don't know if it helps or not, but out of two hunks in
-> > 377b2f359d1f, it is the vmx_get_mt_mask() one which brings the
-> > issue. I.e. the following is enough to fix things:
-> > 
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index f18c2d8c7476..733a0c45d1a6 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -7659,13 +7659,11 @@ u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> >  
-> >         /*
-> >          * Force WB and ignore guest PAT if the VM does NOT have a non-coherent
-> > -        * device attached and the CPU doesn't support self-snoop.  Letting the
-> > -        * guest control memory types on Intel CPUs without self-snoop may
-> > -        * result in unexpected behavior, and so KVM's (historical) ABI is to
-> > -        * trust the guest to behave only as a last resort.
-> > +        * device attached.  Letting the guest control memory types on Intel
-> > +        * CPUs may result in unexpected behavior, and so KVM's ABI is to trust
-> > +        * the guest to behave only as a last resort.
-> >          */
-> > -       if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-> > -           !kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> > +       if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> >                 return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> >  
-> >         return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT);
-> 
-> Hmm, that suggests the guest kernel maps the buffer as WC.  And looking at the
-> bochs driver, IIUC, the kernel mappings via ioremap() are UC-, not WC.  So it
-> could be that userspace doesn't play nice with WC, but could it also be that the
-> QEMU backend doesn't play nice with WC (on Intel)?
-> 
-> Given that this is a purely synthetic device, is there any reason to use UC or WC?
+From: Nikita Kiryushin <kiryushin@ancud.ru>
 
-Well, sharing code with other (real hardware) drivers is pretty much the
-only reason.  DRM has a set of helper functions to manage vram in pci
-memory bars (see drm_gem_vram_helper.c, drm_gem_ttm_helper.c).
+[ Upstream commit cc5645fddb0ce28492b15520306d092730dffa48 ]
 
-> I.e. can the bochs driver configure its VRAM buffers to be WB?  It doesn't look
-> super easy (the DRM/TTM code has so. many. layers), but it appears doable.  Since
-> the device only exists in VMs, it's possible the bochs driver has never run on
-> Intel CPUs with WC memtype.
+There is a possibility of buffer overflow in
+show_rcu_tasks_trace_gp_kthread() if counters, passed
+to sprintf() are huge. Counter numbers, needed for this
+are unrealistically high, but buffer overflow is still
+possible.
 
-Thomas Zimmermann <tzimmermann@suse.de> (Cc'ed) has a drm patch series
-in flight which switches the bochs driver to a shadow buffer model, i.e.
-all the buffers visible to fbcon and userspace live in main memory.
-Display updates are handled via in-kernel memcpy from shadow to vram.
-The pci memory bar becomes an bochs driver implementation detail not
-visible outside the driver.  This should give the bochs driver the
-freedom to map vram with whatever attributes work best with kvm, without
-needing drm changes outside the driver.
+Use snprintf() with buffer size instead of sprintf().
 
-Of course all this does not help much with current distro kernels broken
-by this patch ...
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-take care,
-  Gerd
+Fixes: edf3775f0ad6 ("rcu-tasks: Add count for idle tasks on offline CPUs")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Vamsi Krishna Brahmajosyula <vamsi-krishna.brahmajosyula@broadcom.com>
+---
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 105fdc2bb004..bede3a4f108e 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1240,7 +1240,7 @@ static void show_rcu_tasks_trace_gp_kthread(void)
+ {
+ 	char buf[64];
+ 
+-	sprintf(buf, "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
++	snprintf(buf, sizeof(buf), "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
+ 		data_race(n_heavy_reader_ofl_updates),
+ 		data_race(n_heavy_reader_updates),
+ 		data_race(n_heavy_reader_attempts));
+-- 
+2.45.2
 
