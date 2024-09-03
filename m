@@ -1,169 +1,117 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5895818E03F;
-	Tue,  3 Sep 2024 16:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040661DC741;
+	Tue,  3 Sep 2024 19:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725381200; cv=none; b=JF+3OVTbeDyMrlZmuWoYtwhCsQB8f593xpnO/dqss7zZXE6Usr7RjquVXSYT7kq3QvA8rsoLwlABHXyJR4KAAMYBQFgj6fQxj5eUHu1LFaxwOu7GTHpQSFFpdKQLITo1PWuf2TKT8JMdCafzLElrrD11XDE3UGL0KbvrMqwR/cQ=
+	t=1725392738; cv=none; b=SK4hU5FnlKali1CjTVpWmkWFdTAROpyqpcU6RQy1vO9VkLLwXQ5CUNCC0no/Ew6BIiZ99FlO/f2nZjdlHj20lmnzL+/S5IvWxWOR3uKdtijpU19FcJaaU+7UWBO9OC60ANJ+r1cAeKK6DRzTnlW+4vRNowtpOhRc1h0xeBlz8ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725381200; c=relaxed/simple;
-	bh=MhS/oq03SSj2QvqQptvoFaLxq+uZXfCftTTcDAD6ccg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EioiYwFh4I1Gu5DnDpH7mcFeuLlzNRdfIn8thFWSw45FCT3vGouBOkGBwKkAmSyUoiPQM0gL+WZbRPYh9UpjQPa27jug2nirAeg5mDopjvEH9x2ErmNSCGMxricwuDjHwWk07rq1NhN7gkzbzw3IiPZ5NgFEiaLl6RglQXBKSXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z1Vx1tiL; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1725392738; c=relaxed/simple;
+	bh=rvHjuYOEV1CINRkoyoSlcK07YHioQTEhKdC1rpNv7Gk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bsVdriqz+nP+mw6R/S4ZaLfFjtBqkMkqo/jLkRf9ZwGLUVxWGNca4IzSPqMhuJM7guf1tesdjdavevGyko4QdkLx+gK7R1PkhocAzW1VUQXQAE49Cb3ZMyW255uoDqcUo8OjiE1Tsy4eBVHoGmRLDrw49X/xSeAr6wecuLF5fgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hdIasmSe; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z1Vx1tiL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE847C4CEC9;
-	Tue,  3 Sep 2024 16:33:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725381200;
-	bh=MhS/oq03SSj2QvqQptvoFaLxq+uZXfCftTTcDAD6ccg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Z1Vx1tiLbI0CrfAXXVK5SpvMHQcdHDZ3GoiBjMxB5WDjVzV/MOr8zjDgVvJ9C/IIJ
-	 eW0fYTV80rauFWOwgslRWUOohhntsX3SCJwVUwiYHCXMz3ryEyAHuh+1bBc2mK6OUO
-	 yglq7MaK7AzWRbRFwY4gJSYz1OTBvqMtJtxlhhDHTFWOCexDFJw/RSSQ8YnICWKVas
-	 trdhdOYhlEkVAwxtJKGvD2Xas/pwFrgJ2elsis+3upsbvCUcdJW2OxJ8mT2Xu3AGPr
-	 NNsWXfZ4vBRl93VTaf9OW+F0cV+MYVholBUGA03p3MbEvGrc87PAQnY9nwOF7AsPQu
-	 J2FtqbQoyhx5g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4FFD0CE2610; Tue,  3 Sep 2024 09:33:19 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 08/11] rcutorture: Expand RCUTORTURE_RDR_MASK_[12] to eight bits
-Date: Tue,  3 Sep 2024 09:33:15 -0700
-Message-Id: <20240903163318.480678-8-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
-References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hdIasmSe"
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-374c3400367so2337603f8f.2;
+        Tue, 03 Sep 2024 12:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725392735; x=1725997535; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fPkNgkLdOPg5qYoIVaAIoztYKuro5zmWaepDFvWuEFo=;
+        b=hdIasmSeepU4ukwC0RVkp73/JwFz5txJPqRJy8QFU6233VIMdl+vcyqgkMVMw02UwO
+         6H7+9k7QsqXQU9VKbCnOTKwTEQzTYGapXYgskKnhGwHQjy8E8MQcmxYCwUO7iElDjc82
+         Oye1ufSThITnwbawZh1maVB64Mih/0ZvWrvUSQHNM57jAt/suDGT6F28x57WOa+ldEf3
+         8mUHYAvicNmZh/lG6SC1egY12m5tevCVYwjzbrG/82DYBcAOl2bvOGFE3X+4kaEcig2h
+         S5MySO6MgbFHZ0tSk/Yc8GM/wsvwECg4nMYFTllW+k33kqjUVfIzRab97TQe7mZRSMgT
+         ltrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725392735; x=1725997535;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fPkNgkLdOPg5qYoIVaAIoztYKuro5zmWaepDFvWuEFo=;
+        b=uItmuUqWlbamqfjenzfrhY8MZ+2QyvllcSTU+ybIaRMQpFRgYZBRQylBUpw563SSdU
+         DNVGQrSyNb88GYLABEcs/HofrvFNLnSyUBu2NRsniNO0zrX5fsMfAZuq4WpL9ARn/Kbd
+         D2JM/sDNOpv0PwwlcgtvkZ8MBwd8/aJ02f5d1a3N7nBAB54Cxd4GpUDK6WFW/OZh81rl
+         p7QtFBhgXsxqEj/cfatphVXJqIE3GMyPJ9wYvKjohKeD+bXm4RJY8KimhNeI5QDEy5ys
+         Y2DGvMxvbFjJk0qVpBLuTiDwWS3Ele+90tNrvIxd2XuAXQJEGPTtJ0V7o+K1leXR9Cl2
+         QhYw==
+X-Forwarded-Encrypted: i=1; AJvYcCU1qxEE6Nq4wmW7uxhBI4FyqzJu5g9ueHBzYws/v7JtUuSk8ZeMhVLNt4KRM0z/uPLXfI8=@vger.kernel.org, AJvYcCVHb11qXNE7aihOAMe6ZyKdeNO1G1+8JuiFXEyY61+GpNq2Myyi6FZJmfTwGxS0HRKM5h3NANob4BK8JB9m@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZa/TaFibGCY6kS2jNqKx4COspE0MEI5NkBUxuSayFXpjrkX8C
+	NnlkBoyB48tbbhre0RBA7M7cTkJdM/Wnd/Jb0xPUp5ugfOVcPqLwo5tPWVhIDBz44ZdcIw+rPba
+	zcIZBJ5X3oVUvloBbynwbzHANR7c=
+X-Google-Smtp-Source: AGHT+IFcGducwhXW6NaIYICoNN32Z4VWbi6fF/OnzddCSZfTmpnrJbs4ahiRHR+0RsEBEjIC8WjOoXqKZUCe0AXIT6Q=
+X-Received: by 2002:a05:6000:889:b0:371:8dd3:27c8 with SMTP id
+ ffacd0b85a97d-3749b544d81mr15041811f8f.23.1725392734966; Tue, 03 Sep 2024
+ 12:45:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop> <20240903163318.480678-7-paulmck@kernel.org>
+In-Reply-To: <20240903163318.480678-7-paulmck@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 3 Sep 2024 12:45:23 -0700
+Message-ID: <CAADnVQJCRksMjpKzpNFNXR4ZggnuLN4yTmBbFCr5YW33bbwSwQ@mail.gmail.com>
+Subject: Re: [PATCH rcu 07/11] srcu: Add srcu_read_lock_lite() and srcu_read_unlock_lite()
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit prepares for testing of multiple SRCU reader flavors by
-expanding RCUTORTURE_RDR_MASK_1 and RCUTORTURE_RDR_MASK_2 from a single
-bit to eight bits, allowing them to accommodate the return values from
-multiple calls to srcu_read_lock*().  This will in turn permit better
-testing coverage for these SRCU reader flavors, including testing of
-the diagnostics for inproper use of mixed reader flavors.
+On Tue, Sep 3, 2024 at 9:33=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 84daaa33ea0ab..4ba96e2cfa405 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+...
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
----
- kernel/rcu/rcutorture.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+> +static inline int srcu_read_lock_lite(struct srcu_struct *ssp) __acquire=
+s(ssp)
+> +{
+> +       int retval;
+> +
+> +       srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_LITE);
+> +       retval =3D __srcu_read_lock_lite(ssp);
+> +       rcu_try_lock_acquire(&ssp->dep_map);
+> +       return retval;
+> +}
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index b4cb7623a8bfc..d883f01407178 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -57,9 +57,9 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@
- 
- /* Bits for ->extendables field, extendables param, and related definitions. */
- #define RCUTORTURE_RDR_SHIFT_1	 8	/* Put SRCU index in upper bits. */
--#define RCUTORTURE_RDR_MASK_1	 (1 << RCUTORTURE_RDR_SHIFT_1)
--#define RCUTORTURE_RDR_SHIFT_2	 9	/* Put SRCU index in upper bits. */
--#define RCUTORTURE_RDR_MASK_2	 (1 << RCUTORTURE_RDR_SHIFT_2)
-+#define RCUTORTURE_RDR_MASK_1	 (0xff << RCUTORTURE_RDR_SHIFT_1)
-+#define RCUTORTURE_RDR_SHIFT_2	 16	/* Put SRCU index in upper bits. */
-+#define RCUTORTURE_RDR_MASK_2	 (0xff << RCUTORTURE_RDR_SHIFT_2)
- #define RCUTORTURE_RDR_BH	 0x01	/* Extend readers by disabling bh. */
- #define RCUTORTURE_RDR_IRQ	 0x02	/*  ... disabling interrupts. */
- #define RCUTORTURE_RDR_PREEMPT	 0x04	/*  ... disabling preemption. */
-@@ -71,6 +71,9 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@
- #define RCUTORTURE_MAX_EXTEND	 \
- 	(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_IRQ | RCUTORTURE_RDR_PREEMPT | \
- 	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED)
-+#define RCUTORTURE_RDR_ALLBITS	\
-+	(RCUTORTURE_MAX_EXTEND | RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2 | \
-+	 RCUTORTURE_RDR_MASK_1 | RCUTORTURE_RDR_MASK_2)
- #define RCUTORTURE_RDR_MAX_LOOPS 0x7	/* Maximum reader extensions. */
- 					/* Must be power of two minus one. */
- #define RCUTORTURE_RDR_MAX_SEGS (RCUTORTURE_RDR_MAX_LOOPS + 3)
-@@ -1830,7 +1833,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	int statesold = *readstate & ~newstate;
- 
- 	WARN_ON_ONCE(idxold2 < 0);
--	WARN_ON_ONCE((idxold2 >> RCUTORTURE_RDR_SHIFT_2) > 1);
-+	WARN_ON_ONCE(idxold2 & ~RCUTORTURE_RDR_ALLBITS);
- 	rtrsp->rt_readstate = newstate;
- 
- 	/* First, put new protection in place to avoid critical-section gap. */
-@@ -1845,9 +1848,9 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	if (statesnew & RCUTORTURE_RDR_SCHED)
- 		rcu_read_lock_sched();
- 	if (statesnew & RCUTORTURE_RDR_RCU_1)
--		idxnew1 = (cur_ops->readlock() & 0x1) << RCUTORTURE_RDR_SHIFT_1;
-+		idxnew1 = (cur_ops->readlock() << RCUTORTURE_RDR_SHIFT_1) & RCUTORTURE_RDR_MASK_1;
- 	if (statesnew & RCUTORTURE_RDR_RCU_2)
--		idxnew2 = (cur_ops->readlock() & 0x1) << RCUTORTURE_RDR_SHIFT_2;
-+		idxnew2 = (cur_ops->readlock() << RCUTORTURE_RDR_SHIFT_2) & RCUTORTURE_RDR_MASK_2;
- 
- 	/*
- 	 * Next, remove old protection, in decreasing order of strength
-@@ -1867,7 +1870,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	if (statesold & RCUTORTURE_RDR_RBH)
- 		rcu_read_unlock_bh();
- 	if (statesold & RCUTORTURE_RDR_RCU_2) {
--		cur_ops->readunlock((idxold2 >> RCUTORTURE_RDR_SHIFT_2) & 0x1);
-+		cur_ops->readunlock((idxold2 & RCUTORTURE_RDR_MASK_2) >> RCUTORTURE_RDR_SHIFT_2);
- 		WARN_ON_ONCE(idxnew2 != -1);
- 		idxold2 = 0;
- 	}
-@@ -1877,7 +1880,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 		lockit = !cur_ops->no_pi_lock && !statesnew && !(torture_random(trsp) & 0xffff);
- 		if (lockit)
- 			raw_spin_lock_irqsave(&current->pi_lock, flags);
--		cur_ops->readunlock((idxold1 >> RCUTORTURE_RDR_SHIFT_1) & 0x1);
-+		cur_ops->readunlock((idxold1 & RCUTORTURE_RDR_MASK_1) >> RCUTORTURE_RDR_SHIFT_1);
- 		WARN_ON_ONCE(idxnew1 != -1);
- 		idxold1 = 0;
- 		if (lockit)
-@@ -1892,16 +1895,13 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	if (idxnew1 == -1)
- 		idxnew1 = idxold1 & RCUTORTURE_RDR_MASK_1;
- 	WARN_ON_ONCE(idxnew1 < 0);
--	if (WARN_ON_ONCE((idxnew1 >> RCUTORTURE_RDR_SHIFT_1) > 1))
--		pr_info("Unexpected idxnew1 value of %#x\n", idxnew1);
- 	if (idxnew2 == -1)
- 		idxnew2 = idxold2 & RCUTORTURE_RDR_MASK_2;
- 	WARN_ON_ONCE(idxnew2 < 0);
--	WARN_ON_ONCE((idxnew2 >> RCUTORTURE_RDR_SHIFT_2) > 1);
- 	*readstate = idxnew1 | idxnew2 | newstate;
- 	WARN_ON_ONCE(*readstate < 0);
--	if (WARN_ON_ONCE((*readstate >> RCUTORTURE_RDR_SHIFT_2) > 1))
--		pr_info("Unexpected idxnew2 value of %#x\n", idxnew2);
-+	if (WARN_ON_ONCE(*readstate & ~RCUTORTURE_RDR_ALLBITS))
-+		pr_info("Unexpected readstate value of %#x\n", *readstate);
- }
- 
- /* Return the biggest extendables mask given current RCU and boot parameters. */
-@@ -1926,7 +1926,7 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
- 	unsigned long bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
- 
--	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT_1);
-+	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT_1);  // Can't have reader idx bits.
- 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
- 	if (!(randmask1 & 0x7))
- 		mask = mask & randmask2;
--- 
-2.40.1
+...
 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 602b4b8c4b891..bab888e86b9bb 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> +int __srcu_read_lock_lite(struct srcu_struct *ssp)
+> +{
+> +       int idx;
+> +
+> +       RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_r=
+ead_lock_lite().");
+> +       idx =3D READ_ONCE(ssp->srcu_idx) & 0x1;
+> +       this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter); /* Y */
+> +       barrier(); /* Avoid leaking the critical section. */
+> +       return idx;
+> +}
+> +EXPORT_SYMBOL_GPL(__srcu_read_lock_lite);
+
+The use cases where smp_mb() penalty is noticeable probably will notice
+the cost of extra call too.
+Can the main part be in srcu.h as well to make it truly "lite" ?
+Otherwise we'd have to rely on compilers doing LTO which may or may not hap=
+pen.
