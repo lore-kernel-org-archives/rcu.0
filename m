@@ -1,117 +1,84 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040661DC741;
-	Tue,  3 Sep 2024 19:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7F11C769A
+	for <rcu@vger.kernel.org>; Tue,  3 Sep 2024 21:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725392738; cv=none; b=SK4hU5FnlKali1CjTVpWmkWFdTAROpyqpcU6RQy1vO9VkLLwXQ5CUNCC0no/Ew6BIiZ99FlO/f2nZjdlHj20lmnzL+/S5IvWxWOR3uKdtijpU19FcJaaU+7UWBO9OC60ANJ+r1cAeKK6DRzTnlW+4vRNowtpOhRc1h0xeBlz8ko=
+	t=1725399493; cv=none; b=ZmRpItLXyay/UJ9ghA4VvUU2rApMIyo67Q6J+axK/OW1UyJ0PvGMkht6cWf+K71aFoMJEzJZNhHLLfP9XYHjo0WCqp+q4eZ3Le2K18CQVKuskjbhqj3vlWn3P/fCEurjuojogbMSr2YA4/O56UEltwTrbDNFAVbTFkZUZextjMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725392738; c=relaxed/simple;
-	bh=rvHjuYOEV1CINRkoyoSlcK07YHioQTEhKdC1rpNv7Gk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bsVdriqz+nP+mw6R/S4ZaLfFjtBqkMkqo/jLkRf9ZwGLUVxWGNca4IzSPqMhuJM7guf1tesdjdavevGyko4QdkLx+gK7R1PkhocAzW1VUQXQAE49Cb3ZMyW255uoDqcUo8OjiE1Tsy4eBVHoGmRLDrw49X/xSeAr6wecuLF5fgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hdIasmSe; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1725399493; c=relaxed/simple;
+	bh=cGgPf5JfNAEVKnOSbYXIvdInRlTxMPFHlIJ0pyVOscY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ILt8mRRTK83dWck8sLDb1/K34h8Az/ESoDycGxppXQRcRat3hvNqvdzIZHd1fD5miF8MqnJ9PmGtA792ChKLRiUmxryz4jHQI5wRD6tErgQ4dwwyGFA+XaZgzeSwPMoTZQ586jNbYASoGY/nO3IS9ICf8bwllubxwHgw/UqqNkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f9MN7roT; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hdIasmSe"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-374c3400367so2337603f8f.2;
-        Tue, 03 Sep 2024 12:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725392735; x=1725997535; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fPkNgkLdOPg5qYoIVaAIoztYKuro5zmWaepDFvWuEFo=;
-        b=hdIasmSeepU4ukwC0RVkp73/JwFz5txJPqRJy8QFU6233VIMdl+vcyqgkMVMw02UwO
-         6H7+9k7QsqXQU9VKbCnOTKwTEQzTYGapXYgskKnhGwHQjy8E8MQcmxYCwUO7iElDjc82
-         Oye1ufSThITnwbawZh1maVB64Mih/0ZvWrvUSQHNM57jAt/suDGT6F28x57WOa+ldEf3
-         8mUHYAvicNmZh/lG6SC1egY12m5tevCVYwjzbrG/82DYBcAOl2bvOGFE3X+4kaEcig2h
-         S5MySO6MgbFHZ0tSk/Yc8GM/wsvwECg4nMYFTllW+k33kqjUVfIzRab97TQe7mZRSMgT
-         ltrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725392735; x=1725997535;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fPkNgkLdOPg5qYoIVaAIoztYKuro5zmWaepDFvWuEFo=;
-        b=uItmuUqWlbamqfjenzfrhY8MZ+2QyvllcSTU+ybIaRMQpFRgYZBRQylBUpw563SSdU
-         DNVGQrSyNb88GYLABEcs/HofrvFNLnSyUBu2NRsniNO0zrX5fsMfAZuq4WpL9ARn/Kbd
-         D2JM/sDNOpv0PwwlcgtvkZ8MBwd8/aJ02f5d1a3N7nBAB54Cxd4GpUDK6WFW/OZh81rl
-         p7QtFBhgXsxqEj/cfatphVXJqIE3GMyPJ9wYvKjohKeD+bXm4RJY8KimhNeI5QDEy5ys
-         Y2DGvMxvbFjJk0qVpBLuTiDwWS3Ele+90tNrvIxd2XuAXQJEGPTtJ0V7o+K1leXR9Cl2
-         QhYw==
-X-Forwarded-Encrypted: i=1; AJvYcCU1qxEE6Nq4wmW7uxhBI4FyqzJu5g9ueHBzYws/v7JtUuSk8ZeMhVLNt4KRM0z/uPLXfI8=@vger.kernel.org, AJvYcCVHb11qXNE7aihOAMe6ZyKdeNO1G1+8JuiFXEyY61+GpNq2Myyi6FZJmfTwGxS0HRKM5h3NANob4BK8JB9m@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZa/TaFibGCY6kS2jNqKx4COspE0MEI5NkBUxuSayFXpjrkX8C
-	NnlkBoyB48tbbhre0RBA7M7cTkJdM/Wnd/Jb0xPUp5ugfOVcPqLwo5tPWVhIDBz44ZdcIw+rPba
-	zcIZBJ5X3oVUvloBbynwbzHANR7c=
-X-Google-Smtp-Source: AGHT+IFcGducwhXW6NaIYICoNN32Z4VWbi6fF/OnzddCSZfTmpnrJbs4ahiRHR+0RsEBEjIC8WjOoXqKZUCe0AXIT6Q=
-X-Received: by 2002:a05:6000:889:b0:371:8dd3:27c8 with SMTP id
- ffacd0b85a97d-3749b544d81mr15041811f8f.23.1725392734966; Tue, 03 Sep 2024
- 12:45:34 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f9MN7roT"
+Date: Tue, 3 Sep 2024 17:38:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725399489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=952PcxBu4qPLrefB1WB3fF6Z6QmUkNBiQIiXRdzbJtc=;
+	b=f9MN7roTLfeCBLibXWPWmJSFKwaZ1LysJK5hbwspmAYOEQmEVJmM792/jDmZHxxX5Ih1gM
+	V7ipG9+QvIw0cDfcID28oRVP65BC3fNiii/hrOFibwDaC32V3f8Kqq31fOXMkRjSf88Qt/
+	WiuC1wOU5eg6gDR1m6ddN9eyjz2ZzOk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
+Message-ID: <gbar5cxixgq4jtxgtzv7xjipabhqqbwdwyrtahkkws3tregdvo@edqb7ku2uhk2>
+References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop> <20240903163318.480678-7-paulmck@kernel.org>
-In-Reply-To: <20240903163318.480678-7-paulmck@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 3 Sep 2024 12:45:23 -0700
-Message-ID: <CAADnVQJCRksMjpKzpNFNXR4ZggnuLN4yTmBbFCr5YW33bbwSwQ@mail.gmail.com>
-Subject: Re: [PATCH rcu 07/11] srcu: Add srcu_read_lock_lite() and srcu_read_unlock_lite()
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 3, 2024 at 9:33=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> index 84daaa33ea0ab..4ba96e2cfa405 100644
-> --- a/include/linux/srcu.h
-> +++ b/include/linux/srcu.h
-...
+On Tue, Sep 03, 2024 at 09:32:51AM GMT, Paul E. McKenney wrote:
+> Hello!
+> 
+> This series provides light-weight readers for SRCU.  This lightness
+> is selected by the caller by using the new srcu_read_lock_lite() and
+> srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
+> srcu_read_unlock() flavors.  Although this passes significant rcutorture
+> testing, this should still be considered to be experimental.
 
-> +static inline int srcu_read_lock_lite(struct srcu_struct *ssp) __acquire=
-s(ssp)
-> +{
-> +       int retval;
-> +
-> +       srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_LITE);
-> +       retval =3D __srcu_read_lock_lite(ssp);
-> +       rcu_try_lock_acquire(&ssp->dep_map);
-> +       return retval;
-> +}
+This avoids memory barriers, correct?
 
-...
+> There are a few restrictions:  (1) If srcu_read_lock_lite() is called
+> on a given srcu_struct structure, then no other flavor may be used on
+> that srcu_struct structure, before, during, or after.  (2) The _lite()
+> readers may only be invoked from regions of code where RCU is watching
+> (as in those regions in which rcu_is_watching() returns true).  (3)
+> There is no auto-expediting for srcu_struct structures that have
+> been passed to _lite() readers.  (4) SRCU grace periods for _lite()
+> srcu_struct structures invoke synchronize_rcu() at least twice, thus
+> having longer latencies than their non-_lite() counterparts.  (5) Even
+> with synchronize_srcu_expedited(), the resulting SRCU grace period
+> will invoke synchronize_rcu() at least twice, as opposed to invoking
+> the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
+> srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
+> srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
+> from NMI handlers (that is what the _nmisafe() interface are for).
+> Although one could imagine readers that were both _lite() and _nmisafe(),
+> one might also imagine that the read-modify-write atomic operations that
+> are needed by any NMI-safe SRCU read marker would make this unhelpful
+> from a performance perspective.
 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 602b4b8c4b891..bab888e86b9bb 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> +int __srcu_read_lock_lite(struct srcu_struct *ssp)
-> +{
-> +       int idx;
-> +
-> +       RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_r=
-ead_lock_lite().");
-> +       idx =3D READ_ONCE(ssp->srcu_idx) & 0x1;
-> +       this_cpu_inc(ssp->sda->srcu_lock_count[idx].counter); /* Y */
-> +       barrier(); /* Avoid leaking the critical section. */
-> +       return idx;
-> +}
-> +EXPORT_SYMBOL_GPL(__srcu_read_lock_lite);
+So if I'm following, this should work fine for bcachefs, and be a nifty
+small perforance boost.
 
-The use cases where smp_mb() penalty is noticeable probably will notice
-the cost of extra call too.
-Can the main part be in srcu.h as well to make it truly "lite" ?
-Otherwise we'd have to rely on compilers doing LTO which may or may not hap=
-pen.
+Can I give you an account for my test cluster? If you'd like, we can
+convert bcachefs to it and point it at your branch.
