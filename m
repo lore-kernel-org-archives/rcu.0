@@ -1,84 +1,80 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2046F1A0BD1
-	for <rcu@vger.kernel.org>; Tue,  3 Sep 2024 10:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9053D186E3D
+	for <rcu@vger.kernel.org>; Tue,  3 Sep 2024 15:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725359290; cv=none; b=lp0HIVjFuIvnXlMCzjYzDUeN+p3qsRiFMRIZerOH3hpq6/8nqa72GrXR10dP8gMlMqiEJrptBKmY/tVldOEsjKkkksVorFwIPKA0t327v2uIWkNvQx09fBp6fQw+TBTLrisi5w0GEMnqwHmI8CXEGAS+zaN3wERcJOU2HY2W1CA=
+	t=1725377467; cv=none; b=XcX5cx+M/RFM7mcizh/nS2N/w4RUgg06FyAbXyfdgK14HFG0VPRZcwo0W+6YlTfan0xf9s9oxJbu90O4/x+gDFuT5PgXsMH9TSxEzNB4jVMj8Nf9xu8NC5xYZOwK5X3uq8lpxDUN2Ar4LN3SlGVm6Q9djXlSpnuw8ljkAeNEarU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725359290; c=relaxed/simple;
-	bh=t8rynAs4j0rl0ydR6lnDtnhh7CphXBeArRMMUcqVOcg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NFCRQwkFce4ObWzn1VaLVbsnmsx7G1ALIrSGqXkt+5AJnAdwBQ3pPcBWQ+e7z/KwfRLcYiHhogPBEVCFDoAR4+WxOsNrjECFbcfZpjzwA4Ca37LalQru6vOwel5VIGYCZ2Z12bHe3stvmg78rxXunjXvGHAF9OX6pd/q3FxAU0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGtCOwi6; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1725377467; c=relaxed/simple;
+	bh=myZhSHZglPxRmX1LeF9hNvw0WBoOmbw90VRio1gUy/w=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=lLUUzu4Hh+/U0oAyXJbB1DmdSglTrYT6S+nQD84bf+ikoxm3E3Nd8vJnQdLoJLCUHXjTEz+Te1mVK86aqA2vkz+mOVJnIIMx4S7Ra+vPTJwcCxe7XrSiB3pcMxlsCWWuFZJPkTNwGS8MUaQY7ILEMM7dOL7BPAd2FG6Hm5C4Ceo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GVr/BqKm; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGtCOwi6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0A77C4CEC4;
-	Tue,  3 Sep 2024 10:28:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725359289;
-	bh=t8rynAs4j0rl0ydR6lnDtnhh7CphXBeArRMMUcqVOcg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=oGtCOwi6fvEaZ+smeQb+fftTyTkZOuVVK4NpaK0nzjVQivMLE8aiad03U5RblIfOZ
-	 xl97x9IL7yOZLYKO4D2fTm5QmQcovfDEQzWmc1SbHfSAh1anFl+83vYDNyD20+jgG/
-	 PNx2/2Dtx5rMtKppdBMVPIHyHzXvG0bcc5Z6tHDQk8yocrwrTQQYF9KPfube/1Pa5q
-	 tR7XIj7wpmxjSGxpQUZTAAo5bS3f9zbXsce7hAEmHx0byJbOigAS+mkSICBlzkMoD3
-	 BXZL4r7HotysSdJYawp2XdPINccyHuleYWglLIIl5UCLIiaiKM3RY2+bJTJUYx5ubK
-	 pCmZGL1syF14Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4F2AACE14C5; Tue,  3 Sep 2024 03:28:09 -0700 (PDT)
-Date: Tue, 3 Sep 2024 03:28:09 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Jinjie Ruan <ruanjinjie@huawei.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH -next] rcu: Use the BITS_PER_LONG macro
-Message-ID: <67f4075d-d157-40e9-9f22-2ee24563eb79@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240902110654.2685917-1-ruanjinjie@huawei.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GVr/BqKm"
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6d52d811d1aso48053877b3.1
+        for <rcu@vger.kernel.org>; Tue, 03 Sep 2024 08:31:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1725377461; x=1725982261; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Ec7dmsuyq6MURvKN1Ek/X/vHghIhIMnPsF7++yal6w=;
+        b=GVr/BqKmN+1FjYtqqdksxJxo8K3VG6iBCh5g+P7c1GolUYYGUE5mMN6lrLtOBO/tgn
+         H3yBX30kH8cM+J5KUon5QiXNZ5NLcQSw6fdNPnPJiLGL5AobW27ieHK2s/86ngKQZ/e3
+         HNTOTR40l2eAn/XVHuUg2YtvvcGKKDs6WwHOlhNJkRx9ACy/RfKypjhCgJOpRQVnOG5w
+         KxmimPRoXgKx5L1iuQvGtBZWXE9KCNtKmZKq4n8fnNxyDLFYZUVF7BxSZIwjekgZ3BdL
+         IDGnALM6fCMDHy7TBinurxpIMyPvGZ1L4MKWOAXzogvTZZNK2lQCkZG8rfg4xFwj81FN
+         OXRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725377461; x=1725982261;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Ec7dmsuyq6MURvKN1Ek/X/vHghIhIMnPsF7++yal6w=;
+        b=g4NJEn5wDGpoTjMAoKCXlPahuYr3auVpARktoHoqqULATNbbcjFflCLZiPGbLhJE+7
+         nYKrXIWAl1B/Cn7yv8k6kObd83rYdARwXKSZjVSVFDq4/R+jsJnxmWxfSjt5xsI91Qqf
+         RTuGSt6eiGrOYpZLcD9kR7V0rC0S3ZYeBgRukQ3yZkhCB+oLbLP30dvcCi1a9PXhLCcM
+         fPTmmFYEydW7NKllowZgagkD/5N4gWBtvNS7hqlAaAT8qWwwXQEWgZTw5Wy7ISGQHLSV
+         EO9RDjXDls5DPGEvPsnV720SCCxJr89xx7KVz2qL+GIEa9yjDKYIubv+wRHCYftcCvJ7
+         2amw==
+X-Forwarded-Encrypted: i=1; AJvYcCWpEiteGUKRRq5fksnDbFUguxOkxf3R/BWTVEdyaCSC14lgcb74p0+5EZ8UXdLEW4F+kcc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoxjrHIy/dkM22g7bFGW9K66XUxxNM35JnlVI31FZ6oYxfFFwl
+	DYQ+J9ixQnMUwtf8CII5mRUHsoQ3kaV/g3SbmwoB5xsZr1HaVSKdSAQNPz+1IyIfjzDjKHi7TKf
+	nUw==
+X-Google-Smtp-Source: AGHT+IEh9ne8KzfgecVZ/RaL9A4Ue6g6HIetOniUqznNH1pR9H+ZBj1JoJsiAHWXhWwmsoKvuOIyhj4bnjg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:4d02:b0:6d9:d865:46c7 with SMTP id
+ 00721157ae682-6d9d86547dcmr1285427b3.2.1725377461550; Tue, 03 Sep 2024
+ 08:31:01 -0700 (PDT)
+Date: Tue, 3 Sep 2024 08:30:59 -0700
+In-Reply-To: <87jzfutmfc.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240902110654.2685917-1-ruanjinjie@huawei.com>
+Mime-Version: 1.0
+References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-6-seanjc@google.com>
+ <877cbyuzdn.fsf@redhat.com> <vuwlkftomgsnzsywjyxw6rcnycg3bve3o53svvxg3vd6xpok7o@k4ktmx5tqtmz>
+ <871q26unq8.fsf@redhat.com> <ZtUYZE6t3COCwvg0@yzhao56-desk.sh.intel.com> <87jzfutmfc.fsf@redhat.com>
+Message-ID: <Ztcrs2U8RrI3PCzM@google.com>
+Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
+From: Sean Christopherson <seanjc@google.com>
+To: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Yan Zhao <yan.y.zhao@intel.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>, 
+	Yiwei Zhang <zzyiwei@google.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Sep 02, 2024 at 07:06:54PM +0800, Jinjie Ruan wrote:
-> sizeof(unsigned long) * 8 is the number of bits in an unsigned long
-> variable, replace it with BITS_PER_LONG macro to make it simpler.
-> 
-> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+On Mon, Sep 02, 2024, Vitaly Kuznetsov wrote:
+> FWIW, I use QEMU-9.0 from the same C10S (qemu-kvm-9.0.0-7.el10.x86_64)
+> but I don't think it matters in this case. My CPU is "Intel(R) Xeon(R)
+> Silver 4410Y".
 
-Either Jinjie's or Mathieu's formulation works for me.  But Jinjie was
-here first, so:
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-> ---
->  kernel/rcu/tree.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index a60616e69b66..b48864df415c 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -5579,8 +5579,7 @@ void rcu_init_geometry(void)
->  	 * Complain and fall back to the compile-time values if this
->  	 * limit is exceeded.
->  	 */
-> -	if (rcu_fanout_leaf < 2 ||
-> -	    rcu_fanout_leaf > sizeof(unsigned long) * 8) {
-> +	if (rcu_fanout_leaf < 2 || rcu_fanout_leaf > BITS_PER_LONG) {
->  		rcu_fanout_leaf = RCU_FANOUT_LEAF;
->  		WARN_ON(1);
->  		return;
-> -- 
-> 2.34.1
-> 
+Has this been reproduced on any other hardware besides SPR?  I.e. did we stumble
+on another hardware issue?
