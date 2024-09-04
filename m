@@ -1,88 +1,47 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD7E1CC8AD;
-	Wed,  4 Sep 2024 09:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E56713AD22;
+	Wed,  4 Sep 2024 10:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725441557; cv=none; b=TX/xeLQUMPIGZQ1MHKsR5LaB7JrfEKg+X2zKrY8dd+5U9ddDm28ZAtsqw7Npb2+mVfEzcip0qQBpvwGN01HyYxMW/psPUH/qPLKje/fYK7unRYkL8jESxzjS3Ljh+B/4MVkHTeiG1n2kgZOSdLWo5bmoFeHDGwVvXO3ff+HthiE=
+	t=1725447259; cv=none; b=jtf4FyYhGu1sCveBsdBzAidqRt0Dgwgm/ZNljorzdryHzh5NMdplDGRUfJFDF0OvrfsdWECjHHuwKNrso8rf6cAh+f34t7ZARn6OB40fH7eEqdZRKIrVyyvtrHBXPNX4nDFVsA3H/HZalCVH922nnFL6cQVG2NXYFk8GYvdpVog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725441557; c=relaxed/simple;
-	bh=rYhibeLToLXao14siX2jw/NrLhl3ubJwHIS7KjZoSAs=;
+	s=arc-20240116; t=1725447259; c=relaxed/simple;
+	bh=HhQvuwZmWKAr/jdvLk3yTQm7CYTgzuoOEywfGNZucU8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hODfrYWOq9He4XKtUSuWts5SnBPR6mnch6uMUbj2e5kdO33vwu5sf9Ef8wfYV5ucuFMdmuKRcA/ex+Uh1pJH4gUWrCCiuKSWIGJw5soLrJkYpw4bhqdeWuwBfWoaiGseihn39zQY5zt/RHQcLjBc2iQhQODcGDi7Rqj9M5TZVww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z+++KBV6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dIp/U31u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z+++KBV6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dIp/U31u; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	 Content-Type:Content-Disposition:In-Reply-To; b=UynMmN1AAZfdLQTxRZb/xOqP+Hdt+pfzhKZ4sZ+pk+YiF0aOSIFZeZ4EdAKSfVQiuSptc73tay8VBNBdkrCvGwOvM3efYP7sPuLboe9f3Veaf7Xa25kezcvE3Y0oPdGwlMUTEXXmPQhnkmF1rQCoiPLunJm5tFD9SNk+7ghQUgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/ih1hOv; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z+++KBV6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dIp/U31u";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z+++KBV6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dIp/U31u"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 92602219FF;
-	Wed,  4 Sep 2024 09:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725441553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+X4CE5OLGkYKJigdScpNImAF/U5YbkQWvOcK47dWD28=;
-	b=Z+++KBV6oe73P/joFHjRfqqh4k6JMx/N8SOWkWyK9jL5GWhQMDSsr4mhZdvwuU0RtK7UFF
-	lwDFYFWrezFgxtQrOnOXg6522NQgU4FJECHq8YXTPjcyg34uniKqN07z39uXYVGOkkqZ8X
-	Od08T8NDOhFKZJ2FojmP95oxJXHy5OM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725441553;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+X4CE5OLGkYKJigdScpNImAF/U5YbkQWvOcK47dWD28=;
-	b=dIp/U31u/wEjs3Es1kWHBKqwqFHyoNzaQSmvzOqhYbMYNMvLNeWAzSfWLsx5mKAdiO3GPT
-	yKMVQohw3gfzukBQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725441553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+X4CE5OLGkYKJigdScpNImAF/U5YbkQWvOcK47dWD28=;
-	b=Z+++KBV6oe73P/joFHjRfqqh4k6JMx/N8SOWkWyK9jL5GWhQMDSsr4mhZdvwuU0RtK7UFF
-	lwDFYFWrezFgxtQrOnOXg6522NQgU4FJECHq8YXTPjcyg34uniKqN07z39uXYVGOkkqZ8X
-	Od08T8NDOhFKZJ2FojmP95oxJXHy5OM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725441553;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+X4CE5OLGkYKJigdScpNImAF/U5YbkQWvOcK47dWD28=;
-	b=dIp/U31u/wEjs3Es1kWHBKqwqFHyoNzaQSmvzOqhYbMYNMvLNeWAzSfWLsx5mKAdiO3GPT
-	yKMVQohw3gfzukBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84CB0139E2;
-	Wed,  4 Sep 2024 09:19:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id YsyDHxEm2GbXEgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 04 Sep 2024 09:19:13 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0397BA0962; Wed,  4 Sep 2024 11:19:12 +0200 (CEST)
-Date: Wed, 4 Sep 2024 11:19:12 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jon Kohler <jon@nutanix.com>
-Cc: "paulmck@kernel.org" <paulmck@kernel.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-	"josh@joshtriplett.org" <josh@joshtriplett.org>,
-	"jack@suse.cz" <jack@suse.cz>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: SRCU hung task on 5.10.y on synchronize_srcu(&fsnotify_mark_srcu)
-Message-ID: <20240904091912.orpkwemgpsgcongo@quack3>
-References: <1E829024-48BF-4647-A1DD-AC7E8BFA0FA2@nutanix.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/ih1hOv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA162C4CEC2;
+	Wed,  4 Sep 2024 10:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725447258;
+	bh=HhQvuwZmWKAr/jdvLk3yTQm7CYTgzuoOEywfGNZucU8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Y/ih1hOvsulHiROzZk3z2FWpfbA4oQBP7lR97UxDecbdVhnsLRJxqZLfNTTUxgC4b
+	 7U2ZnFdiAi2at9+qGoZYr5H+0NP0fgV5vwXD9ZpsQTr8qQD49nECEI/19plEfa/C/a
+	 zwLsZI+0Pm9WI5DP/JTlze5JdLAvMZnfIWEtedj2FOSHVwzAvKECLcHJwbaoRY4hBN
+	 3HnaY6kQ/jJekojbifC1XhcJPTrctuW5xI7LsD8XrXo3yJNh4c2Ar2EOfSGowasw35
+	 5zI8ZXVDJ1d3Ac6GjrckDvBb/B1TWRzOcsvzQtUXshY9TMAxO9m8nboUsEP5j1dVJH
+	 JUNRHfoC8N3WQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 80515CE0D32; Wed,  4 Sep 2024 03:54:18 -0700 (PDT)
+Date: Wed, 4 Sep 2024 03:54:18 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 0/11] Add light-weight readers for SRCU
+Message-ID: <0ae7d150-7b92-4e8e-98ea-b28c3b824e11@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <26cddadd-a79b-47b1-923e-9684cd8a7ef4@paulmck-laptop>
+ <gbar5cxixgq4jtxgtzv7xjipabhqqbwdwyrtahkkws3tregdvo@edqb7ku2uhk2>
+ <0359b3a4-b6db-45d9-9957-b304b4a85865@paulmck-laptop>
+ <f4nkwsbqvpaxxqph3iucohfqy5zwn7j7u5uwppp7rp4mnx2eqj@lqxwtgboskik>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -91,77 +50,67 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1E829024-48BF-4647-A1DD-AC7E8BFA0FA2@nutanix.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,gmail.com,joshtriplett.org,suse.cz];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <f4nkwsbqvpaxxqph3iucohfqy5zwn7j7u5uwppp7rp4mnx2eqj@lqxwtgboskik>
 
-On Tue 27-08-24 20:01:27, Jon Kohler wrote:
-> Hey Paul, Lai, Josh, and the RCU list and Jan/FS list -
-> Reaching out about a tricky hung task issue that I'm running into. I've
-> got a virtualized Linux guest on top of a KVM based platform, running
-> a 5.10.y based kernel. The issue we're running into is a hung task that
-> *only* happens on shutdown/reboot of this particular VM once every 
-> 20-50 times.
+On Tue, Sep 03, 2024 at 07:03:53PM -0400, Kent Overstreet wrote:
+> On Tue, Sep 03, 2024 at 03:13:40PM GMT, Paul E. McKenney wrote:
+> > On Tue, Sep 03, 2024 at 05:38:05PM -0400, Kent Overstreet wrote:
+> > > On Tue, Sep 03, 2024 at 09:32:51AM GMT, Paul E. McKenney wrote:
+> > > > Hello!
+> > > > 
+> > > > This series provides light-weight readers for SRCU.  This lightness
+> > > > is selected by the caller by using the new srcu_read_lock_lite() and
+> > > > srcu_read_unlock_lite() flavors instead of the usual srcu_read_lock() and
+> > > > srcu_read_unlock() flavors.  Although this passes significant rcutorture
+> > > > testing, this should still be considered to be experimental.
+> > > 
+> > > This avoids memory barriers, correct?
+> > 
+> > Yes, there are no smp_mb() invocations in either srcu_read_lock_lite()
+> > or srcu_read_unlock_lite().  As usual, nothing comes for free, so the
+> > overhead is moved to the update side, and amplified, in the guise of
+> > the at least two calls to synchronize_rcu().
+> > 
+> > > > There are a few restrictions:  (1) If srcu_read_lock_lite() is called
+> > > > on a given srcu_struct structure, then no other flavor may be used on
+> > > > that srcu_struct structure, before, during, or after.  (2) The _lite()
+> > > > readers may only be invoked from regions of code where RCU is watching
+> > > > (as in those regions in which rcu_is_watching() returns true).  (3)
+> > > > There is no auto-expediting for srcu_struct structures that have
+> > > > been passed to _lite() readers.  (4) SRCU grace periods for _lite()
+> > > > srcu_struct structures invoke synchronize_rcu() at least twice, thus
+> > > > having longer latencies than their non-_lite() counterparts.  (5) Even
+> > > > with synchronize_srcu_expedited(), the resulting SRCU grace period
+> > > > will invoke synchronize_rcu() at least twice, as opposed to invoking
+> > > > the IPI-happy synchronize_rcu_expedited() function.  (6)  Just as with
+> > > > srcu_read_lock() and srcu_read_unlock(), the srcu_read_lock_lite() and
+> > > > srcu_read_unlock_lite() functions may not (repeat, *not*) be invoked
+> > > > from NMI handlers (that is what the _nmisafe() interface are for).
+> > > > Although one could imagine readers that were both _lite() and _nmisafe(),
+> > > > one might also imagine that the read-modify-write atomic operations that
+> > > > are needed by any NMI-safe SRCU read marker would make this unhelpful
+> > > > from a performance perspective.
+> > > 
+> > > So if I'm following, this should work fine for bcachefs, and be a nifty
+> > > small perforance boost.
+> > 
+> > Glad you like it!
+> > 
+> > > Can I give you an account for my test cluster? If you'd like, we can
+> > > convert bcachefs to it and point it at your branch.
+> > 
+> > Thank you, but I will pass on more accounts.  I have a fair amount of
+> > hardware at my disposal.  ;-)
 > 
-> The signature of the hung task is always similar to the output below,
-> where we appear to hang on the call to 
->     synchronize_srcu(&fsnotify_mark_srcu)
-> in fsnotify_connector_destroy_workfn / fsnotify_mark_destroy_workfn,
-> where two kernel threads are both calling synchronize_srcu, then
-> scheduling out in wait_for_completion, and completely going out to
-> lunch for over 4 minutes. This then triggers the hung task timeout and
-> things blow up.
+> Well - bcachefs might be a good torture test; if you patch bcachefs to
+> use the new API point me at a branch and I'll point the CI at it
 
-Well, the most obvious reason for this would be that some process is
-hanging somewhere with fsnotify_mark_srcu held. When this happens, can you
-trigger sysrq-w in the VM and send here its output?
+I am sorry, but I am getting on a plane today, am short of time, and
+won't be responsive for the inevitable issues.
 
-> We are running audit=1 for this system and are using an el8 based
-> userspace.
-> 
-> I've flipped through the fs/notify code base for both 5.10 as well as
-> upstream mainline to see if something jumped off the page, and I
-> haven't yet spotted any particular suspect code from the caller side.
-> 
-> This hang appears to come up at the very end of the shutdown/reboot
-> process, seemingly after the system starts to unwind through initrd.
-> 
-> What I'm working on now is adding some instrumentation to the dracut
-> shutdown initrd scripts to see if I can how far we get down that path
-> before the system fails to make forward progress, which may give some
-> hints. TBD on that. I've also enabled lockdep with CONFIG_PROVE_RCU and
-> a plethora of DEBUG options [2], and didn't get anything interesting.
-> To be clear, we haven't seen lockdep spit out any complaints as of yet.
+But this is a very simple change, just change srcu_read_lock() and
+srcu_read_unlock() into srcu_read_lock_lite() and srcu_read_unlock_lite().
 
-The fact that lockdep doesn't report anything is interesting but then
-lockdep doesn't track everything. In particular I think SRCU itself isn't
-tracked by lockdep.
+Would one of your bcachefs early adopters be up for this task?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+							Thanx, Paul
