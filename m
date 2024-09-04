@@ -1,113 +1,98 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B271EEE4
-	for <rcu@vger.kernel.org>; Wed,  4 Sep 2024 13:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492221DB523
+	for <rcu@vger.kernel.org>; Wed,  4 Sep 2024 14:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725457957; cv=none; b=FeffUG1jynsEP9aiKIhRmBuPhNH+S61qyawAkcZ20106VLcrkM9GKhJXCJSLzPh6ZR/oxgZMIH+c93dM5UbxEI1zgz3u8Xka+/nwyONN4MCsB83Em7Wyc4d77owI4YgEFZTMiK+AQWzRbhwym5Mail7KQbB9okDrxqTxGfkX30Y=
+	t=1725459594; cv=none; b=l0zlxebc1KdASezlzGbnDuKtN+xPypaZ7dTo68toKxAC/8fBYk+03yfq5wGW9TWOv+BD2G0GwPbsOOXIvtgGXgB/I8KPeP0yCxHbwOjXc5WE6jcDIcUfTkCK8mpooPkaLmbWSubJMro5TBbyOC+rNv3XveFNCTFHExhN3Dr8wbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725457957; c=relaxed/simple;
-	bh=eI4hexQHYmjJE9IDHpTWeXCkoQRs4wlGUeRDPW5OhIY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YbqNhqz5AQOikQUOvRAH+no1+iPf1JZpq1+IRex51xDEMQ8msJr4iESWXytfzc2fkvZT3M98ad8eHg2MQmlhL+E8AFORQSaP3UhTQ/rs2XRmkgJja4U6+VGqIOU/kb748amLHd7Id6y/sb4/VaI2/7Ql1S8kofofFOnZ2troWww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mka2/gEx; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1725459594; c=relaxed/simple;
+	bh=mD9f5S4DEuGg1jzc0Ldg5GumyZEVw/s2kOOHo3uEVpw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IU7S2eQWbYD4D199Xkv5JKPYcFFTdKgC1SjxDzjr6t9R4XFKVg7wgQOXgGZLVGKVhh8ZhZ+AaH/TDwgnZZHu6wDiIkHbKpJDrfYmpA9xFER19r+NzcJlcDpWUNKYUSeXG882fWals39Z3Xkszb//eLjJ6sPsTg/2PV7CoXcU8aE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dvl+nSVt; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mka2/gEx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 178F7C4CEC2;
-	Wed,  4 Sep 2024 13:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725457957;
-	bh=eI4hexQHYmjJE9IDHpTWeXCkoQRs4wlGUeRDPW5OhIY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=mka2/gEx2HdiFPE1w1hlv2BB4gHEjQjzzpI9wE0BZnnX3FCfrNwJlc0U0ZPzUmaU3
-	 Ph7CKa+z8CDaFzGp8SKs8ct28H0mOr7143oOdLQtk0LA8O6ZDUKCblbetX8v5dGbZz
-	 gc8shrRuTvBTHfFmIXRY3dVPo5lnBf3ERRKOjg+vjwGMUs2Zg1GHDIDp9J2BKi9RQ9
-	 AT+l4RltYDtEOEBe2atKun6R3CWE46mJILpS0CiCj7vQZNOwqnFZvImxbqKyKQj4lL
-	 7nOPBUadDzKGLx6q9rrfI770GUUs/CtTAbMgI40wo5kW+3lTej7JerDExGyQzRokA7
-	 UzO48PoRgn+rQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B1213CE0B6A; Wed,  4 Sep 2024 06:52:36 -0700 (PDT)
-Date: Wed, 4 Sep 2024 06:52:36 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Z qiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: One-off rcu_nocb_rdp_deoffload bug
-Message-ID: <5bb81db1-bf62-4edc-8d71-dfa192dda39f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <2747e596-5359-4f32-b3e0-0b2368d37017@paulmck-laptop>
- <CALm+0cV0GwT5umPRZrZWg4oqXwdjcWz-NkxkhgxQkv=NypQthA@mail.gmail.com>
- <CAFTL4hzY09QEGE+sTqc02d2LkuH_ObYKiuVTfGnrtwjtYiwt4A@mail.gmail.com>
- <d31bdc50-a61b-446b-926d-b3ddde832a91@paulmck-laptop>
- <236a1f66-f128-44e4-9272-7ae4dbad7485@paulmck-laptop>
- <ZthlEg2njJwXMk32@localhost.localdomain>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dvl+nSVt"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1725459592;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CuCkigoYy9EvKgW0pYC+K0vaMmgbR7ffC5hTK29y7rc=;
+	b=dvl+nSVtKvo9dtaY5QwUNpR11mKhdZbnQwFtPs17CJ/yc0aaKIechIxTwwSjb6J5cPVwje
+	pgoWfO1UB7FhZkzKjjVgUCow/wCy9Ebsyn4YuN1lfbWSv5KSm6nVMz+uHOqEA1mYlOLVI9
+	W/nEPODst5tkx4LAJWrRiCq8F3kBcyE=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-634-uvrvsX-tNhqVo-WhlJDdYw-1; Wed, 04 Sep 2024 10:19:51 -0400
+X-MC-Unique: uvrvsX-tNhqVo-WhlJDdYw-1
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-6cf78470a56so24879467b3.3
+        for <rcu@vger.kernel.org>; Wed, 04 Sep 2024 07:19:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725459590; x=1726064390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CuCkigoYy9EvKgW0pYC+K0vaMmgbR7ffC5hTK29y7rc=;
+        b=BoxzCTgwTJDx3+pb5vQTmDQMMIlfm1KcMBTHuWtfjqQd0aHCLmo1qpDU0C7UanbNk5
+         MSz/Vp9GNFU4894JbjmNld/BWRY1oXxu+czt2FcMg/tNJ5uTGzL8qdfmIRlRw4R8quQR
+         4UiKBTemfmWp0CQ/vZAk41Dc50bokfCiki69gK1bqHaECxtO5S14Fq95EVeNbFEmbO3d
+         u6zu8S8odYVU8jfp9fO1WwyjHH/LIPjPUc5zz0/2frOK8ehTK5RQBhPrxLrBzeBRxUTr
+         ro2Vrg5qI112NSkYXN5a3F/O2Gq9Y8D9zN7xIqbPfzHNO5aGBrwg85G1jejimChkRMKw
+         6nrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVgElkFQXLCGe+XDru64fuxcVM4786T94aTx+y6yMW2i7gwzS1IzWXN/43Bd+GogRD0A1I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwsYqunER5dOi4fLPBCOUIrMgK51RgYHugdG+uwvLTsyim81H96
+	PXUXEipiII3BmGDcmxH7rxfIlQW/A9DjRUfpwfoMEJ6mP4a/iauII57O94UC0NWlWCsQl+pz8sk
+	g+urLGz+VPJQ6wkUD0Foe5IQeD8TeCOY2eZKbHDD1v/PvL4tXHKFyYFq8kumY8fGBVStTyHqVxU
+	dcUZhvDtLrT/LSdTk6lOr+WNEc
+X-Received: by 2002:a05:6902:168e:b0:e11:698f:8843 with SMTP id 3f1490d57ef6-e1d0e9eb2e9mr3269419276.44.1725459590501;
+        Wed, 04 Sep 2024 07:19:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEsnTbfou/A8LxL0fK6QJXDt09m8CtPZdb3+3imkX+k2RU4I4bqj44gQm96hRgWPBh0aaVGuUjc3PXGEU1/6fQ=
+X-Received: by 2002:a05:6902:168e:b0:e11:698f:8843 with SMTP id
+ 3f1490d57ef6-e1d0e9eb2e9mr3269393276.44.1725459590233; Wed, 04 Sep 2024
+ 07:19:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZthlEg2njJwXMk32@localhost.localdomain>
+References: <CA+G9fYv=v713xAFCKvkwr_0qyaQWkmfeDC2=bO7KKkui+p+ZeQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYv=v713xAFCKvkwr_0qyaQWkmfeDC2=bO7KKkui+p+ZeQ@mail.gmail.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
+Date: Wed, 4 Sep 2024 16:19:39 +0200
+Message-ID: <CAOssrKdc4rcjJOqBnhbRa=R5yQY1erh+KuXr_2-nGTQ-qk3vOg@mail.gmail.com>
+Subject: Re: next: rcu_preempt self-detected stall on CPU - queued_spin_lock_slowpath
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: open list <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>, yangyun50@huawei.com, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Zhen Lei <thunder.leizhen@huawei.com>, 
+	Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 04, 2024 at 03:48:02PM +0200, Frederic Weisbecker wrote:
-> Le Wed, Sep 04, 2024 at 05:59:46AM -0700, Paul E. McKenney a écrit :
-> > On Tue, Aug 20, 2024 at 10:46:43AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Aug 20, 2024 at 04:43:39PM +0200, Frederic Weisbecker wrote:
-> > > > Sorry for the html mail, I only have my phone ...
-> > > > 
-> > > > Le mar. 20 août 2024, 13:07, Z qiang <qiang.zhang1211@gmail.com> a écrit :
-> > > > 
-> > > > > >
-> > > > > > Hello, Frederic,
-> > > > > >
-> > > > > > I have seen this once on Neeraj's tree with a few commits on top (-rcu
-> > > > > > commit 46774278c74f ("rcutorture: Test start-poll primitives with
-> > > > > > interrupts disabled").  But only the once so far.
-> > > > > >
-> > > > > > This is the WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist)) in
-> > > > > > rcu_nocb_rdp_deoffload().
-> > > > > >
-> > > > > > Thoughts?
-> > > > > >
-> > > > >
-> > > > > The rcu_segcblist_extract_done_cbs() doesn't reduce the count of
-> > > > > rsclp->len,
-> > > > > in rcu_do_bacth().  this may cause that after we execute the barrier rcu
-> > > > > callback, before decrementing the count of rsclp->len,  the rcu_barrier()
-> > > > > returns and makes a judgment of rcu_segcblist_n_cbs(&rdp->cblist)  in
-> > > > > rcu_nocb_rdp_deoffload().
-> > > > >
-> > > > 
-> > > > That sounds plausible! You just unlocked my thoughts running in circle
-> > > > since yesterday.
-> > > > 
-> > > > 
-> > > > > maybe can use WARN_ON_ONCE(rcu_segcblist_n_segment_cbs()) instead
-> > > > > of WARN_ON_ONCE(rcu_segcblist_n_cbs())
-> > > > >
-> > > > > Thoughts?
-> > > > 
-> > > > I'll test that once I'm back from vacation the september 2nd. Thanks!
-> > > 
-> > > Thank you both!!!
-> > > 
-> > > Running -next over last night hit a number of boot-time splats, so I
-> > > have no idea if this reproduces nicely.  Can't have everything!  ;-)
-> > 
-> > And it is now a two-off given another one last night's testing.  This was
-> > from 168 hours of TREE01 on my -rcu "dev" branch (as opposed to -next),
-> > but I have run many runs over the past two weeks.  So it is reproducible,
-> > but rare.
-> > 
-> > Ah, and if it matters, I synched up to Neeraj's latest as of about 18
-> > hours ago just before starting this test.
-> 
-> Yes, I'm preparing an update for the offending patch (which has one more
-> embarassing issue while I'm going through it again).
+On Wed, Sep 4, 2024 at 2:06=E2=80=AFPM Naresh Kamboju <naresh.kamboju@linar=
+o.org> wrote:
+>
+> The following kernel rcu info generated while running the test case
+> selftests: memfd: run_fuse_test.sh on qemu-arm64 running Linux
+> next-20240902. The qemu-arm64 did not recover.
+>
+> This build was created with kselftest merge configs.
+>
+> Anders bisected this to,
+>   # first bad commit:
+>     [5fb9c98e9d8ddf2abc645e2dcd9eb6703f77fdab]
+>     fuse: add support for no forget requests
 
-Very good, thank you!
+The bad commit was reverted from -next.
 
-							Thanx, Paul
+Thanks,
+Miklos
+
