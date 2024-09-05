@@ -1,234 +1,391 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001A419DF53;
-	Thu,  5 Sep 2024 13:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A27158D66
+	for <rcu@vger.kernel.org>; Thu,  5 Sep 2024 18:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725544440; cv=none; b=r9j160n3+0+dfQBCkbiDS/xlixsRoS+fVciYxtEJCw/6aAIurkqOQfH2YpDq2uZiuD4TAqjQUnmSIbSLoKoh6QgD2ElfVwupOQS+++snJC6UwzWooQWNOBr2Ivr39V8qKNM2m/Okc3Cy7Vlf7+fr1+6J8AAHBKHObjKArG7BXlM=
+	t=1725561141; cv=none; b=LXNY51jmSX5edtREaFt86mxSkSQBcC3AJjfZriBqIXw94/dczOovXb4MpN/hnZUAAM28ADCAD8rX5MX7ThwmZNcRrkPFV7+Gl1DbCVYzDKiQ3O00ejHoRICZyK/dLEZ1UuwEqvNUnyIMkgCts7KbLed6wGTr9SWfnvzN0QXssxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725544440; c=relaxed/simple;
-	bh=M45oi9J1dfDhftJaPMR7wqGDOQwsATiVb4pa/hy99zM=;
+	s=arc-20240116; t=1725561141; c=relaxed/simple;
+	bh=guUMfVXxhxmK7BuYylhY6VX+eIVTaBWgI667edXGhgQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qcMMAy4gPXpiuhskf6F1cyWU5UyK3wmJvuAxaODEeCwVuKEBJ8dkYzlH1C6S8WCCDZbqxeRq5u1iXsfv8hOP4D37JgYWjj4ElAaiWLXA2yv5qYWHtyWs7FTHBlzeeFrNixOnE//kHU5n6R7v+XVRqgyKi+/T/K9Danrs6V2kkJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d7Ur3DIo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kdOi11Sd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d7Ur3DIo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kdOi11Sd; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	 Content-Type:Content-Disposition:In-Reply-To; b=e5zP9NzTjJ1bwte6NrSW2CIa2ZQ6DOKif9K/9Kqlgget6WZo7M1RJf871ogB7pQp0HROysTN3WQ0v83AmNJMx2HE5un7HYXd6qm/Kve7mLrucxsUdZiO+aEZskra6np3MgF53MUboIQutw0u/COTAwy2B3/jLB/lrnHRiTd8Gp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOiuVZgk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d7Ur3DIo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kdOi11Sd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d7Ur3DIo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kdOi11Sd"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1D7BB1F7D4;
-	Thu,  5 Sep 2024 13:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725544437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
-	b=d7Ur3DIoy5/tdxlhh2Eu7oqe51PTPhwi+LmkavWkAecY3rRub/QWQLQNSxKACCrZzxKgll
-	6YPE95jsRh/aAaY/3Fg06Na5p1XkEhhpvDQRYM7anJoBCJZi2nqkxJVzqzzZDR+4eCxkel
-	rfgKwFbew7XOs+ScWMawGNeNAnXjXnM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725544437;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
-	b=kdOi11SdB4dd4VC2V2r4e4NKRLpQdMFC0LPJ0b1v4yjYZndVOHMujmCJ01s6+4/QC2jVUt
-	qSGyH+dP2EJH/BDQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=d7Ur3DIo;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kdOi11Sd
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725544437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
-	b=d7Ur3DIoy5/tdxlhh2Eu7oqe51PTPhwi+LmkavWkAecY3rRub/QWQLQNSxKACCrZzxKgll
-	6YPE95jsRh/aAaY/3Fg06Na5p1XkEhhpvDQRYM7anJoBCJZi2nqkxJVzqzzZDR+4eCxkel
-	rfgKwFbew7XOs+ScWMawGNeNAnXjXnM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725544437;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
-	b=kdOi11SdB4dd4VC2V2r4e4NKRLpQdMFC0LPJ0b1v4yjYZndVOHMujmCJ01s6+4/QC2jVUt
-	qSGyH+dP2EJH/BDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10BF713419;
-	Thu,  5 Sep 2024 13:53:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9YcOBPW32WaiDgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 05 Sep 2024 13:53:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 94ECBA0968; Thu,  5 Sep 2024 15:53:52 +0200 (CEST)
-Date: Thu, 5 Sep 2024 15:53:52 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jon Kohler <jon@nutanix.com>
-Cc: Jan Kara <jack@suse.cz>, "paulmck@kernel.org" <paulmck@kernel.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-	"josh@joshtriplett.org" <josh@joshtriplett.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: SRCU hung task on 5.10.y on synchronize_srcu(&fsnotify_mark_srcu)
-Message-ID: <20240905135352.ooc5lh2zfcizsax6@quack3>
-References: <1E829024-48BF-4647-A1DD-AC7E8BFA0FA2@nutanix.com>
- <20240904091912.orpkwemgpsgcongo@quack3>
- <CBB4A7F7-81F0-44E8-96D4-E1035E21BDE1@nutanix.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOiuVZgk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEEB5C4CEC3;
+	Thu,  5 Sep 2024 18:32:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725561141;
+	bh=guUMfVXxhxmK7BuYylhY6VX+eIVTaBWgI667edXGhgQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vOiuVZgktT3MpJU/g27xOwLy6oMnJCCIwZNnNzJyNDrofYgjNeAKRIrlTK4VIYgz/
+	 kuaoO+rOWGDUiziDkQSMBgCHPqEtoR5OppB/FotNh5NbNlaRbxz/DomxX4HL2oYdMw
+	 MAnu1oRHbnUEZds1teHbBsnpbBs21q50NnwyRSO2l+JeUto9Hm+fQQF8aO7awNfRlW
+	 4wM/EcHyW8w3HKotnHHKLtRYNemStnN9H9J8tdcvNkGeNZsAxOZgHPdU+jhwSo23jP
+	 PI3ceN0ra0tFyYLvGy6XAnnlTQVelOYepEFjBtM2DkCWhVgilk71mTih96Vz005Ycl
+	 jD33E+Q7qXJHg==
+Date: Thu, 5 Sep 2024 20:32:16 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+Cc: Z qiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: One-off rcu_nocb_rdp_deoffload bug
+Message-ID: <Ztn5MOwk4nIfTWv-@localhost.localdomain>
+References: <2747e596-5359-4f32-b3e0-0b2368d37017@paulmck-laptop>
+ <CALm+0cV0GwT5umPRZrZWg4oqXwdjcWz-NkxkhgxQkv=NypQthA@mail.gmail.com>
+ <CAFTL4hzY09QEGE+sTqc02d2LkuH_ObYKiuVTfGnrtwjtYiwt4A@mail.gmail.com>
+ <d31bdc50-a61b-446b-926d-b3ddde832a91@paulmck-laptop>
+ <236a1f66-f128-44e4-9272-7ae4dbad7485@paulmck-laptop>
+ <ZthlEg2njJwXMk32@localhost.localdomain>
+ <5bb81db1-bf62-4edc-8d71-dfa192dda39f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CBB4A7F7-81F0-44E8-96D4-E1035E21BDE1@nutanix.com>
-X-Rspamd-Queue-Id: 1D7BB1F7D4
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,kernel.org,vger.kernel.org,gmail.com,joshtriplett.org];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <5bb81db1-bf62-4edc-8d71-dfa192dda39f@paulmck-laptop>
 
-On Wed 04-09-24 14:40:07, Jon Kohler wrote:
+Le Wed, Sep 04, 2024 at 06:52:36AM -0700, Paul E. McKenney a �crit :
+> > Yes, I'm preparing an update for the offending patch (which has one more
+> > embarassing issue while I'm going through it again).
 > 
-> 
-> > On Sep 4, 2024, at 5:19 AM, Jan Kara <jack@suse.cz> wrote:
-> > 
-> > !-------------------------------------------------------------------|
-> >  CAUTION: External Email
-> > 
-> > |-------------------------------------------------------------------!
-> > 
-> > On Tue 27-08-24 20:01:27, Jon Kohler wrote:
-> >> Hey Paul, Lai, Josh, and the RCU list and Jan/FS list -
-> >> Reaching out about a tricky hung task issue that I'm running into. I've
-> >> got a virtualized Linux guest on top of a KVM based platform, running
-> >> a 5.10.y based kernel. The issue we're running into is a hung task that
-> >> *only* happens on shutdown/reboot of this particular VM once every 
-> >> 20-50 times.
-> >> 
-> >> The signature of the hung task is always similar to the output below,
-> >> where we appear to hang on the call to 
-> >>    synchronize_srcu(&fsnotify_mark_srcu)
-> >> in fsnotify_connector_destroy_workfn / fsnotify_mark_destroy_workfn,
-> >> where two kernel threads are both calling synchronize_srcu, then
-> >> scheduling out in wait_for_completion, and completely going out to
-> >> lunch for over 4 minutes. This then triggers the hung task timeout and
-> >> things blow up.
-> > 
-> > Well, the most obvious reason for this would be that some process is
-> > hanging somewhere with fsnotify_mark_srcu held. When this happens, can you
-> > trigger sysrq-w in the VM and send here its output?
-> 
-> Jan - Thanks for the ping, that is *exactly* what is happening here.
-> Some developments since my last note, the patch Neeraj pointed out
-> wasn't the issue, but rather a confluence of realtime thread configurations
-> that ended up completely starving whatever CPU was processing per-CPU
-> callbacks. So, one thread would go out to lunch completely, and it would
-> just never yield. This particular system was configured with RT_RUNTIME_SHARE
-> unfortunately, so that realtime thread going out to lunch ate the entire system.
+> Very good, thank you!
 
-Glad to hear this is explained (at least partially) :)
+So my proposal for a replacement patch is this (to replace the patch
+of the same name in Neeraj tree):
 
-> What was odd is that this never, ever happened during runtime on some
-> of these systems that have been up for years and getting beat up heavily,
-> but rather only on shutdown. We’ve got more to chase down internally on
-> that.
-> 
-> One thing I wanted to bring up here though while I have you, I have
-> noticed through various hits on google, mailing lists, etc over the years that
-> this specific type of lockup with fsnotify_mark_srcu seems to happen now
-> and then for various oddball reasons, with various root causes. 
-> 
-> It made me think that I wonder if there is a better structure that could be
-> used here that might be a bit more durable. To be clear, I’m not saying that
-> SRCU *is not* durable or anything of the sort (I promise!) but rather
-> wondering if there was anything we could think about tweaking on the
-> fsnotify side of the house to be more efficient.
+---
+From a5865b1c7ccc4efd62c44591d2be0c60e58b0ecf Mon Sep 17 00:00:00 2001
+From: Frederic Weisbecker <frederic@kernel.org>
+Date: Thu, 4 Jul 2024 00:56:40 +0200
+Subject: [PATCH] rcu/nocb: Simplify (de-)offloading state machine
 
-Well, fsnotify_mark_srcu used to be a big problem in the past where
-fanotify code was waiting for userspace response to fanotify event with it
-held. And when userspace didn't reply, the kernel got stuck. After we have
-removed that sore spot couple years ago, I'm not aware of any more problems
-with it. In fact your report is probably the first one in a few years. So
-I'm hoping your google hits are mostly from the past / with old kernels :)
+Now that the (de-)offloading process can only apply to offline CPUs,
+there is no more concurrency between rcu_core and nocb kthreads. Also
+the mutation now happens on empty queues.
 
-								Honza
+Therefore the state machine can be reduced to a single bit called
+SEGCBLIST_OFFLOADED. Simplify the transition as follows:
 
-> >> We are running audit=1 for this system and are using an el8 based
-> >> userspace.
-> >> 
-> >> I've flipped through the fs/notify code base for both 5.10 as well as
-> >> upstream mainline to see if something jumped off the page, and I
-> >> haven't yet spotted any particular suspect code from the caller side.
-> >> 
-> >> This hang appears to come up at the very end of the shutdown/reboot
-> >> process, seemingly after the system starts to unwind through initrd.
-> >> 
-> >> What I'm working on now is adding some instrumentation to the dracut
-> >> shutdown initrd scripts to see if I can how far we get down that path
-> >> before the system fails to make forward progress, which may give some
-> >> hints. TBD on that. I've also enabled lockdep with CONFIG_PROVE_RCU and
-> >> a plethora of DEBUG options [2], and didn't get anything interesting.
-> >> To be clear, we haven't seen lockdep spit out any complaints as of yet.
-> > 
-> > The fact that lockdep doesn't report anything is interesting but then
-> > lockdep doesn't track everything. In particular I think SRCU itself isn't
-> > tracked by lockdep.
-> > 
-> > Honza
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
-> 
-> 
+* Upon offloading: queue the rdp to be added to the rcuog list and
+  wait for the rcuog kthread to set the SEGCBLIST_OFFLOADED bit. Unpark
+  rcuo kthread.
+
+* Upon de-offloading: Park rcuo kthread. Queue the rdp to be removed
+  from the rcuog list and wait for the rcuog kthread to clear the
+  SEGCBLIST_OFFLOADED bit.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+---
+ include/linux/rcu_segcblist.h |   4 +-
+ kernel/rcu/rcu_segcblist.c    |  11 ---
+ kernel/rcu/rcu_segcblist.h    |   2 +-
+ kernel/rcu/tree_nocb.h        | 138 ++++++++++++++++------------------
+ 4 files changed, 68 insertions(+), 87 deletions(-)
+
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index 1ef1bb54853d..2fdc2208f1ca 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -185,9 +185,7 @@ struct rcu_cblist {
+  *  ----------------------------------------------------------------------------
+  */
+ #define SEGCBLIST_ENABLED	BIT(0)
+-#define SEGCBLIST_LOCKING	BIT(1)
+-#define SEGCBLIST_KTHREAD_GP	BIT(2)
+-#define SEGCBLIST_OFFLOADED	BIT(3)
++#define SEGCBLIST_OFFLOADED	BIT(1)
+ 
+ struct rcu_segcblist {
+ 	struct rcu_head *head;
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 1693ea22ef1b..298a2c573f02 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -260,17 +260,6 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+ 	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+-/*
+- * Mark the specified rcu_segcblist structure as offloaded (or not)
+- */
+-void rcu_segcblist_offload(struct rcu_segcblist *rsclp, bool offload)
+-{
+-	if (offload)
+-		rcu_segcblist_set_flags(rsclp, SEGCBLIST_LOCKING | SEGCBLIST_OFFLOADED);
+-	else
+-		rcu_segcblist_clear_flags(rsclp, SEGCBLIST_OFFLOADED);
+-}
+-
+ /*
+  * Does the specified rcu_segcblist structure contain callbacks that
+  * are ready to be invoked?
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 7a0962dfee86..259904075636 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -89,7 +89,7 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+ {
+ 	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+-	    rcu_segcblist_test_flags(rsclp, SEGCBLIST_LOCKING))
++	    rcu_segcblist_test_flags(rsclp, SEGCBLIST_OFFLOADED))
+ 		return true;
+ 
+ 	return false;
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index 6dac4f266c41..d7dc8ffa6ba8 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -604,37 +604,33 @@ static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
+ 	}
+ }
+ 
+-static int nocb_gp_toggle_rdp(struct rcu_data *rdp)
++static void nocb_gp_toggle_rdp(struct rcu_data *rdp_gp, struct rcu_data *rdp)
+ {
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
+-	int ret;
+ 
+-	rcu_nocb_lock_irqsave(rdp, flags);
+-	if (rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED) &&
+-	    !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP)) {
++	/*
++	 * Locking orders future de-offloaded callbacks enqueue against previous
++	 * handling of this rdp. Ie: Make sure rcuog is done with this rdp before
++	 * deoffloaded callbacks can be enqueued.
++	 */
++	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++	if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED)) {
+ 		/*
+ 		 * Offloading. Set our flag and notify the offload worker.
+ 		 * We will handle this rdp until it ever gets de-offloaded.
+ 		 */
+-		rcu_segcblist_set_flags(cblist, SEGCBLIST_KTHREAD_GP);
+-		ret = 1;
+-	} else if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED) &&
+-		   rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP)) {
++		list_add_tail(&rdp->nocb_entry_rdp, &rdp_gp->nocb_head_rdp);
++		rcu_segcblist_set_flags(cblist, SEGCBLIST_OFFLOADED);
++	} else {
+ 		/*
+ 		 * De-offloading. Clear our flag and notify the de-offload worker.
+ 		 * We will ignore this rdp until it ever gets re-offloaded.
+ 		 */
+-		rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_GP);
+-		ret = 0;
+-	} else {
+-		WARN_ON_ONCE(1);
+-		ret = -1;
++		list_del(&rdp->nocb_entry_rdp);
++		rcu_segcblist_clear_flags(cblist, SEGCBLIST_OFFLOADED);
+ 	}
+-
+-	rcu_nocb_unlock_irqrestore(rdp, flags);
+-
+-	return ret;
++	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ }
+ 
+ static void nocb_gp_sleep(struct rcu_data *my_rdp, int cpu)
+@@ -841,14 +837,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	}
+ 
+ 	if (rdp_toggling) {
+-		int ret;
+-
+-		ret = nocb_gp_toggle_rdp(rdp_toggling);
+-		if (ret == 1)
+-			list_add_tail(&rdp_toggling->nocb_entry_rdp, &my_rdp->nocb_head_rdp);
+-		else if (ret == 0)
+-			list_del(&rdp_toggling->nocb_entry_rdp);
+-
++		nocb_gp_toggle_rdp(my_rdp, rdp_toggling);
+ 		swake_up_one(&rdp_toggling->nocb_state_wq);
+ 	}
+ 
+@@ -1018,16 +1007,11 @@ void rcu_nocb_flush_deferred_wakeup(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_flush_deferred_wakeup);
+ 
+-static int rdp_offload_toggle(struct rcu_data *rdp,
+-			       bool offload, unsigned long flags)
+-	__releases(rdp->nocb_lock)
++static int rcu_nocb_queue_toggle_rdp(struct rcu_data *rdp)
+ {
+-	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+ 	bool wake_gp = false;
+-
+-	rcu_segcblist_offload(cblist, offload);
+-	rcu_nocb_unlock_irqrestore(rdp, flags);
++	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+ 	// Queue this rdp for add/del to/from the list to iterate on rcuog
+@@ -1041,9 +1025,25 @@ static int rdp_offload_toggle(struct rcu_data *rdp,
+ 	return wake_gp;
+ }
+ 
++static bool rcu_nocb_rdp_deoffload_wait_cond(struct rcu_data *rdp)
++{
++	unsigned long flags;
++	bool ret;
++
++	/*
++	 * Locking makes sure rcuog is done handling this rdp before deoffloaded
++	 * enqueue can happen. Also it keeps the SEGCBLIST_OFFLOADED flag stable
++	 * while the ->nocb_lock is held.
++	 */
++	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++	ret = !rcu_segcblist_test_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
++	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
++
++	return ret;
++}
++
+ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ {
+-	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
+ 	int wake_gp;
+ 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+@@ -1056,51 +1056,42 @@ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ 	/* Flush all callbacks from segcblist and bypass */
+ 	rcu_barrier();
+ 
++	/*
++	 * Make sure the rcuoc kthread isn't in the middle of a nocb locked
++	 * sequence while offloading is deactivated, along with nocb locking.
++	 */
++	if (rdp->nocb_cb_kthread)
++		kthread_park(rdp->nocb_cb_kthread);
++
+ 	rcu_nocb_lock_irqsave(rdp, flags);
+ 	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist));
++	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 
+-	wake_gp = rdp_offload_toggle(rdp, false, flags);
++	wake_gp = rcu_nocb_queue_toggle_rdp(rdp);
+ 
+ 	mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
++
+ 	if (rdp_gp->nocb_gp_kthread) {
+ 		if (wake_gp)
+ 			wake_up_process(rdp_gp->nocb_gp_kthread);
+ 
+ 		swait_event_exclusive(rdp->nocb_state_wq,
+-				      !rcu_segcblist_test_flags(cblist,
+-								SEGCBLIST_KTHREAD_GP));
+-		if (rdp->nocb_cb_kthread)
+-			kthread_park(rdp->nocb_cb_kthread);
++				      rcu_nocb_rdp_deoffload_wait_cond(rdp));
+ 	} else {
+ 		/*
+ 		 * No kthread to clear the flags for us or remove the rdp from the nocb list
+ 		 * to iterate. Do it here instead. Locking doesn't look stricly necessary
+ 		 * but we stick to paranoia in this rare path.
+ 		 */
+-		rcu_nocb_lock_irqsave(rdp, flags);
+-		rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_KTHREAD_GP);
+-		rcu_nocb_unlock_irqrestore(rdp, flags);
++		raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++		rcu_segcblist_clear_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
++		raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 
+ 		list_del(&rdp->nocb_entry_rdp);
+ 	}
+-	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
+ 
+-	/*
+-	 * Lock one last time to acquire latest callback updates from kthreads
+-	 * so we can later handle callbacks locally without locking.
+-	 */
+-	rcu_nocb_lock_irqsave(rdp, flags);
+-	/*
+-	 * Theoretically we could clear SEGCBLIST_LOCKING after the nocb
+-	 * lock is released but how about being paranoid for once?
+-	 */
+-	rcu_segcblist_clear_flags(cblist, SEGCBLIST_LOCKING);
+-	/*
+-	 * Without SEGCBLIST_LOCKING, we can't use
+-	 * rcu_nocb_unlock_irqrestore() anymore.
+-	 */
+-	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
++	mutex_unlock(&rdp_gp->nocb_gp_kthread_mutex);
+ 
+ 	return 0;
+ }
+@@ -1129,10 +1120,20 @@ int rcu_nocb_cpu_deoffload(int cpu)
+ }
+ EXPORT_SYMBOL_GPL(rcu_nocb_cpu_deoffload);
+ 
+-static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
++static bool rcu_nocb_rdp_offload_wait_cond(struct rcu_data *rdp)
+ {
+-	struct rcu_segcblist *cblist = &rdp->cblist;
+ 	unsigned long flags;
++	bool ret;
++
++	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
++	ret = rcu_segcblist_test_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
++	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
++
++	return ret;
++}
++
++static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
++{
+ 	int wake_gp;
+ 	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
+ 
+@@ -1152,20 +1153,14 @@ static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ 	WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist));
+ 
+-	/*
+-	 * Can't use rcu_nocb_lock_irqsave() before SEGCBLIST_LOCKING
+-	 * is set.
+-	 */
+-	raw_spin_lock_irqsave(&rdp->nocb_lock, flags);
+-
+-	wake_gp = rdp_offload_toggle(rdp, true, flags);
++	wake_gp = rcu_nocb_queue_toggle_rdp(rdp);
+ 	if (wake_gp)
+ 		wake_up_process(rdp_gp->nocb_gp_kthread);
+ 
+-	kthread_unpark(rdp->nocb_cb_kthread);
+-
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+-			      rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
++			      rcu_nocb_rdp_offload_wait_cond(rdp));
++
++	kthread_unpark(rdp->nocb_cb_kthread);
+ 
+ 	return 0;
+ }
+@@ -1340,8 +1335,7 @@ void __init rcu_init_nohz(void)
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
+ 		if (rcu_segcblist_empty(&rdp->cblist))
+ 			rcu_segcblist_init(&rdp->cblist);
+-		rcu_segcblist_offload(&rdp->cblist, true);
+-		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_KTHREAD_GP);
++		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_OFFLOADED);
+ 	}
+ 	rcu_organize_nocb_kthreads();
+ }
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.46.0
+
