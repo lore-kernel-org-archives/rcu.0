@@ -1,327 +1,234 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DC819882F;
-	Thu,  5 Sep 2024 09:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725529518; cv=fail; b=X+/TT5EelxApaSjs42vskRPVYS1qDJEwEcqv9KokbP/ssjrUln4WkyMoDDVeFhCWN9awBDrEqpBmg0q6zWR0FbaPxRvCOM+a4lQa8mrWFLGcn3A8ndTZXUDRap4QiOeCMv8BKAtxKMpyVKvVGiCkdvr5CpEwzr65fId0SDboCFY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725529518; c=relaxed/simple;
-	bh=P6igkgQA/4w082YVOjDb6AkfzCuyoOfgAu8M65nMf5E=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=uY8BYijQx6VuDnbqx8d22Z/Af4IB+YavSQ7IXr1WDPskBMjCK0NNL5up2AUa4Zrsd6x/7lTz4MGCIMl/Td+aNhSTzDqQjZ1s/O6N/vUKqRbMTlYi1AKUXVsUNwsAvKWfT4bf4v3phD/gwU5OEdC6WD1AXM5NdHlx5B6rYq2E6zg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MnDOTH1i; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001A419DF53;
+	Thu,  5 Sep 2024 13:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725544440; cv=none; b=r9j160n3+0+dfQBCkbiDS/xlixsRoS+fVciYxtEJCw/6aAIurkqOQfH2YpDq2uZiuD4TAqjQUnmSIbSLoKoh6QgD2ElfVwupOQS+++snJC6UwzWooQWNOBr2Ivr39V8qKNM2m/Okc3Cy7Vlf7+fr1+6J8AAHBKHObjKArG7BXlM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725544440; c=relaxed/simple;
+	bh=M45oi9J1dfDhftJaPMR7wqGDOQwsATiVb4pa/hy99zM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qcMMAy4gPXpiuhskf6F1cyWU5UyK3wmJvuAxaODEeCwVuKEBJ8dkYzlH1C6S8WCCDZbqxeRq5u1iXsfv8hOP4D37JgYWjj4ElAaiWLXA2yv5qYWHtyWs7FTHBlzeeFrNixOnE//kHU5n6R7v+XVRqgyKi+/T/K9Danrs6V2kkJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d7Ur3DIo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kdOi11Sd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d7Ur3DIo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kdOi11Sd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MnDOTH1i"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725529517; x=1757065517;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=P6igkgQA/4w082YVOjDb6AkfzCuyoOfgAu8M65nMf5E=;
-  b=MnDOTH1i7za4W0ed+SiuVmXQTghNfTe06rivn7WyKhlLMmqApd5LJZPr
-   MACgmjL2IsBT0jDhdd7xHtSgrQUWc1QfuZ1Kw9zw/FolJJ+lhLKbjA6Gz
-   4HUDA6pYrb3xO62vgWDpLZYM9AiRzZtSrR/mG33fYT8y2wuGDgcU/PwRE
-   2NTChYb6yh8BN7D/IBgHVKBPEnIyMIHrSBi01CuGoFc/tGGn1rYBB9LaX
-   74nq3drHxQCMNXYSyFuO2nJ3cJ+bKYtq2YR01P4U0/7le+RbmPfQZBy+v
-   fU905gUjN0IdXto/WvhgCS3acFvzvhwHFLRHDK5Lo3HU1EqoKyE6N1WPp
-   Q==;
-X-CSE-ConnectionGUID: nBFCgqgVSrODBQ4H996rqg==
-X-CSE-MsgGUID: tE9uvGz/R6GWLIebjFCEFg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11185"; a="24037476"
-X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
-   d="scan'208";a="24037476"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 02:45:16 -0700
-X-CSE-ConnectionGUID: 9QUjZHIpRbmF25qfMFZFHw==
-X-CSE-MsgGUID: jCkAmLnrS/6vVc4g1MV7Tg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,204,1719903600"; 
-   d="scan'208";a="65615856"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2024 02:45:15 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 5 Sep 2024 02:45:15 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 5 Sep 2024 02:45:14 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Thu, 5 Sep 2024 02:45:14 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 5 Sep 2024 02:45:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pqg2RVJbR920tjov217ZwU9fYZAR7aTr1V12evaY4341KWdGvwIC33dCl78G9UdLdDrlHUN9JNdnYsPZhKnj4TG1Qwk11ypDKj1HY3JKKmEwHyLhQIdfTr2+RaorZ/vuL6YDYsfKZPqy10LtCusrvIFIL47MTyotyZ01cg+HyCICVS1oSkbpeFesRcZrapoxxF2swZbOXlHrSNkmg1Nh8TOEjP/E8FJYiqAPWoIDYIR2kNxBXfm3KNdyJ9Tfd9zIcyFUTzw2H6ebeseLcrwFUIvox5nW+4xNS6y6VsBFBERNpQfpN0rSnqWZ2psdQOhFUWa3xF95zxsFAiWTe0wFpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gdRsIibCh5LWwIJ9DFVavvOdhw4qD7bvVZx4uH8i2UY=;
- b=rFDFhpdxQWjZOBcJpomLYupgvXnT4A9dPfX/zyQ9DqFB/0udNw8t4QwavgOLFMggMvGRiIfEGl6RUnHT8nI2sA9JExx6aQIo5Tr6RAOIpjJcKmolXVhNr8t37XtdGvYKyiUOf8F8k03u4/upsEzRvF6qMzydlCN7AZvYWPma8nIBfdN4SG5Fs3fKSRmo5ye14K0BF4HqF4mNExnL66USouZLAMnSEYINoZ5dDlxqIhgB3gIBODAjEMwZBPEbdt0qeHMRRiyMSWGv0RqseUpjqcDUcoXyrrPJ91HCuRBUvVRB0guUtQce8A48tgLjTucmHErw4Rdf2LwbYEcEjC6ZSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- CO1PR11MB4996.namprd11.prod.outlook.com (2603:10b6:303:90::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7918.27; Thu, 5 Sep 2024 09:45:12 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::e971:d8f4:66c4:12ca]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::e971:d8f4:66c4:12ca%2]) with mapi id 15.20.7918.024; Thu, 5 Sep 2024
- 09:45:12 +0000
-Date: Thu, 5 Sep 2024 17:43:17 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: Vitaly Kuznetsov <vkuznets@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
-	<rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Kevin Tian
-	<kevin.tian@intel.com>, Yiwei Zhang <zzyiwei@google.com>, Lai Jiangshan
-	<jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Josh
- Triplett" <josh@joshtriplett.org>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
- support self-snoop
-Message-ID: <Ztl9NWCOupNfVaCA@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <877cbyuzdn.fsf@redhat.com>
- <vuwlkftomgsnzsywjyxw6rcnycg3bve3o53svvxg3vd6xpok7o@k4ktmx5tqtmz>
- <871q26unq8.fsf@redhat.com>
- <ZtUYZE6t3COCwvg0@yzhao56-desk.sh.intel.com>
- <87jzfutmfc.fsf@redhat.com>
- <Ztcrs2U8RrI3PCzM@google.com>
- <87frqgu2t0.fsf@redhat.com>
- <ZtfFss2OAGHcNrrV@yzhao56-desk.sh.intel.com>
- <ZthPzFnEsjvwDcH+@yzhao56-desk.sh.intel.com>
- <Ztj-IiEwL3hlRug2@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Ztj-IiEwL3hlRug2@google.com>
-X-ClientProxiedBy: SI2PR04CA0007.apcprd04.prod.outlook.com
- (2603:1096:4:197::19) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d7Ur3DIo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kdOi11Sd";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d7Ur3DIo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kdOi11Sd"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1D7BB1F7D4;
+	Thu,  5 Sep 2024 13:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725544437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
+	b=d7Ur3DIoy5/tdxlhh2Eu7oqe51PTPhwi+LmkavWkAecY3rRub/QWQLQNSxKACCrZzxKgll
+	6YPE95jsRh/aAaY/3Fg06Na5p1XkEhhpvDQRYM7anJoBCJZi2nqkxJVzqzzZDR+4eCxkel
+	rfgKwFbew7XOs+ScWMawGNeNAnXjXnM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725544437;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
+	b=kdOi11SdB4dd4VC2V2r4e4NKRLpQdMFC0LPJ0b1v4yjYZndVOHMujmCJ01s6+4/QC2jVUt
+	qSGyH+dP2EJH/BDQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=d7Ur3DIo;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kdOi11Sd
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725544437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
+	b=d7Ur3DIoy5/tdxlhh2Eu7oqe51PTPhwi+LmkavWkAecY3rRub/QWQLQNSxKACCrZzxKgll
+	6YPE95jsRh/aAaY/3Fg06Na5p1XkEhhpvDQRYM7anJoBCJZi2nqkxJVzqzzZDR+4eCxkel
+	rfgKwFbew7XOs+ScWMawGNeNAnXjXnM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725544437;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=32xq7BN0U/AcKst9Zm4gHcrxMPt0DWtteNkUdQFWdqU=;
+	b=kdOi11SdB4dd4VC2V2r4e4NKRLpQdMFC0LPJ0b1v4yjYZndVOHMujmCJ01s6+4/QC2jVUt
+	qSGyH+dP2EJH/BDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10BF713419;
+	Thu,  5 Sep 2024 13:53:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9YcOBPW32WaiDgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 05 Sep 2024 13:53:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 94ECBA0968; Thu,  5 Sep 2024 15:53:52 +0200 (CEST)
+Date: Thu, 5 Sep 2024 15:53:52 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jon Kohler <jon@nutanix.com>
+Cc: Jan Kara <jack@suse.cz>, "paulmck@kernel.org" <paulmck@kernel.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+	"josh@joshtriplett.org" <josh@joshtriplett.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: SRCU hung task on 5.10.y on synchronize_srcu(&fsnotify_mark_srcu)
+Message-ID: <20240905135352.ooc5lh2zfcizsax6@quack3>
+References: <1E829024-48BF-4647-A1DD-AC7E8BFA0FA2@nutanix.com>
+ <20240904091912.orpkwemgpsgcongo@quack3>
+ <CBB4A7F7-81F0-44E8-96D4-E1035E21BDE1@nutanix.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|CO1PR11MB4996:EE_
-X-MS-Office365-Filtering-Correlation-Id: 07e90538-412b-4ae3-f6b7-08dccd8f7007
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?vk9Rqzczh/m7ydV5jG+eKysedQMTYvP3I1v7s6Au/YnFmQ0xn9rLLm+lGLFm?=
- =?us-ascii?Q?8J0MFNW4xs7031PxDLnaNxJhKxur2SVIicQhr3Ecp+N7AoArpWhxMLYKpNRi?=
- =?us-ascii?Q?d1nGsSmWoggFFLzkLBFB/gT2EqJ/5JmNjGQxyeVaMeiA1E4i1B+Ho6yHTrc6?=
- =?us-ascii?Q?cDif9t03cGjBe4xXcDExnA8jt+hoAI1tkxLyECuORslSp35guu0WU5WqEYWn?=
- =?us-ascii?Q?NJhKiERlw9QyfFeMUSvEv0ncNavDT6ZHguwrTmodtWYxakroeTiGDAVTDywk?=
- =?us-ascii?Q?Ab/W5XNF8fQTbIdAiLnfUHoeO2Am5gDfx0vS8WiM9IApfboS0cJOju1vD0Lk?=
- =?us-ascii?Q?uWlRww8sel9SvZ/21b8d4d8bwRAB5QALNQcKGUxmmSeAUWUKWWKUMukDqpyL?=
- =?us-ascii?Q?qAAjZ83HHkOPQRlv03ukKwDIesw2oVi0UOdHCGSXB3tH1okdHmGYi+DAibxZ?=
- =?us-ascii?Q?IFZwDsYdFi/gTKBffGcno2BHyT8TiM5zM3/Y6Z3y1DZw1XL1UfMxRrwhlwl/?=
- =?us-ascii?Q?YrMnHlxffKf63j6/gU5CL4ExkXjzKA8GDmqW9g2JikCJeXwe1i3FZq02s/vT?=
- =?us-ascii?Q?qa1frYO1TYCmbamHWxIESvNLlGCI21WD0bXGC3BC3UNkHXO0MIm/DQW3+7st?=
- =?us-ascii?Q?3G2PjIZ+rTqhZoTinggtrkvhLatcYxgmKcJWoXTmXW78pWlibqHUVQX+fWpr?=
- =?us-ascii?Q?xhQyYkLX3TM7dyQfVl/pNv8uJMAaOlpJR0Cj/NMHd9ofFc+gbplqEv0LQg2G?=
- =?us-ascii?Q?ATNvJBeUIpqTMMPEtrSoblC4JHMh1Qr0kC/wOeq0GdPgvpBRNLP58jJJ7pgz?=
- =?us-ascii?Q?YhhuUid4VSuvC+35IDdLHhGlHhMykeVWKv5wqPhmVAWDtCevXkkiFQjN2Q01?=
- =?us-ascii?Q?RMEKjbUTlRl0DC1JopGFWu8LTagdMB7tpm+zEXLNmFLCLdHlcZyvI2S7FQgq?=
- =?us-ascii?Q?4ZeNHpLvAjRs2EdIjo1bES+oxeuqmnbn0CmDQWDq00EFMZZIHtbxqTxQN1Mn?=
- =?us-ascii?Q?DLrCNZkqbHW+UsnzKxaY4TT2UDPZbF0cXBWP0ecGE50y4gOM7LRZPeS9FOgK?=
- =?us-ascii?Q?zuhZ4dFPCILNRfhtEnnhaTghyOOH7xbu8Hk/pLHam9mOnaPfuiA0jb4IjJ49?=
- =?us-ascii?Q?l/mZFu9NwH/KWHP0Z8Pn8RfgbCW5+Td5UHokab/jn6CL4U8feKMR1EcpYwWz?=
- =?us-ascii?Q?dVqxXA4OEKDgW9lWoXU0LkwHaoYrVFDOXMQ5ehpE2eU+LnoxK1d+JmJ7jTnO?=
- =?us-ascii?Q?d0WB0HSUDHmEJb8Rqj85qcwnOppKEKTLedqTrRhoCURqVYZZfkQoQp70lceo?=
- =?us-ascii?Q?58/dnI19hfC2O5lBjks6Zn6kwsUH1VRWOUNMbO4acpgAnw=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IqL1SprAXp4XqJ2CkrNrYnmiVHS7lmWpS6SDbnkWlRqQKtw9QLPh0XY+MTue?=
- =?us-ascii?Q?72wvhyPmKQUJ1hgFk1sNBRt7unndv72hsauacCL1qGMquWnI1FkEhs046i3C?=
- =?us-ascii?Q?lE+7/vvueH7tIqm7EsktICO3x6we8yBNv8BGCteJuJDfaq2rtsHZhzaF3Bev?=
- =?us-ascii?Q?muugquW/KC2WdEWddRnFIwLw2bJ0OTHIpHWF4JG+o9OtKpsCYJEYtlhaXcRS?=
- =?us-ascii?Q?VXkO+oW/Kl+MavXmcn3QdGZusbXuh6OqgTJidJu83k8tmnHGR4WMUiDelVON?=
- =?us-ascii?Q?GmH1VFByh3SfidxdZA1kjxM4j1gbz0SOyErS3DvzCaCZ4G6De0t3oGdKIE5u?=
- =?us-ascii?Q?KiP/9z8LbBVpWYhXWDxMQilx4GAO0rXiGbrV6GCy6RZmX0AqfA7a0OKJaRT7?=
- =?us-ascii?Q?/7Dtd7FROHEshwpmtcHUQLpj8eSc5famrLesIX0/kJFfb9GQbXrH3nds6Uo8?=
- =?us-ascii?Q?smcluHTOm+aZirivKLBzNKIY1uAoRD+78WQQAP8IwQByeq0JxcZdCvw6VdXc?=
- =?us-ascii?Q?UOZMV5v4+LoH+vISYV9CN4J2p7347+RnqwQiPpEj7GW0vjgfP23LWVC07gwn?=
- =?us-ascii?Q?U4TikMVDErC5aMj4ErHtIQav7TkSD5rQiVE+JXIYMYRvLEr4HKiDA8touuof?=
- =?us-ascii?Q?uuT+ur1ijBP9sWZQoNhOv1e+kJ2N95uHkLjY561ObCQuU9RyKELBZQPokxZm?=
- =?us-ascii?Q?lYvEK9UoENJkX0LjvGuPKXDKQw6HoT8Bzg3IZgzGVw/8pekCZazUwb/QtT8B?=
- =?us-ascii?Q?nN/CtpU+wvj26zOiwljf/t1o7rW8FhcnonGf6pI0p7aWekc17/AZsBMIv37Q?=
- =?us-ascii?Q?nEZF5s4cYiO+jajGzJo9XlEycJqE4AAeXcBlxv6pO4itF+Orm2TKs7GI5OUK?=
- =?us-ascii?Q?EmJgYegw+uxfjM/DB5PacnTjkfwWkpIFwEGTxNIZuHwXPtsc3w37l5wUG2Wm?=
- =?us-ascii?Q?H6Qp7zDBGydQZ5nEyyHi6WKsMpJ9TFojZ2KJJ7K3R2l3lvuopqhVBNCh9kO1?=
- =?us-ascii?Q?6RqyaPpONVytAab/eam/9hGCiTcwcfmRYzGegET3hO1C+0fvBum+six1clI5?=
- =?us-ascii?Q?Yy2oANq8eQBloVpkh1zq9a0gEz9p3qD8KaKfIzTgjYWibbuEJBCCG9sMIdXx?=
- =?us-ascii?Q?PXZ2V0WwkS91CVOHWTmTTQ1a868QuIelyZDS/gnUcgBODVv8zGO2KT5+y42s?=
- =?us-ascii?Q?Y1ALPeLMSxdjOEyNGkqVVbVRavVADWLMjvjCQcj+bih7ISs80Xsa0afauQ68?=
- =?us-ascii?Q?JUPwWlH7vjYz3OFugPfkDqtvOw2wCqbLAPqRnfTkttuBsVARJ3OpqUQq3Uov?=
- =?us-ascii?Q?HFVDZubpflh/3cvFWbK0yBNjvG1hm4reWPD9KoYhBdKaxWlW5TgljzJffCBi?=
- =?us-ascii?Q?iVD9P3OHzhOE9jzQz0HEb0q08eJHCYlh8e7pGfDpgzXjDrYgqwj4FrLRqiQP?=
- =?us-ascii?Q?1FwJINJ3d0CAJgLzb8eTCks1ssHMeR8cM3sF1rp1k7mvOL/+wzLa2Pi1sU/X?=
- =?us-ascii?Q?BN79NP8vARwgVVCpKmV+GG+sNihM/1H2WUNUQW4YntkBpqbxPXV+77TNNYXK?=
- =?us-ascii?Q?2OOUdSWf5AM97qQt/g+IupJtFe95nyulr63xtpUF?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07e90538-412b-4ae3-f6b7-08dccd8f7007
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2024 09:45:12.4784
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4KmrBF+AUvaEN1eNEiC3e2CA0SQRTUWiwuAnNasuzMzmBheZnBLJKSIb2EemqW8xDvlJuSyZq+IU/PcSTvp+/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4996
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CBB4A7F7-81F0-44E8-96D4-E1035E21BDE1@nutanix.com>
+X-Rspamd-Queue-Id: 1D7BB1F7D4
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,kernel.org,vger.kernel.org,gmail.com,joshtriplett.org];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed, Sep 04, 2024 at 05:41:06PM -0700, Sean Christopherson wrote:
-> On Wed, Sep 04, 2024, Yan Zhao wrote:
-> > On Wed, Sep 04, 2024 at 10:28:02AM +0800, Yan Zhao wrote:
-> > > On Tue, Sep 03, 2024 at 06:20:27PM +0200, Vitaly Kuznetsov wrote:
-> > > > Sean Christopherson <seanjc@google.com> writes:
-> > > > 
-> > > > > On Mon, Sep 02, 2024, Vitaly Kuznetsov wrote:
-> > > > >> FWIW, I use QEMU-9.0 from the same C10S (qemu-kvm-9.0.0-7.el10.x86_64)
-> > > > >> but I don't think it matters in this case. My CPU is "Intel(R) Xeon(R)
-> > > > >> Silver 4410Y".
-> > > > >
-> > > > > Has this been reproduced on any other hardware besides SPR?  I.e. did we stumble
-> > > > > on another hardware issue?
-> > > > 
-> > > > Very possible, as according to Yan Zhao this doesn't reproduce on at
-> > > > least "Coffee Lake-S". Let me try to grab some random hardware around
-> > > > and I'll be back with my observations.
-> > > 
-> > > Update some new findings from my side:
-> > > 
-> > > BAR 0 of bochs VGA (fb_map) is used for frame buffer, covering phys range
-> > > from 0xfd000000 to 0xfe000000.
-> > > 
-> > > On "Sapphire Rapids XCC":
-> > > 
-> > > 1. If KVM forces this fb_map range to be WC+IPAT, installer/gdm can launch
-> > >    correctly. 
-> > >    i.e.
-> > >    if (gfn >= 0xfd000 && gfn < 0xfe000) {
-> > >    	return (MTRR_TYPE_WRCOMB << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> > >    }
-> > >    return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
-> > > 
-> > > 2. If KVM forces this fb_map range to be UC+IPAT, installer failes to show / gdm
-> > >    restarts endlessly. (though on Coffee Lake-S, installer/gdm can launch
-> > >    correctly in this case).
-> > > 
-> > > 3. On starting GDM, ttm_kmap_iter_linear_io_init() in guest is called to set
-> > >    this fb_map range as WC, with
-> > >    iosys_map_set_vaddr_iomem(&iter_io->dmap, ioremap_wc(mem->bus.offset, mem->size));
-> > > 
-> > >    However, during bochs_pci_probe()-->bochs_load()-->bochs_hw_init(), pfns for
-> > >    this fb_map has been reserved as uc- by ioremap().
-> > >    Then, the ioremap_wc() during starting GDM will only map guest PAT with UC-.
-> > > 
-> > >    So, with KVM setting WB (no IPAT) to this fb_map range, the effective
-> > >    memory type is UC- and installer/gdm restarts endlessly.
-> > > 
-> > > 4. If KVM sets WB (no IPAT) to this fb_map range, and changes guest bochs driver
-> > >    to call ioremap_wc() instead in bochs_hw_init(), gdm can launch correctly.
-> > >    (didn't verify the installer's case as I can't update the driver in that case).
-> > > 
-> > >    The reason is that the ioremap_wc() called during starting GDM will no longer
-> > >    meet conflict and can map guest PAT as WC.
+On Wed 04-09-24 14:40:07, Jon Kohler wrote:
 > 
-> Huh.  The upside of this is that it sounds like there's nothing broken with WC
-> or self-snoop.
-Considering a different perspective, the fb_map range is used as frame buffer
-(vram), with the guest writing to this range and the host reading from it.
-If the issue were related to self-snooping, we would expect the VNC window to
-display distorted data. However, the observed behavior is that the GDM window
-shows up correctly for a sec and restarts over and over.
-
-So, do you think we can simply fix this issue by calling ioremap_wc() for the
-frame buffer/vram range in bochs driver, as is commonly done in other gpu
-drivers?
-
---- a/drivers/gpu/drm/tiny/bochs.c
-+++ b/drivers/gpu/drm/tiny/bochs.c
-@@ -261,7 +261,9 @@ static int bochs_hw_init(struct drm_device *dev)
-        if (pci_request_region(pdev, 0, "bochs-drm") != 0)
-                DRM_WARN("Cannot request framebuffer, boot fb still active?\n");
-
--       bochs->fb_map = ioremap(addr, size);
-+       bochs->fb_map = ioremap_wc(addr, size);
-        if (bochs->fb_map == NULL) {
-                DRM_ERROR("Cannot map framebuffer\n");
-                return -ENOMEM;
-
-
 > 
-> > > WIP to find out why effective UC in fb_map range will make gdm to restart
-> > > endlessly.
-> > Not sure whether it's simply because UC is too slow.
+> > On Sep 4, 2024, at 5:19 AM, Jan Kara <jack@suse.cz> wrote:
 > > 
-> > T=Test execution time of a selftest in which guest writes to a GPA for
-> >   0x1000000UL times
+> > !-------------------------------------------------------------------|
+> >  CAUTION: External Email
 > > 
-> >               | Sapphire Rapids XCC  | Coffee Lake-S
-> > --------------|----------------------|-----------------
-> > KVM UC+IPAT   |    T=0m4.530s        |  T=0m0.622s
+> > |-------------------------------------------------------------------!
+> > 
+> > On Tue 27-08-24 20:01:27, Jon Kohler wrote:
+> >> Hey Paul, Lai, Josh, and the RCU list and Jan/FS list -
+> >> Reaching out about a tricky hung task issue that I'm running into. I've
+> >> got a virtualized Linux guest on top of a KVM based platform, running
+> >> a 5.10.y based kernel. The issue we're running into is a hung task that
+> >> *only* happens on shutdown/reboot of this particular VM once every 
+> >> 20-50 times.
+> >> 
+> >> The signature of the hung task is always similar to the output below,
+> >> where we appear to hang on the call to 
+> >>    synchronize_srcu(&fsnotify_mark_srcu)
+> >> in fsnotify_connector_destroy_workfn / fsnotify_mark_destroy_workfn,
+> >> where two kernel threads are both calling synchronize_srcu, then
+> >> scheduling out in wait_for_completion, and completely going out to
+> >> lunch for over 4 minutes. This then triggers the hung task timeout and
+> >> things blow up.
+> > 
+> > Well, the most obvious reason for this would be that some process is
+> > hanging somewhere with fsnotify_mark_srcu held. When this happens, can you
+> > trigger sysrq-w in the VM and send here its output?
 > 
-> Woah.  Have you tried testing MOVDIR64 and/or WT?  E.g. to see if the problem is
-> with UC specifically, or if it occurs with any accesses that immediately write
-> through to main memory.
+> Jan - Thanks for the ping, that is *exactly* what is happening here.
+> Some developments since my last note, the patch Neeraj pointed out
+> wasn't the issue, but rather a confluence of realtime thread configurations
+> that ended up completely starving whatever CPU was processing per-CPU
+> callbacks. So, one thread would go out to lunch completely, and it would
+> just never yield. This particular system was configured with RT_RUNTIME_SHARE
+> unfortunately, so that realtime thread going out to lunch ate the entire system.
+
+Glad to hear this is explained (at least partially) :)
+
+> What was odd is that this never, ever happened during runtime on some
+> of these systems that have been up for years and getting beat up heavily,
+> but rather only on shutdown. We’ve got more to chase down internally on
+> that.
 > 
-> > --------------|----------------------|-----------------
-> > KVM WC+IPAT   |    T=0m0.149s        |  T=0m0.176s
-> > --------------|----------------------|-----------------
-> > KVM WB+IPAT   |    T=0m0.148s        |  T=0m0.148s
-> > ------------------------------------------------------
+> One thing I wanted to bring up here though while I have you, I have
+> noticed through various hits on google, mailing lists, etc over the years that
+> this specific type of lockup with fsnotify_mark_srcu seems to happen now
+> and then for various oddball reasons, with various root causes. 
+> 
+> It made me think that I wonder if there is a better structure that could be
+> used here that might be a bit more durable. To be clear, I’m not saying that
+> SRCU *is not* durable or anything of the sort (I promise!) but rather
+> wondering if there was anything we could think about tweaking on the
+> fsnotify side of the house to be more efficient.
 
-I re-run all the tests and collected an averaged data (10 times each) as
-below (previous data was just a single-run score):
+Well, fsnotify_mark_srcu used to be a big problem in the past where
+fanotify code was waiting for userspace response to fanotify event with it
+held. And when userspace didn't reply, the kernel got stuck. After we have
+removed that sore spot couple years ago, I'm not aware of any more problems
+with it. In fact your report is probably the first one in a few years. So
+I'm hoping your google hits are mostly from the past / with old kernels :)
 
+								Honza
 
-T=Test execution time of a selftest in which guest writes to a GPA for
-  0x1000000UL times with WRITE_ONCE
-
-KVM memtype  | Sapphire Rapids XCC | Coffee Lake-S
--------------|---------------------|----------------
- WB+IPAT     |     T=0.1511s       |    T=0.1661s
--------------|---------------------|----------------
- WC+IPAT     |     T=0.1411s       |    T=0.1656s
--------------|---------------------|----------------
- WT+IPAT     |     T=3.7527s       |    T=0.6156s
--------------|---------------------|----------------
- WP+IPAT     |     T=4.4663s       |    T=0.6203s
--------------|---------------------|----------------
- UC+IPAT     |     T=3.4632s       |    T=0.5868s
-
-
-T=Test execution time of a selftest in which guest writes to a GPA for
-  0x1000000UL times with movdir64b.
-
-(Coffee Lake-S has no feature movdir64).
-
-KVM memtype  | Sapphire Rapids XCC | Coffee Lake-S
--------------|---------------------|----------------
- WB+IPAT     |     T=2.6142s       |       /     
--------------|---------------------|----------------
- WC+IPAT     |     T=2.8919s       |       /     
--------------|---------------------|----------------
- WT+IPAT     |     T=3.0966s       |       /      
--------------|---------------------|----------------
- WP+IPAT     |     T=2.4933s       |       /     
--------------|---------------------|----------------
- UC+IPAT     |     T=3.4606s       |       /     
-
-
-
+> >> We are running audit=1 for this system and are using an el8 based
+> >> userspace.
+> >> 
+> >> I've flipped through the fs/notify code base for both 5.10 as well as
+> >> upstream mainline to see if something jumped off the page, and I
+> >> haven't yet spotted any particular suspect code from the caller side.
+> >> 
+> >> This hang appears to come up at the very end of the shutdown/reboot
+> >> process, seemingly after the system starts to unwind through initrd.
+> >> 
+> >> What I'm working on now is adding some instrumentation to the dracut
+> >> shutdown initrd scripts to see if I can how far we get down that path
+> >> before the system fails to make forward progress, which may give some
+> >> hints. TBD on that. I've also enabled lockdep with CONFIG_PROVE_RCU and
+> >> a plethora of DEBUG options [2], and didn't get anything interesting.
+> >> To be clear, we haven't seen lockdep spit out any complaints as of yet.
+> > 
+> > The fact that lockdep doesn't report anything is interesting but then
+> > lockdep doesn't track everything. In particular I think SRCU itself isn't
+> > tracked by lockdep.
+> > 
+> > Honza
+> > -- 
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
