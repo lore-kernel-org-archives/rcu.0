@@ -1,157 +1,152 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D891E6DF0;
-	Wed,  4 Sep 2024 19:51:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9505B4A2D
+	for <rcu@vger.kernel.org>; Thu,  5 Sep 2024 00:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725479512; cv=none; b=O/gNAOgK+HYl6pqutt8V3zv7n6D+uZEWdIVC5kctpeBM1j3Wo7hFG+zZF+PU9256kfueZOQN8pl7PMLZwfPjd4DiSLBhwgIOPGssT4UfMTEd4na9ZArDxjT4X0UpVyVBL8zGDgwSvfuojr2WYLmJU4q7Aq26rjR/cwUMgboTjVs=
+	t=1725496870; cv=none; b=TpTBm6wz5WlXjRvxcNXrDXV33oAp7wrCwl3ndD9tqDX2D9YQU/MvZ4YUXq3QvU6p+BLKIU+tRmKlA7C3aZcLZbp07kgOq/ggBY2CafImsuam3DBhwLEX70su7KTmcqQzTJa0+IE+5jmjMI2chHENNk8PwuRyMRrWhU9TSmsARRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725479512; c=relaxed/simple;
-	bh=7u+OzaZAl8rD18AqF1OOqxMGNuGjDR6eApR2mv9VXX0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ehBhPyWkxqWmcBLFTM4gIYVq5W20q6W5YG2EzjZJJshoMU4RGlVHEluCA0Ta96POjGt68WmKYEQ2xfY7J2gE2KbQH/gKulKVjPqjWuyM7uZ2A+j3GktGJhjUF7oCVO1l2usY6cV0S5t7gwSGsD9gRTC0lCJ5ZEoQbV4k580t9sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ml2kvg2E; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1725496870; c=relaxed/simple;
+	bh=ilmYsVNMSu1GsaTnBQQLMF9CW8oHkr1VBh9h+1iRw54=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=tScG5W/ROrwnWjAPw1i8q1hhbbknble/ydKsDix7Ii+K1tQL2c3E2o9dF3rXP4m8uyWHisdGRL+GoFq3zV/m+3yeyyIbZcvxRSg8QDV0NyE2cQ1uiCi1U+HVELpWhFUFBUcRn0/l54zL90iyB1OO/7cE0TmgpGQ9xROViS7QlWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T3qMAODE; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ml2kvg2E"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1BC4C4CECB;
-	Wed,  4 Sep 2024 19:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725479511;
-	bh=7u+OzaZAl8rD18AqF1OOqxMGNuGjDR6eApR2mv9VXX0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Ml2kvg2ESFcH63DACNbfg1RsssvBXqo1yRot5cn8AeYxOtC+/oHI7HHhFGNNf+cbJ
-	 cc4jj0GhSprRMPyD0yeTe7MLl/fbDtLwPOtEsgOaNiBSc/+A76ggfKdCiDSFQEFD/V
-	 guddzLjFWfLDHpormi9GzoBxKcNg9M67gha68L4SRvdTprnlGir0KRWFY38JgX1zKV
-	 lT5irx8EXFd1D0IW4JQD8nv1Y05+/nYZcOiWpEz7AgC3NNp6p7ibxot9igU1YS29wt
-	 eaDi4G2jFTPu4ohVIEnGAHqWEJ+xUQBAKjInPUCejQrTOayUUUg7tAtEWQebWecPlU
-	 elgtQbz0jeRYg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 575D6CE16CC; Wed,  4 Sep 2024 12:51:51 -0700 (PDT)
-Date: Wed, 4 Sep 2024 12:51:51 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Jon Kohler <jon@nutanix.com>
-Cc: Jan Kara <jack@suse.cz>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-	"josh@joshtriplett.org" <josh@joshtriplett.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: SRCU hung task on 5.10.y on synchronize_srcu(&fsnotify_mark_srcu)
-Message-ID: <1693a7fa-7fb5-4786-bfa6-6cf3bb24a640@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <1E829024-48BF-4647-A1DD-AC7E8BFA0FA2@nutanix.com>
- <20240904091912.orpkwemgpsgcongo@quack3>
- <CBB4A7F7-81F0-44E8-96D4-E1035E21BDE1@nutanix.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T3qMAODE"
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2d877d2ad3fso162251a91.2
+        for <rcu@vger.kernel.org>; Wed, 04 Sep 2024 17:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1725496868; x=1726101668; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FMry0JvYndcQLUhZCsv77Q7XrtFl137enu18o8wNcxA=;
+        b=T3qMAODEzPh3VJaFz6kWHjF51AIzl0QCso8Jd6jeVyrU9TvfkfprlsyGjveaMKQ2yW
+         DFIIjcFuHOkOc3hGeqv880xlQzYeDL9y0TRoFPve+cgOy3F03aYszLA9pDhPbOduX5OQ
+         BYuCoEZ3X4xNLJb1wsrn1GwgnSe4tpmWjj4kZ2KvoN8g6tvBKVxXQYa77MmxzCePR+KY
+         x57AvJjV+wUqSFwrg11Z4fa+rxziCjhf4ryC5HGPSMAxFdw6myuEOzwj9UjO6UK0iELE
+         MLZ+SrotrXdlzxn9DwHzsGiSgVprcZPRW7r+FFAn7xJXm9HsRhgeyYlDGG4U0Gpr84tZ
+         U9Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725496868; x=1726101668;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FMry0JvYndcQLUhZCsv77Q7XrtFl137enu18o8wNcxA=;
+        b=vpSAkxqgt8p51/W0ikVZfowBtN+1fpjtAdhZgEqSzuSPm3okDSvFRZ8jmLfQQ/RFsd
+         G+lPznhRkwrAd44fKJaFWidGTnzSsOARdkTwBgCJ2Wbbvof0cG4VJPnhcvS+lF15GTpc
+         Eg/0f7he+ZgsUpBjUrYv6PeQ8y/ns0WuzqJKSD/QtyvOZz2Sepk4PPbsum9hn59Ly4m2
+         83oNWX0ZqGQOcEaugl9IBfJFaBBA3+YF1q9dDCwxytU6rAoxDZpTyV9YfigniaYVz5nW
+         rI7Kf10ISGjV9yHS/9/iwrhDQHBoYm8osEDvCMQh4BDkNZkLBMpWh6jQULxtfZG702ab
+         2hWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWksPnL+zvxH5gCd++DjIj/sSveJwHZiZByuccEPEhg325nT63SMl7988W5ZfkjT6aLxvo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmN8A7rhlKZvpa7N+wiw1lpdfhl1qoKZio1vxrJHFGmZNv+3gp
+	RfRnPHguzk4sw1ZDSOqrqKNO0fZeqvqHjZVmYhrv6dqd2AFzOelctWf1zWN+9K+3AzxT7IKC+Gx
+	/eg==
+X-Google-Smtp-Source: AGHT+IGlZUDSltIWI5UCXXys/3zPyqqZ9mhtDPBCcfk9UYyIfXH9PVSS/4d7gViv59YrODYrF2bMsarezqI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:c504:b0:2d8:d736:c355 with SMTP id
+ 98e67ed59e1d1-2d8d736d3a0mr94302a91.7.1725496867734; Wed, 04 Sep 2024
+ 17:41:07 -0700 (PDT)
+Date: Wed, 4 Sep 2024 17:41:06 -0700
+In-Reply-To: <ZthPzFnEsjvwDcH+@yzhao56-desk.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CBB4A7F7-81F0-44E8-96D4-E1035E21BDE1@nutanix.com>
+Mime-Version: 1.0
+References: <20240309010929.1403984-6-seanjc@google.com> <877cbyuzdn.fsf@redhat.com>
+ <vuwlkftomgsnzsywjyxw6rcnycg3bve3o53svvxg3vd6xpok7o@k4ktmx5tqtmz>
+ <871q26unq8.fsf@redhat.com> <ZtUYZE6t3COCwvg0@yzhao56-desk.sh.intel.com>
+ <87jzfutmfc.fsf@redhat.com> <Ztcrs2U8RrI3PCzM@google.com> <87frqgu2t0.fsf@redhat.com>
+ <ZtfFss2OAGHcNrrV@yzhao56-desk.sh.intel.com> <ZthPzFnEsjvwDcH+@yzhao56-desk.sh.intel.com>
+Message-ID: <Ztj-IiEwL3hlRug2@google.com>
+Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
+From: Sean Christopherson <seanjc@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>, 
+	Yiwei Zhang <zzyiwei@google.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Sep 04, 2024 at 02:40:07PM +0000, Jon Kohler wrote:
-> 
-> 
-> > On Sep 4, 2024, at 5:19 AM, Jan Kara <jack@suse.cz> wrote:
+On Wed, Sep 04, 2024, Yan Zhao wrote:
+> On Wed, Sep 04, 2024 at 10:28:02AM +0800, Yan Zhao wrote:
+> > On Tue, Sep 03, 2024 at 06:20:27PM +0200, Vitaly Kuznetsov wrote:
+> > > Sean Christopherson <seanjc@google.com> writes:
+> > > 
+> > > > On Mon, Sep 02, 2024, Vitaly Kuznetsov wrote:
+> > > >> FWIW, I use QEMU-9.0 from the same C10S (qemu-kvm-9.0.0-7.el10.x86_64)
+> > > >> but I don't think it matters in this case. My CPU is "Intel(R) Xeon(R)
+> > > >> Silver 4410Y".
+> > > >
+> > > > Has this been reproduced on any other hardware besides SPR?  I.e. did we stumble
+> > > > on another hardware issue?
+> > > 
+> > > Very possible, as according to Yan Zhao this doesn't reproduce on at
+> > > least "Coffee Lake-S". Let me try to grab some random hardware around
+> > > and I'll be back with my observations.
 > > 
-> > !-------------------------------------------------------------------|
-> >  CAUTION: External Email
+> > Update some new findings from my side:
 > > 
-> > |-------------------------------------------------------------------!
+> > BAR 0 of bochs VGA (fb_map) is used for frame buffer, covering phys range
+> > from 0xfd000000 to 0xfe000000.
 > > 
-> > On Tue 27-08-24 20:01:27, Jon Kohler wrote:
-> >> Hey Paul, Lai, Josh, and the RCU list and Jan/FS list -
-> >> Reaching out about a tricky hung task issue that I'm running into. I've
-> >> got a virtualized Linux guest on top of a KVM based platform, running
-> >> a 5.10.y based kernel. The issue we're running into is a hung task that
-> >> *only* happens on shutdown/reboot of this particular VM once every 
-> >> 20-50 times.
-> >> 
-> >> The signature of the hung task is always similar to the output below,
-> >> where we appear to hang on the call to 
-> >>    synchronize_srcu(&fsnotify_mark_srcu)
-> >> in fsnotify_connector_destroy_workfn / fsnotify_mark_destroy_workfn,
-> >> where two kernel threads are both calling synchronize_srcu, then
-> >> scheduling out in wait_for_completion, and completely going out to
-> >> lunch for over 4 minutes. This then triggers the hung task timeout and
-> >> things blow up.
+> > On "Sapphire Rapids XCC":
 > > 
-> > Well, the most obvious reason for this would be that some process is
-> > hanging somewhere with fsnotify_mark_srcu held. When this happens, can you
-> > trigger sysrq-w in the VM and send here its output?
-> 
-> Jan - Thanks for the ping, that is *exactly* what is happening here.
-> Some developments since my last note, the patch Neeraj pointed out
-> wasn't the issue, but rather a confluence of realtime thread configurations
-> that ended up completely starving whatever CPU was processing per-CPU
-> callbacks. So, one thread would go out to lunch completely, and it would
-> just never yield. This particular system was configured with RT_RUNTIME_SHARE
-> unfortunately, so that realtime thread going out to lunch ate the entire system.
-> 
-> What was odd is that this never, ever happened during runtime on some
-> of these systems that have been up for years and getting beat up heavily,
-> but rather only on shutdown. We’ve got more to chase down internally on
-> that.
-> 
-> One thing I wanted to bring up here though while I have you, I have
-> noticed through various hits on google, mailing lists, etc over the years that
-> this specific type of lockup with fsnotify_mark_srcu seems to happen now
-> and then for various oddball reasons, with various root causes. 
-> 
-> It made me think that I wonder if there is a better structure that could be
-> used here that might be a bit more durable. To be clear, I’m not saying that
-> SRCU *is not* durable or anything of the sort (I promise!) but rather
-> wondering if there was anything we could think about tweaking on the
-> fsnotify side of the house to be more efficient.
-> 
-> Thoughts?
-
-For RCU in real-time environments, we have RCU priority boosting, which
-boost RCU readers that have been preempted for too long.  However, this is
-SRCU, in which readers can simply block, in addition to being preempted.
-Of course, boosting the priority of a task that ha blocked (as opposed
-to being preempted) cannot help -- the task will remain blocked until
-awakened, regardless of its priority.
-
-But your case takes this one step further, in that the workqueue invoking
-callbacks is being preempted and starved, correct?
-
-The usual advice is to make sure that your housekeeping CPUs get
-sufficient CPU time.  Easy to say, easy to do, harder to keep done
-uniformly across a large number of systems running diverse workloads.
-Still, this is the preferred approach.
-
-Just out of curiosity, is this a CONFIG_PREEMPT_RT kernel?
-
-							Thanx, Paul
-
-> >> We are running audit=1 for this system and are using an el8 based
-> >> userspace.
-> >> 
-> >> I've flipped through the fs/notify code base for both 5.10 as well as
-> >> upstream mainline to see if something jumped off the page, and I
-> >> haven't yet spotted any particular suspect code from the caller side.
-> >> 
-> >> This hang appears to come up at the very end of the shutdown/reboot
-> >> process, seemingly after the system starts to unwind through initrd.
-> >> 
-> >> What I'm working on now is adding some instrumentation to the dracut
-> >> shutdown initrd scripts to see if I can how far we get down that path
-> >> before the system fails to make forward progress, which may give some
-> >> hints. TBD on that. I've also enabled lockdep with CONFIG_PROVE_RCU and
-> >> a plethora of DEBUG options [2], and didn't get anything interesting.
-> >> To be clear, we haven't seen lockdep spit out any complaints as of yet.
+> > 1. If KVM forces this fb_map range to be WC+IPAT, installer/gdm can launch
+> >    correctly. 
+> >    i.e.
+> >    if (gfn >= 0xfd000 && gfn < 0xfe000) {
+> >    	return (MTRR_TYPE_WRCOMB << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+> >    }
+> >    return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
 > > 
-> > The fact that lockdep doesn't report anything is interesting but then
-> > lockdep doesn't track everything. In particular I think SRCU itself isn't
-> > tracked by lockdep.
+> > 2. If KVM forces this fb_map range to be UC+IPAT, installer failes to show / gdm
+> >    restarts endlessly. (though on Coffee Lake-S, installer/gdm can launch
+> >    correctly in this case).
 > > 
-> > Honza
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
+> > 3. On starting GDM, ttm_kmap_iter_linear_io_init() in guest is called to set
+> >    this fb_map range as WC, with
+> >    iosys_map_set_vaddr_iomem(&iter_io->dmap, ioremap_wc(mem->bus.offset, mem->size));
+> > 
+> >    However, during bochs_pci_probe()-->bochs_load()-->bochs_hw_init(), pfns for
+> >    this fb_map has been reserved as uc- by ioremap().
+> >    Then, the ioremap_wc() during starting GDM will only map guest PAT with UC-.
+> > 
+> >    So, with KVM setting WB (no IPAT) to this fb_map range, the effective
+> >    memory type is UC- and installer/gdm restarts endlessly.
+> > 
+> > 4. If KVM sets WB (no IPAT) to this fb_map range, and changes guest bochs driver
+> >    to call ioremap_wc() instead in bochs_hw_init(), gdm can launch correctly.
+> >    (didn't verify the installer's case as I can't update the driver in that case).
+> > 
+> >    The reason is that the ioremap_wc() called during starting GDM will no longer
+> >    meet conflict and can map guest PAT as WC.
+
+Huh.  The upside of this is that it sounds like there's nothing broken with WC
+or self-snoop.
+
+> > WIP to find out why effective UC in fb_map range will make gdm to restart
+> > endlessly.
+> Not sure whether it's simply because UC is too slow.
 > 
+> T=Test execution time of a selftest in which guest writes to a GPA for
+>   0x1000000UL times
 > 
+>               | Sapphire Rapids XCC  | Coffee Lake-S
+> --------------|----------------------|-----------------
+> KVM UC+IPAT   |    T=0m4.530s        |  T=0m0.622s
+
+Woah.  Have you tried testing MOVDIR64 and/or WT?  E.g. to see if the problem is
+with UC specifically, or if it occurs with any accesses that immediately write
+through to main memory.
+
+> --------------|----------------------|-----------------
+> KVM WC+IPAT   |    T=0m0.149s        |  T=0m0.176s
+> --------------|----------------------|-----------------
+> KVM WB+IPAT   |    T=0m0.148s        |  T=0m0.148s
+> ------------------------------------------------------
