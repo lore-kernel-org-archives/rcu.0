@@ -1,87 +1,142 @@
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DC41494AC
-	for <rcu@vger.kernel.org>; Fri,  6 Sep 2024 07:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B56A14264A
+	for <rcu@vger.kernel.org>; Fri,  6 Sep 2024 07:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725607398; cv=none; b=hF9Lbw1S/ea+HRGGRZrMWhGYFi7sgm4kKASo/TMsK7CYspOa+NXM7lyJPzQS8OIFd4wZR8Ct16y4fAgihJj+4+vgBwn0zmSdfqII+rZA5g4hADlakFodVUWb2mOpQYqF1ZwXUPblCizqIHoM/Zw81i33THSpp8CSlB50ijALq7g=
+	t=1725608939; cv=none; b=BCohjg7iqXqPpnkiSPgkgjBWV8LdCqIEOTyy8crtcb1KdP43Kgegl6yk9oRDlexq+Mucxwg3yu2E9dd01b5V+eDyzHHu/m///kRlDwLAeO/Us41+Kot50YiPdd31psE+PEh/dDNirLKxaM4t6PvziksgK1BBh0jlI6FHbrJi5uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725607398; c=relaxed/simple;
-	bh=GOhVz96SKhOzE1wKxb1dTvsMOclPUcCrvW4COvnp8Hg=;
-	h=MIME-Version:From:To:Subject:Content-Type:Date:Message-ID; b=ACyANe/WT3MWDQCrA3ggoycYhkISsO1KuDu39H/uu92R5YeS/1gT6WOmjEiswSjajgFwkYSVqMhyZZOhgTKR6pKjB9UyhioRdRTcGxIipDjz7kOmqOmOVuCgbnjAsik7pIOHQ/K3AEZ7OyS759SekRFEg/l1kkLVP4t/pryH/D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eyesonsolution.com; spf=pass smtp.mailfrom=eyesonsolution.com; dkim=pass (1024-bit key) header.d=eyesonsolution.com header.i=@eyesonsolution.com header.b=br3bnLwZ; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eyesonsolution.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eyesonsolution.com
+	s=arc-20240116; t=1725608939; c=relaxed/simple;
+	bh=Y4a1TqnZqQU9vqZEHNh5Yj/+pLvOc8E7D0eiGGcHhRI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MEBkkhsGIVPppcm11RZqJJc4AkEvwYFzolLZib7iTMil9++v8V2VH83R0FTs3TZA9zyWtxaXgTQFZePQz59FB/i4v7j85Mx33gXJnZyXPlSL1aY1bffSLUkW3GH58uNQA1d/b/RDrmvFoBuV8DWwSG3JoeQCzZgJReslp47It38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kv00wFqk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=eyesonsolution.com header.i=@eyesonsolution.com header.b="br3bnLwZ"
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-536584f6c84so636556e87.0
-        for <rcu@vger.kernel.org>; Fri, 06 Sep 2024 00:23:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eyesonsolution.com; s=google; t=1725607394; x=1726212194; darn=vger.kernel.org;
-        h=message-id:date:content-transfer-encoding:subject:to:reply-to:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GOhVz96SKhOzE1wKxb1dTvsMOclPUcCrvW4COvnp8Hg=;
-        b=br3bnLwZXauwrocaxOY0I4NfjQCdv1sW/KhQ/DRyBIC7NiBYlebce8Dha9zchRoaYL
-         mtBJwEqW3i0D6U6AqGoz4IxwJMbiT8XD+h0ir4C03Ic3csBYDZ1iiK6S87F2FD3N0ukK
-         CK2mvtYH/X3/LEDooapMsT++TMZoQHt/7cP7E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725607394; x=1726212194;
-        h=message-id:date:content-transfer-encoding:subject:to:reply-to:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GOhVz96SKhOzE1wKxb1dTvsMOclPUcCrvW4COvnp8Hg=;
-        b=YljjiJ0khbE0GUuR78V53tyMHtkTZL+NVmjJhUna18mOFWmEFh0Z2BcYp7TtDho6u3
-         YAuwZ9Ye8lZPhfyj0h7Px5zkYvlU4KsqBXZwmWrRqfjr+mMdPDCgU75QxYpxCP1jE33x
-         o23lN3h8jXiOQRrxmOgxuRM0G+S3XnmeQsDF/gyZE86oCxZYBb6eqSsmUZgEVBUqG2L/
-         uzQEWbMsK/cecr0mpll+lRR0g/pp14ljBEHiS0HZRu1Z5WLd65gKQsnH9/aemxjkRDbm
-         ijW74m6OGCDuJxKDJodcF0TzcWa6w6d4gUqhyzXqpkUF9Dsh62iGno4mxtbDk2O8znYq
-         sa0Q==
-X-Gm-Message-State: AOJu0YxTnKivF+16zIZ4BgFXbA7yc95Cbcy7tmU3mN3t05qaOQJGfgWx
-	s2RFRMWcbA5QXF9+oSSzrMCRFVF8Iw24opbRvF6UhHNuk7Wjj5bTMbhfiew3jckA/nj397NswcA
-	X
-X-Google-Smtp-Source: AGHT+IEJg1QYTVoWkDdAWdIw3Q2dicnhrugxMMJZAwVdZTJAhicu79y+1FFaRn5jI+Mg7peIhJLUww==
-X-Received: by 2002:a05:6512:104b:b0:536:5625:511a with SMTP id 2adb3069b0e04-536587f82d0mr800251e87.47.1725607393618;
-        Fri, 06 Sep 2024 00:23:13 -0700 (PDT)
-Received: from 139.135.36.114 ([139.135.36.114])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42ca05ccbf5sm10740925e9.16.2024.09.06.00.23.11
-        for <rcu@vger.kernel.org>
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Fri, 06 Sep 2024 00:23:12 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kv00wFqk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62031C4CEC4;
+	Fri,  6 Sep 2024 07:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725608938;
+	bh=Y4a1TqnZqQU9vqZEHNh5Yj/+pLvOc8E7D0eiGGcHhRI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=kv00wFqkgHSOaTeHbHfc7pO+LZzzsEi2r2ftWTc9McGbgmwYy8ZxIh4z0Aw6Nb/U5
+	 nnfEsqDmWq/5O4tQ9RxV2ZCg5TCScTcRmep0J51TqmE/zp8qFL8hjWzOMlF8EqZ50D
+	 onDTM4VDSSVbWovWMsX76XO5fP22aoqayMXEO5IQgOwpkpNaCF5KT/AtbGcWJsUVkE
+	 sYV9zadUD2uJEcbvCu3ts5xIvk9cZ4gy9VGEc86Kbe0FkhTJEsrmJp+/ksHjg5Xyxw
+	 3nPpOyK71OR53WZ+RwP6og2PkNTFu2ms6CQtYFCju/g1fpqVwfyG4+1P8oFCL4oxIO
+	 8u11KbYhsM2lQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 82B36CE0B78; Fri,  6 Sep 2024 00:48:54 -0700 (PDT)
+Date: Fri, 6 Sep 2024 00:48:54 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Z qiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: One-off rcu_nocb_rdp_deoffload bug
+Message-ID: <d9e29f78-8374-4910-8021-ab005915e2b4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CALm+0cV0GwT5umPRZrZWg4oqXwdjcWz-NkxkhgxQkv=NypQthA@mail.gmail.com>
+ <CAFTL4hzY09QEGE+sTqc02d2LkuH_ObYKiuVTfGnrtwjtYiwt4A@mail.gmail.com>
+ <d31bdc50-a61b-446b-926d-b3ddde832a91@paulmck-laptop>
+ <236a1f66-f128-44e4-9272-7ae4dbad7485@paulmck-laptop>
+ <ZthlEg2njJwXMk32@localhost.localdomain>
+ <5bb81db1-bf62-4edc-8d71-dfa192dda39f@paulmck-laptop>
+ <Ztn5MOwk4nIfTWv-@localhost.localdomain>
+ <Ztn7PpfFiYDRBjWX@localhost.localdomain>
+ <3e62cd89-441f-4a9a-aff7-7ca1dda3c34d@paulmck-laptop>
+ <CAFwiDX83q+8fHLrOaLtrbE5q1UKB1BFLS+tGKWyzSKLvDKzFmA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "Mark Jackson" <mark@eyesonsolution.com>
-Reply-To: mark@eyesonsolution.com
-To: rcu@vger.kernel.org
-Subject: Sponsored Post
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Smart_Send_3_1_6
-Date: Fri, 6 Sep 2024 12:23:10 +0500
-Message-ID: <1010425990844829431729@DESKTOP-7HSBNRP>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFwiDX83q+8fHLrOaLtrbE5q1UKB1BFLS+tGKWyzSKLvDKzFmA@mail.gmail.com>
 
-Hello,
+On Fri, Sep 06, 2024 at 12:02:00PM +0530, Neeraj upadhyay wrote:
+> On Fri, Sep 6, 2024 at 11:34 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Thu, Sep 05, 2024 at 08:41:02PM +0200, Frederic Weisbecker wrote:
+> > > Le Thu, Sep 05, 2024 at 08:32:16PM +0200, Frederic Weisbecker a écrit :
+> > > > Le Wed, Sep 04, 2024 at 06:52:36AM -0700, Paul E. McKenney a écrit :
+> > > > > > Yes, I'm preparing an update for the offending patch (which has one more
+> > > > > > embarassing issue while I'm going through it again).
+> > > > >
+> > > > > Very good, thank you!
+> > > >
+> > > > So my proposal for a replacement patch is this (to replace the patch
+> > > > of the same name in Neeraj tree):
+> > >
+> > > FYI, the diffstat against the previous version of the same patch is as follows.
+> > > The rationale being:
+> > >
+> > > 1) rdp->nocb_cb_kthread doesn't need to be protected by nocb_gp_kthread_mutex
+> > >
+> > > 2) Once rcuoc is parked, we really _must_ observe the callback list counter decremented
+> > >    after the barrier's completion.
+> > >
+> > > 3) This fixes another issue: rcuoc must be parked _before_
+> > >    rcu_nocb_queue_toggle_rdp() is called, otherwise a nocb locked sequence
+> > >    within rcuoc would race with rcuog clearing SEGCBLIST_OFFLOADED concurrently,
+> > >    leaving the nocb locked forever.
+> >
+> > Thank you!!!
+> >
+> > Just to make sure that I understand, I apply this patch on top of
+> > Neeraj's current set of branches to get the fix, correct?
+> >
+> 
+> I have pushed this diff to branch next.06.09.24a of shared-rcu tree
+> and started testing.
+> Will squash this diff to the original commit later.
+> 
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git/commit/?h=next.06.09.24a&id=0fc7fc28b5afc3037ae4e1464013bc38c4b51c99
 
-I hope you're doing well when you read this email.
+Thank you!  I fired off light testing which is unlikely to be conclusive.
+But if it passes, I will do some longer and more focused tests.
 
-I am emailing you to see if you want to do sponsored posts.
+							Thanx, Paul
 
-We are looking for websites and blogs that are important for our clients.
-
-You will receive high-quality content with a link that relates to your webs=
-ite's topic.
-
-Can you tell me how much you charge for each post=3F
-
-We will send the payment to you using PayPal or Payoneer once your article =
-is published.
-
-Excited to work with you for a long time and create business opportunities =
-together.
-
-With warm regards,
-Mark Jackson=20
+> - Neeraj
+> 
+> >                                                         Thanx, Paul
+> >
+> > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > > index 755ada098035..97b99cd06923 100644
+> > > --- a/kernel/rcu/tree_nocb.h
+> > > +++ b/kernel/rcu/tree_nocb.h
+> > > @@ -1056,6 +1056,13 @@ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+> > >       /* Flush all callbacks from segcblist and bypass */
+> > >       rcu_barrier();
+> > >
+> > > +     /*
+> > > +      * Make sure the rcuoc kthread isn't in the middle of a nocb locked
+> > > +      * sequence while offloading is deactivated, along with nocb locking.
+> > > +      */
+> > > +     if (rdp->nocb_cb_kthread)
+> > > +             kthread_park(rdp->nocb_cb_kthread);
+> > > +
+> > >       rcu_nocb_lock_irqsave(rdp, flags);
+> > >       WARN_ON_ONCE(rcu_cblist_n_cbs(&rdp->nocb_bypass));
+> > >       WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist));
+> > > @@ -1064,13 +1071,11 @@ static int rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+> > >       wake_gp = rcu_nocb_queue_toggle_rdp(rdp);
+> > >
+> > >       mutex_lock(&rdp_gp->nocb_gp_kthread_mutex);
+> > > +
+> > >       if (rdp_gp->nocb_gp_kthread) {
+> > >               if (wake_gp)
+> > >                       wake_up_process(rdp_gp->nocb_gp_kthread);
+> > >
+> > > -             if (rdp->nocb_cb_kthread)
+> > > -                     kthread_park(rdp->nocb_cb_kthread);
+> > > -
+> > >               swait_event_exclusive(rdp->nocb_state_wq,
+> > >                                     rcu_nocb_rdp_deoffload_wait_cond(rdp));
+> > >       } else {
