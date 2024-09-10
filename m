@@ -1,176 +1,194 @@
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8560132464
-	for <rcu@vger.kernel.org>; Mon,  9 Sep 2024 16:04:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725897861; cv=none; b=QinRPPQsd+65w8ATkeJ60U0nevaKOtKVH7/3z7KeVbGxyPkZUSqjcVsgCiNQxeGZcq8V5ZMsxDGLD5+1RzgD5hQqtx1q9vp+IZeTrGkJhumqDXvREL7v+oqUTH0+oZ6F0pVnNw6W09RMIgzu5UTZbflA2/UCXVHRTFisLYWi5TI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725897861; c=relaxed/simple;
-	bh=SfkXfubgiFx92+7wAeARbv+9+lO6N+ls1vXDEv4upOM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Weh3jMrVceH/Wv3RW25SfEdp0TR5AwYwG3QMLkmyLwRUFT50H96ZkFEeeVUHOzMFH3d8oG6mg9VS2gK1A2lLIkUddQCtKCVlzZQmj1S39LA+wl4TqisoUIpVA0Bb6PQUuTJimE/wB75FEzjgtCbI79T9zXI4ONZUaUBVTjswbe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WEpl45L0; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE21320F;
+	Tue, 10 Sep 2024 01:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725930441; cv=fail; b=GY5GbRxjyveKkCs4BCR0RJTsWALGpNmNClBqyFGdherJPbI3f/d7asatdw9brs8myviM4Q49qZrgDG/7EVGP26x/6w8ipu0Ry/h2JPs15MTq3xrhdwLI7vNrONKD0jhNB7jRmUpl6MxCnG8R1qOORYH+8rOh7lVYxcQlDDNNyw8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725930441; c=relaxed/simple;
+	bh=2fvT+vHRNxVM4RQKWrAayaCnsD/LgCvx0aRRuXOoboI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=K36cQbPCOaa7GQw0cDReoeA9v5KqpToiZSULnYzuHhGRUOs02ztf8SjzVFGo7FzNQ/D0BbHlWK7XoygxM6l1EK5dFC18CaiDZ4O6767QC51Kv405OIME7nFETaqaEbL8P6rvSUGXyOQYw4wh+EpcgXNAyxDQYJJjZ1JqBqr2T2w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZWsGy+om; arc=fail smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WEpl45L0"
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-207332f7c17so9192985ad.2
-        for <rcu@vger.kernel.org>; Mon, 09 Sep 2024 09:04:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725897859; x=1726502659; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HIy0EXPmU4w2r9t2Tqb4i5dEPm1PsQzfMKsGrcWIWA8=;
-        b=WEpl45L0itUFdPl0cxkIT0zVGdolwhd9w1Wk7BKBoh2mDRCGLi2PCGaYV8bu56eO+U
-         S+TmH+Amc/ePIMgsZBq5/NOw7vKvfjmGYnxOm5lsBhfNOP9ZXZxABqFDE5Y89wLf99Rb
-         iZuCzYD+dVg2YcprK8CAxrkMy8AJSY/pIUsnr7BCHloUhugslYjVOgJrtIDUgYgosZFm
-         Ybms869aaW9QtAS88w2pzzvRqotFGRz5rb7aNKEoJjJzlpidXM/LL4qL8qMIAgtmXrit
-         hRy4BAalMTL+jI1HVqKvFUDOpjle6brBGb5PS+2pUIxCpc1Kl1I2RAHOSivyaiboOLDI
-         ZLdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725897859; x=1726502659;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HIy0EXPmU4w2r9t2Tqb4i5dEPm1PsQzfMKsGrcWIWA8=;
-        b=eG9q39XrlOe/xHWX8QUR6WEZ0sxNN+Hi2Uf9LsNauQqzr+USnshN8rXX2QAhGrLNQL
-         VLAqxJzlJwV09me68MyjYUBvJNv+8e1y48/+MsAY1uMJbXMZkiuYbi8/gVMg/1FRsMvP
-         jaA1zaCDAYi5f8kMxmZ4Xcjwn1j0KJ5Zh+73nP+T0j7rHjMTBis/siLnx8VBbiPPztRV
-         KhZTPDDFYIMSATqE+HsM12u/EsU0T0lCvP4hYNb1UcrvDY5h+c06IUFleR8wGiRFGoYC
-         Og7eXyhMALrUFS2C3yyvzx+LpdExxJ/2Cqy2/jhSTZjVzbx9PXNMGFsHcx9jqHNKQhM/
-         ltSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVcV3QXEQ3TDU0uBS5hycaYV7IYZZ8oEDXFks2/1ABnAUcjlSh7Ng7oTTvb9IjZXGKx34E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcDIVDoAEFcfVEdf5NLD3AoGTF1eGtgOajURcrhafvWLkIBCZP
-	5FJ44Zokz8Ca31yYwWjQiZZn1MdLMnzj4UF1qEQ9dUT9+7AVgcUQ+qdvWYXSgsjH/ki4TE/1A53
-	AoA==
-X-Google-Smtp-Source: AGHT+IE4aiCLbBZ14WYzLNSaZH32wjFRVL8mk2TgwQJhNbZlhMrPltFxWEZ5OUqdU3rG1V+9P7yYcAioVaA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d4c1:b0:205:826e:6a17 with SMTP id
- d9443c01a7336-206f0364078mr4697215ad.0.1725897859077; Mon, 09 Sep 2024
- 09:04:19 -0700 (PDT)
-Date: Mon, 9 Sep 2024 09:04:17 -0700
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZWsGy+om"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1725930440; x=1757466440;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   in-reply-to:mime-version;
+  bh=2fvT+vHRNxVM4RQKWrAayaCnsD/LgCvx0aRRuXOoboI=;
+  b=ZWsGy+omPYaySot1BL0LOTSjfyhilkZ+O2NdbxG02XgWTfjGImfMRDvo
+   jawVJ7qtFWUxA42XyHVyd1XdaSosql0kVZYSn4v4rQ7sGdHXcORE+Nf38
+   eGGS+CfdmRngGWl9C5J7f2MfYYXkA12caUlEyoCI0rIewLJTd8AHBNHfb
+   sFJ0qJx+wC0QrTWJSxNxVs3GoNrwdlvwa0qYQp2lJrucUce7EfjtJbokZ
+   y1Rf0BvoCEYIODRJSZp2/j4vSQv/wnbCoe3wMYP5gz/z8JkhZU6Gs4zYA
+   TJKtDddSQyG+ospXO4xo9CtG5ni9NaOeegBHo/PYmrBfNtZrDLrK6iUmk
+   A==;
+X-CSE-ConnectionGUID: 1SPXkQatS9qowmfdMLAJlQ==
+X-CSE-MsgGUID: jPlEJWGvTM+J/NX4gvFxZw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11190"; a="24157664"
+X-IronPort-AV: E=Sophos;i="6.10,215,1719903600"; 
+   d="scan'208";a="24157664"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2024 18:07:19 -0700
+X-CSE-ConnectionGUID: nEWJdgDhRnGlvUlAJdxxjw==
+X-CSE-MsgGUID: cyEAyMSVSc6HFOW4BubbPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,215,1719903600"; 
+   d="scan'208";a="67108142"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Sep 2024 18:07:18 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 9 Sep 2024 18:07:18 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Mon, 9 Sep 2024 18:07:18 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.45) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 9 Sep 2024 18:07:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=HARW9OquoyGhX5XjBf8MdEwYaGXZzP0b5/CtFm03bjlObtzFO6AjHLkBr4Bps/7W6Eg2sndzKjaHdLPwMAV2fiUF7z/h8UKkpj8zvqD+O75+RDDQ3x5zSpQmxzaCTJfm+x1WWw0PsDcL6SD60grEm7dNmc9eoSw74N1zFjM1AB5ygdw0h2sDZkpsNR/VWYMJwRNzg3U1en5ZWcbj8k0m/RztEpBHqbo9wMe3mVb60RNQTDRvnJ/TXhXoe+2Wq/IGXMNR8u6zOsn7md+M3Z4n1ONo6cPlwV+T9lb42habjc6QjssxbEhvfQt09NEMEf4YY3JhASnGjTm/vqQMFBxCjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2fvT+vHRNxVM4RQKWrAayaCnsD/LgCvx0aRRuXOoboI=;
+ b=jYjWGVRYqnRKh6Js5JCrkUpPUArwi2hNXxNP2S4HPgydZ+/AM6V+DD1FZDVL6c3mYXG000CEs6Qsmq8EINIW0/QtD+zVm+LjSAbndeES0UZEdDFyD8Nd8ZhQ9ZRA9Fpj+vlHPHWfJZif59L20kAhWshNKtkGZ7anWlyLw/CIeojPn4YtM4y6CZ1WVqy3ElnLG/W7oy8aW8nYqogO9lgGnLgO3TxDFeMu9V3pOOZWb9PlRf31RKlhIYaRQBpiQz9Vvzf8K4WWJrGA/5lPw/yU0GwSoi92fdryv4aV6a9+S/BCvTmvF+yuGiPDi2V/XnOYavot64XGE8k6XJzHqFDgIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ LV8PR11MB8771.namprd11.prod.outlook.com (2603:10b6:408:206::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.28; Tue, 10 Sep
+ 2024 01:07:13 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::e971:d8f4:66c4:12ca]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::e971:d8f4:66c4:12ca%5]) with mapi id 15.20.7939.017; Tue, 10 Sep 2024
+ 01:07:13 +0000
+Date: Tue, 10 Sep 2024 09:05:16 +0800
+From: Yan Zhao <yan.y.zhao@intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+CC: Sean Christopherson <seanjc@google.com>, Vitaly Kuznetsov
+	<vkuznets@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
+	<kvm@vger.kernel.org>, <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	Kevin Tian <kevin.tian@intel.com>, Yiwei Zhang <zzyiwei@google.com>, "Lai
+ Jiangshan" <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
+ support self-snoop
+Message-ID: <Zt+bTJvNgkG4JeD8@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <ZtUYZE6t3COCwvg0@yzhao56-desk.sh.intel.com>
+ <87jzfutmfc.fsf@redhat.com>
+ <Ztcrs2U8RrI3PCzM@google.com>
+ <87frqgu2t0.fsf@redhat.com>
+ <ZtfFss2OAGHcNrrV@yzhao56-desk.sh.intel.com>
+ <ZthPzFnEsjvwDcH+@yzhao56-desk.sh.intel.com>
+ <Ztj-IiEwL3hlRug2@google.com>
+ <Ztl9NWCOupNfVaCA@yzhao56-desk.sh.intel.com>
+ <Zt6H21nzCjr6wipM@yzhao56-desk.sh.intel.com>
+ <c1d420ba-13de-48dd-abee-473988172d07@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 In-Reply-To: <c1d420ba-13de-48dd-abee-473988172d07@redhat.com>
+X-ClientProxiedBy: SI2PR02CA0014.apcprd02.prod.outlook.com
+ (2603:1096:4:194::19) To DS7PR11MB5966.namprd11.prod.outlook.com
+ (2603:10b6:8:71::6)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZtUYZE6t3COCwvg0@yzhao56-desk.sh.intel.com> <87jzfutmfc.fsf@redhat.com>
- <Ztcrs2U8RrI3PCzM@google.com> <87frqgu2t0.fsf@redhat.com> <ZtfFss2OAGHcNrrV@yzhao56-desk.sh.intel.com>
- <ZthPzFnEsjvwDcH+@yzhao56-desk.sh.intel.com> <Ztj-IiEwL3hlRug2@google.com>
- <Ztl9NWCOupNfVaCA@yzhao56-desk.sh.intel.com> <Zt6H21nzCjr6wipM@yzhao56-desk.sh.intel.com>
- <c1d420ba-13de-48dd-abee-473988172d07@redhat.com>
-Message-ID: <Zt8cgUASZCN6gP8H@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Yan Zhao <yan.y.zhao@intel.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Gerd Hoffmann <kraxel@redhat.com>, kvm@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>, 
-	Yiwei Zhang <zzyiwei@google.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|LV8PR11MB8771:EE_
+X-MS-Office365-Filtering-Correlation-Id: 47eb56a7-30da-4675-2f6a-08dcd134e796
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?KR4Icu2uWajf8aMHr7sS3CVbxbwQQpVCr93wEHiCFKiyWyX4UPzJc9uPLlLs?=
+ =?us-ascii?Q?5FvrWUWwm0TSqPXp6ikMj3aQIGeIEuBwgMTDbDTpw8baffD1E1z1fSImmuoU?=
+ =?us-ascii?Q?RojspEiLF5ki6WdetBjXOkvOk1xFdNtgulGwbW/OBu6VRze5dMUD+mOx9vRn?=
+ =?us-ascii?Q?0anpO8Ls9ctIiT4IsFwJZpRPzMpR+K+Hb7VsbvC2BxbUJPeEI9NvWlaFEMf/?=
+ =?us-ascii?Q?fG2ucrX6RlHRhlRlxAAuFiJTpACdaPe/yAdcrDq7Z0dWLBh87fyCmIO6JmJV?=
+ =?us-ascii?Q?o/CpnI3izeNXicpRPdl57IhFzHubEdeOcLYJqETTUf+NcKndy1N/CbgUUqT/?=
+ =?us-ascii?Q?On+QpB2I88ZTnWtEIab7leAbTpjSUYbBC8Z/+yPN7LDLlo9lKUF3nntd/Qf7?=
+ =?us-ascii?Q?AoZ83VHQMpHIfdfBsLidLd0pez5pkx03uQWb/+ar+nGMpMOyf3qV9k9AUTna?=
+ =?us-ascii?Q?DLmsJ0Zi6Wm+BUMrlqQ2ITvLlhSMN4JDX5t1raE8uNepYio1N+sRw09Jeoke?=
+ =?us-ascii?Q?PxlbADsQE1kZHIL2rlf2OHN2EL/9g4GsQ1OSgxHv/bdCteB6nMkM8HnsGC7F?=
+ =?us-ascii?Q?zKPTlHKgcp2iFrQiIMiPDu/0SV0oY/wop+xe0WC1pBBc04Oepf3r2mbTlAgA?=
+ =?us-ascii?Q?H+k9tLOcAAYfDGuiJ+Fe4MAqwLX3ax3+e+RHxMnmyZuUYPSfc48V/mWHRmru?=
+ =?us-ascii?Q?TNY+GbD4jWT+wbzj9BhLpXbEc/+h1RHS53H/ogiThV9Kn1JcROkIFf3YsJ5D?=
+ =?us-ascii?Q?l0vxMRJv7zQl+iXnwg8VRpICx90hX35J2cOwlsj4I3mRwwZpwVECzukGZzyJ?=
+ =?us-ascii?Q?Tx0EbY6soWZSjB3mznajH/53MqFv+T+H/z7fdOs+Mq4Zp9fmtvNhY/MS/IaM?=
+ =?us-ascii?Q?1SUIKWmz2m/rOF8D8ZMDGB6JGngp/ERKxD8iHAv6BZ0xUjQ3Lw62Wh30zT9j?=
+ =?us-ascii?Q?0HI+Af9ystgF4K2yymuHKAntuhL1MQSS253vMXGVFDCEzWOmUXY3Pnt+aPSN?=
+ =?us-ascii?Q?S4xk47gx5/iJsMuHaiUqUlpv3/WglYgmhT+wHhUiRWmBUipD3NQ9Wnv2evEs?=
+ =?us-ascii?Q?jFPW3P49FMURRgMMmXa3MknBHrfOoIWArtdz4Q0qBTB8fGnTjzxjw5AfKBHz?=
+ =?us-ascii?Q?6vK+E4JXCDpT8Qm7o7N35SJgwh9HHnLcJBYGRyPvPK6NQyMFvivYmjRtdU3Q?=
+ =?us-ascii?Q?v/Vnm6TQl35YGPJmVjg1DTH1gXh6ObP/kUFsuCm0P5pjMRBq5DcjHTWDzoO+?=
+ =?us-ascii?Q?qsBJe6NhFv4NEvAFBLw1NGf7rf9tQ+RvmAsFUkm5qqr7x2WEtVouMHi/UpCg?=
+ =?us-ascii?Q?rThW+lkV99LaqermPgNVXMvnf2VSBg42lAu9IMV5VqDEig=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Y14Htp47rgtEF7VOthd3ncWdZRKmstRfi3SDdnRsguLrfRShlR15RG1e+9cV?=
+ =?us-ascii?Q?c9G4PzEHFLxRHEAnOTySLxjdfUQk0bnk5L9USVR1aMXbsadUqmEA/V9uehuP?=
+ =?us-ascii?Q?Eocg69b2DI8n6hmCenJikSAAnSOlz/vMofvMnzrDru9506b9lhzfFP8SFk1+?=
+ =?us-ascii?Q?I6lOQ+PCFzuuooINheZfxzjOm07u6TeNpB1aj/Iq8OEPwJA9vzdV3srjPu42?=
+ =?us-ascii?Q?oYR5TU/KYGHQYTdypLtsxHeJELxBIRuG3n4cGDXzRryeHG8/CkRTXRrx8E8/?=
+ =?us-ascii?Q?Ko918fPZK3pQATgsD20SG9aH1hYr9J704KeCP6Rixj6VqVWmLZDcXm4sx+7U?=
+ =?us-ascii?Q?6qnNOmLUy/xq9eNVyVF/SVkuX/XFaWRsB4FCSKyMDtXXDroK3j/ehmtfLTAx?=
+ =?us-ascii?Q?yjqWwad8nCnBKFAmDKpmTdoaRF2pWmbRbNdfc5xknHJrQtfa9yM2snTPQcD1?=
+ =?us-ascii?Q?BPdEa+MaR+PiecFFIl8T7LrQFBSH4rRAUZDoqINPRZ/77UVYkzkIQQzmd+hz?=
+ =?us-ascii?Q?yGf6wFca05RMgmKhCaNUVZuUUJeE3lknUp+MdTUVu6IgqN28fhzgkpGQO1lV?=
+ =?us-ascii?Q?DBzZmORJv4KGzN1a6e2z201Np7EVSL7ALSoiUrk8Cd6M6eGqyr1l4/Ydm5iw?=
+ =?us-ascii?Q?mhJ+KvssQZOtzMGFH4SNt+9EqEdiTuBAgA3OHjhomafKhbEEEu4ERP8a1tFs?=
+ =?us-ascii?Q?7tFqc9VRqI4Dv6UHGGkmhAZz8xVyU4t5HGne/Lrvu8IyN6aGeOKxL6W7Due/?=
+ =?us-ascii?Q?OSgsX0uPkjLj10PJINS385+Vb+MOrxBj2zB20N09d+7nRT6G+jR9lsWsf5Nh?=
+ =?us-ascii?Q?l9L1dDHTqZweFNcG+8MmKWrnOu+oNKvnXmetO3ELPPTjjoX1Vvu3licuRpMV?=
+ =?us-ascii?Q?VBSMTbVaOhJRF+QdozvUm0IjZ4VS5HAZtvsUux8qgGGACIDs5N4NoGs5HRM8?=
+ =?us-ascii?Q?07vtd9ruE/jzbqd6LN0SCcbuVkh1llY9ut7vpxeRTfpCCpVtolFBeJIeOYJi?=
+ =?us-ascii?Q?m8TB6jreExI0vMs348d0Zhb9PAcmfCePCB0Xi2AWJoDo2uBmk0rQBjUwBNqe?=
+ =?us-ascii?Q?6oLPFsDzWnxbQgPKpwdBkfzShCtSot75V2uxdQlhEOI7CZcuzMcjaTcwHdYL?=
+ =?us-ascii?Q?9SbPtoKdyctYgAcwWcAERvkzUHVcw9sPU25DfXr7Cwpfjzy9F9F5zezzh1eG?=
+ =?us-ascii?Q?jZ5RIPYpmymjl3Sd5wze8dDV1Nk5vGaAmbk1thXSISeJj+6FTbtjFa7DiaUQ?=
+ =?us-ascii?Q?9ofFff7ErzFfT9sfcGyP7XNYyhbyG1Nwxrrncv1rOV3rR/Zi95sQ06ED9v4b?=
+ =?us-ascii?Q?7ahEB+/hUr7C+wQyvVd4tNRvb528yPb4kbeleglm0FsH147X7mZx/kzzac72?=
+ =?us-ascii?Q?3RWAUVf+k2HCpwUdVPab8hnl3TZ+QNNbuYcZFuVNLFgMVDPWGvze+gd7Dbmd?=
+ =?us-ascii?Q?i3rGbS009SwuZYZJw162K6VvPqRmmC50Qe85chCTP9ln+5hGR3r+mCIYJA/s?=
+ =?us-ascii?Q?KDrejk9tbe4w4QshFxVibaqpr1CSJBQyzrt0toQl+1LNfxn6kT8EIoZVD4mS?=
+ =?us-ascii?Q?qPmvSKFS1+5cxsZZRkoByny1r0C9wGCA9VgDklIS?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47eb56a7-30da-4675-2f6a-08dcd134e796
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2024 01:07:13.4741
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lhytkZQmCNEA1HxTFLHWWSrVIB0MoSdXVeyiwTWNr5rwlQ5LdJ2Jn6MaAjyDRvQlK22uoXv/cAnhZf4rR2ifQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8771
+X-OriginatorOrg: intel.com
 
-On Mon, Sep 09, 2024, Paolo Bonzini wrote:
-> On 9/9/24 07:30, Yan Zhao wrote:
-> > On Thu, Sep 05, 2024 at 05:43:17PM +0800, Yan Zhao wrote:
-> > > On Wed, Sep 04, 2024 at 05:41:06PM -0700, Sean Christopherson wrote:
-> > > > On Wed, Sep 04, 2024, Yan Zhao wrote:
-> > > > > On Wed, Sep 04, 2024 at 10:28:02AM +0800, Yan Zhao wrote:
-> > > > > > On Tue, Sep 03, 2024 at 06:20:27PM +0200, Vitaly Kuznetsov wrote:
-> > > > > > > Sean Christopherson <seanjc@google.com> writes:
-> > > > > > > 
-> > > > > > > > On Mon, Sep 02, 2024, Vitaly Kuznetsov wrote:
-> > > > > > > > > FWIW, I use QEMU-9.0 from the same C10S (qemu-kvm-9.0.0-7.el10.x86_64)
-> > > > > > > > > but I don't think it matters in this case. My CPU is "Intel(R) Xeon(R)
-> > > > > > > > > Silver 4410Y".
-> > > > > > > > 
-> > > > > > > > Has this been reproduced on any other hardware besides SPR?  I.e. did we stumble
-> > > > > > > > on another hardware issue?
-> > > > > > > 
-> > > > > > > Very possible, as according to Yan Zhao this doesn't reproduce on at
-> > > > > > > least "Coffee Lake-S". Let me try to grab some random hardware around
-> > > > > > > and I'll be back with my observations.
-> > > > > > 
-> > > > > > Update some new findings from my side:
-> > > > > > 
-> > > > > > BAR 0 of bochs VGA (fb_map) is used for frame buffer, covering phys range
-> > > > > > from 0xfd000000 to 0xfe000000.
-> > > > > > 
-> > > > > > On "Sapphire Rapids XCC":
-> > > > > > 
-> > > > > > 1. If KVM forces this fb_map range to be WC+IPAT, installer/gdm can launch
-> > > > > >     correctly.
-> > > > > >     i.e.
-> > > > > >     if (gfn >= 0xfd000 && gfn < 0xfe000) {
-> > > > > >     	return (MTRR_TYPE_WRCOMB << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> > > > > >     }
-> > > > > >     return MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT;
-> > > > > > 
-> > > > > > 2. If KVM forces this fb_map range to be UC+IPAT, installer failes to show / gdm
-> > > > > >     restarts endlessly. (though on Coffee Lake-S, installer/gdm can launch
-> > > > > >     correctly in this case).
-> > > > > > 
-> > > > > > 3. On starting GDM, ttm_kmap_iter_linear_io_init() in guest is called to set
-> > > > > >     this fb_map range as WC, with
-> > > > > >     iosys_map_set_vaddr_iomem(&iter_io->dmap, ioremap_wc(mem->bus.offset, mem->size));
-> > > > > > 
-> > > > > >     However, during bochs_pci_probe()-->bochs_load()-->bochs_hw_init(), pfns for
-> > > > > >     this fb_map has been reserved as uc- by ioremap().
-> > > > > >     Then, the ioremap_wc() during starting GDM will only map guest PAT with UC-.
-> > > > > > 
-> > > > > >     So, with KVM setting WB (no IPAT) to this fb_map range, the effective
-> > > > > >     memory type is UC- and installer/gdm restarts endlessly.
-> > > > > > 
-> > > > > > 4. If KVM sets WB (no IPAT) to this fb_map range, and changes guest bochs driver
-> > > > > >     to call ioremap_wc() instead in bochs_hw_init(), gdm can launch correctly.
-> > > > > >     (didn't verify the installer's case as I can't update the driver in that case).
-> > > > > > 
-> > > > > >     The reason is that the ioremap_wc() called during starting GDM will no longer
-> > > > > >     meet conflict and can map guest PAT as WC.
-> > > > 
-> > > > Huh.  The upside of this is that it sounds like there's nothing broken with WC
-> > > > or self-snoop.
-> > > Considering a different perspective, the fb_map range is used as frame buffer
-> > > (vram), with the guest writing to this range and the host reading from it.
-> > > If the issue were related to self-snooping, we would expect the VNC window to
-> > > display distorted data. However, the observed behavior is that the GDM window
-> > > shows up correctly for a sec and restarts over and over.
-> > > 
-> > > So, do you think we can simply fix this issue by calling ioremap_wc() for the
-> > > frame buffer/vram range in bochs driver, as is commonly done in other gpu
-> > > drivers?
-> > > 
-> > > --- a/drivers/gpu/drm/tiny/bochs.c
-> > > +++ b/drivers/gpu/drm/tiny/bochs.c
-> > > @@ -261,7 +261,9 @@ static int bochs_hw_init(struct drm_device *dev)
-> > >          if (pci_request_region(pdev, 0, "bochs-drm") != 0)
-> > >                  DRM_WARN("Cannot request framebuffer, boot fb still active?\n");
-> > > 
-> > > -       bochs->fb_map = ioremap(addr, size);
-> > > +       bochs->fb_map = ioremap_wc(addr, size);
-> > >          if (bochs->fb_map == NULL) {
-> > >                  DRM_ERROR("Cannot map framebuffer\n");
-> > >                  return -ENOMEM;
-> 
+On Mon, Sep 09, 2024 at 03:24:40PM +0200, Paolo Bonzini wrote:
 > While this is a fix for future kernels, it doesn't change the result for VMs
 > already in existence.
-
-I would prefer to bottom out on exactly whether or not the SPR/CLX behavior is
-working as intended.  Maybe the ~8x slowdown is just a side effect of any Intel
-multi-socket/node system, but I think we should get confirmation (inasmuch as
-possible) that that is indeed the case.  E.g. if this is actually a bug in CLX+,
-then the actions we need to take are different.
+Though this is the truth, I have concerns that there may be other guest drivers
+with improper PAT configurations that were previously masked by KVM's force-WB
+setting. Now that we respect the guest's PAT settings, these misconfigurations
+could lead to degraded performance, potentially perceived as errors, as was
+observed in the previous VMX unit test and the current Bochs scenario.
 
 > I don't think there's an alternative to putting this behind a quirk.
 
-This gets a bit weird, which is why I want to bottom out on whether or not CLX
-and SPR are working as intended.  If non-coherent DMA is attached to the VM, then
-even before this patch KVM would honor guest PAT.  I agree that we don't want to
-break existing setups, but if CLX+SPR are working as intended, then this is
-inarguably a bochs driver bug, and I would prefer to have the quirk explicitly
-reference bochs-compatible devices, e.g. in the name and documentation, so that
-userspace can disable the quirk by default and only leave it enabled if a bochs
-device is being exposed to the guest.
