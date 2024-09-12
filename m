@@ -1,49 +1,74 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0070186E29;
-	Wed, 11 Sep 2024 10:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6EC43144;
+	Thu, 12 Sep 2024 16:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726051163; cv=none; b=UrkTB7aNBzAfdIosuAPi+4JAFB//5bGR9B5FNKYzNpMH+0K+PqzfqgfGC517GPWTZAYMYX7zQ+xq0mOH590E2jK9LxdeywwdB3zD46ATNehZZ0Zy4L2mMo9kP8Dq3vtnSCeAuM+xzL/yy5U/RRyyeEEDjRnbzfMFmVIJvn5i7kk=
+	t=1726157318; cv=none; b=sqRG6UHl0Rv6/c6vvrP0zTwez3IDRwylKLMkDyKViFbv2OD0BGjeLUoLM4mfeBFhfIk7mTYseH4O+82/9itA4rNcLnclBZi60SxTFn8qX1cIsFAnzeZuy3DdteCFp3fR1KqS0zyaRFP9Qm7rDd7fgpo8DAamLgrqJa1jbKZQ4cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726051163; c=relaxed/simple;
-	bh=hTPRxjqAv0hvbIBmZQMNx/KXHekumJfEMps97NlvV0E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aCtD+hiP9Z6KTm0U3oto5WErGvF0YHk8DDbvdBRxy7ZF8kwEatp5OI0DXk1phO0fnwsdK3r0b4QOgH+eW97xULUYMIlGJmRVE6oZ4c5n/quSTLkHeQcpZDyhb+IBA7q0FDWbQqG7ZeFA2Ww60WtUhtmwJDasWfERWMhrpCiHVBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nhuKmKGG; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1726157318; c=relaxed/simple;
+	bh=U3VOALeumJGisEeB0OEW7BdyaFX+gZszoURAPjLs1pQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dl23Z5GKjDQSf7P4N71RJZM6a49Fj2BYOKstjLIQsW4D5IeFlRrcyJuYR9BUeU6/fys1NLCxUxGCK5Dr9Nisgd5IC74D0aUZQHAwpx/pXwwpYdGZjOD7y51q8mbnXh5E4Iyi71RwZ0P6reoSWoW++yHLszpu2FfvxIK3jLWVBVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KwZsS7Ml; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nhuKmKGG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 153DBC4CECF;
-	Wed, 11 Sep 2024 10:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726051162;
-	bh=hTPRxjqAv0hvbIBmZQMNx/KXHekumJfEMps97NlvV0E=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=nhuKmKGGekjKBzrspDVfLz0iUxQb/p+YJIzE5K+t2J8vbuP6iAAizKS6IBzarcDY1
-	 hIDTlhxNTrHW5V6PoXK5Sj7YjOxXG+NXTYqwke9SBy9PcGXKUv3+Sp6fCMHCib+rRw
-	 HzncVKK3srV4pD6q2YEpxH96B72CeQKX/XBnqgVZvU3Mrz5bYspuaM7n402xpT/o8J
-	 bWR4wQvS3VVCIbuwBVlup/O4yYJuR3xa971wsjSHdu3CYCjEOGz6NI0+4fCZXwT90y
-	 DSOOajqfA8JMbheeognIbXrdHQOHOHqA1PmTMu3itqxpeXPWAWEEMUGQqEoIDsM/9m
-	 AGLRNv9bLvpsw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1F774CE13D4; Wed, 11 Sep 2024 03:39:19 -0700 (PDT)
-Date: Wed, 11 Sep 2024 03:39:19 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2] rcu/kvfree: Add kvfree_rcu_barrier() API
-Message-ID: <cdab7aec-0f03-48ab-b162-28c4a2f198eb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240820155935.1167988-1-urezki@gmail.com>
- <34ec01ee-a015-45bb-90ce-2c2af4ac9dbf@paulmck-laptop>
- <ZuFmWuUK8POsihzf@pc636>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KwZsS7Ml"
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2f759688444so11222071fa.1;
+        Thu, 12 Sep 2024 09:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726157314; x=1726762114; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YiljT4h9ENP2rTguJJ6qszFdcjCVhri9xDUwGvenRoc=;
+        b=KwZsS7MlZEttaAWg08oVmUCqE8q1HLVC+shP3wwZBqjRpwYTbQxpenxowyJ09j4dds
+         3Ee7gVOAi9eOe/8NB9RpSWK4pODnrNiDaMM3iAyj23HyMGYNQjxS+Lu4ya6whXd+Sq6l
+         ZeZ0zdkndGG+t1A1ww7pIEX8lC6oJtltM/b5xRay7IelVEsQ65N46iX3flhKKK9TPUj6
+         wc3IGgQQwvzTRZtepCh6BC0V/EnHWq2usIoOAORSZfZUm8gSl9TsvUH3qDQmjDFHoZYo
+         4/s+7zixs07Lx7zHPRWIfIvaweZYeskrkHuEWm3g1XSHyFmrwMsdmAu32avTkVnRp9zy
+         D4yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726157314; x=1726762114;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YiljT4h9ENP2rTguJJ6qszFdcjCVhri9xDUwGvenRoc=;
+        b=co6E7vghc4m7SqcEJ3qwvveF/GQE++9pVSqEx/ocv3382xymFHnx3r7ZyFoFRDbv10
+         T7dVe2Ycu96lG0+nQFBL3N0jNFN5Pq1Xe266KCZco2M8lkxRWSFyW4X1xJUtsoFUxUjQ
+         ASZv574N3mCi4qAMNZHLG+XxXiDKc3Y5FMoaa0li6C5qw94qMJUkcNEtLVnK1cdRfn6I
+         amncGP+xJlUBcLdKUqOuTEBeWpWu5/TQiyD1ZcB6pOku4tVaOLGmo8hn0JpLWtYpAaKk
+         LYFEyYZubZY/Nn1Mp0zyATMoA9N0V9GuqnWjJhxUTGtsyV6/EgZrvM/FIhxRN5OY4Pbk
+         mO0A==
+X-Forwarded-Encrypted: i=1; AJvYcCW+XSYOaqqIbN7a8EPQCdDcKBhDqgX/POyF/WDk4ul9PlGKWXdX0ULxXgLHeyJvKZzolvicuJizcSTIhhc=@vger.kernel.org, AJvYcCW0d1ug0d9L7/VC8o/F632P7dASZhdSzofWODnw5K8f6X9kfU4nP/wuTX3kZdxCSQC/g9zY@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRxXVNDW7OSm6ObTxvILiqjlZz0qQgVYaVN7ljGQ/EaXbUeG/L
+	wGM0HuXkeqFPPkFRixv4m1azSGULUi2JHf0AF2hsx05dxBART/Ok
+X-Google-Smtp-Source: AGHT+IHIWmRASK1GlvzjbJeOjvB4S2ZAC+lJSZSf3rgc2jZdShZ3G6z3pAbQwTLFmhmsP7r1Y0hLBg==
+X-Received: by 2002:a2e:719:0:b0:2ef:2c27:6680 with SMTP id 38308e7fff4ca-2f787dc2fc8mr14461881fa.12.1726157312556;
+        Thu, 12 Sep 2024 09:08:32 -0700 (PDT)
+Received: from pc636 (host-90-235-20-248.mobileonline.telia.com. [90.235.20.248])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f75bffc12csm19616311fa.34.2024.09.12.09.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Sep 2024 09:08:31 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 12 Sep 2024 18:08:29 +0200
+To: Xingyu Li <xli399@ucr.edu>
+Cc: Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+	frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org, josh@joshtriplett.org, boqun.feng@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Yu Hao <yhao016@ucr.edu>
+Subject: Re: BUG: WARNING in kvfree_rcu_bulk
+Message-ID: <ZuMR_U5JfZTIeG30@pc636>
+References: <CALAgD-7JNKw5m0wpGAN+ezCL-qn7LcTL5vgyBmQZKbf5BTNUCw@mail.gmail.com>
+ <ZtAunXBPC4WElcez@pc636>
+ <CALAgD-4kr9MLE6jSF7pXFX9msd-NWFL8mrscvJAOecNWAYL4RQ@mail.gmail.com>
+ <ZtieQFsSiALVVGld@pc636>
+ <CALAgD-7WAY6FwTNGdt0BQ2S99Nr+yJ5XyWhA_L_SsbkKsHBrFw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,57 +77,395 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZuFmWuUK8POsihzf@pc636>
+In-Reply-To: <CALAgD-7WAY6FwTNGdt0BQ2S99Nr+yJ5XyWhA_L_SsbkKsHBrFw@mail.gmail.com>
 
-On Wed, Sep 11, 2024 at 11:43:54AM +0200, Uladzislau Rezki wrote:
-> On Tue, Sep 10, 2024 at 08:42:54AM -0700, Paul E. McKenney wrote:
-> > On Tue, Aug 20, 2024 at 05:59:35PM +0200, Uladzislau Rezki (Sony) wrote:
-> > > Add a kvfree_rcu_barrier() function. It waits until all
-> > > in-flight pointers are freed over RCU machinery. It does
-> > > not wait any GP completion and it is within its right to
-> > > return immediately if there are no outstanding pointers.
-> > > 
-> > > This function is useful when there is a need to guarantee
-> > > that a memory is fully freed before destroying memory caches.
-> > > For example, during unloading a kernel module.
-> > > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> > 
-> > As a follow-on patch, once kvfree_rcu_barrier() is accepted into
-> > mainline, should we add a call to kvfree_rcu_barrier() to the
-> > rcu_barrier_throttled() function in kernel/rcu/tree.c?
-> > 
-> > This would allow the do_rcu_barrier module parameter to be used to clear
-> > out kfree_rcu() as well as call_rcu() work.  This would be useful to
-> > people running userspace benchmarks that cause the kernel to do a lot
-> > of kfree_rcu() calls.  Always good to avoid messing up the results from
-> > the current run due to deferred work from the previous run.  Even better
-> > would be to actually account for the deferred work, but do_rcu_barrier
-> > can help with that as well.  ;-)
-> > 
-> > Thoughts?
-> >
-> Makes sense. To be make sure that all objects are flushed. And as you
-> mentioned it is good to have it for benchmarking as a return to a baseline
-> point.
-> 
-> One issue is probably a "name" which would be common for both:
-> 
-> rcu_barrier()
-> kvfree_rcu_barrier()
-> 
-> i mean /sys/module/rcutree/parameters/do_rcu_barrier. From how i
-> would see it, it is supposed to trigger just rcu_barrier() API.
+> > >
+> > > Here is the config file:
+> > > https://gist.github.com/TomAPU/64f5db0fe976a3e94a6dd2b621887cdd
+> > >
+I tested your "reproducer" on 6.11.0-rc2. I see some panics and they are
+different. For example below one triggers: BUG: kernel NULL pointer dereference, address: 0000000000000010
 
-One approach would be to keep the old functionality, but create
-a new sysfs variable that does both.  Except that to avoid code
-duplication, we would likely end up with both actually doing
-both.
+<snip>
+Linux pc640 6.11.0-rc2-00037-g6b376d473b12 #3833 SMP PREEMPT_DYNAMIC Thu Sep 12 15:42:02 CEST 2024 x86_64
 
-Another approach is to rename the sysfs variable.  This might
-work if there are not too many people using it.  Might.  ;-)
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
 
-Other approaches?
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Sep 12 11:13:52 EDT 2024 on ttyS0
+uroot@pc640:~# /home/urezki/a.out
+[  108.612276][ T8454] chnl_net:caif_netlink_parms(): no params data found
+[  108.630121][ T8455] chnl_net:caif_netlink_parms(): no params data found
+[  109.305626][ T8454] bridge0: port 1(bridge_slave_0) entered blocking state
+[  109.310125][ T8454] bridge0: port 1(bridge_slave_0) entered disabled state
+[  109.314806][ T8454] bridge_slave_0: entered allmulticast mode
+[  109.321617][ T8454] bridge_slave_0: entered promiscuous mode
+[  109.614547][ T8454] bridge0: port 2(bridge_slave_1) entered blocking state
+[  109.618924][ T8454] bridge0: port 2(bridge_slave_1) entered disabled state
+[  109.624061][ T8454] bridge_slave_1: entered allmulticast mode
+[  109.630982][ T8454] bridge_slave_1: entered promiscuous mode
+[  109.774534][ T8455] bridge0: port 1(bridge_slave_0) entered blocking state
+[  109.781204][ T8455] bridge0: port 1(bridge_slave_0) entered disabled state
+[  109.787878][ T8455] bridge_slave_0: entered allmulticast mode
+[  109.792835][ T8455] bridge_slave_0: entered promiscuous mode
+[  109.974516][ T8455] bridge0: port 2(bridge_slave_1) entered blocking state
+[  109.978872][ T8455] bridge0: port 2(bridge_slave_1) entered disabled state
+[  109.983548][ T8455] bridge_slave_1: entered allmulticast mode
+[  109.988361][ T8455] bridge_slave_1: entered promiscuous mode
+[  109.997251][ T8454] bond0: (slave bond_slave_0): Enslaving as an active interface with an up link
+[  110.187177][ T8454] bond0: (slave bond_slave_1): Enslaving as an active interface with an up link
+[  110.527036][ T8455] bond0: (slave bond_slave_0): Enslaving as an active interface with an up link
+[  110.666716][ T8455] bond0: (slave bond_slave_1): Enslaving as an active interface with an up link
+[  110.677591][ T8454] team0: Port device team_slave_0 added
+[  110.836395][ T8454] team0: Port device team_slave_1 added
+[  111.510715][ T8455] team0: Port device team_slave_0 added
+[  111.626814][ T8455] team0: Port device team_slave_1 added
+[  111.632180][ T8454] batman_adv: batadv0: Adding interface: batadv_slave_0
+[  111.638793][ T8454] batman_adv: batadv0: The MTU of interface batadv_slave_0 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
+[  111.661108][ T8454] batman_adv: batadv0: Not using interface batadv_slave_0 (retrying later): interface not active
+[  111.835012][ T8454] batman_adv: batadv0: Adding interface: batadv_slave_1
+[  111.841107][ T8454] batman_adv: batadv0: The MTU of interface batadv_slave_1 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
+[  111.857352][ T8454] batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
+[  112.081965][ T8455] batman_adv: batadv0: Adding interface: batadv_slave_0
+[  112.088499][ T8455] batman_adv: batadv0: The MTU of interface batadv_slave_0 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
+[  112.111075][ T8455] batman_adv: batadv0: Not using interface batadv_slave_0 (retrying later): interface not active
+[  112.119385][ T8455] batman_adv: batadv0: Adding interface: batadv_slave_1
+[  112.123657][ T8455] batman_adv: batadv0: The MTU of interface batadv_slave_1 is too small (1500) to handle the transport of batman-adv packets. Packets going over this interface will be fragmented on layer2 which could impact the performance. Setting the MTU to 1560 would solve the problem.
+[  112.141098][ T8455] batman_adv: batadv0: Not using interface batadv_slave_1 (retrying later): interface not active
+[  112.715591][ T8454] hsr_slave_0: entered promiscuous mode
+[  112.801330][ T8454] hsr_slave_1: entered promiscuous mode
+[  113.095845][ T8455] hsr_slave_0: entered promiscuous mode
+[  113.171469][ T8455] hsr_slave_1: entered promiscuous mode
+[  113.251172][ T8455] debugfs: Directory 'hsr0' with parent 'hsr' already present!
+[  113.261201][ T8455] Cannot create hsr debugfs directory
+[  114.440022][ T8454] netdevsim netdevsim0 netdevsim0: renamed from eth0
+[  114.508448][ T8454] netdevsim netdevsim0 netdevsim1: renamed from eth1
+[  114.634433][ T8454] netdevsim netdevsim0 netdevsim2: renamed from eth2
+[  114.744227][ T8454] netdevsim netdevsim0 netdevsim3: renamed from eth3
+[  114.866169][ T8455] netdevsim netdevsim1 netdevsim0: renamed from eth0
+[  114.974856][ T8455] netdevsim netdevsim1 netdevsim1: renamed from eth1
+[  115.094399][ T8455] netdevsim netdevsim1 netdevsim2: renamed from eth2
+[  115.198370][ T8455] netdevsim netdevsim1 netdevsim3: renamed from eth3
+[  115.393414][ T8454] 8021q: adding VLAN 0 to HW filter on device bond0
+[  115.428509][ T8454] 8021q: adding VLAN 0 to HW filter on device team0
+[  115.445428][ T8455] 8021q: adding VLAN 0 to HW filter on device bond0
+[  115.455183][  T841] bridge0: port 1(bridge_slave_0) entered blocking state
+[  115.463761][  T841] bridge0: port 1(bridge_slave_0) entered forwarding state
+[  115.479368][  T142] bridge0: port 2(bridge_slave_1) entered blocking state
+[  115.487741][  T142] bridge0: port 2(bridge_slave_1) entered forwarding state
+[  115.513042][ T8455] 8021q: adding VLAN 0 to HW filter on device team0
+[  115.534056][  T841] bridge0: port 1(bridge_slave_0) entered blocking state
+[  115.540831][  T841] bridge0: port 1(bridge_slave_0) entered forwarding state
+[  115.556733][ T1883] bridge0: port 2(bridge_slave_1) entered blocking state
+[  115.563088][ T1883] bridge0: port 2(bridge_slave_1) entered forwarding state
+[  115.621249][ T8454] 8021q: adding VLAN 0 to HW filter on device batadv0
+[  115.662366][ T8455] 8021q: adding VLAN 0 to HW filter on device batadv0
+[  115.692483][ T8454] veth0_vlan: entered promiscuous mode
+[  115.709197][ T8454] veth1_vlan: entered promiscuous mode
+[  115.740423][ T8455] veth0_vlan: entered promiscuous mode
+[  115.752797][ T8455] veth1_vlan: entered promiscuous mode
+[  115.768040][ T8454] veth0_macvtap: entered promiscuous mode
+[  115.776722][ T8454] veth1_macvtap: entered promiscuous mode
+[  115.799794][ T8454] batman_adv: batadv0: Interface activated: batadv_slave_0
+[  115.810688][ T8455] veth0_macvtap: entered promiscuous mode
+[  115.823230][ T8454] batman_adv: batadv0: Interface activated: batadv_slave_1
+[  115.832372][ T8455] veth1_macvtap: entered promiscuous mode
+[  115.846846][ T8454] netdevsim netdevsim0 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
+[  115.855626][ T8454] netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+[  115.863223][ T8454] netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+[  115.869729][ T8454] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+[  115.934253][ T8455] batman_adv: The newly added mac address (aa:aa:aa:aa:aa:3d) already exists on: batadv_slave_0
+[  115.944230][ T8455] batman_adv: It is strongly recommended to keep mac addresses unique to avoid problems!
+[  115.954913][ T8455] batman_adv: batadv0: Interface activated: batadv_slave_0
+[  116.054848][ T8455] batman_adv: The newly added mac address (aa:aa:aa:aa:aa:3e) already exists on: batadv_slave_1
+[  116.064684][ T8455] batman_adv: It is strongly recommended to keep mac addresses unique to avoid problems!
+[  116.075471][ T8455] batman_adv: batadv0: Interface activated: batadv_slave_1
+[  116.174807][ T8455] netdevsim netdevsim1 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
+[  116.183164][ T8455] netdevsim netdevsim1 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+[  116.191693][ T8455] netdevsim netdevsim1 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+[  116.199476][ T8455] netdevsim netdevsim1 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+[  116.210161][ T8454] ieee80211 phy3: Selected rate control algorithm 'minstrel_ht'
+[  116.314373][ T1138] wlan0: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
+[  116.323148][ T1138] wlan0: Creating new IBSS network, BSSID 50:50:50:50:50:50
+[  116.363438][ T8454] ieee80211 phy4: Selected rate control algorithm 'minstrel_ht'
+[  116.427601][ T8455] ieee80211 phy5: Selected rate control algorithm 'minstrel_ht'
+[  116.439923][   T12] wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
+[  116.447760][   T12] wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
+[  116.513068][   T12] wlan0: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
+[  116.515525][ T8455] ieee80211 phy6: Selected rate control algorithm 'minstrel_ht'
+[  116.517602][   T12] wlan0: Creating new IBSS network, BSSID 50:50:50:50:50:50
+[  116.554182][  T120] wlan1: Created IBSS using preconfigured BSSID 50:50:50:50:50:50
+[  116.562646][  T120] wlan1: Creating new IBSS network, BSSID 50:50:50:50:50:50
+executing program
+[  116.605018][T10471] program a.out is using a deprecated SCSI ioctl, please convert it to SG_IO
+[  117.764915][   T65] netdevsim netdevsim1 netdevsim3 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+[  119.264267][   T65] netdevsim netdevsim1 netdevsim2 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+[  121.375536][   T65] netdevsim netdevsim1 netdevsim1 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+[  121.963598][   T65] netdevsim netdevsim1 netdevsim0 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+[  122.381273][   T65] bridge_slave_1: left allmulticast mode
+[  122.389071][   T65] bridge_slave_1: left promiscuous mode
+[  122.396906][   T65] bridge0: port 2(bridge_slave_1) entered disabled state
+[  122.601981][   T65] bridge_slave_0: left allmulticast mode
+[  122.611091][   T65] bridge_slave_0: left promiscuous mode
+[  122.617820][   T65] bridge0: port 1(bridge_slave_0) entered disabled state
+[  125.712116][   T65] bond0 (unregistering): (slave bond_slave_0): Releasing backup interface
+[  125.921681][   T65] bond0 (unregistering): (slave bond_slave_1): Releasing backup interface
+[  126.042002][   T65] bond0 (unregistering): Released all slaves
+[  128.331207][   T65] hsr_slave_0: left promiscuous mode
+[  128.461209][   T65] hsr_slave_1: left promiscuous mode
+[  128.591184][   T65] batman_adv: batadv0: Interface deactivated: batadv_slave_0
+[  128.595352][   T65] batman_adv: batadv0: Removing interface: batadv_slave_0
+[  128.655982][   T65] batman_adv: batadv0: Interface deactivated: batadv_slave_1
+[  128.664072][   T65] batman_adv: batadv0: Removing interface: batadv_slave_1
+[  128.867924][   T65] veth1_macvtap: left promiscuous mode
+[  128.875673][   T65] veth0_macvtap: left promiscuous mode
+[  128.882671][   T65] veth1_vlan: left promiscuous mode
+[  128.889132][   T65] veth0_vlan: left promiscuous mode
+[  138.513086][   T65] team0 (unregistering): Port device team_slave_1 removed
+[  139.601978][   T65] team0 (unregistering): Port device team_slave_0 removed
+[  150.514196][ T1333] ieee802154 phy0 wpan0: encryption failed: -22
+[  150.531082][ T1333] ieee802154 phy1 wpan1: encryption failed: -22
+[  181.351814][ T1058] ata1: lost interrupt (Status 0x58)
+[  182.061440][ T1058] ata1: found unknown device (class 0)
+executing program
+[  182.101661][T10525] program a.out is using a deprecated SCSI ioctl, please convert it to SG_IO
+[  182.331131][    C7] BUG: kernel NULL pointer dereference, address: 0000000000000010
+[  182.339044][    C7] #PF: supervisor read access in kernel mode
+[  182.345673][    C7] #PF: error_code(0x0000) - not-present page
+[  182.352216][    C7] PGD 150394067 P4D 150394067 PUD 192e9f067 PMD 0
+[  182.359123][    C7] Oops: Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+[  182.365905][    C7] CPU: 7 UID: 0 PID: 54 Comm: ksoftirqd/7 Not tainted 6.11.0-rc2-00037-g6b376d473b12 #3833
+[  182.375040][    C7] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  182.382819][    C7] RIP: 0010:stack_depot_save_flags+0x147/0x8d0
+[  182.388239][    C7] Code: c1 e1 04 4c 03 0d 81 1d c8 0f 65 ff 05 5a ae 92 7b 49 8b 09 49 39 c9 75 11 e9 91 00 00 00 48 8b 09 49 39 c9 0f 84 a4 01 00 00 <39> 59 10 75 ef 44 3b 79 14 75 e9 31 c0 48 8b 54 c1 20 49 39 54 c5
+[  182.399223][    C7] RSP: 0018:ffffc90006657970 EFLAGS: 00010286
+[  182.402848][    C7] RAX: 00000000f759be75 RBX: 00000000f759be75 RCX: 0000000000000000
+[  182.407055][    C7] RDX: 0000000018e8f28b RSI: 000000004a278650 RDI: 00000000bc02d21f
+[  182.411271][    C7] RBP: 0000000000000001 R08: 0000000000000005 R09: ffff88901cdbe750
+[  182.415500][    C7] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[  182.419717][    C7] R13: ffffc900066579d0 R14: 000000000000000e R15: 000000000000000e
+[  182.423938][    C7] FS:  0000000000000000(0000) GS:ffff88901d780000(0000) knlGS:0000000000000000
+[  182.428464][    C7] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  182.432274][    C7] CR2: 0000000000000010 CR3: 00000001730ac000 CR4: 00000000000006f0
+[  182.436523][    C7] Call Trace:
+[  182.439244][    C7]  <TASK>
+[  182.441839][    C7]  ? show_regs+0x88/0x90
+[  182.444877][    C7]  ? __die+0x28/0x80
+[  182.447798][    C7]  ? page_fault_oops+0x3b6/0xb80
+[  182.451009][    C7]  ? copy_from_kernel_nofault_allowed+0xe6/0x110
+[  182.454703][    C7]  ? __pfx_page_fault_oops+0x10/0x10
+[  182.458029][    C7]  ? copy_from_kernel_nofault+0x12f/0x2c0
+[  182.461515][    C7]  ? __sanitizer_cov_trace_switch+0x50/0x90
+[  182.465062][    C7]  ? stack_depot_save_flags+0x147/0x8d0
+[  182.468496][    C7]  ? is_prefetch.constprop.0+0x9d/0x520
+[  182.471883][    C7]  ? stack_depot_save_flags+0x156/0x8d0
+[  182.475300][    C7]  ? __pfx_is_prefetch.constprop.0+0x10/0x10
+[  182.478866][    C7]  ? fixup_exception+0x108/0xae0
+[  182.482081][    C7]  ? kernelmode_fixup_or_oops.constprop.0+0xb8/0xe0
+[  182.485867][    C7]  ? __bad_area_nosemaphore+0x390/0x6a0
+[  182.489306][    C7]  ? ret_from_fork_asm+0x19/0x30
+[  182.492554][    C7]  ? do_user_addr_fault+0x928/0x12c0
+[  182.495874][    C7]  ? rcu_is_watching+0xe/0xc0
+[  182.499002][    C7]  ? exc_page_fault+0x57/0xd0
+[  182.502122][    C7]  ? asm_exc_page_fault+0x22/0x30
+[  182.505376][    C7]  ? stack_depot_save_flags+0x147/0x8d0
+[  182.508798][    C7]  ? __lock_acquire+0xd09/0x5d30
+[  182.512038][    C7]  ? i_callback+0x5d/0x70
+[  182.515071][    C7]  kasan_save_stack+0x3e/0x50
+[  182.518234][    C7]  ? kasan_save_stack+0x2f/0x50
+[  182.521420][    C7]  ? kasan_save_track+0x10/0x30
+[  182.524622][    C7]  ? kasan_save_free_info+0x37/0x60
+[  182.527907][    C7]  ? poison_slab_object+0xf7/0x160
+[  182.531169][    C7]  ? __kasan_slab_free+0x2e/0x50
+[  182.534346][    C7]  ? kmem_cache_free+0x12b/0x4a0
+[  182.537489][    C7]  ? i_callback+0x5d/0x70
+[  182.540435][    C7]  ? rcu_core+0x84d/0x1c60
+[  182.543390][    C7]  ? handle_softirqs+0x219/0x980
+[  182.546499][    C7]  ? run_ksoftirqd+0x36/0x60
+[  182.549492][    C7]  ? smpboot_thread_fn+0x660/0xa10
+[  182.552629][    C7]  ? kthread+0x336/0x440
+[  182.555447][    C7]  ? ret_from_fork+0x44/0x70
+[  182.558334][    C7]  ? ret_from_fork_asm+0x1a/0x30
+[  182.561276][    C7]  kasan_save_track+0x10/0x30
+[  182.564051][    C7]  kasan_save_free_info+0x37/0x60
+[  182.566922][    C7]  poison_slab_object+0xf7/0x160
+[  182.569747][    C7]  __kasan_slab_free+0x2e/0x50
+[  182.572530][    C7]  kmem_cache_free+0x12b/0x4a0
+[  182.575296][    C7]  ? i_callback+0x5d/0x70
+[  182.577922][    C7]  ? rcu_core+0x848/0x1c60
+[  182.580554][    C7]  i_callback+0x5d/0x70
+[  182.583066][    C7]  rcu_core+0x84d/0x1c60
+[  182.585582][    C7]  ? __pfx_rcu_core+0x10/0x10
+[  182.588229][    C7]  handle_softirqs+0x219/0x980
+[  182.590882][    C7]  ? __pfx_handle_softirqs+0x10/0x10
+[  182.593717][    C7]  ? rcu_is_watching+0xe/0xc0
+[  182.596347][    C7]  ? __pfx_run_ksoftirqd+0x10/0x10
+[  182.599104][    C7]  ? smpboot_thread_fn+0x599/0xa10
+[  182.601869][    C7]  run_ksoftirqd+0x36/0x60
+[  182.604434][    C7]  smpboot_thread_fn+0x660/0xa10
+[  182.607152][    C7]  ? __kthread_parkme+0x148/0x220
+[  182.609906][    C7]  ? __pfx_smpboot_thread_fn+0x10/0x10
+[  182.612801][    C7]  kthread+0x336/0x440
+[  182.615219][    C7]  ? _raw_spin_unlock_irq+0x1f/0x50
+[  182.618023][    C7]  ? __pfx_kthread+0x10/0x10
+[  182.620623][    C7]  ret_from_fork+0x44/0x70
+[  182.623162][    C7]  ? __pfx_kthread+0x10/0x10
+[  182.625755][    C7]  ret_from_fork_asm+0x1a/0x30
+[  182.628385][    C7]  </TASK>
+[  182.630443][    C7] Modules linked in:
+[  182.632779][    C7] CR2: 0000000000000010
+[  182.635183][    C7] ---[ end trace 0000000000000000 ]---
+[  182.638056][    C7] RIP: 0010:stack_depot_save_flags+0x147/0x8d0
+[  182.641146][    C7] Code: c1 e1 04 4c 03 0d 81 1d c8 0f 65 ff 05 5a ae 92 7b 49 8b 09 49 39 c9 75 11 e9 91 00 00 00 48 8b 09 49 39 c9 0f 84 a4 01 00 00 <39> 59 10 75 ef 44 3b 79 14 75 e9 31 c0 48 8b 54 c1 20 49 39 54 c5
+[  182.649808][    C7] RSP: 0018:ffffc90006657970 EFLAGS: 00010286
+[  182.653031][    C7] RAX: 00000000f759be75 RBX: 00000000f759be75 RCX: 0000000000000000
+[  182.656897][    C7] RDX: 0000000018e8f28b RSI: 000000004a278650 RDI: 00000000bc02d21f
+[  182.660748][    C7] RBP: 0000000000000001 R08: 0000000000000005 R09: ffff88901cdbe750
+[  182.664628][    C7] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[  182.668435][    C7] R13: ffffc900066579d0 R14: 000000000000000e R15: 000000000000000e
+[  182.672198][    C7] FS:  0000000000000000(0000) GS:ffff88901d780000(0000) knlGS:0000000000000000
+[  182.676268][    C7] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  182.679617][    C7] CR2: 0000000000000010 CR3: 00000001730ac000 CR4: 00000000000006f0
+[  182.683435][    C7] Kernel panic - not syncing: Fatal exception in interrupt
+[  182.687412][    C7] Kernel Offset: disabled
+<snip>
 
-						Thanx, Paul
+second one:
+
+<snip>
+[  657.192361][    C0] list_add corruption. next->prev should be prev (ffff8881996a2670), but was 0000000000000000. (next=ffff8881a3571000).
+[  657.204270][    C0] ------------[ cut here ]------------
+[  657.210763][    C0] kernel BUG at lib/list_debug.c:29!
+[  657.217140][    C0] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+[  657.224382][    C0] CPU: 0 UID: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.11.0-rc2-00037-g6b376d473b12 #3833
+[  657.233350][    C0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  657.241232][    C0] RIP: 0010:__list_add_valid_or_report+0xa2/0x100
+[  657.246703][    C0] Code: c7 c7 e0 2e 2a 8b e8 4d 3d 24 fd 0f 0b 48 c7 c7 80 2f 2a 8b e8 3f 3d 24 fd 0f 0b 48 89 d9 48 c7 c7 e0 2f 2a 8b e8 2e 3d 24 fd <0f> 0b 48 89 f1 48 c7 c7 60 30 2a 8b 48 89 de e8 1a 3d 24 fd 0f 0b
+[  657.257782][    C0] RSP: 0018:ffffc9000434f458 EFLAGS: 00010082
+[  657.261306][    C0] RAX: 0000000000000075 RBX: ffff8881a3571000 RCX: ffffffff816b4fb9
+[  657.265447][    C0] RDX: 0000000000000000 RSI: ffffffff816bef02 RDI: 0000000000000005
+[  657.269555][    C0] RBP: ffff8881b1b40d40 R08: 0000000000000005 R09: 0000000000000000
+[  657.273686][    C0] R10: 0000000000000101 R11: 0000000000000001 R12: ffff8881996a2670
+[  657.277798][    C0] R13: 0000000000000820 R14: ffff8881b1b40d40 R15: ffff8881a3571000
+[  657.281918][    C0] FS:  0000000000000000(0000) GS:ffff88861fc00000(0000) knlGS:0000000000000000
+[  657.286383][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  657.290128][    C0] CR2: 00007f4027088128 CR3: 000000000d17c000 CR4: 00000000000006f0
+[  657.294297][    C0] Call Trace:
+[  657.297076][    C0]  <TASK>
+[  657.299729][    C0]  ? show_regs+0x88/0x90
+[  657.302756][    C0]  ? die+0x32/0xa0
+[  657.305654][    C0]  ? do_trap+0x232/0x430
+[  657.308703][    C0]  ? __list_add_valid_or_report+0xa2/0x100
+[  657.312223][    C0]  ? __list_add_valid_or_report+0xa2/0x100
+[  657.315709][    C0]  ? do_error_trap+0xf4/0x230
+[  657.318839][    C0]  ? __list_add_valid_or_report+0xa2/0x100
+[  657.322308][    C0]  ? handle_invalid_op+0x34/0x40
+[  657.325530][    C0]  ? __list_add_valid_or_report+0xa2/0x100
+[  657.329015][    C0]  ? exc_invalid_op+0x29/0x40
+[  657.332190][    C0]  ? asm_exc_invalid_op+0x16/0x20
+[  657.335452][    C0]  ? __wake_up_klogd.part.0+0x99/0xf0
+[  657.338814][    C0]  ? vprintk+0x82/0x90
+[  657.341768][    C0]  ? __list_add_valid_or_report+0xa2/0x100
+[  657.345267][    C0]  ? __list_add_valid_or_report+0xa2/0x100
+[  657.348732][    C0]  ? ref_tracker_alloc+0x205/0x5a0
+[  657.352010][    C0]  ref_tracker_alloc+0x236/0x5a0
+[  657.355208][    C0]  ? __pfx_ref_tracker_alloc+0x10/0x10
+[  657.358533][    C0]  ? dst_init+0xd6/0x570
+[  657.361499][    C0]  ? dst_alloc+0xb7/0x1a0
+[  657.364473][    C0]  ? ip6_dst_alloc+0x28/0xa0
+[  657.367536][    C0]  ? icmp6_dst_alloc+0x6c/0x4a0
+[  657.370635][    C0]  ? ndisc_send_skb+0x1275/0x1c20
+[  657.373740][    C0]  ? ndisc_send_rs+0x127/0x690
+[  657.376821][    C0]  ? addrconf_rs_timer+0x41e/0x850
+[  657.379973][    C0]  ? call_timer_fn+0x1a3/0x600
+[  657.383021][    C0]  ? __run_timers+0x749/0xae0
+[  657.386018][    C0]  ? timer_expire_remote+0xfb/0x160
+[  657.389128][    C0]  ? tmigr_handle_remote+0x7c7/0xfc0
+[  657.392261][    C0]  ? run_timer_softirq+0x31/0x40
+[  657.395251][    C0]  ? handle_softirqs+0x219/0x980
+[  657.398195][    C0]  ? run_ksoftirqd+0x36/0x60
+[  657.401024][    C0]  ? smpboot_thread_fn+0x660/0xa10
+[  657.404017][    C0]  ? kthread+0x336/0x440
+[  657.406708][    C0]  ? rcu_is_watching+0xe/0xc0
+[  657.409508][    C0]  dst_init+0xd6/0x570
+[  657.412090][    C0]  dst_alloc+0xb7/0x1a0
+[  657.414630][    C0]  ip6_dst_alloc+0x28/0xa0
+[  657.417183][    C0]  icmp6_dst_alloc+0x6c/0x4a0
+[  657.419786][    C0]  ndisc_send_skb+0x1275/0x1c20
+[  657.422420][    C0]  ? validate_store+0x1e/0x60
+[  657.425004][    C0]  ? __pfx_ndisc_send_skb+0x10/0x10
+[  657.427726][    C0]  ? __build_skb_around+0x278/0x3b0
+[  657.430441][    C0]  ? __alloc_skb+0x1fc/0x380
+[  657.432973][    C0]  ? skb_put+0x134/0x1a0
+[  657.435368][    C0]  ndisc_send_rs+0x127/0x690
+[  657.437856][    C0]  addrconf_rs_timer+0x41e/0x850
+[  657.440437][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
+[  657.443169][    C0]  ? try_to_wake_up+0x13b/0x15d0
+[  657.445750][    C0]  ? __pfx_lock_release+0x10/0x10
+[  657.448369][    C0]  call_timer_fn+0x1a3/0x600
+[  657.450828][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
+[  657.453586][    C0]  ? __pfx_call_timer_fn+0x10/0x10
+[  657.456234][    C0]  ? __pfx_lock_release+0x10/0x10
+[  657.458856][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
+[  657.461613][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
+[  657.464365][    C0]  __run_timers+0x749/0xae0
+[  657.466804][    C0]  ? __pfx___run_timers+0x10/0x10
+[  657.469401][    C0]  ? __pfx_lock_acquire+0x10/0x10
+[  657.471986][    C0]  ? lock_acquire+0x1ad/0x550
+[  657.474472][    C0]  timer_expire_remote+0xfb/0x160
+[  657.477069][    C0]  ? __pfx_timer_expire_remote+0x10/0x10
+[  657.479850][    C0]  ? _raw_spin_unlock_irq+0x1f/0x50
+[  657.482475][    C0]  ? lockdep_hardirqs_on+0x78/0x100
+[  657.485141][    C0]  tmigr_handle_remote+0x7c7/0xfc0
+[  657.487771][    C0]  ? __pfx_tmigr_handle_remote+0x10/0x10
+[  657.490551][    C0]  ? run_timer_base+0x11e/0x190
+[  657.493102][    C0]  ? __pfx_run_timer_base+0x10/0x10
+[  657.495762][    C0]  run_timer_softirq+0x31/0x40
+[  657.498286][    C0]  handle_softirqs+0x219/0x980
+[  657.500812][    C0]  ? __pfx_handle_softirqs+0x10/0x10
+[  657.503503][    C0]  ? rcu_is_watching+0xe/0xc0
+[  657.506009][    C0]  ? __pfx_run_ksoftirqd+0x10/0x10
+[  657.508657][    C0]  ? smpboot_thread_fn+0x599/0xa10
+[  657.511301][    C0]  run_ksoftirqd+0x36/0x60
+[  657.513734][    C0]  smpboot_thread_fn+0x660/0xa10
+[  657.516336][    C0]  ? __kthread_parkme+0x148/0x220
+[  657.518950][    C0]  ? __pfx_smpboot_thread_fn+0x10/0x10
+[  657.521715][    C0]  kthread+0x336/0x440
+[  657.524064][    C0]  ? _raw_spin_unlock_irq+0x1f/0x50
+[  657.526737][    C0]  ? __pfx_kthread+0x10/0x10
+[  657.529240][    C0]  ret_from_fork+0x44/0x70
+[  657.531687][    C0]  ? __pfx_kthread+0x10/0x10
+[  657.534185][    C0]  ret_from_fork_asm+0x1a/0x30
+[  657.536744][    C0]  </TASK>
+[  657.538752][    C0] Modules linked in:
+[  657.541038][    C0] ---[ end trace 0000000000000000 ]---
+[  657.543837][    C0] RIP: 0010:__list_add_valid_or_report+0xa2/0x100
+[  657.546921][    C0] Code: c7 c7 e0 2e 2a 8b e8 4d 3d 24 fd 0f 0b 48 c7 c7 80 2f 2a 8b e8 3f 3d 24 fd 0f 0b 48 89 d9 48 c7 c7 e0 2f 2a 8b e8 2e 3d 24 fd <0f> 0b 48 89 f1 48 c7 c7 60 30 2a 8b 48 89 de e8 1a 3d 24 fd 0f 0b
+[  657.555312][    C0] RSP: 0018:ffffc9000434f458 EFLAGS: 00010082
+[  657.558444][    C0] RAX: 0000000000000075 RBX: ffff8881a3571000 RCX: ffffffff816b4fb9
+[  657.562186][    C0] RDX: 0000000000000000 RSI: ffffffff816bef02 RDI: 0000000000000005
+[  657.565917][    C0] RBP: ffff8881b1b40d40 R08: 0000000000000005 R09: 0000000000000000
+[  657.569676][    C0] R10: 0000000000000101 R11: 0000000000000001 R12: ffff8881996a2670
+[  657.573430][    C0] R13: 0000000000000820 R14: ffff8881b1b40d40 R15: ffff8881a3571000
+[  657.577198][    C0] FS:  0000000000000000(0000) GS:ffff88861fc00000(0000) knlGS:0000000000000000
+[  657.581305][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  657.584702][    C0] CR2: 00007f4027088128 CR3: 000000000d17c000 CR4: 00000000000006f0
+[  657.588528][    C0] Kernel panic - not syncing: Fatal exception in interrupt
+[  657.592637][    C0] Kernel Offset: disabled
+<snip>
+
+is about list corruption BUG. So they are different and looks like
+something is corrupted. So i would not trust that your report is about
+kvfree_rcu_bulk() warning is related to a real issue with kvfree_rcu()
+call.
+
+A also run the reproducer on the 6.11.0-rc7 kernel. It still runs
+without any panics yet.
+
+Could you please test the latest kernel? For example 6.11.0-rc7?
+
+--
+Uladzislau Rezki
