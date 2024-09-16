@@ -1,46 +1,46 @@
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2058.outbound.protection.outlook.com [40.107.212.58])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2054.outbound.protection.outlook.com [40.107.243.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0D32744E;
-	Mon, 16 Sep 2024 05:09:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327D02BD19;
+	Mon, 16 Sep 2024 05:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726463384; cv=fail; b=PCmgUMHlUN/vqZeBCJCrM6KJYIb/36tH6m2GjgcJR1k6cvrw8cA1Fh6BK7gu6/Vl9IxJhHLmxRhdssHOFHtjUAENFglxa0JZUOByYmytBb8lotERy2rwEmtWwp0IPhMIhDuZuQe9OD5+/jBzZk0CicN6ZkicSnbwLnLzDljWKdY=
+	t=1726463400; cv=fail; b=pBdKDjAZWzIDi1/9kTQ9AZ+MeTVFb9TFxaCTkRecbnarI1JMzoQcP2Hfq+g6GaR6lwuMsidrXTy9/oUfNjd2ek6XNpWO6dPrTKTbd/OAKqegmOKP14apcMimjGwWIAPhstGENioHghOKT0HBZ/RSJm4L3YYnwuLyBnVOvVxqEbc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726463384; c=relaxed/simple;
-	bh=w/gWoEVrx1J1LxDqTZO4Oo+g6ejZLoZDO95IPl92WNc=;
+	s=arc-20240116; t=1726463400; c=relaxed/simple;
+	bh=9iWo5p6+3i8ZqjG/8dT4qlIGTch2mq8nMCtVnDnETyo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D530e/OTPrECeXuveTUdaWVMoHchRGHIO7AQAY2R2lEjqvEn/ApoT4Axp76km2qGMi9DvBg70xompre3k7qlendF4jrD/inmjM6/VRdaUg9NDmj0yE20vMSkNkrjhNEicM/TaJA4LNpYdiouQL+h9Uky2eC0hsRC3hRRRZFBSn8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=p0BqNEe5; arc=fail smtp.client-ip=40.107.212.58
+	 MIME-Version:Content-Type; b=IdnspDBt6Ey0jt+Ex77VRE5kSpadi2FFYJXAix4OO2IMkPYPhz5CvIIR/oYIOq799zueS8SkV3uJ3nKKoYdB9XsDLttyxbX06F9IKAhkn7B0Ac84v4xv5kYfV/pu09KehystqS/blc95IhzK945E6hhIJuyZKgTQpByTWZnUAhI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=APZ+J72m; arc=fail smtp.client-ip=40.107.243.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="p0BqNEe5"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="APZ+J72m"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=wqUtnxMrjx6LqyfywxM5se9oeFvddKQ0FLQ9kHtdW+lwIJ7I0XEl/FlKxmOwyi+gg3YhjWivBBnF34frJPez9qbnCx/tBLuTn8hybsz6LV9Y2RC7uFUu8+dxjcKxflvsIL92ZoJulLL2Qq/hb57TGM5WU4K3cZ1PvklasJEnh7bkVrBcHIM/pDKMd0ElC8YD9xxS76ES2wQ4la5/x7EZHZzGxPJaqBoc/+a3kDyRyQ4w5g2Y01Og+OA4ZfiNB+G19dAwtUSqnTPn+pvSheizmxQFBj3lBwYGB156TqmDAPyS1wTboEp1NS47XhImgL12qrSj1VOs720u/yOcBsRPXA==
+ b=yveyjA7KkyBNC1laqiTI+b0ZZ+4qeLDSgM3TKaeUF2LI0YQ6gbFUVBQUYPEN/QWWb2vE3yV5H2ZcPK5JL9+bCuUkQCuV0Y4CzU/TGuX7rfKQ5c/lId8VyGDH6rE4tBR+LxXrG68VLiLfj7SVF3ivt5RNVdrtOADx4tmMmK5Qfxh2K0BQ0IfhJBvEgHyoNrstUN7xLixQKnSo6MuPvQIEiKBbwEUvsjINMVuyRm+LLCUCfcUMppLn1zJAx+neZjrrg+bgrKJ6zTlwbzBJKF+jNbzOTD9DdMOHKnXFV9vE/aKdQ5bUzFTXzPy171+Fnfm/dCddhk9wQsFYVzGkK/50jw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r604xJvf0kpMD9SUu6dvCf+ZojbB7Oe7MWbhODd9r8k=;
- b=oBEuog5TwBBe6BHCL/G2+YlSmsR40Os+MQLHvKmCDfgQ8Th7DRyYhuCkbvvfUy0vLI79pz+gpg2gdtGzZytewdKnMYMU9+zhSE/B60Jo2vcYgU6rdC7CY0IcWaRXKovVFpIFNjul1ACkeJxAWpzc9Rd+SwfPSI1y2C8Pyo7OIMyZxb0Y1QTNVKurRqZXgbO0oZb3hRA2e6WqBFXYvWuXm6MXcwl7CQnnnwSLP+XWyu8Gi8Jerl0BKPsdaRbsaEwMO86yi7uqwNjTWhwtgyMjARJ2IDZj82CteiKEYANf2F2/q6Tx5v3VSqdWb0mubN2I9ZscGE8TwjQBhzT4+ZPegg==
+ bh=FS9htN1kP9pZdhBQxkiiDa24nt1ICyEwzzMLrt19yj8=;
+ b=wppSOUaB7d1Ahk+vLk+tnOkRyEirQsHo3ROoAPnR10OTl+RNwqQ5+bKCPA+kDHIuSY6yg1l3EXN6R8VVzzeHMeH5a1Ati9xFJk1jbFwIkYSd9VP+Hbi0AWS6URyISIPSjxYcuG8fT9I3u+o89qmc/SMTK29KFn1nDAYqiQa8O29Hi1kCTU89Snw7QlIwfSKzcXs6tIm3EEBO6usuhm8L6tXvebVjf5ZcXt+IrXCJLPO+FM3JeGw9URq3zqePFwbZ0rqgfdg1hI6htIREgeZPsHKlV+A5slZkgYe05ovOWK1rcOibx2sY4n49hJN1HSYsS4ExBKCbgIA7hqFBX3wm7A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r604xJvf0kpMD9SUu6dvCf+ZojbB7Oe7MWbhODd9r8k=;
- b=p0BqNEe57QVw/NguqJ5X6HfoDI1KREe/QUuLbKSsO5dKhYe2GtC6yKzO5BsIIh22xyY0qShz0e9M1a2TILWJXLlykA0wSQjtUucRy2h5jFmBp2JnTkpallwrAJxR0R+zddwib36pd8b2MT6sBKm1A0eyA1QZ44QNLoHIaM7MXqc=
-Received: from SJ0PR03CA0168.namprd03.prod.outlook.com (2603:10b6:a03:338::23)
- by SA1PR12MB8743.namprd12.prod.outlook.com (2603:10b6:806:37c::18) with
+ bh=FS9htN1kP9pZdhBQxkiiDa24nt1ICyEwzzMLrt19yj8=;
+ b=APZ+J72mtV6X1/Epc5jo0S+IJmiXxYIh5xLEceQbaIzwte7CHe0xFk29Iq/F0sVsAIkC8xQsNFjiRrAcWTN9ocrdAI5SdO5rBYSuSneuZX7rx4EfxE0KXUUoEJCkv1pWyqYAA5FzYPeSee1QeGoPp71NChDvjDTOyPKJsdkukBc=
+Received: from MW4PR04CA0384.namprd04.prod.outlook.com (2603:10b6:303:81::29)
+ by SN7PR12MB6931.namprd12.prod.outlook.com (2603:10b6:806:261::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7962.23; Mon, 16 Sep
- 2024 05:09:37 +0000
-Received: from SJ5PEPF000001CF.namprd05.prod.outlook.com
- (2603:10b6:a03:338:cafe::55) by SJ0PR03CA0168.outlook.office365.com
- (2603:10b6:a03:338::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7962.22; Mon, 16 Sep
+ 2024 05:09:55 +0000
+Received: from SJ5PEPF000001C8.namprd05.prod.outlook.com
+ (2603:10b6:303:81:cafe::9e) by MW4PR04CA0384.outlook.office365.com
+ (2603:10b6:303:81::29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7939.30 via Frontend
- Transport; Mon, 16 Sep 2024 05:09:36 +0000
+ Transport; Mon, 16 Sep 2024 05:09:54 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -48,13 +48,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ5PEPF000001CF.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ SJ5PEPF000001C8.mail.protection.outlook.com (10.167.242.36) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7918.13 via Frontend Transport; Mon, 16 Sep 2024 05:09:36 +0000
+ 15.20.7918.13 via Frontend Transport; Mon, 16 Sep 2024 05:09:54 +0000
 Received: from BLR-L-NUPADHYA.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 16 Sep
- 2024 00:09:30 -0500
+ 2024 00:09:48 -0500
 From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 To: <linux-kernel@vger.kernel.org>
 CC: <john.johansen@canonical.com>, <paul@paul-moore.com>, <jmorris@namei.org>,
@@ -64,9 +64,9 @@ CC: <john.johansen@canonical.com>, <paul@paul-moore.com>, <jmorris@namei.org>,
 	<boqun.feng@gmail.com>, <vinicius.gomes@intel.com>, <mjguzik@gmail.com>,
 	<dennis@kernel.org>, <tj@kernel.org>, <cl@linux.com>, <linux-mm@kvack.org>,
 	<rcu@vger.kernel.org>
-Subject: [RFC 3/6] percpu-refcount: Extend managed mode to allow runtime switching
-Date: Mon, 16 Sep 2024 10:38:08 +0530
-Message-ID: <20240916050811.473556-4-Neeraj.Upadhyay@amd.com>
+Subject: [RFC 4/6] percpu-refcount-torture: Extend test with runtime mode switches
+Date: Mon, 16 Sep 2024 10:38:09 +0530
+Message-ID: <20240916050811.473556-5-Neeraj.Upadhyay@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240916050811.473556-1-Neeraj.Upadhyay@amd.com>
 References: <20240916050811.473556-1-Neeraj.Upadhyay@amd.com>
@@ -82,441 +82,191 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CF:EE_|SA1PR12MB8743:EE_
-X-MS-Office365-Filtering-Correlation-Id: e9d30e1f-8e1a-4901-7e08-08dcd60dc294
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001C8:EE_|SN7PR12MB6931:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8be1d72c-8332-45e0-36a6-08dcd60dcd60
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|82310400026|1800799024|36860700013|7416014|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?2/eNvxGBUcgfLL6PgOg/waOf6yMmzplo3OmXZg6n5Gf3h/GeAwXbCtnE9c1t?=
- =?us-ascii?Q?uinzVRcytnuYbUNRwjgd6BZQxsUhIdK00v8ONVTC3C8VvYWgadiZ7tep3MBP?=
- =?us-ascii?Q?TrXxjkmcbi5xZVMunSygJQjEsZqS16ui4MBqfnmZdMcs38rdYrZIQe81agxq?=
- =?us-ascii?Q?Am613fIfJHyBYMb++jETLwwD2wVadL/902iv1mS5ubpFMgz9y3R7M0nBYlP1?=
- =?us-ascii?Q?an+M3Huk34JMVVF1iAFXevpQjvvBZd3RRRxr1FrC1193F1YGLKsmS7H+kc7Q?=
- =?us-ascii?Q?yl2nC04GdHj3O8u58o2uoaKEseLuf51OCnQFTKIzt4IjMYHUp8IBDtURWNXZ?=
- =?us-ascii?Q?wF25OovX+/GhsBP3rPZtehNbTgJxXgJl0zquc3X/rqfjofNqRjcxDsupOvca?=
- =?us-ascii?Q?8BWZbWaTayCU0DuyHzWx50/0xf+EfPEBfug5kwd0lTEw45zM5d+A5VRU3P+1?=
- =?us-ascii?Q?xDQxpvsjwAcmbm0BlHmzc3ZnKAQ8AlO6vsJuPFQEhLZzk+XWL1pjkVzhuzuO?=
- =?us-ascii?Q?h+HBuVF8f4jIAQkpdwzksY2uWEUr7nh/d41u2yrNEk2ArbqG8rPaPWpTHqwO?=
- =?us-ascii?Q?De99GWWuLdspZQSJLHLv96kKnf5GOi+k3ftkS0RG7NMHLExH4TzIDKABHoOe?=
- =?us-ascii?Q?No8MQMwPrmn8Cg+UgjP+T6K7WGcKo0EkMfD55TXvKEhOOSnkOce9U+Cn6twC?=
- =?us-ascii?Q?UpJWFgPjC1F7mhUs/ciZ+Vt/1Zk3SOmXD1gmAyqM4Pp2ce+K+fdoohjxPbEa?=
- =?us-ascii?Q?UBYBpvc/A8ufVHLvhYNCcXexAtbx27auq1qfMWaqmCbkOhlyxpqJmROJnSM0?=
- =?us-ascii?Q?4oPwbjxqufC/BoSp4tpBYBZD9h+55OI5Dya7kVcBPUiuCnrXzfcqilzCGUND?=
- =?us-ascii?Q?ytajrJySrDyWDf3A6TftirsXx0ps+ZFeKwZHQ7yFD14jJkQOCCIbmtH0VsaC?=
- =?us-ascii?Q?fdanTYa0xiO/CAGYlpl0Cr9iHC7xLULCUjeBVki/4zTxxbjQKzglUjPyZGpd?=
- =?us-ascii?Q?5BrEAf+BNZrx5fZKQkmSbM9Flaefs7N2oEtGTY38zjgsmiZclYYcEx2vI8DW?=
- =?us-ascii?Q?6m8iIKLg5yvXvz7cAhdSIvZEzspmaM6ExguszBhHkBO/wQBGvOMHMh6fcY+M?=
- =?us-ascii?Q?xG1gQdtirn12ebrt+YspG3FQpoht6EgURutpximmFSEdRjOYx//hbdFhuaMa?=
- =?us-ascii?Q?xY5+72xmgrU5pmjt2q2joactJsuEO6dL10okdX4uzoFu85yVBVWT8aEzAB4u?=
- =?us-ascii?Q?aYH7CzpHie93YjJMEziQojvE26l6PhzaDBVKJ4ekeSDJqFIM7UWOwEq8Rm9h?=
- =?us-ascii?Q?hdo55TkLIxAkaEg2Ds+jzzmY+aDJpO3yNfvG+x3JV+HS7bC4eBInZg2YAkms?=
- =?us-ascii?Q?mT+joegLmnjbfcOxpEpni9GwlgraDw8OA1sTjHmR0zmkGUAdJZG3PpZ2q/Vy?=
- =?us-ascii?Q?oyBS2g4fz7nBp0ncLAyn0WzC+M8NzFM3?=
+	=?us-ascii?Q?z70JubxGidW8xyCupr+gZAYJkEF1nNPrmas1rQZf3OKcxAoHLvQ2A2uNSPan?=
+ =?us-ascii?Q?lek5alRGxkWvPYIMisGVkTchurTKylNrcMJiMsSKReA7ihRtLjFYiSuhQMl3?=
+ =?us-ascii?Q?bla9r2oT0plHxxVOM3tLOQs3XF47BSBg2ZCPMNmZpg+2uQ/vP7TY9MEbRoDH?=
+ =?us-ascii?Q?rFuWdgUK0NZA/U7PhqQJInZ8ldW5Fty1zQb2jEG//CE69zla2GrdCCKPQWa7?=
+ =?us-ascii?Q?dolyJgTRk8+jMXGkzUR7oQE+Fycbq0R/3n4d2bcxdhQvzHfa1J2bIv3hK7Ud?=
+ =?us-ascii?Q?Ji3fIqD9YHkl/uitzqafQIcVqdLtHHdZOhCQuSLEDTPopHx5zbHnOBGIOzL+?=
+ =?us-ascii?Q?GaZ+/WXidJd56MStLklEvsitCaBWcG09tvzCznmyJmt3wV9REgb2HPJSBDkL?=
+ =?us-ascii?Q?BgofpBVuS4e3TWt4UYv3BtHAzyA/rQtlxflMSYN8Tioowbq2q2iPl5wt64gO?=
+ =?us-ascii?Q?npUoay0dFd8U70M2kdJZAWu1ubgWDsqM2vBeRcLx0bKxp1ws+p6VYy3jYeQ1?=
+ =?us-ascii?Q?IYhpS2gyAyGAVedikCbIsZ4a+BezlEYZpJOVdKLXI2gL4MOrXMdeANG66sRF?=
+ =?us-ascii?Q?lGtuNl4yrRymvQ3a5U/fPzyWbRbM8pgPb8OaoyIaMwkEF+WfCLAay7PbKgHx?=
+ =?us-ascii?Q?tsSwrzdyPt4pBNKFBhZdcMMzPt5EG0n0hgSH8pCoJJ9hVIFrj2lUMuMXU5vo?=
+ =?us-ascii?Q?v+OnpgH3dXGGRxzAiOKB2P0A7jWvrIrs3fStgQswHMoH4B2TTg7gWH447O7D?=
+ =?us-ascii?Q?3y97PiIObEDalhfEw8KAJuNgs+/T78zfBMZd4chAh7SSQTirmDqS83U7ReWu?=
+ =?us-ascii?Q?F6qRaKDIcZ2bsqT1XYzNcghkRmtWsSd03dpe6BSz5PRMcg1o2qEOTvOntWTA?=
+ =?us-ascii?Q?8B9wC4AXYFJw9kHYfonMfPLvIFUAHa8b0jJPQfbYAqZSiVUQ4/XhIFWexGKM?=
+ =?us-ascii?Q?6Uw+DVNd8Ca8XSzuRq5q1NdPgRbiv+1hc3qYF+bnt3lE5kaz2DTETtnzst0Q?=
+ =?us-ascii?Q?WVSMj9RcU51FhYWFXqi1U92fhdNRo2I4QfEdR2vTpBKbSABy+hCgMt6alRgF?=
+ =?us-ascii?Q?iUOAoofDKDNNMYyLewuHiQfNsb86wPNfjSV/quCr9BFelmEY5MyGtz3LlGa4?=
+ =?us-ascii?Q?ahws4g2cC0/BP8Vri8oEdrDmOp+EyC1Nat3d8jbZS9w8r5R1D3J+kLY/Z6P8?=
+ =?us-ascii?Q?GAqaEvq7vZ6um+fzw4KXFAdLYRhjMRbuSYsMbF9ZwezC3lZJ6jKHhwzSYChQ?=
+ =?us-ascii?Q?NyBapizQFwtroRtstZlOR0uy/+eMBj5kLY3b60VVxfeZYEokQH5ErIgeLTdq?=
+ =?us-ascii?Q?Lfdmcro4uJaieQce+/d6uJV366QnPorH7MeJvv1WZoFZMSumZSX+M3OVjL+c?=
+ =?us-ascii?Q?Sh6ngrhX5568rXKsQyTu8qKhBQfiIJRNYcwBUUo5vcqyQot4VG0ysu7lSRoI?=
+ =?us-ascii?Q?Sjp85BEMV9AzyPuERGP3DVKjs+7Tx/oy?=
 X-Forefront-Antispam-Report:
 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2024 05:09:36.5791
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2024 05:09:54.6758
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9d30e1f-8e1a-4901-7e08-08dcd60dc294
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8be1d72c-8332-45e0-36a6-08dcd60dcd60
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001CF.namprd05.prod.outlook.com
+	SJ5PEPF000001C8.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8743
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6931
 
-Provide more flexibility in terms of runtime mode switch for a managed
-percpu ref. This can be useful for cases when in some scenarios, a
-managed ref's object enters shutdown phase. Instead of waiting for
-manager thread to process the ref, user can dirctly invoke
-percpu_ref_kill() for the ref.
-
-The init modes are same as in existing code. Runtime mode switching
-allows switching back a managed ref to unmanaged mode, which allows
-transitions to all reinit modes from managed mode.
-
-To -->       A   P   P(RI)   M   D  D(RI)  D(RI/M)   EX   REI   RES
-
-  A          y   n     y     y   n    y       y       y     y     y
-  P          n   n     n     n   y    n       n       y     n     n
-  M          y*  n     y*    y   n    y*      y       y*    y     y
-  P(RI)      y   n     y     y   n    y       y       y     y     y
-  D(RI)      y   n     y     y   n    y       y       -     y     y
-  D(RI/M)    y*  n     y*    y   n    y*      y       -     y     y
-
-Modes:
-A - Atomic  P - PerCPU  M - Managed  P(RI) - PerCPU with ReInit
-D(RI) - Dead with ReInit  D(RI/M) - Dead with ReInit and Managed
-
-PerCPU Ref Ops:
-
-KLL - Kill  REI - Reinit  RES - Resurrect
-
-(RI) is for modes which are initialized with PERCPU_REF_ALLOW_REINIT.
-The transitions shown above are the allowed transitions and can be
-indirect transitions. For example, managed ref switches to P(RI) mode
-when percpu_ref_switch_to_unmanaged() is called for it. P(RI) mode
-can be directly switched to A mode using percpu_ref_switch_to_atomic().
+Extend the test to exercise runtime switching from managed
+mode to other reinitable active modes.
 
 Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 ---
- include/linux/percpu-refcount.h |   3 +-
- lib/percpu-refcount.c           | 248 +++++++++++---------------------
- 2 files changed, 88 insertions(+), 163 deletions(-)
+ lib/percpu-refcount-torture.c | 41 +++++++++++++++++++++++++++++++++--
+ lib/percpu-refcount.c         | 12 +++++++++-
+ 2 files changed, 50 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
-index e6aea81b3d01..fe967db431a6 100644
---- a/include/linux/percpu-refcount.h
-+++ b/include/linux/percpu-refcount.h
-@@ -110,7 +110,7 @@ struct percpu_ref_data {
- 	struct rcu_head		rcu;
- 	struct percpu_ref	*ref;
- 	unsigned int		aux_flags;
--	struct llist_node	node;
-+	struct list_head	node;
- 
- };
- 
-@@ -139,6 +139,7 @@ void percpu_ref_switch_to_atomic(struct percpu_ref *ref,
- void percpu_ref_switch_to_atomic_sync(struct percpu_ref *ref);
- void percpu_ref_switch_to_percpu(struct percpu_ref *ref);
- int percpu_ref_switch_to_managed(struct percpu_ref *ref);
-+void percpu_ref_switch_to_unmanaged(struct percpu_ref *ref);
- void percpu_ref_kill_and_confirm(struct percpu_ref *ref,
- 				 percpu_ref_func_t *confirm_kill);
- void percpu_ref_resurrect(struct percpu_ref *ref);
-diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
-index 7d0c85c7ce57..b79e36905aa4 100644
---- a/lib/percpu-refcount.c
-+++ b/lib/percpu-refcount.c
-@@ -5,7 +5,7 @@
- #include <linux/sched.h>
- #include <linux/wait.h>
- #include <linux/slab.h>
--#include <linux/llist.h>
-+#include <linux/list.h>
+diff --git a/lib/percpu-refcount-torture.c b/lib/percpu-refcount-torture.c
+index 686f5a228b40..cb2700b16517 100644
+--- a/lib/percpu-refcount-torture.c
++++ b/lib/percpu-refcount-torture.c
+@@ -3,6 +3,7 @@
+ #include <linux/jiffies.h>
+ #include <linux/module.h>
  #include <linux/moduleparam.h>
- #include <linux/types.h>
- #include <linux/mm.h>
-@@ -43,7 +43,12 @@
++#include <linux/mutex.h>
+ #include <linux/percpu-refcount.h>
+ #include <linux/torture.h>
  
- static DEFINE_SPINLOCK(percpu_ref_switch_lock);
- static DECLARE_WAIT_QUEUE_HEAD(percpu_ref_switch_waitq);
--static LLIST_HEAD(percpu_ref_manage_head);
-+static struct list_head percpu_ref_manage_head = LIST_HEAD_INIT(percpu_ref_manage_head);
-+/* Spinlock protects node additions/deletions */
-+static DEFINE_SPINLOCK(percpu_ref_manage_lock);
-+/* Mutex synchronizes node deletions with the node being scanned */
-+static DEFINE_MUTEX(percpu_ref_active_switch_mutex);
-+static struct list_head *next_percpu_ref_node = &percpu_ref_manage_head;
+@@ -59,6 +60,7 @@ static struct task_struct **busted_late_release_tasks;
  
- static unsigned long __percpu *percpu_count_ptr(struct percpu_ref *ref)
+ static struct percpu_ref *refs;
+ static long *num_per_ref_users;
++static struct mutex *ref_switch_mutexes;
+ 
+ static atomic_t running;
+ static atomic_t *ref_running;
+@@ -97,19 +99,36 @@ static int percpu_ref_manager_thread(void *data)
+ static int percpu_ref_test_thread(void *data)
  {
-@@ -112,7 +117,7 @@ int percpu_ref_init(struct percpu_ref *ref, percpu_ref_func_t *release,
- 	data->confirm_switch = NULL;
- 	data->ref = ref;
- 	ref->data = data;
--	init_llist_node(&data->node);
-+	INIT_LIST_HEAD(&data->node);
+ 	struct percpu_ref *ref = (struct percpu_ref *)data;
++	DEFINE_TORTURE_RANDOM(rand);
++	int ref_idx = ref - refs;
++	int do_switch;
+ 	int i = 0;
  
- 	if (flags & PERCPU_REF_REL_MANAGED)
- 		percpu_ref_switch_to_managed(ref);
-@@ -150,9 +155,9 @@ static int __percpu_ref_switch_to_managed(struct percpu_ref *ref)
- 	data->force_atomic = false;
- 	if (!__ref_is_percpu(ref, &percpu_count))
- 		__percpu_ref_switch_mode(ref, NULL);
--	/* Ensure ordering of percpu mode switch and node scan */
--	smp_mb();
--	llist_add(&data->node, &percpu_ref_manage_head);
-+	spin_lock(&percpu_ref_manage_lock);
-+	list_add(&data->node, &percpu_ref_manage_head);
-+	spin_unlock(&percpu_ref_manage_lock);
+ 	percpu_ref_get(ref);
  
- 	return 0;
+ 	do {
+ 		percpu_ref_get(ref);
++		/* Perform checks once per 256 iterations */
++		do_switch = (torture_random(&rand) & 0xff);
+ 		udelay(delay_us);
++		if (do_switch) {
++			mutex_lock(&ref_switch_mutexes[ref_idx]);
++			percpu_ref_switch_to_unmanaged(ref);
++			udelay(delay_us);
++			percpu_ref_switch_to_atomic_sync(ref);
++			if (do_switch & 1)
++				percpu_ref_switch_to_percpu(ref);
++			udelay(delay_us);
++			percpu_ref_switch_to_managed(ref);
++			mutex_unlock(&ref_switch_mutexes[ref_idx]);
++			udelay(delay_us);
++		}
+ 		percpu_ref_put(ref);
+ 		stutter_wait("percpu_ref_test_thread");
+ 		i++;
+ 	} while (i < niterations);
  
-@@ -162,7 +167,7 @@ static int __percpu_ref_switch_to_managed(struct percpu_ref *ref)
- }
+-	atomic_dec(&ref_running[ref - refs]);
++	atomic_dec(&ref_running[ref_idx]);
+ 	/* Order ref release with ref_running[ref_idx] == 0 */
+ 	smp_mb();
+ 	percpu_ref_put(ref);
+@@ -213,6 +232,13 @@ static void percpu_ref_test_cleanup(void)
+ 	kfree(num_per_ref_users);
+ 	num_per_ref_users = NULL;
  
- /**
-- * percpu_ref_switch_to_managed - Switch an unmanaged ref to percpu mode.
-+ * percpu_ref_switch_to_managed - Switch an unmanaged ref to percpu managed mode.
-  *
-  * @ref: percpu_ref to switch to managed mode
-  *
-@@ -179,6 +184,47 @@ int percpu_ref_switch_to_managed(struct percpu_ref *ref)
- }
- EXPORT_SYMBOL_GPL(percpu_ref_switch_to_managed);
- 
-+/**
-+ * percpu_ref_switch_to_unmanaged - Switch a managed ref to percpu mode.
-+ *
-+ * @ref: percpu_ref to switch back to unmanaged percpu mode
-+ *
-+ * Must only be called with elevated refcount.
-+ */
-+void percpu_ref_switch_to_unmanaged(struct percpu_ref *ref)
-+{
-+	bool mutex_taken = false;
-+	struct list_head *node;
-+	unsigned long flags;
-+
-+	might_sleep();
-+
-+	WARN_ONCE(!percpu_ref_is_managed(ref), "Percpu ref is not managed");
-+
-+	node = &ref->data->node;
-+	spin_lock(&percpu_ref_manage_lock);
-+	if (list_empty(node)) {
-+		spin_unlock(&percpu_ref_manage_lock);
-+		mutex_taken = true;
-+		mutex_lock(&percpu_ref_active_switch_mutex);
-+		spin_lock(&percpu_ref_manage_lock);
++	if (ref_switch_mutexes) {
++		for (i = 0; i < nrefs; i++)
++			mutex_destroy(&ref_switch_mutexes[i]);
++		kfree(ref_switch_mutexes);
++		ref_switch_mutexes = NULL;
 +	}
 +
-+	if (next_percpu_ref_node == node)
-+		next_percpu_ref_node = next_percpu_ref_node->next;
-+	list_del_init(node);
-+	spin_unlock(&percpu_ref_manage_lock);
-+	if (mutex_taken)
-+		mutex_unlock(&percpu_ref_active_switch_mutex);
-+
-+	/* Drop the pseudo-init reference */
-+	percpu_ref_put(ref);
-+	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
-+	ref->data->aux_flags &= ~__PERCPU_REL_MANAGED;
-+	spin_unlock_irqrestore(&percpu_ref_switch_lock, flags);
-+}
-+EXPORT_SYMBOL_GPL(percpu_ref_switch_to_unmanaged);
-+
- static void __percpu_ref_exit(struct percpu_ref *ref)
- {
- 	unsigned long __percpu *percpu_count = percpu_count_ptr(ref);
-@@ -599,164 +645,35 @@ module_param(max_scan_count, int, 0444);
- 
- static void percpu_ref_release_work_fn(struct work_struct *work);
- 
--/*
-- * Sentinel llist nodes for lockless list traveral and deletions by
-- * the pcpu ref release worker, while nodes are added from
-- * percpu_ref_init() and percpu_ref_switch_to_managed().
-- *
-- * Sentinel node marks the head of list traversal for the current
-- * iteration of kworker execution.
-- */
--struct percpu_ref_sen_node {
--	bool inuse;
--	struct llist_node node;
--};
--
--/*
-- * We need two sentinel nodes for lockless list manipulations from release
-- * worker - first node will be used in current reclaim iteration. The second
-- * node will be used in next iteration. Next iteration marks the first node
-- * as free, for use in subsequent iteration.
-- */
--#define PERCPU_REF_SEN_NODES_COUNT     2
--
--/* Track last processed percpu ref node */
--static struct llist_node *last_percpu_ref_node;
--
--static struct percpu_ref_sen_node
--	percpu_ref_sen_nodes[PERCPU_REF_SEN_NODES_COUNT];
--
- static DECLARE_DELAYED_WORK(percpu_ref_release_work, percpu_ref_release_work_fn);
- 
--static bool percpu_ref_is_sen_node(struct llist_node *node)
--{
--	return &percpu_ref_sen_nodes[0].node <= node &&
--		node <= &percpu_ref_sen_nodes[PERCPU_REF_SEN_NODES_COUNT - 1].node;
--}
--
--static struct llist_node *percpu_ref_get_sen_node(void)
--{
--	int i;
--	struct percpu_ref_sen_node *sn;
--
--	for (i = 0; i < PERCPU_REF_SEN_NODES_COUNT; i++) {
--		sn = &percpu_ref_sen_nodes[i];
--		if (!sn->inuse) {
--			sn->inuse = true;
--			return &sn->node;
--		}
--	}
--
--	return NULL;
--}
--
--static void percpu_ref_put_sen_node(struct llist_node *node)
--{
--	struct percpu_ref_sen_node *sn = container_of(node, struct percpu_ref_sen_node, node);
--
--	sn->inuse = false;
--	init_llist_node(node);
--}
--
--static void percpu_ref_put_all_sen_nodes_except(struct llist_node *node)
--{
--	int i;
--
--	for (i = 0; i < PERCPU_REF_SEN_NODES_COUNT; i++) {
--		if (&percpu_ref_sen_nodes[i].node == node)
--			continue;
--		percpu_ref_sen_nodes[i].inuse = false;
--		init_llist_node(&percpu_ref_sen_nodes[i].node);
--	}
--}
--
- static struct workqueue_struct *percpu_ref_release_wq;
- 
- static void percpu_ref_release_work_fn(struct work_struct *work)
- {
--	struct llist_node *pos, *first, *head, *prev, *next;
--	struct llist_node *sen_node;
-+	struct list_head *node;
- 	struct percpu_ref *ref;
- 	int count = 0;
- 	bool held;
--	struct llist_node *last_node = READ_ONCE(last_percpu_ref_node);
- 
--	first = READ_ONCE(percpu_ref_manage_head.first);
--	if (!first)
-+	mutex_lock(&percpu_ref_active_switch_mutex);
-+	spin_lock(&percpu_ref_manage_lock);
-+	if (list_empty(&percpu_ref_manage_head)) {
-+		next_percpu_ref_node = &percpu_ref_manage_head;
-+		spin_unlock(&percpu_ref_manage_lock);
-+		mutex_unlock(&percpu_ref_active_switch_mutex);
- 		goto queue_release_work;
--
--	/*
--	 * Enqueue a dummy node to mark the start of scan. This dummy
--	 * node is used as start point of scan and ensures that
--	 * there is no additional synchronization required with new
--	 * label node additions to the llist. Any new labels will
--	 * be processed in next run of the kworker.
--	 *
--	 *                SCAN START PTR
--	 *                     |
--	 *                     v
--	 * +----------+     +------+    +------+    +------+
--	 * |          |     |      |    |      |    |      |
--	 * |   head   ------> dummy|--->|label |--->| label|--->NULL
--	 * |          |     | node |    |      |    |      |
--	 * +----------+     +------+    +------+    +------+
--	 *
--	 *
--	 * New label addition:
--	 *
--	 *                       SCAN START PTR
--	 *                            |
--	 *                            v
--	 * +----------+  +------+  +------+    +------+    +------+
--	 * |          |  |      |  |      |    |      |    |      |
--	 * |   head   |--> label|--> dummy|--->|label |--->| label|--->NULL
--	 * |          |  |      |  | node |    |      |    |      |
--	 * +----------+  +------+  +------+    +------+    +------+
--	 *
--	 */
--	if (last_node == NULL || last_node->next == NULL) {
--retry_sentinel_get:
--		sen_node = percpu_ref_get_sen_node();
--		/*
--		 * All sentinel nodes are in use? This should not happen, as we
--		 * require only one sentinel for the start of list traversal and
--		 * other sentinel node is freed during the traversal.
--		 */
--		if (WARN_ONCE(!sen_node, "All sentinel nodes are in use")) {
--			/* Use first node as the sentinel node */
--			head = first->next;
--			if (!head) {
--				struct llist_node *ign_node = NULL;
--				/*
--				 * We exhausted sentinel nodes. However, there aren't
--				 * enough nodes in the llist. So, we have leaked
--				 * sentinel nodes. Reclaim sentinels and retry.
--				 */
--				if (percpu_ref_is_sen_node(first))
--					ign_node = first;
--				percpu_ref_put_all_sen_nodes_except(ign_node);
--				goto retry_sentinel_get;
--			}
--			prev = first;
--		} else {
--			llist_add(sen_node, &percpu_ref_manage_head);
--			prev = sen_node;
--			head = prev->next;
--		}
--	} else {
--		prev = last_node;
--		head = prev->next;
+ 	if (refs) {
+ 		for (i = 0; i < nrefs; i++)
+ 			percpu_ref_exit(&refs[i]);
+@@ -251,7 +277,8 @@ static int __init percpu_ref_torture_init(void)
+ 		goto init_err;
  	}
-+	if (next_percpu_ref_node == &percpu_ref_manage_head)
-+		node = percpu_ref_manage_head.next;
-+	else
-+		node = next_percpu_ref_node;
-+	next_percpu_ref_node = node->next;
-+	list_del_init(node);
-+	spin_unlock(&percpu_ref_manage_lock);
+ 	for (i = 0; i < nrefs; i++) {
+-		flags = torture_random(trsp) & 1 ? PERCPU_REF_INIT_ATOMIC : PERCPU_REF_REL_MANAGED;
++		flags = (torture_random(trsp) & 1) ? PERCPU_REF_INIT_ATOMIC :
++							PERCPU_REF_REL_MANAGED;
+ 		err = percpu_ref_init(&refs[i], percpu_ref_test_release,
+ 				      flags, GFP_KERNEL);
+ 		if (err)
+@@ -269,6 +296,16 @@ static int __init percpu_ref_torture_init(void)
+ 	for (i = 0; i < nrefs; i++)
+ 		num_per_ref_users[i] = 0;
  
--	llist_for_each_safe(pos, next, head) {
--		/* Free sentinel node which is present in the list */
--		if (percpu_ref_is_sen_node(pos)) {
--			prev->next = pos->next;
--			percpu_ref_put_sen_node(pos);
--			continue;
--		}
--
--		ref = container_of(pos, struct percpu_ref_data, node)->ref;
-+	while (!list_is_head(node, &percpu_ref_manage_head)) {
-+		ref = container_of(node, struct percpu_ref_data, node)->ref;
- 		__percpu_ref_switch_to_atomic_sync_checked(ref, false);
- 		/*
- 		 * Drop the ref while in RCU read critical section to
-@@ -765,24 +682,31 @@ static void percpu_ref_release_work_fn(struct work_struct *work)
- 		rcu_read_lock();
- 		percpu_ref_put(ref);
- 		held = percpu_ref_tryget(ref);
--		if (!held) {
--			prev->next = pos->next;
--			init_llist_node(pos);
-+		if (held) {
-+			spin_lock(&percpu_ref_manage_lock);
-+			list_add(node, &percpu_ref_manage_head);
-+			spin_unlock(&percpu_ref_manage_lock);
-+			__percpu_ref_switch_to_percpu_checked(ref, false);
-+		} else {
- 			ref->percpu_count_ptr |= __PERCPU_REF_DEAD;
- 		}
- 		rcu_read_unlock();
--		if (!held)
--			continue;
--		__percpu_ref_switch_to_percpu_checked(ref, false);
-+		mutex_unlock(&percpu_ref_active_switch_mutex);
- 		count++;
--		if (count == READ_ONCE(max_scan_count)) {
--			WRITE_ONCE(last_percpu_ref_node, pos);
-+		if (count == READ_ONCE(max_scan_count))
- 			goto queue_release_work;
-+		mutex_lock(&percpu_ref_active_switch_mutex);
++	ref_switch_mutexes = kcalloc(nrefs, sizeof(ref_switch_mutexes[0]), GFP_KERNEL);
++	if (!ref_switch_mutexes) {
++		TOROUT_ERRSTRING("out of memory");
++		err = -ENOMEM;
++		goto init_err;
++	}
++
++	for (i = 0; i < nrefs; i++)
++		mutex_init(&ref_switch_mutexes[i]);
++
+ 	ref_user_tasks = kcalloc(nusers, sizeof(ref_user_tasks[0]), GFP_KERNEL);
+ 	if (!ref_user_tasks) {
+ 		TOROUT_ERRSTRING("out of memory");
+diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
+index b79e36905aa4..4e0a453bd51f 100644
+--- a/lib/percpu-refcount.c
++++ b/lib/percpu-refcount.c
+@@ -723,6 +723,7 @@ EXPORT_SYMBOL_GPL(percpu_ref_test_is_percpu);
+ void percpu_ref_test_flush_release_work(void)
+ {
+ 	int max_flush = READ_ONCE(max_scan_count);
++	struct list_head *next;
+ 	int max_count = 1000;
+ 
+ 	/* Complete any executing release work */
+@@ -738,8 +739,17 @@ void percpu_ref_test_flush_release_work(void)
+ 	/* max scan count update visible to work */
+ 	smp_mb();
+ 	flush_delayed_work(&percpu_ref_release_work);
+-	while (READ_ONCE(last_percpu_ref_node) != NULL && max_count--)
++
++	while (true) {
++		if (!max_count--)
++			break;
 +		spin_lock(&percpu_ref_manage_lock);
-+		node = next_percpu_ref_node;
-+		if (!list_is_head(next_percpu_ref_node, &percpu_ref_manage_head)) {
-+			next_percpu_ref_node = next_percpu_ref_node->next;
-+			list_del_init(node);
- 		}
--		prev = pos;
++		next = next_percpu_ref_node;
 +		spin_unlock(&percpu_ref_manage_lock);
- 	}
- 
--	WRITE_ONCE(last_percpu_ref_node, NULL);
-+	mutex_unlock(&percpu_ref_active_switch_mutex);
-+
- queue_release_work:
- 	queue_delayed_work(percpu_ref_release_wq, &percpu_ref_release_work,
- 			   scan_interval);
++		if (list_is_head(next, &percpu_ref_manage_head))
++			break;
+ 		flush_delayed_work(&percpu_ref_release_work);
++	}
+ 	/* max scan count update visible to work */
+ 	smp_mb();
+ 	WRITE_ONCE(max_scan_count, max_flush);
 -- 
 2.34.1
 
