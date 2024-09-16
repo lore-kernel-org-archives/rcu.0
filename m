@@ -1,636 +1,671 @@
-Received: from mx5.ucr.edu (mx5.ucr.edu [138.23.62.67])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2051.outbound.protection.outlook.com [40.107.92.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F69823BF
-	for <rcu@vger.kernel.org>; Mon, 16 Sep 2024 00:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=138.23.62.67
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726444944; cv=none; b=ZPLdTTtc3PJlBh99dM6+x4ci8pUCz52VSRL4ijOnTyuMkqdgQQPeb4yRvQ17zWifai4gStBXZQvH8J6vnXBoTJimU/LYVO5JRC9UxOD6g++D0VOpqvUP2jCHpcCsocGXqWkwoEb23+G6SvoFDGsLoPKbuCrCn20YE7SYIF9Miuw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726444944; c=relaxed/simple;
-	bh=Rt1GwG/ZJzTxiLN0VOxHA2NcjyvpWi01yyP5BP9biPQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hCKcvD+qyJyLmu60e2iI/ViBGkIQSUw9DxqZ1+gjFCeq/Prp5oJIt9z0kgqqZwpWDretifJvv/pK/hdoKvPhl/dUCuaZLv7pHqKyUiaooicUrMKbs+Ytz8MR+ZzlAZZbXx+C+FvSHi6la2eyRQjQZpURoQrvCuAESwInTfaLFKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ucr.edu; spf=pass smtp.mailfrom=ucr.edu; dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu header.b=qqUrwx1Z; dkim=pass (1024-bit key) header.d=ucr.edu header.i=@ucr.edu header.b=t8XKiRzc; arc=none smtp.client-ip=138.23.62.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ucr.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucr.edu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087DB17C6C;
+	Mon, 16 Sep 2024 05:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1726463320; cv=fail; b=lYrFSOticd4C8DSJ4usSpZ+WNB76nQQo1CWz1WGtBEJtoMpeSBKABlvWbfV4vqSwF8R8C9DRlIM12AbU5Nh0n0kwPN3XXMA+ZVhKwpNSe7tsuWOuN0orMGjJ8GeQF3hdxAGsh0VHMs3jV3OilJxODJDiG5CBeN4bTx4dbysQq/c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1726463320; c=relaxed/simple;
+	bh=JAi+mZo+Z2x61084uHR/zhhz6/khUiqOHvgcgROWnH4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KUkH3I9uFhkmh+6XOFNhLEtC9R12angim+zFrqskUAPQivUsqpnL84KVMHTYWfAjzpTxuVPhmqKiVObelbKlSBu8dyYv2C3x9R6cNgPwlxYf//1TnJwZ42Q0yMmWAvWvM1UzzcicSmnd2kfzppIvwr//LjEHUTFqPvlsVvkv0NQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=kwjwOpfX; arc=fail smtp.client-ip=40.107.92.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="qqUrwx1Z";
-	dkim=pass (1024-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="t8XKiRzc"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1726444943; x=1757980943;
-  h=dkim-signature:x-google-dkim-signature:
-   x-forwarded-encrypted:x-gm-message-state:
-   x-google-smtp-source:mime-version:references:in-reply-to:
-   from:date:message-id:subject:to:cc:content-type:
-   content-transfer-encoding:x-cse-connectionguid:
-   x-cse-msgguid;
-  bh=Rt1GwG/ZJzTxiLN0VOxHA2NcjyvpWi01yyP5BP9biPQ=;
-  b=qqUrwx1ZK66T1GCscPros+u/+swXWMudUYmWclWxojAGdTN8U3qf0QBU
-   cwmPazZ52FDUyhC4Iu9zT6nLaV7yBZC1B3XQ6UnjCuHJfKyxg3ay+8xQo
-   eg4pRt7zGrh6IdA5KxRuTfGlj682kwH8fTIG1BTtd/gyL/sjiViOKjWwK
-   5ZIuCgTU+M0qnsC0/kFAlQIiLhMyn2StpcPkgrh6abPR+dvKG1l2gICFf
-   4K1H6fFdhqObIMLSxq5pzdAzW1aii1KXluuaC4jBzOs5ldWy7jwo//l8Z
-   rsDXzx5n7bjv1fOcEbhXSkEZ97KQxzK6NVxVVBRMs2f05lx1Bn85HWMcT
-   w==;
-X-CSE-ConnectionGUID: ZKoDk/x7RfWAj5BXMiT9LA==
-X-CSE-MsgGUID: seClcUDITrCEKfJBJDPV6w==
-Received: from mail-vs1-f69.google.com ([209.85.217.69])
-  by smtpmx5.ucr.edu with ESMTP/TLS/TLS_AES_256_GCM_SHA384; 15 Sep 2024 17:02:22 -0700
-Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-49bc147b626so877083137.2
-        for <rcu@vger.kernel.org>; Sun, 15 Sep 2024 17:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ucr.edu; s=rmail; t=1726444939; x=1727049739; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gZuPaI6IhzjNI0m0DT2w6QhinHheWNm1XeGH2TwIY5g=;
-        b=t8XKiRzcPu94kto4VEEulMu0M2+rdolb+l95dh9ajjHac4BBtqHpXOAdDk5GDccATD
-         VhGORpbYwYKyt5UYVil9fd7iV4q3nFpKrIQT6OFfogPCOqTYinrCim3t+foZfpTLFLfY
-         XZnixAC7wRcYsFzRO1uaWoCsTRc57cA1fXwqI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726444939; x=1727049739;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gZuPaI6IhzjNI0m0DT2w6QhinHheWNm1XeGH2TwIY5g=;
-        b=o4zf4GTzfosXw9UClMSgLlTE32srKYNGDEW5b/fLS33wC4XRyp0mtpMTHtRzNlFKrc
-         LE2T5bP6APF1Wx+dg5NAJvMR5GTPGOQtoAUIWsh3gFPp5+RbVfOCAQUr7htUcqLsvaGx
-         uhYXeOSR1bmYFC3lT9oJC1WDkadnFlare+uAbuNz6CiqYjZz0qvh3+dGr6Y7Tt8XEj6d
-         Hhhd5qZCdUQmYz5EM7yfp+SRU6tygP66t/ROJPmlCyK2XScGvqdV0LphcJo119V3BzAU
-         kR8R5pTKQafVFzJ5YfNcELHZ9uPYAIMXgNyDjqBnNpUWRnJi0KncR7EbRfhanPr/O74y
-         6cww==
-X-Forwarded-Encrypted: i=1; AJvYcCUvsqLsGx71rNULTDcWIs57t6mfDHg5/9lu+acL8/tf6WTGRxWFQRj1tEMOmR8cK77BAdU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwM1iWsaWzOhFtW1xZ3LlMi860afexscXdBl1hwFlejyvxQ/CRq
-	ILKL4H/QGtMWBhJm1jSakD1WcwVXnebAys8+JyoYRa4WCRjnt1IeYlAP2V9HPRP292VZBxavMA+
-	UyQ1k9e2kTERyNMt4Z/5fcGrDVVYbF5gIoo6fpuZLmMRS1AOPz4X3KUsFbufd7MT/p/8gMaPXId
-	vKVFSyCnXAz5zgV7S34m6DySu1XQ==
-X-Received: by 2002:a05:6102:3712:b0:492:9ca1:d35e with SMTP id ada2fe7eead31-49d4145c022mr9679480137.5.1726444939017;
-        Sun, 15 Sep 2024 17:02:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGVT9nFd3FkcCIJmqP8uaELseGWCiMcq0s3oiMYMMZbKBlvgAvHcrPhnXwK7GeqUqGaelWOwyfHanMFUP1EDsw=
-X-Received: by 2002:a05:6102:3712:b0:492:9ca1:d35e with SMTP id
- ada2fe7eead31-49d4145c022mr9679446137.5.1726444938473; Sun, 15 Sep 2024
- 17:02:18 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="kwjwOpfX"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DgwVsWb4z0d1/3F7G8mZa+qKOSyTFjg0dw7nzZl/AJy6sXMGkIMdEfrPF/CGbfRs/rV2Y2BMIVcDtWPfBV1zzo+SUjsVwmMweGsuOW8LO5OeV4MHowiWddrtV3Wvn1R5dXfnxz5BXAEFO3GnUUyB7X3KmfEDTOirgjQ7ATWprtO1Zstn9huSpVnOE31WvUJiQjWvAGmoDqKKLxeAqVVxPubCrfL0zCr2sUW+Riru8sRaKISO7EIIJt/lzDsaiAoFq1yOD/AbRSghoi6Pg4Ahp8Ltt9XSHCRBY0t6HkJfAkhu2iWc6FmO/I6gRh6OyfQpEoksG9pSwKDns+CmSygY4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Fv695J5QZzYGkUeobETRtESqzsIskAiUqQ7tWH/qp0U=;
+ b=JVUzRs/N9S6L8jbgrY4IjHvq/MMhBDGHaH24yJFGeRby8lSdYD//ClPmqW+NHd7X+1QphVgHa76zlZuzL0Wf2xh4NBrSi8gHoZ1tXaSuPW82fvT8NKEcOxN3IngKPj9ZMbeO4rcJuoG5NqxydAXiCytTm6kmjTf1+O5/9ENFUlnT04EY8t/G4sJOJfe4lg9+tge1AlcvekrUsAxTcN7NcTO+tGatPK9aLL7vp4ZzLXF1dKoARdA1DPILx+U3lIBKJAh/Rq1nu3G5hiQ33FcsM4T1dlE5YhqY/lnBokgjNDCKOdAE5yaHpM8KQNVqAGtnfQ8et6BuJkdYf8X2gaz/WA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fv695J5QZzYGkUeobETRtESqzsIskAiUqQ7tWH/qp0U=;
+ b=kwjwOpfX69TmANdpioHyIOdS1PF64qu6nttXaaR4Xa4GqB3T2d1+VAnl+DbtlhmKDwuVPFM8ByKsTbgCnTGMbqx6+mvL2IrlKdLADU6wRKht5Mt7kW76ikTnwgawZYncMX5iLYMTijNbbPXCv63tYOMBh1IaZV8sRECD2YCjZ0I=
+Received: from SJ0PR03CA0279.namprd03.prod.outlook.com (2603:10b6:a03:39e::14)
+ by CY8PR12MB7587.namprd12.prod.outlook.com (2603:10b6:930:9a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7962.23; Mon, 16 Sep
+ 2024 05:08:31 +0000
+Received: from SJ5PEPF000001CE.namprd05.prod.outlook.com
+ (2603:10b6:a03:39e:cafe::39) by SJ0PR03CA0279.outlook.office365.com
+ (2603:10b6:a03:39e::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7939.29 via Frontend
+ Transport; Mon, 16 Sep 2024 05:08:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ5PEPF000001CE.mail.protection.outlook.com (10.167.242.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7918.13 via Frontend Transport; Mon, 16 Sep 2024 05:08:30 +0000
+Received: from BLR-L-NUPADHYA.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Mon, 16 Sep
+ 2024 00:08:24 -0500
+From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+To: <linux-kernel@vger.kernel.org>
+CC: <john.johansen@canonical.com>, <paul@paul-moore.com>, <jmorris@namei.org>,
+	<serge@hallyn.com>, <linux-security-module@vger.kernel.org>,
+	<gautham.shenoy@amd.com>, <Santosh.Shukla@amd.com>, <Ananth.Narayan@amd.com>,
+	<Raghavendra.KodsaraThimmappa@amd.com>, <paulmck@kernel.org>,
+	<boqun.feng@gmail.com>, <vinicius.gomes@intel.com>, <mjguzik@gmail.com>,
+	<dennis@kernel.org>, <tj@kernel.org>, <cl@linux.com>, <linux-mm@kvack.org>,
+	<rcu@vger.kernel.org>
+Subject: [RFC 0/6] Managed Percpu Refcount
+Date: Mon, 16 Sep 2024 10:38:05 +0530
+Message-ID: <20240916050811.473556-1-Neeraj.Upadhyay@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALAgD-7JNKw5m0wpGAN+ezCL-qn7LcTL5vgyBmQZKbf5BTNUCw@mail.gmail.com>
- <ZtAunXBPC4WElcez@pc636> <CALAgD-4kr9MLE6jSF7pXFX9msd-NWFL8mrscvJAOecNWAYL4RQ@mail.gmail.com>
- <ZtieQFsSiALVVGld@pc636> <CALAgD-7WAY6FwTNGdt0BQ2S99Nr+yJ5XyWhA_L_SsbkKsHBrFw@mail.gmail.com>
- <ZuMR_U5JfZTIeG30@pc636>
-In-Reply-To: <ZuMR_U5JfZTIeG30@pc636>
-From: Xingyu Li <xli399@ucr.edu>
-Date: Sun, 15 Sep 2024 17:02:07 -0700
-Message-ID: <CALAgD-5-Y1S34XqqGkNaO-fFiYAFODkDGiDrshaVLxGLcAYvYQ@mail.gmail.com>
-Subject: Re: BUG: WARNING in kvfree_rcu_bulk
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
-	joel@joelfernandes.org, josh@joshtriplett.org, boqun.feng@gmail.com, 
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
-	qiang.zhang1211@gmail.com, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yu Hao <yhao016@ucr.edu>, Juefei Pu <jpu007@ucr.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CE:EE_|CY8PR12MB7587:EE_
+X-MS-Office365-Filtering-Correlation-Id: 247d3418-1484-42e0-ab2b-08dcd60d9b4c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|82310400026|7416014|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?K0Lx8nxRwN8kQpZnPSsOlXmTwyVV4T6/2rK/A6g3tbPRJl4zKdLIn3XLdt58?=
+ =?us-ascii?Q?Whz43P/wo5fLs8f19NaeUBu6OV8trp4jVUk0RsXH23hDrv3vz6xxXbX5b6E7?=
+ =?us-ascii?Q?3WIJKDtvzmhDRBsKh9dXCmeXf7gWRTn1z2f2P1tjXTfRKOjz0jcr3O1qwA28?=
+ =?us-ascii?Q?8L2/ngM476wVuhoBb78KXqqK+WbGDcRogtU/6Ou/GdyTAVM7zmjZaF8NeLBD?=
+ =?us-ascii?Q?tHVzY+9G1P/OoV05BOYNbdH36Y8/DDleEH1eziQo7L0z2262lb7rmGsoCf5H?=
+ =?us-ascii?Q?zBzxyJOkPyCbaC4TOajaPID4JZ47pOlaunqCw9sW1jfmXDFxJ2ALmWGO229J?=
+ =?us-ascii?Q?t7Mfn0HH2CMMh8qTADf2rAfh3DNydjyvb3rithHjXbmFK8ef/ZwzTTdhs/2w?=
+ =?us-ascii?Q?VfnaG1Nzh/eayZw9rj+i6kksmlrBBOI8gWHve23lFTtq4GkZ6Pse7g17mpMV?=
+ =?us-ascii?Q?yvKQdTdRNVhwgQ2yrQ0BfYc8iew4oTUj+Cr1P2Y4wpXREZQG7jX2rvDC+H1K?=
+ =?us-ascii?Q?oNDd7DEVbBMXykYvXmJHtaI5Zs6yzGNvFMTukY4SGXOBGbbgcTZdouA9/aRb?=
+ =?us-ascii?Q?7305LTzshLwuWKbPxOMa6WOIT0Y89ilbee2hKnO4zwYzHxuAp7oPE/8DuztN?=
+ =?us-ascii?Q?PgfCSwAcLhCNYwLXg9QefmavBGxQdLaidE4UaqxG7eLJMzjulH3Ep82EUDvF?=
+ =?us-ascii?Q?zql40v9vrFttTViOnwdi+OrhOPbXuEryIlbAxlTE/xknHmfObaGRhFFP+jjQ?=
+ =?us-ascii?Q?/9gsbWDxho/P5FzW7h9U7V3onfQ/xlU1Ye8LCwgOhEfVbhM3obC3cQfi5jMm?=
+ =?us-ascii?Q?iuj92KCVnPIxnS7j4s/TZPf4oRufBhpLPWZ3h8fhao1GJNwn0S8LpZ/OpgcQ?=
+ =?us-ascii?Q?dgZUyP5LNK7SnV42y7N4pyShFiHKpWzSoHENH4HxyNeTIEvvJnFDTLwgTVIz?=
+ =?us-ascii?Q?mxjdVDPY0gM8y8xmX8MoDVQR4xP8Li+syhpKQKf52VYek41Bn2kqxUOe4l+g?=
+ =?us-ascii?Q?ZPUp+Zt8NE3zzP1v8n3H9SlRb/MjTmn+WVP9DdtSilShDRJpc3BmzhUZsCWD?=
+ =?us-ascii?Q?pfcQdS7wmcHxg8U7w5oyISs9MJ835sH+5ERyB3ZcsL3+ZT6fcR09fPkXnU7y?=
+ =?us-ascii?Q?oqy4kTxc+P6X67cZQekGTwrYeCtJrSU+kpI3ReVc+XYBOv/bAKuWIp5kLmLm?=
+ =?us-ascii?Q?L4fhlJO1UNYhrtjq+csjImO3TqSlnyuB4Gs9YdR8M9J8sw/TRntgX6i+yQWf?=
+ =?us-ascii?Q?iGawA767P4vQQq3V4WioURfWyNIgSH/bP/Hghy8arkdhDJ0S0yTgNif7I82u?=
+ =?us-ascii?Q?U/9wWVxgeYiVBNXAHRyYRq1hJ+rBIky7CzSMdIahRjRHrtqEZ745n1GLfsJ8?=
+ =?us-ascii?Q?SpC3G/5R/hWcrD5nc70ZOX92e+bmWJIipMd2K6P6eW8HDEtVpQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2024 05:08:30.6617
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 247d3418-1484-42e0-ab2b-08dcd60d9b4c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001CE.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7587
 
-Juefei will answer this. I already Cc'd him.
+Introduction
+------------
+
+This patch series adds a new "managed mode" to percpu-refcounts for
+managing references for objects that are released after an RCU grace
+period has passed since their last reference drop.
+
+Typical usage pattern looks like below
+
+// Called with elevated refcount
+get()
+    p = get_ptr();
+    kref_get(&p->count);
+    return p;
+
+get()
+    rcu_read_lock();
+    p = get_ptr();
+    if (p && !kref_get_unless_zero(&p->count))
+        p = NULL;
+    rcu_read_unlock();
+    return p;
+
+release()
+    remove_ptr(p);
+    call_rcu(&p->rcu, freep);
+
+release()
+    remove_ptr(p);
+    kfree_rcu((p, rcu);
+
+Requirement and Use Case
+------------------------
+
+Percpu refcount requires an explicit percpu_ref_kill() operation at the
+object's usage site where the initial ref count is being dropped. For
+optimal performance, the object's usage should reach a teardown point,
+after which the references shouldn't be acquired or released frequently
+before the final reference is dropped. Following the percpu_ref_kill(),
+any refcount operations on the object are carried out on the
+centralized atomic counter. The performance and scalability of those
+usages decrease if the references are still being added or removed
+after the percpu_ref_kill() operation because of the atomic counter's
+cache line ping-pong between CPUs.
+
+The throughput scalability issue that is seen when Nginx runs with the
+AppArmor linux security module enabled is the primary motivation for
+this change. Performance profiling shows that memory contention in the
+atomic_fetch_add and atomic_fetch_sub operations carried out in
+kref_get() and kref_put() operations on AppArmor labels accounts for
+the majority of CPU cycles. Further information regarding the impact
+of performance on Nginx throughput scalabilityand enhancements through
+percpu references can be found in [1].
+
+However, because of the way references are used in AppArmor, switching
+from kref usage to per-cpu refcount was found to be non-trivial.
+
+Although the specifics of AppArmor refcount management have already
+been covered at [1], the explanation that follows aims to update that
+information with more detailed (and hopefully more accurate)
+information that support the requirement of managed percpu ref.
+
+Within the AppArmor framework, label (struct aa_label) manages
+references for different kinds of objects. Labels are associated with:
+ - Profiles for applications.
+ - Namespaces, via their unconfined profile.
+ - Audit, secmark rules and compound labels.
+
+Labels are referenced by file contexts, security contexts, secid,
+sockets.
+
+The diagram below illustrates the relationship between different
+AppArmor objects via their label references.
+
+                 ----------------
+                | Root Namespace |
+                 ----------------
+                /   ^        |   ^
+              (a)   |       (c)  |
+              /    (b)       |  (d)
+             v     /         v   |
+       ------------        -----------------
+      | Profile 1 |       | Child Namespace |
+       ------------        -----------------
+          |   ^               |    ^
+         (e)  |              (g)   |
+          |  (f)              |   (h)
+          v   |               v    |
+      ---------------       -----------
+     | Child Profile |     | Profile 2 |   
+      ---------------       -----------
+                 ^           ^
+                  \         /
+                   \       /
+                    \     /
+                      (i)
+                       |
+                ----------------
+               | Compound Label |
+                ----------------
+
+(a) The Root namespace keeps track of every profile that exists there.
+    When a profile is loaded and unpacked, a reference to profile is
+    taken for this. This reference to the profile object is also used
+    its **init reference**.
+
+(b) Root namespace is referenced by a profile that is part of it.
+
+(c) To control confinement within a certain domain, such as a chroot
+    environment, a root namespace may include child namespaces. Through
+    each child namespace's unconfined label, the subnamespaces list in
+    the root namespace maintains a (init) reference to child
+    namespaces.
+
+(d) A child namespace maintains a reference to its parent namespace.
+
+(e) Profile can have child subprofiles which are called hat profiles.
+    Certain program segments can be run with permissions differing
+    from the base permissions using these profiles. For instance,
+    executing user-supplied CGI programs in a different Apache profile,
+    or running authorized and unauthenticated traffic in several
+    OpenSSH profiles. By use of its policy profiles list, the parent
+    profile maintains a reference to the child subprofiles. This serves
+    as the child profile's init reference.
+
+(f) Child profiles keep a reference to their parent profile.
+
+(g) Child namespace keeps a reference to all  profiles in it.
+
+(h) A reference to the parent non-root namespace is maintained by child
+    profiles.
+
+(i) Application of context-specific application confinement is done
+    using compound/stack labels. When ls is started from bash, for
+    instance, the confinement rules for the profile /bin/bash///bin/ls
+    may differ from the system-level rules for ls execution. Compund
+    labels are vector of profiles and maintain reference to every
+    profile in its vector.
+
+Label references
+----------------
+
+- Tasks are linked to labels via the security field of their cred. The
+  cred label is copied from the parent task during the bprm exec's cred
+  preparation, and the bprm is transitioned to the new label using the
+  parent task's profile transition rules. A compound/stack label or the
+  label of a single profile may be used in the transition depending on
+  the perms rule for the bprm's path.
+
+  When performing policy checks in AppArmor's security hooks for
+  operations like file permissions, mkdir, rmdir, mount, and so on, the
+  label linked to the task's cred is used. When the associated label is
+  marked as stale, the cred label of a task can change (from within its
+  context) while it is being executed.
+
+  A task maintains references to previous labels for hat transitions,
+  onexec labels, and nnp (no new privilege) labels for exec domain
+  transition checks.
+
+  Labels are cached in file context for file permissions checks on open
+  files. As a result of task profile updates, this label is updated
+  with new profiles from the task's current label during revalidations
+  of cached file permissions.
+
+- Socket contexts store the labels of the current task and peer.
+
+- Profile fs maintains references to the label proxy and namespace in
+  the inode->i_private fields.
+
+- The label parsed from the rule string is referenced by Secmark rule
+  objects.
+
+- The label parsed from the rule string is referenced by audit rule
+  objects.
+
+Label's Initial Ref Teardown
+----------------------------
+
+- When a profile is deleted, the initial reference on its label is
+  dropped and it is no longer a part of the parent namespace or
+  parent profile. Furthermore, every one of its child profiles is
+  deleted recursively. As a result, all profiles that are reachable
+  from the base profile have their initial reference removed in a
+  cascaded manner.
+
+- When a namespace is destroyed, the initial reference to its
+  unconfined label is dropped and it is removed from the parent
+  namespace view. Furthermore, all profiles in that namespace,
+  all sub namespaces, and all profiles inside those sub namespaces
+  are recursively removed and their initial label reference is dropped.
+
+- The reference to parent label is dropped with the release of a label
+  reference post its last reference drop. A profile's parent profile
+  and namespace references are dropped upon ref release. On the
+  namespace ref release path, a namespace drops its reference to its
+  parent namespace. As part of the label release, references to
+  profiles in the compound label's vector are removed.
+
+Stale Labels and Label Redirection
+----------------------------------
+
+- The label associated with profile/namespace that is deleted is marked
+  as stale. When any profile of a compound label is stale, the compound
+  label is also marked stale.
+
+- Label's proxy is used to redirect stale labels to the most recent or
+  active version of the object. For example, when a profile is deleted,
+  its proxy is redirected to the unconfined label of the namespace. This
+  indicates that every application that the profile confined has been
+  moved to an unconfined profile. In a same manner, proxy is redirected
+  to the new profile's label when a profile is replaced. The proxy of a
+  namespace's unconfined label is redirected to the unconfined label of
+  its parent namespace on namespace deletion.
+
+  Redirection to new label is done during reference get operation:
+
+  struct aa_label *aa_get_newest_label(struct aa_label *l)
+  {
+    struct aa_label __rcu **l = &l->proxy->label;
+    struct aa_label *c;
+
+    rcu_read_lock();
+    do {
+        c = rcu_dereference(*l);
+    } while (c && !kref_get_unless_zero(&c->count));
+    rcu_read_unlock();
+
+    return c;
+  }
+
+Label reclaims
+--------------
+
+A label is completely initialized when it is linked to a namespace.
+Label destruction is deferred until the end of a RCU grace period which
+starts after the last reference drop. Enqueuing an RCU callback for
+label and associated object destruction is done from the ref release
+callback.
+
+void aa_label_kref(struct kref *kref)
+{
+  struct aa_label *label = container_of(kref, struct aa_label, count);
+  struct aa_ns *ns = labels_ns(label);
+
+  if (!ns) {
+    label_free_switch(label);
+    return;
+  }
+
+  call_rcu(&label->rcu, label_free_rcu);
+}
+
+Using Label Stale operation for percpu_ref_kill()?
+--------------------------------------------------
+
+Marking a label as stale can serve as a reference termination point
+since stale labels are redirected to the current label linked to its
+objects. There are other labels, though, that are not associated with
+namespaces or profiles. These labels are compound labels linked to
+audit and secmark rule rules or running tasks that contain those
+label references in their cred structure. These labels are:
+
+- The label that is created from rule string is referenced by audit
+  rules. It is possible that a multi element vector audit rule label
+  already exists in the root labelset or that a new label is created
+  during audit rule init. The reference is removed upon audit rule
+  free. It's possible that the created label is actively referenced
+  from other contexts, causing atomic contention on the label's ref
+  operations if percpu_ref_kill() is called on audit rule free.
+
+- The stacked labels which are created on profile exec/domain
+  transitions are stored in task's cred structure. These labels are
+  released when all tasks drop their cred reference to those labels.
+
+- Transition labels which are created during change hat or change
+  profile transitions could be referenced by multiple tasks. These
+  labels are released when all tasks  drop their cred reference to
+  those labels.
+
+- Tasks' most recent label is combined with and cached in open file
+  contexts. These cached labels don't have a defined termination point
+  and can be actively referenced from multiple contexts.
+
+- Other compound labels with similar ref lifetimes include pivotroot
+  and secmark rules.
+
+There exist further scenarios in which stale references may still be
+referenced:
+
+- Stale flags on labels are set using plain writes, and until the CPU
+  observes the stale flag, new references may be incremented or
+  decreased on the stale label.
+
+- A task may make reference a namespace which is marked stale.
+
+- Stale cred label, for which a proxy points to its namespace's stale
+  unconfined label, the stale unconfined label can be referenced until
+  the cred label is updated.
+
+In summary, though percpuref kill can be used for labels when they are
+maked stale, compound labels are not guaranteed to be marked stale
+during their lifetime and they do not have a context where percpuref
+kill can be done.
+
+Proposed Solution
+-----------------
+
+The solution proposed here attempt to address the issue of
+identifying the init reference drop context. A percpu ref manager
+thread keeps an extra reference to the ref. This additional reference
+is used as a (pseudo) init reference to the object. A percpu managed
+ref instance offloads its ref's release work to the ref manager thread.
+
+The ref manager thread uses the following sequence to periodically scan
+the list of managed refs and determine whether a ref is active:
+
+scan_ref() {
+  bool active;
+
+  percpu_ref_switch_to_atomic_sync(&ref);
+  rcu_read_lock();
+  percpu_ref_put(&ref);
+  active = percpu_ref_tryget(&ref);
+  rcu_read_unlock();
+  if (active)
+    percpu_ref_switch_to_percpu(&ref);
+}
+
+The sequence above drops the pseudo-init reference, converts the
+reference to atomic mode, and verifies (within RCU read side
+protection) that all references have been dropped. The reference
+is switched back to perCPU mode (with the pseudo-init reference
+obtained through the try operation) if there are any active
+references.
+
+The two approaches used in this patch series, with slightly differing
+permitted ref mode switches and semantics, are listed below.
+
+Approach 1
+----------
+
+Approach 1 is implemented in patch 1 and has below semantics for ref
+init and switch.
+
+a. Init
+
+A ref can be set to managed mode at initialization time in
+percpu_ref_init(), by passing the PERCPU_REF_REL_MANAGED flag, or by
+calling percpu_ref_switch_to_managed() post init to switch a
+reinitable ref to managed mode. Deferred switches are used in
+situations like module initialization error, when the reference to
+an inited reference is released before the object is used. One example
+of this is the release of AppArmor labels which are not associated with a
+namespace, which is done without waiting for RCU grace period.
+
+Below are the allowed initialization modes for managed ref
+
+               Atomic  Percpu   Dead  Reinit  Managed
+Managed-ref       Y        N      Y      Y       Y
+
+b. Switching modes and operations
+
+Below are the allowed transitions for managed ref.
+
+To -->       A    P    P(RI)    M    D   D(RI)   D(RI/M)    KLL    REI    RES
+
+  A          y    n      y      y    n     y        y        y      y      y
+  P          n    n      n      n    y     n        n        y      n      n    
+  M          n    n      n      y    n     n        y        n      y      y
+  P(RI)      y    n      y      y    n     y        y        y      y      y
+  D(RI)      y    n      y      y    n     y        y        -      y      y
+  D(RI/M)    n    n      n      y    n     n        y        -      y      y
+
+Modes:
+A - Atomic  P - PerCPU  M - Managed  P(RI) - PerCPU with ReInit
+D(RI) - Dead with ReInit  D(RI/M) - Dead with ReInit and Managed
+
+PerCPU Ref Ops:
+
+KLL - Kill  REI - Reinit  RES - Resurrect
+
+A percpu reference that has been switched to managed mode cannot be
+switched back to any other active mode. Managed ref is reinitialized
+to managed mode upon reinit/resurrect.
+
+Approach 2
+----------
+
+The second approach provides a managed reference greater runtime mode
+switching flexibility. This may be helpful in situations where the object
+of a managed reference can enter a shutdown phase in some scenarios. For
+example, for stale singular/compund labels, user can directly call
+percpu_ref_kill() for the ref rather than waiting for the manager
+thread to process the ref.
+
+The init modes are the same as in the previous approach. Runtime mode
+switching provides the ability to convert from managed mode to
+unmanaged mode, hence enabling transitions to all reinitable modes.
+
+To -->       A    P    P(RI)    M    D   D(RI)   D(RI/M)    KLL    REI    RES
+
+  A          y    n      y      y    n     y        y        y      y      y
+  P          n    n      n      n    y     n        n        y      n      n    
+  M          y*   n      y*     y    n     y*       y        y*     y      y
+  P(RI)      y    n      y      y    n     y        y        y      y      y
+  D(RI)      y    n      y      y    n     y        y        -      y      y
+  D(RI/M)    y*   n      y*     y    n     y*       y        -      y      y
+
+(RI) refers to modes whose initialization was done using
+PERCPU_REF_ALLOW_REINIT. The aforementioned transitions are permitted
+and may be indirect transitions. For example, when
+percpu_ref_switch_to_unmanaged() is invoked for it, managed ref
+switches to P(RI) mode. percpu_ref_switch_to_atomic() can be used to
+switch from P(RI) mode to A mode.
+
+Design Implications
+-------------------
+
+1. Deferring the release of a referenced object to the manager thread
+   may delay its memory release. This can result in memory pressure.
+   By turning a managed reference to an unmanaged ref and then
+   executing percpu_ref_kill() on it at known shutdown points in
+   the execution, this issue can be partially resolved using the
+   second approach.
+
+   Flush the scanning work on memory pressure is another strategy that
+   can be used.
+
+2. call_rcu_hurry() is used by percpu refcount lib to perform mode
+   switch operations. Back to back hurry callbacks can impact energy
+   efficiency. The current implementation allows moving the execution
+   to housekeeping cores by using an unbounded workqueue. A deferrable
+   timer can be used to prevent these invocations when the core is
+   idle by delaying the worker execution. Deferring, though, may cause
+   ref reclaims to be delayed.
+
+3. Since the percpu refcount lib uses a single global switch spinlock,
+   back-to-back label switches can delay other percpu users.
+
+4. Long running kworkers may cause other use cases, such as system
+   suspend, to be delayed. By using a freezable work queue and limiting
+   node scans to a maximum count, this is mitigated.
+
+5. Because all managed refs undergo switch-to-atomic mode operation
+   serially, an inactive ref must wait for all prior grace periods to
+   complete before it can be assessed. Ref release may be greatly
+   delayed as a result of this. Batching ref switches can be one
+   method to deal with this, ensuring that all of those RCU callbacks
+   are completed by single grace period.
+
+6. A label's refcount can operate in atomic mode within the window
+   while its counter is being checked for zero. This could lead to
+   high memory contention within the RCU grace period (together with
+   callback execution) duration. In AppArmor, all application that use
+   unconfined profiles will execute atomic ref increment and decrement
+   operations on the ref during that window if the currently scanned
+   label belongs to an unconfined profile. In order to handle this,
+   a prototype is described and implemented in [1], which replaces the
+   atomic and percpu counters of the scanned ref with a temporary
+   percpu ref. Given that the grace period window is of small duration
+   (compared to the scan interval), overall impact of this might not be
+   significant enough to consider the massive complexity of that
+   prototype implementation. This problem requires more investigation
+   in order to find a simpler solution.
+
+Extended/Future Work
+--------------------
+
+1. Another design approach, which was considered was to define a new
+   percpu rcuref type for RCU managed percpu refcounts. This approach
+   is prototyped in [1]. Although this approach provides cleaner
+   semantics w.r.t. mode switches and allowed operations, its current
+   implementation, using composition of percpu ref, could be suboptimal
+   in terms of  the struct's cacheline space requirement and feature
+   extensibility. An independent implementation would require
+   refactoring of the common logic out of the percpu refcount
+   implementation. Additionally, the users of new api could require
+   the modes (ex. ref kill/reinit) supported by percpu refcount.
+   Extending percpu rcuref to support this can result in duplication
+   of functionality/semantics between the two percpu ref types.
+
+2. Explore hazard pointers for scalable refcounting of objects, which
+   provides a more generic solution and has more efficient memory
+   space requirements.
+
+Below is the organization of the patches in this series:
+
+1. Implementation of first approach described in "Proposed Solution"
+   section.
+
+2. Torture test for managed ref to validate early ref release and
+   imbalanced refcount.
+
+   The test is verified on AMD 4th Generation EPYC Processor wth 96C/192T
+   with following test parameters:
+
+   nusers = 300
+   nrefs = 50
+   niterations = 50000
+   onoff_holdoff = 5
+   onoff_interval = 10
+
+3. Implementation of second approach described in "Proposed Solution"
+   section.
+
+4. Updates to torture test to test runtime mode switches from managed
+   to unmanaged modes.
+
+5. Switch Label refcount management to percpu ref in atomic mode.
+
+6. Switch Label refcount management to managed mode.
+
+Highly appreciate any feedback/suggestions on the design approach.
 
 
-On Thu, Sep 12, 2024 at 9:08=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com>=
- wrote:
->
-> > > >
-> > > > Here is the config file:
-> > > > https://gist.github.com/TomAPU/64f5db0fe976a3e94a6dd2b621887cdd
-> > > >
-> I tested your "reproducer" on 6.11.0-rc2. I see some panics and they are
-> different. For example below one triggers: BUG: kernel NULL pointer deref=
-erence, address: 0000000000000010
->
-> <snip>
-> Linux pc640 6.11.0-rc2-00037-g6b376d473b12 #3833 SMP PREEMPT_DYNAMIC Thu =
-Sep 12 15:42:02 CEST 2024 x86_64
->
-> The programs included with the Debian GNU/Linux system are free software;
-> the exact distribution terms for each program are described in the
-> individual files in /usr/share/doc/*/copyright.
->
-> Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-> permitted by applicable law.
-> Last login: Thu Sep 12 11:13:52 EDT 2024 on ttyS0
-> uroot@pc640:~# /home/urezki/a.out
-> [  108.612276][ T8454] chnl_net:caif_netlink_parms(): no params data foun=
-d
-> [  108.630121][ T8455] chnl_net:caif_netlink_parms(): no params data foun=
-d
-> [  109.305626][ T8454] bridge0: port 1(bridge_slave_0) entered blocking s=
-tate
-> [  109.310125][ T8454] bridge0: port 1(bridge_slave_0) entered disabled s=
-tate
-> [  109.314806][ T8454] bridge_slave_0: entered allmulticast mode
-> [  109.321617][ T8454] bridge_slave_0: entered promiscuous mode
-> [  109.614547][ T8454] bridge0: port 2(bridge_slave_1) entered blocking s=
-tate
-> [  109.618924][ T8454] bridge0: port 2(bridge_slave_1) entered disabled s=
-tate
-> [  109.624061][ T8454] bridge_slave_1: entered allmulticast mode
-> [  109.630982][ T8454] bridge_slave_1: entered promiscuous mode
-> [  109.774534][ T8455] bridge0: port 1(bridge_slave_0) entered blocking s=
-tate
-> [  109.781204][ T8455] bridge0: port 1(bridge_slave_0) entered disabled s=
-tate
-> [  109.787878][ T8455] bridge_slave_0: entered allmulticast mode
-> [  109.792835][ T8455] bridge_slave_0: entered promiscuous mode
-> [  109.974516][ T8455] bridge0: port 2(bridge_slave_1) entered blocking s=
-tate
-> [  109.978872][ T8455] bridge0: port 2(bridge_slave_1) entered disabled s=
-tate
-> [  109.983548][ T8455] bridge_slave_1: entered allmulticast mode
-> [  109.988361][ T8455] bridge_slave_1: entered promiscuous mode
-> [  109.997251][ T8454] bond0: (slave bond_slave_0): Enslaving as an activ=
-e interface with an up link
-> [  110.187177][ T8454] bond0: (slave bond_slave_1): Enslaving as an activ=
-e interface with an up link
-> [  110.527036][ T8455] bond0: (slave bond_slave_0): Enslaving as an activ=
-e interface with an up link
-> [  110.666716][ T8455] bond0: (slave bond_slave_1): Enslaving as an activ=
-e interface with an up link
-> [  110.677591][ T8454] team0: Port device team_slave_0 added
-> [  110.836395][ T8454] team0: Port device team_slave_1 added
-> [  111.510715][ T8455] team0: Port device team_slave_0 added
-> [  111.626814][ T8455] team0: Port device team_slave_1 added
-> [  111.632180][ T8454] batman_adv: batadv0: Adding interface: batadv_slav=
-e_0
-> [  111.638793][ T8454] batman_adv: batadv0: The MTU of interface batadv_s=
-lave_0 is too small (1500) to handle the transport of batman-adv packets. P=
-ackets going over this interface will be fragmented on layer2 which could i=
-mpact the performance. Setting the MTU to 1560 would solve the problem.
-> [  111.661108][ T8454] batman_adv: batadv0: Not using interface batadv_sl=
-ave_0 (retrying later): interface not active
-> [  111.835012][ T8454] batman_adv: batadv0: Adding interface: batadv_slav=
-e_1
-> [  111.841107][ T8454] batman_adv: batadv0: The MTU of interface batadv_s=
-lave_1 is too small (1500) to handle the transport of batman-adv packets. P=
-ackets going over this interface will be fragmented on layer2 which could i=
-mpact the performance. Setting the MTU to 1560 would solve the problem.
-> [  111.857352][ T8454] batman_adv: batadv0: Not using interface batadv_sl=
-ave_1 (retrying later): interface not active
-> [  112.081965][ T8455] batman_adv: batadv0: Adding interface: batadv_slav=
-e_0
-> [  112.088499][ T8455] batman_adv: batadv0: The MTU of interface batadv_s=
-lave_0 is too small (1500) to handle the transport of batman-adv packets. P=
-ackets going over this interface will be fragmented on layer2 which could i=
-mpact the performance. Setting the MTU to 1560 would solve the problem.
-> [  112.111075][ T8455] batman_adv: batadv0: Not using interface batadv_sl=
-ave_0 (retrying later): interface not active
-> [  112.119385][ T8455] batman_adv: batadv0: Adding interface: batadv_slav=
-e_1
-> [  112.123657][ T8455] batman_adv: batadv0: The MTU of interface batadv_s=
-lave_1 is too small (1500) to handle the transport of batman-adv packets. P=
-ackets going over this interface will be fragmented on layer2 which could i=
-mpact the performance. Setting the MTU to 1560 would solve the problem.
-> [  112.141098][ T8455] batman_adv: batadv0: Not using interface batadv_sl=
-ave_1 (retrying later): interface not active
-> [  112.715591][ T8454] hsr_slave_0: entered promiscuous mode
-> [  112.801330][ T8454] hsr_slave_1: entered promiscuous mode
-> [  113.095845][ T8455] hsr_slave_0: entered promiscuous mode
-> [  113.171469][ T8455] hsr_slave_1: entered promiscuous mode
-> [  113.251172][ T8455] debugfs: Directory 'hsr0' with parent 'hsr' alread=
-y present!
-> [  113.261201][ T8455] Cannot create hsr debugfs directory
-> [  114.440022][ T8454] netdevsim netdevsim0 netdevsim0: renamed from eth0
-> [  114.508448][ T8454] netdevsim netdevsim0 netdevsim1: renamed from eth1
-> [  114.634433][ T8454] netdevsim netdevsim0 netdevsim2: renamed from eth2
-> [  114.744227][ T8454] netdevsim netdevsim0 netdevsim3: renamed from eth3
-> [  114.866169][ T8455] netdevsim netdevsim1 netdevsim0: renamed from eth0
-> [  114.974856][ T8455] netdevsim netdevsim1 netdevsim1: renamed from eth1
-> [  115.094399][ T8455] netdevsim netdevsim1 netdevsim2: renamed from eth2
-> [  115.198370][ T8455] netdevsim netdevsim1 netdevsim3: renamed from eth3
-> [  115.393414][ T8454] 8021q: adding VLAN 0 to HW filter on device bond0
-> [  115.428509][ T8454] 8021q: adding VLAN 0 to HW filter on device team0
-> [  115.445428][ T8455] 8021q: adding VLAN 0 to HW filter on device bond0
-> [  115.455183][  T841] bridge0: port 1(bridge_slave_0) entered blocking s=
-tate
-> [  115.463761][  T841] bridge0: port 1(bridge_slave_0) entered forwarding=
- state
-> [  115.479368][  T142] bridge0: port 2(bridge_slave_1) entered blocking s=
-tate
-> [  115.487741][  T142] bridge0: port 2(bridge_slave_1) entered forwarding=
- state
-> [  115.513042][ T8455] 8021q: adding VLAN 0 to HW filter on device team0
-> [  115.534056][  T841] bridge0: port 1(bridge_slave_0) entered blocking s=
-tate
-> [  115.540831][  T841] bridge0: port 1(bridge_slave_0) entered forwarding=
- state
-> [  115.556733][ T1883] bridge0: port 2(bridge_slave_1) entered blocking s=
-tate
-> [  115.563088][ T1883] bridge0: port 2(bridge_slave_1) entered forwarding=
- state
-> [  115.621249][ T8454] 8021q: adding VLAN 0 to HW filter on device batadv=
-0
-> [  115.662366][ T8455] 8021q: adding VLAN 0 to HW filter on device batadv=
-0
-> [  115.692483][ T8454] veth0_vlan: entered promiscuous mode
-> [  115.709197][ T8454] veth1_vlan: entered promiscuous mode
-> [  115.740423][ T8455] veth0_vlan: entered promiscuous mode
-> [  115.752797][ T8455] veth1_vlan: entered promiscuous mode
-> [  115.768040][ T8454] veth0_macvtap: entered promiscuous mode
-> [  115.776722][ T8454] veth1_macvtap: entered promiscuous mode
-> [  115.799794][ T8454] batman_adv: batadv0: Interface activated: batadv_s=
-lave_0
-> [  115.810688][ T8455] veth0_macvtap: entered promiscuous mode
-> [  115.823230][ T8454] batman_adv: batadv0: Interface activated: batadv_s=
-lave_1
-> [  115.832372][ T8455] veth1_macvtap: entered promiscuous mode
-> [  115.846846][ T8454] netdevsim netdevsim0 netdevsim0: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  115.855626][ T8454] netdevsim netdevsim0 netdevsim1: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  115.863223][ T8454] netdevsim netdevsim0 netdevsim2: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  115.869729][ T8454] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  115.934253][ T8455] batman_adv: The newly added mac address (aa:aa:aa:=
-aa:aa:3d) already exists on: batadv_slave_0
-> [  115.944230][ T8455] batman_adv: It is strongly recommended to keep mac=
- addresses unique to avoid problems!
-> [  115.954913][ T8455] batman_adv: batadv0: Interface activated: batadv_s=
-lave_0
-> [  116.054848][ T8455] batman_adv: The newly added mac address (aa:aa:aa:=
-aa:aa:3e) already exists on: batadv_slave_1
-> [  116.064684][ T8455] batman_adv: It is strongly recommended to keep mac=
- addresses unique to avoid problems!
-> [  116.075471][ T8455] batman_adv: batadv0: Interface activated: batadv_s=
-lave_1
-> [  116.174807][ T8455] netdevsim netdevsim1 netdevsim0: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  116.183164][ T8455] netdevsim netdevsim1 netdevsim1: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  116.191693][ T8455] netdevsim netdevsim1 netdevsim2: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  116.199476][ T8455] netdevsim netdevsim1 netdevsim3: set [1, 0] type 2=
- family 0 port 6081 - 0
-> [  116.210161][ T8454] ieee80211 phy3: Selected rate control algorithm 'm=
-instrel_ht'
-> [  116.314373][ T1138] wlan0: Created IBSS using preconfigured BSSID 50:5=
-0:50:50:50:50
-> [  116.323148][ T1138] wlan0: Creating new IBSS network, BSSID 50:50:50:5=
-0:50:50
-> [  116.363438][ T8454] ieee80211 phy4: Selected rate control algorithm 'm=
-instrel_ht'
-> [  116.427601][ T8455] ieee80211 phy5: Selected rate control algorithm 'm=
-instrel_ht'
-> [  116.439923][   T12] wlan1: Created IBSS using preconfigured BSSID 50:5=
-0:50:50:50:50
-> [  116.447760][   T12] wlan1: Creating new IBSS network, BSSID 50:50:50:5=
-0:50:50
-> [  116.513068][   T12] wlan0: Created IBSS using preconfigured BSSID 50:5=
-0:50:50:50:50
-> [  116.515525][ T8455] ieee80211 phy6: Selected rate control algorithm 'm=
-instrel_ht'
-> [  116.517602][   T12] wlan0: Creating new IBSS network, BSSID 50:50:50:5=
-0:50:50
-> [  116.554182][  T120] wlan1: Created IBSS using preconfigured BSSID 50:5=
-0:50:50:50:50
-> [  116.562646][  T120] wlan1: Creating new IBSS network, BSSID 50:50:50:5=
-0:50:50
-> executing program
-> [  116.605018][T10471] program a.out is using a deprecated SCSI ioctl, pl=
-ease convert it to SG_IO
-> [  117.764915][   T65] netdevsim netdevsim1 netdevsim3 (unregistering): u=
-nset [1, 0] type 2 family 0 port 6081 - 0
-> [  119.264267][   T65] netdevsim netdevsim1 netdevsim2 (unregistering): u=
-nset [1, 0] type 2 family 0 port 6081 - 0
-> [  121.375536][   T65] netdevsim netdevsim1 netdevsim1 (unregistering): u=
-nset [1, 0] type 2 family 0 port 6081 - 0
-> [  121.963598][   T65] netdevsim netdevsim1 netdevsim0 (unregistering): u=
-nset [1, 0] type 2 family 0 port 6081 - 0
-> [  122.381273][   T65] bridge_slave_1: left allmulticast mode
-> [  122.389071][   T65] bridge_slave_1: left promiscuous mode
-> [  122.396906][   T65] bridge0: port 2(bridge_slave_1) entered disabled s=
-tate
-> [  122.601981][   T65] bridge_slave_0: left allmulticast mode
-> [  122.611091][   T65] bridge_slave_0: left promiscuous mode
-> [  122.617820][   T65] bridge0: port 1(bridge_slave_0) entered disabled s=
-tate
-> [  125.712116][   T65] bond0 (unregistering): (slave bond_slave_0): Relea=
-sing backup interface
-> [  125.921681][   T65] bond0 (unregistering): (slave bond_slave_1): Relea=
-sing backup interface
-> [  126.042002][   T65] bond0 (unregistering): Released all slaves
-> [  128.331207][   T65] hsr_slave_0: left promiscuous mode
-> [  128.461209][   T65] hsr_slave_1: left promiscuous mode
-> [  128.591184][   T65] batman_adv: batadv0: Interface deactivated: batadv=
-_slave_0
-> [  128.595352][   T65] batman_adv: batadv0: Removing interface: batadv_sl=
-ave_0
-> [  128.655982][   T65] batman_adv: batadv0: Interface deactivated: batadv=
-_slave_1
-> [  128.664072][   T65] batman_adv: batadv0: Removing interface: batadv_sl=
-ave_1
-> [  128.867924][   T65] veth1_macvtap: left promiscuous mode
-> [  128.875673][   T65] veth0_macvtap: left promiscuous mode
-> [  128.882671][   T65] veth1_vlan: left promiscuous mode
-> [  128.889132][   T65] veth0_vlan: left promiscuous mode
-> [  138.513086][   T65] team0 (unregistering): Port device team_slave_1 re=
-moved
-> [  139.601978][   T65] team0 (unregistering): Port device team_slave_0 re=
-moved
-> [  150.514196][ T1333] ieee802154 phy0 wpan0: encryption failed: -22
-> [  150.531082][ T1333] ieee802154 phy1 wpan1: encryption failed: -22
-> [  181.351814][ T1058] ata1: lost interrupt (Status 0x58)
-> [  182.061440][ T1058] ata1: found unknown device (class 0)
-> executing program
-> [  182.101661][T10525] program a.out is using a deprecated SCSI ioctl, pl=
-ease convert it to SG_IO
-> [  182.331131][    C7] BUG: kernel NULL pointer dereference, address: 000=
-0000000000010
-> [  182.339044][    C7] #PF: supervisor read access in kernel mode
-> [  182.345673][    C7] #PF: error_code(0x0000) - not-present page
-> [  182.352216][    C7] PGD 150394067 P4D 150394067 PUD 192e9f067 PMD 0
-> [  182.359123][    C7] Oops: Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> [  182.365905][    C7] CPU: 7 UID: 0 PID: 54 Comm: ksoftirqd/7 Not tainte=
-d 6.11.0-rc2-00037-g6b376d473b12 #3833
-> [  182.375040][    C7] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
-96), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [  182.382819][    C7] RIP: 0010:stack_depot_save_flags+0x147/0x8d0
-> [  182.388239][    C7] Code: c1 e1 04 4c 03 0d 81 1d c8 0f 65 ff 05 5a ae=
- 92 7b 49 8b 09 49 39 c9 75 11 e9 91 00 00 00 48 8b 09 49 39 c9 0f 84 a4 01=
- 00 00 <39> 59 10 75 ef 44 3b 79 14 75 e9 31 c0 48 8b 54 c1 20 49 39 54 c5
-> [  182.399223][    C7] RSP: 0018:ffffc90006657970 EFLAGS: 00010286
-> [  182.402848][    C7] RAX: 00000000f759be75 RBX: 00000000f759be75 RCX: 0=
-000000000000000
-> [  182.407055][    C7] RDX: 0000000018e8f28b RSI: 000000004a278650 RDI: 0=
-0000000bc02d21f
-> [  182.411271][    C7] RBP: 0000000000000001 R08: 0000000000000005 R09: f=
-fff88901cdbe750
-> [  182.415500][    C7] R10: 0000000000000000 R11: 0000000000000000 R12: 0=
-000000000000000
-> [  182.419717][    C7] R13: ffffc900066579d0 R14: 000000000000000e R15: 0=
-00000000000000e
-> [  182.423938][    C7] FS:  0000000000000000(0000) GS:ffff88901d780000(00=
-00) knlGS:0000000000000000
-> [  182.428464][    C7] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  182.432274][    C7] CR2: 0000000000000010 CR3: 00000001730ac000 CR4: 0=
-0000000000006f0
-> [  182.436523][    C7] Call Trace:
-> [  182.439244][    C7]  <TASK>
-> [  182.441839][    C7]  ? show_regs+0x88/0x90
-> [  182.444877][    C7]  ? __die+0x28/0x80
-> [  182.447798][    C7]  ? page_fault_oops+0x3b6/0xb80
-> [  182.451009][    C7]  ? copy_from_kernel_nofault_allowed+0xe6/0x110
-> [  182.454703][    C7]  ? __pfx_page_fault_oops+0x10/0x10
-> [  182.458029][    C7]  ? copy_from_kernel_nofault+0x12f/0x2c0
-> [  182.461515][    C7]  ? __sanitizer_cov_trace_switch+0x50/0x90
-> [  182.465062][    C7]  ? stack_depot_save_flags+0x147/0x8d0
-> [  182.468496][    C7]  ? is_prefetch.constprop.0+0x9d/0x520
-> [  182.471883][    C7]  ? stack_depot_save_flags+0x156/0x8d0
-> [  182.475300][    C7]  ? __pfx_is_prefetch.constprop.0+0x10/0x10
-> [  182.478866][    C7]  ? fixup_exception+0x108/0xae0
-> [  182.482081][    C7]  ? kernelmode_fixup_or_oops.constprop.0+0xb8/0xe0
-> [  182.485867][    C7]  ? __bad_area_nosemaphore+0x390/0x6a0
-> [  182.489306][    C7]  ? ret_from_fork_asm+0x19/0x30
-> [  182.492554][    C7]  ? do_user_addr_fault+0x928/0x12c0
-> [  182.495874][    C7]  ? rcu_is_watching+0xe/0xc0
-> [  182.499002][    C7]  ? exc_page_fault+0x57/0xd0
-> [  182.502122][    C7]  ? asm_exc_page_fault+0x22/0x30
-> [  182.505376][    C7]  ? stack_depot_save_flags+0x147/0x8d0
-> [  182.508798][    C7]  ? __lock_acquire+0xd09/0x5d30
-> [  182.512038][    C7]  ? i_callback+0x5d/0x70
-> [  182.515071][    C7]  kasan_save_stack+0x3e/0x50
-> [  182.518234][    C7]  ? kasan_save_stack+0x2f/0x50
-> [  182.521420][    C7]  ? kasan_save_track+0x10/0x30
-> [  182.524622][    C7]  ? kasan_save_free_info+0x37/0x60
-> [  182.527907][    C7]  ? poison_slab_object+0xf7/0x160
-> [  182.531169][    C7]  ? __kasan_slab_free+0x2e/0x50
-> [  182.534346][    C7]  ? kmem_cache_free+0x12b/0x4a0
-> [  182.537489][    C7]  ? i_callback+0x5d/0x70
-> [  182.540435][    C7]  ? rcu_core+0x84d/0x1c60
-> [  182.543390][    C7]  ? handle_softirqs+0x219/0x980
-> [  182.546499][    C7]  ? run_ksoftirqd+0x36/0x60
-> [  182.549492][    C7]  ? smpboot_thread_fn+0x660/0xa10
-> [  182.552629][    C7]  ? kthread+0x336/0x440
-> [  182.555447][    C7]  ? ret_from_fork+0x44/0x70
-> [  182.558334][    C7]  ? ret_from_fork_asm+0x1a/0x30
-> [  182.561276][    C7]  kasan_save_track+0x10/0x30
-> [  182.564051][    C7]  kasan_save_free_info+0x37/0x60
-> [  182.566922][    C7]  poison_slab_object+0xf7/0x160
-> [  182.569747][    C7]  __kasan_slab_free+0x2e/0x50
-> [  182.572530][    C7]  kmem_cache_free+0x12b/0x4a0
-> [  182.575296][    C7]  ? i_callback+0x5d/0x70
-> [  182.577922][    C7]  ? rcu_core+0x848/0x1c60
-> [  182.580554][    C7]  i_callback+0x5d/0x70
-> [  182.583066][    C7]  rcu_core+0x84d/0x1c60
-> [  182.585582][    C7]  ? __pfx_rcu_core+0x10/0x10
-> [  182.588229][    C7]  handle_softirqs+0x219/0x980
-> [  182.590882][    C7]  ? __pfx_handle_softirqs+0x10/0x10
-> [  182.593717][    C7]  ? rcu_is_watching+0xe/0xc0
-> [  182.596347][    C7]  ? __pfx_run_ksoftirqd+0x10/0x10
-> [  182.599104][    C7]  ? smpboot_thread_fn+0x599/0xa10
-> [  182.601869][    C7]  run_ksoftirqd+0x36/0x60
-> [  182.604434][    C7]  smpboot_thread_fn+0x660/0xa10
-> [  182.607152][    C7]  ? __kthread_parkme+0x148/0x220
-> [  182.609906][    C7]  ? __pfx_smpboot_thread_fn+0x10/0x10
-> [  182.612801][    C7]  kthread+0x336/0x440
-> [  182.615219][    C7]  ? _raw_spin_unlock_irq+0x1f/0x50
-> [  182.618023][    C7]  ? __pfx_kthread+0x10/0x10
-> [  182.620623][    C7]  ret_from_fork+0x44/0x70
-> [  182.623162][    C7]  ? __pfx_kthread+0x10/0x10
-> [  182.625755][    C7]  ret_from_fork_asm+0x1a/0x30
-> [  182.628385][    C7]  </TASK>
-> [  182.630443][    C7] Modules linked in:
-> [  182.632779][    C7] CR2: 0000000000000010
-> [  182.635183][    C7] ---[ end trace 0000000000000000 ]---
-> [  182.638056][    C7] RIP: 0010:stack_depot_save_flags+0x147/0x8d0
-> [  182.641146][    C7] Code: c1 e1 04 4c 03 0d 81 1d c8 0f 65 ff 05 5a ae=
- 92 7b 49 8b 09 49 39 c9 75 11 e9 91 00 00 00 48 8b 09 49 39 c9 0f 84 a4 01=
- 00 00 <39> 59 10 75 ef 44 3b 79 14 75 e9 31 c0 48 8b 54 c1 20 49 39 54 c5
-> [  182.649808][    C7] RSP: 0018:ffffc90006657970 EFLAGS: 00010286
-> [  182.653031][    C7] RAX: 00000000f759be75 RBX: 00000000f759be75 RCX: 0=
-000000000000000
-> [  182.656897][    C7] RDX: 0000000018e8f28b RSI: 000000004a278650 RDI: 0=
-0000000bc02d21f
-> [  182.660748][    C7] RBP: 0000000000000001 R08: 0000000000000005 R09: f=
-fff88901cdbe750
-> [  182.664628][    C7] R10: 0000000000000000 R11: 0000000000000000 R12: 0=
-000000000000000
-> [  182.668435][    C7] R13: ffffc900066579d0 R14: 000000000000000e R15: 0=
-00000000000000e
-> [  182.672198][    C7] FS:  0000000000000000(0000) GS:ffff88901d780000(00=
-00) knlGS:0000000000000000
-> [  182.676268][    C7] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  182.679617][    C7] CR2: 0000000000000010 CR3: 00000001730ac000 CR4: 0=
-0000000000006f0
-> [  182.683435][    C7] Kernel panic - not syncing: Fatal exception in int=
-errupt
-> [  182.687412][    C7] Kernel Offset: disabled
-> <snip>
->
-> second one:
->
-> <snip>
-> [  657.192361][    C0] list_add corruption. next->prev should be prev (ff=
-ff8881996a2670), but was 0000000000000000. (next=3Dffff8881a3571000).
-> [  657.204270][    C0] ------------[ cut here ]------------
-> [  657.210763][    C0] kernel BUG at lib/list_debug.c:29!
-> [  657.217140][    C0] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN =
-NOPTI
-> [  657.224382][    C0] CPU: 0 UID: 0 PID: 16 Comm: ksoftirqd/0 Not tainte=
-d 6.11.0-rc2-00037-g6b376d473b12 #3833
-> [  657.233350][    C0] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
-96), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [  657.241232][    C0] RIP: 0010:__list_add_valid_or_report+0xa2/0x100
-> [  657.246703][    C0] Code: c7 c7 e0 2e 2a 8b e8 4d 3d 24 fd 0f 0b 48 c7=
- c7 80 2f 2a 8b e8 3f 3d 24 fd 0f 0b 48 89 d9 48 c7 c7 e0 2f 2a 8b e8 2e 3d=
- 24 fd <0f> 0b 48 89 f1 48 c7 c7 60 30 2a 8b 48 89 de e8 1a 3d 24 fd 0f 0b
-> [  657.257782][    C0] RSP: 0018:ffffc9000434f458 EFLAGS: 00010082
-> [  657.261306][    C0] RAX: 0000000000000075 RBX: ffff8881a3571000 RCX: f=
-fffffff816b4fb9
-> [  657.265447][    C0] RDX: 0000000000000000 RSI: ffffffff816bef02 RDI: 0=
-000000000000005
-> [  657.269555][    C0] RBP: ffff8881b1b40d40 R08: 0000000000000005 R09: 0=
-000000000000000
-> [  657.273686][    C0] R10: 0000000000000101 R11: 0000000000000001 R12: f=
-fff8881996a2670
-> [  657.277798][    C0] R13: 0000000000000820 R14: ffff8881b1b40d40 R15: f=
-fff8881a3571000
-> [  657.281918][    C0] FS:  0000000000000000(0000) GS:ffff88861fc00000(00=
-00) knlGS:0000000000000000
-> [  657.286383][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  657.290128][    C0] CR2: 00007f4027088128 CR3: 000000000d17c000 CR4: 0=
-0000000000006f0
-> [  657.294297][    C0] Call Trace:
-> [  657.297076][    C0]  <TASK>
-> [  657.299729][    C0]  ? show_regs+0x88/0x90
-> [  657.302756][    C0]  ? die+0x32/0xa0
-> [  657.305654][    C0]  ? do_trap+0x232/0x430
-> [  657.308703][    C0]  ? __list_add_valid_or_report+0xa2/0x100
-> [  657.312223][    C0]  ? __list_add_valid_or_report+0xa2/0x100
-> [  657.315709][    C0]  ? do_error_trap+0xf4/0x230
-> [  657.318839][    C0]  ? __list_add_valid_or_report+0xa2/0x100
-> [  657.322308][    C0]  ? handle_invalid_op+0x34/0x40
-> [  657.325530][    C0]  ? __list_add_valid_or_report+0xa2/0x100
-> [  657.329015][    C0]  ? exc_invalid_op+0x29/0x40
-> [  657.332190][    C0]  ? asm_exc_invalid_op+0x16/0x20
-> [  657.335452][    C0]  ? __wake_up_klogd.part.0+0x99/0xf0
-> [  657.338814][    C0]  ? vprintk+0x82/0x90
-> [  657.341768][    C0]  ? __list_add_valid_or_report+0xa2/0x100
-> [  657.345267][    C0]  ? __list_add_valid_or_report+0xa2/0x100
-> [  657.348732][    C0]  ? ref_tracker_alloc+0x205/0x5a0
-> [  657.352010][    C0]  ref_tracker_alloc+0x236/0x5a0
-> [  657.355208][    C0]  ? __pfx_ref_tracker_alloc+0x10/0x10
-> [  657.358533][    C0]  ? dst_init+0xd6/0x570
-> [  657.361499][    C0]  ? dst_alloc+0xb7/0x1a0
-> [  657.364473][    C0]  ? ip6_dst_alloc+0x28/0xa0
-> [  657.367536][    C0]  ? icmp6_dst_alloc+0x6c/0x4a0
-> [  657.370635][    C0]  ? ndisc_send_skb+0x1275/0x1c20
-> [  657.373740][    C0]  ? ndisc_send_rs+0x127/0x690
-> [  657.376821][    C0]  ? addrconf_rs_timer+0x41e/0x850
-> [  657.379973][    C0]  ? call_timer_fn+0x1a3/0x600
-> [  657.383021][    C0]  ? __run_timers+0x749/0xae0
-> [  657.386018][    C0]  ? timer_expire_remote+0xfb/0x160
-> [  657.389128][    C0]  ? tmigr_handle_remote+0x7c7/0xfc0
-> [  657.392261][    C0]  ? run_timer_softirq+0x31/0x40
-> [  657.395251][    C0]  ? handle_softirqs+0x219/0x980
-> [  657.398195][    C0]  ? run_ksoftirqd+0x36/0x60
-> [  657.401024][    C0]  ? smpboot_thread_fn+0x660/0xa10
-> [  657.404017][    C0]  ? kthread+0x336/0x440
-> [  657.406708][    C0]  ? rcu_is_watching+0xe/0xc0
-> [  657.409508][    C0]  dst_init+0xd6/0x570
-> [  657.412090][    C0]  dst_alloc+0xb7/0x1a0
-> [  657.414630][    C0]  ip6_dst_alloc+0x28/0xa0
-> [  657.417183][    C0]  icmp6_dst_alloc+0x6c/0x4a0
-> [  657.419786][    C0]  ndisc_send_skb+0x1275/0x1c20
-> [  657.422420][    C0]  ? validate_store+0x1e/0x60
-> [  657.425004][    C0]  ? __pfx_ndisc_send_skb+0x10/0x10
-> [  657.427726][    C0]  ? __build_skb_around+0x278/0x3b0
-> [  657.430441][    C0]  ? __alloc_skb+0x1fc/0x380
-> [  657.432973][    C0]  ? skb_put+0x134/0x1a0
-> [  657.435368][    C0]  ndisc_send_rs+0x127/0x690
-> [  657.437856][    C0]  addrconf_rs_timer+0x41e/0x850
-> [  657.440437][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
-> [  657.443169][    C0]  ? try_to_wake_up+0x13b/0x15d0
-> [  657.445750][    C0]  ? __pfx_lock_release+0x10/0x10
-> [  657.448369][    C0]  call_timer_fn+0x1a3/0x600
-> [  657.450828][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
-> [  657.453586][    C0]  ? __pfx_call_timer_fn+0x10/0x10
-> [  657.456234][    C0]  ? __pfx_lock_release+0x10/0x10
-> [  657.458856][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
-> [  657.461613][    C0]  ? __pfx_addrconf_rs_timer+0x10/0x10
-> [  657.464365][    C0]  __run_timers+0x749/0xae0
-> [  657.466804][    C0]  ? __pfx___run_timers+0x10/0x10
-> [  657.469401][    C0]  ? __pfx_lock_acquire+0x10/0x10
-> [  657.471986][    C0]  ? lock_acquire+0x1ad/0x550
-> [  657.474472][    C0]  timer_expire_remote+0xfb/0x160
-> [  657.477069][    C0]  ? __pfx_timer_expire_remote+0x10/0x10
-> [  657.479850][    C0]  ? _raw_spin_unlock_irq+0x1f/0x50
-> [  657.482475][    C0]  ? lockdep_hardirqs_on+0x78/0x100
-> [  657.485141][    C0]  tmigr_handle_remote+0x7c7/0xfc0
-> [  657.487771][    C0]  ? __pfx_tmigr_handle_remote+0x10/0x10
-> [  657.490551][    C0]  ? run_timer_base+0x11e/0x190
-> [  657.493102][    C0]  ? __pfx_run_timer_base+0x10/0x10
-> [  657.495762][    C0]  run_timer_softirq+0x31/0x40
-> [  657.498286][    C0]  handle_softirqs+0x219/0x980
-> [  657.500812][    C0]  ? __pfx_handle_softirqs+0x10/0x10
-> [  657.503503][    C0]  ? rcu_is_watching+0xe/0xc0
-> [  657.506009][    C0]  ? __pfx_run_ksoftirqd+0x10/0x10
-> [  657.508657][    C0]  ? smpboot_thread_fn+0x599/0xa10
-> [  657.511301][    C0]  run_ksoftirqd+0x36/0x60
-> [  657.513734][    C0]  smpboot_thread_fn+0x660/0xa10
-> [  657.516336][    C0]  ? __kthread_parkme+0x148/0x220
-> [  657.518950][    C0]  ? __pfx_smpboot_thread_fn+0x10/0x10
-> [  657.521715][    C0]  kthread+0x336/0x440
-> [  657.524064][    C0]  ? _raw_spin_unlock_irq+0x1f/0x50
-> [  657.526737][    C0]  ? __pfx_kthread+0x10/0x10
-> [  657.529240][    C0]  ret_from_fork+0x44/0x70
-> [  657.531687][    C0]  ? __pfx_kthread+0x10/0x10
-> [  657.534185][    C0]  ret_from_fork_asm+0x1a/0x30
-> [  657.536744][    C0]  </TASK>
-> [  657.538752][    C0] Modules linked in:
-> [  657.541038][    C0] ---[ end trace 0000000000000000 ]---
-> [  657.543837][    C0] RIP: 0010:__list_add_valid_or_report+0xa2/0x100
-> [  657.546921][    C0] Code: c7 c7 e0 2e 2a 8b e8 4d 3d 24 fd 0f 0b 48 c7=
- c7 80 2f 2a 8b e8 3f 3d 24 fd 0f 0b 48 89 d9 48 c7 c7 e0 2f 2a 8b e8 2e 3d=
- 24 fd <0f> 0b 48 89 f1 48 c7 c7 60 30 2a 8b 48 89 de e8 1a 3d 24 fd 0f 0b
-> [  657.555312][    C0] RSP: 0018:ffffc9000434f458 EFLAGS: 00010082
-> [  657.558444][    C0] RAX: 0000000000000075 RBX: ffff8881a3571000 RCX: f=
-fffffff816b4fb9
-> [  657.562186][    C0] RDX: 0000000000000000 RSI: ffffffff816bef02 RDI: 0=
-000000000000005
-> [  657.565917][    C0] RBP: ffff8881b1b40d40 R08: 0000000000000005 R09: 0=
-000000000000000
-> [  657.569676][    C0] R10: 0000000000000101 R11: 0000000000000001 R12: f=
-fff8881996a2670
-> [  657.573430][    C0] R13: 0000000000000820 R14: ffff8881b1b40d40 R15: f=
-fff8881a3571000
-> [  657.577198][    C0] FS:  0000000000000000(0000) GS:ffff88861fc00000(00=
-00) knlGS:0000000000000000
-> [  657.581305][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  657.584702][    C0] CR2: 00007f4027088128 CR3: 000000000d17c000 CR4: 0=
-0000000000006f0
-> [  657.588528][    C0] Kernel panic - not syncing: Fatal exception in int=
-errupt
-> [  657.592637][    C0] Kernel Offset: disabled
-> <snip>
->
-> is about list corruption BUG. So they are different and looks like
-> something is corrupted. So i would not trust that your report is about
-> kvfree_rcu_bulk() warning is related to a real issue with kvfree_rcu()
-> call.
->
-> A also run the reproducer on the 6.11.0-rc7 kernel. It still runs
-> without any panics yet.
->
-> Could you please test the latest kernel? For example 6.11.0-rc7?
->
-> --
-> Uladzislau Rezki
+[1] https://lore.kernel.org/lkml/20240110111856.87370-7-Neeraj.Upadhyay@amd.com/T/
 
+- Neeraj
 
+Neeraj Upadhyay (6):
+  percpu-refcount: Add managed mode for RCU released objects
+  percpu-refcount: Add torture test for percpu refcount
+  percpu-refcount: Extend managed mode to allow runtime switching
+  percpu-refcount-torture: Extend test with runtime mode switches
+  apparmor: Switch labels to percpu refcount in atomic mode
+  apparmor: Switch labels to percpu ref managed mode
 
---
-Yours sincerely,
-Xingyu
+ .../admin-guide/kernel-parameters.txt         |  69 +++
+ include/linux/percpu-refcount.h               |  14 +
+ lib/Kconfig.debug                             |   9 +
+ lib/Makefile                                  |   1 +
+ lib/percpu-refcount-torture.c                 | 404 ++++++++++++++++++
+ lib/percpu-refcount.c                         | 329 +++++++++++++-
+ lib/percpu-refcount.h                         |   6 +
+ security/apparmor/include/label.h             |  16 +-
+ security/apparmor/include/policy.h            |   8 +-
+ security/apparmor/label.c                     |  12 +-
+ security/apparmor/policy_ns.c                 |   2 +
+ 11 files changed, 836 insertions(+), 34 deletions(-)
+ create mode 100644 lib/percpu-refcount-torture.c
+ create mode 100644 lib/percpu-refcount.h
+
+-- 
+2.34.1
+
