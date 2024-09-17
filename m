@@ -1,219 +1,129 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1724916F839;
-	Mon, 16 Sep 2024 22:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0B151C5A
+	for <rcu@vger.kernel.org>; Tue, 17 Sep 2024 06:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726527027; cv=none; b=S/gFtj0BIVaakXwgFq9hzWRczw27fSuJcrEmvyeTJZZ+XtU14vRECam+/Tfp5AizT+aFjU10QJfEUCzqSbY108Rlh91pW0fyW8fg9AllPEDeYu9jitTFAwVWoRH1y7le6C5EftqSBgNwNOqItbN350QtayDByrJpygCY/a+UvsE=
+	t=1726554414; cv=none; b=krQXP2eH+xMkbRTCWqcGbHwIQMWqqw+gCfYqy3cGr5lzOqhEVUzdGZ21LB6vkTjG2hFjw9yqiWMaXDzYlzUifbN1ajjYEq0JCGVS5UbqGiLKnWfusAwiGMRJSlHk2oDtc28h7BZyHSL6H5T1aXTitSu7rnN40aEZs7LCsfoAfFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726527027; c=relaxed/simple;
-	bh=XFzJ4mxWd3+ScHM8w2S2c71PfRlHFJW2SZ3NxFYLpjE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fWO5ZwNcFv1oZbYk1FTKazVw7cASOrw5+M5Jw4O/WzQDY5cgoA6qIZe4cx6jYMWWM6446DtVQ7h8xGt9u08TtQfVhOZ/hgd97VvCj4+wZiaUk/OCb0Mti4A6HISwts55ZRq9SOCDwsiqTW/dGhc6l0mCfXFb9NzfWIco15kC/yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4KDWK2A; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1726554414; c=relaxed/simple;
+	bh=K2nQcmcKXIirQ5jLWaunQvyy+nQEk3uCk9cCllOs3FM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JJm+PSMSlamcJwWSBLtEndYiKG6SI9CXQLo0z5x/1+yTWLRSoZjGYQb7xk7+vaxrHwr8j9xIKM7XGbEleLR5Ble6YincSkdxtqEZQhFUE5qKYK7P1pH5L2MePBEsweICy+dY+8CZDaCd8bM8Khdk3TaoLHgV9RMlLcYclBdQhrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GpTEfiC5; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4KDWK2A"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3574EC4CEC5;
-	Mon, 16 Sep 2024 22:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726527026;
-	bh=XFzJ4mxWd3+ScHM8w2S2c71PfRlHFJW2SZ3NxFYLpjE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=s4KDWK2AlwUZuNXgLahGqvEaNQPmVCiV0IY7tZZv/XSzapW/LIdDoxD8sYVz8nFGB
-	 IV5K59auZaawNpjtMUL8snJKX+XRvWYOG3UpKWoc3RlOHhfXSIOIvg3F2DPN0qpBGB
-	 BvObx5Tnx9cSQJTxu9Wg9vkJGXzDgNjIz0jyQd+AoGn3bMR9LaxTr5v99sFYx/vp8g
-	 Hks80bjIVhUYW2egV9yZ07DklXSGdx6zi3sCnd36XCQ9dSMPhd9x6odQyXkxVJc1QT
-	 h+P6r1dmvZ6jItnY+r/NBGRQBKb0ZleKpRnwrBDC7CTLkYWWqsdTo5orDIAeFz9ajB
-	 ya8CZqOKJ4wag==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GpTEfiC5"
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a90188ae58eso648130966b.1
+        for <rcu@vger.kernel.org>; Mon, 16 Sep 2024 23:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1726554411; x=1727159211; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=H7ASPViLRBSV8sKUrdJL1Dpttwd/ZWizZrt8YYj/Fgs=;
+        b=GpTEfiC5UPJGcA7CFLB0DfD0VRat3wUS/iaWh9aDjHmDh4jTuMrgZ5X7tPkb+4uo7f
+         o+ne/3KrVZly86KSIBi1ivMtoD9Tv06a8JhkNSsmmoja0emnTQ//w9SIKsEQIs9NnNof
+         UtKTu2EkyqkZjndIn0hbZcpkCa+inIWs7GLHj5Bdfb4eHtcw5XY4a9Ro1KAuldSc6YEj
+         SBhWbECEy8aYNlao2CWKcLfpPD8/A2kW9n+TMxtEzTqeJNMTsvSfQx8mf7R9dadVZfCi
+         d3WPSKWBzR1vD2grCDQfMoNJnlRkoNNf2w6zp5rpbC/iZx3iayqw2cS7SuLngvPz1Obl
+         U8TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726554411; x=1727159211;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H7ASPViLRBSV8sKUrdJL1Dpttwd/ZWizZrt8YYj/Fgs=;
+        b=in47OO2HzkgVRwlSMCAXSK3p+TqVWE/sp+K0zQADqkWRdIeU4InUf+okBazsZM4+vq
+         PYcWiFovuRSGjQQJTeCQ9iKIipieZyzewmQj0MeiGTHzYY3EBenOe9o8g07zCXj9Z3Ln
+         OFJabn2CeKGO8lRMj7rNYtmr6e7uSD0UqJs/urCm7iFKgY6RBTH92vrfYSVd05SolBor
+         dgWSK7YBdXr6gyjysorP+gXwYYuJj5UDk8IH11v3yyQ2cwUX/LUk7ShQyPqBGd7rYhLa
+         guOv5SG1RqQHcmxKwgYSKcSss4qsE44xZcuPDLizLJzGkH3lsipGD/ALFlJLrrksuf3B
+         LjsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUX7WppY+boKBgCGcxrnwlBJ9JdfyS8frvVydXrznDHKcUIhaFOn4PQy8S1WEaJzwNX5KY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFW2P6ZpNxA4PTCr3wKMvylKdKmqctsYuIkJmzmQz2lfOzNt6S
+	jo2ybS5UHRr0FRgevFzmGYdmhMirhVJDJdCza45JZem/x6XIKJGLFULzGla+OZ0=
+X-Google-Smtp-Source: AGHT+IFp61tQdL1aMBFJZPYLyvUg/ylcWPkrD82sQbDo/hxlsqMN67eL0E/fc3/5YTdEwjY1O+ahhQ==
+X-Received: by 2002:a17:907:e283:b0:a8a:af0c:dba9 with SMTP id a640c23a62f3a-a9029444940mr1546939566b.16.1726554410677;
+        Mon, 16 Sep 2024 23:26:50 -0700 (PDT)
+Received: from localhost (109-81-84-13.rct.o2.cz. [109.81.84.13])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a90612e5600sm408627266b.175.2024.09.16.23.26.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Sep 2024 23:26:50 -0700 (PDT)
+Date: Tue, 17 Sep 2024 08:26:49 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <kees@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 19/19] rcu: Use kthread preferred affinity for RCU exp kworkers
-Date: Tue, 17 Sep 2024 00:49:23 +0200
-Message-ID: <20240916224925.20540-20-frederic@kernel.org>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240916224925.20540-1-frederic@kernel.org>
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 12/19] kthread: Default affine kthread to its preferred
+ NUMA node
+Message-ID: <ZukhKXxErPOaXtAL@tiehlicka>
 References: <20240916224925.20540-1-frederic@kernel.org>
+ <20240916224925.20540-13-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240916224925.20540-13-frederic@kernel.org>
 
-Now that kthreads have an infrastructure to handle preferred affinity
-against CPU hotplug and housekeeping cpumask, convert RCU exp workers to
-use it instead of handling all the constraints by itself.
+On Tue 17-09-24 00:49:16, Frederic Weisbecker wrote:
+> Kthreads attached to a preferred NUMA node for their task structure
+> allocation can also be assumed to run preferrably within that same node.
+> 
+> A more precise affinity is usually notified by calling
+> kthread_create_on_cpu() or kthread_bind[_mask]() before the first wakeup.
+> 
+> For the others, a default affinity to the node is desired and sometimes
+> implemented with more or less success when it comes to deal with hotplug
+> events and nohz_full / CPU Isolation interactions:
+> 
+> - kcompactd is affine to its node and handles hotplug but not CPU Isolation
+> - kswapd is affine to its node and ignores hotplug and CPU Isolation
+> - A bunch of drivers create their kthreads on a specific node and
+>   don't take care about affining further.
+> 
+> Handle that default node affinity preference at the generic level
+> instead, provided a kthread is created on an actual node and doesn't
+> apply any specific affinity such as a given CPU or a custom cpumask to
+> bind to before its first wake-up.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/tree.c | 105 +++++++++-------------------------------------
- 1 file changed, 19 insertions(+), 86 deletions(-)
+Makes sense.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 902d4b5abbe7..118477a6dda4 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4815,6 +4815,22 @@ rcu_boot_init_percpu_data(int cpu)
- 	rcu_boot_init_nocb_percpu_data(rdp);
- }
- 
-+static void rcu_thread_affine_rnp(struct task_struct *t, struct rcu_node *rnp)
-+{
-+	cpumask_var_t affinity;
-+	int cpu;
-+
-+	if (!zalloc_cpumask_var(&affinity, GFP_KERNEL))
-+		return;
-+
-+	for_each_leaf_node_possible_cpu(rnp, cpu)
-+		cpumask_set_cpu(cpu, affinity);
-+
-+	kthread_affine_preferred(t, affinity);
-+
-+	free_cpumask_var(affinity);
-+}
-+
- struct kthread_worker *rcu_exp_gp_kworker;
- 
- static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
-@@ -4827,7 +4843,7 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
- 	if (rnp->exp_kworker)
- 		return;
- 
--	kworker = kthread_run_worker(0, name, rnp_index);
-+	kworker = kthread_create_worker(0, name, rnp_index);
- 	if (IS_ERR_OR_NULL(kworker)) {
- 		pr_err("Failed to create par gp kworker on %d/%d\n",
- 		       rnp->grplo, rnp->grphi);
-@@ -4837,16 +4853,9 @@ static void rcu_spawn_exp_par_gp_kworker(struct rcu_node *rnp)
- 
- 	if (IS_ENABLED(CONFIG_RCU_EXP_KTHREAD))
- 		sched_setscheduler_nocheck(kworker->task, SCHED_FIFO, &param);
--}
- 
--static struct task_struct *rcu_exp_par_gp_task(struct rcu_node *rnp)
--{
--	struct kthread_worker *kworker = READ_ONCE(rnp->exp_kworker);
--
--	if (!kworker)
--		return NULL;
--
--	return kworker->task;
-+	rcu_thread_affine_rnp(kworker->task, rnp);
-+	wake_up_process(kworker->task);
- }
- 
- static void __init rcu_start_exp_gp_kworker(void)
-@@ -4931,79 +4940,6 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	return 0;
- }
- 
--static void rcu_thread_affine_rnp(struct task_struct *t, struct rcu_node *rnp)
--{
--	cpumask_var_t affinity;
--	int cpu;
--
--	if (!zalloc_cpumask_var(&affinity, GFP_KERNEL))
--		return;
--
--	for_each_leaf_node_possible_cpu(rnp, cpu)
--		cpumask_set_cpu(cpu, affinity);
--
--	kthread_affine_preferred(t, affinity);
--
--	free_cpumask_var(affinity);
--}
--
--/*
-- * Update kthreads affinity during CPU-hotplug changes.
-- *
-- * Set the per-rcu_node kthread's affinity to cover all CPUs that are
-- * served by the rcu_node in question.  The CPU hotplug lock is still
-- * held, so the value of rnp->qsmaskinit will be stable.
-- *
-- * We don't include outgoingcpu in the affinity set, use -1 if there is
-- * no outgoing CPU.  If there are no CPUs left in the affinity set,
-- * this function allows the kthread to execute on any CPU.
-- *
-- * Any future concurrent calls are serialized via ->kthread_mutex.
-- */
--static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
--{
--	cpumask_var_t cm;
--	unsigned long mask;
--	struct rcu_data *rdp;
--	struct rcu_node *rnp;
--	struct task_struct *task_exp;
--
--	rdp = per_cpu_ptr(&rcu_data, cpu);
--	rnp = rdp->mynode;
--
--	task_exp = rcu_exp_par_gp_task(rnp);
--
--	/*
--	 * If CPU is the boot one, this task is created later from early
--	 * initcall since kthreadd must be created first.
--	 */
--	if (!task_exp)
--		return;
--
--	if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
--		return;
--
--	mutex_lock(&rnp->kthread_mutex);
--	mask = rcu_rnp_online_cpus(rnp);
--	for_each_leaf_node_possible_cpu(rnp, cpu)
--		if ((mask & leaf_node_cpu_bit(rnp, cpu)) &&
--		    cpu != outgoingcpu)
--			cpumask_set_cpu(cpu, cm);
--	cpumask_and(cm, cm, housekeeping_cpumask(HK_TYPE_RCU));
--	if (cpumask_empty(cm)) {
--		cpumask_copy(cm, housekeeping_cpumask(HK_TYPE_RCU));
--		if (outgoingcpu >= 0)
--			cpumask_clear_cpu(outgoingcpu, cm);
--	}
--
--	if (task_exp)
--		set_cpus_allowed_ptr(task_exp, cm);
--
--	mutex_unlock(&rnp->kthread_mutex);
--
--	free_cpumask_var(cm);
--}
--
- /*
-  * Has the specified (known valid) CPU ever been fully online?
-  */
-@@ -5032,7 +4968,6 @@ int rcutree_online_cpu(unsigned int cpu)
- 	if (rcu_scheduler_active == RCU_SCHEDULER_INACTIVE)
- 		return 0; /* Too early in boot for scheduler work. */
- 	sync_sched_exp_online_cleanup(cpu);
--	rcutree_affinity_setting(cpu, -1);
- 
- 	// Stop-machine done, so allow nohz_full to disable tick.
- 	tick_dep_clear(TICK_DEP_BIT_RCU);
-@@ -5249,8 +5184,6 @@ int rcutree_offline_cpu(unsigned int cpu)
- 	rnp->ffmask &= ~rdp->grpmask;
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 
--	rcutree_affinity_setting(cpu, cpu);
--
- 	// nohz_full CPUs need the tick for stop-machine to work quickly
- 	tick_dep_set(TICK_DEP_BIT_RCU);
- 	return 0;
+> This generic handling is aware of CPU hotplug events and CPU isolation
+> such that:
+> 
+> * When a housekeeping CPU goes up and is part of the node of a given
+>   kthread, it is added to its applied affinity set (and
+>   possibly the default last resort online housekeeping set is removed
+>   from the set).
+> 
+> * When a housekeeping CPU goes down while it was part of the node of a
+>   kthread, it is removed from the kthread's applied
+>   affinity. The last resort is to affine the kthread to all online
+>   housekeeping CPUs.
+
+But I am not really sure about this part. Sure it makes sense to set the
+affinity to exclude isolated CPUs but why do we care about hotplug
+events at all. Let's say we offline all cpus from a given node (or
+that all but isolated cpus are offline - is this even
+realistic/reasonable usecase?). Wouldn't scheduler ignore the kthread's
+affinity in such a case? In other words how is that different from
+tasksetting an userspace task to a cpu that goes offline? We still do
+allow such a task to run, right? We just do not care about affinity
+anymore.
 -- 
-2.46.0
-
+Michal Hocko
+SUSE Labs
