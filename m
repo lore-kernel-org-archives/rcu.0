@@ -1,66 +1,66 @@
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF43317B513;
-	Tue, 17 Sep 2024 14:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C5F017C9E9;
+	Tue, 17 Sep 2024 14:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726583702; cv=none; b=bxmR8dmQfT5AdELLN0qv8Qk1OHryxtJeBWZBor03ctDMAUqZIeZ+266J/fFyXRuXH8xZBHIuKiJZAO2HL4iYgxGUXFfn0jMEcHWh0S0qZZ8zL3rt8nvVwpxfb7pWX2X47yn0aVGTM6vHXSIRiIcLTeY5Z6XiSn2ZV3W4QCsLfoc=
+	t=1726583703; cv=none; b=mUnCnKui5mAOD2R/dqJCsUtfF1rB4a+1PTDj7Q3dxQdqpZ0vUFAdNCtG729xkb8TpGFtFEIS2hbA5w/njYf5qAqsaYVG7VMzl+g+cjWgOrX/3a7LNgZVQVGVMgnurJGyBnDEmhpIN65pnRX5fJTl9EVppcnltUgwpc9rEgU02c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726583702; c=relaxed/simple;
-	bh=Zjmy1aEbU0/OgcKVrk4j8BQEKyIgLpLw6wRloA5pGP0=;
+	s=arc-20240116; t=1726583703; c=relaxed/simple;
+	bh=UEzTx9D/4aIem3SYwDJSGjr2mKzWLG8B0R4I+L4ZtQs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PasehkP5Jz4YKOZupyX05nid2di9VJB3705pV/pR7zbeHZrm50V3v20LT9xDTMspYNr49tO4J0/64WdAEO9ndZ1W/oqUgezD417nOAZ0ZGU1e9lWtOivehBNssQXjEZIL/iNQNxje9xXA3CAkYBlbCiMG+AdfP7lKhxbmvdmNVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RIYZoqz9; arc=none smtp.client-ip=209.85.219.179
+	 MIME-Version; b=B4ws+tLzkRUJ9xcA7B+TxZbIeczYGv+mXiUUDZnqARdYA33Nt5zp02HV7cIuztWyLQGTNw0tH5x/vK6PTTb7Nm3FZmBTsrZAhSPEomEhaC5TP4xwsA55rq3kwPyhG7up/G/xE6bHvWNYDssMDD1Nu0UZ1YokvQ5Gn6omoCmce2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lowJ0vTG; arc=none smtp.client-ip=209.85.219.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RIYZoqz9"
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e1a80979028so5599723276.1;
-        Tue, 17 Sep 2024 07:35:00 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lowJ0vTG"
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6c579748bf4so44300066d6.1;
+        Tue, 17 Sep 2024 07:35:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726583700; x=1727188500; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726583701; x=1727188501; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=GcfRMZ3iyMDLyZX4twHVpqBTdlI1aOiND6/+aYkmmFI=;
-        b=RIYZoqz9KnW6AYzNf+GfgSYG0ztKNQpepJogAfk0lkLFxK24jMjreddtLJxhKM7w2h
-         1VdhkcQpSa3ANXWNNM5rOMdQKID9OKir2MLosShYON+eKwkmoPwkLMagPCgkltvpCVov
-         NC7Tk4Q46TUkF9SFtn0EJGVYPPMPUS6Ybhap6iNq41EIa9Z5bbuz9zPDSgSOeuh8zHFr
-         8VxLQ93MIQYbgDFOksnsu4IsTpJFIpiUy9OpVUurMpiMTkZ3s7XX7QCFIALaKL1kPAOC
-         gXTXsYLcPhZI4aOEuNsWL4+hrTS/DjjKf73sAprAcEH8W0aCQVb9CKbFE6y2yaHEC3q+
-         LXzw==
+        bh=cLQI6kZ6TnjcLlPN0cihMK1F/E38o+9g1wKleRuuDyM=;
+        b=lowJ0vTGORomv5QklVJK5iEMh4WwT6cttc3itDOnaXNGxM2YXvsCjPwHGsg3+NZs8A
+         2rYOoxDUtfGucLkNA1kdb4OwsSXIJcs+da5nXqhLnH2A2GQp7XB7EqNAt8e0Y4Rhu0XM
+         d6vprPfqiBIK77dOflufP2F2pAfbmXm0UYnprU1VEIwlelrB+sNndQUmKsJaMGnTYsLM
+         PzIrSBfTDO+scRkWacNrPebC8wUjy8fQUKSSaHwmGQv640NOddN1r87Wfs+RI4heiiv0
+         Cej/jKUae4smSeB0QGO8rqMISO/sIklewhipO8l7E7MBLA6VwnrQhiksvUrI+5wc5S96
+         T2fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726583700; x=1727188500;
+        d=1e100.net; s=20230601; t=1726583701; x=1727188501;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GcfRMZ3iyMDLyZX4twHVpqBTdlI1aOiND6/+aYkmmFI=;
-        b=Tmo3yIK6KJEcZbotFriS9geWKHz8IOY4a+8kQmsOfmtyH0jMuuwNIhCnBsxhmzjQ88
-         aHOW/1KMWJdWrFSomSi+iqP77rPTToJ8UaUDh+BKYssGkL2mZmVdFf2KjM7Y/Klhsr+3
-         3OtM2Gm2YxUWmyDb/kaX8E6hnyoN4ZgJBL42RkZ214FoF8wOwDCv5Lo4D63S8QNGOD9k
-         Ms0ED+qQ6453bUqQUdfaKSSScGwtKdkvE4otWOcaAxPGb0EQCUQqmeGs7cHh5G3NfTUF
-         dHtQ9waj7zqVmJ2pCRWFxoezPwh4V8GedGldYFEfuxoXVXnXHd1w4Esw8/L1Ux4vUXrb
-         Pb7w==
-X-Forwarded-Encrypted: i=1; AJvYcCXO956lhcokio8o6kiogyoklYsHwk4H9lsQm7lwSmcJa8hxPOJrNgxh3fWIGy4RFtqarquA@vger.kernel.org, AJvYcCXT0aPSjvSy2ywcGoTjYbyozISPP4x5wEW/z8EcHyTRpVpYjmd9p1QedOze6i61TKnWs1vt@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxx7kvJNAVcsk5OcHm1qlgkc2U1zL6kM0DLle1g9tjiKLfBIetZ
-	vRgT404YrCIqIyYKrk7eFQgQDEvZFh7TSc0lCv4tYLXcwkrDQnU5
-X-Google-Smtp-Source: AGHT+IGuBl7w6kHeocxSsrq7wz1PL/D3xhcWK31fEFq1kkjp/eaeFPUIN6wONAeMPCU446DmR2QvTw==
-X-Received: by 2002:a05:6902:cc7:b0:e13:ceaa:59d9 with SMTP id 3f1490d57ef6-e1d9dc41795mr12290884276.41.1726583699724;
-        Tue, 17 Sep 2024 07:34:59 -0700 (PDT)
+        bh=cLQI6kZ6TnjcLlPN0cihMK1F/E38o+9g1wKleRuuDyM=;
+        b=tXRf9eSHXLSRQuBEZKmcA3O+EHB9Vzrl/H9H32JPMswNxZBEKnn/FBMO89DNXj3lBb
+         M4VQKz9fKCEKXI8Np0IoUVOYlZMdPC/6tklWN+hXujq4Wa0jNDAuvUqIy3UTKI+xc/c/
+         4JwciY4qe4zTT5XdY5e2H9GgTA9sbqMmUjEc0MgvQSQBTdgYsmHjJICPC1LBE1Gv5dKK
+         KMBH/x3BKmj1PaaftZqmOMKYqLowuNKdsXAm3r+2jgn70MkfZhI0gWdnp1wf9fShxN9f
+         HLbhc3PUiivGCA6Rkzpbc6jmrRVLNuPY3d2WbyiKmC8GW4WImTonHg3THRZg3iCIJedu
+         Z4wQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtzRm1133qO6AXdRAkOZ8xl9qtidTr4Anu8scCpzNHdlDD3INGv6PBDX2drs75d/vPwwDx@vger.kernel.org, AJvYcCXVtPgoKOlLbbSQ+uSF7fsfPLNmp5N6jblJZRmQCnlhZiqX/oiPzwLeXJ2SW95KDsWkscbd@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8mUmiimeXP+FKdqQp9m9ylynYbN7h/fY/AA3+5UFTDVvvupay
+	oMP2PJjWwzGWEM3+eaTUOceQCtsxUD0mri3hEhlWjDpeE/apeOUV
+X-Google-Smtp-Source: AGHT+IHxAlrf3264M1eG0sU+WYQOpz1SeCGp6P57WflWDJF78YqG3aNM3gQ3OugWPUyeVTVmITSVWQ==
+X-Received: by 2002:a05:6214:440b:b0:6c3:62bc:5de3 with SMTP id 6a1803df08f44-6c57e240938mr223177656d6.53.1726583700929;
+        Tue, 17 Sep 2024 07:35:00 -0700 (PDT)
 Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c58c7da98bsm34819796d6.145.2024.09.17.07.34.58
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c58c645d27sm35018466d6.73.2024.09.17.07.35.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Sep 2024 07:34:59 -0700 (PDT)
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 7E0841200070;
-	Tue, 17 Sep 2024 10:34:58 -0400 (EDT)
+        Tue, 17 Sep 2024 07:35:00 -0700 (PDT)
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfauth.phl.internal (Postfix) with ESMTP id F227C1200070;
+	Tue, 17 Sep 2024 10:34:59 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Tue, 17 Sep 2024 10:34:58 -0400
-X-ME-Sender: <xms:kpPpZpr52CNmslVci5Do8tSBXttYdhbPZMbTuZGTmHK1Z4zt6n_EcA>
-    <xme:kpPpZrq-kCFCQDRFX0udq8YRKfZSQZqFQ33XrNBkDeH-mLd__QhIKV2CXa3e3Cp1p
-    u1bxD_e6__I-ChggQ>
-X-ME-Received: <xmr:kpPpZmOp1GyB8Za1UtlG8JL13R-_n02ERXUFePSegqBcXPPT8leqL9Vle2k>
+  by phl-compute-03.internal (MEProxy); Tue, 17 Sep 2024 10:34:59 -0400
+X-ME-Sender: <xms:k5PpZoyBuEtWz4UGkULBJa6aW9UOXEmvIx5H_9jeFJi8QNvqTvtrpQ>
+    <xme:k5PpZsQM-R7W-zPeDB5SqCvKg99YKQRNc0QqEBt6d-I3P0Ri2VbF-DxUdK0cqZe5f
+    yeksXmFnHqaqki4_A>
+X-ME-Received: <xmr:k5PpZqXfkqX4SPEUwBWiRctbcYiD4nd3B2gGLkqNkqu_un2JmSxJR_nfH2I>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudekjedgjeelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
@@ -79,14 +79,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudekjedgjeelucetufdoteggod
     drohhrghdprhgtphhtthhopehnvggvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdr
     ohhrghdprhgtphhtthhopehjohgvlhesjhhovghlfhgvrhhnrghnuggvshdrohhrghdprh
     gtphhtthhopehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhg
-X-ME-Proxy: <xmx:kpPpZk594qweYGtiOVVvF-n7zpe44oLUquQODnmKQ9SayqLNyDh8Qg>
-    <xmx:kpPpZo4yL31xuVSmdcwvf0nn7uJ8aWlna1nWuLFjAoD8wtARnwO67A>
-    <xmx:kpPpZsi2UvT8JR4VrByHky07ATxzTmDtYcJALwc1uH3Da5rYaLZwuA>
-    <xmx:kpPpZq4UbbrqeY2iEfMJdHGY2RlRcvjdcC1QXK5nKZptAdf8LQbbXg>
-    <xmx:kpPpZvLuHl7ug6ow0JUeXLgB-yLk3yKcrN3lY-SqpetBOjzHbd4Z_gbz>
+X-ME-Proxy: <xmx:k5PpZmjjdvtfnnTUMxyarIvVGtN8GdMkpiet04So6-LLONo4c8ojwg>
+    <xmx:k5PpZqAHEvI5Qsczqkm_xhjIW9GQbQm-AzYSKanMgMCGZfqs0RZTdg>
+    <xmx:k5PpZnKb7YwChUhJaTD_JVehHcBDdHXKX9ao5SKSMth3Y8v_b0or1w>
+    <xmx:k5PpZhAtiRY7Dx0B77YyJRs3Tmb8XF0qz_kPg17U_I9Tou3KelXF-g>
+    <xmx:k5PpZqxcVUppObEIIxuJguw4G4QXC1wazBBEkZMsdIRHmYCqObGjQplm>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 17 Sep 2024 10:34:57 -0400 (EDT)
+ 17 Sep 2024 10:34:59 -0400 (EDT)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org,
@@ -113,9 +113,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Vlastimil Babka <vbabka@suse.cz>,
 	maged.michael@gmail.com
-Subject: [RFC PATCH 3/4] refscale: Add benchmarks for percpu_ref
-Date: Tue, 17 Sep 2024 07:34:01 -0700
-Message-ID: <20240917143402.930114-4-boqun.feng@gmail.com>
+Subject: [RFC PATCH 4/4] WIP: hazptr: Add hazptr test sample
+Date: Tue, 17 Sep 2024 07:34:02 -0700
+Message-ID: <20240917143402.930114-5-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240917143402.930114-1-boqun.feng@gmail.com>
 References: <20240917143402.930114-1-boqun.feng@gmail.com>
@@ -127,82 +127,136 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Benchmarks for percpu_ref are added to evaluate the reader side
-performance between percpu_ref and other refcounting mechanisms.
+Sample code for hazptr. This should go away or get more polished when
+hazptr support is added into rcutorture.
 
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/refscale.c | 50 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 49 insertions(+), 1 deletion(-)
+ samples/Kconfig              |  6 +++
+ samples/Makefile             |  1 +
+ samples/hazptr/hazptr_test.c | 87 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 94 insertions(+)
+ create mode 100644 samples/hazptr/hazptr_test.c
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 7e76ae5159e6..97b73c980c5d 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -393,6 +393,54 @@ static struct ref_scale_ops hazptr_ops = {
- 	.name		= "hazptr"
- };
+diff --git a/samples/Kconfig b/samples/Kconfig
+index b288d9991d27..9b42cde35dca 100644
+--- a/samples/Kconfig
++++ b/samples/Kconfig
+@@ -293,6 +293,12 @@ config SAMPLE_CGROUP
  
-+struct percpu_ref percpu_ref;
+ source "samples/rust/Kconfig"
+ 
++config SAMPLE_HAZPTR
++	bool "Build hazptr sample code"
++	help
++	  Build samples that shows hazard pointer usage. Currently only
++	  builtin usage is supported.
 +
-+static void percpu_ref_dummy(struct percpu_ref *ref) {}
+ endif # SAMPLES
+ 
+ config HAVE_SAMPLE_FTRACE_DIRECT
+diff --git a/samples/Makefile b/samples/Makefile
+index b85fa64390c5..0be21edc8a30 100644
+--- a/samples/Makefile
++++ b/samples/Makefile
+@@ -39,3 +39,4 @@ obj-$(CONFIG_SAMPLE_KMEMLEAK)		+= kmemleak/
+ obj-$(CONFIG_SAMPLE_CORESIGHT_SYSCFG)	+= coresight/
+ obj-$(CONFIG_SAMPLE_FPROBE)		+= fprobe/
+ obj-$(CONFIG_SAMPLES_RUST)		+= rust/
++obj-$(CONFIG_SAMPLE_HAZPTR)		+= hazptr/
+diff --git a/samples/hazptr/hazptr_test.c b/samples/hazptr/hazptr_test.c
+new file mode 100644
+index 000000000000..3cf0cdc8a83a
+--- /dev/null
++++ b/samples/hazptr/hazptr_test.c
+@@ -0,0 +1,87 @@
++#include <linux/module.h>
++#include <linux/kthread.h>
++#include <linux/hazptr.h>
 +
-+static bool percpu_ref_scale_init(void)
-+{
-+	int ret;
-+
-+	ret = percpu_ref_init(&percpu_ref, percpu_ref_dummy, PERCPU_REF_INIT_ATOMIC, GFP_KERNEL);
-+	percpu_ref_switch_to_percpu(&percpu_ref);
-+
-+	return !ret;
-+}
-+
-+static void percpu_ref_scale_cleanup(void)
-+{
-+	percpu_ref_exit(&percpu_ref);
-+}
-+
-+static void percpu_ref_section(const int nloops)
-+{
++struct foo {
 +	int i;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		percpu_ref_get(&percpu_ref);
-+		percpu_ref_put(&percpu_ref);
-+	}
-+}
-+
-+static void percpu_ref_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		percpu_ref_get(&percpu_ref);
-+		un_delay(udl, ndl);
-+		percpu_ref_put(&percpu_ref);
-+	}
-+}
-+
-+static struct ref_scale_ops percpu_ref_ops = {
-+	.init		= percpu_ref_scale_init,
-+	.cleanup	= percpu_ref_scale_cleanup,
-+	.readsection	= percpu_ref_section,
-+	.delaysection	= percpu_ref_delay_section,
-+	.name		= "percpu_ref"
++	struct callback_head head;
 +};
 +
- // Definitions for rwlock
- static rwlock_t test_rwlock;
- 
-@@ -1158,7 +1206,7 @@ ref_scale_init(void)
- 	static struct ref_scale_ops *scale_ops[] = {
- 		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
- 		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
--		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops, &hazptr_ops,
-+		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops, &hazptr_ops, &percpu_ref_ops,
- 	};
- 
- 	if (!torture_init_begin(scale_type, verbose))
++static void simple_func(struct callback_head *head)
++{
++	struct foo *ptr = container_of(head, struct foo, head);
++
++	printk("callback called %px, i is %d\n", ptr, ptr->i);
++	kfree(ptr);
++}
++
++static void simple(void)
++{
++	struct hazptr_context ctx;
++	struct foo *dummy, *tmp, *other;
++	hazptr_t *hptr;
++	hazptr_t *hptr2;
++
++	dummy = kzalloc(sizeof(*dummy), GFP_KERNEL);
++	dummy->i = 42;
++
++	other = kzalloc(sizeof(*dummy), GFP_KERNEL);
++	other->i = 43;
++
++	if (!dummy || !other) {
++		printk("allocation failed, skip test\n");
++		return;
++	}
++
++	init_hazptr_context(&ctx);
++	hptr = hazptr_alloc(&ctx);
++	BUG_ON(!hptr);
++
++	// Get a second hptr.
++	hptr2 = hazptr_alloc(&ctx);
++	BUG_ON(!hptr2);
++
++	// No one is modifying 'dummy', protection must succeed.
++	BUG_ON(!hazptr_tryprotect(hptr, dummy, head));
++
++	// Simulate changing a global pointer.
++	tmp = dummy;
++	WRITE_ONCE(dummy, other);
++
++	// Callback will run after no active readers.
++	printk("callback added, %px\n", tmp);
++
++	call_hazptr(&tmp->head, simple_func);
++
++	// No one is modifying 'dummy', protection must succeed.
++	tmp = hazptr_protect(hptr2, dummy, head);
++
++	printk("reader2 got %px, i is %d\n", tmp, tmp->i);
++
++	// The above callback should run after this.
++	hazptr_clear(hptr);
++	printk("first reader is out\n");
++
++	for (int i = 0; i < 10; i++)
++		schedule(); // yield a few times.
++
++	// Simulate freeing a global pointer.
++	tmp = dummy;
++	WRITE_ONCE(dummy, NULL);
++	printk("callback added, %px\n", tmp);
++	call_hazptr(&tmp->head, simple_func);
++
++	cleanup_hazptr_context(&ctx);
++	printk("no reader here\n");
++
++	for (int i = 0; i < 10; i++)
++		schedule(); // yield a few times.
++}
++
++static int hazptr_test(void)
++{
++	simple();
++	printk("test ends\n");
++	return 0;
++}
++module_init(hazptr_test);
 -- 
 2.45.2
 
