@@ -1,97 +1,63 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BC1172BD6
-	for <rcu@vger.kernel.org>; Wed, 18 Sep 2024 07:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21ED817C7D9;
+	Wed, 18 Sep 2024 08:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726643946; cv=none; b=gaWQt9+Kw6v2UnLGqwZG6zIy7+eWKLdEkl/0Do+N2XkdtSELvR194MHTnhL1/2PlC0zNaZj2ByYqyjwHzza+v22YKjOqWHsUB24st2meArnl7Jo40SlDScGF2FZyUFNsf5F09/LgBsxHLUbsPpcTD/8AykjLpnX5nHW5LmddOJ0=
+	t=1726647008; cv=none; b=R6SDHEOperxrrSLX/r6lt91DIVe5DNMsjDrf+6rVL1wFjYuc3F7tXcCyx5EcFIvonKXjqXbbO/v87LWulCqL57Wej8/JIGi740llSL5h67yZCNKKFkbANlZCdmPsE7Vx324Vm+GJPjtjZ2dVT3GLL3KFRfkqdjdiu124ZQI5bNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726643946; c=relaxed/simple;
-	bh=kTPeIU/j5jUeqN41PXaxQLwE/1Uka9ApKWzgFyfK52o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kIVKnEFbx80pq7BeP4MoxoyDXK4q7wI59IQCx5ktqYJcjunQjcF7QJICnwaJs+jzybhDzfgmMhc0cUt/wB4I+DJR5/Z+E7SLtEA2QoidXrf11xrkDzBfRK3sh5FzF3o3RTArTy1fp8gqc8lX+gqaiJMG1JFShrHDYIxruqXy2kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YbdIQ4a5; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1726647008; c=relaxed/simple;
+	bh=Qsb5CkCGLTMxWStZJMNS0jJ8FSHdnvzp+nam8PsSjT8=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=hA2B27gtYcqB6PL10mO4fUU3pTiyXQ4CgkL5GVX5rEOMAMLXqVLK6KIrAKpgAoNYyhtAM6HD0wzwncIcvGGWiqNXZlS1zuPe+p1bYB2VJjkiEcVDZjoQsqdWo0iZMkMoFNiwMG79jgKmiZzJFAYcqs+IQOl74UCt81fua4EuJLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JDeJAqEu; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YbdIQ4a5"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-374c3400367so4716158f8f.2
-        for <rcu@vger.kernel.org>; Wed, 18 Sep 2024 00:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1726643943; x=1727248743; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TqYtJ8YuLXQL4jCoAoDYqm0N+vE0UnC4CwyzicEGN7M=;
-        b=YbdIQ4a5KegNtN3dJhQZp17f75i1yoMkfIqGIiT/dzFItpbEPxpVBJQUMxvLCpOxA1
-         0vlnamgEsK6LnQIEQHTY5/RsGDcLRnqh7a9QIHEaz04cMO3bUyiQMAopanDnu+SW8JVu
-         wOxeHA2HfTrkLarQmTy25r6jlOmTTED6WPris=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726643943; x=1727248743;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TqYtJ8YuLXQL4jCoAoDYqm0N+vE0UnC4CwyzicEGN7M=;
-        b=NFfMflAnXApP52odAhtHczTlF5PDOmnZdA+fK1PLO4aiBtAqpeODZL4/eEo9MsJDtV
-         UHm67uI5/eMgifXEGVPP5Be8ij05m/8OexRNEeNwWQx/t5T6gmrHovUTNALMigYbsUGL
-         Pd4Ai63hO5rvFn6SQaVMgb5qoz40q7ixtA6fxXLoF8doaBqoEXRG9MCTXQcSsWHJp7T+
-         YLZ0m3HTe6tYGKR1DfN3m27oHb49Lir8wJ/TMBwY6IMAGqbBXEjNgK8DE266VetVK82I
-         CjsEz+N/IOmieXaN+k68r80xeLAmqsuJoZIgo4/bIOlKp8t79saRVgNtk3mF7/NJlrcU
-         eOMg==
-X-Forwarded-Encrypted: i=1; AJvYcCXM/TM5FNJLH5lnvhzAXn5a5t4MbczOEqzEmZWJTXcm9sBqqqRRFTmD5nTstgd1Sl8yez4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGQI6wKAM8CwQ0GcaCNSQiBccIWjafBNyZ3Zh0VTBqJdH7Y/G8
-	heauAJorjf4XNPqAJXwwa4iWFnOkqkH7+jQ7xXfqUOi81BtpxoBaxnqpCZlslYUYSngxCg9My79
-	1rWcIgw==
-X-Google-Smtp-Source: AGHT+IETrnPkrNHvABk6Nq2h9xNFK6GoySxlV6MgDpNgngNwa4YSLTZIh+okQ8xn0r4bEo7W3F8oVw==
-X-Received: by 2002:a5d:4589:0:b0:374:c9f0:7533 with SMTP id ffacd0b85a97d-378d6236beamr14614830f8f.41.1726643942852;
-        Wed, 18 Sep 2024 00:19:02 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a90612df75csm549844966b.149.2024.09.18.00.19.00
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Sep 2024 00:19:01 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a8a7903cb7dso412245866b.3
-        for <rcu@vger.kernel.org>; Wed, 18 Sep 2024 00:19:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVx9wqnjSlII1f2SNPZtHJew7+DS3mATsZ8/8PEV8w5XJC5Z/k0SPllWEnlOMLLPul+TKo=@vger.kernel.org
-X-Received: by 2002:a05:6402:4310:b0:5c4:2d14:c725 with SMTP id
- 4fb4d7f45d1cf-5c42d14c8b6mr21424243a12.2.1726643940613; Wed, 18 Sep 2024
- 00:19:00 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JDeJAqEu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8CEC4CED2;
+	Wed, 18 Sep 2024 08:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726647008;
+	bh=Qsb5CkCGLTMxWStZJMNS0jJ8FSHdnvzp+nam8PsSjT8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=JDeJAqEu9+XTkMHKRvcvoTY85ByKeZbx0Ufwj/KlMpymq+ymUBUzAVhEb3JAfPH6l
+	 aK2bTM3Q9oJo6nOIKX1oahJ/V8BoJ1vISJJepeqsFmKPlX6IsYunP93OBRfG3M1mju
+	 e2fGJYab2Wyu34v6s0Kn39Y4QWkeALKbDteNV85H2oIi7f2i7Tx4H64Q07t9CBUj1z
+	 /uVu5qYVO0C6dwtS6UjpaYrRKA65sPUL2SRuizybW26dzo+mqM7AJ4dGkxhKIHwHeo
+	 kda8tL+aQyS0pbp0G1zhyDvhtKSuyBC4XO292hBB+eI+a9/taX0dK5gaaibUV3tKC8
+	 fzvRv5YRIO6lA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id E9E533806657;
+	Wed, 18 Sep 2024 08:10:10 +0000 (UTC)
+Subject: Re: [GIT PULL] RCU changes for v6.12
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240914024527.GA492739@neeraj.linux>
+References: <20240914024527.GA492739@neeraj.linux>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240914024527.GA492739@neeraj.linux>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.release.v6.12
+X-PR-Tracked-Commit-Id: 355debb83bf79853cde43579f88eed16adb1da29
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 067610ebaaec53809794807842a2fcf5f1f5b9eb
+Message-Id: <172664700971.684502.10200905341930966389.pr-tracker-bot@kernel.org>
+Date: Wed, 18 Sep 2024 08:10:09 +0000
+To: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
+Cc: torvalds@linux-foundation.org, paulmck@kernel.org, joel@joelfernandes.org, frederic@kernel.org, boqun.feng@gmail.com, urezki@gmail.com, neeraj.iitr10@gmail.com, christophe.jaillet@wanadoo.fr, inwardvessel@gmail.com, riel@surriel.com, takakura@valinux.co.jp, seanjc@google.com, thorsten.blum@toblux.com, vschneid@redhat.com, longman@redhat.com, zhouzhouyi@gmail.com, qiang.zhang1211@gmail.com, linux-kernel@vger.kernel.org, kernel-team@meta.com, mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240917143402.930114-1-boqun.feng@gmail.com>
-In-Reply-To: <20240917143402.930114-1-boqun.feng@gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 18 Sep 2024 09:18:43 +0200
-X-Gmail-Original-Message-ID: <CAHk-=wi76E2xxvOaZtgN2FK9YKmbK1ru_1atL8eBCs34z7UigA@mail.gmail.com>
-Message-ID: <CAHk-=wi76E2xxvOaZtgN2FK9YKmbK1ru_1atL8eBCs34z7UigA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] Add hazard pointers to kernel
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
-	lkmm@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang1211@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
-	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Kent Overstreet <kent.overstreet@gmail.com>, Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com
-Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 17 Sept 2024 at 16:34, Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> This series introduces hazard pointers [1] to kernel space. A TL;DR
-> description of hazard pointers is "a scalable refcounting mechanim
-> with RCU-like API". More information can be found at [2].
+The pull request you sent on Sat, 14 Sep 2024 08:15:27 +0530:
 
-Please give actual "this is useful for X, and here is an actual real
-load with numbers showing why it matters".
+> git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.release.v6.12
 
-We don't just merge random infrastructure without a use-case and an
-argument for it.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/067610ebaaec53809794807842a2fcf5f1f5b9eb
 
-                 Linus
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
