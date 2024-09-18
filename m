@@ -1,60 +1,60 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21ED817C7D9;
-	Wed, 18 Sep 2024 08:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF432176FA0;
+	Wed, 18 Sep 2024 08:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726647008; cv=none; b=R6SDHEOperxrrSLX/r6lt91DIVe5DNMsjDrf+6rVL1wFjYuc3F7tXcCyx5EcFIvonKXjqXbbO/v87LWulCqL57Wej8/JIGi740llSL5h67yZCNKKFkbANlZCdmPsE7Vx324Vm+GJPjtjZ2dVT3GLL3KFRfkqdjdiu124ZQI5bNA=
+	t=1726647012; cv=none; b=Ox7RfUcHF0Xfy/NG71jrIcnhRkFWvGpEiODVpX8T0BftUsZe3S3tlXu9YT19aA4yyQeOclIy8OMDH4cuTyYCNYevVvRMRfhvcqE0HKQLU79ef9ShC23rwLcRiyxM5+fFcfzx16rpagGT1PTl+7KFlTi57BhQzixscmp372tok1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726647008; c=relaxed/simple;
-	bh=Qsb5CkCGLTMxWStZJMNS0jJ8FSHdnvzp+nam8PsSjT8=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=hA2B27gtYcqB6PL10mO4fUU3pTiyXQ4CgkL5GVX5rEOMAMLXqVLK6KIrAKpgAoNYyhtAM6HD0wzwncIcvGGWiqNXZlS1zuPe+p1bYB2VJjkiEcVDZjoQsqdWo0iZMkMoFNiwMG79jgKmiZzJFAYcqs+IQOl74UCt81fua4EuJLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JDeJAqEu; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1726647012; c=relaxed/simple;
+	bh=NUie15iA1ECIUc7zgRAua9MnBTbYbm3GIixWKMegGJY=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=l5QsAYhbnhGAV9khKqG9xePr4+CUw4VueqDMhwUhZ5yqq4a2YBLAgBwIw+K9Waxh16LKQpLI6DPACfRIn25LuC/qTWjyhaEJ2ybn3czUftdbP+wR1ha84DI6XCe0c3+JbxtFVDf8gnsaujf0GAoHBhc9va0YOped6N5qRYL5bfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VoThfqD2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JDeJAqEu"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8CEC4CED2;
-	Wed, 18 Sep 2024 08:10:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VoThfqD2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 940F4C4CECD;
+	Wed, 18 Sep 2024 08:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726647008;
-	bh=Qsb5CkCGLTMxWStZJMNS0jJ8FSHdnvzp+nam8PsSjT8=;
+	s=k20201202; t=1726647012;
+	bh=NUie15iA1ECIUc7zgRAua9MnBTbYbm3GIixWKMegGJY=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=JDeJAqEu9+XTkMHKRvcvoTY85ByKeZbx0Ufwj/KlMpymq+ymUBUzAVhEb3JAfPH6l
-	 aK2bTM3Q9oJo6nOIKX1oahJ/V8BoJ1vISJJepeqsFmKPlX6IsYunP93OBRfG3M1mju
-	 e2fGJYab2Wyu34v6s0Kn39Y4QWkeALKbDteNV85H2oIi7f2i7Tx4H64Q07t9CBUj1z
-	 /uVu5qYVO0C6dwtS6UjpaYrRKA65sPUL2SRuizybW26dzo+mqM7AJ4dGkxhKIHwHeo
-	 kda8tL+aQyS0pbp0G1zhyDvhtKSuyBC4XO292hBB+eI+a9/taX0dK5gaaibUV3tKC8
-	 fzvRv5YRIO6lA==
+	b=VoThfqD2yTO9vm3hipzQJ1kXJN+MuedIw/iF7SmNbL4ifQ+sDj0MwyRjxk8+Bjh5v
+	 9facxixc8SHOIHheFLUDFyHO2zo55urgR5a1pMz9QFL6jiuwOPi5UYm4OL04FK7PG6
+	 0vDImPqdOxeDcP/ZoRpHYfrn0PDbomYhsu0+xDXzvtWe39A348PRVjxmBhYiwt23Ag
+	 QSFKaBJY9pwPV+VcWd+HqXgiihUl9FQ+AsGSK7qrlSCq+MQ23A+CSvR632PdyNzzk1
+	 Pip4cMcOdcCQd4PbY/hGCdK+Xc+F7ykh8TmwxrZOFAZzm4pVvuB51kBjrH934qgTqC
+	 s2dAc+V2GAopA==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id E9E533806657;
-	Wed, 18 Sep 2024 08:10:10 +0000 (UTC)
-Subject: Re: [GIT PULL] RCU changes for v6.12
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 99E023806657;
+	Wed, 18 Sep 2024 08:10:15 +0000 (UTC)
+Subject: Re: [GIT PULL] slab updates for 6.11
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240914024527.GA492739@neeraj.linux>
-References: <20240914024527.GA492739@neeraj.linux>
+In-Reply-To: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
+References: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240914024527.GA492739@neeraj.linux>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.release.v6.12
-X-PR-Tracked-Commit-Id: 355debb83bf79853cde43579f88eed16adb1da29
+X-PR-Tracked-Message-Id: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-for-6.12
+X-PR-Tracked-Commit-Id: ecc4d6af979b3bd4d239ff80bbba455c90d3f4f3
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 067610ebaaec53809794807842a2fcf5f1f5b9eb
-Message-Id: <172664700971.684502.10200905341930966389.pr-tracker-bot@kernel.org>
-Date: Wed, 18 Sep 2024 08:10:09 +0000
-To: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-Cc: torvalds@linux-foundation.org, paulmck@kernel.org, joel@joelfernandes.org, frederic@kernel.org, boqun.feng@gmail.com, urezki@gmail.com, neeraj.iitr10@gmail.com, christophe.jaillet@wanadoo.fr, inwardvessel@gmail.com, riel@surriel.com, takakura@valinux.co.jp, seanjc@google.com, thorsten.blum@toblux.com, vschneid@redhat.com, longman@redhat.com, zhouzhouyi@gmail.com, qiang.zhang1211@gmail.com, linux-kernel@vger.kernel.org, kernel-team@meta.com, mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org
+X-PR-Merge-Commit-Id: bdf56c7580d267a123cc71ca0f2459c797b76fde
+Message-Id: <172664701428.684502.2936994868129456564.pr-tracker-bot@kernel.org>
+Date: Wed, 18 Sep 2024 08:10:14 +0000
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>, Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, Christian Brauner <brauner@kernel.org>, RCU <rcu@vger.kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Sat, 14 Sep 2024 08:15:27 +0530:
+The pull request you sent on Mon, 16 Sep 2024 11:45:42 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.release.v6.12
+> git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-for-6.12
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/067610ebaaec53809794807842a2fcf5f1f5b9eb
+https://git.kernel.org/torvalds/c/bdf56c7580d267a123cc71ca0f2459c797b76fde
 
 Thank you!
 
