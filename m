@@ -1,75 +1,42 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3F812E4A;
-	Thu, 19 Sep 2024 16:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07D018E29;
+	Thu, 19 Sep 2024 18:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726762224; cv=none; b=NaoIrl4G17b/8DMJsFMujDB7TNVPVpmRuFHZH54ILsHVZHxEVvZuHjoazlyY9EZXX2oHuzkcBquw+trPHwF4xDZIks7a/aeYUJhDMsg+z5CgAsyR9WHJ3EI2wP4+skujDaxkv6YOWpmo0Pr6DjdPXMuXSBMqmz4y5BOm+96jWP8=
+	t=1726769290; cv=none; b=T/FqRu0/ZtUixwV3gjLjehroagimcc0xSxsLU0QNqOklGpepRgCakR3nki7VVWBhhZHKLMrOxev/i39NIgLNlf+9SF2TKkQfzT1R1Oum/QoGcBxvT7A6SBk8m71XxPxLkbDLe6trFwYVrrECMYRWU0k0J8VnzFB9ZnWLmhoDRIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726762224; c=relaxed/simple;
-	bh=TeWxYNML4uZ1URMQu31Nx1o53ehLgcKlEXaVaXJx29k=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=cc1Uc/cdw+sVcn57Tuxzon69f3J/mAUFug3YSRqVQ0r+7l2iLDPVdYThfDNhwVjXO7iCvnIB8ArbGPVSkkQe2hnS7rVYctUUr5pNiaDugiIwOb1fP3naF8yfrQdtgacd5lwjYXTLoU1CElsReFYYP+Kn1ovQ9ZB6JsMWaBj+In8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BA/rmoFH; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BA/rmoFH"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2059112f0a7so10886565ad.3;
-        Thu, 19 Sep 2024 09:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726762223; x=1727367023; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PY/fGPKseiN5XtuGoO/dNcX3n8cZ54goexwrvXf3OMI=;
-        b=BA/rmoFHpjILmFlUvHVStZgcjzhFfUNu6LlNubzaurEj3smtOpvABhqmFmQvvfYfCU
-         8+wAVb/6RbHvQp2s1cBz5HgdP/Oh7OgQ6Tw0jcp6ASrHd2PhNcosJTKr0oblEcnIixwz
-         J4b+ThfAOcisPTyb17H3caZaEiBM4MlQiea+Ll4+gV7pKsCquSsLTLU763+l7U0SJjxm
-         ByTMmTCNpYdyfk+8qqUvWH2M6pOkPIpbbGoAS9qviZeDgpZZ1P5GQTO8PS8I969z4m49
-         I7lV72yJ4YgwdtDBwFkSxN20LHwwsNIotdCyx3nruZ8G2NkDnrwczhweRALziL5uWWMg
-         GzBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726762223; x=1727367023;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PY/fGPKseiN5XtuGoO/dNcX3n8cZ54goexwrvXf3OMI=;
-        b=d4OMoEWwTXUXcO46i3pK4z1lW/mkfR/stqy7Rv3NIwSY9CoSLs1WTSlkxf8dlFFxqI
-         ONvw5oYC35NfqBAGdRJSZAhfCcLDtWY0w9GMuw6rmTi5qf7h2/0Bktze/7xP9Xi0p3kn
-         GVGf/bmGBdXOqb6g9sFw7dEaE6dxkQswugvasZNri+uqO99KGIMvIs29KLQP+Xqxqkrp
-         5sJOatGjlyyopWabsU6R8J5v29n5OYaKh1Rt6uIoOZM/x5JwKG1WvbE4t+50ZnkosxBi
-         iL8UiEM45xYdrYGpJMhSctK+/8QcwOJbgCAJ6a2bmJldWVd5kSMJMim1ARjleVLvmUMu
-         K+qQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWMKRY8cOS87ykRpmAVHCIzp7rX6i4zYNzjqYolg9YhDL/RZmdnTISeLRHUtW2gGd7a5ZTiBoMgsXJSz4E=@vger.kernel.org, AJvYcCXJ8gQF+xa+k3SpV7jtN92kNHz3cju7hjQilM4Pmo0daSTqZeAjyXPLpYV1uaOV9TKYtC8f@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvWI7hGDppi5VeOoD1qXf8Jc88jJ/J1L5bGLP6rvWCa7DAJx1i
-	vMd/HgslJCIgHf7pKhYl8HqJsg+2cOM6+EWSecBehXuL9YLhsznH
-X-Google-Smtp-Source: AGHT+IE63MOrtSDNRE1puuTOcxVEkzUx9edmw7szWrDYdYgkMNwLAGdFxq+KU06AHJcAn9dSKTtEfw==
-X-Received: by 2002:a17:902:ea09:b0:206:9399:5dd7 with SMTP id d9443c01a7336-20782c16174mr330479015ad.56.1726762222437;
-        Thu, 19 Sep 2024 09:10:22 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946d17fbsm81702445ad.152.2024.09.19.09.10.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Sep 2024 09:10:21 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1726769290; c=relaxed/simple;
+	bh=VpC6Z/47eQxpdIMlA69QxhaCcEiM6gKkuzmPhgwQNiw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lL8fa3WJw0OolmY8YY8C0+OjwVgRGFfPDFUUsq2SJKsjYLpZ8VvL/POXnDK6Ytg0+BjMJ+s3ac7RaX5k2AL+iPJYLBwhlH+zSs/zLZkz55UMy2mBBKCuRWrwlg06vojCBint9u8FdOe1Z/1yCsdnLbNrqROiGEwjEc0w9E71u7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4X8jfw0y6Xz9v7Hl;
+	Fri, 20 Sep 2024 01:48:24 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 26451140E75;
+	Fri, 20 Sep 2024 02:07:51 +0800 (CST)
+Received: from [10.81.207.148] (unknown [10.81.207.148])
+	by APP2 (Coremail) with SMTP id GxC2BwAXespnaOxmyP8_AQ--.55647S2;
+	Thu, 19 Sep 2024 19:07:50 +0100 (CET)
+Message-ID: <9de1c243-8299-4587-8661-7773cef31a05@huaweicloud.com>
+Date: Thu, 19 Sep 2024 20:07:32 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
  pointers
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <ZuvOWM5c8tZotHFL@boqun-archlinux>
-Date: Fri, 20 Sep 2024 00:10:03 +0800
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- RCU <rcu@vger.kernel.org>,
- linux-mm@kvack.org,
- lkmm@lists.linux.dev,
+To: Boqun Feng <boqun.feng@gmail.com>, Alan Huang <mmpgouride@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+ linux-mm@kvack.org, lkmm@lists.linux.dev,
  "Paul E. McKenney" <paulmck@kernel.org>,
  Frederic Weisbecker <frederic@kernel.org>,
  Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
@@ -78,131 +45,72 @@ Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
  "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
  Steven Rostedt <rostedt@goodmis.org>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Zqiang <qiang.zhang1211@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>,
- Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
  Kent Overstreet <kent.overstreet@gmail.com>,
  Linus Torvalds <torvalds@linux-foundation.org>,
- Vlastimil Babka <vbabka@suse.cz>,
- maged.michael@gmail.com,
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
  Neeraj upadhyay <neeraj.upadhyay@amd.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <28F2EAFF-1DF6-41EC-9DFC-3B437D67D840@gmail.com>
 References: <20240917143402.930114-1-boqun.feng@gmail.com>
  <20240917143402.930114-2-boqun.feng@gmail.com>
- <CAJhGHyD8MzUssfuKSGnu1arnayNOyBnUA03vYB0WWwbE3WzoZg@mail.gmail.com>
- <ZuvOWM5c8tZotHFL@boqun-archlinux>
-To: Boqun Feng <boqun.feng@gmail.com>
-X-Mailer: Apple Mail (2.3776.700.51)
+ <CA757E86-2AE4-4077-A07A-679E3BFDBC34@gmail.com>
+ <ZuvLHxH33-p8ki1d@boqun-archlinux>
+From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+In-Reply-To: <ZuvLHxH33-p8ki1d@boqun-archlinux>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwAXespnaOxmyP8_AQ--.55647S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw47uF15XryrKFWUKw4UJwb_yoWDGrg_C3
+	Zrua4vkr1UGF4DXr4rtr18Kr12qF4UZw1qqwn8Jr47Z34rAFWrA3Wvyr95uws3Ja10y34a
+	9r90v34ava47XjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
+	AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
+	JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	4xRDUUUUU==
+X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
 
-2024=E5=B9=B49=E6=9C=8819=E6=97=A5 15:10=EF=BC=8CBoqun Feng =
-<boqun.feng@gmail.com> wrote=EF=BC=9A
->=20
-> On Thu, Sep 19, 2024 at 02:39:13PM +0800, Lai Jiangshan wrote:
->> On Tue, Sep 17, 2024 at 10:34=E2=80=AFPM Boqun Feng =
-<boqun.feng@gmail.com> wrote:
->>=20
->>> +static void hazptr_context_snap_readers_locked(struct =
-hazptr_reader_tree *tree,
->>> +                                              struct hazptr_context =
-*hzcp)
->>> +{
->>> +       lockdep_assert_held(hzcp->lock);
->>> +
->>> +       for (int i =3D 0; i < HAZPTR_SLOT_PER_CTX; i++) {
->>> +               /*
->>> +                * Pairs with smp_store_release() in =
-hazptr_{clear,free}().
->>> +                *
->>> +                * Ensure
->>> +                *
->>> +                * <reader>             <updater>
->>> +                *
->>> +                * [access protected pointers]
->>> +                * hazptr_clear();
->>> +                *   smp_store_release()
->>> +                *                      // in reader scan.
->>> +                *                      smp_load_acquire(); // is =
-null or unused.
->>> +                *                      [run callbacks] // all =
-accesses from
->>> +                *                                      // reader =
-must be
->>> +                *                                      // observed.
->>> +                */
->>> +               hazptr_t val =3D smp_load_acquire(&hzcp->slots[i]);
->>> +
->>> +               if (!is_null_or_unused(val)) {
->>> +                       struct hazptr_slot_snap *snap =3D =
-&hzcp->snaps[i];
->>> +
->>> +                       // Already in the tree, need to remove =
-first.
->>> +                       if (!is_null_or_unused(snap->slot)) {
->>> +                               reader_del(tree, snap);
->>> +                       }
->>> +                       snap->slot =3D val;
->>> +                       reader_add(tree, snap);
->>> +               }
->>> +       }
->>> +}
->>=20
->> Hello
->>=20
->> I'm curious about whether there are any possible memory leaks here.
->>=20
->> It seems that call_hazptr() never frees the memory until the slot is
->> set to another valid value.
->>=20
->> In the code here, the snap is not deleted when hzcp->snaps[i] is =
-null/unused
->> and snap->slot is not which I think it should be.
->>=20
->> And it can cause unneeded deletion and addition of the snap if the =
-slot
->> value is unchanged.
->>=20
->=20
-> I think you're right. (Although the node will be eventually deleted at
-> cleanup_hazptr_context(), however there could be a long-live
-> hazptr_context). It should be:
->=20
-> hazptr_t val =3D smp_load_acquire(&hzcp->slots[i]);
-> struct hazptr_slot_snap *snap =3D &hzcp->snaps[i];
->=20
-> if (val !=3D snap->slot) { // val changed, need to update the tree =
-node.
-> // Already in the tree, need to remove first.
-> if (!is_null_or_unused(snap->slot)) {
-> reader_del(tree, snap);
-> }
->=20
-> // use the latest snapshot.
-> snap->slot =3D val;
->=20
-> // Add it into tree if there is a reader
-> if (!is_null_or_unused(val))
-> reader_add(tree, snap);
-> }
 
-Even using the same context, if two slots are used to protect the same =
-pointer, let it be ptr1,
-then if the second slot is reused for ptr2, ptr1=E2=80=99s callback will =
-be invoked even the first slot still has the ptr1.
 
-The original patch also has this problem.
-
->=20
+Am 9/19/2024 um 8:56 AM schrieb Boqun Feng:
+> On Wed, Sep 18, 2024 at 11:17:37PM +0800, Alan Huang wrote:
+> [...]
+>>> +#define hazptr_tryprotect(hzp, gp, field) (typeof(gp))__hazptr_tryprotect(hzp, (void **)&(gp), offsetof(typeof(*gp), field))
+>>> +#define hazptr_protect(hzp, gp, field) ({ \
+>>> + typeof(gp) ___p; \
+>>> + \
+>>> + ___p = hazptr_tryprotect(hzp, gp, field); \
+>>> + BUG_ON(!___p); \
+>>
+>> hazptr_tryprotect might return NULL, do you need a loop here?
+>>
+> 
+> Thanks for the review. It's me who didn't do a good job here on the
+> documentation. hazptr_protect() is supposed to use for the case where
+> readers know the gp won't change.
+> 
 > Regards,
 > Boqun
->=20
->> I'm not so sure...
->>=20
->> Thanks
->> Lai
+> 
+>>> + ___p; \
+>>> +})
+>>> +
 
+Oh, disregard my other e-mail, I hadn't seen this discussion.
+
+Do you have any specific use case of this in mind? If you know that the 
+pointer can't change, I would assume you can also just read the pointer 
+normally and assign to the hazard pointer without a fence, no?
+
+have fun, jonas
 
