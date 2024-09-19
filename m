@@ -1,101 +1,151 @@
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4747C18EFE2
-	for <rcu@vger.kernel.org>; Thu, 19 Sep 2024 06:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D0F718E36C;
+	Thu, 19 Sep 2024 06:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726728847; cv=none; b=FkBuyeeHy+lx6sY4s7ID4BgMCgvXGyxJOqTKjo8thjQY3bnZUuP+MIf727ECgHDVvIsMkP5x5afrSjNkwCZ1/Aa7egLlPbat8X2Njl54Rz4CLE84ttL1cCeWRF/sEOdHxMJZHlx9c/OQ50nIqA4BxeyWgIWEXV3USE5hvqXtEjQ=
+	t=1726729020; cv=none; b=rRi/QGxecFNTQuW/oI3z04uAdAq7W6wlticX4m9XgYnyEOcReLulmy0OE/ZXvYpmIdKZP1vGtXcNHW7PBPmxx/sOV3q/5PyDVUChdwg+YeVgD/ieNO0xoiRFg+50gaOo9IQSkLnjorkM+2x+IL5rQsLM23x+ZY21Ms+InsPdtJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726728847; c=relaxed/simple;
-	bh=SNG+xyeSaoEynPuXvkVIGLs3uhESwYMX8HsRsEX/v9s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=adpVAwgtntV1jg7kIS3dW3aKNGN5bVrGxzw5W98H1ABTE3b19e4qSfOfOeK1YOIcJt6TwT3G/PWTGAd1EOvPFavoZr7UlgsU4NkuRhAK/K897Pguus9/+9+ae/pQjCt2izBMwpapVv5zvOa5G/X3Ux2xGmVz4plkxM/voWLt+VI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FBpXoR4q; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1726729020; c=relaxed/simple;
+	bh=GfMtiwPE+51iEN55DmgtKun5udcA+FmpKBvyQAJtiY0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pFrTV/3zQ9qj7gKyRz9zLYVRnWdOgu0fIZB5URddHB2igzOXPUF++AzevhJ+DLT3+fbPPleG28y/+HzZaqqXUylFJVfZZ22/iPxTzjpOMLpJlUkeVLLpugFZnhKmk/fg4J4VjLiUSn0vNO0CcUvKWqlvHCHs8GNyriCWT4YStCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bNpi5FaN; arc=none smtp.client-ip=209.85.217.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FBpXoR4q"
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a8a897bd4f1so57023666b.3
-        for <rcu@vger.kernel.org>; Wed, 18 Sep 2024 23:54:04 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bNpi5FaN"
+Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-49bcfbc732eso172157137.3;
+        Wed, 18 Sep 2024 23:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1726728843; x=1727333643; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WsgXsH5u0tVyG6FNrWEuco/5eRBOsE17pT8NJW0A2ts=;
-        b=FBpXoR4qew74P+NGHx5FnOy1d+2XrkGjSmoCp1RDkmrBhmERRQhzEMNK3MrkATAE1F
-         fEp02P/0gQNOHfQc1r9PuHFeMxjzXUYEhHvMcTwbD4uzyCO0kwqVcT2YtX1kWW4wRG6j
-         SGAoD7exL8okhKmk0uFLU2hY96IIFGt8gyByA=
+        d=gmail.com; s=20230601; t=1726729018; x=1727333818; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LjyqInDSlrYo8BNK/yoqNN/E2zQvq1ceUZAN9Ivf1Ww=;
+        b=bNpi5FaNaeVbaemka+wdBKONz7KbTG9DHRjA9nCZ9vWWzHXTX9CjJefEtYo4vmKbRt
+         zGP2cyxdnd4/qTg0D+mii0wAURP1zKGcnNyubKC9V+cSwNTbBIPCO0qo1olOECosQ0KH
+         cgaZp+itLL1czeDahXRTG+MBoH7/QLZqRkh+oHnxyKlfX3g46sJX5aGjj56g6jh4Kjin
+         AL1Ui1wKnznFdC5uGHegG6c3FfJzOswKqshdZdTkqDWa1EtWFz3aoS5EWsp/8UAEfC7y
+         RhdNbzwgKLiNYvr33oEUr3KUqNZdo3IYCVD70LufxA/A8yqTLBQKF7bD/nfci37I89HS
+         nMdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726728843; x=1727333643;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WsgXsH5u0tVyG6FNrWEuco/5eRBOsE17pT8NJW0A2ts=;
-        b=hWesLh1byYiPvEiIWD532h8W7uLKrH9pc3o2s2zCMtJuP0yR2kaeYnfPw8D8DB0N7k
-         TNH1haxDocPrppvslOsc1/yZMgMTnJurZtg6qpdsF9X7xHR+xb6NoVwK0BOtr2bCjL7u
-         SMTPpwcgC9YsMNeio3dAquZynQa7TJEaa/+5oY1C6is+IB2TbH9znUfYTN9eMbPldc6D
-         4pDv6dzkUAQaizl+3DP60XUTXw021v++rtvjIX2bxojzJJOTDeCncoO7ipB0oj2ocYJH
-         9Afi5q4xIHUBKCPQUcdQo3WMdPqfNhZFUie0Y8wu9q1lMqipvFsNjFSS/aAVZJW2U/hu
-         UZpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVItSQsgIOVx1F6v3j58IilpwKzGNeYCJEq23tB/bqz1c1jel6tCaRUGyooTRWT2vj5Qg4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6/J3qe6Kzx8IPhXDpUvhSCTO15bKwDIagyUmOckOCRJw2eDJS
-	YvqZwQQr6gtWFvxXOKJMiac2vSzVnwjWJnuIhnjy1Ux2dlDOrkveC5SedMXRGTkfj0kCltsQf/A
-	6r4sY7A==
-X-Google-Smtp-Source: AGHT+IH2YeeqPb5acsLwWwuVsDYaQFiqlZYTeZ+zZM6r/ugjT7yUr+6OtJKZQEa4IwogOIJ1cXebKw==
-X-Received: by 2002:a17:907:f763:b0:a86:81b8:543f with SMTP id a640c23a62f3a-a90480cef74mr1885117466b.64.1726728843277;
-        Wed, 18 Sep 2024 23:54:03 -0700 (PDT)
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9061096689sm680345566b.27.2024.09.18.23.54.02
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Sep 2024 23:54:02 -0700 (PDT)
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a8d43657255so65626966b.0
-        for <rcu@vger.kernel.org>; Wed, 18 Sep 2024 23:54:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWaisuqVCM/+br7i/MK5ehNUUZ7DA890Sab2JQpOmREzD7LjFn9T+cV/mrmW5TrHE/KK2Q=@vger.kernel.org
-X-Received: by 2002:a17:907:9484:b0:a86:9d3d:edef with SMTP id
- a640c23a62f3a-a9047b50447mr2106944466b.12.1726728403730; Wed, 18 Sep 2024
- 23:46:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1726729018; x=1727333818;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LjyqInDSlrYo8BNK/yoqNN/E2zQvq1ceUZAN9Ivf1Ww=;
+        b=F/sez8UpMFeckcaFIytuE7+UjjRO85okpo1tgmtFvk03SpA3LzLYiwBqt2rmS5Xbqf
+         BUo8do5y/qldAQYZl14I4LW7GdMxRmGjvdzmwlCaZgCrFcZLdIVe28CTxKg2GoDcgWPU
+         xz9X4EpToQ/kZjjhuNn9n1Ji+JoYUII+QAeatXSiD7KlG2i3Qlw258hPqGk9vmKjsDJz
+         DgyaMQzGpiSFqmRDGFd4DcplQR+laqNhqmvCb9hQEmBrOiNUP103jic67chtaAxP51hj
+         ele6xhIa6T2v8v/JHVyH8VBD7lGm/fcr92dOwz6tjdL1z+YZlOVihhDPq43pL/A8FaTS
+         r9nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXExlqm20WfKcwpl+PiIcJTeGdV9XP0yDcpn0UQ3JkNatbl/LLgEeGL9ZF97pkm345W/Y=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWhPIcv6KNbj00YK0QpenoNdfO2Pns+F4IoMeKmIbZWdPuW9z4
+	/Y7rgA+q8B/wqyvqU87LEz2krIQf5GMi4C04pwUqG9AHUbYYi/Xe
+X-Google-Smtp-Source: AGHT+IGC2ng+ioGsscrlsntuIBMM5WTvaUWY7204GDLi7nIUdEs4TTLE54L89LjhuWEcoax5U440Bg==
+X-Received: by 2002:a05:6102:3a0e:b0:49b:f52d:4922 with SMTP id ada2fe7eead31-49d4f6f4a03mr14575335137.27.1726729017873;
+        Wed, 18 Sep 2024 23:56:57 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c75e494ac0sm4288096d6.66.2024.09.18.23.56.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Sep 2024 23:56:57 -0700 (PDT)
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfauth.phl.internal (Postfix) with ESMTP id A0B96120006C;
+	Thu, 19 Sep 2024 02:56:56 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Thu, 19 Sep 2024 02:56:56 -0400
+X-ME-Sender: <xms:OMvrZsjQuzR8LjcH1fyxPi4DCGk_4aGdtcfdQb2dcEEe3JmUjiewhw>
+    <xme:OMvrZlCx4WE572S8TNm0gmi5axMT2XV-YSkW-GBe8ilUU14VK3ZLbdw90B9oj39Dl
+    aH7m3SZO-xn8-XMiw>
+X-ME-Received: <xmr:OMvrZkG3hj_ipRls2R8vHpeTQKV548Mtgq74FH6jYxO5x4XBL4Qif90Qna4P7Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeltddgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
+    drtghomheqnecuggftrfgrthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleel
+    ieevtdeguefhgeeuveeiudffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
+    ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
+    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedvjedpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtohepmhhmphhgohhurhhiuggvsehgmhgrihhlrd
+    gtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghl
+    rdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtph
+    htthhopehlihhnuhigqdhmmheskhhvrggtkhdrohhrghdprhgtphhtthhopehlkhhmmhes
+    lhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehprghulhhmtghksehkvghrnh
+    gvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhr
+    tghpthhtohepnhgvvghrrghjrdhuphgrughhhigrhieskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtohepjhhovghlsehjohgvlhhfvghrnhgrnhguvghsrdhorhhg
+X-ME-Proxy: <xmx:OMvrZtTYz6eTeNpSPaGUUnR0mZ27PrY_kxLNod_4kdp1GIndii5Alw>
+    <xmx:OMvrZpyOASirtdrlWDwgjkutllJxiyOOUPRmSe5y0joX5m3wS-I3EA>
+    <xmx:OMvrZr58gK9PZZmQ3W9-QIsyvB_iWjo0RV0XKTqhQZzKygh1Cy_ZdA>
+    <xmx:OMvrZmxijV_v_TYpb5r0TV-G7mOrhjbwTfMYMIS2LoznL82NeV7ayA>
+    <xmx:OMvrZti84CHJOGT8SKPcpSSsg7YzO9X45gid7lVgfGx-NoNwR1RUw37b>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Sep 2024 02:56:55 -0400 (EDT)
+Date: Wed, 18 Sep 2024 23:56:31 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Alan Huang <mmpgouride@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+	linux-mm@kvack.org, lkmm@lists.linux.dev,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+	Neeraj upadhyay <neeraj.upadhyay@amd.com>
+Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
+ pointers
+Message-ID: <ZuvLHxH33-p8ki1d@boqun-archlinux>
+References: <20240917143402.930114-1-boqun.feng@gmail.com>
+ <20240917143402.930114-2-boqun.feng@gmail.com>
+ <CA757E86-2AE4-4077-A07A-679E3BFDBC34@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240917143402.930114-1-boqun.feng@gmail.com> <CAHk-=wi76E2xxvOaZtgN2FK9YKmbK1ru_1atL8eBCs34z7UigA@mail.gmail.com>
- <050d17f6-7db4-4a05-b4a5-6d5ab4f361cf@amd.com>
-In-Reply-To: <050d17f6-7db4-4a05-b4a5-6d5ab4f361cf@amd.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 19 Sep 2024 08:46:26 +0200
-X-Gmail-Original-Message-ID: <CAHk-=wjzj+WL6uE0J7d4fuiWAygMzTpvZqZxR+yQJm84TTbBCg@mail.gmail.com>
-Message-ID: <CAHk-=wjzj+WL6uE0J7d4fuiWAygMzTpvZqZxR+yQJm84TTbBCg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] Add hazard pointers to kernel
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>, John Johansen <john.johansen@canonical.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-mm@kvack.org, lkmm@vger.kernel.org, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Kent Overstreet <kent.overstreet@gmail.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA757E86-2AE4-4077-A07A-679E3BFDBC34@gmail.com>
 
-On Thu, 19 Sept 2024 at 00:44, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com> wrote:
->
-> While we were working on this problem, this refcount scalability issue got
-> resolved  recently with conditional ref acquisition [3] (however, there are new
-> developments in apparmor code which might bring back the refcount problem [4]).
+On Wed, Sep 18, 2024 at 11:17:37PM +0800, Alan Huang wrote:
+[...]
+> > +#define hazptr_tryprotect(hzp, gp, field) (typeof(gp))__hazptr_tryprotect(hzp, (void **)&(gp), offsetof(typeof(*gp), field))
+> > +#define hazptr_protect(hzp, gp, field) ({ \
+> > + typeof(gp) ___p; \
+> > + \
+> > + ___p = hazptr_tryprotect(hzp, gp, field); \
+> > + BUG_ON(!___p); \
+> 
+> hazptr_tryprotect might return NULL, do you need a loop here?
+> 
 
-Honestly, the various security layers should be a whole lot more
-careful about their horrid performance issues, and I think that [4]
-you point at needs to just be headed off at the pass.
+Thanks for the review. It's me who didn't do a good job here on the
+documentation. hazptr_protect() is supposed to use for the case where
+readers know the gp won't change.
 
-No  more "the security layer is so bad at performance that we have to
-introduce new ref mechanisms", please. Let's push back on bad security
-layer code instead.
+Regards,
+Boqun
 
-                Linus
+> > + ___p; \
+> > +})
+> > +
