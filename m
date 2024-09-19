@@ -1,175 +1,213 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD397524B4;
-	Thu, 19 Sep 2024 19:54:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BE136B11;
+	Thu, 19 Sep 2024 20:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726775649; cv=none; b=ehHt3eFKfouaP005ZX7/tPsormxnwe+xXyhsA+gVH9q3HOIK/DyjpRzCroq5hUPN2+rM6HxnlHwvNWEj4mgO7GQqk7S8CMCJjp/uihdBikQT57ei2F3QEgk3gUZgxws9X0mr2M+vIB5vhHMHYm9diGSzr9GqyFRAxXToMlINoYo=
+	t=1726777860; cv=none; b=LBAK1nrfySYTJsgSoqulgMRAbMkeNmpxo9EI/rLsUatDCOPX0WmrCpGTdmoT2cwxoBYq56p9vg/dy3o0EA9aqyI8+Pm29cPmBdH1osrIbRfnJrY0oCqGdnb7k5V4vnkiFxFk3DrJK2LyPsibhD6HGNygH3RYGjbNBqWYQ3k0c9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726775649; c=relaxed/simple;
-	bh=1i45zGSiRkJTX0/fszbZu3HyTUxbdJZTSv+ySSH3i+g=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=iFTDldElTlkAsSBJOS4uRsbI5wWar14DH2i3/9hHP1pGPcrJ2tgefZ6JksMpEzoyqAKH8GmS9fKgQG118Vn3aL1d0l2vC8IF5dvoC+brPTFqczB0LiqfcDyPyKAw1nH3ou5Ab9wGWz/P4olaxsGBptgHpd7MKVBMwglyRsLEd38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ejxpJpk+; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ejxpJpk+"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2068acc8b98so12933215ad.3;
-        Thu, 19 Sep 2024 12:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726775647; x=1727380447; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PjXf6goRQFZ6Ws5IfZ8O0DYwX0AY16FeqqeJVmOvTGU=;
-        b=ejxpJpk+IIGOdXVT+PQGs41+g4wsJofj4UeDBZ481X/oPtGpm2+OmfQcEj1Tg8YJrN
-         SLBGbA+uuJBoxsxvoORm4yg0lt6OZOX0cR+Gqc5T1z+g9B7KqLh3S432mzICCVe/pcKL
-         TRi3ISkYKK/hbR6mkSR1uKTCUfe2MXR1uvYo+/GUDFsGKzrXffFavJqhDVVqWATHApJq
-         ziMbo7rFgb04Jm5QUE+NYz+BphCY0jLg2iN8PWXyFViC1fMKXuF2upTiir2XkZSQMeMn
-         LbQbSZEh6E+b0Cbc/qfWPZphn11hx8JWQ3tziZH1kfhOVARA6Ow/pCAB1t1l5KlgQeHe
-         J1sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726775647; x=1727380447;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PjXf6goRQFZ6Ws5IfZ8O0DYwX0AY16FeqqeJVmOvTGU=;
-        b=AvMap3dWROI3T949dsfSyOZvq9LXP2+o6YoRmAIyeV2evSdaDyHIRvguHF/+3a7mi+
-         wFpEhxoP0tIlpFJ/hkUGio1jhAhhs0nmsUjI+I7gNuXCk+h3t9v3dkacOamsiTrof2yN
-         87yP4Fzt+pErUbPibjuBVjJ5wLhrHGqnXNLQnOTJpH4zswk7XZsIbLalHjd6NhyGLSwi
-         +86YhRu+CX0JKUAuVdseLm+ya+xRmdZJzvXl77xVdw6k4AIjhXKTJFRmEhcyvzjJXopk
-         4kn2Cnxcdab6ciLoBR2eVr0BY74h61RNgnqut6w0jdy7oVHCVcHj17Wr0is5pgIAXUHA
-         JujA==
-X-Forwarded-Encrypted: i=1; AJvYcCUY1ZgY6V/RG+JfVQ3zvRwFy0Oj2EofzoR3/GaheMY2EnqjdFCPmROUPJ1RuAjrDbSRgBOY@vger.kernel.org, AJvYcCVU0g5bjPPPhQrZskpn6GI7y0KGzPXv3Yy64yx0NwOwtgZxjbLk4VLerCK1yUGekdgT1wXEHbaK9FjqcvQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZaJQtjfzLDBG+tHvo2KlPQ/9zIgySy1h1lB1MTujjjrupgJeP
-	HWzJea4dHMfcMDK2vaw3RwCAk51ZBoM1ezGlzu6l83rmdL72nmYr
-X-Google-Smtp-Source: AGHT+IH5dS4oXN8alWlSTmhjhkU0PXFpBaA5QFKN5xumUpTYUgMD5V/GZ5nWIJx9cLBmoKfPt4ah3w==
-X-Received: by 2002:a17:902:ce85:b0:206:cfb3:92e0 with SMTP id d9443c01a7336-208d8397c0emr6902295ad.17.1726775646983;
-        Thu, 19 Sep 2024 12:54:06 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946d19aasm83542725ad.127.2024.09.19.12.53.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Sep 2024 12:54:06 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1726777860; c=relaxed/simple;
+	bh=QOg9SSVk+762Jv4vk+oIinpIn6nCAa6YYARFpckLiEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mMSrMSD6oVkrJiRt7UoI0y9Plvv1azJRQBg9O2bwnA1yxrYmkSLg5nBexSgWtmw6BpIOOQi7PZNyGuIBC9/A9j/t3sBWCTMixJqfLGFqS+no64/H+3sNESGN57tZBuOMDQPoZKFZm9uRB6iDaEMYVDnNIT01jeNSLri9lKKfnzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4X8mqk5nMBz9v7Hv;
+	Fri, 20 Sep 2024 04:11:14 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 417F51401F1;
+	Fri, 20 Sep 2024 04:30:54 +0800 (CST)
+Received: from [10.81.207.148] (unknown [10.81.207.148])
+	by APP1 (Coremail) with SMTP id LxC2BwAXqTDsiexm4cs+AQ--.1103S2;
+	Thu, 19 Sep 2024 21:30:53 +0100 (CET)
+Message-ID: <abf4a899-e53e-41ac-91d6-1865ffeff5c6@huaweicloud.com>
+Date: Thu, 19 Sep 2024 22:30:34 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
  pointers
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <Zux0Vyh38FK8OeJ4@boqun-archlinux>
-Date: Fri, 20 Sep 2024 03:53:47 +0800
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- RCU <rcu@vger.kernel.org>,
- linux-mm@kvack.org,
- lkmm@lists.linux.dev,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
+To: Jann Horn <jannh@google.com>, Boqun Feng <boqun.feng@gmail.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
+ lkmm@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
  Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
  Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
  Steven Rostedt <rostedt@goodmis.org>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Zqiang <qiang.zhang1211@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>,
- Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
  Kent Overstreet <kent.overstreet@gmail.com>,
  Linus Torvalds <torvalds@linux-foundation.org>,
- Vlastimil Babka <vbabka@suse.cz>,
- maged.michael@gmail.com,
- Neeraj upadhyay <neeraj.upadhyay@amd.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <09AD613C-97F2-4C60-8267-18E27909779F@gmail.com>
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+ Neeraj Upadhyay <neeraj.upadhyay@amd.com>, lkmm@lists.linux.dev
 References: <20240917143402.930114-1-boqun.feng@gmail.com>
  <20240917143402.930114-2-boqun.feng@gmail.com>
- <CAJhGHyD8MzUssfuKSGnu1arnayNOyBnUA03vYB0WWwbE3WzoZg@mail.gmail.com>
- <ZuvOWM5c8tZotHFL@boqun-archlinux>
- <D2BDE4C4-48DB-4813-9608-F672896E0121@gmail.com>
- <Zux0Vyh38FK8OeJ4@boqun-archlinux>
-To: Boqun Feng <boqun.feng@gmail.com>
-X-Mailer: Apple Mail (2.3776.700.51)
+ <CAG48ez0VN8oZcqhdzkWQgNv6bwUN=MUu5EacLg5iPvMQL+R-Qg@mail.gmail.com>
+From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+In-Reply-To: <CAG48ez0VN8oZcqhdzkWQgNv6bwUN=MUu5EacLg5iPvMQL+R-Qg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:LxC2BwAXqTDsiexm4cs+AQ--.1103S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxur18XrW3urWxZw4ftFyDtrb_yoWrAF48pr
+	WUKF1jyF4vywn2k34DZw42q3s7Gr1fZFy5G3s5K34UA3y5uF1SvFy3KrWa9FWkur4vyw10
+	vrsxZas7tr98JFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	jxCztUUUUU=
+X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
 
-2024=E5=B9=B49=E6=9C=8820=E6=97=A5 02:58=EF=BC=8CBoqun Feng =
-<boqun.feng@gmail.com> wrote=EF=BC=9A
->=20
-> On Thu, Sep 19, 2024 at 09:57:12PM +0800, Alan Huang wrote:
-> [...]
->>>=20
->>> I think you're right. (Although the node will be eventually deleted =
-at
->>> cleanup_hazptr_context(), however there could be a long-live
->>> hazptr_context). It should be:
->>>=20
->>> hazptr_t val =3D smp_load_acquire(&hzcp->slots[i]);
->>> struct hazptr_slot_snap *snap =3D &hzcp->snaps[i];
->>>=20
->>> if (val !=3D snap->slot) { // val changed, need to update the tree =
-node.
->>> // Already in the tree, need to remove first.
->>> if (!is_null_or_unused(snap->slot)) {
->>> reader_del(tree, snap);
->>> }
->>>=20
->>> // use the latest snapshot.
->>> snap->slot =3D val;
->>>=20
->>> // Add it into tree if there is a reader
->>> if (!is_null_or_unused(val))
->>> reader_add(tree, snap);
->>> }
->>=20
->> It seems like that two different hazptr_context can=E2=80=99t be used =
-to protect the same pointer?
->>=20
->> Otherwise the following can happen?
->>=20
->> thread1  thread2    thread3(worker)        thread4
->> hazptr_tryprotect(hzp1, ptr1)   hazptr_tryprotect(hzp2, ptr1)=20
->>  add ptr1 to tree
->=20
-> Note that we have snapshot rb_node for each hazard pointer slot, so =
-here
-> thread3 actually would add two rb_nodes with ->slot =3D=3D ptr1 here.
 
-Ok, good to know the rbtree can have multiple nodes with the same key.
 
-Thanks for the explanation!
 
->=20
->> hazptr_clear(hzp1)=20
->> hazptr_tryprotect(hzp1, ptr2)=20
->>  delete ptr1 from tree     unpub ptr1
->=20
-> Therefore, there is still one rb_node with ->slot =3D=3D ptr1 in the =
-tree
-> after the deletion, so updaters won't invoke ptr1's callback.
->=20
-> Regards,
-> Boqun
->=20
->>        call_hazptr(ptr1)
->>        oops: invoke ptr1's callback
->> Or am I missing something?
->>=20
->>>=20
->>> Regards,
->>> Boqun
->>>=20
->>>> I'm not so sure...
->>>>=20
->>>> Thanks
->>>> Lai
+Am 9/19/2024 um 2:12 AM schrieb Jann Horn:
+> On Tue, Sep 17, 2024 at 4:33 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+>> Hazard pointers [1] provide a way to dynamically distribute refcounting
+>> and can be used to improve the scalability of refcounting without
+>> significant space cost.
+> 
+>> +static inline void *__hazptr_tryprotect(hazptr_t *hzp,
+>> +                                       void *const *p,
+>> +                                       unsigned long head_offset)
+>> +{
+>> +       void *ptr;
+>> +       struct callback_head *head;
+>> +
+>> +       ptr = READ_ONCE(*p);
+>> +
+>> +       if (ptr == NULL)
+>> +               return NULL;
+>> +
+>> +       head = (struct callback_head *)(ptr + head_offset);
+>> +
+>> +       WRITE_ONCE(*hzp, head);
+>> +       smp_mb();
+>> +
+>> +       ptr = READ_ONCE(*p); // read again
+>> +
+>> +       if (ptr + head_offset != head) { // pointer changed
+>> +               WRITE_ONCE(*hzp, NULL);  // reset hazard pointer
+>> +               return NULL;
+>> +       } else
+>> +               return ptr;
+>> +}
+> 
+> I got nerdsniped by the Plumbers talk. So, about that smp_mb()...
+> 
+> I think you should be able to avoid the smp_mb() using relaxed atomics
+> (on architectures that have those), at the cost of something like a
+> cmpxchg-acquire sandwiched between a load-acquire and a relaxed load?
+> I'm not sure how their cost compares to an smp_mb() though.
 
+
+
+We have done a similar scheme before, and on some architectures (not 
+x86) the RMW is slightly cheaper than the mb.
+
+Your reasoning is a bit simplified because it seems to assume a stronger 
+concept of ordering than LKMM has, but even with LKMM's ordering your 
+code seems fine.
+
+I feel it can even be simplified a little, the hazard bit does not seem 
+necessary.
+
+Assuming atomic operations for everything racy, relaxed unless stated 
+otherwise:
+
+(R)eader:
+
+    old = read p // I don't think this needs acq, because of address 
+dependencies (*)
+    haz ||=_acq old
+    if (read p != old) retry;
+    *old
+
+(W)riter:
+
+    p =_??? ... // assuming we don't set it to null this needs a rel
+    --- mb ---
+    haz ||= 0
+    while (read_acq haz == old) retry;
+    delete old
+
+
+In order to get a use-after-free, both of the  R:read p  need to read 
+before  W:p = ... , so because of the W:mb, they execute before  W:haz||=0 .
+
+Also, for the use-after-free,  W:read_acq haz  needs to read before (the 
+write part of)  R:haz||=_acq old .
+
+
+Then the  W:haz ||= 0  also needs to read before (the write part of) 
+R:haz||=_acq old  because of coherence on the same location.
+
+Since both of them are atomic RMW, the  W:haz||= 0  also needs to write 
+before (the write part of)  R:haz||=_acq old , and in the absence of 
+non-RMW writes (so assuming no thread will just store to the hazard 
+pointer), this implies that the latter reads-from an rmw-sequence-later 
+store than  W:haz||=0 , which therefore executes before  R:haz||=_acq old .
+
+But because of the acquire barrier,  R:haz||=_acq old  executes before 
+the second  R:read p .
+
+
+This gives a cycle
+    (2nd)R:read p  ->xb  W:haz||=0  ->xb  R:haz||=_acq  ->xb  (2nd)R:read p
+
+and therefore is forbidden.
+
+Note that in this argument, the two  R:read p  are not necessarily 
+reading from the same store. Because of ABA, it can happen that they 
+read from distinct stores and see the same value.
+
+It does require clearing hazard pointers with an RMW like atomic_and(0) 
+(**). The combination of the two RMW (for setting & clearing the hazard 
+pointer) might in total be slower again than an mb.
+
+
+(I took the liberty to add an acquire barrier in the writer's while loop 
+for the case where we read from the (not shown) release store of the 
+reader that clears the hazard pointer. It's arguable whether that acq is 
+needed since one could argue that a delete is a kind of store, in which 
+case control dependency would handle it.)
+
+have fun,
+   jonas
+
+
+(*
+   you talk about sandwiching, and the data dependency does guarantee 
+some weaker form of sandwiching than the acq, but I don't think 
+sandwiching is required at all. If you happened to be able to set the 
+hazard pointer before reading the pointer, that would just extend the 
+protected area, wouldn't it?
+)
+
+(**
+I think if you clear the pointer with a store, the hazard bit does not 
+help. You could be overwriting the hazard bit, and the RMWs that set the 
+hazard bit might never propagate to your CPU.
+
+Also in your code you probably meant to clear the whole hazard pointer 
+in the retry code of the reader, not just the hazard bit.)
 
