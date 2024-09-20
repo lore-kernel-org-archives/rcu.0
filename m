@@ -1,166 +1,148 @@
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC98487AE;
-	Fri, 20 Sep 2024 07:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D2214E2E1;
+	Fri, 20 Sep 2024 13:35:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726818264; cv=none; b=Nh3lml1jqelSSk8lC6pDH6Z7AS/lqJaIO96zdmIx3Q1Fv7J6fGylyuvZrNgc9NB99UFA78thG51Tztg3eshiymKh9q5VtNWaXtl6QtxisBYxI2p50lyMkHPACNo1RyJ+OWNBBBmbr1xLGn9CKZ7SzGV3RN8EIaMxzEr7v9FLBNA=
+	t=1726839343; cv=none; b=MMMbvoVA3oow8KmRNuV9rQAvLiDRsCOISDTBdQis5B6bc7xf/OJrp2H010AYTsjfbwRkMiXiySDuk3cbOnpwl+KaUvXOcGxSKgGHh0u4Jen/7y07rTWoj0K31/uBbRYaCYFdoNMpq+abYYRtIMBhJ7Z4l3yKCEIPJDUpbgX7KMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726818264; c=relaxed/simple;
-	bh=YWSUNT3mvy5KQhGTIciRDN7UKP2afgrsJvQq8zmHzK4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=PufguUwz1/g8nS44aEMdaCftNrOkHCU9Qkp8KbjDf4tpmWteU8Rqec36WeouHMUkhDQG1Aw4xWg2V2EEvgiKQv9Th2W9Ih3FzrvmQdmxb4Dep/DPxkSAh+yykoRA2VfM//T9zV48mgwU5X4udfMoaZQeg4vB253zZkah0m9OqZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4X93f45jyVz9v7JM;
-	Fri, 20 Sep 2024 15:18:52 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 4A055140F86;
-	Fri, 20 Sep 2024 15:44:09 +0800 (CST)
-Received: from [10.45.149.49] (unknown [10.45.149.49])
-	by APP2 (Coremail) with SMTP id GxC2BwAHt8e6J+1m+mBJAQ--.61459S2;
-	Fri, 20 Sep 2024 08:44:08 +0100 (CET)
-Message-ID: <16c2aba7-212d-4612-8cea-50c64626d8f3@huaweicloud.com>
-Date: Fri, 20 Sep 2024 09:43:52 +0200
+	s=arc-20240116; t=1726839343; c=relaxed/simple;
+	bh=DyLTOgl1eE49gc6jW4IfMEpbgKe0+TpW/tB1aSZr50I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OVyhAU8AzFPNYhcvlo9Xsm/d2i9i+OmLkkANbgBieDTGXOSjif2S7rCRXDiXZNCU07CXrlsqR1MadE0g1QC6FyOfHBvAzLYqMFbiwSbZnUylZJ2mQ3cWJ7leU5lFwWBNwL8kurQxKFDBsH9RmNsX7YgsAnT3qcvg4etSMa5q+bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aoGTwCm3; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aoGTwCm3"
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7db0fb03df5so1436587a12.3;
+        Fri, 20 Sep 2024 06:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726839341; x=1727444141; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4WiT20VvGZEoLul+yBbb3XAfILOiLHoijWP26iP09Gk=;
+        b=aoGTwCm36yslffPuYVIvQqpzd4LUP0U/JL14et6reRPuiCg1u+wshf/ej7R417dM3C
+         BpWGqoJwsCyFnpleVEZEqzVP3csW+HHkyEBXCu2CrPfxXQozzyvkjSTjNsqgbCpeay6Q
+         +kvH5Lr79RX/TSHcF6LUVK+vnMhrAxGzsrLfxFRCZPGtSD5hpqyCiB6bbWAi1LIvG4iE
+         U3Uy1rFtadFs2brZjVdp4FyPg0iFjviICaLihRLvMm+t6wd/H8UX0K/3/dgMvCOYo888
+         UxTbFAXInOJ2Qxuqev9LonXgCyvsac4CWztIAgSsQdcQFZX/Omo4isHI1bYP5mF4BKvU
+         Ut6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726839341; x=1727444141;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4WiT20VvGZEoLul+yBbb3XAfILOiLHoijWP26iP09Gk=;
+        b=mjvAfoLscOOY4D5yaO+WNZHD4LrEBfhj9n3C57yqHkE51NYRftLd/q7M1aVxb82ziz
+         5SanYGlbzVO9auYOJqaXJpEPJOk9jbWA3EbLmcbrCRQaFWFCNVt9ZaL0zhfPxglTjHAb
+         oUn5+tLC9ml70oTvg4f7DsYfNaDCC7SNqmyrZEcOVFTmbK9bEW0QGFuGg32HQhKoe6E/
+         Mwsf/aGDxRBbV4ruTJXMQG6jUoSDETOdeBQYR9GmswGiY1evqXpr336HDvHOjnQ/lEzv
+         BF6Ef5mMkWMOPAf/UorGwsSJ6DUdObi86IdBQnAZFzv3yu9kwSPXbmj3unJYPyDNafHN
+         9LIw==
+X-Forwarded-Encrypted: i=1; AJvYcCW6SNcUxxV/mvrqCxtUPGVB3LXasA6/y+Rc5kw3Z6bhdhtKbEMeaeLjr4sD48Mnw73BDCY+@vger.kernel.org, AJvYcCX9tvJHOjEUt/zYPu0D4ZxVdlQT/HKNuQKseR3fUFTexXH7vV3A7qP9UYH5ZQjnId/z1rY0mIMwi46daUc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPRKapfwRvKXR9jEPQLDbObpAd+OTryndNCig0zyd2IOu+kbGr
+	XXWZ0yf6zPVsyzyAiOku3tsNnKIPXFAYI6B75uKn/Qi/lu9vSPkK
+X-Google-Smtp-Source: AGHT+IF9E6a541Mbjo9j50qxF9waC4QlIEoOI8U2Cwj3s1tGGsRGG27E/xRuctO2OBAGuNi0Wwiajg==
+X-Received: by 2002:a05:6a21:9216:b0:1cf:506a:cdcc with SMTP id adf61e73a8af0-1d30cb65dedmr4244909637.43.1726839340992;
+        Fri, 20 Sep 2024 06:35:40 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2079460110fsm95281375ad.96.2024.09.20.06.35.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Sep 2024 06:35:39 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 20 Sep 2024 06:35:38 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>, Christoph Lameter <cl@linux.com>,
+	David Rientjes <rientjes@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Alexander Potapenko <glider@google.com>,
+	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+	kasan-dev@googlegroups.com, Jann Horn <jannh@google.com>,
+	Mateusz Guzik <mjguzik@gmail.com>
+Subject: Re: [PATCH v2 7/7] kunit, slub: add test_kfree_rcu() and
+ test_leak_destroy()
+Message-ID: <6fcb1252-7990-4f0d-8027-5e83f0fb9409@roeck-us.net>
+References: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
+ <20240807-b4-slab-kfree_rcu-destroy-v2-7-ea79102f428c@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
- pointers
-From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-To: Jann Horn <jannh@google.com>, Boqun Feng <boqun.feng@gmail.com>,
- "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
- lkmm@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Kent Overstreet <kent.overstreet@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Neeraj Upadhyay <neeraj.upadhyay@amd.com>, lkmm@lists.linux.dev
-References: <20240917143402.930114-1-boqun.feng@gmail.com>
- <20240917143402.930114-2-boqun.feng@gmail.com>
- <CAG48ez0VN8oZcqhdzkWQgNv6bwUN=MUu5EacLg5iPvMQL+R-Qg@mail.gmail.com>
- <abf4a899-e53e-41ac-91d6-1865ffeff5c6@huaweicloud.com>
-In-Reply-To: <abf4a899-e53e-41ac-91d6-1865ffeff5c6@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwAHt8e6J+1m+mBJAQ--.61459S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxur15GryfGF17Kw43Kr4xXrb_yoW5AF13pr
-	y8tF4UJryDJr1fAw1UXr1UX34UAr13J3WUJrn5WFyUJFWxGr1Igr1UXr1jgr1DAr4kJr1U
-	tr1UXr9xZry5XrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	jzE__UUUUU=
-X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240807-b4-slab-kfree_rcu-destroy-v2-7-ea79102f428c@suse.cz>
 
+Hi,
 
+On Wed, Aug 07, 2024 at 12:31:20PM +0200, Vlastimil Babka wrote:
+> Add a test that will create cache, allocate one object, kfree_rcu() it
+> and attempt to destroy it. As long as the usage of kvfree_rcu_barrier()
+> in kmem_cache_destroy() works correctly, there should be no warnings in
+> dmesg and the test should pass.
+> 
+> Additionally add a test_leak_destroy() test that leaks an object on
+> purpose and verifies that kmem_cache_destroy() catches it.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-Am 9/19/2024 um 10:30 PM schrieb Jonas Oberhauser:
-> 
-> 
-> 
-> Am 9/19/2024 um 2:12 AM schrieb Jann Horn:
->> On Tue, Sep 17, 2024 at 4:33 PM Boqun Feng <boqun.feng@gmail.com> wrote:
->>> Hazard pointers [1] provide a way to dynamically distribute refcounting
->>> and can be used to improve the scalability of refcounting without
->>> significant space cost.
->>
->>> +static inline void *__hazptr_tryprotect(hazptr_t *hzp,
->>> +                                       void *const *p,
->>> +                                       unsigned long head_offset)
->>> +{
->>> +       void *ptr;
->>> +       struct callback_head *head;
->>> +
->>> +       ptr = READ_ONCE(*p);
->>> +
->>> +       if (ptr == NULL)
->>> +               return NULL;
->>> +
->>> +       head = (struct callback_head *)(ptr + head_offset);
->>> +
->>> +       WRITE_ONCE(*hzp, head);
->>> +       smp_mb();
->>> +
->>> +       ptr = READ_ONCE(*p); // read again
->>> +
->>> +       if (ptr + head_offset != head) { // pointer changed
->>> +               WRITE_ONCE(*hzp, NULL);  // reset hazard pointer
->>> +               return NULL;
->>> +       } else
->>> +               return ptr;
->>> +}
->>
->> I got nerdsniped by the Plumbers talk. So, about that smp_mb()...
->>
->> I think you should be able to avoid the smp_mb() using relaxed atomics
->> (on architectures that have those), at the cost of something like a
->> cmpxchg-acquire sandwiched between a load-acquire and a relaxed load?
->> I'm not sure how their cost compares to an smp_mb() though.
-> 
-> 
-> 
-> We have done a similar scheme before, and on some architectures (not 
-> x86) the RMW is slightly cheaper than the mb.
-> 
-> Your reasoning is a bit simplified because it seems to assume a stronger 
-> concept of ordering than LKMM has, but even with LKMM's ordering your 
-> code seems fine.
-> 
-> I feel it can even be simplified a little, the hazard bit does not seem 
-> necessary.
-> 
-> Assuming atomic operations for everything racy, relaxed unless stated 
-> otherwise:
-> 
-> (R)eader:
-> 
->     old = read p // I don't think this needs acq, because of address 
-> dependencies (*)
->     haz ||=_acq old
->     if (read p != old) retry;
+This test case, when run, triggers a warning traceback.
 
-I realized before going to bed that I copied a subtle mistake here from 
-Jann's code, we need an address dependency from this read, or it is not 
-ABA safe.
-This can be done with the small detour that Boqun used:
+kmem_cache_destroy TestSlub_kfree_rcu: Slab cache still has objects when called from test_leak_destroy+0x70/0x11c
+WARNING: CPU: 0 PID: 715 at mm/slab_common.c:511 kmem_cache_destroy+0x1dc/0x1e4
 
-      head = read p // I don't think this needs acq, because of address 
-dependencies (*)
-      haz ||=_acq head
-      old = read p // again
-      if (head != old) retry;
-      barrier(); // ensure compiler does not use its knowledge that head 
-== old to do *head instead!
-      *old // definitely use the second read pointer so hardware can't 
-speculatively dereference this before the second read!
+That is, however, not the worst of it. It also causes boot stalls on
+several platforms and architectures (various arm platforms, arm64,
+loongarch, various ppc, and various x86_64). Reverting it fixes the
+problem. Bisect results are attached for reference.
 
+Guenter
 
-Have a good time,
-   jonas
-
+---
+# bad: [baeb9a7d8b60b021d907127509c44507539c15e5] Merge tag 'sched-rt-2024-09-17' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+# good: [2f27fce67173bbb05d5a0ee03dae5c021202c912] Merge tag 'sound-6.12-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+git bisect start 'HEAD' '2f27fce67173'
+# good: [ae2c6d8b3b88c176dff92028941a4023f1b4cb91] Merge tag 'drm-xe-next-fixes-2024-09-12' of https://gitlab.freedesktop.org/drm/xe/kernel into drm-next
+git bisect good ae2c6d8b3b88c176dff92028941a4023f1b4cb91
+# bad: [c8d8a35d094626808cd07ed0758e14c7e4cf61ac] Merge tag 'livepatching-for-6.12' of git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching
+git bisect bad c8d8a35d094626808cd07ed0758e14c7e4cf61ac
+# bad: [cc52dc2fe39ff5dee9916ac2d9381ec3cbf650c0] Merge tag 'pwm/for-6.12-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux
+git bisect bad cc52dc2fe39ff5dee9916ac2d9381ec3cbf650c0
+# bad: [bdf56c7580d267a123cc71ca0f2459c797b76fde] Merge tag 'slab-for-6.12' of git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab
+git bisect bad bdf56c7580d267a123cc71ca0f2459c797b76fde
+# good: [355debb83bf79853cde43579f88eed16adb1da29] Merge branches 'context_tracking.15.08.24a', 'csd.lock.15.08.24a', 'nocb.09.09.24a', 'rcutorture.14.08.24a', 'rcustall.09.09.24a', 'srcu.12.08.24a', 'rcu.tasks.14.08.24a', 'rcu_scaling_tests.15.08.24a', 'fixes.12.08.24a' and 'misc.11.08.24a' into next.09.09.24a
+git bisect good 355debb83bf79853cde43579f88eed16adb1da29
+# good: [067610ebaaec53809794807842a2fcf5f1f5b9eb] Merge tag 'rcu.release.v6.12' of git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux
+git bisect good 067610ebaaec53809794807842a2fcf5f1f5b9eb
+# good: [4b7ff9ab98af11a477d50f08382bcc4c2f899926] mm, slab: restore kerneldoc for kmem_cache_create()
+git bisect good 4b7ff9ab98af11a477d50f08382bcc4c2f899926
+# bad: [a715e94dbda4ece41aac49b7b7ff8ddb55a7fe08] Merge branch 'slab/for-6.12/rcu_barriers' into slab/for-next
+git bisect bad a715e94dbda4ece41aac49b7b7ff8ddb55a7fe08
+# bad: [b3c34245756adada8a50bdaedbb3965b071c7b0a] kasan: catch invalid free before SLUB reinitializes the object
+git bisect bad b3c34245756adada8a50bdaedbb3965b071c7b0a
+# good: [2eb14c1c2717396f2fb1e4a4c5a1ec87cdd174f6] mm, slab: reintroduce rcu_barrier() into kmem_cache_destroy()
+git bisect good 2eb14c1c2717396f2fb1e4a4c5a1ec87cdd174f6
+# good: [6c6c47b063b593785202be158e61fe5c827d6677] mm, slab: call kvfree_rcu_barrier() from kmem_cache_destroy()
+git bisect good 6c6c47b063b593785202be158e61fe5c827d6677
+# bad: [4e1c44b3db79ba910adec32e2e1b920a0e34890a] kunit, slub: add test_kfree_rcu() and test_leak_destroy()
+git bisect bad 4e1c44b3db79ba910adec32e2e1b920a0e34890a
+# first bad commit: [4e1c44b3db79ba910adec32e2e1b920a0e34890a] kunit, slub: add test_kfree_rcu() and test_leak_destroy()
