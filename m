@@ -1,148 +1,508 @@
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D2214E2E1;
-	Fri, 20 Sep 2024 13:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372601547DA;
+	Sat, 21 Sep 2024 16:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726839343; cv=none; b=MMMbvoVA3oow8KmRNuV9rQAvLiDRsCOISDTBdQis5B6bc7xf/OJrp2H010AYTsjfbwRkMiXiySDuk3cbOnpwl+KaUvXOcGxSKgGHh0u4Jen/7y07rTWoj0K31/uBbRYaCYFdoNMpq+abYYRtIMBhJ7Z4l3yKCEIPJDUpbgX7KMw=
+	t=1726937394; cv=none; b=e0gkt0euEMpkemQGT7SKWLjuZnrtxR+FH2yjKmHtvHzLCxKSYvHnDIKFIA0dHLEFDArlmzOx4hosgk3jvxtyAgDImQBUGJucY1Dc/gpGhnVKRpSWLchY7r0YrL7A/25ebPI6I6tEj/6s8as0weezY8TQ6yOCaP2htxY913fOM8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726839343; c=relaxed/simple;
-	bh=DyLTOgl1eE49gc6jW4IfMEpbgKe0+TpW/tB1aSZr50I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OVyhAU8AzFPNYhcvlo9Xsm/d2i9i+OmLkkANbgBieDTGXOSjif2S7rCRXDiXZNCU07CXrlsqR1MadE0g1QC6FyOfHBvAzLYqMFbiwSbZnUylZJ2mQ3cWJ7leU5lFwWBNwL8kurQxKFDBsH9RmNsX7YgsAnT3qcvg4etSMa5q+bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aoGTwCm3; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1726937394; c=relaxed/simple;
+	bh=fLocS4rkXo+cdkcTNrdh1/o+NMlSqRy+YLYt+PO+GGQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RByJiRYR0S2yRYwNHA10fSKjl1Frzhq3uNiAXikiJO/T8piisYJqi1d/iGXkdqzEmtuxkbtv8m095qxMPBcDVrl0DIuiDlZ47tNBdZSA1xS3koPkQH+g2HNU7SRJ3dRXNo9YNuc+fpeZAmOFG2b32MfDNH/NZVqk+BYjn6G7iH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ocGVMENa; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aoGTwCm3"
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7db0fb03df5so1436587a12.3;
-        Fri, 20 Sep 2024 06:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726839341; x=1727444141; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4WiT20VvGZEoLul+yBbb3XAfILOiLHoijWP26iP09Gk=;
-        b=aoGTwCm36yslffPuYVIvQqpzd4LUP0U/JL14et6reRPuiCg1u+wshf/ej7R417dM3C
-         BpWGqoJwsCyFnpleVEZEqzVP3csW+HHkyEBXCu2CrPfxXQozzyvkjSTjNsqgbCpeay6Q
-         +kvH5Lr79RX/TSHcF6LUVK+vnMhrAxGzsrLfxFRCZPGtSD5hpqyCiB6bbWAi1LIvG4iE
-         U3Uy1rFtadFs2brZjVdp4FyPg0iFjviICaLihRLvMm+t6wd/H8UX0K/3/dgMvCOYo888
-         UxTbFAXInOJ2Qxuqev9LonXgCyvsac4CWztIAgSsQdcQFZX/Omo4isHI1bYP5mF4BKvU
-         Ut6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726839341; x=1727444141;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4WiT20VvGZEoLul+yBbb3XAfILOiLHoijWP26iP09Gk=;
-        b=mjvAfoLscOOY4D5yaO+WNZHD4LrEBfhj9n3C57yqHkE51NYRftLd/q7M1aVxb82ziz
-         5SanYGlbzVO9auYOJqaXJpEPJOk9jbWA3EbLmcbrCRQaFWFCNVt9ZaL0zhfPxglTjHAb
-         oUn5+tLC9ml70oTvg4f7DsYfNaDCC7SNqmyrZEcOVFTmbK9bEW0QGFuGg32HQhKoe6E/
-         Mwsf/aGDxRBbV4ruTJXMQG6jUoSDETOdeBQYR9GmswGiY1evqXpr336HDvHOjnQ/lEzv
-         BF6Ef5mMkWMOPAf/UorGwsSJ6DUdObi86IdBQnAZFzv3yu9kwSPXbmj3unJYPyDNafHN
-         9LIw==
-X-Forwarded-Encrypted: i=1; AJvYcCW6SNcUxxV/mvrqCxtUPGVB3LXasA6/y+Rc5kw3Z6bhdhtKbEMeaeLjr4sD48Mnw73BDCY+@vger.kernel.org, AJvYcCX9tvJHOjEUt/zYPu0D4ZxVdlQT/HKNuQKseR3fUFTexXH7vV3A7qP9UYH5ZQjnId/z1rY0mIMwi46daUc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPRKapfwRvKXR9jEPQLDbObpAd+OTryndNCig0zyd2IOu+kbGr
-	XXWZ0yf6zPVsyzyAiOku3tsNnKIPXFAYI6B75uKn/Qi/lu9vSPkK
-X-Google-Smtp-Source: AGHT+IF9E6a541Mbjo9j50qxF9waC4QlIEoOI8U2Cwj3s1tGGsRGG27E/xRuctO2OBAGuNi0Wwiajg==
-X-Received: by 2002:a05:6a21:9216:b0:1cf:506a:cdcc with SMTP id adf61e73a8af0-1d30cb65dedmr4244909637.43.1726839340992;
-        Fri, 20 Sep 2024 06:35:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2079460110fsm95281375ad.96.2024.09.20.06.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2024 06:35:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Fri, 20 Sep 2024 06:35:38 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ocGVMENa"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1726936994;
+	bh=fLocS4rkXo+cdkcTNrdh1/o+NMlSqRy+YLYt+PO+GGQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ocGVMENak0htCIEdzZaI6MH19tiedl9wKo4gdrjhKDrnYGSWc++fA77KsvqvX25Ua
+	 7Dw1e6ZEqfbavp5f1Es4SuWNiVwLivyYEVuNR/CNEIfYP032LbVFz9qgxlNkMYvZM1
+	 RYOY+uykGq9SSX07SsRILAtj+KoB9W/fi6exnFSuSvdBTOYv+bm2vlikqLC9xOxNdg
+	 JxCcLP+4NGl2lqgL3wu7N8HSW1k7p745xFArmc6H3sKKxEwe+WhOoLW/IoJJ8tG6je
+	 u2jmWs1shIxWSQpB2qVg6Mjkrt2kYK37OiMBqqLAJgTMgvqabvQqgeEpTqe7VNzEVY
+	 EWMinWrtdwtsQ==
+Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4X9w6f0QLxz1LVV;
+	Sat, 21 Sep 2024 12:43:05 -0400 (EDT)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Boqun Feng <boqun.feng@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	John Stultz <jstultz@google.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Christoph Lameter <cl@linux.com>,
-	David Rientjes <rientjes@google.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Alexander Potapenko <glider@google.com>,
-	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
-	kasan-dev@googlegroups.com, Jann Horn <jannh@google.com>,
-	Mateusz Guzik <mjguzik@gmail.com>
-Subject: Re: [PATCH v2 7/7] kunit, slub: add test_kfree_rcu() and
- test_leak_destroy()
-Message-ID: <6fcb1252-7990-4f0d-8027-5e83f0fb9409@roeck-us.net>
-References: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
- <20240807-b4-slab-kfree_rcu-destroy-v2-7-ea79102f428c@suse.cz>
+	Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	maged.michael@gmail.com,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	rcu@vger.kernel.org,
+	linux-mm@kvack.org,
+	lkmm@lists.linux.dev
+Subject: [RFC PATCH 1/1] hpref: Hazard Pointers with Reference Counter
+Date: Sat, 21 Sep 2024 18:42:10 +0200
+Message-Id: <20240921164210.256278-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240807-b4-slab-kfree_rcu-destroy-v2-7-ea79102f428c@suse.cz>
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Boqun Feng's patch series and LPC talk gave me a few ideas I wanted to
+try. I figured we could improve the concept of reference counters by
+adding a hazard-pointer protected fast-path to them.
 
-On Wed, Aug 07, 2024 at 12:31:20PM +0200, Vlastimil Babka wrote:
-> Add a test that will create cache, allocate one object, kfree_rcu() it
-> and attempt to destroy it. As long as the usage of kvfree_rcu_barrier()
-> in kmem_cache_destroy() works correctly, there should be no warnings in
-> dmesg and the test should pass.
-> 
-> Additionally add a test_leak_destroy() test that leaks an object on
-> purpose and verifies that kmem_cache_destroy() catches it.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+This API combines hazard pointers and reference counters.
+It uses hazard pointers as fast-paths, and falls back to reference
+counters either explicitly when the reader expects to hold the object
+for a long time, or when no hazard pointer slots are available.
 
-This test case, when run, triggers a warning traceback.
+This prototype is implemented in userspace within the liburcu project,
+and depends on librseq for per-cpu data structure allocation, indexing,
+and updates.
 
-kmem_cache_destroy TestSlub_kfree_rcu: Slab cache still has objects when called from test_leak_destroy+0x70/0x11c
-WARNING: CPU: 0 PID: 715 at mm/slab_common.c:511 kmem_cache_destroy+0x1dc/0x1e4
+- The top of this liburcu feature branch can be found at:
+  https://github.com/compudj/userspace-rcu-dev/tree/hpref
+  (it's implemented within liburcu for convenience, but it does
+  not actually use RCU).
 
-That is, however, not the worst of it. It also causes boot stalls on
-several platforms and architectures (various arm platforms, arm64,
-loongarch, various ppc, and various x86_64). Reverting it fixes the
-problem. Bisect results are attached for reference.
+- librseq can be found at:
+  https://git.kernel.org/pub/scm/libs/librseq/librseq.git/
 
-Guenter
+This leverages the fact that both synchronization mechanisms aim to
+guarantee existence of objects, and those existence guarantees can be
+chained. Each mechanism achieves its purpose in a different way with
+different tradeoffs. The hazard pointers are faster to read and scale
+better than reference counters, but they consume more memory than a
+per-object reference counter.
 
+The fall-back to reference counter allows bounding the number of
+hazard pointer slots to a fixed size for the entire system:
+nr_cpus * N, where N=8 as it fills a single 64 bytes cache line on
+64-bit architectures.
+
+Porting it to the Linux kernel should be straightforward. We might
+want to pick heavily contented reference counts such as the mm_struct
+mm_count field as a starting point to see if it provides significant
+performance gains.
+
+The hpref read-side performs well even compared to RCU in my benchmarks:
+
+    Results:
+
+    CPU(s):                  16
+      On-line CPU(s) list:   0-15
+    Vendor ID:               AuthenticAMD
+      Model name:            AMD Ryzen 7 PRO 6850U with Radeon Graphics
+
+    8 readers, 1 writer, 10s
+
+    test_urcu_mb         (smp_mb)             nr_reads    829829784 nr_writes     18057836 nr_ops    847887620
+    test_hpref_benchmark (smp_mb)             nr_reads   2040376076 nr_writes      2993246 nr_ops   2043369322
+    test_hpref_benchmark (barrier/membarrier) nr_reads  10609164704 nr_writes      2208432 nr_ops  10611373136
+    test_urcu_bp         (barrier/membarrier) nr_reads  20242102863 nr_writes       599484 nr_ops  20242702347
+    test_urcu            (barrier/membarrier) nr_reads  20714490759 nr_writes       782045 nr_ops  20715272804
+    test_urcu_qsbr                            nr_reads  40774708959 nr_writes      3512904 nr_ops  40778221863
+
+References:
+
+[1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
+     lock-free objects," in IEEE Transactions on Parallel and
+     Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
+
+Link: https://lore.kernel.org/lkml/j3scdl5iymjlxavomgc6u5ndg3svhab6ga23dr36o4f5mt333w@7xslvq6b6hmv/
+Link: https://lpc.events/event/18/contributions/1731/
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Change-Id: I6369064a0e1a1f9632394df31ff41c76905d17e3
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: John Stultz <jstultz@google.com>
+To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Zqiang <qiang.zhang1211@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: maged.michael@gmail.com
+Cc: Mateusz Guzik <mjguzik@gmail.com>
+Cc: rcu@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: lkmm@lists.linux.dev
 ---
-# bad: [baeb9a7d8b60b021d907127509c44507539c15e5] Merge tag 'sched-rt-2024-09-17' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-# good: [2f27fce67173bbb05d5a0ee03dae5c021202c912] Merge tag 'sound-6.12-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
-git bisect start 'HEAD' '2f27fce67173'
-# good: [ae2c6d8b3b88c176dff92028941a4023f1b4cb91] Merge tag 'drm-xe-next-fixes-2024-09-12' of https://gitlab.freedesktop.org/drm/xe/kernel into drm-next
-git bisect good ae2c6d8b3b88c176dff92028941a4023f1b4cb91
-# bad: [c8d8a35d094626808cd07ed0758e14c7e4cf61ac] Merge tag 'livepatching-for-6.12' of git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching
-git bisect bad c8d8a35d094626808cd07ed0758e14c7e4cf61ac
-# bad: [cc52dc2fe39ff5dee9916ac2d9381ec3cbf650c0] Merge tag 'pwm/for-6.12-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux
-git bisect bad cc52dc2fe39ff5dee9916ac2d9381ec3cbf650c0
-# bad: [bdf56c7580d267a123cc71ca0f2459c797b76fde] Merge tag 'slab-for-6.12' of git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab
-git bisect bad bdf56c7580d267a123cc71ca0f2459c797b76fde
-# good: [355debb83bf79853cde43579f88eed16adb1da29] Merge branches 'context_tracking.15.08.24a', 'csd.lock.15.08.24a', 'nocb.09.09.24a', 'rcutorture.14.08.24a', 'rcustall.09.09.24a', 'srcu.12.08.24a', 'rcu.tasks.14.08.24a', 'rcu_scaling_tests.15.08.24a', 'fixes.12.08.24a' and 'misc.11.08.24a' into next.09.09.24a
-git bisect good 355debb83bf79853cde43579f88eed16adb1da29
-# good: [067610ebaaec53809794807842a2fcf5f1f5b9eb] Merge tag 'rcu.release.v6.12' of git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux
-git bisect good 067610ebaaec53809794807842a2fcf5f1f5b9eb
-# good: [4b7ff9ab98af11a477d50f08382bcc4c2f899926] mm, slab: restore kerneldoc for kmem_cache_create()
-git bisect good 4b7ff9ab98af11a477d50f08382bcc4c2f899926
-# bad: [a715e94dbda4ece41aac49b7b7ff8ddb55a7fe08] Merge branch 'slab/for-6.12/rcu_barriers' into slab/for-next
-git bisect bad a715e94dbda4ece41aac49b7b7ff8ddb55a7fe08
-# bad: [b3c34245756adada8a50bdaedbb3965b071c7b0a] kasan: catch invalid free before SLUB reinitializes the object
-git bisect bad b3c34245756adada8a50bdaedbb3965b071c7b0a
-# good: [2eb14c1c2717396f2fb1e4a4c5a1ec87cdd174f6] mm, slab: reintroduce rcu_barrier() into kmem_cache_destroy()
-git bisect good 2eb14c1c2717396f2fb1e4a4c5a1ec87cdd174f6
-# good: [6c6c47b063b593785202be158e61fe5c827d6677] mm, slab: call kvfree_rcu_barrier() from kmem_cache_destroy()
-git bisect good 6c6c47b063b593785202be158e61fe5c827d6677
-# bad: [4e1c44b3db79ba910adec32e2e1b920a0e34890a] kunit, slub: add test_kfree_rcu() and test_leak_destroy()
-git bisect bad 4e1c44b3db79ba910adec32e2e1b920a0e34890a
-# first bad commit: [4e1c44b3db79ba910adec32e2e1b920a0e34890a] kunit, slub: add test_kfree_rcu() and test_leak_destroy()
+ include/urcu/hpref.h | 222 +++++++++++++++++++++++++++++++++++++++++++
+ src/Makefile.am      |   6 +-
+ src/hpref.c          |  78 +++++++++++++++
+ 3 files changed, 305 insertions(+), 1 deletion(-)
+ create mode 100644 include/urcu/hpref.h
+ create mode 100644 src/hpref.c
+
+diff --git a/include/urcu/hpref.h b/include/urcu/hpref.h
+new file mode 100644
+index 00000000..300f7d4e
+--- /dev/null
++++ b/include/urcu/hpref.h
+@@ -0,0 +1,222 @@
++// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
++//
++// SPDX-License-Identifier: LGPL-2.1-or-later
++
++#ifndef _URCU_HPREF_H
++#define _URCU_HPREF_H
++
++/*
++ * HPREF: Hazard pointers with reference counters
++ *
++ * This API combines hazard pointers and reference counters.
++ * It uses hazard pointers as fast-paths, and fall-back to reference
++ * counters either explicitly when the reader expects to hold the object
++ * for a long time, or when no hazard pointer slots are available.
++ *
++ * This leverages the fact that both synchronization mechanisms aim to
++ * guarantee existence of objects, and those existence guarantees can be
++ * chained. Each mechanism achieves its purpose in a different way with
++ * different tradeoffs. The hazard pointers are faster to read and scale
++ * better than reference counters, but they consume more memory than a
++ * per-object reference counter.
++ *
++ * The fall-back to reference counter allows bounding the number of
++ * hazard pointer slots to a fixed size for the entire system:
++ * nr_cpus * N, where N=8 as it fills a single 64 bytes cache line on
++ * 64-bit architectures.
++ *
++ * References:
++ *
++ * [1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
++ *      lock-free objects," in IEEE Transactions on Parallel and
++ *      Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
++ */
++
++#include <stdlib.h>
++#include <unistd.h>
++#include <poll.h>
++#include <stdbool.h>
++#include <rseq/mempool.h>	/* Per-CPU memory */
++#include <rseq/rseq.h>
++
++#include <urcu/ref.h>
++#include <urcu/uatomic.h>
++#include <urcu/compiler.h>
++
++struct hpref_node {
++	struct urcu_ref refcount;
++	void (*release)(struct hpref_node *node);
++};
++
++struct hpref_slot {
++	/* Use rseq to set from reader only if zero. */
++	struct hpref_node *node;
++};
++
++#define NR_PERCPU_SLOTS_BITS	3
++#define HPREF_NR_PERCPU_SLOTS	(1U << NR_PERCPU_SLOTS_BITS)
++/*
++ * The emergency slot is only used for short critical sections
++ * (would be preempt off in when porting this code to the kernel): only
++ * to ensure we have a free slot for taking a reference count as
++ * fallback.
++ */
++#define HPREF_EMERGENCY_SLOT	(HPREF_NR_PERCPU_SLOTS - 1)
++
++struct hpref_percpu_slots {
++	struct hpref_slot slots[HPREF_NR_PERCPU_SLOTS];
++	unsigned int current_slot;
++};
++
++enum hpref_type {
++	HPREF_TYPE_HP,
++	HPREF_TYPE_REF,
++};
++
++struct hpref_ctx {
++	struct hpref_slot *slot;
++	struct hpref_node *hp;
++	enum hpref_type type;
++};
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++extern struct hpref_percpu_slots *hpref_percpu_slots;
++
++void hpref_release(struct urcu_ref *ref);
++
++/*
++ * hpref_synchronize: Wait for any reader possessing a hazard pointer to
++ *                    @node to clear its hazard pointer slot.
++ */
++void hpref_synchronize(struct hpref_node *node);
++
++/*
++ * hpref_synchronize_put: Wait for any reader possessing a hazard
++ *                        pointer to clear its slot and put reference
++ *                        count.
++ */
++void hpref_synchronize_put(struct hpref_node *node);
++
++static inline
++void hpref_node_init(struct hpref_node *node,
++		void (*release)(struct hpref_node *node))
++{
++	urcu_ref_init(&node->refcount);
++	node->release = release;
++}
++
++/*
++ * hpref_promote_hp_to_ref: Promote hazard pointer to reference count.
++ */
++static inline
++void hpref_promote_hp_to_ref(struct hpref_ctx *ctx)
++{
++	if (ctx->type == HPREF_TYPE_REF)
++		return;
++	urcu_ref_get(&ctx->hp->refcount);
++	uatomic_store(&ctx->slot->node, NULL, CMM_RELEASE);
++	ctx->slot = NULL;
++	ctx->type = HPREF_TYPE_REF;
++}
++
++/*
++ * hpref_hp_get: Obtain a reference to a stable object, protected either
++ *               by hazard pointer (fast-path) or using reference
++ *               counter as fall-back.
++ */
++static inline
++bool hpref_hp_get(struct hpref_node **node_p, struct hpref_ctx *ctx)
++{
++	int cpu = rseq_current_cpu_raw();
++	struct hpref_percpu_slots *cpu_slots = rseq_percpu_ptr(hpref_percpu_slots, cpu);
++	struct hpref_slot *slot = &cpu_slots->slots[cpu_slots->current_slot];
++	bool use_refcount = false;
++	struct hpref_node *node, *node2;
++	unsigned int next_slot;
++
++retry:
++	node = uatomic_load(node_p, CMM_RELAXED);
++	if (!node)
++		return false;
++	/* Use rseq to try setting current slot hp. Store B. */
++	if (rseq_load_cbne_store__ptr(RSEQ_MO_RELAXED, RSEQ_PERCPU_CPU_ID,
++				(intptr_t *) &slot->node, (intptr_t) NULL,
++				(intptr_t) node, cpu)) {
++		slot = &cpu_slots->slots[HPREF_EMERGENCY_SLOT];
++		use_refcount = true;
++		/*
++		 * This may busy-wait for another reader using the
++		 * emergency slot to transition to refcount.
++		 */
++		caa_cpu_relax();
++		goto retry;
++	}
++	/* Memory ordering: Store B before Load A. */
++	cmm_smp_mb();
++	node2 = uatomic_load(node_p, CMM_RELAXED);	/* Load A */
++	if (node != node2) {
++		uatomic_store(&slot->node, NULL, CMM_RELAXED);
++		if (!node2)
++			return false;
++		goto retry;
++	}
++	ctx->type = HPREF_TYPE_HP;
++	ctx->hp = node;
++	ctx->slot = slot;
++	if (use_refcount) {
++		hpref_promote_hp_to_ref(ctx);
++		return true;
++	}
++	/*
++	 * Increment current slot (racy increment is OK because it is
++	 * just a position hint). Skip the emergency slot.
++	 */
++	next_slot = uatomic_load(&cpu_slots->current_slot, CMM_RELAXED) + 1;
++	if (next_slot >= HPREF_EMERGENCY_SLOT)
++		next_slot = 0;
++	uatomic_store(&cpu_slots->current_slot, next_slot, CMM_RELAXED);
++	return true;
++}
++
++static inline
++void hpref_put(struct hpref_ctx *ctx)
++{
++	if (ctx->type == HPREF_TYPE_REF) {
++		urcu_ref_put(&ctx->hp->refcount, hpref_release);
++	} else {
++		/* Release HP. */
++		uatomic_store(&ctx->slot->node, NULL, CMM_RELEASE);
++	}
++	ctx->hp = NULL;
++}
++
++/*
++ * hpref_set_pointer: Store pointer @node to @ptr, with RCU publication
++ *                    guarantees.
++ */
++static inline
++void hpref_set_pointer(struct hpref_node **ptr, struct hpref_node *node)
++{
++	if (__builtin_constant_p(node) && node == NULL)
++		uatomic_store(ptr, NULL, CMM_RELAXED);
++	else
++		uatomic_store(ptr, node, CMM_RELEASE);
++}
++
++/*
++ * Return the content of the hpref context hazard pointer field.
++ */
++static inline
++struct hpref_node *hpref_ctx_pointer(struct hpref_ctx *ctx)
++{
++	return ctx->hp;
++}
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* _URCU_HPREF_H */
+diff --git a/src/Makefile.am b/src/Makefile.am
+index b555c818..7312c9f7 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -19,7 +19,8 @@ RCULFHASH = rculfhash.c rculfhash-mm-order.c rculfhash-mm-chunk.c \
+ lib_LTLIBRARIES = liburcu-common.la \
+ 		liburcu.la liburcu-qsbr.la \
+ 		liburcu-mb.la liburcu-bp.la \
+-		liburcu-memb.la liburcu-cds.la
++		liburcu-memb.la liburcu-cds.la \
++		liburcu-hpref.la
+ 
+ #
+ # liburcu-common contains wait-free queues (needed by call_rcu) as well
+@@ -50,6 +51,9 @@ liburcu_cds_la_SOURCES = rculfqueue.c rculfstack.c lfstack.c \
+ 	workqueue.c workqueue.h $(RCULFHASH) $(COMPAT)
+ liburcu_cds_la_LIBADD = liburcu-common.la
+ 
++liburcu_hpref_la_SOURCES = hpref.c
++liburcu_hpref_la_LIBADD = -lrseq
++
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = liburcu-cds.pc liburcu.pc liburcu-bp.pc liburcu-qsbr.pc \
+ 	liburcu-mb.pc liburcu-memb.pc
+diff --git a/src/hpref.c b/src/hpref.c
+new file mode 100644
+index 00000000..f63530f5
+--- /dev/null
++++ b/src/hpref.c
+@@ -0,0 +1,78 @@
++// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
++//
++// SPDX-License-Identifier: LGPL-2.1-or-later
++
++/*
++ * HPREF: Hazard pointers with reference counters
++ */
++
++#define _LGPL_SOURCE
++#include <urcu/hpref.h>
++#include <rseq/mempool.h>	/* Per-CPU memory */
++
++static struct rseq_mempool *mempool;
++struct hpref_percpu_slots *hpref_percpu_slots;
++
++void hpref_release(struct urcu_ref *ref)
++{
++	struct hpref_node *node = caa_container_of(ref, struct hpref_node, refcount);
++
++	node->release(node);
++}
++
++/*
++ * hpref_synchronize: Wait for any reader possessing a hazard pointer to
++ *                    @node to clear its hazard pointer slot.
++ */
++void hpref_synchronize(struct hpref_node *node)
++{
++	int nr_cpus = rseq_get_max_nr_cpus(), cpu;
++
++	/* Memory ordering: Store A before Load B. */
++	cmm_smp_mb();
++	/* Scan all CPUs slots. */
++	for (cpu = 0; cpu < nr_cpus; cpu++) {
++		struct hpref_percpu_slots *cpu_slots = rseq_percpu_ptr(hpref_percpu_slots, cpu);
++		struct hpref_slot *slot;
++		unsigned int i;
++
++		for (i = 0; i < HPREF_NR_PERCPU_SLOTS; i++) {
++			slot = &cpu_slots->slots[i];
++			/* Busy-wait if node is found. */
++			while (uatomic_load(&slot->node, CMM_ACQUIRE) == node)	/* Load B */
++				caa_cpu_relax();
++		}
++	}
++}
++
++/*
++ * hpref_synchronize_put: Wait for any reader possessing a hazard
++ *                        pointer to clear its slot and put reference
++ *                        count.
++ */
++void hpref_synchronize_put(struct hpref_node *node)
++{
++	if (!node)
++		return;
++	hpref_synchronize(node);
++	urcu_ref_put(&node->refcount, hpref_release);
++}
++
++static __attribute__((constructor))
++void hpref_init(void)
++{
++	mempool = rseq_mempool_create("hpref", sizeof(struct hpref_percpu_slots), NULL);
++	if (!mempool)
++		abort();
++	hpref_percpu_slots = rseq_mempool_percpu_zmalloc(mempool);
++	if (!hpref_percpu_slots)
++		abort();
++}
++
++static __attribute__((destructor))
++void hpref_exit(void)
++{
++	rseq_mempool_percpu_free(hpref_percpu_slots);
++	if (rseq_mempool_destroy(mempool))
++		abort();
++}
+-- 
+2.39.2
+
