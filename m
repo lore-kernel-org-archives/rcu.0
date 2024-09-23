@@ -1,227 +1,307 @@
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993F433C8;
-	Sun, 22 Sep 2024 14:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727014439; cv=none; b=h43mg32960YMr3A4pR3/m+Ytllij+T0Vqfc1CgEkh0JdHIn/vcWyUznbW/spadmma1tvRSLIye8KYYXJBt5cLqmkIqVT3X7Qaah8l6AnwBL7x11+H6pn/Rr8SZGJLETRdRxmVxUHgncyt3T0rt8Mb6vf61EpK8VxpmNkjJp8//c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727014439; c=relaxed/simple;
-	bh=3fAe8Gix3+hT1ekAMKfp7MFwOapu/svSucP1/6IWdZo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K2JzbEgCpBxIcRBJkF4QTLAro+scI21/6QTkqDRvZNVINowiDKFFpVb2btjCb2DhHXLmErsRaGWN+9tRTj/yjbqvBi8LUtueY+VukkgCxBLiI5if2Wi34K06bZOkOdTlLezMZPotQKSk+49MAOizA0FfX0oXKhKTYbP1XT2wTxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a0ahQkG6; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2BBC2F2
+	for <rcu@vger.kernel.org>; Mon, 23 Sep 2024 04:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727066327; cv=fail; b=qjBGKKGF47vfGBgQ3f5l6fy1yMh5c/5WH8PoDRclij8oSG45VCLVpa3juLGKqKotz4aaXIa/Bf1gExpdaenVwpW3G5dHtxFWMQG6tNOrlUk91QFrXMF5jCbhhetiKBBRyorMaiXWpVSp7t1dFROlxwYcXdqQWP7JVDI77nC195Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727066327; c=relaxed/simple;
+	bh=UO7RPi9YGc/z79Ls/y5051OS0HHTBvOcnI6QZMQBD08=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=tYvptC0CBmFLjAeDMmZyJhsZmpAO8Qzt8i0b/pQktOyqGGeLjbsoOvtFJiVzYaMSckmb57Vf2VnJKnMgC3QMb+iWBPGGNQQJWg4ZqAHLw/Kvl6DLx+EsLWKwrqEXffbn9Jpju6ckCimnkdhXaTrD0PYAsZvKBj+jBli4aLDSOzw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HXQA0ilS; arc=fail smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a0ahQkG6"
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-206aee40676so28733175ad.0;
-        Sun, 22 Sep 2024 07:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727014437; x=1727619237; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=H60osoPEQIRFYd/ZJmgRWiIyxJNfdxxhbTW+sQ2BYKg=;
-        b=a0ahQkG6W1OQUOg4xjTqHt9Km0ssFykGd2Duo8jDsMWK3wov0H8MNEi8o5UtFIBZQA
-         ie6Ml1v4/J0h96jGAWf3W9rd6VfY1FmaJQPHmx818XEDQwLPSpQAhLdYxwtber3iLMSb
-         4WgWOGGTeDLgtiZTv392OlidT0Wb+WN4WITqOUTE/t/ZYclS/US8khMV1Sk+Axqvgkss
-         /MWAlr2XmLEhiPxTtaMCaFrCv2Ps3uFL5kFNfX6HgPZCymY166mHOC5HWaxlt6g+/jFw
-         Skx4XBKIOaHBq4Qeplbr8zMUAqRh8tukhHDI3KFgarvvkIPFB07AbeLWMvTczQWuGQ+B
-         h/1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727014437; x=1727619237;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H60osoPEQIRFYd/ZJmgRWiIyxJNfdxxhbTW+sQ2BYKg=;
-        b=WcAnvwxMP/4Z/f6z+DOhCEznjwM8IyXOI7Ki4cTjvNNq0UFxoaiN4sxGB2EXhdL/5w
-         fEj5iwzDhigY51aBA5VWe1cob2O/xk5PyZQPWoaIGNuS+7SyUjqI5TtShLi3bqbprG5m
-         8/X36UQtnEE9AfCtqKJDpgNkxOaLikwIRXrzb/9kh0fUPEOBqa+mWModP7PEDK2wt8tb
-         JYhQNOBu7LBWZYBRENcfrvnWuAdgmHf2EhQs4cvzOCIxxR6G3KpJi9t1W5XKgi0NyZEz
-         WheW6AJAPsJ0lUUG23/1jXGtnkAFNE89BYlndlfF2Sojp7/S3yxC11nvZabtjhFw7y8y
-         ehMg==
-X-Forwarded-Encrypted: i=1; AJvYcCWDnSFsis9q5pZDaUoESXUGhIQFCmyLoiHEe/IGaHhzsyAJ1kPVtdevOWk3yJf9tQdEdIcH@vger.kernel.org, AJvYcCXdXdvPnDXi4DpbqHLeVlfNmTodWGVuIfipqd0Xlptsz+H1cbg0aXxa4fzQ7GYBme7Nd0zbEy19zP07F5A=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFrlYzTF7CG+nml/l88nUDms2nadwWvRPybW3i7jRQwANS3YU0
-	y9s6+V9UZUnMRaOg6NHrx+5U1mJ03MIugnXx6Ha5c3VZS808c8Yg
-X-Google-Smtp-Source: AGHT+IEHaxKkIqBBTPuNrLXpgy1OHoUd7mAxeSwx64GY4yclAXmUc8XcyqlQKUnXJbVWazIj77emvw==
-X-Received: by 2002:a17:902:d546:b0:206:8f25:a3e with SMTP id d9443c01a7336-208d841ff88mr130901425ad.53.1727014436696;
-        Sun, 22 Sep 2024 07:13:56 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2079473083fsm120417355ad.258.2024.09.22.07.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Sep 2024 07:13:55 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <fcaaf6b9-f284-4983-a8e3-e282dd95fc16@roeck-us.net>
-Date: Sun, 22 Sep 2024 07:13:53 -0700
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HXQA0ilS"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1727066326; x=1758602326;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=UO7RPi9YGc/z79Ls/y5051OS0HHTBvOcnI6QZMQBD08=;
+  b=HXQA0ilSFy9Xn2TdxPEsTg0OjVaV/bordnUeD4EeufurIS9Oat8lhRep
+   5fiTu5tTEl5xy9d2fd6rLbS96csiCB7Eke/YCHuwSIhKVmRLjFwQMefEb
+   NSiB4iKxHFzwngt4tTK2JHNw5CuIJvp5qLvR2uVdV72iyd4jI6yy/e5Hq
+   E5XydKJJSCuksuMtEh1QJNEXD8VmKuCF0x8OnEj7HMJX6rEUtu/3oNsBF
+   +KL6El7pPyDE2cAeSwVuOxbNsXhtDm4vuaGlfNPLJd1um79L6YWJr2KN0
+   3i7Eo6F/hiErmrvHxGm6ubZ+1XE/+vVMBH7vF5p6iIEvPE5D7jhjcmLF6
+   g==;
+X-CSE-ConnectionGUID: v/tm1tbaRyu09LWcLm+kAg==
+X-CSE-MsgGUID: faKNvjwXROCzP6zfhdN/lQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11202"; a="13632779"
+X-IronPort-AV: E=Sophos;i="6.10,250,1719903600"; 
+   d="scan'208";a="13632779"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2024 21:38:45 -0700
+X-CSE-ConnectionGUID: 2X5wLNddSOeFeP7VRwhFgg==
+X-CSE-MsgGUID: PzkwGV+8Sd6OP9hGFIfFgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,250,1719903600"; 
+   d="scan'208";a="71380927"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Sep 2024 21:38:45 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 22 Sep 2024 21:38:44 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 22 Sep 2024 21:38:43 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Sun, 22 Sep 2024 21:38:43 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Sun, 22 Sep 2024 21:38:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YvLQEogTbq481pOE38tiI3aLBeqlA8v7Ku+3VD4DXq4hR/tMH+VL7ihyEjuMDEXSuPEXY3WTMTgc12crYJo/etcOw8EVQ0OxZcurmpJepGlWaoumMz22Sl2l3my/ip/WxPzw69W0SwP02zc1ER4em6jCMY9Jwu2ralkpm+HqV+k6yAb61pqFFvkW4SyKsglgx5amArPerkYWioXrN+t4dxSVh/AFq0U+xVAYHjJwc0m0Sj/noTXZvAJ7gVKuDUe60e5quWpgPq1yn14xKJ4rATwYoOEI7iVwk6xVgfCZfYkEGKmQ18AMJ5MwcLntek6phyf2nqwg9iBdVdoKMenGTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=G1SqjdMqJ9BeY3SKAeSNZ7IY71gkTeEbHDDwX+KSqxY=;
+ b=ZOkig0hoSpkTw8is0nBjQC1ilOB2bhx4/sAMFZdSMQW8wnN+BAjcfRxrIhMZY0UpRnD8TdyHDZFJL613OjP8dqVlyznAKUWjGrr89NwlSYlVxW0gYPrBSSQd6EhXpTu2C1QRfT5bSH0Pj+gf4uiotXPcI8+hM8SPujXWfrqaT+aw4tIlQH+tkyETRdXW/CzmNZEDt7ASDHA4unJ8H+57LlvpfmGmH7edbSY7V4q0iPszzkoH3Vz41upsiZgfbyv8bb/9e7pXHdyCbCWV4l64NEmimiaACDyne0njw2IaqcKugWNMRjY7efjJM95jbOPro2lucU7VolN9Fa0snriLCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by SA3PR11MB8021.namprd11.prod.outlook.com (2603:10b6:806:2fd::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.25; Mon, 23 Sep
+ 2024 04:38:40 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.7982.022; Mon, 23 Sep 2024
+ 04:38:40 +0000
+Date: Mon, 23 Sep 2024 12:38:31 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, kernel test robot
+	<oliver.sang@intel.com>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+	<andrii@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Kent Overstreet
+	<kent.overstreet@linux.dev>, <rcu@vger.kernel.org>
+Subject: [paulmckrcu:dev] [srcu]  26cb612c43:
+ BUG:using__this_cpu_read()in_preemptible
+Message-ID: <202409231124.358fed11-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SI2PR02CA0006.apcprd02.prod.outlook.com
+ (2603:1096:4:194::8) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 7/7] kunit, slub: add test_kfree_rcu() and
- test_leak_destroy()
-To: Hyeonggon Yoo <42.hyeyoo@gmail.com>, Vlastimil Babka <vbabka@suse.cz>
-Cc: KUnit Development <kunit-dev@googlegroups.com>,
- Brendan Higgins <brendanhiggins@google.com>, David Gow
- <davidgow@google.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Julia Lawall <Julia.Lawall@inria.fr>, Jakub Kicinski <kuba@kernel.org>,
- "Jason A. Donenfeld" <Jason@zx2c4.com>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- Jann Horn <jannh@google.com>, Mateusz Guzik <mjguzik@gmail.com>
-References: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
- <20240807-b4-slab-kfree_rcu-destroy-v2-7-ea79102f428c@suse.cz>
- <6fcb1252-7990-4f0d-8027-5e83f0fb9409@roeck-us.net>
- <07d5a214-a6c2-4444-8122-0a7b1cdd711f@suse.cz>
- <73f9e6d7-f5c0-4cdc-a9c4-dde3e2fb057c@roeck-us.net>
- <474b0519-b354-4370-84ac-411fd3d6d14b@suse.cz>
- <CAB=+i9SQHqVrfUbuSgsKbD07k37MUsPcU7NMSYgwXhLL+UhF2w@mail.gmail.com>
-Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAB=+i9SQHqVrfUbuSgsKbD07k37MUsPcU7NMSYgwXhLL+UhF2w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SA3PR11MB8021:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1eaae9b1-555e-4106-faef-08dcdb899922
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?VSvqPGSkbQrlZaF/6rqzPjFMfByi9aX6UCWZQEGhUqkUgu5Q+CoRT1i4ElEV?=
+ =?us-ascii?Q?nBaI/DSAaujyR3ZME7+mF+2ZNh9TCp+AX3HptO8+VZt3gicdRnEjo8/43bzN?=
+ =?us-ascii?Q?sfhSMoZ9kFpXTaBZ4gXRajMojvgJpCpzOYStptmqUusEviKKCrnmrwfb1YA3?=
+ =?us-ascii?Q?f1hXfdqBm5AhnsZWEddmq2yl63vpyqSwk6bUPWTBgmydgE1H97z8zobLENh/?=
+ =?us-ascii?Q?DCbRJSTG56KWP4jEIXq6dHU58nfAuqv8lgXJZsaH4beH0BJxxo/P8QdI2+Xx?=
+ =?us-ascii?Q?ssCjs/8DKLa4wPNVQyxrvSDwcSplf8py6xsEyceCOoWJI6y5ZTeu5dXTbAGS?=
+ =?us-ascii?Q?kcxCILL0o9QNPLSVYeZm9HN1DaPmaOCQp4Jc6HOLTGfdA1wjtyxGN0qG3Zw1?=
+ =?us-ascii?Q?rkqRekIE1SOzPWbrcbS3XrqeUcPNlX9gTzEXA5NjiCbo3ZdV14fFKmEkIRpP?=
+ =?us-ascii?Q?xH/HBRLBaUo6Kkzi1WmNaxbd9hoFWQnbJXxceNsxXarm+PyJiKLg3+iIB+dN?=
+ =?us-ascii?Q?jeVgQinSlMXnJP7f6BFbty7iByYXtCRvHXmAC6xRLD+1717Ob21jGSaDoSgZ?=
+ =?us-ascii?Q?/sRzuKIb1xSWiVfSDSmwujCRXsZvBwfHTZ55uORGadJ/tyaORH/Gwze4P7p2?=
+ =?us-ascii?Q?Der78tnVCF3HmD+jtXnY7FHMjWn2HDmGABGI22sj1NvcJzlygTZpob70Gpcr?=
+ =?us-ascii?Q?TmaH5NKSu98MS6SwIJ+R6PZ+QIiOyBjuNTJWRZkm6D4hU2YZXF/XwUNNUpYp?=
+ =?us-ascii?Q?ANloTfLB+zBqX6vsmQ789em5IeQvgXVIqLlz7GunHweH5n7ReC0AQ0f8kz/l?=
+ =?us-ascii?Q?mT3Vt1ZpBua/DG5tKmLiRdVFM90D3T/h78Euo4Ph1JA/elrOY+77b7OIK5WM?=
+ =?us-ascii?Q?pax3/0D7uCi7FiRJNAq5vE2T5UKA/sna2ZBIhiVj8szL/g615t3ca+vIv50t?=
+ =?us-ascii?Q?b8TPvgkNRFIykXu+oUaImo3Dl/I2HGXnrHc8alHhlUI0diKwRrAZqBUPsn18?=
+ =?us-ascii?Q?0MSXQMfDqr9noDIuoq4A3jQqbb8ul9fc1hPVq27ZxZCPWm7ViLx06hNN++17?=
+ =?us-ascii?Q?qIDVNK6K+E5k8QK9OdYJFJfCAyQeaWYIQy5yj54iw+iWgjZn6Xculn66UxKu?=
+ =?us-ascii?Q?B2iTugnyHUJH5tdzy5zu69JONBLGwwu6z1zZWh2ilJl4Yhnxt0+bY3zf+dZC?=
+ =?us-ascii?Q?Yj5yCQ9aSsSZF6KPZpNr7Nzu2B1EPz4tkg/ILn0CWepvyOtTBSg2DI/LJ8HC?=
+ =?us-ascii?Q?pk0rwkWDMcUisUBRDWFuw2ZQZWWeQOYWchX0HvsfOgbN3q1L3xdYumYoVIPG?=
+ =?us-ascii?Q?s6AI3gLHUnvgIIzpaF345lW+qNuZcDTKaV4bsGIewqO4afLwqXtMqb70bnML?=
+ =?us-ascii?Q?iZSS4uY=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6eEdFavQjDtrSDx58eMfX1CKUgpcLD+JtiKxhElIcTuThSMSHw8qQ9uVPXKM?=
+ =?us-ascii?Q?TikwEsbf3kwaObzwF60AbQAyXyQlKFgWF7vn1xrQDII2Vie9v3l0bvqiUNCL?=
+ =?us-ascii?Q?VL2Mq3CFSGokaU4ws8zAK14j0CRtkr6JElW6PCdxIUfJvc1f0NRwjpbqlu34?=
+ =?us-ascii?Q?gOUXM94blmBqGf5XwV4uZuGJu7VirrAwYDpOkLPW2UiFqQ7OkKH/ZA8LAK99?=
+ =?us-ascii?Q?9y0gp7gKPY9jzJbqmPbi3es/g3ADaF2QcQF3mU23s/039f65gOPrRyFn9vT7?=
+ =?us-ascii?Q?YFsBa5KA21whL8FDWu0ebz4kkdJd7+huC595vKv0hbh1G+nXM19ype4L2WHN?=
+ =?us-ascii?Q?hOUkVgUgCUvmf3U9juolnlf8WaEYs1Ui7OElzGNC/h3tlFW1NrPP1Skuwkgl?=
+ =?us-ascii?Q?zJBd9428TF5wtqLonnsvYV5Q+1bjT5b0C2npT13UKeZpTDu3R+nb9Kcj+1YZ?=
+ =?us-ascii?Q?sFh4JuGHXc1ZJlKkQE7XuIZxkVzjYjkECqVWRnOfFLTd1Ehf9ha1dVGs9ud9?=
+ =?us-ascii?Q?R3HuIG475GmW/v9F2kHHdWsVNaGvdWQfRq1txm2qB2lUeMquWQTOt35TRrDq?=
+ =?us-ascii?Q?jjGfOMBtFvW4vLrqfnbwUQo/YVlwQsTd6+F9zc+TQW0hlUBijN/QXd/nVpa0?=
+ =?us-ascii?Q?EnLb0KHt25edix/OItcaAhOJAbJUk+/PJSvcHrwFBoTvZ77dxCCa+MEZ7OVk?=
+ =?us-ascii?Q?aei/wUNQX6vbwalTCMvNZYnwXwnI5azLqczjmn+vGxc9yahTOquDjIdN+yZq?=
+ =?us-ascii?Q?hfBDQvSlVdj/t5g+m7aAvvGH7x3uf5ZcsC3ECfm+9R3Mpr2v/shm4rfCJP35?=
+ =?us-ascii?Q?O9vqdfMW+Su1Sw980uhjpEnRrLQV5Q5Et1OmjWWso9IpQyZ6wYmtZDh8CEwz?=
+ =?us-ascii?Q?Pk6y6EUB2T1aHJZfwPkF7DTbyPu07kFaJLVvxe95weGq0uwWOMqXjoYDw98b?=
+ =?us-ascii?Q?0uvZMdtVb8oGNb9lVDdedTyPdzvEom4vZOAqFNjuCRfOGc5ndSyS/BhgdQw7?=
+ =?us-ascii?Q?wVlJIexrsOK7pV6ezbWg0EQ4qmt8Y7sLhXPIfyzM3e8mET4ZRF+IZEgeL1Yu?=
+ =?us-ascii?Q?TgReT+fZXb/zd3Et7yvCqZBLKbNbp958+BbLQVmqUgNOCXmWK0GqejLnoTU4?=
+ =?us-ascii?Q?VH6k2WhHfo6GEBt5sEqv8wIAWkRF1hCR3o1B8CtfF/j2gc2AZdbMZoMpJBSj?=
+ =?us-ascii?Q?C/MhxjvV/rVrpK9RjFWDcmqWoCOAmW0f5mtuvyihaD0CHOnO36BvmleJHwU9?=
+ =?us-ascii?Q?rqQxVBkRDfTg29TUb2y3d9yu7cKa7UYu06YjRfsjnTsV1PYmkjkcO66Dpc5d?=
+ =?us-ascii?Q?5TqVoHgbE/bpe4SD8H9pGyCOZ+05SCNZYaAlpdYIeu8Bfj4w0gYQx480LVRh?=
+ =?us-ascii?Q?6UKDCMDsBQyfRV4znVjfN5Vrauk8rvSyGqYgTnKJYPsmBHYYbsYUOWd6snUs?=
+ =?us-ascii?Q?7e+JunvCd0OAaTAk4alEe/PSC/wvLnEobcXuHtWMCPRYpPu8KeqgsB1hlyCp?=
+ =?us-ascii?Q?17EGbjfUSPeSygx1bOfRYCntKbmv0kiExrl9ITeVql9W3amaFNbBffHCFaoy?=
+ =?us-ascii?Q?2VhbElGX9EfGP/nwR4qZwuVu4pg4WLnmRkexpMR+PklLLp8WssBAZHphQyoC?=
+ =?us-ascii?Q?ug=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1eaae9b1-555e-4106-faef-08dcdb899922
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2024 04:38:40.7471
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: icsb9DgfKKc7hzeizgVIf28/34JD3FRy3dsQsB4uqMAmenCrNBmFU14EHWN3N91bYHx1PqDsl4zeUxlMGsSf5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8021
+X-OriginatorOrg: intel.com
 
-On 9/21/24 23:16, Hyeonggon Yoo wrote:
-> On Sun, Sep 22, 2024 at 6:25 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 9/21/24 23:08, Guenter Roeck wrote:
->>> On 9/21/24 13:40, Vlastimil Babka wrote:
->>>> +CC kunit folks
->>>>
->>>> On 9/20/24 15:35, Guenter Roeck wrote:
->>>>> Hi,
->>>>
->>>> Hi,
->>>>
->>>>> On Wed, Aug 07, 2024 at 12:31:20PM +0200, Vlastimil Babka wrote:
->>>>>> Add a test that will create cache, allocate one object, kfree_rcu() it
->>>>>> and attempt to destroy it. As long as the usage of kvfree_rcu_barrier()
->>>>>> in kmem_cache_destroy() works correctly, there should be no warnings in
->>>>>> dmesg and the test should pass.
->>>>>>
->>>>>> Additionally add a test_leak_destroy() test that leaks an object on
->>>>>> purpose and verifies that kmem_cache_destroy() catches it.
->>>>>>
->>>>>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->>>>>
->>>>> This test case, when run, triggers a warning traceback.
->>>>>
->>>>> kmem_cache_destroy TestSlub_kfree_rcu: Slab cache still has objects when called from test_leak_destroy+0x70/0x11c
->>>>> WARNING: CPU: 0 PID: 715 at mm/slab_common.c:511 kmem_cache_destroy+0x1dc/0x1e4
->>>>
->>>> Yes that should be suppressed like the other slub_kunit tests do. I have
->>>> assumed it's not that urgent because for example the KASAN kunit tests all
->>>> produce tons of warnings and thus assumed it's in some way acceptable for
->>>> kunit tests to do.
->>>>
->>>
->>> I have all tests which generate warning backtraces disabled. Trying to identify
->>> which warnings are noise and which warnings are on purpose doesn't scale,
->>> so it is all or nothing for me. I tried earlier to introduce a patch series
->>> which would enable selective backtrace suppression, but that died the death
->>> of architecture maintainers not caring and people demanding it to be perfect
->>> (meaning it only addressed WARNING: backtraces and not BUG: backtraces,
->>> and apparently that wasn't good enough).
->>
->> Ah, didn't know, too bad.
->>
->>> If the backtrace is intentional (and I think you are saying that it is),
->>> I'll simply disable the test. That may be a bit counter-productive, but
->>> there is really no alternative for me.
->>
->> It's intentional in the sense that the test intentionally triggers a
->> condition that normally produces a warning. Many if the slub kunit test do
->> that, but are able to suppress printing the warning when it happens in the
->> kunit context. I forgot to do that for the new test initially as the warning
->> there happens from a different path that those that already have the kunit
->> suppression, but we'll implement that suppression there too ASAP.
-> 
-> We might also need to address the concern of the commit
-> 7302e91f39a ("mm/slab_common: use WARN() if cache still has objects on
-> destroy"),
-> the concern that some users prefer WARN() over pr_err() to catch
-> errors on testing systems
-> which relies on WARN() format, and to respect panic_on_warn.
-> 
-> So we might need to call WARN() instead of pr_err() if there are errors in
-> slub error handling code in general, except when running kunit tests?
-> 
 
-If people _want_ to see WARNING backtraces generated on purpose, so be it.
-For me it means that _real_ WARNING backtraces disappear in the noise.
-Manually maintaining a list of expected warning backtraces is too maintenance
-expensive for me, so I simply disable all kunit tests which generate
-backtraces on purpose. That is just me, though. Other testbeds may have
-more resources available and may be perfectly happy with the associated
-maintenance cost.
 
-In this specific case, I now have disabled slub kunit tests, and, as
-mentioned before, from my perspective there is no need to change the
-code just to accommodate my needs. I'll do the same with all other new
-unit tests which generate backtraces in the future, without bothering
-anyone.
+Hello,
 
-Sorry for the noise.
+kernel test robot noticed "BUG:using__this_cpu_read()in_preemptible" on:
 
-Thanks,
-Guenter
+commit: 26cb612c431de5093ae6a3a67ecaa0363f5b8829 ("srcu: Add srcu_read_lock_lite() and srcu_read_unlock_lite()")
+https://github.com/paulmckrcu/linux dev
+
+in testcase: rcutorture
+version: 
+with following parameters:
+
+	runtime: 300s
+	test: cpuhotplug
+	torture_type: srcud
+
+
+
+compiler: gcc-12
+test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+in our tests, this issue doesn't always happen, but with a not small rate.
+
+daf812f27d6bbe4c 26cb612c431de5093ae6a3a67ec
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+           :50          66%          33:50    dmesg.BUG:using__this_cpu_read()in_preemptible
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202409231124.358fed11-lkp@intel.com
+
+
+[  169.560380][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
+[ 169.561229][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+[  169.561657][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
+[  169.562369][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  169.563120][   T76] Workqueue: rcu_gp process_srcu
+[  169.563518][   T76] Call Trace:
+[  169.563789][   T76]  <TASK>
+[ 169.564031][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
+[ 169.564418][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
+[ 169.564842][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+[ 169.565219][ T76] ? process_one_work (kernel/workqueue.c:3206) 
+[ 169.565592][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1784) 
+[ 169.565994][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
+[ 169.566373][ T76] ? process_one_work (kernel/workqueue.c:3236) 
+[ 169.566790][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
+[ 169.567199][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
+[ 169.567559][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
+[ 169.567990][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
+[ 169.568361][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
+[ 169.568761][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
+[ 169.569156][ T76] ? kthread (kernel/kthread.c:389) 
+[ 169.569474][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 169.569848][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
+[ 169.570212][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 169.570563][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+[  169.570954][   T76]  </TASK>
+[  169.652036][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
+[ 169.652785][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+[  169.653204][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
+[  169.653945][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  169.654710][   T76] Workqueue: rcu_gp process_srcu
+[  169.655095][   T76] Call Trace:
+[  169.655357][   T76]  <TASK>
+[ 169.655591][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
+[ 169.655958][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
+[ 169.656392][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+[ 169.656771][ T76] ? process_one_work (kernel/workqueue.c:3206) 
+[ 169.657162][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1765) 
+[ 169.657559][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
+[ 169.657909][ T76] ? process_one_work (kernel/workqueue.c:3236) 
+[ 169.658263][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
+[ 169.658623][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
+[ 169.658911][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
+[ 169.659254][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
+[ 169.659554][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
+[ 169.659885][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
+[ 169.660211][ T76] ? kthread (kernel/kthread.c:389) 
+[ 169.660480][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 169.660773][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
+[ 169.661069][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 169.661363][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+[  169.661693][   T76]  </TASK>
+[  169.662140][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
+[ 169.662810][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+[  169.663222][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
+[  169.663934][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  169.664696][   T76] Workqueue: rcu_gp process_srcu
+[  169.665091][   T76] Call Trace:
+[  169.665353][   T76]  <TASK>
+[ 169.665586][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
+[ 169.665959][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
+[ 169.666369][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+[ 169.666727][ T76] ? preempt_count_sub (kernel/sched/core.c:5685) 
+[ 169.667127][ T76] ? process_one_work (kernel/workqueue.c:3206) 
+[ 169.667519][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1784) 
+[ 169.667938][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
+[ 169.668310][ T76] ? process_one_work (kernel/workqueue.c:3236) 
+[ 169.668719][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
+[ 169.669150][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
+[ 169.669517][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
+[ 169.669954][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
+[ 169.670303][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
+[ 169.670692][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
+[ 169.671077][ T76] ? kthread (kernel/kthread.c:389) 
+[ 169.671412][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 169.671761][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
+[ 169.672114][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 169.672463][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+[  169.672861][   T76]  </TASK>
+[  169.690595][   T75] smpboot: CPU 1 is now offline
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240923/202409231124.358fed11-lkp@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
