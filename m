@@ -1,330 +1,212 @@
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAFB1487FF;
-	Wed, 25 Sep 2024 06:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B794139579;
+	Wed, 25 Sep 2024 08:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727246162; cv=none; b=MGaGPpmfRaULA11PCR/w2JRP5GhHl8vr0p5XTfwOz6FcwNW3htG7/tjVyFrc//DqfAbNQEA7ossGoaSrfzeWxgX6lTAnIBPS4iZM3fi561vfBhf0L+RHrFgDNavV1RIlswy4NAFm1Kt/IHBwWhTJuKAK2KEi94nHq1FjLu0uPhA=
+	t=1727254668; cv=none; b=sDvC7ulaeYe4Z+1yQ8cmNW8HRCKIUBfgxHhZNw/OsazWDM89itl2UXheXxyKnOIvWqMgmCMFMmobYSR4S23VxHEVSTwvKMYKk4XIMX7svy3pYNooEDNKCH3U87aPBHEYCmH8UVWVtjw+ml5QV+r78DenZTWAJ1k5MQT3CglSOUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727246162; c=relaxed/simple;
-	bh=DgyGr6egxcOB39s5l6IEt9vFBGg3lOzqWSScvDkVdx8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ti7Xh4KeD/DkNAFr/zjgZnqYS98fFBPe3qFhG5CsGW11HulqK6D9Ji9Xne2Mdpf/IuIaGzEW5YKBD9nO+su45hMBWp/a5ogII7+kq/c0geyakVffCul5f09JQzcZzw1Uv0cPYs+uAnno1oM6Wm/2AgT5eNxPUPWskFScOrP89hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Q6apTrqm; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	s=arc-20240116; t=1727254668; c=relaxed/simple;
+	bh=TjqXMgitC9Pb+7QWCcSVpW7ReibhPwGxQoiUmqKDXp0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DU9hrOvZb5Y5N0cyGh5sdJsdyRV/9cWtCMzAU3+0j/hty4/tTnJPayWR9rgLEPOU1y+F2m760c/5+uy1+kczK2gg3I32ErGszB2EexLpZZXyp5EUddyyU537m/Ng2zJKiYJYhSfNI4RQ7CBMnUz8FpURThEffUvZGdLFa51CGoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WHPJJiQ5; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Q6apTrqm"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1727246152;
-	bh=DgyGr6egxcOB39s5l6IEt9vFBGg3lOzqWSScvDkVdx8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Q6apTrqmCbkPOJxFrRCMYZqmm2X0FA2Eryzt90uZzGARNknLJHHkfLBzijizaDW2m
-	 ocPI3aTcKEv4X12+W2dAgNhs6KTFfDtLzpaA9drN6EV13LgL5LB1aI9fApYlH81+5b
-	 nZdvgVRXs7vDm/bI9ddaiSgx4IMRs1G/RGZwTBQ18Bx4xqjQv+h78wPglzW6r0XqfE
-	 nIMFqSYN8kRGMeHnKOSYouMUZvtpZo7qkv0Wd3MeeFRpd2046rNuLkAulNsw4SArQ9
-	 O73p+k+uP44jAYiLM6umRC7/JJamqSyCKcf48FCPJNfvyCtTFC1vSO8QLkMUyf8ZSz
-	 KCqCtf4LRyl3Q==
-Received: from [172.24.0.4] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XD6S01yS9z1Lkh;
-	Wed, 25 Sep 2024 02:35:44 -0400 (EDT)
-Message-ID: <48ae741e-98aa-49d9-b677-6c4f8fd1bcb0@efficios.com>
-Date: Wed, 25 Sep 2024 08:35:04 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WHPJJiQ5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58007C4CEC3;
+	Wed, 25 Sep 2024 08:57:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727254667;
+	bh=TjqXMgitC9Pb+7QWCcSVpW7ReibhPwGxQoiUmqKDXp0=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=WHPJJiQ5ZmjK3RzTJ4zqVnbu7vvi1fu1Bfq9YGMsmYyH61cTAijqblvGKEiebqyRv
+	 EjdtOyfeCuUbXKzdb+ndFNo0+Ki8J5ghoxG+n0UkL9kgk6Mb4L8uH7XhY3ZT5q0/fi
+	 EtifeyNsBw58Pf8AEcrwyRdgBhy1xOequxKlJd1IU6Z2iawADXlO3FVsG0yqdIySHI
+	 yc8sxtorckIanzXvRgjwoqtbA8zE5j2RVpQLMSX3YkLd2zccm1fF4caXCbwywvYZVg
+	 ijYmuEF0YIlkB1Z78KwQSl0nTaMX3jip55VY9SD7Iulk8kPF97yn/yJDa3fU6dVArP
+	 DW7qmvZPGAzfw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 2FCCECE0E55; Wed, 25 Sep 2024 01:57:45 -0700 (PDT)
+Date: Wed, 25 Sep 2024 01:57:45 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>, rcu@vger.kernel.org
+Subject: Re: [paulmckrcu:dev] [srcu]  26cb612c43:
+ BUG:using__this_cpu_read()in_preemptible
+Message-ID: <ff495e02-dcd4-4310-8806-58fad0dad794@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202409231124.358fed11-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/1] hpref: Hazard Pointers with Reference Counter
-To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
- Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Alan Stern
- <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Mateusz Guzik <mjguzik@gmail.com>, rcu@vger.kernel.org, linux-mm@kvack.org,
- lkmm@lists.linux.dev
-References: <20240921164210.256278-1-mathieu.desnoyers@efficios.com>
- <e4721439-8cad-4134-8c07-84b6ecc69573@huaweicloud.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <e4721439-8cad-4134-8c07-84b6ecc69573@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202409231124.358fed11-lkp@intel.com>
 
-On 2024-09-25 07:57, Jonas Oberhauser wrote:
-> Hi Mathieu,
+On Mon, Sep 23, 2024 at 12:38:31PM +0800, kernel test robot wrote:
 > 
-> interesting idea. Conceptually it looks good.
 > 
-> There's another approach of using hazard pointer to optimize shared 
-> reference counting (to make it lock-free in common cases).
+> Hello,
 > 
-> https://github.com/cmuparlay/concurrent_deferred_rc
+> kernel test robot noticed "BUG:using__this_cpu_read()in_preemptible" on:
 > 
-> It doesn't go as far as what you're doing, but they also use the hazard 
-> pointer to protect the refcount (like you do in the promote function).
-
-Thanks for the reference. Indeed, one use-case of this HP+refcount
-scheme would be to implement something that resembles C++ shared
-pointers. I'm glad to see I'm not alone in seeing potential in this
-approach.
-
-> I haven't read your code in detail but it seems to me you have an ABA 
-> bug: as I explained elsewhere, you could read the same pointer after ABA 
-> but you don't synchronize with the newer store that gave you node2, 
-> leaving you to speculatively read stale values through *ctx->hp.
-> (I am assuming here that ctx->hp is essentially an out parameter used to 
-> let the caller know which node got protected).
-
-You are of course absolutely right. The following change should fix it:
-
-  	cmm_barrier();
--	node2 = uatomic_load(node_p, CMM_RELAXED);	/* Load A */
-+	node2 = rcu_dereference(*node_p);	/* Load A */
-
-Please let me know if I'm missing anything.
-
-Thanks,
-
-Mathieu
-
-
+> commit: 26cb612c431de5093ae6a3a67ecaa0363f5b8829 ("srcu: Add srcu_read_lock_lite() and srcu_read_unlock_lite()")
+> https://github.com/paulmckrcu/linux dev
 > 
-> Have fun,
->    jonas
+> in testcase: rcutorture
+> version: 
+> with following parameters:
 > 
->> +/*
->> + * hpref_hp_get: Obtain a reference to a stable object, protected either
->> + *               by hazard pointer (fast-path) or using reference
->> + *               counter as fall-back.
->> + */
->> +static inline
->> +bool hpref_hp_get(struct hpref_node **node_p, struct hpref_ctx *ctx)
->> +{
->> +    int cpu = rseq_current_cpu_raw();
->> +    struct hpref_percpu_slots *cpu_slots = 
->> rseq_percpu_ptr(hpref_percpu_slots, cpu);
->> +    struct hpref_slot *slot = 
->> &cpu_slots->slots[cpu_slots->current_slot];
->> +    bool use_refcount = false;
->> +    struct hpref_node *node, *node2;
->> +    unsigned int next_slot;
->> +
->> +retry:
->> +    node = uatomic_load(node_p, CMM_RELAXED);
->> +    if (!node)
->> +        return false;
->> +    /* Use rseq to try setting current slot hp. Store B. */
->> +    if (rseq_load_cbne_store__ptr(RSEQ_MO_RELAXED, RSEQ_PERCPU_CPU_ID,
->> +                (intptr_t *) &slot->node, (intptr_t) NULL,
->> +                (intptr_t) node, cpu)) {
->> +        slot = &cpu_slots->slots[HPREF_EMERGENCY_SLOT];
->> +        use_refcount = true;
->> +        /*
->> +         * This may busy-wait for another reader using the
->> +         * emergency slot to transition to refcount.
->> +         */
->> +        caa_cpu_relax();
->> +        goto retry;
->> +    }
->> +    /* Memory ordering: Store B before Load A. */
->> +    cmm_smp_mb();
->> +    node2 = uatomic_load(node_p, CMM_RELAXED);    /* Load A */
->> +    if (node != node2) {
->> +        uatomic_store(&slot->node, NULL, CMM_RELAXED);
->> +        if (!node2)
->> +            return false;
->> +        goto retry;
->> +    }
->> +    ctx->type = HPREF_TYPE_HP;
->> +    ctx->hp = node;
->                     ^---- here
+> 	runtime: 300s
+> 	test: cpuhotplug
+> 	torture_type: srcud
 > 
->> +    ctx->slot = slot;
->> +    if (use_refcount) {
->> +        hpref_promote_hp_to_ref(ctx);
->> +        return true;
->> +    }
->> +    /*
->> +     * Increment current slot (racy increment is OK because it is
->> +     * just a position hint). Skip the emergency slot.
->> +     */
->> +    next_slot = uatomic_load(&cpu_slots->current_slot, CMM_RELAXED) + 1;
->> +    if (next_slot >= HPREF_EMERGENCY_SLOT)
->> +        next_slot = 0;
->> +    uatomic_store(&cpu_slots->current_slot, next_slot, CMM_RELAXED);
->> +    return true;
->> +}
->> +
->> +static inline
->> +void hpref_put(struct hpref_ctx *ctx)
->> +{
->> +    if (ctx->type == HPREF_TYPE_REF) {
->> +        urcu_ref_put(&ctx->hp->refcount, hpref_release);
->> +    } else {
->> +        /* Release HP. */
->> +        uatomic_store(&ctx->slot->node, NULL, CMM_RELEASE);
->> +    }
->> +    ctx->hp = NULL;
->> +}
->> +
->> +/*
->> + * hpref_set_pointer: Store pointer @node to @ptr, with RCU publication
->> + *                    guarantees.
->> + */
->> +static inline
->> +void hpref_set_pointer(struct hpref_node **ptr, struct hpref_node *node)
->> +{
->> +    if (__builtin_constant_p(node) && node == NULL)
->> +        uatomic_store(ptr, NULL, CMM_RELAXED);
->> +    else
->> +        uatomic_store(ptr, node, CMM_RELEASE);
->> +}
->> +
->> +/*
->> + * Return the content of the hpref context hazard pointer field.
->> + */
->> +static inline
->> +struct hpref_node *hpref_ctx_pointer(struct hpref_ctx *ctx)
->> +{
->> +    return ctx->hp;
->> +}
->> +
->> +#ifdef __cplusplus
->> +}
->> +#endif
->> +
->> +#endif /* _URCU_HPREF_H */
->> diff --git a/src/Makefile.am b/src/Makefile.am
->> index b555c818..7312c9f7 100644
->> --- a/src/Makefile.am
->> +++ b/src/Makefile.am
->> @@ -19,7 +19,8 @@ RCULFHASH = rculfhash.c rculfhash-mm-order.c 
->> rculfhash-mm-chunk.c \
->>   lib_LTLIBRARIES = liburcu-common.la \
->>           liburcu.la liburcu-qsbr.la \
->>           liburcu-mb.la liburcu-bp.la \
->> -        liburcu-memb.la liburcu-cds.la
->> +        liburcu-memb.la liburcu-cds.la \
->> +        liburcu-hpref.la
->>   #
->>   # liburcu-common contains wait-free queues (needed by call_rcu) as well
->> @@ -50,6 +51,9 @@ liburcu_cds_la_SOURCES = rculfqueue.c rculfstack.c 
->> lfstack.c \
->>       workqueue.c workqueue.h $(RCULFHASH) $(COMPAT)
->>   liburcu_cds_la_LIBADD = liburcu-common.la
->> +liburcu_hpref_la_SOURCES = hpref.c
->> +liburcu_hpref_la_LIBADD = -lrseq
->> +
->>   pkgconfigdir = $(libdir)/pkgconfig
->>   pkgconfig_DATA = liburcu-cds.pc liburcu.pc liburcu-bp.pc 
->> liburcu-qsbr.pc \
->>       liburcu-mb.pc liburcu-memb.pc
->> diff --git a/src/hpref.c b/src/hpref.c
->> new file mode 100644
->> index 00000000..f63530f5
->> --- /dev/null
->> +++ b/src/hpref.c
->> @@ -0,0 +1,78 @@
->> +// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers 
->> <mathieu.desnoyers@efficios.com>
->> +//
->> +// SPDX-License-Identifier: LGPL-2.1-or-later
->> +
->> +/*
->> + * HPREF: Hazard pointers with reference counters
->> + */
->> +
->> +#define _LGPL_SOURCE
->> +#include <urcu/hpref.h>
->> +#include <rseq/mempool.h>    /* Per-CPU memory */
->> +
->> +static struct rseq_mempool *mempool;
->> +struct hpref_percpu_slots *hpref_percpu_slots;
->> +
->> +void hpref_release(struct urcu_ref *ref)
->> +{
->> +    struct hpref_node *node = caa_container_of(ref, struct 
->> hpref_node, refcount);
->> +
->> +    node->release(node);
->> +}
->> +
->> +/*
->> + * hpref_synchronize: Wait for any reader possessing a hazard pointer to
->> + *                    @node to clear its hazard pointer slot.
->> + */
->> +void hpref_synchronize(struct hpref_node *node)
->> +{
->> +    int nr_cpus = rseq_get_max_nr_cpus(), cpu;
->> +
->> +    /* Memory ordering: Store A before Load B. */
->> +    cmm_smp_mb();
->> +    /* Scan all CPUs slots. */
->> +    for (cpu = 0; cpu < nr_cpus; cpu++) {
->> +        struct hpref_percpu_slots *cpu_slots = 
->> rseq_percpu_ptr(hpref_percpu_slots, cpu);
->> +        struct hpref_slot *slot;
->> +        unsigned int i;
->> +
->> +        for (i = 0; i < HPREF_NR_PERCPU_SLOTS; i++) {
->> +            slot = &cpu_slots->slots[i];
->> +            /* Busy-wait if node is found. */
->> +            while (uatomic_load(&slot->node, CMM_ACQUIRE) == node)    
->> /* Load B */
->> +                caa_cpu_relax();
->> +        }
->> +    }
->> +}
->> +
->> +/*
->> + * hpref_synchronize_put: Wait for any reader possessing a hazard
->> + *                        pointer to clear its slot and put reference
->> + *                        count.
->> + */
->> +void hpref_synchronize_put(struct hpref_node *node)
->> +{
->> +    if (!node)
->> +        return;
->> +    hpref_synchronize(node);
->> +    urcu_ref_put(&node->refcount, hpref_release);
->> +}
->> +
->> +static __attribute__((constructor))
->> +void hpref_init(void)
->> +{
->> +    mempool = rseq_mempool_create("hpref", sizeof(struct 
->> hpref_percpu_slots), NULL);
->> +    if (!mempool)
->> +        abort();
->> +    hpref_percpu_slots = rseq_mempool_percpu_zmalloc(mempool);
->> +    if (!hpref_percpu_slots)
->> +        abort();
->> +}
->> +
->> +static __attribute__((destructor))
->> +void hpref_exit(void)
->> +{
->> +    rseq_mempool_percpu_free(hpref_percpu_slots);
->> +    if (rseq_mempool_destroy(mempool))
->> +        abort();
->> +}
 > 
+> 
+> compiler: gcc-12
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> in our tests, this issue doesn't always happen, but with a not small rate.
+> 
+> daf812f27d6bbe4c 26cb612c431de5093ae6a3a67ec
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :50          66%          33:50    dmesg.BUG:using__this_cpu_read()in_preemptible
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202409231124.358fed11-lkp@intel.com
+> 
+> 
+> [  169.560380][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
+> [ 169.561229][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Does this diff fix things for you?  Here the per-CPU access is a
+heuristic that reduces overhead once the bulk of the CPUs have done
+srcu_read_lock_lite().  So it is OK to get migrated just after the check.
 
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index f3db4d42e70ab..07147efcb64d3 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -482,7 +482,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
+  */
+ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
+ {
+-	bool did_gp = !!(__this_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
++	bool did_gp = !!(raw_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
+ 	unsigned long unlocks;
+ 
+ 	unlocks = srcu_readers_unlock_idx(ssp, idx);
+
+------------------------------------------------------------------------
+
+> [  169.561657][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
+> [  169.562369][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  169.563120][   T76] Workqueue: rcu_gp process_srcu
+> [  169.563518][   T76] Call Trace:
+> [  169.563789][   T76]  <TASK>
+> [ 169.564031][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
+> [ 169.564418][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
+> [ 169.564842][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+> [ 169.565219][ T76] ? process_one_work (kernel/workqueue.c:3206) 
+> [ 169.565592][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1784) 
+> [ 169.565994][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
+> [ 169.566373][ T76] ? process_one_work (kernel/workqueue.c:3236) 
+> [ 169.566790][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
+> [ 169.567199][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
+> [ 169.567559][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
+> [ 169.567990][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
+> [ 169.568361][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
+> [ 169.568761][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
+> [ 169.569156][ T76] ? kthread (kernel/kthread.c:389) 
+> [ 169.569474][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+> [ 169.569848][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
+> [ 169.570212][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+> [ 169.570563][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+> [  169.570954][   T76]  </TASK>
+> [  169.652036][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
+> [ 169.652785][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+> [  169.653204][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
+> [  169.653945][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  169.654710][   T76] Workqueue: rcu_gp process_srcu
+> [  169.655095][   T76] Call Trace:
+> [  169.655357][   T76]  <TASK>
+> [ 169.655591][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
+> [ 169.655958][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
+> [ 169.656392][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+> [ 169.656771][ T76] ? process_one_work (kernel/workqueue.c:3206) 
+> [ 169.657162][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1765) 
+> [ 169.657559][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
+> [ 169.657909][ T76] ? process_one_work (kernel/workqueue.c:3236) 
+> [ 169.658263][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
+> [ 169.658623][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
+> [ 169.658911][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
+> [ 169.659254][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
+> [ 169.659554][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
+> [ 169.659885][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
+> [ 169.660211][ T76] ? kthread (kernel/kthread.c:389) 
+> [ 169.660480][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+> [ 169.660773][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
+> [ 169.661069][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+> [ 169.661363][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+> [  169.661693][   T76]  </TASK>
+> [  169.662140][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
+> [ 169.662810][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+> [  169.663222][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
+> [  169.663934][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  169.664696][   T76] Workqueue: rcu_gp process_srcu
+> [  169.665091][   T76] Call Trace:
+> [  169.665353][   T76]  <TASK>
+> [ 169.665586][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
+> [ 169.665959][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
+> [ 169.666369][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+> [ 169.666727][ T76] ? preempt_count_sub (kernel/sched/core.c:5685) 
+> [ 169.667127][ T76] ? process_one_work (kernel/workqueue.c:3206) 
+> [ 169.667519][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1784) 
+> [ 169.667938][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
+> [ 169.668310][ T76] ? process_one_work (kernel/workqueue.c:3236) 
+> [ 169.668719][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
+> [ 169.669150][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
+> [ 169.669517][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
+> [ 169.669954][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
+> [ 169.670303][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
+> [ 169.670692][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
+> [ 169.671077][ T76] ? kthread (kernel/kthread.c:389) 
+> [ 169.671412][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+> [ 169.671761][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
+> [ 169.672114][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
+> [ 169.672463][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+> [  169.672861][   T76]  </TASK>
+> [  169.690595][   T75] smpboot: CPU 1 is now offline
+> 
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20240923/202409231124.358fed11-lkp@intel.com
+> 
+> 
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+> 
