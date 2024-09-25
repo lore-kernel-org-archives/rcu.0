@@ -1,164 +1,142 @@
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFBC277107;
-	Wed, 25 Sep 2024 10:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B54218DF78;
+	Wed, 25 Sep 2024 11:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727261201; cv=none; b=J09W2pDR8CKocLG3f0SWcQlX4mHBGQnAgb1CYiox0hSOs8f36GjehCK3+PPYk4LJSvoEW/mNMKUNdSZyWsWgdxmwsQqIRzNoRHrOCwkEAnl7pegrSYhK9Rg2T9ltBZKW4PrxYGdLxqyzvp1WtkGvkZalUP0VdhwYNLNPjp39YoU=
+	t=1727264261; cv=none; b=NWN1AHDTp/i3td6Z96Iz14uKtfdvzOHZSKnwwK7Or3C5iYns2UMqjDns9Ib3b5e4bOfHlRoL/T564PclyUnn13kWdhBn9hbf9LgeK0vNSvmPH5+eblxIJ2IPZEboVv2D4OIMqAErPJERrFCSqejoC8BSFxd85BWPA714UNspXFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727261201; c=relaxed/simple;
-	bh=uu/PXwiT3eXsRa1cBT+MzQ24JypnbUQpiBpLXUDF0d0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mIoHIOVYA7Vf1IYTNIDsPBVSbWaCis+ZDFsrKkiMBOwWFOT3i/Pps0lk1M3R2a1r+2Nv+TJhocnsYMGn7m2srAUuQyzJxaYesIC967NOlfbS83sH/2jMbFXr6W2HZaMlKUf09aG803ScS52IQgrKwMm3hCuJprANuiUWztIIC3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jKa5c3Wv; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1727264261; c=relaxed/simple;
+	bh=mNVhvWOEn6bEbyXBRFPt8xXjd1N12QiImpkDDnCHGZg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ul6KBDEgHbeDU9Fw+Wxoqoqom1O8VB33QnEbZ3b8u0pfuZHMorUCzxO3wsCG6/zff7O9Fheepfqb+PMHZxOUf+ozKCarkFaH4eJ3OFfAkwQzwTT/mK/gkjrXpPme3nNByuPqZc9J+MGkZnmGZ1KRCiHUZRR41kbo8ReW7jsYxbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=NzUR10xe; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jKa5c3Wv"
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7a99e4417c3so573263085a.1;
-        Wed, 25 Sep 2024 03:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727261199; x=1727865999; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9aNL2DkbqIFQCOqqQozrXxRXJzMB2AW4PJqi08QSnaw=;
-        b=jKa5c3Wv4yP8JVvFaQAkT68zMF/7is191QtwSv9v1EpToGBz+uC4yx8vmePBG2l7rI
-         Zx55iJtEJuy9DkF6Dtf517ANeEmpeC33d76wClknyj9WEHUgdJixrN0rlKrjsIIjgX03
-         2Su2iSrSksmGWYtHdk/bk+Lye8qnmydsFWjdKKbK61FCO/p6WHNaHFrIFrt/IivuabHb
-         8twBqQN0kbXAMs9DAXBMiYbYZEPIykEUgFVRVR1A55izz22N6CSDzPvyv+rDzCY9ntTB
-         497990Z0YYiBooM4qZaHrPNlQsGK9JpFZqU7sLh+BGwB/hEmM8HFutt0Ld5UKA8uUzUa
-         rUOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727261199; x=1727865999;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9aNL2DkbqIFQCOqqQozrXxRXJzMB2AW4PJqi08QSnaw=;
-        b=rfxgGQCttCiTQhn/lYhLidG0FhwPzfRN5c2WPDWp7hgQoFjLZKeRcgdqGwQkHXbo/+
-         DXUhocsQF6xxkIuOR1ISW6v4JT4noXh9/w2MFdwg7Z5+pYGJZd39ODrDpdOw+/4ujU66
-         6cyXA7yXVT7Uqnz7MvtYO77vxBXHBiNyvXSMRK0EoWCIros4jlg8kqtScKygxYZlbY65
-         ZHllY9N8AbXe3tTx6EAmn+BF5KJ+tS74ENnldwp0W/X2zIVZaNsLBImurelx6kWM/sI1
-         n58yhoJW9x4hAGyBkm16HtGW645CBbRrBkB6Foh95uLbGIV4cJOFrZ80Xg3Yg08DSuQH
-         62oQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9RMaxaXI+mQ8knpjYBeOVZ2thUTGWJLDFWmTspCiuDe4XJAFr2m/ThOqCFwytvd9T/Co=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyg/sYN+yuLKgiIx2aW4sO72YF45abmJ0yUZ09AJWpsU/2xSf+W
-	naDjo2AapcR2221I3Q3HSDayBHvEvvjj6mox/3nKRGf8YuSK8pAl
-X-Google-Smtp-Source: AGHT+IFvHuGGdp6zrYogUOKGpCVDO+pYTLfd+cXdAs25Wrk14yTLJgeGQxPFJrC9SIR0gcCZRTm9PA==
-X-Received: by 2002:a05:620a:3199:b0:7a9:bf31:dbc7 with SMTP id af79cd13be357-7ace7461d21mr347540485a.53.1727261198621;
-        Wed, 25 Sep 2024 03:46:38 -0700 (PDT)
-Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7acde62b3d0sm158399585a.134.2024.09.25.03.46.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2024 03:46:37 -0700 (PDT)
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 0FF831200069;
-	Wed, 25 Sep 2024 06:46:37 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-02.internal (MEProxy); Wed, 25 Sep 2024 06:46:37 -0400
-X-ME-Sender: <xms:DOrzZjJSGMuMjwT-CxfQOIMmOIVDZyrLcSf_UkXRaVhTZ39XtyDyUA>
-    <xme:DOrzZnIHQr2tj5kWc8meY7wB6NkH_Q-dqQJJ3cU5F4mcQooxEKxt0_c-0tOEjjpjB
-    UKDW-G1Ma2l5zWINw>
-X-ME-Received: <xmr:DOrzZrvvRZjLgKFaJfT4u9c6EV6wKQrSYzKv5rv1yt0cB7LQWcfYLVvZl3D0-w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddthedgfedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
-    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
-    gtohhmqeenucggtffrrghtthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleei
-    vedtgeeuhfegueevieduffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhi
-    thihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmh
-    grihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepvdejpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopehjohhnrghsrdhosggvrhhhrghushgvrheshh
-    hurgifvghitghlohhuugdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhes
-    vhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrtghusehvghgvrhdrkhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhmsehkvhgrtghkrdhorhhgpdhr
-    tghpthhtoheplhhkmhhmsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtohepph
-    gruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehk
-    vghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvrhgrjhdruhhprgguhhihrgihsehkvg
-    hrnhgvlhdrohhrghdprhgtphhtthhopehjohgvlhesjhhovghlfhgvrhhnrghnuggvshdr
-    ohhrgh
-X-ME-Proxy: <xmx:DOrzZsaAcBqNHeASds4eEcgDk_lQ5GM87IQGyL-x5ZCX8D8mNzdTtg>
-    <xmx:DOrzZqZ8ZPzkMZfcOkW23uyahf2VuQO16bYMOT03jY6vKQBGQcDygg>
-    <xmx:DOrzZgDTtBxTuAMxP71zmYf5zTpIV7o66qzJDiEtE-2XtOZLZw8SWQ>
-    <xmx:DOrzZoZoLaVSxlF9wFcEhoILwPTqmYEmR2EHKb_lU5WDGLRW6pzlEg>
-    <xmx:DerzZuqxdrjChdezibvqGC_ASUpO23azOPWlRhtKkP9c3eTw1SIKz54b>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Sep 2024 06:46:36 -0400 (EDT)
-Date: Wed, 25 Sep 2024 03:45:54 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
-	lkmm@lists.linux.dev, "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Kent Overstreet <kent.overstreet@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>
-Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
- pointers
-Message-ID: <ZvPp4taB9uu__oSQ@boqun-archlinux>
-References: <20240917143402.930114-1-boqun.feng@gmail.com>
- <20240917143402.930114-2-boqun.feng@gmail.com>
- <55975a55-302f-4c45-bfcc-192a8a1242e9@huaweicloud.com>
- <ZvPfmAp_2mDkI3ss@boqun-archlinux>
- <f5aeeeda-c725-422a-9481-4795bd3ade0f@huaweicloud.com>
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="NzUR10xe"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1727264258;
+	bh=mNVhvWOEn6bEbyXBRFPt8xXjd1N12QiImpkDDnCHGZg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NzUR10xe39M7KcplzFnp+pUsEnYBTpuWdGy3vbCLCSkWSGx7UPd4EO5CiQnCY1JYv
+	 JtRxX5/Ixr7OvlSMQIatUb49kBUW3RitX8UtpVMisU2jOeRGePJAlTKFYsM9DatxiC
+	 i6QageZOCnVC23DGwUXJfVSZG3TkO7GsMJitiSGz5o3khKYim3JA9CZgkBj4oyP6Bh
+	 r4K6hqSj61MhTBA4aXhIbWOuA1mN4pMErKQ29tuxB+3hbN3+GUh2dqogU9ky+12xgT
+	 wgQOr4BhV3FzutJAbY057deM4ZjVSuYufhlTHd+ecR9QhWlEcFwcK6EQMFnb6BbooY
+	 PUPJVGFPX6eHQ==
+Received: from [192.168.126.112] (unknown [147.75.204.251])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XDF885PTZz1LfT;
+	Wed, 25 Sep 2024 07:37:28 -0400 (EDT)
+Message-ID: <38b04b86-1e85-40f0-8174-3c8ab29cbcaf@efficios.com>
+Date: Wed, 25 Sep 2024 13:36:47 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5aeeeda-c725-422a-9481-4795bd3ade0f@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/1] hpref: Hazard Pointers with Reference Counter
+To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+ Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Alan Stern
+ <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+ Mateusz Guzik <mjguzik@gmail.com>, rcu@vger.kernel.org, linux-mm@kvack.org,
+ lkmm@lists.linux.dev
+References: <20240921164210.256278-1-mathieu.desnoyers@efficios.com>
+ <e4721439-8cad-4134-8c07-84b6ecc69573@huaweicloud.com>
+ <48ae741e-98aa-49d9-b677-6c4f8fd1bcb0@efficios.com>
+ <07c9285f-44a1-486a-8390-0c63cefae35a@huaweicloud.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <07c9285f-44a1-486a-8390-0c63cefae35a@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 25, 2024 at 12:11:52PM +0200, Jonas Oberhauser wrote:
+On 2024-09-25 12:06, Jonas Oberhauser wrote:
 > 
 > 
-> Am 9/25/2024 um 12:02 PM schrieb Boqun Feng:
-> > Hi Jonas,
-> > 
-> > Of
-> > course, if we are really worried about compilers being too "smart"
+> Am 9/25/2024 um 8:35 AM schrieb Mathieu Desnoyers:
+>> On 2024-09-25 07:57, Jonas Oberhauser wrote:
+>>> Hi Mathieu,
 > 
-> Ah, I see you know me better and better...
+>>> I haven't read your code in detail but it seems to me you have an ABA 
+>>> bug: as I explained elsewhere, you could read the same pointer after 
+>>> ABA but you don't synchronize with the newer store that gave you 
+>>> node2, leaving you to speculatively read stale values through *ctx->hp.
+>>> (I am assuming here that ctx->hp is essentially an out parameter used 
+>>> to let the caller know which node got protected).
+>>
+>> The following change should fix it:
+>>
+>>       cmm_barrier();
+>> -    node2 = uatomic_load(node_p, CMM_RELAXED);    /* Load A */
+>> +    node2 = rcu_dereference(*node_p);    /* Load A */
+>>
 > 
-> > we can always do the comparison in asm code, then compilers don't know
-> > anything of the equality between 'ptr' and 'head - head_offset'.
-> Yes, but then a simple compiler barrier between the comparison and returning
-> ptr would also do the trick, right? And maybe easier on the eyes.
+> I don't think this fixes it, because IIRC rcu_dereference relies on the 
+> address dependency (which we don't have here) to provide ordering.
+> 
+> I would recommend either:
+> 
+> -    ctx->hp = node;
+> +    ctx->hp = node2;
+> 
+> which fixes the problem under the perhaps too weak assumption that the 
+> compiler doesn't use its knowledge that node==node2 to just undo this 
+> fix, or more strictly,
+
+As stated in Documentation/RCU/rcu_dereference.rst from the Linux
+kernel, comparing the result of rcu_dereference against another
+non-NULL pointer is discouraged, as you rightly point out.
+
+> 
+> +    ctx->hp = READ_ONCE(node2);
+> 
+> which I believe makes sure that the value of node2 is used.
+
+I am not entirely sure this extra READ_ONCE() would be sufficient
+to prevent the compiler from making assumptions about the content
+of node2 and thus use the result of the first load (node) instead.
+It would also not suffice to prevent the CPU from speculatively
+using the result of the first load to perform dependent loads AFAIU.
+
+> Alternatively you could always use an acquire load.
+
+Unless someone comes up with a sound alternate approach,
+I am tempted to go with an acquire load as the second load
+within hpref_hp_get().
+
+This way, the compiler would not attempt to use the
+node value from the first load for dependent loads,
+and the and CPU won't try to speculate dependent loads
+either.
+
+Thanks,
+
+Mathieu
+
+> 
+> 
+> Best wishes,
+> 
+>    jonas
 > 
 
-The thing about putting a compiler barrier is that it will prevent all
-compiler reorderings, and some of the reordering may contribute to
-better codegen. (I know in this case, we have a smp_mb(), but still
-compilers can move unrelated code upto the second load for optimization
-purpose). Asm comparison is cheaper in this way. But TBH, compilers
-should provide a way to compare pointer values without using the result
-for pointer equality proof, if "convert to unsigned long" doesn't work,
-some other ways should work.
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
-Regards,
-Boqun
-
-> 
-> Have fun,
->    jonas
-> 
