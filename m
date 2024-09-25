@@ -1,46 +1,122 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B794139579;
-	Wed, 25 Sep 2024 08:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82751EB36;
+	Wed, 25 Sep 2024 10:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727254668; cv=none; b=sDvC7ulaeYe4Z+1yQ8cmNW8HRCKIUBfgxHhZNw/OsazWDM89itl2UXheXxyKnOIvWqMgmCMFMmobYSR4S23VxHEVSTwvKMYKk4XIMX7svy3pYNooEDNKCH3U87aPBHEYCmH8UVWVtjw+ml5QV+r78DenZTWAJ1k5MQT3CglSOUk=
+	t=1727258568; cv=none; b=WsTqhUbKj2vdY3t6XYoH1N/O6v7NxtszdH2sWhYF+phWKK/5fM5bU4ht6Z2LciHDeWffaonPe5ozhj0my1boabzNtmbD2EiXw8+r9DyJn4sB7lJceiP3g48oVM+6veO9shb/JvupxamfGB9W3MiGT5Ahm+5O3N5evRUfU5mXSwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727254668; c=relaxed/simple;
-	bh=TjqXMgitC9Pb+7QWCcSVpW7ReibhPwGxQoiUmqKDXp0=;
+	s=arc-20240116; t=1727258568; c=relaxed/simple;
+	bh=TSXpCzxJJGkAZZjqekI+SAitYmkvK20SEeZGv6M/hX0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DU9hrOvZb5Y5N0cyGh5sdJsdyRV/9cWtCMzAU3+0j/hty4/tTnJPayWR9rgLEPOU1y+F2m760c/5+uy1+kczK2gg3I32ErGszB2EexLpZZXyp5EUddyyU537m/Ng2zJKiYJYhSfNI4RQ7CBMnUz8FpURThEffUvZGdLFa51CGoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WHPJJiQ5; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=rHAanohcynv0c0/lIMzXCsbvQ6ztJrnQWCLzGROjUc3+li497aQpF0IOErrWALchP8+161eQQt+6Xrp9u0MIUceomTaQ1YBhwaFVFiwUO2GlmHnjElCjRWs+An+NLziBpc2f6xAbBAcly36F02oCkYBVzvyDiyd/JCXf7cpLVIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VYAtYLIg; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WHPJJiQ5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58007C4CEC3;
-	Wed, 25 Sep 2024 08:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727254667;
-	bh=TjqXMgitC9Pb+7QWCcSVpW7ReibhPwGxQoiUmqKDXp0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=WHPJJiQ5ZmjK3RzTJ4zqVnbu7vvi1fu1Bfq9YGMsmYyH61cTAijqblvGKEiebqyRv
-	 EjdtOyfeCuUbXKzdb+ndFNo0+Ki8J5ghoxG+n0UkL9kgk6Mb4L8uH7XhY3ZT5q0/fi
-	 EtifeyNsBw58Pf8AEcrwyRdgBhy1xOequxKlJd1IU6Z2iawADXlO3FVsG0yqdIySHI
-	 yc8sxtorckIanzXvRgjwoqtbA8zE5j2RVpQLMSX3YkLd2zccm1fF4caXCbwywvYZVg
-	 ijYmuEF0YIlkB1Z78KwQSl0nTaMX3jip55VY9SD7Iulk8kPF97yn/yJDa3fU6dVArP
-	 DW7qmvZPGAzfw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2FCCECE0E55; Wed, 25 Sep 2024 01:57:45 -0700 (PDT)
-Date: Wed, 25 Sep 2024 01:57:45 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VYAtYLIg"
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7a9b3cd75e5so648894985a.0;
+        Wed, 25 Sep 2024 03:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727258565; x=1727863365; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZUldRcpWHree9ha+m2OGa8hB6t5ASjRpcAc+wb5KVAU=;
+        b=VYAtYLIgINteP9pzQ1MfBBLgiSUyvNQ5W5OJx/TtQAEs3lbXL8hbwkTPGPLOvxJTNt
+         vRFWspAI5dpnN0s8/B5uA02b/TEuUZDx/d6FxasWx6MMtdlKQef28kbbNOaao2X2MczI
+         O5EDIZbbrh/h+rkwIKFmPhnOSVGLK+O6gfaz4otNlsbPg+e2zfE46TupgrlViOrLMjtU
+         IKblqi3cObR4+Gepa/Rud/nHcLz41f1yA/hyvgoKCYxY3BPsVSK1QY301DganwoUzqqt
+         zICU1BBT2TlPVniBCoumSBjFrHwJ6JdLedHvToz8a0nDpyysm2kneuGxGPjT0VrvytCd
+         16eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727258565; x=1727863365;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZUldRcpWHree9ha+m2OGa8hB6t5ASjRpcAc+wb5KVAU=;
+        b=DLZn21XAWUB14q7mGAFxv8j0FJpstUrqNNoq3OkvrUvQSAE+lszvs1DOacqHmlEoRm
+         1rh6vgXHCPoxxIvYQI0FDH6wdVG2ocRjsKQdaL7HNFT91sPUpMf2N06hJZHVnwZawyY8
+         IQOAMBeXcdZxUdoz47fLpraOdCcqyQ+omkhuxXELnFFt8314xwnJyFXApJt96N8k3ayt
+         mLkHcX2UUrrxSYXF0Gron+caAkcGsVu4hr16dmGpaCkp3IIz51JgMBAs2qvW8ikzGPhG
+         tvk38mpttrAtvOo7S9ND7l4OiDzOQkB4LjReJSQ+/Ps4G7Ic9y8/+NMFNM1WydF9AEUK
+         4/6A==
+X-Forwarded-Encrypted: i=1; AJvYcCUNEeMRjvUXT53kl6AtCN7f1d+pzSO6rMAqapUBcKSD57kje3MxfneA+5nt68gLHJBlYBdK@vger.kernel.org, AJvYcCX60gOpIDtYVU9Xg9lLpGbVgKUCPjWKH0GbvkoJB7rkvgn13TJ84Ly0V4iJuX/uUBd1wG9u@vger.kernel.org
+X-Gm-Message-State: AOJu0YwiBBj6o5hrBVSlI1vJ8OlPU455sdnsWeN7PG1xXE6nwMjInC99
+	sWok8qYf8kXbeT1aBeK8Zg1xAjD4IGy0BfYTCVpxRMYeeri4YNd9
+X-Google-Smtp-Source: AGHT+IGVKuLW3nVDBEzBuAX97uyQGAh+2bW9xcs4xJ8/3Dniq7Tabkb462mX0j8Xz5mFA3BAmLmahQ==
+X-Received: by 2002:a05:6214:3f87:b0:6c5:4f37:2b51 with SMTP id 6a1803df08f44-6cb1dd7d5eemr34515116d6.28.1727258565402;
+        Wed, 25 Sep 2024 03:02:45 -0700 (PDT)
+Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cb0f4c2cb3sm14896766d6.49.2024.09.25.03.02.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Sep 2024 03:02:44 -0700 (PDT)
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfauth.phl.internal (Postfix) with ESMTP id F0EBD1200043;
+	Wed, 25 Sep 2024 06:02:43 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Wed, 25 Sep 2024 06:02:44 -0400
+X-ME-Sender: <xms:w9_zZlfj_lGnX7i1MJHglos1v5O3p40lvSzoAquicUECHur6mNKA3Q>
+    <xme:w9_zZjMS8TfWWXcSAj6HDM98-vyTLHfQj20CnrBJ8GL_1i1BKeA9XFvjEFh3Pyk09
+    _UqwJzmkxuhHNupeA>
+X-ME-Received: <xmr:w9_zZujpYmCTAwb-OgZlXVr6Wls40DzG-z5nc97-lUweSkMwq2uYBVgjWuO3QA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddthedgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleei
+    vedtgeeuhfegueevieduffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhi
+    thihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmh
+    grihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepvdejpdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehjohhnrghsrdhosggvrhhhrghushgvrheshh
+    hurgifvghitghlohhuugdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhes
+    vhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrtghusehvghgvrhdrkhgvrh
+    hnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhmsehkvhgrtghkrdhorhhgpdhr
+    tghpthhtoheplhhkmhhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepph
+    gruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehk
+    vghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvrhgrjhdruhhprgguhhihrgihsehkvg
+    hrnhgvlhdrohhrghdprhgtphhtthhopehjohgvlhesjhhovghlfhgvrhhnrghnuggvshdr
+    ohhrgh
+X-ME-Proxy: <xmx:w9_zZu9zB_-8hCqHAarnASvoUPRQcRM1qcRHz2l3Yx5QgK0B1jftWw>
+    <xmx:w9_zZhvb7KbIkILiBCB44zV7mEpOpTxFfIasKXItglHm9_6SJDq5vg>
+    <xmx:w9_zZtEofsfLnnQrjGgqG8veq719UZiLtGTYxH0ycfn54Wqr5eQS5g>
+    <xmx:w9_zZoO4rJoQEvGU8zaNcCuIDTjgkd1SXk3Uxf8DgASI2n9R77sbSQ>
+    <xmx:w9_zZqMOxcRadFYAMYaVpKCa1mjA_YDCEYqpyU4uqLcJOYVTORhwbDYB>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 25 Sep 2024 06:02:43 -0400 (EDT)
+Date: Wed, 25 Sep 2024 03:02:00 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
+	lkmm@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, rcu@vger.kernel.org
-Subject: Re: [paulmckrcu:dev] [srcu]  26cb612c43:
- BUG:using__this_cpu_read()in_preemptible
-Message-ID: <ff495e02-dcd4-4310-8806-58fad0dad794@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202409231124.358fed11-lkp@intel.com>
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>
+Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
+ pointers
+Message-ID: <ZvPfmAp_2mDkI3ss@boqun-archlinux>
+References: <20240917143402.930114-1-boqun.feng@gmail.com>
+ <20240917143402.930114-2-boqun.feng@gmail.com>
+ <55975a55-302f-4c45-bfcc-192a8a1242e9@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,164 +125,82 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202409231124.358fed11-lkp@intel.com>
+In-Reply-To: <55975a55-302f-4c45-bfcc-192a8a1242e9@huaweicloud.com>
 
-On Mon, Sep 23, 2024 at 12:38:31PM +0800, kernel test robot wrote:
-> 
-> 
-> Hello,
-> 
-> kernel test robot noticed "BUG:using__this_cpu_read()in_preemptible" on:
-> 
-> commit: 26cb612c431de5093ae6a3a67ecaa0363f5b8829 ("srcu: Add srcu_read_lock_lite() and srcu_read_unlock_lite()")
-> https://github.com/paulmckrcu/linux dev
-> 
-> in testcase: rcutorture
-> version: 
-> with following parameters:
-> 
-> 	runtime: 300s
-> 	test: cpuhotplug
-> 	torture_type: srcud
-> 
-> 
-> 
-> compiler: gcc-12
-> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
-> 
-> 
-> in our tests, this issue doesn't always happen, but with a not small rate.
-> 
-> daf812f27d6bbe4c 26cb612c431de5093ae6a3a67ec
-> ---------------- ---------------------------
->        fail:runs  %reproduction    fail:runs
->            |             |             |
->            :50          66%          33:50    dmesg.BUG:using__this_cpu_read()in_preemptible
-> 
-> 
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202409231124.358fed11-lkp@intel.com
-> 
-> 
-> [  169.560380][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
-> [ 169.561229][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
+Hi Jonas,
 
-Does this diff fix things for you?  Here the per-CPU access is a
-heuristic that reduces overhead once the bulk of the CPUs have done
-srcu_read_lock_lite().  So it is OK to get migrated just after the check.
+On Fri, Sep 20, 2024 at 09:41:15AM +0200, Jonas Oberhauser wrote:
+> 
+> 
+> Am 9/17/2024 um 4:33 PM schrieb Boqun Feng:
+> > +static inline void *__hazptr_tryprotect(hazptr_t *hzp,
+> > +					void *const *p,
+> > +					unsigned long head_offset)
+> > +{
+> > +	void *ptr;
+> > +	struct callback_head *head;
+> > +
+> > +	ptr = READ_ONCE(*p);
+> > +
+> > +	if (ptr == NULL)
+> > +		return NULL;
+> > +
+> > +	head = (struct callback_head *)(ptr + head_offset);
+> > +
+> > +	WRITE_ONCE(*hzp, head);
+> > +	smp_mb();
+> > +
+> > +	ptr = READ_ONCE(*p); // read again
+> > +
+> > +	if (ptr + head_offset != head) { // pointer changed
+> > +		WRITE_ONCE(*hzp, NULL);  // reset hazard pointer
+> > +		return NULL;
+> > +	} else
+> > +		return ptr;
+> > +}
+> 
+> There is a subtle potential for ABA issues here.
+> 
+> If the compiler replaces 'return ptr;' with 'return head - head_offset;',
+> then you do not have an address dependency from the second read.
+> 
+> In this case, in ABA, the first read can read from a stale store, then the
+> second read reads the same value from a newer store but only establishes
+> control-dependency based synchronization with that store; any reads from
+> *ptr could be speculatively executed before doing the second ptr =
+> READ_ONCE(*p).
+> 
+> Therefore you could read the object state before it is properly
+> reinitialized by the second store.
+> 
 
-							Thanx, Paul
+Thanks for taking a look, and nice find!
 
-------------------------------------------------------------------------
+> I'm not sure what the most efficient fix is or if you just want to gamble
+> that "the compiler will never do that".
+> I guess either READ_ONCE(ptr) or a compiler barrier before return ptr might
+> do it?
+> 
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index f3db4d42e70ab..07147efcb64d3 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -482,7 +482,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
-  */
- static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
- {
--	bool did_gp = !!(__this_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
-+	bool did_gp = !!(raw_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
- 	unsigned long unlocks;
- 
- 	unlocks = srcu_readers_unlock_idx(ssp, idx);
+I think the root cause of this is that compiler can replace 'ptr' with
+'head - head_offset' based on pointer value comparison. A fix would be
+converting pointer to unsigned long and doing the comparison:
 
-------------------------------------------------------------------------
+	if ((unsigned long)ptr + head_offset != (unsigned long)head) {
+		WRITE_ONCE(*hzp, NULL);
+		return NULL;
+	} else
+		return ptr;
 
-> [  169.561657][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
-> [  169.562369][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [  169.563120][   T76] Workqueue: rcu_gp process_srcu
-> [  169.563518][   T76] Call Trace:
-> [  169.563789][   T76]  <TASK>
-> [ 169.564031][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
-> [ 169.564418][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
-> [ 169.564842][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
-> [ 169.565219][ T76] ? process_one_work (kernel/workqueue.c:3206) 
-> [ 169.565592][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1784) 
-> [ 169.565994][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
-> [ 169.566373][ T76] ? process_one_work (kernel/workqueue.c:3236) 
-> [ 169.566790][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
-> [ 169.567199][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
-> [ 169.567559][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
-> [ 169.567990][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
-> [ 169.568361][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
-> [ 169.568761][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
-> [ 169.569156][ T76] ? kthread (kernel/kthread.c:389) 
-> [ 169.569474][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
-> [ 169.569848][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
-> [ 169.570212][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
-> [ 169.570563][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
-> [  169.570954][   T76]  </TASK>
-> [  169.652036][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
-> [ 169.652785][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
-> [  169.653204][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
-> [  169.653945][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [  169.654710][   T76] Workqueue: rcu_gp process_srcu
-> [  169.655095][   T76] Call Trace:
-> [  169.655357][   T76]  <TASK>
-> [ 169.655591][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
-> [ 169.655958][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
-> [ 169.656392][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
-> [ 169.656771][ T76] ? process_one_work (kernel/workqueue.c:3206) 
-> [ 169.657162][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1765) 
-> [ 169.657559][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
-> [ 169.657909][ T76] ? process_one_work (kernel/workqueue.c:3236) 
-> [ 169.658263][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
-> [ 169.658623][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
-> [ 169.658911][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
-> [ 169.659254][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
-> [ 169.659554][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
-> [ 169.659885][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
-> [ 169.660211][ T76] ? kthread (kernel/kthread.c:389) 
-> [ 169.660480][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
-> [ 169.660773][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
-> [ 169.661069][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
-> [ 169.661363][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
-> [  169.661693][   T76]  </TASK>
-> [  169.662140][   T76] BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/1:2/76
-> [ 169.662810][ T76] caller is try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
-> [  169.663222][   T76] CPU: 0 UID: 0 PID: 76 Comm: kworker/1:2 Not tainted 6.11.0-rc1-00125-g26cb612c431d #1
-> [  169.663934][   T76] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [  169.664696][   T76] Workqueue: rcu_gp process_srcu
-> [  169.665091][   T76] Call Trace:
-> [  169.665353][   T76]  <TASK>
-> [ 169.665586][ T76] dump_stack_lvl (lib/dump_stack.c:122) 
-> [ 169.665959][ T76] check_preemption_disabled (lib/smp_processor_id.c:52) 
-> [ 169.666369][ T76] ? try_check_zero (kernel/rcu/srcutree.c:485 kernel/rcu/srcutree.c:1149) 
-> [ 169.666727][ T76] ? preempt_count_sub (kernel/sched/core.c:5685) 
-> [ 169.667127][ T76] ? process_one_work (kernel/workqueue.c:3206) 
-> [ 169.667519][ T76] ? srcu_advance_state (kernel/rcu/srcutree.c:1784) 
-> [ 169.667938][ T76] ? process_srcu (kernel/rcu/srcutree.c:1893) 
-> [ 169.668310][ T76] ? process_one_work (kernel/workqueue.c:3236) 
-> [ 169.668719][ T76] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
-> [ 169.669150][ T76] ? __list_add (include/linux/list.h:83 include/linux/list.h:150) 
-> [ 169.669517][ T76] ? process_scheduled_works (kernel/workqueue.c:3312) 
-> [ 169.669954][ T76] ? worker_thread (include/linux/list.h:373 kernel/workqueue.c:948 kernel/workqueue.c:3391) 
-> [ 169.670303][ T76] ? __kthread_parkme (arch/x86/include/asm/current.h:49 kernel/kthread.c:293) 
-> [ 169.670692][ T76] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
-> [ 169.671077][ T76] ? kthread (kernel/kthread.c:389) 
-> [ 169.671412][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
-> [ 169.671761][ T76] ? ret_from_fork (arch/x86/kernel/process.c:153) 
-> [ 169.672114][ T76] ? __pfx_kthread (kernel/kthread.c:342) 
-> [ 169.672463][ T76] ? ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
-> [  169.672861][   T76]  </TASK>
-> [  169.690595][   T75] smpboot: CPU 1 is now offline
-> 
-> 
-> 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20240923/202409231124.358fed11-lkp@intel.com
-> 
-> 
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+because of the conversion, compilers lose the information of pointer
+equality, therefore cannot replace 'ptr' with 'head - head_offset'. Of
+course, if we are really worried about compilers being too "smart", we
+can always do the comparison in asm code, then compilers don't know
+anything of the equality between 'ptr' and 'head - head_offset'.
+
+Regards,
+boqun
+
+> Have fun,
+>    jonas
 > 
