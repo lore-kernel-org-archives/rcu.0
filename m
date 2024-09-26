@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D001B29C9;
-	Thu, 26 Sep 2024 22:50:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C0C1B2ED5;
+	Thu, 26 Sep 2024 22:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727391000; cv=none; b=KZrgkC9+Aqqm8HI8KXPM1uppVOSiaNa6QFoP8055+7HWIkxV5OrXUFcsnO8gQhOMlseYF1OU3pXK5a8WYP4QCdhQmHg6mZsZHqGrRxnoxLz8A8hj9JHPoNICfQc5EeRmdjkZsjnO1Sicp8aMweybjEfoF8AjCbr/YVRkQNQduXo=
+	t=1727391004; cv=none; b=V1HSns4nv+aKi5D88YbMLq5pfpGdkoRrlaeVAeKYp/HTQ0kFOYZKeNHvzWmhzlYR3B2gwNpPp7StD3k8AqoSoba1PsgXJiVrOulGr2d0hcI9j7ee6o4TO31VvHWizVONBJ/I3IKlFYbQlnldDvEIZMAOv2vgy6wWpLknBiDGxeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727391000; c=relaxed/simple;
-	bh=+P4kzizCeNOj1Ff6ZQgJUmeNr/qO1N9UQodOY09ijkk=;
+	s=arc-20240116; t=1727391004; c=relaxed/simple;
+	bh=RXq2bB5DoKDocGNG0/VP6/WISAYwDUKtYUPfrdT95y8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A6uSieDb1d3IYwuhG8+CiDIiK3SuveyzkyZ0DC35HBcdxd9kpck3wyXa0SHCB2P3sro5wcvA2B5m+hQbae3/H9K4DbG808wET9dESYW7JovMnXDUV9axXK6ECFX9hKng5NFEo3yT0g38qTGwNQoVEx69SU9jdD6DvDbv1tT9i2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PtxSAIGX; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=W0k2A74Wi3EAm3/lZ/dUopum98uEKgeVnMlGWS6ui95aJryD86ebKYR0Xy+GzqYj7NJoYHFRYG3s7utfJ7fL9lfHooHiyywfukVMTVSDhWmcvRGNG2EPg+OkbAnAeWYWScW06MEw0hZgEfwiB601/N1jxkFiijs6/HJ5FRa2j6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nk66THNm; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PtxSAIGX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DFA1C4CECE;
-	Thu, 26 Sep 2024 22:49:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nk66THNm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C46B0C4CECD;
+	Thu, 26 Sep 2024 22:50:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727391000;
-	bh=+P4kzizCeNOj1Ff6ZQgJUmeNr/qO1N9UQodOY09ijkk=;
+	s=k20201202; t=1727391003;
+	bh=RXq2bB5DoKDocGNG0/VP6/WISAYwDUKtYUPfrdT95y8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PtxSAIGXraxeSEcnRb5c6or1mDuRelDxeTl4uTsmPJoNX4SkfcLp8zfw6DI3U6IKo
-	 hGeCb0rW4cmP1twq+Q/Ux7r7kQ0c+3/feiQC/OFLvPd5+mPm44hnrWQpUEi8QAo2HN
-	 /AeZndBE6GOjR0iiD3XUIS4vvlr2Byt76Pi3DYp/LK1n/HKBKlFBZLyIVDhhYE25Mq
-	 3uAyq78eTTKQ20XvaHSoz0+r7uc7qqhTighQfrX9aQgV7QWXOIO9K+FycdA466YzZY
-	 1p5v51Na8Y6gMtVNn1HfNWfQLDlkNSi2OI/oAz7bcxdGDDVD2djD6m1wCqTBSno0yx
-	 8rauYfzaiZfxw==
+	b=Nk66THNmmU+VDDA3GP1MyvDe+1U8iGLogZB0wDqe/pxeeQE/+1zYgSiSbt2AUL0a5
+	 NnrTKUiDQKCDmAv4ov6gdJ7ytxKbWjS3TBpPbiq6mNFiAhYaDCYtOoJBfKew3Rl8UQ
+	 KpNYpoI4csBN/96OnUoPg4xn2VWT4U948ICe2PI03/as8peDnD6vQZ7Dtgxt5RYu5Q
+	 Rex9d0Ix6en9/8BAgs6aOOyj2t1YZ418z7NFSUyGWxKD0qB91NXQYQ0EEqwrW/ahUS
+	 PtDnM7hl1SlXLgA1P/+qlRLLtj0JrCuysiMfx9nkLhyeYt2CWuVNqsyIGXUudd+XoS
+	 +BZWAB9p8GyUg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -41,9 +41,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Michal Hocko <mhocko@kernel.org>,
 	Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 17/20] rcu: Use kthread preferred affinity for RCU boost
-Date: Fri, 27 Sep 2024 00:49:05 +0200
-Message-ID: <20240926224910.11106-18-frederic@kernel.org>
+Subject: [PATCH 18/20] kthread: Unify kthread_create_on_cpu() and kthread_create_worker_on_cpu() automatic format
+Date: Fri, 27 Sep 2024 00:49:06 +0200
+Message-ID: <20240926224910.11106-19-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240926224910.11106-1-frederic@kernel.org>
 References: <20240926224910.11106-1-frederic@kernel.org>
@@ -55,119 +55,192 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that kthreads have an infrastructure to handle preferred affinity
-against CPU hotplug and housekeeping cpumask, convert RCU boost to use
-it instead of handling all the constraints by itself.
+kthread_create_on_cpu() uses the CPU argument as an implicit and unique
+printf argument to add to the format whereas
+kthread_create_worker_on_cpu() still relies on explicitly passing the
+printf arguments. This difference in behaviour is error prone and
+doesn't help standardizing per-CPU kthread names.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Unify the behaviours and convert kthread_create_worker_on_cpu() to
+use the printf behaviour of kthread_create_on_cpu().
+
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c        | 27 +++++++++++++++++++--------
- kernel/rcu/tree_plugin.h | 11 ++---------
- 2 files changed, 21 insertions(+), 17 deletions(-)
+ fs/erofs/zdata.c        |  2 +-
+ include/linux/kthread.h | 21 +++++++++++----
+ kernel/kthread.c        | 59 ++++++++++++++++++++++++-----------------
+ 3 files changed, 52 insertions(+), 30 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a60616e69b66..c1e9f0818d51 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -149,7 +149,6 @@ static int rcu_scheduler_fully_active __read_mostly;
- 
- static void rcu_report_qs_rnp(unsigned long mask, struct rcu_node *rnp,
- 			      unsigned long gps, unsigned long flags);
--static struct task_struct *rcu_boost_task(struct rcu_node *rnp);
- static void invoke_rcu_core(void);
- static void rcu_report_exp_rdp(struct rcu_data *rdp);
- static void sync_sched_exp_online_cleanup(int cpu);
-@@ -5007,6 +5006,22 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	return 0;
- }
- 
-+static void rcu_thread_affine_rnp(struct task_struct *t, struct rcu_node *rnp)
-+{
-+	cpumask_var_t affinity;
-+	int cpu;
-+
-+	if (!zalloc_cpumask_var(&affinity, GFP_KERNEL))
-+		return;
-+
-+	for_each_leaf_node_possible_cpu(rnp, cpu)
-+		cpumask_set_cpu(cpu, affinity);
-+
-+	kthread_affine_preferred(t, affinity);
-+
-+	free_cpumask_var(affinity);
-+}
-+
- /*
-  * Update kthreads affinity during CPU-hotplug changes.
-  *
-@@ -5026,19 +5041,18 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
- 	unsigned long mask;
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
--	struct task_struct *task_boost, *task_exp;
-+	struct task_struct *task_exp;
- 
- 	rdp = per_cpu_ptr(&rcu_data, cpu);
- 	rnp = rdp->mynode;
- 
--	task_boost = rcu_boost_task(rnp);
- 	task_exp = rcu_exp_par_gp_task(rnp);
- 
- 	/*
--	 * If CPU is the boot one, those tasks are created later from early
-+	 * If CPU is the boot one, this task is created later from early
- 	 * initcall since kthreadd must be created first.
- 	 */
--	if (!task_boost && !task_exp)
-+	if (!task_exp)
- 		return;
- 
- 	if (!zalloc_cpumask_var(&cm, GFP_KERNEL))
-@@ -5060,9 +5074,6 @@ static void rcutree_affinity_setting(unsigned int cpu, int outgoingcpu)
- 	if (task_exp)
- 		set_cpus_allowed_ptr(task_exp, cm);
- 
--	if (task_boost)
--		set_cpus_allowed_ptr(task_boost, cm);
--
- 	mutex_unlock(&rnp->kthread_mutex);
- 
- 	free_cpumask_var(cm);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 1c7cbd145d5e..223f3a02351e 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1217,16 +1217,13 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 	rnp->boost_kthread_task = t;
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+
- 	sp.sched_priority = kthread_prio;
- 	sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
-+	rcu_thread_affine_rnp(t, rnp);
- 	wake_up_process(t); /* get to TASK_INTERRUPTIBLE quickly. */
- }
- 
--static struct task_struct *rcu_boost_task(struct rcu_node *rnp)
--{
--	return READ_ONCE(rnp->boost_kthread_task);
--}
--
- #else /* #ifdef CONFIG_RCU_BOOST */
- 
- static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags)
-@@ -1243,10 +1240,6 @@ static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 8936790618c6..050aaa016ec8 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -318,7 +318,7 @@ static void erofs_destroy_percpu_workers(void)
+ static struct kthread_worker *erofs_init_percpu_worker(int cpu)
  {
+ 	struct kthread_worker *worker =
+-		kthread_create_worker_on_cpu(cpu, 0, "erofs_worker/%u", cpu);
++		kthread_create_worker_on_cpu(cpu, 0, "erofs_worker/%u");
+ 
+ 	if (IS_ERR(worker))
+ 		return worker;
+diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+index 30209bdf83a2..0c66e7c1092a 100644
+--- a/include/linux/kthread.h
++++ b/include/linux/kthread.h
+@@ -187,13 +187,24 @@ extern void __kthread_init_worker(struct kthread_worker *worker,
+ 
+ int kthread_worker_fn(void *worker_ptr);
+ 
+-__printf(2, 3)
++__printf(3, 4)
++struct kthread_worker *kthread_create_worker_on_node(unsigned int flags,
++						     int node,
++						     const char namefmt[], ...);
++
++#define kthread_create_worker(flags, namefmt, ...) \
++({									   \
++	struct kthread_worker *__kw					   \
++		= kthread_create_worker_on_node(flags, NUMA_NO_NODE,	   \
++						namefmt, ## __VA_ARGS__);  \
++	if (!IS_ERR(__kw))						   \
++		wake_up_process(__kw->task);				   \
++	__kw;								   \
++})
++
+ struct kthread_worker *
+-kthread_create_worker(unsigned int flags, const char namefmt[], ...);
+-
+-__printf(3, 4) struct kthread_worker *
+ kthread_create_worker_on_cpu(int cpu, unsigned int flags,
+-			     const char namefmt[], ...);
++			     const char namefmt[]);
+ 
+ bool kthread_queue_work(struct kthread_worker *worker,
+ 			struct kthread_work *work);
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 91037533afda..7eb93c248c59 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -1028,12 +1028,11 @@ int kthread_worker_fn(void *worker_ptr)
+ EXPORT_SYMBOL_GPL(kthread_worker_fn);
+ 
+ static __printf(3, 0) struct kthread_worker *
+-__kthread_create_worker(int cpu, unsigned int flags,
+-			const char namefmt[], va_list args)
++__kthread_create_worker_on_node(unsigned int flags, int node,
++				const char namefmt[], va_list args)
+ {
+ 	struct kthread_worker *worker;
+ 	struct task_struct *task;
+-	int node = NUMA_NO_NODE;
+ 
+ 	worker = kzalloc(sizeof(*worker), GFP_KERNEL);
+ 	if (!worker)
+@@ -1041,20 +1040,14 @@ __kthread_create_worker(int cpu, unsigned int flags,
+ 
+ 	kthread_init_worker(worker);
+ 
+-	if (cpu >= 0)
+-		node = cpu_to_node(cpu);
+-
+ 	task = __kthread_create_on_node(kthread_worker_fn, worker,
+-						node, namefmt, args);
++					node, namefmt, args);
+ 	if (IS_ERR(task))
+ 		goto fail_task;
+ 
+-	if (cpu >= 0)
+-		kthread_bind(task, cpu);
+-
+ 	worker->flags = flags;
+ 	worker->task = task;
+-	wake_up_process(task);
++
+ 	return worker;
+ 
+ fail_task:
+@@ -1065,6 +1058,7 @@ __kthread_create_worker(int cpu, unsigned int flags,
+ /**
+  * kthread_create_worker - create a kthread worker
+  * @flags: flags modifying the default behavior of the worker
++ * @node: task structure for the thread is allocated on this node
+  * @namefmt: printf-style name for the kthread worker (task).
+  *
+  * Returns a pointer to the allocated worker on success, ERR_PTR(-ENOMEM)
+@@ -1072,25 +1066,49 @@ __kthread_create_worker(int cpu, unsigned int flags,
+  * when the caller was killed by a fatal signal.
+  */
+ struct kthread_worker *
+-kthread_create_worker(unsigned int flags, const char namefmt[], ...)
++kthread_create_worker_on_node(unsigned int flags, int node, const char namefmt[], ...)
+ {
+ 	struct kthread_worker *worker;
+ 	va_list args;
+ 
+ 	va_start(args, namefmt);
+-	worker = __kthread_create_worker(-1, flags, namefmt, args);
++	worker = __kthread_create_worker_on_node(flags, node, namefmt, args);
+ 	va_end(args);
+ 
++	if (worker)
++		wake_up_process(worker->task);
++
++	return worker;
++}
++EXPORT_SYMBOL(kthread_create_worker_on_node);
++
++static __printf(3, 4) struct kthread_worker *
++__kthread_create_worker_on_cpu(int cpu, unsigned int flags,
++			       const char namefmt[], ...)
++{
++	struct kthread_worker *worker;
++	va_list args;
++
++	va_start(args, namefmt);
++	worker = __kthread_create_worker_on_node(flags, cpu_to_node(cpu),
++						 namefmt, args);
++	va_end(args);
++
++	if (worker) {
++		kthread_bind(worker->task, cpu);
++		wake_up_process(worker->task);
++	}
++
+ 	return worker;
  }
+-EXPORT_SYMBOL(kthread_create_worker);
  
--static struct task_struct *rcu_boost_task(struct rcu_node *rnp)
--{
--	return NULL;
--}
- #endif /* #else #ifdef CONFIG_RCU_BOOST */
+ /**
+  * kthread_create_worker_on_cpu - create a kthread worker and bind it
+  *	to a given CPU and the associated NUMA node.
+  * @cpu: CPU number
+  * @flags: flags modifying the default behavior of the worker
+- * @namefmt: printf-style name for the kthread worker (task).
++ * @namefmt: printf-style name for the thread. Format is restricted
++ *	     to "name.*%u". Code fills in cpu number.
+  *
+  * Use a valid CPU number if you want to bind the kthread worker
+  * to the given CPU and the associated NUMA node.
+@@ -1122,16 +1140,9 @@ EXPORT_SYMBOL(kthread_create_worker);
+  */
+ struct kthread_worker *
+ kthread_create_worker_on_cpu(int cpu, unsigned int flags,
+-			     const char namefmt[], ...)
++			     const char namefmt[])
+ {
+-	struct kthread_worker *worker;
+-	va_list args;
+-
+-	va_start(args, namefmt);
+-	worker = __kthread_create_worker(cpu, flags, namefmt, args);
+-	va_end(args);
+-
+-	return worker;
++	return __kthread_create_worker_on_cpu(cpu, flags, namefmt, cpu);
+ }
+ EXPORT_SYMBOL(kthread_create_worker_on_cpu);
  
- /*
 -- 
 2.46.0
 
