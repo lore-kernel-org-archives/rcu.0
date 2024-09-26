@@ -1,112 +1,225 @@
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4549F288DB
-	for <rcu@vger.kernel.org>; Thu, 26 Sep 2024 16:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A0FD12BEBB;
+	Thu, 26 Sep 2024 16:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727367202; cv=none; b=BcdYBHDhuKKaKmKR5UW7oLgSkqGDLHSVtoJTnlW8KnvmL56QAm3g85z1BwWYz/cvgjewirgoaIBaspYY5lP5avBpdcY4iq47Uebke3gm3Oo+CH7LyBwhJdE+1tMTaDa8owf8HnKpgOlBTAQ0uLO/UzJO5mD3cTCpjAdQbMhg4E4=
+	t=1727368534; cv=none; b=dPeiN/ymxm+rvaYYJDC+B/myLu1GTC58sdD0Rj+HMPpQ99MvE3VGW3WnHGKH8nIN31R6sgCHh/GaiXcU4t65LfcYBd+xN4dRMIw3i7NMMApcJGUZNV2hYGpfjkNtsmDd0pgovC8/5wY2iiX5cQ2rxil8+ARzk348cwzRLUBs4K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727367202; c=relaxed/simple;
-	bh=b/AkQ6KC/9/lXddy+98mjZVGNz2jCIw0oGNZw2EAKto=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Wr44K0qEzPlGYY/CdGdLEVVP/TwWw++mPtDkk4tPnCACHiEbNbnnn88pxu9G+EBH8E+PVPrRvExwS07W5YcrOC3bC6wiQyd6SPyScFGpgWr6x1HXITRZLTBW1mf/F7Pekw+kzH78PSz6wnwcxeicHUqMMJpG1KQN9s68bOyvoGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XuGZCNKy; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1727368534; c=relaxed/simple;
+	bh=YkV7VcLgIw6oAsn/+PQ5nP/wdS7mDQez5u1C9Izk9B8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aijTRLaZzpE2CSlfo2HnX64QWOW2khKlUpqhsDwqGZ1ovgPO5AH6XXenXJvVoHU+5pLS2ncyN1FGOgjvh3EP1pdql+Z8RwP6lzax6Am0HBqhjVwDU27Bv+WtqH3OSxiYExFS6vnHPIsaSABJC4LbIS01zYDU77Gk0s3wzd8MYMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH2QITYb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V+DehV7d; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH2QITYb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V+DehV7d; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XuGZCNKy"
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5365a9574b6so2018678e87.1
-        for <rcu@vger.kernel.org>; Thu, 26 Sep 2024 09:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1727367199; x=1727971999; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QXnBUq/9ghYv0bNYvo4uDCfOpMdq8coMpre7nUUI9wE=;
-        b=XuGZCNKyThI6pV+XtGz/YSJWu/BbCfILCXOy/06ICqmP5E9NkI0MrLvOE338o1NPGm
-         Y5asItQWnqG5HBzIr22HrluLeJLREAR8pszbeyRWGw8grp5pV+Ey+RBtKe9rAzushAsb
-         xUZJ+3+NExCx41Y3V02LOJMZnuzONYQtqd5rQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727367199; x=1727971999;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QXnBUq/9ghYv0bNYvo4uDCfOpMdq8coMpre7nUUI9wE=;
-        b=Ifb+cQdHZxP/91aMKTM8B9KZdZDS2QFnZR6A3wAgvHIM2VfFCLUjQwKRcTG1LJwyJz
-         Qca53EtLsUgMZPQruv00i1xwoXZBtVVDfAIjHQxRm2awQ3yBhP1HqT+R3rnGsI1tqzxE
-         aajV/of7MwF1q49kDd/CKpA/Vdfu317AJ1TW585gjCp88L7uEDIotyLnK0GKQBtHoBaU
-         qgjhbgKAji8djco4MVRxxcNyfi2BbtW+RNSoSovcaSDdFJPkPHaDek3lJDlwaaMWZRug
-         hlJpv91AUJWe3QbrL9AbJrUCJaF8S6AzOlqTyMZ64WkG4n8O1yS7TQeNJajyRuAVN/t6
-         OR+A==
-X-Forwarded-Encrypted: i=1; AJvYcCVzQ0fLss7VS8Jrg0j1XsWEUCskMBknQIacmkrFBfT53Q6cHuYbCYNcW6IvP6hhl9bX4JQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwW2OErnWvDQUoFhYjVr5uesAYr/QT3vVnRUFfBRmUl1DZPPIDa
-	OKZlT5YWdGD1qrpuaoovtGf737Zu0zxc5MKQV4gT/B6Jx0IchA9bHKSesTHGn/IqsX7sceeZpHJ
-	Vs82gjg==
-X-Google-Smtp-Source: AGHT+IHFEQE78EGrGmbIoaNBLrbPIDTFuTkS2euKrIIfts5E4LsmaaKUJbBRC3uWoB8Hau1MjHZaIg==
-X-Received: by 2002:a05:6512:2207:b0:537:aba1:16be with SMTP id 2adb3069b0e04-5389fc7d1a0mr131686e87.46.1727367199055;
-        Thu, 26 Sep 2024 09:13:19 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-538a04328aesm707e87.173.2024.09.26.09.13.16
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Sep 2024 09:13:17 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5365a9574b6so2018560e87.1
-        for <rcu@vger.kernel.org>; Thu, 26 Sep 2024 09:13:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWGC/DT5lUmffy2oPAyV1QiMMuxfGJrtlcpBoWTOpeli+S3m6uQprdNhRYx+3EhxHpXnZc=@vger.kernel.org
-X-Received: by 2002:a05:6512:1113:b0:536:53e3:feae with SMTP id
- 2adb3069b0e04-5389fc34426mr138492e87.11.1727367195995; Thu, 26 Sep 2024
- 09:13:15 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH2QITYb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V+DehV7d";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH2QITYb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V+DehV7d"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7407D1F804;
+	Thu, 26 Sep 2024 16:35:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727368528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
+	b=eH2QITYbG5LO29oBHWsHKc5cTjAX0JuSoGA2ZlN4CPEkcbccbOudJ4SqC2xf2NBnp2/Fv2
+	xReZ70tPJhoXdrbafpNVIbSXO/tI80zK54k4M6xGOrzqRdeCPVjCpYC7Dh3DIwEAZ0z/cE
+	H8ob63brYl904+xhD20sguHuMrdSvYE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727368528;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
+	b=V+DehV7dM4eDR5lcXZdST+5Nd75Eg/iBCdR4LubJ6PPnMdAKbGuHOpAZiehFrYgAHjQW32
+	SxTWSxWrvaKVCoCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727368528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
+	b=eH2QITYbG5LO29oBHWsHKc5cTjAX0JuSoGA2ZlN4CPEkcbccbOudJ4SqC2xf2NBnp2/Fv2
+	xReZ70tPJhoXdrbafpNVIbSXO/tI80zK54k4M6xGOrzqRdeCPVjCpYC7Dh3DIwEAZ0z/cE
+	H8ob63brYl904+xhD20sguHuMrdSvYE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727368528;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
+	b=V+DehV7dM4eDR5lcXZdST+5Nd75Eg/iBCdR4LubJ6PPnMdAKbGuHOpAZiehFrYgAHjQW32
+	SxTWSxWrvaKVCoCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4C90F13318;
+	Thu, 26 Sep 2024 16:35:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TU5eElCN9WYeHgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 26 Sep 2024 16:35:28 +0000
+Message-ID: <0295538a-4b79-42bf-b0e1-5a905749de1e@suse.cz>
+Date: Thu, 26 Sep 2024 18:35:27 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240917143402.930114-1-boqun.feng@gmail.com> <20240917143402.930114-2-boqun.feng@gmail.com>
- <55975a55-302f-4c45-bfcc-192a8a1242e9@huaweicloud.com> <ZvPfmAp_2mDkI3ss@boqun-archlinux>
- <f5aeeeda-c725-422a-9481-4795bd3ade0f@huaweicloud.com> <ZvPp4taB9uu__oSQ@boqun-archlinux>
- <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com> <ZvP_H_R43bXpmkMS@boqun-archlinux>
- <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com> <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
- <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com> <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com>
- <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com>
-In-Reply-To: <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 26 Sep 2024 09:12:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjL803+FxtAPSGrWqThGQP5cCHzzwZJFq+-fkgt5DQ3VQ@mail.gmail.com>
-Message-ID: <CAHk-=wjL803+FxtAPSGrWqThGQP5cCHzzwZJFq+-fkgt5DQ3VQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard pointers
-To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
-	lkmm@lists.linux.dev, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Kent Overstreet <kent.overstreet@gmail.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com, 
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] slab updates for 6.11
+Content-Language: en-US
+To: Uladzislau Rezki <urezki@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Christian Brauner <brauner@kernel.org>,
+ RCU <rcu@vger.kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>
+References: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
+ <CAHk-=wjmu93njmUVqfkAbGKqHaOKFrTmgU2O=UkP3OOmpCjo4Q@mail.gmail.com>
+ <CA+KHdyV=0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8=zyWng@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <CA+KHdyV=0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8=zyWng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[google.com,linux.com,linux-foundation.org,kvack.org,vger.kernel.org,linux.dev,gmail.com,kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com,linux-foundation.org];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Thu, 26 Sept 2024 at 08:54, Jonas Oberhauser
-<jonas.oberhauser@huaweicloud.com> wrote:
->
-> No, the issue introduced by the compiler optimization (or by your
-> original patch) is that the CPU can speculatively load from the first
-> pointer as soon as it has completed the load of that pointer:
+On 9/18/24 16:40, Uladzislau Rezki wrote:
+>>
+> Thank you for valuable feedback! Indeed it is hard to follow, even
+> though it works correctly.
+> I will add the comment and also break the loop on first queuing as you
+> suggested!
+> 
+> It does not make sense to loop further because following iterations
+> are never successful
+> thus never overwrite "queued" variable(it never reaches the
+> queue_rcu_work() call).
+> 
+> <snip>
+>          bool queued = false;
+>          ...
+>          for (i = 0; i < KFREE_N_BATCHES; i++) {
+>                 if (need_offload_krc(krcp)) {
+>                          queued = queue_rcu_work(system_wq, &krwp->rcu_work);
+>          ...
+>          return queued;
+> <snip>
+> 
+> if we queued, "if(need_offload_krc())" condition is never true anymore.
+> 
+> Below refactoring makes it clear. I will send the patch to address it.
 
-You mean the compiler can do it. The inline asm has no impact on what
-the CPU does. The conditional isn't a barrier for the actual hardware.
-But once the compiler doesn't try to do it, the data dependency on the
-address does end up being an ordering constraint on the hardware too
-(I'm happy to say that I haven't heard from the crazies that want
-value prediction in a long time).
+Looks good, AFAICT. Can you send the full patch then? Thanks.
 
-Just use a barrier.  Or make sure to use the proper ordered memory
-accesses when possible. Don't use an inline asm for the compare - we
-don't even have anything insane like that as a portable helper, and we
-shouldn't have it.
+> <snip>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index a60616e69b66..b1f883fcd918 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3607,11 +3607,12 @@ kvfree_rcu_queue_batch(struct kfree_rcu_cpu *krcp)
+>                         }
+> 
+>                         // One work is per one batch, so there are three
+> -                       // "free channels", the batch can handle. It can
+> -                       // be that the work is in the pending state when
+> -                       // channels have been detached following by each
+> -                       // other.
+> +                       // "free channels", the batch can handle. Break
+> +                       // the loop since it is done with this CPU thus
+> +                       // queuing an RCU work is _always_ success here.
+>                         queued = queue_rcu_work(system_unbound_wq,
+> &krwp->rcu_work);
+> +                       WARN_ON_ONCE(!queued);
+> +                       break;
+>                 }
+>         }
+> <snip>
+> 
+> Thanks!
+> 
 
-                   Linus
