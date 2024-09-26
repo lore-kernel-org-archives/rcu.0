@@ -1,115 +1,99 @@
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from mail.tkos.co.il (golan.tkos.co.il [84.110.109.230])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7375517334E;
-	Thu, 26 Sep 2024 06:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95571547E4
+	for <rcu@vger.kernel.org>; Thu, 26 Sep 2024 09:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.110.109.230
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727331414; cv=none; b=aMO/I0FbLR+JQJaXrP37oWVx0/3ibzBZm6wcndv7wv15CVUOehfh8cX4/nOylqoUpTg8e5PYGV8TE7UI1zpX4qG1RUJ3WtUCssvBUXrnLWhhnVxt/fIKiZQx5oQsvSYxSYJ/wK6qf44WzAvTAPy9rfWiRNYdAnB4kjNOSXQjB7s=
+	t=1727342116; cv=none; b=mVC5St1usETCfCZEn/5Cgm7JdHanwd/W+XhcEy8Zgs+IyU1uMAtP07rYRi2AC+2gBY31oCP31vM2J2Zpfd3x8Ebqxv8/erAtX3+5QQqgVD17DXhUi5WYNBW/NJEoRXofjSOJjMM2D41px9cepH2Gtmyjcl9CcwZ3XamWU4J7RKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727331414; c=relaxed/simple;
-	bh=2MryQ9y2u2yCeiP4+Tmgt60Q1T0o9VzZCCgVPAQ/SZU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=JzUrH+ipAFcqx3PUY1gy6N64OeHiX2+gdRCKHjoPMgc1J1jWJKob1J1Ecqc/7p5X6qh2bJKyLtdZvJCGx1fEp145yW0iBtaz22iLsra7XskNK+5fXLAFHJhHIlVoZcd7g062hnweWTOl+Zo0Izdyb+45xzxfZOkCtb6ZJ3vUuNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=uaTffgAN; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	s=arc-20240116; t=1727342116; c=relaxed/simple;
+	bh=Hz/X1hviwTQFhUXw0cjQaNiwPacVZ8SXLv2utuSlzNA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OE3VbquMF6c6QZf8icAo75z4ReXP5jy2/spb0htwjHd7YzJrDNNe68vhv3AWLZdXraHxjQG19p0Oi308h10zneyvoWW0veKBlVdnV4ImBQPlgjvSBBZ72LcYuX5jrGB30Q6mt/a4KjFVofFXcTsj5IQlu6XndE4te2z49muCiEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il; spf=pass smtp.mailfrom=tkos.co.il; dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b=TynLWPfi; arc=none smtp.client-ip=84.110.109.230
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tkos.co.il
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tkos.co.il
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="uaTffgAN"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1727331410;
-	bh=2MryQ9y2u2yCeiP4+Tmgt60Q1T0o9VzZCCgVPAQ/SZU=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=uaTffgANpcaUG2l8vb0K1oMGlBXjCqou0aHpmIM+BLQrVN0IZp2fMg7Ssvr+ZRW3R
-	 XUsN8xAiiO2th9NYdxyix6uCqOlSPM5iCEheI1dGDlT6uC6gPe+DD33cXoJxKidxMK
-	 z75GOFKd2AEr4AHEf/516Z/+Acb1iEKhyEKZjwTx9O9WIje0J02IexJFYPA/bPu11/
-	 joB/V6tVu5lfcC4w89rfGmD3CWDkkGEIIa6fSreoibsZVGe/JPFeSNiQeBw9RqSDwD
-	 vEMWG0p4v4n0sg15c9W6UkNh//E9gmUpFgVWjE8L+t76+j6YGT2bOquVMAx3P5eO73
-	 6e92FeOV8q31Q==
-Received: from [172.17.2.162] (unknown [178.208.16.192])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XDjzg1sCtz1M6s;
-	Thu, 26 Sep 2024 02:16:47 -0400 (EDT)
-Message-ID: <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com>
-Date: Thu, 26 Sep 2024 08:16:08 +0200
+	dkim=pass (2048-bit key) header.d=tkos.co.il header.i=@tkos.co.il header.b="TynLWPfi"
+Received: from localhost (unknown [10.0.8.2])
+	by mail.tkos.co.il (Postfix) with ESMTP id 50ACA440F85;
+	Thu, 26 Sep 2024 12:03:08 +0300 (IDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
+	s=default; t=1727341388;
+	bh=Hz/X1hviwTQFhUXw0cjQaNiwPacVZ8SXLv2utuSlzNA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=TynLWPfitYbbip5d1wBgxJo+7uIL892/wSdZXFraNWTVYgTS5Kbk70d/g5V2tqr8G
+	 in4UYHjMevfe0HspHQatlOmlOxaJ7zga1ngKiZR5/4LDhUZ6yZZTP9ui8V0AQeQinn
+	 KNjW9SszdjGfCzLLXbWoZB6cOpIiksUeS1DtYauPEhNKs0pDJ5mpV9fOymJRtHxGJ4
+	 mmiwkQoLQqBLpj98HRXcmLAbb5TeMqrg2hfwEfbR5yRkF4aQn1yc+A2mF1n10q6JtZ
+	 FGOOY6kxccPs70HYV2fsDEX8XKWcAAC1Tyaq+YihCsT3UOBdby4zkBB7BfBu4UbgTU
+	 ZsIF313WryWvw==
+From: Baruch Siach <baruch@tkos.co.il>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,  Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>,  Joel Fernandes <joel@joelfernandes.org>,
+  Josh Triplett <josh@joshtriplett.org>,  Boqun Feng
+ <boqun.feng@gmail.com>,  Uladzislau Rezki <urezki@gmail.com>,  Steven
+ Rostedt <rostedt@goodmis.org>,  Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>,  Lai Jiangshan <jiangshanlai@gmail.com>,
+  Zqiang <qiang.zhang1211@gmail.com>,  rcu@vger.kernel.org
+Subject: Re: [PATCH] doc: rcu: update printed dynticks counter bits
+In-Reply-To: <e1af4a94-577a-4fe4-be4f-e4c7b835aab7@paulmck-laptop> (Paul
+	E. McKenney's message of "Tue, 20 Aug 2024 11:47:22 -0700")
+References: <5dd8782f70c3b2367ae3c7d9016eb8fb32c76b49.1723969097.git.baruch@tkos.co.il>
+	<e1af4a94-577a-4fe4-be4f-e4c7b835aab7@paulmck-laptop>
+Date: Thu, 26 Sep 2024 12:05:38 +0300
+Message-ID: <87cykq23a5.fsf@tarshish>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
- pointers
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
- lkmm@lists.linux.dev, "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Kent Overstreet <kent.overstreet@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
- Neeraj Upadhyay <neeraj.upadhyay@amd.com>
-References: <20240917143402.930114-1-boqun.feng@gmail.com>
- <20240917143402.930114-2-boqun.feng@gmail.com>
- <55975a55-302f-4c45-bfcc-192a8a1242e9@huaweicloud.com>
- <ZvPfmAp_2mDkI3ss@boqun-archlinux>
- <f5aeeeda-c725-422a-9481-4795bd3ade0f@huaweicloud.com>
- <ZvPp4taB9uu__oSQ@boqun-archlinux>
- <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com>
- <ZvP_H_R43bXpmkMS@boqun-archlinux>
- <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com>
- <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
- <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com>
-Content-Language: en-US
-In-Reply-To: <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On 2024-09-25 15:20, Mathieu Desnoyers wrote:
-[...]
-> static inline
-> bool same_ptr(void *a, void *b)
-> {
->      asm goto (
->          "cmpq %[a], %[b]\n\t"
->          "jne %l[ne]\n\t"
->          : : [a] "r" (a), [b] "r" (b)
->          : : ne);
->      return true;
-> ne:
->      return false;
-> }
+Hi Paul,
 
-Based on the information provided in this email thread,
-it appears the only concern when it comes to comparing a
-pointer loaded by rcu_dereference() with another pointer
-is the possibility of compiler optimizations.
+On Tue, Aug 20 2024, Paul E. McKenney wrote:
+> On Sun, Aug 18, 2024 at 11:18:17AM +0300, Baruch Siach wrote:
+>> The stall warning prints 16 bits since commit 171476775d32
+>> ("context_tracking: Convert state to atomic_t").
+>> 
+>> Fixes: 171476775d32 ("context_tracking: Convert state to atomic_t")
+>> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+>
+> Good eyes!
+>
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-In the specific case of hazard pointer hpref_hp_get(), this
-function does both loads which are then compared with one
-another. Therefore, it is not possible for the user to
-provide a comparison value known at compile-time, except
-in the unlikely scenario where the hazard pointer would
-be const, which does not really make much sense.
-
-Therefore, just using rcu_dereference() for the second
-load should be fine.
+I remember seeing this patch queued in one of the rcu git trees, but I
+can't find it anymore. I don't see it in Linus' tree either.
 
 Thanks,
+baruch
 
-Mathieu
+>>  Documentation/RCU/stallwarn.rst | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+>> index ca7b7cd806a1..30080ff6f406 100644
+>> --- a/Documentation/RCU/stallwarn.rst
+>> +++ b/Documentation/RCU/stallwarn.rst
+>> @@ -249,7 +249,7 @@ ticks this GP)" indicates that this CPU has not taken any scheduling-clock
+>>  interrupts during the current stalled grace period.
+>>  
+>>  The "idle=" portion of the message prints the dyntick-idle state.
+>> -The hex number before the first "/" is the low-order 12 bits of the
+>> +The hex number before the first "/" is the low-order 16 bits of the
+>>  dynticks counter, which will have an even-numbered value if the CPU
+>>  is in dyntick-idle mode and an odd-numbered value otherwise.  The hex
+>>  number between the two "/"s is the value of the nesting, which will be
+>> -- 
+>> 2.43.0
+>> 
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
