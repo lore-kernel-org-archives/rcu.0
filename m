@@ -1,225 +1,120 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A0FD12BEBB;
-	Thu, 26 Sep 2024 16:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D46A14A4E0;
+	Thu, 26 Sep 2024 16:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727368534; cv=none; b=dPeiN/ymxm+rvaYYJDC+B/myLu1GTC58sdD0Rj+HMPpQ99MvE3VGW3WnHGKH8nIN31R6sgCHh/GaiXcU4t65LfcYBd+xN4dRMIw3i7NMMApcJGUZNV2hYGpfjkNtsmDd0pgovC8/5wY2iiX5cQ2rxil8+ARzk348cwzRLUBs4K0=
+	t=1727368863; cv=none; b=Sk/K3RYe9rkAr7l2hjtCHS36wlZkL90pjtiNfFdDSXxUFRGaFfB4k/H45vnZMV2FoAQvc5oey7yIX9KDhmEZWg0DKZHxekg6SdUPl9XQ9Edbg9rxsuBWQXiisnxsnQLiSaL/zXfqG5qZgSJsXyz8/ia3WIItAZyXn2NHsujeW+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727368534; c=relaxed/simple;
-	bh=YkV7VcLgIw6oAsn/+PQ5nP/wdS7mDQez5u1C9Izk9B8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aijTRLaZzpE2CSlfo2HnX64QWOW2khKlUpqhsDwqGZ1ovgPO5AH6XXenXJvVoHU+5pLS2ncyN1FGOgjvh3EP1pdql+Z8RwP6lzax6Am0HBqhjVwDU27Bv+WtqH3OSxiYExFS6vnHPIsaSABJC4LbIS01zYDU77Gk0s3wzd8MYMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH2QITYb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V+DehV7d; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eH2QITYb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V+DehV7d; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1727368863; c=relaxed/simple;
+	bh=lnx2KBLjQ9hEpSvedvjm5EjvnkpIvBZ/kC+D81DVWXw=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fFRjsYlIiI4iPFArCkaKYxRh041UiE3Ew6lAIsOM7nuAaP/XAjD5b/StMocQqTdEN5lwJLacbEhyZWEw9YETF1Vsaw+hf7+aZZsXAt2Ln3/IKTYdbOrZoKnYpBD5WNLekdYpG6YOSWD5MmG8Rf08YdwqOnwBK9nIBES3Gsvwkpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qi3z2+Yv; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH2QITYb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V+DehV7d";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eH2QITYb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V+DehV7d"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7407D1F804;
-	Thu, 26 Sep 2024 16:35:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727368528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
-	b=eH2QITYbG5LO29oBHWsHKc5cTjAX0JuSoGA2ZlN4CPEkcbccbOudJ4SqC2xf2NBnp2/Fv2
-	xReZ70tPJhoXdrbafpNVIbSXO/tI80zK54k4M6xGOrzqRdeCPVjCpYC7Dh3DIwEAZ0z/cE
-	H8ob63brYl904+xhD20sguHuMrdSvYE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727368528;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
-	b=V+DehV7dM4eDR5lcXZdST+5Nd75Eg/iBCdR4LubJ6PPnMdAKbGuHOpAZiehFrYgAHjQW32
-	SxTWSxWrvaKVCoCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727368528; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
-	b=eH2QITYbG5LO29oBHWsHKc5cTjAX0JuSoGA2ZlN4CPEkcbccbOudJ4SqC2xf2NBnp2/Fv2
-	xReZ70tPJhoXdrbafpNVIbSXO/tI80zK54k4M6xGOrzqRdeCPVjCpYC7Dh3DIwEAZ0z/cE
-	H8ob63brYl904+xhD20sguHuMrdSvYE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727368528;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RoDKZ2gwU3+3ZFoRhCswkZtms50amy9gvTc08Ex4MXY=;
-	b=V+DehV7dM4eDR5lcXZdST+5Nd75Eg/iBCdR4LubJ6PPnMdAKbGuHOpAZiehFrYgAHjQW32
-	SxTWSxWrvaKVCoCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4C90F13318;
-	Thu, 26 Sep 2024 16:35:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TU5eElCN9WYeHgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 26 Sep 2024 16:35:28 +0000
-Message-ID: <0295538a-4b79-42bf-b0e1-5a905749de1e@suse.cz>
-Date: Thu, 26 Sep 2024 18:35:27 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qi3z2+Yv"
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2f7528f4658so11662771fa.3;
+        Thu, 26 Sep 2024 09:41:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727368860; x=1727973660; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JU4mphy76HwymguPoEKzi3kj2OGTpmV+ZH2XF2JvXyE=;
+        b=Qi3z2+YvhXgTzEW0ZkHd8UyHETTqjS8t4rteacSFcE3yt5jqUZLcS0aX0QQ2acjOJV
+         IQJpW91CuAtQ1uKRXTPUsFFy6wkmvojS5b78K4aLi5uRpqWhxZq+C3G1NwNRe+qFjPbH
+         YT3ToI7KZ4c9ZXACTP1LdhwcVPzIyt19ZHdsF9dCUl4+o7ZONcZZJWYFSm3h99PHABie
+         xHZQd9P8Lh8fi62JX4YtiGkpcPtBJyHCHpgn+7JpE9nfFGQD4m80qg0b6AskBJA05hZ6
+         vHPM64TyiwiGDgE+bA6iTIsTGQw+5HNYkMU8ZUEf+SxlauxnSPAth5o9CBmVJT25tA/B
+         3yEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727368860; x=1727973660;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JU4mphy76HwymguPoEKzi3kj2OGTpmV+ZH2XF2JvXyE=;
+        b=Vf5w0xCOkpR3DLB6OZ3U+PO8DpsuWgiCQPQIkkPtbQSNfuq+IpzN0VaP/+xF6CEkcw
+         6yXdx/KmP0ceEVy3YX0Mh+JYarr+6saW9tHPz0+wwRNQ8E37RfjQa1Yh61YryOZB7C1I
+         FYElou6r0/sPeqc4BYaGqG1odSRxTqW69eW06tRFGAqfUgKl/LVDWiZPjKqT5vRydNHF
+         X5RaVr1t7TejbRa02OJBhL9JQ0P7t9ixnHNGOSKCwVZNGceWGKLokok7O1z0ui67ni4W
+         y8b1nPZiTGqkKWsW2TpxAN/+/ADgl7ZVes3w+f5aIN+0LA1dg2ARpJAgxCo9Ld076ebD
+         kGaA==
+X-Forwarded-Encrypted: i=1; AJvYcCV33X9r/KhFffFXIpEvJvoW/1Me659QbGnkympijBJVogsbOFasrA18GEm4A8Kol5vOHSAS@vger.kernel.org, AJvYcCW8C7piscqaAvr9hTvT1NutAOvldi6LV+aITsF5bnbveNxBkVWu+0d05ylTql7a1u2ICbU4x514i3/8yZ8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz14+z6OC+QncrIKNrkuqMoreJoFIS6QOu9575d/KUJnIv9D4yJ
+	c+TuynfnbZo4DC6QHSlZLzIXGIrUypzODufSak3H0yoesKMDTip6
+X-Google-Smtp-Source: AGHT+IFNMjJtobgVHAE/mIi34OHyZUsl9oqOCVmzQ2Ns4AEr56Ppkzvzlb4OxRDp1AHrcPkuPiJpNA==
+X-Received: by 2002:a2e:a58d:0:b0:2ef:2cdb:5055 with SMTP id 38308e7fff4ca-2f9d3e56140mr2340081fa.20.1727368859388;
+        Thu, 26 Sep 2024 09:40:59 -0700 (PDT)
+Received: from pc636 (host-90-233-216-205.mobileonline.telia.com. [90.233.216.205])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f9d45d7a91sm86511fa.47.2024.09.26.09.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2024 09:40:58 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 26 Sep 2024 18:40:55 +0200
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	David Rientjes <rientjes@google.com>,
+	Christoph Lameter <cl@linux.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Christian Brauner <brauner@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>
+Subject: Re: [GIT PULL] slab updates for 6.11
+Message-ID: <ZvWOl1mmBIgi5Vg8@pc636>
+References: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
+ <CAHk-=wjmu93njmUVqfkAbGKqHaOKFrTmgU2O=UkP3OOmpCjo4Q@mail.gmail.com>
+ <CA+KHdyV=0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8=zyWng@mail.gmail.com>
+ <0295538a-4b79-42bf-b0e1-5a905749de1e@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] slab updates for 6.11
-Content-Language: en-US
-To: Uladzislau Rezki <urezki@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Christian Brauner <brauner@kernel.org>,
- RCU <rcu@vger.kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>
-References: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
- <CAHk-=wjmu93njmUVqfkAbGKqHaOKFrTmgU2O=UkP3OOmpCjo4Q@mail.gmail.com>
- <CA+KHdyV=0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8=zyWng@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <CA+KHdyV=0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8=zyWng@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[google.com,linux.com,linux-foundation.org,kvack.org,vger.kernel.org,linux.dev,gmail.com,kernel.org];
-	FREEMAIL_TO(0.00)[gmail.com,linux-foundation.org];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0295538a-4b79-42bf-b0e1-5a905749de1e@suse.cz>
 
-On 9/18/24 16:40, Uladzislau Rezki wrote:
->>
-> Thank you for valuable feedback! Indeed it is hard to follow, even
-> though it works correctly.
-> I will add the comment and also break the loop on first queuing as you
-> suggested!
+On Thu, Sep 26, 2024 at 06:35:27PM +0200, Vlastimil Babka wrote:
+> On 9/18/24 16:40, Uladzislau Rezki wrote:
+> >>
+> > Thank you for valuable feedback! Indeed it is hard to follow, even
+> > though it works correctly.
+> > I will add the comment and also break the loop on first queuing as you
+> > suggested!
+> > 
+> > It does not make sense to loop further because following iterations
+> > are never successful
+> > thus never overwrite "queued" variable(it never reaches the
+> > queue_rcu_work() call).
+> > 
+> > <snip>
+> >          bool queued = false;
+> >          ...
+> >          for (i = 0; i < KFREE_N_BATCHES; i++) {
+> >                 if (need_offload_krc(krcp)) {
+> >                          queued = queue_rcu_work(system_wq, &krwp->rcu_work);
+> >          ...
+> >          return queued;
+> > <snip>
+> > 
+> > if we queued, "if(need_offload_krc())" condition is never true anymore.
+> > 
+> > Below refactoring makes it clear. I will send the patch to address it.
 > 
-> It does not make sense to loop further because following iterations
-> are never successful
-> thus never overwrite "queued" variable(it never reaches the
-> queue_rcu_work() call).
+> Looks good, AFAICT. Can you send the full patch then? Thanks.
 > 
-> <snip>
->          bool queued = false;
->          ...
->          for (i = 0; i < KFREE_N_BATCHES; i++) {
->                 if (need_offload_krc(krcp)) {
->                          queued = queue_rcu_work(system_wq, &krwp->rcu_work);
->          ...
->          return queued;
-> <snip>
-> 
-> if we queued, "if(need_offload_krc())" condition is never true anymore.
-> 
-> Below refactoring makes it clear. I will send the patch to address it.
+I will do so. We can send it from RCU-side for rcX, this merge window or
+you can do it.
 
-Looks good, AFAICT. Can you send the full patch then? Thanks.
+What is the best for you?
 
-> <snip>
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index a60616e69b66..b1f883fcd918 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3607,11 +3607,12 @@ kvfree_rcu_queue_batch(struct kfree_rcu_cpu *krcp)
->                         }
-> 
->                         // One work is per one batch, so there are three
-> -                       // "free channels", the batch can handle. It can
-> -                       // be that the work is in the pending state when
-> -                       // channels have been detached following by each
-> -                       // other.
-> +                       // "free channels", the batch can handle. Break
-> +                       // the loop since it is done with this CPU thus
-> +                       // queuing an RCU work is _always_ success here.
->                         queued = queue_rcu_work(system_unbound_wq,
-> &krwp->rcu_work);
-> +                       WARN_ON_ONCE(!queued);
-> +                       break;
->                 }
->         }
-> <snip>
-> 
-> Thanks!
-> 
-
+--
+Uladzislau Rezki
