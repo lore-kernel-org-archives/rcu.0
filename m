@@ -1,128 +1,116 @@
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877E02837F;
-	Thu, 26 Sep 2024 17:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3CD61B2523;
+	Thu, 26 Sep 2024 22:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727370432; cv=none; b=BDndG+vJ/DBE/N+qhQO+P5VtAEufSPE7iGRLbtOJu8tFdn+LyxTItLdK3PKlcVukGz7qqH+60bHn2HfV5Aneh4Crjuk1Plongq1sRs2Bz7oYffI64lII0HGEm7EC+naAobOI/8wN8cqgE6/F+ajRC2tz7l9pwVjFcxtToMQIDSE=
+	t=1727390981; cv=none; b=U1Xyydh3vnqgKlKQnHQGW7puOM2Rx1QGy0P6W0q1FK+XtFEvcjBycTXlBZ9wW48vBCbzzuBjVkJ9Ln7W2t0WV2dayCq9lnMF7TBfJmAkNZxB0AfFnPeGrXw0wFoaZNgdfNzSeQI/RtoAy7Qy7ng/l0epFwo9QVPYlBHkC70YWF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727370432; c=relaxed/simple;
-	bh=5iYZJMNJaZKXw4tCr+pREI1qBLnsU3gIXs++lWmTl20=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MHOAVM/f4JHGvMvAuEb+hKL/0Mq7ybYMz9H9jwBoiRKSlAGRkp0W8VmmiC3El0Axr91QJjXZN2KhmIiIOFvSJk3/qGYQ5ua8JrMhckoMpInJRT2L5uAt7vbvNdCon6Wv05iW7StgKeWmG/FWnwFNqlCd14kiOJl1KJJcWdlEXp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CCFgfG5J; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1727390981; c=relaxed/simple;
+	bh=92oEHSM6E5QZI86HEze8W34mCNCuSP+gt4f24shWjnc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=GyzA6gM8n3Z/t+Zd1X6/bzYE/vXeOcd68Ranw6k8Zmc674QKsI8Ls6fIQhK4o5mq8vtRLja95KWZhwojNL94JSmNSI8NBz+ZwV4tKiI5hnf+mmYWOLrdGrFqYzOvflmHBgFP+NwUPdDLoKInOliFdngf/yc+EOrOpJW5lUFfMJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OFOzyMhs; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CCFgfG5J"
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-53655b9bbcdso1562642e87.2;
-        Thu, 26 Sep 2024 10:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727370429; x=1727975229; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sSW8LKXMvjgCAP+LleMXU69ztDlOwlRznFCMfPkydaM=;
-        b=CCFgfG5J9smb0SgswtDV+CGNJjUG52RrI6VynBVw2KBs9VwIPtS0LC1bLmpt0OXvlX
-         7lWVT3h7XYC6LhGO3ejV1bXlM/C33UB/MM1h+xo6xGInP42ayglV7S3YY4fMsrorzsvE
-         vPLx3tb3CUCsI44s6E3N7JM5nhGhqT+4GYWU+VQPMum7FvKN2gLY7+xHS7jdLPQXPfyU
-         pZep3vIAvgLAYgYCNra+QGZSlY7U5F5vfvGmJFqkUbo/+ez1AkeU1irxC/tSp53ntX+p
-         o4baIhlm9/XgpI7SIcX2nZ9UN7/TomAI9M/PQgEjBjVdDWGrvQ27B0bNHVA6Pgz/RmAV
-         Ct5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727370429; x=1727975229;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sSW8LKXMvjgCAP+LleMXU69ztDlOwlRznFCMfPkydaM=;
-        b=oCs+x6eILvIjAdEUs66wqxIl/7BdyS+T4V4JBSzSdAglE0xRIiKuoT3n339L5TbNMd
-         r9/orZvvQuc1Ma+/pcVTnBqPTgO5pN2Mmtxm6w3msgAoyRpz2++/1ZDMjir96LlQQ30A
-         3SJylZkSd1pGmQ5g3Z5cBWOgxeUUUxKs5+erh1Jgr1fymI8/4fI+OdzFbrzw0kS89w4l
-         KY/eZFvJH3IlwVEeRj9G8M/po6y6sWffm7KnTaly2rP7RfeeNU+wdAurwRL9c4rpP5En
-         rceQsqDFbBhISLrsw6WMwjEfE+nKOwg74vO+LNQJB1FTyhKiHnLXJZkoKJnjNRAok9YP
-         fREQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUn3CQaQFNfWrHSHk3BefsRnja1+wS9ipZctIHi/wMx28/O0ZVlR9GRIun2xdxTc8I6MCX4@vger.kernel.org, AJvYcCVyAdJy0sO3Dj9Ey3Rbytg1WOZs/2A+RZl1srkVsLZx3kAdhFqjyqLcx16GXARDevjfm1buJWkjNZ7USd8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRacCymXUVkjjGzFTju4B/X/JglGtkkuyvzxNH7DL1wxa6WYEw
-	xb6sJU1lyB0ZfvODEMYeexJeSk+72zwHwagcz0WNLoFrFY3QFOKp
-X-Google-Smtp-Source: AGHT+IEnamfg1YzMrkN+Y0xDuc7LwiVl+tEE9IblD4TwlLvLyB7usjEJR2zCtegZ59qGLt8W+vQrqw==
-X-Received: by 2002:a05:6512:3093:b0:533:45a1:88fc with SMTP id 2adb3069b0e04-5389fc478c4mr260702e87.30.1727370428211;
-        Thu, 26 Sep 2024 10:07:08 -0700 (PDT)
-Received: from pc636 (host-90-233-216-205.mobileonline.telia.com. [90.233.216.205])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5389fd5e365sm13887e87.79.2024.09.26.10.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 10:07:06 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 26 Sep 2024 19:07:03 +0200
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	David Rientjes <rientjes@google.com>,
-	Christoph Lameter <cl@linux.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Christian Brauner <brauner@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>
-Subject: Re: [GIT PULL] slab updates for 6.11
-Message-ID: <ZvWUt2oyXRsvJRNc@pc636>
-References: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
- <CAHk-=wjmu93njmUVqfkAbGKqHaOKFrTmgU2O=UkP3OOmpCjo4Q@mail.gmail.com>
- <CA+KHdyV=0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8=zyWng@mail.gmail.com>
- <0295538a-4b79-42bf-b0e1-5a905749de1e@suse.cz>
- <ZvWOl1mmBIgi5Vg8@pc636>
- <88ed491f-4ae4-4cfc-9be2-dda3de56813c@suse.cz>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OFOzyMhs"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A699EC4CEC9;
+	Thu, 26 Sep 2024 22:49:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727390981;
+	bh=92oEHSM6E5QZI86HEze8W34mCNCuSP+gt4f24shWjnc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=OFOzyMhsolEevHbP5JheK/yJ2si1BnSND7B0gJHO4BQ729HVM9s9J1QexXf9Uh+En
+	 bi8R19DQalwlsOGmVSKSZAkwf/sdUTNZ0Fr/CPppxA4QVcFCtcldRMgFfMWjNxbGkm
+	 zCaXGzb3Ne+x7Ltl7pDAhty21/NSJ4KZrbPaQlaXMMJ7LbodhDfiOtxAl44i/N+j1H
+	 R7cVtGRSDj6cSzB6j9J7LuZwfO3VDbO1k+PIg4/C5K3/JeogOODGuKTAmJA7Q78AU6
+	 yh8S2+6wUdxDoBUlLpUKtZp8gE0yHnmuHsFEbUMvHR/zBF6c2B+31Y6J8ZA+xDQEJ+
+	 jtF9W8+zKlpGg==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Michal Hocko <mhocko@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	rcu@vger.kernel.org,
+	Michal Hocko <mhocko@suse.com>
+Subject: [PATCH 11/20] sched: Handle CPU isolation on last resort fallback rq selection
+Date: Fri, 27 Sep 2024 00:48:59 +0200
+Message-ID: <20240926224910.11106-12-frederic@kernel.org>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240926224910.11106-1-frederic@kernel.org>
+References: <20240926224910.11106-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88ed491f-4ae4-4cfc-9be2-dda3de56813c@suse.cz>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 26, 2024 at 06:46:29PM +0200, Vlastimil Babka wrote:
-> On 9/26/24 18:40, Uladzislau Rezki wrote:
-> > On Thu, Sep 26, 2024 at 06:35:27PM +0200, Vlastimil Babka wrote:
-> >> On 9/18/24 16:40, Uladzislau Rezki wrote:
-> >> >>
-> >> > Thank you for valuable feedback! Indeed it is hard to follow, even
-> >> > though it works correctly.
-> >> > I will add the comment and also break the loop on first queuing as you
-> >> > suggested!
-> >> > 
-> >> > It does not make sense to loop further because following iterations
-> >> > are never successful
-> >> > thus never overwrite "queued" variable(it never reaches the
-> >> > queue_rcu_work() call).
-> >> > 
-> >> > <snip>
-> >> >          bool queued = false;
-> >> >          ...
-> >> >          for (i = 0; i < KFREE_N_BATCHES; i++) {
-> >> >                 if (need_offload_krc(krcp)) {
-> >> >                          queued = queue_rcu_work(system_wq, &krwp->rcu_work);
-> >> >          ...
-> >> >          return queued;
-> >> > <snip>
-> >> > 
-> >> > if we queued, "if(need_offload_krc())" condition is never true anymore.
-> >> > 
-> >> > Below refactoring makes it clear. I will send the patch to address it.
-> >> 
-> >> Looks good, AFAICT. Can you send the full patch then? Thanks.
-> >> 
-> > I will do so. We can send it from RCU-side for rcX, this merge window or
-> > you can do it.
-> > 
-> > What is the best for you?
-> 
-> Guess I could do via slab tree since the original commit went there too.
-> 
-Make sense. I will send to you then!
+When a kthread or any other task has an affinity mask that is fully
+offline or unallowed, the scheduler reaffines the task to all possible
+CPUs as a last resort.
 
---
-Uladzislau Rezki
+This default decision doesn't mix up very well with nohz_full CPUs that
+are part of the possible cpumask but don't want to be disturbed by
+unbound kthreads or even detached pinned user tasks.
+
+Make the fallback affinity setting aware of nohz_full. This applies to
+all architectures supporting nohz_full except arm32. However this
+architecture that overrides the task possible mask is unlikely to be
+willing to integrate new development.
+
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/sched/core.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 43e453ab7e20..d4b759c1cbf1 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3421,6 +3421,21 @@ void kick_process(struct task_struct *p)
+ }
+ EXPORT_SYMBOL_GPL(kick_process);
+ 
++static const struct cpumask *task_cpu_fallback_mask(struct task_struct *t)
++{
++	const struct cpumask *mask;
++
++	mask = task_cpu_possible_mask(p);
++	/*
++	 * Architectures that overrides the task possible mask
++	 * must handle CPU isolation.
++	 */
++	if (mask != cpu_possible_mask)
++		return mask;
++	else
++		return housekeeping_cpumask(HK_TYPE_TICK);
++}
++
+ /*
+  * ->cpus_ptr is protected by both rq->lock and p->pi_lock
+  *
+@@ -3489,7 +3504,7 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+ 			 *
+ 			 * More yuck to audit.
+ 			 */
+-			do_set_cpus_allowed(p, task_cpu_possible_mask(p));
++			do_set_cpus_allowed(p, task_cpu_fallback_mask(p));
+ 			state = fail;
+ 			break;
+ 		case fail:
+-- 
+2.46.0
+
