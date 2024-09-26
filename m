@@ -1,120 +1,155 @@
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D46A14A4E0;
-	Thu, 26 Sep 2024 16:41:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193DB158D6A;
+	Thu, 26 Sep 2024 16:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727368863; cv=none; b=Sk/K3RYe9rkAr7l2hjtCHS36wlZkL90pjtiNfFdDSXxUFRGaFfB4k/H45vnZMV2FoAQvc5oey7yIX9KDhmEZWg0DKZHxekg6SdUPl9XQ9Edbg9rxsuBWQXiisnxsnQLiSaL/zXfqG5qZgSJsXyz8/ia3WIItAZyXn2NHsujeW+s=
+	t=1727368867; cv=none; b=mqGTo5T8a2EQpdktJO+ungQvT7OYQ7EwdRFMp2cB72GBkOpYBHKVVTnXX+W0p590LzcAehdH2LhUBjfYNS9g6znXPq51dPMFc6kPxWNHiGVL48Bx5VsSqpdEnC7KftsxdMMYf+8C1jVIfeGRulOOUITadhytK/h5fSOdiyGFGPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727368863; c=relaxed/simple;
-	bh=lnx2KBLjQ9hEpSvedvjm5EjvnkpIvBZ/kC+D81DVWXw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fFRjsYlIiI4iPFArCkaKYxRh041UiE3Ew6lAIsOM7nuAaP/XAjD5b/StMocQqTdEN5lwJLacbEhyZWEw9YETF1Vsaw+hf7+aZZsXAt2Ln3/IKTYdbOrZoKnYpBD5WNLekdYpG6YOSWD5MmG8Rf08YdwqOnwBK9nIBES3Gsvwkpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qi3z2+Yv; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qi3z2+Yv"
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2f7528f4658so11662771fa.3;
-        Thu, 26 Sep 2024 09:41:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727368860; x=1727973660; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JU4mphy76HwymguPoEKzi3kj2OGTpmV+ZH2XF2JvXyE=;
-        b=Qi3z2+YvhXgTzEW0ZkHd8UyHETTqjS8t4rteacSFcE3yt5jqUZLcS0aX0QQ2acjOJV
-         IQJpW91CuAtQ1uKRXTPUsFFy6wkmvojS5b78K4aLi5uRpqWhxZq+C3G1NwNRe+qFjPbH
-         YT3ToI7KZ4c9ZXACTP1LdhwcVPzIyt19ZHdsF9dCUl4+o7ZONcZZJWYFSm3h99PHABie
-         xHZQd9P8Lh8fi62JX4YtiGkpcPtBJyHCHpgn+7JpE9nfFGQD4m80qg0b6AskBJA05hZ6
-         vHPM64TyiwiGDgE+bA6iTIsTGQw+5HNYkMU8ZUEf+SxlauxnSPAth5o9CBmVJT25tA/B
-         3yEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727368860; x=1727973660;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JU4mphy76HwymguPoEKzi3kj2OGTpmV+ZH2XF2JvXyE=;
-        b=Vf5w0xCOkpR3DLB6OZ3U+PO8DpsuWgiCQPQIkkPtbQSNfuq+IpzN0VaP/+xF6CEkcw
-         6yXdx/KmP0ceEVy3YX0Mh+JYarr+6saW9tHPz0+wwRNQ8E37RfjQa1Yh61YryOZB7C1I
-         FYElou6r0/sPeqc4BYaGqG1odSRxTqW69eW06tRFGAqfUgKl/LVDWiZPjKqT5vRydNHF
-         X5RaVr1t7TejbRa02OJBhL9JQ0P7t9ixnHNGOSKCwVZNGceWGKLokok7O1z0ui67ni4W
-         y8b1nPZiTGqkKWsW2TpxAN/+/ADgl7ZVes3w+f5aIN+0LA1dg2ARpJAgxCo9Ld076ebD
-         kGaA==
-X-Forwarded-Encrypted: i=1; AJvYcCV33X9r/KhFffFXIpEvJvoW/1Me659QbGnkympijBJVogsbOFasrA18GEm4A8Kol5vOHSAS@vger.kernel.org, AJvYcCW8C7piscqaAvr9hTvT1NutAOvldi6LV+aITsF5bnbveNxBkVWu+0d05ylTql7a1u2ICbU4x514i3/8yZ8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz14+z6OC+QncrIKNrkuqMoreJoFIS6QOu9575d/KUJnIv9D4yJ
-	c+TuynfnbZo4DC6QHSlZLzIXGIrUypzODufSak3H0yoesKMDTip6
-X-Google-Smtp-Source: AGHT+IFNMjJtobgVHAE/mIi34OHyZUsl9oqOCVmzQ2Ns4AEr56Ppkzvzlb4OxRDp1AHrcPkuPiJpNA==
-X-Received: by 2002:a2e:a58d:0:b0:2ef:2cdb:5055 with SMTP id 38308e7fff4ca-2f9d3e56140mr2340081fa.20.1727368859388;
-        Thu, 26 Sep 2024 09:40:59 -0700 (PDT)
-Received: from pc636 (host-90-233-216-205.mobileonline.telia.com. [90.233.216.205])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f9d45d7a91sm86511fa.47.2024.09.26.09.40.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 09:40:58 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 26 Sep 2024 18:40:55 +0200
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	David Rientjes <rientjes@google.com>,
-	Christoph Lameter <cl@linux.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Christian Brauner <brauner@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>
-Subject: Re: [GIT PULL] slab updates for 6.11
-Message-ID: <ZvWOl1mmBIgi5Vg8@pc636>
-References: <8d6c5d10-5750-4472-858c-eadc105453be@suse.cz>
- <CAHk-=wjmu93njmUVqfkAbGKqHaOKFrTmgU2O=UkP3OOmpCjo4Q@mail.gmail.com>
- <CA+KHdyV=0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8=zyWng@mail.gmail.com>
- <0295538a-4b79-42bf-b0e1-5a905749de1e@suse.cz>
+	s=arc-20240116; t=1727368867; c=relaxed/simple;
+	bh=Kg5x5O4BfdUTahZxxZiCOthqbANwjhEgzSdKitxzKC8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ozg9+FTqYXZ9TG6QmIzR9epMq3mFIyQxjayGlW/0pvSH4BXHa5JYo64ypEKw930QTv6qsOVEn8oxhdmOQEr3PII2PHUCMgJxTTfgC1+eTACw2xviz8Y3DIHhqEmGkR8OHSDuo+RSdLXcVpvuR/d8z3n7YGoh6oAVOzF7vvA/yOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4XDzNy6HMzz9v7Hp;
+	Fri, 27 Sep 2024 00:21:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id AE558140877;
+	Fri, 27 Sep 2024 00:40:49 +0800 (CST)
+Received: from [10.45.145.4] (unknown [10.45.145.4])
+	by APP2 (Coremail) with SMTP id GxC2BwAniMiBjvVmk3azAQ--.33772S2;
+	Thu, 26 Sep 2024 17:40:49 +0100 (CET)
+Message-ID: <54487a36-f74c-46c3-aed7-fc86eaaa9ca2@huaweicloud.com>
+Date: Thu, 26 Sep 2024 18:40:30 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0295538a-4b79-42bf-b0e1-5a905749de1e@suse.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
+ pointers
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Kent Overstreet <kent.overstreet@gmail.com>, Vlastimil Babka
+ <vbabka@suse.cz>, maged.michael@gmail.com,
+ Neeraj Upadhyay <neeraj.upadhyay@amd.com>
+References: <20240917143402.930114-1-boqun.feng@gmail.com>
+ <20240917143402.930114-2-boqun.feng@gmail.com>
+ <55975a55-302f-4c45-bfcc-192a8a1242e9@huaweicloud.com>
+ <ZvPfmAp_2mDkI3ss@boqun-archlinux>
+ <f5aeeeda-c725-422a-9481-4795bd3ade0f@huaweicloud.com>
+ <ZvPp4taB9uu__oSQ@boqun-archlinux>
+ <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com>
+ <ZvP_H_R43bXpmkMS@boqun-archlinux>
+ <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com>
+ <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
+ <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com>
+ <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com>
+ <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com>
+ <CAHk-=wjL803+FxtAPSGrWqThGQP5cCHzzwZJFq+-fkgt5DQ3VQ@mail.gmail.com>
+From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+In-Reply-To: <CAHk-=wjL803+FxtAPSGrWqThGQP5cCHzzwZJFq+-fkgt5DQ3VQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwAniMiBjvVmk3azAQ--.33772S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFy7KF4kWF4UAF43KFy5CFg_yoW8tr15pr
+	W5KF48KF4kXayYkwn7tw47ury5AaykJFW7uF95WrykArn8Wr1Skr1SkFy7Zas5Cws3Xry2
+	yrWSvry7Xa4ayaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIF
+	4iUUUUU
+X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
 
-On Thu, Sep 26, 2024 at 06:35:27PM +0200, Vlastimil Babka wrote:
-> On 9/18/24 16:40, Uladzislau Rezki wrote:
-> >>
-> > Thank you for valuable feedback! Indeed it is hard to follow, even
-> > though it works correctly.
-> > I will add the comment and also break the loop on first queuing as you
-> > suggested!
-> > 
-> > It does not make sense to loop further because following iterations
-> > are never successful
-> > thus never overwrite "queued" variable(it never reaches the
-> > queue_rcu_work() call).
-> > 
-> > <snip>
-> >          bool queued = false;
-> >          ...
-> >          for (i = 0; i < KFREE_N_BATCHES; i++) {
-> >                 if (need_offload_krc(krcp)) {
-> >                          queued = queue_rcu_work(system_wq, &krwp->rcu_work);
-> >          ...
-> >          return queued;
-> > <snip>
-> > 
-> > if we queued, "if(need_offload_krc())" condition is never true anymore.
-> > 
-> > Below refactoring makes it clear. I will send the patch to address it.
+
+
+Am 9/26/2024 um 6:12 PM schrieb Linus Torvalds:
+> On Thu, 26 Sept 2024 at 08:54, Jonas Oberhauser
+> <jonas.oberhauser@huaweicloud.com> wrote:
+>>
+>> No, the issue introduced by the compiler optimization (or by your
+>> original patch) is that the CPU can speculatively load from the first
+>> pointer as soon as it has completed the load of that pointer:
 > 
-> Looks good, AFAICT. Can you send the full patch then? Thanks.
-> 
-I will do so. We can send it from RCU-side for rcX, this merge window or
-you can do it.
+> You mean the compiler can do it.
 
-What is the best for you?
+What I mean is that if we only use rcu_dereference for the second load 
+(and not either some form of compiler barrier or an acquire load), then 
+the compiler can transform the second program from my previous e-mail 
+(which if mapped 1:1 to hardware would be correct because hardware 
+ensures the ordering based on the address dependency) into the first one 
+(which is incorrect).
 
---
-Uladzislau Rezki
+In particular, the compiler can change
+
+  if (node == node2) t = *node2;
+
+into
+
+  if (node == node2) t = *node;
+
+and then the CPU can speculatively read *node before knowing the value 
+of node2.
+
+The compiler can also speculatively read *node in this case, but that is 
+not what I meant.
+
+The code in Mathieu's original patch is already like the latter one and 
+is broken even if the compiler does not do any optimizations.
+
+
+> The inline asm has no impact on what
+> the CPU does. The conditional isn't a barrier for the actual hardware.
+> But once the compiler doesn't try to do it, the data dependency on the
+> address does end up being an ordering constraint on the hardware too
+
+Exactly. The inline asm would prevent the compiler from doing the 
+transformation though, which would mean that the address dependency 
+appears in the final compiler output.
+
+> Just use a barrier.  Or make sure to use the proper ordered memory
+> accesses when possible. 
+ >
+> Don't use an inline asm for the compare - we
+> don't even have anything insane like that as a portable helper, and we
+> shouldn't have it.
+
+I'm glad you say that :))
+
+I would also just use a barrier before returing the pointer.
+
+Boqun seems to be unhappy with a barrier though, because it would 
+theoretically also forbid unrelated optimizations.
+But I have not seen any evidence that there are any unrelated 
+optimizations going on in the first place that would be forbidden by this.
+
+Have fun,
+   jonas
+
