@@ -1,125 +1,122 @@
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E8917BA4;
-	Fri, 27 Sep 2024 01:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29D514AD25;
+	Fri, 27 Sep 2024 04:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727401094; cv=none; b=UPrajuy0Wg1R1F0lG4yn7xcTLPVm1Grz05wGdRK0xwVzz5oUEAi8+jJKdfNt48FgcxQ4KFER9KUuv2KmyaKkzSz4qoJPenuxqAT1sPtIhKziVU0VoBgl4NApxf7S5avAtgPR2S2VSwN+JuIkcw7zFqkcAnMZWcUtP0/hGXm0nJY=
+	t=1727411380; cv=none; b=gu2h0IJqqCSE+MX9JWw/D6lSi7i02WHzi9lBg9xdTilC96GUphWIfKtVqEU2LZ/uvLPPZddLoyJxmpJ3ZGSLBhsTfHUxRpook6l4uvV1S46L9LAPqQy4zaz9GIHBjUkTUQmGHXMKY/NyiABTsvhKRicr8nJJfKc68GNaz1Egjuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727401094; c=relaxed/simple;
-	bh=EJQzkHkcMnte8kk3sy70iNjECMxGr+QWFDl5GeUDibk=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=NefS7jfO6rj0UR6pDaLef1zYPVKj1t4ct7X1aBku2z4wXpocRoB6sw+mwATPAu3/Nnavc6D/Qv4YGCSiiKa9kVh0MZeuMBqfJMGhAEVQ3RAa2EQZl2j0jpIifBRqFO8T4sHGQPyNBPd6TlASOJoSCRNlZ8ptj/3ytLzHN81GFFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hkGlr4bp; arc=none smtp.client-ip=209.85.222.179
+	s=arc-20240116; t=1727411380; c=relaxed/simple;
+	bh=sMNt5tFQGxDMGatcPVdTRP7jHKRuKdtylY+3WzV8EJI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LyzLlAjrmMEp7ypAwpaDcU6C5TxdSjbpH6PXM53wvLTZNE79mufYZ45RexEu+78VnsE3WBqTikjHGb1oopDRgKjHM6NWIS/oQlu2FXnbogBBWoYvGQPvWFZjSju34tfh3ffF/+2gffaJhjmccUoQkJnFrDDcu3xaHKDdZ/QRW/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BOWlNtUx; arc=none smtp.client-ip=209.85.219.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hkGlr4bp"
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7a99fde9f1dso147565585a.2;
-        Thu, 26 Sep 2024 18:38:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BOWlNtUx"
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6cb22e9c6dbso10202156d6.1;
+        Thu, 26 Sep 2024 21:29:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727401092; x=1728005892; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:references:in-reply-to:message-id
-         :cc:to:from:date:mime-version:feedback-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1727411378; x=1728016178; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vlhv6vJ9/p0T/1mFJKv1z0EQJeECGsYyZGl1aUOn/r8=;
-        b=hkGlr4bpSNfhD2kReSeG0zZoZl1r6gYV1iV9JnBV21sSQ06Z5gb6EUAI1I5arMJANS
-         i9Is3SonVigZeyXHsT5HNV8AXDAp9sNgHO3STDFmMg48jW1Vzum9hohi2X5kekvVj/cb
-         CONqDmRIlPB5OJGwQTNUsnstYXUX40PJdA8s7xH1LFq9PDNwrSPW4kK4e4cRUkLOCmam
-         WGPL2oWnPWexDj60+lUk2PBKRBV9DEyb2PTrgKthmniEf8ccfIHAhBtf4ruKbU7hfbCg
-         XR+IIwShPgFiu7OJHVY+L7y4M6EUK+p0mzu1v7R0jyenV8UJfXO1yBcoVHA1/BVkY2ub
-         AU3A==
+        bh=21M9MzJPvTphBfiljncSfgv5gf4c5od3t3MjpsyahVw=;
+        b=BOWlNtUxOYS3OEILYvKz2SZ2vnzBSooFTXjV9+OiUc6RQJnYxcRo2IWS8RA8R8dVUp
+         4+PVSig3mghyz2aywYZQ1YZHYu+U/dD4PUyaozCd6iK2NGaFAEf7FdjmJH6hLdY98+/z
+         W2r/FM0BTYZ8JC1Q3mvNL5M1TpDBCFDGeWX6xRKmR+m2kYeVKHgFXX1yUcvEVkpBx1ZM
+         5kFunt3IqcIRsJ6b6Q3NR62LldZKf9l2KSAAAIPocMBpX+aiCcAI46KGenc/0eZtII8x
+         K9Vi74RDTxjd2jhGIPoaSzAZuHljIGYBr8bXhR/Z6rtw56PenYKP7OQBnODD90CQ90lC
+         erKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727401092; x=1728005892;
-        h=content-transfer-encoding:subject:references:in-reply-to:message-id
-         :cc:to:from:date:mime-version:feedback-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Vlhv6vJ9/p0T/1mFJKv1z0EQJeECGsYyZGl1aUOn/r8=;
-        b=Uub9935MNWJ/wqZpw+towh1mxy6SsXB9frcX54arcuKknXkWLIOTyf5Hhnc4gZ6C7p
-         kWokYSLrzl1Lbgle+JYt5DNMuUBo8XIUq94PjPzwSUCMAuDH/pT40QBGtVPa0NayTtSY
-         RoDbj1gunwJJX7Scj/Ooi7utSq7UA92f4RMSxW/THRYSE8pUfa+8W4kYHSo4Ebvv53zg
-         iNHg0js/Xq9nqtzgdW2BX8h0YfwBP5o1hOnr+3OvpjdP4UZSSJSOcRGhRvypWYIOEdIH
-         vyO181J3sbi7TioaK5nXryZFWjZL4RmlwJgL6Qx3boasG0LI7jgYDLAdkcRH+STIkKGo
-         Ie9w==
-X-Forwarded-Encrypted: i=1; AJvYcCVe3qG4FErgbtWP13M3NfNnos+Ftee5zlEX6HxLDr2mUo9w8biMmmv9k167JOMEJ50Z/YJV7ihoKK2jilo=@vger.kernel.org, AJvYcCVkNYbiBhTT4aLjeY4hpFfM4eigKbxIMLdK4H78Kh6g5qOzbli2e7joyiInxddiVyeRSi19@vger.kernel.org
-X-Gm-Message-State: AOJu0YykwQTYmH9ng01syqRaBNR2C8n6+o3smNzEEAduHTIvE6Up5lZD
-	33/0A/kuVACXbN9t71xF+AMb0jwqY/omMwCTroei8nCouYOXEw4O
-X-Google-Smtp-Source: AGHT+IGGIx4GHXja8pTVUFJEvkYZ7hNl2HfLZkw22LyWg/l8WV2qX8Mb3nifflTKvhwohArNvVcLoQ==
-X-Received: by 2002:a05:620a:408e:b0:7a3:51ed:38c0 with SMTP id af79cd13be357-7ae3775f989mr306121985a.0.1727401092281;
-        Thu, 26 Sep 2024 18:38:12 -0700 (PDT)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae377f09bcsm42553085a.65.2024.09.26.18.38.11
+        d=1e100.net; s=20230601; t=1727411378; x=1728016178;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=21M9MzJPvTphBfiljncSfgv5gf4c5od3t3MjpsyahVw=;
+        b=H8gIrn0GNTVtm2Z/3wyFuKAFtqJeqRWuylJcuRXdoQTTBIRDA+xRYx24gJ1kRGn21J
+         4d0g+V0ajY2dwNF7bdfhuIflvQGqmXAT+OGB+t8Xj5JVkcl5WPD3Hy8QNQajfzCbaY3t
+         8pp6CqdsNB5kAYMfuVXAWlfddZtYy6nn73aMDS22TvdshCXuVkv3qncifdhC8tlUXGCA
+         zwsZQv767bip56HFDQQuuKzUmHcbn122izl+C4q19lMzM/RiXrcq4VkXVAHHtL66DY2X
+         d6rKke10CkMVWaxCNIzHORkHJdwteFmy50inYBMY4gZy0JcdhLKe2SuCdR4ooKmVL3Hd
+         C6Ag==
+X-Forwarded-Encrypted: i=1; AJvYcCUc/XuiHjvXgknRACpM3GCDJlGs8BIHWwFAFNKQsqfXJnw7V/IrVoXH0ex3eXTq8ggqf7mSCVW+ZxSWepA=@vger.kernel.org, AJvYcCUfeTaN1DxU2TKyJh6mJb28+BYMLD57WNqCfokVddQryvOLpob6gqXnL0HEDnJn6DFOmdbc@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGm0CohelXeb8EAqwm8JJVAJRTtOj2skcvaMIxkVcMAL2ZB0hv
+	OIKVJb3RwHogUHthED9N7HbFGDXDFFJmDD1/QizlMYUkL5f/da5E
+X-Google-Smtp-Source: AGHT+IGf/plWz9ASXEKjdPoI6R7baDwvKze1+ejjNG6Hfz77yFVyuHE5hcsLvlFgymh7Y3GdLFe/cw==
+X-Received: by 2002:a05:6214:3d0e:b0:6cb:28f9:cf71 with SMTP id 6a1803df08f44-6cb3b5dee21mr33731136d6.20.1727411377586;
+        Thu, 26 Sep 2024 21:29:37 -0700 (PDT)
+Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cb3b66b0cdsm5407156d6.80.2024.09.26.21.29.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 18:38:11 -0700 (PDT)
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 2B6821200043;
-	Thu, 26 Sep 2024 21:38:11 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-12.internal (MEProxy); Thu, 26 Sep 2024 21:38:11 -0400
-X-ME-Sender: <xms:gwz2Zge8sXd-s-ZSbW3Z0vmzaQ8pOcRdkcztlvUY2dFTublaKQMiJA>
-    <xme:gwz2ZiN1BVbK-cXYpkB32PVwB-F1cmqlxnUIfd8wJwSHtI4hLND7qUvQU_DIYBWWP
-    4TGGkLCIcZXUBi28g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtkedggeekucetufdoteggodetrfdotf
+        Thu, 26 Sep 2024 21:29:37 -0700 (PDT)
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 587AF1200043;
+	Fri, 27 Sep 2024 00:29:36 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Fri, 27 Sep 2024 00:29:36 -0400
+X-ME-Sender: <xms:sDT2Zic3n8Lq_G9bRHR7x2jO-RnzP39kw5QphGOz9CSdT4GlGX0Kpg>
+    <xme:sDT2ZsOhQdv4PhIt_K6nH_reh7j0x3-cxkeEe6ipT5dvBVEbmBc1VlbaYd1gnPVVG
+    Qdy7S_ILnP1c3ovIg>
+X-ME-Received: <xmr:sDT2Zjhqa4NHv5Q0Nflczmc7bOcXtqZbe78Wq60xR9InPaKQfUfNzYMKvv1paw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtkedgkedvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddt
-    necuhfhrohhmpedfuehoqhhunhcuhfgvnhhgfdcuoegsohhquhhnrdhfvghnghesghhmrg
-    hilhdrtghomheqnecuggftrfgrthhtvghrnhephfdvkeeukedtgeeugfegudejueetjedu
-    heekhffhhedvudfgveehudefudffjeelnecuffhomhgrihhnpegvfhhfihgtihhoshdrtg
-    homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegs
-    ohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeige
-    dqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihig
-    mhgvrdhnrghmvgdpnhgspghrtghpthhtohepvdeipdhmohguvgepshhmthhpohhuthdprh
-    gtphhtthhopehnvggvrhgrjhdruhhprgguhhihrgihsegrmhgurdgtohhmpdhrtghpthht
-    ohepmhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtohepmhgrthhhih
-    gvuhdruggvshhnohihvghrshesvghffhhitghiohhsrdgtohhmpdhrtghpthhtohepjhhi
-    rghnghhshhgrnhhlrghisehgmhgrihhlrdgtohhmpdhrtghpthhtohepkhgvnhhtrdhovh
-    gvrhhsthhrvggvthesghhmrghilhdrtghomhdprhgtphhtthhopehmrghgvggurdhmihgt
-    hhgrvghlsehgmhgrihhlrdgtohhmpdhrtghpthhtohepqhhirghnghdriihhrghnghduvd
-    duudesghhmrghilhdrtghomhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtgho
-    mhdprhgtphhtthhopehrohhsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:gwz2ZhiqNNXGw2cuJzQRyozcqQEm2jyzxBIeWofIkYFmkL3aNj5kNA>
-    <xmx:gwz2Zl9oQfvckPeJhIm1IUsjeFbyhDhFuB-1gVcVOhRka_4yDYGWiQ>
-    <xmx:gwz2ZsuOdpQCtePc-ultglAWJatgZfy2OUX7IhMioDRzZxLcDFheuQ>
-    <xmx:gwz2ZsHKz-gmYYTJPLWlkPSte-POjjX5RMoS04M4eWxNsv_gFzkFoA>
-    <xmx:gwz2ZrNLLIv1LcEjm3qwJZXG9vHnF8Z4baPruBahg3K_h71u9AfD0pqj>
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpeegfeefvdevffejueekjeduleduveehgfehleek
+    gffgueeuvdeuteejhfehledtueenucffohhmrghinhepghhouggsohhlthdrohhrghdpvg
+    hffhhitghiohhsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthi
+    dqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghi
+    lhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedvjedpmhhouggvpe
+    hsmhhtphhouhhtpdhrtghpthhtohepmhgrthhhihgvuhdruggvshhnohihvghrshesvghf
+    fhhitghiohhsrdgtohhmpdhrtghpthhtohepthhorhhvrghlughssehlihhnuhigqdhfoh
+    hunhgurghtihhonhdrohhrghdprhgtphhtthhopehjohhnrghsrdhosggvrhhhrghushgv
+    rheshhhurgifvghitghlohhuugdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnh
+    gvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrtghusehvghgvrhdr
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmhhmsehkvhgrtghkrdhorh
+    hgpdhrtghpthhtoheplhhkmhhmsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthht
+    ohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrih
+    gtsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:sDT2Zv_1rTbuPKdhgfyFp1WG9NX4vjhj7BX4KuXvXdfndMzCVqFrsQ>
+    <xmx:sDT2ZuubbLiY9nUZB0dVHx8LFwNeQj2yPkyI_z4PGOYKZPb3p8DJAw>
+    <xmx:sDT2ZmEh3iGpm4xZF_Tzm4FDQeYWWqIzNunKDB1Dp0AHOXjwA8_EkA>
+    <xmx:sDT2ZtPtmlM_2OXPEMB1wr-HnEHvZvfE5Q5FgMavHMhkSIs0dbFMaQ>
+    <xmx:sDT2ZrOh1wt-edWIW4ZwLvNTfvFftu8-Dm8P2RYrSLp-L7KIYmomLR3S>
 Feedback-ID: iad51458e:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id DDF96B00067; Thu, 26 Sep 2024 21:38:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-Precedence: bulk
-X-Mailing-List: rcu@vger.kernel.org
-List-Id: <rcu.vger.kernel.org>
-List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Date: Fri, 27 Sep 2024 09:37:50 +0800
-From: "Boqun Feng" <boqun.feng@gmail.com>
-To: "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
- "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc: "Jonas Oberhauser" <jonas.oberhauser@huaweicloud.com>,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
- lkmm@lists.linux.dev, "Paul E. McKenney" <paulmck@kernel.org>,
- "Frederic Weisbecker" <frederic@kernel.org>,
- "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>,
- "Joel Fernandes" <joel@joelfernandes.org>,
- "Josh Triplett" <josh@joshtriplett.org>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>, rostedt <rostedt@goodmis.org>,
- "Lai Jiangshan" <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- "Peter Zijlstra" <peterz@infradead.org>, "Ingo Molnar" <mingo@redhat.com>,
- "Will Deacon" <will@kernel.org>, "Waiman Long" <longman@redhat.com>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Kent Overstreet" <kent.overstreet@gmail.com>,
- "Vlastimil Babka" <vbabka@suse.cz>, maged.michael@gmail.com,
- "Neeraj Upadhyay" <neeraj.upadhyay@amd.com>
-Message-Id: <e748893f-28a3-4b8a-a848-cfb1173ab940@app.fastmail.com>
-In-Reply-To: <0b262fe5-2fc5-478d-bf66-f208723238d5@efficios.com>
-References: <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com>
- <ZvP_H_R43bXpmkMS@boqun-archlinux>
- <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com>
- <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 27 Sep 2024 00:29:35 -0400 (EDT)
+Date: Thu, 26 Sep 2024 21:28:48 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	linux-mm@kvack.org, lkmm@lists.linux.dev,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>
+Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
+ pointers
+Message-ID: <ZvY0gG2dCJApPbp5@boqun-archlinux>
+References: <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
  <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com>
  <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com>
  <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com>
@@ -128,76 +125,133 @@ References: <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com>
  <CAHk-=wifOW0VEh6uL3sHSaAUA46YmPDS9Wh5HnNC2JyOiXVA=Q@mail.gmail.com>
  <ZvX12_1mK8983cXm@boqun-archlinux>
  <0b262fe5-2fc5-478d-bf66-f208723238d5@efficios.com>
-Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard pointers
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+ <e748893f-28a3-4b8a-a848-cfb1173ab940@app.fastmail.com>
+Precedence: bulk
+X-Mailing-List: rcu@vger.kernel.org
+List-Id: <rcu.vger.kernel.org>
+List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e748893f-28a3-4b8a-a848-cfb1173ab940@app.fastmail.com>
 
+On Fri, Sep 27, 2024 at 09:37:50AM +0800, Boqun Feng wrote:
+> 
+> 
+> On Fri, Sep 27, 2024, at 9:30 AM, Mathieu Desnoyers wrote:
+> > On 2024-09-27 02:01, Boqun Feng wrote:
+> >> 	#define ADDRESS_EQ(var, expr)							\
+> >> 	({										\
+> >> 		bool _____cmp_res = (unsigned long)(var) == (unsigned long)(expr);	\
+> >> 											\
+> >> 		OPTIMIZER_HIDE_VAR(var);						\
+> >> 		_____cmp_res;								\
+> >> 	})
+> >
+> > If the goal is to ensure gcc uses the register populated by the
+> > second, I'm afraid it does not work. AFAIU, "hiding" the dependency
+> > chain does not prevent the SSA GVN optimization from combining the
 
+Note it's not hiding the dependency, rather the equality,
 
-On Fri, Sep 27, 2024, at 9:30 AM, Mathieu Desnoyers wrote:
-> On 2024-09-27 02:01, Boqun Feng wrote:
->> 	#define ADDRESS_EQ(var, expr)							\
->> 	({										\
->> 		bool _____cmp_res = (unsigned long)(var) == (unsigned long)(expr);	\
->> 											\
->> 		OPTIMIZER_HIDE_VAR(var);						\
->> 		_____cmp_res;								\
->> 	})
->
-> If the goal is to ensure gcc uses the register populated by the
-> second, I'm afraid it does not work. AFAIU, "hiding" the dependency
-> chain does not prevent the SSA GVN optimization from combining the
-> registers as being one and choosing one arbitrary source. "hiding"
-> the dependency chain before or after the comparison won't help here.
->
-> int fct_hide_var_compare(void)
-> {
->      int *a, *b;
->
->      do {
->          a = READ_ONCE(p);
->          asm volatile ("" : : : "memory");
->          b = READ_ONCE(p);
->      } while (!ADDRESS_EQ(a, b));
+> > registers as being one and choosing one arbitrary source. "hiding"
 
-Note that ADDRESS_EQ() only hide first parameter, so this should be ADDRESS_EQ(b, a).
+after OPTIMIZER_HIDE_VAR(var), compiler doesn't know whether 'var' is
+equal to 'expr' anymore, because OPTIMIZER_HIDE_VAR(var) uses "=r"(var)
+to indicate the output is overwritten. So when 'var' is referred later,
+compiler cannot use the register for a 'expr' value or any other
+register that has the same value, because 'var' may have a different
+value from the compiler's POV.
+
+> > the dependency chain before or after the comparison won't help here.
+> >
+> > int fct_hide_var_compare(void)
+> > {
+> >      int *a, *b;
+> >
+> >      do {
+> >          a = READ_ONCE(p);
+> >          asm volatile ("" : : : "memory");
+> >          b = READ_ONCE(p);
+> >      } while (!ADDRESS_EQ(a, b));
+> 
+> Note that ADDRESS_EQ() only hide first parameter, so this should be ADDRESS_EQ(b, a).
+> 
+
+I replaced ADDRESS_EQ(a, b) with ADDRESS_EQ(b, a), and the compile
+result shows it can prevent the issue:
+
+gcc 14.2 x86-64:
+
+fct_hide_var_compare:
+.L2:
+        mov     rcx, QWORD PTR p[rip]
+        mov     rdx, QWORD PTR p[rip]
+        mov     rax, rdx
+        cmp     rcx, rdx
+        jne     .L2
+        mov     eax, DWORD PTR [rax]
+        ret
+
+gcc 14.2.0 ARM64:
+
+fct_hide_var_compare:
+        adrp    x2, p
+        add     x2, x2, :lo12:p
+.L2:
+        ldr     x3, [x2]
+        ldr     x1, [x2]
+        mov     x0, x1
+        cmp     x3, x1
+        bne     .L2
+        ldr     w0, [x0]
+        ret
+
+Link to godbolt:
+
+	https://godbolt.org/z/a7jsfzjxY
 
 Regards,
 Boqun
 
->      return *b;
-> }
->
-> gcc 14.2 x86-64:
->
-> fct_hide_var_compare:
->   mov    rax,QWORD PTR [rip+0x0]        # 67 <fct_hide_var_compare+0x7>
->   mov    rdx,QWORD PTR [rip+0x0]        # 6e <fct_hide_var_compare+0xe>
->   cmp    rax,rdx
->   jne    60 <fct_hide_var_compare>
->   mov    eax,DWORD PTR [rax]
->   ret
-> main:
->   xor    eax,eax
->   ret
->
-> gcc 14.2.0 ARM64:
->
-> fct_hide_var_compare:
->          adrp    x0, .LANCHOR0
->          add     x0, x0, :lo12:.LANCHOR0
-> .L12:
->          ldr     x1, [x0]
->          ldr     x2, [x0]
->          cmp     x1, x2
->          bne     .L12
->          ldr     w0, [x1]
->          ret
-> p:
->          .zero   8
->
->
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
+> Regards,
+> Boqun
+> 
+> >      return *b;
+> > }
+> >
+> > gcc 14.2 x86-64:
+> >
+> > fct_hide_var_compare:
+> >   mov    rax,QWORD PTR [rip+0x0]        # 67 <fct_hide_var_compare+0x7>
+> >   mov    rdx,QWORD PTR [rip+0x0]        # 6e <fct_hide_var_compare+0xe>
+> >   cmp    rax,rdx
+> >   jne    60 <fct_hide_var_compare>
+> >   mov    eax,DWORD PTR [rax]
+> >   ret
+> > main:
+> >   xor    eax,eax
+> >   ret
+> >
+> > gcc 14.2.0 ARM64:
+> >
+> > fct_hide_var_compare:
+> >          adrp    x0, .LANCHOR0
+> >          add     x0, x0, :lo12:.LANCHOR0
+> > .L12:
+> >          ldr     x1, [x0]
+> >          ldr     x2, [x0]
+> >          cmp     x1, x2
+> >          bne     .L12
+> >          ldr     w0, [x1]
+> >          ret
+> > p:
+> >          .zero   8
+> >
+> >
+> > -- 
+> > Mathieu Desnoyers
+> > EfficiOS Inc.
+> > https://www.efficios.com
+> 
