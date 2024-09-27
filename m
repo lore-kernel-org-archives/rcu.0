@@ -1,111 +1,171 @@
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7321C0DF2
-	for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 16:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F5A9443;
+	Fri, 27 Sep 2024 17:17:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727455473; cv=none; b=A0nbYlpqaQNEdRjUi1t0Qiiwfg+lDND7FblrhkmVIhemHrT7ZxXZATfhYmVe3wQebQttQ+1oLNmRKbJAWZd1qBMme7wlVQjSpAPKSJnGEfH5R5J3AmPT8I1pMb4SSHyT5k6Hi/q/UmnOTAPAg9kfUQxStqUeWKKBaFeM3hUszAc=
+	t=1727457448; cv=none; b=pDXyqL3zZbIGzubh9HVxKO/IjPyCS+y+4gZnSnFP8uOgIazoIqZ4TJvgCgHMjKmPP4rWBOKq/NCu9uQSPCmXMcTUJdrWlUVZMgceR8aVHDGqcK9tB9dyf254MgOMG7jXrRxi3gZ3BY5uGLukASx9wedExKzhcJ/U7z3Xvt5WaRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727455473; c=relaxed/simple;
-	bh=C/61GLLGEEVYHtyByRtDw7pPawa+NNpIeX7syWGrSlU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mrt1AZI621//+yswTZRh+UQ0ROl3FgY8QBUqzXNUj3kiPS/f+X7nXayTrrp2+SugjTJl1I0StMJ7V9iC8E9Kb3PH0332F6qrUeL2ZTszlKf4gKQPZ5ZgbzqZHNmw/cyXZKGD2A9mF9gJKXpK38v0f2B9Hg6y4FqFzsjbu9XnhHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZqHbmtea; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1727457448; c=relaxed/simple;
+	bh=9Pl6bXAtXjhyfWlziszA39Bp4r22pKu2aujIPaMnnVc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zoi1BtQnCJGy8wsU0/S02VLcvOK3CknDto5XrmpYcn/3zvngNgeTGT2RQ2kTG1XxWKT1lRGXoCEmJC5vjKp9IWMqd5lXVXtUWlGg2katpWkyhF5ztGuUz04pM8FwvWTn8FRbHP8gc25XJaUBgvRzWuWEt3QhdMhT5asGtkroEJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=fjx/aFpp; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZqHbmtea"
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a8d4093722bso325433966b.0
-        for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 09:44:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1727455469; x=1728060269; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fPpqzCsLOObKbwWe/AzrIGNw3HOBLR2W9N0IccOsIgU=;
-        b=ZqHbmteaT59t7x8Bl6bBV9qGaPNP/Iwph1FfLuoBspZJyL9wtBU2RNIlFVvKLTPNck
-         vYZ5h3Nl5IeqUGFY1yhn0NrwCnfr3IqDnKbiHNCKI8UYc9kM2wz/Tk1JSzuWsJDUxvVp
-         CHBP1wvMI5Y0HKNW0IwgQuWb4UvHwnJCekEtU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727455469; x=1728060269;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fPpqzCsLOObKbwWe/AzrIGNw3HOBLR2W9N0IccOsIgU=;
-        b=IqdIbedh54t+AtRMCgUxTPl6HBLeOpt7gnqllKmkwFNgMg5o9REwfEcfYSFTbujruk
-         5W1+3mbVUpR1xpBvRxTSOK+sJ1aMP79xQf9csAY81mM4QS9c8rSsoTnxE0n/SndJEFy0
-         t5+xiwvixSSNmCG+yOZ0WszskLtpI/P21ptknaYqybXcrS4tv9KNb/JPb8jiApWSm32v
-         ywyYO9JFFjJ2+72MNkk5EuZMAjnIWV5dhoWtpRiB8CPzNAkZs/o0JziU52OrYkTNLVJ/
-         d3bF3XSgQpRccHXqN9sIpG+w0z1lt5GJhS9Dly+tZfmoFJ9nIjSxix9f4/4Hfko7Pg6k
-         iapw==
-X-Forwarded-Encrypted: i=1; AJvYcCXb6oAtrrhzTWPpRVAeuO8eeiC3E7Yfx/r+UOSLTY5RI021fbfB+XySiRWj905x1XZdTzo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwB8man5S0zoRRB+8wEnYJw4xnfcLMnIi64ScgGjbLmSixyxAK/
-	kYa9BV2Yfy3vTNEigQMgLh21AtBqPxQ9yp42v2DpD9svo6k+sTP+TtnCNYdb8kgS2aDlY8nIW0b
-	nC+wi0Q==
-X-Google-Smtp-Source: AGHT+IE1w3/mMg7vZwkHkYlFox+oDGtzNieHH5m2FOtUW8HftWvYYqPLnj5I4Il9gjk2V24hRZggnQ==
-X-Received: by 2002:a17:907:86a6:b0:a8b:2604:1da3 with SMTP id a640c23a62f3a-a93c4908e65mr332833866b.17.1727455469303;
-        Fri, 27 Sep 2024 09:44:29 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c27c5a7dsm153087966b.62.2024.09.27.09.44.28
-        for <rcu@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Sep 2024 09:44:28 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a8d0d82e76aso340729366b.3
-        for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 09:44:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVe9bBI9qL0oeK7COVs9/QXbYvf+rzxfOe26iDOjdfuvohpNNkQZflU2kPoIJfH4guPGuo=@vger.kernel.org
-X-Received: by 2002:a17:907:748:b0:a7a:b73f:7584 with SMTP id
- a640c23a62f3a-a93c492a391mr352824766b.34.1727455468157; Fri, 27 Sep 2024
- 09:44:28 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="fjx/aFpp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1727457444;
+	bh=9Pl6bXAtXjhyfWlziszA39Bp4r22pKu2aujIPaMnnVc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=fjx/aFppwNW8w8vhvtDpCiF5R+jIMtcUVs/0TycezS6PfO7g4K17zRV7o0UkWamr5
+	 vgPyDSJnVIn2UCvDU7GH9MdXEUArA53xCUsR3ANZsu9Ipfta/PZy+hupewNXXldJkr
+	 Q/TeKkoxv9WjYUMwAfQsHAbf0HnJLAL3bhvSYy4J1ONG99q0n5qXN2kRU4LbH5D8tG
+	 a3jE4NxHTySOJ1JuT13o5SYdYdzOcmoGTJ6O/gZeDlq7LoZ7trHhOfE2qUFq+13inS
+	 zFbDBuv9sKLqosN++v9s0Rp7DxzDKCtmuKlGVjHzhcCzlSMNXwsyQ0f/hgkfZDzCo5
+	 ObmckiIHVU8+Q==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XFcbS44H9z1Q6v;
+	Fri, 27 Sep 2024 13:17:24 -0400 (EDT)
+Message-ID: <7e1c8a5e-c110-414c-8fb2-022eacc2bd4a@efficios.com>
+Date: Fri, 27 Sep 2024 13:15:19 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
+ pointers
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Boqun Feng <boqun.feng@gmail.com>
+Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
+ lkmm@lists.linux.dev, "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>,
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>, rostedt <rostedt@goodmis.org>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Kent Overstreet <kent.overstreet@gmail.com>, Vlastimil Babka
+ <vbabka@suse.cz>, maged.michael@gmail.com,
+ Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 References: <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com>
- <ZvP_H_R43bXpmkMS@boqun-archlinux> <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com>
- <48992c9f-6c61-4716-977c-66e946adb399@efficios.com> <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com>
- <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com> <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com>
+ <ZvP_H_R43bXpmkMS@boqun-archlinux>
+ <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com>
+ <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
+ <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com>
+ <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com>
+ <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com>
  <CAHk-=wjL803+FxtAPSGrWqThGQP5cCHzzwZJFq+-fkgt5DQ3VQ@mail.gmail.com>
- <54487a36-f74c-46c3-aed7-fc86eaaa9ca2@huaweicloud.com> <CAHk-=wifOW0VEh6uL3sHSaAUA46YmPDS9Wh5HnNC2JyOiXVA=Q@mail.gmail.com>
- <ZvX12_1mK8983cXm@boqun-archlinux> <0b262fe5-2fc5-478d-bf66-f208723238d5@efficios.com>
+ <54487a36-f74c-46c3-aed7-fc86eaaa9ca2@huaweicloud.com>
+ <CAHk-=wifOW0VEh6uL3sHSaAUA46YmPDS9Wh5HnNC2JyOiXVA=Q@mail.gmail.com>
+ <ZvX12_1mK8983cXm@boqun-archlinux>
+ <0b262fe5-2fc5-478d-bf66-f208723238d5@efficios.com>
  <e748893f-28a3-4b8a-a848-cfb1173ab940@app.fastmail.com>
-In-Reply-To: <e748893f-28a3-4b8a-a848-cfb1173ab940@app.fastmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 27 Sep 2024 09:44:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgQyXOt_HjDZHNqWMmyvv74xLAcMw88grfp4HkKoS2vLw@mail.gmail.com>
-Message-ID: <CAHk-=wgQyXOt_HjDZHNqWMmyvv74xLAcMw88grfp4HkKoS2vLw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard pointers
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, linux-kernel@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, "Uladzislau Rezki (Sony)" <urezki@gmail.com>, rostedt <rostedt@goodmis.org>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Kent Overstreet <kent.overstreet@gmail.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com, 
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+ <CAHk-=wgQyXOt_HjDZHNqWMmyvv74xLAcMw88grfp4HkKoS2vLw@mail.gmail.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <CAHk-=wgQyXOt_HjDZHNqWMmyvv74xLAcMw88grfp4HkKoS2vLw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 26 Sept 2024 at 18:38, Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> Note that ADDRESS_EQ() only hide first parameter, so this should be ADDRESS_EQ(b, a).
+On 2024-09-27 18:44, Linus Torvalds wrote:
+> On Thu, 26 Sept 2024 at 18:38, Boqun Feng <boqun.feng@gmail.com> wrote:
+>>
+>> Note that ADDRESS_EQ() only hide first parameter, so this should be ADDRESS_EQ(b, a).
+> 
+> Yeah, please stop making things unnecessarily complicated.
+> 
+> Just use a barrier(). Please. Stop these stupid games until you can
+> show why it matters.
 
-Yeah, please stop making things unnecessarily complicated.
+The barrier() is ineffective at fixing the issue.
+It does not prevent the compiler CSE from losing the
+address dependency:
 
-Just use a barrier(). Please. Stop these stupid games until you can
-show why it matters.
+int fct_2_volatile_barriers(void)
+{
+     int *a, *b;
 
-And by "why it matters" I mean "major difference in code generation",
-not some "it uses one more register and has to spill" kind of small
-detail.
+     do {
+         a = READ_ONCE(p);
+         asm volatile ("" : : : "memory");
+         b = READ_ONCE(p);
+     } while (a != b);
+     asm volatile ("" : : : "memory");  <----- where you would like your barrier
+     return *b;
+}
 
-At this point, I'm not even convinced the whole hazard pointer
-approach makes sense. And you're not helping by making it more
-complicated than it needs to be.
+With gcc 14.2 (arm64):
 
-          Linus
+fct_2_volatile_barriers:
+         adrp    x0, .LANCHOR0
+         add     x0, x0, :lo12:.LANCHOR0
+.L2:
+         ldr     x1, [x0]    <------ x1 populated by first load.
+         ldr     x2, [x0]
+         cmp     x1, x2
+         bne     .L2
+         ldr     w0, [x1]    <------ x1 is used for access which should depend on b.
+         ret
+
+On weakly-ordered architectures, this lets CPU speculation
+use the result from the first load to speculate
+"ldr w0, [x1]" before "ldr x2, [x0]".
+Based on the RCU documentation, the control dependency
+does not prevent the CPU from speculating loads.
+
+There are a few ways to fix this:
+
+- Compile everything with -fno-cse-follow-jumps.
+- Make the compiler unaware of the relationship between the
+   address equality and address-dependent use of b. This can
+   be done either using ADDRESS_EQ() or asm goto.
+
+I prefer ADDRESS_EQ() because it is arch-agnostic. I don't
+care that it adds one more register movement instruction.
+
+> And by "why it matters" I mean "major difference in code generation",
+> not some "it uses one more register and has to spill" kind of small
+> detail.
+
+Why it matters is because gcc generates code that does not
+preserve address dependency of the second READ_ONCE().
+
+> At this point, I'm not even convinced the whole hazard pointer
+> approach makes sense. And you're not helping by making it more
+> complicated than it needs to be.
+
+I'm preparing a small series that aims to show how a minimal
+hazard pointer implementation can help improve common scenarios:
+
+- Guarantee object existence on pointer dereference to increment
+   a reference count:
+   - replace locking used for that purpose in drivers (e.g. usb),
+   - replace RCU + inc_not_zero pattern,
+- rtmutex: I suspect we can improve situations where locks need
+   to be taken in reverse dependency chain order by guaranteeing
+   existence of first and second locks in traversal order,
+   allowing them to be locked in the correct order (which is
+   reverse from traversal order) rather than try-lock+retry on
+   nested lock. This can be done with hazard pointers without
+   requiring object reclaim to be delayed by an RCU grace period.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
