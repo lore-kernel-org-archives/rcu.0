@@ -1,160 +1,133 @@
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F70139D1B;
-	Fri, 27 Sep 2024 19:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FE9176251
+	for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 19:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727465025; cv=none; b=clQmnjYEFzjyv2LASUmNkMeS0PgVYHLj2p7aIXIS31Jmh5ph67N9uSI6+HUW9dEKn8TdS3HEIRpX9AKCh4Vl7AzC9Rkgz+1ixH2/DqPv8OSlg7ihCWN3hYFez6xDitZ3Q9sWfIfEcn9URuSJjwPIS2LmmTJEdtBgt4zE9UOQRIw=
+	t=1727465773; cv=none; b=fhj5VL7IBZmrndDGenHO9UJab0yR4FdgU+xjDUBeApRjDMYNeZyjTDqJmweRAI4bkgaX6M146qX8PakXHfTKsdt2cX8tldsCbJFKx8VabTnA8oP+E6eKVjeSVg8gRBcfhP1PGO2WZwgEbjrDhXl0inSR85b1Li6aPpK+beqRxJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727465025; c=relaxed/simple;
-	bh=GM2PMzkiugJoiVXHiXF3aEICP/a8rNLrEmgoYpGtqoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L3/7A0w5EQaMkeFwSoMxHlsWhGt4TvB4h/dFBlpWU5JXv78Qyf02dL9tTsdXHVamEJ0qKq2BnRVuZucslkKNY7cWQo5cLIsDsvgNmlAjR23ZdhdtWMktsLnSoxwBRiCYj6ADji2aPox6BNiXtLxRUZa1VICTMxZ024Dw0O58k/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4XFfyJ0cLGz9v7NM;
-	Sat, 28 Sep 2024 03:03:52 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id EDE42140496;
-	Sat, 28 Sep 2024 03:23:37 +0800 (CST)
-Received: from [10.81.203.162] (unknown [10.81.203.162])
-	by APP2 (Coremail) with SMTP id GxC2BwBnFscqBvdmpgHGAQ--.52397S2;
-	Fri, 27 Sep 2024 20:23:37 +0100 (CET)
-Message-ID: <62508c1f-66ca-450d-abb6-236ca3b9096d@huaweicloud.com>
-Date: Fri, 27 Sep 2024 21:23:20 +0200
+	s=arc-20240116; t=1727465773; c=relaxed/simple;
+	bh=kqt5Jntn1aPjnEibEghCyVBj7mxRi2cdnuwUrSdPgVI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bpEeflEWxnrC3WCBHI1bJfSXFoIBraqYf6b34gOXwuKVzVn/L05Yb9ZDAYOcpIiZ8QtAeZzGJuiCXBuD9YKaI3LY3V1z7w+dAyepNicSAvKfNdI8Kp/WNnR4kphH/tPFQ57Fixa2mPMbbObkoeo2AIR9LE1YZLbdZJhf4+Deaz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HKTfrxpq; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HKTfrxpq"
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5c26815e174so3075454a12.0
+        for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 12:36:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1727465768; x=1728070568; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q4BYeztFGhrhYHEtsZ/kMOwsZ9Tbjy1c0Mm3O/TMTIo=;
+        b=HKTfrxpqPu5n+DdYtotNACi1QLIjrovj7NqPsZZtW8pkbIf+0Fwb4BjXYIBb7ztblb
+         80GJRAXyG4if0SymO9XfouedXZXQ+UKlEGBxuHVf8GRxb1eC+Lj6IwuSJDXaiiHOE52k
+         70llxaDq1CyL/DjDSzLAebw9CnmP41UKiaRF8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727465768; x=1728070568;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q4BYeztFGhrhYHEtsZ/kMOwsZ9Tbjy1c0Mm3O/TMTIo=;
+        b=RGf/fBrdZVGU5N1tkfsxv1DbFnqzPpWcQRa31qmGfxUuW/VfnfdGys7yKTjHTgFWDo
+         BYDzY19h4vguZ4mkdLCg1pOEH/6hVLxghR6fqM/amegsfO58mFvpvyVb+G3mXoLwTTZp
+         x5k+VvxhrEByO8BxmrQiTHj6dG+MWZrEHoxe0UleOdq1EXgfzrUPX0ZPtc1X4lSrq1e4
+         Aik//Ssk9pXX+EZflbRCPhdLL/XuL1ksex5BNClO13V2Nbv2Ua8Sq15e4HTlmu4UrlYp
+         n+1j2vxQRVXeES5CI3EUoVH4mxfTHP4NiwDICGBkiNy0Bk/44a2ZQDtKa8VnbP8ClV87
+         Jqyw==
+X-Forwarded-Encrypted: i=1; AJvYcCV3QmxTTd9Vq/JTGzL8KR1K6pxVyo2W9sy2AMiLA01PnmwxyOFq9oB7o5sTqsVc/fA42N8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyni9hDdqMPnf5eeqjOE7SQwBfgrW2HdVvF05kkGFlKaxqOL5vb
+	q71SsW5Y4j0xL5VBH4JnGJAz4sW0qNMPNm/1k7a5tJTjAb+PWtJj9fDBBXqcIrJj0XR8z+JHl77
+	gUEEMHw==
+X-Google-Smtp-Source: AGHT+IGHMdB+ufiH+RXR+f09HIPC/Jqg/q6RlPXqPi0g4unzN4gHuQd4VmKbaEI0K+upO8LuVl2qlA==
+X-Received: by 2002:a05:6402:280d:b0:5c4:23b2:ec35 with SMTP id 4fb4d7f45d1cf-5c8824e5166mr3839007a12.10.1727465767992;
+        Fri, 27 Sep 2024 12:36:07 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c882493e54sm1461388a12.80.2024.09.27.12.36.06
+        for <rcu@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Sep 2024 12:36:06 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5c874f6f119so2837716a12.2
+        for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 12:36:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUAihfJFx9lGKgSNYETZICaOWHQRKPnXjDG7K0zFCbfjHo34Nr4Ha8X+4nSfjdBhQBFeIo=@vger.kernel.org
+X-Received: by 2002:a17:907:36c5:b0:a86:7514:e649 with SMTP id
+ a640c23a62f3a-a93c4a69d42mr423065966b.52.1727465337418; Fri, 27 Sep 2024
+ 12:28:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard
- pointers
-To: Boqun Feng <boqun.feng@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
- lkmm@lists.linux.dev, "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Kent Overstreet <kent.overstreet@gmail.com>, Vlastimil Babka
- <vbabka@suse.cz>, maged.michael@gmail.com,
- Neeraj Upadhyay <neeraj.upadhyay@amd.com>
-References: <ZvPp4taB9uu__oSQ@boqun-archlinux>
- <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com>
- <ZvP_H_R43bXpmkMS@boqun-archlinux>
- <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com>
- <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
- <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com>
- <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com>
- <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com>
- <CAHk-=wjL803+FxtAPSGrWqThGQP5cCHzzwZJFq+-fkgt5DQ3VQ@mail.gmail.com>
- <bba2e656-4c3b-46db-b308-483de440b922@efficios.com>
- <ZvY2zBiluLkqRSkc@boqun-archlinux>
-From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-In-Reply-To: <ZvY2zBiluLkqRSkc@boqun-archlinux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:GxC2BwBnFscqBvdmpgHGAQ--.52397S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF48Zw4Duw13Kr45ZFyDGFg_yoW8ZF1kpr
-	WagF1YgF4kAr4Syr1Ivr4UZFyFyrn3Grn8Cw10gryqv3W3GF4xuF4fK3y7CF9rCrn3Cr1j
-	qr129a4S9wsxZa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	jzE__UUUUU=
-X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
+References: <4167e6f5-4ff9-4aaa-915e-c1e692ac785a@efficios.com>
+ <a87040be-890b-4e83-86bb-5018da4a894d@efficios.com> <48992c9f-6c61-4716-977c-66e946adb399@efficios.com>
+ <e2733938-06fa-46c3-8839-4349fe50d46f@efficios.com> <2b2aea37-06fe-40cb-8458-9408406ebda6@efficios.com>
+ <55633835-242c-4d7f-875b-24b16f17939c@huaweicloud.com> <CAHk-=wjL803+FxtAPSGrWqThGQP5cCHzzwZJFq+-fkgt5DQ3VQ@mail.gmail.com>
+ <54487a36-f74c-46c3-aed7-fc86eaaa9ca2@huaweicloud.com> <CAHk-=wifOW0VEh6uL3sHSaAUA46YmPDS9Wh5HnNC2JyOiXVA=Q@mail.gmail.com>
+ <ZvX12_1mK8983cXm@boqun-archlinux> <0b262fe5-2fc5-478d-bf66-f208723238d5@efficios.com>
+ <e748893f-28a3-4b8a-a848-cfb1173ab940@app.fastmail.com> <CAHk-=wgQyXOt_HjDZHNqWMmyvv74xLAcMw88grfp4HkKoS2vLw@mail.gmail.com>
+ <7e1c8a5e-c110-414c-8fb2-022eacc2bd4a@efficios.com> <CAHk-=wgBgh5U+dyNaN=+XCdcm2OmgSRbcH4Vbtk8i5ZDGwStSA@mail.gmail.com>
+ <34ec590c-b109-44a0-8bfe-8aafc6e7ad64@efficios.com> <CAHk-=wi_hz8Whs2ogRUQEfMBk=OkZ3usmvJkzb5YyEKwqEJBmQ@mail.gmail.com>
+ <1b04e35c-8994-48d9-907a-966bb4dfabaf@huaweicloud.com>
+In-Reply-To: <1b04e35c-8994-48d9-907a-966bb4dfabaf@huaweicloud.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 27 Sep 2024 12:28:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgi9vqh6qUpPKSydfdqd3210MnekZ1VxB6aAmfqz2bFpw@mail.gmail.com>
+Message-ID: <CAHk-=wgi9vqh6qUpPKSydfdqd3210MnekZ1VxB6aAmfqz2bFpw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] hazptr: Add initial implementation of hazard pointers
+To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
+	lkmm@lists.linux.dev, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>, rostedt <rostedt@goodmis.org>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
+	Waiman Long <longman@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Kent Overstreet <kent.overstreet@gmail.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com, 
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Two comments inline,
+On Fri, 27 Sept 2024 at 12:12, Jonas Oberhauser
+<jonas.oberhauser@huaweicloud.com> wrote:
+>
+> I think it depends on which one you hide.
 
-Am 9/27/2024 um 6:38 AM schrieb Boqun Feng:
+No.
 
-> compilers can replace 'ptr' with 'head' because of the equality, and
-> even putting barrier() here cannot prevent compiler to rewrite the else
-> branch into:
-> 
-> 	else {
-> 		barrier();
-> 		return head;
-> 	}
-> 
-> because that's just using a different register, unrelated to memory
-> accesses.
+Dammit, people, read the code I posted.
 
-Yeah, that was the solution I had in mind. My reasoning was that from 
-the C abstract machine, head is still a memory access, and the barrier() 
-should make the compiler forget everything it knew about the value of 
-head from before the barrier().
+> But for
+>
+>   z = a;
+>   hide(z);
+>   if (z==b) { *b; }
 
-So I had a gap in my understanding of the strength of barrier(). Can I 
-understand it to mean that the compiler can do escape analysis to reason 
-that a volatile asm code with ::memory can't possibly be manipulating 
-some variables (like head in this case)?
+No.
 
-That idea seems to be confirmed by this (atrocious, not to be copied!) 
-example:
+I *intentionally* made it an inline function, and only hid the
+arguments to the equality comparison.
 
-int fct_escape_address_of_b(void)
-{
-     int *a, *b;
+So the "hide(z)" hides the argument to the inline function - NOT THE ORIGINAL.
 
-     do {
-         a = READ_ONCE(p);
-         asm volatile ("" : : : "memory");
-         b = READ_ONCE(p);
-     } while (a != b);
+> then it would still know that b == z, and could replace *b with *z
+> (which really is *a).
 
-     // really really hide b
-     int **p = &b;
-     OPTIMIZER_HIDE_VAR(p);
+No.
 
-     asm volatile ("" : : : "memory");
-     return *b;
-}
+The hiding is literally *ONLY* for the comparison. It's inside the
+helper function. It doesn't affect the originals at all.
 
-This also does not generate any additional instructions, unlike just 
-using OPTIMIZER_HIDE_VAR(b).
+Which means that the compiler CANNOT KNOW anything about the original
+pointers when it compares for equality (or inequality).
 
-What is the advantage of defining OPTIMIZE_HIDE_VAR the way it currently 
-works instead of like above?
+Basically, the comparison is now a black box to the compiler, and the
+compiler cannot use the result of the comparison to make ANY judgment
+on whether the two original pointers were related or not.
 
-
-
- > On Fri, Sep 27, 2024 at 03:20:40AM +0200, Mathieu Desnoyers wrote:
-
->> I have a set of examples below that show gcc use the result of the
->> first load, and clang use the result of the second load (on
->> both x86-64 and aarch64). Likewise when a load-acquire is used as
->> second load, which I find odd. 
-
-Note that if you use acquire on the second load, the code is correct 
-even if the compiler uses the result of the first load.
-
-That is because the acquire load will still synchronize sufficiently 
-with the second publishing store after the ABA, and then we can get the 
-right data even from the old address.
-
-Best wishes,
-
-   jonas
-
+               Linus
