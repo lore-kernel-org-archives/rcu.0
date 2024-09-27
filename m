@@ -1,50 +1,75 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B1915E5C8
-	for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 06:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C95A28EF
+	for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 07:26:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727419833; cv=none; b=aJlYNON9PQF7FZN1D3HhTBGtdj3AcAg1pP6HzTTNgdE6oQN1/flRN3SAfl6zeAgtPe1sQXF53eR4IWWR/wXF/JHptRHHyK5UgjPXa1MxPX1X8rKnEQj03f4vyGHZRF9UVsyVy27U1UdkAirUy7Mdjab8Fo6OheqKpyvLm9N6o1c=
+	t=1727421998; cv=none; b=mqViC57VdZ4KAPpNJI+DAXc/REFlwwxXEHcfIxRO0j7x1ITQFHazvuNEozLvDtXzPddCuPa/XO4VX1oJKv9q8DP5IceuAFX79LeeAF6XYT+Hc9HlcZaBkfMz8PGgCJVo95Gvguy4urdTmZ8ut75y0CSt9TVF9KOhljKhpBC3p0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727419833; c=relaxed/simple;
-	bh=+cZAZViW1v0LQ0aLSqaIebziEsrwrTkIrkgvenkCMq0=;
+	s=arc-20240116; t=1727421998; c=relaxed/simple;
+	bh=xMgAuIsRbpaGRuJllqDUgSrd+lucxNOpIKVPx5iakck=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZoIA85ev2rdLPuymZz910ft08zBFUdiSh3Vfyes7KNW/IlvHjZvPAdCL8AJ+7DfNue0bWyEq5Yver20SWA9yR+V57K3xpiNyQlAbBIGWwdcRmqimJPfS6sDlMFdNTM5qUfZA/bJ+SmM178hN58BWLbajWL7IqHpvzccpKk3PLCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrTBxoW7; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=jpYZqqp9Ijh1W7H2hqCF+oCmQNQjuTF6fce9krmmj7fad/CVFmcRSNPoEJQV1GPiZqS7KA2F8Y/KiHdQngVUVIEB6V1xBSfttUm+NIY9YUEzuNN6Icq+rXb0+uXatWLFycq6JbjZLpbeQa47DrULsqtAP8daEFqgHiIbF908UYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TRu/7hJw; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KrTBxoW7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F6FDC4CEC4;
-	Fri, 27 Sep 2024 06:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727419832;
-	bh=+cZAZViW1v0LQ0aLSqaIebziEsrwrTkIrkgvenkCMq0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KrTBxoW7O+f5Py8vklkd3Onn2DEtV5xNCWBpa2ZoQ1sDMUof68TfB34AYn5HvOUsU
-	 /ZbhGaVUlG1UA1JDC7jiTvgVttiI/myM0+RjSEu84NKT+FyA/zOYcgnlrm43IMMWF6
-	 9zQl8qFozYJb7Lm2Dq4VngW1stlzbT03ogDKB8fXGopep+0NwHA0bhumFfrugV3fK8
-	 k4s2fMbl3EwVoK51LtBFbSr/S84uDtzgRqoYmV6vtVZqkLNmoxHeEOAAuqLI+SDvJb
-	 DLUCkzJwL1L/Sl6Lyoo3xMogJcVZFPlrCtXhFElkL6L1IDm8xTskNYrIiXZZESBLF1
-	 asBM25doIYplA==
-Date: Fri, 27 Sep 2024 12:20:25 +0530
-From: Neeraj Upadhyay <Neeraj.Upadhyay@kernel.org>
-To: Baruch Siach <baruch@tkos.co.il>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TRu/7hJw"
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a8d4093722bso248503366b.0
+        for <rcu@vger.kernel.org>; Fri, 27 Sep 2024 00:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1727421993; x=1728026793; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=80ztDIsJWeriQoGVLSr3JhFbaWjjf3yBIgtVIEKSUh4=;
+        b=TRu/7hJwrxUx3wOak5e/c2+oVr4Z3m54883QdSdso5qBSw31X+adwJtycElOCD4Q6v
+         /1qASgjKoiXjg11Y+yuLtk8rSVHWLl3WoEfnZj6nZeJebmWRRulcTQmWM1eRomi08Kmy
+         1piDNGEUFsS+fExW1zjOO9W/23CkRq9be2YQ/vcM8jh5Yr8mhvV83T81zii5ZfFc9bMX
+         NLQQUe4OU/TNG0bkZH9KL0w9MhpzRvgZQfpew9K2P3lK8YoD8A2F+1ZjZ/P47mgtw1qG
+         AnNbcwWYK9dbJJ/z3gOKJJRR5XKTiHIUpc24H6lhKhskcy08rrZufIJTKhTfutGgGiS5
+         UxcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727421993; x=1728026793;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=80ztDIsJWeriQoGVLSr3JhFbaWjjf3yBIgtVIEKSUh4=;
+        b=q8ytZQBV9UIF3+ngOTRJk5pbKFVb5mFHLPQxFDJjDhNi4K5+vQT074n/iKX/8NbNef
+         4NUg9O2rg44TqBK1ocfQBIAeyxGV3iUX1Y62gSCOjgi5LuwhDrQcVuzUen7pXOkNH416
+         YucDbNSfJ1ODWUOC3iPokAaOBIk7bMYefMoxsmCp4MWdDa40pM05QjvhforDtKrcNE2h
+         vkeXR6Hvsn2fBhLCOSciwUv72CDMXaAr6ITPiHi0DDkCKbhTSvXMWMjg/2lqrH/9pfTx
+         JKru/uw36R+KgzJZe49hVW+N3tONPSQssGcnQx8jWPqQXlU6kGdf2e9u1Sz2QmUizuIG
+         6aOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUdSVDSIe3BT1co1hcm8zyl544ofzmCUCf91uh7qq3BkBuvieM1hIZzs67GVrvvS+z8HkA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+vpkcIFS/rC+w4q1GKM9iiZUr01iWKMkaUsxOh76f1JEWRtk4
+	4YBD493m2NdgwJit8M+Df/drpB0YDhb5DLAZWOoW1mofWLlfl4OpZEL5jHy0ng8=
+X-Google-Smtp-Source: AGHT+IE7+CblqEppxGApcOTVpZmHP9GLtTzDm9g1t7gy3vhONmLGIDrJpXglSfFblCwn/uYQ+Ow0Nw==
+X-Received: by 2002:a17:906:c115:b0:a86:4649:28e6 with SMTP id a640c23a62f3a-a93c4a98d6amr167324466b.57.1727421993567;
+        Fri, 27 Sep 2024 00:26:33 -0700 (PDT)
+Received: from localhost (109-81-81-255.rct.o2.cz. [109.81.81.255])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c27776efsm93534866b.30.2024.09.27.00.26.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Sep 2024 00:26:33 -0700 (PDT)
+Date: Fri, 27 Sep 2024 09:26:32 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] doc: rcu: update printed dynticks counter bits
-Message-ID: <20240927065025.GA2649@neeraj.linux>
-References: <5dd8782f70c3b2367ae3c7d9016eb8fb32c76b49.1723969097.git.baruch@tkos.co.il>
- <e1af4a94-577a-4fe4-be4f-e4c7b835aab7@paulmck-laptop>
- <87cykq23a5.fsf@tarshish>
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 11/20] sched: Handle CPU isolation on last resort
+ fallback rq selection
+Message-ID: <ZvZeKBzOBbVyA-xL@tiehlicka>
+References: <20240926224910.11106-1-frederic@kernel.org>
+ <20240926224910.11106-12-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -53,60 +78,72 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87cykq23a5.fsf@tarshish>
+In-Reply-To: <20240926224910.11106-12-frederic@kernel.org>
 
-Hi Baruch,
-
-On Thu, Sep 26, 2024 at 12:05:38PM +0300, Baruch Siach wrote:
-> Hi Paul,
+On Fri 27-09-24 00:48:59, Frederic Weisbecker wrote:
+> When a kthread or any other task has an affinity mask that is fully
+> offline or unallowed, the scheduler reaffines the task to all possible
+> CPUs as a last resort.
 > 
-> On Tue, Aug 20 2024, Paul E. McKenney wrote:
-> > On Sun, Aug 18, 2024 at 11:18:17AM +0300, Baruch Siach wrote:
-> >> The stall warning prints 16 bits since commit 171476775d32
-> >> ("context_tracking: Convert state to atomic_t").
-> >> 
-> >> Fixes: 171476775d32 ("context_tracking: Convert state to atomic_t")
-> >> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> >
-> > Good eyes!
-> >
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> This default decision doesn't mix up very well with nohz_full CPUs that
+> are part of the possible cpumask but don't want to be disturbed by
+> unbound kthreads or even detached pinned user tasks.
 > 
-> I remember seeing this patch queued in one of the rcu git trees, but I
-> can't find it anymore. I don't see it in Linus' tree either.
+> Make the fallback affinity setting aware of nohz_full. This applies to
+> all architectures supporting nohz_full except arm32. However this
+> architecture that overrides the task possible mask is unlikely to be
+> willing to integrate new development.
 > 
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-This patch is included for v6.13 queue [1]
+Thanks, this makes sense to me. Up to scheduler maitainers whether this
+makes sense in general though.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/log/?h=dev
+Thanks for looking into this Frederic!
 
-
-- Neeraj
-
-> Thanks,
-> baruch
+> ---
+>  kernel/sched/core.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
 > 
-> >>  Documentation/RCU/stallwarn.rst | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >> 
-> >> diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-> >> index ca7b7cd806a1..30080ff6f406 100644
-> >> --- a/Documentation/RCU/stallwarn.rst
-> >> +++ b/Documentation/RCU/stallwarn.rst
-> >> @@ -249,7 +249,7 @@ ticks this GP)" indicates that this CPU has not taken any scheduling-clock
-> >>  interrupts during the current stalled grace period.
-> >>  
-> >>  The "idle=" portion of the message prints the dyntick-idle state.
-> >> -The hex number before the first "/" is the low-order 12 bits of the
-> >> +The hex number before the first "/" is the low-order 16 bits of the
-> >>  dynticks counter, which will have an even-numbered value if the CPU
-> >>  is in dyntick-idle mode and an odd-numbered value otherwise.  The hex
-> >>  number between the two "/"s is the value of the nesting, which will be
-> >> -- 
-> >> 2.43.0
-> >> 
-> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 43e453ab7e20..d4b759c1cbf1 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3421,6 +3421,21 @@ void kick_process(struct task_struct *p)
+>  }
+>  EXPORT_SYMBOL_GPL(kick_process);
+>  
+> +static const struct cpumask *task_cpu_fallback_mask(struct task_struct *t)
+> +{
+> +	const struct cpumask *mask;
+> +
+> +	mask = task_cpu_possible_mask(p);
+> +	/*
+> +	 * Architectures that overrides the task possible mask
+> +	 * must handle CPU isolation.
+> +	 */
+> +	if (mask != cpu_possible_mask)
+> +		return mask;
+> +	else
+> +		return housekeeping_cpumask(HK_TYPE_TICK);
+> +}
+> +
+>  /*
+>   * ->cpus_ptr is protected by both rq->lock and p->pi_lock
+>   *
+> @@ -3489,7 +3504,7 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+>  			 *
+>  			 * More yuck to audit.
+>  			 */
+> -			do_set_cpus_allowed(p, task_cpu_possible_mask(p));
+> +			do_set_cpus_allowed(p, task_cpu_fallback_mask(p));
+>  			state = fail;
+>  			break;
+>  		case fail:
 > -- 
->                                                      ~. .~   Tk Open Systems
-> =}------------------------------------------------ooO--U--Ooo------------{=
->    - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
+> 2.46.0
+
+-- 
+Michal Hocko
+SUSE Labs
