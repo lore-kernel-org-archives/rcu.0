@@ -1,115 +1,151 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC402A1C0;
-	Sat, 28 Sep 2024 11:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1482417DFE9;
+	Sat, 28 Sep 2024 11:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727523125; cv=none; b=IMGUl05Z0y6J7eh6EpdmXLZfHbKVCYbFXbYYEPPRKS3G1pPqBsuD2qToqi494+E5k40edoEaotH2/05NVNEt0/K9hADstMi/5lvDpqZKpHjg81JU0PZceIWZ9hMYHeiXdVdkIxjlseXIbVn2w7YKqEvX5ceh3LrDR/UjiJ3xoTo=
+	t=1727523350; cv=none; b=uQwpBluUiyTrXk4Q5AN1e8jCWuP5PcbLSRed/P/mGr7Bi2uUZsLgNvi+pCy0Ai/11wTgi8IfwDdgHdHJpxHKVyc07QOIMjp5y/Xfs4OCAVjBT66C9zLnVY95JIVJqjr/aWk0Rm3eCmHDRgyRPR4z84nO8HG/qd+KrwueoCUW13M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727523125; c=relaxed/simple;
-	bh=bHeWdmxAD41R4bT2Y/3lIBcb9EHeesx11+ZLdT4Jffg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XTW+nTWY7UpTjsGaNzPTRHT0ztNwNuvmnIrVWs0MzG0Wyw0yfxwQEIkP0k8ARU8NVnhM9q0s7iSX8dYVniJKo60CFBgDFJqIVsfot8tr/Dn3dxSb3Yr6T9mkrmhfoqmaNzL9TIWz+Kq535qSDFpaGQ+IjetaKj7z8lwGj2grnuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PpPoVPGB; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1727523350; c=relaxed/simple;
+	bh=5lMXHFtn0jEoSxgXj3YeXoWW7aLl3YwVJkTxD0aY9Cs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QZIJ+a4swkOrN+cETCE7q6rbDZ/6NrEM9pYuv23AtOBIBQsgnzWVV+RAdOPicH7mBLpmhSkyKbVUx5kmpTHpc3X/Dtbs1Le+12YTj6sdtNQgIH0GYdVwwVFDEIjEgh253+Aacv+m8U5TPOEwlgHh9NdvegUvkCrf+udac5U3UTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=hOr8uGwP; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PpPoVPGB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94DC5C4CEC3;
-	Sat, 28 Sep 2024 11:32:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727523124;
-	bh=bHeWdmxAD41R4bT2Y/3lIBcb9EHeesx11+ZLdT4Jffg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=PpPoVPGBX2eR4pSzBMAnS8OgEY1sFbtrJmxFGMI9/sn6QznFe9KFfXsUwtm4IT1pt
-	 BBgA/iS4AcDo0yIQoEhGBiCaBNkNHVmTgtOM4ywycInYOjj60vEG+Clp0f/VQhEYfc
-	 eYfrMqz922bR7lzMwic0xkNEbG4xa0hZuK/0ewmcTOg2iTTohn/sCbf8PKCzz3DAB6
-	 mS620g1fhdnATICG6rrKOjoCEgdzp0a1dfgkr9rcTds/KDXH214K7KEIRcpYkRD2OV
-	 gc4TSeIBvulk2tm6CgScep1nzzIs+o8YoeohVQ9onf35cs3tvemTmXOzuptwuX7w4U
-	 Y+lLgIsde+kgg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 13A3ACE126B; Sat, 28 Sep 2024 04:32:06 -0700 (PDT)
-Date: Sat, 28 Sep 2024 04:32:06 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	John Stultz <jstultz@google.com>,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
-	Mateusz Guzik <mjguzik@gmail.com>, rcu@vger.kernel.org,
-	linux-mm@kvack.org, lkmm@lists.linux.dev
-Subject: Re: [RFC PATCH] compiler.h: Introduce ptr_eq() to preserve address
- dependency
-Message-ID: <55678fb6-4476-4e25-82d5-5d5ad5b7e7d9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240927203334.976821-1-mathieu.desnoyers@efficios.com>
- <23882bd6-c0e0-4f6c-9000-b79216194198@efficios.com>
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="hOr8uGwP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1727523342;
+	bh=5lMXHFtn0jEoSxgXj3YeXoWW7aLl3YwVJkTxD0aY9Cs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hOr8uGwP1TTSe8m6DHD671x0tWa98Xb1hZRss8eWxYv6g9Qor63TrPpXcP7obYlms
+	 tnYPBRGIq97iQBkWPmB3s7CC+7GIGMuACO1mXtqtpUxkJGejBXFoxwfXM/eTXk5thW
+	 zhKZ8DTE2zeu6IpLnsRCeQyPyQD7WggQ0wQEK8QY7kl2j85U2hY5a7JiTo1pEeaqtE
+	 rUd7hS88Omfqk+EGtsd9N3rPTNnaookz4corTEJkQ9ssAfexpbTGU6jhX4kOkfNLae
+	 Qf6foZYIXejmOAM4PLp97DJd3F7qUZmnt3cEvAmTkTHYJbLxh8UgROs3DuwtdGhHqE
+	 4RTk5216pVDxQ==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XG4yk2Ys7z1Zbx;
+	Sat, 28 Sep 2024 07:35:42 -0400 (EDT)
+Message-ID: <2ca589bc-2a60-48ef-95a0-d9ee4a814dea@efficios.com>
+Date: Sat, 28 Sep 2024 07:33:37 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23882bd6-c0e0-4f6c-9000-b79216194198@efficios.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/1] hpref: Hazard Pointers with Reference Counter
+To: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+ Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Alan Stern
+ <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+ Mateusz Guzik <mjguzik@gmail.com>, rcu@vger.kernel.org, linux-mm@kvack.org,
+ lkmm@lists.linux.dev
+References: <20240921164210.256278-1-mathieu.desnoyers@efficios.com>
+ <db17633f-354d-428e-97c2-bcd455766c3a@huaweicloud.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <db17633f-354d-428e-97c2-bcd455766c3a@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 27, 2024 at 07:05:53PM -0400, Mathieu Desnoyers wrote:
-> On 2024-09-27 22:33, Mathieu Desnoyers wrote:
-> [...]
+On 2024-09-28 13:22, Jonas Oberhauser wrote:
+> Two more questions below:
 > 
-> > ---
-> >   include/linux/compiler.h | 62 ++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 62 insertions(+)
-> > 
+> Am 9/21/2024 um 6:42 PM schrieb Mathieu Desnoyers:
+>> +#define NR_PERCPU_SLOTS_BITS    3
 > 
-> I'm wondering if this really belongs in compiler.h, or if it's so
-> RCU/HP specific that it should be implemented in rcupdate.h ?
-> 
-> [... ]
-> > +static __always_inline
-> > +int ptr_eq(const volatile void *a, const volatile void *b)
-> 
-> And perhaps rename this to rcu_ptr_eq() ?
+> Have you measured any advantage of this multi-slot version vs a version 
+> with just one normal slot and one emergency slot?
 
-For either location or name:
+No, I have not. That being said, I am taking a minimalistic
+approach that takes things even further in the "simple" direction
+for what I will send as RFC against the Linux kernel:
+there is just the one "emergency slot", irqs are disabled around
+use of the HP slot, and promotion to refcount is done before
+returning to the caller.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> With just one normal slot, the normal slot version would always be zero, 
+> and there'd be no need to increment etc., which might make the common 
+> case (no conflict) faster.
 
-There are non-RCU uses, but RCU is currently by far the most common.
+The multi-slots allows preemption while holding the slot. It also allows
+HP slots users to keep it longer without doing to refcount right away.
 
-							Thanx, Paul
+I even have a patch that dynamically adapts the scan depth (increase
+by reader, decrease by synchronize, with an hysteresis) in my userspace
+prototype. This splits the number of allocated slots from the scan
+depth. But I keep that for later and will focus on the simple case
+first (single HP slot, only used with irqoff).
 
-> Thanks,
 > 
-> Mathieu
+> Either way I recommend stress testing with just one normal slot to 
+> increase the chance of conflict (and hence triggering corner cases) 
+> during stress testing.
+
+Good point.
+
 > 
-> > +{
-> > +	OPTIMIZER_HIDE_VAR(a);
-> > +	OPTIMIZER_HIDE_VAR(b);
-> > +	return a == b;
-> > +}
-> > +
+>> +retry:
+>> +    node = uatomic_load(node_p, CMM_RELAXED);
+>> +    if (!node)
+>> +        return false;
+>> +    /* Use rseq to try setting current slot hp. Store B. */
+>> +    if (rseq_load_cbne_store__ptr(RSEQ_MO_RELAXED, RSEQ_PERCPU_CPU_ID,
+>> +                (intptr_t *) &slot->node, (intptr_t) NULL,
+>> +                (intptr_t) node, cpu)) {
+>> +        slot = &cpu_slots->slots[HPREF_EMERGENCY_SLOT];
+>> +        use_refcount = true;
+>> +        /*
+>> +         * This may busy-wait for another reader using the
+>> +         * emergency slot to transition to refcount.
+>> +         */
+>> +        caa_cpu_relax();
+>> +        goto retry;
+>> +    }
+> 
+> I'm not familiar with Linux' preemption model. Can this deadlock if a 
+> low-interrupt-level thread is occupying the EMERGENCY slot and a 
+> higher-interrupt-level thread is also trying to take it?
+
+This is a userspace prototype. This will behave similarly to a userspace
+spinlock in that case, which is not great in terms of CPU usage, but
+should eventually unblock the waiter, unless it has a RT priority that
+really prevents any progress from the emergency slot owner.
+
+On my TODO list, I have a bullet about integrating with sys_futex to
+block on wait, wake up on slot release. I would then use the wait/wakeup
+code based on sys_futex already present in liburcu.
+
+Thanks!
+
+Mathieu
+
+
 > 
 > 
 > 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
 > 
+> Best wishes,
+>    jonas
+> 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
