@@ -1,222 +1,314 @@
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBED918622;
-	Sun, 29 Sep 2024 00:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE3B83C00;
+	Sun, 29 Sep 2024 10:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727569224; cv=none; b=auaLqElmHbqXWHqiVF3XfSBIj4FXG5mtKu8OfZxU4mY0/NheAUxqEEQ1UPQCBgz72NJQ2JJNrJs2Lcjk7YoKcghCzyxrLoDhCfGSC88na7A1+3ORCnPYBckNZWPn3ThtDs5eK8Rp1bUX+EgLloM+8buIRMIqfzx3XaE8M4SwKCI=
+	t=1727606303; cv=none; b=kVyjV+TYULcA/jLr478tunHLBqBhnFBYiiYAs2dYfx4EwY/PJFMUvqx9VvRbYvFJHwJM9r6MCjpBnUTVUwx7oDHXww3s0I0yReXoBSssMb//J5DD/Zo0L0m+bOypS+RzNQSUly1O2cpyGTnGeX1igSYbDpCi+2yPBQtW4QpRzbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727569224; c=relaxed/simple;
-	bh=Q9NKGA9e8SpsBeHRGYpOWyq1+YIDZCPIRoH/v9mX76Q=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=GJurvDrOreuanwilTxNUiydeUpe0MZNGyMknIB9O5cr304kjfok4kBOYFtP10mOFFnOmZwCjLIOSv45kKsc+EJFsyMSJgJbXlXMQMr1/zOuSxBzl18HkFx4UVQ+NkoVRdCeK8K4wN5tiBCMiLu8V5pJdrUq4SgI5V2PRqKcGewU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BHdfrHcf; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1727606303; c=relaxed/simple;
+	bh=SgF4pgZTLOl0dKajqPfd5secSNAVBGqHN0Padipl/bE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YSDov5mj6D42xDi3lNwhG/J9Iohb3YBXkcmoXXX5hledluRi8UnkmKliKkbq5n44gMsKSMXkjXMp8t1OVsfssPtdlRW6GLa1RXGpe6kGnsUgSeXD9zccGhouA8Qs61U6WOgsKFSB81S/WztJbe9Vg5csCWeq93W1tu58dp9at64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=X5bJR1wU; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BHdfrHcf"
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-71971d2099cso2630298b3a.2;
-        Sat, 28 Sep 2024 17:20:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727569222; x=1728174022; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AciA5lkArq2LcuAgiidbmpLX8//NU2EZPXWMWey1klw=;
-        b=BHdfrHcfNpWDhIDQe0+Z9HOvc4bH6PA4azOhFArlMKbPW/gbXn5HuczycXYLiiU2gA
-         pb3gYistZH5BMEQL5Ii6oZhszrM2cbHQk6hD1Dhu6F1CD2T/tN3VNbtBeCQ09vfCJXLr
-         ztiWHjPjjMValXyzqN7NJAHcYmLuBtLhmEAlMczqoGz5TwX7vTtcsY22aQw9xIPqbIMf
-         0qTYzLA6J+Qvg46ZR7Z73r6RAxXEzPTPHMeO7H5TOWvDJqYv3ru5QiZ8cZP1zks+jaeo
-         gar3t15Vvh83Ofc03V7XqUEVP+YQ3ZioTu5VAu/S+kqPiTUxPuJ1D6toQBRe8GJd9oRB
-         NZOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727569222; x=1728174022;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AciA5lkArq2LcuAgiidbmpLX8//NU2EZPXWMWey1klw=;
-        b=I3q1TQEHuR7Q64BmTdo9dQIG+rfgfCzDWmY8tZbpOEuB55EbOOgsVXRgKcbf9gw9Lg
-         v+WHrT6jj8wgM45y307kg3acq6lQAbZPApVLIgqVKYH9UNtofLhGhKAOzQkTjVLoJR32
-         PyIlJCvJYUYgBtE0XUP75ngxbBegw5r0VRxRzaRbNBIkjUldL3cAxD/nW2kzuyqEhfqR
-         3m/Gbd23QjXTYRCv4aNUpJtP2sgGgTORnY+kVYmwMPHj6WBaLz3MzQhYGkySiVzvcbxh
-         AHkhn7Da5ik7+9q8HfvPci6WF/Xob77gu8Snmw1NId3VUlJOiq2V0HQWqnWXhVdeYyhw
-         RlQA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/IvkXIyN45aPZpICPX1neMr9Auq6/DKsssoW+WovPzsp8Stj+aFOVeFWMUNLZ9uE/aRbqpQxGro9oOBM=@vger.kernel.org, AJvYcCXtI4P6dM8qcm1FzYLCyU7kATDSwXY2Sdu1fqRXtbo+srdp2hDZXiZsRWlLJ/GOYoLOv1K/@vger.kernel.org
-X-Gm-Message-State: AOJu0YzW6poremw4mCcmrTnmDjO4S/5tinBKdXC4uLcZOwuBj+XnUhLS
-	PrR0G8HKoc9hVzVKRZPzZuGysvM78/V0QMklBgZxMdqHQjvHU1NB
-X-Google-Smtp-Source: AGHT+IGrPCIsZd3xVlDfQ3t7v5wWjb0n8Dw8h91/C6QpaBBBIkYhcxX80aGJo1MfszwJ4cOHtuUW3Q==
-X-Received: by 2002:a05:6a00:194f:b0:717:e01d:312f with SMTP id d2e1a72fcca58-71b26078cf5mr12778522b3a.27.1727569221947;
-        Sat, 28 Sep 2024 17:20:21 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e6db2b390dsm3889001a12.20.2024.09.28.17.20.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 28 Sep 2024 17:20:21 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="X5bJR1wU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1727606299;
+	bh=SgF4pgZTLOl0dKajqPfd5secSNAVBGqHN0Padipl/bE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=X5bJR1wU6nTuItl/6Bx8LS4ISjasrXYFGCAnO+trklYufxKHm7oTuKBrSCiTPYEAG
+	 gjSz09XT8eaXAyT2kK6N7N/BZG2q8QqxnGw4XAXjWGQnJprTBiVSKQWKjenDdAGbxW
+	 Np5WPSNuPzQbfBzq3ltpWRxceuCCSr21XfRQC1jMEUpEp1SivzVOPLuPnK7r4asxds
+	 JNuvoIPtwIGTp/pXiyfIawItlMWUU6twY/ZFjs+IYUZ/sV+5MloofWsGzrEOhMAyDj
+	 cNc0SxdFqoI/7s7cZo5zm/VIH8DReE+8tgn41bHSaISGhp9Hc8BD3Yx0hEjqjP0c0j
+	 fIin0/arVPmMw==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XGgf31s3Dz65S;
+	Sun, 29 Sep 2024 06:38:19 -0400 (EDT)
+Message-ID: <229ac2ba-dd5b-4735-af93-8ef8efb6fa02@efficios.com>
+Date: Sun, 29 Sep 2024 06:36:16 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
  dependency
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <60123be5-ae24-4426-b9ca-6f39e64ab76b@app.fastmail.com>
-Date: Sun, 29 Sep 2024 08:20:01 +0800
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Alan Stern <stern@rowland.harvard.edu>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To: Gary Guo <gary@garyguo.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- John Stultz <jstultz@google.com>,
- Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
+ Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
  Frederic Weisbecker <frederic@kernel.org>,
  Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- rostedt <rostedt@goodmis.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>,
- Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>,
- maged.michael@gmail.com,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
  Mateusz Guzik <mjguzik@gmail.com>,
- Gary Guo <gary@garyguo.net>,
- Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
- RCU <rcu@vger.kernel.org>,
- linux-mm@kvack.org,
- lkmm@lists.linux.dev
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BD97A93F-EAFC-4C32-97F8-EEC8C1B48519@gmail.com>
+ Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, rcu@vger.kernel.org,
+ linux-mm@kvack.org, lkmm@lists.linux.dev, github@npopov.com,
+ llvm@lists.linux.dev
 References: <20240928135128.991110-1-mathieu.desnoyers@efficios.com>
  <20240928135128.991110-2-mathieu.desnoyers@efficios.com>
- <02c63e79-ec8c-4d6a-9fcf-75f0e67ea242@rowland.harvard.edu>
- <2091628c-2d96-4492-99d9-0f6a61b08d1d@efficios.com>
- <d2c87672-af75-4210-bd96-d7f38f2f63ac@rowland.harvard.edu>
- <d49f5d9f-559d-449b-b330-9e5a57d9b438@efficios.com>
- <D31AF4E7-B9D5-4D2F-A4B9-1E12B5E69549@gmail.com>
- <60123be5-ae24-4426-b9ca-6f39e64ab76b@app.fastmail.com>
-To: Boqun Feng <boqun.feng@gmail.com>
-X-Mailer: Apple Mail (2.3776.700.51)
+ <20240929002428.38f37f54.gary@garyguo.net>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <20240929002428.38f37f54.gary@garyguo.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-2024=E5=B9=B49=E6=9C=8829=E6=97=A5 07:55=EF=BC=8CBoqun Feng =
-<boqun.feng@gmail.com> wrote=EF=BC=9A
->=20
->=20
->=20
-> On Sun, Sep 29, 2024, at 6:26 AM, Alan Huang wrote:
->> 2024=E5=B9=B49=E6=9C=8828=E6=97=A5 23:55=EF=BC=8CMathieu Desnoyers =
-<mathieu.desnoyers@efficios.com> wrote=EF=BC=9A
->>>=20
->>> On 2024-09-28 17:49, Alan Stern wrote:
->>>> On Sat, Sep 28, 2024 at 11:32:18AM -0400, Mathieu Desnoyers wrote:
->>>>> On 2024-09-28 16:49, Alan Stern wrote:
->>>>>> On Sat, Sep 28, 2024 at 09:51:27AM -0400, Mathieu Desnoyers =
-wrote:
->>>>>>> equality, which does not preserve address dependencies and =
-allows the
->>>>>>> following misordering speculations:
->>>>>>>=20
->>>>>>> - If @b is a constant, the compiler can issue the loads which =
-depend
->>>>>>>   on @a before loading @a.
->>>>>>> - If @b is a register populated by a prior load, weakly-ordered
->>>>>>>   CPUs can speculate loads which depend on @a before loading @a.
->>>>>>=20
->>>>>> It shouldn't matter whether @a and @b are constants, registers, =
-or
->>>>>> anything else.  All that matters is that the compiler uses the =
-wrong
->>>>>> one, which allows weakly ordered CPUs to speculate loads you =
-wouldn't
->>>>>> expect it to, based on the source code alone.
->>>>>=20
->>>>> I only partially agree here.
->>>>>=20
->>>>> On weakly-ordered architectures, indeed we don't care whether the
->>>>> issue is caused by the compiler reordering the code (constant)
->>>>> or the CPU speculating the load (registers).
->>>>>=20
->>>>> However, on strongly-ordered architectures, AFAIU, only the =
-constant
->>>>> case is problematic (compiler reordering the dependent load), =
-because
->>>> I thought you were trying to prevent the compiler from using one =
-pointer
->>>> instead of the other, not trying to prevent it from reordering =
-anything.
->>>> Isn't this the point the documentation wants to get across when it =
-says
->>>> that comparing pointers can be dangerous?
->>>=20
->>> The motivation for introducing ptr_eq() is indeed because the
->>> compiler barrier is not sufficient to prevent the compiler from
->>> using one pointer instead of the other.
->>=20
->> barrier_data(&b) prevents that.
->>=20
->=20
-> It prevents that because it acts as barrier() + OPTIMIZER_HIDE_VAR(b).
-> I don=E2=80=99t see much value of using that since we can resolve the =
-problem
-> with OPTIMIZER_HIDE_VAR() alone.
+On 2024-09-29 01:24, Gary Guo wrote:
+> Cc: Nikita Popov <github@npopov.com>
+> Cc: llvm@lists.linux.dev
+> 
+> On Sat, 28 Sep 2024 09:51:27 -0400
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> Compiler CSE and SSA GVN optimizations can cause the address dependency
+>> of addresses returned by rcu_dereference to be lost when comparing those
+>> pointers with either constants or previously loaded pointers.
+>>
+>> Introduce ptr_eq() to compare two addresses while preserving the address
+>> dependencies for later use of the address. It should be used when
+>> comparing an address returned by rcu_dereference().
+>>
+>> This is needed to prevent the compiler CSE and SSA GVN optimizations
+>> from replacing the registers holding @a or @b based on their
+>> equality, which does not preserve address dependencies and allows the
+>> following misordering speculations:
+>>
+>> - If @b is a constant, the compiler can issue the loads which depend
+>>    on @a before loading @a.
+>> - If @b is a register populated by a prior load, weakly-ordered
+>>    CPUs can speculate loads which depend on @a before loading @a.
+>>
+>> The same logic applies with @a and @b swapped.
+>>
+>> The compiler barrier() is ineffective at fixing this issue.
+>> It does not prevent the compiler CSE from losing the address dependency:
+>>
+>> int fct_2_volatile_barriers(void)
+>> {
+>>      int *a, *b;
+>>
+>>      do {
+>>          a = READ_ONCE(p);
+>>          asm volatile ("" : : : "memory");
+>>          b = READ_ONCE(p);
+>>      } while (a != b);
+>>      asm volatile ("" : : : "memory");  <----- barrier()
+>>      return *b;
+>> }
+>>
+>> With gcc 14.2 (arm64):
+>>
+>> fct_2_volatile_barriers:
+>>          adrp    x0, .LANCHOR0
+>>          add     x0, x0, :lo12:.LANCHOR0
+>> .L2:
+>>          ldr     x1, [x0]    <------ x1 populated by first load.
+>>          ldr     x2, [x0]
+>>          cmp     x1, x2
+>>          bne     .L2
+>>          ldr     w0, [x1]    <------ x1 is used for access which should depend on b.
+>>          ret
+>>
+>> On weakly-ordered architectures, this lets CPU speculation use the
+>> result from the first load to speculate "ldr w0, [x1]" before
+>> "ldr x2, [x0]".
+>> Based on the RCU documentation, the control dependency does not prevent
+>> the CPU from speculating loads.
+> 
+> I recall seeing Nikita Popov (nikic) doing work related to this to LLVM
+> so it respects pointer provenances much better and doesn't randomly
+> replace pointers with others if they compare equal. So I tried to
+> reproduce this example on clang, which seems to generate the correct
+> code, loading from *b instead of *a.
+> 
+> The generated code with "ptr_eq" however produces one extra move
+> instruction which is not necessary.
+> 
+> I digged into the LLVM source code to see if this behaviour is that we
+> can rely on, and found that the GVN in use is very careful with
+> replacing pointers [1].
+> 
+> Essentially:
+> * null can be replaced
+> * constant addresses can be replaced <-- bad for this use case
+> * pointers originate from the same value (getUnderlyingObject).
+> 
+> So it appears to me that if we can ensure that neither a or b come
+> from a constant address then the OPTIMIZER_HIDE_VAR might be
+> unnecessary for clang? This should be testable with __builtin_constant_p.
+> 
+> Not necessary worth additional complexity handling clang specially, but
+> I think this is GCC/clang difference is worth pointing out.
 
-Yeah, barrier_data generates more instructions.
+Thanks for the thorough analysis of the clang GVN behavior. It confirms
+my observations.
 
->=20
-> Regards,
-> Boqun
->=20
->>>=20
->>> But it turns out that ptr_eq() is also a good tool to prevent the
->>> compiler from reordering loads in case where the comparison is
->>> done against a constant.
->>>=20
->>>>> CPU speculating the loads across the control dependency is not an
->>>>> issue.
->>>>>=20
->>>>> So am I tempted to keep examples that clearly state whether
->>>>> the issue is caused by compiler reordering instructions, or by
->>>>> CPU speculation.
->>>> Isn't it true that on strongly ordered CPUs, a compiler barrier is
->>>> sufficient to prevent the rcu_dereference() problem?  So the whole =
-idea
->>>> behind ptr_eq() is that it prevents the problem on all CPUs.
->>>=20
->>> Correct. But given that we have ptr_eq(), it's good to show how it
->>> equally prevents the compiler from reordering address-dependent =
-loads
->>> (comparison with constant) *and* prevents the compiler from using
->>> one pointer rather than the other (comparison between two =
-non-constant
->>> pointers) which affects speculation on weakly-ordered CPUs.
->>>=20
->>>> You can make your examples as specific as you like, but the fact =
-remains
->>>> that ptr_eq() is meant to prevent situations where both:
->>>> The compiler uses the wrong pointer for a load, and
->>>> The CPU performs the load earlier than you want.
->>>> If either one of those doesn't hold then the problem won't arise.
->>>=20
->>> Correct.
->>>=20
->>> Thanks,
->>>=20
->>> Mathieu
->>>=20
->>>=20
->>> --=20
->>> Mathieu Desnoyers
->>> EfficiOS Inc.
->>> https://www.efficios.com
+AFAIU, your proposal is to add a clang-specific #ifdef to eliminate one
+mov from register to register (and thus free one register) when ptr_eq()
+is used.
 
+I'm not sure the gain (removing this extra mov) is worth it if what we
+lose is robustness.
+
+This would make the code dependent on current clang GVN optimization
+design choices which are really specific to the compiler implementation
+rather than guaranteed by the C standard. How can we be sure it won't
+subtly break with a future clang version ?
+
+If we think about it purely from a compiler optimization perspective,
+using the content of the earliest loaded register allows weakly-ordered
+CPUs to speculate following loads sooner. It's only when address
+dependencies are needed (e.g. RCU) that this is unwanted. Am I missing
+other cases where it is preferable to preserve address dependencies ?
+
+Thanks,
+
+Mathieu
+
+> 
+> I cc'ed nikic and clang-built-linux mailing list, please correct me if
+> I'm wrong.
+> 
+> [1]: https://github.com/llvm/llvm-project/blob/6558e5615ae9e6af6168b0a363808854fd66663f/llvm/lib/Analysis/Loads.cpp#L777-L788
+> 
+> Best,
+> Gary
+> 
+>>
+>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+>> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+>> Acked-by: "Paul E. McKenney" <paulmck@kernel.org>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Boqun Feng <boqun.feng@gmail.com>
+>> Cc: Alan Stern <stern@rowland.harvard.edu>
+>> Cc: John Stultz <jstultz@google.com>
+>> Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: Boqun Feng <boqun.feng@gmail.com>
+>> Cc: Frederic Weisbecker <frederic@kernel.org>
+>> Cc: Joel Fernandes <joel@joelfernandes.org>
+>> Cc: Josh Triplett <josh@joshtriplett.org>
+>> Cc: Uladzislau Rezki <urezki@gmail.com>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+>> Cc: Zqiang <qiang.zhang1211@gmail.com>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Waiman Long <longman@redhat.com>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>> Cc: maged.michael@gmail.com
+>> Cc: Mateusz Guzik <mjguzik@gmail.com>
+>> Cc: Gary Guo <gary@garyguo.net>
+>> Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+>> Cc: rcu@vger.kernel.org
+>> Cc: linux-mm@kvack.org
+>> Cc: lkmm@lists.linux.dev
+>> ---
+>>   include/linux/compiler.h | 62 ++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 62 insertions(+)
+>>
+>> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+>> index 2df665fa2964..f26705c267e8 100644
+>> --- a/include/linux/compiler.h
+>> +++ b/include/linux/compiler.h
+>> @@ -186,6 +186,68 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+>>   	__asm__ ("" : "=r" (var) : "0" (var))
+>>   #endif
+>>   
+>> +/*
+>> + * Compare two addresses while preserving the address dependencies for
+>> + * later use of the address. It should be used when comparing an address
+>> + * returned by rcu_dereference().
+>> + *
+>> + * This is needed to prevent the compiler CSE and SSA GVN optimizations
+>> + * from replacing the registers holding @a or @b based on their
+>> + * equality, which does not preserve address dependencies and allows the
+>> + * following misordering speculations:
+>> + *
+>> + * - If @b is a constant, the compiler can issue the loads which depend
+>> + *   on @a before loading @a.
+>> + * - If @b is a register populated by a prior load, weakly-ordered
+>> + *   CPUs can speculate loads which depend on @a before loading @a.
+>> + *
+>> + * The same logic applies with @a and @b swapped.
+>> + *
+>> + * Return value: true if pointers are equal, false otherwise.
+>> + *
+>> + * The compiler barrier() is ineffective at fixing this issue. It does
+>> + * not prevent the compiler CSE from losing the address dependency:
+>> + *
+>> + * int fct_2_volatile_barriers(void)
+>> + * {
+>> + *     int *a, *b;
+>> + *
+>> + *     do {
+>> + *         a = READ_ONCE(p);
+>> + *         asm volatile ("" : : : "memory");
+>> + *         b = READ_ONCE(p);
+>> + *     } while (a != b);
+>> + *     asm volatile ("" : : : "memory");  <-- barrier()
+>> + *     return *b;
+>> + * }
+>> + *
+>> + * With gcc 14.2 (arm64):
+>> + *
+>> + * fct_2_volatile_barriers:
+>> + *         adrp    x0, .LANCHOR0
+>> + *         add     x0, x0, :lo12:.LANCHOR0
+>> + * .L2:
+>> + *         ldr     x1, [x0]  <-- x1 populated by first load.
+>> + *         ldr     x2, [x0]
+>> + *         cmp     x1, x2
+>> + *         bne     .L2
+>> + *         ldr     w0, [x1]  <-- x1 is used for access which should depend on b.
+>> + *         ret
+>> + *
+> 
+>> + * On weakly-ordered architectures, this lets CPU speculation use the
+>> + * result from the first load to speculate "ldr w0, [x1]" before
+>> + * "ldr x2, [x0]".
+>> + * Based on the RCU documentation, the control dependency does not
+>> + * prevent the CPU from speculating loads.
+>> + */
+>> +static __always_inline
+>> +int ptr_eq(const volatile void *a, const volatile void *b)
+>> +{
+>> +	OPTIMIZER_HIDE_VAR(a);
+>> +	OPTIMIZER_HIDE_VAR(b);
+>> +	return a == b;
+>> +}
+>> +
+>>   #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
+>>   
+>>   /**
+> 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
