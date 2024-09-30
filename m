@@ -1,115 +1,105 @@
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6563D17CA17;
-	Mon, 30 Sep 2024 11:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6D3183098;
+	Mon, 30 Sep 2024 12:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727696237; cv=none; b=BhkdvhqP0FavvsiYkZ3iqsN2r/ELQevtwIXiKHsBS1OGZSXoWd4/WeqO+WFLTq6UvHG7K8+M+yD+hHuTuROap+dRldhspJqWZvFth+XKlhlL3TMkpZTiv2hiI1hq5azubmrAu1Vvw9iqk0DeUB3nCKz9N6ozdfTXeJqkaRekiR4=
+	t=1727697996; cv=none; b=ODs5wqtqsRILEPrHIN/kYrmKBBQaw69zjCb9bCt10TRO/v/cyggYD+L6HTlEs7iFLN5mRlSCKiHuXIYfxsx1Mjf45kteq9A7TZUo1kFGvbgkCqcVJ7Av2fGnadruAVqxf5LwmMCFLBU+ikttle5JIl6ALTjrgbKeww8YlfAflUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727696237; c=relaxed/simple;
-	bh=FyvIzX2J4QCmwHO7Zih4e/9cezEiSl2n09knZnq5RwQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y1Rrsd/7ou5pPwuyYZHNGvrm/PVWiM/UbCk2vZfoe/95buPxTbtcxr4UayoaSJPoIxU0mVTx9ftJ0tRydJ+bu8oXhr3Qmo1azIW8/4MkoOR8dehK38S0TucEaWktT+snHWNpI+TbcpqTaCmyd5uAQnR7uZC71jFkVyKNVJ4IPws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vfmtx40T; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vfmtx40T"
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5398cc2fcb7so1789678e87.1;
-        Mon, 30 Sep 2024 04:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727696233; x=1728301033; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tyZcUMUAegpNAvD640Pc8Za3YSgkV9krfroLC5X2l+A=;
-        b=Vfmtx40TcJ0laGFr6ArDjrGbFnXK/KOzugExOY8/Shv69FaTVuM4rN7FlCpZeTirav
-         po0k6kv+GvSeUBNuODO73kcdt3ltQvteqeYq7h/n/U7/3BEk98j2eY66L2a7XixXXRdL
-         ktZqRk4iuGgbz0NKQs6e9OAUP+lcZdlZv6nMMjK4Nzy7CMe8EUdS3ehKlE1iwggklG3f
-         ACrXI4YmtXaJeN9zLDBs329KIf7ystF6xMPUdeJJi6eJgLjJz/Yin/Sknlteawi6SGeP
-         f5te8s68Ufhij87nZMJ1VJNus1Jw2k+KBnqgCVWvaaAA03NtQn43Y0niC4iT6+gibWH2
-         4yBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727696233; x=1728301033;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tyZcUMUAegpNAvD640Pc8Za3YSgkV9krfroLC5X2l+A=;
-        b=xUO+0tQee4J595nP4LSGokfsWyhGTlRwHcJAsLdLa8DhTCUH3kO2m/67+8NQly3XJv
-         AELHoMXtCZyKuXauc8LXbu626cTky1JDRYmoheJVr1q8otkGhQis648+AGQo9j+2Gh/q
-         XACWwztWmY2sZROc1zciuX3xujG3toJQdCcbQ3zpHy88Gyiqenwj9NPZGkfkKGNhQwiy
-         xS4K8MVF8J5E60BmcNHjeo2v6FUJOFyLz7+ZVJ2buGYkwYm4QCkgZ1cJ6c2hLsA21T97
-         9nhbzxTF6I1qRRJ4eumxHxj/aD8V6oBkR/7El+qejNFmdxdvAVSQMXG21KQ4LgQ1BP5h
-         MAlg==
-X-Forwarded-Encrypted: i=1; AJvYcCW0A/hVC3u0w+xM9drspX4eiOsdKEfio1lnn5FS0LBNeqwszJW7pMbUVGvQy/NYRTMtCZq2I+9b7HZ4DFU=@vger.kernel.org, AJvYcCXGDCx08FXVyuzZ3KLvoLkfhZE7aMJRvrPibgaeTb8mhu4GKdv+EHA7rqbPVI+SJI+Lr95E@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0alqnG5JF8JmPPqZ3nyzZ8smxITwJeXcgN9AyZNeRx82RkhiJ
-	zoTqE1CDgnxF4rRqbuoyRMfcl7QaHgqt/Fpm5SC/7qleZSl/C7EC
-X-Google-Smtp-Source: AGHT+IHUaAhg9KQgh8A1ZU9wg+SL/2DNNV/9m+UwXwbZE9MiidjUVI6cMxKxlQe6d/jTrzmr1O5nQQ==
-X-Received: by 2002:a05:6512:158d:b0:536:548a:ff89 with SMTP id 2adb3069b0e04-5389fc6fc0amr5914529e87.39.1727696233087;
-        Mon, 30 Sep 2024 04:37:13 -0700 (PDT)
-Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-538a043992fsm1219820e87.210.2024.09.30.04.37.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2024 04:37:12 -0700 (PDT)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH] rcu/kvfree: Refactor kvfree_rcu_queue_batch()
-Date: Mon, 30 Sep 2024 13:37:10 +0200
-Message-Id: <20240930113710.637833-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1727697996; c=relaxed/simple;
+	bh=3uZm5F8HdZrf1jSahO+r1HjBDvuoNtC9/fe/8536mZc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fhuZrUNSwpnj1nB0UoaZJ9HQOlWRvg5Yau5kDQBHCNc5/adwoLTLNzmGgVEzHnh+XxLO/q61GoSIcWFv9wDqC0ARHy9H8/4RYDJcZrCgGU0RcTERdbPrW85TDsI1Qz91frLTYILfJw+/jx0vGRqlx9vZc8Mnz5VZTS+fVDCCmWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4XHK6Q326Pz9v7Hy;
+	Mon, 30 Sep 2024 19:46:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id E46EC14059D;
+	Mon, 30 Sep 2024 20:06:30 +0800 (CST)
+Received: from [10.81.209.28] (unknown [10.81.209.28])
+	by APP2 (Coremail) with SMTP id GxC2BwBXBsc2lPpmpbvyAQ--.6803S2;
+	Mon, 30 Sep 2024 13:06:30 +0100 (CET)
+Message-ID: <50bd6ecb-c8e3-4043-9040-b2b4ee71fc02@huaweicloud.com>
+Date: Mon, 30 Sep 2024 14:06:12 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
+ dependency
+To: paulmck@kernel.org
+Cc: Alan Stern <stern@rowland.harvard.edu>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Boqun Feng <boqun.feng@gmail.com>, John Stultz <jstultz@google.com>,
+ Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+ Mateusz Guzik <mjguzik@gmail.com>, Gary Guo <gary@garyguo.net>,
+ rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev
+References: <20240928135128.991110-1-mathieu.desnoyers@efficios.com>
+ <20240928135128.991110-2-mathieu.desnoyers@efficios.com>
+ <02c63e79-ec8c-4d6a-9fcf-75f0e67ea242@rowland.harvard.edu>
+ <2091628c-2d96-4492-99d9-0f6a61b08d1d@efficios.com>
+ <d2c87672-af75-4210-bd96-d7f38f2f63ac@rowland.harvard.edu>
+ <d49f5d9f-559d-449b-b330-9e5a57d9b438@efficios.com>
+ <25344f33-b8dc-43fb-a394-529eff03d979@rowland.harvard.edu>
+ <f635f9ce-fef4-4a9e-bee1-70dbc24a82ad@huaweicloud.com>
+ <973ae617-96a8-456a-a805-af3d61270125@paulmck-laptop>
+From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+In-Reply-To: <973ae617-96a8-456a-a805-af3d61270125@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwBXBsc2lPpmpbvyAQ--.6803S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY37kC6x804xWl14x267AKxVWrJVCq3wAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjc
+	xK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
+	c2xKxwCF04k20xvY0x0EwIxGrwCF54CYxVCY1x0262kKe7AKxVW8ZVWrXwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
+X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
 
-Improve readability of kvfree_rcu_queue_batch() function
-in away that, after a first batch queuing, the loop is break
-and success value is returned to a caller.
 
-There is no reason to loop and check batches further as all
-outstanding objects have already been picked and attached to
-a certain batch to complete an offloading.
 
-Link: https://lore.kernel.org/lkml/ZvWUt2oyXRsvJRNc@pc636/T/
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Am 9/30/2024 um 1:04 PM schrieb Paul E. McKenney:
+> On Mon, Sep 30, 2024 at 11:42:11AM +0200, Jonas Oberhauser wrote:
+>>
+>>
+>> I also currently don't see any major difference between the constant and
+>> register case. The point is that the address is known before loading into b,
+>> and hence the compiler + hardware can speculatively load *b before loading
+>> into b.
+> 
+> In theory, true.  In practice, in the register case, you need a little
+> more bad luck for the compiler to be able to exploit your mistake.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a60616e69b66..b1f883fcd918 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3607,11 +3607,12 @@ kvfree_rcu_queue_batch(struct kfree_rcu_cpu *krcp)
- 			}
- 
- 			// One work is per one batch, so there are three
--			// "free channels", the batch can handle. It can
--			// be that the work is in the pending state when
--			// channels have been detached following by each
--			// other.
-+			// "free channels", the batch can handle. Break
-+			// the loop since it is done with this CPU thus
-+			// queuing an RCU work is _always_ success here.
- 			queued = queue_rcu_work(system_unbound_wq, &krwp->rcu_work);
-+			WARN_ON_ONCE(!queued);
-+			break;
- 		}
- 	}
- 
--- 
-2.39.5
+If there's one thing I've never run out of, then it is bad luck with 
+technology.
+
+   jonas
 
