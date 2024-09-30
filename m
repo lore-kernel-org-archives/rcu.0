@@ -1,223 +1,184 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B1CAD2F;
-	Sun, 29 Sep 2024 17:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1F7F3FB0E;
+	Mon, 30 Sep 2024 08:37:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727629656; cv=none; b=SJvT0L8H2dvkGlYpLFfS7giKHcqWpsuRkxMS72K7E58iEC9LWuAXoisIuwUkk1+tleR/1QltVBGl95v3kWdll45CRNaVdotQiHgDVcv6VazklEoSXGEwuA2cVK4GD+bZzD9hgbuVeW2zgfUZkk3egDEdTd4L9DmpohnwG1GIVvk=
+	t=1727685473; cv=none; b=hKAQeaSGN198P00D7gRBdhDeBuKNgchHD0r/RlxrxjZwJngRqc/e7ZlmB4buunYBJqUcpRV8lEsW9a5krojuuWIv7upFJZOxYooUHLuu31SEocDnj+uuOX6vVVOHyLyAg2vbR9uWtntWh4TpBd4mKUrBX+a7VGZa2tr32Y9U+oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727629656; c=relaxed/simple;
-	bh=O7w8DeVwq7CwRT5PMbyZVQpfUrTlDNjY5NwQLo7OfxA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sSyab/T9By/OkF3HaKxHchwl1d+pAJ3R+HaVgOMxKHVpz/06uFGgeEGiycXcEortQ4f67rQ5TpAfo8y+KkRPGOBR0z3nKgu8qy8vHmYHYD9yTrZBZ7xFKS9QDjQqycq2rQUbuIx7dMAM8gbbsXW5HP9ZPPMFVm9NsTVU3Ylk3QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t2LXR/Do; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1727685473; c=relaxed/simple;
+	bh=TBIV+URHv1FdKGYyHeQbsxrBmZ+Bh312UVwmuZfY2NE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ahcyxjYttcI4vzEyitFlZUNpjDq44Z2qjOOIhf6LiwdT8wCyrZ9SQDafdU6wxRJaXb4zbyRP4u04PnDRD6NfYwOrrL4MmA/66dBXgTNuaXlHAM8H253xaWQQNBPJ6r69Toph6rKuF5+WQG1hSD/9ubx/2kv5zaIqdmX2qg3A3ZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VQFPm0ln; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0z87cj0H; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VQFPm0ln; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0z87cj0H; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t2LXR/Do"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6DBBC4CEC5;
-	Sun, 29 Sep 2024 17:07:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727629655;
-	bh=O7w8DeVwq7CwRT5PMbyZVQpfUrTlDNjY5NwQLo7OfxA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=t2LXR/DoOMh4sF/JbbWKkcGIj78RzUgUI8rsWOJITBhe6S9skX8osKV86lRHspwJ1
-	 tpYMKTXppM93TfsEcEru0yQz8rxkPjYPl4118Xa1M5HI2aNeEk8rT+kcdN7sVerTyr
-	 kswROxQkl3RFeliMR9ybHJXeo0nBBiUCG8izn5VsM/7D1zw8pNkpZIopW7RMUcDoSh
-	 brhwrd6Y+uWwi2vxh8/4YGF/vfJBmQ9NqpQ1uZyHOLc1UAxX7FJeaq0hutwHTzJK6a
-	 eCuUCucuyXbHZ6AF6OH/7t0czyr5NEN5GyAHjun6Ksb3yzjwHYT+zXBhgOIEVyvsuO
-	 bNImMGb9NCvtw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6E859CE04D4; Sun, 29 Sep 2024 10:07:35 -0700 (PDT)
-Date: Sun, 29 Sep 2024 10:07:35 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	John Stultz <jstultz@google.com>,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
-	Mateusz Guzik <mjguzik@gmail.com>, Gary Guo <gary@garyguo.net>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev,
-	Nikita Popov <github@npopov.com>, llvm@lists.linux.dev
-Subject: Re: [PATCH v1 2/2] Documentation: RCU: Refer to ptr_eq()
-Message-ID: <cf2139e2-41cd-4213-89e9-c10873498edf@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240929111608.1016757-1-mathieu.desnoyers@efficios.com>
- <20240929111608.1016757-3-mathieu.desnoyers@efficios.com>
- <8153f0f1-fd18-4ae1-9dc5-f9b725429cad@paulmck-laptop>
- <3a298b64-dd7c-4a0d-950e-8e5b98b39fee@efficios.com>
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VQFPm0ln";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0z87cj0H";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VQFPm0ln";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0z87cj0H"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C3C12216F2;
+	Mon, 30 Sep 2024 08:37:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727685469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9F9YjQEJflSAgogUDfRl6vMT3iaVqscBAMrkCSe/tcs=;
+	b=VQFPm0ln6EMEIhg8R38aZrROCVV2HGVsPuwbHO8RDlizDB07NcaGx8vXZPsKxVwME7r3Ni
+	P/Y/QX6tnm8LZTv9raekzHSoF+sOsYVdfy2ONzsgWjG5r4tMAkc8n9dThDXfdTJDpxBw/q
+	PpuanjAKQhzpFrYYw+/pfxiX/5t8n34=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727685469;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9F9YjQEJflSAgogUDfRl6vMT3iaVqscBAMrkCSe/tcs=;
+	b=0z87cj0H9kLzyWbQVNC++Suat0IJlmeoJ21/v5rDr8ZxQfP9TrdMubu7WJ2gKQckAXn53C
+	fsyiLbKVgL721NAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=VQFPm0ln;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0z87cj0H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727685469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9F9YjQEJflSAgogUDfRl6vMT3iaVqscBAMrkCSe/tcs=;
+	b=VQFPm0ln6EMEIhg8R38aZrROCVV2HGVsPuwbHO8RDlizDB07NcaGx8vXZPsKxVwME7r3Ni
+	P/Y/QX6tnm8LZTv9raekzHSoF+sOsYVdfy2ONzsgWjG5r4tMAkc8n9dThDXfdTJDpxBw/q
+	PpuanjAKQhzpFrYYw+/pfxiX/5t8n34=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727685469;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9F9YjQEJflSAgogUDfRl6vMT3iaVqscBAMrkCSe/tcs=;
+	b=0z87cj0H9kLzyWbQVNC++Suat0IJlmeoJ21/v5rDr8ZxQfP9TrdMubu7WJ2gKQckAXn53C
+	fsyiLbKVgL721NAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FF0113A8B;
+	Mon, 30 Sep 2024 08:37:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /VG/Jl1j+mYhHwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 30 Sep 2024 08:37:49 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH slab hotfixes 0/2] slub kunit tests fixes for 6.12
+Date: Mon, 30 Sep 2024 10:37:15 +0200
+Message-Id: <20240930-b4-slub-kunit-fix-v1-0-32ca9dbbbc11@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a298b64-dd7c-4a0d-950e-8e5b98b39fee@efficios.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADtj+mYC/yWMQQqEMAwAv1JyNtB2y4p+RTy0GjUoVRoVQfz7F
+ vc4AzM3CCUmgVrdkOhk4TVmMIWCbvJxJOQ+M1htna4+GoNDWY6A8xF5x4Ev/A7Bu950pnQWcrc
+ lyvp9NiCLD2pa979pn+cHOcUlinIAAAA=
+X-Change-ID: 20240930-b4-slub-kunit-fix-6fba4d1c1742
+To: Andrew Morton <akpm@linux-foundation.org>, 
+ Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, 
+ Roman Gushchin <roman.gushchin@linux.dev>, 
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org, 
+ linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>
+Cc: kernel test robot <oliver.sang@intel.com>, 
+ Guenter Roeck <linux@roeck-us.net>, "Paul E. McKenney" <paulmck@kernel.org>, 
+ Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+ rcu@vger.kernel.org, David Gow <davidgow@google.com>, 
+ Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org, 
+ kunit-dev@googlegroups.com, Brendan Higgins <brendan.higgins@linux.dev>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1584; i=vbabka@suse.cz;
+ h=from:subject:message-id; bh=TBIV+URHv1FdKGYyHeQbsxrBmZ+Bh312UVwmuZfY2NE=;
+ b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBm+mNTZ364+mQdK/3uDVoTN9uln0OvX42XSvP/v
+ S8tG4oiwAuJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZvpjUwAKCRC74LB10kWI
+ mtNgCACdBeyDV9q9gDZB2VB6AwRjsZDMJ2nVbWsEajf1tYbUlKQki1FMk4qKFmRIFA0FO47Yyc/
+ 36p3Ub+mQeobJ8xBFXJDJJDmyQZYp1W3btfFsJizHuVrKoQV33F4vInTnSLBgps6ES4Qq7mAAEm
+ 8XEJJeoO9mxwCqkn3d3GQE99zE2tb221YmQm8W0CvE7YYFMN4w0hrPoXpVaukLgfAlX7P3PJtjB
+ yHgdogMlBWBlLqg7N9W1q+CEANohsrG8FtaZRzPOQZF3nS2kn1vu8il3IKZoy9wQ3zg0QpaQslZ
+ RqP0CyjbWWLhXZUqrXzkt8eBgBCXEo1LBwqCyaS2yEfCvfVa
+X-Developer-Key: i=vbabka@suse.cz; a=openpgp;
+ fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
+X-Rspamd-Queue-Id: C3C12216F2
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[intel.com,roeck-us.net,kernel.org,gmail.com,vger.kernel.org,google.com,googlegroups.com,linux.dev];
+	FREEMAIL_TO(0.00)[linux-foundation.org,linux.com,google.com,linux.dev,gmail.com,vger.kernel.org,kvack.org,suse.cz];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Sun, Sep 29, 2024 at 12:09:54PM -0400, Mathieu Desnoyers wrote:
-> On 2024-09-29 17:51, Paul E. McKenney wrote:
-> > On Sun, Sep 29, 2024 at 07:16:08AM -0400, Mathieu Desnoyers wrote:
-> > > Refer to ptr_eq() in the rcu_dereference() documentation.
-> > > 
-> > > ptr_eq() is a mechanism that preserves address dependencies when
-> > > comparing pointers, and should be favored when comparing a pointer
-> > > obtained from rcu_dereference() against another pointer.
-> > > 
-> > > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > > Cc: Will Deacon <will@kernel.org>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > > Cc: Alan Stern <stern@rowland.harvard.edu>
-> > > Cc: John Stultz <jstultz@google.com>
-> > > Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> > > Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > > Cc: Joel Fernandes <joel@joelfernandes.org>
-> > > Cc: Josh Triplett <josh@joshtriplett.org>
-> > > Cc: Uladzislau Rezki <urezki@gmail.com>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> > > Cc: Zqiang <qiang.zhang1211@gmail.com>
-> > > Cc: Ingo Molnar <mingo@redhat.com>
-> > > Cc: Waiman Long <longman@redhat.com>
-> > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > Cc: Vlastimil Babka <vbabka@suse.cz>
-> > > Cc: maged.michael@gmail.com
-> > > Cc: Mateusz Guzik <mjguzik@gmail.com>
-> > > Cc: Gary Guo <gary@garyguo.net>
-> > > Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-> > > Cc: rcu@vger.kernel.org
-> > > Cc: linux-mm@kvack.org
-> > > Cc: lkmm@lists.linux.dev
-> > > Cc: Nikita Popov <github@npopov.com>
-> > > Cc: llvm@lists.linux.dev
-> > > ---
-> > > Changes since v0:
-> > > - Include feedback from Alan Stern.
-> > > ---
-> > >   Documentation/RCU/rcu_dereference.rst | 32 ++++++++++++++++++++++-----
-> > >   1 file changed, 27 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/Documentation/RCU/rcu_dereference.rst b/Documentation/RCU/rcu_dereference.rst
-> > > index 2524dcdadde2..9ef97b7ca74d 100644
-> > > --- a/Documentation/RCU/rcu_dereference.rst
-> > > +++ b/Documentation/RCU/rcu_dereference.rst
-> > > @@ -104,11 +104,12 @@ readers working properly:
-> > >   	after such branches, but can speculate loads, which can again
-> > >   	result in misordering bugs.
-> > > --	Be very careful about comparing pointers obtained from
-> > > -	rcu_dereference() against non-NULL values.  As Linus Torvalds
-> > > -	explained, if the two pointers are equal, the compiler could
-> > > -	substitute the pointer you are comparing against for the pointer
-> > > -	obtained from rcu_dereference().  For example::
-> > > +-	Use operations that preserve address dependencies (such as
-> > > +	"ptr_eq()") to compare pointers obtained from rcu_dereference()
-> > > +	against non-NULL pointers. As Linus Torvalds explained, if the
-> > > +	two pointers are equal, the compiler could substitute the
-> > > +	pointer you are comparing against for the pointer obtained from
-> > > +	rcu_dereference().  For example::
-> > >   		p = rcu_dereference(gp);
-> > >   		if (p == &default_struct)
-> > > @@ -125,6 +126,23 @@ readers working properly:
-> > >   	On ARM and Power hardware, the load from "default_struct.a"
-> > >   	can now be speculated, such that it might happen before the
-> > >   	rcu_dereference().  This could result in bugs due to misordering.
-> > > +	Performing the comparison with "ptr_eq()" ensures the compiler
-> > > +	does not perform such transformation.
-> > > +
-> > > +	If the comparison is against another pointer, the compiler is
-> > > +	allowed to use either pointer for the following accesses, which
-> > > +	loses the address dependency and allows weakly-ordered
-> > > +	architectures such as ARM and PowerPC to speculate the
-> > > +	address-dependent load before rcu_dereference().  For example::
-> > > +
-> > > +		p1 = READ_ONCE(gp);
-> > > +		p2 = rcu_dereference(gp);
-> > > +		if (p1 == p2)
-> > > +			do_default(p2->a);
-> > > +
-> > > +	The compiler can use p1->a rather than p2->a, destroying the
-> > > +	address dependency.  Performing the comparison with "ptr_eq()"
-> > > +	ensures the compiler preserves the address dependencies.
-> > 
-> > Bitter experience leads me to suggest a "// BUGGY" comment on the "if"
-> > statement in the above example, and a corrected code snippet right here.  :-/
-> 
-> Changing for the following:
-> 
-> +               p1 = READ_ONCE(gp);
-> +               p2 = rcu_dereference(gp);
-> +               if (p1 == p2)  /* BUGGY!!! */
-> +                       do_default(p2->a);
-> +
-> +       The compiler can use p1->a rather than p2->a, destroying the
-> +       address dependency.  Performing the comparison with "ptr_eq()"
-> +       ensures the compiler preserves the address dependencies.
-> +       Corrected code::
-> +
-> +               p1 = READ_ONCE(gp);
-> +               p2 = rcu_dereference(gp);
-> +               if (ptr_eq(p1, p2))
-> +                       do_default(p2->a);
-> 
-> > 
-> > Other than that, loks good!
-> 
-> Let me know if I should add an acked-by from you on this
-> documentation patch as well.
+The SLUB changes for 6.12 included new kunit tests that resulted in
+noisy warnings, which we normally suppress, and a boot lockup in some
+configurations in case the kunit tests are built-in.
 
-Much better!
+The warnings are addressed in Patch 1.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+The lockups I couldn't reproduce, but inspecting boot initialization
+order makes me suspect the tests (which call few RCU operations) are
+being executed a bit too early before RCU finishes initialization.
+Moving the exection later seems to do the trick, so I'd like to ask
+kunit folks to ack this change (Patch 2). If RCU folks have any
+insights, it would be welcome too.
 
-> Thanks,
-> 
-> Mathieu
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> > >   	However, comparisons are OK in the following cases:
-> > > @@ -204,6 +222,10 @@ readers working properly:
-> > >   		comparison will provide exactly the information that the
-> > >   		compiler needs to deduce the value of the pointer.
-> > > +	When in doubt, use operations that preserve address dependencies
-> > > +	(such as "ptr_eq()") to compare pointers obtained from
-> > > +	rcu_dereference() against non-NULL pointers.
-> > > +
-> > >   -	Disable any value-speculation optimizations that your compiler
-> > >   	might provide, especially if you are making use of feedback-based
-> > >   	optimizations that take data collected from prior runs.  Such
-> > > -- 
-> > > 2.39.2
-> > > 
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+So these are now fixes for 4e1c44b3db79 ("kunit, slub: add
+test_kfree_rcu() and test_leak_destroy()")
+Once sent as a full patch, I also want to include comment fixes from
+Ulad for kvfree_rcu_queue_batch():
+https://lore.kernel.org/all/CA%2BKHdyV%3D0dpJX_v_tcuTQ-_ree-Yb9ch3F_HqfT4YnH8%3DzyWng@mail.gmail.com/
+
+The plan is to take the fixes via slab tree for a 6.12 rcX.
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+Vlastimil Babka (2):
+      mm, slab: suppress warnings in test_leak_destroy kunit test
+      kunit: move call to kunit_run_all_tests() after rcu_end_inkernel_boot()
+
+ init/main.c      | 4 ++--
+ lib/slub_kunit.c | 4 ++--
+ mm/slab.h        | 6 ++++++
+ mm/slab_common.c | 5 +++--
+ mm/slub.c        | 5 +++--
+ 5 files changed, 16 insertions(+), 8 deletions(-)
+---
+base-commit: 9852d85ec9d492ebef56dc5f229416c925758edc
+change-id: 20240930-b4-slub-kunit-fix-6fba4d1c1742
+
+Best regards,
+-- 
+Vlastimil Babka <vbabka@suse.cz>
+
