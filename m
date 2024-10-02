@@ -1,218 +1,227 @@
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9EDA1D1E80
-	for <rcu@vger.kernel.org>; Wed,  2 Oct 2024 14:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01991D014A;
+	Wed,  2 Oct 2024 14:44:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727878481; cv=none; b=j7Q9PQDNu7vJeCLrEkxGJjMmrd6jHdSctqqFEpKpF+lyCZoX/bognDmHfgTu62POYY8hlNIYpo0/TxbtfgSztfbfh15ZUm9XbefgKZpDQFb1TrT+hWuUld6waCQ71Mu6/87t1rg3cFV2Mn9N2DU5q3kST9MxXxnGT9eTuNNevPk=
+	t=1727880289; cv=none; b=DAXt2kGl67fgJazsjhedvaYm56/V8hBXO3m6QQskru3wtHJzAHh81n9UWVlMJeHfhC95k3PXqKpeqAmSSZZmq1rxJ/A3GThfbRhS8qvoZYzn6chzI6KD/e0cF2Hi0lWXWNab+P+aqCUbmxHkS4hmPku0eJG6muiNz9qG9SBhXCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727878481; c=relaxed/simple;
-	bh=WBAUpTaKdB4RW11P9FLvKgOiuB21+jV8Nzn/f9ShX0M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B5wgGNAFFgD2E6xVC7/+4xJLSIvXPNDiyuHnQHdn/sBHu0XOur3NU5/U6MJDaRYDKXr753LK3UJ39LP0e6wU7R/jlaOSyDxKg3iPtCj2seje49OW4m22zYyPJdw4jms44e/FXXgysi87XyZTYmqwX9wW6mS3n8aT1vNOwjc6EI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rowland.harvard.edu; spf=fail smtp.mailfrom=g.harvard.edu; dkim=pass (2048-bit key) header.d=rowland.harvard.edu header.i=@rowland.harvard.edu header.b=LGC8I5lr; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=g.harvard.edu
+	s=arc-20240116; t=1727880289; c=relaxed/simple;
+	bh=xbMRWafQtWcsHPkcRwW4rObd+QgE2P8G83Na5STTNxg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iJb+tl+UExFi6vwtnhmVVmPUS02OcPpEip8bmNHIbCcRB8zX2cnT/ccBeaM0rBy+jMNC7s6xAZL5EqU98wONziBxgDI2AAUD4y+S52g5XYMx+dnW4unwuDxTXd7Qt3gt9aNb4IXJAGFYo3M+nUWabn8INJQc3m/XXEBQhjtJ0B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=12Zr4U0Q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=P4KgZGbb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zc1cPzkM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=12RJnV0w; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rowland.harvard.edu header.i=@rowland.harvard.edu header.b="LGC8I5lr"
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7a9ad8a7c63so675056785a.3
-        for <rcu@vger.kernel.org>; Wed, 02 Oct 2024 07:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rowland.harvard.edu; s=google; t=1727878479; x=1728483279; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gQ/povkWh1vgNmBfuGLgKT44hfzyi9J+3u5A1F7slgc=;
-        b=LGC8I5lr0FCdySRPbBwVFLpdqCs2OxD8aC1t2WlAg80DdkEEIvVAyefHslUFgBkxyC
-         l9LtpNDaxkXpnJEcGjTEMU379gafQWTWiNNwjKFNP8Le21kDGu5svKqD1/wLRN4sx7E+
-         HbeCydYXDbjWjYiHS3gdsrhSwBgm2QtrX4HJ4nmsMQLbtTfHFJPC1+QjgbSO4atadi8S
-         p/EEoucvC8M+tByPVLrZXpPzP17hcAnQhwLdmfImg9i4YUmVhCVnFoy99MEgiUAGPIbY
-         M1E48tiLaP81aXr5d1m/b8JlgaBpUOHVRzXEv39Uj3c+wgcHbVye4BnqpcL8DszlT9nN
-         Qvig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727878479; x=1728483279;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gQ/povkWh1vgNmBfuGLgKT44hfzyi9J+3u5A1F7slgc=;
-        b=Xc82vWj7jipn9Viw/qV5P+Ay80Tpoht8wrmhRBiLOuj8m2c75Dwb2/Y5Yf8Mh1lxV9
-         CxK0P6waYpR77f+ZY/W7r4cTzOvEI9atoAVuMUAWDul76gmROMl3JW9yaXPrXPbjgEhy
-         CBsLOB88jMfOvSNMl/hdvjdtSvGRA6C1p140EQqPhnCNa0peXWp+12V05NFYe7lep3xL
-         TLUQr9V1Mzf5UBZH+hLXE2Or5b2fXDbMnqN9JyI41IL+LcEknqfmSSlNqCthoGbO+TIT
-         Jgn5fS/tSR0segxL7plxe8uUfs9Tj+yfeGsWKU94UQFdO/6NlizhE41yvsLySss/LM8T
-         KZzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVob49MsqMeZWGTFvoUE13s+j1GcsvdxEOFuSLMZmrKmVJFIUrTYBeIZp7ct2oZNqnwFA4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDiZ4nxZsx59VYmsZwVaynyt+pxxL2A5K819bke9H2CEu+FCdU
-	8pYLrqL7A68N3eKIE0BbsUmlSV2WyrsPpaRGm7oB6cgDVg3myHFChobUxYRFqg==
-X-Google-Smtp-Source: AGHT+IG/o8TFevNqXUuDX3vJqZ8KPl51exlwA0PQIaotbs7GdJJp0vmE7UIcGFQNu+8WwPq2nynC8Q==
-X-Received: by 2002:a05:620a:bc6:b0:7a9:b4d2:9d70 with SMTP id af79cd13be357-7ae626bdc64mr557972185a.14.1727878478749;
-        Wed, 02 Oct 2024 07:14:38 -0700 (PDT)
-Received: from rowland.harvard.edu ([2601:19b:681:fd10::1a9d])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae377f09bcsm616133885a.65.2024.10.02.07.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 07:14:38 -0700 (PDT)
-Date: Wed, 2 Oct 2024 10:14:33 -0400
-From: 'Alan Stern' <stern@rowland.harvard.edu>
-To: David Laight <David.Laight@aculab.com>
-Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>, John Stultz <jstultz@google.com>,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	"maged.michael@gmail.com" <maged.michael@gmail.com>,
-	Mateusz Guzik <mjguzik@gmail.com>, Gary Guo <gary@garyguo.net>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"lkmm@lists.linux.dev" <lkmm@lists.linux.dev>
-Subject: Re: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
- dependency
-Message-ID: <d192cf63-a274-4721-968e-a2c098db523b@rowland.harvard.edu>
-References: <20240928135128.991110-1-mathieu.desnoyers@efficios.com>
- <20240928135128.991110-2-mathieu.desnoyers@efficios.com>
- <02c63e79-ec8c-4d6a-9fcf-75f0e67ea242@rowland.harvard.edu>
- <9539c551-5c91-42db-8ac1-cff1d6d7c293@huaweicloud.com>
- <2cdda043-1ad9-40cf-a157-0c16a0ffb046@rowland.harvard.edu>
- <5d7d8a59-57f5-4125-95bb-fda9c193b9cf@huaweicloud.com>
- <82e97ad5-17ad-418d-8791-22297acc7af4@rowland.harvard.edu>
- <ea02ce2ce8a348efa8d461f84f976478@AcuMS.aculab.com>
- <2b1caba3-48fa-43b9-bd44-cf60b9a141d7@rowland.harvard.edu>
- <22638e2fe1274eb0834fa3e43b44184e@AcuMS.aculab.com>
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="12Zr4U0Q";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="P4KgZGbb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zc1cPzkM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="12RJnV0w"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E6475219EE;
+	Wed,  2 Oct 2024 14:44:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727880286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Belre76DL6h+0gD4JiFxLhRUZh4NO1hWWD43NEdumV4=;
+	b=12Zr4U0Q7vibjRo0oZ9RaWG1aO5DJoaUW+ryILL8JL5958QC7tIDvRfyHu2axT/jN6pzUe
+	oegWOM2YWeyUOJ8mPBj46Ujxrfl23VjiGOBdEwdtvX6HikIhSHtJ/th7gSwW0frKzAtccL
+	tlFgXLPKkTn/jrOOgU3YUu/oxwGM8kI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727880286;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Belre76DL6h+0gD4JiFxLhRUZh4NO1hWWD43NEdumV4=;
+	b=P4KgZGbbiC8yYmw5t6DljUj6bq2eV4H/K+x/wQtn5DY0jaB18QLR1vFsJ9fdJQO+n2bGx6
+	wyBXZINzLL46JKDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Zc1cPzkM;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=12RJnV0w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727880285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Belre76DL6h+0gD4JiFxLhRUZh4NO1hWWD43NEdumV4=;
+	b=Zc1cPzkMWSQBnSQN0xZUR/ZMkuow81+byG5pv/cATuO4h1NmOTRhgZc9OBTQzNa74Uh7Rb
+	mgYDaDQLUL6uFNrgsc6No49rp3q+HZohKp56hnr+/Xb552Us7OsSFegHE2Kg/FV7b8DpPy
+	HU+evWluNzba/WJ1HqjCqhM3H5bWNpI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727880285;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Belre76DL6h+0gD4JiFxLhRUZh4NO1hWWD43NEdumV4=;
+	b=12RJnV0wVUR5bFbvcRnM6w3GrBLoKKIljoSl1DzuC780vlBrUaYFS4mduMJDA0oiA9C2v9
+	StK2Uu+tBCkcmMBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC31A13A6E;
+	Wed,  2 Oct 2024 14:44:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id d7tiLV1c/WYyNwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 02 Oct 2024 14:44:45 +0000
+Message-ID: <7f18cd71-4a4a-4d29-beb4-33f6d9fe3c12@suse.cz>
+Date: Wed, 2 Oct 2024 16:44:45 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22638e2fe1274eb0834fa3e43b44184e@AcuMS.aculab.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH slab hotfixes v2 2/2] slub/kunit: skip test_kfree_rcu when
+ the slub kunit test is built-in
+Content-Language: en-US
+To: Guenter Roeck <linux@roeck-us.net>, Christoph Lameter <cl@linux.com>,
+ David Rientjes <rientjes@google.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, "Paul E. McKenney" <paulmck@kernel.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>,
+ rcu@vger.kernel.org, David Gow <davidgow@google.com>,
+ Rae Moar <rmoar@google.com>, linux-kselftest@vger.kernel.org,
+ kunit-dev@googlegroups.com, Brendan Higgins <brendan.higgins@linux.dev>
+References: <20241001-b4-slub-kunit-fix-v2-0-2d995d3ecb49@suse.cz>
+ <20241001-b4-slub-kunit-fix-v2-2-2d995d3ecb49@suse.cz>
+ <80d0cd70-c00a-475c-a028-e842fb86403b@suse.cz>
+ <87f2fe09-ba6a-4405-b716-5325bb6a223b@roeck-us.net>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <87f2fe09-ba6a-4405-b716-5325bb6a223b@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: E6475219EE
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TAGGED_RCPT(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,gmail.com,vger.kernel.org,kvack.org,kernel.org,google.com,googlegroups.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed, Oct 02, 2024 at 08:13:15AM +0000, David Laight wrote:
-> From: 'Alan Stern'
-> > Sent: 01 October 2024 23:57
-> > 
-> > On Tue, Oct 01, 2024 at 05:11:05PM +0000, David Laight wrote:
-> > > From: Alan Stern
-> > > > Sent: 30 September 2024 19:53
-> > > >
-> > > > On Mon, Sep 30, 2024 at 07:05:06PM +0200, Jonas Oberhauser wrote:
-> > > > >
-> > > > >
-> > > > > Am 9/30/2024 um 6:43 PM schrieb Alan Stern:
-> > > > > > On Mon, Sep 30, 2024 at 01:26:53PM +0200, Jonas Oberhauser wrote:
-> > > > > > >
-> > > > > > >
-> > > > > > > Am 9/28/2024 um 4:49 PM schrieb Alan Stern:
-> > > > > > >
-> > > > > > > I should also point out that it is not enough to prevent the compiler from
-> > > > > > > using @a instead of @b.
-> > > > > > >
-> > > > > > > It must also be prevented from assigning @b=@a, which it is often allowed to
-> > > > > > > do after finding @a==@b.
-> > > > > >
-> > > > > > Wouldn't that be a bug?
-> > > > >
-> > > > > That's why I said that it is often allowed to do it. In your case it
-> > > > > wouldn't, but it is often possible when a and b are non-atomic &
-> > > > > non-volatile (and haven't escaped, and I believe sometimes even then).
-> > > > >
-> > > > > It happens for example here with GCC 14.1.0 -O3:
-> > > > >
-> > > > > int fct_hide(void)
-> > > > > {
-> > > > >     int *a, *b;
-> > > > >
-> > > > >     do {
-> > > > >         a = READ_ONCE(p);
-> > > > >         asm volatile ("" : : : "memory");
-> > > > >         b = READ_ONCE(p);
-> > > > >     } while (a != b);
-> > > > >     OPTIMIZER_HIDE_VAR(b);
-> > > > >     return *b;
-> > > > > }
-> > > > >
-> > > > >
-> > > > >
-> > > > >         ldr     r1, [r2]
-> > > > >         ldr     r3, [r2]
-> > > > >         cmp     r1, r3
-> > > > >         bne     .L6
-> > > > >         mov     r3, r1   // nay...
-> > > >
-> > > > A totally unnecessary instruction, which accomplishes nothing other than
-> > > > to waste time, space, and energy.  But nonetheless, allowed -- I agree.
-> > > >
-> > > > The people in charge of GCC's optimizer might like to hear about this,
-> > > > if they're not already aware of it...
-> > > >
-> > > > >         ldr     r0, [r3] // yay!
-> > > > >         bx      lr
-> > > >
-> > > > One could argue that in this example the compiler _has_ used *a instead
-> > > > of *b.  However, such an argument would have more force if we had
-> > > > described what we are talking about more precisely.
-> > >
-> > > The 'mov r3, r1' has nothing to do with 'a'.
-> > 
-> > What do you mean by that?  At this point in the program, a is the
-> > variable whose value is stored in r1 and b is the variable whose value
-> > is stored in r3.  "mov r3, r1" copies the value from r1 into r3 and is
-> > therefore equivalent to executing "b = a".  (That is why I said one
-> > could argue that the "return *b" statement uses the value of *a.)  Thus
-> > it very much does have something to do with "a".
+On 10/2/24 15:52, Guenter Roeck wrote:
+> On 10/2/24 03:26, Vlastimil Babka wrote:
+>> On 10/1/24 18:20, Vlastimil Babka wrote:
+>>> Guenter Roeck reports that the new slub kunit tests added by commit
+>>> 4e1c44b3db79 ("kunit, slub: add test_kfree_rcu() and
+>>> test_leak_destroy()") cause a lockup on boot on several architectures
+>>> when the kunit tests are configured to be built-in and not modules.
+>>>
+>>> The test_kfree_rcu test invokes kfree_rcu() and boot sequence inspection
+>>> showed the runner for built-in kunit tests kunit_run_all_tests() is
+>>> called before setting system_state to SYSTEM_RUNNING and calling
+>>> rcu_end_inkernel_boot(), so this seems like a likely cause. So while I
+>>> was unable to reproduce the problem myself, skipping the test when the
+>>> slub_kunit module is built-in should avoid the issue.
+>>>
+>>> An alternative fix that was moving the call to kunit_run_all_tests() a
+>>> bit later in the boot was tried, but has broken tests with functions
+>>> marked as __init due to free_initmem() already being done.
+>>>
+>>> Fixes: 4e1c44b3db79 ("kunit, slub: add test_kfree_rcu() and test_leak_destroy()")
+>>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>>> Closes: https://lore.kernel.org/all/6fcb1252-7990-4f0d-8027-5e83f0fb9409@roeck-us.net/
+>> 
+>> I hope you can confirm it helps, because the commit added two tests and I've
+>> only skipped one of them, as it's the one using kfree_rcu(), which is
+>> suspected. But the other is responsible for the (now suppressed)
+>> kmem_cache_destroy() warning, and maybe I'm missing something and it was
+>> actually that one causing the lockups.
+>> 
 > 
-> After the cmp and bne r1 and r3 have the same value.
-> The compiler tracks that and will use either register later.
-> That can never matter.
+> Everything works with your patches applied, so we are good.
 
-The whole point of this thread is that sometimes it _does_ matter.  Not 
-on x86, but on weakly ordered architectures where using the wrong 
-register will bypass a dependency and allow the CPU to speculatively 
-load values earlier than the programmer wants it to.
+Thanks for testing! Queued for -next now and will send to Linus later if
+all's good.
 
-> Remember the compiler tracks values (in pseudo/internal registers)
-> not variables.
+>> Since you mentioned the boot lockups happened on some x86_64 too, do you
+>> have a .config of the lockup case? I've tried tweaking some rcu options but
+>> still nothing.
+>> 
 > 
-> > > It is a more general problem that OPTIMISER_HIDE_VAR() pretty much
-> > > always ends up allocating a different internal 'register' for the
-> > > output and then allocating a separate physical rehgister.
-> > 
-> > What output are you referring to?  Does OPTIMISER_HIDE_VAR() have an
-> > output?  If it does, the source program above ignores it, discarding any
-> > returned value.
-> 
-> Look up OPTIMISER_HIDE_VAR(x) it basically x = f(x) where f() is
-> the identity operation:
-> 	asm ("" : "+r"(x))
-> I'll bet that gcc allocates a separate internal/pseudo register
-> for the result so wants to do y = f(x).
-> Probably generating y = x; y = f(y);
-> (The 'mov' might be after the asm, but I think that would get
-> optimised away - the listing file might help.)
-> 
-> So here the compiler has just decided to reuse the register that
-> held the other of a/b for the extra temporary.
+> I have a bunch of debug options enabled. Configuration (generated using
+> "make savedefconfig") for x86_64 is attached.
 
-I think you've got this backward.  As mentioned above, a is originally 
-in r1 and b is in r3.  The source says OPTIMIZER_HIDE_VAR(b), so you're 
-saying that gcc should be copying r3 into a separate internal/pseudo 
-register.  But instead it's copying r1.
+Hmm, didn't see the hang with that (using virtme-ng) on v6.12-rc1. Guess
+there's something more to it. Oh well.
 
-Alan
+> Thanks,
+> Guenter
+
