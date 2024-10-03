@@ -1,36 +1,36 @@
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165CF186E46;
-	Thu,  3 Oct 2024 13:25:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B8F1990AA;
+	Thu,  3 Oct 2024 13:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727961946; cv=none; b=KBgShGdJ7b0gmtJqecf1zny11UtXMvF+agtuJfGdqSYZd7y0fYEseF70EvwrvF9ZhgZ2dKcUI3ca1+NSDImAnaPV7aQ1JqBsSuCCES/T5nxz8Ftk950Rf1V9nPYx/AohnoygJ/AhphMForWWt2F0CHUdSI3U3WLDNr37sDcFuGk=
+	t=1727962377; cv=none; b=hzYUjOlbWJsPJhe1RkuTnehjD7MOY750x/5fqLFtNrqv5hXo5krOxPAhyX0qnw22CoLicwpEg4pdBOdWQUv0EyL7z+LKZEXn3oZW3EFfhiIC/WBLXeg4u4NUexkRfPN3Ur8oazYr+INdW5JeiCBkipmSA2xWiWTa8syD915FwH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727961946; c=relaxed/simple;
-	bh=0Bq3tDtnRpX1pbJsNPejO+Bs7zMzKXxBWm7bWQUcwiE=;
+	s=arc-20240116; t=1727962377; c=relaxed/simple;
+	bh=YTSZ1gR4pl10kKX9+QjBQhs9v6DfHc5Ds/ZvHb/XL/g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uuFCUiXeDQCuxuCr9Bqn9EFqOe9Xj1Eyq59VL+p0+xuT5ir2nVEOlZUGNcsbFfbdAKSScIg4uktvyduAikXTrY41fTJGFz5y2iZu4FWKiH8YqDviSdsV7EutZfeR+y/7YrTcmn11nagjPBPnOmiCIl3AIMTjbDeU+Bg/yqoMor4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=wP35DN2E; arc=none smtp.client-ip=167.114.26.122
+	 In-Reply-To:Content-Type; b=SuyXXXECcQS0dzyzLnoED/4P7kQS+WTURoBrazw/CL2a8aNqYNHQBtwxHItGnUdGDfcGlIvlSBn9Zh++aV9ZQcnsvJUNo7Fj/pdz0xa8OTbFO78twFMoV8R/y5Wg3QpQ3jeudqY36SEl2WdyJwfhGi02GnRWn1du8IiBxIIKmD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=X1GK8v/O; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="wP35DN2E"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="X1GK8v/O"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1727961933;
-	bh=0Bq3tDtnRpX1pbJsNPejO+Bs7zMzKXxBWm7bWQUcwiE=;
+	s=smtpout1; t=1727962375;
+	bh=YTSZ1gR4pl10kKX9+QjBQhs9v6DfHc5Ds/ZvHb/XL/g=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=wP35DN2EtpOm07PoWCz0T0mMaUcxto2ytWDs1yziiOGWC+j+FxhxOq3eC1qy+b9q+
-	 qLO1bAlnX0N0Zlw1ZGvD7iJMGAVGLmou2zQdfOP+pWMZ4h+xNjWqdvt3jRp/enzwQk
-	 tofficLJX+6zWFrzrnXzjz0qiwslONzUNtSt9nQyznJ6Kp3/nJlxI0jmloXbEAzF1S
-	 0cCdDSKfA/epuSKCZuuT0eGajBd0gPVIJsWlRUiN5aVMbhR58+K6sTuUyNOwS3R8Z8
-	 tj16vbvLgKlkiEk7Y4D2WThHi3pO1STu+DDdJHFH3vL30MOwt/bNO6KWSxegxqIWhT
-	 7Z6AB4hAYPUcg==
+	b=X1GK8v/OZtESLEHkimlfFxoawsowDAJytBMD2o7/U0FjMAMyY0u+RROxIqV1qNfcO
+	 3VbzfSyj5e74S4TZIP+m3k83XPJdJNWh/ZRB8KvKn7KUAb6g7wvOlIjP+2ynmX6EWw
+	 I1hoTW40T0gJ8+mI7oLSWsRRU+KbCt2Lr3PndOE1bIwNRv37f57wCKuVGJ6CaybKuh
+	 4h7vJ/CxdQBINIqr6rnGhWb9eGjU+IV3tL5x2CgUP73uxbOv13P7MtRIjp6p6RAfbj
+	 QwGn8sBl9bSG4nUAImNPfpOK1upeqFdU8V3+q3bwlJt0qieL+URAbG8uzQ1lmatJi7
+	 RovViSGiBjP1A==
 Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XKC992Gdzz4sn;
-	Thu,  3 Oct 2024 09:25:33 -0400 (EDT)
-Message-ID: <bd93a57c-662f-470e-8ba4-509f27eada6d@efficios.com>
-Date: Thu, 3 Oct 2024 09:23:31 -0400
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XKCKf3WScz5Zd;
+	Thu,  3 Oct 2024 09:32:54 -0400 (EDT)
+Message-ID: <bb890ea6-742f-40b7-ad3d-aa28f658fa3d@efficios.com>
+Date: Thu, 3 Oct 2024 09:30:53 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -38,18 +38,17 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
- dependency
-To: 'Alan Stern' <stern@rowland.harvard.edu>,
- David Laight <David.Laight@aculab.com>
-Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+Subject: Re: [RFC PATCH 3/4] hp: Implement Hazard Pointers
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+ Nicholas Piggin <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
  "Paul E. McKenney" <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
- John Stultz <jstultz@google.com>, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
+ Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
  Frederic Weisbecker <frederic@kernel.org>,
  Joel Fernandes <joel@joelfernandes.org>,
  Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
@@ -57,97 +56,109 @@ Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
  <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
  Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
  Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>,
- "maged.michael@gmail.com" <maged.michael@gmail.com>,
- Mateusz Guzik <mjguzik@gmail.com>, Gary Guo <gary@garyguo.net>,
- "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "lkmm@lists.linux.dev" <lkmm@lists.linux.dev>
-References: <02c63e79-ec8c-4d6a-9fcf-75f0e67ea242@rowland.harvard.edu>
- <9539c551-5c91-42db-8ac1-cff1d6d7c293@huaweicloud.com>
- <2cdda043-1ad9-40cf-a157-0c16a0ffb046@rowland.harvard.edu>
- <5d7d8a59-57f5-4125-95bb-fda9c193b9cf@huaweicloud.com>
- <82e97ad5-17ad-418d-8791-22297acc7af4@rowland.harvard.edu>
- <ea02ce2ce8a348efa8d461f84f976478@AcuMS.aculab.com>
- <2b1caba3-48fa-43b9-bd44-cf60b9a141d7@rowland.harvard.edu>
- <22638e2fe1274eb0834fa3e43b44184e@AcuMS.aculab.com>
- <d192cf63-a274-4721-968e-a2c098db523b@rowland.harvard.edu>
- <e39c6e5975f345c4b1a97145e207dee4@AcuMS.aculab.com>
- <68dc00b3-1ca1-42bc-8f1e-78ace10e4d64@rowland.harvard.edu>
+ Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+ Mateusz Guzik <mjguzik@gmail.com>,
+ Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>, rcu@vger.kernel.org,
+ linux-mm@kvack.org, lkmm@lists.linux.dev
+References: <20241002010205.1341915-1-mathieu.desnoyers@efficios.com>
+ <20241002010205.1341915-4-mathieu.desnoyers@efficios.com>
+ <Zv3kP477pGeOxuu9@boqun-archlinux>
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Content-Language: en-US
-In-Reply-To: <68dc00b3-1ca1-42bc-8f1e-78ace10e4d64@rowland.harvard.edu>
+In-Reply-To: <Zv3kP477pGeOxuu9@boqun-archlinux>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2024-10-03 03:50, 'Alan Stern' wrote:
-> On Wed, Oct 02, 2024 at 03:24:45PM +0000, David Laight wrote:
->> I think I know what you are trying to do, and you just fail.
->> Whether something can work is another matter, but that code
->> can't ever work.
->>
->> Inside if (a == b) the compiler will always use the same register
->> for references to a and b - because it knows they have the same value.
+On 2024-10-03 02:24, Boqun Feng wrote:
+> On Tue, Oct 01, 2024 at 09:02:04PM -0400, Mathieu Desnoyers wrote:
+[...]
+>> +/*
+>> + * hp_allocate: Allocate a hazard pointer.
+>> + *
+>> + * Allocate a hazard pointer slot for @addr. The object existence should
+>> + * be guaranteed by the caller.
+>> + *
+>> + * Returns a hazard pointer context.
+>> + */
+>> +static inline
+>> +struct hp_ctx hp_allocate(struct hp_slot __percpu *percpu_slots, void *addr)
+>> +{
+>> +	struct hp_slot *slot;
+>> +	struct hp_ctx ctx;
+>> +
+>> +	if (!addr)
+>> +		goto fail;
+>> +	slot = this_cpu_ptr(percpu_slots);
 > 
-> According to the other people in this discussion who have actually tried
-> using this code, it _does_ work (at least some of the time).
+> Are you assuming this is called with preemption disabled? Otherwise,
+> there could two threads picking up the same hazard pointer slot on one
+> CPU,
+
+Indeed, this minimalist implementation only covers the preempt-off
+use-case, where there is a single use of HP per CPU at any given
+time (e.g. for the lazy mm use-case). It expects to be called
+from preempt-off context. I will update the comment accordingly.
+
 > 
-> However, I'm not one of those people and so I leave it up to them to
-> decide how to respond to this critique.
+>> +	/*
+>> +	 * A single hazard pointer slot per CPU is available currently.
+>> +	 * Other hazard pointer domains can eventually have a different
+>> +	 * configuration.
+>> +	 */
+>> +	if (READ_ONCE(slot->addr))
+>> +		goto fail;
+> 
+> .. and they could both read an empty slot, and both think they
+> successfully protect the objects, which could be different objects.
+> 
+> Or am I missing something subtle here?
 
-I suspect that David's comment is about this specific example that
-was given in this leg of the email thread:
+You are correct, I should document this.
 
-https://lore.kernel.org/lkml/5d7d8a59-57f5-4125-95bb-fda9c193b9cf@huaweicloud.com/
+> 
+>> +	WRITE_ONCE(slot->addr, addr);	/* Store B */
+>> +	ctx.slot = slot;
+>> +	ctx.addr = addr;
+>> +	return ctx;
+>> +
+>> +fail:
+>> +	ctx.slot = NULL;
+>> +	ctx.addr = NULL;
+>> +	return ctx;
+>> +}
+>> +
+>> +/*
+>> + * hp_dereference_allocate: Dereference and allocate a hazard pointer.
+>> + *
+>> + * Returns a hazard pointer context.
+>> + */
+>> +static inline
+>> +struct hp_ctx hp_dereference_allocate(struct hp_slot __percpu *percpu_slots, void * const * addr_p)
+>> +{
+>> +	struct hp_slot *slot;
+>> +	void *addr, *addr2;
+>> +	struct hp_ctx ctx;
+>> +
+>> +	addr = READ_ONCE(*addr_p);
+>> +retry:
+>> +	ctx = hp_allocate(percpu_slots, addr);
+>> +	if (!hp_ctx_addr(ctx))
+>> +		goto fail;
+>> +	/* Memory ordering: Store B before Load A. */
+>> +	smp_mb();
+>> +	/*
+>> +	 * Use RCU dereference without lockdep checks, because
+>> +	 * lockdep is not aware of HP guarantees.
+>> +	 */
+>> +	addr2 = rcu_access_pointer(*addr_p);	/* Load A */
+> 
+> Why rcu_access_pointer() instead of READ_ONCE()? Because you want to
+> mark the head of address dependency?
 
-> > > > > int fct_hide(void)
-> > > > > > {
-> > > > > >     int *a, *b;
-> > > > > >
-> > > > > >     do {
-> > > > > >         a = READ_ONCE(p);
-> > > > > >         asm volatile ("" : : : "memory");
-> > > > > >         b = READ_ONCE(p);
-> > > > > >     } while (a != b);
-> > > > > >     OPTIMIZER_HIDE_VAR(b);
-> > > > > >     return *b;
-> > > > > > } 
-
-This indeed cannot work because the hide var is done
-on @b after it was compared with @a, so after the compiler
-was free to use any of the registers due to the equality.
-
-Another example that does *not* work is if we try to hide
-vars on the inputs of the equality, and then proceed to do the
-comparison on the resulting temporaries, e.g.:
-
-int fct_hide(void)
-{
-      int *a, *b;
-
-      do {
-          a = READ_ONCE(p);
-          asm volatile ("" : : : "memory");
-          b = READ_ONCE(p);
-      } while (OPTIMIZER_HIDE_VAR(a) != OPTIMIZER_HIDE_VAR(b));
-      return *b;
-}
-
-The reason why this does *not* work is because the compiler is
-free to use either temporaries for *b at the end, because they
-were deemed identical.
-
-What _does_ work however are the following two approaches:
-
-1) Perform the equality check on the original variables, creating
-new versions (with OPTIMIZER_HIDE_VAR) of both variables for the
-rest of their use, therefore making sure the pointer dereference
-are not derived from versions of the variables which were compared
-with another pointer. (as suggested by Boqun)
-
-2) Perform the equality check on the versions resulting of hiding
-both variables, making sure those versions of the variables are
-not dereferenced afterwards. (as suggested by Linus)
+Yes, the intent here is to mark the address dependency and provide
+a publication guarantee similar to RCU pairing rcu_assign_pointer
+and rcu_dereference. Do you see any reason why READ_ONCE() would
+suffice here ?
 
 Thanks,
 
@@ -155,18 +166,31 @@ Mathieu
 
 
 > 
-> Alan
+> Regards,
+> Boqun
 > 
->> Possibly something like:
->> 	c = b;
->> 	OPTIMISER_HIDE_VAR(c);
->> 	if (a == c) {
->> 		*b
->> will ensure that there isn't a speculative load from *a.
->> You'll get at least one register-register move - but they are safe.
->> Otherwise you'll need to put the condition inside an asm block.
->>
->> 	David
+>> +	/*
+>> +	 * If @addr_p content has changed since the first load,
+>> +	 * clear the hazard pointer and try again.
+>> +	 */
+>> +	if (!ptr_eq(addr2, addr)) {
+>> +		WRITE_ONCE(slot->addr, NULL);
+>> +		if (!addr2)
+>> +			goto fail;
+>> +		addr = addr2;
+>> +		goto retry;
+>> +	}
+>> +	ctx.slot = slot;
+>> +	ctx.addr = addr2;
+>> +	return ctx;
+>> +
+>> +fail:
+>> +	ctx.slot = NULL;
+>> +	ctx.addr = NULL;
+>> +	return ctx;
+>> +}
+>> +
+> [...]
 
 -- 
 Mathieu Desnoyers
