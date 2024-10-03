@@ -1,56 +1,96 @@
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF7623DE
-	for <rcu@vger.kernel.org>; Thu,  3 Oct 2024 00:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95D8DF51;
+	Thu,  3 Oct 2024 00:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727914128; cv=none; b=O/g2zho3JmX7Vnlv3moRMNCRB1FNzCZiPQ5s+y+9jPizWIN8t3c53vypmSm9KGS3oE+uXV2mc4os8LEp3L/ZwaDw+rKidocZ2OpcmmQWSal4qPPjBo2lvr/hPEVmyDRaZSA46t8CZpPPovm0sExcGsYbZzUKNVnQU3/Y92YlRBE=
+	t=1727915142; cv=none; b=GBUYBlF5Qumo7jPOFEsexxxyFg1IGH/VVADbXqCHYZoIvqO2sKvs9FdIx11DdX5dQiMenMW2DYZizbV1c8ZWVXf8VBB7DAFYwiIvUMO6+HjUWNMlA67ELBhVNSUkCkTS/ioKkCGw6MbsE3sr8slKKNZf/+xI1txDLR36NMautNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727914128; c=relaxed/simple;
-	bh=KUrfk+eq3257BUq5EaY4utlmEACyrb2EHZYgj/5cUlI=;
+	s=arc-20240116; t=1727915142; c=relaxed/simple;
+	bh=hvYsIbbz3yxpjZGd/GNq8vszwKEsNA2zbpOrZOHdrx0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EKi8pJ+NGeMs66/uqKjvcMb3au7mFK2r00nMSiGprMN9Vu6U7PXmJgTp+elTwbwcHYJVj29am8nUS4/AUBTlt315Om0bqEb0u2oZtGKriwe3j0Z0oxP27fxkQ3JoVHQhqnWq3NG5qGySP/Uic4auMof7r+lBOsgP+wjPYy5FzRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=K5yulx0I; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=HAZ8W8drHlbe93p2Y2rJfcUQZ7CYNIWPtBAQo0XrnHuZy98MYi5QQqafjxsFQotoxFFKcoawou8wES/98MTPADK9QcgHTw7b7CclCAeFxD06KpcAI+ZfVKfOkj3S5or480xOJIM4ciHzFtb19c/GBf9M4+O9NPpAFfDqB0pmWTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ISebJI5B; arc=none smtp.client-ip=209.85.219.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="K5yulx0I"
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7a9ae0e116cso38073785a.1
-        for <rcu@vger.kernel.org>; Wed, 02 Oct 2024 17:08:45 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ISebJI5B"
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6cb2a6d3144so2246726d6.2;
+        Wed, 02 Oct 2024 17:25:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1727914124; x=1728518924; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=d3cwmVH4T8IqaLZrJPf4dN6HB0iRJ3ayFzGdEtNHxoA=;
-        b=K5yulx0Io0WDvodrDo4Y+tsYCP1+WoV1wVLw4cJZTcHcft4mlGDSFOm4qwLw9gKDXK
-         9rJD+i6u3JKlZbNOq9OVosgSrj/Vgf8bmvBZgJ1UEZPen9RQ/AZW0rH7ofVaT6uq9+rJ
-         vdy6Efoen3boo7EvZKMwbV3e0I97Zoh6GHzmw=
+        d=gmail.com; s=20230601; t=1727915138; x=1728519938; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fdmBFtAuO1xuuA1xbvQwfI32coSRJZlqI5hdaMf3qvc=;
+        b=ISebJI5BzTSeWzyezyar+8T6aLdqk9HYc4xwEdrpsgKrOdT8GeX1eWgXDqpcf7N2mm
+         unfOG0rYRsq9JXSTjG7Gz3C/xyCznXKlHPecXZYujJ+Lxt2U3UWYlyX/7jlSYYPzxKQh
+         LtJ/5TuT5M7UFiwQwWoHVAYEnSrEMVGhl8GFWgiJj5+7dwFpQ0khc/rA5koGg888x1Os
+         bkY5depnsg8JRGiu6wS/2MnH8BgyElOWhSnWQRyLNr3f9kw+w3a+Ri55a4yH7WropCLl
+         jQ4vHVGaaUvlFhnFmptSZZjbV4dUkvuHfms+XBO638r+/izhmEczISnLksFWUVYvjndb
+         hleQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727914124; x=1728518924;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d3cwmVH4T8IqaLZrJPf4dN6HB0iRJ3ayFzGdEtNHxoA=;
-        b=wW6NYNfsFfzRLEQg+XYvccRZyO17wK/z/AdIz/MuE8hlVxPKv2dYl2zyXPd12G2/z5
-         JqAZH3Xq8hqR90EJwqsbCafUmHsdjmWCQcrqn+i9CSOyKLvIeMKgG9ZUeQO377jxZB2z
-         F+XIOTyVUHueIOKHS3zNJHaR5rbOFyXSQ8AsqWlH3Q0QZk7s6fDhatRuylgUU0QmeNnZ
-         rVYM1J6iC1CVchAwNlqIRTTomTOAJQAtIjbZE56q4V6/ozTdUgfCna+3w73SKboHBMCh
-         GnDQMcROoIKoy1ltkUMXmeL/I/PYrLdIY/Y9i8eHkToLbvy8RLTbHcPRm4ZVm5KHy8pU
-         a+Kw==
-X-Forwarded-Encrypted: i=1; AJvYcCUn/naRTtWAG/i1g1YPBlIZ0IEou3eRYeShVJkkQwB/sSlB1aWa5hyCm/zzCCt4tB2T7qU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzyfl+w4M17LStOtqVduaLFHFScwxKX2BFy+i3LnPTJNGn598AH
-	XBbVzem7mLi5xOmxnpcjHPekHBLDIzCKrBMQ51zrTtc/tupFx8U9pqy9cd1VyR0=
-X-Google-Smtp-Source: AGHT+IFyyGM2DUoFUWQ5HNQaWWB8/IaPvClgER78DCcGgoTY7+i7cDT8H5iX51KO9rlUJfwMgd+NTQ==
-X-Received: by 2002:a05:620a:2697:b0:7ac:dd3a:6787 with SMTP id af79cd13be357-7ae62732decmr738226785a.52.1727914124476;
-        Wed, 02 Oct 2024 17:08:44 -0700 (PDT)
-Received: from localhost (129.177.85.34.bc.googleusercontent.com. [34.85.177.129])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae3783f80bsm669783585a.123.2024.10.02.17.08.43
+        d=1e100.net; s=20230601; t=1727915138; x=1728519938;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fdmBFtAuO1xuuA1xbvQwfI32coSRJZlqI5hdaMf3qvc=;
+        b=sKGDCq9+Ja3kl+XuLCuOdJdYEiD4mLNZXNsGR+Bid9NsaPJqhcN0uqdpVUXibmNJni
+         /MfinuQ4BcKgQSHbEyXWoWkAlmeJlTB2YWCW5+ns+K52nHChzE3hqWbn1HzWalvVNgis
+         xczMFIYmqdTViAT81AorMwbuGHtvd2IWcy+bDcgBHcEr3Qh9hCipKbxhEi0iEDUVLsJO
+         xoAre3otbpnx5BF8QHoSbpV+zXFSCae3Yh8nt+KHrFCfZbL+fz3V6FrbJ4K9jeZh46bL
+         naDjig4dKMHWcmy/zjS4dLCD7/aBM464FP+spzIvfTc/Rzkqssn32zQnar8lDeUae3v2
+         cMvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+cuAYReMi2rEHoIs0Y4fF7GBttHseNmiB+ndwvN4sa1ems6N+8KzMTm43Eq6eOVc1Oa7a@vger.kernel.org, AJvYcCUw4K5MW7983VD+EBWXDJUaoiBIvUSTmBfs45G2kIlUYvD+WItvY8EDMbSBmfKkxJjRTrlp5acbg0yZnjw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeP9+6AViVlswJ7Wk2ginUJJgMsWpIpbhpO2WHjioyQ8XXk8z0
+	KFSGlPTh9om0a4qJeLsRbGaLp6iEeGQ7EHTD+rnNn6ItVsmgE6Qz
+X-Google-Smtp-Source: AGHT+IGnKF3a9DMxLqjSehWRMwSs/R7LCv/5apMPogn0UWIcgsZAqe38g270iV/q54p8i8gQNXFtXg==
+X-Received: by 2002:a05:6214:1932:b0:6cb:8266:bef1 with SMTP id 6a1803df08f44-6cb8266c00emr59910906d6.0.1727915138385;
+        Wed, 02 Oct 2024 17:25:38 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45d9299ec6bsm26281cf.53.2024.10.02.17.25.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 17:08:43 -0700 (PDT)
-Date: Thu, 3 Oct 2024 00:08:43 +0000
-From: Joel Fernandes <joel@joelfernandes.org>
+        Wed, 02 Oct 2024 17:25:37 -0700 (PDT)
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 061921200068;
+	Wed,  2 Oct 2024 20:25:37 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Wed, 02 Oct 2024 20:25:37 -0400
+X-ME-Sender: <xms:gOT9Zh7C03D5vooBIbOBV0dNIiWJDT8WMbsmM6Q827FWi5Q7PG7fYQ>
+    <xme:gOT9Zu62Lop7pqWZGJpXAq79J-DYfbj_fr2KfUzrl4Ykg72N9RcMEVwHuLoc42bbe
+    D_i2Fi9HiA9LxG3qQ>
+X-ME-Received: <xmr:gOT9ZocPBs0x-ZDCvHstaGOxdThpjHqI8MKEipPh_x_R2-WMvn-LsVaUTQrouQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvtddgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpefhteffveeuhefhveefgfehvdejkeefuefgfeeg
+    vedtheegvdelueevvdegteffueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhlph
+    gtrdgvvhgvnhhtshenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeile
+    dvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgt
+    ohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepfeefpdhmohguvgepshhmth
+    hpohhuthdprhgtphhtthhopehmrghthhhivghurdguvghsnhhohigvrhhssegvfhhfihgt
+    ihhoshdrtghomhdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugidqfhhouhhnug
+    grthhiohhnrdhorhhgpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurght
+    ihhonhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrgh
+    dprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehnphhighhgihhnsehgmhgrihhlrdgtohhmpdhrtghpthhtohepmh
+    hpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghpthhtohepghhrvghgkhhhsehlihhn
+    uhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepsghighgvrghshieslhhinh
+    huthhrohhnihigrdguvg
+X-ME-Proxy: <xmx:gOT9ZqJS32RFUPPIhiHJWhi8jNycW3T5lyH6Vl7Ou6mUreYr8QGtMw>
+    <xmx:gOT9ZlJ_73yoBrJuQL_I61Bci_3PTpOORhGj3HzdXEkAIGIXdVQRcQ>
+    <xmx:gOT9Zjx-21pV8dm1eA9cIiEjAk-fduc9xble8NtMVrbceoteyB1ofw>
+    <xmx:gOT9ZhI5zLyIfqZssyOsRSbUnmgNFzFPncCNIDgbs4Wc1AdJGBC9xQ>
+    <xmx:geT9ZoZFgx8h4dK8R5bg93Dqrpqs8J0xlrhHOBmLiViYRcw3M-yXeAjQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 2 Oct 2024 20:25:36 -0400 (EDT)
+Date: Wed, 2 Oct 2024 17:24:31 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -59,163 +99,278 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Michael Ellerman <mpe@ellerman.id.au>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	John Stultz <jstultz@google.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,	Will Deacon <will@kernel.org>,
+	Alan Stern <stern@rowland.harvard.edu>,	John Stultz <jstultz@google.com>,
 	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
 	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev,
-	Gary Guo <gary@garyguo.net>, Nikita Popov <github@npopov.com>,
-	llvm@lists.linux.dev
-Subject: Re: [RFC PATCH 1/4] compiler.h: Introduce ptr_eq() to preserve
- address dependency
-Message-ID: <20241003000843.GA192403@google.com>
+	Waiman Long <longman@redhat.com>,	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Vlastimil Babka <vbabka@suse.cz>,
+ maged.michael@gmail.com,	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,	rcu@vger.kernel.org,
+ linux-mm@kvack.org, lkmm@lists.linux.dev
+Subject: Re: [RFC PATCH 3/4] hp: Implement Hazard Pointers
+Message-ID: <Zv3kP477pGeOxuu9@boqun-archlinux>
 References: <20241002010205.1341915-1-mathieu.desnoyers@efficios.com>
- <20241002010205.1341915-2-mathieu.desnoyers@efficios.com>
+ <20241002010205.1341915-4-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241002010205.1341915-2-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20241002010205.1341915-4-mathieu.desnoyers@efficios.com>
 
-On Tue, Oct 01, 2024 at 09:02:02PM -0400, Mathieu Desnoyers wrote:
-> Compiler CSE and SSA GVN optimizations can cause the address dependency
-> of addresses returned by rcu_dereference to be lost when comparing those
-> pointers with either constants or previously loaded pointers.
+On Tue, Oct 01, 2024 at 09:02:04PM -0400, Mathieu Desnoyers wrote:
+> This API provides existence guarantees of objects through Hazard
+> Pointers (HP).
 > 
-> Introduce ptr_eq() to compare two addresses while preserving the address
-> dependencies for later use of the address. It should be used when
-> comparing an address returned by rcu_dereference().
+> Each HP domain defines a fixed number of hazard pointer slots (nr_cpus)
+> across the entire system.
 > 
-> This is needed to prevent the compiler CSE and SSA GVN optimizations
-> from using @a (or @b) in places where the source refers to @b (or @a)
-> based on the fact that after the comparison, the two are known to be
-> equal, which does not preserve address dependencies and allows the
-> following misordering speculations:
+> Its main benefit over RCU is that it allows fast reclaim of
+> HP-protected pointers without needing to wait for a grace period.
 > 
-> - If @b is a constant, the compiler can issue the loads which depend
->   on @a before loading @a.
-> - If @b is a register populated by a prior load, weakly-ordered
->   CPUs can speculate loads which depend on @a before loading @a.
+> It also allows the hazard pointer scan to call a user-defined callback
+> to retire a hazard pointer slot immediately if needed. This callback
+> may, for instance, issue an IPI to the relevant CPU.
 > 
-> The same logic applies with @a and @b swapped.
+> There are a few possible use-cases for this in the Linux kernel:
 > 
-[...]
+>   - Improve performance of mm_count by replacing lazy active mm by HP.
+>   - Guarantee object existence on pointer dereference to use refcount:
+>     - replace locking used for that purpose in some drivers,
+>     - replace RCU + inc_not_zero pattern,
+>   - rtmutex: Improve situations where locks need to be taken in
+>     reverse dependency chain order by guaranteeing existence of
+>     first and second locks in traversal order, allowing them to be
+>     locked in the correct order (which is reverse from traversal
+>     order) rather than try-lock+retry on nested lock.
+> 
+> References:
+> 
+> [1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
+>      lock-free objects," in IEEE Transactions on Parallel and
+>      Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
+> 
+> Link: https://lore.kernel.org/lkml/j3scdl5iymjlxavomgc6u5ndg3svhab6ga23dr36o4f5mt333w@7xslvq6b6hmv/
+> Link: https://lpc.events/event/18/contributions/1731/
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Uladzislau Rezki <urezki@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Zqiang <qiang.zhang1211@gmail.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: maged.michael@gmail.com
+> Cc: Mateusz Guzik <mjguzik@gmail.com>
+> Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+> Cc: rcu@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: lkmm@lists.linux.dev
+> ---
+>  include/linux/hp.h | 154 +++++++++++++++++++++++++++++++++++++++++++++
+>  kernel/Makefile    |   2 +-
+>  kernel/hp.c        |  46 ++++++++++++++
+>  3 files changed, 201 insertions(+), 1 deletion(-)
+>  create mode 100644 include/linux/hp.h
+>  create mode 100644 kernel/hp.c
+> 
+> diff --git a/include/linux/hp.h b/include/linux/hp.h
+> new file mode 100644
+> index 000000000000..929e8685a0fd
+> --- /dev/null
+> +++ b/include/linux/hp.h
+> @@ -0,0 +1,154 @@
+> +// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> +//
+> +// SPDX-License-Identifier: LGPL-2.1-or-later
+> +
+> +#ifndef _LINUX_HP_H
+> +#define _LINUX_HP_H
+> +
 > +/*
-> + * Compare two addresses while preserving the address dependencies for
-> + * later use of the address. It should be used when comparing an address
-> + * returned by rcu_dereference().
+> + * HP: Hazard Pointers
 > + *
-> + * This is needed to prevent the compiler CSE and SSA GVN optimizations
-> + * from using @a (or @b) in places where the source refers to @b (or @a)
-> + * based on the fact that after the comparison, the two are known to be
-> + * equal, which does not preserve address dependencies and allows the
-> + * following misordering speculations:
+> + * This API provides existence guarantees of objects through hazard
+> + * pointers.
 > + *
-> + * - If @b is a constant, the compiler can issue the loads which depend
-> + *   on @a before loading @a.
-> + * - If @b is a register populated by a prior load, weakly-ordered
-> + *   CPUs can speculate loads which depend on @a before loading @a.
+> + * It uses a fixed number of hazard pointer slots (nr_cpus) across the
+> + * entire system for each HP domain.
 > + *
-> + * The same logic applies with @a and @b swapped.
+> + * Its main benefit over RCU is that it allows fast reclaim of
+> + * HP-protected pointers without needing to wait for a grace period.
 > + *
-> + * Return value: true if pointers are equal, false otherwise.
+> + * It also allows the hazard pointer scan to call a user-defined callback
+> + * to retire a hazard pointer slot immediately if needed. This callback
+> + * may, for instance, issue an IPI to the relevant CPU.
 > + *
-> + * The compiler barrier() is ineffective at fixing this issue. It does
-> + * not prevent the compiler CSE from losing the address dependency:
+> + * References:
 > + *
-> + * int fct_2_volatile_barriers(void)
-> + * {
-> + *     int *a, *b;
+> + * [1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
+> + *      lock-free objects," in IEEE Transactions on Parallel and
+> + *      Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
+> + */
+> +
+> +#include <linux/rcupdate.h>
+> +
+> +/*
+> + * Hazard pointer slot.
+> + */
+> +struct hp_slot {
+> +	void *addr;
+> +};
+> +
+> +/*
+> + * Hazard pointer context, returned by hp_use().
+> + */
+> +struct hp_ctx {
+> +	struct hp_slot *slot;
+> +	void *addr;
+> +};
+> +
+> +/*
+> + * hp_scan: Scan hazard pointer domain for @addr.
 > + *
-> + *     do {
-> + *         a = READ_ONCE(p);
-> + *         asm volatile ("" : : : "memory");
-> + *         b = READ_ONCE(p);
-> + *     } while (a != b);
-> + *     asm volatile ("" : : : "memory");  <-- barrier()
-> + *     return *b;
-> + * }
+> + * Scan hazard pointer domain for @addr.
+> + * If @retire_cb is NULL, wait to observe that each slot contains a value
+> + * that differs from @addr.
+> + * If @retire_cb is non-NULL, invoke @callback for each slot containing
+> + * @addr.
+> + */
+> +void hp_scan(struct hp_slot __percpu *percpu_slots, void *addr,
+> +	     void (*retire_cb)(int cpu, struct hp_slot *slot, void *addr));
+> +
+> +/* Get the hazard pointer context address (may be NULL). */
+> +static inline
+> +void *hp_ctx_addr(struct hp_ctx ctx)
+> +{
+> +	return ctx.addr;
+> +}
+> +
+> +/*
+> + * hp_allocate: Allocate a hazard pointer.
 > + *
-> + * With gcc 14.2 (arm64):
+> + * Allocate a hazard pointer slot for @addr. The object existence should
+> + * be guaranteed by the caller.
 > + *
-> + * fct_2_volatile_barriers:
-> + *         adrp    x0, .LANCHOR0
-> + *         add     x0, x0, :lo12:.LANCHOR0
-> + * .L2:
-> + *         ldr     x1, [x0]  <-- x1 populated by first load.
-> + *         ldr     x2, [x0]
-> + *         cmp     x1, x2
-> + *         bne     .L2
-> + *         ldr     w0, [x1]  <-- x1 is used for access which should depend on b.
-> + *         ret
+> + * Returns a hazard pointer context.
+> + */
+> +static inline
+> +struct hp_ctx hp_allocate(struct hp_slot __percpu *percpu_slots, void *addr)
+> +{
+> +	struct hp_slot *slot;
+> +	struct hp_ctx ctx;
+> +
+> +	if (!addr)
+> +		goto fail;
+> +	slot = this_cpu_ptr(percpu_slots);
+
+Are you assuming this is called with preemption disabled? Otherwise,
+there could two threads picking up the same hazard pointer slot on one
+CPU,
+
+> +	/*
+> +	 * A single hazard pointer slot per CPU is available currently.
+> +	 * Other hazard pointer domains can eventually have a different
+> +	 * configuration.
+> +	 */
+> +	if (READ_ONCE(slot->addr))
+> +		goto fail;
+
+.. and they could both read an empty slot, and both think they
+successfully protect the objects, which could be different objects.
+
+Or am I missing something subtle here?
+
+> +	WRITE_ONCE(slot->addr, addr);	/* Store B */
+> +	ctx.slot = slot;
+> +	ctx.addr = addr;
+> +	return ctx;
+> +
+> +fail:
+> +	ctx.slot = NULL;
+> +	ctx.addr = NULL;
+> +	return ctx;
+> +}
+> +
+> +/*
+> + * hp_dereference_allocate: Dereference and allocate a hazard pointer.
 > + *
+> + * Returns a hazard pointer context.
+> + */
+> +static inline
+> +struct hp_ctx hp_dereference_allocate(struct hp_slot __percpu *percpu_slots, void * const * addr_p)
+> +{
+> +	struct hp_slot *slot;
+> +	void *addr, *addr2;
+> +	struct hp_ctx ctx;
+> +
+> +	addr = READ_ONCE(*addr_p);
+> +retry:
+> +	ctx = hp_allocate(percpu_slots, addr);
+> +	if (!hp_ctx_addr(ctx))
+> +		goto fail;
+> +	/* Memory ordering: Store B before Load A. */
+> +	smp_mb();
+> +	/*
+> +	 * Use RCU dereference without lockdep checks, because
+> +	 * lockdep is not aware of HP guarantees.
+> +	 */
+> +	addr2 = rcu_access_pointer(*addr_p);	/* Load A */
 
-I could reproduce this in compiler explorer, but I'm curious what flags are
-you using? For me it does a bunch of usage of the stack for temporary storage
-(still incorrectly returns *a though as you pointed).
+Why rcu_access_pointer() instead of READ_ONCE()? Because you want to
+mark the head of address dependency?
 
-Interestingly, if I just move the comparison into an an __always_inline__
-function like below, but without the optimizer hide stuff, gcc 14.2 on arm64
-does generate the correct code:
+Regards,
+Boqun
 
-static inline __attribute__((__always_inline__)) int ptr_eq(const volatile void *a, const volatile void *b)
-{
-    /* No OPTIMIZER_HIDE_VAR */
-    return a == b;
-}
-
-volatile int *p = 0;
-
-int fct_2_volatile_barriers()
-{
-    int *a, *b;
-
-    do {
-        a = READ_ONCE(p);
-        asm volatile ("" : : : "memory");
-        b = READ_ONCE(p);
-    } while (!ptr_eq(a, b));
-    asm volatile ("" : : : "memory");  // barrier()
-    return *b;
-}
-
-But not sure if it fixes the speculation issue you referred to.
-
-Putting back the OPTIMIZER_HIDE_VAR() then just seems to pass the a and b
-stored on the stack through a washing machine:
-
-        ldr     x0, [sp, 8]
-        str     x0, [sp, 8]
-        ldr     x0, [sp]
-        str     x0, [sp]
-
-And here I thought the "" in OPTIMIZER_HIDE_VAR was not supposed to generate
-any code but I guess it is still a NOOP.
-
-Anyway, as such this LGTM since whether OPTIMIZER_HIDE_VAR() used or not, it
-does fix the problem.
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
-
+> +	/*
+> +	 * If @addr_p content has changed since the first load,
+> +	 * clear the hazard pointer and try again.
+> +	 */
+> +	if (!ptr_eq(addr2, addr)) {
+> +		WRITE_ONCE(slot->addr, NULL);
+> +		if (!addr2)
+> +			goto fail;
+> +		addr = addr2;
+> +		goto retry;
+> +	}
+> +	ctx.slot = slot;
+> +	ctx.addr = addr2;
+> +	return ctx;
+> +
+> +fail:
+> +	ctx.slot = NULL;
+> +	ctx.addr = NULL;
+> +	return ctx;
+> +}
+> +
+[...]
