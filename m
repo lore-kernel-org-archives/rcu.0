@@ -1,34 +1,34 @@
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9C41E260B;
-	Fri,  4 Oct 2024 18:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0371223AC1;
+	Fri,  4 Oct 2024 18:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728066587; cv=none; b=Rn8gpQKAxI9w2nCdWFjYWJiTLgNYYC5F9lgd7A7PhYrxzJ3lGITdhLnxcj9hyqeso/tFx1+rBW0C/cFxf5W4Ms2cZB1Y9DVMpYwfCttFQv3OcAkVFR/S4coDdLUbizp6ZqKQ0/fcdZCdQU4HNoBJf2HntshNYQdxYbX5S6PWoio=
+	t=1728066587; cv=none; b=faQwlfxqgk7pttYNaTmASeg+sCLlWDtFv4mfiHBL5JFJOjlJvlK48buSge6qiaIO/UzTczyBcihgXODsRF5CoqEGXHYrf4VNimnnFcLqneF6swzb1cyQyvcDiWxZEmBJxopPqL/q12VySG1oDVfStib0PD9ktWqY8UxFNg4WGDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728066587; c=relaxed/simple;
-	bh=ruHajFuAP+9RCH6285NJzkwm+MUgE21IicKMAn8zEWg=;
+	bh=cSNRj0OI4fdrnI8/xVeVJxRNLIid96/Ux+wWEexmpEo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oY6n9BxhAKonApRoiUv5j7cJwRoeeplohe7KxZcgQFbKDHDysiaigCcbILCJ33YJAsc9LVdoHbAN8kT84uv2PlDFS/3v6aXc8qbbIqpk2wUpmOPs0ZG1yPSPr5d95HEtJqzOAZE5PNYCU0WSB0JE+iYNP+BKj+ZgFntAdOMH4Z0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=GY4zUt2T; arc=none smtp.client-ip=167.114.26.122
+	 MIME-Version; b=gDbd9Khwvl3tbJyrWAmeG0AYGb5drHYOPLRQn3QbYGekaLcS75lKuy5vLK6hXbjuXTQZ6tM22RLZAAwIJ4wr4ni60Sk75W9ULLv/Oktxoh/A0vu1ZYUZnNsoZlnnGFadOzUMd0nT+qUu269Mic1yN7ZuACGJdnDNbZgB0ex251s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=r6ReknGz; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="GY4zUt2T"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="r6ReknGz"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1728066582;
-	bh=ruHajFuAP+9RCH6285NJzkwm+MUgE21IicKMAn8zEWg=;
+	s=smtpout1; t=1728066584;
+	bh=cSNRj0OI4fdrnI8/xVeVJxRNLIid96/Ux+wWEexmpEo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GY4zUt2TAPM5YfusXMih3fV3IYkWKP/euMtVv+/PxLXdHpNsXgxya95dn+7c+pICP
-	 TpoTwpgWojwhrqN47JfH1uuLyYp0vMw/moy7QhNJmUmXEes6GkKZwj8YBIPPdOzGc4
-	 BvWFvWnu7uUKktoRhbiXX6SvCscRhca9DEuWp4GSkYprAWVw2nrADESHEJMN6SrU8i
-	 TofjfkvbUk0C+uiUrkxROZTRRmYYz4GrhJ8xBdy7djHqB1AYp8Sg8DOZz1eEQm+PvP
-	 FjTvIgbhj27mqs4K8KUeht0xuEIFzqFejkGpvNzMDsIJ13HCSkFoEr7TK7LMgFeW/I
-	 DaiWIjTVWM/Dw==
+	b=r6ReknGzb47nzp3khOzTi1spk242OSeTFb23vL+0K6+KnZ9xtgKlm1qYKGpPUi/5N
+	 k18L7NChx3cewWTMkPeBFrJWLb2YBGnZw6UQcuOTtGd+4pUGJBeltmzT/5N1V/IrVl
+	 /I3rqJNwB7ipVWSz81mHN5FT5/ASIDObYV8qwMXFo+TGCnJ+m6gVTyhxvp6ZBatrYt
+	 zwtjoAUhMDofxSGwv+3tfZ5oblunbsWNnPf0LAwqTjkHKwbJfSr90Be0hfZvsmCU7y
+	 Hi8ASQ2gn6o5cMeEbdLjSBX42KcSWFbd08uhJ7Xvx9tA+8ZY9iKQCh9cPsX37eWCGz
+	 8aG3MKyQFtazw==
 Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XKxsf36hmzN8Q;
-	Fri,  4 Oct 2024 14:29:42 -0400 (EDT)
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XKxsg4h1LzNDr;
+	Fri,  4 Oct 2024 14:29:43 -0400 (EDT)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: Boqun Feng <boqun.feng@gmail.com>
 Cc: linux-kernel@vger.kernel.org,
@@ -62,13 +62,10 @@ Cc: linux-kernel@vger.kernel.org,
 	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
 	rcu@vger.kernel.org,
 	linux-mm@kvack.org,
-	lkmm@lists.linux.dev,
-	Gary Guo <gary@garyguo.net>,
-	Nikita Popov <github@npopov.com>,
-	llvm@lists.linux.dev
-Subject: [RFC PATCH v2 1/4] compiler.h: Introduce ptr_eq() to preserve address dependency
-Date: Fri,  4 Oct 2024 14:27:31 -0400
-Message-Id: <20241004182734.1761555-2-mathieu.desnoyers@efficios.com>
+	lkmm@lists.linux.dev
+Subject: [RFC PATCH v2 3/4] hp: Implement Hazard Pointers
+Date: Fri,  4 Oct 2024 14:27:33 -0400
+Message-Id: <20241004182734.1761555-4-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20241004182734.1761555-1-mathieu.desnoyers@efficios.com>
 References: <20241004182734.1761555-1-mathieu.desnoyers@efficios.com>
@@ -80,35 +77,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Compiler CSE and SSA GVN optimizations can cause the address dependency
-of addresses returned by rcu_dereference to be lost when comparing those
-pointers with either constants or previously loaded pointers.
+This API provides existence guarantees of objects through Hazard
+Pointers (HP). This minimalist implementation is specific to use
+with preemption disabled, but can be extended further as needed.
 
-Introduce ptr_eq() to compare two addresses while preserving the address
-dependencies for later use of the address. It should be used when
-comparing an address returned by rcu_dereference().
+Each HP domain defines a fixed number of hazard pointer slots (nr_cpus)
+across the entire system.
 
-This is needed to prevent the compiler CSE and SSA GVN optimizations
-from using @a (or @b) in places where the source refers to @b (or @a)
-based on the fact that after the comparison, the two are known to be
-equal, which does not preserve address dependencies and allows the
-following misordering speculations:
+Its main benefit over RCU is that it allows fast reclaim of
+HP-protected pointers without needing to wait for a grace period.
 
-- If @b is a constant, the compiler can issue the loads which depend
-  on @a before loading @a.
-- If @b is a register populated by a prior load, weakly-ordered
-  CPUs can speculate loads which depend on @a before loading @a.
+It also allows the hazard pointer scan to call a user-defined callback
+to retire a hazard pointer slot immediately if needed. This callback
+may, for instance, issue an IPI to the relevant CPU.
 
-The same logic applies with @a and @b swapped.
+There are a few possible use-cases for this in the Linux kernel:
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+  - Improve performance of mm_count by replacing lazy active mm by HP.
+  - Guarantee object existence on pointer dereference to use refcount:
+    - replace locking used for that purpose in some drivers,
+    - replace RCU + inc_not_zero pattern,
+  - rtmutex: Improve situations where locks need to be taken in
+    reverse dependency chain order by guaranteeing existence of
+    first and second locks in traversal order, allowing them to be
+    locked in the correct order (which is reverse from traversal
+    order) rather than try-lock+retry on nested lock.
+
+References:
+
+[1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
+     lock-free objects," in IEEE Transactions on Parallel and
+     Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
+
+Link: https://lore.kernel.org/lkml/j3scdl5iymjlxavomgc6u5ndg3svhab6ga23dr36o4f5mt333w@7xslvq6b6hmv/
+Link: https://lpc.events/event/18/contributions/1731/
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Acked-by: "Paul E. McKenney" <paulmck@kernel.org>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>
@@ -119,6 +124,7 @@ Cc: Alan Stern <stern@rowland.harvard.edu>
 Cc: John Stultz <jstultz@google.com>
 Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Boqun Feng <boqun.feng@gmail.com>
 Cc: Frederic Weisbecker <frederic@kernel.org>
 Cc: Joel Fernandes <joel@joelfernandes.org>
@@ -134,94 +140,250 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: maged.michael@gmail.com
 Cc: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Gary Guo <gary@garyguo.net>
 Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
 Cc: rcu@vger.kernel.org
 Cc: linux-mm@kvack.org
 Cc: lkmm@lists.linux.dev
-Cc: Nikita Popov <github@npopov.com>
-Cc: llvm@lists.linux.dev
 ---
 Changes since v0:
-- Include feedback from Alan Stern.
+- Remove slot variable from hp_dereference_allocate().
 ---
- include/linux/compiler.h | 63 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ include/linux/hp.h | 158 +++++++++++++++++++++++++++++++++++++++++++++
+ kernel/Makefile    |   2 +-
+ kernel/hp.c        |  46 +++++++++++++
+ 3 files changed, 205 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/hp.h
+ create mode 100644 kernel/hp.c
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 2df665fa2964..75a378ae7af1 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -186,6 +186,69 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- 	__asm__ ("" : "=r" (var) : "0" (var))
- #endif
- 
+diff --git a/include/linux/hp.h b/include/linux/hp.h
+new file mode 100644
+index 000000000000..e85fc4365ea2
+--- /dev/null
++++ b/include/linux/hp.h
+@@ -0,0 +1,158 @@
++// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
++//
++// SPDX-License-Identifier: LGPL-2.1-or-later
++
++#ifndef _LINUX_HP_H
++#define _LINUX_HP_H
++
 +/*
-+ * Compare two addresses while preserving the address dependencies for
-+ * later use of the address. It should be used when comparing an address
-+ * returned by rcu_dereference().
++ * HP: Hazard Pointers
 + *
-+ * This is needed to prevent the compiler CSE and SSA GVN optimizations
-+ * from using @a (or @b) in places where the source refers to @b (or @a)
-+ * based on the fact that after the comparison, the two are known to be
-+ * equal, which does not preserve address dependencies and allows the
-+ * following misordering speculations:
++ * This API provides existence guarantees of objects through hazard
++ * pointers.
 + *
-+ * - If @b is a constant, the compiler can issue the loads which depend
-+ *   on @a before loading @a.
-+ * - If @b is a register populated by a prior load, weakly-ordered
-+ *   CPUs can speculate loads which depend on @a before loading @a.
++ * It uses a fixed number of hazard pointer slots (nr_cpus) across the
++ * entire system for each HP domain.
 + *
-+ * The same logic applies with @a and @b swapped.
++ * Its main benefit over RCU is that it allows fast reclaim of
++ * HP-protected pointers without needing to wait for a grace period.
 + *
-+ * Return value: true if pointers are equal, false otherwise.
++ * It also allows the hazard pointer scan to call a user-defined callback
++ * to retire a hazard pointer slot immediately if needed. This callback
++ * may, for instance, issue an IPI to the relevant CPU.
 + *
-+ * The compiler barrier() is ineffective at fixing this issue. It does
-+ * not prevent the compiler CSE from losing the address dependency:
++ * References:
 + *
-+ * int fct_2_volatile_barriers(void)
-+ * {
-+ *     int *a, *b;
-+ *
-+ *     do {
-+ *         a = READ_ONCE(p);
-+ *         asm volatile ("" : : : "memory");
-+ *         b = READ_ONCE(p);
-+ *     } while (a != b);
-+ *     asm volatile ("" : : : "memory");  <-- barrier()
-+ *     return *b;
-+ * }
-+ *
-+ * With gcc 14.2 (arm64):
-+ *
-+ * fct_2_volatile_barriers:
-+ *         adrp    x0, .LANCHOR0
-+ *         add     x0, x0, :lo12:.LANCHOR0
-+ * .L2:
-+ *         ldr     x1, [x0]  <-- x1 populated by first load.
-+ *         ldr     x2, [x0]
-+ *         cmp     x1, x2
-+ *         bne     .L2
-+ *         ldr     w0, [x1]  <-- x1 is used for access which should depend on b.
-+ *         ret
-+ *
-+ * On weakly-ordered architectures, this lets CPU speculation use the
-+ * result from the first load to speculate "ldr w0, [x1]" before
-+ * "ldr x2, [x0]".
-+ * Based on the RCU documentation, the control dependency does not
-+ * prevent the CPU from speculating loads.
++ * [1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
++ *      lock-free objects," in IEEE Transactions on Parallel and
++ *      Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
 + */
-+static __always_inline
-+int ptr_eq(const volatile void *a, const volatile void *b)
++
++#include <linux/rcupdate.h>
++
++/*
++ * Hazard pointer slot.
++ */
++struct hp_slot {
++	void *addr;
++};
++
++/*
++ * Hazard pointer context, returned by hp_use().
++ */
++struct hp_ctx {
++	struct hp_slot *slot;
++	void *addr;
++};
++
++/*
++ * hp_scan: Scan hazard pointer domain for @addr.
++ *
++ * Scan hazard pointer domain for @addr.
++ * If @retire_cb is NULL, wait to observe that each slot contains a value
++ * that differs from @addr.
++ * If @retire_cb is non-NULL, invoke @callback for each slot containing
++ * @addr.
++ */
++void hp_scan(struct hp_slot __percpu *percpu_slots, void *addr,
++	     void (*retire_cb)(int cpu, struct hp_slot *slot, void *addr));
++
++/* Get the hazard pointer context address (may be NULL). */
++static inline
++void *hp_ctx_addr(struct hp_ctx ctx)
 +{
-+	OPTIMIZER_HIDE_VAR(a);
-+	OPTIMIZER_HIDE_VAR(b);
-+	return a == b;
++	return ctx.addr;
 +}
 +
- #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
- 
- /**
++/*
++ * hp_allocate: Allocate a hazard pointer.
++ *
++ * Allocate a hazard pointer slot for @addr. The object existence should
++ * be guaranteed by the caller. Expects to be called from preempt
++ * disable context.
++ *
++ * Returns a hazard pointer context.
++ */
++static inline
++struct hp_ctx hp_allocate(struct hp_slot __percpu *percpu_slots, void *addr)
++{
++	struct hp_slot *slot;
++	struct hp_ctx ctx;
++
++	if (!addr)
++		goto fail;
++	slot = this_cpu_ptr(percpu_slots);
++	/*
++	 * A single hazard pointer slot per CPU is available currently.
++	 * Other hazard pointer domains can eventually have a different
++	 * configuration.
++	 */
++	if (READ_ONCE(slot->addr))
++		goto fail;
++	WRITE_ONCE(slot->addr, addr);	/* Store B */
++	ctx.slot = slot;
++	ctx.addr = addr;
++	return ctx;
++
++fail:
++	ctx.slot = NULL;
++	ctx.addr = NULL;
++	return ctx;
++}
++
++/*
++ * hp_dereference_allocate: Dereference and allocate a hazard pointer.
++ *
++ * Returns a hazard pointer context. Expects to be called from preempt
++ * disable context.
++ */
++static inline
++struct hp_ctx hp_dereference_allocate(struct hp_slot __percpu *percpu_slots, void * const * addr_p)
++{
++	void *addr, *addr2;
++	struct hp_ctx ctx;
++
++	addr = READ_ONCE(*addr_p);
++retry:
++	ctx = hp_allocate(percpu_slots, addr);
++	if (!hp_ctx_addr(ctx))
++		goto fail;
++	/* Memory ordering: Store B before Load A. */
++	smp_mb();
++	/*
++	 * Use RCU dereference without lockdep checks, because
++	 * lockdep is not aware of HP guarantees.
++	 */
++	addr2 = rcu_access_pointer(*addr_p);	/* Load A */
++	/*
++	 * If @addr_p content has changed since the first load,
++	 * clear the hazard pointer and try again.
++	 */
++	if (!ptr_eq(addr2, addr)) {
++		WRITE_ONCE(ctx.slot->addr, NULL);
++		if (!addr2)
++			goto fail;
++		addr = addr2;
++		goto retry;
++	}
++	/*
++	 * Use addr2 loaded from rcu_access_pointer() to preserve
++	 * address dependency ordering.
++	 */
++	ctx.addr = addr2;
++	return ctx;
++
++fail:
++	ctx.slot = NULL;
++	ctx.addr = NULL;
++	return ctx;
++}
++
++/* Retire the hazard pointer in @ctx. */
++static inline
++void hp_retire(const struct hp_ctx ctx)
++{
++	smp_store_release(&ctx.slot->addr, NULL);
++}
++
++#endif /* _LINUX_HP_H */
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 3c13240dfc9f..ec16de96fa80 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -7,7 +7,7 @@ obj-y     = fork.o exec_domain.o panic.o \
+ 	    cpu.o exit.o softirq.o resource.o \
+ 	    sysctl.o capability.o ptrace.o user.o \
+ 	    signal.o sys.o umh.o workqueue.o pid.o task_work.o \
+-	    extable.o params.o \
++	    extable.o params.o hp.o \
+ 	    kthread.o sys_ni.o nsproxy.o \
+ 	    notifier.o ksysfs.o cred.o reboot.o \
+ 	    async.o range.o smpboot.o ucount.o regset.o ksyms_common.o
+diff --git a/kernel/hp.c b/kernel/hp.c
+new file mode 100644
+index 000000000000..b2447bf15300
+--- /dev/null
++++ b/kernel/hp.c
+@@ -0,0 +1,46 @@
++// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
++//
++// SPDX-License-Identifier: LGPL-2.1-or-later
++
++/*
++ * HP: Hazard Pointers
++ */
++
++#include <linux/hp.h>
++#include <linux/percpu.h>
++
++/*
++ * hp_scan: Scan hazard pointer domain for @addr.
++ *
++ * Scan hazard pointer domain for @addr.
++ * If @retire_cb is non-NULL, invoke @callback for each slot containing
++ * @addr.
++ * Wait to observe that each slot contains a value that differs from
++ * @addr before returning.
++ */
++void hp_scan(struct hp_slot __percpu *percpu_slots, void *addr,
++	     void (*retire_cb)(int cpu, struct hp_slot *slot, void *addr))
++{
++	int cpu;
++
++	/*
++	 * Store A precedes hp_scan(): it unpublishes addr (sets it to
++	 * NULL or to a different value), and thus hides it from hazard
++	 * pointer readers.
++	 */
++
++	if (!addr)
++		return;
++	/* Memory ordering: Store A before Load B. */
++	smp_mb();
++	/* Scan all CPUs slots. */
++	for_each_possible_cpu(cpu) {
++		struct hp_slot *slot = per_cpu_ptr(percpu_slots, cpu);
++
++		if (retire_cb && smp_load_acquire(&slot->addr) == addr)	/* Load B */
++			retire_cb(cpu, slot, addr);
++		/* Busy-wait if node is found. */
++		while ((smp_load_acquire(&slot->addr)) == addr)	/* Load B */
++			cpu_relax();
++	}
++}
 -- 
 2.39.2
 
