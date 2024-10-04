@@ -1,104 +1,89 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6579684D2C
-	for <rcu@vger.kernel.org>; Thu,  3 Oct 2024 23:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BB6155742;
+	Fri,  4 Oct 2024 10:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727999413; cv=none; b=MPaU2HCHewvykXYoGrJuFfNKBx8bT+npZpj1KEOId/kI9poB9j24kNDr3CzdeCGrtySkN+K6SPtagVG2fVSdWy837E5Vv6DKUelRgqpyE656dstB+fzFkfidUeJPNfsGWLBD1mu5M5koifMSnXK3m63Q7iaL5kHmEYAiKkpRRfM=
+	t=1728038329; cv=none; b=hO2w/GTlkHOTwGd0XeI5Ot0Ie57L8gmGc3w7SqQ5TKx3dlYsH69lZruM8au/FJ/w4DkvUtuo0DpHAFGoCA2xMZRp0pd4FqNHAywl3SNJqTEEwJiS36pzcrQycBnYMrw1Rl+mWcK0Gxw72UZkr5ucSRD46lH4g9pMv74feoqf12s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727999413; c=relaxed/simple;
-	bh=P4LWAW2BuFWicMI3nETfSqQILrG3rvRQdtJX9isTTm8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z/K9zc/SlTHXsYOrfgHfZ5qs7Ji50YRGobvXWGzs3GRONbO//99GpcjgeI8NFxkbmU8IhC/mXFOi3c7++k7zEIv0ISv38bjl2qpjJBBw88LydpxIkwoYwhrY6vNl0Bxust5H9xamz6K90gkRqON5Q63jz6gL3nfQykT9HjiLpww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oggh95Pv; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1728038329; c=relaxed/simple;
+	bh=7mubocY6kh3/gtRFZ62Bo56SeQ9GZ5pPxVAe7t8I3uU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ALzaZb/h+dNM0CLi9vkJhLiDBgKhoj1TvwO1CXIVighOJHEqhJGJCK0tFbpDICsflRSNdT4KtBo82VGxAW8JXDHyCcb3Ou8IffAwudZxcGoj5WYu/6JXMDxLuOVSKQvdYwvVGVuZja1NEHFzD05O3g/gQetntjGVh6hGhrNldwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LC+6I5xC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tLNGrjDB; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oggh95Pv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 804F3C4CEC5;
-	Thu,  3 Oct 2024 23:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727999413;
-	bh=P4LWAW2BuFWicMI3nETfSqQILrG3rvRQdtJX9isTTm8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Oggh95Pv5xS/dCu8mfGNmwpNCVJoFUf28Q0HUfE6SXx2z02Jw3b6FESZmuL+VB+CN
-	 T8UkfSmSzsXR2/DscS1Xg914Fdxh/3fpQnUx3HaZCKOH544qcDXJ53XMBamHky1LEl
-	 x5n+/gfWRmL5CxXLZSOYfJZZ8AtaP2+Jrwg3mtCU6HGtKOSAUXf+BqjAuPYGPPTcil
-	 eIhXYbIJNQMyaHKMFew9u8LQnyMolt+Qye/QedvRn5mrPkPAcpr8dVXr319posYxAb
-	 3KBpl+PgSnwva7DLiOo4Z8Erwv5ccQe9vihXmJlwtrovHebJNcxumv2ns9Na6aYhnl
-	 MgIr7CsNuLPVg==
-Date: Fri, 4 Oct 2024 01:50:09 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LC+6I5xC";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tLNGrjDB"
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1728038326;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=S92vnLrom7/3j1daVQozNqEwDMB0Bu21+iMpxwsPiH4=;
+	b=LC+6I5xCV3ZWTwGH2p7xTpf/BO5bdarUrXTcctB2MkkI7nF+YbRWkjNChBLw7hhqMvWjuI
+	tUPAGp9US5MxG69N2tWungRnwQZbWtjAxgQhigmf4c8E9S5upKGcUyDJij6ZGcALmucNcY
+	GBGNC+tQegSdoZscp5bmkJUa/B6LEqVyDKFh/6OFAqRlPl7MDdWsF4vv20DNiiTqQAkdRW
+	cgMUBRYCimt1g57+vFEdihMfCFPXW3jwtk9FZTn3qpyvYbw5OBCg/F4Wi3tS4aCD5YY1MA
+	MYYoErKi8D5T3imbNGDAVTae1sdV2I0OQBva56W4+FfO745IaOiiahzlKhWabg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1728038326;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=S92vnLrom7/3j1daVQozNqEwDMB0Bu21+iMpxwsPiH4=;
+	b=tLNGrjDBFSJ6VKB1UrCM3FK9Sxcl7JO5NvEmXtxJOV4bGRcu/SQW64viKRp5zLXZxfrpGZ
+	Twfp765G/LDe7PBg==
+To: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, rcu@vger.kernel.org
-Subject: Re: One-off rcu_nocb_rdp_deoffload bug
-Message-ID: <Zv8tsbnYDgFNfSPq@pavilion.home>
-References: <2747e596-5359-4f32-b3e0-0b2368d37017@paulmck-laptop>
- <CALm+0cV0GwT5umPRZrZWg4oqXwdjcWz-NkxkhgxQkv=NypQthA@mail.gmail.com>
- <CAFTL4hzY09QEGE+sTqc02d2LkuH_ObYKiuVTfGnrtwjtYiwt4A@mail.gmail.com>
- <d31bdc50-a61b-446b-926d-b3ddde832a91@paulmck-laptop>
- <236a1f66-f128-44e4-9272-7ae4dbad7485@paulmck-laptop>
- <ZthlEg2njJwXMk32@localhost.localdomain>
- <5bb81db1-bf62-4edc-8d71-dfa192dda39f@paulmck-laptop>
- <Ztn5MOwk4nIfTWv-@localhost.localdomain>
- <Ztn7PpfFiYDRBjWX@localhost.localdomain>
- <CALm+0cXA8LJM7RWO5uqowkN3-gZYidPuyXZoHOJi10cJja1qPQ@mail.gmail.com>
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/1] softirq: Use a dedicated thread for timer wakeups on PREEMPT_RT.
+Date: Fri,  4 Oct 2024 12:17:03 +0200
+Message-ID: <20241004103842.131014-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALm+0cXA8LJM7RWO5uqowkN3-gZYidPuyXZoHOJi10cJja1qPQ@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-Le Thu, Oct 03, 2024 at 10:01:57PM +0800, Z qiang a écrit :
-> When the rcuoc kthreads process rcu callback, before invoke
-> rcu_segcblist_add_len(&rdp->cblist, -count),
-> the rcu_barrier() can insert rcu_barrier_callback() func to offline
-> cpu rdp's->list.
+Hi,
 
-Excellent analysis! Indeed we can have:
+the following was in the PREEMPT_RT queue since last softirq rework. The
+result is that timer wake ups (hrtimer, timer_list) happens in hardirq
+processing them requires to wake ksoftirqd leading two:
+- ksoftirqd will consume all further softirqs. That means all
+  soft interrupts that would be processed in the threaded interrupt will
+  no be delayed to ksoftirqd. The threaded interrupt runs at higher
+  priority than ksoftirqd.
 
-CPU 0                         CPU 1                          CPU 2
------                         -----                          -------
+- ksoftirqd runs at SCHED_OTHER so it will compete for resources with
+  all other tasks in the system, potentially delayed the processing
+  further.
 
-// deoffload                  // nocb_cb_wait                // rcutorture
-rcu_barrier()
-    rcu_segcblist_entrain()
-        rcu_segcblist_add_len(1);
-                             rcu_do_batch()
-                                 rcu_barrier_callback()
-                                                             rcu_barrier()
-                                                                 // still see len == 1
-                                                                 rcu_segcblist_entrain()
-                                                                      rcu_segcblist_add_len(1);
-                                 // decrement len
-                                 rcu_segcblist_add_len(-1);
-                             kthread_parkme()
-// Warn because there is
-// still a pending barrier
-WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist));
+The idea was to let the timers be processed by a dedicated thread
+running at low SCHED_FIFO priority.
+While looking at it again, it might make sense to have the
+pending_softirq flag per-thread to avoid threads with higher priority
+picking up softirqs from low-priority threads. This isn't yet a problem
+because adding softirqs for processing happens only from threaded
+interrupts. So the low-priority thread will wait until the high-priority
+thread is done. And the high-priority thread will PI-boost the
+low-priority thread until it is done. It would only make sense to make
+the flags per-thread once the BH lock is gone.
 
+The patch is limited to PREEMPT_RT. The ksoftirqd bullets from above
+apply also to !PREEMPT_RT +threadirqs. Would it make sense to restrict
+it to force_irqthreads() instead?
 
-And the worst is that the second rcu_barrier() is ignored.
+Sebastian
 
-> 
-> 6,5408,150692937,-,caller=T453;rcu: rcu_callback func: rcu_barrier_callback
-> 
-> Maybe we can wait until rcu_segcblist_n_cbs(&rdp->cblist) return zero
-> and then invoke kthread_parkme() in rcuoc kthreads.
-
-> Any thoughts ?
-
-Sounds good, or simply make sure that rdp->nocb_cb_sleep == false before
-parking? Since kthread_park() should only be called after rcu_barrier() and
-then rdp->nocb_cb_sleep shouldn't be set to true as long as there is a pending
-one? Well we can also add a WARN_ON_ONCE(rcu_segcblist_n_cbs(&rdp->cblist))
-before calling kthread_park().
-
-Would you like to send the fix?
-
-Thanks.
