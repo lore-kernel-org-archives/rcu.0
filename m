@@ -1,130 +1,159 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F9C1D3560
-	for <rcu@vger.kernel.org>; Mon,  7 Oct 2024 13:38:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918D51D47B0;
+	Mon,  7 Oct 2024 13:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728308302; cv=none; b=EikRbCqmqi3DDecJg4N9uIGY/nnVixo8KzIdN3h7bu54ddROuMFrs2y/ltDoQoKnwXRlWXjtIYKbswd5Tv03Jazo/rsX7DR7r8Aq+KhGOmfL8iqtA+ncEYC0nKZGZOuuRD8/r2+afDWMlj4LXRO6xQLiKK9ikm0c1aAyy73Gdog=
+	t=1728308934; cv=none; b=iBYOBZO/1tAmxSrNUjqX5IUQazl0g+e+IWOTqK0EeldRh9QqTJHfRsEuomg7NE7iofec8RnG7+tpATMtCryszqXodLPHDJnwBD3AyxtXnYnlJIGiFMLQLE0hceaf1N00RFQkNfc+T5FXPJsUz7MzpQtl9zj6rZSq8z849NGUEVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728308302; c=relaxed/simple;
-	bh=yVdeGgNTfeFuIEVPc7u0AK0zINUin07XGVxlqUetaSQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DGLTGkPX9MOCPXwZCfOJTdUQenb8tmy9Wwl0TtY0GDUHouX5UVYmI+npf/XabzdDB2fcwuWNAmLQBVRVCoBXfdNtTuzdT5GYYZ+v1TGicQUzlP+n6428v/56JUSaz6oFYGCxdvjV7DSew3CoiZ8r+vB/bBk0LbCsDJEuv5MzJuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hdK03pHB; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1728308934; c=relaxed/simple;
+	bh=HqvDmsEwt3nBhi9RmWBkqnjY7cwdcYMS/zw0M0PgAxs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yvlx9kk7/Z0nesfrbpKqhjIgYuD6deZzSR3+kuvuUhPlA0qy1cNuTfOPezbo94Ps2ICMA+A9alEiUhbWwuUlqOX0AOdU9QbaG4ah7owFIuPaTcG1w2w+uA3dnmQavPtyHJ9x3ZdXMh5Qsf/oR2IZ3diEoTar9yFeJ9XaHjPBc28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mgpMNS6r; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hdK03pHB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728308299;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y5DPNZskkiUAq4LS5OFpU8MIweVBZO51RYIR24GV8o8=;
-	b=hdK03pHBgUv71YXK4AYHt02n1CH+DiY9M9HdpLFOzKlb+wZvnhhg6++u3cj9KC85sjAX3+
-	UfzDri+Vpc/zwnTB8fIVDicEhYBshtXViFgYqOoiSIXcLVunIOvbUDqHnnQKjzJQReyhj9
-	TIteoPvxBl0F9wJYNFMT3CecSaiQ9GY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-411-VsF-aASbPLmtpbBJ7fZQ6g-1; Mon, 07 Oct 2024 09:38:18 -0400
-X-MC-Unique: VsF-aASbPLmtpbBJ7fZQ6g-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-42caf073db8so39782875e9.3
-        for <rcu@vger.kernel.org>; Mon, 07 Oct 2024 06:38:18 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgpMNS6r"
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-45aeef3ce92so31714471cf.2;
+        Mon, 07 Oct 2024 06:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728308931; x=1728913731; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S5zlc/854P3mwwD/0En7ZUUQ9UADgcI2OWzxIEzuKD0=;
+        b=mgpMNS6rlBys3uXDsAhuXV4H5+dCl9HyjgFdlxjYl4oQb3hCWvLiLxNswnJ0HS2929
+         Klrt400Goo93kqnHk3pl5Ba+rOO/O8ysz45/Qb4czw5CA+LgfPJJ9vFBRlmXCfEfVndt
+         yn9qcGcSgafE7//5270qFCJSqjQmeA4PmLUjzpNobwinRlBJCyPkW0dezeMjUSg6Jz36
+         mtL7V3akmtf5rh6AD53jKdQMheNbBNH/oiqwX/jVJJgnVN7+3m29JuGKptj9qEMNSYCJ
+         sEZnubS7RqAXqfLYqMHKM/CS+oFbcQlLDa/EeZ+yn+YllNxu+fofSCtr04dTWmQP/Jfk
+         IsYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728308297; x=1728913097;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y5DPNZskkiUAq4LS5OFpU8MIweVBZO51RYIR24GV8o8=;
-        b=IYiB1Wkb6Bs4BzIaoSFbl2VQc0K4I69GHaoqhntF5wB2jfKG/+RaECDKedPxKIiQms
-         TB5Vfez8FrI0lDdjc1uxt+ed5Yzw792RfuX/1xqaIGUlFioBegkE0LEan8xlyOJFQpIm
-         H4M9Hn5lBN3RRxeEx8eiZhMeh/OU7MLAh9N88rHEpeVBi+Gxjcp8h3fmQanfwIke69Hc
-         H/ZvOZS4nVrnfJHHdpWIbzOMxWARnix5vaDqv/e6CxqtRE+v2qmhDRsER+X3/1Mwcq7u
-         3lbBiWI53WfDxmpyAZqJ2nsfAfusGOWUBA7j0koICjuZ7ZImn6SwJrceyaPRBvWm0m0i
-         V0Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEJ3Kjsi+uZl0rnMkQdyQRi5kYnZyfM3b1SPSGOzX+rLL8qqQPrlgoPsCCt2dFdDdnO9U=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFi84iPWz64CqF1MnhLNpK8NPSl06KU1bv92ZeKfq5xqF6itU9
-	K85+QFz2IRTfBfy6FhXpI1MuZWCnVs0akq3JY7iXBSt7TeTkYEu/i+zN4P2y6Dp+SbaHP6kWCyi
-	luhdoLHsBKluRCFuyHnOzGfAYzGll7IpUBAQBPEc1aBD0zmOhgw==
-X-Received: by 2002:adf:ea8c:0:b0:374:c287:929b with SMTP id ffacd0b85a97d-37d0e6bb291mr6937290f8f.4.1728308296948;
-        Mon, 07 Oct 2024 06:38:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE0TwOIoXGhtncVqqSCdfhnggtMr8A9YmeYV2RL1PX3MgPcnG86Oq8dGEM8Qg3X1MoztO3Yqw==
-X-Received: by 2002:adf:ea8c:0:b0:374:c287:929b with SMTP id ffacd0b85a97d-37d0e6bb291mr6937277f8f.4.1728308296459;
-        Mon, 07 Oct 2024 06:38:16 -0700 (PDT)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d1690f75bsm5766858f8f.23.2024.10.07.06.38.15
+        d=1e100.net; s=20230601; t=1728308931; x=1728913731;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S5zlc/854P3mwwD/0En7ZUUQ9UADgcI2OWzxIEzuKD0=;
+        b=nYB8MBd9Ba7mnoOXmHxtJ9e8gYEJw537fYvpvMVHErNnDvnUT5gQemKej78vY3FAXd
+         93cP/eqkMSs1nKkN2WN0/KLrv4sJ/CPy9wgyceC57mLZ3HSjsKo5+lOU5+4YEFDiMq/6
+         n5O4c304vJH+cWqLMyrvr6wDDUTj9VHr/aOgaAdumGUTBwuM/sSmTTwTq9s6ONyd1sbc
+         Cr/uVgu0Re4uN+ETrEpxv0v0yMiAt3AD4qlAV0RUTQINfoDhgaZDT3RcE+YAKkAiGMot
+         Ps4lmgOvs99nRXyvomTKf80G9EaoJWa7KES8Ygs1GYU+Lvx2x8Rb6dQvS0iWGQ1ZqvrB
+         2ZFw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUSZHL1je41+VOZSlR+H4pv55VXiW6vEfR2ZgLqw36zIuxakuoUQKVNtNLj+jnjfpMefNl/hmie6WRvjU=@vger.kernel.org, AJvYcCW2zmLwWv0lhKqbI9u/UI608sEGHRuFTLOjsobJlMODK+oh6SqcvzuesdaulJ4X2C+RU7IJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzmKpZPrJlytWqubccsMBk24GwmbmwzTyRNdeCNlYgoxFupYHBW
+	jckPGUb1YSiX68rGL6jI0yPFY0V6oltqn2Ffvrx8F2hb6RF1pOF9
+X-Google-Smtp-Source: AGHT+IF6VdfvkU2hzrMRUahm5soqFN17kLE0fZGLWYpM4oiAxmIcoVTIgYNseUzL9676we7a+dYQNw==
+X-Received: by 2002:a05:622a:1301:b0:456:4655:34e6 with SMTP id d75a77b69052e-45d9ba4f77bmr168237951cf.23.1728308931437;
+        Mon, 07 Oct 2024 06:48:51 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45da74fabffsm26429431cf.28.2024.10.07.06.48.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2024 06:38:16 -0700 (PDT)
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
-To: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>, Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, Yiwei
- Zhang <zzyiwei@google.com>, Lai Jiangshan <jiangshanlai@gmail.com>, "Paul
- E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
- Gerd Hoffmann <kraxel@redhat.com>, Linux kernel regressions list
- <regressions@lists.linux.dev>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that
- support self-snoop
-In-Reply-To: <df3c6560-dd37-4ec2-9b7e-1ad4c3ceba07@leemhuis.info>
-References: <20240309010929.1403984-1-seanjc@google.com>
- <20240309010929.1403984-6-seanjc@google.com> <877cbyuzdn.fsf@redhat.com>
- <df3c6560-dd37-4ec2-9b7e-1ad4c3ceba07@leemhuis.info>
-Date: Mon, 07 Oct 2024 15:38:15 +0200
-Message-ID: <87iku4ghiw.fsf@redhat.com>
+        Mon, 07 Oct 2024 06:48:51 -0700 (PDT)
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 1B80D120006E;
+	Mon,  7 Oct 2024 09:48:50 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Mon, 07 Oct 2024 09:48:50 -0400
+X-ME-Sender: <xms:wuYDZ7UYRZs4syIMayCC4UeoyecbczN_y4XKIb4ZRMcTyh52I1dcwA>
+    <xme:wuYDZzk_cDWjpna8tU_w-MPeiJpvGEeugb6PCSaMvLXe4KZ3EB0xBrJxc0yDuOcA8
+    GUzCCGINyqKILGZBg>
+X-ME-Received: <xmr:wuYDZ3Z5hEefZ-aIGwro7A7D-q8RXUP3yKeUuMDFzNq7d4Qy7DV8qHvnmck>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvledgieelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleei
+    vedtgeeuhfegueevieduffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhi
+    thihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmh
+    grihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepfeefpdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehmrghthhhivghurdguvghsnhhohigvrhhsse
+    gvfhhfihgtihhoshdrtghomhdprhgtphhtthhopehtohhrvhgrlhgusheslhhinhhugidq
+    fhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfoh
+    hunhgurghtihhonhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggr
+    ugdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnh
+    gvlhdrohhrghdprhgtphhtthhopehnphhighhgihhnsehgmhgrihhlrdgtohhmpdhrtghp
+    thhtohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghpthhtohepghhrvghgkh
+    hhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepsghighgvrghs
+    hieslhhinhhuthhrohhnihigrdguvg
+X-ME-Proxy: <xmx:wuYDZ2UnMwoOCDKgZnLYpfSR5H6O4tctjffSG198sGEnRoE-tBEYJw>
+    <xmx:wuYDZ1lIjHCxJEvA2EG0eXc6-78kYmdqFdi1xg6xTcyGf91VcOOUYQ>
+    <xmx:wuYDZzdgrVXdeKaQmDUBrjU9oyc4dY3z4ZwoLgx3AcacIyfCca7Zdg>
+    <xmx:wuYDZ_HylBZwSZ0kvnqzeJjYPxJ_idC6jVlPYz43bu7sMdwn3TJPqw>
+    <xmx:wuYDZ3nDjGx3in1J9ewoyqi1NWSvLW_n_mhJ2mXAAT_gqL_qWLWvAMbr>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Oct 2024 09:48:49 -0400 (EDT)
+Date: Mon, 7 Oct 2024 06:47:31 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Paul E. McKenney" <paulmck@kernel.org>,	Will Deacon <will@kernel.org>,
+	Alan Stern <stern@rowland.harvard.edu>,	John Stultz <jstultz@google.com>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,	Vlastimil Babka <vbabka@suse.cz>,
+ maged.michael@gmail.com,	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,	rcu@vger.kernel.org,
+ linux-mm@kvack.org, lkmm@lists.linux.dev
+Subject: Re: [RFC PATCH 3/4] hp: Implement Hazard Pointers
+Message-ID: <ZwPmc_CXW15ilRaK@boqun-archlinux>
+References: <20241002010205.1341915-1-mathieu.desnoyers@efficios.com>
+ <20241002010205.1341915-4-mathieu.desnoyers@efficios.com>
+ <Zv3kP477pGeOxuu9@boqun-archlinux>
+ <bb890ea6-742f-40b7-ad3d-aa28f658fa3d@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb890ea6-742f-40b7-ad3d-aa28f658fa3d@efficios.com>
 
-"Linux regression tracking (Thorsten Leemhuis)"
-<regressions@leemhuis.info> writes:
+On Thu, Oct 03, 2024 at 09:30:53AM -0400, Mathieu Desnoyers wrote:
+[...]
+> > > +	/*
+> > > +	 * Use RCU dereference without lockdep checks, because
+> > > +	 * lockdep is not aware of HP guarantees.
+> > > +	 */
+> > > +	addr2 = rcu_access_pointer(*addr_p);	/* Load A */
+> > 
+> > Why rcu_access_pointer() instead of READ_ONCE()? Because you want to
+> > mark the head of address dependency?
+> 
+> Yes, the intent here is to mark the address dependency and provide
+> a publication guarantee similar to RCU pairing rcu_assign_pointer
+> and rcu_dereference. Do you see any reason why READ_ONCE() would
+> suffice here ?
 
-> On 30.08.24 11:35, Vitaly Kuznetsov wrote:
->> Sean Christopherson <seanjc@google.com> writes:
->> 
->>> Unconditionally honor guest PAT on CPUs that support self-snoop, as
->>> Intel has confirmed that CPUs that support self-snoop always snoop caches
->>> and store buffers.  I.e. CPUs with self-snoop maintain cache coherency
->>> even in the presence of aliased memtypes, thus there is no need to trust
->>> the guest behaves and only honor PAT as a last resort, as KVM does today.
->>>
->>> Honoring guest PAT is desirable for use cases where the guest has access
->>> to non-coherent DMA _without_ bouncing through VFIO, e.g. when a virtual
->>> (mediated, for all intents and purposes) GPU is exposed to the guest, along
->>> with buffers that are consumed directly by the physical GPU, i.e. which
->>> can't be proxied by the host to ensure writes from the guest are performed
->>> with the correct memory type for the GPU.
->> 
->> Necroposting!
->> 
->> Turns out that this change broke "bochs-display" driver in QEMU even
->> when the guest is modern (don't ask me 'who the hell uses bochs for
->> modern guests', it was basically a configuration error :-). E.g:
->> [...]
->
-> This regression made it to the list of tracked regressions. It seems
-> this thread stalled a while ago. Was this ever fixed? Does not look like
-> it, but I might have missed something. Or is this a regression I should
-> just ignore for one reason or another?
->
+READ_ONCE() also provides address dependencies. See the "DEPENDENCY
+RELATIONS: data, addr, and ctrl" section in
+tools/memory-model/Documentation/explanantion.txt.
 
-The regression was addressed in by reverting 377b2f359d1f in 6.11
+Regards,
+Boqun
 
-commit 9d70f3fec14421e793ffbc0ec2f739b24e534900
-Author: Paolo Bonzini <pbonzini@redhat.com>
-Date:   Sun Sep 15 02:49:33 2024 -0400
-
-    Revert "KVM: VMX: Always honor guest PAT on CPUs that support self-snoop"
-
-Also, there's a (pending) DRM patch fixing it from the guest's side:
-https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/9388ccf69925223223c87355a417ba39b13a5e8e
-
--- 
-Vitaly
-
+> 
+> Thanks,
+> 
+> Mathieu
+> 
