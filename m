@@ -1,56 +1,68 @@
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA311D4150
-	for <rcu@vger.kernel.org>; Mon,  7 Oct 2024 13:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A1D18BB90;
+	Mon,  7 Oct 2024 13:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728307202; cv=none; b=VCJ231emdOqRYugm47wXRzSegP5U0u7jbo4eiFkxXJWxdnXzm/sdPiCg7Trqa4srL4wE9QprotXAz+Ixg5I5W+ctyjcxDasqbOWl991Dwlhf7Ip0pqfA0HbXwDxi+Cef6F2ibou/+my73pqb45hKMlTsnFKEnzIqQA2xCO3LSwM=
+	t=1728307396; cv=none; b=AvJ9Ay6S0msgK/1MOGppGMBjqM793gPDs/mD730/ONVuUMVRyEO24IKhdUQaOCAP/Upu5h/ldY/TG0XxP/JBOG0wkYAnDqELXvUj2sYcDgccyPQZoYLOr6qLGHm7B94zv67vlhmL8puomiScs/q7SSVy748y07BPbhbtFQShgRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728307202; c=relaxed/simple;
-	bh=3YwKFRUNFJmgLjP1rnmgXaT5FfHp2H1LLenfe751Fpc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=Wga3oHpGkmtdsTMCw1uZtxHkBheJsnknan7OsCZ/M+8C0pkhg78NqEp/PHmnBeipMF+ZzqC7u9asAB2QjT5ZCztj9/pRU9aOJsSV8n8v0BQl2SZth3oiojTuP/xNcVorLrwCx6Oh+J5dp+kQTVzw3XQ1NzJ3BG8P7V7u/B3jj3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-113-scvUWw6vOdGrDUiS0t4NIw-1; Mon, 07 Oct 2024 14:19:55 +0100
-X-MC-Unique: scvUWw6vOdGrDUiS0t4NIw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 7 Oct
- 2024 14:18:58 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 7 Oct 2024 14:18:58 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Jonas Oberhauser' <jonas.oberhauser@huaweicloud.com>, Mathieu Desnoyers
-	<mathieu.desnoyers@efficios.com>, 'Alan Stern' <stern@rowland.harvard.edu>
-CC: Linus Torvalds <torvalds@linux-foundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, Sebastian Andrzej Siewior
-	<bigeasy@linutronix.de>, "Paul E. McKenney" <paulmck@kernel.org>, Will Deacon
-	<will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Boqun Feng
-	<boqun.feng@gmail.com>, John Stultz <jstultz@google.com>, Neeraj Upadhyay
-	<Neeraj.Upadhyay@amd.com>, Frederic Weisbecker <frederic@kernel.org>, "Joel
- Fernandes" <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
-	Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>, "Mark
- Rutland" <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, "maged.michael@gmail.com"
-	<maged.michael@gmail.com>, Mateusz Guzik <mjguzik@gmail.com>, Gary Guo
-	<gary@garyguo.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "lkmm@lists.linux.dev"
-	<lkmm@lists.linux.dev>
-Subject: RE: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
+	s=arc-20240116; t=1728307396; c=relaxed/simple;
+	bh=sRmBF0SeDxIe13YKtx2EtfkkIJUtFxsFcv9CqtdHrWc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F4kjdrNYS/9L7VvBV1iVaUx+kanln1fcO+XoWupLfbDC58YEb5mkE4gL/0IL4hAPyawTYd4XGk12uRFh4epGGkCGakvHb6jet5+mk0zRMyfhwxXXkd9n50riBcvlQ3A2vst2m9jmKBvvr0rpn4e0ckKDq5ruJp0aRd9MkbeTRUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=AyWYXTwJ; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="AyWYXTwJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1728307387;
+	bh=sRmBF0SeDxIe13YKtx2EtfkkIJUtFxsFcv9CqtdHrWc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=AyWYXTwJOIFfM7YA1yH4qyX7HNVcKXqEM4mCxsjzbyARw0JbSu6tFCQQ0Sb+4dlqy
+	 jRZPbEZYqmCHCjthBX20tX0mRy5Ep4EtS/oSxnpF5mFsqJAa0Nr3N1cfyV15Kt97HY
+	 03gWmio+WUfLakdU6X5Faq04FaFQurydsCXRm96/eynaKzgyDrCQpkB49u8SF37r4Z
+	 d0G4N8+u9zBPCTVTTe1QSMYn5JPmledg4ZDThF3pQU2+pym6uXP5Tz9crKGDB4A+3v
+	 GqeaJsozz8mnEVjNf6Xa/wGYiPTtoFlSmw6/yhhxd8E2jjW3Il7cDFDXp/ccGZBH4E
+	 xyjyfI+YHyiqQ==
+Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XMfwV3qDnz2kt;
+	Mon,  7 Oct 2024 09:23:06 -0400 (EDT)
+Message-ID: <b9e83fb9-c413-4b81-be7d-ddd5f670c773@efficios.com>
+Date: Mon, 7 Oct 2024 09:21:09 -0400
+Precedence: bulk
+X-Mailing-List: rcu@vger.kernel.org
+List-Id: <rcu.vger.kernel.org>
+List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
  dependency
-Thread-Topic: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
- dependency
-Thread-Index: AQHbE2njI9qt6nx11kSrjhsE5O+AlrJyIkGggABQqYCAAKZugIAAWd+AgAAhswCAB6ONHIAAFVQA
-Date: Mon, 7 Oct 2024 13:18:58 +0000
-Message-ID: <43788527053542e78001820857445e4d@AcuMS.aculab.com>
+To: David Laight <David.Laight@ACULAB.COM>,
+ 'Jonas Oberhauser' <jonas.oberhauser@huaweicloud.com>,
+ 'Alan Stern' <stern@rowland.harvard.edu>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
+ John Stultz <jstultz@google.com>, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>,
+ "maged.michael@gmail.com" <maged.michael@gmail.com>,
+ Mateusz Guzik <mjguzik@gmail.com>, Gary Guo <gary@garyguo.net>,
+ "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>,
+ "lkmm@lists.linux.dev" <lkmm@lists.linux.dev>
 References: <02c63e79-ec8c-4d6a-9fcf-75f0e67ea242@rowland.harvard.edu>
  <9539c551-5c91-42db-8ac1-cff1d6d7c293@huaweicloud.com>
  <2cdda043-1ad9-40cf-a157-0c16a0ffb046@rowland.harvard.edu>
@@ -64,54 +76,75 @@ References: <02c63e79-ec8c-4d6a-9fcf-75f0e67ea242@rowland.harvard.edu>
  <68dc00b3-1ca1-42bc-8f1e-78ace10e4d64@rowland.harvard.edu>
  <bd93a57c-662f-470e-8ba4-509f27eada6d@efficios.com>
  <6ae2461a-e509-4c4d-8959-ae17eb214419@huaweicloud.com>
-In-Reply-To: <6ae2461a-e509-4c4d-8959-ae17eb214419@huaweicloud.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-Precedence: bulk
-X-Mailing-List: rcu@vger.kernel.org
-List-Id: <rcu.vger.kernel.org>
-List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+ <43788527053542e78001820857445e4d@AcuMS.aculab.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <43788527053542e78001820857445e4d@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-RnJvbTogSm9uYXMgT2JlcmhhdXNlcg0KPiBTZW50OiAwNyBPY3RvYmVyIDIwMjQgMTI6NTUNCj4g
-DQo+IEFtIDEwLzMvMjAyNCB1bSAzOjIzIFBNIHNjaHJpZWIgTWF0aGlldSBEZXNub3llcnM6DQo+
-ID4gV2hhdCBfZG9lc18gd29yayBob3dldmVyIGFyZSB0aGUgZm9sbG93aW5nIHR3byBhcHByb2Fj
-aGVzOg0KPiA+DQo+ID4gMSkgUGVyZm9ybSB0aGUgZXF1YWxpdHkgY2hlY2sgb24gdGhlIG9yaWdp
-bmFsIHZhcmlhYmxlcywgY3JlYXRpbmcNCj4gPiBuZXcgdmVyc2lvbnMgKHdpdGggT1BUSU1JWkVS
-X0hJREVfVkFSKSBvZiBib3RoIHZhcmlhYmxlcyBmb3IgdGhlDQo+ID4gcmVzdCBvZiB0aGVpciB1
-c2UsIHRoZXJlZm9yZSBtYWtpbmcgc3VyZSB0aGUgcG9pbnRlciBkZXJlZmVyZW5jZQ0KPiA+IGFy
-ZSBub3QgZGVyaXZlZCBmcm9tIHZlcnNpb25zIG9mIHRoZSB2YXJpYWJsZXMgd2hpY2ggd2VyZSBj
-b21wYXJlZA0KPiA+IHdpdGggYW5vdGhlciBwb2ludGVyLiAoYXMgc3VnZ2VzdGVkIGJ5IEJvcXVu
-KQ0KPiANCj4gVGhpcyBzaG91bGQgbm90IGJlIGd1YXJhbnRlZWQgdG8gd29yaywgYmVjYXVzZSBy
-aWdodCBhZnRlciB0aGUNCj4gY29tcGFyaXNvbiB0aGUgY29tcGlsZXIgY2FuIGRvIGI9YSwgdGhl
-biBpdCBkb2Vzbid0IG1hdHRlciBob3cgbXVjaCB5b3UNCj4gaGlkZSBhZnRlcndhcmRzLg0KPiAN
-Cj4gSG93ZXZlciBpdCBtaWdodCB3b3JrIGlmIHlvdSBlc2NhcGUgdGhlIGFkZHJlc3NlcyBvZiBh
-IGFuZCBiIGZpcnN0LCBpbg0KPiB3aGljaCBjYXNlIHRoZSBjb21waWxlciB3aWxsIG5vdCBkbyBi
-PWEgYW55bW9yZSwgYnV0IGl0IG1pZ2h0IGZvcmNlIHRoZQ0KPiBjb21waWxlciB0byBwdXQgYSBh
-bmQgYiBvbiB0aGUgc3RhY2ssIHdoaWNoIGhhcyBzb21lIHBlcmZvcm1hbmNlIGltcGFjdC4NCg0K
-Tm9wZSwgYXMgcG9pbnRlZCBvdXQgbGFzdCB3ZWVrLCB0aGUgY29tcGlsZXIgY2FuIG1vdmUgdGhl
-ICdhID09IGInDQpjaGVjayB0byBiZWZvcmUgdGhlIE9QVElNSVNFUl9ISURfVkFSKCkgYW5kIHRo
-ZW4gdXNlIHRoZSBzYW1lIHJlZ2lzdGVyDQpmb3IgYm90aCBvZiB0aGVtLg0KDQo+ID4gMikgUGVy
-Zm9ybSB0aGUgZXF1YWxpdHkgY2hlY2sgb24gdGhlIHZlcnNpb25zIHJlc3VsdGluZyBvZiBoaWRp
-bmcNCj4gPiBib3RoIHZhcmlhYmxlcywgbWFraW5nIHN1cmUgdGhvc2UgdmVyc2lvbnMgb2YgdGhl
-IHZhcmlhYmxlcyBhcmUNCj4gPiBub3QgZGVyZWZlcmVuY2VkIGFmdGVyd2FyZHMuIChhcyBzdWdn
-ZXN0ZWQgYnkgTGludXMpDQoNClRoYXQgKGFuZCBvdGhlciB0aGluZ3MpIGNvdWxkIHVzZWZ1bGx5
-IHVzZToNCiNkZWZpbmUgT1BUSU1JU0VSX0hJREVfVkFMVUUoeCkgXA0KCSh7IF9fYXV0b190eXBl
-IF94ID0geDsgT1BUSU1JU0VSX0hJREVfVkFSKF94KTsgX3g7IH0pDQpZb3UnbGwgYWxtb3N0IGNl
-cnRhaW5seSBlbmQgdXAgd2l0aCBhIHJlZ2lzdGVyLXJlZ2lzdGVyIG1vdmUNCmV2ZW4gaWYgJ3gn
-IGlzbid0IHVzZWQgYWZ0ZXJ3YXJkcy4NCg0KVGhlIGNhbGxpbmcgY291bGQganVzdCBiZWNvbWU6
-DQoJaWYgKGEgPT0gT1BUSU1JU0VSX0hJREVfVkFMVUUoYikgLi4uDQpzaW5jZSBpdCBpcyBsaWtl
-bHkgdGhhdCB5b3Ugb25seSBjYXJlIGFib3V0IG9uZSBvZiB0aGUgcG9pbnRlcnMuDQooQWN0dWFs
-bHkgaXNuJ3QgaGlkaW5nIG9uZSBvZiB0aGVtIGFsd2F5cyBlbm91Z2g/KQ0KDQoJRGF2aWQNCg0K
-LQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0s
-IE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdh
-bGVzKQ0K
+On 2024-10-07 15:18, David Laight wrote:
+> From: Jonas Oberhauser
+>> Sent: 07 October 2024 12:55
+>>
+>> Am 10/3/2024 um 3:23 PM schrieb Mathieu Desnoyers:
+>>> What _does_ work however are the following two approaches:
+>>>
+>>> 1) Perform the equality check on the original variables, creating
+>>> new versions (with OPTIMIZER_HIDE_VAR) of both variables for the
+>>> rest of their use, therefore making sure the pointer dereference
+>>> are not derived from versions of the variables which were compared
+>>> with another pointer. (as suggested by Boqun)
+>>
+>> This should not be guaranteed to work, because right after the
+>> comparison the compiler can do b=a, then it doesn't matter how much you
+>> hide afterwards.
+>>
+>> However it might work if you escape the addresses of a and b first, in
+>> which case the compiler will not do b=a anymore, but it might force the
+>> compiler to put a and b on the stack, which has some performance impact.
+> 
+> Nope, as pointed out last week, the compiler can move the 'a == b'
+> check to before the OPTIMISER_HID_VAR() and then use the same register
+> for both of them.
+
+Yes.
+
+> 
+>>> 2) Perform the equality check on the versions resulting of hiding
+>>> both variables, making sure those versions of the variables are
+>>> not dereferenced afterwards. (as suggested by Linus)
+> 
+> That (and other things) could usefully use:
+> #define OPTIMISER_HIDE_VALUE(x) \
+> 	({ __auto_type _x = x; OPTIMISER_HIDE_VAR(_x); _x; })
+> You'll almost certainly end up with a register-register move
+> even if 'x' isn't used afterwards.
+
+Yes.
+
+> 
+> The calling could just become:
+> 	if (a == OPTIMISER_HIDE_VALUE(b) ...
+> since it is likely that you only care about one of the pointers.
+> (Actually isn't hiding one of them always enough?)
+
+Linus asked that we hide both inputs, otherwise it's really asking
+for trouble in terms of API misuse.
+
+Thanks,
+
+Mathieu
+
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
