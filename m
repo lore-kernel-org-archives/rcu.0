@@ -1,47 +1,48 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A76816DC3C;
-	Sun,  6 Oct 2024 20:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F07B6FC5;
+	Mon,  7 Oct 2024 07:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728247173; cv=none; b=kq32zrIQtl1thf8tbn0bWrUwKcxDs9I4B2GOTKWaIlPLM+6ZcOgLzCELu8pO058Yov6uEW26N0rq/1fbk0/HrTu4I7fM2nkNrRMGDlQwjUsfu3SHvyzCbdlRSRBSc4BMIatSqoNLgsTcrral8Cde64YLvOtPHVUD7MXQh7BOBLk=
+	t=1728284811; cv=none; b=B1c2fyxqLdwk0o+P0UCoW2j0jx+G5qvjokKt9lI5Zo2UpqpWjz7M63spR6nL/A9yIKOuspKrvrxRcwRkeODY/Xyucd+hQMBCVlAcyPGIqXdMQ6v7pCcuieRezKscu9rFTXzBetw6B3rOBmF0+2AXirtGkXFm6Wj9uG6R76qhrws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728247173; c=relaxed/simple;
-	bh=uvcPrAbHbiaDImYhVusfABjiDJeHc/gUavwIa8OLfBo=;
+	s=arc-20240116; t=1728284811; c=relaxed/simple;
+	bh=G42xkt2HXDJsEm/1X6zsNTuNdHNDZFtY/2XKj0r1FmA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uV7okSvHf147HbKwaBmaOmkW4wyMgOWp0H/3vHF0CitJIfn6p8qspEKJSo/0KVwS3VBxJ4Wt/rzXPesP8+cqP+tog/6eruwMGBgAZgbLLReQ8qokisYNdFsb2cz82R7RngKO+ebnGu9EeDq8lYVuwJh0okdV21V6uYqbSX4HMa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lSmFUlv0; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=JnFCqQs1D83awZM/4rr8dgURiQpoJYRELmeZBk2GxTWJd4HcKrWg+ZM/KU7vr6mbdTXhrPXR00ybaH8v6Tk32196Cwyx9KI3BGd3tNCl1zPjNzGVclSZCIsZBk6tW9wsSEeJQbPYpPyyFTXcF3tiICLIoihiHontAIvV/Xr0c98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kbZl2yLI; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lSmFUlv0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E09FDC4CECC;
-	Sun,  6 Oct 2024 20:39:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728247173;
-	bh=uvcPrAbHbiaDImYhVusfABjiDJeHc/gUavwIa8OLfBo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=lSmFUlv0C4p33ry2q52EFi9b2nAhonpNcPanfJ65jyMalZJ/CQeTWSFr3zOSeIcgp
-	 lubrQtb45RzbKV74YTbIrp+xd2qxURNkZE3xgK+vUIVN22qDvuWfaKvcWXJtE0wRN0
-	 JAUv2wRT/e2i/mGld176Gvxk9voUxNRE6kAVACOv2QigsRGLNbRuXhrb0O18hpeF37
-	 Q1Z5lzGNgPghyGOPAmOCdkULCurrnCRA9LnGg3OQgLjps/xpn8eyKrFMAYZ9w6xfqC
-	 9KRZsRxTvlDPJm39wV39UnNI0famAItlSOXuxYzyq6KZniQEhCdn9Q4panjqmnpl7r
-	 8tzLbyROJoLWw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7B3E1CE09EE; Sun,  6 Oct 2024 13:39:32 -0700 (PDT)
-Date: Sun, 6 Oct 2024 13:39:32 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: David Laight <David.Laight@aculab.com>
-Cc: 'Mathieu Desnoyers' <mathieu.desnoyers@efficios.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kbZl2yLI"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WPrGACetzn240lxkdUEDnFIeJe4VvQIHLBhegiGUuD8=; b=kbZl2yLI7r24lQNgu54c9qhvF8
+	lV9ZOhzm0IWhCk97HGiqo6tTyV7M1r7fvKtrXu1ZbtJ5Yz2qzfmYi3XCKDVyY0Y2kzfWwxoi2JjyS
+	f0fedCVjGXq7A0YlId+p5Mn3tgowZ20sS3RxQl1AYPLGzm+VyjLKwqo97s+3U/CnEn5uuX2zgPfMm
+	K/LYc5j5hbgn0nl7Bb8/PvxXhOr61coobajXrXOaV8nd+iE5qtFgUJnsOOnPHJ74sj0bl2Z6ZXIQG
+	A+YMYwyA3kPWNWuL/YAQuxnUeiyhR2N0BIsGE3zyUURj6GVK8ChjWPOyfXLKD6R0YEx4v5u0qs1rN
+	aTNb3RDg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1sxhp6-00000004NYw-1PAI;
+	Mon, 07 Oct 2024 07:06:28 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 5FF6A30088D; Mon,  7 Oct 2024 09:06:27 +0200 (CEST)
+Date: Mon, 7 Oct 2024 09:06:27 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
+	linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Will Deacon <will@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Alan Stern <stern@rowland.harvard.edu>,
 	John Stultz <jstultz@google.com>,
 	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
@@ -55,21 +56,17 @@ Cc: 'Mathieu Desnoyers' <mathieu.desnoyers@efficios.com>,
 	Waiman Long <longman@redhat.com>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	"maged.michael@gmail.com" <maged.michael@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
 	Mateusz Guzik <mjguzik@gmail.com>,
 	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"lkmm@lists.linux.dev" <lkmm@lists.linux.dev>,
-	Gary Guo <gary@garyguo.net>, Nikita Popov <github@npopov.com>,
-	"llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: Re: [RFC PATCH v2 2/4] Documentation: RCU: Refer to ptr_eq()
-Message-ID: <f2297002-457b-471d-88fe-5c8d31b16523@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20241004182734.1761555-1-mathieu.desnoyers@efficios.com>
- <20241004182734.1761555-3-mathieu.desnoyers@efficios.com>
- <72af935f4a2a4e23b68845d2f6855103@AcuMS.aculab.com>
+	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev
+Subject: Re: [RFC PATCH 0/4] sched+mm: Track lazy active mm existence with
+ hazard pointers
+Message-ID: <20241007070627.GC18071@noisy.programming.kicks-ass.net>
+References: <20241002010205.1341915-1-mathieu.desnoyers@efficios.com>
+ <CAHk-=wgztWbA4z85xKob4eS9P=Nt5h4j=HnN+Pc90expskiCRA@mail.gmail.com>
+ <20241005161537.GB18071@noisy.programming.kicks-ass.net>
+ <CAHk-=whvxq3378vOn++=ZiOQc9=4N-3ejUWr+dXEJ5ti43kT6w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -78,48 +75,34 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <72af935f4a2a4e23b68845d2f6855103@AcuMS.aculab.com>
+In-Reply-To: <CAHk-=whvxq3378vOn++=ZiOQc9=4N-3ejUWr+dXEJ5ti43kT6w@mail.gmail.com>
 
-On Sun, Oct 06, 2024 at 07:52:49PM +0000, David Laight wrote:
-> From: Mathieu Desnoyers
-> > Sent: 04 October 2024 19:28
-> > 
-> > Refer to ptr_eq() in the rcu_dereference() documentation.
-> > 
-> > ptr_eq() is a mechanism that preserves address dependencies when
-> > comparing pointers, and should be favored when comparing a pointer
-> > obtained from rcu_dereference() against another pointer.
+On Sat, Oct 05, 2024 at 09:56:24AM -0700, Linus Torvalds wrote:
+> On Sat, 5 Oct 2024 at 09:16, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, Oct 02, 2024 at 10:39:15AM -0700, Linus Torvalds wrote:
+> > > So I think the real issue is that "active_mm" is an old hack from a
+> > > bygone era when we didn't have the (much more involved) full TLB
+> > > tracking.
+> >
+> > I still seem to have these patches that neither Andy nor I ever managed
+> > to find time to finish:
+> >
+> >   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=x86/lazy
 > 
-> Why does this ever really matter for rcu?
+> Yes, that looks very much like what I had in mind.
 > 
-> The check just ensure that any speculative load uses
-> a specific one of the pointers when they are different.
-> This can only matter if you care about the side effects
-> of the speculative load.
+> In fact, it looks a lot smaller and simpler than what my mental model was.
+> 
+> I was thinking I'd do it by removing "active_mm" entirely from 'struct
+> task_struct', and turn it into a per-cpu variable instead, and then
+> try to massage that into some global new world order. That patch
+> series you point to seems to be much simpler and clearer.
+> 
+> Of course, you also say "never managed to finish", so presumably
+> there's something completely broken in that series, and it doesn't
+> actually work?
 
-It can matter when there are static variables used during OOM.  The code
-must check the pointer against the addresses of the static variables
-to work out how to free them, which can enable the compiler to do
-specialization optimizations that destroy the address dependencies.
-
-Which is OK if those static variables are compile-time initialized or
-some such.  But not if they get new values each time they go into the
-list, as this can result in the reader seeing pre-initialization garbage.
-
-An admittedly rare but very real use case.
-
-							Thanx, Paul
-
-> But rcu is all about (things like) lockless list following.
-> So you need to wait until it is impossible for another
-> execution context to have a reference to some memory
-> before actually completely invalidating it (ie kfree()).
-> 
-> And that 50 line comment is pointless.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+Last time I tried it, it worked fine. I just didn't get around to
+actually fully thinking it trough and making sure nothing subtle was
+broken etc. Pesky details and such..
