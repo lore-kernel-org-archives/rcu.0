@@ -1,30 +1,36 @@
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B276A1E49E;
-	Mon,  7 Oct 2024 14:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411A11D90D3;
+	Mon,  7 Oct 2024 15:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728313180; cv=none; b=V/4K3c1i4AqZXbL6v3GpQLewV8j7ktyAK8/wl8FYipNd4QIOrvTm3xbe2k3B7dVjo9PMW1nWxkD3iX4JSDesUiNPnubZdjONifqezoYse0F2CXQrVOqslZpjWvgHeLpKa0Jnudq1KwVeiZsLIawN9ZStlH3x4O9eUVqIf6DNjMI=
+	t=1728313623; cv=none; b=BIKPmbCDIAIJDlHak693IcJdq+yxhb8dtbQjo7SIiTwydRPUGDOI70BnIKH58JK13h8Dz3/7nMGTjwWuFGUlSPK1tzfG4N/aL6KtTdqhAVb+DlD5ufZIhuollKs8O7VEZw97rASfCHnrBxJVEQ/wcgAXFxpAIN4tajQ9Lq3YNhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728313180; c=relaxed/simple;
-	bh=GVIqygVc5ZBokPnIZpVsJ5SY5rgNzhEdxcEXbU/6Hjo=;
+	s=arc-20240116; t=1728313623; c=relaxed/simple;
+	bh=r1rEb4BcGluwlHstvi+nWxFz5xLpAXRmZnsaTQauCkY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EkSwUkRoMmTNrNRfZmeWRXzchfISB7leP+MywEm4TrXDPPGr1bPZpJG3zv9uRMstwmyoxh57urw6ZNo8FohU8jkZdpnH1YiBRiT9dT8HV34MvGjYD2t+DWEj/p4UKqD25MCHVh5EoPIRTB+4T3G49kkc25PfRsFKNc/VX2DEezE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4XMhcj368vz9v7Hk;
-	Mon,  7 Oct 2024 22:39:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id D44F8140934;
-	Mon,  7 Oct 2024 22:59:25 +0800 (CST)
-Received: from [10.45.154.49] (unknown [10.45.154.49])
-	by APP1 (Coremail) with SMTP id LxC2BwBn+C899wNnLeJjAg--.43995S2;
-	Mon, 07 Oct 2024 15:59:25 +0100 (CET)
-Message-ID: <b86aac93-d1f7-4716-9283-4a8367b20e48@huaweicloud.com>
-Date: Mon, 7 Oct 2024 16:59:06 +0200
+	 In-Reply-To:Content-Type; b=DJ7cl9r9MWv0Ly0tbjyPIyN+CnyJtPqcqhki4ftsXiixcRI9Eo998Ori6ce2YJIqQnchVrH6T/UW7uV5POSGFUUvurGmZmR8ndAovynqY/zNYDFpoB5NVRmzO+tNC6+J6624crUPp7X9v+YG8yVtShjxvUWpy9VPovZo+o41/lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=rWkyGSYF; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="rWkyGSYF"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1728313619;
+	bh=r1rEb4BcGluwlHstvi+nWxFz5xLpAXRmZnsaTQauCkY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rWkyGSYF70MdtnVehW6FBtpNIYFy9k6IVdj66SP1lBOuIi9NBlqdoHQocQgzbC6zO
+	 odM4YO9SgTV6A9OilOfrlU20IND6EiyIFW4EZjAujSZLpbGjEVcsOvzxweckFFODFL
+	 kmnTFec/qoPH/yia06SSkpKrNEUj+UTuCFfizRRycoYFcRW1Kx2tHCrMupweo6bnQ/
+	 mWxnppFiwX+pYJs+vR0HQbnT8DRzVPjGtbQXbjNTZzit6gXlFpBzVcAw66Zlenb/r1
+	 jMKOw2k+Dp9BEsLf8ajwfr5eeSST9uFXtQO1i+TT4xTI611VcYFuk+qVoG2qmpLAtZ
+	 P4a/D2KjwXnBQ==
+Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XMjDL45V4z3rf;
+	Mon,  7 Oct 2024 11:06:58 -0400 (EDT)
+Message-ID: <f5c749d3-e3ec-4463-9dc2-690b9b719315@efficios.com>
+Date: Mon, 7 Oct 2024 11:05:01 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -32,18 +38,19 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] compiler.h: Introduce ptr_eq() to preserve address
- dependency
-To: David Laight <David.Laight@ACULAB.COM>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- 'Alan Stern' <stern@rowland.harvard.edu>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+Subject: Re: [RFC PATCH v2 4/4] sched+mm: Use hazard pointers to track lazy
+ active mm existence
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, Nicholas Piggin
+ <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
  "Paul E. McKenney" <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
- John Stultz <jstultz@google.com>, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
+ Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
  Frederic Weisbecker <frederic@kernel.org>,
  Joel Fernandes <joel@joelfernandes.org>,
  Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
@@ -51,106 +58,135 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
  Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
  Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>,
- "maged.michael@gmail.com" <maged.michael@gmail.com>,
- Mateusz Guzik <mjguzik@gmail.com>, Gary Guo <gary@garyguo.net>,
- "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "lkmm@lists.linux.dev" <lkmm@lists.linux.dev>
-References: <02c63e79-ec8c-4d6a-9fcf-75f0e67ea242@rowland.harvard.edu>
- <9539c551-5c91-42db-8ac1-cff1d6d7c293@huaweicloud.com>
- <2cdda043-1ad9-40cf-a157-0c16a0ffb046@rowland.harvard.edu>
- <5d7d8a59-57f5-4125-95bb-fda9c193b9cf@huaweicloud.com>
- <82e97ad5-17ad-418d-8791-22297acc7af4@rowland.harvard.edu>
- <ea02ce2ce8a348efa8d461f84f976478@AcuMS.aculab.com>
- <2b1caba3-48fa-43b9-bd44-cf60b9a141d7@rowland.harvard.edu>
- <22638e2fe1274eb0834fa3e43b44184e@AcuMS.aculab.com>
- <d192cf63-a274-4721-968e-a2c098db523b@rowland.harvard.edu>
- <e39c6e5975f345c4b1a97145e207dee4@AcuMS.aculab.com>
- <68dc00b3-1ca1-42bc-8f1e-78ace10e4d64@rowland.harvard.edu>
- <bd93a57c-662f-470e-8ba4-509f27eada6d@efficios.com>
- <6ae2461a-e509-4c4d-8959-ae17eb214419@huaweicloud.com>
- <43788527053542e78001820857445e4d@AcuMS.aculab.com>
-From: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-In-Reply-To: <43788527053542e78001820857445e4d@AcuMS.aculab.com>
+ Vlastimil Babka <vbabka@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>,
+ Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, maged.michael@gmail.com,
+ rcu@vger.kernel.org, lkmm@lists.linux.dev
+References: <202410072229.18756716-oliver.sang@intel.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <202410072229.18756716-oliver.sang@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:LxC2BwBn+C899wNnLeJjAg--.43995S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4fKr47tFyfGryfKr15urg_yoW8Cr1kpF
-	W5WanIya1kXrWakF1vq3WUZF90yayftFWUCrn5Kry8Z3s8XFn7AFWayryYya4DCr1fG34j
-	vr4jv3sxAF90qFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIF
-	4iUUUUU
-X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
 
-
-
-Am 10/7/2024 um 3:18 PM schrieb David Laight:
-> From: Jonas Oberhauser
->> Sent: 07 October 2024 12:55
->>
->> Am 10/3/2024 um 3:23 PM schrieb Mathieu Desnoyers:
->>> What _does_ work however are the following two approaches:
->>>
->>> 1) Perform the equality check on the original variables, creating
->>> new versions (with OPTIMIZER_HIDE_VAR) of both variables for the
->>> rest of their use, therefore making sure the pointer dereference
->>> are not derived from versions of the variables which were compared
->>> with another pointer. (as suggested by Boqun)
->>
->> This should not be guaranteed to work, because right after the
->> comparison the compiler can do b=a, then it doesn't matter how much you
->> hide afterwards.
->>
->> However it might work if you escape the addresses of a and b first, in
->> which case the compiler will not do b=a anymore, but it might force the
->> compiler to put a and b on the stack, which has some performance impact.
+On 2024-10-07 16:50, kernel test robot wrote:
 > 
-> Nope, as pointed out last week, the compiler can move the 'a == b'
-> check to before the OPTIMISER_HID_VAR() and then use the same register
-> for both of them.
+> 
+> Hello,
+> 
+> kernel test robot noticed "BUG:using_smp_processor_id()in_preemptible" on:
+> 
+> commit: efef4da3b19cadf4beb45079a05643a77821de79 ("[RFC PATCH v2 4/4] sched+mm: Use hazard pointers to track lazy active mm existence")
+> url: https://github.com/intel-lab-lkp/linux/commits/Mathieu-Desnoyers/compiler-h-Introduce-ptr_eq-to-preserve-address-dependency/20241005-023027
+> base: https://git.kernel.org/cgit/linux/kernel/git/powerpc/linux.git next
+> patch link: https://lore.kernel.org/all/20241004182734.1761555-5-mathieu.desnoyers@efficios.com/
+> patch subject: [RFC PATCH v2 4/4] sched+mm: Use hazard pointers to track lazy active mm existence
 > 
 
-Since the addresses of a and b have escaped, I don't think it can still 
-put them into the same register (or memory location).
+This should do the trick:
 
-Other threads could be temporarily modifying (inside the escape code) or 
-concurrently reading (after the escape code) the two variables 
-independently.
+-       WRITE_ONCE(this_cpu_ptr(hp_domain_sched_lazy_mm.percpu_slots)->addr, NULL);
++       this_cpu_write(hp_domain_sched_lazy_mm.percpu_slots->addr, NULL);
 
-Something in the direction of
+I'll update the patch for the next round.
 
-a = ...;
-...
-b = ...;
+Thanks,
 
-escape(&a);
-escape(&b);
-if (a == b) {
-    OPTIMIZER_HIDE_VAR(b);
-    *b;
-}
+Mathieu
 
 
-Here doing b=a after a==b would (from the point of view of compiler) 
-potentially introduce a data race.
+> in testcase: boot
+> 
+> compiler: gcc-12
+> test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> +--------------------------------------------+------------+------------+
+> |                                            | 75b478bf10 | efef4da3b1 |
+> +--------------------------------------------+------------+------------+
+> | BUG:using_smp_processor_id()in_preemptible | 0          | 12         |
+> +--------------------------------------------+------------+------------+
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202410072229.18756716-oliver.sang@intel.com
+> 
+> 
+> [    6.336856][   T48] BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u10:1/48
+> [ 6.338102][ T48] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> [    6.338809][   T48] CPU: 0 UID: 0 PID: 48 Comm: kworker/u10:1 Not tainted 6.12.0-rc1-00004-gefef4da3b19c #5
+> [    6.339929][   T48] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [    6.341119][   T48] Call Trace:
+> [ 6.341504][ T48] dump_stack_lvl (lib/dump_stack.c:123)
+> [ 6.342057][ T48] dump_stack (lib/dump_stack.c:130)
+> [ 6.342065][ T48] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 lib/smp_processor_id.c:53)
+> [ 6.342065][ T48] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> [ 6.342065][ T48] exec_mmap (include/linux/sched/mm.h:91 fs/exec.c:1017)
+> [ 6.342065][ T48] ? would_dump (fs/exec.c:1409)
+> [ 6.342065][ T48] begin_new_exec (fs/exec.c:1280)
+> [ 6.342065][ T48] ? load_elf_phdrs (fs/binfmt_elf.c:534)
+> [ 6.342065][ T48] load_elf_binary (fs/binfmt_elf.c:996)
+> [ 6.342065][ T48] ? get_lock_stats (kernel/locking/lockdep.c:339)
+> [ 6.342065][ T48] ? search_binary_handler (fs/exec.c:1752)
+> [ 6.342065][ T48] search_binary_handler (fs/exec.c:1752)
+> [ 6.342065][ T48] exec_binprm (fs/exec.c:1795)
+> [ 6.342065][ T48] bprm_execve (fs/exec.c:1846 fs/exec.c:1821)
+> [ 6.342065][ T48] kernel_execve (fs/exec.c:2012)
+> [ 6.342065][ T48] call_usermodehelper_exec_async (kernel/umh.c:110)
+> [ 6.342065][ T48] ? umh_complete (kernel/umh.c:65)
+> [ 6.342065][ T48] ret_from_fork (arch/x86/kernel/process.c:153)
+> [ 6.342065][ T48] ? umh_complete (kernel/umh.c:65)
+> [ 6.342065][ T48] ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
+> [ 6.342065][ T48] entry_INT80_32 (arch/x86/entry/entry_32.S:944)
+> [    6.352140][    T1] ppdev: user-space parallel port driver
+> [    6.353841][    T1] HSI/SSI char device loaded
+> [    6.354238][    T1] e1000: Intel(R) PRO/1000 Network Driver
+> [    6.354673][    T1] e1000: Copyright (c) 1999-2006 Intel Corporation.
+> [    6.650009][    T1] ACPI: _SB_.LNKC: Enabled at IRQ 11
+> [    6.968868][    T1] e1000 0000:00:03.0 eth0: (PCI:33MHz:32-bit) 52:54:00:12:34:56
+> [    6.969500][    T1] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
+> [    6.970506][   T49] BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u10:1/49
+> [ 6.971191][ T49] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
+> [    6.971650][   T49] CPU: 0 UID: 0 PID: 49 Comm: kworker/u10:1 Not tainted 6.12.0-rc1-00004-gefef4da3b19c #5
+> [    6.972365][   T49] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [    6.973115][   T49] Call Trace:
+> [ 6.973356][ T49] dump_stack_lvl (lib/dump_stack.c:123)
+> [ 6.973686][ T49] dump_stack (lib/dump_stack.c:130)
+> [ 6.973983][ T49] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 lib/smp_processor_id.c:53)
+> [ 6.974328][ T49] debug_smp_processor_id (lib/smp_processor_id.c:61)
+> [ 6.974328][ T49] exec_mmap (include/linux/sched/mm.h:91 fs/exec.c:1017)
+> [ 6.974328][ T49] ? would_dump (fs/exec.c:1409)
+> [ 6.974328][ T49] begin_new_exec (fs/exec.c:1280)
+> [ 6.974328][ T49] ? load_elf_phdrs (fs/binfmt_elf.c:534)
+> [ 6.974328][ T49] load_elf_binary (fs/binfmt_elf.c:996)
+> [ 6.974328][ T49] ? get_lock_stats (kernel/locking/lockdep.c:339)
+> [ 6.974328][ T49] ? search_binary_handler (fs/exec.c:1752)
+> [ 6.974328][ T49] search_binary_handler (fs/exec.c:1752)
+> [ 6.974328][ T49] exec_binprm (fs/exec.c:1795)
+> [ 6.974328][ T49] bprm_execve (fs/exec.c:1846 fs/exec.c:1821)
+> [ 6.974328][ T49] kernel_execve (fs/exec.c:2012)
+> [ 6.974328][ T49] call_usermodehelper_exec_async (kernel/umh.c:110)
+> [ 6.974328][ T49] ? umh_complete (kernel/umh.c:65)
+> [ 6.974328][ T49] ret_from_fork (arch/x86/kernel/process.c:153)
+> [ 6.974328][ T49] ? umh_complete (kernel/umh.c:65)
+> [ 6.974328][ T49] ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
+> [ 6.974328][ T49] entry_INT80_32 (arch/x86/entry/entry_32.S:944)
+> 
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20241007/202410072229.18756716-oliver.sang@intel.com
+> 
+> 
+> 
 
-As I pointed out earlier, the compiler might be able to prove that it is 
-a benign data race though and theoretically still do b=a. But if you 
-declare b as volatile on top...
-
-Anyways, the ptr_eq way is much more obvious.
-
-   jonas
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
