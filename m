@@ -1,47 +1,53 @@
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12F814AD17;
-	Mon,  7 Oct 2024 10:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4987A198E81;
+	Mon,  7 Oct 2024 11:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728297779; cv=none; b=dmvFm4gV33mNrmW6WWriekxl1blyxwxP0I6S2JnlAD0y3PjY/PD37PMMKABdIhjCpbfs9p+3LsUXDykVzmeotQGV1L0oSaodxTm5ADPHU3sg4rh8C1+N1vdwaWp8Lni4Wb/Who2Lpox/ZnbSOvzP9qtC662jm/gYlckb46Pge7g=
+	t=1728298883; cv=none; b=l5uaz6WsI6EjWBgx9NDUYmIeCEPnHwGnZW72VnoOPQkdD9C4wNAIDTwGODEnKuCq820YOXuvXoZF2DZaKYiYZI4MS9tB8tTj8q/SnivegSjWB8447GOTuc6o0lfZXcNEZrbVYNTOvjTlpf5rtGLR6wWnA8DSDfGzCoSU2Vlu7CE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728297779; c=relaxed/simple;
-	bh=njbck6Ml0PEjAxLYmHKAGsbYIxEvGaAHvYTs36bXAQU=;
+	s=arc-20240116; t=1728298883; c=relaxed/simple;
+	bh=EsNyz/6NmQGIF7jRLtLbDpUUSAfjnZ0U4efmqd2xUf0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m+U8jLcoDOA8mcwHFBsOdERrFMAlxGSmDsme9aV4TArJ7RNR996eVx5CINsuzWNwasdQPzR0CL/CNYcoz2RfcjtwUynj8anrBeBJPc6OJ7NDzL3ASz2kvMHtII3pqaeUWJNkSCjw4bD7yFnjRGB7/An98ZPoP+0JQSfBV2KEc1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=p0EXI4/V; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=IZfoYGxwdhJZtMxE3bR1dHqAhhbHbkwwrQVuEBLl3rGoN0/BfKpbB5DqDj0ULP4Q3D/AQgdnFWEYjYHJEWOyGYVa25ewfqiFPphjJqeOICXsSEzMGcF3Jt+uZSOnaPV7bNpkJH0QQ4efa7FJw9hRKl2NpE64lT7V4oPNnA36PrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GvTaX+lQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=7nR9JB7F; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="p0EXI4/V"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=g05qBTGyZVIxUFe0rYd3vtXtUIDafbc2+oZifH/Yg1U=; b=p0EXI4/VR/FUuQlAhWY7U3wu3R
-	j0FqzCaS3DEniv+Xlz17Jn51ZiLfkAtmT11uvD0kwI8X0WFjDHPnWBjmSAkA6b52hWwXIN17JVVai
-	xxgi8zLJajVhHl7gz6SefugIyurIgy1l7F8+0pdz9CYt0pUQZLFk2umVs7H6qw4qi9PApPv8+Y2hJ
-	h1TrH3d3nVs5VrAjVrpemvtU686M+gUuk3vjzhA7v3Jal+Ani56lHEcVvvpA9h+ZUL9soyQW4dctY
-	bU1Zxvr/VxmwbTCgvwg+mUegta88eIpMAmbbxeSD/JzsV08hU37nnE+RWiYIVwil54v6/MWPKderG
-	vi/QoL8Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1sxlCO-00000004PBu-49TU;
-	Mon, 07 Oct 2024 10:42:45 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 9E7AE30088D; Mon,  7 Oct 2024 12:42:44 +0200 (CEST)
-Date: Mon, 7 Oct 2024 12:42:44 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GvTaX+lQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="7nR9JB7F"
+Date: Mon, 7 Oct 2024 13:01:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1728298879;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4gRHCcLb4jbQI6d/h1siM+v84iL2e+zAz1uss1+vmg=;
+	b=GvTaX+lQ3NFJaSD+N6WWBhRg2nHwOXDlCfeAs7i0mcIjLclUNFJo/jPF4FdOG1gOMhcqWO
+	Fnv568281VwxHzgCXFCxyX43gL2iWgdqLFWkI7Wi/lGFKkzHmg5cRP0yvEunImGAkl5Sag
+	vUtKBFVtaFrPqj7ePow9Mqmp1IR/Vm5ertGBjEXYCoBHJXhoLhjUR7YhklKST6C5a/loZj
+	U2vpMNH6ji0kD706Ne1F0UvXmvLQXz/otlk5pJY5ExiSpmW6wtF1uk6Yvd3h4uL1rm8+zn
+	JIlkUu059Vt9ILYFyGTIiEGjEVTk/1ZRA0YM8Na4rADk9GRmvIF+zNB4OOeKbg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1728298879;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c4gRHCcLb4jbQI6d/h1siM+v84iL2e+zAz1uss1+vmg=;
+	b=7nR9JB7F/MR7pVgKbZWbz84B8/0uzBBvbTBoD4XEWdCFiRynDn+RBHbKDPmLk1OFpH6Rba
+	xGqMTFDovGI6M5BQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: David Laight <David.Laight@aculab.com>
+Cc: 'Mathieu Desnoyers' <mathieu.desnoyers@efficios.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	Nicholas Piggin <npiggin@gmail.com>,
 	Michael Ellerman <mpe@ellerman.id.au>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Will Deacon <will@kernel.org>,
 	Alan Stern <stern@rowland.harvard.edu>,
@@ -57,52 +63,60 @@ Cc: Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
 	Waiman Long <longman@redhat.com>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+	Vlastimil Babka <vbabka@suse.cz>,
+	"maged.michael@gmail.com" <maged.michael@gmail.com>,
 	Mateusz Guzik <mjguzik@gmail.com>,
 	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev
-Subject: Re: [RFC PATCH v2 3/4] hp: Implement Hazard Pointers
-Message-ID: <20241007104244.GC4879@noisy.programming.kicks-ass.net>
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"lkmm@lists.linux.dev" <lkmm@lists.linux.dev>,
+	Gary Guo <gary@garyguo.net>, Nikita Popov <github@npopov.com>,
+	"llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Subject: Re: RE: [RFC PATCH v2 2/4] Documentation: RCU: Refer to ptr_eq()
+Message-ID: <20241007110118.RJ7zm3ie@linutronix.de>
 References: <20241004182734.1761555-1-mathieu.desnoyers@efficios.com>
- <20241004182734.1761555-4-mathieu.desnoyers@efficios.com>
- <20241005160444.GA18071@noisy.programming.kicks-ass.net>
- <20241005160723.GI33184@noisy.programming.kicks-ass.net>
- <6e7812f7-c94a-46ba-ba4d-cf4b7b1f60c9@efficios.com>
+ <20241004182734.1761555-3-mathieu.desnoyers@efficios.com>
+ <72af935f4a2a4e23b68845d2f6855103@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6e7812f7-c94a-46ba-ba4d-cf4b7b1f60c9@efficios.com>
+In-Reply-To: <72af935f4a2a4e23b68845d2f6855103@AcuMS.aculab.com>
 
-On Sat, Oct 05, 2024 at 02:56:26PM -0400, Mathieu Desnoyers wrote:
-> On 2024-10-05 18:07, Peter Zijlstra wrote:
-> > On Sat, Oct 05, 2024 at 06:04:44PM +0200, Peter Zijlstra wrote:
-> > > On Fri, Oct 04, 2024 at 02:27:33PM -0400, Mathieu Desnoyers wrote:
+On 2024-10-06 19:52:49 [+0000], David Laight wrote:
+> From: Mathieu Desnoyers
+> > Sent: 04 October 2024 19:28
 > > 
-> > > > +void hp_scan(struct hp_slot __percpu *percpu_slots, void *addr,
-> > > > +	     void (*retire_cb)(int cpu, struct hp_slot *slot, void *addr))
-> > > > +{
-> > > > +	int cpu;
-> > > > +
-> > > > +	/*
-> > > > +	 * Store A precedes hp_scan(): it unpublishes addr (sets it to
-> > > > +	 * NULL or to a different value), and thus hides it from hazard
-> > > > +	 * pointer readers.
-> > > > +	 */
+> > Refer to ptr_eq() in the rcu_dereference() documentation.
 > > 
-> > This should probably assert we're in a preemptible context. Otherwise
-> > people will start using this in non-preemptible context and then we get
-> > to unfuck things later.
+> > ptr_eq() is a mechanism that preserves address dependencies when
+> > comparing pointers, and should be favored when comparing a pointer
+> > obtained from rcu_dereference() against another pointer.
 > 
-> Something like this ?
+> Why does this ever really matter for rcu?
 > 
-> +       /* Should only be called from preemptible context. */
-> +       WARN_ON_ONCE(in_atomic());
+> The check just ensure that any speculative load uses
+> a specific one of the pointers when they are different.
+> This can only matter if you care about the side effects
+> of the speculative load.
+> 
+> But rcu is all about (things like) lockless list following.
+> So you need to wait until it is impossible for another
+> execution context to have a reference to some memory
+> before actually completely invalidating it (ie kfree()).
 
-	lockdep_assert_preemption_enabled();
+Not always.
+Non-RCU could would have locking with a barrier to ensure a reload.
+RCU would not have the barrier. Assuming the pointer, points to a
+struct, the compiler could load an element from the first pointer and
+keeping it after it ensured the pointer are equal. However based on the
+logic, the content could have changed and the compiler would not load
+the new value but keep the previous one.
 
-that also checks local IRQ state IIRC.
+> 	David
+
+Sebastian
