@@ -1,108 +1,90 @@
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F07B6FC5;
-	Mon,  7 Oct 2024 07:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813751B3F1F
+	for <rcu@vger.kernel.org>; Mon,  7 Oct 2024 10:14:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728284811; cv=none; b=B1c2fyxqLdwk0o+P0UCoW2j0jx+G5qvjokKt9lI5Zo2UpqpWjz7M63spR6nL/A9yIKOuspKrvrxRcwRkeODY/Xyucd+hQMBCVlAcyPGIqXdMQ6v7pCcuieRezKscu9rFTXzBetw6B3rOBmF0+2AXirtGkXFm6Wj9uG6R76qhrws=
+	t=1728296084; cv=none; b=ad/EiAc01qQ/6HRlulRJ4hsMrSfTrsBSV2prtArnKbYi0z57YlwVPYF29qVo/yC1mreFk0R2rkfAmsM9NlhL3jxk6cPkzfgPTox9/S4VYiZXnBO6RGfuylLRg2KZTis4muixm4iURHtGVlKI0bZj/Ba8SKFyJYhEO6mBpU86FQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728284811; c=relaxed/simple;
-	bh=G42xkt2HXDJsEm/1X6zsNTuNdHNDZFtY/2XKj0r1FmA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JnFCqQs1D83awZM/4rr8dgURiQpoJYRELmeZBk2GxTWJd4HcKrWg+ZM/KU7vr6mbdTXhrPXR00ybaH8v6Tk32196Cwyx9KI3BGd3tNCl1zPjNzGVclSZCIsZBk6tW9wsSEeJQbPYpPyyFTXcF3tiICLIoihiHontAIvV/Xr0c98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kbZl2yLI; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1728296084; c=relaxed/simple;
+	bh=/e87TIRhMNaoB0p1RReT7keK7xxF1cuUqXVWKLEd0oY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RUU+fj7IhEDf4dkT1/tB89MCXaLSIGmmA/JTiPRIxye2fsFjYBO81ItIUvHAfr2kNzJ+OLPhL/UpCzrbCBt2po4wUvH779cdPTCSuEOhiey9jS4voYSlLU74M5EgTaYkEwkt6FWfvDF+JTKmAqvIC/6uaFqgbnSRQijRJVKM9eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aNzXnKlk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kbZl2yLI"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=WPrGACetzn240lxkdUEDnFIeJe4VvQIHLBhegiGUuD8=; b=kbZl2yLI7r24lQNgu54c9qhvF8
-	lV9ZOhzm0IWhCk97HGiqo6tTyV7M1r7fvKtrXu1ZbtJ5Yz2qzfmYi3XCKDVyY0Y2kzfWwxoi2JjyS
-	f0fedCVjGXq7A0YlId+p5Mn3tgowZ20sS3RxQl1AYPLGzm+VyjLKwqo97s+3U/CnEn5uuX2zgPfMm
-	K/LYc5j5hbgn0nl7Bb8/PvxXhOr61coobajXrXOaV8nd+iE5qtFgUJnsOOnPHJ74sj0bl2Z6ZXIQG
-	A+YMYwyA3kPWNWuL/YAQuxnUeiyhR2N0BIsGE3zyUURj6GVK8ChjWPOyfXLKD6R0YEx4v5u0qs1rN
-	aTNb3RDg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1sxhp6-00000004NYw-1PAI;
-	Mon, 07 Oct 2024 07:06:28 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 5FF6A30088D; Mon,  7 Oct 2024 09:06:27 +0200 (CEST)
-Date: Mon, 7 Oct 2024 09:06:27 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aNzXnKlk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728296080;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=3IjXN8FnwsXp6zfExtH8ltC2YeZMQ8iJiIBUY0fo+fE=;
+	b=aNzXnKlklUweou6WEExbvuaZiLj5ri83HjVGPsdjeTDlq4RfGvZcJpvLS7UwHGC1OwcRh4
+	BZuL4N9Vh0Gz8KCyTmff5cMPF6/aBRcmbMCFh66ReTBRPA/br41RMZfqudEkFF2fx3LdR4
+	yJG9SJABEE5RH0ThXuyDAbToJQcvidk=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-49-oC1ZLCL6NUOrNr405DA1fA-1; Mon,
+ 07 Oct 2024 06:14:37 -0400
+X-MC-Unique: oC1ZLCL6NUOrNr405DA1fA-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 13C1F19560B7;
+	Mon,  7 Oct 2024 10:14:35 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.45.225.47])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8AF31300018D;
+	Mon,  7 Oct 2024 10:14:31 +0000 (UTC)
+From: Michal Schmidt <mschmidt@redhat.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	John Stultz <jstultz@google.com>,
-	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev
-Subject: Re: [RFC PATCH 0/4] sched+mm: Track lazy active mm existence with
- hazard pointers
-Message-ID: <20241007070627.GC18071@noisy.programming.kicks-ass.net>
-References: <20241002010205.1341915-1-mathieu.desnoyers@efficios.com>
- <CAHk-=wgztWbA4z85xKob4eS9P=Nt5h4j=HnN+Pc90expskiCRA@mail.gmail.com>
- <20241005161537.GB18071@noisy.programming.kicks-ass.net>
- <CAHk-=whvxq3378vOn++=ZiOQc9=4N-3ejUWr+dXEJ5ti43kT6w@mail.gmail.com>
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu/srcutiny: don't return before reenabling preemption
+Date: Mon,  7 Oct 2024 12:14:15 +0200
+Message-ID: <20241007101415.466155-1-mschmidt@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whvxq3378vOn++=ZiOQc9=4N-3ejUWr+dXEJ5ti43kT6w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Sat, Oct 05, 2024 at 09:56:24AM -0700, Linus Torvalds wrote:
-> On Sat, 5 Oct 2024 at 09:16, Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Oct 02, 2024 at 10:39:15AM -0700, Linus Torvalds wrote:
-> > > So I think the real issue is that "active_mm" is an old hack from a
-> > > bygone era when we didn't have the (much more involved) full TLB
-> > > tracking.
-> >
-> > I still seem to have these patches that neither Andy nor I ever managed
-> > to find time to finish:
-> >
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=x86/lazy
-> 
-> Yes, that looks very much like what I had in mind.
-> 
-> In fact, it looks a lot smaller and simpler than what my mental model was.
-> 
-> I was thinking I'd do it by removing "active_mm" entirely from 'struct
-> task_struct', and turn it into a per-cpu variable instead, and then
-> try to massage that into some global new world order. That patch
-> series you point to seems to be much simpler and clearer.
-> 
-> Of course, you also say "never managed to finish", so presumably
-> there's something completely broken in that series, and it doesn't
-> actually work?
+Code after the return statement is dead. Enable preemption before
+returning from srcu_drive_gp().
 
-Last time I tried it, it worked fine. I just didn't get around to
-actually fully thinking it trough and making sure nothing subtle was
-broken etc. Pesky details and such..
+This will be important when/if PREEMPT_AUTO (lazy resched) gets merged.
+
+Fixes: 65b4a59557f6 ("srcu: Make Tiny SRCU explicitly disable preemption")
+Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+---
+ kernel/rcu/srcutiny.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 549c03336ee9..4dcbf8aa80ff 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -122,8 +122,8 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	ssp = container_of(wp, struct srcu_struct, srcu_work);
+ 	preempt_disable();  // Needed for PREEMPT_AUTO
+ 	if (ssp->srcu_gp_running || ULONG_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max))) {
+-		return; /* Already running or nothing to do. */
+ 		preempt_enable();
++		return; /* Already running or nothing to do. */
+ 	}
+ 
+ 	/* Remove recently arrived callbacks and wait for readers. */
+-- 
+2.46.2
+
