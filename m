@@ -1,192 +1,326 @@
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411A11D90D3;
-	Mon,  7 Oct 2024 15:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4559F13B58B;
+	Mon,  7 Oct 2024 18:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728313623; cv=none; b=BIKPmbCDIAIJDlHak693IcJdq+yxhb8dtbQjo7SIiTwydRPUGDOI70BnIKH58JK13h8Dz3/7nMGTjwWuFGUlSPK1tzfG4N/aL6KtTdqhAVb+DlD5ufZIhuollKs8O7VEZw97rASfCHnrBxJVEQ/wcgAXFxpAIN4tajQ9Lq3YNhs=
+	t=1728325095; cv=none; b=My5X1nzzeWUulBY+XeiFFbPYYTOKluJbZstomz4/obbnkSWGo2Cleu2660zCZXVcwTNT3htOuLtXJw8U13ngQKCgX1HdFzTF+ueJxE7i9Y7KEl1lnizosvF1Kq/3eOdtGxaFEsBiUex1Zw9Ey/hKGgqVUOdigSJplRFERlzAJKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728313623; c=relaxed/simple;
-	bh=r1rEb4BcGluwlHstvi+nWxFz5xLpAXRmZnsaTQauCkY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DJ7cl9r9MWv0Ly0tbjyPIyN+CnyJtPqcqhki4ftsXiixcRI9Eo998Ori6ce2YJIqQnchVrH6T/UW7uV5POSGFUUvurGmZmR8ndAovynqY/zNYDFpoB5NVRmzO+tNC6+J6624crUPp7X9v+YG8yVtShjxvUWpy9VPovZo+o41/lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=rWkyGSYF; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	s=arc-20240116; t=1728325095; c=relaxed/simple;
+	bh=A0/KfeW8kFe4SaoCo5h9qpqTYsDndvVMYxZSEAiT0ZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ngiZR02ci1NXZ8BpGQE6GHb1KQBjXgwr5NtSMe6+g3H9syNdZHXxy5c+SEnW6WCsCakEaQDIxrJA3IjD70PtsT1xbFH36rzrgi+2YfuO0tI5zylgQocMFEX1Jf4UokOBp96tpDCrraqfkGQgPADJ5mKoMYzKhfn0anQmayPoWoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eYMWuHFh; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="rWkyGSYF"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1728313619;
-	bh=r1rEb4BcGluwlHstvi+nWxFz5xLpAXRmZnsaTQauCkY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rWkyGSYF70MdtnVehW6FBtpNIYFy9k6IVdj66SP1lBOuIi9NBlqdoHQocQgzbC6zO
-	 odM4YO9SgTV6A9OilOfrlU20IND6EiyIFW4EZjAujSZLpbGjEVcsOvzxweckFFODFL
-	 kmnTFec/qoPH/yia06SSkpKrNEUj+UTuCFfizRRycoYFcRW1Kx2tHCrMupweo6bnQ/
-	 mWxnppFiwX+pYJs+vR0HQbnT8DRzVPjGtbQXbjNTZzit6gXlFpBzVcAw66Zlenb/r1
-	 jMKOw2k+Dp9BEsLf8ajwfr5eeSST9uFXtQO1i+TT4xTI611VcYFuk+qVoG2qmpLAtZ
-	 P4a/D2KjwXnBQ==
-Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XMjDL45V4z3rf;
-	Mon,  7 Oct 2024 11:06:58 -0400 (EDT)
-Message-ID: <f5c749d3-e3ec-4463-9dc2-690b9b719315@efficios.com>
-Date: Mon, 7 Oct 2024 11:05:01 -0400
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eYMWuHFh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B340C4CEC6;
+	Mon,  7 Oct 2024 18:18:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728325095;
+	bh=A0/KfeW8kFe4SaoCo5h9qpqTYsDndvVMYxZSEAiT0ZQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=eYMWuHFhI1UgHQXm7m0Y33G/ah0+84x42wJKK6E03FtyWiBuW8YLuXtcEvKItewhn
+	 xDlIqZvcPbTmPN0a3/OcIOSDz5NGldxTcyg05mgS0MZlJoImpFW998BV1mt5a2pi2j
+	 zDsqRUlag2Of03xtyB+ubJQwjPGKUV80//waKG0hYC3vRPvD9ppDasWhlHs6MVB8SD
+	 jDeCk1BXHJXDlKVASNBIH/gw96EKdBAcpIokgGvPaEyj2f5p53oA207DooiOdXQk6C
+	 6Rn9OVCBfXwcpgvMAWo4VoQnFBd9fyiFVga/b+VKD9fCVtlgOJKw29je5+xIEFaxsZ
+	 v4laO9pBCrShA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B7BE8CE1594; Mon,  7 Oct 2024 11:18:14 -0700 (PDT)
+Date: Mon, 7 Oct 2024 11:18:14 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Will Deacon <will@kernel.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	John Stultz <jstultz@google.com>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>, maged.michael@gmail.com,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+	rcu@vger.kernel.org, linux-mm@kvack.org, lkmm@lists.linux.dev
+Subject: Re: [RFC PATCH v2 3/4] hp: Implement Hazard Pointers
+Message-ID: <5d695bdd-afd2-4e9f-ba92-376a4b302566@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20241004182734.1761555-1-mathieu.desnoyers@efficios.com>
+ <20241004182734.1761555-4-mathieu.desnoyers@efficios.com>
+ <20241005160444.GA18071@noisy.programming.kicks-ass.net>
+ <df28acef-cf35-49fc-8b40-bc105e3f818f@efficios.com>
+ <20241007104030.GB4879@noisy.programming.kicks-ass.net>
+ <1de5d6ac-7f44-48d6-a5f3-9839d436891a@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 4/4] sched+mm: Use hazard pointers to track lazy
- active mm existence
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, Nicholas Piggin
- <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "Paul E. McKenney" <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
- Alan Stern <stern@rowland.harvard.edu>, John Stultz <jstultz@google.com>,
- Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>,
- Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, maged.michael@gmail.com,
- rcu@vger.kernel.org, lkmm@lists.linux.dev
-References: <202410072229.18756716-oliver.sang@intel.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <202410072229.18756716-oliver.sang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1de5d6ac-7f44-48d6-a5f3-9839d436891a@efficios.com>
 
-On 2024-10-07 16:50, kernel test robot wrote:
+On Mon, Oct 07, 2024 at 10:50:46AM -0400, Mathieu Desnoyers wrote:
+> On 2024-10-07 12:40, Peter Zijlstra wrote:
+> > On Sat, Oct 05, 2024 at 02:50:17PM -0400, Mathieu Desnoyers wrote:
+> > > On 2024-10-05 18:04, Peter Zijlstra wrote:
+> > 
+> > 
+> > > > > +/*
+> > > > > + * hp_allocate: Allocate a hazard pointer.
+> > > > > + *
+> > > > > + * Allocate a hazard pointer slot for @addr. The object existence should
+> > > > > + * be guaranteed by the caller. Expects to be called from preempt
+> > > > > + * disable context.
+> > > > > + *
+> > > > > + * Returns a hazard pointer context.
+> > > > 
+> > > > So you made the WTF'o'meter crack, this here function does not allocate
+> > > > nothing. Naming is bad. At best this is something like
+> > > > try-set-hazard-pointer or somesuch.
+> > > 
+> > > I went with the naming from the 2004 paper from Maged Michael, but I
+> > > agree it could be clearer.
+> > > 
+> > > I'm tempted to go for "hp_try_post()" and "hp_remove()", basically
+> > > "posting" the intent to use a pointer (as in on a metaphorical billboard),
+> > > and removing it when it's done.
+> > 
+> > For RCU we've taken to using the word: 'publish', no?
+> 
+> I'm so glad you suggest this, because it turns out that from all
+> the possible words you could choose from, 'publish' is probably the
+> most actively confusing. I'll explain.
+> 
+> Let me first do a 10'000 feet comparison of RCU vs Hazard Pointers
+> through a simple example:
+> 
+> [ Note: I've renamed the HP dereference try_post to HP load try_post
+>   based on further discussion below. ]
+> 
+> *** RCU ***
+> 
+> * Dereference RCU-protected pointer:
+>     rcu_read_lock();          // [ Begin read transaction ]
+>     l_p = rcu_dereference(p); // [ Load p: @addr or NULL ]
+>     if (l_p)
+>       [ use *l_p ...]
+>     rcu_read_unlock();        // [ End read transaction ]
+> 
+> * Publish @addr:    addr = kmalloc();
+>                     init(addr);
+>                     rcu_assign_pointer(p, addr);
+> 
+> * Reclaim @addr:    rcu_assign_pointer(p, NULL); // [ Unpublish @addr ]
+>                     synchronize_rcu();           // Wait for all pre-existing
+>                                                  // read transactions to complete.
+>                     kfree(addr);
 > 
 > 
-> Hello,
+> *** Hazard Pointers ***
 > 
-> kernel test robot noticed "BUG:using_smp_processor_id()in_preemptible" on:
+> * Load and post a HP-protected pointer:
+>     l_p = hp_load_try_post(domain, &p, &slot);
+>     if (l_p) {
+>       [ use *l_p ...]
+>       hp_remove(&slot, l_p);
+>     }
 > 
-> commit: efef4da3b19cadf4beb45079a05643a77821de79 ("[RFC PATCH v2 4/4] sched+mm: Use hazard pointers to track lazy active mm existence")
-> url: https://github.com/intel-lab-lkp/linux/commits/Mathieu-Desnoyers/compiler-h-Introduce-ptr_eq-to-preserve-address-dependency/20241005-023027
-> base: https://git.kernel.org/cgit/linux/kernel/git/powerpc/linux.git next
-> patch link: https://lore.kernel.org/all/20241004182734.1761555-5-mathieu.desnoyers@efficios.com/
-> patch subject: [RFC PATCH v2 4/4] sched+mm: Use hazard pointers to track lazy active mm existence
+> * Publish @addr:    addr = kmalloc();
+>                     init(addr);
+>                     rcu_assign_pointer(p, addr);
 > 
+> * Reclaim @addr:    rcu_assign_pointer(p, NULL); // [ Unpublish @addr ]
+>                     hp_scan(domain, addr, NULL);
+>                     kfree(addr);
+> 
+> Both HP and RCU have publication guarantees, which can in fact be
+> implemented in the same way (e.g. rcu_assign_pointer paired with
+> something that respects address dependencies ordering). A stronger
+> implementation of this would be pairing a store-release with a
+> load-acquire: it works, but it would add needless overhead on
+> weakly-ordered CPUs.
+> 
+> How the two mechanisms differ is in how they track when it is
+> safe to reclaim @addr. RCU tracks reader "transactions" begin/end,
+> and makes sure that all pre-existing transactions are gone before
+> synchronize_rcu() is allowed to complete. HP does this by tracking
+> "posted" pointer slots with a HP domain. As long as hp_scan observes
+> that HP readers are showing interest in @addr, it will wait.
+> 
+> One notable difference between RCU and HP is that HP knows exactly
+> which pointer is blocking progress, and from which CPU (at least
+> with my per-CPU HP domain implementation). Therefore, it is possible
+> for HP to issue an IPI and make sure the HP user either completes its
+> use of the pointer quickly, or stops using it right away (e.g. making
+> the active mm use idle mm instead).
+> 
+> One strength of RCU is that it can track use of a whole set of RCU
+> pointers just by tracking reader transaction begin/end, but this is
+> also one of its weaknesses: a long reader transaction can postpone
+> completion of grace period for a long time and increase the memory
+> footprint. In comparison, HP can immediately complete as soon as the
+> pointer it is scanning for is gone. Even better, it can send an IPI
+> to the belate CPU and abort use of the pointer using a callback.
 
-This should do the trick:
+Plus, in contrast to hazard pointers, rcu_dereference() cannot say "no".
 
--       WRITE_ONCE(this_cpu_ptr(hp_domain_sched_lazy_mm.percpu_slots)->addr, NULL);
-+       this_cpu_write(hp_domain_sched_lazy_mm.percpu_slots->addr, NULL);
+This all sounds like arguments *for* use of the term "publish" for
+hazard pointers rather than against it.  What am I missing here?
 
-I'll update the patch for the next round.
+							Thanx, Paul
 
-Thanks,
-
-Mathieu
-
-
-> in testcase: boot
+> > > > > +/*
+> > > > > + * hp_dereference_allocate: Dereference and allocate a hazard pointer.
+> > > > > + *
+> > > > > + * Returns a hazard pointer context. Expects to be called from preempt
+> > > > > + * disable context.
+> > > > > + */
+> > > > 
+> > > > More terrible naming. Same as above, but additionally, I would expect a
+> > > > 'dereference' to actually dereference the pointer and have a return
+> > > > value of the dereferenced type.
+> > > 
+> > > hp_dereference_try_post() ?
+> > > 
+> > > > 
+> > > > This function seems to double check and update the hp_ctx thing. I'm not
+> > > > at all sure yet wtf this is doing -- and the total lack of comments
+> > > > aren't helping.
+> > > 
+> > > The hp_ctx contains the outputs.
+> > > 
+> > > The function loads *addr_p to then try_post it into a HP slot. On success,
+> > > it re-reads the *addr_p (with address dependency) and if it still matches,
+> > > use that as output address pointer.
+> > > 
+> > > I'm planning to remove hp_ctx, and just have:
+> > > 
+> > > /*
+> > >   * hp_try_post: Try to post a hazard pointer.
+> > >   *
+> > >   * Post a hazard pointer slot for @addr. The object existence should
+> > >   * be guaranteed by the caller. Expects to be called from preempt
+> > >   * disable context.
+> > >   *
+> > >   * Returns true if post succeeds, false otherwise.
+> > >   */
+> > > static inline
+> > > bool hp_try_post(struct hp_domain *hp_domain, void *addr, struct hp_slot **_slot)
+> > > [...]
+> > > 
+> > > /*
+> > >   * hp_dereference_try_post: Dereference and try to post a hazard pointer.
+> > >   *
+> > >   * Returns a hazard pointer context. Expects to be called from preempt
+> > >   * disable context.
+> > >   */
+> > > static inline
+> > > void *__hp_dereference_try_post(struct hp_domain *hp_domain,
+> > >                                  void * const * addr_p, struct hp_slot **_slot)
+> > > [...]
+> > > 
+> > > #define hp_dereference_try_post(domain, p, slot_p)              \
+> > >          ((__typeof__(*(p))) __hp_dereference_try_post(domain, (void * const *) p, slot_p))
+> > 
+> > This will compile, but do the wrong thing when p is a regular pointer, no?
 > 
-> compiler: gcc-12
-> test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 4G
+> Right, at least in some cases the compiler may not complain, and people used to
+> rcu_dereference() will expect that "p" is the pointer to load rather than the
+> address of that pointer. This would be unexpected.
 > 
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> I must admit that passing the address holding the pointer to load rather than
+> the pointer to load itself makes it much less troublesome in terms of macro
+> layers. But perhaps this is another example where we should wander away from the
+> beaten path and use a word different from "dereference" here. E.g.:
 > 
+> /*
+>  * Use a comma expression within typeof: __typeof__((void)**(addr_p), *(addr_p))
+>  * to generate a compile error if addr_p is not a pointer to a pointer.
+>  */
+> #define hp_load_try_post(domain, addr_p, slot_p)                \
+>         ((__typeof__((void)**(addr_p), *(addr_p))) __hp_load_try_post(domain, (void * const *) (addr_p), slot_p))
 > 
-> +--------------------------------------------+------------+------------+
-> |                                            | 75b478bf10 | efef4da3b1 |
-> +--------------------------------------------+------------+------------+
-> | BUG:using_smp_processor_id()in_preemptible | 0          | 12         |
-> +--------------------------------------------+------------+------------+
+> > 
+> > > 
+> > > /* Clear the hazard pointer in @slot. */
+> > > static inline
+> > > void hp_remove(struct hp_slot *slot)
+> > > [...]
+> > 
+> > Differently weird, but better I suppose :-)
 > 
+> If you find a better word than "remove" to pair with "post", I'm all in :)
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202410072229.18756716-oliver.sang@intel.com
+> > 
+> > 
+> > > > > +void hp_scan(struct hp_slot __percpu *percpu_slots, void *addr,
+> > > > > +	     void (*retire_cb)(int cpu, struct hp_slot *slot, void *addr))
+> > > > > +{
+> > > > > +	int cpu;
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Store A precedes hp_scan(): it unpublishes addr (sets it to
+> > > > > +	 * NULL or to a different value), and thus hides it from hazard
+> > > > > +	 * pointer readers.
+> > > > > +	 */
+> > > > > +
+> > > > > +	if (!addr)
+> > > > > +		return;
+> > > > > +	/* Memory ordering: Store A before Load B. */
+> > > > > +	smp_mb();
+> > > > > +	/* Scan all CPUs slots. */
+> > > > > +	for_each_possible_cpu(cpu) {
+> > > > > +		struct hp_slot *slot = per_cpu_ptr(percpu_slots, cpu);
+> > > > > +
+> > > > > +		if (retire_cb && smp_load_acquire(&slot->addr) == addr)	/* Load B */
+> > > > > +			retire_cb(cpu, slot, addr);
+> > > > 
+> > > > Is retirce_cb allowed to cmpxchg the thing?
+> > > 
+> > > It could, but we'd need to make sure the slot is not re-used by another
+> > > hp_try_post() before the current user removes its own post. It would
+> > > need to synchronize with the current HP user (e.g. with IPI).
+> > > 
+> > > I've actually renamed retire_cb to "on_match_cb".
+> > 
+> > Hmm, I think I see. Would it make sense to pass the expected addr to
+> > hp_remove() and double check we don't NULL out something unexpected? --
+> > maybe just for a DEBUG option.
+> > 
+> > I'm always seeing the NOHZ_FULL guys hating on this :-)
 > 
+> That's a fair point. Sure, we can do this as an extra safety net. For now I
+> will just make the check always present, we can always move it to a debug
+> option later.
 > 
-> [    6.336856][   T48] BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u10:1/48
-> [ 6.338102][ T48] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
-> [    6.338809][   T48] CPU: 0 UID: 0 PID: 48 Comm: kworker/u10:1 Not tainted 6.12.0-rc1-00004-gefef4da3b19c #5
-> [    6.339929][   T48] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [    6.341119][   T48] Call Trace:
-> [ 6.341504][ T48] dump_stack_lvl (lib/dump_stack.c:123)
-> [ 6.342057][ T48] dump_stack (lib/dump_stack.c:130)
-> [ 6.342065][ T48] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 lib/smp_processor_id.c:53)
-> [ 6.342065][ T48] debug_smp_processor_id (lib/smp_processor_id.c:61)
-> [ 6.342065][ T48] exec_mmap (include/linux/sched/mm.h:91 fs/exec.c:1017)
-> [ 6.342065][ T48] ? would_dump (fs/exec.c:1409)
-> [ 6.342065][ T48] begin_new_exec (fs/exec.c:1280)
-> [ 6.342065][ T48] ? load_elf_phdrs (fs/binfmt_elf.c:534)
-> [ 6.342065][ T48] load_elf_binary (fs/binfmt_elf.c:996)
-> [ 6.342065][ T48] ? get_lock_stats (kernel/locking/lockdep.c:339)
-> [ 6.342065][ T48] ? search_binary_handler (fs/exec.c:1752)
-> [ 6.342065][ T48] search_binary_handler (fs/exec.c:1752)
-> [ 6.342065][ T48] exec_binprm (fs/exec.c:1795)
-> [ 6.342065][ T48] bprm_execve (fs/exec.c:1846 fs/exec.c:1821)
-> [ 6.342065][ T48] kernel_execve (fs/exec.c:2012)
-> [ 6.342065][ T48] call_usermodehelper_exec_async (kernel/umh.c:110)
-> [ 6.342065][ T48] ? umh_complete (kernel/umh.c:65)
-> [ 6.342065][ T48] ret_from_fork (arch/x86/kernel/process.c:153)
-> [ 6.342065][ T48] ? umh_complete (kernel/umh.c:65)
-> [ 6.342065][ T48] ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
-> [ 6.342065][ T48] entry_INT80_32 (arch/x86/entry/entry_32.S:944)
-> [    6.352140][    T1] ppdev: user-space parallel port driver
-> [    6.353841][    T1] HSI/SSI char device loaded
-> [    6.354238][    T1] e1000: Intel(R) PRO/1000 Network Driver
-> [    6.354673][    T1] e1000: Copyright (c) 1999-2006 Intel Corporation.
-> [    6.650009][    T1] ACPI: _SB_.LNKC: Enabled at IRQ 11
-> [    6.968868][    T1] e1000 0000:00:03.0 eth0: (PCI:33MHz:32-bit) 52:54:00:12:34:56
-> [    6.969500][    T1] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
-> [    6.970506][   T49] BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u10:1/49
-> [ 6.971191][ T49] caller is debug_smp_processor_id (lib/smp_processor_id.c:61)
-> [    6.971650][   T49] CPU: 0 UID: 0 PID: 49 Comm: kworker/u10:1 Not tainted 6.12.0-rc1-00004-gefef4da3b19c #5
-> [    6.972365][   T49] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [    6.973115][   T49] Call Trace:
-> [ 6.973356][ T49] dump_stack_lvl (lib/dump_stack.c:123)
-> [ 6.973686][ T49] dump_stack (lib/dump_stack.c:130)
-> [ 6.973983][ T49] check_preemption_disabled (arch/x86/include/asm/preempt.h:84 lib/smp_processor_id.c:53)
-> [ 6.974328][ T49] debug_smp_processor_id (lib/smp_processor_id.c:61)
-> [ 6.974328][ T49] exec_mmap (include/linux/sched/mm.h:91 fs/exec.c:1017)
-> [ 6.974328][ T49] ? would_dump (fs/exec.c:1409)
-> [ 6.974328][ T49] begin_new_exec (fs/exec.c:1280)
-> [ 6.974328][ T49] ? load_elf_phdrs (fs/binfmt_elf.c:534)
-> [ 6.974328][ T49] load_elf_binary (fs/binfmt_elf.c:996)
-> [ 6.974328][ T49] ? get_lock_stats (kernel/locking/lockdep.c:339)
-> [ 6.974328][ T49] ? search_binary_handler (fs/exec.c:1752)
-> [ 6.974328][ T49] search_binary_handler (fs/exec.c:1752)
-> [ 6.974328][ T49] exec_binprm (fs/exec.c:1795)
-> [ 6.974328][ T49] bprm_execve (fs/exec.c:1846 fs/exec.c:1821)
-> [ 6.974328][ T49] kernel_execve (fs/exec.c:2012)
-> [ 6.974328][ T49] call_usermodehelper_exec_async (kernel/umh.c:110)
-> [ 6.974328][ T49] ? umh_complete (kernel/umh.c:65)
-> [ 6.974328][ T49] ret_from_fork (arch/x86/kernel/process.c:153)
-> [ 6.974328][ T49] ? umh_complete (kernel/umh.c:65)
-> [ 6.974328][ T49] ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
-> [ 6.974328][ T49] entry_INT80_32 (arch/x86/entry/entry_32.S:944)
+> And now I notice that hp_remove is also used for CPU hotplug (grep
+> matches for cpuhp_remove_state()). I wonder if we should go for something
+> more grep-friendly than "hp_", e.g. "hazptr_" and rename hp.h to hazptr.h ?
+> 
+> Thanks,
+> 
+> Mathieu
 > 
 > 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
 > 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20241007/202410072229.18756716-oliver.sang@intel.com
-> 
-> 
-> 
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
