@@ -1,86 +1,200 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D622E1DEFE1;
-	Tue,  8 Oct 2024 12:28:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9651DF27A;
+	Tue,  8 Oct 2024 13:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728390481; cv=none; b=IPx1F+orxU0K1v8W2G5S1rrFVh+PQXCKZNeasP1iS+z0sk3Ezxoz+XTIQWIp+l2QESpd0hGUuY6neWGFKbxXxpfiM8fWOEJaK4VUzsmiII0NnNLkfANttjXoNMC8DT8fQT/FLX94BtHyO2ipkzdcD6rCw4Ca1kmyKpbvetrX680=
+	t=1728395570; cv=none; b=Uvfl0tPCDKBXa45rsL7ViKFt1tyVWObegM7NoVuZrhr5CuD5eg21+L88KzkzVUk0siElkNyigjai59p/bvfZ08eOyBFKW3CwHVLKhEKmCOIdyp+yGMXkUY9ddrSr/Wo03T8ZfzmQh72rJ19s/pcz35V/OzRDNk+1uKVTrl46AUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728390481; c=relaxed/simple;
-	bh=nbHT3cP3WYMMqE2TSlw5V5n87tenvgeKw3UFNgYUXGs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RlGAgL8YbhOrj8mFXwk2zEW1HgMNgt4Wetp3Yz4aBIBqm9X0b/Q3Kkxu3P+lfmWUD52uSTlpNm4rp8O+ZUipFzw5YtdO1oLdoTR1IbIAflnX9O7oV5uN/Ghm5rhARour25YRYzbwmBXvCdo5YK8W5mxErOOBZub5IMRPaCJINRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GyW8ajgD; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1728395570; c=relaxed/simple;
+	bh=yje+Nf53ZMDX2ciH9OYWiJcxOcJxvL0v/cML/xD8LJI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gcLGycvD6kp3LDu1hsiNdU+Z5unuW83aCoaTElsvD76Huv6rSPIcnb5NpkOllRyWbmQ+WmGbXbxqQchi7AgyJZi3/YqceHQBdQ/RjU5BTD3lW4DGoFUxKMl02flQ8OOKbVn2vrarlCN7MZ3nVgQvAErFGw9b5udXyTa6PlNP0Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=JUhZup11; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GyW8ajgD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F847C4CEC7;
-	Tue,  8 Oct 2024 12:28:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728390481;
-	bh=nbHT3cP3WYMMqE2TSlw5V5n87tenvgeKw3UFNgYUXGs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GyW8ajgDShLQ+H6+/84eMX1JUOj+NYgGBhwwIMis53pnSBq6KsXkNNJnix2fNfMgU
-	 jSmo22rNQNdt1+t/+ITBp03ALkOEA+kP0QtzVqnanhaqh1yPAv3f5rWvIvs4v58nXa
-	 s6Ekf6FEAleCIimWt5Iej8ZZWhTWyD8V+dgQSAX8A2RLvi1uAKLA5fT7YlaNDqdz9j
-	 0bzDoSezNjJWtOV6zpgTZ6G8SbzAloghFRcyXt/PdrfF/r4KcqbhJO3NTKJLqmlZqV
-	 dNXm2bp5Dro7GB6BceECq4KOiGLWu2T3p8r4FYzG6mWTp3Na0SQOORqb5Zbqbu+mth
-	 G9yHwXn9I8ycA==
-Date: Tue, 8 Oct 2024 14:27:58 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Will Deacon <will@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="JUhZup11"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1728395562;
+	bh=yje+Nf53ZMDX2ciH9OYWiJcxOcJxvL0v/cML/xD8LJI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=JUhZup11xZUM5lXz8AmFl7eRRRbNdTVJn/MAouIeqyExpdpC7wwzSy9hI/bDD7sTZ
+	 zMS9WBOhOM6injeA4saJAsztMqLPoIHRVPMs9V6IGJ7OLZUFUAbHuGH7I2h3JMmPTM
+	 dKXT7l/hdTnifrGM8Nctf6T/VvE4JryCejgDRtQ4aIiW7NFqaLuyjMnDIEkRXQC2c8
+	 AXZBOW/Lg9c/MmCwqVIp60r7R/DHkbkd9yjFgUEQVD48fYXvqco8rKZLfZNJxTssgk
+	 QctXWViwcxB7jAFx2bZZGRV7318YPgpZOPtHD0kNVZsevNkm7LfIYya52amK3TQzov
+	 ly7soWyCuYxoQ==
+Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XNHX965gyzLcG;
+	Tue,  8 Oct 2024 09:52:41 -0400 (EDT)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Michal Hocko <mhocko@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	John Stultz <jstultz@google.com>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-	Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 11/20] sched: Handle CPU isolation on last resort
- fallback rq selection
-Message-ID: <ZwUlTiDpvmb9ysfn@localhost.localdomain>
-References: <20240926224910.11106-1-frederic@kernel.org>
- <20240926224910.11106-12-frederic@kernel.org>
- <20241008105434.GA9243@willie-the-truck>
+	Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	maged.michael@gmail.com,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+	rcu@vger.kernel.org,
+	linux-mm@kvack.org,
+	lkmm@lists.linux.dev,
+	Gary Guo <gary@garyguo.net>,
+	Nikita Popov <github@npopov.com>,
+	llvm@lists.linux.dev
+Subject: [RFC PATCH v3 2/4] Documentation: RCU: Refer to ptr_eq()
+Date: Tue,  8 Oct 2024 09:50:32 -0400
+Message-Id: <20241008135034.1982519-3-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20241008135034.1982519-1-mathieu.desnoyers@efficios.com>
+References: <20241008135034.1982519-1-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241008105434.GA9243@willie-the-truck>
 
-Le Tue, Oct 08, 2024 at 11:54:35AM +0100, Will Deacon a écrit :
-> On Fri, Sep 27, 2024 at 12:48:59AM +0200, Frederic Weisbecker wrote:
-> > When a kthread or any other task has an affinity mask that is fully
-> > offline or unallowed, the scheduler reaffines the task to all possible
-> > CPUs as a last resort.
-> > 
-> > This default decision doesn't mix up very well with nohz_full CPUs that
-> > are part of the possible cpumask but don't want to be disturbed by
-> > unbound kthreads or even detached pinned user tasks.
-> > 
-> > Make the fallback affinity setting aware of nohz_full. This applies to
-> > all architectures supporting nohz_full except arm32. However this
-> > architecture that overrides the task possible mask is unlikely to be
-> > willing to integrate new development.
-> 
-> I'm not sure I understand this last sentence. The possible mask is
-> overridden for 32-bit tasks on an *arm64* kernel when running on an SoC
-> featuring some CPUs that can execute only 64-bit tasks. Who is unwilling
-> to integrate what?
+Refer to ptr_eq() in the rcu_dereference() documentation.
 
-Right I've been lazy on that, assuming that nohz_full is a niche, and
-nohz_full on arm 32 bits tasks must be even more a niche. But I can make
-it a macro just like task_cpu_possible_mask() so that architectures
-can override it?
+ptr_eq() is a mechanism that preserves address dependencies when
+comparing pointers, and should be favored when comparing a pointer
+obtained from rcu_dereference() against another pointer.
 
-Thanks.
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: John Stultz <jstultz@google.com>
+Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Zqiang <qiang.zhang1211@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: maged.michael@gmail.com
+Cc: Mateusz Guzik <mjguzik@gmail.com>
+Cc: Gary Guo <gary@garyguo.net>
+Cc: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc: rcu@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: lkmm@lists.linux.dev
+Cc: Nikita Popov <github@npopov.com>
+Cc: llvm@lists.linux.dev
+---
+Changes since v0:
+- Include feedback from Alan Stern.
+
+Changes since v1:
+- Include feedback from Paul E. McKenney.
+---
+ Documentation/RCU/rcu_dereference.rst | 38 +++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/RCU/rcu_dereference.rst b/Documentation/RCU/rcu_dereference.rst
+index 2524dcdadde2..de6175bf430f 100644
+--- a/Documentation/RCU/rcu_dereference.rst
++++ b/Documentation/RCU/rcu_dereference.rst
+@@ -104,11 +104,12 @@ readers working properly:
+ 	after such branches, but can speculate loads, which can again
+ 	result in misordering bugs.
+ 
+--	Be very careful about comparing pointers obtained from
+-	rcu_dereference() against non-NULL values.  As Linus Torvalds
+-	explained, if the two pointers are equal, the compiler could
+-	substitute the pointer you are comparing against for the pointer
+-	obtained from rcu_dereference().  For example::
++-	Use operations that preserve address dependencies (such as
++	"ptr_eq()") to compare pointers obtained from rcu_dereference()
++	against non-NULL pointers. As Linus Torvalds explained, if the
++	two pointers are equal, the compiler could substitute the
++	pointer you are comparing against for the pointer obtained from
++	rcu_dereference().  For example::
+ 
+ 		p = rcu_dereference(gp);
+ 		if (p == &default_struct)
+@@ -125,6 +126,29 @@ readers working properly:
+ 	On ARM and Power hardware, the load from "default_struct.a"
+ 	can now be speculated, such that it might happen before the
+ 	rcu_dereference().  This could result in bugs due to misordering.
++	Performing the comparison with "ptr_eq()" ensures the compiler
++	does not perform such transformation.
++
++	If the comparison is against another pointer, the compiler is
++	allowed to use either pointer for the following accesses, which
++	loses the address dependency and allows weakly-ordered
++	architectures such as ARM and PowerPC to speculate the
++	address-dependent load before rcu_dereference().  For example::
++
++		p1 = READ_ONCE(gp);
++		p2 = rcu_dereference(gp);
++		if (p1 == p2)  /* BUGGY!!! */
++			do_default(p2->a);
++
++	The compiler can use p1->a rather than p2->a, destroying the
++	address dependency.  Performing the comparison with "ptr_eq()"
++	ensures the compiler preserves the address dependencies.
++	Corrected code::
++
++		p1 = READ_ONCE(gp);
++		p2 = rcu_dereference(gp);
++		if (ptr_eq(p1, p2))
++			do_default(p2->a);
+ 
+ 	However, comparisons are OK in the following cases:
+ 
+@@ -204,6 +228,10 @@ readers working properly:
+ 		comparison will provide exactly the information that the
+ 		compiler needs to deduce the value of the pointer.
+ 
++	When in doubt, use operations that preserve address dependencies
++	(such as "ptr_eq()") to compare pointers obtained from
++	rcu_dereference() against non-NULL pointers.
++
+ -	Disable any value-speculation optimizations that your compiler
+ 	might provide, especially if you are making use of feedback-based
+ 	optimizations that take data collected from prior runs.  Such
+-- 
+2.39.2
+
