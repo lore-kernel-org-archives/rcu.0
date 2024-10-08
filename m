@@ -1,34 +1,34 @@
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD121DF987;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7671DF986;
 	Tue,  8 Oct 2024 13:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728395572; cv=none; b=oh54Wa77QpQzherDOQc2gTquOGc2jRN2Yuegd4BCQ41u8wJxCg/sQQLsedX3f2iLnQpUyqEULIzAv4HJ70RpupzyoX41lOQhACmhrDJ2V3fgk/2CkhB7mHqdV2a9h/FsRC9fXPuNlzisxPjDpEzlEmdysIE/u0aGV30srq+kL2Q=
+	t=1728395572; cv=none; b=SSVFeNnHeMVRdZXqSnLBZ8dbVRqrzTzBozmzfl9mlnALO2oF2HGMS7+jQkFLEJ8Tw6bsFL6xh4HXX+yC3z51vgRKBhxteXjD0mztwU1rq4C1QBmAwUaW6FpY2doJYxuAzuNycguLmTVW+POdZUmsjkz7WvSn+s0qn6qc0wBTsYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728395572; c=relaxed/simple;
-	bh=8C3q9wj5bRQ4clt4Y8eAd1LZVU6nG7UzyP+UbnjHZww=;
+	bh=CqeorPBfn7xn4x4/jMKXIZM1tORejYC8CC1QTPI+6II=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DyVt2O6kM5XyDcFxVleHi//b43ampjd7eKqEakPRCAupgILU/MTz+Go58vOqTTNn5j2qLDqwDuwFFzAkx1UVRqVXNL0WAfASOhx9bASMPVYtTHFnCx/gzaqR+kSnp2f0qrBu1jSqr4GeYF6aoLLevUw3imkno02C7p7szZ9Dh+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Ug24iPj9; arc=none smtp.client-ip=167.114.26.122
+	 MIME-Version; b=TZNrQULCv40Ox9vw2rWAVWsDB7vSByM/a0SkgclP3BltGbH+H8tiRSSK5nOIHV54uXva3vUgdLmpNCCKaAjl13mji4iIoZcQ7H6lWJrWLcekuEzsgWoMl4tlcUjVEW91GeMCRc1393BLvye+TGjVO/Sq3hWqFXnmQaIp27i25Zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ep37mymW; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Ug24iPj9"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ep37mymW"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1728395563;
-	bh=8C3q9wj5bRQ4clt4Y8eAd1LZVU6nG7UzyP+UbnjHZww=;
+	s=smtpout1; t=1728395562;
+	bh=CqeorPBfn7xn4x4/jMKXIZM1tORejYC8CC1QTPI+6II=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ug24iPj9L61ex8hFJS2JEoR21qWW5amtYa1PmEJ/WY8vy96wcK9ETL5l5rs2ZI98p
-	 T6QG5Lp874R6Khc2ae3oxs4rXIqJp8L7UpbnSwzWz+4g3oebuAMcJiHocP9HVXyPbf
-	 RkK4PoTg8VHI02xrx7WaSvHiOzSw8R+ESPXPVGGcFystR3EgPNwnMceM5U8BdKyAlt
-	 +YL47jPrJTfar8p1GfYd5lSKj5kKw/Dhws+e5G71Lj3mvX5+mRF8wLNJocWR3H3xLe
-	 s8mgTTpLC5FwKY+YLCyN5eGALx++5yjoMHoiJvvxyOoZ22AdZsyuOgv8ZDYBnXbAdj
-	 BR4PdROwcScKw==
+	b=ep37mymW3evxObDnQSIt1sbxWRwIqCJEJg8zI5qZFOdnwyIF1lEeimU1x2fdW++2p
+	 xoZNWi7AQXhawbbn7rEar3t/FN+BclKdleWla6J97d6X7/ubl8160zYpGkGqWbmGkM
+	 e5CpAk8ILsjCM8zeRvxrcgxKYXWXMonmvkf8dnpd9/G1PP8t0aamSnOMbOs7NSOCAU
+	 tXazdlfBc29XdllDSjZY/FXwkQCVrdXiIeIJepVGQSVYNfdFsWwa7Ey13CEXH/hKYE
+	 VRK1DaPvw5XOh2AZdbfLY6MpSc3g/Ww1UYNQv1TZYv7D8clPnxK9IbH2T/ZJLhe/96
+	 6kICSCx5z4QoQ==
 Received: from thinkos.internal.efficios.com (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XNHXC0cplzLwX;
-	Tue,  8 Oct 2024 09:52:43 -0400 (EDT)
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XNHXB3Lv8zLwW;
+	Tue,  8 Oct 2024 09:52:42 -0400 (EDT)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: Boqun Feng <boqun.feng@gmail.com>
 Cc: linux-kernel@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org,
 	linux-mm@kvack.org,
 	lkmm@lists.linux.dev
-Subject: [RFC PATCH v3 4/4] sched+mm: Use hazard pointers to track lazy active mm existence
-Date: Tue,  8 Oct 2024 09:50:34 -0400
-Message-Id: <20241008135034.1982519-5-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH v3 3/4] hazptr: Implement Hazard Pointers
+Date: Tue,  8 Oct 2024 09:50:33 -0400
+Message-Id: <20241008135034.1982519-4-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20241008135034.1982519-1-mathieu.desnoyers@efficios.com>
 References: <20241008135034.1982519-1-mathieu.desnoyers@efficios.com>
@@ -77,58 +77,41 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace lazy active mm existence tracking with hazard pointers. This
-removes the following implementations and their associated config
-options:
+This API provides existence guarantees of objects through Hazard
+Pointers (hazptr). This minimalist implementation is specific to use
+with preemption disabled, but can be extended further as needed.
 
-- MMU_LAZY_TLB_REFCOUNT
-- MMU_LAZY_TLB_SHOOTDOWN
-- This removes the call_rcu delayed mm drop for RT.
+Each hazptr domain defines a fixed number of hazard pointer slots
+(nr_cpus) across the entire system.
 
-It leverages the fact that each CPU only ever have at most one single
-lazy active mm. This makes it a very good fit for a hazard pointer
-domain implemented with one hazard pointer slot per CPU.
+Its main benefit over RCU is that it allows fast reclaim of
+HP-protected pointers without needing to wait for a grace period.
 
-* Benchmarks:
+It also allows the hazard pointer scan to call a user-defined callback
+to retire a hazard pointer slot immediately if needed. This callback
+may, for instance, issue an IPI to the relevant CPU.
 
-will-it-scale context_switch1_threads
+There are a few possible use-cases for this in the Linux kernel:
 
-nr threads (-t)     speedup
-     1                -0.2%
-     2                +0.4%
-     3                +0.2%
-     6                +0.6%
-    12                +0.8%
-    24                +3%
-    48               +12%
-    96               +21%
-   192               +28%
-   384                +4%
-   768                -0.6%
+  - Improve performance of mm_count by replacing lazy active mm by
+    hazptr.
+  - Guarantee object existence on pointer dereference to use refcount:
+    - replace locking used for that purpose in some drivers,
+    - replace RCU + inc_not_zero pattern,
+  - rtmutex: Improve situations where locks need to be taken in
+    reverse dependency chain order by guaranteeing existence of
+    first and second locks in traversal order, allowing them to be
+    locked in the correct order (which is reverse from traversal
+    order) rather than try-lock+retry on nested lock.
 
-Methodology: Each test is the average of 20 iterations. Use median
-result of 3 test runs.
+References:
 
-Test hardware:
+[1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
+     lock-free objects," in IEEE Transactions on Parallel and
+     Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
 
-CPU(s):                   384
-  On-line CPU(s) list:    0-383
-Vendor ID:                AuthenticAMD
-  Model name:             AMD EPYC 9654 96-Core Processor
-    CPU family:           25
-    Model:                17
-    Thread(s) per core:   2
-    Core(s) per socket:   96
-    Socket(s):            2
-    Stepping:             1
-    Frequency boost:      enabled
-    CPU(s) scaling MHz:   100%
-    CPU max MHz:          3709.0000
-    CPU min MHz:          400.0000
-    BogoMIPS:             4799.75
-
-Memory: 768 GB ram.
-
+Link: https://lore.kernel.org/lkml/j3scdl5iymjlxavomgc6u5ndg3svhab6ga23dr36o4f5mt333w@7xslvq6b6hmv/
+Link: https://lpc.events/event/18/contributions/1731/
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Nicholas Piggin <npiggin@gmail.com>
 Cc: Michael Ellerman <mpe@ellerman.id.au>
@@ -163,374 +146,261 @@ Cc: rcu@vger.kernel.org
 Cc: linux-mm@kvack.org
 Cc: lkmm@lists.linux.dev
 ---
- Documentation/mm/active_mm.rst       |  9 ++--
- arch/Kconfig                         | 32 -------------
- arch/powerpc/Kconfig                 |  1 -
- arch/powerpc/mm/book3s64/radix_tlb.c | 23 +---------
- include/linux/mm_types.h             |  3 --
- include/linux/sched/mm.h             | 68 ++++++++++------------------
- kernel/exit.c                        |  4 +-
- kernel/fork.c                        | 47 +++++--------------
- kernel/sched/sched.h                 |  8 +---
- lib/Kconfig.debug                    | 10 ----
- 10 files changed, 45 insertions(+), 160 deletions(-)
+Changes since v0:
+- Remove slot variable from hp_dereference_allocate().
 
-diff --git a/Documentation/mm/active_mm.rst b/Documentation/mm/active_mm.rst
-index d096fc091e23..c225cac49c30 100644
---- a/Documentation/mm/active_mm.rst
-+++ b/Documentation/mm/active_mm.rst
-@@ -2,11 +2,10 @@
- Active MM
- =========
- 
--Note, the mm_count refcount may no longer include the "lazy" users
--(running tasks with ->active_mm == mm && ->mm == NULL) on kernels
--with CONFIG_MMU_LAZY_TLB_REFCOUNT=n. Taking and releasing these lazy
--references must be done with mmgrab_lazy_tlb() and mmdrop_lazy_tlb()
--helpers, which abstract this config option.
-+Note, the mm_count refcount no longer include the "lazy" users (running
-+tasks with ->active_mm == mm && ->mm == NULL) Taking and releasing these
-+lazy references must be done with mmgrab_lazy_tlb() and mmdrop_lazy_tlb()
-+helpers, which are implemented with hazard pointers.
- 
- ::
- 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 975dd22a2dbd..d4261935f8dc 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -475,38 +475,6 @@ config ARCH_WANT_IRQS_OFF_ACTIVATE_MM
- 	  irqs disabled over activate_mm. Architectures that do IPI based TLB
- 	  shootdowns should enable this.
- 
--# Use normal mm refcounting for MMU_LAZY_TLB kernel thread references.
--# MMU_LAZY_TLB_REFCOUNT=n can improve the scalability of context switching
--# to/from kernel threads when the same mm is running on a lot of CPUs (a large
--# multi-threaded application), by reducing contention on the mm refcount.
--#
--# This can be disabled if the architecture ensures no CPUs are using an mm as a
--# "lazy tlb" beyond its final refcount (i.e., by the time __mmdrop frees the mm
--# or its kernel page tables). This could be arranged by arch_exit_mmap(), or
--# final exit(2) TLB flush, for example.
--#
--# To implement this, an arch *must*:
--# Ensure the _lazy_tlb variants of mmgrab/mmdrop are used when manipulating
--# the lazy tlb reference of a kthread's ->active_mm (non-arch code has been
--# converted already).
--config MMU_LAZY_TLB_REFCOUNT
--	def_bool y
--	depends on !MMU_LAZY_TLB_SHOOTDOWN
--
--# This option allows MMU_LAZY_TLB_REFCOUNT=n. It ensures no CPUs are using an
--# mm as a lazy tlb beyond its last reference count, by shooting down these
--# users before the mm is deallocated. __mmdrop() first IPIs all CPUs that may
--# be using the mm as a lazy tlb, so that they may switch themselves to using
--# init_mm for their active mm. mm_cpumask(mm) is used to determine which CPUs
--# may be using mm as a lazy tlb mm.
--#
--# To implement this, an arch *must*:
--# - At the time of the final mmdrop of the mm, ensure mm_cpumask(mm) contains
--#   at least all possible CPUs in which the mm is lazy.
--# - It must meet the requirements for MMU_LAZY_TLB_REFCOUNT=n (see above).
--config MMU_LAZY_TLB_SHOOTDOWN
--	bool
--
- config ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	bool
- 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index d7b09b064a8a..b1e25e75baab 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -291,7 +291,6 @@ config PPC
- 	select MMU_GATHER_PAGE_SIZE
- 	select MMU_GATHER_RCU_TABLE_FREE
- 	select MMU_GATHER_MERGE_VMAS
--	select MMU_LAZY_TLB_SHOOTDOWN		if PPC_BOOK3S_64
- 	select MODULES_USE_ELF_RELA
- 	select NEED_DMA_MAP_STATE		if PPC64 || NOT_COHERENT_CACHE
- 	select NEED_PER_CPU_EMBED_FIRST_CHUNK	if PPC64
-diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-index 9e1f6558d026..ff0d4f28cf52 100644
---- a/arch/powerpc/mm/book3s64/radix_tlb.c
-+++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-@@ -1197,28 +1197,7 @@ void radix__tlb_flush(struct mmu_gather *tlb)
- 	 * See the comment for radix in arch_exit_mmap().
- 	 */
- 	if (tlb->fullmm) {
--		if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_SHOOTDOWN)) {
--			/*
--			 * Shootdown based lazy tlb mm refcounting means we
--			 * have to IPI everyone in the mm_cpumask anyway soon
--			 * when the mm goes away, so might as well do it as
--			 * part of the final flush now.
--			 *
--			 * If lazy shootdown was improved to reduce IPIs (e.g.,
--			 * by batching), then it may end up being better to use
--			 * tlbies here instead.
--			 */
--			preempt_disable();
--
--			smp_mb(); /* see radix__flush_tlb_mm */
--			exit_flush_lazy_tlbs(mm);
--			__flush_all_mm(mm, true);
--
--			preempt_enable();
--		} else {
--			__flush_all_mm(mm, true);
--		}
--
-+		__flush_all_mm(mm, true);
- 	} else if ( (psize = radix_get_mmu_psize(page_size)) == -1) {
- 		if (!tlb->freed_tables)
- 			radix__flush_tlb_mm(mm);
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 485424979254..db5f13554485 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -975,9 +975,6 @@ struct mm_struct {
- 		atomic_t tlb_flush_batched;
- #endif
- 		struct uprobes_state uprobes_state;
--#ifdef CONFIG_PREEMPT_RT
--		struct rcu_head delayed_drop;
--#endif
- #ifdef CONFIG_HUGETLB_PAGE
- 		atomic_long_t hugetlb_usage;
- #endif
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index 91546493c43d..7b2f0a432f6e 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -9,6 +9,10 @@
- #include <linux/gfp.h>
- #include <linux/sync_core.h>
- #include <linux/sched/coredump.h>
-+#include <linux/hazptr.h>
+Changes since v2:
+- Address Peter Zijlstra's comments.
+- Address Paul E. McKenney's comments.
+---
+ include/linux/hazptr.h | 165 +++++++++++++++++++++++++++++++++++++++++
+ kernel/Makefile        |   2 +-
+ kernel/hazptr.c        |  51 +++++++++++++
+ 3 files changed, 217 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/hazptr.h
+ create mode 100644 kernel/hazptr.c
+
+diff --git a/include/linux/hazptr.h b/include/linux/hazptr.h
+new file mode 100644
+index 000000000000..f8e36d2bdc58
+--- /dev/null
++++ b/include/linux/hazptr.h
+@@ -0,0 +1,165 @@
++// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
++//
++// SPDX-License-Identifier: LGPL-2.1-or-later
 +
-+/* Sched lazy mm hazard pointer domain. */
-+DECLARE_HAZPTR_DOMAIN(hazptr_domain_sched_lazy_mm);
- 
- /*
-  * Routines for handling mm_structs
-@@ -55,61 +59,37 @@ static inline void mmdrop(struct mm_struct *mm)
- 		__mmdrop(mm);
- }
- 
--#ifdef CONFIG_PREEMPT_RT
--/*
-- * RCU callback for delayed mm drop. Not strictly RCU, but call_rcu() is
-- * by far the least expensive way to do that.
-- */
--static inline void __mmdrop_delayed(struct rcu_head *rhp)
--{
--	struct mm_struct *mm = container_of(rhp, struct mm_struct, delayed_drop);
--
--	__mmdrop(mm);
--}
--
--/*
-- * Invoked from finish_task_switch(). Delegates the heavy lifting on RT
-- * kernels via RCU.
-- */
--static inline void mmdrop_sched(struct mm_struct *mm)
--{
--	/* Provides a full memory barrier. See mmdrop() */
--	if (atomic_dec_and_test(&mm->mm_count))
--		call_rcu(&mm->delayed_drop, __mmdrop_delayed);
--}
--#else
--static inline void mmdrop_sched(struct mm_struct *mm)
--{
--	mmdrop(mm);
--}
--#endif
--
- /* Helpers for lazy TLB mm refcounting */
- static inline void mmgrab_lazy_tlb(struct mm_struct *mm)
- {
--	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT))
--		mmgrab(mm);
-+	/*
-+	 * mmgrab_lazy_tlb must provide a full memory barrier, see the
-+	 * membarrier comment finish_task_switch which relies on this.
-+	 */
-+	smp_mb();
++#ifndef _LINUX_HAZPTR_H
++#define _LINUX_HAZPTR_H
 +
-+	/*
-+	 * The caller guarantees existence of mm. Post a hazard pointer
-+	 * to chain this existence guarantee to a hazard pointer.
-+	 * There is only a single lazy mm per CPU at any time.
-+	 */
-+	WARN_ON_ONCE(!hazptr_try_protect(&hazptr_domain_sched_lazy_mm, mm, NULL));
- }
- 
- static inline void mmdrop_lazy_tlb(struct mm_struct *mm)
- {
--	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT)) {
--		mmdrop(mm);
--	} else {
--		/*
--		 * mmdrop_lazy_tlb must provide a full memory barrier, see the
--		 * membarrier comment finish_task_switch which relies on this.
--		 */
--		smp_mb();
--	}
-+	/*
-+	 * mmdrop_lazy_tlb must provide a full memory barrier, see the
-+	 * membarrier comment finish_task_switch which relies on this.
-+	 */
-+	smp_mb();
-+	this_cpu_write(hazptr_domain_sched_lazy_mm.percpu_slots->addr, NULL);
- }
- 
- static inline void mmdrop_lazy_tlb_sched(struct mm_struct *mm)
- {
--	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT))
--		mmdrop_sched(mm);
--	else
--		smp_mb(); /* see mmdrop_lazy_tlb() above */
-+	smp_mb(); /* see mmdrop_lazy_tlb() above */
-+	this_cpu_write(hazptr_domain_sched_lazy_mm.percpu_slots->addr, NULL);
- }
- 
- /**
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 7430852a8571..cb4ace06c0f0 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -545,8 +545,6 @@ static void exit_mm(void)
- 	if (!mm)
- 		return;
- 	mmap_read_lock(mm);
--	mmgrab_lazy_tlb(mm);
--	BUG_ON(mm != current->active_mm);
- 	/* more a memory barrier than a real lock */
- 	task_lock(current);
- 	/*
-@@ -561,6 +559,8 @@ static void exit_mm(void)
- 	 */
- 	smp_mb__after_spinlock();
- 	local_irq_disable();
-+	mmgrab_lazy_tlb(mm);
-+	BUG_ON(mm != current->active_mm);
- 	current->mm = NULL;
- 	membarrier_update_current_mm(NULL);
- 	enter_lazy_tlb(mm, current);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index cc760491f201..0a2e2ab1680a 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -149,6 +149,9 @@ DEFINE_PER_CPU(unsigned long, process_counts) = 0;
- 
- __cacheline_aligned DEFINE_RWLOCK(tasklist_lock);  /* outer */
- 
-+/* Sched lazy mm hazard pointer domain. */
-+DEFINE_HAZPTR_DOMAIN(hazptr_domain_sched_lazy_mm);
++/*
++ * HP: Hazard Pointers
++ *
++ * This API provides existence guarantees of objects through hazard
++ * pointers.
++ *
++ * It uses a fixed number of hazard pointer slots (nr_cpus) across the
++ * entire system for each hazard pointer domain.
++ *
++ * Its main benefit over RCU is that it allows fast reclaim of
++ * HP-protected pointers without needing to wait for a grace period.
++ *
++ * It also allows the hazard pointer scan to call a user-defined callback
++ * to retire a hazard pointer slot immediately if needed. This callback
++ * may, for instance, issue an IPI to the relevant CPU.
++ *
++ * References:
++ *
++ * [1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
++ *      lock-free objects," in IEEE Transactions on Parallel and
++ *      Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
++ */
 +
- #ifdef CONFIG_PROVE_RCU
- int lockdep_tasklist_lock_is_held(void)
- {
-@@ -855,50 +858,24 @@ static void do_shoot_lazy_tlb(void *arg)
- 		WARN_ON_ONCE(current->mm);
- 		current->active_mm = &init_mm;
- 		switch_mm(mm, &init_mm, current);
-+		this_cpu_write(hazptr_domain_sched_lazy_mm.percpu_slots->addr, NULL);
- 	}
- }
- 
--static void cleanup_lazy_tlbs(struct mm_struct *mm)
-+static void remove_lazy_mm_hp(int cpu, struct hazptr_slot *slot, void *addr)
- {
--	if (!IS_ENABLED(CONFIG_MMU_LAZY_TLB_SHOOTDOWN)) {
--		/*
--		 * In this case, lazy tlb mms are refounted and would not reach
--		 * __mmdrop until all CPUs have switched away and mmdrop()ed.
--		 */
--		return;
--	}
-+	smp_call_function_single(cpu, do_shoot_lazy_tlb, addr, 1);
-+	smp_call_function_single(cpu, do_check_lazy_tlb, addr, 1);
-+}
- 
-+static void cleanup_lazy_tlbs(struct mm_struct *mm)
++#include <linux/percpu.h>
++#include <linux/types.h>
++
++/*
++ * Hazard pointer slot.
++ */
++struct hazptr_slot {
++	void *addr;
++};
++
++struct hazptr_domain {
++	struct hazptr_slot __percpu *percpu_slots;
++};
++
++#define DECLARE_HAZPTR_DOMAIN(domain)					\
++	extern struct hazptr_domain domain
++
++#define DEFINE_HAZPTR_DOMAIN(domain)					\
++	static DEFINE_PER_CPU(struct hazptr_slot, __ ## domain ## _slots); \
++	struct hazptr_domain domain = {					\
++		.percpu_slots = &__## domain ## _slots,			\
++	}
++
++/*
++ * hazptr_scan: Scan hazard pointer domain for @addr.
++ *
++ * Scan hazard pointer domain for @addr.
++ * If @on_match_cb is NULL, wait to observe that each slot contains a value
++ * that differs from @addr.
++ * If @on_match_cb is non-NULL, invoke @on_match_cb for each slot containing
++ * @addr.
++ */
++void hazptr_scan(struct hazptr_domain *domain, void *addr,
++	     void (*on_match_cb)(int cpu, struct hazptr_slot *slot, void *addr));
++
++/*
++ * hazptr_try_protect: Try to protect with hazard pointer.
++ *
++ * Try to protect @addr with a hazard pointer slot. The object existence
++ * should be guaranteed by the caller. Expects to be called from preempt
++ * disable context.
++ *
++ * Returns true if protect succeeds, false otherwise.
++ * On success, if @_slot is not NULL, the protected hazptr slot is stored in @_slot.
++ */
++static inline
++bool hazptr_try_protect(struct hazptr_domain *hazptr_domain, void *addr, struct hazptr_slot **_slot)
 +{
- 	/*
--	 * Lazy mm shootdown does not refcount "lazy tlb mm" usage, rather it
--	 * requires lazy mm users to switch to another mm when the refcount
-+	 * Require lazy mm users to switch to another mm when the refcount
- 	 * drops to zero, before the mm is freed. This requires IPIs here to
- 	 * switch kernel threads to init_mm.
--	 *
--	 * archs that use IPIs to flush TLBs can piggy-back that lazy tlb mm
--	 * switch with the final userspace teardown TLB flush which leaves the
--	 * mm lazy on this CPU but no others, reducing the need for additional
--	 * IPIs here. There are cases where a final IPI is still required here,
--	 * such as the final mmdrop being performed on a different CPU than the
--	 * one exiting, or kernel threads using the mm when userspace exits.
--	 *
--	 * IPI overheads have not found to be expensive, but they could be
--	 * reduced in a number of possible ways, for example (roughly
--	 * increasing order of complexity):
--	 * - The last lazy reference created by exit_mm() could instead switch
--	 *   to init_mm, however it's probable this will run on the same CPU
--	 *   immediately afterwards, so this may not reduce IPIs much.
--	 * - A batch of mms requiring IPIs could be gathered and freed at once.
--	 * - CPUs store active_mm where it can be remotely checked without a
--	 *   lock, to filter out false-positives in the cpumask.
--	 * - After mm_users or mm_count reaches zero, switching away from the
--	 *   mm could clear mm_cpumask to reduce some IPIs, perhaps together
--	 *   with some batching or delaying of the final IPIs.
--	 * - A delayed freeing and RCU-like quiescing sequence based on mm
--	 *   switching to avoid IPIs completely.
- 	 */
--	on_each_cpu_mask(mm_cpumask(mm), do_shoot_lazy_tlb, (void *)mm, 1);
--	if (IS_ENABLED(CONFIG_DEBUG_VM_SHOOT_LAZIES))
--		on_each_cpu(do_check_lazy_tlb, (void *)mm, 1);
-+	hazptr_scan(&hazptr_domain_sched_lazy_mm, mm, remove_lazy_mm_hp);
- }
- 
- /*
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 4c36cc680361..d883c2aa3518 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -3527,12 +3527,8 @@ static inline void switch_mm_cid(struct rq *rq,
- 	if (!next->mm) {                                // to kernel
- 		/*
- 		 * user -> kernel transition does not guarantee a barrier, but
--		 * we can use the fact that it performs an atomic operation in
--		 * mmgrab().
--		 */
--		if (prev->mm)                           // from user
--			smp_mb__after_mmgrab();
--		/*
-+		 * we can use the fact that mmgrab() has a full barrier.
-+		 *
- 		 * kernel -> kernel transition does not change rq->curr->mm
- 		 * state. It stays NULL.
- 		 */
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index a30c03a66172..1cb9dab361c9 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -803,16 +803,6 @@ config DEBUG_VM
- 
- 	  If unsure, say N.
- 
--config DEBUG_VM_SHOOT_LAZIES
--	bool "Debug MMU_LAZY_TLB_SHOOTDOWN implementation"
--	depends on DEBUG_VM
--	depends on MMU_LAZY_TLB_SHOOTDOWN
--	help
--	  Enable additional IPIs that ensure lazy tlb mm references are removed
--	  before the mm is freed.
--
--	  If unsure, say N.
--
- config DEBUG_VM_MAPLE_TREE
- 	bool "Debug VM maple trees"
- 	depends on DEBUG_VM
++	struct hazptr_slot __percpu *percpu_slots = hazptr_domain->percpu_slots;
++	struct hazptr_slot *slot;
++
++	if (!addr)
++		return false;
++	slot = this_cpu_ptr(percpu_slots);
++	/*
++	 * A single hazard pointer slot per CPU is available currently.
++	 * Other hazard pointer domains can eventually have a different
++	 * configuration.
++	 */
++	if (READ_ONCE(slot->addr))
++		return false;
++	WRITE_ONCE(slot->addr, addr);	/* Store B */
++	if (_slot)
++		*_slot = slot;
++	return true;
++}
++
++/*
++ * hazptr_load_try_protect: Load and try to protect with hazard pointer.
++ *
++ * Load @addr_p, and try to protect the loaded pointer with hazard
++ * pointers.
++ *
++ * Returns a protected address on success, NULL on failure. Expects to
++ * be called from preempt disable context.
++ *
++ * On success, if @_slot is not NULL, the protected hazptr slot is stored in @_slot.
++ */
++static inline
++void *__hazptr_load_try_protect(struct hazptr_domain *hazptr_domain,
++			 void * const * addr_p, struct hazptr_slot **_slot)
++{
++	struct hazptr_slot *slot;
++	void *addr, *addr2;
++
++	/*
++	 * Load @addr_p to know which address should be protected.
++	 */
++	addr = READ_ONCE(*addr_p);
++retry:
++	/* Try to protect the address by storing it into a slot. */
++	if (!hazptr_try_protect(hazptr_domain, addr, &slot))
++		return NULL;
++	/* Memory ordering: Store B before Load A. */
++	smp_mb();
++	/*
++	 * Re-load @addr_p after storing it to the hazard pointer slot.
++	 */
++	addr2 = READ_ONCE(*addr_p);	/* Load A */
++	/*
++	 * If @addr_p content has changed since the first load,
++	 * retire the hazard pointer and try again.
++	 */
++	if (!ptr_eq(addr2, addr)) {
++		WRITE_ONCE(slot->addr, NULL);
++		if (!addr2)
++			return NULL;
++		addr = addr2;
++		goto retry;
++	}
++	if (_slot)
++		*_slot = slot;
++	/*
++	 * Use addr2 loaded from the second READ_ONCE() to preserve
++	 * address dependency ordering.
++	 */
++	return addr2;
++}
++
++/*
++ * Use a comma expression within typeof: __typeof__((void)**(addr_p), *(addr_p))
++ * to generate a compile error if addr_p is not a pointer to a pointer.
++ */
++#define hazptr_load_try_protect(domain, addr_p, slot_p)	\
++	((__typeof__((void)**(addr_p), *(addr_p))) __hazptr_load_try_protect(domain, (void * const *) (addr_p), slot_p))
++
++/* Retire the protected hazard pointer from @slot. */
++static inline
++void hazptr_retire(struct hazptr_slot *slot, void *addr)
++{
++	WARN_ON_ONCE(slot->addr != addr);
++	smp_store_release(&slot->addr, NULL);
++}
++
++#endif /* _LINUX_HAZPTR_H */
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 3c13240dfc9f..bf6ed81d5983 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -7,7 +7,7 @@ obj-y     = fork.o exec_domain.o panic.o \
+ 	    cpu.o exit.o softirq.o resource.o \
+ 	    sysctl.o capability.o ptrace.o user.o \
+ 	    signal.o sys.o umh.o workqueue.o pid.o task_work.o \
+-	    extable.o params.o \
++	    extable.o params.o hazptr.o \
+ 	    kthread.o sys_ni.o nsproxy.o \
+ 	    notifier.o ksysfs.o cred.o reboot.o \
+ 	    async.o range.o smpboot.o ucount.o regset.o ksyms_common.o
+diff --git a/kernel/hazptr.c b/kernel/hazptr.c
+new file mode 100644
+index 000000000000..3f9f14afbf1d
+--- /dev/null
++++ b/kernel/hazptr.c
+@@ -0,0 +1,51 @@
++// SPDX-FileCopyrightText: 2024 Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
++//
++// SPDX-License-Identifier: LGPL-2.1-or-later
++
++/*
++ * hazptr: Hazard Pointers
++ */
++
++#include <linux/hazptr.h>
++#include <linux/percpu.h>
++
++/*
++ * hazptr_scan: Scan hazard pointer domain for @addr.
++ *
++ * Scan hazard pointer domain for @addr.
++ * If @on_match_cb is non-NULL, invoke @callback for each slot containing
++ * @addr.
++ * Wait to observe that each slot contains a value that differs from
++ * @addr before returning.
++ */
++void hazptr_scan(struct hazptr_domain *hazptr_domain, void *addr,
++	     void (*on_match_cb)(int cpu, struct hazptr_slot *slot, void *addr))
++{
++	struct hazptr_slot __percpu *percpu_slots = hazptr_domain->percpu_slots;
++	int cpu;
++
++	/* Should only be called from preemptible context. */
++	lockdep_assert_preemption_enabled();
++
++	/*
++	 * Store A precedes hazptr_scan(): it unpublishes addr (sets it to
++	 * NULL or to a different value), and thus hides it from hazard
++	 * pointer readers.
++	 */
++	if (!addr)
++		return;
++	/* Memory ordering: Store A before Load B. */
++	smp_mb();
++	/* Scan all CPUs slots. */
++	for_each_possible_cpu(cpu) {
++		struct hazptr_slot *slot = per_cpu_ptr(percpu_slots, cpu);
++
++		if (on_match_cb) {
++			if (smp_load_acquire(&slot->addr) == addr)	/* Load B */
++				on_match_cb(cpu, slot, addr);
++		} else {
++			/* Busy-wait if node is found. */
++			smp_cond_load_acquire(&slot->addr, VAL != addr); /* Load B */
++		}
++	}
++}
 -- 
 2.39.2
 
