@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A90F1957F8;
-	Wed,  9 Oct 2024 18:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9671E0DC5;
+	Wed,  9 Oct 2024 18:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728496847; cv=none; b=ZyK2lj0FA1zjrt7OPM+FPNLCRar6e0yLu/6ST1RBimtHOBsXa3DpXjQpGeBzxIzbtsiLK4CLWJozkADBFttKrD1heWlEcomTPCIAW1YnKvl87YRwr/JmHN50VGygbFNWd+ujl09HhWdkhlguaTy12NaZcidvNYi75Z700aUn+E0=
+	t=1728496847; cv=none; b=PX5jnZHLxWHWPOyAZH5Xrh9HQiCXlFi5xAAWecKZG895u/PnQPO/lxtHKQWfOvo8zoEP2235znLs6GfYHWVvLbPLQ9kvAACvwNG3uDvEgm+X2vtHHLdXJgstv+TTIKBuhyBzGu0UVDlIOx5k18hcitRX9gBbd2WKm1Ant7Mc2Ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728496847; c=relaxed/simple;
-	bh=OySrHGIYGBCnLfy5/68TxcrLmWNaXjEnRyRhtLieCyE=;
+	bh=vpuIgx5kDOrF1tvN1wFdkRmFqkJZGZwsKVqT4sAsn8E=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FIHotcgipeXAvktiLZrlCv0R3FVzaERoOhAx5j7E72SUdjV/ixr1EeRmQHrQtTAdE8xO/SZVQM9mOIHGoc1aXh6vSqS6inMUDY3DL97NATP3kH9InG9Sj4iZTZF57Zn766iU545/uGyeQf6r6HhB8S73WQdS+qFeGtArrrBWtPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmpiWNxj; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=pXx1OyqytY0LolwZDHuxL5t/a4q8Ar8hmMTKEGrDk5JMxNFvfk8dofv460W23Ntdt2rpbB7wNFJK4fEiu/6+FWgXlj4jQhEhPgC8t7c6dMDu5AIGD1s8XLfa+pHs9+lWOhqCMQ3hbczQhLvPJS2soNKM7qEIrLR4hKsmLGqgK04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vGcpGRHG; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmpiWNxj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBF26C4CED1;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vGcpGRHG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9ACCC4CECF;
 	Wed,  9 Oct 2024 18:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1728496846;
-	bh=OySrHGIYGBCnLfy5/68TxcrLmWNaXjEnRyRhtLieCyE=;
+	bh=vpuIgx5kDOrF1tvN1wFdkRmFqkJZGZwsKVqT4sAsn8E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AmpiWNxjj9ykcbMYQabAxAfCZDufS2YtyYEKPaXTrucrMCtyxx2TB5O7ffz0tVj6+
-	 ISHEN6H1n+3shbX7hs+jFBv9Xrll3bRmuscBf/lJW9o3wIQ42STuf0ggSA6W/KHE9X
-	 TDPf751b9mjY4AGGw9kgF+g+xBx4hUTFHkbOle7gOrRulC0o7ygiqCoyV4a3WMMDS2
-	 2tmLBABO8wXW++u/lkPAy+KvG36ileuhJSyflWtRk1dnTWNK4e5OJCgShiEnn0Yd1m
-	 UZISqF7jJWIVgsUIFMyyZmqB2UfegHPX9tN4qcvXGVcyhZzVL0IxNS9Vy0BIv5nyew
-	 znkaBQ6JQukOg==
+	b=vGcpGRHGEXMF9dLRiTMFtMsfpal65nz3iH4dwnTOVDbZNXp/l/8IUf8yG85J/dJhb
+	 7yWJY/K1pFKDQP97xf56Q36xSVy8JoHnCkO0bVKr0OAkePB9PsqzjXHZ5WAL1mZIRm
+	 9SM5fTxx1D1P6aI4F0Bd0KHYOHmlgQGBnhNKd9sY0RG/REnBmW9sBY+3ifs6bCpkrb
+	 IEkBXd2wuq0d5dD5ZpI7CSq2OZYk8tq6F0sZQDvdJhC3RoXi1X05DbUBxoRJmPcz3U
+	 ivpP8uopy1/dpgXilpKAnjqMTE1wsXCUBVCBG7G8TT2tj7dmAaH3YKzz0En8KrkiJD
+	 ThTBKgT2m1efA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7118FCE0DD1; Wed,  9 Oct 2024 11:00:46 -0700 (PDT)
+	id 6E7C8CE0BB1; Wed,  9 Oct 2024 11:00:46 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: frederic@kernel.org,
 	rcu@vger.kernel.org
@@ -35,10 +35,11 @@ Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH rcu 4/7] rcu: Permit start_poll_synchronize_rcu*() with interrupts disabled
-Date: Wed,  9 Oct 2024 11:00:42 -0700
-Message-Id: <20241009180045.777721-4-paulmck@kernel.org>
+	Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 3/7] rcu: Allow short-circuiting of synchronize_rcu_tasks_rude()
+Date: Wed,  9 Oct 2024 11:00:41 -0700
+Message-Id: <20241009180045.777721-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <2dc6de07-374d-44da-82e9-fa9d9c516b46@paulmck-laptop>
 References: <2dc6de07-374d-44da-82e9-fa9d9c516b46@paulmck-laptop>
@@ -50,53 +51,39 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The header comment for both start_poll_synchronize_rcu() and
-start_poll_synchronize_rcu_full() state that interrupts must be enabled
-when calling these two functions, and there is a lockdep assertion in
-start_poll_synchronize_rcu_common() enforcing this restriction.  However,
-there is no need for this restrictions, as can be seen in call_rcu(),
-which does wakeups when interrupts are disabled.
+There are now architectures for which all deep-idle and entry-exit
+functions are properly inlined or marked noinstr.  Such architectures do
+not need synchronize_rcu_tasks_rude(), or will not once RCU Tasks has
+been modified to pay attention to idle tasks.  This commit therefore
+allows a CONFIG_ARCH_HAS_NOINSTR_MARKINGS Kconfig option to turn
+synchronize_rcu_tasks_rude() into a no-op.
 
-This commit therefore removes the lockdep assertion and the comments.
+To facilitate testing, kernels built by rcutorture scripting will enable
+RCU Tasks Trace even on systems that do not need it.
 
-Reported-by: Kent Overstreet <kent.overstreet@linux.dev>
+[ paulmck: Apply Peter Zijlstra feedback. ]
+
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/tree.c | 7 -------
- 1 file changed, 7 deletions(-)
+ kernel/rcu/tasks.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a60616e69b663..3d6507d0b8d33 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4193,7 +4193,6 @@ static void start_poll_synchronize_rcu_common(void)
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 6333f4ccf024b..dd9730fd44fbe 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1398,7 +1398,8 @@ static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func)
+  */
+ void synchronize_rcu_tasks_rude(void)
+ {
+-	synchronize_rcu_tasks_generic(&rcu_tasks_rude);
++	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR) || IS_ENABLED(CONFIG_FORCE_TASKS_RUDE_RCU))
++		synchronize_rcu_tasks_generic(&rcu_tasks_rude);
+ }
+ EXPORT_SYMBOL_GPL(synchronize_rcu_tasks_rude);
  
--	lockdep_assert_irqs_enabled();
- 	local_irq_save(flags);
- 	rdp = this_cpu_ptr(&rcu_data);
- 	rnp = rdp->mynode;
-@@ -4218,9 +4217,6 @@ static void start_poll_synchronize_rcu_common(void)
-  * grace period has elapsed in the meantime.  If the needed grace period
-  * is not already slated to start, notifies RCU core of the need for that
-  * grace period.
-- *
-- * Interrupts must be enabled for the case where it is necessary to awaken
-- * the grace-period kthread.
-  */
- unsigned long start_poll_synchronize_rcu(void)
- {
-@@ -4241,9 +4237,6 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
-  * grace period (whether normal or expedited) has elapsed in the meantime.
-  * If the needed grace period is not already slated to start, notifies
-  * RCU core of the need for that grace period.
-- *
-- * Interrupts must be enabled for the case where it is necessary to awaken
-- * the grace-period kthread.
-  */
- void start_poll_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
- {
 -- 
 2.40.1
 
