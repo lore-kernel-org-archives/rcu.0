@@ -1,152 +1,187 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ACE61E1C27;
-	Wed,  9 Oct 2024 18:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D181A704B
+	for <rcu@vger.kernel.org>; Wed,  9 Oct 2024 18:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728497242; cv=none; b=ZU1tRaQNMz8w/Ovb545TLFgNF/Q0bSi5Kp3W3+FIC8r6NV6rszfkupDd+1BZjrk1DvTzMJeMXqwOWdU4pPBMP/L9IbyBkMZLhu6eYOpPiNOO2xQ7gMNoer7EE3Sf77OEi/GHkR3HaFEOGpVq67ndQ1IjCZdTzJQfsf+djLrkj68=
+	t=1728498209; cv=none; b=KPKear3K1PyQBu7P15xFG4JroZy8bCTU16D0VAPc/UA+pegqFPq/pfNxHzqVP24MYJ+gqW4MKiplBhIxf/WjH2cumfQ1H4BvBZFTt8tcOcZCH94+d4GFYC2Kv+ZdLdYLP/u+Q7gKYMP/T3zFvCYvwLqFuLjPq2qu+xoBwXj1atg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728497242; c=relaxed/simple;
-	bh=Am8qbMwuc4d4Iuj/D9Siigqz78XzeMZGAjUM0tNr9Ok=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JfuGCpZj/V0cje+Kwk6WG+5AuUwf8TO2T7yFmEx2rWI2EJ4BwNkckviC0w3glJmvzCd4pAGXI0E4QCyVqJ22pVDXXrgmB9xpTQrdHcWWN2ufOj+6oSQfgyYu/j6zPp09aysWXcpOPwbdXoraUpuTN2gECDPaxzAbHqRlZDFqMdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qvpQuhSg; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1728498209; c=relaxed/simple;
+	bh=Q2Vx9BF3bF3iGVgQVOHTeL/KxrH9jG/XSZcnQxdpnCk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S+semOXR4vtKzXUKxSUVxiPo75Lv5ysegfz0vmtGAW4aIvv4cPEiF+wj8hJhSEDnygOWvLyZRftMf74nWJq1v+F4omiBdvGw7PN9OOM53ck1G9AEaius9kkW0Hv/e3P4D5OfXXjt+H9sqYzxh0P5WmOpHbVGITFy+Tu/0zY7DTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Z8tHnRyP; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qvpQuhSg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D20A9C4CEE6;
-	Wed,  9 Oct 2024 18:07:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728497241;
-	bh=Am8qbMwuc4d4Iuj/D9Siigqz78XzeMZGAjUM0tNr9Ok=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qvpQuhSgcrnfmB1VxjAkD2SLSay9WhILI/5HriHPtNESgCazoSBxu75AssIeIG2wN
-	 SM6uTRFf1it7J3XG4Lli+CW5p2/HYlsoLQRoGRNDDxm+vSFs01M0Wd3lsQUgTWxG9H
-	 ljfGH6kKV8qIBzopt78bS1rk9FBrDNtwGyioUgcs1p2eZizMvJShs6b4jRN8cTGVmY
-	 L6/9BW7aOJAc1v+Muq2Fmjw9L2RChw0C1AOPolRiIZHcCheArodrX9/L8xUuMMlf7T
-	 6vNu3MR0QKp9CfGaC2b0XIdh1TgV2tN6RnBDSAuZI9ntgJVR36CM0uPOwA7CPBN9Hb
-	 dWKxCMy2zzvZQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 33CF9CE2325; Wed,  9 Oct 2024 11:07:21 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: frederic@kernel.org,
-	rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH rcu 12/12] refscale: Add srcu_read_lock_lite() support using "srcu-lite"
-Date: Wed,  9 Oct 2024 11:07:19 -0700
-Message-Id: <20241009180719.778285-12-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Z8tHnRyP"
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-71e038f3835so132764b3a.0
+        for <rcu@vger.kernel.org>; Wed, 09 Oct 2024 11:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1728498207; x=1729103007; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x62U96HJG0zxZRYG4nMRhEPMT04s/45JFblgVOnczYw=;
+        b=Z8tHnRyPE2nmkhdVvsmJRxFcO2WiYGKYSeGh31awzxvp0lpzzrBn3KeNbFTPqQzIcp
+         TYpJYYlZ8cTKIKowxdKlmfOHFKbRKzAoOZC+XiAANiiY/AFsuQu9C+DW+/0HvESP4wvR
+         Rrulhlt4h06iiukX1uWPF4TlKTX1ueHbQFt0E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728498207; x=1729103007;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x62U96HJG0zxZRYG4nMRhEPMT04s/45JFblgVOnczYw=;
+        b=cDShsVtvfBv+nX14eLxRdvkffXFxMRFACISpENF/P5L86JEjWouN42fhIgqPvxl+QH
+         FCshCFD6pP1FPzeEVEtULoyfP98NNSSCE3w0fIAV+YjTAUDu4Nwo2cCZ1d0mZ/xaQjbz
+         Dpzf1JKkMDySr9T0x2TVOc45bUwJ8j4KOyU8BSPknWWXDnmTe3Pt5zUAourB7Zl0lWcA
+         3GfnrVh4JrvqQiUaD/0QIxttSmjE2yZeH9PqWQSrETQb+P+zXUN8YlBfCHmDoqpC5HFl
+         pSLHlNxrOzL3VTmmdg9wBHmGGGkJ1eWXKHV0ZTcbzdoF5BW9UxuI0VHUCUgb3x9eY2+6
+         BZ1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXgHOlHy1DqNHwmMpEs5F35drCGUdiyE0mCrXyyYblMPddn6eTyRT4EMiEBnbdudPjRzp4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1USdNqZ1cY4QhOeE/wcP6DFipMkVY8cmfmJFyYrtFuS7hjOzm
+	RGATBi+s/XNFXcWd3sj+bNKjsraUXB7AvKiFG8+XH2yF8nfNQ06GQ9limSm0eKrPqjw4LwUydvZ
+	ef7+YNlFBJzvQtFiM7YsKPb0nwlFqmOb4RmfcTg==
+X-Google-Smtp-Source: AGHT+IF0g+2XDV7HiwiEZTjsZy0h8SFQQaXvikhKHyX1AuvN5lae+EJK6gzcWvf2k48PhDoVF7TY/a03CyfCl3yCr90=
+X-Received: by 2002:a05:6a00:8d3:b0:71d:fc11:628c with SMTP id
+ d2e1a72fcca58-71e1dbcaadcmr4106155b3a.25.1728498207117; Wed, 09 Oct 2024
+ 11:23:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241002145738.38226-1-frederic@kernel.org> <20241002145738.38226-3-frederic@kernel.org>
+In-Reply-To: <20241002145738.38226-3-frederic@kernel.org>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Wed, 9 Oct 2024 14:23:15 -0400
+Message-ID: <CAEXW_YQSBwGME1+vKHSM8+svtosunk-QO2oMygFKgapPE3b45w@mail.gmail.com>
+Subject: Re: [PATCH 2/3] rcu/nocb: Fix rcuog wake-up from offline softirq
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>, 
+	kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit creates a new srcu-lite option for the refscale.scale_type
-module parameter that selects srcu_read_lock_lite() and
-srcu_read_unlock_lite().
+Hi Frederic,
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
----
- kernel/rcu/refscale.c | 51 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 40 insertions(+), 11 deletions(-)
+On Wed, Oct 2, 2024 at 10:57=E2=80=AFAM Frederic Weisbecker <frederic@kerne=
+l.org> wrote:
+>
+> After a CPU has set itself offline and before it eventually calls
+> rcutree_report_cpu_dead(), there are still opportunities for callbacks
+> to be enqueued, for example from an IRQ. When that happens on NOCB, the
+> rcuog wake-up is deferred through an IPI to an online CPU in order not
+> to call into the scheduler and risk arming the RT-bandwidth after
+> hrtimers have been migrated out and disabled.
+>
+> But performing a synchronized IPI from an IRQ is buggy as reported in
+> the following scenario:
+>
+>         WARNING: CPU: 1 PID: 26 at kernel/smp.c:633 smp_call_function_sin=
+gle
+>         Modules linked in: rcutorture torture
+>         CPU: 1 UID: 0 PID: 26 Comm: migration/1 Not tainted 6.11.0-rc1-00=
+012-g9139f93209d1 #1
+>         Stopper: multi_cpu_stop+0x0/0x320 <- __stop_cpus+0xd0/0x120
+>         RIP: 0010:smp_call_function_single
+>         <IRQ>
+>         swake_up_one_online
+>         __call_rcu_nocb_wake
+>         __call_rcu_common
+>         ? rcu_torture_one_read
+>         call_timer_fn
+>         __run_timers
+>         run_timer_softirq
+>         handle_softirqs
+>         irq_exit_rcu
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index be66e5a67ee19..897d5b5494949 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -216,6 +216,36 @@ static const struct ref_scale_ops srcu_ops = {
- 	.name		= "srcu"
- };
- 
-+static void srcu_lite_ref_scale_read_section(const int nloops)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static void srcu_lite_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		un_delay(udl, ndl);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static const struct ref_scale_ops srcu_lite_ops = {
-+	.init		= rcu_sync_scale_init,
-+	.readsection	= srcu_lite_ref_scale_read_section,
-+	.delaysection	= srcu_lite_ref_scale_delay_section,
-+	.name		= "srcu-lite"
-+};
-+
- #ifdef CONFIG_TASKS_RCU
- 
- // Definitions for RCU Tasks ref scale testing: Empty read markers.
-@@ -1133,27 +1163,26 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static const struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
--		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &sched_clock_ops, &clock_ops,
--		&jiffies_ops, &typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
-+		&rcu_ops, &srcu_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
-+		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
-+		&sched_clock_ops, &clock_ops, &jiffies_ops, &typesafe_ref_ops, &typesafe_lock_ops,
-+		&typesafe_seqlock_ops,
- 	};
- 
- 	if (!torture_init_begin(scale_type, verbose))
- 		return -EBUSY;
- 
- 	for (i = 0; i < ARRAY_SIZE(scale_ops); i++) {
--		cur_ops = scale_ops[i];
--		if (strcmp(scale_type, cur_ops->name) == 0)
-+		cur_ops = scale_ops[i]; if (strcmp(scale_type,
-+		cur_ops->name) == 0)
- 			break;
- 	}
- 	if (i == ARRAY_SIZE(scale_ops)) {
--		pr_alert("rcu-scale: invalid scale type: \"%s\"\n", scale_type);
--		pr_alert("rcu-scale types:");
--		for (i = 0; i < ARRAY_SIZE(scale_ops); i++)
-+		pr_alert("rcu-scale: invalid scale type: \"%s\"\n",
-+		scale_type); pr_alert("rcu-scale types:"); for (i = 0;
-+		i < ARRAY_SIZE(scale_ops); i++)
- 			pr_cont(" %s", scale_ops[i]->name);
--		pr_cont("\n");
--		firsterr = -EINVAL;
--		cur_ops = NULL;
-+		pr_cont("\n"); firsterr = -EINVAL; cur_ops = NULL;
- 		goto unwind;
- 	}
- 	if (cur_ops->init)
--- 
-2.40.1
+This call stack seems a bit confusing with the context of the first
+paragraph. In the beginning of changelog, you had mentioned the issue
+happens from IRQ, but in fact the callstack here is from softirq
+right? The IRQ issue should already be resolved in current code
+AFAICS.
 
+>         ? tick_handle_periodic
+>         sysvec_apic_timer_interrupt
+>         </IRQ>
+>
+> The periodic tick must be shutdown when the CPU is offline, just like is
+> done for oneshot tick. This must be fixed but this is not enough:
+> softirqs can happen on any hardirq tail and reproduce the above scenario.
+>
+> Fix this with introducing a special deferred rcuog wake up mode when the
+> CPU is offline. This deferred wake up doesn't arm any timer and simply
+> wait for rcu_report_cpu_dead() to be called in order to flush any
+> pending rcuog wake up.
+[...]
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index a9a811d9d7a3..7ed060edd12b 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -290,6 +290,7 @@ struct rcu_data {
+>  #define RCU_NOCB_WAKE_LAZY     2
+>  #define RCU_NOCB_WAKE          3
+>  #define RCU_NOCB_WAKE_FORCE    4
+> +#define RCU_NOCB_WAKE_OFFLINE   5
+>
+>  #define RCU_JIFFIES_TILL_FORCE_QS (1 + (HZ > 250) + (HZ > 500))
+>                                         /* For jiffies_till_first_fqs and=
+ */
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 2fb803f863da..8648233e1717 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -295,6 +295,8 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, =
+int waketype,
+>         case RCU_NOCB_WAKE_FORCE:
+>                 if (rdp_gp->nocb_defer_wakeup < RCU_NOCB_WAKE)
+>                         mod_timer(&rdp_gp->nocb_timer, jiffies + 1);
+> +               fallthrough;
+> +       case RCU_NOCB_WAKE_OFFLINE:
+>                 if (rdp_gp->nocb_defer_wakeup < waketype)
+>                         WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+>                 break;
+> @@ -562,8 +564,16 @@ static void __call_rcu_nocb_wake(struct rcu_data *rd=
+p, bool was_alldone,
+>         lazy_len =3D READ_ONCE(rdp->lazy_len);
+>         if (was_alldone) {
+>                 rdp->qlen_last_fqs_check =3D len;
+> -               // Only lazy CBs in bypass list
+> -               if (lazy_len && bypass_len =3D=3D lazy_len) {
+> +               if (cpu_is_offline(rdp->cpu)) {
+> +                       /*
+> +                        * Offline CPUs can't call swake_up_one_online() =
+from IRQs. Rely
+> +                        * on the final deferred wake-up rcutree_report_c=
+pu_dead()
+> +                        */
+> +                       rcu_nocb_unlock(rdp);
+> +                       wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_OFFLINE,
+> +                                          TPS("WakeEmptyIsDeferredOfflin=
+e"));
+> +               } else if (lazy_len && bypass_len =3D=3D lazy_len) {
+
+Since the call stack is when softirqs are disabled,  would an
+alternative fix be (pseudocode):
+
+Change the following in the "if (was_alldone)" block:
+
+               if (!irqs_disabled_flags(flags)) {
+
+to:
+               if (!irqs_disabled_flags(flags) && !in_softirq())
+
+?
+
+That way perhaps an additional RCU_NOCB flag is not needed.
+
+Or does that not work for some reason?
+
+thanks,
+
+ - Joel
