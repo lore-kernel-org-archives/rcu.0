@@ -1,98 +1,125 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84491E049A;
-	Wed,  9 Oct 2024 18:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748501E049A;
+	Wed,  9 Oct 2024 18:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728497237; cv=none; b=AfBDKq+HnzJFIXcjEDt/yVnXNBUQpwr+1Phe22E+GQzZQC3Dw3xtaUx/GVQnP1ETVB1+37470xHiy2OXeWG6QyoXO60ZWm95yxh52fNrmvzQ6nEwAdNM2veQHqywBLdCqmxJDk6YOnNuyY3OxZYC5+7feVHsUEB+6ICqfjelDfk=
+	t=1728497241; cv=none; b=Q3JT+SU02L7V0NJOIQaZBy1Wz+RNTlFZZe16RltMSMNX/xTvpAav0TSw0AFG02rLjBhKfxREn/j4FE3YUxesoF5uibHyEn3ZEIY0qG10ax5CYTo8quSxMk0wpQg7GdzFiKw/C3ug1awo1EA2bzlKsaJbLxjPHS+aKH5HolT/MMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728497237; c=relaxed/simple;
-	bh=6R3+ZzJ3wC8hJaVq4t8tQzf+S+GvwCzlc3djTWezkYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=KzmoaHMjun/F144DSZH2jBTQoGmqmG6HDe7F1bP9oDlTuyMxGvVSvpsL5Ioop1yT/uuIXiCJU/Ak4FqMX9MgRpmOrAfFNsDMoPyw8ko+GUoAX7/3t1bdzpZS7vGFADbi4zYV2q7Z/icQ21LkpUrdKiJgJpGAZXtRKwZy1tifP6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DR3/7DyK; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1728497241; c=relaxed/simple;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Fk0RXcNnr1hf07NQDbapjfUh2o2PgMfQPRIiQDE1fHhC198Ld6qJ9EqOB7QKqjRMzL2gXD0CEtgV1QwONYQq2k5fv3x8R7ZYLapfsgPccBAfRJyLf81kGxUzNvVk+KR8YCpbvl7Lxt88LsjcMmkh4/MHPRiI+qI5nLH2x1aSV7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ET1UOC2l; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DR3/7DyK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51ACFC4CEC3;
-	Wed,  9 Oct 2024 18:07:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ET1UOC2l"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FBD9C4CEC3;
+	Wed,  9 Oct 2024 18:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728497237;
-	bh=6R3+ZzJ3wC8hJaVq4t8tQzf+S+GvwCzlc3djTWezkYU=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=DR3/7DyKiCiiR6fp8+tBqxUmKZnNxgvkpRny+Cx4UWuWufYvrmaeRROR54eUMnooQ
-	 InLEMlg2tO9N59eYLbzv3Z8wqpL6rJUVnAVG98eAFH7zOnnmXo0laFhYkbQXBR/VHw
-	 ivCHC+EFjrkcLmipZrz4sfV7+nNIU6q1CYNF4UZM5ojgyZEpyXo99d17y93aGEMt5A
-	 RmtDGKqinMLcLkD2WKXhbNKyoJyg3iK0a1oXki9HLsHmWpBu9p3tUDwIu/Z8EPIBQ4
-	 W8+TQF1iJrnoju9NoW2EPai1vKULRVFk0hlNLa9yUiMG1DSlMQrYAl0RKtnYO7dZup
-	 ABsxETRinQREg==
+	s=k20201202; t=1728497241;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ET1UOC2lI3v1Dq1UGsIUa/wz6CxnBK0fLf+88jg3nMdROL9RjWii/LfE0MVDpOtsU
+	 8YqrAUdUogXgllkIIZdxN/UNCE8G2VEtWjOxNAw+v5Q++kUrb8xUNcm5U/SoTQPrkv
+	 CfD4SydBPN8otoyPqEPkv4SVHS+6RIGdXa/YMpi92aR4InHtuUSBl8o6b31bRu5CkJ
+	 7Hn2ld5c5JwfM+KfZFnotvxQdOLJwAp2rOH6hqiw4RZVBwBB+2cjQJn20pfUZPY9ql
+	 S6CV6f81tnS/rT9gr02xy1vplk5KRbmUgHOjRSIQwEHgB2Kuwp3QtFOsuCMpmqZMec
+	 ZwbJQz0NrCEpQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id F10D9CE08E5; Wed,  9 Oct 2024 11:07:16 -0700 (PDT)
-Date: Wed, 9 Oct 2024 11:07:16 -0700
+	id 0EFF7CE08E5; Wed,  9 Oct 2024 11:07:21 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: frederic@kernel.org, rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH rcu 0/12] SRCU-lite changes for v6.13
-Message-ID: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+To: frederic@kernel.org,
+	rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	bpf@vger.kernel.org
+Subject: [PATCH rcu 01/12] srcu: Rename srcu_might_be_idle() to srcu_should_expedite()
+Date: Wed,  9 Oct 2024 11:07:08 -0700
+Message-Id: <20241009180719.778285-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
+References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+SRCU auto-expedites grace periods that follow a sufficiently long idle
+period, and the srcu_might_be_idle() function is used to make this
+decision.  However, the upcoming light-weight SRCU readers will not do
+auto-expediting because doing so would cause the grace-period machinery
+to invoke synchronize_rcu_expedited() twice, with IPIs all around.
+However, software-engineering considerations force this determination
+to remain in srcu_might_be_idle().
 
-This series adds support and testing for srcu_read_lock_lite()
-and srcu_read_unlock_lite(), which avoid smp_mb(), but add a
-couple of synchronize_rcu() calls to the grace-period processing
-and may only be used where RCU is watching.
+This commit therefore changes the name of srcu_might_be_idle() to
+srcu_should_expedite(), thus moving from what it currently does to why
+it does it, this latter being more future-proof.
 
-1.	Rename srcu_might_be_idle() to srcu_should_expedite().
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: <bpf@vger.kernel.org>
+---
+ kernel/rcu/srcutree.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-2.	Introduce srcu_gp_is_expedited() helper function.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 31706e3293bce..9ff4ded609ba5 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1139,7 +1139,8 @@ static void srcu_flip(struct srcu_struct *ssp)
+ }
+ 
+ /*
+- * If SRCU is likely idle, return true, otherwise return false.
++ * If SRCU is likely idle, in other words, the next SRCU grace period
++ * should be expedited, return true, otherwise return false.
+  *
+  * Note that it is OK for several current from-idle requests for a new
+  * grace period from idle to specify expediting because they will all end
+@@ -1159,7 +1160,7 @@ static void srcu_flip(struct srcu_struct *ssp)
+  * negligible when amortized over that time period, and the extra latency
+  * of a needlessly non-expedited grace period is similarly negligible.
+  */
+-static bool srcu_might_be_idle(struct srcu_struct *ssp)
++static bool srcu_should_expedite(struct srcu_struct *ssp)
+ {
+ 	unsigned long curseq;
+ 	unsigned long flags;
+@@ -1469,14 +1470,15 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_expedited);
+  * Implementation of these memory-ordering guarantees is similar to
+  * that of synchronize_rcu().
+  *
+- * If SRCU is likely idle, expedite the first request.  This semantic
+- * was provided by Classic SRCU, and is relied upon by its users, so TREE
+- * SRCU must also provide it.  Note that detecting idleness is heuristic
+- * and subject to both false positives and negatives.
++ * If SRCU is likely idle as determined by srcu_should_expedite(),
++ * expedite the first request.  This semantic was provided by Classic SRCU,
++ * and is relied upon by its users, so TREE SRCU must also provide it.
++ * Note that detecting idleness is heuristic and subject to both false
++ * positives and negatives.
+  */
+ void synchronize_srcu(struct srcu_struct *ssp)
+ {
+-	if (srcu_might_be_idle(ssp) || rcu_gp_is_expedited())
++	if (srcu_should_expedite(ssp) || rcu_gp_is_expedited())
+ 		synchronize_srcu_expedited(ssp);
+ 	else
+ 		__synchronize_srcu(ssp, true);
+-- 
+2.40.1
 
-3.	Renaming in preparation for additional reader flavor.
-
-4.	Bit manipulation changes for additional reader flavor.
-
-5.	Standardize srcu_data pointers to "sdp" and similar.
-
-6.	Add srcu_read_lock_lite() and srcu_read_unlock_lite().
-
-7.	Allow inlining of __srcu_read_{,un}lock_lite().
-
-8.	Expand RCUTORTURE_RDR_MASK_[12] to eight bits.
-
-9.	Add reader_flavor parameter for SRCU readers.
-
-10.	Add srcu_read_lock_lite() support to rcutorture.reader_flavor.
-
-11.	Add light-weight SRCU scenario.
-
-12.	Add srcu_read_lock_lite() support using "srcu-lite".
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt              |    4 
- b/Documentation/admin-guide/kernel-parameters.txt            |    8 
- b/include/linux/srcu.h                                       |   21 -
- b/include/linux/srcutree.h                                   |    2 
- b/kernel/rcu/rcutorture.c                                    |   28 -
- b/kernel/rcu/refscale.c                                      |   51 ++
- b/kernel/rcu/srcutree.c                                      |   16 
- b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST      |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L      |   10 
- b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot |    3 
- b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-N.boot |    1 
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE10      |    2 
- include/linux/srcu.h                                         |   86 +++-
- include/linux/srcutree.h                                     |   44 ++
- kernel/rcu/rcutorture.c                                      |   37 +
- kernel/rcu/srcutree.c                                        |  207 ++++++-----
- 16 files changed, 361 insertions(+), 160 deletions(-)
