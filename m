@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493DC19D075;
-	Wed,  9 Oct 2024 12:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289FC1A0BDC;
+	Wed,  9 Oct 2024 12:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728478313; cv=none; b=mkMDNztwM/kJMw74fbwbVHg3Nb3GEij55Bqyr8T/K5Cml1N+u8Cl23hf2Zaa0UKDsXBrJn3n1bghQu0hk5m4GO1LE8OULQb52fOQAg36TYEIrx4YkCkqaGOPKSPU62fXrnb5wrH1R2R79M+w3qfxtN/HkE2ZF4x8p+la3r2Ehlk=
+	t=1728478318; cv=none; b=roafxk3xGg8aYlABTxrSNvLpFSo0QcQ43rYQgnT63Xl7cwyn5emj6yxfG6Me8wyM817+XkscU9R7V4pruH0+0K+A4kymeaAj0zPD2eN7kmTEnndgujPJyHHqtS2Sy5YbMTOiTcQrlWECZnpnIXCQqh0qcihvXoUV6vuNnVOOpH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728478313; c=relaxed/simple;
-	bh=8qSnsgM8LhMwsfqVBK36j4HZgFG548kSvr6lIkRispo=;
+	s=arc-20240116; t=1728478318; c=relaxed/simple;
+	bh=Vse4+IeX1I6gTLyGFA7QmaJV7gC8q/+woRsbl3quBDk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pmgnEksddVpX49mh4cKBH5bVnv9yguKcjgHLvaD6mYfMe1n0kxS/KpQbjUScxGQNP+aH2pT56tSF14evKB+XXc+KTyZGckBdywwrPGcdKzRm6d+nIvBTF83mFBctXdcvJ8T9Vj/FrtNL+C55xgVRjM3/Gin9yBtxRI5P4IkYkEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OEEd2bL6; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=MBkstxjvvQypiu2znLSbG/jqllVUo0PSK3pDNUyzubB9dJfNxaFQH+CkvUUMc8Etv3OG/pdTG2UoidNrXL5cySfcxUJfrkgMvRnIHOCfkkONuGRtO91GyK3XoZJQDq2NkY64yKwo6ee/o4nUodRvWF4nPrCeWqUM/U5DzYOQiks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QYHxrEWr; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OEEd2bL6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8227CC4CEC5;
-	Wed,  9 Oct 2024 12:51:48 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QYHxrEWr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C564C4CEC5;
+	Wed,  9 Oct 2024 12:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728478312;
-	bh=8qSnsgM8LhMwsfqVBK36j4HZgFG548kSvr6lIkRispo=;
+	s=k20201202; t=1728478317;
+	bh=Vse4+IeX1I6gTLyGFA7QmaJV7gC8q/+woRsbl3quBDk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OEEd2bL6J6Yh6YBsyCq5m+LGHBJwL1tXjnrk7zssZzMyP59806bkeUfg2fH6FJ1nd
-	 aONa9hiDlTdYipD61Gc3YoEou7VDEd9L5b8nD9R8eUi0BkcnTDjBDcX5x8e3oRK5uw
-	 MEye2dbo1oq3MWZlGUpE5NJwCeTMghGq2+D7R0R+UozOEXr6PXCi7hnLlEDlIhryBC
-	 99SafEdlZpV1azA9O9dOZxGImxH5GSf5IN7mdGf6sR9mgmhRaNJxWR4ZoWA8nDEo4J
-	 rO1xSxAOIkzDS66GODK3oVyP+EWfM55tjYmlubGKLoZ+r0oK+JvpB9TZFuFXog26lU
-	 /uObIQnhEidIg==
+	b=QYHxrEWr62dprPX4XvwAQTZUdX4/fNJcf1toXJPwHQn1g4WNllmPG0EMHLQAniRwF
+	 7f2/kDOHJXvoWv21izfGpPPctjsKRsZsObUb9EW7EFzHW1ATxqudgk0kcGdmdfNtbN
+	 9hSF61E2NdcBqONDdbrF57GbaLPKpxuD1rUO1SAslRf3MNxcAUkPUUeakOcmKyjLR2
+	 j/WPSekI7TP6AqUpLf/fh6PUowSi2t4LDisTF9xnRPAyCTs1SMGlPnIbAYoZAKGUH3
+	 ptudWgjmFLXOFXSE3rX9/NAG0dLBn9GIs59GBcXCVjmPPJuTrm1qYT9+6ovXI8NU51
+	 90pQuUmrp444A==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc: linux-kernel@vger.kernel.org,
 	peterz@infradead.org,
 	neeraj.upadhyay@amd.com,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-Subject: [PATCH v2 02/10] rcu: Make some rcu_watching_* functions global
-Date: Wed,  9 Oct 2024 18:21:19 +0530
-Message-Id: <20241009125127.18902-3-neeraj.upadhyay@kernel.org>
+Subject: [PATCH v2 03/10] rcu/tasks: Move holdout checks for idle task to a separate function
+Date: Wed,  9 Oct 2024 18:21:20 +0530
+Message-Id: <20241009125127.18902-4-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20241009125127.18902-1-neeraj.upadhyay@kernel.org>
 References: <20241009125127.18902-1-neeraj.upadhyay@kernel.org>
@@ -57,60 +57,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 
-rcu_watching_snap_in_eqs() and rcu_watching_snap_stopped_since()
-will be used in subsequent commits by RCU-tasks to check rcu_watching
-state of idle tasks. So, make these functions global.
+Move checks for an idle task being a holdout task for RCU-tasks
+to a separate function - rcu_idle_task_is_holdout(). This function
+will be used in subsequent commits to add additional checks for
+idle task. No functional change intended.
 
+Suggested-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/rcu.h  | 4 ++++
- kernel/rcu/tree.c | 4 ++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ kernel/rcu/tasks.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index feb3ac1dc5d5..5fec1b52039c 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -609,6 +609,8 @@ void srcutorture_get_gp_data(struct srcu_struct *sp, int *flags,
- 
- #ifdef CONFIG_TINY_RCU
- static inline bool rcu_watching_zero_in_eqs(int cpu, int *vp) { return false; }
-+static inline bool rcu_watching_snap_in_eqs(int snap) { return false; }
-+static inline bool rcu_watching_snap_stopped_since(int cpu, int snap) { return false; }
- static inline unsigned long rcu_get_gp_seq(void) { return 0; }
- static inline unsigned long rcu_exp_batches_completed(void) { return 0; }
- static inline unsigned long
-@@ -622,6 +624,8 @@ static inline void rcu_gp_slow_register(atomic_t *rgssp) { }
- static inline void rcu_gp_slow_unregister(atomic_t *rgssp) { }
- #else /* #ifdef CONFIG_TINY_RCU */
- bool rcu_watching_zero_in_eqs(int cpu, int *vp);
-+bool rcu_watching_snap_in_eqs(int snap);
-+bool rcu_watching_snap_stopped_since(int cpu, int snap);
- unsigned long rcu_get_gp_seq(void);
- unsigned long rcu_exp_batches_completed(void);
- unsigned long srcu_batches_completed(struct srcu_struct *sp);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ea17dd2d0344..5ecbf85f157d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -303,7 +303,7 @@ static void rcu_watching_online(void)
-  * Return true if the snapshot returned from ct_rcu_watching()
-  * indicates that RCU is in an extended quiescent state.
-  */
--static bool rcu_watching_snap_in_eqs(int snap)
-+bool rcu_watching_snap_in_eqs(int snap)
- {
- 	return !(snap & CT_RCU_WATCHING);
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 6333f4ccf024..56015ced3f37 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -976,6 +976,15 @@ static void rcu_tasks_pregp_step(struct list_head *hop)
+ 	synchronize_rcu();
  }
-@@ -321,7 +321,7 @@ static bool rcu_watching_snap_in_eqs(int snap)
-  *
-  * This is meant to be used in a loop waiting for a CPU to go through an EQS.
-  */
--static bool rcu_watching_snap_stopped_since(int cpu, int snap)
-+bool rcu_watching_snap_stopped_since(int cpu, int snap)
+ 
++static bool rcu_idle_task_is_holdout(struct task_struct *t, int cpu)
++{
++	/* Idle tasks on offline CPUs are RCU-tasks quiescent states. */
++	if (!rcu_cpu_online(cpu))
++		return false;
++
++	return true;
++}
++
+ /* Check for quiescent states since the pregp's synchronize_rcu() */
+ static bool rcu_tasks_is_holdout(struct task_struct *t)
  {
- 	/*
- 	 * The first failing snapshot is already ordered against the accesses
+@@ -995,9 +1004,8 @@ static bool rcu_tasks_is_holdout(struct task_struct *t)
+ 
+ 	cpu = task_cpu(t);
+ 
+-	/* Idle tasks on offline CPUs are RCU-tasks quiescent states. */
+-	if (t == idle_task(cpu) && !rcu_cpu_online(cpu))
+-		return false;
++	if (t == idle_task(cpu))
++		return rcu_idle_task_is_holdout(t, cpu);
+ 
+ 	return true;
+ }
 -- 
 2.40.1
 
