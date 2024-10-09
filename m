@@ -1,104 +1,87 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254941A256B;
-	Wed,  9 Oct 2024 15:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A971A2544;
+	Wed,  9 Oct 2024 17:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728486814; cv=none; b=fDomaIcH12j2pbh2wZF9fbCWAGgR9Gs4LcaXnLkkKLphIkw60qPfPDI7yWEU3ngjlUwZHNiTBpR8AfVeCU4imrn7lHTGjDdNOGUc9NvuKvKYC19RWEtuNJsYCiCC9wbWC9/5AAizYgysXAib99FeWVh3GwilR01nBNGnxsjr0A0=
+	t=1728494342; cv=none; b=sIvEBFc6ihV+n0E0FYnLsrKODKirTX8qbroFGiebh7Un2Xi8aFCUAx7o9nhDzVKRFdFRgUxqZoMnBBQ/oEs+c8QiYRQbqV9CcZzo4Iql9f+/+Vsuw6v2mFGpKS2XsEoPJsXyxoLJgOCZVOEUQmPwP2Ow+3dimmDl3Jk3Y3M+OO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728486814; c=relaxed/simple;
-	bh=6sqMKBeiE/2i6apxFggtxp0XNmSdo86LFLaq2IGy15E=;
+	s=arc-20240116; t=1728494342; c=relaxed/simple;
+	bh=4ywsws1VqT75eiBREC+WyNrE0uUBPNDQWK/1QExI2Hk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DZe6msAAw/zniXihW7J1VE3C2QAODXV7dKCMhRrQ+Et1F1jAmdJDugZNgCmhsQUoCw3+qDH+MTWAPPmp8aDXqjeL8LkdAYLqmvywHvK+7aT067lChSMvtgSzR9CCiISKLIw2LJ8mC7mYme+/lGy67XMNjb851eDJub+QvY31r3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LfnZhqUr; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vv+shJQyGWLkW5MHNZ3eGT9ryO5lcxF+p02cbL2x+jicIdeLa0vu661qoSVKO56yYxhdKUCIbnrJho+w0Eta+aP437er3dXyqdofrlOo/zEW5G0yKKmSMRYMkYOcMgsZjkzHcb28JZZTZiz1PAVcVWtYElbfKj8WIFci0HMA8lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tAT8UerZ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LfnZhqUr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C359C4CEC3;
-	Wed,  9 Oct 2024 15:13:33 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tAT8UerZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1357C4CEC3;
+	Wed,  9 Oct 2024 17:19:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728486813;
-	bh=6sqMKBeiE/2i6apxFggtxp0XNmSdo86LFLaq2IGy15E=;
+	s=k20201202; t=1728494341;
+	bh=4ywsws1VqT75eiBREC+WyNrE0uUBPNDQWK/1QExI2Hk=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=LfnZhqUrsiPF7KJscBTNOIAw/IaB0Dx0l82rFOEinvexaNfAp2a5xFoTtxo6ytAZW
-	 AQFwlS/cJ7AwKkjDRzTASu0guzG8rRrZNFiw5UO2w9FRCNyKhqF3r/WajwqY4u6gNV
-	 n0MJyaERzzmCHaZUFN2FsQd88G5A636hW9VaPpgOOORer/Bnydt6Aw5NLkmvDf5qRj
-	 xyE5AeR10dMTvk6jMZm1rOv7NwEX4sEGplxVNWo4D0k73UnWKjPE/mHSQcT5pwTY6n
-	 FczEZvBZfQoUOVt5prnWGjwpxHHBvGRqMnYRta3l9G89ghnEuwI1Zi7vXvW4SoRrUU
-	 A2CH31zn0ap8A==
+	b=tAT8UerZ7MBLWcqnkb7vOqiWzn7JtDD6n4NKfpSTessMQQdXpJ5G8vnPr0n26iVK3
+	 jvWR6zGAqJt+6Asv9CnrLcic8ZbGQXZvIu71SrSjt0NDnX1kXX7NLHGgq5ujWaNvvf
+	 wK3Dpg9nx5Uo7LIGuMDCuGYIjndpqaDdRzEAC40lWUK1tZI2Qfhc+OcVi5b0ihyw58
+	 NXhjo667lWumg3XLUQgfCjpMo8um2zX0zpH80U0oBCLrawtRGyPi0gOpVgwqT2EXWw
+	 xhdl/oYgJgm8pmxn2qJkehqU3bfhCcAnxnYkP+4DYkm1mXkGPl9Zw+TNV2ZGS7wgBl
+	 +YLlq8mPecUiQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 42A9CCE044C; Wed,  9 Oct 2024 08:13:33 -0700 (PDT)
-Date: Wed, 9 Oct 2024 08:13:33 -0700
+	id 7ECBACE08E5; Wed,  9 Oct 2024 10:19:01 -0700 (PDT)
+Date: Wed, 9 Oct 2024 10:19:01 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 3/3] rcu: Report callbacks enqueued on offline CPU blind
- spot
-Message-ID: <084a9230-c272-49c8-9c67-6c51b595f6e2@paulmck-laptop>
+To: Michal Schmidt <mschmidt@redhat.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/srcutiny: don't return before reenabling preemption
+Message-ID: <6c9dde7f-271b-4342-8ce9-8f363b341c0d@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20241002145738.38226-1-frederic@kernel.org>
- <20241002145738.38226-4-frederic@kernel.org>
- <Zv1f8-1tLd-r1cyu@localhost.localdomain>
- <4e81816e-3a4d-4642-a86c-fd9bd49ca163@paulmck-laptop>
+References: <20241007101415.466155-1-mschmidt@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4e81816e-3a4d-4642-a86c-fd9bd49ca163@paulmck-laptop>
+In-Reply-To: <20241007101415.466155-1-mschmidt@redhat.com>
 
-On Tue, Oct 08, 2024 at 07:03:50PM -0700, Paul E. McKenney wrote:
-> On Wed, Oct 02, 2024 at 05:00:03PM +0200, Frederic Weisbecker wrote:
-> > Le Wed, Oct 02, 2024 at 04:57:38PM +0200, Frederic Weisbecker a écrit :
-> > > Callbacks enqueued after rcutree_report_cpu_dead() fall into RCU barrier
-> > > blind spot. Report any potential misuse.
-> > > 
-> > > Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > ---
-> > >  kernel/rcu/tree.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index a60616e69b66..36070b6bf4a1 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3084,8 +3084,11 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
-> > >  	head->func = func;
-> > >  	head->next = NULL;
-> > >  	kasan_record_aux_stack_noalloc(head);
-> > > +
-> > >  	local_irq_save(flags);
-> > >  	rdp = this_cpu_ptr(&rcu_data);
-> > > +	RCU_LOCKDEP_WARN(rcu_rdp_cpu_online(rdp), "Callback enqueued on offline
-> > > CPU!");
-> > 
-> > This should be !rcu_rdp_cpu_online(rdp)
-> > 
-> > Sigh...
+On Mon, Oct 07, 2024 at 12:14:15PM +0200, Michal Schmidt wrote:
+> Code after the return statement is dead. Enable preemption before
+> returning from srcu_drive_gp().
 > 
-> I am pulling this in for testing with this change, thank you!
-
-And:
-
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-
-> 							Thanx, Paul
+> This will be important when/if PREEMPT_AUTO (lazy resched) gets merged.
 > 
-> > > +
-> > >  	lazy = lazy_in && !rcu_async_should_hurry();
-> > >  
-> > >  	/* Add the callback to our list. */
-> > > -- 
-> > > 2.46.0
-> > > 
-> > > 
+> Fixes: 65b4a59557f6 ("srcu: Make Tiny SRCU explicitly disable preemption")
+> Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+
+Good catch!
+
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+
+> ---
+>  kernel/rcu/srcutiny.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+> index 549c03336ee9..4dcbf8aa80ff 100644
+> --- a/kernel/rcu/srcutiny.c
+> +++ b/kernel/rcu/srcutiny.c
+> @@ -122,8 +122,8 @@ void srcu_drive_gp(struct work_struct *wp)
+>  	ssp = container_of(wp, struct srcu_struct, srcu_work);
+>  	preempt_disable();  // Needed for PREEMPT_AUTO
+>  	if (ssp->srcu_gp_running || ULONG_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max))) {
+> -		return; /* Already running or nothing to do. */
+>  		preempt_enable();
+> +		return; /* Already running or nothing to do. */
+>  	}
+>  
+>  	/* Remove recently arrived callbacks and wait for readers. */
+> -- 
+> 2.46.2
 > 
