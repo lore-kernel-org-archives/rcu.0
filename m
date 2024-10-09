@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803861E25E5;
-	Wed,  9 Oct 2024 12:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278D01A2C19;
+	Wed,  9 Oct 2024 12:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728478342; cv=none; b=T64z/vE6xyca2K8zJBSMjnkq75Rsui5MewutdWMYbK4RljFzw4DNshDjoRyXk5IAI6LdDqxl4N9HY+PwABUIWUelOWs3+e4LyMlWyKqQstrfenvj6lJTzOhgPvgjU5LnIEye8Fy0uNfLu6L/36H1xSOKMbJMVghaiLCYkXtL/C4=
+	t=1728478347; cv=none; b=m7rQj2jeSCQJ+8zcoRH3uqxW7k8FpEh51MehQCnEExYhpk8HJjF5F4/QPx+1lwrW/k/bjbsffFDmK9tw8E9r8TMIUMFuIdWN4yLtXVSsKXJ3ikoEddQX/3M7TtWWYu38Z7XnW9KfVOPOZKr8pZ5WihvMv8S/VZrSDEggAjvA5Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728478342; c=relaxed/simple;
-	bh=5GHN3TQydO4+DYblsifPfmO2C1JXUc1tJrJ11vf8hJw=;
+	s=arc-20240116; t=1728478347; c=relaxed/simple;
+	bh=lOXgRfOyLIl7elkNZsxeg0qekVV+z+V29DqLUPqFN78=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IsSfT9vRz8dv1H83dt29pvVRj59b54PvUaiemPSi+Fz1MCbswkuM9gdxnBKNWbAvgmtzbVtzpKWhJSIWPL97qFEe3C7wCn65FahPdQRz2JKEB3NE0z7sOTNbJV+Kpm9NFwZQHXt4XNLZyiCsKqNNC5eF8PsA07b8H1TymbybBm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uaGKqEeF; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Wkanq1kYIY1cQHh5qkw7+5Qxmk0w3I8yCQhumXfeg73wA4vsE1d4VVc7Gr2YcbggtRy7ZayO+vFpsd+Hr5SJdna/Lqze3S8g4esPom1uBE1l0KiGi8MHnS4YRXcQoN9cYOgrAspt63LuVngb0xSQcMsKfGN+jXAvU8xl/Nw7gpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K2ZxVGxf; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uaGKqEeF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB86DC4CED1;
-	Wed,  9 Oct 2024 12:52:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K2ZxVGxf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9566C4CEC5;
+	Wed,  9 Oct 2024 12:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728478342;
-	bh=5GHN3TQydO4+DYblsifPfmO2C1JXUc1tJrJ11vf8hJw=;
+	s=k20201202; t=1728478346;
+	bh=lOXgRfOyLIl7elkNZsxeg0qekVV+z+V29DqLUPqFN78=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uaGKqEeFN0PwyFg/+8hX9ylsmGNk289GmEKjA1KNrlB6ZRKGO+vWPuHHyqzJmaCf0
-	 OrxeZjwjhLoEibjLP0JKyTanXAxNvbMadz6cd6FVH5eNkqDdxrqdNF5Gw56qsvHDkO
-	 k3fVN0xnaNdBJ24a5+GDLuiu0n6ItV8ayBKcae7GJNilks2W1xlIgXPSTfWbRedF7C
-	 lWxoxSkTL0EpXubTWHdVhqBUWoNn8G82jEY4Yi/RbZa1F9qnvreNuasqZzUFLalvU2
-	 vSYOVrWgyY/Oj2lHQ62EKMwaKroSQcN/5cHMNbPj9b75Q2vn4NeoF58k11QiASISe9
-	 RPjK9XhHmVfxQ==
+	b=K2ZxVGxfr/4AK7Agl9MI+e69zrPCZb4KtzRhkDgzTrYKQ3K5Z1h9lZNmmfZx08Feo
+	 Vm49v6S2GgwaMl/SHf9zmG218tjoeJiodloI8duuCmI2Z55Lj00eZCl6L4w5hD3eMO
+	 /wEzKBGJmkg5vCNpvJN2yZY6UG4yOYcAfr0WJl7q9FzwBP2XDNRK2jly2PU0Ewfu8E
+	 GY/ss0KIeBs1We3lEfNwkuiaRLUEg6axGD+kSNsBwQyKBhG9vEum7C8iQcUTPrjA81
+	 Klhth8uZ+zPjjBQeewcRFR/la0H2KZxtXjV1USkbXZyhtpuoLSgeWME8epe893eLj2
+	 AbXNuCDN62hkw==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc: linux-kernel@vger.kernel.org,
 	peterz@infradead.org,
 	neeraj.upadhyay@amd.com,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-Subject: [PATCH v2 08/10] rcu/tasks: Make RCU-tasks pay attention to idle tasks
-Date: Wed,  9 Oct 2024 18:21:25 +0530
-Message-Id: <20241009125127.18902-9-neeraj.upadhyay@kernel.org>
+Subject: [PATCH v2 09/10] context_tracking: Invoke RCU-tasks enter/exit for NMI context
+Date: Wed,  9 Oct 2024 18:21:26 +0530
+Message-Id: <20241009125127.18902-10-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20241009125127.18902-1-neeraj.upadhyay@kernel.org>
 References: <20241009125127.18902-1-neeraj.upadhyay@kernel.org>
@@ -57,123 +57,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 
-Currently, idle tasks are ignored by RCU-tasks. Change this to
-start paying attention to idle tasks except in deep-idle functions
-where RCU is not watching. With this, for architectures where
-kernel entry/exit and deep-idle functions have been properly tagged
-noinstr, Tasks Rude RCU can be disabled.
+rcu_task_enter() and rcu_task_exit() are not called on NMI
+entry and exit. So, Tasks-RCU-Rude grace period wait is required to
+ensure that NMI handlers have entered/exited into Tasks-RCU eqs.
+For architectures which do not require Tasks-RCU-Rude (as the code
+sections where RCU is not watching are marked as noinstr), when
+those architectures switch to not using Tasks-RCU-Rude, NMI handlers
+task exit to eqs will need to be handled correctly for Tasks-RCU holdout
+tasks running on nohz_full CPUs. As it is safe to call these two
+functions from NMI context, remove the in_nmi() check. This ensures
+that RCU-tasks entry/exit is marked correctly for NMI handlers.
+With this check removed, all callers of ct_kernel_exit_state() and
+ct_kernel_enter_state() now also call rcu_task_exit() and
+rcu_task_enter() respectively. So, fold rcu_task_exit() and
+rcu_task_entry() calls into ct_kernel_exit_state() and
+ct_kernel_enter_state().
 
-[ neeraj.upadhyay: Frederic Weisbecker and Paul E. McKenney feedback. ]
-
+Reported-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+Suggested-by: "Paul E. McKenney" <paulmck@kernel.org>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 ---
- .../RCU/Design/Requirements/Requirements.rst  | 12 +++---
- kernel/rcu/tasks.h                            | 41 ++++++++-----------
- 2 files changed, 24 insertions(+), 29 deletions(-)
+ kernel/context_tracking.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 6125e7068d2c..5016b85d53d7 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2611,8 +2611,8 @@ critical sections that are delimited by voluntary context switches, that
- is, calls to schedule(), cond_resched(), and
- synchronize_rcu_tasks(). In addition, transitions to and from
- userspace execution also delimit tasks-RCU read-side critical sections.
--Idle tasks are ignored by Tasks RCU, and Tasks Rude RCU may be used to
--interact with them.
-+Idle tasks which are idle from RCU's perspective are ignored by Tasks RCU,
-+and Tasks Rude RCU may be used to interact with them.
+diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+index 938c48952d26..85ced563af23 100644
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -91,6 +91,7 @@ static noinstr void ct_kernel_exit_state(int offset)
+ 	seq = ct_state_inc(offset);
+ 	// RCU is no longer watching.  Better be in extended quiescent state!
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & CT_RCU_WATCHING));
++	rcu_task_exit();
+ }
  
- Note well that involuntary context switches are *not* Tasks-RCU quiescent
- states.  After all, in preemptible kernels, a task executing code in a
-@@ -2643,10 +2643,10 @@ moniker.  And this operation is considered to be quite rude by real-time
- workloads that don't want their ``nohz_full`` CPUs receiving IPIs and
- by battery-powered systems that don't want their idle CPUs to be awakened.
+ /*
+@@ -102,6 +103,8 @@ static noinstr void ct_kernel_enter_state(int offset)
+ {
+ 	int seq;
  
--Once kernel entry/exit and deep-idle functions have been properly tagged
--``noinstr``, Tasks RCU can start paying attention to idle tasks (except
--those that are idle from RCU's perspective) and then Tasks Rude RCU can
--be removed from the kernel.
-+As Tasks RCU now pays attention to idle tasks (except those that are idle
-+from RCU's perspective), once kernel entry/exit and deep-idle functions have
-+been properly tagged ``noinstr``, Tasks Rude RCU can be removed from the
-+kernel.
++	rcu_task_enter();
++
+ 	/*
+ 	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
+ 	 * and we also must force ordering with the next RCU read-side
+@@ -149,7 +152,6 @@ static void noinstr ct_kernel_exit(bool user, int offset)
+ 	// RCU is watching here ...
+ 	ct_kernel_exit_state(offset);
+ 	// ... but is no longer watching here.
+-	rcu_task_exit();
+ }
  
- The tasks-rude-RCU API is also reader-marking-free and thus quite compact,
- consisting solely of synchronize_rcu_tasks_rude().
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 1947f9b6346d..72dc0d0a4a8f 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -912,14 +912,15 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- ////////////////////////////////////////////////////////////////////////
- //
- // Simple variant of RCU whose quiescent states are voluntary context
--// switch, cond_resched_tasks_rcu_qs(), user-space execution, and idle.
--// As such, grace periods can take one good long time.  There are no
--// read-side primitives similar to rcu_read_lock() and rcu_read_unlock()
--// because this implementation is intended to get the system into a safe
--// state for some of the manipulations involved in tracing and the like.
--// Finally, this implementation does not support high call_rcu_tasks()
--// rates from multiple CPUs.  If this is required, per-CPU callback lists
--// will be needed.
-+// switch, cond_resched_tasks_rcu_qs(), user-space execution, and idle
-+// tasks which are in RCU-idle context. As such, grace periods can take
-+// one good long time.  There are no read-side primitives similar to
-+// rcu_read_lock() and rcu_read_unlock() because this implementation is
-+// intended to get the system into a safe state for some of the
-+// manipulations involved in tracing and the like. Finally, this
-+// implementation does not support high call_rcu_tasks() rates from
-+// multiple CPUs.  If this is required, per-CPU callback lists will be
-+// needed.
- //
- // The implementation uses rcu_tasks_wait_gp(), which relies on function
- // pointers in the rcu_tasks structure.  The rcu_spawn_tasks_kthread()
-@@ -1079,14 +1080,6 @@ static bool rcu_tasks_is_holdout(struct task_struct *t)
- 	if (!READ_ONCE(t->on_rq))
- 		return false;
- 
--	/*
--	 * Idle tasks (or idle injection) within the idle loop are RCU-tasks
--	 * quiescent states. But CPU boot code performed by the idle task
--	 * isn't a quiescent state.
--	 */
--	if (is_idle_task(t))
--		return false;
+ /*
+@@ -173,7 +175,6 @@ static void noinstr ct_kernel_enter(bool user, int offset)
+ 		ct->nesting++;
+ 		return;
+ 	}
+-	rcu_task_enter();
+ 	// RCU is not watching here ...
+ 	ct_kernel_enter_state(offset);
+ 	// ... but is watching here.
+@@ -238,9 +239,6 @@ void noinstr ct_nmi_exit(void)
+ 	// RCU is watching here ...
+ 	ct_kernel_exit_state(CT_RCU_WATCHING);
+ 	// ... but is no longer watching here.
 -
- 	cpu = task_cpu(t);
+-	if (!in_nmi())
+-		rcu_task_exit();
+ }
  
- 	if (t == idle_task(cpu))
-@@ -1265,11 +1258,12 @@ static void tasks_rcu_exit_srcu_stall(struct timer_list *unused)
-  * period elapses, in other words after all currently executing RCU
-  * read-side critical sections have completed. call_rcu_tasks() assumes
-  * that the read-side critical sections end at a voluntary context
-- * switch (not a preemption!), cond_resched_tasks_rcu_qs(), entry into idle,
-- * or transition to usermode execution.  As such, there are no read-side
-- * primitives analogous to rcu_read_lock() and rcu_read_unlock() because
-- * this primitive is intended to determine that all tasks have passed
-- * through a safe state, not so much for data-structure synchronization.
-+ * switch (not a preemption!), cond_resched_tasks_rcu_qs(), entry into
-+ * RCU-idle context or transition to usermode execution. As such, there
-+ * are no read-side primitives analogous to rcu_read_lock() and
-+ * rcu_read_unlock() because this primitive is intended to determine
-+ * that all tasks have passed through a safe state, not so much for
-+ * data-structure synchronization.
-  *
-  * See the description of call_rcu() for more detailed information on
-  * memory ordering guarantees.
-@@ -1287,8 +1281,9 @@ EXPORT_SYMBOL_GPL(call_rcu_tasks);
-  * grace period has elapsed, in other words after all currently
-  * executing rcu-tasks read-side critical sections have elapsed.  These
-  * read-side critical sections are delimited by calls to schedule(),
-- * cond_resched_tasks_rcu_qs(), idle execution, userspace execution, calls
-- * to synchronize_rcu_tasks(), and (in theory, anyway) cond_resched().
-+ * cond_resched_tasks_rcu_qs(), idle execution within RCU-idle context,
-+ * userspace execution, calls to synchronize_rcu_tasks(), and (in theory,
-+ * anyway) cond_resched().
-  *
-  * This is a very specialized primitive, intended only for a few uses in
-  * tracing and other situations requiring manipulation of function
+ /**
+@@ -273,9 +271,6 @@ void noinstr ct_nmi_enter(void)
+ 	 */
+ 	if (!rcu_is_watching_curr_cpu()) {
+ 
+-		if (!in_nmi())
+-			rcu_task_enter();
+-
+ 		// RCU is not watching here ...
+ 		ct_kernel_enter_state(CT_RCU_WATCHING);
+ 		// ... but is watching here.
 -- 
 2.40.1
 
