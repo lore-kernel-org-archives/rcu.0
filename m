@@ -1,44 +1,49 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212073BBEB;
-	Wed,  9 Oct 2024 14:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254941A256B;
+	Wed,  9 Oct 2024 15:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728484638; cv=none; b=YsL1Ux+dS9RVEeM7/KJcpThXf0djfyUVsLvaXxqkOcETmgLbb0bzAVs9OPyqt3zGhN8Hk9IP4xe7Y2Wj2huEBWeD2w/SfJ+Dl+hPHDKAlwigYOIcSzX2qLeqSh7TjYy038Ij98JEce9h9AVi56o2jA29XHgbxSSjp/w+VQPC0d0=
+	t=1728486814; cv=none; b=fDomaIcH12j2pbh2wZF9fbCWAGgR9Gs4LcaXnLkkKLphIkw60qPfPDI7yWEU3ngjlUwZHNiTBpR8AfVeCU4imrn7lHTGjDdNOGUc9NvuKvKYC19RWEtuNJsYCiCC9wbWC9/5AAizYgysXAib99FeWVh3GwilR01nBNGnxsjr0A0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728484638; c=relaxed/simple;
-	bh=6fyn3wX+UwlDxoFQS10FOggWv6S8FSIec9HdLXYbHxU=;
+	s=arc-20240116; t=1728486814; c=relaxed/simple;
+	bh=6sqMKBeiE/2i6apxFggtxp0XNmSdo86LFLaq2IGy15E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JuxVlqAHi9CipjUxt5g1I/BmCl6g2GnAnqgUvReG1HLZ2/dThfyNKnvvGjDAPh2flTdvZuW+ZBwwfWIJnpr+hgv3XUcBIJSSwAJafnR5IrsJSOmjA0AMez+vnaviCp++/eU1hYAXlus/4uUOnQDFECfpbsKtRnd79xkoZIU2ZiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q+S4h6Vo; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=DZe6msAAw/zniXihW7J1VE3C2QAODXV7dKCMhRrQ+Et1F1jAmdJDugZNgCmhsQUoCw3+qDH+MTWAPPmp8aDXqjeL8LkdAYLqmvywHvK+7aT067lChSMvtgSzR9CCiISKLIw2LJ8mC7mYme+/lGy67XMNjb851eDJub+QvY31r3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LfnZhqUr; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q+S4h6Vo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DC1DC4CEC3;
-	Wed,  9 Oct 2024 14:37:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LfnZhqUr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C359C4CEC3;
+	Wed,  9 Oct 2024 15:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728484637;
-	bh=6fyn3wX+UwlDxoFQS10FOggWv6S8FSIec9HdLXYbHxU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q+S4h6VoePLaSWMBaEZrbTs5ASdKkvAOjlKthj0fp8joS4AmF1JcBHYOMPZxYw6Sz
-	 V32pMsyP+OiL4TR74WdnAd+qUtDHYr7x3LDOPbaF35FzS/GNz3r2POVKD6yJtyAmqD
-	 L2AsDc9Phr0IU/yz9J1BrhxDxaIh8xeFy4kfukTzhyhpFsm/N4yKnlnXwxrFMF8YXc
-	 zjPH1Y7/Bck8QrzjXZ+LMViawL39SsmnUFmnetI5zNG/mR6M3IzVr55b61X66V03LB
-	 J/ysOtMPvwHT7mOLPaAOdBrvNLtH0fP8Fl9LWQd8trT4/qDN9ujZ9Agio0s6pF2sJj
-	 u8nCmY2NhHbaw==
-Date: Wed, 9 Oct 2024 16:37:14 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: neeraj.upadhyay@kernel.org
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, paulmck@kernel.org,
-	joel@joelfernandes.org, boqun.feng@gmail.com, urezki@gmail.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
-	peterz@infradead.org, neeraj.upadhyay@amd.com
-Subject: Re: [PATCH v2 07/10] rcu/tasks: Check RCU watching state for holdout
- idle injection tasks
-Message-ID: <ZwaVGnwu_Mgdbjfa@localhost.localdomain>
-References: <20241009125127.18902-1-neeraj.upadhyay@kernel.org>
- <20241009125127.18902-8-neeraj.upadhyay@kernel.org>
+	s=k20201202; t=1728486813;
+	bh=6sqMKBeiE/2i6apxFggtxp0XNmSdo86LFLaq2IGy15E=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=LfnZhqUrsiPF7KJscBTNOIAw/IaB0Dx0l82rFOEinvexaNfAp2a5xFoTtxo6ytAZW
+	 AQFwlS/cJ7AwKkjDRzTASu0guzG8rRrZNFiw5UO2w9FRCNyKhqF3r/WajwqY4u6gNV
+	 n0MJyaERzzmCHaZUFN2FsQd88G5A636hW9VaPpgOOORer/Bnydt6Aw5NLkmvDf5qRj
+	 xyE5AeR10dMTvk6jMZm1rOv7NwEX4sEGplxVNWo4D0k73UnWKjPE/mHSQcT5pwTY6n
+	 FczEZvBZfQoUOVt5prnWGjwpxHHBvGRqMnYRta3l9G89ghnEuwI1Zi7vXvW4SoRrUU
+	 A2CH31zn0ap8A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 42A9CCE044C; Wed,  9 Oct 2024 08:13:33 -0700 (PDT)
+Date: Wed, 9 Oct 2024 08:13:33 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 3/3] rcu: Report callbacks enqueued on offline CPU blind
+ spot
+Message-ID: <084a9230-c272-49c8-9c67-6c51b595f6e2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20241002145738.38226-1-frederic@kernel.org>
+ <20241002145738.38226-4-frederic@kernel.org>
+ <Zv1f8-1tLd-r1cyu@localhost.localdomain>
+ <4e81816e-3a4d-4642-a86c-fd9bd49ca163@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -48,70 +53,52 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241009125127.18902-8-neeraj.upadhyay@kernel.org>
+In-Reply-To: <4e81816e-3a4d-4642-a86c-fd9bd49ca163@paulmck-laptop>
 
-Le Wed, Oct 09, 2024 at 06:21:24PM +0530, neeraj.upadhyay@kernel.org a écrit :
-> From: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+On Tue, Oct 08, 2024 at 07:03:50PM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 02, 2024 at 05:00:03PM +0200, Frederic Weisbecker wrote:
+> > Le Wed, Oct 02, 2024 at 04:57:38PM +0200, Frederic Weisbecker a écrit :
+> > > Callbacks enqueued after rcutree_report_cpu_dead() fall into RCU barrier
+> > > blind spot. Report any potential misuse.
+> > > 
+> > > Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > ---
+> > >  kernel/rcu/tree.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index a60616e69b66..36070b6bf4a1 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3084,8 +3084,11 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+> > >  	head->func = func;
+> > >  	head->next = NULL;
+> > >  	kasan_record_aux_stack_noalloc(head);
+> > > +
+> > >  	local_irq_save(flags);
+> > >  	rdp = this_cpu_ptr(&rcu_data);
+> > > +	RCU_LOCKDEP_WARN(rcu_rdp_cpu_online(rdp), "Callback enqueued on offline
+> > > CPU!");
+> > 
+> > This should be !rcu_rdp_cpu_online(rdp)
+> > 
+> > Sigh...
 > 
-> Use RCU watching state of a CPU to check whether RCU-tasks GP
-> need to wait for idle injection task on that CPU. Idle injection
-> tasks which are in deep-idle states where RCU is not watching or
-> which have transitioned to/from deep-idle state do not block
-> RCU-tasks grace period.
+> I am pulling this in for testing with this change, thank you!
+
+And:
+
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+
+> 							Thanx, Paul
 > 
-> Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-
-For now this should work because there is a single user that is
-a per-cpu kthread, therefore no RCU-watching writer can race
-against another (real idle VS idle injection or idle_injection VS
-idle injection) without going first through a voluntary context
-switch. But who knows about the future? If an idle injection kthread
-is preempted by another idle injection right after clearing PF_IDLE,
-there could be some spurious QS accounted for the preempted
-kthread.
-
-So perhaps we can consider idle injection as any normal task and
-wait for it to voluntary schedule?
-
-Well I see DEFAULT_DURATION_JIFFIES = 6, which is 60 ms on HZ=100.
-
-Yeah that's a lot...so perhaps this patch is needed after all...
-
-> ---
->  kernel/rcu/tasks.h | 63 +++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 48 insertions(+), 15 deletions(-)
+> > > +
+> > >  	lazy = lazy_in && !rcu_async_should_hurry();
+> > >  
+> > >  	/* Add the callback to our list. */
+> > > -- 
+> > > 2.46.0
+> > > 
+> > > 
 > 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index d8506d2e6f54..1947f9b6346d 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -38,6 +38,8 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
->   * @rtpp: Pointer to the rcu_tasks structure.
->   * @rcu_watching_snap: Per-GP RCU-watching snapshot for idle tasks.
->   * @rcu_watching_snap_rec: RCU-watching snapshot recorded for idle task.
-> + * @rcu_watching_idle_inj_snap: Per-GP RCU-watching snapshot for idle inject task.
-> + * @rcu_watching_idle_inj_rec: RCU-watching snapshot recorded for idle inject task.
->   */
->  struct rcu_tasks_percpu {
->  	struct rcu_segcblist cblist;
-> @@ -56,6 +58,8 @@ struct rcu_tasks_percpu {
->  	struct rcu_tasks *rtpp;
->  	int rcu_watching_snap;
->  	bool rcu_watching_snap_rec;
-> +	int rcu_watching_idle_inj_snap;
-> +	bool rcu_watching_idle_inj_rec;
-
-So how about:
-
-struct rcu_watching_task {
-    int snap;
-    bool rec;
-}
-...
-struct rcu_tasks_percpu {
-       ...
-       struct rcu_watching_task idle_task;
-       struct rcu_watching_task idle_inject;
-}
-
-Thanks.
