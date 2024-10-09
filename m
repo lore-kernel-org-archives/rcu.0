@@ -1,46 +1,40 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A971A2544;
-	Wed,  9 Oct 2024 17:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC361A76D5;
+	Wed,  9 Oct 2024 18:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728494342; cv=none; b=sIvEBFc6ihV+n0E0FYnLsrKODKirTX8qbroFGiebh7Un2Xi8aFCUAx7o9nhDzVKRFdFRgUxqZoMnBBQ/oEs+c8QiYRQbqV9CcZzo4Iql9f+/+Vsuw6v2mFGpKS2XsEoPJsXyxoLJgOCZVOEUQmPwP2Ow+3dimmDl3Jk3Y3M+OO4=
+	t=1728496826; cv=none; b=gdj6HEtpKmMINxp3u5ChQxqb5MMho18fP7c3JW4O5X13O1hTgbUZ47y/BLIg3C/lc96YHs3enY9uHCx9fudI1i0T8Zj+XDxUG/stf+/0DKnzHBIavUsK20TamH7xPYnXEkbn/HBA7GLvujJR/NnSisjjn3vdw8nkKhUKUTmp14k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728494342; c=relaxed/simple;
-	bh=4ywsws1VqT75eiBREC+WyNrE0uUBPNDQWK/1QExI2Hk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vv+shJQyGWLkW5MHNZ3eGT9ryO5lcxF+p02cbL2x+jicIdeLa0vu661qoSVKO56yYxhdKUCIbnrJho+w0Eta+aP437er3dXyqdofrlOo/zEW5G0yKKmSMRYMkYOcMgsZjkzHcb28JZZTZiz1PAVcVWtYElbfKj8WIFci0HMA8lI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tAT8UerZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1728496826; c=relaxed/simple;
+	bh=ULylfd/orvzxXyLN6k+OZ5VccOQzKRlCRQmp4wMqnwQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=TIVOZjJoBJMukZmhimM/Z9XGVfis/AbE2X2/r0EJg/ituzxVGEAYMKNtndbjfpB9su2jtfA/28wNbFpk0Fpfk4he0nc6vgl+8ejEQOgcaidDOW0Si/Q72NJhm20WBtPA4ja1HOIcHsqcF9siA4royY6/YqSKPOZ+Ii+HpYKNEaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S1VHbvw0; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tAT8UerZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1357C4CEC3;
-	Wed,  9 Oct 2024 17:19:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S1VHbvw0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB58C4CEC3;
+	Wed,  9 Oct 2024 18:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728494341;
-	bh=4ywsws1VqT75eiBREC+WyNrE0uUBPNDQWK/1QExI2Hk=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=tAT8UerZ7MBLWcqnkb7vOqiWzn7JtDD6n4NKfpSTessMQQdXpJ5G8vnPr0n26iVK3
-	 jvWR6zGAqJt+6Asv9CnrLcic8ZbGQXZvIu71SrSjt0NDnX1kXX7NLHGgq5ujWaNvvf
-	 wK3Dpg9nx5Uo7LIGuMDCuGYIjndpqaDdRzEAC40lWUK1tZI2Qfhc+OcVi5b0ihyw58
-	 NXhjo667lWumg3XLUQgfCjpMo8um2zX0zpH80U0oBCLrawtRGyPi0gOpVgwqT2EXWw
-	 xhdl/oYgJgm8pmxn2qJkehqU3bfhCcAnxnYkP+4DYkm1mXkGPl9Zw+TNV2ZGS7wgBl
-	 +YLlq8mPecUiQ==
+	s=k20201202; t=1728496826;
+	bh=ULylfd/orvzxXyLN6k+OZ5VccOQzKRlCRQmp4wMqnwQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=S1VHbvw0A/OwJ6NuvVm3cd48Kkkr+KOuGn85XT2EINo+X13ii1Sh6XXFAHZbUSTQV
+	 TCli8rr++xocgaqf0rcACJTcvqrbL6TZ5HTjduNMdRcfoFx3oxEVPKxfpAHztD8+7j
+	 NiqUYiJv5u+Hw7Rx/wD6J1wRoqkJQtUCWapDK8kVlyhZ/ofz876z7JeOlkshDGdLlI
+	 2hQaLvIg9p0jHssWZmmmDLn9C3uDhAKUD+HgadKHVOO42tecOBCKKhEdNE3VJzXffp
+	 Y6J2pL4o8rVN6JwxlxcO2S2tDkA50/bh6st1U+DiNsf8ZpMOLO6X/IxfFKlgSmu+G4
+	 W1FTdbbruB7qA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7ECBACE08E5; Wed,  9 Oct 2024 10:19:01 -0700 (PDT)
-Date: Wed, 9 Oct 2024 10:19:01 -0700
+	id 3536ACE08E5; Wed,  9 Oct 2024 11:00:26 -0700 (PDT)
+Date: Wed, 9 Oct 2024 11:00:26 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Michal Schmidt <mschmidt@redhat.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Uladzislau Rezki (Sony)" <urezki@gmail.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/srcutiny: don't return before reenabling preemption
-Message-ID: <6c9dde7f-271b-4342-8ce9-8f363b341c0d@paulmck-laptop>
+To: frederic@kernel.org, rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH rcu 0/7] Miscellaneous changes for v6.13
+Message-ID: <2dc6de07-374d-44da-82e9-fa9d9c516b46@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20241007101415.466155-1-mschmidt@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,39 +43,34 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241007101415.466155-1-mschmidt@redhat.com>
 
-On Mon, Oct 07, 2024 at 12:14:15PM +0200, Michal Schmidt wrote:
-> Code after the return statement is dead. Enable preemption before
-> returning from srcu_drive_gp().
-> 
-> This will be important when/if PREEMPT_AUTO (lazy resched) gets merged.
-> 
-> Fixes: 65b4a59557f6 ("srcu: Make Tiny SRCU explicitly disable preemption")
-> Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+Hello!
 
-Good catch!
+This series contains miscelleous updates for v6.13:
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+1.	Add rcuog kthreads to RCU_NOCB_CPU help text.
 
-> ---
->  kernel/rcu/srcutiny.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-> index 549c03336ee9..4dcbf8aa80ff 100644
-> --- a/kernel/rcu/srcutiny.c
-> +++ b/kernel/rcu/srcutiny.c
-> @@ -122,8 +122,8 @@ void srcu_drive_gp(struct work_struct *wp)
->  	ssp = container_of(wp, struct srcu_struct, srcu_work);
->  	preempt_disable();  // Needed for PREEMPT_AUTO
->  	if (ssp->srcu_gp_running || ULONG_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max))) {
-> -		return; /* Already running or nothing to do. */
->  		preempt_enable();
-> +		return; /* Already running or nothing to do. */
->  	}
->  
->  	/* Remove recently arrived callbacks and wait for readers. */
-> -- 
-> 2.46.2
-> 
+2.	Add rcuog kthreads to kernel-per-CPU-kthreads.rst.
+
+3.	Allow short-circuiting of synchronize_rcu_tasks_rude().
+
+4.	Permit start_poll_synchronize_rcu*() with interrupts disabled.
+
+5.	Test start-poll primitives with interrupts disabled.
+
+6.	Remove kernel-parameters.txt entry for rcutorture.read_exit.
+
+7.	Remove open-coded one-byte cmpxchg() emulation.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt       |    5 --
+ b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst |    2 -
+ b/kernel/rcu/Kconfig                                    |   28 ++++++++++------
+ b/kernel/rcu/rcutorture.c                               |   10 +++++
+ b/kernel/rcu/tasks.h                                    |    3 +
+ b/kernel/rcu/tree.c                                     |    7 ----
+ kernel/rcu/tasks.h                                      |   17 ---------
+ 7 files changed, 32 insertions(+), 40 deletions(-)
