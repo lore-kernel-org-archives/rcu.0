@@ -1,173 +1,191 @@
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED8A15E81
-	for <rcu@vger.kernel.org>; Thu, 10 Oct 2024 00:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9058EC153;
+	Thu, 10 Oct 2024 08:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728520079; cv=none; b=G7Wi85us6zdZ6S49Q9YehYxOVf1x1t5jdvZ/x3rhG709tszhg8lIBnlG5FwedzvP+bFHVtaT1g1Re35uotuXLBDOr7WNYhv94nAiHNu9S1dk5iaLIcu77imc0NRpZXHOtatYCdcgaJRD8FT+/movEJip6PpohlALUvMWKVAP8B4=
+	t=1728548209; cv=none; b=r01IX+KTzivTb4TA/7b6LQErgHPNFlg3LKr+wUUTAW1WmDkNzcmV/MURTs/z2MuojGupHtrXlS+0IkZjc/AYFP05QKbep33CoQc74sj/6dQJ/GTtWNMBsa1vUVIsx4KGvJDW8UztzH3Esk4PuukA+V8TwYQi44jYvSalIcs2oN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728520079; c=relaxed/simple;
-	bh=YDlMNjPq13XEcf5/f1zerRs3yGSjooeeUIzeM9qKR8c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eOHe3QGU2Vnx9j8egTHS0JK32pV3fqF93ZkxOe4xbivMP0QrslLCa5kE3Dk4nzeTMRcZYCF76DbKi8fwUJJw9tC4wcFGFHsF8lq0kMA10J68fVHyvGFjQUZITEv4BfBalEOxmlZwqXS82r0efNxrQVbKIeB5X6bx9DGzsjgkp3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Rm26wj6y; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1728548209; c=relaxed/simple;
+	bh=wFt66hRYuJmxRsyu0EYyqOHGyLlyWmtjJkTLei3olIk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AKqZhFsalSHXpnsuHMUhs9kkjbJ5IODYvhrnbDq3/fZTM98TxLwzpfY4SsRjG/QG2SeEm5O5NGR4zryTx+ez6EofcUqpw8visUncMx37CNx7UU40OdrDc1+AdLiWO9VlXhzux5T7OdxsRJAS1XJBdmeWAgg4acrmiopcxPc0dmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XYjsIl6J; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Rm26wj6y"
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e290bf7adaaso342331276.1
-        for <rcu@vger.kernel.org>; Wed, 09 Oct 2024 17:27:57 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XYjsIl6J"
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7afcf0625a9so67762585a.0;
+        Thu, 10 Oct 2024 01:16:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1728520076; x=1729124876; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1728548206; x=1729153006; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f1+R02hpp8av9d1oke/1LYEST5x37dCj6t6Jn67ICpI=;
-        b=Rm26wj6y69YdTqyPGcvFAzAZ69CPFadcI29Pu0cP+s3JzbfT0VMrKspEONYlqEv54w
-         mZHdqH06D55pQGA5vfKi3N3kxOYLesZIiwmLpcuFX868x2Ar4hByM54ar1nsFIMllAbt
-         zrYVrPoFAyQzR3rRB+ASv6kWuyB3OGXXy89zg=
+        bh=hrRWTlMbh8H2NmoPMoUWJCWy0QREhDddrwTIMVfvwYQ=;
+        b=XYjsIl6JLAamxPzKFPbi0+jUtw3/9yhS9rEDDJ1WCf7IN6qDB1eRaGyzG2O1O6tQ9C
+         k0a1neCuaR5Z2DoK7QaAT60U2oL1orM2zpqMqLJp0ZRQVX3GlZ5spOTEgFc5ToexyR6J
+         603Yr1jx1OvDlLkcCjzrq+mOrTQiDwAVb2pL/2kj4+Bp6lAgl0bI0BH1x+WE4cS2IolT
+         Vse7jL7iGHHxEkTFiIgw0k3jeA2F8C8aviv2bGcwJR2KzufpiEHvCNP0S+1KcbvOZ+TV
+         GYwL71seXSnE2yZJ+iWdwVXZSX8sSFstNH69T7gk+cU0fOky/mbOO5MG4tmRSwtPQXsH
+         TlQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728520076; x=1729124876;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1728548206; x=1729153006;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f1+R02hpp8av9d1oke/1LYEST5x37dCj6t6Jn67ICpI=;
-        b=VVW9kneNlMbga2PrpMZ9n2javf5wI8A0g1G0CBY5DrmMUNr41P+cxjFnpCi2rcA44U
-         euLCOn+stZ3OOv7ycOAKZMwCPr0NQwVSnMVYOWtQhoxzRo21BqH9ZpKrjrTxvHMnrcEN
-         Y5N/eMtAaz0TANg7gJfVnnHjwHCT2Tql6VazNwGsvnU9euzLtGekrGAzKnjh+DQz/Isx
-         EMpuSUjbfUSgyRjoN005bp0d8k25E5F29D0TSQIY2B5uub42MrCXoyKe4COLCEUEChkJ
-         7wiyD1/WQdiGFKwSreGu6SQEYMQWQuX8+rP9M/j7XpPE6RteM0CjhHx+YsfRznT1P8tk
-         5OyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvVl91Pa4KMV/55pBqedLw6KP/yyKW98weLbbthNCg4y0Dn5OQ/G1JPfyIgxHze6JGag0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHKPpBQ1pXCfx4LolezhYvg51qoLRSq3dJ1uj/5zm5xTt4q+ZY
-	di6VG1BufeHVUi3fy7/T5GlCCjlgre0dztawZbaYI5OKEuah22QNubWixOTU1URzQdQlHXt+t3M
-	9W2Eve3KR/9XyTEB0w+g/00KQ0e4QIIxNczcFKQ==
-X-Google-Smtp-Source: AGHT+IGSNIugRxV69BySb8PbtBCi38kFwqNESAtJ/YVFwaB3zOzNyFyMy0VDrtuxzYyQCslrOOZ5ho65fIQkyHk0TbY=
-X-Received: by 2002:a05:6902:15c6:b0:e20:268b:8ad3 with SMTP id
- 3f1490d57ef6-e28fe4e7431mr4112233276.38.1728520076560; Wed, 09 Oct 2024
- 17:27:56 -0700 (PDT)
+        bh=hrRWTlMbh8H2NmoPMoUWJCWy0QREhDddrwTIMVfvwYQ=;
+        b=g5Gbqocm8kCOsucXz85iiwvo4dOiqu4DrojIfPptFgfkrdTFjLpnzvTjWvw1UAAXfq
+         XC9+RrSrS9GP0GQyPrkR/Hj2WNvl5MV2ZNVyF5bD9WkmWKjoaPKK/SY9sj/WpX6i1XfX
+         ffAw+yGeuuVeMdonSJ06pwmGuyCu38gkNZIcYlsQF10oviwS8hFA3xD1Gn/y+13FZMqN
+         sjn966seKurRxpeT0t4w5Yg3y19Zzq/IJyf4nXC44k9MkjXhjtl/sZtO6MvsOs3m/GLP
+         I/rHVOeHQWFz9Fk1VJ+ABj2NKNN0IpHv/joDbMT3LhE9suYqcl5RD+XlNuY1giYX/LXk
+         t3og==
+X-Forwarded-Encrypted: i=1; AJvYcCXJQgxCu1ygFUCmLX7yA0BVURgrnQkVU6UEkoySH8UfE/4gV9ZOcjfMJ9r6OryTJUU3YCU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQr7MsQJPevmRo9ntQSA4EIVngysKzR4eItprTaocRnHIUg3DK
+	g7H4fO79zlUP7RfQ0imAjojoTVUzLkgOOZLHia4VPJyIrU71nHNt
+X-Google-Smtp-Source: AGHT+IHx/LJTzMQzg+IXsJzYsThqyeP0ui7eVONHumKV/hHC/685bnXccaTQTWL+WUQOTduBfD6tqw==
+X-Received: by 2002:a05:620a:1925:b0:7b1:11f4:d0af with SMTP id af79cd13be357-7b111f4d196mr372869785a.29.1728548206416;
+        Thu, 10 Oct 2024 01:16:46 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b114956001sm28673885a.72.2024.10.10.01.16.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Oct 2024 01:16:45 -0700 (PDT)
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 864D61200068;
+	Thu, 10 Oct 2024 04:16:45 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Thu, 10 Oct 2024 04:16:45 -0400
+X-ME-Sender: <xms:bY0HZ4dSVXIMCvLUqTbxJ3O-9Rw8we4ww5We01UhX7MxUyPJMnvg6g>
+    <xme:bY0HZ6OJ48QLW7moncGOt8DZL9DY1z8Mt3ePUqJdhsPzLAQ7mlfwwoIEtdbrsYKNz
+    PGAaM6pPMA8LPkJqQ>
+X-ME-Received: <xmr:bY0HZ5hkLnZ7-t8IAiIUXM2ocNvrD4Eub-BLKoy3UsRLwmMxvYj9eh3uFsA8jA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefhedgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpeeitdefvefhteeklefgtefhgeelkeefffelvdev
+    hfehueektdevhfettddvteevvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhi
+    thihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmh
+    grihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepledpmhhouggv
+    pehsmhhtphhouhhtpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrgh
+    dprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehjohgvlhesjhhovghlfhgvrhhnrghnuggvshdrohhrghdprhgtph
+    htthhopehnvggvrhgrjhdruhhprgguhhihrgihsegrmhgurdgtohhmpdhrtghpthhtohep
+    phgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuhhrvgiikhhisehgmh
+    grihhlrdgtohhmpdhrtghpthhtohepqhhirghnghdriihhrghnghduvdduudesghhmrghi
+    lhdrtghomhdprhgtphhtthhopehrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtohepsghoqhhunhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:bY0HZ9_QJNGf-jDkwRm8x2FR8jhGkFQQEIYR7fJ3Bbk8N0-KAoQ8Ew>
+    <xmx:bY0HZ0sNLUyV6sibubeb01W0TATlgZUj-whzn-wtRzBmWgBgvz6wnw>
+    <xmx:bY0HZ0GnKrXVBue2ApEls5ZsmOKqPzmzJ1DK9JPpPUqNgp7W2RSwEA>
+    <xmx:bY0HZzMu93UtBnP0clyfD_MhYkh5hXFuRdDhTqMinXzJ01Jvq_5PGg>
+    <xmx:bY0HZ5NKdScG2Q12r8QH01f7ol4vOxS-FIcW82NRM33y2MfuxaH2yxPF>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 10 Oct 2024 04:16:45 -0400 (EDT)
+Date: Thu, 10 Oct 2024 01:16:41 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 1/3] rcu/nocb: Use switch/case on NOCB timer state machine
+Message-ID: <ZweNaSTMQOqXRIIN@boqun-archlinux>
+References: <20241002145738.38226-1-frederic@kernel.org>
+ <20241002145738.38226-2-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241002145738.38226-1-frederic@kernel.org> <20241002145738.38226-3-frederic@kernel.org>
- <CAEXW_YQSBwGME1+vKHSM8+svtosunk-QO2oMygFKgapPE3b45w@mail.gmail.com> <ZwbuDj_tjpWzQDhL@pavilion.home>
-In-Reply-To: <ZwbuDj_tjpWzQDhL@pavilion.home>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Wed, 9 Oct 2024 20:27:42 -0400
-Message-ID: <CAEXW_YSK1ju5u7r1xwaGPivoPhcBJ7THaqGuurCzrLf7sDTWBw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] rcu/nocb: Fix rcuog wake-up from offline softirq
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>, 
-	kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241002145738.38226-2-frederic@kernel.org>
 
-On Wed, Oct 9, 2024 at 4:56=E2=80=AFPM Frederic Weisbecker <frederic@kernel=
-.org> wrote:
->
-[...]
-> > >         ? tick_handle_periodic
-> > >         sysvec_apic_timer_interrupt
-> > >         </IRQ>
-> > >
-> > > The periodic tick must be shutdown when the CPU is offline, just like=
- is
-> > > done for oneshot tick. This must be fixed but this is not enough:
-> > > softirqs can happen on any hardirq tail and reproduce the above scena=
-rio.
-> > >
-> > > Fix this with introducing a special deferred rcuog wake up mode when =
-the
-> > > CPU is offline. This deferred wake up doesn't arm any timer and simpl=
-y
-> > > wait for rcu_report_cpu_dead() to be called in order to flush any
-> > > pending rcuog wake up.
-> > [...]
-> > > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > > index a9a811d9d7a3..7ed060edd12b 100644
-> > > --- a/kernel/rcu/tree.h
-> > > +++ b/kernel/rcu/tree.h
-> > > @@ -290,6 +290,7 @@ struct rcu_data {
-> > >  #define RCU_NOCB_WAKE_LAZY     2
-> > >  #define RCU_NOCB_WAKE          3
-> > >  #define RCU_NOCB_WAKE_FORCE    4
-> > > +#define RCU_NOCB_WAKE_OFFLINE   5
-> > >
-> > >  #define RCU_JIFFIES_TILL_FORCE_QS (1 + (HZ > 250) + (HZ > 500))
-> > >                                         /* For jiffies_till_first_fqs=
- and */
-> > > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > > index 2fb803f863da..8648233e1717 100644
-> > > --- a/kernel/rcu/tree_nocb.h
-> > > +++ b/kernel/rcu/tree_nocb.h
-> > > @@ -295,6 +295,8 @@ static void wake_nocb_gp_defer(struct rcu_data *r=
-dp, int waketype,
-> > >         case RCU_NOCB_WAKE_FORCE:
-> > >                 if (rdp_gp->nocb_defer_wakeup < RCU_NOCB_WAKE)
-> > >                         mod_timer(&rdp_gp->nocb_timer, jiffies + 1);
-> > > +               fallthrough;
-> > > +       case RCU_NOCB_WAKE_OFFLINE:
-> > >                 if (rdp_gp->nocb_defer_wakeup < waketype)
-> > >                         WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketyp=
-e);
-> > >                 break;
-> > > @@ -562,8 +564,16 @@ static void __call_rcu_nocb_wake(struct rcu_data=
- *rdp, bool was_alldone,
-> > >         lazy_len =3D READ_ONCE(rdp->lazy_len);
-> > >         if (was_alldone) {
-> > >                 rdp->qlen_last_fqs_check =3D len;
-> > > -               // Only lazy CBs in bypass list
-> > > -               if (lazy_len && bypass_len =3D=3D lazy_len) {
-> > > +               if (cpu_is_offline(rdp->cpu)) {
-> > > +                       /*
-> > > +                        * Offline CPUs can't call swake_up_one_onlin=
-e() from IRQs. Rely
-> > > +                        * on the final deferred wake-up rcutree_repo=
-rt_cpu_dead()
-> > > +                        */
-> > > +                       rcu_nocb_unlock(rdp);
-> > > +                       wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_OFFLINE=
-,
-> > > +                                          TPS("WakeEmptyIsDeferredOf=
-fline"));
-> > > +               } else if (lazy_len && bypass_len =3D=3D lazy_len) {
-> >
-> > Since the call stack is when softirqs are disabled,  would an
-> > alternative fix be (pseudocode):
-> >
-> > Change the following in the "if (was_alldone)" block:
-> >
-> >                if (!irqs_disabled_flags(flags)) {
-> >
-> > to:
-> >                if (!irqs_disabled_flags(flags) && !in_softirq())
-> >
-> > ?
-> >
-> > That way perhaps an additional RCU_NOCB flag is not needed.
-> >
-> > Or does that not work for some reason?
->
-> It works but this forces the wake-up through the timer when a callback is
-> enqueued from softirqs. And waking up from the timer is a bit more overhe=
-ad
-> and also added GP delay. It could be this though:
->
->     if (!irqs_disabled_flags(flags) && cpu_online(smp_processor_id()))
->
+On Wed, Oct 02, 2024 at 04:57:36PM +0200, Frederic Weisbecker wrote:
+> It's more convenient to benefit from the fallthrough feature of
+> switch / case to handle the timer state machine. Also a new state is
+> about to be added that will take advantage of it.
+> 
+> No intended functional change.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree_nocb.h | 33 +++++++++++++++++++++++----------
+>  1 file changed, 23 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index 97b99cd06923..2fb803f863da 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -271,22 +271,35 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+>  
+>  	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
+>  
+> -	/*
+> -	 * Bypass wakeup overrides previous deferments. In case of
+> -	 * callback storms, no need to wake up too early.
+> -	 */
+> -	if (waketype == RCU_NOCB_WAKE_LAZY &&
+> -	    rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
 
-This makes sense to me and also will future-proof this code path from
-potential users who end up here. I think it will work.
+In the old code, if this "if" branch is not taken,
 
-Feel free to add to this and the next patch:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> -		mod_timer(&rdp_gp->nocb_timer, jiffies + rcu_get_jiffies_lazy_flush());
+> -		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> -	} else if (waketype == RCU_NOCB_WAKE_BYPASS) {
+> +	switch (waketype) {
+> +	case RCU_NOCB_WAKE_BYPASS:
+> +		/*
+> +		 * Bypass wakeup overrides previous deferments. In case of
+> +		 * callback storms, no need to wake up too early.
+> +		 */
+>  		mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
+>  		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> -	} else {
 
-thanks,
+... it will end up in this else branch, however,
 
- - Joel
+> +		break;
+> +	case RCU_NOCB_WAKE_LAZY:
+> +		if (rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
+> +			mod_timer(&rdp_gp->nocb_timer, jiffies + rcu_get_jiffies_lazy_flush());
+> +			WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> +		}
+> +		/*
+> +		 * If the timer is already armed, a non-lazy enqueue may have happened
+> +		 * in-between. Don't delay it and fall-through.
+> +		 */
+> +		break;
+
+... here we break instead of fallthrough when waketype ==
+RCU_NOCB_WAKE_LAZY and rdp->nocb_defer_wakeup != RCU_NOCB_WAKE_NOT, this
+seems to me a functional change, is this intented?
+
+Regards,
+Boqun
+
+> +	case RCU_NOCB_WAKE:
+> +		fallthrough;
+> +	case RCU_NOCB_WAKE_FORCE:
+>  		if (rdp_gp->nocb_defer_wakeup < RCU_NOCB_WAKE)
+>  			mod_timer(&rdp_gp->nocb_timer, jiffies + 1);
+>  		if (rdp_gp->nocb_defer_wakeup < waketype)
+>  			WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> +		break;
+> +	default:
+> +		WARN_ON_ONCE(1);
+>  	}
+>  
+>  	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
+> -- 
+> 2.46.0
+> 
