@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6A01C245D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6F01C2DA1;
 	Fri, 11 Oct 2024 17:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728668373; cv=none; b=kA7ROzqjYOJIwCqw03PSHvH6bh6leC7B0HE1uHUZm3FlpEcVzvQPtj7sgPBV5E5M1xME6WUDLNJmmOlrJqETZ9tVG9GVOGaI5NEWra3QmgwXYQEdVRvL2JSSRltH8NIdRDqMT1rgDR3dM7U8Bp3kZSS8LJZv2GPb+PAR893CY0I=
+	t=1728668373; cv=none; b=kg8ApVqc6e4MpglpTSGTV9vxPePeNs7WwNa1p6RUyTihEUG+xpkLQy6X93jyDHZRyGdq6K4BDLiIr1ITwMqDip75U5JqdxBpYHy9UBPSQwnmUKDsu3MZGKmq2c/xfcNb2atKi5QxTzlaM1CCDzp9CE04e6zD+i4U8teINAnyYBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1728668373; c=relaxed/simple;
-	bh=Zx5VaivUvDu8VT1tnLqC/VtTV/C14Gn+/PcOHscidtA=;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uwcaxZVbs+EjRuezOTPaQCYH9na39FpP3p6wgrF5Ig8SEov0q1ZtW/E9VaF8tnxrM53y/VjQAzPzWLVvTKt6s6OxRwJfnFfvNNbNzZOEk9kM2av+/YuVY/gxjhHDHpWYjQMqJeQYKtCdBxmYPpqvL/RLN093nQHIDgfu32CGGts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TG2opX/X; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Td8mp8kWVmIWcuY1tuabB1oDG/KJJG5+/o4p3GT1hrvAv40MBXQPwBXGl96jfg+ZQ+DRcPKiHn0Av87mOoAwNVdoHnPrDIQKrSXoMHujhEXTS5S/N83enAhpKfSpVm+VVfehfO64yeILgmeZ49unCFrpdgKy7A15/x9qmElE57U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T/DvKyih; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TG2opX/X"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F19C4CEC7;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T/DvKyih"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E52A1C4CEC3;
 	Fri, 11 Oct 2024 17:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1728668373;
-	bh=Zx5VaivUvDu8VT1tnLqC/VtTV/C14Gn+/PcOHscidtA=;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TG2opX/XLPsByEmZEtpcSI6VXOnugeq+tw7QHW71QoyUKf0NSaBoSu3S0nEd50XHt
-	 4K8hYX7N80lJ5sdqfW6O0eop4DhhpBMOCNrI+IM0efWZ38KtBwWK52WEZ2a4eDZxF2
-	 ABEsZHkcPfcm3UE84Jm1egVKt13yVroeozNZZrJr/UaCGgR0XJcaGpFYYI/6aFspY+
-	 lzlUdO5KGwTT1ab5wwlhkwRMhNHqCHcWXRGKofdugFc3FKJ5Yb6AxRj7WTaV/FGZpJ
-	 YRZhEP4HqwFHna0exP6a3boKlaYIBufgQB1PMc/WmZRVx5fd2Q0SpO0pmnIaneD/+i
-	 PEY0mFt+aq6bw==
+	b=T/DvKyihzpbz0F1UjqpYZmPGTveIK/9TCnBiQ5W3BJVe3uTau+kajEEG2W7tkfJHZ
+	 h1LaE1XUR1dgbsZfPI+CJv7Ax+r5wvBW1ekLSIQ/XO4NbEBlMSoYaccUf1w1h9YMON
+	 u2luxl/PZYPUQLTTDaPkIgWJAaLiRRVnDLQS8o3LLOh+BBaDUceRhJA8a90jLoexuy
+	 j/MCaX9f5ZglIJnnavL3Qml//0rTZ61f5UK7e3E7DXyI+sE8lYzwVnrG9+aNhPHhqX
+	 WzchLutmfhOlCMg5t54ZA0poLy0UjxtqMdOCeQCiYei1zN1cFSpShi0j1oBjnKvAcf
+	 LtT/wZIt7QeUg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9F30BCE0EA5; Fri, 11 Oct 2024 10:39:32 -0700 (PDT)
+	id 986CACE0BB1; Fri, 11 Oct 2024 10:39:32 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: frederic@kernel.org,
 	rcu@vger.kernel.org
@@ -40,9 +40,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH v2 rcu 03/13] srcu: Renaming in preparation for additional reader flavor
-Date: Fri, 11 Oct 2024 10:39:21 -0700
-Message-Id: <20241011173931.2050422-3-paulmck@kernel.org>
+Subject: [PATCH v2 rcu 01/13] srcu: Rename srcu_might_be_idle() to srcu_should_expedite()
+Date: Fri, 11 Oct 2024 10:39:19 -0700
+Message-Id: <20241011173931.2050422-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop>
 References: <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop>
@@ -54,11 +54,17 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, there are only two flavors of readers, normal and NMI-safe.
-A number of fields, functions, and types reflect this restriction.
-This renaming-only commit prepares for the addition of light-weight
-(as in memory-barrier-free) readers.  OK, OK, there is also a drive-by
-white-space fixeup!
+SRCU auto-expedites grace periods that follow a sufficiently long idle
+period, and the srcu_might_be_idle() function is used to make this
+decision.  However, the upcoming light-weight SRCU readers will not do
+auto-expediting because doing so would cause the grace-period machinery
+to invoke synchronize_rcu_expedited() twice, with IPIs all around.
+However, software-engineering considerations force this determination
+to remain in srcu_might_be_idle().
+
+This commit therefore changes the name of srcu_might_be_idle() to
+srcu_should_expedite(), thus moving from what it currently does to why
+it does it, this latter being more future-proof.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -67,162 +73,53 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: <bpf@vger.kernel.org>
 ---
- include/linux/srcu.h     | 21 ++++++++++-----------
- include/linux/srcutree.h |  2 +-
- kernel/rcu/srcutree.c    | 22 +++++++++++-----------
- 3 files changed, 22 insertions(+), 23 deletions(-)
+ kernel/rcu/srcutree.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 835bbb2d1f88a..06728ef6f32a4 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -181,10 +181,9 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
- #define SRCU_NMI_SAFE		0x2
- 
- #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
--void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe);
-+void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
- #else
--static inline void srcu_check_nmi_safety(struct srcu_struct *ssp,
--					 bool nmi_safe) { }
-+static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor) { }
- #endif
- 
- 
-@@ -245,7 +244,7 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
- {
- 	int retval;
- 
--	srcu_check_nmi_safety(ssp, false);
-+	srcu_check_read_flavor(ssp, false);
- 	retval = __srcu_read_lock(ssp);
- 	srcu_lock_acquire(&ssp->dep_map);
- 	return retval;
-@@ -262,7 +261,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
- {
- 	int retval;
- 
--	srcu_check_nmi_safety(ssp, true);
-+	srcu_check_read_flavor(ssp, true);
- 	retval = __srcu_read_lock_nmisafe(ssp);
- 	rcu_try_lock_acquire(&ssp->dep_map);
- 	return retval;
-@@ -274,7 +273,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
- {
- 	int retval;
- 
--	srcu_check_nmi_safety(ssp, false);
-+	srcu_check_read_flavor(ssp, false);
- 	retval = __srcu_read_lock(ssp);
- 	return retval;
- }
-@@ -303,7 +302,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
- static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
- {
- 	WARN_ON_ONCE(in_nmi());
--	srcu_check_nmi_safety(ssp, false);
-+	srcu_check_read_flavor(ssp, false);
- 	return __srcu_read_lock(ssp);
- }
- 
-@@ -318,7 +317,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
- 	__releases(ssp)
- {
- 	WARN_ON_ONCE(idx & ~0x1);
--	srcu_check_nmi_safety(ssp, false);
-+	srcu_check_read_flavor(ssp, false);
- 	srcu_lock_release(&ssp->dep_map);
- 	__srcu_read_unlock(ssp, idx);
- }
-@@ -334,7 +333,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
- 	__releases(ssp)
- {
- 	WARN_ON_ONCE(idx & ~0x1);
--	srcu_check_nmi_safety(ssp, true);
-+	srcu_check_read_flavor(ssp, true);
- 	rcu_lock_release(&ssp->dep_map);
- 	__srcu_read_unlock_nmisafe(ssp, idx);
- }
-@@ -343,7 +342,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
- static inline notrace void
- srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
- {
--	srcu_check_nmi_safety(ssp, false);
-+	srcu_check_read_flavor(ssp, false);
- 	__srcu_read_unlock(ssp, idx);
- }
- 
-@@ -360,7 +359,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
- {
- 	WARN_ON_ONCE(idx & ~0x1);
- 	WARN_ON_ONCE(in_nmi());
--	srcu_check_nmi_safety(ssp, false);
-+	srcu_check_read_flavor(ssp, false);
- 	__srcu_read_unlock(ssp, idx);
- }
- 
-diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-index ed57598394de3..ab7d8d215b84b 100644
---- a/include/linux/srcutree.h
-+++ b/include/linux/srcutree.h
-@@ -25,7 +25,7 @@ struct srcu_data {
- 	/* Read-side state. */
- 	atomic_long_t srcu_lock_count[2];	/* Locks per CPU. */
- 	atomic_long_t srcu_unlock_count[2];	/* Unlocks per CPU. */
--	int srcu_nmi_safety;			/* NMI-safe srcu_struct structure? */
-+	int srcu_reader_flavor;			/* Reader flavor for srcu_struct structure? */
- 
- 	/* Update-side state. */
- 	spinlock_t __private lock ____cacheline_internodealigned_in_smp;
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index e29c6cbffbcb0..18f2eae5e14bd 100644
+index 31706e3293bce..9ff4ded609ba5 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -460,7 +460,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
- 
- 		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
- 		if (IS_ENABLED(CONFIG_PROVE_RCU))
--			mask = mask | READ_ONCE(cpuc->srcu_nmi_safety);
-+			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
- 	}
- 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask >> 1)),
- 		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
-@@ -699,25 +699,25 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
- 
- #ifdef CONFIG_PROVE_RCU
- /*
-- * Check for consistent NMI safety.
-+ * Check for consistent reader flavor.
-  */
--void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe)
-+void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
- {
--	int nmi_safe_mask = 1 << nmi_safe;
--	int old_nmi_safe_mask;
-+	int reader_flavor_mask = 1 << read_flavor;
-+	int old_reader_flavor_mask;
- 	struct srcu_data *sdp;
- 
- 	/* NMI-unsafe use in NMI is a bad sign */
--	WARN_ON_ONCE(!nmi_safe && in_nmi());
-+	WARN_ON_ONCE(!read_flavor && in_nmi());
- 	sdp = raw_cpu_ptr(ssp->sda);
--	old_nmi_safe_mask = READ_ONCE(sdp->srcu_nmi_safety);
--	if (!old_nmi_safe_mask) {
--		WRITE_ONCE(sdp->srcu_nmi_safety, nmi_safe_mask);
-+	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
-+	if (!old_reader_flavor_mask) {
-+		WRITE_ONCE(sdp->srcu_reader_flavor, reader_flavor_mask);
- 		return;
- 	}
--	WARN_ONCE(old_nmi_safe_mask != nmi_safe_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_nmi_safe_mask, nmi_safe_mask);
-+	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
+@@ -1139,7 +1139,8 @@ static void srcu_flip(struct srcu_struct *ssp)
  }
--EXPORT_SYMBOL_GPL(srcu_check_nmi_safety);
-+EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
- #endif /* CONFIG_PROVE_RCU */
  
  /*
+- * If SRCU is likely idle, return true, otherwise return false.
++ * If SRCU is likely idle, in other words, the next SRCU grace period
++ * should be expedited, return true, otherwise return false.
+  *
+  * Note that it is OK for several current from-idle requests for a new
+  * grace period from idle to specify expediting because they will all end
+@@ -1159,7 +1160,7 @@ static void srcu_flip(struct srcu_struct *ssp)
+  * negligible when amortized over that time period, and the extra latency
+  * of a needlessly non-expedited grace period is similarly negligible.
+  */
+-static bool srcu_might_be_idle(struct srcu_struct *ssp)
++static bool srcu_should_expedite(struct srcu_struct *ssp)
+ {
+ 	unsigned long curseq;
+ 	unsigned long flags;
+@@ -1469,14 +1470,15 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_expedited);
+  * Implementation of these memory-ordering guarantees is similar to
+  * that of synchronize_rcu().
+  *
+- * If SRCU is likely idle, expedite the first request.  This semantic
+- * was provided by Classic SRCU, and is relied upon by its users, so TREE
+- * SRCU must also provide it.  Note that detecting idleness is heuristic
+- * and subject to both false positives and negatives.
++ * If SRCU is likely idle as determined by srcu_should_expedite(),
++ * expedite the first request.  This semantic was provided by Classic SRCU,
++ * and is relied upon by its users, so TREE SRCU must also provide it.
++ * Note that detecting idleness is heuristic and subject to both false
++ * positives and negatives.
+  */
+ void synchronize_srcu(struct srcu_struct *ssp)
+ {
+-	if (srcu_might_be_idle(ssp) || rcu_gp_is_expedited())
++	if (srcu_should_expedite(ssp) || rcu_gp_is_expedited())
+ 		synchronize_srcu_expedited(ssp);
+ 	else
+ 		__synchronize_srcu(ssp, true);
 -- 
 2.40.1
 
