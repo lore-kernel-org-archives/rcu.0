@@ -1,152 +1,106 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CC31C9B97;
-	Fri, 11 Oct 2024 17:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D322519F12A;
+	Fri, 11 Oct 2024 17:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728668373; cv=none; b=uguEun9STXNTjAQhmkXPao6ZLWBy3OuqC4AmHGQoUT/l7ORyr17sEACR4hpzHqVlMIOiPV53Tj93s3L6Pwy5xVFkaWBnD43jmGjMDeek9T/+kFAua2EqBpczlJNLAXs58B31q8iC+QYSfbtvqGQ6jwpCA02l0tRGVyj3qqstcts=
+	t=1728669448; cv=none; b=gCT2jTPiAE/ohDya7h1gT2awTFQHu0oMdbXE1qzPTo4SxuSyNPbrrI3JudTkb/XftkDSx+n4sAHpUZfWvS/H9N0C3FS15/o0b55ggDNymvl+VWhLf/9GgOEfaeYiLf0OIUWixUeE5ag9roJf3J4rsDiSOiObmrfvWCaFs0DcM74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728668373; c=relaxed/simple;
-	bh=ShAY23PXWJnTwN9m3aELbGSryO452AQIXFVffiHUjJ8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qJz9TsROkCFsVzCyPLFJ9Ctc0knsHok5Iyx+5fVAv1AJ2QTMlMTRVWfv8rOH9j9O8JQqAfmqSgl+V/ghrc0npzDtCYyvTrhy+Xhx8lt27V0A2rNUwWFQU/vLiTQy1KATml8eA7UnTgEX06Sfkc6zBVd4+E47D/WJvlQEwKotGRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qZ2hdvVT; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1728669448; c=relaxed/simple;
+	bh=j1QLahTfEQQSYIMP3KE0A2wTk3QESAmjCUFpyaDKofA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G86rDu7R7R682+ly5lhmrCRl0rUMRfi12Z0oPw78NxBbYFwft0t/EAIiLh3FdH2R+PheTEOzzZEsXnFdRf5Rp/mRLe+6cv7T5Mz3ANUrFOqiUMBuCYM5yxGhX3EFWK/jsmsnydT8dztH3Qolo/3lPkW/WvmcXagQAyOd7plzrjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h/mBhOeo; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qZ2hdvVT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E0D5C4CEDF;
-	Fri, 11 Oct 2024 17:39:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728668373;
-	bh=ShAY23PXWJnTwN9m3aELbGSryO452AQIXFVffiHUjJ8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qZ2hdvVT0seSG7P9xAp+Nfp1Cy6Rc+ziKChMFejj4pIc0mrXe0g5jULUHzjt7mlPP
-	 rRQu1Ze3UPmPQ+Se3f27pjFL99b7v0K/yD63UbKadhzN0/BNM6buzq5kUXqEg/TJPw
-	 rdxgnSSTZYn11tlHhsYaQY7+D9wWKOs9NpCuMIzro+u6RWslj7KMZIgfzLgLmHm+i0
-	 bhBfQiBc6Bn0iFHApB8WK3DfmTJWyPvQQBGIpXeXa3Pp1CtYpAlnJzljPvuPiu1+ff
-	 4fz3hbFScFXgVVBfHdqH927XZnTNjX10qfVbbmVjV/1PKCpXiUUC15IBh26eyC09/e
-	 5oTCbLg0JfanA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B8907CE0FA0; Fri, 11 Oct 2024 10:39:32 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: frederic@kernel.org,
-	rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH v2 rcu 12/13] refscale: Add srcu_read_lock_lite() support using "srcu-lite"
-Date: Fri, 11 Oct 2024 10:39:30 -0700
-Message-Id: <20241011173931.2050422-12-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop>
-References: <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h/mBhOeo"
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e2ed2230d8so890555a91.0;
+        Fri, 11 Oct 2024 10:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728669446; x=1729274246; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hBjSNpLEMV/nmiVFXcbKDzRKa1TywIogtOvve4dQ//s=;
+        b=h/mBhOeoYXCG9vkcQ4zmj/t+V34HCr0KBNVnFu1Z6nsuHTvX7fRL5N8hajBHnGhP+m
+         8oMUp/Ci4mo2mhQjkcSqlg/uYJjm37geZPQrMN9cCzH8EI17HDDdQ6FTIsAJHB8QiCaG
+         KO1An3UrHzsxG3hPsagncfubl+k8Pu3O/A2TCIq4rEI+XPMRqK8gJU+6/T/llHedZvFb
+         bh9YGuulQPVkRjAp70Q9bAggLUildG8u0lppVJ4IXsFSFz9jStyaAZvk0IJN9S2h2YAt
+         K5v9JliUI2aWZDmeKzbnou8tHpG7n/oU08Jpp4RR7sqcG8OTcLLNTabGWlModf/JnoEo
+         9kjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728669446; x=1729274246;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hBjSNpLEMV/nmiVFXcbKDzRKa1TywIogtOvve4dQ//s=;
+        b=gDicSx8i23iRuiDmyd+oVjbTVZcSlPnujBHL64bLd58O8hbQRWZkTDUm4TwZHM+iZc
+         vFdMUo9uWDNKnbdiOl5YAXQ+PfbWaOoMkue4O7L/eZqeUbzNef1VGqsSEQ2iWMaaExJ6
+         xI1MLabxxqB/vzdMAJCEDBjoXF11H5+GiYJNjP3dOZRcyywzDJh85UgLiaY7YuakLvpn
+         g6Fs3UKT28TrUYqFzJw/nvdNML7OMV+RwDf92gLIobp4QV5B5jKU41hvR1QspYkfmPQ+
+         fypTxLhNCaYeo2EljzgOYZ3Qk2YKxMDSO1gDsiIygFU5+xhpMsVZ63oTMUxlWvmDxNyV
+         tyNA==
+X-Forwarded-Encrypted: i=1; AJvYcCUAYvhjheC53MpWzQEg9gvMv/44FWr8XMbL81zltM6IpYvf2ysrh8T5gQhfnkb1yQb3oLOHcFwkRqJ4P1w=@vger.kernel.org, AJvYcCV5vckdct+4Tn6KSBqWsX6eN8TBRmsm3nHr9y3PJrfuv34/xC4tPgw//K/mibcR0oBVrOle@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjX/l1hYLxGkvlAFpTwqFyfs0GqHsO2+y5jT94Zn+e8udgjF1T
+	VTS08zLUkknh2dnYPOFfBBQZOP8iGbIgOhazrK7fnEE25bOrDHnb8chvUI6+b1we44//ULhNd88
+	QTWk1kBoNkTd4omt4kvpKyhwMrv1a8JtE
+X-Google-Smtp-Source: AGHT+IGAVOyxTjetW9FhMV3RoouMEVl2XuncRAo2yNkSgmJ1syLRllBJf9Do/h1xvYUddrqJ0b6ROjxYUvbnjH2i7wM=
+X-Received: by 2002:a17:90a:db97:b0:2e2:e769:dffe with SMTP id
+ 98e67ed59e1d1-2e31535385emr276247a91.30.1728669446034; Fri, 11 Oct 2024
+ 10:57:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop> <20241011173931.2050422-13-paulmck@kernel.org>
+In-Reply-To: <20241011173931.2050422-13-paulmck@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 11 Oct 2024 10:57:13 -0700
+Message-ID: <CAEf4BzYOdvO_PY-QZySa1qtWqZ_+1zySrw+0Qo1cc9HL5=L4aA@mail.gmail.com>
+Subject: Re: [PATCH v2 rcu 13/13] srcu: Improve srcu_read_lock_lite()
+ kernel-doc comment
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, rostedt@goodmis.org, 
+	Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit creates a new srcu-lite option for the refscale.scale_type
-module parameter that selects srcu_read_lock_lite() and
-srcu_read_unlock_lite().
+On Fri, Oct 11, 2024 at 10:39=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
+>
+> Where RCU is watching is where it is OK to invoke rcu_read_lock().
+>
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  include/linux/srcu.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
----
- kernel/rcu/refscale.c | 51 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 40 insertions(+), 11 deletions(-)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 0db9db73f57f2..09ee27ced2a78 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -212,6 +212,36 @@ static const struct ref_scale_ops srcu_ops = {
- 	.name		= "srcu"
- };
- 
-+static void srcu_lite_ref_scale_read_section(const int nloops)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static void srcu_lite_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		un_delay(udl, ndl);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static const struct ref_scale_ops srcu_lite_ops = {
-+	.init		= rcu_sync_scale_init,
-+	.readsection	= srcu_lite_ref_scale_read_section,
-+	.delaysection	= srcu_lite_ref_scale_delay_section,
-+	.name		= "srcu-lite"
-+};
-+
- #ifdef CONFIG_TASKS_RCU
- 
- // Definitions for RCU Tasks ref scale testing: Empty read markers.
-@@ -1082,27 +1112,26 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static const struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
--		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
--		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
-+		&rcu_ops, &srcu_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
-+		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
-+		&clock_ops, &jiffies_ops, &typesafe_ref_ops, &typesafe_lock_ops,
-+		&typesafe_seqlock_ops,
- 	};
- 
- 	if (!torture_init_begin(scale_type, verbose))
- 		return -EBUSY;
- 
- 	for (i = 0; i < ARRAY_SIZE(scale_ops); i++) {
--		cur_ops = scale_ops[i];
--		if (strcmp(scale_type, cur_ops->name) == 0)
-+		cur_ops = scale_ops[i]; if (strcmp(scale_type,
-+		cur_ops->name) == 0)
- 			break;
- 	}
- 	if (i == ARRAY_SIZE(scale_ops)) {
--		pr_alert("rcu-scale: invalid scale type: \"%s\"\n", scale_type);
--		pr_alert("rcu-scale types:");
--		for (i = 0; i < ARRAY_SIZE(scale_ops); i++)
-+		pr_alert("rcu-scale: invalid scale type: \"%s\"\n",
-+		scale_type); pr_alert("rcu-scale types:"); for (i = 0;
-+		i < ARRAY_SIZE(scale_ops); i++)
- 			pr_cont(" %s", scale_ops[i]->name);
--		pr_cont("\n");
--		firsterr = -EINVAL;
--		cur_ops = NULL;
-+		pr_cont("\n"); firsterr = -EINVAL; cur_ops = NULL;
- 		goto unwind;
- 	}
- 	if (cur_ops->init)
--- 
-2.40.1
-
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 4ba96e2cfa405..bab1dae3f69e6 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -270,7 +270,8 @@ static inline int srcu_read_lock(struct srcu_struct *=
+ssp) __acquires(ssp)
+>   * synchronize_rcu_expedited(), IPIs and all.
+>   *
+>   * Note that srcu_read_lock_lite() can be invoked only from those contex=
+ts
+> - * where RCU is watching.  Otherwise, lockdep will complain.
+> + * where RCU is watching, that is, from contexts where it would be legal
+> + * to invoke rcu_read_lock().  Otherwise, lockdep will complain.
+>   */
+>  static inline int srcu_read_lock_lite(struct srcu_struct *ssp) __acquire=
+s(ssp)
+>  {
+> --
+> 2.40.1
+>
