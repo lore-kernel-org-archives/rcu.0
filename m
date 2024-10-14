@@ -1,49 +1,53 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8692C12F375;
-	Mon, 14 Oct 2024 16:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8391C3023;
+	Mon, 14 Oct 2024 17:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728924764; cv=none; b=hIfA4ONzSKNfFAXFF/XHA9mkFPULu6sOU9nbdKg0YGK8UbDjEntoAQwJaCDB9VDWYfYV5PciGiHr5GqqzOyuDWKDyUFDqIyhiQ1laVo3gt2A9whmWKHIhC18EV1BkLM8EqzFGWnOLCBwKDtJ5JxSDUb+bSpHAYedl34wboV5/D4=
+	t=1728925209; cv=none; b=rS9o72P/vFIW/fS9xpDEFGzqJOI9EjEOTZB7clodsjx5pRL/7h/JQQ2KTDXwycXNWqgMsp/19iJwF+0YEVZUkj15jTQP0hgyvFe+YpjsWXgdgVJNgmq0AHoEseVV7YMckiB4G0mAIkxsUrbteXCVbEEyjlWtJMRCIscPRr6q4IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728924764; c=relaxed/simple;
-	bh=V7zNXXyyQzSwGrOl5cHUysVJu4T1slE00U66JtRJ88U=;
+	s=arc-20240116; t=1728925209; c=relaxed/simple;
+	bh=dx2soaUPCbsFbZieW0r9gxOBgSB3AIqhOEL8OJLMfPk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qzu8ikHz/lHq1ry4JuOMGE0SUd5L8KMYDjLzMT24jvk+5deJ5S/6mlcEavmzM1rtTY5AndOUOfalgDFb+VvAlZYU/ordeFIcZDXBRUr9FQNjRVOPDqmCWmQVWwLVaRBsSPiRfvmueIi4mmWx62sbwh3IwN2JXGpg8OXrqgo+IjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FNbMbYpM; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ikFZaHL5t+aOnjXFIuP5YbqPuAn+nh5C98IkgSry6d3TYmOrIDL964e8V6zyU5HQhsMG/vlBWePLHAIh+c7WuKKG1t7UsDui1owzCnzn7sOaSIVWsFL1JfEhqtjmN9v5zhYRSsggC4vvXI/vqoL//QZxSpB0Deb+kXMNgJxljww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bcx+jtY3; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FNbMbYpM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A078C4CEC3;
-	Mon, 14 Oct 2024 16:52:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bcx+jtY3"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F963C4CED0;
+	Mon, 14 Oct 2024 17:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728924764;
-	bh=V7zNXXyyQzSwGrOl5cHUysVJu4T1slE00U66JtRJ88U=;
+	s=k20201202; t=1728925209;
+	bh=dx2soaUPCbsFbZieW0r9gxOBgSB3AIqhOEL8OJLMfPk=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=FNbMbYpMULoJlnBGJTsChuppVWYKo/aKpDFnXBu4wLKKk6X/2bd45U5nETPXwo7/v
-	 L+BZQgUJMNyFwA66Jw6jgIybwvWmNt0Xfio0lBhrKQ0y8wfdSinM4DpEadvBTVMKQI
-	 DC8xMDcJIam7q8iAx521KSWI7ALmL6IQtKy1hUMdWSE/mbuK3YLbcoyRmNuok2iUvx
-	 +tfafWKdV7ZLmrpxnVAAQDLw/ovk2+PY95kVxOsmxlx7evC9cSmhVeKV54Fs1eYb47
-	 djhz00xd41/uRRAjvKBNwU189SzHRinHbtyzl5Ygjts3zvIsqoQVgzeHBhVAURvRsr
-	 Au39J+DHGpILA==
+	b=Bcx+jtY3TY/WdSFe9X4umz+KPyrrz21jFD9/nBQXt695h+rVTzuRPZRxhp2lkpX2I
+	 LS/DPrYb9bc4vLbK4CGuCzmoBSE/GEOFW8cWWaDEKCppGT5PlyQYZCS/lBpDcAlA1g
+	 3Bo9Aupm2NljgLMu/8S31XkMkPYmpltddaZUbmLI1AP4aawUTW8lDNwXgiricjAFic
+	 YFQ9fFcSqzw1ewTfDB/rzqTaDO36RzIVMpUwFbBiQlS0lIMLLBTRDjAhYWbdnmS1IX
+	 u6c1fZZoqVQjj1x5Y3KsIPFB6ea6LbYm2pYDNuthohNNtEI7SKQPhLJ7OQ+9D46GKn
+	 KJkOG5a7U2hOw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id AC0EBCE0B68; Mon, 14 Oct 2024 09:52:43 -0700 (PDT)
-Date: Mon, 14 Oct 2024 09:52:43 -0700
+	id D7296CE0B68; Mon, 14 Oct 2024 10:00:08 -0700 (PDT)
+Date: Mon, 14 Oct 2024 10:00:08 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, rostedt@goodmis.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 03/12] srcu: Renaming in preparation for additional
- reader flavor
-Message-ID: <36076d14-6732-4bbc-b96e-9bab1212c9dd@paulmck-laptop>
+To: Dmitry Vyukov <dvyukov@google.com>, urezki@gmail.com
+Cc: syzbot <syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
+	Marco Elver <elver@google.com>, andrii@kernel.org, ast@kernel.org,
+	bpf@vger.kernel.org, daniel@iogearbox.net, eddyz87@gmail.com,
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev, sdf@fomichev.me, song@kernel.org,
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] KCSAN: data-race in __mod_timer / kvfree_call_rcu
+Message-ID: <278957c8-a6d2-43e5-aed7-9ed44648ffb2@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-3-paulmck@kernel.org>
- <6853d494-0262-4a6a-b538-338695677f57@amd.com>
+References: <670cb520.050a0220.4cbc0.0041.GAE@google.com>
+ <CACT4Y+a1sWaWSVoYrafE+9secQgHYwywEWGCSTF6MZs0Rr7zUA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,193 +56,110 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6853d494-0262-4a6a-b538-338695677f57@amd.com>
+In-Reply-To: <CACT4Y+a1sWaWSVoYrafE+9secQgHYwywEWGCSTF6MZs0Rr7zUA@mail.gmail.com>
 
-On Mon, Oct 14, 2024 at 02:40:35PM +0530, Neeraj Upadhyay wrote:
-> On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
-> > Currently, there are only two flavors of readers, normal and NMI-safe.
-> > A number of fields, functions, and types reflect this restriction.
-> > This renaming-only commit prepares for the addition of light-weight
-> > (as in memory-barrier-free) readers.  OK, OK, there is also a drive-by
-> > white-space fixeup!
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> > Cc: <bpf@vger.kernel.org>
-> > ---
-> >  include/linux/srcu.h     | 21 ++++++++++-----------
-> >  include/linux/srcutree.h |  2 +-
-> >  kernel/rcu/srcutree.c    | 22 +++++++++++-----------
-> >  3 files changed, 22 insertions(+), 23 deletions(-)
-> > 
-> > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > index 835bbb2d1f88a..06728ef6f32a4 100644
-> > --- a/include/linux/srcu.h
-> > +++ b/include/linux/srcu.h
-> > @@ -181,10 +181,9 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
-> >  #define SRCU_NMI_SAFE		0x2
-> >  
-> >  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
-> > -void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe);
-> > +void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
-> >  #else
-> > -static inline void srcu_check_nmi_safety(struct srcu_struct *ssp,
-> > -					 bool nmi_safe) { }
-> > +static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor) { }
-> >  #endif
-> >  
-> >  
-> > @@ -245,7 +244,7 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
-> >  {
-> >  	int retval;
-> >  
-> > -	srcu_check_nmi_safety(ssp, false);
-> > +	srcu_check_read_flavor(ssp, false);
-> 
-> As srcu_check_read_flavor() takes an "int" now, passing a macro for the type of reader would
-> be better here?
+On Mon, Oct 14, 2024 at 10:27:05AM +0200, Dmitry Vyukov wrote:
+> On Mon, 14 Oct 2024 at 08:07, syzbot
+> <syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    5b7c893ed5ed Merge tag 'ntfs3_for_6.12' of https://github...
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=148ae327980000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=a2f7ae2f221e9eae
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=061d370693bdd99f9d34
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/79bb9e82835a/disk-5b7c893e.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/5931997fd31c/vmlinux-5b7c893e.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/fc8cc3d97b18/bzImage-5b7c893e.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KCSAN: data-race in __mod_timer / kvfree_call_rcu
+> >
+> > read to 0xffff888237d1cce8 of 8 bytes by task 10149 on cpu 1:
+> >  schedule_delayed_monitor_work kernel/rcu/tree.c:3520 [inline]
 
-Agreed, and a later commit does introduce macros.
+This is the access to krcp->monitor_work.timer.expires in the function
+schedule_delayed_monitor_work().
 
-> >  	retval = __srcu_read_lock(ssp);
-> >  	srcu_lock_acquire(&ssp->dep_map);
-> >  	return retval;
-> > @@ -262,7 +261,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
-> >  {
-> >  	int retval;
-> >  
-> > -	srcu_check_nmi_safety(ssp, true);
-> > +	srcu_check_read_flavor(ssp, true);
-> >  	retval = __srcu_read_lock_nmisafe(ssp);
-> >  	rcu_try_lock_acquire(&ssp->dep_map);
-> >  	return retval;
-> > @@ -274,7 +273,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
-> >  {
-> >  	int retval;
-> >  
-> > -	srcu_check_nmi_safety(ssp, false);
-> > +	srcu_check_read_flavor(ssp, false);
-> >  	retval = __srcu_read_lock(ssp);
-> >  	return retval;
-> >  }
-> > @@ -303,7 +302,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
-> >  static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
-> >  {
-> >  	WARN_ON_ONCE(in_nmi());
-> > -	srcu_check_nmi_safety(ssp, false);
-> > +	srcu_check_read_flavor(ssp, false);
-> >  	return __srcu_read_lock(ssp);
-> >  }
-> >  
-> > @@ -318,7 +317,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
-> >  	__releases(ssp)
-> >  {
-> >  	WARN_ON_ONCE(idx & ~0x1);
-> > -	srcu_check_nmi_safety(ssp, false);
-> > +	srcu_check_read_flavor(ssp, false);
-> >  	srcu_lock_release(&ssp->dep_map);
-> >  	__srcu_read_unlock(ssp, idx);
-> >  }
-> > @@ -334,7 +333,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
-> >  	__releases(ssp)
-> >  {
-> >  	WARN_ON_ONCE(idx & ~0x1);
-> > -	srcu_check_nmi_safety(ssp, true);
-> > +	srcu_check_read_flavor(ssp, true);
-> >  	rcu_lock_release(&ssp->dep_map);
-> >  	__srcu_read_unlock_nmisafe(ssp, idx);
-> >  }
-> > @@ -343,7 +342,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
-> >  static inline notrace void
-> >  srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
-> >  {
-> > -	srcu_check_nmi_safety(ssp, false);
-> > +	srcu_check_read_flavor(ssp, false);
-> >  	__srcu_read_unlock(ssp, idx);
-> >  }
-> >  
-> > @@ -360,7 +359,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
-> >  {
-> >  	WARN_ON_ONCE(idx & ~0x1);
-> >  	WARN_ON_ONCE(in_nmi());
-> > -	srcu_check_nmi_safety(ssp, false);
-> > +	srcu_check_read_flavor(ssp, false);
-> >  	__srcu_read_unlock(ssp, idx);
-> >  }
-> >  
-> > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> > index ed57598394de3..ab7d8d215b84b 100644
-> > --- a/include/linux/srcutree.h
-> > +++ b/include/linux/srcutree.h
-> > @@ -25,7 +25,7 @@ struct srcu_data {
-> >  	/* Read-side state. */
-> >  	atomic_long_t srcu_lock_count[2];	/* Locks per CPU. */
-> >  	atomic_long_t srcu_unlock_count[2];	/* Unlocks per CPU. */
-> > -	int srcu_nmi_safety;			/* NMI-safe srcu_struct structure? */
-> > +	int srcu_reader_flavor;			/* Reader flavor for srcu_struct structure? */
-> 
-> This is a mask for the reader flavor, so s/srcu_reader_flavor/srcu_reader_flavor_mask ?
-
-Yes, it is a mask, but one that should only ever have a single bit set.
-So calling it a mask might or might not be a service to the reader.
+Uladzislau, could you please take a look at this one?
 
 							Thanx, Paul
 
-> - Neeraj
+> +rcu maintainers, this looks more like rcu issue
 > 
-> >  
-> >  	/* Update-side state. */
-> >  	spinlock_t __private lock ____cacheline_internodealigned_in_smp;
-> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > index e29c6cbffbcb0..18f2eae5e14bd 100644
-> > --- a/kernel/rcu/srcutree.c
-> > +++ b/kernel/rcu/srcutree.c
-> > @@ -460,7 +460,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
-> >  
-> >  		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
-> >  		if (IS_ENABLED(CONFIG_PROVE_RCU))
-> > -			mask = mask | READ_ONCE(cpuc->srcu_nmi_safety);
-> > +			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
-> >  	}
-> >  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask >> 1)),
-> >  		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
-> > @@ -699,25 +699,25 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
-> >  
-> >  #ifdef CONFIG_PROVE_RCU
-> >  /*
-> > - * Check for consistent NMI safety.
-> > + * Check for consistent reader flavor.
-> >   */
-> > -void srcu_check_nmi_safety(struct srcu_struct *ssp, bool nmi_safe)
-> > +void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
-> >  {
-> > -	int nmi_safe_mask = 1 << nmi_safe;
-> > -	int old_nmi_safe_mask;
-> > +	int reader_flavor_mask = 1 << read_flavor;
-> > +	int old_reader_flavor_mask;
-> >  	struct srcu_data *sdp;
-> >  
-> >  	/* NMI-unsafe use in NMI is a bad sign */
-> > -	WARN_ON_ONCE(!nmi_safe && in_nmi());
-> > +	WARN_ON_ONCE(!read_flavor && in_nmi());
-> >  	sdp = raw_cpu_ptr(ssp->sda);
-> > -	old_nmi_safe_mask = READ_ONCE(sdp->srcu_nmi_safety);
-> > -	if (!old_nmi_safe_mask) {
-> > -		WRITE_ONCE(sdp->srcu_nmi_safety, nmi_safe_mask);
-> > +	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
-> > +	if (!old_reader_flavor_mask) {
-> > +		WRITE_ONCE(sdp->srcu_reader_flavor, reader_flavor_mask);
-> >  		return;
-> >  	}
-> > -	WARN_ONCE(old_nmi_safe_mask != nmi_safe_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_nmi_safe_mask, nmi_safe_mask);
-> > +	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
-> >  }
-> > -EXPORT_SYMBOL_GPL(srcu_check_nmi_safety);
-> > +EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
-> >  #endif /* CONFIG_PROVE_RCU */
-> >  
-> >  /*
+> #syz set subsystems: rcu
 > 
+> >  kvfree_call_rcu+0x3b8/0x510 kernel/rcu/tree.c:3839
+> >  trie_update_elem+0x47c/0x620 kernel/bpf/lpm_trie.c:441
+> >  bpf_map_update_value+0x324/0x350 kernel/bpf/syscall.c:203
+> >  generic_map_update_batch+0x401/0x520 kernel/bpf/syscall.c:1849
+> >  bpf_map_do_batch+0x28c/0x3f0 kernel/bpf/syscall.c:5143
+> >  __sys_bpf+0x2e5/0x7a0
+> >  __do_sys_bpf kernel/bpf/syscall.c:5741 [inline]
+> >  __se_sys_bpf kernel/bpf/syscall.c:5739 [inline]
+> >  __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5739
+> >  x64_sys_call+0x2625/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:322
+> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >  do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
+> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> >
+> > write to 0xffff888237d1cce8 of 8 bytes by task 56 on cpu 0:
+> >  __mod_timer+0x578/0x7f0 kernel/time/timer.c:1173
+> >  add_timer_global+0x51/0x70 kernel/time/timer.c:1330
+> >  __queue_delayed_work+0x127/0x1a0 kernel/workqueue.c:2523
+> >  queue_delayed_work_on+0xdf/0x190 kernel/workqueue.c:2552
+> >  queue_delayed_work include/linux/workqueue.h:677 [inline]
+> >  schedule_delayed_monitor_work kernel/rcu/tree.c:3525 [inline]
+> >  kfree_rcu_monitor+0x5e8/0x660 kernel/rcu/tree.c:3643
+> >  process_one_work kernel/workqueue.c:3229 [inline]
+> >  process_scheduled_works+0x483/0x9a0 kernel/workqueue.c:3310
+> >  worker_thread+0x51d/0x6f0 kernel/workqueue.c:3391
+> >  kthread+0x1d1/0x210 kernel/kthread.c:389
+> >  ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
+> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+> >
+> > Reported by Kernel Concurrency Sanitizer on:
+> > CPU: 0 UID: 0 PID: 56 Comm: kworker/u8:4 Not tainted 6.12.0-rc2-syzkaller-00050-g5b7c893ed5ed #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+> > Workqueue: events_unbound kfree_rcu_monitor
+> > ==================================================================
+> > bridge0: port 2(bridge_slave_1) entered blocking state
+> > bridge0: port 2(bridge_slave_1) entered forwarding state
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> > If the report is already addressed, let syzbot know by replying with:
+> > #syz fix: exact-commit-title
+> >
+> > If you want to overwrite report's subsystems, reply with:
+> > #syz set subsystems: new-subsystem
+> > (See the list of subsystem names on the web dashboard)
+> >
+> > If the report is a duplicate of another one, reply with:
+> > #syz dup: exact-subject-of-another-report
+> >
+> > If you want to undo deduplication, reply with:
+> > #syz undup
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/670cb520.050a0220.4cbc0.0041.GAE%40google.com.
