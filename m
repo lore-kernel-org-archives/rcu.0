@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0E11CB9E2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4DE13B284;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729008674; cv=none; b=qrsIqPUqkBKajWnQ8dlZ24YsLbsg2clZwhfXayl4TWy+DlfomLM4DBOz3sGU8dZhvPZp79AhXb2QDK6t9uRFarWmceuYdUfaxPREzzbhNkQ6RctW5IJM7ocg9ecwyKPLHpnbf8RKwbOewjKilVY6bd7+OIE0hCRNj8a82D7rD38=
+	t=1729008674; cv=none; b=ad1ebIscDXQHb73Eu0PfM2zFofYo0sB4gftK+EI64b25+frYDKUJkUlZVJF8bjJkG4pjdjhZ1Ofy7utfS5R0872jbBPV6B2LO28qr/JyVvNc1OB/W2s/qGK4FGRLDDTTcF7al8ySLUE0TJrhx2yaV8kVVZfV3Ca+wCUjE0QdiZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729008674; c=relaxed/simple;
-	bh=HtkA9wBw7Sojuw5HhHk7JjMMtDq6tne9Y9iMOe1hFF4=;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KOyEPZXWwx+6agripVQX0BeCUrfZMVbt1i4UNZ8XRyVjsrlkJfzAsKzD8Kgj1cC+ft9JWqn0g4ra9letBrxuheEq2EE5mYxEUiemS94r27+H/i0JzVYCbK1gk8fwZyuWvUfhbtUocFcKmcEge/M3HN+u2iHzjBryrs56OxMaDEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BgLXKw6N; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=cvubs8C2ZpfMhTgQsiky77H86/QqZAhdKctqdAirgEol/NHMmJ2S+B7BVsA6jBgM60OKrHwbgWWVNwulox5eyqAijYFxFsqqlsqrj7ke4Q4nXKAG2ugUi2aJou3eN4RIiHvRtRvpOPvwJib21Xdkl/NxK9sQatfV0H/6KkbDtU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rjWuaejM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BgLXKw6N"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E766C4CED1;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rjWuaejM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 102FBC4CEC6;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1729008674;
-	bh=HtkA9wBw7Sojuw5HhHk7JjMMtDq6tne9Y9iMOe1hFF4=;
+	bh=YtrJn4vc+Mgz9wgw7+EugcgaEZCddJzBtXAuSeGGRxU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BgLXKw6N3AW+UE0XMhLDqSIskVLB+HpYigMBdbsRUvuki4N7849L9Qsef8x0PCOuW
-	 sVKIg7vmnpeAmr4apZ0rwwbgih3UMRxEGxm32fXVw8nxp8dZKFLGANx//Y4SJRHBDE
-	 4oD7Q6CUrBGrbVavbSKqXTi1I6v0DXk/2RZmeBy/T9zLtg0SLGXPik28l9fEKAduBm
-	 SYdgy3BCwcbvD4pui/epYistnTi7xQxmUyRXFVMDnzF/lce7Wdu5mxL0gl0hXoiz0N
-	 33f0I0KfDui+jzdbhJXWmjHbP2rt7xVHU6lGOPpExt9h0DDU87ACcalCaaz7kTQhQ7
-	 fBlLYRICxSdBA==
+	b=rjWuaejMz3s2kw0x85c0BKmvxqsG68srpL0BWdgw5AbFisGdZpWkE88Lx8rFTSHA8
+	 2VSsfnTjowFQzl7SIbV2FhnAWREHbhdxERR6dwrvif+bomJo3QZ5eI08901VU8byHO
+	 6kqnhcWrYQuVeC/PIZclBNHNz5llVCAfSFXJ8fflzdV7Zfo6wVmv9FDH+6Au0ZIY+Q
+	 oOXOdYwmvw2zCFb/cpHli8WSDJVmnd3vslEhRdCAAjlUEa/FVk3V5Jnz+0JkHz5h7L
+	 YjONZx3hl9Stfqqfi84e9Lu/VF6yVMow50/k6fimHFOIubWyAFQDkTfLMRl4DtXpP3
+	 P0AcGDYJLUg6Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BC0B7CE0F9A; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
+	id B34EECE0971; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH rcu 04/15] srcu: Bit manipulation changes for additional reader flavor
-Date: Tue, 15 Oct 2024 09:11:01 -0700
-Message-Id: <20241015161112.442758-4-paulmck@kernel.org>
+Subject: [PATCH rcu 01/15] srcu: Rename srcu_might_be_idle() to srcu_should_expedite()
+Date: Tue, 15 Oct 2024 09:10:58 -0700
+Message-Id: <20241015161112.442758-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
 References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
@@ -53,11 +53,17 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, there are only two flavors of readers, normal and NMI-safe.
-Very straightforward state updates suffice to check for erroneous
-mixing of reader flavors on a given srcu_struct structure.  This commit
-upgrades the checking in preparation for the addition of light-weight
-(as in memory-barrier-free) readers.
+SRCU auto-expedites grace periods that follow a sufficiently long idle
+period, and the srcu_might_be_idle() function is used to make this
+decision.  However, the upcoming light-weight SRCU readers will not do
+auto-expediting because doing so would cause the grace-period machinery
+to invoke synchronize_rcu_expedited() twice, with IPIs all around.
+However, software-engineering considerations force this determination
+to remain in srcu_might_be_idle().
+
+This commit therefore changes the name of srcu_might_be_idle() to
+srcu_should_expedite(), thus moving from what it currently does to why
+it does it, this latter being more future-proof.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -66,34 +72,53 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/srcutree.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/rcu/srcutree.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 18f2eae5e14bd..abe55777c4335 100644
+index 31706e3293bce..9ff4ded609ba5 100644
 --- a/kernel/rcu/srcutree.c
 +++ b/kernel/rcu/srcutree.c
-@@ -462,7 +462,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
- 		if (IS_ENABLED(CONFIG_PROVE_RCU))
- 			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
- 	}
--	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask >> 1)),
-+	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
- 		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
- 	return sum;
+@@ -1139,7 +1139,8 @@ static void srcu_flip(struct srcu_struct *ssp)
  }
-@@ -712,8 +712,9 @@ void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
- 	sdp = raw_cpu_ptr(ssp->sda);
- 	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
- 	if (!old_reader_flavor_mask) {
--		WRITE_ONCE(sdp->srcu_reader_flavor, reader_flavor_mask);
--		return;
-+		old_reader_flavor_mask = cmpxchg(&sdp->srcu_reader_flavor, 0, reader_flavor_mask);
-+		if (!old_reader_flavor_mask)
-+			return;
- 	}
- 	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
- }
+ 
+ /*
+- * If SRCU is likely idle, return true, otherwise return false.
++ * If SRCU is likely idle, in other words, the next SRCU grace period
++ * should be expedited, return true, otherwise return false.
+  *
+  * Note that it is OK for several current from-idle requests for a new
+  * grace period from idle to specify expediting because they will all end
+@@ -1159,7 +1160,7 @@ static void srcu_flip(struct srcu_struct *ssp)
+  * negligible when amortized over that time period, and the extra latency
+  * of a needlessly non-expedited grace period is similarly negligible.
+  */
+-static bool srcu_might_be_idle(struct srcu_struct *ssp)
++static bool srcu_should_expedite(struct srcu_struct *ssp)
+ {
+ 	unsigned long curseq;
+ 	unsigned long flags;
+@@ -1469,14 +1470,15 @@ EXPORT_SYMBOL_GPL(synchronize_srcu_expedited);
+  * Implementation of these memory-ordering guarantees is similar to
+  * that of synchronize_rcu().
+  *
+- * If SRCU is likely idle, expedite the first request.  This semantic
+- * was provided by Classic SRCU, and is relied upon by its users, so TREE
+- * SRCU must also provide it.  Note that detecting idleness is heuristic
+- * and subject to both false positives and negatives.
++ * If SRCU is likely idle as determined by srcu_should_expedite(),
++ * expedite the first request.  This semantic was provided by Classic SRCU,
++ * and is relied upon by its users, so TREE SRCU must also provide it.
++ * Note that detecting idleness is heuristic and subject to both false
++ * positives and negatives.
+  */
+ void synchronize_srcu(struct srcu_struct *ssp)
+ {
+-	if (srcu_might_be_idle(ssp) || rcu_gp_is_expedited())
++	if (srcu_should_expedite(ssp) || rcu_gp_is_expedited())
+ 		synchronize_srcu_expedited(ssp);
+ 	else
+ 		__synchronize_srcu(ssp, true);
 -- 
 2.40.1
 
