@@ -1,426 +1,316 @@
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2070.outbound.protection.outlook.com [40.107.236.70])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C79166F1B;
-	Tue, 15 Oct 2024 05:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.70
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728969041; cv=fail; b=eUWq3UPqledMavNptH+EsjC5fnEcvUIo/u0oZyjZ+HsCMZtPoBscH89tBSTwlszBY4/Tt/MrrLuodzOQRdh0eMqjIxQD1e3rE++8RVezYkepTKU92/jdxphYcoWe1UlODF8p5P08srb/T1x0l2I4O4V4eLKH3snbklM/oti4FMI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728969041; c=relaxed/simple;
-	bh=V5c4R8bERyDGwVpK4NvkjUNFJ0AlQnLN6vjJyXdM4fo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SEy5jyrAizTg4vGK48MH/6OXQDCZ5ER2b/ZiN8pYSKqtRHmCz4CsOcKU4wg2cQVvhPVHnNfsTx0ISEL+oamEZCL99eNKHu7jGZLsAjy0r6FEPMoIVCBptOLX2qyZu0J/yxrfujUna2S6YZmI1S9/lihVkRk7nzzCTWjLDtXv1A4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=LN5yela/; arc=fail smtp.client-ip=40.107.236.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9A71FC7F4;
+	Tue, 15 Oct 2024 13:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728999332; cv=none; b=ZOMIJGjuciCTMy+crngdOxSbT6J1oUfTgha1hattwwEwWL2YQDyhMBzEQYKpMEm8Pda95FU2Y3moZcSDdlY5t2JyyMWJoH9dkdEjMprhuFWHvdK7v22OmObXROmyWJ6enAsD5hPCTbu1bHuLfGMQDR3Soz1QcdSEMuuU0dhwruQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728999332; c=relaxed/simple;
+	bh=y8iIiPUUP90wqqQFoRBMdZRts0mScrjk70+gYY5Wwxk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QZ70hxodikC4MggfvTdm9wmoQoBhrdw3KBZ+VH1HEWVSMzQTLZeagQbJwY1tGIyjzNlnfXfgO/bPNzlE/tHVmDJ0jUZoQ8Qap8r3T/1Oh7Ga7LYex1NcUrZeqQmf/p1VHCKUFNXY885w9039Vb1mRd8BFnCro+mzql9ZSd05c2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=fuV9rSh0; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LN5yela/"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sflmn6yveUZ/dYqLb/mXbvArKG5QOCo3Ze+NnNQUPFoWlvgc+ZuCFhZs7E9ZDeTKCtiVv1Vvy5uQqR65nlE/PPxk8J7LTN2Qud7rXpw7TWQCkqhjnoik8MSIvdgYMxKWXEWHKBvqX0ndAgJ4+8dyS8prkRcjZjG3vkPE31swLbJmFmKJa10UxmL46KHmrN6meh2w3h9ZCyFBaciawXzi465AS66+QBHaRmAPnEtm+dkThQDdRtIrBJGfcheTtqBE11MX2E50WYVcgWvOJGlydyYfKuxs5YREFj31GA9ZcIF4Ghwkl8SDgQXx8P9pONwgBkK9nJwVGuPiHX0DCxe8dA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5qmG3914WUeQLLwZ+RvvDbzk6pOSoFVlfIghD7K1zZQ=;
- b=glzNpZgUzH/Xpl+YDi8Nx6H9d4pnCu8zuJq1BPDzZtnSFp9UQSDofNtVEMKCP+4kbPdLF5jgkeDYAn+OmoDk6s6A/QVM4+Vw8sTPBlhRJyMiT0Pi9cAsF3/IUMUn5t8nVdhUDUeBsENx24Xzk0ec+WKh/vK5HFrvAsMfimbkF+0F3bSUNFrSuAbqm8vO22mKDBcQE4+lTDZy6TyV5hZxu9C7Z0P9TirAIJvTJweGj51gP+jGWVmATHmQgAhrv/hSpNjvoiOgu+a9ouyPyiK6hNv0AWIELb6iLhyZ7yS0VMT3dCi1zGka1AnoE8pWKcANl3el4K0Vaq0+pf4p0CEScQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qmG3914WUeQLLwZ+RvvDbzk6pOSoFVlfIghD7K1zZQ=;
- b=LN5yela/olZJL8Y/saGFEVKcGcaPrLw2aS6Bypl6jX711N5xOrauIe6XVF5khJeAuBiCJvfGqiDUz9623eFLBW2Ihptm8NQzVczelJXGD0ymLkiZRYDgdFsIqPOCJTly/lkOTx+yYMIRJDs2NvmgrF7uiJmG/44N4r8l71SJD2M=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
- IA0PR12MB8973.namprd12.prod.outlook.com (2603:10b6:208:48e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.26; Tue, 15 Oct
- 2024 05:10:36 +0000
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627]) by DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627%3]) with mapi id 15.20.8048.020; Tue, 15 Oct 2024
- 05:10:36 +0000
-Message-ID: <72ab4701-3d40-42d3-a26a-a0d76fbe27ca@amd.com>
-Date: Tue, 15 Oct 2024 10:40:27 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rcu 05/12] srcu: Standardize srcu_data pointers to "sdp"
- and similar
-Content-Language: en-US
-To: paulmck@kernel.org
-Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-team@meta.com, rostedt@goodmis.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-5-paulmck@kernel.org>
- <d0ec401f-f857-4fbb-89f3-f2d13eb34b5d@amd.com>
- <25cd96f1-6d4d-4dba-b57b-da63d228ba97@paulmck-laptop>
- <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
-From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-In-Reply-To: <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0120.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:27::35) To DS0PR12MB6608.namprd12.prod.outlook.com
- (2603:10b6:8:d0::10)
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="fuV9rSh0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1728999321;
+	bh=y8iIiPUUP90wqqQFoRBMdZRts0mScrjk70+gYY5Wwxk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=fuV9rSh0fT5PPT8HXJ6zlPZylv61kJxHZVsISuma/W6Ssz+XeQMc3WNVb4SXUQ1Ud
+	 dzkbOhiWiNi1vSexwlpw+OeBe1NlzP2Pi5obNSjMKcH1ttLcb3Uc6wzr+xPbZ4iORN
+	 9cxFuBYukb/7YxmrueqgGTJ+wRXZ9/4+OZ4woHKrfTeHOZDSy2P54//+1OfZlF5qvQ
+	 RuwhH5Asc5DF/TZ+M1whvaaftNlXFXXil6w5/1mMjSFKdTdY1GG76Ro5lOclqSv477
+	 mKSaZFaYeHMk6gzQQnR+jgM+OcPXvt+rsFGI1ph6DWQSosonE0HYWsCNB5wYp/58Gk
+	 l3tNtOBqcvnYQ==
+Received: from [172.16.0.134] (96-127-217-162.qc.cable.ebox.net [96.127.217.162])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4XSZpx2Yt7zyWM;
+	Tue, 15 Oct 2024 09:35:21 -0400 (EDT)
+Message-ID: <bfc0e684-b008-4e20-82a9-a953613087b0@efficios.com>
+Date: Tue, 15 Oct 2024 09:33:31 -0400
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|IA0PR12MB8973:EE_
-X-MS-Office365-Filtering-Correlation-Id: a19b3ad7-ecb6-497d-9176-08dcecd7b410
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SCtiUkh1OVB5MHcrTnl5ZHdSUFptZWhnRjE1dDdqMFZJb2RMYnd0T1U2SUdr?=
- =?utf-8?B?aVNjNm5WT2o3WVFtZEZJNnFST2lGeW5NUG1kTW84b0Z1WlN4WTErdWM0bFJ2?=
- =?utf-8?B?U2RPQVVobXZnTlJaaE5KS0tyVDRqRXdUY3h1N0VRNEdhVWxlL2VhbllmbCtv?=
- =?utf-8?B?SXl5SWUwSE5YZjZMQXRjT05HTWJvaHZGVVk1bEhmRmh5MlIyWWUwaWdBc1di?=
- =?utf-8?B?cEtJRkU2WmhQb2dVWUl0N2RDOXFxVXlYdXRGOTBzY3FyTU03TjNERDRUdXd0?=
- =?utf-8?B?TVQyNlFNZXhmdTcwaW9yZDFEeml4ZUhUTHJUSXpOMXFaTGppdldmQU1FSzk4?=
- =?utf-8?B?aVVET2NJMFB2emE1bTdWYkhFM1BrQkJHNlVXVFFnbE5zdG1RdUtpUjRwNnpU?=
- =?utf-8?B?TElidlc1R1pTWXdlSzNQVFVJS2l0VEh1WVVFT2YzbjBabC9UdldaQTkzMnVD?=
- =?utf-8?B?NEtKMDhZYXRvVllYczcrYmlIYnBoTXJkY3g5dlZhMU5mT0tuSlptOUdHOUpH?=
- =?utf-8?B?NERGc2J2TElLaUtDTms1Q1VSeCtFVTV6c1huNWo4MkNQbFk2MDRhMHZMUDA0?=
- =?utf-8?B?Rlg1QnphQks3TlloeG5ZK0RSMFo4YXNMY1dNRXNRWkRTY1VRVU1IRy9sQTdt?=
- =?utf-8?B?eXBGdzlRcVN4N1NsZm43dUFvMFdGT25TMmoyVEJSOWpDTWdmQXpxV3pZVUVF?=
- =?utf-8?B?eDBaT01xeGlNenFhcTY0UnBGZnA1bExtRmVqMS9BcTdaencxV0lXUTVkbkVB?=
- =?utf-8?B?L0N6Wnl2bWN3TnZ3RU41UTBsRlNjZHIwNElQMFc3SEFhSk5KQjF2cVJ4aUtB?=
- =?utf-8?B?eHcyaUd1NFpBVktPazV6cHRncXFyN3J1bndDWlJLdXd1d2hmSm1jaDRUaEhM?=
- =?utf-8?B?NnFWQ3pEeUY0bC9jNFMxUFY1YlVZNlhQNlE2b245WTNNb2U4dWpJR0IxQ1E4?=
- =?utf-8?B?UjdzQlZmdlgzWmJCamdXSHpoNHdjRUlSOWRQbHk0WjJHZTdhZllkcjdiemxm?=
- =?utf-8?B?VjF2dG9YQWViQWpNN1BkR0IxUTZFeGVXWVBqeisvWU9pN1p5SXRSc1BQUG5j?=
- =?utf-8?B?bHhBSnZabDVoa3RpVTFMOHEySnRycU0wWUlYMlBpc3JMSEFGWEdXUjkxTG5C?=
- =?utf-8?B?d3F5d3VZVDdrb0txOTJKbFhPNVd2V0ZCWDl1SW0rZ0s0czUzTkJLdEFtUWg2?=
- =?utf-8?B?RU9Ja2xPZ0RWQVFRVkxLRUNqYXMwTTduMVhMc1VVS014MUszclhBeEJGVHU5?=
- =?utf-8?B?TmRoc1dDSlM2M3NNR0J5RVgwU3dMaHZCdEdlLzhkaXVXNy9LQkF1U0lGTHk4?=
- =?utf-8?B?NHlhOG9BVkh0V0tHcnQ4Y1VxcGVKdjhZNXFHeEJZbDNpQUlKZFZkTndvZDlS?=
- =?utf-8?B?L3p3YThORDFFa2I2c2dCYlRFZjV5NUtGVUxJQjJWMWFkcDdJcnJoczFQUEZM?=
- =?utf-8?B?SElFOVh0eG85RWdSd1RaRU84TFhSMjJzbG1PdEsvOWhLNE5ZUEk0N3g4bkRa?=
- =?utf-8?B?OXdldXJpK1N5ejhSY2Evd3N2dW42R004UmpXV09xT1JHdWF4aE94STdKRE12?=
- =?utf-8?B?RXRvM3R3Si9uckh1L2QwT2xqT04vSWVjY1FZU1BpWmFSdS82b2IrTjJQMGdP?=
- =?utf-8?B?NzFxNHc3NDdlZWZCRUJUWDA4YVZlQjgyS0VXby9YTXpTTkJ3TUZ4L0ZvU1Bt?=
- =?utf-8?B?dFlGVUpKUVliUVNYTGprZE9FY0NPbWhybWJjZ2syQmR4WnJzY1UxVWtnPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Tkc1VzJhZW5tbUFTRGhVQU9uMm1STWIwYzhBNWJ2bVFjMVRnTEhVQ3FzaHJP?=
- =?utf-8?B?Z2tKNXpWaFozZ1RQdzBPUis2ZmJlRE9UZW5pMEJwdUtheml3NXN0dnZENWND?=
- =?utf-8?B?TWlhb2pYUk0zSXdmVzE1Ny9XZ3Jwd1pVRWFpYmhyY3V6SmR0c1hOZmN2N2Nq?=
- =?utf-8?B?ZEp3UDVYT0hjYStxNzV1OG9XblY3ZGlNbnVpclhPTGlRRmxkTjNTaml4NE5t?=
- =?utf-8?B?MStiOG1EUm5SRm16clBMYzFOb0V2dlZjRmU0YUlpMUJTOEdENjVIWkNSTmlh?=
- =?utf-8?B?a0ZJd2JHa0lWOEd5UFJvZkd6cUZNbWNZRWxwaHpqYW5PK3BEWHpMZ3lBQ2gz?=
- =?utf-8?B?T3NNcCtjVEY4VGVMcnAvUGgraUxJbHF0SURvVUU2MElPK1pEN2JWMXZzbkVw?=
- =?utf-8?B?Mk8ybHlFNHIzVXdVcWxjMy9kc3ErdjZZSmQ0U1VhZGNNWm9KM0xNMjBBSHJm?=
- =?utf-8?B?TytCQzN2VVFiQXpZMkkvU0d1TWJjSWpZNGtzbE8vNGRXcS9YTkRTa2YrS0NR?=
- =?utf-8?B?ZC9JcERobWFtNTFUbmdNMWZHc1M4KzN2QllxcGFjT3BmZk83YWhMSEdRSk1q?=
- =?utf-8?B?U3hDNjNHTGszQnpuQU96eDZ5aXlBQStVUDAybGJkbWtmTFBjMzBENi9BQnNt?=
- =?utf-8?B?bHdsNGVhanJCeTd0YXRZMXlvVktFN09YOGNjeVgvYlp6eWgybzhZRmV0QUdZ?=
- =?utf-8?B?eklhNG9zVXQzdFM4ZXkrMW9QQlYxOTVHMDVYMFZFU05DZENDdzdhakRob3Zn?=
- =?utf-8?B?c2Z5b3lKa1Zibi9xWW9IZFZnTy9JajhLTVF0d0lEN2NnclVrTDV6QXNjYmRy?=
- =?utf-8?B?cDFPTE56SHpYVS9PT0NsMjlUK1V6TTBjYm5vNW1pSTFob09CQUlGenJnYTA0?=
- =?utf-8?B?U3lrT1RUYU8wM3FNSWhLbXFhMU9sOHVtbjhLWGh1U3k1N1d3d2dHakhKTXUr?=
- =?utf-8?B?cm0vVU5LYWRjM0pQN1ZiUzl5MkVSdEdwQVBrbXQ0WC9WY09ZWWpBOUIxTjVl?=
- =?utf-8?B?RW52QUVaNkNKWjRUZHI2UzJRR29xZldUem8rSTdYcGpJMExQVENaYkdYMUpk?=
- =?utf-8?B?OUMyVW03eGlvUWV6S05EcDgyeDh0dVh4VitxWkpUOVduRkNwbHlnSWZSN0tZ?=
- =?utf-8?B?VjlyU1QvSnA3TG5qMEpqMTZlaXFDZU1KRHFRY1hOUkVraHJSRmlUWk9pWTZT?=
- =?utf-8?B?d3E2N1h3QndKblE2RjdGYWQ3REk3UHF3L0FzamsxTlhGWnRDSHZScCs1WWZj?=
- =?utf-8?B?WUoxcUJ0YUlOSzBEU0ZoVnpSaGNYbjVJZllibTdsbEd1dVhHTFVFWUpVSDN2?=
- =?utf-8?B?Q0UxeURCbFZtcXZYOHFLTG1jTUw4Z003TnJsdHdsanhjbFhOcUZ0QjIvU2d6?=
- =?utf-8?B?amRWQ2dOVHk3WHkrZGgySG5neGdNRm9LVTRqaW5RRGUzMFQ1ckdVZmpIVEZo?=
- =?utf-8?B?K3VIdFhUV20rL1hGWTdWdzVtTjJ1Zkp5bjR6ZWZqUzRBbHBVTEtaS3VqK3NC?=
- =?utf-8?B?UHBoVThodThKK0UwQjNFR2ZPQVJpdWlaS1huSTZ4NCs1VnM1L0F5eUhBR2lY?=
- =?utf-8?B?V0lhL1hYS0t4b2MyWVZPRGU0S3o3UEg0M1B5bWVzZkpZbHc5ZzhFcFl5MWNS?=
- =?utf-8?B?b3Bhd1VUSS9UaUJweDJoRU9raEpYdWpwOWZ6bGs1b3hqdWduMi9ZT0VhcVkr?=
- =?utf-8?B?TlZadTcyVk40czJ4bCtjbGNkTTNzdVdFb3pEVU4vbW1kdSttdTdKWXhIeTk0?=
- =?utf-8?B?R0pCOEh2TTJTT2IwK3R0QWJyY01xSllndHF0bWQxTUdMQzV1UGRBT3lheWUv?=
- =?utf-8?B?dW5uWW9xUWQ4WG1MenIza3ZUVEdOanF5NlRsdWRtck5IUUFaUkJCTk04MzQx?=
- =?utf-8?B?TTZub2Q2WnpmNnk5bG9Va0xjN0lvV2RVR3oxMysvWmNzZUU0WU9oY1BtSW5H?=
- =?utf-8?B?cEl6L0NBbG5xRENWVEhRdzdZTWQydGthT3NqVkMzNCt6VXhYd3NBaDZVbUZk?=
- =?utf-8?B?N1hyTkNJSVE5dExDeFdTc3NaelB1NWlnRzYydmxEbDRRNzgvL2VVKzJ0eDM1?=
- =?utf-8?B?M3NRUFZRTy9mZzk2SFZxVExtZ2pWRU5XbEdZajdXODNIRGJJVEpoL1BlbzhI?=
- =?utf-8?Q?NwKV+ivHATx8NmUTQ4kzt0HvZ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a19b3ad7-ecb6-497d-9176-08dcecd7b410
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2024 05:10:36.5996
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: phQHmXrYi5+GyunkcqCsJGU78Pxqvh2IjDLO7XgS+WkajTSoxLgNDIhfE2kgkcl8fYZGAj3B/8kySe6nTzqZ9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8973
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 4/4] sched+mm: Use hazard pointers to track lazy
+ active mm existence
+To: kernel test robot <oliver.sang@intel.com>,
+ Peter Zijlstra <peterz@infradead.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, Nicholas Piggin
+ <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Alan Stern <stern@rowland.harvard.edu>,
+ John Stultz <jstultz@google.com>, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Waiman Long <longman@redhat.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, Mateusz Guzik <mjguzik@gmail.com>,
+ Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, maged.michael@gmail.com,
+ rcu@vger.kernel.org, lkmm@lists.linux.dev
+References: <202410141617.612a0f5b-lkp@intel.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <202410141617.612a0f5b-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On 10/15/2024 5:59 AM, Paul E. McKenney wrote:
-> On Mon, Oct 14, 2024 at 09:49:52AM -0700, Paul E. McKenney wrote:
->> On Mon, Oct 14, 2024 at 02:45:50PM +0530, Neeraj Upadhyay wrote:
->>> On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
->>>> This commit changes a few "cpuc" variables to "sdp" to align wiht usage
->>>> elsewhere.
->>>>
->>>
->>> s/wiht/with/
->>
->> Good eyes!
+On 2024-10-14 04:27, kernel test robot wrote:
 > 
-> And fixed.
-> >>> This commit is doing a lot more than renaming "cpuc".
->>
->> Indeed, it does look like I forgot to commit between two changes.
->>
->> It looks like this commit log goes with the changes to the
->> functions srcu_readers_lock_idx(), srcu_readers_unlock_idx(), and
->> srcu_readers_active().  With the exception of the change from "NMI-safe"
->> to "reader flavors in the WARN_ONCE() string in srcu_readers_unlock_idx().
->>
->> How would you suggest that I split up the non-s/cpuc/sdp/ changes?
 > 
-> As a first step, I split it three ways, as you can see on the updated "dev"
-> branch in the -rcu tree.
+> Hello,
 > 
-> Thoughts?
+> kernel test robot noticed "WARNING:at_kernel/hazptr.c:#hazptr_scan" on:
+> 
+> commit: c1508707268498a6fd3ca5853ad65f9482c12374 ("[RFC PATCH v3 4/4] sched+mm: Use hazard pointers to track lazy active mm existence")
+> url: https://github.com/intel-lab-lkp/linux/commits/Mathieu-Desnoyers/compiler-h-Introduce-ptr_eq-to-preserve-address-dependency/20241008-215353
+> base: https://git.kernel.org/cgit/linux/kernel/git/powerpc/linux.git next
+> patch link: https://lore.kernel.org/all/20241008135034.1982519-5-mathieu.desnoyers@efficios.com/
+> patch subject: [RFC PATCH v3 4/4] sched+mm: Use hazard pointers to track lazy active mm existence
 > 
 
-Split looks good to me!
+This appears to be called from:
+
+static int khugepaged(void *none)
+{
+         struct khugepaged_mm_slot *mm_slot;
+
+         set_freezable();
+         set_user_nice(current, MAX_NICE);
+                         
+         while (!kthread_should_stop()) {
+                 khugepaged_do_scan(&khugepaged_collapse_control);
+                 khugepaged_wait_work();
+         }
+                 
+         spin_lock(&khugepaged_mm_lock);
+         mm_slot = khugepaged_scan.mm_slot;
+         khugepaged_scan.mm_slot = NULL;
+         if (mm_slot)
+                 collect_mm_slot(mm_slot);   <-------- here
+         spin_unlock(&khugepaged_mm_lock);
+         return 0;
+}
+
+[...]
+
+static void collect_mm_slot(struct khugepaged_mm_slot *mm_slot)
+{
+         struct mm_slot *slot = &mm_slot->slot;
+         struct mm_struct *mm = slot->mm;
+
+         lockdep_assert_held(&khugepaged_mm_lock);
+
+         if (hpage_collapse_test_exit(mm)) {
+                 /* free mm_slot */
+                 hash_del(&slot->hash);
+                 list_del(&slot->mm_node);
+
+                 /*
+                  * Not strictly needed because the mm exited already.
+                  *
+                  * clear_bit(MMF_VM_HUGEPAGE, &mm->flags);
+                  */
+
+                 /* khugepaged_mm_lock actually not necessary for the below */
+                 mm_slot_free(mm_slot_cache, mm_slot);
+                 mmdrop(mm);             <---------- here
+         }
+}
+
+So technically, before my change, there were two things that differed here:
+
+1) mmdrop possibly did not decrement mm_count to 0 if mm_count was held as a
+    lazy mm, which skipped __mmdrop entirely.
+
+2) If it happened that mm_count did decrement to 0, __mmdrop would call
+    cleanup_lazy_tlbs().
+
+    With CONFIG_MMU_LAZY_TLB_SHOOTDOWN=n (which is the case here), cleanup_lazy_tlbs()
+    returned immediately.
+
+    With CONFIG_MMU_LAZY_TLB_SHOOTDOWN=y (only for powerpc AFAIU), it would do
+    on_each_cpu_mask() to send IPIs to other CPUs which are in the mm_cpumask().
+    It appears to be OK to call on_each_cpu_mask() from preempt-disabled context.
+
+So changing all this to send IPIs for CPUs which have the mm in their hazard pointer
+slot is technically not so different from what CONFIG_MMU_LAZY_TLB_SHOOTDOWN=y
+does.
+
+So AFAIU we have the choice between three ways forward here:
+
+1) Modify hazptr_scan() so it only check for lockdep_assert_preemption_enabled()
+    when the on_match_cb() is NULL (busy-wait behavior). This would allow being
+    called from preempt-disabled context when a specific on-match callback is
+    provided.
+
+2) Modify mm/khugepaged.c:collect_mm_slot() so it releases the khugepaged_mm_lock
+    spinlock around:
+
+                 /* khugepaged_mm_lock actually not necessary for the below */
+                 mm_slot_free(mm_slot_cache, mm_slot);
+                 mmdrop(mm);
+
+   So it does not call mmdrop() from preempt-off context.
+
+3) Approaches (1)+(2).
+
+Thoughts ?
+
+Thanks,
+
+Mathieu
 
 
-- Neeraj
 
-> 							Thanx, Paul
+> in testcase: boot
 > 
->>> - Neeraj
->>>
->>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>> Cc: Alexei Starovoitov <ast@kernel.org>
->>>> Cc: Andrii Nakryiko <andrii@kernel.org>
->>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>> Cc: Kent Overstreet <kent.overstreet@linux.dev>
->>>> Cc: <bpf@vger.kernel.org>
->>>> ---
->>>>  include/linux/srcu.h     | 35 ++++++++++++++++++----------------
->>>>  include/linux/srcutree.h |  4 ++++
->>>>  kernel/rcu/srcutree.c    | 41 ++++++++++++++++++++--------------------
->>>>  3 files changed, 44 insertions(+), 36 deletions(-)
->>>>
->>>> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
->>>> index 06728ef6f32a4..84daaa33ea0ab 100644
->>>> --- a/include/linux/srcu.h
->>>> +++ b/include/linux/srcu.h
->>>> @@ -176,10 +176,6 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
->>>>  
->>>>  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
->>>>  
->>>> -#define SRCU_NMI_UNKNOWN	0x0
->>>> -#define SRCU_NMI_UNSAFE		0x1
->>>> -#define SRCU_NMI_SAFE		0x2
->>>> -
->>>>  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
->>>>  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
->>>>  #else
->>>> @@ -235,16 +231,19 @@ static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flav
->>>>   * a mutex that is held elsewhere while calling synchronize_srcu() or
->>>>   * synchronize_srcu_expedited().
->>>>   *
->>>> - * Note that srcu_read_lock() and the matching srcu_read_unlock() must
->>>> - * occur in the same context, for example, it is illegal to invoke
->>>> - * srcu_read_unlock() in an irq handler if the matching srcu_read_lock()
->>>> - * was invoked in process context.
->>>> + * The return value from srcu_read_lock() must be passed unaltered
->>>> + * to the matching srcu_read_unlock().  Note that srcu_read_lock() and
->>>> + * the matching srcu_read_unlock() must occur in the same context, for
->>>> + * example, it is illegal to invoke srcu_read_unlock() in an irq handler
->>>> + * if the matching srcu_read_lock() was invoked in process context.  Or,
->>>> + * for that matter to invoke srcu_read_unlock() from one task and the
->>>> + * matching srcu_read_lock() from another.
->>>>   */
->>>>  static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	int retval;
->>>>  
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	retval = __srcu_read_lock(ssp);
->>>>  	srcu_lock_acquire(&ssp->dep_map);
->>>>  	return retval;
->>>> @@ -256,12 +255,16 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
->>>>   *
->>>>   * Enter an SRCU read-side critical section, but in an NMI-safe manner.
->>>>   * See srcu_read_lock() for more information.
->>>> + *
->>>> + * If srcu_read_lock_nmisafe() is ever used on an srcu_struct structure,
->>>> + * then none of the other flavors may be used, whether before, during,
->>>> + * or after.
->>>>   */
->>>>  static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	int retval;
->>>>  
->>>> -	srcu_check_read_flavor(ssp, true);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
->>>>  	retval = __srcu_read_lock_nmisafe(ssp);
->>>>  	rcu_try_lock_acquire(&ssp->dep_map);
->>>>  	return retval;
->>>> @@ -273,7 +276,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	int retval;
->>>>  
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	retval = __srcu_read_lock(ssp);
->>>>  	return retval;
->>>>  }
->>>> @@ -302,7 +305,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
->>>>  static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
->>>>  {
->>>>  	WARN_ON_ONCE(in_nmi());
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	return __srcu_read_lock(ssp);
->>>>  }
->>>>  
->>>> @@ -317,7 +320,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
->>>>  	__releases(ssp)
->>>>  {
->>>>  	WARN_ON_ONCE(idx & ~0x1);
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	srcu_lock_release(&ssp->dep_map);
->>>>  	__srcu_read_unlock(ssp, idx);
->>>>  }
->>>> @@ -333,7 +336,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
->>>>  	__releases(ssp)
->>>>  {
->>>>  	WARN_ON_ONCE(idx & ~0x1);
->>>> -	srcu_check_read_flavor(ssp, true);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
->>>>  	rcu_lock_release(&ssp->dep_map);
->>>>  	__srcu_read_unlock_nmisafe(ssp, idx);
->>>>  }
->>>> @@ -342,7 +345,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
->>>>  static inline notrace void
->>>>  srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
->>>>  {
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	__srcu_read_unlock(ssp, idx);
->>>>  }
->>>>  
->>>> @@ -359,7 +362,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
->>>>  {
->>>>  	WARN_ON_ONCE(idx & ~0x1);
->>>>  	WARN_ON_ONCE(in_nmi());
->>>> -	srcu_check_read_flavor(ssp, false);
->>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
->>>>  	__srcu_read_unlock(ssp, idx);
->>>>  }
->>>>  
->>>> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
->>>> index ab7d8d215b84b..79ad809c7f035 100644
->>>> --- a/include/linux/srcutree.h
->>>> +++ b/include/linux/srcutree.h
->>>> @@ -43,6 +43,10 @@ struct srcu_data {
->>>>  	struct srcu_struct *ssp;
->>>>  };
->>>>  
->>>> +/* Values for ->srcu_reader_flavor. */
->>>> +#define SRCU_READ_FLAVOR_NORMAL	0x1		// srcu_read_lock().
->>>> +#define SRCU_READ_FLAVOR_NMI	0x2		// srcu_read_lock_nmisafe().
->>>> +
->>>>  /*
->>>>   * Node in SRCU combining tree, similar in function to rcu_data.
->>>>   */
->>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->>>> index abe55777c4335..4c51be484b48a 100644
->>>> --- a/kernel/rcu/srcutree.c
->>>> +++ b/kernel/rcu/srcutree.c
->>>> @@ -438,9 +438,9 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
->>>>  	unsigned long sum = 0;
->>>>  
->>>>  	for_each_possible_cpu(cpu) {
->>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
->>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->>>>  
->>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
->>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
->>>>  	}
->>>>  	return sum;
->>>>  }
->>>> @@ -456,14 +456,14 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
->>>>  	unsigned long sum = 0;
->>>>  
->>>>  	for_each_possible_cpu(cpu) {
->>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
->>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->>>>  
->>>> -		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
->>>> +		sum += atomic_long_read(&sdp->srcu_unlock_count[idx]);
->>>>  		if (IS_ENABLED(CONFIG_PROVE_RCU))
->>>> -			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
->>>> +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
->>>>  	}
->>>>  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
->>>> -		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
->>>> +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
->>>>  	return sum;
->>>>  }
->>>>  
->>>> @@ -564,12 +564,12 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
->>>>  	unsigned long sum = 0;
->>>>  
->>>>  	for_each_possible_cpu(cpu) {
->>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
->>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
->>>>  
->>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
->>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
->>>> -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
->>>> -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
->>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[0]);
->>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[1]);
->>>> +		sum -= atomic_long_read(&sdp->srcu_unlock_count[0]);
->>>> +		sum -= atomic_long_read(&sdp->srcu_unlock_count[1]);
->>>>  	}
->>>>  	return sum;
->>>>  }
->>>> @@ -703,20 +703,21 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
->>>>   */
->>>>  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
->>>>  {
->>>> -	int reader_flavor_mask = 1 << read_flavor;
->>>> -	int old_reader_flavor_mask;
->>>> +	int old_read_flavor;
->>>>  	struct srcu_data *sdp;
->>>>  
->>>> -	/* NMI-unsafe use in NMI is a bad sign */
->>>> -	WARN_ON_ONCE(!read_flavor && in_nmi());
->>>> +	/* NMI-unsafe use in NMI is a bad sign, as is multi-bit read_flavor values. */
->>>> +	WARN_ON_ONCE((read_flavor != SRCU_READ_FLAVOR_NMI) && in_nmi());
->>>> +	WARN_ON_ONCE(read_flavor & (read_flavor - 1));
->>>> +
->>>>  	sdp = raw_cpu_ptr(ssp->sda);
->>>> -	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
->>>> -	if (!old_reader_flavor_mask) {
->>>> -		old_reader_flavor_mask = cmpxchg(&sdp->srcu_reader_flavor, 0, reader_flavor_mask);
->>>> -		if (!old_reader_flavor_mask)
->>>> +	old_read_flavor = READ_ONCE(sdp->srcu_reader_flavor);
->>>> +	if (!old_read_flavor) {
->>>> +		old_read_flavor = cmpxchg(&sdp->srcu_reader_flavor, 0, read_flavor);
->>>> +		if (!old_read_flavor)
->>>>  			return;
->>>>  	}
->>>> -	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
->>>> +	WARN_ONCE(old_read_flavor != read_flavor, "CPU %d old state %d new state %d\n", sdp->cpu, old_read_flavor, read_flavor);
->>>>  }
->>>>  EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
->>>>  #endif /* CONFIG_PROVE_RCU */
->>>
+> config: i386-randconfig-013-20241011
+> compiler: gcc-12
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> +-----------------------------------------+------------+------------+
+> |                                         | b62696cacd | c150870726 |
+> +-----------------------------------------+------------+------------+
+> | WARNING:at_kernel/hazptr.c:#hazptr_scan | 0          | 5          |
+> | EIP:hazptr_scan                         | 0          | 5          |
+> +-----------------------------------------+------------+------------+
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202410141617.612a0f5b-lkp@intel.com
+> 
+> 
+> [    6.951355][   T22] ------------[ cut here ]------------
+> [ 6.951920][ T22] WARNING: CPU: 0 PID: 22 at kernel/hazptr.c:28 hazptr_scan (kernel/hazptr.c:28)
+> [    6.952580][   T22] Modules linked in:
+> [    6.952880][   T22] CPU: 0 UID: 0 PID: 22 Comm: khugepaged Not tainted 6.12.0-rc1-00004-gc15087072684 #10
+> [ 6.953685][ T22] EIP: hazptr_scan (kernel/hazptr.c:28)
+> [ 6.954087][ T22] Code: c0 74 0a 85 db 8b 0a 74 45 39 c8 74 21 5b 5e 5d 31 c0 31 d2 31 c9 c3 8d b4 26 00 00 00 00 f7 05 a4 18 34 c3 ff ff ff 7f 74 14 <0f> 0b eb d1 89 c1 31 c0 ff d3 5b 5e 5d 31 c0 31 d2 31 c9 c3 8b 0d
+> All code
+> ========
+>     0:	c0 74 0a 85 db       	shlb   $0xdb,-0x7b(%rdx,%rcx,1)
+>     5:	8b 0a                	mov    (%rdx),%ecx
+>     7:	74 45                	je     0x4e
+>     9:	39 c8                	cmp    %ecx,%eax
+>     b:	74 21                	je     0x2e
+>     d:	5b                   	pop    %rbx
+>     e:	5e                   	pop    %rsi
+>     f:	5d                   	pop    %rbp
+>    10:	31 c0                	xor    %eax,%eax
+>    12:	31 d2                	xor    %edx,%edx
+>    14:	31 c9                	xor    %ecx,%ecx
+>    16:	c3                   	ret
+>    17:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+>    1e:	f7 05 a4 18 34 c3 ff 	testl  $0x7fffffff,-0x3ccbe75c(%rip)        # 0xffffffffc33418cc
+>    25:	ff ff 7f
+>    28:	74 14                	je     0x3e
+>    2a:*	0f 0b                	ud2		<-- trapping instruction
+>    2c:	eb d1                	jmp    0xffffffffffffffff
+>    2e:	89 c1                	mov    %eax,%ecx
+>    30:	31 c0                	xor    %eax,%eax
+>    32:	ff d3                	call   *%rbx
+>    34:	5b                   	pop    %rbx
+>    35:	5e                   	pop    %rsi
+>    36:	5d                   	pop    %rbp
+>    37:	31 c0                	xor    %eax,%eax
+>    39:	31 d2                	xor    %edx,%edx
+>    3b:	31 c9                	xor    %ecx,%ecx
+>    3d:	c3                   	ret
+>    3e:	8b                   	.byte 0x8b
+>    3f:	0d                   	.byte 0xd
+> 
+> Code starting with the faulting instruction
+> ===========================================
+>     0:	0f 0b                	ud2
+>     2:	eb d1                	jmp    0xffffffffffffffd5
+>     4:	89 c1                	mov    %eax,%ecx
+>     6:	31 c0                	xor    %eax,%eax
+>     8:	ff d3                	call   *%rbx
+>     a:	5b                   	pop    %rbx
+>     b:	5e                   	pop    %rsi
+>     c:	5d                   	pop    %rbp
+>     d:	31 c0                	xor    %eax,%eax
+>     f:	31 d2                	xor    %edx,%edx
+>    11:	31 c9                	xor    %ecx,%ecx
+>    13:	c3                   	ret
+>    14:	8b                   	.byte 0x8b
+>    15:	0d                   	.byte 0xd
+> [    6.955564][   T22] EAX: c6087680 EBX: c1061470 ECX: 00000000 EDX: c2e104e8
+> [    6.956135][   T22] ESI: c2e104e4 EDI: 00000001 EBP: c42ade88 ESP: c42ade80
+> [    6.956665][   T22] DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068 EFLAGS: 00010202
+> [    6.957266][   T22] CR0: 80050033 CR2: 0819cd10 CR3: 04033d80 CR4: 000406b0
+> [    6.957807][   T22] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+> [    6.958380][   T22] DR6: fffe0ff0 DR7: 00000400
+> [    6.958747][   T22] Call Trace:
+> [ 6.959005][ T22] ? show_regs (arch/x86/kernel/dumpstack.c:479)
+> [ 6.959362][ T22] ? hazptr_scan (kernel/hazptr.c:28)
+> [ 6.959694][ T22] ? __warn (kernel/panic.c:748)
+> [ 6.959974][ T22] ? hazptr_scan (kernel/hazptr.c:28)
+> [ 6.960361][ T22] ? hazptr_scan (kernel/hazptr.c:28)
+> [ 6.960695][ T22] ? report_bug (lib/bug.c:180 lib/bug.c:219)
+> [ 6.961083][ T22] ? hazptr_scan (kernel/hazptr.c:28)
+> [ 6.961427][ T22] ? exc_overflow (arch/x86/kernel/traps.c:301)
+> [ 6.961778][ T22] ? handle_bug (arch/x86/kernel/traps.c:260)
+> [ 6.962157][ T22] ? exc_invalid_op (arch/x86/kernel/traps.c:309 (discriminator 1))
+> [ 6.962549][ T22] ? thread_stack_free_rcu (kernel/fork.c:867)
+> [ 6.962955][ T22] ? handle_exception (arch/x86/entry/entry_32.S:1047)
+> [ 6.963399][ T22] ? thread_stack_free_rcu (kernel/fork.c:867)
+> [ 6.963801][ T22] ? exc_overflow (arch/x86/kernel/traps.c:301)
+> [ 6.964203][ T22] ? hazptr_scan (kernel/hazptr.c:28)
+> [ 6.964544][ T22] ? exc_overflow (arch/x86/kernel/traps.c:301)
+> [ 6.964895][ T22] ? hazptr_scan (kernel/hazptr.c:28)
+> [ 6.965279][ T22] __mmdrop (kernel/fork.c:895 (discriminator 3))
+> [ 6.965599][ T22] collect_mm_slot (mm/khugepaged.c:1455)
+> [ 6.965952][ T22] khugepaged_scan_mm_slot+0x210/0x60c
+> [ 6.966493][ T22] ? khugepaged (mm/khugepaged.c:2511 mm/khugepaged.c:2571)
+> [ 6.966865][ T22] khugepaged (mm/khugepaged.c:2515 mm/khugepaged.c:2571)
+> [ 6.967239][ T22] ? _raw_spin_unlock_irqrestore (arch/x86/include/asm/irqflags.h:42 arch/x86/include/asm/irqflags.h:97 arch/x86/include/asm/irqflags.h:155 include/linux/spinlock_api_smp.h:151 kernel/locking/spinlock.c:194)
+> [ 6.967684][ T22] ? __kthread_parkme (arch/x86/include/asm/bitops.h:206 arch/x86/include/asm/bitops.h:238 include/asm-generic/bitops/instrumented-non-atomic.h:142 kernel/kthread.c:280)
+> [ 6.968102][ T22] kthread (kernel/kthread.c:389)
+> [ 6.968400][ T22] ? khugepaged_scan_mm_slot+0x60c/0x60c
+> [ 6.968896][ T22] ? kthread_park (kernel/kthread.c:342)
+> [ 6.969286][ T22] ret_from_fork (arch/x86/kernel/process.c:153)
+> [ 6.969628][ T22] ? kthread_park (kernel/kthread.c:342)
+> [ 6.969961][ T22] ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
+> [ 6.970383][ T22] entry_INT80_32 (arch/x86/entry/entry_32.S:944)
+> [    6.970758][   T22] irq event stamp: 4719
+> [ 6.971117][ T22] hardirqs last enabled at (4729): __up_console_sem (arch/x86/include/asm/irqflags.h:42 (discriminator 1) arch/x86/include/asm/irqflags.h:97 (discriminator 1) arch/x86/include/asm/irqflags.h:155 (discriminator 1) kernel/printk/printk.c:344 (discriminator 1))
+> [ 6.971790][ T22] hardirqs last disabled at (4736): __up_console_sem (kernel/printk/printk.c:342 (discriminator 1))
+> [ 6.972475][ T22] softirqs last enabled at (4708): handle_softirqs (kernel/softirq.c:401 kernel/softirq.c:582)
+> [ 6.973162][ T22] softirqs last disabled at (4695): __do_softirq (kernel/softirq.c:589)
+> [    6.973771][   T22] ---[ end trace 0000000000000000 ]---
+> 
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20241014/202410141617.612a0f5b-lkp@intel.com
+> 
+> 
+> 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
