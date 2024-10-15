@@ -1,151 +1,169 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF88B1F76DD;
-	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F384203714
+	for <rcu@vger.kernel.org>; Tue, 15 Oct 2024 18:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729008675; cv=none; b=laFi3NAhqex4qZrQmPlCHD5vJs50+D8wcf/ailyez20TSKd5rb+ihtnJhG6sKvDGZxHN2PukdJAbFSDH60xX6jEM+y5efm+iTyE0gGO/rAFxIgQPbGT5tvWv7Ru2s0YiizIVtvHaWaKf5jFdVON00f0qNzxTdttH3/5sS92rpnk=
+	t=1729018093; cv=none; b=U+4x/NjMBPESXoalvryrrmsjw3nOSIRxyi4ZR8l++FDK0Cpv4qPHwbCwcnSZ63LxHJ0ooSr9lkp9+stVzJvDaLn1hZXaYqlvND1YvHWuaalR4SgowLm3qwINUJKutTzpwNkspJob/rycuLcIxEnxwBgl8ZRqvHcYYNO9F3AuSm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729008675; c=relaxed/simple;
-	bh=ShAY23PXWJnTwN9m3aELbGSryO452AQIXFVffiHUjJ8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=edC1hSAa87U7INZi/fDo6Y9MX5TrkcdP2PGXdisj5iI/ePQW4TQqoXUFPjrL8l8nKT8prwzQqDkivl9A+xg8tsjOYYNS94t6LPJ8vex1jAfngaIbqGYS8vDH4fYqbdpKELKdGCzRstfvB8gWo2bCUAI8ISSZj5wji92m4NLPIPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JLTU9ovS; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1729018093; c=relaxed/simple;
+	bh=xclAp3358o1GSRDObWNEEYRwXA2GYIZQEWERQwBhl50=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rpHal+8P9E588ToUSlthJh0lrYtA8x1iFiaJ5KCTTslUt+6GUxkhUiz/bcCdjAAcUh5W97+MK2OKBR8vtjvNKsm6pVVzQsRL7qRFG8Ucf68W3q3ovP5XM+zY9mpMfcYWWVycLDVw4rRQb620/RliuJDyPJcAsSNSS5Z3NEljmcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=pIMBBLpH; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLTU9ovS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B44C4CEF3;
-	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729008674;
-	bh=ShAY23PXWJnTwN9m3aELbGSryO452AQIXFVffiHUjJ8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JLTU9ovS7V5DQluJGRKqzRlmP20klBZWltdZIpdgvfxcg0+/eG4Cwaj0xEwHOUAtP
-	 /Ji4tT90mMEUhTGub0zGqCrKbSRtoU0ZcEkTlBPiwEUgJT3i7k+Q1uQK5hUmjME8AW
-	 a9+f43D+BOtWUeqpm3NgeL/Mj50NU6YTTGCwmXq4mz/vgAkDmNJvMlxQlNS60Rlg8k
-	 kW9uwTlFFSMXAy6/Xgx+GouyhP3baIHbf5FP6BUawXwrvTg+Q4AEwjLtCPi4H3evOx
-	 bjnrCixHk3GLKz0Si3mNEHHxCIswE1nf1dBxbRZ5TjMyKmSDrgDdce5q+4CCqW91Rg
-	 gVitZYy3/GhFA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D7376CE1FD6; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH rcu 14/15] refscale: Add srcu_read_lock_lite() support using "srcu-lite"
-Date: Tue, 15 Oct 2024 09:11:11 -0700
-Message-Id: <20241015161112.442758-14-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
-References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pIMBBLpH"
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7b10ed5e7cdso628598785a.3
+        for <rcu@vger.kernel.org>; Tue, 15 Oct 2024 11:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1729018090; x=1729622890; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=3T1pHk6kVrDYaC9PJpwXDBTIgR4oYMz5uSi/GGf2dLg=;
+        b=pIMBBLpHdDhvIOF8+PLFuwOMAWR441VoIMpD2xtwQ/WEXBTQiQ0s08386WHPYIrCxX
+         HhbdGzPVzSj8zJdnJUK1/VopqKGTGwFcfpdZjw6IDdkS6hzaRghZj77esDRa/mLhfMyO
+         RJUQGTFX8PtQm3IZJBAZeYv+dfnbbMkNVT3yU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729018090; x=1729622890;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3T1pHk6kVrDYaC9PJpwXDBTIgR4oYMz5uSi/GGf2dLg=;
+        b=dQYLgYY03MjSDil08MggVERWaHxeGn+Xcbg6s1wzkvn0vXdtKfXhKLRDewsetzKKz3
+         s6V+6gsZthrDTUkCwNMgLV9CUxjim7JFaeXRixV//G9iwymhpScVzu7QTeeJxrkByPPu
+         4hamccpcxh0jpcb/6ERXgzPdMrFyOIzjekrbhWos36QlsDRQ3SxIK+yU9BwvlQJxdVb6
+         XmrJSzXifVJKo6Sfn2sD0dK0gHjd9b1LGb4DIjRVfictHrOkZzh8GTeuE8ITv8PBzeYt
+         Km75qVOgmckhGI3h9whSo+Gu0InIJFckKgKP49trqC5BcyQ8AA3D8Zmr1gwSb+QYyQ4G
+         qYQg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxgJulzN3urarsi8eWil5NMToWGbrms7JMAYJ4oo1r0CT9TS37XxLuzTux1ibsjri6vs0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIqlYTmjjy5aPqt7Vsir8oYFYjA1+gLl4lxYHA2bM4uZ9mPVr6
+	Uw06OVwgLeS3kPcxuFVD9e4ZHYdumqWQPJWzFDWwjaJzHmsTYVDknKExQlL6gYU=
+X-Google-Smtp-Source: AGHT+IGX+qjAK/CrOqvekczHdHEEe340jRXKcB/zLEOiPXMkbjeTCj4l6jHidKqL8ktZOU+ttRsz6g==
+X-Received: by 2002:a05:620a:199a:b0:7a9:ac57:ff58 with SMTP id af79cd13be357-7b120fc4cf3mr1654070685a.37.1729018090221;
+        Tue, 15 Oct 2024 11:48:10 -0700 (PDT)
+Received: from localhost ([91.196.69.99])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b136179ec0sm100204585a.59.2024.10.15.11.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Oct 2024 11:48:09 -0700 (PDT)
+Message-ID: <670eb8e9.050a0220.36d3ae.48f3@mx.google.com>
+X-Google-Original-Message-ID: <20241015184807.GA973@JoelBox.>
+Date: Tue, 15 Oct 2024 14:48:07 -0400
+From: Joel Fernandes <joel@joelfernandes.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, rostedt@goodmis.org
+Subject: Re: [PATCH rcu 2/3] rcu: Stop stall warning from dumping stacks if
+ grace period ends
+References: <fb0b7a92-d371-4510-80c4-25a57f2c4f3d@paulmck-laptop>
+ <20241009180509.778133-2-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241009180509.778133-2-paulmck@kernel.org>
 
-This commit creates a new srcu-lite option for the refscale.scale_type
-module parameter that selects srcu_read_lock_lite() and
-srcu_read_unlock_lite().
+On Wed, Oct 09, 2024 at 11:05:08AM -0700, Paul E. McKenney wrote:
+> Currently, once an RCU CPU stall warning decides to dump the stalling
+> CPUs' stacks, the rcu_dump_cpu_stacks() function persists until it
+> has gone through the full list.  Unfortunately, if the stalled grace
+> periods ends midway through, this function will be dumping stacks of
+> innocent-bystander CPUs that happen to be blocking not the old grace
+> period, but instead the new one.  This can cause serious confusion.
+> 
+> This commit therefore stops dumping stacks if and when the stalled grace
+> period ends.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  kernel/rcu/tree_stall.h | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index d7cdd535e50b1..9d79133377ff6 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -335,13 +335,17 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+>   * that don't support NMI-based stack dumps.  The NMI-triggered stack
+>   * traces are more accurate because they are printed by the target CPU.
+>   */
+> -static void rcu_dump_cpu_stacks(void)
+> +static void rcu_dump_cpu_stacks(unsigned long gp_seq)
+>  {
+>  	int cpu;
+>  	unsigned long flags;
+>  	struct rcu_node *rnp;
+>  
+>  	rcu_for_each_leaf_node(rnp) {
+> +		if (gp_seq != rcu_state.gp_seq) {
+> +			pr_err("INFO: Stall ended during stack backtracing.\n");
+> +			return;
+> +		}
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
----
- kernel/rcu/refscale.c | 51 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 40 insertions(+), 11 deletions(-)
+small nit, this also needs data_race() like you did in next patch? Although
+you did delete this code in the next patch.
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index 0db9db73f57f2..09ee27ced2a78 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -212,6 +212,36 @@ static const struct ref_scale_ops srcu_ops = {
- 	.name		= "srcu"
- };
- 
-+static void srcu_lite_ref_scale_read_section(const int nloops)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static void srcu_lite_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+	int idx;
-+
-+	for (i = nloops; i >= 0; i--) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		un_delay(udl, ndl);
-+		srcu_read_unlock_lite(srcu_ctlp, idx);
-+	}
-+}
-+
-+static const struct ref_scale_ops srcu_lite_ops = {
-+	.init		= rcu_sync_scale_init,
-+	.readsection	= srcu_lite_ref_scale_read_section,
-+	.delaysection	= srcu_lite_ref_scale_delay_section,
-+	.name		= "srcu-lite"
-+};
-+
- #ifdef CONFIG_TASKS_RCU
- 
- // Definitions for RCU Tasks ref scale testing: Empty read markers.
-@@ -1082,27 +1112,26 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static const struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
--		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
--		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
-+		&rcu_ops, &srcu_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
-+		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
-+		&clock_ops, &jiffies_ops, &typesafe_ref_ops, &typesafe_lock_ops,
-+		&typesafe_seqlock_ops,
- 	};
- 
- 	if (!torture_init_begin(scale_type, verbose))
- 		return -EBUSY;
- 
- 	for (i = 0; i < ARRAY_SIZE(scale_ops); i++) {
--		cur_ops = scale_ops[i];
--		if (strcmp(scale_type, cur_ops->name) == 0)
-+		cur_ops = scale_ops[i]; if (strcmp(scale_type,
-+		cur_ops->name) == 0)
- 			break;
- 	}
- 	if (i == ARRAY_SIZE(scale_ops)) {
--		pr_alert("rcu-scale: invalid scale type: \"%s\"\n", scale_type);
--		pr_alert("rcu-scale types:");
--		for (i = 0; i < ARRAY_SIZE(scale_ops); i++)
-+		pr_alert("rcu-scale: invalid scale type: \"%s\"\n",
-+		scale_type); pr_alert("rcu-scale types:"); for (i = 0;
-+		i < ARRAY_SIZE(scale_ops); i++)
- 			pr_cont(" %s", scale_ops[i]->name);
--		pr_cont("\n");
--		firsterr = -EINVAL;
--		cur_ops = NULL;
-+		pr_cont("\n"); firsterr = -EINVAL; cur_ops = NULL;
- 		goto unwind;
- 	}
- 	if (cur_ops->init)
--- 
-2.40.1
+thanks,
 
+ - Joel
+
+
+>  		printk_deferred_enter();
+>  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>  		for_each_leaf_node_possible_cpu(rnp, cpu)
+> @@ -608,7 +612,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen,
+>  	       data_race(rcu_state.n_online_cpus)); // Diagnostic read
+>  	if (ndetected) {
+> -		rcu_dump_cpu_stacks();
+> +		rcu_dump_cpu_stacks(gp_seq);
+>  
+>  		/* Complain about tasks blocking the grace period. */
+>  		rcu_for_each_leaf_node(rnp)
+> @@ -640,7 +644,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  	rcu_force_quiescent_state();  /* Kick them all. */
+>  }
+>  
+> -static void print_cpu_stall(unsigned long gps)
+> +static void print_cpu_stall(unsigned long gp_seq, unsigned long gps)
+>  {
+>  	int cpu;
+>  	unsigned long flags;
+> @@ -677,7 +681,7 @@ static void print_cpu_stall(unsigned long gps)
+>  	rcu_check_gp_kthread_expired_fqs_timer();
+>  	rcu_check_gp_kthread_starvation();
+>  
+> -	rcu_dump_cpu_stacks();
+> +	rcu_dump_cpu_stacks(gp_seq);
+>  
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>  	/* Rewrite if needed in case of slow consoles. */
+> @@ -759,7 +763,8 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  	gs2 = READ_ONCE(rcu_state.gp_seq);
+>  	if (gs1 != gs2 ||
+>  	    ULONG_CMP_LT(j, js) ||
+> -	    ULONG_CMP_GE(gps, js))
+> +	    ULONG_CMP_GE(gps, js) ||
+> +	    !rcu_seq_state(gs2))
+>  		return; /* No stall or GP completed since entering function. */
+>  	rnp = rdp->mynode;
+>  	jn = jiffies + ULONG_MAX / 2;
+> @@ -780,7 +785,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  			pr_err("INFO: %s detected stall, but suppressed full report due to a stuck CSD-lock.\n", rcu_state.name);
+>  		} else if (self_detected) {
+>  			/* We haven't checked in, so go dump stack. */
+> -			print_cpu_stall(gps);
+> +			print_cpu_stall(gs2, gps);
+>  		} else {
+>  			/* They had a few time units to dump stack, so complain. */
+>  			print_other_cpu_stall(gs2, gps);
+> -- 
+> 2.40.1
+> 
+> 
