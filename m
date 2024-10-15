@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94491F76D9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF88B1F76DD;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729008675; cv=none; b=oWd1GegFrMEitlPMFmfNom/67P3sAiWAetkAQvAleXQNJbs62q9p8a7vZYeTuM9NwaKXIK6SmstkJureM+qQEoLe0StAb96zD/8JjCu+BlitDPxER70swJlL+PHwpjld0DIeWAtDKHovc06O0Z6AwthMBF1S+EyzeSoE4G71m7g=
+	t=1729008675; cv=none; b=laFi3NAhqex4qZrQmPlCHD5vJs50+D8wcf/ailyez20TSKd5rb+ihtnJhG6sKvDGZxHN2PukdJAbFSDH60xX6jEM+y5efm+iTyE0gGO/rAFxIgQPbGT5tvWv7Ru2s0YiizIVtvHaWaKf5jFdVON00f0qNzxTdttH3/5sS92rpnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729008675; c=relaxed/simple;
-	bh=USWy1f2+MRE4E6Ag+HiaCUvOKEVnE9SJTDypoSyYrTo=;
+	bh=ShAY23PXWJnTwN9m3aELbGSryO452AQIXFVffiHUjJ8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t8zmlbRPLWDW94Ci6OuDHBoiuFEjVeOJT1dso/IK5x1TkWYw8JxfCRkLrFUqK8UWJigpWy3LJAm1vgJyu7gCHcqMhgyiCXnQqOfUM27vTqOp9P0EJLqUK5Tb8IPdvPd8R4Bq8pFaG3hoYt9It39T2rQ+HCZdX83PligwSMgP1iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VluLbv0D; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=edC1hSAa87U7INZi/fDo6Y9MX5TrkcdP2PGXdisj5iI/ePQW4TQqoXUFPjrL8l8nKT8prwzQqDkivl9A+xg8tsjOYYNS94t6LPJ8vex1jAfngaIbqGYS8vDH4fYqbdpKELKdGCzRstfvB8gWo2bCUAI8ISSZj5wji92m4NLPIPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JLTU9ovS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VluLbv0D"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85DAFC4CEE4;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLTU9ovS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B44C4CEF3;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1729008674;
-	bh=USWy1f2+MRE4E6Ag+HiaCUvOKEVnE9SJTDypoSyYrTo=;
+	bh=ShAY23PXWJnTwN9m3aELbGSryO452AQIXFVffiHUjJ8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VluLbv0DeB/aePpRB2If4lR9PZW2xAiiLjEKlpvhbZYRhtKBvek4K8DIwRWS7DVKv
-	 wNQidWf2fSt5/42jtGoFKqZCWU6JHqAWBx6eB+jmwMLHIWjlD6K/zy0wonIGVBA3Rc
-	 SJVSamA/SawXue+wuT8PGVj5w1yyDZDiAUfKraWI9ElF4SDWQQXtRyH0ckXL+9B/Zl
-	 uzCKheq7oTkLWOiwo/PdDCvuNZhEpPCAIzpaXxi393dPJ7DxDgX3DI1LggSxyTbpHO
-	 m/B14GCYJwLH/3dh9/kfExnjwz/lQQ/AYq+TBS3v/aKzQmyO7263Cn1wwq++it6bQ1
-	 sNHIDtV1kX26A==
+	b=JLTU9ovS7V5DQluJGRKqzRlmP20klBZWltdZIpdgvfxcg0+/eG4Cwaj0xEwHOUAtP
+	 /Ji4tT90mMEUhTGub0zGqCrKbSRtoU0ZcEkTlBPiwEUgJT3i7k+Q1uQK5hUmjME8AW
+	 a9+f43D+BOtWUeqpm3NgeL/Mj50NU6YTTGCwmXq4mz/vgAkDmNJvMlxQlNS60Rlg8k
+	 kW9uwTlFFSMXAy6/Xgx+GouyhP3baIHbf5FP6BUawXwrvTg+Q4AEwjLtCPi4H3evOx
+	 bjnrCixHk3GLKz0Si3mNEHHxCIswE1nf1dBxbRZ5TjMyKmSDrgDdce5q+4CCqW91Rg
+	 gVitZYy3/GhFA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CF578CE16F0; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
+	id D7376CE1FD6; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -39,9 +39,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH rcu 11/15] rcutorture: Add reader_flavor parameter for SRCU readers
-Date: Tue, 15 Oct 2024 09:11:08 -0700
-Message-Id: <20241015161112.442758-11-paulmck@kernel.org>
+Subject: [PATCH rcu 14/15] refscale: Add srcu_read_lock_lite() support using "srcu-lite"
+Date: Tue, 15 Oct 2024 09:11:11 -0700
+Message-Id: <20241015161112.442758-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
 References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
@@ -53,9 +53,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit adds an rcutorture.reader_flavor parameter whose bits
-correspond to reader flavors.  For example, SRCU's readers are 0x1 for
-normal and 0x2 for NMI-safe.
+This commit creates a new srcu-lite option for the refscale.scale_type
+module parameter that selects srcu_read_lock_lite() and
+srcu_read_unlock_lite().
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
@@ -64,98 +64,88 @@ Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: <bpf@vger.kernel.org>
 ---
- .../admin-guide/kernel-parameters.txt         |  8 +++++
- kernel/rcu/rcutorture.c                       | 30 ++++++++++++++-----
- 2 files changed, 30 insertions(+), 8 deletions(-)
+ kernel/rcu/refscale.c | 51 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 40 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 1518343bbe223..52922727006fc 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5426,6 +5426,14 @@
- 			The delay, in seconds, between successive
- 			read-then-exit testing episodes.
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 0db9db73f57f2..09ee27ced2a78 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -212,6 +212,36 @@ static const struct ref_scale_ops srcu_ops = {
+ 	.name		= "srcu"
+ };
  
-+	rcutorture.reader_flavor= [KNL]
-+			A bit mask indicating which readers to use.
-+			If there is more than one bit set, the readers
-+			are entered from low-order bit up, and are
-+			exited in the opposite order.  For SRCU, the
-+			0x1 bit is normal readers and the 0x2 bit is
-+			for NMI-safe readers.
-+
- 	rcutorture.shuffle_interval= [KNL]
- 			Set task-shuffle interval (s).  Shuffling tasks
- 			allows some CPUs to go into dyntick-idle mode
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index f96ab98f8182f..405decec33677 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -111,6 +111,7 @@ torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disab
- torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
- torture_param(int, read_exit_delay, 13, "Delay between read-then-exit episodes (s)");
- torture_param(int, read_exit_burst, 16, "# of read-then-exit bursts per episode, zero to disable");
-+torture_param(int, reader_flavor, 0x1, "Reader flavors to use, one per bit.");
- torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
- torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
- torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
-@@ -644,10 +645,20 @@ static void srcu_get_gp_data(int *flags, unsigned long *gp_seq)
- 
- static int srcu_torture_read_lock(void)
- {
--	if (cur_ops == &srcud_ops)
--		return srcu_read_lock_nmisafe(srcu_ctlp);
--	else
--		return srcu_read_lock(srcu_ctlp);
++static void srcu_lite_ref_scale_read_section(const int nloops)
++{
++	int i;
 +	int idx;
-+	int ret = 0;
 +
-+	if ((reader_flavor & 0x1) || !(reader_flavor & 0x7)) {
-+		idx = srcu_read_lock(srcu_ctlp);
-+		WARN_ON_ONCE(idx & ~0x1);
-+		ret += idx;
++	for (i = nloops; i >= 0; i--) {
++		idx = srcu_read_lock_lite(srcu_ctlp);
++		srcu_read_unlock_lite(srcu_ctlp, idx);
 +	}
-+	if (reader_flavor & 0x2) {
-+		idx = srcu_read_lock_nmisafe(srcu_ctlp);
-+		WARN_ON_ONCE(idx & ~0x1);
-+		ret += idx << 1;
++}
++
++static void srcu_lite_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++	int idx;
++
++	for (i = nloops; i >= 0; i--) {
++		idx = srcu_read_lock_lite(srcu_ctlp);
++		un_delay(udl, ndl);
++		srcu_read_unlock_lite(srcu_ctlp, idx);
 +	}
-+	return ret;
- }
++}
++
++static const struct ref_scale_ops srcu_lite_ops = {
++	.init		= rcu_sync_scale_init,
++	.readsection	= srcu_lite_ref_scale_read_section,
++	.delaysection	= srcu_lite_ref_scale_delay_section,
++	.name		= "srcu-lite"
++};
++
+ #ifdef CONFIG_TASKS_RCU
  
- static void
-@@ -671,10 +682,11 @@ srcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
+ // Definitions for RCU Tasks ref scale testing: Empty read markers.
+@@ -1082,27 +1112,26 @@ ref_scale_init(void)
+ 	long i;
+ 	int firsterr = 0;
+ 	static const struct ref_scale_ops *scale_ops[] = {
+-		&rcu_ops, &srcu_ops, RCU_TRACE_OPS RCU_TASKS_OPS &refcnt_ops, &rwlock_ops,
+-		&rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops, &clock_ops, &jiffies_ops,
+-		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
++		&rcu_ops, &srcu_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
++		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &acqrel_ops,
++		&clock_ops, &jiffies_ops, &typesafe_ref_ops, &typesafe_lock_ops,
++		&typesafe_seqlock_ops,
+ 	};
  
- static void srcu_torture_read_unlock(int idx)
- {
--	if (cur_ops == &srcud_ops)
--		srcu_read_unlock_nmisafe(srcu_ctlp, idx);
--	else
--		srcu_read_unlock(srcu_ctlp, idx);
-+	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
-+	if (reader_flavor & 0x2)
-+		srcu_read_unlock_nmisafe(srcu_ctlp, (idx & 0x2) >> 1);
-+	if ((reader_flavor & 0x1) || !(reader_flavor & 0x7))
-+		srcu_read_unlock(srcu_ctlp, idx & 0x1);
- }
+ 	if (!torture_init_begin(scale_type, verbose))
+ 		return -EBUSY;
  
- static int torture_srcu_read_lock_held(void)
-@@ -2389,6 +2401,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
- 		 "n_barrier_cbs=%d "
- 		 "onoff_interval=%d onoff_holdoff=%d "
- 		 "read_exit_delay=%d read_exit_burst=%d "
-+		 "reader_flavor=%x "
- 		 "nocbs_nthreads=%d nocbs_toggle=%d "
- 		 "test_nmis=%d\n",
- 		 torture_type, tag, nrealreaders, nfakewriters,
-@@ -2401,6 +2414,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
- 		 n_barrier_cbs,
- 		 onoff_interval, onoff_holdoff,
- 		 read_exit_delay, read_exit_burst,
-+		 reader_flavor,
- 		 nocbs_nthreads, nocbs_toggle,
- 		 test_nmis);
- }
+ 	for (i = 0; i < ARRAY_SIZE(scale_ops); i++) {
+-		cur_ops = scale_ops[i];
+-		if (strcmp(scale_type, cur_ops->name) == 0)
++		cur_ops = scale_ops[i]; if (strcmp(scale_type,
++		cur_ops->name) == 0)
+ 			break;
+ 	}
+ 	if (i == ARRAY_SIZE(scale_ops)) {
+-		pr_alert("rcu-scale: invalid scale type: \"%s\"\n", scale_type);
+-		pr_alert("rcu-scale types:");
+-		for (i = 0; i < ARRAY_SIZE(scale_ops); i++)
++		pr_alert("rcu-scale: invalid scale type: \"%s\"\n",
++		scale_type); pr_alert("rcu-scale types:"); for (i = 0;
++		i < ARRAY_SIZE(scale_ops); i++)
+ 			pr_cont(" %s", scale_ops[i]->name);
+-		pr_cont("\n");
+-		firsterr = -EINVAL;
+-		cur_ops = NULL;
++		pr_cont("\n"); firsterr = -EINVAL; cur_ops = NULL;
+ 		goto unwind;
+ 	}
+ 	if (cur_ops->init)
 -- 
 2.40.1
 
