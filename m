@@ -1,47 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D811D1F76D2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBEBE1F76D4;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729008674; cv=none; b=QcCzN6vm4fNlhFh2JljHx5jxh8dI9Cin0uZXAZle2iNl9TiBB/GIEsjhJpeHc/nef87jH2dOM21QA9wA894LRMHBBXe0U+FfMTD99UlPUkxCrl1gOEVQF1/ecLv6LAjCnoPF+25qjGmh36L3XTb1EZmTURuIQgy2XiYSVE2+pIA=
+	t=1729008674; cv=none; b=G7GHlnKUNu98+DqSfK+BXphz90nJRleJBSS1AC5vYPnVhTPpLLE8wJLVMkycpaKQ2sYqeTOMRJEEJoHTdZklIIgNaPuAEJDVRidNm/mkr9RGVNoi7ImGgn8jcqSyjwvuWtmYM2i+aE90Rm8ta9G+H0EiVqQZ+QSRuZJ90OJ5HqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729008674; c=relaxed/simple;
-	bh=2/hu6Yi0XsmLS7jmPPcP2qqf4oo1mhmwzrHcI6b4xBA=;
+	bh=8e+zGyoW+Tm4spVSvH4fyTbGnotsozeYt2gapdOvycA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TEXNULrtbZJfni1wrlEahi2MfG0Oi+b+5yclxf4I2pyMcEn+UnjFrFKBXePZc/OO4kyMioEICRSBqbv+1LsnGbOGECC9xSJphmAQ5jxPtWOkrdxEPgqd/QgLKmes0NiCbd43WpQDRFM67D+i+eOagwpy4vZmewtv5/LbUhNKW0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eikvUaAA; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=bTUzznG7Y2N70gaD+GEUqIUnLMG1Qu/tDVS6c6ApQ8D65iBxfhWFICJzHttCF8uZ+5Hk7QhooI4cxggNUZrgVBYT1e6AEChgyp52nEUeGUN1zRHWxNtG4btu/EgMuFF7iepQvDXrNBV9ZY2nygcPfPujtV3hox8/U+yVnBOHFBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZRM6b5VE; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eikvUaAA"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EBDC4CEE3;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZRM6b5VE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4FA4C4CEF5;
 	Tue, 15 Oct 2024 16:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1729008674;
-	bh=2/hu6Yi0XsmLS7jmPPcP2qqf4oo1mhmwzrHcI6b4xBA=;
+	bh=8e+zGyoW+Tm4spVSvH4fyTbGnotsozeYt2gapdOvycA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eikvUaAAAV+LFBGasGXysFYWlnzo6ep0sjM6lJ+EOa0ujRPxyeBHVnLdKCwhCg+zu
-	 gPsrpkMBFlWeEzNbUPK08SevdPC+tRQynJnAW7uLFw9I5qTtFr81pk8kLe8H0NnZF3
-	 lh/QmqnCf3emspdPnHccaYisFqUE48OqoW/ngm9+E1AxJd4+Akpa06QD5ezS7AxahQ
-	 aXMNe/gzffcug8gUaTpuMd1YByQ7qLKCUtCb6zNEiKGYKIMG5oPdn6Xfb9bLnMP9FG
-	 LWSKEjc8MEDuQqbPbgGKvy+83kregsyfoZnSBLbHsQbPaDhAJHmDy25Yu/mMIilI4X
-	 ijiC2cvzYr1UQ==
+	b=ZRM6b5VE41ITBDvTkYCmQMVXY9O2L3EaJDoraUdCMbsxr75935KbL5NUm4YaAcdaL
+	 NtTXITYelbjm9+BgDAFQh37dC3zBcmoaFUWxpMClP2TFB49ySXqURLza1yTrcqF70I
+	 zkTIH9Z2TtdTpdOPLI13eFEF59lYJpP0azd6i9lF9iZZqYM2jjLwPdDLRMX5Br+61f
+	 n56YycBAU0rWwwkk6p+kVw++dvwMCM8p1m6f9DoPHvFzC/GkDH009ks7F1jbptIHvQ
+	 Mu+zsIOsZw4RAzvRJvB+yku4tLy3paGGnC8Ldz7aza9wjUAui+77chUtMraLUkkT9i
+	 5H3+Ap5L3qEsg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D1EA8CE1D59; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
+	id D9AA9CE20E2; Tue, 15 Oct 2024 09:11:13 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH rcu 12/15] rcutorture: Add srcu_read_lock_lite() support to rcutorture.reader_flavor
-Date: Tue, 15 Oct 2024 09:11:09 -0700
-Message-Id: <20241015161112.442758-12-paulmck@kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH rcu 15/15] srcu: Improve srcu_read_lock_lite() kernel-doc comment
+Date: Tue, 15 Oct 2024 09:11:12 -0700
+Message-Id: <20241015161112.442758-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
 References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
@@ -53,60 +49,29 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit causes bit 0x4 of rcutorture.reader_flavor to select the new
-srcu_read_lock_lite() and srcu_read_unlock_lite() functions.
+Where RCU is watching is where it is OK to invoke rcu_read_lock().
 
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 4 ++--
- kernel/rcu/rcutorture.c                         | 7 +++++++
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ include/linux/srcu.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 52922727006fc..203ec51e41d48 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5431,8 +5431,8 @@
- 			If there is more than one bit set, the readers
- 			are entered from low-order bit up, and are
- 			exited in the opposite order.  For SRCU, the
--			0x1 bit is normal readers and the 0x2 bit is
--			for NMI-safe readers.
-+			0x1 bit is normal readers, 0x2 NMI-safe readers,
-+			and 0x4 light-weight readers.
- 
- 	rcutorture.shuffle_interval= [KNL]
- 			Set task-shuffle interval (s).  Shuffling tasks
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 405decec33677..a313cdcb0960f 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -658,6 +658,11 @@ static int srcu_torture_read_lock(void)
- 		WARN_ON_ONCE(idx & ~0x1);
- 		ret += idx << 1;
- 	}
-+	if (reader_flavor & 0x4) {
-+		idx = srcu_read_lock_lite(srcu_ctlp);
-+		WARN_ON_ONCE(idx & ~0x1);
-+		ret += idx << 2;
-+	}
- 	return ret;
- }
- 
-@@ -683,6 +688,8 @@ srcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
- static void srcu_torture_read_unlock(int idx)
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 4ba96e2cfa405..bab1dae3f69e6 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -270,7 +270,8 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+  * synchronize_rcu_expedited(), IPIs and all.
+  *
+  * Note that srcu_read_lock_lite() can be invoked only from those contexts
+- * where RCU is watching.  Otherwise, lockdep will complain.
++ * where RCU is watching, that is, from contexts where it would be legal
++ * to invoke rcu_read_lock().  Otherwise, lockdep will complain.
+  */
+ static inline int srcu_read_lock_lite(struct srcu_struct *ssp) __acquires(ssp)
  {
- 	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
-+	if (reader_flavor & 0x4)
-+		srcu_read_unlock_lite(srcu_ctlp, (idx & 0x4) >> 2);
- 	if (reader_flavor & 0x2)
- 		srcu_read_unlock_nmisafe(srcu_ctlp, (idx & 0x2) >> 1);
- 	if ((reader_flavor & 0x1) || !(reader_flavor & 0x7))
 -- 
 2.40.1
 
