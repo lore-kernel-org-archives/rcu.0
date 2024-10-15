@@ -1,51 +1,51 @@
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2055.outbound.protection.outlook.com [40.107.92.55])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2070.outbound.protection.outlook.com [40.107.236.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E314C8C;
-	Tue, 15 Oct 2024 03:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C79166F1B;
+	Tue, 15 Oct 2024 05:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.70
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728963161; cv=fail; b=EkMGwfhrYYhkFUSjN0MXVXJJdQ1NN40CydJvi/UJp1lmerOHEOnG9ZLev3F7UieYjqGQFtPDD/J/9h3appvj6SQyPByOn+x4byvlYDvajYZPwmk7KC9jOlk2YXSYTH1cDE2jxi7+8ygmWXDTmvE6/ybMMTmRChxy4Lut0zZ0YU0=
+	t=1728969041; cv=fail; b=eUWq3UPqledMavNptH+EsjC5fnEcvUIo/u0oZyjZ+HsCMZtPoBscH89tBSTwlszBY4/Tt/MrrLuodzOQRdh0eMqjIxQD1e3rE++8RVezYkepTKU92/jdxphYcoWe1UlODF8p5P08srb/T1x0l2I4O4V4eLKH3snbklM/oti4FMI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728963161; c=relaxed/simple;
-	bh=x4oOCAC0pqS/y7OhUkNYKuYTCAgNrX3gri/zT9naXzQ=;
+	s=arc-20240116; t=1728969041; c=relaxed/simple;
+	bh=V5c4R8bERyDGwVpK4NvkjUNFJ0AlQnLN6vjJyXdM4fo=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=nRbjT/JiRJVkEhmwYF5JEqs0DlCigHc4dovmEQw0fp1Y0ecIlnLWwW/fV7rULNTGQ1ZKJp+/MxpUn9mmmnSkOqxJhzIhcmvTMPKNEHCtRdePTHWpA1pKf25kAy8D+d3Imqr8SzVFIhCZ4lk4oQC5aVZZ5yz3U2yjL0xSyo7hEPo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=z5tdjliz; arc=fail smtp.client-ip=40.107.92.55
+	 Content-Type:MIME-Version; b=SEy5jyrAizTg4vGK48MH/6OXQDCZ5ER2b/ZiN8pYSKqtRHmCz4CsOcKU4wg2cQVvhPVHnNfsTx0ISEL+oamEZCL99eNKHu7jGZLsAjy0r6FEPMoIVCBptOLX2qyZu0J/yxrfujUna2S6YZmI1S9/lihVkRk7nzzCTWjLDtXv1A4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=LN5yela/; arc=fail smtp.client-ip=40.107.236.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="z5tdjliz"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="LN5yela/"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=raVTNFxw65H5PDOVn4KF39Bs5pFXx3hr8GWrre12LzA78Tt7a2oJWJkvRxvikc/MvaLWpCHUa3+l1PPzRpEYS9Lw6CpMu7dHO8hTKhxqeujg0AeAd+qsbsyeGPM2xQJBJUWjCOG3w9jDTT6uzXcL9LatlI0OQhbQ6yyYEvYPTnV4WGDY/EzyRTywrs5k9BjsVe9+CskgGTy/kc1YZMltZcSW2wo9mX76+oz4sEqwuhvccQYQ/XCDi6BSQY4dGcv7EI++/W4QKo2TWA62UpRVuOS+t+ahiN41XGGhv35PHQVvvq51ozEx0QQAlsrEEJEMQMqzy7gneKSLfBm3hcRGlw==
+ b=sflmn6yveUZ/dYqLb/mXbvArKG5QOCo3Ze+NnNQUPFoWlvgc+ZuCFhZs7E9ZDeTKCtiVv1Vvy5uQqR65nlE/PPxk8J7LTN2Qud7rXpw7TWQCkqhjnoik8MSIvdgYMxKWXEWHKBvqX0ndAgJ4+8dyS8prkRcjZjG3vkPE31swLbJmFmKJa10UxmL46KHmrN6meh2w3h9ZCyFBaciawXzi465AS66+QBHaRmAPnEtm+dkThQDdRtIrBJGfcheTtqBE11MX2E50WYVcgWvOJGlydyYfKuxs5YREFj31GA9ZcIF4Ghwkl8SDgQXx8P9pONwgBkK9nJwVGuPiHX0DCxe8dA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m0H2rSJrDb++upfOUXJiJinUlCQe+ukojJTjQs4fE0k=;
- b=aXnnaFg6BrUBrVkeB5RPlkaGtCT03PWSGTCFwyahW7vPq6Ib/t8GlDezfWwb5ut3jl431enoYs3uhY7+ZLo4h8JLbIevVtwfLlqRXJwGftLuLWsR7B7vHdci3pd6rZMX7gIMB/r14ZDnT8vEq9yMCZMAkga+h0J1lg/M4hLOH4gNFYo1zTY3DK/y8Ns9XHMSA+oxZwh86kab63cvSDe6416ewsQkBadcMkPHcvQ1iYzyMSWy4X8P0dYT4I3IPe7QbugbHV4ZQyx2QQBCyBgJ4Ch9sx+X2PTs4rCmGcnMWLU3UKKDTHWm3bGW28eRNzOxgLblMt6+D1sgxm5dhtsjjQ==
+ bh=5qmG3914WUeQLLwZ+RvvDbzk6pOSoFVlfIghD7K1zZQ=;
+ b=glzNpZgUzH/Xpl+YDi8Nx6H9d4pnCu8zuJq1BPDzZtnSFp9UQSDofNtVEMKCP+4kbPdLF5jgkeDYAn+OmoDk6s6A/QVM4+Vw8sTPBlhRJyMiT0Pi9cAsF3/IUMUn5t8nVdhUDUeBsENx24Xzk0ec+WKh/vK5HFrvAsMfimbkF+0F3bSUNFrSuAbqm8vO22mKDBcQE4+lTDZy6TyV5hZxu9C7Z0P9TirAIJvTJweGj51gP+jGWVmATHmQgAhrv/hSpNjvoiOgu+a9ouyPyiK6hNv0AWIELb6iLhyZ7yS0VMT3dCi1zGka1AnoE8pWKcANl3el4K0Vaq0+pf4p0CEScQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m0H2rSJrDb++upfOUXJiJinUlCQe+ukojJTjQs4fE0k=;
- b=z5tdjlizhHR3obkQ+xX85v71O58HCxIRcJuC0QVp3i1SyOC646kBSlQDrU5hN5/O1kfx2hUv658oo0FIr6mZjqoRi251rJnrjv7OjLR1E/cpkqgkefi5kB6DZG82vioft8r7UHvhU1nJBUgGNcrf0lO54vKzXjwmBtosKyRYfzA=
+ bh=5qmG3914WUeQLLwZ+RvvDbzk6pOSoFVlfIghD7K1zZQ=;
+ b=LN5yela/olZJL8Y/saGFEVKcGcaPrLw2aS6Bypl6jX711N5xOrauIe6XVF5khJeAuBiCJvfGqiDUz9623eFLBW2Ihptm8NQzVczelJXGD0ymLkiZRYDgdFsIqPOCJTly/lkOTx+yYMIRJDs2NvmgrF7uiJmG/44N4r8l71SJD2M=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
- SJ2PR12MB8009.namprd12.prod.outlook.com (2603:10b6:a03:4c7::10) with
+ IA0PR12MB8973.namprd12.prod.outlook.com (2603:10b6:208:48e::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.22; Tue, 15 Oct
- 2024 03:32:36 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.26; Tue, 15 Oct
+ 2024 05:10:36 +0000
 Received: from DS0PR12MB6608.namprd12.prod.outlook.com
  ([fe80::b71d:8902:9ab3:f627]) by DS0PR12MB6608.namprd12.prod.outlook.com
  ([fe80::b71d:8902:9ab3:f627%3]) with mapi id 15.20.8048.020; Tue, 15 Oct 2024
- 03:32:36 +0000
-Message-ID: <8f988c33-2787-4547-a6af-e7c52061b48b@amd.com>
-Date: Tue, 15 Oct 2024 09:02:27 +0530
+ 05:10:36 +0000
+Message-ID: <72ab4701-3d40-42d3-a26a-a0d76fbe27ca@amd.com>
+Date: Tue, 15 Oct 2024 10:40:27 +0530
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rcu 04/12] srcu: Bit manipulation changes for additional
- reader flavor
+Subject: Re: [PATCH rcu 05/12] srcu: Standardize srcu_data pointers to "sdp"
+ and similar
 Content-Language: en-US
 To: paulmck@kernel.org
 Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -54,15 +54,16 @@ Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
  Peter Zijlstra <peterz@infradead.org>,
  Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
 References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-4-paulmck@kernel.org>
- <abf6c382-7b70-4cdb-9227-7dfd21e60c45@amd.com>
- <6f8934c8-8499-48ec-89fa-e3f356fae419@paulmck-laptop>
+ <20241009180719.778285-5-paulmck@kernel.org>
+ <d0ec401f-f857-4fbb-89f3-f2d13eb34b5d@amd.com>
+ <25cd96f1-6d4d-4dba-b57b-da63d228ba97@paulmck-laptop>
+ <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
 From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-In-Reply-To: <6f8934c8-8499-48ec-89fa-e3f356fae419@paulmck-laptop>
+In-Reply-To: <e63311e5-4311-4b08-abcc-8298a22c52f4@paulmck-laptop>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BMXPR01CA0095.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::35) To DS0PR12MB6608.namprd12.prod.outlook.com
+X-ClientProxiedBy: PN2PR01CA0120.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:27::35) To DS0PR12MB6608.namprd12.prod.outlook.com
  (2603:10b6:8:d0::10)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -71,154 +72,355 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|SJ2PR12MB8009:EE_
-X-MS-Office365-Filtering-Correlation-Id: d67846da-a3a5-47f6-0b2b-08dcecca033e
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|IA0PR12MB8973:EE_
+X-MS-Office365-Filtering-Correlation-Id: a19b3ad7-ecb6-497d-9176-08dcecd7b410
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|366016|376014;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ZEJPNzNlWWdqRVFmbVoyTUZLMHliYm9JbzFtTHFiK3NMNU00cXFLeUlBenV1?=
- =?utf-8?B?WXZYaXA0UVpwWnZwZy9qUWNyM2kyK1N5anI4cUlyN0VHLytHaktOVndQc3ph?=
- =?utf-8?B?bWg4TnYxY01KanZ3dWQ2dHU3UFpUeU1hak1XQnVUZzJpaEpZaS9SK1MzY0t6?=
- =?utf-8?B?M3J1UkViRSs1UmNZcUU2NUZiYnk2UnlDOGc3cGZyK0xtMUdGYTNIMTgwa0dC?=
- =?utf-8?B?U2dlTzVnU0U1Y3hlVzg2L29MYlFRYkZsaFNYTVRJdWpoYmRHcGYxSWEyRnVx?=
- =?utf-8?B?QXl0b3Z4UThkajdCZ2F4VjFEYjhuQUx2L0dscko0TWpQYjNZUnV1MmwrZ0Y1?=
- =?utf-8?B?VmFVWVQxSmxTaVp2K05xbU1UbForWldKN2h2YkR4QTdOVjlFKzdQZlpObERO?=
- =?utf-8?B?ZXQxQ0JrNlBWSWIrSm9OSjdadWtrdmtKdkxLd1RFSStDaHptZHVDM2ViMXZ2?=
- =?utf-8?B?RXR5NG9XZEV3Mldyd0xtYXQralJZa0xlcERrZy9tNFpZVm5OcHVTNWdTZmFu?=
- =?utf-8?B?aUhYRGFaL3Y3d05PbTBrVnU1QS8zRk5qckxac0U5TTRITFQwT29Tb21zUER6?=
- =?utf-8?B?MFJUQmMxYU9hOVk3cExyeTBzdG1HaWRVZUdDMGs1eHhBRjgybWZjQ01WaHcw?=
- =?utf-8?B?TnFIcEJESWZxVEgzdkVHcGhyUGxKVXFzUlZnR1IxellvRDh6TkxYN0h2b3V0?=
- =?utf-8?B?YTY0SG5DWHdnWG5nQW5MU3ZGeFFscElzYUlVbWhqS1FyS0dQbzFjMmZrYXFI?=
- =?utf-8?B?NVBjV2NBNGNGWVhGTjhDSUpjeDFrV3l3Nm92ZjVDM0FzSEo0SFJlem1sSkox?=
- =?utf-8?B?OUVzVmtQRzNTaVpBNlZ0a011eWwxU29oU0dVT29sRTdDQlF0enU3WmU5c3Nu?=
- =?utf-8?B?WDYzeUZjeTRBM204cXVOR1czUGtuWmd2dVE1SHgwMWY2TGZEUE45VnF0TmNi?=
- =?utf-8?B?c09wUzdGNERLOFJBY3ZkdG1PYytDK1MrQVorYlBCNFFCdHczL2pCcFhka2V4?=
- =?utf-8?B?TkFmV1gybVkzTG5tV3RubTIrNEZMcy9pTi9zRTZmQml1amlnMW1WZGVVMEY3?=
- =?utf-8?B?aFQzdnBSY3JudzJGbjJiVTd5Slc4RDIvWnFZNUxqL0wwZDJjVFJlSVpDQ29r?=
- =?utf-8?B?U01LaEMvdVNBUGQ0TmlucmJ1VGhBaVUxd0VvVFFtQ3lpcEJHTG5ZUlZIN2FO?=
- =?utf-8?B?aGJYNmNObTJjdXpVU2RqRERMYWFQdGxVc0dwYmZGZ25CREJkY2NxdG44Ry81?=
- =?utf-8?B?Q3lvMEhLK3lPSVhOMHJBUThuWXQrdEU1dEhOR1luVXVMSkV5NzlVWjM2RzI5?=
- =?utf-8?B?WkhST2orQXVPSlFHb2t1bkJtalNOVSs4eGx3Mmh5dHNXNUNXNTlUczVtb2pN?=
- =?utf-8?B?YUFSaW82cGdJamcxUlJNdXZtaHNlbVR4bXNSaG5lODc1YU05OGN6TXJQei9p?=
- =?utf-8?B?cDFYem51aU9jdzE0QXBVZkNhS3Y4dTBaWmh1cjdtVWltc3NyaVFORVBwS096?=
- =?utf-8?B?amE3NkYrdUhYb2VvdmN5QThEb092S0lkVkJyUjgwa3diRXVNSFBTaDU0WVl3?=
- =?utf-8?B?VEk0VTVMbkhxNmtTTTBQN1FORllsYmd2dlBjYTcxM0hVN2ZPVTZSU2FzRjdN?=
- =?utf-8?B?QVpiUTlwSWU3YUxvRXVMVFVzNHI2d042aTc4RTQ4aTBXRU9LdDYyWG1MT2JO?=
- =?utf-8?B?WmJqZkEwYmhUamtnWHAzb2FKTXBLbWlFaDV6ZForK0ZscGdNWjhKMGZBPT0=?=
+	=?utf-8?B?SCtiUkh1OVB5MHcrTnl5ZHdSUFptZWhnRjE1dDdqMFZJb2RMYnd0T1U2SUdr?=
+ =?utf-8?B?aVNjNm5WT2o3WVFtZEZJNnFST2lGeW5NUG1kTW84b0Z1WlN4WTErdWM0bFJ2?=
+ =?utf-8?B?U2RPQVVobXZnTlJaaE5KS0tyVDRqRXdUY3h1N0VRNEdhVWxlL2VhbllmbCtv?=
+ =?utf-8?B?SXl5SWUwSE5YZjZMQXRjT05HTWJvaHZGVVk1bEhmRmh5MlIyWWUwaWdBc1di?=
+ =?utf-8?B?cEtJRkU2WmhQb2dVWUl0N2RDOXFxVXlYdXRGOTBzY3FyTU03TjNERDRUdXd0?=
+ =?utf-8?B?TVQyNlFNZXhmdTcwaW9yZDFEeml4ZUhUTHJUSXpOMXFaTGppdldmQU1FSzk4?=
+ =?utf-8?B?aVVET2NJMFB2emE1bTdWYkhFM1BrQkJHNlVXVFFnbE5zdG1RdUtpUjRwNnpU?=
+ =?utf-8?B?TElidlc1R1pTWXdlSzNQVFVJS2l0VEh1WVVFT2YzbjBabC9UdldaQTkzMnVD?=
+ =?utf-8?B?NEtKMDhZYXRvVllYczcrYmlIYnBoTXJkY3g5dlZhMU5mT0tuSlptOUdHOUpH?=
+ =?utf-8?B?NERGc2J2TElLaUtDTms1Q1VSeCtFVTV6c1huNWo4MkNQbFk2MDRhMHZMUDA0?=
+ =?utf-8?B?Rlg1QnphQks3TlloeG5ZK0RSMFo4YXNMY1dNRXNRWkRTY1VRVU1IRy9sQTdt?=
+ =?utf-8?B?eXBGdzlRcVN4N1NsZm43dUFvMFdGT25TMmoyVEJSOWpDTWdmQXpxV3pZVUVF?=
+ =?utf-8?B?eDBaT01xeGlNenFhcTY0UnBGZnA1bExtRmVqMS9BcTdaencxV0lXUTVkbkVB?=
+ =?utf-8?B?L0N6Wnl2bWN3TnZ3RU41UTBsRlNjZHIwNElQMFc3SEFhSk5KQjF2cVJ4aUtB?=
+ =?utf-8?B?eHcyaUd1NFpBVktPazV6cHRncXFyN3J1bndDWlJLdXd1d2hmSm1jaDRUaEhM?=
+ =?utf-8?B?NnFWQ3pEeUY0bC9jNFMxUFY1YlVZNlhQNlE2b245WTNNb2U4dWpJR0IxQ1E4?=
+ =?utf-8?B?UjdzQlZmdlgzWmJCamdXSHpoNHdjRUlSOWRQbHk0WjJHZTdhZllkcjdiemxm?=
+ =?utf-8?B?VjF2dG9YQWViQWpNN1BkR0IxUTZFeGVXWVBqeisvWU9pN1p5SXRSc1BQUG5j?=
+ =?utf-8?B?bHhBSnZabDVoa3RpVTFMOHEySnRycU0wWUlYMlBpc3JMSEFGWEdXUjkxTG5C?=
+ =?utf-8?B?d3F5d3VZVDdrb0txOTJKbFhPNVd2V0ZCWDl1SW0rZ0s0czUzTkJLdEFtUWg2?=
+ =?utf-8?B?RU9Ja2xPZ0RWQVFRVkxLRUNqYXMwTTduMVhMc1VVS014MUszclhBeEJGVHU5?=
+ =?utf-8?B?TmRoc1dDSlM2M3NNR0J5RVgwU3dMaHZCdEdlLzhkaXVXNy9LQkF1U0lGTHk4?=
+ =?utf-8?B?NHlhOG9BVkh0V0tHcnQ4Y1VxcGVKdjhZNXFHeEJZbDNpQUlKZFZkTndvZDlS?=
+ =?utf-8?B?L3p3YThORDFFa2I2c2dCYlRFZjV5NUtGVUxJQjJWMWFkcDdJcnJoczFQUEZM?=
+ =?utf-8?B?SElFOVh0eG85RWdSd1RaRU84TFhSMjJzbG1PdEsvOWhLNE5ZUEk0N3g4bkRa?=
+ =?utf-8?B?OXdldXJpK1N5ejhSY2Evd3N2dW42R004UmpXV09xT1JHdWF4aE94STdKRE12?=
+ =?utf-8?B?RXRvM3R3Si9uckh1L2QwT2xqT04vSWVjY1FZU1BpWmFSdS82b2IrTjJQMGdP?=
+ =?utf-8?B?NzFxNHc3NDdlZWZCRUJUWDA4YVZlQjgyS0VXby9YTXpTTkJ3TUZ4L0ZvU1Bt?=
+ =?utf-8?B?dFlGVUpKUVliUVNYTGprZE9FY0NPbWhybWJjZ2syQmR4WnJzY1UxVWtnPT0=?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(366016)(376014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NFp6QWU3Z1VhZDFETG5ZMVRmUmVpQTBQaktQSjNWT294L2VVRy9qYURyZmhF?=
- =?utf-8?B?YVVLbnd1VW04eEFIL05CdDlOand2VnVBWGwvN1BQTHFzZHBzMDRFZ0svdHZt?=
- =?utf-8?B?elJkRjczMHUxdnUvVUJRcWtybFVyWnlrblVHb2svZjc2RFZlZkdud2MweXVU?=
- =?utf-8?B?ZEZIOEhGMEM3ZllZcWlFY2RHNEtOWWZza1l5bU4vK25sbTNkZldmTEd6UnUr?=
- =?utf-8?B?bWRCVHJkRTJCa1NqNDZuVkt5MFY1ajVOU1FaeEtwY1ZSRXN5R1JzcXNtcHow?=
- =?utf-8?B?YjErenBZcHlUcllaRUh2bWFIcUx5bWJwSXIxKzA2VytUT29kNi9QVnNtT01r?=
- =?utf-8?B?NDJRd1Rna2piQnl5TWU5WWs1UlpqdXBQTFNvbVJGYkNWbzVMTWlnMmR2amJI?=
- =?utf-8?B?UVh1aUJLdnJrVS9MVTdXTkhpa2ZLenJWN2ZZMk5zQVpHdGcxQWE1STZDdWth?=
- =?utf-8?B?YXR3Uk9MUzNKU0ZlMlpnZ2cvaTJFNVNIbEhMWkhtcEFVNFJSMjdJWUk4MmNv?=
- =?utf-8?B?STRuRWxjSmg2RTdZYmY1eDQ0RUdpNFVOSTQzUHFEYW8vV0kyaDl1L3BtNjFM?=
- =?utf-8?B?NUJudDNMdjBQL2k3YlVwL0toQ3lHdG1QUng0UU1pdnN5OTRRbGkzeEdFWnVN?=
- =?utf-8?B?cHJyM0JvcFp2SktzMUd3RE1iNUpTWnAzejdMbHMzM3RGL1MyaDR1bmxLU1ZM?=
- =?utf-8?B?clNRNm1hdy9IUnJ1RENCRFc5cTRzZ1FuYnBMRkkrZFlVZkNVMlkzOEthMlpG?=
- =?utf-8?B?bWhsK29qOTA0NzBlaEtVZDROT0cvWXZ0Z1hGbllrVGdnY3J5ZllueHJaNklr?=
- =?utf-8?B?U21NNXhBenR6RmJia2JUcFVCSlBoaHRxazZzNmk1YTBlV3VNbVY1NndXc3Bj?=
- =?utf-8?B?bTYxRmxPSXBXY1dtLyt6OVdrZ2puWjQwSDdIdFNHVFJ0NUs2M1l0U0hmeVdG?=
- =?utf-8?B?bzRYeWFEVlk3RHVHQVk4T0VmektIZitORzZxZHRiZGk5TDJHUEMrRStvS2Fl?=
- =?utf-8?B?bURzY0dXZTNqcXlxeEhiMEtGcVk2dklWUlJQVkVGdlJrTzNOQkp5bTRPL1pu?=
- =?utf-8?B?SGtBbktSbWo4em5DcEV5cGVDQkRPTEh6YlRISVRRcG92N2xzL0UyVi9GWk5U?=
- =?utf-8?B?ZHY2NTdNT0xmcjRPUm9jcmZ4U01GQ0JNUWE0RXRUbWFLMWxyN1pkWEJCVFJG?=
- =?utf-8?B?N3ZHV28vOC9ibnI0eDVtYnBnellVcTUrczFZeW1xeU1OTmhobkkvbzZlWFFD?=
- =?utf-8?B?R0RCRUd5Y2NrWWJtcmVack9xR3FLR1BKWDRQbmhaTUFGeU8vNEpySW1kUkRF?=
- =?utf-8?B?VmdNRFhTb2REZThUc21wUk92QTJNcW9ZWjk3cjdERUp4cGdVcEFSYjZBUkpL?=
- =?utf-8?B?QlFncTBNNTFmYi91RHBjalN4dkR3YWFXTTNRcVdWeW4zOEk3RTBqTFNSZFZH?=
- =?utf-8?B?UVZGd3J4SW5NbW0yZVdZT3paOWJHbnVYRVNIYklZSGh1cS85eE1uVG95Y0Jt?=
- =?utf-8?B?NEpyQzBYNTg2ZGZ5aEF5VlhiV0Rqclc0VkRpQnZtcDhOemtiNGZoeWdleFhI?=
- =?utf-8?B?a1k1NlN5UTIzaWs5ZGFlN1ZublpYS0EySC9xVUVQRU4zaU1xczdVTlQ0Sm1C?=
- =?utf-8?B?WEtNZWxMUEN5b1pvOERSYy92Tkp6Mm9YNm5UM1ZaaUpzRjlCZGZydWF1UTVj?=
- =?utf-8?B?TmVsVU9PUnlHUkszaUEyK2txbU1EMVZoZTBlK2hDTWlQU1hsMFp5SFBiVjhj?=
- =?utf-8?B?OEtubUpCUEZnRGt4V0RPK0ZxQ0dEUVBtSFd0RHg1RzQxeTkyVW0vZjBkTno0?=
- =?utf-8?B?aWZvNXdDRm5xelR2dmZWSXY1dTFUeEUrU1BHSVZ4cUkyQmFody9sdnVMb1Js?=
- =?utf-8?B?bVNhdmM4cmRWNk5KQVNJU2lIblE0VmJwajVaelNINmY3WlV5dDhtbHcwUVIz?=
- =?utf-8?B?Zm4xKzFIR25ZRThxS2R0UWZmR3dnZVpEVmNZU2xzanBHRnQzMGplYldycGpJ?=
- =?utf-8?B?MXNqK2ZsNisxS1hoYk9BV0Y2R3AwQW54NTgrMUtlZzEyTzhyeTJRbkthenJr?=
- =?utf-8?B?NWt5OUpaSk1Eb21hNVh0cVVXdDZ3dkdicFFITWRpeG9kRi9MQm5icTRBdExB?=
- =?utf-8?Q?ptjAUNvHCZvKzocNBSWP7jJgC?=
+	=?utf-8?B?Tkc1VzJhZW5tbUFTRGhVQU9uMm1STWIwYzhBNWJ2bVFjMVRnTEhVQ3FzaHJP?=
+ =?utf-8?B?Z2tKNXpWaFozZ1RQdzBPUis2ZmJlRE9UZW5pMEJwdUtheml3NXN0dnZENWND?=
+ =?utf-8?B?TWlhb2pYUk0zSXdmVzE1Ny9XZ3Jwd1pVRWFpYmhyY3V6SmR0c1hOZmN2N2Nq?=
+ =?utf-8?B?ZEp3UDVYT0hjYStxNzV1OG9XblY3ZGlNbnVpclhPTGlRRmxkTjNTaml4NE5t?=
+ =?utf-8?B?MStiOG1EUm5SRm16clBMYzFOb0V2dlZjRmU0YUlpMUJTOEdENjVIWkNSTmlh?=
+ =?utf-8?B?a0ZJd2JHa0lWOEd5UFJvZkd6cUZNbWNZRWxwaHpqYW5PK3BEWHpMZ3lBQ2gz?=
+ =?utf-8?B?T3NNcCtjVEY4VGVMcnAvUGgraUxJbHF0SURvVUU2MElPK1pEN2JWMXZzbkVw?=
+ =?utf-8?B?Mk8ybHlFNHIzVXdVcWxjMy9kc3ErdjZZSmQ0U1VhZGNNWm9KM0xNMjBBSHJm?=
+ =?utf-8?B?TytCQzN2VVFiQXpZMkkvU0d1TWJjSWpZNGtzbE8vNGRXcS9YTkRTa2YrS0NR?=
+ =?utf-8?B?ZC9JcERobWFtNTFUbmdNMWZHc1M4KzN2QllxcGFjT3BmZk83YWhMSEdRSk1q?=
+ =?utf-8?B?U3hDNjNHTGszQnpuQU96eDZ5aXlBQStVUDAybGJkbWtmTFBjMzBENi9BQnNt?=
+ =?utf-8?B?bHdsNGVhanJCeTd0YXRZMXlvVktFN09YOGNjeVgvYlp6eWgybzhZRmV0QUdZ?=
+ =?utf-8?B?eklhNG9zVXQzdFM4ZXkrMW9QQlYxOTVHMDVYMFZFU05DZENDdzdhakRob3Zn?=
+ =?utf-8?B?c2Z5b3lKa1Zibi9xWW9IZFZnTy9JajhLTVF0d0lEN2NnclVrTDV6QXNjYmRy?=
+ =?utf-8?B?cDFPTE56SHpYVS9PT0NsMjlUK1V6TTBjYm5vNW1pSTFob09CQUlGenJnYTA0?=
+ =?utf-8?B?U3lrT1RUYU8wM3FNSWhLbXFhMU9sOHVtbjhLWGh1U3k1N1d3d2dHakhKTXUr?=
+ =?utf-8?B?cm0vVU5LYWRjM0pQN1ZiUzl5MkVSdEdwQVBrbXQ0WC9WY09ZWWpBOUIxTjVl?=
+ =?utf-8?B?RW52QUVaNkNKWjRUZHI2UzJRR29xZldUem8rSTdYcGpJMExQVENaYkdYMUpk?=
+ =?utf-8?B?OUMyVW03eGlvUWV6S05EcDgyeDh0dVh4VitxWkpUOVduRkNwbHlnSWZSN0tZ?=
+ =?utf-8?B?VjlyU1QvSnA3TG5qMEpqMTZlaXFDZU1KRHFRY1hOUkVraHJSRmlUWk9pWTZT?=
+ =?utf-8?B?d3E2N1h3QndKblE2RjdGYWQ3REk3UHF3L0FzamsxTlhGWnRDSHZScCs1WWZj?=
+ =?utf-8?B?WUoxcUJ0YUlOSzBEU0ZoVnpSaGNYbjVJZllibTdsbEd1dVhHTFVFWUpVSDN2?=
+ =?utf-8?B?Q0UxeURCbFZtcXZYOHFLTG1jTUw4Z003TnJsdHdsanhjbFhOcUZ0QjIvU2d6?=
+ =?utf-8?B?amRWQ2dOVHk3WHkrZGgySG5neGdNRm9LVTRqaW5RRGUzMFQ1ckdVZmpIVEZo?=
+ =?utf-8?B?K3VIdFhUV20rL1hGWTdWdzVtTjJ1Zkp5bjR6ZWZqUzRBbHBVTEtaS3VqK3NC?=
+ =?utf-8?B?UHBoVThodThKK0UwQjNFR2ZPQVJpdWlaS1huSTZ4NCs1VnM1L0F5eUhBR2lY?=
+ =?utf-8?B?V0lhL1hYS0t4b2MyWVZPRGU0S3o3UEg0M1B5bWVzZkpZbHc5ZzhFcFl5MWNS?=
+ =?utf-8?B?b3Bhd1VUSS9UaUJweDJoRU9raEpYdWpwOWZ6bGs1b3hqdWduMi9ZT0VhcVkr?=
+ =?utf-8?B?TlZadTcyVk40czJ4bCtjbGNkTTNzdVdFb3pEVU4vbW1kdSttdTdKWXhIeTk0?=
+ =?utf-8?B?R0pCOEh2TTJTT2IwK3R0QWJyY01xSllndHF0bWQxTUdMQzV1UGRBT3lheWUv?=
+ =?utf-8?B?dW5uWW9xUWQ4WG1MenIza3ZUVEdOanF5NlRsdWRtck5IUUFaUkJCTk04MzQx?=
+ =?utf-8?B?TTZub2Q2WnpmNnk5bG9Va0xjN0lvV2RVR3oxMysvWmNzZUU0WU9oY1BtSW5H?=
+ =?utf-8?B?cEl6L0NBbG5xRENWVEhRdzdZTWQydGthT3NqVkMzNCt6VXhYd3NBaDZVbUZk?=
+ =?utf-8?B?N1hyTkNJSVE5dExDeFdTc3NaelB1NWlnRzYydmxEbDRRNzgvL2VVKzJ0eDM1?=
+ =?utf-8?B?M3NRUFZRTy9mZzk2SFZxVExtZ2pWRU5XbEdZajdXODNIRGJJVEpoL1BlbzhI?=
+ =?utf-8?Q?NwKV+ivHATx8NmUTQ4kzt0HvZ?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d67846da-a3a5-47f6-0b2b-08dcecca033e
+X-MS-Exchange-CrossTenant-Network-Message-Id: a19b3ad7-ecb6-497d-9176-08dcecd7b410
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2024 03:32:36.4681
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2024 05:10:36.5996
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: umuoeScust2BuN7nHVstMp8KlJNPChx6TncU4MRN7LiwYXfaZjthlCuaIlZmf207120TuzUB7+FS3mCviSHS2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8009
+X-MS-Exchange-CrossTenant-UserPrincipalName: phQHmXrYi5+GyunkcqCsJGU78Pxqvh2IjDLO7XgS+WkajTSoxLgNDIhfE2kgkcl8fYZGAj3B/8kySe6nTzqZ9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8973
 
 
 
-On 10/14/2024 10:21 PM, Paul E. McKenney wrote:
-> On Mon, Oct 14, 2024 at 02:42:33PM +0530, Neeraj Upadhyay wrote:
->> On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
->>> Currently, there are only two flavors of readers, normal and NMI-safe.
->>> Very straightforward state updates suffice to check for erroneous
->>> mixing of reader flavors on a given srcu_struct structure.  This commit
->>> upgrades the checking in preparation for the addition of light-weight
->>> (as in memory-barrier-free) readers.
+On 10/15/2024 5:59 AM, Paul E. McKenney wrote:
+> On Mon, Oct 14, 2024 at 09:49:52AM -0700, Paul E. McKenney wrote:
+>> On Mon, Oct 14, 2024 at 02:45:50PM +0530, Neeraj Upadhyay wrote:
+>>> On 10/9/2024 11:37 PM, Paul E. McKenney wrote:
+>>>> This commit changes a few "cpuc" variables to "sdp" to align wiht usage
+>>>> elsewhere.
+>>>>
 >>>
->>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>> Cc: Alexei Starovoitov <ast@kernel.org>
->>> Cc: Andrii Nakryiko <andrii@kernel.org>
->>> Cc: Peter Zijlstra <peterz@infradead.org>
->>> Cc: Kent Overstreet <kent.overstreet@linux.dev>
->>> Cc: <bpf@vger.kernel.org>
->>> ---
->>>  kernel/rcu/srcutree.c | 7 ++++---
->>>  1 file changed, 4 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->>> index 18f2eae5e14bd..abe55777c4335 100644
->>> --- a/kernel/rcu/srcutree.c
->>> +++ b/kernel/rcu/srcutree.c
->>> @@ -462,7 +462,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
->>>  		if (IS_ENABLED(CONFIG_PROVE_RCU))
->>>  			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
->>>  	}
->>> -	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask >> 1)),
->>> +	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
->>>  		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
->>>  	return sum;
->>>  }
->>> @@ -712,8 +712,9 @@ void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
->>>  	sdp = raw_cpu_ptr(ssp->sda);
->>>  	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
->>>  	if (!old_reader_flavor_mask) {
->>> -		WRITE_ONCE(sdp->srcu_reader_flavor, reader_flavor_mask);
->>> -		return;
->>> +		old_reader_flavor_mask = cmpxchg(&sdp->srcu_reader_flavor, 0, reader_flavor_mask);
+>>> s/wiht/with/
 >>
->> This looks to be separate independent fix?
+>> Good eyes!
 > 
-> I would say that it is part of the upgrade.  The old logic worked if there
-> are only two flavors, but the cmpxchg() is required for more than two.
+> And fixed.
+> >>> This commit is doing a lot more than renaming "cpuc".
+>>
+>> Indeed, it does look like I forgot to commit between two changes.
+>>
+>> It looks like this commit log goes with the changes to the
+>> functions srcu_readers_lock_idx(), srcu_readers_unlock_idx(), and
+>> srcu_readers_active().  With the exception of the change from "NMI-safe"
+>> to "reader flavors in the WARN_ONCE() string in srcu_readers_unlock_idx().
+>>
+>> How would you suggest that I split up the non-s/cpuc/sdp/ changes?
+> 
+> As a first step, I split it three ways, as you can see on the updated "dev"
+> branch in the -rcu tree.
+> 
+> Thoughts?
 > 
 
-Ok, I need to check more to understand why it is not required when we
-have only two flavors.
+Split looks good to me!
 
 
 - Neeraj
 
 > 							Thanx, Paul
 > 
->> - Neeraj
->>
->>> +		if (!old_reader_flavor_mask)
->>> +			return;
->>>  	}
->>>  	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
->>>  }
->>
+>>> - Neeraj
+>>>
+>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>>> Cc: Alexei Starovoitov <ast@kernel.org>
+>>>> Cc: Andrii Nakryiko <andrii@kernel.org>
+>>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>>> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+>>>> Cc: <bpf@vger.kernel.org>
+>>>> ---
+>>>>  include/linux/srcu.h     | 35 ++++++++++++++++++----------------
+>>>>  include/linux/srcutree.h |  4 ++++
+>>>>  kernel/rcu/srcutree.c    | 41 ++++++++++++++++++++--------------------
+>>>>  3 files changed, 44 insertions(+), 36 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+>>>> index 06728ef6f32a4..84daaa33ea0ab 100644
+>>>> --- a/include/linux/srcu.h
+>>>> +++ b/include/linux/srcu.h
+>>>> @@ -176,10 +176,6 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+>>>>  
+>>>>  #endif /* #else #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+>>>>  
+>>>> -#define SRCU_NMI_UNKNOWN	0x0
+>>>> -#define SRCU_NMI_UNSAFE		0x1
+>>>> -#define SRCU_NMI_SAFE		0x2
+>>>> -
+>>>>  #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_TREE_SRCU)
+>>>>  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor);
+>>>>  #else
+>>>> @@ -235,16 +231,19 @@ static inline void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flav
+>>>>   * a mutex that is held elsewhere while calling synchronize_srcu() or
+>>>>   * synchronize_srcu_expedited().
+>>>>   *
+>>>> - * Note that srcu_read_lock() and the matching srcu_read_unlock() must
+>>>> - * occur in the same context, for example, it is illegal to invoke
+>>>> - * srcu_read_unlock() in an irq handler if the matching srcu_read_lock()
+>>>> - * was invoked in process context.
+>>>> + * The return value from srcu_read_lock() must be passed unaltered
+>>>> + * to the matching srcu_read_unlock().  Note that srcu_read_lock() and
+>>>> + * the matching srcu_read_unlock() must occur in the same context, for
+>>>> + * example, it is illegal to invoke srcu_read_unlock() in an irq handler
+>>>> + * if the matching srcu_read_lock() was invoked in process context.  Or,
+>>>> + * for that matter to invoke srcu_read_unlock() from one task and the
+>>>> + * matching srcu_read_lock() from another.
+>>>>   */
+>>>>  static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+>>>>  {
+>>>>  	int retval;
+>>>>  
+>>>> -	srcu_check_read_flavor(ssp, false);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+>>>>  	retval = __srcu_read_lock(ssp);
+>>>>  	srcu_lock_acquire(&ssp->dep_map);
+>>>>  	return retval;
+>>>> @@ -256,12 +255,16 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+>>>>   *
+>>>>   * Enter an SRCU read-side critical section, but in an NMI-safe manner.
+>>>>   * See srcu_read_lock() for more information.
+>>>> + *
+>>>> + * If srcu_read_lock_nmisafe() is ever used on an srcu_struct structure,
+>>>> + * then none of the other flavors may be used, whether before, during,
+>>>> + * or after.
+>>>>   */
+>>>>  static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp)
+>>>>  {
+>>>>  	int retval;
+>>>>  
+>>>> -	srcu_check_read_flavor(ssp, true);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
+>>>>  	retval = __srcu_read_lock_nmisafe(ssp);
+>>>>  	rcu_try_lock_acquire(&ssp->dep_map);
+>>>>  	return retval;
+>>>> @@ -273,7 +276,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
+>>>>  {
+>>>>  	int retval;
+>>>>  
+>>>> -	srcu_check_read_flavor(ssp, false);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+>>>>  	retval = __srcu_read_lock(ssp);
+>>>>  	return retval;
+>>>>  }
+>>>> @@ -302,7 +305,7 @@ srcu_read_lock_notrace(struct srcu_struct *ssp) __acquires(ssp)
+>>>>  static inline int srcu_down_read(struct srcu_struct *ssp) __acquires(ssp)
+>>>>  {
+>>>>  	WARN_ON_ONCE(in_nmi());
+>>>> -	srcu_check_read_flavor(ssp, false);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+>>>>  	return __srcu_read_lock(ssp);
+>>>>  }
+>>>>  
+>>>> @@ -317,7 +320,7 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
+>>>>  	__releases(ssp)
+>>>>  {
+>>>>  	WARN_ON_ONCE(idx & ~0x1);
+>>>> -	srcu_check_read_flavor(ssp, false);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+>>>>  	srcu_lock_release(&ssp->dep_map);
+>>>>  	__srcu_read_unlock(ssp, idx);
+>>>>  }
+>>>> @@ -333,7 +336,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+>>>>  	__releases(ssp)
+>>>>  {
+>>>>  	WARN_ON_ONCE(idx & ~0x1);
+>>>> -	srcu_check_read_flavor(ssp, true);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NMI);
+>>>>  	rcu_lock_release(&ssp->dep_map);
+>>>>  	__srcu_read_unlock_nmisafe(ssp, idx);
+>>>>  }
+>>>> @@ -342,7 +345,7 @@ static inline void srcu_read_unlock_nmisafe(struct srcu_struct *ssp, int idx)
+>>>>  static inline notrace void
+>>>>  srcu_read_unlock_notrace(struct srcu_struct *ssp, int idx) __releases(ssp)
+>>>>  {
+>>>> -	srcu_check_read_flavor(ssp, false);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+>>>>  	__srcu_read_unlock(ssp, idx);
+>>>>  }
+>>>>  
+>>>> @@ -359,7 +362,7 @@ static inline void srcu_up_read(struct srcu_struct *ssp, int idx)
+>>>>  {
+>>>>  	WARN_ON_ONCE(idx & ~0x1);
+>>>>  	WARN_ON_ONCE(in_nmi());
+>>>> -	srcu_check_read_flavor(ssp, false);
+>>>> +	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_NORMAL);
+>>>>  	__srcu_read_unlock(ssp, idx);
+>>>>  }
+>>>>  
+>>>> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+>>>> index ab7d8d215b84b..79ad809c7f035 100644
+>>>> --- a/include/linux/srcutree.h
+>>>> +++ b/include/linux/srcutree.h
+>>>> @@ -43,6 +43,10 @@ struct srcu_data {
+>>>>  	struct srcu_struct *ssp;
+>>>>  };
+>>>>  
+>>>> +/* Values for ->srcu_reader_flavor. */
+>>>> +#define SRCU_READ_FLAVOR_NORMAL	0x1		// srcu_read_lock().
+>>>> +#define SRCU_READ_FLAVOR_NMI	0x2		// srcu_read_lock_nmisafe().
+>>>> +
+>>>>  /*
+>>>>   * Node in SRCU combining tree, similar in function to rcu_data.
+>>>>   */
+>>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>>>> index abe55777c4335..4c51be484b48a 100644
+>>>> --- a/kernel/rcu/srcutree.c
+>>>> +++ b/kernel/rcu/srcutree.c
+>>>> @@ -438,9 +438,9 @@ static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
+>>>>  	unsigned long sum = 0;
+>>>>  
+>>>>  	for_each_possible_cpu(cpu) {
+>>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+>>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+>>>>  
+>>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[idx]);
+>>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
+>>>>  	}
+>>>>  	return sum;
+>>>>  }
+>>>> @@ -456,14 +456,14 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
+>>>>  	unsigned long sum = 0;
+>>>>  
+>>>>  	for_each_possible_cpu(cpu) {
+>>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+>>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+>>>>  
+>>>> -		sum += atomic_long_read(&cpuc->srcu_unlock_count[idx]);
+>>>> +		sum += atomic_long_read(&sdp->srcu_unlock_count[idx]);
+>>>>  		if (IS_ENABLED(CONFIG_PROVE_RCU))
+>>>> -			mask = mask | READ_ONCE(cpuc->srcu_reader_flavor);
+>>>> +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
+>>>>  	}
+>>>>  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
+>>>> -		  "Mixed NMI-safe readers for srcu_struct at %ps.\n", ssp);
+>>>> +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
+>>>>  	return sum;
+>>>>  }
+>>>>  
+>>>> @@ -564,12 +564,12 @@ static bool srcu_readers_active(struct srcu_struct *ssp)
+>>>>  	unsigned long sum = 0;
+>>>>  
+>>>>  	for_each_possible_cpu(cpu) {
+>>>> -		struct srcu_data *cpuc = per_cpu_ptr(ssp->sda, cpu);
+>>>> +		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+>>>>  
+>>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[0]);
+>>>> -		sum += atomic_long_read(&cpuc->srcu_lock_count[1]);
+>>>> -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[0]);
+>>>> -		sum -= atomic_long_read(&cpuc->srcu_unlock_count[1]);
+>>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[0]);
+>>>> +		sum += atomic_long_read(&sdp->srcu_lock_count[1]);
+>>>> +		sum -= atomic_long_read(&sdp->srcu_unlock_count[0]);
+>>>> +		sum -= atomic_long_read(&sdp->srcu_unlock_count[1]);
+>>>>  	}
+>>>>  	return sum;
+>>>>  }
+>>>> @@ -703,20 +703,21 @@ EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
+>>>>   */
+>>>>  void srcu_check_read_flavor(struct srcu_struct *ssp, int read_flavor)
+>>>>  {
+>>>> -	int reader_flavor_mask = 1 << read_flavor;
+>>>> -	int old_reader_flavor_mask;
+>>>> +	int old_read_flavor;
+>>>>  	struct srcu_data *sdp;
+>>>>  
+>>>> -	/* NMI-unsafe use in NMI is a bad sign */
+>>>> -	WARN_ON_ONCE(!read_flavor && in_nmi());
+>>>> +	/* NMI-unsafe use in NMI is a bad sign, as is multi-bit read_flavor values. */
+>>>> +	WARN_ON_ONCE((read_flavor != SRCU_READ_FLAVOR_NMI) && in_nmi());
+>>>> +	WARN_ON_ONCE(read_flavor & (read_flavor - 1));
+>>>> +
+>>>>  	sdp = raw_cpu_ptr(ssp->sda);
+>>>> -	old_reader_flavor_mask = READ_ONCE(sdp->srcu_reader_flavor);
+>>>> -	if (!old_reader_flavor_mask) {
+>>>> -		old_reader_flavor_mask = cmpxchg(&sdp->srcu_reader_flavor, 0, reader_flavor_mask);
+>>>> -		if (!old_reader_flavor_mask)
+>>>> +	old_read_flavor = READ_ONCE(sdp->srcu_reader_flavor);
+>>>> +	if (!old_read_flavor) {
+>>>> +		old_read_flavor = cmpxchg(&sdp->srcu_reader_flavor, 0, read_flavor);
+>>>> +		if (!old_read_flavor)
+>>>>  			return;
+>>>>  	}
+>>>> -	WARN_ONCE(old_reader_flavor_mask != reader_flavor_mask, "CPU %d old state %d new state %d\n", sdp->cpu, old_reader_flavor_mask, reader_flavor_mask);
+>>>> +	WARN_ONCE(old_read_flavor != read_flavor, "CPU %d old state %d new state %d\n", sdp->cpu, old_read_flavor, read_flavor);
+>>>>  }
+>>>>  EXPORT_SYMBOL_GPL(srcu_check_read_flavor);
+>>>>  #endif /* CONFIG_PROVE_RCU */
+>>>
