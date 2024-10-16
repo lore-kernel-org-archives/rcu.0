@@ -1,86 +1,74 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9485C205E23;
-	Wed, 16 Oct 2024 16:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC5245008;
+	Wed, 16 Oct 2024 16:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729095156; cv=none; b=FOJgy2dq3lAvuK8jkucdal/vu9UjBojNwiMiC99a9rM3W3W9gGX9TkXwHZ7Fmro1ilzSD7aeSownhK2edR0ipaNnD621ykG51KfxRS8OBikCM6XWBWmRxlYuilzKGM7hYCzAXudm8nqXzY2DnFu7+LPRH32MJwUiXvDKOLEbVjw=
+	t=1729095532; cv=none; b=r0zixpxFQxFlR9sdxaC4mpQUA76mVzaBzobM6QSzXx9ojEMzFBpDO0YqHKstaf9W/Gryzgtzv7XdoSAC3nbN9fdMYhEFeuZHwMip6Zi9qASAWUh5LzTEfaZnZMzokWdZRiO4AWtwSweoAtJ4NxyjSD47eLRqwmV6LO+QxU9PzQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729095156; c=relaxed/simple;
-	bh=/kdo8FDR22c+8gTYCEWztNfSfN4bRIUDHgvEhgdZI5c=;
+	s=arc-20240116; t=1729095532; c=relaxed/simple;
+	bh=aBIvETqKl94KeNJUMmTeq/D8trRXd8B8NutvTcC+c/Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uNwl4NzdQdyXg3Q79JxkdWzSzwTbmRPFlbHqx5UoRFu4hO+ntP/034ACZPh5i14Oacn7iqQmZVNzVpwhLbWpDU6h5ka05J+cuKHp9aJpRwRCv5fIthwRgGNVPwaZxTRm05qOpHIsJCjs4OENfABFr/dkN2A2azM4y/jWEDctbNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C3bfjRKc; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=PGM1v2teCBQysC35elDfCizW1YuHIyT3t6uDX7zxnR0JlnK/prGQub2cAy6KtuEXinoFhKLsBdo3MyKh/EIGDgReHKGBrfeqD+ud4pWg606EMIL/S9EZfsbXNfa32v0btDr5OVhFT9YbEDmbuTus/HUxLD+97Bf9ycgTMduukrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rnhezzg/; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C3bfjRKc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FA74C4CECE;
-	Wed, 16 Oct 2024 16:12:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rnhezzg/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 704E7C4CEC5;
+	Wed, 16 Oct 2024 16:18:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729095156;
-	bh=/kdo8FDR22c+8gTYCEWztNfSfN4bRIUDHgvEhgdZI5c=;
+	s=k20201202; t=1729095532;
+	bh=aBIvETqKl94KeNJUMmTeq/D8trRXd8B8NutvTcC+c/Y=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=C3bfjRKcJPQLjFJvsNgHaB8UUDnRw/cy5yHPnAl8g7ESJln1K2SxgdcOPOWrsUFOz
-	 1h7wyCIeP7U5iShfhe2dJCGf3S3cz/c8zA083NEEFrHKPw7MoAyrlC2WYtnMaxi6GT
-	 ZR5mjHyMumC3LfA8I+9hg9G2Zjve7mWPifWlPiJiGGBjzBPLOqtR3r39wgs2L0zicc
-	 8bkGSIgTDUIw6lG2r25A3bS3eyLDW1yqtKyvjFCH0Khv79qaSw14WfCcwasU/jBZe4
-	 Z2oe8Je9UwJPWpai68/+oYjJXyQuC2epF7BX9NrNofXS/ZONglmj6x6LioTCkn98Nd
-	 zorvdZUtINHAg==
+	b=rnhezzg/yDnFSvVcTi+mFsfp1uwazV66KxR/QLGKzwcTO8+Xl5UuUhHXPf/k7TZdW
+	 XOX02FDLzoNE2EvOsg/4Cryw/qqPUHQjnO9fOQqE7digDrjthNmGL8JeUcy7N1suJC
+	 HyHH8QFfVvXUiyt1vzKa1PKO0R4AEBpLdo/jCgr6vOmzk73kl8gSOZH6QyPytHlgku
+	 160W5K09id2DNFCz8FA6e4PcI3SuDD709b5EVFWpJOzWl3JpvK48F4ouSF5kudvbD7
+	 iD1k1iZBwpXDsieBWKxs4nB3xYgfb5aPJ6ClzrA1jva+T9DnUFlZl9FA+gSKpaKt9T
+	 DRa5jQKdZGIOg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E1DD1CE0DCA; Wed, 16 Oct 2024 09:12:35 -0700 (PDT)
-Date: Wed, 16 Oct 2024 09:12:35 -0700
+	id 1A6AACE0DCA; Wed, 16 Oct 2024 09:18:52 -0700 (PDT)
+Date: Wed, 16 Oct 2024 09:18:52 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: kernel test robot <oliver.sang@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [peterz-queue:sched/lazy] [sched, x86]  74d850cd4c:
- WARNING:at_kernel/rcu/rcutorture.c:#rcu_torture_stats_print[rcutorture]
-Message-ID: <b9d0af7f-0b1f-4f55-87a6-f64124f898b8@paulmck-laptop>
+To: frederic@kernel.org, rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH v2 rcu 0/3] RCU CPU stall-warning changes for v6.13
+Message-ID: <92193018-8624-495e-a685-320119f78db1@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <202410151544.7d2292c6-lkp@intel.com>
- <20241016154048.sdiJ85Zc@linutronix.de>
+References: <fb0b7a92-d371-4510-80c4-25a57f2c4f3d@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241016154048.sdiJ85Zc@linutronix.de>
+In-Reply-To: <fb0b7a92-d371-4510-80c4-25a57f2c4f3d@paulmck-laptop>
 
-On Wed, Oct 16, 2024 at 05:40:48PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2024-10-15 15:47:20 [+0800], kernel test robot wrote:
-> > Hello,
-> Hi,
-> 
-> it took me a while to reproduce this because it does not trigger without
-> the ltp userland and this is not downloaded properly so I had to
-> workaround it. However…
-> 
-> > [   98.006999][  T543] busted-torture: rtc: 00000000639e821e ver: 6796 tfle: 0 rta: 6796 rtaf: 0 rtf: 6787 rtmbe: 1 rtmbkf: 0/0 rtbe: 0 rtbke: 0 rtbf: 0 rtb: 0 nt: 89 barrier: 0/0:0 read-exits: 64 nocb-toggles: 0:0
-> > [   98.017386][  T543] busted-torture: !!! 
-> > [   98.017662][  T543] ------------[ cut here ]------------
-> > [   98.019330][  T543] WARNING: CPU: 0 PID: 543 at kernel/rcu/rcutorture.c:2258 rcu_torture_stats_print+0x24c/0x610 [rcutorture]
-> > [   98.021831][  T543] Modules linked in: rcutorture torture
-> …
-> > [   98.237025][  T543] ------------[ cut here ]------------
-> > [   98.238052][  T543] WARNING: CPU: 0 PID: 543 at kernel/rcu/rcutorture.c:2263 rcu_torture_stats_print+0x373/0x610 [rcutorture]
-> > [   98.240000][  T543] Modules linked in: rcutorture torture
-> …
-> 
-> It took me a while to figure out that this test is using
-> rcu_busted_torture_deferred_free() which in turn invokes the callback
-> before the grace period. Buh.
-> So it looks like LAZY preempt triggers this more reliably than the
-> normal preempt version…
+Hello!
 
-Agreed!
+This series contains RCU CPU stall-warning changes for v6.13:
 
-Please don't run any rcutorture scenario whose name contains "BUSTED"
-or "busted" unless you are trying to test rcutorture's ability to find
-broken RCU implementations.
+1.	Delete unused rcu_gp_might_be_stalled() function.
 
-							Thanx, Paul
+2.	Stop stall warning from dumping stacks if grace period ends.
+
+3.	Finer-grained grace-period-end checks in rcu_dump_cpu_stacks().
+
+Changes since v1:
+
+o	Add data_race() to grace-period sequence-number access per
+	feedback from Joel Fernandes.
+
+o	Add Reviewed-by tags.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcutiny.h |    1 -
+ b/include/linux/rcutree.h |    1 -
+ b/kernel/rcu/tree_stall.h |   30 ------------------------------
+ kernel/rcu/tree_stall.h   |   35 ++++++++++++++++++++++-------------
+ 4 files changed, 22 insertions(+), 45 deletions(-)
