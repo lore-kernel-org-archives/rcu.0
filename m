@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD28420F5AA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2DD20F5CB;
 	Wed, 16 Oct 2024 16:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729095573; cv=none; b=X6o9C53a+5rH6Ua4NaeqjYoPsRC9iaorYphILQFC2FubTgwuQsUEh+72dlZsQwzK6iHDHRIOlaJI068c3UC7rY88lRIXsTklEA5lznqPEdi5Kx80RjqSWm7XhQK53jJvQP/4N/OmvnobT0MJXblM0kpfBtGctAhO1G4yWowbOfc=
+	t=1729095573; cv=none; b=m7V0byPOlvqx2uht4xyCBuf+n8Mdkmgd8Uq9NCy8KI15HhDUWSbg78MwqvYw4AKRabyyyNzOweKXWsFPr3ACsQHe86jBgSgdBd8KR/nEGieux5rSv03eeLIhhqwv0fJnVNWiwTuP7yt+/GJisuyD0Qi3QxR6lOTrjWQCyRwOvuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1729095573; c=relaxed/simple;
-	bh=b/Ydri4xRhgAwhSosvwIWIB9nRy/kHsOi/HMFdJm+Qk=;
+	bh=z6RZfS0L73tloDDW1M9QJxcVucFxOSoR9JcTaLK3X34=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uqiC2Ceh7m+rWBt9Mf8l0eGV9rRvQO5BVJYRr6okVDM8cuOQwqlK1t82+pdvO4IQrj71oxtW1HygpC26w9dYPR9KBiiAV198xzCwyNjgqXpabkGwViOsX/aJH+DyjxS4rfhJoZa23TO81KI39H0C3RcEER+HOWTMkBuFHrKK63s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b/+H1O2n; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=lmtCfqtVYcvCxYa05i64xgwRO6kIF0iTnOcIfl74pK+AUXzpZyRtMNTXhwyCtLiUlvsJjIio+TlFBUsE8+QxesXY/5syqs2PeLEHed0eIrDyYVTvjzESvYwqWdRck8aGHZNSZs+c3MRNDybBojpE3U38Zffd9njaPSmWS7VJzlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b6kK4pqS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b/+H1O2n"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50B02C4CED0;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b6kK4pqS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C174C4CEC5;
 	Wed, 16 Oct 2024 16:19:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1729095573;
-	bh=b/Ydri4xRhgAwhSosvwIWIB9nRy/kHsOi/HMFdJm+Qk=;
+	bh=z6RZfS0L73tloDDW1M9QJxcVucFxOSoR9JcTaLK3X34=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b/+H1O2nyM7yqxyhnNoIRnVbd3KlUXN5OdWSyBpJdU+tcdrBcP3H8e25dNWN5dxsU
-	 WehNWhQrCXxTq7eWm96j8teeXaPSQxmmjHwAj9BrLqf9aXwttXwozD/66Uywfir4HM
-	 2KGdkK5/BGWDYyYcCqUpvsz++LLnFcNg2m9XDr8Z35tdWefkK7zKlk1YXrGThlyKgl
-	 Es8UE4/rd6WTfPIea9RaRgNo0oIn0i9CJJc6zD7Gacz3f5Ln6FVdLKthfqPcfw9qTc
-	 OGFP/4J9Ak9APcpNAssJfObx1zgiIoUVxb/I6hEm8OYYzDHRoQpSABpCRWvFwSwZF/
-	 dDBda1fD3S0kQ==
+	b=b6kK4pqSXG4sraAbFVFg4bOELtahxfJ4i2b71TQanKI1Yh7BGWdK61Z5xWOur7MdL
+	 4vVz0tijWwYtW5+xHVsiFdhmrIepVg1DzxhCjt2AmNXd1V9NLTwd8h+aFjqPpnmDgL
+	 e0yMkJJFFy0HvpbRokTRRn2QlmOlu9n+0lB0JdfONnKffPz6TwFti9BzDlsj3SeKLC
+	 Bk9rV4deSfYtC73nF4h4Y2Jd/xafKKvR//6QiEtUJYQX91FcLbMEMRR15ouF72zuoo
+	 cu7Pq9CMoftmXg/893F4NTEaKI0EhebjErfPeQlzcSpGx56bMQrwlP71AK/UdQtacy
+	 BnfQIwGx98/lA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id EBDFFCE0F9A; Wed, 16 Oct 2024 09:19:32 -0700 (PDT)
+	id E6291CE0DCA; Wed, 16 Oct 2024 09:19:32 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: frederic@kernel.org,
 	rcu@vger.kernel.org
@@ -36,9 +36,9 @@ Cc: linux-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH v2 rcu 3/3] rcu: Finer-grained grace-period-end checks in rcu_dump_cpu_stacks()
-Date: Wed, 16 Oct 2024 09:19:31 -0700
-Message-Id: <20241016161931.478592-3-paulmck@kernel.org>
+Subject: [PATCH v2 rcu 1/3] rcu: Delete unused rcu_gp_might_be_stalled() function
+Date: Wed, 16 Oct 2024 09:19:29 -0700
+Message-Id: <20241016161931.478592-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <92193018-8624-495e-a685-320119f78db1@paulmck-laptop>
 References: <92193018-8624-495e-a685-320119f78db1@paulmck-laptop>
@@ -50,61 +50,82 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit pushes the grace-period-end checks further down into
-rcu_dump_cpu_stacks(), and also uses lockless checks coupled with
-finer-grained locking.
-
-The result is that the current leaf rcu_node structure's ->lock is
-acquired only if a stack backtrace might be needed from the current CPU,
-and is held across only that CPU's backtrace.  As a result, if there are
-no stalled CPUs associated with a given rcu_node structure, then its
-->lock will not be acquired at all.  On large systems, it is usually
-(though not always) the case that a small number of CPUs are stalling
-the current grace period, which means that the ->lock need be acquired
-only for a small fraction of the rcu_node structures.
+The rcu_gp_might_be_stalled() function is no longer used, so this commit
+removes it.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree_stall.h | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ include/linux/rcutiny.h |  1 -
+ include/linux/rcutree.h |  1 -
+ kernel/rcu/tree_stall.h | 30 ------------------------------
+ 3 files changed, 32 deletions(-)
 
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 0ee270b3f5ed2..fe42315f667fc 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -165,7 +165,6 @@ static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
+ static inline bool rcu_is_watching(void) { return true; }
+ static inline void rcu_momentary_eqs(void) { }
+ static inline void kfree_rcu_scheduler_running(void) { }
+-static inline bool rcu_gp_might_be_stalled(void) { return false; }
+ 
+ /* Avoid RCU read-side critical sections leaking across. */
+ static inline void rcu_all_qs(void) { barrier(); }
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 90a684f94776e..27d86d9127817 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -40,7 +40,6 @@ void kvfree_rcu_barrier(void);
+ void rcu_barrier(void);
+ void rcu_momentary_eqs(void);
+ void kfree_rcu_scheduler_running(void);
+-bool rcu_gp_might_be_stalled(void);
+ 
+ struct rcu_gp_oldstate {
+ 	unsigned long rgos_norm;
 diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b530844becf85..8994391b95c76 100644
+index 4432db6d0b99b..d7cdd535e50b1 100644
 --- a/kernel/rcu/tree_stall.h
 +++ b/kernel/rcu/tree_stall.h
-@@ -342,20 +342,24 @@ static void rcu_dump_cpu_stacks(unsigned long gp_seq)
- 	struct rcu_node *rnp;
- 
- 	rcu_for_each_leaf_node(rnp) {
--		if (gp_seq != data_race(rcu_state.gp_seq)) {
--			pr_err("INFO: Stall ended during stack backtracing.\n");
--			return;
--		}
- 		printk_deferred_enter();
--		raw_spin_lock_irqsave_rcu_node(rnp, flags);
--		for_each_leaf_node_possible_cpu(rnp, cpu)
-+		for_each_leaf_node_possible_cpu(rnp, cpu) {
-+			if (gp_seq != data_race(rcu_state.gp_seq)) {
-+				printk_deferred_exit();
-+				pr_err("INFO: Stall ended during stack backtracing.\n");
-+				return;
-+			}
-+			if (!(data_race(rnp->qsmask) & leaf_node_cpu_bit(rnp, cpu)))
-+				continue;
-+			raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 			if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
- 				if (cpu_is_offline(cpu))
- 					pr_err("Offline CPU %d blocking current GP.\n", cpu);
- 				else
- 					dump_cpu_task(cpu);
-+			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 			}
--		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		}
- 		printk_deferred_exit();
- 	}
+@@ -76,36 +76,6 @@ int rcu_jiffies_till_stall_check(void)
  }
+ EXPORT_SYMBOL_GPL(rcu_jiffies_till_stall_check);
+ 
+-/**
+- * rcu_gp_might_be_stalled - Is it likely that the grace period is stalled?
+- *
+- * Returns @true if the current grace period is sufficiently old that
+- * it is reasonable to assume that it might be stalled.  This can be
+- * useful when deciding whether to allocate memory to enable RCU-mediated
+- * freeing on the one hand or just invoking synchronize_rcu() on the other.
+- * The latter is preferable when the grace period is stalled.
+- *
+- * Note that sampling of the .gp_start and .gp_seq fields must be done
+- * carefully to avoid false positives at the beginnings and ends of
+- * grace periods.
+- */
+-bool rcu_gp_might_be_stalled(void)
+-{
+-	unsigned long d = rcu_jiffies_till_stall_check() / RCU_STALL_MIGHT_DIV;
+-	unsigned long j = jiffies;
+-
+-	if (d < RCU_STALL_MIGHT_MIN)
+-		d = RCU_STALL_MIGHT_MIN;
+-	smp_mb(); // jiffies before .gp_seq to avoid false positives.
+-	if (!rcu_gp_in_progress())
+-		return false;
+-	// Long delays at this point avoids false positive, but a delay
+-	// of ULONG_MAX/4 jiffies voids your no-false-positive warranty.
+-	smp_mb(); // .gp_seq before second .gp_start
+-	// And ditto here.
+-	return !time_before(j, READ_ONCE(rcu_state.gp_start) + d);
+-}
+-
+ /* Don't do RCU CPU stall warnings during long sysrq printouts. */
+ void rcu_sysrq_start(void)
+ {
 -- 
 2.40.1
 
