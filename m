@@ -1,213 +1,131 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF2654F95;
-	Wed, 16 Oct 2024 15:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A48454F95;
+	Wed, 16 Oct 2024 15:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729091293; cv=none; b=LeHsnSZWWIURkm/lTRGXCRnBoE6POvq77ai4IIU8H+9eWr2XIv+gu/BexKbDGYz2HbR+koscizfz4LWmXjcSGdhWgh1S5ncXldKKSny+ThlGEScaGQdFwtYV3CWKLWXdZvDygzNAUrGXVIn9578LT3Cj0rEJcO6/vHoKZErhemA=
+	t=1729091932; cv=none; b=qn7Bit5a+9/3Nqn4I2slt2ugUjYK8lmB0HGMKL1/RlX5jao9zWVBeu16QkXWqWq6Ar25cQXVhtNF62YqjNowJfb6F10XY46u5rKSRt9m5RozHGc9ZY9GsGKN0wNaHSqEw/Rc+Y1wfoy4J5ruAPm2mCDDtijm2+kUK4K46V4nld4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729091293; c=relaxed/simple;
-	bh=LFMX6aOf4sbvZcO0BW0FdVsE+TnJkhrN/1S+FnDsSdY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o2FVyxfegjZzlUq7N1Nan36u0w5UY/j4kwTuarYQTtgnnliLihsF9kq4KtuOwYtGwQHnXbX3YRNhrQ1nakKMgkKa3Gh2PfBA89IUuajmEkKF28ZHN7Up/hR56Ubnp0tBifIbrE/6AOnAeGWjmEpCIOyrTPuM6yyPgVMF+t2AOFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jutC7Ve5; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1729091932; c=relaxed/simple;
+	bh=l3gCXwrWZUpT+zYKSIOyGoXfLBBx6Hz9wO/qr1r+1sI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u1nihAg5YAR73PHrh1+tbftmK5jrOs3xS6KmPqjU85lmJfHSsM8iqOfg8TC4N/oUiY6eo6IgtJl2ITB61FDEO0YHfgsbwXyTr29aa71Q0xUWfwSeZU1Mgo1kKuVK+fHN0lhFCDhHRFR8/duPNCiskaZSDShH5JNKsUN/GKzWUHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B5/y6rDn; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jutC7Ve5"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c962c3e97dso4982850a12.0;
-        Wed, 16 Oct 2024 08:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729091290; x=1729696090; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9R0Mxro5aq1p2IlmjvlEWTlfSxkLbXh80rEOstKpdqk=;
-        b=jutC7Ve5upaZ/LjRe/pc/rCGncdaG0/SeR0ySfX6Ox2mwT23kXRPRMJ81zHyUjun37
-         jQNM5z3mlzKV4SZBok6+9CZV8ZpFVp0GQV4eTYfRQvBrn5IYs3zZR/10IkDojzzhcjbU
-         7WF+WkZ5iC8Bjc+HtLL8VnqtsZp+/c7AF2xOko1QR3e4C1Bv2WG4Bo8cLZzl4icVRIe5
-         zMgfnSjkJjmxgLcRUGaSjooEI/ThYzOr7Y74eqi42+9NiCuJo0H7vfkIdwRjOzi4vAie
-         h+sl+5IiVzT63+4YSvZFFWNTmiGVvI0B2Lnj+wr3ZletI3MEWzJiLNb9sEAqmkKj9bVe
-         4OvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729091290; x=1729696090;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9R0Mxro5aq1p2IlmjvlEWTlfSxkLbXh80rEOstKpdqk=;
-        b=Vq+5MSYgUsv37PAsYY9lDv75oUcoDkAUESu9HNjeb1aK7iEKxMxJQZ9kVWpJEO9sVf
-         dT6JAfvZq6WGYiNoESlzk/xpxGPZCGqr67Vqb6Jid0eyvxRyDnnYOxPiCCBLyGOLSPB6
-         Bkfk8HeQgSbPss9H5iFgLDqLaSfHmu2HTPeJ+H9/i8YV42/P/YvMTEAFSAIqpicW66uz
-         aGWp8b1rdTCMXuu7NPfvINc/ktPiYGQ1UIen50zyf3ytIm4T8a/VbOvy4GmB//JrWoSx
-         740ptVPyfcEchTZa3up6JiVC1s8UvOk18RFtt1TkFSV6T5mWvmLnvEN3KRxBphBIZZfU
-         Tpuw==
-X-Forwarded-Encrypted: i=1; AJvYcCUhJwCC3aHQ1qJw0ew3DwuwcXKQ08fu1qzUGZKdCPoNMsI5n07GD+Jv2nQqZQbvC/m5kLkjFchmei4YJVJ3@vger.kernel.org, AJvYcCVVNmeSmXVGOvPSJv1HRE1EbL9EXYus0iBEMRe1QtEvN3BnVNnK9eyCpCL0F3VGgxG8XdY=@vger.kernel.org, AJvYcCXBSVgcexanWCTWU1cKemjDYft8BGlZSt6rkkuq/ScezYMPsCuFEEU06k3Yq+boI4e0fgKG@vger.kernel.org
-X-Gm-Message-State: AOJu0YzghmowakKFwTwjsy1PhUE/lSxPQCpgsLrEQfM7jNfOQNFjmRNO
-	hfKigIjVs4wfmWbwCQG1yeHXoQ/34j6QsEWbDD2wxN4qV+TAdXWWSdmtqeEx3YkNa10aJlnB5ZO
-	wYVwIJab57o1QEvXXWpnI7pXBFjQ=
-X-Google-Smtp-Source: AGHT+IF1U+zudIlW1KBw4ym9LDMi6u1ZDc7h3iZU66bIWFZRg5MRqpidxzHN7eV/h97wUE8QUDdTRTbxFKDDdivRh7c=
-X-Received: by 2002:a05:6402:2714:b0:5c9:7dd9:3eda with SMTP id
- 4fb4d7f45d1cf-5c97dd946f0mr9522311a12.5.1729091289619; Wed, 16 Oct 2024
- 08:08:09 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B5/y6rDn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B823C4CEC5;
+	Wed, 16 Oct 2024 15:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729091932;
+	bh=l3gCXwrWZUpT+zYKSIOyGoXfLBBx6Hz9wO/qr1r+1sI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=B5/y6rDn7QAdgL30YrSQDp1AKqZkqhbUYTOKMDjecolCGDww1N5DIdzuJCjhUjzR1
+	 rf1k2pLLBafG2HWZQVOj29z0AHb/KhIcAF+zLTFRGMjRFu81lRJhF4yXIvYpaItKfO
+	 89VOPjL5NlKjl1v44+b7L7PP0kao99moEHztsaSmyDEaSAXbLyjfEetDHl5tShCWb8
+	 +w6OqX2JhvA5FcGblMJAoA2g1qLnQHeFHUBGLex+VCVkVrldWjw+v9evSdeBJNGZX7
+	 6gjdGOzLm8v3HUCmd+kQZSaefVZkw4Ao+txM7ilw6b1vMNpunz9DX8QocF7c8v8oWW
+	 Gm6AVb5pfBPQg==
+Message-ID: <22df18fd-4db4-4bf6-94e2-5a45aad91680@kernel.org>
+Date: Wed, 16 Oct 2024 17:18:47 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <670cb520.050a0220.4cbc0.0041.GAE@google.com> <CACT4Y+a1sWaWSVoYrafE+9secQgHYwywEWGCSTF6MZs0Rr7zUA@mail.gmail.com>
- <278957c8-a6d2-43e5-aed7-9ed44648ffb2@paulmck-laptop>
-In-Reply-To: <278957c8-a6d2-43e5-aed7-9ed44648ffb2@paulmck-laptop>
-From: Uladzislau Rezki <urezki@gmail.com>
-Date: Wed, 16 Oct 2024 17:07:58 +0200
-Message-ID: <CA+KHdyX5n8K0guzyGiWFOt=p8UY6OvHrkH01-wgRHjzF8BZxDQ@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] KCSAN: data-race in __mod_timer / kvfree_call_rcu
-To: paulmck@kernel.org
-Cc: Dmitry Vyukov <dvyukov@google.com>, 
-	syzbot <syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>, 
-	Marco Elver <elver@google.com>, andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@fomichev.me, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH rcu] configs/debug: make sure PROVE_RCU_LIST=y takes
+ effect
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+ joel@joelfernandes.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kees@kernel.org, paulmck@kernel.org
+References: <20241016011144.3058445-1-kuba@kernel.org>
+Content-Language: en-GB
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20241016011144.3058445-1-kuba@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-I will have a look at this!
+Hi Jakub,
 
-On Mon, Oct 14, 2024 at 7:00=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Mon, Oct 14, 2024 at 10:27:05AM +0200, Dmitry Vyukov wrote:
-> > On Mon, 14 Oct 2024 at 08:07, syzbot
-> > <syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    5b7c893ed5ed Merge tag 'ntfs3_for_6.12' of https://gi=
-thub...
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D148ae3279=
-80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Da2f7ae2f2=
-21e9eae
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D061d370693b=
-dd99f9d34
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
- Debian) 2.40
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/79bb9e82835a=
-/disk-5b7c893e.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/5931997fd31c/vm=
-linux-5b7c893e.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/fc8cc3d97b=
-18/bzImage-5b7c893e.xz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> > > Reported-by: syzbot+061d370693bdd99f9d34@syzkaller.appspotmail.com
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > BUG: KCSAN: data-race in __mod_timer / kvfree_call_rcu
-> > >
-> > > read to 0xffff888237d1cce8 of 8 bytes by task 10149 on cpu 1:
-> > >  schedule_delayed_monitor_work kernel/rcu/tree.c:3520 [inline]
->
-> This is the access to krcp->monitor_work.timer.expires in the function
-> schedule_delayed_monitor_work().
->
-> Uladzislau, could you please take a look at this one?
->
->                                                         Thanx, Paul
->
-> > +rcu maintainers, this looks more like rcu issue
-> >
-> > #syz set subsystems: rcu
-> >
-> > >  kvfree_call_rcu+0x3b8/0x510 kernel/rcu/tree.c:3839
-> > >  trie_update_elem+0x47c/0x620 kernel/bpf/lpm_trie.c:441
-> > >  bpf_map_update_value+0x324/0x350 kernel/bpf/syscall.c:203
-> > >  generic_map_update_batch+0x401/0x520 kernel/bpf/syscall.c:1849
-> > >  bpf_map_do_batch+0x28c/0x3f0 kernel/bpf/syscall.c:5143
-> > >  __sys_bpf+0x2e5/0x7a0
-> > >  __do_sys_bpf kernel/bpf/syscall.c:5741 [inline]
-> > >  __se_sys_bpf kernel/bpf/syscall.c:5739 [inline]
-> > >  __x64_sys_bpf+0x43/0x50 kernel/bpf/syscall.c:5739
-> > >  x64_sys_call+0x2625/0x2d60 arch/x86/include/generated/asm/syscalls_6=
-4.h:322
-> > >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> > >  do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
-> > >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> > >
-> > > write to 0xffff888237d1cce8 of 8 bytes by task 56 on cpu 0:
-> > >  __mod_timer+0x578/0x7f0 kernel/time/timer.c:1173
-> > >  add_timer_global+0x51/0x70 kernel/time/timer.c:1330
-> > >  __queue_delayed_work+0x127/0x1a0 kernel/workqueue.c:2523
-> > >  queue_delayed_work_on+0xdf/0x190 kernel/workqueue.c:2552
-> > >  queue_delayed_work include/linux/workqueue.h:677 [inline]
-> > >  schedule_delayed_monitor_work kernel/rcu/tree.c:3525 [inline]
-> > >  kfree_rcu_monitor+0x5e8/0x660 kernel/rcu/tree.c:3643
-> > >  process_one_work kernel/workqueue.c:3229 [inline]
-> > >  process_scheduled_works+0x483/0x9a0 kernel/workqueue.c:3310
-> > >  worker_thread+0x51d/0x6f0 kernel/workqueue.c:3391
-> > >  kthread+0x1d1/0x210 kernel/kthread.c:389
-> > >  ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
-> > >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> > >
-> > > Reported by Kernel Concurrency Sanitizer on:
-> > > CPU: 0 UID: 0 PID: 56 Comm: kworker/u8:4 Not tainted 6.12.0-rc2-syzka=
-ller-00050-g5b7c893ed5ed #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BI=
-OS Google 09/13/2024
-> > > Workqueue: events_unbound kfree_rcu_monitor
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > bridge0: port 2(bridge_slave_1) entered blocking state
-> > > bridge0: port 2(bridge_slave_1) entered forwarding state
-> > >
-> > >
-> > > ---
-> > > This report is generated by a bot. It may contain errors.
-> > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > >
-> > > syzbot will keep track of this issue. See:
-> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > >
-> > > If the report is already addressed, let syzbot know by replying with:
-> > > #syz fix: exact-commit-title
-> > >
-> > > If you want to overwrite report's subsystems, reply with:
-> > > #syz set subsystems: new-subsystem
-> > > (See the list of subsystem names on the web dashboard)
-> > >
-> > > If the report is a duplicate of another one, reply with:
-> > > #syz dup: exact-subject-of-another-report
-> > >
-> > > If you want to undo deduplication, reply with:
-> > > #syz undup
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Gr=
-oups "syzkaller-bugs" group.
-> > > To unsubscribe from this group and stop receiving emails from it, sen=
-d an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/=
-msgid/syzkaller-bugs/670cb520.050a0220.4cbc0.0041.GAE%40google.com.
+On 16/10/2024 03:11, Jakub Kicinski wrote:
+> Commit 0aaa8977acbf ("configs: introduce debug.config for CI-like setup")
+> added CONFIG_PROVE_RCU_LIST=y to the common CI config,
+> but RCU_EXPERT is not set, and it's a dependency for
+> CONFIG_PROVE_RCU_LIST=y. Make sure CIs take advantage
+> of CONFIG_PROVE_RCU_LIST=y, recent fixes in networking
+> indicate that it does catch bugs.
+
+Good catch! I confirm it fixes the issue:
+
+Acked-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> I'd be slightly tempted to still send it to Linux for v6.12.
+
+Good idea, it sounds like a fix because I guess if it was on the list,
+it was supposed to be used. But be careful it might detect quite a few
+issues: I just enabled it on MPTCP tree, and it found issues.
+
+It might be good to check the impact first, e.g. at least enabling it
+when running the Networking tests. Please note that the CI didn't pick
+up this patch, because it is marked for RCU (PATCH rcu):
 
 
+https://patchwork.kernel.org/project/netdevbpf/patch/20241016011144.3058445-1-kuba@kernel.org/
 
---=20
-Uladzislau Rezki
+If the impact is important, it might be better to target linux-next
+first, no?
+
+Cheers,
+Matt
+-- 
+Sponsored by the NGI0 Core fund.
+
