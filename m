@@ -1,103 +1,166 @@
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0C21A2547
-	for <rcu@vger.kernel.org>; Tue, 22 Oct 2024 22:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3449414B97E;
+	Tue, 22 Oct 2024 22:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729635746; cv=none; b=a8DdnTe60HRXHkGY0FssbqONPqeMgl7c11MQWP9IGb6W5/SoTQ2wIAVSKhH5SvRAe5eoAHIBursA6lL3FQqATfM7GH3Q7IfvqZH0c9MpcyKjj2/gWyaDnk/szdTQLijvH8GLSwuEskGAPmoZ3YAoR9XYaRbDIA157hDtVkUVHjs=
+	t=1729636058; cv=none; b=oCM67sJoR8e4T+6Mh6Jjo06nGVq4q7k6D2LzrY0GyjRfHlhH/tuBTI3q0DmXmMFw9tbj2tvQzeumnZCBz9CA8cmi5SKWiMnbnyjUet3hu7Bb/204sP2b7blNRkaQmKiM3jYWm5dANHk7iPlwKyYOyCUO0rnXpG3FYscahiQnykM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729635746; c=relaxed/simple;
-	bh=MVapkSi7WwnwYpMTqxMDHtRQp6648YIQQ+l56D+yQjg=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=IkZyB9oORHpckzxW6cJuHKX7sLondg4vw764WL26X3riGoe9Ss/lEJF6Oyem6+kzJOf3Q0mS8alMxfXgPVoTV44IdAJvTTF5N7GQ17TxPMrGr1rBjTqg28GM2JtcAIlX405A7RftT4PkHlwrowwtIIIuZ1Fhe42RjkCzLr5VJYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gLqFysLx; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1729636058; c=relaxed/simple;
+	bh=KMEHB+VAFASGEyyk9QyeOHQsQn83Agc1/7pf/mwqwpk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FJpnuAB1BFsA1UOlZmBEzsn1WHWnW3rgOCxmwkcMhpIseuzGXGCg6sQ34IS0uede/INs9FCulaBrcASpUhw5n57V+RyGSmq3aXBph1v//A7sPLAYOKygzWYwkaHrRVKZvLPFVtbXE/VkiY1yirR4GjeMBXetNMNoyfHDaGR2KEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KzIwGo5p; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gLqFysLx"
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71f5208217dso744416b3a.2
-        for <rcu@vger.kernel.org>; Tue, 22 Oct 2024 15:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729635744; x=1730240544; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IAurXDQos6UC8Kz9RYticBS0uwxPsZxZpB5uXwa/g/k=;
-        b=gLqFysLxSF6BDv9SAaqeXQyNVal7PbeFVsvS0k/zf0yEywTGrZZ9zWoLnrXLjM/wiy
-         3088exYZKK48q8FW4x1tLWoi7Eqy2WyZ+x1m4ziohV2ml7R4k6mnO8rS6bLYQaTj+kyC
-         NzmXW7ORuv3sOTVYox6WJsYdS5J6Rdf8MiJMd+IjlyIMapZQTJNd+WtDrnbVVbfWEyN1
-         smBIhiseXBYnTlZR1VvN2KYLIPALTkdypaBiq8q4ZTOb6YS6ZsY06cTrtDisteWL8hQ/
-         vAf83Lsry30x+d1Lvil+q2L2eVjdkImbyn/khx1bMGeVVXoJsIg2anpfXuF0I84vFgLk
-         tr2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729635744; x=1730240544;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IAurXDQos6UC8Kz9RYticBS0uwxPsZxZpB5uXwa/g/k=;
-        b=kDzvYR4qunZSGJ7a9QIiOqR0P0SJjHJbcrKqALTw+hgWRfFOPctQSOd9dEmBLFb+DF
-         9Qsi6SY0yCVhCpbbYFhhGOhV+MOcxhTisy7G90z2xmoA/87Ti+ZLc+Jdg15k5NO/E6Og
-         wPI97modKYHIOhQTJMvHglr52xAYMabMAKIY4sF+Zc4LCQYDPtDu4fwIVRlnejlilP7v
-         gJQSGEE6ukqnqjBLpU1MZcGrT0BQevspgElo0NJqeVJhabFFH28mkQWAL1rUf9z9Yam+
-         EWAgXpA0qCwwbVUFrCSKuMiiyPR1cvyaQ2BeSNh2fVqmV2SIIitwkYtsfJfBAVnypFNm
-         qxCw==
-X-Gm-Message-State: AOJu0YwdG2uvzmXULCWcq7PZyDcZuK0b9mK87Ws7NnUi2Cvrdj4SCtCX
-	0ejd2s2rviWWKMiLHcEgzdObcCclnikjNXa37Vq569ZdHUJdQHIIaI7t4nKnbciNsh3Zn5+p8F/
-	8kV+Ae7GsBg7oxiPhDxNS5i+2hIb/OSgQ
-X-Google-Smtp-Source: AGHT+IE4rhAWJTpc005yoyANoSQh4U5y5BijVWdxKpC8nppzgUfVKmJ1aSFVPMS7wPIxD9jFpKWMC6Ak8mURZ9htGzk=
-X-Received: by 2002:a05:6a00:4fd4:b0:71e:780e:9c1 with SMTP id
- d2e1a72fcca58-72030b7b971mr961070b3a.18.1729635743863; Tue, 22 Oct 2024
- 15:22:23 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KzIwGo5p"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BC92C4CEC3;
+	Tue, 22 Oct 2024 22:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729636058;
+	bh=KMEHB+VAFASGEyyk9QyeOHQsQn83Agc1/7pf/mwqwpk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KzIwGo5p5IGyYqy8kn5yoPceahTY+j46Wyoy4tFLQyO6I5AGuJ4D7BHii9SswQU2C
+	 Jbw5U6v8Xi+ujhbtHCStoAR/y+gqZtmN5mItP14z1UNcC9rgykl9dL3MRhnoir7Q3T
+	 xJCYB3oLWLr3GIK/bF8205KW6B6Q5QDRC2UFO7YPfFOJ99paMeKiJitv8qorTMyGWa
+	 6hPPcskbUeM4NYEolSqJWanMlmBGJbxCoQvJIX9XcXGfCMHk0VRpqxp5o4l8dbqt6j
+	 vRwsoL3b/o87qhBdahtHJhPjV+eTcSarkGIb8vMRqKzSEewKehHSmbA7uss1uElk6Y
+	 AJUdJHxeJXJ+g==
+Date: Wed, 23 Oct 2024 00:27:34 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/1] softirq: Use a dedicated thread for timer wakeups on
+ PREEMPT_RT.
+Message-ID: <Zxgm1lOsddTRSToB@pavilion.home>
+References: <20241004103842.131014-1-bigeasy@linutronix.de>
+ <20241004103842.131014-2-bigeasy@linutronix.de>
+ <ZxeomPnsi6oGHKPT@localhost.localdomain>
+ <20241022153421.zLWiABPU@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Shane Miller <gshanemiller6@gmail.com>
-Date: Tue, 22 Oct 2024 18:21:47 -0400
-Message-ID: <CAFtQo5By2EjXrjzdmx=dEt9k+20EjEGuwdEAZ4fB3=8H37tp=Q@mail.gmail.com>
-Subject: re: defer_rcu() usage
-To: rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241022153421.zLWiABPU@linutronix.de>
 
-I've used the qsbr flavor of urcu with success. It works great. The
-doc, benchmark code make clear that RCU writers,
+Le Tue, Oct 22, 2024 at 05:34:21PM +0200, Sebastian Andrzej Siewior a écrit :
+> On 2024-10-22 15:28:56 [+0200], Frederic Weisbecker wrote:
+> > > Once the ksoftirqd is marked as pending (or is running) it will collect
+> > > all raised softirqs. This in turn means that a softirq which would have
+> > > been processed at the end of the threaded interrupt, which runs at an
+> > > elevated priority, is now moved to ksoftirqd which runs at SCHED_OTHER
+> > > priority and competes with every regular task for CPU resources.
+> > 
+> > But for ksoftirqd to collect other non-timers softirqs, those vectors must
+> > have been raised before from a threaded interrupt, right? So why those
+> > vectors didn't get a chance to execute at the end of that threaded interrupt?
+> 
+> This statement is no longer accurate since
+> 	d15121be74856 ("Revert "softirq: Let ksoftirqd do its job"")
+> 
+> So the "collect all" part is no longer.
+> 
+> > OTOH one problem I can imagine is a threaded interrupt preempting ksoftirqd
+> > which must wait for ksoftirqd to complete due to the local_bh_disable()
+> > in the beginning of irq_forced_thread_fn(). But then isn't there some
+> > PI involved on the local lock?
+> 
+> Yes, there is PI involved on the local lock. So this will happen.
+> 
+> > Sorry I'm probably missing something...
+> 
+> Try again without the "ksoftirqd will collect it all" since this won't
+> happen since the revert I mentioned.
 
-* must use rcu_xchg_pointer() or rcu_assign_pointer() to update data structure
-* must call 'synchronize_rcu()' which blocks until readers are out of
-critical section on old copy so that the old data structure can be
-cleaned up.
+I still don't get it, this makes:
 
-However, synchronize_rcu() is not giving me the write performance I want.
+"""
+Once the ksoftirqd is marked as pending (or is running), a softirq which
+would have been processed at the end of the threaded interrupt, which runs
+at an elevated priority, is now moved to ksoftirqd which runs at SCHED_OTHER
+priority and competes with every regular task for CPU resources.
+"""
 
-But 'tests/benchmark/test_urcu_defer.c' does - cool!
+ksoftirqd raised for timers still doesn't prevent a threaded IRQ from running
+softirqs, unless it preempts ksoftirqd and waits with PI. So is it what you're
+trying to solve?
 
-Regrettably, the doc on 'defer_rcu' just isn't clear to me. When
-'defer_rcu' runs the callback specified in its arguments can I
-conclude, like 'synchronize_rcu()' that there are no/none/zero readers
-in a critical section on the old data structure?
+Or is the problem that timer softirqs are executed with SCHED_NORMAL?
 
-Is this the intended usage?
+> 
+> > > This introduces long delays on heavy loaded systems and is not desired
+> > > especially if the system is not overloaded by the softirqs.
+> > > 
+> > > Split the TIMER_SOFTIRQ and HRTIMER_SOFTIRQ processing into a dedicated
+> > > timers thread and let it run at the lowest SCHED_FIFO priority.
+> > > Wake-ups for RT tasks happen from hardirq context so only timer_list timers
+> > > and hrtimers for "regular" tasks are processed here.
+> > 
+> > That last sentence confuses me. How are timers for non regular task processed
+> > elsewhere? Ah you mean RT tasks rely on hard hrtimers?
+> 
+> Correct. A clock_nanosleep() for a RT task will result in wake_up() from
+> hardirq. A clock_nanosleep() for a !RT task will result in wake_up()
+> from ksoftirqd or now the suggested ktimersd.
 
-```
-void deferCallBack(void *oldData) {
- Foo *old = (Foo*)oldData;
-  // In this function I know for sure no RCU reader
-  // is in a critical section in 'old'. I can free/mutate
-  // it as needed
-  . . .
-}
+Oh I see now, that's all in __hrtimer_init_sleeper().
 
-void rcuWriterLoop() {
-  rcu_defer_register_thread();
-  while (!done) {
-    Foo *newCopy = ....
-    // Prior to this line readers are not in a read critical section (CS)
-    // or in CS on 'old'. On return readers are not in a CS or in
-    // a CS in newCopy only.
-    Foo *old = rcu_xchg_pointer(&current, newCopy);
-    // Cleanup 'old': readers can't be accessing it
-    defer_rcu(deferCallBack, old);
-  }
-  rcu_defer_unregister_thread();
-}
-```
+> 
+> Quick question: Do we want this in forced-threaded mode, too? The timer
+> (timer_list timer) and all HRTIMER_MODE_SOFT are handled in ksoftirqd.
+
+It's hard to tell for me as I don't know the !RT usecases for forced-threaded mode.
+"If in doubt say N" ;-)
+
+> > > +#ifdef CONFIG_PREEMPT_RT
+> > > +static void timersd_setup(unsigned int cpu)
+> > > +{
+> > 
+> > That also needs a comment.
+> 
+> Why we want the priority I guess.
+
+Yes.
+
+> 
+> …
+> > > +void raise_hrtimer_softirq(void)
+> > > +{
+> > > +	raise_ktimers_thread(HRTIMER_SOFTIRQ);
+> > > +}
+> > > +
+> > > +void raise_timer_softirq(void)
+> > > +{
+> > > +	unsigned long flags;
+> > > +
+> > > +	local_irq_save(flags);
+> > > +	raise_ktimers_thread(TIMER_SOFTIRQ);
+> > > +	wake_timersd();
+> > 
+> > This is supposed to be called from hardirq only, right?
+> > Can't irq_exit_rcu() take care of it? Why is it different
+> > from HRTIMER_SOFTIRQ ?
+> 
+> Good question. This shouldn't be any different compared to the hrtimer
+> case. This is only raised in hardirq, so yes, the irq_save can go away
+> and the wake call, too.
+
+Cool. You can add lockdep_assert_in_irq() within raise_ktimers_thread() for
+some well deserved relief :-)
+
+Thanks.
+
+> 
+> > Thanks.
+> 
+> Sebastian
