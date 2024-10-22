@@ -1,127 +1,118 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351B66EB7C;
-	Tue, 22 Oct 2024 17:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0426B1A726D;
+	Tue, 22 Oct 2024 17:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729617812; cv=none; b=ad2uFYkXe7j3ObuhGyDrFOZjEXi5nTuRixorxwpXSkKeNhnpTCVXdxRtDNOgY+NtYdmyg7pZBA5eNijVpFaiKx8zE95991oTjqbrO06kiTBMgO81DZbCORtujNGKA0Svkx+f4PiBgcWK4/27R8KKXkylgcPK0mAQMWSbYjAWbG0=
+	t=1729618168; cv=none; b=UwjpXPyrkWjZjDbg3/Qg1Qlz1F/gIMWk/lsV3CNpT+93Yjt7viAwfLRACJ7VcQdpwavPcgxFhQWpILYt9hEoTCqeuY6QWaA7Artmp408WEpcXqZFFKhNUU2RETHu5osdHGAqEVUNZbm2FZqWcEbwLL78iCIROQqSHVbhQI0dcx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729617812; c=relaxed/simple;
-	bh=rCnBaxudAE0hJKimJTU73aeC8dWGsSksIH+CQi6HRyc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R040xTw08yNA2jA2RQH/EGC+q1gCFybp1SMIb+i6SF1sajmX12AwO+TVOhMVp2Y9Cp4WUgR9P0e62fvxIVaIJgg11fijYicx2Hd2G81eqEmgJZES2VEpHcVgCSrRtLZgGpFXREedJD+oxBo7jKh0u5Gi/yZOdVaaT7P7nkO4yfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yapxj3z7; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1729618168; c=relaxed/simple;
+	bh=m0Nwo0+i3YnOzZq93vl1VFUzbNQLAnEr6HkebnHRbpc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=k8f8X7YBoSoO16OV3KSfPbufAc2HL8vfIwUey3mDuo6dH3odMk1GU9Yfn1ebbuQ9Frf4W7P80ifYkHdz10QX3eeEEG83Q7n89aneP+wcgqNxVEguBUA9tVprQIAk6AQ3v9OUWKDEYimkpAeYy88R9WzQlQJotrxqYuITvVTcXV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YGjoowiw; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yapxj3z7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04350C4CEC3;
-	Tue, 22 Oct 2024 17:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729617812;
-	bh=rCnBaxudAE0hJKimJTU73aeC8dWGsSksIH+CQi6HRyc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Yapxj3z7YU9J3L+oMoXLfarPIAQZv44FDgZER9IC3hX8OANT1i2LN25DVubPhHn3F
-	 xH3r2B2YAk2+YsNx5zvwENkpnPHSOMTuVJnAigpO7XHJU060QPR8bK3ywMIvqX4RkB
-	 keBy4aF0xpC1PxQ5n/Cp8kFKbQi8LPm/RYSbWLrL2qd9OSLgIke8+ubb/vtzaMCJYM
-	 XcMYRWUHCFjTsoipsziVfB6XWiuZQ3TvWzJFA5mSjQtf9hBlC6oeofPT/ETd4mZd5F
-	 nc1r/WajVulXEzABX0Eti2uZIzfJGzJ37C2YNCzTJyItIiEMQhGLJ0FrQhMbNoFLox
-	 aDs0ydJlnFwBA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9FB92CE0A48; Tue, 22 Oct 2024 10:23:31 -0700 (PDT)
-Date: Tue, 22 Oct 2024 10:23:31 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] rcu/nocb: Fix rcuog wake-up from offline softirq
-Message-ID: <126f384f-bef4-468b-9082-0e3d47bdfd06@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20241010163609.51273-1-frederic@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YGjoowiw"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71e49ef3b2bso4188870b3a.2;
+        Tue, 22 Oct 2024 10:29:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729618166; x=1730222966; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4qDFTq1IwR3EAOCiFBH20Hns15lhdahsLn6F0YbvNyY=;
+        b=YGjoowiwRpOeSTh0tXqs2g/pQq+I3xIgynjHX6II1zs4/dDEXpbahRxl6yqec22YK9
+         4Dj+Slgzj144rWEKHSSC2ozwzLdnDcgXRCzKBMmjvlvaPWGqfFxDHxX4ehuTIO/1JIYr
+         DZ2gSgmVkG0+vMTiEPFPfSg6OUYwaN1tqyb6Nb4MXenOKpj7jiI4qZfhfXT9jpozN6NF
+         5C+3sglz6JMWODZoN/l0rHONYn+pPHSkXFYT6hBKu5PPTcWIOOmlPajy+lDz/M/vjSJE
+         RM8cVju0F2BsCjM7vcE/5f7dPgBpaZTcqMagsOMXnjJgHPuiDPDZqHtix79TCZgX8QMQ
+         kaOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729618166; x=1730222966;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4qDFTq1IwR3EAOCiFBH20Hns15lhdahsLn6F0YbvNyY=;
+        b=eLwURGLlAv3/pbyf4iuCv78PuSEKFe/xsOtEj4lFLw8+tL4JX7xIuLUZMCWk8bMSuZ
+         c5af6RVoluSEF5jPi3kWXWLfP9MXAc9KSECC2eWOd34P7QaFq2k8OcMnKoScFS04XU1h
+         PfGiLKPlj/9QI293XiGuJsHi5rSO9fW60uQde9XXu63WCt6WpXi9DgfbVjYaFZ/GC8DF
+         Gv3UcTFczjqlqQENyV9iwz9sq+hh1rL5ACF0DR6S0TJ9MGQNk3Y9yY74V5cKF17YxpQd
+         V7GWjtgMHmk9OeAD7cDMliISM2uLeOz/3pXi9u/Im+lVzAOYCPMCR4xcZcBYbBek2nTv
+         8Vlw==
+X-Forwarded-Encrypted: i=1; AJvYcCUrbSSJVYDp4Phgf2ex0nOuxF7B5nsgGNOEgCbxb8UHILSEy1z60yCGpnzsGJlf+Jl2Qxt6UT1VsGdVKrE=@vger.kernel.org, AJvYcCWZClFzmdowN378mLDBFtBhA8ZpVC/6s/YJkD0N70utgpK3oeqP16hE317uU6Gt4NPlLtwS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIBeNagVxuYi4T/fq2fffJB/e4BS34hyaulv3vodeVuME+O80t
+	9KgYz9ov77qJfYhZMZIlFmGfD8x3bxhs7BLVrjCnhcNmvXjVkeVFJv5HubqDI0Qtt59jY0oduvm
+	T8DyVSEX3B0UWDLGzJ6b2QCB/ibU=
+X-Google-Smtp-Source: AGHT+IGk5ApWtGrmJSdKF8uzT8Dslo6RcY1GOrRqFYXBm4Tunrey1WFYDqEF5/P0ItYRwDCarpd7vi0nbJgYjJnE+kY=
+X-Received: by 2002:a05:6a00:10d2:b0:71e:587d:f268 with SMTP id
+ d2e1a72fcca58-72030a070d7mr17997b3a.4.1729618166122; Tue, 22 Oct 2024
+ 10:29:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241010163609.51273-1-frederic@kernel.org>
+References: <97594073-e296-4876-9d6a-1e4a4f33d857@paulmck-laptop>
+ <ZxdLfLWWrAEfRiXV@infradead.org> <20241022070635.GY16066@noisy.programming.kicks-ass.net>
+ <ZxdPN6wT1LMyLaNL@infradead.org> <20241022071018.GA16066@noisy.programming.kicks-ass.net>
+ <ZxdQiLhn16FtkOys@infradead.org> <8b2552d8-0453-476a-8606-e8b761934783@paulmck-laptop>
+In-Reply-To: <8b2552d8-0453-476a-8606-e8b761934783@paulmck-laptop>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 22 Oct 2024 10:29:13 -0700
+Message-ID: <CAEf4BzbyctiXq8L5MQmCtVqGSN8uawUmNXJMm-X8jDcp8QQ86g@mail.gmail.com>
+Subject: Re: [PATCH rcu] srcu: Guarantee non-negative return value from srcu_read_lock()
+To: paulmck@kernel.org
+Cc: Christoph Hellwig <hch@infradead.org>, Peter Zijlstra <peterz@infradead.org>, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org, 
+	andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 10, 2024 at 06:36:09PM +0200, Frederic Weisbecker wrote:
-> After a CPU has set itself offline and before it eventually calls
-> rcutree_report_cpu_dead(), there are still opportunities for callbacks
-> to be enqueued, for example from a softirq. When that happens on NOCB,
-> the rcuog wake-up is deferred through an IPI to an online CPU in order
-> not to call into the scheduler and risk arming the RT-bandwidth after
-> hrtimers have been migrated out and disabled.
-> 
-> But performing a synchronized IPI from a softirq is buggy as reported in
-> the following scenario:
-> 
->         WARNING: CPU: 1 PID: 26 at kernel/smp.c:633 smp_call_function_single
->         Modules linked in: rcutorture torture
->         CPU: 1 UID: 0 PID: 26 Comm: migration/1 Not tainted 6.11.0-rc1-00012-g9139f93209d1 #1
->         Stopper: multi_cpu_stop+0x0/0x320 <- __stop_cpus+0xd0/0x120
->         RIP: 0010:smp_call_function_single
->         <IRQ>
->         swake_up_one_online
->         __call_rcu_nocb_wake
->         __call_rcu_common
->         ? rcu_torture_one_read
->         call_timer_fn
->         __run_timers
->         run_timer_softirq
->         handle_softirqs
->         irq_exit_rcu
->         ? tick_handle_periodic
->         sysvec_apic_timer_interrupt
->         </IRQ>
-> 
-> Fix this with forcing deferred rcuog wake up through the NOCB timer when
-> the CPU is offline. The actual wake up will happen from
-> rcutree_report_cpu_dead().
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202409231644.4c55582d-lkp@intel.com
-> Fixes: 9139f93209d1 ("rcu/nocb: Fix RT throttling hrtimer armed from offline CPU")
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+On Tue, Oct 22, 2024 at 7:26=E2=80=AFAM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Tue, Oct 22, 2024 at 12:13:12AM -0700, Christoph Hellwig wrote:
+> > On Tue, Oct 22, 2024 at 09:10:18AM +0200, Peter Zijlstra wrote:
+> > > Ah, well, the thing that got us here is that we (Andrii and me) wante=
+d
+> > > to use -1 as an 'invalid' value to indicate SRCU is not currently in
+> > > use.
+> > >
+> > > So it all being int is really rather convenient :-)
+> >
+> > Then please document that use.  Maybe even with a symolic name for
+> > -1 that clearly describes these uses.
+>
+> Would this work?
+>
+> #define SRCU_INVALID_INDEX -1
+>
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+But why? It's a nice property to have an int-returning API where valid
+values are only >=3D 0, so callers are free to use the entire negative
+range (not just -1) for whatever they need to store in case there is
+no srcu_idx value.
 
-> ---
->  kernel/rcu/tree_nocb.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 97b99cd06923..16865475120b 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -554,13 +554,19 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
->  			rcu_nocb_unlock(rdp);
->  			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
->  					   TPS("WakeLazy"));
-> -		} else if (!irqs_disabled_flags(flags)) {
-> +		} else if (!irqs_disabled_flags(flags) && cpu_online(rdp->cpu)) {
->  			/* ... if queue was empty ... */
->  			rcu_nocb_unlock(rdp);
->  			wake_nocb_gp(rdp, false);
->  			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
->  					    TPS("WakeEmpty"));
->  		} else {
-> +			/*
-> +			 * Don't do the wake-up upfront on fragile paths.
-> +			 * Also offline CPUs can't call swake_up_one_online() from
-> +			 * (soft-)IRQs. Rely on the final deferred wake-up from
-> +			 * rcutree_report_cpu_dead()
-> +			 */
->  			rcu_nocb_unlock(rdp);
->  			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
->  					   TPS("WakeEmptyIsDeferred"));
-> -- 
-> 2.46.0
-> 
+Why are we complicating something that's simple and straightforward?
+It's similar with any fd- and id- returning API.
+
+Marking it as u16 would be fine, but unusual (and probably suboptimal
+due to common u16 to int conversion).
+
+Marking it as unsigned int would be bad, because it implies that all
+32 bits can be used for valid value, making it impossible to use <0
+for something else.
+
+Just documenting that valid int values are always >=3D is good and
+convenient, why not sticking to just that?
+
+> Whatever the name, maybe Peter and Andrii define this under #ifndef
+> right now, and we get it into include/linux/srcu.h over time.
+>
+> Or is there a better way?  Or name, for that matter.
+>
+>                                                         Thanx, Paul
