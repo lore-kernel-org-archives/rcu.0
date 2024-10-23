@@ -1,210 +1,105 @@
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1681A0BD6;
-	Wed, 23 Oct 2024 10:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36A819F128;
+	Wed, 23 Oct 2024 10:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729678946; cv=none; b=C81UDkmHGI0UNrOjpeSLFXd/XcjNcu12JiVA+DuAmykpwIMLsWUsTd4Opa9NfwPv01NpKXWs4RmIe0cuKjwODThWQS89oS81UPFJXUGd2YAnbGbi9Onp9VgMPbQbGqvsBWEKxWQNW+xpWKwmzmsyAY+9Iz/mCCusoqxTDyxLS0w=
+	t=1729680787; cv=none; b=Sws0YIxJ7cQHzwOM/09XMNDsjVEXKuGE7GTKpP9vh9acnOK4YrHUlY+A3STNd/jbeCaTf7bH8OLCNwlPrYrMdq0AVHHXMJ9LN6WmeIkNC0i9HhtapXgtmhq58IaxOcskNMdUTyOAacPHvnXp1IAENboNHfmUI34oMkD1UNpx+n4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729678946; c=relaxed/simple;
-	bh=6SEb8/31xiDkdu+t44GUu4dAwdZXiqq016p1/voP1CM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XvGfkw3Z5L1ZhEARaKa7pcj89bi0xZnMRCivip1AJxUVV/9YVi3tsGvir+7mxoHG4gPNvcLwlCPWN4WtERPHc43zdJepWBNndK93h7jHiBik7OanDZMT3Mz4KgeDZOnaZawIeVaSseOONuQKCGfP676FQW2C3CtYBtpFwbnOG/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=nd2rxYra; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+	s=arc-20240116; t=1729680787; c=relaxed/simple;
+	bh=AAU8KRcl96ThA1amDDhZN1F5mt06VT7Cl0E97kVyZj0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d3lHUaX1yCo6uwdzgiKwz0IA/iaohS2Yxr12bmhAVDYR60flnvwJzo+yTxsU9QSkWYnssFyRM9WuUxJEVoKthQhn7GBxx5jAtBrE+ZiCuAYUXsBEGwv41EhtiyR7oYbmQdxdILIRD8Nb6uCeg6h2JRYyTe52ManLvMBc8ZNXxHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YA8Vt+oL; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=asvjDthV; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="nd2rxYra"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=LY2GlIt3FOp937hchX3AbpdCg37qWU6Kx2gOBzkvB14=;
-	t=1729678944; x=1730110944; b=nd2rxYraNVN4gm7VZ4b5t8nZXjfNfjZgLu5wfEpFGH2xNqH
-	4kqI09f87u1tLjkff49xn3Y5ADx0Ib8CQ1eDxgbodSiyRyy6rNUon2zEFMwXuUodferuzRk0pV6qb
-	MczZKGQL/bOYy886mOkxNwsyg8mqQy9U1ZyjbH+Hq1bU4NsocFKWDZwun3pfSrygu8XQlEOL1L0PY
-	vPuJwGGPFEHVuAxLG26r2/gzfFj+OsCjXTIpj1MtJKahipHetTaa3zAWc4N/+Z19GlGnMDNK4yrt9
-	9LSoOLqu0sGT3hPZUFrmVW+6JMUZqUVED4pnQXakdl92pQmHfsfXl92cfPcym9TA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1t3YVS-0003Yo-Ht; Wed, 23 Oct 2024 12:22:22 +0200
-Message-ID: <2b25a988-6965-48e4-a788-58dd8a776e06@leemhuis.info>
-Date: Wed, 23 Oct 2024 12:22:22 +0200
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YA8Vt+oL";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="asvjDthV"
+Date: Wed, 23 Oct 2024 12:52:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1729680778;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z5cYhVPG6B3EdAF5puQribkhOVErnOJ3c7NZLJS9l04=;
+	b=YA8Vt+oL+RV6h2mGuBhreZBvqzFhkzz4nEoEp4cPCS7eSSygxU9suv43i+NTUKhUQLGWaZ
+	cjGlOVedOTgcZKaXVRZ1LKk7RjfghQ3CF174m/uh9Rv0rvVAKDs6dIQEg04pwECDKbWjL2
+	CppRZjUusUvBec7k/W2gVD8FXO66/umBabozu2JUpMBzl2GtP5EXMDJNQoXfZ813FjgZSk
+	VPc/yZmw6pxT4MIi34rZbc+Ve+8W/mfbGqx6kEoTvrgZ4G6LAVXU/wOjMh2LgA3BVzBPiU
+	/XORfIk3BM10MKLrknVT/caRlAN5xm2cfL3HIQuzTPETrfqBxgI3aVjMIU4j6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1729680778;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z5cYhVPG6B3EdAF5puQribkhOVErnOJ3c7NZLJS9l04=;
+	b=asvjDthVa95B3RC3XCKFPW3PyNpLKFJEQuM4kq39EC7Xg469qTCOKLG1QzBlEBk4HZY2LK
+	bR4mufrbgSy+eJAw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Davidlohr Bueso <dave@stgolabs.net>, Ingo Molnar <mingo@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/1] softirq: Use a dedicated thread for timer wakeups on
+ PREEMPT_RT.
+Message-ID: <20241023105257.3Ibh0V5d@linutronix.de>
+References: <20241004103842.131014-1-bigeasy@linutronix.de>
+ <20241004103842.131014-2-bigeasy@linutronix.de>
+ <ZxeomPnsi6oGHKPT@localhost.localdomain>
+ <20241022153421.zLWiABPU@linutronix.de>
+ <Zxgm1lOsddTRSToB@pavilion.home>
+ <20241023063014.iPbVTkiw@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Regression] wifi problems since tg3 started throwing rcu stall
- warnings
-To: Frederic Weisbecker <frederic@kernel.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>, Mingcong Bai <jeffbai@aosc.io>,
- "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>
-References: <b8da4aec-4cca-4eb0-ba87-5f8641aa2ca9@leemhuis.info>
- <ZxjLQzHKuR-w16hF@pavilion.home>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZxjLQzHKuR-w16hF@pavilion.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1729678944;ac8ff4a5;
-X-HE-SMSGID: 1t3YVS-0003Yo-Ht
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241023063014.iPbVTkiw@linutronix.de>
 
-On 23.10.24 12:09, Frederic Weisbecker wrote:
-> Le Wed, Oct 23, 2024 at 10:27:18AM +0200, Linux regression tracking (Thorsten Leemhuis) a écrit :
->> Hi, Thorsten here, the Linux kernel's regression tracker.
->>
->> Frederic, I noticed a report about a regression in bugzilla.kernel.org
->> that appears to be caused by the following change of yours:
->>
->> 55d4669ef1b768 ("rcu: Fix rcu_barrier() VS post CPUHP_TEARDOWN_CPU
->> invocation")
-
-> Are you sure about the commit? Below it says:
-
-Not totally, but...
-
->> As many (most?) kernel developers don't keep an eye on the bug tracker,
->> I decided to write this mail. To quote from
->> https://bugzilla.kernel.org/show_bug.cgi?id=219390:
->>
->>>  Mingcong Bai 2024-10-15 13:32:35 UTC
->>>
->>> Since aa162aa4aa383a0a714b1c36e8fcc77612ddd1a2 between v6.10.4 and
+On 2024-10-23 08:30:18 [+0200], To Frederic Weisbecker wrote:
+> > > > > +void raise_timer_softirq(void)
+> > > > > +{
+> > > > > +	unsigned long flags;
+> > > > > +
+> > > > > +	local_irq_save(flags);
+> > > > > +	raise_ktimers_thread(TIMER_SOFTIRQ);
+> > > > > +	wake_timersd();
+> > > > 
+> > > > This is supposed to be called from hardirq only, right?
+> > > > Can't irq_exit_rcu() take care of it? Why is it different
+> > > > from HRTIMER_SOFTIRQ ?
+> > > 
+> > > Good question. This shouldn't be any different compared to the hrtimer
+> > > case. This is only raised in hardirq, so yes, the irq_save can go away
+> > > and the wake call, too.
+> > 
+> > Cool. You can add lockdep_assert_in_irq() within raise_ktimers_thread() for
+> > some well deserved relief :-)
 > 
-> Now that's aa162aa4aa383a0a714b1c36e8fcc77612ddd1a2 which I can't find in vanilla
-> tree.
+> If you want to, sure. I would add them to both raise functions.
 
-...quite, as that is the commit-id of the backport to v6.10.5; and the
-reporter reverted it there. Ideally of course that would have happened
-on recent mainline. If you doubt, ask Mingcong Bai to check if a revert
-there helps, too.
+That function (run_local_timers()) was in past also called from other
+places like the APIC IRQ but all this is gone now. The reason why I
+added the wake and the local_irq_save() is because it uses
+raise_softirq() instead raise_softirq_irqoff(). And raise_softirq() was
+used since it was separated away from tasklets.
 
-HTH, Ciao, Thorsten
+Now, raise_timer_softirq() is a function within softirq.c because it
+needs to access task_struct timersd which was only accessible there. It
+has been made public later due to the rcutorture bits so it could be
+very much be made inline and reduced to just raise_ktimers_thread().
+I tend to make TIMER_SOFTIRQ use also raise_softirq_irqoff() to make it
+look the same. That lockdep_assert_in_irq() is probably cheap but it
+might look odd why RT needs or just TIMER and not HRTIMER.
 
-> Also I'm failing to see an immediate issue between the below stacktrace
-> and the above commit. So are we sure about that reference?
-> 
-> Thanks.
-> 
-> 
->>> v6.10.5, the Broadcom Tigon3 Ethernet interface (tg3) found on Apple
->>> MacBook Pro (15'', Mid 2010) would throw many rcu stall errors during
->>> boot up, causing peripherals such as the wireless card to misbehave:
->>>
->>> [   24.153855] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 2-.... } 21 jiffies s: 973 root: 0x4/.
->>> [   24.166938] rcu: blocking rcu_node structures (internal RCU debug):
->>> [   24.177800] Sending NMI from CPU 3 to CPUs 2:
->>> [   24.183113] NMI backtrace for cpu 2
->>> [   24.183119] CPU: 2 PID: 1049 Comm: NetworkManager Not tainted 6.10.5-aosc-main #1
->>> [   24.183123] Hardware name: Apple Inc. MacBookPro6,2/Mac-F22586C8, BIOS    MBP61.88Z.005D.B00.1804100943 04/10/18
->>> [   24.183125] RIP: 0010:__this_module+0x2d3d1/0x4f310 [tg3]
->>> [   24.183135] Code: c3 cc cc cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 89 f6 48 03 77 30 8b 06 <31> f6 31 ff c3 cc cc cc cc 66 0f 1f 44 00 00 90 90 90 90 90 90 90
->>> [   24.183138] RSP: 0018:ffffbf1a011d75e8 EFLAGS: 00000082
->>> [   24.183141] RAX: 0000000000000000 RBX: ffffa04ec78f8a00 RCX: 0000000000000000
->>> [   24.183143] RDX: 0000000000000000 RSI: ffffbf1a00fb007c RDI: ffffa04ec78f8a00
->>> [   24.183145] RBP: 0000000000000b50 R08: 0000000000000000 R09: 0000000000000000
->>> [   24.183147] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000216
->>> [   24.183148] R13: ffffbf1a011d7624 R14: ffffa04ec78f8a08 R15: ffffa04ec78f8b40
->>> [   24.183151] FS:  00007f4c524b2140(0000) GS:ffffa05007d00000(0000) knlGS:0000000000000000
->>> [   24.183153] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> [   24.183155] CR2: 00007f7025eae3e8 CR3: 00000001040f8000 CR4: 00000000000006f0
->>> [   24.183157] Call Trace:
->>> [   24.183162]  <NMI>
->>> [   24.183167]  ? nmi_cpu_backtrace+0xbf/0x140
->>> [   24.183175]  ? nmi_cpu_backtrace_handler+0x11/0x20
->>> [   24.183181]  ? nmi_handle+0x61/0x160
->>> [   24.183186]  ? default_do_nmi+0x42/0x110
->>> [   24.183191]  ? exc_nmi+0x1bd/0x290
->>> [   24.183194]  ? end_repeat_nmi+0xf/0x53
->>> [   24.183203]  ? __this_module+0x2d3d1/0x4f310 [tg3]
->>> [   24.183207]  ? __this_module+0x2d3d1/0x4f310 [tg3]
->>> [   24.183210]  ? __this_module+0x2d3d1/0x4f310 [tg3]
->>> [   24.183213]  </NMI>
->>> [   24.183214]  <TASK>
->>> [   24.183215]  __this_module+0x31828/0x4f310 [tg3]
->>> [   24.183218]  ? __this_module+0x2d390/0x4f310 [tg3]
->>> [   24.183221]  __this_module+0x398e6/0x4f310 [tg3]
->>> [   24.183225]  __this_module+0x3baf8/0x4f310 [tg3]
->>> [   24.183229]  __this_module+0x4733f/0x4f310 [tg3]
->>> [   24.183233]  ? _raw_spin_unlock_irqrestore+0x25/0x70
->>> [   24.183237]  ? __this_module+0x398e6/0x4f310 [tg3]
->>> [   24.183241]  __this_module+0x4b943/0x4f310 [tg3]
->>> [   24.183244]  ? delay_tsc+0x89/0xf0
->>> [   24.183249]  ? preempt_count_sub+0x51/0x60
->>> [   24.183254]  __this_module+0x4be4b/0x4f310 [tg3]
->>> [   24.183258]  __dev_open+0x103/0x1c0
->>> [   24.183265]  __dev_change_flags+0x1bd/0x230
->>> [   24.183269]  ? rtnl_getlink+0x362/0x400
->>> [   24.183276]  dev_change_flags+0x26/0x70
->>> [   24.183280]  do_setlink+0xe16/0x11f0
->>> [   24.183286]  ? __nla_validate_parse+0x61/0xd40
->>> [   24.183295]  __rtnl_newlink+0x63d/0x9f0
->>> [   24.183301]  ? kmem_cache_alloc_node_noprof+0x12b/0x360
->>> [   24.183308]  ? kmalloc_trace_noprof+0x11e/0x350
->>> [   24.183312]  ? rtnl_newlink+0x2e/0x70
->>> [   24.183316]  rtnl_newlink+0x47/0x70
->>> [   24.183320]  rtnetlink_rcv_msg+0x152/0x400
->>> [   24.183324]  ? __netlink_sendskb+0x68/0x90
->>> [   24.183329]  ? netlink_unicast+0x237/0x290
->>> [   24.183333]  ? __pfx_rtnetlink_rcv_msg+0x10/0x10
->>> [   24.183336]  netlink_rcv_skb+0x5b/0x110
->>> [   24.183343]  netlink_unicast+0x1a4/0x290
->>> [   24.183347]  netlink_sendmsg+0x222/0x4a0
->>> [   24.183350]  ? proc_get_long.constprop.0+0x116/0x210
->>> [   24.183358]  ____sys_sendmsg+0x379/0x3b0
->>> [   24.183363]  ? copy_msghdr_from_user+0x6d/0xb0
->>> [   24.183368]  ___sys_sendmsg+0x86/0xe0
->>> [   24.183372]  ? addrconf_sysctl_forward+0xf3/0x270
->>> [   24.183378]  ? _copy_from_iter+0x8b/0x570
->>> [   24.183384]  ? __pfx_addrconf_sysctl_forward+0x10/0x10
->>> [   24.183388]  ? _raw_spin_unlock+0x19/0x50
->>> [   24.183392]  ? proc_sys_call_handler+0xf3/0x2f0
->>> [   24.183397]  ? trace_hardirqs_on+0x29/0x90
->>> [   24.183401]  ? __fdget+0xc2/0xf0
->>> [   24.183405]  __sys_sendmsg+0x5b/0xc0
->>> [   24.183410]  ? syscall_trace_enter+0x110/0x1b0
->>> [   24.183416]  do_syscall_64+0x64/0x150
->>> [   24.183423]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
->>>
->>> I have bisected the error to this commit. Reverting it caused no new or
->>> perceivable issues on both the MacBook and a Zen4-based laptop.
->>
->> [...]
->>
->>>> Ohh, and when you say "causing peripherals such as the wireless card to
->>>> misbehave" what exactly do you mean?
->>>
->>> When the kernel throws rcu stall messages, the wireless card on the
->>> MacBook may fail to discover and/or connect to wireless networks - not a
->>> consistent behaviour but I suppose that something in the kernel got stuck.
->>
->> See the ticket for more details and dmesg logs; the problem still
->> happens with 6.12-rc. The reporter is CCed.
->>
->> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
->> --
->> Everything you wanna know about Linux kernel regression tracking:
->> https://linux-regtracking.leemhuis.info/about/#tldr
->> If I did something stupid, please tell me, as explained on that page.
->>
->> P.S.: let me use this mail to also add the report to the list of tracked
->> regressions to ensure it's doesn't fall through the cracks:
->>
->> #regzbot introduced: 55d4669ef1b76823083caecfab12a8bd2ccdcf64
->> #regzbot from: Mingcong Bai <jeffbai@aosc.io>
->> #regzbot duplicate: https://bugzilla.kernel.org/show_bug.cgi?id=219390
->> #regzbot title: rcu: wifi problems since tg3 started throwing rcu stall
->> warnings
->> #regzbot ignore-activity
->>
-> 
-> 
+> > Thanks.
 
+Sebastian
