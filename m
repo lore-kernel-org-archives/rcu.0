@@ -1,117 +1,179 @@
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6550115B54A;
-	Wed, 23 Oct 2024 06:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750E7157E78;
+	Wed, 23 Oct 2024 08:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729666705; cv=none; b=L6phBONUZ5Y5A0PmumJqQKo1enTOILlMZuHgJ5ihLkIaYLNIeF2/ODom82pnAS7ko3LyxYZEV2gwRMozPa7erHkQGaWbUi9/iOCS9GhOg7O0XhuUS88PUExvh24r9pNhMIHwJuuR+ne+YnsTGdy161cExHW73N/BAVuM/tLZBwg=
+	t=1729672043; cv=none; b=ofGT2p8810Qr/4aCXeJIUSthESULbXqfX73IPKQvnLgJT/tGJ8ir8fsLFkHfjK4Egi3LRgZe1HytWwvqqtqYkmCG3qTPxfVdgc9yv6YJZ3TsLaCwMI+YjSxsvekdI9Rc5jvg5J8Mw9knPK5uI8BUL7I9v/0Qh2cVX1uwwxn1bx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729666705; c=relaxed/simple;
-	bh=kIYSP2HrvnlBooroD9bV1HBVuIhQtKeyM8zyzFbi0Dc=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=F7DiWYsZkBaGVP//kPGXUXqk2IB0M4cpg0KG9RIOhlPwRDNaGmR6SzaDK1WjWQP8tskFgjn/08PFOBMOVKgCLGaQfuqHFlwLjylYIA0grdsnXehDJjnveunjIMH6E7gWeyyEO5tTMJbeDceSrn+y74wNJgfmPgUknczhRCCTWXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P5+4mh1G; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1729672043; c=relaxed/simple;
+	bh=U0tsJHZrqqryplTs05WdKWRIsA7U8scP65D3OIdBCqk=;
+	h=Message-ID:Date:MIME-Version:From:Cc:To:Subject:Content-Type; b=aATVyicoU4OLzuCFV9iBkRY5N2ZYcdSTFIn4LLRbww5xw0cttmMPxzH1U2EiyWD2fWTygGfvpocuWQzIKn711KUWbgt2QX66qDoOhRcoZg1YdxqVQJ/RAkGBXaq5EnrzYlKZirY0sWTtoTMTDW72erM7qVZgs/fs39BIyKun8iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ScDPTQnJ; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P5+4mh1G"
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-71e49ef3bb9so429959b3a.1;
-        Tue, 22 Oct 2024 23:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729666704; x=1730271504; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=psxO1zt20+uv/LX4GmwC5XIGZqa8nVpZ7UFHq/pnWwU=;
-        b=P5+4mh1GQhu6Uy8jhrHso4xmMb9AeiQigUCvp+t+ND7ADRRZtyNa3Z6g570jRLHX36
-         2tG4uEerlWUXn1QhsrbaIevAB9B0M/gRM3SOWJveCaTjxw8Ygb3WW7zEXLZ4OHSD8r1M
-         57NaiKJAdSjwUx3wQGuJI0PQoQS6neJ9J123rP7k0pzsglHkk1DW3CZ6b7RbvIReW1cM
-         q60W1GL7AAiItPEE6zXOUl2Dv6wWSYY4LVQUl1Ek6E7NbNkeU6KZtKuiEtIHBPgYFSG4
-         UG3DoGKAWuU1LAacKJCLpbTt6o1qrBs4eJfgN+8Lk47uy9fQvcpV15xjnYzt9XYqkBLq
-         xIhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729666704; x=1730271504;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=psxO1zt20+uv/LX4GmwC5XIGZqa8nVpZ7UFHq/pnWwU=;
-        b=XAvvJ5Aq/BoUkhKL3VPmQDii7LcJO1KdzWr1p8RG6ebsTt039Zjn/hNp9z1AU7xyQt
-         lRFfqYTb6exT7bA+sZPRmCwF2nayUVN7ejAOT3xZ5NGeGPpYGwjocDAiMRmxbetoXQ/h
-         vh5ZIwPdzjbD+MDRg2R5nCQ0AvN5fCunVZSPYs/FSnbLOAKhiYEy1oZAmAsp5M/INIES
-         4NYdaTwldthJmzrtk31IVx5MAjptXU96Qc9bmiHEqwlslaR+l0cRA1lW6GXvHvwF/w16
-         rRg/VGzceBMfISYQr8YuRFgN6saYsqgl0UHwX3RAfY8QjpCwlZj04VgWnQ4wXN3GyeYh
-         t3rg==
-X-Forwarded-Encrypted: i=1; AJvYcCVZIwsDqE1pdX3kiKJfP6m3L4HKZPOd0ebtfqbKKGlLx0Votd3WI90l+hhc3pKgiOHKNa1TIWYprXjOeLQ=@vger.kernel.org, AJvYcCXoFLj1/qOGq4faqH7MWYfqL+jzpu7fs4XEizV+DWyB+sPSY8GOHNygBbu/tYNPIYjyvYKn@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQfJKqzwNzCOPBB1SdePdbK1QWxOYjgRZw0rpYTOrPc4/44JyQ
-	e7XsTxwfkZdNoXz4otT/E/3DYI2HhtHezV+VO7W2BMzQgwkuthgF
-X-Google-Smtp-Source: AGHT+IHT8m3VszuaXVMsEaYDU2CFxrir9D9o3wCZ851AbCNsg96M3hI28FV72+/POnMqh+W8gJRxig==
-X-Received: by 2002:a05:6a00:2d0b:b0:71e:74f6:f83a with SMTP id d2e1a72fcca58-71edc132db1mr10191008b3a.3.1729666703550;
-        Tue, 22 Oct 2024 23:58:23 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec13ea28fsm5904240b3a.141.2024.10.22.23.58.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Oct 2024 23:58:23 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ScDPTQnJ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	Reply-To:Subject:To:Cc:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To
+	:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=Elp8TP5PUL4Th380KlSPCaH+/ahfGnDbjbC9HeP1pJs=; t=1729672041;
+	x=1730104041; b=ScDPTQnJ+1TvYwC7++DhfC+kN1zhEtZgOpf5oLj2rPRbItcJvvgcPzpszCMSE
+	E+AXONe9CBFcfHdtbyZenA1vqc1le8qKGVIeuWEfP2KBBXPYUPQQX3tNhr6FCkjCiT22vPZPU1OiJ
+	jOQ/+ve9FH5TcvpUkKzKjzV1RgRTzG1SHwl+D9VEIAI+uiJLtsCqD3WBzDMfyOsbWszpy7P9hMchF
+	dzV0FYqLrU0hQOycyFv5hCaxzE1Nq7A/y3VCS6eErfgH0b5FPZ9kLOs33Eclegfv9TeyPY7cKFti7
+	UcXi89Od9k5G7EPcjhfUqnDBqV5YD1Yb9MDCYBalobWnHYyDvw==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1t3Wi7-0001Hb-Gu; Wed, 23 Oct 2024 10:27:19 +0200
+Message-ID: <b8da4aec-4cca-4eb0-ba87-5f8641aa2ca9@leemhuis.info>
+Date: Wed, 23 Oct 2024 10:27:18 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Re: [PATCH rcu] srcu: Guarantee non-negative return value from
- srcu_read_lock()
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <8b2552d8-0453-476a-8606-e8b761934783@paulmck-laptop>
-Date: Wed, 23 Oct 2024 14:58:07 +0800
-Cc: Christoph Hellwig <hch@infradead.org>,
- Peter Zijlstra <peterz@infradead.org>,
- RCU <rcu@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- kernel-team@meta.com,
- Steven Rostedt <rostedt@goodmis.org>,
- andrii@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E068D091-F79C-4F56-974D-08ED95AD6F58@gmail.com>
-References: <97594073-e296-4876-9d6a-1e4a4f33d857@paulmck-laptop>
- <ZxdLfLWWrAEfRiXV@infradead.org>
- <20241022070635.GY16066@noisy.programming.kicks-ass.net>
- <ZxdPN6wT1LMyLaNL@infradead.org>
- <20241022071018.GA16066@noisy.programming.kicks-ass.net>
- <ZxdQiLhn16FtkOys@infradead.org>
- <8b2552d8-0453-476a-8606-e8b761934783@paulmck-laptop>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3776.700.51)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Cc: Linux kernel regressions list <regressions@lists.linux.dev>,
+ LKML <linux-kernel@vger.kernel.org>, Mingcong Bai <jeffbai@aosc.io>,
+ "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Subject: [Regression] wifi problems since tg3 started throwing rcu stall
+ warnings
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1729672041;c9578c6c;
+X-HE-SMSGID: 1t3Wi7-0001Hb-Gu
 
-On Oct 22, 2024, at 22:26, Paul E. McKenney <paulmck@kernel.org> wrote:
->=20
-> On Tue, Oct 22, 2024 at 12:13:12AM -0700, Christoph Hellwig wrote:
->> On Tue, Oct 22, 2024 at 09:10:18AM +0200, Peter Zijlstra wrote:
->>> Ah, well, the thing that got us here is that we (Andrii and me) =
-wanted
->>> to use -1 as an 'invalid' value to indicate SRCU is not currently in
->>> use.
->>>=20
->>> So it all being int is really rather convenient :-)
->>=20
->> Then please document that use.  Maybe even with a symolic name for
->> -1 that clearly describes these uses.
->=20
-> Would this work?
->=20
-> #define SRCU_INVALID_INDEX -1
+Hi, Thorsten here, the Linux kernel's regression tracker.
 
-Is there any similar guarantee of the return value of =
-get_state_synchronize_rcu
-or start_poll_synchronize_rcu, like invalid value?
+Frederic, I noticed a report about a regression in bugzilla.kernel.org
+that appears to be caused by the following change of yours:
 
->=20
-> Whatever the name, maybe Peter and Andrii define this under #ifndef
-> right now, and we get it into include/linux/srcu.h over time.
->=20
-> Or is there a better way?  Or name, for that matter.
->=20
-> Thanx, Paul
->=20
+55d4669ef1b768 ("rcu: Fix rcu_barrier() VS post CPUHP_TEARDOWN_CPU
+invocation")
 
+As many (most?) kernel developers don't keep an eye on the bug tracker,
+I decided to write this mail. To quote from
+https://bugzilla.kernel.org/show_bug.cgi?id=219390:
+
+>  Mingcong Bai 2024-10-15 13:32:35 UTC
+> 
+> Since aa162aa4aa383a0a714b1c36e8fcc77612ddd1a2 between v6.10.4 and
+> v6.10.5, the Broadcom Tigon3 Ethernet interface (tg3) found on Apple
+> MacBook Pro (15'', Mid 2010) would throw many rcu stall errors during
+> boot up, causing peripherals such as the wireless card to misbehave:
+> 
+> [   24.153855] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 2-.... } 21 jiffies s: 973 root: 0x4/.
+> [   24.166938] rcu: blocking rcu_node structures (internal RCU debug):
+> [   24.177800] Sending NMI from CPU 3 to CPUs 2:
+> [   24.183113] NMI backtrace for cpu 2
+> [   24.183119] CPU: 2 PID: 1049 Comm: NetworkManager Not tainted 6.10.5-aosc-main #1
+> [   24.183123] Hardware name: Apple Inc. MacBookPro6,2/Mac-F22586C8, BIOS    MBP61.88Z.005D.B00.1804100943 04/10/18
+> [   24.183125] RIP: 0010:__this_module+0x2d3d1/0x4f310 [tg3]
+> [   24.183135] Code: c3 cc cc cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 89 f6 48 03 77 30 8b 06 <31> f6 31 ff c3 cc cc cc cc 66 0f 1f 44 00 00 90 90 90 90 90 90 90
+> [   24.183138] RSP: 0018:ffffbf1a011d75e8 EFLAGS: 00000082
+> [   24.183141] RAX: 0000000000000000 RBX: ffffa04ec78f8a00 RCX: 0000000000000000
+> [   24.183143] RDX: 0000000000000000 RSI: ffffbf1a00fb007c RDI: ffffa04ec78f8a00
+> [   24.183145] RBP: 0000000000000b50 R08: 0000000000000000 R09: 0000000000000000
+> [   24.183147] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000216
+> [   24.183148] R13: ffffbf1a011d7624 R14: ffffa04ec78f8a08 R15: ffffa04ec78f8b40
+> [   24.183151] FS:  00007f4c524b2140(0000) GS:ffffa05007d00000(0000) knlGS:0000000000000000
+> [   24.183153] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   24.183155] CR2: 00007f7025eae3e8 CR3: 00000001040f8000 CR4: 00000000000006f0
+> [   24.183157] Call Trace:
+> [   24.183162]  <NMI>
+> [   24.183167]  ? nmi_cpu_backtrace+0xbf/0x140
+> [   24.183175]  ? nmi_cpu_backtrace_handler+0x11/0x20
+> [   24.183181]  ? nmi_handle+0x61/0x160
+> [   24.183186]  ? default_do_nmi+0x42/0x110
+> [   24.183191]  ? exc_nmi+0x1bd/0x290
+> [   24.183194]  ? end_repeat_nmi+0xf/0x53
+> [   24.183203]  ? __this_module+0x2d3d1/0x4f310 [tg3]
+> [   24.183207]  ? __this_module+0x2d3d1/0x4f310 [tg3]
+> [   24.183210]  ? __this_module+0x2d3d1/0x4f310 [tg3]
+> [   24.183213]  </NMI>
+> [   24.183214]  <TASK>
+> [   24.183215]  __this_module+0x31828/0x4f310 [tg3]
+> [   24.183218]  ? __this_module+0x2d390/0x4f310 [tg3]
+> [   24.183221]  __this_module+0x398e6/0x4f310 [tg3]
+> [   24.183225]  __this_module+0x3baf8/0x4f310 [tg3]
+> [   24.183229]  __this_module+0x4733f/0x4f310 [tg3]
+> [   24.183233]  ? _raw_spin_unlock_irqrestore+0x25/0x70
+> [   24.183237]  ? __this_module+0x398e6/0x4f310 [tg3]
+> [   24.183241]  __this_module+0x4b943/0x4f310 [tg3]
+> [   24.183244]  ? delay_tsc+0x89/0xf0
+> [   24.183249]  ? preempt_count_sub+0x51/0x60
+> [   24.183254]  __this_module+0x4be4b/0x4f310 [tg3]
+> [   24.183258]  __dev_open+0x103/0x1c0
+> [   24.183265]  __dev_change_flags+0x1bd/0x230
+> [   24.183269]  ? rtnl_getlink+0x362/0x400
+> [   24.183276]  dev_change_flags+0x26/0x70
+> [   24.183280]  do_setlink+0xe16/0x11f0
+> [   24.183286]  ? __nla_validate_parse+0x61/0xd40
+> [   24.183295]  __rtnl_newlink+0x63d/0x9f0
+> [   24.183301]  ? kmem_cache_alloc_node_noprof+0x12b/0x360
+> [   24.183308]  ? kmalloc_trace_noprof+0x11e/0x350
+> [   24.183312]  ? rtnl_newlink+0x2e/0x70
+> [   24.183316]  rtnl_newlink+0x47/0x70
+> [   24.183320]  rtnetlink_rcv_msg+0x152/0x400
+> [   24.183324]  ? __netlink_sendskb+0x68/0x90
+> [   24.183329]  ? netlink_unicast+0x237/0x290
+> [   24.183333]  ? __pfx_rtnetlink_rcv_msg+0x10/0x10
+> [   24.183336]  netlink_rcv_skb+0x5b/0x110
+> [   24.183343]  netlink_unicast+0x1a4/0x290
+> [   24.183347]  netlink_sendmsg+0x222/0x4a0
+> [   24.183350]  ? proc_get_long.constprop.0+0x116/0x210
+> [   24.183358]  ____sys_sendmsg+0x379/0x3b0
+> [   24.183363]  ? copy_msghdr_from_user+0x6d/0xb0
+> [   24.183368]  ___sys_sendmsg+0x86/0xe0
+> [   24.183372]  ? addrconf_sysctl_forward+0xf3/0x270
+> [   24.183378]  ? _copy_from_iter+0x8b/0x570
+> [   24.183384]  ? __pfx_addrconf_sysctl_forward+0x10/0x10
+> [   24.183388]  ? _raw_spin_unlock+0x19/0x50
+> [   24.183392]  ? proc_sys_call_handler+0xf3/0x2f0
+> [   24.183397]  ? trace_hardirqs_on+0x29/0x90
+> [   24.183401]  ? __fdget+0xc2/0xf0
+> [   24.183405]  __sys_sendmsg+0x5b/0xc0
+> [   24.183410]  ? syscall_trace_enter+0x110/0x1b0
+> [   24.183416]  do_syscall_64+0x64/0x150
+> [   24.183423]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> I have bisected the error to this commit. Reverting it caused no new or
+> perceivable issues on both the MacBook and a Zen4-based laptop.
+
+[...]
+
+>> Ohh, and when you say "causing peripherals such as the wireless card to
+>> misbehave" what exactly do you mean?
+> 
+> When the kernel throws rcu stall messages, the wireless card on the
+> MacBook may fail to discover and/or connect to wireless networks - not a
+> consistent behaviour but I suppose that something in the kernel got stuck.
+
+See the ticket for more details and dmesg logs; the problem still
+happens with 6.12-rc. The reporter is CCed.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+P.S.: let me use this mail to also add the report to the list of tracked
+regressions to ensure it's doesn't fall through the cracks:
+
+#regzbot introduced: 55d4669ef1b76823083caecfab12a8bd2ccdcf64
+#regzbot from: Mingcong Bai <jeffbai@aosc.io>
+#regzbot duplicate: https://bugzilla.kernel.org/show_bug.cgi?id=219390
+#regzbot title: rcu: wifi problems since tg3 started throwing rcu stall
+warnings
+#regzbot ignore-activity
