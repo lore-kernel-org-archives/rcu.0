@@ -1,89 +1,92 @@
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578AA1FAF1E
-	for <rcu@vger.kernel.org>; Thu, 24 Oct 2024 17:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A0B216A0C;
+	Thu, 24 Oct 2024 20:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729790828; cv=none; b=UEsn6oh9xhE5Ido1ChSMpZVXjr+ZY9fnRAdqns+jY6xTTbauoHz2oiITi14h0rSzrwE59NoTNPKyXXwYvDxlBA6g3Xe2NUTYIlghncUnTNNpXn8KdVJE6HKErxfCvxX9H1qe5846Wkfpug/Rmg6FhBLdmqXqFLSYaG/G9DW8Xm8=
+	t=1729801704; cv=none; b=uTE9OgK6+lINY3X8Vcl7THCYrCQijvLq5UMfzbhsOMz2pQH0DRfJncume4K4cMe8VUvUP13NM2E9dh6KsFGUgje+TImBGXNqFvmyng8ug2q3RPluAIZ/eDJS24wAh5j2TzWYc3uhFdB/IMZwpOOwHGzmlDy0d9GL2IFIuK/Jz58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729790828; c=relaxed/simple;
-	bh=h8RFd+d+i1wbRBi6yqvvSPq8tMEmRyVuXH8u+OiSNKE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N1dmCsJeqTT7rVAIC7VrMTws+UkwmELIzkmJ0c2iRUb4WxkImByHlbiauh0+tQqDf8t2PchJtLmaM6w+DaJGZnFBgygUZNXor55fGcYnbYrhuFr2Qs2Cwys7rOPbHQpm1XwsTVpe10rDu25Tc0+8O+/2gq6YovJAu02mIDH6GWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bfj75SZ6; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1729801704; c=relaxed/simple;
+	bh=oowk6seRJ6717d9XxCE+gg+EDwstr4833dYoKnYVTjY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sq35TXWwH7w6ifkp0CMbs1BnbvSx6oSGMTwQtnLBtGgXjr9ntHf7mcrACysO1zzWhoWM/EqoSn/AQYM6GUdwoj8XJgvEo1D1gk+cor5G+fIHwhnt+UGw++XVfXa7BQ4KNNoKocQNdIE0tP2HI03G/sisMkGEjhddZfFrxV9D91c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4Xrqimz; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bfj75SZ6"
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3e605ffe10cso729675b6e.3
-        for <rcu@vger.kernel.org>; Thu, 24 Oct 2024 10:27:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1729790825; x=1730395625; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5bnWcdm5+hNqSVcQRV8A0OvOCGjR5wdTjA31GYBYKTQ=;
-        b=bfj75SZ6HvWNBXaxXLSF0ZuWZlItSStglmpmogo18PSi5u3T9xJcaf+npjzzLCqon8
-         JvIwRx4m4SV0jus5jkRqXvPY5Bk131+EBIaH6fp0nLNJ7da4DX6qcp+fqdPvyrWprKhL
-         YYo68XjQBVxeptMRUGjRbHekyXF5s4XO3r/JsnY5fqKmu/QB3of2944A0n7GB51HpcJ8
-         8Ju/iGCNt180bkXMRv1LXdQKlx2BVAPsVj9FfCBKX6FV8D4Z5nwbIseJrnz3LZzf1/UX
-         m0izVBO/QYuNq2oI7FivW+PPtQKaOZAmDI9toTD8xNoyfSJhZxCRW06uJWvWE2hdiVk0
-         nYMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729790825; x=1730395625;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5bnWcdm5+hNqSVcQRV8A0OvOCGjR5wdTjA31GYBYKTQ=;
-        b=S6vOOkMFKkTIsxwehaLf2drHFkqdQsRshj015v16VtP6hz4lI5dMan5jEntrCsb4Df
-         U5VgqThvkP2Mcy66oQFsvKAcvBA6UHQ6YSAvSaC5EsA8aBGS9UwfoAlc8qtC8JBQm4w6
-         Z/jis+pcEj0zPbT0E0pFwbyUf0ItDXQDMu3vXRl4dj+v+PJwEllR9fYHGJdmGhT3h66c
-         Km2XuJWBTESOMqxeCwVL1JPohWDc4mIeFXDiT2UYanYFXMc/oqKQTly1VJbEqIaL7MIm
-         D9iMsiEUVRytbkO6AoZUfFoVAyyk9peiOmhNvd2xsohASlyJNaXlcluAkCJlbgHMsQoY
-         4M9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWRllYNSEIvRTgHpGK66bPJclMOYr1HO47w8QLnahBjOzcqiUlLAePpMMKhDq9N0HYDilg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbZfyjBg/hNSutZnQbCuB+oXBOyPkGIexbS1qgxlB1aMFEHiVc
-	0vU712/17YDDLsHbLitX7sZ4ic4ljoVPNAm8wfgDl0iBKWaK9IlfrFZVqX7a8SP6ESjNfPa8BZn
-	UbCmhCxqW85CCNmfiKl/N/L4SQb4kBhvu/udTmA==
-X-Google-Smtp-Source: AGHT+IHhQgBabBejMOJrKixD9g1JQGyZY7vFWmponZeA+I34SkwPlnziEuk8soIt/tK651/v3WePSqfLEmAYknFqfOA=
-X-Received: by 2002:a05:6808:3092:b0:3e3:e0d6:1434 with SMTP id
- 5614622812f47-3e624501561mr6952186b6e.1.1729790825369; Thu, 24 Oct 2024
- 10:27:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4Xrqimz"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 749CEC4CEC7;
+	Thu, 24 Oct 2024 20:28:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729801704;
+	bh=oowk6seRJ6717d9XxCE+gg+EDwstr4833dYoKnYVTjY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=s4XrqimzAJeSNkUw0dV/hjrGVTGPif+C03heLE9ToIEWCukAmv4k/1dJKDAftzV1p
+	 YOXtxdmqR0lSgZUseWrPiPms1gHSuVt63VlNmk4bCkLL9TZu8V5NLD+5PKTgYmvPzP
+	 E4Spqz698LASoPs8enaMRCdCdcYa00NPvdomwr1FvlzGfdZVqef0MokdtyhfU5bK33
+	 pTbHipqQ/9IijELfL0uMRYNxJ44VpFlLfl8cBgKqcX8TSJ8aKBgC6emOHnwFZulniS
+	 rxq/ICoGkbrL6cH8vT74Q6zaSM7wxjqgWJkRjtpwnSkqeepJ5mzR5abQwk2ofotusr
+	 hoaEUKihtn+ZA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1E1ABCE0F74; Thu, 24 Oct 2024 13:28:24 -0700 (PDT)
+Date: Thu, 24 Oct 2024 13:28:24 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 2/2] rcuscale: Remove redundant WARN_ON_ONCE() splat
+Message-ID: <640af17a-958c-4321-89d4-8ab1f12986fb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20241024164558.715296-1-urezki@gmail.com>
+ <20241024164558.715296-2-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+G9fYsaQPsvJdCsezaTu1x3koCzkTBEG8C1NpZotZLXZpZ9Qw@mail.gmail.com>
-In-Reply-To: <CA+G9fYsaQPsvJdCsezaTu1x3koCzkTBEG8C1NpZotZLXZpZ9Qw@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 24 Oct 2024 22:56:53 +0530
-Message-ID: <CA+G9fYu1QsoBLgqn5yQF28n=0gz773-cO2jq9J=qeUNugD+Hcg@mail.gmail.com>
-Subject: Re: stable-rc linux-6.6.y: Queues: tinyconfig: undefined reference to `irq_work_queue'
-To: linux-stable <stable@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	rcu <rcu@vger.kernel.org>
-Cc: Anders Roxell <anders.roxell@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Sasha Levin <sashal@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241024164558.715296-2-urezki@gmail.com>
 
-On Thu, 24 Oct 2024 at 20:11, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> Most of the tinyconfigs are failing on stable-rc linux-6.6.y.
->
-> Build errors:
-> --------------
-> aarch64-linux-gnu-ld: kernel/task_work.o: in function `task_work_add':
-> task_work.c:(.text+0x190): undefined reference to `irq_work_queue'
-> task_work.c:(.text+0x190): relocation truncated to fit:
-> R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
+On Thu, Oct 24, 2024 at 06:45:58PM +0200, Uladzislau Rezki (Sony) wrote:
+> There are two places where WARN_ON_ONCE() is called two times
+> in the error paths. One which is encapsulated into if() condition
+> and another one, which is unnecessary, is placed in the brackets.
+> 
+> Remove an extra WARN_ON_ONCE() splat which is in brackets.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Anders bisected this regression and found,
-# first bad commit:
-  [63ad09867ee1affe4b7a5914deeb031d5b4c0be2]
-  task_work: Add TWA_NMI_CURRENT as an additional notify mode.
-  [ Upstream commit 466e4d801cd438a1ab2c8a2cce1bef6b65c31bbb ]
+For both:
 
-- Naresh
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+
+> ---
+>  kernel/rcu/rcuscale.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index de7d511e6be4..1d8bb603c289 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -889,13 +889,11 @@ kfree_scale_init(void)
+>  
+>  		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
+>  			pr_alert("ERROR: call_rcu() CBs are not being lazy as expected!\n");
+> -			WARN_ON_ONCE(1);
+>  			goto unwind;
+>  		}
+>  
+>  		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start > 3 * HZ)) {
+>  			pr_alert("ERROR: call_rcu() CBs are being too lazy!\n");
+> -			WARN_ON_ONCE(1);
+>  			goto unwind;
+>  		}
+>  	}
+> -- 
+> 2.39.5
+> 
