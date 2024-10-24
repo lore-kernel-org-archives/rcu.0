@@ -1,143 +1,96 @@
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0311E2614
-	for <rcu@vger.kernel.org>; Thu, 24 Oct 2024 14:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B538C1B983F;
+	Thu, 24 Oct 2024 15:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729780910; cv=none; b=cAeWfdKObL6ErbzYWp3UNjD/0pK44ceLZY74iFia31trCMxaSYrdXncT6xW/VV+DMMUQArMHWaVg0oEZqD+63CX/6DBkd/zHY5otDKOhVXgXZamzKQwpyT7XVEoMcT+Tz1KEZpi8RSF8aGqeGWkiefOb/PQoDuneLi6QuWYksLQ=
+	t=1729782268; cv=none; b=nYPLwVpTGS0k0AvqMgvJVnKZXLoim31aNinIELJgRVMf/5stZduGZ6ciGaEwHOzQcob5dJymyFPBI1jVm+BesyHYX9G8BKx/TxwovpUiaC6IJqes1NEtELtLspK+6KJAr+6td48PqRQiTMF5ZxaovkoqeYlX1mwbEHqAXSwchT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729780910; c=relaxed/simple;
-	bh=PB8KBVtiODUPJZipdTOV7LIC3rFuPdVi4OkEXiOycZQ=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=i9FZCaV+wC65sfti78syurSU3E6sChRyVGL3igOfmqnr/cQgiMspnDCFVEuY7l7erYk9ieEMb+PS8B2FmBkNEtJVEFrmtQUl2QEqk6H6Kfieo82Y5P1KX2hIRCE/fljo8AHWzTio2NzWmUFEqTMR5EWCSNs3Lhs5Qhcy0ppxVqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wAfM0OWt; arc=none smtp.client-ip=209.85.167.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1729782268; c=relaxed/simple;
+	bh=SoohIX4A8iq+a394BKxuqcPe7xfBSY1DJV2TDucHwFc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tvLakex+qjXGJSnvv17ZIAt/LVmnK6z14/WZTCk3SxKHvQPNXKrz6AK/sHP2/qCUW0kp6F/1lE0RW64gwkvxty52z/xZQRPSDdhhiaWAcCWyZ0F5aPeUYtfKNmOKwGJq6BzHLgqz8tOwrTIM5dngGd5gQFfUPuasJH+Pg6Cenzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yVtgLiY7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=a6eQ1FRy; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wAfM0OWt"
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3e5fee32e76so579913b6e.1
-        for <rcu@vger.kernel.org>; Thu, 24 Oct 2024 07:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1729780907; x=1730385707; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dZVAlNyX41TJtkmqUex4uvcXk1DCDx1jUZWPpru6ieQ=;
-        b=wAfM0OWtqL3UAFrAGLpmyT38YMOJU3RlJGWdA22cvnLzKsG2yrqnbYtdcpxQ2OJdPx
-         WHojQU+W66MEYcqeORNuCTGlbG9pByfnkF5MJeaTLH+VFfRMZPEp9Kr5WK/zIlsHFEXM
-         nAhu2+p4f61leCBTqz8ktk4UiVHyvXzz1d9IDiC3yDaUc912qBXHLs25YUs94ZvTEhn/
-         msR2cz7IR6e+63DoVlXOvcf98K9bUFV6+5lgFB/YGdlRDRMW1/zmy614wEb7zGg/Yp8E
-         0HBnylUyITPWdkrV7ZuyAek1psV1xAF6USHUNcPVkEJOwIVpuXNs6jKAziHhmgUHwzHv
-         YDEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729780907; x=1730385707;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dZVAlNyX41TJtkmqUex4uvcXk1DCDx1jUZWPpru6ieQ=;
-        b=eGT3bC4CWxEVprLmbroBvyy5v53z5SUjhNzgwnaneUaxyVIVzGr66SV3dg1EKbknmC
-         SAzo4+LUYLw4sjAFW00bmGqovwJecUhqkZN/xXtGYo2pxO/Q9JHpT8uEwQ/qYTUm1a5E
-         RzIFEHxaw0ZcxsUTH/AAacAnQiLdRc4Z1ycjr07We0PAQ72zPymECwyHkEkeVy2jgQu1
-         uP6qLMPQ330bNE2yEXjhelxC9YxANhGIPMb/hptD3P82sC7xR16Hj9EnxOugBSPS9zaJ
-         WXu7IXQmFE4jJcqjQ4DQNj4M4jGbFi1fgz4yhDxHTo/Q4OXuRIdxq1wcSayYdx0AlWeR
-         V/6g==
-X-Forwarded-Encrypted: i=1; AJvYcCV3blg6jHWfnRt75BCypLEW8EFpyoJGUgraIhFWYr7jtqMN2FMhyXbP/xJn6e2nXbO9OS0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwAfpdW7bIpuojE7zJnWCaGoHTEkW0vmE5FMoILYyDxdCUGcBGE
-	8mfCq/JhCJ3VB5k2w9NWWhdUWsl3sTpIICmQe/DOz+oKT0j3doWps/zHZa5og2P8EMPsYAqo8GT
-	sKzlrTC3rEL5hWF9+QRxeARfOui8FQS3d1dlSQg==
-X-Google-Smtp-Source: AGHT+IFoj6HxQyMTP+O33KIqB5ZEoLUAbXegDn8qFNOc1tMmOFYwu+hGvrsVM/tago/3Idtl8FtQq6jNLh4roVRyF88=
-X-Received: by 2002:a05:6808:3a07:b0:3e6:261f:5a51 with SMTP id
- 5614622812f47-3e6261f61eemr6815877b6e.35.1729780907103; Thu, 24 Oct 2024
- 07:41:47 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yVtgLiY7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="a6eQ1FRy"
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1729782259;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OsoLDSGHUhlix5riksMYLdDZFvTpSEdwUTBBLqYAa0A=;
+	b=yVtgLiY7kxzdJAXqBiRJFOj8DnNeDT2isvUHmPbsqMzV9QJWqQPvXB/C1U3E4nP6IKdFAx
+	Rj9iE94wuncptQvy6S9PSACkpkNjqR0hZ26jHl4Vglrm9ZYcBX7+0TVrw+LV+xX9fm1H+M
+	cpcytt0iZ9QV+/WBdJ0EYBBAiEKq8vckq8RDPi+UW0FgG/j41+dLp6s+FFwLxaUkMLQqEU
+	wiSzNJLo38/w/YWRPGBXChXqiYT9jDQMvjyNg0/EKTAKsHaAS8pNsP9Ftg+pFvLm6GK1x1
+	kgB0MpTr56/rbrpVml9xeLp0J5W5jBUW0k7TMbSOjyv76+AkPx4llVxf1tLpzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1729782259;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OsoLDSGHUhlix5riksMYLdDZFvTpSEdwUTBBLqYAa0A=;
+	b=a6eQ1FRyvtMi/JErjcYKTw8UKKRW40XRIfpD+fCBC7q5E3giV//eLtnmRqF3tYKnpoNjLc
+	2jkxPblvIZX6z2CQ==
+To: linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v2 0/3] softirq: Use a dedicated thread for timer wakeups on PREEMPT_RT.
+Date: Thu, 24 Oct 2024 16:55:48 +0200
+Message-ID: <20241024150413.518862-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 24 Oct 2024 20:11:34 +0530
-Message-ID: <CA+G9fYsaQPsvJdCsezaTu1x3koCzkTBEG8C1NpZotZLXZpZ9Qw@mail.gmail.com>
-Subject: stable-rc linux-6.6.y: Queues: tinyconfig: undefined reference to `irq_work_queue'
-To: linux-stable <stable@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	rcu <rcu@vger.kernel.org>
-Cc: Anders Roxell <anders.roxell@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Most of the tinyconfigs are failing on stable-rc linux-6.6.y.
+Hi,
 
-Build errors:
---------------
-aarch64-linux-gnu-ld: kernel/task_work.o: in function `task_work_add':
-task_work.c:(.text+0x190): undefined reference to `irq_work_queue'
-task_work.c:(.text+0x190): relocation truncated to fit:
-R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
+the following was in the PREEMPT_RT queue since last softirq rework. The
+result is that timer wake ups (hrtimer, timer_list) happens in hardirq
+processing them requires to wake ksoftirqd. ksoftirqd runs at SCHED_OTHER s=
+o it
+will compete for resources with all other tasks in the system, potentially
+delayed the processing further.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The idea was to let the timers be processed by a dedicated thread
+running at low SCHED_FIFO priority.
+While looking at it again, it might make sense to have the
+pending_softirq flag per-thread to avoid threads with higher priority
+picking up softirqs from low-priority threads. This isn't yet a problem
+because adding softirqs for processing happens only from threaded
+interrupts. So the low-priority thread will wait until the high-priority
+thread is done. And the high-priority thread will PI-boost the
+low-priority thread until it is done. It would only make sense to make
+the flags per-thread once the BH lock is gone.
 
-metadata:
-------------
-git_describe: v6.6.57-251-g1870a9bd3fe7
-git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Build:   v6.6.57-251-g1870a9bd3fe7
-Details: https://qa-reports.linaro.org/lkft/linux-stable-rc-queues-queue_6.6/build/v6.6.57-251-g1870a9bd3fe7
-kernel_version: 6.6.58
+The patch is limited to PREEMPT_RT. The ksoftirqd bullets from above
+apply also to !PREEMPT_RT +threadirqs. Would it make sense to restrict
+it to force_irqthreads() instead?
 
-Regressions (compared to build v6.6.57)
-------------------------------------------------------------------------
+v1=E2=80=A6v2: https://lore.kernel.org/all/20241004103842.131014-1-bigeasy@=
+linutronix.de/
+ Frederick's comments:
+ - Use __raise_softirq_irqoff() to raise the softirq for !PREEMPT_RT. Also a
+   lockdep test to ensure that this is always invoked from an IRQ.
+ - Make raise_ktimers_thread() only OR the flag and nothing else to
+   align with __raise_softirq_irqoff(). The wake happens on return from
+   interrupt anyway.
+ - A comment in timersd_setup() and interrupt.h
+ - local_pending_timers() =3D> local_timers_pending().
 
-parisc:
+Sebastian
 
-  * build/gcc-11-tinyconfig
-mips:
-
-  * build/gcc-12-tinyconfig
-  * build/clang-19-tinyconfig
-  * build/gcc-8-tinyconfig
-  * build/clang-nightly-tinyconfig
-arm:
-
-  * build/clang-19-tinyconfig
-  * build/gcc-8-tinyconfig
-  * build/gcc-13-tinyconfig
-  * build/clang-nightly-tinyconfig
-powerpc:
-
-  * build/clang-19-tinyconfig
-  * build/gcc-8-tinyconfig
-  * build/gcc-13-tinyconfig
-  * build/clang-nightly-tinyconfig
-arm64:
-
-  * build/clang-19-tinyconfig
-  * build/gcc-8-tinyconfig
-  * build/gcc-13-tinyconfig
-  * build/clang-nightly-tinyconfig
-arc:
-
-  * build/gcc-9-tinyconfig
-  * build/gcc-8-tinyconfig
-s390:
-
-  * build/clang-19-tinyconfig
-  * build/gcc-8-tinyconfig
-  * build/gcc-13-tinyconfig
-  * build/clang-nightly-tinyconfig
-sparc:
-
-  * build/gcc-8-tinyconfig
-  * build/gcc-11-tinyconfig
-riscv:
-
-  * build/clang-19-tinyconfig
-  * build/gcc-8-tinyconfig
-  * build/gcc-13-tinyconfig
-
-compare history links:
------
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-queues-queue_6.6/build/v6.6.57-251-g1870a9bd3fe7/testrun/25533195/suite/build/test/gcc-13-tinyconfig/history/
-- https://qa-reports.linaro.org/lkft/linux-stable-rc-queues-queue_6.6/build/v6.6.57-251-g1870a9bd3fe7/testrun/25533195/suite/build/test/gcc-13-tinyconfig/log
-
---
-Linaro LKFT
-https://lkft.linaro.org
