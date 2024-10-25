@@ -1,91 +1,103 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB58818CBFF;
-	Fri, 25 Oct 2024 06:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CA21B0F3E
+	for <rcu@vger.kernel.org>; Fri, 25 Oct 2024 06:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729839100; cv=none; b=t/H+mBRaPL/A3aRb8bBoA2ZilVWRqmAlaNBBkg0tsTi62r/frJdF7Fc+dPj0XTV4JDBIVREUvbBdi3XLR1LlmNrGdqv37PdMBqnSQgEXhsZtR8NPwsEl5n9aEsSJEFwS/E361k5Sroi3c5bArtth3XmmL02H6oPMN6FYuLboHQg=
+	t=1729839494; cv=none; b=MY3Pnojv2mpr0EFcgCinlEviW9jz7Y16Ey5aBFuYkUrIdl8fCFFenoGLvr98ZDAtUhwTSYBEeD6mXMxIgM5ESJ7wigi3xjZiDhxc5dlO3ZVW+MxB8wNLn1KwuxLCJOXwZqwrpL5uckUKdOIYh47Gs4c/o2qofCVdlzqt/YhMv50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729839100; c=relaxed/simple;
-	bh=Fcj07ef6ZmAUJLv0JpSeJ5QvpvjS7urdGRU/woa/GRU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gB5EESCC1oOULHvNoxQcN5gmG5e32p4+dlTlR6iYRKCSF3A/AwoWwNIvC27vUmx016SGPqrA8ZN/oT8w4MBR/zQvef/7QcyG2QxzmFYeUsJEv5xTSS3b4+EYqurF1aKixPYtPsF2dP1r+qiBJKddJmauMLy0mJ052+BxIA3Ho84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bxftS3/Y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4k/3pj60; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1729839494; c=relaxed/simple;
+	bh=sBTXmI6NZgdBE3MLizMmB4sLy8PV3GeBa7CDd4wgcy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ncLaswUnkSbuNsgMFzgVpXolZUXUpVHBDwY6BmrQal/zx6IttQ6+P5QN5vquiE8xZt4pC7992G8LuUn5mAR3kTqbDnvNA6yLGzHJtlD621S+7SAMGne1P/m5GvNqpC5sn9y+hWtcXmiRg0MR8xMdjK8wDOBWzvYUCL/moMaLVH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=og/WxUJ3; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bxftS3/Y";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4k/3pj60"
-Date: Fri, 25 Oct 2024 08:51:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1729839096;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=20Bc1eU/s+h4RynsGXBZHHHgbYIcK+6zEwC7BqWsbmE=;
-	b=bxftS3/YirzavYM9UjJzWXinFXe3cgs0C1Yk9luCwjZk7wChO17GtCpqpavFtXbOeF3+20
-	swzPStw4egcfqn+aFdDn0sYb4/vuVqdAAGKK3Bppgf9h/6uqyytZz5F6MeB5gGkd33iNgI
-	bmnwvcQCvMOt3N4BIak9KoCMV/RrCKgMy8CSlZMQB7DA8ZsA9B51gOJ7d4YmEtGvHaK0lh
-	cmiezL7sA2Cg8wB1cjobeoAWlvX8SsUCW+uOG2bQnDq+b03wh/F2qGrqhvKLAqBrylw1Jy
-	Ewem8m2p4aYYoJDJvycTFwBwfopbWLuBZi8erTXh8ZNo2TxioZKAh/4nhTW3Qw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1729839096;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=20Bc1eU/s+h4RynsGXBZHHHgbYIcK+6zEwC7BqWsbmE=;
-	b=4k/3pj60xk1hswzu8D2SbjRA3cfQ9nyD2d6cL1SeV/wp1XLhdWTA1qxlbnO0gHnWtzIlaX
-	oyHa1ZeqW1SVBzAg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: linux-stable <stable@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: stable-rc linux-6.6.y: Queues: tinyconfig: undefined reference
- to `irq_work_queue'
-Message-ID: <20241025065133.oMP0jTDx@linutronix.de>
-References: <CA+G9fYsaQPsvJdCsezaTu1x3koCzkTBEG8C1NpZotZLXZpZ9Qw@mail.gmail.com>
- <CA+G9fYu1QsoBLgqn5yQF28n=0gz773-cO2jq9J=qeUNugD+Hcg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="og/WxUJ3"
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-37d808ae924so1194804f8f.0
+        for <rcu@vger.kernel.org>; Thu, 24 Oct 2024 23:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1729839491; x=1730444291; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C3LzRSuqFUNNIls06aLLw3N1E++PGjrYT9igAcSyaqw=;
+        b=og/WxUJ3WjWjBUiBzwbMzqI9IuiqLaNm5+aw8Fo3jo/hB3NFOFQCgxKYB49VuqzDQK
+         JbKrRucgmHQk/JBLD60dWcqOsbmBrc0LF1YsrIn0PE5PaGKEYd+L0mF3FWEBhvD9ZzwS
+         JIws6rxCs2Um0+fnpBXOVeK6IH0ApGBsRincf7mlQgwgd7fcBefLnl2vdqQ9Zc1rEoLa
+         bNietSi+WH4Jv7U//+CactFuy6UYoedD+sUBqYpSvAA/bCnj8S/2LN7WfIPHjB3CkkN1
+         RlF2lViy/KYHxwY2Scs8KoxTJpHYSsRHH4vkaeYP+DJCdEBdIxONbsJAfBYaxD9HzQu5
+         wmXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729839491; x=1730444291;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C3LzRSuqFUNNIls06aLLw3N1E++PGjrYT9igAcSyaqw=;
+        b=d2O3gTBrEKyR6XcIuSLMjNODA/kbXZTdOxDKT8GrlF5FtkmzAfd1Kq7ERSnBvLiaJ4
+         5uobW11UzMCGMkVI7iCqrqCpXeTRyowtfT00kQPIRtGwUcpn1RPV02GqUH9wipy8Ur/t
+         ps+sBx6bW06mmdsgF9nD5vaUOwp5eFKnLytLY6O2P+za1Mmq0oXqUTQttwp+m5RVuwvw
+         cMwoSHdHSVAc2d2cwtreIrgTSKcySZJAi7+cvwjGXuLKHtzWTEAHcgSh9gOFivgXWhp6
+         K0d1943/8kGEELRfjV4TESWQy2p+PRGA4plGLJYAebBnedflHzaaBpAKUlEVi2a0V9hg
+         HyAw==
+X-Gm-Message-State: AOJu0YwCuLc6RoiFPAPVrtuZ8oI6tKyXhmPTiqXNR5nqRNVc78rOYK+U
+	nkKdENupfvSIyEVUpnwOByv9gLxJZacZVYf8FW9NbTovfFAia80/hhSEYOdAIcmJGh6W9yqX7ln
+	iCK+LqA==
+X-Google-Smtp-Source: AGHT+IFOUcg0o8x+V8MO/OT9IJx0xRi4+WOeNrizJQmPZtw76liyIhfSDJyY1kDogHEQxRhVwLBKKw==
+X-Received: by 2002:a5d:46ce:0:b0:37d:476e:f110 with SMTP id ffacd0b85a97d-38045882607mr3262640f8f.34.1729839490270;
+        Thu, 24 Oct 2024 23:58:10 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b47a41sm751945f8f.52.2024.10.24.23.58.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Oct 2024 23:58:09 -0700 (PDT)
+Date: Fri, 25 Oct 2024 09:58:05 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org
+Subject: [bug report] refscale: Add srcu_read_lock_lite() support using
+ "srcu-lite"
+Message-ID: <663547f8-3126-453d-8f9e-f9ce252d43c2@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYu1QsoBLgqn5yQF28n=0gz773-cO2jq9J=qeUNugD+Hcg@mail.gmail.com>
 
-On 2024-10-24 22:56:53 [+0530], Naresh Kamboju wrote:
-> On Thu, 24 Oct 2024 at 20:11, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >
-> > Most of the tinyconfigs are failing on stable-rc linux-6.6.y.
-> >
-> > Build errors:
-> > --------------
-> > aarch64-linux-gnu-ld: kernel/task_work.o: in function `task_work_add':
-> > task_work.c:(.text+0x190): undefined reference to `irq_work_queue'
-> > task_work.c:(.text+0x190): relocation truncated to fit:
-> > R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
-> 
-> Anders bisected this regression and found,
-> # first bad commit:
->   [63ad09867ee1affe4b7a5914deeb031d5b4c0be2]
->   task_work: Add TWA_NMI_CURRENT as an additional notify mode.
->   [ Upstream commit 466e4d801cd438a1ab2c8a2cce1bef6b65c31bbb ]
+Hello Paul E. McKenney,
 
-Would you mind to cherry-pick
-	cec6937dd1aae ("task_work: make TWA_NMI_CURRENT handling conditional on IRQ_WORK")
+Commit 1e07186d7377 ("refscale: Add srcu_read_lock_lite() support
+using "srcu-lite"") from Oct 15, 2024 (linux-next), leads to the
+following Smatch static checker warning:
 
-I'm able to to build the arm64 tinyconfig on the queue/6.6 branch with
-this (while it fails without).
+	kernel/rcu/refscale.c:1151 ref_scale_init()
+	warn: inconsistent indenting
 
-> - Naresh
+kernel/rcu/refscale.c
+    1141         for (i = 0; i < ARRAY_SIZE(scale_ops); i++) {
+    1142                 cur_ops = scale_ops[i]; if (strcmp(scale_type,
+    1143                 cur_ops->name) == 0)
+    1144                         break;
+    1145         }
+    1146         if (i == ARRAY_SIZE(scale_ops)) {
+    1147                 pr_alert("rcu-scale: invalid scale type: \"%s\"\n",
+    1148                 scale_type); pr_alert("rcu-scale types:"); for (i = 0;
+    1149                 i < ARRAY_SIZE(scale_ops); i++)
+    1150                         pr_cont(" %s", scale_ops[i]->name);
+--> 1151                 pr_cont("\n"); firsterr = -EINVAL; cur_ops = NULL;
+    1152                 goto unwind;
 
-Sebastian
+This looks like you pressed the wrong button in vim and it accidentally jumbled
+the code?
+
+    1153         }
+    1154         if (cur_ops->init)
+    1155                 if (!cur_ops->init()) {
+    1156                         firsterr = -EUCLEAN;
+    1157                         goto unwind;
+    1158                 }
+
+regards,
+dan carpenter
