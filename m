@@ -1,92 +1,91 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A0B216A0C;
-	Thu, 24 Oct 2024 20:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB58818CBFF;
+	Fri, 25 Oct 2024 06:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729801704; cv=none; b=uTE9OgK6+lINY3X8Vcl7THCYrCQijvLq5UMfzbhsOMz2pQH0DRfJncume4K4cMe8VUvUP13NM2E9dh6KsFGUgje+TImBGXNqFvmyng8ug2q3RPluAIZ/eDJS24wAh5j2TzWYc3uhFdB/IMZwpOOwHGzmlDy0d9GL2IFIuK/Jz58=
+	t=1729839100; cv=none; b=t/H+mBRaPL/A3aRb8bBoA2ZilVWRqmAlaNBBkg0tsTi62r/frJdF7Fc+dPj0XTV4JDBIVREUvbBdi3XLR1LlmNrGdqv37PdMBqnSQgEXhsZtR8NPwsEl5n9aEsSJEFwS/E361k5Sroi3c5bArtth3XmmL02H6oPMN6FYuLboHQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729801704; c=relaxed/simple;
-	bh=oowk6seRJ6717d9XxCE+gg+EDwstr4833dYoKnYVTjY=;
+	s=arc-20240116; t=1729839100; c=relaxed/simple;
+	bh=Fcj07ef6ZmAUJLv0JpSeJ5QvpvjS7urdGRU/woa/GRU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sq35TXWwH7w6ifkp0CMbs1BnbvSx6oSGMTwQtnLBtGgXjr9ntHf7mcrACysO1zzWhoWM/EqoSn/AQYM6GUdwoj8XJgvEo1D1gk+cor5G+fIHwhnt+UGw++XVfXa7BQ4KNNoKocQNdIE0tP2HI03G/sisMkGEjhddZfFrxV9D91c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4Xrqimz; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=gB5EESCC1oOULHvNoxQcN5gmG5e32p4+dlTlR6iYRKCSF3A/AwoWwNIvC27vUmx016SGPqrA8ZN/oT8w4MBR/zQvef/7QcyG2QxzmFYeUsJEv5xTSS3b4+EYqurF1aKixPYtPsF2dP1r+qiBJKddJmauMLy0mJ052+BxIA3Ho84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bxftS3/Y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4k/3pj60; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4Xrqimz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 749CEC4CEC7;
-	Thu, 24 Oct 2024 20:28:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729801704;
-	bh=oowk6seRJ6717d9XxCE+gg+EDwstr4833dYoKnYVTjY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=s4XrqimzAJeSNkUw0dV/hjrGVTGPif+C03heLE9ToIEWCukAmv4k/1dJKDAftzV1p
-	 YOXtxdmqR0lSgZUseWrPiPms1gHSuVt63VlNmk4bCkLL9TZu8V5NLD+5PKTgYmvPzP
-	 E4Spqz698LASoPs8enaMRCdCdcYa00NPvdomwr1FvlzGfdZVqef0MokdtyhfU5bK33
-	 pTbHipqQ/9IijELfL0uMRYNxJ44VpFlLfl8cBgKqcX8TSJ8aKBgC6emOHnwFZulniS
-	 rxq/ICoGkbrL6cH8vT74Q6zaSM7wxjqgWJkRjtpwnSkqeepJ5mzR5abQwk2ofotusr
-	 hoaEUKihtn+ZA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1E1ABCE0F74; Thu, 24 Oct 2024 13:28:24 -0700 (PDT)
-Date: Thu, 24 Oct 2024 13:28:24 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 2/2] rcuscale: Remove redundant WARN_ON_ONCE() splat
-Message-ID: <640af17a-958c-4321-89d4-8ab1f12986fb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20241024164558.715296-1-urezki@gmail.com>
- <20241024164558.715296-2-urezki@gmail.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bxftS3/Y";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4k/3pj60"
+Date: Fri, 25 Oct 2024 08:51:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1729839096;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=20Bc1eU/s+h4RynsGXBZHHHgbYIcK+6zEwC7BqWsbmE=;
+	b=bxftS3/YirzavYM9UjJzWXinFXe3cgs0C1Yk9luCwjZk7wChO17GtCpqpavFtXbOeF3+20
+	swzPStw4egcfqn+aFdDn0sYb4/vuVqdAAGKK3Bppgf9h/6uqyytZz5F6MeB5gGkd33iNgI
+	bmnwvcQCvMOt3N4BIak9KoCMV/RrCKgMy8CSlZMQB7DA8ZsA9B51gOJ7d4YmEtGvHaK0lh
+	cmiezL7sA2Cg8wB1cjobeoAWlvX8SsUCW+uOG2bQnDq+b03wh/F2qGrqhvKLAqBrylw1Jy
+	Ewem8m2p4aYYoJDJvycTFwBwfopbWLuBZi8erTXh8ZNo2TxioZKAh/4nhTW3Qw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1729839096;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=20Bc1eU/s+h4RynsGXBZHHHgbYIcK+6zEwC7BqWsbmE=;
+	b=4k/3pj60xk1hswzu8D2SbjRA3cfQ9nyD2d6cL1SeV/wp1XLhdWTA1qxlbnO0gHnWtzIlaX
+	oyHa1ZeqW1SVBzAg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: linux-stable <stable@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: Re: stable-rc linux-6.6.y: Queues: tinyconfig: undefined reference
+ to `irq_work_queue'
+Message-ID: <20241025065133.oMP0jTDx@linutronix.de>
+References: <CA+G9fYsaQPsvJdCsezaTu1x3koCzkTBEG8C1NpZotZLXZpZ9Qw@mail.gmail.com>
+ <CA+G9fYu1QsoBLgqn5yQF28n=0gz773-cO2jq9J=qeUNugD+Hcg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241024164558.715296-2-urezki@gmail.com>
+In-Reply-To: <CA+G9fYu1QsoBLgqn5yQF28n=0gz773-cO2jq9J=qeUNugD+Hcg@mail.gmail.com>
 
-On Thu, Oct 24, 2024 at 06:45:58PM +0200, Uladzislau Rezki (Sony) wrote:
-> There are two places where WARN_ON_ONCE() is called two times
-> in the error paths. One which is encapsulated into if() condition
-> and another one, which is unnecessary, is placed in the brackets.
+On 2024-10-24 22:56:53 [+0530], Naresh Kamboju wrote:
+> On Thu, 24 Oct 2024 at 20:11, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > Most of the tinyconfigs are failing on stable-rc linux-6.6.y.
+> >
+> > Build errors:
+> > --------------
+> > aarch64-linux-gnu-ld: kernel/task_work.o: in function `task_work_add':
+> > task_work.c:(.text+0x190): undefined reference to `irq_work_queue'
+> > task_work.c:(.text+0x190): relocation truncated to fit:
+> > R_AARCH64_CALL26 against undefined symbol `irq_work_queue'
 > 
-> Remove an extra WARN_ON_ONCE() splat which is in brackets.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Anders bisected this regression and found,
+> # first bad commit:
+>   [63ad09867ee1affe4b7a5914deeb031d5b4c0be2]
+>   task_work: Add TWA_NMI_CURRENT as an additional notify mode.
+>   [ Upstream commit 466e4d801cd438a1ab2c8a2cce1bef6b65c31bbb ]
 
-For both:
+Would you mind to cherry-pick
+	cec6937dd1aae ("task_work: make TWA_NMI_CURRENT handling conditional on IRQ_WORK")
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+I'm able to to build the arm64 tinyconfig on the queue/6.6 branch with
+this (while it fails without).
 
-> ---
->  kernel/rcu/rcuscale.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index de7d511e6be4..1d8bb603c289 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -889,13 +889,11 @@ kfree_scale_init(void)
->  
->  		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
->  			pr_alert("ERROR: call_rcu() CBs are not being lazy as expected!\n");
-> -			WARN_ON_ONCE(1);
->  			goto unwind;
->  		}
->  
->  		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start > 3 * HZ)) {
->  			pr_alert("ERROR: call_rcu() CBs are being too lazy!\n");
-> -			WARN_ON_ONCE(1);
->  			goto unwind;
->  		}
->  	}
-> -- 
-> 2.39.5
-> 
+> - Naresh
+
+Sebastian
