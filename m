@@ -1,249 +1,378 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4627610E0;
-	Thu, 31 Oct 2024 05:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126CB15665E
+	for <rcu@vger.kernel.org>; Thu, 31 Oct 2024 08:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730351012; cv=none; b=TZFMdKKS+O49aezyiZqixz5eT+K41FSpO1gYNXQDi2MbvOcij/FyGTaVGFVIiIbcvrDiz72Igv4RP0dozIuP/T3i6pnMVH51qH25yZGsAtJPNWtFLDUky3/4Vs2t9TIbNHjqUAijo80NsCaCJgDYRacyvdCkgFz2sHn9H4n/dpo=
+	t=1730364030; cv=none; b=BlX5cIDAtzNrFJfDAkoTfuCZHS8kuevad3mlVGmLHp7zYPfOTczhRbcGyy7pjUZyEv7z5l7q4BEw+MpaVBPb3fQrE9uYurLLzP479EaQuUI9ry0jWJpdyz7AXYtSgRIOtoT6YR5iZ790IhmMGAb2OXoSwAXugZEUMB2wVvrDBng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730351012; c=relaxed/simple;
-	bh=crqaGcpCs9QPG86QUyQdTNr4bi8mDvhVfJheQXLl5wc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e0kKCwzBokp0ur2wUMwbTsDwpHawB4Qhbzqovb5Z4PkQTq/4olhVX6cHw/0TjT7Bno6j6XBaB11SY4/ANFAVGy45g8p7cAdUwuK5Jz3TL2x0tYbTE6rDgnvNdHFiAArPwtAwO4NQM7PPliO9uwDjU0Ucjgfn3s9J6LPInuEeTaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hMY3mB+Y; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1730364030; c=relaxed/simple;
+	bh=LeyMk9avMeu7kqwcGwwL69alsnubIEkZVPHGvteIeZY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=uH8jWXdEliS9Lr0d5urT/oNzjnBv5xuzilXyY0Q3vAVrw64oZ+RBjgZ7OnAvCEiA3VlOrdub66niT7dwk3/crBUzO+kBfLpYtethFsFzvd2kyU++QU4QTpOh0FQgZuvWjF2GSPFqzpBd/FDeLsyEYWcz3+3FXI00kHbaMWb7DTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YAeR9ADs; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMY3mB+Y"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7FECC4CEC3;
-	Thu, 31 Oct 2024 05:03:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730351011;
-	bh=crqaGcpCs9QPG86QUyQdTNr4bi8mDvhVfJheQXLl5wc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=hMY3mB+YLobcZV0zcJtOZAokvAVMuOHncN1p1ZESqp7uMxbBrdaRsc/DVeJKhv/AR
-	 hdOBBVhHoa5Impr2dqzsTEbMgY6mAPvId6bwQU5BR1g88DPbNiJ8Ubfn8EZpFPRkKD
-	 Rv5CeloM/Fa8EHEu/Jei/2mfwwjQtTritcBhckKR/MGWFBr6MuITntNEzveh7+AJPb
-	 Im0kg1ZZc8A40+a2G4brwgtlSStnTDtqms+/Ds3vBnvRMSOssrSFOVqGAIp/aWdoF4
-	 nGi1tSr8FaxlUaUjN6zLyaFKng5dzZimvA0eOTMAKuhCnGb7ycEYxeMovWztezSLEw
-	 8L6Nyr+8cpuKw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 58636CE0995; Wed, 30 Oct 2024 22:03:31 -0700 (PDT)
-Date: Wed, 30 Oct 2024 22:03:31 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Cheng-Jui Wang =?utf-8?B?KOeOi+ato+edvyk=?= <Cheng-Jui.Wang@mediatek.com>,
-	"sumit.garg@linaro.org" <sumit.garg@linaro.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"frederic@kernel.org" <frederic@kernel.org>,
-	wsd_upstream <wsd_upstream@mediatek.com>,
-	Bobule Chang =?utf-8?B?KOW8teW8mOe+qSk=?= <bobule.chang@mediatek.com>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>,
-	"kernel-team@meta.com" <kernel-team@meta.com>,
-	"joel@joelfernandes.org" <joel@joelfernandes.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [PATCH v3 rcu 3/3] rcu: Finer-grained grace-period-end checks in
- rcu_dump_cpu_stacks()
-Message-ID: <1617541e-4853-4567-b9c0-febf1cfa26a8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <92193018-8624-495e-a685-320119f78db1@paulmck-laptop>
- <20241016161931.478592-3-paulmck@kernel.org>
- <c3218fbe-7bb1-4fd6-8b00-beee244ffeae@paulmck-laptop>
- <b2b0bceacbd080e13b3aa7ad05569a787df4646d.camel@mediatek.com>
- <adb044e2-8f62-4367-9a22-30515f5647b1@paulmck-laptop>
- <d0adc7d14da0f21909eef68acf19fc5706a4b1af.camel@mediatek.com>
- <9e90d04e-081b-4730-890b-295ed52747de@paulmck-laptop>
- <CAD=FV=WBcOCGbD0haRYLGgAFpDhfoqMW8mvj9DEA0CSPHG3Owg@mail.gmail.com>
- <63859e70-2ea7-4a67-857c-fa226566f25a@paulmck-laptop>
- <CAD=FV=WsM=om=xobfWkC8nLQNK89xdyNNX=L1=DjD79ZPXYxRg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YAeR9ADs"
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-50c9f4efd09so212934e0c.2
+        for <rcu@vger.kernel.org>; Thu, 31 Oct 2024 01:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1730364026; x=1730968826; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yRVDQpV+hUXvvZ+d81+vLy4HFzH/pZtNnyV5rKLdBNk=;
+        b=YAeR9ADsGq5fZFeMvyZi2C4yRMnG7MKHO14eu/7/wpV95yX63jAQGHhET+BNuyqKS6
+         N/P7TauhdBKX0aC8uwUXAv4FXpjnWphcGGQbgoS3RF4UDE8AvyJ4QyvuMsETbJtJo3St
+         QEtuGSLGCuvZ/cdS0UEDrw0dmX/MwOK43NPVP2pJ/nxot/upeLjiclE0cUAfI3EucGG3
+         IPk0WMC4/Wpe2O5p5tNWXXthtg/vFHi4v5PZunO5NqoAz6V/TqdDje07YAV45IUOJDjO
+         pabe256+yc8FO5r2sNmVMKSfSeH3niwHG2VwDjGislEDJXDLSfXFMBk9vzIsmHmiaJsy
+         p45g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730364026; x=1730968826;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yRVDQpV+hUXvvZ+d81+vLy4HFzH/pZtNnyV5rKLdBNk=;
+        b=pPt6+1pjhGd4FogTLZ/xAxZUtRhZpLjcdXz939Z5QD17F3Sx2V9QafSNDRJbQMd7r7
+         fFBHflET9lC04jqlQp5crb1JawN+ZSPi0A6RVxBZzrziIWMrPntWBwBw/j6vVqmGASZo
+         cZ1WxlR8nhgoaKCNM7xBvLziYXawjPwISF8w0L4PlXFuHmx+pIzflL1Xgb0HCVxf7uTK
+         Tq9gxx4gjfkermegnGF3FfjFaxkqgTS9dCtgnZqPrSgrOWk/h2kbyo/9LqSGaads6au8
+         zTT5gyjGkEtwurYondYFkgLyhW/+ACHQsMkeo0cCbcxWn6x1j6KK+rqRcorRpYpofgmY
+         TQPw==
+X-Forwarded-Encrypted: i=1; AJvYcCWI9Y+GJbAaFHvJbYD1YJ2wAzlFsIXeYbXW3QohBw1s2/GF3PF8/0uRzS2C/YeAqryxgHo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yws9nJwchWLkU5fIQWVuWWFyP93fpwVE52Uza6ejc5l3xVMWXZU
+	TX+/EJiF/snhuCh0eqI1ruzVyb2iMlWEkRJZ0UpOKOJZkl05aFRTlWtozCnjgpYOGA09f+rEJrs
+	lZAzzxclJfH1Gg83bjaWAXgqhyJBXcBt+o5dOAw==
+X-Google-Smtp-Source: AGHT+IGR/MPyH3IolNU4N1H3KPOJfa7bE8GqUDT765g/usV3v7bfC6kWkOhjTjRmP547kzqlXxsbmIBpPjVVnaUU3uw=
+X-Received: by 2002:a05:6122:891:b0:50a:caec:70a2 with SMTP id
+ 71dfb90a1353d-5101501c00bmr17269880e0c.4.1730364025759; Thu, 31 Oct 2024
+ 01:40:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=WsM=om=xobfWkC8nLQNK89xdyNNX=L1=DjD79ZPXYxRg@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 31 Oct 2024 14:10:14 +0530
+Message-ID: <CA+G9fYtb5vAnEiHupwsnaeZ7uzdko_WAcjw9ZAFkHNXBVhi1EA@mail.gmail.com>
+Subject: next-20241031: kernel/time/clockevents.c:455 clockevents_register_device
+To: Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>, rcu <rcu@vger.kernel.org>, 
+	linux-clk <linux-clk@vger.kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Anna-Maria Behnsen <anna-maria@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Frederic Weisbecker <frederic@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	=?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>, 
+	Peter Maydell <peter.maydell@linaro.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Anders Roxell <anders.roxell@linaro.org>, 
+	Aishwarya TCV <aishwarya.tcv@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Oct 30, 2024 at 05:21:13PM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Oct 30, 2024 at 4:27 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Oct 30, 2024 at 01:12:01PM -0700, Doug Anderson wrote:
-> > > Hi,
-> > >
-> > > On Wed, Oct 30, 2024 at 6:54 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > > > We do assume that nmi_trigger_cpumask_backtrace() uses true NMIs, so,
-> > > > > > yes, nmi_trigger_cpumask_backtrace() should use true NMIs, just like
-> > > > > > the name says.  ;-)
-> > > > >
-> > > > > In the comments of following patch, the arm64 maintainers have
-> > > > > differing views on the use of nmi_trigger_cpumask_backtrace(). I'm a
-> > > > > bit confused and unsure which perspective is more reasonable.
-> > > > >
-> > > > > https://lore.kernel.org/all/20230906090246.v13.4.Ie6c132b96ebbbcddbf6954b9469ed40a6960343c@changeid/
-> > > >
-> > > > I clearly need to have a chat with the arm64 maintainers, and thank
-> > > > you for checking.
-> > > >
-> > > > > > /*
-> > > > > >  * NOTE: though nmi_trigger_cpumask_backtrace() has "nmi_" in the
-> > > > > name,
-> > > > > >  * nothing about it truly needs to be implemented using an NMI, it's
-> > > > > >  * just that it's _allowed_ to work with NMIs. If ipi_should_be_nmi()
-> > > > > >  * returned false our backtrace attempt will just use a regular IPI.
-> > > > > >  */
-> > > > >
-> > > > > > Alternatively, arm64 could continue using nmi_trigger_cpumask_backtrace()
-> > > > > > with normal interrupts (for example, on SoCs not implementing true NMIs),
-> > > > > > but have a short timeout (maybe a few jiffies?) after which its returns
-> > > > > > false (and presumably also cancels the backtrace request so that when
-> > > > > > the non-NMI interrupt eventually does happen, its handler simply returns
-> > > > > > without backtracing).  This should be implemented using atomics to avoid
-> > > > > > deadlock issues.  This alternative approach would provide accurate arm64
-> > > > > > backtraces in the common case where interrupts are enabled, but allow
-> > > > > > a graceful fallback to remote tracing otherwise.
-> > > > > >
-> > > > > > Would you be interested in working this issue, whatever solution the
-> > > > > > arm64 maintainers end up preferring?
-> > > > >
-> > > > > The 10-second timeout is hard-coded in nmi_trigger_cpumask_backtrace().
-> > > > > It is shared code and not architecture-specific. Currently, I haven't
-> > > > > thought of a feasible solution. I have also CC'd the authors of the
-> > > > > aforementioned patch to see if they have any other ideas.
-> > > >
-> > > > It should be possible for arm64 to have an architecture-specific hook
-> > > > that enables them to use a much shorter timeout.  Or, to eventually
-> > > > switch to real NMIs.
-> > >
-> > > Note that:
-> > >
-> > > * Switching to real NMIs is impossible on many existing arm64 CPUs.
-> > > The hardware support simply isn't there. Pseudo-NMIs should work fine
-> > > and are (in nearly all cases) just as good as NMIs but they have a
-> > > small performance impact. There are also compatibility issues with
-> > > some pre-existing bootloaders. ...so code can't assume even Pseudo-NMI
-> > > will work and needs to be able to fall back. Prior to my recent
-> > > changes arm64 CPUs wouldn't even do stacktraces in some scenarios. Now
-> > > at least they fall back to regular IPIs.
-> >
-> > But those IPIs are of no help whatsoever when the target CPU is spinning
-> > with interrupts disabled, which is the scenario under discussion.
-> 
-> Right that we can't trace the target CPU spinning with interrupts
-> disabled.
+The QEMU-ARM64 boot has failed with the Linux next-20241031 tag.
+The boot log shows warnings at clockevents_register_device and followed
+by rcu_preempt detected stalls.
 
-You can by invoking sched_show_task(cpu_curr(cpu)) on the CPU requesting
-the backtrace.  The resulting backtrace will not be as good as you
-would get from using an NMI, but if you don't have NMIs, it is better
-than nothing.
+However, the system did not proceed far enough to reach the login prompt.
+The fvp-aemva, Qemu-arm64, Qemu-armv7 and Qemu-riscv64 boot failed.
 
->           ...but in the case where NMI isn't available it _still_
-> makes sense to make arch_trigger_cpumask_backtrace() fall back to IPI
-> because:
-> 
-> 1. There are many cases where the trigger.*cpu.*backtrace() class of
-> functions are used to trace CPUs that _aren't_ looping with interrupts
-> disabled. We still want to be able to backtrace in that case. For
-> instance, you can see in "panic.c" that there are cases where
-> trigger_all_cpu_backtrace() is called. It's valuable to make cases
-> like this (where there's no indication that a CPU is locked) actually
-> work.
-> 
-> 2. Even if there's a CPU that's looping with interrupts disabled and
-> we can't trace it because of no NMI, it could still be useful to get
-> backtraces of other CPUs. It's possible that what the other CPUs are
-> doing could give a hint about the CPU that's wedged. This isn't a
-> great hint, but some info is better than no info.
+Please find the incomplete boot log links below for your reference.
+The Qemu version is 9.0.2.
 
-And it also makes sense for an IRQ-based backtrace to fall back to
-something like the aforementioned sched_show_task(cpu_curr(cpu)) if
-the destination CPU has interrupts disabled.
+This is always reproducible.
+First seen on Linux next-20241031 tag.
+  Good: next-20241030
+  Good: next-20241031
 
-> > Hence my suggestion that arm64, when using IRQs to request stack
-> > backtraces, have an additional short timeout (milliseconds) in
-> > order to fall back to remote stack tracing.  In many cases, this
-> > fallback happens automatically, as you can see in dump_cpu_task().
-> > If trigger_single_cpu_backtrace() returns false, the stack is dumped
-> > remotely.
-> 
-> I think the answer here is that the API needs to change. The whole
-> boolean return value for trigger.*cpu.*backtrace() is mostly ignored
-> by callers. Yes, you've pointed at one of the two places that it's not
-> ignored and it tries a reasonable fallback, but all the other callers
-> just silently do nothing when the function returns false. That led to
-> many places where arm64 devices were simply not getting _any_
-> stacktrace.
-> 
-> Perhaps we need some type of API that says "I actually have a
-> fallback, so if you don't think the stracktrace will succeed then it's
-> OK to return false".
+qemu-arm64:
+  boot:
+    * clang-19-lkftconfig
+    * gcc-13-lkftconfig
+    * clang-nightly-lkftconfig
 
-Boolean is fine for trigger_single_cpu_backtrace(), which is directed at
-a single CPU.  And the one call to this function that does not currently
-check its return value could just call dump_cpu_task() instead.
+qemu-armv7:
+  boot:
+    * clang-19-lkftconfig
+    * gcc-13-lkftconfig
+    * clang-nightly-lkftconfig
 
-There are only 20 or so uses of all of these functions, so the API can
-change, give or take the pain involved in changing architecture-specific
-code.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> > > * Even if we decided that we absolutely had to disable stacktrades on
-> > > arm64 CPUs without some type of NMI, that won't fix arm32. arm32 has
-> > > been using regular IPIs for backtraces like this for many, many years.
-> > > Maybe folks don't care as much about arm32 anymore but it feels bad if
-> > > we totally break it.
-> >
-> > Because arm32 isn't used much for datacenter workloads, it will not
-> > be suffering from this issue.  Not enough to have motivated anyone to
-> > fix it, anyway.  In contrast, in the datacenter, CPUs really can and
-> > do have interrupts disabled for many seconds.  (No, this is not a good
-> > thing, but it is common enough for us to need to avoid disabling other
-> > debugging facilities.)
-> >
-> > So it might well be that arm32 will continue to do just fine with
-> > IRQ-based stack tracing.  Or maybe someday arm32 will also need to deal
-> > with this same issue.  But no "maybe" for arm64, given its increasing
-> > use in the datacenter.
-> 
-> IMO the answer here is that anyone in datacenters should just turn on
-> pseudo NMI (or NMI on newer arm64 CPUs).
+Boot log:
+-------
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x000f0510]
+    0.000000] Linux version 6.12.0-rc5-next-20241031 (tuxmake@tuxmake)
+(aarch64-linux-gnu-gcc (Debian 13.3.0-5) 13.3.0, GNU ld (GNU Binutils
+for Debian) 2.43.1) #1 SMP PREEMPT @1730356841
+[    0.000000] KASLR enabled
+[    0.000000] random: crng init done
+[    0.000000] Machine model: linux,dummy-virt
+<trim>
+<6>[    0.216503] GICv3: CPU1: found redistributor 1 region 0:0x00000000080c0000
+<6>[    0.218511] GICv3: CPU1: using allocated LPI pending table
+@0x0000000100250000
+<4>[    0.220528] ------------[ cut here ]------------
+<4>[ 0.220657] WARNING: CPU: 1 PID: 0 at kernel/time/clockevents.c:455
+clockevents_register_device (kernel/time/clockevents.c:455
+(discriminator 1))
+<4>[    0.221897] Modules linked in:
+<4>[    0.222659] CPU: 1 UID: 0 PID: 0 Comm: swapper/1 Not tainted
+6.12.0-rc5-next-20241031 #1
+<4>[    0.223100] Hardware name: linux,dummy-virt (DT)
+<4>[    0.223480] pstate: 200003c9 (nzCv DAIF -PAN -UAO -TCO -DIT
+-SSBS BTYPE=--)
+<4>[ 0.223815] pc : clockevents_register_device
+(kernel/time/clockevents.c:455 (discriminator 1))
+<4>[ 0.223899] lr : clockevents_config_and_register
+(kernel/time/clockevents.c:523)
+<4>[    0.223951] sp : ffff800080103cd0
+<4>[    0.223985] x29: ffff800080103cd0 x28: 0000000000000091 x27:
+0000000000000000
+<4>[    0.224143] x26: fff06d7e11c1b000 x25: fff00000ff4d7108 x24:
+00000000000000ee
+<4>[    0.224221] x23: 01ffffffffffffff x22: ffff9282ed4e66c8 x21:
+ffff9282ed8ce940
+<4>[    0.224296] x20: fff00000ff4ef000 x19: fff00000ff4ef000 x18:
+0000000000000010
+<4>[    0.224376] x17: 3030353230303130 x16: 3030303030307830 x15:
+4020656c62617420
+<4>[    0.224450] x14: 676e69646e657020 x13: 3030303035323030 x12:
+3130303030303030
+<4>[    0.224522] x11: 78304020656c6261 x10: ffff9282eda4de88 x9 :
+ffff9282eb3b161c
+<4>[    0.224621] x8 : 000000001dcd6500 x7 : 000000003b9aca00 x6 :
+00000000007fffff
+<4>[    0.224693] x5 : 000000000000001b x4 : 0000000000800000 x3 :
+000001ffffffffff
+<4>[    0.224771] x2 : 0000000000000001 x1 : ffff9282ed9ced40 x0 :
+0000000000000000
+<4>[    0.225007] Call trace:
+<4>[ 0.225218] clockevents_register_device+0x170/0x188 P
+<4>[ 0.225367] clockevents_config_and_register+0x34/0x50 L
+<4>[ 0.225487] clockevents_config_and_register (kernel/time/clockevents.c:523)
+<4>[ 0.225553] arch_timer_starting_cpu
+(drivers/clocksource/arm_arch_timer.c:1034)
+<4>[ 0.225602] cpuhp_invoke_callback (kernel/cpu.c:194)
+<4>[ 0.225649] __cpuhp_invoke_callback_range (kernel/cpu.c:965)
+<4>[ 0.225691] notify_cpu_starting (kernel/cpu.c:1604)
+<4>[ 0.225733] secondary_start_kernel (arch/arm64/kernel/smp.c:251)
+<4>[ 0.225809] __secondary_switched (arch/arm64/kernel/head.S:421)
+<4>[    0.226244] ---[ end trace 0000000000000000 ]---
+<6>[    0.228186] CPU1: Booted secondary processor 0x0000000001 [0x000f0510]
+<6>[    0.237749] smp: Brought up 1 node, 2 CPUs
+<6>[    0.253976] SMP: Total of 2 processors activated.
+<6>[    0.254658] CPU: All CPU(s) started at EL2
+<trim>
+<3>[   21.732871] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+<3>[   21.734120] rcu: 1-...!: (0 ticks this GP) idle=0ca0/0/0x0
+softirq=0/0 fqs=0 (false positive?)
+<3>[   21.735202] rcu: (detected by 0, t=5252 jiffies, g=-1179, q=28 ncpus=2)
+<6>[   21.736404] Sending NMI from CPU 0 to CPUs 1:
+<4>[ 21.737195] NMI backtrace for cpu 1 skipped: idling at
+default_idle_call (kernel/sched/idle.c:126)
+<3>[   21.741361] rcu: rcu_preempt kthread timer wakeup didn't happen
+for 5251 jiffies! g-1179 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+<3>[   21.742143] rcu: Possible timer handling issue on cpu=1 timer-softirq=0
+<3>[   21.742724] rcu: rcu_preempt kthread starved for 5252 jiffies!
+g-1179 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+<3>[   21.743583] rcu: Unless rcu_preempt kthread gets sufficient CPU
+time, OOM is now expected behavior.
+<3>[   21.744154] rcu: RCU grace-period kthread stack dump:
+<6>[   21.744678] task:rcu_preempt     state:I stack:0     pid:18
+tgid:18    ppid:2      flags:0x00000008
+<6>[   21.746801] Call trace:
+<6>[ 21.747336] __switch_to+0x104/0x180 T
+<6>[ 21.747990] __schedule (kernel/sched/core.c:5330 kernel/sched/core.c:6707)
+<6>[ 21.748380] schedule (kernel/sched/core.c:6785 kernel/sched/core.c:6799)
+<6>[ 21.748717] schedule_timeout (include/linux/timer.h:185
+kernel/time/sleep_timeout.c:100)
+<6>[ 21.749159] rcu_gp_fqs_loop (kernel/rcu/tree.c:2045 (discriminator 15))
+<6>[ 21.749600] rcu_gp_kthread (kernel/rcu/tree.c:2250 (discriminator 2))
+<6>[ 21.749966] kthread (kernel/kthread.c:389)
+<6>[ 21.750256] ret_from_fork (arch/arm64/kernel/entry.S:863)
+<3>[   84.752681] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+<3>[   84.753221] rcu: 1-...!: (0 ticks this GP) idle=0cd8/0/0x0
+softirq=0/0 fqs=1 (false positive?)
+<3>[   84.753702] rcu: (detected by 0, t=21007 jiffies, g=-1179, q=28 ncpus=2)
+<6>[   84.754154] Sending NMI from CPU 0 to CPUs 1:
+<4>[ 84.754746] NMI backtrace for cpu 1 skipped: idling at
+default_idle_call (kernel/sched/idle.c:126)
+<3>[   84.756511] rcu: rcu_preempt kthread timer wakeup didn't happen
+for 15749 jiffies! g-1179 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+<3>[   84.757462] rcu: Possible timer handling issue on cpu=1 timer-softirq=0
+<3>[   84.757880] rcu: rcu_preempt kthread starved for 15750 jiffies!
+g-1179 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+<3>[   84.758538] rcu: Unless rcu_preempt kthread gets sufficient CPU
+time, OOM is now expected behavior.
+<3>[   84.759136] rcu: RCU grace-period kthread stack dump:
+<6>[   84.759609] task:rcu_preempt     state:I stack:0     pid:18
+tgid:18    ppid:2      flags:0x00000008
+<6>[   84.760175] Call trace:
+<6>[ 84.760454] __switch_to+0x104/0x180 T
+<6>[ 84.760810] __schedule (kernel/sched/core.c:5330 kernel/sched/core.c:6707)
+<6>[ 84.761218] schedule (kernel/sched/core.c:6785 kernel/sched/core.c:6799)
+<6>[ 84.761528] schedule_timeout (include/linux/timer.h:185
+kernel/time/sleep_timeout.c:100)
+<6>[ 84.761846] rcu_gp_fqs_loop (kernel/rcu/tree.c:2045 (discriminator 15))
+<6>[ 84.762304] rcu_gp_kthread (kernel/rcu/tree.c:2250 (discriminator 2))
+<6>[ 84.762751] kthread (kernel/kthread.c:389)
+<6>[ 84.763168] ret_from_fork (arch/arm64/kernel/entry.S:863)
+<3>[  105.768683] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+<3>[  105.769169] rcu: 1-...!: (0 ticks this GP) idle=0ce8/0/0x0
+softirq=0/0 fqs=0 (false positive?)
+<3>[  105.769749] rcu: (detected by 0, t=5252 jiffies, g=-1175, q=27 ncpus=2)
+<6>[  105.770219] Sending NMI from CPU 0 to CPUs 1:
+<4>[ 105.770939] NMI backtrace for cpu 1 skipped: idling at
+default_idle_call (kernel/sched/idle.c:126)
+<3>[  105.771924] rcu: rcu_preempt kthread timer wakeup didn't happen
+for 5250 jiffies! g-1175 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+<3>[  105.772727] rcu: Possible timer handling issue on cpu=1 timer-softirq=0
+<3>[  105.773193] rcu: rcu_preempt kthread starved for 5251 jiffies!
+g-1175 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+<3>[  105.773892] rcu: Unless rcu_preempt kthread gets sufficient CPU
+time, OOM is now expected behavior.
+<3>[  105.774494] rcu: RCU grace-period kthread stack dump:
+<6>[  105.775006] task:rcu_preempt     state:I stack:0     pid:18
+tgid:18    ppid:2      flags:0x00000008
+<6>[  105.775929] Call trace:
+<6>[ 105.776238] __switch_to+0x104/0x180 T
+<6>[ 105.776702] __schedule (kernel/sched/core.c:5330 kernel/sched/core.c:6707)
+<6>[ 105.777169] schedule (kernel/sched/core.c:6785 kernel/sched/core.c:6799)
+<6>[ 105.777571] schedule_timeout (include/linux/timer.h:185
+kernel/time/sleep_timeout.c:100)
+<6>[ 105.778041] rcu_gp_fqs_loop (kernel/rcu/tree.c:2045 (discriminator 15))
+<6>[ 105.778507] rcu_gp_kthread (kernel/rcu/tree.c:2250 (discriminator 2))
+<6>[ 105.778968] kthread (kernel/kthread.c:389)
+<6>[ 105.779365] ret_from_fork (arch/arm64/kernel/entry.S:863)
+<3>[  168.788676] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+<3>[  168.789211] rcu: 1-...!: (0 ticks this GP) idle=0cf8/0/0x0
+softirq=0/0 fqs=1 (false positive?)
+<3>[  168.789696] rcu: (detected by 0, t=21007 jiffies, g=-1175, q=27 ncpus=2)
+<6>[  168.790176] Sending NMI from CPU 0 to CPUs 1:
+<4>[ 168.790347] NMI backtrace for cpu 1 skipped: idling at
+default_idle_call (kernel/sched/idle.c:126)
+<3>[  168.791281] rcu: rcu_preempt kthread timer wakeup didn't happen
+for 15752 jiffies! g-1175 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+<3>[  168.791959] rcu: Possible timer handling issue on cpu=1 timer-softirq=0
+<3>[  168.792586] rcu: rcu_preempt kthread starved for 15753 jiffies!
+g-1175 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+<3>[  168.793343] rcu: Unless rcu_preempt kthread gets sufficient CPU
+time, OOM is now expected behavior.
+<3>[  168.793928] rcu: RCU grace-period kthread stack dump:
+<6>[  168.794213] task:rcu_preempt     state:I stack:0     pid:18
+tgid:18    ppid:2      flags:0x00000008
+<6>[  168.794719] Call trace:
+<6>[ 168.794925] __switch_to+0x104/0x180 T
+<6>[ 168.795202] __schedule (kernel/sched/core.c:5330 kernel/sched/core.c:6707)
+<6>[ 168.795454] schedule (kernel/sched/core.c:6785 kernel/sched/core.c:6799)
+<6>[ 168.795690] schedule_timeout (include/linux/timer.h:185
+kernel/time/sleep_timeout.c:100)
+<6>[ 168.795977] rcu_gp_fqs_loop (kernel/rcu/tree.c:2045 (discriminator 15))
+<6>[ 168.796250] rcu_gp_kthread (kernel/rcu/tree.c:2250 (discriminator 2))
+<6>[ 168.796606] kthread (kernel/kthread.c:389)
+<6>[ 168.797039] ret_from_fork (arch/arm64/kernel/entry.S:863)
+<3>[  189.804686] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+<3>[  189.805214] rcu: 1-...!: (0 ticks this GP) idle=0d08/0/0x0
+softirq=0/0 fqs=0 (false positive?)
+<3>[  189.805791] rcu: (detected by 0, t=5252 jiffies, g=-1171, q=27 ncpus=2)
+<6>[  189.806325] Sending NMI from CPU 0 to CPUs 1:
+<4>[ 189.807068] NMI backtrace for cpu 1 skipped: idling at
+default_idle_call (kernel/sched/idle.c:126)
+<3>[  189.808147] rcu: rcu_preempt kthread timer wakeup didn't happen
+for 5251 jiffies! g-1171 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+<3>[  189.808872] rcu: Possible timer handling issue on cpu=1 timer-softirq=0
+<3>[  189.809344] rcu: rcu_preempt kthread starved for 5252 jiffies!
+g-1171 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+<3>[  189.809965] rcu: Unless rcu_preempt kthread gets sufficient CPU
+time, OOM is now expected behavior.
+<3>[  189.810600] rcu: RCU grace-period kthread stack dump:
+<6>[  189.811112] task:rcu_preempt     state:I stack:0     pid:18
+tgid:18    ppid:2      flags:0x00000008
+<6>[  189.811623] Call trace:
+<6>[ 189.811852] __switch_to+0x104/0x180 T
+<6>[ 189.812287] __schedule (kernel/sched/core.c:5330 kernel/sched/core.c:6707)
+<6>[ 189.812584] schedule (kernel/sched/core.c:6785 kernel/sched/core.c:6799)
+<6>[ 189.812932] schedule_timeout (include/linux/timer.h:185
+kernel/time/sleep_timeout.c:100)
+<6>[ 189.813394] rcu_gp_fqs_loop (kernel/rcu/tree.c:2045 (discriminator 15))
+<6>[ 189.813685] rcu_gp_kthread (kernel/rcu/tree.c:2250 (discriminator 2))
+<6>[ 189.813993] kthread (kernel/kthread.c:389)
+<6>[ 189.814240] ret_from_fork (arch/arm64/kernel/entry.S:863)
+<3>[  252.824675] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+<3>[  252.825201] rcu: 1-...!: (0 ticks this GP) idle=0d18/0/0x0
+softirq=0/0 fqs=1 (false positive?)
+<3>[  252.825675] rcu: (detected by 0, t=21007 jiffies, g=-1171, q=27 ncpus=2)
+<6>[  252.826077] Sending NMI from CPU 0 to CPUs 1:
+<4>[ 252.826332] NMI backtrace for cpu 1 skipped: idling at
+default_idle_call (kernel/sched/idle.c:126)
+<3>[  252.827295] rcu: rcu_preempt kthread timer wakeup didn't happen
+for 15752 jiffies! g-1171 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+<3>[  252.828099] rcu: Possible timer handling issue on cpu=1 timer-softirq=0
+<3>[  252.828632] rcu: rcu_preempt kthread starved for 15753 jiffies!
+g-1171 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
+<3>[  252.829561] rcu: Unless rcu_preempt kthread gets sufficient CPU
+time, OOM is now expected behavior.
+<3>[  252.830012] rcu: RCU grace-period kthread stack dump:
+<6>[  252.830503] task:rcu_preempt     state:I stack:0     pid:18
+tgid:18    ppid:2      flags:0x00000008
+<6>[  252.831137] Call trace:
+<6>[ 252.831328] __switch_to+0x104/0x180 T
+<6>[ 252.831619] __schedule (kernel/sched/core.c:5330 kernel/sched/core.c:6707)
+<6>[ 252.832041] schedule (kernel/sched/core.c:6785 kernel/sched/core.c:6799)
+<6>[ 252.832413] schedule_timeout (include/linux/timer.h:185
+kernel/time/sleep_timeout.c:100)
+<6>[ 252.832689] rcu_gp_fqs_loop (kernel/rcu/tree.c:2045 (discriminator 15))
+<6>[ 252.832991] rcu_gp_kthread (kernel/rcu/tree.c:2250 (discriminator 2))
+<6>[ 252.833264] kthread (kernel/kthread.c:389)
+<6>[ 252.833511] ret_from_fork (arch/arm64/kernel/entry.S:863)
+<struck>
 
-Suppose datacenters all do this.  What part of this issue remains?
+Boot log link,
+-----
+- https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241031/testrun/25617342/suite/boot/test/gcc-13-lkftconfig-debug/log
+- https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241031/testrun/25617342/suite/boot/test/gcc-13-lkftconfig-debug/details/
 
-> > > IMO waiting 10 seconds for a backtrace is pretty crazy to begin with.
-> > > What about just changing that globally to 1 second? If not, it doesn't
-> > > feel like it would be impossibly hard to make an arch-specific
-> > > callback to choose the time and that callback could even take into
-> > > account whether we managed to get an NMI. I'd be happy to review such
-> > > a patch.
-> >
-> > Let's please keep the 10-second timeout for NMI-based backtraces.
-> >
-> > But I take it that you are not opposed to a shorter timeout for the
-> > special case of IRQ-based stack backtrace requests?
-> 
-> IMO the 10 second is still awfully long (HW watchdogs can trigger
-> during that time), but I'm not that upset by it. I'm OK with shorter
-> timeouts for IRQ-based ones, though I'm not sure I'd be OK w/ timeouts
-> measured in milliseconds unless the caller has actually said that they
-> can handle a "false" return or the caller says that it's more
-> important to be quick than to wait for a long time.
+Build images:
+------
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2oBwuVtvQdiUyZ16JGOe1JsS6KY/
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2oBwvKQrvbVwqhTKdkXN0BXivv2
 
-If you are using NMIs, and the CPU doesn't respond in 10 seconds,
-something is likely broken.  Maybe bad firmware or bad hardware.  You are
-right that watchdogs might trigger, but they are likely already triggering
-due to the target CPU being so firmly locked up that it is not responding
-even to NMIs.
+Steps to reproduce via qemu:
+----------------
+/usr/bin/qemu-system-aarch64 -cpu max,pauth-impdef=on \
+   -machine virt,virtualization=on,gic-version=3,mte=on \
+   -nographic -nic none -m 4G -monitor none -no-reboot \
+   -smp 2 -kernel kernel/Image -append \"console=ttyAMA0,115200
+rootwait root=/dev/vda debug verbose console_msg_format=syslog
+systemd.log_level=warning rw earlycon\" \
+   -drive file=rootfs.ext4,if=none,format=raw,id=hd0 \
+   -device virtio-blk-device,drive=hd0
 
-On the other hand, when you are not using NMIs, then I agree
-you want a shorter timeout before remotely tracing the staek via
-sched_show_task(cpu_curr(cpu)).  I picked a few milliseconds, but if
-datacenters are using real NMIs or pseudo NMIs (and thus are not being
-blocked by normal interrupt disabling), then I must defer to others on
-the default timeout.  Much depends on the workload and configuration.
 
-						Thanx, Paul
+Steps to reproduce with tuxrun reproducer:
+---------------
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2oBwvKQrvbVwqhTKdkXN0BXivv2/reproducer
+
+Boot history compare link:
+------------------------
+- https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241031/testrun/25617515/suite/boot/test/gcc-13-lkftconfig-kselftest/history/
+- https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241031/testrun/25616350/suite/boot/test/clang-19-lkftconfig/history/
+
+metadata:
+---------
+  git describe: next-20241031
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git sha: f9f24ca362a4d84dd8aeb4b8f3ec28cb6c43dd06
+  kernel config:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2oBwuVtvQdiUyZ16JGOe1JsS6KY/config
+  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2oBwuVtvQdiUyZ16JGOe1JsS6KY/
+  toolchain: gcc-13, gcc-8 and clang-19
+  config: defconfig+lkftconfig
+  arch: arm64
+
+Please let me know if you need more information.
+
+--
+Linaro LKFT
+https://lkft.linaro.org
