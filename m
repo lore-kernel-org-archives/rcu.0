@@ -1,179 +1,107 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0AA717C7BD;
-	Fri,  1 Nov 2024 13:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398E4136347;
+	Fri,  1 Nov 2024 14:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730469593; cv=none; b=Ddr4Chn/EXsXrgHVZLBn4do8VR/pJAXpOaQSgxb5sTTNMISmzXInAveOevuWHoX633IBFFrCd5Fxcdv6dnYwy9PMsEzYanV/54JfQkEP6sZ7QVmpUtYCRdz080URaLERBHWkgIHbyktYVXSZG/7EVL3v59NZu7hjmEZIRiAHlUo=
+	t=1730471416; cv=none; b=Xu+SgMz6JaGunDGMu2Fq9AODMmPrFttoWivmL8jxk86Fr6BQm0h7D1kAE5pKATSlhkgzjJcETevsgZ1255zmbF+BfhG4rmWVjIvqiRxK+Y7KUHtOVL7RTlKOgMxB5y/NOCD5Jfo3axWpA5beUNJn8qoKRQdXwEa6QqKkQyImVhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730469593; c=relaxed/simple;
-	bh=mg+5hEwdTdV8IE0oBNIsJ8IUYJo6J5Xk7iZ8CG8OSk0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GwtLKjvtTKVBLP0ucT1HcPmvZD8PlYvMQWQczWBo+Atu7m5KSY8WlSDKZCHNoBaP2F8eYaNMH0FCi+B9902SutDlpkGhJbiriWg8dQu5YC1f7QUG1VD63L7t4U1/dLV1GYkocMohXzv6fnmy8GZCW6dbdfcbF/xP1sZJuxa4hZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eKvS+R4Q; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1730471416; c=relaxed/simple;
+	bh=TKAtd4Xz8cLFFFmnHPins+tJ+Mfne7qr3bvUedak18U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j6wmE/oqM9AwxvXH8nR8oJgRZ1XVDz7CLXIhNJ6n7Cmgis6bd98yN3rBn5s5mpwexO0KkVshvPcpl53RbechQlAXtYmTDYEkGufCG66tlDIaan7AUXLx5lb5AoHXm5/eOc4ua3iJjQ+paPaXU56MSF6UO7Cm/+4KdIloIJqWxvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clV2wVvV; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eKvS+R4Q"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB2DC4CECD;
-	Fri,  1 Nov 2024 13:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730469593;
-	bh=mg+5hEwdTdV8IE0oBNIsJ8IUYJo6J5Xk7iZ8CG8OSk0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=eKvS+R4QxwXg6vd4UmQqo0vBwdnnAoeSzqE0HSxSnN/xvFbJ6VlBnKe4pySxPOHdW
-	 utKm9PX+Zlqsj9OpbL/CPcYuFYfqgOugQ5uIkjY0bsQmdVNt+yNK3NPegxX6lP645n
-	 gGSwhd2mjgt0rXu4eOaqiRkNjm1bUIq2iPOlgwCKEhG61yYDAiiZOwDPrhF+1LU/ex
-	 bsTY2yOAggEDQ1MvyCtxIBPPx48v6IahrTrD0Oi12dpy1iCgAwPdNZJPZSWO+ldIdt
-	 8OFHxn99xU4Rr8qMOmfdXQwytDSNLbSHrURHOklMChcGvFy+CXHp9YS3pgY/EtxwjY
-	 LalejN7FSnBdQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C78A9CE0995; Fri,  1 Nov 2024 06:59:52 -0700 (PDT)
-Date: Fri, 1 Nov 2024 06:59:52 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Cheng-Jui Wang =?utf-8?B?KOeOi+ato+edvyk=?= <Cheng-Jui.Wang@mediatek.com>
-Cc: "sumit.garg@linaro.org" <sumit.garg@linaro.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dianders@chromium.org" <dianders@chromium.org>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"frederic@kernel.org" <frederic@kernel.org>,
-	wsd_upstream <wsd_upstream@mediatek.com>,
-	Bobule Chang =?utf-8?B?KOW8teW8mOe+qSk=?= <bobule.chang@mediatek.com>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>,
-	"kernel-team@meta.com" <kernel-team@meta.com>,
-	"joel@joelfernandes.org" <joel@joelfernandes.org>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [PATCH v3 rcu 3/3] rcu: Finer-grained grace-period-end checks in
- rcu_dump_cpu_stacks()
-Message-ID: <c3635aaf-1fb5-4464-bd58-07f686536d9a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <92193018-8624-495e-a685-320119f78db1@paulmck-laptop>
- <20241016161931.478592-3-paulmck@kernel.org>
- <c3218fbe-7bb1-4fd6-8b00-beee244ffeae@paulmck-laptop>
- <b2b0bceacbd080e13b3aa7ad05569a787df4646d.camel@mediatek.com>
- <adb044e2-8f62-4367-9a22-30515f5647b1@paulmck-laptop>
- <d0adc7d14da0f21909eef68acf19fc5706a4b1af.camel@mediatek.com>
- <9e90d04e-081b-4730-890b-295ed52747de@paulmck-laptop>
- <00ace254f9085aad12684185b77504bd911aed63.camel@mediatek.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clV2wVvV"
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7ea64af4bbbso270847a12.1;
+        Fri, 01 Nov 2024 07:30:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730471414; x=1731076214; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TKAtd4Xz8cLFFFmnHPins+tJ+Mfne7qr3bvUedak18U=;
+        b=clV2wVvVpvtg73poXDClHokmVTSuMI+Fz7X8wserVsovSY/SBHAduC3FMs7xF2EzMo
+         J7MoqPO90lgbhyOCFiRhe+CUurxGxwrZBB/AjpbCvM7EQYTm8jVjIbLwUE+mRigT04Ui
+         FNfMp0t63MjMY3/0xPiC0lf0yBuIZ+BEPTrriV7x9MsDJ4DbcPXxhzptDSdX8xMKPgsd
+         JcP4SFXzzFW1IhWBaGafFUEGxCR1zB41f78L8esOaOdxX+Rwd8X0UJtJC2S7tmTHWkoF
+         eHgzm1FYmYPIl6uaDUqe0GWZSq3D8a3GnkFbdXzJnRE8zgU1QduTCURKo1K9atvS0H2/
+         ShNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730471414; x=1731076214;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TKAtd4Xz8cLFFFmnHPins+tJ+Mfne7qr3bvUedak18U=;
+        b=reMdGsOJNS3fZey1MPu4eBzWV9N5DBt65fzufp2TKDSUPj5grOXt630EohOxbz4PZ8
+         6psCDrP4aWzGIvREos6hLEVAouteOAjf/H1LdCCA7EprgpqhWgqOwc0LwY5ecm0WDZp4
+         aX7mgGuqPUXIL4k76SEySmsdzDUX7j5iNVAfP1Jju8XKmY50mWn6Dp+vEJcI4t25zu36
+         juLNujfc4pMZpj6zx8sf2t1alr3tOcLlUBP6OnQaQQ00Q8Vp3fbdHu79miLLnl4Xvc36
+         9Pr8k53thK9c3hv0iWIiu3HxsB8niiUuKaxbeJLlVT23A8ozeuyWueVTD0kecBXSQDNV
+         YdgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUcddTIFhAUva6E5m4fxOb8nt4UIPOxfdXgU8wI57ZcNJRdfqeZhg6tbyN49RbIM1jZHBDBJme4OlNk@vger.kernel.org, AJvYcCUe3POq1CKgdLDMz2qn3xbpuLOLoSsK/fl8duCYWjEs7l/wSnwKZhUbvjf4F4JsgTHviP7x@vger.kernel.org, AJvYcCW7KYjj/XP8jOjd80nepQYw5wHuokjARoOMr5Vh2TzM71baJx52ZVYCxXp12zmT9sTzTUlSihPKlMTEF5VupA==@vger.kernel.org, AJvYcCWrA/gIKCcGyaQx5vpm3q4Og4KhwKLVz+LCd+2n1tRcNXKzL/YvgTqdfmqaaPII85tiyBSx1iU0eM71ilrO@vger.kernel.org
+X-Gm-Message-State: AOJu0YyMAIo/qasMDLO6pQZELkxNxXHnLXTQGTEwCEIl7IwDDjqIkZCZ
+	42F/dGLW/ZJH/dFvpluA70bgmKWcstTjINT737cHaAoBoWFWqqqdO6HjCDCd7Yay+70EslMIpTK
+	7TC5LglDHoBK6OFmm/sZ+os4p2RU=
+X-Google-Smtp-Source: AGHT+IGOQhefEp7FLZkdniAIiiIsTLBIszMwpP4/Ctt+MCmEaSNoKLq4eMcSMtSjAgS5QbXUeuU5N7LkDLjPkosOQVw=
+X-Received: by 2002:a17:902:d50c:b0:20c:5da8:47b8 with SMTP id
+ d9443c01a7336-210c689759amr141323595ad.5.1730471414470; Fri, 01 Nov 2024
+ 07:30:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <00ace254f9085aad12684185b77504bd911aed63.camel@mediatek.com>
+References: <20241101060237.1185533-1-boqun.feng@gmail.com>
+In-Reply-To: <20241101060237.1185533-1-boqun.feng@gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 1 Nov 2024 15:30:01 +0100
+Message-ID: <CANiq72ndWJtzSQSFYuVkRPhdan_PvNpvGEhQXKAZKESnt7JVAA@mail.gmail.com>
+Subject: Re: [RFC v2 00/13] LKMM *generic* atomics in Rust
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: rust-for-linux@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, lkmm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, 
+	Andrea Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, 
+	David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, 
+	Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, 
+	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, torvalds@linux-foundation.org, 
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+	Trevor Gross <tmgross@umich.edu>, dakr@redhat.com, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 01, 2024 at 07:41:27AM +0000, Cheng-Jui Wang (王正睿) wrote:
-> On Wed, 2024-10-30 at 06:54 -0700, Paul E. McKenney wrote:
-> > > > Alternatively, arm64 could continue using nmi_trigger_cpumask_backtrace()
-> > > > with normal interrupts (for example, on SoCs not implementing true NMIs),
-> > > > but have a short timeout (maybe a few jiffies?) after which its returns
-> > > > false (and presumably also cancels the backtrace request so that when
-> > > > the non-NMI interrupt eventually does happen, its handler simply returns
-> > > > without backtracing).  This should be implemented using atomics to avoid
-> > > > deadlock issues.  This alternative approach would provide accurate arm64
-> > > > backtraces in the common case where interrupts are enabled, but allow
-> > > > a graceful fallback to remote tracing otherwise.
-> > > > 
-> > > > Would you be interested in working this issue, whatever solution the
-> > > > arm64 maintainers end up preferring?
-> > > 
-> > > The 10-second timeout is hard-coded in nmi_trigger_cpumask_backtrace().
-> > > It is shared code and not architecture-specific. Currently, I haven't
-> > > thought of a feasible solution. I have also CC'd the authors of the
-> > > aforementioned patch to see if they have any other ideas.
-> > 
-> > It should be possible for arm64 to have an architecture-specific hook
-> > that enables them to use a much shorter timeout.  Or, to eventually
-> > switch to real NMIs.
-> 
-> There is already another thread discussing the timeout issue, but I
-> still have some questions about RCU. To avoid mixing the discussions, I
-> start this separate thread to discuss RCU.
-> 
-> > > Regarding the rcu stall warning, I think the purpose of acquiring `rnp-
-> > > > lock` is to protect the rnp->qsmask variable rather than to protect
-> > > 
-> > > the `dump_cpu_task()` operation, right?
-> > 
-> > As noted below, it is also to prevent false-positive stack dumps.
-> > 
-> > > Therefore, there is no need to call dump_cpu_task() while holding the
-> > > lock.
-> > > When holding the spinlock, we can store the CPUs that need to be dumped
-> > > into a cpumask, and then dump them all at once after releasing the
-> > > lock.
-> > > Here is my temporary solution used locally based on kernel-6.11.
-> > > 
-> > > +     cpumask_var_t mask;
-> > > +     bool mask_ok;
-> > > 
-> > > +     mask_ok = zalloc_cpumask_var(&mask, GFP_ATOMIC);
-> > >       rcu_for_each_leaf_node(rnp) {
-> > >               raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > >               for_each_leaf_node_possible_cpu(rnp, cpu)
-> > >                       if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu))
-> > > {
-> > >                               if (cpu_is_offline(cpu))
-> > >                                       pr_err("Offline CPU %d blocking
-> > > current GP.\n", cpu);
-> > > +                             else if (mask_ok)
-> > > +                                     cpumask_set_cpu(cpu, mask);
-> > >                               else
-> > >                                       dump_cpu_task(cpu);
-> > >                       }
-> > >               raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-> > >       }
-> > > +     if (mask_ok) {
-> > > +             if (!trigger_cpumask_backtrace(mask)) {
-> > > +                     for_each_cpu(cpu, mask)
-> > > +                             dump_cpu_task(cpu);
-> > > +             }
-> > > +             free_cpumask_var(mask);
-> > > +     }
-> > > 
-> > > After applying this, I haven't encountered the lockup issue for five
-> > > days, whereas it used to occur about once a day.
-> > 
-> > We used to do it this way, and the reason that we changed was to avoid
-> > false-positive (and very confusing) stack dumps in the surprisingly
-> > common case where the act of dumping the first stack caused the stalled
-> > grace period to end.
-> > 
-> > So sorry, but we really cannot go back to doing it that way.
-> > 
-> >                                                         Thanx, Paul
-> 
-> Let me clarify, the reason for the issue mentioned above is that it
-> pre-determines all the CPUs to be dumped before starting the dump
-> process. Then, dumping the first stack caused the stalled grace period
-> to end. Subsequently, many CPUs that do not need to be dumped (false
-> positives) are dumped.
-> 
-> So,to prevent false positives, it should be about excluding those CPUs
-> that do not to be dumped, right? Therefore, the action that trully help
-> is actually "releasing the lock after each dump (allowing other CPUs to
-> update qsmask) and rechecking (gp_seq and qsmask) to confirm whether to
-> continue dumping".
-> 
-> I think holding the lock while dumping CPUs does not help prevent false
-> positives; it only blocks those CPUs waiting for the lock (e.g., CPUs
-> aboult to report qs). For CPUs that do not interact with this lock,
-> holding it should not have any impact. Did I miss anything?
+On Fri, Nov 1, 2024 at 7:03=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> wr=
+ote:
+>
+> This time, I try implementing a generic atomic type `Atomic<T>`, since
+> Benno and Gary suggested last time, and also Rust standard library is
+> also going to that direction [1].
 
-Yes.
+I would like to thank Boqun for trying out this approach, even when he
+wasn't (and maybe still isn't) convinced.
 
-The stalled CPU could unstall itself just after the lock was released,
-so that the stack dump would be from some random irrelevant and confusing
-point in the code.  This would not be a good thing.  In contrast, with the
-lock held, the stalled CPU cannot fully exit its RCU read-side critical
-section, so that the dump has at least some relevance.
-
-Let's please instead confine the change to architecture-specific code
-that chooses to use interrupts instead of NMIs, as suggested in my
-previous email.  If there is more than one such architecture (arm64 and
-arm32?), they can of course share code, if appropriate.
-
-							Thanx, Paul
+Cheers,
+Miguel
