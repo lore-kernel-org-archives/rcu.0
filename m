@@ -1,22 +1,22 @@
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C0F1DFE3A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9006B1E0DA1;
 	Wed,  6 Nov 2024 15:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730905467; cv=none; b=fXn205xA2hYuzcfNJlKfABwSYCzX2G/N38VcstO/7SEopAtHQShBUfTXqEbma55UaaR+EKk+UmC4ErivIf2mce2rMNiaVjmUEaaz16FgVaXJdYHMU2bsSHzRyfsy8EsayR+nywG4tzxxkBetZxShlqO/KDOHal0VrV0F+UILc+Q=
+	t=1730905468; cv=none; b=U0A1d+IJ9onNQ79Ge3GEVPUE0JyhUwxq/YZ1EwulW6S5yiqBSQBaqBnQviU243Wi6jcpy9gxlSWhXfVS4JxcebCGOQ7vw822yuUm5xyzFNBQYBqljG0OhIesM9goEO1u21muDE3Qk6z9hHoYrZr2VoRqtE15UmrNgiDiy/4Rm38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730905467; c=relaxed/simple;
-	bh=bxrUaP0iFuIQytJUIVYsQ435NmDo6IZumJ7hGL4qN1o=;
+	s=arc-20240116; t=1730905468; c=relaxed/simple;
+	bh=FmzB8ZRj0dfS9Q8t32a1K8iEBd7tFBm57uOALkdDzxY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ofuct0mwbbKGsPg4ErOxe5KL9BGJcD74WcfGQKXKGH7og6sNZC0hCjjIE8q0dIIhiX1+XRqOIGbhfJVAYAcslntNnMuljwxSXDkLRFcpFlY2E9xTRIwKNQXjp9Y06b8Wi7U4y+7QhjXHE0AcM+X7MKOHhK0QF6M1BJOo2NQnS8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IjJ4DkCj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MnqwOWtn; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=d0bCJ2hNavDRVfTGnRbgz1d9vZ9JVNMS/MHy7lTjOibGuPQr1AoTuSQXDiK9XdiLXcboLBLI7krB8SrFy3SIdVOH+OtVLfKN4SG8bWqqMkbByEAMcfPAmE52BJh2JpW4M5eqNnx4gG4rO7ehJkRIr+fRRSRMxrd+GvNdQ/DxZYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Yk5JyOVI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3InIA09w; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IjJ4DkCj";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MnqwOWtn"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Yk5JyOVI";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3InIA09w"
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020; t=1730905464;
@@ -24,21 +24,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dVN0DAOR7peTZ0SeKTNDZNJuwJl+BEEN1bDPz/38Gtk=;
-	b=IjJ4DkCjMDxZ2jueN/FVDtbgOpkiY5g6Q9rX2wmZLZDGhG9MxTHw9Yo2CWLqPI6HZqgXf5
-	AB+VgRKeAN2Wzmhf8TfI9tJ9znIiXr/oRJa4oeLt0iYZyV6f2NRJhIQwzLaZ4pG+foyO2X
-	oCAwA5qJZ1cRxYAFWkcB0cKWaYfwSxOh2dEXj+TjCEaUx00rgwfgbVmm5HsgJD1IselDi8
-	khedkK/FFlQnSadxPvfkQss9RyXFRbnNCBbzkwFB7XR5C6cLXNVNeIvaSEnZfz1v4xYvAi
-	qV+GIwqgBlfuMNFYL67ssqIIqbNJvCbTTz8pd9jRO2r1zX369qWByvsSJQCGzQ==
+	bh=zQdED8DAdnUkE8LHZdtmssZ0jx637Ik3t3wGyg9RV7g=;
+	b=Yk5JyOVIhECLWkhFrvTIr3/+86uRpbE69YOxbNKR3xq5jzFV26U6SHqRUOhXNndGtVwrbx
+	Tm3btdyDj2giJr6BWUK9ISQ7GvPbRpJK7fv0TLHGRhdNAG98ubqvK1p8zWWVSG+2Qo87+c
+	8LV3nblCLoH6jqhr+YxwhrBiuQgJYvmlPLNC3ynCuJtWQ3gwPVzy6rA/QjmnSDMGI8Vtyv
+	pAMtDGe2DTgB9Fl3xzYTUapysUr8Xc+NU2hU5nvdj1QGh8yDHYwXAhR8MW3BuPJmVebZXS
+	MzMpS+9fCo+Bq6AAJ4dWcg6mMwg2N+v8upyMGpC5ZWJmRxix+BwSRvV0TPTh2A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1730905464;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dVN0DAOR7peTZ0SeKTNDZNJuwJl+BEEN1bDPz/38Gtk=;
-	b=MnqwOWtnE+D9BgJuoeVaA/19yNzYnJR74crv6fFpqq7VL+o6zSenaV2B0l1sGOpd3OxTPS
-	o9TeoF4BO8U6QGBA==
+	bh=zQdED8DAdnUkE8LHZdtmssZ0jx637Ik3t3wGyg9RV7g=;
+	b=3InIA09wLEhY9FtqvNYl+W4CpEN5kpqpFD7MgGtYtJWqjXG5wkaD4Qxs/o6uQVlc8MhPcR
+	/0TXDrrFJWt3EcCg==
 To: linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -49,9 +49,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v3 1/3] hrtimer: Use __raise_softirq_irqoff() to raise the softirq.
-Date: Wed,  6 Nov 2024 15:51:37 +0100
-Message-ID: <20241106150419.2593080-2-bigeasy@linutronix.de>
+Subject: [PATCH v3 2/3] timers: Use __raise_softirq_irqoff() to raise the softirq.
+Date: Wed,  6 Nov 2024 15:51:38 +0100
+Message-ID: <20241106150419.2593080-3-bigeasy@linutronix.de>
 In-Reply-To: <20241106150419.2593080-1-bigeasy@linutronix.de>
 References: <20241106150419.2593080-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -63,40 +63,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
 As an optimisation use __raise_softirq_irqoff() to raise the softirq.
-This is always called from an interrupt handler so it can be reduced to
-just or set softirq flag and let softirq be invoked on return from
-interrupt.
+This is always called from an interrupt handler, interrupts are already
+disabled so it can be reduced to just or set softirq flag and let
+softirq be invoked on return from interrupt.
 
 Use __raise_softirq_irqoff() to raise the softirq.
 
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/time/hrtimer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/time/timer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index cddcd08ea827f..5402e0f242178 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1811,7 +1811,7 @@ void hrtimer_interrupt(struct clock_event_device *dev)
- 	if (!ktime_before(now, cpu_base->softirq_expires_next)) {
- 		cpu_base->softirq_expires_next =3D KTIME_MAX;
- 		cpu_base->softirq_activated =3D 1;
--		raise_softirq_irqoff(HRTIMER_SOFTIRQ);
-+		__raise_softirq_irqoff(HRTIMER_SOFTIRQ);
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 0fc9d066a7be4..1759de934284c 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -2499,7 +2499,7 @@ static void run_local_timers(void)
+ 		 */
+ 		if (time_after_eq(jiffies, READ_ONCE(base->next_expiry)) ||
+ 		    (i =3D=3D BASE_DEF && tmigr_requires_handle_remote())) {
+-			raise_softirq(TIMER_SOFTIRQ);
++			__raise_softirq_irqoff(TIMER_SOFTIRQ);
+ 			return;
+ 		}
  	}
-=20
- 	__hrtimer_run_queues(cpu_base, now, flags, HRTIMER_ACTIVE_HARD);
-@@ -1906,7 +1906,7 @@ void hrtimer_run_queues(void)
- 	if (!ktime_before(now, cpu_base->softirq_expires_next)) {
- 		cpu_base->softirq_expires_next =3D KTIME_MAX;
- 		cpu_base->softirq_activated =3D 1;
--		raise_softirq_irqoff(HRTIMER_SOFTIRQ);
-+		__raise_softirq_irqoff(HRTIMER_SOFTIRQ);
- 	}
-=20
- 	__hrtimer_run_queues(cpu_base, now, flags, HRTIMER_ACTIVE_HARD);
 --=20
 2.45.2
 
