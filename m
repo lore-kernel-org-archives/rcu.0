@@ -1,48 +1,49 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7022064F5;
-	Wed,  6 Nov 2024 16:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B465206970;
+	Wed,  6 Nov 2024 16:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730908961; cv=none; b=K1YEphkw6kf7qycwP3bB1lFwHjQVSiSoeqx/vtNFOOFroC+rhIY7if4LoL1xlh5O6pJVvHYwyjuvK1MpJRGCkYYi1zNFQ59SB9oKeO2W+qxYLNOZt3zO1//BiYuOjqPMSlVxE45taSLF9lnockNqtPO2PpaawIh/m+0OV1U8DG8=
+	t=1730908964; cv=none; b=WjZ/vibkXEHsKxsPz/2976IsxzZIHihy8HI06eljyLcz4sv+vY/3Gi1RaiX+aXMqlaF+ZKu4cDcn1nYxhLtDuhCdgXV1yZp1HeEm2UXPlK+O1MuKYxO0I4Gdl8iQB3LQN1STyLf9XriUWlbAxgZ5E1AeQLbcennOgTKyAeI8s8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730908961; c=relaxed/simple;
-	bh=4glDQSNUoXiax4XF8AjgBBQOPX1MeTdEr5B6E0keNH8=;
+	s=arc-20240116; t=1730908964; c=relaxed/simple;
+	bh=rhYeUBB/n91//oTPNUiqguVr/Wrp4228mhfdTnKKsC4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JFFBiggH5dLSCE+8x/FeQ9UfT6N43PkrF4L0PtQHsX3wEm4Z4GUQp0RrtO90S33qXO4lgiexp99YfySgyDKOolpyWLNGRF/T1u0gJzRbB2jjBwXFfEdYX78MLMJI7vF5y779/f+RirIyb3WUsTmY7I2nUwk7aObowfzo+dYbe+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FXLpXb1J; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=cq0scMs2kLKw3UFybpHQCrQN7SVxBMhSZEakzG9Bqe8unksIuFL8qR3lZg5/fXBK7vplh+7jh5NS1o0F0uprPNx6GHSFRQqPimgwQ/d9t8ICdPK91oCWyVBSVRDR0CRL/KLIzSYeT9I9qgr+3MddLmP5xFjze0HaKWPvG7HEhtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPmToyHE; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FXLpXb1J"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE061C4CED4;
-	Wed,  6 Nov 2024 16:02:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPmToyHE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74077C4CECD;
+	Wed,  6 Nov 2024 16:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730908961;
-	bh=4glDQSNUoXiax4XF8AjgBBQOPX1MeTdEr5B6E0keNH8=;
+	s=k20201202; t=1730908964;
+	bh=rhYeUBB/n91//oTPNUiqguVr/Wrp4228mhfdTnKKsC4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FXLpXb1J6rVW/SuU/Gqadi2jhe22nOaPSsoC+PTIlHtR5nBDiY0G5GOYyPWta6RXo
-	 S7cEWf89VH/aDQzPKRzjywAUo+YZ1l2nJOu5qhu52HYB3FN/nHcSmnZUrwYh9nx6ZN
-	 obqGLnYSCsaiKRZV9PxwXneMgPMv/KsSJKGAC+RSSjdenkSCOoqzLz1bteX4vnQN3I
-	 cGfiHRKwaYqd4DqTV1y5AJH2RxZoXLl/U1Kcghz46wyt0iCw9PlqSH1Z+QAZQLXgLM
-	 +rL231KJC5usVG9EwX+P/RWI6b8Uu44gUMCOPUPUOrmnO2E1KZ00WNEzCrswJVlvak
-	 YqRbLkx8NNIzA==
+	b=BPmToyHE8ScyzXvhV1M8DWPs/LIrWMm48yT8CJARVZhLBQ9xF4aYzpxJA426U+WVp
+	 gp7+weV/Dp6rbUpU23pgS7pAdMj3aK1IgwEOVVy4a3I61sqvfV/ySpgOV0dLmtaTcw
+	 kWmb9NbqI0wO0qmAPfdwIbbrNnrbcol306h65Ml11AXU7CCLx6IbZT98JHZLI66qu1
+	 HkRol5XxL1//+rHRBndYaNn2O4Cl2GWt7+tJmSI2s2EMLNjKTMEXbEvekGK8YJbUeT
+	 vOMcPjEi8RExwEMdH8lJobX+saqXDJ2OA38ipKk/w0OroXqCr6ULysR573pgvI74Xc
+	 lUEggRdYT4Qvg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
 	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 4/6] rcutorture: Avoid printing cpu=-1 for no-fault RCU boost failure
-Date: Wed,  6 Nov 2024 17:02:21 +0100
-Message-ID: <20241106160223.42119-5-frederic@kernel.org>
+Subject: [PATCH 5/6] rcuscale: Do a proper cleanup if kfree_scale_init() fails
+Date: Wed,  6 Nov 2024 17:02:22 +0100
+Message-ID: <20241106160223.42119-6-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241106160223.42119-1-frederic@kernel.org>
 References: <20241106160223.42119-1-frederic@kernel.org>
@@ -54,47 +55,62 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-If a CPU runs throughout the stalled grace period without passing
-through a quiescent state, RCU priority boosting cannot help.
-The rcu_torture_boost_failed() function therefore prints a message
-flagging the first such CPU.  However, if the stall was instead due to
-(for example) RCU's grace-period kthread being starved of CPU, there will
-be no such CPU, causing rcu_check_boost_fail() to instead pass back -1
-through its cpup CPU-pointer parameter.
+A static analyzer for C, Smatch, reports and triggers below
+warnings:
 
-Therefore, the current message complains about a mythical CPU -1.
+   kernel/rcu/rcuscale.c:1215 rcu_scale_init()
+   warn: inconsistent returns 'global &fullstop_mutex'.
 
-This commit therefore checks for this situation, and notes that all CPUs
-have passed through a quiescent state.
+The checker complains about, we do not unlock the "fullstop_mutex"
+mutex, in case of hitting below error path:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+<snip>
+...
+    if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
+        pr_alert("ERROR: call_rcu() CBs are not being lazy as expected!\n");
+        WARN_ON_ONCE(1);
+        return -1;
+        ^^^^^^^^^^
+...
+<snip>
+
+it happens because "-1" is returned right away instead of
+doing a proper unwinding.
+
+Fix it by jumping to "unwind" label instead of returning -1.
+
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/rcu/ZxfTrHuEGtgnOYWp@pc636/T/
+Fixes: 084e04fff160 ("rcuscale: Add laziness and kfree tests")
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/rcu/rcuscale.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index bb75dbf5c800..e92fa97fc76f 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1059,8 +1059,13 @@ static bool rcu_torture_boost_failed(unsigned long gp_state, unsigned long *star
- 			// At most one persisted message per boost test.
- 			j = jiffies;
- 			lp = READ_ONCE(last_persist);
--			if (time_after(j, lp + mininterval) && cmpxchg(&last_persist, lp, j) == lp)
--				pr_info("Boost inversion persisted: No QS from CPU %d\n", cpu);
-+			if (time_after(j, lp + mininterval) &&
-+			    cmpxchg(&last_persist, lp, j) == lp) {
-+				if (cpu < 0)
-+					pr_info("Boost inversion persisted: QS from all CPUs\n");
-+				else
-+					pr_info("Boost inversion persisted: No QS from CPU %d\n", cpu);
-+			}
- 			return false; // passed on a technicality
+diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+index 6d37596deb1f..de7d511e6be4 100644
+--- a/kernel/rcu/rcuscale.c
++++ b/kernel/rcu/rcuscale.c
+@@ -890,13 +890,13 @@ kfree_scale_init(void)
+ 		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
+ 			pr_alert("ERROR: call_rcu() CBs are not being lazy as expected!\n");
+ 			WARN_ON_ONCE(1);
+-			return -1;
++			goto unwind;
  		}
- 		VERBOSE_TOROUT_STRING("rcu_torture_boost boosting failed");
+ 
+ 		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start > 3 * HZ)) {
+ 			pr_alert("ERROR: call_rcu() CBs are being too lazy!\n");
+ 			WARN_ON_ONCE(1);
+-			return -1;
++			goto unwind;
+ 		}
+ 	}
+ 
 -- 
 2.46.0
 
