@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05795202625;
-	Wed,  6 Nov 2024 14:59:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BFA20402B;
+	Wed,  6 Nov 2024 14:59:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730905168; cv=none; b=QVktJGZZ4X9aNgXoCOCZuc5o7HsR1bvb/RWQgBEezd7N1TMncIRMzRkJEw4OEpkObz74HHnz54bTwD5gB1enD5CkzMlJOnV9hlX2b9w5sJSnfEGnWoFnqm822Q5gjCkUHVymHV56Ib4T7Mjv9+TKZa+hM1TC+KELJt50Vwof8SA=
+	t=1730905170; cv=none; b=Izfq3nRx6tON2ErMI5+VIZyZxdQKy3NpQr1S9bB8L9TaLljV6rICqrHG0kzyMwulZL/mYoznJm0VtDAXeVqKu4AJTcOdnhn1P5K+1PdArjtqFxde4kpQ54iRHzpeURvqHSXjqIz+ajJ2+rfUeBnyMaFJ4exXIhZyClL4J+g/c6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730905168; c=relaxed/simple;
-	bh=qA/c0N3rIn1d+527roOwF7bl5h7TXeVRuH3DxgNRebw=;
+	s=arc-20240116; t=1730905170; c=relaxed/simple;
+	bh=KfEzAK0yWwsc73/eBMwT2Rzo8Q/O9jbmqLzgwx89IvU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pf2sAHjoCUhREIK2chhTSiRqY6TcscfdTLw9vLhpW9JjvbsXteXLGUSqknPHUXQIffRh7JhMvwYxgySUY4Cyor/IeRYO57kOLWj8wGlYh4d/g2F7sxmO18woeI6g/EfbLV6wV6rU887WaVvDXu0OOGfvHqFTvF24YXUDryjbx8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kiq8Et49; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=hoGXYYPJecIkrwrMu1r1aXmp0ReXN8k96BXk7jASgQWzmtaedrYw7Fc/erLpENq1lBaIpQbbVhsYHq9nZRR6XfCGYAE+LWR3UCGsE7MmG42urB66YvT3dFaa33ocEiTVZcfySyi2cFZCDt2oqD9ziiiD5hEeN1GwYKt9siT/TF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lXqcBxcX; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kiq8Et49"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C369C4CEC6;
-	Wed,  6 Nov 2024 14:59:23 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lXqcBxcX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9551C4CED4;
+	Wed,  6 Nov 2024 14:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730905166;
-	bh=qA/c0N3rIn1d+527roOwF7bl5h7TXeVRuH3DxgNRebw=;
+	s=k20201202; t=1730905169;
+	bh=KfEzAK0yWwsc73/eBMwT2Rzo8Q/O9jbmqLzgwx89IvU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kiq8Et49D6w50kLceRxq1pVCsNKk+lrWWZpW+ScNk4nVPEwlWESeMhuHe4c5dLEK4
-	 RvXRaXOTbrPgOgN/lCXkF3kiPmjbWrOy6lv5BJeiMs+unBf6Z4ybnmPvFHa1NLrJ4B
-	 TQ/MN6SksZjvxa1f9jQhXGCtqBMmbhfllIROHvvrmGqWRuJiuDaPzFrqPhY6aKPT8+
-	 WKJzYDngpAxPXmc3txEbpQIltaooKSIYjhpy+1wFH5Nk0WBXdJQd7XcJ6Fg7XBZ8dP
-	 G9MvZjix/EGr4vhrU4p/2Gr2LgECwlfN5+VDyacYmpa9FTkgXpijBoMz72z+tuT/uz
-	 WVhiUsVB6q86g==
+	b=lXqcBxcXkyn27Puwj3HRxr8vRWOX/LJt+EyevkZ32fB6o36U9w6tYd+y7fwA60i0f
+	 ixoUOvFQ+uoQyFHSUQL1iFoZgNrB/GkZZd1TzuE0TJ3n/Ip/k8zK00j00WYwF/17cB
+	 rY3438l1WpUAJ2zmUjr3uOxMv45pPBI2aYXp7IaIGDRI0ouPQOeI00bYmtVGGWMzhD
+	 /AV6nJfaIXqFYOOHDK7sLacADfIpCUA/CwNq7+CuWFmnwE2BqlM2BLfEGLPrtMD+0S
+	 aGIcsGyd85CgGqhjqOOZXoEFGoHHtXGbHdU6ZWVmcG3/7zDbZUF7NSWChlRUUr3cfI
+	 klYFlwEqLh3PA==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -39,11 +39,10 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
 	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 3/8] rcu: Permit start_poll_synchronize_rcu*() with interrupts disabled
-Date: Wed,  6 Nov 2024 15:59:06 +0100
-Message-ID: <20241106145911.35503-4-frederic@kernel.org>
+Subject: [PATCH 4/8] rcutorture: Test start-poll primitives with interrupts disabled
+Date: Wed,  6 Nov 2024 15:59:07 +0100
+Message-ID: <20241106145911.35503-5-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241106145911.35503-1-frederic@kernel.org>
 References: <20241106145911.35503-1-frederic@kernel.org>
@@ -57,54 +56,59 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The header comment for both start_poll_synchronize_rcu() and
-start_poll_synchronize_rcu_full() state that interrupts must be enabled
-when calling these two functions, and there is a lockdep assertion in
-start_poll_synchronize_rcu_common() enforcing this restriction.  However,
-there is no need for this restrictions, as can be seen in call_rcu(),
-which does wakeups when interrupts are disabled.
+This commit tests the ->start_poll() and ->start_poll_full() functions
+with interrupts disabled, but only for RCU variants setting the
+->start_poll_irqsoff flag.
 
-This commit therefore removes the lockdep assertion and the comments.
-
-Reported-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c | 7 -------
- 1 file changed, 7 deletions(-)
+ kernel/rcu/rcutorture.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 38b121a77366..13829cf38f52 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4194,7 +4194,6 @@ static void start_poll_synchronize_rcu_common(void)
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp;
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index bb75dbf5c800..b4cb7623a8bf 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -393,6 +393,7 @@ struct rcu_torture_ops {
+ 	int slow_gps;
+ 	int no_pi_lock;
+ 	int debug_objects;
++	int start_poll_irqsoff;
+ 	const char *name;
+ };
  
--	lockdep_assert_irqs_enabled();
- 	local_irq_save(flags);
- 	rdp = this_cpu_ptr(&rcu_data);
- 	rnp = rdp->mynode;
-@@ -4219,9 +4218,6 @@ static void start_poll_synchronize_rcu_common(void)
-  * grace period has elapsed in the meantime.  If the needed grace period
-  * is not already slated to start, notifies RCU core of the need for that
-  * grace period.
-- *
-- * Interrupts must be enabled for the case where it is necessary to awaken
-- * the grace-period kthread.
-  */
- unsigned long start_poll_synchronize_rcu(void)
- {
-@@ -4242,9 +4238,6 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
-  * grace period (whether normal or expedited) has elapsed in the meantime.
-  * If the needed grace period is not already slated to start, notifies
-  * RCU core of the need for that grace period.
-- *
-- * Interrupts must be enabled for the case where it is necessary to awaken
-- * the grace-period kthread.
-  */
- void start_poll_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
- {
+@@ -581,6 +582,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
+ 	.extendables		= RCUTORTURE_MAX_EXTEND,
+ 	.debug_objects		= 1,
++	.start_poll_irqsoff	= 1,
+ 	.name			= "rcu"
+ };
+ 
+@@ -1695,14 +1697,22 @@ rcu_torture_fakewriter(void *arg)
+ 				cur_ops->cond_sync_exp_full(&gp_snap_full);
+ 				break;
+ 			case RTWS_POLL_GET:
++				if (cur_ops->start_poll_irqsoff)
++					local_irq_disable();
+ 				gp_snap = cur_ops->start_gp_poll();
++				if (cur_ops->start_poll_irqsoff)
++					local_irq_enable();
+ 				while (!cur_ops->poll_gp_state(gp_snap)) {
+ 					torture_hrtimeout_jiffies(torture_random(&rand) % 16,
+ 								  &rand);
+ 				}
+ 				break;
+ 			case RTWS_POLL_GET_FULL:
++				if (cur_ops->start_poll_irqsoff)
++					local_irq_disable();
+ 				cur_ops->start_gp_poll_full(&gp_snap_full);
++				if (cur_ops->start_poll_irqsoff)
++					local_irq_enable();
+ 				while (!cur_ops->poll_gp_state_full(&gp_snap_full)) {
+ 					torture_hrtimeout_jiffies(torture_random(&rand) % 16,
+ 								  &rand);
 -- 
 2.46.0
 
