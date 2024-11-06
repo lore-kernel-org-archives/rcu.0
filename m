@@ -1,117 +1,110 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303B6189F5C;
-	Wed,  6 Nov 2024 16:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D80E204944;
+	Wed,  6 Nov 2024 20:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730909701; cv=none; b=EYm6CDfzJFS0FdcNH9PJiYGev+8aXU0xVRV0Nx8RslrnDS1M29A5XFDjRT6Vz0rLoOIgKrZ5PXQrfb3PZFufHBT/x/kp15GqhVwvfxRlP0VXmvK1H/VcIXui2JTgtyEd7z7j5Pfd12WkGYriDqybzPFvUEsC0Kt/NhCE+ATohdY=
+	t=1730924308; cv=none; b=PAwSYycwFLWbEGU85FhJAFgmG1KH7zwXjskavaa7LwnyOwJTl0ZWPkc3rYCpRQSBYU6WQqceyN7uN0Q/VMQlttRvZZPMFk3FkO+NdisbDXOz8loC6q/YizrSPaP12ZUINqO7nj7tCrk5VxnGJ75cQ26SbE3PQzQAfek/qaizLQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730909701; c=relaxed/simple;
-	bh=2L2KPeDDY1cDn036D9Ij9ZGhV0YgRwxwdrhtgK5vbtM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E2EzPrBW+OKcRC7BLfP/YuGIKOxj2sGEw6XGBftHmdQ+TvbZ9GizveUODvHAhiSV/pPYqK5jGQ+3NBeL/y+RrxzLaBUTZTBTWx6ZR0n7eIhzJRoWvruwhwMDvVX/ixW3fdsQflrrvaEPAOSt5DMbytjRJondyJtyiDUki3p82wM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jPCLy3Cn; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1730924308; c=relaxed/simple;
+	bh=QsLrCND2FcA2NmDLIeBmkTo+vrdrgqm9mjExCkISpuU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fQOfMktt6b+E6BNppnbrkMi5IIUA2HeRhFV93/RNNLYQv/PAreU9w95bLYGQgYgSlG4mCymUWkv8i64/ECKeyFJTnpoW7WEyJ9DgM80Zk3OhQUztCDP6Py+DS+a7w0RHItFCMnCxab98zqmaQYmyGhZfshJH0+0gxHP1T7GJcns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M6ZPiP4p; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jPCLy3Cn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2296C4CEC6;
-	Wed,  6 Nov 2024 16:14:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M6ZPiP4p"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DFA6C4CEC6;
+	Wed,  6 Nov 2024 20:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730909700;
-	bh=2L2KPeDDY1cDn036D9Ij9ZGhV0YgRwxwdrhtgK5vbtM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jPCLy3Cn1ejfR/Oqs80JkzGiLv3SCxGNZ4ypNsRamXXfgbqqZcaWpxIfGhoQ2gG4T
-	 HnSqcDcgtAupIFLbtTx8SgkRdAnqsYYM7b/YWqxQ9Z4Rq0J17D9onjpDG1vxkjPOE8
-	 i279sAap4rqLk6l986/3nDR072mM3wsa4pS3TVdCr6jOKO6OX+Ui+cBA7dbRa7+AeJ
-	 G6T9Ewm0aEfd87HNHkpxebzx+MN7PrSlpOFXXAImlq9xzXO3BZB89bk6+EyEHhACHK
-	 EXdhit2XeH2rIyfhHM3QlGHCwx2umZ2kQY3Sqb2pWQGquABgQ9aYZKE3aszqbOIsL3
-	 OIhMIeE4XUvjg==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: Nicholas Piggin <npiggin@gmail.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Masahiro Yamada <yamada.masahiro@socionext.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: [PATCH 1/2] Rename .data.unlikely to .data..unlikely
-Date: Thu,  7 Nov 2024 01:14:40 +0900
-Message-ID: <20241106161445.189399-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=k20201202; t=1730924305;
+	bh=QsLrCND2FcA2NmDLIeBmkTo+vrdrgqm9mjExCkISpuU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=M6ZPiP4p09olpLK2/Sas2zI6tv/jySRPbJyrIXAtdxFqALsT/LXAcZlxf5Z7kbdt/
+	 V2kujZ+gkGS0i8repnTBlIkoJipF/qyBxba2mHfZZj4MluE47xfv8D0kuEz0SiyWHh
+	 mQ1qqi+gbRt88PTtW0IinJzkO16Nw9BkK+k1ZSx+aJWOUgJ/ViNmhFBWABq4q7kEmE
+	 N4CQ13RsQyVMWVbzi7Y8w8LBZ7LUJh5EJVzuBqVRmwYK6EhlAlJbPCU7wRCP3Ll6TW
+	 ZSoiRFwXE6gxUosCwPcgbEkkaVfr7hlpFSGnMn6lNamReXKPTobbRzXjcJ9rhrx9xb
+	 tQ5WqOjZz3v6Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1CAC8CE09DB; Wed,  6 Nov 2024 12:18:25 -0800 (PST)
+Date: Wed, 6 Nov 2024 12:18:25 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Zilin Guan <zilinguan811@gmail.com>
+Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Use READ_ONCE() for rdp->gpwrap access in
+ __note_gp_changes()
+Message-ID: <65bfe6b1-3bfa-469d-aada-8e79d1101d5d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20241104151230.3107133-1-zilinguan811@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241104151230.3107133-1-zilinguan811@gmail.com>
 
-Commit 7ccaba5314ca ("consolidate WARN_...ONCE() static variables")
-was intended to collect all .data.unlikely sections into one chunk.
-However, this has not worked when CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-or CONFIG_LTO_CLANG is enabled, because .data.unlikely matches the
-.data.[0-9a-zA-Z_]* pattern in the DATA_MAIN macro.
+On Mon, Nov 04, 2024 at 03:12:30PM +0000, Zilin Guan wrote:
+> In function __note_gp_changes(), rdp->gpwrap is read using READ_ONCE()
+> in line 1307:
+> 
+> 1307    if (IS_ENABLED(CONFIG_PROVE_RCU) && READ_ONCE(rdp->gpwrap))
+> 1308            WRITE_ONCE(rdp->last_sched_clock, jiffies);
+> 
+> while read directly in line 1305:
+> 
+> 1305    if (ULONG_CMP_LT(rdp->gp_seq_needed, rnp->gp_seq_needed) ||
+> 	    rdp->gpwrap)
+> 1306            WRITE_ONCE(rdp->gp_seq_needed, rnp->gp_seq_needed);
+> 
+> In the same environment, reads in two places should have the same
+> protection.
+> 
+> Signed-off-by: Zilin Guan <zilinguan811@gmail.com>
 
-Commit cb87481ee89d ("kbuild: linker script do not match C names unless
-LD_DEAD_CODE_DATA_ELIMINATION is configured") was introduced to suppress
-the issue for the default CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=n case,
-providing a minimal fix for stable backporting. We were aware this did
-not address the issue for CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y. The
-plan was to apply correct fixes and then revert cb87481ee89d. [1]
+Good eyes!!!
 
-Seven years have passed since then, yet the #ifdef workaround remains in
-place.
+But did you find this with KCSAN, or by visual inspection?
 
-Using a ".." separator in the section name fixes the issue for
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION and CONFIG_LTO_CLANG.
+The reason that I ask is that the __note_gp_changes() should be
+invoked with the leaf rnp->lock held, which should exclude writes to
+the rdp->gpwrap fields for all CPUs corresponding to that leaf rcu_node
+structure.
 
-[1]: https://lore.kernel.org/linux-kbuild/CAK7LNASck6BfdLnESxXUeECYL26yUDm0cwRZuM4gmaWUkxjL5g@mail.gmail.com/
+Note the raw_lockdep_assert_held_rcu_node(rnp) call at the beginning of
+this function.
 
-Fixes: cb87481ee89d ("kbuild: linker script do not match C names unless LD_DEAD_CODE_DATA_ELIMINATION is configured")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+So I believe that the proper fix is to *remove* READ_ONCE() from accesses
+to rdp->gpwrap in this function.
 
- include/asm-generic/vmlinux.lds.h | 2 +-
- include/linux/rcupdate.h          | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Or am I missing something here?
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index c995474e4c64..3c9dc1fd094d 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -357,7 +357,7 @@ defined(CONFIG_AUTOFDO_CLANG) || defined(CONFIG_PROPELLER_CLANG)
- 	*(.data..decrypted)						\
- 	*(.ref.data)							\
- 	*(.data..shared_aligned) /* percpu related */			\
--	*(.data.unlikely)						\
-+	*(.data..unlikely)						\
- 	__start_once = .;						\
- 	*(.data.once)							\
- 	__end_once = .;							\
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 58d84c59f3dd..48e5c03df1dd 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -401,7 +401,7 @@ static inline int debug_lockdep_rcu_enabled(void)
-  */
- #define RCU_LOCKDEP_WARN(c, s)						\
- 	do {								\
--		static bool __section(".data.unlikely") __warned;	\
-+		static bool __section(".data..unlikely") __warned;	\
- 		if (debug_lockdep_rcu_enabled() && (c) &&		\
- 		    debug_lockdep_rcu_enabled() && !__warned) {		\
- 			__warned = true;				\
--- 
-2.43.0
+							Thanx, Paul
 
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index b1f883fcd918..d3e2b420dce5 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1302,7 +1302,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+>  		zero_cpu_stall_ticks(rdp);
+>  	}
+>  	rdp->gp_seq = rnp->gp_seq;  /* Remember new grace-period state. */
+> -	if (ULONG_CMP_LT(rdp->gp_seq_needed, rnp->gp_seq_needed) || rdp->gpwrap)
+> +	if (ULONG_CMP_LT(rdp->gp_seq_needed, rnp->gp_seq_needed) || READ_ONCE(rdp->gpwrap))
+>  		WRITE_ONCE(rdp->gp_seq_needed, rnp->gp_seq_needed);
+>  	if (IS_ENABLED(CONFIG_PROVE_RCU) && READ_ONCE(rdp->gpwrap))
+>  		WRITE_ONCE(rdp->last_sched_clock, jiffies);
+> -- 
+> 2.34.1
+> 
