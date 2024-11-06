@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF28D202F89;
-	Wed,  6 Nov 2024 14:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10412202625;
+	Wed,  6 Nov 2024 14:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730905160; cv=none; b=NOwOUkMxQTz1ZvsNnFtxNX5vyOxHsl1qU+FCcX1SPiqq6jVM7tuXftuWZRCxiQQbbuqOGPuSajxXyM4gprEMFC+sVB/RdvmNkeYntJJvXXT5X6oUDQXbviLlPEL95Npgo7Her6wQkobUt2Mm50pljZ7v4LuRu8DITUOncy5xyTE=
+	t=1730905164; cv=none; b=ZpJ2NTNfakG0Xy0UueCnnh4EvCzyR7uKTnVPa1eecIF1CZ5yhvtccP17apkNYlfylsM0SbPZSenzydC8GHpImeVDOJXi6k9b7fCNI6FEtCICA2CeaZCoUqSNLo8LfK0dtM5ApIR7V4sF2jQcWi9JkwTha1w/3qeWlLubD1F/uWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730905160; c=relaxed/simple;
-	bh=n40xhh0z9NziEa64CxH5rGePLUJObsn4LcYAfAzqI9o=;
+	s=arc-20240116; t=1730905164; c=relaxed/simple;
+	bh=+ZiepWhi94NGo7vByz0jA+dg9Rjr5KkBmO7yVbgAD8I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gfznepEeOJwjA4XMHxqvhc9LywWTfphJSBdk7Bw8bl6m1rjs2Y4lfSXFHRB/vB+eZf8D5WjpExeC8T1sSuZttAHhEuwaLwkxpt0DI4MSz7Jqrq+hv8YC++R/GupIJtOQHo4zV9OIfWT6ONZUIW9bgdJ91n9KFs3cuqK/705Io3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=df/OymoN; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=k2wDcELkjEhkiHRsjd1f+ZjdW5RmDNS29Y/P2zt/HEAoFuA4HFasqY0nAe44d3539yfcQTIWXu3xwUpxh79XKuYLwg99M11Aw94EC/Qx92n4sB9rCcawUVLMlbVtCXOb1XjnvXdQOS4WDwfHHrRpt+e6Bj1RkxCMnXHrMhi8xmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S1sGyXur; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="df/OymoN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 102F2C4CED4;
-	Wed,  6 Nov 2024 14:59:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S1sGyXur"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5789C4CED5;
+	Wed,  6 Nov 2024 14:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730905160;
-	bh=n40xhh0z9NziEa64CxH5rGePLUJObsn4LcYAfAzqI9o=;
+	s=k20201202; t=1730905163;
+	bh=+ZiepWhi94NGo7vByz0jA+dg9Rjr5KkBmO7yVbgAD8I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=df/OymoNcVHVKFvXcpxp8QpKO87gY9UmfjHUoIPanFV4Eq1R21/bnhO175jRfoX4O
-	 SNCkHgAWUGJKFgrnkdaMCLndb8BH8emxi38GAqROXc+ML3qZSgOFZ0NVGLIWnR8z1A
-	 pyDXUZJC2AXyK2Ar4QazCAL7GcVk261Ry7LgYmxauOJDqmq+CqnrL4N2eqrVAgyZXh
-	 s8njYZ2BQiG20TpBIfV3nqKR/nZsA67kK7m1Je2WvC65FI8MQ63bBAS26HhBmMr2jT
-	 QucXDp1sUHi3AKEgDkA3ZR2LM9urhgAABLChW+brmEzbYZbbqVOvYwIuRcF6C5HIrv
-	 CVJbnAj1dg89g==
+	b=S1sGyXurEsjXhdxOTwtcP5dAZR3ha1gmmQYBTLGYuoVLWop6t74Vi/celdwHeWkpJ
+	 xUBU734TXM8UwCwnpQPfPybrFRpVholT+ut5DJmpN8H0TyXCNx/i2tvoOaOon6z4Ah
+	 alBXGnGdEOqh7fN0lzWHMF1tOMhiEUheITMZAPEBKyiuLILR8NgQSf6J6iJjlGDZwb
+	 9GFRyNshlDnCfHtGW95b6ns+1/VbGg2nlnQPto51ALVtCtu3E++CFAdugsJd765SzK
+	 2eUZSkwl90Q8NawA+RXxuZC7SrGBJ/bfMVORkcVtTSh/1zk+XCr1jXSFTSg+G7WHR0
+	 XAZq3Kclxnybg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -39,10 +39,12 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 1/8] doc: Add rcuog kthreads to kernel-per-CPU-kthreads.rst
-Date: Wed,  6 Nov 2024 15:59:04 +0100
-Message-ID: <20241106145911.35503-2-frederic@kernel.org>
+Subject: [PATCH 2/8] rcu: Allow short-circuiting of synchronize_rcu_tasks_rude()
+Date: Wed,  6 Nov 2024 15:59:05 +0100
+Message-ID: <20241106145911.35503-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241106145911.35503-1-frederic@kernel.org>
 References: <20241106145911.35503-1-frederic@kernel.org>
@@ -56,28 +58,40 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds the rcuog kthreads to the list of callback-offloading
-kthreads that can be affinitied away from worker CPUs.
+There are now architectures for which all deep-idle and entry-exit
+functions are properly inlined or marked noinstr.  Such architectures do
+not need synchronize_rcu_tasks_rude(), or will not once RCU Tasks has
+been modified to pay attention to idle tasks.  This commit therefore
+allows a CONFIG_ARCH_HAS_NOINSTR_MARKINGS Kconfig option to turn
+synchronize_rcu_tasks_rude() into a no-op.
+
+To facilitate testing, kernels built by rcutorture scripting will enable
+RCU Tasks Trace even on systems that do not need it.
+
+[ paulmck: Apply Peter Zijlstra feedback. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- Documentation/admin-guide/kernel-per-CPU-kthreads.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
-index b6aeae3327ce..ea7fa2a8bbf0 100644
---- a/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
-+++ b/Documentation/admin-guide/kernel-per-CPU-kthreads.rst
-@@ -315,7 +315,7 @@ To reduce its OS jitter, do at least one of the following:
- 	to do.
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 6333f4ccf024..dd9730fd44fb 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1398,7 +1398,8 @@ static void call_rcu_tasks_rude(struct rcu_head *rhp, rcu_callback_t func)
+  */
+ void synchronize_rcu_tasks_rude(void)
+ {
+-	synchronize_rcu_tasks_generic(&rcu_tasks_rude);
++	if (!IS_ENABLED(CONFIG_ARCH_WANTS_NO_INSTR) || IS_ENABLED(CONFIG_FORCE_TASKS_RUDE_RCU))
++		synchronize_rcu_tasks_generic(&rcu_tasks_rude);
+ }
+ EXPORT_SYMBOL_GPL(synchronize_rcu_tasks_rude);
  
- Name:
--  rcuop/%d and rcuos/%d
-+  rcuop/%d, rcuos/%d, and rcuog/%d
- 
- Purpose:
-   Offload RCU callbacks from the corresponding CPU.
 -- 
 2.46.0
 
