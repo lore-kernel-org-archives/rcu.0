@@ -1,128 +1,235 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D459136672;
-	Tue, 12 Nov 2024 12:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275821FDFBD;
+	Tue, 12 Nov 2024 14:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731415844; cv=none; b=qxejMlvz7LZBfJ/IIXwZwcnBq7x3e6ok0D/v7mhJ79NeQ1deDxtr2ZHevNJCEEyIDfoL61dLOW5bV0Eqx/7XOfN2mdQkEaE0+HiiU61H3F/yhVKNNbdeuQwR4pjsSbJSu5Olj2iI9fnYV5jTJwNQ5QI7sPKGH5PrmpAysqP1ObA=
+	t=1731421408; cv=none; b=jQKzldtPLo+mfMnFsDYf9akVmK7Zpo5lBx8MRED2aCCi+ANStw/sCsipmX8KeavQXXZZc1cxUwvGdBzwn/1eqSNkGdZSzE0pdKHYWPWJ/FF05cwt0yr0Hg42phrNXg74OXaL4CRVMlLCLV30e3Yf0SUd5Plzmp/CEOBKhX+B6WE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731415844; c=relaxed/simple;
-	bh=mnfOiE5eIPKtHfBAoGmaq+Twf9102+gLIWoMtZu0bl0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kKwUOUj8bHm1AE4UEEivR8M02bQOkTUsMiggrWdQB8TbCUFWZsrBcsMjDdsK+yqK2muee/FEafAtJNNzUbE4hhnXCqIcV5k2JnY5/J4B/T9HhnKCpqggBk72mVyvN5Pt6sdTlkL1mXltLeb9Uq1PwuJSe0NWdJQXeKQQRC5RaRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e1k9FsZk; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1731421408; c=relaxed/simple;
+	bh=jkG09fF11D+eodj0e0n/wWASad3Dl1VhGhPaaWNQ4Xo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=RbC/pKfCrmJoofF/3vKQ1JhilqNPsbsd2Sc+6qLwDRzLN7AHGRLDrN7Z0rvfOQTwhPuDBK0XRBpqBiNA9IaHeFTpEGzMBKc9MhI5+jipErAbcszzaFkteh7wJe8RSgLs/hs+Epc0bN6Vm9XYg4omXj3NAt5uURwYe0eG1/oWZDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxpfUFTo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e1k9FsZk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93527C4CED5;
-	Tue, 12 Nov 2024 12:50:43 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxpfUFTo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 641D9C4CED8;
+	Tue, 12 Nov 2024 14:23:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731415844;
-	bh=mnfOiE5eIPKtHfBAoGmaq+Twf9102+gLIWoMtZu0bl0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e1k9FsZkWnzSFQdSuqZTtm74De+U2+fi5KQ9go3TSSh9EmKfhg2x8Hn+cOvRUi6dW
-	 IShlat4q6U6iPda++MFYpgkBa4/HiO8fXimkEY8D+sWRoLOfFk/694VpuEH66gWw5A
-	 4Adr8RJQCaG3DorphdmKofOi5BKBWE5bepAf0o3Dgx21BQ2ryKL6TsKMvNiC8u0TkR
-	 kXvNEF529tO9T+BcKNcFF81h2scalD2x+atDCynMkpmzmiy8CSlI0fUfpKoxD7TrSZ
-	 zDh8/772CBWItkKxVkN2xB72B7gftDcwngNwMp0/xn8lwOIQHDxTtzWkpuZN91p6ix
-	 Uo9TtZ73dfFnw==
-Date: Tue, 12 Nov 2024 13:50:40 +0100
+	s=k20201202; t=1731421406;
+	bh=jkG09fF11D+eodj0e0n/wWASad3Dl1VhGhPaaWNQ4Xo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kxpfUFTosip0FpKaVh+Q96YatA37CulFMeZXQOkzjwiJWP9uhIiXfT6dswxtxVPh8
+	 MUEVXkBBSW3xL5pZNtAGm3NNxISNC1OuEEifN6VLYnBEz6k96duy/m9Ck43UJqXj69
+	 Zp4f+WlXrheZ+q8nIvydwWO3yvw1gtlbYOXQ+zaYRyDtcn6WieViMjEyZFoMyrchF3
+	 ka7ozBFTmezYSToFX010su7m2PO6Nk66bcJPUYQHAg63CAvVB8dKd0YP2Tr7btGaU5
+	 FNIxF6Lf00NvYMj2A86XWIqatK/RjfNLVGWqPWess6A1x+C/R/I6hZIZ5ngpEWlFYk
+	 TVLvsFRALnTIA==
 From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Mingcong Bai <jeffbai@aosc.io>,
-	Thorsten Leemhuis <regressions@leemhuis.info>,
-	Linux regressions mailing list <regressions@lists.linux.dev>,
-	LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-	sakiiily@aosc.io, Kexy Biscuit <kexybiscuit@aosc.io>
-Subject: Re: [Regression] wifi problems since tg3 started throwing rcu stall
- warnings
-Message-ID: <ZzNPIOR8aaxfrLE2@localhost.localdomain>
-References: <b8da4aec-4cca-4eb0-ba87-5f8641aa2ca9@leemhuis.info>
- <ZxjLQzHKuR-w16hF@pavilion.home>
- <2b25a988-6965-48e4-a788-58dd8a776e06@leemhuis.info>
- <e2ffd3d06fad236ea900d4fb439b2240@aosc.io>
- <937c258b-f34c-4f63-949d-a5e7c8db714d@leemhuis.info>
- <ZyyQuTfMMSLwStf_@pavilion.home>
- <a7fc57a1a49b5f710c4354ca21c91dba@aosc.io>
- <Zy4WKKq18GunXa6S@localhost.localdomain>
- <814ca9e3-df3b-45ce-ad36-9659b445c499@paulmck-laptop>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	rcu@vger.kernel.org,
+	Michal Hocko <mhocko@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 12/21] sched,arm64: Handle CPU isolation on last resort fallback rq selection
+Date: Tue, 12 Nov 2024 15:22:36 +0100
+Message-ID: <20241112142248.20503-13-frederic@kernel.org>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20241112142248.20503-1-frederic@kernel.org>
+References: <20241112142248.20503-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <814ca9e3-df3b-45ce-ad36-9659b445c499@paulmck-laptop>
 
-Le Fri, Nov 08, 2024 at 07:14:41AM -0800, Paul E. McKenney a écrit :
-> On Fri, Nov 08, 2024 at 02:46:16PM +0100, Frederic Weisbecker wrote:
-> > Le Fri, Nov 08, 2024 at 12:29:40AM +0800, Mingcong Bai a écrit :
-> > > Hi Frederic,
-> > > 
-> > > <snip>
-> > > 
-> > > > Sorry for the lag, I still don't understand how this specific commit
-> > > > can produce this issue. Can you please retry with and without this
-> > > > commit
-> > > > reverted?
-> > > 
-> > > Just tested v6.12-rc6 with and without the revert. Without the revert, the
-> > > touchpad and the wireless adapter both stopped working, whereas with the
-> > > revert, both devices functions as normal.
-> > > 
-> > > I have attached the dmesg for both kernels below. Unlike the log we got last
-> > > time, there is no direct reference to tg3 any more, but the NMI backtrace
-> > > still pointed to NetworkManager and net/netlink-related functions (perhaps a
-> > > debug kernel would be more helpful?). Here's a snippet:
-> > > 
-> > > [   10.337720] rcu: INFO: rcu_preempt detected expedited stalls on
-> > > CPUs/tasks: { P683 } 21 jiffies s: 781 root: 0x0/T
-> > > [   10.339168] rcu: blocking rcu_node structures (internal RCU debug):
-> > > [   10.591480] loop0: detected capacity change from 0 to 8
-> > > [   11.777733] rcu: INFO: rcu_preempt detected expedited stalls on
-> > > CPUs/tasks: { 3-.... } 21 jiffies s: 1077 root: 0x8/.
-> > > [   11.779210] rcu: blocking rcu_node structures (internal RCU debug):
-> > > [   11.780630] Sending NMI from CPU 1 to CPUs 3:
-> > > [   11.780659] NMI backtrace for cpu 3
-> > > [   11.780663] CPU: 3 UID: 0 PID: 1027 Comm: NetworkManager Not tainted
-> > > 6.12.0-aosc-main #1
-> > 
-> > Funny, this happens on bootup and no CPU has ever gone offline, so the path
-> > modified by this patch shouldn't have been taken. And yet this commit has
-> > an influence to the point of reliably triggering that stall.
-> > 
-> > I'm running off of ideas, Paul any clue?
-> 
-> Here is one straw to grasp at...
-> 
-> Is it possible that one of the CPUs had a problem coming online at boot,
-> and therefore backed out of the online process, thus appearing to at
-> least some of the CPU-hotplug notifiers to have gone offline?
+When a kthread or any other task has an affinity mask that is fully
+offline or unallowed, the scheduler reaffines the task to all possible
+CPUs as a last resort.
 
-I looked for it in the dmesg and there are indeed rejected CPUs but very early,
-before secondary boot-up.
+This default decision doesn't mix up very well with nohz_full CPUs that
+are part of the possible cpumask but don't want to be disturbed by
+unbound kthreads or even detached pinned user tasks.
 
-Just in case, Mingcong Bai can you test the following patch without the
-revert and see if it triggers something?
+Make the fallback affinity setting aware of nohz_full. ARM64 is a
+special case and its last resort EL0 32bits capable CPU can be updated
+as housekeeping CPUs appear on boot.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 35949ec1f935..b4f8ed8138d3 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -5170,6 +5170,7 @@ void rcutree_migrate_callbacks(int cpu)
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 	bool needwake;
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ arch/arm64/include/asm/cpufeature.h  |  1 +
+ arch/arm64/include/asm/mmu_context.h |  2 ++
+ arch/arm64/kernel/cpufeature.c       | 49 +++++++++++++++++++++++-----
+ include/linux/mmu_context.h          |  1 +
+ kernel/sched/core.c                  |  2 +-
+ 5 files changed, 46 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 3d261cc123c1..992d782f2899 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -663,6 +663,7 @@ static inline bool supports_clearbhb(int scope)
+ }
  
-+	WARN_ON_ONCE(1);
- 	if (rcu_rdp_is_offloaded(rdp))
- 		return;
+ const struct cpumask *system_32bit_el0_cpumask(void);
++const struct cpumask *fallback_32bit_el0_cpumask(void);
+ DECLARE_STATIC_KEY_FALSE(arm64_mismatched_32bit_el0);
  
+ static inline bool system_supports_32bit_el0(void)
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index 7c09d47e09cb..8d481e16271b 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -282,6 +282,8 @@ task_cpu_possible_mask(struct task_struct *p)
+ }
+ #define task_cpu_possible_mask	task_cpu_possible_mask
+ 
++const struct cpumask *task_cpu_fallback_mask(struct task_struct *p);
++
+ void verify_cpu_asid_bits(void);
+ void post_ttbr_update_workaround(void);
+ 
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 53ee8ce38d5b..4eabe0f02cc8 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -75,6 +75,7 @@
+ #include <linux/cpu.h>
+ #include <linux/kasan.h>
+ #include <linux/percpu.h>
++#include <linux/sched/isolation.h>
+ 
+ #include <asm/cpu.h>
+ #include <asm/cpufeature.h>
+@@ -133,6 +134,7 @@ DEFINE_STATIC_KEY_FALSE(arm64_mismatched_32bit_el0);
+  * Only valid if arm64_mismatched_32bit_el0 is enabled.
+  */
+ static cpumask_var_t cpu_32bit_el0_mask __cpumask_var_read_mostly;
++static cpumask_var_t fallback_32bit_el0_mask __cpumask_var_read_mostly;
+ 
+ void dump_cpu_features(void)
+ {
+@@ -1618,6 +1620,23 @@ const struct cpumask *system_32bit_el0_cpumask(void)
+ 	return cpu_possible_mask;
+ }
+ 
++const struct cpumask *task_cpu_fallback_mask(struct task_struct *p)
++{
++	if (!static_branch_unlikely(&arm64_mismatched_32bit_el0))
++		return housekeeping_cpumask(HK_TYPE_TICK);
++
++	if (!is_compat_thread(task_thread_info(p)))
++		return housekeeping_cpumask(HK_TYPE_TICK);
++
++	if (!system_supports_32bit_el0())
++		return cpu_none_mask;
++
++	if (!cpumask_empty(fallback_32bit_el0_mask))
++		return fallback_32bit_el0_mask;
++	else
++		return cpu_32bit_el0_mask;
++}
++
+ static int __init parse_32bit_el0_param(char *str)
+ {
+ 	allow_mismatched_32bit_el0 = true;
+@@ -3605,22 +3624,33 @@ static int mismatched_32bit_el0_online(unsigned int cpu)
+ 
+ 	if (cpu_32bit) {
+ 		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
++		if (housekeeping_cpu(cpu, HK_TYPE_TICK))
++			cpumask_set_cpu(cpu, fallback_32bit_el0_mask);
+ 		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
+ 	}
+ 
++	if (cpu_32bit_unofflineable >= 0) {
++		if (!housekeeping_cpu(cpu_32bit_unofflineable, HK_TYPE_TICK) &&
++		    cpu_32bit && housekeeping_cpu(cpu, HK_TYPE_TICK)) {
++			cpu_32bit_unofflineable = cpu;
++			pr_info("Asymmetric 32-bit EL0 support detected on housekeeping CPU %u;"
++				"CPU hot-unplug disabled on CPU %u\n", cpu, cpu);
++		}
++		return 0;
++	}
++
+ 	if (cpumask_test_cpu(0, cpu_32bit_el0_mask) == cpu_32bit)
+ 		return 0;
+ 
+-	if (cpu_32bit_unofflineable < 0)
+-		return 0;
+-
+ 	/*
+-	 * We've detected a mismatch. We need to keep one of our CPUs with
+-	 * 32-bit EL0 online so that is_cpu_allowed() doesn't end up rejecting
+-	 * every CPU in the system for a 32-bit task.
++	 * We've detected a mismatch. We need to keep one of our CPUs, preferrably
++	 * housekeeping, with 32-bit EL0 online so that is_cpu_allowed() doesn't end up
++	 * rejecting every CPU in the system for a 32-bit task.
+ 	 */
+-	cpu_32bit_unofflineable = cpu_32bit ? cpu : cpumask_any_and(cpu_32bit_el0_mask,
+-								    cpu_active_mask);
++	cpu_32bit_unofflineable = cpumask_any_and(fallback_32bit_el0_mask, cpu_active_mask);
++	if (cpu_32bit_unofflineable >= nr_cpu_ids)
++		cpu_32bit_unofflineable = cpumask_any_and(cpu_32bit_el0_mask, cpu_active_mask);
++
+ 	setup_elf_hwcaps(compat_elf_hwcaps);
+ 	elf_hwcap_fixup();
+ 	pr_info("Asymmetric 32-bit EL0 support detected on CPU %u; CPU hot-unplug disabled on CPU %u\n",
+@@ -3641,6 +3671,9 @@ static int __init init_32bit_el0_mask(void)
+ 	if (!zalloc_cpumask_var(&cpu_32bit_el0_mask, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
++	if (!zalloc_cpumask_var(&fallback_32bit_el0_mask, GFP_KERNEL))
++		return -ENOMEM;
++
+ 	return cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+ 				 "arm64/mismatched_32bit_el0:online",
+ 				 mismatched_32bit_el0_online, mismatched_32bit_el0_offline);
+diff --git a/include/linux/mmu_context.h b/include/linux/mmu_context.h
+index bbaec80c78c5..ac01dc4eb2ce 100644
+--- a/include/linux/mmu_context.h
++++ b/include/linux/mmu_context.h
+@@ -24,6 +24,7 @@ static inline void leave_mm(void) { }
+ #ifndef task_cpu_possible_mask
+ # define task_cpu_possible_mask(p)	cpu_possible_mask
+ # define task_cpu_possible(cpu, p)	true
++# define task_cpu_fallback_mask(p)	housekeeping_cpumask(HK_TYPE_TICK)
+ #else
+ # define task_cpu_possible(cpu, p)	cpumask_test_cpu((cpu), task_cpu_possible_mask(p))
+ #endif
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 719e0ed1e976..b4b9743d7c9c 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3494,7 +3494,7 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+ 			 *
+ 			 * More yuck to audit.
+ 			 */
+-			do_set_cpus_allowed(p, task_cpu_possible_mask(p));
++			do_set_cpus_allowed(p, task_cpu_fallback_mask(p));
+ 			state = fail;
+ 			break;
+ 		case fail:
+-- 
+2.46.0
 
-
-Thanks.
-
-> 
-> 							Thanx, Paul
