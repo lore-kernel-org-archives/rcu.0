@@ -1,61 +1,65 @@
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2081.outbound.protection.outlook.com [40.107.236.81])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2048.outbound.protection.outlook.com [40.107.223.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCAD41C79;
-	Tue, 12 Nov 2024 04:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EDA208222;
+	Tue, 12 Nov 2024 04:42:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731386275; cv=fail; b=B0rnwUAd5FmbI2iVEFTjYTBOgBJt0y3YK4AJWMeVTTLCmBqd4TjugUM5f1If1ph/3ecgjvp7ya0XyEr76/8GNyonl37iicKpsJt1TVe9y4AoO5BqQ/+TAHBX5Za0ELiHxRcudn/0yswYDtD6MJYM5UsJ7X3qY0g/bRjI9hMRwL4=
+	t=1731386580; cv=fail; b=GvktGvb1Y7kW7OZLayXvp1lFau51gNlAJI9ZTuS5HCTkQ/0YgugJT+/1Bv8IT3nBzzg22weIu9dQbShMuSGpOkFc12oAtFytEt0QjiCPw1WeInK5h7AFJzrhghr0TSRzeZDJAHInaoS2Ir7uZFEuxW0NzbdGnnxg2C5XFWSx44w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731386275; c=relaxed/simple;
-	bh=YIp/r8esns0sMS1A2fHX5ZTfFYPKpJwmhLpgs2HK6TA=;
+	s=arc-20240116; t=1731386580; c=relaxed/simple;
+	bh=gqvsadeLUGz2O4Wf9TKNa+JwXGV93mm5Xx95cG6cb6k=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=TbGXg1OADdtnRAZ7ylMdrM71JWgjS0l+gVttGTRRFj87RaBYyBSM2OYDIDy0Ku0dhUGvrgRpngZ+bXYVxJ5/K3utgVzw5bcgUQMrY9uB9RGYx2Q46a1hXAnBGIEbKjJORwdX3vjRfl4PFdlowM9RQq/a4duYziug5n4rYyziE/I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pVey2z8o; arc=fail smtp.client-ip=40.107.236.81
+	 Content-Type:MIME-Version; b=mwY0C+Sb+cVufn7/GlosM69gK10SH5mtHBCSw2O9BBeTo+AjTRky3nVeyTRF+ZsBAbLtrcwJ4c/bYl6Nh3Un/7TkdULDBiUeKWVR9d/PYgKGh8Uvd25oetHam339K/CRi/cgfYvhlV1WQB6ky3F1okzFm7a7fghoJPFIIMPxxWA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=bItI+Xjg; arc=fail smtp.client-ip=40.107.223.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pVey2z8o"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="bItI+Xjg"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=QElJw4A1fTG7oT5fPmqwvqEe0VZJ1vt50xfyzfcUhkR4EOGzFa6Ah3UawyTtwU8ceBCTIHvzb3ToQbj4tK1dyf6W2rQHxWM0MYg/CbOHTufIujKcKRsH0oUpL7SjEO5m0Brr4tWSnKiiAQk5F4thKBPCQcMvHI/gVWOZ0Z5gMZwHMQjkuMvkV5kWFG3tkPuXxIATOu0F/CLsv1p2DKguQcfakepjI9HLguNUHgMznESogWaWdZNDXX2gEpp+5PnalT/njXd1ZA5a7KSwognMcIiWcwneze4X9rxejmkcRa8LFv/T+a/+GeZ0xBRu0LDpvw2RU77WQXXdPnSFs+aHzA==
+ b=Tk7Leo+55x5vxYGzSLAigouihCJes4OfHkgpJQzZrwkUx+5eHOKm+PEOiuwUZXlo4rI2h4yRwhpL8RRHjs3sXk7KjgZZwEZ1R38x5t0fcTktWtQD2KLmvi9KeDUdcWMnz5nn5EtMwQmu94SR2AcvG2v9jNNG4c86vLj8pm1iXAGdRyfFQmA+BDi4PBJhU4FAVqT9v94+bA4ZooFkhslGPjtzXelFBCmpuJ+yr33Jgyvav1u0gw/jQW/a2UyLGl+TDI5ZoVmGFPcsqdt/aHsJN1HLYGzk41Ft6W3zjD2fM3aBuM+a1wddWtzR/II2sigE0Ip07CUWvVzjpcD7sN4dAQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kMk94nRAjyz+csVcMH9ERTuVIVnI34+JTkaTNVOCZ4w=;
- b=Q1B3K5wOuCut9pF6uIUYHZcsUDBlfX6eScR1uCV1ZKfSgvzIBv2gKijnDCj1tZDXYaS5k17H1s1gBbUUJd3xF96xPufyYfR1KMWtkuCZSRVM6uCFTn9WmKI0Ss4qij05Qn5jsJELVw9R0SB4/SAVVz95U84ej0I2xxWgafxlddL1p1VeZDjgRoxeFEHeCI3B8qsFTUaCYvpIREUwPvKwa6Hr6F7xfi1MvdtyK8RKsOzU3KSXZNy4uP9v/X6Zusi8P+kHFMHqsgXg+epccDVYECCCXZFxg+5CBFsRjoHujAe7hjCp9dU4cL6Oh4U+JKm4KKDIhPNqDwvGemPnLfaOrA==
+ bh=oxgScA0dSg7YFy9knkmyTqFVeEcS5/8+2JpKM5QvG9A=;
+ b=w97OzjE93//YnYlw1sr00gnaPFMD3cy+R5+CHV172jLx0H2hzDDqyzKOSKG/S3cPTDqzp051P1Bf6nZmv8HL7SkibEAWbugOiBubUS7tXs/zocQ2cH5rW5xkctCODaSWJrwqxHllU9qozdIllveNmHoy92dRFWo6U2tB8yjAl+KvNLGGBBKF1Km6aNgXZ9YRfw4kMcgG74IgxiPj+emrKWy9MJzSUQnmq7uRUyJsNI/I3V0LCiGBMH+8B/kvwvJWZGGUHz54dWLU6nlLD92pwbH+mN9PMEdT0QNLUXCnM5JR/YXzHBv+MIMk3LKBwAbe3wN66sXEEKUb4vcLxHXNwA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kMk94nRAjyz+csVcMH9ERTuVIVnI34+JTkaTNVOCZ4w=;
- b=pVey2z8ojJ6ezQniSP5UIIAJKuvY5C8iFGbLA1GI5Zb6Ytdmq2QNfXz25I/Sti6JuM00bzBWPTM7c39nmvMI4atC+yTk7aV5DzbsdySNq1fFm8yQgivqicFlVyUulfs9pY5IcvVDHGEc11419BABx0ALlpZakuM98QuKwA+MsHo=
+ bh=oxgScA0dSg7YFy9knkmyTqFVeEcS5/8+2JpKM5QvG9A=;
+ b=bItI+Xjg8Ag5dYErPjB4YV5ht5PYoxNvEn3mK3cb1oiEMF/bMrAiAjwVLWcb4ijw3GOvmRT6/MyVCgYIQuEQAHgtZ94GLwrjUFJ6FRWfAzAUqGsYvN7pUDpahRJIlx9VHPKR0hd60pfY0KSlU7TZFfKNduYKmeoQBYbjZANhQvM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
- SJ1PR12MB6242.namprd12.prod.outlook.com (2603:10b6:a03:457::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8137.28; Tue, 12 Nov 2024 04:37:50 +0000
+ CH3PR12MB8879.namprd12.prod.outlook.com (2603:10b6:610:171::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.16; Tue, 12 Nov
+ 2024 04:42:52 +0000
 Received: from DS0PR12MB6608.namprd12.prod.outlook.com
  ([fe80::b71d:8902:9ab3:f627]) by DS0PR12MB6608.namprd12.prod.outlook.com
  ([fe80::b71d:8902:9ab3:f627%3]) with mapi id 15.20.8137.027; Tue, 12 Nov 2024
- 04:37:50 +0000
-Message-ID: <48dfaa56-4d1f-47e5-8174-3a433711e0db@amd.com>
-Date: Tue, 12 Nov 2024 10:07:40 +0530
+ 04:42:52 +0000
+Message-ID: <c48c9dca-fe07-4833-acaa-28c827e5a79e@amd.com>
+Date: Tue, 12 Nov 2024 10:12:40 +0530
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 rcu 0/13] SRCU-lite changes for v6.13
-To: paulmck@kernel.org, frederic@kernel.org, rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <3b82ac1a-8786-4a27-8eff-ecc67b50dfb6@paulmck-laptop>
- <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
+Subject: Re: [PATCH rcu 11/15] rcutorture: Add reader_flavor parameter for
+ SRCU readers
+To: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
+References: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
+ <20241015161112.442758-11-paulmck@kernel.org>
 Content-Language: en-US
 From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-In-Reply-To: <ddf64299-de71-41a2-b575-56ec173faf75@paulmck-laptop>
+In-Reply-To: <20241015161112.442758-11-paulmck@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0014.apcprd02.prod.outlook.com
- (2603:1096:3:17::26) To DS0PR12MB6608.namprd12.prod.outlook.com
+X-ClientProxiedBy: SI1PR02CA0055.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::16) To DS0PR12MB6608.namprd12.prod.outlook.com
  (2603:10b6:8:d0::10)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -64,158 +68,169 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|SJ1PR12MB6242:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e4077e7-9a39-4149-3f0d-08dd02d3c3c7
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|CH3PR12MB8879:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8bdc729-ca33-4d53-0d37-08dd02d47798
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?WkppMkRvQnBqcll2T1pKZ1lZbTU4WnJQMHovdEl6R1pLT245VkdVOFp2S3I1?=
- =?utf-8?B?UkE1QkkrTy83M3BjdlVsV2UzQzFQUUxBTmlIRXRhcUNsSHN2S3Brd1hHUEdJ?=
- =?utf-8?B?Y09mVThndkNuQTQyOWlDMkJQWmFDYUlXMTVGWXZad1FZQVVQT3haN1dZMDhz?=
- =?utf-8?B?UnBjc3pmUHg1UHFVYmVkVExIMHMwQWZCTEZLZlVSeHNvOUx6N2VrcXE4dmcx?=
- =?utf-8?B?WW9LSVgyNlVxVUpJMmlKb2xydzhHVCtXSTFoejhPVEQ0dWI5QlZRbDBlSlRB?=
- =?utf-8?B?a0k0TkV3Q0NXampHYzFWNEVRcU9RUWNvWDhoa3pxOUJESEdVZkxaV1F5RHRU?=
- =?utf-8?B?SzNqbG44dFVTdkRCUlhtQVBzQkJVQlBySTFWeXVjNWNBcDhWSWNVQWlZdEJx?=
- =?utf-8?B?ZWg5UEdYZ1d6eDV0Si9ZalBmNzJPYWZBVlcyNHV4aDkzM3BXRDlESHYzd25v?=
- =?utf-8?B?SWFoaDJxcTB5RFcrWHZsalhabEtEdnh0N2pubUpaY29jK2lrRnhEOG51ZjY5?=
- =?utf-8?B?TWVMRjJ5SmZ4R3BDL0V2ZFJjQzg3LzI0VENGVXdDcjc5WU85VlpLc1RyL3cr?=
- =?utf-8?B?UUliZUNVSCtSOWdaaWk5YlR4c1NHbXVQMDFwaEVMK2tMdXJnVGhIczZwNGFQ?=
- =?utf-8?B?N0gwQ29ud0dNb1IreUpSQklhaW9ETzZWeFVXMGxKZnliZDRveGtGWGNPUXAw?=
- =?utf-8?B?dzVUNGtSUFpCZllhNnM5MFNEMEFNbU9oQ2JMcm9hT0MxT1kvdlM4VEwreGFV?=
- =?utf-8?B?d09YRUlBUVNtbFE0TG04dTRhWU5iTGhVaFJ2RkhFOUtCemlrOGxZNGQxRVB1?=
- =?utf-8?B?aEU5RHpxTkdzTGUxT08zTGQwLy96ZWw4bGxPMlh5Nm5oanVXVEEwWTRIb3pI?=
- =?utf-8?B?U2Vha0prYVM4T084ZGhUd2l0M0haeVNlbmN0VDhFM3JpYjVQdDlkdit3NzEz?=
- =?utf-8?B?d0QxTU9yQWMxV3NJV0ZyUXFJWmFBVlFvQmtnMStLYWJxYW8yem4wb0ljT05k?=
- =?utf-8?B?Ulk1RjUzZHp6TnZub3VoQW1Tc3hOZzd3aFVtMVFNZjBZbGw2VE1DclBpOEFS?=
- =?utf-8?B?ajJFUlNSeU5ub2lvVVRoaC9OUE1vUjNxK3ZqaElxRVdJVmhZMkN6RUJDaFdj?=
- =?utf-8?B?WFNPWWFmV0o5NlNqeGxqYnlycUw1UjZmbHlOMkJSZDVlNXF6bDAvU3czOHVO?=
- =?utf-8?B?MFZnSTYwNVg1T1hIT2NmRk12RGQ2Ymk0K1BDblQ5a3lhZnNuSFFhVm1PbXZs?=
- =?utf-8?B?RWdHeWtXU1ZNRVlwQlVvV3VWckxpMUxvNDZ1ZmhLdkNxVU9DMFg2MHdlZ0dV?=
- =?utf-8?B?UW5JR0ZXekxxY3Z5S3k3QkMrYVdFSlF2ZFE0VUVvanBPVFA5YzltKzJCOUdm?=
- =?utf-8?B?RzFXRmFoUVh5WWRQYisxVWxQMGJWd2J1WWVsNy9GVi8wRE9CVXV3UFhKcHFJ?=
- =?utf-8?B?WUlnVFR1RXc4UlpNaldIV1RTYTdNTmtqWG5VaUtoa3YxNE9hNUVKL1ZZWnBo?=
- =?utf-8?B?RDdNWGkyVDBxMXZSdHBnR2ZMaitMZSt1T0VkQWkyMHMrcEFQZVI0ZjFzS2V5?=
- =?utf-8?B?Z1N2MElXTXpCcU5sMmh0dzdWRDNQRFlvdy95QVVJUjFXY3NxVitwY1o4RDNX?=
- =?utf-8?B?enhJYWtMM2Z6YnFSY29pbDh4T0t2NHk2TWk3dUVsUTFWUnVaQUNXY1JqT1pv?=
- =?utf-8?B?TnNmaFduYUdtNVpGL2RRYTFKYi9NSURyeVNWZVNzS3F5bDdZalhBR25lbHJ2?=
- =?utf-8?Q?8XnNiUZsjtjcXZZd1gF/2V6mW92pzndWOQV7b5J?=
+	=?utf-8?B?TnRVMzJGNkMrbVIxQlNtT05wVDNHMmxyQys5SDh2aWZaMXpKVk5VaEptT3ho?=
+ =?utf-8?B?WkpNRkVpdHJCZnBkUjByUlVlN2ErcjMyRG9UMVBUN29sSWJJNUFLaHdOY1ds?=
+ =?utf-8?B?eVNEcGtVWUx5TXd4c1JiMDJQckFIUEdtVTVMVTJXVk5DMldsM2lsZmZIU3Bq?=
+ =?utf-8?B?eWdNaEEyelp2Nmh6bitaUmNWYVNFV1B5SXhPQ1JGSlVtVUo4RnFpY0NhOW1h?=
+ =?utf-8?B?YlROUjltdDdONXpBTEtRaHJNcCtESGpuR2ZSUVdBM1hteXRJOHluNzVlOE9l?=
+ =?utf-8?B?ZVpjS0pQNTNOWVgxZWtxQUtyNVJZQU1XdmtyeTFpZmVCalBvSXZ5Ukwvdllt?=
+ =?utf-8?B?dUtKS2NuN2RHdVFyVzRBUHdNbi9INmZOWTU3MHdiODhMZ3c3aDJmTkI4bWVI?=
+ =?utf-8?B?N0tRYytPWGtwT2IveWVrdjd2K25JbnN6a2RmbldWeFlsZ3ptQ3c4YlJvbWEr?=
+ =?utf-8?B?SFd3MU8vTWIyYi8rMlpqTzc4MVRkUlMvNVhtZFg2eHJUT09RQy9SNnlFVFY4?=
+ =?utf-8?B?UCtrNDY0ZkRlTGlkYS9uUDlmSEZobXkzSVpOQ21KOVhCbjdGSmVsQUY1OTZh?=
+ =?utf-8?B?OFpYR3BMcUFVaXc5NW1hWTBzdmo1V3Brclp6UVRqeFhBUkRVaktkWXZCWVNR?=
+ =?utf-8?B?VUpKdHVISXJqMCs4aHdDdzFvMmNUTStmM0FyRWFxNHVLU21QMVQ3b0kwVTJL?=
+ =?utf-8?B?Y0xHKzFvRHgvVmpWY1JOSEpmeGJzb1oyV3A4WXpCcEZJU29hdXYyWFM4dmdR?=
+ =?utf-8?B?RStESjNmWGR5S0lZU3dkbnkzem5TRjljeWpiUkY0T2thQ2NtWXVvY1FaV1FK?=
+ =?utf-8?B?REJFWjRvdktQZjlNVGlZcmZTZmo5bWErYSswemxJVWhQZUIvdVIyZmFlZnY4?=
+ =?utf-8?B?K3EyYjBYTjVOVHdVYW04S014dkkvQ3VRQ1VrSjJVMlVsNzdoVFZiSTNYaFRZ?=
+ =?utf-8?B?MDVwVGpsc3FzeHVKTlM5QmZHbEg0SUVwKzBpVHh6QkZ5S1ViUWhaQkFibjZl?=
+ =?utf-8?B?OXMyZnRuOC9Jb1JWUzA3bzc5NGtvbi9sVXFkMlRsRUlwd2hVT25VN21XWGJO?=
+ =?utf-8?B?aXYyS1ZpUWVXanEvaGZRWUNTcGxDVG5lbTd3NDhoNGhWUUpmS0twcDJBTE9C?=
+ =?utf-8?B?dUFiZktnaGYrQVhJalFMK1JvOUlBbTJjRjFNblk2TjREck1ITzBSSUQ0OE85?=
+ =?utf-8?B?TmdWdUxjUjNYMy9ld3VtNmZHa3Z0K29OLzVpU2dyL3JiR3ZJR1ZONUVBWWVt?=
+ =?utf-8?B?L3NNbnRBbkc2WDZkSFMrSDRyZ2Zady9yRS9oZzg2VkdIWmlua0VGdG9RT1cy?=
+ =?utf-8?B?dmNmQ2NzeWROSkFDdE5WazRLWmJRNmo1dlM5T3R0M1Zlb3FKdkQ4QkI1d3Nm?=
+ =?utf-8?B?TmZMcnp2SVI2d0xpNStUZDBBT2xBR3BEYzFVYmtOeS85SnNFL2R0RnhxNmZZ?=
+ =?utf-8?B?QXVmdG11Zk5sR2UxZWFwamtFOVFhRE90N2paN1ZZRTdjZWpwcmJPQlMzN2JJ?=
+ =?utf-8?B?WmtWK2xlSkpXbi9HNXIwZi95a1ZINThTdVhVT0VYcFhjTDdwREkydTNaTVNS?=
+ =?utf-8?B?V3ZoejRkdlE5eUsvQmU3MEJDY00yWHo4dmpkZFlvYmRMWkVxZXNOTzNIRjlG?=
+ =?utf-8?B?Sk8xOEROTDdtbm5HbldTUVArRGRhTVhleVRFZXVPS3FNZkNJbnk5dHVUNXFT?=
+ =?utf-8?B?R0NDWHpTYnhhUU83dUkwaVFOVld5VDZKemJGb3ZiYVQxcHNLWFZRcVU3TUM3?=
+ =?utf-8?Q?HmQ/zQ3HUsRq1zv9+KpJB7qpCwUIOZz95u5pD6z?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UERTTjJrVk1JeTl3OUZSN1d4QVJtYk9tSU52ZlB1c2JDWndWTFovTTI1cUJ2?=
- =?utf-8?B?bEFXVm9wWFZielkvRzhxWDBHVy8zTjBLdG5tMmp1Ly91R1Eyb296aGlQbFdU?=
- =?utf-8?B?blk3SWlTWWZvT0ppQTFtRjd5aU1sSVZlRTVMZDJaNHV3dmQxSEp1bXUyNlZL?=
- =?utf-8?B?ZlBhcHBoS041YjBJMWJldFIxWUlFc1p5SElGbGUvemxKRmFJUVVuL0pVK0tW?=
- =?utf-8?B?cjdhOHBEQkxiRU1GOWF3ajdiUkNZRTA0R0pQd2I5ZnFiM01lV29memowc0Rv?=
- =?utf-8?B?WFdVUStUY2VZS0N4OTVpSzNWWUpqNUxHS0xENVl5cCtsMjBwby9PUHdvQmdk?=
- =?utf-8?B?R3o3VlFYUEdyUlFsVE4xUXF1RlhqZGR2ZHRGNi9jNmpqSjd6K2NEZVY5R1di?=
- =?utf-8?B?VDZ6ZGNQV1BRTERkQ29TeitIZDhEL3V6bzRVUEkyTDFaYzRuSUN1eFZINXM0?=
- =?utf-8?B?V2NDcWNhM1ZWVDBmRUlvSW5BcllzWXUwRnluUU15TG9HNlBFb2NlS1JFdzBo?=
- =?utf-8?B?M0JXa3M0cGNiaXl0ekh2ZWgvclZTOXZxMkFqbThoOXRGYXBuS0x4M2IxUGps?=
- =?utf-8?B?NXVkOTY1aU1VVk1ROVI4WTRTMXRCRm1MNGpoUXh3N3psMitmOFlwT0h5MVQy?=
- =?utf-8?B?SnJ6UyttWTN0OTA4WmtTRmxnWnp0ZUxUNEFhcWxRMzNNSENXeFZnRjYwQ29P?=
- =?utf-8?B?UEd3NGR3NDhaRFFSUDVaNTBaMGx0Zm1JSEpHdVR2cExpUFJscW5MZ2lscFZX?=
- =?utf-8?B?TjE4Skl5aVVxTFZ3c2srWjJ4NE43SDFySzhrTGNLTkk1c2FoWG0xZE9OWTI3?=
- =?utf-8?B?WG40U1hIbUpoMnZDYTFHdFVmZFFQZlJFSi9kMzhBZG9wd0lhcWl3Wmsramk5?=
- =?utf-8?B?YklzZ3liSVpOWW9xYUJaeG5vOGdaWmsvUjF3ZktoSGR6VDJ3Ri95WUV4S2t0?=
- =?utf-8?B?UkNwVDU3VVpSTU5BQkFEbkxqWEpySzNQRmRpMTNmcE0rallmYW1weENhSGJP?=
- =?utf-8?B?c0NuU0ZxeXhxb3NoVGJhUkZYbUNsUlEybkdPNVlTU3FDTElGMzBQZFp5L1Bx?=
- =?utf-8?B?L2FFZVhXZnZOc3hiY0EyMnFPWmVOS0Rnb0hkS3ljbEdRS3JaUUVkOFBFUkRr?=
- =?utf-8?B?SG9qZVpoTjRNN1BkWXpRNUQ2eVlLM0k3MjZRL1ZEWTQ4bWo3bG00dmVhbVBQ?=
- =?utf-8?B?VVB0ZFM2ckNpamVYSGtPQmxSSHpCTGs1ZGNHUjNIb2lYK3FiUkg1eCtTZmI4?=
- =?utf-8?B?WTdNa0lQaVhESkJjaTM5RVRqQklRNWdMN1JnaG9YT2dvbHBCUERlMDQyUWt1?=
- =?utf-8?B?VDZTQVpKcHc4L3p4Qlg4ZzZQZERvdmc2cERES1ZiN0xPVXRLRTRaTVQ0UWRL?=
- =?utf-8?B?SVZ6RmZpZ3p3L1RVWmI2ZzIwai8xL2FtTW84di80am9SbUMzSkIyOVZkV05F?=
- =?utf-8?B?aXJtOWJTa2VURmp5aXJZeERmQWQ2TW9LaXVva2pFdEpmNDk0aDB3dHJZV1hp?=
- =?utf-8?B?aVArTHNRVXo4cjRxa2F4ZEFCa0N1eW1lREVjVVlJMWR5WHhHQmpWOGwzWUJl?=
- =?utf-8?B?RFR4ZldvRzRpQTdtdkpjeE5GZ0hJQnhCRk1xcCtaTmVoUWFWTmNPRSswODAy?=
- =?utf-8?B?RDEwUDRHZDhzVFAzVUlaTWRrWVZYd2FQazVDaUYxcWtFTVBUa3NvWXRpT0dw?=
- =?utf-8?B?NVJnOGN3WStOaUhUOGdUL3JaWCtuZDhrVkU5MDZpOEFubUU5NkNCemlsM3Jq?=
- =?utf-8?B?S3BPRWZqSEEyMG5RWjFxMjJ6TzgyTzhXcUpzbUJMSXJnS0NHaHNtb3ZXSTJW?=
- =?utf-8?B?RldBMytMTWJ2bWxEV3dhbWhpQlBaSmFYdlRMM1dtSkduTlV4b204VUJGeTRs?=
- =?utf-8?B?QzdJaG9ON2pqSUlwdFJYTmRZOGtUZmwzZDRQTS80MTVObXpjSCsxN3kwRExX?=
- =?utf-8?B?WFlLMjM3bEVmNGdvdXdwU293VGIyMGtZemljSlFhZDQrUzlJdk5aUDR6OThz?=
- =?utf-8?B?aVB5bkh0Q1liWjJNVnlZN0JuQjc5WW9FbENKVU9DV3NQdE4rMmZZRVlPcnRC?=
- =?utf-8?B?Sk9vODJRQndYVEpJR1RUbmhHeTFxa1hjYzVVSUpwbjcra0lLY2pXOWY3MnFx?=
- =?utf-8?Q?1n2b2RjcWsrLV3ZMyogG21UrL?=
+	=?utf-8?B?T0hyZ3NJNnpCRktVbkFtSXd6dk9UL1E3WS9CL3Z4aTdJNXNpZG41TkNQMU1W?=
+ =?utf-8?B?RFpPZkk0K29jR0RyUE5FaDZqZDlLS2NCcmJIaEtQa2gwWm0rR21wODQyWGxv?=
+ =?utf-8?B?OFRHZXdSU3R6RVovWGxpN0VpNUNVRzFlVEpVSzErRGxTNW4xWDZGUDNkWktY?=
+ =?utf-8?B?VGp0czhZeDNFdFR6dEhsbisvRkl6UklzenhpRTB0V1FKS3V4YnJyL1JwWUdm?=
+ =?utf-8?B?eHJjZ3luTkM0NkhVZStJOTJER0ZJMTFoRG9na1NUaE1kcUJaa1RPcVlZSHdr?=
+ =?utf-8?B?cGE5UUxuR0Vkc1VXWCsxS2NYTXI5WjYyZERTSGZ3c240TTlJaVN2T2YzYzhv?=
+ =?utf-8?B?Y2lZUjFGWlp1YTN0cVhTZXFncU1NWWdDM1ZuSFhMd0k0NmNPZ2NwQkdmVlR4?=
+ =?utf-8?B?V3JTLytGZ1l4OEQyRS9xZlEzT3ZPZytnbGwyaS9jNWlUUnZIaVBoUkovY1Ex?=
+ =?utf-8?B?LzVCalFXN3ExTzdmbVVDbm0xbUlHNmQyb08yelRVWmxJb04xMi84YkFBVTlz?=
+ =?utf-8?B?YlJwSExLYU00d1NQL0ZETmh6S1BRVEJ0eDNTb2lQTWpldlBoUGlOTGtCRGY4?=
+ =?utf-8?B?eUgzU05VYi92NUdqQmh3Rm1KUENOWUtNMU5ua2wyZnlSRHJya1Z3TXA3NjIv?=
+ =?utf-8?B?RWY2dEdteW9yV3YzRldDYnBGenV4R3Y5MVUzc2w5Tm1HbDNhUEhVWHN3N0tK?=
+ =?utf-8?B?VjA3RTNHZDdaMk9jTEpzd1MwYkZmamZobXdEVDFzMGFRTUVUVjBmUUo0UzNH?=
+ =?utf-8?B?cmhkUFNzYkl1Y1pkWG1PYk1JM2FieG8wT1VjdFI3Y3FnalJhZ1l1SkJ4MWE1?=
+ =?utf-8?B?cUZvY013UklacllsTW5jKzMyUUJ6NkgxS3lBYkxQTnR3V2VhRXBnSm1lVDN6?=
+ =?utf-8?B?bjVjaWMvek9jZ0VCWTlzL3hJbUFMeE5ianEzUVcwanI0R2grQmsyMDRjOGFC?=
+ =?utf-8?B?Q2dNRzZtWVB1Q015cnZ0N1BnUjdIa3IvN1FQSGczc0JBSWZ3WXVvZ0dZT2hL?=
+ =?utf-8?B?QkRQWXJxZkZPMTNkNFNxck9iM0crcnlHNjB6dEZ6ai84RmQrVUpDUUJFdnpQ?=
+ =?utf-8?B?U09JWjlUK0Y5N2NhOUhTdWw4RjZ0WG9ra2I4VXo1OUhNNDJRcjVuM0xmang5?=
+ =?utf-8?B?dWZZMUprT2JZNFo0d2VqZUtzaTg0SWFTcDBwVU05Nlkydm5sRHA1ZU92MkJF?=
+ =?utf-8?B?RDUyZFFPeTB6ZDN1Z2V6NkFldG9SR3RhYmdDd3M5VXpnRjVNUWVMdDJQRWl3?=
+ =?utf-8?B?a3N4WDRhMU4yWWo5NTYxTDdwbmx5clhkU0k0UmdvUVMwbXVpWnp5UUs1MHN4?=
+ =?utf-8?B?U2ZiMXl3c1hSU1FsdjJEUWkwOXhzck51OUdna2diRnZyTm9zc0duaFNCTXV6?=
+ =?utf-8?B?ZHl3dkE3ZDJYZnNpbnRxRUhCcjZ5QU9wd2E1cGFkSUxwcGJrR1ZobTBHU3J6?=
+ =?utf-8?B?RmxZWnhEUzlZb0h6RnBtZ0VkdEZXK01WS01oNnJGRlowNUdnZkJ3RTVnUUU2?=
+ =?utf-8?B?WnhqWFd0Z1ppeC9xWG5HdHpzc3ZWbG1pTmY2S1hhVm1kYStXWUVjK1lYMjR2?=
+ =?utf-8?B?TFd3bEEzclZKa2dUbzRXUk9PWlREaU1kcTUrT1lEc2t1VkdwN1RxVCtJU1J0?=
+ =?utf-8?B?dmlpMzVoSXB5UkhDaldWSFd1SWFRUUM1cERIMnczYVU2V1p0Sm1RWGhJT1Bs?=
+ =?utf-8?B?SVhrVWJtWnR1a3FFYUlzd2tXbFZDeDR5YkIyMFM1Z2hpNGhwTlBSaUxEbFlO?=
+ =?utf-8?B?QnpHMHd0cjZNa291cnJhMjc3SVptUmZDaDZuNGlyZHlReWdnNDdyQUtnS0ZB?=
+ =?utf-8?B?aU1nN1lrV0h0K1pJZC9hc3N0NllyWUFXZHRHWnN1SnY0MjRhS3hYeXBtdmlw?=
+ =?utf-8?B?OGF4VmRnNDFET0MxbWYvV0Yyd2xSRVBTR1VOT3lySGM1SjhPQnpxbTdtNDJh?=
+ =?utf-8?B?MWI5OUlxTDQ2R2VCYUQ5eHRZcUVYNVdERW9yS21YTHpaM1NxZmg3cVh2UXJG?=
+ =?utf-8?B?UkVwWm1JZ0hKOWoySlhBbE45V01mL3MydUtIRzhvOXY0TmNRMXFEYTdzWVpx?=
+ =?utf-8?B?b09tQTk5UXh3cEI2QXNEM0VLNTNPV2FiS1pPK0VtdklHdDFOUmp2QVFkcmt4?=
+ =?utf-8?Q?lQZ2E5yMfDBtQvF7R5zo3zqfg?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e4077e7-9a39-4149-3f0d-08dd02d3c3c7
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8bdc729-ca33-4d53-0d37-08dd02d47798
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2024 04:37:50.5585
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2024 04:42:52.0294
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x+Asj0UdifTz/J9x+LvJN7pwBI4BdQO6CAgg5viDd4g+LgvzkD6/5Oy4YBSDhq0a+46+5K1CsS9pWHkVwIJWmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6242
+X-MS-Exchange-CrossTenant-UserPrincipalName: eLQqgFJv4QwT92t/fovJb2naHNXG/3tq/l0y6o7sCrp+vGxDpwLmD9fZH6IWFTEnxX0cBxQyRiY03T2gtbBodw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8879
 
 On 10/15/2024 9:41 PM, Paul E. McKenney wrote:
-> Hello!
+> This commit adds an rcutorture.reader_flavor parameter whose bits
+> correspond to reader flavors.  For example, SRCU's readers are 0x1 for
+> normal and 0x2 for NMI-safe.
 > 
-> This v3 series adds support and testing for srcu_read_lock_lite()
-> and srcu_read_unlock_lite(), which avoid smp_mb(), but add a couple of
-> synchronize_rcu() calls to the grace-period processing and may only be
-> used where RCU is watching.
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: <bpf@vger.kernel.org>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  8 +++++
+>  kernel/rcu/rcutorture.c                       | 30 ++++++++++++++-----
+>  2 files changed, 30 insertions(+), 8 deletions(-)
 > 
-> 1.	Rename srcu_might_be_idle() to srcu_should_expedite().
-> 
-> 2.	Introduce srcu_gp_is_expedited() helper function.
-> 
-> 3.	Renaming in preparation for additional reader flavor.
-> 
-> 4.	Bit manipulation changes for additional reader flavor.
-> 
-> 5.	Standardize srcu_data pointers to "sdp" and similar.
-> 
-> 6.	Improve srcu_read_lock{,_nmisafe}() comments.
-> 
-> 7.	Create CPP macros for normal and NMI-safe SRCU readers.
-> 
-> 8.	Add srcu_read_lock_lite() and srcu_read_unlock_lite().
-> 
-> 9.	Allow inlining of __srcu_read_{,un}lock_lite().
-> 
-> 10.	Expand RCUTORTURE_RDR_MASK_[12] to eight bits.
-> 
-> 11.	Add reader_flavor parameter for SRCU readers.
-> 
-> 12.	Add srcu_read_lock_lite() support to rcutorture.reader_flavor.
-> 
-> 13.	Add light-weight SRCU scenario.
-> 
-> 14.	Add srcu_read_lock_lite() support using "srcu-lite".
-> 
-> 15.	Improve srcu_read_lock_lite() kernel-doc comment.
-> 
-> Changes since v2:
-> 
-> o	Apply acked-by tag.
-> 
-> o	Split commit per Neeraj Upadhyay feedback.
-> 
-> Changes since v1:
-> 
-> o	Apply reviewed-by tag.
-> 
-> o	Link to performance data.
-> 
-> o	Add commit improving kernel-doc comment.
-> 
-> o	Pull out into separate branch to avoid dependency on an otherwise
-> 	unrelated refscale commit.
-> 
-> 						Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 1518343bbe223..52922727006fc 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5426,6 +5426,14 @@
+>  			The delay, in seconds, between successive
+>  			read-then-exit testing episodes.
+>  
+> +	rcutorture.reader_flavor= [KNL]
+> +			A bit mask indicating which readers to use.
+> +			If there is more than one bit set, the readers
+> +			are entered from low-order bit up, and are
+> +			exited in the opposite order.  For SRCU, the
+> +			0x1 bit is normal readers and the 0x2 bit is
+> +			for NMI-safe readers.
+> +
+>  	rcutorture.shuffle_interval= [KNL]
+>  			Set task-shuffle interval (s).  Shuffling tasks
+>  			allows some CPUs to go into dyntick-idle mode
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index f96ab98f8182f..405decec33677 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -111,6 +111,7 @@ torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disab
+>  torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
+>  torture_param(int, read_exit_delay, 13, "Delay between read-then-exit episodes (s)");
+>  torture_param(int, read_exit_burst, 16, "# of read-then-exit bursts per episode, zero to disable");
+> +torture_param(int, reader_flavor, 0x1, "Reader flavors to use, one per bit.");
+>  torture_param(int, shuffle_interval, 3, "Number of seconds between shuffles");
+>  torture_param(int, shutdown_secs, 0, "Shutdown time (s), <= zero to disable.");
+>  torture_param(int, stall_cpu, 0, "Stall duration (s), zero to disable.");
+> @@ -644,10 +645,20 @@ static void srcu_get_gp_data(int *flags, unsigned long *gp_seq)
+>  
+>  static int srcu_torture_read_lock(void)
+>  {
+> -	if (cur_ops == &srcud_ops)
+> -		return srcu_read_lock_nmisafe(srcu_ctlp);
+> -	else
+> -		return srcu_read_lock(srcu_ctlp);
+> +	int idx;
+> +	int ret = 0;
+> +
+> +	if ((reader_flavor & 0x1) || !(reader_flavor & 0x7)) {
 
-For this series:
-
-Reviewed-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Minor: Maybe use macros in place of 0x1, 0x2, 0x7 as a cleanup later.
 
 
 - Neeraj
+
+> +		idx = srcu_read_lock(srcu_ctlp);
+> +		WARN_ON_ONCE(idx & ~0x1);
+> +		ret += idx;
+> +	}
+> +	if (reader_flavor & 0x2) {
+> +		idx = srcu_read_lock_nmisafe(srcu_ctlp);
+> +		WARN_ON_ONCE(idx & ~0x1);
+> +		ret += idx << 1;
+> +	}
+> +	return ret;
+>  }
+>  
 
