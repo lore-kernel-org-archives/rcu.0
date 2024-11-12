@@ -1,243 +1,124 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D1D7204921;
-	Tue, 12 Nov 2024 01:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA35205ABF;
+	Tue, 12 Nov 2024 01:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731374925; cv=none; b=ZyLmLLkc+1u4pPr+m4+K6m/2gj7969YuGoAlh2hNGTQ8Sh4vcxpFrbYfTzk/975llafFgssdpTT+2Lg+4zOgtMjlnQDAbHqNFf+0DFbOosQuVbghBtg7XbxggE17bVM5ex7Ti2ALj29LbXVPPAzWidNet/b1QVZdkOirsJUYUdA=
+	t=1731375105; cv=none; b=Nz8l4DxWJcoo0CLNsgS6Lli8K6obteqoOp6tzyJXT6rWiVjPopK5aIesM7e7/2+wieoBk3Tb/EAjanwdEXOaKRp/7qC8lPJBn+MvhnP8UcZsLftJSrM4efcClB/F2TDkio19QC+16QLg4kygGBGyfrLKSTZh5rBPGbpCqoptQEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731374925; c=relaxed/simple;
-	bh=1ESE2VPKTU3JRaOnmP+kg3oYTLo3tW6IyA6ZD5e5zkY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ftHEv4ljnNI4nsFY2oWbhugRsi6aSrx9XgvS5TGnGHAYSb63JkwbFAG4V8OtVgN6xXAA/mX5O/bZrzuPnseZr9pZoz3jPHDz8m6Q3rV/RMRXbbfNMlGiwbShti2idAUjAmHPWt7qSq0pH07E12xJpphSPnj4GgKXBxmGL+06gDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMwblpTM; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1731375105; c=relaxed/simple;
+	bh=QYsZv/IYpEobJEvqATWqh2kv3A3XK8nogTl6lynsHwM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=aQjJqn8VaTV8ppRfK5v2ikB7DO7fPopeEYAj0oqWtxcuaG5jaFWb5jPZIrFSs9Wza+QzAFYShaui6lX6jkfzjZBGxc1cOLRC4CGqrQo03+k+ytaVLUAmnk+XCOXGUn+wnyuOAiNse/BcSYvRUxGqIwQACnx9rhr3d5H2m9Xr4Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9ideWVA; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMwblpTM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBE9DC4CECF;
-	Tue, 12 Nov 2024 01:28:44 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9ideWVA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22C38C4CECF;
+	Tue, 12 Nov 2024 01:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731374924;
-	bh=1ESE2VPKTU3JRaOnmP+kg3oYTLo3tW6IyA6ZD5e5zkY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=EMwblpTMywyOAmQx+gEq4VIAgtOo1sO6ctCD/gLfKTNtWdd7MiURwNWm8DgE/Epq6
-	 t2Lqgaa7zGlvEGSGit7DSRHisR1UFqyVstjnDhFIvvVUXZB/XN0pquQmYIum4pJhrz
-	 u5L+QZlLskTmm76ZHvp7ntFaQ4k7im9FLn+579wcK5mApymZHVHbySNmkqwe5JGNV4
-	 LIDjb4qs7LlFt65xwDSAJWiziPw8IcAhTKGEQMdhTiJxs2ASCGha1rMtYcKXRaokYG
-	 G2NDl1z/JFkL6cMenrTJ5+ToQcOghmCN886rFR+BMOjD43BqqimZUMBtqHoJiNe383
-	 iMZ3qobwEE9Mg==
+	s=k20201202; t=1731375105;
+	bh=QYsZv/IYpEobJEvqATWqh2kv3A3XK8nogTl6lynsHwM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=V9ideWVAj+QEnCQikWVK34pz64e5HcUo6BtxwdLYSyJtzRmhsUVzYIpfLMzIMpKEd
+	 ismKT27ypW2PcYJ2haLLculposdkCpbQwLC4f4YNU4xgiakTZzEIzpxwlbXomSGyMS
+	 L250Ou/S4sPg181Ilq9unzDkXdP9pfubI5C/X3t9tSpiFRzgaS2H4eYTHwueW7xS7y
+	 7jIM/LWlrLLKFwJfQ4k/kadj8ws4B0UIK7yNZ+AqVw07N/u3vZsu4PUCxtWFkRG2PV
+	 L2rw6T3poEURM20YT0R/L3But/LWfmri9rw/Hdt+6bKyW3SXQqpDHVCwv9HxU+8WtW
+	 Z70N2DMBZLHJQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 70619CE0BA3; Mon, 11 Nov 2024 17:28:44 -0800 (PST)
-Date: Mon, 11 Nov 2024 17:28:44 -0800
+	id BD0CACE0BC4; Mon, 11 Nov 2024 17:31:44 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Cc: frederic@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, rostedt@goodmis.org,
-	kernel test robot <oliver.sang@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 06/12] srcu: Add srcu_read_lock_lite() and
- srcu_read_unlock_lite()
-Message-ID: <bb96e032-4f7d-41bf-a675-81350dca8d0a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ff986c31-9cd0-45e5-aa31-9aedf582325f@paulmck-laptop>
- <20241009180719.778285-6-paulmck@kernel.org>
- <e46a4c37-47d3-4a02-a7a5-278d047dd7a2@amd.com>
- <71a72bcc-ba85-4f86-9d41-cccfd433fa09@paulmck-laptop>
- <c15d4a80-2f27-4588-af87-9cf7cf3ad79e@amd.com>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	frederic@kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: [PATCH rcu 2/3] srcu: Check for srcu_read_lock_lite() across all CPUs
+Date: Mon, 11 Nov 2024 17:31:42 -0800
+Message-Id: <20241112013143.1926484-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <bb96e032-4f7d-41bf-a675-81350dca8d0a@paulmck-laptop>
+References: <bb96e032-4f7d-41bf-a675-81350dca8d0a@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c15d4a80-2f27-4588-af87-9cf7cf3ad79e@amd.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 11, 2024 at 10:21:58PM +0530, Neeraj Upadhyay wrote:
-> On 11/11/2024 8:56 PM, Paul E. McKenney wrote:
-> > On Mon, Nov 11, 2024 at 06:24:58PM +0530, Neeraj Upadhyay wrote:
-> >>>  /*
-> >>> - * Returns approximate total of the readers' ->srcu_lock_count[] values
-> >>> - * for the rank of per-CPU counters specified by idx.
-> >>> + * Computes approximate total of the readers' ->srcu_lock_count[] values
-> >>> + * for the rank of per-CPU counters specified by idx, and returns true if
-> >>> + * the caller did the proper barrier (gp), and if the count of the locks
-> >>> + * matches that of the unlocks passed in.
-> >>>   */
-> >>> -static unsigned long srcu_readers_lock_idx(struct srcu_struct *ssp, int idx)
-> >>> +static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, unsigned long unlocks)
-> >>>  {
-> >>>  	int cpu;
-> >>> +	unsigned long mask = 0;
-> >>>  	unsigned long sum = 0;
-> >>>  
-> >>>  	for_each_possible_cpu(cpu) {
-> >>>  		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
-> >>>  
-> >>>  		sum += atomic_long_read(&sdp->srcu_lock_count[idx]);
-> >>> +		if (IS_ENABLED(CONFIG_PROVE_RCU))
-> >>> +			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
-> >>>  	}
-> >>> -	return sum;
-> >>> +	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
-> >>> +		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
-> >>
-> >> I am trying to understand the (unlikely) case where synchronize_srcu() is done before any
-> >> srcu reader lock/unlock lite call is done. Can new SRCU readers fail to observe the
-> >> updates?
-> > 
-> > If a SRCU reader fail to observe the index flip, then isn't it the case
-> > that the synchronize_rcu() invoked from srcu_readers_active_idx_check()
-> > must wait on it?
-> 
-> Below is the sequence of operations I was thinking of, where at step 4 CPU2
-> reads old pointer
-> 
-> ptr = old
-> 
-> 
-> CPU1                                         CPU2
-> 
-> 1. Update ptr = new
-> 
-> 2. synchronize_srcu()
-> 
-> <Does not use synchronize_rcu()
->  as SRCU_READ_FLAVOR_LITE is not
->  set for any sdp as srcu_read_lock_lite()
->  hasn't been called by any CPU>
-> 
->                                       3. srcu_read_lock_lite()
->                                         <No smp_mb() ordering>
-> 
->                                       4.  Can read ptr == old ?
+If srcu_read_lock_lite() is used on a given srcu_struct structure, then
+the grace-period processing must to synchronize_rcu() instead of smp_mb()
+between the scans of the ->srcu_unlock_count[] and ->srcu_lock_count[]
+counters.  Currently, it does that by testing the SRCU_READ_FLAVOR_LITE
+bit of the ->srcu_reader_flavor mask, which works well.  But only if
+the CPU running that srcu_struct structure's grace period has previously
+executed srcu_read_lock_lite(), which might not be the case, especially
+just after that srcu_struct structure has been created and initialized.
 
-As long as the kernel was built with CONFIG_PROVE_RCU=y and given a fix
-to the wrong-CPU issue you quite rightly point out below, no it cannot.
-The CPU's first call to srcu_read_lock_lite() will use cmpxchg() to update
-->srcu_reader_flavor, which will place full ordering between that update
-and the later read from "ptr".
+This commit therefore updates the srcu_readers_unlock_idx() function
+to OR together the ->srcu_reader_flavor masks from all CPUs, and
+then make the srcu_readers_active_idx_check() function that test the
+SRCU_READ_FLAVOR_LITE bit in the resulting mask.
 
-So if the synchronize_srcu() is too early to see the SRCU_READ_FLAVOR_LITE
-bit, then the reader must see the new value of "ptr".  Similarly,
-if the reader can see the old value of "ptr", then synchronize_srcu()
-must see the reader's setting of the SRCU_READ_FLAVOR_LITE bit.
+Note that the srcu_readers_unlock_idx() function is already scanning all
+the CPUs to sum up the ->srcu_unlock_count[] fields and that this is on
+the grace-period slow path, hence no concerns about the small amount of
+extra work.
 
-But both the CONFIG_PROVE_RCU=n and the wrong-CPU issue must be fixed
-for this to work.  Please see the upcoming patches to be posted as a
-reply to this email.
+Reported-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Closes: https://lore.kernel.org/all/d07e8f4a-d5ff-4c8e-8e61-50db285c57e9@amd.com/
+Fixes: c0f08d6b5a61 ("srcu: Add srcu_read_lock_lite() and srcu_read_unlock_lite()")
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/rcu/srcutree.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-> >>> +	if (mask & SRCU_READ_FLAVOR_LITE && !gp)
-> >>> +		return false;
-> >>
-> >> So, srcu_readers_active_idx_check() can potentially return false for very long
-> >> time, until the CPU executing srcu_readers_active_idx_check() does
-> >> at least one read lock/unlock lite call?
-> > 
-> > That is correct.  The theory is that until after an srcu_read_lock_lite()
-> > has executed, there is no need to wait on it.  Does the practice match the
-> > theory in this case, or is there some sequence of events that I missed?
-> 
-> Below sequence
-> 
-> CPU1                     CPU2     
->                        1. srcu_read_lock_lite()
->                        
->                        
->                        2. srcu_read_unlock_lite()
-> 
-> 3. synchronize_srcu()
-> 
-> 3.1 srcu_readers_lock_idx() is
-> called with gp = false as
-> srcu_read_lock_lite() was never
-> called on this CPU for this
-> srcu_struct. So
-> ssp->sda->srcu_reader_flavor is not
-> set for CPU1's sda.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 70979f294768c..5991381b44383 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -458,7 +458,7 @@ static bool srcu_readers_lock_idx(struct srcu_struct *ssp, int idx, bool gp, uns
+  * Returns approximate total of the readers' ->srcu_unlock_count[] values
+  * for the rank of per-CPU counters specified by idx.
+  */
+-static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
++static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx, unsigned long *rdm)
+ {
+ 	int cpu;
+ 	unsigned long mask = 0;
+@@ -468,11 +468,11 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
+ 		struct srcu_data *sdp = per_cpu_ptr(ssp->sda, cpu);
+ 
+ 		sum += atomic_long_read(&sdp->srcu_unlock_count[idx]);
+-		if (IS_ENABLED(CONFIG_PROVE_RCU))
+-			mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
++		mask = mask | READ_ONCE(sdp->srcu_reader_flavor);
+ 	}
+ 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && (mask & (mask - 1)),
+ 		  "Mixed reader flavors for srcu_struct at %ps.\n", ssp);
++	*rdm = mask;
+ 	return sum;
+ }
+ 
+@@ -482,10 +482,11 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
+  */
+ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
+ {
+-	bool did_gp = !!(raw_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
++	unsigned long rdm;
+ 	unsigned long unlocks;
+ 
+-	unlocks = srcu_readers_unlock_idx(ssp, idx);
++	unlocks = srcu_readers_unlock_idx(ssp, idx, &rdm);
++	bool did_gp = !!(rdm & SRCU_READ_FLAVOR_LITE);
+ 
+ 	/*
+ 	 * Make sure that a lock is always counted if the corresponding
+-- 
+2.40.1
 
-Good eyes!  Yes, the scan that sums the ->srcu_unlock_count[] counters
-must also OR together the ->srcu_reader_flavor fields.
-
-> 3.2 Inside srcu_readers_lock_idx()
-> "mask" contains SRCU_READ_FLAVOR_LITE
-> as CPU2's sdp->srcu_reader_flavor has it.
-> 
-> 3.3 CPU1 keeps returning false from
-> below check until CPU1 does at least
-> one srcu_read_lock_lite() call or
-> the thread migrates.
-> 
-> if (mask & SRCU_READ_FLAVOR_LITE && !gp)
->   return false;
-
-This is also fixed by the OR of the ->srcu_reader_flavor fields, correct?
-
-I guess I could claim that this bug prevents the wrong-CPU bug above
-from resulting in a too-short SRCU grace period, but it is of course
-better to just fix the bugs.  ;-)
-
-> >>> +	return sum == unlocks;
-> >>>  }
-> >>>  
-> >>>  /*
-> >>> @@ -473,6 +482,7 @@ static unsigned long srcu_readers_unlock_idx(struct srcu_struct *ssp, int idx)
-> >>>   */
-> >>>  static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >>>  {
-> >>> +	bool did_gp = !!(raw_cpu_read(ssp->sda->srcu_reader_flavor) & SRCU_READ_FLAVOR_LITE);
-> >>
-> >> sda->srcu_reader_flavor is only set when CONFIG_PROVE_RCU is enabled. But we
-> >> need the reader flavor information for srcu lite variant to work. So, lite
-> >> variant does not work when CONFIG_PROVE_RCU is disabled. Am I missing something
-> >> obvious here?
-> > 
-> > At first glance, it appears that I am the one who missed something obvious.
-> > Including in testing, which failed to uncover this issue.
-> > 
-> > Thank you for the careful reviews!
-> 
-> Sure thing, no problem!
-
-And again, thank you!
-
-							Thanx, Paul
-
-> >>>  	unsigned long unlocks;
-> >>>  
-> >>>  	unlocks = srcu_readers_unlock_idx(ssp, idx);
-> >>> @@ -482,13 +492,16 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >>>  	 * unlock is counted. Needs to be a smp_mb() as the read side may
-> >>>  	 * contain a read from a variable that is written to before the
-> >>>  	 * synchronize_srcu() in the write side. In this case smp_mb()s
-> >>> -	 * A and B act like the store buffering pattern.
-> >>> +	 * A and B (or X and Y) act like the store buffering pattern.
-> >>>  	 *
-> >>> -	 * This smp_mb() also pairs with smp_mb() C to prevent accesses
-> >>> -	 * after the synchronize_srcu() from being executed before the
-> >>> -	 * grace period ends.
-> >>> +	 * This smp_mb() also pairs with smp_mb() C (or, in the case of X,
-> >>> +	 * Z) to prevent accesses after the synchronize_srcu() from being
-> >>> +	 * executed before the grace period ends.
-> >>>  	 */
-> >>> -	smp_mb(); /* A */
-> >>> +	if (!did_gp)
-> >>> +		smp_mb(); /* A */
-> >>> +	else
-> >>> +		synchronize_rcu(); /* X */
-> >>>  
-> >>>  	/*
-> >>>  	 * If the locks are the same as the unlocks, then there must have
-> >>> @@ -546,7 +559,7 @@ static bool srcu_readers_active_idx_check(struct srcu_struct *ssp, int idx)
-> >>>  	 * which are unlikely to be configured with an address space fully
-> >>>  	 * populated with memory, at least not anytime soon.
-> >>>  	 */
-> >>> -	return srcu_readers_lock_idx(ssp, idx) == unlocks;
-> >>> +	return srcu_readers_lock_idx(ssp, idx, did_gp, unlocks);
-> >>>  }
-> >>>  
-> >>
