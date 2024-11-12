@@ -1,51 +1,48 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93D8200133;
-	Tue, 12 Nov 2024 14:37:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1ADF2309A3;
+	Tue, 12 Nov 2024 14:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731422247; cv=none; b=Cgl52mhqn4Gy5qkDuFY1djEaXW/3anjnclgybaGg9qD00LanWpuRvz92vqLM1h83rkhW1LLwxxQJSdTXLE7fqG3yOfanzNAMOlQYSDH7Wq0HTtVi1kb3K8Z1ctDEa236zicqaplrb6LZWDG46QYOVVaxMWuvFqaPq3s7jhSTZb8=
+	t=1731423126; cv=none; b=agbB3GkMutsXMcFmKesl4cZ6PtVdtNGaPEJPEbkT7S4F8ENqebglxC35FgmuvwzWt7XfoO0QhaslX/T9XFVBvNvykDv5+qovyGvYkxW5IpCOYV8VJexwWGYf9OiMPC4FsXzt3s8/JbbgflnttgocwKwFMmphXmPLZFH9dIuTyA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731422247; c=relaxed/simple;
-	bh=2S3GF9YgOUVpSAFE9yXBXJbkzVZbHzXUYGcIPmCPbZ4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lemDlobhfEwA5M6n33CGZbTn1SEEtzy/WrwZKrVSt2a/KctboSYY/zGsey2r7R0ORTs7D9qfRnWS6FGw0/lZ3Js8Phk6hKkAN/7xNbSpuANxGOQqKKpSwk05q3qj0iS4ilZ2vAMko9FRms6NwA6pMm4laBqhxnWW6qF5HAPtgIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E2Mn6xzC; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1731423126; c=relaxed/simple;
+	bh=b7Xt7FMDlXDgljySpoqqAYI+yQJBj2AoyiAgZzXZNc0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=quQZl1OiMZe0hz7b0NXFZlDwNZgVpp7k21TTNoDJuKGvC6PKa7s8ElE/sX5SXBlAIde+kWqM6jQi4aG135Y0Q2xgHpu0Vt9qIuuZvHEqNIc30DuZDszKmUB2RBAmCv2ZFR6uGLMkZOM8aUY1MdMeYRenqdRk1YNKqwbyffX0yck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D6S3PDsd; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E2Mn6xzC"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6B26C4CED0;
-	Tue, 12 Nov 2024 14:37:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D6S3PDsd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AE21C4CED0;
+	Tue, 12 Nov 2024 14:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731422247;
-	bh=2S3GF9YgOUVpSAFE9yXBXJbkzVZbHzXUYGcIPmCPbZ4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E2Mn6xzCC22m1WxtxUGNvC2lSrvLRNlRgjRuhrdlOyrUOIZnLSVP/Yo8k6WcGze6j
-	 9Ka9JBu64D+JMdH1PueyIoUUZ7Ewhn+9XydE01xmBhQSbYrvI14/RUqaLpGiMUfZSo
-	 ICkvifnHUUskFbqBVJBqCmnrYzAlAc12Scwz1WFNzzQbJRRzYNmSM3btCBo4Imvvzu
-	 NyK0w8YG1qwmtjE2AaU2W/InanaH9tRBAsxwvsjYCC4vrnInjCKMsYJXngjaxmDOzu
-	 r0UJhz50sJdUeYTgJE9dwar3Kmcg4s0z/wsFvHzjx3PXfMyvIqI7vg5TkA8whm/jXn
-	 mvaFriSbpmkBQ==
+	s=k20201202; t=1731423126;
+	bh=b7Xt7FMDlXDgljySpoqqAYI+yQJBj2AoyiAgZzXZNc0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=D6S3PDsd3/EvpOycxRcxQpm4xwoy0Wng00iwUhjY9I8JvPAgH4LbWRCi4OV30lgBF
+	 EZh7eJaSHg0ybyvS2Ma+h8G31EY4T5Gf7JMZAyl8RzaPnBNdO4zGkxbpcz5LW61lLd
+	 MTb4fpAkMEttbHKHiMlzBJc4DO9shrbvp5TnM9ZVFfJeh0BIj+PzfJFGeqEUReIeAn
+	 uqKPL7d2cH1hPlu3a4IMmNAYkoA+e2DvdUB1XI/fCLfhreTUME1yhm/+gRfT3hJWlx
+	 aYAQhqAl3JhKDxjtABiD7VxfpKjm89MXjGeOhPqWav8s044ebflRDKPbNgMOlptqVd
+	 Hj4V+B0Xs9IQw==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu <rcu@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 3/3] rcu: Finer-grained grace-period-end checks in rcu_dump_cpu_stacks()
-Date: Tue, 12 Nov 2024 15:37:11 +0100
-Message-ID: <20241112143711.21239-4-frederic@kernel.org>
+	rcu <rcu@vger.kernel.org>
+Subject: [PATCH 00/16] SRCU for v6.13
+Date: Tue, 12 Nov 2024 15:51:43 +0100
+Message-ID: <20241112145159.23032-1-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20241112143711.21239-1-frederic@kernel.org>
-References: <20241112143711.21239-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -54,66 +51,48 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hello,
 
-This commit pushes the grace-period-end checks further down into
-rcu_dump_cpu_stacks(), and also uses lockless checks coupled with
-finer-grained locking.
+Please find below the SRCU patches targeted for the upcoming
+merge window.
 
-The result is that the current leaf rcu_node structure's ->lock is
-acquired only if a stack backtrace might be needed from the current CPU,
-and is held across only that CPU's backtrace.  As a result, if there are
-no stalled CPUs associated with a given rcu_node structure, then its
-->lock will not be acquired at all.  On large systems, it is usually
-(though not always) the case that a small number of CPUs are stalling
-the current grace period, which means that the ->lock need be acquired
-only for a small fraction of the rcu_node structures.
+Paul E. McKenney (15):
+  srcu: Rename srcu_might_be_idle() to srcu_should_expedite()
+  srcu: Introduce srcu_gp_is_expedited() helper function
+  srcu: Renaming in preparation for additional reader flavor
+  srcu: Bit manipulation changes for additional reader flavor
+  srcu: Standardize srcu_data pointers to "sdp" and similar
+  srcu: Improve srcu_read_lock{,_nmisafe}() comments
+  srcu: Create CPP macros for normal and NMI-safe SRCU readers
+  srcu: Add srcu_read_lock_lite() and srcu_read_unlock_lite()
+  srcu: Allow inlining of __srcu_read_{,un}lock_lite()
+  rcutorture: Expand RCUTORTURE_RDR_MASK_[12] to eight bits
+  rcutorture: Add reader_flavor parameter for SRCU readers
+  rcutorture: Add srcu_read_lock_lite() support to
+    rcutorture.reader_flavor
+  rcutorture: Add light-weight SRCU scenario
+  refscale: Add srcu_read_lock_lite() support using "srcu-lite"
+  srcu: Improve srcu_read_lock_lite() kernel-doc comment
 
-[ paulmck: Apply Dan Carpenter feedback. ]
+Zhen Lei (1):
+  srcu: Replace WARN_ON_ONCE() with BUILD_BUG_ON() if possible
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/rcu/tree_stall.h | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |   8 ++
+ include/linux/srcu.h                          |  90 ++++++++++---
+ include/linux/srcutree.h                      |  46 ++++++-
+ kernel/rcu/rcutorture.c                       |  65 +++++----
+ kernel/rcu/refscale.c                         |  37 +++++-
+ kernel/rcu/srcutree.c                         | 123 +++++++++++-------
+ .../selftests/rcutorture/configs/rcu/CFLIST   |   1 +
+ .../selftests/rcutorture/configs/rcu/SRCU-L   |  10 ++
+ .../rcutorture/configs/rcu/SRCU-L.boot        |   3 +
+ .../rcutorture/configs/rcu/SRCU-N.boot        |   1 +
+ .../selftests/rcutorture/configs/rcu/TREE10   |   2 +-
+ 11 files changed, 295 insertions(+), 91 deletions(-)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b530844becf8..925fcdad5dea 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -342,20 +342,24 @@ static void rcu_dump_cpu_stacks(unsigned long gp_seq)
- 	struct rcu_node *rnp;
- 
- 	rcu_for_each_leaf_node(rnp) {
--		if (gp_seq != data_race(rcu_state.gp_seq)) {
--			pr_err("INFO: Stall ended during stack backtracing.\n");
--			return;
--		}
- 		printk_deferred_enter();
--		raw_spin_lock_irqsave_rcu_node(rnp, flags);
--		for_each_leaf_node_possible_cpu(rnp, cpu)
-+		for_each_leaf_node_possible_cpu(rnp, cpu) {
-+			if (gp_seq != data_race(rcu_state.gp_seq)) {
-+				printk_deferred_exit();
-+				pr_err("INFO: Stall ended during stack backtracing.\n");
-+				return;
-+			}
-+			if (!(data_race(rnp->qsmask) & leaf_node_cpu_bit(rnp, cpu)))
-+				continue;
-+			raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 			if (rnp->qsmask & leaf_node_cpu_bit(rnp, cpu)) {
- 				if (cpu_is_offline(cpu))
- 					pr_err("Offline CPU %d blocking current GP.\n", cpu);
- 				else
- 					dump_cpu_task(cpu);
- 			}
--		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-+		}
- 		printk_deferred_exit();
- 	}
- }
+Thanks.
 -- 
 2.46.0
 
