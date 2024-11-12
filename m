@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4E81FEFCB;
-	Tue, 12 Nov 2024 14:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C175A1FF7CF;
+	Tue, 12 Nov 2024 14:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731422241; cv=none; b=peH8vl2aKaAtwFBTkylgo38hNziJGr3RHER09Wlp1zNmdCd7QeQwLvCJtQQPx0EyTaVuG59DzKrLPwII3TheHAJANXrfLCLerHMUL0Q2lrn4CKl/MNglZ/1QpAe5BeUFVy5H3pVT+6YXIJpRIRCeyqZSWDZLomrgjf20llbP2PM=
+	t=1731422244; cv=none; b=L7oxWYfCRAen19+aGWH8bQ4BwmrQV8g2UPiGnpniF5lWGv4K4cIPssj0hOv8lCNwuEL6EQhgIlQ84JVjFQE0N6vI5+iBXDIyF582EydNHSLFuD4n1xRzwVA45jzNz6xjPHvc7bLdPOoL9H7rFYPxafLoatrcu6tTcghxQszeiJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731422241; c=relaxed/simple;
-	bh=OLM1LmvcGmfjwEoOH9THmUpT4WbBiVuJoTYmOw4ORrg=;
+	s=arc-20240116; t=1731422244; c=relaxed/simple;
+	bh=MBalVYHu+YCpiyEjXv1rcDKHPByokIPNarfrKVTvbcs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iYF93vdw9ZUCcFDMgWpAQ9oB2tZFdQhpANOop2MaJeL2UHXplpeyQnycd4/A0R7sdtlIvHu6iYP3ngf6qMWiqXAtMTI61ulZb8Cn89YNF5FTUfz61fZSwPy90ZhSgyQJpEC2hX8zYyk2NP8mUleTNOSKJ5DPumXPuhr+wqGArFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HXKHjTKy; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=pLL7QUWtbpgSLyE1ilYbsK55gP7HsjJ4LDIv/gnRo9sUtdnwJ8Hgq/Owktyn0tkdxdvSZB5O3P5s11Iiz1G+tZaBOexa2F2/qer09glrQtRzCxAVHeULyDCLv5H1pBBXYGWtDg8unNC+0RloFJbsaB/oCp6u4gd/Yy/QcB38qUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XV6VTGJx; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HXKHjTKy"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E4FC4CED5;
-	Tue, 12 Nov 2024 14:37:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XV6VTGJx"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BA61C4CEDB;
+	Tue, 12 Nov 2024 14:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731422241;
-	bh=OLM1LmvcGmfjwEoOH9THmUpT4WbBiVuJoTYmOw4ORrg=;
+	s=k20201202; t=1731422244;
+	bh=MBalVYHu+YCpiyEjXv1rcDKHPByokIPNarfrKVTvbcs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HXKHjTKyUbZPR6iHL4Gv3k6lw7qIdLYGsYEhL/GTflN6Y9HfituAM/nJ71CLJh9Fm
-	 X5cSOnT7xgjcgv1J42+WEixgU9pf+nIvtCPOvvujyDvsNgtfzGHPVLze7e+Wk86eyB
-	 anNFzRhsAE32QQWGzcQno7Jz5YcT0sNSjw5SmZ0CKNrDlXBrDeUbjRCzgMqsFnJrWD
-	 CNErYQWFtapb2VLhGdAeQUMlQwkOgF5K2BQJXWkRUFTkUIF0uLnP/6emcRs2R72EpY
-	 hciIRdZDE0XaKKmfRNReRTc5H1LCzlvu4Mg3DtHFvuivRY6xw7iqcHsI1aMl/86YLD
-	 LeA8EoqJo7IrQ==
+	b=XV6VTGJx3sVmn30yYPcPxIfsDI7uTGEFpf5WhC+FMNxH4TVUSy2Ju3gRNA88hppVv
+	 8n0OP9bsJ2LxG4g0rRynF1hjifAaNgn2qzLWSlL4ddAgAi6ZI/1t9puf59psPqPSWP
+	 W2U5HoGgo8TYm0UyY9uBQd7oUGbTLMHeg2WPbp0Y6RwN/NVH+sdlc+KX7+9DktA9hZ
+	 PhA3UogJtR7qHAha32ecarjsxkmaTCic4LQx2eSMXs3JLsLoJ8YVXKEXycIdzwg6x/
+	 jVbxf9k3NVBOjChYLo053Xahdlf6rgSGvZJyUfZ7oksXH1Rj6r2X3YN4ylxuNX65Aj
+	 BZXWKoHWcwlzA==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -40,9 +40,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 1/3] rcu: Delete unused rcu_gp_might_be_stalled() function
-Date: Tue, 12 Nov 2024 15:37:09 +0100
-Message-ID: <20241112143711.21239-2-frederic@kernel.org>
+Subject: [PATCH 2/3] rcu: Stop stall warning from dumping stacks if grace period ends
+Date: Tue, 12 Nov 2024 15:37:10 +0100
+Message-ID: <20241112143711.21239-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241112143711.21239-1-frederic@kernel.org>
 References: <20241112143711.21239-1-frederic@kernel.org>
@@ -56,83 +56,93 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_gp_might_be_stalled() function is no longer used, so this commit
-removes it.
+Currently, once an RCU CPU stall warning decides to dump the stalling
+CPUs' stacks, the rcu_dump_cpu_stacks() function persists until it
+has gone through the full list.  Unfortunately, if the stalled grace
+periods ends midway through, this function will be dumping stacks of
+innocent-bystander CPUs that happen to be blocking not the old grace
+period, but instead the new one.  This can cause serious confusion.
+
+This commit therefore stops dumping stacks if and when the stalled grace
+period ends.
+
+[ paulmck: Apply Joel Fernandes feedback. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/rcutiny.h |  1 -
- include/linux/rcutree.h |  1 -
- kernel/rcu/tree_stall.h | 30 ------------------------------
- 3 files changed, 32 deletions(-)
+ kernel/rcu/tree_stall.h | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 0ee270b3f5ed..fe42315f667f 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -165,7 +165,6 @@ static inline bool rcu_inkernel_boot_has_ended(void) { return true; }
- static inline bool rcu_is_watching(void) { return true; }
- static inline void rcu_momentary_eqs(void) { }
- static inline void kfree_rcu_scheduler_running(void) { }
--static inline bool rcu_gp_might_be_stalled(void) { return false; }
- 
- /* Avoid RCU read-side critical sections leaking across. */
- static inline void rcu_all_qs(void) { barrier(); }
-diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
-index 90a684f94776..27d86d912781 100644
---- a/include/linux/rcutree.h
-+++ b/include/linux/rcutree.h
-@@ -40,7 +40,6 @@ void kvfree_rcu_barrier(void);
- void rcu_barrier(void);
- void rcu_momentary_eqs(void);
- void kfree_rcu_scheduler_running(void);
--bool rcu_gp_might_be_stalled(void);
- 
- struct rcu_gp_oldstate {
- 	unsigned long rgos_norm;
 diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 4432db6d0b99..d7cdd535e50b 100644
+index d7cdd535e50b..b530844becf8 100644
 --- a/kernel/rcu/tree_stall.h
 +++ b/kernel/rcu/tree_stall.h
-@@ -76,36 +76,6 @@ int rcu_jiffies_till_stall_check(void)
- }
- EXPORT_SYMBOL_GPL(rcu_jiffies_till_stall_check);
- 
--/**
-- * rcu_gp_might_be_stalled - Is it likely that the grace period is stalled?
-- *
-- * Returns @true if the current grace period is sufficiently old that
-- * it is reasonable to assume that it might be stalled.  This can be
-- * useful when deciding whether to allocate memory to enable RCU-mediated
-- * freeing on the one hand or just invoking synchronize_rcu() on the other.
-- * The latter is preferable when the grace period is stalled.
-- *
-- * Note that sampling of the .gp_start and .gp_seq fields must be done
-- * carefully to avoid false positives at the beginnings and ends of
-- * grace periods.
-- */
--bool rcu_gp_might_be_stalled(void)
--{
--	unsigned long d = rcu_jiffies_till_stall_check() / RCU_STALL_MIGHT_DIV;
--	unsigned long j = jiffies;
--
--	if (d < RCU_STALL_MIGHT_MIN)
--		d = RCU_STALL_MIGHT_MIN;
--	smp_mb(); // jiffies before .gp_seq to avoid false positives.
--	if (!rcu_gp_in_progress())
--		return false;
--	// Long delays at this point avoids false positive, but a delay
--	// of ULONG_MAX/4 jiffies voids your no-false-positive warranty.
--	smp_mb(); // .gp_seq before second .gp_start
--	// And ditto here.
--	return !time_before(j, READ_ONCE(rcu_state.gp_start) + d);
--}
--
- /* Don't do RCU CPU stall warnings during long sysrq printouts. */
- void rcu_sysrq_start(void)
+@@ -335,13 +335,17 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+  * that don't support NMI-based stack dumps.  The NMI-triggered stack
+  * traces are more accurate because they are printed by the target CPU.
+  */
+-static void rcu_dump_cpu_stacks(void)
++static void rcu_dump_cpu_stacks(unsigned long gp_seq)
  {
+ 	int cpu;
+ 	unsigned long flags;
+ 	struct rcu_node *rnp;
+ 
+ 	rcu_for_each_leaf_node(rnp) {
++		if (gp_seq != data_race(rcu_state.gp_seq)) {
++			pr_err("INFO: Stall ended during stack backtracing.\n");
++			return;
++		}
+ 		printk_deferred_enter();
+ 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 		for_each_leaf_node_possible_cpu(rnp, cpu)
+@@ -608,7 +612,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen,
+ 	       data_race(rcu_state.n_online_cpus)); // Diagnostic read
+ 	if (ndetected) {
+-		rcu_dump_cpu_stacks();
++		rcu_dump_cpu_stacks(gp_seq);
+ 
+ 		/* Complain about tasks blocking the grace period. */
+ 		rcu_for_each_leaf_node(rnp)
+@@ -640,7 +644,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 	rcu_force_quiescent_state();  /* Kick them all. */
+ }
+ 
+-static void print_cpu_stall(unsigned long gps)
++static void print_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ {
+ 	int cpu;
+ 	unsigned long flags;
+@@ -677,7 +681,7 @@ static void print_cpu_stall(unsigned long gps)
+ 	rcu_check_gp_kthread_expired_fqs_timer();
+ 	rcu_check_gp_kthread_starvation();
+ 
+-	rcu_dump_cpu_stacks();
++	rcu_dump_cpu_stacks(gp_seq);
+ 
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 	/* Rewrite if needed in case of slow consoles. */
+@@ -759,7 +763,8 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	gs2 = READ_ONCE(rcu_state.gp_seq);
+ 	if (gs1 != gs2 ||
+ 	    ULONG_CMP_LT(j, js) ||
+-	    ULONG_CMP_GE(gps, js))
++	    ULONG_CMP_GE(gps, js) ||
++	    !rcu_seq_state(gs2))
+ 		return; /* No stall or GP completed since entering function. */
+ 	rnp = rdp->mynode;
+ 	jn = jiffies + ULONG_MAX / 2;
+@@ -780,7 +785,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 			pr_err("INFO: %s detected stall, but suppressed full report due to a stuck CSD-lock.\n", rcu_state.name);
+ 		} else if (self_detected) {
+ 			/* We haven't checked in, so go dump stack. */
+-			print_cpu_stall(gps);
++			print_cpu_stall(gs2, gps);
+ 		} else {
+ 			/* They had a few time units to dump stack, so complain. */
+ 			print_other_cpu_stall(gs2, gps);
 -- 
 2.46.0
 
