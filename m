@@ -1,112 +1,103 @@
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F9441FDF92;
-	Wed, 13 Nov 2024 11:00:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656704206B;
+	Wed, 13 Nov 2024 14:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731495616; cv=none; b=spfUHK5J07xEioAF8BvggGxwsi8Ln5dUlPPc9rQISHiMtfP9GGQv7ALieTAizJUaA/KXEpBwlIdMeJYi6bswV3Sr8fEABKoMTlLxHD0WId+QbGU1R1fPM3OU1sUi9ZLC+C4n+ZysvlnolREgvEx/NXUzOp18ifFc1XkPCsRAjKA=
+	t=1731507503; cv=none; b=hlZXcNpphUqzSgB/umz7XJ2/7G20pNdM5ex2XOdW1na9xnhXVBx+G68dkM4J5WlZRtXR2DWZjTcqd9P2HVeZq49En2RJ+LHlDWUmYg4RE+pBCUpNC+t6H6pn4asdly7nT6VIk3NcEHfXgRScp981anc7SdachBmRugmh+GWhSto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731495616; c=relaxed/simple;
-	bh=I8cRsHQSN0vAF8niCPwBIcvh0901or4VWvAMWSQvXNk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rwgW3vhkJF+nHL3moRVUeQ/wpn60G4tmJz+IfrtvN1mwdaxY1D4mGHXRMe1jEdzczdOOBYCezAwGSMWMUss0Qdnw63zaznFM8sBiEIrMWTOJ7I4RC/UHJ4ltpVPaQ+6s68QZT4RqR7hO989WaLzqVMZWF0VV062DePyo+Bu9iU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BBghVAqs; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1731507503; c=relaxed/simple;
+	bh=VTLzchnhjgjlI226ZCHfEBm2YUpKULDHnBuBWCqYXN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cyxEm5tgV5P41dTog1hRMYNvsJqwIPFVEXsxzmnTPVoGqOhKeOA8ooDAL2ssxiyUNHeZuEBrnrVtVX9dosJHEo4P2OJbwtDp2OX4eQUzO/KlgpbcTXpbjxg84Vq+gNNOvq6UD6l4IeVByJUwqBGdlrFHul/82aCcX+v3aZcNMEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Qg4YBcGY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MfIeSrsS; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BBghVAqs"
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-539e4b7409fso612606e87.0;
-        Wed, 13 Nov 2024 03:00:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731495613; x=1732100413; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Sv1E+zxu28KObA7XsFoCV/meODpEN9w1DvDqrRLJFE=;
-        b=BBghVAqslFa18HNp+tv4cEFlQDbXr6yvMNaSLd+CGr78jY5HWAFID/F7Nadegw3AEP
-         OSZzEzEeX6MU5HMHQjPWIZvavDipPwW2llPZXEY0aH9BiNibeGohIfK/PMPxlZ44n/7B
-         86mJIsMTAQHFAV5l9at5FRgnPZZ3uwjrqJj/DI8WjtO/WzENtYgiL/PjuUZoflPSVRO8
-         v0RYUTfZt5Lvrw+nQXjZ41vZT73KCRGjEcFVnYoslrkkXs60lhbVzuc0nd/sx/KwQV15
-         UGnSONtv+OkaYvxMcC/QVCQHHqC6QO/0RKv4qZFBIiK79hGyFVcyM04svcWcPDgzJTW5
-         eIxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731495613; x=1732100413;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3Sv1E+zxu28KObA7XsFoCV/meODpEN9w1DvDqrRLJFE=;
-        b=whGjsvLJUMFbyqTDY9Jyi9KXcQhdbMOJJ2tiEoMr1vh95CvvG/aj4WYcl1A4hWSXfL
-         DHqpEE5g2ewCKEm6zODgRYR/7C3pOYOhO4DWZpddTU0NdvKQCknK58zjYgIHYqGpsgWm
-         1hRGroxbEmg0GI6/GBzlmstBXgOQ34L2J+T83igKSkr1YT0lW8kxD7YS5t9ebZq5q3E2
-         fh9rMOkqEyK/yQABHCG66+RI6dNAR3vNl87tuEpQ5WXqyyOy8FZTmOq/LCwmPwFX4pjx
-         1ZRWpIjVZHdU6Xytzeu8Y16qNzzXjz77sKMXdiXiCaVmRXqF80NgGFFrj2ZWq1n7Xi/C
-         0vAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMD4U1KjWuGK0p3agew0MBdfu57sswoOdpj8fbzQHaP3pLQo41fuqOns7V9F7m/xLOsQx/6DXVoefMwLY=@vger.kernel.org, AJvYcCXOCsMiZmQsbKN1+6UHQhtzYjadHlX+vRVwaL0XVIm461ZwzAV2yFps71HhPFweOIGERJ+l@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLUKLK+JntVTYCrApIS71GQkakzEZnQolibK3gpRizcI/x1Rlw
-	XV03dWC6GHMlTqznmUiKWCeR5GqvxMpNAo9K8TH0PSlFvDaoHp/5
-X-Google-Smtp-Source: AGHT+IFu1W6eDRNA1sRoQfblfzI0TLuXUjBnhBUR0M52Lqq3nLhcsKteHMqvAMNbl4aR5M/Rld2KoA==
-X-Received: by 2002:a05:6512:6cf:b0:53d:a24c:5c7 with SMTP id 2adb3069b0e04-53da24c0710mr340726e87.10.1731495612985;
-        Wed, 13 Nov 2024 03:00:12 -0800 (PST)
-Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53d826a7287sm2137119e87.164.2024.11.13.03.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 03:00:12 -0800 (PST)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v2 2/2] rcuscale: Remove redundant WARN_ON_ONCE() splat
-Date: Wed, 13 Nov 2024 12:00:09 +0100
-Message-Id: <20241113110009.65256-2-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241113110009.65256-1-urezki@gmail.com>
-References: <20241113110009.65256-1-urezki@gmail.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Qg4YBcGY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MfIeSrsS"
+Date: Wed, 13 Nov 2024 15:18:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1731507500;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k1NnsfkLq2HnmImLt4DvLhPon1Pe+zCIYBq+XyGR0FY=;
+	b=Qg4YBcGYpL9DGABYZpbXY74B3Ojg19jAzxfo+nYOpfEcllXDgfHhjvMPQQQyygAeSGKIu3
+	Mc2eDoGMvfIqGxqbthlEgQGPvXFA6DHZaprm/PPwd4kxf8h/dttI5MffqpuyvtgXXyOHVQ
+	fdtDfFudxB73WbSu8ZVc2TTW5givvfAUb9I+cNkfuPdt2UZcxwpU6PUlZMtoNcJTOnKgBB
+	fB9PbQajEOdX+TuVZ+UN73CXfKEAwfIe/VVeX50I0M8sn14vzppOwd1krDz5ztWj/PE/fS
+	V3dmGK92WWQ5Upm7e12g2EGmWCVWi7kBKXLPP7F3NbwY07yTi0fQclW8dCmQqA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1731507500;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k1NnsfkLq2HnmImLt4DvLhPon1Pe+zCIYBq+XyGR0FY=;
+	b=MfIeSrsSxZAO22WT5Pi7FoVbFQRk5lMcLq+XH/Do9UQLMx1SqmDib6eQ37wa9YZ/1Eodre
+	feF9z7vLPk5wHPCg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+	syzbot <syzbot+39f85d612b7c20d8db48@syzkaller.appspotmail.com>,
+	Liam.Howlett@oracle.com, akpm@linux-foundation.org,
+	jannh@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lorenzo.stoakes@oracle.com, syzkaller-bugs@googlegroups.com,
+	Marco Elver <elver@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	kasan-dev <kasan-dev@googlegroups.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Waiman Long <longman@redhat.com>, dvyukov@google.com,
+	vincenzo.frascino@arm.com, paulmck@kernel.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, tj@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+	roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, rcu@vger.kernel.org
+Subject: Re: [syzbot] [mm?] WARNING: locking bug in __rmqueue_pcplist
+Message-ID: <20241113141818.eQfGt53n@linutronix.de>
+References: <67275485.050a0220.3c8d68.0a37.GAE@google.com>
+ <ee48b6e9-3f7a-49aa-ae5b-058b5ada2172@suse.cz>
+ <b9a674c1-860c-4448-aeb2-bf07a78c6fbf@suse.cz>
+ <20241104114506.GC24862@noisy.programming.kicks-ass.net>
+ <20241104114726.GD24862@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241104114726.GD24862@noisy.programming.kicks-ass.net>
 
-There are two places where WARN_ON_ONCE() is called two times
-in the error paths. One which is encapsulated into if() condition
-and another one, which is unnecessary, is placed in the brackets.
+On 2024-11-04 12:47:26 [+0100], Peter Zijlstra wrote:
+> On Mon, Nov 04, 2024 at 12:45:06PM +0100, Peter Zijlstra wrote:
+> > diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> > index 6310a180278b..ac9f6682bb2f 100644
+> > --- a/mm/kasan/generic.c
+> > +++ b/mm/kasan/generic.c
+> > @@ -521,12 +521,12 @@ size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
+> >  			sizeof(struct kasan_free_meta) : 0);
+> >  }
+> >  
+> > -static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+> > +void kasan_record_aux_stack(void *addr)
+> >  {
+> >  	struct slab *slab = kasan_addr_to_slab(addr);
+> >  	struct kmem_cache *cache;
+> >  	struct kasan_alloc_meta *alloc_meta;
+> > -	void *object;
+> > +	void *object
+> 
+> Clearly I'm still struggling to type ... *sigh*
 
-Remove an extra WARN_ON_ONCE() splat which is in brackets.
+Should I put all this in a patch or is already been done?
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/rcuscale.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index d360fa44b234..0f3059b1b80d 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -889,14 +889,12 @@ kfree_scale_init(void)
- 
- 		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start < 2 * HZ)) {
- 			pr_alert("ERROR: call_rcu() CBs are not being lazy as expected!\n");
--			WARN_ON_ONCE(1);
- 			firsterr = -1;
- 			goto unwind;
- 		}
- 
- 		if (WARN_ON_ONCE(jiffies_at_lazy_cb - jif_start > 3 * HZ)) {
- 			pr_alert("ERROR: call_rcu() CBs are being too lazy!\n");
--			WARN_ON_ONCE(1);
- 			firsterr = -1;
- 			goto unwind;
- 		}
--- 
-2.39.5
-
+Sebastian
