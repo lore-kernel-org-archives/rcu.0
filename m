@@ -1,175 +1,208 @@
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2041.outbound.protection.outlook.com [40.107.212.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47BF1273F9;
-	Wed, 13 Nov 2024 17:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731517252; cv=fail; b=ErBeSr/FxIf7XG3tgAfZ/yjT4OTwjhkUAUdKq0KVd0128FE5XLgvixGfdRTBrQsvZ4A9MKH+nSTCXnhIsj6iQF4udJH2Hm9J1uZaKOB4q6gQuOb5QChioK+1fxTdWOzfgY0D624NJuaisuSjTS08M/1ebgVK5WrPlhaDzvYEnRw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731517252; c=relaxed/simple;
-	bh=gaOFLNsBVdCnsddvAxkrQLaaDQWtEdBnxtlPlpNXJXk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=WiZd6MpG9SODfj4lA0t7seUxO7FBn+LGuE/KHPcfQWv8nmzovlJ1EmxllRw2hqyTE5kvFCKYEGvnmODXqBM2OGr+m1auUgPxhVsGqQRQ6acPxuBuds2T9UiyyAmCFk3D1ftwmN4mXNPz4vChQVanqlWgLh9TT8UC2clE9UvxX9Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=5knkm4hj; arc=fail smtp.client-ip=40.107.212.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66FFF126C03;
+	Thu, 14 Nov 2024 16:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731603471; cv=none; b=XHoNUk4KTxlfEx+9RKSvyqy5Ba6V67nlDRbWQ/m9u9fJo23pGPc0fEJkpXXGtJLkHQOh1NY3iD7A5cjj+31gHAenwpbLyVB0smswV4udsPapY70PrJGxfUMEs5c5KesITiEKr74ud1LNl4QVyNFWs1FfZ9nY+wdzV6wdsS6cLXE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731603471; c=relaxed/simple;
+	bh=wj1oFk9KGavjsrDS+FpIbkVK4MwqL9xKf904n7vFnwM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G7WyMSQYnxHxnTQm86aTYoKhqehCOofqJRPbxfnmN1THBeuU8fLX0z8BBN4hpygqmDEVCVccgioDHH7wHQZu+fTihJjWcY07Ly11YnfMsIxawhTiIbhViIEMuLQt5TH6AFKP1pzyhnzMKwHSaRoOhouct2VM81VzrV2bV5qMxmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K1z0VYWy; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5knkm4hj"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=iCsVSYfY0kuuul0sZLXwBdJjItJh6vBmrldxUl6rXEfWrw4ttXQQ/uFmxJJits/CkEJhzZ9UmyQUtWXT+Bt9kNWSIAAGspSjAlJMTmS7RLtCikYdQlJJcog7Yh+yONXboEADtH9iZSpgSgKxErPRhz4I867TVuMqKxfIsu3HnD6ltTCiC4Wtm/gzy4Isg3132tvp6Ot39Vr9xPuHj4S/bUp7aTTboDaZTG8avXqhFwJotXscX5v1Aikqz+YMFu8BzYXK02k2qYBdRCEqO9VtnsVwXcLX16HPvwtco1dHVgiWbUM3Jo3cS0PMmZ1qQ1NawtOfPaKsMqUHm7k/097GpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f0wQW7ZVa24UHy4W0G7urcfoWnleRXWXNyQI/yAEk8I=;
- b=T7NOTzz9r71HHLs2jN6viVmXHRijZFYcu8P32CRwQudc5cDuUaNm0/hhEEjb8eS8MGQKmd6kRa4piolg9CASLGt/3bxoC9+13/NjqcnkHppeHnmvWQEQj1/1Pp0L1F9nwTk8HzQe+OFu1vJ1WGmhc9CFr2HEtoHFeuyy6QhNywsFY2cCabzV5M4wrRvjpNV7WN6r4QXatb3hzlZQLiDJmn2fTSfaYe9T7k2/ncC8ZM1qjt2T2Q+4+svpyckPI8vOPQZ0FO/rZGE2Z3FJpGRJerkDod3tJZ1oeqMLhGqPbxmoCGRr6BcrGIypTxtC+YBJYC5EZXnve/URT3nxfvOWwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f0wQW7ZVa24UHy4W0G7urcfoWnleRXWXNyQI/yAEk8I=;
- b=5knkm4hjCecvnh4DIlH5z6NeR3ptBWSR0jkju4jX4O/jW/JeftxEQEtUd5zHvsV3dvqARD2QHWUj5fp4KELtmcPuyN22XdGQWUCtXtAktqTSXbpm2LWInVbeLluG8yNtwB06bJEy7enJ4z+yFU7+JTV5oUloJnIPRXiJN/guJ7w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com (2603:10b6:8:d0::10) by
- DM4PR12MB9072.namprd12.prod.outlook.com (2603:10b6:8:be::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8137.27; Wed, 13 Nov 2024 17:00:46 +0000
-Received: from DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627]) by DS0PR12MB6608.namprd12.prod.outlook.com
- ([fe80::b71d:8902:9ab3:f627%3]) with mapi id 15.20.8137.027; Wed, 13 Nov 2024
- 17:00:46 +0000
-Message-ID: <f5d6114c-b03f-4faa-b210-c7090e20afa6@amd.com>
-Date: Wed, 13 Nov 2024 22:30:35 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] rcuscale: Remove redundant WARN_ON_ONCE() splat
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- Frederic Weisbecker <frederic@kernel.org>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-References: <20241113110009.65256-1-urezki@gmail.com>
- <20241113110009.65256-2-urezki@gmail.com>
-Content-Language: en-US
-From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-In-Reply-To: <20241113110009.65256-2-urezki@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR03CA0116.apcprd03.prod.outlook.com
- (2603:1096:4:91::20) To DS0PR12MB6608.namprd12.prod.outlook.com
- (2603:10b6:8:d0::10)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K1z0VYWy"
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-53d9ff8f1e4so959014e87.2;
+        Thu, 14 Nov 2024 08:57:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731603467; x=1732208267; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3E8KoyGXHwNoJ3biinuum5PL8wDFoLA6D0OgiN4eob8=;
+        b=K1z0VYWyNlluKNqV6j/BLUM9jKCoX69jUpaocB2IcQn57+RVqCPAn4/4iPSSZI6I+y
+         dSsrap7GHVkEbvLZkQ1/8qdopIKpf8aatj21PbgASgqtq+WuYAQXgo22/squqst3BEeW
+         F0CZ8FeyH0JZruqNV/K3FStonIBlzrjDUm7j7L0v8zGmMuvtZe7AEnLS4r+F+jTlloJ5
+         d/8krSM81IoVWUo9HYx5CmGZkEB7pmoWIgOlQfzICz4C7LCG80RMoQHcrZnBlM9rccsw
+         yf9DBVoOIi08GKWBAriDXNXvhhUeeiMbPs5WBUtmL5KtG86gwBb2QxZVo7TZrjdhpvUJ
+         T6OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731603467; x=1732208267;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3E8KoyGXHwNoJ3biinuum5PL8wDFoLA6D0OgiN4eob8=;
+        b=OTf5kJdHnbnQ8EjkU58Qg9Bm2SGm/aNBrxh1duurXZmA+I50jP5x8y4GqecaRF5u7Z
+         QEc6eCNxGBDSwLfw5RA4Z7AEF67FI6n0+XO3U/TxtRJ87vZ3rL1gPmf0dQlV0TgV5Cez
+         3TV2JVhSyEik2VI2rPVo0o2AHCHbEE7gSVv4EmYyetBeCSlyTkwSdSFvPFjkxiS9e4lq
+         klGQlR8lNNsotI9+N9D4Wa7z5N34EMLrMhLCDz9bAXptnMln8HbjDDd3Ofmj2wEA1umk
+         7AQULxTkryCDRBAS1DYVdOPaV/UuF4CSfLBBNfFKQVpcPGVrnkWFtLCnUH/kOfdEt7jR
+         OXOw==
+X-Forwarded-Encrypted: i=1; AJvYcCVWaqh0iDa8rskonAxmGY3pX0UFl9zxJCDZKI6ntOZD1F6JEsO+Uy7Kc0uYGCTOpZtEtU4F2g+sawP9ukU=@vger.kernel.org, AJvYcCXq/ht+cv42ry/cwOAz/YLDM6dM11UdWgSjR9fYLyDQKJm56Av5BYLOANhr0LjmYLp2aoU7@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIp2JANRn9XsF7siuJZ7I+ugJGflOoU8M3TwY2k7jUbYy8NkoS
+	K87r/2vjSU3RheZak/nMhuB46Z4ZzecGhWCTH8g4zCyq4iupX951
+X-Google-Smtp-Source: AGHT+IERlzVRllFSvMo2kIMW15bEw0UKyUPG8/FpBsB+MFpT1AAY9B81Xgd6tQkLcA12hc2IPAH/oQ==
+X-Received: by 2002:a05:6512:3043:b0:53d:a321:db74 with SMTP id 2adb3069b0e04-53da5c7b50dmr1568868e87.50.1731603467118;
+        Thu, 14 Nov 2024 08:57:47 -0800 (PST)
+Received: from pc636 (host-95-203-27-13.mobileonline.telia.com. [95.203.27.13])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53da64f29f0sm246264e87.39.2024.11.14.08.57.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2024 08:57:45 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 14 Nov 2024 17:57:42 +0100
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Christoph Lameter <cl@linux.com>,
+	David Rientjes <rientjes@google.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	maple-tree@lists.infradead.org
+Subject: Re: [PATCH RFC 2/6] mm/slub: add sheaf support for batching
+ kfree_rcu() operations
+Message-ID: <ZzYsBu_rJWSAcAYf@pc636>
+References: <20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz>
+ <20241112-slub-percpu-caches-v1-2-ddc0bdc27e05@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6608:EE_|DM4PR12MB9072:EE_
-X-MS-Office365-Filtering-Correlation-Id: 173a069e-5ec5-406c-88cf-08dd0404b72e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?TnZwcW53Z2Y2VE1ZbGNvK1lGNmtDS1Z5K3IzN01NNFdOVnBBck9QTlcxZ1Vz?=
- =?utf-8?B?YkIweWZDRHpZZzFCSGRIWE9YaXhvNTlXUDBCWGFsdUZyODY4SG5KSEdkNnNQ?=
- =?utf-8?B?ajVJY3hoRHQ0UjFCTWlHOERLdEdPZld4cDlaT1ZiQzl3bHM2K3RuZ2hHTytL?=
- =?utf-8?B?NkdTZm8wT1RBY3E5d0hzTG51MXI0ay8zSmt0VGQ0bGRjSjVrcDBBTUppRXZX?=
- =?utf-8?B?REZEQU5UazE0WjRRM3cvTmNEYXR0SjlXNFFreHN0U0xkQzJKQjNFcHBpSUNr?=
- =?utf-8?B?RHBoaDIxVlU2UXQrbHlvTjNzUXg5QjduNFV2eVcrbFNwQnBTcXhwTmdzNk52?=
- =?utf-8?B?UFBMRUZIZThSdjltK2ltYUpuQnpPKzJTcHZWY0czSDhReCtmRWxZVmRPaXhq?=
- =?utf-8?B?ZENJVlBvNmpkTXJiRk1VRFNzWXh6TGxldmFIMm5aNDluQUo2WTBSYjBzM2lO?=
- =?utf-8?B?Z2NkdFEzeFl3SGVyTkR3cjdNd2ZhRWEwdTF1akRZKzU3Y290b1VHdndISXJq?=
- =?utf-8?B?U20xYlNqOXQzL3hIUXlFM25QaXN3cnZFZHJ6aDhQcVhvWWw4UzNZTWZlaklw?=
- =?utf-8?B?cXFmZnJLcEdYdkxINnM1d0xCRXZZakxZbEhmUEVQMUZEdHRCaDN3MnFERnh1?=
- =?utf-8?B?djRjUTkySE5JOGtuS1RWc1hUWi9LNXMvTm1meDFzNnZseit0d3VSWGNpUmRS?=
- =?utf-8?B?S1ZPaVFJRy9SSkZDZ2NENDdLVUV4SUxNMzlTNC8yTEowOVZQU2FES1J2N0NI?=
- =?utf-8?B?OEJEYUNnelljOVN5MkdOc1JkdDJVMFNEV1BVM1lYME5EcHJYbTBGSkxSQ202?=
- =?utf-8?B?aUR4WUZLaitUc1orclNHWjU0WkdyUjlWeXhremNPaEYzTzZuMUhPMEZsK3dr?=
- =?utf-8?B?OFhHdzV3NzlRNGcwdVVtL2N0azlHNDZCcjZISzhQNmJyM0ViRk9pWkZhUXJK?=
- =?utf-8?B?eXZxUHQ4OTFkZERaa0VTRHhOcno3MXd6N1ZvcVBaVU5HVVFNZzBRWlNvcXUv?=
- =?utf-8?B?ejZXWkxYUEhMdDJ1Q2tqSWp6QWZsZ0xnNUpyODlJckZCckE5RnB1bjhTR1k4?=
- =?utf-8?B?MkZSNHV4eXhZUUZJd2JxZ1g4VTFHKzJmR05jcUlsb1hMR3ZQOUdqczZuTkVj?=
- =?utf-8?B?cXhPK1YraUdJU3dnZ0ZHZU1EWjNTeXpQYlVIbVJmZE1FT3Fodi85b2xFUFhZ?=
- =?utf-8?B?MHgyRE5OOTBQc3o2S1YwL01hNElPQ3VQRGZ5Nm00M2VaS3EwNjJKUUw5bHh6?=
- =?utf-8?B?TFB2STFuYkVyWXZvSHFXWitwaDFwUWxIcXpYQ0E2T3p2TFlQUkwzYWd6RHVh?=
- =?utf-8?B?b0Vyb0F5enQ5WkZyS200NmtZUGRsSHBKTmlMT0VSRDc5ZjUwMXhiTERsYmVD?=
- =?utf-8?B?R2c1ZVUzSjlzR2FnSFd3b1J5M3hodXpHTk0rQjJ4d09IcitUNXhzTVhOOWow?=
- =?utf-8?B?b3V1akdBOFR1UVdqTmI2SzZmdjFUUCsxL0pCdllhK1E5QVliZW5IcFc0bm5s?=
- =?utf-8?B?NWVFYXlGeVpJdDlHMm5NWTFzbzFPZ2ZVTXBTZ2R2L3BNK1d0a21oQktRRnpO?=
- =?utf-8?B?SGFZVkE3TmRlZkpPajI1Ymw0WTRNdFNrZkJjN203L0xRWjFhUjkxUjBud1FN?=
- =?utf-8?B?RUdyaGRkaVlqWDlCcGdQY0xHMWR5cjlxQUdBUmdnK1dvOVNGRnI1bDJETzZJ?=
- =?utf-8?B?RlJKWFBuNUVnWEZ6dDVJMXlzZG13OUF4QkxCdU45VnhjdWY3QXp2STdQdHpD?=
- =?utf-8?Q?Pu+DssyYP+ZmiJndElPBS/qSuXOawjJCAlL7JFh?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6608.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TVc3MDlpT0FUcG9LOHgzTzRQekZEU3c4cnhzME01UldpNUNVQnhFaFNZWm1C?=
- =?utf-8?B?NWNseWZVeGs4L0tyQ3ZWUi9HOERabFFxT1RqcTFaZEcyMnMxc1Y5bzlLMGpK?=
- =?utf-8?B?WEtCMGJHeEJ1QXNtbFhpVTRUWk5XVkh5UXVpSXBjRWFHV3Q3R2svM2I1U3pH?=
- =?utf-8?B?dTdmNG9yMUNQbVBkMElwUTJMejJXN3R4dHQ0TTNrUFJObjZOd1hLYm5jb1Jm?=
- =?utf-8?B?NUJpZ3VnWVBndUNoZFJRekZLTTJGdkllL0taL0xNVXQ3Z2hNU0oyTklzdE9V?=
- =?utf-8?B?dmJqTndxM1NvQnR0RnZDUE1NRUhXeE1obnR6M1d2OFFNMVYxbUh4SjM5ckRo?=
- =?utf-8?B?bDlWR3RiM1NEbnRra3JpWFBCTm53dHlBMlpuanRrZjl5dVNnM0w4eXVjZ2hJ?=
- =?utf-8?B?RkNqOU9hWmJOeDc1aGc5Z2RrN3NjSmYyYVl0UkNveWVZZEVjaS9UdFBCN3BM?=
- =?utf-8?B?VnExRG9IcVdYaGZtMjZCNW5sUXpocmJTK21Md0gwenlDU2oxa2lPckJFUS9I?=
- =?utf-8?B?THpickxXb0xnYnpuZXE0OGhjMG0rNlBoTUw0aXlZMHp3TzJ5YkY2YmExUHd2?=
- =?utf-8?B?NDZHNDFkRmtEMGwzY0Jxd0FUZjVMNXkvTUNoNGdyUWRpRkMvZkNmVkJnU2g5?=
- =?utf-8?B?S0JxVWhaSlFLV2wxU2RMOS8rOVdIVmdlVUx0QzhhQUh3TFFLS1BvSlNvUG4x?=
- =?utf-8?B?ZjdWZXVidFpyZS80UkJXWjdLTFRMTTVFMkRLZWZBeVpsNTc2eGFFWUF5N2U2?=
- =?utf-8?B?aW9pVS96K1NRaFhxMXpneTdhWUVMMVF3cVdnbGdGQmE5T05MSnZQLzhyTW5v?=
- =?utf-8?B?RWNLVWJ3N0hEYnJrZ2lTdmRMcmhzRmV4TmxqeDEydncwQkk3T2pSNmEwYkdM?=
- =?utf-8?B?amttcFkyODFzYWY2SG40Nmx3VWp5SjVYakMzTFFJR2lzTkIrZGE1M2psRzly?=
- =?utf-8?B?R1lPeUhxWnNiU0MrYjFtNDdDa0MrckI2cnhJYTZFL1ZwN2FxdzJ5QUI1VklE?=
- =?utf-8?B?dk5wYnlGQWR5cUxpTHFoc1czdmtCUUEyRDlaRTMrZmFqamdwcGI4dkRxMlBh?=
- =?utf-8?B?NHd6TFlsVzIzT2xHa21JTWlteWR5Wks2TUVoTTZNRWxmZi94VFd4ZXVta1pp?=
- =?utf-8?B?UHJwaDJVRmttY3YxSUVtZFBISlBRbmJlRmhURXpTNFRONE5vRk1KY2hyNTQ1?=
- =?utf-8?B?c3JINURSNDhwUDJMdURFcUZoY2tFQUFRSUhvbVNUcHdVaGt0YkVpVklOQUYr?=
- =?utf-8?B?eGd5RG5XeVZVQ1ZwaldLWVhWbXI2dDUzUWZMZkN6Wm45UXNRTzlUNkxrQTlW?=
- =?utf-8?B?dnk0dkw4cDdkZGg5dXk5aWV0R2dKY09IMVJyZnh1TVpNQnU2OVM3NjRhb1VH?=
- =?utf-8?B?bkU1UVQ4bjhhOC8xN3FVdmZnd29LNm5maUpRdlVVT29lZlFKVDArQmhaeVpV?=
- =?utf-8?B?eFR0V0ZRNHQ2aXlTemUwSElUaW1Xc2krSjhEOTZqL2NURG5NQUZhSzZ0eUNa?=
- =?utf-8?B?TmZkckEvRi9wNTJmay9LYmFLY1R3Q0lNYkJjQmtIZWlQWTNnVkUxOEpBcVpj?=
- =?utf-8?B?Slh0ZFJRRCtmYzVCUGJPMzdpSDQzb1liMW5iMXNMRzJzampPZktGWUsvMENq?=
- =?utf-8?B?V2lodm1RcGhYOStHSk9laS9aK0pzcTJNa3lDVmtvRjdUdXRYTE9VUUQyNVNU?=
- =?utf-8?B?eVFvZllXQVBTbWVqT3hCdytiTEhLZnZRYVFrZFFaRGQ2OGxETnVPRjB0TmlO?=
- =?utf-8?B?QjBQQjNRYnVOR1Z6dU9WTTFGUHJvYlBJUTBZOEpXQkpUU3psOHJWK0QwbjNZ?=
- =?utf-8?B?VVBqdUQzZUZJK21IMzBKNy9tSlpXR2tyZ1lNdTJUSERkRlZIYXhMcG0vOHhP?=
- =?utf-8?B?dWo4WjBNa1o0eGtlWTQ4Wmg4c2xwWmNVZytnaE0yZERqV0RnMHpoN2tQQkpn?=
- =?utf-8?B?R25QMktKUFBnQW0zcUYyNTNrQmkvZnVmaFk4WGRaSUxrWHM3Mys4eEFLNnhL?=
- =?utf-8?B?U1IxWWZEcnlwa3NUVFEvR2ZsaSt2WC9kVDF5VXZLOWtDbU9oQnhFYnNuZTFQ?=
- =?utf-8?B?L1ptM3JHbHpmemp0TjRDak1XdVVXQTdXcG5YY00xWTdaUjdmUmVrRnRNS0tn?=
- =?utf-8?Q?DQALpG/9cBfh6hpkMQQsCUZuZ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 173a069e-5ec5-406c-88cf-08dd0404b72e
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6608.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2024 17:00:45.9803
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xwnbSqCER6hLQw9SoBmY6SPYyFxfL3RVqO0YwPU3vGtzn1ollIeWoB9UN3hIk/5sF/MMuw6xm/jn74KMubbwPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB9072
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241112-slub-percpu-caches-v1-2-ddc0bdc27e05@suse.cz>
 
-
-
-On 11/13/2024 4:30 PM, Uladzislau Rezki (Sony) wrote:
-> There are two places where WARN_ON_ONCE() is called two times
-> in the error paths. One which is encapsulated into if() condition
-> and another one, which is unnecessary, is placed in the brackets.
+On Tue, Nov 12, 2024 at 05:38:46PM +0100, Vlastimil Babka wrote:
+> Extend the sheaf infrastructure for more efficient kfree_rcu() handling.
+> For caches where sheafs are initialized, on each cpu maintain a rcu_free
+> sheaf in addition to main and spare sheaves.
 > 
-> Remove an extra WARN_ON_ONCE() splat which is in brackets.
+> kfree_rcu() operations will try to put objects on this sheaf. Once full,
+> the sheaf is detached and submitted to call_rcu() with a handler that
+> will try to put in on the barn, or flush to slab pages using bulk free,
+> when the barn is full. Then a new empty sheaf must be obtained to put
+> more objects there.
 > 
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> It's possible that no free sheafs are available to use for a new
+> rcu_free sheaf, and the allocation in kfree_rcu() context can only use
+> GFP_NOWAIT and thus may fail. In that case, fall back to the existing
+> kfree_rcu() machinery.
+> 
+> Because some intended users will need to perform additonal cleanups
+> after the grace period and thus have custom rcu_call() callbacks today,
+> add the possibility to specify a kfree_rcu() specific destructor.
+> Because of the fall back possibility, the destructor now needs be
+> invoked also from within RCU, so add __kvfree_rcu() that RCU can use
+> instead of kvfree().
+> 
+> Expected advantages:
+> - batching the kfree_rcu() operations, that could eventually replace the
+>   batching done in RCU itself
+> - sheafs can be reused via barn instead of being flushed to slabs, which
+>   is more effective
+>   - this includes cases where only some cpus are allowed to process rcu
+>     callbacks (Android)
+> 
+> Possible disadvantage:
+> - objects might be waiting for more than their grace period (it is
+>   determined by the last object freed into the sheaf), increasing memory
+>   usage - but that might be true for the batching done by RCU as well?
+> 
+> RFC LIMITATIONS: - only tree rcu is converted, not tiny
+> - the rcu fallback might resort to kfree_bulk(), not kvfree(). Instead
+>   of adding a variant of kfree_bulk() with destructors, is there an easy
+>   way to disable the kfree_bulk() path in the fallback case?
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
+>  include/linux/slab.h |  15 +++++
+>  kernel/rcu/tree.c    |   8 ++-
+>  mm/slab.h            |  25 +++++++
+>  mm/slab_common.c     |   3 +
+>  mm/slub.c            | 182 +++++++++++++++++++++++++++++++++++++++++++++++++--
+>  5 files changed, 227 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index b13fb1c1f03c14a5b45bc6a64a2096883aef9f83..23904321992ad2eeb9389d0883cf4d5d5d71d896 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -343,6 +343,21 @@ struct kmem_cache_args {
+>  	 * %0 means no sheaves will be created
+>  	 */
+>  	unsigned int sheaf_capacity;
+> +	/**
+> +	 * @sheaf_rcu_dtor: A destructor for objects freed by kfree_rcu()
+> +	 *
+> +	 * Only valid when non-zero @sheaf_capacity is specified. When freeing
+> +	 * objects by kfree_rcu() in a cache with sheaves, the objects are put
+> +	 * to a special percpu sheaf. When that sheaf is full, it's passed to
+> +	 * call_rcu() and after a grace period the sheaf can be reused for new
+> +	 * allocations. In case a cleanup is necessary after the grace period
+> +	 * and before reusal, a pointer to such function can be given as
+> +	 * @sheaf_rcu_dtor and will be called on each object in the rcu sheaf
+> +	 * after the grace period passes and before the sheaf's reuse.
+> +	 *
+> +	 * %NULL means no destructor is called.
+> +	 */
+> +	void (*sheaf_rcu_dtor)(void *obj);
+>  };
+>  
+>  struct kmem_cache *__kmem_cache_create_args(const char *name,
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index b1f883fcd9185a5e22c10102d1024c40688f57fb..42c994fdf9960bfed8d8bd697de90af72c1f4f58 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -65,6 +65,7 @@
+>  #include <linux/kasan.h>
+>  #include <linux/context_tracking.h>
+>  #include "../time/tick-internal.h"
+> +#include "../../mm/slab.h"
+>  
+>  #include "tree.h"
+>  #include "rcu.h"
+> @@ -3420,7 +3421,7 @@ kvfree_rcu_list(struct rcu_head *head)
+>  		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
+>  
+>  		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
+> -			kvfree(ptr);
+> +			__kvfree_rcu(ptr);
+>  
+>  		rcu_lock_release(&rcu_callback_map);
+>  		cond_resched_tasks_rcu_qs();
+> @@ -3797,6 +3798,9 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+>  	if (!head)
+>  		might_sleep();
+>  
+> +	if (kfree_rcu_sheaf(ptr))
+> +		return;
+> +
+>
+This change crosses all effort which has been done in order to improve kvfree_rcu :)
 
+For example:
+  performance, app launch improvements for Android devices;
+  memory consumption optimizations to minimize LMK triggering;
+  batching to speed-up offloading;
+  etc.
 
-Reviewed-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+So we have done a lot of work there. We were thinking about moving all
+functionality from "kernel/rcu" to "mm/". As a first step i can do that,
+i.e. move kvfree_rcu() as is. After that we can switch to second step.
 
+Sounds good for you or not?
 
-- Neeraj
+--
+Uladzislau Rezki
