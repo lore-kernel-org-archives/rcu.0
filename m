@@ -1,234 +1,162 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C4919B5A9;
-	Mon, 18 Nov 2024 14:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51854C2C9;
+	Tue, 19 Nov 2024 02:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731939995; cv=none; b=ioW47+hM1PeoUxLJ1gsCe5ZXHbvh62bQNp7aaq5sxGjtZUjXZLiiFV4oqnppHNuRsN34S4Kwj9/MTx1c52gZo76XNkhfxSa9hTeDSlAg1T7KfkwJO7v+6jLoNbxtE/jL0q84+pOIisaqvd6Z9tk1PqD7B+zhMKZu+IFdZwwbV30=
+	t=1731983399; cv=none; b=MkXJnHZWQvHv+Jhyw0lLBTdomCiKy9XDrIgHznu8S8l9So9pfql1o+7urJwERmAtnVZZXjUeE4mnGpAAeMPGEcmJJxr9DCkdluD7xOT6QZ+XLdP4CDF6MJkbLjG9zuuXUmDg62kyxCcw8Q5BEQos1xJvtJFYyQZ9JcIV6FW7jAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731939995; c=relaxed/simple;
-	bh=mNQXSj7B9lAc/kdpj2qVGcHNyZJI7tv+0JnJ8oN7Y78=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hryqJf6GJrhidJZLE34GFbTiSwof1OfOXgCN96guUXJgAU58Ce7mVxsCVOfyENCeIV05ZO6b/GKofBGQQzctdYE4X2Iqj5j6llhQgbY9Azw0dpW4DiM84cOylPhkaehsu7zxXifGhdembEAjmAPplRqp0pJsaSLWDhAa3jik3tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IX46Vykx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2SESeyKC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bfOoCiYT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=z5i8gX8Y; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1731983399; c=relaxed/simple;
+	bh=wTdw0rpt/RuCXG/3r5/Cbtj8C5tC5pnWt9qxgy+ldso=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xv+JJblkpqf+FXKBGGSmKeUJcb9dy7AjSaXtews0lJQZ9xvqxn6rin9T6EtjZCbjGqsv5yP6InqfXaiIhzhPwh9UJAzsQpb9hjAaG3JYQTA9GL+ujluCo12+Pv3a58foUwJYvs0ZqY03r2+k48N3RKqLhNLAsfenFEO9YKsvQSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ekh6tG5L; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IX46Vykx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2SESeyKC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bfOoCiYT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="z5i8gX8Y"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D1861218BB;
-	Mon, 18 Nov 2024 14:26:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731939992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=//UoUtpWKLHH/tF8AGkvFCsF74EDM0ATlUHwxLWCZ4I=;
-	b=IX46VykxXzFGCjtXZ38uL90FXdQeFt4pC/cJa4kliFrCgseeXESV1mpc5WUYzk2by0rj8l
-	q/QlgPqKtx9vgVDMOU+FrN136nCJn2V/1imgD9a4T3TTSM9QyjGWMqCPyR2rqp5w6kXv4o
-	Y+CO0IE5GQRd17zVgTF8CS5sQA7ZlXg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731939992;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=//UoUtpWKLHH/tF8AGkvFCsF74EDM0ATlUHwxLWCZ4I=;
-	b=2SESeyKCxlxQEBp9yoEIEp3NQnFVCVM9wZTM15yJw91ngPLDOPnSkeAd1nxJ+bJaSGKDWN
-	dbnf50jXRw4OlLDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731939991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=//UoUtpWKLHH/tF8AGkvFCsF74EDM0ATlUHwxLWCZ4I=;
-	b=bfOoCiYTUyL561y4abzHpM6sjtTmMt+yO+7K04hfNpredJwmHLVcC4r1T/+j2b2hp5Ao/Q
-	U/uJ1t0ugRfMzKkc5FgJTwSdK+BpxG37zFlBuaeu/Cyj1v7VoUYjto7FGsPcdiPQ0Df+pq
-	3mBo0lp2VNa9PLvB8N7cxkD3erPkNWc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731939991;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=//UoUtpWKLHH/tF8AGkvFCsF74EDM0ATlUHwxLWCZ4I=;
-	b=z5i8gX8YX9gOtasUMxBEeVGfO0ouRlioKPTSfvBRRA/BDGvkOcK7vICl1H+C3ulUZc01Ig
-	LeeFwO5XJ9yxRoDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AD4EF134A0;
-	Mon, 18 Nov 2024 14:26:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aZ7WKZdOO2fcdwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 18 Nov 2024 14:26:31 +0000
-Message-ID: <9dc33d5f-fc04-4780-80ae-3c5f80a8b891@suse.cz>
-Date: Mon, 18 Nov 2024 15:26:31 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ekh6tG5L"
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2fb51f39394so4602781fa.2;
+        Mon, 18 Nov 2024 18:29:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731983395; x=1732588195; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jDu2TDDimIym5HIL4t/Fyx220cmR1Bl82M9X+9neXZA=;
+        b=Ekh6tG5LJyNzT5Z9QcJ/YQlx5iZ4lqlrhtTP8fUXOMZbkfpRjwzPXvQZXqPOBhjVeW
+         09OISK9Hr/bLnkxx/yv9SGsEhyIiZstcFteeJJf35FIyhY+sK7rTID24O4ouDeXmVuBK
+         W6zhFtu4sR7U2GJrkDZs/qmiLjfGIwWo8/tOFbmav7dpsTRB+omBtEaVy/nV9N/7omKf
+         HsM4/eoHRK+3qNhmka8TFgTLtdpeUrf0qvKUo2xxLDigYflqZYeDJi9sJOZ7j7Ii1KRP
+         kXLIdpPoEkf6+4SPvRQ1Eu2ssoPg9pbnklxQhkz3MLwKlEeRCqwEQmgoiU4vf7rx/usM
+         ukyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731983395; x=1732588195;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jDu2TDDimIym5HIL4t/Fyx220cmR1Bl82M9X+9neXZA=;
+        b=iSwzdCv76DzAX6Yl8ZQCCy547OFGs2ZRPXVTtKA+D2U3xykNrxngGOkYQkKItEv6F6
+         SrLCvN/Ts23d+78y33t+r7EgtvwJiW931BlwaHRZMAQN/Cgf4hB+X5U5CLUBJXp8zPv7
+         PpwoUCZbyrr1La/lke7uoLwcc7BKqEEg6u4xIuK2ELS/rBHZzMbfJRDxBvlYjUuj8hKx
+         TRtsj2gbWzkMtflxu0eCKe24/dFRLDxbftUgtPooIDtTQFfh5XfisCX1/nsinv+0sz7z
+         LKqmW6sE5dDqIUTlyChgsaNt5dcIIZdW0Qanglu5VOS5xDWS1hY4B7yRZF14gKXrhKRE
+         qBGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWpq/wLohEz/4sGL0iBPIG1YFwopxbssmOaE9CB1VDDGqsg9viW2YXykp0OsbQ1wHek2rJlfhhokvBhA0g=@vger.kernel.org, AJvYcCXrs3aU80UBqfmbiJMOvhlW/31Bywfi0CMpY4bQstWZlR1ZuvJ/eE3sj0XGprr7/fzCiIJl@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZ0qKTHZQoWquj8o3QJ8DKCwRg4fVt+t/ugh2XDo9AH2d48qWf
+	Ji6uf4BfAaOgiPaYJjH1fSUVpp3HCsNkH4+wc04w4jwmlTATmoQ4bFLKt+E2z9xWoBMfsOOrLNE
+	fl84+i1XhsS1O4cPVyl99+sQswrafOv/q/MM=
+X-Google-Smtp-Source: AGHT+IElFgWUK61PKPPQAD8gSlLf9PUekbFJYHZdgq5RuTaHPZtmenazC7fFM2ZO4hhOfG7tmksbTAYcNrxOP3bXovk=
+X-Received: by 2002:a05:651c:2110:b0:2fb:584a:8ea6 with SMTP id
+ 38308e7fff4ca-2ff6098d59cmr63348961fa.27.1731983395060; Mon, 18 Nov 2024
+ 18:29:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 6/6] mm, slub: sheaf prefilling for guaranteed
- allocations
-Content-Language: en-US
-To: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc: Suren Baghdasaryan <surenb@google.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter
- <cl@linux.com>, David Rientjes <rientjes@google.com>,
- Pekka Enberg <penberg@kernel.org>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Matthew Wilcox <willy@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- maple-tree@lists.infradead.org
 References: <20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz>
- <20241112-slub-percpu-caches-v1-6-ddc0bdc27e05@suse.cz>
- <CAB=+i9QoavVWZ6HxiOb8ypqov0rM+HAK4ge7nKHdQRPUaNPmkw@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
- KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
- 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
- 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
- tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
- Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
- 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
- LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
- 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
- BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
- QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
- AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJkBREIBQkRadznAAoJECJPp+fMgqZkNxIQ
- ALZRqwdUGzqL2aeSavbum/VF/+td+nZfuH0xeWiO2w8mG0+nPd5j9ujYeHcUP1edE7uQrjOC
- Gs9sm8+W1xYnbClMJTsXiAV88D2btFUdU1mCXURAL9wWZ8Jsmz5ZH2V6AUszvNezsS/VIT87
- AmTtj31TLDGwdxaZTSYLwAOOOtyqafOEq+gJB30RxTRE3h3G1zpO7OM9K6ysLdAlwAGYWgJJ
- V4JqGsQ/lyEtxxFpUCjb5Pztp7cQxhlkil0oBYHkudiG8j1U3DG8iC6rnB4yJaLphKx57NuQ
- PIY0Bccg+r9gIQ4XeSK2PQhdXdy3UWBr913ZQ9AI2usid3s5vabo4iBvpJNFLgUmxFnr73SJ
- KsRh/2OBsg1XXF/wRQGBO9vRuJUAbnaIVcmGOUogdBVS9Sun/Sy4GNA++KtFZK95U7J417/J
- Hub2xV6Ehc7UGW6fIvIQmzJ3zaTEfuriU1P8ayfddrAgZb25JnOW7L1zdYL8rXiezOyYZ8Fm
- ZyXjzWdO0RpxcUEp6GsJr11Bc4F3aae9OZtwtLL/jxc7y6pUugB00PodgnQ6CMcfR/HjXlae
- h2VS3zl9+tQWHu6s1R58t5BuMS2FNA58wU/IazImc/ZQA+slDBfhRDGYlExjg19UXWe/gMcl
- De3P1kxYPgZdGE2eZpRLIbt+rYnqQKy8UxlszsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
- J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
- /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
- IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
- X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
- wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
- PVAiT6fnzIKmZAUCZAUSmwUJDK5EZgAKCRAiT6fnzIKmZOJGEACOKABgo9wJXsbWhGWYO7mD
- 8R8mUyJHqbvaz+yTLnvRwfe/VwafFfDMx5GYVYzMY9TWpA8psFTKTUIIQmx2scYsRBUwm5VI
- EurRWKqENcDRjyo+ol59j0FViYysjQQeobXBDDE31t5SBg++veI6tXfpco/UiKEsDswL1WAr
- tEAZaruo7254TyH+gydURl2wJuzo/aZ7Y7PpqaODbYv727Dvm5eX64HCyyAH0s6sOCyGF5/p
- eIhrOn24oBf67KtdAN3H9JoFNUVTYJc1VJU3R1JtVdgwEdr+NEciEfYl0O19VpLE/PZxP4wX
- PWnhf5WjdoNI1Xec+RcJ5p/pSel0jnvBX8L2cmniYnmI883NhtGZsEWj++wyKiS4NranDFlA
- HdDM3b4lUth1pTtABKQ1YuTvehj7EfoWD3bv9kuGZGPrAeFNiHPdOT7DaXKeHpW9homgtBxj
- 8aX/UkSvEGJKUEbFL9cVa5tzyialGkSiZJNkWgeHe+jEcfRT6pJZOJidSCdzvJpbdJmm+eED
- w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
- 1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
- EP+ylKVEKb0Q2A==
-In-Reply-To: <CAB=+i9QoavVWZ6HxiOb8ypqov0rM+HAK4ge7nKHdQRPUaNPmkw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[google.com,oracle.com,linux.com,kernel.org,lge.com,linux.dev,infradead.org,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+ <20241112-slub-percpu-caches-v1-6-ddc0bdc27e05@suse.cz> <CAB=+i9QoavVWZ6HxiOb8ypqov0rM+HAK4ge7nKHdQRPUaNPmkw@mail.gmail.com>
+ <9dc33d5f-fc04-4780-80ae-3c5f80a8b891@suse.cz>
+In-Reply-To: <9dc33d5f-fc04-4780-80ae-3c5f80a8b891@suse.cz>
+From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date: Tue, 19 Nov 2024 11:29:43 +0900
+Message-ID: <CAB=+i9RZra587ik+A-hZtVwzppAt9CsA7oiuVg9QhgEHT=-daQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 6/6] mm, slub: sheaf prefilling for guaranteed allocations
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Pekka Enberg <penberg@kernel.org>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+	Matthew Wilcox <willy@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	rcu@vger.kernel.org, maple-tree@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/18/24 14:13, Hyeonggon Yoo wrote:
-> On Wed, Nov 13, 2024 at 1:39 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->> +
->> +/*
->> + * Allocate from a sheaf obtained by kmem_cache_prefill_sheaf()
->> + *
->> + * Guaranteed not to fail as many allocations as was the requested count.
->> + * After the sheaf is emptied, it fails - no fallback to the slab cache itself.
->> + *
->> + * The gfp parameter is meant only to specify __GFP_ZERO or __GFP_ACCOUNT
->> + * memcg charging is forced over limit if necessary, to avoid failure.
->> + */
->> +void *
->> +kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
->> +                                  struct slab_sheaf *sheaf)
->> +{
->> +       void *ret = NULL;
->> +       bool init;
->> +
->> +       if (sheaf->size == 0)
->> +               goto out;
->> +
->> +       ret = sheaf->objects[--sheaf->size];
->> +
->> +       init = slab_want_init_on_alloc(gfp, s);
->> +
->> +       /* add __GFP_NOFAIL to force successful memcg charging */
->> +       slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, init, s->object_size);
-> 
-> Maybe I'm missing something, but how can this be used for non-sleepable contexts
-> if __GFP_NOFAIL is used? I think we have to charge them when the sheaf
+On Mon, Nov 18, 2024 at 11:26=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> w=
+rote:
+>
+> On 11/18/24 14:13, Hyeonggon Yoo wrote:
+> > On Wed, Nov 13, 2024 at 1:39=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> >> +
+> >> +/*
+> >> + * Allocate from a sheaf obtained by kmem_cache_prefill_sheaf()
+> >> + *
+> >> + * Guaranteed not to fail as many allocations as was the requested co=
+unt.
+> >> + * After the sheaf is emptied, it fails - no fallback to the slab cac=
+he itself.
+> >> + *
+> >> + * The gfp parameter is meant only to specify __GFP_ZERO or __GFP_ACC=
+OUNT
+> >> + * memcg charging is forced over limit if necessary, to avoid failure=
+.
+> >> + */
+> >> +void *
+> >> +kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+> >> +                                  struct slab_sheaf *sheaf)
+> >> +{
+> >> +       void *ret =3D NULL;
+> >> +       bool init;
+> >> +
+> >> +       if (sheaf->size =3D=3D 0)
+> >> +               goto out;
+> >> +
+> >> +       ret =3D sheaf->objects[--sheaf->size];
+> >> +
+> >> +       init =3D slab_want_init_on_alloc(gfp, s);
+> >> +
+> >> +       /* add __GFP_NOFAIL to force successful memcg charging */
+> >> +       slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, ini=
+t, s->object_size);
+> >
+> > Maybe I'm missing something, but how can this be used for non-sleepable=
+ contexts
+> > if __GFP_NOFAIL is used? I think we have to charge them when the sheaf
+>
+> AFAIK it forces memcg to simply charge even if allocated memory goes over
+> the memcg limit. So there's no issue with a non-sleepable context, there
+> shouldn't be memcg reclaim happening in that case.
 
-AFAIK it forces memcg to simply charge even if allocated memory goes over
-the memcg limit. So there's no issue with a non-sleepable context, there
-shouldn't be memcg reclaim happening in that case.
+Ok, but I am still worried about mem alloc profiling/memcg trying to
+allocate some memory
+with __GFP_NOFAIL flag and eventually passing it to the buddy allocator,
+which does not want __GFP_NOFAIL without __GFP_DIRECT_RECLAIM?
+e.g.) memcg hook calls
+alloc_slab_obj_exts()->kcalloc_node()->....->alloc_pages()
 
-> is returned
-> via kmem_cache_prefill_sheaf(), just like users of bulk alloc/free?
+> > is returned
+> > via kmem_cache_prefill_sheaf(), just like users of bulk alloc/free?
+>
+> That would be very costly to charge/uncharge if most of the objects are n=
+ot
+> actually used - it's what we want to avoid here.
+> Going over the memcgs limit a bit in a very rare case isn't considered su=
+ch
+> an issue, for example Linus advocated such approach too in another contex=
+t.
 
-That would be very costly to charge/uncharge if most of the objects are not
-actually used - it's what we want to avoid here.
-Going over the memcgs limit a bit in a very rare case isn't considered such
-an issue, for example Linus advocated such approach too in another context.
+Thanks for the explanation! That was a point I was missing.
 
-> Best,
-> Hyeonggon
-> 
->> +out:
->> +       trace_kmem_cache_alloc(_RET_IP_, ret, s, gfp, NUMA_NO_NODE);
->> +
->> +       return ret;
->> +}
->> +
->>  /*
->>   * To avoid unnecessary overhead, we pass through large allocation requests
->>   * directly to the page allocator. We use __GFP_COMP, because we will need to
->>
->> --
->> 2.47.0
->>
-
+> > Best,
+> > Hyeonggon
+> >
+> >> +out:
+> >> +       trace_kmem_cache_alloc(_RET_IP_, ret, s, gfp, NUMA_NO_NODE);
+> >> +
+> >> +       return ret;
+> >> +}
+> >> +
+> >>  /*
+> >>   * To avoid unnecessary overhead, we pass through large allocation re=
+quests
+> >>   * directly to the page allocator. We use __GFP_COMP, because we will=
+ need to
+> >>
+> >> --
+> >> 2.47.0
+> >>
+>
