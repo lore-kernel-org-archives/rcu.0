@@ -1,47 +1,47 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9103D1D26E3
-	for <rcu@vger.kernel.org>; Tue, 19 Nov 2024 15:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620C41D0B9E
+	for <rcu@vger.kernel.org>; Tue, 19 Nov 2024 15:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732030644; cv=none; b=QUclv/m9WtLwmrEJoLe2TbAetbyBIh6xtNs0CubMfmd6tBK28BIT7NliE5qIesheFLhTnwGI13By4scswWqyBeF1eJDKyw1AjxPxINACcvi8bBFE7oweMchn3/27piU+3LfY3tm2D7wfSSPiu50WCoVUAdf2E8HcGNOJytgJt0U=
+	t=1732030658; cv=none; b=as5XwoMb1k8PjzDg3pnfnTNR/JTPguHIGQOI5nDS0Ekx4G+WhgpDaMbW1N2xJHDWSADlYagDzd8RDn4hFJTWH3snn6J8Izw3XdgHm7S4RGE0vvegnGYZUXvZQ21r3IAzKZaqFwjh/8QysJc1ySqnemoS8KmTkUsAgN3r5E0gQ8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732030644; c=relaxed/simple;
-	bh=Qe5AsYkNVOEHTNs/w1sH/iiGUncnosxKlZrjavgQTWc=;
+	s=arc-20240116; t=1732030658; c=relaxed/simple;
+	bh=g4RPCjUX2beCsOhmA+cf1EgW2WlK56h+myfKo4lgSbM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TLrnWe4zoxFFtRbGEzeZ+sZSGn60ucv2gCkaKdzTXsqj3EJ6oToLPo3YKqvemo/vEeLc6QRZVW16hMYLhaqXkPoKQ7DUR1pmHQU54zhGVlN56dZ3tyv343aS1ZuwjvtKEczAb3c/VYaV0v3p05Bfq/qsLzePla5sOGx3cYKS760=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BisaG8D+; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=TdZhxnCbjEHQXwCFNjw4NMBU0MtSDq0cYpE0VO72o/f89J/m3lO6zitAI5FeAgOL3/NDH/uXmNWYg4JWgbjgIXabkJ3n8vCFFbY0vhNOjrtZwWvzIkSzS1toBLWvC+Srmxb1dNi35z2KfZdEjar72OuHmz9DigUu6AaAV2lRju4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YcW6xxsd; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BisaG8D+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YcW6xxsd"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732030640;
+	s=mimecast20190719; t=1732030655;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VTrWPsFjEj6kjl2SR0Q+Shqo2M3AIl3ViwWNRJPCXGk=;
-	b=BisaG8D+qJ4qzomWh3FIvOEc8gBYwapgMa119jf2hrfTTeTsrIWhTTHS4sSEbQj4BGABHz
-	wWhhv8aFGn4YT9izvAw9goQTNqwORSOb5u+mnbfU+yyrCHXY01dwtI05FQ0D5NAuyqLf2x
-	GdwCbLWBqcbGG7CPFMmtuRrUdzIgZXQ=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+	bh=wuJGo/SWDYxjpRhP1lHMjQsEt0PrcPcPyU5QylcJ498=;
+	b=YcW6xxsdzDfWLYOzoZGGCwbUDf9UYpmgJMe9dvif+3qY60OAqlrjoAFQbPLPhLtsuxWDFv
+	V3ClElQbm0+A7xaUKR2ejAZKy26BqV2peT1z0HMQlsi5xUgvqXVDWY95s8iMFcS5xnpqgk
+	7eU410cUYUMfK+aYr8b5MatAymSlxTQ=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-240-1AlVl6ygNXGoWGme969LHQ-1; Tue,
- 19 Nov 2024 10:37:17 -0500
-X-MC-Unique: 1AlVl6ygNXGoWGme969LHQ-1
-X-Mimecast-MFC-AGG-ID: 1AlVl6ygNXGoWGme969LHQ
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-427-4V10RU0zMVukkEJohwz2Cw-1; Tue,
+ 19 Nov 2024 10:37:32 -0500
+X-MC-Unique: 4V10RU0zMVukkEJohwz2Cw-1
+X-Mimecast-MFC-AGG-ID: 4V10RU0zMVukkEJohwz2Cw
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 188B01955DC3;
-	Tue, 19 Nov 2024 15:37:12 +0000 (UTC)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4177119773FC;
+	Tue, 19 Nov 2024 15:37:27 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.194.94])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3D90930001A2;
-	Tue, 19 Nov 2024 15:36:57 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 859B830001A0;
+	Tue, 19 Nov 2024 15:37:12 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-doc@vger.kernel.org,
@@ -51,8 +51,7 @@ To: linux-kernel@vger.kernel.org,
 	x86@kernel.org,
 	rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
+Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -66,6 +65,7 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Andy Lutomirski <luto@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
@@ -102,9 +102,9 @@ Cc: "Paul E . McKenney" <paulmck@kernel.org>,
 	Yair Podemsky <ypodemsk@redhat.com>,
 	Daniel Wagner <dwagner@suse.de>,
 	Petr Tesarik <ptesarik@suse.com>
-Subject: [RFC PATCH v3 05/15] rcutorture: Make TREE04 use CONFIG_RCU_DYNTICKS_TORTURE
-Date: Tue, 19 Nov 2024 16:34:52 +0100
-Message-ID: <20241119153502.41361-6-vschneid@redhat.com>
+Subject: [RFC PATCH v3 06/15] jump_label: Add forceful jump label type
+Date: Tue, 19 Nov 2024 16:34:53 +0100
+Message-ID: <20241119153502.41361-7-vschneid@redhat.com>
 In-Reply-To: <20241119153502.41361-1-vschneid@redhat.com>
 References: <20241119153502.41361-1-vschneid@redhat.com>
 Precedence: bulk
@@ -116,28 +116,92 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-We now have an RCU_EXPERT config for testing small-sized RCU dynticks
-counter:  CONFIG_RCU_DYNTICKS_TORTURE.
+Later commits will cause objtool to warn about non __ro_after_init static
+keys being used in .noinstr sections in order to safely defer instruction
+patching IPIs targeted at NOHZ_FULL CPUs.
 
-Modify scenario TREE04 to exercise to use this config in order to test a
-ridiculously small counter (2 bits).
+Two such keys currently exist: mds_idle_clear and __sched_clock_stable,
+which can both be modified at runtime.
 
-Link: http://lore.kernel.org/r/4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+As discussed at LPC 2024 during the realtime micro-conference, modifying
+these specific keys incurs additional interference (SMT hotplug) or can
+even be downright incompatible with NOHZ_FULL (unstable TSC).
+
+Suppressing the IPI associated with modifying such keys is thus a minor
+concern wrt NOHZ_FULL interference, so add a jump type that will be
+leveraged by both the kernel (to know not to defer the IPI) and objtool (to
+know not to generate the aforementioned warning).
+
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/TREE04 | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/jump_label.h | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04 b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-index dc4985064b3ad..67caf4276bb01 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04
-@@ -16,3 +16,4 @@ CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
- CONFIG_RCU_EXPERT=y
- CONFIG_RCU_EQS_DEBUG=y
- CONFIG_RCU_LAZY=y
-+CONFIG_RCU_DYNTICKS_TORTURE=y
+diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
+index f5a2727ca4a9a..93e729545b941 100644
+--- a/include/linux/jump_label.h
++++ b/include/linux/jump_label.h
+@@ -200,7 +200,8 @@ struct module;
+ #define JUMP_TYPE_FALSE		0UL
+ #define JUMP_TYPE_TRUE		1UL
+ #define JUMP_TYPE_LINKED	2UL
+-#define JUMP_TYPE_MASK		3UL
++#define JUMP_TYPE_FORCEFUL      4UL
++#define JUMP_TYPE_MASK		7UL
+ 
+ static __always_inline bool static_key_false(struct static_key *key)
+ {
+@@ -244,12 +245,15 @@ extern enum jump_label_type jump_label_init_type(struct jump_entry *entry);
+  * raw value, but have added a BUILD_BUG_ON() to catch any issues in
+  * jump_label_init() see: kernel/jump_label.c.
+  */
+-#define STATIC_KEY_INIT_TRUE					\
+-	{ .enabled = { 1 },					\
+-	  { .type = JUMP_TYPE_TRUE } }
+-#define STATIC_KEY_INIT_FALSE					\
+-	{ .enabled = { 0 },					\
+-	  { .type = JUMP_TYPE_FALSE } }
++#define __STATIC_KEY_INIT(_true, force)					\
++	{ .enabled = { _true },						\
++	  { .type = (_true ? JUMP_TYPE_TRUE : JUMP_TYPE_FALSE) |	\
++		    (force ? JUMP_TYPE_FORCEFUL : 0UL)} }
++
++#define STATIC_KEY_INIT_TRUE  __STATIC_KEY_INIT(true, false)
++#define STATIC_KEY_INIT_FALSE __STATIC_KEY_INIT(false, false)
++#define STATIC_KEY_INIT_TRUE_FORCE  __STATIC_KEY_INIT(true, true)
++#define STATIC_KEY_INIT_FALSE_FORCE __STATIC_KEY_INIT(false, true)
+ 
+ #else  /* !CONFIG_JUMP_LABEL */
+ 
+@@ -369,6 +373,8 @@ struct static_key_false {
+ 
+ #define STATIC_KEY_TRUE_INIT  (struct static_key_true) { .key = STATIC_KEY_INIT_TRUE,  }
+ #define STATIC_KEY_FALSE_INIT (struct static_key_false){ .key = STATIC_KEY_INIT_FALSE, }
++#define STATIC_KEY_TRUE_FORCE_INIT  (struct static_key_true) { .key = STATIC_KEY_INIT_TRUE_FORCE,  }
++#define STATIC_KEY_FALSE_FORCE_INIT (struct static_key_false){ .key = STATIC_KEY_INIT_FALSE_FORCE, }
+ 
+ #define DEFINE_STATIC_KEY_TRUE(name)	\
+ 	struct static_key_true name = STATIC_KEY_TRUE_INIT
+@@ -376,6 +382,9 @@ struct static_key_false {
+ #define DEFINE_STATIC_KEY_TRUE_RO(name)	\
+ 	struct static_key_true name __ro_after_init = STATIC_KEY_TRUE_INIT
+ 
++#define DEFINE_STATIC_KEY_TRUE_FORCE(name)	\
++	struct static_key_true name = STATIC_KEY_TRUE_FORCE_INIT
++
+ #define DECLARE_STATIC_KEY_TRUE(name)	\
+ 	extern struct static_key_true name
+ 
+@@ -385,6 +394,9 @@ struct static_key_false {
+ #define DEFINE_STATIC_KEY_FALSE_RO(name)	\
+ 	struct static_key_false name __ro_after_init = STATIC_KEY_FALSE_INIT
+ 
++#define DEFINE_STATIC_KEY_FALSE_FORCE(name)	\
++	struct static_key_false name = STATIC_KEY_FALSE_FORCE_INIT
++
+ #define DECLARE_STATIC_KEY_FALSE(name)	\
+ 	extern struct static_key_false name
+ 
 -- 
 2.43.0
 
