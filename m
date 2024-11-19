@@ -1,162 +1,88 @@
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51854C2C9;
-	Tue, 19 Nov 2024 02:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB8A157469
+	for <rcu@vger.kernel.org>; Tue, 19 Nov 2024 08:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731983399; cv=none; b=MkXJnHZWQvHv+Jhyw0lLBTdomCiKy9XDrIgHznu8S8l9So9pfql1o+7urJwERmAtnVZZXjUeE4mnGpAAeMPGEcmJJxr9DCkdluD7xOT6QZ+XLdP4CDF6MJkbLjG9zuuXUmDg62kyxCcw8Q5BEQos1xJvtJFYyQZ9JcIV6FW7jAU=
+	t=1732003968; cv=none; b=UayGCvH5f6k+Z42WNNVVhfAoAlHVOzXkmWdrYPIqj3FSSGj/NlaJ20DWUFA9Y2JUw1D8N+/3Qb43x/b9Sri6kiuGVC64h2GwIALS1RbuxC3vJwWu3p5xUZ1xxpdZDze4YG+E3vyPB34YNGqpGr5N2bnJMEgrU+dfPt4/uHLse0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731983399; c=relaxed/simple;
-	bh=wTdw0rpt/RuCXG/3r5/Cbtj8C5tC5pnWt9qxgy+ldso=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xv+JJblkpqf+FXKBGGSmKeUJcb9dy7AjSaXtews0lJQZ9xvqxn6rin9T6EtjZCbjGqsv5yP6InqfXaiIhzhPwh9UJAzsQpb9hjAaG3JYQTA9GL+ujluCo12+Pv3a58foUwJYvs0ZqY03r2+k48N3RKqLhNLAsfenFEO9YKsvQSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ekh6tG5L; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1732003968; c=relaxed/simple;
+	bh=CazBJ3n+f02EQEe3WabvUTIZI5Sq9oEfv6QvtvT6vbA=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=KvcukKPZEtVVvk87oczcZtr7isbSuqh13F1RoLtE8JJwAIG0dVbMQ5UBLY4hV8VN0ATHZbuegmCViMxQUzcPZmbvys52OKcysm47mXo4eumtS6Ktl3f8y6e+Kff+wNL1xJHiVIEGXjeOnPmGki1CNID7sZSnNrQdzQSN0hOMdLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=jcQDDMJE; arc=none smtp.client-ip=162.62.57.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ekh6tG5L"
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2fb51f39394so4602781fa.2;
-        Mon, 18 Nov 2024 18:29:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731983395; x=1732588195; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jDu2TDDimIym5HIL4t/Fyx220cmR1Bl82M9X+9neXZA=;
-        b=Ekh6tG5LJyNzT5Z9QcJ/YQlx5iZ4lqlrhtTP8fUXOMZbkfpRjwzPXvQZXqPOBhjVeW
-         09OISK9Hr/bLnkxx/yv9SGsEhyIiZstcFteeJJf35FIyhY+sK7rTID24O4ouDeXmVuBK
-         W6zhFtu4sR7U2GJrkDZs/qmiLjfGIwWo8/tOFbmav7dpsTRB+omBtEaVy/nV9N/7omKf
-         HsM4/eoHRK+3qNhmka8TFgTLtdpeUrf0qvKUo2xxLDigYflqZYeDJi9sJOZ7j7Ii1KRP
-         kXLIdpPoEkf6+4SPvRQ1Eu2ssoPg9pbnklxQhkz3MLwKlEeRCqwEQmgoiU4vf7rx/usM
-         ukyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731983395; x=1732588195;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jDu2TDDimIym5HIL4t/Fyx220cmR1Bl82M9X+9neXZA=;
-        b=iSwzdCv76DzAX6Yl8ZQCCy547OFGs2ZRPXVTtKA+D2U3xykNrxngGOkYQkKItEv6F6
-         SrLCvN/Ts23d+78y33t+r7EgtvwJiW931BlwaHRZMAQN/Cgf4hB+X5U5CLUBJXp8zPv7
-         PpwoUCZbyrr1La/lke7uoLwcc7BKqEEg6u4xIuK2ELS/rBHZzMbfJRDxBvlYjUuj8hKx
-         TRtsj2gbWzkMtflxu0eCKe24/dFRLDxbftUgtPooIDtTQFfh5XfisCX1/nsinv+0sz7z
-         LKqmW6sE5dDqIUTlyChgsaNt5dcIIZdW0Qanglu5VOS5xDWS1hY4B7yRZF14gKXrhKRE
-         qBGg==
-X-Forwarded-Encrypted: i=1; AJvYcCWpq/wLohEz/4sGL0iBPIG1YFwopxbssmOaE9CB1VDDGqsg9viW2YXykp0OsbQ1wHek2rJlfhhokvBhA0g=@vger.kernel.org, AJvYcCXrs3aU80UBqfmbiJMOvhlW/31Bywfi0CMpY4bQstWZlR1ZuvJ/eE3sj0XGprr7/fzCiIJl@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZ0qKTHZQoWquj8o3QJ8DKCwRg4fVt+t/ugh2XDo9AH2d48qWf
-	Ji6uf4BfAaOgiPaYJjH1fSUVpp3HCsNkH4+wc04w4jwmlTATmoQ4bFLKt+E2z9xWoBMfsOOrLNE
-	fl84+i1XhsS1O4cPVyl99+sQswrafOv/q/MM=
-X-Google-Smtp-Source: AGHT+IElFgWUK61PKPPQAD8gSlLf9PUekbFJYHZdgq5RuTaHPZtmenazC7fFM2ZO4hhOfG7tmksbTAYcNrxOP3bXovk=
-X-Received: by 2002:a05:651c:2110:b0:2fb:584a:8ea6 with SMTP id
- 38308e7fff4ca-2ff6098d59cmr63348961fa.27.1731983395060; Mon, 18 Nov 2024
- 18:29:55 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="jcQDDMJE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1732003959; bh=Yofk1ob8af5jPXo5+73rcYHPj7V+HmsEhFfiLt0dWX8=;
+	h=From:To:Cc:Subject:Date;
+	b=jcQDDMJEz1cpNONburBw68H2sX5yBNiIKb3t6/NhOgUmqk/QLEIYUFCpbStM3O/HQ
+	 xT5ePp9GHltHIZBZUA5DVZi38d8UdpCUrjfG7YnEs6OXXVmgvQPxXt5O/Ct84TdzwK
+	 qd/zYugjf1BySGDUHqQPpkA4S82WA/7cGJk3ULpw=
+Received: from localhost.localdomain ([36.111.64.84])
+	by newxmesmtplogicsvrsza15-1.qq.com (NewEsmtp) with SMTP
+	id 7A13668E; Tue, 19 Nov 2024 15:30:33 +0800
+X-QQ-mid: xmsmtpt1732001433teosw1ykk
+Message-ID: <tencent_E213C035373D59F2469A887D3D60498E6B08@qq.com>
+X-QQ-XMAILINFO: M07Ulnfy3VHKFwilQDo3iluzG+2C5ojMAH/+mIMjtbLwwEgCnMb8FxZ4kXb62t
+	 rRRUdGBjts0ev0T2QaFwy11sjnObRi4cAKdagmWgcn9h3cqUCu7CQhCRPU7yO4yLA5IuM44Kkg59
+	 p7DRmjEuWRMSnnLf3f+enYGjmqLb02K2Ql5nR43reyCTJOHRFN5jLKmRgpg6jcQi12rjmFDAmU32
+	 HaaSk/cueFkHG/ZwqNAkBQS0PBbVVZ4kPEzqRF/B6gMsS2kijdMBe8nQceVnYC5qxyyjDrwTpydK
+	 7ip8B9CpPZd2PNySolicjkICUycqmTlxQwJQUocG4YcL54Xv7foodPb8AQrNe4ob38+b6/hQkslU
+	 yj8CCXQbyC6iiwSZmfzKTHP87AuFy4O50S1eTUXXBqIa/Aj277qYd46wkodbIYhZkI5DQZlJgHvG
+	 NS2/A4c8jjOl6NTcqMr9ssoRzhpWeTLl0/JwnRq0zcHKt/KXrvlwqwMc+oILpbb3IiS292Nh72QM
+	 enbPT1Cn8DQU3V9g/SibluNqvvHf+eqhYXE3RgM9Bcr/axqjPg9A1wFmymgnsyZSRwLgu1+n574P
+	 pfobog5FX09WaVvT29ukSdiqeZjHrORRkTauwHUDJTM6KIYFjtSQnN/Hjp0fOCK6wDoGoHvK9Jtx
+	 XJrTwcOHMLvG5QwEQF1dli8e0sf7wtRhCS+hvrZGhb4mYZ2YL4gvf8pv4Fvzbvf6ADRBn2eEe2Cl
+	 cKVPeglgQrO7/JrajjxPGoGBxGPTMLaaq6g1Kz027vWQRY6MjE5kU7EwbK476gFiK7dQkLULB+q1
+	 qGyieEyiK7RKEkAgOI05fx8VoDW2gP+BOtuqfdwJC0lElJZiQAytce3igAY0UBCrYgAwMNrxOfZz
+	 mVuATx9SzJ9WGhhOYVHU7+hLvstgGSpeo7rL2BgpvdMEcQdLJxaVXakrX7tQkehGkUmH/CgINrM7
+	 LL4/nu0bFJrEQ2qGr1dJHqoFkKYiPeQ0coh/gaaRO2XxEGVBCuhxjIhI5Y/s638I+cMvhaX0I=
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Feng Lee <379943137@qq.com>
+To: jiangshanlai@gmail.com,
+	paulmck@kernel.org,
+	josh@joshtriplett.org,
+	rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com
+Cc: rcu@vger.kernel.org,
+	Feng Lee <379943137@qq.com>
+Subject: [PATCH -next] srcu: Remove redundant GP sequence checks in srcu_funnel_gp_start
+Date: Tue, 19 Nov 2024 15:29:49 +0800
+X-OQ-MSGID: <20241119072949.2698-1-379943137@qq.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz>
- <20241112-slub-percpu-caches-v1-6-ddc0bdc27e05@suse.cz> <CAB=+i9QoavVWZ6HxiOb8ypqov0rM+HAK4ge7nKHdQRPUaNPmkw@mail.gmail.com>
- <9dc33d5f-fc04-4780-80ae-3c5f80a8b891@suse.cz>
-In-Reply-To: <9dc33d5f-fc04-4780-80ae-3c5f80a8b891@suse.cz>
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date: Tue, 19 Nov 2024 11:29:43 +0900
-Message-ID: <CAB=+i9RZra587ik+A-hZtVwzppAt9CsA7oiuVg9QhgEHT=-daQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 6/6] mm, slub: sheaf prefilling for guaranteed allocations
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Suren Baghdasaryan <surenb@google.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Pekka Enberg <penberg@kernel.org>, 
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	Matthew Wilcox <willy@infradead.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	rcu@vger.kernel.org, maple-tree@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 18, 2024 at 11:26=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 11/18/24 14:13, Hyeonggon Yoo wrote:
-> > On Wed, Nov 13, 2024 at 1:39=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
-> wrote:
-> >> +
-> >> +/*
-> >> + * Allocate from a sheaf obtained by kmem_cache_prefill_sheaf()
-> >> + *
-> >> + * Guaranteed not to fail as many allocations as was the requested co=
-unt.
-> >> + * After the sheaf is emptied, it fails - no fallback to the slab cac=
-he itself.
-> >> + *
-> >> + * The gfp parameter is meant only to specify __GFP_ZERO or __GFP_ACC=
-OUNT
-> >> + * memcg charging is forced over limit if necessary, to avoid failure=
-.
-> >> + */
-> >> +void *
-> >> +kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
-> >> +                                  struct slab_sheaf *sheaf)
-> >> +{
-> >> +       void *ret =3D NULL;
-> >> +       bool init;
-> >> +
-> >> +       if (sheaf->size =3D=3D 0)
-> >> +               goto out;
-> >> +
-> >> +       ret =3D sheaf->objects[--sheaf->size];
-> >> +
-> >> +       init =3D slab_want_init_on_alloc(gfp, s);
-> >> +
-> >> +       /* add __GFP_NOFAIL to force successful memcg charging */
-> >> +       slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, ini=
-t, s->object_size);
-> >
-> > Maybe I'm missing something, but how can this be used for non-sleepable=
- contexts
-> > if __GFP_NOFAIL is used? I think we have to charge them when the sheaf
->
-> AFAIK it forces memcg to simply charge even if allocated memory goes over
-> the memcg limit. So there's no issue with a non-sleepable context, there
-> shouldn't be memcg reclaim happening in that case.
+We will perform GP sequence checking at the beginning of srcu_gp_start,
+thus making it safe to remove duplicate GP sequence checks prior to
+calling srcu_gp_start.
 
-Ok, but I am still worried about mem alloc profiling/memcg trying to
-allocate some memory
-with __GFP_NOFAIL flag and eventually passing it to the buddy allocator,
-which does not want __GFP_NOFAIL without __GFP_DIRECT_RECLAIM?
-e.g.) memcg hook calls
-alloc_slab_obj_exts()->kcalloc_node()->....->alloc_pages()
+Signed-off-by: Feng Lee <379943137@qq.com>
+---
+ kernel/rcu/srcutree.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> > is returned
-> > via kmem_cache_prefill_sheaf(), just like users of bulk alloc/free?
->
-> That would be very costly to charge/uncharge if most of the objects are n=
-ot
-> actually used - it's what we want to avoid here.
-> Going over the memcgs limit a bit in a very rare case isn't considered su=
-ch
-> an issue, for example Linus advocated such approach too in another contex=
-t.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 5e2e53464794..cbef5674d201 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1076,7 +1076,6 @@ static void srcu_funnel_gp_start(struct srcu_struct *ssp, struct srcu_data *sdp,
+ 	/* If grace period not already in progress, start it. */
+ 	if (!WARN_ON_ONCE(rcu_seq_done(&sup->srcu_gp_seq, s)) &&
+ 	    rcu_seq_state(sup->srcu_gp_seq) == SRCU_STATE_IDLE) {
+-		WARN_ON_ONCE(ULONG_CMP_GE(sup->srcu_gp_seq, sup->srcu_gp_seq_needed));
+ 		srcu_gp_start(ssp);
+ 
+ 		// And how can that list_add() in the "else" clause
+-- 
+2.47.0
 
-Thanks for the explanation! That was a point I was missing.
 
-> > Best,
-> > Hyeonggon
-> >
-> >> +out:
-> >> +       trace_kmem_cache_alloc(_RET_IP_, ret, s, gfp, NUMA_NO_NODE);
-> >> +
-> >> +       return ret;
-> >> +}
-> >> +
-> >>  /*
-> >>   * To avoid unnecessary overhead, we pass through large allocation re=
-quests
-> >>   * directly to the page allocator. We use __GFP_COMP, because we will=
- need to
-> >>
-> >> --
-> >> 2.47.0
-> >>
->
