@@ -1,177 +1,309 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7742A1D172B
-	for <rcu@vger.kernel.org>; Tue, 19 Nov 2024 15:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E9B78C76;
+	Tue, 19 Nov 2024 15:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732030801; cv=none; b=Eqj1Py+oOWk2To+LXQt0uNKdU2xFvIuqgcZmf/tKoSGYBsJJypU7NVAQNDY+TjDdaRH+mq8GaPMzhexXBbm3VJstLjax67i94VhD+B2CE5mJLMDYCJxoa0g7yJkoe/6qwG/gzkp+DjMBdaTzJIwtugxmIbNsx0pWtG8ytIKT+C0=
+	t=1732031827; cv=none; b=kb+HcMHWP5nxKz+AqFLgRG/SO8ShmgRZR7JxL+LcHpMLumErggQ8oogLxbiEJWazyWh7EyX2nDcrJih/GWak959R/YXa7QHFn6UGnlxh8cr4+cB3iniCrp+m/0gmI0kWCBpSWnJ2QeAWEjiGQvqJAOK8YbiwT9ZFlbTBcbc7xCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732030801; c=relaxed/simple;
-	bh=FDSvP1EhYqYkFNY54ZUxRHJZiVHOU5zN9wYGjv6JRq4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bqj/ThmErKWiRcTvE0WiEOSygy3uqo/7S9JVcJZZIlOHZwpYmlhT4Omr7AWU0fnJHhNRKQ2jjAvfDqWe1IdChMC8f9oZb0W+q9zYmswP+AHr4zMpn9DJduwnMncXx2MXMJGL5ZXn4yJkr90NDxp9L0nBXFmU6s6Yyl45sPUwj8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dnog5Itt; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1732031827; c=relaxed/simple;
+	bh=pPWk2srY52uKpMTPEaaa6/FCmseLFxfV4tOXS4hNUW0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vsecc4sA7r7JUBEvjo09VNRsUUyuNCxEafao8KLAr08bAy6EhLyPvBf9zGFfzOtwzrFQRG3jFwCZkKEqtY/yzoW4naRmo36X3AaX54Dy/FqOtPgsLNJbTg21TCpMWthmtkFXFyh+ZygMLk7eAJ6YBkBTrya22btLzCDojF+Vfag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zVS+9zO4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=M9Vih6ak; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dnog5Itt"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732030799;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zVS+9zO4";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="M9Vih6ak"
+Date: Tue, 19 Nov 2024 16:57:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1732031823;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=F1GnqQSFPr8VITMqjCT6H9sq2glpq77hQWm9Vj7AfgE=;
-	b=Dnog5IttFyH2/brC0BIAf/IUc5yPvCLxhxoKQNnnhwEabijQHFb72V0WjCIWmcgBN7Pf53
-	kQPE1obmn5JEsw0ndWuek4XncH2rH8PATO70iBPbXYZorf2LM+41YYRg68L2o7g5aL+x45
-	D5eJi046Of19qJK+G//PvNEN8QikMQA=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-207-92ypQAdDPJmP9uLfkEuaoA-1; Tue,
- 19 Nov 2024 10:39:57 -0500
-X-MC-Unique: 92ypQAdDPJmP9uLfkEuaoA-1
-X-Mimecast-MFC-AGG-ID: 92ypQAdDPJmP9uLfkEuaoA
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 15EC119541A0;
-	Tue, 19 Nov 2024 15:39:52 +0000 (UTC)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.194.94])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 63E1730001A0;
-	Tue, 19 Nov 2024 15:39:37 +0000 (UTC)
-From: Valentin Schneider <vschneid@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org,
-	linux-mm@kvack.org,
-	bpf@vger.kernel.org,
-	x86@kernel.org,
-	rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>,
-	Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>,
-	Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Daniel Wagner <dwagner@suse.de>,
-	Petr Tesarik <ptesarik@suse.com>
-Subject: [RFC PATCH v3 15/15] context-tracking: Add a Kconfig to enable IPI deferral for NO_HZ_IDLE
-Date: Tue, 19 Nov 2024 16:35:02 +0100
-Message-ID: <20241119153502.41361-16-vschneid@redhat.com>
-In-Reply-To: <20241119153502.41361-1-vschneid@redhat.com>
-References: <20241119153502.41361-1-vschneid@redhat.com>
+	bh=/MZupiwZEv7S6PjpR394r6GaOTkxg+//UpoNKUISypU=;
+	b=zVS+9zO4h+PK0IqQ8XLcKd95hrb/9Cn9t82pvxjhq4ohxyu58DOSkzJbM51AE7F8552EIW
+	XMu+7XqS47dcd5OlDFlrIhBBvo6uaj9gYuDQOqDydml0UkFFPKRU74ogbUzFTRElOMEas+
+	4VFxUTTe8pX68HxeleUaEUwFl/7OJr4tQL4ToTV1vg8W3q/R5Y90dOUo1PHYCWPzC12miy
+	k6OS0jvb0jPrulaRnWUycY0ivSOV89iYjeXmE3QaWOdjTbslix5x6Yk7yGLrkWykLo+sJw
+	BCSGmzmipZ3KQaZVnNiAw1kQ0pYI8Sgg1Bf4bz2qqEAMdzhzdkjRxdNuyBKEdg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1732031823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/MZupiwZEv7S6PjpR394r6GaOTkxg+//UpoNKUISypU=;
+	b=M9Vih6akybhkq0+cTrUzYnbzTr0aHFMI9KXtGv3vOOIAn3q9LUHEu8CCp1WTz13SSKwT4Z
+	Lpcp3VRNsatxhTCw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+	syzbot <syzbot+39f85d612b7c20d8db48@syzkaller.appspotmail.com>,
+	Liam.Howlett@oracle.com, akpm@linux-foundation.org,
+	jannh@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lorenzo.stoakes@oracle.com, syzkaller-bugs@googlegroups.com,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	kasan-dev <kasan-dev@googlegroups.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Waiman Long <longman@redhat.com>, dvyukov@google.com,
+	vincenzo.frascino@arm.com, paulmck@kernel.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, tj@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+	Thomas Gleixner <tglx@linutronix.de>, roman.gushchin@linux.dev,
+	42.hyeyoo@gmail.com, rcu@vger.kernel.org
+Subject: [PATCH] kasan: Remove kasan_record_aux_stack_noalloc().
+Message-ID: <20241119155701.GYennzPF@linutronix.de>
+References: <67275485.050a0220.3c8d68.0a37.GAE@google.com>
+ <ee48b6e9-3f7a-49aa-ae5b-058b5ada2172@suse.cz>
+ <b9a674c1-860c-4448-aeb2-bf07a78c6fbf@suse.cz>
+ <20241104114506.GC24862@noisy.programming.kicks-ass.net>
+ <CANpmjNPmQYJ7pv1N3cuU8cP18u7PP_uoZD8YxwZd4jtbof9nVQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPmQYJ7pv1N3cuU8cP18u7PP_uoZD8YxwZd4jtbof9nVQ@mail.gmail.com>
 
-With NO_HZ_IDLE, we get CONTEXT_TRACKING_IDLE, so we get these
-transitions:
+From: Peter Zijlstra <peterz@infradead.org>
 
-  ct_idle_enter()
-    ct_kernel_exit()
-      ct_state_inc_clear_work()
+kasan_record_aux_stack_noalloc() was introduced to record a stack trace
+without allocating memory in the process. It has been added to callers
+which were invoked while a raw_spinlock_t was held.
+More and more callers were identified and changed over time. Is it a
+good thing to have this while functions try their best to do a
+locklessly setup? The only downside of having kasan_record_aux_stack()
+not allocate any memory is that we end up without a stacktrace if
+stackdepot runs out of memory and at the same stacktrace was not
+recorded before. Marco Elver said in
+	https://lore.kernel.org/all/20210913112609.2651084-1-elver@google.com/
+that this is rare.
 
-  ct_idle_exit()
-    ct_kernel_enter()
-      ct_work_flush()
+Make the kasan_record_aux_stack_noalloc() behaviour default as
+kasan_record_aux_stack().
 
-With just CONTEXT_TRACKING_IDLE, ct_state_inc_clear_work() is just
-ct_state_inc() and ct_work_flush() is a no-op. However, making them be
-functional as if under CONTEXT_TRACKING_WORK would allow NO_HZ_IDLE to
-leverage IPI deferral to keep idle CPUs idle longer.
+[bigeasy: Dressed the diff as patch. ]
 
-Having this enabled for NO_HZ_IDLE is a different argument than for having
-it for NO_HZ_FULL (power savings vs latency/performance), but the backing
-mechanism is identical.
-
-Add a default-no option to enable IPI deferral with NO_HZ_IDLE.
-
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+Reported-by: syzbot+39f85d612b7c20d8db48@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/67275485.050a0220.3c8d68.0a37.GAE@google.com
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/time/Kconfig | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index 04efc2b605823..a3cb903a4e022 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -188,9 +188,23 @@ config CONTEXT_TRACKING_USER_FORCE
+Didn't add a Fixes tag, didn't want to put 
+   7cb3007ce2da2 ("kasan: generic: introduce kasan_record_aux_stack_noalloc()")
+
+there.
+
+ include/linux/kasan.h     |  2 --
+ include/linux/task_work.h |  3 ---
+ kernel/irq_work.c         |  2 +-
+ kernel/rcu/tiny.c         |  2 +-
+ kernel/rcu/tree.c         |  4 ++--
+ kernel/sched/core.c       |  2 +-
+ kernel/task_work.c        | 14 +-------------
+ kernel/workqueue.c        |  2 +-
+ mm/kasan/generic.c        | 14 ++------------
+ mm/slub.c                 |  2 +-
+ 10 files changed, 10 insertions(+), 37 deletions(-)
+
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 00a3bf7c0d8f0..1a623818e8b39 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -488,7 +488,6 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+ void kasan_cache_shrink(struct kmem_cache *cache);
+ void kasan_cache_shutdown(struct kmem_cache *cache);
+ void kasan_record_aux_stack(void *ptr);
+-void kasan_record_aux_stack_noalloc(void *ptr);
  
- config CONTEXT_TRACKING_WORK
- 	bool
--	depends on HAVE_CONTEXT_TRACKING_WORK && CONTEXT_TRACKING_USER
-+	depends on HAVE_CONTEXT_TRACKING_WORK && (CONTEXT_TRACKING_USER || CONTEXT_TRACKING_WORK_IDLE)
- 	default y
+ #else /* CONFIG_KASAN_GENERIC */
  
-+config CONTEXT_TRACKING_WORK_IDLE
-+       bool
-+       depends on HAVE_CONTEXT_TRACKING_WORK && CONTEXT_TRACKING_IDLE && !CONTEXT_TRACKING_USER
-+       default n
-+       help
-+	 This option enables deferral of some IPIs when they are targeted at CPUs
-+	 that are idle. This can help keep CPUs idle longer, but induces some
-+	 extra overhead to idle <-> kernel transitions and to IPI sending.
-+
-+	 Say Y if the power improvements are worth more to you than the added
-+	 overheads.
-+
-+	 Say N otherwise.
-+
- config NO_HZ
- 	bool "Old Idle dynticks config"
- 	help
+@@ -506,7 +505,6 @@ static inline void kasan_cache_create(struct kmem_cache *cache,
+ static inline void kasan_cache_shrink(struct kmem_cache *cache) {}
+ static inline void kasan_cache_shutdown(struct kmem_cache *cache) {}
+ static inline void kasan_record_aux_stack(void *ptr) {}
+-static inline void kasan_record_aux_stack_noalloc(void *ptr) {}
+ 
+ #endif /* CONFIG_KASAN_GENERIC */
+ 
+diff --git a/include/linux/task_work.h b/include/linux/task_work.h
+index 2964171856e00..0646804860ff1 100644
+--- a/include/linux/task_work.h
++++ b/include/linux/task_work.h
+@@ -19,9 +19,6 @@ enum task_work_notify_mode {
+ 	TWA_SIGNAL,
+ 	TWA_SIGNAL_NO_IPI,
+ 	TWA_NMI_CURRENT,
+-
+-	TWA_FLAGS = 0xff00,
+-	TWAF_NO_ALLOC = 0x0100,
+ };
+ 
+ static inline bool task_work_pending(struct task_struct *task)
+diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+index 2f4fb336dda17..73f7e1fd4ab4d 100644
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -147,7 +147,7 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
+ 	if (!irq_work_claim(work))
+ 		return false;
+ 
+-	kasan_record_aux_stack_noalloc(work);
++	kasan_record_aux_stack(work);
+ 
+ 	preempt_disable();
+ 	if (cpu != smp_processor_id()) {
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index b3b3ce34df631..4b3f319114650 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -250,7 +250,7 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ {
+ 	if (head)
+-		kasan_record_aux_stack_noalloc(ptr);
++		kasan_record_aux_stack(ptr);
+ 
+ 	__kvfree_call_rcu(head, ptr);
+ }
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index b1f883fcd9185..7eae9bd818a90 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3083,7 +3083,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+ 	}
+ 	head->func = func;
+ 	head->next = NULL;
+-	kasan_record_aux_stack_noalloc(head);
++	kasan_record_aux_stack(head);
+ 	local_irq_save(flags);
+ 	rdp = this_cpu_ptr(&rcu_data);
+ 	lazy = lazy_in && !rcu_async_should_hurry();
+@@ -3807,7 +3807,7 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ 		return;
+ 	}
+ 
+-	kasan_record_aux_stack_noalloc(ptr);
++	kasan_record_aux_stack(ptr);
+ 	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+ 	if (!success) {
+ 		run_page_cache_worker(krcp);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a1c353a62c568..3717360a940d2 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -10485,7 +10485,7 @@ void task_tick_mm_cid(struct rq *rq, struct task_struct *curr)
+ 		return;
+ 
+ 	/* No page allocation under rq lock */
+-	task_work_add(curr, work, TWA_RESUME | TWAF_NO_ALLOC);
++	task_work_add(curr, work, TWA_RESUME);
+ }
+ 
+ void sched_mm_cid_exit_signals(struct task_struct *t)
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index c969f1f26be58..d1efec571a4a4 100644
+--- a/kernel/task_work.c
++++ b/kernel/task_work.c
+@@ -55,26 +55,14 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+ 		  enum task_work_notify_mode notify)
+ {
+ 	struct callback_head *head;
+-	int flags = notify & TWA_FLAGS;
+ 
+-	notify &= ~TWA_FLAGS;
+ 	if (notify == TWA_NMI_CURRENT) {
+ 		if (WARN_ON_ONCE(task != current))
+ 			return -EINVAL;
+ 		if (!IS_ENABLED(CONFIG_IRQ_WORK))
+ 			return -EINVAL;
+ 	} else {
+-		/*
+-		 * Record the work call stack in order to print it in KASAN
+-		 * reports.
+-		 *
+-		 * Note that stack allocation can fail if TWAF_NO_ALLOC flag
+-		 * is set and new page is needed to expand the stack buffer.
+-		 */
+-		if (flags & TWAF_NO_ALLOC)
+-			kasan_record_aux_stack_noalloc(work);
+-		else
+-			kasan_record_aux_stack(work);
++		kasan_record_aux_stack(work);
+ 	}
+ 
+ 	head = READ_ONCE(task->task_works);
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 9949ffad8df09..65b8314b2d538 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -2180,7 +2180,7 @@ static void insert_work(struct pool_workqueue *pwq, struct work_struct *work,
+ 	debug_work_activate(work);
+ 
+ 	/* record the work call stack in order to print it in KASAN reports */
+-	kasan_record_aux_stack_noalloc(work);
++	kasan_record_aux_stack(work);
+ 
+ 	/* we own @work, set data and link */
+ 	set_work_pwq(work, pwq, extra_flags);
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 6310a180278b6..b18b5944997f8 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -521,7 +521,7 @@ size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
+ 			sizeof(struct kasan_free_meta) : 0);
+ }
+ 
+-static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
++void kasan_record_aux_stack(void *addr)
+ {
+ 	struct slab *slab = kasan_addr_to_slab(addr);
+ 	struct kmem_cache *cache;
+@@ -538,17 +538,7 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+ 		return;
+ 
+ 	alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
+-	alloc_meta->aux_stack[0] = kasan_save_stack(0, depot_flags);
+-}
+-
+-void kasan_record_aux_stack(void *addr)
+-{
+-	return __kasan_record_aux_stack(addr, STACK_DEPOT_FLAG_CAN_ALLOC);
+-}
+-
+-void kasan_record_aux_stack_noalloc(void *addr)
+-{
+-	return __kasan_record_aux_stack(addr, 0);
++	alloc_meta->aux_stack[0] = kasan_save_stack(0, 0);
+ }
+ 
+ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+diff --git a/mm/slub.c b/mm/slub.c
+index 5b832512044e3..b8c4bf3fe0d07 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2300,7 +2300,7 @@ bool slab_free_hook(struct kmem_cache *s, void *x, bool init,
+ 			 * We have to do this manually because the rcu_head is
+ 			 * not located inside the object.
+ 			 */
+-			kasan_record_aux_stack_noalloc(x);
++			kasan_record_aux_stack(x);
+ 
+ 			delayed_free->object = x;
+ 			call_rcu(&delayed_free->head, slab_free_after_rcu_debug);
 -- 
-2.43.0
+2.45.2
 
