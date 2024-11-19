@@ -1,47 +1,47 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620C41D0B9E
-	for <rcu@vger.kernel.org>; Tue, 19 Nov 2024 15:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103491CCB35
+	for <rcu@vger.kernel.org>; Tue, 19 Nov 2024 15:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732030658; cv=none; b=as5XwoMb1k8PjzDg3pnfnTNR/JTPguHIGQOI5nDS0Ekx4G+WhgpDaMbW1N2xJHDWSADlYagDzd8RDn4hFJTWH3snn6J8Izw3XdgHm7S4RGE0vvegnGYZUXvZQ21r3IAzKZaqFwjh/8QysJc1ySqnemoS8KmTkUsAgN3r5E0gQ8Y=
+	t=1732030674; cv=none; b=YU9hEc54dYxhJmuttIyqq0feHsK9fe9nmAWFbTgG7amdnW9BpYrzWft45DTX01rR8YhIutT2SGmO8Nlx/HpBIi1FnSlGlZvJWTOxiSCpwnnRljPVT0xdH85Dt2UuBcwcJxzl9pWqYephmoyz05pRUaOnDWNkVVKnrMYaHGBn9RE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732030658; c=relaxed/simple;
-	bh=g4RPCjUX2beCsOhmA+cf1EgW2WlK56h+myfKo4lgSbM=;
+	s=arc-20240116; t=1732030674; c=relaxed/simple;
+	bh=9pH7ZkeY4viWe7Wod5zfr5y5mOdJFAFbwB72hayvvGQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TdZhxnCbjEHQXwCFNjw4NMBU0MtSDq0cYpE0VO72o/f89J/m3lO6zitAI5FeAgOL3/NDH/uXmNWYg4JWgbjgIXabkJ3n8vCFFbY0vhNOjrtZwWvzIkSzS1toBLWvC+Srmxb1dNi35z2KfZdEjar72OuHmz9DigUu6AaAV2lRju4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YcW6xxsd; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=aIMT8XK1RJT9ACo8xWNv19qblUcxCNM7XtzScLtXNmfTKfwzodkBaBT9z/IG8iE4HGNHY5hC/IrUIw4kJH9CGUFBiadoBDZV/5AqOIUcf4FfJ34yu1IQVPSMTDkTaMJvinuD3t095x/hUoCLhXi95uyWe8w4vcXbYt/6sxFnr0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CB2IFQK3; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YcW6xxsd"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CB2IFQK3"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732030655;
+	s=mimecast20190719; t=1732030672;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wuJGo/SWDYxjpRhP1lHMjQsEt0PrcPcPyU5QylcJ498=;
-	b=YcW6xxsdzDfWLYOzoZGGCwbUDf9UYpmgJMe9dvif+3qY60OAqlrjoAFQbPLPhLtsuxWDFv
-	V3ClElQbm0+A7xaUKR2ejAZKy26BqV2peT1z0HMQlsi5xUgvqXVDWY95s8iMFcS5xnpqgk
-	7eU410cUYUMfK+aYr8b5MatAymSlxTQ=
+	bh=UFFvFWWnWyZvXw5qfQp0QkusU/cmiYrMNoaijrYT6Zw=;
+	b=CB2IFQK3+iVQQRoSyhOHl0cn8hui0AKVu45/Q/GVa406vsffFkohR+qIdj6GQxiWGqHynp
+	XEV5ZDRY3bzca2KX00aOkktNCtXKmALx2m0Yv4F7zAxrdlnlrOwthwz0IgjZRb2Vgz4T1F
+	QjWqGjUD5DUvTRWJsNQ9fSfznzHwp+I=
 Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-427-4V10RU0zMVukkEJohwz2Cw-1; Tue,
- 19 Nov 2024 10:37:32 -0500
-X-MC-Unique: 4V10RU0zMVukkEJohwz2Cw-1
-X-Mimecast-MFC-AGG-ID: 4V10RU0zMVukkEJohwz2Cw
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-594-8NjzI6AZPs6iJgNCQczRug-1; Tue,
+ 19 Nov 2024 10:37:49 -0500
+X-MC-Unique: 8NjzI6AZPs6iJgNCQczRug-1
+X-Mimecast-MFC-AGG-ID: 8NjzI6AZPs6iJgNCQczRug
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4177119773FC;
-	Tue, 19 Nov 2024 15:37:27 +0000 (UTC)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DF4C91979052;
+	Tue, 19 Nov 2024 15:37:43 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.194.94])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 859B830001A0;
-	Tue, 19 Nov 2024 15:37:12 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B133F30001A0;
+	Tue, 19 Nov 2024 15:37:27 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	linux-doc@vger.kernel.org,
@@ -102,9 +102,9 @@ Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Yair Podemsky <ypodemsk@redhat.com>,
 	Daniel Wagner <dwagner@suse.de>,
 	Petr Tesarik <ptesarik@suse.com>
-Subject: [RFC PATCH v3 06/15] jump_label: Add forceful jump label type
-Date: Tue, 19 Nov 2024 16:34:53 +0100
-Message-ID: <20241119153502.41361-7-vschneid@redhat.com>
+Subject: [RFC PATCH v3 07/15] x86/speculation/mds: Make mds_idle_clear forceful
+Date: Tue, 19 Nov 2024 16:34:54 +0100
+Message-ID: <20241119153502.41361-8-vschneid@redhat.com>
 In-Reply-To: <20241119153502.41361-1-vschneid@redhat.com>
 References: <20241119153502.41361-1-vschneid@redhat.com>
 Precedence: bulk
@@ -120,88 +120,33 @@ Later commits will cause objtool to warn about non __ro_after_init static
 keys being used in .noinstr sections in order to safely defer instruction
 patching IPIs targeted at NOHZ_FULL CPUs.
 
-Two such keys currently exist: mds_idle_clear and __sched_clock_stable,
-which can both be modified at runtime.
+mds_idle_clear is used in .noinstr code, and can be modified at
+runtime (SMT hotplug). Suppressing the text_poke_sync() IPI has little
+benefits for this key, as hotplug implies eventually going through
+takedown_cpu() -> stop_machine_cpuslocked() which is going to cause
+interference on all online CPUs anyway.
 
-As discussed at LPC 2024 during the realtime micro-conference, modifying
-these specific keys incurs additional interference (SMT hotplug) or can
-even be downright incompatible with NOHZ_FULL (unstable TSC).
-
-Suppressing the IPI associated with modifying such keys is thus a minor
-concern wrt NOHZ_FULL interference, so add a jump type that will be
-leveraged by both the kernel (to know not to defer the IPI) and objtool (to
-know not to generate the aforementioned warning).
+Mark it as forceful to let the kernel know to always send the
+text_poke_sync() IPI for it, and to let objtool know not to warn about it.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- include/linux/jump_label.h | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
-index f5a2727ca4a9a..93e729545b941 100644
---- a/include/linux/jump_label.h
-+++ b/include/linux/jump_label.h
-@@ -200,7 +200,8 @@ struct module;
- #define JUMP_TYPE_FALSE		0UL
- #define JUMP_TYPE_TRUE		1UL
- #define JUMP_TYPE_LINKED	2UL
--#define JUMP_TYPE_MASK		3UL
-+#define JUMP_TYPE_FORCEFUL      4UL
-+#define JUMP_TYPE_MASK		7UL
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 47a01d4028f60..dcc4d5d6e3b95 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -114,7 +114,7 @@ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_ibpb);
+ DEFINE_STATIC_KEY_FALSE(switch_mm_always_ibpb);
  
- static __always_inline bool static_key_false(struct static_key *key)
- {
-@@ -244,12 +245,15 @@ extern enum jump_label_type jump_label_init_type(struct jump_entry *entry);
-  * raw value, but have added a BUILD_BUG_ON() to catch any issues in
-  * jump_label_init() see: kernel/jump_label.c.
-  */
--#define STATIC_KEY_INIT_TRUE					\
--	{ .enabled = { 1 },					\
--	  { .type = JUMP_TYPE_TRUE } }
--#define STATIC_KEY_INIT_FALSE					\
--	{ .enabled = { 0 },					\
--	  { .type = JUMP_TYPE_FALSE } }
-+#define __STATIC_KEY_INIT(_true, force)					\
-+	{ .enabled = { _true },						\
-+	  { .type = (_true ? JUMP_TYPE_TRUE : JUMP_TYPE_FALSE) |	\
-+		    (force ? JUMP_TYPE_FORCEFUL : 0UL)} }
-+
-+#define STATIC_KEY_INIT_TRUE  __STATIC_KEY_INIT(true, false)
-+#define STATIC_KEY_INIT_FALSE __STATIC_KEY_INIT(false, false)
-+#define STATIC_KEY_INIT_TRUE_FORCE  __STATIC_KEY_INIT(true, true)
-+#define STATIC_KEY_INIT_FALSE_FORCE __STATIC_KEY_INIT(false, true)
+ /* Control MDS CPU buffer clear before idling (halt, mwait) */
+-DEFINE_STATIC_KEY_FALSE(mds_idle_clear);
++DEFINE_STATIC_KEY_FALSE_FORCE(mds_idle_clear);
+ EXPORT_SYMBOL_GPL(mds_idle_clear);
  
- #else  /* !CONFIG_JUMP_LABEL */
- 
-@@ -369,6 +373,8 @@ struct static_key_false {
- 
- #define STATIC_KEY_TRUE_INIT  (struct static_key_true) { .key = STATIC_KEY_INIT_TRUE,  }
- #define STATIC_KEY_FALSE_INIT (struct static_key_false){ .key = STATIC_KEY_INIT_FALSE, }
-+#define STATIC_KEY_TRUE_FORCE_INIT  (struct static_key_true) { .key = STATIC_KEY_INIT_TRUE_FORCE,  }
-+#define STATIC_KEY_FALSE_FORCE_INIT (struct static_key_false){ .key = STATIC_KEY_INIT_FALSE_FORCE, }
- 
- #define DEFINE_STATIC_KEY_TRUE(name)	\
- 	struct static_key_true name = STATIC_KEY_TRUE_INIT
-@@ -376,6 +382,9 @@ struct static_key_false {
- #define DEFINE_STATIC_KEY_TRUE_RO(name)	\
- 	struct static_key_true name __ro_after_init = STATIC_KEY_TRUE_INIT
- 
-+#define DEFINE_STATIC_KEY_TRUE_FORCE(name)	\
-+	struct static_key_true name = STATIC_KEY_TRUE_FORCE_INIT
-+
- #define DECLARE_STATIC_KEY_TRUE(name)	\
- 	extern struct static_key_true name
- 
-@@ -385,6 +394,9 @@ struct static_key_false {
- #define DEFINE_STATIC_KEY_FALSE_RO(name)	\
- 	struct static_key_false name __ro_after_init = STATIC_KEY_FALSE_INIT
- 
-+#define DEFINE_STATIC_KEY_FALSE_FORCE(name)	\
-+	struct static_key_false name = STATIC_KEY_FALSE_FORCE_INIT
-+
- #define DECLARE_STATIC_KEY_FALSE(name)	\
- 	extern struct static_key_false name
- 
+ /*
 -- 
 2.43.0
 
