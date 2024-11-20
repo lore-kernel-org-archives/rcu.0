@@ -1,37 +1,43 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC15F193;
-	Wed, 20 Nov 2024 00:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE80B146D53;
+	Wed, 20 Nov 2024 10:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732061136; cv=none; b=F7kX5P7NQAnkk/Nb8fs5/PVJzf1aHedSQE+gJRlNUf0HDXnbsaGXuk3HO01GcvQXWgZt6GAnkDle6ZDxh0rguadKNSs8Qryt+Ikp9cNmLbO/Ud8gTPp8pW3mGGHH7eMSc2yfMqUDWRK2BVcS9ZX6XwOwJD1iMFbX/i3C4jf0vfw=
+	t=1732098144; cv=none; b=r9MIevaYhvbRcjSlfAOtm64MYA7IT19DEHCBoW+VSBzYOEBU7LQjwO8sXhhqJLCUAA4Lru/RCF9DY2kqE/gZE1Zawq7zhlrApIVSUBfbsTTbIW0egqC4vA5r58JDH0maIvge+J7WEwMa9q4wjY8ROJpGIZlkZxnk8fDRVW2VvtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732061136; c=relaxed/simple;
-	bh=NMnFX7XK6VdRPzGtpSRTKyvI+/r1fqrGrX48X5BBDWA=;
+	s=arc-20240116; t=1732098144; c=relaxed/simple;
+	bh=kJQDEeMh5yQymd7/4zNyXAyvNMvAn8pbTvK9MW3F1j4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H3mjApGchXntPaTsiTun9YAMNpumBS37zjZbuy1gasVvNZcszphDac8Vce2dDoI5/6AoTrXWSwrcjfFt6XmC9QZtj2rXO7rrf6J6NBGMYd9S33A90Ma9C8QFMRaGGzP0wz0InFDoZzMm2+Whwp9ofP1fMertercYWT8znrmLmFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eksPcppY; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=M1ceEiXzERU9M72UwiT+gQJZQDpcD1vFAo2yEWOzV9bIFzwkcPB6qSUasV0hEUxEqxqh655Ly8zv0k7214q8WG6q6SvaW31gsjSlTrEAjQEVOQ+PMEuoW4u+HfEsI9mt3S0nQvsZ0w+IEFBRVEQwD7L9h40wXOTUnG+FnPKmaL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ud7ivUQk; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eksPcppY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 492F7C4CECF;
-	Wed, 20 Nov 2024 00:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732061136;
-	bh=NMnFX7XK6VdRPzGtpSRTKyvI+/r1fqrGrX48X5BBDWA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eksPcppYzPeSt6INt9TwqRvZ4lhbHTxdkTT3HfOrf73uMrdgSEcCiaBLbjbuEr7KW
-	 KTtf0X/Xm113UupXPcdgtWqsbZTElfC3SS6AjmXWs7Njc7ceshzOwUlnMhh2jsa5hH
-	 5OHCR/v0n3tWuWAQrg1DkVk8tW7PRGoTeRmRwkCdgz5FoLEnCrEjA+x4MkVxOrYs9g
-	 tX6BNjcLJDxuXETMH5s7gDSEqB5HHNJFSx81pxD01l1XlEm7xGdkg4yKrWRdZOitj5
-	 tSMfXDjRII5KS06JqDQP80Djvc0pHpcI447DDFOp/8729SCiqKnXDMrLwR5jZhA/7C
-	 VKL7upp0zVLyg==
-Date: Tue, 19 Nov 2024 16:05:32 -0800
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, rcu@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ud7ivUQk"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=6BHYRXy9lLaaBbd09VImTq6Rn50W4X4567EqZRkeTsQ=; b=Ud7ivUQkqoJelXj28zCQsU+gIU
+	rPNqESkMj9Dvu0GcK3GwMBeifTq00wVepK50OM0ITEOdtka/jqFErp6Jd8j999ZICXAW3mvcrtkvK
+	CusDuiYnEJ629rY55UUL/cBOjUKRFBuX/QQ0VICN6+DrH4L+Ho55jjI7IoNjs/cWvfyFbmptF1Klx
+	vEhnAtqlle6ozdCc/aMWBNbBq7u2ct3VCOEy18Xvn1aIkiTLeG6uKCbmVgjwRnFMZT4eAurE+BZ5H
+	x1Ct2ikx1ujlCMCd31kJ29lLgD5iVA3BgXaBQ3K/vEe5Jd7aBT4P21yj4cyyY2YhFQ7RnlBQHq7Pn
+	jj1hI06g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tDhql-0000000582g-0cwS;
+	Wed, 20 Nov 2024 10:22:20 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 04D013006AB; Wed, 20 Nov 2024 11:22:20 +0100 (CET)
+Date: Wed, 20 Nov 2024 11:22:19 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -44,7 +50,6 @@ Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
 	Wanpeng Li <wanpengli@tencent.com>,
 	Vitaly Kuznetsov <vkuznets@redhat.com>,
 	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
@@ -73,37 +78,39 @@ Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
 	Julian Pidancet <julian.pidancet@oracle.com>,
 	Tom Lendacky <thomas.lendacky@amd.com>,
 	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
 	Juri Lelli <juri.lelli@redhat.com>,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Yair Podemsky <ypodemsk@redhat.com>,
 	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
 Subject: Re: [RFC PATCH v3 06/15] jump_label: Add forceful jump label type
-Message-ID: <20241120000532.maqzgsn7m34lti6u@jpoimboe>
+Message-ID: <20241120102219.GF19989@noisy.programming.kicks-ass.net>
 References: <20241119153502.41361-1-vschneid@redhat.com>
  <20241119153502.41361-7-vschneid@redhat.com>
+ <20241120000532.maqzgsn7m34lti6u@jpoimboe>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241119153502.41361-7-vschneid@redhat.com>
+In-Reply-To: <20241120000532.maqzgsn7m34lti6u@jpoimboe>
 
-On Tue, Nov 19, 2024 at 04:34:53PM +0100, Valentin Schneider wrote:
-> +++ b/include/linux/jump_label.h
-> @@ -200,7 +200,8 @@ struct module;
->  #define JUMP_TYPE_FALSE		0UL
->  #define JUMP_TYPE_TRUE		1UL
->  #define JUMP_TYPE_LINKED	2UL
-> -#define JUMP_TYPE_MASK		3UL
-> +#define JUMP_TYPE_FORCEFUL      4UL
-> +#define JUMP_TYPE_MASK		7UL
+On Tue, Nov 19, 2024 at 04:05:32PM -0800, Josh Poimboeuf wrote:
+> On Tue, Nov 19, 2024 at 04:34:53PM +0100, Valentin Schneider wrote:
+> > +++ b/include/linux/jump_label.h
+> > @@ -200,7 +200,8 @@ struct module;
+> >  #define JUMP_TYPE_FALSE		0UL
+> >  #define JUMP_TYPE_TRUE		1UL
+> >  #define JUMP_TYPE_LINKED	2UL
+> > -#define JUMP_TYPE_MASK		3UL
+> > +#define JUMP_TYPE_FORCEFUL      4UL
+> > +#define JUMP_TYPE_MASK		7UL
+> 
+> Hm, I don't think we can (ab)use this pointer bit on 32-bit arches, as
+> the address could be 4 byte aligned?
 
-Hm, I don't think we can (ab)use this pointer bit on 32-bit arches, as
-the address could be 4 byte aligned?
-
--- 
-Josh
+Right, you can force the alignment of the thing, workqueues do similar
+hacks to get more bits.
