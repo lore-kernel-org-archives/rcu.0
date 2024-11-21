@@ -1,39 +1,44 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBE9487BE;
-	Wed, 20 Nov 2024 17:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C793A1CC88D;
+	Thu, 21 Nov 2024 11:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732123821; cv=none; b=kSMpxYOH1zh+7Y3NgAM+M6pOU8ng3FPz1EaO1VV8IXcL763pdnljRpFO/W8LJFC6Q3i8Q3+jA536WYJkz6qsTOSWCdnXrbmjty1KdOdqTRDF9BWxKuCtRun93JtsUlMWWI+hEW5hQuoTLgCHTPw/dBFwmGSxltpbQ+F09kmCKhU=
+	t=1732186832; cv=none; b=AQC8XXosU6910MXuQCuC5BQbrgypl4u40amRPeZxbO7IPcxh8MUZzh/ZeWbwDzSgEESUt1A6saJfe4Hi1Y5JB7FTrh+I51puby2h0tX5MABRXenMtVmv3bV/QVYoQMqGB9acYRuzW1MwIcxFohLO0RBUclwB1SDzaHcRLkC8uKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732123821; c=relaxed/simple;
-	bh=PFA7J969PABg1BMHj5bUVkB7wuVSRSb1IQcjJeE4WLw=;
+	s=arc-20240116; t=1732186832; c=relaxed/simple;
+	bh=9gfsOjXUGyFwnFr59dC+u4M0J91DcAOQbqnLQalZcxU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gcwn+hQQKNGRbLZdO8uCz1fFesc5gsFP4cOShAsrom6ApGjhp4syIdVNNIpRSuVOwyqo3xqnBhfYAm5z44oWMLCVk2nv+V35CsnmBXElzUPry/N4nDipBjHT5pACImX2fTYBpRG5ScLit8gZEJWwMyuVR/eXiuRUCL1T1LV85bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kf3Dyd2C; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=A00AQ33AVVtRyYGqhJML98gNYFCLGtxbWaLqi+Ip2DCYAT+0iSKiq5hHicx5oaE9Y+HaaZzD8BjgijBTSxf7mLRgXqXo0q9V7w/Ikk4CTdFv1bJlDNHs1fr8kp/Ziw+8iLAlAqPI0V614DvgaXCM0v+cs4x93ugENccqMMbOGV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aGfumQ4J; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kf3Dyd2C"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD605C4CECD;
-	Wed, 20 Nov 2024 17:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732123820;
-	bh=PFA7J969PABg1BMHj5bUVkB7wuVSRSb1IQcjJeE4WLw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kf3Dyd2CKUZa3tMlA5c9d+2ELCZPrv6chpFxvCS+UiOnBey7DGXhhzWANw/Gp+cVf
-	 9ekUEtoHku9jwPT9QXn/R2VMK+633Zwv3F8SW/w65Og7YAa79XArf9PDSYf46Yny/f
-	 CrYCCnTD0bWSCkL5fF9NGkrNb77XNSWjrPupERZ/bTBF5I2Jc5S3xRmc9IDdaoFlod
-	 GylypmxLKgFB8l61QEhIJKuBcBziS7S2je/uwRmgBZtYP0rWwBCTQiHaso7+9c9Aeo
-	 QatfyLQ2wrkudg0oAe0ccQENxnmONZH9eFt1AMIDeWXdmNfFX87/aC3WxZnfDlQGNL
-	 8lnRD6NSI6heA==
-Date: Wed, 20 Nov 2024 18:30:17 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, rcu@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aGfumQ4J"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=/4UY6ooFSZbuurvbSSxwnqyBmiXRU+RN7sWd/ZeHliw=; b=aGfumQ4JkaRWnYeAD+H/67VZah
+	vYz0LMQIP45v3VwBZKvVWDMqLirOmn6oWsQjYIgwz13/QVVo4P7x6kVsqdCp2NSs/LWBA3X+Hzgbe
+	uGH6g5kKTrVQ2NKdOtNQZvDqva01ydSWpXjvNPB+1zgOPTYAIevJFZIMJZYYFNPFL1Ifbv3PKnJZv
+	OrwEY2eJ4EsvDdm0qUegKwZMVis4ARGSOAgFYvCfKVXYZcaxuES3LHkjrjuAr/MHrhw/5FzBU9PlF
+	5qrPQbLKjpWsCQb1aYz5GmVU03v13aN65v2SlUcMnIeL21n/K2hMk8I4crChD6KYZLtY4/0wo5Ris
+	TqUAjfTw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tE4v7-00000000ZU8-1far;
+	Thu, 21 Nov 2024 11:00:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 0365F30068B; Thu, 21 Nov 2024 12:00:21 +0100 (CET)
+Date: Thu, 21 Nov 2024 12:00:20 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
@@ -45,7 +50,7 @@ Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
 	Wanpeng Li <wanpengli@tencent.com>,
 	Vitaly Kuznetsov <vkuznets@redhat.com>,
 	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
@@ -58,7 +63,6 @@ Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Christoph Hellwig <hch@infradead.org>,
 	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
 	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
 	Sami Tolvanen <samitolvanen@google.com>,
 	Ard Biesheuvel <ardb@kernel.org>,
@@ -79,68 +83,52 @@ Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
 	Marcelo Tosatti <mtosatti@redhat.com>,
 	Yair Podemsky <ypodemsk@redhat.com>,
 	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <Zz4cqfVfyb1enxql@localhost.localdomain>
+Subject: Re: [RFC PATCH v3 06/15] jump_label: Add forceful jump label type
+Message-ID: <20241121110020.GC24774@noisy.programming.kicks-ass.net>
 References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-12-vschneid@redhat.com>
- <Zz2_7MbxvfjKsz08@pavilion.home>
- <Zz3w0o_3wZDgJn0K@localhost.localdomain>
- <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20241119153502.41361-7-vschneid@redhat.com>
+ <20241119233902.kierxzg2aywpevqx@jpoimboe>
+ <20241120145649.GJ19989@noisy.programming.kicks-ass.net>
+ <20241120145746.GL38972@noisy.programming.kicks-ass.net>
+ <20241120165515.qx4qyenlb5guvmfe@jpoimboe>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+In-Reply-To: <20241120165515.qx4qyenlb5guvmfe@jpoimboe>
 
-Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a écrit :
-> On 20/11/24 15:23, Frederic Weisbecker wrote:
+On Wed, Nov 20, 2024 at 08:55:15AM -0800, Josh Poimboeuf wrote:
+> On Wed, Nov 20, 2024 at 03:57:46PM +0100, Peter Zijlstra wrote:
+> > On Wed, Nov 20, 2024 at 03:56:49PM +0100, Peter Zijlstra wrote:
+> > 
+> > > But I think we can make the fall-back safer, we can simply force the IPI
+> > > when we poke at noinstr code -- then NOHZ_FULL gets to keep the pieces,
+> > > but at least we don't violate any correctness constraints.
+> > 
+> > I should have read more; that's what is being proposed.
 > 
-> > Ah but there is CT_STATE_GUEST and I see the last patch also applies that to
-> > CT_STATE_IDLE.
-> >
-> > So that could be:
-> >
-> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
-> > {
-> > 	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-> > 	unsigned int old;
-> > 	bool ret = false;
-> >
-> > 	preempt_disable();
-> >
-> > 	old = atomic_read(&ct->state);
-> >
-> > 	/* CT_STATE_IDLE can be added to last patch here */
-> > 	if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
-> > 		old &= ~CT_STATE_MASK;
-> > 		old |= CT_STATE_USER;
-> > 	}
-> 
-> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL check,
-> but we get an extra loop if the target CPU exits kernelspace not to
-> userspace (e.g. vcpu or idle) in the meantime - not great, not terrible.
+> Hm, now I'm wondering what you read, as I only see the text poke IPIs
+> being forced when the caller sets force_ipi, rather than the text poke
+> code itself detecting a write to .noinstr.
 
-The thing is, what you read with atomic_read() should be close to reality.
-If it already is != CT_STATE_KERNEL then you're good (minus racy changes).
-If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in any case,
-at least to make sure you didn't miss a context tracking change. So the best
-you can do is a bet.
+Right, so I had much confusion and my initial thought was that it would
+do something dangerous. Then upon reading more I see it forces the IPI
+for these special keys -- with that force_ipi thing.
 
-> 
-> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KERNEL=1
-> we could do: 
-> 
->   old = atomic_read(&ct->state);
->   old &= ~CT_STATE_KERNEL;
+Now, there's only two keys marked special, and both have a noinstr
+presence -- the entire reason they get marked.
 
-And perhaps also old |= CT_STATE_IDLE (I'm seeing the last patch now),
-so you at least get a chance of making it right (only ~CT_STATE_KERNEL
-will always fail) and CPUs usually spend most of their time idle.
+So effectively we force the IPI when patching noinstr, no?
 
-Thanks.
+But yeah, this is not quite the same as not marking anything and simply
+forcing the IPI when the target address is noinstr.
+
+And having written all that; perhaps that is the better solution, it
+sticks the logic in text_poke and ensure it automagically work for all
+its users, obviating the need for special marking.
+
+Is that what you were thinking?
