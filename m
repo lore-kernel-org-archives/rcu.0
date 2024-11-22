@@ -1,123 +1,223 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5531DDC32;
-	Fri, 22 Nov 2024 11:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C5779FE;
+	Fri, 22 Nov 2024 12:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732275136; cv=none; b=qVaF76xJDQg7+bwQFumR3/bTvcWqlYBJfZwZkQohQJsfJsP+q8cxHTCaJRuSUuxacJDg0yZsRxvqyaL3uRcCx1xawSDq8+JLu82GC+7borcelo3DRk11m2QbWJSxpA4y9hkg3oneD7Y9cdOmT03gN2i3FsXgkMBW+dIUdQz+QdM=
+	t=1732280029; cv=none; b=OTiXQYkEFzwLA8p1NN5AJ7lAZAgSOXtqLEYb18MEfU1ACC/o63ITMzJArz9Q4cqax6qdWxRoAc1lPZzMPv98XOrrSTtQzgsqvsD5HQ/JbZof8aqt98fN1Mw1q5iAITM17gOGmV20ah7tWpcEMzx56hjxz7YNvOpD6pJF7tSusdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732275136; c=relaxed/simple;
-	bh=Xg+DaoAsALEyo18syRnOL6zaKvc5waW7/iMILZVGyaE=;
+	s=arc-20240116; t=1732280029; c=relaxed/simple;
+	bh=//jUWkPnDeKfRmE6z8C5sOx1U9xYZqa2EA/4iJb5IuM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=syDwyFcDoBIEr3kfKzk3tq14CJZRtFKpmAsT5apIxi4RRRUmM8xP/i6o7lrXZhyT6Brx/XEoHX85P1hXKFCLYBu8ylH96HZZMAry45KpLAnvl8ZT682wOlJqe8Hb3qFd3tMA5urQAHYc1kHwjzAReEVIqVao/Q2wxzzbPgwCTPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=k/c6S05b; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gxXo0Zpw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	 Content-Type:Content-Disposition:In-Reply-To; b=njyYMcD/kE7opgsJmCEXUXamBRk/zIgkc/9xBMog3sQxSZ9+ktAi7pdr9sxKlch82xigAhNKTZfLNaEKFFV5iiF4NXgJlzyFDbylzxC+8/3ro1gi4CzIt+1wEX+eZaYtaIOwTrysCc4IGDBiYSP4VUF02mVN7yhsvvMILpl4wZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oLsIV1EN; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="k/c6S05b";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gxXo0Zpw"
-Date: Fri, 22 Nov 2024 12:32:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1732275132;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qXjERXwGoyz9ImH0OMqUpjRgs/7YUUrAyzys/z/9r0k=;
-	b=k/c6S05bPuDrImjm8Fw2qYvcj4mTSjZ9qt6zOhnYnC/mGr0YO959GgXEX26faTyCFz4Nz+
-	Pem5zExC15Sg2I07wHAoCFMlb+V3bGY9L7bteS9f/PiRdZSCV3r58/Jzjfu2Wbnq/fLmtR
-	H1Pl3jx8N4xp00twLXnjB57bDvKEk6LxRORDGuk6J2lU1DwfYyAsGDfIiOXeVXYZ+0P6b5
-	hic4DPcoYR4PZQDlZdm/QzgJo2hamgJknpx5TkyP9ut319fveGdQ+W0FNIH5CTLtlM/QLB
-	ctAXFRgA10RqXhtkB9LQOucJn49BcljwAoBypGl6KgTlX2xg81Ijh4PSNqDcPA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1732275132;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qXjERXwGoyz9ImH0OMqUpjRgs/7YUUrAyzys/z/9r0k=;
-	b=gxXo0ZpwlI393YrU+pT27Eb0NRpvEvxrhTtR0c4V04Uoryoueah5nEIxdBvaMlhIl6sX4X
-	h2YKQi/K542hcPBA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	syzbot <syzbot+39f85d612b7c20d8db48@syzkaller.appspotmail.com>,
-	Liam.Howlett@oracle.com, akpm@linux-foundation.org,
-	jannh@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lorenzo.stoakes@oracle.com, syzkaller-bugs@googlegroups.com,
-	kasan-dev <kasan-dev@googlegroups.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Waiman Long <longman@redhat.com>, dvyukov@google.com,
-	vincenzo.frascino@arm.com, paulmck@kernel.org, frederic@kernel.org,
-	neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, tj@kernel.org, cl@linux.com,
-	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-	Thomas Gleixner <tglx@linutronix.de>, roman.gushchin@linux.dev,
-	42.hyeyoo@gmail.com, rcu@vger.kernel.org
-Subject: Re: [PATCH] kasan: Remove kasan_record_aux_stack_noalloc().
-Message-ID: <20241122113210.QxE7YOwK@linutronix.de>
-References: <67275485.050a0220.3c8d68.0a37.GAE@google.com>
- <ee48b6e9-3f7a-49aa-ae5b-058b5ada2172@suse.cz>
- <b9a674c1-860c-4448-aeb2-bf07a78c6fbf@suse.cz>
- <20241104114506.GC24862@noisy.programming.kicks-ass.net>
- <CANpmjNPmQYJ7pv1N3cuU8cP18u7PP_uoZD8YxwZd4jtbof9nVQ@mail.gmail.com>
- <20241119155701.GYennzPF@linutronix.de>
- <CA+fCnZfzJcbEy0Qmn5GPzPUx9diR+3qw+4ukHa2j5xzzQMF8Kw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oLsIV1EN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AFF6C4CED0;
+	Fri, 22 Nov 2024 12:53:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732280028;
+	bh=//jUWkPnDeKfRmE6z8C5sOx1U9xYZqa2EA/4iJb5IuM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=oLsIV1ENlDGQftG6yQCY/EpB8zrqkKUT69pzDQJAY3XLR/SLc9/EzLWeMHn/hEC/6
+	 doErMA7pZLaVEVBhEGHzz2odGEodVKCFpUbAzdH2pAE8DDR+lN5c9GZ1a85l5/sJRr
+	 Sn7IR4Zfx2w6+8N8tybnxkwBu6Bsiu5C4+jZagfffWrXBp3EL9m9dsszw5bOIUmaN7
+	 BxdpzTfTeVqT0QwaITMc1JuHtXaBrB2T/JN8h0YMAROrH4EXxK/bd59UId0xQ7urbI
+	 Qfn8CQlmUWeUnIX0X9E4EL79apdDUuTCctH1NpKd8NulSl8gmRRgaSTGqBQs8eMQTT
+	 Q1AvSRmge2OIQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 14E3BCE0BC4; Fri, 22 Nov 2024 04:53:48 -0800 (PST)
+Date: Fri, 22 Nov 2024 04:53:48 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+	x86@kernel.org, rcu@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Juerg Haefliger <juerg.haefliger@canonical.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
+	Chuang Wang <nashuiliang@gmail.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Petr Mladek <pmladek@suse.com>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+	Julian Pidancet <julian.pidancet@oracle.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [RFC PATCH v3 04/15] rcu: Add a small-width RCU watching counter
+ debug option
+Message-ID: <f85c0f84-7ae3-4fb5-889a-d9b83f9603fe@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20241119153502.41361-1-vschneid@redhat.com>
+ <20241119153502.41361-5-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CA+fCnZfzJcbEy0Qmn5GPzPUx9diR+3qw+4ukHa2j5xzzQMF8Kw@mail.gmail.com>
+In-Reply-To: <20241119153502.41361-5-vschneid@redhat.com>
 
-On 2024-11-19 20:36:56 [+0100], Andrey Konovalov wrote:
-> > diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> > index 6310a180278b6..b18b5944997f8 100644
-> > --- a/mm/kasan/generic.c
-> > +++ b/mm/kasan/generic.c
-> > @@ -521,7 +521,7 @@ size_t kasan_metadata_size(struct kmem_cache *cache=
-, bool in_object)
-> >                         sizeof(struct kasan_free_meta) : 0);
-> >  }
-> >
-> > -static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_f=
-lags)
->=20
-> Could you add a comment here that notes the usage, something like:
->=20
-> "This function avoids dynamic memory allocations and thus can be
-> called from contexts that do not allow allocating memory."
->=20
-> > +void kasan_record_aux_stack(void *addr)
-> >  {
-=E2=80=A6
-Added but would prefer to add a pointer to stack_depot_save_flags()
-which has this Context: paragraph. Would that work?
-Now looking at it, it says:
-|  * Context: Any context, but setting STACK_DEPOT_FLAG_CAN_ALLOC is requir=
-ed if
-|  *          alloc_pages() cannot be used from the current context. Curren=
-tly
-|  *          this is the case for contexts where neither %GFP_ATOMIC nor
-|  *          %GFP_NOWAIT can be used (NMI, raw_spin_lock).
+On Tue, Nov 19, 2024 at 04:34:51PM +0100, Valentin Schneider wrote:
+> A later commit will reduce the size of the RCU watching counter to free up
+> some bits for another purpose. Paul suggested adding a config option to
+> test the extreme case where the counter is reduced to its minimum usable
+> width for rcutorture to poke at, so do that.
+> 
+> Make it only configurable under RCU_EXPERT. While at it, add a comment to
+> explain the layout of context_tracking->state.
+> 
+> Link: http://lore.kernel.org/r/4c2cb573-168f-4806-b1d9-164e8276e66a@paulmck-laptop
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 
-If I understand this correctly then STACK_DEPOT_FLAG_CAN_ALLOC must not
-be specified if invoked from NMI. This will stop
-stack_depot_save_flags() from allocating memory the function will still
-acquire pool_lock, right?
-Do we need to update the comment saying that it must not be used from
-NMI or do we make it jump over the locked section in the NMI case?
+Looks good, one help-text nit below.
 
-Sebastian
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+
+> ---
+>  include/linux/context_tracking_state.h | 44 ++++++++++++++++++++++----
+>  kernel/rcu/Kconfig.debug               | 14 ++++++++
+>  2 files changed, 51 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/context_tracking_state.h b/include/linux/context_tracking_state.h
+> index 7b8433d5a8efe..0b81248aa03e2 100644
+> --- a/include/linux/context_tracking_state.h
+> +++ b/include/linux/context_tracking_state.h
+> @@ -18,12 +18,6 @@ enum ctx_state {
+>  	CT_STATE_MAX		= 4,
+>  };
+>  
+> -/* Odd value for watching, else even. */
+> -#define CT_RCU_WATCHING CT_STATE_MAX
+> -
+> -#define CT_STATE_MASK (CT_STATE_MAX - 1)
+> -#define CT_RCU_WATCHING_MASK (~CT_STATE_MASK)
+> -
+>  struct context_tracking {
+>  #ifdef CONFIG_CONTEXT_TRACKING_USER
+>  	/*
+> @@ -44,9 +38,45 @@ struct context_tracking {
+>  #endif
+>  };
+>  
+> +/*
+> + * We cram two different things within the same atomic variable:
+> + *
+> + *                     CT_RCU_WATCHING_START  CT_STATE_START
+> + *                                |                |
+> + *                                v                v
+> + *     MSB [ RCU watching counter ][ context_state ] LSB
+> + *         ^                       ^
+> + *         |                       |
+> + * CT_RCU_WATCHING_END        CT_STATE_END
+> + *
+> + * Bits are used from the LSB upwards, so unused bits (if any) will always be in
+> + * upper bits of the variable.
+> + */
+>  #ifdef CONFIG_CONTEXT_TRACKING
+> +#define CT_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+> +
+> +#define CT_STATE_WIDTH bits_per(CT_STATE_MAX - 1)
+> +#define CT_STATE_START 0
+> +#define CT_STATE_END   (CT_STATE_START + CT_STATE_WIDTH - 1)
+> +
+> +#define CT_RCU_WATCHING_MAX_WIDTH (CT_SIZE - CT_STATE_WIDTH)
+> +#define CT_RCU_WATCHING_WIDTH     (IS_ENABLED(CONFIG_RCU_DYNTICKS_TORTURE) ? 2 : CT_RCU_WATCHING_MAX_WIDTH)
+> +#define CT_RCU_WATCHING_START     (CT_STATE_END + 1)
+> +#define CT_RCU_WATCHING_END       (CT_RCU_WATCHING_START + CT_RCU_WATCHING_WIDTH - 1)
+> +#define CT_RCU_WATCHING           BIT(CT_RCU_WATCHING_START)
+> +
+> +#define CT_STATE_MASK        GENMASK(CT_STATE_END,        CT_STATE_START)
+> +#define CT_RCU_WATCHING_MASK GENMASK(CT_RCU_WATCHING_END, CT_RCU_WATCHING_START)
+> +
+> +#define CT_UNUSED_WIDTH (CT_RCU_WATCHING_MAX_WIDTH - CT_RCU_WATCHING_WIDTH)
+> +
+> +static_assert(CT_STATE_WIDTH        +
+> +	      CT_RCU_WATCHING_WIDTH +
+> +	      CT_UNUSED_WIDTH       ==
+> +	      CT_SIZE);
+> +
+>  DECLARE_PER_CPU(struct context_tracking, context_tracking);
+> -#endif
+> +#endif	/* CONFIG_CONTEXT_TRACKING */
+>  
+>  #ifdef CONFIG_CONTEXT_TRACKING_USER
+>  static __always_inline int __ct_state(void)
+> diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+> index 9b0b52e1836fa..8dc505d841f8d 100644
+> --- a/kernel/rcu/Kconfig.debug
+> +++ b/kernel/rcu/Kconfig.debug
+> @@ -168,4 +168,18 @@ config RCU_STRICT_GRACE_PERIOD
+>  	  when looking for certain types of RCU usage bugs, for example,
+>  	  too-short RCU read-side critical sections.
+>  
+> +
+> +config RCU_DYNTICKS_TORTURE
+> +	bool "Minimize RCU dynticks counter size"
+> +	depends on RCU_EXPERT
+> +	default n
+> +	help
+> +	  This option controls the width of the dynticks counter.
+> +
+> +	  Lower values will make overflows more frequent, which will increase
+> +	  the likelihood of extending grace-periods. This option sets the width
+> +	  to its minimum usable value.
+
+The second sentence ("Lower values ...") sounds at first reading like
+this Kconfig option directly controls the width.  The third sentence sets
+things straight, but the reader might well be irretrievably confused by
+that point.  How about something like this instead?
+
+	help
+	  This option sets the width of the dynticks counter to its
+	  minimum usable value.  This minimum width greatly increases
+	  the probability of flushing out bugs involving counter wrap,
+	  but it also increases the probability of extending grace period
+	  durations.  This Kconfig option should therefore be avoided in
+	  production due to the consequent increased probability of OOMs.
+
+	  This has no value for production and is only for testing.
+
+>  endmenu # "RCU Debugging"
+> -- 
+> 2.43.0
+> 
