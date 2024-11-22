@@ -1,139 +1,123 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6083917B4E9
-	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 10:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5531DDC32;
+	Fri, 22 Nov 2024 11:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732270667; cv=none; b=PGFa3Tvz683lx+lSVnMAjkll7i2wBP0bcuhONIcJ6EVZLmqfMZZdzD6zHybE6Pg+MuTmeIlDMePVesUR9bwn8ss5VKmy2iNA38gzlyw4wHRUC7gGZ8XGRIWt17wGm0faI5YvcPZPJ4j/PFRRfCQi9ZX16R07nyTYusOp37QIgrs=
+	t=1732275136; cv=none; b=qVaF76xJDQg7+bwQFumR3/bTvcWqlYBJfZwZkQohQJsfJsP+q8cxHTCaJRuSUuxacJDg0yZsRxvqyaL3uRcCx1xawSDq8+JLu82GC+7borcelo3DRk11m2QbWJSxpA4y9hkg3oneD7Y9cdOmT03gN2i3FsXgkMBW+dIUdQz+QdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732270667; c=relaxed/simple;
-	bh=XUuo/u7cK5K5gY/dFgAwCjVRAIBZqBeX+BIxJiAEQkY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uYJY/MMo8JqtFU2w1pdWoKlwuZcc3GxCvDJBGvqlRpw03DZX7j4r42EZBQs5ykw3nzvOgUX/IcZnR9PyNhTUl+vKlkRibaJ6JZLqlrvZoxzJ3S2VkwQ8bo2bwbuTk2hdjD3zFj44v29Qt1IoMUshub6hCCGkfLl8+WbMP/y/YLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ODvY3pyH; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1732275136; c=relaxed/simple;
+	bh=Xg+DaoAsALEyo18syRnOL6zaKvc5waW7/iMILZVGyaE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=syDwyFcDoBIEr3kfKzk3tq14CJZRtFKpmAsT5apIxi4RRRUmM8xP/i6o7lrXZhyT6Brx/XEoHX85P1hXKFCLYBu8ylH96HZZMAry45KpLAnvl8ZT682wOlJqe8Hb3qFd3tMA5urQAHYc1kHwjzAReEVIqVao/Q2wxzzbPgwCTPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=k/c6S05b; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gxXo0Zpw; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ODvY3pyH"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732270665;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="k/c6S05b";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gxXo0Zpw"
+Date: Fri, 22 Nov 2024 12:32:10 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1732275132;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=69DVKh9DUZx0Pn4NM7TlxBgCo8xRovdMM0JkhaNwI8A=;
-	b=ODvY3pyHJMfA4P6Np7b49iS5zpeaNxVu2/tIID1WbyeFngJa0WZMhRifwNorVLRP8PEQhX
-	TS+GuCoUWsl3QqTGmoLjXpB+0YKIS0d5ZVs7lSvDsg4T0ESxRwm2lOoauPkAMyMflTyGyV
-	MQNn4tyD5/uL4x+PSqDwgb/rGMSR5v4=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-494-6dSWrZctN4apSYcGhsvBLQ-1; Fri, 22 Nov 2024 05:17:43 -0500
-X-MC-Unique: 6dSWrZctN4apSYcGhsvBLQ-1
-X-Mimecast-MFC-AGG-ID: 6dSWrZctN4apSYcGhsvBLQ
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-6eeb9152b2cso36457507b3.1
-        for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 02:17:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732270663; x=1732875463;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=69DVKh9DUZx0Pn4NM7TlxBgCo8xRovdMM0JkhaNwI8A=;
-        b=WtUoUoGcLCZSWZDDTIZyCAa3ZME4dlhO25ydouxx2VwU2Uz3KbDd7bZ0C2TMeTs337
-         EBpHlluNujPS2c5omFQeipamQCYt2f5Xx6sTbw+E67Hi+l+NWlHXdh7rqFjQNdrkg9kB
-         Sgvwnjt7vwzyEYRtMpL6NHj39Dh8SSJAbeCaSkMnkpYfQDMWLGE3EoeO7gKXXkzAu1MC
-         cqCRTRLbmNuu3KfuYcPhXLmmzAC5PXGJEMnZTmg5WwaohPO0rpvX9y2sd0HEPupBsdLN
-         ox5Cyvs7TDhYDj6m0wWg9vB2ZEDv8h4y9UdoNcnyg9vkCMjmTLl5Mn70aPdxEb1oWhW9
-         fwpw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0sMzzHPw+a4QWapU5ms7TfBX4/RDajKkJzhkbMzbRU1edOAadKU5lsnT8c50XvXvDyeA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTEUJL20z8MWk7cwqFmYRD9U242M7UyaHwqJ6IRZbd8iPlzU4r
-	diLl0Xs7rC/75h8PirZbNuhV1NV0GUL6ORRxdqQdOeG4EHiohjcBRtGUtVUtyRr0oqHoEkHOo2K
-	/hJopufteMLIdzn2mxyMN6spiSfe2M0Y0MC+uhTMoBFG0AV7l1g==
-X-Gm-Gg: ASbGnctcjCIEjTisKWqP8HAU8ArhRkH5N982iQW1hBioO5QIaMiR/MH5zrdqmWPvZnF
-	YVMl3pza72pX/fdwyG6ZH9FI/T2esiXs08HH/TQ5nDEz2gqgDeUsXPz0+hV86P7CkDcN0R6J9+V
-	vmZWanxbOOE0sFcf4Tn3bTwU3khGrxq5tQcSbmSuqwsahvJSfRbAvKQzXdFl9W8ER3crk/5glPK
-	msEyh9JHR5ogCL13cAEhd7cz4LhSw7kat22TQpMXw8k6B8t1ZrW2cFu6pO8H0U1e1koBY3Gh4ec
-	/9ImUoJWFpMiA7i/8j7pfybJS0J3iPM9m/0=
-X-Received: by 2002:a05:690c:4b8f:b0:6e2:a129:1623 with SMTP id 00721157ae682-6eee0a4e7cbmr23805887b3.38.1732270663060;
-        Fri, 22 Nov 2024 02:17:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGzjL7GOb26N8xVdZoDD0aeetdAAWaPf+1MRvyDFWpPzlOuVttoePPk8DAQ//wEdbZj+zzG2Q==
-X-Received: by 2002:a05:690c:4b8f:b0:6e2:a129:1623 with SMTP id 00721157ae682-6eee0a4e7cbmr23805387b3.38.1732270662779;
-        Fri, 22 Nov 2024 02:17:42 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b513f91e8esm72637485a.2.2024.11.22.02.17.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 02:17:41 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Wanpeng Li <wanpengli@tencent.com>, Vitaly Kuznetsov
- <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>, Frederic
- Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
- Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Andrew Morton
- <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>,
- Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>, Jason Baron <jbaron@akamai.com>, Kees Cook
- <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>, Ard
- Biesheuvel <ardb@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Juerg
- Haefliger <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
- <nsaenz@kernel.org>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Dan Carpenter <error27@gmail.com>,
- Chuang Wang <nashuiliang@gmail.com>, Yang Jihong <yangjihong1@huawei.com>,
- Petr Mladek <pmladek@suse.com>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Song Liu <song@kernel.org>, Julian Pidancet <julian.pidancet@oracle.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze
- <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Juri
- Lelli <juri.lelli@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, Yair
- Podemsky <ypodemsk@redhat.com>, Daniel Wagner <dwagner@suse.de>, Petr
- Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 06/15] jump_label: Add forceful jump label type
-In-Reply-To: <20241121202106.nqybif4yru57wgu3@jpoimboe>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-7-vschneid@redhat.com>
- <20241119233902.kierxzg2aywpevqx@jpoimboe>
- <20241120145649.GJ19989@noisy.programming.kicks-ass.net>
- <20241120145746.GL38972@noisy.programming.kicks-ass.net>
- <20241120165515.qx4qyenlb5guvmfe@jpoimboe>
- <20241121110020.GC24774@noisy.programming.kicks-ass.net>
- <xhsmhcyioa8lu.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20241121202106.nqybif4yru57wgu3@jpoimboe>
-Date: Fri, 22 Nov 2024 11:17:33 +0100
-Message-ID: <xhsmha5dra7ya.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	bh=qXjERXwGoyz9ImH0OMqUpjRgs/7YUUrAyzys/z/9r0k=;
+	b=k/c6S05bPuDrImjm8Fw2qYvcj4mTSjZ9qt6zOhnYnC/mGr0YO959GgXEX26faTyCFz4Nz+
+	Pem5zExC15Sg2I07wHAoCFMlb+V3bGY9L7bteS9f/PiRdZSCV3r58/Jzjfu2Wbnq/fLmtR
+	H1Pl3jx8N4xp00twLXnjB57bDvKEk6LxRORDGuk6J2lU1DwfYyAsGDfIiOXeVXYZ+0P6b5
+	hic4DPcoYR4PZQDlZdm/QzgJo2hamgJknpx5TkyP9ut319fveGdQ+W0FNIH5CTLtlM/QLB
+	ctAXFRgA10RqXhtkB9LQOucJn49BcljwAoBypGl6KgTlX2xg81Ijh4PSNqDcPA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1732275132;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qXjERXwGoyz9ImH0OMqUpjRgs/7YUUrAyzys/z/9r0k=;
+	b=gxXo0ZpwlI393YrU+pT27Eb0NRpvEvxrhTtR0c4V04Uoryoueah5nEIxdBvaMlhIl6sX4X
+	h2YKQi/K542hcPBA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	syzbot <syzbot+39f85d612b7c20d8db48@syzkaller.appspotmail.com>,
+	Liam.Howlett@oracle.com, akpm@linux-foundation.org,
+	jannh@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lorenzo.stoakes@oracle.com, syzkaller-bugs@googlegroups.com,
+	kasan-dev <kasan-dev@googlegroups.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Waiman Long <longman@redhat.com>, dvyukov@google.com,
+	vincenzo.frascino@arm.com, paulmck@kernel.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, tj@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+	Thomas Gleixner <tglx@linutronix.de>, roman.gushchin@linux.dev,
+	42.hyeyoo@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] kasan: Remove kasan_record_aux_stack_noalloc().
+Message-ID: <20241122113210.QxE7YOwK@linutronix.de>
+References: <67275485.050a0220.3c8d68.0a37.GAE@google.com>
+ <ee48b6e9-3f7a-49aa-ae5b-058b5ada2172@suse.cz>
+ <b9a674c1-860c-4448-aeb2-bf07a78c6fbf@suse.cz>
+ <20241104114506.GC24862@noisy.programming.kicks-ass.net>
+ <CANpmjNPmQYJ7pv1N3cuU8cP18u7PP_uoZD8YxwZd4jtbof9nVQ@mail.gmail.com>
+ <20241119155701.GYennzPF@linutronix.de>
+ <CA+fCnZfzJcbEy0Qmn5GPzPUx9diR+3qw+4ukHa2j5xzzQMF8Kw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CA+fCnZfzJcbEy0Qmn5GPzPUx9diR+3qw+4ukHa2j5xzzQMF8Kw@mail.gmail.com>
 
-On 21/11/24 12:21, Josh Poimboeuf wrote:
-> On Thu, Nov 21, 2024 at 04:51:09PM +0100, Valentin Schneider wrote:
->> Okay so forcing the IPI for .noinstr patching lets us get rid of all the
->> force_ipi faff; however I would still want the special marking to tell
->> objtool "yep we're okay with this one", and still get warnings when a new
->> .noinstr key gets added so we double think about it.
->
-> Yeah.  Though, instead of DECLARE_STATIC_KEY_FALSE_NOINSTR adding a new
-> jump label type, it could just add an objtool annotation pointing to the
-> key.  If that's the way we're going I could whip up a patch if that
-> would help.
->
+On 2024-11-19 20:36:56 [+0100], Andrey Konovalov wrote:
+> > diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> > index 6310a180278b6..b18b5944997f8 100644
+> > --- a/mm/kasan/generic.c
+> > +++ b/mm/kasan/generic.c
+> > @@ -521,7 +521,7 @@ size_t kasan_metadata_size(struct kmem_cache *cache=
+, bool in_object)
+> >                         sizeof(struct kasan_free_meta) : 0);
+> >  }
+> >
+> > -static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_f=
+lags)
+>=20
+> Could you add a comment here that notes the usage, something like:
+>=20
+> "This function avoids dynamic memory allocations and thus can be
+> called from contexts that do not allow allocating memory."
+>=20
+> > +void kasan_record_aux_stack(void *addr)
+> >  {
+=E2=80=A6
+Added but would prefer to add a pointer to stack_depot_save_flags()
+which has this Context: paragraph. Would that work?
+Now looking at it, it says:
+|  * Context: Any context, but setting STACK_DEPOT_FLAG_CAN_ALLOC is requir=
+ed if
+|  *          alloc_pages() cannot be used from the current context. Curren=
+tly
+|  *          this is the case for contexts where neither %GFP_ATOMIC nor
+|  *          %GFP_NOWAIT can be used (NMI, raw_spin_lock).
 
-Well I'm down for the approach and I'd appreciate help for the objtool side
-:-)
+If I understand this correctly then STACK_DEPOT_FLAG_CAN_ALLOC must not
+be specified if invoked from NMI. This will stop
+stack_depot_save_flags() from allocating memory the function will still
+acquire pool_lock, right?
+Do we need to update the comment saying that it must not be used from
+NMI or do we make it jump over the locked section in the NMI case?
 
-> --
-> Josh
-
+Sebastian
