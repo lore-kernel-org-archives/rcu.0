@@ -1,114 +1,97 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE504C62B
-	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 14:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175B613632B
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 15:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732287433; cv=none; b=BNyIvnn8GudH50D+cA+05bW78dGRB09msvixW8M1X4IYjvnkPqqRJa4JxnTJc5+OnKATf7iISn2QNn9SwwSvgHOWODbAkLHbh+i40p79ShsEbWSa9XCBYJQ5Uj96uXe/xVL21BMy8qljoHFw2c97H8ZmwNE4bPEhs7ZpPIAkw3w=
+	t=1732287701; cv=none; b=mbKQyFbM/mAe41vnzwsApr6bPg/4+B1Pri+s65qxhBN1RlOqprfGUaOAUPg9v5zbkk82GPzZDdU15h4i4UHMc7FLWH/LFx4HSaSaoVZoqj01RFL8D0oJq0gQxBGUPJzSKOE/v+QSM/j1JuB/naQuyDPcxFACtks5wKMDVQ4WS4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732287433; c=relaxed/simple;
-	bh=tqqa48xgvR9pXkWvcyLzXe0k1qdpgquZatajbiXvd10=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=O1x+88Q5qgt+ZvYANvmapiMrls9buVMTziCvLBcXBShJ2IF+STd6FXIgI8DrQEK1hQFGZMluPZbQPtUuq+SHFEJX2Up0vyojKBHETBw9Lq1Jcjav75+SwdpLYI6UU9ii8c2JS4Ue4uH1jm6nIHKsqaHM0mJWzVJd4iaVhuFjxPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UDAgDFlG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1732287701; c=relaxed/simple;
+	bh=EG21qF81vyu8kAAnYY/umSakY5DmKt3dJKGUkwVVr5w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ec9U1fXroARKQ6WJA12+ivOPCNRnPqYsjIQrHyR/wIxIPZfGoLTqXYThs4j/nYofK1AXSye9QtF7d73LpH80tg5t8lvFWdQAFA/yhmXSGAjNU+OPrW5cH+YK2JE0+HKvmhD6KghI2AgwxSDd9fxS49ku8Hj1P98M7k66ovovzyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RFE0gAtA; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UDAgDFlG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732287431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sptth2+J7xYYlvrpOuYTMVo9n+vm/HkHIiB9PfWHJ6k=;
-	b=UDAgDFlG8XED7/CIpXsjVmEqeunIT4eXDsw31icDRspjRg3A11iQwsvIpuAOxtoL29DUwL
-	eT/DwuAgXRLT+KTr0P+lwaE3cS7GnSAAZP3UwmtcpkN75aRXZD4Hmm5XiHAWoewCkFpq5R
-	EUCb9iKMcoJFJ/01SZ1vSlSlNStYTe8=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-678-kIYliH8iOI-4Yamrem9jKg-1; Fri, 22 Nov 2024 09:57:10 -0500
-X-MC-Unique: kIYliH8iOI-4Yamrem9jKg-1
-X-Mimecast-MFC-AGG-ID: kIYliH8iOI-4Yamrem9jKg
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7b146057b67so244576185a.2
-        for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 06:57:10 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RFE0gAtA"
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-382423f4082so1451959f8f.3
+        for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 07:01:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1732287698; x=1732892498; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2CBrmR/4K5+pOzn9XzmrpMtqvst0Y6UbBDGLFW9ccDE=;
+        b=RFE0gAtAc0sk+V1B2HZSwyZAYj5e2/u0MDQDjF51cUD99k1VmF4Azr/esnEG9DZ7/Z
+         fKics2Eb36gu5Q2P8HCD+ighi0qCZJRrc3zuHK9jOdU+xbo+kp7U7TTj0PlahdvQFmf8
+         +pfN5kHN45EdaQFogSyS9SEIAseeDePbWg0E6DO+epFnu2KceZi7bF+1H2rWo05aZ8rV
+         eie3fZFdPxHtefFu9VJ+YDD1QiLKp6Gs9Wmlg2DA3LsmAyYQCXeqb+jsBJs5kYH7vaqo
+         bwSdF0t5YkfVgP7R5njcjf72kZh8rlmx3JQM7mMfGS0N2JN0F4audQABrFAUWdUOZ3aM
+         iEeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732287430; x=1732892230;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sptth2+J7xYYlvrpOuYTMVo9n+vm/HkHIiB9PfWHJ6k=;
-        b=iuHD2pQYiJaabUbr9/RRZzFq+3WHqNn5WzHb2a2uxMee9NntxSjWNPz1ro4I0zKVL1
-         MXbGFzUm6uUOcmx9gs/+9KK+O/ph+EJFjyyqfPL0hYka1agTHeowjXsEQrcIKxtyDe5W
-         SOR3gBlt1yA1JDp3xP8aR9u3hSSbuchojP03FVoXmdFlHZhSaRWkQNj5XJkjoaJhFSyW
-         gXDbukFUakaL5OVbyuwvm6WzIlJOf/bU0zwpWNxPQ9hKZnR0tJgEPlK1hT2oN2/19G3c
-         3w1IVexBD1zXnGwkyWEUVssNP834b7zo6m3+wmugSoryQ3vSPW7G3nPgrYNGxDIqk5eU
-         u+DA==
-X-Forwarded-Encrypted: i=1; AJvYcCXI8iBX0XGb68xsemVc1B9enntm6M0Q1NSfj/hTKF0a8oYsxea/xJeY8il5/wYKgm9fO0Q=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxvak1030QYfLGpyt8DdSs3sJTlDLXoed5lVrA8KzDIfAi5s+Nf
-	TzX5XaBmc7eXsLJRz2XaQ57fwoz16zT9FfacU/RzSdtcbCVKjVIOVpoAMU5+kl1qkV+YSxhAXty
-	S1b7EtXaKmu/SouMncecnZx8M0YPU7ZsoP8ejq5f9PNwaxRvMsg==
-X-Gm-Gg: ASbGncvcgkpwAj64wYpdcn+a9RMVUWbhiQ3CJmJT3mTkOc5JstNLLHeyBeAbfwNg/KK
-	jmqaxx0ebgKjYzM9pch80oSqUqqx+yxaJukfcAz2UOxXTmeTNQNPFsIOReMpLnr7icaw52V7M2H
-	jOB3BTJEwq8UYO8oIm9b4e7XZa0QYW/Z2uAPAq2UtUPErp0b34gy7XK48yCnWyJyGXcMMYLMpPo
-	4jGV1T7SvuSktPHn2Mb5APMb8eZyhVYwyTUDWBHPh4PVfcv9i6fYq9CHbRRQiq3KBnuCQzHaEuB
-	I/8BTXDp533Kw9EVBreoofT1Na9/KDJdfPo=
-X-Received: by 2002:a05:620a:4551:b0:7b1:522a:b05 with SMTP id af79cd13be357-7b514488166mr373603885a.7.1732287429597;
-        Fri, 22 Nov 2024 06:57:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHo66xOB/q1z1C9fiLdA8QOFwiL4+kiR9reyJMdimFadi7v3LEk57578pB7zv1XQEy4GyU/yA==
-X-Received: by 2002:a05:620a:4551:b0:7b1:522a:b05 with SMTP id af79cd13be357-7b514488166mr373597785a.7.1732287429065;
-        Fri, 22 Nov 2024 06:57:09 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b513faf57dsm93769985a.48.2024.11.22.06.57.00
+        d=1e100.net; s=20230601; t=1732287698; x=1732892498;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2CBrmR/4K5+pOzn9XzmrpMtqvst0Y6UbBDGLFW9ccDE=;
+        b=tY5LXVNwK4L4D776SghwboIUdittlUi0VHkCe3/vljypv8msO/qvDwekZG6IxZAHGZ
+         1PdoYAhO4oZJcUJfFjiwLOJ/nZaQWxRzfElbLdnxSHnGdI/TXfHaInwK9ADwwUoDfh0F
+         7iKq7r5Ojp0b4vKFlK53DdZdoWJAJZDTX5BgiuqdDHBo/7+PVXhSsq7XKu3+5ExqyBrk
+         m8gdHB9qSF72p63GWtI3reOmUo2pHXWQNbxOOclLu/NicEqhefSc6XprTjuqi+J216PH
+         jrKDUt9uTbr5wUlmLfbGMUP5SXzTrixMT3FMAoq9/3RNzAFWoDmfTGkVfLN36hfCUyRV
+         ntZg==
+X-Forwarded-Encrypted: i=1; AJvYcCWwi7WkDkimKXi4RX2m8yB+SJFMfr2eHsvOdlN2rlJz4XQAsqRt9PmfOnbZArszrOXv8SQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQiEVDIUSX2joCRufAs6JvLeDCS/rTCkK0aume3netUoSRSCy1
+	5SPylCbWosybglv1Y8UNHkV4SBYcjQCqQ99053FLAmfNqweG/rZDp3yzKJMa7A==
+X-Gm-Gg: ASbGncvoTyY5WzWoJ3NUCbDo6USzFOXJO8rFZHcR3T4opnymt8MxqCxznX243OOBhIm
+	IGyJqxOfsV3hV/OQimDgQgdIbf1l3VVDnkg+feyvt3yRY3E2v0XOIngOs0U2PywitaOTWWAQ0Qz
+	+ImMpvs/y+UpC+BxJk4zIuVrcwfJrYhC+jLsQNCZbPWhOL9YXuMaFgDdvchOOgUuwLy7yzHXP98
+	1Gf7JZ5X42IpucYTZvqcLTSczbfq150PA2cW10mJUGSg4gWJzc=
+X-Google-Smtp-Source: AGHT+IFF4ahp+lojSsbIu757K7jRdjQw+mcOJ9fyXHtJSRlvd+VoIDXJnOIjlPPaqGgb9XiUJbFMLA==
+X-Received: by 2002:a5d:47aa:0:b0:382:3789:191c with SMTP id ffacd0b85a97d-38260b45584mr2567216f8f.7.1732287697197;
+        Fri, 22 Nov 2024 07:01:37 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:9c:201:e369:a6f7:a3ea:97bb])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3825fafe3cbsm2583014f8f.38.2024.11.22.07.01.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 06:57:08 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- x86@kernel.org, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Jonathan
- Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Paolo
- Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, Vitaly
- Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
- <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
- Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Andrew Morton
- <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>,
- Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron
- <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
- <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
- Piggin <npiggin@gmail.com>, Juerg Haefliger
- <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
- <nsaenz@kernel.org>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
- Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
- Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
- Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
- <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
- Dionna Glaze <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Marcelo
- Tosatti <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Daniel
- Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
- infrastructure
-In-Reply-To: <Zz4cqfVfyb1enxql@localhost.localdomain>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-12-vschneid@redhat.com>
- <Zz2_7MbxvfjKsz08@pavilion.home> <Zz3w0o_3wZDgJn0K@localhost.localdomain>
- <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Zz4cqfVfyb1enxql@localhost.localdomain>
-Date: Fri, 22 Nov 2024 15:56:59 +0100
-Message-ID: <xhsmh1pz39v0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        Fri, 22 Nov 2024 07:01:36 -0800 (PST)
+Date: Fri, 22 Nov 2024 16:01:29 +0100
+From: Marco Elver <elver@google.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	syzbot <syzbot+39f85d612b7c20d8db48@syzkaller.appspotmail.com>,
+	Liam.Howlett@oracle.com, akpm@linux-foundation.org,
+	jannh@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lorenzo.stoakes@oracle.com, syzkaller-bugs@googlegroups.com,
+	kasan-dev <kasan-dev@googlegroups.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Waiman Long <longman@redhat.com>, dvyukov@google.com,
+	vincenzo.frascino@arm.com, paulmck@kernel.org, frederic@kernel.org,
+	neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
+	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, tj@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+	Thomas Gleixner <tglx@linutronix.de>, roman.gushchin@linux.dev,
+	42.hyeyoo@gmail.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] kasan: Remove kasan_record_aux_stack_noalloc().
+Message-ID: <Z0CcyfbPqmxJ9uJH@elver.google.com>
+References: <67275485.050a0220.3c8d68.0a37.GAE@google.com>
+ <ee48b6e9-3f7a-49aa-ae5b-058b5ada2172@suse.cz>
+ <b9a674c1-860c-4448-aeb2-bf07a78c6fbf@suse.cz>
+ <20241104114506.GC24862@noisy.programming.kicks-ass.net>
+ <CANpmjNPmQYJ7pv1N3cuU8cP18u7PP_uoZD8YxwZd4jtbof9nVQ@mail.gmail.com>
+ <20241119155701.GYennzPF@linutronix.de>
+ <CA+fCnZfzJcbEy0Qmn5GPzPUx9diR+3qw+4ukHa2j5xzzQMF8Kw@mail.gmail.com>
+ <20241122113210.QxE7YOwK@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -116,70 +99,74 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241122113210.QxE7YOwK@linutronix.de>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On 20/11/24 18:30, Frederic Weisbecker wrote:
-> Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a =C3=A9crit=
- :
->> On 20/11/24 15:23, Frederic Weisbecker wrote:
->>
->> > Ah but there is CT_STATE_GUEST and I see the last patch also applies t=
-hat to
->> > CT_STATE_IDLE.
->> >
->> > So that could be:
->> >
->> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
->> > {
->> >    struct context_tracking *ct =3D per_cpu_ptr(&context_tracking, cpu);
->> >    unsigned int old;
->> >    bool ret =3D false;
->> >
->> >    preempt_disable();
->> >
->> >    old =3D atomic_read(&ct->state);
->> >
->> >    /* CT_STATE_IDLE can be added to last patch here */
->> >    if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
->> >            old &=3D ~CT_STATE_MASK;
->> >            old |=3D CT_STATE_USER;
->> >    }
->>
->> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL check,
->> but we get an extra loop if the target CPU exits kernelspace not to
->> userspace (e.g. vcpu or idle) in the meantime - not great, not terrible.
->
-> The thing is, what you read with atomic_read() should be close to reality.
-> If it already is !=3D CT_STATE_KERNEL then you're good (minus racy change=
-s).
-> If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in an=
-y case,
-> at least to make sure you didn't miss a context tracking change. So the b=
-est
-> you can do is a bet.
->
->>
->> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KERNEL=
-=3D1
->> we could do:
->>
->>   old =3D atomic_read(&ct->state);
->>   old &=3D ~CT_STATE_KERNEL;
->
-> And perhaps also old |=3D CT_STATE_IDLE (I'm seeing the last patch now),
-> so you at least get a chance of making it right (only ~CT_STATE_KERNEL
-> will always fail) and CPUs usually spend most of their time idle.
->
+On Fri, Nov 22, 2024 at 12:32PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2024-11-19 20:36:56 [+0100], Andrey Konovalov wrote:
+> > > diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> > > index 6310a180278b6..b18b5944997f8 100644
+> > > --- a/mm/kasan/generic.c
+> > > +++ b/mm/kasan/generic.c
+> > > @@ -521,7 +521,7 @@ size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
+> > >                         sizeof(struct kasan_free_meta) : 0);
+> > >  }
+> > >
+> > > -static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+> > 
+> > Could you add a comment here that notes the usage, something like:
+> > 
+> > "This function avoids dynamic memory allocations and thus can be
+> > called from contexts that do not allow allocating memory."
+> > 
+> > > +void kasan_record_aux_stack(void *addr)
+> > >  {
+> …
+> Added but would prefer to add a pointer to stack_depot_save_flags()
+> which has this Context: paragraph. Would that work?
+> Now looking at it, it says:
+> |  * Context: Any context, but setting STACK_DEPOT_FLAG_CAN_ALLOC is required if
+> |  *          alloc_pages() cannot be used from the current context. Currently
+> |  *          this is the case for contexts where neither %GFP_ATOMIC nor
+> |  *          %GFP_NOWAIT can be used (NMI, raw_spin_lock).
+> 
+> If I understand this correctly then STACK_DEPOT_FLAG_CAN_ALLOC must not
+> be specified if invoked from NMI. This will stop
+> stack_depot_save_flags() from allocating memory the function will still
+> acquire pool_lock, right?
+> Do we need to update the comment saying that it must not be used from
+> NMI or do we make it jump over the locked section in the NMI case?
 
-I'm thinking with:
+Good point. It was meant to also be usable from NMI, because it's very
+likely to succeed, and should just take the lock-less fast path once the
+stack is in the depot.
 
-        CT_STATE_IDLE		=3D 0,
-        CT_STATE_USER		=3D 1,
-        CT_STATE_GUEST		=3D 2,
-        CT_STATE_KERNEL		=3D 4, /* Keep that as a standalone bit */
+But I think we need a fix like this for initial saving of a stack trace:
 
-we can stick with old &=3D ~CT_STATE_KERNEL; and that'll let the cmpxchg
-succeed for any of IDLE/USER/GUEST.
 
-> Thanks.
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index 5ed34cc963fc..245d5b416699 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -630,7 +630,15 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+ 			prealloc = page_address(page);
+ 	}
+ 
+-	raw_spin_lock_irqsave(&pool_lock, flags);
++	if (in_nmi()) {
++		/* We can never allocate in NMI context. */
++		WARN_ON_ONCE(can_alloc);
++		/* Best effort; bail if we fail to take the lock. */
++		if (!raw_spin_trylock_irqsave(&pool_lock, flags))
++			goto exit;
++	} else {
++		raw_spin_lock_irqsave(&pool_lock, flags);
++	}
+ 	printk_deferred_enter();
+ 
+ 	/* Try to find again, to avoid concurrently inserting duplicates. */
 
+
+If that looks reasonable, I'll turn it into a patch.
