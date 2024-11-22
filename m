@@ -1,150 +1,139 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from cornsilk.yew.relay.mailchannels.net (cornsilk.yew.relay.mailchannels.net [23.83.220.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11ADC134A8
-	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 13:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732283802; cv=none; b=YXgl3zWTFkyST4VvTk0dWXdJm1rAyXSS/xawR2HP95wtsfZ/Qs5SyT7Yi+rfGLSH5GlcNR7Ll2mW6/Sh4V7eUYXkx3duhYgdZ6XaKesHBCKZ8rjTWjGE84FP8LNpt6G4xH+aCxRFer3tx22mORWzOrnWFO0HTJAREdugBp8YY+4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732283802; c=relaxed/simple;
-	bh=8WMrdbry8cYbb3PwBwFzfa4t8XIIPzo0aJN5xmp6Bzw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AVcko5PEVaeKJ0WRVocb5Vgmxrs4pqYRaKSEgKrT+OBxFbcWOx35kWe5dCH1steaIfqkti9KlgV3q7ePBO9r5o2pQwzw8+7ipJh4JG+M77hrA3oisAO3fxd7n6uVTLyLMCS/Ez0bZUwUTf7tb+VB+y/Idh4sz+Gv6N8eNweGhNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JT21EBqH; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1037579C0
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 14:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.220.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1732284452; cv=pass; b=tDV3d8oEvpd/TJ2YgDAfBEqckwtUWdozLJI1tVMMg8vi7xlp2dL0qldV2RZUeu+gbYFOl+kmbOad4A32AU5Wgn9RDSuvhtbqUuEP7OWOGpqiGaYiAAJoy1qnqHqdkt03t/d/n/FSQMkw4ti0zr9UkmEkLWkXpPpKeeqvGguNrTc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1732284452; c=relaxed/simple;
+	bh=zXZVhUhg6UMftYuU/yfEsyfdQ6I3CUmNscYeG0Epq8E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=fOdiamKWDX2p8KPIJGFRw1DN1DAZIsCM6JYs5YXRTmfZ8l8VQy7/bzGplZ2mNeox1uT6rA8bAM2A2LPmDhsBeszlRPiH6OFnLTvK7vxzKfI5R5pcZA/qqR38yLGxYtrDHg2RcujpeZg35KW7g8ApVFsuoJDQLaH9T+O0kVGnImU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com; spf=pass smtp.mailfrom=templeofstupid.com; dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b=FZEFe8Yq; arc=pass smtp.client-ip=23.83.220.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=templeofstupid.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JT21EBqH"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1732283800;
+	dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b="FZEFe8Yq"
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 2BAF9242E2
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 09:35:31 +0000 (UTC)
+Received: from pdx1-sub0-mail-a207.dreamhost.com (trex-8.trex.outbound.svc.cluster.local [100.122.110.163])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id BA50B23A3E
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 09:35:30 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1732268130; a=rsa-sha256;
+	cv=none;
+	b=AhzPR+QBjyStXI4TyBXoepTmvMK/t2ih9d5DbZ3N8mMtbkBZKqRPfXAnGZGNHwBHyazNCW
+	Z5FFet5a1V6Tfnk5uFWfV1xiAdey+IpXg53YmIZGY7LGeO05EANNlW7I7qaGdxbXpcRM2A
+	riWGIl8XyNWNmuZiwRRUdMHC+/wF5VRwWJ8nut6a+rN7q3cTCHmIUJGBvTDwbdOzgLuvzM
+	a95h143Pt/3TXXL/Q2cvuFvu1hlippKeOqndRrpbk5iaQ2bbmlLNLR4ZEPv8IPRwFO9qR/
+	misLi/+RQHe3JwVeyENxNeKYkb4EjednTseumCqspU0C7O1V9QuPif2UkjTgAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1732268130;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SsHaI1ei1IfQPr0KsTU1Bgjr9RwL5hBLdlpSc5oHDTU=;
-	b=JT21EBqHCsSyPl3ffxSYLitOS3ro9JY0IAUhMjt9E36t6a+G6X/H/tySP9VReojvYaO77b
-	6IGOJhOGa70iW84GramlQRpeVRMH6U22TFnURm2+dF89PZ3SaG9KetU82JAEVLekpAqBe1
-	AumAMroVV+cpwlFwA82P7JIRuEyxAVs=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-517-gBS0t4nXNg6okooW7zDC1A-1; Fri, 22 Nov 2024 08:56:39 -0500
-X-MC-Unique: gBS0t4nXNg6okooW7zDC1A-1
-X-Mimecast-MFC-AGG-ID: gBS0t4nXNg6okooW7zDC1A
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-38256b20f5fso1550751f8f.1
-        for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 05:56:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732283798; x=1732888598;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SsHaI1ei1IfQPr0KsTU1Bgjr9RwL5hBLdlpSc5oHDTU=;
-        b=Qnl03blR2WBcsHouwXF1GieMino+uuYCIOP77GC6zon2zYhSTNMgjE/tOHrHTu4JXo
-         SKNxJSwIIQ0m2jKNbjIYLWo66/xwjDHXbFtwnGkik0frOL8ZwdUWvwFeMHKHmWlZ3va9
-         cm5v3gpEHI0tpQHKsr03wSviu4hO+/SL8HGKvZUPr4Z2JsUG3wUIMozcBCc3utQ+qlQ9
-         AfB4Rgd6hgBJOaG2Pf7o/Fayk0szUlKZRvVtRrYPWR6rgFaCDx3qBG5B6JkV47ozam1a
-         2mx5z1BISzdlJ4MIrFA/5E+ZSQ/JEnDO0yfrg/4YS5VJQtH5FjmUhe8UY7/MEWt96gkL
-         MFLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXi13OP+mk6hQeTJ94b/DxIbaN55kXosZuWKSi62O3sjD7R4R31eumeyO2MjeQDSE4RpYw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2DhwOqGkqcry2RCOxKsmBVQqluLjzs/Bzohq9+6qlnEQ7Nitj
-	d+0eDXd2xIoT7daFnAC69OO4ZLi4lzlPby44LqwpQN/UnW7DRnIuCVxM6FfFU3BJNzMy+HfeNQX
-	LRvC+TZkqgkb/6+dV0wuU/xXpP9n2R7WpGJt/Qq2tITq4r1THQQ==
-X-Gm-Gg: ASbGncvqqVleVK8coRtyDFE5iKdo56DM2icKU7G+6+UvSgsuQwCfr8ANTiCosYdYTA6
-	dt9C5EgtQ0yfQmh0XkR56DmWqlKVXmuE6kRKHIK4TgwkF/xUkaIN8lnky4oThXInYed+9V4bkyg
-	rUZ7E2TWjLia6MILL6EzB8dHNyWBLYVhvQYqtsJFPYzBDldx9kt/t+wEACN+nl8QsC3RxWhXr/j
-	CG9a8xs2oX03xdWfUAJ+rOYkEXyJ8jo9nZ/Pw08uvDoUzhiQJNYSfnscMnDulfGD0v7wpUmN2e1
-	g4P2FN++3Vdxd05AbBAfuR7jzjIibpUrxlQ=
-X-Received: by 2002:a5d:64a9:0:b0:382:4fa4:e544 with SMTP id ffacd0b85a97d-38260b3caf5mr2941873f8f.6.1732283797761;
-        Fri, 22 Nov 2024 05:56:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGiRi9yMi/lEmTBvU6LjIZoyT2mo/EJzfL6hLaHeWfXh/dSLFhhXDExODAa08mxumRLkt9jSw==
-X-Received: by 2002:a5d:64a9:0:b0:382:4fa4:e544 with SMTP id ffacd0b85a97d-38260b3caf5mr2941848f8f.6.1732283797392;
-        Fri, 22 Nov 2024 05:56:37 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3825fbedf40sm2418281f8f.98.2024.11.22.05.56.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 05:56:36 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- x86@kernel.org, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter
- Anvin" <hpa@zytor.com>, Paolo Bonzini <pbonzini@redhat.com>, Wanpeng Li
- <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Andy
- Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
- <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, Josh
- Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Andrew
- Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>,
- Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
- <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron
- <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
- <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
- Piggin <npiggin@gmail.com>, Juerg Haefliger
- <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
- <nsaenz@kernel.org>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
- Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
- Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
- Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
- <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
- Dionna Glaze <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Marcelo
- Tosatti <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Daniel
- Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 04/15] rcu: Add a small-width RCU watching
- counter debug option
-In-Reply-To: <f85c0f84-7ae3-4fb5-889a-d9b83f9603fe@paulmck-laptop>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-5-vschneid@redhat.com>
- <f85c0f84-7ae3-4fb5-889a-d9b83f9603fe@paulmck-laptop>
-Date: Fri, 22 Nov 2024 14:56:34 +0100
-Message-ID: <xhsmh7c8v9xt9.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	 resent-to:resent-from:resent-message-id:dkim-signature;
+	bh=HZAEqfrjCbTuothITkBDCZ7mGcsd2bpnUTM5j+JGGGQ=;
+	b=USHsa4RoL1CsazocZfFe3RKROSYsip367wILLk9Y3NRKlSFUOqUA0h/2uL+Lb901e1MCO/
+	KHl6gK8hAnBXN/27AcwLFMuexWkKTO4U+vKhRRXm45oH90/+8Xo9T6uwSdRSRxeLN1cTHx
+	RCJ5Px37HzsHPCaoBORuh/J+7q1uA9M4tWqRyzw0vlxqzeVUMFxIHs6zVnESuwWlaPk/yF
+	TJuJ6uDBFxR9qInXej6BVlOQKCI9RVVXMn0wMF74KLMHrXSJAVUH2sXhL25QsEy8jBaQJa
+	+30V0aorAZep1eOlRrK/FK8odfEqV3qhL+otPIjSGhhv7MFA2SI2EO2VB4uYtg==
+ARC-Authentication-Results: i=1;
+	rspamd-868968d99d-87psv;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=johansen@templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MC-Relay: Good
+X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MailChannels-Auth-Id: dreamhost
+X-Abaft-Shade: 51bb1d3d1035705e_1732268130966_2247031815
+X-MC-Loop-Signature: 1732268130966:3630377397
+X-MC-Ingress-Time: 1732268130966
+Received: from pdx1-sub0-mail-a207.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.122.110.163 (trex/7.0.2);
+	Fri, 22 Nov 2024 09:35:30 +0000
+Received: from kmjvbox.templeofstupid.com (c-73-70-109-47.hsd1.ca.comcast.net [73.70.109.47])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kjlx@templeofstupid.com)
+	by pdx1-sub0-mail-a207.dreamhost.com (Postfix) with ESMTPSA id 4Xvqhf46hmz60
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 01:35:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
+	s=dreamhost; t=1732268130;
+	bh=HZAEqfrjCbTuothITkBDCZ7mGcsd2bpnUTM5j+JGGGQ=;
+	h=Date:From:To:Cc:Subject:Content-Type;
+	b=FZEFe8Yq759Eu5rpcR/O1/VwzqKTj3iM0I16yJSwwqI0G8VjII7cnoWMyCjI5IC2G
+	 mduXH2sXTyTF6ECZ+njrlhZkPBNyViXICSngN4xm49u7fRf1zTRX9puG1ePSVcQQdr
+	 C0qxCRMZgg8DGUWs0G3erf6aIToAHPoMIhrASBhjKqDma0aSW7108nXKirTKxoz4OR
+	 vv6e8ACGKwutQDgumUrp/6V23mklNnBDyAxrcTVaEbJvDn6iFYJKjbyfmOisigYw7F
+	 17JjJH1uc6ncqb8U5j4h4DWkVNHIGYh/eZDKqg8xoKVrvLq1X/MOu83VCpvYbFxt+k
+	 5x3nezK7O0Ryg==
+Received: from johansen (uid 1000)
+	(envelope-from johansen@templeofstupid.com)
+	id e0020
+	by kmjvbox.templeofstupid.com (DragonFly Mail Agent v0.12);
+	Fri, 22 Nov 2024 01:35:28 -0800
+Resent-From: Krister Johansen <johansen@templeofstupid.com>
+Resent-Date: Fri, 22 Nov 2024 01:35:28 -0800
+Resent-Message-ID: <20241122093528.GC7186@templeofstupid.com>
+Resent-To: rcu@vger.kernel.org
+Date: Fri, 22 Nov 2024 00:46:22 -0800
+From: Krister Johansen <kjlx@templeofstupid.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	stable@vger.kernel.org
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+	David Reaver <me@davidreaver.com>
+Subject: [PATCH stable 5.15/5.10 0/2] rcu-tasks: Idle tasks on offline CPUs
+ are in quiescent states
+Message-ID: <cover.1732237776.git.kjlx@templeofstupid.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 22/11/24 04:53, Paul E. McKenney wrote:
-> On Tue, Nov 19, 2024 at 04:34:51PM +0100, Valentin Schneider wrote:
->> +config RCU_DYNTICKS_TORTURE
->> +	bool "Minimize RCU dynticks counter size"
->> +	depends on RCU_EXPERT
->> +	default n
->> +	help
->> +	  This option controls the width of the dynticks counter.
->> +
->> +	  Lower values will make overflows more frequent, which will increase
->> +	  the likelihood of extending grace-periods. This option sets the width
->> +	  to its minimum usable value.
->
-> The second sentence ("Lower values ...") sounds at first reading like
-> this Kconfig option directly controls the width.  The third sentence sets
-> things straight, but the reader might well be irretrievably confused by
-> that point.  How about something like this instead?
->
->       help
->         This option sets the width of the dynticks counter to its
->         minimum usable value.  This minimum width greatly increases
->         the probability of flushing out bugs involving counter wrap,
->         but it also increases the probability of extending grace period
->         durations.  This Kconfig option should therefore be avoided in
->         production due to the consequent increased probability of OOMs.
->
->         This has no value for production and is only for testing.
->
+Paul, Neeraj, and Stable Team:
+I've run into a case with rcu_tasks_postscan where the warning introduced as
+part of 46aa886c4("rcu-tasks: Fix IPI failure handling in
+trc_wait_for_one_reader") is getting triggered when trc_wait_for_one_reader
+sends an IPI to a CPU that is offline.  This is occurring on a platform that has
+hotplug slots available but not populated.  I don't believe the bug is caused by
+this change, but I do think that Paul's commit that confines the postscan
+operation to just the active CPUs would help prevent this from happening.
 
-Much better, I'll take that, thank you!
+Would the RCU maintainers be amenable to having this patch backported to the
+5.10 and 5.15 branches as well?  I've attached cherry-picks of the relevant
+commits to minimize the additional work needed.
 
->>  endmenu # "RCU Debugging"
->> --
->> 2.43.0
->>
+Thanks,
+
+-K
+
+Paul E. McKenney (1):
+  rcu-tasks: Idle tasks on offline CPUs are in quiescent states
+
+ kernel/rcu/tasks.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+-- 
+2.25.1
 
