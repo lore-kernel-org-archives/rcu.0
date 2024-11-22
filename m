@@ -1,86 +1,86 @@
-Received: from seashell.cherry.relay.mailchannels.net (seashell.cherry.relay.mailchannels.net [23.83.223.162])
+Received: from cyan.ash.relay.mailchannels.net (cyan.ash.relay.mailchannels.net [23.83.222.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29B81BD9F5
-	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 08:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.223.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F362B170A3A
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 09:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.222.47
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732265240; cv=pass; b=MLq1K94/MoyK8FgmYphGOwBeVTspqCRa/o/qdxdS0XhbeE6y3iX0t3sxMXM9D9YsvfnI8i4MHG+DH/qEdRUX+eIHgJkzJhIgAmLrTmEnD272Y4+kxRLPj+7Td39itsQ256oUme2Tqkli5CL/uK3EL9gzL92xFx1enRiWm5rbGJA=
+	t=1732267509; cv=pass; b=HiNsjuWz3fJ+Q1RZYFMs7jciaD9qu6VXSDIavv91rwzj/aS/KpasrT3x5qcGRa09NffUCkmNXBGM5Je+sCPN81KZfoj+e/veOOS9JAlohInPBYydhEjzJdNCypA/BWMvq78mVRsMoRrLAxU0uSTltViQe8qQC0TWS4IwWrVF62c=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732265240; c=relaxed/simple;
-	bh=mfnjIkwEMwoAK8Hl/BGSZ5EwNX49jHCs8zSU5Kh6aAs=;
+	s=arc-20240116; t=1732267509; c=relaxed/simple;
+	bh=01ZqHsP1HaI0v83fwf7w+JvCVsz+iTys39ImnW4nzq0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A/AgS6LL7CyZFpundXxmj1YtU5mnJS6+6IodCmB9yTV+FDDjn/7KNHZRZcAOPJBARR4Hkc//dKqaKRSAvuTyFJCU6tNzhLiu27M/3xx5HbLOlmq2LNStwzrVgbhK8nPVH87HQ+oWUAGE3UUT05ZiKAArz7tstlDunAl4SMB2dD4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com; spf=pass smtp.mailfrom=templeofstupid.com; dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b=V6lqABV5; arc=pass smtp.client-ip=23.83.223.162
+	 Content-Type:Content-Disposition:In-Reply-To; b=slVweseg9LysCBJ6QuQOI5A6SEDvzJwtA5H0BKSDAgwu7Xr+DubzMbSXHpHkWuD+nU8OIu7qRZOozYBJPXl5yb55zFKiJaXcVAIQIW5U/TP17fI7h+Og2CvMQ0KTsSjKk6Bbot0pohoK6orhb8KbzFll/XOLXf10ZGsqhkicW4E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com; spf=pass smtp.mailfrom=templeofstupid.com; dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b=Q4Zxz8EQ; arc=pass smtp.client-ip=23.83.222.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=templeofstupid.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b="V6lqABV5"
+	dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b="Q4Zxz8EQ"
 X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id A8022782EE2
-	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 08:47:10 +0000 (UTC)
-Received: from pdx1-sub0-mail-a207.dreamhost.com (100-121-84-117.trex-nlb.outbound.svc.cluster.local [100.121.84.117])
+	by relay.mailchannels.net (Postfix) with ESMTP id 37D87903AD8
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 08:48:06 +0000 (UTC)
+Received: from pdx1-sub0-mail-a207.dreamhost.com (trex-5.trex.outbound.svc.cluster.local [100.118.24.228])
 	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 5307A782F62
-	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 08:47:10 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1732265230; a=rsa-sha256;
+	by relay.mailchannels.net (Postfix) with ESMTPA id 88C779033D6
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 08:48:05 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1732265285; a=rsa-sha256;
 	cv=none;
-	b=VCS2NGbCqa8RVfMZ/0pP0oxIIFxxCv/TeDsy8LhnEGirFwUG8B7TH9bQpmkVeJgiwl43Mz
-	6K3L9ut8B1RITW0ry6VmPwjDBn8gJBt4S8rCZK/3j68B3hOxZUttykWd4l8M9XO2nSEZIp
-	wwkMjPSU7GlBLB7Sh991y6VtQ8zaUiAxoL0m0cT0E85XxSegXOwTxxzlTre4Wbn2GY9RTd
-	+E/14batywWkdHY9w6se5gbu9it8YNtvYlNa9zBDEVtBmAwZcDVivn0rFiWm0eVbsQD995
-	NdWwK/NpvKfV4Bw3F64R4vzNYJL0jMbONfB8QRakDJlDY7wrnWJ5wAoQMZNjEA==
+	b=d1/63f1MleBj/oFwcpANG2JDvCQt0K89Zzg/eaQuuYzgnDH8O5MF0nzaNKf91aacO60ubP
+	hzhWx/PrBbXHd4X5yCC2mWflyLfXzAOiXggACZhpv28Hy7CFa2O6ggFSr9yOf0+mvMOs1q
+	FpEb/58GEpGEIbNQThP68qZjtvlIzmsUyW1IFNi2VebHlh6cdY9Y+ZZM/DFn4yhmPgtDGA
+	grzDF9WmRaoaro7M+TaG82iEAZwjr44EG60KEikWNb1ME+roOP+LrMsW93YbUL14ME2k6f
+	3ANUfJKVheztGl/A/1rfxZSGCYCeYSvjDisVeYtCBJWPgaFZYDiNnJLWWeBQRA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
-	s=arc-2022; t=1732265230;
+	s=arc-2022; t=1732265285;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=FySjOuyh1KSKgHAF3MyH1EoL3y42VBfUevuuuW3PI/E=;
-	b=LEW9YKtbmKdPWWGUVnPKHsBDieZZPQzM8OY4WIEL7oDTovID+6j9fNp+LPVbN5Tb36MPIz
-	Y7v/2s0hvrY94qyNoaErgWY0Y5nxzQ0AaRHBoRUmsxjUHcwiszfwMVRkaC0JZTe7rtP2o+
-	bfJeJ206YFgkT+ZNxNscJazbxprd56hb+riB//UBCsJ5w6AF8Y/kzRCOT/jmZrkN558Hhe
-	YAkh5RqSOdwIDeb02HhD5/2ckbywXvVRYkDElZlMxI9T3xXEbONb5Cq+ET5jHlX1la36by
-	Bs2n9lS78hOx4N6/mFB5kVXFpfHqqSsl9pjGvXyx8dWlzLPt3KjsKD4UilZIxw==
+	bh=2Kw/lmLqCq6u0/mL7W0PXaEaVd1ox3PdTzE4P3dN3HI=;
+	b=2YEKuHJ3NTzlaTvHPZwrMrG5ndVqnstjul0pLJv5KXFxuCFIMQZ27dD158phVzK6wS7rbW
+	6hxL91moksmwq3Ma06zc2vPA2Ql2AVRn77J7N2MK/QgPNLJZRk+610CYxKyEv3fqXYZeWl
+	fjnZyL8eJlFJ0dfh+mo3N5WvYJy/y8A7E2T82nBv9H1CjN1DjTltz/6DpmAQ2rBlnzyd+Z
+	C3IRTHEVRNLW3RFB3AoHrE2RcPyBbKDF433AtiOgztL7Yruo65ZGVetkOond5lporv/2mx
+	ZoSOKYk9IoTTXzXaJZp5MrZTsRFbhl6kHw9rGErniIR3NNlHropSPp70SSWtJw==
 ARC-Authentication-Results: i=1;
-	rspamd-dcc6979f6-4v4ch;
+	rspamd-868968d99d-v7rvv;
 	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
 X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
 X-MC-Relay: Neutral
 X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
 X-MailChannels-Auth-Id: dreamhost
-X-Trouble-Vacuous: 3178943914643f30_1732265230548_2972545301
-X-MC-Loop-Signature: 1732265230548:1675702209
-X-MC-Ingress-Time: 1732265230548
+X-Shelf-Quick: 37a40489714209eb_1732265286137_774916908
+X-MC-Loop-Signature: 1732265286137:3730953986
+X-MC-Ingress-Time: 1732265286137
 Received: from pdx1-sub0-mail-a207.dreamhost.com (pop.dreamhost.com
  [64.90.62.162])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.121.84.117 (trex/7.0.2);
-	Fri, 22 Nov 2024 08:47:10 +0000
+	by 100.118.24.228 (trex/7.0.2);
+	Fri, 22 Nov 2024 08:48:06 +0000
 Received: from kmjvbox.templeofstupid.com (c-73-70-109-47.hsd1.ca.comcast.net [73.70.109.47])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kjlx@templeofstupid.com)
-	by pdx1-sub0-mail-a207.dreamhost.com (Postfix) with ESMTPSA id 4Xvpct0YnMzL6
-	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 00:47:10 -0800 (PST)
+	by pdx1-sub0-mail-a207.dreamhost.com (Postfix) with ESMTPSA id 4Xvpdw6DrNzym
+	for <rcu@vger.kernel.org>; Fri, 22 Nov 2024 00:48:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-	s=dreamhost; t=1732265230;
-	bh=FySjOuyh1KSKgHAF3MyH1EoL3y42VBfUevuuuW3PI/E=;
+	s=dreamhost; t=1732265284;
+	bh=2Kw/lmLqCq6u0/mL7W0PXaEaVd1ox3PdTzE4P3dN3HI=;
 	h=Date:From:To:Cc:Subject:Content-Type;
-	b=V6lqABV54ECT9V7KKr6BLs8jaAw5kE3vDN6QG9HeboJCBBEzDfAVkGwRMmhmB2+id
-	 uVspxuFJY60gAitvStl4shrqNnIei5vhpxKzcDkbC/5I3zRYgcARaJdW3TJwh5Lmus
-	 pA3Li/evmLN7FlODmgnGccr5DOW8Apz/sGQGBpszMyDlFehkfelZ3/DitassLkwvUj
-	 oXM9SJrIuXsVHmgy/FeGVeSyP6oBGvA99V74hZ7obTiYASAoXmZZ4c5MVOAtKnbICk
-	 NtaW7LlNoZzTll/LNxsRatlmRXLHyfLdiWFAZYrCwRyUE8+sIjf35wTwnZ6jglp7Jq
-	 kuji71BSgVJrg==
+	b=Q4Zxz8EQIXpwhwCvDMAjzXafh6oVDDoMyrWNqT17DjecdSQszQ+pv7HrGmGmFyb7S
+	 NcmruqwAZZBuGqUu7Kuyyo3nOoJeTdssJUMusNYY1M5E/69hTAkBDjSOqBPhfgiFfj
+	 +Jvp59gOviBqzLqmjqmJvwfMdpL/bpeKRwRClyu26Fd87P7Ik0f0Pn0vTLSUUCMeKH
+	 DDSDfI9QSzERK1O2Ja9jczlLZnvHnM2z2HC/BXEFPQG00Xxd2ALHurJMotiHNS1PIZ
+	 1vMkp02bIcM9vv2JC2XD6zNl72tXaUE83nX0XLrsO3VEPoCOVEGqCM8pbWKFn+1Nb7
+	 WXDZstkSDMJzw==
 Received: from johansen (uid 1000)
 	(envelope-from kjlx@templeofstupid.com)
 	id e006b
 	by kmjvbox.templeofstupid.com (DragonFly Mail Agent v0.12);
-	Fri, 22 Nov 2024 00:47:08 -0800
-Date: Fri, 22 Nov 2024 00:47:08 -0800
+	Fri, 22 Nov 2024 00:48:03 -0800
+Date: Fri, 22 Nov 2024 00:48:03 -0800
 From: Krister Johansen <kjlx@templeofstupid.com>
 To: "Paul E. McKenney" <paulmck@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
@@ -95,9 +95,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
 	David Reaver <me@davidreaver.com>
-Subject: [PATCH 5.15.y 1/2] rcu-tasks: Idle tasks on offline CPUs are in
+Subject: [PATCH 5.10.y 2/2] rcu-tasks: Idle tasks on offline CPUs are in
  quiescent states
-Message-ID: <c56243da5c8b4451097b39468166248790f9a1de.1732237776.git.kjlx@templeofstupid.com>
+Message-ID: <69e45347cdb5a256b6e78e77e5bf8da005582b0c.1732238585.git.kjlx@templeofstupid.com>
 References: <cover.1732237776.git.kjlx@templeofstupid.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -131,10 +131,10 @@ Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 5528c172570b..8648685e7dfa 100644
+index bede3a4f108e..ea45a2d53a99 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -1090,7 +1090,7 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
+@@ -1007,7 +1007,7 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
  {
  	int cpu;
  
