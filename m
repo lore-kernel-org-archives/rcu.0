@@ -1,181 +1,168 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F112500BB;
-	Sun, 24 Nov 2024 21:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4496E1714B3
+	for <rcu@vger.kernel.org>; Sun, 24 Nov 2024 22:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732484764; cv=none; b=kYM5bQmZSVHSvWuWczJfOe8dMwF44gWf0nTxk8htqeliEQsZ1hcQyT/hCsldQh9O85i0fraFcex97vJ6iawOMiGEhxzC5g6KHqU+f1OYRitWdCyu4v9DDxPxVDeFst7XF54Jh1uDD742RAOFvrJb9o0FqvIWRkWMk5hCuQwLfXY=
+	t=1732488566; cv=none; b=YzneLqb9fyl+WQjyAxAjmHW6kb+6CSmOlhBX4oBVIBlvflz7QQyy/Ip246zXUTW22qG9OUVWU6QIOq49O4m3xoLW8ht3GJMUtN+uULnm6STxaL+jk3mSaZHRvxCR/zqdk2G2YoGGLDKkZxgkBbicfSCA0JSxZ9AtBfrJgO+7czc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732484764; c=relaxed/simple;
-	bh=/qhmFmtGTN/yG2NensqYHITpZ/haNfld1Woay8hK220=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nVpy1P9Z6baVEDcUdk8nWBa/qcNsdWfLH92XwRiQ5WKSSLHpFqlfrMnT1Nl3v/FvklT9OHJPp29+yAotpBYrJaCq0Z9sKJWsWQZMUC+fjkPEs3E3U9hTWIRWnAKOa0eAKZ0PFTonQ8tlXZtheAJDWz8t0l7FuRpWRnISz5Ovvh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZNg7MJ2I; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1732488566; c=relaxed/simple;
+	bh=gfnHJjwfgdKmCRW2N48UfWJk5ORO21VNu9CS8MFAIjI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UzUzRedm1MUtmS37KFjE82h1QPiqUCV4OSHTvw0J/OpgLftELT5qqcuRTpWMYOpI1VTDNDTnzKBG7cPJEH71qjIjB3ZYxvojTQS3IBFLdNzK+ze8zXq+u4tfTX6onWvgduoPTQoRY4LQ+0R4VLEpqxwg8KEDTMHl0xpm1Oym39A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LOlxwbmz; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZNg7MJ2I"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE06C4CECC;
-	Sun, 24 Nov 2024 21:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732484763;
-	bh=/qhmFmtGTN/yG2NensqYHITpZ/haNfld1Woay8hK220=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZNg7MJ2IIU3CeTaHZ48HzrmcZZAw0SYc+qCR/IKYfojob4+a9LbntBCi696q0OjUN
-	 3nQvd8ihsO2okerTSi3qXbeP7+LNX7rk2RZTot29gYFw3eku4E/jStldwicIm8jQSq
-	 Jpvge98weBKXSdbt5FHI9opC+dsG48zcJQqC4EpSMqFwt5BAyZtTlcIZ8F1rOycM8t
-	 gBXJmsYnFDfxgSh+rxCGS5FXmXw2NvRkPX7hznrkisrgC//vxx85ldSGSXAXmR7YTU
-	 3LHIuIqDGcPS9H2ByV200QW0+2+eVwzg+CINe8g2Q9xl4+OtQ3aiK5W+MZpdqpHY8C
-	 k9ocOhptHnk2g==
-Date: Sun, 24 Nov 2024 22:46:01 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <Z0Oeme2yhxF_ArX0@pavilion.home>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-12-vschneid@redhat.com>
- <Zz2_7MbxvfjKsz08@pavilion.home>
- <Zz3w0o_3wZDgJn0K@localhost.localdomain>
- <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Zz4cqfVfyb1enxql@localhost.localdomain>
- <xhsmh1pz39v0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LOlxwbmz"
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-724f1004c79so983724b3a.2
+        for <rcu@vger.kernel.org>; Sun, 24 Nov 2024 14:49:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1732488563; x=1733093363; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zX0nE7NDEdfGZrNZGwPLqU9rN5UAwEYfOh7fGJZubFM=;
+        b=LOlxwbmzrD1KQqgyB6myUPMbBQTuh+m3vMibN7BQXtl24VK+R7GpYw4CEBACZ9ACTp
+         lrjKBvLhl8buXEd9wlF4uAhWfoysZ6CMH9iYHJjsVvHUtC4fb16kpUNHymXXzMygQDhG
+         TC6jFtRF9y0dkpPVBuBjIqIU/LGQ5AlZhjWXw3/n5yf91iL7v2nA/OHbjHD0fLcBSJVJ
+         yH+7RTsVdWTZ34DnMWOs3GjPqxCAbhoM+xNjvBhRsxVW/eHJn2UDZ7cWT+f+MjiemmGg
+         KtRau4W87EK6GoljQ/Czu47CdBymFtd3GSlcWdwZlfKuIdzLWH9+Cuovj3fkkwIf/k8N
+         VjJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732488563; x=1733093363;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zX0nE7NDEdfGZrNZGwPLqU9rN5UAwEYfOh7fGJZubFM=;
+        b=CWlCXwymXYoPEYFvOEDtcQCcN6tkcfmPut4Ja+1x+IS+PL+BZ1H65OURlxW7xnUpYW
+         7VRnUsXVQZ6a7GV0jkzl7y/uNPMlrMtFONxLYP3Hc+/z251TDtCy69V0hojjArXyGe1j
+         35R+bmYaZfN/BAct6P29i1n7m/A83aiT+9c8zCm2Cx8kOibeh77TO68znWmteSxqwVxp
+         j2kna9IemjbBrs8QYr4Ey6dT/n7bE1ZGwUZVBmm7lo6plVrcWgkr6U7ZPT2ylff5m9W7
+         RBteAnLsgF78X1HRWLsZxDgbUZ/086mDG+68iU1D/FZoYaLrJ2f/Skr8YCrlEFYw8DcR
+         dOfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUVlssC98EzrhDggbEVGCRBbop+bvoGMEo9GNQpePO8M2pwKvfEEjrTfqWKl+z2egl0yH4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGJWpwgIRN6+A7v5Td3FFDbzni/w560L+ybh/jJzgTf8aZ7Zrm
+	lgVxS4RXevTpI4qNeGQLUj/hcC5GbmX6FgkbhmlDPbVC5BeQbdRvvg+vTpSyHu/iIs298E8ibox
+	BLRmqcIPuZyjPnk7pIKsYt5wTluSQJNrHVNE0
+X-Gm-Gg: ASbGncuBnqrIkqO2XY0VpOqQTVPzPzLdGgcEp7yTgl+cSk6dPY30LfyEXD3dMf4Dq8p
+	w8mODba5WI5XYaFc3e6Bpt/hJVV9kqI6HEpNJJgIe6Rq8E7kr0MoYyIrmDjXZhcU=
+X-Google-Smtp-Source: AGHT+IGly1+z6aeNBztEpVOsbXsN+8Ek9BfoSxWOu5bkpC+Sbuna4B2/9T9dhULWPlo4Oyv5U12MRtr3xKrQOEwO3aE=
+X-Received: by 2002:a05:6a00:c81:b0:720:36c5:b548 with SMTP id
+ d2e1a72fcca58-724df684b57mr13854174b3a.16.1732488562364; Sun, 24 Nov 2024
+ 14:49:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <xhsmh1pz39v0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+References: <6743acf4.050a0220.1cc393.004d.GAE@google.com>
+In-Reply-To: <6743acf4.050a0220.1cc393.004d.GAE@google.com>
+From: Marco Elver <elver@google.com>
+Date: Sun, 24 Nov 2024 23:48:46 +0100
+Message-ID: <CANpmjNMQ7ZVG0i9j1K7J0yKrtfrFfHi6kXaA7FLKmX5T4yWXTw@mail.gmail.com>
+Subject: Re: [syzbot] [perf?] [trace?] KCSAN: assert: race in srcu_gp_start_if_needed
+To: syzbot <syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com>
+Cc: acme@kernel.org, adrian.hunter@intel.com, 
+	alexander.shishkin@linux.intel.com, irogers@google.com, jolsa@kernel.org, 
+	kan.liang@linux.intel.com, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	mark.rutland@arm.com, mhiramat@kernel.org, mingo@redhat.com, 
+	namhyung@kernel.org, oleg@redhat.com, peterz@infradead.org, 
+	syzkaller-bugs@googlegroups.com, RCU <rcu@vger.kernel.org>, 
+	"Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Le Fri, Nov 22, 2024 at 03:56:59PM +0100, Valentin Schneider a écrit :
-> On 20/11/24 18:30, Frederic Weisbecker wrote:
-> > Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a écrit :
-> >> On 20/11/24 15:23, Frederic Weisbecker wrote:
-> >>
-> >> > Ah but there is CT_STATE_GUEST and I see the last patch also applies that to
-> >> > CT_STATE_IDLE.
-> >> >
-> >> > So that could be:
-> >> >
-> >> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
-> >> > {
-> >> >    struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-> >> >    unsigned int old;
-> >> >    bool ret = false;
-> >> >
-> >> >    preempt_disable();
-> >> >
-> >> >    old = atomic_read(&ct->state);
-> >> >
-> >> >    /* CT_STATE_IDLE can be added to last patch here */
-> >> >    if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
-> >> >            old &= ~CT_STATE_MASK;
-> >> >            old |= CT_STATE_USER;
-> >> >    }
-> >>
-> >> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL check,
-> >> but we get an extra loop if the target CPU exits kernelspace not to
-> >> userspace (e.g. vcpu or idle) in the meantime - not great, not terrible.
-> >
-> > The thing is, what you read with atomic_read() should be close to reality.
-> > If it already is != CT_STATE_KERNEL then you're good (minus racy changes).
-> > If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in any case,
-> > at least to make sure you didn't miss a context tracking change. So the best
-> > you can do is a bet.
-> >
-> >>
-> >> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KERNEL=1
-> >> we could do:
-> >>
-> >>   old = atomic_read(&ct->state);
-> >>   old &= ~CT_STATE_KERNEL;
-> >
-> > And perhaps also old |= CT_STATE_IDLE (I'm seeing the last patch now),
-> > so you at least get a chance of making it right (only ~CT_STATE_KERNEL
-> > will always fail) and CPUs usually spend most of their time idle.
-> >
-> 
-> I'm thinking with:
-> 
->         CT_STATE_IDLE		= 0,
->         CT_STATE_USER		= 1,
->         CT_STATE_GUEST		= 2,
->         CT_STATE_KERNEL		= 4, /* Keep that as a standalone bit */
++Cc RCU
 
-Right!
-
-> 
-> we can stick with old &= ~CT_STATE_KERNEL; and that'll let the cmpxchg
-> succeed for any of IDLE/USER/GUEST.
-
-Sure but if (old & CT_STATE_KERNEL), cmpxchg() will consistently fail.
-But you can make a bet that it has switched to CT_STATE_IDLE between
-the atomic_read() and the first atomic_cmpxchg(). This way you still have
-a tiny chance to succeed.
-
-That is:
-
-   old = atomic_read(&ct->state);
-   if (old & CT_STATE_KERNEl)
-      old |= CT_STATE_IDLE;
-   old &= ~CT_STATE_KERNEL;
-
-
-   do {
-      atomic_try_cmpxchg(...)
-
-Hmm?
-
+On Sun, 24 Nov 2024 at 23:47, syzbot
+<syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    42d9e8b7ccdd Merge tag 'powerpc-6.13-1' of git://git.kerne..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10a00778580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d7fd5be0e73b8b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=16a19b06125a2963eaee
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/ef231513adc7/disk-42d9e8b7.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/54caaac5960b/vmlinux-42d9e8b7.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/85b5a6566143/bzImage-42d9e8b7.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com
+>
+> ==================================================================
+> BUG: KCSAN: assert: race in srcu_get_delay kernel/rcu/srcutree.c:658 [inline]
+> BUG: KCSAN: assert: race in srcu_funnel_gp_start kernel/rcu/srcutree.c:1089 [inline]
+> BUG: KCSAN: assert: race in srcu_gp_start_if_needed+0x808/0x9f0 kernel/rcu/srcutree.c:1339
+>
+> race at unknown origin, with assert no writes to 0xffffffff8676ffc8 of 8 bytes by task 6285 on cpu 0:
+>  srcu_get_delay kernel/rcu/srcutree.c:658 [inline]
+>  srcu_funnel_gp_start kernel/rcu/srcutree.c:1089 [inline]
+>  srcu_gp_start_if_needed+0x808/0x9f0 kernel/rcu/srcutree.c:1339
+>  __call_srcu kernel/rcu/srcutree.c:1384 [inline]
+>  __synchronize_srcu+0x114/0x150 kernel/rcu/srcutree.c:1432
+>  synchronize_srcu+0x1ae/0x1d0
+>  uprobe_unregister_sync+0x1a/0x20 kernel/events/uprobes.c:1328
+>  __probe_event_disable kernel/trace/trace_uprobe.c:1138 [inline]
+>  probe_event_disable+0x1f5/0x240 kernel/trace/trace_uprobe.c:1222
+>  trace_uprobe_register+0xbb/0x3c0 kernel/trace/trace_uprobe.c:1512
+>  perf_trace_event_unreg+0x6c/0x1a0 kernel/trace/trace_event_perf.c:162
+>  perf_uprobe_destroy+0x6a/0xf0 kernel/trace/trace_event_perf.c:345
+>  _free_event+0x7ca/0xa10 kernel/events/core.c:5357
+>  put_event kernel/events/core.c:5454 [inline]
+>  perf_event_release_kernel+0x61a/0x670 kernel/events/core.c:5579
+>  perf_release+0x1f/0x30 kernel/events/core.c:5589
+>  __fput+0x17a/0x6d0 fs/file_table.c:450
+>  ____fput+0x1c/0x30 fs/file_table.c:478
+>  task_work_run+0x13a/0x1a0 kernel/task_work.c:239
+>  resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
+>  exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+>  syscall_exit_to_user_mode+0xa8/0x120 kernel/entry/common.c:218
+>  do_syscall_64+0xd6/0x1c0 arch/x86/entry/common.c:89
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> value changed: 0x0000000000000000 -> 0x0000000000000001
+>
+> Reported by Kernel Concurrency Sanitizer on:
+> CPU: 0 UID: 0 PID: 6285 Comm: syz.1.1056 Not tainted 6.12.0-syzkaller-08756-g42d9e8b7ccdd #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+> ==================================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion visit https://groups.google.com/d/msgid/syzkaller-bugs/6743acf4.050a0220.1cc393.004d.GAE%40google.com.
