@@ -1,188 +1,93 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45EAB1922D3;
-	Mon, 25 Nov 2024 11:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECAFD1922FD;
+	Mon, 25 Nov 2024 11:18:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732532583; cv=none; b=rItg6+p+eb8QLGI89PeBDFAp8EGwhh72BAvCVONqxaKnzOvteuCcoIyXxNwJjMv4xl9SxJ1gKhag9Ua7ziqskoj3yccQe13G4CwvuOztZ0+NKXi45P9a/QbnGe8uD4xTloijkUUzsjdMxX/KQwj43lEMU9FhRcSEia+KfN/U2+k=
+	t=1732533514; cv=none; b=CbCP+xBMlEWAF108w2sLpIYHRFD35BIaTwM0R5oYhwmSv4oROhXS7+zlirgushhUX8cx7oDmnX1jyQ0HS25YB83Fwu/iM0VhAqyRQeG7vOaMabZYx6cNZRo8j4uac0AYOicnWVR9e8G3qB2Hr+DvjRAKaNK6U5G5KkeR7kVBFjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732532583; c=relaxed/simple;
-	bh=EC8OTNAFrDQnBJNrWVsMD1fjNs6MD0EWoAQPeINzPco=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PkjFMUvRz5jG1CIqsXseiAyeNGLdnhMdAG3HRoNrGVuvDf50NzmyYpya8fidiRx8eWA2BSaaWJ4S6CIFICDXV70ldXToK6KhP+SxVaE26H0pJYbNe1BBF91uCAF/iuU91Pawi8XMSlrGcqm7+6SIsfd7pEo3ueWirYaOQ+Cfhy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QF8bIsW8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cPxFRDaw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QF8bIsW8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cPxFRDaw; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1732533514; c=relaxed/simple;
+	bh=6B04KsZo6t6s0pI8aF1kaG1Lzd9HUwRpD74QomBAbcQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ICvIUZGlNU5lyumXJN6BTr6mpp+6NYgX78c1RSOaVqttKxM0ODnXC0zQqE0rDbrNhQ7yk389w05iDrsGgPSXffcaSsQPoQHYMxKTPeiN3ExWFVrGpOSHvV4fTNHRZVunoRFcE6DJHCdLTNPxIROqpAg6SiWgFVfJeLWyYrCCxSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iQL03Ujf; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QF8bIsW8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cPxFRDaw";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QF8bIsW8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cPxFRDaw"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 49EDE1F381;
-	Mon, 25 Nov 2024 11:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732532579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ar+9cLAWulcXxRtGsFXKmSM16oo5C1sr63D5/gDwuFU=;
-	b=QF8bIsW8FP8ccdRuQdq/p+Mk0r7rKRfZBge6qR79GZrIa6Z6gYRsVaDthcKm/NaMZqEjBT
-	pHX588FJezA0X1PA2syL4ujyL+bkGGlCO+oczy7RuI8Q4/S9AI4r86SU7sNbi0QAXgZsZB
-	aCqcG48Q6h09Yj9uloMI6+O12SBpenY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732532579;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ar+9cLAWulcXxRtGsFXKmSM16oo5C1sr63D5/gDwuFU=;
-	b=cPxFRDaw1TAofA3iopLEU926TpIhH4oZwFMIYCrgNHyf3Ucr8ngTZej3HTICFbR6eU2ciV
-	7pp541nAtX6RB6Aw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732532579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ar+9cLAWulcXxRtGsFXKmSM16oo5C1sr63D5/gDwuFU=;
-	b=QF8bIsW8FP8ccdRuQdq/p+Mk0r7rKRfZBge6qR79GZrIa6Z6gYRsVaDthcKm/NaMZqEjBT
-	pHX588FJezA0X1PA2syL4ujyL+bkGGlCO+oczy7RuI8Q4/S9AI4r86SU7sNbi0QAXgZsZB
-	aCqcG48Q6h09Yj9uloMI6+O12SBpenY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732532579;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ar+9cLAWulcXxRtGsFXKmSM16oo5C1sr63D5/gDwuFU=;
-	b=cPxFRDaw1TAofA3iopLEU926TpIhH4oZwFMIYCrgNHyf3Ucr8ngTZej3HTICFbR6eU2ciV
-	7pp541nAtX6RB6Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 25FE2137D4;
-	Mon, 25 Nov 2024 11:02:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id E0vqCGNZRGf3AgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 25 Nov 2024 11:02:59 +0000
-Message-ID: <a4bd2aef-6402-49e0-9ad6-f353c5200ee7@suse.cz>
-Date: Mon, 25 Nov 2024 12:02:58 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iQL03Ujf"
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2ffbea0acc2so10582821fa.1;
+        Mon, 25 Nov 2024 03:18:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732533511; x=1733138311; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BdTs+yXvHV2VkvZOleuVL8AIilS9h/9TJ0CS202URO0=;
+        b=iQL03Ujf/pH0GISur+awajdxELajdcEeLSBT2+vVYYr41sm1thyfzhzsoTOZ+LWB5t
+         S/cwROSTjTts5RJYRa/J4GqMl24KL7oCvldwxh5D+9G6TpxDLyrn5xbTnO9joZCgOKzx
+         qKTRpJp8Uy4F/UrZE5DM5ojDNpm8o7h5y+VrDEt90gPq/LAZkwmvThm7aVGVTeB36M/T
+         dUc8d+l9WIRVFLnEO2iJDBjZ+UXNcKMNcJBmVCGszEInw8AQ/gi568t6R0HBLH73f91n
+         jk/uzG4x7AGqaYr2iF6N3ayTIDOQ621LPDr+l2Uvwty+fpBiWsScxuemljGINkH9p6L7
+         8oeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732533511; x=1733138311;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BdTs+yXvHV2VkvZOleuVL8AIilS9h/9TJ0CS202URO0=;
+        b=vMk1dLHsEEVil2U0ZQhzTg6OQFdruCO5zMR0HwR8YI/Ve8m7Oa+u7icgCGvfCb/6ho
+         754Gxn+QlMmU35LdM2iXmQgxLCd0FPmZD4JnB4AGVzM/uX9WGfqjZDzXHe0k7zzIzucH
+         DYKOPdhptDlVasuovzZkCEXfR8WakTGYQWpnZAq1i2yuV4kTtQ6Wxi2aqVugE6bgU1IF
+         Qm+A2gzE4KyIqJUHbAYVI4ySz3ITUiQ2AiaiJf5WF4HqMEVhpc2hyQJ15+KWvJKMq3ma
+         CVszuP1LGcBVucK+WDh0SpeAvh4JEsHs2zwi/JgiI4lLUA/RnrVrTzdH9fpWoAei3VrL
+         dMHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWp10TZ1OEc4SLHhf/DXRWS7BdXhrMUquQ4KeNSEDawTlFE8Sef6z8X8SL+w3RH8eR3X4tM@vger.kernel.org, AJvYcCXVe5PR6bhBO91SKViMfj4kxpwSjqesTMEUO0UwccaAYApcnvbVCn5dgvIWP4zoYFZfkrOma7g/t2z//TQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyX8fHqOYJ3Wu98tYmTNde5EmHqIqS5W8aq6foBtTcUSYSM+kSJ
+	zE+jDFeIs8fmHB6Twj3f0FWPZCz9ZgLr2peHhnVSQ7TqQCRn5vqU9SNK1yxao80EGzPML86rP+h
+	1a3+eqKsbhKHhGLoCu8X+x4zJzMU=
+X-Gm-Gg: ASbGncvHqBMkcv4TDSCSBp5a4OMuNDstP2rb+uUhiuWSphrLHfnlgPN7VLUJ6X9gnNy
+	ubSQmjwwB986wcr837mLOLeiB2zlxcjM=
+X-Google-Smtp-Source: AGHT+IGrV2G7XuEDge18atcEwTobuvAC/IfIeeHl5buAnYkMXfeXyvtF4Gz6f1OITlD/141JIhoAwC2zgZbcvFEfhmE=
+X-Received: by 2002:a05:6512:3ba2:b0:53d:d139:6c21 with SMTP id
+ 2adb3069b0e04-53dd369fbbbmr5835086e87.18.1732533510747; Mon, 25 Nov 2024
+ 03:18:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz>
+ <20241112-slub-percpu-caches-v1-2-ddc0bdc27e05@suse.cz> <ZzYsBu_rJWSAcAYf@pc636>
+ <cc7f24b8-4de5-4023-b40b-5f62287aafe8@suse.cz> <Zz3YDI4Bb04opI2d@pc636> <a4bd2aef-6402-49e0-9ad6-f353c5200ee7@suse.cz>
+In-Reply-To: <a4bd2aef-6402-49e0-9ad6-f353c5200ee7@suse.cz>
+From: Uladzislau Rezki <urezki@gmail.com>
+Date: Mon, 25 Nov 2024 12:18:19 +0100
+Message-ID: <CA+KHdyXH5X=J2ontChFVUqFx15=VVng23H4gh_o-2Vzfo+mmjw@mail.gmail.com>
 Subject: Re: [PATCH RFC 2/6] mm/slub: add sheaf support for batching
  kfree_rcu() operations
-Content-Language: en-US
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Suren Baghdasaryan <surenb@google.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter
- <cl@linux.com>, David Rientjes <rientjes@google.com>,
- Pekka Enberg <penberg@kernel.org>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Matthew Wilcox <willy@infradead.org>, Boqun Feng <boqun.feng@gmail.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- maple-tree@lists.infradead.org
-References: <20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz>
- <20241112-slub-percpu-caches-v1-2-ddc0bdc27e05@suse.cz>
- <ZzYsBu_rJWSAcAYf@pc636> <cc7f24b8-4de5-4023-b40b-5f62287aafe8@suse.cz>
- <Zz3YDI4Bb04opI2d@pc636>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
- KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
- 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
- 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
- tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
- Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
- 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
- LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
- 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
- BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
- QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
- AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJkBREIBQkRadznAAoJECJPp+fMgqZkNxIQ
- ALZRqwdUGzqL2aeSavbum/VF/+td+nZfuH0xeWiO2w8mG0+nPd5j9ujYeHcUP1edE7uQrjOC
- Gs9sm8+W1xYnbClMJTsXiAV88D2btFUdU1mCXURAL9wWZ8Jsmz5ZH2V6AUszvNezsS/VIT87
- AmTtj31TLDGwdxaZTSYLwAOOOtyqafOEq+gJB30RxTRE3h3G1zpO7OM9K6ysLdAlwAGYWgJJ
- V4JqGsQ/lyEtxxFpUCjb5Pztp7cQxhlkil0oBYHkudiG8j1U3DG8iC6rnB4yJaLphKx57NuQ
- PIY0Bccg+r9gIQ4XeSK2PQhdXdy3UWBr913ZQ9AI2usid3s5vabo4iBvpJNFLgUmxFnr73SJ
- KsRh/2OBsg1XXF/wRQGBO9vRuJUAbnaIVcmGOUogdBVS9Sun/Sy4GNA++KtFZK95U7J417/J
- Hub2xV6Ehc7UGW6fIvIQmzJ3zaTEfuriU1P8ayfddrAgZb25JnOW7L1zdYL8rXiezOyYZ8Fm
- ZyXjzWdO0RpxcUEp6GsJr11Bc4F3aae9OZtwtLL/jxc7y6pUugB00PodgnQ6CMcfR/HjXlae
- h2VS3zl9+tQWHu6s1R58t5BuMS2FNA58wU/IazImc/ZQA+slDBfhRDGYlExjg19UXWe/gMcl
- De3P1kxYPgZdGE2eZpRLIbt+rYnqQKy8UxlszsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
- J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
- /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
- IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
- X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
- wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
- PVAiT6fnzIKmZAUCZAUSmwUJDK5EZgAKCRAiT6fnzIKmZOJGEACOKABgo9wJXsbWhGWYO7mD
- 8R8mUyJHqbvaz+yTLnvRwfe/VwafFfDMx5GYVYzMY9TWpA8psFTKTUIIQmx2scYsRBUwm5VI
- EurRWKqENcDRjyo+ol59j0FViYysjQQeobXBDDE31t5SBg++veI6tXfpco/UiKEsDswL1WAr
- tEAZaruo7254TyH+gydURl2wJuzo/aZ7Y7PpqaODbYv727Dvm5eX64HCyyAH0s6sOCyGF5/p
- eIhrOn24oBf67KtdAN3H9JoFNUVTYJc1VJU3R1JtVdgwEdr+NEciEfYl0O19VpLE/PZxP4wX
- PWnhf5WjdoNI1Xec+RcJ5p/pSel0jnvBX8L2cmniYnmI883NhtGZsEWj++wyKiS4NranDFlA
- HdDM3b4lUth1pTtABKQ1YuTvehj7EfoWD3bv9kuGZGPrAeFNiHPdOT7DaXKeHpW9homgtBxj
- 8aX/UkSvEGJKUEbFL9cVa5tzyialGkSiZJNkWgeHe+jEcfRT6pJZOJidSCdzvJpbdJmm+eED
- w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
- 1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
- EP+ylKVEKb0Q2A==
-In-Reply-To: <Zz3YDI4Bb04opI2d@pc636>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[google.com,oracle.com,linux.com,kernel.org,lge.com,linux.dev,gmail.com,infradead.org,kvack.org,vger.kernel.org,lists.infradead.org];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Pekka Enberg <penberg@kernel.org>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Matthew Wilcox <willy@infradead.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	rcu@vger.kernel.org, maple-tree@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 11/20/24 13:37, Uladzislau Rezki wrote:
-> Thank you. Let me try to start moving it into mm/. I am thinking to place
-> it to the slab_common.c file. I am not sure if it makes sense to have a
-> dedicated file name for this purpose.
+> On 11/20/24 13:37, Uladzislau Rezki wrote:
+> > Thank you. Let me try to start moving it into mm/. I am thinking to place
+> > it to the slab_common.c file. I am not sure if it makes sense to have a
+> > dedicated file name for this purpose.
+>
+> Yeah sounds good. slub.c is becoming rather large and this should not
+> interact with SLUB internals heavily anyway, slab_common.c makes sense.
+> Thanks!
+>
+Got it :)
 
-Yeah sounds good. slub.c is becoming rather large and this should not
-interact with SLUB internals heavily anyway, slab_common.c makes sense.
 Thanks!
 
-> Anyway, share your view if you want to add something. Otherwise i can
-> proceed with that process.
-> 
-> --
-> Uladzislau Rezki
-
+-- 
+Uladzislau Rezki
