@@ -1,125 +1,218 @@
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD8044360;
-	Fri, 29 Nov 2024 14:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D186114A0A4
+	for <rcu@vger.kernel.org>; Fri, 29 Nov 2024 16:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732890032; cv=none; b=kiG8CFsukU1sBeObtoQlBOAZjx457Z7/k7tHUYnbMrkmOrsUu3Gfw6or2PPK7HNRGcHN4w3NNjMeutQC21zDrPc0gwZUg+Ld2jx6mNXGRtj+RwRgcnGr8QKi7dCCLlB5yuXy3QUKqA02gBOpV7YS5d3ok69qlWVCfTq2kxCQ4LM=
+	t=1732898446; cv=none; b=XwSP5QU0DDkeLWfJpfzElUgXis90RHNvX2mJWze/qZAhh+oIEn4E1mCHdFL4GbCirZ8GeDuoDpHYyYNnWhoFDNy9TCFIgO3ROj05zisLk+aPVrKFzcsL6teGI7+7rIHQCfdvljW5die/mu/erD93Ns3LSYSdqmdeZnQtlftcuHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732890032; c=relaxed/simple;
-	bh=Cy/ZEnbIjBH6QcsuZHAvW2ybUF95XgUtkUzHpRfLIZc=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MnQAVuNV5zIQrQq8hgaHS+z1HDAldpjRrOnnCTRqe3dv5CN+4x8BTkPeL00tPUurY88W5bBButROiKDc92IS3TiPtysLTRB61MUAyQCNpSi9mGT+2cczVorj4//qZgxDV6wZWHxfaXOPMwQVGmQoNF6grDzjhr7vY2rRXY7sKiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZEPVvlf; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1732898446; c=relaxed/simple;
+	bh=az39fDf+MhRZMw9gFTdPNqw5XUR3nQ20B8N3wHXK3SY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ub2B9/fUim6y7TZDsoCT/Fkxmf4XRdqaIf+AEhlI+hh2do9Y5ptubN+RFwQG8VX60HVAj8S0ikxtLgC8elWx2/UwC9uHRkQWIJo8i9iaV9dBWVAZWjcNPzFuDGK0HIEjslES+Mq2sabTbx1M8dxR8RyLGmkti+dz/fKfF7wse5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HLcHSN0f; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lZEPVvlf"
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2ffb0bbe9c8so23377561fa.0;
-        Fri, 29 Nov 2024 06:20:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732890028; x=1733494828; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ov12DWzgb/UPU3FhdyAKlLO1eWE/ZNSJ/oisuTw+9HY=;
-        b=lZEPVvlfL4D8fvM2WQMKB60KLU0HVFRSontxzAPyEMt/vl85p6S0poqiZV01oMsu+p
-         qGJk7n+XSMOqZUyjFD9FX64VgcEBf50A9laiT/zZirkwkBX1EH6ijnA5jV9Brup3nnNI
-         YhDLkdqj+yflN3CGpiiha5INTi/5Vhf0G98zej7z/BZL6JiVjpcAT9RZeEPPb2p8PZH2
-         Fom5U8sPF6PNshjAXiHwNmEt43C5Uaa5rcvtb4FBrtg/M4dYyLGMLvOKNYynKia4Vbb7
-         mJYwlbBXu7yUesiNz6KwtLC7WuoccdfvSrkQH5xWxP2fli0Vl7YKC2N1CMRyk85GvPRY
-         Cgjw==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HLcHSN0f"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1732898443;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2oxQ2EopQjYunks2eIxH2qb+BPEjEvokj+yvCZveiP0=;
+	b=HLcHSN0fqRsvoYLqKz7fg/gLlrP6cRc2KBHRkF3VNk7yE75efKv4ol64zvgZmSAvYUfjgG
+	ALaA2Gf5rIs0wNHGD4Nj/70UF3QZwf9RzM0UkamRTQ7fpwFup/ck7sQOGIc4VzBUooSFqo
+	YtmaaA5wkUzhdGK3Dh+vPfhOUTviWSM=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-677-ImVc2wOJP52ZRiD8cJ8rBw-1; Fri, 29 Nov 2024 11:40:42 -0500
+X-MC-Unique: ImVc2wOJP52ZRiD8cJ8rBw-1
+X-Mimecast-MFC-AGG-ID: ImVc2wOJP52ZRiD8cJ8rBw
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7b6732101a6so309350585a.2
+        for <rcu@vger.kernel.org>; Fri, 29 Nov 2024 08:40:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732890028; x=1733494828;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ov12DWzgb/UPU3FhdyAKlLO1eWE/ZNSJ/oisuTw+9HY=;
-        b=Ip/CjX45wt/76QQqJ301mXxJSqc2ZgK/0FHAsfkbMzLqM47+1FWZyGTgdAuRgTAQLH
-         dILwsqNLiLbd4NbHpOBKCy0h+7aYFyWqdb/U1xpz8JjfmGasIIsB0bRHjKZF3SQZm4UD
-         JOk++A3igoqfHriFNNreIHRfzwfl6O3gRthaq9nvQEItRresORgAIlNg7SIpvj1Ojwzj
-         XPWPLv4rZoURcsH5yjbtbhaafacezSCUeP1rn59dC5tMFqn3JfmKsvEnoNCAYzNgbW0t
-         xLm0ctPYLxYSpbNMTop75XhRTcsFmOxH8GKBjrTB6U5eePFq/5TTaZm12lyhoSpGQpfQ
-         E3FQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUH6VnTj8X6V1v/qtmv49ynPjvxzlDIDLJ61V54PdtLq/e1boiuHCqOgJn1jKU9tOQ9O+DAXCfm2C6ykow=@vger.kernel.org, AJvYcCX/IyS5wPeJXKrI8b/SmwUUnApKjTeO6r+MbKanuRyZkhhJ7eiYRAzdc+cnLgLVfUoxSwSs@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxi7vX3Q7dc21Kd7MxiBEYA04selj8SR4YzZfv0pgbIfDdmFkCd
-	3jEZBVSndz1uoQJZbuJbSUGHjjxlVcGDn0b0e1eMEzfXJ3o3SjfC
-X-Gm-Gg: ASbGncs4RIZQL/AfOTVbpES1tEFy5G4cv258KogeLqd2fV3jmeVQAE/ejr2ssY+gsQi
-	zJD+c+tNkJ3LjgA4kNAJLGifIb3Semco+9iQKCceJ7t3yupjTPlEyJS94eK/5Io+Ly7Hj48NWyx
-	6xgh0CiO4HffEGxK7z+VCZlE5XqfZxiWseMd4uJUS0rB5PUMuKkR1300toFaum+3MaY0Rmqq+/T
-	cic4wanWAyL1RjqZk7Q4x8EJOPDTAX+iE9S1lTreAjDgf2L0RJuUXIRP9jx5oYumijzjzc5FgEb
-	9A==
-X-Google-Smtp-Source: AGHT+IGUT6CEclltd/WGp4YaLqNyRCPTqgq1ZAEUO7JQ+l/iucwpW5srMhSlkIsp2PzbWTTd/GILGw==
-X-Received: by 2002:a2e:bcc1:0:b0:2ff:cfeb:cabd with SMTP id 38308e7fff4ca-2ffd6110b09mr76415021fa.28.1732890028116;
-        Fri, 29 Nov 2024 06:20:28 -0800 (PST)
-Received: from pc636 (host-95-203-21-235.mobileonline.telia.com. [95.203.21.235])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2ffdfc74a65sm4677051fa.70.2024.11.29.06.20.26
+        d=1e100.net; s=20230601; t=1732898442; x=1733503242;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2oxQ2EopQjYunks2eIxH2qb+BPEjEvokj+yvCZveiP0=;
+        b=Y3AhoYWMTDMzopJeqkZdm/8Z2qMj8WBpn22cgvx+jyCDOHfgy2oCZsD1Z2bXnJwQx/
+         5IwROzzhMJZneIuMwW58G1y+E4W9gX8uLkmbwwZ5GjJm847e7YLAH2B8rwKkoVO3qNMw
+         oNqs4oUYFsnJOISq+/XiXS6r9dLcnP2fzANuXuOnLfYbFRkLDxOQv3xdJka3pv9Z6Ueq
+         dHSwiMqp1CkZMVSf0phtbG89Rm9cm1m0UKj0lE8zzUoIgetTOZusZeejSLrAcJY7Xscw
+         Eo7B0Go21Kvj9ai2VXti+B/GC8h54WdLF5+8zQ5r5+4SlzmZz8pSn9/l7spKqNAhbpIb
+         cKYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwsLhR6Ha4nKeHPUGM+pSebo+0IBDe4X09F/YhKc3Mw4MiIN68ce5mjX7BqGD543y9+to=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxn1dV7HurrpF4fAQcJftuWRP2Q++sRlH1WPSLqpwJ3NcmiSo0F
+	ZEr+ScQ0icZUrdHsT/WlqX0yUBqhbK9tdXJmL+6Ta1JGELND1obGEyfik1yhWR3PO3SPz/Pa320
+	S49elT/B14wTuP8B4P96+VlmBFLMwwha4ayetcPzO/lD7FYD0Gw==
+X-Gm-Gg: ASbGncsR0x1M8oZEdarc8nHg+yJVfGbQrn0qpUPf8rd8I2tPCXinw86s6ZMimE3kZzI
+	To8RV/KNk3H70/+GKJ4SIgbsqX+1plecqh+r/UBgl16WPr4yrCwBqI+S8IU5gPXTc4ewe7V7I/j
+	KkXgq5coq0ca+ssVyxhDj/xZAlVUgNV2YZ+nQN73MkXmiQa7FZZe6ZxuVsk8mO7ZI24mzop48l/
+	5dqzuWl2KOZ29VKcP+6ThmNHWjmoJKg758CtTXGiDta+IzwqBy506VkHKefiMtSN1D+lRbgbalR
+	5LE0EhwwOD37lqX5cHm/mHjnIeuSzPJ74uc=
+X-Received: by 2002:a05:6214:c62:b0:6d4:1a99:427b with SMTP id 6a1803df08f44-6d864d8e4famr151983456d6.30.1732898442012;
+        Fri, 29 Nov 2024 08:40:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG9RcRtBRvnIDfzr2/iRL96o9fRk4J92A47PIoCtseLUfNoii93tfgZQ/3Nm/m06TGA/XDcKA==
+X-Received: by 2002:a05:6214:c62:b0:6d4:1a99:427b with SMTP id 6a1803df08f44-6d864d8e4famr151982836d6.30.1732898441562;
+        Fri, 29 Nov 2024 08:40:41 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d8752064besm18111326d6.71.2024.11.29.08.40.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2024 06:20:27 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Fri, 29 Nov 2024 15:20:23 +0100
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Christoph Lameter <cl@linux.com>,
-	David Rientjes <rientjes@google.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Boqun Feng <boqun.feng@gmail.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	maple-tree@lists.infradead.org
-Subject: Re: [PATCH RFC 2/6] mm/slub: add sheaf support for batching
- kfree_rcu() operations
-Message-ID: <Z0nNpyBoD5x2M4jn@pc636>
-References: <20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz>
- <20241112-slub-percpu-caches-v1-2-ddc0bdc27e05@suse.cz>
- <ZzYsBu_rJWSAcAYf@pc636>
- <cc7f24b8-4de5-4023-b40b-5f62287aafe8@suse.cz>
- <Zz3YDI4Bb04opI2d@pc636>
- <a4bd2aef-6402-49e0-9ad6-f353c5200ee7@suse.cz>
- <CA+KHdyXH5X=J2ontChFVUqFx15=VVng23H4gh_o-2Vzfo+mmjw@mail.gmail.com>
- <Z0iZOFAUSqN7cN5Z@pc636>
- <d16bef14-eaee-4917-8cb6-5571327220df@suse.cz>
+        Fri, 29 Nov 2024 08:40:40 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+ x86@kernel.org, rcu@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Nicolas Saenz Julienne <nsaenzju@redhat.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Jonathan
+ Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, Paolo
+ Bonzini <pbonzini@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, Vitaly
+ Kuznetsov <vkuznets@redhat.com>, Andy Lutomirski <luto@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes
+ <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
+ Feng <boqun.feng@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes
+ <lstoakes@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Jason Baron
+ <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Ard Biesheuvel <ardb@kernel.org>, Nicholas
+ Piggin <npiggin@gmail.com>, Juerg Haefliger
+ <juerg.haefliger@canonical.com>, Nicolas Saenz Julienne
+ <nsaenz@kernel.org>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Nadav Amit <namit@vmware.com>, Dan
+ Carpenter <error27@gmail.com>, Chuang Wang <nashuiliang@gmail.com>, Yang
+ Jihong <yangjihong1@huawei.com>, Petr Mladek <pmladek@suse.com>, "Jason A.
+ Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>, Julian Pidancet
+ <julian.pidancet@oracle.com>, Tom Lendacky <thomas.lendacky@amd.com>,
+ Dionna Glaze <dionnaglaze@google.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, Juri Lelli <juri.lelli@redhat.com>, Marcelo
+ Tosatti <mtosatti@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, Daniel
+ Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
+Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
+ infrastructure
+In-Reply-To: <Z0Oeme2yhxF_ArX0@pavilion.home>
+References: <20241119153502.41361-1-vschneid@redhat.com>
+ <20241119153502.41361-12-vschneid@redhat.com>
+ <Zz2_7MbxvfjKsz08@pavilion.home> <Zz3w0o_3wZDgJn0K@localhost.localdomain>
+ <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Zz4cqfVfyb1enxql@localhost.localdomain>
+ <xhsmh1pz39v0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z0Oeme2yhxF_ArX0@pavilion.home>
+Date: Fri, 29 Nov 2024 17:40:29 +0100
+Message-ID: <xhsmhttbqm1s2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d16bef14-eaee-4917-8cb6-5571327220df@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello!
+On 24/11/24 22:46, Frederic Weisbecker wrote:
+> Le Fri, Nov 22, 2024 at 03:56:59PM +0100, Valentin Schneider a =C3=A9crit=
+ :
+>> On 20/11/24 18:30, Frederic Weisbecker wrote:
+>> > Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a =C3=A9c=
+rit :
+>> >> On 20/11/24 15:23, Frederic Weisbecker wrote:
+>> >>
+>> >> > Ah but there is CT_STATE_GUEST and I see the last patch also applie=
+s that to
+>> >> > CT_STATE_IDLE.
+>> >> >
+>> >> > So that could be:
+>> >> >
+>> >> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+>> >> > {
+>> >> >    struct context_tracking *ct =3D per_cpu_ptr(&context_tracking, c=
+pu);
+>> >> >    unsigned int old;
+>> >> >    bool ret =3D false;
+>> >> >
+>> >> >    preempt_disable();
+>> >> >
+>> >> >    old =3D atomic_read(&ct->state);
+>> >> >
+>> >> >    /* CT_STATE_IDLE can be added to last patch here */
+>> >> >    if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
+>> >> >            old &=3D ~CT_STATE_MASK;
+>> >> >            old |=3D CT_STATE_USER;
+>> >> >    }
+>> >>
+>> >> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL che=
+ck,
+>> >> but we get an extra loop if the target CPU exits kernelspace not to
+>> >> userspace (e.g. vcpu or idle) in the meantime - not great, not terrib=
+le.
+>> >
+>> > The thing is, what you read with atomic_read() should be close to real=
+ity.
+>> > If it already is !=3D CT_STATE_KERNEL then you're good (minus racy cha=
+nges).
+>> > If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in=
+ any case,
+>> > at least to make sure you didn't miss a context tracking change. So th=
+e best
+>> > you can do is a bet.
+>> >
+>> >>
+>> >> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KER=
+NEL=3D1
+>> >> we could do:
+>> >>
+>> >>   old =3D atomic_read(&ct->state);
+>> >>   old &=3D ~CT_STATE_KERNEL;
+>> >
+>> > And perhaps also old |=3D CT_STATE_IDLE (I'm seeing the last patch now=
+),
+>> > so you at least get a chance of making it right (only ~CT_STATE_KERNEL
+>> > will always fail) and CPUs usually spend most of their time idle.
+>> >
+>>=20
+>> I'm thinking with:
+>>=20
+>>         CT_STATE_IDLE		=3D 0,
+>>         CT_STATE_USER		=3D 1,
+>>         CT_STATE_GUEST		=3D 2,
+>>         CT_STATE_KERNEL		=3D 4, /* Keep that as a standalone bit */
+>
+> Right!
+>
+>>=20
+>> we can stick with old &=3D ~CT_STATE_KERNEL; and that'll let the cmpxchg
+>> succeed for any of IDLE/USER/GUEST.
+>
+> Sure but if (old & CT_STATE_KERNEL), cmpxchg() will consistently fail.
+> But you can make a bet that it has switched to CT_STATE_IDLE between
+> the atomic_read() and the first atomic_cmpxchg(). This way you still have
+> a tiny chance to succeed.
+>
+> That is:
+>
+>    old =3D atomic_read(&ct->state);
+>    if (old & CT_STATE_KERNEl)
+>       old |=3D CT_STATE_IDLE;
+>    old &=3D ~CT_STATE_KERNEL;
+>
+>
+>    do {
+>       atomic_try_cmpxchg(...)
+>
+> Hmm?
 
-> On 11/28/24 5:24 PM, Uladzislau Rezki wrote:
-> > On Mon, Nov 25, 2024 at 12:18:19PM +0100, Uladzislau Rezki wrote:
-> >>> On 11/20/24 13:37, Uladzislau Rezki wrote:
-> >>>> Thank you. Let me try to start moving it into mm/. I am thinking to place
-> >>>> it to the slab_common.c file. I am not sure if it makes sense to have a
-> >>>> dedicated file name for this purpose.
-> >>>
-> >>> Yeah sounds good. slub.c is becoming rather large and this should not
-> >>> interact with SLUB internals heavily anyway, slab_common.c makes sense.
-> >>> Thanks!
-> >>>
-> >> Got it :)
-> >>
-> > There is one question. Do you think it works if i do a migration as one
-> > big commit? I am asking, because it is easier to go that way.
-> 
-> Hi, I think one big move is fine. In case there are further adjustments,
-> those would be better in separate patches. That makes it easy to review
-> the move with git diff --color-moved.
-> 
-Sounds good and thank you!
+But it could equally be CT_STATE_{USER, GUEST}, right? That is, if we have
+all of this enabled them we assume the isolated CPUs spend the least amount
+of time in the kernel, if they don't we get to blame the user.
 
---
-Uladzislau Rezki
