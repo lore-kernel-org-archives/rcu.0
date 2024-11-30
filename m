@@ -1,195 +1,169 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3B454279;
-	Fri, 29 Nov 2024 22:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D140E17BD3
+	for <rcu@vger.kernel.org>; Sat, 30 Nov 2024 22:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732918794; cv=none; b=ElKjYT6ihijsR7xeFMNgBKlX6N+4LnxQ7V463x0N21dtiag40lu2YUTnMC0cZd0kp82lgjocDhfqlv/lpAUt7Cyt2PJ63H/FKeCCv5dEjE8xClywL1AQcpyE24NIfB4064JaYiaW8vWVPYW9M+KXRHRx5+JOXdjy94Zk/iCWLYc=
+	t=1733005381; cv=none; b=diqMn09ss/W+8C/88gc0rMk4Pz0KGz5+rQLPcOTEDKj8gdgsKJWM3Esp5YP1VCfE872TcM8nWHiQF7P9CdQ+Zjvr4d4Z6nfWxTrX4hnoVw+4TGeTg7yka/uFxQAJeqi3OPT9AKcGcyHzLMcFYShL39UdpGwprRUdHw2nLjY05Ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732918794; c=relaxed/simple;
-	bh=OJvU5bLoYGZXh8qACQ/T6IEV8oDjNatqYL+CeW3HsJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i6J+y4trG6gaP981SbMfKlABk0A+efDzgh2pSzsX4f2H5OVWBI+A+eLx/O0G9lnsKR0kdOK4WeFSIDRs5Iy7DE32Hy3TwL9zQxTf6mmSqqtklFQRdGDL7weOpHUjJzfdf5YN9hI+7nEYJ7PLJV4SkVAOHiijyaZUHriuaHgpkrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o5p0Hl5t; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1733005381; c=relaxed/simple;
+	bh=0IvvcDUDY8TJbK4KimI6JhkxQh8QP+EzoZ9T/flyLaY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=nIbqblLMvXAiYW8OhbaDrFXAHssWSq5CN8Dn6ZGyyzdp9mn7DOM8j8n+dQIDKDEtcdjVd+lQ4IwbQgWRmjh1ymdep4VTLVF/5aWxOLLqBRNnd7Ef1O1gLEZ7YlqvPr46+VezoXJAD23Nce6TMdq4OV/1XK/YG4Eey7J4Zu74qtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MsY5Zk4e; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o5p0Hl5t"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C894C4CECF;
-	Fri, 29 Nov 2024 22:19:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732918794;
-	bh=OJvU5bLoYGZXh8qACQ/T6IEV8oDjNatqYL+CeW3HsJg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o5p0Hl5t68sOGrNrYENKMovE5NztdhOpEAFABibzPZGUoqz1AXXaCH53QUmqJu9yj
-	 4Ymv5lTSZbEsDt+NPkbGOI0BMOSI/hhFnrmJFW+/qqVN7darYuDK67nomYfyn1WTZW
-	 BFRJMR/Fl9FeauFwTeTH3phw520rl/KLfJopadlpHQUp+IZrgAicwA5DrSA19U8kSy
-	 DpTFETeRTKi33P/1gcVkoaLTCtVby2dZtM0i0fCZSI8+UVXXGJuKWkaLG6dG9bq/8l
-	 w9ueF6Q3rudD7ZWIlpxFt0GwISNHkjcxLh8drdyWqw8+a9ohium7+Z6XshqrmZWZxx
-	 DWCgNchAqIpvQ==
-Date: Fri, 29 Nov 2024 23:19:51 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-	x86@kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jason Baron <jbaron@akamai.com>, Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Juerg Haefliger <juerg.haefliger@canonical.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Nadav Amit <namit@vmware.com>, Dan Carpenter <error27@gmail.com>,
-	Chuang Wang <nashuiliang@gmail.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Petr Mladek <pmladek@suse.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-	Julian Pidancet <julian.pidancet@oracle.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>
-Subject: Re: [RFC PATCH v3 11/15] context-tracking: Introduce work deferral
- infrastructure
-Message-ID: <Z0o-B1ONq4wL1RHc@pavilion.home>
-References: <20241119153502.41361-1-vschneid@redhat.com>
- <20241119153502.41361-12-vschneid@redhat.com>
- <Zz2_7MbxvfjKsz08@pavilion.home>
- <Zz3w0o_3wZDgJn0K@localhost.localdomain>
- <xhsmho729hlv0.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Zz4cqfVfyb1enxql@localhost.localdomain>
- <xhsmh1pz39v0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Z0Oeme2yhxF_ArX0@pavilion.home>
- <xhsmhttbqm1s2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MsY5Zk4e"
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-aa52edbcb63so706406466b.1
+        for <rcu@vger.kernel.org>; Sat, 30 Nov 2024 14:22:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733005377; x=1733610177; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xLKP146zo0xxtQwNFZbDeNInT0znVxv5b+lZE7DK2kI=;
+        b=MsY5Zk4eG8+oj1hoE1uBpZ4GmwnpR+I1WMZc4075Z5TGQwhLzJsnJ1MSYhplGW6n3K
+         wPN3w670+tZaEHlQ2u1Qw1eWimkJiobO7f9ZhyC0Jjxb76jTqve6jsUSsiBqtul5Ckdp
+         nsGSjjfwSwYXdOPTXi48rNW323sr0gsrz2TM7GCmBF2QBdPGjfPaZo42Ab5grQTXCCIi
+         D/MOXf0ChFaIP4WtcbM995TXvEeqOiw73BsV2p9uTpxyjjXGmVnKmUci22gg7nlKGi5E
+         mj5Nr+gIVQ6utzUIwCF4poFJk4+F3ovXcBRQf4TEueBNXc0Gb2zKt0SfoA3qMZuzJ2cX
+         /opQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733005377; x=1733610177;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xLKP146zo0xxtQwNFZbDeNInT0znVxv5b+lZE7DK2kI=;
+        b=aDDAF8IfHsHCLng4cILZy5JfIEh8eLelC0+YX4LsIiqKvZWRt+ND77thQklbrkuE5a
+         ye+k8Pe8bzPFE6pwzl25DNhXZiip4uaqIsajfjscLabNOiGqNehdCDZMqTKilDeXtV9S
+         6qP9MKpbhDYQVF6UmCFwQIVJX3JyQSVYqGNhH73Ud8hOZ68hTArRC5UtVzGbAQyOAJwy
+         i+4pkkoeeSD6aJBKW2vQGPBQD+BJP/M/tLg4nLI1XkV339g0QFior8aM6IVMh4l4/8PA
+         QhHpoM3mmWtiij2VVoy680KSR6/9pv2oMvSua1Cdk/8HS6TbQv/GqN6TM6ogtyAtgIHq
+         OspA==
+X-Gm-Message-State: AOJu0YwyeGB9EZmLaBmo/EhaSF2bQ8LCHy+lLLkOwQoPz07K1lZvpzPl
+	D4FTTKbAYCydy32ujjz2oLnqdGyZWCX2p87KQquqWuAPdIMbQP1LKzsJB0SThddU1ttGtrnYfY3
+	JvrQr5XILbeiEN/hUSdxsv9WKGu1JkWlC
+X-Gm-Gg: ASbGncuPwgvdF8ad3tyTQx0ACd7RWSaemr0YvgdD/PV8Txc7oQryK4jPSIqv1oDk+Gg
+	yFbMv6qK2TiXRTBSDuDJhdMGIPTIniJPZ
+X-Google-Smtp-Source: AGHT+IEwAMaENbcnfwYvSVK7k3NDAGXGzAT7AAkoSoVHXEdoTthsJsClkIL6K4ijaWNomYdrV74DnJR8rr8B7+UggsY=
+X-Received: by 2002:a17:907:7615:b0:aa5:358c:73af with SMTP id
+ a640c23a62f3a-aa5945075fdmr1544711466b.6.1733005376993; Sat, 30 Nov 2024
+ 14:22:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <xhsmhttbqm1s2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Sat, 30 Nov 2024 23:22:45 +0100
+Message-ID: <CA+=Fv5R9NG+1SHU9QV9hjmavycHKpnNyerQ=Ei90G98ukRcRJA@mail.gmail.com>
+Subject: Kernel Oops on alpha with kernel version >=6.9.x
+To: rcu@vger.kernel.org, paulmck@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Le Fri, Nov 29, 2024 at 05:40:29PM +0100, Valentin Schneider a écrit :
-> On 24/11/24 22:46, Frederic Weisbecker wrote:
-> > Le Fri, Nov 22, 2024 at 03:56:59PM +0100, Valentin Schneider a écrit :
-> >> On 20/11/24 18:30, Frederic Weisbecker wrote:
-> >> > Le Wed, Nov 20, 2024 at 06:10:43PM +0100, Valentin Schneider a écrit :
-> >> >> On 20/11/24 15:23, Frederic Weisbecker wrote:
-> >> >>
-> >> >> > Ah but there is CT_STATE_GUEST and I see the last patch also applies that to
-> >> >> > CT_STATE_IDLE.
-> >> >> >
-> >> >> > So that could be:
-> >> >> >
-> >> >> > bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
-> >> >> > {
-> >> >> >    struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
-> >> >> >    unsigned int old;
-> >> >> >    bool ret = false;
-> >> >> >
-> >> >> >    preempt_disable();
-> >> >> >
-> >> >> >    old = atomic_read(&ct->state);
-> >> >> >
-> >> >> >    /* CT_STATE_IDLE can be added to last patch here */
-> >> >> >    if (!(old & (CT_STATE_USER | CT_STATE_GUEST))) {
-> >> >> >            old &= ~CT_STATE_MASK;
-> >> >> >            old |= CT_STATE_USER;
-> >> >> >    }
-> >> >>
-> >> >> Hmph, so that lets us leverage the cmpxchg for a !CT_STATE_KERNEL check,
-> >> >> but we get an extra loop if the target CPU exits kernelspace not to
-> >> >> userspace (e.g. vcpu or idle) in the meantime - not great, not terrible.
-> >> >
-> >> > The thing is, what you read with atomic_read() should be close to reality.
-> >> > If it already is != CT_STATE_KERNEL then you're good (minus racy changes).
-> >> > If it is CT_STATE_KERNEL then you still must do a failing cmpxchg() in any case,
-> >> > at least to make sure you didn't miss a context tracking change. So the best
-> >> > you can do is a bet.
-> >> >
-> >> >>
-> >> >> At the cost of one extra bit for the CT_STATE area, with CT_STATE_KERNEL=1
-> >> >> we could do:
-> >> >>
-> >> >>   old = atomic_read(&ct->state);
-> >> >>   old &= ~CT_STATE_KERNEL;
-> >> >
-> >> > And perhaps also old |= CT_STATE_IDLE (I'm seeing the last patch now),
-> >> > so you at least get a chance of making it right (only ~CT_STATE_KERNEL
-> >> > will always fail) and CPUs usually spend most of their time idle.
-> >> >
-> >> 
-> >> I'm thinking with:
-> >> 
-> >>         CT_STATE_IDLE		= 0,
-> >>         CT_STATE_USER		= 1,
-> >>         CT_STATE_GUEST		= 2,
-> >>         CT_STATE_KERNEL		= 4, /* Keep that as a standalone bit */
-> >
-> > Right!
-> >
-> >> 
-> >> we can stick with old &= ~CT_STATE_KERNEL; and that'll let the cmpxchg
-> >> succeed for any of IDLE/USER/GUEST.
-> >
-> > Sure but if (old & CT_STATE_KERNEL), cmpxchg() will consistently fail.
-> > But you can make a bet that it has switched to CT_STATE_IDLE between
-> > the atomic_read() and the first atomic_cmpxchg(). This way you still have
-> > a tiny chance to succeed.
-> >
-> > That is:
-> >
-> >    old = atomic_read(&ct->state);
-> >    if (old & CT_STATE_KERNEl)
-> >       old |= CT_STATE_IDLE;
-> >    old &= ~CT_STATE_KERNEL;
-> >
-> >
-> >    do {
-> >       atomic_try_cmpxchg(...)
-> >
-> > Hmm?
-> 
-> But it could equally be CT_STATE_{USER, GUEST}, right? That is, if we have
-> all of this enabled them we assume the isolated CPUs spend the least amount
-> of time in the kernel, if they don't we get to blame the user.
+Hi,
 
-Unless CONTEXT_TRACKING_WORK_IDLE=y yes.
 
-Anyway that's just a detail that can be refined in the future. I'm fine with
-just clearing CT_STATE_KERNEL and go with that.
+First some background:
+I've been trying to boot recent kernels on my alpha machines. Anything
+after linux-6.8.12 gives me trouble. After doing a kernel bisect, I
+found that commit 9187210eee7d87eea37b45ea93454a88681894a4
+(net-next-6.9) is where my troubles begin. The problem consists in
+that the boot process gets stuck when trying to set parameters for
+network interfaces. The bad commit does make a lot of updates to the
+network code.
 
-Thanks.
+When booting the system with kernel 6.12.0 I'm able to boot into
+single-user mode, but when starting system services one by one I
+trigger a kernel Oops when the network interface is renamed (see stack
+dump below). Looking at the changes made by the bad commit, it seems
+to (among other things) be replacing the locking mechanism (RCU
+instead of rtnl_lock). The stack dump from the kernel Oops suggests
+that something is happening in the RCU locking code. I'm no expert on
+RCU-stuff but I read somewhere that it is done by volatile access on
+all systems other than DEC Alpha, where a memory barrier instruction
+is required. This indicates that the change could affect Alpha
+architecture differently? Inspecting the changes to networking code in
+the bad commit, particularly the changes made to net/core/dev.c, I put
+together the patch below. This patch reverts one of the lines changed
+in the "bad commit" for net/core/dev.c. After reverting the change on
+just this line, I'm able to boot kernel 6.12.0 on my Alpha ES-40 to
+full multi-user again. I've tested this on an Alpha ES40 and an
+UP2000+ and the problem is 100% reproducible on both machines.
+
+The patch might not be a real solution to the problem but could be a good
+place to start looking when figuring out what's really going on. The feedback
+I've gotten so far (forums and the netdev mailing list) is that the
+RCU implementation on alpha is probably where things go wrong.
+
+
+
+------------------------------------
+Patch to "fix" the problem:
+-----------------------------------
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 13d00fc10f55..26fda14367e5 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -1261,7 +1261,7 @@ int dev_change_name(struct net_device *dev,
+const char *newname)
+
+        netdev_name_node_del(dev->name_node);
+
+-       synchronize_net();
++       synchronize_rcu();
+
+        netdev_name_node_add(net, dev->name_node);
+
+
+--------------------------
+dmesg/kernel log:
+-------------------------
+
+[   93.431592] tulip 0000:01:02.0 enp1s2: renamed from eth0
+
+[   93.436475] Unable to handle kernel paging request at virtual
+address 0000000000000000
+[   93.436475] CPU 1
+[   93.436475] rcu_exp_gp_kthr(17): Oops -1
+[   93.436475] pc = [<0000000000000000>]  ra = [<0000000000000000>]
+ps = 0000    Not tainted
+[   93.436475] pc is at 0x0
+[   93.436475] ra is at 0x0
+[   93.436475] v0 = 0000000000000007  t0 = fffffc0000e62440  t1 =
+0000000000000001
+[   93.436475] t2 = 0000000000000000  t3 = 0000000000000001  t4 =
+0000000000000001
+[   93.436475] t5 = 0000000000000001  t6 = 0000000000000001  t7 =
+fffffc0003138000
+[   93.436475] s0 = fffffc0000e62440  s1 = fffffc0000ec3a10  s2 =
+fffffc0000ec3a10
+[   93.436475] s3 = fffffc0000ec3a10  s4 = fffffc00003a90f0  s5 =
+fffffc0000e62440
+[   93.436475] s6 = 0000000000000000
+[   93.436475] a0 = 0000000000000000  a1 = 0000000000000000  a2 =
+0000000000000000
+[   93.436475] a3 = 0000000000000000  a4 = 0000000000000001  a5 =
+fffffc0000517744
+[   93.436475] t8 = 0000000000000001  t9 = 0000000000000001  t10=
+fffffc0000e3d320
+[   93.436475] t11= fffffc0000220240  pv = fffffc0000b73210  at =
+0000000000000000
+[   93.436475] gp = fffffc0000eb3a10  sp = 00000000ea2ea184
+[   93.436475] Disabling lock debugging due to kernel taint
+[   93.436475] Trace:
+[   93.436475] [<fffffc00003aee60>] wait_rcu_exp_gp+0x30/0xa0
+[   93.436475] [<fffffc0000b6c200>] __cond_resched+0x30/0x90
+[   93.436475] [<fffffc00003569b8>] kthread_worker_fn+0xc8/0x1f0
+[   93.436475] [<fffffc000035863c>] kthread+0x17c/0x1c0
+[   93.436475] [<fffffc00003568f0>] kthread_worker_fn+0x0/0x1f0
+[   93.436475] [<fffffc0000311128>] ret_from_kernel_thread+0x18/0x20
+
+[   93.436475] Code:
+[   93.436475]  00000000
+[   93.436475]  00000000
+[   93.436475]  00063301
+[   93.436475]  0000077c
+[   93.436475]  00001111
+[   93.436475]  000022a2
