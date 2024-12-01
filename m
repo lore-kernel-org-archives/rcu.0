@@ -1,90 +1,79 @@
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10B5AD5A
-	for <rcu@vger.kernel.org>; Sun,  1 Dec 2024 10:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4027533086
+	for <rcu@vger.kernel.org>; Sun,  1 Dec 2024 17:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733047765; cv=none; b=vCOQf77r9CshYr6SHC84cq5Z3siH8Oz1oGUFcnTLt+MZyIdU0dMRd4DwHXV/duWRWXQT4SE8tHY67yT5Sne9qAozCQfRsYEyDPSDUV6fv1w4n+8KLVM7hE3eOv3p2/hArI4yYr7PHYswKlPNPZN2v8x6lDwHkYx4QuZqK4u1ZDI=
+	t=1733072660; cv=none; b=HX87vyddd3GE4RsE+rwV0BqLkTPQk7VbG4fLy47OzcuX1whu0iuMRbdgMTYZr8V2kRthkDbm0KWjHLl5QFK8WaGwZv3+7F8oPmNNFGJ6nJgHoHJKvhJeiXN4PU6tuufnTFgrlJIe6ic6P8lonlDw5Gv/vfUcqHhsj79bi9hQS5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733047765; c=relaxed/simple;
-	bh=gOi+enroUyrB38qJqbzPwdn5XFUcbaoFsaiQQjhidCY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OpN7Bs8YNXsZ1QTE4Qf8DxD6p3Ph/u18pHc/1ocMtO5eOSiKLvTAsHEaMJLfSL2rMJK91UdTzfJ5DrGX2qbYJhOdu7brM06L1z7sjZ2/aS22WZeR3hYhoaPXGElMGi7p+dr5H9q6HQFCnXZDkrYKRV5CXJsyMtCAIsb5Q1c6h6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NmTdAbm2; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1733072660; c=relaxed/simple;
+	bh=EKXrWxUNpGfFM6+1EUTiXNGhnESgaYA6dk/YKKTMhf4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WOHFiCivDB2+xTFFfAGHkKh1+WvU6RaxE7Kdu9RfUymDnl2kwjrFdrwC0dJL2R+g/PON50/svUtsod3IKOpkQ2ENHhXQi7XMKp47zFrZFTYHmAsf7hLgoX8Ktn0wgNkJZ9zD2/ux8orT612g+eA4vlNKEgXHWzCaH3o/0E8NUTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XP/g06Cm; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NmTdAbm2"
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aa5b0d8bd41so326794366b.2
-        for <rcu@vger.kernel.org>; Sun, 01 Dec 2024 02:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733047762; x=1733652562; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7Y/P4yLiokP4aBaqQz+6ev3m1YWo9zM+Q9ULiW2DX1g=;
-        b=NmTdAbm240BBIC7X/r1iNtcxSW7UzapLcgiegGdK6mfENDpQH/Cfc8QQ7qZyJx5Jx5
-         JZ7eorvAtWiVlUZx2i3LVZ9qOrrqKdoOtS0ywfsSBenBUtnTAbNdKx3vBniBLmnJkgdG
-         QefvDUnax/vbgn5Yxi/Uuw3oR/sF5wnHtCTCmZU2bp7U+MT3t2NNUgc+PQaLQkV8QcHK
-         ByyzZ7zWqYQNMocwHxqxI2PZs3UkUQkV7cbQJHi2CzPhv/lfyIU9j6otRMREAcp9RORe
-         v+a/BJVekVD5Nb0MDchq6KceduqcEIVuAxFltjmWnz5Mlr9Wg8Dq6TFRNAtQO+VlKS28
-         wVWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733047762; x=1733652562;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7Y/P4yLiokP4aBaqQz+6ev3m1YWo9zM+Q9ULiW2DX1g=;
-        b=FjnXIfp8zMZ5goM16uSmIHSmjuBX6S7zm9OqGH9L9z3JLFJveLd9U8JncPo7oLwWgp
-         BlXAol5AfugDBJWLt/fgBOobvI5qrNgBiF80zyr0yfxYgrbgod1Jyqfzgyqb+APFmxIE
-         0J9hd0ywVfh7UEBTRq6a7hHtwgOuWXfZjqtO/FZHoYt8X1XQkAeTNLJNn/RenSI8Bn2c
-         rFwdxvzVVR++U1uBdozbN821fKcUa1jwpuD8oPafY4eadCvJcIcJl+n8iSbJRSDmw4At
-         qDRlwkGpvhmfHR4C8qo9SC4ORzd9nqtQx9NOSmUgg3gJXnzLpIw0oePgDMb6i5jlL9W1
-         ig8Q==
-X-Gm-Message-State: AOJu0YyLY/I3D0f9em2Ywu3yiNLcT9uw9yFwNpfHo/ncuQXKiUUaIlmk
-	yKOXHPZBetkUYfXWmxM0BBy8OL0CiYcC4eZemMgexQek3XpUcNDhJmNzSOfwptZuAmpAuLDTdyY
-	7ZWBkzetSlMleN9jDZwLqb5+RbXU=
-X-Gm-Gg: ASbGncuu7FShc+mFyNLDg6mH4D1noFDmCxoJJC7zR0/hiCBcdaHC1MVM1dV2Y6kmdpa
-	qf8qmZa7jDeepTweexzC0HiY4TvE5hZSi
-X-Google-Smtp-Source: AGHT+IHaDlQeaQmlEoD98gou9QFDqWyvMzcuExnVPb9zlUrCJc9gVwFDcy1CCXulqImOFxrYWdJ1PYkr2upTI1L5Xg4=
-X-Received: by 2002:a17:907:7743:b0:aa5:49f0:1510 with SMTP id
- a640c23a62f3a-aa580ee8739mr1333981066b.8.1733047761938; Sun, 01 Dec 2024
- 02:09:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XP/g06Cm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D6BDC4CECF;
+	Sun,  1 Dec 2024 17:04:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733072658;
+	bh=EKXrWxUNpGfFM6+1EUTiXNGhnESgaYA6dk/YKKTMhf4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XP/g06Cmq7f0/TfULyw3Jkzlz5mzFo2fhjyNIFWsU+yqQjyn/WUY/gpKC4fxLmi1t
+	 uY3OVZwW0e/EDmY5f2i9xyZFCjPUvPCHhGK1x7Up248dT1XiTUaE0ANZd0Wf+eFVFI
+	 U/pIAPLIyXGEQ5smqJS5ddvO9UhbuyLtTFRwuulmcbXbdA83UOodMHIWMP+5n86J2L
+	 XNTGOFvfyy4/XRNOJ2l6zVNDCSDAFNezVsnjlIt80+CvggoGOF5ZotbkTUDDBz1n0F
+	 Gbl5W4Sv49dxDG0gRCdWvEl/Bk3U9eX92Daer6ZqOKaEjdwXdWNpkYd6ut7GilMba5
+	 nBcupHJtvw8hw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 3B17BCE0DB6; Sun,  1 Dec 2024 09:04:18 -0800 (PST)
+Date: Sun, 1 Dec 2024 09:04:18 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Magnus Lindholm <linmag7@gmail.com>
+Cc: rcu@vger.kernel.org
+Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
+Message-ID: <8e365392-0e0d-4d78-bae7-69f27c8350f9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CA+=Fv5R9NG+1SHU9QV9hjmavycHKpnNyerQ=Ei90G98ukRcRJA@mail.gmail.com>
+ <f1561626-fde6-41c0-9d45-87a6a7b13816@paulmck-laptop>
+ <CA+=Fv5TMZ1bckob2VZ1AaNwdU3R+5a8REKg4aZR8novx7+dj-g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+=Fv5R9NG+1SHU9QV9hjmavycHKpnNyerQ=Ei90G98ukRcRJA@mail.gmail.com>
- <f1561626-fde6-41c0-9d45-87a6a7b13816@paulmck-laptop>
-In-Reply-To: <f1561626-fde6-41c0-9d45-87a6a7b13816@paulmck-laptop>
-From: Magnus Lindholm <linmag7@gmail.com>
-Date: Sun, 1 Dec 2024 11:09:10 +0100
-Message-ID: <CA+=Fv5TMZ1bckob2VZ1AaNwdU3R+5a8REKg4aZR8novx7+dj-g@mail.gmail.com>
-Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
-To: paulmck@kernel.org
-Cc: rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+=Fv5TMZ1bckob2VZ1AaNwdU3R+5a8REKg4aZR8novx7+dj-g@mail.gmail.com>
 
-On Sun, Dec 1, 2024 at 5:31=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
+On Sun, Dec 01, 2024 at 11:09:10AM +0100, Magnus Lindholm wrote:
+> On Sun, Dec 1, 2024 at 5:31 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> 
+> > Does booting with the "rcupdate.rcu_normal=1" kernel boot parameter
+> > also suppress the problem?
+> 
+> setting rcupdate.rcu_normal=1 also suppresses the problem. I guess this makes
+> RCU code not do synchronize_rcu_normal() in stead of the full
+> synchronize_rcu_expedited() which is where I get the kernel Oops.
 
-> Does booting with the "rcupdate.rcu_normal=3D1" kernel boot parameter
-> also suppress the problem?
+Exactly, though the effect is that any call to synchronize_rcu_expedited()
+instead results in a call to synchronize_rcu().
 
-setting rcupdate.rcu_normal=3D1 also suppresses the problem. I guess this m=
-akes
-RCU code not do synchronize_rcu_normal() in stead of the full
-synchronize_rcu_expedited() which is where I get the kernel Oops.
+Which means that you can work around this problem without having to
+carry patches and without having to slow down network configuration for
+everyone else.  ;-)
 
-> That "pc =3D" down below is the program counter?  If so, I am at a loss
-> as to what RCU could do to make it be zero.
->
+> > That "pc =" down below is the program counter?  If so, I am at a loss
+> > as to what RCU could do to make it be zero.
+> 
+> No sure why this happens, if the RCU code is passing around pointers to
+> worker function and this somehow ends up being a null pointer on the Alpha?
 
-No sure why this happens, if the RCU code is passing around pointers to
-worker function and this somehow ends up being a null pointer on the Alpha?
+Are frame pointers enabled on your setup?  If not, could you please
+enable them and reproduce the problem?  Could you also please try
+building and reproducing with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y?
 
-/Magnus
+							Thanx, Paul
