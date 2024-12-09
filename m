@@ -1,66 +1,66 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82110225767
-	for <rcu@vger.kernel.org>; Mon,  9 Dec 2024 12:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3966D1B043D
+	for <rcu@vger.kernel.org>; Mon,  9 Dec 2024 14:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733747597; cv=none; b=tj2f70YNKLcICOCyYK6yaL3aRGn3c3HdqXRVJTRDPy2xEiuUX0b/JYwWzko+HRN4zJ9RV1VAML+IKAvuf3Gue+XLx0/KIEmXjIoLWyCsP555qwKg4dJDKUwFfaZV5T0owE7qklBBrqOXxTiV/2ANr8ya4piMYx5z0vYlPx2lQFg=
+	t=1733755382; cv=none; b=lxuttnX/cwcghI7eH+ijahv8KIPfyWCoe2oX3XufiL86pqIogWSCrWAINK8ZzaUFKVsUj+BuZg1hk8rFs2Gsz8aF8PMS3Nwe6obbHTXwO4bVwUCD2w+2STMasqCxqsLuwQZWBM/IDmWGdLitjQoUoMIYwDDkCCBNzB2JiCDQhBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733747597; c=relaxed/simple;
-	bh=ek6JnJryzS8nkolvdBO+WcL7txRzhCqyp5AS4yQyerY=;
+	s=arc-20240116; t=1733755382; c=relaxed/simple;
+	bh=Iiqbjto+vb0aXpNcZOFiu3NWNHXQsyJ41jNpYdodkL8=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LqTC+q7UQ6n+PBbJ45OvNCnIrnNT87mtV1dfyx5H/tm66F7cwKZP+wkgqMkzcuq55wsvB7NrLaetVmb8vcCzbSAbtijpVFriE+relws5zrzP2fISjur9VqM0oSOP9yrQHjpWHP7Du0H9T6K7f5lDLxEiHwtVYJwWospECQCLFvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BPBsh1k4; arc=none smtp.client-ip=209.85.218.42
+	 MIME-Version:Content-Type; b=bK11eHPRSb/prBXSfqkD749gKZ3kAOm8SRXb5EfxkD1UT2yX7DBnA1eS9B4WBjzyTTzg7m0qyiqRp2r/MMAU5ADumjwlUKiGd1HJp7YKGjt8GJRlzng3hy+VWP6rdeBsTBwhdU9k4oKRIn4YhwdQRQwqr3oWFhYZKtxUQ4IYZ1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=REDpF6dF; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BPBsh1k4"
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-aa67bc91f87so20469066b.1
-        for <rcu@vger.kernel.org>; Mon, 09 Dec 2024 04:33:15 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="REDpF6dF"
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3862c78536bso341565f8f.2
+        for <rcu@vger.kernel.org>; Mon, 09 Dec 2024 06:42:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1733747594; x=1734352394; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1733755377; x=1734360177; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Nt1cndHZ8pbXtiRxeB+O52iETLBujQEcUgkGHWv3lYM=;
-        b=BPBsh1k44sW9Uvtngsyo0Z/4E0JbXC/ebAX7UVqfON71LrRfKh6Lhw20HWcf/+WQ0g
-         KRFyY8FarxwJfNT9qAg2a51N+oG9jQ937eE/V1hN9T4vzfp9lAxVKm99v99uz+y8SPei
-         dBmo/qRSHSf6ZOOtlyNkhPryyggxkF2m9D7kPaiVJfC2M+mw/eUtGRJA00FyxW7vPwwn
-         kh/puyj7+ad1J9Rusn+HgTvKlhjaVP1rwu7s8YzubkrDhvwGI70oIOTebzCGUWKlftaf
-         Qavzuhg618riQvM8cV8BBJBuyutVbnqPshwOTI5SCUJNXsGPHpyaQDoa3TlbFTJ32QGg
-         RTRw==
+        bh=nkwsX/4Xva/aw3/I8I2kwIJd9M/PGmCc4Ypj6qQ29AM=;
+        b=REDpF6dFhXNy3Vc5phYvhf0EusEPJbM1EBVwSgBXlV6eBVci5wLzMrfgwFHdHkquZa
+         22+/z3lfJQhNPvCH2+JpzR7RaczfQzOq2L8iDNFDDziwMSoeL37Z/1ma2jPXs95p4quy
+         jJtkjP3/Ck0bVWvFEOOZN19ZLM27x/gxXkV1Q+9nyjbepnX2BYeo+accdUWPnU1RxIN+
+         /ePs1EnonFTVgWTOa0FSxdi3Sc44yNHFtPaZwFNqjDpuYmMiDdtKKnnWtPcBowJ7AAHq
+         HEyHPt3AM2jKmI4M3C1k/8RSJjGUHUVOEggFuoCsjBgdBtp6BnBV3S8MAa7BuyH1CDsx
+         zLfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733747594; x=1734352394;
+        d=1e100.net; s=20230601; t=1733755377; x=1734360177;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Nt1cndHZ8pbXtiRxeB+O52iETLBujQEcUgkGHWv3lYM=;
-        b=rlND3nNgEuktrZ1pGRZ6pyNJDXBg/e88OMYiw0P5QFJQruFwD+AdiETv9dZ6nBfiGU
-         aCsrYk/7oJpz8noAz2FbkDTmSsEtQ1tR+29eeSYlmXB4zyPCFJQPr5u4fv/MkmPgaZ+D
-         kjo4UPnlyEE18wG02YCKH6posN3ilqqwy3hC5AGbM9pYdwcKYyYodi23trN7vvEA+Q2E
-         y8/VkdJ7/ERF9p+mSQEvVYu4ViM7xH0LdnraX6l7WAo5Juxg/6RLQi3WP/kdnveOeidw
-         PqfEo5kz+C2Z4HOGtXID+iiosLJIfwIn/m5nGHxoa2ucOvSkAK6ao2B+vbi7XYMRY3Pq
-         lmfw==
-X-Forwarded-Encrypted: i=1; AJvYcCXg6qJFmua93/gUbnnKDRcgeE0U1kxmz7h5Q6scQbaU0Ii3aG+s2IUrZks7cYCBUqHXk/E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAmO8aOM2qDJBc/ONENtxLT8PTCsNkUgbiaZv0FEp4+uLsG1rY
-	mXMFz9GhqiYoEYOpEjdSyr07pkd0x+W83094tt0zxvJqOcf1F3nXrel0MyikaHo=
-X-Gm-Gg: ASbGncs/YrjgFkG7mFY1q9/1W8AlJf7Zj8NSAxq40rVp9Sc61Y1uWh2OQo1xtmj6m/c
-	5fKN7IyhI187TSeFJ+4bQCs0Dc0TPrmtY1jQ0uW7a9RATi23h0wUprEFCBbTZd9fHV/uNxaCzi9
-	/WTRib8TC/vRwxv0/oNaG6GwnnOM8i+7M8b2AgHNmgFzSICmoqDL7PvepyyVLI2ZIx01zBR4jpn
-	3I6ffW938pLuUTIw9VkuhUrBwJlYOk72unMJXcHdOSY0pwwAoL69zAiLVopLYGRgD3w8o+wvUJK
-	/2/Q6IeTC7KrMQZ2IiQuIovkjzqcbToWZWa9v8LCsAJfGWDy33tQkeo=
-X-Google-Smtp-Source: AGHT+IHhdX0FdatIb0ng+WxBrxtwY6KW2ibAnH43Vj2dTr2Rwd6wvnDl6sDEJjcdHu0Fke7nx/YjOQ==
-X-Received: by 2002:a17:907:3fa8:b0:a9a:8216:2f4d with SMTP id a640c23a62f3a-aa639fa5dfamr461325766b.3.1733747593866;
-        Mon, 09 Dec 2024 04:33:13 -0800 (PST)
+        bh=nkwsX/4Xva/aw3/I8I2kwIJd9M/PGmCc4Ypj6qQ29AM=;
+        b=GqruqUjfh0g8tDaAG7Fkapl+2zh/todmDoZ2PVUbGnnQ7Arh+JWF6+gE4ZW4sPiuCO
+         LffRyIA7EUT5hSRCju8EmWEDr71R+zWbjXlk7MPg1QucWo0S5iHrzKOcd1Ot+tHOnha7
+         jtCnhbRYD9ZyyzyHQ+OQECSV3mD4iJKLQeIlKhsyBFJ1sMZuIU9s6v5dG/Da8hpElhaS
+         EXcTzOJKP7494aKI3epwcRLX758HbZvxa+dEqFjgy+LZqztF+1QxgBccvvXKhWQaF5MD
+         LGqQqDxNxjaX7sZKwCzH7KwbPhAF2Gu+DOxC78zplOecKVue2fHyvzyym8Ji9E+a2IsV
+         15fA==
+X-Forwarded-Encrypted: i=1; AJvYcCXtCaBmBNjQk66S1Si1ChjSBAuNkMmSKLB2Cd+3AY6G6fyTXrww34Zysnihb+wl4CxA5H4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw09v6IjaUoxi8imVzGeMTE4f/yTWGmZ+ObufJQQmXUEH9AQts/
+	j8WZ4HO4k/+4zH6e9ojMqNlk1Bkd1CaVQJ188/FhJhkUrVwb9p7XJGyRuNtlwsU=
+X-Gm-Gg: ASbGncsynt5k+gwDWm71rfySrkhGGt5/Yl+eRVM+KS45d4Zo9CLUuHfudpl70wQNZMp
+	j4qwQAz93kGzC2zFky00el/Z/ujFJWcLtfHLQkSfldqZnqnaXDPpyxu+OQHEae9TiAmZktpP6A/
+	Fw3gYiliDb1KuHwQ+tisqJo9Bn+PMoxSODP4gfJNNEmqpYpiNdOjDflJO+Cxm/TqZiwcpkLGjk7
+	tWgcLf96tMvVFv718ExRc2MMelS84SP9EpPBlFThMyXJ/bhU+AGP3rqgq/gT3DQmAcvwzldAczc
+	yrd7F4EuZ75tquW2CIlxuNWnraVTHpjD6VEyjCKiB0XxF2uahPUvRIo=
+X-Google-Smtp-Source: AGHT+IFS9ZOU0lVFyWUQ84y6baV41ONm7JGT6TkRTJEtzq0JeBL9l/n9rsr90siOB4OTv3dodfZukg==
+X-Received: by 2002:a05:6000:1846:b0:385:fd31:ca24 with SMTP id ffacd0b85a97d-3862b3cea6dmr3365934f8f.12.1733755377482;
+        Mon, 09 Dec 2024 06:42:57 -0800 (PST)
 Received: from mordecai.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-3010-3bd6-8521-caf1.ipv6.o2.cz. [2a00:1028:83b8:1e7a:3010:3bd6:8521:caf1])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa62601b5fesm672536266b.117.2024.12.09.04.33.11
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38636e05568sm7300809f8f.39.2024.12.09.06.42.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2024 04:33:13 -0800 (PST)
-Date: Mon, 9 Dec 2024 13:33:09 +0100
+        Mon, 09 Dec 2024 06:42:57 -0800 (PST)
+Date: Mon, 9 Dec 2024 15:42:52 +0100
 From: Petr Tesarik <ptesarik@suse.com>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Dave Hansen
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, Dave Hansen
  <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
  linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
  bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
@@ -95,8 +95,8 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Dave Hansen
  <dwagner@suse.de>
 Subject: Re: [RFC PATCH v3 13/15] context_tracking,x86: Add infrastructure
  to defer kernel TLBI
-Message-ID: <20241209133309.794439ca@mordecai.tesarici.cz>
-In-Reply-To: <xhsmh1pyh6p0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Message-ID: <20241209154252.4f8fa5a8@mordecai.tesarici.cz>
+In-Reply-To: <20241209121249.GN35539@noisy.programming.kicks-ass.net>
 References: <20241119153502.41361-1-vschneid@redhat.com>
 	<20241119153502.41361-14-vschneid@redhat.com>
 	<20241120152216.GM19989@noisy.programming.kicks-ass.net>
@@ -107,6 +107,7 @@ References: <20241119153502.41361-1-vschneid@redhat.com>
 	<20241121153016.GL39245@noisy.programming.kicks-ass.net>
 	<20241205183111.12dc16b3@mordecai.tesarici.cz>
 	<xhsmh1pyh6p0k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	<20241209121249.GN35539@noisy.programming.kicks-ass.net>
 X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -117,68 +118,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 09 Dec 2024 13:04:43 +0100
-Valentin Schneider <vschneid@redhat.com> wrote:
+On Mon, 9 Dec 2024 13:12:49 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-> On 05/12/24 18:31, Petr Tesarik wrote:
-> > On Thu, 21 Nov 2024 16:30:16 +0100
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> >  
-> >> On Thu, Nov 21, 2024 at 07:07:44AM -0800, Dave Hansen wrote:  
-> >> > On 11/21/24 03:12, Peter Zijlstra wrote:  
-> >> > >> I see e.g. ds_clear_cea() clears PTEs that can have the _PAGE_GLOBAL flag,
-> >> > >> and it correctly uses the non-deferrable flush_tlb_kernel_range().  
-> >> > >
-> >> > > I always forget what we use global pages for, dhansen might know, but
-> >> > > let me try and have a look.
-> >> > >
-> >> > > I *think* we only have GLOBAL on kernel text, and that only sometimes.  
-> >> >
-> >> > I think you're remembering how _PAGE_GLOBAL gets used when KPTI is in play.  
-> >>
-> >> Yah, I suppose I am. That was the last time I had a good look at this
-> >> stuff :-)
-> >>  
-> >> > Ignoring KPTI for a sec... We use _PAGE_GLOBAL for all kernel mappings.
-> >> > Before PCIDs, global mappings let the kernel TLB entries live across CR3
-> >> > writes. When PCIDs are in play, global mappings let two different ASIDs
-> >> > share TLB entries.  
-> >>
-> >> Hurmph.. bah. That means we do need that horrible CR4 dance :/  
-> >
-> > In general, yes.
-> >
-> > But I wonder what exactly was the original scenario encountered by
-> > Valentin. I mean, if TLB entry invalidations were necessary to sync
-> > changes to kernel text after flipping a static branch, then it might be
-> > less overhead to make a list of affected pages and call INVLPG on them.
-> >
-> > AFAIK there is currently no such IPI function for doing that, but if we
-> > could add one. If the list of invalidated global pages is reasonably
-> > short, of course.
-> >
-> > Valentin, do you happen to know?
-> >  
+> On Mon, Dec 09, 2024 at 01:04:43PM +0100, Valentin Schneider wrote:
 > 
-> So from my experimentation (hackbench + kernel compilation on housekeeping
-> CPUs, dummy while(1) userspace loop on isolated CPUs), the TLB flushes only
-> occurred from vunmap() - mainly from all the hackbench threads coming and
-> going.
+> > > But I wonder what exactly was the original scenario encountered by
+> > > Valentin. I mean, if TLB entry invalidations were necessary to sync
+> > > changes to kernel text after flipping a static branch, then it might be
+> > > less overhead to make a list of affected pages and call INVLPG on them.  
 > 
-> Static branch updates only seem to trigger the sync_core() IPI, at least on
-> x86.
+> No; TLB is not involved with text patching (on x86).
+> 
+> > > Valentin, do you happen to know?  
+> > 
+> > So from my experimentation (hackbench + kernel compilation on housekeeping
+> > CPUs, dummy while(1) userspace loop on isolated CPUs), the TLB flushes only
+> > occurred from vunmap() - mainly from all the hackbench threads coming and
+> > going.  
+> 
+> Right, we have virtually mapped stacks.
 
-Thank you, this is helpful.
+Wait... Are you talking about the kernel stac? But that's only 4 pages
+(or 8 pages with KASAN), so that should be easily handled with INVLPG.
+No CR4 dances are needed for that.
 
-So, these allocations span more than tlb_single_page_flush_ceiling
-pages (default 33). Is THP enabled? If yes, we could possibly get below
-that threshold by improving flushing of huge pages (cf. footnote [1] in
-Documentation/arch/x86/tlb.rst).
-
-OTOH even though a series of INVLPG may reduce subsequent TLB misses,
-it will not exactly improve latency, so it would go against the main
-goal of this whole patch series.
-
-Hmmm... I see, the CR4 dance is the best solution after all. :-|
+What am I missing?
 
 Petr T
