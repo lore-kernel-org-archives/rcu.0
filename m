@@ -1,61 +1,61 @@
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC061D5171;
-	Tue, 10 Dec 2024 16:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8792153DC;
+	Tue, 10 Dec 2024 16:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733848842; cv=none; b=UPEMvYmsKBuwEDAiaNMPdhca/nhBpYteZJypJ5dHACwZ7g3AyA3ZTS1Km2IdWmFGMp7yBxvdwnjLPnCEcnEkrBKLvxI4N6cxbyn/K4HIzUuKtsB/DTeUNe3QIIEp+grJlBgtv8vGDghrv3kNrTt0xC0Q41UIolPuQJx6k7b8Uj8=
+	t=1733848843; cv=none; b=UCO5zYa6IHN6nzbcHDYv6pnFny+r6ZNpg4mmqvKn7JEnbqzRysgU3Gn4bzkh1ZYMOGaqK4x2lx4mzePxS2i/UrIRKWhBnMpWfX+mJajpkJsyIj4HSGup1lVmDviaxvO3cZwpajOgqChcQsdte8T2lA+p4lBh3J2sHOCwQXOsgsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733848842; c=relaxed/simple;
-	bh=Urh+WmY3GFT00nqYOZ92UBETC1FBOevOJk0kXUGPxaw=;
+	s=arc-20240116; t=1733848843; c=relaxed/simple;
+	bh=96C4Ff7noTHvUfYlu51M40HOaWBfgD2burIr67S83dc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WXKL+qPuOW1kpEGFVas1py3c2ElUotcSbDcFpToNtg/gQCjOIMpo4yuJ7atG5PwzHHrLdpImg5EKz8dQ1wZwYUPrsiAkt/np9AR1iQrvMnqs0AWszy/0fl5EpfUaELRygr+fYC7XFxJwfLiny/dZCAF3fc3pFE6XZ+U9L82jnCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IlNH9x96; arc=none smtp.client-ip=209.85.167.49
+	 MIME-Version; b=nxh1kbm44sLlkd6zsZfEJGW6SGWVhJM+4WaGizX0IXfzko0Tdma23GGp4ioXcua3lr8jO4lMEfq+SL6vXvCP8n9mek38HHfN+t03JPzwtASFq55+jPypCjqcaSaIntmtne4dyaH69ZPSouCCZbvPoOvoIv23LBYur7p7mBQpanY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QixbVDay; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IlNH9x96"
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-54021daa6cbso1951566e87.0;
-        Tue, 10 Dec 2024 08:40:40 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QixbVDay"
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-540215984f0so2069953e87.1;
+        Tue, 10 Dec 2024 08:40:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733848839; x=1734453639; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733848840; x=1734453640; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UdPE5CaBHMhT6cavsDrFmlg9kwPywztBv9Mfz0gYFxI=;
-        b=IlNH9x96sjb4g+9ESbXCJjr21rfg4/nXliJ072RuqkYn36sDUjt0d2k2LLPRfVCzY1
-         MFXaBvN7T/dmv76lnfuU9VYBZbsqHQ+L3mA/ZO9TDgEGDZEiY8Vxix2zQtK5C7T0d5eM
-         odwi8z1ykLUnUZgvh2FRnXs8XgNGP877K80kB3RVMUm41dTOH0yao+40sMl6xe2t2V25
-         P4sKzDONRc6ePQ0Ro2qup8MKrzfH85l9hejS/xyvbAZqHDwBc2oF7RslhUd+dWVBFHUk
-         KI5kYRg20lECWx1muQ0UFFlLk58zrlpCD9X6oozWwhQVJgeILX9SmbYcwzV6XqtV7Qpx
-         /75g==
+        bh=ClETbVzs2/eIlopkwOYmZeoS18KY5TfMVLeWid2GulI=;
+        b=QixbVDay9+thajhGScGmLN64oUI/s1BoxkH/O+lIyz8sAn6b0uLq8xnWb/BqlPSjiM
+         knyjMzHQfv0uDIySRbmj9SBwCysrnrbLHCfoxPSO3QdMJhNJUSFA/iYhI5ny6TqOFPfG
+         +QPhdG74py5+/ZVwYuotYCA9+pe4YMfvGbAbNzu4MS2dIJJQn3lKT1Cizm3nKjKtJCZz
+         xfe0QUb8YTQPfZPDB3hzWggoq2n+S/zs+IMfar/MIvn6jOXQzhVb/N2+0X/iNpVbhyoK
+         eOKlpKIZeKWSXZ461TAxLEL8/j+etKCk3uxpFqWqlBG/O4IMNVqBD3U0HrQfyYxtcRIf
+         BBfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733848839; x=1734453639;
+        d=1e100.net; s=20230601; t=1733848840; x=1734453640;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UdPE5CaBHMhT6cavsDrFmlg9kwPywztBv9Mfz0gYFxI=;
-        b=oS0CButkkTXbV/nW0XREZDhCOTPi6ddNLgsFzBNCU/qxPDFsaK+F7J3egwwl7uFk4/
-         n3GSdmItxQRlpwpLe99lPnEK60P5Mq5nCJwsKdtKXumJiwy6H/NrenHLVUO4/f+8eWV2
-         ElPb1FGe0x/as/nljsaEGAO1ZEEE/aln+JPP7Lnzg4NgXYp1ryTgZFVOw0IIvO0njutf
-         Tun6edr+6Qy1dG0typpD99qUZmJNxiUhVnGDT1QAi9/R4oiIe1OfLqcbd6sEwLbcnLlE
-         uKZeim/ct7F4umEkmlvqvvsNNrIAVULiiKhuyNop7S553qkujR8aIvndWtr99xmLwNbX
-         1ycA==
-X-Forwarded-Encrypted: i=1; AJvYcCW23tDoAM2JVFOE4+yu9Jz6hPbG68CON3ZwrafsdZZ0QsT7XO4oJd92pMJ5M9KKHxJvXIhD0CD7czUoBpw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7K4wYC0JwYi9G5a4sWPOViMLywKt2SVTTHUGK5179MtniSHMW
-	V+X7mtz5DUpJe4Af/k0H8Sa6NPyH2JsQJ5/B239qz2VIun7cdwu2
-X-Gm-Gg: ASbGncs6MhS3ECf66QQVA4dPqTFtSp3iFV7mnI+JohTzLNQmZA+kECxUARIAPKVFaPs
-	rzRaZbKze7g7NCSvOFUn4hDTD/1Krw6KRPG/55RBkDPzseHtPOqTjrymlOUivoGA5ivDDZlvf1j
-	VCQaMEZFDyEs23AmCGffatVXsMXwysbyeyj2CSXxgRX6UV5bp1N3p5IOubGzhwt8OeeM4UxicVW
-	n5ifhqIpx41yavUCRutsdi6peFofAH1N7TkH8zVUOW6IXe2lg==
-X-Google-Smtp-Source: AGHT+IFXg03XavY3zbgVuUO+42mxcr0qW2R92VYVB7iUi/Qw3cgWDDrElu+xTCGcLsSdSOB6pE9uDg==
-X-Received: by 2002:a05:6512:15a2:b0:540:1abe:d6d2 with SMTP id 2adb3069b0e04-54024107498mr1918094e87.35.1733848838529;
-        Tue, 10 Dec 2024 08:40:38 -0800 (PST)
+        bh=ClETbVzs2/eIlopkwOYmZeoS18KY5TfMVLeWid2GulI=;
+        b=W1x2dlII2dC6KrUbgDxtygyN1leK89GwWqMyvi7SogZq30tbZxygih51L2JDJndANA
+         0PKAzloeLgbMB1GbONez5m56uiMglj6jgH9qlTxKI0jyPaVjqjTes2x3wWn6no9TV08X
+         S3cTPPVtBZMXg2ny2XwkXHLkGcf9kBYilQEIn1T0WCaM2BT0/thkwgeKE/KI7GGcoIUr
+         3X/rkopA6KSglJZAvNsnIkFrPD30DB7zslZ/tDPNv8fYHrl994kyUuWgqyGJAEYxTZe1
+         VpbykuD7l+HSeoANYTX0Wekh5r3Klr2fEH5oS69Jq4w7EilGPx766+xcVFxSZ7Mc1m5O
+         2D9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUFcltvoMJb4ZP5wCcChQspZxo8tCjIaF4cLZTn/spxqc3MxPP0jBP0tITPON6+8eIXJPmHFy7PMG5A0gs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8Y+kxl3c4KAd+/43ZezTuyBaGUkIXgAF/B5SYqnlqwuiEkIx/
+	ibJYP/7lxxdC96aYzMb8IcjlF5ju3hMJcQ7Dickg8UjP2GcGCmDq
+X-Gm-Gg: ASbGnctKjSp2QAgbxbdVYhE/LArClpTLpuAh7OzmJlZvOTAFN3DasVnGwIOCpQfjLH7
+	7rmv8diOli8v0KeCphZiWBYBKDiISs53iz/w5Q88XIBt3CcL0MzaN4EAaAS1n0EvEBK8yRJqq6h
+	yMuOsnwHyNIFfvNWc/+Eme0601JjGbQb6oiRiWFYW0kQI6TnUx30afpS8odtKH5yxp9vEb1ykbv
+	QIGuwUrKjy/olxRsVrGETa/FdNfuZrlIRrpKy6+tCt9yvP/uQ==
+X-Google-Smtp-Source: AGHT+IFLmxwSZlSjwaR27QpJke6rURhJNzaMl3K1lpQik83HRlwxxz03FF+x+GNaY58FSlMOxRq9gA==
+X-Received: by 2002:a05:6512:ba6:b0:540:1fec:f322 with SMTP id 2adb3069b0e04-5402410485emr1773977e87.39.1733848839554;
+        Tue, 10 Dec 2024 08:40:39 -0800 (PST)
 Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53f93377eefsm1031875e87.67.2024.12.10.08.40.37
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53f93377eefsm1031875e87.67.2024.12.10.08.40.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2024 08:40:37 -0800 (PST)
+        Tue, 10 Dec 2024 08:40:38 -0800 (PST)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: linux-mm@kvack.org,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -64,9 +64,9 @@ Cc: RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [RFC v1 1/5] rcu/kvfree: Temporary reclaim over call_rcu()
-Date: Tue, 10 Dec 2024 17:40:31 +0100
-Message-Id: <20241210164035.3391747-2-urezki@gmail.com>
+Subject: [RFC v1 2/5] mm/slab: Copy main data structures of kvfree_rcu()
+Date: Tue, 10 Dec 2024 17:40:32 +0100
+Message-Id: <20241210164035.3391747-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20241210164035.3391747-1-urezki@gmail.com>
 References: <20241210164035.3391747-1-urezki@gmail.com>
@@ -78,74 +78,118 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is to start a smooth process of moving a main functionality
-to the SLAB. Therefore this patch:
-
-- adds a support(temporary) to reclaim freed objects over call_rcu();
-- disconnects a main functionality of kvfree_rcu() API by using call_rcu();
-- directly reclaims an object for a single-argument variant;
-- adds an rcu_barrier() call to the kvfree_rcu_barrier().
+This patch copies main data structures of kvfree_rcu() API
+from the kernel/rcu/tree.c into slab_common.c file. Later on,
+it will be removed from the tree.c.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+ mm/slab_common.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 95 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b1f883fcd918..ab24229dfa73 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2559,13 +2559,19 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 		debug_rcu_head_unqueue(rhp);
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 893d32059915..a249fdb0d92e 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1338,3 +1338,98 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
+ EXPORT_TRACEPOINT_SYMBOL(kfree);
+ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
  
- 		rcu_lock_acquire(&rcu_callback_map);
--		trace_rcu_invoke_callback(rcu_state.name, rhp);
- 
- 		f = rhp->func;
--		debug_rcu_head_callback(rhp);
--		WRITE_ONCE(rhp->func, (rcu_callback_t)0L);
--		f(rhp);
- 
-+		/* This is temporary, it will be removed when migration is over. */
-+		if (__is_kvfree_rcu_offset((unsigned long) f)) {
-+			trace_rcu_invoke_kvfree_callback("", rhp, (unsigned long) f);
-+			kvfree((void *) rhp - (unsigned long) f);
-+		} else {
-+			trace_rcu_invoke_callback(rcu_state.name, rhp);
-+			debug_rcu_head_callback(rhp);
-+			WRITE_ONCE(rhp->func, (rcu_callback_t)0L);
-+			f(rhp);
-+		}
- 		rcu_lock_release(&rcu_callback_map);
- 
- 		/*
-@@ -3787,6 +3793,16 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- 	struct kfree_rcu_cpu *krcp;
- 	bool success;
- 
-+	if (head) {
-+		call_rcu(head, (rcu_callback_t) ((void *) head - ptr));
-+	} else {
-+		synchronize_rcu();
-+		kvfree(ptr);
-+	}
++/* Maximum number of jiffies to wait before draining a batch. */
++#define KFREE_DRAIN_JIFFIES (5 * HZ)
++#define KFREE_N_BATCHES 2
++#define FREE_N_CHANNELS 2
 +
-+	/* Disconnect the rest. */
-+	return;
++/**
++ * struct kvfree_rcu_bulk_data - single block to store kvfree_rcu() pointers
++ * @list: List node. All blocks are linked between each other
++ * @gp_snap: Snapshot of RCU state for objects placed to this bulk
++ * @nr_records: Number of active pointers in the array
++ * @records: Array of the kvfree_rcu() pointers
++ */
++struct kvfree_rcu_bulk_data {
++	struct list_head list;
++	struct rcu_gp_oldstate gp_snap;
++	unsigned long nr_records;
++	void *records[] __counted_by(nr_records);
++};
 +
- 	/*
- 	 * Please note there is a limitation for the head-less
- 	 * variant, that is why there is a clear rule for such
-@@ -3871,6 +3887,9 @@ void kvfree_rcu_barrier(void)
- 	bool queued;
- 	int i, cpu;
- 
-+	/* Temporary. */
-+	rcu_barrier();
++/*
++ * This macro defines how many entries the "records" array
++ * will contain. It is based on the fact that the size of
++ * kvfree_rcu_bulk_data structure becomes exactly one page.
++ */
++#define KVFREE_BULK_MAX_ENTR \
++	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
 +
- 	/*
- 	 * Firstly we detach objects and queue them over an RCU-batch
- 	 * for all CPUs. Finally queued works are flushed for each CPU.
++/**
++ * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
++ * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
++ * @head_free: List of kfree_rcu() objects waiting for a grace period
++ * @head_free_gp_snap: Grace-period snapshot to check for attempted premature frees.
++ * @bulk_head_free: Bulk-List of kvfree_rcu() objects waiting for a grace period
++ * @krcp: Pointer to @kfree_rcu_cpu structure
++ */
++
++struct kfree_rcu_cpu_work {
++	struct rcu_work rcu_work;
++	struct rcu_head *head_free;
++	struct rcu_gp_oldstate head_free_gp_snap;
++	struct list_head bulk_head_free[FREE_N_CHANNELS];
++	struct kfree_rcu_cpu *krcp;
++};
++
++/**
++ * struct kfree_rcu_cpu - batch up kfree_rcu() requests for RCU grace period
++ * @head: List of kfree_rcu() objects not yet waiting for a grace period
++ * @head_gp_snap: Snapshot of RCU state for objects placed to "@head"
++ * @bulk_head: Bulk-List of kvfree_rcu() objects not yet waiting for a grace period
++ * @krw_arr: Array of batches of kfree_rcu() objects waiting for a grace period
++ * @lock: Synchronize access to this structure
++ * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
++ * @initialized: The @rcu_work fields have been initialized
++ * @head_count: Number of objects in rcu_head singular list
++ * @bulk_count: Number of objects in bulk-list
++ * @bkvcache:
++ *	A simple cache list that contains objects for reuse purpose.
++ *	In order to save some per-cpu space the list is singular.
++ *	Even though it is lockless an access has to be protected by the
++ *	per-cpu lock.
++ * @page_cache_work: A work to refill the cache when it is empty
++ * @backoff_page_cache_fill: Delay cache refills
++ * @work_in_progress: Indicates that page_cache_work is running
++ * @hrtimer: A hrtimer for scheduling a page_cache_work
++ * @nr_bkv_objs: number of allocated objects at @bkvcache.
++ *
++ * This is a per-CPU structure.  The reason that it is not included in
++ * the rcu_data structure is to permit this code to be extracted from
++ * the RCU files.  Such extraction could allow further optimization of
++ * the interactions with the slab allocators.
++ */
++struct kfree_rcu_cpu {
++	// Objects queued on a linked list
++	// through their rcu_head structures.
++	struct rcu_head *head;
++	unsigned long head_gp_snap;
++	atomic_t head_count;
++
++	// Objects queued on a bulk-list.
++	struct list_head bulk_head[FREE_N_CHANNELS];
++	atomic_t bulk_count[FREE_N_CHANNELS];
++
++	struct kfree_rcu_cpu_work krw_arr[KFREE_N_BATCHES];
++	raw_spinlock_t lock;
++	struct delayed_work monitor_work;
++	bool initialized;
++
++	struct delayed_work page_cache_work;
++	atomic_t backoff_page_cache_fill;
++	atomic_t work_in_progress;
++	struct hrtimer hrtimer;
++
++	struct llist_head bkvcache;
++	int nr_bkv_objs;
++};
 -- 
 2.39.5
 
