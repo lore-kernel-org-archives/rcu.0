@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FA81D9324;
-	Wed, 11 Dec 2024 15:41:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB9131D9324;
+	Wed, 11 Dec 2024 15:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733931670; cv=none; b=du1+jnVPEjq32iLsnHw/amG0fdh1Z9/vWfAf0M1aITM445y6KGanldD2OFwV/UiRHCGx/llSHhNXmB79+6Hh/OzfuXSd9YjgEDnCYfOayD03dTimZAW+xWBt8DtT8dfU09G3aaav3uySCNg5BJI9vvMW1Dvboo2q/leR5jDcjC8=
+	t=1733931673; cv=none; b=PtuwsDLPVwTI0e1ajIDepczRGjKZojlITizXyEURGDTjLJQMJ6muwyXIoMOWVpce8M4KLegdDsIFF9h1zTBK7bI+rksUnxbO9yAvArJNTsuwVSfTqW267wIZz50tKcqYRjUnSC0Q/oG8E+pW1k7e81s1eJLzHhUHrGV9wzAALXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733931670; c=relaxed/simple;
-	bh=2qfuTV6k+A8iDq1teARtVDQzBAoKchz+tMTAsMIX4+E=;
+	s=arc-20240116; t=1733931673; c=relaxed/simple;
+	bh=Zl9E3LG4ePzB3S1zktQqMaaRMvPxhBEbf67CVv5m/KE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ulQ6XivRSLUaXIJ+tUvPgJ1/Y6y9/Adii24ftExPq2ZY1kmLwLOYSylX7jftN2JiB4R0LE8tlnAXL+xZ2/uxXM9qh0M6iYO4wMexYntrSyrgf670rfZPPS3wUSxGYf8Nt9peJYsBDUxb07H2JTVt2jgSlBgwbNgApLP0lee3UVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nc7sYBQH; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=InGm8kz/Qgo11HlLHDqh+TiofZmtabatqY0sJ8qyLMV/o0k87YInUsAsJl06AW9FB3DJGMDrKeuw3EmdR0yTAzJSF9pUEcolCWAzWrF6MgoJtUblw58jSbZBDwPJ/1ezVd4vuT04DraFLg3rQMQ6Lwg2E+HuHkwboN6/enXULVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cHTxkkVn; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nc7sYBQH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2DA0C4CEDD;
-	Wed, 11 Dec 2024 15:41:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cHTxkkVn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FD8BC4CEDE;
+	Wed, 11 Dec 2024 15:41:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733931669;
-	bh=2qfuTV6k+A8iDq1teARtVDQzBAoKchz+tMTAsMIX4+E=;
+	s=k20201202; t=1733931673;
+	bh=Zl9E3LG4ePzB3S1zktQqMaaRMvPxhBEbf67CVv5m/KE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Nc7sYBQHWsneHm+RDymrniaj4mitPN7j7ea2YdKP9niGyvkp1gXpfHct8rHMa0YrG
-	 f6feb1+HULCsQIuaNNjRvMFIisKqI5UDVEynQ6L5LQorZ7Z4wG2lAGhay7NKO1y+cZ
-	 aGyNBpPV21LSFM/FPM+6Itrf7nXwHXtZoCi83bikfpV03LmnrcEb+3dQhBHJ9DVuOq
-	 F/EcAj7YWWA1devSxAGgVuSlW7rRIm4sjiHDLig0WcerfXUSeH/wrXyX9k3PN5c6Xb
-	 +6R/3najAYR04xWmYNvgUQ6yrWiHnlSeTdr+8FYOUhYju18hmYs9M/HtOtrTv8Z8Ck
-	 1kcjrlunevEMA==
+	b=cHTxkkVnesefVanc4+eZ3LWwfNJWnYX7m658TiDwNSPmtX/3AnFpkbX4TrJ/ImQy4
+	 Hu4WVheUhsjZawEfpaSNjDmofDHG5tL8WAJgb9pFg0vauoXffLb/bjDBeXVP/ymgrU
+	 KJyu5XUCrwo0usqm95LRig9tq26ZTpe/WlQb8Wbf2RsIkj4GLJlDVQTjZfIPIL+cZ9
+	 tX08hMyrBYYVU32XsWlR3jaEdJkBbRiQkecnHN9+b9UVv/zxjT7HbRNknY0gLixVD+
+	 Bz66hGcuGvyv1oHODsCFMOSYEwWtYO3HEfm+O5JppuSLhmsIA0tbIF2YFQtCWwckYE
+	 o1Iw05m/KSfCg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -40,12 +40,12 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu@vger.kernel.org,
-	Uladzislau Rezki <urezki@gmail.com>
-Subject: [PATCH 11/19] kthread: Make sure kthread hasn't started while binding it
-Date: Wed, 11 Dec 2024 16:40:24 +0100
-Message-ID: <20241211154035.75565-12-frederic@kernel.org>
+	rcu@vger.kernel.org
+Subject: [PATCH 12/19] kthread: Default affine kthread to its preferred NUMA node
+Date: Wed, 11 Dec 2024 16:40:25 +0100
+Message-ID: <20241211154035.75565-13-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241211154035.75565-1-frederic@kernel.org>
 References: <20241211154035.75565-1-frederic@kernel.org>
@@ -57,82 +57,233 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Make sure the kthread is sleeping in the schedule_preempt_disabled()
-call before calling its handler when kthread_bind[_mask]() is called
-on it. This provides a sanity check verifying that the task is not
-randomly blocked later at some point within its function handler, in
-which case it could be just concurrently awaken, leaving the call to
-do_set_cpus_allowed() without any effect until the next voluntary sleep.
+Kthreads attached to a preferred NUMA node for their task structure
+allocation can also be assumed to run preferrably within that same node.
 
-Rely on the wake-up ordering to ensure that the newly introduced "started"
-field returns the expected value:
+A more precise affinity is usually notified by calling
+kthread_create_on_cpu() or kthread_bind[_mask]() before the first wakeup.
 
-    TASK A                                   TASK B
-    ------                                   ------
-READ kthread->started
-wake_up_process(B)
-   rq_lock()
-   ...
-   rq_unlock() // RELEASE
-                                           schedule()
-                                              rq_lock() // ACQUIRE
-                                              // schedule task B
-                                              rq_unlock()
-                                              WRITE kthread->started
+For the others, a default affinity to the node is desired and sometimes
+implemented with more or less success when it comes to deal with hotplug
+events and nohz_full / CPU Isolation interactions:
 
-Similarly, writing kthread->started before subsequent voluntary sleeps
-will be visible after calling wait_task_inactive() in
-__kthread_bind_mask(), reporting potential misuse of the API.
+- kcompactd is affine to its node and handles hotplug but not CPU Isolation
+- kswapd is affine to its node and ignores hotplug and CPU Isolation
+- A bunch of drivers create their kthreads on a specific node and
+  don't take care about affining further.
 
-Upcoming patches will make further use of this facility.
+Handle that default node affinity preference at the generic level
+instead, provided a kthread is created on an actual node and doesn't
+apply any specific affinity such as a given CPU or a custom cpumask to
+bind to before its first wake-up.
+
+This generic handling is aware of CPU hotplug events and CPU isolation
+such that:
+
+* When a housekeeping CPU goes up that is part of the node of a given
+  kthread, the related task is re-affined to that own node if it was
+  previously running on the default last resort online housekeeping set
+  from other nodes.
+
+* When a housekeeping CPU goes down while it was part of the node of a
+  kthread, the running task is migrated (or the sleeping task is woken
+  up) automatically by the scheduler to other housekeepers within the
+  same node or, as a last resort, to all housekeepers from other nodes.
 
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/kthread.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/linux/cpuhotplug.h |   1 +
+ kernel/kthread.c           | 106 ++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 106 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index a04b73c40173..6cc5e484547c 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -240,6 +240,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_WORKQUEUE_ONLINE,
+ 	CPUHP_AP_RANDOM_ONLINE,
+ 	CPUHP_AP_RCUTREE_ONLINE,
++	CPUHP_AP_KTHREADS_ONLINE,
+ 	CPUHP_AP_BASE_CACHEINFO_ONLINE,
+ 	CPUHP_AP_ONLINE_DYN,
+ 	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 40,
 diff --git a/kernel/kthread.c b/kernel/kthread.c
-index a5ac612b1609..b6f9ce475a4f 100644
+index b6f9ce475a4f..3394ff024a5a 100644
 --- a/kernel/kthread.c
 +++ b/kernel/kthread.c
-@@ -53,6 +53,7 @@ struct kthread_create_info
+@@ -35,6 +35,9 @@ static DEFINE_SPINLOCK(kthread_create_lock);
+ static LIST_HEAD(kthread_create_list);
+ struct task_struct *kthreadd_task;
+ 
++static LIST_HEAD(kthreads_hotplug);
++static DEFINE_MUTEX(kthreads_hotplug_lock);
++
+ struct kthread_create_info
+ {
+ 	/* Information passed to kthread() from kthreadd. */
+@@ -53,6 +56,7 @@ struct kthread_create_info
  struct kthread {
  	unsigned long flags;
  	unsigned int cpu;
-+	int started;
++	unsigned int node;
+ 	int started;
  	int result;
  	int (*threadfn)(void *);
- 	void *data;
-@@ -382,6 +383,8 @@ static int kthread(void *_create)
- 	schedule_preempt_disabled();
- 	preempt_enable();
+@@ -64,6 +68,8 @@ struct kthread {
+ #endif
+ 	/* To store the full name if task comm is truncated. */
+ 	char *full_name;
++	struct task_struct *task;
++	struct list_head hotplug_node;
+ };
  
-+	self->started = 1;
+ enum KTHREAD_BITS {
+@@ -122,8 +128,11 @@ bool set_kthread_struct(struct task_struct *p)
+ 
+ 	init_completion(&kthread->exited);
+ 	init_completion(&kthread->parked);
++	INIT_LIST_HEAD(&kthread->hotplug_node);
+ 	p->vfork_done = &kthread->exited;
+ 
++	kthread->task = p;
++	kthread->node = tsk_fork_get_node(current);
+ 	p->worker_private = kthread;
+ 	return true;
+ }
+@@ -314,6 +323,11 @@ void __noreturn kthread_exit(long result)
+ {
+ 	struct kthread *kthread = to_kthread(current);
+ 	kthread->result = result;
++	if (!list_empty(&kthread->hotplug_node)) {
++		mutex_lock(&kthreads_hotplug_lock);
++		list_del(&kthread->hotplug_node);
++		mutex_unlock(&kthreads_hotplug_lock);
++	}
+ 	do_exit(0);
+ }
+ EXPORT_SYMBOL(kthread_exit);
+@@ -339,6 +353,48 @@ void __noreturn kthread_complete_and_exit(struct completion *comp, long code)
+ }
+ EXPORT_SYMBOL(kthread_complete_and_exit);
+ 
++static void kthread_fetch_affinity(struct kthread *kthread, struct cpumask *cpumask)
++{
++	cpumask_and(cpumask, cpumask_of_node(kthread->node),
++		    housekeeping_cpumask(HK_TYPE_KTHREAD));
++
++	if (cpumask_empty(cpumask))
++		cpumask_copy(cpumask, housekeeping_cpumask(HK_TYPE_KTHREAD));
++}
++
++static void kthread_affine_node(void)
++{
++	struct kthread *kthread = to_kthread(current);
++	cpumask_var_t affinity;
++
++	WARN_ON_ONCE(kthread_is_per_cpu(current));
++
++	if (kthread->node == NUMA_NO_NODE) {
++		housekeeping_affine(current, HK_TYPE_KTHREAD);
++	} else {
++		if (!zalloc_cpumask_var(&affinity, GFP_KERNEL)) {
++			WARN_ON_ONCE(1);
++			return;
++		}
++
++		mutex_lock(&kthreads_hotplug_lock);
++		WARN_ON_ONCE(!list_empty(&kthread->hotplug_node));
++		list_add_tail(&kthread->hotplug_node, &kthreads_hotplug);
++		/*
++		 * The node cpumask is racy when read from kthread() but:
++		 * - a racing CPU going down will either fail on the subsequent
++		 *   call to set_cpus_allowed_ptr() or be migrated to housekeepers
++		 *   afterwards by the scheduler.
++		 * - a racing CPU going up will be handled by kthreads_online_cpu()
++		 */
++		kthread_fetch_affinity(kthread, affinity);
++		set_cpus_allowed_ptr(current, affinity);
++		mutex_unlock(&kthreads_hotplug_lock);
++
++		free_cpumask_var(affinity);
++	}
++}
++
+ static int kthread(void *_create)
+ {
+ 	static const struct sched_param param = { .sched_priority = 0 };
+@@ -369,7 +425,6 @@ static int kthread(void *_create)
+ 	 * back to default in case they have been changed.
+ 	 */
+ 	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
+-	set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_TYPE_KTHREAD));
+ 
+ 	/* OK, tell user we're spawned, wait for stop or wakeup */
+ 	__set_current_state(TASK_UNINTERRUPTIBLE);
+@@ -385,6 +440,9 @@ static int kthread(void *_create)
+ 
+ 	self->started = 1;
+ 
++	if (!(current->flags & PF_NO_SETAFFINITY))
++		kthread_affine_node();
 +
  	ret = -EINTR;
  	if (!test_bit(KTHREAD_SHOULD_STOP, &self->flags)) {
  		cgroup_kthread_ready();
-@@ -540,7 +543,9 @@ static void __kthread_bind(struct task_struct *p, unsigned int cpu, unsigned int
- 
- void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
- {
-+	struct kthread *kthread = to_kthread(p);
- 	__kthread_bind_mask(p, mask, TASK_UNINTERRUPTIBLE);
-+	WARN_ON_ONCE(kthread->started);
+@@ -781,6 +839,52 @@ int kthreadd(void *unused)
+ 	return 0;
  }
  
- /**
-@@ -554,7 +559,9 @@ void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
-  */
- void kthread_bind(struct task_struct *p, unsigned int cpu)
- {
-+	struct kthread *kthread = to_kthread(p);
- 	__kthread_bind(p, cpu, TASK_UNINTERRUPTIBLE);
-+	WARN_ON_ONCE(kthread->started);
- }
- EXPORT_SYMBOL(kthread_bind);
- 
++/*
++ * Re-affine kthreads according to their preferences
++ * and the newly online CPU. The CPU down part is handled
++ * by select_fallback_rq() which default re-affines to
++ * housekeepers in case the preferred affinity doesn't
++ * apply anymore.
++ */
++static int kthreads_online_cpu(unsigned int cpu)
++{
++	cpumask_var_t affinity;
++	struct kthread *k;
++	int ret;
++
++	guard(mutex)(&kthreads_hotplug_lock);
++
++	if (list_empty(&kthreads_hotplug))
++		return 0;
++
++	if (!zalloc_cpumask_var(&affinity, GFP_KERNEL))
++		return -ENOMEM;
++
++	ret = 0;
++
++	list_for_each_entry(k, &kthreads_hotplug, hotplug_node) {
++		if (WARN_ON_ONCE((k->task->flags & PF_NO_SETAFFINITY) ||
++				 kthread_is_per_cpu(k->task) ||
++				 k->node == NUMA_NO_NODE)) {
++			ret = -EINVAL;
++			continue;
++		}
++		kthread_fetch_affinity(k, affinity);
++		set_cpus_allowed_ptr(k->task, affinity);
++	}
++
++	free_cpumask_var(affinity);
++
++	return ret;
++}
++
++static int kthreads_init(void)
++{
++	return cpuhp_setup_state(CPUHP_AP_KTHREADS_ONLINE, "kthreads:online",
++				kthreads_online_cpu, NULL);
++}
++early_initcall(kthreads_init);
++
+ void __kthread_init_worker(struct kthread_worker *worker,
+ 				const char *name,
+ 				struct lock_class_key *key)
 -- 
 2.46.0
 
