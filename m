@@ -1,66 +1,110 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A416188938;
-	Thu, 12 Dec 2024 18:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303CC1A7273;
+	Thu, 12 Dec 2024 18:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734029481; cv=none; b=FUaz2xdgn4Jj0YRNx6f0LWqkXSJi6jVHUCBAcXCaXPH/8QYpPcQk0eQROVSrNjfAsdrkXGSX6gK+og4YsUT2CMNNlMdZCs9oL94i8jINp5DHCnpSoElkGFTfx0sP/blRGH9HhFeLMR34mKZSRU+OqkzgdPEzw3KpDyqr0aNNtcA=
+	t=1734029488; cv=none; b=Om2PQ6qlz0oWbsEElpI6Ck+LFNZFlAKt/hsJR2L9JoUQ7RUNMBdJ1Wf58trF2Kiv+mOmiS9nnjoYodga7dAr+E6bbR23K/CN8ZyHbo9f6fWtS2KeBtyG7pE+eTsKwhR9avY6y7NP0NFi+eBTu3jr+9KmYAtTyvXxImGXdHhPKWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734029481; c=relaxed/simple;
-	bh=uVB9sWODCLv4EDCaAVZ0QQLLVmwGK3gfcpVbu7ue/J0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DxOmct5MksfUt5T10jDT3ZfBg6eWM+OesQQa29rjnnyTCLj8RYY8tJFPSvOwWMFZjbCGlL9mZhn9SNA/TKyJ3T2wF5r2H0Dzb0af5HNyTj5FMYlmx54RExcJHz107BLRJX7RdoKeUTa4u3WcmudgEstIPlQI8zodlIQFILt4HCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A5TtcYqN; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1734029488; c=relaxed/simple;
+	bh=9LAc+KmzGouRxxmiYt4dsholAgVMkHQ0Pn+gD/Oc/CA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mwnSbaKsfa3CGUfNLmJZ2E6COZVONoxyLuYE+BeOTbXvLzv1VhoGnf3ALYlq3ri98iOrat25SMlh/EVIKL2l1nfLifBayHjtIBPfzolGy47hNCKnr1GcuA+dcYClAObCvbDo9dmyPaBTwhjRJO9kBWkT0Z9MbwE/ccBhmvgYOtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SXKQijTd; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A5TtcYqN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D223AC4CECE;
-	Thu, 12 Dec 2024 18:51:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SXKQijTd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D1E4C4CECE;
+	Thu, 12 Dec 2024 18:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734029479;
-	bh=uVB9sWODCLv4EDCaAVZ0QQLLVmwGK3gfcpVbu7ue/J0=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=A5TtcYqN2VnNOsyvTD5ECVUg/P+W4LCrsLmt+dtSpRDnbHVu4xj3uAJKRG7lroEJe
-	 bYg5zQYqApPDo+VAlqUY6a+jjrSxfCtldGxIAortN4FOAN+QDyC/Vqu5cOmRYaD8vg
-	 X+0STOH+r9WR8/Z5duzUcMIX41F+gnWmTObNoTZ7pX6oPwH4cx4LK2J0F+VZ8lD0lW
-	 c5zVNzpUFvbQZA6KgXtFT0hgXgxWotwT35LmljSGCbCPFOYVs6AwyFjyqjodVtgEex
-	 2Fz/uVSFc/YBzirPiE97X4oKP3HGNa6vEemXWUurTMq41L6UUfYxMsfgYfVydspesM
-	 y1b3cF/gSFRrQ==
+	s=k20201202; t=1734029488;
+	bh=9LAc+KmzGouRxxmiYt4dsholAgVMkHQ0Pn+gD/Oc/CA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SXKQijTdfcekib4r9pTkqLNtX5yrcOCqY/7AIRyaAnHxQhG/7KDpd5aD92vWYt6sf
+	 /HyRDtr9l40bz+zm7cXLUCMqnl44npV/yluIGfshWj2l8dWmAnT5coL8uxMxPeVvh6
+	 /yA7h8p6J03Y/nzevGSRk3R2XuGV/2QTHQmxboZ1ifx9wqVtEtyFRocnFzhIOYN6Yg
+	 7AEWH5kBvkkfb3g4DfU6d3lUaP58yfRLaGk/IY5U7UnaXGVlgQ+BCfSQdD7epCCQ7m
+	 ms9w2kfv2N03K+BgZgBs7irURy9gPSwTzua80eh77qunVmJRH97vS1SkjFG+CONFvq
+	 CdW64HbpfWdxw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 83249CE0F53; Thu, 12 Dec 2024 10:51:19 -0800 (PST)
-Date: Thu, 12 Dec 2024 10:51:19 -0800
+	id C12FDCE0F53; Thu, 12 Dec 2024 10:51:27 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH rcu 0/3] SRCU updates for v6.14
-Message-ID: <c330fdd2-91b6-42f4-b28e-cf35dfd165b7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH rcu 1/3] srcu: Guarantee non-negative return value from srcu_read_lock()
+Date: Thu, 12 Dec 2024 10:51:24 -0800
+Message-Id: <20241212185126.2193701-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <c330fdd2-91b6-42f4-b28e-cf35dfd165b7@paulmck-laptop>
+References: <c330fdd2-91b6-42f4-b28e-cf35dfd165b7@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+For almost 20 years, the int return value from srcu_read_lock() has
+been always either zero or one.  This commit therefore documents the
+fact that it will be non-negative, and does the same for the underlying
+__srcu_read_lock().
 
-This series contains SRCU updates:
+[ paulmck: Apply Andrii Nakryiko feedback. ]
 
-1.	Guarantee non-negative return value from srcu_read_lock().
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/linux/srcu.h  | 15 ++++++++-------
+ kernel/rcu/srcutree.c |  3 ++-
+ 2 files changed, 10 insertions(+), 8 deletions(-)
 
-2.	Fix typo s/srcu_check_read_flavor()/__srcu_check_read_flavor()/.
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 08339eb8a01c8..abaddd7e6ddf7 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -232,13 +232,14 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+  * a mutex that is held elsewhere while calling synchronize_srcu() or
+  * synchronize_srcu_expedited().
+  *
+- * The return value from srcu_read_lock() must be passed unaltered
+- * to the matching srcu_read_unlock().  Note that srcu_read_lock() and
+- * the matching srcu_read_unlock() must occur in the same context, for
+- * example, it is illegal to invoke srcu_read_unlock() in an irq handler
+- * if the matching srcu_read_lock() was invoked in process context.  Or,
+- * for that matter to invoke srcu_read_unlock() from one task and the
+- * matching srcu_read_lock() from another.
++ * The return value from srcu_read_lock() is guaranteed to be
++ * non-negative.  This value must be passed unaltered to the matching
++ * srcu_read_unlock().  Note that srcu_read_lock() and the matching
++ * srcu_read_unlock() must occur in the same context, for example, it is
++ * illegal to invoke srcu_read_unlock() in an irq handler if the matching
++ * srcu_read_lock() was invoked in process context.  Or, for that matter to
++ * invoke srcu_read_unlock() from one task and the matching srcu_read_lock()
++ * from another.
+  */
+ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
+ {
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 5e2e534647946..26ef58b481aae 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -738,7 +738,8 @@ EXPORT_SYMBOL_GPL(__srcu_check_read_flavor);
+ /*
+  * Counts the new reader in the appropriate per-CPU element of the
+  * srcu_struct.
+- * Returns an index that must be passed to the matching srcu_read_unlock().
++ * Returns a guaranteed non-negative index that must be passed to the
++ * matching __srcu_read_unlock().
+  */
+ int __srcu_read_lock(struct srcu_struct *ssp)
+ {
+-- 
+2.40.1
 
-3.	Remove redundant GP sequence checks in srcu_funnel_gp_start,
-	courtesy of Feng Lee.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/srcu.h     |   15 ++++++++-------
- b/include/linux/srcutree.h |    2 +-
- b/kernel/rcu/srcutree.c    |    3 ++-
- kernel/rcu/srcutree.c      |    1 -
- 4 files changed, 11 insertions(+), 10 deletions(-)
