@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E3E188917;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80074188938;
 	Thu, 12 Dec 2024 18:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734029400; cv=none; b=aQlWnpwk6mb21SCWCDKu86Rffc9G4EsmG09z3TUPyN15MunTvc2D8pjkUOss6cY6is/uyd6V1f6eBu16UDIK8hCwUsw2s2m2wPprF2GlJI/+wXC1dy6CAcCU2Ve5ScJocN75fCe8Nvhcl2BiR5NS/3EB5+r6ag0YOccPjCkG5fg=
+	t=1734029400; cv=none; b=MYd0SbE5EI7HKtDrGrHNqioDeCkSZLUTMYQjnc0RL4zDsSSByiADNOLfWID36wko/iPiODbPbRIlpJdyQrGk6dracGB4PrXDN69MpB7vrqnjH9DzfXNvyXwffy8LGs4JEMAvByzwWQT7sSg2dlN0vC1DTu/w4MH+XEVyAgwHig4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734029400; c=relaxed/simple;
-	bh=IJpDFL43PIQmlzhvMZy0oiR7KUJoDwLh5SiwYaWUY+w=;
+	bh=CB7qitqTyFGRiWs84wTv8ARO3blatEc+ifaORbcqGDA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Iv6yAVyRWkeNwT7zMv8mOhNLBzCnx9WX/NoeO53Ay2KaIAE4aaDqLJkBfa2TRlzoRUhsp4xVj0p2ahjPVJ6Mn17r9YphKu3apmSAugvZn6LkpXsBDTgDCAUFy6H2MO6rA0MvwbJj74fB4Mus6d44Jv3qpVvXd3wLduRRi1q2tsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BSmgTCe4; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=ls9X+ZDje9PujtG5XgIwGtV+WTleexiGA5fwIaSGTuHfxa63/FB0ekFnAJQbg2IXvYZCE8uizn0o25EYDr8eNoNUqljYrsHfFWy7RBbtE4WPRHsB7GfpN3s3YfRcoUm3NddpKYxd3Q5eQKnMWi4Ss1dOP9bYOiyb+up4/r9Fjp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rWtRYXTp; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BSmgTCe4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44385C4CEDF;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rWtRYXTp"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FB42C4AF0B;
 	Thu, 12 Dec 2024 18:50:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1734029400;
-	bh=IJpDFL43PIQmlzhvMZy0oiR7KUJoDwLh5SiwYaWUY+w=;
+	bh=CB7qitqTyFGRiWs84wTv8ARO3blatEc+ifaORbcqGDA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BSmgTCe4n0fzdRLwPi6TKwobUHvr3OhUpM9EWO2D+CMDbHbQMSfKsw4NdWwvnXbYE
-	 RVlxNvEY2wt1ExjUdYiqjoS0qcVVmphmzytp7cT+dWlagxjlu7OCrUzE7Knu9Pq1kD
-	 6yKepJ7ceIlL1H8NjvVGtAdo5pX/aJwoBUIoZPVumWr1xYam2rBub5lU0yyboFC03H
-	 RWLRDeOCKLAFpNU/GeN20E2tQ4ivieYejSuPNFZrWxuiMqsOYsqUHkYYUb+dSGjAXA
-	 vxsTR8/2uVEF7aFpPCw5lfbW1sqkUtbC4Z1CCliMb38Ss096i0JKzOI2hcB79jDyoV
-	 qWoMoELAoPs3g==
+	b=rWtRYXTpw2hPbyOa6TzyPtbLOsN00+AWNmqWB5mCRyxaSiuVEIh55KAQQaKVISVdv
+	 huWj9SuH1jVbCuRzx2/QeO/mJYwdI/4dMz3FVzu4tkxXQ9LM887rxWDMJYzHPVv4c6
+	 IZmjiIw2kI+OQl4JiGGIc88n2bgoJkwrKVG5M8L25M1Rsc4z980ESXFmDPwWICMISM
+	 6t+LN98FnUoVkUfZEt77jJ3NcE/9BXl5BiK5zDi8/vdrQ+YwsMyPqxFsz+R7FRXnZA
+	 pqNEuu57jDusdMWvr0JVFlB8Nw3sd38xUl61f2ZgGV2BF1bSAhOcjWEFNnCyJrVy1C
+	 6XixvJpP1Marw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BF26BCE0FA8; Thu, 12 Dec 2024 10:49:59 -0800 (PST)
+	id BC7D7CE0FA5; Thu, 12 Dec 2024 10:49:59 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 05/18] rcutorture: Use finer-grained timeouts for rcu_torture_writer() polling
-Date: Thu, 12 Dec 2024 10:49:44 -0800
-Message-Id: <20241212184957.2127441-5-paulmck@kernel.org>
+Subject: [PATCH rcu 04/18] rcutorture: Decorate failing reader segments with CPU ID
+Date: Thu, 12 Dec 2024 10:49:43 -0800
+Message-Id: <20241212184957.2127441-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <62e4d9a4-18ad-49b3-9656-23e17b78033f@paulmck-laptop>
 References: <62e4d9a4-18ad-49b3-9656-23e17b78033f@paulmck-laptop>
@@ -48,67 +48,84 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rcu_torture_writer() polling currently uses timeouts ranging from
-zero to 16 milliseconds to wait for the polled grace period to end.
-This works, but it would be better to have a higher probability of
-exercising races with the code that cleans up after a grace period.
-This commit therefore switches from these millisecond-scale timeouts
-to timeouts ranging from zero to 128 microseconds, and with a full
-microsecond's worth of timeout fuzz.
+This commit adds CPU number to the "Failure/close-call rcutorture reader
+segments" list printed at the end of an rcutorture run that had too-short
+grace periods.  This information can help debugging interactions with
+migration and CPU hotplug.
+
+However, experience indicates that sampling the CPU number in rcutorture's
+read-side code can reduce the probability of too-short bugs by a small
+integer factor.  And small integer factors are crucial to RCU bug hunting,
+so this commit also introduces a default-off RCU_TORTURE_TEST_LOG_CPU
+Kconfig option to enable this CPU-number-logging functionality at
+build time.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ kernel/rcu/Kconfig.debug | 15 +++++++++++++++
+ kernel/rcu/rcutorture.c  |  9 +++++++--
+ 2 files changed, 22 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index 9b0b52e1836fa..b3ac000004bfe 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -53,6 +53,21 @@ config RCU_TORTURE_TEST
+ 	  Say M if you want the RCU torture tests to build as a module.
+ 	  Say N if you are unsure.
+ 
++config RCU_TORTURE_TEST_LOG_CPU
++	tristate "Log CPU for rcutorture failures"
++	depends on RCU_TORTURE_TEST
++	default n
++	help
++	  This option causes rcutorture to decorate each entry of its
++	  log of failure/close-call rcutorture reader segments with the
++	  number of the CPU that the reader was running on at the time.
++	  This information can be useful, but it does incur additional
++	  overhead, overhead that can make both failures and close calls
++	  less probable.
++
++	  Say Y here if you want CPU IDs logged.
++	  Say N if you are unsure.
++
+ config RCU_REF_SCALE_TEST
+ 	tristate "Scalability tests for read-side synchronization (RCU and others)"
+ 	depends on DEBUG_KERNEL
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 0bc6fc5822153..6067f2740247d 100644
+index 99780a74da44c..0bc6fc5822153 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -1561,8 +1561,8 @@ rcu_torture_writer(void *arg)
- 							break;
- 						}
- 					WARN_ON_ONCE(ulo_size > 0 && i >= ulo_size);
--					torture_hrtimeout_jiffies(torture_random(&rand) % 16,
--								  &rand);
-+					torture_hrtimeout_us(torture_random(&rand) % 128, 1000,
-+							     &rand);
- 				}
- 				rcu_torture_pipe_update(old_rp);
- 				break;
-@@ -1582,8 +1582,8 @@ rcu_torture_writer(void *arg)
- 							break;
- 						}
- 					WARN_ON_ONCE(rgo_size > 0 && i >= rgo_size);
--					torture_hrtimeout_jiffies(torture_random(&rand) % 16,
--								  &rand);
-+					torture_hrtimeout_us(torture_random(&rand) % 128, 1000,
-+							     &rand);
- 				}
- 				rcu_torture_pipe_update(old_rp);
- 				break;
-@@ -1592,8 +1592,8 @@ rcu_torture_writer(void *arg)
- 				gp_snap = cur_ops->start_gp_poll_exp();
- 				rcu_torture_writer_state = RTWS_POLL_WAIT_EXP;
- 				while (!cur_ops->poll_gp_state_exp(gp_snap))
--					torture_hrtimeout_jiffies(torture_random(&rand) % 16,
--								  &rand);
-+					torture_hrtimeout_us(torture_random(&rand) % 128, 1000,
-+							     &rand);
- 				rcu_torture_pipe_update(old_rp);
- 				break;
- 			case RTWS_POLL_GET_EXP_FULL:
-@@ -1601,8 +1601,8 @@ rcu_torture_writer(void *arg)
- 				cur_ops->start_gp_poll_exp_full(&gp_snap_full);
- 				rcu_torture_writer_state = RTWS_POLL_WAIT_EXP_FULL;
- 				while (!cur_ops->poll_gp_state_full(&gp_snap_full))
--					torture_hrtimeout_jiffies(torture_random(&rand) % 16,
--								  &rand);
-+					torture_hrtimeout_us(torture_random(&rand) % 128, 1000,
-+							     &rand);
- 				rcu_torture_pipe_update(old_rp);
- 				break;
- 			case RTWS_SYNC:
+@@ -262,6 +262,7 @@ struct rt_read_seg {
+ 	unsigned long rt_delay_ms;
+ 	unsigned long rt_delay_us;
+ 	bool rt_preempted;
++	int rt_cpu;
+ };
+ static int err_segs_recorded;
+ static struct rt_read_seg err_segs[RCUTORTURE_RDR_MAX_SEGS];
+@@ -1862,6 +1863,8 @@ static void rcutorture_one_extend(int *readstate, int newstate,
+ 	WARN_ON_ONCE(idxold2 < 0);
+ 	WARN_ON_ONCE(idxold2 & ~RCUTORTURE_RDR_ALLBITS);
+ 	rtrsp->rt_readstate = newstate;
++	if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_CPU))
++		rtrsp->rt_cpu = raw_smp_processor_id();
+ 
+ 	/* First, put new protection in place to avoid critical-section gap. */
+ 	if (statesnew & RCUTORTURE_RDR_BH)
+@@ -3559,8 +3562,10 @@ rcu_torture_cleanup(void)
+ 					err_segs[i].rt_delay_us);
+ 				firsttime = 0;
+ 			}
+-			pr_cont("%s\n",
+-				err_segs[i].rt_preempted ? "preempted" : "");
++			pr_cont("%s", err_segs[i].rt_preempted ? "preempted" : "");
++			if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_CPU))
++				pr_cont(" CPU %d", err_segs[i].rt_cpu);
++			pr_cont("\n");
+ 
+ 		}
+ 	}
 -- 
 2.40.1
 
