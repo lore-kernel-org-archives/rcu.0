@@ -1,218 +1,185 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9563610F2;
-	Thu, 12 Dec 2024 10:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D1E210F6D
+	for <rcu@vger.kernel.org>; Thu, 12 Dec 2024 10:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733999440; cv=none; b=Awf4vMycrO5a0sKegAMlcJiDsZq15hIPEmjR9gO0x6AhzkI7oJxYpTLTnYTMtDJZGkRXL8RO4GOpbgHTUQksR5DmrkPp+m1KRdnZzwI2edIxfusACauzMIxK0dUZkj+IfDuAkAgG5uGf8pWoiUX8V/ub8mwQNIRUAOsQk6IKQnQ=
+	t=1734000699; cv=none; b=ZvE1zh10rUhENiHqb1hkZEe+eqHTdXzZUho3J6uJFUDctupTSi1qezG2S9YSG/3n7xy2gf6CEgvhierHul1lI+NUesA6u6h5TgjITA0dQGtSVN/tQBDSc2Mel8FtfDdfJET8smkFRejRZyShuaij12CEYRBUdPz/tqNXx7hLTms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733999440; c=relaxed/simple;
-	bh=JYIXVSkEKRUlowh48LuJjbTtvx4Cfw+mUDvsE1F6NVM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VNNYosTEwKjnxmKyR4pt26F+xCqajqzANPX2wBIVKmcJlnNKJ5/BOgvqSRDRTvorxCD0ZvpZZ5C2xoRwXV8TCCBFQQy+9ge7SmptW0rwLTMrZbrUVXRR0xqUbdfpH13ulrt96r/bA+6n7MhrqIqgMqXzVwvJ6PH8CYnuTpBVo94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PYRMNLfd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/l91I6Tm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PYRMNLfd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/l91I6Tm; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1734000699; c=relaxed/simple;
+	bh=r8PedwbATslMjHn8HdkHK7/SPqYwOBI7VaWxxuig9FE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RHB5TQ8uMIqfDGU2eeT/3RLk/a9cs9DR7K5a62m1dAz/fL5YWqg/CPpsFRsDa+X0DGLAX7X6CIsuCCajPsn+0AAT2fMwatIdKtm92X1q7XGiDrFx2YhD+Pj2sOy67mzM/Usl/FbHAOmz+ooOTL45dfolBVVrc5gNy7sYINV9atI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sav9PnrJ; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PYRMNLfd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/l91I6Tm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PYRMNLfd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/l91I6Tm"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BFEFD1F445;
-	Thu, 12 Dec 2024 10:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733999436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=jmt8yBQ6ShXzUXwOUOUaJoeXsGES/8ZDpWR5ho4hHYo=;
-	b=PYRMNLfdKfscC0/bLPF1b8/Ame8L0UPHp8QYarL3jTj17qYgByrJvLZXQkHqtSsqtpa1H1
-	7hpfD5VNQd9rY7DoSdD+inNJijGHegOZ42rgO6+LLNRmXvDqqOI4tlPVl2hqXg9bvg19OW
-	os8mAYjrm7+wP/y2Fyq9lIxxuWE0aWU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733999436;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=jmt8yBQ6ShXzUXwOUOUaJoeXsGES/8ZDpWR5ho4hHYo=;
-	b=/l91I6TmfNc31FgmeVw/t2AcMmx8UBSqNkoYgmOUz400VQ06vYQaZzy8CHzhWuFnNeIAID
-	uKz/F/UZOA7JeiBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733999436; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=jmt8yBQ6ShXzUXwOUOUaJoeXsGES/8ZDpWR5ho4hHYo=;
-	b=PYRMNLfdKfscC0/bLPF1b8/Ame8L0UPHp8QYarL3jTj17qYgByrJvLZXQkHqtSsqtpa1H1
-	7hpfD5VNQd9rY7DoSdD+inNJijGHegOZ42rgO6+LLNRmXvDqqOI4tlPVl2hqXg9bvg19OW
-	os8mAYjrm7+wP/y2Fyq9lIxxuWE0aWU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733999436;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=jmt8yBQ6ShXzUXwOUOUaJoeXsGES/8ZDpWR5ho4hHYo=;
-	b=/l91I6TmfNc31FgmeVw/t2AcMmx8UBSqNkoYgmOUz400VQ06vYQaZzy8CHzhWuFnNeIAID
-	uKz/F/UZOA7JeiBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AEB4D13939;
-	Thu, 12 Dec 2024 10:30:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rPW2KUy7WmdUIwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 12 Dec 2024 10:30:36 +0000
-Message-ID: <e683b73f-4bf3-47be-b08a-4fd2fe6adff5@suse.cz>
-Date: Thu, 12 Dec 2024 11:30:36 +0100
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sav9PnrJ"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-432d86a3085so2924275e9.2
+        for <rcu@vger.kernel.org>; Thu, 12 Dec 2024 02:51:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1734000695; x=1734605495; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rtpsjC48mE/nmTjT+Q7/MwVuoD24o44fCuhvsg4pi50=;
+        b=sav9PnrJNBwmfEgRCNJBkS1L2H6Dkv1gJFXcd0QcZV3XczZJSQBOcjyyH1PWWnzth8
+         X6wh6yv2dJVaPM56v55qUMWZ4zJhym6NhmImyD9wAcAhkzUrXK6HaOSbC5N0A7kiq1mb
+         xYB38FlKaUI+tkGZy41ZfXiS1RfS5HxANFaeSQfz27T3SKxlne80Wb3HUqZSLHlXMnKk
+         t3Ch4eCLeX2YTah4oRyjjRKzhrCpovzYTpQKrJZW0yGxpFY46FfQ2cgCzHlV1GPhq4zf
+         UJhGWwhXuPMvb0OGhloM6gNEl2qfJQuD0cFDyjJ9gNUr+XnDusBOyYTkWswNl/aPgS6Q
+         P4XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734000695; x=1734605495;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rtpsjC48mE/nmTjT+Q7/MwVuoD24o44fCuhvsg4pi50=;
+        b=FKN1ROwzKVXwOdY9o0Nn+0t+xBt6oFVUk3QmbOVVlWUv9S8iVUbwF6Do4dj7r3siSU
+         D9+4S+1gAP0Xb0wh5wK3hPVE6+XgaOQrW6dGy7POZXCp8Pq8iI9JZqFp6iyGinbEAeN8
+         vyRfpvJjq00HxdmtM2YfhsUPYI7cEw0SwcgINOLLQ13JCl7JFaGaTJ7iArWZJIcCu6r1
+         w22F4dOMDmB1k4HPgv8fPvVXTd7EdYlYU4netsGr/12Ng8Xh24pf+QhL0UZYglpXECag
+         U+0kLUzMELuuOquEwPGYfj1xjiqJ3ssW9a8O1oftwiNWLc7/CqykrX4xqzkFvviHQGZz
+         khHw==
+X-Forwarded-Encrypted: i=1; AJvYcCUd3iYtU1q8SGVziLbtLdM9Kxt0vMWSOxg9eW8R0m8UV3dgjvVHMSHR1XB0MPjlLhDfF+4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YybmsvOjB1isnESy8wYxOidOtwrrwh4LekrCCN1ZdO0NcBH+q2d
+	FzVbDTAi+QfGRUwvc6Os1ApVkgH693/g2nSlcRswmF4AHiEO0nUeBGpzBXcLBQG7MpQ0bBEZGym
+	Kyi/GO42PAhYJQ9JMPHZQCXotS+tc1seSCnA+
+X-Gm-Gg: ASbGncsW8fzRVOhsfEAOm737rNta3nui5+QBKHbylkXq9EQFuNUQYlf/ve01hZ5a6LJ
+	I8jWgckzPZe1wkLZq22PytOzbI9Yxb3LSBbPuEhupZz7D/4SqnNDv8OBHrVBamsLpotTV
+X-Google-Smtp-Source: AGHT+IHyygeSxJyNs1AB/t8h2oWE3zrmWEnc+tMnMhN05YyXp5Tg5F9O0X+SggrM6je5HiwFGxlS9nrxUkLK1wXEwpM=
+X-Received: by 2002:a05:600c:5101:b0:434:a1d3:a331 with SMTP id
+ 5b1f17b1804b1-4361c3e2350mr42431505e9.22.1734000695440; Thu, 12 Dec 2024
+ 02:51:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC v1 0/5] Move kvfree_rcu() into SLAB
-Content-Language: en-US
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-References: <20241210164035.3391747-1-urezki@gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <20241210164035.3391747-1-urezki@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.993];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com,kvack.org,linux-foundation.org];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid]
-X-Spam-Score: -4.30
-X-Spam-Flag: NO
+References: <20241101060237.1185533-1-boqun.feng@gmail.com> <20241101060237.1185533-3-boqun.feng@gmail.com>
+In-Reply-To: <20241101060237.1185533-3-boqun.feng@gmail.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 12 Dec 2024 11:51:23 +0100
+Message-ID: <CAH5fLghYjcb-mpR_rr2aC_W8rRb6g8jCFxgky7iEqVgmpHjf=Q@mail.gmail.com>
+Subject: Re: [RFC v2 02/13] rust: sync: Add basic atomic operation mapping framework
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: rust-for-linux@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev, lkmm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <parri.andrea@gmail.com>, 
+	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, 
+	Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
+	Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, 
+	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, torvalds@linux-foundation.org, 
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+	Trevor Gross <tmgross@umich.edu>, dakr@redhat.com, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/10/24 17:40, Uladzislau Rezki (Sony) wrote:
-> Hello!
+On Fri, Nov 1, 2024 at 7:03=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> wr=
+ote:
+>
+> Preparation for generic atomic implementation. To unify the
+> ipmlementation of a generic method over `i32` and `i64`, the C side
+> atomic methods need to be grouped so that in a generic method, they can
+> be referred as <type>::<method>, otherwise their parameters and return
+> value are different between `i32` and `i64`, which would require using
+> `transmute()` to unify the type into a `T`.
+>
+> Introduce `AtomicIpml` to represent a basic type in Rust that has the
+> direct mapping to an atomic implementation from C. This trait is sealed,
+> and currently only `i32` and `i64` ipml this.
 
-Hi and thanks!
+There seems to be quite a few instances of "impl" spelled as "ipml" here.
 
-> This series is based on v6.12 kernel.
+> Further, different methods are put into different `*Ops` trait groups,
+> and this is for the future when smaller types like `i8`/`i16` are
+> supported but only with a limited set of API (e.g. only set(), load(),
+> xchg() and cmpxchg(), no add() or sub() etc).
+>
+> While the atomic mod is introduced, documentation is also added for
+> memory models and data races.
+>
+> Also bump my role to the maintainer of ATOMIC INFRASTRUCTURE to reflect
+> my responsiblity on the Rust atomic mod.
+>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  MAINTAINERS                    |   4 +-
+>  rust/kernel/sync.rs            |   1 +
+>  rust/kernel/sync/atomic.rs     |  19 ++++
+>  rust/kernel/sync/atomic/ops.rs | 199 +++++++++++++++++++++++++++++++++
+>  4 files changed, 222 insertions(+), 1 deletion(-)
+>  create mode 100644 rust/kernel/sync/atomic.rs
+>  create mode 100644 rust/kernel/sync/atomic/ops.rs
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b77f4495dcf4..e09471027a63 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3635,7 +3635,7 @@ F:        drivers/input/touchscreen/atmel_mxt_ts.c
+>  ATOMIC INFRASTRUCTURE
+>  M:     Will Deacon <will@kernel.org>
+>  M:     Peter Zijlstra <peterz@infradead.org>
+> -R:     Boqun Feng <boqun.feng@gmail.com>
+> +M:     Boqun Feng <boqun.feng@gmail.com>
+>  R:     Mark Rutland <mark.rutland@arm.com>
+>  L:     linux-kernel@vger.kernel.org
+>  S:     Maintained
+> @@ -3644,6 +3644,8 @@ F:        arch/*/include/asm/atomic*.h
+>  F:     include/*/atomic*.h
+>  F:     include/linux/refcount.h
+>  F:     scripts/atomic/
+> +F:     rust/kernel/sync/atomic.rs
+> +F:     rust/kernel/sync/atomic/
 
-Could it be rebased to v6.13-rc1, which is a basis for most -next branches?
-Right now patch 5 doesn't apply on v6.13-rc1.
+This is why mod.rs files are superior :)
 
-Please also Cc all slab maintainers/reviewers.
+> @@ -0,0 +1,19 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +//! Atomic primitives.
+> +//!
+> +//! These primitives have the same semantics as their C counterparts: an=
+d the precise definitions of
+> +//! semantics can be found at [`LKMM`]. Note that Linux Kernel Memory (C=
+onsistency) Model is the
+> +//! only model for Rust code in kernel, and Rust's own atomics should be=
+ avoided.
+> +//!
+> +//! # Data races
+> +//!
+> +//! [`LKMM`] atomics have different rules regarding data races:
+> +//!
+> +//! - A normal read doesn't data-race with an atomic read.
 
-> It is an attempt to move the kvfree_rcu()
-> into MM from the kernel/rcu/ place. I split the series into a few patches so it
-> is easier to follow a migration process.
+This was fixed:
+https://github.com/rust-lang/rust/pull/128778
 
-I think this is not the best approach. The individual diffs are not easy to
-follow because they copy code or delete code separately, and not move it in
-a single commit. I get a much better overview when I diff the whole series
-against baseline, then git highlights pure moves and local changes nicely.
+> +mod private {
+> +    /// Sealed trait marker to disable customized impls on atomic implem=
+entation traits.
+> +    pub trait Sealed {}
+> +}
 
-Having moves recorded properly would also make it possible for "git blame
--C" to show changes that were made in the old file before the move, but with
-copy and deletion in separate commits it doesn't work.
-(but note it seems it doesn't work so great even if I squash everything to
-one patch - were the functions reodered?)
+Just make the trait unsafe?
 
-And with this approach you also need the temporary changes.
-
-What I think could work better is to do:
-- preparatory changes in the existing location
-  - splitting out kvfree_rcu_init() and calling separately in start_kernel()
-  - renaming shrinkers
-  - adjusting the names passed to trace_rcu_...()
-  - maybe even adding the CONFIG_TINY_RCU guards even if redundant
-- one big move of code between files, hopefully needing no or minimal
-adjustments after the preparatory steps
-
-Makes sense?
-
-Thanks,
-Vlastimil
-
-> As a result of this series, the main functionality is located under MM.
-> 
-> Uladzislau Rezki (Sony) (5):
->   rcu/kvfree: Temporary reclaim over call_rcu()
->   mm/slab: Copy main data structures of kvfree_rcu()
->   mm/slab: Copy internal functions of kvfree_rcu()
->   mm/slab: Copy a function of kvfree_rcu() initialization
->   mm/slab: Move kvfree_rcu() into SLAB
-> 
->  include/linux/slab.h |   1 +
->  init/main.c          |   1 +
->  kernel/rcu/tree.c    | 866 ------------------------------------------
->  mm/slab_common.c     | 875 +++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 877 insertions(+), 866 deletions(-)
-> 
-
+Alice
