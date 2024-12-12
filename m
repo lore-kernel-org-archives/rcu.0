@@ -1,61 +1,78 @@
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7248E13D52E;
-	Thu, 12 Dec 2024 18:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DEE218594;
+	Thu, 12 Dec 2024 18:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734028237; cv=none; b=GznKhA/0PRR7Aj02z5d4Nb/4meOBK1qPd6rKyTIeXYI++7oMO3kjZvDwcIP+3bMMN1tGVCq9NoqqG9MPZZLGQ2g6ZiGLf0n6kMS0l3xdEszw1n4emvWqc2D6qUDQKEUGIaRtbVUTArsfJMRJuOHfNBjZcUznibwhV8AQCKEpPOE=
+	t=1734028769; cv=none; b=jZbXw5EmS/UXZbWHZLEFLxEmHi5Kl5SDUfnbOldGCxM3mXCCkxbmYuey22kAYDdpNkyC9qr/+pRtBhDfcGiyi0krWnqqHI1l3+2i8RYEHhHcAW8OBtZD/KMuEP2aYOFst96lBWKiMzziehEeYTLoyVeB9SjqMEJHPu3XgT/eo6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734028237; c=relaxed/simple;
-	bh=5nf9ux/Cf69Q8UJZhT4C6lwQ+XAMk771vuE4mhshYTE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=rNgADLJfqmSIq6wx0sUvZK91L1tdMBxOC1bZ92xt/2vJzbC9rqH+Z8v7PR8XLBHZZgznIEZHymfGc4rg3OWipDmXAhx5FYQC64mggnNqk5mUqEcYT6A61FHr0+8Z3S+ZYFtbZC8eNJZoBPVyYbXnOPDj5b/cTeEq8kwTS+88Uww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=RomAY41b; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
+	s=arc-20240116; t=1734028769; c=relaxed/simple;
+	bh=m590/Q5h4u9oEARMO6LLrWrWq41qWEexj/rHoT8zjDg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=d7hbfYP0il9Gi3+NUc1pOUxS1EaRSF4rIJdOGm9kxV9iBDGcytlCreoZsf+IOD/TQuK6T5qQg9VfCztKdZgTgs6eseGqmDaJpAfbUAcbMHBvwKlj+kMUjzVM1065NjKrjtrwlEO1NFgEDw2qd3XCR2BTVuPywQevtFuf5ZfqtoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iIEG7CcX; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="RomAY41b"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
-	s=default; t=1734028228;
-	bh=5nf9ux/Cf69Q8UJZhT4C6lwQ+XAMk771vuE4mhshYTE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=RomAY41bZNZspmyg6+2I4w5wubdmo6SWVOaNsAFY9xu3Uuv3pjug0Y2luU3HqEyU3
-	 VPmpR4epABliMOAJZYMMwaF8qzZvhFbyKTaqyWyrFVjg1a1sGWlY4m3PvaMKeanv/3
-	 DRXtZ9HeS77MsaUZC/SLIQysKOh6h8KyVgK2A1Wo=
-Received: by gentwo.org (Postfix, from userid 1003)
-	id B6B77401F4; Thu, 12 Dec 2024 10:30:28 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id B548B401C4;
-	Thu, 12 Dec 2024 10:30:28 -0800 (PST)
-Date: Thu, 12 Dec 2024 10:30:28 -0800 (PST)
-From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-cc: linux-mm@kvack.org, "Paul E . McKenney" <paulmck@kernel.org>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Vlastimil Babka <vbabka@suse.cz>, RCU <rcu@vger.kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>, Pekka Enberg <penberg@kernel.org>, 
-    David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-    Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 0/5] Move kvfree_rcu() into SLAB (v2)
-In-Reply-To: <20241212180208.274813-1-urezki@gmail.com>
-Message-ID: <4f739c61-24c0-3790-8114-988f02c7caea@gentwo.org>
-References: <20241212180208.274813-1-urezki@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iIEG7CcX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE34FC4CECE;
+	Thu, 12 Dec 2024 18:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734028766;
+	bh=m590/Q5h4u9oEARMO6LLrWrWq41qWEexj/rHoT8zjDg=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=iIEG7CcXGUOIA4D3R66C1Fm4w2GC4BgW6IbLCvTp2o8riX80onPJPogtPN00VZzcu
+	 ssA2avAwrRI8LMwyU3lCtC8jxAWyOkb0hNBhdpkUjfHnLUtdWI/LBnpBqEIYoTx+A6
+	 vsBt6w7Nzk2O+w+RoECQ8VDY5ty2D9m9/D+chiI6dSecps7JPbea1E+/omiv3OnS/c
+	 CrTuDkv4KbqakzsRgzbVP5QYgUDW/m/VzdRfNG6KGTNtvIEbPchrGvpNX7pOxRxQbg
+	 EvRZMfAbjnEtCRJws6Qpiw1pCtJh6Lkooj3RoG0StxlfAhHTwXq4FVy+WlskIk+zeT
+	 74jw1JqteDM6A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6860BCE0EE4; Thu, 12 Dec 2024 10:39:26 -0800 (PST)
+Date: Thu, 12 Dec 2024 10:39:26 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH rcu 0/8] Miscellaneous fixes for v6.14
+Message-ID: <928b8031-2bfe-4c90-9952-7d331e027ae3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, 12 Dec 2024, Uladzislau Rezki (Sony) wrote:
+Hello!
 
-> This is v2. It is based on the Linux 6.13-rc2. The first version is
-> here:
+This series contains miscellaneous fixes:
 
-I do not see any use of internal slab interfaces by this code. It seems to
-be using rcu internals though. So it would best be placed with the rcu
-code.
+1.	Report callbacks enqueued on offline CPU blind spot, courtesy
+	of Frederic Weisbecker.
+
+2.	Make rcu_report_exp_cpu_mult() caller acquire lock.
+
+3.	Move rcu_report_exp_rdp() setting of ->cpu_no_qs.b.exp under lock.
+
+4.	Replace open-coded rcu_exp_need_qs() from rcu_exp_handler()
+	with call.
+
+5.	Make preemptible rcu_exp_handler() check idempotency.
+
+6.	Add KCSAN exclusive-writer assertions for rdp->cpu_no_qs.b.exp.
+
+7.	Add lockdep_assert_irqs_disabled() to rcu_exp_need_qs().
+
+8.	MAINTAINERS: Update RCU git tree.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/MAINTAINERS              |   10 ++++----
+ b/kernel/rcu/tree.c        |    3 ++
+ b/kernel/rcu/tree_exp.h    |   20 ++++++++++------
+ b/kernel/rcu/tree_plugin.h |    1 
+ kernel/rcu/tree_exp.h      |   54 ++++++++++++++++++++++++++++-----------------
+ 5 files changed, 56 insertions(+), 32 deletions(-)
