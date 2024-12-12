@@ -1,66 +1,37 @@
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4194B189F39;
-	Thu, 12 Dec 2024 19:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB6718595F;
+	Thu, 12 Dec 2024 19:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734030506; cv=none; b=UCgRry95GrfTwciPKIs78eEiPYDT4oV/l0mjNu7Pwo4TnV95M/iA+yDUy7K9wlz4EkGG8WFIYzIBAoIadv5fb2EvnSFdiEhrPRL3N4HdWZWL5X7Ni/dCCzIxTX6O6m4GoIByS7Sb6VW0L0UN9KzbwobSsCQUSVmo2qBH6I7o+vU=
+	t=1734030648; cv=none; b=WlSg7nwNS+WCko3Uq734d0p26gQegWQbkXAZINltMEmFnpJiKR+RkI4Yp0D+oRQsFC57x0GbR2AJVULLpe2NTyo/Ou2jZSMSeXCKxr37WuRxFCUEnje32sScv0hHJZyD/DiXmY8zb1QfbFOggO7IrFgxxJeA9eHOpg8z6u4Cago=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734030506; c=relaxed/simple;
-	bh=SSbtbjf4N+myf4rI1mNd/z9Tj+QVRdniq1d3DjCN/DA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N4y5+qFJs1NrZF0FtOoitmOUkSr3JWjraVbl3VRY8JTF+hXo93w6iATtVkby6GgZhVrlrbHk8JDIkIjNL7Sp2lWPBdAguqNi2o68u4O3n9MjalbaykGcFhsXSiLGGxkng5Z/eJ1vbFdQA9daxnKX13tq1w/sTs1JIFBR7jA4fZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SanTGc+g; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1734030648; c=relaxed/simple;
+	bh=AMznUxMpA41JhEG6jpXa+3ZVKV/cWyO/qDR4WdYSGwI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I1038Lkp0svkxJ4bpSqH+T6yb705Y+nFLEGhOyqd3rRxlXkwdctIoAplnC61OWY+uWZ5WWniPmHdnTIG/gQ84z7TQ/O1fUr0YqalZ/5HzZYdAp+C+jkTm5F3tLBVCCQE4kz0k3r+e1sFkIRfMIOz0bE8J0Zn30Qo6Y0A2hLlzuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YCKhh/dc; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SanTGc+g"
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-54026562221so987924e87.1;
-        Thu, 12 Dec 2024 11:08:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734030503; x=1734635303; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OGQYHU92ndPrpYv/6POn9PHDMPJeDwarv6TQ5xlWAUc=;
-        b=SanTGc+gpGZG87CH9L67mMY0Hf6aK0Wc7cGSJsehx6xyrhCV9sX0Am2vTNTR509xMU
-         KsMWGzd/e9P5y1k9Y2SmfIH1lxU2B87cNW48/gaYHG1OZjZ1bGgz+nqX5DV4m90JxNTK
-         S7tVoVeBxH6+GXsutaZ5wTy4oxjAgj8dmVdrio+XbfaHDZK3xEKwYgsYkT+HpTTUbuyS
-         BhjzU5YqDqtuLloDAkLVPVq0rGWySxy81ArmblngZ7oBvyoBK4I6wVwSsLrGShOgo0uL
-         NXu9UBtvh8zgJMrmkMms8tdGbE4YmM97CxgQ1L1qcUDsGs7yLLmp7+IoFSUn1HSwYqgG
-         XWNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734030503; x=1734635303;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OGQYHU92ndPrpYv/6POn9PHDMPJeDwarv6TQ5xlWAUc=;
-        b=aqMn6l7sOfnxsAkcoOw8GQIaHm7annmYeyqnt20duemuR/T0q525l8JESWkxGreMtK
-         zo4NxMbHY1FlVK16QCW7CQRzD9hL5r32F7orxPE++FziAWHZXKUaBj/RmhI/uS0eBAlr
-         N/qgT9IRKABQNg8r1einjRxAHKHLaB87LuNKpGGoq8o4PioQ4CHbqUSTuVzW9VhF/9sU
-         bgunTtLTSJwfThwn1mbZDfUmnzGktejb1wzfndMRtMoCfJ3MEbhYlIRJ+O84pFkNQXY5
-         +0If7YWqylpIxdiAmmRqb4YCVmCV9LBcpCYodeSelRnMz1/Jn3FyicOOKgze/HFnoxSG
-         UrBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVazzWVbLRO2l1pPZ8V0j6VgERUmTVyr0HsWmxgsD0lKTkVlhJ/Sn78+ZMUsUoc6nwg31CAn5Dso8r+rJw=@vger.kernel.org, AJvYcCXDM8GQyLLPEu+9InzTP+yuy6KVQiARzwwjT5tFchEdDTZEhN26cPE/dGaI21dmvdQ6WgTh@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZmT/KlkfYO4KXlaOJcFp25Xqm/zYxpuul/YuESUGiGKe7sKsX
-	pl+93Rs4DgKAaJO0dicX1/oxzRYveNt4nSEFpEZuobkkLRAu5TO3
-X-Gm-Gg: ASbGncsjhmesE5MKhk4TujkQZxgVNJjyzIGeRD6NyZGii83TWW5FL6pp8lplhfjUNZp
-	RhzkKdqsjgB/FffxaYtHG2Oj0qcBEbNhPwIzAXeJvyS8Sgdvw5x/hXTnTtAeCMUSMmAK9ePey0G
-	LH9BdLTDefXqae5ZWRSwqyW/HFggPSlCZ87g0TI9KFnQ6mMtDJtpZvDIaM5MQurzu1ZJAK2pCh2
-	WF3QHakhactA9hvj5aJIrU=
-X-Google-Smtp-Source: AGHT+IE3zgljXGWu86jNCVPuPy5ygINSrvsgKsVFQBNJzggmWYL0gkJwGiHiS08fe2ObOOBvnhF0HQ==
-X-Received: by 2002:a05:6512:220b:b0:540:1c33:ac83 with SMTP id 2adb3069b0e04-540340b6ca4mr533017e87.0.1734030503185;
-        Thu, 12 Dec 2024 11:08:23 -0800 (PST)
-Received: from pc636 ([2001:9b1:d5a0:a500::800])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53f67be1128sm1735397e87.85.2024.12.12.11.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 11:08:22 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 12 Dec 2024 20:08:20 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YCKhh/dc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 533FDC4CECE;
+	Thu, 12 Dec 2024 19:10:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734030648;
+	bh=AMznUxMpA41JhEG6jpXa+3ZVKV/cWyO/qDR4WdYSGwI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=YCKhh/dc3SwYjPcBpobt0jJvjye3oavE1njWiYZI50TSajTemo+dc97YDnT1b7oT+
+	 00Lhb7N0edntEuHd+mcGwXObTacBXYxPemju/9z2FimvTKyxc7RSRuDa+boxkoJSOL
+	 JvcSQKft6T659fK0xudg3nYb4iSkzh+zwXmGrc3NP8IJh0v99lgC/NhKsV9mY8TuhL
+	 EyD4X8DikNFWwCYSbLUPbQ2iYiqemZn6+zXQJ9a5tAIbJhQfsjg99+qGgz7sq2fgF8
+	 pi7z3dXa2yz6e7LfGTXn2rFdqTc0YVWDmd5DvthayJmcpUz057NJqlKaVRpwi6IRUM
+	 bPngJcvzDm/pA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id DF29BCE0DFC; Thu, 12 Dec 2024 11:10:47 -0800 (PST)
+Date: Thu, 12 Dec 2024 11:10:47 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
 To: "Christoph Lameter (Ampere)" <cl@gentwo.org>
 Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-	"Paul E . McKenney" <paulmck@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Vlastimil Babka <vbabka@suse.cz>, RCU <rcu@vger.kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
@@ -71,7 +42,8 @@ Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
 	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
 Subject: Re: [PATCH v2 0/5] Move kvfree_rcu() into SLAB (v2)
-Message-ID: <Z1s0pPsGMehOLHWU@pc636>
+Message-ID: <ab3c9f52-1643-4dfa-9a04-d6db4dfcf29a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20241212180208.274813-1-urezki@gmail.com>
  <4f739c61-24c0-3790-8114-988f02c7caea@gentwo.org>
 Precedence: bulk
@@ -93,9 +65,8 @@ On Thu, Dec 12, 2024 at 10:30:28AM -0800, Christoph Lameter (Ampere) wrote:
 > I do not see any use of internal slab interfaces by this code. It seems to
 > be using rcu internals though. So it would best be placed with the rcu
 > code.
->
-I think, later on there will be integration. This is a step forward to place
-it under mm where it should be.
 
---
-Uladzislau Rezki
+That is indeed the current state.  The point of moving it is to later
+take advantage of internal slab state.
+
+							Thanx, Paul
