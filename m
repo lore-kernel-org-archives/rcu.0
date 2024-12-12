@@ -1,78 +1,123 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DEE218594;
-	Thu, 12 Dec 2024 18:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F69218594;
+	Thu, 12 Dec 2024 18:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734028769; cv=none; b=jZbXw5EmS/UXZbWHZLEFLxEmHi5Kl5SDUfnbOldGCxM3mXCCkxbmYuey22kAYDdpNkyC9qr/+pRtBhDfcGiyi0krWnqqHI1l3+2i8RYEHhHcAW8OBtZD/KMuEP2aYOFst96lBWKiMzziehEeYTLoyVeB9SjqMEJHPu3XgT/eo6s=
+	t=1734028778; cv=none; b=A5asaFOz89XwEOSmBJbQcRMX70MA8Ieg7sKhykcU+EJRBK6kuPKbLRO/N8mhNL/vk+laQOeeCi1awGfT/qIH1uNaI6yYNCAMLKRT5Nt+qFpBbgMDUXasuNmKN00HKSQvQ+XvAv1Wy3reeOAggVecPpS0FwGaXCNlFlriuMff/BU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734028769; c=relaxed/simple;
-	bh=m590/Q5h4u9oEARMO6LLrWrWq41qWEexj/rHoT8zjDg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=d7hbfYP0il9Gi3+NUc1pOUxS1EaRSF4rIJdOGm9kxV9iBDGcytlCreoZsf+IOD/TQuK6T5qQg9VfCztKdZgTgs6eseGqmDaJpAfbUAcbMHBvwKlj+kMUjzVM1065NjKrjtrwlEO1NFgEDw2qd3XCR2BTVuPywQevtFuf5ZfqtoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iIEG7CcX; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1734028778; c=relaxed/simple;
+	bh=mpb3OxMibi00zoaHZEYpEWb6uy4/muJlU71GYLvWf90=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=MhPZKeabIZRVj+5iBNtdxH1yazGl0r43thu+wX8cCUZP0uWH7MO9WR8KHQNffAbdiwaHs2Uhv3v4Dc1wRKreIqW8y55EcQPy/2VqS8daKw7bqC3Y1KBSFzzhEoNXQanx5xCMPTY4LxhtY6UAZ2jF8PvhyDE4Jev1GN9GRmwyqGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L2+AgoRZ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iIEG7CcX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE34FC4CECE;
-	Thu, 12 Dec 2024 18:39:26 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L2+AgoRZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5E2CC4CEDE;
+	Thu, 12 Dec 2024 18:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734028766;
-	bh=m590/Q5h4u9oEARMO6LLrWrWq41qWEexj/rHoT8zjDg=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=iIEG7CcXGUOIA4D3R66C1Fm4w2GC4BgW6IbLCvTp2o8riX80onPJPogtPN00VZzcu
-	 ssA2avAwrRI8LMwyU3lCtC8jxAWyOkb0hNBhdpkUjfHnLUtdWI/LBnpBqEIYoTx+A6
-	 vsBt6w7Nzk2O+w+RoECQ8VDY5ty2D9m9/D+chiI6dSecps7JPbea1E+/omiv3OnS/c
-	 CrTuDkv4KbqakzsRgzbVP5QYgUDW/m/VzdRfNG6KGTNtvIEbPchrGvpNX7pOxRxQbg
-	 EvRZMfAbjnEtCRJws6Qpiw1pCtJh6Lkooj3RoG0StxlfAhHTwXq4FVy+WlskIk+zeT
-	 74jw1JqteDM6A==
+	s=k20201202; t=1734028777;
+	bh=mpb3OxMibi00zoaHZEYpEWb6uy4/muJlU71GYLvWf90=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=L2+AgoRZPL1+tZg7Sq2m8jE9SsJU4i3fW7CMWAtR1ObgdYFEYwrMRvzzgB6Yp96gt
+	 MigzXYBS8Zgfypl2bNKJmMRZ9sds1er91iEkgOWUR2gC0wis4mw+xRftF+5T4ZNQkm
+	 u1wOCgbtELJcC0j54+NYzGSAm5FHgHTfd/riZiy0K4xeBuNZM1tnUfdGS+zwqsAf0R
+	 GPZA3HyPL86NdOH4HZkag0Eny5kRrLDjEBsGqdg9F7D+lHiA1iO33tz5ecofWJBq6s
+	 F6j0TBXYKuOOr1fdqpcZ1MJiBk2nkW3Q8P2P5CnrVGXfEcHkvyoLqa3bs2q8uhRoJX
+	 6je32rKyTJ1HQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 6860BCE0EE4; Thu, 12 Dec 2024 10:39:26 -0800 (PST)
-Date: Thu, 12 Dec 2024 10:39:26 -0800
+	id 43CAFCE0FA5; Thu, 12 Dec 2024 10:39:37 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH rcu 0/8] Miscellaneous fixes for v6.14
-Message-ID: <928b8031-2bfe-4c90-9952-7d331e027ae3@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH rcu 4/8] rcu: Replace open-coded rcu_exp_need_qs() from rcu_exp_handler() with call
+Date: Thu, 12 Dec 2024 10:39:32 -0800
+Message-Id: <20241212183936.1936196-4-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <928b8031-2bfe-4c90-9952-7d331e027ae3@paulmck-laptop>
+References: <928b8031-2bfe-4c90-9952-7d331e027ae3@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+Currently, the preemptible implementation of rcu_exp_handler()
+almost open-codes rcu_exp_need_qs().  A call to that function would be
+shorter and would improve expediting in cases where rcu_exp_handler()
+interrupted a preemption-disabled or bh-disabled region of code.
+This commit therefore moves rcu_exp_need_qs() out of the non-preemptible
+leg of the enclosing #ifdef and replaces the open coding in preemptible
+rcu_exp_handler() with a call to rcu_exp_need_qs().
 
-This series contains miscellaneous fixes:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/rcu/tree_exp.h | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
-1.	Report callbacks enqueued on offline CPU blind spot, courtesy
-	of Frederic Weisbecker.
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 5c4ea66cc00dd..f3884393b9477 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -718,6 +718,16 @@ static void rcu_exp_sel_wait_wake(unsigned long s)
+ 	rcu_exp_wait_wake(s);
+ }
+ 
++/* Request an expedited quiescent state. */
++static void rcu_exp_need_qs(void)
++{
++	__this_cpu_write(rcu_data.cpu_no_qs.b.exp, true);
++	/* Store .exp before .rcu_urgent_qs. */
++	smp_store_release(this_cpu_ptr(&rcu_data.rcu_urgent_qs), true);
++	set_tsk_need_resched(current);
++	set_preempt_need_resched();
++}
++
+ #ifdef CONFIG_PREEMPT_RCU
+ 
+ /*
+@@ -742,13 +752,10 @@ static void rcu_exp_handler(void *unused)
+ 	 */
+ 	if (!depth) {
+ 		if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK)) ||
+-		    rcu_is_cpu_rrupt_from_idle()) {
++		    rcu_is_cpu_rrupt_from_idle())
+ 			rcu_report_exp_rdp(rdp);
+-		} else {
+-			WRITE_ONCE(rdp->cpu_no_qs.b.exp, true);
+-			set_tsk_need_resched(t);
+-			set_preempt_need_resched();
+-		}
++		else
++			rcu_exp_need_qs();
+ 		return;
+ 	}
+ 
+@@ -841,16 +848,6 @@ static void rcu_exp_print_detail_task_stall_rnp(struct rcu_node *rnp)
+ 
+ #else /* #ifdef CONFIG_PREEMPT_RCU */
+ 
+-/* Request an expedited quiescent state. */
+-static void rcu_exp_need_qs(void)
+-{
+-	__this_cpu_write(rcu_data.cpu_no_qs.b.exp, true);
+-	/* Store .exp before .rcu_urgent_qs. */
+-	smp_store_release(this_cpu_ptr(&rcu_data.rcu_urgent_qs), true);
+-	set_tsk_need_resched(current);
+-	set_preempt_need_resched();
+-}
+-
+ /* Invoked on each online non-idle CPU for expedited quiescent state. */
+ static void rcu_exp_handler(void *unused)
+ {
+-- 
+2.40.1
 
-2.	Make rcu_report_exp_cpu_mult() caller acquire lock.
-
-3.	Move rcu_report_exp_rdp() setting of ->cpu_no_qs.b.exp under lock.
-
-4.	Replace open-coded rcu_exp_need_qs() from rcu_exp_handler()
-	with call.
-
-5.	Make preemptible rcu_exp_handler() check idempotency.
-
-6.	Add KCSAN exclusive-writer assertions for rdp->cpu_no_qs.b.exp.
-
-7.	Add lockdep_assert_irqs_disabled() to rcu_exp_need_qs().
-
-8.	MAINTAINERS: Update RCU git tree.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/MAINTAINERS              |   10 ++++----
- b/kernel/rcu/tree.c        |    3 ++
- b/kernel/rcu/tree_exp.h    |   20 ++++++++++------
- b/kernel/rcu/tree_plugin.h |    1 
- kernel/rcu/tree_exp.h      |   54 ++++++++++++++++++++++++++++-----------------
- 5 files changed, 56 insertions(+), 32 deletions(-)
