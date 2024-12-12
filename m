@@ -1,43 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 080B4223328;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0804E223302;
 	Thu, 12 Dec 2024 18:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734028778; cv=none; b=CXWQiEzOuX9nA91aWMZTZq/5nxA5i9lD+D5P6O8fRUf1yn+ogtwlQ1Tyvzk7OnmJjZxZFeFxR6QOcKoDsONRUTBDv0r7QhoJBnvnc2d2r18Be928mFSBCyJgVoryrnDuYtojy0NuaxWxdtf/0DY6so9vRqziTEAmJ0HYmcD4acc=
+	t=1734028778; cv=none; b=RbCGvrL8pjiBvmXcp12EtfK4PvKL4pZ3jErN9GgFGvL3obaFozIPP4H1sMmxpgillBJGxfQOTg5xWvubbjULz3vC7kljo/9Gp2P3ezsDs1NZoGwY1TFxVwHkUBd9X8wbiV5mD0vzI8YALLJF1gYPI3xDTkiWZRdpAhBdGFgzj2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734028778; c=relaxed/simple;
-	bh=lrBecZFHohJhe5fZBGyApnmibdB5hzycxSGgrG1RZnA=;
+	bh=M+u1mLkgwoFCzd2B/v6VzYBFEaWMnA5b0i8RiGmlU84=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DQknrRr2GnfRkwCSm8nA6+XlNQz3YERzfBcm6lxMJZ54XGz7AMuZjhT3p3KMpPIpmpaldiOqstxeHSUFqHTaT2wgP2qbnQEYpDcOJu4hD/+JWCM2w2jBK37+KY7jCBSoI9qTZgpSPSlNZWkGSDS5yej0DDMxGQobUbMUKGDe1JA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UpnKk8Fm; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=WENq+Q4XvAre+EI3SaXsV2+IR5RwbgTJoPWArMltpCfy1zBZOjnKfJ6Q5aHwhQRmx5L5di5nSqm+xrzGj832M+1U/mVoA5aW2vR5oWtvaj+aVyfGl/AG0i/dYt2Jlob/p21jOgXw24Hq29gTp5JYy2ql876X4uAqzYvpwKxjddI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UIbZceyJ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UpnKk8Fm"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BBC5C4CECE;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UIbZceyJ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AFC6C4AF0B;
 	Thu, 12 Dec 2024 18:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1734028777;
-	bh=lrBecZFHohJhe5fZBGyApnmibdB5hzycxSGgrG1RZnA=;
+	bh=M+u1mLkgwoFCzd2B/v6VzYBFEaWMnA5b0i8RiGmlU84=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UpnKk8FmlOCgHvvDyNgbpdt9yR47oapZtPN5yZF/bO806zBpJvbFXMEzq+VypkO1G
-	 59C4XtB3K1JFLyF9TWW1UL6PaZVKp5CTRG66weHNnosp35d1A4VvJlzk7dSTzG3bLK
-	 DcQmj7sqpFDvs1Ho9LoiLVuyqz8trmVE/P0BnZshPEU1WZKNtLsJAclNpGHomwM+Ny
-	 /RiilQs+LEvLsleaj15uV9x7SJtv1wjmxrTHUJakNFU+7tsgS24yXI0Tb54Cu78eD2
-	 +TsNYiNHPnoOXVkM6mEJRrEGqlO9VcLLREQJ5jZFTb5e/TtTswH5NdqmILwF1vDvox
-	 XvQFmp7+W+7Aw==
+	b=UIbZceyJEbyeztq/36ocDD4mtOfkbvV2lUh6dodhGg1UJHlSoAJKXUShsaWqHizK0
+	 61br0cYhr8u1bb1hvYYC7quIPijMGuAvZbjHrUJsq14qZYHPxT2bio7K2ftPmsTTsx
+	 wD2wZRc9IdwFCdLanP5hmRnw1v2WpvXmZ5bYD0jAr1PwmYkexnngBySTAeHSWnnTdu
+	 PyRIuQFRyQka79ggg6S4InzSi7CERRVQGSrZjwlO6KybH96EmfJzPgL/x7d5OiVMEz
+	 z+kTxxo/gXVmfRQ2Pdon5MbQ4KAbciSTVl65cAEkD24kJvlsRu/3KVE4sN6pLpAZ3Q
+	 owtXGT9OhLvZQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3C95FCE0EE4; Thu, 12 Dec 2024 10:39:37 -0800 (PST)
+	id 3EEEECE0F78; Thu, 12 Dec 2024 10:39:37 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/8] rcu: Report callbacks enqueued on offline CPU blind spot
-Date: Thu, 12 Dec 2024 10:39:29 -0800
-Message-Id: <20241212183936.1936196-1-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH rcu 2/8] rcu: Make rcu_report_exp_cpu_mult() caller acquire lock
+Date: Thu, 12 Dec 2024 10:39:30 -0800
+Message-Id: <20241212183936.1936196-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <928b8031-2bfe-4c90-9952-7d331e027ae3@paulmck-laptop>
 References: <928b8031-2bfe-4c90-9952-7d331e027ae3@paulmck-laptop>
@@ -49,34 +49,74 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Frederic Weisbecker <frederic@kernel.org>
+There is a hard-to-trigger bug in the expedited grace-period computation
+whose fix requires that the __sync_rcu_exp_select_node_cpus() function
+to check that the grace-period sequence number has not changed before
+invoking rcu_report_exp_cpu_mult().  However, this check must be done
+while holding the leaf rcu_node structure's ->lock.
 
-Callbacks enqueued after rcutree_report_cpu_dead() fall into RCU barrier
-blind spot. Report any potential misuse.
+This commit therefore prepares for that fix by moving this lock's
+acquisition from rcu_report_exp_cpu_mult() to its callers (all two
+of them).
 
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/rcu/tree_exp.h | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index ff98233d4aa59..24f1cb292a92d 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3084,8 +3084,11 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
- 	head->func = func;
- 	head->next = NULL;
- 	kasan_record_aux_stack_noalloc(head);
-+
- 	local_irq_save(flags);
- 	rdp = this_cpu_ptr(&rcu_data);
-+	RCU_LOCKDEP_WARN(!rcu_rdp_cpu_online(rdp), "Callback enqueued on offline CPU!");
-+
- 	lazy = lazy_in && !rcu_async_should_hurry();
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index fb664d3a01c95..581e88d39542d 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -227,16 +227,16 @@ static void __maybe_unused rcu_report_exp_rnp(struct rcu_node *rnp, bool wake)
  
- 	/* Add the callback to our list. */
+ /*
+  * Report expedited quiescent state for multiple CPUs, all covered by the
+- * specified leaf rcu_node structure.
++ * specified leaf rcu_node structure, which is acquired by the caller.
+  */
+-static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
++static void rcu_report_exp_cpu_mult(struct rcu_node *rnp, unsigned long flags,
+ 				    unsigned long mask, bool wake)
++				    __releases(rnp->lock)
+ {
+ 	int cpu;
+-	unsigned long flags;
+ 	struct rcu_data *rdp;
+ 
+-	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	raw_lockdep_assert_held_rcu_node(rnp);
+ 	if (!(rnp->expmask & mask)) {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		return;
+@@ -257,8 +257,12 @@ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp,
+  */
+ static void rcu_report_exp_rdp(struct rcu_data *rdp)
+ {
++	unsigned long flags;
++	struct rcu_node *rnp = rdp->mynode;
++
+ 	WRITE_ONCE(rdp->cpu_no_qs.b.exp, false);
+-	rcu_report_exp_cpu_mult(rdp->mynode, rdp->grpmask, true);
++	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	rcu_report_exp_cpu_mult(rnp, flags, rdp->grpmask, true);
+ }
+ 
+ /* Common code for work-done checking. */
+@@ -432,8 +436,10 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	}
+ 	/* Report quiescent states for those that went offline. */
+-	if (mask_ofl_test)
+-		rcu_report_exp_cpu_mult(rnp, mask_ofl_test, false);
++	if (mask_ofl_test) {
++		raw_spin_lock_irqsave_rcu_node(rnp, flags);
++		rcu_report_exp_cpu_mult(rnp, flags, mask_ofl_test, false);
++	}
+ }
+ 
+ static void rcu_exp_sel_wait_wake(unsigned long s);
 -- 
 2.40.1
 
