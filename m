@@ -1,229 +1,159 @@
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E38A918C002;
-	Fri, 13 Dec 2024 20:28:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D24175AB;
+	Fri, 13 Dec 2024 20:37:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734121731; cv=none; b=pOALEcRHXVTSWeilK+6B2ukiJ/YXUfm46G3eW7zZUSeZkFjoeavz/GgmDnoE+yCzPdB5zYqdaHsepS5IZ0WnBoBwqaFCD82ieOCYS500vsV4MwSi5t0Aav/wcUI4YTrhI9+OvbY5Al/0f+pjKPR/jdLlJ9gjURlCodQzkqQ5ugA=
+	t=1734122265; cv=none; b=eO1/F1NEuSXQhgJ6b3PFbpUgKwdSm9cY2LvUxe01ITkPy2tKuJfPTpvu7g9/9NOLI0w4csIup8Lzlk3TXE964Dmev0mIZnh6OqrDUiDpcvBZAoz1nDA2RQDU9YVG+7//OZOEHVv4EfCWiLw1tzfXPwP599de+Pwro3l2dtoY5B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734121731; c=relaxed/simple;
-	bh=5bn8oXNQA2053l7zQok4dmxpsp3aILhYx8v20d7OHts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bmnY5jyWKrhPsbc/tErS6mlCVHIjjzosb7zP6IGLZa7Btb2ECqwmyUsqnlH7hdkV9U4Rieh6IGUt0qYylsMlAJONPtBvd69rECF+ZA+8wf10KE9ZuUk7Q3+QnvCbRUVTdWHWLrP8nzF9fr9SS/7mUOM8UWedXEK2QcmHAXSIkaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MtgjQxZH; arc=none smtp.client-ip=209.85.160.169
+	s=arc-20240116; t=1734122265; c=relaxed/simple;
+	bh=K6QZ1TxxKCBf8A8qbvwGo280gAv3OmuGt7sIjSOpryU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iNVc/HxIEz4LCtyDOUfsh1nKvD71IHIgW/pgTiHAutodBmVzPebwUVRiNXKD6ZBlHCbcYYFeq6zEfJuWbwUG5FAN0YLfQBp1oQeUzFaimEXlz87l02Td2epaTHMMgqH+QqzgdukOplj2x9M1cnSCirQBT1+wl/LoUDi9XcU2nA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JMQ2mzjb; arc=none smtp.client-ip=209.85.160.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MtgjQxZH"
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-467a1ee7ff2so14562101cf.0;
-        Fri, 13 Dec 2024 12:28:49 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JMQ2mzjb"
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-467a63f5d1cso10508511cf.0;
+        Fri, 13 Dec 2024 12:37:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734121729; x=1734726529; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oy+g6CCR8H9z+qQ9IKAP5iLictR2vzTnBiPMNSCfde4=;
-        b=MtgjQxZHzxg9rWflg3Btj+Un26/j+wxaShGxKMA7AiG23Peeq+oH4hxuramJZsnvoC
-         kLVF9DHop9wkujR+xKdFMFbtIjadaeBRJLbLm3dUHuQWhtn0QZyJvtTNJ7vUQACv63dj
-         03vAsbfqfAf7u4j2wqsk61LuVp+tG/OPJb9XRDLPMZ9rBVI9VFP+fNBVbSIcUYQsjhIX
-         C2yle+ui5YPn6p/sodBxnLzkR9xvgKY4b+FASQ6H6xwr9p8axFS35incwBFNUm/6TvBW
-         SWrik3/XFHqMy1Cl9NL38dVu9ElABFKAi1cd7DSEDj9e8oug/D+7ONOY84gTX04DpFv7
-         pXLA==
+        d=gmail.com; s=20230601; t=1734122263; x=1734727063; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ourHhKVYzOBg1yEuLjh4qlGIVWq5DzAEGlr8M472leM=;
+        b=JMQ2mzjbMGPKQs76Q6nVh8N/KAQ/WIt2SHyWdQS1Hd5lwGjk/n4HRH3Da2PyE/iw2k
+         +wX4AtGNbYPwV01htijbDlaAIZrquYo5yF+Y7R2Ju9FiL44BD01j1W0aFLxTg67z/0K+
+         v9QhT552TI+ZaGIOR8e5lHzWh9SDmcdAy3OD4JoW62JZJyTS0G+sFjbujUo6tvfEpUeN
+         YHzYvi8Ep2MNybp+401FhCWOMSdTQoaIIs4ZuG5v2lUQu7i15p9DVf4WEfF5VhiH3F4b
+         i3PC/4X3w7wczK8HHlqlQdUi7JE+Y8iwCHlPErhWapWMXc86T6pBcYfoxmPmgouLCyxj
+         fEjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734121729; x=1734726529;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oy+g6CCR8H9z+qQ9IKAP5iLictR2vzTnBiPMNSCfde4=;
-        b=tbkWlBF1XJw7kDQbLbqFwuDcFrx/sua6dcetkjZW5kWkHlzmg+3v16zRdFAmfP63js
-         keDzaVrrKnNo+O4ykJXTh3mG/Z4kbG8HxjcT/djO642O3oYUqgxTqoGpr4c2AjdZ4fQw
-         OcXvhU9Gzc377BlMGE10jE2bb1ikLLS9X/zw0jTTHNe9jgm2G3M7I/BVyNBc04wtkCpz
-         XhPhy46gJhyK1E2I3TvVqvNZNFuhbWUNpE5D9uxtwiCGL7dyLFO+NI8pjIYMzXEXPNze
-         dl8DONnvh0Hn1MmhpJxF8UHIqOy/4+2tC0nMFIlrASkCBDodsTLEsnypJJWaH9Kxe2kz
-         6JeA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqLBRDLPhffOFojkuxzmTEeR1TnxxpMBCadcnJLAQ7DgP/D2wb9V8nbTKyyOCr9fhyYt++@vger.kernel.org, AJvYcCUvG+zzN5sqW2zAHOb70GMJjqHul6mUBwBlhvUK+OAkbSMQUi2CU56IxoFKxZqkIaCGD9qGByJiBxAYBbO1@vger.kernel.org, AJvYcCVRUZwv7XH4bS69CpC0iC/Agf/J6wTrpm0xE7W2ra5yh72oSbax/np9LZVqZ5Lfcj7DL75H4C5k7+nboBeQCg==@vger.kernel.org, AJvYcCXTDrGsXZMVjWs1Q/FDf+p8m453qmMSp3gsxIxaECX7aovOayf9FNkhbA0qZev4R0eJPPCXHzG1N8qt@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOZuRfXijkG6n7oIywXvaLpmbnNiUmAFi/+AQoRPP0iOyebgdk
-	2gjWk+b8REPdEBmju4OD7Wlgsz2x4w2ZCuvWO8mwA0DU458LyL55
-X-Gm-Gg: ASbGncvvBpY81RTzGOxI6/q4KbnBOUjJ06n//BytL461/8rn0TqUQxgJMB3pMmu829V
-	F/0cOA0kybb1+lNfKtSbXTEVl+UjcHX/iuz2WsRWbBH94d94fl3+j0ueuf0Cpwe9Wm6y7qSBOJg
-	XTLj3+gQAMjKicixg5T6ueJSqPKyPMK2sTscpknVJ7HsuaQTwbEHLY7fkOv38QUiqE3e7Cv3aLj
-	ayXBkecq/68vD44XBVa+u1L0FPVmDlUWylByhWPJby9nqo9y45X7fdDpkDTKsOGqiyMgsaLDh98
-	Fn7RdY8VM8U3IvKh8uXes8+iWLrdHjNZNmncNZc9pIdbRV4=
-X-Google-Smtp-Source: AGHT+IE+typyqa+c+sehJ31gByo0JHXafJZohfOiskIhz13g3nXxbmg6ccM58eE7yA0wkS9fbfPtVQ==
-X-Received: by 2002:a05:622a:11d5:b0:467:6508:2385 with SMTP id d75a77b69052e-467a5829f17mr76237551cf.34.1734121728767;
-        Fri, 13 Dec 2024 12:28:48 -0800 (PST)
-Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-467b2cc278dsm1297491cf.48.2024.12.13.12.28.47
+        d=1e100.net; s=20230601; t=1734122263; x=1734727063;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ourHhKVYzOBg1yEuLjh4qlGIVWq5DzAEGlr8M472leM=;
+        b=uBT5tKdbEQ6DvTAdHLCgpFZydkxaLRTYyLsFBlmLFaRni434GkPsAKbbTZLWWFaRHX
+         /FIJoT12IlCQv7iUZwCf/naF5jRwd2vJmZXCQP1pnpg+XwUes/cD5yBkWFhEWgfBeDOa
+         tf33/wWcDHZ0QS3kNokK1eCT9cYu6FvFgo0leWEfK03MUKyTjm6+IV+yCgORfyeGvBxE
+         g5rDtbLvjIBuTn0M235iAyAzy4gFSpQj5rYC333uqtcgSbXnlugD0UVC/Cnz05476Bgp
+         nibD/LRMhjeZRgTp8XMPAvNygytkDgaoucOLKWLPd3gQxrTqJ6tkOmphrAwpN4M22nMU
+         GqbA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhHPKW88H4rn4knJECccjtV/hbyL8JHjUpls8ukN9Z+DDaxkks4V5WzqrzoKOmLh1Dtj7w@vger.kernel.org, AJvYcCXouYhCrJJe/ZQfDPDbh4cjzbgjKeaEqgg1sUErKtywLBSWRMObYcNhGplS5inmJ0mhiRovtmLzX3o+kuc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywxxli7qIsK1uW/Q05tPu/H9I85wlZUtW3mu0QyyHUHBqbPzioJ
+	QMLGiibp4KctL4865e90DlOj3JsHEJioVqFDJKzJ5jw0+oySGo+3
+X-Gm-Gg: ASbGncvMUuOCkShpy5fOC2x41Nzn7s47M5K+CgWiYK0Kv+y5iNzAsWQNhQGz1Rvwb4H
+	V6ZoBah7X03mC/7/bEnqCLVEjUppKMHx0BdeiLkR2MHwYPdv8vW5BXQP7yCVsURrNBrOZxNG2E3
+	IDh4OAFsNnpOhPTijevPbfkXcixda9j/a3YIjijC3qGijDzO7JG0+GyWe1z1IqOuRLm17EJ/8eG
+	z2YZAqjVG+teSisL/rAvY2laBO49S59EYiOx3srn9mdgAo0a5GvAA==
+X-Google-Smtp-Source: AGHT+IG40vULa7VB9jnVn12piaYJboj5bBO3uZ9xlEm9L9silyL18rPgjqSZV94vTuAHYUcprJ2lFg==
+X-Received: by 2002:a05:622a:1a94:b0:463:64b2:2e0d with SMTP id d75a77b69052e-467a5807b26mr77401201cf.40.1734122263125;
+        Fri, 13 Dec 2024 12:37:43 -0800 (PST)
+Received: from localhost ([2a03:2880:20ff:a::])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-467b2e8097asm1290211cf.63.2024.12.13.12.37.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2024 12:28:48 -0800 (PST)
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfauth.phl.internal (Postfix) with ESMTP id B8C611200066;
-	Fri, 13 Dec 2024 15:28:47 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Fri, 13 Dec 2024 15:28:47 -0500
-X-ME-Sender: <xms:_5hcZ52D0Txfq3afYHx_FbgTtmEk_XFYGdsCxZrFemGViQYgimNBIw>
-    <xme:_5hcZwE0JuQpAx-sNtF1T4lNVXCTxpu8QQK39LNMwvRar7kPxKYKGILxZCLuwVeiw
-    JqiJqyI3iHFHYZ3VA>
-X-ME-Received: <xmr:_5hcZ55iST0Ld5UtgJO19PFmYPPES1IEZQ5fvzsB0A8k-EhTnaQH_VgICyoU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrkeejgddufeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
-    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
-    gtohhmqeenucggtffrrghtthgvrhhnpefftdeihfeigedtvdeuueffieetvedtgeejuefh
-    hffgudfgfeeggfeftdeigeehvdenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdo
-    mhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejke
-    ehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgr
-    mhgvpdhnsggprhgtphhtthhopeehjedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
-    eprghlihgtvghrhihhlhesghhoohhglhgvrdgtohhmpdhrtghpthhtoheprhhushhtqdhf
-    ohhrqdhlihhnuhigsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgtuh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgv
-    lhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrrhgthh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehllhhvmheslhhishhtshdr
-    lhhinhhugidruggvvhdprhgtphhtthhopehlkhhmmheslhhishhtshdrlhhinhhugidrug
-    gvvhdprhgtphhtthhopehojhgvuggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegr
-    lhgvgidrghgrhihnohhrsehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:_5hcZ21dZDlSFPHhJ-hR_xqZ1E0rep-r4WrXiwUQyM1nizooQS9AnA>
-    <xmx:_5hcZ8F5a37Iksgu8azbe4LtJh86oPlDtiIZrtuMnU4PwfLQHgkdaA>
-    <xmx:_5hcZ3_Z-H-jUwynNjV6TS1Q48CIKGofI_-xcmhDLwS-hAy2MJ1wxA>
-    <xmx:_5hcZ5lGDiaKlmxar7Ng2QGY3xkyj4bsqNu3LdLxBbywFujFVq5mLg>
-    <xmx:_5hcZwFSPtMAKsGOW-8Vmvi_oCQ7KHZB-ZN7yeYoB03uVjiO-lIrMZ-I>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Dec 2024 15:28:45 -0500 (EST)
-Date: Fri, 13 Dec 2024 12:28:45 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: rust-for-linux@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	llvm@lists.linux.dev, lkmm@lists.linux.dev,
-	Miguel Ojeda <ojeda@kernel.org>,	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
-	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
- linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org,
- Trevor Gross <tmgross@umich.edu>,	dakr@redhat.com,
- Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,	Albert Ou <aou@eecs.berkeley.edu>,
- linux-riscv@lists.infradead.org
-Subject: Re: [RFC v2 02/13] rust: sync: Add basic atomic operation mapping
- framework
-Message-ID: <Z1yY_Yr0B6KpWLmJ@tardis.local>
-References: <20241101060237.1185533-1-boqun.feng@gmail.com>
- <20241101060237.1185533-3-boqun.feng@gmail.com>
- <CAH5fLghYjcb-mpR_rr2aC_W8rRb6g8jCFxgky7iEqVgmpHjf=Q@mail.gmail.com>
- <Z1sYNOYJPzQmJXn6@boqun-archlinux>
- <CAH5fLgidmY7FtKLKR-Yxb6U-mQvsyatGRToqSHHRACfTdiAtUA@mail.gmail.com>
+        Fri, 13 Dec 2024 12:37:42 -0800 (PST)
+From: Usama Arif <usamaarif642@gmail.com>
+To: frederic@kernel.org,
+	tglx@linutronix.de,
+	paulmck@kernel.org
+Cc: vlad.wing@gmail.com,
+	rcu@vger.kernel.org,
+	boqun.feng@gmail.com,
+	linux-kernel@vger.kernel.org,
+	joel@joelfernandes.org,
+	neeraj.upadhyay@amd.com,
+	urezki@gmail.com,
+	qiang.zhang1211@gmail.com,
+	Cheng-Jui.Wang@mediatek.com,
+	leitao@debian.org,
+	kernel-team@meta.com,
+	Usama Arif <usamaarif642@gmail.com>
+Subject: [RFC 0/1] sched: defer completion task to online CPU
+Date: Fri, 13 Dec 2024 20:33:44 +0000
+Message-ID: <20241213203739.1519801-1-usamaarif642@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH5fLgidmY7FtKLKR-Yxb6U-mQvsyatGRToqSHHRACfTdiAtUA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 13, 2024 at 03:37:13PM +0100, Alice Ryhl wrote:
-[...]
-> > > > @@ -0,0 +1,19 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +
-> > > > +//! Atomic primitives.
-> > > > +//!
-> > > > +//! These primitives have the same semantics as their C counterparts: and the precise definitions of
-> > > > +//! semantics can be found at [`LKMM`]. Note that Linux Kernel Memory (Consistency) Model is the
-> > > > +//! only model for Rust code in kernel, and Rust's own atomics should be avoided.
-> > > > +//!
-> > > > +//! # Data races
-> > > > +//!
-> > > > +//! [`LKMM`] atomics have different rules regarding data races:
-> > > > +//!
-> > > > +//! - A normal read doesn't data-race with an atomic read.
-> > >
-> > > This was fixed:
-> > > https://github.com/rust-lang/rust/pull/128778
-> > >
-> >
-> > Yeah, I was aware of that effort, and good to know it's finally merged.
-> > Thanks!
-> >
-> > This will be in 1.83, right? If so, we will still need the above until
-> > we bump up the minimal rustc version to 1.83 or beyond. I will handle
-> > this properly with the minimal rustc 1.83 (i.e. if this goes in first,
-> > will send a follow up patch). I will also mention in the above that this
-> > has been changed in 1.83.
-> >
-> > This also reminds that I should add that LKMM allows mixed-size atomic
-> > accesses (as non data race), I will add that in the version.
-> 
-> This is just documentation. I don't think you need to do any special
+We (meta) are running 6.12 release kernel in production and are encoutering
+the below warning, mostly at boot time, reported by Vlad Poenaru.
 
-The PR also contained miri changes, so the same code will be reported
-differently by miri. That was what I was thinking of. However, now think
-about it, we are not going to use Rust atomics, so this difference
-shouldn't affect us. Therefore I agree, I will drop this.
+           ------------[ cut here ]------------
+           WARNING: CPU: 94 PID: 588 at kernel/time/hrtimer.c:1086 hrtimer_start_range_ns+0x289/0x2d0
+           Modules linked in:
+           CPU: 94 UID: 0 PID: 588 Comm: migration/94 Not tainted
+           Stopper: multi_cpu_stop+0x0/0x120 <- stop_machine_cpuslocked+0x66/0xc0
+           RIP: 0010:hrtimer_start_range_ns+0x289/0x2d0
+           Code: 41 5c 41 5d 41 5e 41 5f 5d e9 63 94 ea 00 0f 0b 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d e9 39 fc 15 01 0f 0b e9 c1 fd ff ff <0f> 0b 48 8b 45 00 e9 59 ff ff ff f3 0f 1e fa 65 8b 05 1d ec e8 7e
+           RSP: 0018:ffffc900019cbcc8 EFLAGS: 00010046
+           RAX: ffff88bf449a4c40 RBX: 0000000000000082 RCX: 0000000000000001
+           RDX: 0000000000000001 RSI: ffff88bf43224c80 RDI: ffff88bf449a4c40
+           RBP: ffff88bf449a4c80 R08: ffff888280970090 R09: 0000000000000000
+           R10: ffff88bf432252e0 R11: ffffffff811abf70 R12: ffff88bf449a4c40
+           R13: ffff88bf43234b28 R14: ffff88bf43224c80 R15: 0000000000000000
+           FS:  0000000000000000(0000) GS:ffff88bf44980000(0000) knlGS:0000000000000000
+           CR2: 0000000000000000 CR3: 000000404b230001 CR4: 0000000000770ef0
+           PKRU: 55555554
+           Call Trace:
+            <TASK>
+            ? __warn+0xcf/0x1b0
+            ? hrtimer_start_range_ns+0x289/0x2d0
+            ? report_bug+0x120/0x1a0
+            ? handle_bug+0x60/0x90
+            ? exc_invalid_op+0x1a/0x50
+            ? asm_exc_invalid_op+0x1a/0x20
+            ? register_refined_jiffies+0xb0/0xb0
+            ? hrtimer_start_range_ns+0x289/0x2d0
+            ? hrtimer_start_range_ns+0x186/0x2d0
+            start_dl_timer+0xfc/0x150
+            enqueue_dl_entity+0x367/0x640
+            dl_server_start+0x53/0xa0
+            enqueue_task_fair+0x363/0x460
+            enqueue_task+0x3c/0x200
+            ttwu_do_activate+0x94/0x240
+            try_to_wake_up+0x315/0x600
+            complete+0x4b/0x80
+            ? stop_two_cpus+0x2f0/0x2f0
+            cpu_stopper_thread+0xb1/0x120
+            ? smpboot_unregister_percpu_thread+0xc0/0xc0
+            smpboot_thread_fn+0xf7/0x150
+            kthread+0x121/0x130
+            ? kthread_blkcg+0x40/0x40
+            ret_from_fork+0x39/0x50
+            ? kthread_blkcg+0x40/0x40
+            ret_from_fork_asm+0x11/0x20
+            </TASK>
+           ---[ end trace 0000000000000000 ]---
 
-> MSRV handling.
-> 
-> > > > +mod private {
-> > > > +    /// Sealed trait marker to disable customized impls on atomic implementation traits.
-> > > > +    pub trait Sealed {}
-> > > > +}
-> > >
-> > > Just make the trait unsafe?
-> > >
-> >
-> > And make the safety requirement of `AtomicImpl` something like:
-> >
-> >     The type must have the implementation for atomic operations.
-> >
-> > ? Hmm.. I don't think that's a good safety requirement TBH. Actually the
-> > reason that we need to restrict `AtomicImpl` types is more of an
-> > iplementation issue (the implementation need to be done if we want to
-> > support i8 or i16) rather than safety issue. So a sealed trait is proper
-> > here. Does this make sense? Or am I missing something?
-> 
-> Where is the AtomicImpl trait used?
-> 
+It looks like completion that requires an hrtimer is being scheduled on a
+CPU that is not yet completely online. There have been other issues with
+hrtimer that have been fixed recently [1]. This bug might have been
+introduced in [2].
 
-It's used when `impl`ing an `AllowAtomic` type, `AllowAtomic` has an
-associate type named `Repr` which must be an `AtomicImpl`, i.e. each
-type that has atomic operation support must select the underlying
-implementation types (currently we only have i32 and i64 from C side
-APIs). Using a sealed trait is appropriate in this case, because unless
-you are adding atomic support for different sizes of data, you shouldn't
-impl `AtomicImpl`.
+We dont have a reliable reproducer for this (just see it popping up in
+production). A possible fix might be to defer the completion to be done
+to a CPU that is already online, which is what is done in RFC. It would be
+good to get feedback on how this could be reproduced, if the RFC makes sense
+or if there is another way to solve this.
 
-Regards,
-Boqun
+Thanks!
 
-> Alice
+[1] https://lore.kernel.org/all/20240913214205.12359-2-frederic@kernel.org/
+[2] https://lore.kernel.org/all/169972295552.3135.1094880886431606890.tip-bot2@tip-bot2/
+
+Usama Arif (1):
+  sched: defer completion task to online CPU
+
+ kernel/sched/completion.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+-- 
+2.43.5
+
