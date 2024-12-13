@@ -1,236 +1,230 @@
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179E553BE
-	for <rcu@vger.kernel.org>; Fri, 13 Dec 2024 14:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E5E318C002;
+	Fri, 13 Dec 2024 19:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734100649; cv=none; b=Jp20k6u9B/2rRsm526X3YQ5GGdR1fijjOI5kvIDXdrHhviqXYdGoyXWKUbjdG4trvGRH4PsVOGUkernHyS9gaEdbgpxFPEio/OW3aYb9I3rEXeeWc8cC6CfU2nS7qOD1EUuRJD0wNVNokGHG28b9Oh+5ZzfHja1jR+RHtSKCcas=
+	t=1734119390; cv=none; b=K3z5GEwNgX/2HSdrooHhY0OCazN515SEDUqKe4hjOeuFk6v+TqVsa4FM4hAlqYFBYY7cNWwfCPUgb6KHjfqwJ/1Xd2mj3uDL8MuS9ZUjITavbaasTgoW9HsennztGgoZqk8CBkg8LuIYnxc6iH+ZcwaAJ6HzKtqBtoO38gCHdvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734100649; c=relaxed/simple;
-	bh=cSE7YfpxLSVqgzR60SozadvYSPlf/zv5LQnl9qv4L1k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JQibWeLNmDaGeeKsyc4hcp6BXqdAo4uJqYvJu42kxbsx8hrF4l66dH4dkZoL4/uGZ8vCM2Kh1W5kUVUv2RHNFtXBYUNNVCUhndxb9LpxM/gU6ESCuCZyeCL9DoDDrBMH2Q9V0fB4zMv9RtKTAgliJf3Mah5fTufx/ptLL+EskOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PfOFw51S; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1734119390; c=relaxed/simple;
+	bh=+o+mvnqZTJP7gt8olhH5rlsdpb9WCYcqAv8nwKQMpYw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZMTVP8IPkErCHIzOtTVbwedG16uL+NalQ1IDXAmAz8G+8EWVpyCqsLB8XXJVgOtvpa7NG30Z6lBRrEwkmilZl0V/cvcwJ7KtABhjoBlfPw3I/Ziy0nv/mkS5Le/nAD4ib11N/PCRLkJOsu5YKR+ZT6bdl/HJuUKEJO/zXi+nmbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ULP8Xe48; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PfOFw51S"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso12453225e9.0
-        for <rcu@vger.kernel.org>; Fri, 13 Dec 2024 06:37:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734100645; x=1734705445; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2GEPFVvt/WcPx7hwmrvPddq2GA3SILVOBgchd5bamcM=;
-        b=PfOFw51Sc6+iHmr4t7p92tJRccDwESqAyiHjn8XOfpSW8u0+dEeagmIhd8ycLxIZrt
-         CZgNE5rE74B6NCA73ubjF2qTPu5tE3eZClthiamwwwooFKoornNfDxl7c+E6MSxTPnrz
-         q5ySVQ9F9dGKl0ehQbxaNxH5lUjCV1PMj3CMIbz0KKDqC87gg19s7BsnlYjUv0yyamS9
-         NHonNwe68la396ZNorewQ0ctILQ5T9ZAdppFp/OljKJav2W4c143NmBSsziJIumfjofI
-         X1731XrUj0boIqgFoA5m2nPVsh9yFu4sIayC3IK/ZYtBVu3op4hCDmhFWl3KFz/9Kbu7
-         vohg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734100645; x=1734705445;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2GEPFVvt/WcPx7hwmrvPddq2GA3SILVOBgchd5bamcM=;
-        b=svTshoXoedQDeD0X3wmMhdKwFV1qjnJuJTbFwIKZ6mdrLHwfHGD+QDlZuOveKnAZOz
-         6f3tYx+UWx2fsu8dh8LcTLMENhL4PC6zvwKJA1aEEhygPEuv7nB7n2uIZ7zOAjhbqqpW
-         o02Rt9ghHJAyzp5C1putmF+pLWScXHdUteFqrQ5y2D7CDTCc2el+96OJluqCmNqyAG5z
-         NlMBMRvXFplALkwXQS9IdmZ4VN+WcpYySA3V9hAbbblj7FK+SmADw4LMi6nK3ipIimNc
-         Efvh30LmBOBVY0ijKfO13vAYCgOwnOhJknnvpB++zkQa0GTcqhReuypMAxpuxjyLTRCa
-         MF/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWdcLiDBI8ukTGA8LhPO2kL1rcQfKIsZ3tCR0uqQU7AWRNOSL6szVsx/rFnNSK02n/G93E=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOtEcpQ6d2P1b26V/TSGdIyAogzXz+2bXHMhlgMnuhT3FjpYuC
-	arVmQOyO34BZVaUWUGRB2VAXKl6nNTY3MJlF8yilEgwGTrrIkicAHYGhmGfmwr4BEPYxU18i1LJ
-	oWQXaL2wiTnfsYxkCevXGBad/EcmJ33ajoHUu
-X-Gm-Gg: ASbGncsZGXYN4BbBvHpv+3gIhDAI7Z16E8Y50XSflNM2BX8NCWl6qf7KlrT4js4de1H
-	AGsNEIolRPqBJj3FKK+/6dDNBrHfOCRvR38no1WI=
-X-Google-Smtp-Source: AGHT+IF5nz9iFwihOnmrHXThptEMDz6uAvc2eauPyTTcPdqXIp7ICHSubzS0ZSdBwH7W3Dcgfoy53emLLyY7/WPXocY=
-X-Received: by 2002:a05:6000:154b:b0:385:f092:e00 with SMTP id
- ffacd0b85a97d-3889ad32da3mr2133093f8f.50.1734100645390; Fri, 13 Dec 2024
- 06:37:25 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ULP8Xe48"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED355C4CED0;
+	Fri, 13 Dec 2024 19:49:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734119390;
+	bh=+o+mvnqZTJP7gt8olhH5rlsdpb9WCYcqAv8nwKQMpYw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ULP8Xe48Y8M2g4sIlmL1qJErMw4S1Q9Us7ch4lm2RjV0nHyD1/M4mYfFyFO37oWzY
+	 vvTi9fWIjxj29sZH5g4NPsHDZb40oiIq0MHXeyIhGkD2xeALoyB6mKlQAFsqcU3O4a
+	 6Ee1INW92xifcejSkVdlDe3eMNGG+BtrUn6h5jaLNZvbOrBX0XrGlg9y16cF6BTqbx
+	 F1lkh/ZA9oasSc48F0pqI0DGNUV+6Ae/kgaZfCQroDSTBeoqxT6ThFQ21MixoNTg4t
+	 Ap36Y9St+Q18kGZZYon0HywDKooFa5ZzV7Zd/1m2TZlUNP+u2tGmTtZGtblEdLoARB
+	 AhWUGxzjHYZpQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 8CEC4CE09E4; Fri, 13 Dec 2024 11:49:49 -0800 (PST)
+Date: Fri, 13 Dec 2024 11:49:49 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
+ detection
+Message-ID: <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <eb83ab84-05b3-43da-bc59-e2dbd932740c@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101060237.1185533-1-boqun.feng@gmail.com>
- <20241101060237.1185533-3-boqun.feng@gmail.com> <CAH5fLghYjcb-mpR_rr2aC_W8rRb6g8jCFxgky7iEqVgmpHjf=Q@mail.gmail.com>
- <Z1sYNOYJPzQmJXn6@boqun-archlinux>
-In-Reply-To: <Z1sYNOYJPzQmJXn6@boqun-archlinux>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 13 Dec 2024 15:37:13 +0100
-Message-ID: <CAH5fLgidmY7FtKLKR-Yxb6U-mQvsyatGRToqSHHRACfTdiAtUA@mail.gmail.com>
-Subject: Re: [RFC v2 02/13] rust: sync: Add basic atomic operation mapping framework
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev, lkmm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <parri.andrea@gmail.com>, 
-	Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, 
-	Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
-	Daniel Lustig <dlustig@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com, 
-	Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, torvalds@linux-foundation.org, 
-	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	Trevor Gross <tmgross@umich.edu>, dakr@redhat.com, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eb83ab84-05b3-43da-bc59-e2dbd932740c@paulmck-laptop>
 
-On Thu, Dec 12, 2024 at 6:07=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Thu, Dec 12, 2024 at 11:51:23AM +0100, Alice Ryhl wrote:
-> > On Fri, Nov 1, 2024 at 7:03=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com=
-> wrote:
-> > >
-> > > Preparation for generic atomic implementation. To unify the
-> > > ipmlementation of a generic method over `i32` and `i64`, the C side
-> > > atomic methods need to be grouped so that in a generic method, they c=
-an
-> > > be referred as <type>::<method>, otherwise their parameters and retur=
-n
-> > > value are different between `i32` and `i64`, which would require usin=
-g
-> > > `transmute()` to unify the type into a `T`.
-> > >
-> > > Introduce `AtomicIpml` to represent a basic type in Rust that has the
-> > > direct mapping to an atomic implementation from C. This trait is seal=
-ed,
-> > > and currently only `i32` and `i64` ipml this.
-> >
-> > There seems to be quite a few instances of "impl" spelled as "ipml" her=
-e.
-> >
->
-> Will fix!
->
-> > > Further, different methods are put into different `*Ops` trait groups=
-,
-> > > and this is for the future when smaller types like `i8`/`i16` are
-> > > supported but only with a limited set of API (e.g. only set(), load()=
-,
-> > > xchg() and cmpxchg(), no add() or sub() etc).
-> > >
-> > > While the atomic mod is introduced, documentation is also added for
-> > > memory models and data races.
-> > >
-> > > Also bump my role to the maintainer of ATOMIC INFRASTRUCTURE to refle=
-ct
-> > > my responsiblity on the Rust atomic mod.
-> > >
-> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > > ---
-> > >  MAINTAINERS                    |   4 +-
-> > >  rust/kernel/sync.rs            |   1 +
-> > >  rust/kernel/sync/atomic.rs     |  19 ++++
-> > >  rust/kernel/sync/atomic/ops.rs | 199 +++++++++++++++++++++++++++++++=
-++
-> > >  4 files changed, 222 insertions(+), 1 deletion(-)
-> > >  create mode 100644 rust/kernel/sync/atomic.rs
-> > >  create mode 100644 rust/kernel/sync/atomic/ops.rs
-> > >
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index b77f4495dcf4..e09471027a63 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -3635,7 +3635,7 @@ F:        drivers/input/touchscreen/atmel_mxt_t=
-s.c
-> > >  ATOMIC INFRASTRUCTURE
-> > >  M:     Will Deacon <will@kernel.org>
-> > >  M:     Peter Zijlstra <peterz@infradead.org>
-> > > -R:     Boqun Feng <boqun.feng@gmail.com>
-> > > +M:     Boqun Feng <boqun.feng@gmail.com>
-> > >  R:     Mark Rutland <mark.rutland@arm.com>
-> > >  L:     linux-kernel@vger.kernel.org
-> > >  S:     Maintained
-> > > @@ -3644,6 +3644,8 @@ F:        arch/*/include/asm/atomic*.h
-> > >  F:     include/*/atomic*.h
-> > >  F:     include/linux/refcount.h
-> > >  F:     scripts/atomic/
-> > > +F:     rust/kernel/sync/atomic.rs
-> > > +F:     rust/kernel/sync/atomic/
-> >
-> > This is why mod.rs files are superior :)
-> >
->
-> ;-) Not going to do anything right now, but let me think about this.
->
-> > > @@ -0,0 +1,19 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +//! Atomic primitives.
-> > > +//!
-> > > +//! These primitives have the same semantics as their C counterparts=
-: and the precise definitions of
-> > > +//! semantics can be found at [`LKMM`]. Note that Linux Kernel Memor=
-y (Consistency) Model is the
-> > > +//! only model for Rust code in kernel, and Rust's own atomics shoul=
-d be avoided.
-> > > +//!
-> > > +//! # Data races
-> > > +//!
-> > > +//! [`LKMM`] atomics have different rules regarding data races:
-> > > +//!
-> > > +//! - A normal read doesn't data-race with an atomic read.
-> >
-> > This was fixed:
-> > https://github.com/rust-lang/rust/pull/128778
-> >
->
-> Yeah, I was aware of that effort, and good to know it's finally merged.
-> Thanks!
->
-> This will be in 1.83, right? If so, we will still need the above until
-> we bump up the minimal rustc version to 1.83 or beyond. I will handle
-> this properly with the minimal rustc 1.83 (i.e. if this goes in first,
-> will send a follow up patch). I will also mention in the above that this
-> has been changed in 1.83.
->
-> This also reminds that I should add that LKMM allows mixed-size atomic
-> accesses (as non data race), I will add that in the version.
+The get_state_synchronize_rcu_full() and poll_state_synchronize_rcu_full()
+functions use the root rcu_node structure's ->gp_seq field to detect
+the beginnings and ends of grace periods, respectively.  This choice is
+necessary for the poll_state_synchronize_rcu_full() function because
+(give or take counter wrap), the following sequence is guaranteed not
+to trigger:
 
-This is just documentation. I don't think you need to do any special
-MSRV handling.
+        get_state_synchronize_rcu_full(&rgos);
+        synchronize_rcu();
+        WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&rgos));
 
-> > > +mod private {
-> > > +    /// Sealed trait marker to disable customized impls on atomic im=
-plementation traits.
-> > > +    pub trait Sealed {}
-> > > +}
-> >
-> > Just make the trait unsafe?
-> >
->
-> And make the safety requirement of `AtomicImpl` something like:
->
->     The type must have the implementation for atomic operations.
->
-> ? Hmm.. I don't think that's a good safety requirement TBH. Actually the
-> reason that we need to restrict `AtomicImpl` types is more of an
-> iplementation issue (the implementation need to be done if we want to
-> support i8 or i16) rather than safety issue. So a sealed trait is proper
-> here. Does this make sense? Or am I missing something?
+The RCU callbacks that awaken synchronize_rcu() instances are
+guaranteed not to be invoked before the root rcu_node structure's
+->gp_seq field is updated to indicate the end of the grace period.
+However, these callbacks might start being invoked immediately
+thereafter, in particular, before rcu_state.gp_seq has been updated.
+Therefore, poll_state_synchronize_rcu_full() must refer to the
+root rcu_node structure's ->gp_seq field.  Because this field is
+updated under this structure's ->lock, any code following a call to
+poll_state_synchronize_rcu_full() will be fully ordered after the
+full grace-period computation, as is required by RCU's memory-ordering
+semantics.
 
-Where is the AtomicImpl trait used?
+By symmetry, the get_state_synchronize_rcu_full() function should also
+use this same root rcu_node structure's ->gp_seq field.  But it turns out
+that symmetry is profoundly (though extremely infrequently) destructive
+in this case.  To see this, consider the following sequence of events:
 
-Alice
+1.      CPU 0 starts a new grace period, and updates rcu_state.gp_seq
+        accordingly.
+
+2.      As its first step of grace-period initialization, CPU 0 examines
+        the current CPU hotplug state and decides that it need not wait
+        for CPU 1, which is currently offline.
+
+3.      CPU 1 comes online, and updates its state.  But this does not
+        affect the current grace period, but rather the one after that.
+        After all, CPU 1 was offline when the current grace period
+        started, so all pre-existing RCU readers on CPU 1 must have
+        completed or been preempted before it last went offline.
+        The current grace period therefore has nothing it needs to wait
+        for on CPU 1.
+
+4.      CPU 1 switches to an rcutorture kthread which is running
+        rcutorture's rcu_torture_reader() function, which starts a new
+        RCU reader.
+
+5.      CPU 2 is running rcutorture's rcu_torture_writer() function
+        and collects a new polled grace-period "cookie" using
+        get_state_synchronize_rcu_full().  Because the newly started
+        grace period has not completed initialization, the root rcu_node
+        structure's ->gp_seq field has not yet been updated to indicate
+        that this new grace period has already started.
+
+        This cookie is therefore set up for the end of the current grace
+        period (rather than the end of the following grace period).
+
+6.      CPU 0 finishes grace-period initialization.
+
+7.      If CPU 1’s rcutorture reader is preempted, it will be added to
+        the ->blkd_tasks list, but because CPU 1’s ->qsmask bit is not
+        set in CPU 1's leaf rcu_node structure, the ->gp_tasks pointer
+        will not be updated.  Thus, this grace period will not wait on
+        it.  Which is only fair, given that the CPU did not come online
+        until after the grace period officially started.
+
+8.      CPUs 0 and 2 then detect the new grace period and then report
+        a quiescent state to the RCU core.
+
+9.      Because CPU 1 was offline at the start of the current grace
+        period, CPUs 0 and 2 are the only CPUs that this grace period
+        needs to wait on.  So the grace period ends and post-grace-period
+        cleanup starts.  In particular, the root rcu_node structure's
+        ->gp_seq field is updated to indicate that this grace period
+        has now ended.
+
+10.     CPU 2 continues running rcu_torture_writer() and sees that,
+        from the viewpoint of the root rcu_node structure consulted by
+        the poll_state_synchronize_rcu_full() function, the grace period
+        has ended.  It therefore updates state accordingly.
+
+11.     CPU 1 is still running the same RCU reader, which notices this
+        update and thus complains about the too-short grace period.
+
+The fix is for the get_state_synchronize_rcu_full() function to use
+rcu_state.gp_seq instead of the the root rcu_node structure's ->gp_seq
+field.  With this change in place, if step 5's cookie indicates that the
+grace period has not yet started, then any prior code executed by CPU 2
+must have happened before CPU 1 came online.  This will in turn prevent
+CPU 1's code in steps 3 and 11 from spanning CPU 2's grace-period wait,
+thus preventing CPU 1 from being subjected to a too-short grace period.
+
+This commit therefore makes this change.  Note that there is no change to
+the poll_state_synchronize_rcu_full() function, which as noted above,
+must continue to use the root rcu_node structure's ->gp_seq field.
+This is of course an asymmetry between these two functions, but is an
+asymmetry that is absolutely required for correct operation.  It is a
+common human tendency to greatly value symmetry, and sometimes symmetry
+is a wonderful thing.  Other times, symmetry results in poor performance.
+But in this case, symmetry is just plain wrong.
+
+Nevertheless, the asymmetry does require an additional adjustment.
+It is possible for get_state_synchronize_rcu_full() to see a given
+grace period as having started, but for an immediately following
+poll_state_synchronize_rcu_full() to see it as having not yet started.
+Given the current rcu_seq_done_exact() implementation, this will
+result in a false-positive indication that the grace period is done
+from poll_state_synchronize_rcu_full().  This is dealt with by making
+rcu_seq_done_exact() reach back three grace periods rather than just
+two of them.
+
+Although this fixes 91a967fd6934 ("rcu: Add full-sized polling for
+get_completed*() and poll_state*()"), it is not clear that it is worth
+backporting this commit.  First, it took me many weeks to convince
+rcutorture to reproduce this more frequently than once per year.  Second,
+this cannot be reproduced at all without frequent CPU-hotplug operations,
+as in waiting all of 50 milliseconds from the end of the previous
+operation until starting the next one.  Third, the TREE03.boot settings
+cause multi-millisecond delays during RCU grace-period initialization,
+which greatly increase the probability of the above sequence of events.
+(Don't do this in production workloads!)  Fourth, extremely heavy use of
+get_state_synchronize_rcu_full() and/or poll_state_synchronize_rcu_full()
+is required to reproduce this, and as of v6.12, only kfree_rcu() uses it,
+and even then not particularly heavily.
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+---
+
+Changes since RFC v1:
+
+o	Update rcu_seq_done_exact() to handle backwards-gp_seq effects
+	of get_state_synchronize_rcu_full() using rcu_state.gp_seq and
+	poll_state_synchronize_rcu_full() continuing to use the root
+	rcu_node structure's ->gp_seq field.  With this commit, rcutorture
+	passes 10 hours of 400 instances of TREE03.  Without this commit,
+	there are about 50 too-short grace periods per hour, again with
+	400 instances of TREE03.
+
+o	Add TREE03.boot's multi-millisecond delays for grace-period
+	initialization.
+
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index 2f9c9272cd486..d2a91f705a4ab 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -162,7 +162,7 @@ static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
+ {
+ 	unsigned long cur_s = READ_ONCE(*sp);
+ 
+-	return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
++	return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (3 * RCU_SEQ_STATE_MASK + 1));
+ }
+ 
+ /*
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 980f1fa719665..71620a8a2eb3d 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -4204,14 +4204,17 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+  */
+ void get_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
+ {
+-	struct rcu_node *rnp = rcu_get_root();
+-
+ 	/*
+ 	 * Any prior manipulation of RCU-protected data must happen
+ 	 * before the loads from ->gp_seq and ->expedited_sequence.
+ 	 */
+ 	smp_mb();  /* ^^^ */
+-	rgosp->rgos_norm = rcu_seq_snap(&rnp->gp_seq);
++
++	// Yes, rcu_state.gp_seq, not rnp_root->gp_seq, the latter's use
++	// in poll_state_synchronize_rcu_full() notwithstanding.  Use of
++	// the latter here would result in too-short grace periods due to
++	// interactions with newly onlined CPUs.
++	rgosp->rgos_norm = rcu_seq_snap(&rcu_state.gp_seq);
+ 	rgosp->rgos_exp = rcu_seq_snap(&rcu_state.expedited_sequence);
+ }
+ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu_full);
