@@ -1,114 +1,145 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C1471DA113;
-	Tue, 17 Dec 2024 08:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F8A1D9A51
+	for <rcu@vger.kernel.org>; Tue, 17 Dec 2024 20:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734424102; cv=none; b=LcrfOloZLbNK1zVwmTbY45+CtDNX8ezS9e2K7y0H2xXlngyPat0gFXpeP+1lwnxuNLbtfFFfqvuB9mtJiSQ2GRbwnbKitopDVyA+u6YQcb1UJB8jqh2MbXL2N6HoZZy99NuzztIJ3PBN1GvkEYN9y30xV1bseBKC7Ys1K/1IJ0U=
+	t=1734466252; cv=none; b=AHb39xsKKIejVgskwj5k8xrr59XZBGGb7grePP/5//DPFHPMcM+TypnfIIe9H0KmFGgj2QTCZPa9ILLshyOQI6YQE3XhpW4AQmi8WeBDDM7BHaW2HuJW3bkGXV4KYvUE/qUa43/8AndN+HZQC3l/dkKE8QhUS20QYzMFykKKODc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734424102; c=relaxed/simple;
-	bh=SPmFEcKXpyPmdcnzipJn8Q/yWwafSU6dklD5P69XHH0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U2R49dFbuOMpmUtgK+grNr3JllaOqMoQRrdUZVsv0KPFvpcMf+uAbe6v1eyYxOukF5rqAjZtYlB8EiorVNq4dVcj+vO/qRML0m6djMaixBgouCelskqtPJAFiM1YsHR6WMVLN7XBRfL596CX1Wje1+W4d2dVaC+ged/Aqe6DIeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Q4OeeuwG; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1734466252; c=relaxed/simple;
+	bh=S9DoO5a3n3vU6X/je+MmroDxVIgCBKe2ddmDuJmV/mo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZoHYfAEXG86WNbB9kW7oPzIHQiyetfwcWB+Xi1cdqfmvPcIT/TxR5BY5mkRc0vSSifCDccjRjG8uZbiVVY1N0zM9kTJRyf+b8fb6pStMk9GDmZ8+Ay5vc9adupNMuATneLuEu0ADtvvbMwuC0mbULpBeQ8PPwxvUtXuTG6F9CwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SC9ukFpk; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Q4OeeuwG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94E06C4CED3;
-	Tue, 17 Dec 2024 08:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1734424102;
-	bh=SPmFEcKXpyPmdcnzipJn8Q/yWwafSU6dklD5P69XHH0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q4OeeuwGPzt5YMsCKvfDS+YbGt4LObn0W/QRHrkohzHbbyKstrMv0Czhyia2s7Xea
-	 nKjrnsN0lw1pC/VQOoNq5+iaPsHB0VwKRcOjaNnKoBd+yJgGnfWqMLVIvkLzL/JyNZ
-	 Cy1WASjCDMZVwIEd4pP1XwwC4GfhtLDYk/ijqRUg=
-Date: Tue, 17 Dec 2024 09:28:18 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Xiangyu Chen <xiangyu.chen@windriver.com>,
-	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-	torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-	jslaby@suse.cz, rcu <rcu@vger.kernel.org>
-Subject: Re: Linux 6.1.120
-Message-ID: <2024121703-bobbed-paced-99a5@gregkh>
-References: <2024121411-multiple-activist-51a1@gregkh>
- <20241216-comic-handling-3bcf108cc465@wendy>
- <CALm+0cVd=yhCTXm4j+OcqiBQwwC=bf2ja7iQ87ypBb7KD2qbjA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SC9ukFpk"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4363dc916ceso409155e9.0
+        for <rcu@vger.kernel.org>; Tue, 17 Dec 2024 12:10:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1734466249; x=1735071049; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ptCMEfalScg4HE+s2WF5iyeS7CJ5LoQymYStrG4iRVc=;
+        b=SC9ukFpkLeX3Ab8vupeb/6U3Sa1A4Yipa5Mmdt8mtiVcxh+XXswWzrgJgXeHwePziS
+         WkLJX04TvTtVL/MhOCQm6aoTqLiVxcYXjMl3k5LWGH6dA88qrBu9gUCGrNyfmKCUbfli
+         vSzaWP202LoVtzqRWAu6fgcg+MirDJ3bzoZmcbVu9vMELpftpzrRI9r6OrjZQIDJwQVa
+         ztTMtwqswcWWH6nQxzq+GpVSGFDsEGNNkTYYo5pBZPIdy6IdL5MpaRDcYuoRnJdthoPJ
+         5yCFYmNgcvrebUTMuzfbL8FYmgiPT6br0zOM3IIXw5UklsLbIE25/qe5SK+otRuxwd2v
+         okPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734466249; x=1735071049;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ptCMEfalScg4HE+s2WF5iyeS7CJ5LoQymYStrG4iRVc=;
+        b=IXaULpiS/Wxnlexyv4fYnwCvpC1j7pFTboioVvJUM0Hexo5DhMd3hWhIWfK9QB9/LH
+         Rog2vhfUBfd+bnlLv9z4AvzdKyZbbPnNuqxv46mTRYf3YmTxlQCEZRe6Ikpi3wLIVgqN
+         53rQJ32zWyMd2pOMgJnJqS9SOM1gCEjtUOiEKI8UIK7BJ7gAdxiTwNl7PyT3urUV5M6Q
+         DqSnexix8m05CHfT+buzk3umkV4oroxktJlPwMRcYjhUfa3hxHZNV8RyJOyb6X8b644w
+         DId1XvuGtu0f0MphGhfv3hA3MwPLqXm2dW5TGQKS3ei2ldEeiNieLjyzP74P1x27Tis1
+         cbMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDHag8kP0EcOIQDJ9c3mIzwTA2ZDYmWan6rUgFDZIyTTvnL7UOIB5SqwVsBezyFGSQiu4=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywo7UkxHlYJGlBpE5XJGkvzBRkBeBJTPyYu9grSMZJNQ7eLRkV+
+	I393Puk/Y6k/JR8N2rbsWsNEDsWFk8Hj50Xm30BovvtlbhyRwU+Kn9DoxXEzPFOfcTFEZiF5NjZ
+	8B2CHQgeXa44zHChsNVGIAWHwucu5S483SVVC/Q==
+X-Gm-Gg: ASbGnctXbfTLSGdVw0cMQem0B265choO8yu2DfB/1s/kRvJwH00DdTiHk/iKZFIwe0Q
+	X61wacxLz0Zr4j1ryw1OjF5q9588CrlI/8rk0LUkvhbmJbMra2vDjLYDwiyeh/xG091Qf4A==
+X-Google-Smtp-Source: AGHT+IGKGM3GSJM51xtpyhc2/6RhhD/S1kZ/YygELvpxDkqeIEk+YG5SrrmAjsx+Q88wsvntYUv7XsFnXak8mvmHL9g=
+X-Received: by 2002:a5d:584f:0:b0:386:3958:2ec5 with SMTP id
+ ffacd0b85a97d-388db294b60mr4487740f8f.28.1734466249108; Tue, 17 Dec 2024
+ 12:10:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cVd=yhCTXm4j+OcqiBQwwC=bf2ja7iQ87ypBb7KD2qbjA@mail.gmail.com>
+References: <20241212163357.35934-1-dakr@kernel.org> <20241212163357.35934-8-dakr@kernel.org>
+In-Reply-To: <20241212163357.35934-8-dakr@kernel.org>
+From: Fabien Parent <fabien.parent@linaro.org>
+Date: Tue, 17 Dec 2024 12:10:38 -0800
+Message-ID: <CAPFo5V+WOWzzXxN=-n+ADrFdkSV7C66Lq-+gitx+TnrsAzYJnw@mail.gmail.com>
+Subject: Re: [PATCH v6 07/16] rust: add `io::{Io, IoRaw}` base types
+To: Danilo Krummrich <dakr@kernel.org>
+Cc: gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com, 
+	ojeda@kernel.org, alex.gaynor@gmail.com, boqun.feng@gmail.com, 
+	gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me, 
+	tmgross@umich.edu, a.hindborg@samsung.com, aliceryhl@google.com, 
+	airlied@gmail.com, fujita.tomonori@gmail.com, lina@asahilina.net, 
+	pstanner@redhat.com, ajanulgu@redhat.com, lyude@redhat.com, robh@kernel.org, 
+	daniel.almeida@collabora.com, saravanak@google.com, dirk.behme@de.bosch.com, 
+	j@jannau.net, chrisi.schrefl@gmail.com, paulmck@kernel.org, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Dec 17, 2024 at 04:11:21PM +0800, Z qiang wrote:
-> >
-> > On Sat, Dec 14, 2024 at 09:53:13PM +0100, Greg Kroah-Hartman wrote:
-> > > I'm announcing the release of the 6.1.120 kernel.
-> > >
-> > > All users of the 6.1 kernel series must upgrade.
-> > >
-> > > The updated 6.1.y git tree can be found at:
-> > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.1.y
-> > > and can be browsed at the normal kernel.org git web browser:
-> > >       https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> > >
-> > > ------------
-> >
-> > > Zqiang (1):
-> > >       rcu-tasks: Fix access non-existent percpu rtpcp variable in rcu_tasks_need_gpcb()
-> >
-> > I was AFK last week so I missed reporting this, but on riscv this patch
-> > causes:
-> > [    0.145463] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:274
-> > [    0.155273] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-> > [    0.164160] preempt_count: 1, expected: 0
-> > [    0.168716] RCU nest depth: 0, expected: 0
-> > [    0.173370] 1 lock held by swapper/0/1:
-> > [    0.177726]  #0: ffffffff81494d78 (rcu_tasks.cbs_gbl_lock){....}-{2:2}, at: cblist_init_generic+0x2e/0x374
-> > [    0.188768] irq event stamp: 718
-> > [    0.192439] hardirqs last  enabled at (717): [<ffffffff8098df90>] _raw_spin_unlock_irqrestore+0x34/0x5e
-> > [    0.203098] hardirqs last disabled at (718): [<ffffffff8098de32>] _raw_spin_lock_irqsave+0x24/0x60
-> > [    0.213254] softirqs last  enabled at (0): [<ffffffff800105d2>] copy_process+0x50c/0xdac
-> > [    0.222445] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> > [    0.229551] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.1.119-00350-g224fd631c41b #1
-> > [    0.238330] Hardware name: Microchip PolarFire-SoC Icicle Kit (DT)
-> > [    0.245329] Call Trace:
-> > [    0.248113] [<ffffffff8000678c>] show_stack+0x2c/0x38
-> > [    0.253868] [<ffffffff80984e66>] dump_stack_lvl+0x5e/0x80
-> > [    0.260022] [<ffffffff80984e9c>] dump_stack+0x14/0x20
-> > [    0.265768] [<ffffffff800499b0>] __might_resched+0x200/0x20a
-> > [    0.272217] [<ffffffff80049784>] __might_sleep+0x3c/0x68
-> > [    0.278258] [<ffffffff802022aa>] __kmem_cache_alloc_node+0x64/0x240
-> > [    0.285385] [<ffffffff801b1760>] __kmalloc+0xc0/0x180
-> > [    0.291140] [<ffffffff8008c752>] cblist_init_generic+0x84/0x374
-> > [    0.297857] [<ffffffff80a0b212>] rcu_spawn_tasks_kthread+0x1c/0x72
-> > [    0.304888] [<ffffffff80a0b0e8>] rcu_init_tasks_generic+0x20/0x12e
-> > [    0.311902] [<ffffffff80a00eb8>] kernel_init_freeable+0x56/0xa8
-> > [    0.318638] [<ffffffff80985c10>] kernel_init+0x1a/0x18e
-> > [    0.324574] [<ffffffff80004124>] ret_from_exception+0x0/0x1a
-> >
-> 
-> Hello, Xiangyu
-> 
-> For v6.1.x kernels, the cblist_init_generic() is invoke in init task context,
-> rtp->rtpcp_array is allocated use GFP_KERENL and in the critical section
-> holding rcu_tasks.cbs_gbl_lock spinlock.  so might_resched() trigger warnings.
-> You should perform the operation of allocating rtpcp_array memory outside
-> the spinlock.
-> Are you willing to resend the patch?
+Hi Danilo,
 
-So should I revert this, or do you have a fixup patch somewhere?
+> +/// ```no_run
+> +/// # use kernel::{bindings, io::{Io, IoRaw}};
+> +/// # use core::ops::Deref;
+> +///
+> +/// // See also [`pci::Bar`] for a real example.
+> +/// struct IoMem<const SIZE: usize>(IoRaw<SIZE>);
+> +///
+> +/// impl<const SIZE: usize> IoMem<SIZE> {
+> +///     /// # Safety
+> +///     ///
+> +///     /// [`paddr`, `paddr` + `SIZE`) must be a valid MMIO region that is mappable into the CPUs
+> +///     /// virtual address space.
+> +///     unsafe fn new(paddr: usize) -> Result<Self>{
+> +///         // SAFETY: By the safety requirements of this function [`paddr`, `paddr` + `SIZE`) is
+> +///         // valid for `ioremap`.
+> +///         let addr = unsafe { bindings::ioremap(paddr as _, SIZE.try_into().unwrap()) };
 
-confused,
+This line generates a warning when building the doctests on arm64:
 
-greg k-h
+warning: useless conversion to the same type: usize
+    --> rust/doctests_kernel_generated.rs:3601:59
+     |
+3601 |         let addr = unsafe { bindings::ioremap(paddr as _,
+SIZE.try_into().unwrap()) };
+     |                                                           ^^^^^^^^^^^^^^^
+     |
+     = help: consider removing .try_into()
+     = help: for further information visit
+https://rust-lang.github.io/rust-clippy/master/index.html#useless_conversion
+
+Same things happens as well in devres.rs
+
+> +///         if addr.is_null() {
+> +///             return Err(ENOMEM);
+> +///         }
+> +///
+> +///         Ok(IoMem(IoRaw::new(addr as _, SIZE)?))
+> +///     }
+> +/// }
+> +///
+> +/// impl<const SIZE: usize> Drop for IoMem<SIZE> {
+> +///     fn drop(&mut self) {
+> +///         // SAFETY: `self.0.addr()` is guaranteed to be properly mapped by `Self::new`.
+> +///         unsafe { bindings::iounmap(self.0.addr() as _); };
+> +///     }
+> +/// }
+> +///
+> +/// impl<const SIZE: usize> Deref for IoMem<SIZE> {
+> +///    type Target = Io<SIZE>;
+> +///
+> +///    fn deref(&self) -> &Self::Target {
+> +///         // SAFETY: The memory range stored in `self` has been properly mapped in `Self::new`.
+> +///         unsafe { Io::from_raw(&self.0) }
+> +///    }
+> +/// }
+> +///
+> +///# fn no_run() -> Result<(), Error> {
+> +/// // SAFETY: Invalid usage for example purposes.
+> +/// let iomem = unsafe { IoMem::<{ core::mem::size_of::<u32>() }>::new(0xBAAAAAAD)? };
+> +/// iomem.writel(0x42, 0x0);
+> +/// assert!(iomem.try_writel(0x42, 0x0).is_ok());
+> +/// assert!(iomem.try_writel(0x42, 0x4).is_err());
+> +/// # Ok(())
+> +/// # }
+> +/// ```
