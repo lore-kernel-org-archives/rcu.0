@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1986B1FA844;
-	Wed, 18 Dec 2024 16:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEBDC1FAC3D;
+	Wed, 18 Dec 2024 16:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734540624; cv=none; b=cmD+kjNTzx/XGEHrwK1mb+w79hNKtHGEQMoAq6K+UXf+4/zgaJUEuDobchLAh3tebYvSDf2oS5f5dyzmQ27NY91C1olpDOLO4DDdKTOzA5+ZpIiW/zXDCBQlYoM9uoZxIa0Kmm9ojKhQQQCD+2zl+JWZkPT7HYe9x4ve7JEqi4E=
+	t=1734540629; cv=none; b=bkP6OeWcWw2ifF6lGUqHFLR9/2MabqMVbtL71C9V/dlvbAlNcbWrGaUUX9+Sizspas0EWOS0wvrNwVx8o6TgJE5JJ78Szy3598a2jfkG0K59Fq535pXXHHh/a9tGbLpLjp2o8hJyFLokERNd/UIPABjxNe4nx/TKFUCJ7X+F8qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734540624; c=relaxed/simple;
-	bh=wsSFbaS5gHpFjn7Wfsdir/WXJuDIjV9rXiSlyPWPMQc=;
+	s=arc-20240116; t=1734540629; c=relaxed/simple;
+	bh=Nx04f2UY5wu4GKXvfnaz0KF5DugzuqZshT0buArrIM8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gi2k/4oYrsaXDphOzvJz6x6MrYR5ABpBlqe/UWIQGhLqBq02vpb1GtuTiJiS7S/fP/628+x5rlWpTF+DV5oyG2W0CVH7970qHZ1eyNWfNj7x8FQZLLWDyV7QQZuP6out5mQP1bR0JWuAScM/PBK2EqKGBWhAs2OCwDIO9brFSaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6pUHtUW; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=qRnXn5frrG43JCbR/wgMivUBvtuBjtjAHA62d0dvUeK4HyydPSHpMRosgNjRhDBOsJejoRnApqcBZXJn2zHaQiXx5h1dtT5JiqugYhsBD/bQfwxck6l+UEEujavLBhdCrbRsfqgt5fXnZRwe7NHNEaaM/9up/R0X9Z26dBN6nms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lSlzLPR2; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6pUHtUW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62F96C4CED0;
-	Wed, 18 Dec 2024 16:50:20 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lSlzLPR2"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20FC5C4CECD;
+	Wed, 18 Dec 2024 16:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734540623;
-	bh=wsSFbaS5gHpFjn7Wfsdir/WXJuDIjV9rXiSlyPWPMQc=;
+	s=k20201202; t=1734540627;
+	bh=Nx04f2UY5wu4GKXvfnaz0KF5DugzuqZshT0buArrIM8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Z6pUHtUWCameKpZ4NRaIU4vIuWoERimsAki4k6i1Ijt4tNNLR1XEXTcK3nnW+jyPR
-	 Ye7udxzSuydTcufbCs7GvxWaYurgu14Vm1axhtrSRcu9ipj/mLNst8gdC3h+JZnDjH
-	 2j7d/ZAeBGgMQ197/3FX+7m0CE4SyWbxzTHmvY+U+ao7KR7O8uBM58F6oSI+8jupeD
-	 iiDXpfSQ/QGJi7hL7R1CUODvj+kY1JbCe8wll2PffppcVReMysaXOZP2i6Hrk9KMpe
-	 5vH1SngktU6IlH1waUGNnG02ve428tLelPYlTatX4C9lGOpEl8C73/lbJZ8Y0uw9NI
-	 PtJIBRTRJDCrg==
+	b=lSlzLPR2hZ4zEPirL+mOaWKCmCCFkqOHqi6MV2IAX9L3ibW+pCxWGTj61Ui2LoGTF
+	 7OO3DHlzVbO233Pf7xVoZjCyKdQru/qgccqq2fodTV94QHdK2/BVwXBA7mHkj8k0WB
+	 H+sqSLxU/fe791TOpy297Q/Rdqe2zWpkAAiYvv+Yp+h5yWYl8Vyl39zJMWZCfwTRKR
+	 hZqfoAGFipFITwQl8exfYHBTqWFDib5hAUj2zWP2Mmodacv/gx9AyS162Mi8rR/v4R
+	 xwBeCBso/AEAopMc8ui5qgMIvHrRGOokRh3Oh08eu7eRnmBHvUpS4ureZEHdqH1nLO
+	 D3G5JhP+CN+xQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: LKML <linux-kernel@vger.kernel.org>,
@@ -43,9 +43,9 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Usama Arif <usamaarif642@gmail.com>,
 	paulmck@kernel.org,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH 2/3] rcu: Remove swake_up_one_online() bandaid
-Date: Wed, 18 Dec 2024 17:50:07 +0100
-Message-ID: <20241218165008.37820-3-frederic@kernel.org>
+Subject: [PATCH 3/3] Revert "rcu/nocb: Fix rcuog wake-up from offline softirq"
+Date: Wed, 18 Dec 2024 17:50:08 +0100
+Message-ID: <20241218165008.37820-4-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20241218165008.37820-1-frederic@kernel.org>
 References: <20241218165008.37820-1-frederic@kernel.org>
@@ -57,97 +57,42 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It's now ok to perform a wake-up from an offline CPU because the
-resulting armed scheduler bandwidth hrtimers are now correctly targeted
-by hrtimer infrastructure.
+This reverts commit f7345ccc62a4b880cf76458db5f320725f28e400.
 
-Remove the obsolete hackerry.
+swake_up_one_online() has been removed because hrtimers can now assign
+a proper online target to hrtimers queued from offline CPUs. Therefore
+remove the related hackery.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c      | 34 +---------------------------------
- kernel/rcu/tree_exp.h  |  2 +-
- kernel/rcu/tree_nocb.h |  2 +-
- 3 files changed, 3 insertions(+), 35 deletions(-)
+ kernel/rcu/tree_nocb.h | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c160e05dfb7c..576b5c365145 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1060,38 +1060,6 @@ static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
- 	return needmore;
- }
- 
--static void swake_up_one_online_ipi(void *arg)
--{
--	struct swait_queue_head *wqh = arg;
--
--	swake_up_one(wqh);
--}
--
--static void swake_up_one_online(struct swait_queue_head *wqh)
--{
--	int cpu = get_cpu();
--
--	/*
--	 * If called from rcutree_report_cpu_starting(), wake up
--	 * is dangerous that late in the CPU-down hotplug process. The
--	 * scheduler might queue an ignored hrtimer. Defer the wake up
--	 * to an online CPU instead.
--	 */
--	if (unlikely(cpu_is_offline(cpu))) {
--		int target;
--
--		target = cpumask_any_and(housekeeping_cpumask(HK_TYPE_RCU),
--					 cpu_online_mask);
--
--		smp_call_function_single(target, swake_up_one_online_ipi,
--					 wqh, 0);
--		put_cpu();
--	} else {
--		put_cpu();
--		swake_up_one(wqh);
--	}
--}
--
- /*
-  * Awaken the grace-period kthread.  Don't do a self-awaken (unless in an
-  * interrupt or softirq handler, in which case we just might immediately
-@@ -1116,7 +1084,7 @@ static void rcu_gp_kthread_wake(void)
- 		return;
- 	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
- 	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
--	swake_up_one_online(&rcu_state.gp_wq);
-+	swake_up_one(&rcu_state.gp_wq);
- }
- 
- /*
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index fb664d3a01c9..17b1a5e3590c 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -200,7 +200,7 @@ static void __rcu_report_exp_rnp(struct rcu_node *rnp,
- 		if (rnp->parent == NULL) {
- 			raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 			if (wake)
--				swake_up_one_online(&rcu_state.expedited_wq);
-+				swake_up_one(&rcu_state.expedited_wq);
- 
- 			break;
- 		}
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 2605dd234a13..a43141a1b3a5 100644
+index a43141a1b3a5..a03fc19abde7 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -216,7 +216,7 @@ static bool __wake_nocb_gp(struct rcu_data *rdp_gp,
- 	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
- 	if (needwake) {
- 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("DoWake"));
--		swake_up_one_online(&rdp_gp->nocb_gp_wq);
-+		swake_up_one(&rdp_gp->nocb_gp_wq);
- 	}
- 
- 	return needwake;
+@@ -554,19 +554,13 @@ static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_alldone,
+ 			rcu_nocb_unlock(rdp);
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY,
+ 					   TPS("WakeLazy"));
+-		} else if (!irqs_disabled_flags(flags) && cpu_online(rdp->cpu)) {
++		} else if (!irqs_disabled_flags(flags)) {
+ 			/* ... if queue was empty ... */
+ 			rcu_nocb_unlock(rdp);
+ 			wake_nocb_gp(rdp, false);
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu,
+ 					    TPS("WakeEmpty"));
+ 		} else {
+-			/*
+-			 * Don't do the wake-up upfront on fragile paths.
+-			 * Also offline CPUs can't call swake_up_one_online() from
+-			 * (soft-)IRQs. Rely on the final deferred wake-up from
+-			 * rcutree_report_cpu_dead()
+-			 */
+ 			rcu_nocb_unlock(rdp);
+ 			wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE,
+ 					   TPS("WakeEmptyIsDeferred"));
 -- 
 2.46.0
 
