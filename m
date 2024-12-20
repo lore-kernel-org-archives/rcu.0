@@ -1,110 +1,149 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACAF1C4A1C;
-	Fri, 20 Dec 2024 16:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF001C1F06;
+	Fri, 20 Dec 2024 23:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734713076; cv=none; b=COgC2IhxjNwrbY+lvuO4vtSq+GD8+2txsM214WHW/kZV9R/7GekpjLtiR2/JkQsvZk15U52CtwXM+AfJZzmDf38i8pbbwf9mGXs33B2J+9yfDtwRBJhJHjj0cEwu276Ud4LyroeFivAi4dVbURPnMT5Q2xdZPVJXAZQjE9TkcMk=
+	t=1734736772; cv=none; b=EVB4Q0g7Z2REdak0ZXttNgMeRfPrLYjcju9LX9tFnbMQcxNrV+LmFQsGj/YgbXE+xWAqh8EXqKi09ULIPqCFYG+b3j3nb30yoWfkQh+8U0A2MAJZa26UoAdI9gjghVjK7KTi+9ySqdMOQiOi1H+OUwNEyao4iGwYxnqHiJ+yNyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734713076; c=relaxed/simple;
-	bh=/W6KyWLZlMH11g0ZeGK+Lh6aIPfQrX8kBjIMECm+d5M=;
+	s=arc-20240116; t=1734736772; c=relaxed/simple;
+	bh=5/wjedoKkCLX2nGMeShs3qKYEO2j/4y/5eqKXoTgnGg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IPTwFg94V6YDvhy7ZlOeect4AH5Rzi4ybZPuJrqlpQj8eRGFULI9VhRJLi0oAs7uXD3bT/+g09BOUuxCg+NBFe2G90Nw34jZWias1IrN8bE73Ys7x3carwNnesE50u3fe8ogsoaTIZeG8dQhEOJnbRor4JRH6kmRWthq79Wwv+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=u+mX9gp0; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=g5CdboVse9/rj1HsD9z+H4yzeS37NONzBV74Et92lBl90+3J2RR32y8SolfRmLuKmQHr4uhGszZQI0yhQdx6moYlno81vtPnNzbmkUGoPf9ylozrb3rzd8E1JOOx4YJY7SwV+YhBQ5WFHLtyiBnPumDlZdcmFUG9UiTtpE7mUnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BeEjBQ9K; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="u+mX9gp0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1311CC4CECD;
-	Fri, 20 Dec 2024 16:44:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1734713075;
-	bh=/W6KyWLZlMH11g0ZeGK+Lh6aIPfQrX8kBjIMECm+d5M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u+mX9gp0NI1sL3o4th4djHYK5dBf/0xQlg/OKaDCpAkkl8mPc+JPsPsMk7iEHvjvf
-	 KRqSuRlfZUGpDQDYTy3cCL4ZIoh4RY/0jVHHmd0qT7gYwenPiEJvcJaWOCOyMke5A7
-	 cJyC18i4ooGBrDaXfc/xGbwcGxM2IvRCtnXHCiEE=
-Date: Fri, 20 Dec 2024 17:44:31 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Danilo Krummrich <dakr@kernel.org>
-Cc: rafael@kernel.org, bhelgaas@google.com, ojeda@kernel.org,
-	alex.gaynor@gmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-	bjorn3_gh@protonmail.com, benno.lossin@proton.me, tmgross@umich.edu,
-	a.hindborg@samsung.com, aliceryhl@google.com, airlied@gmail.com,
-	fujita.tomonori@gmail.com, lina@asahilina.net, pstanner@redhat.com,
-	ajanulgu@redhat.com, lyude@redhat.com, robh@kernel.org,
-	daniel.almeida@collabora.com, saravanak@google.com,
-	dirk.behme@de.bosch.com, j@jannau.net, fabien.parent@linaro.org,
-	chrisi.schrefl@gmail.com, paulmck@kernel.org,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v7 00/16] Device / Driver PCI / Platform Rust abstractions
-Message-ID: <2024122031-outfit-mop-86d0@gregkh>
-References: <20241219170425.12036-1-dakr@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BeEjBQ9K"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC616C4CECD;
+	Fri, 20 Dec 2024 23:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734736771;
+	bh=5/wjedoKkCLX2nGMeShs3qKYEO2j/4y/5eqKXoTgnGg=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=BeEjBQ9KKTMD+HvThkR1/IWYyWzF03a9N7ZFHowceZsKiQ4W5wTw0Ck9xL9cihg1S
+	 yutHtFvcIM9w8tg3ynp8hdVO/pqwWGCvkAJ9a+Op8b4EhqjDh7UrtewQk+HzsX8DFp
+	 14a66cyC7Gph9oHbYL074LQXiuOFT9VEUiOxigVKzp9cV+7OUH2nUaLmdpD5wiNJ2/
+	 mjnFsVLVneTJAU3ulxPlh9GQImYk+uq0XAkYIKWLMeOC8s5s/AVvK21VSpiE00Wlfk
+	 QoU0K7G13hVTMS/krwn2R8CrngqKbRG60uQ9al13J/nJzBXkn8U6dEhHBmFv941cUx
+	 r6kf0ceMFGtXQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 5D67ECE071A; Fri, 20 Dec 2024 15:19:31 -0800 (PST)
+Date: Fri, 20 Dec 2024 15:19:31 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>, vlad.wing@gmail.com,
+	rcu@vger.kernel.org, boqun.feng@gmail.com, joel@joelfernandes.org,
+	neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com, Cheng-Jui.Wang@mediatek.com,
+	leitao@debian.org, kernel-team@meta.com,
+	Usama Arif <usamaarif642@gmail.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH 0/3] hrtimer: Fix timers queued locally from offline CPUs
+Message-ID: <4fbc9ab5-43f3-47b7-a8df-27a8e6cf7040@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20241218165008.37820-1-frederic@kernel.org>
+ <7d19b58a-2cd2-4c29-8596-f0cda605112f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241219170425.12036-1-dakr@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7d19b58a-2cd2-4c29-8596-f0cda605112f@paulmck-laptop>
 
-On Thu, Dec 19, 2024 at 06:04:02PM +0100, Danilo Krummrich wrote:
-> This patch series implements the necessary Rust abstractions to implement
-> device drivers in Rust.
+On Thu, Dec 19, 2024 at 09:42:48AM -0800, Paul E. McKenney wrote:
+> On Wed, Dec 18, 2024 at 05:50:05PM +0100, Frederic Weisbecker wrote:
+> > 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
+> > was introduced to fix stalls with scheduler bandwidth timers getting
+> > migrated while some kthreads handling CPU hotplug rely on bandwidth.
+> > 
+> > However this has introduced several other issues which used to be
+> > confined to RCU. But not anymore as it is spreading to hotplug code
+> > itself (https://lore.kernel.org/all/20241213203739.1519801-1-usamaarif642@gmail.com/)
+> > 
+> > Instead of introducing yet another new hackery, fix the problem in
+> > hrtimers for everyone.
 > 
-> This includes some basic generalizations for driver registration, handling of ID
-> tables, MMIO operations and device resource handling.
+> The good news is that this passes 12 hours of 400*TREE03.  (Yay!!!)
 > 
-> Those generalizations are used to implement device driver support for two
-> busses, the PCI and platform bus (with OF IDs) in order to provide some evidence
-> that the generalizations work as intended.
+> The so-so news is that this gives only about 70% confidence that these
+> patches help, but on the other hand, it also gives much higher confidence
+> that these patches are not hurting anything.
 > 
-> The patch series also includes two patches adding two driver samples, one PCI
-> driver and one platform driver.
-> 
-> The PCI bits are motivated by the Nova driver project [1], but are used by at
-> least one more OOT driver (rnvme [2]).
-> 
-> The platform bits, besides adding some more evidence to the base abstractions,
-> are required by a few more OOT drivers aiming at going upstream, i.e. rvkms [3],
-> cpufreq-dt [4], asahi [5] and the i2c work from Fabien [6].
-> 
-> The patches of this series can also be [7], [8] and [9].
-> 
-> Changes in v7:
-> ==============
-> - Revocable:
->   - replace `compare_exchange` with `swap`
-> 
-> - Driver:
->   - fix warning when CONFIG_OF=n
-> 
-> - I/O:
->   - remove unnecessary return statement in rust_helper_iounmap()
->   - fix cast in doctest for `bindings::ioremap`
-> 
-> - Devres:
->   - fix cast in doctest for `bindings::ioremap`
-> 
-> - PCI:
->   - remove `Deref` of `pci::DeviceId`
->   - rename `DeviceId` constructors
->     - `new`       -> `from_id`
->     - `with_class -> `from_class`
-> 
-> - MISC:
->   - use `kernel::ffi::c_*` instead of `core::ffi::c_*`
->   - rebase onto latest rust-next (0c5928deada15a8d075516e6e0d9ee19011bb000)
+> At least for TREE03.
 
-Thanks for this last round of changes, looks great to me!  I've added
-them all to my driver-core-testing branch, and if 0-day doesn't
-complain, will move it to driver-core-next for merging into 6.14-rc1.
+Another day, another 12 hours of 400*TREE03 passed.  This gets us up
+beyond 90% confidence that these patches help, and even more confidence
+that they are not too severely hurting anything.
 
-Thanks for persisting with this, looks great.  Now the real work starts :)
+> The not-so-good news is that this series causes build failures for
+> rcutorture scenarios (such as SRCU-T) that build with CONFIG_SMP=n:
+> 
+> ------------------------------------------------------------------------
+> kernel/time/hrtimer.c: In function ‘enqueue_hrtimer_offline’:
+> kernel/time/hrtimer.c:1229:42: error: ‘migration_base’ undeclared (first use in this function); did you mean ‘is_migration_base’?
+> ------------------------------------------------------------------------
+> 
+> When built with KCSAN enabled (--kcsan to kvm.sh), there is this
+> additional build failure on that same line of code:
+> 
+> ------------------------------------------------------------------------
+> kernel/time/hrtimer.c:1229:3: error: incompatible pointer types assigning to 'volatile typeof (timer->base)' (aka 'struct hrtimer_clock_base *volatile') from 'bool (*)(struct hrtimer_clock_base *)' (aka '_Bool (*)(struct hrtimer_clock_base *)') [-Werror,-Wincompatible-pointer-types]
+> 
+>  1229 |                 WRITE_ONCE(timer->base, &migration_base);
+> ------------------------------------------------------------------------
+> 
+> Me, I am a bit surprised that enqueue_hrtimer_offline() is even built
+> in a CONFIG_SMP=n kernel.
+> 
+> But there might be some reason why #ifdef-ing out that function's body
+> would be a bad idea, so over to you!  ;-)
 
-thanks,
+Curiosity overcame me, and the #ifdef makes things at least appear to
+work for CONFIG_SMP=n kernels.  Experimental patch below, which I intend
+to use for further testing, but I have no plans to push it upstream.
 
-greg k-h
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 61a0b92b3a3cfef69e3848806e51d1b99a9e9406
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Dec 20 15:10:26 2024 -0800
+
+    EXP hrtimers: No-op enqueue_hrtimer_offline() if !HOTPLUG_CPU
+    
+    In kernels built with CONFIG_HOTPLUG_CPU=n, this experimental commit
+    uses #ifdef to remove the body of the enqueue_hrtimer_offline() function.
+    This might or might not be the correct fix to the build complaint about
+    migration_base being undeclared.
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Vlad Poenaru <vlad.wing@gmail.com>
+    Cc: Usama Arif <usamaarif642@gmail.com>
+    Cc: Frederic Weisbecker <frederic@kernel.org>
+
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 48c0078d2c4f2..4235b7825b152 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -1213,6 +1213,7 @@ static void enqueue_hrtimer_offline(struct hrtimer *timer,
+ 				    struct hrtimer_clock_base *base,
+ 				    const enum hrtimer_mode mode)
+ {
++#ifdef CONFIG_HOTPLUG_CPU
+ 	struct hrtimer_cpu_base *new_cpu_base, *old_cpu_base, *this_cpu_base;
+ 	struct hrtimer_clock_base *new_base;
+ 	int cpu;
+@@ -1238,6 +1239,7 @@ static void enqueue_hrtimer_offline(struct hrtimer *timer,
+ 
+ 	if (enqueue_hrtimer(timer, new_base, mode))
+ 		smp_call_function_single_async(cpu, &new_cpu_base->csd);
++#endif
+ }
+ 
+ 
