@@ -1,95 +1,175 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BADA42070;
-	Fri, 27 Dec 2024 11:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C047E3D69;
+	Fri, 27 Dec 2024 16:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735300131; cv=none; b=IdY6FxaIuBsBvtuZOG7xRJrJUw31girgxFiD/l7W30yTBVuv2+ltdJzml7W1t7KS8I2UQrACXNWImvCyVd3oegGTs7TZX191LF/Hkulixa/S5vllV4jOzQnEGpUPj468RdN9QgiiBP63TF0BFlwxWc7UnGZYklx7iYTLhDwnMfU=
+	t=1735317450; cv=none; b=Wv6pom56EY3KuODgftQoUVQqS0GM3hJyQUxdlX8Ybu3VsYetXtsme2UnxgroEK9F4uQ4CVhBZHjitSwZrNPiHF6j0clYTu1hm7ZsvX9hMfuSbJeJQ4paUPwQJyH7L7pcQ+BoNN41+QR/w/Ai9Wu9aAGBh5hVGB2E9GR8/BRXkxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735300131; c=relaxed/simple;
-	bh=NyIjsxP7hLdhQx5rqI8thDofmltetYsKWrqF5omzlvc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=r0ZIvMuQZQKkL6SeAzrzYgaL4KG9/cjo8X1zPXMn7YMY4/PltSlA4Ov122yWyk+hSO1Yt83UmdDKXisDbjI4SPdzu5sX+O5jToqBAlTQT2TPtz/3atVKrKxgolaTd+rqA3xyQPsqrmrhX77xfF8riPBpN3VK9yqMcmcSbH+pphM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=mvdk0sz/; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="mvdk0sz/"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=AnrCj2REncAYtqLUkwdLwQJ4yHzFo8R8XcPdjRYdx+w=; t=1735300127; x=1735904927; 
-	b=mvdk0sz/JAtKgMgMFfXMSCsuuo5YMCCFXLIPiukuVTLiXb7fugvA3OWsfaS6UGa8FqFCTC2LDRJ
-	WhZ9LUO2NphxBIYmYoAaVBbpiTrfODELCeaDzrk0hAFuNO4MBJ8GQ9TgSm76lXvaLuce3P+RoWr4i
-	EYYbEqOLzmYKWg9iCl5Nv4f/ZugTsir6491wHq3SVDjfxGx/Rvuu6QCM1uFKiMzclS+3tyU2HQQqi
-	C4zNN9bn7NP7bpLiy2eoj3EaTgv9vWaSYyL6xQg9Y4EeAKShdLiObdnXAjgFTbNghPattgnJarxmu
-	yuscnB0uiJu+nLQrbKVQrWXJJCx91WnGw07A==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1tR8pa-00000001IWy-0qbB; Fri, 27 Dec 2024 12:48:38 +0100
-Received: from dynamic-077-191-186-045.77.191.pool.telefonica.de ([77.191.186.45] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1tR8pZ-00000002CQz-48LF; Fri, 27 Dec 2024 12:48:38 +0100
-Message-ID: <4e3a93da86414add80784db70ae2ebe255ae75ca.camel@physik.fu-berlin.de>
+	s=arc-20240116; t=1735317450; c=relaxed/simple;
+	bh=MLoC1hpznAYKSA+VkV9BEbf7a4//s6wY+RGSAytITuA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=sYdIzWoODnLRb4MeDtzw9hWCzyc5ESvvIPWMKFI050geda3iTuFb10nwR67hnwQj7X5HfOP93TLzQNOODmufiIQyP1Jc8rRkSCdNpis02EN8R3LCZXUVgDmnXPeXq3D3IHHcefJcFF+5fhvP9SqD6Bx4ENaUI8t7lTIYNSJANqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 65E4292009C; Fri, 27 Dec 2024 17:30:50 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 6271192009B;
+	Fri, 27 Dec 2024 16:30:50 +0000 (GMT)
+Date: Fri, 27 Dec 2024 16:30:50 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Magnus Lindholm <linmag7@gmail.com>
+cc: "Paul E. McKenney" <paulmck@kernel.org>, Michael Cree <mcree@orcon.net.nz>, 
+    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+    rcu@vger.kernel.org, linux-alpha@vger.kernel.org
 Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Magnus Lindholm <linmag7@gmail.com>, "Maciej W. Rozycki"
- <macro@orcam.me.uk>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Michael Cree
- <mcree@orcon.net.nz>, 	rcu@vger.kernel.org, linux-alpha@vger.kernel.org
-Date: Fri, 27 Dec 2024 12:48:37 +0100
 In-Reply-To: <CA+=Fv5TJhDrrxG82=MNPFEFFwKD4NDYyB1u32ZvnGv6Ma0h_Nw@mail.gmail.com>
-References: 
-	<CA+=Fv5R+8y2hCq7p-xo5qZ0CyinR_0aAndUkoEAweCVs_95SMw@mail.gmail.com>
-	 <Z1YpKFQGtMWF3yy3@creeky>
-	 <CA+=Fv5Q=f-6y=EhZhG2XfZB0O=m+yOiv+gmtmMABVQZieKdwbQ@mail.gmail.com>
-	 <Z2ClSlwznfuk8Uwr@creeky>
-	 <CA+=Fv5RaqHL6MJjvhF-mn3CVY10e=2QqFBSVO6YXLUJ7WV9zGQ@mail.gmail.com>
-	 <CA+=Fv5RP=NoWo4VeTX7hx103=jP2d-NC-jFo+ePXLBRubCxc_w@mail.gmail.com>
-	 <ef49a479-2000-42ee-9b10-9f3b6a68ec35@paulmck-laptop>
-	 <CA+=Fv5REK+xbA49zD3aYBgG2J1Xw1FWP02qjyyOTrwbzMRXu3w@mail.gmail.com>
-	 <be4fe590-b41c-4033-91c1-94f10c4f3d40@paulmck-laptop>
-	 <CA+=Fv5Tk-vbAK72ZOK-bPwvnx9w_1ATH=S9t-LW8gBEgQPYa3A@mail.gmail.com>
-	 <b3cd5af3-4b8f-43bd-b3f3-c9f4644c95d4@paulmck-laptop>
-	 <alpine.DEB.2.21.2412192347450.20821@angie.orcam.me.uk>
-	 <CA+=Fv5TJhDrrxG82=MNPFEFFwKD4NDYyB1u32ZvnGv6Ma0h_Nw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.2 
+Message-ID: <alpine.DEB.2.21.2412271452100.20821@angie.orcam.me.uk>
+References: <CA+=Fv5R+8y2hCq7p-xo5qZ0CyinR_0aAndUkoEAweCVs_95SMw@mail.gmail.com> <Z1YpKFQGtMWF3yy3@creeky> <CA+=Fv5Q=f-6y=EhZhG2XfZB0O=m+yOiv+gmtmMABVQZieKdwbQ@mail.gmail.com> <Z2ClSlwznfuk8Uwr@creeky> <CA+=Fv5RaqHL6MJjvhF-mn3CVY10e=2QqFBSVO6YXLUJ7WV9zGQ@mail.gmail.com>
+ <CA+=Fv5RP=NoWo4VeTX7hx103=jP2d-NC-jFo+ePXLBRubCxc_w@mail.gmail.com> <ef49a479-2000-42ee-9b10-9f3b6a68ec35@paulmck-laptop> <CA+=Fv5REK+xbA49zD3aYBgG2J1Xw1FWP02qjyyOTrwbzMRXu3w@mail.gmail.com> <be4fe590-b41c-4033-91c1-94f10c4f3d40@paulmck-laptop>
+ <CA+=Fv5Tk-vbAK72ZOK-bPwvnx9w_1ATH=S9t-LW8gBEgQPYa3A@mail.gmail.com> <b3cd5af3-4b8f-43bd-b3f3-c9f4644c95d4@paulmck-laptop> <alpine.DEB.2.21.2412192347450.20821@angie.orcam.me.uk> <CA+=Fv5TJhDrrxG82=MNPFEFFwKD4NDYyB1u32ZvnGv6Ma0h_Nw@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Magnus,
+On Fri, 27 Dec 2024, Magnus Lindholm wrote:
 
-On Fri, 2024-12-27 at 11:42 +0100, Magnus Lindholm wrote:
-> >=20
-> I've done some more testing last couple of days and it seems like
-> applying the one-liner "fix" to smp.c (alignment of csd_stack in
-> function smp_call_function_single) is sufficient to mitigate both rcu
-> related bugs (the bugs are not even rcu related).
+> The code generated by gcc from smp.c reserves 96 bytes of stack space
+> but places csd_stack struct on $sp+79. Since sizeof csd_stack is 32
+> bytes, it seems to me that [($sp+79) & NOT(0x1f) +
+> sizeof(call_single_data_t)] might be greater than "96+$sp" if say, bit
+> 3 and 4 are set in $sp? or am I missing something here?
 
-Could you post the patch? I would like to give it a try myself.
+ Umm, no.  The psABI guarantees 16-byte alignment for the stack pointer, 
+and under this condition (((x - 17) & ~31) + 32 <= x) is guaranteed to be 
+true (except for the overflow case, of course, which does not apply here).
 
-Adrian
+> ---------------------------
+> lda     sp,-96(sp)
+> ...
+> lda     s0,79(sp)
+> ...
+> andnot  s0,0x1f,s0
+> ...
+> stq zero,8(s0)
+> stq zero,0(s0)
+> stq     zero,16(s0)
+> stq     zero,24(s0)
+> stl     t0,8(s0) [.node =  CSD_FLAG_LOCK | CSD_TYPE_SYNC]
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+ So `csd_stack' isn't at ($old_sp + 79) but rather (($old_sp + 79) & ~31), 
+which is just a way to guarantee 32-byte alignment for the data object 
+where the psABI only guarantees 16-byte alignment for stack allocations.
+
+> 2)
+> Using  cacheline_aligned_in_smp when declaring csd_stack in
+> smp_call_function_single will actually reserve less stack space (80
+> bytes in stead of 96), csd_stack is referenced directly using $sp.
+> Maybe alignment is just a way to simplify things for gcc and avoid
+> hitting compiler bugs?
+
+ For the Alpha port generic definitions are used, so I wouldn't draw such 
+conclusions.  It's just how things work out by default, and objects of the 
+`call_single_data_t' type are aligned to their size, which is 32, while 
+____cacheline_aligned_in_smp requests alignment to either 32 or 64 bytes, 
+depending on the kernel configuration...
+
+> --------------------------
+> lda     sp,-80(sp)
+> stq     zero,48(sp)
+> stq     zero,64(sp)
+> stq     zero,72(sp)
+> stl     t0,56(sp) [.node =  CSD_FLAG_LOCK | CSD_TYPE_SYNC]
+
+... so I don't really know why it causes the alignment to be decreased 
+here back to the psABI value of 16 bytes.
+
+> I've made numerous attempts with different versions of GCC, including
+> the most recent git version (with and without the patches from Maciej)
+> and they give similar results, even though the exact amount of
+> stackspace reserved, registers used, and placement of csd_stack struct
+> will differ somewhat. (GCC) 15.0.0 20241225, with Maciej patches
+> applied, will produce the code below:
+> 
+> lda     sp,-112(sp)
+> lda     t1,47(sp)
+> andnot  t1,0x1f,t1
+> ...
+> 
+> Which boots and lets me load/unload my scsi kernel moduel, but just
+> adding some debug print statement to smp_call_function_single will
+> again give a kernel null pointer exception. Printing the value of &csd
+> seems to allocate space for csd on the stack instead of keeping it in
+> registers which will later trigger a null pointer excepting when
+> accessed. To me it seems like this just moves around the stack
+> clobbering problem?
+
+ A code generation bug cannot be ruled out of course.  But it might be an 
+ISO C compliance bug too that just happens to trigger for this particular 
+scenario.
+
+> CPU 1
+> rmmod(1444): Oops 1
+> pc = [<fffffc000078e818>]  ra = [<fffffc00003dd0f8>]  ps = 0000    Not tainted
+> pc is at llist_add_batch+0x8/0x50
+> ra is at __smp_call_single_queue+0x38/0xa0
+> v0 = 0000000000000000  t0 = fffffc0000e2b100  t1 = fffffc0000ec4048
+> t2 = 0000000000000000  t3 = fffffc0000ec4048  t4 = 0000000000000000
+> t5 = 0000000000000001  t6 = ffffffffffffffec  t7 = fffffc0005d4c000
+> s0 = 0000000000000000  s1 = 0000000000000001  s2 = 0000000000000001
+> s3 = 0000000000000001  s4 = fffffc0000cd0330  s5 = fffffc000020ee80
+> s6 = 00000200010422a0
+> a0 = 0000000000000000  a1 = 0000000000000000  a2 = fffffc000020f100
+> a3 = fffffc0005d4fa28  a4 = ffff1020ffffff00  a5 = 0000000000000000
+> t8 = 0000000000000001  t9 = 0000000000000001  t10= 0000000000000000
+> t11= 0000000000000000  pv = fffffc000078e810  at = 0000000000000000
+> gp = fffffc0000e9c980  sp = 00000000905861a6
+> Disabling lock debugging due to kernel taint
+> Trace:
+> [<fffffc00003dd1bc>] generic_exec_single+0x5c/0x150
+> [<fffffc00003dd3ec>] smp_call_function_single+0x13c/0x220
+> [<fffffc000082ceec>] device_release+0x3c/0xf0
+> [<fffffc00003ae178>] rcu_barrier+0x1b8/0x4d0
+> [<fffffc00003aaa30>] rcu_barrier_handler+0x0/0x120
+> [<fffffc00003aaa30>] rcu_barrier_handler+0x0/0x120
+> [<fffffc0000858418>] scsi_host_dev_release+0x58/0x170
+> [<fffffc000082cf04>] device_release+0x54/0xf0
+> [<fffffc0000b501f0>] kobject_put+0x90/0x1b0
+> [<fffffc000082d0fc>] put_device+0x1c/0x30
+> [<fffffc00008583ac>] scsi_host_put+0x1c/0x30
+> [<fffffc00007b9694>] pci_device_remove+0x34/0x90
+> [<fffffc0000838284>] device_remove+0x64/0xb0
+> [<fffffc0000839d24>] device_release_driver_internal+0x284/0x370
+> [<fffffc0000839ecc>] driver_detach+0x7c/0x110
+> [<fffffc00008377e8>] bus_remove_driver+0x98/0x160
+> [<fffffc000083a754>] driver_unregister+0x44/0xa0
+> [<fffffc00007b94e8>] pci_unregister_driver+0x38/0xd0
+> [<fffffc00003be264>] sys_delete_module+0x174/0x2f0
+> [<fffffc000031095c>] entMM+0x9c/0xc0
+> [<fffffc0000310d04>] entSys+0xa4/0xc0
+> [<fffffc0000310d04>] entSys+0xa4/0xc0
+> 
+> Code:
+>   f43ffffb
+>   6bfa8001
+>   47ff041f
+>   2ffe0000
+>   a4120000  <---  ldq     v0,0(a2) (*first = READ_ONCE(head->first);)
+>   60004000  <---  mb
+>  <b4110000> <---  stq     v0,0(a1) (new_last->next = first;)
+>   60004000
+
+ So `__smp_call_single_queue' is called with NULL `node'.
+
+ Would you be able to trace it back further, e.g. by adding BUG_ON(!node)
+to `__smp_call_single_queue' and so on if required, to see where this NULL 
+pointer comes from originally?  I do hope such a minimal probe won't 
+disturb code generation enough for this to become a heisenbug.
+
+  Maciej
