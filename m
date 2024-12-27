@@ -1,250 +1,215 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093C6146D6E
-	for <rcu@vger.kernel.org>; Fri, 27 Dec 2024 09:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735291095; cv=fail; b=dvj0hQt1hmv1Bjp6YU4qvyvYDEMnlVpzTv8q3kJvxAMHA4YB0CtWcCPphtqRnwsrhAhtpPHQJHJ/VDXOVDVlOjT/oUeZkuhkxTpJ75qyMdHMB/Xm6Wr5nsCTrADhfo7Wb4poyNRMQaNdCPn4u5aLyS/SYCyNJ6e/125RYAWbFcg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735291095; c=relaxed/simple;
-	bh=zJPWHfG/bNf98sBoKVqz1J8J/NpI9sij9pQD1sxpDIw=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=PRzZNyo5EDvuSz8sImzal2PD7Gf3GNQm02EiHWblrI42T72KkiGZqeOdOHC31YyIH5XFRkHsUQT84aw0RWrGpHe4sy41Vm9/smeUhb38WKybmUrASxYx+GaADRp7vL6wLtohGiULV4UCaW4W7PQ6bM/ZgwAy/NAxqPoWgQGPWRk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LK26PiHf; arc=fail smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F84F1F1310;
+	Fri, 27 Dec 2024 10:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1735296184; cv=none; b=cQrpnxif87NhEWYi5uRFGxwt9+RSq7+kyp939ht2+7q/ys+GuHUrLWX76H6Ql2Dsd/6FE396nc6T6pqQmuIPBgKUE+AvnB5J71pmQlBPVHvmn2BswRptkQ5xyFT3+N9Eg/kF4V7TnRkXgtKglROOJ6OfzXtODsxQ/oHYnG0NhkA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1735296184; c=relaxed/simple;
+	bh=siQbiKFwr2CpGKl7Go74NpbnuSEyZX1ge05n4xnPrSg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h6UvMXTjk3KRJ9O/Ogaejr0UvU1t0A+rMYvZdqoPYaf7/AO0O/vgevAnTLkHfyG7fAN7O9gOKzQS5/UKLqZwYErEYrgGzqEE953RoEHm41GbDOeHJS73aay02b6l2V2cjBfKtEg8qXTfa62t5Y+SNQvcewHIiebNRoRD6oDLk84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZXO+GGnN; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LK26PiHf"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1735291094; x=1766827094;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=zJPWHfG/bNf98sBoKVqz1J8J/NpI9sij9pQD1sxpDIw=;
-  b=LK26PiHf7oWnGet7co27B0S/KsswHMxd/q7AgmxXJpOI4J1KoJ7Rjb9k
-   l2UqFWKJSJXLIhN0IFB3G9x4Mr+CxtrcbAV5cir2iiHMKvEb2TJ0YlEv+
-   /H1f3Emk3OW3ZrvVAfzliDhlB/yHJuJGK9EitE+wa3sHCRo0YoicRBhxa
-   4Mk5PZckbJxBCAyeYdH2NpOJM8SSSRMMQzRlpgD0tsdk6HWx+4BDaf0Zm
-   RW/lv65uRq+nQ5smDu2jnbGMJsB8AIBgzyDA1V1iX6dzdy5azm2zjFcjp
-   WGFx4wOWSd9ZQhboRNMILie9mlbbI+uY6bepsB/BFmELaurYbh0WMMs7c
-   Q==;
-X-CSE-ConnectionGUID: q0pbclrNRU2syLC3JH5IyA==
-X-CSE-MsgGUID: P0ORUFg1QH2ikDdkWfYzPA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11297"; a="61074328"
-X-IronPort-AV: E=Sophos;i="6.12,268,1728975600"; 
-   d="scan'208";a="61074328"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2024 01:18:13 -0800
-X-CSE-ConnectionGUID: MXXYUfaVT36187ixkwkY4g==
-X-CSE-MsgGUID: beEXqplsSuayezREj2J8Ww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="104193201"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Dec 2024 01:18:13 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Fri, 27 Dec 2024 01:18:12 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Fri, 27 Dec 2024 01:18:12 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Fri, 27 Dec 2024 01:18:12 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qli/Tb9T3NPCeUzter9aoMdQIUxYdGvVm5TQP5z3+QKGCyTx5AIPmXO4NEewX0XWplbTvfUEypGUu0MoIZZJiSN4dv7aiKZGGIXZGtfMhurDt41+63u27+fvddz6JvfniYWvJ+YBwWhwKD9KlXmbOhpjMUyniHlhm9xN2My7B0sDfvjRwH583CMsYzlyj+aTwP02b6zfvXIP1GoEju7Z+KiF0TmixXeipi/R5RKCvq6wZMh35tB/7SHnH4yYB8dXfJvO7jbfeHUvi/yNKKSwStFG40Jj7X+YatphAWMwLf80TgwS4sD6T3pxVtwiB/R4FcFLuPcwaOWOxj2s2+5Fhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EEe0sBYcY19vRkIYm7dPJncHBygGh/pJX5KxIL07eng=;
- b=bJ1OGEnd51133NC41MeIupw7d/bNQjIntUZkkUcTVQeW7SW51on7VRU01YzMOjwl/I9U1MDmHbgU5vC0nbRtBeeGW/0CtN+rc8QJhUfIMNfiixBbYfXgPsjABOA8GybGEl2um8YqHmYcgHyg7Ic7L/uPvJCi+AVOJ31WR+MSuCPKsUYzDC2YB55ikEkhJ5e0YNZ9Rdzjmk/OMoqYVwCw0gPZPQXMKysZJF/xaUUnW0uKFGobMlKkKM5gH4vAIr1CMd5YpC9lTHkwxcHS+EgbgDr4Sgqu/cE9BBIebLAB1dwlP8cEX80uUCVPyavBgeEjRJ0rq8CjP+wNZ/oULO1JtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by PH0PR11MB4791.namprd11.prod.outlook.com (2603:10b6:510:43::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8272.21; Fri, 27 Dec
- 2024 09:17:26 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%6]) with mapi id 15.20.8293.000; Fri, 27 Dec 2024
- 09:17:26 +0000
-Date: Fri, 27 Dec 2024 17:17:18 +0800
-From: kernel test robot <oliver.sang@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <rcu@vger.kernel.org>,
-	<oliver.sang@intel.com>
-Subject: [paulmckrcu:dev.2024.12.23a] [srcu]  c634c0678e:
- UBSAN:array-index-out-of-bounds_in_kernel/rcu/srcutree.c
-Message-ID: <202412271623.8ceb422e-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SI2PR02CA0006.apcprd02.prod.outlook.com
- (2603:1096:4:194::8) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZXO+GGnN"
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5d88c355e0dso3328910a12.0;
+        Fri, 27 Dec 2024 02:43:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735296181; x=1735900981; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0732FTT2bfW2JoIsn/wOq5+IdXAcmZ9lcahoNJojnnc=;
+        b=ZXO+GGnN+6gR4z8XLOHDOSWngzlf9drdUD4Mgmwf9EOPRZGOEKV5QlOmw0L8KrdZ1d
+         hQrZsgSSNaa7OlI2IdqjkyxExUsK7IMxmFvbVukCUT8QXGhB1zPFfWimCMLnpqiPbgzr
+         tz21jF12ZAKTM1XxWG6FUUNu2pz0mVFqgHlMbBQsX+mwANbP4Jf8c0urY8h9ude8lNY7
+         S8BWm4hZ4yVGi+JsCwO/d7Lx4UGS+mrbvZEpWLOhTkOZUrOS4Y042FfJ0XiVuO2mh9DO
+         0FtUlW/+VG6CKQ7rrRXGYv82sEDvFXFVAMUTX2MBBIJr055MoeP7aHKAtKMOsc45uk6H
+         7aiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735296181; x=1735900981;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0732FTT2bfW2JoIsn/wOq5+IdXAcmZ9lcahoNJojnnc=;
+        b=E43W1wDtDSx3APtiIvbb37ARQsH6Z5Lv5fgBqaiafUTYmtqXB3l2VfmK3IvN1hYO1V
+         JZso3qbAF+VpjFLqEE5AznLPQzGOlwkyNfas+iZJ6iFlUBKXc0gPTye77pahd/nkXqx2
+         s67tw6An7BcC5dK7cC8K1Ie+BRpHnOzUdDC6jPKvrFSnW88kRyXS4uHUXY5bzOizjyP4
+         a8JpknS8UnYHWRoQYMZSnt2M5MQUA//ckwDrem0GrE6U2l0JUftLaHDg7QegcyR1Fz/N
+         mMNk6Ufi44k4f+IBsa2uzWo7Qh6zgQEwxKI9ReJ8mXOriRU7monUtXduCNqAGkIopZ0l
+         Vwbg==
+X-Forwarded-Encrypted: i=1; AJvYcCVWM84TSFUFTp6oTAFPnp7SYi1CV1uVKhZq1lk2x0folD67PzLMutAjaP22HFvlaVzsTPRW@vger.kernel.org, AJvYcCXZkrGW2fwvRy4DfowYQuvkXBi1A3F83hiFYsPajMyRG+NO7gIAWwSjqrgROQLbzTx2bADLJFEZJQmoDw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwaItVu0KvrcqlParYl0F8nhVx1IcKgQ2Xt864F2phX8w9kZvU
+	IqJt7+7XPct97FXp5fNcfe4GqYEru89ld6ZpkBoELf+N6BUY5JB//q6BbdAdwfDRbLopDPSqEnc
+	7jq/qpNZy1r6wSzhqgkK+klo+6wJ7mpDY
+X-Gm-Gg: ASbGnctVzpiSbgdd1wYdrtXmUJaTB2rP+94Ww8nQyFuGJ9yf3fPWZ+OfO3Khzji7PbH
+	j9SrxL07v+SIj2KGNOx4PzSMtYavsk3I1uqv7ce8=
+X-Google-Smtp-Source: AGHT+IH+IoYZOwkreNczRFLhT3TTIaVrMsWyDzGMSlN/equuTZPuL6K6jrpOEFpMCvuy+jXgli6URp7/oVkiJ/RNt7s=
+X-Received: by 2002:a05:6402:3507:b0:5d1:fb79:c1b2 with SMTP id
+ 4fb4d7f45d1cf-5d81dd7f7f8mr22691543a12.11.1735296180468; Fri, 27 Dec 2024
+ 02:43:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|PH0PR11MB4791:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b4ac927-e832-49ad-ea4d-08dd265747bf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?9t3i0FSX0GMRK8UgPoOpMOTJUmQ60jI3iVrKbWk73Ax0jY/9/WBanBXadXlm?=
- =?us-ascii?Q?X6V/3xfNRizElFdNgOzkSSDWi+DdjZIA1nQooXBpMt7/wOdhZnAtau3BBT6V?=
- =?us-ascii?Q?30Q3LaQ3RDpylXTmbF9tyTk032AgBtrhJH1VML85RdQZOEvs27HRotpJXTqN?=
- =?us-ascii?Q?SFBhsNTRv12xIHY8LgaF5u8F1Yrpz0nLINFtAkbhnhHu9Ofet0OFDyoiiK0/?=
- =?us-ascii?Q?PCuFbXqlivNIHxPGqe1Eof8TXsp3LWwimVIllUwupUnECG8/VpGDy7+AOCv7?=
- =?us-ascii?Q?PqtPYN+uH9Vpyu77Mzh/O5HxfXszDLFDWynT86qx17uDkIZNkld9FIXDxdnk?=
- =?us-ascii?Q?tAYH5f6WgLG//2S4DhWbZT5WwG0PlaGX1DTP/gLEDjOK+kcPmnHVc1V0TxID?=
- =?us-ascii?Q?bdfDAdQKNX+H5GmoTXXAy5Do5ptVRG26xLwP+fz9aJ+tzKFS4H1xG6BSBRkt?=
- =?us-ascii?Q?WQmzhV5BmMXuh0EjnKWvKv+ZzcmKQctUGnKI6jbSt4ZbBMCjwmjUrDHPNPX8?=
- =?us-ascii?Q?9uKqtBMT3tovQ1oi7SVFAu+qpDh3gWl7XNhSS17kI8dzK94rbhgLp5PzZ7pK?=
- =?us-ascii?Q?Htk/7KDkAdAoz64uzRF0t2JZX8mL9c4k/6MCKs3FpdKH534w3TGCH1nBw3K0?=
- =?us-ascii?Q?7Ya/gXL4nhrvnA2lx9X3jtpzM70RAlMfZLVD4rbaakOyVLjHu32nJZOqWbHY?=
- =?us-ascii?Q?ebTVrxUhPZE4k54K7TqHezEgdMALP4655kY9rvpbDMHX4jmpRMwO4NoZlWUZ?=
- =?us-ascii?Q?uGPu0sIiiniWvzF8SW+CkjMVy+6KuD1g2xQDM+0vapWZwfJwzaWmfH7zhTVS?=
- =?us-ascii?Q?r6t7smk3dQhGlXEBCY1L0wmMNQ40VTZIDkBGZW9FD2jLnimTKNlElOaUMRDT?=
- =?us-ascii?Q?ekV+tFgHfxN4VtvZVY76e5m8zo5CB0L5ruNsZm/5+C4FTISYP+HX0SgYtDQu?=
- =?us-ascii?Q?FO+uYuxawTz2vMD1Mi2+xFGmaiH6W5b4M3vTSIcooPpOMFJQgW5K9n3mNRaw?=
- =?us-ascii?Q?pihAzmg9mumAMCQlW8YcZe3n8M7IeqxlSGJCrwjjq9JZ6S/6YbRuYhCTRK7w?=
- =?us-ascii?Q?dzEkp/mGIWuzwTTgPpv1qTf6T8wp47fZZKB0jfl1zDDo0JKUh4KMU228WPsQ?=
- =?us-ascii?Q?mBU1GaDXYMVaT3fDL5E32nY6giV22Rjq0Xp+yETeihYthoFt9RLLEkzyDirp?=
- =?us-ascii?Q?lPGT+tYlZvRAy2MgeV8AzwTiGMX5RW8r+xSVKMYJSJpDbMg2+BRd9kmfDvsk?=
- =?us-ascii?Q?N25nH3p1ZCUg2K/3kqkeRzkCJ5VHHANhn+4xD/k0pD8h+zo0AfiuScTf5H/w?=
- =?us-ascii?Q?hl0GfgitQ+15p1Y9FxrJy+bROhZzd27YVn8Z2DDVUeNVew=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uETzzax9oGEkvrVnfiYrToZdhrktfoo2k5xJy4R7tNmmf//stTj5S1F1C0no?=
- =?us-ascii?Q?fuFxiqeYe08pzq0slSVgh5/EZOUYeF+es9dhfnAl5XplS+ZIFHSm8lv/fPch?=
- =?us-ascii?Q?6/OGTTKgb3ST3P1gCKa6abJD7Ou0ClnnvPqLkYsRbC+ry2Sxk9ldX2sYoIfC?=
- =?us-ascii?Q?ilh2RtvtCdt/pfFjn4Ya3U4M8QKxtGgXTYYfAZttbiG3xjRQebv7j9AgQB2i?=
- =?us-ascii?Q?vPx6OTY64Urqxw4Vhfg7SP424DRYWqIaDxHh8lnbrsoHHrkpoFKeWo+3UKhi?=
- =?us-ascii?Q?nSybSIdMmGBZZ1qO6v2hDIZ2T/nPtO3GYjsnlQpPN8RRDboT427rRBwLXKfG?=
- =?us-ascii?Q?x87vT6rDIhnBGywi/RjgHjyVvs9VCT0IXW0lP9qcl1gDEVjUccrcI8NeHOB4?=
- =?us-ascii?Q?0Jv7pIk3wR5hjDr5X3veByEvAwxNFJNDwXReMSpWm9hP3tFsm6yoA8RQ3ZGM?=
- =?us-ascii?Q?34VdbmCI1cCE0YHpEXq6goYpW0HJH7ablMA9Crb8I3VNkNHQBFHt+TG5zuhE?=
- =?us-ascii?Q?NvTw5EIk2r1/aDEmo6Wj6vkgqzzDfVD2wnv6SXLiZ7vMOvSIS9qlBn9pMTf5?=
- =?us-ascii?Q?qQDiIzAyS0nn58thNzUjBA4h75pkf4+t2Q98npFNW8IEZITyceBnHXdAPe80?=
- =?us-ascii?Q?W+aM9oNvvRSofAYqoIBvOSCTRcX0ECZD89T0zklSIM6q2InlmvgA3UeUBC9i?=
- =?us-ascii?Q?jgukBGdzvH+SKr41Y4YyF0Pe/QphoQMdEjB6rebnPP1OJw2Mx1xFPQthPiaB?=
- =?us-ascii?Q?Lhbc0Gi60s/DgbuNWUC4tZjF8Lamxne6yHXO6w6edPOU0j8yc/WWN5oR9/CO?=
- =?us-ascii?Q?Uf98Ogx/3ee4h8Lz815Kbd6VeURLef+6oLgmOYjP6aOEuERwQch6yND8SM9f?=
- =?us-ascii?Q?IX1HVCOAWK2vP53tgG4kFUSmTNGlEsKkiocHJVPgCtjbjFYobeDVjjQcodxS?=
- =?us-ascii?Q?PhE/lgl1Q+0n2VRlSbgHOripF8P0Cf8SKskpmNomyqRwiQxuyNu0kAY4e3f2?=
- =?us-ascii?Q?Z3pag/BjLk8w2pYRm7481cnnh+cYL21SRvT+Lk3RzxpUxJYzoK4HRvaxb8TZ?=
- =?us-ascii?Q?CYSaIEa0wa5UsrvN0IzhF5+p7+V8jXy6EGAyjzp9pfd9f0VIF1iyA+L7UVDe?=
- =?us-ascii?Q?0tA0WMY9E9lKJ9wbVGmwDMabILCQrxE4I0lKLK5B+FEB54WmoO+GS/hr3BKH?=
- =?us-ascii?Q?+1udSbFtA9zQCdYmK/hyiSPTO7DQxvozb0vuNz+FDhA34F0Fihm7EHllIVp6?=
- =?us-ascii?Q?AFJcmMlem8+0pUsn5cnjBoikMdKEvG1ljSD7acivQcyU9geeobFbF3npnvsH?=
- =?us-ascii?Q?xUx8TnTQLfN9jfSWQXanNBzjB+SMBAsKXiVia8dzS3odli+3eOlovAsb4Zkw?=
- =?us-ascii?Q?yupMJ260x956CgIr3gB/JJ3cCA+ZDvZNmjjOnFqllltm4B0QWTBmEdu1c5i+?=
- =?us-ascii?Q?yGqmjVau2E2AJJO2rsDdnbX3nP/MkVbbRTUpiYC4wFb7kOuaFpQDimViOG/O?=
- =?us-ascii?Q?YHQ+YtDV5dvjfGm/ts8eUsn3y8eezxTP11LgjjxnRrf3OqINJPC++K1y1Daq?=
- =?us-ascii?Q?yGA88yOEaEkENbP4sJQuBG7tjQnICNorA2N5z9nfEQkyFy7VH5tYUXiMxzbX?=
- =?us-ascii?Q?kQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b4ac927-e832-49ad-ea4d-08dd265747bf
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Dec 2024 09:17:26.5543
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aNCex+XiB5lk4GjCd+XXNiUUgy1kw4jQFkCR8v21hA7gyHMjC5EzzSoozLn1zHN30LgE8AaHJ9efkl2GdXYpBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4791
-X-OriginatorOrg: intel.com
+References: <CA+=Fv5R+8y2hCq7p-xo5qZ0CyinR_0aAndUkoEAweCVs_95SMw@mail.gmail.com>
+ <Z1YpKFQGtMWF3yy3@creeky> <CA+=Fv5Q=f-6y=EhZhG2XfZB0O=m+yOiv+gmtmMABVQZieKdwbQ@mail.gmail.com>
+ <Z2ClSlwznfuk8Uwr@creeky> <CA+=Fv5RaqHL6MJjvhF-mn3CVY10e=2QqFBSVO6YXLUJ7WV9zGQ@mail.gmail.com>
+ <CA+=Fv5RP=NoWo4VeTX7hx103=jP2d-NC-jFo+ePXLBRubCxc_w@mail.gmail.com>
+ <ef49a479-2000-42ee-9b10-9f3b6a68ec35@paulmck-laptop> <CA+=Fv5REK+xbA49zD3aYBgG2J1Xw1FWP02qjyyOTrwbzMRXu3w@mail.gmail.com>
+ <be4fe590-b41c-4033-91c1-94f10c4f3d40@paulmck-laptop> <CA+=Fv5Tk-vbAK72ZOK-bPwvnx9w_1ATH=S9t-LW8gBEgQPYa3A@mail.gmail.com>
+ <b3cd5af3-4b8f-43bd-b3f3-c9f4644c95d4@paulmck-laptop> <alpine.DEB.2.21.2412192347450.20821@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2412192347450.20821@angie.orcam.me.uk>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Fri, 27 Dec 2024 11:42:49 +0100
+Message-ID: <CA+=Fv5TJhDrrxG82=MNPFEFFwKD4NDYyB1u32ZvnGv6Ma0h_Nw@mail.gmail.com>
+Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Michael Cree <mcree@orcon.net.nz>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, rcu@vger.kernel.org, 
+	linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+> > The best thing would of course be to fix the compiler.  If that cannot
+> > be done, why not just carry these patches?
+>
+>  Right.  Magnus, has your kernel been built with compiler options implying
+> BWX support?  If not, can you please rebuild it accordingly and see if it
+> changes anything?
+>
+>  Also a data race between RMW accesses can't be ruled out even with BWX
+> Alphas, because GCC insists on producing those sequences, as I discovered
+> in the course of implementing said GCC fix for data safety[1].  For BWX
+> use it should be ready to build a working kernel right away, because no
+> unaligned LL/SC emulation is required, so Magnus, can you please try the
+> patchset out in the second step and see if it makes any change?
+>
+>  Of course it might break things horribly too, as I still haven't got to
+> verifying the BWX side beyond the assembly pattern match snippets in the
+> GCC testsuite (to be done hopefully in the next couple of weeks).
+
+Hi,
+
+I've done some more testing last couple of days and it seems like
+applying the one-liner "fix" to smp.c (alignment of csd_stack in
+function smp_call_function_single) is sufficient to mitigate both rcu
+related bugs (the bugs are not even rcu related). I guess it's pretty
+simple to just carry this patch until we figure out the root cause.
+Either way, I've tried to get a better understanding of what gcc is
+doing differently in the two cases:
+
+1)
+The code generated by gcc from smp.c reserves 96 bytes of stack space
+but places csd_stack struct on $sp+79. Since sizeof csd_stack is 32
+bytes, it seems to me that [($sp+79) & NOT(0x1f) +
+sizeof(call_single_data_t)] might be greater than "96+$sp" if say, bit
+3 and 4 are set in $sp? or am I missing something here?
+
+---------------------------
+lda     sp,-96(sp)
+...
+lda     s0,79(sp)
+...
+andnot  s0,0x1f,s0
+...
+stq zero,8(s0)
+stq zero,0(s0)
+stq     zero,16(s0)
+stq     zero,24(s0)
+stl     t0,8(s0) [.node =  CSD_FLAG_LOCK | CSD_TYPE_SYNC]
 
 
 
-Hello,
-
-kernel test robot noticed "UBSAN:array-index-out-of-bounds_in_kernel/rcu/srcutree.c" on:
-
-commit: c634c0678e8b46a432aaf2993cc3fb81b6941981 ("srcu: Make Tree SRCU updates independent of ->srcu_idx")
-https://github.com/paulmckrcu/linux dev.2024.12.23a
-
-in testcase: rcutorture
-version: 
-with following parameters:
-
-	runtime: 300s
-	test: cpuhotplug
-	torture_type: srcud
+2)
+Using  cacheline_aligned_in_smp when declaring csd_stack in
+smp_call_function_single will actually reserve less stack space (80
+bytes in stead of 96), csd_stack is referenced directly using $sp.
+Maybe alignment is just a way to simplify things for gcc and avoid
+hitting compiler bugs?
+--------------------------
+lda     sp,-80(sp)
+stq     zero,48(sp)
+stq     zero,64(sp)
+stq     zero,72(sp)
+stl     t0,56(sp) [.node =  CSD_FLAG_LOCK | CSD_TYPE_SYNC]
 
 
 
-config: x86_64-randconfig-074-20241226
-compiler: gcc-12
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
 
-(please refer to attached dmesg/kmsg for entire log/backtrace)
+I've made numerous attempts with different versions of GCC, including
+the most recent git version (with and without the patches from Maciej)
+and they give similar results, even though the exact amount of
+stackspace reserved, registers used, and placement of csd_stack struct
+will differ somewhat. (GCC) 15.0.0 20241225, with Maciej patches
+applied, will produce the code below:
 
+lda     sp,-112(sp)
+lda     t1,47(sp)
+andnot  t1,0x1f,t1
+...
 
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202412271623.8ceb422e-lkp@intel.com
-
-
-[  434.917288][ T2320] ------------[ cut here ]------------
-[  434.938323][ T2320] UBSAN: array-index-out-of-bounds in kernel/rcu/srcutree.c:1918:9
-[  434.941267][ T2320] index -23500 is out of range for type 'srcu_ctr [2]'
-[  434.942019][ T2320] CPU: 1 UID: 0 PID: 2320 Comm: rmmod Tainted: G                T  6.13.0-rc1-00070-gc634c0678e8b #1
-[  434.943103][ T2320] Tainted: [T]=RANDSTRUCT
-[  434.943530][ T2320] Call Trace:
-[  434.943893][ T2320]  <TASK>
-[ 434.944224][ T2320] dump_stack_lvl (lib/dump_stack.c:123)
-[ 434.944766][ T2320] ubsan_epilogue (lib/ubsan.c:232)
-[ 434.945286][ T2320] __ubsan_handle_out_of_bounds (lib/ubsan.c:429)
-[ 434.945896][ T2320] srcu_torture_stats_print (kernel/rcu/srcutree.c:1918)
-[ 434.946535][ T2320] rcu_torture_stats_print (kernel/rcu/rcutorture.c:2445) rcutorture
-[ 434.947574][ T2320] ? rcu_torture_preempt (kernel/rcu/rcutorture.c:2362) rcutorture
-[ 434.948560][ T2320] ? kfree (mm/slub.c:4598 mm/slub.c:4746)
-[ 434.948994][ T2320] ? vfree (mm/vmalloc.c:3388)
-[ 434.949526][ T2320] ? rcu_torture_mem_dump_obj (kernel/rcu/rcutorture.c:2489) rcutorture
-[ 434.950627][ T2320] ? __sanitizer_cov_trace_pc (kernel/kcov.c:217)
-[ 434.951294][ T2320] ? cleanup_srcu_struct (kernel/rcu/srcutree.c:711)
-[ 434.951899][ T2320] rcu_torture_cleanup (kernel/rcu/rcutorture.c:3664) rcutorture
-[ 434.952906][ T2320] ? ftrace_likely_update (arch/x86/include/asm/smap.h:56 kernel/trace/trace_branch.c:225)
-[ 434.953470][ T2320] ? rcu_torture_print_module_parms+0x104/0x104 rcutorture
-[ 434.954601][ T2320] ? __mutex_unlock_slowpath (kernel/locking/mutex.c:914)
-[ 434.955225][ T2320] ? build_sched_groups (kernel/sched/wait.c:383)
-[ 434.955799][ T2320] ? write_comp_data (kernel/kcov.c:246)
-[ 434.956334][ T2320] ? ftrace_likely_update (arch/x86/include/asm/smap.h:56 kernel/trace/trace_branch.c:225)
-[ 434.956905][ T2320] ? __sanitizer_cov_trace_pc (kernel/kcov.c:217)
-[ 434.961646][ T2320] __do_sys_delete_module+0x36a/0x4ed
-[ 434.962321][ T2320] ? module_flags (kernel/module/main.c:732)
-[ 434.962828][ T2320] ? ftrace_likely_update (kernel/trace/trace_branch.c:220)
-[ 434.963408][ T2320] ? write_comp_data (kernel/kcov.c:246)
-[ 434.963949][ T2320] ? ftrace_likely_update (kernel/trace/trace_branch.c:220)
-[ 434.964556][ T2320] ? ftrace_likely_update (kernel/trace/trace_branch.c:220)
-[ 434.965115][ T2320] ? write_comp_data (kernel/kcov.c:246)
-[ 434.965639][ T2320] ? ftrace_likely_update (arch/x86/include/asm/smap.h:56 kernel/trace/trace_branch.c:225)
-[ 434.966188][ T2320] ? __sanitizer_cov_trace_pc (kernel/kcov.c:217)
-[ 434.966797][ T2320] do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
-[ 434.967296][ T2320] ? entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130)
-[  434.967978][ T2320]  </TASK>
-[  434.968715][ T2320] ---[ end trace ]---
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20241227/202412271623.8ceb422e-lkp@intel.com
+Which boots and lets me load/unload my scsi kernel moduel, but just
+adding some debug print statement to smp_call_function_single will
+again give a kernel null pointer exception. Printing the value of &csd
+seems to allocate space for csd on the stack instead of keeping it in
+registers which will later trigger a null pointer excepting when
+accessed. To me it seems like this just moves around the stack
+clobbering problem?
 
 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+CPU 1
+rmmod(1444): Oops 1
+pc = [<fffffc000078e818>]  ra = [<fffffc00003dd0f8>]  ps = 0000    Not tainted
+pc is at llist_add_batch+0x8/0x50
+ra is at __smp_call_single_queue+0x38/0xa0
+v0 = 0000000000000000  t0 = fffffc0000e2b100  t1 = fffffc0000ec4048
+t2 = 0000000000000000  t3 = fffffc0000ec4048  t4 = 0000000000000000
+t5 = 0000000000000001  t6 = ffffffffffffffec  t7 = fffffc0005d4c000
+s0 = 0000000000000000  s1 = 0000000000000001  s2 = 0000000000000001
+s3 = 0000000000000001  s4 = fffffc0000cd0330  s5 = fffffc000020ee80
+s6 = 00000200010422a0
+a0 = 0000000000000000  a1 = 0000000000000000  a2 = fffffc000020f100
+a3 = fffffc0005d4fa28  a4 = ffff1020ffffff00  a5 = 0000000000000000
+t8 = 0000000000000001  t9 = 0000000000000001  t10= 0000000000000000
+t11= 0000000000000000  pv = fffffc000078e810  at = 0000000000000000
+gp = fffffc0000e9c980  sp = 00000000905861a6
+Disabling lock debugging due to kernel taint
+Trace:
+[<fffffc00003dd1bc>] generic_exec_single+0x5c/0x150
+[<fffffc00003dd3ec>] smp_call_function_single+0x13c/0x220
+[<fffffc000082ceec>] device_release+0x3c/0xf0
+[<fffffc00003ae178>] rcu_barrier+0x1b8/0x4d0
+[<fffffc00003aaa30>] rcu_barrier_handler+0x0/0x120
+[<fffffc00003aaa30>] rcu_barrier_handler+0x0/0x120
+[<fffffc0000858418>] scsi_host_dev_release+0x58/0x170
+[<fffffc000082cf04>] device_release+0x54/0xf0
+[<fffffc0000b501f0>] kobject_put+0x90/0x1b0
+[<fffffc000082d0fc>] put_device+0x1c/0x30
+[<fffffc00008583ac>] scsi_host_put+0x1c/0x30
+[<fffffc00007b9694>] pci_device_remove+0x34/0x90
+[<fffffc0000838284>] device_remove+0x64/0xb0
+[<fffffc0000839d24>] device_release_driver_internal+0x284/0x370
+[<fffffc0000839ecc>] driver_detach+0x7c/0x110
+[<fffffc00008377e8>] bus_remove_driver+0x98/0x160
+[<fffffc000083a754>] driver_unregister+0x44/0xa0
+[<fffffc00007b94e8>] pci_unregister_driver+0x38/0xd0
+[<fffffc00003be264>] sys_delete_module+0x174/0x2f0
+[<fffffc000031095c>] entMM+0x9c/0xc0
+[<fffffc0000310d04>] entSys+0xa4/0xc0
+[<fffffc0000310d04>] entSys+0xa4/0xc0
 
+Code:
+  f43ffffb
+  6bfa8001
+  47ff041f
+  2ffe0000
+  a4120000  <---  ldq     v0,0(a2) (*first = READ_ONCE(head->first);)
+  60004000  <---  mb
+ <b4110000> <---  stq     v0,0(a1) (new_last->next = first;)
+  60004000
