@@ -1,239 +1,204 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA697156220
-	for <rcu@vger.kernel.org>; Tue, 31 Dec 2024 07:16:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8E52AD21;
+	Tue, 31 Dec 2024 10:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735629403; cv=none; b=WBmPGqh2mJD3htc3GS23SxNQ3MEZEpcqMOYMtVgbcZZBuq2veIn4BpzZVblGeEnirsp5cm2PJ4FUMWZsodqyV5hjGDDCSReS/KdAEVOZbkte6Utv/jhyq6vpcLro/wXFbL8TPKhWB/kPMvtjiRkQZY16297jr6EdZJUvbdbpFm0=
+	t=1735641847; cv=none; b=EMThQmiwFa0hPvw/4zHHntTJlHawCvEflSxajJ9hSEH63JqkHoRUchLs3oXWn21AsZkwKc45TiKRGRb2v/xHQBqqY0pD78P6T5+gZ/1ZfalFY4xQ5vNlzRXplCPCEOxuQfbalSHGdNiIZIpphQKGB24LwhsfwwgvBEWEPWCVT0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735629403; c=relaxed/simple;
-	bh=Y/D+3xUf9YvUukpYayzftKZHTJj7LOhYmnuecowmqUY=;
+	s=arc-20240116; t=1735641847; c=relaxed/simple;
+	bh=hNZsV7aVjTO/Oph2EizHE3xYkG5ABVePahNQhFajo1c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bWCPX8hRM8mOeE5dJuHir7bYnjf+nTRIDfUukhkKMUiEv/bNs2rOQtSEt/rmJKcCRHO4rMmc5dZol8O7c9VuBZIMvcAq1THx9BvzxKLdFQh9bPx/DVbFvdWzTtUpB9JrtVRn6p7adVWlOMa4+XkKytPuD8loCNewyn+zmt+um6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RhxhIlrd; arc=none smtp.client-ip=209.85.221.44
+	 To:Cc:Content-Type; b=k7TmC7ZO6BylLsdqp0GqjpPg2EezGXvpsM/ZKFoalr4eJZe3sW85lDHXi9ArND+NhgEG/K1fvh7GdDn5JAQ4Ip5JAAxm7zY+imSSoXzvvHtxwJXevE+8j3vLPJXpXJcFhL/laFzF2c8pdGbTK54MkMhEdC66ITvVQ2F6EiBIagY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWnb6aqF; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RhxhIlrd"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3862d161947so4688615f8f.3
-        for <rcu@vger.kernel.org>; Mon, 30 Dec 2024 23:16:41 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWnb6aqF"
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5d122cf8dd1so16974458a12.2;
+        Tue, 31 Dec 2024 02:44:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735629400; x=1736234200; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1735641844; x=1736246644; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/guRW7caN300rQDp88cB/xH8vw7MftPCA67Fyl22evY=;
-        b=RhxhIlrdg9LEmPqiMyP6rTfcGtQ7jFDfL2Fb5mY0jwu6R8eB/zdLe8tU/KqLe+iQ0o
-         ruMhxWssnPn2CCpl/NSN3GTwSr9LjslpzMj3alEWFpweaWuPACf1jYkwRSYpK09TNFjP
-         kVuLg2cJ7EPFeY9TDd+FPO4J08Cufza21uM4YZdOl00VFvCRVg+6kjwyhw2zuLJdcIKb
-         rzdmm+y5nr/rNdp1pJKycXQWn6BDInVztGUU20fScPzrCHu+DAG1kZ3K81irXzD00tUX
-         993IHnwaMDjpbCOTRH12z5ApUn6vqBXUEX1mHqnmPyqjdZUDkS1c+KS7cgMflDMvTKQO
-         QoTA==
+        bh=46Xla2ZNkq9B6Ti87RIET4GniW6M+MRvF1zbc9kqi58=;
+        b=JWnb6aqF06Sivbcq6UGMQMwROfwYwkGAp3tQkWTkTMLYT0p74OlsDEEsZKv5TStmpy
+         ADWOacJ8puGIqdBu/paflsm6cnck1Q8ZpJwp2q+QhBEPgNxv6bUcMyFtN2x/ABQ8jd0N
+         zcMnvbqAm/zPVp5auFGXRuOXR4SkMULW7LFHjnynUVnxQ4UTGNpNxvCzJot4e5n5Pdsj
+         11BqKOr7GYyrpvzRony1v/k4lv2Q6I+XcQybGiDcmfLB92EMd5rXW/chWVTLV/Wl89A8
+         g+BORszFLE9id0+EHb1GuR0RCGpEgbvEi/UAkJVSxF9gxXP5RoezDDMRVcodKsOxp08M
+         /fMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735629400; x=1736234200;
+        d=1e100.net; s=20230601; t=1735641844; x=1736246644;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/guRW7caN300rQDp88cB/xH8vw7MftPCA67Fyl22evY=;
-        b=WW9qe8dGvEI+a0R1sB+n7RyVi05SS8zT1oVhiEC8vyfWLNzgoyUxjcGO+L55ArnlyI
-         pdTwEY9oybMZUu36C1eUdvBmkWvpAm+tWwApfkkOki1InfPucqT+39q3zf/K4eZeBoCM
-         Vfhdudg/nm7DE+RKTqWhjyoFYYe6uUdIPLplgq1YYR05syYLVpOoNv8pw0UG6K69GDoL
-         AM8HZajs9ybcogzleziuIG2p41uVraliNLLKscuhjQEbmMxFzDR01yiLy8YTSCLyjZ+Y
-         5lvsuiP3QfcW6aO+yxQzLLKrEdeSy7CRwayVxHB/ihdbQoitc+R1zqn59hSSwH4wlach
-         9jig==
-X-Forwarded-Encrypted: i=1; AJvYcCVpwOhvxRjKNSGAjtT8fURycsTXNgM+W77EzFPE1kDr2dh40eHk3VWSS3DUL1q9jMRmiWs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKyP7RMAbz7fJu7HueWhTnVJjrVR5US8noH1Vi2gVTje+cTg8J
-	5nsBKlZVRLvvFWUKuSHS2J9119gMnirRL6dcLz6QCLADGwsr8fWUsP6QQljgogZYNZLoJ62zDI5
-	zSm2d5obRPXrp3SMWqpWiXI7BB9rgQCg9vOJcxw==
-X-Gm-Gg: ASbGnctOqheVlSvVxG4n/b4SigWlpWNqOZiql3MF/jqbR2rMzIB4js2uy2ZKt+p0RSt
-	U+cmvZx5hGcUfICSlJAgD0Mn/RFeyqtIgDkja2bk=
-X-Google-Smtp-Source: AGHT+IGKuQ17oi2lKBzVb6/487SflzLcbi+3ADh6HWhZ3nybOLlhPC8aDuA8oWDoEC7AIxUKE3eBGqCf/TBQFoAH1ZA=
-X-Received: by 2002:a5d:584c:0:b0:386:2ebe:7ae2 with SMTP id
- ffacd0b85a97d-38a223f7248mr35165064f8f.45.1735629399795; Mon, 30 Dec 2024
- 23:16:39 -0800 (PST)
+        bh=46Xla2ZNkq9B6Ti87RIET4GniW6M+MRvF1zbc9kqi58=;
+        b=ij2S+SPLQ1CUrda6ZgpqmO7aCcSFN35N6lHz4p50ThGO5xQvVM+jHz4e7/8erB1BbZ
+         MXPHoLgLqp+9J0iuPow6lftLfG6i7LU/4UeTVHVqDz8B17d1qyVsNFIY9TwolFXo5wY8
+         WhM4IPHg8bL/hlseeOMTdXi3E52hEnWMK9+Y6xFYEENcyBqhXUJUl5+umzDwPFydueyr
+         qTis3KV4vCSCpDz8dU89hxsnEIXnXGZCkCLWRFaCbnvrqeENux5+sLAqmltCe0Gk0ZJz
+         XsEF8qnEITdx0yVnW5wGAxUCca/gMRnpOPpehLp6oRwz1icS0ZpcEiB6ToL3hMJF87JB
+         IxBA==
+X-Forwarded-Encrypted: i=1; AJvYcCUhFWtNtsKLWsqzvXkBNUqAahFyBgUE0HfSjOCek7NzoYCbrIyIp5GZtgRSuXKdetB/WusrgBWY2LVQow==@vger.kernel.org, AJvYcCWshU/b6sRKpthhxXwjjRJefAC+ep9727fE2C0n5cEKLLKK0rWYBUsxhnbOpQHD4p0I4/zr@vger.kernel.org
+X-Gm-Message-State: AOJu0YwPo48o0NN1a0wpjFFozo5zaReJldry3+QcedjRZuRB15JjYesW
+	wm/8F6tGJEmU6JCwyllLD6Sh6v//fSDwVMnMAQz5th/PHHAw2+V4koyAE5qyC7T9AkPr22WjMWc
+	xcwk7sIjkqEEh1JwgxBhSavlM1RctCRFE
+X-Gm-Gg: ASbGncuN0Kyc2DHlFVtAsM0S3Ddmf4eRwkOjnEGfo47YmOMCZwfZ5OrsIu6eREZIOv7
+	cPfZMqHj8h4rLVL2DX4R/rD8qm5fEdLVfUTre0jM=
+X-Google-Smtp-Source: AGHT+IFNidcOZt+HfMjbfCYmZlVoBvuecrRgk1pDdmuUMHHEDJ9NyBDCvxr9lkErpUTcOqo5rnKDp3HdBNkHEMp4AUc=
+X-Received: by 2002:a17:907:368a:b0:aa6:b473:8500 with SMTP id
+ a640c23a62f3a-aac3355fe3fmr3229307566b.42.1735641843939; Tue, 31 Dec 2024
+ 02:44:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202412311203.ca7bddba-lkp@intel.com>
-In-Reply-To: <202412311203.ca7bddba-lkp@intel.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Tue, 31 Dec 2024 15:16:25 +0800
-Message-ID: <CALm+0cWOxUm_hrNe4UP4Z-vyr4RCOw+dc=kCBTgsyjHFHiHDsg@mail.gmail.com>
-Subject: Re: [paulmckrcu:dev.2024.12.24a] [srcu] 9216c28c6a: BUG:unable_to_handle_page_fault_for_address
-To: kernel test robot <oliver.sang@intel.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	rcu@vger.kernel.org
+References: <CA+=Fv5R+8y2hCq7p-xo5qZ0CyinR_0aAndUkoEAweCVs_95SMw@mail.gmail.com>
+ <Z1YpKFQGtMWF3yy3@creeky> <CA+=Fv5Q=f-6y=EhZhG2XfZB0O=m+yOiv+gmtmMABVQZieKdwbQ@mail.gmail.com>
+ <Z2ClSlwznfuk8Uwr@creeky> <CA+=Fv5RaqHL6MJjvhF-mn3CVY10e=2QqFBSVO6YXLUJ7WV9zGQ@mail.gmail.com>
+ <CA+=Fv5RP=NoWo4VeTX7hx103=jP2d-NC-jFo+ePXLBRubCxc_w@mail.gmail.com>
+ <ef49a479-2000-42ee-9b10-9f3b6a68ec35@paulmck-laptop> <CA+=Fv5REK+xbA49zD3aYBgG2J1Xw1FWP02qjyyOTrwbzMRXu3w@mail.gmail.com>
+ <be4fe590-b41c-4033-91c1-94f10c4f3d40@paulmck-laptop> <CA+=Fv5Tk-vbAK72ZOK-bPwvnx9w_1ATH=S9t-LW8gBEgQPYa3A@mail.gmail.com>
+ <b3cd5af3-4b8f-43bd-b3f3-c9f4644c95d4@paulmck-laptop> <alpine.DEB.2.21.2412192347450.20821@angie.orcam.me.uk>
+ <CA+=Fv5TJhDrrxG82=MNPFEFFwKD4NDYyB1u32ZvnGv6Ma0h_Nw@mail.gmail.com> <alpine.DEB.2.21.2412271452100.20821@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2412271452100.20821@angie.orcam.me.uk>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Tue, 31 Dec 2024 11:43:52 +0100
+Message-ID: <CA+=Fv5SW-N+5KzsnVdHvy406-p+g7giUbt626xwDduy6xjaPkw@mail.gmail.com>
+Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Michael Cree <mcree@orcon.net.nz>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, rcu@vger.kernel.org, 
+	linux-alpha@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
->
->
->
-> Hello,
->
-> kernel test robot noticed "BUG:unable_to_handle_page_fault_for_address" on:
->
-> commit: 9216c28c6a927fd20f116feed55bba025f18f401 ("srcu: Make SRCU readers use ->srcu_ctrs for counter selection")
-> https://github.com/paulmckrcu/linux dev.2024.12.24a
->
-> in testcase: rcutorture
-> version:
-> with following parameters:
->
->         runtime: 300s
->         test: default
->         torture_type: srcu
->
->
->
-> config: i386-randconfig-005-20241230
-> compiler: gcc-12
-> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
->
-> (please refer to attached dmesg/kmsg for entire log/backtrace)
->
->
-> +------------------------------------------------+------------+------------+
-> |                                                | 2add2e88ea | 9216c28c6a |
-> +------------------------------------------------+------------+------------+
-> | BUG:unable_to_handle_page_fault_for_address    | 0          | 6          |
-> | Oops                                           | 0          | 6          |
-> | EIP:__srcu_read_lock                           | 0          | 6          |
-> | Kernel_panic-not_syncing:Fatal_exception       | 0          | 6          |
-> +------------------------------------------------+------------+------------+
->
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> | Closes: https://lore.kernel.org/oe-lkp/202412311203.ca7bddba-lkp@intel.com
->
+>  Umm, no.  The psABI guarantees 16-byte alignment for the stack pointer,
+> and under this condition (((x - 17) & ~31) + 32 <= x) is guaranteed to be
+> true (except for the overflow case, of course, which does not apply here).
 
-Please try the following modifications:
+aha! that explains it! thanks, is the psABI available somewhere?
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index e85db7d5b364..7c7304dee645 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1999,6 +1999,7 @@ static int srcu_module_coming(struct module *mod)
-        for (i = 0; i < mod->num_srcu_structs; i++) {
-                ssp = *(sspp++);
-                ssp->sda = alloc_percpu(struct srcu_data);
-+               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
-                if (WARN_ON_ONCE(!ssp->sda))
-                        return -ENOMEM;
-        }
+>
+>  Would you be able to trace it back further, e.g. by adding BUG_ON(!node)
+> to `__smp_call_single_queue' and so on if required, to see where this NULL
+> pointer comes from originally?  I do hope such a minimal probe won't
+> disturb code generation enough for this to become a heisenbug.
+>
+Hi, below are some additional test that I've made,
+
+It seems to me that part of the stack is overwritten with the values
+of other local variables. Previously this affected the return address
+on the stack causing kernels Oops on function return (see previous
+mail in thread). In this run it seems like when the pointer *csd in
+smp_call_function_single is stored on the stack, it gets overwritten
+by writes to csd_stack.info. The difference here is that I use GCC
+15.0.0 20241225 (experimental) instead of gcc (Gentoo 14.2.1_p20241116
+p3) 14.2.1. To me, this looks like the same problem but the clobbering
+just hits a different part of the stack. Below is some debug-output,
+where I've added some print statements to the code in
+smp_call_function_single of smp.c. When csd_stack is declared as
+"struct ____cacheline_aligned_in_smp __call_single_data csd_stack",
+this first case is the case where the code works:
+
+unloading the scsi module:
+--------------------------------------------------
+smp:
+&csd_stack.info=fffffc000493fd90
+&csd=fffffc000493fd98
+smp:
+&csd_stack.info=fffffc000493fd90
+&csd=fffffc000493fd98
+sd 6:0:1:0: [sdb] Synchronizing SCSI cache
+rcu: rcu_barrier: cpu=0
+smp:
+&csd_stack.info=fffffc000935bc50
+&csd=fffffc000935bc58
+rcu: rcu_barrier: cpu=1
+smp:
+&csd_stack.info=fffffc000935bc50
+&csd=fffffc000935bc58
+rcu: rcu_barrier: cpu=2
+smp:
+&csd_stack.info=fffffc000935bc50
+&csd=fffffc000935bc58
+smp: generic_exec_single: csd=fffffc000935bc38 cpu=2 smp_cpu=2
 
 
 
-Thanks
-Zqiang
+Below is the same debug output when csd_stack is declared as
+"call_single_data_t csd_stack" (i.e. no patch applied). For some
+reason, in this case, the address of the csd variable is the same as
+the address of csd_stack.info. If this is really the case, no wonder
+that a write to csd_stack.info will overwrite the csd pointer. In this
+case the code fails according to below:
 
->
-> [  168.973150][  T628] BUG: unable to handle page fault for address: 2367a000
-> [  168.973700][  T628] #PF: supervisor write access in kernel mode
-> [  168.974809][  T628] #PF: error_code(0x0002) - not-present page
-> [  168.975761][  T628] *pde = 00000000
-> [  168.976236][  T628] Oops: Oops: 0002 [#1] PREEMPT SMP
-> [  168.977052][  T628] CPU: 0 UID: 0 PID: 628 Comm: rcu_torture_wri Tainted: G                T  6.13.0-rc2-00067-g9216c28c6a92 #1
-> [  168.978867][  T628] Tainted: [T]=RANDSTRUCT
-> [  168.979429][  T628] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [ 168.980862][ T628] EIP: __srcu_read_lock (kernel/rcu/srcutree.c:749)
-> [ 168.981213][ T628] Code: 85 ff 74 0c e8 45 59 00 00 83 3b 00 74 02 0f 0b 5b 5e 5f 5d c3 8b 00 f0 83 44 24 fc 00 83 c0 07 83 e0 fc c3 55 89 e5 8b 50 04 <64> ff 02 f0 83 44 24 fc 00 2b 50 08 5d 89 d0 c1 f8 03 c3 55 89 e5
-> All code
-> ========
->    0:   85 ff                   test   %edi,%edi
->    2:   74 0c                   je     0x10
->    4:   e8 45 59 00 00          call   0x594e
->    9:   83 3b 00                cmpl   $0x0,(%rbx)
->    c:   74 02                   je     0x10
->    e:   0f 0b                   ud2
->   10:   5b                      pop    %rbx
->   11:   5e                      pop    %rsi
->   12:   5f                      pop    %rdi
->   13:   5d                      pop    %rbp
->   14:   c3                      ret
->   15:   8b 00                   mov    (%rax),%eax
->   17:   f0 83 44 24 fc 00       lock addl $0x0,-0x4(%rsp)
->   1d:   83 c0 07                add    $0x7,%eax
->   20:   83 e0 fc                and    $0xfffffffc,%eax
->   23:   c3                      ret
->   24:   55                      push   %rbp
->   25:   89 e5                   mov    %esp,%ebp
->   27:   8b 50 04                mov    0x4(%rax),%edx
->   2a:*  64 ff 02                incl   %fs:(%rdx)               <-- trapping instruction
->   2d:   f0 83 44 24 fc 00       lock addl $0x0,-0x4(%rsp)
->   33:   2b 50 08                sub    0x8(%rax),%edx
->   36:   5d                      pop    %rbp
->   37:   89 d0                   mov    %edx,%eax
->   39:   c1 f8 03                sar    $0x3,%eax
->   3c:   c3                      ret
->   3d:   55                      push   %rbp
->   3e:   89 e5                   mov    %esp,%ebp
->
-> Code starting with the faulting instruction
-> ===========================================
->    0:   64 ff 02                incl   %fs:(%rdx)
->    3:   f0 83 44 24 fc 00       lock addl $0x0,-0x4(%rsp)
->    9:   2b 50 08                sub    0x8(%rax),%edx
->    c:   5d                      pop    %rbp
->    d:   89 d0                   mov    %edx,%eax
->    f:   c1 f8 03                sar    $0x3,%eax
->   12:   c3                      ret
->   13:   55                      push   %rbp
->   14:   89 e5                   mov    %esp,%ebp
-> [  168.982540][  T628] EAX: ef0c8420 EBX: ef0c8420 ECX: e5e1e840 EDX: 00000000
-> [  168.983022][  T628] ESI: ef0c919c EDI: 00000000 EBP: c75e9ee8 ESP: c75e9ee8
-> [  168.983503][  T628] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010246
-> [  168.984024][  T628] CR0: 80050033 CR2: 2367a000 CR3: 075f5000 CR4: 00040690
-> [  168.984518][  T628] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> [  168.985008][  T628] DR6: fffe0ff0 DR7: 00000400
-> [  168.985329][  T628] Call Trace:
-> [ 168.985571][ T628] ? show_regs (arch/x86/kernel/dumpstack.c:479 arch/x86/kernel/dumpstack.c:465)
-> [ 168.985877][ T628] ? __die_body (arch/x86/kernel/dumpstack.c:421)
-> [ 168.986185][ T628] ? __die (arch/x86/kernel/dumpstack.c:435)
-> [ 168.986466][ T628] ? page_fault_oops (arch/x86/mm/fault.c:715)
-> [ 168.986811][ T628] ? kernelmode_fixup_or_oops+0x50/0x58
-> [ 168.987273][ T628] ? __bad_area_nosemaphore+0x37/0x1d5
-> [ 168.987726][ T628] ? validate_chain (kernel/locking/lockdep.c:3819 kernel/locking/lockdep.c:3872)
-> [ 168.988058][ T628] ? bad_area_nosemaphore (arch/x86/mm/fault.c:835)
-> [ 168.988406][ T628] ? do_user_addr_fault (arch/x86/mm/fault.c:1280 (discriminator 1))
-> [ 168.988763][ T628] ? exc_page_fault (arch/x86/include/asm/irqflags.h:26 arch/x86/include/asm/irqflags.h:87 arch/x86/include/asm/irqflags.h:147 arch/x86/mm/fault.c:1489 arch/x86/mm/fault.c:1539)
-> [ 168.989110][ T628] ? pvclock_clocksource_read_nowd (arch/x86/mm/fault.c:1494)
-> [ 168.989472][ T628] ? handle_exception (arch/x86/entry/entry_32.S:1048)
-> [ 168.989800][ T628] ? siphash_4u64 (lib/siphash.c:203)
-> [ 168.990123][ T628] ? pvclock_clocksource_read_nowd (arch/x86/mm/fault.c:1494)
-> [ 168.990539][ T628] ? __srcu_read_lock (kernel/rcu/srcutree.c:749)
-> [ 168.990858][ T628] ? rcu_torture_barrier_init (kernel/rcu/rcutorture.c:3381) rcutorture
-> [ 168.991319][ T628] ? siphash_4u64 (lib/siphash.c:203)
-> [ 168.991618][ T628] ? pvclock_clocksource_read_nowd (arch/x86/mm/fault.c:1494)
-> [ 168.992021][ T628] ? __srcu_read_lock (kernel/rcu/srcutree.c:749)
-> [ 168.992340][ T628] srcu_read_lock (include/linux/srcu.h:165 include/linux/srcu.h:257) rcutorture
-> [ 168.992735][ T628] srcu_torture_read_lock (kernel/rcu/rcutorture.c:693) rcutorture
-> [ 168.993184][ T628] rcu_torture_writer (kernel/rcu/rcutorture.c:1528) rcutorture
-> [ 168.993615][ T628] ? _raw_spin_unlock_irqrestore (arch/x86/include/asm/irqflags.h:26 arch/x86/include/asm/irqflags.h:87 arch/x86/include/asm/irqflags.h:147 include/linux/spinlock_api_smp.h:151 kernel/locking/spinlock.c:194)
-> [ 168.994020][ T628] ? trace_hardirqs_on (kernel/trace/trace_preemptirq.c:80 (discriminator 13))
-> [ 168.994369][ T628] kthread (kernel/kthread.c:391)
-> [ 168.994647][ T628] ? rcu_torture_pipe_update (kernel/rcu/rcutorture.c:1447) rcutorture
-> [ 168.995108][ T628] ? list_del_init (include/linux/lockdep.h:248)
-> [ 168.995428][ T628] ret_from_fork (arch/x86/kernel/process.c:153)
-> [ 168.995735][ T628] ? list_del_init (include/linux/lockdep.h:248)
-> [ 168.996053][ T628] ret_from_fork_asm (arch/x86/entry/entry_32.S:737)
-> [ 168.996380][ T628] entry_INT80_32 (arch/x86/entry/entry_32.S:942)
-> [  168.996692][  T628] Modules linked in: rcutorture(+) torture intel_rapl_msr intel_rapl_common iosf_mbi crc32c_intel aesni_intel input_leds led_class fuse
-> [  168.997654][  T628] CR2: 000000002367a000
-> [  168.997945][  T628] ---[ end trace 0000000000000000 ]---
->
->
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20241231/202412311203.ca7bddba-lkp@intel.com
->
->
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
->
->
+unloading the scsi module:
+-----------------------------------------
+smp:
+&csd_stack.info=fffffc000493fd98
+&csd=fffffc000493fd98
+smp: smp_call_function_single: not wait smp_cpu=1
+sd 6:0:1:0: [sdb] Synchronizing SCSI cache
+rcu: rcu_barrier: cpu=0
+smp:
+&csd_stack.info=fffffc0006207c58
+&csd=fffffc0006207c58
+smp: generic_exec_single: csd=fffffc0006207c40 cpu=0 smp_cpu=0
+Unable to handle kernel paging request at virtual address 0000000000000008
+CPU 0
+rmmod(1443): Oops 0
+pc = [<fffffc00003dd564>]  ra = [<fffffc00003dd558>]  ps = 0000    Not tainted
+pc is at smp_call_function_single+0x204/0x220
+ra is at smp_call_function_single+0x1f8/0x220
+
+
+
+
+Below is yet another test, here the code works, csd_stack is declared
+as "call_single_data_t csd_stack" (i.e. no patch applied). In this
+example the code works since I've added some extra "dummy variables"
+on the stack which seems to steer things around enough. Here it's also
+clear that the address of csd does not overlap with the address of
+csd_stack.info. test0 and test1 are just the extra local variables
+that I've added.
+
+-----------------------------------------
+smp:
+&csd_stack.info=fffffc000493fd78
+&csd=fffffc000493fd90
+smp: smp_call_function_single: not wait smp_cpu=1
+smp: &test0=fffffc000493fd98
+smp: &test1=fffffc000493fd88
+sd 6:0:1:0: [sdb] Synchronizing SCSI cache
+rcu: rcu_barrier: cpu=0
+smp:
+&csd_stack.info=fffffc0009e07c38
+&csd=fffffc0009e07c50
+smp: &test0=fffffc0009e07c58
+smp: &test1=fffffc0009e07c48
+smp: generic_exec_single: csd=fffffc0009e07c20 cpu=0 smp_cpu=0
+
+
+
+
+Patch I used to "fix" kernel/smp.c
+----------------------------------------------------
++++ kernel/smp.c        2024-12-19 19:01:20.592819628 +0100
+@@ -631,7 +631,7 @@
+int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
+                             int wait)
+ {
+        call_single_data_t *csd;
+-       call_single_data_t csd_stack = {
++       struct ____cacheline_aligned_in_smp __call_single_data csd_stack = {
+                .node = { .u_flags = CSD_FLAG_LOCK | CSD_TYPE_SYNC, },
+        };
+        int this_cpu;
+
+
+
+/Magnus
