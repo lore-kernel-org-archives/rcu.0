@@ -1,428 +1,218 @@
-Received: from bg5.exmail.qq.com (bg5.exmail.qq.com [43.155.80.173])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65144A23;
-	Thu,  2 Jan 2025 03:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.155.80.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735786834; cv=none; b=YuDP3ikC+Gq4m9+4knxrdLhnse33RsN+Qp88BYIo2J/KdG46o/F76ZNfGKgzf1pi4HE4WutZidZyNxCXD3awbON+oDrnthEgeHcUNTRRqXC8Ka37zm59BM6fEalQNp6slxECZSFYcPMzxoGJ7HKKzs9c5y6d2+iy9SemJCAYrtE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735786834; c=relaxed/simple;
-	bh=u0EOYe0MvpratdiGdcFQUUJ3tsaasq+VBaA2oEAfWGw=;
-	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=pIbzzQinSy9AC29bmdOCH6rzqiQPf8iEaayqokwrPsY2rWDtRhgSJqOebxePQ+mvE01EXoXM092l9LfVEr5vm0vfdMs9aLn5YPw9P/vUfZxUPxGV1J5ZoTPJJndKwbE/SJWthOnglKI7jc5OsV9xyqcK//j8AA3WBaTX91GDBIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn; spf=pass smtp.mailfrom=m.fudan.edu.cn; dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b=M3kBfMS4; arc=none smtp.client-ip=43.155.80.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=m.fudan.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=m.fudan.edu.cn
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FBC191F60
+	for <rcu@vger.kernel.org>; Thu,  2 Jan 2025 05:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1735796524; cv=fail; b=jgRPdIGKLkQY9lDjIKT8Gmpa0IKoT55r/k9mJIRkN1LIIeT+Wa3wCt/MReuxmg9eutDwe05cIxYTzvTOBUaSnTGOWwdKpRluksHKDQnM1PmFJJk7Pf+FPzqucYHNKBBvVz+w/ARHyhxi3fdFHEbUbdGE8ZznwV/zyxNhGtM1o5s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1735796524; c=relaxed/simple;
+	bh=fd5mxu1mlvhS5A6bpswnJWtsnPt0S5qTB0IC6IEuvyE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=asvIKHYCFy/9Q8xhWt8GKQqglV1Ac1s6CgPZotQ2jO0S/7VDVQ3vSEKUiR8dwTCgMekPpTp32Fyt8WEy3PND6l21R0STbyhmJRsvPSQLGpye/XCZrPsOKInTSYIeZI4naQJ2eHDXnleWPftYsLJPhS6F+KqFCf0F7BtLZDVAUf4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ChfOMN4J; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=m.fudan.edu.cn header.i=@m.fudan.edu.cn header.b="M3kBfMS4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=m.fudan.edu.cn;
-	s=sorc2401; t=1735786785;
-	bh=S0RayRK3m2faEApAsOlUXVkWVX1yBv9HhFHnhhgmk2Q=;
-	h=From:Mime-Version:Subject:Message-Id:Date:To;
-	b=M3kBfMS4ko1rjITo5809EuK5an23fhbNVx2k44PHST5gnOzOOlLtC0dLzzMHGZQfY
-	 XCss89bfG70X30fHl9+fKnBxNYg4/XqeI8dHbdIqDypYACgD3dY/9O0Vh6MLY3gEEB
-	 XVHalzArsmPr9qBd4Nns/scID7SzRC8UcETDdD7c=
-X-QQ-mid: bizesmtpip2t1735786780tgl9q2q
-X-QQ-Originating-IP: XPw7q00d0B6yIAlZOnUsI0rsiUXwPN/Yc4p9jtAxcZk=
-Received: from smtpclient.apple ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 02 Jan 2025 10:59:38 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 17041026471661364997
-From: Kun Hu <huk23@m.fudan.edu.cn>
-Content-Type: text/plain;
-	charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ChfOMN4J"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1735796521; x=1767332521;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=fd5mxu1mlvhS5A6bpswnJWtsnPt0S5qTB0IC6IEuvyE=;
+  b=ChfOMN4J81CKV9AomJVrhaQuhvrO8NJaEf8KKSGsvu4e/IP946cirukm
+   HZjAo6D54iRPm0LdiVe8MuRrEiKLKFf6pQWuxCY73/4Big0eXoSEcnjW5
+   OLCJYqMmipT0N3id5dRwLAL6vUR2q3MIHZBkDwsSQ3JIdUFKdtuLuV8rg
+   xeHMe2lrqD4GwzY2gi4mGCiE/btmhvi3RM9RzmzT0cppSgm7phYkndo4J
+   ap+ek+nn7e4nqxrYCE8288X5iV1JJhyGRqxkI1Mt+olxpw01pA3qsOXEE
+   ywH6Z+Me2hzdHrd/f84UJLZCc9IFqXkuiU52FQ1h6UY7BazT45duqJZrU
+   w==;
+X-CSE-ConnectionGUID: CzFvr19jRUiaEzZffjh8+A==
+X-CSE-MsgGUID: c1dPzrbwSfO0bzww6hgHvA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11302"; a="36251087"
+X-IronPort-AV: E=Sophos;i="6.12,284,1728975600"; 
+   d="scan'208";a="36251087"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jan 2025 21:42:00 -0800
+X-CSE-ConnectionGUID: ZnzRqZUbQR64ddqE92DSMQ==
+X-CSE-MsgGUID: ScO/MVeKSf+DEehw6c8A7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="124672837"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Jan 2025 21:41:59 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Wed, 1 Jan 2025 21:41:58 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Wed, 1 Jan 2025 21:41:58 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Wed, 1 Jan 2025 21:41:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IZ6Ke71OLPhOIDb/+yuc1skjCE9S09uK2mGTjfozaUPshRhciZ/EZy4EVcSo/lCl/wkZZvcNniMIz4jr09DHZEOMQkeyxYFEB5Xy9+qHVTK6McUsfljVtNb6BxtO8Iym8DQGApD3tp0QSAqzVe7Jo9wLYAHlY2wU0VniVG1cjgElqox8T9weTxz1IObKCI6JP9q7u2/w9Plw2cfxUZrID7NGqnZDZ5q8ZoI3eFUkggIIRxSabO4eMDS76dAJCofAt82m7P/Uiso7y4fKnD7dQRROft2/Tn0FKPccATPCpTbCOqhSzRTOzrzhFdrTW4GNYbZb8pHgkKenAQIwrXWobw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GCkzWgB67T9rAuwRkg+nplTktnoE7nbZGeQ+CKAcle8=;
+ b=AyLgVFBT4OAY50dn5+VHE3SBEqEpR6wWkFronzaY3K7R9W9TpPz7VNUCusMGPucdOzifTzV6uPLLPWJBNEVK2juhFNUmD1TgGpDrfYTzCiqkZNBdYJPLPFYesZiY7C8Kq4yUVhBmkPJplGEv3uJXq69VPws3QSQvR4XCNDTqoXJxUfg5IhNb3iTY6pKBKDjMKdFWkWbLHUQ7DwdXdErv3bVxkzxxOTxXaO4dWkh5X1r/6Ewd5pS9b+uAvhxRFM2Su65h7DcdBa74bmf/vgxPxXVi0HD/X/mE8turGPylJ/PJdSLaL3EUAd1O7IJH56BKZ4XOHyex0jmqp8jMM3v7hQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by MW3PR11MB4745.namprd11.prod.outlook.com (2603:10b6:303:5e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.11; Thu, 2 Jan
+ 2025 05:41:25 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%3]) with mapi id 15.20.8314.012; Thu, 2 Jan 2025
+ 05:41:25 +0000
+Date: Thu, 2 Jan 2025 13:41:16 +0800
+From: Oliver Sang <oliver.sang@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+CC: Z qiang <qiang.zhang1211@gmail.com>, <oe-lkp@lists.linux.dev>,
+	<lkp@intel.com>, <rcu@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: Re: [paulmckrcu:dev.2024.12.24a] [srcu] 9216c28c6a:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <Z3Ym/DDtGOPamGjZ@xsang-OptiPlex-9020>
+References: <202412311203.ca7bddba-lkp@intel.com>
+ <CALm+0cWOxUm_hrNe4UP4Z-vyr4RCOw+dc=kCBTgsyjHFHiHDsg@mail.gmail.com>
+ <949f6251-d411-45ef-9f85-d5d069b90b0e@paulmck-laptop>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <949f6251-d411-45ef-9f85-d5d069b90b0e@paulmck-laptop>
+X-ClientProxiedBy: SG2PR06CA0248.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::32) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: watchdog: BUG: soft lockup in note_gp_changes in kernel/rcu/tree.c
-Message-Id: <7238787A-B616-4E0C-85DF-DB17012FA1C0@m.fudan.edu.cn>
-Date: Thu, 2 Jan 2025 10:59:27 +0800
-Cc: rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org
-To: paulmck@kernel.org,
- frederic@kernel.org,
- neeraj.upadhyay@kernel.org,
- joel@joelfernandes.org,
- josh@joshtriplett.org,
- boqun.feng@gmail.com,
- urezki@gmail.com,
- rostedt@goodmis.org,
- mathieu.desnoyers@efficios.com,
- jiangshanlai@gmail.com,
- qiang.zhang1211@gmail.com
-X-Mailer: Apple Mail (2.3818.100.11.1.3)
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:m.fudan.edu.cn:qybglogicsvrgz:qybglogicsvrgz8a-1
-X-QQ-XMAILINFO: MrbDGK7FFKtfDi2d74ArGbgn2ZkBBEilDjn8ZUv0HYd4p36aM9vzcXIx
-	1Z283zAIMCfetBVDROF586k6pekO6yoN15oq1wOJfjKYRvSO3NHyhhRd1wrfHuhgMASF20U
-	ex3SYo0uqKJZ9C3daKBHzILTxJtPX/czgIoDjmbA2QLNBfvdEm9W8cpPahjCCMUQbzDeO/h
-	sHf0oxJD0X0xkOY2ZlMVzM8VVYCrfEimelLjXphn+PJV4CQ4q20Z8u2O0saspbosn9ocUL5
-	3WnvqVkNKUAMZnLnS1hG/+jTwRsTGuMRr9PLwqRG/jbNLV7SMI6TlZApHE0M0YqfsDyya18
-	2tn3IDE5i0TUbzBHl8WC7vohwqdoN+D5fciu2qlPu/sTJU4NCq0d6Gos9d7muRf5FNjxv5a
-	4bkK+/OqkBRMaDB2+Ct4iXJQYRxAh90oBj+k5uNMb/ncYuanaCu57kr41zPS7iHdrMlUcvU
-	BU4rEeT8UtMaDFYFORNV+y5D+ijqStR6p/2PAmEuHQYRKTS+y10eLvIcaf7F0S+bk5zcciD
-	1aetkovpIyOZJCutzDr7LhI0JJC44ZnAiNu1gkBXzQyptZdJmk49TBgkDF/ITIy1rNk/QZr
-	ME0GPmBI7e2hyGQiq9rYzFxtRxrFmc0GUF+hFBGlZV6RyGX4OSmwtet6Yg6Jk6ZPUaHtmJy
-	04HMpy/VqnG2de3JAuKdc8Csb/NPoISfjNbxSamH9qyJQoWAywADpgXpxVnWWXfZ1jFJzqz
-	NWLnFCx9vuXgGGLlHYnmsEGJyozjrlJvT4f1o9/kQ5NphQG+CNBavoZC0GyHBzx8Um/niI4
-	6VxrzCnk87GtZpUZtAGrBdZaO9ixWkqYcSMucMY8wWnZ3IdQWLmvsiWf0X6kg2/AmCDSknv
-	158b8UyKnlpvcJ1akGmCK0UJao826mTzY4tKR8RIJZdG/2cic9k7xLUfCpr8mvF4qp+/vo0
-	pgcm1b7bxeGaj44CAYN353a/KLJV5u4SktFs=
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-X-QQ-RECHKSPAM: 0
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|MW3PR11MB4745:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0070d605-78fa-4fcd-0c3c-08dd2af018d2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?kBjaHJiq9keFFA6wBo0rjQD6DPNcRThSL2QP5Mkh2+V1oQg3w+pmvg3uwUah?=
+ =?us-ascii?Q?wzSQ09bELGgvPqLXTq+I1jhpGrz1/XCqjDE5HBfLxjm3d5QKCGRDRzdTJwCS?=
+ =?us-ascii?Q?ps8qMBK4J5M4hA12lku0IeV36i3A6oSZpMyVbawKeQ9u5HLdj5DMdA04/1Gu?=
+ =?us-ascii?Q?A9ajP8uwh9gtloWC8xZkdh8KmVG/AK8AuzmuM9eQOifJNzVQluTITAquc411?=
+ =?us-ascii?Q?HPf7weSPPK8gEik+AeIlA2WCOGIvyFMdCwmzGXaISYTDXPueHuNnckH4MqpL?=
+ =?us-ascii?Q?lB5gINY0op33amGUtGJ3Eag++yz/YN6KhWO+PkiCyiJAOzfmDQVZXtXys2Gq?=
+ =?us-ascii?Q?9je40Y54jv56/ElMzCI9Uvm/3kF4wd3wGoFxDwH7APEbDoUfmPqhQgqfb/60?=
+ =?us-ascii?Q?bxh9goe0QfCvpXOBhjuDfZzVPUJdFeRCLBOA5oRk4Fyi3TLZANg+78jzGUf5?=
+ =?us-ascii?Q?B2VU8wbSicaf7aufOI7j7Gl8hcW92XUMsQPTwuPPEZ90c4wnebW3Dd9CMWqZ?=
+ =?us-ascii?Q?UmZAdHkg3aRUrutK/Ji2oZEsWFakwFOqPeAQ07MkBcXLOI8uB76lR9Eo4F1T?=
+ =?us-ascii?Q?VxQc+Iztt16crpW+VC294dBeDv+Me3k6piEleinwS2n9AmbR4JGN3H5I3/rd?=
+ =?us-ascii?Q?ZYfYWAxPYbB8QDWUt8UOBtTgOL7bX4aT3VGnFGf02C9dclMPwA2WR5zNetph?=
+ =?us-ascii?Q?o5yGYm9lb/36wDDKy+g2j+t4MoQli8o6e+uiBi2+vzSL+TzdP2IamWxHzQKQ?=
+ =?us-ascii?Q?3fK58sx+gO0NBjiGphTXw9iSDy3j0NmVlnIEQ5EGhYSIIzmuqWBWZNkSRCdn?=
+ =?us-ascii?Q?lFigvUTe0Ru8vr1l16L2nogKKxVH80J3ObSx7xxIpbAmPP4CO8bpdFSLYAWL?=
+ =?us-ascii?Q?DybghpZH0J5o0Wo08FWiiKN5Y36tDzQv+Ec3a+Gj0GjiD3ScflpLv+DmTDft?=
+ =?us-ascii?Q?UaLCLNbGUBRo/Azog3zS8f+xyTHxnK3Zih0vtsIZhOIFBXiSakyFTSMehMV8?=
+ =?us-ascii?Q?w2rY3FPEJq3TVtjEB39XA+8peBdEUHFPXxEHCreS4FwULsaUZFDLrUMbqljN?=
+ =?us-ascii?Q?120rDbAMiL/O+hG2hSb3ierFZa8BSPWyOPrzjOO60Oexc618ckhvZ8HiFyyT?=
+ =?us-ascii?Q?OGLALwQW6gO5q5zBTBedQaAevwZGN7WS64fslJUwhjM0zv4PKTPk/dwM9bwu?=
+ =?us-ascii?Q?SslPNFY/7njwU5tvI45xcCi6jQ3806plVmVCIZVPPZDZupXVteeQCCFJWxVk?=
+ =?us-ascii?Q?JC2u9s36a7QaaqTOt5RDeRyHg1klWjggUdw1DSt8FWU6fe89VuERJh5GtH+t?=
+ =?us-ascii?Q?b6qjd27f2F635r0aTeaodWGiqzZ/Szw5Y5IG5i4r6fHgzaNh4TYrBR/xi6nF?=
+ =?us-ascii?Q?k3bfzuoryCuAde4vqvp16PgJkxGT?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2iwwJok/LJ74hhjRl58J0ZFJ0W7YhzSP0ir216EMJT+1bk+d4KHmZMwmCwHE?=
+ =?us-ascii?Q?//FqPmHdxST8KZb35SgvTD9hzcvJvPbngpabERbj/njUyIZnTSabGsQVpRn/?=
+ =?us-ascii?Q?M/nPO+/GcKQturlM24W65YbqxLFjDls/TkA6Jw3Hm0c6zjGRs2+ZHtkfIr5v?=
+ =?us-ascii?Q?6ZINmlePx2eV7rjhQtmaVJjI/gQbR/IwwuYKWxTjomWwqVlh6j241P81vWJ5?=
+ =?us-ascii?Q?ulhZgjcnUXuPq4gBuVG5ku+6+RKY1ieDkT0GjysoWYAAsiqP1HCd0MGp1t3l?=
+ =?us-ascii?Q?uDwrPjRqJhEK3lN68QPRhqgfNQ9vwy1EuFr9TaOo4/K6oXQDNw6AtsWX8fAa?=
+ =?us-ascii?Q?fenXYNGzswjNYNmtikW5q4wNHIAUO68FXj+jgq4nOGUbK2TWqbpWNAVzRQjC?=
+ =?us-ascii?Q?157sKzuF/pPj36gDTWQ0IqSf4qiPx5uQn/OR6FyQr77CR6sYVR4ScQos+ZON?=
+ =?us-ascii?Q?fz4YU8TAtfxqIMIIPpeus/hNLJrN7D/yZJPWN2WXzRyaNkuBPLAMKxgVjtds?=
+ =?us-ascii?Q?s4Q1O/tbn3DicoB+wUdXuostewaKTzRPYKELYBuoPHu1eN6qPm/kKzV2aIvx?=
+ =?us-ascii?Q?nR94Ak8xKYwSRd4pg3umSAFImvf7KhWzEfvuZOIau4MFZnLSZsRdyzGuud9B?=
+ =?us-ascii?Q?jTe8cP2DGnLqQxDWhYYzntgLA7ySRZFm6qa5S4/95422dMsIL95FKyG1da+U?=
+ =?us-ascii?Q?AAdf1zFnWyviifl80dcf337VR6U2VfRxN7ii62rDRmNkPm224qL3le2qfjZq?=
+ =?us-ascii?Q?bCV90NpluSJgzgmIRCOZdOW5/cqSU72mliUrMlOBeJek2YZTw3cowqEhPNHe?=
+ =?us-ascii?Q?6GEUg+zmpMqe6eXIwwgCr4dU/RDTHpDQodHPulORMlF9r7ZhPgOd4p9I/YR1?=
+ =?us-ascii?Q?zgOy5CNpmo0FqJXgzubOkVHJNiAt4Ws7mzA06fYmUGmwbabjIPigtcFn+IhO?=
+ =?us-ascii?Q?ecI2iEZL4sSWVGECLRzZSaBvNy0yM5GlRdQs20bFXl+PjFg2lfnxm6ZyQV35?=
+ =?us-ascii?Q?ShCXuhcF5VphTax1axRWHidDzByEM1ImLYByZ0crWEViCDO/6sX0UR3/rAao?=
+ =?us-ascii?Q?PhPD+e7/KjwxrqTEAwqnk+ZQD9KZFNPzQLpf2Shwlv6WDw9rq277FVSV0aiW?=
+ =?us-ascii?Q?CJScrsNa5xXY8V0OjbKtaGf983tnRgzDdSar2XkL6Kozb4l5C1C25u3M6QOt?=
+ =?us-ascii?Q?yzlZGbB7fWtJonSV2mCnCDblA1Zi0mTSw5iTPaN6J0Oqcj7hwU5wVpPE+Ckl?=
+ =?us-ascii?Q?r6myseuBCkMJKPZQGnjHAq1hyGrAsBGb5CuBehf08OHbpB6doNoBErC77qdC?=
+ =?us-ascii?Q?z8y53ANWpvvUG43Drduaznr6yBe2QFNqg3Q5SEvK6zYMwWnqWqpLjf214gHs?=
+ =?us-ascii?Q?82ngeCdGNKj581dRMvDCRs7QQu+nixEZGsLShbYtKdQl3+KocKR1WA6Xyu48?=
+ =?us-ascii?Q?c4Iuro15/52nMU8C6fOPECM053lZcrS+lFhkaiYgc0MIwSYu4xCh0TQgj3o3?=
+ =?us-ascii?Q?40ATi2jga0kQgGxJeQ5Yy9Iv/X3AR1mRwi4KVTNFUsEsHQUrCUWWS3yjw+vr?=
+ =?us-ascii?Q?HSghLqUEhLzuCrd0j18Qe+WmedJt4uz+nxrY4phO2DqLiV+O0DvSGXECH2D4?=
+ =?us-ascii?Q?mg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0070d605-78fa-4fcd-0c3c-08dd2af018d2
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2025 05:41:25.6562
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W5YQ3+32rw5ONGPK0sMVgy31UaPaqySi46BZjPEB6JcIhMlpVxexZuJydXvlHMxfuaiRQoD3U9NavFLU14oeDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4745
+X-OriginatorOrg: intel.com
 
-Hello,
+hi, Zqiang, hi, Paul,
 
-When using our customed fuzzer tool to fuzz the latest Linux kernel, the =
-following crash
-was triggered.
+On Tue, Dec 31, 2024 at 08:19:44AM -0800, Paul E. McKenney wrote:
+> On Tue, Dec 31, 2024 at 03:16:25PM +0800, Z qiang wrote:
 
-HEAD commit: dbfac60febfa806abb2d384cb6441e77335d2799
-git tree: upstream
-Console output: =
-https://drive.google.com/file/d/1D3EDxDxPi0t7m_Z4Uc4FuL26DnHs7yTa/view?usp=
-=3Dsharing
-Kernel config: =
-https://drive.google.com/file/d/1m1mk_YusR-tyusNHFuRbzdj8KUzhkeHC/view?usp=
-=3Dsharing
-C reproducer: /
-Syzlang reproducer: /
+[...]
 
-We observed a crash at line 1333 in note_gp_changes, likely caused by a =
-race condition involving rcu_gp_kthread_wake and note_gp_changes. The =
-issue appears to involve insufficient or incorrect synchronization, as =
-indicated by the involvement of _raw_spin_unlock_irqrestore in =
-spinlock.c. Specifically, this may lead to invalid accesses to =
-rcu_state.gp_kthread or related flags (e.g., gp_flags), potentially =
-resulting in unexpected behavior in swake_up_one_online.
+> > >
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > the same patch/commit), kindly add following tags
+> > > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-lkp/202412311203.ca7bddba-lkp@intel.com
+> > >
+> > 
+> > Please try the following modifications:
 
-Could you please help check if this needs to be addressed?
+yes, the following modifications fix the issues we found for 9216c28c6a. thanks!
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Kun Hu <huk23@m.fudan.edu.cn>, Jiaji Qin =
-<jjtan24@m.fudan.edu.cn>
+Tested-by: kernel test robot <oliver.sang@intel.com>
 
-------------------------------------------
-watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [syz.0.745:6431]
-Modules linked in:
-irq event stamp: 312081
-hardirqs last  enabled at (312080): [<ffffffff8aed07eb>] =
-irqentry_exit+0x3b/0x90 kernel/entry/common.c:357
-hardirqs last disabled at (312081): [<ffffffff8aecedbf>] =
-sysvec_apic_timer_interrupt+0xf/0xb0 arch/x86/kernel/apic/apic.c:1049
-softirqs last  enabled at (312032): [<ffffffff82f0f514>] =
-softirq_handle_end kernel/softirq.c:407 [inline]
-softirqs last  enabled at (312032): [<ffffffff82f0f514>] =
-handle_softirqs+0x544/0x870 kernel/softirq.c:589
-softirqs last disabled at (312035): [<ffffffff82f111ce>] __do_softirq =
-kernel/softirq.c:595 [inline]
-softirqs last disabled at (312035): [<ffffffff82f111ce>] invoke_softirq =
-kernel/softirq.c:435 [inline]
-softirqs last disabled at (312035): [<ffffffff82f111ce>] __irq_exit_rcu =
-kernel/softirq.c:662 [inline]
-softirqs last disabled at (312035): [<ffffffff82f111ce>] =
-irq_exit_rcu+0xee/0x140 kernel/softirq.c:678
-CPU: 1 UID: 0 PID: 6431 Comm: syz.0.745 Not tainted 6.13.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:note_gp_changes+0xd8/0x1d0 kernel/rcu/tree.c:1333
-Code: c0 0f 85 d4 00 00 00 0f b6 45 14 84 c0 75 27 48 85 db 0f 85 a5 00 =
-00 00 9c 58 f6 c4 02 0f 85 ae 00 00 00 48 85 db 74 01 fb 5b <5d> 41 5c =
-41 5d 41 5e e9 47 59 ff 07 4c 89 e7 e8 04 bb de 07 85 c0
-RSP: 0018:ffa00000001e8e38 EFLAGS: 00000206
-RAX: 0000000000000002 RBX: ff1100006a2bd240 RCX: 1ffffffff1eb7361
-RDX: 0000000000000000 RSI: 0000000000000101 RDI: 0000000000000000
-RBP: ff1100006a2bd240 R08: 0000000000000001 R09: 0000000000000001
-R10: fffffbfff1eb7aaa R11: ffffffff8f5bd557 R12: ffffffff8d726380
-R13: 0000000000000202 R14: 00000000000296e9 R15: ff11000018c80000
-FS:  0000000000000000(0000) GS:ff1100006a280000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f69243b2260 CR3: 00000000336f0002 CR4: 0000000000771ef0
-PKRU: 80000000
-Call Trace:
- <IRQ>
- rcu_check_quiescent_state kernel/rcu/tree.c:2451 [inline]
- rcu_core+0x18c/0x16c0 kernel/rcu/tree.c:2807
- handle_softirqs+0x1ad/0x870 kernel/softirq.c:561
- __do_softirq kernel/softirq.c:595 [inline]
- invoke_softirq kernel/softirq.c:435 [inline]
- __irq_exit_rcu kernel/softirq.c:662 [inline]
- irq_exit_rcu+0xee/0x140 kernel/softirq.c:678
- instr_sysvec_irq_work arch/x86/kernel/irq_work.c:17 [inline]
- sysvec_irq_work+0xca/0xf0 arch/x86/kernel/irq_work.c:17
- </IRQ>
- <TASK>
- asm_sysvec_irq_work+0x1a/0x20 arch/x86/include/asm/idtentry.h:738
-RIP: 0010:__raw_spin_unlock_irqrestore =
-include/linux/spinlock_api_smp.h:152 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0x3c/0x70 =
-kernel/locking/spinlock.c:194
-Code: 74 24 10 e8 16 b5 17 f8 48 89 ef e8 9e 35 18 f8 81 e3 00 02 00 00 =
-75 29 9c 58 f6 c4 02 75 35 48 85 db 74 01 fb bf 01 00 00 00 <e8> 8f 53 =
-0c f8 65 8b 05 50 0c 14 75 85 c0 74 0e 5b 5d e9 c8 9b 20
-RSP: 0018:ffa0000003e07938 EFLAGS: 00000206
-RAX: 0000000000000006 RBX: 0000000000000200 RCX: 1ffffffff1eb7361
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: ffffffff99031638 R08: 0000000000000001 R09: 0000000000000001
-R10: fffffbfff1eb7aaa R11: ffffffff8f5bd557 R12: 1ff40000007c0f2e
-R13: ff1100001f201c80 R14: 0000000000000001 R15: 0000000000000000
- debug_object_active_state+0x2e7/0x3d0 lib/debugobjects.c:1055
- debug_rcu_head_queue kernel/rcu/rcu.h:225 [inline]
- __call_rcu_common.constprop.0+0x44/0x790 kernel/rcu/tree.c:3071
- file_free fs/file_table.c:76 [inline]
- __fput+0x6ed/0xc70 fs/file_table.c:463
- task_work_run+0x173/0x280 kernel/task_work.c:239
- exit_task_work include/linux/task_work.h:43 [inline]
- do_exit+0xa63/0x2fe0 kernel/exit.c:938
- do_group_exit+0xd3/0x2a0 kernel/exit.c:1087
- get_signal+0x267a/0x2790 kernel/signal.c:3017
- arch_do_signal_or_restart+0x81/0x870 arch/x86/kernel/signal.c:337
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x1dc/0x270 kernel/entry/common.c:218
- do_syscall_64+0xd0/0x1d0 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8bfb79171d
-Code: Unable to access opcode bytes at 0x7f8bfb7916f3.
-RSP: 002b:00007f8bfa3e4ba8 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-RAX: 000000000000007b RBX: 00007f8bfb953f80 RCX: 00007f8bfb79171d
-RDX: ffffffffffffffff RSI: 0000000000000000 RDI: 00000000200003c0
-RBP: 00007f8bfb806425 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffffffffffff R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f8bfb953f8c R14: 00007f8bfb954018 R15: 00007f8bfa3e4d40
- </TASK>
-Sending NMI from CPU 1 to CPUs 0,2-3:
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Not tainted 6.13.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:__raw_spin_unlock_irqrestore =
-include/linux/spinlock_api_smp.h:151 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0x28/0x70 =
-kernel/locking/spinlock.c:194
-Code: 90 90 f3 0f 1e fa 55 48 89 fd 48 83 c7 18 53 48 89 f3 48 8b 74 24 =
-10 e8 16 b5 17 f8 48 89 ef e8 9e 35 18 f8 81 e3 00 02 00 00 <75> 29 9c =
-58 f6 c4 02 75 35 48 85 db 74 01 fb bf 01 00 00 00 e8 8f
-RSP: 0018:ffa0000000007e00 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8307db03
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ff1100006a22ce40
-RBP: ff1100006a22ce40 R08: 0000000000000001 R09: ffe21c000d4459c9
-R10: ffe21c000d4459c8 R11: ff1100006a22ce43 R12: 000000000003b18c
-R13: ff1100006a22ced0 R14: 0000000000000000 R15: ff1100006a22ce40
-FS:  0000000000000000(0000) GS:ff1100006a200000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc14ae82000 CR3: 00000000089e0002 CR4: 0000000000771ef0
-PKRU: 55555554
-Call Trace:
- <NMI>
- </NMI>
- <IRQ>
- __run_hrtimer kernel/time/hrtimer.c:1735 [inline]
- __hrtimer_run_queues+0x531/0xca0 kernel/time/hrtimer.c:1803
- hrtimer_interrupt+0x39a/0x880 kernel/time/hrtimer.c:1865
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1038 [inline]
- __sysvec_apic_timer_interrupt+0x114/0x400 =
-arch/x86/kernel/apic/apic.c:1055
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 =
-[inline]
- sysvec_apic_timer_interrupt+0x8f/0xb0 arch/x86/kernel/apic/apic.c:1049
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 =
-arch/x86/include/asm/idtentry.h:702
-RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
-RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:92 =
-[inline]
-RIP: 0010:default_idle+0x1e/0x30 arch/x86/kernel/process.c:743
-Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 eb =
-0c 0f 1f 44 00 00 0f 00 2d b9 76 35 00 0f 1f 44 00 00 fb f4 <fa> e9 37 =
-1e 23 00 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90
-RSP: 0018:ffffffff8d407e00 EFLAGS: 00000202
-RAX: 00000000000d6ff1 RBX: 0000000000000000 RCX: ffffffff8aed0d81
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: dffffc0000000000 R08: 0000000000000001 R09: ffe21c000d446cc3
-R10: ffe21c000d446cc2 R11: ff1100006a236613 R12: 0000000000000000
-R13: ffffffff8f5bd550 R14: 0000000000000000 R15: 0000000000000000
- default_idle_call+0x6d/0xb0 kernel/sched/idle.c:117
- cpuidle_idle_call kernel/sched/idle.c:185 [inline]
- do_idle+0x31d/0x3d0 kernel/sched/idle.c:325
- cpu_startup_entry+0x4f/0x60 kernel/sched/idle.c:423
- rest_init+0x1a9/0x2f0 init/main.c:747
- start_kernel+0x412/0x510 init/main.c:1102
- x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:507
- x86_64_start_kernel+0xba/0x110 arch/x86/kernel/head64.c:488
- common_startup_64+0x12c/0x138
- </TASK>
-NMI backtrace for cpu 3
-CPU: 3 UID: 0 PID: 2541 Comm: systemd-udevd Not tainted 6.13.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:rcu_read_lock_held+0x23/0xb0 kernel/rcu/update.c:346
-Code: 90 90 90 90 90 90 90 f3 0f 1e fa 48 b8 00 00 00 00 00 fc ff df 53 =
-48 83 ec 60 48 89 e3 48 8d 7c 24 20 48 c7 04 24 b3 8a b5 41 <48> c7 44 =
-24 08 86 7f f8 8c 48 c1 eb 03 48 c7 44 24 10 20 ed 0e 83
-RSP: 0018:ffa0000000298c20 EFLAGS: 00000082
-RAX: dffffc0000000000 RBX: ffa0000000298c20 RCX: ffffffff82f73725
-RDX: 0000000000000001 RSI: ff1100002697c680 RDI: ffa0000000298c40
-RBP: ff11000001656400 R08: 0000000000000000 R09: fffffbfff23cc7a9
-R10: fffffbfff23cc7a8 R11: ffffffff91e63d47 R12: ff11000001079000
-R13: 0000000000000001 R14: ff1100006a3a9440 R15: 0000000000000040
-FS:  00007fc4050e48c0(0000) GS:ff1100006a380000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc871bcff8 CR3: 00000000541d6003 CR4: 0000000000771ef0
-PKRU: 55555554
-Call Trace:
- <NMI>
- </NMI>
- <IRQ>
- __queue_work+0x5be/0x1220 kernel/workqueue.c:2269
- call_timer_fn+0x1be/0x690 kernel/time/timer.c:1793
- expire_timers kernel/time/timer.c:1839 [inline]
- __run_timers+0x4fc/0xb50 kernel/time/timer.c:2418
- __run_timer_base kernel/time/timer.c:2430 [inline]
- __run_timer_base kernel/time/timer.c:2422 [inline]
- run_timer_base+0xc5/0x120 kernel/time/timer.c:2439
- run_timer_softirq+0x1a/0x40 kernel/time/timer.c:2449
- handle_softirqs+0x1ad/0x870 kernel/softirq.c:561
- __do_softirq kernel/softirq.c:595 [inline]
- invoke_softirq kernel/softirq.c:435 [inline]
- __irq_exit_rcu kernel/softirq.c:662 [inline]
- irq_exit_rcu+0xee/0x140 kernel/softirq.c:678
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 =
-[inline]
- sysvec_apic_timer_interrupt+0x94/0xb0 arch/x86/kernel/apic/apic.c:1049
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 =
-arch/x86/include/asm/idtentry.h:702
-RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 =
-[inline]
-RIP: 0010:_raw_spin_unlock_irq+0x29/0x50 kernel/locking/spinlock.c:202
-Code: 90 f3 0f 1e fa 55 48 8b 74 24 08 48 89 fd 48 83 c7 18 e8 7a b5 17 =
-f8 48 89 ef e8 02 36 18 f8 e8 ed 0f 42 f8 fb bf 01 00 00 00 <e8> 02 54 =
-0c f8 65 8b 05 c3 0c 14 75 85 c0 74 06 5d e9 3c 9c 20 00
-RSP: 0018:ffa0000003a57ce0 EFLAGS: 00000202
-RAX: 0000000000ffe279 RBX: 0000000000000000 RCX: 1ffffffff1eb7361
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: ff1100003fc49280 R08: 0000000000000001 R09: 0000000000000001
-R10: fffffbfff1eb7aaa R11: ffffffff8f5bd557 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: ff1100002697c680
- spin_unlock_irq include/linux/spinlock.h:401 [inline]
- get_signal+0x1f24/0x2790 kernel/signal.c:3020
- arch_do_signal_or_restart+0x81/0x870 arch/x86/kernel/signal.c:337
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x1dc/0x270 kernel/entry/common.c:218
- do_syscall_64+0xd0/0x1d0 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fc40568b04e
-Code: 0f 1f 40 00 48 8b 15 79 af 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff =
-ff eb ba 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 =
-f0 ff ff 77 5a c3 66 0f 1f 84 00 00 00 00 00 48 83 ec 28
-RSP: 002b:00007ffe5fb12788 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: fffffffffffffdff RBX: 0000000000001001 RCX: 00007fc40568b04e
-RDX: 0000000000001001 RSI: 0000559aeb0bbd00 RDI: 0000000000000012
-RBP: 0000000000000012 R08: 0000559aeb0bbd00 R09: 00007fc405673be0
-R10: 000000000000006f R11: 0000000000000246 R12: 0000559aeb0bbd00
-R13: 0000000000001000 R14: 0000000000000000 R15: 00007ffe5fb127b0
- </TASK>
-NMI backtrace for cpu 2
-CPU: 2 UID: 0 PID: 2540 Comm: systemd-udevd Not tainted 6.13.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:pfn_valid include/linux/mmzone.h:2045 [inline]
-RIP: 0010:__virt_addr_valid+0x11d/0x610 arch/x86/mm/physaddr.c:65
-Code: 00 bb 19 00 00 00 e8 92 f8 48 00 49 89 ec 89 d9 31 ff 49 c1 ec 1b =
-4c 89 e0 48 d3 e8 48 89 c3 48 89 c6 e8 d6 fa 48 00 48 85 db <74> 1d 45 =
-31 e4 e8 69 f8 48 00 44 89 e0 5b 5d 41 5c 41 5d e9 76 99
-RSP: 0018:ffa0000000240bf8 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff82e0a77a
-RDX: 0000000000000000 RSI: ff110000153f2340 RDI: 0000000000000003
-RBP: 000000006a329440 R08: 0000000000000000 R09: fffffbfff3206eaa
-R10: fffffbfff3206ea9 R11: ffffffff9903754b R12: 000000000000000d
-R13: ff11000001656000 R14: 0000000000000000 R15: ff11000001e00000
-FS:  00007fc4050e48c0(0000) GS:ff1100006a300000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055558e69e9b0 CR3: 00000000401b4005 CR4: 0000000000771ef0
-PKRU: 55555554
-Call Trace:
- <NMI>
- </NMI>
- <IRQ>
- kasan_addr_to_slab+0xd/0x80 mm/kasan/common.c:37
- __kasan_record_aux_stack+0xe/0xc0 mm/kasan/generic.c:529
- insert_work+0x36/0x240 kernel/workqueue.c:2183
- __queue_work+0x868/0x1220 kernel/workqueue.c:2339
- call_timer_fn+0x1be/0x690 kernel/time/timer.c:1793
- expire_timers kernel/time/timer.c:1839 [inline]
- __run_timers+0x4fc/0xb50 kernel/time/timer.c:2418
- __run_timer_base kernel/time/timer.c:2430 [inline]
- __run_timer_base kernel/time/timer.c:2422 [inline]
- run_timer_base+0xc5/0x120 kernel/time/timer.c:2439
- run_timer_softirq+0x1a/0x40 kernel/time/timer.c:2449
- handle_softirqs+0x1ad/0x870 kernel/softirq.c:561
- __do_softirq kernel/softirq.c:595 [inline]
- invoke_softirq kernel/softirq.c:435 [inline]
- __irq_exit_rcu kernel/softirq.c:662 [inline]
- irq_exit_rcu+0xee/0x140 kernel/softirq.c:678
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 =
-[inline]
- sysvec_apic_timer_interrupt+0x94/0xb0 arch/x86/kernel/apic/apic.c:1049
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 =
-arch/x86/include/asm/idtentry.h:702
-RIP: 0010:check_preemption_disabled+0x3e/0x170 lib/smp_processor_id.c:56
-Code: 44 8b 25 21 9e 16 75 65 8b 1d 16 9e 16 75 81 e3 ff ff ff 7f 31 ff =
-89 de 0f 1f 44 00 00 85 db 74 15 0f 1f 44 00 00 44 89 e0 5b <5d> 41 5c =
-41 5d 41 5e e9 71 2d 23 00 0f 1f 44 00 00 9c 5b 81 e3 00
-RSP: 0018:ffa0000003617878 EFLAGS: 00000202
-RAX: 0000000000000002 RBX: 0000000000000008 RCX: 0000000000000000
-RDX: 1ffffffff1ac20bc RSI: 0000000000000002 RDI: 0000000000000000
-RBP: ffffffff8b82c2a0 R08: ffffffff8b33c540 R09: 0000000000000001
-R10: 000000000003b18c R11: ffffffff8f5bd557 R12: 0000000000000002
-R13: ffffffff8b82c260 R14: 00c0ffff95a10cf8 R15: ffa0000003617960
- do_perf_trace_lock_acquire include/trace/events/lock.h:24 [inline]
- perf_trace_lock_acquire+0x111/0x670 include/trace/events/lock.h:24
- trace_lock_acquire include/trace/events/lock.h:24 [inline]
- lock_acquire+0x2fd/0x580 kernel/locking/lockdep.c:5820
- __mutex_lock_common kernel/locking/mutex.c:585 [inline]
- __mutex_lock+0x16f/0x1eb0 kernel/locking/mutex.c:735
- seq_read_iter+0xe1/0x1260 fs/seq_file.c:182
- kernfs_fop_read_iter+0x415/0x5a0 fs/kernfs/file.c:279
- new_sync_read fs/read_write.c:484 [inline]
- vfs_read fs/read_write.c:565 [inline]
- vfs_read+0x870/0xbf0 fs/read_write.c:545
- ksys_read+0x122/0x240 fs/read_write.c:708
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xc3/0x1d0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fc40568b04e
-Code: 0f 1f 40 00 48 8b 15 79 af 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff =
-ff eb ba 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 =
-f0 ff ff 77 5a c3 66 0f 1f 84 00 00 00 00 00 48 83 ec 28
-RSP: 002b:00007ffe5fb12788 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 0000000000001001 RCX: 00007fc40568b04e
-RDX: 0000000000001001 RSI: 0000559aeb0bbd40 RDI: 0000000000000012
-RBP: 0000000000000012 R08: 0000559aeb0bbd40 R09: 00007fc405673be0
-R10: 000000000000006f R11: 0000000000000246 R12: 0000559aeb0bbd40
-R13: 0000000000001000 R14: 0000000000000000 R15: 00007ffe5fb127b0
- </TASK>
-
-
-
----------------
-thanks,
-Kun Hu=
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index e85db7d5b364..7c7304dee645 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -1999,6 +1999,7 @@ static int srcu_module_coming(struct module *mod)
+> >         for (i = 0; i < mod->num_srcu_structs; i++) {
+> >                 ssp = *(sspp++);
+> >                 ssp->sda = alloc_percpu(struct srcu_data);
+> > +               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+> 
+> This does look quite promising, so thank you for digging into this!!!
+> 
+> Looking forward to seeing if it fixes the problem.  ;-)
+> 
+> 							Thanx, Paul
+> 
+> >                 if (WARN_ON_ONCE(!ssp->sda))
+> >                         return -ENOMEM;
+> >         }
+> > 
+> > 
+> > 
+> > Thanks
+> > Zqiang
