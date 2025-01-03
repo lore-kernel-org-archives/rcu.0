@@ -1,155 +1,105 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE8B2EAE6;
-	Fri,  3 Jan 2025 15:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89842BE4F
+	for <rcu@vger.kernel.org>; Fri,  3 Jan 2025 16:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735918031; cv=none; b=J3fwhvUO5U+olX3iD2EE5v2TjKSMkUjHCHcs3PQHxjbYdrj1glZEWHu9AZDLHbuauj016J3tIZWxT2XRjeEaefrEgKZcUOqVx9nV9XtIE7ih3GwmY8EcHLPtXHgEPxzYCYgYR3/9LNXRBYKJ0SBfd4nCt+/MS4FqP9kKVjy2Ces=
+	t=1735923044; cv=none; b=HfypFS6k5i4ljnJ/nyHYb2Fvw6IdQz0nnxzSy78YhTzegbuyAxa7ly2JU6cHHnfclNndZiuPOxXmlT5fHrYfV3Zg98Su6rWAq5wAQKhyUfJaS9xUkE6XSesltjC/IM8xkPPMt94m94qE5rWbOKihchEW+cD1ZGpkCZv6iwq+aas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735918031; c=relaxed/simple;
-	bh=jm+iuUOduzHHSUn0ZbawEdCZp5LdTCsIK/f61RTcNIk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r2toV28d3ih3VjLx2iYFf+q0zRhLN2tCNsMBLg1aLCVtwA/Ybr0UqX+QCtatcLvMR12TEIybcYVlZ36gdVT5YBmWslFv6v5SSXTWchDTgTwGOpryMZuUXGBXcfWUssXGNC0W0q28pRTs880VQ7KtaFPTcG2ejVEKesJHYtkTS6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pk8ewQCO; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1735923044; c=relaxed/simple;
+	bh=jfIIwHq0qtf1edauL8jcdVssF7q6aCivQveGRx9/cRA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n715c8wfbOIlBUIsIhXrweq00FaIT7SVW0B/bWce762asVNXABuXFTBk/TjEpMRs6AJHHOeWolg1er7lgj/ONnNAOQnZD/j6cTCZeW/Htmzli/eFqb6MkBBX3jr2eq5DReQlAerw6YnpOvdqRjhtF9eRXSuBCRBAN+ge+g02hFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=QmvtkpwX; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pk8ewQCO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92FB5C4CECE;
-	Fri,  3 Jan 2025 15:27:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735918030;
-	bh=jm+iuUOduzHHSUn0ZbawEdCZp5LdTCsIK/f61RTcNIk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pk8ewQCOUoK6lTCBkqYoJ9tTE/2XQDH96G/5fXOZHiU3JnJvSUCwxTwelatwR9IYt
-	 dK+IkqfKob+vL9RspqI59mhL7kWCzBHQoayMqqtjKIrjI5jnbP967N99QYNTASE586
-	 l4PHCOVIoIeN+jpX23yasDEoir5Q4f6QGH5wvL3A+x4r9QCh81mMEqLbBAVROTUcGo
-	 YVJ8K+nnXPthr6CkKi0Y7x2Sg6kNJjFccbePLk5wJhICldeBiTntui6qbQ+2inDD8C
-	 LOG8yMyYUIY+9TsW+CYO1dO3jgmoLmaUsK6pRNovSIQhSMYwox0mzOT2dgBwALcvCH
-	 sGM9ee6AkSwqQ==
-Date: Fri, 3 Jan 2025 15:27:03 +0000
-From: Will Deacon <will@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
-	Michal Hocko <mhocko@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 10/19] sched,arm64: Handle CPU isolation on last resort
- fallback rq selection
-Message-ID: <20250103152702.GB3816@willie-the-truck>
-References: <20241211154035.75565-1-frederic@kernel.org>
- <20241211154035.75565-11-frederic@kernel.org>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QmvtkpwX"
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-38a34e8410bso4013248f8f.2
+        for <rcu@vger.kernel.org>; Fri, 03 Jan 2025 08:50:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1735923041; x=1736527841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jfIIwHq0qtf1edauL8jcdVssF7q6aCivQveGRx9/cRA=;
+        b=QmvtkpwXPJYJNMH0aLGrJeXrGueHkptJvC4e8RnhxotlhQ9DJmbVIlnLTMWDyZLvii
+         twdJ9w4O/XoG1HpDeEakNYz4HvJy2nYNFdLPuT2k6CbYocNbQtak4WMNLDmWe8SQ/23u
+         fe8mlAg+28udwzPh3CV15068eml85Y7g5pn1o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735923041; x=1736527841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jfIIwHq0qtf1edauL8jcdVssF7q6aCivQveGRx9/cRA=;
+        b=pEa17/yoq8+dXqDSUCwJtf6lPiM0BFxsMaK/p40Foz/EB4d0zGUWOB1Rgvw7YtAsti
+         OfNRS0/nLw5IJg6JBpIyOpcchtkt1Ji9KQcFeDy5ZF3fr++pSNxzJELIzYtmHGgcNUGf
+         GSpTj8+3aCbfiFnR+RZhN98AqDaLR8GgFZh3DoIzJPyOM1Ri6HrZLEqDyVFSuDVPwev/
+         t/5VJ+5g0267x9bRNc/bXzBirBd6HKrQfI6MOJ+o8xSK9eDJG9mLut2x2yiXEmktvbv7
+         HVrDqBZrbckJW0Mt3FowORMg59U0z1VmsI3UbTGPH8i5HZ8gxrFrEbRBv3VSThQvjScF
+         cN7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXFjJ/RokMWXghI/x+x59LeoHpN8u/Zxqw5V3SpPvCdw2cAEapFV8d8PWw+Md9F1/NSrhI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYl5zZZT7WqTRc1f61I17DlnRU8dUHYL5YkWhraxRiBNsjjuVe
+	Ea2HrIhWj6aOkqceGLokniZoOhmSv7X2weSPkKLZJQgpF8Llm9jDQrOdtl49hWGSVKp+PBS3s5I
+	bvvBB8oNxHG/WYXh0tFzC5bLdXbtOipT3Sh0gzw==
+X-Gm-Gg: ASbGncv5xPH1VQ9mGHTgPgyOwQvtRL5t4EIRECoDPJfYripJns+jCwy9PUNjEqLl3bZ
+	TLzr4J7sKTfVR+xqa884GKIfzJZ9UT0JsXk1UQt0=
+X-Google-Smtp-Source: AGHT+IGqUviYMEjw6Iz6WFD6HaXyu/+XxDyKHNcYGIiI6FUqnH5wGi8tnDuP53Wq3h/kEYw+yp0lanmBXk3uhh2jxy4=
+X-Received: by 2002:a05:6000:4a03:b0:385:fcfb:8d4f with SMTP id
+ ffacd0b85a97d-38a221fae8amr43305026f8f.21.1735923040739; Fri, 03 Jan 2025
+ 08:50:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211154035.75565-11-frederic@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20250102182343.vlgzo6wjf5abqxol@ed.ac.uk> <afa3b043-0591-463e-8b61-21db547a25ad@paulmck-laptop>
+ <CAEXW_YT5W2R4ebof1Eo5hix1JasHm0Kz_nDOxM9Fv-k7iNGsmQ@mail.gmail.com>
+In-Reply-To: <CAEXW_YT5W2R4ebof1Eo5hix1JasHm0Kz_nDOxM9Fv-k7iNGsmQ@mail.gmail.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Fri, 3 Jan 2025 11:50:29 -0500
+Message-ID: <CAEXW_YRcGAMgjOM1Qv5=k7sVVWfiDagoHsvYn_6XJrFsZbHAEw@mail.gmail.com>
+Subject: Re: Taking page faults in RCU critical sections
+To: paulmck@kernel.org
+Cc: Karim Manaouil <kmanaouil.dev@gmail.com>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 11, 2024 at 04:40:23PM +0100, Frederic Weisbecker wrote:
-> When a kthread or any other task has an affinity mask that is fully
-> offline or unallowed, the scheduler reaffines the task to all possible
-> CPUs as a last resort.
-> 
-> This default decision doesn't mix up very well with nohz_full CPUs that
-> are part of the possible cpumask but don't want to be disturbed by
-> unbound kthreads or even detached pinned user tasks.
-> 
-> Make the fallback affinity setting aware of nohz_full.
-> 
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  arch/arm64/include/asm/cpufeature.h  |  1 +
->  arch/arm64/include/asm/mmu_context.h |  2 ++
->  arch/arm64/kernel/cpufeature.c       | 11 +++++++++++
->  include/linux/mmu_context.h          |  1 +
->  kernel/sched/core.c                  |  2 +-
->  5 files changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-> index 8b4e5a3cd24c..cac5efc836c0 100644
-> --- a/arch/arm64/include/asm/cpufeature.h
-> +++ b/arch/arm64/include/asm/cpufeature.h
-> @@ -671,6 +671,7 @@ static inline bool supports_clearbhb(int scope)
->  }
->  
->  const struct cpumask *system_32bit_el0_cpumask(void);
-> +const struct cpumask *fallback_32bit_el0_cpumask(void);
->  DECLARE_STATIC_KEY_FALSE(arm64_mismatched_32bit_el0);
->  
->  static inline bool system_supports_32bit_el0(void)
-> diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-> index 48b3d9553b67..7883abd6b29a 100644
-> --- a/arch/arm64/include/asm/mmu_context.h
-> +++ b/arch/arm64/include/asm/mmu_context.h
-> @@ -283,6 +283,8 @@ task_cpu_possible_mask(struct task_struct *p)
->  }
->  #define task_cpu_possible_mask	task_cpu_possible_mask
->  
-> +const struct cpumask *task_cpu_fallback_mask(struct task_struct *p);
-> +
->  void verify_cpu_asid_bits(void);
->  void post_ttbr_update_workaround(void);
->  
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index 7ce1b8ab417f..2b7aa32bf436 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1642,6 +1642,17 @@ const struct cpumask *system_32bit_el0_cpumask(void)
->  	return cpu_possible_mask;
->  }
->  
-> +const struct cpumask *task_cpu_fallback_mask(struct task_struct *p)
-> +{
-> +	if (!static_branch_unlikely(&arm64_mismatched_32bit_el0))
-> +		return housekeeping_cpumask(HK_TYPE_TICK);
-> +
-> +	if (!is_compat_thread(task_thread_info(p)))
-> +		return housekeeping_cpumask(HK_TYPE_TICK);
-> +
-> +	return system_32bit_el0_cpumask();
-> +}
+On Thu, Jan 2, 2025 at 7:58=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
+rg> wrote:
+[...]
+> > > Last question, do I need the -rt kernel for preempt RCU?
+> >
+> > No, CONFIG_PREEMPT=3Dy suffices.
+> >
+> > Note that CONFIG_PREEMPT_RT=3Dy, AKA -rt, also makes spinlocks (but not
+> > raw spinlocks) be limited sleeplocks, and thus allows RCU read-side
+> > critical sections to block when acquiring these sleeping "spinlocks".
+> > But this is OK, because all of this is still subject to priority boosti=
+ng.
+>
+> Should PREEMPT_RT kernels not throw warnings though when calling
+> rcu_note_context_switch() in RCU read-side sections?
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/k=
+ernel/rcu/tree_plugin.h#n331
+>
+> I don't run a PREEMPT_RT kernel myself so I can't confirm if these
+> warnings somehow don't appear, but I figured it would be good to
+> double check in this discussion.
 
-I think this is correct, but damn what we really want to ask for is the
-intersection of task_cpu_possible_mask(p) and
-housekeeping_cpumask(HK_TYPE_TICK). It's a shame to duplicate the logic
-in task_cpu_possible_mask() here because we don't want to allocate a
-temporary mask.
+Please ignore my noise, Steven clarified for me in a meeting today
+that preempt !=3D 0 in that warning, when an a
+"spinlock-coverted-to-rtmutex for PREEMPT_RT" blocks. So even though
+the rtmutex blocks in an RCU read-side critical section.
 
-Maybe we could have a helper to consolidate things a little?
+In other words, I believe rtmutex is the exception -- It can block in
+an RCU read-side critical section on any kernel (PREEMPT_RT or
+otherwise). I could stand corrected though but that's my current
+understanding.
 
-static inline const struct cpumask *
-__task_cpu_possible_mask(struct task_struct *p, const struct cpumask *mask)
-{
-	if (!static_branch_unlikely(&arm64_mismatched_32bit_el0))
-		return mask;
+thanks,
 
-	if (!is_compat_thread(task_thread_info(p)))
-		return mask;
-
-	return system_32bit_el0_cpumask();
-}
-
-Then we could call that from both task_cpu_possible_mask() and
-task_cpu_fallback_mask(), but passing 'cpu_possible_mask' and
-housekeeping_cpumask(HK_TYPE_TICK) for the 'mask' argument respectively?
-
-Will
+ - Joel
