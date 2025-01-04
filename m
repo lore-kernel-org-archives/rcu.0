@@ -1,51 +1,68 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794722914;
-	Sat,  4 Jan 2025 01:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD571D5CDD
+	for <rcu@vger.kernel.org>; Sat,  4 Jan 2025 20:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735953287; cv=none; b=qSm8/oLtF/yBJs+Hrvyaf4FAy+wgn4w5g831Wfr1WsjKf3J3qQCErtCe/vZJc7WLCdXpK9MQymXzh5hom4wIvZTHtts/emwOCyMH8X/8DesYKFmgVRw9iSBo673qxiIGOBZ861vOE22uw7oyowgJSYtPdvm+obmYJnsVSodgxmM=
+	t=1736024185; cv=none; b=jZ1r6fRmDelTfw8KoqRcNszLjbj7p9N0WUNxwl6lL6KquMwl6TVudTgKizUqlIdTWcjSFDk207/u4N83oCSLk4z5/ojtEa0Bc2PQnmzxuLKeo9q3GpmIvIIho1S2LIP4x89AKQaKcYP/r6WwOB4TJFNWgf9rNKCgbo381I28t7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735953287; c=relaxed/simple;
-	bh=HqMXK1wC2oDxS29DmLcwJV6pK6bB08okpn9m9iDlouU=;
+	s=arc-20240116; t=1736024185; c=relaxed/simple;
+	bh=6KBJecC06S1chS9LMLYYaaLDS0o0cxF0HWrHTQxw1Fw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oyweEh6v00QCRbtaZRoItRjrUnrDVhHsWS0wm6NW3OgRB732v2A1Rcx4dRXRTpPJYfPSRdNv7cheTMmPlt8iUSicG1n9L4GGk8lucU0m6hdXPJYn05bmV4fZGRUOvqRKpKic7j4NCkjvnGj6sj5iVmm7YvcUVGmJPsxB5NNhBo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XIuP2oMS; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=EEdGn4UT697gBmo6gk+lkQ2Yw4notAwa+1YyCq5M1k1ePMYJJ7A7TV6/yJ5V3In/VJ3voZkoAOGjlmblwZWZEyyUpy69V/YI2s2W50VVOshY09a+xof9F3+INwGdnXnT14TdeYYyolhjkhs1+6IIIcsOe0tsipFWTv2PI55I61o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ke928T2M; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIuP2oMS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE168C4CED6;
-	Sat,  4 Jan 2025 01:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735953287;
-	bh=HqMXK1wC2oDxS29DmLcwJV6pK6bB08okpn9m9iDlouU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=XIuP2oMSsVWXiLxYzNoQGMuC4qMCRshpF6qTi2JJ3qACIOb2IKTQjNQrbwb8wMdtS
-	 sGFAeSm16WOJtwB549GgpdbzMaa4r/mUQ45zD20TXqYeWP8EhZlVeQX9EppQvkhfBi
-	 WNIWMBHDwqFqTZAR82KIqXSlu1oS7+4q8uJ3jLx8PWQ7z9gnhjslsK57Xazs2fbTsZ
-	 olGL7hzBZWo0uv9uYyAhQTtDJTnTma5RhRtj4zDUVv+5f0prHHLJLqIOxiafsC+4jL
-	 teBdItwI+wivDTsqZ+HpGNJ3YwAPXu0X0cdAxmSnkV2N2wU960sndQJjauveFtttc4
-	 QdNhqS1Y+TXZA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9767CCE3844; Fri,  3 Jan 2025 17:14:46 -0800 (PST)
-Date: Fri, 3 Jan 2025 17:14:46 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Marco Elver <elver@google.com>
-Cc: syzbot <syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com>,
-	acme@kernel.org, adrian.hunter@intel.com,
-	alexander.shishkin@linux.intel.com, irogers@google.com,
-	jolsa@kernel.org, kan.liang@linux.intel.com,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mark.rutland@arm.com,
-	mhiramat@kernel.org, mingo@redhat.com, namhyung@kernel.org,
-	oleg@redhat.com, peterz@infradead.org,
-	syzkaller-bugs@googlegroups.com, RCU <rcu@vger.kernel.org>
-Subject: Re: [syzbot] [perf?] [trace?] KCSAN: assert: race in
- srcu_gp_start_if_needed
-Message-ID: <77c8887d-e69c-4554-9c9f-c9d755c7aff5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <6743acf4.050a0220.1cc393.004d.GAE@google.com>
- <CANpmjNMQ7ZVG0i9j1K7J0yKrtfrFfHi6kXaA7FLKmX5T4yWXTw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ke928T2M"
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-386329da1d9so6058349f8f.1
+        for <rcu@vger.kernel.org>; Sat, 04 Jan 2025 12:56:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736024181; x=1736628981; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l39P4RACVW18QiRc1FwJxKt4TShQMGGpGm+N8iwlnuA=;
+        b=ke928T2MfsXPBE0HRm6R+HKmKgepaeO0N8ZUkGgiwoOx5hfho7aCXXvZfQ739fRTeu
+         zXzDJDHQAVOOonpdWxPirBgeQyDXrTrX13nZ1IQmG7N9pshbg1UuOtViIdQurdXQBZhZ
+         34fWdwg95Nw2yLuwrfDZZMFjUtMb5jIINQDJo6iLILLIKOazF8/HrbQ+Tdi5loNJOILZ
+         szB/RlYbPZAgYs2yR9vJ0yDFFU/r27NgmDLMLhjVp2BUFspFJta+nFidi4CdgxSoL5n6
+         Ap0b4N99F1Y/g6WgCPNFQsySGSKTHZPbkXj+m3SslptAffh1UKLrMF/EHD1AKpLq7LLu
+         WHkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736024181; x=1736628981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l39P4RACVW18QiRc1FwJxKt4TShQMGGpGm+N8iwlnuA=;
+        b=M5mCpnWFl8pUROA4BL2tX3iiz7GAs9upV73rbx93GNTfQF/aSgmhhHTApQtFhjLMC3
+         TrM5ApMFiySxHQuFhOtJn9jMipc4VfIMZj7sNSxgnRHEC9d5OzG54d6q9uzTW4vjn+vP
+         nrHw/iK6/T36q0jbDLfhX/1UsYu9dVpSk+OgXNjG2diAY4+OTYK7Cwh2DiYZ+mJsxIiq
+         3nAHFz+f8x3Y2CvFIiJlAphga41RfAMSVpxLeNz9fc/A7gejPOWc1X/5vpqK+DV1io8X
+         FOVzIeeF0Z+brJxVdncvm2cjBOLNN1BOGbAvMDefgSpfpwkAywRv3S0Obq89Wzta9jPo
+         sfww==
+X-Gm-Message-State: AOJu0Yy1NWxfeS3qUoAgoy5Zw8EXIJvY5eSONVq6PmrcQZznxStGQrrJ
+	RN7FVFfHL1RcZWf3nVaBhfmHUnHRl+WxJx5kjL4hVZ4CcXD5UCEw
+X-Gm-Gg: ASbGnctLj7k0jUcSmVBe6AordCHxdwZvbkskaf+AMqv9OCVeHHfBfg4SWWIMFCn/M+b
+	fN4uX01KWF1S6pUre+FYyi0A4PliEa6icVQcghHT0j9y2CR+51101kb4j/rq39wuPchDRlj38cp
+	exnFLUfFD5Ux0Eqx8lBfZVMAUcpB2ds6fO3l4PT+7vEhmrRh84c4IUCsTPGHDP47R1FFYc3xdv/
+	ec2dUtvycwJtmf1RP9Tk+jk3XdxjYpBPHooSTtMDUOXy9qe3yN3+wD1gjsm7CbRBcFESc+B51hH
+	6tOC3HznyeBMRg==
+X-Google-Smtp-Source: AGHT+IHydBlTtze8qgu5rA2dENndEsJl3ELc9Cs7w+9kweVrj8WrGCoblsH/ph+CudueOLlp3a1ayQ==
+X-Received: by 2002:a05:6000:1866:b0:38a:20d9:32e6 with SMTP id ffacd0b85a97d-38a223ff35bmr46246522f8f.45.1736024181101;
+        Sat, 04 Jan 2025 12:56:21 -0800 (PST)
+Received: from ed.ac.uk (vpn-fn-230.net.ed.ac.uk. [192.41.114.230])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e69sm43496492f8f.35.2025.01.04.12.56.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Jan 2025 12:56:20 -0800 (PST)
+Date: Sat, 4 Jan 2025 20:56:19 +0000
+From: Karim Manaouil <kmanaouil.dev@gmail.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: rcu@vger.kernel.org, kmanaouil.dev@gmail.com
+Subject: Re: Taking page faults in RCU critical sections
+Message-ID: <20250104205619.juog4hsn4vramp6u@ed.ac.uk>
+References: <20250102182343.vlgzo6wjf5abqxol@ed.ac.uk>
+ <afa3b043-0591-463e-8b61-21db547a25ad@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -54,114 +71,148 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANpmjNMQ7ZVG0i9j1K7J0yKrtfrFfHi6kXaA7FLKmX5T4yWXTw@mail.gmail.com>
+In-Reply-To: <afa3b043-0591-463e-8b61-21db547a25ad@paulmck-laptop>
 
-On Sun, Nov 24, 2024 at 11:48:46PM +0100, Marco Elver wrote:
-> +Cc RCU
+On Thu, Jan 02, 2025 at 11:16:11AM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 02, 2025 at 06:23:43PM +0000, Karim Manaouil wrote:
+> > Hi Paul,
+> > 
+> > First, I wish you a happy new year!
 > 
-> On Sun, 24 Nov 2024 at 23:47, syzbot
-> <syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    42d9e8b7ccdd Merge tag 'powerpc-6.13-1' of git://git.kerne..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=10a00778580000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3d7fd5be0e73b8b
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=16a19b06125a2963eaee
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/ef231513adc7/disk-42d9e8b7.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/54caaac5960b/vmlinux-42d9e8b7.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/85b5a6566143/bzImage-42d9e8b7.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KCSAN: assert: race in srcu_get_delay kernel/rcu/srcutree.c:658 [inline]
-> > BUG: KCSAN: assert: race in srcu_funnel_gp_start kernel/rcu/srcutree.c:1089 [inline]
-> > BUG: KCSAN: assert: race in srcu_gp_start_if_needed+0x808/0x9f0 kernel/rcu/srcutree.c:1339
+> Hello, Karim, and a very happy square new year to you and yours as well!
+> I have added the rcu email list in case someone else has ideas.
+> 
+> > I am working on implementing page migration for some types of kernel
+> > memory. My technique is to remap those kernel pages in vmap/vmalloc 
+> > area and allow the kernel to take page faults during page migration.
+> > 
+> > However, I have the problem of spinlocks and RCU critical sections.
+> > A page fault can occur while the kernel is inside an RCU read critical
+> > section. For example, in fs/dcache.c:dget_parent():
+> > 
+> > rcu_read_lock()
+> > seq = raw_seqcount_begin(&dentry->d_seq);
+> > rcu_read_unlock()
+> > 
+> > If the kernel page where "dentry" belongs to is undergoing migration,
+> > a page fault could occur on the CPU executing the code above, when the
+> > migration thread (running on another CPU) clears the corresponding 
+> > PTE entry in vmap and flushes the TLB (but the new page is not mapped
+> > yet).
+> > 
+> > The page table entries are replaced by migration entries, and the CPU,
+> > on which the page fault happened, will have to wait or spin in the page
+> > fault handler until the migration is complete (success or failure).
+> > 
+> > With calssical RCU, I cannot wait in the page fault handler (like it's
+> > done in migration_entry_wait()) because that's explicit blocking and 
+> > that's prohihited.
+> 
+> Indeed it is, and by design.
+> 
+> > I tried to spin in the fault handler with something like
+> > 
+> > for (;;) {
+> > 	pte = ptep_get_lockless(ptep);
+> > 	if (pte_none(pte) || pte_present(pte))
+> > 		break;
+> > 	cpu_relax();
+> > }
+> > 
+> > But the entire system stopped working (I assume because rcu_synchronise()
+> > on other CPUs is waiting for us and we are waiting for other CPUs, so a
+> > deadlock situation).
+> > 
+> > I realised that I need something like preempt RCU. Would the cpu_relax()
+> > above work with preempt RCU?
+> 
+> You would need something like cond_resched(), but you cannot use this
+> within an RCU read-side critical section.  And spinning in this manner
+> within a fault handler is not a good idea.  You will likely get lockups
+> and stalls of various sorts.
+> 
+> Preemptible RCU permits preemption, but not unconditional blocking.
+> The reason for this is that a preempted reader can be subjected to RCU
+> priority boosting, but if a reader were to block, priority boosting
+> would not help.
+> 
+> The reason that we need priority boosting to help is that blocked RCU
+> readers stall the current RCU grace period, which means that any memory
+> waiting to be freed continues waiting, eventually resulting in OOM.
+> Of course, OOMs are not good for your kernel's uptime, hence the
+> restriction against general blocking in RCU readers.
 
-Hmmm...  All of those are from slow paths, so locking looks to be the
-best approach.
+I believe not only OOM, but it could also lead to a deadlock, as I observed 
+in my small experiments. Basically, one CPU (0) was blocked inside an RCU
+region, waiting for another CPU (1), running the page migration/compaction
+thread, but the migration thread itself (on CPU1) was trying to free some 
+memory and it had to first wait for the existing RCU readers, amongst them
+CPU0, and that lead to circular waiting (CPU0 waiting for CPU1, but
+CPU1 ends up waiting for CPU0).
 
-A very lightly tested prototype patch is shown below (for which feedback
-is most welcome), and thank you all for your testing efforts!
+> Please note that spinlocks have this same restriction.  Sleeping while
+> holding a spinlock can result in deadlock, which is even worse for your
+> kernel's uptime.
+> 
+> > Do you have any ideas for how to properly approach this problem?
+> 
+> Here are a few to start with:
+> 
+> 0.	Look at the existing code that migrates processes and/or kernels
+> 	from one system to another, and then do whatever they do.
+> 
+> 1.	Allocate the needed memory up front, before acquiring the
+> 	spinlocks and before entering the RCU readers.
+> 
+> 2.	Move the existing spinlocks to mutexes and the existing uses
+> 	of RCU to SRCU, perhaps using srcu_read_lock_lite().  But note
+> 	that a great deal of review and benchmarking will be necessary
+> 	to prove that there are no regressions.  And that changes of
+> 	this sort in mm almost always result in regressions.
+> 
+> 	So I strongly advise you not to take this approach lightly.
+> 
+> 3.	Your ideas here!
 
-							Thanx, Paul
+For (0), it seems that most of the solutions along those lines are "stop
+the world" kind of solutions, which is not ideal.
 
-------------------------------------------------------------------------
+I thought about (2) before I sent you the email, but then I was
+skeptical for the same reasons you listed.
 
-commit a955c6a7168f7b204784e4ef7e4db9d017043f73
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Fri Jan 3 17:04:49 2025 -0800
+I believe that another variation of (2) is the solution to this problem.
 
-    srcu: Force synchronization for srcu_get_delay()
-    
-    Currently, srcu_get_delay() can be called concurrently, for example,
-    by a CPU that is the first to request a new grace period and the CPU
-    processing the current grace period.  Although concurrent access is
-    harmless, it unnecessarily expands the state space.  Additionally,
-    all calls to srcu_get_delay() are from slow paths.
-    
-    This commit therefore protects all calls to srcu_get_delay() with
-    ssp->srcu_sup->lock, which is already held on the invocation from the
-    srcu_funnel_gp_start() function.  While in the area, this commit also
-    adds a lockdep_assert_held() to srcu_get_delay() itself.
-    
-    Reported-by: syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+In fact, there is a very small window in which an RCU reader can trigger
+a page fault, which is the window between flushing the TLB and updating
+the page table entry.
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 7c7304dee6457..a60acc9cf2f32 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -648,6 +648,7 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
- 	unsigned long jbase = SRCU_INTERVAL;
- 	struct srcu_usage *sup = ssp->srcu_sup;
- 
-+	lockdep_assert_held(&ACCESS_PRIVATE(ssp->srcu_sup, lock));
- 	if (srcu_gp_is_expedited(ssp))
- 		jbase = 0;
- 	if (rcu_seq_state(READ_ONCE(sup->srcu_gp_seq))) {
-@@ -675,9 +676,13 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
- void cleanup_srcu_struct(struct srcu_struct *ssp)
- {
- 	int cpu;
-+	unsigned long delay;
- 	struct srcu_usage *sup = ssp->srcu_sup;
- 
--	if (WARN_ON(!srcu_get_delay(ssp)))
-+	spin_lock_irq_rcu_node(ssp->srcu_sup);
-+	delay = srcu_get_delay(ssp);
-+	spin_unlock_irq_rcu_node(ssp->srcu_sup);
-+	if (WARN_ON(!delay))
- 		return; /* Just leak it! */
- 	if (WARN_ON(srcu_readers_active(ssp)))
- 		return; /* Just leak it! */
-@@ -1100,7 +1105,9 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
- {
- 	unsigned long curdelay;
- 
-+	spin_lock_irq_rcu_node(ssp->srcu_sup);
- 	curdelay = !srcu_get_delay(ssp);
-+	spin_unlock_irq_rcu_node(ssp->srcu_sup);
- 
- 	for (;;) {
- 		if (srcu_readers_active_idx_check(ssp, idx))
-@@ -1849,7 +1856,9 @@ static void process_srcu(struct work_struct *work)
- 	ssp = sup->srcu_ssp;
- 
- 	srcu_advance_state(ssp);
-+	spin_lock_irq_rcu_node(ssp->srcu_sup);
- 	curdelay = srcu_get_delay(ssp);
-+	spin_unlock_irq_rcu_node(ssp->srcu_sup);
- 	if (curdelay) {
- 		WRITE_ONCE(sup->reschedule_count, 0);
- 	} else {
+This makes think that to prevent the deadlock situation above, I need to 
+make sure that the page migration/compaction path should never wait for RCU
+readers. In this case, the RCU reader will wait (spinning) for a bounded
+amount of time which is the amount of time needed to close the window
+described above: copy the contents of the old page to the new page, update
+the page table entry and make the writes visible to the spinning RCU reader,
+no blocking, no scheduling and no grace periods to wait for.
+
+Do you think this is a sane approach? Obviously one down side is
+burning CPU cycles while spinning, but it should be a small enough
+amount of time.
+
+
+> > Last question, do I need the -rt kernel for preempt RCU?
+> 
+> No, CONFIG_PREEMPT=y suffices.
+> 
+> Note that CONFIG_PREEMPT_RT=y, AKA -rt, also makes spinlocks (but not
+> raw spinlocks) be limited sleeplocks, and thus allows RCU read-side
+> critical sections to block when acquiring these sleeping "spinlocks".
+> But this is OK, because all of this is still subject to priority boosting.
+> 
+> 							Thanx, Paul
+
+Thank you!
+
+-- 
+Best,
+Karim
+Edinburgh University
