@@ -1,124 +1,167 @@
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BEBF11CA0
-	for <rcu@vger.kernel.org>; Fri,  3 Jan 2025 17:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794722914;
+	Sat,  4 Jan 2025 01:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735925705; cv=none; b=StqelTZLvZAv4CsfE1HnP7xzf3Gjt90FMHzHXLOZhVE9iGBP8CvO2p9gcq8DHv6hbQqJg0rBX8Tz4ZrDGktspe94AKpomVhBR7bhfnZckSY3wD8m2Ujs6/1zc/khWwmGqE5f1dM1TRIYQSZtxwndB6utrWTlJd/cjDajfVl435k=
+	t=1735953287; cv=none; b=qSm8/oLtF/yBJs+Hrvyaf4FAy+wgn4w5g831Wfr1WsjKf3J3qQCErtCe/vZJc7WLCdXpK9MQymXzh5hom4wIvZTHtts/emwOCyMH8X/8DesYKFmgVRw9iSBo673qxiIGOBZ861vOE22uw7oyowgJSYtPdvm+obmYJnsVSodgxmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735925705; c=relaxed/simple;
-	bh=PBDcmfnZysMfS3NgkQtiLkymPUys1gfQDdtZTwStAIg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qaJ0vi77meo1FH4W8Szbs+fhNjV9X2clrdHtQemhiUgiXLPBjGvmUvHNgROt3Ekn7E9V9t7LUauxDLdhOTjpghTHmFNrxstXC6ldyqTJppD1SNa4y3jOPymwsqGcw+1DO1P62IVlmIBW0ksgPxms73zj041VgixU7ipyP75PIkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Cj/5JzYi; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1735953287; c=relaxed/simple;
+	bh=HqMXK1wC2oDxS29DmLcwJV6pK6bB08okpn9m9iDlouU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oyweEh6v00QCRbtaZRoItRjrUnrDVhHsWS0wm6NW3OgRB732v2A1Rcx4dRXRTpPJYfPSRdNv7cheTMmPlt8iUSicG1n9L4GGk8lucU0m6hdXPJYn05bmV4fZGRUOvqRKpKic7j4NCkjvnGj6sj5iVmm7YvcUVGmJPsxB5NNhBo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XIuP2oMS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Cj/5JzYi"
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4361e89b6daso85398075e9.3
-        for <rcu@vger.kernel.org>; Fri, 03 Jan 2025 09:35:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1735925702; x=1736530502; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BPwpRuSLMbQOP94KV/MIzkS4jrRWUT1ASSsthIdW70U=;
-        b=Cj/5JzYibyFuKFNzZPDr5vJk0hJ6F874iVPQVdKoFWgYKSMtNnwzpUynAZnrL5R+Z5
-         +nemyRdPmEpY95MnNL76a6rtNQRJ0FCBsBteYR6P4fkGCD64vAn2KY2Ul5aFpUAfdKFv
-         GNmO7zBoZAJfHHVFd9wxaA06b60UBxPV1pUeM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735925702; x=1736530502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BPwpRuSLMbQOP94KV/MIzkS4jrRWUT1ASSsthIdW70U=;
-        b=l22yr0oC1Rhcd2H97fLfSvwMU/KMLHlGJZXJWnqnHXCATHhmFpPUyvQ0WGTyWzqzPT
-         kKEk/Nwl217p7RG9wv8BhIq/ImPNp1xXA3fvJipQAoIghOVMbWKvvOg2P+MyYM+bTUD4
-         YE7BxZwVC1+0DRfCfpyExDivQ2WoYde/aBdAGoUrSFioLWtVFsMYNbAZNCo1rdxAwr+Z
-         BGpR/TVVZ6zLZUCi72gIrNNvkQ43MYdqtwb06xP2N52hzc6NBSpydLnGWk4yfsdOMElx
-         odDjJXeoNRb0Tf82rYaxBLYwuR6Ns8yb8Kz+3CXDkNC9EJrgngoaCE5VWtH5VIPipo7z
-         JuMA==
-X-Forwarded-Encrypted: i=1; AJvYcCVpAMi3k79vP7Wigx5nI4wHAoHo6CZYw/a56k2MnBgvy7+t0zhQYziW11sZpPDACf20Spo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqAMaxS6Dlk+KwK2qpMljMKpSKLWj0LXMkg+Vhuc1Y9if/y9fp
-	GOhjWS/CPRLQTW2TSLYd2ECWxahb1BLsp7zpWQGTcMVUh5A56FIAZqTAQ79yjasVM6qcVA4nNKO
-	JD8fbx22U6dzE1iFJMD5RcvLWpNn5GeclkFdjHA==
-X-Gm-Gg: ASbGncuE7YUDIJBT47wFdbF5LSecDlzmZNFtmLO1MnVy+UNEOsh/Zb1DiN1dZHV2qy5
-	tiVpFj0YniXZ/2JAwpDncoA/8im1u72yh68Dm5g==
-X-Google-Smtp-Source: AGHT+IFRrB++ciFx32hmJNbF/XnxFEgSwgCHy1QaFNUvFMLQ/IZhOeogLtat1Y6+xENxG1j0uY9DPShNk1uJ9bY9Zsw=
-X-Received: by 2002:a05:6000:1a8f:b0:386:4034:f9a8 with SMTP id
- ffacd0b85a97d-38a223f5c51mr38232744f8f.38.1735925701934; Fri, 03 Jan 2025
- 09:35:01 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XIuP2oMS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE168C4CED6;
+	Sat,  4 Jan 2025 01:14:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735953287;
+	bh=HqMXK1wC2oDxS29DmLcwJV6pK6bB08okpn9m9iDlouU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XIuP2oMSsVWXiLxYzNoQGMuC4qMCRshpF6qTi2JJ3qACIOb2IKTQjNQrbwb8wMdtS
+	 sGFAeSm16WOJtwB549GgpdbzMaa4r/mUQ45zD20TXqYeWP8EhZlVeQX9EppQvkhfBi
+	 WNIWMBHDwqFqTZAR82KIqXSlu1oS7+4q8uJ3jLx8PWQ7z9gnhjslsK57Xazs2fbTsZ
+	 olGL7hzBZWo0uv9uYyAhQTtDJTnTma5RhRtj4zDUVv+5f0prHHLJLqIOxiafsC+4jL
+	 teBdItwI+wivDTsqZ+HpGNJ3YwAPXu0X0cdAxmSnkV2N2wU960sndQJjauveFtttc4
+	 QdNhqS1Y+TXZA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9767CCE3844; Fri,  3 Jan 2025 17:14:46 -0800 (PST)
+Date: Fri, 3 Jan 2025 17:14:46 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Marco Elver <elver@google.com>
+Cc: syzbot <syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com>,
+	acme@kernel.org, adrian.hunter@intel.com,
+	alexander.shishkin@linux.intel.com, irogers@google.com,
+	jolsa@kernel.org, kan.liang@linux.intel.com,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, mark.rutland@arm.com,
+	mhiramat@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+	oleg@redhat.com, peterz@infradead.org,
+	syzkaller-bugs@googlegroups.com, RCU <rcu@vger.kernel.org>
+Subject: Re: [syzbot] [perf?] [trace?] KCSAN: assert: race in
+ srcu_gp_start_if_needed
+Message-ID: <77c8887d-e69c-4554-9c9f-c9d755c7aff5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6743acf4.050a0220.1cc393.004d.GAE@google.com>
+ <CANpmjNMQ7ZVG0i9j1K7J0yKrtfrFfHi6kXaA7FLKmX5T4yWXTw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250102182343.vlgzo6wjf5abqxol@ed.ac.uk> <afa3b043-0591-463e-8b61-21db547a25ad@paulmck-laptop>
- <CAEXW_YT5W2R4ebof1Eo5hix1JasHm0Kz_nDOxM9Fv-k7iNGsmQ@mail.gmail.com>
- <CAEXW_YRcGAMgjOM1Qv5=k7sVVWfiDagoHsvYn_6XJrFsZbHAEw@mail.gmail.com> <9b3565b8-7182-4ba5-8dcd-b93fd7eb7ddd@paulmck-laptop>
-In-Reply-To: <9b3565b8-7182-4ba5-8dcd-b93fd7eb7ddd@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Fri, 3 Jan 2025 12:34:48 -0500
-Message-ID: <CAEXW_YQ-yk777w4avC9y1+MxWZMpRx9PpLobsgHAOtOXMihWwA@mail.gmail.com>
-Subject: Re: Taking page faults in RCU critical sections
-To: paulmck@kernel.org
-Cc: Karim Manaouil <kmanaouil.dev@gmail.com>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMQ7ZVG0i9j1K7J0yKrtfrFfHi6kXaA7FLKmX5T4yWXTw@mail.gmail.com>
 
-On Fri, Jan 3, 2025 at 12:08=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Fri, Jan 03, 2025 at 11:50:29AM -0500, Joel Fernandes wrote:
-> > On Thu, Jan 2, 2025 at 7:58=E2=80=AFPM Joel Fernandes <joel@joelfernand=
-es.org> wrote:
-> > [...]
-> > > > > Last question, do I need the -rt kernel for preempt RCU?
-> > > >
-> > > > No, CONFIG_PREEMPT=3Dy suffices.
-> > > >
-> > > > Note that CONFIG_PREEMPT_RT=3Dy, AKA -rt, also makes spinlocks (but=
- not
-> > > > raw spinlocks) be limited sleeplocks, and thus allows RCU read-side
-> > > > critical sections to block when acquiring these sleeping "spinlocks=
-".
-> > > > But this is OK, because all of this is still subject to priority bo=
-osting.
-> > >
-> > > Should PREEMPT_RT kernels not throw warnings though when calling
-> > > rcu_note_context_switch() in RCU read-side sections?
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/kernel/rcu/tree_plugin.h#n331
-> > >
-> > > I don't run a PREEMPT_RT kernel myself so I can't confirm if these
-> > > warnings somehow don't appear, but I figured it would be good to
-> > > double check in this discussion.
+On Sun, Nov 24, 2024 at 11:48:46PM +0100, Marco Elver wrote:
+> +Cc RCU
+> 
+> On Sun, 24 Nov 2024 at 23:47, syzbot
+> <syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com> wrote:
 > >
-> > Please ignore my noise, Steven clarified for me in a meeting today
-> > that preempt !=3D 0 in that warning, when an a
-> > "spinlock-coverted-to-rtmutex for PREEMPT_RT" blocks. So even though
-> > the rtmutex blocks in an RCU read-side critical section.
+> > Hello,
 > >
-> > In other words, I believe rtmutex is the exception -- It can block in
-> > an RCU read-side critical section on any kernel (PREEMPT_RT or
-> > otherwise). I could stand corrected though but that's my current
-> > understanding.
->
-> RCU doesn't know about this distinction, it is just told preempt or not.
-> The scheduler passes in @true when the sched_mode is greater than SM_NONE=
-,
-> which includes SM_RTLOCK_WAIT.  But this latter is used only in -rt
-> kernels, so that you cannot use rtmutexes in RCU read-side critical
-> sections in non-rt kernels.
->
-> So, in practice, portable code only gets to use spinlocks in RCU read-sid=
-e
-> critical sections.
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    42d9e8b7ccdd Merge tag 'powerpc-6.13-1' of git://git.kerne..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=10a00778580000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3d7fd5be0e73b8b
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=16a19b06125a2963eaee
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/ef231513adc7/disk-42d9e8b7.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/54caaac5960b/vmlinux-42d9e8b7.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/85b5a6566143/bzImage-42d9e8b7.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KCSAN: assert: race in srcu_get_delay kernel/rcu/srcutree.c:658 [inline]
+> > BUG: KCSAN: assert: race in srcu_funnel_gp_start kernel/rcu/srcutree.c:1089 [inline]
+> > BUG: KCSAN: assert: race in srcu_gp_start_if_needed+0x808/0x9f0 kernel/rcu/srcutree.c:1339
 
-Ah, true! SM_RTLOCKWAIT only is used in PREEMPT_RT kernels.  This
-makes sense, thanks a lot for clarifying.
+Hmmm...  All of those are from slow paths, so locking looks to be the
+best approach.
 
- - Joel
+A very lightly tested prototype patch is shown below (for which feedback
+is most welcome), and thank you all for your testing efforts!
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit a955c6a7168f7b204784e4ef7e4db9d017043f73
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Jan 3 17:04:49 2025 -0800
+
+    srcu: Force synchronization for srcu_get_delay()
+    
+    Currently, srcu_get_delay() can be called concurrently, for example,
+    by a CPU that is the first to request a new grace period and the CPU
+    processing the current grace period.  Although concurrent access is
+    harmless, it unnecessarily expands the state space.  Additionally,
+    all calls to srcu_get_delay() are from slow paths.
+    
+    This commit therefore protects all calls to srcu_get_delay() with
+    ssp->srcu_sup->lock, which is already held on the invocation from the
+    srcu_funnel_gp_start() function.  While in the area, this commit also
+    adds a lockdep_assert_held() to srcu_get_delay() itself.
+    
+    Reported-by: syzbot+16a19b06125a2963eaee@syzkaller.appspotmail.com
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 7c7304dee6457..a60acc9cf2f32 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -648,6 +648,7 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+ 	unsigned long jbase = SRCU_INTERVAL;
+ 	struct srcu_usage *sup = ssp->srcu_sup;
+ 
++	lockdep_assert_held(&ACCESS_PRIVATE(ssp->srcu_sup, lock));
+ 	if (srcu_gp_is_expedited(ssp))
+ 		jbase = 0;
+ 	if (rcu_seq_state(READ_ONCE(sup->srcu_gp_seq))) {
+@@ -675,9 +676,13 @@ static unsigned long srcu_get_delay(struct srcu_struct *ssp)
+ void cleanup_srcu_struct(struct srcu_struct *ssp)
+ {
+ 	int cpu;
++	unsigned long delay;
+ 	struct srcu_usage *sup = ssp->srcu_sup;
+ 
+-	if (WARN_ON(!srcu_get_delay(ssp)))
++	spin_lock_irq_rcu_node(ssp->srcu_sup);
++	delay = srcu_get_delay(ssp);
++	spin_unlock_irq_rcu_node(ssp->srcu_sup);
++	if (WARN_ON(!delay))
+ 		return; /* Just leak it! */
+ 	if (WARN_ON(srcu_readers_active(ssp)))
+ 		return; /* Just leak it! */
+@@ -1100,7 +1105,9 @@ static bool try_check_zero(struct srcu_struct *ssp, int idx, int trycount)
+ {
+ 	unsigned long curdelay;
+ 
++	spin_lock_irq_rcu_node(ssp->srcu_sup);
+ 	curdelay = !srcu_get_delay(ssp);
++	spin_unlock_irq_rcu_node(ssp->srcu_sup);
+ 
+ 	for (;;) {
+ 		if (srcu_readers_active_idx_check(ssp, idx))
+@@ -1849,7 +1856,9 @@ static void process_srcu(struct work_struct *work)
+ 	ssp = sup->srcu_ssp;
+ 
+ 	srcu_advance_state(ssp);
++	spin_lock_irq_rcu_node(ssp->srcu_sup);
+ 	curdelay = srcu_get_delay(ssp);
++	spin_unlock_irq_rcu_node(ssp->srcu_sup);
+ 	if (curdelay) {
+ 		WRITE_ONCE(sup->reschedule_count, 0);
+ 	} else {
