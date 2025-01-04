@@ -1,216 +1,203 @@
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD571D5CDD
-	for <rcu@vger.kernel.org>; Sat,  4 Jan 2025 20:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A23FE1D5CC4
+	for <rcu@vger.kernel.org>; Sat,  4 Jan 2025 21:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736024185; cv=none; b=jZ1r6fRmDelTfw8KoqRcNszLjbj7p9N0WUNxwl6lL6KquMwl6TVudTgKizUqlIdTWcjSFDk207/u4N83oCSLk4z5/ojtEa0Bc2PQnmzxuLKeo9q3GpmIvIIho1S2LIP4x89AKQaKcYP/r6WwOB4TJFNWgf9rNKCgbo381I28t7k=
+	t=1736025328; cv=none; b=ms9IiJK/6XTd4HRnSmadU3i8ZiJ7V1wr/XVGykWMcfr+s8owtiDgtTW3G9xJbzHw5RMWn5vtHq2uds572U8czj3vaaggtyM5QmqhhX3ndpz4c+SVxNAKJjrmax96grX2dehvcysWJC96SSvY7lF/7Cz/InYVKmTNHzWM24iWkak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736024185; c=relaxed/simple;
-	bh=6KBJecC06S1chS9LMLYYaaLDS0o0cxF0HWrHTQxw1Fw=;
+	s=arc-20240116; t=1736025328; c=relaxed/simple;
+	bh=VrSTH8pfQ8HPYFLkFEmvfwyvhyzEu1YyvKcTzx4CQoI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EEdGn4UT697gBmo6gk+lkQ2Yw4notAwa+1YyCq5M1k1ePMYJJ7A7TV6/yJ5V3In/VJ3voZkoAOGjlmblwZWZEyyUpy69V/YI2s2W50VVOshY09a+xof9F3+INwGdnXnT14TdeYYyolhjkhs1+6IIIcsOe0tsipFWTv2PI55I61o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ke928T2M; arc=none smtp.client-ip=209.85.221.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=BWTJnGq5z3V+AAJUr11TUIKmkfUxiDJsn76TnXB8AUh4vSLxIpkL0ZqQNrc/EV27fyF3oXosHIMkgXLcyUfKQ01MP7SvROXHvgW3Qe9hg6tIOVDAUkQxHHTu/zCn27zGKXkcxV03X9EXwtI04uQfY/7a0G8ar5lR43wQT/X+if8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XYn9s+tQ; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ke928T2M"
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-386329da1d9so6058349f8f.1
-        for <rcu@vger.kernel.org>; Sat, 04 Jan 2025 12:56:22 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XYn9s+tQ"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43626213fffso82841305e9.1
+        for <rcu@vger.kernel.org>; Sat, 04 Jan 2025 13:15:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736024181; x=1736628981; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l39P4RACVW18QiRc1FwJxKt4TShQMGGpGm+N8iwlnuA=;
-        b=ke928T2MfsXPBE0HRm6R+HKmKgepaeO0N8ZUkGgiwoOx5hfho7aCXXvZfQ739fRTeu
-         zXzDJDHQAVOOonpdWxPirBgeQyDXrTrX13nZ1IQmG7N9pshbg1UuOtViIdQurdXQBZhZ
-         34fWdwg95Nw2yLuwrfDZZMFjUtMb5jIINQDJo6iLILLIKOazF8/HrbQ+Tdi5loNJOILZ
-         szB/RlYbPZAgYs2yR9vJ0yDFFU/r27NgmDLMLhjVp2BUFspFJta+nFidi4CdgxSoL5n6
-         Ap0b4N99F1Y/g6WgCPNFQsySGSKTHZPbkXj+m3SslptAffh1UKLrMF/EHD1AKpLq7LLu
-         WHkg==
+        d=gmail.com; s=20230601; t=1736025323; x=1736630123; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GWgolHKaPvRRI3N7rRxTgXzx1FDg/uaN0c7CX6t6lv0=;
+        b=XYn9s+tQ2Jqm21jHy9XnFDszkFqM3YtxEYNB63AATHNG1r3IzJQKw9RQ0MM2LLeel9
+         B3Q59/ulKWs2Ful4r4xaDknHxwO1JNvG2bUCCyAXyRrFuNJ2ud3NIQTDaaOb/KOy9yBD
+         PVZ0v3d1EUhuVrNF1d0Hcs8cRX/rBAKyAVB2gWlKkQks9DIfFFKQ5aQCLWGmlnv79Zy9
+         EHp45MYyGtwzeb3lH4ZNZcJ131jnN0jrSoNho0pRDmVokq98/ZKdKfhUOzQMMhRv1yoN
+         BGqkmKTi0ynQByowC27y3MHjiBG5BO1j1UyKCC4pAC7DorNjFNQHyl2JMpmcqtWojdXT
+         iJVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736024181; x=1736628981;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l39P4RACVW18QiRc1FwJxKt4TShQMGGpGm+N8iwlnuA=;
-        b=M5mCpnWFl8pUROA4BL2tX3iiz7GAs9upV73rbx93GNTfQF/aSgmhhHTApQtFhjLMC3
-         TrM5ApMFiySxHQuFhOtJn9jMipc4VfIMZj7sNSxgnRHEC9d5OzG54d6q9uzTW4vjn+vP
-         nrHw/iK6/T36q0jbDLfhX/1UsYu9dVpSk+OgXNjG2diAY4+OTYK7Cwh2DiYZ+mJsxIiq
-         3nAHFz+f8x3Y2CvFIiJlAphga41RfAMSVpxLeNz9fc/A7gejPOWc1X/5vpqK+DV1io8X
-         FOVzIeeF0Z+brJxVdncvm2cjBOLNN1BOGbAvMDefgSpfpwkAywRv3S0Obq89Wzta9jPo
-         sfww==
-X-Gm-Message-State: AOJu0Yy1NWxfeS3qUoAgoy5Zw8EXIJvY5eSONVq6PmrcQZznxStGQrrJ
-	RN7FVFfHL1RcZWf3nVaBhfmHUnHRl+WxJx5kjL4hVZ4CcXD5UCEw
-X-Gm-Gg: ASbGnctLj7k0jUcSmVBe6AordCHxdwZvbkskaf+AMqv9OCVeHHfBfg4SWWIMFCn/M+b
-	fN4uX01KWF1S6pUre+FYyi0A4PliEa6icVQcghHT0j9y2CR+51101kb4j/rq39wuPchDRlj38cp
-	exnFLUfFD5Ux0Eqx8lBfZVMAUcpB2ds6fO3l4PT+7vEhmrRh84c4IUCsTPGHDP47R1FFYc3xdv/
-	ec2dUtvycwJtmf1RP9Tk+jk3XdxjYpBPHooSTtMDUOXy9qe3yN3+wD1gjsm7CbRBcFESc+B51hH
-	6tOC3HznyeBMRg==
-X-Google-Smtp-Source: AGHT+IHydBlTtze8qgu5rA2dENndEsJl3ELc9Cs7w+9kweVrj8WrGCoblsH/ph+CudueOLlp3a1ayQ==
-X-Received: by 2002:a05:6000:1866:b0:38a:20d9:32e6 with SMTP id ffacd0b85a97d-38a223ff35bmr46246522f8f.45.1736024181101;
-        Sat, 04 Jan 2025 12:56:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736025323; x=1736630123;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GWgolHKaPvRRI3N7rRxTgXzx1FDg/uaN0c7CX6t6lv0=;
+        b=c33DFQM+6mHu/deMtK2fsnoh4H3nTSSTHXYwCDAgapqRSYRpg/IpEomh3gQdDDRmla
+         eNicZYyIrJN+X+zYa5BG3pqlmfYoNZ0dgEiB2TDLa6Cvn9BXWbKZRQQoV/Gu65f/G22o
+         BRdIsKy3BA7FcU7ZdS2hsGLxkODSZxQBzIIUZpRVsb2aYS23IFeHsE2Z2VOBgvz96K74
+         e/lePgGdZWgtr9VOQ2/e9SEHybSNZBXZr0N0RjVxfzvyfwYng5eW+Amr7QAcKkasqdv1
+         J5T75SxDCZ5HmgU4/LMykhCewQX9UFOlzrPjuZmzv1GmiinBAiAFambeWVBnJSGA7A1V
+         b2ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUr9KYPfq6ukAxzFBPCARFYLdOau1KeL15zMcblOuTIdktqUWxJXzBJYgof0TozFDwW5sQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXj+HeyKHMRHEQvLjzqFYF/ZhHJ0HU7aqdw6am9KSFbBKA/v55
+	zc4UkNQjPbzKg+43iXspfCoiOwBFjOzidyIi+aRdXcgMYYqyZJOR
+X-Gm-Gg: ASbGncvF9LOaT4OYNMPjJuslqZYh4ipliCghpDOTRPwlVxrzwzk0Vbq/3dlKLhd+wM9
+	MBCtpS2Kqo0FU3wiGZU10CrRFSNWoOYnwIF66MK3Q1ztFyJsL/Hmo3RanfzB5cAhSsj2uCRKuB1
+	nn3XxSCTpAT9P21d/pslV9CcXLhHPkoeFisZeUv1dfW/yMrg50B96jMnlDVNM6m8AJTSVNE8P7E
+	QhKNhmEMIa9EdssyU+kyIK2y5NrpDRPuTZa1figkdQ1oH/ruaTGaZsmKEhnMwchIfoqcAomvmBx
+	I7EThD2DCZOKJA==
+X-Google-Smtp-Source: AGHT+IEh75Fprn/8dVapJquUj9nolGJ2+W64VzqXGcgieqY1t7SDruk+fD2Nfn7ZYRQN36RMygGQRQ==
+X-Received: by 2002:a05:6000:1ac7:b0:386:4332:cc99 with SMTP id ffacd0b85a97d-38a1a233539mr47792935f8f.17.1736025322410;
+        Sat, 04 Jan 2025 13:15:22 -0800 (PST)
 Received: from ed.ac.uk (vpn-fn-230.net.ed.ac.uk. [192.41.114.230])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c832e69sm43496492f8f.35.2025.01.04.12.56.20
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c847d7fsm43858451f8f.60.2025.01.04.13.15.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jan 2025 12:56:20 -0800 (PST)
-Date: Sat, 4 Jan 2025 20:56:19 +0000
+        Sat, 04 Jan 2025 13:15:21 -0800 (PST)
+Date: Sat, 4 Jan 2025 21:15:20 +0000
 From: Karim Manaouil <kmanaouil.dev@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, kmanaouil.dev@gmail.com
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: paulmck@kernel.org, rcu@vger.kernel.org, kmanaouil.dev@gmail.com
 Subject: Re: Taking page faults in RCU critical sections
-Message-ID: <20250104205619.juog4hsn4vramp6u@ed.ac.uk>
+Message-ID: <20250104211520.kfvsu63m4fmvktt6@ed.ac.uk>
 References: <20250102182343.vlgzo6wjf5abqxol@ed.ac.uk>
  <afa3b043-0591-463e-8b61-21db547a25ad@paulmck-laptop>
+ <CAEXW_YT5W2R4ebof1Eo5hix1JasHm0Kz_nDOxM9Fv-k7iNGsmQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <afa3b043-0591-463e-8b61-21db547a25ad@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YT5W2R4ebof1Eo5hix1JasHm0Kz_nDOxM9Fv-k7iNGsmQ@mail.gmail.com>
 
-On Thu, Jan 02, 2025 at 11:16:11AM -0800, Paul E. McKenney wrote:
+Hi Joel,
+
+On Thu, Jan 02, 2025 at 07:58:09PM -0500, Joel Fernandes wrote:
+> Hi Karim and Paul,
+> 
+> On Thu, Jan 2, 2025 at 2:16 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > On Thu, Jan 02, 2025 at 06:23:43PM +0000, Karim Manaouil wrote:
-> > Hi Paul,
-> > 
-> > First, I wish you a happy new year!
+> > > First, I wish you a happy new year!
+> > Hello, Karim, and a very happy square new year to you and yours as well!
+> > I have added the rcu email list in case someone else has ideas.
 > 
-> Hello, Karim, and a very happy square new year to you and yours as well!
-> I have added the rcu email list in case someone else has ideas.
+> Happy new year wishes to you all as well!
 > 
-> > I am working on implementing page migration for some types of kernel
-> > memory. My technique is to remap those kernel pages in vmap/vmalloc 
-> > area and allow the kernel to take page faults during page migration.
-> > 
-> > However, I have the problem of spinlocks and RCU critical sections.
-> > A page fault can occur while the kernel is inside an RCU read critical
-> > section. For example, in fs/dcache.c:dget_parent():
-> > 
-> > rcu_read_lock()
-> > seq = raw_seqcount_begin(&dentry->d_seq);
-> > rcu_read_unlock()
-> > 
-> > If the kernel page where "dentry" belongs to is undergoing migration,
-> > a page fault could occur on the CPU executing the code above, when the
-> > migration thread (running on another CPU) clears the corresponding 
-> > PTE entry in vmap and flushes the TLB (but the new page is not mapped
-> > yet).
-> > 
-> > The page table entries are replaced by migration entries, and the CPU,
-> > on which the page fault happened, will have to wait or spin in the page
-> > fault handler until the migration is complete (success or failure).
-> > 
-> > With calssical RCU, I cannot wait in the page fault handler (like it's
-> > done in migration_entry_wait()) because that's explicit blocking and 
-> > that's prohihited.
+> > > I am working on implementing page migration for some types of kernel
+> > > memory. My technique is to remap those kernel pages in vmap/vmalloc
+> > > area and allow the kernel to take page faults during page migration.
+> > >
+> > > However, I have the problem of spinlocks and RCU critical sections.
+> > > A page fault can occur while the kernel is inside an RCU read critical
+> > > section. For example, in fs/dcache.c:dget_parent():
+> > >
+> > > rcu_read_lock()
+> > > seq = raw_seqcount_begin(&dentry->d_seq);
+> > > rcu_read_unlock()
+> > >
+> > > If the kernel page where "dentry" belongs to is undergoing migration,
+> > > a page fault could occur on the CPU executing the code above, when the
+> > > migration thread (running on another CPU) clears the corresponding
+> > > PTE entry in vmap and flushes the TLB (but the new page is not mapped
+> > > yet).
+> > >
+> > > The page table entries are replaced by migration entries, and the CPU,
+> > > on which the page fault happened, will have to wait or spin in the page
+> > > fault handler until the migration is complete (success or failure).
+> > >
+> > > With calssical RCU, I cannot wait in the page fault handler (like it's
+> > > done in migration_entry_wait()) because that's explicit blocking and
+> > > that's prohihited.
+> >
+> > Indeed it is, and by design.
 > 
-> Indeed it is, and by design.
+> True. Interesting problem.
 > 
-> > I tried to spin in the fault handler with something like
-> > 
-> > for (;;) {
-> > 	pte = ptep_get_lockless(ptep);
-> > 	if (pte_none(pte) || pte_present(pte))
-> > 		break;
-> > 	cpu_relax();
-> > }
-> > 
-> > But the entire system stopped working (I assume because rcu_synchronise()
-> > on other CPUs is waiting for us and we are waiting for other CPUs, so a
-> > deadlock situation).
-> > 
-> > I realised that I need something like preempt RCU. Would the cpu_relax()
-> > above work with preempt RCU?
+> > > Do you have any ideas for how to properly approach this problem?
+> >
+> > Here are a few to start with:
+> >
+> > 0.      Look at the existing code that migrates processes and/or kernels
+> >         from one system to another, and then do whatever they do.
+> >
+> > 1.      Allocate the needed memory up front, before acquiring the
+> >         spinlocks and before entering the RCU readers.
+> >
+> > 2.      Move the existing spinlocks to mutexes and the existing uses
+> >         of RCU to SRCU, perhaps using srcu_read_lock_lite().  But note
+> >         that a great deal of review and benchmarking will be necessary
+> >         to prove that there are no regressions.  And that changes of
+> >         this sort in mm almost always result in regressions.
+> >
+> >         So I strongly advise you not to take this approach lightly.
+> >
+> > 3.      Your ideas here!
 > 
-> You would need something like cond_resched(), but you cannot use this
-> within an RCU read-side critical section.  And spinning in this manner
-> within a fault handler is not a good idea.  You will likely get lockups
-> and stalls of various sorts.
-> 
-> Preemptible RCU permits preemption, but not unconditional blocking.
-> The reason for this is that a preempted reader can be subjected to RCU
-> priority boosting, but if a reader were to block, priority boosting
-> would not help.
-> 
-> The reason that we need priority boosting to help is that blocked RCU
-> readers stall the current RCU grace period, which means that any memory
-> waiting to be freed continues waiting, eventually resulting in OOM.
-> Of course, OOMs are not good for your kernel's uptime, hence the
-> restriction against general blocking in RCU readers.
+> I am a bit nervous that if it is entirely possible to eliminate
+> page-fault rabbit holes, what if the page fault handler itself causes
+> a fault because it accesses some memory that was now backed by an
+> invalid PTE?
 
-I believe not only OOM, but it could also lead to a deadlock, as I observed 
-in my small experiments. Basically, one CPU (0) was blocked inside an RCU
-region, waiting for another CPU (1), running the page migration/compaction
-thread, but the migration thread itself (on CPU1) was trying to free some 
-memory and it had to first wait for the existing RCU readers, amongst them
-CPU0, and that lead to circular waiting (CPU0 waiting for CPU1, but
-CPU1 ends up waiting for CPU0).
+You are right. However, it is very easy to prevent that from happening by
+limiting migration for only certain types of kernel pages. In my patchset
+(which I'm hoping to send soon), I only care about slab pages from certain
+particular kmem caches. The page fault handler has no business to do with
+the objects contained in those slabs, and therefore will never try to access
+them and trigger a recursive page fault.
 
-> Please note that spinlocks have this same restriction.  Sleeping while
-> holding a spinlock can result in deadlock, which is even worse for your
-> kernel's uptime.
+> To that end, I was wondering if any of the following approaches are possible:
 > 
-> > Do you have any ideas for how to properly approach this problem?
-> 
-> Here are a few to start with:
-> 
-> 0.	Look at the existing code that migrates processes and/or kernels
-> 	from one system to another, and then do whatever they do.
-> 
-> 1.	Allocate the needed memory up front, before acquiring the
-> 	spinlocks and before entering the RCU readers.
-> 
-> 2.	Move the existing spinlocks to mutexes and the existing uses
-> 	of RCU to SRCU, perhaps using srcu_read_lock_lite().  But note
-> 	that a great deal of review and benchmarking will be necessary
-> 	to prove that there are no regressions.  And that changes of
-> 	this sort in mm almost always result in regressions.
-> 
-> 	So I strongly advise you not to take this approach lightly.
-> 
-> 3.	Your ideas here!
+> 1. When the memory is being migrated, allow the old memory to still be
+> accessible until the migration completes. Then "atomically" modify the
+> PTE to point to the new memory. Orchestrate this in a way that no
+> fault should occur.
 
-For (0), it seems that most of the solutions along those lines are "stop
-the world" kind of solutions, which is not ideal.
+This is impossible because to copy the contents of the old page to the
+new page, you have to stabilise the old page by preventing concurrent
+updates (by unmapping the page and flushing the TLB prior to copying),
+which renders the page inaccessible to other CPUs, including the RCU
+reader trying to dereference the objects contained in the page.
 
-I thought about (2) before I sent you the email, but then I was
-skeptical for the same reasons you listed.
+> 2. Try to see if page faults can be avoided entirely by not executing
+> the offending code. In Android GC, a page movement algorithm is being
+> explored AFAIK where there is a "stop the world" pause preventing code
+> from executing until the memory is moved to the new location. mremap()
+> is used in userspace to do this move so I admit this is a bit
+> tangential, but conceptually the ideas are similar.
 
-I believe that another variation of (2) is the solution to this problem.
+Hmm that's one possible way. Send an IPI to all the other CPUs prior to
+unmapping the page and ask them to block while the kernel page is being
+migrated. If you have many pages to migrate and migration is frequent,
+this may not be appreciated at all.
 
-In fact, there is a very small window in which an RCU reader can trigger
-a page fault, which is the window between flushing the TLB and updating
-the page table entry.
-
-This makes think that to prevent the deadlock situation above, I need to 
-make sure that the page migration/compaction path should never wait for RCU
-readers. In this case, the RCU reader will wait (spinning) for a bounded
-amount of time which is the amount of time needed to close the window
-described above: copy the contents of the old page to the new page, update
-the page table entry and make the writes visible to the spinning RCU reader,
-no blocking, no scheduling and no grace periods to wait for.
-
-Do you think this is a sane approach? Obviously one down side is
-burning CPU cycles while spinning, but it should be a small enough
-amount of time.
-
-
-> > Last question, do I need the -rt kernel for preempt RCU?
+> > > Last question, do I need the -rt kernel for preempt RCU?
+> >
+> > No, CONFIG_PREEMPT=y suffices.
+> >
+> > Note that CONFIG_PREEMPT_RT=y, AKA -rt, also makes spinlocks (but not
+> > raw spinlocks) be limited sleeplocks, and thus allows RCU read-side
+> > critical sections to block when acquiring these sleeping "spinlocks".
+> > But this is OK, because all of this is still subject to priority boosting.
 > 
-> No, CONFIG_PREEMPT=y suffices.
+> Should PREEMPT_RT kernels not throw warnings though when calling
+> rcu_note_context_switch() in RCU read-side sections?
 > 
-> Note that CONFIG_PREEMPT_RT=y, AKA -rt, also makes spinlocks (but not
-> raw spinlocks) be limited sleeplocks, and thus allows RCU read-side
-> critical sections to block when acquiring these sleeping "spinlocks".
-> But this is OK, because all of this is still subject to priority boosting.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/rcu/tree_plugin.h#n331
 > 
-> 							Thanx, Paul
-
-Thank you!
+> I don't run a PREEMPT_RT kernel myself so I can't confirm if these
+> warnings somehow don't appear, but I figured it would be good to
+> double check in this discussion.
+> 
+> thanks,
+> 
+> - Joel
 
 -- 
 Best,
