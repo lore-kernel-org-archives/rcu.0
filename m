@@ -1,20 +1,81 @@
-Received: from invmail3.skhynix.com (exvmail3.skhynix.com [166.125.252.90])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B182FC52;
-	Mon,  6 Jan 2025 07:36:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.90
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B531D79A9;
+	Mon,  6 Jan 2025 08:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736148977; cv=none; b=AVGwrwYKTRK94JiGUKlw8ziaOt4Jm6Cx9qdctni/S10ik92pqipOO3RE/DLJmisHM6CcZDiina9RaYc2ll3Teqm812ZNSroFCSTbzf9TNG+j2W+y1g6qOfGmw8kZgD3nVGeAAIEZvywluXKTMDMFAKDYfBAUvDTINa629LjcA8A=
+	t=1736153157; cv=none; b=MFI+/KMJNIedChi8/zY4FXzvUYHNKorzYp1BQkCLPNpaVqnM9tWDjfLG1TDTiV4Y0iy8LgUgn64iDi8wJPBRm/sFe7rXb2YML0Zv5gQMydDI/+yJLBOQoXaBDb3YN28dJUPP59NIWcYMrtlQnYWOgz4GR/Ef81DykcgbFvbCF8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736148977; c=relaxed/simple;
-	bh=Jfn7Eu/yK6trgfIGGAQuYjQmi5oYpmx4+wLY7t7bH6A=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=t53i/CdM27H/7t2+i5iPIemiaYiE6A7AhASzw4Dv1u4S63aVpYhr4o0QhzJafsNOv6SySYM0FAP4RYCb8j9rYfv1LW5f03cqXA5FR8qNwIOP0XD9q3+EA7DMBMdVU2i/k3CEHwpmUilfV3hyp0jD684iQOXJUxtSWU/bFGjQ59k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc59-7a9ff700000194b3-c3-677b845f600d
-Message-ID: <9ceb805c-4b42-4517-93cf-6b3cd3cdce5f@sk.com>
-Date: Mon, 6 Jan 2025 16:21:02 +0900
+	s=arc-20240116; t=1736153157; c=relaxed/simple;
+	bh=f8oKskr2lqOfA5GWBWO7bfkXy9cxLL8a5PV2VMOAHZs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e+tSSje3DjGNlqftxyD10x/SFie644vi3D5vfCWbDdMnddfUcYTvTC8+L5bx8xCw45MAl0W9JDBmwEMWlwj9KDAHINKZ1xQvcHt9MDtbT6TAZCbhV+5UQnKJ6y7K0EBOn5bMUgEayRyfJLXAHLhmmrbBOUuh5VuZtjbGtaplJ8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=taYyu+78; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=T850A2Nq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0yTKeAaP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4iJa5KHa; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="taYyu+78";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="T850A2Nq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0yTKeAaP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4iJa5KHa"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D67DE21161;
+	Mon,  6 Jan 2025 08:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736153153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
+	b=taYyu+78nxoy1hBhtbsfzYwd1apDoVWptqLd9jL/ejhlPz5WjIT4oD+puSslPf3FhMHWXm
+	OCtFoBiVf+jrDBwMeHaa4R5HGNLN3ECufho6AurtKVUl/IQIzy4RmUFE5+cYlhD5L//KcE
+	nKy3PHhVFUG2IWgYSkfkvLSkYeGtdO0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736153153;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
+	b=T850A2NqzVzxD/inszYRD1cAzHEBLJ0JmybNcTdy37P8qcWXoP3Xzet4w3PkbsUKvO51Xe
+	wI8oWwiNf8mK8IDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0yTKeAaP;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4iJa5KHa
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736153152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
+	b=0yTKeAaPuMt7aMZVg/9RvSJv8l2+JoBrK6KVp/9pWoW+8DQe2UsgFH+LZo8j3wLmm8dQyw
+	GDe0xr99V3B9Nn9jCXK5kZk7bqZ8fVmEjePlGx+/jun3CGC1jW+Zeis7bVmPznZ0eMFl/g
+	mRB2r2rqy/CP2V29yw8JO11cJmhS4xc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736153152;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
+	b=4iJa5KHa5G3udu4cYxTwrhisV3qDcqzgp9iKYP1HmNAOR1KCV1nBJqTtUQwANb1CyUR9MD
+	SVvPUSSrU4UxLGBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC94C137DA;
+	Mon,  6 Jan 2025 08:45:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jYUVKUCYe2cBYwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 06 Jan 2025 08:45:52 +0000
+Message-ID: <1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
+Date: Mon, 6 Jan 2025 09:45:52 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -22,87 +83,196 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: kernel_team@skhynix.com, 42.hyeyoo@gmail.com, RCU <rcu@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Christoph Lameter <cl@linux.com>,
- Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [External Mail] [PATCH v2 0/5] Move kvfree_rcu() into SLAB (v2)
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>
-References: <20241212180208.274813-1-urezki@gmail.com>
+Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
+To: Chen Ridong <chenridong@huaweicloud.com>, akpm@linux-foundation.org,
+ mhocko@kernel.org, hannes@cmpxchg.org, yosryahmed@google.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ davidf@vimeo.com, handai.szj@taobao.com, rientjes@google.com,
+ kamezawa.hiroyu@jp.fujitsu.com, RCU <rcu@vger.kernel.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
+References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
 Content-Language: en-US
-From: Hyeonggon Yoo <hyeonggon.yoo@sk.com>
-In-Reply-To: <20241212180208.274813-1-urezki@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <20241224025238.3768787-1-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsXC9ZZnoW58S3W6wYNbnBYTewws5qxfw2Zx
-	/dsbRouV3c1sFpd3zWGzuLfmP6tFz/Iai09LvrFYtH3+x2pxdvY5Vou2JRuZLCauEbVYfZHF
-	YnZjH6MDn8fOWXfZPRZsKvXYtKqTzWPTp0nsHl1vrzB5nJjxm8XjyZXpTB4LG6Yye7RP2Mns
-	cWbBEXaPz5vkArijuGxSUnMyy1KL9O0SuDJu73zBWPCYs+L2h6IGxvvsXYwcHBICJhJPl+Z1
-	MXKCmXPnnGMGsXkFLCW+fbjEBFLCIqAi8XEvI0RYUOLkzCcsILaogLzE/VszgKZwcTALvGKS
-	WHJ1IxNIQljAR+Ll3xdgCRGBG4wSFzZfYgdJCAmYSXw8+Rism1lAXOLWk/lgC9gEtCR2dKaC
-	hDkFzCVm3N/MDlFiJtG1tYsRwpaX2P52DjPITAmByewSB88+ZYc4WlLi4IobLBMYBWchOXAW
-	khWzkMyahWTWAkaWVYwimXlluYmZOcZ6xdkZlXmZFXrJ+bmbGIFxuKz2T+QOxm8Xgg8xCnAw
-	KvHwFsyrShdiTSwrrsw9xCjBwawkwpulUZkuxJuSWFmVWpQfX1Sak1p8iFGag0VJnNfoW3mK
-	kEB6YklqdmpqQWoRTJaJg1OqgXHZow+XHXb57K8VyFPyvT3noKzw3RpP15ViIZJrXwruPsez
-	VqGK9fj56Z1+Ty5ZOimuddstcuS7mJjgtExxhWvl1/trClZLb3avvLJsbuSRd9rbvddsDt29
-	16P5Z7pTiMgpi81Mv2J2fQu6tqAuduOv0nNXdOatjm+wKJ9TekBSNLeFQzZ38UolluKMREMt
-	5qLiRAA/7REUvwIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXCNUOnRDeupTrd4MkmQ4uJPQYWc9avYbO4
-	/u0No8XK7mY2i8NzT7JaXN41h83i3pr/rBY9y2ssPi35xmLR9vkfq8XZ2edYLdqWbGSymLhG
-	1GL1RRaL2Y19jA78Hjtn3WX3WLCp1GPTqk42j02fJrF7dL29wuRxYsZvFo8nV6YzeSxsmMrs
-	sfjFByaP9gk7mT3OLDjC7vF5k1wATxSXTUpqTmZZapG+XQJXxu2dLxgLHnNW3P5Q1MB4n72L
-	kZNDQsBEYu6cc8wgNq+ApcS3D5eYuhg5OFgEVCQ+7mWECAtKnJz5hAXEFhWQl7h/awZQKxcH
-	s8ArJoklVzcygSSEBXwkXv59AZYQEbjBKHFh8yWwBUICZhIfTz4G62YWEJe49WQ+2AI2AS2J
-	HZ2pIGFOAXOJGfc3s0OUmEl0be1ihLDlJba/ncM8gZFvFpI7ZiGZNAtJyywkLQsYWVYximTm
-	leUmZuaY6RVnZ1TmZVboJefnbmIExtSy2j+TdjB+u+x+iFGAg1GJh7dgXlW6EGtiWXFl7iFG
-	CQ5mJRHeLI3KdCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8XuGpCUIC6YklqdmpqQWpRTBZJg5O
-	qQZGyw1Zm+beVqgoV3ITnvY08OTvWMFuyyNBN1KmCc3afnx30yGvJ1UOvyZ87W59v78t9ffh
-	NcnZf72zHBXy+KddN7nLbfAsJPVxpeOdp0vnT+HyUbK6U7pbZmHk5MoVizpiXPjMF26KK7tp
-	esne6fjdr2+Ejy3XyPkSvqJnkfHe/y3m/p+X7j/PpsRSnJFoqMVcVJwIAECNKbKlAgAA
-X-CFilter-Loop: Reflected
+X-Rspamd-Queue-Id: D67DE21161
+X-Spam-Score: -4.51
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
+On 12/24/24 03:52, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 
++CC RCU
 
-On 2024-12-13 3:02 AM, Uladzislau Rezki (Sony) wrote:
-> Hello!
+> A soft lockup issue was found in the product with about 56,000 tasks were
+> in the OOM cgroup, it was traversing them when the soft lockup was
+> triggered.
 > 
-> This is v2. It is based on the Linux 6.13-rc2. The first version is
-> here:
+> watchdog: BUG: soft lockup - CPU#2 stuck for 23s! [VM Thread:1503066]
+> CPU: 2 PID: 1503066 Comm: VM Thread Kdump: loaded Tainted: G
+> Hardware name: Huawei Cloud OpenStack Nova, BIOS
+> RIP: 0010:console_unlock+0x343/0x540
+> RSP: 0000:ffffb751447db9a0 EFLAGS: 00000247 ORIG_RAX: ffffffffffffff13
+> RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000ffffffff
+> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000247
+> RBP: ffffffffafc71f90 R08: 0000000000000000 R09: 0000000000000040
+> R10: 0000000000000080 R11: 0000000000000000 R12: ffffffffafc74bd0
+> R13: ffffffffaf60a220 R14: 0000000000000247 R15: 0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f2fe6ad91f0 CR3: 00000004b2076003 CR4: 0000000000360ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  vprintk_emit+0x193/0x280
+>  printk+0x52/0x6e
+>  dump_task+0x114/0x130
+>  mem_cgroup_scan_tasks+0x76/0x100
+>  dump_header+0x1fe/0x210
+>  oom_kill_process+0xd1/0x100
+>  out_of_memory+0x125/0x570
+>  mem_cgroup_out_of_memory+0xb5/0xd0
+>  try_charge+0x720/0x770
+>  mem_cgroup_try_charge+0x86/0x180
+>  mem_cgroup_try_charge_delay+0x1c/0x40
+>  do_anonymous_page+0xb5/0x390
+>  handle_mm_fault+0xc4/0x1f0
 > 
-> https://lore.kernel.org/linux-mm/20241210164035.3391747-4-urezki@gmail.com/T/
+> This is because thousands of processes are in the OOM cgroup, it takes a
+> long time to traverse all of them. As a result, this lead to soft lockup
+> in the OOM process.
 > 
-> The difference between v1 and v2 is that, the preparation process is
-> done in original place instead and after that there is one final move.
+> To fix this issue, call 'cond_resched' in the 'mem_cgroup_scan_tasks'
+> function per 1000 iterations. For global OOM, call
+> 'touch_softlockup_watchdog' per 1000 iterations to avoid this issue.
 > 
-> Uladzislau Rezki (Sony) (5):
->    rcu/kvfree: Initialize kvfree_rcu() separately
->    rcu/kvfree: Move some functions under CONFIG_TINY_RCU
->    rcu/kvfree: Adjust names passed into trace functions
->    rcu/kvfree: Adjust a shrinker name
->    mm/slab: Move kvfree_rcu() into SLAB
+> Fixes: 9cbb78bb3143 ("mm, memcg: introduce own oom handler to iterate only over its own threads")
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>  mm/memcontrol.c | 7 ++++++-
+>  mm/oom_kill.c   | 8 +++++++-
+>  2 files changed, 13 insertions(+), 2 deletions(-)
 > 
->   include/linux/slab.h |   1 +
->   init/main.c          |   1 +
->   kernel/rcu/tree.c    | 876 ------------------------------------------
->   mm/slab_common.c     | 880 +++++++++++++++++++++++++++++++++++++++++++
->   4 files changed, 882 insertions(+), 876 deletions(-)
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 65fb5eee1466..46f8b372d212 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1161,6 +1161,7 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+>  {
+>  	struct mem_cgroup *iter;
+>  	int ret = 0;
+> +	int i = 0;
+>  
+>  	BUG_ON(mem_cgroup_is_root(memcg));
+>  
+> @@ -1169,8 +1170,12 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+>  		struct task_struct *task;
+>  
+>  		css_task_iter_start(&iter->css, CSS_TASK_ITER_PROCS, &it);
+> -		while (!ret && (task = css_task_iter_next(&it)))
+> +		while (!ret && (task = css_task_iter_next(&it))) {
+> +			/* Avoid potential softlockup warning */
+> +			if ((++i & 1023) == 0)
+> +				cond_resched();
+>  			ret = fn(task, arg);
+> +		}
+>  		css_task_iter_end(&it);
+>  		if (ret) {
+>  			mem_cgroup_iter_break(memcg, iter);
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 1c485beb0b93..044ebab2c941 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -44,6 +44,7 @@
+>  #include <linux/init.h>
+>  #include <linux/mmu_notifier.h>
+>  #include <linux/cred.h>
+> +#include <linux/nmi.h>
+>  
+>  #include <asm/tlb.h>
+>  #include "internal.h"
+> @@ -430,10 +431,15 @@ static void dump_tasks(struct oom_control *oc)
+>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
+>  	else {
+>  		struct task_struct *p;
+> +		int i = 0;
+>  
+>  		rcu_read_lock();
+> -		for_each_process(p)
+> +		for_each_process(p) {
+> +			/* Avoid potential softlockup warning */
+> +			if ((++i & 1023) == 0)
+> +				touch_softlockup_watchdog();
 
-Sorry for the late reply, but better late than never...
+This might suppress the soft lockup, but won't a rcu stall still be detected?
 
-FWIW,
+>  			dump_task(p, oc);
+> +		}
+>  		rcu_read_unlock();
+>  	}
+>  }
 
-Acked-by: Hyeonggon Yoo <hyeonggon.yoo@sk.com>
-Tested-by: Hyeonggon Yoo <hyeonggon.yoo@sk.com>
-
-Thanks for all the efforts!
-
-By the way, any future plans how to take advantage of internal slab
-state?
-
---
-Hyeonggon
