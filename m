@@ -1,215 +1,267 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4037F10FD
-	for <rcu@vger.kernel.org>; Sun,  5 Jan 2025 19:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7540FDDBC
+	for <rcu@vger.kernel.org>; Mon,  6 Jan 2025 03:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736104890; cv=none; b=kOi7hfostrSMHCJULnuebkP/ZjFMWgE78X6/1LpuK5m9w4S6VHrOJXKbzGrDYbIchZMK6wkmuSR4+2HYwO43TdKxFttc6ck7INQMSkokIMosxXnI7wnLuIaezoFDiKnmPCaHCnN2zilKMzfhT1W8hENLH/SaL0KOqsvSeRsqET0=
+	t=1736133908; cv=none; b=VKDQylL07T25RgzkCqcziK63KlWI/vDEJeRbiPBxrbAPzuDqwcFMdrR0Ca2pIz0tSibIDCWEo+80fpTiXjtv73pvMSpiVdvyEBhWlPDJx3MLVNtaAM48pOTsFtMa5GrqiYQGNIrNsiGjY9qBQyFG226HBRDTtkv9GoVSMdOS17Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736104890; c=relaxed/simple;
-	bh=ZcawMcmMQE2FILtBYjPlvMrqAkfCLOJ3uGJk5xXKRIo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s+dhgHtPF4OmLig2E7hk210bHezPb1DEbY5++qit1Bz1yVffxxHyIWWNaodfmwUiRqDH7to5zOfB6haQKu7M/YFy9M2jEt+tNvQh5M1Vjt+jl0oh+x2g/4QaldsPlNtcVjxNS/cAAeK/ZdSOs6dmbpFUUJ0kXM/5oOzE6uN68wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOjKnFWL; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1736133908; c=relaxed/simple;
+	bh=41AAFZgDZIZZn9RfZjpSZBHdG0oRXvgFwHi2gPWys1g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fpV9tzbIFCqjJ6ATch4RcoCkRGlflVJeBThkffJ7F2pYIwW5x89ToFdTXIOoUQb/8id94AXBLdJkXgJdQfgEAbdk3Wjuo6l07BjxX7sGOXCrxPG0/p7xaFsyNzO3zHCg9pc8ynOts/7vlBjr5723w+2Pkwr2IN1empGMJPOlXog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CbIT1v50; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOjKnFWL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C630AC4CED0;
-	Sun,  5 Jan 2025 19:21:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736104889;
-	bh=ZcawMcmMQE2FILtBYjPlvMrqAkfCLOJ3uGJk5xXKRIo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=jOjKnFWLJvTMnsX6az7HbYpKqX1GZ4hfFoIAVWduw1XLpdIJwxDljDg4FwVqUuQI7
-	 imY1qlslROFv+d5YpEZSCyqXUbyBfOiFgOCfwbhnbERvkfhDGk2OFALO/rrA7cWaUZ
-	 0wvT/0kpMyYvMFpU+QXJF+mY1pVB30SynPLwDtHExsDRZqj85Ivr3Q8/lZLrzjlQmA
-	 e0wS9H7FEbQu9kbfybQCw5+RuYnOT9QLNHHb4igQQ4Xo4yuKBDg+1peMb9dGZ6pSM5
-	 k0IDR0pHt8xkBt21TReqCodTWqffF1WSCHnOFGJlZWRuV+6f+MOfdIiap+9Yxv5X7X
-	 mkboIkRXv3MPA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 63794CE0B73; Sun,  5 Jan 2025 11:21:29 -0800 (PST)
-Date: Sun, 5 Jan 2025 11:21:29 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Karim Manaouil <kmanaouil.dev@gmail.com>
-Cc: rcu@vger.kernel.org
-Subject: Re: Taking page faults in RCU critical sections
-Message-ID: <b64b0008-40df-426e-9a9e-a1f80ac63f90@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250102182343.vlgzo6wjf5abqxol@ed.ac.uk>
- <afa3b043-0591-463e-8b61-21db547a25ad@paulmck-laptop>
- <20250104205619.juog4hsn4vramp6u@ed.ac.uk>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CbIT1v50"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21636268e43so12796565ad.2
+        for <rcu@vger.kernel.org>; Sun, 05 Jan 2025 19:25:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736133906; x=1736738706; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qwu0CGLfx4PBv0aP19byG7/qRPpn0POPKp0Znpy+smk=;
+        b=CbIT1v50Uiv1JbvG5dYDNtNpSoS+tPrCdJaY17ACnvZ5OHThmauB7iAd+ctnhQ1Zc/
+         foqXlQ4tiMtA6dGCEsVnisKPcFgxtfx2tmXcozjH1/CjsOu+hQRBKae8Els+qA7mqTz9
+         u6ALj8Len0ltZXsEuKp3nllUvn/JW9PvcAyzpQE2jPtf3RgNVwA8EqfHP/ABF0PIMshG
+         88M3UUAQ/wyl8/jP/Qrbo2C5k5S/dC5lbt2UIP7EbUpDAiQLAOVt2HLZocNukkSOcXgq
+         srnxeyMHt2BW/Vuoz4phAP/wDTa38ZpGBFUcfc+JYaNvsrXcszATXnR5hOBxLllgwE96
+         4BvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736133906; x=1736738706;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qwu0CGLfx4PBv0aP19byG7/qRPpn0POPKp0Znpy+smk=;
+        b=FNH+3k9CnAFr5IR7kq9HYlbahp/w4XL64eMtjV7adFwTzoTTblaAbMX+ZYT4kkTDlS
+         9vSHweMGKJYYTn4cFi4jqEmIBBGE1VXUCpGi0JKXUcvvBgo1XNFomLQeFGEqR44i/J5w
+         8wAL9Hqna9nmQukYNIPW1niicG3AHV1AXA/ho8TT/Fvz4TesgbXWhmKbPE8ASgSumfqF
+         FtT9LdTlcZvS6VGTHnlKT8z3RCKkt75MClS7GE2JvcKwXvlXgDIE3tCvjV/aMxMwqYBQ
+         RKX0yXZiUq+lyAJNXVexovdeir4CJU8MMa2LB7qzRyy3RJegv20njzocNO8OdDijcrms
+         2BsA==
+X-Forwarded-Encrypted: i=1; AJvYcCWim+Cjf9wuDUKfE37/MfyW3I4FqkFqUgcHM8KX8O1fCgQ+fYPSLdMMXStIc/0gO20bE3g=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxdvve/ST5p73y5AXZDypeZHFUuQAsUWdItfkhcTohZ2HDX1Ga6
+	gUqv9ZUNoV0U1KBWFcHIj2rvo4RKJXNMx4mHPXQn19VSkYNe0IYtg9daCPqLjWXozNbItT4OxuM
+	C6dkhnUjK/oyzB7/67Uum5ukyDRQ=
+X-Gm-Gg: ASbGncs+gw3Fzrk23CCZgIPN9Y5iq6MQxUTyYWdB2Q+e2LZOkVLMEntB5flROgaI4jr
+	bbVqo4A+e2Yi3tgr8lf6PEgfoBfGsrj26CAIGSPk=
+X-Google-Smtp-Source: AGHT+IEd9uX8m62UbCkIiqMruS24B5gEb7kpnbKEoxfd8QD3vky/MOHt+yDs5UgtyZvPgih7cjAnP+84f7NsF2hO8po=
+X-Received: by 2002:a17:902:e5c7:b0:215:bf1b:a894 with SMTP id
+ d9443c01a7336-219e6eb5bffmr826923375ad.24.1736133905685; Sun, 05 Jan 2025
+ 19:25:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250104205619.juog4hsn4vramp6u@ed.ac.uk>
+References: <202412311203.ca7bddba-lkp@intel.com> <CALm+0cWOxUm_hrNe4UP4Z-vyr4RCOw+dc=kCBTgsyjHFHiHDsg@mail.gmail.com>
+ <949f6251-d411-45ef-9f85-d5d069b90b0e@paulmck-laptop> <Z3Ym/DDtGOPamGjZ@xsang-OptiPlex-9020>
+ <c8c4c6d6-ad52-4cd2-ba1f-c442da4432af@paulmck-laptop> <CALm+0cVbaJuMWMkU4g_6inCKiBVaVD3iixvBrfMJTqZ-3OUCvg@mail.gmail.com>
+ <c2561f0c-9bc1-4492-b9dd-655502f101f7@paulmck-laptop>
+In-Reply-To: <c2561f0c-9bc1-4492-b9dd-655502f101f7@paulmck-laptop>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Mon, 6 Jan 2025 11:24:54 +0800
+Message-ID: <CALm+0cWoK_+xMxZ1xddZGt9KxuUqkW13fqwtOm9NtBEd+LqBFQ@mail.gmail.com>
+Subject: Re: [paulmckrcu:dev.2024.12.24a] [srcu] 9216c28c6a: BUG:unable_to_handle_page_fault_for_address
+To: paulmck@kernel.org
+Cc: Oliver Sang <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Jan 04, 2025 at 08:56:19PM +0000, Karim Manaouil wrote:
-> On Thu, Jan 02, 2025 at 11:16:11AM -0800, Paul E. McKenney wrote:
-> > On Thu, Jan 02, 2025 at 06:23:43PM +0000, Karim Manaouil wrote:
-> > > Hi Paul,
-> > > 
-> > > First, I wish you a happy new year!
-> > 
-> > Hello, Karim, and a very happy square new year to you and yours as well!
-> > I have added the rcu email list in case someone else has ideas.
-> > 
-> > > I am working on implementing page migration for some types of kernel
-> > > memory. My technique is to remap those kernel pages in vmap/vmalloc 
-> > > area and allow the kernel to take page faults during page migration.
-> > > 
-> > > However, I have the problem of spinlocks and RCU critical sections.
-> > > A page fault can occur while the kernel is inside an RCU read critical
-> > > section. For example, in fs/dcache.c:dget_parent():
-> > > 
-> > > rcu_read_lock()
-> > > seq = raw_seqcount_begin(&dentry->d_seq);
-> > > rcu_read_unlock()
-> > > 
-> > > If the kernel page where "dentry" belongs to is undergoing migration,
-> > > a page fault could occur on the CPU executing the code above, when the
-> > > migration thread (running on another CPU) clears the corresponding 
-> > > PTE entry in vmap and flushes the TLB (but the new page is not mapped
-> > > yet).
-> > > 
-> > > The page table entries are replaced by migration entries, and the CPU,
-> > > on which the page fault happened, will have to wait or spin in the page
-> > > fault handler until the migration is complete (success or failure).
-> > > 
-> > > With calssical RCU, I cannot wait in the page fault handler (like it's
-> > > done in migration_entry_wait()) because that's explicit blocking and 
-> > > that's prohihited.
-> > 
-> > Indeed it is, and by design.
-> > 
-> > > I tried to spin in the fault handler with something like
-> > > 
-> > > for (;;) {
-> > > 	pte = ptep_get_lockless(ptep);
-> > > 	if (pte_none(pte) || pte_present(pte))
-> > > 		break;
-> > > 	cpu_relax();
-> > > }
-> > > 
-> > > But the entire system stopped working (I assume because rcu_synchronise()
-> > > on other CPUs is waiting for us and we are waiting for other CPUs, so a
-> > > deadlock situation).
-> > > 
-> > > I realised that I need something like preempt RCU. Would the cpu_relax()
-> > > above work with preempt RCU?
-> > 
-> > You would need something like cond_resched(), but you cannot use this
-> > within an RCU read-side critical section.  And spinning in this manner
-> > within a fault handler is not a good idea.  You will likely get lockups
-> > and stalls of various sorts.
-> > 
-> > Preemptible RCU permits preemption, but not unconditional blocking.
-> > The reason for this is that a preempted reader can be subjected to RCU
-> > priority boosting, but if a reader were to block, priority boosting
-> > would not help.
-> > 
-> > The reason that we need priority boosting to help is that blocked RCU
-> > readers stall the current RCU grace period, which means that any memory
-> > waiting to be freed continues waiting, eventually resulting in OOM.
-> > Of course, OOMs are not good for your kernel's uptime, hence the
-> > restriction against general blocking in RCU readers.
-> 
-> I believe not only OOM, but it could also lead to a deadlock, as I observed 
-> in my small experiments. Basically, one CPU (0) was blocked inside an RCU
-> region, waiting for another CPU (1), running the page migration/compaction
-> thread, but the migration thread itself (on CPU1) was trying to free some 
-> memory and it had to first wait for the existing RCU readers, amongst them
-> CPU0, and that lead to circular waiting (CPU0 waiting for CPU1, but
-> CPU1 ends up waiting for CPU0).
+>
+> On Fri, Jan 03, 2025 at 01:50:50PM +0800, Z qiang wrote:
+> > >
+> > > On Thu, Jan 02, 2025 at 01:41:16PM +0800, Oliver Sang wrote:
+> > > > hi, Zqiang, hi, Paul,
+> > > >
+> > > > On Tue, Dec 31, 2024 at 08:19:44AM -0800, Paul E. McKenney wrote:
+> > > > > On Tue, Dec 31, 2024 at 03:16:25PM +0800, Z qiang wrote:
+> > > >
+> > > > [...]
+> > > >
+> > > > > > >
+> > > > > > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > > > > > the same patch/commit), kindly add following tags
+> > > > > > > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > > > > > | Closes: https://lore.kernel.org/oe-lkp/202412311203.ca7bddba-lkp@intel.com
+> > > > > > >
+> > > > > >
+> > > > > > Please try the following modifications:
+> > > >
+> > > > yes, the following modifications fix the issues we found for 9216c28c6a. thanks!
+> > > >
+> > > > Tested-by: kernel test robot <oliver.sang@intel.com>
+> > >
+> > > Thank you, and I will apply this during my next rebase.
+> > >
+> > > Zqiang, unless you tell me otherwise, I will add your Co-developed-by
+> > > and Signed-off-by.
+> > >
+> > > Either way, Happy Square New Year!
+> >
+> > Thank you,  Happy New Year!  :)
+>
+> And here you go!  Please let me know of anything I missed.
+>
+> And thank you for saving me the time it would have taken to track
+> this one down.  ;-)
+>
+>                                                         Thanx, Paul
+>
+> ------------------------------------------------------------------------
+>
+> commit 71c893e6d1857d1e4ea37aec557d734a560fdb39
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Thu Dec 19 16:08:54 2024 -0800
+>
+>     srcu: Make SRCU readers use ->srcu_ctrs for counter selection
+>
+>     This commit causes SRCU readers to use ->srcu_ctrs for counter
+>     selection instead of ->srcu_idx.  This takes another step towards
+>     array-indexing-free SRCU readers.
+>
+>     [ paulmck: Apply kernel test robot feedback. ]
+>
+>     Co-developed-by: Z qiang <qiang.zhang1211@gmail.com>
+>     Signed-off-by: Z qiang <qiang.zhang1211@gmail.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>     Tested-by: kernel test robot <oliver.sang@intel.com>
+>
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index c794d599db5c1..1b01ced61a45b 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -101,6 +101,7 @@ struct srcu_usage {
+>   */
+>  struct srcu_struct {
+>         unsigned int srcu_idx;                  /* Current rdr array element. */
+> +       struct srcu_ctr __percpu *srcu_ctrp;
+>         struct srcu_data __percpu *sda;         /* Per-CPU srcu_data array. */
+>         struct lockdep_map dep_map;
+>         struct srcu_usage *srcu_sup;            /* Update-side data. */
+> @@ -167,6 +168,7 @@ struct srcu_struct {
+>  #define __SRCU_STRUCT_INIT(name, usage_name, pcpu_name)                                                \
+>  {                                                                                              \
+>         .sda = &pcpu_name,                                                                      \
+> +       .srcu_ctrp = &pcpu_name.srcu_ctrs[0],                                                   \
+>         __SRCU_STRUCT_INIT_COMMON(name, usage_name)                                             \
+>  }
+>
+> @@ -222,13 +224,12 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
+>   */
+>  static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
+>  {
+> -       int idx;
+> +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+>
+>         RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_lite().");
+> -       idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> -       this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter); /* Y */
+> +       this_cpu_inc(scp->srcu_locks.counter); /* Y */
+>         barrier(); /* Avoid leaking the critical section. */
+> -       return idx;
+> +       return scp - &ssp->sda->srcu_ctrs[0];
+>  }
+>
+>  /*
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index d7ee2f345e192..3bf7f41ad72b8 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -253,8 +253,10 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>         atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+>         INIT_DELAYED_WORK(&ssp->srcu_sup->work, process_srcu);
+>         ssp->srcu_sup->sda_is_static = is_static;
+> -       if (!is_static)
+> +       if (!is_static) {
+>                 ssp->sda = alloc_percpu(struct srcu_data);
+> +               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+> +       }
+>         if (!ssp->sda)
+>                 goto err_free_sup;
 
-Yes, making an RCU read-side critical section wait, whether directly or
-indirectly, on an RCU grace period is a good way to achieve deadlock.
+ssp->srcu_ctrp should be assigned a value under the condition that
+ssp->sda is  allocated successfully.
 
-> > Please note that spinlocks have this same restriction.  Sleeping while
-> > holding a spinlock can result in deadlock, which is even worse for your
-> > kernel's uptime.
-> > 
-> > > Do you have any ideas for how to properly approach this problem?
-> > 
-> > Here are a few to start with:
-> > 
-> > 0.	Look at the existing code that migrates processes and/or kernels
-> > 	from one system to another, and then do whatever they do.
-> > 
-> > 1.	Allocate the needed memory up front, before acquiring the
-> > 	spinlocks and before entering the RCU readers.
-> > 
-> > 2.	Move the existing spinlocks to mutexes and the existing uses
-> > 	of RCU to SRCU, perhaps using srcu_read_lock_lite().  But note
-> > 	that a great deal of review and benchmarking will be necessary
-> > 	to prove that there are no regressions.  And that changes of
-> > 	this sort in mm almost always result in regressions.
-> > 
-> > 	So I strongly advise you not to take this approach lightly.
-> > 
-> > 3.	Your ideas here!
-> 
-> For (0), it seems that most of the solutions along those lines are "stop
-> the world" kind of solutions, which is not ideal.
+-       if (!is_static) {
++       if (!is_static)
+                ssp->sda = alloc_percpu(struct srcu_data);
+-               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+-       }
+        if (!ssp->sda)
+                goto err_free_sup;
++       if (!is_static)
++               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
 
-How about the solutions that are not "stop the world"?
 
-> I thought about (2) before I sent you the email, but then I was
-> skeptical for the same reasons you listed.
 
-Fair enough!
+>         init_srcu_struct_data(ssp);
+> @@ -742,12 +744,11 @@ EXPORT_SYMBOL_GPL(__srcu_check_read_flavor);
+>   */
+>  int __srcu_read_lock(struct srcu_struct *ssp)
+>  {
+> -       int idx;
+> +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+>
+> -       idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> -       this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter);
+> +       this_cpu_inc(scp->srcu_locks.counter);
+>         smp_mb(); /* B */  /* Avoid leaking the critical section. */
+> -       return idx;
+> +       return scp - &ssp->sda->srcu_ctrs[0];
+>  }
+>  EXPORT_SYMBOL_GPL(__srcu_read_lock);
+>
+> @@ -772,13 +773,11 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+>   */
+>  int __srcu_read_lock_nmisafe(struct srcu_struct *ssp)
+>  {
+> -       int idx;
+> -       struct srcu_data *sdp = raw_cpu_ptr(ssp->sda);
+> +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
 
-> I believe that another variation of (2) is the solution to this problem.
-> 
-> In fact, there is a very small window in which an RCU reader can trigger
-> a page fault, which is the window between flushing the TLB and updating
-> the page table entry.
-> 
-> This makes think that to prevent the deadlock situation above, I need to 
-> make sure that the page migration/compaction path should never wait for RCU
-> readers. In this case, the RCU reader will wait (spinning) for a bounded
-> amount of time which is the amount of time needed to close the window
-> described above: copy the contents of the old page to the new page, update
-> the page table entry and make the writes visible to the spinning RCU reader,
-> no blocking, no scheduling and no grace periods to wait for.
-> 
-> Do you think this is a sane approach? Obviously one down side is
-> burning CPU cycles while spinning, but it should be a small enough
-> amount of time.
+Should this be the case?
 
-Maybe?
+struct srcu_ctr  *scp = raw_cpu_ptr(ssp->srcu_ctrp);
 
-If you are running in a guest OS, can vCPU preemption cause trouble?
-There are lots of moving parts in TLB flushing, so have you checked all
-the ones that you need to in this case?
+>
+> -       idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> -       atomic_long_inc(&sdp->srcu_ctrs[idx].srcu_locks);
+> +       atomic_long_inc(&scp->srcu_locks);
+>         smp_mb__after_atomic(); /* B */  /* Avoid leaking the critical section. */
+> -       return idx;
+> +       return scp - &ssp->sda->srcu_ctrs[0];
+>  }
+>  EXPORT_SYMBOL_GPL(__srcu_read_lock_nmisafe);
+>
+> @@ -1152,6 +1151,8 @@ static void srcu_flip(struct srcu_struct *ssp)
+>         smp_mb(); /* E */  /* Pairs with B and C. */
+>
+>         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1); // Flip the counter.
+> +       WRITE_ONCE(ssp->srcu_ctrp,
+> +                  &ssp->sda->srcu_ctrs[!(ssp->srcu_ctrp - &ssp->sda->srcu_ctrs[0])]);
+>
+>         /*
+>          * Ensure that if the updater misses an __srcu_read_unlock()
+> @@ -1998,6 +1999,7 @@ static int srcu_module_coming(struct module *mod)
+>         for (i = 0; i < mod->num_srcu_structs; i++) {
+>                 ssp = *(sspp++);
+>                 ssp->sda = alloc_percpu(struct srcu_data);
+> +               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+>                 if (WARN_ON_ONCE(!ssp->sda))
+>                         return -ENOMEM;
 
-One (rough!) rule of thumb is that if you can use a spinlock to protect
-the race window you are concerned about, then it is OK to spin waiting
-for that race window from within an RCU read-side critical section.
 
-But as always, this rule is no substitute for understanding the
-interactions.
+-               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+                if (WARN_ON_ONCE(!ssp->sda))
+                        return -ENOMEM;
++               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
 
-							Thanx, Paul
 
-> > > Last question, do I need the -rt kernel for preempt RCU?
-> > 
-> > No, CONFIG_PREEMPT=y suffices.
-> > 
-> > Note that CONFIG_PREEMPT_RT=y, AKA -rt, also makes spinlocks (but not
-> > raw spinlocks) be limited sleeplocks, and thus allows RCU read-side
-> > critical sections to block when acquiring these sleeping "spinlocks".
-> > But this is OK, because all of this is still subject to priority boosting.
-> > 
-> > 							Thanx, Paul
-> 
-> Thank you!
-> 
-> -- 
-> Best,
-> Karim
-> Edinburgh University
+Thanks
+Zqiang
+
+>         }
