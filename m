@@ -1,278 +1,286 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B531D79A9;
-	Mon,  6 Jan 2025 08:45:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E44B17C9E8;
+	Tue,  7 Jan 2025 05:50:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736153157; cv=none; b=MFI+/KMJNIedChi8/zY4FXzvUYHNKorzYp1BQkCLPNpaVqnM9tWDjfLG1TDTiV4Y0iy8LgUgn64iDi8wJPBRm/sFe7rXb2YML0Zv5gQMydDI/+yJLBOQoXaBDb3YN28dJUPP59NIWcYMrtlQnYWOgz4GR/Ef81DykcgbFvbCF8U=
+	t=1736229051; cv=none; b=TeUzeeB2QUXiEPnTSJtAopuxrG349v/3BaLWEe2dURPfXv9/UkxSFAWbqlj9dwNPXTXebkUo2lS1QyjtCgB3hlMM6eYIW9ne9rznSbvLM8FjNq5bbwGE5duRny0LAuCMz+LE+iqRW5DjzjHX8iZ6xemvClb5/UcPyuoy0dae4EE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736153157; c=relaxed/simple;
-	bh=f8oKskr2lqOfA5GWBWO7bfkXy9cxLL8a5PV2VMOAHZs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e+tSSje3DjGNlqftxyD10x/SFie644vi3D5vfCWbDdMnddfUcYTvTC8+L5bx8xCw45MAl0W9JDBmwEMWlwj9KDAHINKZ1xQvcHt9MDtbT6TAZCbhV+5UQnKJ6y7K0EBOn5bMUgEayRyfJLXAHLhmmrbBOUuh5VuZtjbGtaplJ8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=taYyu+78; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=T850A2Nq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0yTKeAaP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4iJa5KHa; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1736229051; c=relaxed/simple;
+	bh=mPqkHolay7yXa56tkt6buDJ2oLJOcqqZ3s/yJ3UqDsk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s+XAWAqqgP9N7++P0ubO9SoBJPUFXvvcfjctCcnuAgciNh6Nc43sSrI1gnYuPbdzPIJufNwv1FBZWvwjNX0vQO1ExkmcVBHOplANLKPYtej6umSGGvRRL9zgTECAlrwX631iBuvdRUjNTsOTrZeXBFwyZmjs8GIbisXBvfT/aiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i17FGAdM; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="taYyu+78";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="T850A2Nq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0yTKeAaP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4iJa5KHa"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D67DE21161;
-	Mon,  6 Jan 2025 08:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736153153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
-	b=taYyu+78nxoy1hBhtbsfzYwd1apDoVWptqLd9jL/ejhlPz5WjIT4oD+puSslPf3FhMHWXm
-	OCtFoBiVf+jrDBwMeHaa4R5HGNLN3ECufho6AurtKVUl/IQIzy4RmUFE5+cYlhD5L//KcE
-	nKy3PHhVFUG2IWgYSkfkvLSkYeGtdO0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736153153;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
-	b=T850A2NqzVzxD/inszYRD1cAzHEBLJ0JmybNcTdy37P8qcWXoP3Xzet4w3PkbsUKvO51Xe
-	wI8oWwiNf8mK8IDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0yTKeAaP;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4iJa5KHa
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736153152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
-	b=0yTKeAaPuMt7aMZVg/9RvSJv8l2+JoBrK6KVp/9pWoW+8DQe2UsgFH+LZo8j3wLmm8dQyw
-	GDe0xr99V3B9Nn9jCXK5kZk7bqZ8fVmEjePlGx+/jun3CGC1jW+Zeis7bVmPznZ0eMFl/g
-	mRB2r2rqy/CP2V29yw8JO11cJmhS4xc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736153152;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=8unrTvKae6m1mp7QwRwUZgVhor5hVomY1M8CRyhx1+4=;
-	b=4iJa5KHa5G3udu4cYxTwrhisV3qDcqzgp9iKYP1HmNAOR1KCV1nBJqTtUQwANb1CyUR9MD
-	SVvPUSSrU4UxLGBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC94C137DA;
-	Mon,  6 Jan 2025 08:45:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jYUVKUCYe2cBYwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 06 Jan 2025 08:45:52 +0000
-Message-ID: <1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
-Date: Mon, 6 Jan 2025 09:45:52 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i17FGAdM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2375AC4CED6;
+	Tue,  7 Jan 2025 05:50:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736229051;
+	bh=mPqkHolay7yXa56tkt6buDJ2oLJOcqqZ3s/yJ3UqDsk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=i17FGAdM17lGkT5M3UjJfy6IXvW59XK4wxbVE08TgVeyhcM9maSLk74yzlBJ3CFqG
+	 lgNO6F0MM6t7UoPtY4tdSmtex97z9gOEuI31UueH+88ngcRjIr9QgoUORmUws9QM+9
+	 +ZfXXdA7ZGcy204aJh6GoVgM+W8DGrezTN7UPYpNbLvoLAU9WH2RNeLd0X4dp3NltL
+	 DzvAKFHMyi31SNsWV/HCT9nVrMD9Wjd+z1e7OlDvipV0faFXWjbWkKTpKgrlST8WW6
+	 uN19i6Uz8TPcXfi2UX4ft6pcAtgt8dzVUmQvY8JRPJVJEBOCLPlC88quX4eZ4+A/5v
+	 dKDeS/CSKMwSQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9732ACE0C4A; Mon,  6 Jan 2025 21:50:50 -0800 (PST)
+Date: Mon, 6 Jan 2025 21:50:50 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Z qiang <qiang.zhang1211@gmail.com>
+Cc: Oliver Sang <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, rcu@vger.kernel.org
+Subject: Re: [paulmckrcu:dev.2024.12.24a] [srcu] 9216c28c6a:
+ BUG:unable_to_handle_page_fault_for_address
+Message-ID: <8f42f7ac-3d5d-43c7-a646-fe46576397ff@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202412311203.ca7bddba-lkp@intel.com>
+ <CALm+0cWOxUm_hrNe4UP4Z-vyr4RCOw+dc=kCBTgsyjHFHiHDsg@mail.gmail.com>
+ <949f6251-d411-45ef-9f85-d5d069b90b0e@paulmck-laptop>
+ <Z3Ym/DDtGOPamGjZ@xsang-OptiPlex-9020>
+ <c8c4c6d6-ad52-4cd2-ba1f-c442da4432af@paulmck-laptop>
+ <CALm+0cVbaJuMWMkU4g_6inCKiBVaVD3iixvBrfMJTqZ-3OUCvg@mail.gmail.com>
+ <c2561f0c-9bc1-4492-b9dd-655502f101f7@paulmck-laptop>
+ <CALm+0cWoK_+xMxZ1xddZGt9KxuUqkW13fqwtOm9NtBEd+LqBFQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
-To: Chen Ridong <chenridong@huaweicloud.com>, akpm@linux-foundation.org,
- mhocko@kernel.org, hannes@cmpxchg.org, yosryahmed@google.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- davidf@vimeo.com, handai.szj@taobao.com, rientjes@google.com,
- kamezawa.hiroyu@jp.fujitsu.com, RCU <rcu@vger.kernel.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
-References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <20241224025238.3768787-1-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: D67DE21161
-X-Spam-Score: -4.51
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALm+0cWoK_+xMxZ1xddZGt9KxuUqkW13fqwtOm9NtBEd+LqBFQ@mail.gmail.com>
 
-On 12/24/24 03:52, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
-
-+CC RCU
-
-> A soft lockup issue was found in the product with about 56,000 tasks were
-> in the OOM cgroup, it was traversing them when the soft lockup was
-> triggered.
+On Mon, Jan 06, 2025 at 11:24:54AM +0800, Z qiang wrote:
+> >
+> > On Fri, Jan 03, 2025 at 01:50:50PM +0800, Z qiang wrote:
+> > > >
+> > > > On Thu, Jan 02, 2025 at 01:41:16PM +0800, Oliver Sang wrote:
+> > > > > hi, Zqiang, hi, Paul,
+> > > > >
+> > > > > On Tue, Dec 31, 2024 at 08:19:44AM -0800, Paul E. McKenney wrote:
+> > > > > > On Tue, Dec 31, 2024 at 03:16:25PM +0800, Z qiang wrote:
+> > > > >
+> > > > > [...]
+> > > > >
+> > > > > > > >
+> > > > > > > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > > > > > > the same patch/commit), kindly add following tags
+> > > > > > > > | Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > > > > > > | Closes: https://lore.kernel.org/oe-lkp/202412311203.ca7bddba-lkp@intel.com
+> > > > > > > >
+> > > > > > >
+> > > > > > > Please try the following modifications:
+> > > > >
+> > > > > yes, the following modifications fix the issues we found for 9216c28c6a. thanks!
+> > > > >
+> > > > > Tested-by: kernel test robot <oliver.sang@intel.com>
+> > > >
+> > > > Thank you, and I will apply this during my next rebase.
+> > > >
+> > > > Zqiang, unless you tell me otherwise, I will add your Co-developed-by
+> > > > and Signed-off-by.
+> > > >
+> > > > Either way, Happy Square New Year!
+> > >
+> > > Thank you,  Happy New Year!  :)
+> >
+> > And here you go!  Please let me know of anything I missed.
+> >
+> > And thank you for saving me the time it would have taken to track
+> > this one down.  ;-)
+> >
+> >                                                         Thanx, Paul
+> >
+> > ------------------------------------------------------------------------
+> >
+> > commit 71c893e6d1857d1e4ea37aec557d734a560fdb39
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Thu Dec 19 16:08:54 2024 -0800
+> >
+> >     srcu: Make SRCU readers use ->srcu_ctrs for counter selection
+> >
+> >     This commit causes SRCU readers to use ->srcu_ctrs for counter
+> >     selection instead of ->srcu_idx.  This takes another step towards
+> >     array-indexing-free SRCU readers.
+> >
+> >     [ paulmck: Apply kernel test robot feedback. ]
+> >
+> >     Co-developed-by: Z qiang <qiang.zhang1211@gmail.com>
+> >     Signed-off-by: Z qiang <qiang.zhang1211@gmail.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >     Tested-by: kernel test robot <oliver.sang@intel.com>
+> >
+> > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> > index c794d599db5c1..1b01ced61a45b 100644
+> > --- a/include/linux/srcutree.h
+> > +++ b/include/linux/srcutree.h
+> > @@ -101,6 +101,7 @@ struct srcu_usage {
+> >   */
+> >  struct srcu_struct {
+> >         unsigned int srcu_idx;                  /* Current rdr array element. */
+> > +       struct srcu_ctr __percpu *srcu_ctrp;
+> >         struct srcu_data __percpu *sda;         /* Per-CPU srcu_data array. */
+> >         struct lockdep_map dep_map;
+> >         struct srcu_usage *srcu_sup;            /* Update-side data. */
+> > @@ -167,6 +168,7 @@ struct srcu_struct {
+> >  #define __SRCU_STRUCT_INIT(name, usage_name, pcpu_name)                                                \
+> >  {                                                                                              \
+> >         .sda = &pcpu_name,                                                                      \
+> > +       .srcu_ctrp = &pcpu_name.srcu_ctrs[0],                                                   \
+> >         __SRCU_STRUCT_INIT_COMMON(name, usage_name)                                             \
+> >  }
+> >
+> > @@ -222,13 +224,12 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
+> >   */
+> >  static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
+> >  {
+> > -       int idx;
+> > +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+> >
+> >         RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_lite().");
+> > -       idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> > -       this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter); /* Y */
+> > +       this_cpu_inc(scp->srcu_locks.counter); /* Y */
+> >         barrier(); /* Avoid leaking the critical section. */
+> > -       return idx;
+> > +       return scp - &ssp->sda->srcu_ctrs[0];
+> >  }
+> >
+> >  /*
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index d7ee2f345e192..3bf7f41ad72b8 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -253,8 +253,10 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> >         atomic_set(&ssp->srcu_sup->srcu_barrier_cpu_cnt, 0);
+> >         INIT_DELAYED_WORK(&ssp->srcu_sup->work, process_srcu);
+> >         ssp->srcu_sup->sda_is_static = is_static;
+> > -       if (!is_static)
+> > +       if (!is_static) {
+> >                 ssp->sda = alloc_percpu(struct srcu_data);
+> > +               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+> > +       }
+> >         if (!ssp->sda)
+> >                 goto err_free_sup;
 > 
-> watchdog: BUG: soft lockup - CPU#2 stuck for 23s! [VM Thread:1503066]
-> CPU: 2 PID: 1503066 Comm: VM Thread Kdump: loaded Tainted: G
-> Hardware name: Huawei Cloud OpenStack Nova, BIOS
-> RIP: 0010:console_unlock+0x343/0x540
-> RSP: 0000:ffffb751447db9a0 EFLAGS: 00000247 ORIG_RAX: ffffffffffffff13
-> RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000ffffffff
-> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000247
-> RBP: ffffffffafc71f90 R08: 0000000000000000 R09: 0000000000000040
-> R10: 0000000000000080 R11: 0000000000000000 R12: ffffffffafc74bd0
-> R13: ffffffffaf60a220 R14: 0000000000000247 R15: 0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f2fe6ad91f0 CR3: 00000004b2076003 CR4: 0000000000360ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  vprintk_emit+0x193/0x280
->  printk+0x52/0x6e
->  dump_task+0x114/0x130
->  mem_cgroup_scan_tasks+0x76/0x100
->  dump_header+0x1fe/0x210
->  oom_kill_process+0xd1/0x100
->  out_of_memory+0x125/0x570
->  mem_cgroup_out_of_memory+0xb5/0xd0
->  try_charge+0x720/0x770
->  mem_cgroup_try_charge+0x86/0x180
->  mem_cgroup_try_charge_delay+0x1c/0x40
->  do_anonymous_page+0xb5/0x390
->  handle_mm_fault+0xc4/0x1f0
+> ssp->srcu_ctrp should be assigned a value under the condition that
+> ssp->sda is  allocated successfully.
 > 
-> This is because thousands of processes are in the OOM cgroup, it takes a
-> long time to traverse all of them. As a result, this lead to soft lockup
-> in the OOM process.
-> 
-> To fix this issue, call 'cond_resched' in the 'mem_cgroup_scan_tasks'
-> function per 1000 iterations. For global OOM, call
-> 'touch_softlockup_watchdog' per 1000 iterations to avoid this issue.
-> 
-> Fixes: 9cbb78bb3143 ("mm, memcg: introduce own oom handler to iterate only over its own threads")
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->  mm/memcontrol.c | 7 ++++++-
->  mm/oom_kill.c   | 8 +++++++-
->  2 files changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 65fb5eee1466..46f8b372d212 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1161,6 +1161,7 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
->  {
->  	struct mem_cgroup *iter;
->  	int ret = 0;
-> +	int i = 0;
->  
->  	BUG_ON(mem_cgroup_is_root(memcg));
->  
-> @@ -1169,8 +1170,12 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
->  		struct task_struct *task;
->  
->  		css_task_iter_start(&iter->css, CSS_TASK_ITER_PROCS, &it);
-> -		while (!ret && (task = css_task_iter_next(&it)))
-> +		while (!ret && (task = css_task_iter_next(&it))) {
-> +			/* Avoid potential softlockup warning */
-> +			if ((++i & 1023) == 0)
-> +				cond_resched();
->  			ret = fn(task, arg);
-> +		}
->  		css_task_iter_end(&it);
->  		if (ret) {
->  			mem_cgroup_iter_break(memcg, iter);
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 1c485beb0b93..044ebab2c941 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -44,6 +44,7 @@
->  #include <linux/init.h>
->  #include <linux/mmu_notifier.h>
->  #include <linux/cred.h>
-> +#include <linux/nmi.h>
->  
->  #include <asm/tlb.h>
->  #include "internal.h"
-> @@ -430,10 +431,15 @@ static void dump_tasks(struct oom_control *oc)
->  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
->  	else {
->  		struct task_struct *p;
-> +		int i = 0;
->  
->  		rcu_read_lock();
-> -		for_each_process(p)
-> +		for_each_process(p) {
-> +			/* Avoid potential softlockup warning */
-> +			if ((++i & 1023) == 0)
-> +				touch_softlockup_watchdog();
+> -       if (!is_static) {
+> +       if (!is_static)
+>                 ssp->sda = alloc_percpu(struct srcu_data);
+> -               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+> -       }
+>         if (!ssp->sda)
+>                 goto err_free_sup;
+> +       if (!is_static)
+> +               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
 
-This might suppress the soft lockup, but won't a rcu stall still be detected?
+It doesn't hurt to assign NULL to ssp->srcu_ctrp on allocation failure.
 
->  			dump_task(p, oc);
-> +		}
->  		rcu_read_unlock();
->  	}
->  }
+Or am I missing something here?
 
+> >         init_srcu_struct_data(ssp);
+> > @@ -742,12 +744,11 @@ EXPORT_SYMBOL_GPL(__srcu_check_read_flavor);
+> >   */
+> >  int __srcu_read_lock(struct srcu_struct *ssp)
+> >  {
+> > -       int idx;
+> > +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+> >
+> > -       idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> > -       this_cpu_inc(ssp->sda->srcu_ctrs[idx].srcu_locks.counter);
+> > +       this_cpu_inc(scp->srcu_locks.counter);
+> >         smp_mb(); /* B */  /* Avoid leaking the critical section. */
+> > -       return idx;
+> > +       return scp - &ssp->sda->srcu_ctrs[0];
+> >  }
+> >  EXPORT_SYMBOL_GPL(__srcu_read_lock);
+> >
+> > @@ -772,13 +773,11 @@ EXPORT_SYMBOL_GPL(__srcu_read_unlock);
+> >   */
+> >  int __srcu_read_lock_nmisafe(struct srcu_struct *ssp)
+> >  {
+> > -       int idx;
+> > -       struct srcu_data *sdp = raw_cpu_ptr(ssp->sda);
+> > +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+> 
+> Should this be the case?
+> 
+> struct srcu_ctr  *scp = raw_cpu_ptr(ssp->srcu_ctrp);
+
+Good catch!  This is messed up.  I am now thinking in terms of something
+like this:
+
+	struct srcu_ctr *scp = this_cpu_ptr(READ_ONCE(ssp->srcu_ctrp));
+
+Except that I broke the CONFIG_NEED_SRCU_NMI_SAFE=y case at some point,
+and need to fix that first.  This commit works:
+
+c10edfa489eb ("srcu: Pull ->srcu_{un,}lock_count into a new srcu_ctr structure")
+
+I am now trying:
+
+71c893e6d185 ("srcu: Make SRCU readers use ->srcu_ctrs for counter selection")
+
+The trick is to apply this patch:
+
+------------------------------------------------------------------------
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 26ae869865a12..74809a083e2b5 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -66,7 +66,7 @@ config TREE_SRCU
+ 	  This option selects the full-fledged version of SRCU.
+ 
+ config NEED_SRCU_NMI_SAFE
+-	def_bool HAVE_NMI && !ARCH_HAS_NMI_SAFE_THIS_CPU_OPS && !TINY_SRCU
++	def_bool HAVE_NMI && !TINY_SRCU
+ 
+ config TASKS_RCU_GENERIC
+ 	def_bool TASKS_RCU || TASKS_RUDE_RCU || TASKS_TRACE_RCU
+------------------------------------------------------------------------
+
+Or run some system with CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS=n.
+
+> > -       idx = READ_ONCE(ssp->srcu_idx) & 0x1;
+> > -       atomic_long_inc(&sdp->srcu_ctrs[idx].srcu_locks);
+> > +       atomic_long_inc(&scp->srcu_locks);
+> >         smp_mb__after_atomic(); /* B */  /* Avoid leaking the critical section. */
+> > -       return idx;
+> > +       return scp - &ssp->sda->srcu_ctrs[0];
+> >  }
+> >  EXPORT_SYMBOL_GPL(__srcu_read_lock_nmisafe);
+> >
+> > @@ -1152,6 +1151,8 @@ static void srcu_flip(struct srcu_struct *ssp)
+> >         smp_mb(); /* E */  /* Pairs with B and C. */
+> >
+> >         WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1); // Flip the counter.
+> > +       WRITE_ONCE(ssp->srcu_ctrp,
+> > +                  &ssp->sda->srcu_ctrs[!(ssp->srcu_ctrp - &ssp->sda->srcu_ctrs[0])]);
+> >
+> >         /*
+> >          * Ensure that if the updater misses an __srcu_read_unlock()
+> > @@ -1998,6 +1999,7 @@ static int srcu_module_coming(struct module *mod)
+> >         for (i = 0; i < mod->num_srcu_structs; i++) {
+> >                 ssp = *(sspp++);
+> >                 ssp->sda = alloc_percpu(struct srcu_data);
+> > +               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+> >                 if (WARN_ON_ONCE(!ssp->sda))
+> >                         return -ENOMEM;
+> 
+> 
+> -               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+>                 if (WARN_ON_ONCE(!ssp->sda))
+>                         return -ENOMEM;
+> +               ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];
+
+Again, the assigment does not hurt anything, but in this case I agree
+that your way is more clear, so I will use that.
+
+							Thanx, Paul
