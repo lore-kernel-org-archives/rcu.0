@@ -1,62 +1,62 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F124400;
-	Thu,  9 Jan 2025 00:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E39176AB5;
+	Thu,  9 Jan 2025 02:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736383940; cv=none; b=FNbkIjloaVssCsDoNoh6wb+sIuuTrikSpOZhVZbQa5sUZRf9ZRjjzIDamnTPcuxQf0AoHEDwZKgkgFcs5AxiOVnzQimF0zZp2jiFDuD/aKMzavYoSMlk2r4SWILAIy+5Rpl0r/W0IPHZ1ZsTLQUNHLpOOXsuAFvznMZpuYf3dZA=
+	t=1736390019; cv=none; b=NXam33MF/PYTieANjJmf5jRuVqKrxYi4yiqz4GIfftvvS5Y9ZTIBPvpdossTkl/S0RBLl+KavIeGx+EvDYwXpHJNc4TF69oh1hyTAY8IkTaAWKxw7SKDsQMA/YvdpN2jmEqFuiL8I9JtvOEzno7kK3szLpuaxr6x1aYZEb4n000=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736383940; c=relaxed/simple;
-	bh=xYMJgqzospJElr/HNEcNQoIzi7g3DfZDcSBbvaqDHk8=;
+	s=arc-20240116; t=1736390019; c=relaxed/simple;
+	bh=gnKHNYGF41fHvWv3BsejTFbvY4r7/L2WhwYKcYQeIlE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QU/BrelXUMIGcrvNvh9sSh31KD4JXc67kjpDSrdGP+DBtwlL3dC9COeetyYadrwFuX1trEeZpdGyTsZDFoOr84whHGWJxY2t+g+p58a+T3uyYCEVL1ecwd6Adk3qfWuXMx/G1zem9njOyAYKendXef7cpP0+enS1BxATK+hJiDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PqWEGLem; arc=none smtp.client-ip=198.175.65.15
+	 Content-Type:Content-Disposition:In-Reply-To; b=qgCjIsfR5Y0J5T7Jfa4KlWBov7zIBREBpdnWBI+nX7ibG8ENxiLnKKgYu+1zcJ0PQUJlQo+BoJkDJz/rciVsUuA9tuyF5hztpUZHxat/a/yYgDrGORKj8pldGy36nGZiZiOBtdUndQyzlD1JRtjF7RP5ACYPSlGLTzYAqTICufg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DEtnX5WK; arc=none smtp.client-ip=192.198.163.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PqWEGLem"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DEtnX5WK"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736383938; x=1767919938;
+  t=1736390015; x=1767926015;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=xYMJgqzospJElr/HNEcNQoIzi7g3DfZDcSBbvaqDHk8=;
-  b=PqWEGLemizUjpiCbn38vt2XK4lWYB4cSSAxc/cwAGyEB0WTWVh9KnLCU
-   yQRG+j/0RcvF3iR0pTvRHKhMJJx8UwUStNlHE1K01Z8xT5QvihcIBJXGr
-   NjO6LcqEO64XX7O+nBfCZ+3hFFUyEiUKoSHB+K9Ncm8ZGtenkRQCJmSsY
-   gKDShI2rGyUUVfkH29tjhp6dmvOqCseue9dCbBxdpwvPo/3xpzO2EkRPb
-   NWmpaoD34hbwS7KKZJyZieYrCMPOdfdV7LSJI7rE8hPAUYihFhsjYMTrg
-   URcYktUG7lc7TZth6fjbuBpDNu+I4E7rmyyKbhg/2PdAoo8/WXPj0w/au
+  bh=gnKHNYGF41fHvWv3BsejTFbvY4r7/L2WhwYKcYQeIlE=;
+  b=DEtnX5WK85WjwzYrlC7DXb1hAyeIjVP7TkOKnxV8h51Bbrj5ZzgZyNop
+   oY+jEDbsce8a4Zaah+Z8JIGgBooGWDSONWDGhF7ahG1Zb1AsSzHpsXPRR
+   XSV37YPaD+RMW35ri1g8sa4as4EDvaX4zDZtWaUqF7HpQE7zlU2UEreBS
+   N++xmYdrb5wtWl8as9ANiwK7LTsRxWQekmhKPnQMzY12+Ebb7qH1iKpTw
+   4izo17/UUwyPcc8HCsedsmAjtJRC9Vk1N4FHRJLiFJiu+4giuB4Nykmd1
+   qIgcpzcQDx5ssqZEZsNvDON1r+J/sUDDmT/vohKEWOwn3oLEWjsjqeiSR
    Q==;
-X-CSE-ConnectionGUID: 2DAZoQKUQ0ymc07FwA4sHw==
-X-CSE-MsgGUID: cthxST1xS/O3DPfXQ7UH1A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11309"; a="40311212"
-X-IronPort-AV: E=Sophos;i="6.12,299,1728975600"; 
-   d="scan'208";a="40311212"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2025 16:52:18 -0800
-X-CSE-ConnectionGUID: 9cpPcIkGTmyEN7YbED7l2w==
-X-CSE-MsgGUID: wUEJlf6ATm6Dd+zBPAF0IQ==
+X-CSE-ConnectionGUID: RGUNc0mmS7KoNH7kWte6HA==
+X-CSE-MsgGUID: /3IxZliWSmurnC+phg8xCQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11309"; a="47211005"
+X-IronPort-AV: E=Sophos;i="6.12,300,1728975600"; 
+   d="scan'208";a="47211005"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2025 18:33:35 -0800
+X-CSE-ConnectionGUID: V+MgKG3aQy+vPZqUd7GyXw==
+X-CSE-MsgGUID: xJb4qjxISiyOdTuG4xkQjQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="126548450"
+X-IronPort-AV: E=Sophos;i="6.12,300,1728975600"; 
+   d="scan'208";a="103794909"
 Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 08 Jan 2025 16:52:14 -0800
+  by fmviesa009.fm.intel.com with ESMTP; 08 Jan 2025 18:33:32 -0800
 Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1tVgmS-000Grj-22;
-	Thu, 09 Jan 2025 00:52:12 +0000
-Date: Thu, 9 Jan 2025 08:51:14 +0800
+	id 1tViMU-000GwZ-0U;
+	Thu, 09 Jan 2025 02:33:30 +0000
+Date: Thu, 9 Jan 2025 10:32:55 +0800
 From: kernel test robot <lkp@intel.com>
 To: Yongliang Gao <leonylgao@gmail.com>, paulmck@kernel.org,
 	frederic@kernel.org, thunder.leizhen@huawei.com
-Cc: oe-kbuild-all@lists.linux.dev, frankjpliu@tencent.com,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Yongliang Gao <leonylgao@tencent.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	frankjpliu@tencent.com, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Yongliang Gao <leonylgao@tencent.com>
 Subject: Re: [PATCH] rcu/cpu_stall_cputime: fix the hardirq count for x86
  architecture
-Message-ID: <202501090842.SfI6QPGS-lkp@intel.com>
+Message-ID: <202501091016.QtqNWWih-lkp@intel.com>
 References: <20250108065716.2888148-1-leonylgao@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -82,21 +82,25 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Yongliang-Gao/rcu-cpu_sta
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
 patch link:    https://lore.kernel.org/r/20250108065716.2888148-1-leonylgao%40gmail.com
 patch subject: [PATCH] rcu/cpu_stall_cputime: fix the hardirq count for x86 architecture
-config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20250109/202501090842.SfI6QPGS-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250109/202501090842.SfI6QPGS-lkp@intel.com/reproduce)
+config: riscv-randconfig-002-20250109 (https://download.01.org/0day-ci/archive/20250109/202501091016.QtqNWWih-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250109/202501091016.QtqNWWih-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202501090842.SfI6QPGS-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202501091016.QtqNWWih-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   kernel/rcu/tree.c: In function 'rcu_watching_snap_recheck':
->> kernel/rcu/tree.c:960:71: error: implicit declaration of function 'arch_irq_stat_cpu' [-Wimplicit-function-declaration]
-     960 |                         rsrp->nr_hardirqs = kstat_cpu_irqs_sum(cpu) + arch_irq_stat_cpu(cpu);
-         |                                                                       ^~~~~~~~~~~~~~~~~
+>> kernel/rcu/tree.c:960:50: error: call to undeclared function 'arch_irq_stat_cpu'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+                           rsrp->nr_hardirqs = kstat_cpu_irqs_sum(cpu) + arch_irq_stat_cpu(cpu);
+                                                                         ^
+   In file included from kernel/rcu/tree.c:5743:
+>> kernel/rcu/tree_stall.h:439:29: error: call to undeclared function 'arch_irq_stat_cpu'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+                   kstat_cpu_irqs_sum(cpu) + arch_irq_stat_cpu(cpu) - rsrp->nr_hardirqs,
+                                             ^
+   2 errors generated.
 
 
 vim +/arch_irq_stat_cpu +960 kernel/rcu/tree.c
