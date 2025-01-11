@@ -1,128 +1,205 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0231619C556
-	for <rcu@vger.kernel.org>; Thu,  9 Jan 2025 19:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D83D170A26;
+	Sat, 11 Jan 2025 19:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736449664; cv=none; b=SaiEYXyD6NItKUDM/uKq90qXtEHfWD8Egnqb3wDjafgZW6w8LAobpejgvHax4YafudUId5VhSRI9QxCZT6Gtj2GZunUd+uDBLztE7Mqxzgq+P3uScz8ZMRTSWXsgBrRVyZefmltTNaO8VYTMTcNw2L5aQy8j8MIkEJ0+BTL0vxk=
+	t=1736624411; cv=none; b=OTIbMLnETwGezAT8rEQQLXjf+F5kbYHfAPoTY571l63zIn+0DMiLRuTTRKJ4f1i5FA6DjE2m+Qt9MOxS4lKtIfYUg8kyt7bdkeVMVV3HZb8v+KJ5pGvNx/ZxYBhuYAwvU2s4VhX74zqWAZUHdIg/qpiUmlX217hvN+Oy2LqhZiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736449664; c=relaxed/simple;
-	bh=DPkQ40FBUAaj9IHEH0Qec+XhXevOidtvsQHxrPGjdJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=udVte7Lds+E/I6k9WoRnN8WFms1bG7zmlGlFYNs6sq28jPxHXRy2Hb5pTrILN3Thsj6K+DWKyu3ASmuxRLuGEEGShLSOmzwtZyr/serJ8p2Du2vRtcnjWLHV8n+cTyrpT2IoaGCw4omo6QuGFAciUteAPYQKYyeaAqMlBLBAaaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uOEXCfZz; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1736624411; c=relaxed/simple;
+	bh=9/wyTfZoBHkUII6ciivpkaI4bhtYyJITFK5JfqTzx1k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bV6TaOuI5bNKv09gkM4h4xLZovjsWZ1X3PQ1K6zeDZEYRax4D3YWXQTfW6ZL4/DCHEfRWLnuIazgcs6P8Dd8k7ZFzVCWAI+hxqjVZbNNDrsVlzEPFxiwOJRMwKxRny6UYF3GGQx9OEZEvEuP9HQd3aBpjBx1Na2x1HhlZEkoRpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=utJrKl/L; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0lAPQHWg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=utJrKl/L; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0lAPQHWg; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uOEXCfZz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 699B8C4CED2;
-	Thu,  9 Jan 2025 19:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736449663;
-	bh=DPkQ40FBUAaj9IHEH0Qec+XhXevOidtvsQHxrPGjdJg=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=uOEXCfZzVKezzlC80jmDU+zt8jKuPsmh8gU56nS7XvMvwduFwww0989GGpOpKfhcD
-	 8Ny/8qTgq/L4jiTQPsj2OB7WTWRBy8KZfPwOlvbI0rR4LXwXmpyaPSlzUTlrNk8Kse
-	 4UTauw+BwRAcR56c5vlVqMSxTvwGlba/6jA2syn99Z+mr9d6h210/8zJFu3rm7JuTU
-	 OojE+LxxDCUAQNEu+4gVCmXruOP/h5HrlzZXG5w232yBXRIQZOCKNgt4vkMhWM+5ci
-	 fpL2R40mZZcIAtNfpaw+pM5tRxpivtYJkWRrYPoxwdOA4J6YSBFyqsbIpR3DZKn+Zc
-	 xxc4J9s1feaGQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D18CFCE0B6D; Thu,  9 Jan 2025 11:07:42 -0800 (PST)
-Date: Thu, 9 Jan 2025 11:07:42 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: frederic@kernel.org, boqun.feng@gmail.com, urezki@gmail.com,
-	neeraj.iitr10@gmail.com, joel@joelfernandes.org
-Subject: [PATCH RFC] rcu/nocb: Print segment lengths in
- show_rcu_nocb_gp_state()
-Message-ID: <e5d8a9d6-ec86-40e8-8b9e-3fd90ecc7dbf@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="utJrKl/L";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0lAPQHWg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="utJrKl/L";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0lAPQHWg"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4137A1F365;
+	Sat, 11 Jan 2025 19:40:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736624402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=LV82KRMizZPGJXhkfyUBud0XV9X/8fM//US4wAYAtis=;
+	b=utJrKl/LV4XIBlNjdi4WmyCZYomfu+zwfH4s6QVRNCKmIo9BqaEa9P7s4GDbEuk/KjDwM4
+	UwXZc4BQrk1OLKT9svHeyuWlFQ5s3FwCCGwniGjptVWOGAJU09uYAdRYNuj8iIQ+6/KT+B
+	RAm69SOKhtw02Z+/Ei9V1knVh14vcbY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736624402;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=LV82KRMizZPGJXhkfyUBud0XV9X/8fM//US4wAYAtis=;
+	b=0lAPQHWg3IzDp0PxU/9Z+g68dYA3GnEZVzvZlrk13HdNlA5A0qjzBhULeqFrr2o3Wqn4b+
+	JqTztC7kXkenCYDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1736624402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=LV82KRMizZPGJXhkfyUBud0XV9X/8fM//US4wAYAtis=;
+	b=utJrKl/LV4XIBlNjdi4WmyCZYomfu+zwfH4s6QVRNCKmIo9BqaEa9P7s4GDbEuk/KjDwM4
+	UwXZc4BQrk1OLKT9svHeyuWlFQ5s3FwCCGwniGjptVWOGAJU09uYAdRYNuj8iIQ+6/KT+B
+	RAm69SOKhtw02Z+/Ei9V1knVh14vcbY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1736624402;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=LV82KRMizZPGJXhkfyUBud0XV9X/8fM//US4wAYAtis=;
+	b=0lAPQHWg3IzDp0PxU/9Z+g68dYA3GnEZVzvZlrk13HdNlA5A0qjzBhULeqFrr2o3Wqn4b+
+	JqTztC7kXkenCYDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FC0413763;
+	Sat, 11 Jan 2025 19:40:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QOhQBxLJgme2KgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Sat, 11 Jan 2025 19:40:02 +0000
+Message-ID: <9f872537-8e96-413b-bcb1-3f1b8a4fc275@suse.cz>
+Date: Sat, 11 Jan 2025 20:40:01 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/5] Move kvfree_rcu() into SLAB (v2)
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: linux-mm@kvack.org, "Paul E . McKenney" <paulmck@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, RCU <rcu@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, Christoph Lameter <cl@linux.com>,
+ Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+ Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+References: <20241212180208.274813-1-urezki@gmail.com>
+ <17476947-d447-4de3-87bb-97d5f3c0497d@suse.cz> <Z2AmLkyTF1h7FNvB@pc636>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <Z2AmLkyTF1h7FNvB@pc636>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,kernel.org,linux-foundation.org,vger.kernel.org,linux.com,google.com,lge.com,linux.dev,gmail.com,sony.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-Analysis of an rcutorture callback-based forward-progress test failure was
-hampered by the lack of ->cblist segment lengths.  This commit therefore
-adds this information, so that what would have been ".W85620.N." (there
-are some callbacks waiting for grace period sequence number 85620 and
-some number more that have not yet been assigned to a grace period)
-now prints as ".W2(85620).N6." (there are 2 callbacks waiting for grace
-period 85620 and 6 not yet assigned to a grace period).  Note that
-"D" (done), "N" (next and not yet assigned to a grace period, and "B"
-(bypass, also not yet assigned to a grace period) have just the number
-of callbacks without the parenthesized grace-period sequence number.
+On 12/16/24 14:07, Uladzislau Rezki wrote:
+> On Sun, Dec 15, 2024 at 06:30:02PM +0100, Vlastimil Babka wrote:
+>> On 12/12/24 19:02, Uladzislau Rezki (Sony) wrote:
+>> > Hello!
+>> > 
+>> > This is v2. It is based on the Linux 6.13-rc2. The first version is
+>> > here:
+>> > 
+>> > https://lore.kernel.org/linux-mm/20241210164035.3391747-4-urezki@gmail.com/T/
+>> > 
+>> > The difference between v1 and v2 is that, the preparation process is
+>> > done in original place instead and after that there is one final move.
+>> 
+>> Looks good, will include in slab/for-next
+>> 
+>> I think patch 5 should add more explanation to the commit message - the
+>> subthread started by Christoph could provide content :) Can you summarize so
+>> I can amend the commit log?
+>>
+> <snip>
+> mm/slab: Move kvfree_rcu() into SLAB
+> 
+> Move kvfree_rcu() functionality to the slab_common.c file.
+> 
+> The reason of being kvfree_rcu() functionality as part of SLAB is
+> that, there is a clear trend and need of closer integration. One
+> of the recent example is creating a barrier function for SLAB caches.
+> 
+> Another reason is to prevent of having several implementations of
+> RCU machinery for reclaiming objects after a GP. As future steps,
+> it can be more integrated(easier) with SLAB internals.
+> <snip>
 
-In contrast, "W" (waiting for the current grace period) and "R" (ready
-to wait for the next grace period to start) both have parenthesized
-grace-period sequence numbers.
+Thanks, amended.
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> --
+> Uladzislau Rezki
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 295789004d071..b7d5564104a5b 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -3047,6 +3047,7 @@ static void rcu_torture_fwd_prog_cr(struct rcu_fwd *rfp)
- 	n_launders_cb_snap = READ_ONCE(rfp->n_launders_cb);
- 	cver = READ_ONCE(rcu_torture_current_version) - cver;
- 	gps = rcutorture_seq_diff(cur_ops->get_gp_seq(), gps);
-+	rcu_fwd_progress_check(rfp->rcu_fwd_id);
- 	pr_alert("%s: Waiting for CBs: %pS() %d\n", __func__, cur_ops->cb_barrier, rfp->rcu_fwd_id);
- 	cur_ops->cb_barrier(); /* Wait for callbacks to be invoked. */
- 	(void)rcu_torture_fwd_prog_cbfree(rfp);
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index a03fc19abde73..4a954ecf1c36e 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1551,8 +1551,11 @@ static void show_rcu_nocb_gp_state(struct rcu_data *rdp)
- /* Dump out nocb kthread state for the specified rcu_data structure. */
- static void show_rcu_nocb_state(struct rcu_data *rdp)
- {
--	char bufw[20];
--	char bufr[20];
-+	char bufd[22];
-+	char bufw[45];
-+	char bufr[45];
-+	char bufn[22];
-+	char bufb[22];
- 	struct rcu_data *nocb_next_rdp;
- 	struct rcu_segcblist *rsclp = &rdp->cblist;
- 	bool waslocked;
-@@ -1566,9 +1569,13 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 					      typeof(*rdp),
- 					      nocb_entry_rdp);
- 
--	sprintf(bufw, "%ld", rsclp->gp_seq[RCU_WAIT_TAIL]);
--	sprintf(bufr, "%ld", rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
--	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%c%s%c%s%c%c q%ld %c CPU %d%s\n",
-+	sprintf(bufd, "%ld", rsclp->seglen[RCU_DONE_TAIL]);
-+	sprintf(bufw, "%ld(%ld)", rsclp->seglen[RCU_WAIT_TAIL], rsclp->gp_seq[RCU_WAIT_TAIL]);
-+	sprintf(bufr, "%ld(%ld)", rsclp->seglen[RCU_NEXT_READY_TAIL],
-+		      rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
-+	sprintf(bufn, "%ld", rsclp->seglen[RCU_NEXT_TAIL]);
-+	sprintf(bufb, "%ld", rcu_cblist_n_cbs(&rdp->nocb_bypass));
-+	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%s%c%s%c%s%c%s%c%s q%ld %c CPU %d%s\n",
- 		rdp->cpu, rdp->nocb_gp_rdp->cpu,
- 		nocb_next_rdp ? nocb_next_rdp->cpu : -1,
- 		"kK"[!!rdp->nocb_cb_kthread],
-@@ -1580,12 +1587,15 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 		jiffies - rdp->nocb_nobypass_last,
- 		rdp->nocb_nobypass_count,
- 		".D"[rcu_segcblist_ready_cbs(rsclp)],
-+		rcu_segcblist_segempty(rsclp, RCU_DONE_TAIL) ? "" : bufd,
- 		".W"[!rcu_segcblist_segempty(rsclp, RCU_WAIT_TAIL)],
- 		rcu_segcblist_segempty(rsclp, RCU_WAIT_TAIL) ? "" : bufw,
- 		".R"[!rcu_segcblist_segempty(rsclp, RCU_NEXT_READY_TAIL)],
- 		rcu_segcblist_segempty(rsclp, RCU_NEXT_READY_TAIL) ? "" : bufr,
- 		".N"[!rcu_segcblist_segempty(rsclp, RCU_NEXT_TAIL)],
-+		rcu_segcblist_segempty(rsclp, RCU_NEXT_TAIL) ? "" : bufn,
- 		".B"[!!rcu_cblist_n_cbs(&rdp->nocb_bypass)],
-+		!rcu_cblist_n_cbs(&rdp->nocb_bypass) ? "" : bufb,
- 		rcu_segcblist_n_cbs(&rdp->cblist),
- 		rdp->nocb_cb_kthread ? task_state_to_char(rdp->nocb_cb_kthread) : '.',
- 		rdp->nocb_cb_kthread ? (int)task_cpu(rdp->nocb_cb_kthread) : -1,
