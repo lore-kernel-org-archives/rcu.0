@@ -1,221 +1,287 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F204A1B0408;
-	Sat, 11 Jan 2025 19:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B552A1BF7E0;
+	Sun, 12 Jan 2025 23:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736624643; cv=none; b=YTIwE8yXMsItuH5zeMFZBux48JtkpvknBxd0kjaDhkkqq7x/8vk4KNi+TUqHs4YozUR+shfmQYGDuDPdahWrsLQTuy/Hkt+v7qsGaLGY0RSiFtBj3f7sXQfk9JtzgZoDaqrubMkyPdMi7/PjA37HmBQb6MkKJ9SNDKQWIrYlf5Y=
+	t=1736724373; cv=none; b=ibwbLhUAxtTTnk3d8vE97MRtL6v1xIO8bx3Kzp+HZiyQ8fx3OgrTX2cn4zPC5GgrjiJJNj/vweKLkT3MoDbAfd97NnBAKbIfheB70UJNzFSdSYsA+qKcHkxedFQMsQmUH57J54+9EX1D8Cw1UqxrUr0PNfhEepgY9Vcr3bX+ZYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736624643; c=relaxed/simple;
-	bh=qaPCLYm9k3wT6P8k8lbtwHNUG+NGHSneT9y9072KxT8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WGbnlHjar1A02lHqoCpzNaPFklfWKGfEtw1PyZmUXdmzmrSNWHR8N98S3kTGH7NmbaeAHkEyoLLTb6iVoysDB+jx/Doqf9Pd9jrTrB0zajY5NyZR0WgCaQ2vKKwV/GoNIxQiGlBpJ60cKCjK+9qo4MaGMaskw0Xv/6dTCMWYpVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dkQT23ww; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZqdSpxmN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dkQT23ww; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZqdSpxmN; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1736724373; c=relaxed/simple;
+	bh=PvKrhZJMg32VCPn9ZWHLXRN/UyM4fxxhV2AZssF+TZA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Iw4EkrjACpvp+u05vofajatAMqMqJ0XFXIbXwfP35LSRy35KvMl1Uas/TP5R8mScdQiZr48ypFDKkjrqe5DlyIAAme4DA9Y9B7cWA/oGUATY8mrPpeKG4m+VOeQH7aqragpfQ5p0JbLkwvVkoyomQeHaWR0vY0BXyn3zW47VBFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dpaYGEE5; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dkQT23ww";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZqdSpxmN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dkQT23ww";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZqdSpxmN"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 067BE21160;
-	Sat, 11 Jan 2025 19:43:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736624634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=wKbl5AGH/Y/74GCxEaZBx38Eogph+MPR7vZph9Szr2Y=;
-	b=dkQT23wwOJmefMsxRx6QwRVOS0BGmWPWVTqYDFXR3lligBlraYxTyKZVFdd/E+AHpBV/2W
-	ajXxtBPxCLqg/0KCqWjU8PqexvXw622Q4mp9kMDwx0kMMDZ7wroUT69RncqqmqC4qnFdR3
-	6wvoVCxo1mNXq++Pj93Z/06SVX0HXow=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736624634;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=wKbl5AGH/Y/74GCxEaZBx38Eogph+MPR7vZph9Szr2Y=;
-	b=ZqdSpxmN9durSRlObEcUn4WVlrikZEV766z2jwndo1IC7Gpk7KmJB2pOZiu4ULNdShoulf
-	cX5BvKx7CsyJ6DAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736624634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=wKbl5AGH/Y/74GCxEaZBx38Eogph+MPR7vZph9Szr2Y=;
-	b=dkQT23wwOJmefMsxRx6QwRVOS0BGmWPWVTqYDFXR3lligBlraYxTyKZVFdd/E+AHpBV/2W
-	ajXxtBPxCLqg/0KCqWjU8PqexvXw622Q4mp9kMDwx0kMMDZ7wroUT69RncqqmqC4qnFdR3
-	6wvoVCxo1mNXq++Pj93Z/06SVX0HXow=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736624634;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=wKbl5AGH/Y/74GCxEaZBx38Eogph+MPR7vZph9Szr2Y=;
-	b=ZqdSpxmN9durSRlObEcUn4WVlrikZEV766z2jwndo1IC7Gpk7KmJB2pOZiu4ULNdShoulf
-	cX5BvKx7CsyJ6DAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D67E113763;
-	Sat, 11 Jan 2025 19:43:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XQGIM/nJgmeOKwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Sat, 11 Jan 2025 19:43:53 +0000
-Message-ID: <0c6fea47-c0ac-4398-a820-ac33f981c1f9@suse.cz>
-Date: Sat, 11 Jan 2025 20:43:53 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dpaYGEE5"
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5d3ecae02beso4821000a12.0;
+        Sun, 12 Jan 2025 15:26:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736724370; x=1737329170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XnWgqywIVuHL3v0PYcULOABULUOK7rc2D6wwz4OSIpk=;
+        b=dpaYGEE5zed0VGwEsz5085ZJ2IiEUqevAKq3Qtk/ltX1XRhpFDaCPxOtB3ZvdoFPKK
+         w4GkJXlTuI8G+O1UUvs89EXSCvOPgy6FqZ4VEyswHTTW0/g9GgNEzcA/IX2WT+5YiDDR
+         uFWJcwMMX+kAEzhU/fxDoabPGSzYfN5arV09z2b53548Aq67ZfuQQ/KMJoEMSDnHnN7y
+         QB9NbjN47LXoWbTCxpbsoTnGsOrGH33s7NsF9SX/vjG4HSWJHFnKb6VwfBoBFAjzu/xT
+         zX51p+zEF48kOgRpfOoRUykndE+B4SUB4knnZ1k1VrceYVPNwK4qpBYBQkStHtsw5rcz
+         2XkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736724370; x=1737329170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XnWgqywIVuHL3v0PYcULOABULUOK7rc2D6wwz4OSIpk=;
+        b=KMPC23rpJ/cqq3J3YZSqmUY6DqkRdlPFTkJuXETYm0qPPNb6D3iPboikpCeJZgUBhN
+         J8MbWtiZ4KtxbcqusPuQpcIxxbX7yZhGtyYcMfAIyAENTqZRBuGuaIZZQ9RyvgkTeRCI
+         uKP71CYn/X3PLXXPfOd2A/UDthbRaZqSGor7uHFwZVGnErm6WFicZBuTwI1H2fNGrD5d
+         SQfR8kEoHZFJ+CIGHj/QVv27TzCMB1i5VxVkMUVLsD23iW5ct2Owaq4JiViIQ8FKUIPm
+         gawLR5iicAL49fKqn6UGewKmiWTILe3KxuG5zHj+aQqhzlhSD4+B+mAL9G96rSHZl19B
+         DMuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWi1whZ70rL4cGLjScbAx6V7pef0WAaNNqY1ahieZzg0Dtxmk7wJCLvYRyv2c5uoRcjV+hB@vger.kernel.org, AJvYcCWyvdUE7wOnDidzyFURAEZKq46Qoa2oDQlKNcAU0E6L9ruCtun2arssU9Bm/xtrZTMQpMuX8px0PRaMvA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/UtjSJvM4/FMv/2S5kRmfJIps2OJnwRZrpFT+6LagcnxbMipy
+	5dchsRg7Hs4EBstaI/6jlPE0iKqLqjXaJQ7qOKKabIk3gh5FM+gbjbcyChy2NF6PmHEiqdMDVU6
+	xW3UkSss8F6YfYwj8AsX/B9HXGTVNO+sW
+X-Gm-Gg: ASbGncsO4p9F9tSEj6HgvG7NWng/gp9F+C28MZER1xokLrNk/XSIoGs828iqhvLnc6W
+	bKKYmjyxTmnL/fZibpQH3oTsm32MzW2R/M52hHDI=
+X-Google-Smtp-Source: AGHT+IF4crZ4BXYJg7zPrUUZbYQzjy/fTeEWGDQcJYqwlBc9i/cFmey0IAdVs9T1ay9Zd4tATDrRomo1DqGglXaiiik=
+X-Received: by 2002:a17:906:f59f:b0:aa6:8781:9909 with SMTP id
+ a640c23a62f3a-ab2ab709f7bmr1675045166b.29.1736724369734; Sun, 12 Jan 2025
+ 15:26:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External Mail] [PATCH v2 0/5] Move kvfree_rcu() into SLAB (v2)
-Content-Language: en-US
-To: Hyeonggon Yoo <hyeonggon.yoo@sk.com>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "Paul E . McKenney" <paulmck@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: kernel_team@skhynix.com, 42.hyeyoo@gmail.com, RCU <rcu@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Christoph Lameter <cl@linux.com>,
- Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-References: <20241212180208.274813-1-urezki@gmail.com>
- <9ceb805c-4b42-4517-93cf-6b3cd3cdce5f@sk.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <9ceb805c-4b42-4517-93cf-6b3cd3cdce5f@sk.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[sk.com,gmail.com,kvack.org,kernel.org,linux-foundation.org];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[skhynix.com,gmail.com,vger.kernel.org,linux.com,kernel.org,google.com,lge.com,linux.dev,sony.com];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+References: <CA+=Fv5R+8y2hCq7p-xo5qZ0CyinR_0aAndUkoEAweCVs_95SMw@mail.gmail.com>
+ <Z1YpKFQGtMWF3yy3@creeky> <CA+=Fv5Q=f-6y=EhZhG2XfZB0O=m+yOiv+gmtmMABVQZieKdwbQ@mail.gmail.com>
+ <Z2ClSlwznfuk8Uwr@creeky> <CA+=Fv5RaqHL6MJjvhF-mn3CVY10e=2QqFBSVO6YXLUJ7WV9zGQ@mail.gmail.com>
+ <CA+=Fv5RP=NoWo4VeTX7hx103=jP2d-NC-jFo+ePXLBRubCxc_w@mail.gmail.com>
+ <ef49a479-2000-42ee-9b10-9f3b6a68ec35@paulmck-laptop> <CA+=Fv5REK+xbA49zD3aYBgG2J1Xw1FWP02qjyyOTrwbzMRXu3w@mail.gmail.com>
+ <be4fe590-b41c-4033-91c1-94f10c4f3d40@paulmck-laptop> <CA+=Fv5Tk-vbAK72ZOK-bPwvnx9w_1ATH=S9t-LW8gBEgQPYa3A@mail.gmail.com>
+ <b3cd5af3-4b8f-43bd-b3f3-c9f4644c95d4@paulmck-laptop> <alpine.DEB.2.21.2412192347450.20821@angie.orcam.me.uk>
+ <CA+=Fv5TJhDrrxG82=MNPFEFFwKD4NDYyB1u32ZvnGv6Ma0h_Nw@mail.gmail.com>
+ <alpine.DEB.2.21.2412271452100.20821@angie.orcam.me.uk> <CA+=Fv5SW-N+5KzsnVdHvy406-p+g7giUbt626xwDduy6xjaPkw@mail.gmail.com>
+In-Reply-To: <CA+=Fv5SW-N+5KzsnVdHvy406-p+g7giUbt626xwDduy6xjaPkw@mail.gmail.com>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Mon, 13 Jan 2025 00:25:58 +0100
+X-Gm-Features: AbW1kvYAG26LRO9EMlFLZEj1BlQ0YkQEctUkXvVHlLeaqahOMfKC294a8U_E2zk
+Message-ID: <CA+=Fv5TtOQkDMPnuPrPGcB0VGhUHUDqe5=Z+ovd5x5rBJ-Hsjw@mail.gmail.com>
+Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Michael Cree <mcree@orcon.net.nz>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, rcu@vger.kernel.org, 
+	linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/6/25 08:21, Hyeonggon Yoo wrote:
-> 
-> 
-> On 2024-12-13 3:02 AM, Uladzislau Rezki (Sony) wrote:
->> Hello!
->> 
->> This is v2. It is based on the Linux 6.13-rc2. The first version is
->> here:
->> 
->> https://lore.kernel.org/linux-mm/20241210164035.3391747-4-urezki@gmail.com/T/
->> 
->> The difference between v1 and v2 is that, the preparation process is
->> done in original place instead and after that there is one final move.
->> 
->> Uladzislau Rezki (Sony) (5):
->>    rcu/kvfree: Initialize kvfree_rcu() separately
->>    rcu/kvfree: Move some functions under CONFIG_TINY_RCU
->>    rcu/kvfree: Adjust names passed into trace functions
->>    rcu/kvfree: Adjust a shrinker name
->>    mm/slab: Move kvfree_rcu() into SLAB
->> 
->>   include/linux/slab.h |   1 +
->>   init/main.c          |   1 +
->>   kernel/rcu/tree.c    | 876 ------------------------------------------
->>   mm/slab_common.c     | 880 +++++++++++++++++++++++++++++++++++++++++++
->>   4 files changed, 882 insertions(+), 876 deletions(-)
-> 
-> Sorry for the late reply, but better late than never...
-> 
-> FWIW,
-> 
-> Acked-by: Hyeonggon Yoo <hyeonggon.yoo@sk.com>
-> Tested-by: Hyeonggon Yoo <hyeonggon.yoo@sk.com>
+Hi again.
 
-Thanks, applied.
+I've been running some more tests, this time with a smp kernel but on
+a system with just one cpu, seems to me as a bit simpler scenario to
+analyze. I've added some print statements to smp_call_function_single,
+just to see what's really going on:
 
-> Thanks for all the efforts!
-> 
-> By the way, any future plans how to take advantage of internal slab
-> state?
+pr_warn("smp_call_function_single: %llx %llx
+size=3D%d\n",&csd_stack,&csd, sizeof(call_single_data_t));
 
-One way is the sheaves effort which in the last RFC also replaced the way
-kfree_rcu() is handled for caches with enabled sheaves.
+output is seen below:
+smp: smp_call_function_single: fffffc000493fc40 fffffc000493fc58 size=3D32
+so, the csd_stack struct is 32-bytes in size but &csd - &csd_stack =3D
+24. This does not make any sense?
 
-Perhaps even without those we could consider e.g. doing the kfree_rcu()
-batching by grouping the pending frees per kmem cache, which could perhaps
-lead to more efficient flushing later.
 
-> --
-> Hyeonggon
+pr_warn("\n&csd_stack.info=3D%lx\n&csd=3D%lx\n",&csd_stack.info,&csd);
 
+output according to below:
+smp:
+&csd_stack.info=3Dfffffc000493fc58
+&csd=3Dfffffc000493fc58
+
+Here csd variable has the same address on the stack as csd_stack.info.
+
+Using above information and locking at the disassembly of
+smp_call_function_single in smp.o I've put together the following
+table mapping out the stack of smp_call_function_single:
+
+
+$sp+0 ra
+$sp+8 s0
+$sp+16
+$sp+24
+$sp+32 csd_stack.node 0xfffffc000493fc40
+$sp+40 csd_stack.node 0xfffffc000493fc48
+$sp+48 csd_stack.func 0xfffffc000493fc50
+$sp+56 csd_stack.info 0xfffffc000493fc58
+$sp+64 csd 0xfffffc000493fc58
+$sp+72
+$sp+80 a3
+$sp+88 a2
+$sp+96 a0
+$sp+104 a1
+$sp+112 -
+
+
+When requesting csd_stack to be aligned using
+__attribute__((__aligned__(x))) it seems as if the compiler does not
+leave enough room above the csd_stack struct. i.e since the exact
+location of csd_stack depends on the actual value of $sp it is not
+known at compile time. Seems like gcc does not take this into account.
+The code works fine if I remove the alignment attribute for csd_stack.
+Also as previously mentioned, declaring csd_stack as "struct
+____cacheline_aligned_in_smp" makes it work, but judging from the
+disassembly code, this statement has no effect on the alignment of
+csd_stack, i.e csd_stack is not aligned to anything its simply just
+placed on the stack, indirectly making it just 16-byte aligned instead
+of the requested 32-byte alignment.
+
+It seems to me that, when used to align variables that reside on the
+stack,  __attribute__((__aligned__(x))) does not work correctly with
+gcc/alpha/linux.
+
+
+/Magnus
+
+On Tue, Dec 31, 2024 at 11:43=E2=80=AFAM Magnus Lindholm <linmag7@gmail.com=
+> wrote:
+>
+> >  Umm, no.  The psABI guarantees 16-byte alignment for the stack pointer=
+,
+> > and under this condition (((x - 17) & ~31) + 32 <=3D x) is guaranteed t=
+o be
+> > true (except for the overflow case, of course, which does not apply her=
+e).
+>
+> aha! that explains it! thanks, is the psABI available somewhere?
+>
+> >
+> >  Would you be able to trace it back further, e.g. by adding BUG_ON(!nod=
+e)
+> > to `__smp_call_single_queue' and so on if required, to see where this N=
+ULL
+> > pointer comes from originally?  I do hope such a minimal probe won't
+> > disturb code generation enough for this to become a heisenbug.
+> >
+> Hi, below are some additional test that I've made,
+>
+> It seems to me that part of the stack is overwritten with the values
+> of other local variables. Previously this affected the return address
+> on the stack causing kernels Oops on function return (see previous
+> mail in thread). In this run it seems like when the pointer *csd in
+> smp_call_function_single is stored on the stack, it gets overwritten
+> by writes to csd_stack.info. The difference here is that I use GCC
+> 15.0.0 20241225 (experimental) instead of gcc (Gentoo 14.2.1_p20241116
+> p3) 14.2.1. To me, this looks like the same problem but the clobbering
+> just hits a different part of the stack. Below is some debug-output,
+> where I've added some print statements to the code in
+> smp_call_function_single of smp.c. When csd_stack is declared as
+> "struct ____cacheline_aligned_in_smp __call_single_data csd_stack",
+> this first case is the case where the code works:
+>
+> unloading the scsi module:
+> --------------------------------------------------
+> smp:
+> &csd_stack.info=3Dfffffc000493fd90
+> &csd=3Dfffffc000493fd98
+> smp:
+> &csd_stack.info=3Dfffffc000493fd90
+> &csd=3Dfffffc000493fd98
+> sd 6:0:1:0: [sdb] Synchronizing SCSI cache
+> rcu: rcu_barrier: cpu=3D0
+> smp:
+> &csd_stack.info=3Dfffffc000935bc50
+> &csd=3Dfffffc000935bc58
+> rcu: rcu_barrier: cpu=3D1
+> smp:
+> &csd_stack.info=3Dfffffc000935bc50
+> &csd=3Dfffffc000935bc58
+> rcu: rcu_barrier: cpu=3D2
+> smp:
+> &csd_stack.info=3Dfffffc000935bc50
+> &csd=3Dfffffc000935bc58
+> smp: generic_exec_single: csd=3Dfffffc000935bc38 cpu=3D2 smp_cpu=3D2
+>
+>
+>
+> Below is the same debug output when csd_stack is declared as
+> "call_single_data_t csd_stack" (i.e. no patch applied). For some
+> reason, in this case, the address of the csd variable is the same as
+> the address of csd_stack.info. If this is really the case, no wonder
+> that a write to csd_stack.info will overwrite the csd pointer. In this
+> case the code fails according to below:
+>
+> unloading the scsi module:
+> -----------------------------------------
+> smp:
+> &csd_stack.info=3Dfffffc000493fd98
+> &csd=3Dfffffc000493fd98
+> smp: smp_call_function_single: not wait smp_cpu=3D1
+> sd 6:0:1:0: [sdb] Synchronizing SCSI cache
+> rcu: rcu_barrier: cpu=3D0
+> smp:
+> &csd_stack.info=3Dfffffc0006207c58
+> &csd=3Dfffffc0006207c58
+> smp: generic_exec_single: csd=3Dfffffc0006207c40 cpu=3D0 smp_cpu=3D0
+> Unable to handle kernel paging request at virtual address 000000000000000=
+8
+> CPU 0
+> rmmod(1443): Oops 0
+> pc =3D [<fffffc00003dd564>]  ra =3D [<fffffc00003dd558>]  ps =3D 0000    =
+Not tainted
+> pc is at smp_call_function_single+0x204/0x220
+> ra is at smp_call_function_single+0x1f8/0x220
+>
+>
+>
+>
+> Below is yet another test, here the code works, csd_stack is declared
+> as "call_single_data_t csd_stack" (i.e. no patch applied). In this
+> example the code works since I've added some extra "dummy variables"
+> on the stack which seems to steer things around enough. Here it's also
+> clear that the address of csd does not overlap with the address of
+> csd_stack.info. test0 and test1 are just the extra local variables
+> that I've added.
+>
+> -----------------------------------------
+> smp:
+> &csd_stack.info=3Dfffffc000493fd78
+> &csd=3Dfffffc000493fd90
+> smp: smp_call_function_single: not wait smp_cpu=3D1
+> smp: &test0=3Dfffffc000493fd98
+> smp: &test1=3Dfffffc000493fd88
+> sd 6:0:1:0: [sdb] Synchronizing SCSI cache
+> rcu: rcu_barrier: cpu=3D0
+> smp:
+> &csd_stack.info=3Dfffffc0009e07c38
+> &csd=3Dfffffc0009e07c50
+> smp: &test0=3Dfffffc0009e07c58
+> smp: &test1=3Dfffffc0009e07c48
+> smp: generic_exec_single: csd=3Dfffffc0009e07c20 cpu=3D0 smp_cpu=3D0
+>
+>
+>
+>
+> Patch I used to "fix" kernel/smp.c
+> ----------------------------------------------------
+> +++ kernel/smp.c        2024-12-19 19:01:20.592819628 +0100
+> @@ -631,7 +631,7 @@
+> int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
+>                              int wait)
+>  {
+>         call_single_data_t *csd;
+> -       call_single_data_t csd_stack =3D {
+> +       struct ____cacheline_aligned_in_smp __call_single_data csd_stack =
+=3D {
+>                 .node =3D { .u_flags =3D CSD_FLAG_LOCK | CSD_TYPE_SYNC, }=
+,
+>         };
+>         int this_cpu;
+>
+>
+>
+> /Magnus
