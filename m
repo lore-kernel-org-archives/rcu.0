@@ -1,47 +1,47 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60581FBEBD
-	for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 17:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CEE1FA24C
+	for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 18:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736877596; cv=none; b=BY91xbcJ79faJt/tZOa/ZFytb6KARSro5J1xl5Kt7+MMQQXJP+eOOgIYbL6cwywtYKTbpJzysph8tNjDB850fOgs89hnH7vAXA1mM/tjBgEi6JCaF/JoRxRteDQ7Cfe2DSjcEFem12fbUfEHRUuG1w4iOK1nhV/RH7RN0b9/zqA=
+	t=1736877623; cv=none; b=O0at2x/UwTgvrbLCKgzMk5lQj76SrlQAclzAyoa9aRiuYsan9qL/6zxyet2ktU3+Mn6b1yBxv+35zhuk8JLSEdPUUaXUeC3NOZHVVF6lH3wcfg54clvzClP2Le6bzys/ixYU+Fxtsw5eCl0iID8Chb7HI0bRl766WQ+VzJrjJVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736877596; c=relaxed/simple;
-	bh=a0ZNShjC4ZT1Hj0Or9es9gDy8pngaLJj9xiIa+7Ry9M=;
+	s=arc-20240116; t=1736877623; c=relaxed/simple;
+	bh=DlNKaMcWkLekUb5b729QKRNcYbX/BVpcNnQiLO9J7o4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SFk8qCSpBL7ZwmDS4RjWbJLLSZU4B17JApGdl6I+7adk2ZvyMf8trAcFayittHROKshzUBd/Va5Sxh8rWLw4xiWLm9a8g93VXnTVBB0wGRHazIf7+tflm1IRHyICTYCa0nL1dxTzT686fg4rP60sg91BIZIXHNrbVNlBSJ8nvWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MiMql5B4; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=hLvkp7y0pBA5OvKbLo6KjURD6wBKjmb1WWGNHr1emuBqzBtEA6tdBTS1bmJ46+bxfLph7PcOqMzmW2lzS/d3suzpdqoFdCylvrtU/NCsd4ll/StGbYBfsPBcN5pDDJpOX3UQpQNuasd9TwIAQtof+mFZWn43KffacCZ+chnjf9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZEDAd9gv; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MiMql5B4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZEDAd9gv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1736877592;
+	s=mimecast20190719; t=1736877621;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Fzzncw7C2q7Oj32JE4D69orayDnnAM5XMqXCZgIYhoQ=;
-	b=MiMql5B4maMaY3ttBA9UywpXoPWNV4YETerlrrNujUIsXdu2fzA1phcUJUrI0+ZyOoUtCP
-	G5cXdhcw8G3XInGhW52IuOVXOvj+BNh9yPWMXCtYe7cBQjaMnqycEucCn0cOMFgFjc48Fv
-	pZdFpsrRg0uiXMftQ5ndaxPn2Cqlp4g=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+	bh=oEa6Jvbfjlidl4MXGQFSAZ9P76MqELccnrf7elTRMWU=;
+	b=ZEDAd9gvqQwY1bVmmAS/0LJL0scUsARVgfuwNADo9ebAUVtFg0Q89AyfkAkEXUxKuGzgip
+	w4/z3Uvg3wz/z/00GU5ezyP0r0Wu+xorrtqehHS4sqVjcEyY/JN0MZBDcvR/WSdt0Adq2H
+	EJvt8Yt5tuI37AIrobafw4HG1HWJLcw=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-83-jmSM7AxOMj2WDdft3VwBHw-1; Tue,
- 14 Jan 2025 12:59:49 -0500
-X-MC-Unique: jmSM7AxOMj2WDdft3VwBHw-1
-X-Mimecast-MFC-AGG-ID: jmSM7AxOMj2WDdft3VwBHw
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-113-k3wLyZ7iPkiQIoWyV-6PFw-1; Tue,
+ 14 Jan 2025 13:00:14 -0500
+X-MC-Unique: k3wLyZ7iPkiQIoWyV-6PFw-1
+X-Mimecast-MFC-AGG-ID: k3wLyZ7iPkiQIoWyV-6PFw
 Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D8B751955F79;
-	Tue, 14 Jan 2025 17:59:45 +0000 (UTC)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BD2A51955DE0;
+	Tue, 14 Jan 2025 18:00:10 +0000 (UTC)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.192.55])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6685F195608A;
-	Tue, 14 Jan 2025 17:59:20 +0000 (UTC)
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 79BA9195E3E0;
+	Tue, 14 Jan 2025 17:59:46 +0000 (UTC)
 From: Valentin Schneider <vschneid@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	x86@kernel.org,
@@ -131,9 +131,9 @@ Cc: Juergen Gross <jgross@suse.com>,
 	Luis Chamberlain <mcgrof@kernel.org>,
 	Randy Dunlap <rdunlap@infradead.org>,
 	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v4 16/30] x86/speculation/mds: Mark mds_idle_clear key as allowed in .noinstr
-Date: Tue, 14 Jan 2025 18:51:29 +0100
-Message-ID: <20250114175143.81438-17-vschneid@redhat.com>
+Subject: [PATCH v4 17/30] sched/clock, x86: Mark __sched_clock_stable key as allowed in .noinstr
+Date: Tue, 14 Jan 2025 18:51:30 +0100
+Message-ID: <20250114175143.81438-18-vschneid@redhat.com>
 In-Reply-To: <20250114175143.81438-1-vschneid@redhat.com>
 References: <20250114175143.81438-1-vschneid@redhat.com>
 Precedence: bulk
@@ -149,37 +149,33 @@ Later commits will cause objtool to warn about static keys being used in
 .noinstr sections in order to safely defer instruction patching IPIs
 targeted at NOHZ_FULL CPUs.
 
-mds_idle_clear is used in .noinstr code, and can be modified at
-runtime (SMT hotplug). Suppressing the text_poke_sync() IPI has little
-benefits for this key, as hotplug implies eventually going through
-takedown_cpu() -> stop_machine_cpuslocked() which is going to cause
-interference on all online CPUs anyway.
+__sched_clock_stable is used in .noinstr code, and can be modified at
+runtime (e.g. time_cpufreq_notifier()). Suppressing the text_poke_sync()
+IPI has little benefits for this key, as NOHZ_FULL is incompatible with an
+unstable TSC anyway.
 
 Mark it to let objtool know not to warn about it.
 
 Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 ---
- arch/x86/kernel/cpu/bugs.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/sched/clock.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 47a01d4028f60..acad84dcfc3cd 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -113,8 +113,13 @@ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_ibpb);
- /* Control unconditional IBPB in switch_mm() */
- DEFINE_STATIC_KEY_FALSE(switch_mm_always_ibpb);
- 
--/* Control MDS CPU buffer clear before idling (halt, mwait) */
--DEFINE_STATIC_KEY_FALSE(mds_idle_clear);
-+/*
-+ * Control MDS CPU buffer clear before idling (halt, mwait)
+diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
+index 200e5568b9894..e59986bc14a43 100644
+--- a/kernel/sched/clock.c
++++ b/kernel/sched/clock.c
+@@ -75,8 +75,11 @@ static DEFINE_STATIC_KEY_FALSE_RO(sched_clock_running);
+  *
+  * Similarly we start with __sched_clock_stable_early, thereby assuming we
+  * will become stable, such that there's only a single 1 -> 0 transition.
 + *
-+ * Allowed in .noinstr as this key is updated during hotplug which comes with
-+ * more interference than just the text patching IPI.
-+ */
-+DEFINE_STATIC_KEY_FALSE_NOINSTR(mds_idle_clear);
- EXPORT_SYMBOL_GPL(mds_idle_clear);
++ * Allowed in .noinstr as an unstable TLC is incompatible with NOHZ_FULL,
++ * thus the text patching IPI would be the least of our concerns.
+  */
+-static DEFINE_STATIC_KEY_FALSE(__sched_clock_stable);
++static DEFINE_STATIC_KEY_FALSE_NOINSTR(__sched_clock_stable);
+ static int __sched_clock_stable_early = 1;
  
  /*
 -- 
