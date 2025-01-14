@@ -1,65 +1,66 @@
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B2220CCC9
-	for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 21:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6341920C010
+	for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 21:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736889243; cv=none; b=K3oprcCfixfOA1DjJLDsSGwxnRXtoh90f6pNrwrNavIDYR6B5dCPm1t4B23FwukIm0JSYIpaODBAhPIcIHuR3VC2yMjaMRfKcKr5T2Jh5/EYvx+x73Yu5FQPySowkDML7I8gTx9rEXy70CgLDrvBu+gWEFvmEMOiths4O3VlTAU=
+	t=1736889567; cv=none; b=uL4YqHitMDBheoGsmf08VuO+KSiXD9pIx2uG6HsEpotUQlf0MfxddkjJ/5b4RuLVNLNjV9jM+mZTd2bXKmvo4VUqiNzND2BniByzlATWg2kGNSFawfDeCnsFds5JU1TRGvRMUiQH2JctH+eD/CTYnBr3yN8Puz4MTpmGPB5EtPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736889243; c=relaxed/simple;
-	bh=HPeOyPTCGGTDHOMXLb+UXWG1X7FxbwpONqdOtUySSrA=;
+	s=arc-20240116; t=1736889567; c=relaxed/simple;
+	bh=75fcOSQJdhmnq3pSXnEyg1Dd9Gtm+vOQTHqw0XM6WTs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=QVVh0I8Ad3QOzc9+1ZNHx438gfs6NzS4NsTtlWb05N3b5YRTrx9zyOn9trm5Np9oR1VeKFPnH/eI2/cb51Kx9uXW26nN/NbmGlGC+J68Ti/Zk3F2B1LU5WAvP8IhBHDYJALLNDyVnDRNIt5q+c2orbOPxCvJaPpVCkoVgbVJqXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tdal1sZu; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=W+CU1kz6Qn8mAoBvC37d9skvG208GjSu8gH2irtaRzUds87qnXjJSXgaKiPVpk674/dELQ6eKRAk78p+D6Qi1UaidMU/hWetrTCjnQj9/426HArdrMbWkS4jjlcPzN6ip6QH/Lmyg1PJZJA+EvF/rdR1XkQ0vRcVk2lkUs6saj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e7nuU18E; arc=none smtp.client-ip=209.85.214.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tdal1sZu"
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ee5668e09bso10664011a91.3
-        for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 13:13:59 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e7nuU18E"
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-218cf85639eso161292895ad.3
+        for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 13:19:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736889239; x=1737494039; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1736889565; x=1737494365; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d9cRGGic7Te5o12Iwy1M3OB31drPOXRp+PHli2u04Fc=;
-        b=tdal1sZu79aUYEJfdP1gM9Xcda9j8Wwc4Tr5g7qpUO5NRZ7iabU1ZFvpgbZtTzfbBd
-         QHSuHYSZorVXmiWAGPR+NqJx0xIYP4Ro4dtIgEM2k1Ap0E6HbTMlDo7wxa77Rvy6jjph
-         z7ln0jTq4mLdSJFLR+HRPA5g+EPuLxoHVnBOMJa1iCdMwZBNwfPK5lU/umsM4pKTLkyn
-         xdFrMH4+9KXg4DO3kLyTN/L1RoO0oaZkWrp39eI25LyL6GbhY/NF0TCtt4ykMiSvfram
-         jXm1aHRzkXPSYYs0OljrbiGSfMUJYtQlNhWckV29e/yccyIiV2hPSJe5IJV1yElmyU+1
-         rYpQ==
+        bh=XVbipT56M6kECF5Qh7elLUxboyXWurLrq3UYAkefsoQ=;
+        b=e7nuU18EDzPa3x8Kv50KAwIViJ8EPVBsM8MUymYFL554zqnQ1k0kqdoOwE3/zZQ34h
+         Zv5YBf6P4119SdKqRmOkS2GHI3dYXbrKdvCaaBEtBWjur2h43o7w6H1c1qPGdelkIXtu
+         G7QTE76ZXoSySqTwRVnARtjL/8scp3WMC17ND1v2G7n2zP0FoP0cT2p5APgCFHADwvYa
+         x5BgORDkBXQ57agb+txiv4aM780ASXxK3Si0GYmHYXL3vkmktoiKTk0r19w173jsgjiD
+         jVgFCBVahj8ghRhFddNQztthZmy4qdGT9lHECb9JKGBk2A4nMITQ8kOoercLllCH+Alb
+         Akkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736889239; x=1737494039;
+        d=1e100.net; s=20230601; t=1736889565; x=1737494365;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d9cRGGic7Te5o12Iwy1M3OB31drPOXRp+PHli2u04Fc=;
-        b=GeDHXVWaFTvMCkOrvmCglwqQ3nAEULFj+UjympckGVaU314uyWTPuPI/cgNcVeY+Pl
-         hzr26hleDTsGqUUXgwD7TRu+6qR5JWc0NhGyrLKuoLdibJz4xg4MBxVaWk8d2lGPEufN
-         Fj2uXcQNnEuxUJqhSXSIfimg/E9SOQ5RLmrIov6ph7sI8GxAvB47iMVn3g6h16W+H241
-         qZkhGGStKKn27Bu+pcRFWXX48pjggNdI/cb1augi8OJ8ezndyuRC98lneUrVXSoXdF+Q
-         VIrmjMiJVuPif07/e7ggN9mj2tVp7kRAu7Qki2ivbkzhB+DbTR2c9qqkaSkMIL++R9Ss
-         709g==
-X-Forwarded-Encrypted: i=1; AJvYcCX6jY7I5qj4wRa0mMa2NXdzCaG1u5/BasZW/JSyoCGk32z2DcHsC7EpGzYyMkY3wEScFM8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyig0XGZSMv4ANIdflKdER3qqo9QqjWcs7TGcfIQaHfd3701Jt5
-	Mr5jR+qDDs54wojTAy1Ila9T1Sq3FGH2Xqw9YWlCedzBOK8pUu1gWGPXfPMQBXy5dFIr5ppdu84
-	qyA==
-X-Google-Smtp-Source: AGHT+IFnD8IBYtaFLZfmn+yp8faKF4j5W1D2QQ93HaiFkyR3KITtNCKyHKA+6Vtw5k/ROipPB4Gea/5UJbQ=
-X-Received: from pjbsn8.prod.google.com ([2002:a17:90b:2e88:b0:2f4:465d:5c61])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1f8b:b0:2ee:bf84:4fe8
- with SMTP id 98e67ed59e1d1-2f548f1d44cmr36656404a91.30.1736889238866; Tue, 14
- Jan 2025 13:13:58 -0800 (PST)
-Date: Tue, 14 Jan 2025 13:13:57 -0800
-In-Reply-To: <20250114175143.81438-26-vschneid@redhat.com>
+        bh=XVbipT56M6kECF5Qh7elLUxboyXWurLrq3UYAkefsoQ=;
+        b=PX5Duw6TdbvhnPY+YStSBkn/2mS2M5H1um/9xYXtpvpceFgWnHi7Ce1ufQSRe5ee0e
+         2iJklIASgadpqhd+AntBjlFj4gcKsjAa6RMLgc/bV0RYfTr7ciHX4t7dkCiUgMkyAptd
+         cNZpNRKns5tLbh7mO0UWyRax8a4UITAiupcYpe980mqxASMH1aoqgNIRmvcmi1I7ARro
+         kxAgnNQXPucyPds7Q4iDPykfkIl2RE7XaxDEF/Erw9VrlNFG97CIpKNptgnzMkHsVTaY
+         r2z1XtuyvLSsUO9+1Z03DKNFnw98DL8V3aAKgP1YaN/6otZpbBw7Uh0eLqNVq1gT/6QE
+         XEig==
+X-Forwarded-Encrypted: i=1; AJvYcCUF6BJcDRr+zwWVd8QPo0CD9bQBxp8lcM+dw7BwbP+DXaSJORXarsNaAfOVGog0FsOlH7U=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqaPSbxxX81L0CdgK9PNCgis+Gx8reD85BjilFZ9VSndQCzSGj
+	D5ghqRCQhYDiKpttISCDTQ+nZSe3wv0cN9zusq2bBVKWl9YbIVVC4Fd+c0IVrV3MFfZlLka1jYi
+	x/Q==
+X-Google-Smtp-Source: AGHT+IGTMIc2Hr+w/ebVVGGlbFAB7WFV7TbQJLIjfH34Jlhrw+YYPMlrag1B602JmLWOQ4sU4fLE9W3Pz50=
+X-Received: from plap13.prod.google.com ([2002:a17:902:f08d:b0:217:8109:e87])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:902:cec1:b0:216:3dc5:1230
+ with SMTP id d9443c01a7336-21a83ffc1dbmr401799985ad.42.1736889564696; Tue, 14
+ Jan 2025 13:19:24 -0800 (PST)
+Date: Tue, 14 Jan 2025 13:19:23 -0800
+In-Reply-To: <20250114175143.81438-19-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-26-vschneid@redhat.com>
-Message-ID: <Z4bTlZkqihaAyGb4@google.com>
-Subject: Re: [PATCH v4 25/30] context_tracking,x86: Defer kernel text patching IPIs
+References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-19-vschneid@redhat.com>
+Message-ID: <Z4bU2xlZXh53lgH6@google.com>
+Subject: Re: [PATCH v4 18/30] x86/kvm/vmx: Mark vmx_l1d_should flush and
+ vmx_l1d_flush_cond keys as allowed in .noinstr
 From: Sean Christopherson <seanjc@google.com>
 To: Valentin Schneider <vschneid@redhat.com>
 Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
@@ -69,22 +70,22 @@ Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
 	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
 	linux-hardening@vger.kernel.org, linux-mm@kvack.org, 
 	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
-	bcm-kernel-feedback-list@broadcom.com, Peter Zijlstra <peterz@infradead.org>, 
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Juergen Gross <jgross@suse.com>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	bcm-kernel-feedback-list@broadcom.com, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Juergen Gross <jgross@suse.com>, Ajay Kaher <ajay.kaher@broadcom.com>, 
+	Alexey Makhalov <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
 	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
 	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
 	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
 	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
 	Kan Liang <kan.liang@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
 	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
 	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
 	Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
@@ -100,83 +101,32 @@ Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
 	Shuah Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
 	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
 	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Yosry Ahmed <yosryahmed@google.com>, 
 	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
 	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
 	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
 	Tiezhu Yang <yangtiezhu@loongson.cn>
 Content-Type: text/plain; charset="us-ascii"
 
+Please use "KVM: VMX:" for the scope.
+
 On Tue, Jan 14, 2025, Valentin Schneider wrote:
-> text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
-> them vs the newly patched instruction. CPUs that are executing in userspace
-> do not need this synchronization to happen immediately, and this is
-> actually harmful interference for NOHZ_FULL CPUs.
+> Later commits will cause objtool to warn about static keys being used in
+> .noinstr sections in order to safely defer instruction patching IPIs
+> targeted at NOHZ_FULL CPUs.
+> 
+> These keys are used in .noinstr code, and can be modified at runtime
+> (/proc/kernel/vmx* write). However it is not expected that they will be
+> flipped during latency-sensitive operations, and thus shouldn't be a source
+> of interference wrt the text patching IPI.
 
-...
+This misses KVM's static key that's buried behind CONFIG_HYPERV=m|y.
 
-> This leaves us with static keys and static calls.
+vmlinux.o: warning: objtool: vmx_vcpu_enter_exit+0x241: __kvm_is_using_evmcs: non-RO static key usage in noinstr
+vmlinux.o: warning: objtool: vmx_update_host_rsp+0x13: __kvm_is_using_evmcs: non-RO static key usage in noinstr
 
-...
-
-> @@ -2317,11 +2334,20 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
->  	 * First step: add a int3 trap to the address that will be patched.
->  	 */
->  	for (i = 0; i < nr_entries; i++) {
-> -		tp[i].old = *(u8 *)text_poke_addr(&tp[i]);
-> -		text_poke(text_poke_addr(&tp[i]), &int3, INT3_INSN_SIZE);
-> +		void *addr = text_poke_addr(&tp[i]);
-> +
-> +		/*
-> +		 * There's no safe way to defer IPIs for patching text in
-> +		 * .noinstr, record whether there is at least one such poke.
-> +		 */
-> +		if (is_kernel_noinstr_text((unsigned long)addr))
-> +			cond = NULL;
-
-Maybe pre-check "cond", especially if multiple ranges need to be checked?  I.e.
-
-		if (cond && is_kernel_noinstr_text(...))
-> +
-> +		tp[i].old = *((u8 *)addr);
-> +		text_poke(addr, &int3, INT3_INSN_SIZE);
->  	}
->  
-> -	text_poke_sync();
-> +	__text_poke_sync(cond);
->  
->  	/*
->  	 * Second step: update all but the first byte of the patched range.
-
-...
-
-> +/**
-> + * is_kernel_noinstr_text - checks if the pointer address is located in the
-> + *                    .noinstr section
-> + *
-> + * @addr: address to check
-> + *
-> + * Returns: true if the address is located in .noinstr, false otherwise.
-> + */
-> +static inline bool is_kernel_noinstr_text(unsigned long addr)
-> +{
-> +	return addr >= (unsigned long)__noinstr_text_start &&
-> +	       addr < (unsigned long)__noinstr_text_end;
-> +}
-
-This doesn't do the right thing for modules, which matters because KVM can be
-built as a module on x86, and because context tracking understands transitions
-to GUEST mode, i.e. CPUs that are running in a KVM guest will be treated as not
-being in the kernel, and thus will have IPIs deferred.  If KVM uses a static key
-or branch between guest_state_enter_irqoff() and guest_state_exit_irqoff(), the
-patching code won't wait for CPUs to exit guest mode, i.e. KVM could theoretically
-use the wrong static path.
-
-I don't expect this to ever cause problems in practice, because patching code in
-KVM's VM-Enter/VM-Exit path that has *functional* implications, while CPUs are
-actively running guest code, would be all kinds of crazy.  But I do think we
-should plug the hole.
-
-If this issue is unique to KVM, i.e. is not a generic problem for all modules (I
-assume module code generally isn't allowed in the entry path, even via NMI?), one
-idea would be to let KVM register its noinstr section for text poking.
+Side topic, it's super annoying that "objtool --noinstr" only runs on vmlinux.o.
+I realize objtool doesn't have the visilibity to validate cross-object calls,
+but couldn't objtool validates calls and static key/branch usage so long as the
+target or key/branch is defined in the same object?
