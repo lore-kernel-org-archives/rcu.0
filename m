@@ -1,147 +1,90 @@
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49F11FC7FE
-	for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 21:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E12232441;
+	Wed, 15 Jan 2025 02:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736891332; cv=none; b=C/BF5Hyok+k6PWv1FN+u5piXeVib3AgitamCOrBxvEBrCQOCGK2bMy8N6Q6kM+YendN78G30zwOlebTp+lcWJw3oTglujJcvc4dakwYf3yKlqI3ogNjVYRbHAyhhT3c580gEYTTSn/C9s3cm4Xr67DrhVzSj+iFNvndOW+4ZMxQ=
+	t=1736908619; cv=none; b=Qz5ay3CTUCJR/EAqENgcgYJ/jGQtXVpEVkiaYq1oT72k04Bzvr9Zx6lEFMxlYxR5nqMiDTd0Ja2DrBl7VkVlANzstxhhYTRmZ+xHY2mPwnos9gSUSOVf6kUSV/Kb8kdJ+llD2Uo1dqu2sFMD2cm2itM0xmHxbyzsvfBIdGI48hY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736891332; c=relaxed/simple;
-	bh=Qnfv3RXewSZryKcbeV9ntSt9VoSXcn2RU5Cczbey1Bs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=EpNHd261b85N5Yp86PqKa2A4OW7Nkpxmd6oLG7AhesjMHYPZdoQek1t782cJ6WcXbviG9YbDXTXfTB2roFcpKUbVqArjiIXKRyNuoI0xSSor7WmCFhuAL91fdri9wadCrAtlZAk0hb9baDDk4/6Puz4xZ/y74RaOtK93i+dNwmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vHPDWtoz; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1736908619; c=relaxed/simple;
+	bh=TzMnNb+SGxxc0WEjZf39odl4521EWGy0qtYkCYqb/pI=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=Xz7IJWcfr5oqX29itT5KBT3iFr3DfsfOPOqHWKgoRAKyd/tnJtzmtgfEwwK1INRPeGc2qIkaIYdlHRwu/eU7FQBZmWZ7kQHx/+YG49yXEP35FY3cnk1ZOlSMk/GXZUZBldWfruZRpW/6YUNoXJ7lh2CNDndnuhtsS2bCh/pULeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VBschxz8; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vHPDWtoz"
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2ef35de8901so10419747a91.3
-        for <rcu@vger.kernel.org>; Tue, 14 Jan 2025 13:48:50 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBschxz8"
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aaee0b309adso1011068866b.3;
+        Tue, 14 Jan 2025 18:36:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736891330; x=1737496130; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SY5ohLi34L7dYoduVlaYy23kjKtiA3foJ9V2Q6nj8Ew=;
-        b=vHPDWtoz15PHx2+owNqMUZS9HsFf+aBx5qlVGvpH7cKVBSFa/rY5zSqMhF5+GUltD+
-         CrU3Qbx8ceTmWrrEroY9VUPVD55b3A3lanUzvfNYAckLKCfjT1nXrC9jFNCn02KB4tNV
-         MWNpc9GkYPaQBEZEZx1utA1LwugytGYec8eHIWRCOxfLtzCTAenkwsND5zYvF0m4njMq
-         xlj/9pvtYnmX19nb7UWl4hYz25QO8X8fPvwNpo7J5rf+QoQLw5a43KuNvvX31LISYNtb
-         ORjcN0Jde7xCC2Ig15unDYwc9N1DkOrgSHJVxjUVYf7ft1GrbcZYZmHl/4L0WLYPea8o
-         K0qA==
+        d=gmail.com; s=20230601; t=1736908616; x=1737513416; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TzMnNb+SGxxc0WEjZf39odl4521EWGy0qtYkCYqb/pI=;
+        b=VBschxz8QnYyWcZ09oVqrnMmHX796Uav+uznAoozs3LlTlj3cS418OicvymonfsZnC
+         6HkRxZBuZPnM1u3HhDYY+QILA/ACAyUZypj3aIXT4l5rAMFJrcxZF0r7Pcjyg58bZDLY
+         ws06KIwfvnJ+ZSbHX9riJn4zJr34uKawymrZhkuk5HKLE2XYQTSDUecDCuyoSzbRv6ON
+         ljGIy5SBMUGpF5WoIUgtMY/ki7blZtvgq+ZQLPps+lV2C0NkR+TQpsrVmW6thAjREmYh
+         7iqj3s/6DRUbd3dzPa27M8A6goLpvvmVPCF7SlHD/9VQFqzozMkXIxraPOM0WXEFMyzW
+         gcaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736891330; x=1737496130;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SY5ohLi34L7dYoduVlaYy23kjKtiA3foJ9V2Q6nj8Ew=;
-        b=BPe063RzHyJKrH6QC300XApHPa/+7qKK6VinAf99wFKY1sG53rcq6zPijWUmPYmJMH
-         8ClVxNXlq7xPdLms4LYuHDWGjmH4kkNjrj7zomCz0Lw2sqZr+9G8KHcsxs5SN09yGm0f
-         p1JfZ1fXptH/aOhWUkjaKWrJRqTec0ltDSXxpHUO+NYcP7ZuOGKi0Tvb9ZHz0WUpamST
-         ER/O49/QiPfNwFSFrW0MHaGnIgDG6Fhs46w02NcDlFDUC+DPl+vjEalCfRa/v+yhK+3Y
-         L5Ai7fl09orQARiCAUGfOY4zou4/pfu+Ji9jq7OX/j5eRStjfhHap/5E7MHztiEqCdmq
-         s3Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCX109Q9/Cb8jnIjh3++iMZcmEN5qpVhbaIvHtfbYlzxBjlS9O/HXXJxoFg4sHVGH7oMIzU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHCqKqxWKQEJC4SGcfD5pA/8V2ItRu/pLcZOPqUBrycnEToFd8
-	lGrqosFYQWcQWdZtS7Noy8YCBugOaaSBkBgbCojxT1Iqxzo8N+Wg6+rsitHDrPftcgCxfLV1qmf
-	hpw==
-X-Google-Smtp-Source: AGHT+IGwfpH2TIl0yoCx6tHXuYKAWJYGIodcKzr2p0TmFaGwbmX4878qRqYpxqFQD7ygsze3Eu4GllOh0sY=
-X-Received: from pjbtc14.prod.google.com ([2002:a17:90b:540e:b0:2f2:ea3f:34c3])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90a:d00b:b0:2ee:d63f:d8f
- with SMTP id 98e67ed59e1d1-2f548ebf53cmr37053651a91.13.1736891330040; Tue, 14
- Jan 2025 13:48:50 -0800 (PST)
-Date: Tue, 14 Jan 2025 13:48:48 -0800
-In-Reply-To: <Z4bTlZkqihaAyGb4@google.com>
+        d=1e100.net; s=20230601; t=1736908616; x=1737513416;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TzMnNb+SGxxc0WEjZf39odl4521EWGy0qtYkCYqb/pI=;
+        b=BLFcZ7wvWTK9YsHr92HBrebJr2hN7srT+fxYPn6KlbMhgM7/3SWZiOAnwXmbXV/Zti
+         KsjDj91O4zx118OyvbIvlLxGUk1bcB0zl89Oh0gJ5hJYLIvRtTd/IvF7I1DYCePqMrCc
+         I3hx40J2u95r0hkIngbbRFNDARpbWPAnxzdeg7xeokWzTxb2NXFUsjbp8o9Lv7RkkbdO
+         vZQGNr3qrdqvdjAl2WpBJkQxSjK1Q6FjrHYqKSb2VEItrn8oDqkEb3J3CDGq4GckeXjb
+         BHlRSVtzYY2iYF/IRdpdbwfaSz6MTS9lbOjHDwdxxl1PrOzmX36Yx1mcjcn8s+P6AoUt
+         hFpA==
+X-Forwarded-Encrypted: i=1; AJvYcCV3GNo70tgQeLX2aj0PIYdeJw3x7v7QKenFb9fCE/7eIybvq/6Val8Q4whqYu1SuBIIJecz@vger.kernel.org, AJvYcCVxBFyOpxmSgGaw10CSVRlgdHwG63Xm9A+zptkbepQFt+iFGtmYKlRz/r1kxPluivYRf28rcyEjCzVff4Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRxHjtfzf+8NBxXqlzhXZT99s+WeWh4WSgsez6uF6wBrv/z02x
+	s2uzgt3m6WUqYkXlFm+3bYIqY2OFALKfHo8cLuhQhvQ/WFXlZIFFs50g5RPLkqT6WkeLpQyrcRL
+	MrCnZUDor2n1J3hTuyYclpL2pmhj8tM+F
+X-Gm-Gg: ASbGncvWPKv2jsl5vK0miF3aFBAQhvTtXEf/tHJvPGiK/4W3z9zHTguNQZRcKwU3wzu
+	SPTZvq1z/5hi5o+SvY28f3rY6tT2SrHiXfBfG+E8=
+X-Google-Smtp-Source: AGHT+IFxDDWH/p8TjDyzzlmdGk0qjmcPpwo2K9wDzMKxfkKaPsykmWUitVK70rkKmY+pay46txya1MVzPKWOJXQYLLM=
+X-Received: by 2002:a17:907:2dac:b0:aae:eb0b:f39a with SMTP id
+ a640c23a62f3a-ab2abc6ea73mr2636951166b.42.1736908616172; Tue, 14 Jan 2025
+ 18:36:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-26-vschneid@redhat.com>
- <Z4bTlZkqihaAyGb4@google.com>
-Message-ID: <Z4bbwE8yfg349gBx@google.com>
-Subject: Re: [PATCH v4 25/30] context_tracking,x86: Defer kernel text patching IPIs
-From: Sean Christopherson <seanjc@google.com>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
-	virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org, 
-	linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org, 
-	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
-	bcm-kernel-feedback-list@broadcom.com, Peter Zijlstra <peterz@infradead.org>, 
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Juergen Gross <jgross@suse.com>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>, 
-	Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, 
-	Tomas Glozar <tglozar@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, 
-	Mel Gorman <mgorman@suse.de>, Kees Cook <kees@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, 
-	Shuah Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+From: cheung wall <zzqq0103.hey@gmail.com>
+Date: Wed, 15 Jan 2025 10:36:44 +0800
+X-Gm-Features: AbW1kvbKWLfU0KMEckiH_rawDCfDIVT21ZzjUy5whZ_nnWHL2dzBhxuAeFFxS2U
+Message-ID: <CAKHoSAvbRnktnM=H52eNe0QQryP908Q612Hfxzy2sozUdHRrjQ@mail.gmail.com>
+Subject: "WARNING in rcu_sr_normal_complete" in Linux Kernel v6.12-rc4
+To: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 14, 2025, Sean Christopherson wrote:
-> On Tue, Jan 14, 2025, Valentin Schneider wrote:
-> > +/**
-> > + * is_kernel_noinstr_text - checks if the pointer address is located in the
-> > + *                    .noinstr section
-> > + *
-> > + * @addr: address to check
-> > + *
-> > + * Returns: true if the address is located in .noinstr, false otherwise.
-> > + */
-> > +static inline bool is_kernel_noinstr_text(unsigned long addr)
-> > +{
-> > +	return addr >= (unsigned long)__noinstr_text_start &&
-> > +	       addr < (unsigned long)__noinstr_text_end;
-> > +}
-> 
-> This doesn't do the right thing for modules, which matters because KVM can be
-> built as a module on x86, and because context tracking understands transitions
-> to GUEST mode, i.e. CPUs that are running in a KVM guest will be treated as not
-> being in the kernel, and thus will have IPIs deferred.  If KVM uses a static key
-> or branch between guest_state_enter_irqoff() and guest_state_exit_irqoff(), the
-> patching code won't wait for CPUs to exit guest mode, i.e. KVM could theoretically
-> use the wrong static path.
-> 
-> I don't expect this to ever cause problems in practice, because patching code in
-> KVM's VM-Enter/VM-Exit path that has *functional* implications, while CPUs are
-> actively running guest code, would be all kinds of crazy.  But I do think we
-> should plug the hole.
-> 
-> If this issue is unique to KVM, i.e. is not a generic problem for all modules (I
-> assume module code generally isn't allowed in the entry path, even via NMI?), one
-> idea would be to let KVM register its noinstr section for text poking.
+Hello,
 
-Another idea would be to track which keys/branches are tagged noinstr, i.e. generate
-the information at compile time instead of doing lookups at runtime.  The biggest
-downside I can think of is that it would require plumbing in the information to
-text_poke_bp_batch().
+I am writing to report a potential vulnerability identified in the
+Linux Kernel version v6.12-rc4. This vulnerability was discovered
+while i was testing the kernel.
+
+Linux Kernel Repository Git Commit:
+42f7652d3eb527d03665b09edac47f85fb600924 (tag: v6.12-rc4)
+
+Bug Location: 0010:rcu_sr_normal_complete+0xd0/0x110 kernel/rcu/tree.c:1638
+
+Bug report: https://pastebin.com/kuJ7wnPe
+
+Entire Log: https://pastebin.com/fT42ya0T
+
+Thank you for your time and attention.
+
+Best regards
+
+Wall
