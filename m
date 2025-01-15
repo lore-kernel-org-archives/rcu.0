@@ -1,128 +1,86 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.lony.xyz (unknown [172.105.251.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3952222FAE9;
-	Wed, 15 Jan 2025 06:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2661E98F6
+	for <rcu@vger.kernel.org>; Wed, 15 Jan 2025 10:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.251.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736923323; cv=none; b=T75O4P19THSzJr6UXro+fQNGpYLnrGG1uJu2ka3Hg2sJD1dAODls/LM5Axtqu1ZhfE6NFW7NP9hEyBztWPMSjr9hrTB3C3XV3h5tQcXc0TQJI09Q8unADff3Wh2jlMPGcZVZkVUMJ0efz57NojON8zrEfA//XBc2KeUy2qMLZ5A=
+	t=1736938397; cv=none; b=Cjh0fXnujzz/5bMsHOztT6LTZ004lbe3p0w0iC59lSRIZ7cUXLylocLukmuscJoWI2vz25cumuk3pM2AImREdK4+SZiEP7KW9PK/7YocPmiOBIbcCnCZfUedLYtxK9lHNvXgHRWOJzKG1PR67i+RL4tU8N3NCaM1WkBKhTKVlWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736923323; c=relaxed/simple;
-	bh=bgY+YVYRDmnRUhd9hC0XPzyVCgfpIC4kE0RT+1d1CSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XeWxXINzupzsis8jEJ+WHbXN5/wJUpaLyiDf1lNBSmB8RYis3He0a9/xmxL33TXgIyJ8nd10NMpeLplWnYTOnSNVK5s/Y0HXQ8tC+YoFGVVKAWTNtzU7roue0071c4yFHXBvBSl/c2jYouL9uzxe3Xr4AH3LmPtpZAtqCy24hMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WAIS5RJ+; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1736938397; c=relaxed/simple;
+	bh=kV8NCzAqZ+AjjvyfSzvWfCFZcmp6/sUjJ/Hc8aabX4w=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To; b=Tzle+4p85Fp2/uqX/ddlCi6EMK1q1fP6MGfvSjG8ijkfstDtlh86qz21sluQHqunYh05ZacYAuylKzoRq6heGQW73i8jJ9JZA3RT1fyt8iT3vJrNsN2GRQ5RHsedtqDw3466jYZEB9871gtcLAbhVXN19uSEYmHR86f/+pOpHO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lony.xyz; spf=pass smtp.mailfrom=lony.xyz; dkim=fail (2048-bit key) header.d=lony.xyz header.i=@lony.xyz header.b=nxj4N+B1 reason="signature verification failed"; arc=none smtp.client-ip=172.105.251.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lony.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lony.xyz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WAIS5RJ+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC216C4CEDF;
-	Wed, 15 Jan 2025 06:41:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736923322;
-	bh=bgY+YVYRDmnRUhd9hC0XPzyVCgfpIC4kE0RT+1d1CSg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WAIS5RJ+HciZXjtPxrtNebxVZbWYP1lfFRhP/crDreCXBFfUDrzK0wNb9glRR1qZl
-	 LW53WAm4IeNqKEnkKyzUSBnah+iQpY2qOINnoyyWnnZhasfIq5mLTCffq7FrITc8et
-	 CHC+MzefHzpBM9jDk7P/AhZJ4sswnjwFIXLYhHxAfs9Di3Nj0tY/o1f1IPZKaoDeaF
-	 EqavdYtUzKy9yDL5PrOfLolemyOdXs+Io1rWeiqYb7jiYSMyTVzPMwJcC9ZNhtfrUE
-	 /UQK1QoKSCrXiCxQ6/ZLX2Rr14aplknkYmSWbTW1Ra9cB4FiYmkxEuqdan3fBbHjJx
-	 8bn90llk/oU1w==
-Date: Wed, 15 Jan 2025 07:41:54 +0100
-From: Danilo Krummrich <dakr@kernel.org>
-To: Gary Guo <gary@garyguo.net>, gregkh@linuxfoundation.org
-Cc: rafael@kernel.org, bhelgaas@google.com, ojeda@kernel.org,
-	alex.gaynor@gmail.com, boqun.feng@gmail.com,
-	bjorn3_gh@protonmail.com, benno.lossin@proton.me, tmgross@umich.edu,
-	a.hindborg@samsung.com, aliceryhl@google.com, airlied@gmail.com,
-	fujita.tomonori@gmail.com, lina@asahilina.net, pstanner@redhat.com,
-	ajanulgu@redhat.com, lyude@redhat.com, robh@kernel.org,
-	daniel.almeida@collabora.com, saravanak@google.com,
-	dirk.behme@de.bosch.com, j@jannau.net, fabien.parent@linaro.org,
-	chrisi.schrefl@gmail.com, paulmck@kernel.org,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v7 08/16] rust: add devres abstraction
-Message-ID: <Z4dYsoKrbP4_Nz_v@pollux>
-References: <20241219170425.12036-1-dakr@kernel.org>
- <20241219170425.12036-9-dakr@kernel.org>
- <20241224215323.560f17a9.gary@garyguo.net>
- <Z4aR4OrCQMoF6Boo@pollux>
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=lony.xyz header.i=@lony.xyz header.b="nxj4N+B1"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lony.xyz; s=mail;
+	t=1736937998; bh=kV8NCzAqZ+AjjvyfSzvWfCFZcmp6/sUjJ/Hc8aabX4w=;
+	h=Date:Subject:From:To:From;
+	b=nxj4N+B13gExCxtnV0Aruzot3dcey9x+KSDY2J5xiodvqwsLtpTd1CeSuXYI5p/Fq
+	 2N330D2c94+rmb9AJOCcIOhMqvc3vQ/tFEHINQwIbsqLJ7P+NxDRWGtZYE/Ry5xjnX
+	 Mc6Y3cnQCyABqdtAmPCv4IyQS+schp6X//OP6vPOMT0G/4ySYFbPC/B9HEf8tuPlGF
+	 YDZZkiFb4en58i7Dt6u6OSQ13WT8bjOr/fb6YG/lyWBlR6VJnJBmD2o9cBY+OMrawI
+	 LYxJNujhROB4e5raJiir3pcM/zkgQUs+LBlBYX3lHWxT8j1Pajri2hwQiitsq6BLsz
+	 7noU+xUBh2MSA==
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z4aR4OrCQMoF6Boo@pollux>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 15 Jan 2025 11:46:36 +0100
+Message-Id: <D72L4RZIUEE0.1S1HF6ZNRTXN3@lony.xyz>
+Subject: Supposed CPU stall in RCU reported by security firm
+From: =?utf-8?q?Sergio_Migu=C3=A9ns_Iglesias?= <sergio@lony.xyz>
+To: <rcu@vger.kernel.org>
+X-Mailer: aerc 0.18.2
 
-On Tue, Jan 14, 2025 at 05:33:45PM +0100, Danilo Krummrich wrote:
-> > > +impl<T> Drop for Devres<T> {
-> > > +    fn drop(&mut self) {
-> > > +        // Revoke the data, such that it gets dropped already and the actual resource is freed.
-> > > +        //
-> > > +        // `DevresInner` has to stay alive until the devres callback has been called. This is
-> > > +        // necessary since we don't know when `Devres` is dropped and calling
-> > > +        // `devm_remove_action()` instead could race with `devres_release_all()`.
-> > 
-> > IIUC, the outcome of that race is the `WARN` if
-> > devres_release_all takes the spinlock first and has already remvoed the
-> > action?
-> > 
-> > Could you do a custom devres_release here that mimick
-> > `devm_remove_action` but omit the `WARN`? This way it allows the memory
-> > behind DevresInner to be freed early without keeping it allocated until
-> > the end of device lifetime.
-> 
-> Better late than never, I now remember what's the *actual* race I was preventing
-> here:
-> 
->   | Task 0                               | Task 1
-> --|----------------------------------------------------------------------------
-> 1 | Devres::drop() {                     | devres_release_all() {
-> 2 |    DevresInner::remove_action() {    |    spin_lock_irqsave();
-> 3 |                                      |    remove_nodes(&todo);
-> 4 |                                      |    spin_unlock_irqrestore();
-> 5 |       devm_remove_action_nowarn();   |
-> 6 |       let _ = Arc::from_raw();       |
-> 7 |    }                                 |
-> 8 | }                                    |
-> 9 |                                      |    release_nodes(&todo);
-> 10|                                      | }
-> 
-> So, if devres_release_all() wins the race it stores the devres action within the
-> temporary todo list. Which means that in 9 we enter
-> DevresInner::devres_callback() even though DevresInner has been freed already.
-> 
-> Unfortunately, this race can happen with [1], but not with this original version
-> of Devres.
+Hello,
 
-Well, actually this can't happen, since obviously we know whether Devres:drop
-removed it or whether it will be released by devres_release_all() and we only
-free DevresInner conditionally.
+I checked LinkedIn and the CEO of a Security firm posted this
+(translated from Spanish):
 
-So, the code in [1] is fine; I somehow managed to confuse myself.
+> I have just discovered a #vulnerability in the #Linux #kernel that
+> allows forcing a crash (exploitable locally, and in certain scenarios,
+> remotely).
+>
+> The issue lies in the RCU subsystem, which is critical for the
+> kernel's memory management. Unintentionally, I have found a way to
+> generate a "lock" in this subsystem, causing the kernel's own memory
+> management operations to fail (callbacks, memory allocation for process
+> structures, etc.). Unable to recover, a kernel panic occurs (the
+> equivalent of the Windows BSOD).
+>
+> I don't know how many kernel versions may be affected, as this
+> subsystem has been part of Linux for over two decades and I imagine
+> it has undergone many changes. However, the attack works on a version
+> of the 6.X branch like clockwork.
+>
+> I believe this bug could be dangerous in shared hosting environments,
+> VPS, etc.
+>
+> Let's see if I can find time to report it. Or not. If I see it can be
+> militarized (for remote attacks), I will add it to our #0day arsenal
+> for #pentest. Some clients sometimes simply want to see how a server
+> crashes to test contingency plans, etc.
+>
+> If I cannot exploit it remotely, or it doesn't have much value, I will
+> report it, as always. Unfortunately, our company cannot afford the
+> luxury of reporting interesting vulnerabilities (that serve us in our
+> day-to-day) for free. This is something that is sometimes not
+> understood, but we are an offensive security company (genuine),
+> we do not live off cloud smells.
 
-Sorry for the noise.
+He appends a screenshot which I have saved in the WayBack Machine here:
+https://web.archive.org/web/20250115103832/https://www.linkedin.com/feed/up=
+date/urn:li:activity:7284277163200057344/
 
-- Danilo
+While I know this may be a bluff, I prefer reporting it first, just in
+case it is not.
 
-> 
-> I see two ways to fix it:
-> 
-> 1) Just revert [1] and stick with the original version.
-> 
-> 2) Use devm_release_action() instead of devm_remove_action() and don't drop the
->    reference in DevresInner::remove_action() (6). This way the reference is
->    always dropped from the callback.
-> 
-> With 2) we still have an unnecessary call to revoke() if Devres is dropped
-> before the device is detached from the driver, but that's still better than
-> keeping DevresInner alive until the device is detached from the driver, which
-> the original version did. Hence, I'll go ahead and prepare a patch for this,
-> unless there are any concerns.
-> 
-> - Danilo
-> 
-> [1] https://lore.kernel.org/rust-for-linux/20250107122609.8135-2-dakr@kernel.org/
+Best regards,
+Sergio M. Iglesias.
