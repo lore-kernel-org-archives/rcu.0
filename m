@@ -1,70 +1,91 @@
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1C73D76;
-	Thu, 16 Jan 2025 21:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE6B1862;
+	Thu, 16 Jan 2025 21:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737061349; cv=none; b=i8AW13wtuzx5drEG3Cfw1fFjKZwQOe2h5YQsN/9ON9U8Gi6i3qBcm4rObjVsACBnlWHHGugmGEjuNAuTfz63VRhEtPAP76HSiRynnQPSjON98jUiYnJ56cs3l1Lrp65L7+UNhX85IRl09udbOp4hpG1sK9QlFxRqWiIQ22D8uFE=
+	t=1737063501; cv=none; b=kzDIpUBs3UvSviVb0TN4gZceg4gi3DLsDwSvrOhFTi5k5BSwT9254p8Zrb/NgjuDuJV3J5vPHca3pcU4QNxDZPff44BIK6Q0a04BqlLkUhn7Hc0AE4cTE4o8XORbCfuJJUl0XmmswbISlzjaMl4l/9ZFwVCFpWXBoVU7cVodwoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737061349; c=relaxed/simple;
-	bh=M5AXe7WdSqr1YmPNEHAF0GmhANfg1x1FfR+ZbTY+0+g=;
+	s=arc-20240116; t=1737063501; c=relaxed/simple;
+	bh=zgk9DRVPBdMbV1NlpPTG0nFxpD/SEFZUqzUWlgFLQGU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uLyuyVxkHcu4z/bRFp6XA5R2Fq+8NxhqYkzDvy4cz0PxD09HOhaDujBVHYcGfd16qhP1A/5y9phZ2wCBdpISIuNj9II5f1iIC7T414yduZgkQzelpay0hu91bF1f5PRMi7DfZ7hda4AJReDnV86uuwc5Qp8u2JDUzcYIMZmpvzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tvqOETaC; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=CfeFXwMaOUYGsj5JMwmJAAlkb/DjkwGiebunc7RjGBMgXkzrupUb3PwnQOlUSbHCBJpdUbhUl1jvlB/oAyRz0FYLEn5OXFlpHiZjxrj8GoeEDAJjr5fSYZFDxgUPg60MJ0ufn0S16pNdtA/uTceA0LS0APC00rMLnluUyR+kA5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OOD2S1pE; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tvqOETaC"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OOD2S1pE"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Dd9xxzIaOtJal9dw9NyPkkoGl9lhLKiFJQR75pHe4EU=; b=tvqOETaC4o9wOERmS/KLEcYl4e
-	c/ZBX+FZMN16SmbILLXA2zis7bL/b4tr7EOnTp6/fMs97waexgUTICXOMr2KOfKN0wT9B5MEHyuE6
-	LfHUdBfaCsgkg2GsmRwa5o2DZiWS5pfob7BACUobd3hVqEaiy0VDhQryUlo01JMsaNBbeYQwRRKZk
-	LRdyzSvE4UncVW6EppPVWRmKPlTYZXkeWITtjNTLD2ldtoH1joZJr+H7D6GNWq5HI0uGo3eTNCmb+
-	3ckWDItG6I/nNMFG9Wfu48hVCxhv6X8ANdWb2s0H3ewfqPe/OxklaPelFoBdqFa/190vTSz0lsVmJ
-	rHu1Pi4Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tYX0K-00000002Syo-2QeW;
-	Thu, 16 Jan 2025 21:02:16 +0000
-Date: Thu, 16 Jan 2025 21:02:16 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Jonathan Corbet <corbet@lwn.net>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Boqun Feng <boqun.feng@gmail.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH rcu 2/7] docs: Improve discussion of this_cpu_ptr(), add
- raw_cpu_ptr()
-Message-ID: <Z4lz2CC7SLgSp90y@casper.infradead.org>
-References: <a2c2793d-771a-436e-8c42-4cb38def0e2f@paulmck-laptop>
- <20250116200239.3782374-2-paulmck@kernel.org>
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=E2YYLz/on8UkqxKNCOmfkESkbeHHVNi9Qiq47EiWsgk=; b=OOD2S1pE3lX8o+W7vxSJYds/cR
+	U6MwX1Ncq59yecLIDgNS1jc+oBQADocQwC8XUs2XYOS+tFKbXNh+nBoiijg1KTGp+SAjVTuVg72MG
+	NV7oNrZ+SWyvqBRzD4GQ+LUnw0hIRwLPiutR4942efskzBgfh/gMjtK7LurMDJGsw1vDDhgILufoY
+	2K00K61y5IusTergXPXUqc2vEJYOBMRJIbGys/V8/tFpRKvg834DpwNtiA+VMyLTT7L3TMlndElRZ
+	iXfrIl55Lz1CIQWrSnKV5lRjMoSgohj6dd8CI8Ir8QLEu2wbfNjG0SNFxskB9nye4yYpM0/onGiPm
+	TJ5od8ZQ==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tYXZ0-00000002t7M-2PH2;
+	Thu, 16 Jan 2025 21:38:06 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id B18F5300777; Thu, 16 Jan 2025 22:38:05 +0100 (CET)
+Date: Thu, 16 Jan 2025 22:38:05 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Kernel Team <kernel-team@meta.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH rcu 13/17] srcu: Add SRCU-fast readers
+Message-ID: <20250116213805.GC7232@noisy.programming.kicks-ass.net>
+References: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
+ <20250116202112.3783327-13-paulmck@kernel.org>
+ <CAADnVQ+fz7DQ9O=4F-4NNo1J7=dkiDAfYa+Fc5WXBK0yH0f=TQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250116200239.3782374-2-paulmck@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+fz7DQ9O=4F-4NNo1J7=dkiDAfYa+Fc5WXBK0yH0f=TQ@mail.gmail.com>
 
-On Thu, Jan 16, 2025 at 12:02:34PM -0800, Paul E. McKenney wrote:
-> +The special cases where it makes sense do obtain a per-CPU pointer in
+On Thu, Jan 16, 2025 at 01:00:24PM -0800, Alexei Starovoitov wrote:
+> On Thu, Jan 16, 2025 at 12:21 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > +/*
+> > + * Counts the new reader in the appropriate per-CPU element of the
+> > + * srcu_struct.  Returns a pointer that must be passed to the matching
+> > + * srcu_read_unlock_fast().
+> > + *
+> > + * Note that this_cpu_inc() is an RCU read-side critical section either
+> > + * because it disables interrupts, because it is a single instruction,
+> > + * or because it is a read-modify-write atomic operation, depending on
+> > + * the whims of the architecture.
+> > + */
+> > +static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct *ssp)
+> > +{
+> > +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
+> > +
+> > +       RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
+> > +       this_cpu_inc(scp->srcu_locks.counter); /* Y */
+> > +       barrier(); /* Avoid leaking the critical section. */
+> > +       return scp;
+> > +}
+> 
+> This doesn't look fast.
+> If I'm reading this correctly,
+> even with debugs off RCU_LOCKDEP_WARN() will still call
+> rcu_is_watching() and this doesn't look cheap or fast.
 
-s/do/to/
-
-> +preemptible code are addressed by raw_cpu_ptr(), but please note that such
-
-s/please note that //
-
-> +use cases need to handle cases where two different CPUs are accessing
-> +the same per cpu variable, which might well be that of a third CPU.
-> +These use cases are typically performance optimizations.  For example,
-> +SRCU implements a pair of counters as a pair of per-CPU variables,
-> +and rcu_read_lock_nmisafe() uses raw_cpu_ptr() to get a pointer to some
-> +CPU's counter, and uses atomic_inc_long() to handle migration between
-> +the raw_cpu_ptr() and the atomic_inc_long().
+this is the while (0 && (c)), thing, right? can't the compiler throw
+that out in DCE ?
