@@ -1,96 +1,127 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5266524168F;
-	Thu, 16 Jan 2025 20:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209791993B2;
+	Thu, 16 Jan 2025 20:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737058410; cv=none; b=mDTv8hnD3XhK9CAFz6fo5/CPEsURbdpysFJcfRMefsRH4nSycDDZwQq+vNNRDQ9ObXD/7ljq8Mxp4GPN/eiahaMdP6RNM0P4ykNlQvbbRpO04+wilwvGNBDmmYJ3K2vKJ5CNQa9IZyRt8psXfvbEQWK8CN3WAPdnsdK18PoM3oM=
+	t=1737058867; cv=none; b=b9m4GXiGTsLg/E9DTrAVro9DiXfe8GXXRKpZiamnYGQV/M8ew1yg9kw1fLBrZHufaMlYReN7uWJmQ7kxTb84b8XxTLgk79gc4R4jDmcRQ3onCXhrvzzjL2c5Plo50jUsqoaX1TVnghL0Ad6TLYvVRV6ntvXpY+S6X94tq4gM36E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737058410; c=relaxed/simple;
-	bh=lS+VTDHcbfCovgK+C4MkX0AzlheKwnhQP7lt1rpOa24=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EvY7/rvz8sMrp4irA6C8Us0vwybUW6FM0266Vz9IvTXj9ilWviK8d1XP0EnxIK0c5+e6ntwtzvA+/C6m0L0xxWhMeY1XH5wezRKC/G3d5lW5zqIEXbvYAOQx2Lzl/NR4FkvttzQ0l0cGn5fphHqE/WoDhlfqm4IBU1nGt+M9b8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qlyVQmqX; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1737058867; c=relaxed/simple;
+	bh=IujXZ/V4JeCkW+cP57v01+Vzkrp2BtP99eLZJ8FICcU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=F2jvScpuaQPCXZGev04bkC8cBsSi3kwmKflZ7e3/2MhNG5HnnvIDWTPx+S44DInleqnRWMva4Tcy6cBw8wLfmc+9hzWnmkGd+YI+tyxG3IqGQ+LuR5oaQdk3DMRM0xmgmCvWpViLPbUIW3jQusUk24dyv5LZ/m+UvKolfIl7R6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GWf1tLaZ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qlyVQmqX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2014C4CEED;
-	Thu, 16 Jan 2025 20:13:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GWf1tLaZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0681C4CED6;
+	Thu, 16 Jan 2025 20:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737058410;
-	bh=lS+VTDHcbfCovgK+C4MkX0AzlheKwnhQP7lt1rpOa24=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qlyVQmqXWLVaTShp182BCOGEchEohIk9t+FBGtunkHsq23zfdJBkd5sOnHIrQfkXY
-	 nIRlK5MMzls9rxRj7vvxriEokb2HVL+mUCdC/SIz/3CIIIEoq9jSD7kf8l4prWc+sh
-	 DLuSPoRDJpyaNXltrjon3VBiKyNAuo/aY9W1XCzKOHvYugb2tgK9bJcghmCjPYV2bB
-	 N/q8j13/L+z0kNLM8YIRoJ7l400dLpU6i9WxSMzuqVB5tIhcsFqcSDFlhWRq1uUe5p
-	 mcK/+Xdn+0FPebQlx49Z12JAKezIiHFHa+9bO9qIj1/DMe/lBtO48Tqn+EJxNdoSF1
-	 pQLNjSbHzfjiQ==
+	s=k20201202; t=1737058866;
+	bh=IujXZ/V4JeCkW+cP57v01+Vzkrp2BtP99eLZJ8FICcU=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=GWf1tLaZOEAWvqBJXa9VEc+ZCbo3V8bBuNNybdf1brdjtrdRoZRhz6Uhwvn4Bql3G
+	 /SoUWBo3YUaKn522QuELtPO63TUDzVB812cMVZQkGceAuyfVFESj7QJi7cfz4hJX4T
+	 Zdm55elNY9Hld2fkW5kmC6OIC2IW+Qr4P9ldc6CsElHjTxJjUTfJFxyb9uoxdiFKIR
+	 cP8ssre9hG/17hICGZQuU/pOesyBsi6KExxBIDwxNgflm9+jTmsh5PhwcQ+H5EsB0D
+	 FahDbMRcNkVmGqZ1jhz4IsUfMGqYhk0CfEntetI09bQtyIQX5aL9bKxDxGj571MA6X
+	 MC2YSvAOe8u2Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 58BD8CE37D2; Thu, 16 Jan 2025 12:13:29 -0800 (PST)
+	id 5B811CE13C4; Thu, 16 Jan 2025 12:21:06 -0800 (PST)
+Date: Thu, 16 Jan 2025 12:21:06 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH rcu 7/9] rcu: limit PREEMPT_RCU configurations
-Date: Thu, 16 Jan 2025 12:13:25 -0800
-Message-Id: <20250116201327.3782963-7-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <df73d8ef-ef52-4f99-ac22-e2b66f0c644e@paulmck-laptop>
-References: <df73d8ef-ef52-4f99-ac22-e2b66f0c644e@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+	ast@kernel.org, andrii@kernel.org, peterz@infradead.org,
+	kent.overstreet@linux.dev, bpf@vger.kernel.org
+Subject: [PATCH rcu 0/17] SRCU updates, including SRCU-fast
+Message-ID: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Ankur Arora <ankur.a.arora@oracle.com>
+Hello!
 
-PREEMPT_LAZY can be enabled stand-alone or alongside PREEMPT_DYNAMIC
-which allows for dynamic switching of preemption models.
+This series contains SRCU updates, perhaps most notably the addition of
+srcu_read_lock_fast() and srcu_read_unlock_fast(), which on my laptop are
+about 20% faster than rcu_read_lock_trace() and rcu_read_unlock_trace().
+There are of course drawbacks:
 
-The choice of PREEMPT_RCU or not, however, is fixed at compile time.
+o	Lack of CPU stall warnings.
+o	SRCU-fast readers permitted only where rcu_is_watching().
+o	A pointer-sized return value from srcu_read_lock_fast() must
+	be passed to the corresponding srcu_read_unlock_fast().
+o	In the absence of readers, a synchronize_srcu() having _fast()
+	readers will incur the latency of at least two normal RCU grace
+	periods.
+o	RCU Tasks Trace priority boosting could be easily added.
+	Boosting SRCU readers is more difficult.
 
-Given that PREEMPT_RCU makes some trade-offs to optimize for latency
-as opposed to throughput, configurations with limited preemption
-might prefer the stronger forward-progress guarantees of PREEMPT_RCU=n.
+Whether or not this can replace RCU Tasks Trace, it should replace the
+SRCU-lite API, where the only drawback is a pointer-sized return value
+from srcu_read_lock_fast() compared to the int-sized return value from
+srcu_read_lock_lite().  And yes, I should have thought harder before
+doing that SRCU-lite...
 
-Accordingly, explicitly limit PREEMPT_RCU=y to the latency oriented
-preemption models: PREEMPT, PREEMPT_RT, and the runtime configurable
-model PREEMPT_DYNAMIC.
+The series is as follows:
 
-This means the throughput oriented models, PREEMPT_NONE,
-PREEMPT_VOLUNTARY, and PREEMPT_LAZY will run with PREEMPT_RCU=n.
+1.	Make Tiny SRCU able to operate in preemptible kernels.
 
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+2.	Define SRCU_READ_FLAVOR_ALL in terms of symbols.
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index 582d461c9ab7d..80242957fa417 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -18,7 +18,7 @@ config TREE_RCU
- 
- config PREEMPT_RCU
- 	bool
--	default y if PREEMPTION
-+	default y if (PREEMPT || PREEMPT_RT || PREEMPT_DYNAMIC)
- 	select TREE_RCU
- 	help
- 	  This option selects the RCU implementation that is
--- 
-2.40.1
+3.	Use ->srcu_gp_seq for rcutorture reader batch.
 
+4.	Pull ->srcu_{un,}lock_count into a new srcu_ctr structure.
+
+5.	Make SRCU readers use ->srcu_ctrs for counter selection.
+
+6.	Make Tree SRCU updates independent of ->srcu_idx.
+
+7.	Force synchronization for srcu_get_delay().
+
+8.	Rename srcu_check_read_flavor_lite() to
+	srcu_check_read_flavor_force().
+
+9.	Add SRCU_READ_FLAVOR_SLOWGP to flag need for synchronize_rcu().
+
+10.	Pull pointer-to-integer conversion into __srcu_ptr_to_ctr().
+
+11.	Pull integer-to-pointer conversion into __srcu_ctr_to_ptr().
+
+12.	Move SRCU Tree/Tiny definitions from srcu.h.
+
+13.	Add SRCU-fast readers.
+
+14.	Add ability to test srcu_read_{,un}lock_fast().
+
+15.	Add srcu_read_lock_fast() support using "srcu-fast".
+
+16.	Make scenario SRCU-P use srcu_read_lock_fast().
+
+17.	Fix srcu_read_unlock_{lite,nmisafe}() kernel-doc.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/srcu.h                                       |    3 
+ b/include/linux/srcutiny.h                                   |    2 
+ b/include/linux/srcutree.h                                   |   13 
+ b/kernel/rcu/rcu.h                                           |    9 
+ b/kernel/rcu/rcutorture.c                                    |    2 
+ b/kernel/rcu/refscale.c                                      |   32 +
+ b/kernel/rcu/srcutiny.c                                      |    6 
+ b/kernel/rcu/srcutree.c                                      |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-P.boot |    1 
+ include/linux/srcu.h                                         |   66 ++-
+ include/linux/srcutiny.h                                     |   25 +
+ include/linux/srcutree.h                                     |   77 +++
+ kernel/rcu/rcutorture.c                                      |    9 
+ kernel/rcu/srcutree.c                                        |  233 +++++------
+ 14 files changed, 332 insertions(+), 148 deletions(-)
