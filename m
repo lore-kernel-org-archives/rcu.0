@@ -1,91 +1,88 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE6B1862;
-	Thu, 16 Jan 2025 21:38:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 871731A0711
+	for <rcu@vger.kernel.org>; Thu, 16 Jan 2025 21:38:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737063501; cv=none; b=kzDIpUBs3UvSviVb0TN4gZceg4gi3DLsDwSvrOhFTi5k5BSwT9254p8Zrb/NgjuDuJV3J5vPHca3pcU4QNxDZPff44BIK6Q0a04BqlLkUhn7Hc0AE4cTE4o8XORbCfuJJUl0XmmswbISlzjaMl4l/9ZFwVCFpWXBoVU7cVodwoU=
+	t=1737063509; cv=none; b=XIy4lhCbUza/r82zL6tX70gxVOSq8lIb2KiKOvrtsdK2ZupA5eU1L7NT94H6SYbHHWZB0HKsR44tG7BJ8pGT7LCVsB9lYWQPtaiDCU2tF4JBdVZi1Vl8ym2gcFwXJ75qFYU6vlKN/NNHSOQbNY797h8+h9Si51njsVI1EVF0fHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737063501; c=relaxed/simple;
-	bh=zgk9DRVPBdMbV1NlpPTG0nFxpD/SEFZUqzUWlgFLQGU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CfeFXwMaOUYGsj5JMwmJAAlkb/DjkwGiebunc7RjGBMgXkzrupUb3PwnQOlUSbHCBJpdUbhUl1jvlB/oAyRz0FYLEn5OXFlpHiZjxrj8GoeEDAJjr5fSYZFDxgUPg60MJ0ufn0S16pNdtA/uTceA0LS0APC00rMLnluUyR+kA5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OOD2S1pE; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1737063509; c=relaxed/simple;
+	bh=6XHIVPjGu2PXGnHiltbPyonYLGPrw0tB4DmQEAIZsE8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SS0ZsUSd8GWuhTsFsrQlnv6iWFFAFji2J6D+hKfBhEAbpZjbtvkQCCmC342o2wKuETMstGgvuznrlG37S8agxhlGf5s0FOjq+UPyBrOaaECWNFyFvOfljPMhQUS6VPiAkmJ+VI071y/uEEhLz/F6UIJZZkSv+DCz3R69BvKviQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=uDGupkUp; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OOD2S1pE"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=E2YYLz/on8UkqxKNCOmfkESkbeHHVNi9Qiq47EiWsgk=; b=OOD2S1pE3lX8o+W7vxSJYds/cR
-	U6MwX1Ncq59yecLIDgNS1jc+oBQADocQwC8XUs2XYOS+tFKbXNh+nBoiijg1KTGp+SAjVTuVg72MG
-	NV7oNrZ+SWyvqBRzD4GQ+LUnw0hIRwLPiutR4942efskzBgfh/gMjtK7LurMDJGsw1vDDhgILufoY
-	2K00K61y5IusTergXPXUqc2vEJYOBMRJIbGys/V8/tFpRKvg834DpwNtiA+VMyLTT7L3TMlndElRZ
-	iXfrIl55Lz1CIQWrSnKV5lRjMoSgohj6dd8CI8Ir8QLEu2wbfNjG0SNFxskB9nye4yYpM0/onGiPm
-	TJ5od8ZQ==;
-Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tYXZ0-00000002t7M-2PH2;
-	Thu, 16 Jan 2025 21:38:06 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id B18F5300777; Thu, 16 Jan 2025 22:38:05 +0100 (CET)
-Date: Thu, 16 Jan 2025 22:38:05 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kernel Team <kernel-team@meta.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH rcu 13/17] srcu: Add SRCU-fast readers
-Message-ID: <20250116213805.GC7232@noisy.programming.kicks-ass.net>
-References: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
- <20250116202112.3783327-13-paulmck@kernel.org>
- <CAADnVQ+fz7DQ9O=4F-4NNo1J7=dkiDAfYa+Fc5WXBK0yH0f=TQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="uDGupkUp"
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3ce7c4115e8so9100705ab.1
+        for <rcu@vger.kernel.org>; Thu, 16 Jan 2025 13:38:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1737063505; x=1737668305; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CgZXwhIbMXY/TwJHgja6LHn8HVFhHyWdPne03eqR/vY=;
+        b=uDGupkUpTshAzDZupw3JcC81tjs3PnLTanw693AfMLrWrGi35bvDpiQs1xGxEVnLiK
+         5LruXOagvYztyyYtvrdRM8VYt4i4S7g5s23o6mUjZGbkLg5fflvgF+1ptIsN4J442u3F
+         u3KdfvAYasrq0/kOQWHh47rZOW6q+c46pK3+JB6H71Nf4d7vsKt0DEWmgIFaey6n/0l5
+         LiFokPXSjMCyHfawwYRsQNonp4o7ADFo2Qu4YpUCoBd/5a1HwrlOwH8IZosxkxdN9VWO
+         bFKm5yLE/yjl0t7O0egOe3zm7+wJ64OQwwAWum0AomYaehhUJLYfIqqWU94F2nOaquch
+         X8OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737063505; x=1737668305;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CgZXwhIbMXY/TwJHgja6LHn8HVFhHyWdPne03eqR/vY=;
+        b=qYCZDIGyWxtr7IbeNdd/XjPolcy8id2A6A8UZLyepHZi1jGpdEopQvKN/XNvM2hDHa
+         mTrGalyjFlmt4bsyzjyrc2E9K5AarnWtRSMiqVawoTo3Zvo6LIhydHeJFZ+ZUiuapxhm
+         1aPiCgUi9nj0gRdJvAOlMgumRGZRhqPMIvCmcS6JmmJXn93G7HFprE4l3433W6/TQMg9
+         WBjWgKRPcVzVmSgS2jJFqtmDzrDy+qB5Trgle6mBTOO8QXW1StEwryKZS38LWv/nk5xG
+         DUWBgWy8CLoU4yPjES+mMF32Rayd6AmEEDDNM80k7P7q+ozgo66P164ruRbNQVXRi+z5
+         QGwg==
+X-Forwarded-Encrypted: i=1; AJvYcCWl1Db0MGoXT8DVg1YPpthWqiKdqQNJhtjO7ql/KkwcOUzes+Lmdf4ayp4Mn0xDiOHyPtU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwB7sNvTBC+9iX0QmON84+hU+WywJ9EZvLgavzWTQiSv8cJfuBl
+	coY9dQymhSXS+fs4mHfDWjR4jRPcCeJmd7cazrH8aBublo6hMZbDRQjKsfapN3CreEL6V6I+USG
+	T
+X-Gm-Gg: ASbGnct8ZyUkFUzfBXjTOUewWZJSFjs76KZAJTe+zitZiXXR62WK58g39hvqS3DAeYK
+	TuXs2sUvXaeVL+Oesslja16Pdz+cZuVb5oH5uWsXG3WDlPmaHFQrLD5opnV0vrpvqV/LgGaRuqi
+	vduIjmu1aJvX0NyLPbTSdxUgj1bgi9Ty5AGUckYm9oFlXF8uhyNLg5hHfDlmZYyuo6DkHdfaLnm
+	ls3aVGMQVQclfQ0tHwMPWmQOC7uFEbALbvkq8eJGQF8xrG3XmPQ
+X-Google-Smtp-Source: AGHT+IHElLYUr786BLlL9LbMjWXZHuXF434Z7WeJnvG3d2kRye70/yQwvxJpQq7HSYTp92RqeWf/Pw==
+X-Received: by 2002:a92:dacc:0:b0:3ce:6a08:2584 with SMTP id e9e14a558f8ab-3ce84a1a9efmr71928945ab.7.1737063505457;
+        Thu, 16 Jan 2025 13:38:25 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3cf71b6846bsm2084615ab.65.2025.01.16.13.38.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jan 2025 13:38:24 -0800 (PST)
+Message-ID: <e6283b39-5101-47bf-a4b5-bde247ce3bdb@kernel.dk>
+Date: Thu, 16 Jan 2025 14:38:23 -0700
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+fz7DQ9O=4F-4NNo1J7=dkiDAfYa+Fc5WXBK0yH0f=TQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rcu 3/7] rcu: Document self-propagating callbacks
+To: "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+References: <a2c2793d-771a-436e-8c42-4cb38def0e2f@paulmck-laptop>
+ <20250116200239.3782374-3-paulmck@kernel.org>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20250116200239.3782374-3-paulmck@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 16, 2025 at 01:00:24PM -0800, Alexei Starovoitov wrote:
-> On Thu, Jan 16, 2025 at 12:21 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > +/*
-> > + * Counts the new reader in the appropriate per-CPU element of the
-> > + * srcu_struct.  Returns a pointer that must be passed to the matching
-> > + * srcu_read_unlock_fast().
-> > + *
-> > + * Note that this_cpu_inc() is an RCU read-side critical section either
-> > + * because it disables interrupts, because it is a single instruction,
-> > + * or because it is a read-modify-write atomic operation, depending on
-> > + * the whims of the architecture.
-> > + */
-> > +static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct *ssp)
-> > +{
-> > +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
-> > +
-> > +       RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
-> > +       this_cpu_inc(scp->srcu_locks.counter); /* Y */
-> > +       barrier(); /* Avoid leaking the critical section. */
-> > +       return scp;
-> > +}
-> 
-> This doesn't look fast.
-> If I'm reading this correctly,
-> even with debugs off RCU_LOCKDEP_WARN() will still call
-> rcu_is_watching() and this doesn't look cheap or fast.
+On 1/16/25 1:02 PM, Paul E. McKenney wrote:
+> This commit documents the fact that a given RCU callback function can
+> repost itself.
 
-this is the while (0 && (c)), thing, right? can't the compiler throw
-that out in DCE ?
+Thanks for adding this!
+
+-- 
+Jens Axboe
+
