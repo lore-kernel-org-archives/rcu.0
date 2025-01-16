@@ -1,100 +1,75 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABBE23F269;
-	Thu, 16 Jan 2025 20:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E811414AD2B;
+	Thu, 16 Jan 2025 20:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737057762; cv=none; b=gnBaNt0REXU+6H68uFwZ132ur8Q6f6N7wrWMbMQnlq6MKJ62gLuwk6rImqCUMoZp3xDiTbKof7IyHMyAV2oErd57J2841ckP2QhSkGPiPjspOjluwO3hnF1rr1UPwTeQVUGjctK2UuoNxaEVk4BLM32K0DRLdBoXxBGDqUZj0MU=
+	t=1737057938; cv=none; b=MH85hWXuPkxyRY7Yr1l4q5tQqF7P1RtMoEj0OHElG3vtbOgVs1Ye/VQJquFFk8NwpBuUQOT6x992z+WEbFrvNSzieee2w0C8260/A6q/kcZ3lskhnqF5xldq3Ox4psBHQgKjObFNPB5AAAlmmAoox6iDDPSjKT2MeU0pf4/54bY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737057762; c=relaxed/simple;
-	bh=nCzBiBHz3M2xxT1NTdXIMhRys/kvq/wbFX7EYoDah+g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=inuuzqddOIqOdtfULxIPZmQE1hKe2Kgt4okz7md3jlhwuuNmQNZ/EH+aYWZHmOLSUszAJWG4gQobib8UGVzTPBfzkSqtmaNxe6ETdCU5mNt0M/eCYPaS+oPOM+fVvy7vNhPc58lt2RaI99ppfnlXHoe0xlla+6PXHtT+UhrhYGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kEcvtssV; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1737057938; c=relaxed/simple;
+	bh=bE8B1j8ThaVrcRuMRy2dRH06ILF/sCg5FujXLSvdslQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=bAyG0Kw+TMR/KJQxSFTg3ZJ4ZGzuyPg5uw6h6P8lGA/8FAzxbvkA6EkMz4MM1fgi5CIA+cX7x344DMaDj0m1KQ0S4hpYlEHwq8BPssTUv4G7DlMF+jIe6WJfNoGJChKKx/wGYhsPgX+fxgKEjDhiqJ0e9yTPR2aQjLMw+TrazVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fdtdgrIF; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kEcvtssV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2AA3C4CEE9;
-	Thu, 16 Jan 2025 20:02:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fdtdgrIF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E224C4CED6;
+	Thu, 16 Jan 2025 20:05:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737057761;
-	bh=nCzBiBHz3M2xxT1NTdXIMhRys/kvq/wbFX7EYoDah+g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kEcvtssV3oT38qFLKH/36T5Z2kPdhHLdBFij255x0R67OP5KNYWBp1/Yu5s8vMGMf
-	 wPVwQLxawWj8Zulkjv0+0v3SezcxrWly8FqsrkXQxBiZKqcCz8X+JkU2mrd5E1cdRd
-	 cQ13/84dD+OzyS4RW3tGwOOpsLjZxyqYLOosjhLPMQY4IKHojK++O9JUEeo7/3bBHW
-	 hTeJaxikTKpjC7htp4PhAjDsU2JScTjegjsvbyVzto/MDMryCbXOWZZhBRUV5iPxLA
-	 f3j9XIXvE6ioh4Z5Z0HpGnkYpkzjGOubAwmGkuvX996CY+qeXhhVtZyj7/fGRhjIrm
-	 GCuDNmI9v76mA==
+	s=k20201202; t=1737057937;
+	bh=bE8B1j8ThaVrcRuMRy2dRH06ILF/sCg5FujXLSvdslQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=fdtdgrIFR74pWfJcW8k8hQUh3WfNqgMQrQwKGrUtGEGvLVu/hcy3CoX+0ON/K2wvk
+	 LOmqVORiVsCa0sQhlNkxsrSk5u2WBoPpMgOoK/qkoFcCTlyI4IkHT1dnDwzA2dt7Bz
+	 PdiyDQCiQl01OQflg7XpA4R1MSlpniB9pFfvit93enC8egVW5JcuYkozN+ldcqHe6R
+	 QZ/IEWlJc5AgeJzwlrFQRyJT8d4X+3JL3L79+SmgCUWRe0SwgKJRNl9LlZhiRQcZ3c
+	 KuZKYfHY0XFv5rwyg+Co8CspCZXddmAfwxaHw+oHWcBC1qh5bbO7sglcVaqh4qfrx1
+	 KXK8ZiFh7LZrQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 349F7CE37C4; Thu, 16 Jan 2025 12:02:41 -0800 (PST)
+	id 1CF2DCE10F9; Thu, 16 Jan 2025 12:05:37 -0800 (PST)
+Date: Thu, 16 Jan 2025 12:05:37 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 6/7] rcu: Clarify RCU_LAZY and RCU_LAZY_DEFAULT_OFF help text
-Date: Thu, 16 Jan 2025 12:02:38 -0800
-Message-Id: <20250116200239.3782374-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <a2c2793d-771a-436e-8c42-4cb38def0e2f@paulmck-laptop>
-References: <a2c2793d-771a-436e-8c42-4cb38def0e2f@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH rcu 0/5] Miscellaneous fixes
+Message-ID: <7b24a850-7d56-4386-8544-be5e643b6b9f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This commit wordsmiths the RCU_LAZY and RCU_LAZY_DEFAULT_OFF Kconfig
-options' help text.
+Hello!
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/Kconfig | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+This series contains miscellaneous fixes:
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index b9b6bc55185db..2bb22dac3b5a9 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -323,21 +323,27 @@ config RCU_LAZY
- 	depends on RCU_NOCB_CPU
- 	default n
- 	help
--	  To save power, batch RCU callbacks and flush after delay, memory
--	  pressure, or callback list growing too big.
-+	  To save power, batch RCU callbacks and delay starting the
-+	  corresponding grace  period for multiple seconds.  The grace
-+	  period will be started after this delay, in case of memory
-+	  pressure, or if the corresponding CPU's callback list grows
-+	  too large.
- 
--	  Requires rcu_nocbs=all to be set.
-+	  These delays happen only on rcu_nocbs CPUs, that is, CPUs
-+	  whose callbacks have been offloaded.
- 
--	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
-+	  Use the rcutree.enable_rcu_lazy=0 kernel-boot parameter to
-+	  globally disable these delays.
- 
- config RCU_LAZY_DEFAULT_OFF
- 	bool "Turn RCU lazy invocation off by default"
- 	depends on RCU_LAZY
- 	default n
- 	help
--	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
--	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
--	  it back on.
-+	  Build the kernel with CONFIG_RCU_LAZY=y, but cause the kernel
-+	  to boot with these energy-efficiency delays disabled.  Use the
-+	  rcutree.enable_rcu_lazy=0 kernel-boot parameter to override
-+	  the this option at boot time, thus re-enabling these delays.
- 
- config RCU_DOUBLE_CHECK_CB_TIME
- 	bool "RCU callback-batch backup time check"
--- 
-2.40.1
+1.	Split rcu_report_exp_cpu_mult() mask parameter and use for
+	tracing.
 
+2.	Remove READ_ONCE() for rdp->gpwrap access in __note_gp_changes(),
+	courtesy of Zilin Guan.
+
+3.	Fix get_state_synchronize_rcu_full() GP-start detection.
+
+4.	Move RCU Tasks self-tests to core_initcall().
+
+5.	Print segment lengths in show_rcu_nocb_gp_state().
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/include/linux/rcupdate.h |    6 ------
+ b/init/main.c              |    1 -
+ b/kernel/rcu/rcu.h         |    2 +-
+ b/kernel/rcu/tasks.h       |    5 ++++-
+ b/kernel/rcu/tree.c        |    6 +++---
+ b/kernel/rcu/tree_exp.h    |    6 ++++--
+ b/kernel/rcu/tree_nocb.h   |   20 +++++++++++++++-----
+ kernel/rcu/tree.c          |    9 ++++++---
+ 8 files changed, 33 insertions(+), 22 deletions(-)
