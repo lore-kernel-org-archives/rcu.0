@@ -1,42 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C59914AD2B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2FC722CBEE;
 	Thu, 16 Jan 2025 20:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737057945; cv=none; b=VBjbTwPEg/sSwH4DHUsYh0PbqpZqtyorPw0zGw70xlod8pS2XeEl3HCGXUnWs69hbmrQ5VKd6vfqLRmS/JVscY5Wknu0Iw7wbWgr2LL3F6/xPkBrcuIIvYp+ji3yIleblqaGISICalFJ+6afmjO7AhXPYTJQT7thGb3HyV/COaY=
+	t=1737057945; cv=none; b=uqYET2YO54QNICWohQcxp9oZDZb+S3EVmWHQlAx1xFi3WpbZO1wef7ptSApf86l7opZP+PYVqwf2MF18ND8Pe1+X9L1MSsN7JLdcOOWk14xH9fB4AezrfxOwnx6Fbg+arurM9lFZhD1kcS/80PvIqJLNFY+m2KzSDagAhoZhii4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737057945; c=relaxed/simple;
-	bh=NP/CK3qlbbTrzpBV1+3fFxhbMdYgJcUACRadRqSIOlU=;
+	bh=WMQ7DP9OiOxGto+2UoZj3IavynbQoyjALlXlLrmJ9XU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=it+/WIMTxIR/Ia6UDCm5YBZSka0UUbgKjKL85E7/k+l8HdBTrDWyl1Aasj8gLdfbsI4iCTDN+hda2VZBrvDGR+B/VSCDecQgXcpmipOoTh60rLXmVg9JPeBiIpG888wrbz1h2GXMW35enbZqsh0oH3WP7KAxXH7kuAHqQKl056E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=foXRttxb; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=K66eAaaL+yYN8jwGRwW85KFhEtFG73NqpTPxz/tS34ENcnb8fwXqRAoJsPXGQ8NH6lqXgCp+A9rFUXHQXSriSga+g05d3ou36Q7X426dEbljzlmQ/QhwQjS7UC+QAkwES2D3TFr5LajtUI7yDKdAmkgXVaeQ3l4gFBqdF3ExIDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dfGbICgQ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="foXRttxb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7199CC4CEE6;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dfGbICgQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D72C4CED6;
 	Thu, 16 Jan 2025 20:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1737057945;
-	bh=NP/CK3qlbbTrzpBV1+3fFxhbMdYgJcUACRadRqSIOlU=;
+	bh=WMQ7DP9OiOxGto+2UoZj3IavynbQoyjALlXlLrmJ9XU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=foXRttxbGiSK8jAUDaijACmdlwrAwCe1qQ/OZkefWBPlanZgtZYE0SyNObw+JTPks
-	 XMNzeRXcGt/4/2zGdJkoiN/5d+WUzVAlBhbXKm5v2JKmbcv4rxkDb5CoWb/CLKe6Xl
-	 GzapcHq/F1NppAaEA1X5BgTxW5ebO6/BNAidJ/vRzgDEPp1flS6k9XGX4uQiBA4xIU
-	 0QHvgpXjpTMx7G0XE5d9MBjMLQnwV8aR3ZFS72Itn8O++QRmVowbfP78+Sf6G45M2u
-	 L2o42QfTh67lazQcH6VDlGyhwGE/N44I3j2vxw/fRRqH5hCUSFzevKw892DNxMUARw
-	 Sfd/+ymlhmhdg==
+	b=dfGbICgQLsRbw3ftKiz4V5vKHFBzrCDmivdd4/DsNTsomLjOUIfi0LiyOnOJERlo+
+	 0cFPbQNnEpiIXsaAEt23SjWkrueXCg6QNlfzgI2wQld4i+cPJ9d8NZnHKz7a9xVps4
+	 3C9Ze7iqo1IDIARxP2ts8WuWeshquPJ+7REABNlLwIiEUF4NlxmSkxG7RAW/HxfaN7
+	 Ev1oBq+cxsPKNNnDDO4o1PiqVw3QDDV2YAa5kz/uVipwUP59Ekv2gAOBcwvXHhCrPM
+	 LpSEXJjul4ddw2s5DtheJzTFMT7+9xH5hCMHFUka1YV/4Rl0q5ccx5aa4T7xuQw7tZ
+	 0Sj/cqHaqTrmw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0C072CE37C1; Thu, 16 Jan 2025 12:05:45 -0800 (PST)
+	id 02437CE10F9; Thu, 16 Jan 2025 12:05:45 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/5] rcu/nocb: Print segment lengths in show_rcu_nocb_gp_state()
-Date: Thu, 16 Jan 2025 12:05:43 -0800
-Message-Id: <20250116200543.3782539-5-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH rcu 1/5] rcu: Split rcu_report_exp_cpu_mult() mask parameter and use for tracing
+Date: Thu, 16 Jan 2025 12:05:39 -0800
+Message-Id: <20250116200543.3782539-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <7b24a850-7d56-4386-8544-be5e643b6b9f@paulmck-laptop>
 References: <7b24a850-7d56-4386-8544-be5e643b6b9f@paulmck-laptop>
@@ -48,77 +49,42 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Analysis of an rcutorture callback-based forward-progress test failure was
-hampered by the lack of ->cblist segment lengths.  This commit therefore
-adds this information, so that what would have been ".W85620.N." (there
-are some callbacks waiting for grace period sequence number 85620 and
-some number more that have not yet been assigned to a grace period)
-now prints as ".W2(85620).N6." (there are 2 callbacks waiting for grace
-period 85620 and 6 not yet assigned to a grace period).  Note that
-"D" (done), "N" (next and not yet assigned to a grace period, and "B"
-(bypass, also not yet assigned to a grace period) have just the number
-of callbacks without the parenthesized grace-period sequence number.
-
-In contrast, "W" (waiting for the current grace period) and "R" (ready
-to wait for the next grace period to start) both have parenthesized
-grace-period sequence numbers.
+This commit renames the rcu_report_exp_cpu_mult() function from "mask"
+to "mask_in" and introduced a "mask" local variable to better support
+upcoming event-tracing additions.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ kernel/rcu/tree_exp.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 2605dd234a13c..5ff3bc56ff515 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1557,8 +1557,11 @@ static void show_rcu_nocb_gp_state(struct rcu_data *rdp)
- /* Dump out nocb kthread state for the specified rcu_data structure. */
- static void show_rcu_nocb_state(struct rcu_data *rdp)
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 77efed89c79e3..8d4895c854c59 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -230,17 +230,19 @@ static void __maybe_unused rcu_report_exp_rnp(struct rcu_node *rnp, bool wake)
+  * specified leaf rcu_node structure, which is acquired by the caller.
+  */
+ static void rcu_report_exp_cpu_mult(struct rcu_node *rnp, unsigned long flags,
+-				    unsigned long mask, bool wake)
++				    unsigned long mask_in, bool wake)
+ 				    __releases(rnp->lock)
  {
--	char bufw[20];
--	char bufr[20];
-+	char bufd[22];
-+	char bufw[45];
-+	char bufr[45];
-+	char bufn[22];
-+	char bufb[22];
- 	struct rcu_data *nocb_next_rdp;
- 	struct rcu_segcblist *rsclp = &rdp->cblist;
- 	bool waslocked;
-@@ -1572,9 +1575,13 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 					      typeof(*rdp),
- 					      nocb_entry_rdp);
+ 	int cpu;
++	unsigned long mask;
+ 	struct rcu_data *rdp;
  
--	sprintf(bufw, "%ld", rsclp->gp_seq[RCU_WAIT_TAIL]);
--	sprintf(bufr, "%ld", rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
--	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%c%s%c%s%c%c q%ld %c CPU %d%s\n",
-+	sprintf(bufd, "%ld", rsclp->seglen[RCU_DONE_TAIL]);
-+	sprintf(bufw, "%ld(%ld)", rsclp->seglen[RCU_WAIT_TAIL], rsclp->gp_seq[RCU_WAIT_TAIL]);
-+	sprintf(bufr, "%ld(%ld)", rsclp->seglen[RCU_NEXT_READY_TAIL],
-+		      rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
-+	sprintf(bufn, "%ld", rsclp->seglen[RCU_NEXT_TAIL]);
-+	sprintf(bufb, "%ld", rcu_cblist_n_cbs(&rdp->nocb_bypass));
-+	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%s%c%s%c%s%c%s%c%s q%ld %c CPU %d%s\n",
- 		rdp->cpu, rdp->nocb_gp_rdp->cpu,
- 		nocb_next_rdp ? nocb_next_rdp->cpu : -1,
- 		"kK"[!!rdp->nocb_cb_kthread],
-@@ -1586,12 +1593,15 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 		jiffies - rdp->nocb_nobypass_last,
- 		rdp->nocb_nobypass_count,
- 		".D"[rcu_segcblist_ready_cbs(rsclp)],
-+		rcu_segcblist_segempty(rsclp, RCU_DONE_TAIL) ? "" : bufd,
- 		".W"[!rcu_segcblist_segempty(rsclp, RCU_WAIT_TAIL)],
- 		rcu_segcblist_segempty(rsclp, RCU_WAIT_TAIL) ? "" : bufw,
- 		".R"[!rcu_segcblist_segempty(rsclp, RCU_NEXT_READY_TAIL)],
- 		rcu_segcblist_segempty(rsclp, RCU_NEXT_READY_TAIL) ? "" : bufr,
- 		".N"[!rcu_segcblist_segempty(rsclp, RCU_NEXT_TAIL)],
-+		rcu_segcblist_segempty(rsclp, RCU_NEXT_TAIL) ? "" : bufn,
- 		".B"[!!rcu_cblist_n_cbs(&rdp->nocb_bypass)],
-+		!rcu_cblist_n_cbs(&rdp->nocb_bypass) ? "" : bufb,
- 		rcu_segcblist_n_cbs(&rdp->cblist),
- 		rdp->nocb_cb_kthread ? task_state_to_char(rdp->nocb_cb_kthread) : '.',
- 		rdp->nocb_cb_kthread ? (int)task_cpu(rdp->nocb_cb_kthread) : -1,
+ 	raw_lockdep_assert_held_rcu_node(rnp);
+-	if (!(rnp->expmask & mask)) {
++	if (!(rnp->expmask & mask_in)) {
+ 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		return;
+ 	}
++	mask = mask_in & rnp->expmask;
+ 	WRITE_ONCE(rnp->expmask, rnp->expmask & ~mask);
+ 	for_each_leaf_node_cpu_mask(rnp, cpu, mask) {
+ 		rdp = per_cpu_ptr(&rcu_data, cpu);
 -- 
 2.40.1
 
