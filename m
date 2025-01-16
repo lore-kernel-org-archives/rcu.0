@@ -1,43 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5327F2442E2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5337F2442E4;
 	Thu, 16 Jan 2025 20:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737059076; cv=none; b=m2RVWQQOzY2qqCEwAE/ht+y23c4nJoeoP47fZJ1TeZgIxyPecEzgGSVnumdf/4OsPUuAxTxLNPVre+h26vfZa1RPhJ+q2eYJ8usjHeNpMeIqekzTwp3Cr31vsJfJwX5UUNGB2XmUOciI/Sml0EO5Nmu+1iqSUZhXPvxgDMiF+HQ=
+	t=1737059076; cv=none; b=KHLHP4ishJ1K9huyEDMv1DIVGf+7KwNpg7PxsNzSeSE4/S6Ni2s/ORF32LASsrZrdru+K2kA/XmvQJgXRPLJaSz5s0aDIa42mpC/SEA4QjpiyKibwMPgyiyCfrXgbwPGfBnLWh4f5aKHifAd6GM6ZhbPsPxS3U+moilm2UbTU3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737059076; c=relaxed/simple;
-	bh=iWWKhZCpclRMeZhsYPmOufXD5RGtSeKrdZTXIAZscLg=;
+	bh=sNsrlG0xwaUm9vOI/jxEuBiUxmOvuWV5gFJh0f+cF64=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eCsFXXDpIesmDhZT0V6XL30UcUKtiDumAo95mZA5yEKuXrJGDz09PjaKCW9gxUztFHEYEQs+eRkS+dd4JKJeNT1ZMeTiFOGxHZoLSfi6DCzeDPC4jcgklHAzyFvmhwy+6uoTkvpkvytn74Dhk4DEOL4UqJsAQnsiFFDqWq5zH6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=go5YKibP; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=dg8fsUZkCbYZI4NQnYKFKUgjj6Ktddy0/xcjS7hcuhmBgLaeoZZ7DLAMfLuGGG6nrnXtTEuZ6nAy67oWr/1r20bj9ITK5qDY7yYYrkmuBIHKzJW8jWF117OnC3eLcwT9SXM10wpSue4lEf9mGVGX2TyDpnpcNp4BJ/9Y1r728mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fIdX5y9S; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="go5YKibP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0974FC4CEDF;
-	Thu, 16 Jan 2025 20:24:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIdX5y9S"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4FBAC4CED6;
+	Thu, 16 Jan 2025 20:24:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737059076;
-	bh=iWWKhZCpclRMeZhsYPmOufXD5RGtSeKrdZTXIAZscLg=;
+	s=k20201202; t=1737059075;
+	bh=sNsrlG0xwaUm9vOI/jxEuBiUxmOvuWV5gFJh0f+cF64=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=go5YKibPCx7L1LeYzN6ERdnBUQJCj+oC6izEos4IyxeRWKIORKylz6+wtvmRY882L
-	 5NoWAIxqN5F+sthElV9dzOskzmgBl26P1MjEdrt6iHOVUFUg51HH4p/EiqUWeZVMSj
-	 ZY/UFZPO5+hnjEJiMSPDgq33M2tu1kdNKanN545DnE+E4/J93wVm3USAu2Ee/EXUgb
-	 itiM75X9Zsq6IRXbrEG5HTg3jJ1XD2oaFYouO06E+xfW+m75VfeCSBdtEWpYa2MvgA
-	 GA8GfAHC7JydvbA0rysTVE3IEX42pyj+su8NtGhbZE5lG0zM2WUyyv/2NrpRjoeZdd
-	 sonc368/8eLtQ==
+	b=fIdX5y9Sjb3ozn3k395jgeSOFcYZ1sOqUoIC60yrVXwmQskLoROov4ZZrlStW6VVn
+	 MKhwm+Zw/7DorKMO77CDVrXG8+ymlegI4+crF4BwW/19QCCYEqFcCgHjGk+LjM83Mt
+	 lztnirgrLiL3bCccX4ADwzRKsZJWpn/EX/z8hXGrqu00OimY8ilTDRABLqKrNXtlU3
+	 SGzweZ9U870fG/7y1Vr0WndAabyWEJq7MALNjlWeLfR7j5JAs5gx9J1KT4GydS3GnL
+	 nA/Sj8kXHTlKpZt43/R//+4brgyaBqiHQZhyJ2csJK/5NJGoZn1TiljzUUrlZxRNWw
+	 wkoCKa9nJT0pA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A5E81CE37B4; Thu, 16 Jan 2025 12:24:35 -0800 (PST)
+	id A1383CE13C4; Thu, 16 Jan 2025 12:24:35 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH rcu 03/11] rcutorture: Include grace-period sequence numbers in failure/close-call
-Date: Thu, 16 Jan 2025 12:24:26 -0800
-Message-Id: <20250116202434.3783613-3-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 01/11] torture: Add get_torture_init_jiffies() for test-start time
+Date: Thu, 16 Jan 2025 12:24:24 -0800
+Message-Id: <20250116202434.3783613-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
 References: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
@@ -49,214 +48,70 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit includes the grace-period sequence numbers at the beginning
-and end of each segment in the "Failure/close-call rcutorture reader
-segments" list.  These are in hexadecimal, and only the bottom byte.
-Currently, only RCU is supported, with its three sequence numbers (normal,
-expedited, and polled).
+This commit adds a get_torture_init_jiffies() function that returns the
+value of the jiffies counter at the start of the test, that is, at the
+point where torture_init_begin() was invoked.
 
-Note that if all the grace-period sequence numbers remain the same across
-a given reader segement, only one copy of the number will be printed.
-Of course, if there is a change, both sets of values will be printed.
-
-Because the overhead of collecting this information can suppress
-heisenbugs, this information is collected and printed only in kernels
-built with CONFIG_RCU_TORTURE_TEST_LOG_GP=y.
-
-[ paulmck: Apply Nathan Chancellor feedback for IS_ENABLED(). ]
-[ paulmck: Apply feedback from kernel test robot. ]
+This will be used to enable torture-test holdoffs for tests implemented
+using per-CPU kthreads, which are created and deleted by CPU-hotplug
+operations, and thus (unlike normal kthreads) don't automatically know
+when the test started.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Tested-by: kernel test robot <oliver.sang@intel.com>
 ---
- kernel/rcu/Kconfig.debug | 14 ++++++++++++++
- kernel/rcu/rcu.h         |  2 ++
- kernel/rcu/rcutorture.c  | 34 ++++++++++++++++++++++++++++++++++
- kernel/rcu/tiny.c        | 14 ++++++++++++++
- kernel/rcu/tree.c        | 20 ++++++++++++++++++++
- 5 files changed, 84 insertions(+)
+ include/linux/torture.h |  1 +
+ kernel/torture.c        | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 6af90510a1ca7..25a9dc2be0dcd 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -84,6 +84,20 @@ config RCU_TORTURE_TEST_LOG_CPU
- 	  Say Y here if you want CPU IDs logged.
- 	  Say N if you are unsure.
- 
-+config RCU_TORTURE_TEST_LOG_GP
-+	bool "Log grace-period numbers for rcutorture failures"
-+	depends on RCU_TORTURE_TEST
-+	default n
-+	help
-+	  This option causes rcutorture to decorate each entry of its
-+	  log of failure/close-call rcutorture reader segments with the
-+	  corresponding grace-period sequence numbers.	This information
-+	  can be useful, but it does incur additional overhead, overhead
-+	  that can make both failures and close calls less probable.
-+
-+	  Say Y here if you want grace-period sequence numbers logged.
-+	  Say N if you are unsure.
-+
- config RCU_REF_SCALE_TEST
- 	tristate "Scalability tests for read-side synchronization (RCU and others)"
- 	depends on DEBUG_KERNEL
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index f6fcf87d91395..7c14eec7c13ae 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -590,6 +590,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
- #endif
- static inline void rcu_gp_set_torture_wait(int duration) { }
- #endif
-+unsigned long rcutorture_gather_gp_seqs(void);
-+void rcutorture_format_gp_seqs(unsigned long seqs, char *cp);
- 
- #ifdef CONFIG_TINY_SRCU
- 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 9788933984655..7af7de1688466 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -273,6 +273,8 @@ struct rt_read_seg {
- 	bool rt_preempted;
- 	int rt_cpu;
- 	int rt_end_cpu;
-+	unsigned long rt_gp_seq;
-+	unsigned long rt_gp_seq_end;
- };
- static int err_segs_recorded;
- static struct rt_read_seg err_segs[RCUTORTURE_RDR_MAX_SEGS];
-@@ -407,6 +409,8 @@ struct rcu_torture_ops {
- 	void (*gp_slow_register)(atomic_t *rgssp);
- 	void (*gp_slow_unregister)(atomic_t *rgssp);
- 	bool (*reader_blocked)(void);
-+	unsigned long (*gather_gp_seqs)(void);
-+	void (*format_gp_seqs)(unsigned long seqs, char *cp);
- 	long cbflood_max;
- 	int irq_capable;
- 	int can_boost;
-@@ -611,6 +615,8 @@ static struct rcu_torture_ops rcu_ops = {
- 	.reader_blocked		= IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_CPU)
- 				  ? has_rcu_reader_blocked
- 				  : NULL,
-+	.gather_gp_seqs		= rcutorture_gather_gp_seqs,
-+	.format_gp_seqs		= rcutorture_format_gp_seqs,
- 	.irq_capable		= 1,
- 	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
- 	.extendables		= RCUTORTURE_MAX_EXTEND,
-@@ -656,6 +662,8 @@ static struct rcu_torture_ops rcu_busted_ops = {
- 	.sync		= synchronize_rcu_busted,
- 	.exp_sync	= synchronize_rcu_busted,
- 	.call		= call_rcu_busted,
-+	.gather_gp_seqs	= rcutorture_gather_gp_seqs,
-+	.format_gp_seqs	= rcutorture_format_gp_seqs,
- 	.irq_capable	= 1,
- 	.extendables	= RCUTORTURE_MAX_EXTEND,
- 	.name		= "busted"
-@@ -1989,6 +1997,12 @@ static void rcutorture_one_extend(int *readstate, int newstate, bool insoftirq,
- 				rtrsp[-1].rt_preempted = cur_ops->reader_blocked();
- 		}
- 	}
-+	// Sample grace-period sequence number, as good a place as any.
-+	if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_GP) && cur_ops->gather_gp_seqs) {
-+		rtrsp->rt_gp_seq = cur_ops->gather_gp_seqs();
-+		if (!first)
-+			rtrsp[-1].rt_gp_seq_end = rtrsp->rt_gp_seq;
-+	}
- 
- 	/*
- 	 * Next, remove old protection, in decreasing order of strength
-@@ -3577,6 +3591,7 @@ rcu_torture_cleanup(void)
- 	int flags = 0;
- 	unsigned long gp_seq = 0;
- 	int i;
-+	int j;
- 
- 	if (torture_cleanup_begin()) {
- 		if (cur_ops->cb_barrier != NULL) {
-@@ -3672,6 +3687,25 @@ rcu_torture_cleanup(void)
- 				else
- 					pr_cont(" ...");
- 			}
-+			if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_GP) &&
-+			    cur_ops->gather_gp_seqs && cur_ops->format_gp_seqs) {
-+				char buf1[16+1];
-+				char buf2[16+1];
-+				char sepchar = '-';
-+
-+				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq, buf1);
-+				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq_end, buf2);
-+				if (err_segs[i].rt_gp_seq == err_segs[i].rt_gp_seq_end) {
-+					if (buf2[0]) {
-+						for (j = 0; buf2[j]; j++)
-+							buf2[j] = '.';
-+						if (j)
-+							buf2[j - 1] = ' ';
-+					}
-+					sepchar = ' ';
-+				}
-+				pr_cont(" %s%c%s", buf1, sepchar, buf2);
-+			}
- 			if (err_segs[i].rt_delay_ms != 0) {
- 				pr_cont(" %s%ldms", firsttime ? "" : "+",
- 					err_segs[i].rt_delay_ms);
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index b3b3ce34df631..773944257e796 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -257,6 +257,20 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- EXPORT_SYMBOL_GPL(kvfree_call_rcu);
- #endif
- 
-+#if IS_ENABLED(CONFIG_RCU_TORTURE_TEST)
-+unsigned long rcutorture_gather_gp_seqs(void)
-+{
-+	return READ_ONCE(rcu_ctrlblk.gp_seq) & 0xff;
-+}
-+EXPORT_SYMBOL_GPL(rcutorture_gather_gp_seqs);
-+
-+void rcutorture_format_gp_seqs(unsigned long seqs, char *cp)
-+{
-+	snprintf(cp, 8, "g%02lx", seqs & 0xff);
-+}
-+EXPORT_SYMBOL_GPL(rcutorture_format_gp_seqs);
-+#endif
-+
- void __init rcu_init(void)
- {
- 	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 9ba34206e20d2..574a280660624 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -559,6 +559,26 @@ void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
+diff --git a/include/linux/torture.h b/include/linux/torture.h
+index 0134e7221cae6..1b59056c3b182 100644
+--- a/include/linux/torture.h
++++ b/include/linux/torture.h
+@@ -104,6 +104,7 @@ int torture_stutter_init(int s, int sgap);
+ /* Initialization and cleanup. */
+ bool torture_init_begin(char *ttype, int v);
+ void torture_init_end(void);
++unsigned long get_torture_init_jiffies(void);
+ bool torture_cleanup_begin(void);
+ void torture_cleanup_end(void);
+ bool torture_must_stop(void);
+diff --git a/kernel/torture.c b/kernel/torture.c
+index dede150aef011..3a0a8cc604010 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -792,6 +792,8 @@ static void torture_stutter_cleanup(void)
+ 	stutter_task = NULL;
  }
- EXPORT_SYMBOL_GPL(rcutorture_get_gp_data);
  
-+/* Gather grace-period sequence numbers for rcutorture diagnostics. */
-+unsigned long rcutorture_gather_gp_seqs(void)
++static unsigned long torture_init_jiffies;
++
+ static void
+ torture_print_module_parms(void)
+ {
+@@ -821,6 +823,7 @@ bool torture_init_begin(char *ttype, int v)
+ 	torture_type = ttype;
+ 	verbose = v;
+ 	fullstop = FULLSTOP_DONTSTOP;
++	WRITE_ONCE(torture_init_jiffies, jiffies); // Lockless reads.
+ 	torture_print_module_parms();
+ 	return true;
+ }
+@@ -836,6 +839,15 @@ void torture_init_end(void)
+ }
+ EXPORT_SYMBOL_GPL(torture_init_end);
+ 
++/*
++ * Get the torture_init_begin()-time value of the jiffies counter.
++ */
++unsigned long get_torture_init_jiffies(void)
 +{
-+	return ((READ_ONCE(rcu_state.gp_seq) & 0xff) << 16) |
-+	       ((READ_ONCE(rcu_state.expedited_sequence) & 0xff) << 8) |
-+	       (READ_ONCE(rcu_state.gp_seq_polled) & 0xff);
++	return READ_ONCE(torture_init_jiffies);
 +}
-+EXPORT_SYMBOL_GPL(rcutorture_gather_gp_seqs);
++EXPORT_SYMBOL_GPL(get_torture_init_jiffies);
 +
-+/* Format grace-period sequence numbers for rcutorture diagnostics. */
-+void rcutorture_format_gp_seqs(unsigned long seqs, char *cp)
-+{
-+	unsigned int egp = (seqs >> 8) & 0xff;
-+	unsigned int ggp = (seqs >> 16) & 0xff;
-+	unsigned int pgp = seqs & 0xff;
-+
-+	snprintf(cp, 16, "g%02x:e%02x:p%02x", ggp, egp, pgp);
-+}
-+EXPORT_SYMBOL_GPL(rcutorture_format_gp_seqs);
-+
- #if defined(CONFIG_NO_HZ_FULL) && (!defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK))
  /*
-  * An empty function that will trigger a reschedule on
+  * Clean up torture module.  Please note that this is -not- invoked via
+  * the usual module_exit() mechanism, but rather by an explicit call from
 -- 
 2.40.1
 
