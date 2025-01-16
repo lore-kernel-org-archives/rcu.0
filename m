@@ -1,43 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03192442F7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00CE244F82;
 	Thu, 16 Jan 2025 20:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737059076; cv=none; b=a2uRdWEPr3N33EsX6KwATLbvzw5jGdVKZle45BqrIR6VZJJCSNz3Fn/luB4vNNgAMNAnLRPZ+crVEgFvZnnCPHEt+W5Q58TZ13lywfdQDV141mnkhLbM7FYvN7CPODXe4qBEObgGf4/mhJraXqg7d7Ea9SaQomUvZdP8xBaoYDU=
+	t=1737059076; cv=none; b=B2V+wpA7sg134tzSWc5yw3S7SkwouPlMvQrn3QFW4nArQ3AeIsRMUU+2QiA/CYcRQ9+dx2WXjop87MGAXJzMTJg+YjeEz9UqsoSeD0AEIo8LxUS8LGyYYonSsCAGIxFqI6nZOUsDc2R4pVEC2lynyNZ8qXl9w382IodlJ7XGdOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737059076; c=relaxed/simple;
-	bh=Y0UpprIRJnbbVRDMHgt1RNMyLVEianVXZ68KcrsvDn8=;
+	bh=KB7ffITFRNm9svQKvwkYB6dRr1WT4/QwQRwGRBNJU48=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WwuV1BEfaRaTysp07FfbSI/FrMAmUHsCRuTx3sa9DPH+F4oRn8uK9Rg5YJX0QZw7Z3WbToVYSnE1K/jED6sssgNGvjyzX0+A3Reta15tGkDf4EC9bziNwZPKDicETe4uns3cux8LzGmHfmLiDhec5gihsFXrt9u42l26ZRMuTmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RqzPDbt4; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=XJl298YgjrijBjdYpkRrsQk6S5EuU3LHg9Gsmn3fsXMH9pg5mgDw1w2Ct5FFtAmaRXnr56s6O0fXaYn0+BLJ6toVXQ0SI0pXzNISghV5rXpyUe49SNkltFqn+5dFfe8Lq5UZ2z05AQmmZbHilDtS5FPBxrYtKWe6ExMzH0mVN6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u6Yz7bvw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RqzPDbt4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA20C4CEEC;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u6Yz7bvw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E51C4CEEB;
 	Thu, 16 Jan 2025 20:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1737059076;
-	bh=Y0UpprIRJnbbVRDMHgt1RNMyLVEianVXZ68KcrsvDn8=;
+	bh=KB7ffITFRNm9svQKvwkYB6dRr1WT4/QwQRwGRBNJU48=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RqzPDbt4D9MPcaHKPshOX/OkWhoI27wrBL6gWh29ZVtNZ95Bo5caDeIw8C/O7ScbV
-	 pdJTi0CpDPkBn0duzsm8UFDkTBopq1QwYeHzmrMo1r7xYUgibGzfgOJZ/Zz/ShgIUh
-	 OnLkehn4VVjzHeunehDGCcdI3MuAWvOqNAJQNhV/3F71j0IWgzoMWJ+SbTXByWZ4o5
-	 1+Nd/oX36DWS2QWVaLcklHydk889ixxsG3/So/sQV8HK7oRouIfDHlzQqV/DbrMAjc
-	 xiShTileXpoxjarCo46JFWP9tOhq1ESGzZ8ULj6HrV8kulj3kKCBjn4rBCv3gPHog0
-	 f2QPM5U4LVLBA==
+	b=u6Yz7bvwgj4h+cU2O5vnLFA5gXHAtfnj12w47WYEPljgsxmbIV8gGxT7qKy24l6iK
+	 OmkftegDs8RlTmb1LBMXyRQcx7XteFj0XAzP8mVDLdXWHaEQUggRYgTlYAqTkbmanX
+	 ZAoL+BGGSmhYh9m4ONd6kcGNg0m8VK4mV0Us1UrsHphEkb0WVd1cuHBqyFjkJUE3hE
+	 vgIUxH7N7JMt8UYXIYxSMkqvZmIyl5dQsimOiJtdCaBkaJMtOIKr0LSKJ5mskNYNZX
+	 RWHokevHFKYAy6iyFwpw/dISGi5avAI0ZSoRu3U79oroj0sbV/wm3uZH/kxHFu9HRf
+	 cObmnpGNtblfg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id B12F1CE37D4; Thu, 16 Jan 2025 12:24:35 -0800 (PST)
+	id B349DCE37D5; Thu, 16 Jan 2025 12:24:35 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH rcu 08/11] rcutorture: Move RCU_TORTURE_TEST_{CHK_RDR_STATE,LOG_CPU} to bool
-Date: Thu, 16 Jan 2025 12:24:31 -0800
-Message-Id: <20250116202434.3783613-8-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 09/11] rcutorture: Complain when invalid SRCU reader_flavor is specified
+Date: Thu, 16 Jan 2025 12:24:32 -0800
+Message-Id: <20250116202434.3783613-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
 References: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
@@ -49,39 +48,29 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The RCU_TORTURE_TEST_CHK_RDR_STATE and RCU_TORTURE_TEST_LOG_CPU Kconfig
-options are pointlessly defined as tristate.  This commit therefore
-converts them to bool.
+Currently, rcutorture ignores reader_flavor bits that are not in the
+SRCU_READ_FLAVOR_ALL bitmask, which could confuse rcutorture users into
+believing buggy patches had been fully tested.  This commit therefore
+produces a splat in this case.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202412241458.150d082b-lkp@intel.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/Kconfig.debug | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/rcutorture.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 25a9dc2be0dcd..12e4c64ebae15 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -54,7 +54,7 @@ config RCU_TORTURE_TEST
- 	  Say N if you are unsure.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 2e6e8664e4038..36bc8d1332d43 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -690,6 +690,8 @@ static int srcu_torture_read_lock(void)
+ 	struct srcu_ctr __percpu *scp;
+ 	int ret = 0;
  
- config RCU_TORTURE_TEST_CHK_RDR_STATE
--	tristate "Check rcutorture reader state"
-+	bool "Check rcutorture reader state"
- 	depends on RCU_TORTURE_TEST
- 	default n
- 	help
-@@ -70,7 +70,7 @@ config RCU_TORTURE_TEST_CHK_RDR_STATE
- 	  Say N if you are unsure.
- 
- config RCU_TORTURE_TEST_LOG_CPU
--	tristate "Log CPU for rcutorture failures"
-+	bool "Log CPU for rcutorture failures"
- 	depends on RCU_TORTURE_TEST
- 	default n
- 	help
++	WARN_ON_ONCE(reader_flavor & ~SRCU_READ_FLAVOR_ALL);
++
+ 	if ((reader_flavor & SRCU_READ_FLAVOR_NORMAL) || !(reader_flavor & SRCU_READ_FLAVOR_ALL)) {
+ 		idx = srcu_read_lock(srcu_ctlp);
+ 		WARN_ON_ONCE(idx & ~0x1);
 -- 
 2.40.1
 
