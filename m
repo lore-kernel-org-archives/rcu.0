@@ -1,44 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DF422FACD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E582361DA;
 	Thu, 16 Jan 2025 20:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737058410; cv=none; b=eoKVHMhBMCF0wbEJ4EY6mmK+zcrkbhcensWdrbRpDo1XuAdBkFr9hi+Y+VLx5eyZzG7fQTKBzegbCUD/5SIFomsrwLhj+3YmmA5XKSDAAC759SFxilAj0eneO+/XJxv2CcfCaF8vRQiLfQG+F2tSCFVlmNeClnpo2ilTFlRLDZM=
+	t=1737058410; cv=none; b=Zv68jDhsV7sXvtSkuIul9QXcnY3724laHanilxkmeaflLejIVCk9vjOMmQCXVRu0+HrP/QIsIt0RVWuZOnCCJLm3A71p6d/TwOORpUZcgdaZ7L0CihZPPy50WLjB37u4UjNXv7nGCm2o6ljPnQ0VZ42OGZg0K59jLpQjEPVLzOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1737058410; c=relaxed/simple;
-	bh=h7UaYb14hxuWlBGdYH1/6Ho7xR5oRrUYUhDJkEaVBH4=;
+	bh=2kCcpwrxC+sFJfs74p9b/NIfUYLNRgHwpLZRtUNE9V0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PxiIA02Tn+XuxNKcQ6/jtccyf19J9txRVo05C3GH6h7MO7YSOwULikM2La4gYnXcpXHWRJNbQINbImKZGd2sadYSWKIxL4gucBxQCO06TRfruCXRac+I44kS5HOyg3xyihn51QUeA9dHAix93WtmYqNgCEVUuJwZvEFbp9BU+L4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s+w/JRJh; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=aWElAjj2CFNqby6Zm4zL+qhXjG0fvNXV/d2vVKyvrW3YIrGloU6bdoHYxFt25pdAx+nQ2iGi4eppTCoLR1pICWMTTigFQ9MjMGeBZl9hSEBTOopSMRZOhpl8dyNPjW3H2ZywQRXI9/Cz8YfyLYkG5YJwRYwLUR6eZuP5+YUs7IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EftLCmGh; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s+w/JRJh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E945C4CEDD;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EftLCmGh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 924AEC4CED6;
 	Thu, 16 Jan 2025 20:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1737058409;
-	bh=h7UaYb14hxuWlBGdYH1/6Ho7xR5oRrUYUhDJkEaVBH4=;
+	bh=2kCcpwrxC+sFJfs74p9b/NIfUYLNRgHwpLZRtUNE9V0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=s+w/JRJhEln/T2a1R34CUiY94csoGwVS7GAMoAKe7bxjKrwE7XmBoXgsdb00JL/vr
-	 WjinbS19FsBT/osxApckOUsBADtwu+Td1ok/FkYswuk0pPr+goIqkxKlPtK5TrsKyU
-	 dbsWoHkbAvJXb1iFeF7yglvlQe4+4mi572OBJYNeSgkVa/49k0dvXKbJLY7Doq5XIY
-	 2tMdWh+DbfRVWQ+QKG3QDnC8uzVx6ciUXDA8ePACc7n088jZIirl/x1wBH+M38UsAm
-	 So+KWmNKV+rJzWgtoTFSJ5ccpycEgX3u9Hi2JIoi/ZD089CzJMg9LsVujoOov3onJT
-	 iudcOkXJgnuYA==
+	b=EftLCmGh+enD1SyXPE7Y7u1LRrwuoIdHkG63yGpyiGGuXD2JqLJnQ85L31DBgmxPZ
+	 mvC5zlxq174sSOXz6+W7fovl6g3QSdce5d5kW6SOE+6+oFTPoBcpHKpsxCTqnOOWsa
+	 K58CuJpzpAYynbqiukXCsX01qrlx0fbaRi+S0V4PPX7ZsxpHj7X7She3FLGB8MkA0T
+	 ho/QHbasEWAw6i17Q1DT0qYV4TQdfKOEqS8caZXW5JEjpzaH/j1lKdcvRdflGGhXd9
+	 rQm29pf5bPJyUJKAB0YYXrWq5oRI8Et4YiKmiT3XqguEcPJfaqFq2ev9pHqnsRvC9X
+	 rYhwzsegbABrg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4F1E8CE37B4; Thu, 16 Jan 2025 12:13:29 -0800 (PST)
+	id 4A827CE12BE; Thu, 16 Jan 2025 12:13:29 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	Ankur Arora <ankur.a.arora@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 3/9] sched: update __cond_resched comment about RCU quiescent states
-Date: Thu, 16 Jan 2025 12:13:21 -0800
-Message-Id: <20250116201327.3782963-3-paulmck@kernel.org>
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH rcu 1/9] rcu: fix header guard for rcu_all_qs()
+Date: Thu, 16 Jan 2025 12:13:19 -0800
+Message-Id: <20250116201327.3782963-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <df73d8ef-ef52-4f99-ac22-e2b66f0c644e@paulmck-laptop>
 References: <df73d8ef-ef52-4f99-ac22-e2b66f0c644e@paulmck-laptop>
@@ -52,38 +53,36 @@ Content-Transfer-Encoding: 8bit
 
 From: Ankur Arora <ankur.a.arora@oracle.com>
 
-Update comment in __cond_resched() clarifying how urgently needed
-quiescent state are provided.
+rcu_all_qs() is defined for !CONFIG_PREEMPT_RCU but the declaration
+is conditioned on CONFIG_PREEMPTION.
 
-Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+With CONFIG_PREEMPT_LAZY, CONFIG_PREEMPTION=y does not imply
+CONFIG_PREEMPT_RCU=y.
+
+Decouple the two.
+
+Cc: Paul E. McKenney <paulmck@kernel.org>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/sched/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/rcutree.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 95e40895a5190..b0f7ffcc46a66 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7281,7 +7281,7 @@ int __sched __cond_resched(void)
- 		return 1;
- 	}
- 	/*
--	 * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
-+	 * In PREEMPT_RCU kernels, ->rcu_read_lock_nesting tells the tick
- 	 * whether the current CPU is in an RCU read-side critical section,
- 	 * so the tick can report quiescent states even for CPUs looping
- 	 * in kernel context.  In contrast, in non-preemptible kernels,
-@@ -7290,6 +7290,8 @@ int __sched __cond_resched(void)
- 	 * RCU quiescent state.  Therefore, the following code causes
- 	 * cond_resched() to report a quiescent state, but only when RCU
- 	 * is in urgent need of one.
-+	 * A third case, preemptible, but non-PREEMPT_RCU provides for
-+	 * urgently needed quiescent states via rcu_flavor_sched_clock_irq().
- 	 */
- #ifndef CONFIG_PREEMPT_RCU
- 	rcu_all_qs();
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 27d86d9127817..aad586f15ed0c 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -103,7 +103,7 @@ extern int rcu_scheduler_active;
+ void rcu_end_inkernel_boot(void);
+ bool rcu_inkernel_boot_has_ended(void);
+ bool rcu_is_watching(void);
+-#ifndef CONFIG_PREEMPTION
++#ifndef CONFIG_PREEMPT_RCU
+ void rcu_all_qs(void);
+ #endif
+ 
 -- 
 2.40.1
 
