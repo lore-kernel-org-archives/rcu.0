@@ -1,79 +1,50 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF003BBC5;
-	Thu, 16 Jan 2025 14:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BE822BAB7;
+	Thu, 16 Jan 2025 16:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737036245; cv=none; b=KiHK1tIKFfuzWPCjNnn03yV79dt6sJmamgNGT2eusutn7MbjdYaLlVNhxHV9oV5KNUphCglUGkGyt35tiEhEpkFrNv+sFOPQ161pQJr6jx372lz3okZGKkrVoqkGY8ckgo5wF2+wiH5UJ1LDOzEx48EZUbdPzfVYt9fZzXmSjX0=
+	t=1737043424; cv=none; b=RhXYa90GlVnCt42mqYTCqHu9DrLegaXM+9xYTT69cFcJ5u1G+yN/oK/o2N/GM9uuh0dkr4ol2ApdTyEt3HoReZXIOq6zM9Q2ortxGcU0q1P+ncPsFmaAqocHPmNhwlBOpULW5Y2AjXQRRSIcHMQTm5FxLJVZSjtXDG6AeLAy4v8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737036245; c=relaxed/simple;
-	bh=aumlo1hSv1RGq++VrDnHs0vxHWrKksh1sRvk0Ro45nE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fIbxHAMEsyqmspkVOtyfMsz0oYQR6yTYkwVELcxKZtjjO+UTV3kKPQvhza3rdNJH88RsyWVzSU8H1HcpOvkW7zdWkhosKWoZm8DAvnL7ffStETZJk5nnwbQagmBHXEm8xlpLWUhaW88Edgj1UeMimDRvjp09N9MkHunD/F23RXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hp+9kGl/; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1737043424; c=relaxed/simple;
+	bh=QcJl9SXQ6in13mauO1RfoQd6DWsHPd60WU6GdWuedCg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qb+pRS0iuNC8MHtZeygN8Cr23G81jmRYi/YuqOhYdQRhubLo4UUL9Q/hqHenOCmMTQ4vyLD6c9GEdHNuwPfuOSwE3cvKKEZJoUR0Cztw4UsSrIWCDxVTrV6q+jWAZSqoNCmM+o5Kb5XJnPDLuXNRPBr6XNnh1Jy41UexvyEWsas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dUd1DrQk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hp+9kGl/"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-53ffaaeeb76so1013733e87.0;
-        Thu, 16 Jan 2025 06:04:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737036242; x=1737641042; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=N/RtX+cgcWKj9zjY7fDNFiaiGMxyIrenboTJKW5OkPY=;
-        b=hp+9kGl/Q7wl2GO80T+5g1loYmDJpH5fE8ZCHfOEoRtkblliq8EMG9K55bwruPoUxU
-         iy9mb8G3PfQabtd6wpMMgGQJR3IPWlaVhQSDu/P+JVGFP/RHHNUI+LoGJH4CKpsBifH1
-         fvqanXbYEzvXlhYOoN6FMFwuhVGf2P8FA9hUI8Ldj9HWCdT/jSQ6mDuObqNzjw9l+BAG
-         dLSn6Bl1FJ9MJ0qxvqFVATLqy4Ei+0p+sRub2BpIv3ztxFcKJhCOPLH9wPDJDMB99/RV
-         4KH72inLTm07lBZFPGLlubiBI95uzRuyoshtWsOBKi+RMY9sJ1FZXKbEXB39T/sUIlNF
-         wqoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737036242; x=1737641042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N/RtX+cgcWKj9zjY7fDNFiaiGMxyIrenboTJKW5OkPY=;
-        b=h0meNXQte0b7srTgDmGkH0e/wcBouWACB1WirdrcRWroqDONJ+qj4B+ZFNrWUBniTd
-         AZMMbMMi3kj9AzkRsARIe5p4Xrk3ojJOrTnCTYuoKJIx/5R5NGCAy4Qnbt6Mlt/dveOg
-         hBHnZVDvDXztL0F47C0U262/WpoeSW4UbZz51tKoxJLF1RT/fYtPqGUGz3+p6f4I2UoY
-         rDzrpwxAlc9PbAUyA6yfdduI1PC+auXEfqcOuZWIaT2h+bYNoAvzZnU9Y8WZfiWQ/L/a
-         VKIzSmUElYcUNmFZJg7fVD9avjUr5GSgDi/dsNNDjS8+QE0qBAzN76vNhHtDH5Ch8jK+
-         tUlg==
-X-Forwarded-Encrypted: i=1; AJvYcCWJzWM7SHsk/rqLEodWUaS7cNLXdBY/GhFnnVprc80A2L9TPEU3CbdseS3upGpJlyLTJ9iY@vger.kernel.org, AJvYcCWze/Y+fW9qzEIp/JMRwjQhIA8S3XKlRyuqDTz36/U3QT5IdEi0t6CJFQhohCejjpMfYT5k06tDeR3rFEk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywnh3F0OXYtuBRWdZkBo0HMcTml/M+KvowYCUi6prTqhqaBIKd4
-	40lr3PPSw8Uene0iH9opdJyv6RjjKlZVhAGEh6tYis88RiDz/ED+
-X-Gm-Gg: ASbGncv4/Ifn3ZXB3rbXrQSA0rvV0607px8QUmSAt0uG7864n3nA0UQKwpGorIdy6MU
-	a2P08XJ8nzjPL9U6IV6UAgz6pMwOZ489s3qz3OQXoimjpl3UpV2eN/q4O1IIILyoBRtIIgAKXYk
-	rHH6194qeLaz/Jm6t6dVvVxKJA1HfgoP1bymgiS2lsjyngT7jbHdpx7SUaxbRTVuwZGIC2t+lis
-	bFLRz7oZmmuBZ2hVuEhUJFfO2MvM8LgcwB5e8tGGZvTWZfYHyG7MKzNACbkvPuj40+NHnlj19Zf
-	CMSez2sIQoI=
-X-Google-Smtp-Source: AGHT+IG91kg2Z0+xyGHOZeIUOyhQvY89VqnIW114qF8zIlOdtY6mDgWmurCfZRMfTBDmsmgFEOpGQQ==
-X-Received: by 2002:a05:6512:15a3:b0:542:2f5a:5f52 with SMTP id 2adb3069b0e04-542845b9037mr9895397e87.13.1737036240363;
-        Thu, 16 Jan 2025 06:04:00 -0800 (PST)
-Received: from pc636 (host-217-213-93-172.mobileonline.telia.com. [217.213.93.172])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5428becbbf4sm2312143e87.256.2025.01.16.06.03.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2025 06:03:59 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 16 Jan 2025 15:03:56 +0100
-To: cheung wall <zzqq0103.hey@gmail.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dUd1DrQk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE5AC4CED6;
+	Thu, 16 Jan 2025 16:03:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737043423;
+	bh=QcJl9SXQ6in13mauO1RfoQd6DWsHPd60WU6GdWuedCg=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=dUd1DrQkZZRMltIHzpAB/2/YNkZpdC1QBePNzOwQ5aPT0meTuSfN9KYEUnoVhL5b+
+	 gpsU73rzwFUHNy37p2qMMaP16HkSTBQA/5DfZtYKD0xjHwn8oNx9CjE9AS2rmbqVQV
+	 rilJoF5+6RQp5u27PUE0S35GQJ9bQpzSn5ZIeCMD4zVlwqD4juD+Q2OfSXXUWWSDgC
+	 1A8Ep+w9a7ViKluU9mYLXnZU2LQOxk6/+udeBTyUXRi7KHje/rrxQ61fkAcyivjWER
+	 IO8CW/P5RuaTTza7vq2gIyzrDdD6zByCq/5EAtvxRPxXR29NUzG0v+GvGKk4ghxmw4
+	 EJNfH5S4ecwQg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 4A315CE0C15; Thu, 16 Jan 2025 08:03:43 -0800 (PST)
+Date: Thu, 16 Jan 2025 08:03:43 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: "WARNING in rcu_sr_normal_complete" in Linux Kernel v6.12-rc4
-Message-ID: <Z4kRzMO03mwjqCu2@pc636>
-References: <CAKHoSAvbRnktnM=H52eNe0QQryP908Q612Hfxzy2sozUdHRrjQ@mail.gmail.com>
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] srcu: refactor __srcu_read_(un)lock_lite() declarations
+Message-ID: <ce82b07d-84c5-4f9d-a3d4-87fdc3675307@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250114105215.4007622-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -82,29 +53,80 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKHoSAvbRnktnM=H52eNe0QQryP908Q612Hfxzy2sozUdHRrjQ@mail.gmail.com>
+In-Reply-To: <20250114105215.4007622-1-masahiroy@kernel.org>
 
-Hello, Cheung Wall!
+On Tue, Jan 14, 2025 at 07:52:13PM +0900, Masahiro Yamada wrote:
+> For CONFIG_TREE_SRCU, __srcu_read_(un)lock_lite() are defined as static
+> inline functions in <linux/srcutree.h>. The later function declarations
+> are redundant.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-> 
-> I am writing to report a potential vulnerability identified in the
-> Linux Kernel version v6.12-rc4. This vulnerability was discovered
-> while i was testing the kernel.
-> 
-> Linux Kernel Repository Git Commit:
-> 42f7652d3eb527d03665b09edac47f85fb600924 (tag: v6.12-rc4)
-> 
-> Bug Location: 0010:rcu_sr_normal_complete+0xd0/0x110 kernel/rcu/tree.c:1638
-> 
-> Bug report: https://pastebin.com/kuJ7wnPe
-> 
-> Entire Log: https://pastebin.com/fT42ya0T
-> 
-> Thank you for your time and attention.
-> 
-Do you have a reproducer of this splat?
+Hello, Masahiro, and thank you for the patch!
 
-Thank you in advance!
+This part of the code has seen quite a bit of churn over the past month
+or so.  So could you please rebase this patch on top of my -rcu tree's
+"dev" branch?
 
---
-Uladzislau Rezki
+git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+
+							Thanx, Paul
+
+> ---
+> 
+>  include/linux/srcu.h     | 9 ++-------
+>  include/linux/srcutree.h | 4 ++--
+>  2 files changed, 4 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 08339eb8a01c..314f0bca6eb7 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -45,6 +45,8 @@ int init_srcu_struct(struct srcu_struct *ssp);
+>  
+>  #ifdef CONFIG_TINY_SRCU
+>  #include <linux/srcutiny.h>
+> +#define __srcu_read_lock_lite __srcu_read_lock
+> +#define __srcu_read_unlock_lite __srcu_read_unlock
+>  #elif defined(CONFIG_TREE_SRCU)
+>  #include <linux/srcutree.h>
+>  #else
+> @@ -56,13 +58,6 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *head,
+>  void cleanup_srcu_struct(struct srcu_struct *ssp);
+>  int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
+>  void __srcu_read_unlock(struct srcu_struct *ssp, int idx) __releases(ssp);
+> -#ifdef CONFIG_TINY_SRCU
+> -#define __srcu_read_lock_lite __srcu_read_lock
+> -#define __srcu_read_unlock_lite __srcu_read_unlock
+> -#else // #ifdef CONFIG_TINY_SRCU
+> -int __srcu_read_lock_lite(struct srcu_struct *ssp) __acquires(ssp);
+> -void __srcu_read_unlock_lite(struct srcu_struct *ssp, int idx) __releases(ssp);
+> -#endif // #else // #ifdef CONFIG_TINY_SRCU
+>  void synchronize_srcu(struct srcu_struct *ssp);
+>  
+>  #define SRCU_GET_STATE_COMPLETED 0x1
+> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
+> index 490aeecc6bb4..16a7d631c185 100644
+> --- a/include/linux/srcutree.h
+> +++ b/include/linux/srcutree.h
+> @@ -219,7 +219,7 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf);
+>   * or because it is a read-modify-write atomic operation, depending on
+>   * the whims of the architecture.
+>   */
+> -static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
+> +static inline int __srcu_read_lock_lite(struct srcu_struct *ssp) __acquires(ssp)
+>  {
+>  	int idx;
+>  
+> @@ -241,7 +241,7 @@ static inline int __srcu_read_lock_lite(struct srcu_struct *ssp)
+>   * or because it is a read-modify-write atomic operation, depending on
+>   * the whims of the architecture.
+>   */
+> -static inline void __srcu_read_unlock_lite(struct srcu_struct *ssp, int idx)
+> +static inline void __srcu_read_unlock_lite(struct srcu_struct *ssp, int idx) __releases(ssp)
+>  {
+>  	barrier();  /* Avoid leaking the critical section. */
+>  	this_cpu_inc(ssp->sda->srcu_unlock_count[idx].counter);  /* Z */
+> -- 
+> 2.43.0
+> 
