@@ -1,143 +1,224 @@
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EAB1F78E1;
-	Fri, 17 Jan 2025 06:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539971FBCBC
+	for <rcu@vger.kernel.org>; Fri, 17 Jan 2025 09:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737097168; cv=none; b=AKJ+unoyEe1djvy2FSIpckCdqKXTj4L22TmSjhQgZc66Jz632i2lKtttfYEy922q/38V63orzeo3xoprTr1GLgrKv6aClxM/BCdAeU0Kzr2Rz6OUL9TUfcD70xkLfNrhmkqMXPzluzYEm07JRYTquFl6U7bVghSDOTYaMyhqxC4=
+	t=1737107281; cv=none; b=Uh0bqtaQN1jd3zUBJFUFOHDoNMWcypVOWa21opGJshdACpQaLl1FGNlYajEpfLp9ZpDabQsDBfIRl9YbymWP3GV/jH3Xac5N3AVDNVci5ar+AzFmh/PcZqp3BpBODfRtFGuH9d4Mp3yujUBM6WiDhM1x/4CcDDxxt+ACX9FuY1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737097168; c=relaxed/simple;
-	bh=bT/lws0qdKKEVqXiASK2cA33sHXAEJPrHrOb8JKK8AE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ItueL73OTfxoFmMrqkz19DTmjSziAxfPgvrKDqpwvCa26WhNvd+gzbdyh7BGfa2x+WgISXQUpDMQ0GtQZ1UJK4mohdD4gkc5vsDve06Vb1jnWZ7l2ZEgS0tbaiAlyYlZlGRUS0xaKLO2/kH/nSCa0YEmuevFRLMJsDm365dRRVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YZ9V31bHmz1W49p;
-	Fri, 17 Jan 2025 14:55:23 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 69E3B180101;
-	Fri, 17 Jan 2025 14:59:16 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 17 Jan
- 2025 14:59:15 +0800
-Message-ID: <a9f98b54-19ac-4ea6-bb8b-76eeb9c89608@huawei.com>
-Date: Fri, 17 Jan 2025 14:59:14 +0800
+	s=arc-20240116; t=1737107281; c=relaxed/simple;
+	bh=F2gqeuB0aLhR/bzKUvYunwZ5S0liP9KO05qoNp3Tqo0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OZTfdNBMFb6e7zP82jJADnNwsEKX7zIYzqtUPmFTpAEsjaEcudw4nfRCr1xPc8ItCmYUvucKOsE5PLz5cN7WSm9xyJNETiuu7FxduvBoTZz2KePcB7I2SONM4LwbAgMHyzUZZzgIc8wwWa6Vt+oe3uP7XwUGLUvehGCxtIukJRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DHBRYnQc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DHBRYnQc"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737107277;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VvR9KfuLK5jT/0k1YGBwcApH+9cF5PsvBxGMV+DYi4c=;
+	b=DHBRYnQclWBz29AczmtdH2psrHQWNAp2LDJjwl32uDPBUSGvi1VCdiDO7Zu95RYG4y3OpB
+	9Tebjf3WoGAbLJ64WOQ9vzSA4BycUOWy/bKAHOHksNptStG7BmNFug3JbEo5RGgIFyw1yE
+	ZQ5x15X5d61OUrj/+AN5FwVAZ+jtRyE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-647-nx2S9OmqMxWsIGHFs_JKQA-1; Fri, 17 Jan 2025 04:47:55 -0500
+X-MC-Unique: nx2S9OmqMxWsIGHFs_JKQA-1
+X-Mimecast-MFC-AGG-ID: nx2S9OmqMxWsIGHFs_JKQA
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4361efc9d1fso13364065e9.2
+        for <rcu@vger.kernel.org>; Fri, 17 Jan 2025 01:47:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737107274; x=1737712074;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VvR9KfuLK5jT/0k1YGBwcApH+9cF5PsvBxGMV+DYi4c=;
+        b=Xp38R6McKc4JlsfHrNZkM/hBy5mRerIzf/zEjC32lnJRzZ1Hb7Uy2UY6EvPzkz4dHD
+         5/UxO7FLHSq/jYnCLJl7Hcuif6P0nJFuBPIHIsUKdFb8J5XtX6c/rnVb1D0/ddpfSdFX
+         6ZAfQm24TEmDANywj35mdNzZ3n92MTjK3+lckk6tDG1cwJ2KRYxQx8tO3olHpGHY3Kzd
+         W03maDyJsjZcFLOsxiqXBnfyNBgnQjStk/o/cwrKiGrrb0WjaWcahh2RdlMxdv4SnOef
+         FDmfs6QvU0HHfKg4W08q/JLVQsm9oGnMgLZqB79igrGFS/21K/C9mXCd9MCtl/O51KGF
+         nf1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWM+RvvfcMXmGeJqujNDL086uv1x6tSUtAr1JJDR8WfKQinyN4SzIZU3eQDPOBsJvms0F0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTuQKhAJ6VGnNQ32XHNQewjZnQHSaj8YIja6vsCFaMOLjb9zp4
+	hymaPY3XqDPzkJ5wanCCLYQ3n5euMkBl6AfOTIHWJJAl5vxduNAZ0A2qksfy4nDOx7pHKbVZ6IN
+	oW0rgnH/b9KDHnQjhqQQ+DzU2m7MCL3LGkeaAG9A9Kb4fHirXSQ==
+X-Gm-Gg: ASbGncvEevWwLf06F/3HZvMrjQM199DCCUDWvZNuzwIp6r+gYXFTHC2Ofoso5fiJAWu
+	zRCqgx7fibjAaMCBfCEfxR/kkeZXBI1RC8bd6MM+E39dyPA0ybvrPpXExr+ZPBdVDIahsRY20h7
+	uK6TJv4CqIb7ojFWDMsZ7mV8eOR3FG7DrpT8Llv/qPAFg4wosy0qxoZ2zu8mo2kzAlfsqthCI+Q
+	dM5GMmUToPhA95navcZhIc6I97XwZ1vkLsF3/FDAdKFP8VES+AyKP69Y2WSdR4B67h9uZtQFsRz
+	2yhOpZapi+EcqMHrz6+PeSTDv3M4zYK9IVlQvYmR0w==
+X-Received: by 2002:a05:600c:9a3:b0:434:fa73:a907 with SMTP id 5b1f17b1804b1-4389191b819mr16314245e9.13.1737107273781;
+        Fri, 17 Jan 2025 01:47:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHToHDxXT5KMOIEW1byUZUSn/LchRidR5pJg2ZFHbUxu07B2Q/njknWrWkjTXhDYHkp8NfwWQ==
+X-Received: by 2002:a05:600c:9a3:b0:434:fa73:a907 with SMTP id 5b1f17b1804b1-4389191b819mr16313255e9.13.1737107273291;
+        Fri, 17 Jan 2025 01:47:53 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438904131f5sm27135155e9.11.2025.01.17.01.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2025 01:47:52 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, Peter Zijlstra
+ <peterz@infradead.org>, Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+ Juergen Gross <jgross@suse.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
+ Alexey Makhalov <alexey.amakhalov@broadcom.com>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Thomas
+ Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
+ Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H.
+ Peter Anvin" <hpa@zytor.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+ <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, Boris
+ Ostrovsky <boris.ostrovsky@oracle.com>, Josh Poimboeuf
+ <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker <frederic@kernel.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
+ <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun
+ Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli
+ <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>, Vincent
+ Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
+ <mgorman@suse.de>, Kees Cook <kees@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, Shuah
+ Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, Miguel
+ Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, "Mike
+ Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland
+ <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
+ Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 25/30] context_tracking,x86: Defer kernel text
+ patching IPIs
+In-Reply-To: <Z4bTlZkqihaAyGb4@google.com>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-26-vschneid@redhat.com>
+ <Z4bTlZkqihaAyGb4@google.com>
+Date: Fri, 17 Jan 2025 10:47:49 +0100
+Message-ID: <xhsmhed11hiuy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
-To: <paulmck@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>
-CC: Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>, Andrew
- Morton <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-	<yosryahmed@google.com>, <roman.gushchin@linux.dev>,
-	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>, <davidf@vimeo.com>,
-	<handai.szj@taobao.com>, <rientjes@google.com>,
-	<kamezawa.hiroyu@jp.fujitsu.com>, RCU <rcu@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <wangweiyang2@huawei.com>
-References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
- <1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
- <58caaa4f-cf78-4d0f-af31-8a9277b6ebf5@huaweicloud.com>
- <20250113194546.3de1af46fa7a668111909b63@linux-foundation.org>
- <Z4YjArAULdlOjhUf@tiehlicka> <aaa26dbb-e3b5-42a3-aac0-1cb594a272b6@suse.cz>
- <0b6a3935-8b6c-4d11-bacc-31c1ba15b349@huaweicloud.com>
- <81294730-1cd9-4793-b886-9ababe29d071@paulmck-laptop>
-Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <81294730-1cd9-4793-b886-9ababe29d071@paulmck-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: text/plain
 
-
-
-On 2025/1/15 2:42, Paul E. McKenney wrote:
-> On Tue, Jan 14, 2025 at 08:13:37PM +0800, Chen Ridong wrote:
+On 14/01/25 13:13, Sean Christopherson wrote:
+> On Tue, Jan 14, 2025, Valentin Schneider wrote:
+>> text_poke_bp_batch() sends IPIs to all online CPUs to synchronize
+>> them vs the newly patched instruction. CPUs that are executing in userspace
+>> do not need this synchronization to happen immediately, and this is
+>> actually harmful interference for NOHZ_FULL CPUs.
+>
+> ...
+>
+>> This leaves us with static keys and static calls.
+>
+> ...
+>
+>> @@ -2317,11 +2334,20 @@ static void text_poke_bp_batch(struct text_poke_loc *tp, unsigned int nr_entries
+>>       * First step: add a int3 trap to the address that will be patched.
+>>       */
+>>      for (i = 0; i < nr_entries; i++) {
+>> -		tp[i].old = *(u8 *)text_poke_addr(&tp[i]);
+>> -		text_poke(text_poke_addr(&tp[i]), &int3, INT3_INSN_SIZE);
+>> +		void *addr = text_poke_addr(&tp[i]);
+>> +
+>> +		/*
+>> +		 * There's no safe way to defer IPIs for patching text in
+>> +		 * .noinstr, record whether there is at least one such poke.
+>> +		 */
+>> +		if (is_kernel_noinstr_text((unsigned long)addr))
+>> +			cond = NULL;
+>
+> Maybe pre-check "cond", especially if multiple ranges need to be checked?  I.e.
+>
+>               if (cond && is_kernel_noinstr_text(...))
+>> +
+>> +		tp[i].old = *((u8 *)addr);
+>> +		text_poke(addr, &int3, INT3_INSN_SIZE);
+>>      }
 >>
+>> -	text_poke_sync();
+>> +	__text_poke_sync(cond);
 >>
->> On 2025/1/14 17:20, Vlastimil Babka wrote:
->>> On 1/14/25 09:40, Michal Hocko wrote:
->>>> On Mon 13-01-25 19:45:46, Andrew Morton wrote:
->>>>> On Mon, 13 Jan 2025 14:51:55 +0800 Chen Ridong <chenridong@huaweicloud.com> wrote:
->>>>>
->>>>>>>> @@ -430,10 +431,15 @@ static void dump_tasks(struct oom_control *oc)
->>>>>>>>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
->>>>>>>>  	else {
->>>>>>>>  		struct task_struct *p;
->>>>>>>> +		int i = 0;
->>>>>>>>  
->>>>>>>>  		rcu_read_lock();
->>>>>>>> -		for_each_process(p)
->>>>>>>> +		for_each_process(p) {
->>>>>>>> +			/* Avoid potential softlockup warning */
->>>>>>>> +			if ((++i & 1023) == 0)
->>>>>>>> +				touch_softlockup_watchdog();
->>>>>>>
->>>>>>> This might suppress the soft lockup, but won't a rcu stall still be detected?
->>>>>>
->>>>>> Yes, rcu stall was still detected.
->>>
->>> "was" or "would be"? I thought only the memcg case was observed, or was that
->>> some deliberate stress test of the global case? (or the pr_info() console
->>> stress test mentioned earlier, but created outside of the oom code?)
->>>
->>
->> It's not easy to reproduce for global OOM. Because the pr_info() console
->> stress test can also lead to other softlockups or RCU warnings(not
->> causeed by OOM process) because the whole system is struggling.However,
->> if I add mdelay(1) in the dump_task() function (just to slow down
->> dump_task, assuming this is slowed by pr_info()) and trigger a global
->> OOM, RCU warnings can be observed.
->>
->> I think this can verify that global OOM can trigger RCU warnings in the
->> specific scenarios.
-> 
-> We do have a recently upstreamed rcutree.csd_lock_suppress_rcu_stall
-> kernel boot parameter that causes RCU CPU stall warnings to suppress
-> most of the output when there is an ongoing CSD-lock stall.
-> 
-> Would it make sense to do something similar when the system is in OOM,
-> give or take the traditional difficulty of determining exactly when OOM
-> starts and ends?
-> 
-> 1dd01c06506c ("rcu: Summarize RCU CPU stall warnings during CSD-lock stalls")
-> 
-> 							Thanx, Paul
-> 
+>>      /*
+>>       * Second step: update all but the first byte of the patched range.
+>
+> ...
+>
+>> +/**
+>> + * is_kernel_noinstr_text - checks if the pointer address is located in the
+>> + *                    .noinstr section
+>> + *
+>> + * @addr: address to check
+>> + *
+>> + * Returns: true if the address is located in .noinstr, false otherwise.
+>> + */
+>> +static inline bool is_kernel_noinstr_text(unsigned long addr)
+>> +{
+>> +	return addr >= (unsigned long)__noinstr_text_start &&
+>> +	       addr < (unsigned long)__noinstr_text_end;
+>> +}
+>
+> This doesn't do the right thing for modules, which matters because KVM can be
+> built as a module on x86, and because context tracking understands transitions
+> to GUEST mode, i.e. CPUs that are running in a KVM guest will be treated as not
+> being in the kernel, and thus will have IPIs deferred.  If KVM uses a static key
+> or branch between guest_state_enter_irqoff() and guest_state_exit_irqoff(), the
+> patching code won't wait for CPUs to exit guest mode, i.e. KVM could theoretically
+> use the wrong static path.
+>
 
-I prefer to just drop it.
+AFAICT guest_state_{enter,exit}_irqoff() are only used in noinstr functions
+and thus such a static key usage should at the very least be caught and
+warned about by objtool - when this isn't built as a module.
 
-Unlike memcg OOM, global OOM doesn't usually happen. Although it
-'verified' that the RCU warning can be observed, we haven't encountered
-it in practice. Besides, other RCU warnings may also be observed during
-global OOM, and it's difficult to circumvent all the warnings.
+I never really thought about noinstr sections for modules; I can get
+objtool to warn about a non-noinstr allowed key being used in
+e.g. vmx_vcpu_enter_exit() just by feeding it the vmx.o:
 
-Best regards,
-Ridong
+arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_vcpu_enter_exit.isra.0+0x0: dummykey: non-RO static key usage in noinstr
 
->>>>>> For global OOM, system is likely to struggle, do we have to do some
->>>>>> works to suppress RCU detete?
->>>>>
->>>>> rcu_cpu_stall_reset()?
->>>>
->>>> Do we really care about those? The code to iterate over all processes
->>>> under RCU is there (basically) since ever and yet we do not seem to have
->>>> many reports of stalls? Chen's situation is specific to memcg OOM and
->>>> touching the global case was mostly for consistency reasons.
->>>
->>> Then I'd rather not touch the global case then if it's theoretical? It's not
->>> even exactly consistent, given it's a cond_resched() in the memcg code (that
->>> can be eventually automatically removed once/if lazy preempt becomes the
->>> sole implementation), but the touch_softlockup_watchdog() would remain,
->>> while doing only half of the job?
->>
->>
+...but that requires removing a lot of code first because objtool stops
+earlier in its noinstr checks as it hits functions it doesn't have full
+information on, e.g.
+
+arch/x86/kvm/vmx/vmx.o: warning: objtool: vmx_vcpu_enter_exit+0x21c: call to __ct_user_enter() leaves .noinstr.text section
+
+__ct_user_enter() *is* noinstr, but you don't get that from just the header prototype.
+
+> I don't expect this to ever cause problems in practice, because patching code in
+> KVM's VM-Enter/VM-Exit path that has *functional* implications, while CPUs are
+> actively running guest code, would be all kinds of crazy.  But I do think we
+> should plug the hole.
+>
+> If this issue is unique to KVM, i.e. is not a generic problem for all modules (I
+> assume module code generally isn't allowed in the entry path, even via NMI?), one
+> idea would be to let KVM register its noinstr section for text poking.
+
