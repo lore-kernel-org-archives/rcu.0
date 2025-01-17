@@ -1,142 +1,199 @@
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96191A23AB
-	for <rcu@vger.kernel.org>; Fri, 17 Jan 2025 17:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E058166F29;
+	Fri, 17 Jan 2025 17:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737134131; cv=none; b=mNZB32g27TzyQDN8xi5ypin8o/Jnns5Aru9OzxTeYZm38HRQwvZXDWmhwtzjATF5PlyL8J4dBFoIqS6YldEfKbKoZEeMdOlLvPXb3QRN9+122jQ9uUUbjY+3/DnnD7EiGfCqx/BE34jAQMov/nN+jwlWPKC2lUHyyammUhB5Vec=
+	t=1737134687; cv=none; b=EMkxwh8jGc9bqurIud5XF25WSUq2dl2HWpFaPmgyUGnJFsgydX5TsbBHAi/zjYXQpIFrgH8IQXHiazgHVsa920sYTTBS3ypIOWZtwaiJI+vJOLmOgdKiwCt/ZoHokLmmHYtjzxZIlVo/952NvSQ4nVJu1Zb9CvCmgWueZT3xa6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737134131; c=relaxed/simple;
-	bh=0MFya64nSwrKA4zsNtkUtWH4IKaadp8mDbPpC2PlrFo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=A1Ixuwt+py2iDQZZZQX8ZmBdxOZgyVFqJgSdekIhW2y2gb2Rc/X8T4qq47ySVrh2l6RQZ8WhTW4+4TiQjfsE6ArXOgvMWPwO37neTUvcC1ms6ACNnt+A2F016HUJDwxrgz3remgJYDicD4kIOPGT27gUf0uiPXLgJFv/nUMdaOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4ag2GoeL; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+	s=arc-20240116; t=1737134687; c=relaxed/simple;
+	bh=vQjjD7FPoYaAO1rCeuGip+ShuzpBMzlvg1IFriProcg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pq0IYty60/trC29ZPFEGI02nS/c4S9S8sFOKuQswGPjOas8GgRU2RPv7VdIPpz2zpvlPb6ltXTKp0cxNMTvQb5BMkmPiaG46/yt48NI6+wPDy+N4HIbjD4lUsHVemu8ffOBAqchg2GUdiMKFuy7+MKdv1HR6Xt3We7Ea3+6MbkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=As0sVt9J; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4ag2GoeL"
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-2178115051dso44450885ad.1
-        for <rcu@vger.kernel.org>; Fri, 17 Jan 2025 09:15:29 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="As0sVt9J"
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5401e6efffcso2618287e87.3;
+        Fri, 17 Jan 2025 09:24:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1737134129; x=1737738929; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/pcx17eniD+ASjh3teIfjrJN/d55a+1SMCIjE05N6Y0=;
-        b=4ag2GoeL9Uij5dXXikR/tga2oE333+Z0UZd8JXsw3kqqlw23y0O2WI2cTxZTydYu+y
-         maXvrtsG9f/N2QLF8f0bu94m9UUcknp5XYbNi74iypZwo4tFIhp2HhWkkEyjzhf2/U0H
-         32YrCRpcmMESOO9ydGjpPlrOkkT3DrRZDdYaUG+6HBYzGmgaskztkRyu5gZTkA934dSS
-         O/iA2JJBQinlPO8c5/kzcRCIXdRGBOggWL5m12u/hJpal2N3y59MNhdHTraWJil+EdMo
-         PHfryZI3ALsHyW3L+tvcA2D983kD9zAGO5rqwFI43pqgco9MISMa0ubHWJ6wQQmh/Caf
-         IjQA==
+        d=gmail.com; s=20230601; t=1737134683; x=1737739483; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0/H3/XMYSEjWC6PXGCCgpkrZcBA3IHPQi9kADqhE4Gw=;
+        b=As0sVt9J+AvLWISuYvQ4Ywf20rasbX73MQh2vCqYa23ZfYnsN7rCBnbY8IeirwsTjI
+         xvXNsOonTH7lOy31eCJBJteYQ6tTVAhnGFikVn7QKKs1NRjGXiJIHL2Lqlcvrx5St+H7
+         VcLdfAzLrN+6CGQw6Kr/ocvB8lkedrULphHBXI39HjBA8daXabBu3mpEbJfDiABiTH0+
+         ZmqjIqvsMYzbC9NGhP1VFBMCmr3AIaCHook8Aq3g1/NFEnO2ZHkg9AqBFOBPCHavZQSG
+         5MgdTpYZTBc2Jci3UXKrqTdF31Hf2rb+zKyUH0VRfNxu7pfHcHPdVEiqhrjjxgTXiMJN
+         zfSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737134129; x=1737738929;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/pcx17eniD+ASjh3teIfjrJN/d55a+1SMCIjE05N6Y0=;
-        b=JrXgYAXio2fXGslVfcimfXSFWjcNhgw6jVyenhMRWP94NQL+0jtcH84mVDlhQq6xOa
-         FwOjs2xk6WflnhNqz2QMMnadqOWL61irImyRbzbGyeZ5euzQ24xYCle7QqzKZczRlFx8
-         x2lm/o0BJ7CJHLMv2KVuuY2cMrAbeZmeK/GfbsEVdbgxsMxgBLL2W2ferWXOg5EBkPNs
-         0ZQszE7mI92m0hEWYbE3q776V229NqBX8Ho6qWUYKBp4vLGJz/B8ANOvO6Fh1OhJPXPJ
-         515OMPh+Y7SAUqkewzoJWaK2HKUxRpJ32Qp+K1lW1TeuoIlnRdzqOFoSP4ss7jD6zID0
-         PxBw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8/Q4i/9sdo3k2vpAXN4C3Z5prNiS+kc9Uk9xGicWf3nOplfDFHPiUSQ2cEYi5uoTPtdU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyo9h+arf/g6AhlRI6SLHHuSCBGIwizU1WtzfLKyDSRWquJvau5
-	/ja7xvJk3xxQBWTrf3WFldH0ozePABmViciTE+nQUY5F5B46Vb5C8gtxY3SZbCbMVHwknXQC9w4
-	q3g==
-X-Google-Smtp-Source: AGHT+IFBt8EUJmCBrYJSR6SbgIXxnZj6fm10TNGjaAj4XRK+x0dRIzGirCE9VGAaKkDPtl0zEYTqCFRnILs=
-X-Received: from pfbcv2.prod.google.com ([2002:a05:6a00:44c2:b0:725:a760:4c72])
- (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:148d:b0:725:eb85:f802
- with SMTP id d2e1a72fcca58-72daf930e3cmr5815077b3a.2.1737134128872; Fri, 17
- Jan 2025 09:15:28 -0800 (PST)
-Date: Fri, 17 Jan 2025 09:15:27 -0800
-In-Reply-To: <xhsmhed11hiuy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        d=1e100.net; s=20230601; t=1737134683; x=1737739483;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0/H3/XMYSEjWC6PXGCCgpkrZcBA3IHPQi9kADqhE4Gw=;
+        b=S087n50OaB5QcwNg4Z2byRfGs76Oki93ygOC5PJMbsi5Ay6uTq4y0bvaTlBWc+/cWa
+         El2k0eakgCJyVaA07HJWJEHPOv4/FZfuDlXTqQIdTy2FqjlauIIHOi2opINHCb4JK0BD
+         mTAr68DXKlkpTyFitx3NFts21U/g7F6+O64DFc7xk5lFeqjQY2JyZARPK/NYxlTdJWxt
+         6Xs6lPvcbY6L2HX7Pll5mRnzo+U+RsTCNxvF61jGI8VTNimC6vX+X4rQ3ATTJ7FFoB+E
+         3PImRqnzcUqkJ0vLTKxk6c3D3a7SdhJhh1VsVMLK96qTdOyvxtO2py2ZB36k+osmdiTE
+         ySJg==
+X-Forwarded-Encrypted: i=1; AJvYcCXcwe6QsUAotSsFDhqi9QAlkwyDVb81DYgalqOMF5yddWF9x30DdisezO29+/i1Ljjvq6RcGAZXA7wMJgY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJbhTK/DnVjthYbzf8smTxmC8nD4+gjwE4EztX7nnlWeerj7jm
+	wfTRxpaCcbSBk8NWrEAQuSGiT+y+BOVEZPhctryPu2Z4rh1Yc/WR
+X-Gm-Gg: ASbGncsVv33+PPkSKrpkGFjd58EDoFuKJe1m0z6Ne5TId0p4jTtlu0MJmsi5Gcne3x2
+	qWpju9PnosEwhMrGcH53a0OiEubI2u1RFuHvNJsAzSjQWwb846NRiNHj9FTN90ruSkNF6KXG3Yg
+	t+ST24UHChNFZcUpxXoy5u/OzEJ0XCx8D/9uKS0/7phdFp3fsVf4xkXStfrvzsTTNr7riym+B5P
+	1UATixz6ishe5+R0gzrPOG53znNSzAd/8kr7/grt4V2fUnkKxQV
+X-Google-Smtp-Source: AGHT+IFKqKpMjmlUCfnqjw6ESn9IySNQPvOK9OOEbNn0Be48GmX9dVSmJAlEOZUH8D4c9ds3dgNGSA==
+X-Received: by 2002:a19:f509:0:b0:540:3550:b0f1 with SMTP id 2adb3069b0e04-5439c22d865mr1034992e87.7.1737134683017;
+        Fri, 17 Jan 2025 09:24:43 -0800 (PST)
+Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5439af60a4esm435398e87.158.2025.01.17.09.24.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2025 09:24:42 -0800 (PST)
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Feng Lee <379943137@qq.com>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: [GIT PULL] RCU changes for v6.14
+Date: Fri, 17 Jan 2025 18:24:40 +0100
+Message-Id: <20250117172440.49319-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-26-vschneid@redhat.com>
- <Z4bTlZkqihaAyGb4@google.com> <xhsmhed11hiuy.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-Message-ID: <Z4qQL89GZ_gk0vpu@google.com>
-Subject: Re: [PATCH v4 25/30] context_tracking,x86: Defer kernel text patching IPIs
-From: Sean Christopherson <seanjc@google.com>
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
-	virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org, 
-	linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org, 
-	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
-	bcm-kernel-feedback-list@broadcom.com, Peter Zijlstra <peterz@infradead.org>, 
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Juergen Gross <jgross@suse.com>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>, 
-	Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, 
-	Tomas Glozar <tglozar@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, 
-	Mel Gorman <mgorman@suse.de>, Kees Cook <kees@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, 
-	Shuah Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 17, 2025, Valentin Schneider wrote:
-> On 14/01/25 13:13, Sean Christopherson wrote:
-> > On Tue, Jan 14, 2025, Valentin Schneider wrote:
-> >> +/**
-> >> + * is_kernel_noinstr_text - checks if the pointer address is located in the
-> >> + *                    .noinstr section
-> >> + *
-> >> + * @addr: address to check
-> >> + *
-> >> + * Returns: true if the address is located in .noinstr, false otherwise.
-> >> + */
-> >> +static inline bool is_kernel_noinstr_text(unsigned long addr)
-> >> +{
-> >> +	return addr >= (unsigned long)__noinstr_text_start &&
-> >> +	       addr < (unsigned long)__noinstr_text_end;
-> >> +}
-> >
-> > This doesn't do the right thing for modules, which matters because KVM can be
-> > built as a module on x86, and because context tracking understands transitions
-> > to GUEST mode, i.e. CPUs that are running in a KVM guest will be treated as not
-> > being in the kernel, and thus will have IPIs deferred.  If KVM uses a static key
-> > or branch between guest_state_enter_irqoff() and guest_state_exit_irqoff(), the
-> > patching code won't wait for CPUs to exit guest mode, i.e. KVM could theoretically
-> > use the wrong static path.
-> 
-> AFAICT guest_state_{enter,exit}_irqoff() are only used in noinstr functions
-> and thus such a static key usage should at the very least be caught and
-> warned about by objtool - when this isn't built as a module.
+Hi Linus,
 
-That doesn't magically do the right thing though.  If KVM is built as a module,
-is_kernel_noinstr_text() will get false negatives even for static keys/branches
-that are annotaed as NOINSTR.
+Please pull the latest RCU git tree from:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu.release.v6.14
+
+# HEAD: 4b5c2205526cc1579b840893b98eb7545220f7cf:
+
+Merge branches 'fixes.2024.12.14a', 'rcutorture.2024.12.14a', 'srcu.2024.12.14a' and 'torture-test.2024.12.14a' into rcu-merge.2024.12.14a
+
+fixes.2024.12.14a: RCU fixes
+rcutorture.2024.12.14a: Torture-test updates
+srcu.2024.12.14a: SRCU updates
+torture-test.2024.12.14a: Adding an extra test, fixes
+
+One merge conflicts was detected by linux-next:
+
+* https://lore.kernel.org/lkml/20241220133738.1beae531@canb.auug.org.au/T/
+
+The conflict resolution from linux-next look good to me, plus I make
+my own resolutions at branch merge/rcu.2024.12.21a for your reference.
+
+----------------------------------------------------------------
+
+RCU pull request for v6.14
+
+This pull request contains the following branches:
+
+fixes.2024.12.14a: Misc fixes, check if IRQs are disabled in rcu_exp_need_qs(),
+    instrument KCSAN exclusive-writer assertions, add extra WARN_ON_ONCE() check,
+    set the cpu_no_qs.b.exp under lock, warn if callback enqueued on offline CPU.
+
+rcutorture.2024.12.14a: Torture-test updates, add rcutorture.preempt_duration kernel
+    module parameter, make the TREE03 scenario do preemption, improve pooling timeouts
+    for rcu_torture_writer(), improve output of "Failure/close-call rcutorture reader
+    segments", add some reader-state debugging checks, update doc of polled APIs, add
+    extra diagnostics for per-reader-segment preemption.
+
+srcu.2024.12.14a: SRCU updates, improve doc for srcu_read_lock() in terms of return
+    value, fix typo in comments, remove redundant GP sequence checks in the
+    srcu_funnel_gp_start.
+
+torture-test.2024.12.14a: Add an extra test for sched_clock(), improve testing
+    on unresponsive systems.
+
+----------------------------------------------------------------
+
+Feng Lee (1):
+  srcu: Remove redundant GP sequence checks in srcu_funnel_gp_start
+
+Frederic Weisbecker (1):
+  rcu: Report callbacks enqueued on offline CPU blind spot
+
+Paul E. McKenney (29):
+  refscale: Add test for sched_clock()
+  torture: Make kvm-remote.sh give up on unresponsive system
+  torture: Add dowarn argument to torture_sched_setaffinity()
+  rcutorture: Add random real-time preemption
+  rcutorture: Make the TREE03 scenario do preemption
+  rcutorture: Decorate failing reader segments with CPU ID
+  rcutorture: Use finer-grained timeouts for rcu_torture_writer() polling
+  rcutorture: Add ->cond_sync_exp_full function to rcu_ops structure
+  rcutorture: Check preemption for failing reader
+  rcutorture: Decorate failing reader segments with last CPU ID
+  rcutorture: Add full read-side contexts to "busted" torture type
+  rcutorture: Pretty-print rcutorture reader segments
+  rcutorture: Make rcutorture_one_extend() check reader state
+  rcutorture: Ignore attempts to test preemption and forward progress
+  rcutorture: Add documentation for recent conditional and polled APIs
+  rcutorture: Add parameters to control polled/conditional wait interval
+  rcutorture: Add preempt_count() to rcutorture_one_extend_check() diagnostics
+  rcutorture: Read CPU ID for decoration protected by both reader types
+  rcutorture: Add per-reader-segment preemption diagnostics
+  rcutorture: Use symbols for SRCU reader flavors
+  rcu: Make rcu_report_exp_cpu_mult() caller acquire lock
+  rcu: Move rcu_report_exp_rdp() setting of ->cpu_no_qs.b.exp under lock
+  rcu: Replace open-coded rcu_exp_need_qs() from rcu_exp_handler() with call
+  rcu: Make preemptible rcu_exp_handler() check idempotency
+  rcu: Add KCSAN exclusive-writer assertions for rdp->cpu_no_qs.b.exp
+  rcu: Add lockdep_assert_irqs_disabled() to rcu_exp_need_qs()
+  MAINTAINERS: Update RCU git tree
+  srcu: Guarantee non-negative return value from srcu_read_lock()
+  srcu: Fix typo s/srcu_check_read_flavor()/__srcu_check_read_flavor()/
+
+ Documentation/admin-guide/kernel-parameters.txt                |   74 ++++++++++++++++++++
+ MAINTAINERS                                                    |   10 +-
+ Makefile                                                       |    2
+ arch/x86/kernel/cpu/amd.c                                      |    2
+ include/linux/rcupdate_wait.h                                  |   11 +++
+ include/linux/srcu.h                                           |   15 ++--
+ include/linux/srcutree.h                                       |    2
+ include/linux/torture.h                                        |    2
+ kernel/bpf/lpm_trie.c                                          |   44 +++++-------
+ kernel/locking/locktorture.c                                   |    6 -
+ kernel/rcu/Kconfig.debug                                       |   15 ++++
+ kernel/rcu/rcutorture.c                                        |    2
+ kernel/rcu/refscale.c                                          |   40 ++++++++++-
+ kernel/rcu/srcutree.c                                          |    3
+ kernel/rcu/tree.c                                              |    3
+ kernel/rcu/tree_exp.h                                          |   20 +++--
+ kernel/rcu/tree_plugin.h                                       |    1
+ kernel/rcu/update.c                                            |    4 -
+ scripts/mod/modpost.c                                          |    2
+ scripts/package/install-extmod-build                           |    4 -
+ tools/testing/selftests/bpf/.gitignore                         |    1
+ tools/testing/selftests/bpf/Makefile                           |    2
+ tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c |   10 --
+ tools/testing/selftests/rcutorture/bin/kvm-remote.sh           |   25 +++++-
+ tools/testing/selftests/rcutorture/configs/rcu/TREE03.boot     |    1
+ include/linux/srcu.h                                           |   21 +++--
+ include/linux/srcutree.h                                       |    8 --
+ kernel/bpf/lpm_trie.c                                          |   87 +++++++++++++++---------
+ kernel/rcu/Kconfig.debug                                       |   16 ++++
+ kernel/rcu/rcutorture.c                                        |  279 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------
+ kernel/rcu/srcutree.c                                          |    5 -
+ kernel/rcu/tree_exp.h                                          |  128 ++++++++++++++++++++++-------------
+ kernel/rcu/tree_plugin.h                                       |    1
+ tools/testing/selftests/bpf/map_tests/lpm_trie_map_basic_ops.c |  395 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 37 files changed, 1033 insertions(+), 235 deletions(-)
