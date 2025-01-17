@@ -1,214 +1,139 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931B120100E;
-	Fri, 17 Jan 2025 14:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB33B9443;
+	Fri, 17 Jan 2025 15:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737123202; cv=none; b=T+Pzc+m1TpI96f6gwpdgSdkAH/OheC1KVD8qWQJIHOKkLzYCkhtWFybWTIVMsuWYjWxHEKiUzmY9WunqpSJJ5reD4fuAqewuspApOSQLdPA2JdSHMlmUQsODO0G3whK+ivV9AYDjpYoZn+5EmpqBOWz27L3ZI5M2pr3E5ZY3Dk4=
+	t=1737127204; cv=none; b=Ot4fLY83jagPOfdPIhKFuOnJofrhb0aiRPjwffGfmTUh26GpYsAdTDzoNn0R0KMQu2gy9huL2SIK1FAmNfIk/Ixo/Kgbr2Ilw6BMWbDLAtkTcvevZFsG10dME0FbJUh6iyTlHW61r0D3sewq3zasoqHfubRWuXyFOqoOd/PWYq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737123202; c=relaxed/simple;
-	bh=wAakblihQyNLO2bNDbTKLKoXC7SeqxHBrxge1cPfcDY=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=P2cep0V+8hpW+nc6aaANnW5mOarAVAlQJUp+W/jeuVxnsp/PlbdmpxFkLExlcBJcSMWc48PaKHrpKxNuFNeH95zUV1tAAAtPGjFNAhp7QThkP6J5HKKXmVp/Vjo72GYPDa6Kvcmlc4JthMa6m0B3pB4iueuxZVqMBIHV/LzgUkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aJNLT/RZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZdnRZLcM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aJNLT/RZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZdnRZLcM; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1737127204; c=relaxed/simple;
+	bh=RIKbx/tVMfmlGzmV3GPlcLDJf8dF9I1I73i8HM4kPEE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tOKdTn819nw2lNPmDPq8/Nay1QMevmvps3KeIGOukRLbAj5xwIhaJCUslVH5XwE77G8T/b0grsFD8khKLYalm14fMNRdtBO4ZGTa/UdmnlQmSQUMGowC+JNxsjMq4eAlzB5o851/PAxTQGAhXcCt9IUsFmyV/EvTgui4Uh6WVks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=njTt0Lmr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6P6fPDXJ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aJNLT/RZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZdnRZLcM";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aJNLT/RZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZdnRZLcM"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8E2951F7A1;
-	Fri, 17 Jan 2025 14:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737123198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=ANuHJobp+61zEEiCh8cTcrnbfh/EFJYHMB8DmBIjVKA=;
-	b=aJNLT/RZkJXpxdBGpAfOVkALcqo6t0YWa7jfvgFnhiENensZoWOsW/CBcRfm/S0PY9WT+Y
-	3mL2P4ZwwmlfAH4RHtTFV7yxVr/GzMXsHcS/uIwV+X5phamZiWRg5gTd6ow2uKZmXDNuJd
-	G6MOtc40mwMr/lOdDiD5aN4YABTFttE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737123198;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=ANuHJobp+61zEEiCh8cTcrnbfh/EFJYHMB8DmBIjVKA=;
-	b=ZdnRZLcMyr1pdvhrlA9LHjAZSOakb5fnzZGu0tbOT5RGKv0HHgrr3vTczKIz6R/i2GwdWt
-	591t48kUmbgHXxDQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="aJNLT/RZ";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZdnRZLcM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1737123198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=ANuHJobp+61zEEiCh8cTcrnbfh/EFJYHMB8DmBIjVKA=;
-	b=aJNLT/RZkJXpxdBGpAfOVkALcqo6t0YWa7jfvgFnhiENensZoWOsW/CBcRfm/S0PY9WT+Y
-	3mL2P4ZwwmlfAH4RHtTFV7yxVr/GzMXsHcS/uIwV+X5phamZiWRg5gTd6ow2uKZmXDNuJd
-	G6MOtc40mwMr/lOdDiD5aN4YABTFttE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1737123198;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=ANuHJobp+61zEEiCh8cTcrnbfh/EFJYHMB8DmBIjVKA=;
-	b=ZdnRZLcMyr1pdvhrlA9LHjAZSOakb5fnzZGu0tbOT5RGKv0HHgrr3vTczKIz6R/i2GwdWt
-	591t48kUmbgHXxDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C3E3139CB;
-	Fri, 17 Jan 2025 14:13:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BPHJGX5limdIQwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 17 Jan 2025 14:13:18 +0000
-Message-ID: <3154387b-c045-401e-800c-f5d05be033e4@suse.cz>
-Date: Fri, 17 Jan 2025 15:13:18 +0100
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="njTt0Lmr";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6P6fPDXJ"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1737127200;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y71FQ3ma4TZ18quMFWIJPZSfF92S2xZIwyBBJO20TJ8=;
+	b=njTt0LmrTEH2itvJhSBBJoNRhbpnvf2l4jw4yFX1DeDJSQPDWid/dY6V8d1S/SAECGHM8v
+	c735mfUpz1WeC4VdetL0MQGp+Dp5a5sMOYQuJdxCwG4RfBDk2CZgnKfIqBjJMrc8pRqhGg
+	4/AB3tPWDwODkilGPZbJ3rKDic+4ccjDtskLVrzH+AD5lwGv3fn0GAf9Jll1HybOqPGWdB
+	BXnnLD5tdbmZyz2R/m52VqJWEIZNSyHlF5o8zVCMLrm+UCSwKIaD9yXL1h0kWj2Q1/At0e
+	NAxyFtaoXAO+CXE3ce1w7Bjsc9MzhSlfZ5AD2PjBJFStdtXuNpY1jn+pawjCJQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1737127200;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y71FQ3ma4TZ18quMFWIJPZSfF92S2xZIwyBBJO20TJ8=;
+	b=6P6fPDXJuRL/g4ywp5ofb2w50dhPxgFfYgaru0qPVgKnAl5rlxE07/Lug8xdxVKsbomMke
+	s/kpi5ilJpcWB7Cg==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, vlad.wing@gmail.com,
+ rcu@vger.kernel.org, boqun.feng@gmail.com, joel@joelfernandes.org,
+ neeraj.upadhyay@amd.com, urezki@gmail.com, qiang.zhang1211@gmail.com,
+ Cheng-Jui.Wang@mediatek.com, leitao@debian.org, kernel-team@meta.com,
+ Usama Arif <usamaarif642@gmail.com>, paulmck@kernel.org, Anna-Maria
+ Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH 1/3 v3] hrtimers: Force migrate away hrtimers queued
+ after CPUHP_AP_HRTIMERS_DYING
+In-Reply-To: <Z4plCGNJddH-BDWE@localhost.localdomain>
+References: <20241231170712.149394-1-frederic@kernel.org>
+ <20241231170712.149394-2-frederic@kernel.org> <8734hjausb.ffs@tglx>
+ <Z4plCGNJddH-BDWE@localhost.localdomain>
+Date: Fri, 17 Jan 2025 16:20:00 +0100
+Message-ID: <87ikqda2n3.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Vlastimil Babka <vbabka@suse.cz>
-Subject: [GIT PULL] slab updates for 6.14
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Rientjes <rientjes@google.com>, Christoph Lameter <cl@linux.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- "Uladzislau Rezki (Sony)" <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
-Content-Language: en-US
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 8E2951F7A1
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[google.com,linux.com,linux-foundation.org,kvack.org,vger.kernel.org,linux.dev,gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Fri, Jan 17 2025 at 15:11, Frederic Weisbecker wrote:
+> Le Thu, Jan 16, 2025 at 11:59:48AM +0100, Thomas Gleixner a =C3=A9crit :
+>> > +	if (enqueue_hrtimer(timer, new_base, mode))
+>> > +		smp_call_function_single_async(cpu, &new_cpu_base->csd);
+>>=20
+>> Duh. This reimplementation of switch_hrtimer_base() is really aweful. We
+>> can be smarter than that. Untested patch below.
+>
+> Indeed, and I tried to "fix" switch_hrtimer_base() but didn't managed to =
+do
+> it properly. Looks like you did :-)
+>
+> But I have a few comments:
+>
+>> @@ -208,6 +211,13 @@ struct hrtimer_cpu_base *get_target_base
+>>  	if (static_branch_likely(&timers_migration_enabled) && !pinned)
+>>  		return &per_cpu(hrtimer_bases, get_nohz_timer_target());
+>>  #endif
+>> +#ifdef CONFIG_HOTPLUG_CPU
+>> +	if (unlikely(!base->online)) {
+>> +		int cpu =3D cpumask_any_and(cpu_online_mask, housekeeping_cpumask(HK_=
+TYPE_TIMER));
+>> +
+>> +		return &per_cpu(hrtimer_bases, cpu);
+>> +	}
+>> +#endif
+>
+> This should be at the beginning of get_target_base(), otherwise the targe=
+t may
+> end up being the local one.
 
-please pull the latest slab updates from:
+Indeed. As I said, it's untested.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-for-6.14
+>> -		if (new_cpu_base !=3D this_cpu_base &&
+>> +		if (new_cpu_base !=3D this_cpu_base && this_cpu_base->online &&
+>>  		    hrtimer_check_target(timer, new_base)) {
+>>  			raw_spin_unlock(&new_base->cpu_base->lock);
+>>  			raw_spin_lock(&base->cpu_base->lock);
+>
+> This forget the case where the elected remote target is the same as the o=
+ld one,
+> but its next event is after the timer. In that case this default to local=
+, even
+> if it is offline.
 
-There's a small conflict with the mm tree:
-https://lore.kernel.org/all/20241216152721.15c5864d@canb.auug.org.au/
+*blink*
+
+> How about this? (untested yet)
+> -static int
+> -hrtimer_check_target(struct hrtimer *timer, struct hrtimer_clock_base *n=
+ew_base)
+> +static bool
+> +hrtimer_suitable_target(struct hrtimer *timer,
+> +			struct hrtimer_clock_base *new_base,
+> +			struct hrtimer_cpu_base *new_cpu_base,
+> +			struct hrtimer_cpu_base *this_cpu_base)
+>  {
+>  	ktime_t expires;
+>=20=20
+> +	/* The local CPU clockevent can be reprogrammed */
+> +	if (new_cpu_base =3D=3D this_cpu_base)
+> +		return true;
+
+That needs a comment explaining that @new_cpu_base is guaranteed not to
+be @this_cpu_base if @this_cpu_base->online =3D=3D false due to the magic in
+get_target_base(). That's far from obvious.
+
+I had to stare at it 5 times to convince myself that this is correct.
+
+Other than that, this looks about right.
 
 Thanks,
-Vlastimil
 
-======================================
-
-* Move the kfree_rcu() implementation from RCU to SLAB subsystem
-  (Uladzislau Rezki)
-
-  The kfree_rcu() implementation has been historically maintained in the RCU
-  subsystem. At LSF/MM we agreed to move it to SLAB, where it more logically
-  belongs to. The batching is planned be more integrated with SLUB internals in
-  the future, while using the RCU APIs like any other subsystem.
-
-* Fix for kernel-doc warning (Randy Dunlap)
-
-----------------------------------------------------------------
-Randy Dunlap (1):
-      mm/slab: fix kernel-doc func param names
-
-Uladzislau Rezki (Sony) (5):
-      rcu/kvfree: Initialize kvfree_rcu() separately
-      rcu/kvfree: Move some functions under CONFIG_TINY_RCU
-      rcu/kvfree: Adjust names passed into trace functions
-      rcu/kvfree: Adjust a shrinker name
-      mm/slab: Move kvfree_rcu() into SLAB
-
-Vlastimil Babka (1):
-      Merge branch 'slab/for-6.14/kfree_rcu_move' into slab/for-next
-
- include/linux/slab.h |   1 +
- init/main.c          |   1 +
- kernel/rcu/tree.c    | 876 --------------------------------------------------
- mm/slab.h            |   4 +-
- mm/slab_common.c     | 880 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 884 insertions(+), 878 deletions(-)
-
+        tglx
