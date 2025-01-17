@@ -1,296 +1,143 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7524C1362;
-	Fri, 17 Jan 2025 00:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EAB1F78E1;
+	Fri, 17 Jan 2025 06:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737072431; cv=none; b=qTYIg+UsVQmzpD8nmJsDFj3IXa4pcnwbb8f5myvI63r4FdzRWd86aCT3nV4kc+FIrPuSCkBgUG/kDq2kJTYZVZimXRbOIx1yM2pDFFPCIVdpbmXh37B3dVxjCOrWeX/PQDL284SN20imk4uxfDnMj/+rxTwZfVhMkB/WBeOk4Io=
+	t=1737097168; cv=none; b=AKJ+unoyEe1djvy2FSIpckCdqKXTj4L22TmSjhQgZc66Jz632i2lKtttfYEy922q/38V63orzeo3xoprTr1GLgrKv6aClxM/BCdAeU0Kzr2Rz6OUL9TUfcD70xkLfNrhmkqMXPzluzYEm07JRYTquFl6U7bVghSDOTYaMyhqxC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737072431; c=relaxed/simple;
-	bh=u8qwLJkR77hvkpoUSlPZrcYFHV7eN0YSX9VBpsSvHEE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=niuKm62TszJfK92+hsYRq5jzbH0HKe7tdMHUIaz/a3ni2QYYsRwDEEIbQhAkf0YbEYpjOWVD/O+5GVP6Cdkl3gcrtVSE1RR+FKDgnnFKFQ6Mm87+iQPt4NzeIvj7J9wI9lAxDJaFnrroHsB+skt6LG5Y72SL4bvqmN2gp1OeFrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dyJ/8BLa; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dyJ/8BLa"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9BB2C4CED6;
-	Fri, 17 Jan 2025 00:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737072431;
-	bh=u8qwLJkR77hvkpoUSlPZrcYFHV7eN0YSX9VBpsSvHEE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=dyJ/8BLa6HH6Wgyd3oSnobZTv1WiYi8Sv3un8h8DMNjUuSpuuxqHLEPlnl4YBRhKh
-	 5SPoIPp7TEvH7tlxHbeO3/3Wx8l/YaqagN2pgTmKinLX/H1+8ctTRh9JQ5Ov9Vkg1u
-	 wnh0FYpp0IZH55R5dOTSMMOWQZy/jG5v8GOks/HBnpQmEfCGa7tG2EqmXxlpdu1iRt
-	 DkF9wNbkpibPsGaU6ABs7qz85UAokjHjafKcXf3rkfACQifd1LnszykKM69c3NLme+
-	 GtLikmpmfthOosaiTTeNvpHXzIPaYy/aGIZxou1Au9x8s9Jyugx3qOrE7KM5UnvM6q
-	 m8AZZX9Rrv6ag==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9864CCE12BE; Thu, 16 Jan 2025 16:07:10 -0800 (PST)
-Date: Thu, 16 Jan 2025 16:07:10 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 13/17] srcu: Add SRCU-fast readers
-Message-ID: <bd0c32d3-3a99-4358-aae7-b4b2b1c24b5c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <826c8527-d6ba-46c5-bb89-4625750cbeed@paulmck-laptop>
- <20250116202112.3783327-13-paulmck@kernel.org>
- <CAEf4BzYqAVuX1nP20qVaY8_CnDom699vzAjm7ZLaMx+oz8vceQ@mail.gmail.com>
- <5dc925b6-2faf-4788-9c8c-9387d04417ee@paulmck-laptop>
- <CAEf4BzZhJU+Q3qVyhqKjSRtGt=+3VY=N14ZOqqxYmCOQPnKnWw@mail.gmail.com>
+	s=arc-20240116; t=1737097168; c=relaxed/simple;
+	bh=bT/lws0qdKKEVqXiASK2cA33sHXAEJPrHrOb8JKK8AE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ItueL73OTfxoFmMrqkz19DTmjSziAxfPgvrKDqpwvCa26WhNvd+gzbdyh7BGfa2x+WgISXQUpDMQ0GtQZ1UJK4mohdD4gkc5vsDve06Vb1jnWZ7l2ZEgS0tbaiAlyYlZlGRUS0xaKLO2/kH/nSCa0YEmuevFRLMJsDm365dRRVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YZ9V31bHmz1W49p;
+	Fri, 17 Jan 2025 14:55:23 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 69E3B180101;
+	Fri, 17 Jan 2025 14:59:16 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 17 Jan
+ 2025 14:59:15 +0800
+Message-ID: <a9f98b54-19ac-4ea6-bb8b-76eeb9c89608@huawei.com>
+Date: Fri, 17 Jan 2025 14:59:14 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZhJU+Q3qVyhqKjSRtGt=+3VY=N14ZOqqxYmCOQPnKnWw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
+To: <paulmck@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>
+CC: Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>, Andrew
+ Morton <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+	<yosryahmed@google.com>, <roman.gushchin@linux.dev>,
+	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>, <davidf@vimeo.com>,
+	<handai.szj@taobao.com>, <rientjes@google.com>,
+	<kamezawa.hiroyu@jp.fujitsu.com>, RCU <rcu@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+	<cgroups@vger.kernel.org>, <wangweiyang2@huawei.com>
+References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
+ <1ea309c1-d0f8-4209-b0b0-e69ad4e986ae@suse.cz>
+ <58caaa4f-cf78-4d0f-af31-8a9277b6ebf5@huaweicloud.com>
+ <20250113194546.3de1af46fa7a668111909b63@linux-foundation.org>
+ <Z4YjArAULdlOjhUf@tiehlicka> <aaa26dbb-e3b5-42a3-aac0-1cb594a272b6@suse.cz>
+ <0b6a3935-8b6c-4d11-bacc-31c1ba15b349@huaweicloud.com>
+ <81294730-1cd9-4793-b886-9ababe29d071@paulmck-laptop>
+Content-Language: en-US
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <81294730-1cd9-4793-b886-9ababe29d071@paulmck-laptop>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On Thu, Jan 16, 2025 at 02:57:25PM -0800, Andrii Nakryiko wrote:
-> On Thu, Jan 16, 2025 at 2:54 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Jan 16, 2025 at 01:52:53PM -0800, Andrii Nakryiko wrote:
-> > > On Thu, Jan 16, 2025 at 12:21 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > This commit adds srcu_read_{,un}lock_fast(), which is similar
-> > > > to srcu_read_{,un}lock_lite(), but avoids the array-indexing and
-> > > > pointer-following overhead.  On a microbenchmark featuring tight
-> > > > loops around empty readers, this results in about a 20% speedup
-> > > > compared to RCU Tasks Trace on my x86 laptop.
-> > > >
-> > > > Please note that SRCU-fast has drawbacks compared to RCU Tasks
-> > > > Trace, including:
-> > > >
-> > > > o       Lack of CPU stall warnings.
-> > > > o       SRCU-fast readers permitted only where rcu_is_watching().
-> > > > o       A pointer-sized return value from srcu_read_lock_fast() must
-> > > >         be passed to the corresponding srcu_read_unlock_fast().
-> > > > o       In the absence of readers, a synchronize_srcu() having _fast()
-> > > >         readers will incur the latency of at least two normal RCU grace
-> > > >         periods.
-> > > > o       RCU Tasks Trace priority boosting could be easily added.
-> > > >         Boosting SRCU readers is more difficult.
-> > > >
-> > > > SRCU-fast also has a drawback compared to SRCU-lite, namely that the
-> > > > return value from srcu_read_lock_fast()-fast is a 64-bit pointer and
-> > > > that from srcu_read_lock_lite() is only a 32-bit int.
-> > > >
-> > > > [ paulmck: Apply feedback from Akira Yokosawa. ]
-> > > >
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > > Cc: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > Cc: <bpf@vger.kernel.org>
-> > > > ---
-> > > >  include/linux/srcu.h     | 47 ++++++++++++++++++++++++++++++++++++++--
-> > > >  include/linux/srcutiny.h | 22 +++++++++++++++++++
-> > > >  include/linux/srcutree.h | 38 ++++++++++++++++++++++++++++++++
-> > > >  3 files changed, 105 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > > > index 2bd0e24e9b554..63bddc3014238 100644
-> > > > --- a/include/linux/srcu.h
-> > > > +++ b/include/linux/srcu.h
-> > > > @@ -47,9 +47,10 @@ int init_srcu_struct(struct srcu_struct *ssp);
-> > > >  #define SRCU_READ_FLAVOR_NORMAL        0x1             // srcu_read_lock().
-> > > >  #define SRCU_READ_FLAVOR_NMI   0x2             // srcu_read_lock_nmisafe().
-> > > >  #define SRCU_READ_FLAVOR_LITE  0x4             // srcu_read_lock_lite().
-> > > > +#define SRCU_READ_FLAVOR_FAST  0x8             // srcu_read_lock_fast().
-> > > >  #define SRCU_READ_FLAVOR_ALL   (SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_NMI | \
-> > > > -                               SRCU_READ_FLAVOR_LITE) // All of the above.
-> > > > -#define SRCU_READ_FLAVOR_SLOWGP        SRCU_READ_FLAVOR_LITE
-> > > > +                               SRCU_READ_FLAVOR_LITE | SRCU_READ_FLAVOR_FAST) // All of the above.
-> > > > +#define SRCU_READ_FLAVOR_SLOWGP        (SRCU_READ_FLAVOR_LITE | SRCU_READ_FLAVOR_FAST)
-> > > >                                                 // Flavors requiring synchronize_rcu()
-> > > >                                                 // instead of smp_mb().
-> > > >  void __srcu_read_unlock(struct srcu_struct *ssp, int idx) __releases(ssp);
-> > > > @@ -253,6 +254,33 @@ static inline int srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp)
-> > > >         return retval;
-> > > >  }
-> > > >
-> > > > +/**
-> > > > + * srcu_read_lock_fast - register a new reader for an SRCU-protected structure.
-> > > > + * @ssp: srcu_struct in which to register the new reader.
-> > > > + *
-> > > > + * Enter an SRCU read-side critical section, but for a light-weight
-> > > > + * smp_mb()-free reader.  See srcu_read_lock() for more information.
-> > > > + *
-> > > > + * If srcu_read_lock_fast() is ever used on an srcu_struct structure,
-> > > > + * then none of the other flavors may be used, whether before, during,
-> > > > + * or after.  Note that grace-period auto-expediting is disabled for _fast
-> > > > + * srcu_struct structures because auto-expedited grace periods invoke
-> > > > + * synchronize_rcu_expedited(), IPIs and all.
-> > > > + *
-> > > > + * Note that srcu_read_lock_fast() can be invoked only from those contexts
-> > > > + * where RCU is watching, that is, from contexts where it would be legal
-> > > > + * to invoke rcu_read_lock().  Otherwise, lockdep will complain.
-> > > > + */
-> > > > +static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *ssp) __acquires(ssp)
-> > > > +{
-> > > > +       struct srcu_ctr __percpu *retval;
-> > > > +
-> > > > +       srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
-> > > > +       retval = __srcu_read_lock_fast(ssp);
-> > > > +       rcu_try_lock_acquire(&ssp->dep_map);
-> > > > +       return retval;
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * srcu_read_lock_lite - register a new reader for an SRCU-protected structure.
-> > > >   * @ssp: srcu_struct in which to register the new reader.
-> > > > @@ -356,6 +384,21 @@ static inline void srcu_read_unlock(struct srcu_struct *ssp, int idx)
-> > > >         __srcu_read_unlock(ssp, idx);
-> > > >  }
-> > > >
-> > > > +/**
-> > > > + * srcu_read_unlock_fast - unregister a old reader from an SRCU-protected structure.
-> > > > + * @ssp: srcu_struct in which to unregister the old reader.
-> > > > + * @scp: return value from corresponding srcu_read_lock_fast().
-> > > > + *
-> > > > + * Exit a light-weight SRCU read-side critical section.
-> > > > + */
-> > > > +static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
-> > > > +       __releases(ssp)
-> > > > +{
-> > > > +       srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
-> > > > +       srcu_lock_release(&ssp->dep_map);
-> > > > +       __srcu_read_unlock_fast(ssp, scp);
-> > > > +}
-> > > > +
-> > > >  /**
-> > > >   * srcu_read_unlock_lite - unregister a old reader from an SRCU-protected structure.
-> > > >   * @ssp: srcu_struct in which to unregister the old reader.
-> > > > diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-> > > > index 07a0c4489ea2f..380260317d98b 100644
-> > > > --- a/include/linux/srcutiny.h
-> > > > +++ b/include/linux/srcutiny.h
-> > > > @@ -71,6 +71,28 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
-> > > >         return idx;
-> > > >  }
-> > > >
-> > > > +struct srcu_ctr;
-> > > > +
-> > > > +static inline bool __srcu_ptr_to_ctr(struct srcu_struct *ssp, struct srcu_ctr __percpu *scpp)
-> > > > +{
-> > > > +       return (int)(intptr_t)(struct srcu_ctr __force __kernel *)scpp;
-> > > > +}
-> > > > +
-> > > > +static inline struct srcu_ctr __percpu *__srcu_ctr_to_ptr(struct srcu_struct *ssp, int idx)
-> > > > +{
-> > > > +       return (struct srcu_ctr __percpu *)(intptr_t)idx;
-> > > > +}
-> > > > +
-> > > > +static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct *ssp)
-> > > > +{
-> > > > +       return __srcu_ctr_to_ptr(ssp, __srcu_read_lock(ssp));
-> > > > +}
-> > > > +
-> > > > +static inline void __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
-> > > > +{
-> > > > +       __srcu_read_unlock(ssp, __srcu_ptr_to_ctr(ssp, scp));
-> > > > +}
-> > > > +
-> > > >  #define __srcu_read_lock_lite __srcu_read_lock
-> > > >  #define __srcu_read_unlock_lite __srcu_read_unlock
-> > > >
-> > > > diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> > > > index ef3065c0cadcd..bdc467efce3a2 100644
-> > > > --- a/include/linux/srcutree.h
-> > > > +++ b/include/linux/srcutree.h
-> > > > @@ -226,6 +226,44 @@ static inline struct srcu_ctr __percpu *__srcu_ctr_to_ptr(struct srcu_struct *ss
-> > > >         return &ssp->sda->srcu_ctrs[idx];
-> > > >  }
-> > > >
-> > > > +/*
-> > > > + * Counts the new reader in the appropriate per-CPU element of the
-> > > > + * srcu_struct.  Returns a pointer that must be passed to the matching
-> > > > + * srcu_read_unlock_fast().
-> > > > + *
-> > > > + * Note that this_cpu_inc() is an RCU read-side critical section either
-> > > > + * because it disables interrupts, because it is a single instruction,
-> > > > + * or because it is a read-modify-write atomic operation, depending on
-> > > > + * the whims of the architecture.
-> > > > + */
-> > > > +static inline struct srcu_ctr __percpu *__srcu_read_lock_fast(struct srcu_struct *ssp)
-> > > > +{
-> > > > +       struct srcu_ctr __percpu *scp = READ_ONCE(ssp->srcu_ctrp);
-> > > > +
-> > > > +       RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_lock_fast().");
-> > > > +       this_cpu_inc(scp->srcu_locks.counter); /* Y */
-> > > > +       barrier(); /* Avoid leaking the critical section. */
-> > > > +       return scp;
-> > > > +}
-> > > > +
-> > > > +/*
-> > > > + * Removes the count for the old reader from the appropriate
-> > > > + * per-CPU element of the srcu_struct.  Note that this may well be a
-> > > > + * different CPU than that which was incremented by the corresponding
-> > > > + * srcu_read_lock_fast(), but it must be within the same task.
-> > >
-> > > hm... why the "same task" restriction? With uretprobes we take
-> > > srcu_read_lock under a traced task, but we can "release" this lock
-> > > from timer interrupt, which could be in the context of any task.
-> >
-> > A kneejerk reaction on my part?  ;-)
-> >
-> > But the good news is that this restriction is easy for me to relax.
-> > I adjust the comments and remove the rcu_try_lock_acquire()
-> > from srcu_read_lock_fast() and the srcu_lock_release() from
-> > srcu_read_unlock_fast().
-> >
-> > But in that case, I should rename this to srcu_down_read_fast() and
-> > srcu_up_read_fast() or similar, as these names would clearly indicate
-> > that they can be used cross-task.  (And from interrupt handlers, but
-> > not from NMI handlers.)
-> >
-> > Also, srcu_read_lock() and srcu_read_unlock() have srcu_lock_acquire() and
-> > srcu_lock_release() calls, so I am surprised that lockdep didn't complain
-> > when you invoked srcu_read_lock() from task context and srcu_read_unlock()
-> > from a timer interrupt.
+
+
+On 2025/1/15 2:42, Paul E. McKenney wrote:
+> On Tue, Jan 14, 2025 at 08:13:37PM +0800, Chen Ridong wrote:
+>>
+>>
+>> On 2025/1/14 17:20, Vlastimil Babka wrote:
+>>> On 1/14/25 09:40, Michal Hocko wrote:
+>>>> On Mon 13-01-25 19:45:46, Andrew Morton wrote:
+>>>>> On Mon, 13 Jan 2025 14:51:55 +0800 Chen Ridong <chenridong@huaweicloud.com> wrote:
+>>>>>
+>>>>>>>> @@ -430,10 +431,15 @@ static void dump_tasks(struct oom_control *oc)
+>>>>>>>>  		mem_cgroup_scan_tasks(oc->memcg, dump_task, oc);
+>>>>>>>>  	else {
+>>>>>>>>  		struct task_struct *p;
+>>>>>>>> +		int i = 0;
+>>>>>>>>  
+>>>>>>>>  		rcu_read_lock();
+>>>>>>>> -		for_each_process(p)
+>>>>>>>> +		for_each_process(p) {
+>>>>>>>> +			/* Avoid potential softlockup warning */
+>>>>>>>> +			if ((++i & 1023) == 0)
+>>>>>>>> +				touch_softlockup_watchdog();
+>>>>>>>
+>>>>>>> This might suppress the soft lockup, but won't a rcu stall still be detected?
+>>>>>>
+>>>>>> Yes, rcu stall was still detected.
+>>>
+>>> "was" or "would be"? I thought only the memcg case was observed, or was that
+>>> some deliberate stress test of the global case? (or the pr_info() console
+>>> stress test mentioned earlier, but created outside of the oom code?)
+>>>
+>>
+>> It's not easy to reproduce for global OOM. Because the pr_info() console
+>> stress test can also lead to other softlockups or RCU warnings(not
+>> causeed by OOM process) because the whole system is struggling.However,
+>> if I add mdelay(1) in the dump_task() function (just to slow down
+>> dump_task, assuming this is slowed by pr_info()) and trigger a global
+>> OOM, RCU warnings can be observed.
+>>
+>> I think this can verify that global OOM can trigger RCU warnings in the
+>> specific scenarios.
 > 
-> That's because I'm using __srcu_read_lock and __srcu_read_unlock ;)
-> See this part in kernel/events/uprobes.c:
+> We do have a recently upstreamed rcutree.csd_lock_suppress_rcu_stall
+> kernel boot parameter that causes RCU CPU stall warnings to suppress
+> most of the output when there is an ongoing CSD-lock stall.
 > 
-> /* __srcu_read_lock() because SRCU lock survives switch to user space */
-> srcu_idx = __srcu_read_lock(&uretprobes_srcu);
+> Would it make sense to do something similar when the system is in OOM,
+> give or take the traditional difficulty of determining exactly when OOM
+> starts and ends?
+> 
+> 1dd01c06506c ("rcu: Summarize RCU CPU stall warnings during CSD-lock stalls")
+> 
+> 							Thanx, Paul
+> 
 
-I clearly should have read that code more carefully!  ;-)
+I prefer to just drop it.
 
-This happens to work for srcu_read_lock() and srcu_read_lock_nmisafe(),
-but invoking __srcu_read_lock_lite() or __srcu_read_lock_fast() would fail
-(rarely!) with too-short grace periods.
+Unlike memcg OOM, global OOM doesn't usually happen. Although it
+'verified' that the RCU warning can be observed, we haven't encountered
+it in practice. Besides, other RCU warnings may also be observed during
+global OOM, and it's difficult to circumvent all the warnings.
 
-So thank you for catching this!  I will adjust the name and semantics.
+Best regards,
+Ridong
 
-                                                        Thanx, Paul
-
-> > > > + *
-> > > > + * Note that this_cpu_inc() is an RCU read-side critical section either
-> > > > + * because it disables interrupts, because it is a single instruction,
-> > > > + * or because it is a read-modify-write atomic operation, depending on
-> > > > + * the whims of the architecture.
-> > > > + */
-> > > > +static inline void __srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
-> > > > +{
-> > > > +       barrier();  /* Avoid leaking the critical section. */
-> > > > +       this_cpu_inc(scp->srcu_unlocks.counter);  /* Z */
-> > > > +       RCU_LOCKDEP_WARN(!rcu_is_watching(), "RCU must be watching srcu_read_unlock_fast().");
-> > > > +}
-> > > > +
-> > > >  /*
-> > > >   * Counts the new reader in the appropriate per-CPU element of the
-> > > >   * srcu_struct.  Returns an index that must be passed to the matching
-> > > > --
-> > > > 2.40.1
-> > > >
+>>>>>> For global OOM, system is likely to struggle, do we have to do some
+>>>>>> works to suppress RCU detete?
+>>>>>
+>>>>> rcu_cpu_stall_reset()?
+>>>>
+>>>> Do we really care about those? The code to iterate over all processes
+>>>> under RCU is there (basically) since ever and yet we do not seem to have
+>>>> many reports of stalls? Chen's situation is specific to memcg OOM and
+>>>> touching the global case was mostly for consistency reasons.
+>>>
+>>> Then I'd rather not touch the global case then if it's theoretical? It's not
+>>> even exactly consistent, given it's a cond_resched() in the memcg code (that
+>>> can be eventually automatically removed once/if lazy preempt becomes the
+>>> sole implementation), but the touch_softlockup_watchdog() would remain,
+>>> while doing only half of the job?
+>>
+>>
