@@ -1,210 +1,223 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AA318C31;
-	Sun, 19 Jan 2025 23:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BAA1DF251;
+	Mon, 20 Jan 2025 11:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737329916; cv=none; b=aYfGI3sS72o3EQ1nTdZ3G1o8bD+RqFSl7M8EuGEz2hC8Ano7O/Bxu10oInGcoh/WyZUE1ay2/KnTahdrkcnxDB4L7qJM3wazfy2N/Zq8v2eo/taIUgkXBbW5OA4ucX9lvvtKWgfpCrbEUk1CAlY6inm5jgncHNvTJw28mvX45kM=
+	t=1737371733; cv=none; b=RSREJX7H+d58Wj45ZlJk1Roif0iVT+uz1I4FThnygLUoVvrep2+J3o/GsCz8RyAxfnDl90GufOBLXfk/oTkWjVkze+hAuYXUAzuv3IK4N+4u2uE26VFqVhLkW+EfqBfxNPIWhji6LWVEyUYLCY+KZFROOBemYjXKoCV1Ddw37HY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737329916; c=relaxed/simple;
-	bh=4SZCGWD8nOYqgjCkOpU0tHUtIEPHcPgtIwlvmPjQo/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=aVZNIbUjnloXXQLREv96KiT286k2VwGI4lUZINwZSBKKNg2VAdloNh/evlhcsQ+u4Eh7HdtKAszM0kcjZ4G5HLOZrcOqQi6/F4ftDWVGMdcIQMgnBtzlodOchoGHZDxawoDnbQMuKT3h0XxPHhlrz7YlNhtTWM8v9+tYVEVf6Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KHGFj6rX; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1737371733; c=relaxed/simple;
+	bh=GjQy4x7GXESlbgIr3leMmaCtLptNcAfWQxkR/MaBTck=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dC615/Suv6NeEQXbi/FJQyP/Aws+Co5hGKORaHnhHssX6ywcKMr1XCOf3NlbSN6zgMzX/+vlOnTPxcjOHRDKTtFGisQZlx8afJSFwqhX8H0JeRKO1xeYVcgvcLUaLpAiZg4kfBpyM3Xy8EjuEJ09hWMW1wrpWDEzO1HpSM1q1Jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RbfAo8lf; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KHGFj6rX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B28C4CED6;
-	Sun, 19 Jan 2025 23:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737329915;
-	bh=4SZCGWD8nOYqgjCkOpU0tHUtIEPHcPgtIwlvmPjQo/4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=KHGFj6rX9AFzWRWCaq5OpMJNTA9/FA0YAJXIFoNd6i4h9SZQtNcjSCuPd3u6kY+zT
-	 XHaDcDBR9kV1Ql6UOHHR/Ipy9f6YI/ic52ZAeR6kg1nYZv0thdQoXFDrm1KrKHwEpB
-	 TruxqFCxQlAWCjDoq31g45p/1sMX4OO/RczNFhg4L+i8oRKt1N+MkTWqBhhTNsmx7y
-	 CdIlY5F7HjunQQF2OG5Mfx8BJplJQStHkUh+0IUnfI9+lphXacqURILzkI7B9gdtSY
-	 BT2xBqe8ig70/KDBBS5nM+nN4vA42Is8oQaPyXnpRL0hbd0jjosFs4GOaEIGT/CS/7
-	 BX+DLengH+xXQ==
-Date: Mon, 20 Jan 2025 00:38:33 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RbfAo8lf"
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5439e331cceso2621889e87.1;
+        Mon, 20 Jan 2025 03:15:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737371729; x=1737976529; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2GVkq9tRDCkhxRDT/CBStGfoQ0If4+e8Z0FyGDV8QRs=;
+        b=RbfAo8lfbwMVcCpiq0tb2FsTRUGzh8U4gJ3cQ52oxJ6LPXABl/7O/jKPMabkUGq4sG
+         WQ6Qir6qEj9CDXLCLsHxLhVNTgG6+RY0Z8J/AEAOwUxYv5ILoUHtZ/z72/WF2Z9qcU8d
+         ahY7YB+WGusP2oyyH6pqiXLOdYB5q2ORRf9oRvoh+Sl6ihMIOAuw9cVjDM6IeSccJTh3
+         UeQz62zihvdsUdpf3jDymCidrkvdOXgZ9a7/2f1zaK2EYykcgQlMGYgvS8dlpPkgZv+w
+         dHjWXg9tloWJp2kIbd9WrsVnbmNrIAXh0p9bq4ewb5l3HoT5xMa1+AGQmavJUxJ+PKCC
+         Jwcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737371729; x=1737976529;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2GVkq9tRDCkhxRDT/CBStGfoQ0If4+e8Z0FyGDV8QRs=;
+        b=Bw2N+aIxhWo4oBP30iiCUau9bzFgWXAt9ypemi0C37/kNMb//bKjNivaN2oGma12xk
+         Z1wRbfWtOkRVc48Xm+agdigv8nUmzvozfGL76U2ZoY+xunC4jawHVw38igNtanSmMBWu
+         wGSa2HeoLVVNPybboaryr6uZZ0p93oPbGF9MM5pPwDgBUfuJhdc8A9gefQKS7mVByiiR
+         Odo4Lcb1n2/udKbj+0ztMmFGcUqqpLYdQhWIKvdnPfLWGWHeXorVJdnfdnYCQ08p7vKN
+         IWLAjJBlX6o0LH+E++8pF2vgxQaaxamtmgie362NZBeXeAtXfHtZrFwivwzc3//4uMWc
+         P6kg==
+X-Forwarded-Encrypted: i=1; AJvYcCUO/JVQz3GLWAz8BaVVangrjGHasXn5/OLh2HR7LlMIje1SQX6ZWPncYpb23dtrgsPmB6NH@vger.kernel.org, AJvYcCVEMivwmU97tHxhD/fpuyvA3263COvMNztjoNh6LKnuShf7Y4CIL9JXE2LUcOQIry2TsO2L@vger.kernel.org, AJvYcCVIJfS0tT8LkYJD0C3HjyAsL0AlA3JLb1ZENG3ukoKix06PwGIiH0+QXJ/LTbL+NsX7Vkky3FaehfDiPBBc@vger.kernel.org, AJvYcCVxniCfL/fmXafo/8H7/EZvMi4+fHZMaln2+Wd+vfSeHaJu3Gtk3qCnYxIzIHKwBnfs5L4=@vger.kernel.org, AJvYcCWoFFpuD+Gn1zZSOkh9fqjJaiapr8SQo2m3bdNuW3gMAUOqICSsAO3pvGUfWehbj5x7/1Z7hfvbBZzmdg==@vger.kernel.org, AJvYcCX+2aEYU4WaLT+eFZOP/Ni50CUalXzmd5wXYnIvNcfXVYFvh6rBeEPoG/ljHDYN/rAJQFP6HZS+GArqekC65bUc@vger.kernel.org, AJvYcCX0VOMemCqRDAOuR+6nXvtiE7x0+h9LJyEdeFciGY6qCZhFq6BZAqFbTKjWqs4qhdWU7Jz6Y3puiqY0BulQIp1kCw==@vger.kernel.org, AJvYcCXYM5ct4b5dM21CS9Cxsq/wSuurtHMUBZ28vS8O1/HPYEjYA9zNM/wb+dF7P6ejQNbMtsR372+barAxjDRqAOWF@vger.kernel.org
+X-Gm-Message-State: AOJu0YzUVuDqXSbDRO4SJsSsMHaGJHaQkJLJ++yXv7er9tVnwFg9JHtb
+	toHX18pci+nUvhxB0rVwD+/9vDFdmjxo34Cx60n3I9HkvHdEO4lc
+X-Gm-Gg: ASbGncvzlE2+Bu8GkWzcjOsL+NHnMXrRur68L6pYJGZiQ1A2hMIo5Euk768ZokvErKM
+	hfwEZhYTHGMx7VG7Fyx8NLPRCgvDedNgI80iLgRhXMID8tgmO6Yt0UekHM97Ds85Oe0g1YJkm/U
+	+v6ShUSRd4sdNGT8w6lNR1dEE15Xmd9l6jgIVIkEbrFBZ+o7KQ/feSxZG44XBWSvrEg9opMIgd+
+	nJHI8NDHq+wlsT2S9Ymnuxiahv1PWW1tRqcBZT3DK37AswXSHWRzIsADQi6TsCldDPwR4Ta9dNX
+	XuDt7C1o8nx4RPFWpnLY6ykB
+X-Google-Smtp-Source: AGHT+IHKV/b4OpTja4V+3bSeLRqiI1pV4ugkz/2qcipp1USPLcCJuF4RKlBH/zOnSXkuGgwcoGAG8A==
+X-Received: by 2002:ac2:4155:0:b0:542:8cf5:a3a3 with SMTP id 2adb3069b0e04-5439c216c23mr3426183e87.5.1737371729069;
+        Mon, 20 Jan 2025 03:15:29 -0800 (PST)
+Received: from pc636 (host-217-213-93-172.mobileonline.telia.com. [217.213.93.172])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5439af60936sm1298036e87.107.2025.01.20.03.15.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jan 2025 03:15:27 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 20 Jan 2025 12:15:20 +0100
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Jann Horn <jannh@google.com>,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	virtualization@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+	linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	Juergen Gross <jgross@suse.com>,
+	Ajay Kaher <ajay.kaher@broadcom.com>,
+	Alexey Makhalov <alexey.amakhalov@broadcom.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	"Liang, Kan" <kan.liang@linux.intel.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>, RCU <rcu@vger.kernel.org>,
-	Michal Hocko <mhocko@suse.com>
-Subject: [GIT PULL] kthread updates for v6.14
-Message-ID: <Z42M-Zqd3kBNCfgz@pavilion.home>
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Jason Baron <jbaron@akamai.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Clark Williams <williams@redhat.com>,
+	Yair Podemsky <ypodemsk@redhat.com>,
+	Tomas Glozar <tglozar@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Kees Cook <kees@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Rong Xu <xur@google.com>,
+	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Jinghao Jia <jinghao7@illinois.edu>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+Message-ID: <Z44wSJTXknQVKWb0@pc636>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-30-vschneid@redhat.com>
+ <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
+ <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z4qBMqcMg16p57av@pc636>
+ <xhsmhwmetfk9d.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <xhsmhwmetfk9d.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-Hi Linus,
+On Fri, Jan 17, 2025 at 06:00:30PM +0100, Valentin Schneider wrote:
+> On 17/01/25 17:11, Uladzislau Rezki wrote:
+> > On Fri, Jan 17, 2025 at 04:25:45PM +0100, Valentin Schneider wrote:
+> >> On 14/01/25 19:16, Jann Horn wrote:
+> >> > On Tue, Jan 14, 2025 at 6:51 PM Valentin Schneider <vschneid@redhat.com> wrote:
+> >> >> vunmap()'s issued from housekeeping CPUs are a relatively common source of
+> >> >> interference for isolated NOHZ_FULL CPUs, as they are hit by the
+> >> >> flush_tlb_kernel_range() IPIs.
+> >> >>
+> >> >> Given that CPUs executing in userspace do not access data in the vmalloc
+> >> >> range, these IPIs could be deferred until their next kernel entry.
+> >> >>
+> >> >> Deferral vs early entry danger zone
+> >> >> ===================================
+> >> >>
+> >> >> This requires a guarantee that nothing in the vmalloc range can be vunmap'd
+> >> >> and then accessed in early entry code.
+> >> >
+> >> > In other words, it needs a guarantee that no vmalloc allocations that
+> >> > have been created in the vmalloc region while the CPU was idle can
+> >> > then be accessed during early entry, right?
+> >>
+> >> I'm not sure if that would be a problem (not an mm expert, please do
+> >> correct me) - looking at vmap_pages_range(), flush_cache_vmap() isn't
+> >> deferred anyway.
+> >>
+> >> So after vmapping something, I wouldn't expect isolated CPUs to have
+> >> invalid TLB entries for the newly vmapped page.
+> >>
+> >> However, upon vunmap'ing something, the TLB flush is deferred, and thus
+> >> stale TLB entries can and will remain on isolated CPUs, up until they
+> >> execute the deferred flush themselves (IOW for the entire duration of the
+> >> "danger zone").
+> >>
+> >> Does that make sense?
+> >>
+> > Probably i am missing something and need to have a look at your patches,
+> > but how do you guarantee that no-one map same are that you defer for TLB
+> > flushing?
+> >
+> 
+> That's the cool part: I don't :')
+> 
+Indeed, sounds unsafe :) Then we just do not need to free areas.
 
-A pull request from me on the topic of kthreads may appear out of
-the blue but this "subsystem" has no official maintainer and nobody
-loudly volunteered to take these changes. Therefore I'm carrying
-these myself.
+> For deferring instruction patching IPIs, I (well Josh really) managed to
+> get instrumentation to back me up and catch any problematic area.
+> 
+> I looked into getting something similar for vmalloc region access in
+> .noinstr code, but I didn't get anywhere. I even tried using emulated
+> watchpoints on QEMU to watch the whole vmalloc range, but that went about
+> as well as you could expect.
+> 
+> That left me with staring at code. AFAICT the only vmap'd thing that is
+> accessed during early entry is the task stack (CONFIG_VMAP_STACK), which
+> itself cannot be freed until the task exits - thus can't be subject to
+> invalidation when a task is entering kernelspace.
+> 
+> If you have any tracing/instrumentation suggestions, I'm all ears (eyes?).
+> 
+As noted before, we defer flushing for vmalloc. We have a lazy-threshold
+which can be exposed(if you need it) over sysfs for tuning. So, we can add it.
 
-Thanks.
-
-The following changes since commit fac04efc5c793dccbd07e2d59af9f90b7fc0dca4:
-
-  Linux 6.13-rc2 (2024-12-08 14:03:39 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git tags/kthread-for-6.14-rc1
-
-for you to fetch changes up to d8b4bf4ea04dd96fe43f6010c614149aba4c9b91:
-
-  kthread: modify kernel-doc function name to match code (2025-01-13 11:33:26 +0100)
-
-----------------------------------------------------------------
-Kthreads affinity follow either of 4 existing different patterns:
-
-1) Per-CPU kthreads must stay affine to a single CPU and never execute
-   relevant code on any other CPU. This is currently handled by smpboot
-   code which takes care of CPU-hotplug operations. Affinity here is
-   a correctness constraint.
-
-2) Some kthreads _have_ to be affine to a specific set of CPUs and can't
-   run anywhere else. The affinity is set through kthread_bind_mask()
-   and the subsystem takes care by itself to handle CPU-hotplug
-   operations. Affinity here is assumed to be a correctness constraint.
-
-3) Per-node kthreads _prefer_ to be affine to a specific NUMA node. This
-   is not a correctness constraint but merely a preference in terms of
-   memory locality. kswapd and kcompactd both fall into this category.
-   The affinity is set manually like for any other task and CPU-hotplug
-   is supposed to be handled by the relevant subsystem so that the task
-   is properly reaffined whenever a given CPU from the node comes up.
-   Also care should be taken so that the node affinity doesn't cross
-   isolated (nohz_full) cpumask boundaries.
-
-4) Similar to the previous point except kthreads have a _preferred_
-   affinity different than a node. Both RCU boost kthreads and RCU
-   exp kworkers fall into this category as they refer to "RCU nodes"
-   from a distinctly distributed tree.
-
-Currently the preferred affinity patterns (3 and 4) have at least 4
-identified users, with more or less success when it comes to handle
-CPU-hotplug operations and CPU isolation. Each of which do it in its own
-ad-hoc way.
-
-This is an infrastructure proposal to handle this with the following API
-changes:
-
-_ kthread_create_on_node() automatically affines the created kthread to
-  its target node unless it has been set as per-cpu or bound with
-  kthread_bind[_mask]() before the first wake-up.
-
-- kthread_affine_preferred() is a new function that can be called right
-  after kthread_create_on_node() to specify a preferred affinity
-  different than the specified node.
-
-When the preferred affinity can't be applied because the possible
-targets are offline or isolated (nohz_full), the kthread is affine
-to the housekeeping CPUs (which means to all online CPUs most of the
-time or only the non-nohz_full CPUs when nohz_full= is set).
-
-kswapd, kcompactd, RCU boost kthreads and RCU exp kworkers have been
-converted, along with a few old drivers.
-
-Summary of the changes:
-
-* Consolidate a bunch of ad-hoc implementations of kthread_run_on_cpu()
-
-* Introduce task_cpu_fallback_mask() that defines the default last
-  resort affinity of a task to become nohz_full aware
-
-* Add some correctness check to ensure kthread_bind() is always called
-  before the first kthread wake up.
-
-* Default affine kthread to its preferred node.
-
-* Convert kswapd / kcompactd and remove their halfway working ad-hoc
-  affinity implementation
-
-* Implement kthreads preferred affinity
-
-* Unify kthread worker and kthread API's style
-
-* Convert RCU kthreads to the new API and remove the ad-hoc affinity
-  implementation.
-
-----------------------------------------------------------------
-
-Frederic Weisbecker (15):
-      arm/bL_switcher: Use kthread_run_on_cpu()
-      soc/qman: test: Use kthread_run_on_cpu()
-      kallsyms: Use kthread_run_on_cpu()
-      lib: test_objpool: Use kthread_run_on_cpu()
-      arm64: Exclude nohz_full CPUs from 32bits el0 support
-      sched,arm64: Handle CPU isolation on last resort fallback rq selection
-      kthread: Make sure kthread hasn't started while binding it
-      kthread: Default affine kthread to its preferred NUMA node
-      mm: Create/affine kcompactd to its preferred node
-      mm: Create/affine kswapd to its preferred node
-      kthread: Implement preferred affinity
-      rcu: Use kthread preferred affinity for RCU boost
-      kthread: Unify kthread_create_on_cpu() and kthread_create_worker_on_cpu() automatic format
-      treewide: Introduce kthread_run_worker[_on_cpu]()
-      rcu: Use kthread preferred affinity for RCU exp kworkers
-
-Randy Dunlap (1):
-      kthread: modify kernel-doc function name to match code
-
- Documentation/arch/arm64/asymmetric-32bit.rst      |   8 +
- arch/arm/common/bL_switcher.c                      |  10 +-
- arch/arm64/include/asm/cpufeature.h                |   1 +
- arch/arm64/include/asm/mmu_context.h               |  14 +-
- arch/arm64/kernel/cpufeature.c                     |  15 +-
- arch/x86/kvm/i8254.c                               |   2 +-
- crypto/crypto_engine.c                             |   2 +-
- drivers/cpufreq/cppc_cpufreq.c                     |   2 +-
- drivers/gpu/drm/drm_vblank_work.c                  |   2 +-
- .../gpu/drm/i915/gem/selftests/i915_gem_context.c  |   2 +-
- drivers/gpu/drm/i915/gt/selftest_execlists.c       |   2 +-
- drivers/gpu/drm/i915/gt/selftest_hangcheck.c       |   2 +-
- drivers/gpu/drm/i915/gt/selftest_slpc.c            |   2 +-
- drivers/gpu/drm/i915/selftests/i915_request.c      |   8 +-
- drivers/gpu/drm/msm/disp/msm_disp_snapshot.c       |   2 +-
- drivers/gpu/drm/msm/msm_atomic.c                   |   2 +-
- drivers/gpu/drm/msm/msm_gpu.c                      |   2 +-
- drivers/gpu/drm/msm/msm_kms.c                      |   2 +-
- .../media/platform/chips-media/wave5/wave5-vpu.c   |   2 +-
- drivers/net/dsa/mv88e6xxx/chip.c                   |   2 +-
- drivers/net/ethernet/intel/ice/ice_dpll.c          |   2 +-
- drivers/net/ethernet/intel/ice/ice_gnss.c          |   2 +-
- drivers/net/ethernet/intel/ice/ice_ptp.c           |   2 +-
- drivers/platform/chrome/cros_ec_spi.c              |   2 +-
- drivers/ptp/ptp_clock.c                            |   2 +-
- drivers/soc/fsl/qbman/qman_test_stash.c            |   6 +-
- drivers/spi/spi.c                                  |   2 +-
- drivers/usb/typec/tcpm/tcpm.c                      |   2 +-
- drivers/vdpa/vdpa_sim/vdpa_sim.c                   |   2 +-
- drivers/watchdog/watchdog_dev.c                    |   2 +-
- fs/erofs/zdata.c                                   |   2 +-
- include/linux/cpuhotplug.h                         |   1 +
- include/linux/kthread.h                            |  56 +++++-
- include/linux/mmu_context.h                        |   1 +
- kernel/kallsyms_selftest.c                         |   4 +-
- kernel/kthread.c                                   | 203 ++++++++++++++++++---
- kernel/rcu/tree.c                                  |  94 ++--------
- kernel/rcu/tree_plugin.h                           |  11 +-
- kernel/sched/core.c                                |   2 +-
- kernel/sched/ext.c                                 |   2 +-
- kernel/workqueue.c                                 |   2 +-
- lib/test_objpool.c                                 |  19 +-
- mm/compaction.c                                    |  43 +----
- mm/vmscan.c                                        |   8 +-
- net/dsa/tag_ksz.c                                  |   2 +-
- net/dsa/tag_ocelot_8021q.c                         |   2 +-
- net/dsa/tag_sja1105.c                              |   2 +-
- 47 files changed, 341 insertions(+), 221 deletions(-)
+--
+Uladzislau Rezki
