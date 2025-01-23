@@ -1,34 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB751ADC7D;
-	Thu, 23 Jan 2025 20:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A161CC881;
+	Thu, 23 Jan 2025 21:52:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737664224; cv=none; b=oChjEgzxEh5f5wTrnZGT+aTfHZZKzc6op+Zzaf6Guhb+Y9MpWtFq8D+ol4GhSmD3wkHtPwvOcfIWb2LaKo2RNUGA30FPcK94cey5fVHFCE8e1KUA+t7wYjjlflagaSsGckFZsGPltTVJt6H4z9/vFLEYwGYXep5iMax9MIaffv0=
+	t=1737669178; cv=none; b=gnrywWE9Ee75NvEfVm3WSZo+VCbsh6qUEOOFlWFLLPCrj+/IwVOtEneDFyyvJk5bsIrRl9VQEJtrLoClLgDzKBy458rBrLzjmxYwREHHJiWVbaG+dMNSUB0O9txBhEXSjercDZ/r7gvakexK7YOr0YmmqXvaI4gIBE+utmClHjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737664224; c=relaxed/simple;
-	bh=qbapeJt0ClS7PLhxg4ULrYuH98zmfBYba61jRgt2qjk=;
+	s=arc-20240116; t=1737669178; c=relaxed/simple;
+	bh=f6+UPUNuZpmIh6EyaK6jnpUslxTgcKdctqVTk2mUZJI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WWpWa2WdxHTuSStUIhe27/R7eMRt26L7l6qiiZUGhoKR5KOo6pIImqTHXpeZo4ZrM1eq3EfChTwEzfIBdPTEkpcknWE1tzhNtcBDcobQsjrpTpeakKEyhSTP+Kj/+hAQSintQ7UdZGd52tAhngXTx8C+RbSFGu9KIY4ZWr8Yx9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IFyWM9b8; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=l8BBtFaTSzNobAs4AlZtGKC36LRkJe5hLJdgML5RzTxOvpQBJ9iV0cKWpcFu502h97hD5DM6XFpGhWow00q5dIBGugpK2FUrSHuomS3nFOjB5AOZp2S4EeDKEKj1P4olEFh5C3wEIUMmGJWDep9krGCPGZlYVkseY9ylril6o+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sbSw/J8u; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IFyWM9b8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E2BC4CEDF;
-	Thu, 23 Jan 2025 20:30:23 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sbSw/J8u"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E31AC4CED3;
+	Thu, 23 Jan 2025 21:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737664223;
-	bh=qbapeJt0ClS7PLhxg4ULrYuH98zmfBYba61jRgt2qjk=;
+	s=k20201202; t=1737669177;
+	bh=f6+UPUNuZpmIh6EyaK6jnpUslxTgcKdctqVTk2mUZJI=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=IFyWM9b8VoXapoLxX0pNZ/a+JZ7/GjcawaWt5dH8F6Bzg+GJxZCy8fRiyZDNn3osC
-	 xFeZiii6Ma+5e8rhrkK6BZg4KHIaaZE8kFgSchIwBpaMR34I3OUXkEVOXvQkPZaS8F
-	 K8BlhqG8RWl0zZKbjwhHO7lgDsNHSextw0ZKBmF7LRbQd+pZZNFvO6CQGoqsA1WS9W
-	 FViF8SdipliWASHzqdBA3uatRaNx77WgTr9Nob0altgBET6E9D6UzSHLpBKTL/vVWp
-	 nBEm7PpOCPeDMTL9pXbGL0xkm9XV/HSkSxDELlW3VOwIRewCcUCYEveNv5zf8qeBOP
-	 fxc36RnvetUTw==
+	b=sbSw/J8uLOR27bnu47LD2ir25yDwDfX38kxyAFHx9pQzE+WboicitjdW4cJ2QJ/gL
+	 Q+pCdBFKy8UMxea1n2CICInDGvDMtnZeTsr+EYO15T6n6SsF1+xqIP0dZhXmQAeLke
+	 LWldrxRP1eWrXQ27FKyXxPu4qon9T5oVQJdHuFTM2dEPmxnpVNKDSzId5S0qAbClPl
+	 MB/LSBzX0t9pfNGcaONwqfu4HUkYHYsXb40GMpg8ZwijJEnhOQSWEK2tkWgXPCBh8m
+	 oHJHQzSIrKJ4cHTIv+fRmiXcAczjWYopEWZWLqXHk2F1fib0lAt+KPvq2l9jfrwfo/
+	 RWKVR1wWd8OGQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 685DCCE0C56; Thu, 23 Jan 2025 12:30:23 -0800 (PST)
-Date: Thu, 23 Jan 2025 12:30:23 -0800
+	id 365E0CE378B; Thu, 23 Jan 2025 13:52:57 -0800 (PST)
+Date: Thu, 23 Jan 2025 13:52:57 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc: Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
@@ -38,12 +38,11 @@ Cc: Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
 	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 3/4] rcu: Update TREE05.boot to test normal
- synchronize_rcu()
-Message-ID: <a4972f84-e3dc-4ecb-a53e-21ef9cf856a9@paulmck-laptop>
+Subject: Re: [PATCH 4/4] rcu: Use _full() API to debug synchronize_rcu()
+Message-ID: <ea7d8677-f81e-4590-9716-23ea41597873@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20250123185828.460836-1-urezki@gmail.com>
- <20250123185828.460836-3-urezki@gmail.com>
+ <20250123185828.460836-4-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,45 +51,72 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250123185828.460836-3-urezki@gmail.com>
+In-Reply-To: <20250123185828.460836-4-urezki@gmail.com>
 
-On Thu, Jan 23, 2025 at 07:58:27PM +0100, Uladzislau Rezki (Sony) wrote:
-> Add extra parameters for rcutorture module. One is the "nfakewriters"
-> which is set -1. There will be created number of test-kthreads which
-> correspond to number of CPUs in a test system. Those threads randomly
-> invoke synchronize_rcu() call.
+On Thu, Jan 23, 2025 at 07:58:28PM +0100, Uladzislau Rezki (Sony) wrote:
+> Switch for using of get_state_synchronize_rcu_full() and
+> poll_state_synchronize_rcu_full() pair for debug a normal
+> synchronize_rcu() call.
 > 
-> Apart of that "rcu_normal" is set to 1, because it is specifically for
-> a normal synchronize_rcu() testing, also a newly added parameter which
-> is "rcu_normal_wake_from_gp" is set to 1 also. That prevents interaction
-> with other callbacks in a system.
+> Just using "not" full APIs to identify if a grace period
+> is passed or not might lead to a false kernel splat.
 > 
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-
-This one looks fine to me.
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-						Thanx, Paul
-
 > ---
->  tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  include/linux/rcupdate_wait.h | 4 ++++
+>  kernel/rcu/tree.c             | 8 +++-----
+>  2 files changed, 7 insertions(+), 5 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
-> index c419cac233ee..54f5c9053474 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
-> @@ -2,3 +2,9 @@ rcutree.gp_preinit_delay=3
->  rcutree.gp_init_delay=3
->  rcutree.gp_cleanup_delay=3
->  rcupdate.rcu_self_test=1
-> +
-> +# This part is for synchronize_rcu() testing
-> +rcutorture.nfakewriters=-1
-> +rcutorture.gp_sync=1
-> +rcupdate.rcu_normal=1
-> +rcutree.rcu_normal_wake_from_gp=1
+> diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+> index f9bed3d3f78d..a16fc2a9a7d7 100644
+> --- a/include/linux/rcupdate_wait.h
+> +++ b/include/linux/rcupdate_wait.h
+> @@ -16,6 +16,10 @@
+>  struct rcu_synchronize {
+>  	struct rcu_head head;
+>  	struct completion completion;
+> +#ifdef CONFIG_PROVE_RCU
+> +	/* This is for testing. */
+> +	struct rcu_gp_oldstate oldstate;
+> +#endif
+>  };
+>  void wakeme_after_rcu(struct rcu_head *head);
+>  
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 2795d6b5109c..0ae90089ef09 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1612,12 +1612,10 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+>  {
+>  	struct rcu_synchronize *rs = container_of(
+>  		(struct rcu_head *) node, struct rcu_synchronize, head);
+> -	unsigned long oldstate = (unsigned long) rs->head.func;
+>  
+>  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+> -		!poll_state_synchronize_rcu(oldstate),
+> -		"A full grace period is not passed yet: %lu",
+> -		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
+> +		!poll_state_synchronize_rcu_full(&rs->oldstate),
+> +		"A full grace period is not passed yet!\n");
+
+Looks good, but why not also continue printing out the required
+grace-period sequence number?  Yes, there would need to be helper
+sprintf()-style functions to paper over the difference between Tiny RCU
+and Tree RCU.  ;-)
+
+							Thanx, Paul
+
+>  	/* Finally. */
+>  	complete(&rs->completion);
+> @@ -3214,7 +3212,7 @@ static void synchronize_rcu_normal(void)
+>  	 * snapshot before adding a request.
+>  	 */
+>  	if (IS_ENABLED(CONFIG_PROVE_RCU))
+> -		rs.head.func = (void *) get_state_synchronize_rcu();
+> +		get_state_synchronize_rcu_full(&rs.oldstate);
+>  
+>  	rcu_sr_normal_add_req(&rs);
+>  
 > -- 
 > 2.39.5
 > 
