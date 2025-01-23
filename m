@@ -1,63 +1,38 @@
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DC917741
-	for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 19:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E441CEE9A
+	for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 20:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737661056; cv=none; b=XinUIqthktQxhkuUpKJd5lY4yOiBAPyAOIkWOyIH+b7Zev3UjsYTOZYYo126Cc8Rw+dLRVUtKq8I8a9M6wj5W4EmSJvO2EBYxHrFuAzm2MDXQI2YN2iQ6Ahr+x8gSJ3IeiNj1Fk+BJxfW34V5w8IBJ+IjxCdjuDxhs4UpNk5opk=
+	t=1737664004; cv=none; b=idC+VtuK5m98+SW+/+f24hNwrq2zsAQkE5n47w8Va8jEcviyL/esqwaIf4nx05by0eDRTWZo6oic/UogpS5ydUzIfw/1sVinORHmK6AD+fRmstjDEn5IMUpqin18kAHwdI1+iAZ1+bxcphPeewCafFlQUIR94+DoZl70871bKPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737661056; c=relaxed/simple;
-	bh=HyBhlpgtqOiMs5ZVNPuqkKklnLBYveORAOFj7dkKCZA=;
+	s=arc-20240116; t=1737664004; c=relaxed/simple;
+	bh=oL6NQEdTtjZ/hVogsbi/d3v+aVJuZPXEZ3JA2IGtK2Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R1m6wovpm254HiBsyFPJCKHR11lHhQFzt2kzcHYsojZUjYRa815ajT4gfuyPBYgxzNH7ByKmc3yygE8IcvRHsZA4wJu9Zf6535g0POU+4blJ4Yi1HNq2pseZKh4V1w75o6ZvD0TO/ETRq6HMJtTkeuhGwaqSs9Ok1dkSwl7EYDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=NLZCHOO6; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=pzENeCaZCN420cNfQFsSXxAbjgZk5vzYm9Axr/rDR8tgrHuGp0NipXfQZhbBne0carIbaSM7TWhbR4k5m7iLPKfoQ+rqr2ZhkZpi0ElJuJuKOSAJVRBmg6FSoCbMgutM6PT0Zn2LadaBIKdPrFGZQx6ixg4BTHM8DX0/eccTa+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BM8Ylsvk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NLZCHOO6"
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-467a3f1e667so8365911cf.0
-        for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 11:37:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1737661053; x=1738265853; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HgVwUL8cM02YfaCeU1/XMmjj0tdkjn2bwYjtAYAHIcA=;
-        b=NLZCHOO64IRt7rbKyqQVaHZNxZ6UjAF1FLSQb9CA3BhSack8tjfnj7ugJhM069NpSY
-         lj/wdvnYpuOhU5utJLu8PkoizFyok+aYDrXoeq43SRdRgrICoqHO48GUaubAv0mFXZQa
-         GUypGdntBzuTy2ZaCE7bRwELM/RiaSuJCelUA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737661053; x=1738265853;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HgVwUL8cM02YfaCeU1/XMmjj0tdkjn2bwYjtAYAHIcA=;
-        b=vIje4nObVHRh861l6XiDJr6RmmnRAy1D1vZvbwy/r/YrV1oByPxkgmuUXTQv1CQA2H
-         xIRoPhpMrcwBeSYqQfHb5W8vkOTU5GQnUxDWpuhu1r1J3OxyrDwgSf2Fi9h9kMWhQonH
-         S5b2jJzPbqnX5zwkQQrKUhUulMERojXrRLZOI6MxwADFgyapgVXUGL6lTE8I0afQclSf
-         jLK8miSs9eCZFhCUnGuw8RzOSY7jfBPT73lixXiLPI83nCwpuh5XIYFYdkzMjyAuJjhw
-         rh3X7Ql6vrtwAoBYyVVxuRefJWgrHyub+ZMAHm95jqwN+oJtsp/I240iO7pFXcZe4Mfq
-         h+jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXfOuV/m/mdT7IQOVAYrC7vKwjMKuy6xUHzSz3ZDNg7qb8+lzSOUSTzzDZf3bp18V9rtBY=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyp8NoggK8IhU8N0qU7HvQG+43s+HT1ks/RJKH1vm4NSSoMqddd
-	PtoCWGYV2R4Y5I1zNzMRNMY29ewR0K2YhNlD1s/pa9gqMYe1tBoL+Yv9aUQT2mU=
-X-Gm-Gg: ASbGncs7vRb4S3MIH1JGKzn2k337GIeOUASEzqu33KDvhw3+yS9B4HVWrF2Mb7WqUSH
-	T4a7h369vDJ6zdVI5x7sYYB1N+pZy1xW2aYQnAn5fI3VFYSa6ymNWwlYWSbbLmlRPpgr2k0NKxp
-	zUZNkGYvBZ7MkPekCkJV0iu2L8H5EImft5fnuWYLp/z0xZF3mqNd6iAuDVo5WMXWNp/rgn27KWG
-	FGMAUWNUx0xFWW/oNIDWizbwf9U0ImQU91FvVjrZgGVxfbuFEzYk3awmdcepE56476EB5vriaCb
-	Lt8NO4vOd/qp4LEUalytuMgZvpU+4wRNaNypNjvn3YD3Tg==
-X-Google-Smtp-Source: AGHT+IG+8Lpc66A360D0SQ3mvU1EMoh0gkzCqIG6zTOyY5gaBn2ttLdchg/B/aWaqNgFeIHj6DJmrQ==
-X-Received: by 2002:ac8:5f06:0:b0:467:53c8:7572 with SMTP id d75a77b69052e-46e12a55504mr485247851cf.13.1737661053455;
-        Thu, 23 Jan 2025 11:37:33 -0800 (PST)
-Received: from localhost (c-73-251-172-144.hsd1.va.comcast.net. [73.251.172.144])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46e66b8700dsm2016261cf.76.2025.01.23.11.37.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 11:37:32 -0800 (PST)
-Date: Thu, 23 Jan 2025 14:37:31 -0500
-From: Joel Fernandes <joel@joelfernandes.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BM8Ylsvk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D11C4CED3;
+	Thu, 23 Jan 2025 20:26:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737664003;
+	bh=oL6NQEdTtjZ/hVogsbi/d3v+aVJuZPXEZ3JA2IGtK2Q=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=BM8YlsvkAFY8VL7voqRF0HNeVo9V69AEiIMAWUBLSsnhKFaurUaZZwm6zOxDAZfNI
+	 NKu0EVm2k72iaubF2R3OYCWlaBtx3yc6ErS5rPt5jgGYT6VcjUWJeNBPeQ4n7py1X2
+	 0fDiY1RHdGLszuEZ3XdUzEuPQgd8EHSpzPkEMZGdov5qn7GTDshOXUsV6URd1dTiaG
+	 V3jVODaj8/5FneHqGYWtX/7qi4BxHokuQzQ3QtLCJuRE3FU/dF8XLHbB61Vm4TxpBB
+	 4zYnE337xa0w1nO8REOJkMePQT3Rnx2evMKXTcVy44wU2yVRnymllXiH/Fc8Mnl6n0
+	 sT9XgqAnOwZXg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 93DDBCE0DC7; Thu, 23 Jan 2025 12:26:43 -0800 (PST)
+Date: Thu, 23 Jan 2025 12:26:43 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
@@ -70,7 +45,8 @@ Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
 Subject: Re: [PATCH RFC 0/4] slab, rcu: move and consolidate TINY_RCU
  kvfree_rcu() to SLAB
-Message-ID: <20250123193731.GA682588@joelbox2>
+Message-ID: <647c4404-283c-4a98-aaf4-d3f0b44dee7d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 References: <20250123-slub-tiny-kfree_rcu-v1-0-0e386ef1541a@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -113,28 +89,7 @@ On Thu, Jan 23, 2025 at 11:37:17AM +0100, Vlastimil Babka wrote:
 > 
 > git tree:
 > https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/slub-tiny-kfree_rcu
-
-Looks good to me, except typo in third patch 'kmalloc of vmalloc allocation'
-should be 'kmalloc or vmalloc allocation'.
-
-Maybe also add some comments on top of 'kvfree_rcu_cb()'. Like:
-
-/*
- * Given an rcu_head embedded within an object at an offset < 4k,
- * free the object in question.
- */
-
-I like the touch with the config option in the last patch!
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
-
-
-
-
+> 
 > To: Christoph Lameter <cl@linux.com>
 > To: David Rientjes <rientjes@google.com>
 > Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -153,6 +108,9 @@ thanks,
 > Cc: rcu@vger.kernel.org
 > 
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+
 > ---
 > Vlastimil Babka (4):
 >       slab, rcu: move TINY_RCU variant of kvfree_rcu() to SLAB
