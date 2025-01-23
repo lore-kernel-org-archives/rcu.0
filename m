@@ -1,61 +1,61 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E76516F858;
-	Thu, 23 Jan 2025 18:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97E517C220;
+	Thu, 23 Jan 2025 18:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737658715; cv=none; b=NodwM5p7RD7ZHZqecZIKU0ruMtD17zHdEXILmuw29+pyBE9o1LzpjgbxQa9DWPTi1eiLW+Z/CKT0Sjrham8FWJ0dRvZCyEfcxL6eef1gHvZwdWbRd+phxUxZl4IeubDjcHRgMr87M6vQylBG1aYdiYS3qflQw7IBDp2NWAGay1g=
+	t=1737658716; cv=none; b=luG65ruOC0TSLjTyIXzu4242zJODxVitbtEPn8ogmlSAIR/fqJhe5z6PcuvSbXbSr6lggyHQBB7zW7rLd8lQ0y642f6OLTPtLSRBxA4fqngvlPTGHh/X1NJD8xFXlafcE692xOuVtyPcg5x4f0Nys2FlH97DSekz/6tdQ+ammmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737658715; c=relaxed/simple;
-	bh=huvA0Eqmf5vb3szR3jUX+yxvj+JUOxupUW3Bf9sh2ys=;
+	s=arc-20240116; t=1737658716; c=relaxed/simple;
+	bh=RwZvbgX910S4UG3GAt47ssRn0Spn1KbQiiaXn8iPpK0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TglDE5JDF7MRZzYpC+76Q90YeHqO4Mcym1TJ3OibWIPlNdwBvFg6Zdpglcuff8zu4+YfSBqiekbR8SlpRXgW9a9urF9Oy3GycA5ALqar4rn9HnKok6UlxE95M2BpsJAW7y4rJXcADqrZlsgzrMTrXKgpIY0CEg6JqbtWj2Abo84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fhb+9O0V; arc=none smtp.client-ip=209.85.208.178
+	 MIME-Version; b=MWP/1gFJxZZXsAVjTsjiCU8pX/vJ29UF738CxCt4PgaJDt4QZQW4opoclEQklvUdGkhP6mn/eJkKw5AzvGrIk/b3dMqJqVzw1mB24q1iLm+14VrWkSfhPNyC3XgSGPIaYYwJsYka1X21C4iumnh/IrXV+z6BSSRwkjDQxdHRcfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QD1Mu12m; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fhb+9O0V"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-3002c324e7eso10823921fa.3;
-        Thu, 23 Jan 2025 10:58:33 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QD1Mu12m"
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5401be44b58so1466653e87.0;
+        Thu, 23 Jan 2025 10:58:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737658712; x=1738263512; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737658713; x=1738263513; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sVvT7NP9aO9EIv6Tv5VTAY7tEo9/tNIuoTqsrg0VSvk=;
-        b=fhb+9O0Vd6YpE1Ob9kKXN+2LOPc9SVLM+PC/cR+GUXKYvTksyX2iWRk9gR+iDGOi9+
-         RiVfQ5cRDcQJ8ESOIkNKK+gfOQB1phwbPob7SyG4cLnLloQ2rzlk1QajSr0pRsbMkh7t
-         +0ynwdFJObqBTjUm2sCxN/UPsKlVTeu5dUE2M99cLst07n/vab3FTZjedaH25toVJggJ
-         JPT6vLpns9LGejRgW12V/2m/zSBS7Q9CPeqrHOoAliZqde4kcb5xa/OFRsiNBzcwzATP
-         xodHm5ubOhlQiD6T1hya8Qfdk5RwEcHDc1o+Z48OtX+Iv3YRHSKUjdgRSI4gxy6JsqDJ
-         l0fw==
+        bh=CnQF6orToOjnS8khCdzt3y/vz48zz2lcz2DYFQDQYZA=;
+        b=QD1Mu12mbcwnjq5yXQjTbTCbPImEwJIqTsP9fsG8lUiIp4b2/qd+h4PFarHb8L9AwT
+         Rpc+ap5bwue2gywVnSW7uR5yjidKigbYNopQv/JKuvZLDZPeFVOrRIzPjIWo5eRCPWYX
+         llgX4Nj19vXBQh/lO7dmEPvygT/hPcuu56ZMvOzHjGXNHcmxPwEIPqdsHizmjoMEZudA
+         ZHfme5/cUrGlNTLwKHlpaHYHiPFIdv5YCRXTCraHVwz8HukKCp0bHEfOFdb8ridW3keN
+         WaXH7+1aQmu3b5TTnfqpfwkd+prHnQyhmgVFh3PCEbzBJsDF6SZ6nYM5gkJBIS9+ANcr
+         ZK0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737658712; x=1738263512;
+        d=1e100.net; s=20230601; t=1737658713; x=1738263513;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sVvT7NP9aO9EIv6Tv5VTAY7tEo9/tNIuoTqsrg0VSvk=;
-        b=wfrSot7qWa8foQx8lOL/W6oxnS+Rv5LawcNZRhW1Dc95D2aoNesQs98u0OAmyMj9kS
-         O+NFZgRa22Jnj/POyL2rZ/4beWHObL+I9qfRofGeJpxudgp24GJtnG5Aq5s+Sw4eSGID
-         eDHM6Knm0gr5OWRGqLRyB2+EV2zloFsPhUUIikXVH6ub1upw9wRXnMUOW8szBFVdNK4h
-         2r23ek5e0WCncyGwbCsR9LLfaJ+Yeggrfz/1XKAwchgpapQYzvHbzKMqOFCvkbQjZ39k
-         3CYoVdCWzInYjLsozkmSiPi9cvFwA0RtEVVqoBDUlgZfvceURNpdWnqsk1oZGYchW3nt
-         R9Cw==
-X-Forwarded-Encrypted: i=1; AJvYcCXbyFSbFu+XaUZ03Erw6zwYJBVIyEye30tB+IXa3C/yiBL+0EnQMazDJcYgyeFQUPibdEOmS/kYBdvjrsk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzVihSpZWsioeCOXHGjTW6EvqUsvimWRQa4NeNNod89nRjHPebc
-	GSmRGbTa27Xm0NNb2ybWlq+j4sifr8lMuSy1aivEAsBnLnII7o3UskY1Gw==
-X-Gm-Gg: ASbGncuMY2h3w2KsfpBXXH7JQ+zYKQfPzB5vYu9xUS7kclEoyLmm2MMbO1shRHcubbW
-	GYI7AKvwqZXv1FITc1FPN/Ms7+25Z2dVFiFVjXUdoSF6PKFLglmFuVgLP4N9wXFeHAwdDDxInmL
-	bIQ1oIBCqAUxDvgZCSY6tiR4NAGj51oGR9LBv2xn+oqmlUSigYQKI7LIIZiwhx4LHlzNfcL6wd0
-	XmLIYKt+NxZZRdH2TuoVP7ajIzoJf/0BQLObmjnQeaO4Ne2odgH/mCCxiz0Diii8Hsf60htZGsb
-X-Google-Smtp-Source: AGHT+IGx/gyP6KI6eRMVx44Gk3ldDLPOP4RK1jdSV2B9MGmB0gTv/bbqBcGmx/zbccrw+Kcozo/u4A==
-X-Received: by 2002:ac2:41d1:0:b0:540:2ff1:3c7c with SMTP id 2adb3069b0e04-5439c22a843mr7377804e87.7.1737658711804;
-        Thu, 23 Jan 2025 10:58:31 -0800 (PST)
+        bh=CnQF6orToOjnS8khCdzt3y/vz48zz2lcz2DYFQDQYZA=;
+        b=GLQlzVwYVqh+F6adHk/b6RHy5s7v6Ip95ZD6VIcrZg/JTLgCJkAa4abXFPVuhuaBQe
+         9Y753n8WUIJ+PGxFgLNVwfEg80tJU10SE/2pha0Zm7La0p7QKXYZQC3CfWqsDLKu+bgI
+         y5U6TMKXkr4dI4NXiNxQlzxDM/0V0v7AjqIvUsITF2kLEnKr0e6cfQh1x1SmnuhO1t6n
+         6+4+CtcmEFB2BJI3oi7IwQnFO9qw0QO+wUEg03vdayWrSzl+tMRtUnD+QDzFvfzoS/je
+         625k0V4EGe3pTMlyTU2f9bBVB3oAVRqibaNjdy6j02OhJr09GT5EJiVE9Yy9W34fvaSF
+         NHpg==
+X-Forwarded-Encrypted: i=1; AJvYcCXccw/4R/XUTTix5T9kj4hA8bSSYBx2SLxv5GOXO2MkSAH7zzxSEK+7mJgm8PO4YcI1//YCmNg+ESgngxk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTrCevU5zzOnyIqQAJfcNYIbhmgLKUtEYnD5YwvV9vDbbED4oB
+	2jn7lgn+h3aB9nR6ivMWECDOlVx6liWOCQaaGZ/8rQdbaSzAgG7F
+X-Gm-Gg: ASbGncvaaM8CLDxJgdIQ624qim0Ak6lpvUTB3Irk9ohQytcZIkQJhd4zFT49gq6ZO5f
+	tUo5ZV6/TKdC0a8+3hYsZWVNtojtiQPSbxf9rnUP7/+j/FF/01kZIXxPvq2vzTChi8KDWSrELQV
+	1eN+h4UTVpp8vlMOVRa9QaP43zK2Zw8l47vEHPJurs1yQfUg+SyMFVuJ+hleTjDyE2eAVCsSj3/
+	9ZaB1t4UmXuOtkzwkLD3OtyZ8TTuBS1gI5OIV4foS2xn6sVuXFAY551ieOGbNxxZq1NVETQZ64n
+X-Google-Smtp-Source: AGHT+IF7vFmZuDaTLDCmNgIIbMtb1JMs0Aig/nla69iRPjNnFd3xWEZdHUXKBa+ExJUMJotCbKF+tw==
+X-Received: by 2002:a05:6512:3189:b0:540:2fbb:22cb with SMTP id 2adb3069b0e04-5439c221527mr9171939e87.13.1737658712747;
+        Thu, 23 Jan 2025 10:58:32 -0800 (PST)
 Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-543c8368497sm9644e87.151.2025.01.23.10.58.30
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-543c8368497sm9644e87.151.2025.01.23.10.58.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 10:58:31 -0800 (PST)
+        Thu, 23 Jan 2025 10:58:32 -0800 (PST)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>
@@ -67,9 +67,9 @@ Cc: RCU <rcu@vger.kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH 2/4] torture: Remove CONFIG_NR_CPUS configuration
-Date: Thu, 23 Jan 2025 19:58:26 +0100
-Message-Id: <20250123185828.460836-2-urezki@gmail.com>
+Subject: [PATCH 3/4] rcu: Update TREE05.boot to test normal synchronize_rcu()
+Date: Thu, 23 Jan 2025 19:58:27 +0100
+Message-Id: <20250123185828.460836-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250123185828.460836-1-urezki@gmail.com>
 References: <20250123185828.460836-1-urezki@gmail.com>
@@ -81,28 +81,35 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This configuration specifies the maximum number of CPUs which
-is set to 8. The problem is that it can not be overwritten for
-something higher.
+Add extra parameters for rcutorture module. One is the "nfakewriters"
+which is set -1. There will be created number of test-kthreads which
+correspond to number of CPUs in a test system. Those threads randomly
+invoke synchronize_rcu() call.
 
-Remove that configuration for TREE05, so it is possible to run
-the torture test on as many CPUs as many system has.
+Apart of that "rcu_normal" is set to 1, because it is specifically for
+a normal synchronize_rcu() testing, also a newly added parameter which
+is "rcu_normal_wake_from_gp" is set to 1 also. That prevents interaction
+with other callbacks in a system.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/TREE05 | 1 -
- 1 file changed, 1 deletion(-)
+ tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05 b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-index 9f48c73709ec..d6fbb82e3e6d 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05
-@@ -1,5 +1,4 @@
- CONFIG_SMP=y
--CONFIG_NR_CPUS=8
- CONFIG_PREEMPT_NONE=y
- CONFIG_PREEMPT_VOLUNTARY=n
- CONFIG_PREEMPT=n
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
+index c419cac233ee..54f5c9053474 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
+@@ -2,3 +2,9 @@ rcutree.gp_preinit_delay=3
+ rcutree.gp_init_delay=3
+ rcutree.gp_cleanup_delay=3
+ rcupdate.rcu_self_test=1
++
++# This part is for synchronize_rcu() testing
++rcutorture.nfakewriters=-1
++rcutorture.gp_sync=1
++rcupdate.rcu_normal=1
++rcutree.rcu_normal_wake_from_gp=1
 -- 
 2.39.5
 
