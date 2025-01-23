@@ -1,142 +1,182 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17EBB18A6AE;
-	Thu, 23 Jan 2025 18:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DC917741
+	for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 19:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737658717; cv=none; b=hKYgvYZRGlftYkDWwlP2eI1ooeBahJ7p6iEo820FRaCzrnTwn8qaDw0Gt09Y8DtwbUWRQT+TMZEbCdbzeW0zPVPzgKWzSdpVCjgMWoUDO5SgY3UquqEzr/Mhkpq/zplHpGeJhjUGys/7ElDyDDUS2qP2dgQCTtO+geqWOmVSJqo=
+	t=1737661056; cv=none; b=XinUIqthktQxhkuUpKJd5lY4yOiBAPyAOIkWOyIH+b7Zev3UjsYTOZYYo126Cc8Rw+dLRVUtKq8I8a9M6wj5W4EmSJvO2EBYxHrFuAzm2MDXQI2YN2iQ6Ahr+x8gSJ3IeiNj1Fk+BJxfW34V5w8IBJ+IjxCdjuDxhs4UpNk5opk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737658717; c=relaxed/simple;
-	bh=1sllsi9F/Q/N7eTgfTFGVbPA87tR/DUWvo5VkBPNlPk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CkXRTyKueyUzYs8ujmM7V5zjwD7KWwOZoOYhtrJglZHUAR23nhOQr7THO0hKGbv7ulCyC3YWyp/n4+ernWwn+ItQ4JmX/MvsLL+KvRjUemGsj1Dbib3ySp76o+k9fsELMYGMNkIosWE35CJ1h/t8wEqpZnl6d2wvOhRj+Efnjqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M1PYfeWJ; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1737661056; c=relaxed/simple;
+	bh=HyBhlpgtqOiMs5ZVNPuqkKklnLBYveORAOFj7dkKCZA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R1m6wovpm254HiBsyFPJCKHR11lHhQFzt2kzcHYsojZUjYRa815ajT4gfuyPBYgxzNH7ByKmc3yygE8IcvRHsZA4wJu9Zf6535g0POU+4blJ4Yi1HNq2pseZKh4V1w75o6ZvD0TO/ETRq6HMJtTkeuhGwaqSs9Ok1dkSwl7EYDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=NLZCHOO6; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M1PYfeWJ"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-540218726d5so1429933e87.2;
-        Thu, 23 Jan 2025 10:58:35 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NLZCHOO6"
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-467a3f1e667so8365911cf.0
+        for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 11:37:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737658714; x=1738263514; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PQMpcEzLxZWnBlEPxsQY2sa6eEqK7zJT3M51w1wAnJ8=;
-        b=M1PYfeWJqsehadbgbBgdvIJ3sAa7s9NyB4u3ta+ia1KhXZgzagyGz0QZWFHHhdfuaf
-         6M4YyHgqYkJL9wJf5e9EQxjZfVPz3Y/wRweBOp6gGNNjXOdkAhjDmW94UgHkmmwny7ru
-         im4Dmq3bR02CQEzEGd0tFE7nBQTqh7f2c3tIJT2RqeeMdEBk6+zCOQPDDNAxnq8+VvA4
-         AYulXiADbSd6bDr91zQmpJSo3u8K2GyUBMfj94XJlwQ04miIyV/D+rzm6KmISDANj7cv
-         bR2MN3N2Onih3DxT+piYp8q64i4FNkGWv6uSOJoodgg9+nKV+p/5SUD+PB8xc69xj3Oe
-         jfgA==
+        d=joelfernandes.org; s=google; t=1737661053; x=1738265853; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HgVwUL8cM02YfaCeU1/XMmjj0tdkjn2bwYjtAYAHIcA=;
+        b=NLZCHOO64IRt7rbKyqQVaHZNxZ6UjAF1FLSQb9CA3BhSack8tjfnj7ugJhM069NpSY
+         lj/wdvnYpuOhU5utJLu8PkoizFyok+aYDrXoeq43SRdRgrICoqHO48GUaubAv0mFXZQa
+         GUypGdntBzuTy2ZaCE7bRwELM/RiaSuJCelUA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737658714; x=1738263514;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PQMpcEzLxZWnBlEPxsQY2sa6eEqK7zJT3M51w1wAnJ8=;
-        b=di3rxV0nqpyZ2EqUPhcjVKFIdxMDN8+qdApJvEi53aVF03kTQBOWcegQc4M/Hes4Q/
-         +rM3NQoYzzKvWk5uNrPRK1Bk+6o1cPr22HwNsgpeFgdDNgQpCjSEOQSMytgaS7BBJKQ3
-         lyqQmA97RKYwG+UzAsS3IogUjganAVgcAhDJhLEx3lqBSBkhVYWtnB21VhnlEa357NW0
-         xfvflv7A9LaLncJcnCxCPScoyiSGCPSogDoGBhkdjXpfIZorf4BjyQq7hn8sQg+llAfj
-         kjxhP/mogDdQyegnTWz9UYQEsDr9ZWpzlr0yo93S8926lTj/PsYW4iPmIiHD+Q7y1B8P
-         tTDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX5DHtHaZ+5I1UUT/uXncLKA/GaY760RGNhkGy/k2O/qeDUnaUgw1Tu366qlG36TQTpEB2PoHweJhIh/NY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyybCIOO8YAI5Xcu1+fCTvCh53v0vnI8XplV7S+WiWtXMGIvhGY
-	vas9HxBvxSr5lfwpU5QjBV8yqS5LJ2dF7w8ERc28Q2e3i+OLiPjD
-X-Gm-Gg: ASbGnctknoWXtvfUMBIDUSzBhXUNkS6Gfj+NiwTc6BkjiRFT87KofPK+N08EcxyO6jh
-	OVefhXwBOpzllmAPKHrba4cLoaxRkxdb5IAnLMcI0PYAq86bpd18GTfJDNWn5x+46srAZgLo3rx
-	je2sF37/ng2mR0QmiofCjZfYDdn/JGXu7DCl8xer+b3vIG3WYzM+D/AB/iqmxPiHsphalP263av
-	1gD8nFY2hIM6hFbqW5yi1AGxzV0vFkwGF4I8k2vWRBNvAbHyfwCWuISbhtjzbQQa1KBzZVKx1LD
-X-Google-Smtp-Source: AGHT+IG8HDMu/dBffQQYFZIQ8XixOEGsiXfgz39zicgDR+ac6qtsBNYC7P3vQR7esdELtQTbMcLelA==
-X-Received: by 2002:ac2:41d7:0:b0:542:2a8b:d56f with SMTP id 2adb3069b0e04-5439c22ca36mr8146588e87.4.1737658713713;
-        Thu, 23 Jan 2025 10:58:33 -0800 (PST)
-Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-543c8368497sm9644e87.151.2025.01.23.10.58.32
+        d=1e100.net; s=20230601; t=1737661053; x=1738265853;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HgVwUL8cM02YfaCeU1/XMmjj0tdkjn2bwYjtAYAHIcA=;
+        b=vIje4nObVHRh861l6XiDJr6RmmnRAy1D1vZvbwy/r/YrV1oByPxkgmuUXTQv1CQA2H
+         xIRoPhpMrcwBeSYqQfHb5W8vkOTU5GQnUxDWpuhu1r1J3OxyrDwgSf2Fi9h9kMWhQonH
+         S5b2jJzPbqnX5zwkQQrKUhUulMERojXrRLZOI6MxwADFgyapgVXUGL6lTE8I0afQclSf
+         jLK8miSs9eCZFhCUnGuw8RzOSY7jfBPT73lixXiLPI83nCwpuh5XIYFYdkzMjyAuJjhw
+         rh3X7Ql6vrtwAoBYyVVxuRefJWgrHyub+ZMAHm95jqwN+oJtsp/I240iO7pFXcZe4Mfq
+         h+jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfOuV/m/mdT7IQOVAYrC7vKwjMKuy6xUHzSz3ZDNg7qb8+lzSOUSTzzDZf3bp18V9rtBY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyp8NoggK8IhU8N0qU7HvQG+43s+HT1ks/RJKH1vm4NSSoMqddd
+	PtoCWGYV2R4Y5I1zNzMRNMY29ewR0K2YhNlD1s/pa9gqMYe1tBoL+Yv9aUQT2mU=
+X-Gm-Gg: ASbGncs7vRb4S3MIH1JGKzn2k337GIeOUASEzqu33KDvhw3+yS9B4HVWrF2Mb7WqUSH
+	T4a7h369vDJ6zdVI5x7sYYB1N+pZy1xW2aYQnAn5fI3VFYSa6ymNWwlYWSbbLmlRPpgr2k0NKxp
+	zUZNkGYvBZ7MkPekCkJV0iu2L8H5EImft5fnuWYLp/z0xZF3mqNd6iAuDVo5WMXWNp/rgn27KWG
+	FGMAUWNUx0xFWW/oNIDWizbwf9U0ImQU91FvVjrZgGVxfbuFEzYk3awmdcepE56476EB5vriaCb
+	Lt8NO4vOd/qp4LEUalytuMgZvpU+4wRNaNypNjvn3YD3Tg==
+X-Google-Smtp-Source: AGHT+IG+8Lpc66A360D0SQ3mvU1EMoh0gkzCqIG6zTOyY5gaBn2ttLdchg/B/aWaqNgFeIHj6DJmrQ==
+X-Received: by 2002:ac8:5f06:0:b0:467:53c8:7572 with SMTP id d75a77b69052e-46e12a55504mr485247851cf.13.1737661053455;
+        Thu, 23 Jan 2025 11:37:33 -0800 (PST)
+Received: from localhost (c-73-251-172-144.hsd1.va.comcast.net. [73.251.172.144])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46e66b8700dsm2016261cf.76.2025.01.23.11.37.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 10:58:33 -0800 (PST)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Cheung Wall <zzqq0103.hey@gmail.com>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
+        Thu, 23 Jan 2025 11:37:32 -0800 (PST)
+Date: Thu, 23 Jan 2025 14:37:31 -0500
+From: Joel Fernandes <joel@joelfernandes.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH 4/4] rcu: Use _full() API to debug synchronize_rcu()
-Date: Thu, 23 Jan 2025 19:58:28 +0100
-Message-Id: <20250123185828.460836-4-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250123185828.460836-1-urezki@gmail.com>
-References: <20250123185828.460836-1-urezki@gmail.com>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 0/4] slab, rcu: move and consolidate TINY_RCU
+ kvfree_rcu() to SLAB
+Message-ID: <20250123193731.GA682588@joelbox2>
+References: <20250123-slub-tiny-kfree_rcu-v1-0-0e386ef1541a@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250123-slub-tiny-kfree_rcu-v1-0-0e386ef1541a@suse.cz>
 
-Switch for using of get_state_synchronize_rcu_full() and
-poll_state_synchronize_rcu_full() pair for debug a normal
-synchronize_rcu() call.
+On Thu, Jan 23, 2025 at 11:37:17AM +0100, Vlastimil Babka wrote:
+> Following the move of the TREE_RCU batching kvfree_rcu() implementation
+> to slab, we still have the simple non-batching implementation in tiny
+> RCU, and RCU implementation specific ifdefs in slab code.
+> 
+> Finish the move and integration into slab. Allow using the simple
+> call_rcu() based implementation also with tree RCU when SLUB_TINY is
+> enabled, as its goal is also to limit memory footprint with less concern
+> for top performance.
+> 
+> In order to avoid RCU having to recognize the fake callback function
+> pointers (__is_kvfree_rcu_offset()) when handling call_rcu(), implement
+> a callback that can calculate the object's address from the embedded
+> rcu_head pointer without knowing the specific offset (previously SLOB
+> would not have made it possible, but it's gone now).
+> 
+> After this series, AFAIK only the following kvfree_rcu specific code
+> remains in RCU:
+> 
+> - a call to kfree_rcu_scheduler_running() from rcu_set_runtime_mode()
+> 
+>   - probably necessary and a generic registration interface would be
+>     unnecessary bloat?
+> 
+> - declarations of kfree_rcu() API in include/linux/rcupdate.h
+> 
+>   - could be moved to slab.h after checking for/fixing up potential
+>     missing includes
+> 
+> git tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/slub-tiny-kfree_rcu
 
-Just using "not" full APIs to identify if a grace period
-is passed or not might lead to a false kernel splat.
+Looks good to me, except typo in third patch 'kmalloc of vmalloc allocation'
+should be 'kmalloc or vmalloc allocation'.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- include/linux/rcupdate_wait.h | 4 ++++
- kernel/rcu/tree.c             | 8 +++-----
- 2 files changed, 7 insertions(+), 5 deletions(-)
+Maybe also add some comments on top of 'kvfree_rcu_cb()'. Like:
 
-diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-index f9bed3d3f78d..a16fc2a9a7d7 100644
---- a/include/linux/rcupdate_wait.h
-+++ b/include/linux/rcupdate_wait.h
-@@ -16,6 +16,10 @@
- struct rcu_synchronize {
- 	struct rcu_head head;
- 	struct completion completion;
-+#ifdef CONFIG_PROVE_RCU
-+	/* This is for testing. */
-+	struct rcu_gp_oldstate oldstate;
-+#endif
- };
- void wakeme_after_rcu(struct rcu_head *head);
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2795d6b5109c..0ae90089ef09 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1612,12 +1612,10 @@ static void rcu_sr_normal_complete(struct llist_node *node)
- {
- 	struct rcu_synchronize *rs = container_of(
- 		(struct rcu_head *) node, struct rcu_synchronize, head);
--	unsigned long oldstate = (unsigned long) rs->head.func;
- 
- 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
--		!poll_state_synchronize_rcu(oldstate),
--		"A full grace period is not passed yet: %lu",
--		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-+		!poll_state_synchronize_rcu_full(&rs->oldstate),
-+		"A full grace period is not passed yet!\n");
- 
- 	/* Finally. */
- 	complete(&rs->completion);
-@@ -3214,7 +3212,7 @@ static void synchronize_rcu_normal(void)
- 	 * snapshot before adding a request.
- 	 */
- 	if (IS_ENABLED(CONFIG_PROVE_RCU))
--		rs.head.func = (void *) get_state_synchronize_rcu();
-+		get_state_synchronize_rcu_full(&rs.oldstate);
- 
- 	rcu_sr_normal_add_req(&rs);
- 
--- 
-2.39.5
+/*
+ * Given an rcu_head embedded within an object at an offset < 4k,
+ * free the object in question.
+ */
 
+I like the touch with the config option in the last patch!
+
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+thanks,
+
+ - Joel
+
+
+
+
+> To: Christoph Lameter <cl@linux.com>
+> To: David Rientjes <rientjes@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Cc: linux-mm@kvack.org
+> To: "Paul E. McKenney" <paulmck@kernel.org>
+> To: Joel Fernandes <joel@joelfernandes.org>
+> To: Josh Triplett <josh@joshtriplett.org>
+> To: Boqun Feng <boqun.feng@gmail.com>
+> To: Uladzislau Rezki <urezki@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Zqiang <qiang.zhang1211@gmail.com>
+> Cc: rcu@vger.kernel.org
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+> Vlastimil Babka (4):
+>       slab, rcu: move TINY_RCU variant of kvfree_rcu() to SLAB
+>       rcu: remove trace_rcu_kvfree_callback
+>       rcu, slab: use a regular callback function for kvfree_rcu
+>       slab: don't batch kvfree_rcu() with SLUB_TINY
+> 
+>  include/linux/rcupdate.h   | 29 ++++++++++++++---------------
+>  include/linux/rcutiny.h    | 36 ------------------------------------
+>  include/linux/rcutree.h    |  3 ---
+>  include/linux/slab.h       | 14 ++++++++++++++
+>  include/trace/events/rcu.h | 34 ----------------------------------
+>  kernel/rcu/tiny.c          | 24 ------------------------
+>  kernel/rcu/tree.c          |  9 ++-------
+>  mm/Kconfig                 |  4 ++++
+>  mm/slab.h                  |  2 ++
+>  mm/slab_common.c           | 32 +++++++++++++++++++++++++-------
+>  mm/slub.c                  | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  11 files changed, 103 insertions(+), 126 deletions(-)
+> ---
+> base-commit: e492fac3657b60b8dd78a6e8ca26d1d14706c7b3
+> change-id: 20250123-slub-tiny-kfree_rcu-bd65bfe222f2
+> 
+> Best regards,
+> -- 
+> Vlastimil Babka <vbabka@suse.cz>
+> 
