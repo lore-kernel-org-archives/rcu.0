@@ -1,198 +1,116 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480E5192B94;
-	Fri, 24 Jan 2025 16:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A5E1ADC6D;
+	Fri, 24 Jan 2025 16:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737736953; cv=none; b=qmKWJaE/zcWD7/UWpqDO3A+uAYe4svgi7+oJVsUDGOC8ZwIfYe9jiLC+DR9OwTJGPqx5HcFSNY6ytH/DdYIPQ0qaOJya5TGEp5LuPHMnqVTz1+1Y10KzaPINgK1k/huKRUw6B4KU/AkWyHs0/FU3CeKULLfp7d5rPOOQxPcbhqQ=
+	t=1737737841; cv=none; b=qTLXP3okWC+TiDwl2YhXJM28b+sbSWlYY6YB2L8uIdQF2oNSPGQQ4dCORtQtKiJ4vbAHPLi6W2ys49BNpX+Q9a4fbZHz5BPXY012FcTm93whMDQaBm130gtTk3m2MpO+WdqOWa79EFedmZ7mNmf+HOLtOdVOD90vUpkwSQGHOIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737736953; c=relaxed/simple;
-	bh=ajYX9Oqs2ebDbLdQ4g4q3I1kllsGJpA7sDRF49nUQOI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bh5u9H7EmCwfbvCR4qOAaFZ8Ac3ix4KIyI+7JvkKfMeev9UFmSil7CiBzOYeMLHelDz1zoUG+N8NqvZktpeqJEbsqNqpzxyY5lpa0sgUuS77qVMgyMucO4ncVvJw+IfonU3QZXweKG9HkAXBdsxHIQun9YraidPs699gR2xXgNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JsIevqc6; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1737737841; c=relaxed/simple;
+	bh=f5BdNfLG7qVGb77pe5MWvPmr5N55juXmpHxg9JmLi8M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wfd6i3NATLdZEeask41bh9YClOL2sP+thWn0GKA7gOJIt6KIKQuXAM+zFNAmz0qt++xMkN+E0RqG2UX7/p08GISAAZmLQvzww6/0mBe8sKd7IE5JpxDINsm9XlSiz7GRGFr4RugMaTmk2Rj+gqb5VQc+pf698Q2ZZxJxcYQu9KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GauZP0/N; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JsIevqc6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779D3C4CED2;
-	Fri, 24 Jan 2025 16:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737736952;
-	bh=ajYX9Oqs2ebDbLdQ4g4q3I1kllsGJpA7sDRF49nUQOI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JsIevqc6/b9mMVUJo7OSz9/9bwCcST5B3eO/b9YFogRIRiO3mqRDej9dIjGB1EZ1T
-	 +riHikRqk7eRW+sLM87akA6f7gx4+Id0BLShhYljcsdf9qaL8mNgwcBMQhKw9+5cIU
-	 J1RLICd2IpqUg5rvrkXg/uj+pa4RFyHwKneX8Tb7yDd3slJ004q24Ohj4tate4zGp0
-	 T8VL0MqS5UL4P/8U7jRlmLONUIUKs0u18sBBz8e8CudgOKCu6SYWTGzElSQtuxKk3W
-	 IA8PYG7Z6LTdLWge7pxt8k2V5nKOHBsCXisPlHhrFg+629ljfqYz1PBBQ3F9KUaThM
-	 7vlFBd72+Zmwg==
-Date: Fri, 24 Jan 2025 17:42:29 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
- detection
-Message-ID: <Z5PC9Rs1C2NIBR8k@localhost.localdomain>
-References: <eb83ab84-05b3-43da-bc59-e2dbd932740c@paulmck-laptop>
- <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
- <Z5OodAwpjRtR4lvv@localhost.localdomain>
- <19388b60-5e71-463d-ba68-9064d0caa224@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GauZP0/N"
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-ab2bb0822a4so467483466b.3;
+        Fri, 24 Jan 2025 08:57:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737737838; x=1738342638; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T4bXFjNsYpYRfvfAbK17JWFokNDCLw4ZHyHFhst1k2k=;
+        b=GauZP0/NeqAkK19rljCWi+xWrlpvMBcMofRkikLb/qsEvWm39f1sb/U9ILUTUQtc+7
+         lEUxdo7CsuJiaxi1KNvEm04f+YpxfoI0GpH8ho6yN5dH77K72y3a2TTgZvr5yS3m4AW2
+         6yREqF33iv2qAcCJI+OzrWHdIho2BBEKj0bKiie823lG493Gm5fNjKKkw3+fEilHXGmf
+         EcrwoMRqkD3QDsroErR6xazKILc2YAA7QVoxLiwScbMEIR5vBLuUp3upXH1SvYDvj0Hv
+         a3cMDiWd80ID5wbGh1jVZ4in5w+MhwvF14Ql/ZJx9lHI/7aC0NpE2nljrMWbHdPssFXo
+         ookA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737737838; x=1738342638;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T4bXFjNsYpYRfvfAbK17JWFokNDCLw4ZHyHFhst1k2k=;
+        b=wwtnr26wSd8ifPRGPns/Q5ZApmEQjve19/7xl1glLvCEnmtLdM4QRtBj1+ivjMHUrl
+         W0h7ul3h+VCZ8wGqZ3LNM01F3iEeqP6miHDhDLQyi48qyzV9Xu+CdngSQwbF2FLhcif5
+         ttxboKFfxzh9Hvob5lXEt+KeSKF8IGF4YxAJsBEa487Y8I+1Zp05QvGSjf5syca3CPQU
+         fPuo1SDZjz2nQclWRzyZcOzqmBkD4ATNbdaalEIMFeUU0jzMZyoc1UibYycDGgEkj1QL
+         uRgf/DHRumW7/yDwb0ZhvFh6ULcX+aiAtVlYBORaAPyvOukSC+9UKln0nq29j2IR+XAC
+         Sx5A==
+X-Forwarded-Encrypted: i=1; AJvYcCV9b6SH5/s9eAn5cBJ+8pqLXcZ8NvptyggOWQR/ra7ZBEKuTZQJpHRQKXxtmQAiM25FmAMr@vger.kernel.org, AJvYcCXpEEBMhW/otCfInL2XJJwqoGZDnOVUgj0qzBD6kyrsR4ZonkuVjsHYUOKK7HNaitytU4jQLwNGOADkJA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4Zp4Xjvtl98RC0NIOnpvm6UHN5rcz3fvraoXNabheaB66K0wn
+	dGbhNORlu7RcqpmWMOFpe1byj5uIckVPhaEdA4e5eye9v6ij9NYhN1dcYFCNE0gTHCh9k18BkVr
+	/Xa1rce/7lOkn8h3SXTRpmJHBfXY=
+X-Gm-Gg: ASbGnctqzmQjxFVF+XxicFG59B7m6eZSxJ69I/E/M6BRG3jcC3sbjqy5Z9wUqhbW45J
+	7x4jTEtWl2TOXczteOXzCvbwsPsF975ZXqnyLBxViCRtvgASW4ouS2OXgd5Ueo9o=
+X-Google-Smtp-Source: AGHT+IFiqJ9dADUH7qn1R/PXwAau7xMCFJ5HMHkvmVmV1fDdRpT+sa9PcOwGsYYLD0s3dVENdSrgiOxP1uEpW3m+H04=
+X-Received: by 2002:a17:907:7296:b0:ab3:4c32:aa6c with SMTP id
+ a640c23a62f3a-ab38b10cfa4mr2992452466b.20.1737737837384; Fri, 24 Jan 2025
+ 08:57:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <19388b60-5e71-463d-ba68-9064d0caa224@paulmck-laptop>
+References: <CA+=Fv5SW-N+5KzsnVdHvy406-p+g7giUbt626xwDduy6xjaPkw@mail.gmail.com>
+ <CA+=Fv5TtOQkDMPnuPrPGcB0VGhUHUDqe5=Z+ovd5x5rBJ-Hsjw@mail.gmail.com>
+ <alpine.DEB.2.21.2501122348510.18889@angie.orcam.me.uk> <CA+=Fv5Q9UxeSP0U10d281Nbm3agyFgpwyY95+d2pAWVWJP=2Yg@mail.gmail.com>
+ <CA+=Fv5RU946-r5S8hZKTF4w20s82Oc-JDe-pCa1W7zjr6nEoag@mail.gmail.com>
+ <CA+=Fv5RntE=Z=PgYYxBDLTDES6aWkg-+yqEPPDjv-E7GCcoufg@mail.gmail.com>
+ <alpine.DEB.2.21.2501201317060.27432@angie.orcam.me.uk> <Z4-jgMJgbVriLaCr@minute>
+ <Z5KMHoA7GlHJyUU_@minute> <alpine.DEB.2.21.2501232306270.27203@angie.orcam.me.uk>
+ <Z5NxuIFsMUvqWUtC@minute>
+In-Reply-To: <Z5NxuIFsMUvqWUtC@minute>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Fri, 24 Jan 2025 17:57:05 +0100
+X-Gm-Features: AWEUYZlaK5IQfun0t2CnwCwXSR8Gm3WPQ0EhK3IrbGrA1i4BSMz2uDtOVcSlfWg
+Message-ID: <CA+=Fv5QmSkP4Ysp1zHNmUPftXYbSquTCsO_o3Rcgi2T5RcPj5A@mail.gmail.com>
+Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
+To: Ivan Kokshaysky <ink@unseen.parts>
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Michael Cree <mcree@orcon.net.nz>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, rcu@vger.kernel.org, 
+	linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Le Fri, Jan 24, 2025 at 07:58:20AM -0800, Paul E. McKenney a écrit :
-> On Fri, Jan 24, 2025 at 03:49:24PM +0100, Frederic Weisbecker wrote:
-> > Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McKenney a écrit :
-> > > The get_state_synchronize_rcu_full() and poll_state_synchronize_rcu_full()
-> > > functions use the root rcu_node structure's ->gp_seq field to detect
-> > > the beginnings and ends of grace periods, respectively.  This choice is
-> > > necessary for the poll_state_synchronize_rcu_full() function because
-> > > (give or take counter wrap), the following sequence is guaranteed not
-> > > to trigger:
-> > > 
-> > >         get_state_synchronize_rcu_full(&rgos);
-> > >         synchronize_rcu();
-> > >         WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&rgos));
-> > > 
-> > > The RCU callbacks that awaken synchronize_rcu() instances are
-> > > guaranteed not to be invoked before the root rcu_node structure's
-> > > ->gp_seq field is updated to indicate the end of the grace period.
-> > > However, these callbacks might start being invoked immediately
-> > > thereafter, in particular, before rcu_state.gp_seq has been updated.
-> > > Therefore, poll_state_synchronize_rcu_full() must refer to the
-> > > root rcu_node structure's ->gp_seq field.  Because this field is
-> > > updated under this structure's ->lock, any code following a call to
-> > > poll_state_synchronize_rcu_full() will be fully ordered after the
-> > > full grace-period computation, as is required by RCU's memory-ordering
-> > > semantics.
-> > > 
-> > > By symmetry, the get_state_synchronize_rcu_full() function should also
-> > > use this same root rcu_node structure's ->gp_seq field.  But it turns out
-> > > that symmetry is profoundly (though extremely infrequently) destructive
-> > > in this case.  To see this, consider the following sequence of events:
-> > > 
-> > > 1.      CPU 0 starts a new grace period, and updates rcu_state.gp_seq
-> > >         accordingly.
-> > > 
-> > > 2.      As its first step of grace-period initialization, CPU 0 examines
-> > >         the current CPU hotplug state and decides that it need not wait
-> > >         for CPU 1, which is currently offline.
-> > > 
-> > > 3.      CPU 1 comes online, and updates its state.  But this does not
-> > >         affect the current grace period, but rather the one after that.
-> > >         After all, CPU 1 was offline when the current grace period
-> > >         started, so all pre-existing RCU readers on CPU 1 must have
-> > >         completed or been preempted before it last went offline.
-> > >         The current grace period therefore has nothing it needs to wait
-> > >         for on CPU 1.
-> > > 
-> > > 4.      CPU 1 switches to an rcutorture kthread which is running
-> > >         rcutorture's rcu_torture_reader() function, which starts a new
-> > >         RCU reader.
-> > > 
-> > > 5.      CPU 2 is running rcutorture's rcu_torture_writer() function
-> > >         and collects a new polled grace-period "cookie" using
-> > >         get_state_synchronize_rcu_full().  Because the newly started
-> > >         grace period has not completed initialization, the root rcu_node
-> > >         structure's ->gp_seq field has not yet been updated to indicate
-> > >         that this new grace period has already started.
-> > > 
-> > >         This cookie is therefore set up for the end of the current grace
-> > >         period (rather than the end of the following grace period).
-> > > 
-> > > 6.      CPU 0 finishes grace-period initialization.
-> > > 
-> > > 7.      If CPU 1’s rcutorture reader is preempted, it will be added to
-> > >         the ->blkd_tasks list, but because CPU 1’s ->qsmask bit is not
-> > >         set in CPU 1's leaf rcu_node structure, the ->gp_tasks pointer
-> > >         will not be updated.  Thus, this grace period will not wait on
-> > >         it.  Which is only fair, given that the CPU did not come online
-> > >         until after the grace period officially started.
-> > > 
-> > > 8.      CPUs 0 and 2 then detect the new grace period and then report
-> > >         a quiescent state to the RCU core.
-> > > 
-> > > 9.      Because CPU 1 was offline at the start of the current grace
-> > >         period, CPUs 0 and 2 are the only CPUs that this grace period
-> > >         needs to wait on.  So the grace period ends and post-grace-period
-> > >         cleanup starts.  In particular, the root rcu_node structure's
-> > >         ->gp_seq field is updated to indicate that this grace period
-> > >         has now ended.
-> > > 
-> > > 10.     CPU 2 continues running rcu_torture_writer() and sees that,
-> > >         from the viewpoint of the root rcu_node structure consulted by
-> > >         the poll_state_synchronize_rcu_full() function, the grace period
-> > >         has ended.  It therefore updates state accordingly.
-> > > 
-> > > 11.     CPU 1 is still running the same RCU reader, which notices this
-> > >         update and thus complains about the too-short grace period.
-> > 
-> > I think I get the race but I must confess I'm not very familiar with how this
-> > all materialize on CPU 2's rcu_torture_writer() and CPU 1's rcu_torture_reader().
-> > 
-> > Basically this could trigger on CPU 1 with just doing the following, right?
-> > 
-> > rcu_read_lock()
-> > get_state_synchronize_rcu_full(&rgos);
-> > WARN_ON_ONCE(poll_state_synchronize_rcu_full(&rgos))
-> > rcu_read_unlock()
-> 
-> CPU 1 would do rcu_read_lock()/checks/rcu_read_unlock() as the
-> reader, and CPU 2 would do get_state_synchronize_rcu_full(), later
-> poll_state_synchronize_rcu_full(), which would (erroneously) indicate
-> a completed grace period, so it would update the state, triggering CPU
-> 1's checks.
-
-I see, so if I generalize the problem beyond rcutorture, this looks like this,
+Are there other parts of the code that might unalign the stack, even
+if the stack is properly aligned to begin with? i.e passing an uneven
+number of function arguments on the stack or inside interrupt
+handlers? Alpha does not make use of a separate interrupt stack,
 right?
 
-CPU 0                                    CPU 1                       CPU 2
------                                    ------                      -----
 
-rcu_seq_start(rcu_state.gp_seq)
-                                         // CPU boots
-                                         rcu_read_lock()
-                                         r0 = rcu_dereference(*X)
-                                                                     r1 = *X
-                                                                     *X = NULL
-                                                                     // relies on rnp->gp_seq and not rcu_state.gp_seq
-                                                                     get_state_synchronize_rcu_full(&gros)
-WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
-rcu_report_qs_rdp()
-                                                                      rcu_report_qs_rdp()
-                                                                      rcu_report_qs_rnp()
-                                                                      rcu_report_qs_rsp()
-                                                                      if (poll_state_synchronize_rcu_full(&rgos))
-                                                                          kfree(r1)
-                                          // play with r0 and crash
+On stack alignment in "ALPHA Calling Standard":
+D.3.1 Stack Alignment
+
+"This standard requires that stacks be octaword aligned at the time a
+new procedure is invoked. During the body of a procedure, however,
+there is no requirement to keep this level of alignment (even though
+it may be beneficial). This implies that any asynchronous interrupt
+handlers must properly align the stack before any standard calls are
+made."
 
 
-> > I'm wondering, what prevents us from removing rcu_state.gp_seq and rely only on
-> > the root node for the global state ?
-> 
-> One scenario comes to mind immediately.  There may be others.
-> 
-> Suppose we were running with default configuration on a system with
-> "only" eight CPUs.  Then there is only the one rcu_node structure,
-> which is both root and leaf.  Without rcu_state.gp_seq, there
-> would be no way to communicate the beginning of the grace period to
-> get_state_synchronize_rcu_full() without also allowing quiescent states
-> to be reported.  There would thus be no time in which to check for newly
-> onlined/offlined CPUs.
 
-Heh, that makes sense! Though perhaps that qsmaskinit[next] handling part
-could be done before rcu_seq_start()?
+For now I've reverted the stack alignment patch and I'm now just
+applying this patch. Now the ES40 is stable again
 
-Thanks.
+--- smp.orig 2025-01-24 17:50:18.822326213 +0100
++++ smp.h 2025-01-24 17:51:13.772835769 +0100
+@@ -30,8 +30,7 @@
+  (struct __call_single_data){ .func = (_func), .info = (_info), }
 
-> 
-> 							Thanx, Paul
+ /* Use __aligned() to avoid to use 2 cache lines for 1 csd */
+-typedef struct __call_single_data call_single_data_t
+- __aligned(sizeof(struct __call_single_data));
++typedef struct __call_single_data call_single_data_t;
+
+ #define INIT_CSD(_csd, _func, _info) \
+ do { \
+
+/Magnus
