@@ -1,121 +1,210 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEF812C484;
-	Fri, 24 Jan 2025 15:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A421314D430;
+	Fri, 24 Jan 2025 15:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737733765; cv=none; b=JZyqv4O0T7pcgYtP0DhLb7uBaNGcg3TTIR47QgvAL1oZHiyjOZ+tCJGfptmNpFmtH14esHehXMiX9RH6+MY0Y7xtMGYOt+4NNvgvsBnr9/qvTEkeumK1ye27xeIBPk2rxDLJFoKpgGGY0TSLjuhJ+mumkIjg3WXwfr7BZEoQbfg=
+	t=1737734301; cv=none; b=DksGMPRh3kL0y/M3uXpbTLTx7+a2ENHygF+k/VFKDcg8cU3xl6lErruLkh8ADVWpyX98Az1m0CEBWGzRDbTMiyKLXHkbUwJ2thcF17BK3Hbsh++CQ6cKVtnQEcPy4tHCqGgJBPbnuiI5eKPKA/ZatoFJH88Y4F5WRugYkwPmK8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737733765; c=relaxed/simple;
-	bh=4XS3R7mtDBzp/BdILqI6T6RrtsX/n40dLsgq4B6Nygk=;
+	s=arc-20240116; t=1737734301; c=relaxed/simple;
+	bh=U/akbj2Q8nCc/2OdOYhxctoEhc3SUFk+Ews5V1NQsdA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fvet1oNL5+IfmVx+qa8p5I+ThDKYEz0+cmkAKPXhBYvRzLtB/78BZ6l5mWhG8Ak0ceIUppCf6egJU8TVmZcLLZhiVotR9DtbWR9B7SnuIAoSQH+KFVH+CdG9xYkaBPUmL5HALClUWCZi+qiGu44tI3OjHwB4HIqAj17mib5b+5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kObnP978; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=O02XhMl57PPdm0AVswxg++Ej+CkMHDoGI5ApT34nVNYt1sPhsbjHSPJHYX/aZU5AYHSPxkOLfUH+QGfJBWxbw8BdJR0yajO/viub12xUBO1WZZi8o0DXSyU0V4V8zajHlujUZtf7MqtPa+clSkN7BPvEkoNyBC5C79OP136uPeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxvLCOAt; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kObnP978"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C23C4CED2;
-	Fri, 24 Jan 2025 15:49:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxvLCOAt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ECC2C4CEDD;
+	Fri, 24 Jan 2025 15:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737733764;
-	bh=4XS3R7mtDBzp/BdILqI6T6RrtsX/n40dLsgq4B6Nygk=;
+	s=k20201202; t=1737734301;
+	bh=U/akbj2Q8nCc/2OdOYhxctoEhc3SUFk+Ews5V1NQsdA=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=kObnP978DRWu4I+c+rs6Vet5Z3I+DRAa09FxRt7yuRtYRag4/oHP2LoeABuJPfD04
-	 LigW522udu6EnVDiSCCAioprB1p9UGhihfrCvsE4g2WohsMUKG9RYY2PvODdPk+iLC
-	 /lQhiNzPK66wiv1xhjEnI6tFHwQluVemCdftDQsbs/rJHfw2WX1B2R6nsPa2DFkbYA
-	 G+3COb2yYYZGsI0djqaDtx4XXuM9c2s3unTHiaN/ds3ydJzJQ/vUl08uKt63I3e3qH
-	 2LDNnq8ixFdyD19jQ+za3GB78xyczcznUlvfWC69AFSE+Te0FTU/ClcFPMyaGPGCux
-	 Sk38k5VtNB/sg==
+	b=jxvLCOAtz5MFZChJHaQdoU2oXYQoPCfkB6J8Joddpv4ZOlo+brXsYEDWdtdTWo0i6
+	 4CypVksfyD7HG2sdnAf5kuQ/+FBmghsA4C5ay510l2GBK1Gk9QqNRFo9GokDlbtvRt
+	 hPyO9apxbgo21utONUOS+Z7HKNnGNPoOXZ5cS9aVykauIl4teaUi4voupIr7H8GyT5
+	 CswsCB8oF78lrCUyzk1VCp3sirpHnUv1BMisYpvWFBn4mdfjg0xwVybLPNbj81qow6
+	 3rTtv0yMFZHm7DzXcK1VjT+LDPO7MBIFIdvVKA0Cd34NCiLgHzkOEMDRY82VlNy/c3
+	 6mO/4kV4pVLSw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 64228CE160E; Fri, 24 Jan 2025 07:49:24 -0800 (PST)
-Date: Fri, 24 Jan 2025 07:49:24 -0800
+	id A3CFBCE0E7B; Fri, 24 Jan 2025 07:58:20 -0800 (PST)
+Date: Fri, 24 Jan 2025 07:58:20 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Cheung Wall <zzqq0103.hey@gmail.com>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 4/4] rcu: Use _full() API to debug synchronize_rcu()
-Message-ID: <00900afe-ac4e-4362-a3f9-d65f2c9dcd9a@paulmck-laptop>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org
+Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
+ detection
+Message-ID: <19388b60-5e71-463d-ba68-9064d0caa224@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20250123185828.460836-1-urezki@gmail.com>
- <20250123185828.460836-4-urezki@gmail.com>
- <ea7d8677-f81e-4590-9716-23ea41597873@paulmck-laptop>
- <Z5N9_EafVhSfE6nA@pc636>
+References: <eb83ab84-05b3-43da-bc59-e2dbd932740c@paulmck-laptop>
+ <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
+ <Z5OodAwpjRtR4lvv@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z5N9_EafVhSfE6nA@pc636>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z5OodAwpjRtR4lvv@localhost.localdomain>
 
-On Fri, Jan 24, 2025 at 12:48:12PM +0100, Uladzislau Rezki wrote:
-> On Thu, Jan 23, 2025 at 01:52:57PM -0800, Paul E. McKenney wrote:
-> > On Thu, Jan 23, 2025 at 07:58:28PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > Switch for using of get_state_synchronize_rcu_full() and
-> > > poll_state_synchronize_rcu_full() pair for debug a normal
-> > > synchronize_rcu() call.
-> > > 
-> > > Just using "not" full APIs to identify if a grace period
-> > > is passed or not might lead to a false kernel splat.
-> > > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > ---
-> > >  include/linux/rcupdate_wait.h | 4 ++++
-> > >  kernel/rcu/tree.c             | 8 +++-----
-> > >  2 files changed, 7 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-> > > index f9bed3d3f78d..a16fc2a9a7d7 100644
-> > > --- a/include/linux/rcupdate_wait.h
-> > > +++ b/include/linux/rcupdate_wait.h
-> > > @@ -16,6 +16,10 @@
-> > >  struct rcu_synchronize {
-> > >  	struct rcu_head head;
-> > >  	struct completion completion;
-> > > +#ifdef CONFIG_PROVE_RCU
-> > > +	/* This is for testing. */
-> > > +	struct rcu_gp_oldstate oldstate;
-> > > +#endif
-> > >  };
-> > >  void wakeme_after_rcu(struct rcu_head *head);
-> > >  
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index 2795d6b5109c..0ae90089ef09 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -1612,12 +1612,10 @@ static void rcu_sr_normal_complete(struct llist_node *node)
-> > >  {
-> > >  	struct rcu_synchronize *rs = container_of(
-> > >  		(struct rcu_head *) node, struct rcu_synchronize, head);
-> > > -	unsigned long oldstate = (unsigned long) rs->head.func;
-> > >  
-> > >  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
-> > > -		!poll_state_synchronize_rcu(oldstate),
-> > > -		"A full grace period is not passed yet: %lu",
-> > > -		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-> > > +		!poll_state_synchronize_rcu_full(&rs->oldstate),
-> > > +		"A full grace period is not passed yet!\n");
+On Fri, Jan 24, 2025 at 03:49:24PM +0100, Frederic Weisbecker wrote:
+> Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McKenney a écrit :
+> > The get_state_synchronize_rcu_full() and poll_state_synchronize_rcu_full()
+> > functions use the root rcu_node structure's ->gp_seq field to detect
+> > the beginnings and ends of grace periods, respectively.  This choice is
+> > necessary for the poll_state_synchronize_rcu_full() function because
+> > (give or take counter wrap), the following sequence is guaranteed not
+> > to trigger:
 > > 
-> > Looks good, but why not also continue printing out the required
-> > grace-period sequence number?  Yes, there would need to be helper
-> > sprintf()-style functions to paper over the difference between Tiny RCU
-> > and Tree RCU.  ;-)
+> >         get_state_synchronize_rcu_full(&rgos);
+> >         synchronize_rcu();
+> >         WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&rgos));
 > > 
-> Uhh :) Do we have rcu_seq_diff() for a _full() API? Looks like not :)
+> > The RCU callbacks that awaken synchronize_rcu() instances are
+> > guaranteed not to be invoked before the root rcu_node structure's
+> > ->gp_seq field is updated to indicate the end of the grace period.
+> > However, these callbacks might start being invoked immediately
+> > thereafter, in particular, before rcu_state.gp_seq has been updated.
+> > Therefore, poll_state_synchronize_rcu_full() must refer to the
+> > root rcu_node structure's ->gp_seq field.  Because this field is
+> > updated under this structure's ->lock, any code following a call to
+> > poll_state_synchronize_rcu_full() will be fully ordered after the
+> > full grace-period computation, as is required by RCU's memory-ordering
+> > semantics.
+> > 
+> > By symmetry, the get_state_synchronize_rcu_full() function should also
+> > use this same root rcu_node structure's ->gp_seq field.  But it turns out
+> > that symmetry is profoundly (though extremely infrequently) destructive
+> > in this case.  To see this, consider the following sequence of events:
+> > 
+> > 1.      CPU 0 starts a new grace period, and updates rcu_state.gp_seq
+> >         accordingly.
+> > 
+> > 2.      As its first step of grace-period initialization, CPU 0 examines
+> >         the current CPU hotplug state and decides that it need not wait
+> >         for CPU 1, which is currently offline.
+> > 
+> > 3.      CPU 1 comes online, and updates its state.  But this does not
+> >         affect the current grace period, but rather the one after that.
+> >         After all, CPU 1 was offline when the current grace period
+> >         started, so all pre-existing RCU readers on CPU 1 must have
+> >         completed or been preempted before it last went offline.
+> >         The current grace period therefore has nothing it needs to wait
+> >         for on CPU 1.
+> > 
+> > 4.      CPU 1 switches to an rcutorture kthread which is running
+> >         rcutorture's rcu_torture_reader() function, which starts a new
+> >         RCU reader.
+> > 
+> > 5.      CPU 2 is running rcutorture's rcu_torture_writer() function
+> >         and collects a new polled grace-period "cookie" using
+> >         get_state_synchronize_rcu_full().  Because the newly started
+> >         grace period has not completed initialization, the root rcu_node
+> >         structure's ->gp_seq field has not yet been updated to indicate
+> >         that this new grace period has already started.
+> > 
+> >         This cookie is therefore set up for the end of the current grace
+> >         period (rather than the end of the following grace period).
+> > 
+> > 6.      CPU 0 finishes grace-period initialization.
+> > 
+> > 7.      If CPU 1’s rcutorture reader is preempted, it will be added to
+> >         the ->blkd_tasks list, but because CPU 1’s ->qsmask bit is not
+> >         set in CPU 1's leaf rcu_node structure, the ->gp_tasks pointer
+> >         will not be updated.  Thus, this grace period will not wait on
+> >         it.  Which is only fair, given that the CPU did not come online
+> >         until after the grace period officially started.
+> > 
+> > 8.      CPUs 0 and 2 then detect the new grace period and then report
+> >         a quiescent state to the RCU core.
+> > 
+> > 9.      Because CPU 1 was offline at the start of the current grace
+> >         period, CPUs 0 and 2 are the only CPUs that this grace period
+> >         needs to wait on.  So the grace period ends and post-grace-period
+> >         cleanup starts.  In particular, the root rcu_node structure's
+> >         ->gp_seq field is updated to indicate that this grace period
+> >         has now ended.
+> > 
+> > 10.     CPU 2 continues running rcu_torture_writer() and sees that,
+> >         from the viewpoint of the root rcu_node structure consulted by
+> >         the poll_state_synchronize_rcu_full() function, the grace period
+> >         has ended.  It therefore updates state accordingly.
+> > 
+> > 11.     CPU 1 is still running the same RCU reader, which notices this
+> >         update and thus complains about the too-short grace period.
 > 
-> It contains both, rgos_norm and rgos_exp! Take a delta of both?
+> I think I get the race but I must confess I'm not very familiar with how this
+> all materialize on CPU 2's rcu_torture_writer() and CPU 1's rcu_torture_reader().
+> 
+> Basically this could trigger on CPU 1 with just doing the following, right?
+> 
+> rcu_read_lock()
+> get_state_synchronize_rcu_full(&rgos);
+> WARN_ON_ONCE(poll_state_synchronize_rcu_full(&rgos))
+> rcu_read_unlock()
 
-Why not?  Maybe separate the two differences with a colon.
+CPU 1 would do rcu_read_lock()/checks/rcu_read_unlock() as the
+reader, and CPU 2 would do get_state_synchronize_rcu_full(), later
+poll_state_synchronize_rcu_full(), which would (erroneously) indicate
+a completed grace period, so it would update the state, triggering CPU
+1's checks.
 
-Or maybe make a variant of poll_state_synchronize_rcu_full() that take
-a char* argument, which uses the same value for the check and the string
-to be output.
+> > The fix is for the get_state_synchronize_rcu_full() function to use
+> > rcu_state.gp_seq instead of the the root rcu_node structure's ->gp_seq
+> > field.  With this change in place, if step 5's cookie indicates that the
+> > grace period has not yet started, then any prior code executed by CPU 2
+> > must have happened before CPU 1 came online.  This will in turn prevent
+> > CPU 1's code in steps 3 and 11 from spanning CPU 2's grace-period wait,
+> > thus preventing CPU 1 from being subjected to a too-short grace period.
+> > 
+> > This commit therefore makes this change.  Note that there is no change to
+> > the poll_state_synchronize_rcu_full() function, which as noted above,
+> > must continue to use the root rcu_node structure's ->gp_seq field.
+> > This is of course an asymmetry between these two functions, but is an
+> > asymmetry that is absolutely required for correct operation.  It is a
+> > common human tendency to greatly value symmetry, and sometimes symmetry
+> > is a wonderful thing.  Other times, symmetry results in poor performance.
+> > But in this case, symmetry is just plain wrong.
+> > 
+> > Nevertheless, the asymmetry does require an additional adjustment.
+> > It is possible for get_state_synchronize_rcu_full() to see a given
+> > grace period as having started, but for an immediately following
+> > poll_state_synchronize_rcu_full() to see it as having not yet started.
+> > Given the current rcu_seq_done_exact() implementation, this will
+> > result in a false-positive indication that the grace period is done
+> > from poll_state_synchronize_rcu_full().  This is dealt with by making
+> > rcu_seq_done_exact() reach back three grace periods rather than just
+> > two of them.
+> > 
+> > Although this fixes 91a967fd6934 ("rcu: Add full-sized polling for
+> > get_completed*() and poll_state*()"), it is not clear that it is worth
+> > backporting this commit.  First, it took me many weeks to convince
+> > rcutorture to reproduce this more frequently than once per year.  Second,
+> > this cannot be reproduced at all without frequent CPU-hotplug operations,
+> > as in waiting all of 50 milliseconds from the end of the previous
+> > operation until starting the next one.  Third, the TREE03.boot settings
+> > cause multi-millisecond delays during RCU grace-period initialization,
+> > which greatly increase the probability of the above sequence of events.
+> > (Don't do this in production workloads!)  Fourth, extremely heavy use of
+> > get_state_synchronize_rcu_full() and/or poll_state_synchronize_rcu_full()
+> > is required to reproduce this, and as of v6.12, only kfree_rcu() uses it,
+> > and even then not particularly heavily.
+> 
+> I'm wondering, what prevents us from removing rcu_state.gp_seq and rely only on
+> the root node for the global state ?
+
+One scenario comes to mind immediately.  There may be others.
+
+Suppose we were running with default configuration on a system with
+"only" eight CPUs.  Then there is only the one rcu_node structure,
+which is both root and leaf.  Without rcu_state.gp_seq, there
+would be no way to communicate the beginning of the grace period to
+get_state_synchronize_rcu_full() without also allowing quiescent states
+to be reported.  There would thus be no time in which to check for newly
+onlined/offlined CPUs.
 
 							Thanx, Paul
