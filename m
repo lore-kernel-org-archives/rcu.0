@@ -1,171 +1,96 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9151A156222
-	for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 15:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8390F12BF02;
+	Fri, 24 Jan 2025 15:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737732159; cv=none; b=JMO5bfes0AkpX1vkQL2GqARCNDzBNnannWL6sXVs+LuUvj1I61OYWeaYUBUXvB6w8q68qnzmuRX0zqSIT49bFNDTzFemwCsIdKi45LupQ97o5alEIfslute8e/9aLgMhmYFlqMMRLCA6v0IgMIlVLMGgiXPMZF7hi2AkNVdTCX8=
+	t=1737733524; cv=none; b=EZGQuFs0LEsVKFsxfkd8oiAk+UGI0dqb6aZTK1jE7CCNoGRYhZ1OkmmdznxPCKZQRYi8GJEVqd1Hc1MJBzUlmjlGiVA7K85z7Hc9sotVdPCq8b5kd6jlyMy0iAzwQU3IEfNZ//EMHPRbz4lfBfn3/33IdlYxlbXKnZcBmv4i2R4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737732159; c=relaxed/simple;
-	bh=DwitzjRGQEzgyZZn0UD4LNiBUZsqGx1Qrum3CBb5LtE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=eS8H4clMlM7h5Jr5R0Qf+88DxKmvJRUPBdAdftFe+JmYrb2fSri3dqKJTQS8rf6GjooUFqgW5xpDV5w9xCyoWbn+eJ9TmpqsptLXewogxO9fu60t1ooJRNlalUmldAr7jr8eSZbqOHRqXiNncVVc77KzxKSwInuF+qHO8EqlxCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HxwXSMOU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1737733524; c=relaxed/simple;
+	bh=S3/2Ia3VmQ5YFu51XFVEOifogH6IFRdY1kEQup13u+g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HEnif45qn456K1fhVUnW2tX7UQkaR4QumjYVIm8zjFdyquDCEb4qEKbwtSHi1IpQTxnORtpg2D+cH+JKaeGrQQqwYN0aTSQL3W3Zy+hG+716fd2jGXboC+isjQleBIqiXz5q2O6Yj6MerohM0TFwMC83fnbb37T2UL/aLfsQAIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BB7hyvLo; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HxwXSMOU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1737732156;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DwitzjRGQEzgyZZn0UD4LNiBUZsqGx1Qrum3CBb5LtE=;
-	b=HxwXSMOUwlQW6rkKs1bhgyQDM7IU6V+Cx1Q5TXVI4C8aFL/gRNx7+XZSdhxGhEj0dDVbhU
-	sOpdqOCzWZ/oxLkA2J/88tLzQycl0eX9cm7l6dGff5t+VWB2ewFkeqb3jKN5Rck8VKQ6RK
-	4DjtQC5fZUMEa9A70U6fRjyNMnsMU24=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-WFdJ7wKgPdihUESrp28Ytg-1; Fri, 24 Jan 2025 10:22:35 -0500
-X-MC-Unique: WFdJ7wKgPdihUESrp28Ytg-1
-X-Mimecast-MFC-AGG-ID: WFdJ7wKgPdihUESrp28Ytg
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6d89a389ee9so49663846d6.2
-        for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 07:22:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737732153; x=1738336953;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DwitzjRGQEzgyZZn0UD4LNiBUZsqGx1Qrum3CBb5LtE=;
-        b=jgK8mflXuoMch+9q7Y/8Fc0EzxjKPZD5ZQoOlEKMdT36ReiFOUemwxiXYz3UTFMcFF
-         uu1OG9z9pK2ET6a2KiesmI/u7eU5rzKxyu3r7jR1lQPnxkl2/FH0Z3/ml6X5E10geEJQ
-         AwSPUdnRRUP0vEVXzHg1ZbrUB0Siawb+0RostOdIkmy2HmXPmyQhzDafsR8Ghre7Ec65
-         U4LY2B7gE1+4/T803jdORO4DkN52qqMQyl6gsVCptgcsgDtqd2gOFPA+/eIGCOykeCWt
-         9gp4Dh6AHBC/keqsqylCUgT1+9zrBxRujin4cmTVfPN8MiZcAzwCDrW0m7CV+T8A2sAE
-         tBcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXHeT0m3y4dTMZEpPyFOsDm/4rcQDWs98mpSixC7DWC6vlbP8+FBVezlH1f0oN/hlLtr8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz03vhMV+kTQgiau4YwonzObCtvp7eJ7RhPOowcFwAaJRsneCwL
-	zSdeSuUw+NNWupl5fCUkIrLOT3BYhttCaH3UMY+EZ4Ke5GSY6G/N8kdAdyrM3ZQKr4HzE9M1hFU
-	uqdCkiIDXVuNEotcmh2rV1nLBl9lMktFSHLvwBMJANsFtoxinwg==
-X-Gm-Gg: ASbGncsaHcoQ9n7vbvqEUAuLMZXgUBOzm4UGFluZOVaa52SrzknFzDc67sOWbPl8SPI
-	BAodrmb5ZdMEGYWTC0FtjUdJvkC2i8LVEdb9Q+CBda965KrQD7Il4WPYyBadrAfI4KiDUNNQ7WU
-	3s67za/6HwXEvIL12fkSY19ZO4L3MtqhoNM3vaoj37Muvmg7yFiXp/jnSWWmcZhiAuRUmt8JYc2
-	D9AK9JqFIBk9oYokqk9XKOE+3C+TN8yx3NQcbAgSzfgW7AX5vDXKzVgjk1tdLxom5rLYmvAPUd8
-	pTVtxxPr4bGhtYLJ3o7bxipP3Te9UG6uPYTLMxF3O08XGtl338AoXVM=
-X-Received: by 2002:a05:6214:1302:b0:6d8:861f:adca with SMTP id 6a1803df08f44-6e1b2235c9fmr497775136d6.42.1737732153421;
-        Fri, 24 Jan 2025 07:22:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE5TeadQAXYF5iUiWYdZcwN/B3B0GhQEA3OgvrN+YGY06rhpOtkdAXjp93P8gBhIIoKYtqxZQ==
-X-Received: by 2002:a05:6214:1302:b0:6d8:861f:adca with SMTP id 6a1803df08f44-6e1b2235c9fmr497773786d6.42.1737732152904;
-        Fri, 24 Jan 2025 07:22:32 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e2058c2a51sm9344776d6.109.2025.01.24.07.22.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2025 07:22:32 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BB7hyvLo"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB8AEC4CED2;
+	Fri, 24 Jan 2025 15:45:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737733524;
+	bh=S3/2Ia3VmQ5YFu51XFVEOifogH6IFRdY1kEQup13u+g=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=BB7hyvLoWl00IeZmTA+OvQOUynKSodSId2w0sFCigT54S6E7182pqk6PId7FMk3B8
+	 RgDpLXC/V0rczv3zfH3oHnK8tRHAifCFk9BM5fhGf6jow9QcFgExXoMXSYpGa+DR3x
+	 lg29My5qpS0VzHykcv2O7ly/KdYwuzYPii+zUQWDMeyETmCheiDHeOY2NXhEhMNUSs
+	 7ffUAOr4Mb9uYrCFmHyRgZFumrH+wbUraI8hzJfFTORJamAWNPGaC+Wbt+c7Xi0ceO
+	 KifB2www63fZWgu0dwJR6b5z6Yomjl8Z7dRuXteyjzzi+W9w9Tc7Vm8d90s0QtnG7a
+	 4GNX33FS1Z+IA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 96292CE0DCA; Fri, 24 Jan 2025 07:45:23 -0800 (PST)
+Date: Fri, 24 Jan 2025 07:45:23 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>, Jann Horn <jannh@google.com>,
- linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
- kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
- <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
- Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
- <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
- Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
- Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
- <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli
- <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
- Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>, Vincent
- Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
- <mgorman@suse.de>, Kees Cook <kees@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, Shuah
- Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, Miguel
- Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, "Mike
- Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland
- <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, Nicolas Saenz
- Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Yosry Ahmed <yosryahmed@google.com>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-In-Reply-To: <Z4_Sl-zu7GprkbaL@pc636>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Z4qBMqcMg16p57av@pc636>
- <xhsmhwmetfk9d.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Z44wSJTXknQVKWb0@pc636>
- <xhsmhr04xfow1.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Z4_Sl-zu7GprkbaL@pc636>
-Date: Fri, 24 Jan 2025 16:22:19 +0100
-Message-ID: <xhsmh8qr0p784.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Cc: Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Cheung Wall <zzqq0103.hey@gmail.com>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 2/4] torture: Remove CONFIG_NR_CPUS configuration
+Message-ID: <d410ab83-515a-4454-8420-1ada8cf86efd@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250123185828.460836-1-urezki@gmail.com>
+ <20250123185828.460836-2-urezki@gmail.com>
+ <6f2969e3-344d-4f2d-a71c-ed999ac35324@paulmck-laptop>
+ <Z5N8cmpD-HmTYQQJ@pc636>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z5N8cmpD-HmTYQQJ@pc636>
 
-On 21/01/25 18:00, Uladzislau Rezki wrote:
->> >
->> > As noted before, we defer flushing for vmalloc. We have a lazy-threshold
->> > which can be exposed(if you need it) over sysfs for tuning. So, we can add it.
->> >
->>
->> In a CPU isolation / NOHZ_FULL context, isolated CPUs will be running a
->> single userspace application that will never enter the kernel, unless
->> forced to by some interference (e.g. IPI sent from a housekeeping CPU).
->>
->> Increasing the lazy threshold would unfortunately only delay the
->> interference - housekeeping CPUs are free to run whatever, and so they will
->> eventually cause the lazy threshold to be hit and IPI all the CPUs,
->> including the isolated/NOHZ_FULL ones.
->>
-> Do you have any testing results for your workload? I mean how much
-> potentially we can allocate. Again, maybe it is just enough to back
-> and once per-hour offload it.
->
+On Fri, Jan 24, 2025 at 12:41:38PM +0100, Uladzislau Rezki wrote:
+> On Thu, Jan 23, 2025 at 12:29:45PM -0800, Paul E. McKenney wrote:
+> > On Thu, Jan 23, 2025 at 07:58:26PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > This configuration specifies the maximum number of CPUs which
+> > > is set to 8. The problem is that it can not be overwritten for
+> > > something higher.
+> > > 
+> > > Remove that configuration for TREE05, so it is possible to run
+> > > the torture test on as many CPUs as many system has.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > 
+> > You should be able to override this on the kvm.sh command line by
+> > specifying "--kconfig CONFIG_NR_CPUS=128" or whatever number you wish.
+> > For example, see the torture.sh querying the system's number of CPUs
+> > and then specifying it to a number of tests.
+> > 
+> > Or am I missing something here?
+> > 
+> It took me a while to understand what happens. Apparently there is this
+> 8 CPUs limitation. Yes, i can do it manually by passing --kconfig but
+> you need to know about that. I have not expected that.
+> 
+> Therefore i removed it from the configuration because i have not found
+> a good explanation why we need. It is confusing instead :)
 
-Potentially as much as you want... In our Openshift environments, you can
-get any sort of container executing on the housekeeping CPUs and they're
-free to do pretty much whatever they want. Per CPU isolation they're not
-allowed/meant to disturb isolated CPUs, however.
+Right now, if I do a run with --configs "TREE10 14*CFLIST", this will
+make use of 20 systems with 80 CPUs each.  If you remove that line from
+TREE05, won't each instance of TREE05 consume a full system, for a total
+of 33 systems?  Yes, I could use "--kconfig CONFIG_NR_CPUS=8" on the
+command line, but that would affect all the scenarios, not just TREE05.
+Including (say) TINY01, where I believe that it would cause kvm.sh
+to complain about a Kconfig conflict.
 
-> Apart of that how critical IPIing CPUs affect your workloads?
->
+Hence me not being in favor of this change.  ;-)
 
-If I'm being pedantic, a single IPI to an isolated CPU breaks the
-isolation. If we can't quiesce IPIs to isolated CPUs, then we can't
-guarantee that whatever is running on the isolated CPUs is actually
-isolated / shielded from third party interference.
+Is there another way to make things work for both situations?
 
+							Thanx, Paul
