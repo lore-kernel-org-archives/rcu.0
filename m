@@ -1,64 +1,64 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8EA1E495;
-	Fri, 24 Jan 2025 11:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB9121ADCE;
+	Fri, 24 Jan 2025 11:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737718905; cv=none; b=juC4ZD+NmnXhskDgHjnJVP2NPUdwP6kSMq0AiwijRg8gZjtFHtBDPNoRZjPoorevMmLICp0C/RuTv6kae5HGD2dc2SGQ9zVPbSHutNbVh/zFdWkcQtjjCmgLu9WZeMRED4MSkWUmU57ETmX2Q2MVvsUwVNnvxepnUleYX8g132U=
+	t=1737719298; cv=none; b=tmtDBg7BDfkRrB0d1KQWe4pWG2iJdfW3ZXksXjtZanJmir9OxWdJoa73RBseupShaBh6VFJqQj1KluLwBe0ALOnXkJ2BVE7xnMMSFSVC+eMgwvNsb7KVEdRq2YZZ+6hyIYAjkiv4b7MdN8otQz4GGxxtpF4Aqr7pklwA7y+vfzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737718905; c=relaxed/simple;
-	bh=cMIitP4XmQY7dALjBOjVawerA+npBn/hshRxCeYiza4=;
+	s=arc-20240116; t=1737719298; c=relaxed/simple;
+	bh=sdyN51v5aYB6ERkGOgvV14eWTmYxjridHBbVmoqNErU=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M8Rl+DHoSjI4v2tdyauZvryE6Pg2xnjrtC2pbycCaCeMZBKoi+9yRpNZYZ7HXq58zaBZjopalwDn2hhsp0ZE2MIsHrG6pbpRoc6R5y7TLmmb03bQAxA2HKNIQib2gips/MMINcOUJD7EqeKj3mk97DFuTYGKTGv3KM/khSaqaXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NVuJCZv8; arc=none smtp.client-ip=209.85.167.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=bG0y5pEfEopDP5b4u2MNLp5aoVBXQCYVy61bvoJ5GBjaS8TNBpp0RJmGkIC4izLjOh5SySobcemdS0Dt0Rv9SSWkt/XzcrS0c1BgTkadLzwlHNBs9WJlc/15aIex1RZhk0LTc63MJ4Y64KJAluDAkylZWa9q/564G50qhK8/TRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B9+ej95/; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NVuJCZv8"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-53df80eeeedso2205587e87.2;
-        Fri, 24 Jan 2025 03:41:43 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B9+ej95/"
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5401c68b89eso2099126e87.0;
+        Fri, 24 Jan 2025 03:48:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737718902; x=1738323702; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737719295; x=1738324095; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NS/G2aM1NLkBuUdo/HVV2lGZqUmriSmC/xeGCNPwjng=;
-        b=NVuJCZv8IK/IyfkXI3g3c1qDg2XLTFPr8ynA9ERCbwyMueyDMIXg2YuHBUm6AaTOX1
-         DHLlMiIvXU19wdkGy4FFB9c5O/CZfNP7syT316srpm9B1yZjxkWecyq9rS71aJRDMkzI
-         NEdKdGmMTOnLHye6FNml+s2tLDuIDy3sgJSAHAcWLGPYK24nrsd+lCuPBFgIXf3Lzfl5
-         iCEbTrBO4t6LQAhtbF3tRKAknPzNeVmgcZP1Q+bzHR26N3cUhVs0YZ7rc+Gh64q3E037
-         3LMgF2TvJxEmQo3hCNBx9M13+bgiGuJ1nVC/3kC+1md6iUv5J6S1fUywJOqIP4G0ahyv
-         TTEA==
+        bh=cMaR+pjNepUoWReMXMdvm2uf9T0/khbodt6eNZRD1Q0=;
+        b=B9+ej95/4SL44pG9ASB7yCYuT92efthynFTw04Ptp6Gd6vPAAr7orIXZzd/7Fe4YJ+
+         XtPAcW4ME1lg4Px4yLXbsZ6uM8bmB0usWn1I3JmZbBd7LxuRhaRNg3aGtih4Wc21PDc3
+         p3+9SSJ5dzIm7mDCRNnU3/WH28hpQpoScLCxbc80cx1TWpheD+E32OkoEZvNmx59qlZx
+         pWdFrk0cqqQRh7RMmYVuWObEQlQg9UZo60dT5Fp1QOKKlHCn/P5KkNDQ2ydcqWytA9/K
+         Y/Nz35YMI7ZO9vL1+jiLneCPViXlmLqX0LMUSrSr5C37A2kknqWDiouUUSHKZtq+fbIR
+         9mRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737718902; x=1738323702;
+        d=1e100.net; s=20230601; t=1737719295; x=1738324095;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NS/G2aM1NLkBuUdo/HVV2lGZqUmriSmC/xeGCNPwjng=;
-        b=uOM0LPkwmhx2tcpxaf3rRkX45Yse02NqGAe53ovNoYU+qm8c9eua5CdZ6pyV8nNtmh
-         wGJ9RbyySGJ2E0d/apKi5fhqHMVM4BCJwQ8pq+FqE0VUClTUFH+J1xYnktBX2Fk5CCcG
-         rYu83xFLdpgv+3bQLK/8Jyd6YtFzfVRowrBX0WR70sn5IK5osZbpmO6w+q++vc5d/W36
-         im+unh+xRy7Hlo76Abacy0MzW4eEtbXyFJf8b8X6DFJfro7uUPUKweW6+9LNLDOf8w/C
-         Ceu40uZAzFBdIQyoRG50+ixYIrnn846XG16kMnloRBJqT7s3VGvzhte3w6mt10wfh7bv
-         SS9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUg7ljWl+FQn87YCgw+PZwcsFV1N3ZnB+lGRWAecurDTCvg1OYamECduEj3Rxk6ewMtm41CWUd7kmpHdGw=@vger.kernel.org, AJvYcCXeZc/GW1K/+979S/EOQsJqTgp6/d5JcfFFjbcnszJvBMVho02+N0W2yZOMWeY+vnG0479C@vger.kernel.org
-X-Gm-Message-State: AOJu0YxV7Q6EIbcmYBW1qVAQMrFUp2T2VPIn6Xb7ja/OvoFyiECX7PZQ
-	9ZfiiamvW3imCuvFWAqw842LgYDdrvxHqw6eB+/Jcc0K75mCkv1URXRakg==
-X-Gm-Gg: ASbGnctFhAqJllah62ad64dbCWLuBvYwaYkQDmq2bgQQEPeBTr87g8LrhLGeNtZXMSA
-	bg59F0sCOeviI+1c5ET68rEgUSUjaab7e24LN3JK6uaRGwLRftwCklxuzd/koJElWN2peGHmGU5
-	GceDJbHm+zgnzQQ6PLfNp/1aGng132YxrJpCSTmAJd6UwcHqliAPDMkTBixPx70VMxSYDaT6dMH
-	ptlokNVGGT4CjrCEMvqc8hrAMh531pNUa0ieRmAllAWQVfdViWNFPbmKNL6Lkrecb1csSenY740
-	fwp+KLVKJHNe8neFfq+cTbmJ6CQZ7ybDR+M=
-X-Google-Smtp-Source: AGHT+IHJjIBDttTSiJA5HqBau7qSBpwUHKyNh03pJxjkHNWtizkGnV+CbA17aYGyl8wYjpQY49nFjw==
-X-Received: by 2002:a05:6512:e83:b0:542:2991:e984 with SMTP id 2adb3069b0e04-5439c21f2a4mr8986286e87.9.1737718901520;
-        Fri, 24 Jan 2025 03:41:41 -0800 (PST)
+        bh=cMaR+pjNepUoWReMXMdvm2uf9T0/khbodt6eNZRD1Q0=;
+        b=Tu1+tT2BL1tHJK88Mbp0RYDOgCyMshtQm2gGWld7aMOj2Z7VKQX7ZEZG+zD71KSURX
+         bcveC81BH9WnS3Vcjpbo1lI/++Pl+QW8ol1DnsNRzGGtpDpnPVfGt4bUR0h+JBNiV7th
+         AFaSemdyGelLFZ/OVCgb1/uTBVg6UB5rjKcGLv1d+UOc/eohjdOIteBP67Qw3lDzonV8
+         6F5uMszO+BU2PmXf6l91tnpT2CipjViVXWgTXNsgMSJOgYemu48kLBXX6IAz+aAT130C
+         8b/V8KTR2ZVPjKyDtEljN1F+SoowrwN+f/XRyez/w4Z5fBGaX3gETfua2nfcQYb7Zec5
+         6QJg==
+X-Forwarded-Encrypted: i=1; AJvYcCVxj1J1wGGVsn9JnG+v5jmELCBITcTQgoBI17SnLBz8X1fAuGnfSIw69xCaBVWGP9wd5PmYuAFgQW6jhJ0=@vger.kernel.org, AJvYcCWNQ4XtF7f68hOYwvdV0i0Yzz/f0aSYyrg4T3ByRXq9H2IbFCLT8sahyNE/wCf763jF/kL2@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVjSGgbBLcBgENK7GBr4A63guQ3eo26vstQzChw0HgR8E9FUmR
+	3iiIE6VAPh/4owEr7PiPnVBn1DseFHbL8geUYsqV4ExfDEXJB5zk
+X-Gm-Gg: ASbGnctJZN1QeIxpXh1iBiQtWm033MR1FwsWzHWh2/EbwBhMhqDFb8vfRYFSIO8+puD
+	FetpRR5/CRqp5q2HlZy4N1ZsrWxObJTCHSirADYpfxnX9CuLoOWBys9lZlJfkihL6uWy/orb+Y7
+	UVwx+flR6n4DutCqXEcaPrYQ3Pu5XymH2KYONeiJe0nKaI0ADBWwUByZ02SA61t+6WwEmqxHgLy
+	R5SZeYjzvS/LY5xSw8EXVsnbHtTfq98ZxkxhZrB/GPac3iUxdMxsbnYMac6eVXetnL4yZb8ilnM
+	oDozwuXqZg27BvsJtb8SeBg6WPXatXpPR4I=
+X-Google-Smtp-Source: AGHT+IFCTQR5shGQiMiqSNy3cpo/saD6X8nVbZ3U+JXvLllex2UyB4L85oJaII3C9+395VGg+8ZEHw==
+X-Received: by 2002:a05:6512:32c9:b0:542:7ff6:73c4 with SMTP id 2adb3069b0e04-543c7d42db1mr966587e87.1.1737719294864;
+        Fri, 24 Jan 2025 03:48:14 -0800 (PST)
 Received: from pc636 (host-217-213-93-172.mobileonline.telia.com. [217.213.93.172])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-543c8379b76sm269121e87.172.2025.01.24.03.41.40
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-543c822f8e3sm266947e87.64.2025.01.24.03.48.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2025 03:41:40 -0800 (PST)
+        Fri, 24 Jan 2025 03:48:14 -0800 (PST)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Fri, 24 Jan 2025 12:41:38 +0100
+Date: Fri, 24 Jan 2025 12:48:12 +0100
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
 	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
@@ -68,11 +68,11 @@ Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
 	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH 2/4] torture: Remove CONFIG_NR_CPUS configuration
-Message-ID: <Z5N8cmpD-HmTYQQJ@pc636>
+Subject: Re: [PATCH 4/4] rcu: Use _full() API to debug synchronize_rcu()
+Message-ID: <Z5N9_EafVhSfE6nA@pc636>
 References: <20250123185828.460836-1-urezki@gmail.com>
- <20250123185828.460836-2-urezki@gmail.com>
- <6f2969e3-344d-4f2d-a71c-ed999ac35324@paulmck-laptop>
+ <20250123185828.460836-4-urezki@gmail.com>
+ <ea7d8677-f81e-4590-9716-23ea41597873@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -81,32 +81,63 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6f2969e3-344d-4f2d-a71c-ed999ac35324@paulmck-laptop>
+In-Reply-To: <ea7d8677-f81e-4590-9716-23ea41597873@paulmck-laptop>
 
-On Thu, Jan 23, 2025 at 12:29:45PM -0800, Paul E. McKenney wrote:
-> On Thu, Jan 23, 2025 at 07:58:26PM +0100, Uladzislau Rezki (Sony) wrote:
-> > This configuration specifies the maximum number of CPUs which
-> > is set to 8. The problem is that it can not be overwritten for
-> > something higher.
+On Thu, Jan 23, 2025 at 01:52:57PM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 23, 2025 at 07:58:28PM +0100, Uladzislau Rezki (Sony) wrote:
+> > Switch for using of get_state_synchronize_rcu_full() and
+> > poll_state_synchronize_rcu_full() pair for debug a normal
+> > synchronize_rcu() call.
 > > 
-> > Remove that configuration for TREE05, so it is possible to run
-> > the torture test on as many CPUs as many system has.
+> > Just using "not" full APIs to identify if a grace period
+> > is passed or not might lead to a false kernel splat.
 > > 
 > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  include/linux/rcupdate_wait.h | 4 ++++
+> >  kernel/rcu/tree.c             | 8 +++-----
+> >  2 files changed, 7 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+> > index f9bed3d3f78d..a16fc2a9a7d7 100644
+> > --- a/include/linux/rcupdate_wait.h
+> > +++ b/include/linux/rcupdate_wait.h
+> > @@ -16,6 +16,10 @@
+> >  struct rcu_synchronize {
+> >  	struct rcu_head head;
+> >  	struct completion completion;
+> > +#ifdef CONFIG_PROVE_RCU
+> > +	/* This is for testing. */
+> > +	struct rcu_gp_oldstate oldstate;
+> > +#endif
+> >  };
+> >  void wakeme_after_rcu(struct rcu_head *head);
+> >  
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 2795d6b5109c..0ae90089ef09 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1612,12 +1612,10 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+> >  {
+> >  	struct rcu_synchronize *rs = container_of(
+> >  		(struct rcu_head *) node, struct rcu_synchronize, head);
+> > -	unsigned long oldstate = (unsigned long) rs->head.func;
+> >  
+> >  	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+> > -		!poll_state_synchronize_rcu(oldstate),
+> > -		"A full grace period is not passed yet: %lu",
+> > -		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
+> > +		!poll_state_synchronize_rcu_full(&rs->oldstate),
+> > +		"A full grace period is not passed yet!\n");
 > 
-> You should be able to override this on the kvm.sh command line by
-> specifying "--kconfig CONFIG_NR_CPUS=128" or whatever number you wish.
-> For example, see the torture.sh querying the system's number of CPUs
-> and then specifying it to a number of tests.
+> Looks good, but why not also continue printing out the required
+> grace-period sequence number?  Yes, there would need to be helper
+> sprintf()-style functions to paper over the difference between Tiny RCU
+> and Tree RCU.  ;-)
 > 
-> Or am I missing something here?
-> 
-It took me a while to understand what happens. Apparently there is this
-8 CPUs limitation. Yes, i can do it manually by passing --kconfig but
-you need to know about that. I have not expected that.
+Uhh :) Do we have rcu_seq_diff() for a _full() API? Looks like not :)
 
-Therefore i removed it from the configuration because i have not found
-a good explanation why we need. It is confusing instead :)
+It contains both, rgos_norm and rgos_exp! Take a delta of both?
 
 --
 Uladzislau Rezki
