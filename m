@@ -1,59 +1,59 @@
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694651D514C
-	for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 01:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BBB1D5CEB
+	for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 01:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737683928; cv=none; b=GVZPysjFKroJDsCtrzrw6RZt/JK+awI6QyOnPcEzGkGpQPhADzlZf4rPamEda3G5q4eulSKkghpfUuUnh3s5h6Cfbq9jimr4pWWYq59fUfjV1QEx5PGJc0dSggwd8/qEXdhc9InMCRghsGY1oJ2BQp9jsUlrmCAzZO6ClqMVHTs=
+	t=1737683930; cv=none; b=drXDm48QqlmlkNz37mRoc3A5plXJcHjkutWej+qt/btk3YCd2e/N6T0Em8cUeVdBJxi/RqZHg2j9IC1hl9dHp8N5g8Rqaei/OGWYNnZ0DVd9Cx8URC05Aw6NGe3Pvk3Fd8PBxrHVg4F9ChxVLspMOw40XTmY18F7aevmO2IJ9VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737683928; c=relaxed/simple;
-	bh=mlls54bce+0lvfNSi96vEZ6jU4CJvOJNuNga3KxcE+A=;
+	s=arc-20240116; t=1737683930; c=relaxed/simple;
+	bh=2/LB3V5JWdcgf4tsAt88qzoc3B9PT+ZPjL3M7JzTYTA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Xezieit4w/A/C9S4wzU7oQyXcCsTn7v2VJ8O0fTVpIECJ382TLull4hke64LLU2mCl4LdZJkCUxzQZqEvP2tXdaxFRXS3Z+T1HTDP5j4xc5EgoSOiOq3sHdfhTeBFHhFih2bztY6II3yQ9xYSIOHAcRW+cqiosNLFTJQllcmlFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=YOwDyFgU; arc=none smtp.client-ip=209.85.222.178
+	 MIME-Version; b=Geh0mt4quY5bKVaXXWfax+fQfVn/3N3ctcDopIV9uRWxMN4be3YhgyvwHL5rlDoMmULOmP8PRfRV8oTa49Je1mFyJMgTOyg4GTRTvfDrFYks9Uxw2j2Q+71DLcUOA44r5dD60Qq7y2I8wXg86bNLNnZAWwgzZT+XqQSpyMQX5HQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=FRq9ATeL; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="YOwDyFgU"
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7b6ef047e9bso154110285a.1
-        for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 17:58:47 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="FRq9ATeL"
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7b9ad0e84e6so177567285a.0
+        for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 17:58:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1737683926; x=1738288726; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1737683928; x=1738288728; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qaQdwk1K6JMmpEpTCCMueooCLhtDXZocXZ+0dVMaVq8=;
-        b=YOwDyFgUkwUyUl7OAe8ejSuXAMFVvQ5NSXSJN0jOvTDHjVmxxX0cISRJMYJRgOOjiJ
-         G5k/PxzFQtJkkzvU8Yb6AROkcowPdlHMq8AlmUmHWwZFjhW1YcR6NDyoV1Zre5+KLaQz
-         j70Z0HQzByW3gGiy+XB6L4TwopPb+X0VDBBRQ=
+        bh=EOszlMe/TkxR9TrVzVzkXceOdLnBKIK5m4j/zRnrkWk=;
+        b=FRq9ATeL8byd0qZjRMKs5GoVDNwzxC79MSg+ZyeqO/OzOzHeGIX2bSn+qMpf1xifv0
+         6XvN3iMkrle08eJu/Fb3gBqaWwq/zNK5v4MvfGFeEn1tGkOSh3WAT7Y1nFxN5IB2Jb0n
+         ETVwM6N/f0Ly3R85j6OUDKXUlXuDNbNe2hfJA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737683926; x=1738288726;
+        d=1e100.net; s=20230601; t=1737683928; x=1738288728;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qaQdwk1K6JMmpEpTCCMueooCLhtDXZocXZ+0dVMaVq8=;
-        b=LakFJPGGrHVNzS5YsHfTwicR2czCV/jenVh9L6Kk1/Dl+9xP0V4LalFtVHCr71T2/O
-         dgc58AluIM04rRLIAYdpF68rrwe6s0F6JI/KSIgHyaLxnwc9P/Rm+lug2jPtzRyVjATD
-         8VmnlPl+fiMkpiLUT8oKedQ48S0m7A1y1n8I/9zh+MNvVS+jfwCwPquicNu8R0u079L4
-         aaRCgr9HCxaSzVwbirtHbubl+uHzomHcefnvDCVkHmxMUt/b97PA6LpGIB7RyJBVDC3x
-         26k+6Dm7d2NRijCVmEMWShk7hCJuWZxCReiyxOHwCXJFAKLXsCUTF/LretROdSz4SORu
-         VPbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWSEi37AKPWiFpZn6UhfXsmwVOb2VxcWHS9wKsA45XEw5/UnrElTiT272Stl0UQHwHwqWQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCPLOl18TA4+AwkK7T4JHWHV5EgPIfaxbNVxq8MHyX6ltJkeFP
-	gBQl4WsmX5Auqmp8TRe+vnCMEemFOaGy0xmzpqiOlaBMM03iJ0Ypt0YacDrWdTs=
-X-Gm-Gg: ASbGnctd8EHwqIdlQavuH/TvJMaNKDfbbLo03HIzd3go66gxlEx6Iss5cBeSWnszbzo
-	4gWL+9r5Sk81cxv71tkTqjC76tpy9PdzVopabetxdX7ui4jA57j911BO9P0w7ba1+Gw9VCRJ3QF
-	2z/5x/2U9K9Bv+O3Zed1inMzXZZ2FnhEVIT5/tQwvxtynoo4ty1Lx9SJvPpLCTunmnS09cOVrde
-	twcDq5q/kiSO4cZptjIWMqQtYvlp0LZWnjIQizDIMk1e1wYrLw2LwKCvcDL4ZRqb1bZsgg8FPYx
-	KTuemVibLEK3j6/hxQFJnXUQ8O0IOn6w3Ms5f81LrymnE6U=
-X-Google-Smtp-Source: AGHT+IGedeLyH46JZ6ICjRhHLoRnczUEGAXR32xcGpowOpwEm6uqWspuRRdZr/IOKsIKbb8aqDrT3A==
-X-Received: by 2002:a05:620a:278e:b0:7be:73f6:9e86 with SMTP id af79cd13be357-7be9af69755mr301087285a.20.1737683926278;
-        Thu, 23 Jan 2025 17:58:46 -0800 (PST)
+        bh=EOszlMe/TkxR9TrVzVzkXceOdLnBKIK5m4j/zRnrkWk=;
+        b=fFUd7stzst1+mBfMsZ2VqF7cStk1ZPEXsjzNctZICJc2Rqn0pZGCeejayiqA2FDgg6
+         AsooyJZqdqeXRKfKr1XSNA3q45vX2DeIvhl8s2ZpDVK1Ey/meKMdiwNS6c9TauIo3CFp
+         FAiNXdDKHwlOCnhs0h7nppZDZMM/IFAD/0IEuy5lG1ER5suhLzNki5hlBq4CNY5r8XlS
+         fOMM1kU3S8VyqDlIm0bNQAO4ibPyoh7yxIRIdyh+V8sLDMhlGOM5/iTpg6wOIXtgBYAO
+         onQOpzbUEVoSVHoovpVhLcw2xZ83qo503R5W0XevFDw18iJAMVgXKm+rvNhEVd2qyyd7
+         tTCg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCVqn3Dtw2070js3YKDdx59Kftc9kmqwdljRyaliStfHgd2qmJRIYuCb/o/eoFCBRM0s4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzZN4LPZ51iFHqXDD37CrPcBZsF3NP5MSJnGSh7TsGCCd/DTMk
+	EcHgrRJ71w8oM1y8FvNhFYHGUI9G3St3Bwx3VW/M91tNO13yWEPAAp/1DCyjE8k=
+X-Gm-Gg: ASbGncvg1d6BXoBzyYQ9tNw49sbjPR4PXYi3JqurAscydV8by7KHIVW0jw9rOT4lczM
+	JuIvO4pozrQEQYXCtUaCFIfqmlQlh7TEu4EVG9qkZH49U35852sHFg1+zhOTKe99IVefhpSTBZf
+	oc09KTO6sJMLjkD4CfudBmxz53ouZ9o+S7Z53cQpooW/g6q6q5YrLv+L1tOoZMQQy2CuvcgyVxi
+	kbdnHn9oNUgX5mIJQN0JMKtRX5Ei5ZV+19tTHDgrkvGnlMh+bOfX/smQPtAu5+aPM3oTpq6gj8J
+	QzlDk4Lr8m0REHpp3EKQKcf9Dr5JZMg4o8zihBDTRZ31oDM=
+X-Google-Smtp-Source: AGHT+IH9ySNTqIGTKZEGcsDbyErRXUpqlMVIGd6POYjLkXuAG73cMWZAVXL3Cixc0SCiAmr0lb4wWg==
+X-Received: by 2002:a05:620a:2b9b:b0:7b6:d1e1:a239 with SMTP id af79cd13be357-7be631e58d9mr4060955685a.2.1737683927847;
+        Thu, 23 Jan 2025 17:58:47 -0800 (PST)
 Received: from joelbox2.. (c-73-251-172-144.hsd1.va.comcast.net. [73.251.172.144])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7be9ae8a5fbsm44741985a.31.2025.01.23.17.58.44
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7be9ae8a5fbsm44741985a.31.2025.01.23.17.58.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 17:58:45 -0800 (PST)
+        Thu, 23 Jan 2025 17:58:47 -0800 (PST)
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -65,9 +65,9 @@ To: linux-kernel@vger.kernel.org,
 Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
 	rcu@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH RFC 1/5] rcutorture: kvm: Simplify invocation of mkinitrd.sh
-Date: Thu, 23 Jan 2025 20:58:32 -0500
-Message-Id: <20250124015836.732086-2-joel@joelfernandes.org>
+Subject: [PATCH RFC 2/5] rcutorture: Add a stress-ng build script
+Date: Thu, 23 Jan 2025 20:58:33 -0500
+Message-Id: <20250124015836.732086-3-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250124015836.732086-1-joel@joelfernandes.org>
 References: <20250124015836.732086-1-joel@joelfernandes.org>
@@ -79,30 +79,109 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The else block is unnecessary and we can simply clarify the if condition
-to remove the else clause. It is more readable.
+This script automates the building of stress-ng and can be run from
+any directory. It also support cross-compilation. The output is placed
+into the initrd directory.
 
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ .../selftests/rcutorture/bin/mkstress-ng.sh   | 86 +++++++++++++++++++
+ 1 file changed, 86 insertions(+)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/mkstress-ng.sh
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 42e5e8597a1a..4766c3023fed 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -275,10 +275,7 @@ do
- 	shift
- done
- 
--if test -n "$dryrun" || test -z "$TORTURE_INITRD" || tools/testing/selftests/rcutorture/bin/mkinitrd.sh
--then
--	:
--else
-+if test -z "$dryrun" && test -n "$TORTURE_INITRD" && !tools/testing/selftests/rcutorture/bin/mkinitrd.sh
- 	echo No initrd and unable to create one, aborting test >&2
- 	exit 1
- fi
+diff --git a/tools/testing/selftests/rcutorture/bin/mkstress-ng.sh b/tools/testing/selftests/rcutorture/bin/mkstress-ng.sh
+new file mode 100755
+index 000000000000..e5a19cca6923
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/bin/mkstress-ng.sh
+@@ -0,0 +1,86 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Clone and build the stress-ng tool, placing the binary in the
++# initrd directory. Ensure binary is up-to-date.
++#
++# Usage: ./bin/mkstress-ng.sh (run from any where).
++#
++# Copyright (C) Google LLC, 2024
++# Author: Joel Fernandes (Google) <joel@joelfernandes.org>
++
++# Get the directory where the script is located
++SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
++
++REPO_URL="https://github.com/ColinIanKing/stress-ng.git"
++SRC_DIR="${SCRIPT_DIR}/../res/stress-ng"
++INITRD_DIR="${SCRIPT_DIR}/../initrd"
++BIN_NAME="stress-ng"
++export COMPILER="${CROSS_COMPILE}gcc"
++
++is_statically_linked() {
++    if file "$1" | grep -q "statically linked"; then
++        return 0
++    else
++        return 1
++    fi
++}
++
++needs_build() {
++    if [ ! -f "$INITRD_DIR/$BIN_NAME" ]; then
++        return 0
++    fi
++    if [ "$(find "$SRC_DIR" -newer "$INITRD_DIR/$BIN_NAME")" ]; then
++        return 0
++    fi
++    if ! is_statically_linked "$INITRD_DIR/$BIN_NAME"; then
++        return 0
++    fi
++    return 1
++}
++
++if [ ! -d "$INITRD_DIR" ]; then
++    echo "Error: INITRD_DIR ($INITRD_DIR) does not exist"
++    exit 1
++fi
++
++if ! which "$COMPILER" &> /dev/null; then
++    echo "Error: Compiler $COMPILER not found."
++    exit 1
++fi
++
++if [ ! -d "$SRC_DIR" ]; then
++    echo "Cloning stress-ng repository..."
++    if ! git clone "$REPO_URL" "$SRC_DIR"; then
++        echo "Failed to clone stress-ng repository."
++        rm -rf "$SRC_DIR"
++        exit 1
++    fi
++else
++    echo "Updating stress-ng repository..."
++    cd "$SRC_DIR" || exit 1
++    git pull || { echo "Failed to update stress-ng repository"; exit 1; }
++    cd - > /dev/null || exit 1
++fi
++
++# Build stress-ng binary if needed
++if needs_build; then
++    echo "Building stress-ng binary..."
++    cd "$SRC_DIR" || exit 1
++    STATIC=1 make -j 8 || { echo "stress-ng build failed"; exit 1; }
++    cd - > /dev/null || exit 1
++
++    # Verify the stress-ng binary is static
++    if ! is_statically_linked "$SRC_DIR/$BIN_NAME"; then
++        echo "Error: The stress-ng binary is not statically linked."
++        exit 1
++    fi
++
++    echo "Copying stress-ng binary to initrd directory..."
++    cp "$SRC_DIR/$BIN_NAME" "$INITRD_DIR" || { echo "Failed to copy stress-ng binary"; exit 1; }
++else
++    echo "stress-ng binary is up-to-date, no build needed."
++fi
++
++echo "stress-ng build process completed successfully."
++exit 0
+\ No newline at end of file
 -- 
 2.34.1
 
