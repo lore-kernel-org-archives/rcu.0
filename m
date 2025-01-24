@@ -1,94 +1,171 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BA1146596;
-	Fri, 24 Jan 2025 14:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9151A156222
+	for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 15:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737730583; cv=none; b=N7pKNCx1ikoOWjPof8SEWlbwk0WuMFIfw800aLFqTD6GoNG2Ua2i9x6lQzRZiV9REysuuelqk+SgkHRTBFte7fkmlfVcWMyKouPwBwmhEP61pervDdQC3eLW2mvmOr/DKjODzAFc7Un6UImI5y217HIoCLKfvlsFttOISvElBww=
+	t=1737732159; cv=none; b=JMO5bfes0AkpX1vkQL2GqARCNDzBNnannWL6sXVs+LuUvj1I61OYWeaYUBUXvB6w8q68qnzmuRX0zqSIT49bFNDTzFemwCsIdKi45LupQ97o5alEIfslute8e/9aLgMhmYFlqMMRLCA6v0IgMIlVLMGgiXPMZF7hi2AkNVdTCX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737730583; c=relaxed/simple;
-	bh=oxik95iMeWZ8ZQgMWf34sjCyLsfuchERTcGyQmex7aU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D4ZgmZ0PLXQ0Y6G9TcGdk2rkZHj6aK05M2zOf/b5R/N3szLN6MCT/OKuUQBDUXj1JH5b5/cwu7VVo0/ePfi9Qw3gazzpY7cXvp64mLcj/e1Z8saVCJjxTeXAjnjXQch5PdDmD8OveGctUc/2eY8Zjwe6zGcloKNbp2Haofu2Gws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VEVl04C7; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1737732159; c=relaxed/simple;
+	bh=DwitzjRGQEzgyZZn0UD4LNiBUZsqGx1Qrum3CBb5LtE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=eS8H4clMlM7h5Jr5R0Qf+88DxKmvJRUPBdAdftFe+JmYrb2fSri3dqKJTQS8rf6GjooUFqgW5xpDV5w9xCyoWbn+eJ9TmpqsptLXewogxO9fu60t1ooJRNlalUmldAr7jr8eSZbqOHRqXiNncVVc77KzxKSwInuF+qHO8EqlxCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HxwXSMOU; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VEVl04C7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E13CDC4CEDD;
-	Fri, 24 Jan 2025 14:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737730582;
-	bh=oxik95iMeWZ8ZQgMWf34sjCyLsfuchERTcGyQmex7aU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VEVl04C7vxv4wilrX0xnWwxSsjhoPo04IBnHo24YQNdA8bb25GM+vEAY9NoG8jbYr
-	 5PT55Pqw37k8gxKuQAqctV6PERfo7O7fjx3Rpi7pcOZHs9c7CJC9nXENfxr39GeJ3/
-	 VBrfFY5U3LelFOx4KYD37Gb/UNpQvzismxAqI9iL17KspTiKB/0PoCc/ylJ7s9/W6g
-	 ahWuizzgS+u7pYdDH6sC3x9AVArvt8x1okjrvhN1pe4fmQBZJPwUy+IJZ150pfJ4Sw
-	 mc/n6zDibuwErB8qi8dljs5yqbx3D9CHrd7ASzrg+bJSIi0x/mPsjdafZwxdIbctgH
-	 TT8TbeAVZtkhA==
-Date: Fri, 24 Jan 2025 15:56:19 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com, rostedt@goodmis.org
-Subject: Re: [PATCH RFC rcu] Fix get_state_synchronize_rcu_full() GP-start
- detection
-Message-ID: <Z5OqE-eJDo-1W_-r@localhost.localdomain>
-References: <eb83ab84-05b3-43da-bc59-e2dbd932740c@paulmck-laptop>
- <CAEXW_YSo1NTmx8FE3WNN7zL9so24o40HXhxubHJVvfxWBYtz0w@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HxwXSMOU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1737732156;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DwitzjRGQEzgyZZn0UD4LNiBUZsqGx1Qrum3CBb5LtE=;
+	b=HxwXSMOUwlQW6rkKs1bhgyQDM7IU6V+Cx1Q5TXVI4C8aFL/gRNx7+XZSdhxGhEj0dDVbhU
+	sOpdqOCzWZ/oxLkA2J/88tLzQycl0eX9cm7l6dGff5t+VWB2ewFkeqb3jKN5Rck8VKQ6RK
+	4DjtQC5fZUMEa9A70U6fRjyNMnsMU24=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-637-WFdJ7wKgPdihUESrp28Ytg-1; Fri, 24 Jan 2025 10:22:35 -0500
+X-MC-Unique: WFdJ7wKgPdihUESrp28Ytg-1
+X-Mimecast-MFC-AGG-ID: WFdJ7wKgPdihUESrp28Ytg
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6d89a389ee9so49663846d6.2
+        for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 07:22:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737732153; x=1738336953;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DwitzjRGQEzgyZZn0UD4LNiBUZsqGx1Qrum3CBb5LtE=;
+        b=jgK8mflXuoMch+9q7Y/8Fc0EzxjKPZD5ZQoOlEKMdT36ReiFOUemwxiXYz3UTFMcFF
+         uu1OG9z9pK2ET6a2KiesmI/u7eU5rzKxyu3r7jR1lQPnxkl2/FH0Z3/ml6X5E10geEJQ
+         AwSPUdnRRUP0vEVXzHg1ZbrUB0Siawb+0RostOdIkmy2HmXPmyQhzDafsR8Ghre7Ec65
+         U4LY2B7gE1+4/T803jdORO4DkN52qqMQyl6gsVCptgcsgDtqd2gOFPA+/eIGCOykeCWt
+         9gp4Dh6AHBC/keqsqylCUgT1+9zrBxRujin4cmTVfPN8MiZcAzwCDrW0m7CV+T8A2sAE
+         tBcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXXHeT0m3y4dTMZEpPyFOsDm/4rcQDWs98mpSixC7DWC6vlbP8+FBVezlH1f0oN/hlLtr8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz03vhMV+kTQgiau4YwonzObCtvp7eJ7RhPOowcFwAaJRsneCwL
+	zSdeSuUw+NNWupl5fCUkIrLOT3BYhttCaH3UMY+EZ4Ke5GSY6G/N8kdAdyrM3ZQKr4HzE9M1hFU
+	uqdCkiIDXVuNEotcmh2rV1nLBl9lMktFSHLvwBMJANsFtoxinwg==
+X-Gm-Gg: ASbGncsaHcoQ9n7vbvqEUAuLMZXgUBOzm4UGFluZOVaa52SrzknFzDc67sOWbPl8SPI
+	BAodrmb5ZdMEGYWTC0FtjUdJvkC2i8LVEdb9Q+CBda965KrQD7Il4WPYyBadrAfI4KiDUNNQ7WU
+	3s67za/6HwXEvIL12fkSY19ZO4L3MtqhoNM3vaoj37Muvmg7yFiXp/jnSWWmcZhiAuRUmt8JYc2
+	D9AK9JqFIBk9oYokqk9XKOE+3C+TN8yx3NQcbAgSzfgW7AX5vDXKzVgjk1tdLxom5rLYmvAPUd8
+	pTVtxxPr4bGhtYLJ3o7bxipP3Te9UG6uPYTLMxF3O08XGtl338AoXVM=
+X-Received: by 2002:a05:6214:1302:b0:6d8:861f:adca with SMTP id 6a1803df08f44-6e1b2235c9fmr497775136d6.42.1737732153421;
+        Fri, 24 Jan 2025 07:22:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE5TeadQAXYF5iUiWYdZcwN/B3B0GhQEA3OgvrN+YGY06rhpOtkdAXjp93P8gBhIIoKYtqxZQ==
+X-Received: by 2002:a05:6214:1302:b0:6d8:861f:adca with SMTP id 6a1803df08f44-6e1b2235c9fmr497773786d6.42.1737732152904;
+        Fri, 24 Jan 2025 07:22:32 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e2058c2a51sm9344776d6.109.2025.01.24.07.22.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jan 2025 07:22:32 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Jann Horn <jannh@google.com>,
+ linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
+ <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
+ <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
+ <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
+ Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
+ Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli
+ <juri.lelli@redhat.com>, Clark Williams <williams@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>, Tomas Glozar <tglozar@redhat.com>, Vincent
+ Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
+ <mgorman@suse.de>, Kees Cook <kees@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, Shuah
+ Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, Miguel
+ Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, "Mike
+ Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland
+ <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, Nicolas Saenz
+ Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Yosry Ahmed <yosryahmed@google.com>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
+ Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+In-Reply-To: <Z4_Sl-zu7GprkbaL@pc636>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-30-vschneid@redhat.com>
+ <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
+ <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z4qBMqcMg16p57av@pc636>
+ <xhsmhwmetfk9d.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z44wSJTXknQVKWb0@pc636>
+ <xhsmhr04xfow1.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Z4_Sl-zu7GprkbaL@pc636>
+Date: Fri, 24 Jan 2025 16:22:19 +0100
+Message-ID: <xhsmh8qr0p784.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YSo1NTmx8FE3WNN7zL9so24o40HXhxubHJVvfxWBYtz0w@mail.gmail.com>
+Content-Type: text/plain
 
-Le Thu, Jan 23, 2025 at 08:49:47PM -0500, Joel Fernandes a écrit :
-> On Thu, Dec 12, 2024 at 7:59 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > The get_state_synchronize_rcu_full() and poll_state_synchronize_rcu_full()
-> > functions use the root rcu_node structure's ->gp_seq field to detect
-> > the beginnings and ends of grace periods, respectively.  This choice is
-> > necessary for the poll_state_synchronize_rcu_full() function because
-> > (give or take counter wrap), the following sequence is guaranteed not
-> > to trigger:
-> >
-> >         get_state_synchronize_rcu_full(&rgos);
-> >         synchronize_rcu();
-> >         WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&rgos));
-> >
-> > The RCU callbacks that awaken synchronize_rcu() instances are
-> > guaranteed not to be invoked before the root rcu_node structure's
-> > ->gp_seq field is updated to indicate the end of the grace period.
-> > However, these callbacks might start being invoked immediately
-> > thereafter, in particular, before rcu_state.gp_seq has been updated.
-> > Therefore, poll_state_synchronize_rcu_full() must refer to the
-> > root rcu_node structure's ->gp_seq field.  Because this field is
-> > updated under this structure's ->lock, any code following a call to
-> > poll_state_synchronize_rcu_full() will be fully ordered after the
-> > full grace-period computation, as is required by RCU's memory-ordering
-> > semantics.
-> >
-> > By symmetry, the get_state_synchronize_rcu_full() function should also
-> > use this same root rcu_node structure's ->gp_seq field.  But it turns out
-> > that symmetry is profoundly (though extremely infrequently) destructive
-> > in this case.  To see this, consider the following sequence of events:
-> >
-> > 1.      CPU 0 starts a new grace period, and updates rcu_state.gp_seq
-> >         accordingly.
+On 21/01/25 18:00, Uladzislau Rezki wrote:
+>> >
+>> > As noted before, we defer flushing for vmalloc. We have a lazy-threshold
+>> > which can be exposed(if you need it) over sysfs for tuning. So, we can add it.
+>> >
+>>
+>> In a CPU isolation / NOHZ_FULL context, isolated CPUs will be running a
+>> single userspace application that will never enter the kernel, unless
+>> forced to by some interference (e.g. IPI sent from a housekeeping CPU).
+>>
+>> Increasing the lazy threshold would unfortunately only delay the
+>> interference - housekeeping CPUs are free to run whatever, and so they will
+>> eventually cause the lazy threshold to be hit and IPI all the CPUs,
+>> including the isolated/NOHZ_FULL ones.
+>>
+> Do you have any testing results for your workload? I mean how much
+> potentially we can allocate. Again, maybe it is just enough to back
+> and once per-hour offload it.
+>
 
-I don't think so because idle CPUs are waited upon to report a QS, unlike
-offline CPUs that don't appear in ->qsmaskinitnext.
+Potentially as much as you want... In our Openshift environments, you can
+get any sort of container executing on the housekeeping CPUs and they're
+free to do pretty much whatever they want. Per CPU isolation they're not
+allowed/meant to disturb isolated CPUs, however.
 
-If the CPU 1 is idle while the grace period kthread scans its
-ct_rcu_watching_cpu(), then the QS is reported on its behalf and when CPU 1
-goes out of idle it is guaranteed to see the new started GP on the root node.
+> Apart of that how critical IPIing CPUs affect your workloads?
+>
 
-If the CPU 1 is not idle while the grace period kthread scans its
-ct_rcu_watching_cpu(), then CPU 1 must report a QS and that cancels the race.
+If I'm being pedantic, a single IPI to an isolated CPU breaks the
+isolation. If we can't quiesce IPIs to isolated CPUs, then we can't
+guarantee that whatever is running on the isolated CPUs is actually
+isolated / shielded from third party interference.
 
-Thanks.
