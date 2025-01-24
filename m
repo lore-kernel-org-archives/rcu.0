@@ -1,170 +1,137 @@
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1C91D7E4B
-	for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 01:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8943A5588E;
+	Fri, 24 Jan 2025 06:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737683938; cv=none; b=p7j7m6ij3DYOhYh0kUFK5YxaNg3KcrcSCGh0aifXD87WdD5mgIszEeghO+LtNsmJwZ6GX2pvxnVf3C1wKO7zk3jBqAoq+kmF227KS2XgBik5F1EFdPTN3EkOvHhUpaW6K4O2zDJ243aThFVuZ6s9NMpBCirkiSZk3SoQteVY1p4=
+	t=1737698782; cv=none; b=dh686+M+PdxXZ0cg87eCJ6p+6DVqixvrI9kf5CRe43GcaNJa4ul8Uos4HOd9bho2hJQb0cHRFW9vuq3uc7pkuVIuMHKSvVFWNqwem6Zpb2eW51BOWsAdCfC3SY4EmFtPchxyr0EFlJvW1I5dO8tRYbi5x6SiHd9VxsnXliRYhT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737683938; c=relaxed/simple;
-	bh=OuvN4hSJXio2PoJiej9Y5bVI4DH3N1EbznQzh95Pj9Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i/oNBsx+IInSE+yWIVAGGx+2lOx5q/bWMqgGRwIE0VjvgtQkj7o0VGMxmd/SCjRK4WfAXLTEdZkczc9LlPLUbA6/cTcVsYR6AI0i1zwZYoT2mMwk4WS25b8NfB7rCfTAYl9f59PTYZNBMDWistMB4d73Jiqr0pwgzTPqiOrBUeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=p9sJ16iP; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1737698782; c=relaxed/simple;
+	bh=5RtWOBiu0z0MlmBFKAeRVozYWldGTfWTRtvIt1V/7CE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G5M2os97apNvqbV1+XH/F2lrR7dTEhEwZjaBWMH3Qr/ZrIo2DHXlne+U/5ASWoFsSUJmmLrCR06YNxcQFFdCBUolz5xIwAB5/O7oElbQPExHjOtIfXsx1iMhCYDMrR05ROWJFCW/ZJCcaClqQi9dOik+0XAtQE+mcpypXAviNgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aoPDqKoY; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="p9sJ16iP"
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7b6f0afda3fso73761985a.2
-        for <rcu@vger.kernel.org>; Thu, 23 Jan 2025 17:58:56 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aoPDqKoY"
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5d3cf094768so3365637a12.0;
+        Thu, 23 Jan 2025 22:06:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1737683936; x=1738288736; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y+QF5oSbZcs+JbJsvoCUbafjxE54u1Cr2sHAMeNdyY0=;
-        b=p9sJ16iPpGjmXQzZZTBy6IXvDnvihbEf5W3TycdIx+HB+x8xYDfrsA14Jom8Co5Qye
-         orhK+xwH8+i54VVjj1HuGFtetmd2P6fqdEU9WBrFz2BldUS4xGnDnON0/2q49kUlOSJc
-         eCpsJkXXfzkAfdPp9oAocY5JIcsEjnTULcyzA=
+        d=gmail.com; s=20230601; t=1737698779; x=1738303579; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RG4j+svmASbLImMpUcZ8t8gAUFeLss6a+rNfigwqj5A=;
+        b=aoPDqKoYeM0eCmH4pMeTKBHulvVsafIKFLV0Zh77pY8/dCfl4m6quYiuvGrdspkGdz
+         xNg68rVtgGZ8isykcFhJgnLmdm1OobTj5XaVqRpyxiClv1agloGIK50lBVfz662vBur1
+         nyG7ZHgvd3HlRqqZuvVLbjDGi3SvkVscE4mznm1vf8+yXCV9dQsCGqX0k/x8e3/sCSWY
+         KnBf9rfxN2YU23LvYc4dSNjYmy4kIo3qThD+N78MttIU+NvPCoJCJl2rqklOxw3/iCV/
+         sFxJi1rd6fVOfvkzpSu4QyQtOdDSdRNv751dGnxLcr0hrEzdxCo9FGf9fwiVX5asuG0v
+         nGVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737683936; x=1738288736;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y+QF5oSbZcs+JbJsvoCUbafjxE54u1Cr2sHAMeNdyY0=;
-        b=Evfyy4YDg4Yag1sErSdhzLfgNc55DTtJ3qIAE06Gubew0BSe5Ik6hk3XUyDhX4KWWE
-         VBN+9JABS003eCAbUoST+B7C13NHWLnoYForRaP5LiAofp1nugUId0Em28Cn1uQPDmvX
-         Upf7NmfA/D/9YHyb6vLWaih3QRqUaru5q1xWFqe0ksHKGn7ZbVj5Z66GJKLbNpSPb16M
-         PmSzQk+i71fFQ9aA84lxBRMrKu/UrOuIF3hhVhVMp6CHRtgKzuE0H80e/rJAtV7nPYeu
-         QR53qGBNHPO39U7NVyVNHem5ECf+2EZWvMTDopJLOVX2zp6qtkNLW/rivdxO7ZrcR9hj
-         HE9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXXnimdmSFvI7WpQq8tBaIW60tjBk7k0++mNyjjCZKxGBGxWCGRgNcW006gTgS31VrNp2A=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9hu+YMSwBDwDWMmqrMFmUpOVKMXdKnDcfWnHL2R/boCrfc8CF
-	Nwp+TcmYKxtlKOXzU9lpzoia+NxS7J1/hIRyqM+y85Nbh0qE4/vMNlQ/gepGo4c=
-X-Gm-Gg: ASbGnctqvhPiFZZdIMooEV8vtNb2MQ7IOtwV63cOTpOO1JboyLKdxijbC2dZuhdWeWj
-	ghnkQPVljtUQ0TgJ6wDYo24riHt2QgiGmj7ai+qd4JbJdb7rkVUa6rx2F00AQtIcnNfuLEnQ6kJ
-	QOuPdAmxewWMqPTBRrEhKZgAl83qzvWg7UCX5REYQWRm2b2/A6WKkQ1lYzijBV6KWoX950WvkhZ
-	umtiBMUXloxVqFJ6uZwpst2zUewl4uYD87t4dlbdA9lj3iHNNouSSV7SmeeWIbMynkaQMGoDFvb
-	60IiF05efUCfgB6ncSU3A4tcRWYyx9yfQWhkQSlQRiVcjzk=
-X-Google-Smtp-Source: AGHT+IH36P6Jv8uzjmbePn9/vGkZZmN7+mVBRG1wMuKKi1ngiL7zOS7+fOI/X1b/u1OyY3fqtN5Vkw==
-X-Received: by 2002:a05:620a:1a02:b0:7b6:6a76:3a44 with SMTP id af79cd13be357-7be631f2fe6mr3884618085a.17.1737683936019;
-        Thu, 23 Jan 2025 17:58:56 -0800 (PST)
-Received: from joelbox2.. (c-73-251-172-144.hsd1.va.comcast.net. [73.251.172.144])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7be9ae8a5fbsm44741985a.31.2025.01.23.17.58.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 17:58:55 -0800 (PST)
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH RFC 5/5] rcutorture: kvm: Invoke stress-ng building it if necessary
-Date: Thu, 23 Jan 2025 20:58:36 -0500
-Message-Id: <20250124015836.732086-6-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250124015836.732086-1-joel@joelfernandes.org>
-References: <20250124015836.732086-1-joel@joelfernandes.org>
+        d=1e100.net; s=20230601; t=1737698779; x=1738303579;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RG4j+svmASbLImMpUcZ8t8gAUFeLss6a+rNfigwqj5A=;
+        b=Uv+9d0s7f8RIf8pSutbzEFRsJsXOoHE1w1629ZcevcuEl9dyC9ppP+7wX5CSKiQGLQ
+         yy37WGItRMMmfkW5QqMF5ICKxAVmr/h8r/0b9J9AN9QIzgpVkctF17p4PQn5Ma5Cm18A
+         Seapx/ZL+Dw2ia/tPc9sck6bXE/A4iLj1+Qi3U6hnQyZb1Wwp0p4RKDK/Saiew2eZWwB
+         CSh5l1I6+zlc2owqNgBtdQZwvic0hfgGnYCaAmTUbrAsEXSqDprvxtU4fP0drYYFwjnr
+         suusSUptpvkD0OeG2PcFjATT62OH/ZAFDLmOfy5hHGhOKajuYMTwnwi00GKiwyFJDdpW
+         wqPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUWo1AtKEF2Cp8DvJB34ar5EGGnWJs2phSo7NVMOERBEkOy2i0kzF63rM7H/hSF5aSIZujk@vger.kernel.org, AJvYcCX+eoX75GYmDeISzskh3vMdeL7b4POcc3YXBp5ipYLrFtq4GrQ27hr9RPz4msRSloPOj4QQLSdU9uPCmA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxltt/moh10HtxDcSAJK5sClJ5xoTEZ3xN9uJvlvGnqbiqd5d9s
+	oaVztdbspnXbL9r3UBJyj5umghDrw67vB6dt1VOLOldzY6ZMr/lr5D3UrYxeBZNVZCRNZNuwZXP
+	UtZl6HPlYtpJ5zDXz1sLzqsDBpdA=
+X-Gm-Gg: ASbGncvQYhOJ5OsoBizXcq2luLpFZj5TR00mWgNPzvh/hMQvSZFUwH7MknP41IKna6K
+	DG+2Dnejgs5QaXogNRptYDK7jDFGQs+WZPMe6CTZVXZuKEzuTMtcWK+WObjhgJws=
+X-Google-Smtp-Source: AGHT+IFq9oDds6G4G+lCXW4ewNcqetr0yFoE6Xlpu5bzQrC10H8j958krCHEz4JZ/vWF5PVrtfz1A0WoV/s6kYGdkxo=
+X-Received: by 2002:a05:6402:1d4e:b0:5db:fcb0:e52b with SMTP id
+ 4fb4d7f45d1cf-5dbfcb0e88amr7034843a12.24.1737698778432; Thu, 23 Jan 2025
+ 22:06:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CA+=Fv5TJhDrrxG82=MNPFEFFwKD4NDYyB1u32ZvnGv6Ma0h_Nw@mail.gmail.com>
+ <alpine.DEB.2.21.2412271452100.20821@angie.orcam.me.uk> <CA+=Fv5SW-N+5KzsnVdHvy406-p+g7giUbt626xwDduy6xjaPkw@mail.gmail.com>
+ <CA+=Fv5TtOQkDMPnuPrPGcB0VGhUHUDqe5=Z+ovd5x5rBJ-Hsjw@mail.gmail.com>
+ <alpine.DEB.2.21.2501122348510.18889@angie.orcam.me.uk> <CA+=Fv5Q9UxeSP0U10d281Nbm3agyFgpwyY95+d2pAWVWJP=2Yg@mail.gmail.com>
+ <CA+=Fv5RU946-r5S8hZKTF4w20s82Oc-JDe-pCa1W7zjr6nEoag@mail.gmail.com>
+ <CA+=Fv5RntE=Z=PgYYxBDLTDES6aWkg-+yqEPPDjv-E7GCcoufg@mail.gmail.com>
+ <alpine.DEB.2.21.2501201317060.27432@angie.orcam.me.uk> <Z4-jgMJgbVriLaCr@minute>
+ <Z5KMHoA7GlHJyUU_@minute> <alpine.DEB.2.21.2501232306270.27203@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2501232306270.27203@angie.orcam.me.uk>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Fri, 24 Jan 2025 07:06:06 +0100
+X-Gm-Features: AWEUYZlW-p1L1-ejmCcyg-JvuN5aGR5JaJM3VWsa0tHfyWDpnxb_Txt3F8c9LIg
+Message-ID: <CA+=Fv5SkXgOPdGD-ytreeS8OR=FVW3MuSbOz1_MoZtO56E6=CA@mail.gmail.com>
+Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
+To: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Ivan Kokshaysky <ink@unseen.parts>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Michael Cree <mcree@orcon.net.nz>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, rcu@vger.kernel.org, 
+	linux-alpha@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Invoke stress-ng from init using new --stress-ng and optional
---stress-ng-args. Default --stress-ng-args are used if none are
-provided. Not passing --stress-ng does not change the behavior of kvm.sh
-from before.
+>  Umm, this is a part of UAPI, and the change in alignment changes the ABI
+> (think padding where `struct pt_regs' has been embedded into another
+> structure), so AFAICT it is a no-no.
+>
+>  But the only place I could quickly find this should matter for is this:
+>
+>         /* ... and find our stack ... */
+>         lda     $30,0x4000 - SIZEOF_PT_REGS($8)
+>
+> which should be straightforward to fix:
+>
+>         lda     $30,0x4000 - ((SIZEOF_PT_REGS + 15) & ~15)($8)
+>
+> or suchlike.  Have I missed anything?
+>
+>   Maciej
+>
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- tools/testing/selftests/rcutorture/bin/kvm.sh | 38 +++++++++++++++++--
- 1 file changed, 34 insertions(+), 4 deletions(-)
+I left my ES40 doing "emerge --update --newuse --deep @world. Which
+failed and I'm seeing stuff like this in the logs:
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 4766c3023fed..d35496247ee6 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -42,13 +42,15 @@ TORTURE_JITTER_STOP=""
- TORTURE_KCONFIG_KASAN_ARG=""
- TORTURE_KCONFIG_KCSAN_ARG=""
- TORTURE_KMAKE_ARG=""
-+TORTURE_MOD=rcutorture
- TORTURE_NO_AFFINITY=""
- TORTURE_QEMU_MEM=512
- torture_qemu_mem_default=1
- TORTURE_REMOTE=
- TORTURE_SHUTDOWN_GRACE=180
-+TORTURE_STRESS_NG=
-+TORTURE_STRESS_NG_DEFAULT_ARGS="--cpu 1 --cpu-method matrixprod --cpu-ops 1000000 --perf -t 5"
- TORTURE_SUITE=rcu
--TORTURE_MOD=rcutorture
- TORTURE_TRUST_MAKE=""
- debuginfo="CONFIG_DEBUG_INFO_NONE=n CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y"
- resdir=""
-@@ -90,6 +92,8 @@ usage () {
- 	echo "       --remote"
- 	echo "       --results absolute-pathname"
- 	echo "       --shutdown-grace seconds"
-+	echo "       --stress-ng"
-+	echo "       --stress-ng-args \"stress-ng arguments\""
- 	echo "       --torture lock|rcu|rcuscale|refscale|scf|X*"
- 	echo "       --trust-make"
- 	exit 1
-@@ -251,6 +255,14 @@ do
- 		TORTURE_SHUTDOWN_GRACE=$2
- 		shift
- 		;;
-+	--stress-ng)
-+		TORTURE_STRESS_NG=1
-+		;;
-+	--stress-ng-args)
-+		checkarg --stress-ng-args "(stress-ng arguments)" "$#" "$2" '.*' '^error'
-+		TORTURE_STRESS_NG_DEFAULT_ARGS="$2"
-+		shift
-+		;;
- 	--torture)
- 		checkarg --torture "(suite name)" "$#" "$2" '^\(lock\|rcu\|rcuscale\|refscale\|scf\|X.*\)$' '^--'
- 		TORTURE_SUITE=$2
-@@ -275,9 +287,27 @@ do
- 	shift
- done
- 
--if test -z "$dryrun" && test -n "$TORTURE_INITRD" && !tools/testing/selftests/rcutorture/bin/mkinitrd.sh
--	echo No initrd and unable to create one, aborting test >&2
--	exit 1
-+if test -n "$TORTURE_STRESS_NG"
-+then
-+	if ! "$RCUTORTURE/bin/mkstress-ng.sh"
-+	then
-+		echo "Failed to build stress-ng, aborting test" >&2
-+		exit 1
-+	fi
-+fi
-+
-+if test -z "$dryrun" && test -n "$TORTURE_INITRD"
-+then
-+	stress_args=""
-+	if test -n "$TORTURE_STRESS_NG"
-+	then
-+		stress_args="stress-ng $TORTURE_STRESS_NG_DEFAULT_ARGS"
-+	fi
-+	if ! "$RCUTORTURE/bin/mkinitrd.sh" $stress_args
-+	then
-+		echo "No initrd and unable to create one, aborting test" >&2
-+		exit 1
-+	fi
- fi
- 
- CONFIGFRAG=${RCUTORTURE}/configs/${TORTURE_SUITE}; export CONFIGFRAG
--- 
-2.34.1
+conftest(29098): unaligned trap at 00000200010005f0: 00000000bb65ed99 28 2
+conftest(29098): unaligned trap at 00000200010005f8: 00000000dab6f47f 28 1
 
+Unable to handle kernel paging request at virtual address 535853452d4d4245
+CPU 2
+cp(19064): Oops 0
+pc = [<fffffc00004ac9dc>]  ra = [<fffffc0000497630>]  ps = 0000    Not tainted
+pc is at __d_lookup_rcu+0x6c/0x110
+ra is at lookup_fast+0x40/0x200
+v0 = 535853452d4d4249  t0 = 0000000000000000  t1 = fffffc0003780000
+t2 = 000000003a01009f  t3 = 6465637379730035  t4 = 0000000000000000
+t5 = 0000000000000001  t6 = 0000001400000000  t7 = fffffc00a8e8c000
+s0 = fffffc00a8e8fdb0  s1 = 0000000000000001  s2 = fffffc00a8e8fdb0
+s3 = 000000011fe45840  s4 = 000002000096408d  s5 = 000000011fe46060
+s6 = 00000000000003ff
+a0 = fffffc00fb5260c0  a1 = fffffc00a8e8fdc0  a2 = fffffc00a8e8fdf4
+a3 = 0000000000000000  a4 = 0000000000004050  a5 = 00000000021ab34f
+t8 = fffffc00fb5260c0  t9 = fffffc00a8e8fdf4  t10= 000000146e2931da
+t11= fffffc000a52b089  pv = fffffc00004ac970  at = fffffc000a52a800
+gp = fffffc0000e9c980  sp = 000000001a40800e
+Disabling lock debugging due to kernel taint
+Trace:
+[<fffffc000049cd90>] path_lookupat+0xb0/0x260
+[<fffffc000049d620>] filename_lookup+0x90/0x180
+[<fffffc000048ce5c>] do_readlinkat.part.0+0x6c/0x200
+[<fffffc000043a0e8>] __handle_mm_fault+0xb18/0xd60
+[<fffffc000049cf78>] getname_flags+0x38/0x270
+[<fffffc0000494bd8>] path_put+0x38/0x50
+[<fffffc000048ce34>] do_readlinkat.part.0+0x44/0x200
+[<fffffc000031095c>] entMM+0x9c/0xc0
+[<fffffc000048d7f0>] sys_readlink+0x30/0x50
+[<fffffc0000310d04>] entSys+0xa4/0xc0
+
+
+
+/Magnus
