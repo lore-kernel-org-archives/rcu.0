@@ -1,49 +1,41 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E748618A93E;
-	Fri, 24 Jan 2025 22:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DCD41C54B1;
+	Fri, 24 Jan 2025 23:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737759023; cv=none; b=GYt4c5n9Mf4/BoeLQk0OS5RaPbnSRlRGiO+rpawr85nQp+i4QRicqZDYZiOMOlnyWbrTN6Mo8FVEImnrxEe/KXuL5kahw0pcXDsDIAvb4MMRGb/Xy2nNakuCzuBB9fUDWNMpeEtPwoAgex3N8DgVxLLgn9iD6rKOMy2RVl/Izh4=
+	t=1737759842; cv=none; b=uqW4v+AkxCInThmisUGbkE9eNWEAXo61f6x2Oz0/iYd7ssaKYMW/181CN/XHba7orY4yfUKbpfXXx0JFUFjfVW/ymEbQaXDdHa3yCKQBQnE1Q5+aUMeg0+vQDnrDSUu5oGH000qI+/iw6kVVEWoXDX9RvcP+fn/CRHClrq1akL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737759023; c=relaxed/simple;
-	bh=h2EuH2czpoPPXO5B+4dIwHkRsdrKx2PCo110QKZ55vM=;
+	s=arc-20240116; t=1737759842; c=relaxed/simple;
+	bh=zPoDq63HwIFTbeNhaTj+1USIJUfLPWWLh8+bXs3B5A0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yofl1ZRbu0gcT4NFzmgZlyrUc8UzVhX/ujLhh7KhzOn5jBFT/kr40KwA7iMAT70zwK+sPSA8G5zr1PGf9WQUWL0vQN8ncLDZchFjSuIQbkaFypTGOB4T/rY9eK5MqphCIa26dZtexYzO/meTeBb2XytSc4QcKBS6zKNxU5vOMXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jXGzhUgn; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=qP9EDMhaIQu3SsZNk77Lf37wDz2CzTcmLM+vwL5VYRBBuGRJ9cCn2YEFtNDiJgQIF0QeefXHS/ZSaUvqv1eWeLub6AAcrtNaxPBSb/AjEc4gOLccS+AR9hF1C4a1ABON+MrSgbPL7UWYOUKfyR6welRsSKmy7JL0TUebzRJL7DU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nBCVn87K; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jXGzhUgn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A085C4CED2;
-	Fri, 24 Jan 2025 22:50:22 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nBCVn87K"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E355C4CED2;
+	Fri, 24 Jan 2025 23:04:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737759022;
-	bh=h2EuH2czpoPPXO5B+4dIwHkRsdrKx2PCo110QKZ55vM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=jXGzhUgnLTx/QZNwAemzE+5nji122Mq4lE/SxnK7+G9vxvwUlmXaSFhFQ671wxJs/
-	 kqcs8/jQ8MlqvaFxvb3n+88McdMEjCG2FntmoigZ/tWr5oomCmSbSK/j9gB9q0dypV
-	 9pOgg7EEatuyFbmXZ8yJCLDSgLTdtXR91FGay0BPzgKz4W+UFXAqh+9D8ogRrJc+OW
-	 lej2hWvMhrwYll9GBLIeMHaOwbYnI164jjX30dLaxo0DSLBLbmvyqYBWKC3D94wX0y
-	 TvqddFMgHPDOPxLRgekyCQA8pUgC2gD7IfKYgD1AvuTW/hE0a7leVlkusIRT/61FzI
-	 paIi2pulR8JEQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0BD9DCE13C2; Fri, 24 Jan 2025 14:50:22 -0800 (PST)
-Date: Fri, 24 Jan 2025 14:50:22 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
+	s=k20201202; t=1737759841;
+	bh=zPoDq63HwIFTbeNhaTj+1USIJUfLPWWLh8+bXs3B5A0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nBCVn87Kr58OB4ZPWX8yxOPEpZWKNpBn7f6jsM8kbPAlPD1fsE/eA6N/XUD6jwK53
+	 2yAWeG1VDRU+LdhOnSmdqinFsfDh7zkSL4fbn0IqyPPpZVOZWQXXaBisGoR03yauEC
+	 2EydU0QBMccmPjPBb5PzQNWrzno0qXrycpamCqJb/GrhF5f0lXqz8IhwojyzvGKaJ5
+	 YgFRf8vPwXDDra0CUIyeSkH96Mfuyb07/zaebPUvRAuO7ZZQKkNSN1pR3f8ol8ve2a
+	 u4joKH7XqoZaFHzsliqJoe9ZkAhKft3HsqCAAO1DuZQP24oCgi/MQdodyeOxK3dWxF
+	 KzLKqsOsDsWDQ==
+Date: Sat, 25 Jan 2025 00:03:58 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	rostedt@goodmis.org
 Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
  detection
-Message-ID: <5bfcc3ac-1638-4ce3-bc14-1a08c9aa7075@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Message-ID: <Z5QcXoE0lrS6yIBt@pavilion.home>
 References: <eb83ab84-05b3-43da-bc59-e2dbd932740c@paulmck-laptop>
  <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
- <Z5OodAwpjRtR4lvv@localhost.localdomain>
- <19388b60-5e71-463d-ba68-9064d0caa224@paulmck-laptop>
- <Z5PC9Rs1C2NIBR8k@localhost.localdomain>
- <c58693df-24dc-4c2a-b04a-d96637235e09@paulmck-laptop>
- <Z5QTPWMUzqEE-h6A@pavilion.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -53,58 +45,29 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z5QTPWMUzqEE-h6A@pavilion.home>
+In-Reply-To: <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
 
-On Fri, Jan 24, 2025 at 11:25:01PM +0100, Frederic Weisbecker wrote:
-> Le Fri, Jan 24, 2025 at 11:40:54AM -0800, Paul E. McKenney a écrit :
-> > > > > I'm wondering, what prevents us from removing rcu_state.gp_seq and rely only on
-> > > > > the root node for the global state ?
-> > > > 
-> > > > One scenario comes to mind immediately.  There may be others.
-> > > > 
-> > > > Suppose we were running with default configuration on a system with
-> > > > "only" eight CPUs.  Then there is only the one rcu_node structure,
-> > > > which is both root and leaf.  Without rcu_state.gp_seq, there
-> > > > would be no way to communicate the beginning of the grace period to
-> > > > get_state_synchronize_rcu_full() without also allowing quiescent states
-> > > > to be reported.  There would thus be no time in which to check for newly
-> > > > onlined/offlined CPUs.
-> > > 
-> > > Heh, that makes sense! Though perhaps that qsmaskinit[next] handling part
-> > > could be done before rcu_seq_start()?
-> > 
-> > If we do that, aren't we vulnerable to a CPU coming online just after
-> > we handled qsmaskinit{,next} and just before we do rcu_seq_start()?
-> 
-> But then that CPU is guaranteed to see the pre-GP accesses because
-> rcutree_report_cpu_starting() holds the rnp lock.
-> 
-> Hmm but it won't see the starting gp_seq and it might therefore be one GP
-> too early while accelerating its own callbacks (mis-attributing them the
-> current GP in progress instead of a subsequent one) even though other CPUs
-> may have reported their own QS already.
-> 
-> Because I only now realize this necessary order while starting a grace period:
-> 
-> 1) rcu_seq_start(rcu_state.gp_seq)
-> 2) go through ->qsmaskinit[next] _while holding leaf rnp locks_
-> 3) go through the whole tree breadth first to reflect rcu_state.gp_seq to
->    rnp->gp_seq. CPUs may start reporting QS concurrently once the first leaf
->    node is reached
-> 
-> And the step 2) with its fully ordered locking on leaves which release the write
-> to rcu_state.gp_seq is what makes sure that if any CPU from step 3) has already
-> reported a QS, it is guaranteed that any call to rcu_seq_snap() under any other
-> leaf rnp locking will return the sequence of the subsequent GP number and not the
-> current one in progress.
+Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McKenney a écrit :
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 2f9c9272cd486..d2a91f705a4ab 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -162,7 +162,7 @@ static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
+>  {
+>  	unsigned long cur_s = READ_ONCE(*sp);
+>  
+> -	return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
+> +	return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (3 * RCU_SEQ_STATE_MASK + 1));
 
-Very good!!!
+This might need a comment.
 
-> This is what makes RCU an entertaining companion. You (think you) understand
-> it in the evening and then you forget it all over again in the next morning.
-> (And in lunch time you stare at things...).
+The way I understand it is that rcu_state.gp_seq might be seen started while
+root_rnp->gp_seq is not. So rcu_seq_snap() on the started rcu_state.gp_seq
+may return maximum 2 full GPs ahead of root_rnp->gp_seq. And therefore it takes below
+2 GPs to safely deduce we wrapped around.
 
-That sums up many of my entertaining experiences with RCU over the past
-three decades.  ;-)
+Should it be ULONG_CMP_LT(cur_s, s - (2 * (RCU_SEQ_STATE_MASK + 1))) ?
 
-							Thanx, Paul
+Or am I missing something?
+
+Thanks.
