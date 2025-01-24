@@ -1,64 +1,64 @@
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D9721B1A3
-	for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 12:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F46524F
+	for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 12:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737720668; cv=none; b=Z4QKjmPD3AQued05M0JG5Lppb+veUU/K/0ZblBYiTzKVLkThcw8UxVJkacr3T0/lN6rEs2Olb9lrN5XgvbExcxfI2YpX27lnH5fKkkCJ0gaEtJVbbfFIttSNgCoNsakAlsZgR6HhIuOma38sl3mdxltywN/BhwuS0HwGJAAgxBY=
+	t=1737722884; cv=none; b=s6GSlo+GD0r2QIFLapm/mz8jgx6vWjenrePz8ymopS1oINXAIdl+1qnb8DvYjOpxSzztqqKQTwwr/i3v8h9IcUugPleY3skqEcRBQhqGiSCYI3NJUrfssmcHiQ9815HQR95RXOxU2moCgOU8cxBWs7XxvrTq9IrZMqBbvGqXxVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737720668; c=relaxed/simple;
-	bh=wa0BpRoNtBGneYJwjqp4gCnPBTpkXVWnRBjcR1M70XI=;
+	s=arc-20240116; t=1737722884; c=relaxed/simple;
+	bh=zKNm+4G3DcbYBG1x6VxPCQAUeJrs0nOfEYdTJ70LSlM=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o3Sanvc92t2T9Z2BD+k2DsJ5Igz3caipgE6hDx1+KtZVszLvdSM8WsJ1rfM3UTjJzjAHYY+TOISypRB3HcXpElmfqdV1oIgz7htnVxmA5Uwu2wxdyUxf9ZSipA17S+gtO/FJzVJ/cOXTLmDpsXpQ8vFpk4mxlS3Kh44tShjhHbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TVnUihPv; arc=none smtp.client-ip=209.85.208.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=c1kHnoh9BTGN/J+fguCIZiujHjGCm+bCILXGSX7XOGcJ8KcQeWOHwqdWZtgXXGKvd33TMwu/Lz6MvXBxrOexDBXd2JTfaB7iFd6dJd1VaBCzup/9wKubAUCpJHJq05sAjHNUHms9F3HMiZrHibnupy7uQlhwY7JHg5hUbkUUgWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f4qqfY4p; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TVnUihPv"
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-30613037309so20217761fa.3
-        for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 04:11:06 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f4qqfY4p"
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5439b0dd4bfso1635616e87.0
+        for <rcu@vger.kernel.org>; Fri, 24 Jan 2025 04:48:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737720665; x=1738325465; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737722880; x=1738327680; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CCFWsVUlTlzlODRazwy3FhP7ZwvGV/2uZu6VlfdPVtE=;
-        b=TVnUihPvjBXTLqKV+kkbCIhbd9MM9jdOKyj1+Rsm4NVqCnHfK1dF11MVkf/P4GcUiq
-         Rmp/41ZVV8IxdWmk+p5tVD4pyRUBgQO22hxOcT+R5I5jwJoiPEz6dK6OIzjpd2iXq68+
-         EYOFbF7DWYALAbQ7knoRORylDVtXKbJvFos/FAhx4ueq24khPNxw2DNzg+rbTIz3Parg
-         b3MAOqQ5T0CLnTjBptdIoRHfv+1KDl1AxDmaJT5ToLi6QmdUlTIisvyU1U/Df6XEpbHg
-         UBnjcJUd5H1k2IIGwrmGDxqG19qrwyyBpKl9ip8iVgKMtpZLvubIkosQ0QLT+qWztmtw
-         /DNA==
+        bh=4BzrtAZUmYmJhcFIblC4VJWVTxNvUlbeOqI5x0bXKmI=;
+        b=f4qqfY4pGQgzIdyauhzI26cjtfFqmkXByRPMqxk99DTW7h5T0fe17KmTi+cassyF5C
+         7WqRJGdE+NfYwEEjwMOaJH8yRJRlCFP457NINfVlR2Nnyezxw0e+iQvvXGLYkl0KHvfN
+         OElfqdP8i49HKBBiBcJLchcVIeYtbm0/ENuORolDESiQVb3jeUXqVqRZhXcHDGxFiKhX
+         HVL5Za67VDeQCZoi/Zu9x0sNZA0bQbPiYs5C4RvPcr6woCZQtsm/8bg6X9uojIP6oZ+K
+         v/UIHOlAgYw4ISELiy9QVWhqEldVTkh1F0lSSO3qP34DAKX5nxpEG9Hw3zeor3F8s3OU
+         G+rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737720665; x=1738325465;
+        d=1e100.net; s=20230601; t=1737722880; x=1738327680;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CCFWsVUlTlzlODRazwy3FhP7ZwvGV/2uZu6VlfdPVtE=;
-        b=uiM/iReFn1AKyrRVPY4681VPu1VM4+SJz4qxIpV1Ux4UUBEOLaiZzarxrXLraEcG6h
-         4PkrLhjOtglnbGqsomcHK4Dtkv4pr3nGpprttJxwXJeotRb4EtYFLWCtF8C3vHMsOR5e
-         C85+o+8hhqxJ9ygc3/eFnhS/Gdoy72xsBHh6ZybSXUMypqSOjGEwQVG3AQA1MgdAEjwa
-         je/f5F3LNPZ+F5aXXRxpAKAYEfAQ0r4hYsPjDyjVkuojM30SJP21pw8XLD9Rd6meersP
-         akBCBhSm4Fy+v3Q6JH0hq+gn5m02Bnn/VEu9//qiO0e4KhaO2R3+atgnxpWGNWF5cYHV
-         1T5A==
-X-Forwarded-Encrypted: i=1; AJvYcCUE9JtBQdNHJSJXSLXfHLfozIlxD5cwLzMbZc2A+k9+XguTosfn+DfqDSeI9d1hBrB/2Ig=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxglykfqoq53DSv+KlDF65c64BPs+QvJCiXc2pHk0MgPilDMdqR
-	xH5GWooqirU57P2oPlJ1GS7b8OIO8u6kiIeZQQ4t45BQteC49Hq5
-X-Gm-Gg: ASbGnctiULufJaKZNLjemo+KV7HqbGFGsiW1EMsLRP82dE3fOMDaCKZWCPlX7KhvBfA
-	8XLxxFETOeAx6/jm61mhBvjG69BS52Mx4Wv1dAGUSmUQW8se0AtGvI0CLDLETV+bokw+JeaUTvR
-	v41yZgfS6nasAI1YplmFDo28sxEgoIwUDGquLlG/CdYZevKQ6gc05w0BEzhbQ5FBYXlxmRQCyxr
-	X0VGWVdhVYdvXkQGr9NJpTPh+T1ERgmNzJpnAt6l95G9SP8eA8qK0v3xLRUBNsTu4nWWSjUsTVm
-	6vfY4TdiFf+9HyZZdjZgOdKAYn3DkSN4Ndc=
-X-Google-Smtp-Source: AGHT+IH20V+H9mL+BtrdGoQx/Z+iCvWoXKL/MKk3o1LRlvkK6XuwLhntzsnscxycRabVdx8Z6pXUbg==
-X-Received: by 2002:a05:6512:aca:b0:53e:37e4:1457 with SMTP id 2adb3069b0e04-5439c280723mr11508144e87.33.1737720664827;
-        Fri, 24 Jan 2025 04:11:04 -0800 (PST)
+        bh=4BzrtAZUmYmJhcFIblC4VJWVTxNvUlbeOqI5x0bXKmI=;
+        b=RANUCzKzi0dkkQip7x19r7g9HhUuGfeYuRd1NzFp4/obJRM6yjSpYCtaJIhO3PCK7s
+         /INb3uz8ABOCPNrbZDs1EwSz37xIYyHwuUJu3kTA40xR8wBjAK6x6/qS8+Nix5XKD2Dj
+         Og8Mgy4LhG53PBY2c+mR+LRj3xTiNbFr6eAD+n5aKRJFB6ieQlyfA366hlYshdhXhtn3
+         u5Q+3+uvpttrvfBzjcgZNMJO/Nghwo4py6GE37nTXCe9Q/AL5Y+PV9ehilyPT+X/IdXe
+         PkyvpfY0gE08tGqEdQhcNvNyEt3JeMnZxpozrWscEENLYY4s6i+vkajWEieAbk7lTkLr
+         +acg==
+X-Forwarded-Encrypted: i=1; AJvYcCUanKl3xgSG6wXGI4pCgD2GE4k8HHclMUY27Lf5fZAd9uHehea34gJ0jbQtZwTxzdn9dOc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjPXiH6cJqcnVefE4ORX5GPvM2jl4QN8m15Bn+QiZTc6v49LJv
+	94+xcOATz4jHu68/q8a/M/oeGIZa22jEq9wB2UjgEQ12QOOlXuy8
+X-Gm-Gg: ASbGncugUrklRdlZbjI4GY/gp5z4Apeg9sTElc4MFihcMTTQsdWkvkifWAV26xVKHQs
+	MyfazVaTW2eJbnd3REM0KGKHL1Mz6whr0keAFQTBTFbdpC+1oHe5Cs3kv4Z0AyKH/+IlQaVZO98
+	Yvr3lfmh1cfmRA9OstVpRStJHGvEvfXWghL5BJO4FkA6jicmS5kRnbZoLPwoN5tSWbemcmruLnm
+	x+ovFWUkZLBymwNBwUFnOo9f6d98XJ7psiagEDvbkf3UGgRl9iJilExODyjYb6+4CKK05nzl9fr
+	vPax5zD41ofkcWLkFLU7NAF7PicvqWPCmNM=
+X-Google-Smtp-Source: AGHT+IHfDCKln2WQAdqNwoqpNnunQ0kWDLLio3VptmybfPuU4j38QgVw6I8QCrCL2FcPVriNtBeZnA==
+X-Received: by 2002:ac2:520b:0:b0:542:98bb:566f with SMTP id 2adb3069b0e04-5439c287e74mr8146119e87.52.1737722879720;
+        Fri, 24 Jan 2025 04:47:59 -0800 (PST)
 Received: from pc636 (host-217-213-93-172.mobileonline.telia.com. [217.213.93.172])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-543c836848bsm271613e87.126.2025.01.24.04.11.03
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-543c822f827sm288753e87.71.2025.01.24.04.47.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jan 2025 04:11:04 -0800 (PST)
+        Fri, 24 Jan 2025 04:47:59 -0800 (PST)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Fri, 24 Jan 2025 13:11:01 +0100
+Date: Fri, 24 Jan 2025 13:47:56 +0100
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -73,10 +73,11 @@ Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH RFC 4/4] slab: don't batch kvfree_rcu() with SLUB_TINY
-Message-ID: <Z5ODVa3osRqNFlX6@pc636>
+Subject: Re: [PATCH RFC 3/4] rcu, slab: use a regular callback function for
+ kvfree_rcu
+Message-ID: <Z5OL_OeL8olMaeml@pc636>
 References: <20250123-slub-tiny-kfree_rcu-v1-0-0e386ef1541a@suse.cz>
- <20250123-slub-tiny-kfree_rcu-v1-4-0e386ef1541a@suse.cz>
+ <20250123-slub-tiny-kfree_rcu-v1-3-0e386ef1541a@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -85,141 +86,215 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250123-slub-tiny-kfree_rcu-v1-4-0e386ef1541a@suse.cz>
+In-Reply-To: <20250123-slub-tiny-kfree_rcu-v1-3-0e386ef1541a@suse.cz>
 
-On Thu, Jan 23, 2025 at 11:37:21AM +0100, Vlastimil Babka wrote:
-> kvfree_rcu() is batched for better performance except on TINY_RCU, which
-> is a simple implementation for small UP systems. Similarly SLUB_TINY is
-> an option intended for small systems, whether or not used together with
-> TINY_RCU. In case SLUB_TINY is used with !TINY_RCU, it makes arguably
-> sense to not do the batching and limit the memory footprint. It's also
-> suboptimal to have RCU-specific #ifdefs in slab code.
+On Thu, Jan 23, 2025 at 11:37:20AM +0100, Vlastimil Babka wrote:
+> RCU has been special-casing callback function pointers that are integers
+> lower than 4096 as offsets of rcu_head for kvfree() instead. The tree
+> RCU implementation no longer does that as the batched kvfree_rcu() is
+> not a simple call_rcu(). The tiny RCU still does, and the plan is also
+> to make tree RCU use call_rcu() for SLUB_TINY configurations.
 > 
-> With that, add CONFIG_KFREE_RCU_BATCHED to determine whether batching
-> kvfree_rcu() implementation is used. It is not set by a user prompt, but
-> enabled by default and disabled in case TINY_RCU or SLUB_TINY are
-> enabled.
+> Instead of teaching tree RCU again to special case the offsets, let's
+> remove the special casing completely. Since there's no SLOB anymore, it
+> is possible to create a callback function that can take a pointer to a
+> middle of slab object with unknown offset and determine the object's
+> pointer before freeing it, so implement that as kvfree_rcu_cb().
 > 
-> Use the new config for #ifdef's in slab code and extend their scope to
-> cover all code used by the batched kvfree_rcu(). For example there's no
-> need to perform kvfree_rcu_init() if the batching is disabled.
+> Large kmalloc and vmalloc allocations are handled simply by aligning
+> down to page size. For that we retain the requirement that the offset is
+> smaller than 4096. But we can remove __is_kvfree_rcu_offset() completely
+> and instead just opencode the condition in the BUILD_BUG_ON() check.
 > 
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  include/linux/slab.h |  2 +-
->  mm/Kconfig           |  4 ++++
->  mm/slab_common.c     | 45 +++++++++++++++++++++++++--------------------
->  3 files changed, 30 insertions(+), 21 deletions(-)
+>  include/linux/rcupdate.h | 24 +++++++++---------------
+>  kernel/rcu/tiny.c        | 13 -------------
+>  mm/slab.h                |  2 ++
+>  mm/slab_common.c         |  5 +----
+>  mm/slub.c                | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  5 files changed, 54 insertions(+), 32 deletions(-)
 > 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index bcc62e5656c35c6a3f4caf26fb33d7447dead39a..9faf33734a8eee2425b90e679c0457ab459422a3 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -1083,7 +1083,7 @@ extern void kvfree_sensitive(const void *addr, size_t len);
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 3f70d1c8144426f40553c8c589f07097ece8a706..7ff16a70ca1c0fb1012c4118388f60687c5e5b3f 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -1025,12 +1025,6 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+>  #define RCU_POINTER_INITIALIZER(p, v) \
+>  		.p = RCU_INITIALIZER(v)
 >  
->  unsigned int kmem_cache_size(struct kmem_cache *s);
+> -/*
+> - * Does the specified offset indicate that the corresponding rcu_head
+> - * structure can be handled by kvfree_rcu()?
+> - */
+> -#define __is_kvfree_rcu_offset(offset) ((offset) < 4096)
+> -
+>  /**
+>   * kfree_rcu() - kfree an object after a grace period.
+>   * @ptr: pointer to kfree for double-argument invocations.
+> @@ -1041,11 +1035,11 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+>   * when they are used in a kernel module, that module must invoke the
+>   * high-latency rcu_barrier() function at module-unload time.
+>   *
+> - * The kfree_rcu() function handles this issue.  Rather than encoding a
+> - * function address in the embedded rcu_head structure, kfree_rcu() instead
+> - * encodes the offset of the rcu_head structure within the base structure.
+> - * Because the functions are not allowed in the low-order 4096 bytes of
+> - * kernel virtual memory, offsets up to 4095 bytes can be accommodated.
+> + * The kfree_rcu() function handles this issue. In order to have a universal
+> + * callback function handling different offsets of rcu_head, the callback needs
+> + * to determine the starting address of the freed object, which can be a large
+> + * kmalloc of vmalloc allocation. To allow simply aligning the pointer down to
+> + * page boundary for those, only offsets up to 4095 bytes can be accommodated.
+>   * If the offset is larger than 4095 bytes, a compile-time error will
+>   * be generated in kvfree_rcu_arg_2(). If this error is triggered, you can
+>   * either fall back to use of call_rcu() or rearrange the structure to
+> @@ -1091,10 +1085,10 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr);
+>  do {									\
+>  	typeof (ptr) ___p = (ptr);					\
+>  									\
+> -	if (___p) {									\
+> -		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offsetof(typeof(*(ptr)), rhf)));	\
+> -		kvfree_call_rcu(&((___p)->rhf), (void *) (___p));			\
+> -	}										\
+> +	if (___p) {							\
+> +		BUILD_BUG_ON(offsetof(typeof(*(ptr)), rhf) >= 4096);	\
+> +		kvfree_call_rcu(&((___p)->rhf), (void *) (___p));	\
+> +	}								\
+>
+Why removing the macro? At least __is_kvfree_rcu_offset() makes it
+clear what and why + it has a nice comment what it is used for. 4096
+looks like hard-coded value.
+
+Or you do not want that someone else started to use that macro in
+another places?
+
+>  } while (0)
 >  
-> -#ifdef CONFIG_TINY_RCU
-> +#ifndef CONFIG_KFREE_RCU_BATCHED
->  static inline void kvfree_rcu_barrier(void)
->  {
->  	rcu_barrier();
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 84000b01680869801a10f56f06d0c43d6521a8d2..e513308a4aed640ee556ecb5793c7f3f195bbcae 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -242,6 +242,10 @@ menu "Slab allocator options"
->  config SLUB
->  	def_bool y
+>  #define kvfree_rcu_arg_1(ptr)					\
+> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+> index 0ec27093d0e14a4b1060ea08932c4ac13f9b0f26..77e0db0221364376a99ebeb17485650879385a6e 100644
+> --- a/kernel/rcu/tiny.c
+> +++ b/kernel/rcu/tiny.c
+> @@ -88,12 +88,6 @@ static inline bool rcu_reclaim_tiny(struct rcu_head *head)
+>  	unsigned long offset = (unsigned long)head->func;
 >  
-> +config KFREE_RCU_BATCHED
-> +	def_bool y
-> +	depends on !SLUB_TINY && !TINY_RCU
+>  	rcu_lock_acquire(&rcu_callback_map);
+> -	if (__is_kvfree_rcu_offset(offset)) {
+> -		trace_rcu_invoke_kvfree_callback("", head, offset);
+> -		kvfree((void *)head - offset);
+> -		rcu_lock_release(&rcu_callback_map);
+> -		return true;
+> -	}
+>  
+>  	trace_rcu_invoke_callback("", head);
+>  	f = head->func;
+> @@ -159,10 +153,6 @@ void synchronize_rcu(void)
+>  }
+>  EXPORT_SYMBOL_GPL(synchronize_rcu);
+>  
+> -static void tiny_rcu_leak_callback(struct rcu_head *rhp)
+> -{
+> -}
+> -
+>  /*
+>   * Post an RCU callback to be invoked after the end of an RCU grace
+>   * period.  But since we have but one CPU, that would be after any
+> @@ -178,9 +168,6 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
+>  			mem_dump_obj(head);
+>  		}
+> -
+> -		if (!__is_kvfree_rcu_offset((unsigned long)head->func))
+> -			WRITE_ONCE(head->func, tiny_rcu_leak_callback);
+>  		return;
+>  	}
+>  
+> diff --git a/mm/slab.h b/mm/slab.h
+> index e9fd9bf0bfa65b343a4ae0ecd5b4c2a325b04883..2f01c7317988ce036f0b22807403226a59f0f708 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -604,6 +604,8 @@ void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+>  			    void **p, int objects, struct slabobj_ext *obj_exts);
+>  #endif
+>  
+> +void kvfree_rcu_cb(struct rcu_head *head);
 > +
->  config SLUB_TINY
->  	bool "Configure for minimal memory footprint"
->  	depends on EXPERT
+>  size_t __ksize(const void *objp);
+>  
+>  static inline size_t slab_ksize(const struct kmem_cache *s)
 > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index f13d2c901daf1419993620459fbd5845eecb85f1..9f6d66313afc6684bdc0f32908fe01c83c60f283 100644
+> index 330cdd8ebc5380090ee784c58e8ca1d1a52b3758..f13d2c901daf1419993620459fbd5845eecb85f1 100644
 > --- a/mm/slab_common.c
 > +++ b/mm/slab_common.c
-> @@ -1284,6 +1284,28 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc);
->  EXPORT_TRACEPOINT_SYMBOL(kfree);
->  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+> @@ -1532,9 +1532,6 @@ kvfree_rcu_list(struct rcu_head *head)
+>  		rcu_lock_acquire(&rcu_callback_map);
+>  		trace_rcu_invoke_kvfree_callback("slab", head, offset);
 >  
-> +#ifndef CONFIG_KFREE_RCU_BATCHED
-> +
-> +void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+> -		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset)))
+> -			kvfree(ptr);
+> -
+This is not correct unless i miss something. Why do you remove this?
+
+>  
+> diff --git a/mm/slub.c b/mm/slub.c
+> index c2151c9fee228d121a9cbcc220c3ae054769dacf..651381bf05566e88de8493e0550f121d23b757a1 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/bitops.h>
+>  #include <linux/slab.h>
+>  #include "slab.h"
+> +#include <linux/vmalloc.h>
+>  #include <linux/proc_fs.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/kasan.h>
+> @@ -4732,6 +4733,47 @@ static void free_large_kmalloc(struct folio *folio, void *object)
+>  	folio_put(folio);
+>  }
+>  
+> +void kvfree_rcu_cb(struct rcu_head *head)
 > +{
-> +	if (head) {
-> +		kasan_record_aux_stack_noalloc(ptr);
-> +		call_rcu(head, kvfree_rcu_cb);
+> +	void *obj = head;
+> +	struct folio *folio;
+> +	struct slab *slab;
+> +	struct kmem_cache *s;
+> +	void *slab_addr;
+> +
+> +	if (unlikely(is_vmalloc_addr(obj))) {
+> +		obj = (void *) PAGE_ALIGN_DOWN((unsigned long)obj);
+> +		vfree(obj);
 > +		return;
 > +	}
 > +
-> +	// kvfree_rcu(one_arg) call.
-> +	might_sleep();
-> +	synchronize_rcu();
-> +	kvfree(ptr);
+> +	folio = virt_to_folio(obj);
+> +	if (unlikely(!folio_test_slab(folio))) {
+> +		/*
+> +		 * rcu_head offset can be only less than page size so no need to
+> +		 * consider folio order
+> +		 */
+> +		obj = (void *) PAGE_ALIGN_DOWN((unsigned long)obj);
+> +		free_large_kmalloc(folio, obj);
+> +		return;
+> +	}
+> +
+> +	slab = folio_slab(folio);
+> +	s = slab->slab_cache;
+> +	slab_addr = folio_address(folio);
+> +
+> +	if (is_kfence_address(obj)) {
+> +		obj = kfence_object_start(obj);
+> +	} else {
+> +		unsigned int idx = __obj_to_index(s, slab_addr, obj);
+> +
+> +		obj = slab_addr + s->size * idx;
+> +		obj = fixup_red_left(s, obj);
+> +	}
+> +
+> +	slab_free(s, slab, obj, _RET_IP_);
 > +}
 > +
-> +void __init kvfree_rcu_init(void)
-> +{
-> +}
-> +
-> +#else /* CONFIG_KFREE_RCU_BATCHED */
-> +
->  /*
->   * This rcu parameter is runtime-read-only. It reflects
->   * a minimum allowed number of objects which can be cached
-> @@ -1858,24 +1880,6 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->  	return true;
->  }
->  
-> -#ifdef CONFIG_TINY_RCU
-> -
-> -void kvfree_call_rcu(struct rcu_head *head, void *ptr)
-> -{
-> -	if (head) {
-> -		kasan_record_aux_stack_noalloc(ptr);
-> -		call_rcu(head, kvfree_rcu_cb);
-> -		return;
-> -	}
-> -
-> -	// kvfree_rcu(one_arg) call.
-> -	might_sleep();
-> -	synchronize_rcu();
-> -	kvfree(ptr);
-> -}
-> -
-> -#else /* !CONFIG_TINY_RCU */
-> -
->  static enum hrtimer_restart
->  schedule_page_work_fn(struct hrtimer *t)
->  {
-> @@ -2084,8 +2088,6 @@ void kvfree_rcu_barrier(void)
->  }
->  EXPORT_SYMBOL_GPL(kvfree_rcu_barrier);
->  
-> -#endif /* !CONFIG_TINY_RCU */
-> -
->  static unsigned long
->  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
->  {
-> @@ -2175,3 +2177,6 @@ void __init kvfree_rcu_init(void)
->  
->  	shrinker_register(kfree_rcu_shrinker);
->  }
-> +
-> +#endif /* CONFIG_KFREE_RCU_BATCHED */
-> +
-> 
-> -- 
-> 2.48.1
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-
-A small nit: CONFIG_KVFREE_RCU_BATCHED?
+Tiny computer case. Just small nit, maybe remove unlikely() but you decide :)
 
 --
 Uladzislau Rezki
