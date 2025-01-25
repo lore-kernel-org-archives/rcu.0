@@ -1,111 +1,154 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from minute.unseen.parts (minute.unseen.parts [139.162.151.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BDE4A1D;
-	Sat, 25 Jan 2025 14:56:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2AE5A94A;
+	Sat, 25 Jan 2025 15:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.162.151.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737816981; cv=none; b=ez/8zHrn/VMT8XDgeKo0uDN8EVdBBPo9RRrOiEkSaGk0E+8nrrdAPHxnBSoFJs6RN8V3DGLL2nlwtCRnfiLny7RN/IIsYvJAhDS5M9pcvwpAihQkQL58oMdlAAj54JqCVvApyEIHt/XN3zsgerT3wKRzqMz6UCmYLQdIiPrtU5Y=
+	t=1737818168; cv=none; b=tCG+WW4OBfwkmB0QMWSzuOiTtzP1UIEaXjbSFQ0R/JMmcODOFqlPmwZSiA5HJAiHHpkjYTbICxFWVWwtvwxiI9UIUNoWsl+4b4EqikkpEWxxLd1oWI5Tbeh1R2O+nAVi1Gp27+yx4PxG5uE3aTZO5gu30cORgRe60ck/v6iqXL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737816981; c=relaxed/simple;
-	bh=WnJ5mZKRiwqHMSmYy7TUux4A95rSaTWgwjrQagaMMJ4=;
+	s=arc-20240116; t=1737818168; c=relaxed/simple;
+	bh=oF4tz9QCQ2oeg0jLTnWNAl9vyAEnX6vj/7Dgl+1EzQg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p1ERfhQszxCLHa4CPn5B1c9WNcet2SH8hSIvDGEpmi7c8L1Z/tbWvwibnuCmeTblkApW6UESg/f2n8naFzfuV2JCXkkC6N/JfxBvqfFuKNsk1RgaHSlqRHaWPMzjyTp+CqWzfKzs/G3zQXSkmkpQ2GC8T9pEbf5D8/dU1zt0F18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oRNEekwp; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ISgE0j2codPGSA8v65nRMiMvzS6DtoMuEGdTN813I8miWXnlBotlCiDI09hnec8iHmhnexn41DH3y79M1ey6W6yq4pdcOaQVkb2MNQuiWtKf3sXlZRlc/aPunwS+8UYckso95zfwhj1OUeyTjoFhJAzUaQbQ9+JcKgQ3PQpQY4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unseen.parts; spf=pass smtp.mailfrom=unseen.parts; dkim=pass (2048-bit key) header.d=unseen.parts header.i=@unseen.parts header.b=C6q22Olh; arc=none smtp.client-ip=139.162.151.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unseen.parts
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unseen.parts
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oRNEekwp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00347C4CED6;
-	Sat, 25 Jan 2025 14:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737816979;
-	bh=WnJ5mZKRiwqHMSmYy7TUux4A95rSaTWgwjrQagaMMJ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oRNEekwpzqiUyKDz3Ok1tDjroN1tQwfUgySnJVAG3mRfCX+KyMeBwI2kt/i0zYghY
-	 g2zi+c+0QA5d9U8wnUemid1S04bmr5ocw3YEl/3uICM9V/vwj2nIYOWZ1EbruPdi3I
-	 uZz1rnoT/XC1512ijoTTkrji86UqoB6PZ4PRloKVscuzKitQZRaE7tKCc5IaNvKOyP
-	 Wv6g+vCYIpWtYzuRe5Lpbn3+1azxBUZi6kLzNyhdp18NvSAkVroGJKujD4BsrapfEE
-	 /k8dcqJQdtySJqWm8bw7B0lyM0jdfW0P9Lr/SxOLaUVzxO5gWX1qhqy+VS3Cnsjb44
-	 E6yDdmzrft1nA==
-Date: Sat, 25 Jan 2025 15:56:16 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
- detection
-Message-ID: <Z5T7kF7LKIuk05FR@pavilion.home>
-References: <eb83ab84-05b3-43da-bc59-e2dbd932740c@paulmck-laptop>
- <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
- <Z5QcXoE0lrS6yIBt@pavilion.home>
- <d7bbe2cd-d889-40e9-8d46-fb8772fed6db@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=unseen.parts header.i=@unseen.parts header.b="C6q22Olh"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=unseen.parts; s=sig; h=In-Reply-To:Content-Type:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Hhj160kQD8iFSe2KQbZv/+7UbJVGxbkae2fFm1F+174=; b=C6q22OlhHTrFHXXlqHodYhC2wG
+	tiwooj0zVE3cPnkgYFA3fxz2/mK6JXVZmGHwngfbqeDPU8q3S4GZMPUHSJrLFGsicEFxR84Ognues
+	QuwrJRkJYI4fh0jW3we7LqgK+x2XoL5EcdTFUQDAoZomcs5T/6WDp1TPtbjbRFKSGYUxmGfnc8Vfm
+	om3sxemza86ZVPj8BXNhYBnbGx7iAg4s4D6HTkRN71Y1IwvCKj5DAmjFxOkEQqnXPYPNIjOH0EFtn
+	B42C+YPkuIEYvbKSIfXdDjTxUsWZqN1u7VOvw4zFLrTRMD5CjgmI457QxFp9caw507BniAyk+tLM+
+	l9qlZINw==;
+Received: from minute.unseen.parts ([139.162.151.61]:49778 helo=minute)
+	by minute.unseen.parts with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.96)
+	(envelope-from <ink@unseen.parts>)
+	id 1tbhsk-0008T3-0r;
+	Sat, 25 Jan 2025 16:15:34 +0100
+Date: Sat, 25 Jan 2025 16:15:32 +0100
+From: Ivan Kokshaysky <ink@unseen.parts>
+To: Magnus Lindholm <linmag7@gmail.com>
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Michael Cree <mcree@orcon.net.nz>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	rcu@vger.kernel.org, linux-alpha@vger.kernel.org
+Subject: Re: Kernel Oops on alpha with kernel version >=6.9.x
+Message-ID: <Z5UAFAD6xCSpKJYw@minute>
+References: <alpine.DEB.2.21.2501122348510.18889@angie.orcam.me.uk>
+ <CA+=Fv5Q9UxeSP0U10d281Nbm3agyFgpwyY95+d2pAWVWJP=2Yg@mail.gmail.com>
+ <CA+=Fv5RU946-r5S8hZKTF4w20s82Oc-JDe-pCa1W7zjr6nEoag@mail.gmail.com>
+ <CA+=Fv5RntE=Z=PgYYxBDLTDES6aWkg-+yqEPPDjv-E7GCcoufg@mail.gmail.com>
+ <alpine.DEB.2.21.2501201317060.27432@angie.orcam.me.uk>
+ <Z4-jgMJgbVriLaCr@minute>
+ <Z5KMHoA7GlHJyUU_@minute>
+ <alpine.DEB.2.21.2501232306270.27203@angie.orcam.me.uk>
+ <Z5NxuIFsMUvqWUtC@minute>
+ <CA+=Fv5QmSkP4Ysp1zHNmUPftXYbSquTCsO_o3Rcgi2T5RcPj5A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d7bbe2cd-d889-40e9-8d46-fb8772fed6db@paulmck-laptop>
+In-Reply-To: <CA+=Fv5QmSkP4Ysp1zHNmUPftXYbSquTCsO_o3Rcgi2T5RcPj5A@mail.gmail.com>
 
-Le Fri, Jan 24, 2025 at 04:01:55PM -0800, Paul E. McKenney a écrit :
-> On Sat, Jan 25, 2025 at 12:03:58AM +0100, Frederic Weisbecker wrote:
-> > Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McKenney a écrit :
-> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > index 2f9c9272cd486..d2a91f705a4ab 100644
-> > > --- a/kernel/rcu/rcu.h
-> > > +++ b/kernel/rcu/rcu.h
-> > > @@ -162,7 +162,7 @@ static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
-> > >  {
-> > >  	unsigned long cur_s = READ_ONCE(*sp);
-> > >  
-> > > -	return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
-> > > +	return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (3 * RCU_SEQ_STATE_MASK + 1));
-> > 
-> > This might need a comment.
+On Fri, Jan 24, 2025 at 05:57:05PM +0100, Magnus Lindholm wrote:
+> Are there other parts of the code that might unalign the stack, even
+> if the stack is properly aligned to begin with? i.e passing an uneven
+> number of function arguments on the stack or inside interrupt
+> handlers? Alpha does not make use of a separate interrupt stack,
+> right?
+
+Good questions. No, there is no separate interrupt stack, it's always the
+kernel one. Stack frames from interrupts in user mode are 64-byte aligned
+though. Interrupts in kernel mode, user mode syscalls and exceptions all
+use 6 x 64-bit word frames and do not change the stack [mis]alignment.
+
+So, what we have now:
+1. The "normal" kernel stack is always misaligned by 8, thanks to
+   the sizeof(struct pt_regs);
+2. Syscalls and exceptions handlers receive 16-byte aligned stack, as it
+   gets "fixed" by SAVE_ALL macro in entry.S, which pushes the odd number
+   of registers on the stack;
+3. Interrupt handlers may, or may not, have got an aligned stack depending
+   on kernel/user mode in which the interrupt had come.
+
+Ugh.
+
+> On stack alignment in "ALPHA Calling Standard":
+> D.3.1 Stack Alignment
 > 
-> Good point!  Would you like to propose one?
+> "This standard requires that stacks be octaword aligned at the time a
+> new procedure is invoked. During the body of a procedure, however,
+> there is no requirement to keep this level of alignment (even though
+> it may be beneficial). This implies that any asynchronous interrupt
+> handlers must properly align the stack before any standard calls are
+> made."
 
-Ok.
+I hope we can rely on GCC changing $sp only by multiplies of 16.
 
-> 
-> > The way I understand it is that rcu_state.gp_seq might be seen started while
-> > root_rnp->gp_seq is not. So rcu_seq_snap() on the started rcu_state.gp_seq
-> > may return maximum 2 full GPs ahead of root_rnp->gp_seq. And therefore it takes below
-> > 2 GPs to safely deduce we wrapped around.
-> 
-> Exactly!
-> 
-> > Should it be ULONG_CMP_LT(cur_s, s - (2 * (RCU_SEQ_STATE_MASK + 1))) ?
-> 
-> Quite possibly.  I freely admit that I allowed a bit of slop because
-> time was of the essence (holidays and all that) and also it does not
-> hurt much to lose a couple of counts out of a 2^32 cycle, to say nothing
-> of the common-case 2^64 cycle.  It would not hurt to be exact, but it
-> would be necessary to convince ourselves that we were not off by one in
-> the wrong direction.
-> 
-> I would be happy to see a patch, as long as it was sufficiently
-> convincing.
+Magnus, can you please try this variant?
 
-I'm not so much concerned about being exact but rather about making
-sure we still understand what we did within one year. We can leave one
-more grace period than what we expect out of paranoia but, the most
-important is that we comment about what we expect and why. Let me
-prepare a patch for that.
+(Yes, there is still the UAPI issue that Maciej pointed out, but that's
+another story.)
 
-In the meantime for your patch:
+Ivan.
 
-   Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-
-
-> 
-> > Or am I missing something?
-> 
-> Not that I can see.  So the answer is probably "yes".  ;-)
-
-Thanks! :-)
-
-> 
-> 							Thanx, Paul
+diff --git a/arch/alpha/include/uapi/asm/ptrace.h b/arch/alpha/include/uapi/asm/ptrace.h
+index 5ca45934fcbb..72ed913a910f 100644
+--- a/arch/alpha/include/uapi/asm/ptrace.h
++++ b/arch/alpha/include/uapi/asm/ptrace.h
+@@ -42,6 +42,8 @@ struct pt_regs {
+ 	unsigned long trap_a0;
+ 	unsigned long trap_a1;
+ 	unsigned long trap_a2;
++/* This makes the stack 16-byte aligned as GCC expects */
++	unsigned long __pad0;
+ /* These are saved by PAL-code: */
+ 	unsigned long ps;
+ 	unsigned long pc;
+diff --git a/arch/alpha/kernel/asm-offsets.c b/arch/alpha/kernel/asm-offsets.c
+index 4cfeae42c79a..e9dad60b147f 100644
+--- a/arch/alpha/kernel/asm-offsets.c
++++ b/arch/alpha/kernel/asm-offsets.c
+@@ -19,9 +19,13 @@ static void __used foo(void)
+ 	DEFINE(TI_STATUS, offsetof(struct thread_info, status));
+ 	BLANK();
+ 
++	DEFINE(SP_OFF, offsetof(struct pt_regs, ps));
+ 	DEFINE(SIZEOF_PT_REGS, sizeof(struct pt_regs));
+ 	BLANK();
+ 
++	DEFINE(SWITCH_STACK_SIZE, sizeof(struct switch_stack));
++	BLANK();
++
+ 	DEFINE(HAE_CACHE, offsetof(struct alpha_machine_vector, hae_cache));
+ 	DEFINE(HAE_REG, offsetof(struct alpha_machine_vector, hae_register));
+ }
+diff --git a/arch/alpha/kernel/entry.S b/arch/alpha/kernel/entry.S
+index dd26062d75b3..6fb38365539d 100644
+--- a/arch/alpha/kernel/entry.S
++++ b/arch/alpha/kernel/entry.S
+@@ -15,10 +15,6 @@
+ 	.set noat
+ 	.cfi_sections	.debug_frame
+ 
+-/* Stack offsets.  */
+-#define SP_OFF			184
+-#define SWITCH_STACK_SIZE	64
+-
+ .macro	CFI_START_OSF_FRAME	func
+ 	.align	4
+ 	.globl	\func
