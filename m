@@ -1,174 +1,196 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52433D64;
-	Mon, 27 Jan 2025 16:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC773D64;
+	Mon, 27 Jan 2025 16:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737996558; cv=none; b=ewaXM9Fs+JYKGqC5kxUxVpvQRv+dREbki/En7g5NUV6hAsHkj2SJbyZnEXZzQ4y1XWzZRZdgJ2Zs0PaSzFIyZ6TyYBgQDr8lHf3QyQPDvfbZCV5MVw3XiIrCUeQyGq2qIc48FCenE0ayZkQmI0QzW4ZCTPUeZ+xaD0z25ZWsx3M=
+	t=1737996662; cv=none; b=u0wF8i3JP5SMnewgmN1MWoiffIfM7p8yW1pFaD/DvqSbsptAdW0edtRBK+gho5iQacm0Z6bkfKbSzWzAXvtNeWG6VbmFCxL9r9CksNZdAJ74sQl477orI1kPIAt2qJnFU+7cC7IWDA48FMJdDdatl3OvXrtIB9Li3fy6DEDqM/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737996558; c=relaxed/simple;
-	bh=yVaBGZRS5giy0CAWZjD9f8gYIcMLtqmkS5ciC3RRAKg=;
+	s=arc-20240116; t=1737996662; c=relaxed/simple;
+	bh=vOO+8KZy+xCdV70Ap3ghYIwGH7Idp1ruvBc7ZGcSUfI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cHuNQXhBXEZaF5pbS67Ufunpkff2ImhTpXUaKqdqscgoQ8MCoqEZ+GW1297qHUfNWsxdJa4ClonzaNhxc6JMbnoSgc6tJHTuc9wiKdIMNdkth412T8jlrbdx4M3my6kTuUDV3LHooWhuJymifAD67F8Y04BkYCSNQGQsdXv/4po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kSxq8h7T; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=rmV0Xv7oFJs6J9pKPWRx/85UmvQ4zBYTlVzDkkrWMejrzU8584YxwzYfwFji/lmaKC5WXQtOSMDAAyxxahkR/Qet+jjaP8GYsvN66TEv1Dn/TZAt4sDKtW7711KxWIuDNjBLEhQw5FHnSA4aR+NqD9VgXc2losHSSsBkN+P5hbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bbRez3CZ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kSxq8h7T"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2446EC4CED2;
-	Mon, 27 Jan 2025 16:49:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bbRez3CZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAC78C4CED2;
+	Mon, 27 Jan 2025 16:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737996558;
-	bh=yVaBGZRS5giy0CAWZjD9f8gYIcMLtqmkS5ciC3RRAKg=;
+	s=k20201202; t=1737996661;
+	bh=vOO+8KZy+xCdV70Ap3ghYIwGH7Idp1ruvBc7ZGcSUfI=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=kSxq8h7TBT+s/22piQ12XA4qxKr46KdVoqUK5KpIHLx0ViYuJhUGXZImo5fEPWMbt
-	 XJh8D9xFVtIG62VTVUf9T9xVW9z9B/muH068Kl6dNxZWtJI9ctTJzHjsnM3igSZZi6
-	 IM7KTParquj6jmjKJfjd5sGqCfbPf3PLLNl6A2F6hm8smW/t/41ycZrM5n/2l8+7XS
-	 Em2P6DxR4/msV7amyiZjnyy4RssrOs/snV5f1uezxGNkc6oVqUurDmIkv6yarygoKX
-	 MCpItKSaO2pyWjh76ueGqrWdo4Xi6yOeNMLczUG+bI+Z9Io6j+vvz8Upf1aJcDy1+L
-	 Jpqes2lz7yakw==
+	b=bbRez3CZ+bf+b9eLfjryk5l7SaOzouDbdx/P+UpOhv8hR9LlxE8sp7Bn+0tBmCuWx
+	 xJDwsPK7gjVUI2fj5fY696qrhkFFn/h5SZ1t0KappZlrDUY0rzCDsKVpAmlub6PyM2
+	 6+1D7AVOFRASMYJK/Xto26FpnftQelz3KuFsXi61CrH3AmuEZSW/WteWDhsxf9oMiC
+	 EysUZSG+qVC69X06L/dbPNCUqzyYVJUU4oJLEjQ/H3ySLgpw1wnoBXjtJTNmvHG9mR
+	 5+HAZ7+oJj+0mJKan1HMaC+/51HKKsk4bnN69XcSMX+q0f1pbyIry4py9qCUliimKJ
+	 WeWCiHBO4k7ig==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BCCF0CE13C2; Mon, 27 Jan 2025 08:49:17 -0800 (PST)
-Date: Mon, 27 Jan 2025 08:49:17 -0800
+	id 7876CCE13C4; Mon, 27 Jan 2025 08:51:01 -0800 (PST)
+Date: Mon, 27 Jan 2025 08:51:01 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
- detection
-Message-ID: <76ea9e49-c8d9-4ddf-8dd5-65ba4096e242@paulmck-laptop>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Cheung Wall <zzqq0103.hey@gmail.com>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 2/4] torture: Remove CONFIG_NR_CPUS configuration
+Message-ID: <fd09724c-dcd9-4f41-b33c-20f6258da6b0@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
- <Z5QcXoE0lrS6yIBt@pavilion.home>
- <d7bbe2cd-d889-40e9-8d46-fb8772fed6db@paulmck-laptop>
- <Z5T7kF7LKIuk05FR@pavilion.home>
- <a18ec931-a7cb-408b-8707-f88068a13ba9@paulmck-laptop>
- <CAEXW_YReLoj+fofM9=fT-G0rz-E0z7vcwg_ANrbfCrPOX99tYA@mail.gmail.com>
- <CAEXW_YQaC+TYnXZca2MBcJQgf2EWD+pBp-Dih+b647RtpJ+LNQ@mail.gmail.com>
- <83f5a3ff-8f89-4994-844f-b7eb9e80b16d@paulmck-laptop>
- <CAEXW_YTiX2taVbg3keCR4RuxSdfpVA0fVPpCcDWXjF7rH7Kkdw@mail.gmail.com>
- <CAEXW_YTduDBJY2CbkStWc3-4MP06+bJVFmEbgvfayB6BQyyksw@mail.gmail.com>
+References: <6f2969e3-344d-4f2d-a71c-ed999ac35324@paulmck-laptop>
+ <Z5N8cmpD-HmTYQQJ@pc636>
+ <d410ab83-515a-4454-8420-1ada8cf86efd@paulmck-laptop>
+ <Z5PMGlDb489VEZ7S@pc636>
+ <c57daf05-1018-40b5-9684-22dfd94cc8d9@paulmck-laptop>
+ <Z5PSeEn_ceFuqbnz@pc636>
+ <06b6c9f2-c668-4c7d-8555-69a23cc8b4e7@paulmck-laptop>
+ <Z5eJ13aWwMDK00U1@pc636>
+ <c0280436-2239-41d8-b118-1e6792995778@paulmck-laptop>
+ <Z5epgkyeyAvTVOQg@pc636>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YTduDBJY2CbkStWc3-4MP06+bJVFmEbgvfayB6BQyyksw@mail.gmail.com>
+In-Reply-To: <Z5epgkyeyAvTVOQg@pc636>
 
-On Sun, Jan 26, 2025 at 09:58:11PM -0500, Joel Fernandes wrote:
-> On Sun, Jan 26, 2025 at 9:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> >
-> > On Sun, Jan 26, 2025 at 9:03 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Sun, Jan 26, 2025 at 08:22:23PM -0500, Joel Fernandes wrote:
-> > > > On Sun, Jan 26, 2025 at 8:13 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > >
-> > > > > Hi, Paul and Frederic,
-> > > > >
-> > > > > [...]
-> > > > > > > > On Sat, Jan 25, 2025 at 12:03:58AM +0100, Frederic Weisbecker wrote:
-> > > > > > > > > Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McKenney a écrit :
-> > > > > > > > > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > > > > > > > > index 2f9c9272cd486..d2a91f705a4ab 100644
-> > > > > > > > > > --- a/kernel/rcu/rcu.h
-> > > > > > > > > > +++ b/kernel/rcu/rcu.h
-> > > > > > > > > > @@ -162,7 +162,7 @@ static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
-> > > > > > > > > >  {
-> > > > > > > > > >         unsigned long cur_s = READ_ONCE(*sp);
-> > > > > > > > > >
-> > > > > > > > > > -       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
-> > > > > > > > > > +       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (3 * RCU_SEQ_STATE_MASK + 1));
-> > > > > > > > >
-> > > > > [...]
-> > > > > > > > > The way I understand it is that rcu_state.gp_seq might be seen started while
-> > > > > > > > > root_rnp->gp_seq is not. So rcu_seq_snap() on the started rcu_state.gp_seq
-> > > > > > > > > may return maximum 2 full GPs ahead of root_rnp->gp_seq. And therefore it takes below
-> > > > > > > > > 2 GPs to safely deduce we wrapped around.
-> > > > > > > >
-> > > > > > > > Exactly!
-> > > > > > > >
-> > > > > > > > > Should it be ULONG_CMP_LT(cur_s, s - (2 * (RCU_SEQ_STATE_MASK + 1))) ?
-> > > > > > > >
-> > > > > > > > Quite possibly.  I freely admit that I allowed a bit of slop because
-> > > > > > > > time was of the essence (holidays and all that) and also it does not
-> > > > > > > > hurt much to lose a couple of counts out of a 2^32 cycle, to say nothing
-> > > > > > > > of the common-case 2^64 cycle.  It would not hurt to be exact, but it
-> > > > > > > > would be necessary to convince ourselves that we were not off by one in
-> > > > > > > > the wrong direction.
-> > > > > > > >
-> > > > > > > > I would be happy to see a patch, as long as it was sufficiently
-> > > > > > > > convincing.
-> > > > > > >
-> > > > > > > I'm not so much concerned about being exact but rather about making
-> > > > > > > sure we still understand what we did within one year. We can leave one
-> > > > > > > more grace period than what we expect out of paranoia but, the most
-> > > > > > > important is that we comment about what we expect and why. Let me
-> > > > > > > prepare a patch for that.
-> > > > > >
-> > > > > > Even better!
-> > > > >
-> > > > > Do we really have users who could pass such a huge delta wrapped
-> > > > > around value to poll() i.e > ULONG_MAX/2 ?  For 32-bit, that would be
-> > > > > 2 billion count since the get() (500 million GPs on 32-bit?). I am
-> > > > > curious if such a scenario should be a WARN() because also: If more
-> > > > > than ULONG_MAX/2 values are possible after get(), then a full or
-> > > > > multiple ULONG_MAX wraparound is also possible. This means then both
-> > > > > rcu_seq_done() and rcu_seq_done_exact() become unreliable anyway for
-> > > > > such stale get() values.
-> > > > >
-> > > > > I do agree with both your points on the side effect of the patch to
-> > > > > rcu_seq_done_exact(), but I am not fully convinced myself about
-> > > > > utility of rcu_seq_done_exact() versus the rcu_seq_done() but I could
-> > > > > be missing something.
-> > > >
-> > > > I want to modify my comment on reliability. rcu_seq_done_exact() is
-> > > > certainly more "reliable" than rcu_seq_done() for wraparound delta  >
-> > > > ULONG_MAX/2. Still with such a huge wrap around it is not fail proof
-> > > > if it lands within the "3 Grace period" window, so if it is not super
-> > > > reliable and if the user should not rely on it, then I wonder if it is
-> > > > better to not do it and instead warn the user they are playing with
-> > > > fire. But a counter-argument might be, landing within the 3 GP window
-> > > > is quite low probability...
-> > >
-> > > It is also a harmless false negative.  And another poll within a few
-> > > hundred milliseconds will set things straight.  In contrast, if we
-> > > used rcu_seq_done(), it would be a good long time before we got out of
-> > > false-negative territory.
-> >
-> > True!
-> >
-> > > On a 32-bit system, if there was an expedited grace period every 10
-> > > microseconds (just barely possible on small systems), then a 32-bit
-> > > counter would wrap in about 12 hours.  So there would be a six-hour
-> > > false-negative zone.
-> > >
-> > > So an expedited grace period every 10 microseconds combined with
-> > > a six-hour polling delay is unlikely, but not out of the realm of
-> > > possibility.
-> >
-> > Assuming that every 10 microsecond of the entire 6 hours is used for
-> > an expedited GP, but I agree with your point.
-> >
-> > > Please feel free to nominate a comment.
-> >
-> > Ok thanks, I'll see what Frederic comes up with and can take it from there.
+On Mon, Jan 27, 2025 at 04:42:58PM +0100, Uladzislau Rezki wrote:
+> On Mon, Jan 27, 2025 at 06:51:44AM -0800, Paul E. McKenney wrote:
+> > On Mon, Jan 27, 2025 at 02:27:51PM +0100, Uladzislau Rezki wrote:
+> > > On Fri, Jan 24, 2025 at 11:34:03AM -0800, Paul E. McKenney wrote:
+> > > > On Fri, Jan 24, 2025 at 06:48:40PM +0100, Uladzislau Rezki wrote:
+> > > > > On Fri, Jan 24, 2025 at 09:36:07AM -0800, Paul E. McKenney wrote:
+> > > > > > On Fri, Jan 24, 2025 at 06:21:30PM +0100, Uladzislau Rezki wrote:
+> > > > > > > On Fri, Jan 24, 2025 at 07:45:23AM -0800, Paul E. McKenney wrote:
+> > > > > > > > On Fri, Jan 24, 2025 at 12:41:38PM +0100, Uladzislau Rezki wrote:
+> > > > > > > > > On Thu, Jan 23, 2025 at 12:29:45PM -0800, Paul E. McKenney wrote:
+> > > > > > > > > > On Thu, Jan 23, 2025 at 07:58:26PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > > > > > > > > > This configuration specifies the maximum number of CPUs which
+> > > > > > > > > > > is set to 8. The problem is that it can not be overwritten for
+> > > > > > > > > > > something higher.
+> > > > > > > > > > > 
+> > > > > > > > > > > Remove that configuration for TREE05, so it is possible to run
+> > > > > > > > > > > the torture test on as many CPUs as many system has.
+> > > > > > > > > > > 
+> > > > > > > > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > > > > > > > 
+> > > > > > > > > > You should be able to override this on the kvm.sh command line by
+> > > > > > > > > > specifying "--kconfig CONFIG_NR_CPUS=128" or whatever number you wish.
+> > > > > > > > > > For example, see the torture.sh querying the system's number of CPUs
+> > > > > > > > > > and then specifying it to a number of tests.
+> > > > > > > > > > 
+> > > > > > > > > > Or am I missing something here?
+> > > > > > > > > > 
+> > > > > > > > > It took me a while to understand what happens. Apparently there is this
+> > > > > > > > > 8 CPUs limitation. Yes, i can do it manually by passing --kconfig but
+> > > > > > > > > you need to know about that. I have not expected that.
+> > > > > > > > > 
+> > > > > > > > > Therefore i removed it from the configuration because i have not found
+> > > > > > > > > a good explanation why we need. It is confusing instead :)
+> > > > > > > > 
+> > > > > > > > Right now, if I do a run with --configs "TREE10 14*CFLIST", this will
+> > > > > > > > make use of 20 systems with 80 CPUs each.  If you remove that line from
+> > > > > > > > TREE05, won't each instance of TREE05 consume a full system, for a total
+> > > > > > > > of 33 systems?  Yes, I could use "--kconfig CONFIG_NR_CPUS=8" on the
+> > > > > > > > command line, but that would affect all the scenarios, not just TREE05.
+> > > > > > > > Including (say) TINY01, where I believe that it would cause kvm.sh
+> > > > > > > > to complain about a Kconfig conflict.
+> > > > > > > > 
+> > > > > > > > Hence me not being in favor of this change.  ;-)
+> > > > > > > > 
+> > > > > > > > Is there another way to make things work for both situations?
+> > > > > > > > 
+> > > > > > > OK, i see. Well. I will just go with --kconfig CONFIG_NR_CPUS=foo if i
+> > > > > > > need more CPUs for TREE05.
+> > > > > > > 
+> > > > > > > I will not resist, we just drop this patch :)
+> > > > > > 
+> > > > > > Thank you!
+> > > > > > 
+> > > > > > The bug you are chasing happens when a given synchonize_rcu() interacts
+> > > > > > with RCU readers, correct?
+> > > > > > 
+> > > > > Below one:
+> > > > > 
+> > > > > <snip>
+> > > > > /*
+> > > > >  * RCU torture fake writer kthread.  Repeatedly calls sync, with a random
+> > > > >  * delay between calls.
+> > > > >  */
+> > > > > static int
+> > > > > rcu_torture_fakewriter(void *arg)
+> > > > > {
+> > > > > ...
+> > > > > <snip>
+> > > > > 
+> > > > > > In rcutorture, only the rcu_torture_writer() call to synchronize_rcu()
+> > > > > > interacts with rcu_torture_reader().  So my guess is that running
+> > > > > > many small TREE05 guest OSes would reproduce this bug more quickly.
+> > > > > > So instead of this:
+> > > > > > 
+> > > > > > 	--kconfig CONFIG_NR_CPUS=128
+> > > > > > 
+> > > > > > Do this:
+> > > > > > 
+> > > > > > 	--configs "16*TREE05"
+> > > > > > 
+> > > > > > Or maybe even this:
+> > > > > > 
+> > > > > > 	--configs "16*TREE05" --kconfig CONFIG_NR_CPUS=4
+> > > > > Thanks for input.
+> > > > > 
+> > > > > > 
+> > > > > > Thoughts?
+> > > > > > 
+> > > > > If you mean below splat:
+> > > > 
+> > > > > 
+> > > > > i.e. with more nfakewriters.
+> > > > 
+> > > > Right, and large nfakewriters would help push the synchronize_rcu()
+> > > > wakeups off of the grace-period kthread.
+> > > > 
+> > > > > If you mean the one that has recently reported, i am not able to
+> > > > > reproduce it anyhow :)
+> > > > 
+> > > > Using larger numbers of smaller rcutorture guest OSes might help to
+> > > > reproduce it.  Maybe as small as three CPUs each.  ;-)
+> > > > 
+> > > OK. I will give a try this:
+> > > 
+> > > for (( i=0; i<$LOOPS; i++ )); do
+> > > 	tools/testing/selftests/rcutorture/bin/kvm.sh --cpus 5 --configs \
+> > > 	'16*TREE05' --memory 10G --bootargs 'rcutorture.fwd_progress=1'
+> > > 	echo "Done $i"
+> > > done
+> > 
+> > Making each guest OS smaller needs "--kconfig CONFIG_NR_CPUS=4" (or
+> > whatever) as well, perhaps also increasing the "16*TREE05".
+> > 
 > 
-> I forgot to ask is the reason for keeping rcu_seq_done_exact() to have
-> more complexity only when needed, or does it make sense to rename
-> rcu_seq_done_exact() as rcu_seq_done_done() and get rid of the old
-> rcu_seq_done()?
+> By default we have NR_CPUS=8, we we discussed. Providing to kvm "--cpus 5"
+> parameter will just set number of CPUs for a VM to 5:
+> 
+> <snip>
+> ...
+> [    0.060672] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=5, Nodes=1
+> ...
+> <snip>
+> 
+> so, for my test i do not see why i need to set --kconfig CONFIG_NR_CPUS=4.
+> 
+> Am i missing something? :)
 
-We might well be able to use the rcu_seq_done_exact() algorithm for
-all the uses, but that will require very careful review and testing.
-Please keep in mind that there are quite a few uses, that the benefit
-is small, and I was lazy.  ;-)
-
-The difference with the polling APIs is that a user might well
-legitimately hang onto a cookie for six hours, for example, by having
-used it to tag a data structure in a block cache or similar.
+Because that gets you more guest OSes running on your system, each with
+one RCU-update kthread that is being checked by RCU reader kthreads.
+Therefore, it might double the rate at which you are able to reproduce
+this issue.
 
 							Thanx, Paul
