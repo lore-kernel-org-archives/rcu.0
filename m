@@ -1,117 +1,53 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E900915D5C4;
-	Mon, 27 Jan 2025 15:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52433D64;
+	Mon, 27 Jan 2025 16:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737993125; cv=none; b=Yaixk2NT9g8JS+nz72wMIxpyoC41XThvZ1riCIksfXTtYLysSA3UrwSnQ9sWF0sHTwwS8wWOeWVqWQen2NztrCCfsLfCdgHNHMY4H5rsCkVvwW9iznH5ErGFppww+Q5Da+hytEGb2XF9MlAhdTCx+rDplukRrloFRxIriOjKrko=
+	t=1737996558; cv=none; b=ewaXM9Fs+JYKGqC5kxUxVpvQRv+dREbki/En7g5NUV6hAsHkj2SJbyZnEXZzQ4y1XWzZRZdgJ2Zs0PaSzFIyZ6TyYBgQDr8lHf3QyQPDvfbZCV5MVw3XiIrCUeQyGq2qIc48FCenE0ayZkQmI0QzW4ZCTPUeZ+xaD0z25ZWsx3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737993125; c=relaxed/simple;
-	bh=lKShl/TiOp2ZoXo/jImChQXPJ2hMZLXx2pOut7WiptI=;
+	s=arc-20240116; t=1737996558; c=relaxed/simple;
+	bh=yVaBGZRS5giy0CAWZjD9f8gYIcMLtqmkS5ciC3RRAKg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DLKFJfUHVX4VaBF+Z2eMkHiaDRNcIR6mJIyT/JNL2m+bKkJMX3TblJtnnT54DblrKEvsX15pyDWE7kuIM35u8d4bjeX9e5pNGzLZ5ZEwTbUfkvo6RkcRoGtXuaRz0+LgTNClx5GXD3odvjFt/caxe4wrmdUclmbHwsiKuLhffKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Opi/ZOMV; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=cHuNQXhBXEZaF5pbS67Ufunpkff2ImhTpXUaKqdqscgoQ8MCoqEZ+GW1297qHUfNWsxdJa4ClonzaNhxc6JMbnoSgc6tJHTuc9wiKdIMNdkth412T8jlrbdx4M3my6kTuUDV3LHooWhuJymifAD67F8Y04BkYCSNQGQsdXv/4po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kSxq8h7T; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Opi/ZOMV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87519C4CED2;
-	Mon, 27 Jan 2025 15:51:50 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kSxq8h7T"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2446EC4CED2;
+	Mon, 27 Jan 2025 16:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737993124;
-	bh=lKShl/TiOp2ZoXo/jImChQXPJ2hMZLXx2pOut7WiptI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Opi/ZOMV/zfLovkaRrjcFN22SaJmB+XJGtnDJ/cIoGIjT25SkYRyAorU+UjcclWyd
-	 6DePEaUZ/QK4W0yHLc5Kb3ieU/uOi+zRZdhIrfh5zorrG9bSfVDQc9h0dR9gO+3bHq
-	 ul1VD9PJ3iJuekF+lfnqBztVCR/WhUeMwXxaqNSwUyFJREhVmoO8Vtntzw4FAiTB00
-	 00OvDbjpP1jbVZyUSglO9BK2uxJ3fZYicWL3MsWiS1eDM68OxCFUf3tPPbIQwtET/k
-	 cGteI6qIszlohfI51re4Bs3hb3htIsly4LrqymlfAEdhSawB5JdAEcLJmnZm2zRPZn
-	 N7W92SLp2WhHA==
-Date: Mon, 27 Jan 2025 15:51:47 +0000
-From: Will Deacon <will@kernel.org>
-To: Jann Horn <jannh@google.com>
-Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org,
-	x86@kernel.org, virtualization@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-	linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
-	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-	linux-arch@vger.kernel.org, rcu@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-	bcm-kernel-feedback-list@broadcom.com,
-	Juergen Gross <jgross@suse.com>,
-	Ajay Kaher <ajay.kaher@broadcom.com>,
-	Alexey Makhalov <alexey.amakhalov@broadcom.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Jason Baron <jbaron@akamai.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Clark Williams <williams@redhat.com>,
-	Yair Podemsky <ypodemsk@redhat.com>,
-	Tomas Glozar <tglozar@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Kees Cook <kees@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Rong Xu <xur@google.com>,
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Yosry Ahmed <yosryahmed@google.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	Jinghao Jia <jinghao7@illinois.edu>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-Message-ID: <20250127155146.GB25757@willie-the-truck>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
+	s=k20201202; t=1737996558;
+	bh=yVaBGZRS5giy0CAWZjD9f8gYIcMLtqmkS5ciC3RRAKg=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=kSxq8h7TBT+s/22piQ12XA4qxKr46KdVoqUK5KpIHLx0ViYuJhUGXZImo5fEPWMbt
+	 XJh8D9xFVtIG62VTVUf9T9xVW9z9B/muH068Kl6dNxZWtJI9ctTJzHjsnM3igSZZi6
+	 IM7KTParquj6jmjKJfjd5sGqCfbPf3PLLNl6A2F6hm8smW/t/41ycZrM5n/2l8+7XS
+	 Em2P6DxR4/msV7amyiZjnyy4RssrOs/snV5f1uezxGNkc6oVqUurDmIkv6yarygoKX
+	 MCpItKSaO2pyWjh76ueGqrWdo4Xi6yOeNMLczUG+bI+Z9Io6j+vvz8Upf1aJcDy1+L
+	 Jpqes2lz7yakw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id BCCF0CE13C2; Mon, 27 Jan 2025 08:49:17 -0800 (PST)
+Date: Mon, 27 Jan 2025 08:49:17 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org
+Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
+ detection
+Message-ID: <76ea9e49-c8d9-4ddf-8dd5-65ba4096e242@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
+ <Z5QcXoE0lrS6yIBt@pavilion.home>
+ <d7bbe2cd-d889-40e9-8d46-fb8772fed6db@paulmck-laptop>
+ <Z5T7kF7LKIuk05FR@pavilion.home>
+ <a18ec931-a7cb-408b-8707-f88068a13ba9@paulmck-laptop>
+ <CAEXW_YReLoj+fofM9=fT-G0rz-E0z7vcwg_ANrbfCrPOX99tYA@mail.gmail.com>
+ <CAEXW_YQaC+TYnXZca2MBcJQgf2EWD+pBp-Dih+b647RtpJ+LNQ@mail.gmail.com>
+ <83f5a3ff-8f89-4994-844f-b7eb9e80b16d@paulmck-laptop>
+ <CAEXW_YTiX2taVbg3keCR4RuxSdfpVA0fVPpCcDWXjF7rH7Kkdw@mail.gmail.com>
+ <CAEXW_YTduDBJY2CbkStWc3-4MP06+bJVFmEbgvfayB6BQyyksw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -121,76 +57,118 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAEXW_YTduDBJY2CbkStWc3-4MP06+bJVFmEbgvfayB6BQyyksw@mail.gmail.com>
 
-On Fri, Jan 17, 2025 at 04:52:19PM +0100, Jann Horn wrote:
-> On Fri, Jan 17, 2025 at 4:25 PM Valentin Schneider <vschneid@redhat.com> wrote:
-> > On 14/01/25 19:16, Jann Horn wrote:
-> > > On Tue, Jan 14, 2025 at 6:51 PM Valentin Schneider <vschneid@redhat.com> wrote:
-> > >> vunmap()'s issued from housekeeping CPUs are a relatively common source of
-> > >> interference for isolated NOHZ_FULL CPUs, as they are hit by the
-> > >> flush_tlb_kernel_range() IPIs.
-> > >>
-> > >> Given that CPUs executing in userspace do not access data in the vmalloc
-> > >> range, these IPIs could be deferred until their next kernel entry.
-> > >>
-> > >> Deferral vs early entry danger zone
-> > >> ===================================
-> > >>
-> > >> This requires a guarantee that nothing in the vmalloc range can be vunmap'd
-> > >> and then accessed in early entry code.
+On Sun, Jan 26, 2025 at 09:58:11PM -0500, Joel Fernandes wrote:
+> On Sun, Jan 26, 2025 at 9:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> >
+> > On Sun, Jan 26, 2025 at 9:03 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > > >
-> > > In other words, it needs a guarantee that no vmalloc allocations that
-> > > have been created in the vmalloc region while the CPU was idle can
-> > > then be accessed during early entry, right?
+> > > On Sun, Jan 26, 2025 at 08:22:23PM -0500, Joel Fernandes wrote:
+> > > > On Sun, Jan 26, 2025 at 8:13 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > > > >
+> > > > > Hi, Paul and Frederic,
+> > > > >
+> > > > > [...]
+> > > > > > > > On Sat, Jan 25, 2025 at 12:03:58AM +0100, Frederic Weisbecker wrote:
+> > > > > > > > > Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McKenney a écrit :
+> > > > > > > > > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> > > > > > > > > > index 2f9c9272cd486..d2a91f705a4ab 100644
+> > > > > > > > > > --- a/kernel/rcu/rcu.h
+> > > > > > > > > > +++ b/kernel/rcu/rcu.h
+> > > > > > > > > > @@ -162,7 +162,7 @@ static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
+> > > > > > > > > >  {
+> > > > > > > > > >         unsigned long cur_s = READ_ONCE(*sp);
+> > > > > > > > > >
+> > > > > > > > > > -       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
+> > > > > > > > > > +       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (3 * RCU_SEQ_STATE_MASK + 1));
+> > > > > > > > >
+> > > > > [...]
+> > > > > > > > > The way I understand it is that rcu_state.gp_seq might be seen started while
+> > > > > > > > > root_rnp->gp_seq is not. So rcu_seq_snap() on the started rcu_state.gp_seq
+> > > > > > > > > may return maximum 2 full GPs ahead of root_rnp->gp_seq. And therefore it takes below
+> > > > > > > > > 2 GPs to safely deduce we wrapped around.
+> > > > > > > >
+> > > > > > > > Exactly!
+> > > > > > > >
+> > > > > > > > > Should it be ULONG_CMP_LT(cur_s, s - (2 * (RCU_SEQ_STATE_MASK + 1))) ?
+> > > > > > > >
+> > > > > > > > Quite possibly.  I freely admit that I allowed a bit of slop because
+> > > > > > > > time was of the essence (holidays and all that) and also it does not
+> > > > > > > > hurt much to lose a couple of counts out of a 2^32 cycle, to say nothing
+> > > > > > > > of the common-case 2^64 cycle.  It would not hurt to be exact, but it
+> > > > > > > > would be necessary to convince ourselves that we were not off by one in
+> > > > > > > > the wrong direction.
+> > > > > > > >
+> > > > > > > > I would be happy to see a patch, as long as it was sufficiently
+> > > > > > > > convincing.
+> > > > > > >
+> > > > > > > I'm not so much concerned about being exact but rather about making
+> > > > > > > sure we still understand what we did within one year. We can leave one
+> > > > > > > more grace period than what we expect out of paranoia but, the most
+> > > > > > > important is that we comment about what we expect and why. Let me
+> > > > > > > prepare a patch for that.
+> > > > > >
+> > > > > > Even better!
+> > > > >
+> > > > > Do we really have users who could pass such a huge delta wrapped
+> > > > > around value to poll() i.e > ULONG_MAX/2 ?  For 32-bit, that would be
+> > > > > 2 billion count since the get() (500 million GPs on 32-bit?). I am
+> > > > > curious if such a scenario should be a WARN() because also: If more
+> > > > > than ULONG_MAX/2 values are possible after get(), then a full or
+> > > > > multiple ULONG_MAX wraparound is also possible. This means then both
+> > > > > rcu_seq_done() and rcu_seq_done_exact() become unreliable anyway for
+> > > > > such stale get() values.
+> > > > >
+> > > > > I do agree with both your points on the side effect of the patch to
+> > > > > rcu_seq_done_exact(), but I am not fully convinced myself about
+> > > > > utility of rcu_seq_done_exact() versus the rcu_seq_done() but I could
+> > > > > be missing something.
+> > > >
+> > > > I want to modify my comment on reliability. rcu_seq_done_exact() is
+> > > > certainly more "reliable" than rcu_seq_done() for wraparound delta  >
+> > > > ULONG_MAX/2. Still with such a huge wrap around it is not fail proof
+> > > > if it lands within the "3 Grace period" window, so if it is not super
+> > > > reliable and if the user should not rely on it, then I wonder if it is
+> > > > better to not do it and instead warn the user they are playing with
+> > > > fire. But a counter-argument might be, landing within the 3 GP window
+> > > > is quite low probability...
+> > >
+> > > It is also a harmless false negative.  And another poll within a few
+> > > hundred milliseconds will set things straight.  In contrast, if we
+> > > used rcu_seq_done(), it would be a good long time before we got out of
+> > > false-negative territory.
 > >
-> > I'm not sure if that would be a problem (not an mm expert, please do
-> > correct me) - looking at vmap_pages_range(), flush_cache_vmap() isn't
-> > deferred anyway.
-> 
-> flush_cache_vmap() is about stuff like flushing data caches on
-> architectures with virtually indexed caches; that doesn't do TLB
-> maintenance. When you look for its definition on x86 or arm64, you'll
-> see that they use the generic implementation which is simply an empty
-> inline function.
-> 
-> > So after vmapping something, I wouldn't expect isolated CPUs to have
-> > invalid TLB entries for the newly vmapped page.
+> > True!
 > >
-> > However, upon vunmap'ing something, the TLB flush is deferred, and thus
-> > stale TLB entries can and will remain on isolated CPUs, up until they
-> > execute the deferred flush themselves (IOW for the entire duration of the
-> > "danger zone").
+> > > On a 32-bit system, if there was an expedited grace period every 10
+> > > microseconds (just barely possible on small systems), then a 32-bit
+> > > counter would wrap in about 12 hours.  So there would be a six-hour
+> > > false-negative zone.
+> > >
+> > > So an expedited grace period every 10 microseconds combined with
+> > > a six-hour polling delay is unlikely, but not out of the realm of
+> > > possibility.
 > >
-> > Does that make sense?
+> > Assuming that every 10 microsecond of the entire 6 hours is used for
+> > an expedited GP, but I agree with your point.
+> >
+> > > Please feel free to nominate a comment.
+> >
+> > Ok thanks, I'll see what Frederic comes up with and can take it from there.
 > 
-> The design idea wrt TLB flushes in the vmap code is that you don't do
-> TLB flushes when you unmap stuff or when you map stuff, because doing
-> TLB flushes across the entire system on every vmap/vunmap would be a
-> bit costly; instead you just do batched TLB flushes in between, in
-> __purge_vmap_area_lazy().
-> 
-> In other words, the basic idea is that you can keep calling vmap() and
-> vunmap() a bunch of times without ever doing TLB flushes until you run
-> out of virtual memory in the vmap region; then you do one big TLB
-> flush, and afterwards you can reuse the free virtual address space for
-> new allocations again.
-> 
-> So if you "defer" that batched TLB flush for CPUs that are not
-> currently running in the kernel, I think the consequence is that those
-> CPUs may end up with incoherent TLB state after a reallocation of the
-> virtual address space.
-> 
-> Actually, I think this would mean that your optimization is disallowed
-> at least on arm64 - I'm not sure about the exact wording, but arm64
-> has a "break before make" rule that forbids conflicting writable
-> address translations or something like that.
+> I forgot to ask is the reason for keeping rcu_seq_done_exact() to have
+> more complexity only when needed, or does it make sense to rename
+> rcu_seq_done_exact() as rcu_seq_done_done() and get rid of the old
+> rcu_seq_done()?
 
-Yes, that would definitely be a problem. There's also the more obvious
-issue that the CnP ("Common not Private") feature of some Arm CPUs means
-that TLB entries can be shared between cores, so the whole idea of using
-a CPU's exception level to predicate invalidation is flawed on such a
-system.
+We might well be able to use the rcu_seq_done_exact() algorithm for
+all the uses, but that will require very careful review and testing.
+Please keep in mind that there are quite a few uses, that the benefit
+is small, and I was lazy.  ;-)
 
-Will
+The difference with the polling APIs is that a user might well
+legitimately hang onto a cookie for six hours, for example, by having
+used it to tag a data structure in a block cache or similar.
+
+							Thanx, Paul
