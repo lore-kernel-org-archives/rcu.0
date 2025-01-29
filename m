@@ -1,55 +1,55 @@
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CB718C03A
-	for <rcu@vger.kernel.org>; Wed, 29 Jan 2025 02:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F8718801A
+	for <rcu@vger.kernel.org>; Wed, 29 Jan 2025 02:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738116684; cv=none; b=Nsx5N+OMw2mLbdpVkKB2ecmO1t5vDQepHZ7DwCUa1AY/QEoea8Jqh2bMloTwCMlerUgrBVtIplEnKhRDCFn0tvqUCOIyBFgT5hhmgnzeegzqtWtL47xdgkvEqLJL8GjQvsBZ/EEp4hw+JybrrSfXtagrcO8K+R9+UMIofvjWNc0=
+	t=1738116845; cv=none; b=lhZmSrNbwZ/kqZWV81Q/yX5s7x9SimYHJIIK1AAenJsu+KFnwtumSEU3K6tdUHF/HHadJj4l8hOwlLQOlnaOmR2f5yKdo1zX3bY4GMRO64QsspB6ZDWY+UFID1Nb17L0BPlHx/MfPVN2JeuQyUtvqG13tw3GaIhJvPCrjH8VG34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738116684; c=relaxed/simple;
-	bh=EoIZuEwvQElY9fCK6xRnxQtzEEM79Nd09hGYt3/arHc=;
+	s=arc-20240116; t=1738116845; c=relaxed/simple;
+	bh=FXB1B+5klQ7FxUpeWHDXPHQ9r+HLJPr34OwDxhFuDmY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Df6evKdccKLwjbNPu8QBnw1IlaKix2Qw1FmIl3Dt4IPhYuBM7ZM5YuesXxLpOQqQnvXdQ+LMVceQMhUM/Pwc6GxGcnyxTXMzv1YwCzT4/hP1whRyKO/WP22D77H84hizNV9TSuWE6YFh9Y2M+O5MDjNsekS18kd93w8cZU4OqGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=VD6yHw8u; arc=none smtp.client-ip=209.85.128.54
+	 To:Cc:Content-Type; b=A0wUUIjA4qCNCpj3VHp85sdqQkwEpEefqRhNFbp/pj/TTFWDwkcZAFXF1NEp+urJiF3VBgUpPQVEycYL8+qyybC0dxeR4Fr99+Qh/r1/ixBLDAokYnF1GofBsA1RqTYJ8K9Nj1/EglbdQ+PFQ0i9ujAC9FUpMzMTcIKRP3aEfBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=K/2O7ULh; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="VD6yHw8u"
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43618283dedso66486505e9.3
-        for <rcu@vger.kernel.org>; Tue, 28 Jan 2025 18:11:22 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="K/2O7ULh"
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-38a34e8410bso3184293f8f.2
+        for <rcu@vger.kernel.org>; Tue, 28 Jan 2025 18:14:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1738116681; x=1738721481; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1738116842; x=1738721642; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fNwGxs4BJR7UxzLLK1j3FpTZ1TR4WEj4/Jpe2fcVBII=;
-        b=VD6yHw8uCC4qQuotsnuhbj+jzYGJhl02hiwshjzYQOcMO/an1Yle5+N/d+SkRISP73
-         vkeyOoB4ToD6uixJ107LAEHT68CKqw1xThheiI0Ri+GOJDtmOdUAYlE4YjRQfj3I6pHS
-         yK2VEu9hQ6JlqSIQT/ByT9CFnrV0zURHW1v9k=
+        bh=5f5PTMjoXMpr550F7WAxSWJajUEsod5edyGlx6IfgmY=;
+        b=K/2O7ULhEoPkJhz5tH4z46TA8RxAZWRnN0EdNi6gBF8zMw2AJDD/ZW7oz02XqWQA42
+         7SLHRcE/YdgskPU4G4jwrNrPTE/KM2GAJyYZATYUjUdVwj4YTGXfDaNoDRQNVCFvHsDv
+         rRmCb4Y+VxqJMflSPlkUeqsKiv46YR/gHiC2Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738116681; x=1738721481;
+        d=1e100.net; s=20230601; t=1738116842; x=1738721642;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fNwGxs4BJR7UxzLLK1j3FpTZ1TR4WEj4/Jpe2fcVBII=;
-        b=qk70QOEZzT5sctKMOvR0dsXs/IQ65YDgXK59JAV1LWKDw8rcAwHzprUrlbAqEHoNeW
-         hQdwJzwcULTy5lZAHrGGZPenq5YdCI8xYW7PpMVKp4z47KIS7t74Nt7zZTUIVOu8k71G
-         dnwb0lO3I4Q6cCj2NeI8w/URqStb+M9tS5F9bs3kR8BHBJ5tAC7uEKbMKfhF4Y45Ov6l
-         gOW929+8BYZZjk09fDFrmhHGQaTmacLGCmSlAQl9tyn3o7KjwV9yUJgEwIxUXmSPrKCf
-         1EyFpn6eb2omZwJCVjdiFDMMB6/stRyRu2ZFLvVYI33YoWG3mg0T+5ljJw8GqE03jtcn
-         92Rw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+nxb/+mUacdpvGZuADnRm1DyUbqlsDunwjUPO9yo8ctVdMRpHdRrPRDmKofqz0Wytrh8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8tLqfPEsJrncrAqG2G4AppDIux6j5UVb3BGyNE8ohVrEw6xTD
-	XFmh9iFO6fpui5OnkUReetjj5Uo1KMjcaHV1k9UDFeEhU5aKnvdbzRkDbLO3bRghQqghGU61jCN
-	Gbjmf6KGUgcr+moHVXjT8NWFkhvFw+CWYEyZmaQ==
-X-Gm-Gg: ASbGncuBW9vrUA84bpeWMasobaEo9yiy2VXOVsZCKtFgTMi29BXhRjnqjLn0I5fA1cQ
-	h73ASnf2tN9K5CmLt2o3UO1TguKxZoLZf0W/9kyoYP0WBqLFZyx0irSFoS4hm12ir88LvBn0fqP
-	4W2BzWxMlK
-X-Google-Smtp-Source: AGHT+IHtvIVNJtC6U6BVx92cHaFpbCSXGIbhPS45SK2GzkFQ4E7Zf2BN+2qgPKXGGVgRsspaXbkdqI+LNCe1qRT85Hg=
-X-Received: by 2002:a05:6000:144d:b0:38a:88ac:ed0d with SMTP id
- ffacd0b85a97d-38c51941b32mr748472f8f.12.1738116680664; Tue, 28 Jan 2025
- 18:11:20 -0800 (PST)
+        bh=5f5PTMjoXMpr550F7WAxSWJajUEsod5edyGlx6IfgmY=;
+        b=QHogtUH/NSjNJSd1Vbhh5eg9fBubCiskDpIjwwrhTeBJgpro/MwMubdyVZ4Rv/3XBE
+         bD4DrRK2IvD3wDnaHu8hNbVGZw2UCSd00Ms68M+EfMVUmp/nzBxnpkuACJspOZjlpIXd
+         nvTWLBG11S0QlA+ueke/stqkFSQ+Kn9/fhZt+/K6pTzWTxgXMuGgorPoZ38dwJ4/kQmE
+         4IvPK9jaqpJAZp/hLuqqF1q1F9P7JET6iYMRb5yONWkoDAXDTg+RO71QDp10VhZg0ZoT
+         8wlzA5m55sWc3rn3Nf0pOzjCxFE5uArEIOXsbmeWSIh+biU6He+FN2Sa4gA3Uw1iEkxf
+         RXYw==
+X-Forwarded-Encrypted: i=1; AJvYcCXpbLuucyQQvaUPi2mYWQdfpgXrZLW7upk9J9zOHF5+pY2y3MTsUrAkkpvEn4x3nGaZ74I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWldmZZB+eGb9AAg/McZkVuW1uMH6k6tDJ5vKB8ozOCQFtyfrg
+	dOR08R31Km306uA3QwNdY4wuMY/3/bEtqL/XAm9GyHqFSFlU60vByzNRrTZuSX6iLpiW58qYEyg
+	ZiBc8RGi2/MIVtcxm4aDfONE4KDbiBZKwq5/lSg==
+X-Gm-Gg: ASbGncvv2ZUOFvrQUexwvZAS/lBxc7x2mK77yqiK6Fzmcnqda1VMPl21CU8kdLaoChO
+	JbD7+gPHJmCPQ8KOzQdudK2cy+lprO7Z42+re1X7Os5WplrYsNmn8b5Iym/16mRuR12zcvR+h5g
+	==
+X-Google-Smtp-Source: AGHT+IEZKtx81N0MJ4kiEJVfdiOgbfco1Gh7xsHOx9pQH+4JuI3Y1FeuI/QVjVxMT85WDyDlwRwhzgrrjyzlsxuY09E=
+X-Received: by 2002:a05:6000:1448:b0:38b:d824:df3 with SMTP id
+ ffacd0b85a97d-38c51973892mr883867f8f.24.1738116842030; Tue, 28 Jan 2025
+ 18:14:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -62,9 +62,9 @@ References: <20250128000737.1264218-1-joel@joelfernandes.org>
  <CAEXW_YTRo6Y-YExOc=BDaMMh-S9--tB3LBYCZ6UR18hnL9Lnkg@mail.gmail.com> <038e394f-7030-4406-b24e-512cefbe8bb6@paulmck-laptop>
 In-Reply-To: <038e394f-7030-4406-b24e-512cefbe8bb6@paulmck-laptop>
 From: Joel Fernandes <joel@joelfernandes.org>
-Date: Tue, 28 Jan 2025 21:11:03 -0500
-X-Gm-Features: AWEUYZkeIlr2dEyTJAyRJS7V6xEJRRDaDVkQwXTx36eqlzRLAQPZMOY8g_jPn2A
-Message-ID: <CAEXW_YQJMeu3VQWHZjNmdS4ODqqkRjZ=Xpx2o+_pRREZPzF0WA@mail.gmail.com>
+Date: Tue, 28 Jan 2025 21:13:45 -0500
+X-Gm-Features: AWEUYZk26Lg_5RXAzoHS8fePDhTOQYKDrqzMkSA6-czqfYe52uw6FOiymKUKu-c
+Message-ID: <CAEXW_YQ7SOOUzUS1KZaZRw0SftjVjX1tMKQr6CE=Cv2z76U8Og@mail.gmail.com>
 Subject: Re: [PATCH] rcu: Merge rcu_seq_done_exact() logic into rcu_seq_done()
 To: paulmck@kernel.org
 Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>, 
@@ -179,40 +179,19 @@ ing
 > so it is hard to test grace-period sequence-number wrap.
 >
 > Not impossible, though...
+>
 
-I realized with some simple tests this can break because of some
-ambiguity around whether a wraparound really happened:
+We could test a decent number of candidate sequences to cover
+different cases. Not ideal like bruteforcing, but...   Another idea is
+to hardcode/assume ULONG_MAX as 16-bit in a unit test.
 
-say *sp is 100, and s is 200.
 
-This could either be a full 32/64-bit wrap around, or it could be that
-*sp is not yet caught up. I guess there is no way to distinguish
-between the two cases.
-
-For this example, ULONG_CMP_GE will be false and ULONG_CMP_LT will be
-true making the new rcu_seq_done() version to be true.
-
-But if *sp is not yet caught up, that means the new rcu_seq_done()
-should be false, not true!
-
-Sigh, I look like a fool now. But I am also wondering what makes
-rcu_seq_done_exact() correct then - because it cannot really tell when
-a wrap around actually occurred. Hmmm...
-
-Confused,
+thanks,
 
  - Joel
 
 
 
-
->
->                                                         Thanx, Paul
->
-> > thanks,
-> >
-> >  - Joel
-> >
 > >
 > > >
 > > >                                                         Thanx, Paul
