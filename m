@@ -1,95 +1,173 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE67C84D34;
-	Thu, 30 Jan 2025 18:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113581514E4;
+	Thu, 30 Jan 2025 18:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738263306; cv=none; b=s8+z6sNK+actWKXtFAFE7wp3qdw2CB//qVknylV+HPxNJrMEk6/oIL3gKwzfpIyiuV5WmQQjlAzi4Ge4JxjSUGmQPcLx8sc1hKilZ7hlHBG5HEacIuxI22ncQaQ9CG18cUo0JijDdr8E4vb6qrVmpuwgOl6E1Am4WU3xZUMfTQk=
+	t=1738263324; cv=none; b=tVsUBH7ZzhDjGrkxhTtPDz9Y1Bcy+tauH6SA78nTZ4WxkcgoDz3EtUneOc8i+XUEuTSHUcPPYTPchIyPh2/VqB6HGno2FE5T/Omh3OOOx9U7s1SV00RtGnSNWGxZ6FeQx7HIHopg77VLzhDkvU5gvzdLAJvDmRE3Bp9wtiI75ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738263306; c=relaxed/simple;
-	bh=+qwT0MPbAWnP5VSmEeKF7QOYVy8cIZLmTNtK+kCmOfI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SsFie/bf2vGj5JaOQlEC1qFd1B2HuKqAewvN0d4y/R94q+ZZAHUVJkqtvhaC+b6jkleSe7MPKpMHTtExq1J6Ae5rR6iBwWmND+Jmza6Eyy9D0uXj9Eub9+iykScZyztRKat42I8SoT8P7U/ja/4S80SHTCdd1zg+mabkU+xkpDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DYdOg76O; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1738263324; c=relaxed/simple;
+	bh=tPKROHjyWAa8SfafGqicbLb5SiktzL9QQlpR2hUEBIk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=BgAGty4pyLB4r+ySJKUXQhrVqem/+wteUIjy6J/Amt0rdQXLbiEdCzuAwbn8cjf71y/KJQfQ0i31sYXXXBFgKZs/bwTminjz+A6lxDNIXgy4y2+s7ssiHS0sZE/e8oQaPvEOHjCu565IT5AU++h9/myuNExqnhAj/ObUY4LP8gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j+amY6ip; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DYdOg76O"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D611C4CED2;
-	Thu, 30 Jan 2025 18:55:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j+amY6ip"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB642C4CED3;
+	Thu, 30 Jan 2025 18:55:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738263305;
-	bh=+qwT0MPbAWnP5VSmEeKF7QOYVy8cIZLmTNtK+kCmOfI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=DYdOg76OuVvDGAxBH1Sti/WZgxfjW5LsR4/pO8Bhh00gQLGBAoqVJVA5Jpz8re7AJ
-	 tFAKdouXNvWAhD2v9dw12uRMZaLv9O975isUnQ7Zj3HHdtphuy5gSvzqWfGr8TFjJN
-	 MMujwKDaRV1oa/V20eD04AV8j56srIZ1fulLVCLjUJ6jvn6D9G8wdZIeHxlIQQxlTz
-	 BKnbcVo+WkOI1yKru+p9T2WL5WA0bvKCKLJxKOo5b1T3mFkLNb6MyL9DXL/iaCqPKm
-	 U8oUt53nsNPl08N6yTemFdKjAtxTT6nTPKegB5LyDKKzolNs3t8psHdjhIpyzk+OIY
-	 37G4Rk1HwpW5Q==
+	s=k20201202; t=1738263323;
+	bh=tPKROHjyWAa8SfafGqicbLb5SiktzL9QQlpR2hUEBIk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=j+amY6ipgN3QCpK9/61RJQ7+dRHmmEEqvEhooI3zUP1fP898vk7rAXmc1boZNPCwa
+	 ccWnlw4JKpDQfuVbi2qwwdpzfJw6KDWXvDIMpFzE5Y4skNa1hAfavyUNVbEmZFRDwQ
+	 5+c7YkdZOrRC+0gV4TOuFlHXWhHaHWiGgC0Hs5tt8sT7zD8IabAyuqYX1uHfz5IWi3
+	 AdRkByD/Plg10Swe2F5F4IrpDffGBeHb4BhLsIk8St6qIwBTjSI5s2l7HVnYmtaegt
+	 6c9gB5aqQM2sEr98ZyVEjm+VR9eKaZYKUHikEQcOzgc/7SFHD/OIG8oj6fqLxTF5tw
+	 ydHWxTJ7XkOpw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E72CCCE37D9; Thu, 30 Jan 2025 10:55:04 -0800 (PST)
-Date: Thu, 30 Jan 2025 10:55:04 -0800
+	id 87F27CE37DA; Thu, 30 Jan 2025 10:55:23 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: Re: [PATCH rcu 0/9] Lazy-preemption-related updates
-Message-ID: <9bc6e5fe-d49f-495a-9f55-537ed97a3615@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <df73d8ef-ef52-4f99-ac22-e2b66f0c644e@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH rcu v2] 2/9] rcu: rename PREEMPT_AUTO to PREEMPT_LAZY
+Date: Thu, 30 Jan 2025 10:55:15 -0800
+Message-Id: <20250130185522.1652093-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <9bc6e5fe-d49f-495a-9f55-537ed97a3615@paulmck-laptop>
+References: <9bc6e5fe-d49f-495a-9f55-537ed97a3615@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df73d8ef-ef52-4f99-ac22-e2b66f0c644e@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
 
-Hello!
+From: Ankur Arora <ankur.a.arora@oracle.com>
 
-This series makes adjustments to RCU to better handle lazy preemption:
+Replace mentions of PREEMPT_AUTO with PREEMPT_LAZY.
 
-1.	fix header guard for rcu_all_qs(), courtesy of Ankur Arora.
+Also, since PREMPT_LAZY implies PREEMPTION, we can reduce the
+TASKS_RCU selection criteria from this:
 
-2.	rename PREEMPT_AUTO to PREEMPT_LAZY, courtesy of Ankur Arora.
+  NEED_TASKS_RCU && (PREEMPTION || PREEMPT_AUTO)
 
-3.	update __cond_resched comment about RCU quiescent states,
-	courtesy of Ankur Arora.
+to this:
 
-4.	handle unstable rdp in rcu_read_unlock_strict(), courtesy of
-	Ankur Arora.
+  NEED_TASKS_RCU && PREEMPTION
 
-5.	handle quiescent states for PREEMPT_RCU=n, PREEMPT_COUNT=y,
-	courtesy of Ankur Arora.
+CC: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/srcutiny.h |  2 +-
+ kernel/rcu/Kconfig       |  2 +-
+ kernel/rcu/srcutiny.c    | 14 +++++++-------
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-6.	provide quiescent states, courtesy of Ankur Arora.
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 1321da803274..31b59b4be2a7 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -64,7 +64,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+ {
+ 	int idx;
+ 
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], READ_ONCE(ssp->srcu_lock_nesting[idx]) + 1);
+ 	preempt_enable();
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 2bb22dac3b5a..582d461c9ab7 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -91,7 +91,7 @@ config NEED_TASKS_RCU
+ 
+ config TASKS_RCU
+ 	bool
+-	default NEED_TASKS_RCU && (PREEMPTION || PREEMPT_AUTO)
++	default NEED_TASKS_RCU && PREEMPTION
+ 	select IRQ_WORK
+ 
+ config FORCE_TASKS_RUDE_RCU
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 4dcbf8aa80ff..f688bdad293e 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -98,7 +98,7 @@ void __srcu_read_unlock(struct srcu_struct *ssp, int idx)
+ {
+ 	int newval;
+ 
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	newval = READ_ONCE(ssp->srcu_lock_nesting[idx]) - 1;
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], newval);
+ 	preempt_enable();
+@@ -120,7 +120,7 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	struct srcu_struct *ssp;
+ 
+ 	ssp = container_of(wp, struct srcu_struct, srcu_work);
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	if (ssp->srcu_gp_running || ULONG_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max))) {
+ 		preempt_enable();
+ 		return; /* Already running or nothing to do. */
+@@ -138,7 +138,7 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
+ 	preempt_enable();
+ 	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
+ 	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 	preempt_enable();
+@@ -159,7 +159,7 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	 * at interrupt level, but the ->srcu_gp_running checks will
+ 	 * straighten that out.
+ 	 */
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	WRITE_ONCE(ssp->srcu_gp_running, false);
+ 	idx = ULONG_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max));
+ 	preempt_enable();
+@@ -172,7 +172,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+ {
+ 	unsigned long cookie;
+ 
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	cookie = get_state_synchronize_srcu(ssp);
+ 	if (ULONG_CMP_GE(READ_ONCE(ssp->srcu_idx_max), cookie)) {
+ 		preempt_enable();
+@@ -199,7 +199,7 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 
+ 	rhp->func = func;
+ 	rhp->next = NULL;
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	local_irq_save(flags);
+ 	*ssp->srcu_cb_tail = rhp;
+ 	ssp->srcu_cb_tail = &rhp->next;
+@@ -261,7 +261,7 @@ unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
+ {
+ 	unsigned long ret;
+ 
+-	preempt_disable();  // Needed for PREEMPT_AUTO
++	preempt_disable();  // Needed for PREEMPT_LAZY
+ 	ret = get_state_synchronize_srcu(ssp);
+ 	srcu_gp_start_if_needed(ssp);
+ 	preempt_enable();
+-- 
+2.40.1
 
-7.	limit PREEMPT_RCU configurations, courtesy of Ankur Arora.
-
-8.	Make scenario TREE10 build CONFIG_PREEMPT_LAZY=y.
-
-9.	Make scenario TREE07 build CONFIG_PREEMPT_LAZY=y.
-
-Changes since v1:
-
-o	Reword commit-log line containing only "to:" to avoid confusing
-	tools that parse commit logs.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/include/linux/rcupdate.h                              |    2 -
- b/include/linux/rcutree.h                               |    2 -
- b/include/linux/srcutiny.h                              |    2 -
- b/kernel/rcu/Kconfig                                    |    2 -
- b/kernel/rcu/srcutiny.c                                 |   14 +++----
- b/kernel/rcu/tree_plugin.h                              |   11 +++++
- b/kernel/sched/core.c                                   |    4 +-
- b/kernel/trace/trace_osnoise.c                          |   32 +++++++---------
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE07 |    3 +
- b/tools/testing/selftests/rcutorture/configs/rcu/TREE10 |    3 +
- kernel/rcu/Kconfig                                      |    2 -
- kernel/rcu/tree_plugin.h                                |   11 +++--
- 12 files changed, 51 insertions(+), 37 deletions(-)
