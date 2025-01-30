@@ -1,47 +1,48 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F97C18E743;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92781946C8;
 	Thu, 30 Jan 2025 19:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738263799; cv=none; b=rFkBwFXmf+/IzLp7hA7ja+mqGmxtvBfxrL/OVOou+/Wu0bBCpamrnHQsJk5EQAnGlNvsKTYBJYNHXfMVUw58/iZyQAHUslK+jfZ8DtDfKflfDK7rA7/ng2MnaFHdMoFRl77IbtjQwVcDTRbdB+QGltmWEac2COAIw6hxAIKsU3s=
+	t=1738263799; cv=none; b=DqeOw4wJiORvUnbiPxcKnyXXDFjBCDGIfRX+XBngGoBmFzJuAk3HypJpV65opI4cceoRDZfwrciPhueSIOzMvgJWrb9zl0peDM0EgOvjFTf7a21mSwGmUWwFTayPYdm2E0lZMSS1YuEuTm/M3U3zDv6uv5FNk51/rwK1k3X2qKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1738263799; c=relaxed/simple;
-	bh=lp9AQ9TKsxbomNyt4e4oCMRlXfFXDxB1Z9oZ9NSAOfw=;
+	bh=MuiGWlKDzF6dNqbiFZiGQuuHK6BJEGPPyZ6qKqtvXc8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Pa1mxCdtq134pgSLGd+7AQmoVSpEpu+3H1jZob1tZY+CboO9rcv7UlGaEzl+tDhjFPFFHh+L7IfI60cLSDnSQU6WsQNkNp3rgjOoyg7ih+vF5RQNcYR1zA/NXqWPdXEYH9lZWoik1huFpZSbHvS58g5GZp1E5v4Z5N08ZrVZaVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WsCAn8+k; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=BbInnhQw8aS/ziKeHCyh5AFAVotjvCmTBMtLAzJAVpPJiABlsg/9Ansbx2zlxybM7ohx8lkOqBwqHKLMXxhs0HfyVLZzq4A1HKnO7LGJQ5dzf6ZPEVaidjVhtMwrSDptEWRhoQouCWw0mCw0sbk+AmmDq/q1ogOfJYONfEwBx4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UjI6ub+w; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WsCAn8+k"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3821CC4CEE3;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UjI6ub+w"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C54C4CED2;
 	Thu, 30 Jan 2025 19:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1738263799;
-	bh=lp9AQ9TKsxbomNyt4e4oCMRlXfFXDxB1Z9oZ9NSAOfw=;
+	bh=MuiGWlKDzF6dNqbiFZiGQuuHK6BJEGPPyZ6qKqtvXc8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WsCAn8+kXn6rDeMJVzkMMNOSBN5fh/qPCLJKp9toV9DIeMjwTdApefa12ipy+ScPm
-	 kRnJhGWPN9B7Wygfp1+gBkjjHbq4yrwsVRHBYzU0ROlFniBDfDv6zaN0iQj/8G7g8m
-	 1GqsLxSzepTSk3r3d4dYDuhmPkHmzQ/seh5OEGPK2NdOK6PfvQOlmBIlqA6a4J25B/
-	 iItsdgntRi9U7BbYLyZUMuGJUjLpDzVEORtJmlQGtQKzqEX39hnu14MmWjntWiGNPz
-	 euaWzJLNyGZD4SRWu+JHMrftqWa5Z+PunP4OoN2vTXv2r+/It2uhEm9Q2chJOt2pUf
-	 /nqU0BkLJs85w==
+	b=UjI6ub+wPoD8oq3IGsijUYGJ/XuDknLqIlQ4cgfYgEXQbydVFPcp7V8L4Huo2DSjg
+	 wIpRYkOJ29FqoLA9hTWKoYod/ey7VfYY5TXyrEqo+N1GY8WKHemwwRuFcUefoQ1Li9
+	 Ep/ExkYuCTdPzjgBzqM11RuUavmcvMDfKY92C1cnI/HmSLH9V8q44TynD4snd9uuJ/
+	 bY7LMv8uh4EgYThjzejHPwzDoitaz5BHSEaDR5EjrOtIhwCmBiNv4frcPS5Ox5JK4X
+	 d3Olu0tEV5nFkf/c2kN76INaiCJBH3oPiSgD8yhr43nL+zJYEQVZfrEfVtvlGfwQbJ
+	 OBRtlwW5hrzEA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D8447CE37DC; Thu, 30 Jan 2025 11:03:18 -0800 (PST)
+	id D1911CE37D9; Thu, 30 Jan 2025 11:03:18 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	"Paul E. McKenney" <paulmck@kernel.org>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH rcu v2] 03/20] srcu: Use ->srcu_gp_seq for rcutorture reader batch
-Date: Thu, 30 Jan 2025 11:03:00 -0800
-Message-Id: <20250130190317.1652481-3-paulmck@kernel.org>
+Subject: [PATCH rcu v2] 01/20] srcu: Make Tiny SRCU able to operate in preemptible kernels
+Date: Thu, 30 Jan 2025 11:02:58 -0800
+Message-Id: <20250130190317.1652481-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <1034ef54-b6b3-42bb-9bd8-4c37c164950d@paulmck-laptop>
 References: <1034ef54-b6b3-42bb-9bd8-4c37c164950d@paulmck-laptop>
@@ -53,55 +54,88 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit stops using ->srcu_idx for rcutorture's reader-batch
-consistency checking, using ->srcu_gp_seq instead.  This is a first
-step towards a faster srcu_read_{,un}lock_lite() that avoids the array
-accesses that use ->srcu_idx.
+Given that SRCU allows its read-side critical sections are not just
+preemptible, but also allow general blocking, there is not much
+reason to restrict Tiny SRCU to non-preemptible kernels.  This commit
+therefore removes Tiny SRCU dependencies on non-preemptibility, primarily
+surrounding its interaction with rcutorture and early boot.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Ankur Arora <ankur.a.arora@oracle.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: <bpf@vger.kernel.org>
 ---
- kernel/rcu/rcutorture.c | 2 ++
- kernel/rcu/srcutree.c   | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ kernel/rcu/rcu.h      | 9 ++++++---
+ kernel/rcu/srcutiny.c | 6 ++++++
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index d26fb1d33ed9..1d2de50fb5d6 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -791,6 +791,7 @@ static struct rcu_torture_ops srcu_ops = {
- 	.readunlock	= srcu_torture_read_unlock,
- 	.readlock_held	= torture_srcu_read_lock_held,
- 	.get_gp_seq	= srcu_torture_completed,
-+	.gp_diff	= rcu_seq_diff,
- 	.deferred_free	= srcu_torture_deferred_free,
- 	.sync		= srcu_torture_synchronize,
- 	.exp_sync	= srcu_torture_synchronize_expedited,
-@@ -834,6 +835,7 @@ static struct rcu_torture_ops srcud_ops = {
- 	.readunlock	= srcu_torture_read_unlock,
- 	.readlock_held	= torture_srcu_read_lock_held,
- 	.get_gp_seq	= srcu_torture_completed,
-+	.gp_diff	= rcu_seq_diff,
- 	.deferred_free	= srcu_torture_deferred_free,
- 	.sync		= srcu_torture_synchronize,
- 	.exp_sync	= srcu_torture_synchronize_expedited,
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index f87a9fb6d6bb..b5bb73c877de 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1679,7 +1679,7 @@ EXPORT_SYMBOL_GPL(srcu_barrier);
-  */
- unsigned long srcu_batches_completed(struct srcu_struct *ssp)
- {
--	return READ_ONCE(ssp->srcu_idx);
-+	return READ_ONCE(ssp->srcu_sup->srcu_gp_seq);
- }
- EXPORT_SYMBOL_GPL(srcu_batches_completed);
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index f87c9d6d36fc..f6fcf87d9139 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -611,8 +611,6 @@ void srcutorture_get_gp_data(struct srcu_struct *sp, int *flags,
+ static inline bool rcu_watching_zero_in_eqs(int cpu, int *vp) { return false; }
+ static inline unsigned long rcu_get_gp_seq(void) { return 0; }
+ static inline unsigned long rcu_exp_batches_completed(void) { return 0; }
+-static inline unsigned long
+-srcu_batches_completed(struct srcu_struct *sp) { return 0; }
+ static inline void rcu_force_quiescent_state(void) { }
+ static inline bool rcu_check_boost_fail(unsigned long gp_state, int *cpup) { return true; }
+ static inline void show_rcu_gp_kthreads(void) { }
+@@ -624,7 +622,6 @@ static inline void rcu_gp_slow_unregister(atomic_t *rgssp) { }
+ bool rcu_watching_zero_in_eqs(int cpu, int *vp);
+ unsigned long rcu_get_gp_seq(void);
+ unsigned long rcu_exp_batches_completed(void);
+-unsigned long srcu_batches_completed(struct srcu_struct *sp);
+ bool rcu_check_boost_fail(unsigned long gp_state, int *cpup);
+ void show_rcu_gp_kthreads(void);
+ int rcu_get_gp_kthreads_prio(void);
+@@ -636,6 +633,12 @@ void rcu_gp_slow_register(atomic_t *rgssp);
+ void rcu_gp_slow_unregister(atomic_t *rgssp);
+ #endif /* #else #ifdef CONFIG_TINY_RCU */
  
++#ifdef CONFIG_TINY_SRCU
++static inline unsigned long srcu_batches_completed(struct srcu_struct *sp) { return 0; }
++#else // #ifdef CONFIG_TINY_SRCU
++unsigned long srcu_batches_completed(struct srcu_struct *sp);
++#endif // #else // #ifdef CONFIG_TINY_SRCU
++
+ #ifdef CONFIG_RCU_NOCB_CPU
+ void rcu_bind_current_to_nocb(void);
+ #else
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index f688bdad293e..6e9fe2ce1075 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -20,7 +20,11 @@
+ #include "rcu_segcblist.h"
+ #include "rcu.h"
+ 
++#ifndef CONFIG_TREE_RCU
+ int rcu_scheduler_active __read_mostly;
++#else // #ifndef CONFIG_TREE_RCU
++extern int rcu_scheduler_active;
++#endif // #else // #ifndef CONFIG_TREE_RCU
+ static LIST_HEAD(srcu_boot_list);
+ static bool srcu_init_done;
+ 
+@@ -282,11 +286,13 @@ bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
+ }
+ EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
+ 
++#ifndef CONFIG_TREE_RCU
+ /* Lockdep diagnostics.  */
+ void __init rcu_scheduler_starting(void)
+ {
+ 	rcu_scheduler_active = RCU_SCHEDULER_RUNNING;
+ }
++#endif // #ifndef CONFIG_TREE_RCU
+ 
+ /*
+  * Queue work for srcu_struct structures with early boot callbacks.
 -- 
 2.40.1
 
