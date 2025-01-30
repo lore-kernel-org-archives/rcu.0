@@ -1,43 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE131F2363;
-	Thu, 30 Jan 2025 19:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2E31F2C24;
+	Thu, 30 Jan 2025 19:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738263886; cv=none; b=aGGBfvef1msDyrvivaCvOaWIXheKwceYlY2CaL5hZlL9smZB7ww4DtEWtHS1srsxCo/y4CJ4nkZBsUEX1ZuRfltKeu1Bm5O68wxjVhMFw6qumQQSulRzJJ9wInc1wu5DtQ0GeeQPtLXIx2D04dO0YXz+m9hc/5wzdIYO/WygTsM=
+	t=1738263887; cv=none; b=Z/qaCVb0EGyy/+9UXSGGsX7Gya5k92XfZgZrNCW0cPtmKXklFo/E+M8voaQiscZ78KGtlX65gPO1W6qd5sB4RNkVHwqH4z/9/udvR+ubMJybuxuX2uX+7bJhsEGiEUQC1eTkEYX2KMu7asLxBPU9HZfGYeJb5AiEt8W2X5sRRQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738263886; c=relaxed/simple;
-	bh=kpykuJ6IJmLToY2NQQdfvb935dMGsfHVdSa5fdenBAQ=;
+	s=arc-20240116; t=1738263887; c=relaxed/simple;
+	bh=Kg5t8i3kV4zJeeVGhFRkKGOTaTT8nnHE1O1nDqYrNfQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Axewec0dgUx+MJfcLOngVuNupH8v7ACKg4TopaqJOfkhdOl3TpMNwO/9RpMSR5l56qjsKCqENR4XpJby/eTTDRr+gXGKf41X2XsVIvzoqqrrFi1x/MUFhHq5LChkgNnSXIkLdsZYcHUL+5Q+K1YDnMo1it35fHIXo1VBq86gsnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jc9ebNk7; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=YMLn0DAkao/pWaIkdZda3tfBOP8JmH//3tcMFXvQgQpp3TwoEvQM4pyPZbFrD6Q3K9j0EeY9OVG0Wk+EMxBZGFl6j0YhuESnz848KUsg3opAGQshmDhOWK7CRSIlF6QNJVnZ9RjBnSPHhuJ9vn5QIPeUvsg5ItwwteFsHkOW300=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dSlTpp3D; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jc9ebNk7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1215BC4AF0E;
-	Thu, 30 Jan 2025 19:04:46 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dSlTpp3D"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17029C4CED3;
+	Thu, 30 Jan 2025 19:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738263886;
-	bh=kpykuJ6IJmLToY2NQQdfvb935dMGsfHVdSa5fdenBAQ=;
+	s=k20201202; t=1738263887;
+	bh=Kg5t8i3kV4zJeeVGhFRkKGOTaTT8nnHE1O1nDqYrNfQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jc9ebNk7lgvmzNSFl3ZfeuwZY4UDB+KAGqCs7IJxgcKL3SqS+PlCEyyE3LD/XVZax
-	 ObsPH5NfqgzWHIBXNfc3uooXwt4QBn72dzyyR4wBTO/piBzJ6iQKdz/9h00ASXqxI0
-	 SANZTHySy422IR7Tfl0cMwBMfBexVxhPZHitvHcDL8BZQ5ZoUnQmuleNJZUkczyZHY
-	 c4oR+N//cZgi57sI9uqMFvzFdbNpi+DhJvP5HJ4i6oKx+EYVJUWIOYZ5KSR3YwXvqQ
-	 sJBn32+OzuAkf5g7E6UhCJO5tWONtvAb6iOLWFQzbLqL+3TuH+a21f2qiSLIIm3V6f
-	 tQA2kTXiLdG7g==
+	b=dSlTpp3D8jDfGtDaUoXFifrv2WI7HZr4zftTCcwxOtAUwVs5l/I8UOgFb/YKaFwxV
+	 Emxv1NhnDRiVgL9/VUebrDBxl1GyUYEaahyWhU/mjfZjl9K/cn+WMNwi7FAGJy1m50
+	 ODk5iEoomB44Ger7/MH/l34KmYAy5GeggcS2PjWZkr/38Ou5DJ4DguUeqAi1icEwBR
+	 96MJ5BuC19nnbhzsST8d+7mM6AxH5CZuZXiOrmXkvKdsYdQaQ/G3QrKchRWIJET4UK
+	 zSPRt/t8FtYdSgjrScIPkbmVxHZ4QZPTeOCoMbl61zPPfgV2NdqmeYxSylwPu1lPGd
+	 NN1OLSn9VkcUw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 897DACE37E6; Thu, 30 Jan 2025 11:04:45 -0800 (PST)
+	id 86C3CCE37E2; Thu, 30 Jan 2025 11:04:45 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH rcu v2] 08/11] rcutorture: Move RCU_TORTURE_TEST_{CHK_RDR_STATE,LOG_CPU} to bool
-Date: Thu, 30 Jan 2025 11:04:41 -0800
-Message-Id: <20250130190444.1652700-8-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu v2] 07/11] rcutorture: Make cur_ops->format_gp_seqs take buffer length
+Date: Thu, 30 Jan 2025 11:04:40 -0800
+Message-Id: <20250130190444.1652700-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <bd22a7da-a4e0-45dc-b43c-1532af4dcfc7@paulmck-laptop>
 References: <bd22a7da-a4e0-45dc-b43c-1532af4dcfc7@paulmck-laptop>
@@ -49,39 +48,95 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The RCU_TORTURE_TEST_CHK_RDR_STATE and RCU_TORTURE_TEST_LOG_CPU Kconfig
-options are pointlessly defined as tristate.  This commit therefore
-converts them to bool.
+The Tree and Tiny implementations of rcutorture_format_gp_seqs() use
+hard-coded constants for the length of the buffer that they format into.
+This is of course an accident waiting to happen, so this commit therefore
+makes them take a length argument.  The rcutorture calling code uses
+ARRAY_SIZE() to safely compute this new argument.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202412241458.150d082b-lkp@intel.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/Kconfig.debug | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/rcu.h        | 2 +-
+ kernel/rcu/rcutorture.c | 8 +++++---
+ kernel/rcu/tiny.c       | 4 ++--
+ kernel/rcu/tree.c       | 4 ++--
+ 4 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 25a9dc2be0dc..12e4c64ebae1 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -54,7 +54,7 @@ config RCU_TORTURE_TEST
- 	  Say N if you are unsure.
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index d2a91f705a4a..eed2951a4962 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -591,7 +591,7 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
+ static inline void rcu_gp_set_torture_wait(int duration) { }
+ #endif
+ unsigned long long rcutorture_gather_gp_seqs(void);
+-void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp);
++void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp, size_t len);
  
- config RCU_TORTURE_TEST_CHK_RDR_STATE
--	tristate "Check rcutorture reader state"
-+	bool "Check rcutorture reader state"
- 	depends on RCU_TORTURE_TEST
- 	default n
- 	help
-@@ -70,7 +70,7 @@ config RCU_TORTURE_TEST_CHK_RDR_STATE
- 	  Say N if you are unsure.
+ #ifdef CONFIG_TINY_SRCU
  
- config RCU_TORTURE_TEST_LOG_CPU
--	tristate "Log CPU for rcutorture failures"
-+	bool "Log CPU for rcutorture failures"
- 	depends on RCU_TORTURE_TEST
- 	default n
- 	help
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 0f5a94542719..2e6e8664e403 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -411,7 +411,7 @@ struct rcu_torture_ops {
+ 	void (*gp_slow_unregister)(atomic_t *rgssp);
+ 	bool (*reader_blocked)(void);
+ 	unsigned long long (*gather_gp_seqs)(void);
+-	void (*format_gp_seqs)(unsigned long long seqs, char *cp);
++	void (*format_gp_seqs)(unsigned long long seqs, char *cp, size_t len);
+ 	long cbflood_max;
+ 	int irq_capable;
+ 	int can_boost;
+@@ -3699,8 +3699,10 @@ rcu_torture_cleanup(void)
+ 				char buf2[20+1];
+ 				char sepchar = '-';
+ 
+-				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq, buf1);
+-				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq_end, buf2);
++				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq,
++							buf1, ARRAY_SIZE(buf1));
++				cur_ops->format_gp_seqs(err_segs[i].rt_gp_seq_end,
++							buf2, ARRAY_SIZE(buf2));
+ 				if (err_segs[i].rt_gp_seq == err_segs[i].rt_gp_seq_end) {
+ 					if (buf2[0]) {
+ 						for (j = 0; buf2[j]; j++)
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index b97c64e99a90..6380fbd27557 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -264,9 +264,9 @@ unsigned long long rcutorture_gather_gp_seqs(void)
+ }
+ EXPORT_SYMBOL_GPL(rcutorture_gather_gp_seqs);
+ 
+-void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp)
++void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp, size_t len)
+ {
+-	snprintf(cp, 8, "g%04llx", seqs & 0xffffULL);
++	snprintf(cp, len, "g%04llx", seqs & 0xffffULL);
+ }
+ EXPORT_SYMBOL_GPL(rcutorture_format_gp_seqs);
+ #endif
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index ac596596e771..1d201455aa7c 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -569,13 +569,13 @@ unsigned long long rcutorture_gather_gp_seqs(void)
+ EXPORT_SYMBOL_GPL(rcutorture_gather_gp_seqs);
+ 
+ /* Format grace-period sequence numbers for rcutorture diagnostics. */
+-void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp)
++void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp, size_t len)
+ {
+ 	unsigned int egp = (seqs >> 16) & 0xffffffULL;
+ 	unsigned int ggp = (seqs >> 40) & 0xffffULL;
+ 	unsigned int pgp = seqs & 0xffffULL;
+ 
+-	snprintf(cp, 20, "g%04x:e%06x:p%04x", ggp, egp, pgp);
++	snprintf(cp, len, "g%04x:e%06x:p%04x", ggp, egp, pgp);
+ }
+ EXPORT_SYMBOL_GPL(rcutorture_format_gp_seqs);
+ 
 -- 
 2.40.1
 
