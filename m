@@ -1,99 +1,117 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534191F131F;
-	Thu, 30 Jan 2025 19:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBAF31F131F;
+	Thu, 30 Jan 2025 19:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738263879; cv=none; b=PD+BlzqFX8EWMrmqkrsIeMYqHv9k6+imDpj1JlNPpcAfPoLMMKnaJcW9fPRD9i8hzP3xZInS3Gsu3NIYHF+ruwtDIw37quD+SIWrCd4YNvvvMNfqhqQlKLQZDwbzkGiuGXW4w0EJ7Xk+8P589VemZMGockRJiIJFnoS6lGy7rqE=
+	t=1738263885; cv=none; b=NuKNxNGpdwF/gM5tUnCcP4heb80BIUp4wnupHC7i2nqpPEESwawpZ31aMBxcPmx29quFvqAyQhLDMb3gjrHISuGdxAbiNOGM5hdIRXi29woQ9zcgGIyhDj8jn186X6t2MSkRiQn7BXw7j7LTuSY/VmEEPfsn5yP3Am3cfMW7Bm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738263879; c=relaxed/simple;
-	bh=UvstwIrHh4yg71jLnUEWEWjgTy/RtVTNKH20NnE9Z/I=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cVWB6HMTEL1AoJytUjNW+ilYjNfAr2NAnhG5bxIdRylZjEJyREVkOLRlY+qD05nfvsxKKMq+EDVc4YsVaBp9P1LVEI1TDFmk+agZoEsQzrcONbjMGRDUx6UJIqz8U1TCgUoTuxyEe5hf+aBLJLY9ib1rNdAeiG+nSExYMkdabmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lMO2cpVh; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1738263885; c=relaxed/simple;
+	bh=skpQ2y/71eDNwBWi3t9jBbeEnDPFWYsUiO3M8+45cao=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=V3/TVzY5vNwMVCUAccMm9oxCr81CWx1JjzL1LwiLr9JnEeZW5kHxwRCkL4BZqveuji0BlnQd15ACtq1rrheuoJ5PasEK4XiYjz61P17D8P3t9hFTcbXzGwZ7Ms6doaNVxGrDaAViJU6+3lDL2dgm+iuP2ClEHOf1ovywqOAZP8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/mSmcuU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMO2cpVh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C37EC4CED2;
-	Thu, 30 Jan 2025 19:04:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/mSmcuU"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B63CFC4CED2;
+	Thu, 30 Jan 2025 19:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738263879;
-	bh=UvstwIrHh4yg71jLnUEWEWjgTy/RtVTNKH20NnE9Z/I=;
-	h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
-	b=lMO2cpVh8a5wd8bRsrPLXQYbnLCBrHmGMggiIbocLoJ+6h84kurcZSqbHPhAH0Xsu
-	 MR0CuI2JZS7em7spANd6rsG1UvZOeoRz9cw4VyZYxTmkiEt1f164lmDzpQ0e2TrN2N
-	 FFDKK9zdImTaiGFFGvNq2nVoE53NA25zp9SvTP6pW6eaXc7/R/EELkxZq94qnuvgKS
-	 41fDtakeu/nrnP4XkiEngljx2TdqOv3GLhDhbmM0AwGrH9mLUyijSnkfTyMuYFdCG2
-	 Dn4Jj0VvTfDEky6RItxZAP2aZDiFJSJdwULCwQH54IQXbbhBGjq9fwq1p4mCkME2Br
-	 3ojXWEaRl4dCg==
+	s=k20201202; t=1738263885;
+	bh=skpQ2y/71eDNwBWi3t9jBbeEnDPFWYsUiO3M8+45cao=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=L/mSmcuU1/UuqIbbMMfXYhH7HSGIvrmV0oQ0Wr8sPEcVgNCDUtoOkSh5KG1LJ2WGN
+	 D6xUzWitf90oRNzJT7EOly83J49esDd0KcBP7Gk8OdaKpp4CHs3a77pqW9djpVV8h+
+	 BywpTB1gHcTi2CQt9WOJBgy9Ot9cwapa495ZxXXX9PVlduLHxVzrFvOpct28QLMmm0
+	 2q6/M3EiejmG0omszMAWAfHPq5fkkLSTVhRPrOcu3GTLa7CMe5tDn6fPhMSme0PrWc
+	 AIExyBU7Grmw4mTHcYmZjg1sEEsWt1DRpV0S9HMnpr/s9xIntWGPS7zljbalrrp8ON
+	 xwduPBSS58dLg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D992ACE37D9; Thu, 30 Jan 2025 11:04:38 -0800 (PST)
-Date: Thu, 30 Jan 2025 11:04:38 -0800
+	id 76579CE37D9; Thu, 30 Jan 2025 11:04:45 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH rcu 0/11] Torture-test updates
-Message-ID: <bd22a7da-a4e0-45dc-b43c-1532af4dcfc7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu v2] 01/11] torture: Add get_torture_init_jiffies() for test-start time
+Date: Thu, 30 Jan 2025 11:04:34 -0800
+Message-Id: <20250130190444.1652700-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <bd22a7da-a4e0-45dc-b43c-1532af4dcfc7@paulmck-laptop>
+References: <bd22a7da-a4e0-45dc-b43c-1532af4dcfc7@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
 
-Hello!
+This commit adds a get_torture_init_jiffies() function that returns the
+value of the jiffies counter at the start of the test, that is, at the
+point where torture_init_begin() was invoked.
 
-This series contains torture-test updates:
+This will be used to enable torture-test holdoffs for tests implemented
+using per-CPU kthreads, which are created and deleted by CPU-hotplug
+operations, and thus (unlike normal kthreads) don't automatically know
+when the test started.
 
-1.	Add get_torture_init_jiffies() for test-start time.
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/torture.h |  1 +
+ kernel/torture.c        | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
 
-2.	Add a test_boost_holdoff module parameter.
+diff --git a/include/linux/torture.h b/include/linux/torture.h
+index 0134e7221cae..1b59056c3b18 100644
+--- a/include/linux/torture.h
++++ b/include/linux/torture.h
+@@ -104,6 +104,7 @@ int torture_stutter_init(int s, int sgap);
+ /* Initialization and cleanup. */
+ bool torture_init_begin(char *ttype, int v);
+ void torture_init_end(void);
++unsigned long get_torture_init_jiffies(void);
+ bool torture_cleanup_begin(void);
+ void torture_cleanup_end(void);
+ bool torture_must_stop(void);
+diff --git a/kernel/torture.c b/kernel/torture.c
+index dede150aef01..3a0a8cc60401 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -792,6 +792,8 @@ static void torture_stutter_cleanup(void)
+ 	stutter_task = NULL;
+ }
+ 
++static unsigned long torture_init_jiffies;
++
+ static void
+ torture_print_module_parms(void)
+ {
+@@ -821,6 +823,7 @@ bool torture_init_begin(char *ttype, int v)
+ 	torture_type = ttype;
+ 	verbose = v;
+ 	fullstop = FULLSTOP_DONTSTOP;
++	WRITE_ONCE(torture_init_jiffies, jiffies); // Lockless reads.
+ 	torture_print_module_parms();
+ 	return true;
+ }
+@@ -836,6 +839,15 @@ void torture_init_end(void)
+ }
+ EXPORT_SYMBOL_GPL(torture_init_end);
+ 
++/*
++ * Get the torture_init_begin()-time value of the jiffies counter.
++ */
++unsigned long get_torture_init_jiffies(void)
++{
++	return READ_ONCE(torture_init_jiffies);
++}
++EXPORT_SYMBOL_GPL(get_torture_init_jiffies);
++
+ /*
+  * Clean up torture module.  Please note that this is -not- invoked via
+  * the usual module_exit() mechanism, but rather by an explicit call from
+-- 
+2.40.1
 
-3.	Include grace-period sequence numbers in failure/close-call.
-
-4.	Expand failure/close-call grace-period output.
-
-5.	Trace expedited grace-period numbers in hexadecimal.
-
-6.	Add ftrace-compatible timestamp to GP# failure/close-call output.
-
-7.	Make cur_ops->format_gp_seqs take buffer length.
-
-8.	Move RCU_TORTURE_TEST_{CHK_RDR_STATE,LOG_CPU} to bool.
-
-9.	Complain when invalid SRCU reader_flavor is specified.
-
-10.	Add FORCE_NEED_SRCU_NMI_SAFE Kconfig for testing.
-
-11.	Make SRCU lockdep testing use srcu_read_lock_nmisafe().
-
-Changes since v1:
-
-o	Fix "segement" typo in commit log.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/Documentation/admin-guide/kernel-parameters.txt        |    5 +
- b/include/linux/torture.h                                |    1 
- b/include/trace/events/rcu.h                             |    2 
- b/kernel/rcu/Kconfig                                     |   11 ++
- b/kernel/rcu/Kconfig.debug                               |   14 +++
- b/kernel/rcu/rcu.h                                       |    2 
- b/kernel/rcu/rcutorture.c                                |   19 +++-
- b/kernel/rcu/tiny.c                                      |   14 +++
- b/kernel/rcu/tree.c                                      |   20 ++++
- b/kernel/torture.c                                       |   12 ++
- b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh |    2 
- kernel/rcu/Kconfig.debug                                 |    4 
- kernel/rcu/rcu.h                                         |    6 -
- kernel/rcu/rcutorture.c                                  |   64 ++++++++++++---
- kernel/rcu/tiny.c                                        |   12 +-
- kernel/rcu/tree.c                                        |   22 ++---
- 16 files changed, 173 insertions(+), 37 deletions(-)
