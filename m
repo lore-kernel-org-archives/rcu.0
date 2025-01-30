@@ -1,136 +1,99 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988001F190E;
-	Thu, 30 Jan 2025 19:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534191F131F;
+	Thu, 30 Jan 2025 19:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738263800; cv=none; b=FOfm6nsEcMOK6mJZ2cltZn+HF8pVb5aDsYept4i+SeWHpig9g+yeEQfmM9gwnWzbEwvAv/J7AnAo43ZZwk1qiSpyv3uFFW2CzZDxNllyinrWyDlev1SMUW0mYtmv5ug3373S0SOhwk6WWJh2QZNCOAHBQx2TJH4q38tOyePd3/k=
+	t=1738263879; cv=none; b=PD+BlzqFX8EWMrmqkrsIeMYqHv9k6+imDpj1JlNPpcAfPoLMMKnaJcW9fPRD9i8hzP3xZInS3Gsu3NIYHF+ruwtDIw37quD+SIWrCd4YNvvvMNfqhqQlKLQZDwbzkGiuGXW4w0EJ7Xk+8P589VemZMGockRJiIJFnoS6lGy7rqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738263800; c=relaxed/simple;
-	bh=9y2DzeCgvyMVVNxPX0RVQZZ22Kzqmwq2K+TRXJQVSOY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SiZo2apy6p/7+6jzoo+0o+XXF9YHZhnJMVuaW/ctPGCmri1rpMYCIuWQwsTqabcn/yh+uczN87JAIenPZUZW+BKnhAb2j5GzLUuvYm6aQ1G9hwDgaCIjnlXm5VTWNSGONZalePe8BWD0CqgtJzIgXRbpd2JvAvWZOK3FYbTN+dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GqRWktmD; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1738263879; c=relaxed/simple;
+	bh=UvstwIrHh4yg71jLnUEWEWjgTy/RtVTNKH20NnE9Z/I=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cVWB6HMTEL1AoJytUjNW+ilYjNfAr2NAnhG5bxIdRylZjEJyREVkOLRlY+qD05nfvsxKKMq+EDVc4YsVaBp9P1LVEI1TDFmk+agZoEsQzrcONbjMGRDUx6UJIqz8U1TCgUoTuxyEe5hf+aBLJLY9ib1rNdAeiG+nSExYMkdabmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lMO2cpVh; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GqRWktmD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1006C4CEE7;
-	Thu, 30 Jan 2025 19:03:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMO2cpVh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C37EC4CED2;
+	Thu, 30 Jan 2025 19:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738263800;
-	bh=9y2DzeCgvyMVVNxPX0RVQZZ22Kzqmwq2K+TRXJQVSOY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GqRWktmD34aYw8VgnC8lk+5SrM6a0gf+ibzG/raLratfYA2p2BOWwOiZRvmi5C5KH
-	 D0iN5bp4HRXa946NgB1BsyP1WVfkHl8sYqL4fELp2m6zacNqvfD7JHKJHKnqYzDcVK
-	 vn28dp5KcwYIgGtWpxsl47bmcanHNviz/8dXm8k8/39Hnwg4lkolyYcX33XT0VxGtt
-	 rjWxQkVhfyPFsbGgEMF+r8GO559DsDi0xpNOIPoaOYCWmBDOZBAPEfT+g3bUXcv9d4
-	 3NR/h6ocy9O5IR5/O+grCedkOEAzH2WXRuSnfPPsQnvFGR9NBok64RbjX+9lgcLA6i
-	 IfVAmBI694oHg==
+	s=k20201202; t=1738263879;
+	bh=UvstwIrHh4yg71jLnUEWEWjgTy/RtVTNKH20NnE9Z/I=;
+	h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
+	b=lMO2cpVh8a5wd8bRsrPLXQYbnLCBrHmGMggiIbocLoJ+6h84kurcZSqbHPhAH0Xsu
+	 MR0CuI2JZS7em7spANd6rsG1UvZOeoRz9cw4VyZYxTmkiEt1f164lmDzpQ0e2TrN2N
+	 FFDKK9zdImTaiGFFGvNq2nVoE53NA25zp9SvTP6pW6eaXc7/R/EELkxZq94qnuvgKS
+	 41fDtakeu/nrnP4XkiEngljx2TdqOv3GLhDhbmM0AwGrH9mLUyijSnkfTyMuYFdCG2
+	 Dn4Jj0VvTfDEky6RItxZAP2aZDiFJSJdwULCwQH54IQXbbhBGjq9fwq1p4mCkME2Br
+	 3ojXWEaRl4dCg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 12516CE3991; Thu, 30 Jan 2025 11:03:19 -0800 (PST)
+	id D992ACE37D9; Thu, 30 Jan 2025 11:04:38 -0800 (PST)
+Date: Thu, 30 Jan 2025 11:04:38 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH rcu v2] 19/20] srcu: Add srcu_down_read_fast() and srcu_up_read_fast()
-Date: Thu, 30 Jan 2025 11:03:16 -0800
-Message-Id: <20250130190317.1652481-19-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <1034ef54-b6b3-42bb-9bd8-4c37c164950d@paulmck-laptop>
-References: <1034ef54-b6b3-42bb-9bd8-4c37c164950d@paulmck-laptop>
+To: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org
+Subject: Re: [PATCH rcu 0/11] Torture-test updates
+Message-ID: <bd22a7da-a4e0-45dc-b43c-1532af4dcfc7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4864e07-93b8-4bc9-80fd-62b00a64e329@paulmck-laptop>
 
-A pair of matching srcu_read_lock_fast() and srcu_read_unlock_fast()
-invocations must take place within the same context, for example, within
-the same task.  Otherwise, lockdep complains, as is the right thing to
-do for most use cases.
+Hello!
 
-However, there are use cases involving tracing (for example, uretprobes)
-in which an SRCU reader needs to begin in one task and end in a
-timer handler, which might interrupt some other task.  This commit
-therefore supplies the semaphore-like srcu_down_read_fast() and
-srcu_up_read_fast() functions, which act like srcu_read_lock_fast() and
-srcu_read_unlock_fast(), but permitting srcu_up_read_fast() to be invoked
-in a different context than was the matching srcu_down_read_fast().
+This series contains torture-test updates:
 
-Neither srcu_down_read_fast() nor srcu_up_read_fast() may be invoked
-from an NMI handler.
+1.	Add get_torture_init_jiffies() for test-start time.
 
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: <bpf@vger.kernel.org>
----
- include/linux/srcu.h | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+2.	Add a test_boost_holdoff module parameter.
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 317eab82a5f0..900b0d5c05f5 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -281,6 +281,24 @@ static inline struct srcu_ctr __percpu *srcu_read_lock_fast(struct srcu_struct *
- 	return retval;
- }
- 
-+/**
-+ * srcu_down_read_fast - register a new reader for an SRCU-protected structure.
-+ * @ssp: srcu_struct in which to register the new reader.
-+ *
-+ * Enter a semaphore-like SRCU read-side critical section, but for
-+ * a light-weight smp_mb()-free reader.  See srcu_read_lock_fast() and
-+ * srcu_down_read() for more information.
-+ *
-+ * The same srcu_struct may be used concurrently by srcu_down_read_fast()
-+ * and srcu_read_lock_fast().
-+ */
-+static inline struct srcu_ctr __percpu *srcu_down_read_fast(struct srcu_struct *ssp) __acquires(ssp)
-+{
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
-+	srcu_check_read_flavor_force(ssp, SRCU_READ_FLAVOR_FAST);
-+	return __srcu_read_lock_fast(ssp);
-+}
-+
- /**
-  * srcu_read_lock_lite - register a new reader for an SRCU-protected structure.
-  * @ssp: srcu_struct in which to register the new reader.
-@@ -400,6 +418,22 @@ static inline void srcu_read_unlock_fast(struct srcu_struct *ssp, struct srcu_ct
- 	__srcu_read_unlock_fast(ssp, scp);
- }
- 
-+/**
-+ * srcu_up_read_fast - unregister a old reader from an SRCU-protected structure.
-+ * @ssp: srcu_struct in which to unregister the old reader.
-+ * @scp: return value from corresponding srcu_read_lock_fast().
-+ *
-+ * Exit an SRCU read-side critical section, but not necessarily from
-+ * the same context as the maching srcu_down_read_fast().
-+ */
-+static inline void srcu_up_read_fast(struct srcu_struct *ssp, struct srcu_ctr __percpu *scp)
-+	__releases(ssp)
-+{
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) && in_nmi());
-+	srcu_check_read_flavor(ssp, SRCU_READ_FLAVOR_FAST);
-+	__srcu_read_unlock_fast(ssp, scp);
-+}
-+
- /**
-  * srcu_read_unlock_lite - unregister a old reader from an SRCU-protected structure.
-  * @ssp: srcu_struct in which to unregister the old reader.
--- 
-2.40.1
+3.	Include grace-period sequence numbers in failure/close-call.
 
+4.	Expand failure/close-call grace-period output.
+
+5.	Trace expedited grace-period numbers in hexadecimal.
+
+6.	Add ftrace-compatible timestamp to GP# failure/close-call output.
+
+7.	Make cur_ops->format_gp_seqs take buffer length.
+
+8.	Move RCU_TORTURE_TEST_{CHK_RDR_STATE,LOG_CPU} to bool.
+
+9.	Complain when invalid SRCU reader_flavor is specified.
+
+10.	Add FORCE_NEED_SRCU_NMI_SAFE Kconfig for testing.
+
+11.	Make SRCU lockdep testing use srcu_read_lock_nmisafe().
+
+Changes since v1:
+
+o	Fix "segement" typo in commit log.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/admin-guide/kernel-parameters.txt        |    5 +
+ b/include/linux/torture.h                                |    1 
+ b/include/trace/events/rcu.h                             |    2 
+ b/kernel/rcu/Kconfig                                     |   11 ++
+ b/kernel/rcu/Kconfig.debug                               |   14 +++
+ b/kernel/rcu/rcu.h                                       |    2 
+ b/kernel/rcu/rcutorture.c                                |   19 +++-
+ b/kernel/rcu/tiny.c                                      |   14 +++
+ b/kernel/rcu/tree.c                                      |   20 ++++
+ b/kernel/torture.c                                       |   12 ++
+ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh |    2 
+ kernel/rcu/Kconfig.debug                                 |    4 
+ kernel/rcu/rcu.h                                         |    6 -
+ kernel/rcu/rcutorture.c                                  |   64 ++++++++++++---
+ kernel/rcu/tiny.c                                        |   12 +-
+ kernel/rcu/tree.c                                        |   22 ++---
+ 16 files changed, 173 insertions(+), 37 deletions(-)
