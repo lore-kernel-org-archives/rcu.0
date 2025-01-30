@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5E21F0E4E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC1B1F0E4F;
 	Thu, 30 Jan 2025 18:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738263324; cv=none; b=eqQ0YMZoQDURr4tODkHFJINOPVRHSAj6euk5VRbg7Tf/tMHlvPcasUd3cn7ziBi9eKg1d//GeqX4ZPVlEIIknc6B7QqI0CscAIu3JqiWUFXys5PjtnCOzfTPYoNDHy78YAMV9YsjA531jhSscxBzyUknCuWA2Wxb077C6FvZG+s=
+	t=1738263324; cv=none; b=XkIHG/ZUpkk1+vmTuxEw/Fx2EXXFByoq3CUgIuF5IO4S1Bh6LP/QyIMZtf8YKVJmCoDKwzWloUyS1r5haOgo+ABQ6tZ8PZMA0FSMMXk9wgodjhvMhZyQx/EjJ8UV1+MAZ1OtApGsxVPbWubI6co2nEwGPteS6xnMqJVOAriT07c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1738263324; c=relaxed/simple;
-	bh=JtnsE4qtHTaRkqiJLwlk6TcjetiG4zzhIrMVIESdTq4=;
+	bh=9oSvYec02iMCgTRNU+MsLaNfu3vQBdFnRvJxD4744hE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WFAqMLmyZ8RJQ/n2bRy0UHkRp72TCRK2LqUxV+2jHLVcRWDECOzl2RqnXttqXnzMWbh0a+/2S0F7xT4BdeIqJDjd4YiECkddcfKzXqSr3sCTq7ELJt34ZutiGqNL6idX5mK5N/p6Enbn+xu8OISvdYNWGvol9PU+du73A75JIBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LiMzLguD; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=WL+x0xl0gJJlIcS23pJL55nWpAtBVGAYnRhMHiK6ro1lyQPm3Z4QQwtxXb6VziYwnApWtgOPcZ23Kq7QNwQYLdNC6ueOeEfBobiZX+EdeLLfZHQaZ9aokOHol0usBW7Q4BZB8VY3IrEbDtS4b8HjY8MZliMOSZg3DO7sBUJGlu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KPjYqCpa; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LiMzLguD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36458C4CEF0;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KPjYqCpa"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 362ACC4CEEF;
 	Thu, 30 Jan 2025 18:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1738263324;
-	bh=JtnsE4qtHTaRkqiJLwlk6TcjetiG4zzhIrMVIESdTq4=;
+	bh=9oSvYec02iMCgTRNU+MsLaNfu3vQBdFnRvJxD4744hE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LiMzLguDUxJtkBR3zVelHzmJOriCJ7K6HqJECyQ9C3s+GIZe04MR6g1FzudtOY76Z
-	 QuvpgadXUwlIABiZJpBfOKUlHxQjycBApb/OkwhRnvCJCMm9EkVMop62+3n7F3IeLC
-	 vizaKGFiedMDKldMvJGRtCw9xpp88Taygtqpxx15kOIYSqGuM8IXsHlTfJhmVn9sov
-	 WhLyKJYEv0+GsTEyOtktL6mqvd3NLfJqTvuavn5tEhMbo8pXD6qZFsUFplJIed9Xuo
-	 72RZhOIqlGZo1m5f0FCtX/mdB+CfATZCUN6hwnRIc6TPzlNlX77/P2VezsRadR1pr8
-	 4R92ouRvalXGw==
+	b=KPjYqCpa/Gv7mZ/H3WDmqUthou6SoCpWEOSQssa37+Y9j5c255cuBCz+E0X9Hzzrj
+	 iIAeNCYK8WGa2+pNC2DSXKcjhUURw/3xOFDx9ZmjG+LBDrHzlPYfh/6GUSy3WhFvaS
+	 OiQzteM4vxqrMB6x6B/A4tJ5AaSUgOd3xGs/67W5TSAZegkWs3rg5oAPSeIPDlRlU2
+	 f6u8VQc36q3wEI/T5EfmZD7LsQUlT0QDqG0r54/nRAt7wI9RmsKm4uE1CCnzyazINH
+	 hfM3AXOP9KIo19yXg5XrbNpf+pujr5u8bdA75iukSbYujcqHHG+/wPgBI8ERpGw7SD
+	 p9nxLfia2fa6w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 939D7CE37E0; Thu, 30 Jan 2025 10:55:23 -0800 (PST)
+	id 96957CE37E2; Thu, 30 Jan 2025 10:55:23 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -35,11 +35,11 @@ Cc: linux-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
 	Ankur Arora <ankur.a.arora@oracle.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
 	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH rcu v2] 6/9] osnoise: provide quiescent states
-Date: Thu, 30 Jan 2025 10:55:19 -0800
-Message-Id: <20250130185522.1652093-6-paulmck@kernel.org>
+Subject: [PATCH rcu v2] 7/9] rcu: limit PREEMPT_RCU configurations
+Date: Thu, 30 Jan 2025 10:55:20 -0800
+Message-Id: <20250130185522.1652093-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <9bc6e5fe-d49f-495a-9f55-537ed97a3615@paulmck-laptop>
 References: <9bc6e5fe-d49f-495a-9f55-537ed97a3615@paulmck-laptop>
@@ -53,83 +53,44 @@ Content-Transfer-Encoding: 8bit
 
 From: Ankur Arora <ankur.a.arora@oracle.com>
 
-To reduce RCU noise for nohz_full configurations, osnoise depends
-on cond_resched() providing quiescent states for PREEMPT_RCU=n
-configurations. For PREEMPT_RCU=y configurations -- where
-cond_resched() is a stub -- we do this by directly calling
-rcu_momentary_eqs().
+PREEMPT_LAZY can be enabled stand-alone or alongside PREEMPT_DYNAMIC
+which allows for dynamic switching of preemption models.
 
-With (PREEMPT_LAZY=y, PREEMPT_DYNAMIC=n), however, we have a
-configuration with (PREEMPTION=y, PREEMPT_RCU=n) where neither
-of the above can help.
+The choice of PREEMPT_RCU or not, however, is fixed at compile time.
 
-Handle that by providing an explicit quiescent state here for all
-configurations.
+Given that PREEMPT_RCU makes some trade-offs to optimize for latency
+as opposed to throughput, configurations with limited preemption
+might prefer the stronger forward-progress guarantees of PREEMPT_RCU=n.
 
-As mentioned above this is not needed for non-stubbed cond_resched(),
-but, providing a quiescent state here just pulls in one that a future
-cond_resched() would provide, so doesn't cause any extra work for
-this configuration.
+Accordingly, explicitly limit PREEMPT_RCU=y to the latency oriented
+preemption models: PREEMPT, PREEMPT_RT, and the runtime configurable
+model PREEMPT_DYNAMIC.
+
+This means the throughput oriented models, PREEMPT_NONE,
+PREEMPT_VOLUNTARY, and PREEMPT_LAZY will run with PREEMPT_RCU=n.
 
 Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/trace/trace_osnoise.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ kernel/rcu/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index b9f96c77527d..2340ffcefb9d 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -1531,27 +1531,25 @@ static int run_osnoise(void)
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index 582d461c9ab7..80242957fa41 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -18,7 +18,7 @@ config TREE_RCU
  
- 		/*
- 		 * In some cases, notably when running on a nohz_full CPU with
--		 * a stopped tick PREEMPT_RCU has no way to account for QSs.
--		 * This will eventually cause unwarranted noise as PREEMPT_RCU
--		 * will force preemption as the means of ending the current
--		 * grace period. We avoid this problem by calling
--		 * rcu_momentary_eqs(), which performs a zero duration
--		 * EQS allowing PREEMPT_RCU to end the current grace period.
--		 * This call shouldn't be wrapped inside an RCU critical
--		 * section.
-+		 * a stopped tick PREEMPT_RCU or PREEMPT_LAZY have no way to
-+		 * account for QSs. This will eventually cause unwarranted
-+		 * noise as RCU forces preemption as the means of ending the
-+		 * current grace period.  We avoid this by calling
-+		 * rcu_momentary_eqs(), which performs a zero duration EQS
-+		 * allowing RCU to end the current grace period. This call
-+		 * shouldn't be wrapped inside an RCU critical section.
- 		 *
--		 * Note that in non PREEMPT_RCU kernels QSs are handled through
--		 * cond_resched()
-+		 * Normally QSs for other cases are handled through cond_resched().
-+		 * For simplicity, however, we call rcu_momentary_eqs() for all
-+		 * configurations here.
- 		 */
--		if (IS_ENABLED(CONFIG_PREEMPT_RCU)) {
--			if (!disable_irq)
--				local_irq_disable();
-+		if (!disable_irq)
-+			local_irq_disable();
- 
--			rcu_momentary_eqs();
-+		rcu_momentary_eqs();
- 
--			if (!disable_irq)
--				local_irq_enable();
--		}
-+		if (!disable_irq)
-+			local_irq_enable();
- 
- 		/*
- 		 * For the non-preemptive kernel config: let threads runs, if
+ config PREEMPT_RCU
+ 	bool
+-	default y if PREEMPTION
++	default y if (PREEMPT || PREEMPT_RT || PREEMPT_DYNAMIC)
+ 	select TREE_RCU
+ 	help
+ 	  This option selects the RCU implementation that is
 -- 
 2.40.1
 
