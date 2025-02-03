@@ -1,250 +1,165 @@
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1BD2080F9;
-	Mon,  3 Feb 2025 15:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC34192B74
+	for <rcu@vger.kernel.org>; Mon,  3 Feb 2025 19:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738595138; cv=none; b=uLJLP/4POFy2gfy1dhFN1iStKFleIjtnUYNSlp6fj83SmLMTUNmjtjbF/4FDxMxaRzgfu4tjzhIG+3dL9P5/WQqEFIdb4jxP7GRlN++lvupJVdTL1qezbU+MkY4jX+80QZcVhx7Lar93mhfCu/3P379+8jkab+thTQApAp7PL0Y=
+	t=1738609655; cv=none; b=Du0GRg6dp6l+uspf/VZl+z9lQ2MRpsyIItljoK5h1nEJIm7ePVHBXcKh3atwbRLMfr2O6NWYPAYZmve2MNdrWYGH5n5WFaBK2Nho9Rn34aO7p0MmNjIDMjjWZXCxEBE6ao46M4k60IzT58YVfHo8Hid1WYfm0KxXQze4BihKMds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738595138; c=relaxed/simple;
-	bh=tKnh+kKottUjOUdTWNtI3LHAb+KtZ0BffGkQSU7pKrA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xr+eAx0ef618AYJtLwdkbWU8UHrESY+HBPfQoYD6pLtInnZDyJcYndSIK+cQkvRPY7p0oAs5xShktatZby6PZ0klBcusy5U/zYcfqYtQNFxkqf5+GA5sNOCU+brePoOYX8Br1ycBdpzoeVYRa4WRVXSMKcl3cuFDcmcbgTM/pao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0ZbbXXFr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ggj5AKXh; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	s=arc-20240116; t=1738609655; c=relaxed/simple;
+	bh=sFECFljIY8hF7UElYtjTLnwB8NoqEp0fdysI/bokdY4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TgCzQ7BErEKCA4WJx2FxGYMdZz19bIRpMl++iUltN1KiOIpHAR/Dxte5v6o/PZMbvQar0uaPecYXB844vMJERYVaJACrpqMZCF6wb5ugPREVESpJ9OSGenRLQjIg5xrvhoHy52sWUINIsNDtJRPKFg8Mb2DfqmnzWsj6Dht5Y5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=erTS1JfU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0ZbbXXFr";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ggj5AKXh"
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1738595133;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F/fZu6xb+Szg+d8vtwSZnj4vBZAZohI+wxhZ6Q3N7B8=;
-	b=0ZbbXXFrwenSMc6uxmEYuSRqnbNnDttcLnabAinX0KuKsGrcrgqG9zc11Kj1R5PI4CHn4E
-	3ivBYxviO60jpMWVu70aXJPaWuWM+n3ZbNwCXCkLKeG6kggkKFhnz3T6OzypRH1f+oNarF
-	2II3IFvw3EpmNP/ipqWHdNAlCGqB+PaJrzYkIxRWTTsZ0JU1Voa/UYc+TC3dm8iG7iaNbR
-	mKKNVZ9vZzLa/GpHCNJEMd1Ufkma6pa2CPOq0jlWaTZJqqyUVCTmemPZiYPXV5mUAP4UEu
-	DpZJYxMw2WLqmWSJrFzhrK1QIGZEd6d5XX80+o4PDAm/RQrX+Qsn0Gc15oTqEw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1738595133;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F/fZu6xb+Szg+d8vtwSZnj4vBZAZohI+wxhZ6Q3N7B8=;
-	b=Ggj5AKXhGFY/+u9Ea9vNMSv10xKbJagbXN+6zZwqrWuIOSfKtO7wlgnhTsmyz05IO2D8fR
-	0VgvTUm99PKBHKBA==
-To: linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	MengEn Sun <mengensun@tencent.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	YueHong Wu <yuehongwu@tencent.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="erTS1JfU"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDCD6C4CED2;
+	Mon,  3 Feb 2025 19:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738609654;
+	bh=sFECFljIY8hF7UElYtjTLnwB8NoqEp0fdysI/bokdY4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=erTS1JfURzghn+eQafn/1AmUyM1NIcwS3pRwMpvV3PbK4wu+FLUplWEpFkPV6Gc1j
+	 LlPqEm3MRQHM0Lr3mXn+RYf3hx/mjSeLHOyHhInAH3WUAxRRJfA8erImWzwnVNjtsZ
+	 2MMQDqYRylPEg9ute5/qbmf3yr7mSMHRVlNMfVM2m8sws+xz6nyiMO5KdOzbg7uw2X
+	 tdViHk8GexZ+Pn7Y2ojPky7VqnsZX3jmJUz+XCi5pdaIXw6lRQO0d+mCE9KhMBC1g4
+	 jcG//CU65LLyOjG5angJ+ygCmOVKgqYyR6wnprnzHmTszbasePyBaeglFzeUXKhpML
+	 JT5yYTgU4ecpw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 7F405CE00C4; Mon,  3 Feb 2025 11:07:34 -0800 (PST)
+Date: Mon, 3 Feb 2025 11:07:34 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 3/4] ucount: Use RCU for ucounts lookups.
-Date: Mon,  3 Feb 2025 16:05:24 +0100
-Message-ID: <20250203150525.456525-4-bigeasy@linutronix.de>
-In-Reply-To: <20250203150525.456525-1-bigeasy@linutronix.de>
-References: <20250203150525.456525-1-bigeasy@linutronix.de>
+	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH 0/4] slab, rcu: move and consolidate TINY_RCU
+ kvfree_rcu() to SLAB
+Message-ID: <5ee3321c-417a-4638-8d9e-77faa5f07462@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250203-slub-tiny-kfree_rcu-v1-0-d4428bf9a8a1@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250203-slub-tiny-kfree_rcu-v1-0-d4428bf9a8a1@suse.cz>
 
-The ucounts element is looked up under ucounts_lock. This can be
-optimized by using RCU for a lockless lookup and return and element if the
-reference can be obtained.
+On Mon, Feb 03, 2025 at 10:28:46AM +0100, Vlastimil Babka wrote:
+> Following the move of the TREE_RCU batching kvfree_rcu() implementation
+> to slab, we still have the simple non-batching implementation in tiny
+> RCU, and RCU implementation specific ifdefs in slab code.
+> 
+> Finish the move and integration into slab. Allow using the simple
+> call_rcu() based implementation also with tree RCU when SLUB_TINY is
+> enabled, as its goal is also to limit memory footprint with less concern
+> for top performance.
+> 
+> In order to avoid RCU having to recognize the fake callback function
+> pointers (__is_kvfree_rcu_offset()) when handling call_rcu(), implement
+> a callback that can calculate the object's address from the embedded
+> rcu_head pointer without knowing the specific offset (previously SLOB
+> would not have made it possible, but it's gone now).
+> 
+> After this series, AFAIK only the following kvfree_rcu specific code
+> remains in RCU:
+> 
+> - a call to kfree_rcu_scheduler_running() from rcu_set_runtime_mode()
+> 
+>   - probably necessary and a generic registration interface would be
+>     unnecessary bloat?
 
-Replace hlist_head with hlist_nulls_head which is RCU compatible. Let
-find_ucounts() search for the required item within a RCU section and
-return the item if a reference could be obtained.
-This means alloc_ucounts() will always return an element (unless the
-memory allocation failed). Let put_ucounts() RCU free the element if the
-reference counter dropped to zero.
+I am OK with this calling directly.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/user_namespace.h |  4 +-
- kernel/ucount.c                | 75 ++++++++++++++++++----------------
- 2 files changed, 43 insertions(+), 36 deletions(-)
+Alternatively, you could create a core_initcall() that did nothing
+but invoke kfree_rcu_scheduler_running(), and then drop that call from
+rcu_set_runtime_mode().  Up to you guys!
 
-diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-index 7183e5aca2829..ad4dbef92597b 100644
---- a/include/linux/user_namespace.h
-+++ b/include/linux/user_namespace.h
-@@ -5,6 +5,7 @@
- #include <linux/kref.h>
- #include <linux/nsproxy.h>
- #include <linux/ns_common.h>
-+#include <linux/rculist_nulls.h>
- #include <linux/sched.h>
- #include <linux/workqueue.h>
- #include <linux/rwsem.h>
-@@ -115,9 +116,10 @@ struct user_namespace {
- } __randomize_layout;
-=20
- struct ucounts {
--	struct hlist_node node;
-+	struct hlist_nulls_node node;
- 	struct user_namespace *ns;
- 	kuid_t uid;
-+	struct rcu_head rcu;
- 	atomic_t count;
- 	atomic_long_t ucount[UCOUNT_COUNTS];
- 	atomic_long_t rlimit[UCOUNT_RLIMIT_COUNTS];
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index 4aa5011538257..b6abaf68cdccb 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -15,7 +15,10 @@ struct ucounts init_ucounts =3D {
- };
-=20
- #define UCOUNTS_HASHTABLE_BITS 10
--static struct hlist_head ucounts_hashtable[(1 << UCOUNTS_HASHTABLE_BITS)];
-+#define UCOUNTS_HASHTABLE_ENTRIES (1 << UCOUNTS_HASHTABLE_BITS)
-+static struct hlist_nulls_head ucounts_hashtable[UCOUNTS_HASHTABLE_ENTRIES=
-] =3D {
-+	[0 ... UCOUNTS_HASHTABLE_ENTRIES - 1] =3D HLIST_NULLS_HEAD_INIT(0)
-+};
- static DEFINE_SPINLOCK(ucounts_lock);
-=20
- #define ucounts_hashfn(ns, uid)						\
-@@ -24,7 +27,6 @@ static DEFINE_SPINLOCK(ucounts_lock);
- #define ucounts_hashentry(ns, uid)	\
- 	(ucounts_hashtable + ucounts_hashfn(ns, uid))
-=20
--
- #ifdef CONFIG_SYSCTL
- static struct ctl_table_set *
- set_lookup(struct ctl_table_root *root)
-@@ -127,22 +129,28 @@ void retire_userns_sysctls(struct user_namespace *ns)
- #endif
- }
-=20
--static struct ucounts *find_ucounts(struct user_namespace *ns, kuid_t uid,=
- struct hlist_head *hashent)
-+static struct ucounts *find_ucounts(struct user_namespace *ns, kuid_t uid,
-+				    struct hlist_nulls_head *hashent)
- {
- 	struct ucounts *ucounts;
-+	struct hlist_nulls_node *pos;
-=20
--	hlist_for_each_entry(ucounts, hashent, node) {
--		if (uid_eq(ucounts->uid, uid) && (ucounts->ns =3D=3D ns))
--			return ucounts;
-+	guard(rcu)();
-+	hlist_nulls_for_each_entry_rcu(ucounts, pos, hashent, node) {
-+		if (uid_eq(ucounts->uid, uid) && (ucounts->ns =3D=3D ns)) {
-+			if (atomic_inc_not_zero(&ucounts->count))
-+				return ucounts;
-+		}
- 	}
- 	return NULL;
- }
-=20
- static void hlist_add_ucounts(struct ucounts *ucounts)
- {
--	struct hlist_head *hashent =3D ucounts_hashentry(ucounts->ns, ucounts->ui=
-d);
-+	struct hlist_nulls_head *hashent =3D ucounts_hashentry(ucounts->ns, ucoun=
-ts->uid);
-+
- 	spin_lock_irq(&ucounts_lock);
--	hlist_add_head(&ucounts->node, hashent);
-+	hlist_nulls_add_head_rcu(&ucounts->node, hashent);
- 	spin_unlock_irq(&ucounts_lock);
- }
-=20
-@@ -155,37 +163,33 @@ struct ucounts *get_ucounts(struct ucounts *ucounts)
-=20
- struct ucounts *alloc_ucounts(struct user_namespace *ns, kuid_t uid)
- {
--	struct hlist_head *hashent =3D ucounts_hashentry(ns, uid);
--	struct ucounts *ucounts, *new =3D NULL;
-+	struct hlist_nulls_head *hashent =3D ucounts_hashentry(ns, uid);
-+	struct ucounts *ucounts, *new;
-+
-+	ucounts =3D find_ucounts(ns, uid, hashent);
-+	if (ucounts)
-+		return ucounts;
-+
-+	new =3D kzalloc(sizeof(*new), GFP_KERNEL);
-+	if (!new)
-+		return NULL;
-+
-+	new->ns =3D ns;
-+	new->uid =3D uid;
-+	atomic_set(&new->count, 1);
-=20
- 	spin_lock_irq(&ucounts_lock);
- 	ucounts =3D find_ucounts(ns, uid, hashent);
--	if (!ucounts) {
-+	if (ucounts) {
- 		spin_unlock_irq(&ucounts_lock);
--
--		new =3D kzalloc(sizeof(*new), GFP_KERNEL);
--		if (!new)
--			return NULL;
--
--		new->ns =3D ns;
--		new->uid =3D uid;
--		atomic_set(&new->count, 1);
--
--		spin_lock_irq(&ucounts_lock);
--		ucounts =3D find_ucounts(ns, uid, hashent);
--		if (!ucounts) {
--			hlist_add_head(&new->node, hashent);
--			get_user_ns(new->ns);
--			spin_unlock_irq(&ucounts_lock);
--			return new;
--		}
-+		kfree(new);
-+		return ucounts;
- 	}
--	if (!atomic_inc_not_zero(&ucounts->count))
--		ucounts =3D NULL;
--	spin_unlock_irq(&ucounts_lock);
--	kfree(new);
-=20
--	return ucounts;
-+	hlist_nulls_add_head_rcu(&new->node, hashent);
-+	get_user_ns(new->ns);
-+	spin_unlock_irq(&ucounts_lock);
-+	return new;
- }
-=20
- void put_ucounts(struct ucounts *ucounts)
-@@ -193,10 +197,11 @@ void put_ucounts(struct ucounts *ucounts)
- 	unsigned long flags;
-=20
- 	if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock, flags)) {
--		hlist_del_init(&ucounts->node);
-+		hlist_nulls_del_rcu(&ucounts->node);
- 		spin_unlock_irqrestore(&ucounts_lock, flags);
-+
- 		put_user_ns(ucounts->ns);
--		kfree(ucounts);
-+		kfree_rcu(ucounts, rcu);
- 	}
- }
-=20
---=20
-2.47.2
+> - declarations of kfree_rcu() API in include/linux/rcupdate.h
+> 
+>   - could be moved to slab.h after checking for/fixing up potential
+>     missing includes
 
+It would be good to move them, but no real hurry from this end.
+
+> git tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/slub-tiny-kfree_rcu
+> 
+> Changes since RFC [1]:
+> - Rebased to v6.14-rc1
+> - Fixed build errors reported by bots.
+> - Changed where kvfree_call_rcu() is moved to in patch 1 to avoid another
+>   move in patch 4.
+> - R-b's by Ulad and Joel
+> - Fix a memory leak in kvfree_rcu_list() thanks to Ulad
+> - Various comments' improvements and fixes (Joel, Ulad)
+> - Rename config to CONFIG_KFREE_RCU_BATCHED (Ulad)
+> 
+> Due to changes, didn't keep Paul's Tested-by (but thanks!)
+
+I re-ran the tests, so feel free to add it back in.  ;-)
+
+							Thanx, Paul
+
+> Will include in slab/for-next if no objection.
+> 
+> [1] https://lore.kernel.org/all/20250123-slub-tiny-kfree_rcu-v1-0-0e386ef1541a@suse.cz/
+> 
+> To: Christoph Lameter <cl@linux.com>
+> To: David Rientjes <rientjes@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Cc: linux-mm@kvack.org
+> To: "Paul E. McKenney" <paulmck@kernel.org>
+> To: Joel Fernandes <joel@joelfernandes.org>
+> To: Josh Triplett <josh@joshtriplett.org>
+> To: Boqun Feng <boqun.feng@gmail.com>
+> To: Uladzislau Rezki <urezki@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Zqiang <qiang.zhang1211@gmail.com>
+> Cc: rcu@vger.kernel.org
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+> Vlastimil Babka (4):
+>       slab, rcu: move TINY_RCU variant of kvfree_rcu() to SLAB
+>       rcu: remove trace_rcu_kvfree_callback
+>       rcu, slab: use a regular callback function for kvfree_rcu
+>       slab: don't batch kvfree_rcu() with SLUB_TINY
+> 
+>  include/linux/rcupdate.h   | 33 ++++++++++++++++++---------------
+>  include/linux/rcutiny.h    | 36 ------------------------------------
+>  include/linux/rcutree.h    |  3 ---
+>  include/linux/slab.h       | 14 ++++++++++++++
+>  include/trace/events/rcu.h | 34 ----------------------------------
+>  kernel/rcu/tiny.c          | 25 -------------------------
+>  kernel/rcu/tree.c          |  9 ++-------
+>  mm/Kconfig                 |  4 ++++
+>  mm/slab.h                  |  2 ++
+>  mm/slab_common.c           | 33 +++++++++++++++++++++++++++------
+>  mm/slub.c                  | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+>  11 files changed, 113 insertions(+), 126 deletions(-)
+> ---
+> base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
+> change-id: 20250123-slub-tiny-kfree_rcu-bd65bfe222f2
+> 
+> Best regards,
+> -- 
+> Vlastimil Babka <vbabka@suse.cz>
+> 
