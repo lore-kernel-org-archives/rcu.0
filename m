@@ -1,171 +1,157 @@
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E8E1F55EB;
-	Sun,  2 Feb 2025 22:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.63.210.85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634301FF1D7
+	for <rcu@vger.kernel.org>; Mon,  3 Feb 2025 09:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738536151; cv=none; b=f+xpg4mId60NVJl+z9XBMoRC9BONBHf55ZyK8lkxXMa0QdcOz9le/gOmXFTBwBOoCmHINoZLbwFvJtX57R1KbAbgPsVtxqi4yVP2S7G04M9WTYxM9A/3kE7LctBBUIIzs49O3UFjRKTpQaveC/4LiPFycf4dW4BM81MCHbpUb0U=
+	t=1738574972; cv=none; b=XgEvr/JXKlW/gQvNhsjxzmGoxz0A4vNMJeHFgQ42FLNz47IN7PBwd3OuphsJY1qfU2cT0/A1FaW9X+QD2XRv6AhMQWK6ygRP9mGf3Wym5dDFkmBQXlCoXsFQNfN28Hjj6IIeKMgjvDRnd1E+0AwGyuHcGuIVm7EBLsEYmShBoEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738536151; c=relaxed/simple;
-	bh=qSNoil9KM8+5HeFGOJ9HYPvfydxNnPOxjUHmJ65r2fY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a6HN/RK346qrYGmugDT25d4Jnj2/yRwLBkGucaClzVZPXyN0v8mt7TTTZBLlLIFjdIomzD9pF3KABv4XqAX8m6x6i2O8jskPlRZnxC9BYaZmk/rCVuzkIPOuYDVVigOZes+9fNJ1TpI24+mbZEgX4MZrhns00qfPRp6eqKfzfv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=asahilina.net; spf=pass smtp.mailfrom=asahilina.net; dkim=pass (2048-bit key) header.d=asahilina.net header.i=@asahilina.net header.b=WQ3Ic9mU; arc=none smtp.client-ip=212.63.210.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=asahilina.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=asahilina.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=asahilina.net header.i=@asahilina.net header.b="WQ3Ic9mU"
-Received: from [127.0.0.1] (localhost [127.0.0.1])
+	s=arc-20240116; t=1738574972; c=relaxed/simple;
+	bh=X7hKG/Z8YcJcnrzfyVDDXyZTn7CP4HsNw7N1yazCglk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=s7ZGR7UO8ifyRYqsz/exkxy6eeQieS2ZbgdxrAZJvqG38vpP7dCpGvQQLc7SEIELWU0SiD67sFKmmEdqGK5cX1EG3JrTSYwZsalLSHyeS+9zInF24SvWkgOY6TmafDdl9u5yeFwH+wIrmi7nlGVpZjs2CaYAcKWNUWBGBIFVEbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: lina@asahilina.net)
-	by mail.marcansoft.com (Postfix) with ESMTPSA id 42AE842657;
-	Sun,  2 Feb 2025 22:42:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
-	s=default; t=1738536144;
-	bh=qSNoil9KM8+5HeFGOJ9HYPvfydxNnPOxjUHmJ65r2fY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=WQ3Ic9mURPvoG/AaMLD4RQFLDALdZS6SmEi8tZsq7afD8QWjRbVsHhy16voA/pgcJ
-	 UpCtZ1Ylf/u1RBjNVp2lBrZnof0QQLwrSYasU/HZGVWnhf89kMtHcyGghaI8PK9Pb3
-	 L2fxM+EFZ+Kqwo+d9apSDjkSSP9aret6Adr94Pve4pj8vNqBMGTNLZtn/1u46EZVAw
-	 TUr2GKM9N4X1/eq0FBfrnYmCpaii1RO5S0vgkqDNCzlsetw4/vYGic/XWb4YOW8pWu
-	 S/YnPf3Nop1drymu6x3HoE0gXippHt1N6T5sdw3iujG95+Zy29SQtY7S7Jt08Lsx1J
-	 YxImPiSOaPmTw==
-Message-ID: <e271d8a1-493d-40b4-8328-2146eef26d0d@asahilina.net>
-Date: Mon, 3 Feb 2025 07:42:19 +0900
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 98FFC21137;
+	Mon,  3 Feb 2025 09:29:28 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 78FEC13A96;
+	Mon,  3 Feb 2025 09:29:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ALNDHXiMoGfwYAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 03 Feb 2025 09:29:28 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Mon, 03 Feb 2025 10:28:48 +0100
+Subject: [PATCH 2/4] rcu: remove trace_rcu_kvfree_callback
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 07/16] rust: add `io::{Io, IoRaw}` base types
-To: Danilo Krummrich <dakr@kernel.org>
-Cc: gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com,
- ojeda@kernel.org, alex.gaynor@gmail.com, boqun.feng@gmail.com,
- gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me,
- tmgross@umich.edu, a.hindborg@samsung.com, aliceryhl@google.com,
- airlied@gmail.com, fujita.tomonori@gmail.com, pstanner@redhat.com,
- ajanulgu@redhat.com, lyude@redhat.com, robh@kernel.org,
- daniel.almeida@collabora.com, saravanak@google.com, dirk.behme@de.bosch.com,
- j@jannau.net, fabien.parent@linaro.org, chrisi.schrefl@gmail.com,
- paulmck@kernel.org, rust-for-linux@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
- devicetree@vger.kernel.org, rcu@vger.kernel.org
-References: <20241212163357.35934-1-dakr@kernel.org>
- <20241212163357.35934-8-dakr@kernel.org> <Z2BTSbOjWa8R29i5@cassiopeiae>
- <e8da15f0-5b97-4569-842c-891cdf886978@asahilina.net>
- <Z5_vlx1BZuJGOvK7@pollux>
-Content-Language: en-US
-From: Asahi Lina <lina@asahilina.net>
-In-Reply-To: <Z5_vlx1BZuJGOvK7@pollux>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20250203-slub-tiny-kfree_rcu-v1-2-d4428bf9a8a1@suse.cz>
+References: <20250203-slub-tiny-kfree_rcu-v1-0-d4428bf9a8a1@suse.cz>
+In-Reply-To: <20250203-slub-tiny-kfree_rcu-v1-0-d4428bf9a8a1@suse.cz>
+To: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, 
+ "Paul E. McKenney" <paulmck@kernel.org>, 
+ Joel Fernandes <joel@joelfernandes.org>, 
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+ Uladzislau Rezki <urezki@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+ Roman Gushchin <roman.gushchin@linux.dev>, 
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+ rcu@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
+X-Mailer: b4 0.14.2
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[];
+	TAGGED_RCPT(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 98FFC21137
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
 
+Tree RCU does not handle kvfree_rcu() by queueing individual objects by
+call_rcu() anymore, thus the tracepoint and associated
+__is_kvfree_rcu_offset() check is dead code now. Remove it.
 
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ include/trace/events/rcu.h | 34 ----------------------------------
+ kernel/rcu/tree.c          |  9 ++-------
+ 2 files changed, 2 insertions(+), 41 deletions(-)
 
-On 2/3/25 7:20 AM, Danilo Krummrich wrote:
-> Hi Lina,
-> 
-> On Mon, Feb 03, 2025 at 06:19:57AM +0900, Asahi Lina wrote:
-> 
->>
->>
->> On 12/17/24 1:20 AM, Danilo Krummrich wrote:
->>> On Thu, Dec 12, 2024 at 05:33:38PM +0100, Danilo Krummrich wrote:
->>>> +/// IO-mapped memory, starting at the base address @addr and spanning @maxlen bytes.
->>>> +///
->>>> +/// The creator (usually a subsystem / bus such as PCI) is responsible for creating the
->>>> +/// mapping, performing an additional region request etc.
->>>> +///
->>>> +/// # Invariant
->>>> +///
->>>> +/// `addr` is the start and `maxsize` the length of valid I/O mapped memory region of size
->>>> +/// `maxsize`.
->>>> +///
->>>> +/// # Examples
->>>> +///
->>>> +/// ```no_run
->>>> +/// # use kernel::{bindings, io::{Io, IoRaw}};
->>>> +/// # use core::ops::Deref;
->>>> +///
->>>> +/// // See also [`pci::Bar`] for a real example.
->>>> +/// struct IoMem<const SIZE: usize>(IoRaw<SIZE>);
->>>> +///
->>>> +/// impl<const SIZE: usize> IoMem<SIZE> {
->>>> +///     /// # Safety
->>>> +///     ///
->>>> +///     /// [`paddr`, `paddr` + `SIZE`) must be a valid MMIO region that is mappable into the CPUs
->>>> +///     /// virtual address space.
->>>> +///     unsafe fn new(paddr: usize) -> Result<Self>{
->>>> +///         // SAFETY: By the safety requirements of this function [`paddr`, `paddr` + `SIZE`) is
->>>> +///         // valid for `ioremap`.
->>>> +///         let addr = unsafe { bindings::ioremap(paddr as _, SIZE.try_into().unwrap()) };
->>
->> This is a problematic API. ioremap() does not work on some platforms
->> like Apple Silicon. Instead, you have to use ioremap_np() for most devices.
->>
->> Please add a bindings::resource abstraction and use that to construct
->> IoMem. Then, you can check the flags for
->> bindings::IORESOURCE_MEM_NONPOSTED and use the appropriate function,
->> like this:
-> 
-> This is just a very simplified example of how to use `IoRaw` and `Io` base
-> types in the scope of an example section within a doc-comment.
-> 
-> There is an actual `IoMem` implementation including a struct resource
-> abstraction [1] from Daniel though. Maybe you want to have a look at this
-> instead.
-> 
-> [1] https://lore.kernel.org/rust-for-linux/20250130220529.665896-1-daniel.almeida@collabora.com/
-> 
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index e81431deaa50b21725b08ad7c1a2992a0074065a..ac3b28b8939b78843aecb44bed8cb76c451ab060 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -560,40 +560,6 @@ TRACE_EVENT_RCU(rcu_segcb_stats,
+ 
+ );
+ 
+-/*
+- * Tracepoint for the registration of a single RCU callback of the special
+- * kvfree() form.  The first argument is the RCU type, the second argument
+- * is a pointer to the RCU callback, the third argument is the offset
+- * of the callback within the enclosing RCU-protected data structure,
+- * the fourth argument is the number of lazy callbacks queued, and the
+- * fifth argument is the total number of callbacks queued.
+- */
+-TRACE_EVENT_RCU(rcu_kvfree_callback,
+-
+-	TP_PROTO(const char *rcuname, struct rcu_head *rhp, unsigned long offset,
+-		 long qlen),
+-
+-	TP_ARGS(rcuname, rhp, offset, qlen),
+-
+-	TP_STRUCT__entry(
+-		__field(const char *, rcuname)
+-		__field(void *, rhp)
+-		__field(unsigned long, offset)
+-		__field(long, qlen)
+-	),
+-
+-	TP_fast_assign(
+-		__entry->rcuname = rcuname;
+-		__entry->rhp = rhp;
+-		__entry->offset = offset;
+-		__entry->qlen = qlen;
+-	),
+-
+-	TP_printk("%s rhp=%p func=%ld %ld",
+-		  __entry->rcuname, __entry->rhp, __entry->offset,
+-		  __entry->qlen)
+-);
+-
+ /*
+  * Tracepoint for marking the beginning rcu_do_batch, performed to start
+  * RCU callback invocation.  The first argument is the RCU flavor,
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 475f31deed1418d73d097bb4d39fe714814fefa3..5dbc4189037c501b8c671598131ed5ea6d4afd71 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2931,13 +2931,8 @@ static int __init rcu_spawn_core_kthreads(void)
+ static void rcutree_enqueue(struct rcu_data *rdp, struct rcu_head *head, rcu_callback_t func)
+ {
+ 	rcu_segcblist_enqueue(&rdp->cblist, head);
+-	if (__is_kvfree_rcu_offset((unsigned long)func))
+-		trace_rcu_kvfree_callback(rcu_state.name, head,
+-					 (unsigned long)func,
+-					 rcu_segcblist_n_cbs(&rdp->cblist));
+-	else
+-		trace_rcu_callback(rcu_state.name, head,
+-				   rcu_segcblist_n_cbs(&rdp->cblist));
++	trace_rcu_callback(rcu_state.name, head,
++			   rcu_segcblist_n_cbs(&rdp->cblist));
+ 	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCBQueued"));
+ }
+ 
 
-That's what I get for skimming too much... I thought this had the actual
-implementation. Sorry!
-
->>
->> https://github.com/AsahiLinux/linux/blob/fce34c83f1dca5b10cc2c866fd8832a362de7974/rust/kernel/io_mem.rs#L152
->>
->>
->>>> +///         if addr.is_null() {
->>>> +///             return Err(ENOMEM);
->>>> +///         }
->>>> +///
->>>> +///         Ok(IoMem(IoRaw::new(addr as _, SIZE)?))
->>>> +///     }
->>>> +/// }
->>>> +///
->>>> +/// impl<const SIZE: usize> Drop for IoMem<SIZE> {
->>>> +///     fn drop(&mut self) {
->>>> +///         // SAFETY: `self.0.addr()` is guaranteed to be properly mapped by `Self::new`.
->>>> +///         unsafe { bindings::iounmap(self.0.addr() as _); };
->>>> +///     }
->>>> +/// }
->>>> +///
->>>> +/// impl<const SIZE: usize> Deref for IoMem<SIZE> {
->>>> +///    type Target = Io<SIZE>;
->>>> +///
->>>> +///    fn deref(&self) -> &Self::Target {
->>>> +///         // SAFETY: The memory range stored in `self` has been properly mapped in `Self::new`.
->>>> +///         unsafe { Io::from_raw(&self.0) }
->>>> +///    }
->>>> +/// }
->>>> +///
->>>> +///# fn no_run() -> Result<(), Error> {
->>>> +/// // SAFETY: Invalid usage for example purposes.
->>>> +/// let iomem = unsafe { IoMem::<{ core::mem::size_of::<u32>() }>::new(0xBAAAAAAD)? };
->>>> +/// iomem.writel(0x42, 0x0);
->>>> +/// assert!(iomem.try_writel(0x42, 0x0).is_ok());
->>>> +/// assert!(iomem.try_writel(0x42, 0x4).is_err());
->>>> +/// # Ok(())
->>>> +/// # }
->>>> +/// ```
->>>> +#[repr(transparent)]
->>>> +pub struct Io<const SIZE: usize = 0>(IoRaw<SIZE>);
-> 
-
-~~ Lina
+-- 
+2.48.1
 
