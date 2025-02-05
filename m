@@ -1,226 +1,190 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861061662EF;
-	Wed,  5 Feb 2025 14:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C2918C039
+	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 15:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738767380; cv=none; b=VlQvDZRvmLDUGWsxo35bSTfYD80wj2/xy6UPRtDSe8JVW4IhKCH+qsmVmI0+KKdcaAVqIaZrbmnymDAO93Eid1OxpE2GeyrboV/LnLK3+FInh90X2OX+AfFs2Gkn6aXy65ZYUdcDoMfqHInJrajfPNL++4z5d3NyNEmHKVbhljc=
+	t=1738770324; cv=none; b=SKGa3Xg/ufWRmdY3K+7JiDsDG4GmE3ShxOqshTQANn3hhOLmreLUnhBmz7QTY5NNH6aB0SzBayAyTtoxvIzFuZ8+YoGZNIsTujJ1dV4rx6Fhw9HkHMerF6GFvcB+BTPqhPh1ZaylA0C0qqJrIEarEUXiQ6BYkawLLX+htTp197g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738767380; c=relaxed/simple;
-	bh=suedBXgOqsaza0cIwFzD3Owz5wVb4B1ExCnNEwxoNQA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TtXIdHJarWgIUtI9QSdybNg+wqKAOL3tZwgTcTKKubelAtJoZ8OOgzSx3nGBH6boCWxTu7eKtQNrNUF/oBr/79SPQlUP2Bx/AeVKO5Ni1HIJMJJ+d1Rxurz+wq0yosq4EYe6rbNNc5z1OTVsOAHayEBB2B6b+9y1+BLdivKL8m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JRe9tQzk; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1738770324; c=relaxed/simple;
+	bh=HNCjg1MALIv4dy4CTWpeCXU2reB6NDFlV/eyT9XFuQI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TPBnelnzLacCf4yntW7smIzWcuQkw8rqdNBR06h7OXUhF470g6gkiIQVp64eT8bJ9h2eT6y/uoHQwrvE6yfi2pWM4pTRpZ1QnBbwejdR/9jCvdNKopWnnxxA0jqIrCyTpxUsm0E2Gs/phlWlJGOYXLqBtea0AQaZ8HnsZbisfQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=M2AAeYaP; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JRe9tQzk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460F9C4CED6;
-	Wed,  5 Feb 2025 14:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738767380;
-	bh=suedBXgOqsaza0cIwFzD3Owz5wVb4B1ExCnNEwxoNQA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JRe9tQzkmvWDHjDL2iuLBDftpLwZZCIl2tHZe2Ysp9W66/tQvzPyh/qj6NljELKmx
-	 POiX8/eCF1gDJ3uWkFfQGn0XqpILtxmCw8x9vdVvht8mpeudaOkQJ889Lfbr8wt6Tq
-	 aFGKVoLegxEV/5GDLOtQeSg1yPuuPAnCVlFv5xxUAMFqHTUhuKZxLO+lMaPbrOgu+T
-	 dCI6Nq4t0uQDSAFqKdu4x5RQUJacZkNFovbiCN79xSRwBc0CzCauapzmgVHs9XK0/K
-	 wCl69QoPgRib9ymyGBZNvdu6guxv7wV4WJW/p9Fa0k3MkVTDGdHsnZpxfa71a16hn2
-	 kBKbtxEe/nRkA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E405CCE0749; Wed,  5 Feb 2025 06:56:19 -0800 (PST)
-Date: Wed, 5 Feb 2025 06:56:19 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, josh@joshtriplett.org,
-	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL
- pointer dereference in rcu_core (3)
-Message-ID: <9694d40a-072e-47c2-a950-3b258bbe04f5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <67a2b20a.050a0220.50516.0003.GAE@google.com>
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="M2AAeYaP"
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4362bae4d7dso49389515e9.1
+        for <rcu@vger.kernel.org>; Wed, 05 Feb 2025 07:45:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1738770320; x=1739375120; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TJYBW46PAYvv66CBHwB9PW5vmy4S1x3UTfTgfNBIgjU=;
+        b=M2AAeYaPycf1dDLxhlCxdGmc3KPZk0RgcJCi6n7TD/PkKXXPLX3LsCWO8uvW7udoeU
+         Mk6yqLYt524fgqCvvl6ivt0IS1F5bdCCnE5SJE+Ht9S31cCk5o2rK6WGpdEPziljZxRh
+         nNIWRlxotHi3kEemsyJI6ag2jio6qC2VhIa/o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738770320; x=1739375120;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TJYBW46PAYvv66CBHwB9PW5vmy4S1x3UTfTgfNBIgjU=;
+        b=q0/bNYht6BCJnjgYlHDkNiJfqoLPit/XygNNedb1wCXw6TLQC2m2S35zbP+NxG2NA+
+         rFy/TMtxXPH+OgzBUOnWLRUd43vfHPOesmOrabHK+0Nky41FwdOc1C3IXdDVKoUkuchn
+         TMaVjMhn3j0rWE30UpIlHS6zuwnTgBH2Tt8CgkcQJGNtjxDsXVeIboSfSTOSW/rkKShk
+         75sDgFIfSKwgmAEKoQyEa/4Lp6ZedWSRlfnUyKgsh4r1tYziD1AWGCG42JUilQ/vDmGv
+         nF17DSzEnyGwxp2AN0wCTkGP38ZbzTJ53E+aE4EVO7vnL17bhdF0VjUUz9Zwyrz55gek
+         T9aA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEmftHxgRWuGrlxDuLvJ7YVurtHmmJANrTbn3tTI3a+sz7yY62LmEC/QP6qYGr9EG8pRw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4OzTz770XE+nqUYvuQi5sk4QluY1wysFzscGsRA9cm/0NOx5/
+	1ua1ohnp2QTARicLY5Cj6KUp0w9vGDqLw0CeE0udldYwXVk8oGpLiJLqwvV+M/UOOvz7M29RpuZ
+	Ri47MGj+diDryMUi1HM1CZw1QKAULAZkvBhBlJQ==
+X-Gm-Gg: ASbGncuf9bJm7Ub0MssD2VmA/XDG222MeQDaI4rI1siH5j6Z/CE4eQ4UltI9xzfBfIx
+	gOBjsM3Jfvn6Swv6vyrdsp9rC65kGPB6fxbjWgP65bNtQPxsx9+Yor8iK1sT1i193oH/OYjsrMg
+	I=
+X-Google-Smtp-Source: AGHT+IFiWJe9oBaxhN7WtB+19rR96m0imK6K9QNDqqC3QbSZlewaL6NN7SxBu/0j0ubnYkf8xQpBeX/NKVU9Ja8xhhY=
+X-Received: by 2002:a5d:4c90:0:b0:385:fb59:8358 with SMTP id
+ ffacd0b85a97d-38db491e83fmr2095111f8f.53.1738770320226; Wed, 05 Feb 2025
+ 07:45:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67a2b20a.050a0220.50516.0003.GAE@google.com>
+References: <ecce7241-4238-4d86-8e4c-5080937129ce@paulmck-laptop>
+ <15D1150A-9B7B-4EB7-91C6-2D881D6F48DA@joelfernandes.org> <861f1dc3-bfc0-4a81-9b78-c8e9995db4cd@paulmck-laptop>
+ <CAEXW_YQ4W=upWV_x1woSgq-DJPFXmBjH2pVmUnBVb_n_UKrw7A@mail.gmail.com>
+ <ec293223-2a33-4d2f-b3ca-c011c3d987f3@paulmck-laptop> <CAEXW_YQXgZANSjo835VfHMqY=z8gaSWQ2bgaWtVd4-3KX0hX8w@mail.gmail.com>
+ <999751de-b891-424d-a7b5-80bfa98793ff@paulmck-laptop> <CAEXW_YT6bD=sAD77yg+BXC+Q0NW0RHCg6fEYZ_jsBeXkAd_1tg@mail.gmail.com>
+ <e23ab8d2-1a64-458b-a83d-eabcf92a2382@paulmck-laptop>
+In-Reply-To: <e23ab8d2-1a64-458b-a83d-eabcf92a2382@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Wed, 5 Feb 2025 10:45:08 -0500
+X-Gm-Features: AWEUYZlrWfrEphEmAQIbQS6cIDVkH0svWmBXbyCipIfWl2_nszrvzajHjXVoCrw
+Message-ID: <CAEXW_YSFtF=Vx2P73m0tdfAYgSui-KSzGnyqiTY1rwOfWfFycA@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Merge rcu_seq_done_exact() logic into rcu_seq_done()
+To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 04, 2025 at 04:34:18PM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10faf5f8580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
-> dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b69d18580000
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-0de63bb7.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/1142009a30a7/vmlinux-0de63bb7.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5d9e46a8998d/bzImage-0de63bb7.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/526692501242/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
-> 
->  slab radix_tree_node start ffff88803bf382c0 pointer offset 24 size 576
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> #PF: supervisor instruction fetch in kernel mode
-> #PF: error_code(0x0010) - not-present page
-> PGD 0 P4D 0 
-> Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
-> CPU: 0 UID: 0 PID: 5705 Comm: syz-executor Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-> RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
-> RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
-> RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
-> RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
-> R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
-> R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
-> FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <IRQ>
->  rcu_do_batch kernel/rcu/tree.c:2546 [inline]
+On Wed, Feb 5, 2025 at 5:28=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> On Tue, Feb 04, 2025 at 08:28:29PM -0500, Joel Fernandes wrote:
+> > On Tue, Feb 4, 2025 at 3:22=E2=80=AFPM Paul E. McKenney <paulmck@kernel=
+.org> wrote:
+> > >
+> > > On Tue, Feb 04, 2025 at 10:44:45AM -0500, Joel Fernandes wrote:
+> > > > On Thu, Jan 30, 2025 at 12:56=E2=80=AFAM Paul E. McKenney <paulmck@=
+kernel.org> wrote:
+> > > > > By "where we were initially", one might reasonably guess that you=
+ meant
+> > > > > that the initial value and the target are one and the same.  But =
+I suspect
+> > > > > that you are thinking of a third value, the value of the underlyi=
+ng
+> > > > > grace-period sequence number at the time of the call to rcu_seq_s=
+nap().
+> > > > > But you might be thinking of something else entirely.
+> > > > >
+> > > > > > Now we move rcu_seq_done_exact. It has the exact same behavior =
+except
+> > > > > > that instead of ULONG_MAX/2, the above situations are shrunk to=
+ about
+> > > > > > 10 counts from the target. So if target is 28, then the initial
+> > > > > > sequence should have been at least 18 to avoid false-positive, =
+but
+> > > > > > again it is possible and I certain see in the code that it cann=
+ot be
+> > > > > > used this way.. (at least so far).. So all we are left with is =
+the
+> > > > > > false-negative band of ~2.5 GPs..
+> > > > >
+> > > > > Here, I have the same questions.  As you no doubt guessed.
+> > > > >
+> > > > > > About "what are the consequences of failing to get this right".=
+  I
+> > > > > > believe false-positive is unacceptable unless it is maybe debug=
+ code -
+> > > > > > that can break functionality in code, too short GPs and all tha=
+t.
+> > > > > > However false-negative is OK as long as the usecase can retry l=
+ater
+> > > > > > and can afford to wait. Did I get that much correct?
+> > > > >
+> > > > > Maybe?
+> > > > >
+> > > > > Please look at this on a per-use-case basis.
+> > > >
+> > > > Sure. FWIW, I started a world-editable document here. I am planning=
+ to
+> > > > work on this a bit more before our meeting this week. If others
+> > > > knowledgeable like Frederic and others could make edits/comments,
+> > > > that'd be welcomed. But I basically summarized this whole thread he=
+re:
+> > > > https://docs.google.com/document/d/1sFNuGH4U6DFCE8sunbdWMjFhJhb1aG4=
+goOJAnS6c6gQ/edit?usp=3Dsharing
+> > > >
+> > > > My thought is (AFAICS), this patch is still valid and
+> > > > rcu_seq_done_exact is a potentially better replacement to
+> > > > rcu_seq_done. But famous last words...
+> > >
+> > > Let's start with the use case where the sequence number is being used
+> > > by rcu_barrier().  What happens?
+> >
+> > The rcu_state.barrier_sequence is used to keep track of barrier in
+> > progress, as there can be concurrent rcu_barrier() calls happening so
+> > we optimize by batching multiples of these calls.
+> >
+> > It also handles the case where the entrain IPI came through but no
+> > rcu_barrier() is currently in-flight (which would be weird but maybe
+> > it happens somehow).
+> >
+> > It is also used to make sure we don't need to entrain on a CPU again
+> > if we already did an entraining for a certain rcu_barrier() invocation
+> > already. This is tracked by rdp->barrier_seq_snap which copies the
+> > value of rcu_state.barrier_sequence after the entraining. Al though I
+> > am currently unable to envision why the IPI handler would be called
+> > unnecessarily (hardware bug?) since we hold the rcu_barrier mutex
+> > throughout the rcu_barrier() function, including while waiting on
+> > CPUs.
+> >
+> > Going back to my first point, for the rcu_seq_done() in rcu_barrier(),
+> > we are checking if someone else did our work:
+> >     mutex_lock(&rcu_state.barrier_mutex);
+> >     /* Did someone else do our work for us? */
+> >     if (rcu_seq_done(&rcu_state.barrier_sequence, s))
+> >
+> > Here I think rcu_seq_done_exact() is better, because if too many
+> > rcu_barrier() calls concurrently made at the same time, the mutex may
+> > be contended. If enough time passes and we have a wrap around, we
+> > might end up in false-negative land which is much larger with
+> > rcu_seq_done() than ..done_exact(). However, that does seem to be a
+> > bug to begin with if the mutex contended for that long. OTOH, doing an
+> > rcu_barrier() again when we didn't need to doesn't seem like the end
+> > of the world especially if we contended on the mutex for that long.
+> > But at least it shows that rcu_seq_done_exact() cannot seem to hurt
+> > here.
+> >
+> > Hmmm,
+>
+> So...  Do we really care about the difference between rcu_seq_done()
+> and rcu_seq_done_exact() in the rcu_barrier() case?
 
-The usual way that this happens is that someone clobbers the rcu_head
-structure of something that has been passed to call_rcu().  The most
-popular way of clobbering this structure is to pass the same something to
-call_rcu() twice in a row, but other creative arrangements are possible.
+In so far as to get rid of rcu_seq_done() API in favor of using
+rcu_seq_done_exact() but should not cause any functional or robustness
+changes to rcu_barrier() at least, AFAICS.
 
-Building your kernel with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y can usually
-spot invoking call_rcu() twice in a row.
+thanks,
 
-							Thanx, Paul
-
->  rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2802
->  handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:561
->  __do_softirq kernel/softirq.c:595 [inline]
->  invoke_softirq kernel/softirq.c:435 [inline]
->  __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:662
->  irq_exit_rcu+0x9/0x30 kernel/softirq.c:678
->  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
->  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
->  </IRQ>
->  <TASK>
->  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-> RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
-> RIP: 0010:_raw_spin_unlock_irqrestore+0xd8/0x140 kernel/locking/spinlock.c:194
-> Code: 9c 8f 44 24 20 42 80 3c 23 00 74 08 4c 89 f7 e8 fe 78 2d f6 f6 44 24 21 02 75 52 41 f7 c7 00 02 00 00 74 01 fb bf 01 00 00 00 <e8> c3 0f 95 f5 65 8b 05 d4 58 0b 74 85 c0 74 43 48 c7 04 24 0e 36
-> RSP: 0018:ffffc900030fef60 EFLAGS: 00000206
-> RAX: 23438dd059a4b100 RBX: 1ffff9200061fdf0 RCX: ffffffff819b316a
-> RDX: dffffc0000000000 RSI: ffffffff8c0aa680 RDI: 0000000000000001
-> RBP: ffffc900030feff8 R08: ffffffff942f9847 R09: 1ffffffff285f308
-> R10: dffffc0000000000 R11: fffffbfff285f309 R12: dffffc0000000000
-> R13: 1ffff9200061fdec R14: ffffc900030fef80 R15: 0000000000000246
->  spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
->  rmqueue_bulk mm/page_alloc.c:2329 [inline]
->  __rmqueue_pcplist+0x21fd/0x2a90 mm/page_alloc.c:3004
->  rmqueue_pcplist mm/page_alloc.c:3046 [inline]
->  rmqueue mm/page_alloc.c:3077 [inline]
->  get_page_from_freelist+0x886/0x37a0 mm/page_alloc.c:3474
->  __alloc_frozen_pages_noprof+0x292/0x710 mm/page_alloc.c:4739
->  alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
->  folio_alloc_mpol_noprof mm/mempolicy.c:2289 [inline]
->  vma_alloc_folio_noprof+0x12b/0x260 mm/mempolicy.c:2324
->  folio_prealloc+0x2e/0x170
->  wp_page_copy mm/memory.c:3435 [inline]
->  do_wp_page+0x1253/0x49b0 mm/memory.c:3827
->  handle_pte_fault mm/memory.c:5905 [inline]
->  __handle_mm_fault+0x24d5/0x70f0 mm/memory.c:6032
->  handle_mm_fault+0x3e5/0x8d0 mm/memory.c:6201
->  do_user_addr_fault arch/x86/mm/fault.c:1388 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1480 [inline]
->  exc_page_fault+0x2b9/0x8b0 arch/x86/mm/fault.c:1538
->  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-> RIP: 0010:__put_user_4+0x11/0x20 arch/x86/lib/putuser.S:88
-> Code: 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 89 cb 48 c1 fb 3f 48 09 d9 0f 01 cb <89> 01 31 c9 0f 01 ca c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90 90
-> RSP: 0018:ffffc900030fff00 EFLAGS: 00050202
-> RAX: 0000000000000005 RBX: 0000000000000000 RCX: 00005555679927d0
-> RDX: 0000000000000000 RSI: ffffffff8c0ab8e0 RDI: ffffffff8c608a00
-> RBP: ffff888000dfcf20 R08: ffffffff901b5177 R09: 1ffffffff2036a2e
-> R10: dffffc0000000000 R11: fffffbfff2036a2f R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000005 R15: dffffc0000000000
->  schedule_tail+0x96/0xb0 kernel/sched/core.c:5312
->  ret_from_fork+0x24/0x80 arch/x86/kernel/process.c:144
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
-> Modules linked in:
-> CR2: 0000000000000000
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-> RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
-> RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
-> RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
-> RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
-> R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
-> R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
-> FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess):
->    0:	9c                   	pushf
->    1:	8f 44 24 20          	pop    0x20(%rsp)
->    5:	42 80 3c 23 00       	cmpb   $0x0,(%rbx,%r12,1)
->    a:	74 08                	je     0x14
->    c:	4c 89 f7             	mov    %r14,%rdi
->    f:	e8 fe 78 2d f6       	call   0xf62d7912
->   14:	f6 44 24 21 02       	testb  $0x2,0x21(%rsp)
->   19:	75 52                	jne    0x6d
->   1b:	41 f7 c7 00 02 00 00 	test   $0x200,%r15d
->   22:	74 01                	je     0x25
->   24:	fb                   	sti
->   25:	bf 01 00 00 00       	mov    $0x1,%edi
-> * 2a:	e8 c3 0f 95 f5       	call   0xf5950ff2 <-- trapping instruction
->   2f:	65 8b 05 d4 58 0b 74 	mov    %gs:0x740b58d4(%rip),%eax        # 0x740b590a
->   36:	85 c0                	test   %eax,%eax
->   38:	74 43                	je     0x7d
->   3a:	48                   	rex.W
->   3b:	c7                   	.byte 0xc7
->   3c:	04 24                	add    $0x24,%al
->   3e:	0e                   	(bad)
->   3f:	36                   	ss
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+ - Joel
