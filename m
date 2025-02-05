@@ -1,148 +1,230 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227E422AE59;
-	Wed,  5 Feb 2025 10:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8D51632D3;
+	Wed,  5 Feb 2025 14:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738751313; cv=none; b=WCzUCsIqHfqBD7zHCT4maXraAq/L8TmUIRelulz554KKnmc4feg8EA8w6HvEHA8n1LSN7fLK8jhMsVqk5IQe81L7Gh7wR9PFB9dc4pRBbHWwRodsFwZtbwNxYgiWn/2fDuuZPIm50XckZ8kQjucDZzR4QegWX89EtwKB8i9NoyA=
+	t=1738767055; cv=none; b=dUshOukAyMjaWppnvr5tXUbdhTZREmZwTmmdtiAoZjn5dGU43znrfDBFMYUBMwiDkytcV0yLRu5p3QogqsQjsQJ/tYOSoD5bWU6tLGizQ/vXnMXJp+V+t5001Kn6/1P/3DXTJVQre5eFZmad2N/TZqkoOMalO+6V+wuev0+T1F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738751313; c=relaxed/simple;
-	bh=BO3vZ8coexN2Gg28q2FbNqKsK8IEU3cZORQCqX9qx+Y=;
+	s=arc-20240116; t=1738767055; c=relaxed/simple;
+	bh=StKTB1B/3jPFwxrAklmtnDfsfOMHP2qcxx/OmEYAq1A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WJoaP8e9ZoLLYZlC+EKAwO1gnoVvUcDhMfct3KigBBBO4+a1WPMey4zUBDFf09/F/aB6MIfi0FQ3dISq/hfIT7spkoLOPEvKL3mYNtSFfhEN1dfHr8RvfOGe1JLJ1fT7tm3FgfDW/gsc2vYaLaXaG6YSuZ7/UQu03Q8h89g/r1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A9ggFggQ; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=qvVczxQDUWlpMYAFrL3DpAWUn7PoFFwoxGmqlAQwRL5GczPa87MWW0npxeDIQ1EgSZlsQEtAGkbBX1LFJ1lFEjevIQTW65LTtZev44kmw+E9ttBx/XwA26o/rjlRjojE/JyVPR8WylCZvsIAL10rkgwOPOT/d/nkqmOomlOoQ4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xm6SDLLH; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A9ggFggQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85683C4CED1;
-	Wed,  5 Feb 2025 10:28:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xm6SDLLH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A783BC4CED1;
+	Wed,  5 Feb 2025 14:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738751312;
-	bh=BO3vZ8coexN2Gg28q2FbNqKsK8IEU3cZORQCqX9qx+Y=;
+	s=k20201202; t=1738767053;
+	bh=StKTB1B/3jPFwxrAklmtnDfsfOMHP2qcxx/OmEYAq1A=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=A9ggFggQl/taQgyhAPaGTtFCh7yjztbIny4CO10YOvw7BVy1oWYpIGld2QuWFGwCs
-	 0XYdxUj1lbMiX6p+aerwtw/DqcbwN0REGZVqhU4wQM5S2sMKY0PgSGlpLOzSKU6kHS
-	 YJLbo1wtetLr5CmKKKItcw7abfKNocUqqDaassKXNtj/a5Zh7dqqw7jTqdsSVbtujH
-	 yk1cagKFGn73gvUQyIZcdHwkn/+LwODfisSkH5oQF5WvFRPN0dLdLISy+Pea9l6nL6
-	 0SyVy/BzijqF5ljHQ+QXTkSs5qV0zGpZ7P9uGKS3jWLkeARr/65BV2Ii694kdIOkBB
-	 d2J8/qt3qsIJQ==
+	b=Xm6SDLLHA1Cqe+kvJd9o7k1682UMHWENIL9UavMyuulK0eMlpz6G/BruQ0W3mChDG
+	 ehEPFDYWPNbwGOguisFAy3cRYqvzB8n4z0h/h7BrwVhzJWGBnc6EAZ/B8glTF2ARaO
+	 swJhB0Uviaau+25kUFnZ6Jv/nX98bRnsGQaNtetbIjoIc3rEugmikTBCesJ0qCgC+Q
+	 pr14HkwJLO4u8uPQHSAXTax+OqE/RIqF7SIEGo0v1+Xe+v0OlzcjUN1Yyq3UqlnM8v
+	 FxV+iS8c9ayNnO7PwlaD58/kkH3kH12d3L8Jy4mK2igzBhKUr9c6L3ftEWDG8WDWHv
+	 79O/om5OX3B+w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1F71DCE04A9; Wed,  5 Feb 2025 02:28:32 -0800 (PST)
-Date: Wed, 5 Feb 2025 02:28:32 -0800
+	id 45C7ACE03CD; Wed,  5 Feb 2025 06:50:53 -0800 (PST)
+Date: Wed, 5 Feb 2025 06:50:53 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Merge rcu_seq_done_exact() logic into rcu_seq_done()
-Message-ID: <e23ab8d2-1a64-458b-a83d-eabcf92a2382@paulmck-laptop>
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-trace-kernel@vger.kernel.org, john.ogness@linutronix.de
+Subject: Re: [PATCH rcu v2] 4/5] rcu-tasks: Move RCU Tasks self-tests to
+ core_initcall()
+Message-ID: <a68e2e94-b4c6-4791-b581-ecbf3fee28e9@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <ecce7241-4238-4d86-8e4c-5080937129ce@paulmck-laptop>
- <15D1150A-9B7B-4EB7-91C6-2D881D6F48DA@joelfernandes.org>
- <861f1dc3-bfc0-4a81-9b78-c8e9995db4cd@paulmck-laptop>
- <CAEXW_YQ4W=upWV_x1woSgq-DJPFXmBjH2pVmUnBVb_n_UKrw7A@mail.gmail.com>
- <ec293223-2a33-4d2f-b3ca-c011c3d987f3@paulmck-laptop>
- <CAEXW_YQXgZANSjo835VfHMqY=z8gaSWQ2bgaWtVd4-3KX0hX8w@mail.gmail.com>
- <999751de-b891-424d-a7b5-80bfa98793ff@paulmck-laptop>
- <CAEXW_YT6bD=sAD77yg+BXC+Q0NW0RHCg6fEYZ_jsBeXkAd_1tg@mail.gmail.com>
+References: <43f70961-1884-42bf-b303-1d33665d99d2@paulmck-laptop>
+ <20250130185320.1651910-4-paulmck@kernel.org>
+ <20250204102611.OVuHn9rS@linutronix.de>
+ <ff2ed5ba-52f4-4e82-ac0c-6e6a7013d86e@paulmck-laptop>
+ <20250204163409.ueObHFje@linutronix.de>
+ <9ed4e0fd-75c4-400a-9a0b-74c68286bad3@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YT6bD=sAD77yg+BXC+Q0NW0RHCg6fEYZ_jsBeXkAd_1tg@mail.gmail.com>
+In-Reply-To: <9ed4e0fd-75c4-400a-9a0b-74c68286bad3@paulmck-laptop>
 
-On Tue, Feb 04, 2025 at 08:28:29PM -0500, Joel Fernandes wrote:
-> On Tue, Feb 4, 2025 at 3:22 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Feb 04, 2025 at 10:44:45AM -0500, Joel Fernandes wrote:
-> > > On Thu, Jan 30, 2025 at 12:56 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > By "where we were initially", one might reasonably guess that you meant
-> > > > that the initial value and the target are one and the same.  But I suspect
-> > > > that you are thinking of a third value, the value of the underlying
-> > > > grace-period sequence number at the time of the call to rcu_seq_snap().
-> > > > But you might be thinking of something else entirely.
-> > > >
-> > > > > Now we move rcu_seq_done_exact. It has the exact same behavior except
-> > > > > that instead of ULONG_MAX/2, the above situations are shrunk to about
-> > > > > 10 counts from the target. So if target is 28, then the initial
-> > > > > sequence should have been at least 18 to avoid false-positive, but
-> > > > > again it is possible and I certain see in the code that it cannot be
-> > > > > used this way.. (at least so far).. So all we are left with is the
-> > > > > false-negative band of ~2.5 GPs..
-> > > >
-> > > > Here, I have the same questions.  As you no doubt guessed.
-> > > >
-> > > > > About "what are the consequences of failing to get this right".  I
-> > > > > believe false-positive is unacceptable unless it is maybe debug code -
-> > > > > that can break functionality in code, too short GPs and all that.
-> > > > > However false-negative is OK as long as the usecase can retry later
-> > > > > and can afford to wait. Did I get that much correct?
-> > > >
-> > > > Maybe?
-> > > >
-> > > > Please look at this on a per-use-case basis.
-> > >
-> > > Sure. FWIW, I started a world-editable document here. I am planning to
-> > > work on this a bit more before our meeting this week. If others
-> > > knowledgeable like Frederic and others could make edits/comments,
-> > > that'd be welcomed. But I basically summarized this whole thread here:
-> > > https://docs.google.com/document/d/1sFNuGH4U6DFCE8sunbdWMjFhJhb1aG4goOJAnS6c6gQ/edit?usp=sharing
-> > >
-> > > My thought is (AFAICS), this patch is still valid and
-> > > rcu_seq_done_exact is a potentially better replacement to
-> > > rcu_seq_done. But famous last words...
-> >
-> > Let's start with the use case where the sequence number is being used
-> > by rcu_barrier().  What happens?
+On Tue, Feb 04, 2025 at 12:20:30PM -0800, Paul E. McKenney wrote:
+> On Tue, Feb 04, 2025 at 05:34:09PM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2025-02-04 03:51:48 [-0800], Paul E. McKenney wrote:
+> > > On Tue, Feb 04, 2025 at 11:26:11AM +0100, Sebastian Andrzej Siewior wrote:
+> > > > On 2025-01-30 10:53:19 [-0800], Paul E. McKenney wrote:
+> > > > > The timer and hrtimer softirq processing has moved to dedicated threads
+> > > > > for kernels built with CONFIG_IRQ_FORCED_THREADING=y.  This results in
+> > > > > timers not expiring until later in early boot, which in turn causes the
+> > > > > RCU Tasks self-tests to hang in kernels built with CONFIG_PROVE_RCU=y,
+> > > > > which further causes the entire kernel to hang.  One fix would be to
+> > > > > make timers work during this time, but there are no known users of RCU
+> > > > > Tasks grace periods during that time, so no justification for the added
+> > > > > complexity.  Not yet, anyway.
+> > > > > 
+> > > > > This commit therefore moves the call to rcu_init_tasks_generic() from
+> > > > > kernel_init_freeable() to a core_initcall().  This works because the
+> > > > > timer and hrtimer kthreads are created at early_initcall() time.
+> > > > 
+> > > > Fixes: 49a17639508c3 ("softirq: Use a dedicated thread for timer wakeups on PREEMPT_RT.")
+> > > > ?
+> > > 
+> > > Quite possibly...  I freely confess that I was more focused on the fix
+> > > than on the bug's origin.  Would you be willing to try this commit and
+> > > its predecessor?
+> > 
+> > Yes. Just verified.
+> > Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > 
-> The rcu_state.barrier_sequence is used to keep track of barrier in
-> progress, as there can be concurrent rcu_barrier() calls happening so
-> we optimize by batching multiples of these calls.
+> Boqun, could you please apply Sebastian's tags, including the Fixes
+> tag above?
 > 
-> It also handles the case where the entrain IPI came through but no
-> rcu_barrier() is currently in-flight (which would be weird but maybe
-> it happens somehow).
+> > > > I played with it and I can reproduce the issue with !RT + threadirqs but
+> > > > not with RT (which implies threadirqs).
+> > > > Is there anything in RT that avoids the problem?
+> > > 
+> > > Not that I know of, but then again I did not try it.  To your point,
+> > 
+> > The change looks fine.
+> > 
+> > > I do need to make a -rt rcutorture scenario.  TREE03 has been intended to
+> > > approximate this, and it uses the following Kconfig options:
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > CONFIG_SMP=y
+> > > CONFIG_NR_CPUS=16
+> > > CONFIG_PREEMPT_NONE=n
+> > > CONFIG_PREEMPT_VOLUNTARY=n
+> > > CONFIG_PREEMPT=y
+> > > #CHECK#CONFIG_PREEMPT_RCU=y
+> > > CONFIG_HZ_PERIODIC=y
+> > > CONFIG_NO_HZ_IDLE=n
+> > > CONFIG_NO_HZ_FULL=n
+> > > CONFIG_RCU_TRACE=y
+> > > CONFIG_HOTPLUG_CPU=y
+> > > CONFIG_RCU_FANOUT=2
+> > > CONFIG_RCU_FANOUT_LEAF=2
+> > > CONFIG_RCU_NOCB_CPU=n
+> > > CONFIG_DEBUG_LOCK_ALLOC=n
+> > > CONFIG_RCU_BOOST=y
+> > > CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+> > > CONFIG_RCU_EXPERT=y
+> > 
+> > You could enable CONFIG_PREEMPT_RT ;)
+> > CONFIG_PREEMPT_LAZY is probably also set a lot.
+> > 
+> > That should be it.
+> > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > And the following kernel-boot parameters:
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30
+> > > rcutree.gp_preinit_delay=12
+> > > rcutree.gp_init_delay=3
+> > > rcutree.gp_cleanup_delay=3
+> > > rcutree.kthread_prio=2
+> > > threadirqs
+> > > rcutree.use_softirq=0
+> > > rcutorture.preempt_duration=10
+> > > 
+> > > ------------------------------------------------------------------------
+> > > 
+> > > Some of these are for RCU's benefit, but what should I change to more
+> > > closely approximate a typical real-time deployment?
+> > 
+> > See above.
 > 
-> It is also used to make sure we don't need to entrain on a CPU again
-> if we already did an entraining for a certain rcu_barrier() invocation
-> already. This is tracked by rdp->barrier_seq_snap which copies the
-> value of rcu_state.barrier_sequence after the entraining. Al though I
-> am currently unable to envision why the IPI handler would be called
-> unnecessarily (hardware bug?) since we hold the rcu_barrier mutex
-> throughout the rcu_barrier() function, including while waiting on
-> CPUs.
+> Which got me this diff:
 > 
-> Going back to my first point, for the rcu_seq_done() in rcu_barrier(),
-> we are checking if someone else did our work:
->     mutex_lock(&rcu_state.barrier_mutex);
->     /* Did someone else do our work for us? */
->     if (rcu_seq_done(&rcu_state.barrier_sequence, s))
+> ------------------------------------------------------------------------
 > 
-> Here I think rcu_seq_done_exact() is better, because if too many
-> rcu_barrier() calls concurrently made at the same time, the mutex may
-> be contended. If enough time passes and we have a wrap around, we
-> might end up in false-negative land which is much larger with
-> rcu_seq_done() than ..done_exact(). However, that does seem to be a
-> bug to begin with if the mutex contended for that long. OTOH, doing an
-> rcu_barrier() again when we didn't need to doesn't seem like the end
-> of the world especially if we contended on the mutex for that long.
-> But at least it shows that rcu_seq_done_exact() cannot seem to hurt
-> here.
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE03 b/tools/testing/selftests/rcutorture/configs/rcu/TREE03
+> index 2dc31b16e506..6158f5002497 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE03
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE03
+> @@ -2,7 +2,9 @@ CONFIG_SMP=y
+>  CONFIG_NR_CPUS=16
+>  CONFIG_PREEMPT_NONE=n
+>  CONFIG_PREEMPT_VOLUNTARY=n
+> -CONFIG_PREEMPT=y
+> +CONFIG_PREEMPT=n
+> +CONFIG_PREEMPT_LAZY=y
+> +CONFIG_PREEMPT_RT=y
+>  #CHECK#CONFIG_PREEMPT_RCU=y
+>  CONFIG_HZ_PERIODIC=y
+>  CONFIG_NO_HZ_IDLE=n
+> @@ -15,4 +17,5 @@ CONFIG_RCU_NOCB_CPU=n
+>  CONFIG_DEBUG_LOCK_ALLOC=n
+>  CONFIG_RCU_BOOST=y
+>  CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+> +CONFIG_EXPERT=y
+>  CONFIG_RCU_EXPERT=y
 > 
-> Hmmm,
+> ------------------------------------------------------------------------
+> 
+> But a 10-minute run got me the splat shown below, and in addition a
+> shutdown-time hang.
+> 
+> This is caused by RCU falling behind a callback-flooding kthread that
+> invokes call_rcu() in a semi-tight loop.  Setting rcutree.kthread_prio=40
+> avoids the splat, but still gets the shutdown-time hang.  Retrying with
+> the default rcutree.kthread_prio=2 failed to reproduce the splat, but
+> it did reproduce the shutdown-time hang.
+> 
+> OK, maybe printk buffers are not being flushed?  A 100-millisecond sleep
+> at the end of of rcu_torture_cleanup() got all of rcutorture's output
+> flushed, but lost the subsequent shutdown-time console traffic.  The
+> pr_flush(HZ/10,1) seems more sensible, but this is private to printk().
+> 
+> I would like to log the shutdown-time console traffic because RCU can
+> sometimes break things on that path.
+> 
+> Thoughts?
 
-So...  Do we really care about the difference between rcu_seq_done()
-and rcu_seq_done_exact() in the rcu_barrier() case?
+Longer rcutorture runs showed (not unexpectedly) that the 100-millisecond
+sleep was not always sufficient, nor was a 500-milliseconds sleep.
+
+There is a call to kmsg_dump(KMSG_DUMP_SHUTDOWN) in kernel_power_off()
+that appears to be intended to dump out the printk() buffers, but it
+does not seem to do so in kernels built with CONFIG_PREEMPT_RT=y.
+Does there need to be a pr_flush() call prior to the call to
+migrate_to_reboot_cpu()?  Or maybe even to do_kernel_power_off_prepare()
+or kernel_shutdown_prepare()?
+
+Adding John Ogness on CC so that he can tell me the error of my ways.
+
+> PS:  I will do longer runs in case that splat was not a one-off.
+>      My concern is that I might need to adjust something more in order
+>      to get a reliable callback-flooding test.
+
+And this was not a one-off.  Running 10 40-minute instances of the new-age
+CONFIG_PREEMPT_RT=y TREE03 reliably triggers this.  At first glance,
+this appears to be an interaction between testing of RCU priority
+boosting and RCU-callback flooding forward-progress testing.  And disabling
+testing of RCU priority boosting avoids these OOMs.  As does running
+without CONFIG_PREEMPT_RT=y.
+
+My next step is to run with rcutorture.preempt_duration=0, which disables
+within-guest-OS random preempting of kthreads.  If that doesn't help,
+I expect to play around with avoiding concurrent testing of RCU priority
+boosting and RCU callback flooding forward progress.
+
+Or is there a better way?
 
 							Thanx, Paul
