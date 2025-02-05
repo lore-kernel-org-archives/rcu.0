@@ -1,54 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8D51632D3;
-	Wed,  5 Feb 2025 14:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861061662EF;
+	Wed,  5 Feb 2025 14:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738767055; cv=none; b=dUshOukAyMjaWppnvr5tXUbdhTZREmZwTmmdtiAoZjn5dGU43znrfDBFMYUBMwiDkytcV0yLRu5p3QogqsQjsQJ/tYOSoD5bWU6tLGizQ/vXnMXJp+V+t5001Kn6/1P/3DXTJVQre5eFZmad2N/TZqkoOMalO+6V+wuev0+T1F0=
+	t=1738767380; cv=none; b=VlQvDZRvmLDUGWsxo35bSTfYD80wj2/xy6UPRtDSe8JVW4IhKCH+qsmVmI0+KKdcaAVqIaZrbmnymDAO93Eid1OxpE2GeyrboV/LnLK3+FInh90X2OX+AfFs2Gkn6aXy65ZYUdcDoMfqHInJrajfPNL++4z5d3NyNEmHKVbhljc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738767055; c=relaxed/simple;
-	bh=StKTB1B/3jPFwxrAklmtnDfsfOMHP2qcxx/OmEYAq1A=;
+	s=arc-20240116; t=1738767380; c=relaxed/simple;
+	bh=suedBXgOqsaza0cIwFzD3Owz5wVb4B1ExCnNEwxoNQA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qvVczxQDUWlpMYAFrL3DpAWUn7PoFFwoxGmqlAQwRL5GczPa87MWW0npxeDIQ1EgSZlsQEtAGkbBX1LFJ1lFEjevIQTW65LTtZev44kmw+E9ttBx/XwA26o/rjlRjojE/JyVPR8WylCZvsIAL10rkgwOPOT/d/nkqmOomlOoQ4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xm6SDLLH; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=TtXIdHJarWgIUtI9QSdybNg+wqKAOL3tZwgTcTKKubelAtJoZ8OOgzSx3nGBH6boCWxTu7eKtQNrNUF/oBr/79SPQlUP2Bx/AeVKO5Ni1HIJMJJ+d1Rxurz+wq0yosq4EYe6rbNNc5z1OTVsOAHayEBB2B6b+9y1+BLdivKL8m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JRe9tQzk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xm6SDLLH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A783BC4CED1;
-	Wed,  5 Feb 2025 14:50:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JRe9tQzk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460F9C4CED6;
+	Wed,  5 Feb 2025 14:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738767053;
-	bh=StKTB1B/3jPFwxrAklmtnDfsfOMHP2qcxx/OmEYAq1A=;
+	s=k20201202; t=1738767380;
+	bh=suedBXgOqsaza0cIwFzD3Owz5wVb4B1ExCnNEwxoNQA=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Xm6SDLLHA1Cqe+kvJd9o7k1682UMHWENIL9UavMyuulK0eMlpz6G/BruQ0W3mChDG
-	 ehEPFDYWPNbwGOguisFAy3cRYqvzB8n4z0h/h7BrwVhzJWGBnc6EAZ/B8glTF2ARaO
-	 swJhB0Uviaau+25kUFnZ6Jv/nX98bRnsGQaNtetbIjoIc3rEugmikTBCesJ0qCgC+Q
-	 pr14HkwJLO4u8uPQHSAXTax+OqE/RIqF7SIEGo0v1+Xe+v0OlzcjUN1Yyq3UqlnM8v
-	 FxV+iS8c9ayNnO7PwlaD58/kkH3kH12d3L8Jy4mK2igzBhKUr9c6L3ftEWDG8WDWHv
-	 79O/om5OX3B+w==
+	b=JRe9tQzkmvWDHjDL2iuLBDftpLwZZCIl2tHZe2Ysp9W66/tQvzPyh/qj6NljELKmx
+	 POiX8/eCF1gDJ3uWkFfQGn0XqpILtxmCw8x9vdVvht8mpeudaOkQJ889Lfbr8wt6Tq
+	 aFGKVoLegxEV/5GDLOtQeSg1yPuuPAnCVlFv5xxUAMFqHTUhuKZxLO+lMaPbrOgu+T
+	 dCI6Nq4t0uQDSAFqKdu4x5RQUJacZkNFovbiCN79xSRwBc0CzCauapzmgVHs9XK0/K
+	 wCl69QoPgRib9ymyGBZNvdu6guxv7wV4WJW/p9Fa0k3MkVTDGdHsnZpxfa71a16hn2
+	 kBKbtxEe/nRkA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 45C7ACE03CD; Wed,  5 Feb 2025 06:50:53 -0800 (PST)
-Date: Wed, 5 Feb 2025 06:50:53 -0800
+	id E405CCE0749; Wed,  5 Feb 2025 06:56:19 -0800 (PST)
+Date: Wed, 5 Feb 2025 06:56:19 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org, Frederic Weisbecker <frederic@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-trace-kernel@vger.kernel.org, john.ogness@linutronix.de
-Subject: Re: [PATCH rcu v2] 4/5] rcu-tasks: Move RCU Tasks self-tests to
- core_initcall()
-Message-ID: <a68e2e94-b4c6-4791-b581-ecbf3fee28e9@paulmck-laptop>
+To: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>
+Cc: akpm@linux-foundation.org, josh@joshtriplett.org,
+	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL
+ pointer dereference in rcu_core (3)
+Message-ID: <9694d40a-072e-47c2-a950-3b258bbe04f5@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <43f70961-1884-42bf-b303-1d33665d99d2@paulmck-laptop>
- <20250130185320.1651910-4-paulmck@kernel.org>
- <20250204102611.OVuHn9rS@linutronix.de>
- <ff2ed5ba-52f4-4e82-ac0c-6e6a7013d86e@paulmck-laptop>
- <20250204163409.ueObHFje@linutronix.de>
- <9ed4e0fd-75c4-400a-9a0b-74c68286bad3@paulmck-laptop>
+References: <67a2b20a.050a0220.50516.0003.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -57,174 +48,179 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9ed4e0fd-75c4-400a-9a0b-74c68286bad3@paulmck-laptop>
+In-Reply-To: <67a2b20a.050a0220.50516.0003.GAE@google.com>
 
-On Tue, Feb 04, 2025 at 12:20:30PM -0800, Paul E. McKenney wrote:
-> On Tue, Feb 04, 2025 at 05:34:09PM +0100, Sebastian Andrzej Siewior wrote:
-> > On 2025-02-04 03:51:48 [-0800], Paul E. McKenney wrote:
-> > > On Tue, Feb 04, 2025 at 11:26:11AM +0100, Sebastian Andrzej Siewior wrote:
-> > > > On 2025-01-30 10:53:19 [-0800], Paul E. McKenney wrote:
-> > > > > The timer and hrtimer softirq processing has moved to dedicated threads
-> > > > > for kernels built with CONFIG_IRQ_FORCED_THREADING=y.  This results in
-> > > > > timers not expiring until later in early boot, which in turn causes the
-> > > > > RCU Tasks self-tests to hang in kernels built with CONFIG_PROVE_RCU=y,
-> > > > > which further causes the entire kernel to hang.  One fix would be to
-> > > > > make timers work during this time, but there are no known users of RCU
-> > > > > Tasks grace periods during that time, so no justification for the added
-> > > > > complexity.  Not yet, anyway.
-> > > > > 
-> > > > > This commit therefore moves the call to rcu_init_tasks_generic() from
-> > > > > kernel_init_freeable() to a core_initcall().  This works because the
-> > > > > timer and hrtimer kthreads are created at early_initcall() time.
-> > > > 
-> > > > Fixes: 49a17639508c3 ("softirq: Use a dedicated thread for timer wakeups on PREEMPT_RT.")
-> > > > ?
-> > > 
-> > > Quite possibly...  I freely confess that I was more focused on the fix
-> > > than on the bug's origin.  Would you be willing to try this commit and
-> > > its predecessor?
-> > 
-> > Yes. Just verified.
-> > Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Tue, Feb 04, 2025 at 04:34:18PM -0800, syzbot wrote:
+> Hello,
 > 
-> Boqun, could you please apply Sebastian's tags, including the Fixes
-> tag above?
+> syzbot found the following issue on:
 > 
-> > > > I played with it and I can reproduce the issue with !RT + threadirqs but
-> > > > not with RT (which implies threadirqs).
-> > > > Is there anything in RT that avoids the problem?
-> > > 
-> > > Not that I know of, but then again I did not try it.  To your point,
-> > 
-> > The change looks fine.
-> > 
-> > > I do need to make a -rt rcutorture scenario.  TREE03 has been intended to
-> > > approximate this, and it uses the following Kconfig options:
-> > > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > CONFIG_SMP=y
-> > > CONFIG_NR_CPUS=16
-> > > CONFIG_PREEMPT_NONE=n
-> > > CONFIG_PREEMPT_VOLUNTARY=n
-> > > CONFIG_PREEMPT=y
-> > > #CHECK#CONFIG_PREEMPT_RCU=y
-> > > CONFIG_HZ_PERIODIC=y
-> > > CONFIG_NO_HZ_IDLE=n
-> > > CONFIG_NO_HZ_FULL=n
-> > > CONFIG_RCU_TRACE=y
-> > > CONFIG_HOTPLUG_CPU=y
-> > > CONFIG_RCU_FANOUT=2
-> > > CONFIG_RCU_FANOUT_LEAF=2
-> > > CONFIG_RCU_NOCB_CPU=n
-> > > CONFIG_DEBUG_LOCK_ALLOC=n
-> > > CONFIG_RCU_BOOST=y
-> > > CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-> > > CONFIG_RCU_EXPERT=y
-> > 
-> > You could enable CONFIG_PREEMPT_RT ;)
-> > CONFIG_PREEMPT_LAZY is probably also set a lot.
-> > 
-> > That should be it.
-> > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > And the following kernel-boot parameters:
-> > > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > rcutorture.onoff_interval=200 rcutorture.onoff_holdoff=30
-> > > rcutree.gp_preinit_delay=12
-> > > rcutree.gp_init_delay=3
-> > > rcutree.gp_cleanup_delay=3
-> > > rcutree.kthread_prio=2
-> > > threadirqs
-> > > rcutree.use_softirq=0
-> > > rcutorture.preempt_duration=10
-> > > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > Some of these are for RCU's benefit, but what should I change to more
-> > > closely approximate a typical real-time deployment?
-> > 
-> > See above.
+> HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10faf5f8580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
+> dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b69d18580000
 > 
-> Which got me this diff:
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-0de63bb7.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/1142009a30a7/vmlinux-0de63bb7.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/5d9e46a8998d/bzImage-0de63bb7.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/526692501242/mount_0.gz
 > 
-> ------------------------------------------------------------------------
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
 > 
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE03 b/tools/testing/selftests/rcutorture/configs/rcu/TREE03
-> index 2dc31b16e506..6158f5002497 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/TREE03
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE03
-> @@ -2,7 +2,9 @@ CONFIG_SMP=y
->  CONFIG_NR_CPUS=16
->  CONFIG_PREEMPT_NONE=n
->  CONFIG_PREEMPT_VOLUNTARY=n
-> -CONFIG_PREEMPT=y
-> +CONFIG_PREEMPT=n
-> +CONFIG_PREEMPT_LAZY=y
-> +CONFIG_PREEMPT_RT=y
->  #CHECK#CONFIG_PREEMPT_RCU=y
->  CONFIG_HZ_PERIODIC=y
->  CONFIG_NO_HZ_IDLE=n
-> @@ -15,4 +17,5 @@ CONFIG_RCU_NOCB_CPU=n
->  CONFIG_DEBUG_LOCK_ALLOC=n
->  CONFIG_RCU_BOOST=y
->  CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
-> +CONFIG_EXPERT=y
->  CONFIG_RCU_EXPERT=y
-> 
-> ------------------------------------------------------------------------
-> 
-> But a 10-minute run got me the splat shown below, and in addition a
-> shutdown-time hang.
-> 
-> This is caused by RCU falling behind a callback-flooding kthread that
-> invokes call_rcu() in a semi-tight loop.  Setting rcutree.kthread_prio=40
-> avoids the splat, but still gets the shutdown-time hang.  Retrying with
-> the default rcutree.kthread_prio=2 failed to reproduce the splat, but
-> it did reproduce the shutdown-time hang.
-> 
-> OK, maybe printk buffers are not being flushed?  A 100-millisecond sleep
-> at the end of of rcu_torture_cleanup() got all of rcutorture's output
-> flushed, but lost the subsequent shutdown-time console traffic.  The
-> pr_flush(HZ/10,1) seems more sensible, but this is private to printk().
-> 
-> I would like to log the shutdown-time console traffic because RCU can
-> sometimes break things on that path.
-> 
-> Thoughts?
+>  slab radix_tree_node start ffff88803bf382c0 pointer offset 24 size 576
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> #PF: supervisor instruction fetch in kernel mode
+> #PF: error_code(0x0010) - not-present page
+> PGD 0 P4D 0 
+> Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
+> CPU: 0 UID: 0 PID: 5705 Comm: syz-executor Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> RIP: 0010:0x0
+> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+> RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
+> RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
+> RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
+> R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
+> R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
+> FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <IRQ>
+>  rcu_do_batch kernel/rcu/tree.c:2546 [inline]
 
-Longer rcutorture runs showed (not unexpectedly) that the 100-millisecond
-sleep was not always sufficient, nor was a 500-milliseconds sleep.
+The usual way that this happens is that someone clobbers the rcu_head
+structure of something that has been passed to call_rcu().  The most
+popular way of clobbering this structure is to pass the same something to
+call_rcu() twice in a row, but other creative arrangements are possible.
 
-There is a call to kmsg_dump(KMSG_DUMP_SHUTDOWN) in kernel_power_off()
-that appears to be intended to dump out the printk() buffers, but it
-does not seem to do so in kernels built with CONFIG_PREEMPT_RT=y.
-Does there need to be a pr_flush() call prior to the call to
-migrate_to_reboot_cpu()?  Or maybe even to do_kernel_power_off_prepare()
-or kernel_shutdown_prepare()?
-
-Adding John Ogness on CC so that he can tell me the error of my ways.
-
-> PS:  I will do longer runs in case that splat was not a one-off.
->      My concern is that I might need to adjust something more in order
->      to get a reliable callback-flooding test.
-
-And this was not a one-off.  Running 10 40-minute instances of the new-age
-CONFIG_PREEMPT_RT=y TREE03 reliably triggers this.  At first glance,
-this appears to be an interaction between testing of RCU priority
-boosting and RCU-callback flooding forward-progress testing.  And disabling
-testing of RCU priority boosting avoids these OOMs.  As does running
-without CONFIG_PREEMPT_RT=y.
-
-My next step is to run with rcutorture.preempt_duration=0, which disables
-within-guest-OS random preempting of kthreads.  If that doesn't help,
-I expect to play around with avoiding concurrent testing of RCU priority
-boosting and RCU callback flooding forward progress.
-
-Or is there a better way?
+Building your kernel with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y can usually
+spot invoking call_rcu() twice in a row.
 
 							Thanx, Paul
+
+>  rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2802
+>  handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:561
+>  __do_softirq kernel/softirq.c:595 [inline]
+>  invoke_softirq kernel/softirq.c:435 [inline]
+>  __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:662
+>  irq_exit_rcu+0x9/0x30 kernel/softirq.c:678
+>  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
+>  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
+>  </IRQ>
+>  <TASK>
+>  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+> RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+> RIP: 0010:_raw_spin_unlock_irqrestore+0xd8/0x140 kernel/locking/spinlock.c:194
+> Code: 9c 8f 44 24 20 42 80 3c 23 00 74 08 4c 89 f7 e8 fe 78 2d f6 f6 44 24 21 02 75 52 41 f7 c7 00 02 00 00 74 01 fb bf 01 00 00 00 <e8> c3 0f 95 f5 65 8b 05 d4 58 0b 74 85 c0 74 43 48 c7 04 24 0e 36
+> RSP: 0018:ffffc900030fef60 EFLAGS: 00000206
+> RAX: 23438dd059a4b100 RBX: 1ffff9200061fdf0 RCX: ffffffff819b316a
+> RDX: dffffc0000000000 RSI: ffffffff8c0aa680 RDI: 0000000000000001
+> RBP: ffffc900030feff8 R08: ffffffff942f9847 R09: 1ffffffff285f308
+> R10: dffffc0000000000 R11: fffffbfff285f309 R12: dffffc0000000000
+> R13: 1ffff9200061fdec R14: ffffc900030fef80 R15: 0000000000000246
+>  spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
+>  rmqueue_bulk mm/page_alloc.c:2329 [inline]
+>  __rmqueue_pcplist+0x21fd/0x2a90 mm/page_alloc.c:3004
+>  rmqueue_pcplist mm/page_alloc.c:3046 [inline]
+>  rmqueue mm/page_alloc.c:3077 [inline]
+>  get_page_from_freelist+0x886/0x37a0 mm/page_alloc.c:3474
+>  __alloc_frozen_pages_noprof+0x292/0x710 mm/page_alloc.c:4739
+>  alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
+>  folio_alloc_mpol_noprof mm/mempolicy.c:2289 [inline]
+>  vma_alloc_folio_noprof+0x12b/0x260 mm/mempolicy.c:2324
+>  folio_prealloc+0x2e/0x170
+>  wp_page_copy mm/memory.c:3435 [inline]
+>  do_wp_page+0x1253/0x49b0 mm/memory.c:3827
+>  handle_pte_fault mm/memory.c:5905 [inline]
+>  __handle_mm_fault+0x24d5/0x70f0 mm/memory.c:6032
+>  handle_mm_fault+0x3e5/0x8d0 mm/memory.c:6201
+>  do_user_addr_fault arch/x86/mm/fault.c:1388 [inline]
+>  handle_page_fault arch/x86/mm/fault.c:1480 [inline]
+>  exc_page_fault+0x2b9/0x8b0 arch/x86/mm/fault.c:1538
+>  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> RIP: 0010:__put_user_4+0x11/0x20 arch/x86/lib/putuser.S:88
+> Code: 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 89 cb 48 c1 fb 3f 48 09 d9 0f 01 cb <89> 01 31 c9 0f 01 ca c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90 90
+> RSP: 0018:ffffc900030fff00 EFLAGS: 00050202
+> RAX: 0000000000000005 RBX: 0000000000000000 RCX: 00005555679927d0
+> RDX: 0000000000000000 RSI: ffffffff8c0ab8e0 RDI: ffffffff8c608a00
+> RBP: ffff888000dfcf20 R08: ffffffff901b5177 R09: 1ffffffff2036a2e
+> R10: dffffc0000000000 R11: fffffbfff2036a2f R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000005 R15: dffffc0000000000
+>  schedule_tail+0x96/0xb0 kernel/sched/core.c:5312
+>  ret_from_fork+0x24/0x80 arch/x86/kernel/process.c:144
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+>  </TASK>
+> Modules linked in:
+> CR2: 0000000000000000
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:0x0
+> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+> RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
+> RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
+> RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
+> R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
+> R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
+> FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>    0:	9c                   	pushf
+>    1:	8f 44 24 20          	pop    0x20(%rsp)
+>    5:	42 80 3c 23 00       	cmpb   $0x0,(%rbx,%r12,1)
+>    a:	74 08                	je     0x14
+>    c:	4c 89 f7             	mov    %r14,%rdi
+>    f:	e8 fe 78 2d f6       	call   0xf62d7912
+>   14:	f6 44 24 21 02       	testb  $0x2,0x21(%rsp)
+>   19:	75 52                	jne    0x6d
+>   1b:	41 f7 c7 00 02 00 00 	test   $0x200,%r15d
+>   22:	74 01                	je     0x25
+>   24:	fb                   	sti
+>   25:	bf 01 00 00 00       	mov    $0x1,%edi
+> * 2a:	e8 c3 0f 95 f5       	call   0xf5950ff2 <-- trapping instruction
+>   2f:	65 8b 05 d4 58 0b 74 	mov    %gs:0x740b58d4(%rip),%eax        # 0x740b590a
+>   36:	85 c0                	test   %eax,%eax
+>   38:	74 43                	je     0x7d
+>   3a:	48                   	rex.W
+>   3b:	c7                   	.byte 0xc7
+>   3c:	04 24                	add    $0x24,%al
+>   3e:	0e                   	(bad)
+>   3f:	36                   	ss
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
