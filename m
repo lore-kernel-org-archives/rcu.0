@@ -1,62 +1,62 @@
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7CA22A7ED
-	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 09:28:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC8A22A7F0
+	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 09:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738747733; cv=none; b=L/wppHwT7eviLTzehGwjx0Ga9A9a6st7HPMBrFrVtds/R32JK4KAYXGktg2O+tOFS3h+Aw/4V0DH8AH+53o4XBDthHNhg1K5B/8nNHVg5r88biqoAVX+cwo5DDTeXZkcmC3BaamDDWomYqq+L8eOhEkvoxFEv1kS/WgiLVKo9eo=
+	t=1738748417; cv=none; b=Q3JszAGswlU+41R7ci73YYgEB9doXdxad5/kJtCxY+UwIEmXt1vniIccManw0gMaK7kVqvd7zHCE/cd8aGTeyDppYsLqeXXpt7uNI264aR/sR5I1HRcNBhDC0Pv7zikDdRxI+i6f/cRyaK60O1YsU9ZZbzXm0qNXMSEkRsy8WuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738747733; c=relaxed/simple;
-	bh=s+feehdjvacWB5vZQP1hA8n/kiq5ZqfFh7Yi9F3h6JY=;
+	s=arc-20240116; t=1738748417; c=relaxed/simple;
+	bh=gR3Gag8uRMwQU9Bmdg1HWYiAzoZPs6x1CneAK3Or0v4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UYGfUl9qs6aDaGN1zKSnXt5cX7XWkV6CBB9JxTAGzMdrOa/J0vI27PzOi4WbyYb4+r5MBa+3KJYvzWxyJWZxb0Aiw+X+vrBgwGc8BJAoz+ROKA8wGm1WF016+f36E9DUcMuLasTydVS9SwoUQqQMb5j9cT3yO7cwJUvk+nrEGaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iEl6Pj5x; arc=none smtp.client-ip=209.85.214.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=fD9UgcxTUj3THgfFhcOzpMLmNfMSpS5h9W5l3cSxBKPXCBB+hDBbDQjDW7zk06tpxFehxJpUipPQwaBEtk+HK8+zA4iQDKIXjGO36UOD9LZdkC6bJFnKdDYJFRAPYEOqSk/coRDNT3f55wxVFugzI3nbXNpWUOM2luL/5dZnnzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gooGYVju; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEl6Pj5x"
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21f20666e72so3064505ad.1
-        for <rcu@vger.kernel.org>; Wed, 05 Feb 2025 01:28:51 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gooGYVju"
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21f2339dcfdso1800205ad.1
+        for <rcu@vger.kernel.org>; Wed, 05 Feb 2025 01:40:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738747731; x=1739352531; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738748415; x=1739353215; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRbxoMBzUG+hvulzwE2ajAZiA+/UrsVptxvsnAuNkP0=;
-        b=iEl6Pj5x3cxEiPEokDJOsn7Gh5lnFwncSWJF6uBbG/m0HR/0UFJbDSRw1kEaBljFhl
-         theSupQAJbpL8QWH7XiQzbrL2Dz8g2d9lK3rS49JJMtl0XdvxaF7G5gNiwBeiWgDQob1
-         XDWn5uKM01YCa4+nFdTbdZor99CZU0JG4/k8Y2sG7Vdur84LIGoAT3xHK/5NWEKYs5aR
-         fQ0w9CKOUUmomVWaRSELVHXpvhL1diXY5I5HzW0ItdSKuC0EVjJtodypB3VbCXAp+2Og
-         qGWSdotKzy63iIzRr0PNGhKJYLWUt4EHRiP50MZzXAgBs/EP0h30hb/KvkAMesJN9NX3
-         NjVg==
+        bh=qjPw3Npe2yQ2lWhiZcLUlLMtJQlIVo767jAtj+2FQG0=;
+        b=gooGYVjuUOJB92c2ts6wcU/AqH6tWXm9u7bOPhp2fjqefHEgkiQWAygZX/RW2ZqsB0
+         BQKcR0XS7ui/q5MhR5MhblfXoMc2I1yZ7F/0meog3Oiqlxt+ZfHrn3N6EJr5DJV19YRZ
+         GCXc/g1cNJgWhlC9JZOzfCNU/WW5lr3YsSj+zYkFLsOvsd7nkCUcXfmLDGUb+A3wHFc7
+         z+7mkX9dmaljT72plewYnjgVwcWVj5k1wHtHT9zatPP1IGu/5b1Cn7vtdnu6ob+W1KhG
+         Lc2HhWnFXfdYlSYsSyt+hEjhx9mhfQMXsWNHM69zaKpQiDqcP9lpUnn8TtJ1Yei06SwE
+         MTtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738747731; x=1739352531;
+        d=1e100.net; s=20230601; t=1738748415; x=1739353215;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cRbxoMBzUG+hvulzwE2ajAZiA+/UrsVptxvsnAuNkP0=;
-        b=QL7xUjbOlig/TtwszopoutxXlxXIdMppLUplMvdIJhfpbjOBoHYzhsnDYEMKDy7rgu
-         NfvPyVwDwmzvcug/Rw944JJjL9/AFXMzZk3Z3dvYwEjR8tUcVme/djyrBqwa3af1JsFc
-         9Ip5WE8kSHs2AjnidN9wq0xysDeFbOv7/4eZMTIiRqi6QD+oGfGB8O7ro51p+CKyOtF3
-         0/vOvHthTyrxPkm8bCakTfuCU3ww4Qo/HgvLfmDOg/VC+nXb8loO4QGBj3Ns7gQkvIro
-         fsVFE+wJKNzj2IEuOxING8f2qY89fkgaR3aXmBEhMbesS9hJPrI4w5Tatjz/1Tm4F00R
-         DlLw==
-X-Forwarded-Encrypted: i=1; AJvYcCXWtAMAdbRtt+x7tGQYWdsxVolKPQ/SjN8k1Kb8gGApfyA3ITcdJqNrVBuUQc3wX7abHx0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwgFFvSZzo7jhAo3Ij5GmDwdykKwamOqj7AtwNwYdxGJ9gtRb+y
-	S1X8Hfh3ob1/kEnfgVt0DWFoNfMGNkUZLOOL3cNdRm7kPqWke4NO
-X-Gm-Gg: ASbGncsn+A1bSIFp/cEnfLfKpefgvsuPTToVJdwvLbYHT0dJkTIzBrMCzIMC+1J14Uc
-	vfftZCTB37JXeVfO0VHD+p8KEPvZvJSu/jM/Hr40R/0cj5BzozvhM/Kx9TCIa9Dlv5dRBAu4vLQ
-	ir7I0PSQPiZtXIgS8RZiuWdht7hG2+lbJw3sObXRcYW/i9kgUaGpIyQnPofgmbydIUc60CXFwgU
-	M21iF3Qi1OAoADz7PhfhzjFCz0og4oQEu5EE6pzRXosbKDlH7m8bAzcqxl6TBb6hHR0/XyTS1uv
-	tlKekAPUvxqLiYZ7ddyJlYxi1yhZjZPfjG6I0TU=
-X-Google-Smtp-Source: AGHT+IFcrwCJs2Pn94HAzxRnEGQiSa/iTsozumTzxE23W3954tdRVZhsZX74IDtIJf+fPRjtP0Jdkw==
-X-Received: by 2002:a17:902:e541:b0:215:6fcd:6cd1 with SMTP id d9443c01a7336-21f17e2716cmr31457365ad.7.1738747730637;
-        Wed, 05 Feb 2025 01:28:50 -0800 (PST)
+        bh=qjPw3Npe2yQ2lWhiZcLUlLMtJQlIVo767jAtj+2FQG0=;
+        b=Bb0LIdyIXkxSzJ41v2rOcS5gcroiCdPy8Ewf6crRJczm+W7op1YiUErm5hNyjR0UDc
+         IeBjFmWu8ohoMY7cPdY2WB73jdSwjzbwInxnxUueLa04FLcbOsTjc88MQdovVd6ibph6
+         0BlM5tGZNsM4hr0UnHRfNjTRF1tshKh+AqQ2uUhqKfFD1Q+uEaxfs+x6oMMMxdwZStCX
+         pCZzRk9IjPiUiM6U97msG6GOKv/5Pdz3zd3aadkQj9OleQuU7zTcxqbylNQdOyJJi1tq
+         h3R8vZiZMkmJGEttx6FWxVnPcbElySv1/7DZKJFq01cVB1S8dKlcGoWWks3lIWnNblNT
+         XSUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVuI7VkbC67bzGprDj/YDS0oUmGD/ZwVAsi2076ahD22L3cj+gPGxVThnOROoABuUJNsfE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwI9h22ouu2Qd7BXV+AB29lCj1S7ondrYzKn9TRCK9E87qJycWA
+	ulB8wl7FPojpCENmxznOPrsuZW+Wm/ahICs5MoF7c9iW/KBofEP2
+X-Gm-Gg: ASbGnctmJLWJi0ulA7OBHz4S/ABiRma1k5kEHQdU1cxhKJC3156nEHvIOaMi/fgwHRu
+	v8LUp8ToXtzOQNiWg1UBhxue4n/YGNOSMTR3slDWxPbzO1nstUwBXXP0ov3Rz2YmxG/5vo/Z4ne
+	axOrSuWbxJWZmrJb813B/4A7T+SnhDmtIFgxk4HtcrT4/Ghq+gM4BvsrAijb7dmK6R/JM3+w3xi
+	Fw/k76jKjPI3ifvYV945ISA8gEeO0b4DO8Fq/IgZxFzL8xEJcImH4ZWzm8x9gzisrLs/f/ZXRBh
+	3HqQmlg9SVUM1zcNmnJsGQF59e6Z0rtXEgmU9nU=
+X-Google-Smtp-Source: AGHT+IFrO2QJpwZa8pq9OAx4k3/Zex9zjfUv3ML+kx5UgVe6MF5bN7W/+iPDXo8nUha74fanmD86jg==
+X-Received: by 2002:a17:902:eb83:b0:21e:fe55:d3a5 with SMTP id d9443c01a7336-21f01d1584dmr95686435ad.21.1738748414963;
+        Wed, 05 Feb 2025 01:40:14 -0800 (PST)
 Received: from MacBook-Air-5.local ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f13a8221csm13539575ad.122.2025.02.05.01.28.45
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-acebe3845d9sm11393548a12.21.2025.02.05.01.40.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Feb 2025 01:28:50 -0800 (PST)
-Date: Wed, 5 Feb 2025 18:28:41 +0900
+        Wed, 05 Feb 2025 01:40:14 -0800 (PST)
+Date: Wed, 5 Feb 2025 18:40:05 +0900
 From: "Harry (Hyeonggon) Yoo" <42.hyeyoo@gmail.com>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
@@ -71,10 +71,10 @@ Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH 2/4] rcu: remove trace_rcu_kvfree_callback
-Message-ID: <Z6MvSf24WA5-r5oM@MacBook-Air-5.local>
+Subject: Re: [PATCH 4/4] slab: don't batch kvfree_rcu() with SLUB_TINY
+Message-ID: <Z6Mx9bEY9dvUTy7Q@MacBook-Air-5.local>
 References: <20250203-slub-tiny-kfree_rcu-v1-0-d4428bf9a8a1@suse.cz>
- <20250203-slub-tiny-kfree_rcu-v1-2-d4428bf9a8a1@suse.cz>
+ <20250203-slub-tiny-kfree_rcu-v1-4-d4428bf9a8a1@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -83,19 +83,32 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250203-slub-tiny-kfree_rcu-v1-2-d4428bf9a8a1@suse.cz>
+In-Reply-To: <20250203-slub-tiny-kfree_rcu-v1-4-d4428bf9a8a1@suse.cz>
 
-On Mon, Feb 03, 2025 at 10:28:48AM +0100, Vlastimil Babka wrote:
-> Tree RCU does not handle kvfree_rcu() by queueing individual objects by
-> call_rcu() anymore, thus the tracepoint and associated
-> __is_kvfree_rcu_offset() check is dead code now. Remove it.
+On Mon, Feb 03, 2025 at 10:28:50AM +0100, Vlastimil Babka wrote:
+> kvfree_rcu() is batched for better performance except on TINY_RCU, which
+> is a simple implementation for small UP systems. Similarly SLUB_TINY is
+> an option intended for small systems, whether or not used together with
+> TINY_RCU. In case SLUB_TINY is used with !TINY_RCU, it makes arguably
+> sense to not do the batching and limit the memory footprint. It's also
+> suboptimal to have RCU-specific #ifdefs in slab code.
 > 
+> With that, add CONFIG_KVFREE_RCU_BATCHED to determine whether batching
+> kvfree_rcu() implementation is used. It is not set by a user prompt, but
+> enabled by default and disabled in case TINY_RCU or SLUB_TINY are
+> enabled.
+> 
+> Use the new config for #ifdef's in slab code and extend their scope to
+> cover all code used by the batched kvfree_rcu(). For example there's no
+> need to perform kvfree_rcu_init() if the batching is disabled.
+> 
+> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
 
 Looks good to me,
 Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
 -- 
 Harry
