@@ -1,128 +1,176 @@
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0885D25A63B;
-	Wed,  5 Feb 2025 01:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D062288C8
+	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 07:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738719540; cv=none; b=k1dwgLBnBfSoCjNFjeHYoTqiR+GHkBVtPSYk4mgzZ14Bqdj+zhWiYK0GXBUds9Qq09Hc/CpFAL3Fo45u9Hwk/X8xXxpWlRP31UG15Lsmn6aWJX7WrhAImxTGKuOOeA+3qAYqjjcbPOCWto4t9tOI9ZYDTBNqG/8fhlWHjSdTGPM=
+	t=1738742241; cv=none; b=idc/1FUOHFIiyIQH2WfKUZuzSjvM7L2ioVIAmL5qIJjrf4PCe8eTpfvSQUTfe1lAsu9bltcVq/U1b9vqXwI0ZJjWZuq2VsnhOlOGQhE8BmhG40fNUkAiL9Js0px+PvTcS6zduF5hs2/Ycm1XYZTy8l7rHYRGgViVit/s4P003oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738719540; c=relaxed/simple;
-	bh=oUEvIE7Ygq+NVKre2zyiV8axQSyC5SemEbXMGzGjgvg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=IkHxEmCEbaGBe4GPslqideNd2lQXDO5F+6RZnLtfZr5jWPM8e3XfQJ8kTZtGIzwY+uJvQyY0YfO6zClxwdy2Kq3Ysv1KZLU8/GxDdYXwxAW/7T3kLTey7LHeSt9g3cnDPb//nhmL4O0/wi99LygwAJ9ppX48LXf+4368czH4vI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YnjYp6J2cz4f3jsv;
-	Wed,  5 Feb 2025 09:38:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B165A1A138C;
-	Wed,  5 Feb 2025 09:38:54 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgBHql4rwaJnJqPCCw--.38584S2;
-	Wed, 05 Feb 2025 09:38:54 +0800 (CST)
-Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
- map atomically
-To: Hou Tao <hotforest@gmail.com>, bpf@vger.kernel.org, rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, "Paul E . McKenney" <paulmck@kernel.org>
-References: <20250204082848.13471-1-hotforest@gmail.com>
- <20250204082848.13471-3-hotforest@gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com>
-Date: Wed, 5 Feb 2025 09:38:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1738742241; c=relaxed/simple;
+	bh=uJCJoXaIceeUOx7uPX2U7F+kJtLIbsGT9PC55HpSSoA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gS/2CahAVRY6Sj1Fc3Vmpfe5fXdsNG8ZbCjoquUa+6ntqSOU+A3LyBQ+zMBMu/DuBkcaSVkte2PbMc5c5McVzo1pVyoN2CL/5JlU/fO0gjP/RMKCfywYaRstCgA8UaA8Br0+1errvlNQBA2yQTcwHMW3iWrbaC6c7nWG7vSFvQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SN4m623h; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SN4m623h"
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5d3e6274015so11150917a12.0
+        for <rcu@vger.kernel.org>; Tue, 04 Feb 2025 23:57:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1738742238; x=1739347038; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZPQ45o6GxZmuNIcqeDr+LwklxlIy2EcQQETBSNhoeZw=;
+        b=SN4m623hoCBDLEJ9loNxqj3z9fN3yiKKP5jm48JFSbdwUasahCW05X+gnaUNiit3uT
+         0Vj/ge+V/aUo/BjenHKKlwBfjtgzrvLxEOvRSq6QUuiCgeUw6ZFjm657a4nOZfXNMSgG
+         4/H3AQuMjpZy0UDFmIkFJHvyug7M7U441RZwdtmaxPAPQEKIuPRJGx43mpXz1t8qdM8X
+         gUV5bEPbQ8Hn+4QebSnSzxltoyOKu9tL2KdGEbCteQ9owdE859iKN07r7h/pt38wtpnQ
+         b1QQ140QUOLFQPoFS1R6bPSEiS4M2UoLtvPf41hj4bwBbMFnJJFiUqEhfZDBM6JLwqVS
+         LBBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738742238; x=1739347038;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZPQ45o6GxZmuNIcqeDr+LwklxlIy2EcQQETBSNhoeZw=;
+        b=AW+f7ut5mM3Rz9GlKqQI1FaySNMcH9OT8iXUhDTb9fjVlATUUJAUDX9uMbjk7l7m0u
+         Idx/L/H/3E8c69lYnofNiJrZvL0k/pCYw4JmvAUK4GPJ0crdV4SSOpvLz1EgXZ3bcL+k
+         GC8DmmN43Uix7K1aN2IvR8GyNNrnOIIWj5J1/2Fu6eVteX0CBRo4OaIsHf1FDSAQVRHp
+         6Bbqvh0pC5JcBsl6iwDMqLOXtjz+BDJ4ufuGrdl5YPjPuD/SeALmq5zMKL/GQ0+vwncm
+         dM2JSPG1dxwR9hhb696fRMDDNvCUQlyjHwR6ubhgKSJWGwjkCnU++YnrD3Pp6kfWAVyR
+         6ncQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOesADjOW6wUwuniAL4696O84ZjuP8occp3zNcI9f16QVbNig7uE4r/+8vCyUBR+VMA84=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxDaBRiE/7SBl3dSVA4UZL24046F/yKTpJgUk5S2LwFOhLc9/SE
+	edb+TbyqfydBZTpo7mG6worl1seN+yv+KkT+AL6exgCy6kgv1qhJYOlQfUcFH4gYPqfZYCoI4ye
+	THzOWiuZZGEDWTTL+ERiWp3dCC70Oa+nE1bts
+X-Gm-Gg: ASbGncviMCkwUaL/p32WLtD8FfSd6+5ISNmZS4B+4be0mdse5DpUdHzXz9QlKEPaqdl
+	QPjzKptMgbA2Zn0OB+rsV++njAnSZ4O9lAkzh123prdqRa3lKcV7Vm9mTTTnpDC8PEdf3MXk=
+X-Google-Smtp-Source: AGHT+IF42kGdt3W89ZlIif5gI9zTVay8hB8q4hXlUr7ZH/inOaMzt+i5WRt04SxMmmK4e4sdUzF5crttdHY+pNqtxAg=
+X-Received: by 2002:a05:6402:4308:b0:5dc:7425:ea9b with SMTP id
+ 4fb4d7f45d1cf-5dcdb76453fmr1840955a12.25.1738742237482; Tue, 04 Feb 2025
+ 23:57:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250204082848.13471-3-hotforest@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBHql4rwaJnJqPCCw--.38584S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJryrWr4DtF4xAFW3Aw4fKrg_yoW8uF18pF
-	ZYkr1Ut3Wvya4qqw4xArsxCFW3Awn3Ja45KF4DtryrAw1YqryvyrnYk3Z2qFy3AFWrJFnY
-	q3W2qrnIkayUKFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_
-	Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
-	UvcSsGvfC2KfnxnUUI43ZEXa7IU07PEDUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20250204132357.102354-1-edumazet@google.com> <20250204132357.102354-12-edumazet@google.com>
+ <20250204120903.6c616fc8@kernel.org> <CANn89i+2TrrYYXr7RFX2ZwtYfUwWQS6Qg9GNL6FGt8cdWR1dhQ@mail.gmail.com>
+ <20250204130025.33682a8d@kernel.org> <CANn89iJf0K39xMpzmdWd4r_u+3xFA3B6Ep3raTBms6Z8S76Zyg@mail.gmail.com>
+ <39a1fde2-63f7-4092-870f-ae20156fbb9e@paulmck-laptop> <20250204133025.78c466ec@kernel.org>
+In-Reply-To: <20250204133025.78c466ec@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 5 Feb 2025 08:57:06 +0100
+X-Gm-Features: AWEUYZmf-hkK5S-4cTzXYSKvaPn4vDvYROBq0moc-474cU0yHwAgjs53TxCGO80
+Message-ID: <CANn89i+AozhFhZNK0Y4e_EqXV1=yKjGuvf43Wa6JJKWMOixWQQ@mail.gmail.com>
+Subject: Re: [PATCH v3 net 11/16] ipv6: input: convert to dev_net_rcu()
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
+	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Simon Horman <horms@kernel.org>, eric.dumazet@gmail.com, 
+	rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-+cc Cody Haas
+On Tue, Feb 4, 2025 at 10:30=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Tue, 4 Feb 2025 13:17:08 -0800 Paul E. McKenney wrote:
+> > > > TBH I'm slightly confused by this, and the previous warnings.
+> > > >
+> > > > The previous one was from a timer callback.
+> > > >
+> > > > This one is with BH disabled.
+> > > >
+> > > > I thought BH implies RCU protection. We certainly depend on that
+> > > > in NAPI for XDP. And threaded NAPI does the exact same thing as
+> > > > xfrm_trans_reinject(), a bare local_bh_disable().
+> > > >
+> > > > RCU folks, did something change or is just holes in my brain again?
+> > >
+> > > Nope, BH does not imply rcu_read_lock()
+> >
+> > You are both right?  ;-)
+> >
+> > The synchronize_rcu() function will wait for all types of RCU readers,
+> > including BH-disabled regions of code.  However, lockdep can distinguis=
+h
+> > between the various sorts of readers.  So for example
+> >
+> >       lockdep_assert_in_rcu_read_lock_bh();
+> >
+> > will complain unless you did rcu_read_lock_bh(), even if you did someth=
+ing
+> > like disable_bh().  If you don't want to distinguish and are happy with
+> > any type of RCU reader, you can use
+> >
+> >       lockdep_assert_in_rcu_reader();
+> >
+> > I have been expecting that CONFIG_PREEMPT_RT=3Dy kernels will break thi=
+s
+> > any day now, but so far so good.  ;-)
+>
+> Thanks Paul! So IIUC in this case we could:
+>
+> diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
+> index 0f5eb9db0c62..58ec1eb9ae6a 100644
+> --- a/include/net/net_namespace.h
+> +++ b/include/net/net_namespace.h
+> @@ -401,7 +401,7 @@ static inline struct net *read_pnet(const possible_ne=
+t_t *pnet)
+>  static inline struct net *read_pnet_rcu(possible_net_t *pnet)
+>  {
+>  #ifdef CONFIG_NET_NS
+> -       return rcu_dereference(pnet->net);
+> +       return rcu_dereference_check(pnet->net, rcu_read_lock_bh_held());
+>  #else
+>         return &init_net;
+>  #endif
+>
+> Sorry for the sideline, Eric, up to you how to proceed..
 
-Sorry for the resend. I sent the reply in the HTML format.
+I will squash this diff to the following iteration, and keep rcu_dereferenc=
+e()
 
-On 2/4/2025 4:28 PM, Hou Tao wrote:
-> Currently, the update of existing element in hash map involves two
-> steps:
-> 1) insert the new element at the head of the hash list
-> 2) remove the old element
-> 
-> It is possible that the concurrent lookup operation may fail to find
-> either the old element or the new element if the lookup operation starts
-> before the addition and continues after the removal.
-> 
-> Therefore, replacing the two-step update with an atomic update. After
-> the change, the update will be atomic in the perspective of the lookup
-> operation: it will either find the old element or the new element.
-> 
-> Signed-off-by: Hou Tao <hotforest@gmail.com>
-> ---
->  kernel/bpf/hashtab.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 4a9eeb7aef85..a28b11ce74c6 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -1179,12 +1179,14 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
->  		goto err;
->  	}
->  
-> -	/* add new element to the head of the list, so that
-> -	 * concurrent search will find it before old elem
-> -	 */
-> -	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
-> -	if (l_old) {
-> -		hlist_nulls_del_rcu(&l_old->hash_node);
-> +	if (!l_old) {
-> +		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
-> +	} else {
-> +		/* Replace the old element atomically, so that
-> +		 * concurrent search will find either the new element or
-> +		 * the old element.
-> +		 */
-> +		hlist_nulls_replace_rcu(&l_new->hash_node, &l_old->hash_node);
->  
->  		/* l_old has already been stashed in htab->extra_elems, free
->  		 * its special fields before it is available for reuse. Also
-> 
+Note that nf_hook() also grabs rcu_read_lock().
 
-After thinking about it the second time, the atomic list replacement on
-the update side is enough to make lookup operation always find the
-existing element. However, due to the immediate reuse, the lookup may
-find an unexpected value. Maybe we should disable the immediate reuse
-for specific map (e.g., htab of maps).
+diff --git a/net/ipv6/ip6_input.c b/net/ipv6/ip6_input.c
+index 4030527ebe098e86764f37c9068d2f2f9af2d183..ee5a69fdc67a30e55c5a073455e=
+1d7299f168f34
+100644
+--- a/net/ipv6/ip6_input.c
++++ b/net/ipv6/ip6_input.c
+@@ -477,9 +477,7 @@ void ip6_protocol_deliver_rcu(struct net *net,
+struct sk_buff *skb, int nexthdr,
+ static int ip6_input_finish(struct net *net, struct sock *sk, struct
+sk_buff *skb)
+ {
+        skb_clear_delivery_time(skb);
+-       rcu_read_lock();
+        ip6_protocol_deliver_rcu(net, skb, 0, false);
+-       rcu_read_unlock();
 
+        return 0;
+ }
+@@ -487,9 +485,14 @@ static int ip6_input_finish(struct net *net,
+struct sock *sk, struct sk_buff *sk
+
+ int ip6_input(struct sk_buff *skb)
+ {
+-       return NF_HOOK(NFPROTO_IPV6, NF_INET_LOCAL_IN,
+-                      dev_net_rcu(skb->dev), NULL, skb, skb->dev, NULL,
+-                      ip6_input_finish);
++       int res;
++
++       rcu_read_lock();
++       res =3D NF_HOOK(NFPROTO_IPV6, NF_INET_LOCAL_IN,
++                     dev_net_rcu(skb->dev), NULL, skb, skb->dev, NULL,
++                     ip6_input_finish);
++       rcu_read_unlock();
++       return res;
+ }
+ EXPORT_SYMBOL_GPL(ip6_input);
