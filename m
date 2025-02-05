@@ -1,116 +1,217 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6851E207DED;
-	Tue,  4 Feb 2025 23:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE24079F5
+	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 00:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738711518; cv=none; b=hB7U2yDwNeyFnaMfBabK750PtmpK4wM4yU7z0fEQbLUqtA3rco5y43rQfFe4E42hlkC2wLkSil8tnCEbtMMBis3lrwouPc/AsOWPfG2dg5e79W4NJzUZ+s60lGUSSUFIQ0t2CJNSHm4k5HR4GiTnUHu9E3OhLgJUDLLHXD5G4gA=
+	t=1738715662; cv=none; b=mKmYKkQOM69mwkg5IBE61UKBlO5DhWQG4am6A9gQqvRkGv2Juc6mvYvq+JZTLRnD8rfy79GOHcyqjj0P44VNaesesD+EueksMMafhyPHy+MsrBx+iUsQqKDvg3bTvPx4z+jRt0mpNvH6dMMfqn0mmNVzitFZFdcSaqe9fIOEDtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738711518; c=relaxed/simple;
-	bh=SYn9QTxw4vAqiSN7u2YiwRtdvovqaEiCf8EY7REoNKw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gobJNd9gs+zPQ2qYCk3C9akBidUMjwQZ8HunaGhKqsE4qR+P9IecqzJSWRL07zzk615d5dSDM1tWdtePZ3DcbOCTbUj5g5pvY/neDcqbFFMs8FI5IBOqHpK8utpIBSQlIvdfhs16E0lULxpqEsTxfCp3VLxSbRMSCZ3RvcFnY9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N05CaSok; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N05CaSok"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0E12C4CEDF;
-	Tue,  4 Feb 2025 23:25:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738711515;
-	bh=SYn9QTxw4vAqiSN7u2YiwRtdvovqaEiCf8EY7REoNKw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=N05CaSokfnWauihUSqmNHHca4KEFMc6GcJ7hju6WpGduFJMv8MjxTwp+nnQ5cqQx2
-	 Naf7K3bfVOxlarsXnh72oNKzYDhrTruTAX5FmCgaqqZl9oc80T0udvkgmIEP9sHZBv
-	 zswmjTEHTwno7IihnEGAb9sqRf306CHDS1MIMdL+VpOENed4Fc8++JO2nyAbhfNilk
-	 PlVoSncKnLYewuMGDFefSRaokgXg7dF5wM+SbGlUHWU1qob4bjpBWWfxKiezp/7D6k
-	 HOuFYQC7BAjmC6uIBEZrlnNKezzzeFv1xIT0y7xQzxkRvYV7r7aqNTemyt3rdW25UV
-	 JuoSjejsy52vg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 51D35CE028A; Tue,  4 Feb 2025 15:25:15 -0800 (PST)
-Date: Tue, 4 Feb 2025 15:25:15 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Simon Horman <horms@kernel.org>, eric.dumazet@gmail.com,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v3 net 11/16] ipv6: input: convert to dev_net_rcu()
-Message-ID: <85496569-9ecc-447d-8b76-659c68aee3ea@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250204132357.102354-1-edumazet@google.com>
- <20250204132357.102354-12-edumazet@google.com>
- <20250204120903.6c616fc8@kernel.org>
- <CANn89i+2TrrYYXr7RFX2ZwtYfUwWQS6Qg9GNL6FGt8cdWR1dhQ@mail.gmail.com>
- <20250204130025.33682a8d@kernel.org>
- <CANn89iJf0K39xMpzmdWd4r_u+3xFA3B6Ep3raTBms6Z8S76Zyg@mail.gmail.com>
- <39a1fde2-63f7-4092-870f-ae20156fbb9e@paulmck-laptop>
- <20250204133025.78c466ec@kernel.org>
+	s=arc-20240116; t=1738715662; c=relaxed/simple;
+	bh=Q4Vw+3Re6Vn9ZU9fP0QUBKUW7rK+C0tlTr4zhN2dF3E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CJs0sfYp1mjKzMtFiGWNEq1PkktVxDbfjZm9fHwnXNwAWCmSIIBkD3zXoLtDORRnnyQuk+FS1zuKXYaWxn3fnQLsyodlncBFz4swOosEJjR5kpRNdo+ZL8AuRjmVo4dbVy7wsDhWWAVO32ufvlVefYQPvC2K8Ab8OGBmFq+kStg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-851f02bbfd8so381369639f.2
+        for <rcu@vger.kernel.org>; Tue, 04 Feb 2025 16:34:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738715660; x=1739320460;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kQPG7nsKYYHsfpJzpMresG+1MH6cnrQ1XLV4kImA0a4=;
+        b=qQINZyzDD8QTEaWIQRq6IUeqLv9nSX+0ZkoSnUAXfnrJj6jcWd5Or4qmwSdUb2S3ch
+         I+G+lkWdUb9WAXbloIoIHEDVzk6SqEgaYa12yxKUUmyTUuZO6g0zzRT3RYE8eiRDhFrw
+         CRLyh+53UsfRWhw3r1MXqmrYGVWjfGUPNHBYnM98gym7caGXYZpJpjAsZCkgSigQjAQW
+         +ipkUHi3YqYH8h3RiibNSqnwBGvjFtJGgaVsUCoEWyzYNL3nvelvJhK65pY+doV5OMPv
+         3+3B940P0ns8vdKi6Oj4T2/qQlZ3DthRSocHcnKOY8qs/3qm19ppN943QsfV8iBWsmdi
+         T9EA==
+X-Forwarded-Encrypted: i=1; AJvYcCXdiy9/WZ4FyCUgYFiCmXSYIA/rhk1HD2kIT14Wo0HxsczPRUv6/0rHAdb1MjSeLKDPZ2k=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxf3jvsaWiXkpTS0ty6nb2rDKuA9yOcKBEMhd78OhJp/q62sDRt
+	NYqsw8H26jmBIlp1OGbkb1Opad4mp6VX8mocozyp4ZjaYW44zph7xCVZiyVm/i3c0kspUhkWyhO
+	emRDdeHXjy1KgEk1btqsDxdh51bOrqd0p5Myudu7RJU4CNLj8/fs94tI=
+X-Google-Smtp-Source: AGHT+IFvzyjgGoqm3tyli3Mq8Q6irtgPgsoSG3VLwGoxQI8kXgXlJs+2lQJS5s3nyVT4pOM/zBm2aAXAWw1hXT/KEe6xURj7AucA
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250204133025.78c466ec@kernel.org>
+X-Received: by 2002:a05:6e02:1687:b0:3cf:fa94:c7d with SMTP id
+ e9e14a558f8ab-3d04f45b33cmr9252425ab.9.1738715658443; Tue, 04 Feb 2025
+ 16:34:18 -0800 (PST)
+Date: Tue, 04 Feb 2025 16:34:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67a2b20a.050a0220.50516.0003.GAE@google.com>
+Subject: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL pointer
+ dereference in rcu_core (3)
+From: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, josh@joshtriplett.org, 
+	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, paulmck@kernel.org, 
+	rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 04, 2025 at 01:30:25PM -0800, Jakub Kicinski wrote:
-> On Tue, 4 Feb 2025 13:17:08 -0800 Paul E. McKenney wrote:
-> > > > TBH I'm slightly confused by this, and the previous warnings.
-> > > >
-> > > > The previous one was from a timer callback.
-> > > >
-> > > > This one is with BH disabled.
-> > > >
-> > > > I thought BH implies RCU protection. We certainly depend on that
-> > > > in NAPI for XDP. And threaded NAPI does the exact same thing as
-> > > > xfrm_trans_reinject(), a bare local_bh_disable().
-> > > >
-> > > > RCU folks, did something change or is just holes in my brain again?  
-> > > 
-> > > Nope, BH does not imply rcu_read_lock()  
-> > 
-> > You are both right?  ;-)
-> > 
-> > The synchronize_rcu() function will wait for all types of RCU readers,
-> > including BH-disabled regions of code.  However, lockdep can distinguish
-> > between the various sorts of readers.  So for example
-> > 
-> > 	lockdep_assert_in_rcu_read_lock_bh();
-> > 
-> > will complain unless you did rcu_read_lock_bh(), even if you did something
-> > like disable_bh().  If you don't want to distinguish and are happy with
-> > any type of RCU reader, you can use
-> > 
-> > 	lockdep_assert_in_rcu_reader();
-> > 
-> > I have been expecting that CONFIG_PREEMPT_RT=y kernels will break this
-> > any day now, but so far so good.  ;-)
-> 
-> Thanks Paul! So IIUC in this case we could:
-> 
-> diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
-> index 0f5eb9db0c62..58ec1eb9ae6a 100644
-> --- a/include/net/net_namespace.h
-> +++ b/include/net/net_namespace.h
-> @@ -401,7 +401,7 @@ static inline struct net *read_pnet(const possible_net_t *pnet)
->  static inline struct net *read_pnet_rcu(possible_net_t *pnet)
->  {
->  #ifdef CONFIG_NET_NS
-> -	return rcu_dereference(pnet->net);
-> +	return rcu_dereference_check(pnet->net, rcu_read_lock_bh_held());
+Hello,
 
-That should do it!
+syzbot found the following issue on:
 
-							Thanx, Paul
+HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10faf5f8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b69d18580000
 
->  #else
->  	return &init_net;
->  #endif
-> 
-> Sorry for the sideline, Eric, up to you how to proceed..
-> I'll try to remember the details better next time :)
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-0de63bb7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1142009a30a7/vmlinux-0de63bb7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5d9e46a8998d/bzImage-0de63bb7.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/526692501242/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+
+ slab radix_tree_node start ffff88803bf382c0 pointer offset 24 size 576
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 0 P4D 0 
+Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5705 Comm: syz-executor Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
+RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
+RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
+R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
+R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
+FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ rcu_do_batch kernel/rcu/tree.c:2546 [inline]
+ rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2802
+ handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:561
+ __do_softirq kernel/softirq.c:595 [inline]
+ invoke_softirq kernel/softirq.c:435 [inline]
+ __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:662
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:678
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
+ sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0xd8/0x140 kernel/locking/spinlock.c:194
+Code: 9c 8f 44 24 20 42 80 3c 23 00 74 08 4c 89 f7 e8 fe 78 2d f6 f6 44 24 21 02 75 52 41 f7 c7 00 02 00 00 74 01 fb bf 01 00 00 00 <e8> c3 0f 95 f5 65 8b 05 d4 58 0b 74 85 c0 74 43 48 c7 04 24 0e 36
+RSP: 0018:ffffc900030fef60 EFLAGS: 00000206
+RAX: 23438dd059a4b100 RBX: 1ffff9200061fdf0 RCX: ffffffff819b316a
+RDX: dffffc0000000000 RSI: ffffffff8c0aa680 RDI: 0000000000000001
+RBP: ffffc900030feff8 R08: ffffffff942f9847 R09: 1ffffffff285f308
+R10: dffffc0000000000 R11: fffffbfff285f309 R12: dffffc0000000000
+R13: 1ffff9200061fdec R14: ffffc900030fef80 R15: 0000000000000246
+ spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
+ rmqueue_bulk mm/page_alloc.c:2329 [inline]
+ __rmqueue_pcplist+0x21fd/0x2a90 mm/page_alloc.c:3004
+ rmqueue_pcplist mm/page_alloc.c:3046 [inline]
+ rmqueue mm/page_alloc.c:3077 [inline]
+ get_page_from_freelist+0x886/0x37a0 mm/page_alloc.c:3474
+ __alloc_frozen_pages_noprof+0x292/0x710 mm/page_alloc.c:4739
+ alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
+ folio_alloc_mpol_noprof mm/mempolicy.c:2289 [inline]
+ vma_alloc_folio_noprof+0x12b/0x260 mm/mempolicy.c:2324
+ folio_prealloc+0x2e/0x170
+ wp_page_copy mm/memory.c:3435 [inline]
+ do_wp_page+0x1253/0x49b0 mm/memory.c:3827
+ handle_pte_fault mm/memory.c:5905 [inline]
+ __handle_mm_fault+0x24d5/0x70f0 mm/memory.c:6032
+ handle_mm_fault+0x3e5/0x8d0 mm/memory.c:6201
+ do_user_addr_fault arch/x86/mm/fault.c:1388 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1480 [inline]
+ exc_page_fault+0x2b9/0x8b0 arch/x86/mm/fault.c:1538
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+RIP: 0010:__put_user_4+0x11/0x20 arch/x86/lib/putuser.S:88
+Code: 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 89 cb 48 c1 fb 3f 48 09 d9 0f 01 cb <89> 01 31 c9 0f 01 ca c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90 90
+RSP: 0018:ffffc900030fff00 EFLAGS: 00050202
+RAX: 0000000000000005 RBX: 0000000000000000 RCX: 00005555679927d0
+RDX: 0000000000000000 RSI: ffffffff8c0ab8e0 RDI: ffffffff8c608a00
+RBP: ffff888000dfcf20 R08: ffffffff901b5177 R09: 1ffffffff2036a2e
+R10: dffffc0000000000 R11: fffffbfff2036a2f R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000005 R15: dffffc0000000000
+ schedule_tail+0x96/0xb0 kernel/sched/core.c:5312
+ ret_from_fork+0x24/0x80 arch/x86/kernel/process.c:144
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
+RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
+RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
+R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
+R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
+FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	9c                   	pushf
+   1:	8f 44 24 20          	pop    0x20(%rsp)
+   5:	42 80 3c 23 00       	cmpb   $0x0,(%rbx,%r12,1)
+   a:	74 08                	je     0x14
+   c:	4c 89 f7             	mov    %r14,%rdi
+   f:	e8 fe 78 2d f6       	call   0xf62d7912
+  14:	f6 44 24 21 02       	testb  $0x2,0x21(%rsp)
+  19:	75 52                	jne    0x6d
+  1b:	41 f7 c7 00 02 00 00 	test   $0x200,%r15d
+  22:	74 01                	je     0x25
+  24:	fb                   	sti
+  25:	bf 01 00 00 00       	mov    $0x1,%edi
+* 2a:	e8 c3 0f 95 f5       	call   0xf5950ff2 <-- trapping instruction
+  2f:	65 8b 05 d4 58 0b 74 	mov    %gs:0x740b58d4(%rip),%eax        # 0x740b590a
+  36:	85 c0                	test   %eax,%eax
+  38:	74 43                	je     0x7d
+  3a:	48                   	rex.W
+  3b:	c7                   	.byte 0xc7
+  3c:	04 24                	add    $0x24,%al
+  3e:	0e                   	(bad)
+  3f:	36                   	ss
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
