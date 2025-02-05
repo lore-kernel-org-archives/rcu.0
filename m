@@ -1,168 +1,128 @@
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C0F22839A
-	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 01:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0885D25A63B;
+	Wed,  5 Feb 2025 01:38:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738718929; cv=none; b=EZfCd3tFubplviQ6s7kb6YEv5ME26LWKr2u7hnch/Jca6qBX4TUYuEwJbzDmJz0q7jUfNpzQQVE4s9XP30Pf9oZrBVfBZEF13YNs21cmXh83iOA9qZPyj8xVFIPc4IEwfR+b2dzDd9mrvpyHAMYnZ9Ri8THikb4u8qEKsOGHt0I=
+	t=1738719540; cv=none; b=k1dwgLBnBfSoCjNFjeHYoTqiR+GHkBVtPSYk4mgzZ14Bqdj+zhWiYK0GXBUds9Qq09Hc/CpFAL3Fo45u9Hwk/X8xXxpWlRP31UG15Lsmn6aWJX7WrhAImxTGKuOOeA+3qAYqjjcbPOCWto4t9tOI9ZYDTBNqG/8fhlWHjSdTGPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738718929; c=relaxed/simple;
-	bh=CH7XHWayXlMm6X+ldAU5cm1aFpjYOaEmlR1VogaAYjI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OT/R9GhFi/D2QdJ/LVS15d1KtQ3pNLP5xDihX9vfNlQV3FWRoPousIyxmWLoWpXp1dH7PFIc27j+mDKrltdXZZay73Fvc/92+UjWdGhG3jGlQGqKj9Qb/lQfShdz4LH0FonSLVzFuxqFGFClnoz10hEah9Zrgts0yHS5aSNbW/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=aPsMAkiD; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="aPsMAkiD"
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-438a3216fc2so61954405e9.1
-        for <rcu@vger.kernel.org>; Tue, 04 Feb 2025 17:28:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1738718926; x=1739323726; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=skstW0gZrBCHPVrwtSMOsDrBsYFzTxe36lXFm/o/T+I=;
-        b=aPsMAkiD1fo7id/uikouW8Zk2PWd6y3M0RWksKF7qhvMWv62765u0GL46ZDytRe49N
-         1o1wLQb9venavCRoi/Jdk1VYiTlO0OAYc3UlMHq+W8jOScBqLXa/RYjyP68rzyj7jUmd
-         L1MqrOg9rgtk8wVmIsKoOOHiz/fwjUhaQkxg0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738718926; x=1739323726;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=skstW0gZrBCHPVrwtSMOsDrBsYFzTxe36lXFm/o/T+I=;
-        b=YJFgfxeKGHfAkmaPvCOvZSv+/r1JiBffTb/zXHISzsnSct7HhAHidW/1peprIQNt/A
-         PtXy6I2ZRbGqRhPdOrvmcwTg4miB9XzESRlFxViYlV4oMfX+5LWe/HdDBLCvEcGfjryM
-         MPUGTB3D044d5XPkjj9YN7aitoO5XLkUsLpVCO5g1tePuHmVvcaYk37V+t01BECDRhAw
-         YCX6nB3XcOeDw6mH4NZz16PrfB6IgNaA1hI3/JnPKIo4qXntzaZOBrHjeO/WNlNOcwTq
-         DOOTzPfxNvoYczTx2fkbuhkg2SaPQh6PESu8BFhsatNemygF0hOgcl+wBlp7PwGoiIEM
-         zHVA==
-X-Forwarded-Encrypted: i=1; AJvYcCWosRQ96PQSrkvzmPm704YdLCh+kpYh7uWfTRhyOmH0xoxlmKPizUYeC6BdwKt0nKcxi9s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyuSowwpHZoOahNsOp2QN+642X3/W1asZgj1vU4Qjb174/XgRcZ
-	yvfQrGk0X6ozI+qtIS02B1sSyVCqc9Cy5owY7Bj6aRE8mmnd+EXAbQtMBNAGgfyEuFw+R02xaMT
-	JJ5bIUNdaVA6cLlxz/+sj4DjSQpmk/n9VEXWBpA==
-X-Gm-Gg: ASbGnctI44gXPvtKJBH1tndJ9VWtEUqO0bKsNiPrBHwSCs8PwjPNm0PdAXL7CB0QMLv
-	sEl9P4rCzHmk5BqxcwhNqx9ziMGZKr6N+tKhoyuVxGSuqvYi25Y7pJm+SysrwkLy2PUSky7orOA
-	==
-X-Google-Smtp-Source: AGHT+IGMXUeWyZIUGTb7fVTbXwtmB43laY/dhAFV0Yf4yccthMqcqrSF6+Uos1iQ0bgcXWln9IWa4wmI7AK8EG21pdg=
-X-Received: by 2002:a05:6000:1543:b0:385:faaa:9d1d with SMTP id
- ffacd0b85a97d-38db4929c07mr609460f8f.35.1738718925148; Tue, 04 Feb 2025
- 17:28:45 -0800 (PST)
+	s=arc-20240116; t=1738719540; c=relaxed/simple;
+	bh=oUEvIE7Ygq+NVKre2zyiV8axQSyC5SemEbXMGzGjgvg=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=IkHxEmCEbaGBe4GPslqideNd2lQXDO5F+6RZnLtfZr5jWPM8e3XfQJ8kTZtGIzwY+uJvQyY0YfO6zClxwdy2Kq3Ysv1KZLU8/GxDdYXwxAW/7T3kLTey7LHeSt9g3cnDPb//nhmL4O0/wi99LygwAJ9ppX48LXf+4368czH4vI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YnjYp6J2cz4f3jsv;
+	Wed,  5 Feb 2025 09:38:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id B165A1A138C;
+	Wed,  5 Feb 2025 09:38:54 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgBHql4rwaJnJqPCCw--.38584S2;
+	Wed, 05 Feb 2025 09:38:54 +0800 (CST)
+Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
+ map atomically
+To: Hou Tao <hotforest@gmail.com>, bpf@vger.kernel.org, rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "Paul E . McKenney" <paulmck@kernel.org>
+References: <20250204082848.13471-1-hotforest@gmail.com>
+ <20250204082848.13471-3-hotforest@gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com>
+Date: Wed, 5 Feb 2025 09:38:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ecce7241-4238-4d86-8e4c-5080937129ce@paulmck-laptop>
- <15D1150A-9B7B-4EB7-91C6-2D881D6F48DA@joelfernandes.org> <861f1dc3-bfc0-4a81-9b78-c8e9995db4cd@paulmck-laptop>
- <CAEXW_YQ4W=upWV_x1woSgq-DJPFXmBjH2pVmUnBVb_n_UKrw7A@mail.gmail.com>
- <ec293223-2a33-4d2f-b3ca-c011c3d987f3@paulmck-laptop> <CAEXW_YQXgZANSjo835VfHMqY=z8gaSWQ2bgaWtVd4-3KX0hX8w@mail.gmail.com>
- <999751de-b891-424d-a7b5-80bfa98793ff@paulmck-laptop>
-In-Reply-To: <999751de-b891-424d-a7b5-80bfa98793ff@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Tue, 4 Feb 2025 20:28:29 -0500
-X-Gm-Features: AWEUYZnoxuLEMClrezb3XSmPtsauGGEzfqmICCe3WJEDRQTvqHqDSouxEV2lAWg
-Message-ID: <CAEXW_YT6bD=sAD77yg+BXC+Q0NW0RHCg6fEYZ_jsBeXkAd_1tg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Merge rcu_seq_done_exact() logic into rcu_seq_done()
-To: paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20250204082848.13471-3-hotforest@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBHql4rwaJnJqPCCw--.38584S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJryrWr4DtF4xAFW3Aw4fKrg_yoW8uF18pF
+	ZYkr1Ut3Wvya4qqw4xArsxCFW3Awn3Ja45KF4DtryrAw1YqryvyrnYk3Z2qFy3AFWrJFnY
+	q3W2qrnIkayUKFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_
+	Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+	UvcSsGvfC2KfnxnUUI43ZEXa7IU07PEDUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Tue, Feb 4, 2025 at 3:22=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> On Tue, Feb 04, 2025 at 10:44:45AM -0500, Joel Fernandes wrote:
-> > On Thu, Jan 30, 2025 at 12:56=E2=80=AFAM Paul E. McKenney <paulmck@kern=
-el.org> wrote:
-> > > By "where we were initially", one might reasonably guess that you mea=
-nt
-> > > that the initial value and the target are one and the same.  But I su=
-spect
-> > > that you are thinking of a third value, the value of the underlying
-> > > grace-period sequence number at the time of the call to rcu_seq_snap(=
-).
-> > > But you might be thinking of something else entirely.
-> > >
-> > > > Now we move rcu_seq_done_exact. It has the exact same behavior exce=
-pt
-> > > > that instead of ULONG_MAX/2, the above situations are shrunk to abo=
-ut
-> > > > 10 counts from the target. So if target is 28, then the initial
-> > > > sequence should have been at least 18 to avoid false-positive, but
-> > > > again it is possible and I certain see in the code that it cannot b=
-e
-> > > > used this way.. (at least so far).. So all we are left with is the
-> > > > false-negative band of ~2.5 GPs..
-> > >
-> > > Here, I have the same questions.  As you no doubt guessed.
-> > >
-> > > > About "what are the consequences of failing to get this right".  I
-> > > > believe false-positive is unacceptable unless it is maybe debug cod=
-e -
-> > > > that can break functionality in code, too short GPs and all that.
-> > > > However false-negative is OK as long as the usecase can retry later
-> > > > and can afford to wait. Did I get that much correct?
-> > >
-> > > Maybe?
-> > >
-> > > Please look at this on a per-use-case basis.
-> >
-> > Sure. FWIW, I started a world-editable document here. I am planning to
-> > work on this a bit more before our meeting this week. If others
-> > knowledgeable like Frederic and others could make edits/comments,
-> > that'd be welcomed. But I basically summarized this whole thread here:
-> > https://docs.google.com/document/d/1sFNuGH4U6DFCE8sunbdWMjFhJhb1aG4goOJ=
-AnS6c6gQ/edit?usp=3Dsharing
-> >
-> > My thought is (AFAICS), this patch is still valid and
-> > rcu_seq_done_exact is a potentially better replacement to
-> > rcu_seq_done. But famous last words...
->
-> Let's start with the use case where the sequence number is being used
-> by rcu_barrier().  What happens?
++cc Cody Haas
 
-The rcu_state.barrier_sequence is used to keep track of barrier in
-progress, as there can be concurrent rcu_barrier() calls happening so
-we optimize by batching multiples of these calls.
+Sorry for the resend. I sent the reply in the HTML format.
 
-It also handles the case where the entrain IPI came through but no
-rcu_barrier() is currently in-flight (which would be weird but maybe
-it happens somehow).
+On 2/4/2025 4:28 PM, Hou Tao wrote:
+> Currently, the update of existing element in hash map involves two
+> steps:
+> 1) insert the new element at the head of the hash list
+> 2) remove the old element
+> 
+> It is possible that the concurrent lookup operation may fail to find
+> either the old element or the new element if the lookup operation starts
+> before the addition and continues after the removal.
+> 
+> Therefore, replacing the two-step update with an atomic update. After
+> the change, the update will be atomic in the perspective of the lookup
+> operation: it will either find the old element or the new element.
+> 
+> Signed-off-by: Hou Tao <hotforest@gmail.com>
+> ---
+>  kernel/bpf/hashtab.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 4a9eeb7aef85..a28b11ce74c6 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -1179,12 +1179,14 @@ static long htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>  		goto err;
+>  	}
+>  
+> -	/* add new element to the head of the list, so that
+> -	 * concurrent search will find it before old elem
+> -	 */
+> -	hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+> -	if (l_old) {
+> -		hlist_nulls_del_rcu(&l_old->hash_node);
+> +	if (!l_old) {
+> +		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+> +	} else {
+> +		/* Replace the old element atomically, so that
+> +		 * concurrent search will find either the new element or
+> +		 * the old element.
+> +		 */
+> +		hlist_nulls_replace_rcu(&l_new->hash_node, &l_old->hash_node);
+>  
+>  		/* l_old has already been stashed in htab->extra_elems, free
+>  		 * its special fields before it is available for reuse. Also
+> 
 
-It is also used to make sure we don't need to entrain on a CPU again
-if we already did an entraining for a certain rcu_barrier() invocation
-already. This is tracked by rdp->barrier_seq_snap which copies the
-value of rcu_state.barrier_sequence after the entraining. Al though I
-am currently unable to envision why the IPI handler would be called
-unnecessarily (hardware bug?) since we hold the rcu_barrier mutex
-throughout the rcu_barrier() function, including while waiting on
-CPUs.
+After thinking about it the second time, the atomic list replacement on
+the update side is enough to make lookup operation always find the
+existing element. However, due to the immediate reuse, the lookup may
+find an unexpected value. Maybe we should disable the immediate reuse
+for specific map (e.g., htab of maps).
 
-Going back to my first point, for the rcu_seq_done() in rcu_barrier(),
-we are checking if someone else did our work:
-    mutex_lock(&rcu_state.barrier_mutex);
-    /* Did someone else do our work for us? */
-    if (rcu_seq_done(&rcu_state.barrier_sequence, s))
-
-Here I think rcu_seq_done_exact() is better, because if too many
-rcu_barrier() calls concurrently made at the same time, the mutex may
-be contended. If enough time passes and we have a wrap around, we
-might end up in false-negative land which is much larger with
-rcu_seq_done() than ..done_exact(). However, that does seem to be a
-bug to begin with if the mutex contended for that long. OTOH, doing an
-rcu_barrier() again when we didn't need to doesn't seem like the end
-of the world especially if we contended on the mutex for that long.
-But at least it shows that rcu_seq_done_exact() cannot seem to hurt
-here.
-
-Hmmm,
-
- - Joel
