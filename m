@@ -1,62 +1,62 @@
 Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33142185A8
-	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 09:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7CA22A7ED
+	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 09:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738746829; cv=none; b=raZZLbI7eSo1wOcUipwGotGvXzO1wjCc2U5FgZXhnhlipf4uZtz2TBt053o08qkqaH9QFlw61qL6dn3X7yIFngx7ZwK/etQlBKJWsR99HLyAoy0+8f/aF0OlJVEmEbDzkly5YCnv7Frk26hk9kwIno+nQ0KWa2VyIeIzP6G4cnI=
+	t=1738747733; cv=none; b=L/wppHwT7eviLTzehGwjx0Ga9A9a6st7HPMBrFrVtds/R32JK4KAYXGktg2O+tOFS3h+Aw/4V0DH8AH+53o4XBDthHNhg1K5B/8nNHVg5r88biqoAVX+cwo5DDTeXZkcmC3BaamDDWomYqq+L8eOhEkvoxFEv1kS/WgiLVKo9eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738746829; c=relaxed/simple;
-	bh=BWc1Rdmpvm4dfhgWx8uNVH3MJB5xnB0MDNRzcGhlLow=;
+	s=arc-20240116; t=1738747733; c=relaxed/simple;
+	bh=s+feehdjvacWB5vZQP1hA8n/kiq5ZqfFh7Yi9F3h6JY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b55twDhqTCMpg7lefyODi42BnnXjwebu9lif0bi6xtNaBTZdAzt4EuheZ49wnZb6dQH46Q3LlagEWBpLuzJCz8Kk4DT9HiT5Dc2CRbdKz3Ig9z/QlhYF2wX8/ePTp2bqdzXcnxN9a7BPJUz9+9TBkc3FzkaaraR8ZaRIvxZav38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RSpvgFv0; arc=none smtp.client-ip=209.85.214.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=UYGfUl9qs6aDaGN1zKSnXt5cX7XWkV6CBB9JxTAGzMdrOa/J0vI27PzOi4WbyYb4+r5MBa+3KJYvzWxyJWZxb0Aiw+X+vrBgwGc8BJAoz+ROKA8wGm1WF016+f36E9DUcMuLasTydVS9SwoUQqQMb5j9cT3yO7cwJUvk+nrEGaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iEl6Pj5x; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RSpvgFv0"
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21ddab8800bso92994455ad.3
-        for <rcu@vger.kernel.org>; Wed, 05 Feb 2025 01:13:47 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEl6Pj5x"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-21f20666e72so3064505ad.1
+        for <rcu@vger.kernel.org>; Wed, 05 Feb 2025 01:28:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738746827; x=1739351627; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1738747731; x=1739352531; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4gF353iZ2yw5vN9So1t8QaGUqLVsGg8dL36FMAbegCU=;
-        b=RSpvgFv0t4u5SF7XBxJu0AJxAkCZGjP1EDIbyTsHuiiAlfukoYosTsUg1PIlZOXoxl
-         pE5sVv8hCzGG4IHLEeMxDi0gaLLk8SbVkLBXn8ozWD6INpxCXbvkDujMPOlz4y7bJDAo
-         w5tnwkA1gJB4Ay62OXCM0eV5M32sG35BGN4vLizUeCxgZjXY+sOOGrzgqhpuD+noPhV0
-         jtze+5kxuiaeQIEKJD7hrltqUgzITubjEElWKPd0qy3SnZem3pL16KzZ5XDAjpYkXukV
-         ZAFSqBTxndYWAlqkr3sEV11dH8h6gKbodWXa1744X23oX7U6zkH3Gdf3bx4TuW6r9GCv
-         Aq1Q==
+        bh=cRbxoMBzUG+hvulzwE2ajAZiA+/UrsVptxvsnAuNkP0=;
+        b=iEl6Pj5x3cxEiPEokDJOsn7Gh5lnFwncSWJF6uBbG/m0HR/0UFJbDSRw1kEaBljFhl
+         theSupQAJbpL8QWH7XiQzbrL2Dz8g2d9lK3rS49JJMtl0XdvxaF7G5gNiwBeiWgDQob1
+         XDWn5uKM01YCa4+nFdTbdZor99CZU0JG4/k8Y2sG7Vdur84LIGoAT3xHK/5NWEKYs5aR
+         fQ0w9CKOUUmomVWaRSELVHXpvhL1diXY5I5HzW0ItdSKuC0EVjJtodypB3VbCXAp+2Og
+         qGWSdotKzy63iIzRr0PNGhKJYLWUt4EHRiP50MZzXAgBs/EP0h30hb/KvkAMesJN9NX3
+         NjVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738746827; x=1739351627;
+        d=1e100.net; s=20230601; t=1738747731; x=1739352531;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4gF353iZ2yw5vN9So1t8QaGUqLVsGg8dL36FMAbegCU=;
-        b=nzvJL9sR0swPnFx3OfZ5n3QOxe2h0G1/Wi9ztFRLxio5rsRSVWUmXdEhustS9snDeF
-         w8wOUejE11Kvyyc7LUq9ZPBivZoqtcSRJFbGggPBm4ZlkEO5X+mZ3vj1njFeBQ1ofsWh
-         dgNfsrUGnB36VB0DRIzPLatATvXNEzeKkhxPmhYOmoOXSX4g5gV1qsWzWH/II88yBkye
-         wneUwps4gqL38Dygy4/OnfrhZ52iD/yN+/5AS2s22GNf/sZUrDEw+gSp6cCO4O1ReHfn
-         Tt9wwKx1V6Djc42/JURXzZMpAIgbUrxgMX8rHGZsQ5+IUcBthRTR4g7W//kORcYqXLJe
-         LRIw==
-X-Forwarded-Encrypted: i=1; AJvYcCX5qA5n7ymti76aEed5Y5xCuKSyNvV21BRhkjIHEh4RS93lp4szWRmY8ZEl8I1J3/Kf+js=@vger.kernel.org
-X-Gm-Message-State: AOJu0YznbvZ+TOcQdFcwlU23FHZvig4+qOlyIOEmv4tt3buzwImskpn5
-	BP4tEkHfqaW+jcjsVisAH/nnUFZmdvU0STQXv5+wYbM22TSQakfL
-X-Gm-Gg: ASbGncslIlPQcXRZOn6SvELTTnoDzFT2/1OlNZIYv6Skedsx6rwQZgJsZbgY6zB7/fZ
-	MA+WPBva/israQNPxvZnt4wJJ9q0Rmj9d4M7Z0p9XfyADDeKbpcqUMKBBOu9qHFzKPcdAummS6r
-	Kqua6dIdoGWGOkLL/fFcd9WCPnlC/X26BkKpaXZOpPj7ralg7x5R4Kg+2DG5a1df6D7NJlkZaZD
-	1kJYRvVnxcm8Uq4iiHCg6D1DSJ7pCw/KkEmAMb4GzktYOHpVsvg3jTSZM2Ji06CLy7q3A35dw09
-	mvQVN3vjgqCPTwqUzXTPM08neRzHaiJ9vFAWMiA=
-X-Google-Smtp-Source: AGHT+IFKFULiDyzRU53IFAsL1WTmjkLM37iRTzF1gfrP3bgNfPqfVb15MXkAsPlTMkLU3IiqzW3Wxg==
-X-Received: by 2002:a17:902:c941:b0:21f:1096:7ce with SMTP id d9443c01a7336-21f17e4900bmr34403485ad.17.1738746826630;
-        Wed, 05 Feb 2025 01:13:46 -0800 (PST)
+        bh=cRbxoMBzUG+hvulzwE2ajAZiA+/UrsVptxvsnAuNkP0=;
+        b=QL7xUjbOlig/TtwszopoutxXlxXIdMppLUplMvdIJhfpbjOBoHYzhsnDYEMKDy7rgu
+         NfvPyVwDwmzvcug/Rw944JJjL9/AFXMzZk3Z3dvYwEjR8tUcVme/djyrBqwa3af1JsFc
+         9Ip5WE8kSHs2AjnidN9wq0xysDeFbOv7/4eZMTIiRqi6QD+oGfGB8O7ro51p+CKyOtF3
+         0/vOvHthTyrxPkm8bCakTfuCU3ww4Qo/HgvLfmDOg/VC+nXb8loO4QGBj3Ns7gQkvIro
+         fsVFE+wJKNzj2IEuOxING8f2qY89fkgaR3aXmBEhMbesS9hJPrI4w5Tatjz/1Tm4F00R
+         DlLw==
+X-Forwarded-Encrypted: i=1; AJvYcCXWtAMAdbRtt+x7tGQYWdsxVolKPQ/SjN8k1Kb8gGApfyA3ITcdJqNrVBuUQc3wX7abHx0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgFFvSZzo7jhAo3Ij5GmDwdykKwamOqj7AtwNwYdxGJ9gtRb+y
+	S1X8Hfh3ob1/kEnfgVt0DWFoNfMGNkUZLOOL3cNdRm7kPqWke4NO
+X-Gm-Gg: ASbGncsn+A1bSIFp/cEnfLfKpefgvsuPTToVJdwvLbYHT0dJkTIzBrMCzIMC+1J14Uc
+	vfftZCTB37JXeVfO0VHD+p8KEPvZvJSu/jM/Hr40R/0cj5BzozvhM/Kx9TCIa9Dlv5dRBAu4vLQ
+	ir7I0PSQPiZtXIgS8RZiuWdht7hG2+lbJw3sObXRcYW/i9kgUaGpIyQnPofgmbydIUc60CXFwgU
+	M21iF3Qi1OAoADz7PhfhzjFCz0og4oQEu5EE6pzRXosbKDlH7m8bAzcqxl6TBb6hHR0/XyTS1uv
+	tlKekAPUvxqLiYZ7ddyJlYxi1yhZjZPfjG6I0TU=
+X-Google-Smtp-Source: AGHT+IFcrwCJs2Pn94HAzxRnEGQiSa/iTsozumTzxE23W3954tdRVZhsZX74IDtIJf+fPRjtP0Jdkw==
+X-Received: by 2002:a17:902:e541:b0:215:6fcd:6cd1 with SMTP id d9443c01a7336-21f17e2716cmr31457365ad.7.1738747730637;
+        Wed, 05 Feb 2025 01:28:50 -0800 (PST)
 Received: from MacBook-Air-5.local ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f9e1d77ff9sm1041407a91.13.2025.02.05.01.13.41
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f13a8221csm13539575ad.122.2025.02.05.01.28.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Feb 2025 01:13:45 -0800 (PST)
-Date: Wed, 5 Feb 2025 18:13:37 +0900
+        Wed, 05 Feb 2025 01:28:50 -0800 (PST)
+Date: Wed, 5 Feb 2025 18:28:41 +0900
 From: "Harry (Hyeonggon) Yoo" <42.hyeyoo@gmail.com>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
@@ -71,11 +71,10 @@ Cc: Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH 3/4] rcu, slab: use a regular callback function for
- kvfree_rcu
-Message-ID: <Z6MrwUgsgX-LK4eY@MacBook-Air-5.local>
+Subject: Re: [PATCH 2/4] rcu: remove trace_rcu_kvfree_callback
+Message-ID: <Z6MvSf24WA5-r5oM@MacBook-Air-5.local>
 References: <20250203-slub-tiny-kfree_rcu-v1-0-d4428bf9a8a1@suse.cz>
- <20250203-slub-tiny-kfree_rcu-v1-3-d4428bf9a8a1@suse.cz>
+ <20250203-slub-tiny-kfree_rcu-v1-2-d4428bf9a8a1@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -84,25 +83,12 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250203-slub-tiny-kfree_rcu-v1-3-d4428bf9a8a1@suse.cz>
+In-Reply-To: <20250203-slub-tiny-kfree_rcu-v1-2-d4428bf9a8a1@suse.cz>
 
-On Mon, Feb 03, 2025 at 10:28:49AM +0100, Vlastimil Babka wrote:
-> RCU has been special-casing callback function pointers that are integers
-> lower than 4096 as offsets of rcu_head for kvfree() instead. The tree
-> RCU implementation no longer does that as the batched kvfree_rcu() is
-> not a simple call_rcu(). The tiny RCU still does, and the plan is also
-> to make tree RCU use call_rcu() for SLUB_TINY configurations.
-> 
-> Instead of teaching tree RCU again to special case the offsets, let's
-> remove the special casing completely. Since there's no SLOB anymore, it
-> is possible to create a callback function that can take a pointer to a
-> middle of slab object with unknown offset and determine the object's
-> pointer before freeing it, so implement that as kvfree_rcu_cb().
-> 
-> Large kmalloc and vmalloc allocations are handled simply by aligning
-> down to page size. For that we retain the requirement that the offset is
-> smaller than 4096. But we can remove __is_kvfree_rcu_offset() completely
-> and instead just opencode the condition in the BUILD_BUG_ON() check.
+On Mon, Feb 03, 2025 at 10:28:48AM +0100, Vlastimil Babka wrote:
+> Tree RCU does not handle kvfree_rcu() by queueing individual objects by
+> call_rcu() anymore, thus the tracepoint and associated
+> __is_kvfree_rcu_offset() check is dead code now. Remove it.
 > 
 > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
