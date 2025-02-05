@@ -1,217 +1,168 @@
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE24079F5
-	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 00:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C0F22839A
+	for <rcu@vger.kernel.org>; Wed,  5 Feb 2025 01:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738715662; cv=none; b=mKmYKkQOM69mwkg5IBE61UKBlO5DhWQG4am6A9gQqvRkGv2Juc6mvYvq+JZTLRnD8rfy79GOHcyqjj0P44VNaesesD+EueksMMafhyPHy+MsrBx+iUsQqKDvg3bTvPx4z+jRt0mpNvH6dMMfqn0mmNVzitFZFdcSaqe9fIOEDtY=
+	t=1738718929; cv=none; b=EZfCd3tFubplviQ6s7kb6YEv5ME26LWKr2u7hnch/Jca6qBX4TUYuEwJbzDmJz0q7jUfNpzQQVE4s9XP30Pf9oZrBVfBZEF13YNs21cmXh83iOA9qZPyj8xVFIPc4IEwfR+b2dzDd9mrvpyHAMYnZ9Ri8THikb4u8qEKsOGHt0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738715662; c=relaxed/simple;
-	bh=Q4Vw+3Re6Vn9ZU9fP0QUBKUW7rK+C0tlTr4zhN2dF3E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CJs0sfYp1mjKzMtFiGWNEq1PkktVxDbfjZm9fHwnXNwAWCmSIIBkD3zXoLtDORRnnyQuk+FS1zuKXYaWxn3fnQLsyodlncBFz4swOosEJjR5kpRNdo+ZL8AuRjmVo4dbVy7wsDhWWAVO32ufvlVefYQPvC2K8Ab8OGBmFq+kStg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-851f02bbfd8so381369639f.2
-        for <rcu@vger.kernel.org>; Tue, 04 Feb 2025 16:34:20 -0800 (PST)
+	s=arc-20240116; t=1738718929; c=relaxed/simple;
+	bh=CH7XHWayXlMm6X+ldAU5cm1aFpjYOaEmlR1VogaAYjI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OT/R9GhFi/D2QdJ/LVS15d1KtQ3pNLP5xDihX9vfNlQV3FWRoPousIyxmWLoWpXp1dH7PFIc27j+mDKrltdXZZay73Fvc/92+UjWdGhG3jGlQGqKj9Qb/lQfShdz4LH0FonSLVzFuxqFGFClnoz10hEah9Zrgts0yHS5aSNbW/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=aPsMAkiD; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="aPsMAkiD"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-438a3216fc2so61954405e9.1
+        for <rcu@vger.kernel.org>; Tue, 04 Feb 2025 17:28:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1738718926; x=1739323726; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=skstW0gZrBCHPVrwtSMOsDrBsYFzTxe36lXFm/o/T+I=;
+        b=aPsMAkiD1fo7id/uikouW8Zk2PWd6y3M0RWksKF7qhvMWv62765u0GL46ZDytRe49N
+         1o1wLQb9venavCRoi/Jdk1VYiTlO0OAYc3UlMHq+W8jOScBqLXa/RYjyP68rzyj7jUmd
+         L1MqrOg9rgtk8wVmIsKoOOHiz/fwjUhaQkxg0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738715660; x=1739320460;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kQPG7nsKYYHsfpJzpMresG+1MH6cnrQ1XLV4kImA0a4=;
-        b=qQINZyzDD8QTEaWIQRq6IUeqLv9nSX+0ZkoSnUAXfnrJj6jcWd5Or4qmwSdUb2S3ch
-         I+G+lkWdUb9WAXbloIoIHEDVzk6SqEgaYa12yxKUUmyTUuZO6g0zzRT3RYE8eiRDhFrw
-         CRLyh+53UsfRWhw3r1MXqmrYGVWjfGUPNHBYnM98gym7caGXYZpJpjAsZCkgSigQjAQW
-         +ipkUHi3YqYH8h3RiibNSqnwBGvjFtJGgaVsUCoEWyzYNL3nvelvJhK65pY+doV5OMPv
-         3+3B940P0ns8vdKi6Oj4T2/qQlZ3DthRSocHcnKOY8qs/3qm19ppN943QsfV8iBWsmdi
-         T9EA==
-X-Forwarded-Encrypted: i=1; AJvYcCXdiy9/WZ4FyCUgYFiCmXSYIA/rhk1HD2kIT14Wo0HxsczPRUv6/0rHAdb1MjSeLKDPZ2k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxf3jvsaWiXkpTS0ty6nb2rDKuA9yOcKBEMhd78OhJp/q62sDRt
-	NYqsw8H26jmBIlp1OGbkb1Opad4mp6VX8mocozyp4ZjaYW44zph7xCVZiyVm/i3c0kspUhkWyhO
-	emRDdeHXjy1KgEk1btqsDxdh51bOrqd0p5Myudu7RJU4CNLj8/fs94tI=
-X-Google-Smtp-Source: AGHT+IFvzyjgGoqm3tyli3Mq8Q6irtgPgsoSG3VLwGoxQI8kXgXlJs+2lQJS5s3nyVT4pOM/zBm2aAXAWw1hXT/KEe6xURj7AucA
+        d=1e100.net; s=20230601; t=1738718926; x=1739323726;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=skstW0gZrBCHPVrwtSMOsDrBsYFzTxe36lXFm/o/T+I=;
+        b=YJFgfxeKGHfAkmaPvCOvZSv+/r1JiBffTb/zXHISzsnSct7HhAHidW/1peprIQNt/A
+         PtXy6I2ZRbGqRhPdOrvmcwTg4miB9XzESRlFxViYlV4oMfX+5LWe/HdDBLCvEcGfjryM
+         MPUGTB3D044d5XPkjj9YN7aitoO5XLkUsLpVCO5g1tePuHmVvcaYk37V+t01BECDRhAw
+         YCX6nB3XcOeDw6mH4NZz16PrfB6IgNaA1hI3/JnPKIo4qXntzaZOBrHjeO/WNlNOcwTq
+         DOOTzPfxNvoYczTx2fkbuhkg2SaPQh6PESu8BFhsatNemygF0hOgcl+wBlp7PwGoiIEM
+         zHVA==
+X-Forwarded-Encrypted: i=1; AJvYcCWosRQ96PQSrkvzmPm704YdLCh+kpYh7uWfTRhyOmH0xoxlmKPizUYeC6BdwKt0nKcxi9s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyuSowwpHZoOahNsOp2QN+642X3/W1asZgj1vU4Qjb174/XgRcZ
+	yvfQrGk0X6ozI+qtIS02B1sSyVCqc9Cy5owY7Bj6aRE8mmnd+EXAbQtMBNAGgfyEuFw+R02xaMT
+	JJ5bIUNdaVA6cLlxz/+sj4DjSQpmk/n9VEXWBpA==
+X-Gm-Gg: ASbGnctI44gXPvtKJBH1tndJ9VWtEUqO0bKsNiPrBHwSCs8PwjPNm0PdAXL7CB0QMLv
+	sEl9P4rCzHmk5BqxcwhNqx9ziMGZKr6N+tKhoyuVxGSuqvYi25Y7pJm+SysrwkLy2PUSky7orOA
+	==
+X-Google-Smtp-Source: AGHT+IGMXUeWyZIUGTb7fVTbXwtmB43laY/dhAFV0Yf4yccthMqcqrSF6+Uos1iQ0bgcXWln9IWa4wmI7AK8EG21pdg=
+X-Received: by 2002:a05:6000:1543:b0:385:faaa:9d1d with SMTP id
+ ffacd0b85a97d-38db4929c07mr609460f8f.35.1738718925148; Tue, 04 Feb 2025
+ 17:28:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1687:b0:3cf:fa94:c7d with SMTP id
- e9e14a558f8ab-3d04f45b33cmr9252425ab.9.1738715658443; Tue, 04 Feb 2025
- 16:34:18 -0800 (PST)
-Date: Tue, 04 Feb 2025 16:34:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67a2b20a.050a0220.50516.0003.GAE@google.com>
-Subject: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL pointer
- dereference in rcu_core (3)
-From: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, josh@joshtriplett.org, 
-	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, paulmck@kernel.org, 
-	rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <ecce7241-4238-4d86-8e4c-5080937129ce@paulmck-laptop>
+ <15D1150A-9B7B-4EB7-91C6-2D881D6F48DA@joelfernandes.org> <861f1dc3-bfc0-4a81-9b78-c8e9995db4cd@paulmck-laptop>
+ <CAEXW_YQ4W=upWV_x1woSgq-DJPFXmBjH2pVmUnBVb_n_UKrw7A@mail.gmail.com>
+ <ec293223-2a33-4d2f-b3ca-c011c3d987f3@paulmck-laptop> <CAEXW_YQXgZANSjo835VfHMqY=z8gaSWQ2bgaWtVd4-3KX0hX8w@mail.gmail.com>
+ <999751de-b891-424d-a7b5-80bfa98793ff@paulmck-laptop>
+In-Reply-To: <999751de-b891-424d-a7b5-80bfa98793ff@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Tue, 4 Feb 2025 20:28:29 -0500
+X-Gm-Features: AWEUYZnoxuLEMClrezb3XSmPtsauGGEzfqmICCe3WJEDRQTvqHqDSouxEV2lAWg
+Message-ID: <CAEXW_YT6bD=sAD77yg+BXC+Q0NW0RHCg6fEYZ_jsBeXkAd_1tg@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Merge rcu_seq_done_exact() logic into rcu_seq_done()
+To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Feb 4, 2025 at 3:22=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> On Tue, Feb 04, 2025 at 10:44:45AM -0500, Joel Fernandes wrote:
+> > On Thu, Jan 30, 2025 at 12:56=E2=80=AFAM Paul E. McKenney <paulmck@kern=
+el.org> wrote:
+> > > By "where we were initially", one might reasonably guess that you mea=
+nt
+> > > that the initial value and the target are one and the same.  But I su=
+spect
+> > > that you are thinking of a third value, the value of the underlying
+> > > grace-period sequence number at the time of the call to rcu_seq_snap(=
+).
+> > > But you might be thinking of something else entirely.
+> > >
+> > > > Now we move rcu_seq_done_exact. It has the exact same behavior exce=
+pt
+> > > > that instead of ULONG_MAX/2, the above situations are shrunk to abo=
+ut
+> > > > 10 counts from the target. So if target is 28, then the initial
+> > > > sequence should have been at least 18 to avoid false-positive, but
+> > > > again it is possible and I certain see in the code that it cannot b=
+e
+> > > > used this way.. (at least so far).. So all we are left with is the
+> > > > false-negative band of ~2.5 GPs..
+> > >
+> > > Here, I have the same questions.  As you no doubt guessed.
+> > >
+> > > > About "what are the consequences of failing to get this right".  I
+> > > > believe false-positive is unacceptable unless it is maybe debug cod=
+e -
+> > > > that can break functionality in code, too short GPs and all that.
+> > > > However false-negative is OK as long as the usecase can retry later
+> > > > and can afford to wait. Did I get that much correct?
+> > >
+> > > Maybe?
+> > >
+> > > Please look at this on a per-use-case basis.
+> >
+> > Sure. FWIW, I started a world-editable document here. I am planning to
+> > work on this a bit more before our meeting this week. If others
+> > knowledgeable like Frederic and others could make edits/comments,
+> > that'd be welcomed. But I basically summarized this whole thread here:
+> > https://docs.google.com/document/d/1sFNuGH4U6DFCE8sunbdWMjFhJhb1aG4goOJ=
+AnS6c6gQ/edit?usp=3Dsharing
+> >
+> > My thought is (AFAICS), this patch is still valid and
+> > rcu_seq_done_exact is a potentially better replacement to
+> > rcu_seq_done. But famous last words...
+>
+> Let's start with the use case where the sequence number is being used
+> by rcu_barrier().  What happens?
 
-syzbot found the following issue on:
+The rcu_state.barrier_sequence is used to keep track of barrier in
+progress, as there can be concurrent rcu_barrier() calls happening so
+we optimize by batching multiples of these calls.
 
-HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10faf5f8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
-dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b69d18580000
+It also handles the case where the entrain IPI came through but no
+rcu_barrier() is currently in-flight (which would be weird but maybe
+it happens somehow).
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-0de63bb7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1142009a30a7/vmlinux-0de63bb7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5d9e46a8998d/bzImage-0de63bb7.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/526692501242/mount_0.gz
+It is also used to make sure we don't need to entrain on a CPU again
+if we already did an entraining for a certain rcu_barrier() invocation
+already. This is tracked by rdp->barrier_seq_snap which copies the
+value of rcu_state.barrier_sequence after the entraining. Al though I
+am currently unable to envision why the IPI handler would be called
+unnecessarily (hardware bug?) since we hold the rcu_barrier mutex
+throughout the rcu_barrier() function, including while waiting on
+CPUs.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+Going back to my first point, for the rcu_seq_done() in rcu_barrier(),
+we are checking if someone else did our work:
+    mutex_lock(&rcu_state.barrier_mutex);
+    /* Did someone else do our work for us? */
+    if (rcu_seq_done(&rcu_state.barrier_sequence, s))
 
- slab radix_tree_node start ffff88803bf382c0 pointer offset 24 size 576
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 0 P4D 0 
-Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5705 Comm: syz-executor Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
-RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
-RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
-R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
-R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
-FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- rcu_do_batch kernel/rcu/tree.c:2546 [inline]
- rcu_core+0xaaa/0x17a0 kernel/rcu/tree.c:2802
- handle_softirqs+0x2d4/0x9b0 kernel/softirq.c:561
- __do_softirq kernel/softirq.c:595 [inline]
- invoke_softirq kernel/softirq.c:435 [inline]
- __irq_exit_rcu+0xf7/0x220 kernel/softirq.c:662
- irq_exit_rcu+0x9/0x30 kernel/softirq.c:678
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1049 [inline]
- sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1049
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0xd8/0x140 kernel/locking/spinlock.c:194
-Code: 9c 8f 44 24 20 42 80 3c 23 00 74 08 4c 89 f7 e8 fe 78 2d f6 f6 44 24 21 02 75 52 41 f7 c7 00 02 00 00 74 01 fb bf 01 00 00 00 <e8> c3 0f 95 f5 65 8b 05 d4 58 0b 74 85 c0 74 43 48 c7 04 24 0e 36
-RSP: 0018:ffffc900030fef60 EFLAGS: 00000206
-RAX: 23438dd059a4b100 RBX: 1ffff9200061fdf0 RCX: ffffffff819b316a
-RDX: dffffc0000000000 RSI: ffffffff8c0aa680 RDI: 0000000000000001
-RBP: ffffc900030feff8 R08: ffffffff942f9847 R09: 1ffffffff285f308
-R10: dffffc0000000000 R11: fffffbfff285f309 R12: dffffc0000000000
-R13: 1ffff9200061fdec R14: ffffc900030fef80 R15: 0000000000000246
- spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
- rmqueue_bulk mm/page_alloc.c:2329 [inline]
- __rmqueue_pcplist+0x21fd/0x2a90 mm/page_alloc.c:3004
- rmqueue_pcplist mm/page_alloc.c:3046 [inline]
- rmqueue mm/page_alloc.c:3077 [inline]
- get_page_from_freelist+0x886/0x37a0 mm/page_alloc.c:3474
- __alloc_frozen_pages_noprof+0x292/0x710 mm/page_alloc.c:4739
- alloc_pages_mpol+0x311/0x660 mm/mempolicy.c:2270
- folio_alloc_mpol_noprof mm/mempolicy.c:2289 [inline]
- vma_alloc_folio_noprof+0x12b/0x260 mm/mempolicy.c:2324
- folio_prealloc+0x2e/0x170
- wp_page_copy mm/memory.c:3435 [inline]
- do_wp_page+0x1253/0x49b0 mm/memory.c:3827
- handle_pte_fault mm/memory.c:5905 [inline]
- __handle_mm_fault+0x24d5/0x70f0 mm/memory.c:6032
- handle_mm_fault+0x3e5/0x8d0 mm/memory.c:6201
- do_user_addr_fault arch/x86/mm/fault.c:1388 [inline]
- handle_page_fault arch/x86/mm/fault.c:1480 [inline]
- exc_page_fault+0x2b9/0x8b0 arch/x86/mm/fault.c:1538
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0010:__put_user_4+0x11/0x20 arch/x86/lib/putuser.S:88
-Code: 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 89 cb 48 c1 fb 3f 48 09 d9 0f 01 cb <89> 01 31 c9 0f 01 ca c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90 90
-RSP: 0018:ffffc900030fff00 EFLAGS: 00050202
-RAX: 0000000000000005 RBX: 0000000000000000 RCX: 00005555679927d0
-RDX: 0000000000000000 RSI: ffffffff8c0ab8e0 RDI: ffffffff8c608a00
-RBP: ffff888000dfcf20 R08: ffffffff901b5177 R09: 1ffffffff2036a2e
-R10: dffffc0000000000 R11: fffffbfff2036a2f R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000005 R15: dffffc0000000000
- schedule_tail+0x96/0xb0 kernel/sched/core.c:5312
- ret_from_fork+0x24/0x80 arch/x86/kernel/process.c:144
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 0000000000000000 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
-RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
-RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
-R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
-R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
-FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	9c                   	pushf
-   1:	8f 44 24 20          	pop    0x20(%rsp)
-   5:	42 80 3c 23 00       	cmpb   $0x0,(%rbx,%r12,1)
-   a:	74 08                	je     0x14
-   c:	4c 89 f7             	mov    %r14,%rdi
-   f:	e8 fe 78 2d f6       	call   0xf62d7912
-  14:	f6 44 24 21 02       	testb  $0x2,0x21(%rsp)
-  19:	75 52                	jne    0x6d
-  1b:	41 f7 c7 00 02 00 00 	test   $0x200,%r15d
-  22:	74 01                	je     0x25
-  24:	fb                   	sti
-  25:	bf 01 00 00 00       	mov    $0x1,%edi
-* 2a:	e8 c3 0f 95 f5       	call   0xf5950ff2 <-- trapping instruction
-  2f:	65 8b 05 d4 58 0b 74 	mov    %gs:0x740b58d4(%rip),%eax        # 0x740b590a
-  36:	85 c0                	test   %eax,%eax
-  38:	74 43                	je     0x7d
-  3a:	48                   	rex.W
-  3b:	c7                   	.byte 0xc7
-  3c:	04 24                	add    $0x24,%al
-  3e:	0e                   	(bad)
-  3f:	36                   	ss
+Here I think rcu_seq_done_exact() is better, because if too many
+rcu_barrier() calls concurrently made at the same time, the mutex may
+be contended. If enough time passes and we have a wrap around, we
+might end up in false-negative land which is much larger with
+rcu_seq_done() than ..done_exact(). However, that does seem to be a
+bug to begin with if the mutex contended for that long. OTOH, doing an
+rcu_barrier() again when we didn't need to doesn't seem like the end
+of the world especially if we contended on the mutex for that long.
+But at least it shows that rcu_seq_done_exact() cannot seem to hurt
+here.
 
+Hmmm,
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+ - Joel
