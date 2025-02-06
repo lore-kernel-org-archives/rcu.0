@@ -1,38 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C71D22D4EC;
-	Thu,  6 Feb 2025 09:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0955F226522;
+	Thu,  6 Feb 2025 09:59:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738835915; cv=none; b=klt40b8cPgwy3M+uozEOpZYMeZfMyXZd1IIAQAVOiZk3KeRGPDPHQUs8Oe/2W8hUbVqweqsmkQL3cUuVPOGfvMhxEpTSezH1NgMf5qa2Cq+t65iEu5HL85VAcY6e7DZ21EgVuUCNCr3BbH4mSbP+XyKxfehP8QVahoGDPEsWTdM=
+	t=1738835941; cv=none; b=kyJNyqOSlW4Y3vdbFM5pfQKhIe2tPKIPAwDE6jiVdWiY89C7xhWy9mChTx6UPGWTPdcMqrpvD1Xzah+teJ2FDSsn7CySikhQAf3Vo62nZA09U2vCo3A/z8J4w5h7UcxFiG06NhX7WYKh06bTC4+qa/RGBGnJJ9uczTJtWTRnMAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738835915; c=relaxed/simple;
-	bh=fJZ5knD00ceYH7HVhwhzARvJoSUI+ycBzjsOjt2tNaI=;
+	s=arc-20240116; t=1738835941; c=relaxed/simple;
+	bh=+pCwVkUxh1c4QtxylWPTynxOfoxiyt0sFQ8MWyRjBMQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EXOn1d5OW6I1pmnQU3wefO5Jcjo0O73v0wsXF7u6i2D6o3AIjKpxzWuvBFZUrvlLT0VrdvtjN/S9WvvybltsNS4QBQJJ+mbDhDoCU1PIrcmR/YEvXKYpy3O84PFnFvhv8Zi8RIrn0sjxdkpbQJkJHxs4eNhZj1ByezhdMU6JQio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P2qD16d4; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=bVWpCpEOS+73A2Zx++GTPtwgCDREZT02RCtkN88Ckxe85zsq96epOPYxjXMkTupdXEDlwT5tli90eRPqG1U6hbwASEZagjc3E3HcqexEQDgnV6YsmCAxU0JCKQClnGmG9epCjZHeajYcnAfTjEPpjVfIEfPFBy7hrOqCr+Yw5Bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JDzeH9GC; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P2qD16d4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E60F3C4CEDD;
-	Thu,  6 Feb 2025 09:58:34 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JDzeH9GC"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D447AC4CEDD;
+	Thu,  6 Feb 2025 09:59:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738835915;
-	bh=fJZ5knD00ceYH7HVhwhzARvJoSUI+ycBzjsOjt2tNaI=;
+	s=k20201202; t=1738835940;
+	bh=+pCwVkUxh1c4QtxylWPTynxOfoxiyt0sFQ8MWyRjBMQ=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=P2qD16d4T9jav2JGdccXG5Yq0og3IAyEn65iJz2EMKkIeQrvciMOcq+Nt8fbeVf6H
-	 ESjedLfm2hYGmNapWyYGCOYoDVgpn7QnSLdcTNoWf7qpOcBRwKSNQijbr1sOOOXM/f
-	 LZzG03PJTqqCuS8M5RQI4IB0bp0cayRRnd+6mrKgDN8OSCveWlsR8bGB6NZ3HjCbo7
-	 peRZPMIBObWMr7vTvR7cDW9LnZKT/2Nks+Y2e+rGFXjv6k4sVLoqAo86WeBy4CHdce
-	 wFd7B1Pymlc+8IPzptcshMlahCUJ4y97zMr9RI7o9HbIP/9fCMPEJ6aIDGN4IYMixL
-	 aHYJ0Xxug1mFA==
+	b=JDzeH9GCxH+zutCAFqJdQhZ8eQZMk/pyLFhOQ6EEuGk8wGWsfAeZ7gW65O7GDkhxU
+	 q/5o17Z0cY+8xZAPQUYz/vfGvpKqjp5W1AZ0lipLFFsuENvHmcHUDWO1AohzXNjTlT
+	 iaiwBv5FoFW6+kag6xjlz7iWRxVQKeOtmOPQl2HaxTpvcyJIOHISIHXbZMa4Mk1hls
+	 s5IWYLJXtCs8/8pLbE0q87Fp+kioAuTkMcC9aaVmuOI/DXBp3HVlWgYrOy5ej/u05I
+	 pJL1DE560XLYEJNLIlEafiVuUpAjiDQZrrkJ7+kPmm3OixE9K+i30Vhlkn2F1VuHqf
+	 fm1FaaVTevNWw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 83854CE0809; Thu,  6 Feb 2025 01:58:34 -0800 (PST)
-Date: Thu, 6 Feb 2025 01:58:34 -0800
+	id 92964CE0809; Thu,  6 Feb 2025 01:59:00 -0800 (PST)
+Date: Thu, 6 Feb 2025 01:59:00 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>,
 	rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	kernel-team@meta.com, rostedt@goodmis.org,
 	Frederic Weisbecker <frederic@kernel.org>,
@@ -44,7 +43,7 @@ Cc: Petr Mladek <pmladek@suse.com>,
 	linux-trace-kernel@vger.kernel.org
 Subject: Re: [PATCH rcu v2] 4/5] rcu-tasks: Move RCU Tasks self-tests to
  core_initcall()
-Message-ID: <e3012763-2242-476e-842c-678ecb1e7622@paulmck-laptop>
+Message-ID: <a6090e06-34af-4b71-a9b5-79d94005dc15@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <a68e2e94-b4c6-4791-b581-ecbf3fee28e9@paulmck-laptop>
  <84pljwi2w0.fsf@jogness.linutronix.de>
@@ -55,36 +54,48 @@ References: <a68e2e94-b4c6-4791-b581-ecbf3fee28e9@paulmck-laptop>
  <841pwc11ae.fsf@jogness.linutronix.de>
  <84y0ykyqf6.fsf@jogness.linutronix.de>
  <2a7774e4-a3fc-48d5-97b0-6f74396e7f93@paulmck-laptop>
- <84ed0bmq9a.fsf@jogness.linutronix.de>
+ <20250206090249.G7TXOt0y@linutronix.de>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <84ed0bmq9a.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250206090249.G7TXOt0y@linutronix.de>
 
-On Thu, Feb 06, 2025 at 09:34:01AM +0106, John Ogness wrote:
-> On 2025-02-05, "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > commit 35679c18b062368855e183ee6712ca5c16145d8c
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Wed Feb 5 12:27:23 2025 -0800
-> >
-> >     printk: Flush console log from kernel_power_off()
-> >     
-> >     Kernels built with CONFIG_PREEMPT_RT=y can lose significant console output
-> >     and shutdown time, which hides shutdown-time RCU issues from rcutorture.
-> >     Therefore, make pr_flush() public and invoke it after then last print
-> >     in kernel_power_off().
-> >     
-> >     [ paulmck: Apply John Ogness feedback. ]
-> >     
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Thu, Feb 06, 2025 at 10:02:49AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2025-02-05 15:50:14 [-0800], Paul E. McKenney wrote:
+> > diff --git a/include/linux/printk.h b/include/linux/printk.h
+> > index 4217a9f412b2..d658d7e81bef 100644
+> > --- a/include/linux/printk.h
+> > +++ b/include/linux/printk.h
+> > @@ -207,6 +207,7 @@ void printk_legacy_allow_panic_sync(void);
+> >  extern bool nbcon_device_try_acquire(struct console *con);
+> >  extern void nbcon_device_release(struct console *con);
+> >  void nbcon_atomic_flush_unsafe(void);
+> > +bool pr_flush(int timeout_ms, bool reset_on_progress);
+> …
+> > diff --git a/kernel/reboot.c b/kernel/reboot.c
+> > index a701000bab34..a84828d0757b 100644
+> > --- a/kernel/reboot.c
+> > +++ b/kernel/reboot.c
+> > @@ -704,6 +704,7 @@ void kernel_power_off(void)
+> >  	migrate_to_reboot_cpu();
+> >  	syscore_shutdown();
+> >  	pr_emerg("Power down\n");
+> > +	pr_flush(1000, 1);
 > 
-> Reviewed-by: John Ogness <john.ogness@linutronix.de>
+> this could be true instead 1 given that the type is bool
 
-Thank you!  I will apply this on my next rebase.
+Good point, and this matches other usage.  Will fix on my next rebase.
 
 							Thanx, Paul
+
+> >  	kmsg_dump(KMSG_DUMP_SHUTDOWN);
+> >  	machine_power_off();
+> >  }
+> 
+> Sebastian
