@@ -1,65 +1,40 @@
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126471DE2C5
-	for <rcu@vger.kernel.org>; Fri,  7 Feb 2025 09:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DCB1D618A;
+	Fri,  7 Feb 2025 09:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738920755; cv=none; b=iPmV7JzySNGDm4jiktbWyRclDYzAaEML4Dr5/yOZ/yYIqPxTGsQ/Z+iH10JWcy6aPJRQRnGJykmclbaVwJXda21vnxfDdz+GmWvsVXEmSXOQRMVKY0wiuEjfz4QvDPGcw+gd95i8ICWM7S/EZm1B6hKFWKiqaGzr6xjl9qpJq3s=
+	t=1738921292; cv=none; b=R5xpwuLiWanwirdgJBS75CItW4c/gjDN0DDR+GcKsBbTRlKcr1nkdrO6dG6HZbSplTJ4OzjhWDyKQ0UCO86Rnq1VQ4OrHguLHh0rZyaeUyiOJjp2nRKBsEPyOuLiQEYFxAEpjuKUOLDwveVbIVH6b4XzOby+whGG5aedBVLEbEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738920755; c=relaxed/simple;
-	bh=U5K/bmzzMNTyixCzS6tI8UaoaljUYYEAWu8cFv9t0pU=;
+	s=arc-20240116; t=1738921292; c=relaxed/simple;
+	bh=cP0kGHuvU3nRFuyuh7Kc7W3rfxUKkOVYL5Mob7ZUKgE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HSNPhjTzU2iG8uIHWMDYtYEop6GlfLQaZVvBlD/do7TAjPBL4IKs0FilV9rnlQtamPoOcOgyJ7CaoEGlhCodZHSXpsd/470HRAIdQ2ivSfx3s+CJz6OKv42R/rdOfsceAyuvqW2SMpmY6XMO8j6SEIGmtra8GHOxtd0K+Fj4HmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bHL6i3cA; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCarXidu8hj5eSnJHmDq4tWEGyb96Om3WXSzR5PztI8C6agOthUcPVZLPizILccNtUwQ/QIcXX4t4O+Dp0y1PIHFsOMeUkwYt8vkTwQyGmVmdmCzI45eKmcTCwuhMgzWtYIVnMtge9HaFaQW8+3GX65/5nBdJ/pSKLhQ97sHiRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=W0PE77Qt; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bHL6i3cA"
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4364a37a1d7so18187435e9.3
-        for <rcu@vger.kernel.org>; Fri, 07 Feb 2025 01:32:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738920752; x=1739525552; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w8aNJoNQ8/KZ3zGcS/1S9RhAv2oCaPXrYb2HHOjsrgw=;
-        b=bHL6i3cAT7vabO+bZZtblsPU319t7gHKa4r7TN9mgVIzch3XtAbhmeIM3M8cs+YR1I
-         XNoeMT4nNam83PXa/4qxThRK8jXQex+TQZ2BoLLhx/KLbKtbTD9Y6Bj+XmK8/J+U7ay9
-         qOUpCMZYgwalRG4+VDZn1eBhCn/+w8u3llRWHVYb0g+Ee5SJuLKdMXFOGa/4e4lOg60Q
-         WjJh02y7N+pDiN8WnIj2bVptFTPcYbbFd8coHsCm3cQZhZYVDCUtFkh0/nFBwu2Znk99
-         gujzBgckMGRAiWxFMA2udjfXQf1fZHsO3dGEOrDHc+P3aQxjYIMtFvl+VuDgkj9fYmC+
-         sA8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738920752; x=1739525552;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w8aNJoNQ8/KZ3zGcS/1S9RhAv2oCaPXrYb2HHOjsrgw=;
-        b=tuZZjdBL3d7Mm6J1kdWfuUrNXAcalLwzxPYAf5NHqt3MnZXFSBDf/2ZAgD+7KCk6C0
-         fiHnlhUra4QN5m/wwZzlsuIfOl1S5pmvqfApncyz5BmdBlr5hvkId5N6pX3ok2UibF5f
-         0bdiB1Z6DsTudhoAgWMvBCM2ud4+h3M+CMSdeEBoF1UkcuYoTkCV2soOUJzZJ/nHA0T2
-         oMn58G99OxRTcD+lFCBfhkIWC6sgtXpmhFBvrGXmoU7MnBWwS19Dx9XQuWE3FuYSy/iw
-         JJWCyE/AHr4xlA0e1xoY786pgQmye2INQtYTjJ/xSkA/SnpPQe4gLPQYKEgvx6rODh87
-         4ytA==
-X-Forwarded-Encrypted: i=1; AJvYcCVPLci9+1/ysmarZJ0I0VfFSeWZ6VY3bwXzdLepTyxZAQ4nB4eGcwGrLeBc40Vrjo2JlqU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwS/7chS+bc2Os1kF90CR4EJRgKIBnE1vj8UVp5UyjmU1Ux/sRj
-	ffiNhdoWMDMo+hNIbAPPahxThvtj/Hu0x6cYxai0U3YAFV/awJwL5GbupijFTg==
-X-Gm-Gg: ASbGncsyueazAe5hqWfSEe78lv5AKuZJR+hagoHthjU/QSloWiWIE+n0ZiTkrmI5dAY
-	YP/MWRzoydlfRELO0BjJdsiRoevyV/H/CMMJb4b2t3dw2xhaTdNAdIIOXskC0re+VK1gJQQ32/h
-	KlETLz6DTZl3UxECs4n0crOEwjpnH3OTINa6iPmZlrjkZ19byulnA47fh1Onid7cJ7ToOVna34x
-	CG+LeMH+cyBNfuTiyjsC5gPFfN6C0wCHF9Be4EEqDrxu9zzfkek6ApPswc4PDpP/faeln3umXxS
-	nZ0S0Ch0UgeYKD4y
-X-Google-Smtp-Source: AGHT+IFjez7z/oMyp8FZ4MzUt+FHIKHXHPa3EjEklv71c4Z6v/8R41o727c+Gb8EycHsA7aojSutXg==
-X-Received: by 2002:a05:600c:19c9:b0:434:a0bf:98ea with SMTP id 5b1f17b1804b1-4392498c08cmr20059475e9.9.1738920752144;
-        Fri, 07 Feb 2025 01:32:32 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:9c:201:fad3:ca37:9540:5c99])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4391dfdc1acsm48592775e9.40.2025.02.07.01.32.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2025 01:32:31 -0800 (PST)
-Date: Fri, 7 Feb 2025 10:32:25 +0100
-From: Marco Elver <elver@google.com>
-To: Peter Zijlstra <peterz@infradead.org>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="W0PE77Qt"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Y1gqRSqWYUoS/5b4bvazFO7Ddo/G+ehsqfGlUNrq33s=; b=W0PE77QtqF8+1sI/uGMrmKcTum
+	6MbjNVPlK/r7lq3fEtLxK7DIar/jgbEkq5rQMStZsn1YzeUUJJKrM0YOHEPiO5iiIVh1mTEPwgQsx
+	DLsFn4XV4xB7ZGONnwOvWFYljnOHWJKo6k8qiI2Edw07tcYIE9vvXks8Si9jjL5ky9QxjWmDTYYNV
+	XrH5mRb/iSXkukM7UaWenYruIzNnBX8U4NfxKUyL1wBBaeGmu2q/LldwyXpdkSopKUPaE0F4j+IJZ
+	EtrqvIJKdj/0oI+yCGbc5rT/PpXvw8DN3NsgSDQkT9PMk/9lpoeSUNHnZkmD1mQiBJFFcwKllgWeP
+	fE4idlew==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tgKrR-0000000H9UC-0XlV;
+	Fri, 07 Feb 2025 09:41:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 1A6313002F0; Fri,  7 Feb 2025 10:41:20 +0100 (CET)
+Date: Fri, 7 Feb 2025 10:41:20 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Marco Elver <elver@google.com>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Alexander Potapenko <glider@google.com>,
 	Bart Van Assche <bvanassche@acm.org>,
@@ -87,10 +62,11 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	linux-crypto@vger.kernel.org
 Subject: Re: [PATCH RFC 02/24] compiler-capability-analysis: Rename
  __cond_lock() to __cond_acquire()
-Message-ID: <Z6XTKTo_LMj9KmbY@elver.google.com>
+Message-ID: <20250207094120.GA7145@noisy.programming.kicks-ass.net>
 References: <20250206181711.1902989-1-elver@google.com>
  <20250206181711.1902989-3-elver@google.com>
  <20250207082832.GU7145@noisy.programming.kicks-ass.net>
+ <Z6XTKTo_LMj9KmbY@elver.google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -99,51 +75,60 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250207082832.GU7145@noisy.programming.kicks-ass.net>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+In-Reply-To: <Z6XTKTo_LMj9KmbY@elver.google.com>
 
-On Fri, Feb 07, 2025 at 09:28AM +0100, Peter Zijlstra wrote:
-> On Thu, Feb 06, 2025 at 07:09:56PM +0100, Marco Elver wrote:
-> > Just like the pairing of attribute __acquires() with a matching
-> > function-like macro __acquire(), the attribute __cond_acquires() should
-> > have a matching function-like macro __cond_acquire().
+On Fri, Feb 07, 2025 at 10:32:25AM +0100, Marco Elver wrote:
+> On Fri, Feb 07, 2025 at 09:28AM +0100, Peter Zijlstra wrote:
+> > On Thu, Feb 06, 2025 at 07:09:56PM +0100, Marco Elver wrote:
+> > > Just like the pairing of attribute __acquires() with a matching
+> > > function-like macro __acquire(), the attribute __cond_acquires() should
+> > > have a matching function-like macro __cond_acquire().
+> > > 
+> > > To be consistent, rename __cond_lock() to __cond_acquire().
 > > 
-> > To be consistent, rename __cond_lock() to __cond_acquire().
+> > So I hate this __cond_lock() thing we have with a passion. I think it is
+> > one of the very worst annotations possible since it makes a trainwreck
+> > of the trylock code.
+> > 
+> > It is a major reason why mutex is not annotated with this nonsense.
+> > 
+> > Also, I think very dim of sparse in general -- I don't think I've ever
+> > managed to get a useful warning from between all the noise it generates.
 > 
-> So I hate this __cond_lock() thing we have with a passion. I think it is
-> one of the very worst annotations possible since it makes a trainwreck
-> of the trylock code.
+> Happy to reduce the use of __cond_lock(). :-)
+> Though one problem I found is it's still needed for those complex
+> statement-expression *_trylock that spinlock.h/rwlock.h has, where we
+> e.g. have (with my changes):
 > 
-> It is a major reason why mutex is not annotated with this nonsense.
+> 	#define raw_spin_trylock_irqsave(lock, flags)		\
+> 		__cond_acquire(lock, ({				\
+> 			local_irq_save(flags);			\
+> 			_raw_spin_trylock(lock) ?		\
+> 			1 : ({ local_irq_restore(flags); 0; }); \
+> 		}))
 > 
-> Also, I think very dim of sparse in general -- I don't think I've ever
-> managed to get a useful warning from between all the noise it generates.
+> Because there's an inner condition using _raw_spin_trylock() and the
+> result of _raw_spin_trylock() is no longer directly used in a branch
+> that also does the unlock, Clang becomes unhappy and complains. I.e.
+> annotating _raw_spin_trylock with __cond_acquires(1, lock) doesn't work
+> for this case because it's in a complex statement-expression. The only
+> way to make it work was to wrap it into a function that has attribute
+> __cond_acquires(1, lock) which is what I made __cond_lock/acquire do.
 
-Happy to reduce the use of __cond_lock(). :-)
-Though one problem I found is it's still needed for those complex
-statement-expression *_trylock that spinlock.h/rwlock.h has, where we
-e.g. have (with my changes):
+Does something like:
 
-	#define raw_spin_trylock_irqsave(lock, flags)		\
-		__cond_acquire(lock, ({				\
-			local_irq_save(flags);			\
-			_raw_spin_trylock(lock) ?		\
-			1 : ({ local_irq_restore(flags); 0; }); \
-		}))
+static inline bool
+_raw_spin_trylock_irqsave(raw_spinlock_t *lock, unsigned long *flags)
+	__cond_acquire(1, lock)
+{
+	local_irq_save(*flags);
+	if (_raw_spin_trylock(lock))
+		return true;
+	local_irq_restore(*flags);
+	return false;
+}
 
-Because there's an inner condition using _raw_spin_trylock() and the
-result of _raw_spin_trylock() is no longer directly used in a branch
-that also does the unlock, Clang becomes unhappy and complains. I.e.
-annotating _raw_spin_trylock with __cond_acquires(1, lock) doesn't work
-for this case because it's in a complex statement-expression. The only
-way to make it work was to wrap it into a function that has attribute
-__cond_acquires(1, lock) which is what I made __cond_lock/acquire do.
+#define raw_spin_trylock_irqsave(lock, flags) \
+	_raw_spin_trylock_irqsave((lock), &(flags))
 
-For some of the trivial uses, like e.g.
-
-	#define raw_spin_trylock(lock)	__cond_acquire(lock, _raw_spin_trylock(lock))
-
-it's easy enough to remove the outer __cond_lock/acquire if e.g. the
-_raw_spin_trylock has the attribute __cond_acquires. I kept these around
-for Sparse compatibility, but if we want to get rid of Sparse
-compatibility, some of those can be simplified.
+work?
