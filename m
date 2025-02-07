@@ -1,146 +1,194 @@
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0FB1A23A9
-	for <rcu@vger.kernel.org>; Fri,  7 Feb 2025 09:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8223118DB3A
+	for <rcu@vger.kernel.org>; Fri,  7 Feb 2025 17:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738921857; cv=none; b=pSMR0fJdN8NkDisF+aPeFV1Ex0BTsa/VhPieAfNtOn4pSkyehnU6qNrH4AzZtfg7NzDM+RubB7KTydxDTjTPoLajUU6ctHJZw4ZAoUTAZELSpilrc/Fe8RaXY6Wn59fB2sDllC6Pp5gWJSbNlnQ62mBxvOdD+Jl3Fb5PXrQY9oQ=
+	t=1738948017; cv=none; b=dPzZ5WmV7uZ7AohKplpDnm8RHHa+A+HZ8hm+92tnUOH9DjdegMzE/414HMd5poEqgr7Bki/lwr0ieqVa9+H5r6l5Y2WJz3FqVCTxPYC+CmZEAs0SOwCeSC9ce2IOSKAsp1wBigl+A6ChVzj4s00+y0itF/JNsooQiIS8EMnHeIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738921857; c=relaxed/simple;
-	bh=DcZStX43QWkfR5u3HFZ/BzIYCBxV2cty6MbV4E+zA/g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CsodBWOmloHekpmFgK14pCYN+ia31YntSq9QFhw/j5Tqk4c2fGI6omab+6LrdcJuOxnqSKbDc3H1lX5aToLkxgWnSsdoWbPqHrn/5J6WqTPchbiA8GzKRG6rf/moDNTfaGh1SbDhfDxNxp6yO8vQkHY/+OEQyDesmhbsIn++I/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lTGP3NnY; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1738948017; c=relaxed/simple;
+	bh=I2e5fwjdOHrC389H955xUrW7Yt08enQx3eznrVoldiA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=sjz1+b/4mZJT28x4u3hkzGC4pnnW8mRAccAkh6gyljAOMCnapcJJ917ti819J5Q5HYup6ZyAFrmI/zy+pojJ+MuMKVM4SK9rwQIfHCPcYKaKrn7tBZlf7S1LzNrpWac83bESe37SLUMasgXgvZAAnLbUjchi6h/u9KYlnV93Lbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i4RuBrvr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lTGP3NnY"
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21f464b9a27so23318225ad.1
-        for <rcu@vger.kernel.org>; Fri, 07 Feb 2025 01:50:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1738921855; x=1739526655; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RDirK3mhBkbwPEuL8B+oV7JCR8taE0i7p+xewXa9S2U=;
-        b=lTGP3NnYuuqaAxiLtQDjoKfAbvg98mgVdUITWFyDI88GBqlfX8+gE+6RAHV2B35hEu
-         xr5cHPOnaeZZ4+c2Z0KZBMP1X4dg0M7HWk+3g8V2teZW2o77USlgwULjrXXVzUniEjUV
-         /yofknAVvs2XPfmp83Mq3JbkXAAF8vn7+VqANSkLaCtjwH/RcDdIia+ymnob16Gsn/Rh
-         WR2zFYAPKYWs6lbh6aBN+JzO8of9xevS/+mRAgPtKZHNx5w1Jmiv0IRbTsfRfVgkraVc
-         bS/1xAtbf9zppZDh1ymzLJEKE+d5i81r6+o6K1z4hEjRoEpcZ7xeVgNBxBALpXO5/HeM
-         okKg==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i4RuBrvr"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738948014;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YX0Ta551pNoazXrou1rxJx7Jk32CWnG6aaI06lzcMPk=;
+	b=i4RuBrvrqyZc449LyajITzX67djMhVI+bqm4bwMzq+A5h8Y8oHg0zfgvngReWRRok1TI4h
+	y1v/njZ4/VRn4yrUJS9kQGIC8d4Vx4/Z9wi4V+AviU8hjLJr6tM5hjiomgyUZTKXPJijuL
+	eqAl59Jgvu52k7Ln4Ojbf782CFouUAE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-522-OMRjxDvKOEeuiygVQKBk6Q-1; Fri, 07 Feb 2025 12:06:52 -0500
+X-MC-Unique: OMRjxDvKOEeuiygVQKBk6Q-1
+X-Mimecast-MFC-AGG-ID: OMRjxDvKOEeuiygVQKBk6Q
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-38daf7d2d1cso1030820f8f.3
+        for <rcu@vger.kernel.org>; Fri, 07 Feb 2025 09:06:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738921855; x=1739526655;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RDirK3mhBkbwPEuL8B+oV7JCR8taE0i7p+xewXa9S2U=;
-        b=JeBvmSVOV/jOsK9I5zeT2jk+ZB2ikrBWEAwg4XUhXns/JkbkEeP+irOzN5Y6Kl6xYr
-         q5QuyYjyCCoW5IQSI8DsbJxeky/0EjIFo8qs5RWlFCtWi9e9tda4dHlvqiUmB1SqSK2w
-         0lHi4omGeHTXGaO5EGVdhZ6fDgc2pGWK+glBXQ31lUT3TKvxNmQEa0s/p1GRw0ojHsu2
-         keHnyCe/jNEGIh6lHc/OqutwXqfgvQNoUMGfX27yNUpb/PY6vnST72JPLR0i3TTm8WWe
-         07ruaIQaKyHeIv31/MXte+CjekVthrx+hQA3vrAjNwlzQunw1WHtacA+MHdCGaLs138V
-         fTgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWH8x+KWjkRUd6hAdEsnK7Mp7BNBlbL7QbqM5U1TBstrDJD765Baj1bAtX32MINAtOZavY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJxzqLVcJoJQcOBvAGGWCpjsDy0mTI1LJlyzK3Ua96gEBfErva
-	+kYv/Lfw/aIDDzcjbQ543xaOYjs7cHGe00xhTxBfEFYKpuE+RK40JMONC5JKq/+3E4TBN4HaGOg
-	q+BoeGvevZL7/4vVZUpjo3SCdUKfVP58ru0D0
-X-Gm-Gg: ASbGnctuzxG92CFojRlF2AFMBKL7QzPU3zYOHsB/dJjYQf7ws5P1UgHz/B/n+sVsG67
-	ot2Y4qKlE1k+z75DoGuJIb0dH85y7nnTDe+sdXMpyCNbXtIrycIViH81ZflfniXCREwnhQRK6AY
-	lGT3NeWT0ASrieli5j/xpZeJq9u1w=
-X-Google-Smtp-Source: AGHT+IGtpI60RL6U4oqQIl1xCkyZiOpePhlEFI1F9M8a5wczlR73MReXjWLUiW2MgPhSx2R8ZYzw5o/wmDVYUO+I2GU=
-X-Received: by 2002:a17:902:e547:b0:215:5935:7eef with SMTP id
- d9443c01a7336-21f4e6b1204mr47269625ad.22.1738921854968; Fri, 07 Feb 2025
- 01:50:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738948011; x=1739552811;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YX0Ta551pNoazXrou1rxJx7Jk32CWnG6aaI06lzcMPk=;
+        b=pqLwVaR8ToLjlYGhb34eYDz3Y4gfIwrY/XqZDMhTse23PoI1+QOZJKJosHWzEUXkJT
+         EjEQhcChapXbMESqZ2EeurtLxZvbtX4glaGSmvb+h5pYSmJWr06uNVIjALD2cINjqvqr
+         Tr7pK91t4+WqsNYth7FxlEHEidcFVjGeA2k2EHiCgIkdFLneqDpzgiGdPmigUXCuBuXw
+         51ZOmzMYMIZzOWZdAoRzHfS/lb6U0c8UIt7m17XHLGpg9341nt1drZNrZpEv9MCrqRZi
+         sjusLBEvuNH+jaN6Y2Yy6K/F5V49ZrTs/+vwor7ISFepNy9tg+BOMadZebHC+lmlwZrM
+         6rfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVyiNfI+9zk+N5v9HRxfSTFFuPFOlsaT21g4aew59wqS9QP/Y/ycAA4v2jcKnypaqHpVyc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVbqxtjjxofyuKlRjFyvKZ1Ax8IQpCg0jfFnGI2XweLXdf8bGV
+	geFNFcTp93ktkJIQgDw2kFzcJr0vZyqjQviOQ/XimBa/I1637GNUtR676h8lv6n0wqxMiRiA1hf
+	DHdYZOnBjc4Dg3kZWicrcJD4bLwDTdFHUmCYh18EpXoyeZl7XEA==
+X-Gm-Gg: ASbGncvoPQhD4fI62wGCfewdlRfGy3qBiMGrJFOYHRs5GDzGSe4AwmHpayoHXqz1DYc
+	f2kt5xAM+qg/WvfPQOaEy7qB562NBPcX5uDW1f87nhUr29Xf4XTUpg+7xRr1amV2bAtj+iwkX+a
+	6Bn+p97S7M/TdxbmL2o7MTfUePqbESx5mhH9Qdouc30/Jh2WS63hL28j2XPerNaMlCD51erjBYw
+	iClaj/InhWs9ZMEWkz8+urtaSPse22bdccAPH9Ww1UeMogD2jwrbjWT31IKbocYVyLS9QEpsaY3
+	/jQgY+FtDNDVCPPPhH+/K6abPVzbqCKC/SGvIRNGAYtoaFvPiWNU8ajwQch4X9g5og==
+X-Received: by 2002:a5d:638d:0:b0:386:5b2:a9d9 with SMTP id ffacd0b85a97d-38dc9497d11mr1923999f8f.53.1738948011058;
+        Fri, 07 Feb 2025 09:06:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEOdkgTDMixdzesAbzZ6LQT5F1eKCI9U7dpB+ZFF0HwYFgHj2Fc571j17/M7jlf73QfQ/8NiQ==
+X-Received: by 2002:a5d:638d:0:b0:386:5b2:a9d9 with SMTP id ffacd0b85a97d-38dc9497d11mr1923876f8f.53.1738948010215;
+        Fri, 07 Feb 2025 09:06:50 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4391dca0041sm59887155e9.14.2025.02.07.09.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Feb 2025 09:06:49 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
+ <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
+ <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
+ <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
+ Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
+ Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
+ <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
+ Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
+ <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+ Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
+ Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
+ Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 22/30] context_tracking: Exit CT_STATE_IDLE upon
+ irq/nmi entry
+In-Reply-To: <xhsmh5xm0pkuo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-23-vschneid@redhat.com>
+ <Z5A6NPqVGoZ32YsN@pavilion.home>
+ <xhsmh5xm0pkuo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Date: Fri, 07 Feb 2025 18:06:45 +0100
+Message-ID: <xhsmhbjvdk7kq.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250206181711.1902989-1-elver@google.com> <20250206181711.1902989-3-elver@google.com>
- <20250207082832.GU7145@noisy.programming.kicks-ass.net> <Z6XTKTo_LMj9KmbY@elver.google.com>
- <20250207094120.GA7145@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250207094120.GA7145@noisy.programming.kicks-ass.net>
-From: Marco Elver <elver@google.com>
-Date: Fri, 7 Feb 2025 10:50:18 +0100
-X-Gm-Features: AWEUYZnQWDpp3VDaOjksp9Zo0oytYCkyAdjXISUfV_jPXxvw0lspyJEb-bEMFNQ
-Message-ID: <CANpmjNPfFXjwb1-ou3M6s38w=uXgHioK1d=mMSB3_HjHjV2waw@mail.gmail.com>
-Subject: Re: [PATCH RFC 02/24] compiler-capability-analysis: Rename
- __cond_lock() to __cond_acquire()
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, 
-	Bart Van Assche <bvanassche@acm.org>, Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ingo Molnar <mingo@kernel.org>, 
-	Jann Horn <jannh@google.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Josh Triplett <josh@joshtriplett.org>, 
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-On Fri, 7 Feb 2025 at 10:41, Peter Zijlstra <peterz@infradead.org> wrote:
+On 27/01/25 12:17, Valentin Schneider wrote:
+> On 22/01/25 01:22, Frederic Weisbecker wrote:
+>> And NMIs interrupting userspace don't call
+>> enter_from_user_mode(). In fact they don't call irqentry_enter_from_user_mode()
+>> like regular IRQs but irqentry_nmi_enter() instead. Well that's for archs
+>> implementing common entry code, I can't speak for the others.
+>>
 >
-> On Fri, Feb 07, 2025 at 10:32:25AM +0100, Marco Elver wrote:
-> > On Fri, Feb 07, 2025 at 09:28AM +0100, Peter Zijlstra wrote:
-> > > On Thu, Feb 06, 2025 at 07:09:56PM +0100, Marco Elver wrote:
-> > > > Just like the pairing of attribute __acquires() with a matching
-> > > > function-like macro __acquire(), the attribute __cond_acquires() should
-> > > > have a matching function-like macro __cond_acquire().
-> > > >
-> > > > To be consistent, rename __cond_lock() to __cond_acquire().
-> > >
-> > > So I hate this __cond_lock() thing we have with a passion. I think it is
-> > > one of the very worst annotations possible since it makes a trainwreck
-> > > of the trylock code.
-> > >
-> > > It is a major reason why mutex is not annotated with this nonsense.
-> > >
-> > > Also, I think very dim of sparse in general -- I don't think I've ever
-> > > managed to get a useful warning from between all the noise it generates.
-> >
-> > Happy to reduce the use of __cond_lock(). :-)
-> > Though one problem I found is it's still needed for those complex
-> > statement-expression *_trylock that spinlock.h/rwlock.h has, where we
-> > e.g. have (with my changes):
-> >
-> >       #define raw_spin_trylock_irqsave(lock, flags)           \
-> >               __cond_acquire(lock, ({                         \
-> >                       local_irq_save(flags);                  \
-> >                       _raw_spin_trylock(lock) ?               \
-> >                       1 : ({ local_irq_restore(flags); 0; }); \
-> >               }))
-> >
-> > Because there's an inner condition using _raw_spin_trylock() and the
-> > result of _raw_spin_trylock() is no longer directly used in a branch
-> > that also does the unlock, Clang becomes unhappy and complains. I.e.
-> > annotating _raw_spin_trylock with __cond_acquires(1, lock) doesn't work
-> > for this case because it's in a complex statement-expression. The only
-> > way to make it work was to wrap it into a function that has attribute
-> > __cond_acquires(1, lock) which is what I made __cond_lock/acquire do.
+> That I didn't realize, so thank you for pointing it out. Having another
+> look now, I mistook DEFINE_IDTENTRY_RAW(exc_int3) for the general case
+> when it really isn't :(
 >
-> Does something like:
+>> Unifying the behaviour between user and idle such that the IRQs/NMIs exit the
+>> CT_STATE can be interesting but I fear this may not come for free. You would
+>> need to save the old state on IRQ/NMI entry and restore it on exit.
+>>
 >
-> static inline bool
-> _raw_spin_trylock_irqsave(raw_spinlock_t *lock, unsigned long *flags)
->         __cond_acquire(1, lock)
-> {
->         local_irq_save(*flags);
->         if (_raw_spin_trylock(lock))
->                 return true;
->         local_irq_restore(*flags);
->         return false;
-> }
+> That's what I tried to avoid, but it sounds like there's no nice way around it.
 >
-> #define raw_spin_trylock_irqsave(lock, flags) \
->         _raw_spin_trylock_irqsave((lock), &(flags))
+>> Do we really need it?
+>>
 >
-> work?
+> Well, my problem with not doing IDLE->KERNEL transitions on IRQ/NMI is that
+> this leads the IPI deferral logic to observe a technically-out-of-sync sate
+> for remote CPUs. Consider:
+>
+>   CPUx            CPUy
+>                     state := CT_STATE_IDLE
+>                     ...
+>                     ~>IRQ
+>                     ...
+>                     ct_nmi_enter()
+>                     [in the kernel proper by now]
+>
+>   text_poke_bp_batch()
+>     ct_set_cpu_work(CPUy, CT_WORK_SYNC)
+>       READ CPUy ct->state
+>       `-> CT_IDLE_STATE
+>       `-> defer IPI
+>
+>
+> I thought this meant I would need to throw out the "defer IPIs if CPU is
+> idle" part, but AIUI this also affects CT_STATE_USER and CT_STATE_GUEST,
+> which is a bummer :(
 
-Yup it does (tested). Ok, so getting rid of __cond_lock should be doable. :-)
+Soooo I've been thinking...
+
+Isn't
+
+  (context_tracking.state & CT_RCU_WATCHING)
+
+pretty much a proxy for knowing whether a CPU is executing in kernelspace,
+including NMIs?
+
+NMI interrupts userspace/VM/idle -> ct_nmi_enter()   -> it becomes true
+IRQ interrupts idle              -> ct_irq_enter()   -> it becomes true
+IRQ interrupts userspace         -> __ct_user_exit() -> it becomes true
+IRQ interrupts VM                -> __ct_user_exit() -> it becomes true
+
+IOW, if I gate setting deferred work by checking for this instead of
+explicitely CT_STATE_KERNEL, "it should work" and prevent the
+aforementioned issue? Or should I be out drinking instead? :-)
+
