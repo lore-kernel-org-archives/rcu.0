@@ -1,173 +1,120 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE2424FC09
-	for <rcu@vger.kernel.org>; Mon, 10 Feb 2025 17:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7911325B66E;
+	Mon, 10 Feb 2025 18:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739208990; cv=none; b=cAhHfunporz9jZKVJgLCWvwp7PLQgTAE2LcipCA0XJ5rqf0W3c+OTiXeTZGusSmhPxVmDddLZ+7kcNIHGSHdmAZWwYGfvUF9Ead5a6+e/yDc8IdCQGT/gNx6GCEu5/ec14oiR9uSnP1ra10mxAeJSbANsw4xMeeml5J0mEKEyQQ=
+	t=1739211038; cv=none; b=jh3LYO3Z/d5YeC5BIp/n476M5swDKOnVDhKWrgtUKIbzdVnN83p2olUdovNDbV3i4msr6CCfyBmsBXHgvzerzJQR80WvkLqPihRm9BoslVeJy3UKPYGVYJfjhilsxv29OF1UNsfgQx5cRf5EaFpzUF+7Ge2i01BcWjh/N0/dMlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739208990; c=relaxed/simple;
-	bh=u+xBAfgGtWSjK+lShNplBj7ifal6E7BNbQMyEHGnBJo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JApgMLuY+mxbWyWjAXCmOEXab/1egH+7Tdou8dC1oJ2UFJWwAyJC5K5/l4STz6/a5zSuI4SdZhaUoQMR+Q+E/Rif3UqqpQmHqff+iJo3Zr98HL+Hw0Jmfrwz0VvRD4cXk6yQJDFGobRQ3qPEuwFpMuRNT8ADhablYVVtVsSqLQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TNVef/C9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1739211038; c=relaxed/simple;
+	bh=QCydUMBwaRsSOEGW5fhHh5FWsbHLXC5hIhgJjIbSnJM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D7TvGThgp4nv9J9yilNoia2ZvFHABzG5rZAxKXFJNCd/CqKVDzthFuM8rFXl2QKRWMfsJ3U8WT4atvprCQReiqmmOw6XaH8A7KPRNFvABpdNlYzANcDrc1ZJnSm5QXfJSmD5mvcTxAHJiyBpzZGqBkR+ljaya0zetPcIrdfUmT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=qzADi6ZF; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TNVef/C9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739208988;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jmeQoovG0+h8NkGt8mJ7mUN4l2oR44byLjbsSTWDllc=;
-	b=TNVef/C9tVl7GrjDDWrrk4hKqiVtvBdY+TNx20ou+2MVywJjBiuRS+LAdusTTRCqabnRrS
-	2SiqpNifaNfl25SlyrgBFL3GpF+iEYwRuIyGr0R8M3DIJp2CSXAawX3L6JXmi/qYw5Lo2e
-	q6z9McKvrk7zmUsoFCctS6WLdDv4p8Y=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-210-_mBp1dOAOcqwoG5g173k0g-1; Mon, 10 Feb 2025 12:36:26 -0500
-X-MC-Unique: _mBp1dOAOcqwoG5g173k0g-1
-X-Mimecast-MFC-AGG-ID: _mBp1dOAOcqwoG5g173k0g
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-38dcd8ddc5eso2143219f8f.3
-        for <rcu@vger.kernel.org>; Mon, 10 Feb 2025 09:36:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739208985; x=1739813785;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jmeQoovG0+h8NkGt8mJ7mUN4l2oR44byLjbsSTWDllc=;
-        b=LfetWjrDzNcegjf+RbUTnNHsvyIY5yu9oofmcYDjDYzFI3H8MD3FP1Auv3PW0BZyWs
-         sFVIy30i7HpvThT14UuxQa1/4IzCsOum8h20DFK57O5DZTDOo1rj5sJvBpisyrZbwQWa
-         G9KSEeRrDoxs/J/Q1e0W5sjHiVgBds2LjzXIE+BYElWT4CW5E2WdPgqA4Xfu82QLDPJX
-         T4pgPGp1fLe369Y9rvYV9z7g7DfmNxxGr2NOaP6SNbUOQaD3CcNevSpqaf+XuviMXIyR
-         twe0pnpVWEyw6ZRwjpleKf2nis/jWsN89vcDsz9ocyKKvfYYu3J8p6WhKEUSPH9Y2nny
-         J9cg==
-X-Forwarded-Encrypted: i=1; AJvYcCU0O5EAyzyHi1mSOyTQAB9GYslm64rcDgxOntam6nCGTWgJ8bL86IRL8qEEbKgznqRWaZs=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyw/Xl9EnJb3fvnzIcdlPrmbwAHOH4LazHCJIGWYlxxm8qCRvw0
-	Aq7n5f89HRnt3c+UhwOlZhn6rQRAFKZ2b3OLG0loJvSRgbk30U3UytK17xdFEz2QvX8Y51uoU9a
-	z1KvBPWi9/aQsHmQcYH9Yx0AYhfPTztNg8i4+xmjrORMXa4eb2w==
-X-Gm-Gg: ASbGncv9pe3qIEzf1qEil7BRHa6RVvwbjVsIteJ4Vu5slzJ7jxAxFyDD2mj/xy18i4f
-	CS0dTXgP6LIThu32U8TGMjSt2+BEVLqhUTYr1Mx4Dbze28lUV4WZKUTBYb78tDmQqwEzihaQV/V
-	fjS8Zc2X8T1vZIcygIia1lzBzur17qUFv8zKD5otBknkfEqpAui1mhVM+M3gVsF+/PH9WfWo6hA
-	/a4Ad1GyXqViuSqAcyqdLQNsBgjNCrMYs6AF77/alsOWFYiIQud8Iy2mNR9PyQ+O+g1BWdyA+5G
-	suV4EdSQUcxFYDCNJOPjPexIj0XIfqw0gT6kGS84HAyMc0jkYjum7M0mJZDdDzVQtw==
-X-Received: by 2002:a5d:598f:0:b0:38d:e250:d953 with SMTP id ffacd0b85a97d-38de250dbabmr3058635f8f.35.1739208985388;
-        Mon, 10 Feb 2025 09:36:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFxfTkrMg3Ut4KvVNhGVu91A0XAdGHvAD9T0QbpHzfP2OmSPgOw5f7LxHQ3fWHxL8NqTxJ5mQ==
-X-Received: by 2002:a5d:598f:0:b0:38d:e250:d953 with SMTP id ffacd0b85a97d-38de250dbabmr3058583f8f.35.1739208984820;
-        Mon, 10 Feb 2025 09:36:24 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dbf2ed900sm12687106f8f.53.2025.02.10.09.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 09:36:24 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
- kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
- <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
- Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
- <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, "Paul E. McKenney"
- <paulmck@kernel.org>, Jason Baron <jbaron@akamai.com>, Steven Rostedt
- <rostedt@goodmis.org>, Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
- Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
- Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
- <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
- Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
- <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
- <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
- Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 22/30] context_tracking: Exit CT_STATE_IDLE upon
- irq/nmi entry
-In-Reply-To: <Z6ZTBXUiEOLVcSKp@pavilion.home>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-23-vschneid@redhat.com>
- <Z5A6NPqVGoZ32YsN@pavilion.home>
- <xhsmh5xm0pkuo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <xhsmhbjvdk7kq.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <Z6ZTBXUiEOLVcSKp@pavilion.home>
-Date: Mon, 10 Feb 2025 18:36:20 +0100
-Message-ID: <xhsmh8qqdk8h7.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="qzADi6ZF"
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4YsCKy1Kt8z6ClRNh;
+	Mon, 10 Feb 2025 18:10:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1739211013; x=1741803014; bh=5d4NYfy5d24mQ4QZnrsHA0r6
+	Om6Ygst0euippVvDqVE=; b=qzADi6ZFFLU6Af+cOra73jCVUrOlDcplHnonVv41
+	624xPheX0jFtJvVm8kifQIM+nXVw1C89ak5I4hDbcT5Awspe5D1EkeinkOHm9VfK
+	hM5PxhVWZRKn1hZb1qakWu4kx1xc6L6XGw0VwWBxWi092vad6pLrpgDUqA0SC/qX
+	f7LBLRGZCI37sGh+Vo/U9LXhsrG1KMKc2QtqihbHMTlbgunhJFgFYAGI+xZVN6xZ
+	x+nxQeZCEbHmprGNJjtarzQdtP5xQeUJrSyubFi0TexD3fv0qx2X7kM/2cibheRo
+	/9jmZprEZB4Ob0e0p5JyfXqfVwosqw7V+DY7CcMyXD+XdQ==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id vKI5VGS4czNT; Mon, 10 Feb 2025 18:10:13 +0000 (UTC)
+Received: from [100.66.154.22] (unknown [104.135.204.82])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4YsCKK2JxDz6ClY9g;
+	Mon, 10 Feb 2025 18:09:56 +0000 (UTC)
+Message-ID: <e276263f-2bc5-450e-9a35-e805ad8f277b@acm.org>
+Date: Mon, 10 Feb 2025 10:09:55 -0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 08/24] lockdep: Annotate lockdep assertions for
+ capability analysis
+To: Marco Elver <elver@google.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+ Alexander Potapenko <glider@google.com>, Bill Wendling <morbo@google.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
+ Joel Fernandes <joel@joelfernandes.org>, Jonathan Corbet <corbet@lwn.net>,
+ Josh Triplett <josh@joshtriplett.org>, Justin Stitt
+ <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
+ Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+ kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org
+References: <20250206181711.1902989-1-elver@google.com>
+ <20250206181711.1902989-9-elver@google.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20250206181711.1902989-9-elver@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 07/02/25 19:37, Frederic Weisbecker wrote:
-> Le Fri, Feb 07, 2025 at 06:06:45PM +0100, Valentin Schneider a =C3=A9crit=
- :
->>
->> Soooo I've been thinking...
->>
->> Isn't
->>
->>   (context_tracking.state & CT_RCU_WATCHING)
->>
->> pretty much a proxy for knowing whether a CPU is executing in kernelspac=
-e,
->> including NMIs?
->
-> You got it!
->
+On 2/6/25 10:10 AM, Marco Elver wrote:
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 67964dc4db95..5cea929b2219 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -282,16 +282,16 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+>   	do { WARN_ON_ONCE(debug_locks && !(cond)); } while (0)
+>   
+>   #define lockdep_assert_held(l)		\
+> -	lockdep_assert(lockdep_is_held(l) != LOCK_STATE_NOT_HELD)
+> +	do { lockdep_assert(lockdep_is_held(l) != LOCK_STATE_NOT_HELD); __assert_cap(l); } while (0)
+>   
+>   #define lockdep_assert_not_held(l)	\
+>   	lockdep_assert(lockdep_is_held(l) != LOCK_STATE_HELD)
+>   
+>   #define lockdep_assert_held_write(l)	\
+> -	lockdep_assert(lockdep_is_held_type(l, 0))
+> +	do { lockdep_assert(lockdep_is_held_type(l, 0)); __assert_cap(l); } while (0)
+>   
+>   #define lockdep_assert_held_read(l)	\
+> -	lockdep_assert(lockdep_is_held_type(l, 1))
+> +	do { lockdep_assert(lockdep_is_held_type(l, 1)); __assert_shared_cap(l); } while (0)
 
-Yay!
+These changes look wrong to me. The current behavior of
+lockdep_assert_held(lock) is that it issues a kernel warning at
+runtime if `lock` is not held when a lockdep_assert_held()
+statement is executed. __assert_cap(lock) tells the compiler to
+*ignore* the absence of __must_hold(lock). I think this is wrong.
+The compiler should complain if a __must_hold(lock) annotation is
+missing. While sparse does not support interprocedural analysis for
+lock contexts, the Clang thread-safety checker supports this. If
+function declarations are annotated with __must_hold(lock), Clang will
+complain if the caller does not hold `lock`.
 
->>
->> NMI interrupts userspace/VM/idle -> ct_nmi_enter()   -> it becomes true
->> IRQ interrupts idle              -> ct_irq_enter()   -> it becomes true
->> IRQ interrupts userspace         -> __ct_user_exit() -> it becomes true
->> IRQ interrupts VM                -> __ct_user_exit() -> it becomes true
->>
->> IOW, if I gate setting deferred work by checking for this instead of
->> explicitely CT_STATE_KERNEL, "it should work" and prevent the
->> aforementioned issue? Or should I be out drinking instead? :-)
->
-> Exactly it should work! Now that doesn't mean you can't go out
-> for a drink :-)
->
+In other words, the above changes disable a useful compile-time check.
+I think that useful compile-time checks should not be disabled.
 
-Well, drinks were had very shortly after sending this email :D
-
-> Thanks.
-
+Bart.
