@@ -1,187 +1,148 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3785221D92
-	for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 13:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A7A24C66B
+	for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 13:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739280842; cv=none; b=mmzYyAhbD+y1nnkdzBaIhgqYvsyQvIdnpGfGsziUVC9wDbVdd+YwFcSIMokEfT+/MXhnsv/UVWGMMU569WLfs4Je4EoZMLFm/Xec7/j+2dmagCrS2/ClH9OSFNst+UG1mnT7bjaycVgQcMOTge1GnP01U6hpFQsNPeB9OycLlaw=
+	t=1739282159; cv=none; b=oTj9ISH7l03eNoF05atJ3pW5g9A2kodFbLQ2gmI6tvoQAq3OWyxh5C3ldaQ5dL80aDVRo3v3gz52Mqg4XmLeWIU6uIGNpvuypg1GkSnci6Mq6Hxh3fWGIwvdgQAbSVsQsj1COAlZFr+Sbh/eczp3/wvMtx0i0GxDVo4MUiXrpQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739280842; c=relaxed/simple;
-	bh=I6rYC3Ttea935cxDKXU7eGhmr1cWrMQ3SYanZpPc/20=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VbZrsqRAg+LcAy7JMJSyNCKvgmNn6vcUTGgYc/h9UyHywSpm1psm8F0xK7ACa8o3mkSXspRReRkVqCJiOlTvk+hQrhhvXoLr2dMWnf5hWay5wA7XQi0y/Tys78b3755jJTNBJ3ni60Z4EBqqwPZyldMtXQ/9di39iwdWLqeYUNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T/Js0VBS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1739282159; c=relaxed/simple;
+	bh=tvddLOD38SbA+nE14izQGPNoMlGp5ZWiCv7xIdyaTR8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XdlNxB4YIsfcf6KknIJpsTp7kKMhJhObirMg2WiNwrHY2tvYVxqb239A4G/ESNXlHEivw5yZlXMHwBrAxwZkyPNOSgHBhuYBypTyRloJwzyf4uPIHhp7PwyRqYW3NcADkrhzsAE32jATBPJ0su18IpAfJdIhof7JuIuLt65JqUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LjEEbJVK; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T/Js0VBS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739280839;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I6rYC3Ttea935cxDKXU7eGhmr1cWrMQ3SYanZpPc/20=;
-	b=T/Js0VBSgcT6OPC9QBAR3bPxcbq++c6NvaMipXAJRtNbNGASO5G6biem94diU5OhXk47TG
-	5v7ocv40R45gLCS4rUMuZXHyDY7a6nm4Oh0TCURykHAIUkpwtzHhsjp9lkfOy+t1d3yRm7
-	fJQ7o3ROgRkU4iXfXLWdED7qbyBj94E=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-518-rbtlj86uPlaCfU2tt2nszg-1; Tue, 11 Feb 2025 08:33:57 -0500
-X-MC-Unique: rbtlj86uPlaCfU2tt2nszg-1
-X-Mimecast-MFC-AGG-ID: rbtlj86uPlaCfU2tt2nszg
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43935bcec0aso23303575e9.3
-        for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 05:33:57 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LjEEbJVK"
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2fa1a3c88c5so7191722a91.3
+        for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 05:55:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1739282157; x=1739886957; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AhF+JZnbICstMQ4SyijmaSYDsITfNwFybUAYOWyiZXU=;
+        b=LjEEbJVKsnr9/Bsf8TZWXbIEH1ixlpJK61YR+lS6w6zVvRx0ZMR8sUTqELQhPhYvx0
+         g6F8Xe/usYq8l/6WOpRHuk63HnkmtvH6PvLGsgcpB+9NeHgdaGSBIJq7nbE9ilO28O3R
+         g3w0p4vW/9Pggxyymt7DJIK4Hpcvocw8jjphJjx7OaqZAwzzfqGCiK52B5fxCqrBWDSn
+         JGYdvodniqgfzB9aSif2AxWUg746i+Z5vsZbd0bmnP4JxqvmBMgVZuEuui9KQ0lE1efb
+         pciajeEA29strUtEP+X4Z67WFSHVxbszxRS3WwB/ywXHhenuZtNgHUZJIRZokwpsrs7K
+         sNEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739280836; x=1739885636;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I6rYC3Ttea935cxDKXU7eGhmr1cWrMQ3SYanZpPc/20=;
-        b=a2OU5QBVk29lVNrJMCsWIgB9eZ1h+nePFbPZ85SxO2RQk8tuSEYJ6N7mpVj05Hnqup
-         /8Bettk5NGXWdd0q39CzP8zKMbAuobP3KJbZGSIXzeXUD0dD0Jy+qG363pHyinS+W2m0
-         2BnuORwC9MSVDkGpG5tDpa+YYr1A9qWvQsenK/JJZE+m4ATc8bKHUxltTa9QZf16gxc1
-         dfxZrOBOjZO4gSr5aNncYtjfTsvn2jzkppHylG7LFCDzGlNxgbnqu2y2oUrCZqdUYPDn
-         kttST3cTpT/MDBc7IEteQNINzuUtSpMS02kSzqAA9USU0c5EOkzZSViel1DQIHdRER3y
-         OMoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJhzKJZq8mcMwrbbHN09nOystuboaGnXQpbp7xgcM39y5ah0tTNbDc6u5ux+pvSJHPwrU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMN5Z4AwFC4hTgAkSiKpDQ2jzVpTv4EnPL7sboHEQGQkVhaj5G
-	3Ebk+da77MzSdmFJE+d3gWXUdf8kqVCJYulvGVcAQqdCMrBaMSZvcss8Rx9ZbtR9lZLaYyFyX0+
-	ZnSHcfol5sHAvivCZztFcPz6T3mu9opQWhrYDRMYSWK/rXLNudg==
-X-Gm-Gg: ASbGncvKSv0It2ixBfCHaFDMkrxLYXZ+EJLHHWQUyuc61Q9wOCYH7t/Ug3KHfeMV1i2
-	CSVMqZgKwOX7DAYx8ctx5nsiQ8EyuGKG97EvRL6RrJQEPRGeZ73+AVM74KE/0+13Yv71QXRIO3v
-	TkRJklvkX37T5HHJRp87OgXg+Ysbl7dZz4Bv1iwuBw83lD1tL7wV5oenhpGH9OTklyg/DD+roks
-	R4vgmKiHvjj8jvZPFX4ruBVj/gUyjJrYfgsncPe3tam9sOyQg4PMfqrCLXX5/bYYqRnkhrcbZz8
-	v4Q1ROQjttwoB05cCIKebE1cTfmwyEuOJHSD8V+iNqgvN49kUWPBs6n+Vw8ZnFLR0w==
-X-Received: by 2002:a05:600c:384c:b0:439:554f:f64f with SMTP id 5b1f17b1804b1-439554ffb3bmr21891425e9.0.1739280836464;
-        Tue, 11 Feb 2025 05:33:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHLaJ199QatUt+F367q7Ky9NspQydjwYuxDlEpx56Dm3c1ApLy01ntC7qxuc1s/8cawIiMmnw==
-X-Received: by 2002:a05:600c:384c:b0:439:554f:f64f with SMTP id 5b1f17b1804b1-439554ffb3bmr21890805e9.0.1739280836017;
-        Tue, 11 Feb 2025 05:33:56 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dcb88d5e6sm11688621f8f.1.2025.02.11.05.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2025 05:33:55 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Jann Horn <jannh@google.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
- kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
- <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
- Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
- <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
- Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
- Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
- Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
- Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
- <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
- Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
- <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
- <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
- Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-In-Reply-To: <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
- <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
-Date: Tue, 11 Feb 2025 14:33:51 +0100
-Message-ID: <xhsmh34gkk3ls.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        d=1e100.net; s=20230601; t=1739282157; x=1739886957;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AhF+JZnbICstMQ4SyijmaSYDsITfNwFybUAYOWyiZXU=;
+        b=cqAHlOLOjY7cx5b4/vqNXHECLnFM26nZhu0KUKeGpKD2270eV+tW9v2icp7hstZWzU
+         942+vkstY4OapL2XhgEVGyBf/Zhua4PzCT12jUoQDPn6XVV01+PrIqmRgyA0Two1ARLE
+         YN4RRuiv9Ykoao8otJtvx3+ERCLjtI7ZCPAoCcI5nbQh85Ss3RCIwonadnNcUMbZDQLC
+         el5x0td4KmbQiYS3sqVuzgRN9g6mi8JsoWbCsHm0/zPqEStzgRd2MsCe7cpUlR10F2o/
+         Oi6qQbYdLG+29kgrCKmTya3zjk3wTPKuB6ZUpeTngGDV7Ruh4pmxsdg6hJE/y2Kcq4tu
+         y2dQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU5QVafLILFiMLtpVAwRDUdr6gS8X0lz64gQXVXllIX4VobyxC8LsSpy3lxjW1nlewm4Y0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0XSUQSsyA950ALAMO4PLjpSWCSowUNN0GOnpgfy3NA7Gip/ci
+	FSOygJFZMs5TxnuPdlju8HsN7HWt6FAYBGmtEK2ph7c07+Li2FeT7PJfzL+2UNURA+4PIWvxShX
+	4LtsvijMJJodlfg5Hjzt/tCXFjfZiB2c1CxVb
+X-Gm-Gg: ASbGncvKjPgJcnBYkoGgKppYBR0K3hCUN67fd9ubv/g9ljd3bI5M1EfZeXxlnhiXMx3
+	d1kjUpXhN6tj5/TFw+Ot6N8dsupyRGR92WuvexyfPrx9bxzmCi78UISOdF+q225twKUPAuDjbMR
+	m0b52PELeostKSlvnHYkjHzHO4oZk=
+X-Google-Smtp-Source: AGHT+IGroUNVHpMBAUy/bObZea2jE/snBP4iAn1fJ0F8Y+yGqofcGPH5OOKF/rW4Qwm5mzGvQOH1DLn2V2e6J52emRE=
+X-Received: by 2002:a17:90b:1d45:b0:2ea:5e0c:2847 with SMTP id
+ 98e67ed59e1d1-2fa9ee17fb8mr4391611a91.22.1739282157250; Tue, 11 Feb 2025
+ 05:55:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20250206181711.1902989-1-elver@google.com> <20250206181711.1902989-9-elver@google.com>
+ <e276263f-2bc5-450e-9a35-e805ad8f277b@acm.org> <CANpmjNMfxcpyAY=jCKSBj-Hud-Z6OhdssAXWcPaqDNyjXy0rPQ@mail.gmail.com>
+ <f5eda818-6119-4b8f-992f-33bc9c184a64@acm.org>
+In-Reply-To: <f5eda818-6119-4b8f-992f-33bc9c184a64@acm.org>
+From: Marco Elver <elver@google.com>
+Date: Tue, 11 Feb 2025 14:55:20 +0100
+X-Gm-Features: AWEUYZkwbHjIdQKR2hqck9okMpxl0TDfWkkc2sBGpPLWquXQ8_lyXjiGcdcjlSE
+Message-ID: <CANpmjNPxyWey6v1tj6TwtN6Pe8Ze=wrfFFjuJFzCQTd4XM8xQA@mail.gmail.com>
+Subject: Re: [PATCH RFC 08/24] lockdep: Annotate lockdep assertions for
+ capability analysis
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, 
+	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ingo Molnar <mingo@kernel.org>, 
+	Jann Horn <jannh@google.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Josh Triplett <josh@joshtriplett.org>, 
+	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
+	Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/02/25 23:08, Jann Horn wrote:
-> On Mon, Feb 10, 2025 at 7:36=E2=80=AFPM Valentin Schneider <vschneid@redh=
-at.com> wrote:
->> What if isolated CPUs unconditionally did a TLBi as late as possible in
->> the stack right before returning to userspace? This would mean that upon
->> re-entering the kernel, an isolated CPU's TLB wouldn't contain any kernel
->> range translation - with the exception of whatever lies between the
->> last-minute flush and the actual userspace entry, which should be feasib=
-le
->> to vet? Then AFAICT there wouldn't be any work/flush to defer, the IPI
->> could be entirely silenced if it targets an isolated CPU.
+On Mon, 10 Feb 2025 at 19:54, Bart Van Assche <bvanassche@acm.org> wrote:
 >
-> Two issues with that:
 >
-
-Firstly, thank you for entertaining the idea :-)
-
-> 1. I think the "Common not Private" feature Will Deacon referred to is
-> incompatible with this idea:
-> <https://developer.arm.com/documentation/101811/0104/Address-spaces/Commo=
-n-not-Private>
-> says "When the CnP bit is set, the software promises to use the ASIDs
-> and VMIDs in the same way on all processors, which allows the TLB
-> entries that are created by one processor to be used by another"
+> On 2/10/25 10:23 AM, Marco Elver wrote:
+> > If you try to write code where you access a guarded_by variable, but
+> > the lock is held not in all paths we can write it like this:
+> >
+> > struct bar {
+> >    spinlock_t lock;
+> >    bool a; // true if lock held
+> >    int counter __var_guarded_by(&lock);
+> > };
+> > void foo(struct bar *d)
+> > {
+> >     ...
+> >     if (d->a) {
+> >       lockdep_assert_held(&d->lock);
+> >       d->counter++;
+> >     } else {
+> >       // lock not held!
+> >     }
+> >    ...
+> > }
+> >
+> > Without lockdep_assert_held() you get false positives, and there's no
+> > other good way to express this if you do not want to always call foo()
+> > with the lock held.
+> >
+> > It essentially forces addition of lockdep checks where the static
+> > analysis can't quite prove what you've done is right. This is
+> > desirable over adding no-analysis attributes and not checking anything
+> > at all.
 >
+> In the above I see that two different options have been mentioned for
+> code that includes conditional lockdep_assert_held() calls:
+> - Either include __assert_cap() in the lockdep_assert_held() definition.
+> - Or annotate the entire function with __no_thread_safety_analysis.
+>
+> I think there is a third possibility: add an explicit __assert_cap()
+> call under the lockdep_assert_held() call. With this approach the
+> thread-safety analysis remains enabled for the annotated function and
+> the compiler will complain if neither __must_hold() nor __assert_cap()
+> has been used.
 
+That's just adding more clutter. Being able to leverage existing
+lockdep_assert to avoid false positives (at potential cost of few
+false negatives) is a decent trade-off. Sure, having maximum checking
+guarantees would be nice, but there's a balance we have to strike vs.
+ergonomics, usability, and pointless clutter.
 
-Sorry for being obtuse - I can understand inconsistent TLB states (old vs
-new translations being present in separate TLBs) due to not sending the
-flush IPI causing an issue with that, but not "flushing early". Even if TLB
-entries can be shared/accessed between CPUs, a CPU should be allowed not to
-have a shared entry in its TLB - what am I missing?
+Can we initially try to avoid clutter as much as possible? Then, if
+you feel coverage is not good enough, make the analysis stricter by
+e.g. removing the implicit assert from lockdep_assert in later patches
+and see how it goes.
 
-> 2. It's wrong to assume that TLB entries are only populated for
-> addresses you access - thanks to speculative execution, you have to
-> assume that the CPU might be populating random TLB entries all over
-> the place.
-
-Gotta love speculation. Now it is supposed to be limited to genuinely
-accessible data & code, right? Say theoretically we have a full TLBi as
-literally the last thing before doing the return-to-userspace, speculation
-should be limited to executing maybe bits of the return-from-userspace
-code?
-
-Furthermore, I would hope that once a CPU is executing in userspace, it's
-not going to populate the TLB with kernel address translations - AIUI the
-whole vulnerability mitigation debacle was about preventing this sort of
-thing.
-
+I'm basing my judgement here on experience having worked on other
+analysis in the kernel, and the biggest request from maintainers has
+always been to "avoid useless clutter and false positives at all
+cost", often at the cost of increased potential for false negatives
+but avoiding false positives and reducing annotations (I can dig out
+discussions we had for KMSAN if you do not believe me...).
