@@ -1,180 +1,93 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD947253F2B
-	for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 16:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334EC3BB54;
+	Tue, 11 Feb 2025 18:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739290247; cv=none; b=da7XpCqGf8mEfEnpcpVRPCRwQukTn59XZlZZxXkrQc4TmjPgLVcfQjlgc5vuMV2DIajalFzqb5rBPE81y2eeFgeYJGXN4xMWr/ArsKeomrCuKfvyFTvTHQO2mpwwEGakRo6/pYyO3AoPqzIyFYQWog3IUCteiIVKPQuC/o8CXmQ=
+	t=1739298935; cv=none; b=ZQHKZCxuZ05q5NMIdWr1ZG0eJikrFMYcr/asGWZ3RN3eP0u76F6sKlHIILdJ0J3aSJO4AJ4nOowavaB4w4XFqrm2xPnlGMLN171gIFdQWu1K6A8eGm5lyWmTiX9obHMGY9ddN0jbyS7mWHzfwDBqeIvsTlBmgr4RwuvBxNMTZl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739290247; c=relaxed/simple;
-	bh=nE7GJqZw+gIEdhcV99Kpd2q5ds+/vCptECGTizt6klE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DKtTDhaOBh/xm0Mz2ZrF5Fj7aR6tNSXZqEPwA7tR/GhoVvtypYdnxZ+nVc5zZ3fUEucRjRZ+Xw9qglsnarU0HVzo3m8Ksyf6420SIFqkYGh0MXrENcUXBm6XS0kep5VyO/lMWdiDxBBi1VhPtcwNaTcBkNiGGhIG4tCLwyCPync=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i1HUBeyt; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1739298935; c=relaxed/simple;
+	bh=/GDgxa2V50tFPQOr9OXJ/5PrkxuGxrhpmwMTgMzj/T0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Uc1Eo9DIEdZkhEjCJqSXlSC1r59vNi9OeQo5y0fo5OlU4g9pWH+XNEPYevE1uMUsEFxwfFwJpZUKQSioUPBbZTtitqdl+jmXe9I4qWsWj1TKja2HKV5th6xnC5mcoA4PXuW32jeREpVrdVY+99bqY9TkXZN2fQpbC/xNiejMW1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kl+DX5ig; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i1HUBeyt"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739290243;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DkXKKRZIZ3B6nMXAUQwqba2hAbiJWDhaRaBNOU6/fJw=;
-	b=i1HUBeytVZQfuTjrexbgjP7YEuXhfQTbb6pRe91MQPsrHrNvdDzSOfyC/EERd6n8ZWPDjF
-	+lZ5tsIl54r4itAaxVJ7JLggTgV7punI/95D8cHSFkAUzbdWyJUgYCJxsfKBbdpQAXbDp7
-	n1YwDMda2zzuC6MFCw8XkhNYDMwIpOc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-9-ajXSFyONWAXUwr-7dipg-1; Tue, 11 Feb 2025 11:10:42 -0500
-X-MC-Unique: 9-ajXSFyONWAXUwr-7dipg-1
-X-Mimecast-MFC-AGG-ID: 9-ajXSFyONWAXUwr-7dipg
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-438da39bb69so43407545e9.0
-        for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 08:10:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739290241; x=1739895041;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DkXKKRZIZ3B6nMXAUQwqba2hAbiJWDhaRaBNOU6/fJw=;
-        b=B0OyKtgKroggq6s3WiAmocR4r85gg4CIZyJQN+jO0e6pbQuM+uwjggQfJ8dNrolXNJ
-         IPldvhy4AjeibklzAe5Q0RgeZ3fWrkD8jQevQcSslsUVRBkpFLIrooXDjNQHex/SWO3I
-         b4lBIR+s6iaU4fZJDYhuDoIX13KtWv4vuCwrHYwqeGoW37/5MkFOE+g0SWIKKZWld2l1
-         OjgUWo7Mdh4U2hsfUDcFzp9rRqh95qfkZ9Pyt2Mv5SD3QdQecBl2K+c1feRt/TzbJLZd
-         0+eXIorU+lGddNAKHfWFCv1b17ZRDewsLepGrY2d2gjkWM2mQCb5BF/v7o9XmhrUH4kr
-         umcw==
-X-Forwarded-Encrypted: i=1; AJvYcCVwdT6w7EZm4Fj5c/00b+iKh2CTZBaxpugaiQZ4MMZbGWtf4rS747aTJWq94MYmhaA6kUk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyH3Ca8MaWdA6p6W3/p8Hk3r46mLq1pzDJLVitipV6V4xZA/A3L
-	u9/gJe6hRf2qOGV89z2Rht2auwyk+Rvwa20W28tHO1LVSb7BCQW769bVQZA3Ut4OmGWcmTXKvR7
-	buHGtZKuKSqSFU5Iajdd4hQSZM4p1kMkCeVCQCZdBgqWTVz/KUA==
-X-Gm-Gg: ASbGncsMfdSao4MFLELuTpOhDWx/Njm0YzBJ4Fq+R2SjcAYQsG7ZO2pFMI95+KjBTMq
-	j8P4WNqgH0NhUcji2r2Sp+dR/hBbSoS4Ng1o9qdF4kGD+sw93c8BS1qm15OzvS/F1LC6pSii/gC
-	L9OQ9pqi1ViebiB/klUhYQjkSV3GqMkVtCewjq9iluqvRK6TT1s6SewSr9Eo7eEofYTZ+jZfgYH
-	GOc1lf+HPsFMjfRH1pLfdJ25tjkVuHtehpyIEGxZBIdgRxuUcjxd220Q4s9fKx5dBKIs2gxG/3f
-	c7vAAf5mwlAfdv+yTuDWjMLv7JWRLXj79hMOJqKtl9zsrcPBOjoENyTIOe5oWWG+pg==
-X-Received: by 2002:a05:600c:500b:b0:439:48d9:d8b0 with SMTP id 5b1f17b1804b1-43948d9dd41mr73108675e9.16.1739290240854;
-        Tue, 11 Feb 2025 08:10:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGxNXfn5PLr2I3O9shVB9BLvMIo6l6XNn4GHuv5+NRtXPlNDWEKqGeQnOp/tv15slnT46loqA==
-X-Received: by 2002:a05:600c:500b:b0:439:48d9:d8b0 with SMTP id 5b1f17b1804b1-43948d9dd41mr73107295e9.16.1739290240325;
-        Tue, 11 Feb 2025 08:10:40 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dc9ef8ac6sm12561610f8f.27.2025.02.11.08.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2025 08:10:39 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Dave Hansen <dave.hansen@intel.com>, Jann Horn <jannh@google.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
- linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
- kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
- <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
- Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
- <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
- Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
- Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
- Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
- Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
- <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
- Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
- <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
- <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
- Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-In-Reply-To: <352317e3-c7dc-43b4-b4cb-9644489318d0@intel.com>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
- <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
- <xhsmh34gkk3ls.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <352317e3-c7dc-43b4-b4cb-9644489318d0@intel.com>
-Date: Tue, 11 Feb 2025 17:10:36 +0100
-Message-ID: <xhsmhv7tgihs3.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kl+DX5ig"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A7A7C4CEDD;
+	Tue, 11 Feb 2025 18:35:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739298933;
+	bh=/GDgxa2V50tFPQOr9OXJ/5PrkxuGxrhpmwMTgMzj/T0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kl+DX5igmocajTRVwBOsdZaBjIkP6B6H3j2G+72XnR5gu5LDvnJzhET+0Vb1TMSD6
+	 A2JJP0TP1FLV+XAsv0hHXSjSVvmEa9pb6Aq69DOXfje6W4aQvorDhKm+HheB9iwZk0
+	 HuKXXpkcwLgd97YlZP+3rVJgybJj/l5FR2DN9O8+m+fzpo18vRtEJF4U3KODj2pDqk
+	 5Y4+pUbVH2gHNtjDAj9Di2bjvymszhio/t1iBscgngU+cs1w6NolRNEgvJOkRh/XYU
+	 fLOI0ULS1WWzZnBE83kphBPURC+LTNVtCov0hoitU4GLBR2kBgB0FgKhKc+Y6s6q+5
+	 vUSGvKMQjmT/A==
+From: SeongJae Park <sj@kernel.org>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: SeongJae Park <sj@kernel.org>,
+	"Naresh Kamboju" <naresh.kamboju@linaro.org>,
+	"open list" <linux-kernel@vger.kernel.org>,
+	linux-mm <linux-mm@kvack.org>,
+	"Linux PM" <linux-pm@vger.kernel.org>,
+	rcu <rcu@vger.kernel.org>,
+	"LTP List" <ltp@lists.linux.it>,
+	"Linux Regressions" <regressions@lists.linux.dev>,
+	lkft-triage@lists.linaro.org,
+	"Andrew Morton" <akpm@linux-foundation.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	"Vincent Guittot" <vincent.guittot@linaro.org>,
+	"Daniel Lezcano" <daniel.lezcano@linaro.org>,
+	"Dan Carpenter" <dan.carpenter@linaro.org>,
+	"Anders Roxell" <anders.roxell@linaro.org>
+Subject: Re: next-20250210: WARNING: at include/linux/rwsem.h:85 madvise_unlock
+Date: Tue, 11 Feb 2025 10:35:31 -0800
+Message-Id: <20250211183531.4359-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <fa1a7a10-f892-4e7e-acb4-0b058aa53d88@app.fastmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On 11/02/25 06:22, Dave Hansen wrote:
-> On 2/11/25 05:33, Valentin Schneider wrote:
->>> 2. It's wrong to assume that TLB entries are only populated for
->>> addresses you access - thanks to speculative execution, you have to
->>> assume that the CPU might be populating random TLB entries all over
->>> the place.
->> Gotta love speculation. Now it is supposed to be limited to genuinely
->> accessible data & code, right? Say theoretically we have a full TLBi as
->> literally the last thing before doing the return-to-userspace, speculation
->> should be limited to executing maybe bits of the return-from-userspace
->> code?
->
-> In practice, it's mostly limited like that.
->
-> Architecturally, there are no promises from the CPU. It is within its
-> rights to cache anything from the page tables at any time. If it's in
-> the CR3 tree, it's fair game.
->
->> Furthermore, I would hope that once a CPU is executing in userspace, it's
->> not going to populate the TLB with kernel address translations - AIUI the
->> whole vulnerability mitigation debacle was about preventing this sort of
->> thing.
->
-> Nope, unfortunately. There's two big exception to this. First, "implicit
-> supervisor-mode accesses". There are structures for which the CPU gets a
-> virtual address and accesses it even while userspace is running. The LDT
-> and GDT are the most obvious examples, but there are some less
-> ubiquitous ones like the buffers for PEBS events.
->
-> Second, remember that user versus supervisor is determined *BY* the page
-> tables. Before Linear Address Space Separation (LASS), all virtual
-> memory accesses walk the page tables, even userspace accesses to kernel
-> addresses.  The User/Supervisor bit is *in* the page tables, of course.
->
-> A userspace access to a kernel address results in a page walk and the
-> CPU is completely free to cache all or part of that page walk. A
-> Meltdown-style _speculative_ userspace access to kernel memory won't
-> generate a fault either. It won't leak data like it used to, of course,
-> but it can still walk the page tables. That's one reason LASS is needed.
+On Tue, 11 Feb 2025 10:32:55 +0100 "Arnd Bergmann" <arnd@arndb.de> wrote:
 
-Bummer, now I have at least two architectures proving me wrong :-) Thank
-you as well for the education, I really appreciate it.
+> On Tue, Feb 11, 2025, at 10:23, Naresh Kamboju wrote:
+> > Regressions on arm64 Juno-r2 device while running LTP syscalls tests
+> > madvise01 warnings on the Linux next-20250210 tag.
+> >
+> > First seen on next-20250210
+> > Good: next-20250207
+> > Bad: next-20250210
+> 
+> Cc SeongJae Park <sj@kernel.org>
+[...]
+> This is mmap_write_unlock() triggering
+> rwsem_assert_held_write(&mm->mmap_lock);
+> 
+> That code was changed in these commits:
+> 
+> 415553982a1e mm-madvise-remove-redundant-mmap_lock-operations-from-process_madvise-fix
+> ec68fbd9e99f mm/madvise: remove redundant mmap_lock operations from process_madvise()
+> f19c9d7b57cf mm/madvise: split out madvise() behavior execution
+> a4d5a73cdc14 mm/madvise: split out madvise input validity check
+> 948a0a9ea070 mm/madvise: split out mmap locking operations for madvise()
+> 
+> You could try reverting them to see if that fixes it again.
 
+Thank you for kindly Cc-ing me and further providing this nice information,
+Arnd!  I posted a fix and continuing discussion there:
+https://lore.kernel.org/20250211063201.5106-1-sj@kernel.org
+
+
+Thanks,
+SJ
+
+[...]
