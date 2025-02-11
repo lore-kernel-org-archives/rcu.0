@@ -1,120 +1,89 @@
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4045D1C1F02;
-	Tue, 11 Feb 2025 09:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956EB1F3BA1
+	for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 10:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739266410; cv=none; b=ahmo0E/E+5Ka88p5jt86g4Ce8R8Qey986kRr+Nb3ucHcSygc8lU7jP11MrisHsdEWUWFLq/sXA8U5dnm5NOYy+BdEHzjB3Mjm15NuJp0nmLqBoiLFc76hZddIjaLOxdIQWdcH1UN8r7v8hV0p19Xi2J3sd1ScWyVhbK64tEwgBM=
+	t=1739268542; cv=none; b=sDKmMkGWLpzNMh4aRLrg5iDr6ct7RLK4i9CQjbXGqOrCeGcZcaFyLEmpM8WA2G/dUVe2SJljNaWmZqeMcsYLe9M/pCxFR4Haz322ESbjr6C8J+vMqcLyNpPckQp8VggoaiZB5CyLowFK0eshKFdyIyYnJeD5XvWdZA5/Ul30f20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739266410; c=relaxed/simple;
-	bh=K2Vpg7q2HNfMD7lB/N3JWtCYXSONSifeqZFXDp5nzac=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=APz+lWlaJlRDRRnUbg8TRJLdgE7Dp6v3MU6v0yFSeJNOPO0YFcrNqpyjyU07Oz5jMmjTnfQiFpYkKbniiS3G+Ab3U0f8pRBWsNv0evpfnZkoYNQqgfy3PxpqEZRjge7nZWTMSmjTm4/h1ux0UvbvbRuYuCJNUvLwKPloHX7IEBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=CFW4RC5g; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ST/goioB; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+	s=arc-20240116; t=1739268542; c=relaxed/simple;
+	bh=K6S6iD5Rl8d3VWop+gMF8fxHP2/hz2ZGqmmyv6NoDeA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J1bdE9Z9JwfVoa9elnhWRcfyRhVZ9o7AtgRHO3R1XZmgO8gqiRgzrsr7pA4TjSV2cxHPr7WMDni3srFHcxvq9F4xtxLlgx2bkli97n/SHhMW6iZEoWny+gw7Xxl1FJXnStqvVt5mF5Ttnst+eCF1jmos90m5OjxOddjKbmJp0dE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zJSONbUX; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="CFW4RC5g";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ST/goioB"
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 32CE21140121;
-	Tue, 11 Feb 2025 04:33:26 -0500 (EST)
-Received: from phl-imap-11 ([10.202.2.101])
-  by phl-compute-10.internal (MEProxy); Tue, 11 Feb 2025 04:33:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1739266406;
-	 x=1739352806; bh=s4rBUSI4dAh8XWsfRTCFJvHBI1iLX3Omhg2y1TCystU=; b=
-	CFW4RC5ge017Qy/5q9YpRRtVeRQHBGsNtWsqeSHq9IlPqU3D/1OpenSqa1yWLPz+
-	3jOpIl+Dqu7qLghltBFY06eTT97oongSU89kACZ01SivrvvOvk4k0PbPrexlXmsl
-	8tVg1b+LUnU4Z9yx2BBX7hMq/SV6tMsBX8MC8Pwn6H/h1f6R+WcA+AoBH6yUCOft
-	EhU0nM60rH3QCPinBrAWv3dnGACFYomy2VG4SA8FI+YIi41WHeykauQMBo//1d41
-	rNxf6iMoJSnGJ897SZ7HUwlyFxbJljSVMz4wVxWOpDRdwV1KnzAX1UUsZoc7gIBq
-	zfvOuGMtK2CMAvM0zvp6AA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1739266406; x=
-	1739352806; bh=s4rBUSI4dAh8XWsfRTCFJvHBI1iLX3Omhg2y1TCystU=; b=S
-	T/goioBamYzLG4znNoWRyLsSEh1pq0rd/BABhs2+3A3fmV0ny9OQBzLRelQ3HSo3
-	XYVWqaAG/6P9Xyfj1APaXLcnrQG4iN1vFfEP8H6RKg8Gav6xMd7GaND1t79gqYZz
-	aNAl4m05k7zakKUPfoejBmGWp7XqETkSovK3rS+pU3B0tULyD33UrWSPxJiUQvQO
-	aY2loB0FM2kkHNcdfmXH3vLayBekYj6aQkq0I1ldIn5v2fm91j3FZPcW4hm5btqu
-	lpt5kp4wpL2r1FuupczcJ7s4VYFjRGJhKPO2gT9fWhXCFyrxppDGwlA6xhrd0u+n
-	JaPwX0qFXSQhjFTPYythA==
-X-ME-Sender: <xms:ZRmrZz0tpvAHtplLTDzHY9wvWle75B-BadVOKEYApMLeeqciw4AwBw>
-    <xme:ZRmrZyEtmKVHr9wvI0Uqb1Si0OUZnWbWduF1_P3sS7DxttdHcGAXWnNVEHLDrhorl
-    DXRrAWnRi5Ykg0EHCs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdegtdeihecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthejredtredt
-    tdenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusg
-    druggvqeenucggtffrrghtthgvrhhnpeeifffgtdefteettdelgfeftdfhveegteehleet
-    ffeuheffudeiieevheefieethfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhlih
-    hnrghrohdrohhrghdpthhugihsuhhithgvrdgtohhmnecuvehluhhsthgvrhfuihiivgep
-    tdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspg
-    hrtghpthhtohepudehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehprghulhhm
-    tghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsjheskhgvrhhnvghlrdhorhhgpd
-    hrtghpthhtoheplhhinhhugidqmhhmsehkvhgrtghkrdhorhhgpdhrtghpthhtoheprghn
-    uggvrhhsrdhrohigvghllheslhhinhgrrhhordhorhhgpdhrtghpthhtohepuggrnhdrtg
-    grrhhpvghnthgvrheslhhinhgrrhhordhorhhgpdhrtghpthhtohepuggrnhhivghlrdhl
-    vgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehnrghrvghshhdrkhgrmh
-    gsohhjuheslhhinhgrrhhordhorhhgpdhrtghpthhtohepvhhinhgtvghnthdrghhuihht
-    thhotheslhhinhgrrhhordhorhhgpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfoh
-    hunhgurghtihhonhdrohhrgh
-X-ME-Proxy: <xmx:ZRmrZz41I2pGnP5S-EbBKlRbBVRfgHmDFkIt0xxCskcGg_5nf342MA>
-    <xmx:ZRmrZ43L3vDrHzIUbm9YVB055SlYFnrNos9Pr1R2c71s40qAvn5BgA>
-    <xmx:ZRmrZ2Ed_eEOT2RZ9B9DnAjMri1ByTx9NfQtDBvs5YEyQ51k4eMjgg>
-    <xmx:ZRmrZ59EfVWFdtHtG1SsxMJWndjtCVrSHGc9Pd7s4DNIfjqB5R9jUA>
-    <xmx:ZhmrZze9rNN9vIlFfZ2j7nVfcE0RzBdfomn_eAVk8n9B4HjnFSUA9ZmV>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 5BAE32220072; Tue, 11 Feb 2025 04:33:25 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zJSONbUX"
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-866f84385b4so1633427241.3
+        for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 02:08:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1739268538; x=1739873338; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xEn3cm/UNrP7SZZldloJXkuufWri2Kvjnrj9hrLDPQo=;
+        b=zJSONbUXNjUxPwaAhwR11YaCEGxh+rGPY9/wu+eqXAgAg4VB3P9yJZt8BHoYMoc1kx
+         Bd3Aq6MBujKnddL92AvMLkG7ORLp7ofIvB/3kzRpGrlK501NLLGSIH3grh13ZC2fxYQ/
+         yg61PmArNQiNblm1NukY1yy7VLEoUysY2azzDU195wY6H2V1s148ghuz5wrPwJPipz3y
+         cCh5OcvykDstZ8f3xfFHnRCX9cpm5GeChZnRcaUoWh29Mtx8fQpV1L8udDi67GPHGUcA
+         hKYf+RKyuzoqOQDw+VxVMEHJGOpI1+jy8n2lu8qJAk32kfBDESW443ddIMGKffOeG92+
+         WaJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739268538; x=1739873338;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xEn3cm/UNrP7SZZldloJXkuufWri2Kvjnrj9hrLDPQo=;
+        b=qyYN33nhO28yNFT9eJWNFP0WxZgMHcg55KvChfNMznXBa10U4/gDqpVlsWwg7Iqkoj
+         05itgs7Hfh0WcFkDq4bSE4gcbtZuYn+mxOdRPzu6FeIeg72AQGJ6QbWTGiKplpAMsNCs
+         GlZX5iyiQobIIFtDM/k8AzzNZjqMKWYxU99Ny9VGPUlaPyethkUEqJh5gcYDnHBiRPTr
+         /SGBYEbCF7KQ13Sb/tKyorlPcYwZAOR5EyKRCyvUvuFZZWHU5DP7AUFh/IaJ2hJT2Jfh
+         r9es6xzCq6zXyHCqFF1IgBm9HIcDuCePo/WqOqOOTLJ5nNMwxdkZIL8TKICp5sD0eETY
+         YzFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXIL3NLKmjzy5hDhX3rJeQYY8MyLbQC6SWMIDEVWPgBDr54daZsztUnIizHpckIBViSlOo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzRpYx8kAAkJj81bYc4POjqnqFWGSloVRo+lPExOCzxen4edkl
+	dPxb4BhEiokn9qLQ5TdP3tUpTzot1DO5kJIPgV/aX8c1wlPzm3tmLpsYs+12qCyn1ChqmBQeP1X
+	DTen50FRe50oLyqJjHMyH+tJgzd9UB9u05oNr8g==
+X-Gm-Gg: ASbGncurAvEwfEM102fe745UFsZrvQRYGdpZ0ZN7Nt69mIGUN/schvvmsW1H7ConmWE
+	/F6xWxKlfwDSvCeopfNeCB3ieD/RRtlyK6AE+hDqzcRJX672gB8okgEeIje/5Du4sPcHlOOQRLn
+	5PgAScL3eA5gQhoXZ+0h9WXecBpWkp/w==
+X-Google-Smtp-Source: AGHT+IHp1zdj8ZibeFlCfAdtduHOD6KnRYnX/ZueNTg9nfqkFNPLIXpI43V2qHdRl3eZSUUEm/vQoAR49cYDijtPvYw=
+X-Received: by 2002:a05:6102:3e0b:b0:4af:ba51:a25f with SMTP id
+ ada2fe7eead31-4ba85f1d603mr11334067137.20.1739268538258; Tue, 11 Feb 2025
+ 02:08:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 11 Feb 2025 10:32:55 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "open list" <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
- "Linux PM" <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
- "LTP List" <ltp@lists.linux.it>,
- "Linux Regressions" <regressions@lists.linux.dev>,
- lkft-triage@lists.linaro.org
-Cc: "Andrew Morton" <akpm@linux-foundation.org>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- "Vincent Guittot" <vincent.guittot@linaro.org>,
- "Daniel Lezcano" <daniel.lezcano@linaro.org>,
- "Dan Carpenter" <dan.carpenter@linaro.org>,
- "Anders Roxell" <anders.roxell@linaro.org>, "SeongJae Park" <sj@kernel.org>
-Message-Id: <fa1a7a10-f892-4e7e-acb4-0b058aa53d88@app.fastmail.com>
-In-Reply-To: 
- <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
-References: 
- <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
+References: <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 11 Feb 2025 15:38:46 +0530
+X-Gm-Features: AWEUYZlxubnV84-s1VVkx9iBxiTYmg01jsC7etcGK75gbLsVTjiAfHyBl1JrU90
+Message-ID: <CA+G9fYtf=NaCuLrs2BtfXRQvxDap214i4bJSC+mEqTWPV7676Q@mail.gmail.com>
 Subject: Re: next-20250210: WARNING: at include/linux/rwsem.h:85 madvise_unlock
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+To: open list <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Linux PM <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>, 
+	LTP List <ltp@lists.linux.it>, Linux Regressions <regressions@lists.linux.dev>, 
+	lkft-triage@lists.linaro.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Anders Roxell <anders.roxell@linaro.org>, SeongJae Park <sj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 11, 2025, at 10:23, Naresh Kamboju wrote:
+On Tue, 11 Feb 2025 at 14:53, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
 > Regressions on arm64 Juno-r2 device while running LTP syscalls tests
 > madvise01 warnings on the Linux next-20250210 tag.
 >
 > First seen on next-20250210
 > Good: next-20250207
 > Bad: next-20250210
-
-Cc SeongJae Park <sj@kernel.org>
-
+>
 > This regression is reproducible with CONFIG_ARM64_64K_PAGES=y
 >
 > Test regression: LTP madvise01 WARNING include/linux/rwsem.h madvise_unlock
@@ -138,24 +107,6 @@ Cc SeongJae Park <sj@kernel.org>
 > include/linux/mmap_lock.h:70 (discriminator 1)
 > include/linux/mmap_lock.h:169 (discriminator 1)
 > include/linux/mmap_lock.h:176 (discriminator 1) mm/madvise.c:1599
-
-This is mmap_write_unlock() triggering
-rwsem_assert_held_write(&mm->mmap_lock);
-
-That code was changed in these commits:
-
-415553982a1e mm-madvise-remove-redundant-mmap_lock-operations-from-process_madvise-fix
-ec68fbd9e99f mm/madvise: remove redundant mmap_lock operations from process_madvise()
-f19c9d7b57cf mm/madvise: split out madvise() behavior execution
-a4d5a73cdc14 mm/madvise: split out madvise input validity check
-948a0a9ea070 mm/madvise: split out mmap locking operations for madvise()
-
-You could try reverting them to see if that fixes it again.
-
-     Arnd
-
-Fullquote below for reference.
-
 > (discriminator 1))
 > Tested kernel: 6.14.0-rc2-next-20[ 1190.646322] Modules linked in: tun
 > overlay btrfs blake2b_generic xor xor_neon raid6_pq zstd_compress
@@ -346,8 +297,7 @@ Fullquote below for reference.
 >
 > ## Source
 > * kernel version: 6.14.0-rc2-next-20250210
-> * git tree: 
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> * git tree: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 > * git sha: df5d6180169ae06a2eac57e33b077ad6f6252440
 > * git describe: next-20250210
 > * project details:
@@ -358,23 +308,22 @@ Fullquote below for reference.
 > * config : CONFIG_ARM64_64K_PAGES=y (gcc-13-lkftconfig-64k_page_size)
 > * build config:
 > https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/config
-> * build: 
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/
->
-> ## Boot log
-> Juno-r2 log: 
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/log
-> Juno-r2 details:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/
-> Juno-r2 history:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/history/
-> Juno-r2 lava log 1:
-> https://lkft.validation.linaro.org/scheduler/job/8117395#L43180
-> Juno-r2 lava log 2: 
-> https://lkft.validation.linaro.org/scheduler/job/8118169
-> Juno-r2 lava log 3: 
-> https://lkft.validation.linaro.org/scheduler/job/8118170
->
+> * build: https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/
+
+Re posting links due format issue,
+
+## Boot log
+* Juno-r2 log: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/log
+* Juno-r2 details:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/
+* Juno-r2 history:
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/history/
+* Juno-r2 lava log 1:
+https://lkft.validation.linaro.org/scheduler/job/8117395#L43180
+* Juno-r2 lava log 2: https://lkft.validation.linaro.org/scheduler/job/8118169
+* Juno-r2 lava log 3: https://lkft.validation.linaro.org/scheduler/job/8118170
+
+ >
 > --
 > Linaro LKFT
 > https://lkft.linaro.org
