@@ -1,329 +1,187 @@
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956EB1F3BA1
-	for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 10:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3785221D92
+	for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 13:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739268542; cv=none; b=sDKmMkGWLpzNMh4aRLrg5iDr6ct7RLK4i9CQjbXGqOrCeGcZcaFyLEmpM8WA2G/dUVe2SJljNaWmZqeMcsYLe9M/pCxFR4Haz322ESbjr6C8J+vMqcLyNpPckQp8VggoaiZB5CyLowFK0eshKFdyIyYnJeD5XvWdZA5/Ul30f20=
+	t=1739280842; cv=none; b=mmzYyAhbD+y1nnkdzBaIhgqYvsyQvIdnpGfGsziUVC9wDbVdd+YwFcSIMokEfT+/MXhnsv/UVWGMMU569WLfs4Je4EoZMLFm/Xec7/j+2dmagCrS2/ClH9OSFNst+UG1mnT7bjaycVgQcMOTge1GnP01U6hpFQsNPeB9OycLlaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739268542; c=relaxed/simple;
-	bh=K6S6iD5Rl8d3VWop+gMF8fxHP2/hz2ZGqmmyv6NoDeA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J1bdE9Z9JwfVoa9elnhWRcfyRhVZ9o7AtgRHO3R1XZmgO8gqiRgzrsr7pA4TjSV2cxHPr7WMDni3srFHcxvq9F4xtxLlgx2bkli97n/SHhMW6iZEoWny+gw7Xxl1FJXnStqvVt5mF5Ttnst+eCF1jmos90m5OjxOddjKbmJp0dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zJSONbUX; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1739280842; c=relaxed/simple;
+	bh=I6rYC3Ttea935cxDKXU7eGhmr1cWrMQ3SYanZpPc/20=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=VbZrsqRAg+LcAy7JMJSyNCKvgmNn6vcUTGgYc/h9UyHywSpm1psm8F0xK7ACa8o3mkSXspRReRkVqCJiOlTvk+hQrhhvXoLr2dMWnf5hWay5wA7XQi0y/Tys78b3755jJTNBJ3ni60Z4EBqqwPZyldMtXQ/9di39iwdWLqeYUNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T/Js0VBS; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zJSONbUX"
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-866f84385b4so1633427241.3
-        for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 02:08:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1739268538; x=1739873338; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xEn3cm/UNrP7SZZldloJXkuufWri2Kvjnrj9hrLDPQo=;
-        b=zJSONbUXNjUxPwaAhwR11YaCEGxh+rGPY9/wu+eqXAgAg4VB3P9yJZt8BHoYMoc1kx
-         Bd3Aq6MBujKnddL92AvMLkG7ORLp7ofIvB/3kzRpGrlK501NLLGSIH3grh13ZC2fxYQ/
-         yg61PmArNQiNblm1NukY1yy7VLEoUysY2azzDU195wY6H2V1s148ghuz5wrPwJPipz3y
-         cCh5OcvykDstZ8f3xfFHnRCX9cpm5GeChZnRcaUoWh29Mtx8fQpV1L8udDi67GPHGUcA
-         hKYf+RKyuzoqOQDw+VxVMEHJGOpI1+jy8n2lu8qJAk32kfBDESW443ddIMGKffOeG92+
-         WaJw==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T/Js0VBS"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739280839;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I6rYC3Ttea935cxDKXU7eGhmr1cWrMQ3SYanZpPc/20=;
+	b=T/Js0VBSgcT6OPC9QBAR3bPxcbq++c6NvaMipXAJRtNbNGASO5G6biem94diU5OhXk47TG
+	5v7ocv40R45gLCS4rUMuZXHyDY7a6nm4Oh0TCURykHAIUkpwtzHhsjp9lkfOy+t1d3yRm7
+	fJQ7o3ROgRkU4iXfXLWdED7qbyBj94E=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-rbtlj86uPlaCfU2tt2nszg-1; Tue, 11 Feb 2025 08:33:57 -0500
+X-MC-Unique: rbtlj86uPlaCfU2tt2nszg-1
+X-Mimecast-MFC-AGG-ID: rbtlj86uPlaCfU2tt2nszg
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43935bcec0aso23303575e9.3
+        for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 05:33:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739268538; x=1739873338;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xEn3cm/UNrP7SZZldloJXkuufWri2Kvjnrj9hrLDPQo=;
-        b=qyYN33nhO28yNFT9eJWNFP0WxZgMHcg55KvChfNMznXBa10U4/gDqpVlsWwg7Iqkoj
-         05itgs7Hfh0WcFkDq4bSE4gcbtZuYn+mxOdRPzu6FeIeg72AQGJ6QbWTGiKplpAMsNCs
-         GlZX5iyiQobIIFtDM/k8AzzNZjqMKWYxU99Ny9VGPUlaPyethkUEqJh5gcYDnHBiRPTr
-         /SGBYEbCF7KQ13Sb/tKyorlPcYwZAOR5EyKRCyvUvuFZZWHU5DP7AUFh/IaJ2hJT2Jfh
-         r9es6xzCq6zXyHCqFF1IgBm9HIcDuCePo/WqOqOOTLJ5nNMwxdkZIL8TKICp5sD0eETY
-         YzFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIL3NLKmjzy5hDhX3rJeQYY8MyLbQC6SWMIDEVWPgBDr54daZsztUnIizHpckIBViSlOo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzRpYx8kAAkJj81bYc4POjqnqFWGSloVRo+lPExOCzxen4edkl
-	dPxb4BhEiokn9qLQ5TdP3tUpTzot1DO5kJIPgV/aX8c1wlPzm3tmLpsYs+12qCyn1ChqmBQeP1X
-	DTen50FRe50oLyqJjHMyH+tJgzd9UB9u05oNr8g==
-X-Gm-Gg: ASbGncurAvEwfEM102fe745UFsZrvQRYGdpZ0ZN7Nt69mIGUN/schvvmsW1H7ConmWE
-	/F6xWxKlfwDSvCeopfNeCB3ieD/RRtlyK6AE+hDqzcRJX672gB8okgEeIje/5Du4sPcHlOOQRLn
-	5PgAScL3eA5gQhoXZ+0h9WXecBpWkp/w==
-X-Google-Smtp-Source: AGHT+IHp1zdj8ZibeFlCfAdtduHOD6KnRYnX/ZueNTg9nfqkFNPLIXpI43V2qHdRl3eZSUUEm/vQoAR49cYDijtPvYw=
-X-Received: by 2002:a05:6102:3e0b:b0:4af:ba51:a25f with SMTP id
- ada2fe7eead31-4ba85f1d603mr11334067137.20.1739268538258; Tue, 11 Feb 2025
- 02:08:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739280836; x=1739885636;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I6rYC3Ttea935cxDKXU7eGhmr1cWrMQ3SYanZpPc/20=;
+        b=a2OU5QBVk29lVNrJMCsWIgB9eZ1h+nePFbPZ85SxO2RQk8tuSEYJ6N7mpVj05Hnqup
+         /8Bettk5NGXWdd0q39CzP8zKMbAuobP3KJbZGSIXzeXUD0dD0Jy+qG363pHyinS+W2m0
+         2BnuORwC9MSVDkGpG5tDpa+YYr1A9qWvQsenK/JJZE+m4ATc8bKHUxltTa9QZf16gxc1
+         dfxZrOBOjZO4gSr5aNncYtjfTsvn2jzkppHylG7LFCDzGlNxgbnqu2y2oUrCZqdUYPDn
+         kttST3cTpT/MDBc7IEteQNINzuUtSpMS02kSzqAA9USU0c5EOkzZSViel1DQIHdRER3y
+         OMoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJhzKJZq8mcMwrbbHN09nOystuboaGnXQpbp7xgcM39y5ah0tTNbDc6u5ux+pvSJHPwrU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMN5Z4AwFC4hTgAkSiKpDQ2jzVpTv4EnPL7sboHEQGQkVhaj5G
+	3Ebk+da77MzSdmFJE+d3gWXUdf8kqVCJYulvGVcAQqdCMrBaMSZvcss8Rx9ZbtR9lZLaYyFyX0+
+	ZnSHcfol5sHAvivCZztFcPz6T3mu9opQWhrYDRMYSWK/rXLNudg==
+X-Gm-Gg: ASbGncvKSv0It2ixBfCHaFDMkrxLYXZ+EJLHHWQUyuc61Q9wOCYH7t/Ug3KHfeMV1i2
+	CSVMqZgKwOX7DAYx8ctx5nsiQ8EyuGKG97EvRL6RrJQEPRGeZ73+AVM74KE/0+13Yv71QXRIO3v
+	TkRJklvkX37T5HHJRp87OgXg+Ysbl7dZz4Bv1iwuBw83lD1tL7wV5oenhpGH9OTklyg/DD+roks
+	R4vgmKiHvjj8jvZPFX4ruBVj/gUyjJrYfgsncPe3tam9sOyQg4PMfqrCLXX5/bYYqRnkhrcbZz8
+	v4Q1ROQjttwoB05cCIKebE1cTfmwyEuOJHSD8V+iNqgvN49kUWPBs6n+Vw8ZnFLR0w==
+X-Received: by 2002:a05:600c:384c:b0:439:554f:f64f with SMTP id 5b1f17b1804b1-439554ffb3bmr21891425e9.0.1739280836464;
+        Tue, 11 Feb 2025 05:33:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHLaJ199QatUt+F367q7Ky9NspQydjwYuxDlEpx56Dm3c1ApLy01ntC7qxuc1s/8cawIiMmnw==
+X-Received: by 2002:a05:600c:384c:b0:439:554f:f64f with SMTP id 5b1f17b1804b1-439554ffb3bmr21890805e9.0.1739280836017;
+        Tue, 11 Feb 2025 05:33:56 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38dcb88d5e6sm11688621f8f.1.2025.02.11.05.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2025 05:33:55 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Jann Horn <jannh@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+ linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
+ <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
+ <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
+ <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
+ Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
+ Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
+ Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
+ Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
+ <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
+ Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
+ <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+ Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
+ Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
+ Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+In-Reply-To: <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-30-vschneid@redhat.com>
+ <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
+ <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
+ <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
+Date: Tue, 11 Feb 2025 14:33:51 +0100
+Message-ID: <xhsmh34gkk3ls.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYt5QwJ4_F8fJj7jx9_0Le9kOVSeG38ox9qnKqwsrDdvHQ@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 11 Feb 2025 15:38:46 +0530
-X-Gm-Features: AWEUYZlxubnV84-s1VVkx9iBxiTYmg01jsC7etcGK75gbLsVTjiAfHyBl1JrU90
-Message-ID: <CA+G9fYtf=NaCuLrs2BtfXRQvxDap214i4bJSC+mEqTWPV7676Q@mail.gmail.com>
-Subject: Re: next-20250210: WARNING: at include/linux/rwsem.h:85 madvise_unlock
-To: open list <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	Linux PM <linux-pm@vger.kernel.org>, rcu <rcu@vger.kernel.org>, 
-	LTP List <ltp@lists.linux.it>, Linux Regressions <regressions@lists.linux.dev>, 
-	lkft-triage@lists.linaro.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Anders Roxell <anders.roxell@linaro.org>, SeongJae Park <sj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 11 Feb 2025 at 14:53, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+On 10/02/25 23:08, Jann Horn wrote:
+> On Mon, Feb 10, 2025 at 7:36=E2=80=AFPM Valentin Schneider <vschneid@redh=
+at.com> wrote:
+>> What if isolated CPUs unconditionally did a TLBi as late as possible in
+>> the stack right before returning to userspace? This would mean that upon
+>> re-entering the kernel, an isolated CPU's TLB wouldn't contain any kernel
+>> range translation - with the exception of whatever lies between the
+>> last-minute flush and the actual userspace entry, which should be feasib=
+le
+>> to vet? Then AFAICT there wouldn't be any work/flush to defer, the IPI
+>> could be entirely silenced if it targets an isolated CPU.
 >
-> Regressions on arm64 Juno-r2 device while running LTP syscalls tests
-> madvise01 warnings on the Linux next-20250210 tag.
+> Two issues with that:
 >
-> First seen on next-20250210
-> Good: next-20250207
-> Bad: next-20250210
->
-> This regression is reproducible with CONFIG_ARM64_64K_PAGES=y
->
-> Test regression: LTP madvise01 WARNING include/linux/rwsem.h madvise_unlock
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> ## Test log
-> command: madvise01
-> [ 1190.422933] /usr/local/bin/kirk[359]: starting test madvise01 (madvise01)
-> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_madSbRtkW as tmpdir (tmpfs filesystem)
-> tst_test.c:1860: TINFO: LTP version: 20240930
-> [ 1190.607278] Injecting memory failure for pfn 0x8e13f at process
-> virtual address 0xffff8c8c0000
-> tst_test.c:1864: TINFO:[
-> ** replaying previous printk message **
-> [ 1190.618980] Memory failure: 0x8e13f: recovery action for clean LRU
-> page: Recovered
-> [ 1190.619013] ------------[ cut here ]------------
-> [ 1190.619016] WARNING: CPU: 2 PID: 137820 at include/linux/rwsem.h:85
-> madvise_unlock (include/linux/rwsem.h:85 (discriminator 1)
-> include/linux/rwsem.h:205 (discriminator 1)
-> include/linux/mmap_lock.h:70 (discriminator 1)
-> include/linux/mmap_lock.h:169 (discriminator 1)
-> include/linux/mmap_lock.h:176 (discriminator 1) mm/madvise.c:1599
-> (discriminator 1))
-> Tested kernel: 6.14.0-rc2-next-20[ 1190.646322] Modules linked in: tun
-> overlay btrfs blake2b_generic xor xor_neon raid6_pq zstd_compress
-> panfrost hdlcd tda998x onboard_usb_dev drm_shmem_helper drm_client_lib
-> cec gpu_sched drm_dma_helper drm_kms_helper fuse drm backlight
-> ip_tables x_tables
-> 250210 #1 SMP PREEMPT @1739162484[ 1190.671777] CPU: 2 UID: 0 PID:
-> 137820 Comm: madvise01 Not tainted 6.14.0-rc2-next-20250210 #1
-> [ 1190.683191] Hardware name: ARM Juno development board (r2) (DT)
-> aarch64
-> tst_test.c:1703: TINFO:[ 1192.996920] pstate: a0000005 (NzCv daif -PAN
-> -UAO -TCO -DIT -SSBS BTYPE=--)
-> Timeout per run is 0h 05m 24s
-> [ 1193.006802] pc : madvise_unlock (include/linux/rwsem.h:85
-> (discriminator 1) include/linux/rwsem.h:205 (discriminator 1)
-> include/linux/mmap_lock.h:70 (discriminator 1)
-> include/linux/mmap_lock.h:169 (discriminator 1)
-> include/linux/mmap_lock.h:176 (discriminator 1) mm/madvise.c:1599
-> (discriminator 1))
-> [ 1211.692758] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> [ 1211.692776] rcu: 1-...0: (0 ticks this GP)
-> idle=f3a4/1/0x4000000000000000 softirq=946757/946757 fqs=2625
-> [ 1211.692794] rcu: 2-...0: (1 GPs behind)
-> idle=2fac/1/0x4000000000000002 softirq=357256/357257 fqs=2625
-> [ 1211.692809] rcu: (detected by 4, t=5252 jiffies, g=196909, q=138 ncpus=6)
-> [ 1211.692821] Sending NMI from CPU 4 to CPUs 1:
-> [ 1221.694021] Sending NMI from CPU 4 to CPUs 2:
-> [ 1231.695220] rcu: rcu_preempt kthread timer wakeup didn't happen for
-> 5001 jiffies! g196909 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> [ 1231.695231] rcu: Possible timer handling issue on cpu=4 timer-softirq=26922
-> [ 1231.695238] rcu: rcu_preempt kthread starved for 5002 jiffies!
-> g196909 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=4
-> [ 1231.695251] rcu: Unless rcu_preempt kthread gets sufficient CPU
-> time, OOM is now expected behavior.
-> [ 1231.695257] rcu: RCU grace-period kthread stack dump:
-> [ 1231.695262] task:rcu_preempt     state:I stack:0     pid:18
-> tgid:18    ppid:2      task_flags:0x208040 flags:0x00000008
-> [ 1231.695280] Call trace:
-> [ 1231.695286] __switch_to (arch/arm64/kernel/process.c:704) (T)
-> [ 1231.695306] __schedule (kernel/sched/core.c:5381 kernel/sched/core.c:6765)
-> [ 1231.695318] schedule (kernel/sched/core.c:6843 kernel/sched/core.c:6857)
-> [ 1231.695330] schedule_timeout (include/linux/timer.h:185
-> kernel/time/sleep_timeout.c:100)
-> [ 1231.695347] rcu_gp_fqs_loop (kernel/rcu/tree.c:2024 (discriminator 15))
-> [ 1231.695365] rcu_gp_kthread (kernel/rcu/tree.c:2229 (discriminator 2))
-> [ 1231.695380] kthread (kernel/kthread.c:464)
-> [ 1231.695395] ret_from_fork (arch/arm64/kernel/entry.S:863)
-> [ 1231.695410] rcu: Stack dump where RCU GP kthread last ran:
-> [ 1231.695417] CPU: 4 UID: 0 PID: 0 Comm: swapper/4 Not tainted
-> 6.14.0-rc2-next-20250210 #1
-> [ 1231.695428] Hardware name: ARM Juno development board (r2) (DT)
-> [ 1231.695434] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [ 1231.695445] pc : cpuidle_enter_state (drivers/cpuidle/cpuidle.c:292)
-> [ 1231.695467] lr : cpuidle_enter_state
-> (arch/arm64/include/asm/irqflags.h:26
-> arch/arm64/include/asm/irqflags.h:48 drivers/cpuidle/cpuidle.c:290)
-> [ 1231.695481] sp : ffff80008378fd90
-> [ 1231.695486] x29: ffff80008378fd90 x28: 0000000000000000 x27: 0000000000000000
-> [ 1231.695503] x26: 0000000000000000 x25: 0000000000000001 x24: 0000011a1e4785a4
-> [ 1231.695519] x23: 0000000000000001 x22: ffff00080314a080 x21: 0000011a1e83fe44
-> [ 1231.695536] x20: 0000000000000001 x19: ffff00097d625778 x18: ffff8000a0c2fc10
-> [ 1231.695552] x17: 000000040044ffff x16: 00500072f5507510 x15: 0000000000000000
-> [ 1231.695568] x14: ffff0008007bc800 x13: ffff8008fad70000 x12: 0000000034d4d91d
-> [ 1231.695585] x11: 0000000000000000 x10: 0000000000001000 x9 : ffff8000815901a4
-> [ 1231.695601] x8 : ffff80008378fc98 x7 : 0000000000000001 x6 : ffff8000829f9000
-> [ 1231.695617] x5 : ffff0008007bc800 x4 : ffff8000829f95e0 x3 : 0000000000000000
-> [ 1231.695633] x2 : 0000000000000000 x1 : 0000000100000001 x0 : 0000000100000001
-> [ 1231.695649] Call trace:
-> [ 1231.695653] cpuidle_enter_state (drivers/cpuidle/cpuidle.c:292) (P)
-> [ 1231.695671] cpuidle_enter (drivers/cpuidle/cpuidle.c:391 (discriminator 2))
-> [ 1231.695692] do_idle (kernel/sched/idle.c:155
-> kernel/sched/idle.c:230 kernel/sched/idle.c:325)
-> [ 1231.695716] cpu_startup_entry (kernel/sched/idle.c:423 (discriminator 1))
-> [ 1231.695732] secondary_start_kernel
-> (arch/arm64/include/asm/atomic_ll_sc.h:95 (discriminator 2)
-> arch/arm64/include/asm/atomic.h:28 (discriminator 2)
-> include/linux/atomic/atomic-arch-fallback.h:546 (discriminator 2)
-> include/linux/atomic/atomic-arch-fallback.h:994 (discriminator 2)
-> include/linux/atomic/atomic-instrumented.h:436 (discriminator 2)
-> include/linux/sched/mm.h:37 (discriminator 2)
-> arch/arm64/kernel/smp.c:214 (discriminator 2))
-> [ 1231.695749] __secondary_switched (arch/arm64/kernel/head.S:421)
-> madvise01.c:68: TINFO: Mounting [ 1231.961851] lr : do_madvise
-> (mm/madvise.c:1748)
-> [ 1242.412862] sp : ffff8000a188fdc0
-> tmp_madvise to /tmp/LTP_madSbRtkW/tmp_madvise fstyp=tmpfs flags=0[
-> 1242.416214] x29: ffff8000a188fdc0 x28: ffff000813417c00 x27:
-> 0000000000000000
->
-> madvise01.c:113: TPASS: madvise[ 1294.712666] rcu: INFO: rcu_preempt
-> detected stalls on CPUs/tasks:
-> [ 1294.712685] rcu: 2-...0: (1 GPs behind)
-> idle=2fac/1/0x4000000000000002 softirq=357256/357257 fqs=7636
-> [ 1294.712704] rcu: (detected by 4, t=26007 jiffies, g=196909, q=184 ncpus=6)
-> [ 1294.712716] Sending NMI from CPU 4 to CPUs 2:
-> [ 1304.713915] rcu: rcu_preempt kthread timer wakeup didn't happen for
-> 8168 jiffies! g196909 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-> [ 1304.713927] rcu: Possible timer handling issue on cpu=3 timer-softirq=35895
-> [ 1304.713933] rcu: rcu_preempt kthread starved for 8169 jiffies!
-> g196909 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=3
-> [ 1304.713945] rcu: Unless rcu_preempt kthread gets sufficient CPU
-> time, OOM is now expected behavior.
-> [ 1304.713951] rcu: RCU grace-period kthread stack dump:
-> [ 1304.713955] task:rcu_preempt     state:I stack:0     pid:18
-> tgid:18    ppid:2      task_flags:0x208040 flags:0x00000008
-> [ 1304.713974] Call trace:
-> [ 1304.713979] __switch_to (arch/arm64/kernel/process.c:704) (T)
-> [ 1304.714000] __schedule (kernel/sched/core.c:5381 kernel/sched/core.c:6765)
-> [ 1304.714013] schedule (kernel/sched/core.c:6843 kernel/sched/core.c:6857)
-> [ 1304.714024] schedule_timeout (include/linux/timer.h:185
-> kernel/time/sleep_timeout.c:100)
-> [ 1304.714042] rcu_gp_fqs_loop (kernel/rcu/tree.c:2024 (discriminator 15))
-> [ 1304.714061] rcu_gp_kthread (kernel/rcu/tree.c:2229 (discriminator 2))
-> [ 1304.714076] kthread (kernel/kthread.c:464)
-> [ 1304.714090] ret_from_fork (arch/arm64/kernel/entry.S:863)
-> [ 1304.714105] rcu: Stack dump where RCU GP kthread last ran:
-> [ 1304.714109] Sending NMI from CPU 4 to CPUs 3:
-> [ 1304.714119] NMI backtrace for cpu 3
-> [ 1304.714130] CPU: 3 UID: 0 PID: 205 Comm: systemd-udevd Not tainted
-> 6.14.0-rc2-next-20250210 #1
-> [ 1304.714143] Hardware name: ARM Juno development board (r2) (DT)
-> [ 1304.714148] pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [ 1304.714158] pc : queued_spin_lock_slowpath
-> (kernel/locking/qspinlock.c:380 (discriminator 5))
-> [ 1304.714176] lr : _raw_spin_lock_bh (kernel/locking/spinlock.c:179)
-> [ 1304.714189] sp : ffff800085e6f310
-> [ 1304.714193] x29: ffff800085e6f310 x28: ffff000808761c00 x27: ffff00080295b500
-> [ 1304.714210] x26: ffff00081e724e00 x25: 0000000000000000 x24: 0000000000008080
-> [ 1304.714224] x23: 0000000000000000 x22: 0000000074000080 x21: 0000000000000078
-> [ 1304.714239] x20: ffff000802bb0a30 x19: ffff000802bb0a30 x18: 0000000000000000
-> [ 1304.714254] x17: 0000000000000000 x16: 0000000000000000 x15: 0000aaaabea75a70
-> [ 1304.714268] x14: 0000000000000000 x13: 2dcd92d500000000 x12: 40982a24d45a0569
-> [ 1304.714283] x11: 3cc1638a3642b30d x10: d5e7818600000000 x9 : ffff80008159decc
-> [ 1304.714298] x8 : ffff800085e6f278 x7 : 0000000000000000 x6 : 0000000000000201
-> [ 1304.714312] x5 : ffff8000829f9000 x4 : ffff8000829f95e0 x3 : 0000000000000001
-> [ 1304.714326] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000001
-> [ 1304.714339] Call trace:
-> [ 1304.714343] queued_spin_lock_slowpath
-> (kernel/locking/qspinlock.c:380 (discriminator 5)) (P)
-> [ 1304.714360] _raw_spin_lock_bh (kernel/locking/spinlock.c:179)
-> [ 1304.714374] lock_sock_nested (net/core/sock.c:3649 (discriminator 1))
-> [ 1304.714388] tcp_sock_set_cork (net/ipv4/tcp.c:3547 net/ipv4/tcp.c:3560)
-> [ 1304.714405] xs_tcp_send_request (net/sunrpc/xprtsock.c:1124)
-> [ 1304.714418] xprt_transmit (net/sunrpc/xprt.c:1578 net/sunrpc/xprt.c:1634)
-> [ 1304.714434] call_transmit (net/sunrpc/clnt.c:2283 net/sunrpc/clnt.c:2265)
-> [ 1304.714447] __rpc_execute
-> (include/asm-generic/bitops/generic-non-atomic.h:128
-> net/sunrpc/sched.c:954)
-> [ 1304.714463] rpc_execute (include/linux/sched/mm.h:339
-> (discriminator 1) include/linux/sched/mm.h:399 (discriminator 1)
-> net/sunrpc/sched.c:1026 (discriminator 1))
-> [ 1304.714476] rpc_run_task (net/sunrpc/clnt.c:1250)
-> [ 1304.714488] rpc_call_sync (net/sunrpc/clnt.c:1278 (discriminator 1))
-> [ 1304.714501] nfs3_rpc_wrapper (fs/nfs/nfs3proc.c:36)
-> [ 1304.714516] nfs3_proc_getattr (fs/nfs/nfs3proc.c:123)
-> [ 1304.714528] __nfs_revalidate_inode (fs/nfs/inode.c:1311 (discriminator 2))
-> [ 1304.714546] nfs_access_get_cached (fs/nfs/dir.c:3058 (discriminator
-> 1) fs/nfs/dir.c:3118 (discriminator 1))
-> [ 1304.714561] nfs_do_access (fs/nfs/dir.c:3246)
-> [ 1304.714574] nfs_permission (fs/nfs/dir.c:3360)
-> [ 1304.714588] inode_permission (fs/namei.c:588 fs/namei.c:562)
-> [ 1304.714606] link_path_walk.part.0.constprop.0 (fs/namei.c:1831
-> fs/namei.c:2422)
-> [ 1304.714624] path_lookupat (fs/namei.c:2607 fs/namei.c:2630)
-> [ 1304.714639] filename_lookup (fs/namei.c:2660)
-> [ 1304.714654] kern_path (fs/namei.c:2768)
-> [ 1304.714669] unix_find_other (net/unix/af_unix.c:1153 net/unix/af_unix.c:1182)
-> [ 1304.714681] unix_dgram_sendmsg (net/unix/af_unix.c:2038)
-> [ 1304.714692] ____sys_sendmsg (net/socket.c:718 (discriminator 1)
-> net/socket.c:733 (discriminator 1) net/socket.c:2573 (discriminator
-> 1))
-> [ 1304.714710] ___sys_sendmsg (net/socket.c:2627)
-> [ 1304.714725] __sys_sendmsg (net/socket.c:2659 (discriminator 1))
-> [ 1304.714740] __arm64_sys_sendmsg (net/socket.c:2662)
-> [ 1304.714755] invoke_syscall.constprop.0
-> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
-> [ 1304.714772] do_el0_svc (arch/arm64/kernel/syscall.c:139
-> arch/arm64/kernel/syscall.c:151)
-> [ 1304.714787] el0_svc (arch/arm64/include/asm/irqflags.h:82
-> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
-> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
-> [ 1304.714806] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:763)
-> [ 1304.714821] el0t_64_sync (arch/arm64/kernel/entry.S:600)
-> test for MADV_NORMAL PASSED
->
-> ## Source
-> * kernel version: 6.14.0-rc2-next-20250210
-> * git tree: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> * git sha: df5d6180169ae06a2eac57e33b077ad6f6252440
-> * git describe: next-20250210
-> * project details:
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/
-> * architecture: arm64
-> * device: Juno-r2
-> * toolchain: gcc-13
-> * config : CONFIG_ARM64_64K_PAGES=y (gcc-13-lkftconfig-64k_page_size)
-> * build config:
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/config
-> * build: https://storage.tuxsuite.com/public/linaro/lkft/builds/2spp0dMfaQHNeHr0jT9DgXiO1Px/
 
-Re posting links due format issue,
+Firstly, thank you for entertaining the idea :-)
 
-## Boot log
-* Juno-r2 log: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/log
-* Juno-r2 details:
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/
-* Juno-r2 history:
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20250210/testrun/27251102/suite/log-parser-test/test/warning-warning-cpu-pid-at-includelinuxrwsemh-madvise_unlock/history/
-* Juno-r2 lava log 1:
-https://lkft.validation.linaro.org/scheduler/job/8117395#L43180
-* Juno-r2 lava log 2: https://lkft.validation.linaro.org/scheduler/job/8118169
-* Juno-r2 lava log 3: https://lkft.validation.linaro.org/scheduler/job/8118170
+> 1. I think the "Common not Private" feature Will Deacon referred to is
+> incompatible with this idea:
+> <https://developer.arm.com/documentation/101811/0104/Address-spaces/Commo=
+n-not-Private>
+> says "When the CnP bit is set, the software promises to use the ASIDs
+> and VMIDs in the same way on all processors, which allows the TLB
+> entries that are created by one processor to be used by another"
+>
 
- >
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+
+Sorry for being obtuse - I can understand inconsistent TLB states (old vs
+new translations being present in separate TLBs) due to not sending the
+flush IPI causing an issue with that, but not "flushing early". Even if TLB
+entries can be shared/accessed between CPUs, a CPU should be allowed not to
+have a shared entry in its TLB - what am I missing?
+
+> 2. It's wrong to assume that TLB entries are only populated for
+> addresses you access - thanks to speculative execution, you have to
+> assume that the CPU might be populating random TLB entries all over
+> the place.
+
+Gotta love speculation. Now it is supposed to be limited to genuinely
+accessible data & code, right? Say theoretically we have a full TLBi as
+literally the last thing before doing the return-to-userspace, speculation
+should be limited to executing maybe bits of the return-from-userspace
+code?
+
+Furthermore, I would hope that once a CPU is executing in userspace, it's
+not going to populate the TLB with kernel address translations - AIUI the
+whole vulnerability mitigation debacle was about preventing this sort of
+thing.
+
