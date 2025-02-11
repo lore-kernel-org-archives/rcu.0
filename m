@@ -1,145 +1,274 @@
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A7024E4B9
-	for <rcu@vger.kernel.org>; Mon, 10 Feb 2025 22:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDD728F5
+	for <rcu@vger.kernel.org>; Tue, 11 Feb 2025 00:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739225377; cv=none; b=K6QVmLh+3YhOLb4Ia2pdxr30MOcp3TBxsUG5OPk6rSc8xZx8Bvxql5GEP242akkomkUSLzklDpUmst2lmj0BH2klGpZ7sBXAQdtoNgNPfHgRtaGp8uafyav7lN/ffHSgtI0klmEFAsXnu7l2m5osB//+OVRplzHINlT54NVgE1I=
+	t=1739233736; cv=none; b=V4pGFqsHQaIpi1a88F5QarURePOBWOFl5AXotnmXNfPMWPZzd6zVW/iOuORW32ngHkgaO9krPINCMzVNn4HqAtM0J/Y7yumCtcyc3CmgbBWU8VT9CGuiChfzUvwiopUWhNy9cnuemLhIvh3LetbsHEcQIVvBOaijdoKlaJFPauo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739225377; c=relaxed/simple;
-	bh=44AOn8KPG/5b/gwXWVMZM4o0cSu0C5gCOO/mytEsVzc=;
+	s=arc-20240116; t=1739233736; c=relaxed/simple;
+	bh=dFb38PYMyv+UEenKSim3jv0rojeAKfCqlzpED01XGoE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L6Nfu8VSCAlVE4W7gyi2cIVys0tfzsAr9MsL9DQgIF4J6EbULm12F9oZYXJQTqqi/2VZis6AFUXEhbPfZPV0z8C/8x54UV2TBG2vIaA1rNka2xYajvW1synGqxiY9NdUJPUAC/vuQlGsfik/p7dFM4VHDizLxG4HemJz1QfRsDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Er4k8Jgg; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 To:Cc:Content-Type; b=pGZw/3z6B3mjOHrCwZ9R5vpVCxEGYyQP4YBXjeKYfNoR90Hl4gtpLe1W80GmIkw4AfaC8x66MCwBkFRmU2hbXE2aa2SLlUOz4Lr4xwPzILcW+zzXesI6xLTC0DOugK1TS2Skx2O7Nn3aDEk568PEuQPkXyUz+CsV1nALlFPnsbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=pdNd1/oR; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Er4k8Jgg"
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5de6d412ee9so894a12.1
-        for <rcu@vger.kernel.org>; Mon, 10 Feb 2025 14:09:35 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="pdNd1/oR"
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-38dd935a267so1731586f8f.1
+        for <rcu@vger.kernel.org>; Mon, 10 Feb 2025 16:28:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1739225374; x=1739830174; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1739233732; x=1739838532; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=44AOn8KPG/5b/gwXWVMZM4o0cSu0C5gCOO/mytEsVzc=;
-        b=Er4k8Jggi+SM4CnJwm27bFFKeQkowgsaqOyOh89teRf+uRTV8W9l50Gr/9vDaBFO2l
-         DdtALmmisHwzd0PONwPMwil4vpdlJoTeTDFTI3ixQL7x7X8vLAV4839xH0GVspld/V+6
-         96JBHWoYyIJDLDlzGZC/6SyFOwuKXU6qjZY/YzEQ8WeXnGJ1AsmfW2qXHUaA2we5g0v/
-         ArIgVC/8Sq4RykAHj7LkOYAzsNPoLcj/bsq01O5TmO1a6pxI+7SI8q9/zDIrXXSR8D6Y
-         AZAXikH7tZA/LJrwUl9A5DHiVLl+THQrcU87unLFsk16627Gmr4dY3LrCGoj8FQzh2mc
-         KLnA==
+        bh=aJHvmkoJ4NZzrDtHkxvQtMlMZmaGhaWLkXX3ZNLF8DM=;
+        b=pdNd1/oRor/cQSC0YWK6l/fANpqq9i8UUHQMymJlHxO2DOuj63lXWMzBGwRWUtHSmP
+         N1ZEePqvg7evLhpZ+QMvX8ilKiGGyr6Ae5XBiSDeC1ZFPvDpCL0sgMNMgrro9V7vwlBG
+         OEvjCIDiy/3W38964a71x6lvUBaiaLcnZcwc4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739225374; x=1739830174;
+        d=1e100.net; s=20230601; t=1739233732; x=1739838532;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=44AOn8KPG/5b/gwXWVMZM4o0cSu0C5gCOO/mytEsVzc=;
-        b=ZuUhfkoy8oxSaIgpOCvy4hAIiejTKrIuClLo2hM3HNbyC7Q4qw9zTf3/+7BC8AzMgX
-         /aciRKihJo2Al9KEBck5jqSHeWUKFfcW0B92hifI1YHM7FcSae5x6Z9IOBkkzaJAAR79
-         P2aBuhE3gu8krABUY8GhpeAeNc+NQCWEfIhOza6aNuq4zKRthLH6H+rgD8XGmJ2MgaoN
-         mlf8bXRC25+XtaPtT+VDRQ17nSnEDmgjwuLI5FZSAozESmDevs4ejH66urs8ngAXVoJ+
-         tAsgV6I+tq1eQQ4+u343XzrLAMfuHmkRY/uxEhQatSICCZosKFHFwvhrYgcVQhWfgMuQ
-         Obhw==
-X-Forwarded-Encrypted: i=1; AJvYcCXDg8tyEL1W0PZCOCp9SIX/0ruXCJ/KCudFATiRHTgT0Tckw6BmGxIiME71FKqfv6BGp7k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKhADttT7FMkxVp3lKp3xJ99rIVJcz5pcoyuBdKH4uPzHnwv9o
-	xBPW8u/ZpiEkADXw/X0qmHIaVCkYL2xceGDr0MXMGpnQjm/3QaPWmt/E4iCh6X/zgICFjbWAAGq
-	nyMozsol4Yxfo/IPeTqnBWcqg5AUF/o3if+Lf
-X-Gm-Gg: ASbGncuH7PQX+3BhNobLEywy+ye5OGglIHKzoqjSP00mDCrMC4wGUlNt4tR7Qyziz2N
-	J9Ty6jSktvviE3kt/00zARB05J6U/7pIzZ7saKD7y6CrU7MyCKltM4kEe/w7JTEXvnR5dWqn9Gt
-	8iWW23/CQfumP633zG2zeU4Vc=
-X-Google-Smtp-Source: AGHT+IG6JmQxBrqAHiHQy9r7fd0aAn9Heiw/iaJpJbhcsh707Pq8kG+sl2h6STthD8Ujnt3Wdn5OEmJdDMQ5PMlBL9s=
-X-Received: by 2002:a50:aa93:0:b0:5dc:d08e:e128 with SMTP id
- 4fb4d7f45d1cf-5dea05e7838mr1520a12.5.1739225373121; Mon, 10 Feb 2025 14:09:33
- -0800 (PST)
+        bh=aJHvmkoJ4NZzrDtHkxvQtMlMZmaGhaWLkXX3ZNLF8DM=;
+        b=v7b4e3688+K6Oqli/7WNANM0DDpIu0wbBSrViOHs+gBCDWxwO58Bs4XxEm/rTYYKPO
+         DTeP2J37tphoQh1nlOIe/hPaSlWfWqic8aOgxMXi10UAWoA0lLeyUJTDwAuJCrdzZcJb
+         ZWpRY1ARTItYGOArdrNXAJb6lqB08bXUjZkYv39o4154qFTLs8iXfe6QDdaOsr2ExZ2Q
+         uuz5gbL0Brsdxasn0eLOthYVJYqLnaYIjKK4/bWLaeif5xJbApZEi1x/tXmF3QWtDXL/
+         4mm6Qixi3yR0kShI97MPAaa+czaw0PDkeqcP4e3N2NIYYJ+MbYuBrxxK+tzeDxnA9RDH
+         ATOA==
+X-Forwarded-Encrypted: i=1; AJvYcCWazqev29M8qGLNle1DW55nRAXAf7IN4UKtqhgA0vqCVNl9OFMkqCNoCrfcnV85jGOVBEE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWpvA5TKfa5G9g8RsHoK0ebTCjac9O250IbsG1bgfx17AKJBAq
+	V+x5Nxvbgv865JiHV0czc7+OLl90Gv4VG19DQwzwjFXCY4nLDiz1KpZDqMOBcrl9vTP+B4jChh2
+	r00J5MCrz2h+BHaTUQtkePbR0XBJZxD50InuWPg==
+X-Gm-Gg: ASbGncsK98dHKkTsEP58UTaE+04yIxVxYmVf2nnLPh+OW0xNU3D6DIIoFnH0kRTBnOE
+	AvFMJf9Fr1JG95NXVBI/+uLbeVSNh100ovpkgHA8Xn0kgIouaaPsO6RLs+QsEZD9DRtq8Z7E=
+X-Google-Smtp-Source: AGHT+IExfl+mPR5DWHGAjHDLHsIBCrX3fpi4pnophsPSrLb37A1vXmaO36a5G8lrOeU3g3f1M+wVwnw57XvehNxxaLs=
+X-Received: by 2002:a5d:64e2:0:b0:38d:d4d4:d381 with SMTP id
+ ffacd0b85a97d-38dd4d4d577mr8943689f8f.15.1739233732259; Mon, 10 Feb 2025
+ 16:28:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250114175143.81438-1-vschneid@redhat.com> <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com> <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-In-Reply-To: <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-From: Jann Horn <jannh@google.com>
-Date: Mon, 10 Feb 2025 23:08:55 +0100
-X-Gm-Features: AWEUYZmtdNVDV_xq3vvo5TVQ7aaS79EFzdycTCfl72XGpztchND9QHjN9zcxWNo
-Message-ID: <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer flush_tlb_kernel_range()
- targeting NOHZ_FULL CPUs
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
-	virtualization@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	loongarch@lists.linux.dev, linux-riscv@lists.infradead.org, 
-	linux-perf-users@vger.kernel.org, xen-devel@lists.xenproject.org, 
-	kvm@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, 
-	bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	"Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Jason Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>, 
-	Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>, 
-	Tomas Glozar <tglozar@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, 
-	Mel Gorman <mgorman@suse.de>, Kees Cook <kees@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@infradead.org>, 
-	Shuah Khan <shuah@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
-	"Mike Rapoport (Microsoft)" <rppt@kernel.org>, Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>, 
-	Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Yosry Ahmed <yosryahmed@google.com>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>
+References: <da5065c4-79ba-431f-9d7e-1ca314394443@paulmck-laptop>
+ <Z5QcXoE0lrS6yIBt@pavilion.home> <d7bbe2cd-d889-40e9-8d46-fb8772fed6db@paulmck-laptop>
+ <Z5T7kF7LKIuk05FR@pavilion.home> <a18ec931-a7cb-408b-8707-f88068a13ba9@paulmck-laptop>
+ <CAEXW_YReLoj+fofM9=fT-G0rz-E0z7vcwg_ANrbfCrPOX99tYA@mail.gmail.com>
+ <CAEXW_YQaC+TYnXZca2MBcJQgf2EWD+pBp-Dih+b647RtpJ+LNQ@mail.gmail.com>
+ <83f5a3ff-8f89-4994-844f-b7eb9e80b16d@paulmck-laptop> <CAEXW_YTiX2taVbg3keCR4RuxSdfpVA0fVPpCcDWXjF7rH7Kkdw@mail.gmail.com>
+ <CAEXW_YTduDBJY2CbkStWc3-4MP06+bJVFmEbgvfayB6BQyyksw@mail.gmail.com>
+ <76ea9e49-c8d9-4ddf-8dd5-65ba4096e242@paulmck-laptop> <CAEXW_YSxGb3ph-bBiWsOJS-C2XvW9FUuwtoM1eFVxPomMKUd5A@mail.gmail.com>
+In-Reply-To: <CAEXW_YSxGb3ph-bBiWsOJS-C2XvW9FUuwtoM1eFVxPomMKUd5A@mail.gmail.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Mon, 10 Feb 2025 19:28:37 -0500
+X-Gm-Features: AWEUYZmPmyksieWZ1pEBQBr2nyM2oMrHAAhAW1a8E8lPwWucfBGFvBzUIGIpA-8
+Message-ID: <CAEXW_YS4wD1WJm3fGukyf_rUTZoe9Rmbs2rphLntmo2NbYG--A@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start detection
+To: paulmck@kernel.org
+Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, rostedt@goodmis.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 10, 2025 at 7:36=E2=80=AFPM Valentin Schneider <vschneid@redhat=
-.com> wrote:
-> What if isolated CPUs unconditionally did a TLBi as late as possible in
-> the stack right before returning to userspace? This would mean that upon
-> re-entering the kernel, an isolated CPU's TLB wouldn't contain any kernel
-> range translation - with the exception of whatever lies between the
-> last-minute flush and the actual userspace entry, which should be feasibl=
+On Mon, Jan 27, 2025 at 1:45=E2=80=AFPM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+>
+> On Mon, Jan 27, 2025 at 11:49=E2=80=AFAM Paul E. McKenney <paulmck@kernel=
+.org> wrote:
+> >
+> > On Sun, Jan 26, 2025 at 09:58:11PM -0500, Joel Fernandes wrote:
+> > > On Sun, Jan 26, 2025 at 9:55=E2=80=AFPM Joel Fernandes <joel@joelfern=
+andes.org> wrote:
+> > > >
+> > > > On Sun, Jan 26, 2025 at 9:03=E2=80=AFPM Paul E. McKenney <paulmck@k=
+ernel.org> wrote:
+> > > > >
+> > > > > On Sun, Jan 26, 2025 at 08:22:23PM -0500, Joel Fernandes wrote:
+> > > > > > On Sun, Jan 26, 2025 at 8:13=E2=80=AFPM Joel Fernandes <joel@jo=
+elfernandes.org> wrote:
+> > > > > > >
+> > > > > > > Hi, Paul and Frederic,
+> > > > > > >
+> > > > > > > [...]
+> > > > > > > > > > On Sat, Jan 25, 2025 at 12:03:58AM +0100, Frederic Weis=
+becker wrote:
+> > > > > > > > > > > Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McK=
+enney a =C3=A9crit :
+> > > > > > > > > > > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> > > > > > > > > > > > index 2f9c9272cd486..d2a91f705a4ab 100644
+> > > > > > > > > > > > --- a/kernel/rcu/rcu.h
+> > > > > > > > > > > > +++ b/kernel/rcu/rcu.h
+> > > > > > > > > > > > @@ -162,7 +162,7 @@ static inline bool rcu_seq_done=
+_exact(unsigned long *sp, unsigned long s)
+> > > > > > > > > > > >  {
+> > > > > > > > > > > >         unsigned long cur_s =3D READ_ONCE(*sp);
+> > > > > > > > > > > >
+> > > > > > > > > > > > -       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_=
+LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
+> > > > > > > > > > > > +       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_=
+LT(cur_s, s - (3 * RCU_SEQ_STATE_MASK + 1));
+> > > > > > > > > > >
+> > > > > > > [...]
+> > > > > > > > > > > The way I understand it is that rcu_state.gp_seq migh=
+t be seen started while
+> > > > > > > > > > > root_rnp->gp_seq is not. So rcu_seq_snap() on the sta=
+rted rcu_state.gp_seq
+> > > > > > > > > > > may return maximum 2 full GPs ahead of root_rnp->gp_s=
+eq. And therefore it takes below
+> > > > > > > > > > > 2 GPs to safely deduce we wrapped around.
+> > > > > > > > > >
+> > > > > > > > > > Exactly!
+> > > > > > > > > >
+> > > > > > > > > > > Should it be ULONG_CMP_LT(cur_s, s - (2 * (RCU_SEQ_ST=
+ATE_MASK + 1))) ?
+> > > > > > > > > >
+> > > > > > > > > > Quite possibly.  I freely admit that I allowed a bit of=
+ slop because
+> > > > > > > > > > time was of the essence (holidays and all that) and als=
+o it does not
+> > > > > > > > > > hurt much to lose a couple of counts out of a 2^32 cycl=
+e, to say nothing
+> > > > > > > > > > of the common-case 2^64 cycle.  It would not hurt to be=
+ exact, but it
+> > > > > > > > > > would be necessary to convince ourselves that we were n=
+ot off by one in
+> > > > > > > > > > the wrong direction.
+> > > > > > > > > >
+> > > > > > > > > > I would be happy to see a patch, as long as it was suff=
+iciently
+> > > > > > > > > > convincing.
+> > > > > > > > >
+> > > > > > > > > I'm not so much concerned about being exact but rather ab=
+out making
+> > > > > > > > > sure we still understand what we did within one year. We =
+can leave one
+> > > > > > > > > more grace period than what we expect out of paranoia but=
+, the most
+> > > > > > > > > important is that we comment about what we expect and why=
+. Let me
+> > > > > > > > > prepare a patch for that.
+> > > > > > > >
+> > > > > > > > Even better!
+> > > > > > >
+> > > > > > > Do we really have users who could pass such a huge delta wrap=
+ped
+> > > > > > > around value to poll() i.e > ULONG_MAX/2 ?  For 32-bit, that =
+would be
+> > > > > > > 2 billion count since the get() (500 million GPs on 32-bit?).=
+ I am
+> > > > > > > curious if such a scenario should be a WARN() because also: I=
+f more
+> > > > > > > than ULONG_MAX/2 values are possible after get(), then a full=
+ or
+> > > > > > > multiple ULONG_MAX wraparound is also possible. This means th=
+en both
+> > > > > > > rcu_seq_done() and rcu_seq_done_exact() become unreliable any=
+way for
+> > > > > > > such stale get() values.
+> > > > > > >
+> > > > > > > I do agree with both your points on the side effect of the pa=
+tch to
+> > > > > > > rcu_seq_done_exact(), but I am not fully convinced myself abo=
+ut
+> > > > > > > utility of rcu_seq_done_exact() versus the rcu_seq_done() but=
+ I could
+> > > > > > > be missing something.
+> > > > > >
+> > > > > > I want to modify my comment on reliability. rcu_seq_done_exact(=
+) is
+> > > > > > certainly more "reliable" than rcu_seq_done() for wraparound de=
+lta  >
+> > > > > > ULONG_MAX/2. Still with such a huge wrap around it is not fail =
+proof
+> > > > > > if it lands within the "3 Grace period" window, so if it is not=
+ super
+> > > > > > reliable and if the user should not rely on it, then I wonder i=
+f it is
+> > > > > > better to not do it and instead warn the user they are playing =
+with
+> > > > > > fire. But a counter-argument might be, landing within the 3 GP =
+window
+> > > > > > is quite low probability...
+> > > > >
+> > > > > It is also a harmless false negative.  And another poll within a =
+few
+> > > > > hundred milliseconds will set things straight.  In contrast, if w=
 e
-> to vet? Then AFAICT there wouldn't be any work/flush to defer, the IPI
-> could be entirely silenced if it targets an isolated CPU.
+> > > > > used rcu_seq_done(), it would be a good long time before we got o=
+ut of
+> > > > > false-negative territory.
+> > > >
+> > > > True!
+> > > >
+> > > > > On a 32-bit system, if there was an expedited grace period every =
+10
+> > > > > microseconds (just barely possible on small systems), then a 32-b=
+it
+> > > > > counter would wrap in about 12 hours.  So there would be a six-ho=
+ur
+> > > > > false-negative zone.
+> > > > >
+> > > > > So an expedited grace period every 10 microseconds combined with
+> > > > > a six-hour polling delay is unlikely, but not out of the realm of
+> > > > > possibility.
+> > > >
+> > > > Assuming that every 10 microsecond of the entire 6 hours is used fo=
+r
+> > > > an expedited GP, but I agree with your point.
+> > > >
+> > > > > Please feel free to nominate a comment.
+> > > >
+> > > > Ok thanks, I'll see what Frederic comes up with and can take it fro=
+m there.
+> > >
+> > > I forgot to ask is the reason for keeping rcu_seq_done_exact() to hav=
+e
+> > > more complexity only when needed, or does it make sense to rename
+> > > rcu_seq_done_exact() as rcu_seq_done_done() and get rid of the old
+> > > rcu_seq_done()?
+> >
+> > We might well be able to use the rcu_seq_done_exact() algorithm for
+> > all the uses, but that will require very careful review and testing.
+> > Please keep in mind that there are quite a few uses, that the benefit
+> > is small, and I was lazy.  ;-)
+> >
+> > The difference with the polling APIs is that a user might well
+> > legitimately hang onto a cookie for six hours, for example, by having
+> > used it to tag a data structure in a block cache or similar.
+>
+> Thanks for clarification. I will work on a patch along these lines and
+> see if it is worth doing.
 
-Two issues with that:
+Here I think there is a real issue:
 
-1. I think the "Common not Private" feature Will Deacon referred to is
-incompatible with this idea:
-<https://developer.arm.com/documentation/101811/0104/Address-spaces/Common-=
-not-Private>
-says "When the CnP bit is set, the software promises to use the ASIDs
-and VMIDs in the same way on all processors, which allows the TLB
-entries that are created by one processor to be used by another"
+poll_state_synchronize_srcu() uses rcu_seq_done()
 
-2. It's wrong to assume that TLB entries are only populated for
-addresses you access - thanks to speculative execution, you have to
-assume that the CPU might be populating random TLB entries all over
-the place.
+    if (cookie !=3D SRCU_GET_STATE_COMPLETED &&
+        !rcu_seq_done(&ssp->srcu_sup->srcu_gp_seq, cookie))
+        return false;
+
+where as poll_state_synchronize_rcu() uses rcu_seq_done_exact()
+
+bool poll_state_synchronize_rcu(unsigned long oldstate)
+{
+    if (oldstate =3D=3D RCU_GET_STATE_COMPLETED ||
+        rcu_seq_done_exact(&rcu_state.gp_seq_polled, oldstate)) {
+
+I believe rcu_seq_done_exact() makes more sense for polling API, as
+there is a higher chance that there is a significant delay between the
+get_state..() and poll_state..() calls.
+
+I think I am pretty convinced now looking at all the call sites that
+rcu_seq_done_exact() should be used everywhere. I am vetting more
+callsites, but that's what I'm leaning towards. I think
+rcu_seq_done_exact() makes the code more robust to false-negatives
+(duration during which a false-negative is in effect)...
+
+thanks,
+
+ - Joel
