@@ -1,70 +1,102 @@
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2080.outbound.protection.outlook.com [40.107.93.80])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02DA27109F;
-	Tue, 11 Feb 2025 22:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959F55474C;
+	Wed, 12 Feb 2025 04:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739313517; cv=fail; b=TZ9Fph+LrZajWzL9VsuzRUd65ql31HiyH2qMkPe5xJGnUqW3mL483YFuZB6lt0xRg491QUK1m55qelgB9XV6WjR7nd6V45SGsUlWK3/UjXIceilxzK3yqAf6EwcIpRtZmzOT2xRUu/QykaT0CFbD6tz0QwryxwWTuFvbGf0Ito8=
+	t=1739336247; cv=fail; b=SpFeZ+moZQXTeos6F/APu5uB+pXqt0qMuHK5K4d4gGFsyq+EPUhrqHwcriGqfrWEWWjlPR/542TEkxViS61GNGpabyxeNDxD2gGdaewrM5PyXaNTi4ldSrmpSPyaBRG4hza26u6e3HiRj9/YW0j4WEAMttw3wg4mX/i1M7tCWpQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739313517; c=relaxed/simple;
-	bh=LBkdCqN0Id3nK0UxZoHndqTuxaoNU5PnfNkev/wh85Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=MzSzyDZH9Kz/LTRuymfhg+5HtZF86E68IawbqP4CVR0iXcRTyK2mi4n6Zy4enKPV8lFyTTyPf7SHOMRljA3nA80ZIy6ifXEEgG4L5kbSgBVHOchoLP3xgR2N3xDjvoTziCPERzxN8SYQVjeucMILuCFYLE+Cs3sMjnmoj0lV6uA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OJkIR4vN; arc=fail smtp.client-ip=40.107.93.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1739336247; c=relaxed/simple;
+	bh=AQpPbs3ANiO1zq2hKzoZ8mztP1k1Qwws2zEi1j6lenE=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=sbzwtey7z9MmHLjqCOgDdaIt4zHr2dZazWjEWSZ8TOJLzz6bP1FaTVGKEQuVwhvSYY3kXZdLXznsgOrK8E31Ms/5OqtL+6d0Uvdn+wto6SrsLKf9Eh0I9osvkh43bMueej44YETmmWupIiBYwpAltBYE60Uz4h7eTQ5EUqVIQBo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d3Ka9cjg; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OJkIR4vN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d3Ka9cjg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739336246; x=1770872246;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=AQpPbs3ANiO1zq2hKzoZ8mztP1k1Qwws2zEi1j6lenE=;
+  b=d3Ka9cjgEmfzZJuTRcc43Ho+v4SckzprnZJeHYG5DL9/IBkyppBX0vP6
+   LN8VREtcry8WFK+Xo3brdgzvg/NJZk3vu/t7MiEey+bS/Q3y4kYFZWYMp
+   VQd7YsAWtM8A+jrozg7syV7cY/lY+TjWRlUwWy1bKXArKgRvMK5hPE1IM
+   bDvo/1o/O/sxQNhIgIMqKmdEqAATm/uoMpwbG2faKzlNJhBJqNNBBenvn
+   JMKb2y3Xdt/vCaavd1Aw4enWQNv/FiuXN+uPJOVX230+0kjBxoNnRSqhp
+   SCf8fZwP4m1LVTAB2FmuoJIOmtKwAgajJ7tOiN6EcG3jOmK1HEPM+MrRd
+   g==;
+X-CSE-ConnectionGUID: w4AZ1HXsQo+ww9iw8+Zenw==
+X-CSE-MsgGUID: Z0ZTUTNVSm+gcYBWlPFwlA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11342"; a="40122054"
+X-IronPort-AV: E=Sophos;i="6.13,279,1732608000"; 
+   d="scan'208";a="40122054"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2025 20:57:25 -0800
+X-CSE-ConnectionGUID: iVq0sBg+QEqvWFSfYrLTJQ==
+X-CSE-MsgGUID: 6kJ4X5b+S2OKsq0KR4WeKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="113608302"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Feb 2025 20:57:24 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44; Tue, 11 Feb 2025 20:57:24 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Tue, 11 Feb 2025 20:57:24 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.177)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 11 Feb 2025 20:57:22 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Z+gFwTzeN+RLthpbdQ6ZLNsznDr18tvtjPZ2sQT+R6PKNcFeN07g/aP4TXytU3yaqtx6q5ueK1vUMlg6aZ07DddF3ZCAZVUn+pw7dawooe7l+mqM07xrq6TVwJR/SFkOzZbxYd3mC4IQT8b7kM8kier4A89l2z6mgQktTGiUSZbWTS6xHyB/l+WwSDkizdugU1HMmynNv1VuPbETPfwmSD/rvS2HbopWm1rTGrUTQf/ycR/kPwoiIvzfBdKgacGOZIKdMEyhaCWerwaLz9pfx3rFcaa6eWiXGtbz8JYbXiOVHQGWuIycoqPfXw8Kox/Kv04oLiDGiBNhSnk0gYoPlA==
+ b=yKLj7DOMTgx0hPSW8+c0iJIr6MMT2h4jO+I8QvYu6Hug5c2r4+PZXkY48OZE1wuHPqZf1GpYu5tshs+ELjYqhdi2Fatw+j1NmMEx2AzvgBnAjJRrZyH2aNYHQJavOkRLbGbr6OPHaDW8d9noBiOHQZerxJwD7ZIE2t5LHV4Q1Q6U8Fl/lvqApGmwxzf1YgyutgRNxN4P6JHevhLtCmvbglfAQ9gJZpIISIfLPzw4QIsWUlamrdwn7/bIkoNTig5zeeUWZGUQjVDY6D4EWK8bx3OlY34FxpeZ1C/2ksZgLPkZ+JuGeA20J+UnkYodOHXlKWpbXhMnQ8VaAy8x7xHIQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o8vSGC7S2NY/OTpU5vSgsMN8JTXOr3JRndjFpZK5UwI=;
- b=l4tswPiDquOcpaEvSb6oVQVmKo1PHpOdpLtZU8KXx1GIQhpHhiss7gTUqnAJDkYLQPszjavo0PL+SNzBCh3NarPo0eOsp208PAmjcM3/GCMWP8ypHDcK1WprHPeC3qi6MYq3Ehyozs7sNjtvUP1J1PpwJ9qONKryYMo+il7UEU2j/d9JYHMqXyO29ZAwIy+GaxwPHqC4f7MSiASPYQjnsbCI3GVoFhhH1+36UORADJNRGwysTrVEUMYXLM5Ie/hBi7G1UuBMJhwg3U9IXSn2lsQhp4qeVYC7+afJNmcatpzlO83SYvKFdBrOpmXngTVOPr9TDYrzL9Nn0wVjvoVcSg==
+ bh=9xS19ITpW6p3lFQ69S9JrjzYnurvyZFlE9K3RIGnEBE=;
+ b=nMI92rH0fDDDf8rVdmxegIxVWxm4KvaLE3lDWEZ6/L26BJk+cgwBWW5rEr7jyLGF3/jQIi3zsu/W1xgl4//nfqrb9rDqDINc/HHw20Hro8YA8JrjT47FmbCtzRJvHQVt/jffrw3KwzlDdoczM/8cOyBU5z8ftA7R/rRwPNcKycT66Xmkl5szkWEmCfRgMAOHv2n0zrYnt20M/RJfk5XRjv559uU/fYVW2jQ1/A4JfqIMEqqjljBHzaSJALFj7trjzFHrLv9lOlXMecMfZFhy6/SmvKZXXJLduNhX8vtC0QtN1GAg02G3tE27ZAgyaFZVCsoMSHzhq/0QJTUCEFJEdA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o8vSGC7S2NY/OTpU5vSgsMN8JTXOr3JRndjFpZK5UwI=;
- b=OJkIR4vNAVVqsPUSUrw4MwlF7jBOtsNjs2reS7pzcEg6+aX1WY/iSvOb3cLMga8wxZG6PxO9KMKLF9HZ6NGA1lPcvqAUCSbxbixwAkFVIbgST7h+oZOZazklDyaGobsWVc/KwL5mmSVdfNh2HWbLTefqJ9LikLQl4MA9xsQYh1YdYfq0Jl2bWbLraoZNoRzqGLKuOetZ8G+qPyygADGPmbu/COFBKRJ2hAw81V1Uj0fHCB+jsP3Za0gZVBGOFfI2VpQcjrk5lId0EOMjxVsLNcv1amT5hMwcN5tpHeV0VAunVwtYF+kXN9HiId+q/D3zLpxKhbwtdZVccXjIsJqE8Q==
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by SA0PR12MB7001.namprd12.prod.outlook.com (2603:10b6:806:2c0::11) with
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by CH3PR11MB8702.namprd11.prod.outlook.com (2603:10b6:610:1cb::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.18; Tue, 11 Feb
- 2025 22:38:32 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8422.015; Tue, 11 Feb 2025
- 22:38:32 +0000
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Cc: "Joel Fernandes" <joelagnelf@nvidia.com>,
-	rcu@vger.kernel.org
-Subject: [PATCH v2] rcu: Merge rcu_seq_done_exact() logic into rcu_seq_done()
-Date: Tue, 11 Feb 2025 17:38:07 -0500
-Message-ID: <20250211223807.1834978-1-joelagnelf@nvidia.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BY1P220CA0003.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:a03:59d::10) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.11; Wed, 12 Feb
+ 2025 04:57:21 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%3]) with mapi id 15.20.8422.015; Wed, 12 Feb 2025
+ 04:57:21 +0000
+Date: Wed, 12 Feb 2025 12:57:07 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-kernel@vger.kernel.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>, <kvm@vger.kernel.org>,
+	<linux-crypto@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
+	<linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>,
+	<linux-media@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <chrome-platform@lists.linux.dev>,
+	<linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+	<virtualization@lists.linux.dev>, <linux-watchdog@vger.kernel.org>,
+	<linux-erofs@lists.ozlabs.org>, <rcu@vger.kernel.org>,
+	<oliver.sang@intel.com>
+Subject: [linus:master] [treewide]  b04e317b52:
+ INFO:task_blocked_for_more_than#seconds
+Message-ID: <202502121025.55bfa801-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SG2PR02CA0026.apcprd02.prod.outlook.com
+ (2603:1096:3:18::14) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -72,179 +104,177 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|SA0PR12MB7001:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95d877d9-7d6d-494a-fb38-08dd4aecd049
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|CH3PR11MB8702:EE_
+X-MS-Office365-Filtering-Correlation-Id: c46323ac-296c-42bc-785a-08dd4b21bb95
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?N3nPupFNMu/kf8DUsYGdZkwnYp4vhN2Wmws2sTCTM16ITYQ1KNtPjp9oSMpL?=
- =?us-ascii?Q?KzA2Wa/YGhI8WNpK6kYO4+Be1/ud+ZcfLOmkF2nX4LJ7/QHXhto8YzVByQMh?=
- =?us-ascii?Q?j2HZfwW9V1nWROMLRlVINdsEtM3MNQeQdKVawlgVOJ2DiOmC058rTYLmvsv5?=
- =?us-ascii?Q?AI5UbLAyURL8nU3ESYqjhGDvVFyxCPzhNcN8maw+27d2fsfiZnrTWYgG7omB?=
- =?us-ascii?Q?uCfJzG7nuCdK9An2yA2vsFyrerwOKdSN+vcERF4I3H5UZkXpLCBPl2jjZoZJ?=
- =?us-ascii?Q?sNGQ/ras+/LDYqfWxN6kf3zDibN/gge9xDY+gN63kQ9fXW5OcoM9+tPmFIR1?=
- =?us-ascii?Q?EuUob5I83sFgMrXE7453Qyscw0TjyaL0aiF9OntafEABOGb3NZk0S3yJX745?=
- =?us-ascii?Q?0Ro6sbOUTru6s/O6NW5TsAr7uw72ZreZ6bDw/dXYUB2aIa196QrZ+I91XaJz?=
- =?us-ascii?Q?7cU5oYtGAnhePPh9XL4YI4ZQfv9IEQTSgPjEYS9mlfrn1Xsn+hrkdI+ncQAv?=
- =?us-ascii?Q?0bhhxQpPselJzovlOELGOOeYRng+rju75dDwBU02YIlUkP8n91azbeq2s1Mz?=
- =?us-ascii?Q?GzTVf8+V/EQIx7MZGcNpwr4375O0nf+2m0urvd+VVU1obDqq8SEUZkNb8aJb?=
- =?us-ascii?Q?z7vFcSTj19buxtgsWGHxbUtlXBrrVq63hxGSpGezzoklorbtKtuK8LHSbmCJ?=
- =?us-ascii?Q?eS0pJWDQR5xcox+9+SiCwiG0gWCxe39Dmf7zbiEcqd9ru25a/pnbao7BxNcz?=
- =?us-ascii?Q?DJZLzPF9d3lWV9upcbbSnWNA3yB1WlLwsQH3QGv2UcLrIauKNbF8iC6RbDYn?=
- =?us-ascii?Q?KBwqut6/4luaq1sD5aTB92Is7HbiOdbqsJfJoh7b9qt3HUfEevhmGFvX3+K0?=
- =?us-ascii?Q?1TLB5LGQLzP5Fh+vCrQmziRwzLO/JW437TccNADjKJp2jfucGGhDD8ObXIbu?=
- =?us-ascii?Q?x620SzRDSIXWWE8PH9+PXUJ6Q49BnoBOrU9fCqyGBTEyG7DoCqbeHyyTi0IC?=
- =?us-ascii?Q?TA7A7jOhtMmfhVJQsx/2JAAj6igkgMZW2ijWoengQRODUZ04VX5C91DBYfFb?=
- =?us-ascii?Q?kbym4tOm8otVckVtXeJuEg3nPW5/6xZy+I8i52yWLgSAkEO1HTWTOyWlVKkL?=
- =?us-ascii?Q?yrL2HsJ7u/NcirGsdd9B74znR1EKI1oafU5TPuYzQ49h71yi+EYfDXvsSs4I?=
- =?us-ascii?Q?BC56iRKlJbZXZcr/PabRhUXVld2/DmMEWtaJ/2bj4LQOJfmnHQ6lgTHSbZx2?=
- =?us-ascii?Q?W3nXW1Bsq9GQBl1bHS/cfqbIcSJIjdSt50v7jKTn93mhdDrYk7zVs8Z+/XQn?=
- =?us-ascii?Q?uP5+eHndK3C8pzfDmusTupmzmZ2z1FvGuSyTOz/0XSHeLLw8UMh2IQ8wc1Ot?=
- =?us-ascii?Q?yXOHSw8evoHn7fDPN5VVf2+b1E3GShSDvZ3cYCAK+eDyQWhmN8XiAeZfBNxk?=
- =?us-ascii?Q?quBLTw4gzPA=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?uo0w6I6vEaKTOCsL7J8ifJ45cTTuQ7UqOValydjixMDw3twVrS4OVfepdsDw?=
+ =?us-ascii?Q?PcyRBJ07OcBrIf/LxcwO/99xJKp9q0UG29kWiCFHsxg6fpaJa+Oz4o5aBLl1?=
+ =?us-ascii?Q?3rznIjpUm1kISONqnkSnFlac+Fr2j85zPQiKhlw9az66GnuRfky7G7GJnI0A?=
+ =?us-ascii?Q?E+LmTkYnsVET7KtAFJthQuNXyp846a+QPGAkwYEoTPuneoan5UMt8CmzZ4Bm?=
+ =?us-ascii?Q?PGSdCSfNHSORQ3nELCE5IoWY1O12yKyZOioIebPLhVzYLeQe7ltUV7TxO7NB?=
+ =?us-ascii?Q?1Y31gxPssspJHy1rQPtlnPkxLQ6ipFsvp7smEw4wETmrpj+RsElD3MItteKI?=
+ =?us-ascii?Q?HLq5901/2WweX8xqFcUOrMUydVquWbPktX2zxTv7+STmLBpUAfHGJx9wPm2Y?=
+ =?us-ascii?Q?t3vi6rg0W6AOLMRJEsW3ZyobsLab8zfYT2J+m/DNmL8Wub0xShPZ/Equrk7v?=
+ =?us-ascii?Q?oMxvfvwJmuNkWzg6QgNdlqhczdn6rHlgfRoJmtXiM3+FyEvX+JgAsaBKr3cN?=
+ =?us-ascii?Q?zzQdHHp/h+2L1BrnRCgnKwmRrvv3Zo5hBDHAICua8UY8QQLY6E+TOpBuczJb?=
+ =?us-ascii?Q?uGJSJDdW8lvhXl57ggD2fjDJRRghlTrldMYRDwjvSKc6GTCyXi7X1r3G0cLb?=
+ =?us-ascii?Q?AimKgWsXQnIDu9KRpYiYqytOo5OPnomE9kzKlxTdyhTXenvFRqo1YjqYppOA?=
+ =?us-ascii?Q?ElkWo4Jio+ThalcuafQd95MXdjbsc/HuUYBtT2dD9Fz0pJ3DOQKtmijV5Ovc?=
+ =?us-ascii?Q?o7cALViBOWMmD1k784EuIu94EuhRHfeYoTA567j4Vx0ZpuqP1rzPmbieRXVp?=
+ =?us-ascii?Q?ooTTOvT7sedV/V8LQFCE+sdJeaOrZBlXUo7egVjtCKEGtnCgnoU8avPHbbtx?=
+ =?us-ascii?Q?pAN59K3QId/lVaP4Igc2wD0YcgTHnR5dS8uamFQa0cIJDGmcRk85gbzTOi2d?=
+ =?us-ascii?Q?PDZglBkS+0wrxllbCQz87gtFV5kcAKqTYRGTjYBfqVu7gKSJEHFGob1h5/Sr?=
+ =?us-ascii?Q?dsJSTZH6ZU9w82PCl6c7aRcg5mUiyfX5pl+14LRRrNhM37QF+BlCSn4lzFTc?=
+ =?us-ascii?Q?g89pe1eGkrcAfAXybcl4bs4r1S1h0sInVBFTDSz0vq7qhZoYzx6CcDyCO0YA?=
+ =?us-ascii?Q?fM3yb5SQOLQ2SosVItpZv99z02frAPl8Ya0OItxnfUJRNS1kKNTB9Zqh4++R?=
+ =?us-ascii?Q?AgjA/6/dv52kckc2NEDO0wZRmLf8o7dMXqnSpZ/kVsP/jf+dAnVldB7Z7pNM?=
+ =?us-ascii?Q?iDOl7LsH8MLafJ6UkaVsAhdIVf/Z4fBgEtX8oAXl22JcHEvbmGlVHMSdIUE8?=
+ =?us-ascii?Q?qFrzxZ/Y/XMbQrOwBl1wDiZZYzTRUi506Vh7xI1JhYRwGw=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ApkVWVJSOAYUCLSMi7T25BB3CfY5OetMxKu7cc7l6Yv0NoNX9EX4XpYY4fr7?=
- =?us-ascii?Q?e6ae07WVxTneUUJmKZrj/MH/o74VdJB3uTFp5Q1e49ki7LASvNqD6v8wTPsw?=
- =?us-ascii?Q?IS05iDINq47WxuigI5lrGnsSpKt9C4ZHtHTgi7PX5D5OpIMEJ6TFJgSIThwJ?=
- =?us-ascii?Q?6RH3Bcb5uhsNGiODSNncPiXeGGkz85w1bZVyEK2VXgSai0qTCL2lAJS/tW8x?=
- =?us-ascii?Q?LTTg7rwW0LvcRwO1uU93/DZTjzuE0w+Lm/QkJdMNOke3AR0eA5ebHFWzmMIo?=
- =?us-ascii?Q?5nk44NPlA8+0KumgpSYJH74DRdIlbI2DavHYm+YyLnhV/zC1pSEaukjCtreO?=
- =?us-ascii?Q?XTNHU/Y4BXn0eOF4WccKVPO+HFOMeexFqh14nBClp1CrZ1O5MljWY9tlmt+m?=
- =?us-ascii?Q?Z0AWkChVSLtL+in2tCP0s/gWWkdtsirPTavF5d1NG6x57khfq4iVsx0OiFnr?=
- =?us-ascii?Q?ifo6bQZ7GBzUutdASBeJ8/1hWZlH91hQSDffPYrEnOS9GJRXb/sgH82rID2V?=
- =?us-ascii?Q?YI+UAiNWcdChQ/BgzWLVQyap7ldHM0ZlTNX+eOnNewQrFO9+vuai9F/Nc7xN?=
- =?us-ascii?Q?mXHPcdHcflWGhzXFtjP3aQF56/15zX/NakId4YtWvNj1ytDFE7z832ugW2Pv?=
- =?us-ascii?Q?afmEnRUYOj32e15oMq7GTsU956Yo+FY5XZZECKFvp+P4C7mxh5FIQ7MJxQa6?=
- =?us-ascii?Q?/CBykVVtSVV8vIIhzBpIQrG0MMN25EHua30fR/nsKMR26xPrPnuFx+cFpBE2?=
- =?us-ascii?Q?X5ZB1VE/voNys1cpBPlM1WS/AuxtzSAiWyVnME5roaQR5/ZNs/xC29/5/y2Z?=
- =?us-ascii?Q?ZZ2hPbkc059miwsRZOQLbwTCeWFS/yhKpDLE9/q66pUCHQrYIncqWl8N2R/F?=
- =?us-ascii?Q?k4sQPaMUbtAyzYJO0DrD46BN9xCAkBeeR3dxIxK6bXdekWHtgtpV7bb1fWtw?=
- =?us-ascii?Q?Cs/d5U8WYLuhtOkXsmzT6oOlFY1l6rVKRr1xFov7Z/JIwh9Yzsa9d+LtGGcz?=
- =?us-ascii?Q?uTxvdJZff2m3VxL2GkmRNOE+7NKj6lVb+ZcYyJdbzEKKoxvyg80jSCgFIjhn?=
- =?us-ascii?Q?5Vn1psoNLMSg3+xh8Z6DVAg3+XcuP1NdUUKNtBmaIGGNNOdNIZ23WycBge9a?=
- =?us-ascii?Q?xUDtIU7EEUqJhFY3QXMOv2QD48WUwmdyW9lw9z1NudWTHSPcH+ZOxNkh18Am?=
- =?us-ascii?Q?eHWzLgmIm9dN/zGg2aQSJA3z9erXjL+cx322ldfL5PWUUjyYDDbCYKUXqa/R?=
- =?us-ascii?Q?fmAKcyq8bwiO5A3ICmw10B+QXA7qbdKsw8knlbmFqy/pZjQMRGWb2mP6VsYd?=
- =?us-ascii?Q?uFQwbq2JoOOTJkBZJ0l47+6bHge0OL83NeB3Mg8Sv1Frn1H4PRTDEmf0WXTe?=
- =?us-ascii?Q?fuOV1AJ36opQl34CrP9Y1NhQmTH8tG/ZclPr0QfLtzs5if/kT/apxXwzPo15?=
- =?us-ascii?Q?PZ8zj6uzShOXEQRcHFhnRcFR3aWXq/3innLp/OdQSgIJ5fCz4FbpkwTa26BI?=
- =?us-ascii?Q?Mw2volj7igBI6Fjv7XDA/AJXBwcISDAW6mH6FPMcLcFcaIwaa4cu3Yf5jN8D?=
- =?us-ascii?Q?lypzjtKVp3W7AsZqp+oPG2C+niDNE3J+UaXz3c6g?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95d877d9-7d6d-494a-fb38-08dd4aecd049
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zrKrFoT4L86AWYuH+4n/i+5S8HqBpf07m7dbtjR2bNubIPSfZD0CxtYiWnGI?=
+ =?us-ascii?Q?IZYTXsIYzwHfKJwpQ/bMO/St9qOKjiyDE9yefNmRWqsHbTjZEXSb7taSbCQN?=
+ =?us-ascii?Q?og5mlqxO97K36cVDO/bEb08/Xr9YVMidqiX+q6LQot08/Y1Mdavzk/2wb0Ul?=
+ =?us-ascii?Q?eONBUAEi5CvvN5yxSRg+2yzZHtjSLIGkC7eIXosoCubODr+GXoId2Kl2dYiR?=
+ =?us-ascii?Q?GBqP6AQQgf3v47OvaqLhy2jiB/fGJm05fwHDvyUP4BIyZrHAPYxPvjjDYwbI?=
+ =?us-ascii?Q?Tqf+xQCrfLDR48HYbugCOUO0ByYZCB4KfM2raXDndeWQYocG+5FwBxCM9/gt?=
+ =?us-ascii?Q?RpsElh6ziUsMIJv0tgoL8gAd5ra4a2dG3SuqEowlqLRlw/g9gr33oOn+klaP?=
+ =?us-ascii?Q?Pz1yyu29HJYWzhgA3MlJor8pbLNKsQwrdAQavL12BkJ/f/hbgVAa3GMthBTm?=
+ =?us-ascii?Q?iyxl5hXShF4y4Y/l1JWPXKQ48dUy/HXWZIZ4bBlp/ERV694qTwVLCG/dE0eT?=
+ =?us-ascii?Q?Qq0sar7zOzrqHmqeT44C3wWkOfdv6Yq9LJTbfTjxxbC9k/mVZIaWgeBM1rdL?=
+ =?us-ascii?Q?cSLrAwqvB8KRwrGPhHEt5TfFCgKk546ho1u1w28kOLhnPincavBJIHZdywh/?=
+ =?us-ascii?Q?fmBaJufw9XzebE2AAWIo//oLG27Aa8z+czUrDEN8EoWTULL4OlOSzg+WEESe?=
+ =?us-ascii?Q?33UE7E2S2rU20bt+zPAJ8W3hmplA1W70Ngdy3dusV5l8Y+Mp1GYn6J1csKyp?=
+ =?us-ascii?Q?fyOdiEvOEPYC+how3CWISze2NYRurdV+reYXeB+mERwnrXuKNyh9TDhkfzez?=
+ =?us-ascii?Q?Qjg6etk+wglUQvPh0yeURScQWDkhZuhzKr2K0ayIDWti2iiZ2wMJHXaicpxz?=
+ =?us-ascii?Q?rDDelL1nq1gng185xUrdqLfaB14V17D2jQra/nRyzrtDr9gCbzGyAIYd47SQ?=
+ =?us-ascii?Q?+twN0sbDFcQ1Ygw2aUJ+q16JANTTiBdNHSdWWc8iXoTTVcpUh7YC6YbGca56?=
+ =?us-ascii?Q?GpHfaIwvBJHzCOB8mxalwLmgPRol7bursofdO6I+nxWEozermfdqx430ihHY?=
+ =?us-ascii?Q?FuuE0Ml447SuO50C4yWZCfkoLdbXwKCI2vwKhbKNwNSrwTi7Ia/y62Rf+CW6?=
+ =?us-ascii?Q?qQtXn0NHnt/FN+cPrz/P7JAc3nR9MSDW+ZrWR4QOHHsdqDz1j+uYCm813zli?=
+ =?us-ascii?Q?lCg+RQ1Ll9a02Z1XgPvlOFf4UQHWOA6XDNO1bozzEj7vScdCG1xnc9nVIRAw?=
+ =?us-ascii?Q?95X3RJ+ULbOzzn38nA7ANxAgyZS+6yAEt0bFPYqbTWero443GbTVzA6X8KVb?=
+ =?us-ascii?Q?Y/YUTyptjMOiHkZqBYLznIQZo6yLm8VX8io3tPPNlMXfqcqLTclejBZ3HnRf?=
+ =?us-ascii?Q?2c3VYENz1vPWtZtYl2JLBkZ19E9yOwO5vY5MmJiKFy2yIqomrUOBN04EALgv?=
+ =?us-ascii?Q?Ikn5uuyWY2y/6MzzJ82VDvTbva1LY9HakhtJ1VhPZx0wd3cSVtCiZ6hOQPaN?=
+ =?us-ascii?Q?9vi9+iLOJMKetZUBETrR4dH7fHhmLTGtDqDnHAKWe99i6oFnBl3RQJfMG+KK?=
+ =?us-ascii?Q?odjtyn67cplQrrV4FDt5AfAgflHlHWDET4srGm3FaAT+DakLoxJLdtQTndb5?=
+ =?us-ascii?Q?TA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c46323ac-296c-42bc-785a-08dd4b21bb95
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2025 22:38:32.5258
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2025 04:57:21.0389
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Toow7FaXM0wDZCWHzycn3/UxyzGqFL1EtWoFVIn1tp4Sg3qjwyuDaO74xoS1+Io8LEeNgbehnvTHeH8adefXaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7001
+X-MS-Exchange-CrossTenant-UserPrincipalName: LyN3mmZxBrwyJ6R8ZuLzRn9HoAcyKcqw/XreDJlhnnDYmw3Nn/aRxGMumgMEHGQ+sJiYnz2JYqc+wINeTP4EZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8702
+X-OriginatorOrg: intel.com
 
-From: "Joel Fernandes" <joelagnelf@nvidia.com>
 
-The rcu_seq_done() API has a large "false-negative" windows of size
-ULONG_MAX/2, where after wrap around, it is possible that it will think
-that a GP has not completed if a wrap around happens and the delta is
-large.
 
-One place this might cause a possible problem is SRCU:
+Hello,
 
-poll_state_synchronize_srcu() uses rcu_seq_done() unlike
-poll_state_synchronize_rcu() which uses rcu_seq_done_exact().
 
-The  rcu_seq_done_exact() makes more sense for polling API, as
-there is a higher chance that there is a significant delay between the
-get_state..() and poll_state..() calls.
+we noticed the issue happens with a low rate on this commit, but keeps clean
+on parent when we even run the tests up to 999 times. just FYI.
 
-Another place where this seems scary is if the condition for the wakeup
-was false causing missed wakeups, example in tree-nocb:
+41f70d8e16349c65 b04e317b522630b46f78ee62ecb
+---------------- ---------------------------
+       fail:runs  %reproduction    fail:runs
+           |             |             |
+           :999          2%          16:999   dmesg.INFO:task_blocked_for_more_than#seconds
+           :999          2%          16:999   dmesg.Kernel_panic-not_syncing:hung_task:blocked_tasks
 
-        swait_event_interruptible_exclusive(
-            rnp->nocb_gp_wq[rcu_seq_ctr(wait_gp_seq) & 0x1],
-            rcu_seq_done(&rnp->gp_seq, wait_gp_seq) ||
-            !READ_ONCE(my_rdp->nocb_gp_sleep));
 
-The shorter false-negative window of rcu_seq_done_exact() would improve
-robustness as rcu_seq_done_exact() makes the window of false-negativity
-by only ~2-3 GPs versus ULONG_MAX/2. It also results in a negative code
-delta and could potentially avoid issues in the future where
-rcu_seq_done() was reporting false-negatives for too long.
+kernel test robot noticed "INFO:task_blocked_for_more_than#seconds" on:
 
-One downside of this change is the slightly higher computation, but it
-is trivial computation and I think is worth it.
+commit: b04e317b522630b46f78ee62ecbdc5734e8d43de ("treewide: Introduce kthread_run_worker[_on_cpu]()")
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-rcutorture runs of all scenarios for 15 minutes passed. Code inspection
-was done thoroughly for all users to convince the change would work.
-Further inspection reveals it is more robust so it is more than a
-cleanup.
+[test failed on linus/master      7ee983c850b40043ac4751836fbd9a2b4d0c5937]
+[test failed on linux-next/master ed58d103e6da15a442ff87567898768dc3a66987]
 
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
----
-v1->v2:
-    Updated commit message with more analysis and points.
+in testcase: rcuscale
+version: 
+with following parameters:
 
- kernel/rcu/rcu.h  | 13 ++-----------
- kernel/rcu/tree.c |  6 +++---
- 2 files changed, 5 insertions(+), 14 deletions(-)
+	runtime: 300s
+	scale_type: rcu
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index eed2951a4962..c2ca196907cb 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -146,19 +146,10 @@ static inline bool rcu_seq_started(unsigned long *sp, unsigned long s)
- 
- /*
-  * Given a snapshot from rcu_seq_snap(), determine whether or not a
-- * full update-side operation has occurred.
-+ * full update-side operation has occurred while also handling
-+ * wraparounds that exceed the (ULONG_MAX / 2) safety-factor/guard-band.
-  */
- static inline bool rcu_seq_done(unsigned long *sp, unsigned long s)
--{
--	return ULONG_CMP_GE(READ_ONCE(*sp), s);
--}
--
--/*
-- * Given a snapshot from rcu_seq_snap(), determine whether or not a
-- * full update-side operation has occurred, but do not allow the
-- * (ULONG_MAX / 2) safety-factor/guard-band.
-- */
--static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
- {
- 	unsigned long cur_s = READ_ONCE(*sp);
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b77ccc55557b..835600cec9ba 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4300,7 +4300,7 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu_full);
- bool poll_state_synchronize_rcu(unsigned long oldstate)
- {
- 	if (oldstate == RCU_GET_STATE_COMPLETED ||
--	    rcu_seq_done_exact(&rcu_state.gp_seq_polled, oldstate)) {
-+	    rcu_seq_done(&rcu_state.gp_seq_polled, oldstate)) {
- 		smp_mb(); /* Ensure GP ends before subsequent accesses. */
- 		return true;
- 	}
-@@ -4347,9 +4347,9 @@ bool poll_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
- 
- 	smp_mb(); // Order against root rcu_node structure grace-period cleanup.
- 	if (rgosp->rgos_norm == RCU_GET_STATE_COMPLETED ||
--	    rcu_seq_done_exact(&rnp->gp_seq, rgosp->rgos_norm) ||
-+	    rcu_seq_done(&rnp->gp_seq, rgosp->rgos_norm) ||
- 	    rgosp->rgos_exp == RCU_GET_STATE_COMPLETED ||
--	    rcu_seq_done_exact(&rcu_state.expedited_sequence, rgosp->rgos_exp)) {
-+	    rcu_seq_done(&rcu_state.expedited_sequence, rgosp->rgos_exp)) {
- 		smp_mb(); /* Ensure GP ends before subsequent accesses. */
- 		return true;
- 	}
+
+
+config: i386-randconfig-052-20250205
+compiler: gcc-12
+test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202502121025.55bfa801-lkp@intel.com
+
+
+[ 1023.501569][   T32] INFO: task UVCG:82 blocked for more than 491 seconds.
+[ 1023.510932][   T32]       Tainted: G                T  6.13.0-rc2-00014-gb04e317b5226 #1
+[ 1023.528506][   T32] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[ 1023.551252][   T32] task:UVCG            state:D stack:0     pid:82    tgid:82    ppid:2      flags:0x00004000
+[ 1023.582336][   T32] Call Trace:
+[ 1023.599286][ T32] __schedule (kernel/sched/core.c:5372 kernel/sched/core.c:6756) 
+[ 1023.617204][ T32] ? __this_cpu_preempt_check (lib/smp_processor_id.c:67) 
+[ 1023.637326][ T32] schedule (kernel/sched/core.c:6834 kernel/sched/core.c:6848) 
+[ 1023.653175][ T32] schedule_preempt_disabled (kernel/sched/core.c:6906) 
+[ 1023.672095][ T32] kthread (kernel/kthread.c:453) 
+[ 1023.684220][ T32] ? kthread_flush_work (kernel/kthread.c:970) 
+[ 1023.700611][ T32] ? kthread_is_per_cpu (kernel/kthread.c:413) 
+[ 1023.716756][ T32] ret_from_fork (arch/x86/kernel/process.c:153) 
+[ 1023.732758][ T32] ? kthread_is_per_cpu (kernel/kthread.c:413) 
+[ 1023.748605][ T32] ret_from_fork_asm (arch/x86/entry/entry_32.S:737) 
+[ 1023.764004][ T32] entry_INT80_32 (arch/x86/entry/entry_32.S:942) 
+[ 1023.776959][   T32]
+[ 1023.776959][   T32] Showing all locks held in the system:
+[ 1023.803410][   T32] 1 lock held by khungtaskd/32:
+[ 1023.815913][ T32] #0: c3baa3d4 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire (include/linux/rcupdate.h:336) 
+[ 1023.842061][   T32] 1 lock held by in:imklog/227:
+[ 1023.849815][ T32] #0: ecd0e884 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos (fs/file.c:1194) 
+[ 1023.877481][   T32] 1 lock held by dmesg/494:
+[ 1023.885260][   T32] 2 locks held by depmod/567:
+[ 1023.903871][   T32]
+[ 1023.907007][   T32] =============================================
+[ 1023.907007][   T32]
+[ 1023.938278][   T32] Kernel panic - not syncing: hung_task: blocked tasks
+[ 1023.951013][   T32] CPU: 0 UID: 0 PID: 32 Comm: khungtaskd Tainted: G                T  6.13.0-rc2-00014-gb04e317b5226 #1 78ab3595737b7bb7ccfbfed5c1dcb65e25af99a7
+[ 1023.973770][   T32] Tainted: [T]=RANDSTRUCT
+[ 1023.979010][   T32] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 1023.991787][   T32] Call Trace:
+[ 1023.995862][ T32] dump_stack_lvl (lib/dump_stack.c:122) 
+[ 1024.001535][ T32] dump_stack (lib/dump_stack.c:130) 
+[ 1024.006622][ T32] panic (kernel/panic.c:258 kernel/panic.c:375) 
+[ 1024.011360][ T32] check_hung_uninterruptible_tasks (kernel/hung_task.c:239) 
+[ 1024.018678][ T32] watchdog (kernel/hung_task.c:398) 
+[ 1024.023798][ T32] kthread (kernel/kthread.c:466) 
+[ 1024.028697][ T32] ? check_hung_uninterruptible_tasks (kernel/hung_task.c:380) 
+[ 1024.036601][ T32] ? kthread_is_per_cpu (kernel/kthread.c:413) 
+[ 1024.042763][ T32] ret_from_fork (arch/x86/kernel/process.c:153) 
+[ 1024.048431][ T32] ? kthread_is_per_cpu (kernel/kthread.c:413) 
+[ 1024.054588][ T32] ret_from_fork_asm (arch/x86/entry/entry_32.S:737) 
+[ 1024.060422][ T32] entry_INT80_32 (arch/x86/entry/entry_32.S:942) 
+[ 1024.067908][   T32] Kernel Offset: disabled
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20250212/202502121025.55bfa801-lkp@intel.com
+
+
+
 -- 
-2.34.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
