@@ -1,265 +1,176 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2070.outbound.protection.outlook.com [40.107.244.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C463209F22;
-	Wed, 12 Feb 2025 10:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739356984; cv=none; b=KgToNYQSSeNIr+mAMKwVf+L8TuznrLT5PvtSMAJZ0pCuAI4hqWNkHQmfDe3jOluSZI8lQsolJdoMpvnyJVu8uZUl8v9m2/z+e26OCrFO5LgNb87BrmcH+yOlvCIpSrQ9VbD+JbZQ6Fp48tmVY6Z2fpmnl0WHEKLvJA018CwJiVo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739356984; c=relaxed/simple;
-	bh=MZ9NlZLMHZ4XSxzfy1mUEo6JbMYrV7+8qzdH5KrrJ3U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RpqqGXNhqPRwj0LZZCTMKLDYZg4TkTKbLXqX1BlEx+ZD23OtGDF54cDNVZ1dceRMXRBAoAhnnZkhM+mBlsy3Ensma36ZQRLsC6WMlk484Mu2zHPh9LIPP1dHKekCaK7OZoPgZNnRSdb2Fv3DpfiThk0Y40J+5dWCMDfQlP/YksI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T+hYzz88; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A472040AF
+	for <rcu@vger.kernel.org>; Thu, 13 Feb 2025 18:30:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.70
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739471445; cv=fail; b=IQD9Poy8PG8VRvcjJMr6mCjt16AV4PZ6j5ufzsqvYm53PZ7JddMO2URv7FQBinfRwsEyPn35wH072ttYsVIgSiSvFoZlf8AL1zAeCmVDMUBhfUd4VZJYY/MR0di3zOnieZFBwosZ/Byx/F6WowYt5eTlw6wpnmcn7Y/B6FcKfHg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739471445; c=relaxed/simple;
+	bh=+ARYTDUuIN5fGK50N9wRM/8fcv0aekVI8Ic4JhSToE4=;
+	h=Date:From:To:Subject:Message-ID:Content-Type:Content-Disposition:
+	 MIME-Version; b=DSUyBqT5kQwORpUC4ZbH1KhPoBACob8pQVPLx5aMVWDN6NfXTFOC8OsGHwz933v6sMRUN98yZFpR5KcmvEBVeCemgVSXiNIroVJZOm9jGUv40lo3DqgbVI4moVrLWx90aDPZwlgociYg8b4ItessU/iZY2ifF4bamS+J7Mm63g4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=f1/1+PdT; arc=fail smtp.client-ip=40.107.244.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T+hYzz88"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A07B9C4CEDF;
-	Wed, 12 Feb 2025 10:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739356983;
-	bh=MZ9NlZLMHZ4XSxzfy1mUEo6JbMYrV7+8qzdH5KrrJ3U=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=T+hYzz88SKUIDBv1wYqlSKjnSaI4/34jomwND8R5aHAQU4wW/bVoS3UHCcDteyoWS
-	 MwrezTde9mKoxuiI76Bz923mGxAP4SvLbHmoNLipC+8A9Zhuj/hx95/5bGdWsKiPnF
-	 bXU0S+z8cnrU3KpmKWqovMjRW9gpeJQHJPje8k+3z5W7lwfee94AxeOepnckO26dMd
-	 zRu5XSDu57yvS+WubF07HtVBaoRbmR5ppEPLI5xS4nGYK/Hl6R/0TCvCbArrR7pFMN
-	 97r5wLBT7OqaU159Oc/Z5TU1oZeoi9KNSWtxwnzv1MLNkv9uwR3VKhxJ/184nQqAaU
-	 osfNWzi7I+dfw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BB6A9CE0546; Wed, 12 Feb 2025 02:42:57 -0800 (PST)
-Date: Wed, 12 Feb 2025 02:42:57 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	rostedt@goodmis.org
-Subject: Re: [PATCH RFC v2 rcu] Fix get_state_synchronize_rcu_full() GP-start
- detection
-Message-ID: <7f460007-1564-460e-98e4-3d463e7f14ac@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAEXW_YReLoj+fofM9=fT-G0rz-E0z7vcwg_ANrbfCrPOX99tYA@mail.gmail.com>
- <CAEXW_YQaC+TYnXZca2MBcJQgf2EWD+pBp-Dih+b647RtpJ+LNQ@mail.gmail.com>
- <83f5a3ff-8f89-4994-844f-b7eb9e80b16d@paulmck-laptop>
- <CAEXW_YTiX2taVbg3keCR4RuxSdfpVA0fVPpCcDWXjF7rH7Kkdw@mail.gmail.com>
- <CAEXW_YTduDBJY2CbkStWc3-4MP06+bJVFmEbgvfayB6BQyyksw@mail.gmail.com>
- <76ea9e49-c8d9-4ddf-8dd5-65ba4096e242@paulmck-laptop>
- <CAEXW_YSxGb3ph-bBiWsOJS-C2XvW9FUuwtoM1eFVxPomMKUd5A@mail.gmail.com>
- <CAEXW_YS4wD1WJm3fGukyf_rUTZoe9Rmbs2rphLntmo2NbYG--A@mail.gmail.com>
- <CAEXW_YQkpiQeGat1WhUgMgd3qDWSTBnD6ivc-vdhUHK-6yaUAQ@mail.gmail.com>
- <b9510edf-47ed-4eeb-9259-259445a1fe82@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="f1/1+PdT"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=iVhOgiqYEWJoIF6uiJFSkO+ccgcS3JK3V7vtDuiedE9VM48LmrlDkyjXqVXmXuYSATBSVG0db3ZH5peQmQ2b/00g8gfz4uWH+Z2TJpNfiOWRXPGfqNiS6QetxDGEzEPyZi8TvxfzQdGrV4wycFc8Jys+VCDB/fEk4s3x4Ad1SAG3b6jy3nV/ti9IMD8RMXG8oUMmCFFDMxwafAe+I5d16kZxPSQQDtfz06VntqSFLZt8Cn4O6tX878LnRoE+8F4h9dI90zbx/ScjOcpVVtRVwZCz6s/IZGiYRc0HsKKgKGODvsa/MJwAt/wJw/jfpFG9y4pI/bi9h4/UukkbLNk2xA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ixqwjEsuHqeBzURGbRdP6lUMqNIwiks+JtsWyzwHbtM=;
+ b=YkGxVJBK2lA/QREXD5iRJFuajfHSrzfX4jJFNQOk2svrA9Ez1zqBtanyUnz8mSdMXCQsrJzq/IrZyq2DgTiCKPpJ7vB00SBbPJ3xo9KUH57svsZs30Et98F68Eth/rv6QoCgsWxbalHy6LMmbdKMOIGvycgzD+Oj1TmYBmxI82O9TXhVRfaunws+g6kj9Ect7rUQ26BV72f8S/J5g5CfT0uGe4sPrRJ4fDa/lm7G00QMxCrhdKR1INu6xjgchFeIAhPfA9J+BLxkuHIWAW1hM+I8Wnzkd2CiumR/EkjfARB6c06U/4JRctHkGox6q7pRfRthPCFZFTWfLbakIW8rlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ixqwjEsuHqeBzURGbRdP6lUMqNIwiks+JtsWyzwHbtM=;
+ b=f1/1+PdTFVZIt77CkZ+1zuCjkufxaffQ+UO50F0Wmm64rg0h1Xiv01DljZ8IHecEgfOoZKxCFATP7b/h2YV4yuppZewn0jCZ61UL+qSaYJwpG+lIjFgfIkfIz5Om5337oZx2iQd8a1MPyJfi2xu4cYeX/5sUVC+8BeJldCmZGaZzz7WckbyUAYSmpXAhmA9tCM0PBU4dna7SNYfuUb3ePmjcAXqWcjUJbjH0d/t8vJEZPJ6cBvKpAgHr/GN4z+a7u75CGLzzWA2Fs3egoiZPzYGloXZ5XMkM3QKLH1X50yW/3HtfegXmKpawbQnKXLDp54LJJiAH9pZRbgPJBYc+qg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH7PR12MB8056.namprd12.prod.outlook.com (2603:10b6:510:269::21)
+ by CY5PR12MB6454.namprd12.prod.outlook.com (2603:10b6:930:36::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.13; Thu, 13 Feb
+ 2025 18:30:41 +0000
+Received: from PH7PR12MB8056.namprd12.prod.outlook.com
+ ([fe80::5682:7bec:7be0:cbd6]) by PH7PR12MB8056.namprd12.prod.outlook.com
+ ([fe80::5682:7bec:7be0:cbd6%6]) with mapi id 15.20.8445.008; Thu, 13 Feb 2025
+ 18:30:41 +0000
+Date: Thu, 13 Feb 2025 13:30:33 -0500
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: rcu@vger.kernel.org, paulmck@kernel.org
+Subject: The rdp->gpwrap behavior
+Message-ID: <20250213183033.GA2635051@joelnvbox>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-ClientProxiedBy: BYAPR08CA0024.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::37) To PH7PR12MB8056.namprd12.prod.outlook.com
+ (2603:10b6:510:269::21)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b9510edf-47ed-4eeb-9259-259445a1fe82@paulmck-laptop>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB8056:EE_|CY5PR12MB6454:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7100d1a0-25b0-4cae-98ee-08dd4c5c84f4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?0tyh0eb9ugP1WoTrO5pK3rP9vqBDGmXoKEoMTZbKbzLi6r9nkdPzZJexdNoS?=
+ =?us-ascii?Q?6KZsMBaRLAX8ByPqISC0Z3PI2QGW59R6v0SnOqlaLdWUVE3o1ejU/svecfVz?=
+ =?us-ascii?Q?WPUypHDrOG7AbcqSEeLmK2fle/Zjq1pPyxjeMPdf0XraomzheUog8wxFlZxT?=
+ =?us-ascii?Q?RqUdxKf7TWOEWsXDgezRLX2LE/Eqju3n2RehlZOHzKt+5kCXX89Ojw4FYHL6?=
+ =?us-ascii?Q?FB35Xlow7u2abjEranR53pjGBqMLbvaHqi4GY5/CjexYD/DmNfDnC4jbESNm?=
+ =?us-ascii?Q?4iR+Ehf+6wJgNW7Vqx3/W7S3FoGrx8x5WbEs60KrrdiFMS0CNixAB3jvebDe?=
+ =?us-ascii?Q?VDLvmc3Z9ta+tHVeUbBResy8GP074d3fKAvGYxdjK2XtNOYaVOjKZfkclya1?=
+ =?us-ascii?Q?SEGpnd/7SibP4AQ1HC+63F6VIOJnVCzDJaRb4N9HyQ4Wp0Rj+2Bqd2jdmxfz?=
+ =?us-ascii?Q?/DFx5fDD+Uwi+5iQr+6VlKwy2NvTiMHfBVZUlMairjFgYYERHqHqfg936x2Y?=
+ =?us-ascii?Q?1OxoghVt1YdlClf2e6MeyekyvfJ9XKyiQ4n3lLNB3lf4C+zcFYcTg767EK/F?=
+ =?us-ascii?Q?iN8eZicT3wfj98UEqIzTRAUi0/FYq01+tCQiMVq0DGx42zCYpeDmrBknC82G?=
+ =?us-ascii?Q?hz57Jnnn9c/MeLigD176ULidZF6PcjvkIu9isynBLAokqzNhI1nZjjTSKAg1?=
+ =?us-ascii?Q?SdEOP8bLY04OliYOFH3yivrkhM7/oLWxT8uXg8uPadmTfTZ3sPILVtoSiwfj?=
+ =?us-ascii?Q?s9jwaUlyDvsyOQF51sDJL8nkw0Xxgqr21b7QMV/PdvDnPUlmHo45YvkdQO/r?=
+ =?us-ascii?Q?bRNs2gLbQh0xhWwI+G+ra6Y4Y/OZFl//07z/TalFEEcM0UyAW91MTB2oanYU?=
+ =?us-ascii?Q?MRtaSNnJrVWx1iwCZjhEjy4xBwSMkbHYQ7Dhb0zN/v8nWSOsFbNpc7BuN8o8?=
+ =?us-ascii?Q?sEPI9hFfRL15hbbvi3cNybTvxNjs0mdiVMV1yawgTjTrli2ucsiVBtghH4bG?=
+ =?us-ascii?Q?a7Ef7O5ZrIjc1wmMoD0MVzTdnIjL9ZkB0Ndy9DoP28ZCHRQAMwYjGR9emyyw?=
+ =?us-ascii?Q?N1ehlFteFdgyVdIwcaM92UQXbR0xLrx8wTklmqCFJn1Kdv72Pw1s6GnkVsaN?=
+ =?us-ascii?Q?I6I3GHgjx1mw6d1rWpaSxerBxa1cEJyAaKcHpNkhiYq38cVoTE60nuLVt8dV?=
+ =?us-ascii?Q?Cif1F177SgqGr1PDSUnPcjmmph0b1fj0Cs3HB4zwsUgyb5FUEmxr8yJd3Te8?=
+ =?us-ascii?Q?r4ZsBtddxF3gsqfefLIeHxmJ2XohvRQazZS7mwMN4PYdzz/9ivpbv75DduXj?=
+ =?us-ascii?Q?OITbLt2Lz+aAFcMgm8XqGf7SXMrJluDIq+PUrGp2NW2WJJZaX3JAxSqIbBNl?=
+ =?us-ascii?Q?EbgkPsc5XqOTNqJRVFQ7GnBtcQUn?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB8056.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?9mb1VqyOJppLni9eohY4iXG3xAZQ2tC3yVPzVK4fWQWuNrpae2MI5B1VEbEv?=
+ =?us-ascii?Q?jO0aM4Yc8O/kXKodxmta/7yX0yxtaq1MXvvwrMUEL7Lqvs+2oJ/y/ucQKytH?=
+ =?us-ascii?Q?CsZx03XQ11BUdyd1lzcdsIX6eMVyMA9CECgTnirYKSfP3TBmUOABSAMMUhKt?=
+ =?us-ascii?Q?dApiE5Ze1/QsuDlZ6Y0uj7lIIw7p1L+DYTrJZBL+t5tzad5k6FruAKvZzbV/?=
+ =?us-ascii?Q?tSey+noIlTqaEwtmZ/a7QL+F5zauI+hojWYHS0VeugDvVRXrOaGv5Wp1mtm4?=
+ =?us-ascii?Q?4kvK9SVbWer1pBX+92kWcwY9Tbg7gtldv3dsZtxDDvIZU0Cd4R4laxRU4p5B?=
+ =?us-ascii?Q?9my/huM0REzUsVUZDNVDXkB2R0FrtNpVaT9hLwHI1AoIbtsCWsrMD7xHOQNi?=
+ =?us-ascii?Q?L7LcjiFPvzRcfMm8sPS3chooGuzYJoQmfZRUKB6K9M8lJra9Y+29nPWYtcKy?=
+ =?us-ascii?Q?p/JtoMgaVDWk/YwsjruwishjIZBDTftDvK/fpq+Z7Tz5Vdf+BX9yJKEVh1cF?=
+ =?us-ascii?Q?jQ0X7vWP1YX2GzKKTA9/OFpjW1AmIv+5lfqlQZzigeZAFCO1ESvwHsSWyA3x?=
+ =?us-ascii?Q?ayt3r8hyeP/aLe3EWaQOvKu9rWrQiKuCyNtWez/4w2LiA8NNEhcbUj+OD5XY?=
+ =?us-ascii?Q?BbVFM3r8A2Pqpvq31nk3rb/VgW++EhEb+GN27gRogAQbiUAxW+S4OHuOZMik?=
+ =?us-ascii?Q?/R4EwET+yyq4jNC+nmgim0L/vMbuatLDi2WsFRHhcI4ZvQBFVfmMW+vJhSDN?=
+ =?us-ascii?Q?ihehabUbHKvggCEtderVu7cfll6nCtHhWwe+tapJXCIQG83QzyCAFRqqR6Cw?=
+ =?us-ascii?Q?TpjpciKyBfcvL8htnWi5O5H4k06FtKF3hlEALZDGWYO3exKruUF+YeP6Khlh?=
+ =?us-ascii?Q?RC2gFdosOWtiRrlNnPa2DXv9qYheCyiqRwAATuEaOUPFliHJM8af5vPnSi+G?=
+ =?us-ascii?Q?UCuIrz9ugpagVbtGW6Rt4kkOmc0kpVa/h+P+hULY4a0AzjHX9+j89HSBRRSe?=
+ =?us-ascii?Q?w9Mst1wOJdIihxlZBsQQOKaG5NQNiIaZWLUn4uCA8bGpAgh4LSS0Za0buYe4?=
+ =?us-ascii?Q?2oIkYSsXAd/0Qg9wwKR9twST5MbHYa40UfUhFJvRkRQyxt7fUYWoEll5ypSD?=
+ =?us-ascii?Q?bThPTYo2D7AXeAgKudLOjFqgZyMK7FswmEbK6W8qblMVB0uVC1oXgp79GBmS?=
+ =?us-ascii?Q?Rl54lub9sN+GZZ1VV4zR9sMJKAFZbwj7fh8o5Aq2zZR11vrxdqhLzK1KgQJb?=
+ =?us-ascii?Q?FaArnRsWy/ufiiAKprXNKYieR1ilR36lV13C4Dtv/Vgub0pxn8MKHEfO3s0g?=
+ =?us-ascii?Q?Jli48O6xI0iQa2JfqbQLSYLWdz5iJ3d4p2KKZ8k/39PaSkGqun3Y2YqK+yXW?=
+ =?us-ascii?Q?vLKKZYPURK+Mx+FX5WOQ4XTLbm1zL6OysZXgMklvMfPsupON6AxPv7VdY1i1?=
+ =?us-ascii?Q?7lyeZxVZFnJchCEru0TsKIMw0ZY9Z3RWVUWX2ew+TaeOhnKo5WkiBb3VNlUC?=
+ =?us-ascii?Q?RYWfEq3Ct1xtre3SBDtP7rE1wqUIlxbxYRg9hiJKKks3AFkiX9BE1L/1yjGs?=
+ =?us-ascii?Q?I1PHwDJtlfnYcn/HWwKR2ARJA7xpL0Ky65GOn0TE?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7100d1a0-25b0-4cae-98ee-08dd4c5c84f4
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB8056.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 18:30:40.9353
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yLNiVhjmx8WVLPHlzL0oVSVs2tCtOWGsbwwko/HdG6ghoyyw8aY1eM1y5BO9PyLNEiciRefda1L7bbj1O/A4Nw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6454
 
-On Wed, Feb 12, 2025 at 02:14:19AM -0800, Paul E. McKenney wrote:
-> On Mon, Feb 10, 2025 at 08:22:24PM -0500, Joel Fernandes wrote:
-> > On Mon, Feb 10, 2025 at 7:28 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > On Mon, Jan 27, 2025 at 1:45 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > On Mon, Jan 27, 2025 at 11:49 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > On Sun, Jan 26, 2025 at 09:58:11PM -0500, Joel Fernandes wrote:
-> > > > > > On Sun, Jan 26, 2025 at 9:55 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > > > > On Sun, Jan 26, 2025 at 9:03 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > > > > On Sun, Jan 26, 2025 at 08:22:23PM -0500, Joel Fernandes wrote:
-> > > > > > > > > On Sun, Jan 26, 2025 at 8:13 PM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > > > > > > > Hi, Paul and Frederic,
-> > > > > > > > > >
-> > > > > > > > > > [...]
-> > > > > > > > > > > > > On Sat, Jan 25, 2025 at 12:03:58AM +0100, Frederic Weisbecker wrote:
-> > > > > > > > > > > > > > Le Fri, Dec 13, 2024 at 11:49:49AM -0800, Paul E. McKenney a écrit :
-> > > > > > > > > > > > > > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > > > > > > > > > > > > > index 2f9c9272cd486..d2a91f705a4ab 100644
-> > > > > > > > > > > > > > > --- a/kernel/rcu/rcu.h
-> > > > > > > > > > > > > > > +++ b/kernel/rcu/rcu.h
-> > > > > > > > > > > > > > > @@ -162,7 +162,7 @@ static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
-> > > > > > > > > > > > > > >  {
-> > > > > > > > > > > > > > >         unsigned long cur_s = READ_ONCE(*sp);
-> > > > > > > > > > > > > > >
-> > > > > > > > > > > > > > > -       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
-> > > > > > > > > > > > > > > +       return ULONG_CMP_GE(cur_s, s) || ULONG_CMP_LT(cur_s, s - (3 * RCU_SEQ_STATE_MASK + 1));
-> > > > > > > > > > > > > >
-> > > > > > > > > > [...]
-> > > > > > > > > > > > > > The way I understand it is that rcu_state.gp_seq might be seen started while
-> > > > > > > > > > > > > > root_rnp->gp_seq is not. So rcu_seq_snap() on the started rcu_state.gp_seq
-> > > > > > > > > > > > > > may return maximum 2 full GPs ahead of root_rnp->gp_seq. And therefore it takes below
-> > > > > > > > > > > > > > 2 GPs to safely deduce we wrapped around.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Exactly!
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > > Should it be ULONG_CMP_LT(cur_s, s - (2 * (RCU_SEQ_STATE_MASK + 1))) ?
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Quite possibly.  I freely admit that I allowed a bit of slop because
-> > > > > > > > > > > > > time was of the essence (holidays and all that) and also it does not
-> > > > > > > > > > > > > hurt much to lose a couple of counts out of a 2^32 cycle, to say nothing
-> > > > > > > > > > > > > of the common-case 2^64 cycle.  It would not hurt to be exact, but it
-> > > > > > > > > > > > > would be necessary to convince ourselves that we were not off by one in
-> > > > > > > > > > > > > the wrong direction.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > I would be happy to see a patch, as long as it was sufficiently
-> > > > > > > > > > > > > convincing.
-> > > > > > > > > > > >
-> > > > > > > > > > > > I'm not so much concerned about being exact but rather about making
-> > > > > > > > > > > > sure we still understand what we did within one year. We can leave one
-> > > > > > > > > > > > more grace period than what we expect out of paranoia but, the most
-> > > > > > > > > > > > important is that we comment about what we expect and why. Let me
-> > > > > > > > > > > > prepare a patch for that.
-> > > > > > > > > > >
-> > > > > > > > > > > Even better!
-> > > > > > > > > >
-> > > > > > > > > > Do we really have users who could pass such a huge delta wrapped
-> > > > > > > > > > around value to poll() i.e > ULONG_MAX/2 ?  For 32-bit, that would be
-> > > > > > > > > > 2 billion count since the get() (500 million GPs on 32-bit?). I am
-> > > > > > > > > > curious if such a scenario should be a WARN() because also: If more
-> > > > > > > > > > than ULONG_MAX/2 values are possible after get(), then a full or
-> > > > > > > > > > multiple ULONG_MAX wraparound is also possible. This means then both
-> > > > > > > > > > rcu_seq_done() and rcu_seq_done_exact() become unreliable anyway for
-> > > > > > > > > > such stale get() values.
-> > > > > > > > > >
-> > > > > > > > > > I do agree with both your points on the side effect of the patch to
-> > > > > > > > > > rcu_seq_done_exact(), but I am not fully convinced myself about
-> > > > > > > > > > utility of rcu_seq_done_exact() versus the rcu_seq_done() but I could
-> > > > > > > > > > be missing something.
-> > > > > > > > >
-> > > > > > > > > I want to modify my comment on reliability. rcu_seq_done_exact() is
-> > > > > > > > > certainly more "reliable" than rcu_seq_done() for wraparound delta  >
-> > > > > > > > > ULONG_MAX/2. Still with such a huge wrap around it is not fail proof
-> > > > > > > > > if it lands within the "3 Grace period" window, so if it is not super
-> > > > > > > > > reliable and if the user should not rely on it, then I wonder if it is
-> > > > > > > > > better to not do it and instead warn the user they are playing with
-> > > > > > > > > fire. But a counter-argument might be, landing within the 3 GP window
-> > > > > > > > > is quite low probability...
-> > > > > > > >
-> > > > > > > > It is also a harmless false negative.  And another poll within a few
-> > > > > > > > hundred milliseconds will set things straight.  In contrast, if we
-> > > > > > > > used rcu_seq_done(), it would be a good long time before we got out of
-> > > > > > > > false-negative territory.
-> > > > > > >
-> > > > > > > True!
-> > > > > > >
-> > > > > > > > On a 32-bit system, if there was an expedited grace period every 10
-> > > > > > > > microseconds (just barely possible on small systems), then a 32-bit
-> > > > > > > > counter would wrap in about 12 hours.  So there would be a six-hour
-> > > > > > > > false-negative zone.
-> > > > > > > >
-> > > > > > > > So an expedited grace period every 10 microseconds combined with
-> > > > > > > > a six-hour polling delay is unlikely, but not out of the realm of
-> > > > > > > > possibility.
-> > > > > > >
-> > > > > > > Assuming that every 10 microsecond of the entire 6 hours is used for
-> > > > > > > an expedited GP, but I agree with your point.
-> > > > > > >
-> > > > > > > > Please feel free to nominate a comment.
-> > > > > > >
-> > > > > > > Ok thanks, I'll see what Frederic comes up with and can take it from there.
-> > > > > >
-> > > > > > I forgot to ask is the reason for keeping rcu_seq_done_exact() to have
-> > > > > > more complexity only when needed, or does it make sense to rename
-> > > > > > rcu_seq_done_exact() as rcu_seq_done_done() and get rid of the old
-> > > > > > rcu_seq_done()?
-> > > > >
-> > > > > We might well be able to use the rcu_seq_done_exact() algorithm for
-> > > > > all the uses, but that will require very careful review and testing.
-> > > > > Please keep in mind that there are quite a few uses, that the benefit
-> > > > > is small, and I was lazy.  ;-)
-> > > > >
-> > > > > The difference with the polling APIs is that a user might well
-> > > > > legitimately hang onto a cookie for six hours, for example, by having
-> > > > > used it to tag a data structure in a block cache or similar.
-> > > >
-> > > > Thanks for clarification. I will work on a patch along these lines and
-> > > > see if it is worth doing.
-> > >
-> > > Here I think there is a real issue:
-> > >
-> > > poll_state_synchronize_srcu() uses rcu_seq_done()
-> > >
-> > >     if (cookie != SRCU_GET_STATE_COMPLETED &&
-> > >         !rcu_seq_done(&ssp->srcu_sup->srcu_gp_seq, cookie))
-> > >         return false;
-> > >
-> > > where as poll_state_synchronize_rcu() uses rcu_seq_done_exact()
-> > >
-> > > bool poll_state_synchronize_rcu(unsigned long oldstate)
-> > > {
-> > >     if (oldstate == RCU_GET_STATE_COMPLETED ||
-> > >         rcu_seq_done_exact(&rcu_state.gp_seq_polled, oldstate)) {
-> > >
-> > > I believe rcu_seq_done_exact() makes more sense for polling API, as
-> > > there is a higher chance that there is a significant delay between the
-> > > get_state..() and poll_state..() calls.
-> > >
-> > > I think I am pretty convinced now looking at all the call sites that
-> > > rcu_seq_done_exact() should be used everywhere. I am vetting more
-> > > callsites, but that's what I'm leaning towards. I think
-> > > rcu_seq_done_exact() makes the code more robust to false-negatives
-> > > (duration during which a false-negative is in effect)...
-> 
-> I don't recall anything needing the large region of false negativity,
-> but there is much that I do not remember.  ;-)
-> 
-> > I was wondering if this can go wonky a little bit (not bug, just
-> > optimization issue):
-> > 
-> > __note_gp_changes() sees rdp->gpwrap is set.
-> > 
-> > rnp->gp_seq had overflown and so now < rdp->gp_seq when the
-> > rcu_advance_cbs() is called.
-> 
-> The rdp->gpwrap is set quite some time before overflow, and it is set
-> by the grace-period kthread.  Which in theory prevents it from advancing
-> while setting ->gpwrap.
-> 
-> > rcu_advance_cbs() uses the rnp->gp_seq to do the advancing.
-> > 
-> > All the CBs that could be advanced don't move because their gp_seq is
-> > > rnp->gp_seq due to the overflow.
-> 
-> That would require a long delay in rcu_advance_cbs(), and isn't this delay
-> (from the viewpoint of the "clock" embodied by the grace-period sequence
-> number) prevented by the fact that the leaf rcu_node structure's ->lock
-> is held?
-> 
-> > It is probably a slight delay in CB execution and not that big a deal.
-> > I am not saying this is an issue but something I observed when reading
-> > code.
-> > 
-> > I also got to go audit rcu_seq_completed_gp() to see the implications
-> > of the ULONG_CMP_LT in it...
-> 
-> Wouldn't we want this comparison to work the same way as that of
-> rcu_seq_done()?  As in, if we change rcu_seq_done(), shouldn't we
-> also change rcu_seq_completed_gp()?  (Not necessarily in the same
-> patch, but at the same time.)
++rcu for archives
 
-We also have uses of ULONG_CMP_*() in rcu_seq_started(), rcu_seq_new_gp(),
-rcu_seq_diff(), rcu_segcblist_advance(), rcu_segcblist_accelerate(),
-poll_state_synchronize_srcu(), srcu_gp_is_expedited(), srcu_gp_start(),
-srcu_gp_end(), srcu_funnel_exp_start(), srcu_funnel_gp_start(),
-srcu_should_expedite(), srcu_gp_start_if_needed(), srcu_advance_state(),
-srcu_reschedule(), rcu_gpnum_ovf(), rcu_start_this_gp(),
-rcu_future_gp_cleanup(), rcu_accelerate_cbs_unlocked(),
-__note_gp_changes() (as you noted), rcu_gp_cleanup(),
-exp_funnel_lock(), rcu_exp_wait_wake(), show_rcu_gp_kthreads(), and
-rcu_check_gp_start_stall().
+Hi,
 
-For other similar issues, there is rcu_torture_reader_do_mbchk(),
-->srcu_idx in srcu_drive_gp() and friends, rcu_nocb_try_bypass(),
-and nocb_gp_wait().
+Following up about our gpwrap discussions, I did some tracing of rdp->gpwrap
+with just boot testing.
 
-There is also a ULONG_CMP_LT() that should now be time_before()
-in rcu_torture_stall_one().  There is a ULONG_CMP_GE() that should
-be time_after() in print_other_cpu_stall(), print_cpu_stall(), and
-print_other_cpu_stall().  The check_cpu_stall() function has both.
+I actually never see it set because rdp->gp_seq and rnp->gp_seq are usually
+very close.
 
-One could argue that the diagnostic output wants ULONG_MAX/2 of false
-negative.  But what makes the most sense?  Can we get rid of both
-ULONG_CMP_GE() and ULONG_CMP_LT()?
+Example trace:
 
-							Thane, Paul
+# rnp->gp_seq starts with -1200 on boot and then right around the wrap:
+
+178.096329: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: -3 (0xfffffffffffffffd), rdp->gp_seq: -3 (0xfffffffffffffffd), wrap before: 0
+178.096330: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: -3 (0xfffffffffffffffd), rdp->gp_seq: -3 (0xfffffffffffffffd), wrap after: 0
+178.100327: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: 1 (0x1), rdp->gp_seq: 1 (0x1), wrap before: 0
+178.100328: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: 1 (0x1), rdp->gp_seq: 1 (0x1), wrap after: 0
+
+The wrap "before" and "after" are the value of gpwrap before and after
+calling rcu_gpnum_ovf().
+
+Closer look at the _ovf() shows it should be only set if rdp->gp_seq and
+rnp->gp_seq are quite a distance apart (say if the CPU was idle for too long
+and many GPs have passed. This can happen both with/without wrap. So imminent
+wrapping seems not necessary for ->gpwrap to be even set AFAICS.
+
+I think the problem is ULONG_CMP_LT is not really "<" so even after wrap, it
+can false. i.e if rdp->gpseq + ULONG/4 wraps, it could still return false.
+
+From a testing POV, the example shows it is not set even when around when a
+wrap actually happened.  So may be, we are not testing gpwrap much, or at
+all, with rcutorture?
+
+But before that, I am feeling it is not behaving correctly. I'd expect it to
+be set even if rnp and rdp values are close but we are actually about to
+wrap.  So most likely I am missing something.
+
+thanks,
+
+ - Joel
+
