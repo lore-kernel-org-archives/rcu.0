@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE4222D7BC;
-	Thu, 13 Feb 2025 23:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A022B24A05A;
+	Thu, 13 Feb 2025 23:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739489170; cv=none; b=triNvrAHw5+kT7onoy1sM7Uj/cEycLHUyI1SDwdO7Wklag+6CAUf8s6kuXuKF/oUrVX/+9WABmRIag4FzmgUGd4S1hPQmwg6xSa6R9fLZisKQJUUlnN5db6Nj2Thfpm8rmDB5Zmf+oKMzxizlhcflb8LcWDutfPRLDdNIa3xRYI=
+	t=1739489172; cv=none; b=XJtjRhEg0UhIehaQGGsGe8Ho6pGxt330whdv/+GT7P1/pr5ebtgtQWTNqwI/9Zkh/wT3H+trg3lyUr3Fx34uyJIUOYmPqqcXMghr2Ny07g+BC/bV80M3rwJkOanmN2aZekiV9lYvJBoiOoX+CvKu8sLUuqotClZYc7k/jHrC9Go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739489170; c=relaxed/simple;
-	bh=CKxsi2aJsPtfh0/X6LjUEirL7VKDHgefV+VYEBXQ+AM=;
+	s=arc-20240116; t=1739489172; c=relaxed/simple;
+	bh=h2c3p5IRVnPlkrbT+U6oZXQnZrjV6yS35OkqeQuIypw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BhEtM0eFlYFy/698jYiYcMmsWfs4E+YbYp8pIlsKWjTvC9oPGcLPkyn+jjYkWs38lnyhrt3UN8caAFGhcxz9DrhVyU4yqbByofOdKLoTA93d/dejHv2jIZ4XjCT/WQTIV40QmfQk4TisddTRvmCOtQ9b/W5yxZQDIBQHgR9JMrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OYNj6XPU; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=XIkrNVcGsRVl9940PH5uDuwkw66+9G9ncpWzc1tGaAaAT8TI1yHFecM1QoWObAoEJpJ3nYxEeFUiERvGDsbgKHRmh4ZxUMtWYM4a3s3s2NZQe2OmS1wFlwgT1X+9csqAg3uoATlUL235L9CPdS8D/BrvqX5SgcgoLaRMCR6iCH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MhHgLjbG; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OYNj6XPU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E615FC4CEE5;
-	Thu, 13 Feb 2025 23:26:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MhHgLjbG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40C4DC4CEE6;
+	Thu, 13 Feb 2025 23:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739489169;
-	bh=CKxsi2aJsPtfh0/X6LjUEirL7VKDHgefV+VYEBXQ+AM=;
+	s=k20201202; t=1739489172;
+	bh=h2c3p5IRVnPlkrbT+U6oZXQnZrjV6yS35OkqeQuIypw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OYNj6XPUYSEeCZhFlhis2xUvJqjnkcHBEL7DwRlQ4IDzgD+Os46kHEqHCqBaFUNCb
-	 V8Gnr1xwZfT8TXDtbcANMjLsCZaFWD1n/2si9zc5+rjw3LFUBtqtmu8ntgD6eGAn9o
-	 rSL7UElTcEMsxZyqQpsBPJXuFwRDCszhI+jIdEsD+qAqq/zUN2J0LMHGvFLngWVIp4
-	 oE2SgAnsBS0tWZNXQU6JZYQtnn2/RLlVrNDwc/m1MNR44C0ihd2wpDfehTK9vr+QN1
-	 s/OcX7LTBVzR2U+c67HOPN5SQtPv0bRevoSkPVNucp91Vsx49U8iZdZ3JTCf7zirgi
-	 UYydzBuTU/XpQ==
+	b=MhHgLjbGw/fjNl0yDpInuhIT0/A2dvA9AIpJJC1mNyCdUI3Dsit19P3sfeNJ1Ff38
+	 bJlGMIS40Rbga2kW276IEUHqATNKkzrrLl3ATbh2cct5aQ/EPoLrsxX2IRpc3Qdnto
+	 X/wPuWBFHpcxH84/LkTNGkCp/+i6lqhulYK5j9XBq5a7BIqcKfAST8fHIxeWr9P/Tf
+	 TSB8Fy7BXlChGOk+1SkxMELER5qZMptGPmCzsGpFzLaWVTmVBxmVbMrRBdZknOnbMY
+	 wvB8/k4luM8h80/Ayn8Aw9aBLDCK2IgkgfYiki/9bUcH+KweBGZmV3+EXjTkiwU28v
+	 MWjytyG56z63g==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -36,9 +36,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>
-Subject: [PATCH 1/3] rcu/exp: Protect against early QS report
-Date: Fri, 14 Feb 2025 00:25:57 +0100
-Message-ID: <20250213232559.34163-2-frederic@kernel.org>
+Subject: [PATCH 2/3] rcu/exp: Remove confusing needless full barrier on task unblock
+Date: Fri, 14 Feb 2025 00:25:58 +0100
+Message-ID: <20250213232559.34163-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20250213232559.34163-1-frederic@kernel.org>
 References: <20250213232559.34163-1-frederic@kernel.org>
@@ -50,63 +50,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When a grace period is started, the ->expmask of each node is set up
-from sync_exp_reset_tree(). Then later on each leaf node also initialize
-its ->exp_tasks pointer.
+A full memory barrier in the RCU-PREEMPT task unblock path advertizes
+to order the context switch (or rather the accesses prior to
+rcu_read_unlock()) with the expedited grace period fastpath.
 
-This means that the initialization of the quiescent state of a node and
-the initialization of its blocking tasks happen with an unlocked node
-gap in-between.
+However the grace period can not complete without the rnp calling into
+rcu_report_exp_rnp() with the node locked. This reports the quiescent
+state in a fully ordered fashion against updater's accesses thanks to:
 
-It happens to be fine because nothing is expected to report an exp
-quiescent state within this gap, since no IPI have been issued yet and
-every rdp's ->cpu_no_qs.b.exp should be false.
+1) The READ-SIDE smp_mb__after_unlock_lock() barrier accross nodes
+   locking while propagating QS up to the root.
 
-However if it were to happen by accident, the quiescent state could be
-reported and propagated while ignoring tasks that blocked _before_ the
-start of the grace period.
+2) The UPDATE-SIDE smp_mb__after_unlock_lock() barrier while holding the
+   the root rnp to wait/check for the GP completion.
 
-Prevent such trouble to happen in the future and initialize both the
-quiescent states mask to report and the blocked tasks head from the same
-node locked block.
+3) The (perhaps redundant given step 1) and 2)) smp_mb() in rcu_seq_end()
+   before the grace period completes.
+
+This makes the explicit barrier in this place superflous. Therefore
+remove it as it is confusing.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree_exp.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/tree_plugin.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 8d4895c854c5..caff16e441d1 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -141,6 +141,13 @@ static void __maybe_unused sync_exp_reset_tree(void)
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 		WARN_ON_ONCE(rnp->expmask);
- 		WRITE_ONCE(rnp->expmask, rnp->expmaskinit);
-+		/*
-+		 * Need to wait for any blocked tasks as well.	Note that
-+		 * additional blocking tasks will also block the expedited GP
-+		 * until such time as the ->expmask bits are cleared.
-+		 */
-+		if (rcu_is_leaf_node(rnp) && rcu_preempt_has_tasks(rnp))
-+			WRITE_ONCE(rnp->exp_tasks, rnp->blkd_tasks.next);
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	}
- }
-@@ -393,13 +400,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 	}
- 	mask_ofl_ipi = rnp->expmask & ~mask_ofl_test;
- 
--	/*
--	 * Need to wait for any blocked tasks as well.	Note that
--	 * additional blocking tasks will also block the expedited GP
--	 * until such time as the ->expmask bits are cleared.
--	 */
--	if (rcu_preempt_has_tasks(rnp))
--		WRITE_ONCE(rnp->exp_tasks, rnp->blkd_tasks.next);
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 
- 	/* IPI the remaining CPUs for expedited quiescent state. */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 3c0bbbbb686f..d51cc7a5dfc7 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -534,7 +534,6 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 		WARN_ON_ONCE(rnp->completedqs == rnp->gp_seq &&
+ 			     (!empty_norm || rnp->qsmask));
+ 		empty_exp = sync_rcu_exp_done(rnp);
+-		smp_mb(); /* ensure expedited fastpath sees end of RCU c-s. */
+ 		np = rcu_next_node_entry(t, rnp);
+ 		list_del_init(&t->rcu_node_entry);
+ 		t->rcu_blocked_node = NULL;
 -- 
 2.46.0
 
