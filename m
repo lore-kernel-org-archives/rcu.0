@@ -1,167 +1,134 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1F51A23BA
-	for <rcu@vger.kernel.org>; Sat, 15 Feb 2025 10:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAFA6748F;
+	Sat, 15 Feb 2025 10:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739615341; cv=none; b=DWhGPdxJXPDyMyRZLJz8NsHRozUVa9GpQRkPHFQRbyfv9MeCj7+dBfiglnVYTGuD3FWyFY8cOBqhcmRQoJ69+lmL2ij/VLm0eFYjaZfd4ecjMBpfuTzLzLXiNOc0F3wUWMBANJDfnQfWYT+H1o/WqT+t7D9xPBLr/gH4XIxrAlA=
+	t=1739615888; cv=none; b=exXeGeYEC8Y0spx6VezYXMMUDsCDN9IU3s+X5ZQzGaEGuRYgaNXzpCOtgb2M6S9r6mjJTF1STc+OUfWp21moR5M7WilHVNq99WSLzBSxHRnPaR91mYgGWVIvAYnRJhY/t/RE8fAOlFoygMVcj3QqPT3S2APjbRJTFSLEiHc1TIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739615341; c=relaxed/simple;
-	bh=SYoLYYHRLMDBJaURS8NJiTG+9B1+Rz9BwrhY3jwrFds=;
+	s=arc-20240116; t=1739615888; c=relaxed/simple;
+	bh=/RsSP7B8uA1gZJ7yfQ4XHMRCEWhxwYKlCUFm4QKIbSo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NNz51r5I24811o91w6JFZhsQ5f6cO+J1T4N71n11HirHHaY2rU1Y5dL2Q6cGjXtp8Xy1uQ3URutHg8dbY1BvReWz4ERbge2drJIqlpruzUNj5LfGOypa5bb1GtgFa2DmmwFxqGdRPvuH7geRitTTWE8pRYivXjs+HR6uFhTO0Ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Di6yrWqQ; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=E4krev6FHty7mLyuazWVeUAy/3zMyqVdXylo6I2rM8t6iP9lInZYRyn4NL/8I8XO6t9IlFTxlHEvE5HbTsVqWYtay/mD6CpJU34U/Hh2VmiCbNUR8EG97+n5j/haZijK3QJiyj8bpJRu8I4BCakoH5oBIt/+GZsZ1Dr9oLJEfcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iVipA2fc; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Di6yrWqQ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0C37C4CEDF;
-	Sat, 15 Feb 2025 10:29:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iVipA2fc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C8DC4CEDF;
+	Sat, 15 Feb 2025 10:38:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739615341;
-	bh=SYoLYYHRLMDBJaURS8NJiTG+9B1+Rz9BwrhY3jwrFds=;
+	s=k20201202; t=1739615887;
+	bh=/RsSP7B8uA1gZJ7yfQ4XHMRCEWhxwYKlCUFm4QKIbSo=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Di6yrWqQ2ZMjsVVrnkzdy3EX80cyoylUXJ/pBuICfFXDbMjYKm7d9gTP+eCXxGtaY
-	 WEX1y8hNCBNXaLJJlL1scZnymtU3nMBNgTo37529qbFqBs4d3FfLxhEb0Y2wZ6hQwG
-	 xqTcHmdxMpSWX77bnI6erdlbHGXHw68I2T2tPKG8X4XvPQlA9C/FbXcZBLpj6VMr1K
-	 1O1oeY5zNpxPgkvDFdVM8X15zhNcJXaC9w3VrRxH+WaFryKTaN5bXPnQP8nW95vjDi
-	 oy3tmksWlAjquF2QzkQiOtTZSwsH7MHPPgfKpzf6TlklsJuuRTT+Zpt8bbEpBkmBb7
-	 CJlb7v4Js7rxg==
+	b=iVipA2fcy3y+c/y0vQJVXUXk5IPqP5iJEolhDlt7isC+0/waWyVHFJzQXsCOTjlox
+	 mwN6PvSdK13eIByyw8SG7clc28x1dBGJ/uBL68akvukB5S6GB+SbBK8He3o0dDhJMM
+	 ZXZhEn0yD8DOx9XBx46XSwFcJQd+zC+WoGuJoqbxqCawUwsIAF6CQxrv6gWDMatYfp
+	 IHKazSInnVFGn2wGvI5mAm/gXewqeGMw9Bywf3i7KL9uk9cFtd6x44ev5oeU5qnJhe
+	 3GaIVZqJIH+wipohjAzURP8DNG+saNXi1p0J3pPlxWHjKmqo2aSzFI/AqT5lmnI7v0
+	 8qsgHoIxa5OYg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id A2B14CE092A; Sat, 15 Feb 2025 02:28:58 -0800 (PST)
-Date: Sat, 15 Feb 2025 02:28:58 -0800
+	id AF53CCE092A; Sat, 15 Feb 2025 02:38:04 -0800 (PST)
+Date: Sat, 15 Feb 2025 02:38:04 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: rcu@vger.kernel.org
-Subject: Re: The rdp->gpwrap behavior
-Message-ID: <d1ebe3a6-42d9-489e-8df2-9dc8c2635a61@paulmck-laptop>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
+ report
+Message-ID: <610596cf-9836-473f-bcdc-15c69b7e0cd4@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20250213183033.GA2635051@joelnvbox>
- <b04b997e-fee6-4c5f-a0f9-12e671d27f8c@paulmck-laptop>
- <009ef653-f41e-4101-886e-d9a4ce4d6e32@nvidia.com>
+References: <20250213232559.34163-1-frederic@kernel.org>
+ <20250213232559.34163-4-frederic@kernel.org>
+ <fe931d3a-bf97-4be5-8420-f1fcb55e6a46@paulmck-laptop>
+ <Z68yzBURiIr_7Lmy@pavilion.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <009ef653-f41e-4101-886e-d9a4ce4d6e32@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z68yzBURiIr_7Lmy@pavilion.home>
 
-On Fri, Feb 14, 2025 at 01:03:40PM -0500, Joel Fernandes wrote:
-> Hi Paul,
-> 
-> On 2/14/2025 3:20 AM, Paul E. McKenney wrote:
-> > On Thu, Feb 13, 2025 at 01:30:33PM -0500, Joel Fernandes wrote:
-> >> +rcu for archives
-> >>
-> >> Hi,
-> >>
-> >> Following up about our gpwrap discussions, I did some tracing of rdp->gpwrap
-> >> with just boot testing.
-> >>
-> >> I actually never see it set because rdp->gp_seq and rnp->gp_seq are usually
-> >> very close.
-> >>
-> >> Example trace:
-> >>
-> >> # rnp->gp_seq starts with -1200 on boot and then right around the wrap:
-> >>
-> >> 178.096329: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: -3 (0xfffffffffffffffd), rdp->gp_seq: -3 (0xfffffffffffffffd), wrap before: 0
-> >> 178.096330: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: -3 (0xfffffffffffffffd), rdp->gp_seq: -3 (0xfffffffffffffffd), wrap after: 0
-> >> 178.100327: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: 1 (0x1), rdp->gp_seq: 1 (0x1), wrap before: 0
-> >> 178.100328: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: 1 (0x1), rdp->gp_seq: 1 (0x1), wrap after: 0
-> >>
-> >> The wrap "before" and "after" are the value of gpwrap before and after
-> >> calling rcu_gpnum_ovf().
-> >>
-> >> Closer look at the _ovf() shows it should be only set if rdp->gp_seq and
-> >> rnp->gp_seq are quite a distance apart (say if the CPU was idle for too long
-> >> and many GPs have passed. This can happen both with/without wrap. So imminent
-> >> wrapping seems not necessary for ->gpwrap to be even set AFAICS.
-> >>
-> >> I think the problem is ULONG_CMP_LT is not really "<" so even after wrap, it
-> >> can false. i.e if rdp->gpseq + ULONG/4 wraps, it could still return false.
+On Fri, Feb 14, 2025 at 01:10:52PM +0100, Frederic Weisbecker wrote:
+> Le Fri, Feb 14, 2025 at 01:01:56AM -0800, Paul E. McKenney a écrit :
+> > On Fri, Feb 14, 2025 at 12:25:59AM +0100, Frederic Weisbecker wrote:
+> > > A CPU coming online checks for an ongoing grace period and reports
+> > > a quiescent state accordingly if needed. This special treatment that
+> > > shortcuts the expedited IPI finds its origin as an optimization purpose
+> > > on the following commit:
+> > > 
+> > > 	338b0f760e84 (rcu: Better hotplug handling for synchronize_sched_expedited()
+> > > 
+> > > The point is to avoid an IPI while waiting for a CPU to become online
+> > > or failing to become offline.
+> > > 
+> > > However this is pointless and even error prone for several reasons:
+> > > 
+> > > * If the CPU has been seen offline in the first round scanning offline
+> > >   and idle CPUs, no IPI is even tried and the quiescent state is
+> > >   reported on behalf of the CPU.
+> > > 
+> > > * This means that if the IPI fails, the CPU just became offline. So
+> > >   it's unlikely to become online right away, unless the cpu hotplug
+> > >   operation failed and rolled back, which is a rare event that can
+> > >   wait a jiffy for a new IPI to be issued.
+
+But the expedited grace period might be preempted for an arbitrarily
+long period, especially if a hypervisor is in play.  And we do drop
+that lock midway through...
+
+> > > * But then the "optimization" applying on failing CPU hotplug down only
+> > >   applies to !PREEMPT_RCU.
+
+Yes, definitely only non-preemptible RCU.
+
+> > > * This force reports a quiescent state even if ->cpu_no_qs.b.exp is not
+> > >   set. As a result it can race with remote QS reports on the same rdp.
+> > >   Fortunately it happens to be OK but an accident is waiting to happen.
+
+To your point, I did in fact incorrectly decide that this was a bug.  ;-)
+
+> > > For all those reasons, remove this optimization that doesn't look worthy
+> > > to keep around.
 > > 
-> > Exactly, and all of that is in fact the intended behavior.
-> 
-> Ah I think I get it now, so the wrap isn't really about the counter wrapping
-> causing an issue, but about the design of the ULONG_CMP APIs which are designed
-> for comparisons that wrap around. Due to this design, there is a side effect
-> that the numbers being compared have to be at a distance that is less than half
-> the number wheel. Otherwise the comparisons of numbers yields incorrect results.
-> Is that accurate to say?  IOW, ->gpwrap == true means, don't compare the numbers
-> anymore till we sort these huge deltas out.
-
-But "incorrect" is such a harsh and judgmental word.  ;-)
-
-Somewhat more seriously, ULONG_CMP_{GE,LT}() are defined to return the
-sign (or its complement) of differences between a pair of 32-bit or 64-bit
-numbers, as sizeof(unsigned long) dictates.  This is, mathematically,
-how you do signed differences.  The result coming out negative isn't
-incorrect, but instead the expected result given the numbers in question.
-
-Current RCU use cases might interpret a negative result as "no one did
-it for us yet", as in rcu_barrier(), "this CPU has not completed the
-current grace period", as in __note_gp_changes(), and so on.
-
-Now, these can get a false-positive/-negative result.  In the case of
-rcu_barrier(), we get a needless rcu_barrier() computation.  In the case
-of __note_gp_changes(), the false negative is OK, but a false positive
-from wrapping all the way around, could be fatal for a CPU that was idle
-for a long time (hence ->gpwrap).  And so on.
-
-> >> >From a testing POV, the example shows it is not set even when around when a
-> >> wrap actually happened.  So may be, we are not testing gpwrap much, or at
-> >> all, with rcutorture?
+> > Thank you for digging into this!
 > > 
-> > True enough, and that would be well worth fixing.
-> > 
-> > One simple (and maybe too simple) fix is to add a Kconfig option to
-> > kernel/rcu/Kconfig.debug that makes rcu_gpnum_ovf() use something like
-> > (32 << RCU_SEQ_CTR_SHIFT).  This, or some similar value, should cause
-> > rcutorture's stuttering and/or shuffling to trigger setting of ->gpwrap
-> > within a few minutes.
-> > 
-> > And I would not be surprised if doing this located bugs.
+> > When I ran tests that removed the call to sync_sched_exp_online_cleanup()
+> > a few months ago, I got grace-period hangs [1].  Has something changed
+> > to make this safe?
 > 
-> Ok cool! So I will work on this next then. I am curious to see how often it
-> triggers both with/without such a change.
+> Hmm, but was it before or after "rcu: Fix get_state_synchronize_rcu_full()
+> GP-start detection" ?
 
-If you can make it trigger without this change, you are far more patient
-than I am.  ;-)
+Before.  There was also some buggy debug code in play.  Also, to get the
+failure, it was necessary to make TREE03 disable preemption, as stock
+TREE03 has an empty sync_sched_exp_online_cleanup() function.
 
-> >> But before that, I am feeling it is not behaving correctly. I'd expect it to
-> >> be set even if rnp and rdp values are close but we are actually about to
-> >> wrap.  So most likely I am missing something.
-> > 
-> > If I understand correctly, you would like ->gpwrap to be set
-> > unconditionally at various points in the cycle, for example, at zero,
-> > ULONG_MAX/4, ULONG_MAX/2, and 3*ULONG_MAX/4.  But this could easily
-> > have the effect of discarding each CPU's quiescent states that showed
-> > up before the first call to rcu_watching_snap_recheck(), even if that
-> > CPU was active.  Our users might not consider this to be a friendly act.
-> 
-> Got it.
-> 
-> > In contrast, the current setup only discards quiescent states for CPUs
-> > that just came back from idle prior to call to rcu_watching_snap_save().
-> 
-> Do you mean the check of ->gpwrap in rcu_report_qs_rdp() which returns early?
+I am rerunning the test with a WARN_ON_ONCE() after the early exit from
+the sync_sched_exp_online_cleanup().  Of course, lack of a failure does
+not necessairly indicate
 
-Well, it also resets the CPU to collect quiescent states for the current
-grace period, but yes, it does return early.
+> And if after do we know why?
 
-> > In addition, use of the aforementioned Kconfig option has the benefit of
-> > making any ->gpwrap-related bugs appear during testing, not in production.
-> > On the same grounds, one could argue that absence of this Kconfig option
-> > should also cause gp_seq to zero rather than the current;
-> > 
-> > 	.gp_seq = (0UL - 300UL) << RCU_SEQ_CTR_SHIFT,
-> 
-> Hm, I think it still make sense to the do -300 even without debug options, just
-> so we have a true wrap early on, regardless of which APIs we use for comparison.
+Here are some (possibly bogus) possibilities that came to mind:
 
-It has certainly been as it is for a long time, so agreed.
+1.	There is some coming-online race that deprives the incoming
+	CPU of an IPI, but nevertheless marks that CPU as blocking the
+	current grace period.
+
+2.	Some strange scenario involves the CPU going offline for just a
+	little bit, so that the IPI gets wasted on the outgoing due to
+	neither of the "if" conditions in rcu_exp_handler() being true.
+	The outgoing CPU just says "I need a QS", then leaves and
+	comes back.  (The expedited grace period doesn't retry because
+	it believes that it already sent that IPI.)
+
+3.	Your ideas here!  ;-)
 
 							Thanx, Paul
