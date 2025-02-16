@@ -1,165 +1,182 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65E21925B8;
-	Sat, 15 Feb 2025 22:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B43156F54;
+	Sun, 16 Feb 2025 08:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739658228; cv=none; b=CqDAyzoH2goaXkciUCkYV/yI6YbzmxUCFKhXkTf853B+nv42QsYP8DLpORPe+NmfhVAWLku/zpTSrteZRQa4VsBVP/n/nFagYwXFrHohzXEecx0X6xbTVklR/sLc+BVn1JQ+KYgRHI6kGZ2y5Sg1da2ak8SpcyCrExw/mgyDtN0=
+	t=1739695321; cv=none; b=eAx2JIvEebx1gOxcKpS8b97DxhlkYuAQFfKy1CgaGDVCb9V2wqYa8wfmBJlWU8tSdSRS/CwnScvw7b5NgX03HeCk9E7S9M7Ok/HkZTguwngc6s/hXSjTms8k9N0DpSwA0WAVxu33zSceXEl44WaP3rV8ogqjNY/xbnk560Mq4dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739658228; c=relaxed/simple;
-	bh=kS4tVwPrXjws7PNQ0nNHvqcDFZvOCHRyzqs+aU8eMOk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JOpj3HMJ/dmcHbjSww3kyEW4Dg5pw+l1lt75rcNLyfzHcrx16xsDiSIuL4YADmpJwEXERfdAm06oDoxIcbcEQ0I0LyrdLywxE5AFDlkvbWJsBHXgbBxcLrQcxGSogQoFAWSf+hdHciwok526NO60nmwZSsE3rFMgIBD8tAvyR0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RBAxhBlX; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1739695321; c=relaxed/simple;
+	bh=Vskc2wwVqA5Ms7gkLQLcg3MEV8RCfdMgVZ3QWgJZO90=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D6fQNz7cIc1mcModLLxn6yFBbCP0dmrFe+1Owiarp6VwQp3F7eBPKd+GZsB8sxvECt5IkbaUQBFZVItK5h/MXMZJirCsi9xz1HpRpxQmBkcy3gT72LXeG4N1eco2gecyfAiGVyXpb8ETHp4+MHQIAd3dsztrm6cq5Cvo8czTRJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P4TwHDBp; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RBAxhBlX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF6C6C4CEDF;
-	Sat, 15 Feb 2025 22:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739658228;
-	bh=kS4tVwPrXjws7PNQ0nNHvqcDFZvOCHRyzqs+aU8eMOk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RBAxhBlXL0zTSD/f9Avl7mUjP3cSobgHNYC/av5dPrcXcFj/1hoXrG1Loe6FVGKW0
-	 5jK1TTlU7g/TuUeP7ztAm+isr85PmWVfoBbUfZgem8+qCBBR1hczfzg0uJfy8vnYyz
-	 batp8cC82O0vwP9L4yrAoz1wFsdB9+IfTuMieN2MZac1pfS39o8VPLtoh55aK0n5T+
-	 j/4IEY0Ouii/mhVfJlMvoQTEZKDO5/j1Q+trPpZPrrkqYoUngoIIcjD2Em4Eop6YNX
-	 anYJ4TmcHiTZZFing41Fhm4bAFceUNjP3532/OmQ+6mnScLFXvIFu0QOLz/uNNxUkg
-	 4Vc6myxOXDDcg==
-Date: Sat, 15 Feb 2025 23:23:45 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
- report
-Message-ID: <Z7ET8S4HKqSPubQY@pavilion.home>
-References: <20250213232559.34163-1-frederic@kernel.org>
- <20250213232559.34163-4-frederic@kernel.org>
- <fe931d3a-bf97-4be5-8420-f1fcb55e6a46@paulmck-laptop>
- <Z68yzBURiIr_7Lmy@pavilion.home>
- <610596cf-9836-473f-bcdc-15c69b7e0cd4@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P4TwHDBp"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-220d39a5627so49610245ad.1;
+        Sun, 16 Feb 2025 00:42:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739695320; x=1740300120; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Uo8I2VTpZsm/M0eSKbaSlNCrIf12xCPXDdrqy9nBvo=;
+        b=P4TwHDBpeh6M7610/9FzvPiOeoeLOR3PgXmVV1tPALgZrMvLancGcIp8hPyVB/o29W
+         uDc/nngDkJX7EDbYMiIRyCf4WVg29QaqLDprmD4IA3OOfFE8FO4Y7F7jB30hSM50D+hp
+         OiBGNLhC1TtSEvVyUGuyPwdt9TqF/lw6riG6Wzh5BdkgYuOyQjRyBxWUJ/+tZqPrQJa1
+         CJOutdmi7uMHQmSi3L8DdtJcVWDWTfH5kY/iB+YkjfdPkEIoORlhagWlVLhAMcnz+nAa
+         GTEek2t06T8xKWrk0X9OSIOjwbuOz3rkAPwnVIQ9wzIJzStFiwkOF9dGl8g0Eg8YrZ/L
+         gLnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739695320; x=1740300120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/Uo8I2VTpZsm/M0eSKbaSlNCrIf12xCPXDdrqy9nBvo=;
+        b=Poxe4B31jRopDecnkIQkqljbPC1DMsCrfahT2T/VfflBwwvjFWwB7lptq0Y/4R9qvD
+         oN+eJ3jVN/B5RikuVdO/u7lcBZZn7dNAMdAJWOsJkb0wqce1fnQQMnOxzk6FJVqg6K6s
+         5ASBbkDgxrXYycL3u5xUGJVg4VSGATYwWW436thqQQHXLnbYYgc/T5+FeYzKkOI3XmZt
+         IxxN8FmSzOAlx1iKEeexJFHlAdc53lKpgJB+t/2YHd7I5vKL8iTD2K+F55E4RZKJMI69
+         XUpUvp0wycf+IE/XgIQsZ5lYBvVFIJjCp34dKpysPAVbPjYbjE7nYwxxu+4fl+qmXNqK
+         7SVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVizOdCUhDK68JpDKOzK7e8b7jMOAGONhmR6BQFIwM4qrUPkqpPheDICWWkrQ+6TG4FBORt@vger.kernel.org, AJvYcCWVA8+rKcnz7MzHukU6et8B3aZlSWM/hwqWB3Cm+2MhbG0u2gxy7AYUMrXmIGkpstgOLvxkgT4rdFRJoJI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWu0w+Bo4Fx4jEO1k4Sa8HwrJRHgKBq/v4X+LmRfx1YTa5YoQF
+	uFojMRwemKy+hjtWZqFQCZS1TCLBJBcOSvVO3zMpcCmD9KtkMSQxSBhz9cC0
+X-Gm-Gg: ASbGncsi64Vq0gAmEhJPifIjbrYnxT4jlhOL1+ot7ixcqQE8+YGWtL/HT3/HgBEFC53
+	l1RCHuTT1VZTGrLaxokbKA3hhNcCVORQLM5qlrRmkIUAHvc9RH6mvNJFk1C54zLnxtw1+ryMQhv
+	DsFlJYsi9RG+pLZRfcJyckFq0rZAxVvFUIdlZ877WeJ9OVd+AMbHZWaGJYbAqoWgymnBpbGxe7K
+	ty0bsm5KDOyantG5h6iA//L6wHwN0tdxQp5hJOmAqEiqji/m+rkplirtfUJlN/7HXMh3bd9pvh0
+	q1gj7ynoaIk1nlfFw88WPczHQrJsDN83X1vyduk1qGbmPXx7Zv7NGhv4fyr0Hw==
+X-Google-Smtp-Source: AGHT+IFWSv7o5UfJZsr45iFaTsnSGgjOJ/QEPD95j0N9PVTAsh9E6EiQ4ySP/8hifcKlUKOW3csoJg==
+X-Received: by 2002:a17:902:d4cd:b0:221:2f4:5446 with SMTP id d9443c01a7336-22104048145mr89810585ad.25.1739695319630;
+        Sun, 16 Feb 2025 00:41:59 -0800 (PST)
+Received: from VM-119-80-tencentos.localdomain ([14.22.11.165])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-220d5349634sm52681805ad.31.2025.02.16.00.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Feb 2025 00:41:59 -0800 (PST)
+From: Yongliang Gao <leonylgao@gmail.com>
+To: Neeraj.Upadhyay@amd.com,
+	paulmck@kernel.org,
+	frederic@kernel.org,
+	thunder.leizhen@huawei.com
+Cc: frankjpliu@tencent.com,
+	kernelxing@tencent.com,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yongliang Gao <leonylgao@tencent.com>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH v3] rcu/cpu_stall_cputime: fix the hardirq count for x86 architecture
+Date: Sun, 16 Feb 2025 16:41:09 +0800
+Message-Id: <20250216084109.3109837-1-leonylgao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <610596cf-9836-473f-bcdc-15c69b7e0cd4@paulmck-laptop>
 
-Le Sat, Feb 15, 2025 at 02:38:04AM -0800, Paul E. McKenney a écrit :
-> On Fri, Feb 14, 2025 at 01:10:52PM +0100, Frederic Weisbecker wrote:
-> > Le Fri, Feb 14, 2025 at 01:01:56AM -0800, Paul E. McKenney a écrit :
-> > > On Fri, Feb 14, 2025 at 12:25:59AM +0100, Frederic Weisbecker wrote:
-> > > > A CPU coming online checks for an ongoing grace period and reports
-> > > > a quiescent state accordingly if needed. This special treatment that
-> > > > shortcuts the expedited IPI finds its origin as an optimization purpose
-> > > > on the following commit:
-> > > > 
-> > > > 	338b0f760e84 (rcu: Better hotplug handling for synchronize_sched_expedited()
-> > > > 
-> > > > The point is to avoid an IPI while waiting for a CPU to become online
-> > > > or failing to become offline.
-> > > > 
-> > > > However this is pointless and even error prone for several reasons:
-> > > > 
-> > > > * If the CPU has been seen offline in the first round scanning offline
-> > > >   and idle CPUs, no IPI is even tried and the quiescent state is
-> > > >   reported on behalf of the CPU.
-> > > > 
-> > > > * This means that if the IPI fails, the CPU just became offline. So
-> > > >   it's unlikely to become online right away, unless the cpu hotplug
-> > > >   operation failed and rolled back, which is a rare event that can
-> > > >   wait a jiffy for a new IPI to be issued.
-> 
-> But the expedited grace period might be preempted for an arbitrarily
-> long period, especially if a hypervisor is in play.  And we do drop
-> that lock midway through...
+From: Yongliang Gao <leonylgao@tencent.com>
 
-Well, then that delays the expedited grace period as a whole anyway...
+When counting the number of hardirqs in the x86 architecture,
+it is essential to add arch_irq_stat_cpu to ensure accuracy.
 
-> > > > For all those reasons, remove this optimization that doesn't look worthy
-> > > > to keep around.
-> > > 
-> > > Thank you for digging into this!
-> > > 
-> > > When I ran tests that removed the call to sync_sched_exp_online_cleanup()
-> > > a few months ago, I got grace-period hangs [1].  Has something changed
-> > > to make this safe?
-> > 
-> > Hmm, but was it before or after "rcu: Fix get_state_synchronize_rcu_full()
-> > GP-start detection" ?
-> 
-> Before.  There was also some buggy debug code in play.  Also, to get the
-> failure, it was necessary to make TREE03 disable preemption, as stock
-> TREE03 has an empty sync_sched_exp_online_cleanup() function.
-> 
-> I am rerunning the test with a WARN_ON_ONCE() after the early exit from
-> the sync_sched_exp_online_cleanup().  Of course, lack of a failure does
-> not necessairly indicate
+For example, a CPU loop within the rcu_read_lock function.
 
-Cool, thanks!
+Before:
+[   70.910184] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   70.910436] rcu:     3-....: (4999 ticks this GP) idle=***
+[   70.910711] rcu:              hardirqs   softirqs   csw/system
+[   70.910870] rcu:      number:        0        657            0
+[   70.911024] rcu:     cputime:        0          0         2498   ==> 2498(ms)
+[   70.911278] rcu:     (t=5001 jiffies g=3677 q=29 ncpus=8)
 
-> 
-> > And if after do we know why?
-> 
-> Here are some (possibly bogus) possibilities that came to mind:
-> 
-> 1.	There is some coming-online race that deprives the incoming
-> 	CPU of an IPI, but nevertheless marks that CPU as blocking the
-> 	current grace period.
+After:
+[   68.046132] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   68.046354] rcu:     2-....: (4999 ticks this GP) idle=***
+[   68.046628] rcu:              hardirqs   softirqs   csw/system
+[   68.046793] rcu:      number:     2498        663            0
+[   68.046951] rcu:     cputime:        0          0         2496   ==> 2496(ms)
+[   68.047244] rcu:     (t=5000 jiffies g=3825 q=4 ncpus=8)
 
-Arguably there is a tiny window between rcutree_report_cpu_starting()
-and set_cpu_online() that could make ->qsmaskinitnext visible before
-cpu_online() and therefore delay the IPI a bit. But I don't expect
-more than a jiffy to fill up the gap. And if that's relevant, note that
-only !PREEMPT_RCU is then "fixed" by sync_sched_exp_online_cleanup() here.
+Fixes: be42f00b73a0 ("rcu: Add RCU stall diagnosis information")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202501090842.SfI6QPGS-lkp@intel.com/
+Signed-off-by: Yongliang Gao <leonylgao@tencent.com>
+Reviewed-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 
-> 
-> 2.	Some strange scenario involves the CPU going offline for just a
-> 	little bit, so that the IPI gets wasted on the outgoing due to
-> 	neither of the "if" conditions in rcu_exp_handler() being true.
-> 	The outgoing CPU just says "I need a QS", then leaves and
-> 	comes back.  (The expedited grace period doesn't retry because
-> 	it believes that it already sent that IPI.)
-
-I don't think this is possible. Once the CPU enters CPUHP_TEARDOWN_CPU with
-stop_machine, no more IPIs can be issued. The remaining ones are executed
-at CPUHP_AP_SMPCFD_DYING, still in stop_machine. So this is the last call
-for rcu_exp_handler() execution. And this last call has to be followed
-by rcu_note_context_switch() between stop_machine and the final schedule to
-idle. And that rcu_note_context_switch() must report the rdp exp context
-switch.
-
-One easy way to assert that is:
+---
+Changes from v2:
+- Add Reviewed-by 'Neeraj Upadhyay' information
+- Link to v2: https://lore.kernel.org/all/20250109024652.1342595-1-leonylgao@gmail.com
+Changes from v1:
+- Fix compilation error when using arm64-allnoconfig/riscv-randconfig. [kernel test robot]
+- Link to v1: https://lore.kernel.org/r/20250108065716.2888148-1-leonylgao%40gmail.com
+---
+---
+ kernel/rcu/tree.c       | 10 +++++++---
+ kernel/rcu/tree.h       |  2 +-
+ kernel/rcu/tree_stall.h |  4 ++--
+ 3 files changed, 10 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 86935fe00397..40d6090a33f5 100644
+index 475f31deed14..a0dab5923d03 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -4347,6 +4347,12 @@ void rcutree_report_cpu_dead(void)
- 	 * may introduce a new READ-side while it is actually off the QS masks.
- 	 */
- 	lockdep_assert_irqs_disabled();
-+	/*
-+	 * CPUHP_AP_SMPCFD_DYING was the last call for rcu_exp_handler() execution.
-+	 * The requested QS must have been reported on the last context switch
-+	 * from stop machine to idle.
-+	 */
-+	WARN_ON_ONCE(rdp->cpu_no_qs.b.exp);
- 	// Do any dangling deferred wakeups.
- 	do_nocb_deferred_wakeup(rdp);
+@@ -781,6 +781,10 @@ static int rcu_watching_snap_save(struct rcu_data *rdp)
+ 	return 0;
+ }
  
-> 
-> 3.	Your ideas here!  ;-)
++#ifndef arch_irq_stat_cpu
++#define arch_irq_stat_cpu(cpu) 0
++#endif
++
+ /*
+  * Returns positive if the specified CPU has passed through a quiescent state
+  * by virtue of being in or having passed through an dynticks idle state since
+@@ -916,9 +920,9 @@ static int rcu_watching_snap_recheck(struct rcu_data *rdp)
+ 			rsrp->cputime_irq     = kcpustat_field(kcsp, CPUTIME_IRQ, cpu);
+ 			rsrp->cputime_softirq = kcpustat_field(kcsp, CPUTIME_SOFTIRQ, cpu);
+ 			rsrp->cputime_system  = kcpustat_field(kcsp, CPUTIME_SYSTEM, cpu);
+-			rsrp->nr_hardirqs = kstat_cpu_irqs_sum(rdp->cpu);
+-			rsrp->nr_softirqs = kstat_cpu_softirqs_sum(rdp->cpu);
+-			rsrp->nr_csw = nr_context_switches_cpu(rdp->cpu);
++			rsrp->nr_hardirqs = kstat_cpu_irqs_sum(cpu) + arch_irq_stat_cpu(cpu);
++			rsrp->nr_softirqs = kstat_cpu_softirqs_sum(cpu);
++			rsrp->nr_csw = nr_context_switches_cpu(cpu);
+ 			rsrp->jiffies = jiffies;
+ 			rsrp->gp_seq = rdp->gp_seq;
+ 		}
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index a9a811d9d7a3..1bba2225e744 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -168,7 +168,7 @@ struct rcu_snap_record {
+ 	u64		cputime_irq;	/* Accumulated cputime of hard irqs */
+ 	u64		cputime_softirq;/* Accumulated cputime of soft irqs */
+ 	u64		cputime_system; /* Accumulated cputime of kernel tasks */
+-	unsigned long	nr_hardirqs;	/* Accumulated number of hard irqs */
++	u64		nr_hardirqs;	/* Accumulated number of hard irqs */
+ 	unsigned int	nr_softirqs;	/* Accumulated number of soft irqs */
+ 	unsigned long long nr_csw;	/* Accumulated number of task switches */
+ 	unsigned long   jiffies;	/* Track jiffies value */
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 925fcdad5dea..56b21219442b 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -435,8 +435,8 @@ static void print_cpu_stat_info(int cpu)
+ 	rsr.cputime_system  = kcpustat_field(kcsp, CPUTIME_SYSTEM, cpu);
+ 
+ 	pr_err("\t         hardirqs   softirqs   csw/system\n");
+-	pr_err("\t number: %8ld %10d %12lld\n",
+-		kstat_cpu_irqs_sum(cpu) - rsrp->nr_hardirqs,
++	pr_err("\t number: %8lld %10d %12lld\n",
++		kstat_cpu_irqs_sum(cpu) + arch_irq_stat_cpu(cpu) - rsrp->nr_hardirqs,
+ 		kstat_cpu_softirqs_sum(cpu) - rsrp->nr_softirqs,
+ 		nr_context_switches_cpu(cpu) - rsrp->nr_csw);
+ 	pr_err("\tcputime: %8lld %10lld %12lld   ==> %d(ms)\n",
+-- 
+2.39.3
 
-:-)
-
-> 
-> 							Thanx, Paul
