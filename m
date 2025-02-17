@@ -1,170 +1,154 @@
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC1F76026;
-	Mon, 17 Feb 2025 02:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57761F16B;
+	Mon, 17 Feb 2025 02:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739758326; cv=none; b=Vu3P5R9VuNlQXgstN54VISsxKSEiR1PHT3qynRStEykqQqacS0udwamCEL3Bcme4c1AK6TvygkC8/gJbomle45Y4JJbhOAQtaDADCuVs9ygsXaJldljVpcFn30gRQerRn5d4pQJzReSxI7uKK3RRz7vsqXZXU/tlhbRv/WIikJo=
+	t=1739758994; cv=none; b=TctZvs7IffGV4hMQGrqBFu+jOs4IQKOoWDKyXhAkAGQDhfz6MAhFK5KOHXe3UERMlRviju17I2QbwJQZHe6+pSfSTYPCSj2i0/Lc7AFqJ07Ts3aacl8tZ4qz8ikeYtF+C6bVx0FATPUuAc1tVag7CPB2gYtnvb1Kcq5gkBDaFDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739758326; c=relaxed/simple;
-	bh=NLdFO27qpvN8zY+dJVhvFtamOsv39cjJjxxbReiO60M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uAO19PC1J1AR1pXPi8tDwW+fmgRowV/5UQlnWGJOuKiA6XuwA4jBESJjY+pRb+qt1AINP6s0VORi7U6/JB907SpKxKFjqaQeiNli+kH7zI8jqM50Au5BzCQbgdlsy0V/3BKm7eqIzgTalICmqkkDgeFsruYzz4pLd2+74SLpXrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A01Oz1k6; arc=none smtp.client-ip=209.85.160.176
+	s=arc-20240116; t=1739758994; c=relaxed/simple;
+	bh=nJKa6bALEhYgO74p6lWul8puVtnEmAKvhZMCNo2iu2o=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=iXrgcP/M3LamPCdEnDcIXqcYw1NilOY5g0zL8eBBfqv5XgzfsjLLhHJ7xReqvbu/WManxyma3baZGpbRtGLIXqhVthKAWA05gpgT3O9mnCTFDSO4BZx0PTlmZHvmJD12uWJEs2iSovCK0s84PkOsn1NthLrPLHM5Z8GMod9jn7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fjDLTNZu; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A01Oz1k6"
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-471ebfbad4dso6189991cf.3;
-        Sun, 16 Feb 2025 18:12:04 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fjDLTNZu"
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7c0a12eb6c0so9289585a.0;
+        Sun, 16 Feb 2025 18:23:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739758323; x=1740363123; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1739758992; x=1740363792; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BYMzkjPFhu4j+/htejHxz0Ece5HFcsbyGIeX6/xhquU=;
-        b=A01Oz1k6PRxeD7w7OB89uNi7O+yxznbNDvCBUlvENqO2oeeqJYqZdkz/aWGKxl7Zb6
-         97AetXdsa7L0tsSJr5y1p66tIXxO0HFucSEl+KtORdGuPvEQIDwCdgxOPkldUTqxcPjK
-         11O3+gFDowV7RO9TvIwvhCBBJEslrGa7bxoLtEiXY2o5X6tLJNVvLBQ7R5GTzo89vQUK
-         W6+hgxAucUbfv9rhNqegYXGqC/mzMWrfr71CPGD8WlFeKLNuIYnvIZYi+d2/VBnMajF9
-         624m7mElRsLzujxuKCuN8TAWp/z0/vXnyhEgP4PU/lIR/mar4uqBll0wgc7hvoHc9seR
-         Qjmg==
+        bh=5K6UIgLK2BUUt0MWARkWgKarU0VGbzAyBiqh/DYSwyk=;
+        b=fjDLTNZuKi2ZcqSJiLn0nC5jV9U6v8IDOhz/AA7Gl7EhFeIwfO5Kf9oGgoxsDBHaXR
+         YULr6+6jrAfDNKspm0dJvCyqDNiFQ0zseEdR6e2MyqoXhaGloiJjxZ22Gz3wOyC3iFEj
+         bHTlxT1xrPi60uxD0w4ywjxevqRWN/9Fq0XeXbFEPptus0utjA1aN3yAqf6AIkSoY+tK
+         kz/SLK4u7iYC0roMmkw9XV7uUzj6WOoc9RCE1kPkTrQyV9G2XrYcxBaofnFitLanxVB5
+         pcD3aorA0dSoqQhYcMPEAqLOIOWDioFRJ975T6g/F0ZMBIJmbyiS1uRqz5O2QYnDf/dV
+         uBDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739758324; x=1740363124;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1739758992; x=1740363792;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BYMzkjPFhu4j+/htejHxz0Ece5HFcsbyGIeX6/xhquU=;
-        b=nJEOHxgWS0X7dWr+xfKtJkeEmfxl2Fmb2HI0RRhOg7snEQYPK80wCZlzX9dkldGF5p
-         vPZlgG73HgkzCeK4RRCWTGaPbGz8wpi0WfpCkEQfY64Mp54uDwAMdyHSGcAKeRGycs9m
-         Oz+vAoqI/CDKa8pqhmU5/wV4AqocSjcxFZeJbS9LXDBzsqf7tsYYdEUkeaXY8+P7fE+F
-         8sHutTnmRwaIbNPuRDcWNo7egPyixp4kDahGJSaufeD715il4Xrnm0GCBwtwPdlyhzjo
-         Fd9ngn0PAl9vM1PRK+/WlNiS5q8f+JRU/rwhXqcpcj/fNjzznYcjdVv/T4mbP64zMGPe
-         jR6A==
-X-Forwarded-Encrypted: i=1; AJvYcCW0lu7Q1bKxpG3cPoZ/hAdOys/9V7yYNPM5Dvtr2hCad3IZTXfAwMa7rVAU98MTo9sfMl7LNZeVOGI=@vger.kernel.org, AJvYcCWAX0LeB6I49ousOsp2xGKE+xEyS++5vpIjPBLLRG/KRgddcRqNyu3f8yHhjrGAWG8O5MMM@vger.kernel.org
-X-Gm-Message-State: AOJu0YyPh7jWKJIM7lU6UA9ogE7+YZzrMx27asnMwd4cNVPJh2yBRLYq
-	aB0JiTE5dnncqADDUwR7paum4889KJw6R2sKm6ASMmXdbsBBZm6w
-X-Gm-Gg: ASbGncuipf/GJrj4J/N8jtJnhWJ4UFrrFnRlg92KnoQgUJ8W1izrbVPMlSZF/eIx0D6
-	/DTBKw1qHK3XhmiKhSv84ZxRCurasMef3V+m4xJFewwwDmEiuvOxOfpD7NJJ5lJSDPn23reMD8S
-	SKMQOCURRjHdQTQg4KTng5ov4TS1WmlDerCr+au3yan34Jt3tVYeXYqQm+Ykmh+/MUKir9EZs4Z
-	vAkB2Nyh0uzbJcMtHAyQNVk01AXMhQibvcmfDYD69n8KqllKXMe1h4EKoCErpQGUqCM9Yrr3sGl
-	afH3AqZS8ySJEqdIdD+qefXLRo3hmMWETcAFs/hl1NDDv0eDICz2VZSPtKxV7JDik6u7o7aBOC9
-	PFHTEsg==
-X-Google-Smtp-Source: AGHT+IFfbD1+PJvXob7XWwUPy/dDfSQ1gVpMkghQ7JLkctIDDG2P+iW941sWCzv/RMKHJXsCMOOmjg==
-X-Received: by 2002:ac8:7d01:0:b0:471:bd5e:d5dd with SMTP id d75a77b69052e-471dbd274a6mr100097421cf.16.1739758323607;
-        Sun, 16 Feb 2025 18:12:03 -0800 (PST)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471c29eb0e4sm41972921cf.10.2025.02.16.18.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Feb 2025 18:12:03 -0800 (PST)
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfauth.phl.internal (Postfix) with ESMTP id EBE2B1200043;
-	Sun, 16 Feb 2025 21:12:02 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Sun, 16 Feb 2025 21:12:02 -0500
-X-ME-Sender: <xms:8pqyZ8YxbWwRHOSZpBzQrVZLO2LyfbhwIqo6lvd6ntWlPaqLlkUdJg>
-    <xme:8pqyZ3YxtCNj_f1J5wUXhwmrCYnY_LoRnYb6dU3cWnQhIj63QXSVwhrSO1sDjkKgW
-    I4YDJusvNZI-nuqEA>
-X-ME-Received: <xmr:8pqyZ29rUfwC4yJxEB1jXlQRD67TACaWNuPJVGZl5-7aSgW_X14HI6xSwA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdehjeduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
-    drtghomheqnecuggftrfgrthhtvghrnhephfetvdfgtdeukedvkeeiteeiteejieehvdet
-    heduudejvdektdekfeegvddvhedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhn
-    odhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejje
-    ekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhn
-    rghmvgdpnhgspghrtghpthhtohepjedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
-    eprhhitghhrghrugdrfigvihihrghnghesghhmrghilhdrtghomhdprhgtphhtthhopehp
-    rghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskh
-    gvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrdhuphgrughhhigrhieskhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-    dprhgtphhtthhopehlihhnuhigqdguohgtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhr
-    tghpthhtohepsghoqhhunhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:8pqyZ2rkZyawUAtRCcCDe3mHvoH42RO_FqWsN6iecQ7oQQvdw0dlyg>
-    <xmx:8pqyZ3pBb2tBuBxLtZ2wmmQowB1Rn4pxQ47CKIYfoPBJN9aThMHQGw>
-    <xmx:8pqyZ0QZkVzsaaKcMAz_rFxPD-z0xsC6yMUdXxMsJVfXV9vJVsg5fQ>
-    <xmx:8pqyZ3pryHt-ixXIl9Ec4nPjDEkzlr78ImsN2CZqnKdzZfTW_vr-RQ>
-    <xmx:8pqyZ84rDq6SZJpTp2T7Ov5MTDAcEIeEaIb17FnhXy17pI6Cfia0kqd_>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 16 Feb 2025 21:12:02 -0500 (EST)
-Date: Sun, 16 Feb 2025 18:12:01 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Wei Yang <richard.weiyang@gmail.com>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	rcu@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] doc/RCU/listRCU: fix an example code snippets
-Message-ID: <Z7Ka8Z5RS_OwyL_G@Mac.home>
-References: <20250101082306.10404-1-richard.weiyang@gmail.com>
+        bh=5K6UIgLK2BUUt0MWARkWgKarU0VGbzAyBiqh/DYSwyk=;
+        b=C6D7Mahy8Q3W2yArWGNrN+qCrtVRF0oOJayciPNoOkPSKbmK4nS8BAYr4kjZKAT4fR
+         HQymmml+yHaiS/cLQitGRfMUTsHoZx9N9OuhC7hNn6ihMxVLr0Izcei6TE4EUsO2jVfS
+         D9nyfZBmRHUuz2n6xJOgzdx87xvctOMmTvyOTtVTe0QUO7v8qhF4SVJwjG1zpqmSUJUS
+         y5nUcV9agf4Ikpkth9wO76qfDTaTN1P/0HHLHhwxrCPZT/MX5yD+FFPgzCXafiA2QHAJ
+         k+6t7ZSwTWbhJuEIqDYrAbIlH7Bf48toGC6dJ+lKvTcudWmOFmrg/h/rI+6U316dbSNg
+         iA4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVwGQL+Wg5e3DqW9Uc5w/VEJWJ17T/iBCwYIcKELNyz5yFlC933cnhXdyO+VaJBhFKoZvA1@vger.kernel.org, AJvYcCXorKkjnaeAU5GSsKrrud0R+Yu73HeiU4zg5maQA1KEbGhO9Ks0G91pyTrDytPEvn0/Isa2iMAoPfs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVnMTAysrzBw57weKJm7j8yGvDz5Hk1akafEh/v6RVE6KZgIWX
+	8aYia/QuGx4EkFCUvo3d6Mm+upJ7y64PTXaTZaPGE6bZihenNBM5
+X-Gm-Gg: ASbGncsI3yescD9XIrng2AtFVfHxvRGgoHCM3ASsCod8U9nWH3R8k0wWSXiG0kiQ/1c
+	k3WLZLvPc10vUZoEjxAj8Jkl+FocZdtQl2JP6q+HsWeSN6EhFDRFI9BeWYgm199y0/SA8e47xFi
+	Mc5zJEjePr/7N+vjL/pipSvn94XQJUAFMr2HWVATqMZ+imn+GFhylglSXY54fGzE966T4elzawh
+	vQM0f1pTLj2VuKOgunmkrChhmzDrpp7+DrfzxFDK1RlyqdUoUQQTIG01/LHGpJiIJKAjDTRYK8=
+X-Google-Smtp-Source: AGHT+IEqn63zCbq9V5q9AfcMKEKiNo7blyxShQtxPGVnCIoluf+PsU9BykLNNordLTRUekbGAOO1GQ==
+X-Received: by 2002:a05:6214:1d09:b0:6e4:3e5e:56d5 with SMTP id 6a1803df08f44-6e66ccb1064mr134910126d6.5.1739758991678;
+        Sun, 16 Feb 2025 18:23:11 -0800 (PST)
+Received: from smtpclient.apple ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471c29e94edsm42038071cf.8.2025.02.16.18.23.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 16 Feb 2025 18:23:10 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250101082306.10404-1-richard.weiyang@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
+Subject: Re: [PATCH] doc/RCU/listRCU: fix an example code snippets
+From: Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <Z7Ka8Z5RS_OwyL_G@Mac.home>
+Date: Mon, 17 Feb 2025 10:22:53 +0800
+Cc: Wei Yang <richard.weiyang@gmail.com>,
+ paulmck@kernel.org,
+ frederic@kernel.org,
+ neeraj.upadhyay@kernel.org,
+ rcu@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CDB3A2E0-A891-491E-9F7D-F09843F1A3E3@gmail.com>
+References: <20250101082306.10404-1-richard.weiyang@gmail.com>
+ <Z7Ka8Z5RS_OwyL_G@Mac.home>
+To: Boqun Feng <boqun.feng@gmail.com>
+X-Mailer: Apple Mail (2.3826.400.131.1.6)
 
-Hi Wei,
-
-The change loosk good to me, thanks!
-
-I queued the patch for futher reviews and tests with some changes in the
-commit log (for title formating and a bit more explanation), please see
-below.
-
-Regards,
-Boqun
-
-On Wed, Jan 01, 2025 at 08:23:06AM +0000, Wei Yang wrote:
+On Feb 17, 2025, at 10:12, Boqun Feng <boqun.feng@gmail.com> wrote:
+>=20
+> Hi Wei,
+>=20
+> The change loosk good to me, thanks!
+>=20
+> I queued the patch for futher reviews and tests with some changes in =
+the
+> commit log (for title formating and a bit more explanation), please =
+see
+> below.
+>=20
+> Regards,
+> Boqun
+>=20
+> On Wed, Jan 01, 2025 at 08:23:06AM +0000, Wei Yang wrote:
+>> The example code for "Eliminating Stale Data" looks not correct:
+>>=20
+>>  * rcu_read_unlock() should put after kstrdup()
+>>  * spin_unlock() should be called before return
+>>=20
+>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> [...]
+>=20
+>=20
+> ------------------>8
+> Subject: [PATCH] doc/RCU/listRCU: Fix an example code snippets
+>=20
 > The example code for "Eliminating Stale Data" looks not correct:
-> 
->   * rcu_read_unlock() should put after kstrdup()
->   * spin_unlock() should be called before return
-> 
+>=20
+> * rcu_read_unlock() should put after kstrdup(), because otherwise
+> entry may get freed while kstrdup() is being called.
+>=20
+> * spin_unlock() should be called before return, otherwise the
+> function would return with the lock of the entry held.
+>=20
+> Hence fix these.
+>=20
 > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-[...]
+> Link: =
+https://lore.kernel.org/r/20250101082306.10404-1-richard.weiyang@gmail.com=
 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+> Documentation/RCU/listRCU.rst | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/RCU/listRCU.rst =
+b/Documentation/RCU/listRCU.rst
+> index ed5c9d8c9afe..8df50fcd69fd 100644
+> --- a/Documentation/RCU/listRCU.rst
+> +++ b/Documentation/RCU/listRCU.rst
+> @@ -348,9 +348,10 @@ to accomplish this would be to add a ``deleted`` =
+flag and a ``lock`` spinlock to
+> rcu_read_unlock();
+> return AUDIT_BUILD_CONTEXT;
+> }
+> - rcu_read_unlock();
+> if (state =3D=3D AUDIT_STATE_RECORD)
+> *key =3D kstrdup(e->rule.filterkey, GFP_ATOMIC);
+> + spin_unlock(&e->lock);
 
------------------->8
-Subject: [PATCH] doc/RCU/listRCU: Fix an example code snippets
+According to the above quick quiz, we should return with the lock held.
 
-The example code for "Eliminating Stale Data" looks not correct:
+> + rcu_read_unlock();
+> return state;
+> }
+> }
+> --=20
+>=20
 
-*	rcu_read_unlock() should put after kstrdup(), because otherwise
-	entry may get freed while kstrdup() is being called.
-
-*	spin_unlock() should be called before return, otherwise the
-	function would return with the lock of the entry held.
-
-Hence fix these.
-
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-Link: https://lore.kernel.org/r/20250101082306.10404-1-richard.weiyang@gmail.com
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- Documentation/RCU/listRCU.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-index ed5c9d8c9afe..8df50fcd69fd 100644
---- a/Documentation/RCU/listRCU.rst
-+++ b/Documentation/RCU/listRCU.rst
-@@ -348,9 +348,10 @@ to accomplish this would be to add a ``deleted`` flag and a ``lock`` spinlock to
- 					rcu_read_unlock();
- 					return AUDIT_BUILD_CONTEXT;
- 				}
--				rcu_read_unlock();
- 				if (state == AUDIT_STATE_RECORD)
- 					*key = kstrdup(e->rule.filterkey, GFP_ATOMIC);
-+				spin_unlock(&e->lock);
-+				rcu_read_unlock();
- 				return state;
- 			}
- 		}
--- 
