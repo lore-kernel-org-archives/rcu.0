@@ -1,67 +1,95 @@
-Received: from mail.sparklesage.pl (mail.sparklesage.pl [141.94.21.160])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E09A212FA8
-	for <rcu@vger.kernel.org>; Mon, 17 Feb 2025 09:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.94.21.160
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679B721B1BC;
+	Mon, 17 Feb 2025 14:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739784571; cv=none; b=MWIrFrpENxlq5KBFsgV2EgMK49+YvxxZ+V43xBDehFsOjxbSx5Qd1U56BkxlnnMApbEr4lLZsaNTOYdBHbZXBfGtS1Ly6KXj2VY5k3nNQRykk7C/Cv/V4fRLfTTdIc8bbls9uJpvSy90KrYjiDMKuASDCrIQkVA3f6IqJ9rhaJc=
+	t=1739802002; cv=none; b=sy94bP6kO6pPr0Lr5TNs40DV6RiIOEdCT/d9DwdnOOpHgWdranV0Y2W5NdZZAY1D+/mOiNO4ENIh8U/Xu77PQbAJ+kmNZE1/6Jll4u4rDD2cZaXF1nIWjY4o5GHBp/QUpWeH05aZ3tKLVZJJ1qWPefOKgz61dcUCBpknHrE0Fjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739784571; c=relaxed/simple;
-	bh=zNAeIHW5d17E0rOgLn6zTHPXf4g8meBvBBQrzy07W1c=;
-	h=Message-ID:Date:From:To:Subject:MIME-Version:Content-Type; b=Ad7Ko///qicp7LNnYjJJwta2mIkVAoiD626pwgQNF9omx4pqbJ+OeQ7Tfg+rPC+H9q9z3JBnmtX0DATLbZJwnv1DQssDLxYIyYvY574nT7cyB6AS378aDTodk1kvJYjFS/v/kvGaNWPU9qY1AaWibx492nH3OC2e5I7TYkuYqgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sparklesage.pl; spf=pass smtp.mailfrom=sparklesage.pl; dkim=pass (2048-bit key) header.d=sparklesage.pl header.i=@sparklesage.pl header.b=cbUKQZ9+; arc=none smtp.client-ip=141.94.21.160
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sparklesage.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sparklesage.pl
+	s=arc-20240116; t=1739802002; c=relaxed/simple;
+	bh=F5Fq4V08KjRjvKMrLulUhqT0/eJwNG0iacCf2irg2mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D9zKiDDglWL+9oHUi+rUi5HqOgebsTfrrFYzDFPhkI6bjz1VlN/g8TS9BY4cxf6SQp47BPbje04tIsw/r6ZE84019b+WWwWuHAku/7o491zlRyJkuIGXajeUoC7vpvVbjSeQrfssMTIQgyIfqxjAMj9g6eomMOTVPFI0off01hU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n/5qO8KR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DTx3N+0p; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sparklesage.pl header.i=@sparklesage.pl header.b="cbUKQZ9+"
-Received: by mail.sparklesage.pl (Postfix, from userid 1002)
-	id 0333F494F2; Mon, 17 Feb 2025 10:10:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sparklesage.pl;
-	s=mail; t=1739783510;
-	bh=zNAeIHW5d17E0rOgLn6zTHPXf4g8meBvBBQrzy07W1c=;
-	h=Date:From:To:Subject:From;
-	b=cbUKQZ9+19mYSJ2/IN6mWQSTL83Xw/4YQnFeB4TL1OtwQGqxVwjUv4tvWVOGcq6XO
-	 1bIUahgbz1e4yjBrratV8iWc39k4KWCeDATUuQc4p82oN5EpGXrTJbpckFIehAMfo0
-	 lkBmERgge218MFbih6UqOkXltbDsbTvWH/wZHek150bcUtY/EkNzhnHbXD/5chzBBg
-	 wa82jEITI2eLERJyprTcr5+VwKodBfuhGHu9kIqzpe8j9gp4oJhwNw+2QEXD/h00BH
-	 syGqL0Fh1MJ6NPL2I811BOTenDQUoDteLqVM/BMmBS8oHTAkJP4yADUaSOE3TDbhDk
-	 vsUD0JezYYnqw==
-Received: by mail.sparklesage.pl for <rcu@vger.kernel.org>; Mon, 17 Feb 2025 09:10:45 GMT
-Message-ID: <20250217084500-0.1.ca.148o4.0.q8336iiqom@sparklesage.pl>
-Date: Mon, 17 Feb 2025 09:10:45 GMT
-From: =?UTF-8?Q?"Katarzyna_Chowa=C5=84ska"?= <katarzyna.chowanska@sparklesage.pl>
-To: <rcu@vger.kernel.org>
-Subject: =?UTF-8?Q?Sp=C5=82ata_raty?=
-X-Mailer: mail.sparklesage.pl
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n/5qO8KR";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DTx3N+0p"
+Date: Mon, 17 Feb 2025 15:19:56 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1739801998;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Uyo5k+GprhxLkM9w+L8CKX8UCCowCbgz4V8rWU94hrg=;
+	b=n/5qO8KRcWA5TDw7mzbASwa8PTTRlvWJeskMNFDCEY1LSP2GJcqN8Xo1OhZF1NlPR5CKrt
+	o5iJ4Pgw07grRwEtIpkKmQYLoFpYpOWbXk7D6qhiC/pnfmjrNoc/YXqKUOZPqpKcQhyRue
+	1wfytWALSZLDIvwFOv1Y3erUq7+NY6ncvL1sMzLTUNe59tdKah/JevsF59wm5TYF4bqYnb
+	wWjYVL/r9TowTYkJqqZU4nx1LyPGtLH6K9X90WpeFkGGQGs3UmFe8odwUWd+ee0XBtOaLZ
+	mXKb3mOJoEEX8IaIl6Hm/Lu/EvJpmPfTwmVBTaP+i/OEnkAvYCNrcWnlkfpPxg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1739801998;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Uyo5k+GprhxLkM9w+L8CKX8UCCowCbgz4V8rWU94hrg=;
+	b=DTx3N+0ptr7aSyabWFl3/dtr/ABDwRBuekFvwkohqTkrN6CilHfXC3uuPCRqMS5DQPaUAH
+	tiATJ0uyVQn/OUCQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Christoph Lameter <cl@linux.com>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	maple-tree@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH RFC v2 03/10] locking/local_lock: Introduce
+ localtry_lock_t
+Message-ID: <20250217141956._01BcsrG@linutronix.de>
+References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz>
+ <20250214-slub-percpu-caches-v2-3-88592ee0966a@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250214-slub-percpu-caches-v2-3-88592ee0966a@suse.cz>
 
-Szanowni Pa=C5=84stwo,
+On 2025-02-14 17:27:39 [+0100], Vlastimil Babka wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> 
+> In !PREEMPT_RT local_lock_irqsave() disables interrupts to protect
+> critical section, but it doesn't prevent NMI, so the fully reentrant
+> code cannot use local_lock_irqsave() for exclusive access.
+> 
+> Introduce localtry_lock_t and localtry_lock_irqsave() that
+> disables interrupts and sets acquired=1, so localtry_lock_irqsave()
+> from NMI attempting to acquire the same lock will return false.
+> 
+> In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
+> Map localtry_lock_irqsave() to preemptible spin_trylock().
+> When in hard IRQ or NMI return false right away, since
+> spin_trylock() is not safe due to PI issues.
 
-w imieniu polskiej firmy specjalizuj=C4=85cej si=C4=99 w dziedzinie restr=
-ukturyzacji chcia=C5=82abym zapozna=C4=87 Pa=C5=84stwa z rozwi=C4=85zanie=
-m, kt=C3=B3re mo=C5=BCe odmieni=C4=87 sytuacj=C4=99 Pa=C5=84stwa biznesu.
+spin_trylock() is not safe due to explicit locking in the underneath
+rt_spin_trylock() implementation. Removing this explicit locking and
+attempting only "trylock" is undesired due to PI implications.
 
-Oferujemy wsparcie oparte na nowoczesnych narz=C4=99dziach prawnych, taki=
-ch jak post=C4=99powanie o zatwierdzenie uk=C5=82adu (PZU), kt=C3=B3re na=
-tychmiast chroni firm=C4=99 i otwiera drog=C4=99 do licznych, ma=C5=82o z=
-nanych korzy=C5=9Bci. Dla firm wymagaj=C4=85cych bardziej zaawansowanego =
-podej=C5=9Bcia, nasze dzia=C5=82ania sanacyjne zapewniaj=C4=85 kompleksow=
-e wsparcie prawne i operacyjne, pozwalaj=C4=85c jednocze=C5=9Bnie na kont=
-ynuowanie codziennej dzia=C5=82alno=C5=9Bci.
+> Note there is no need to use local_inc for acquired variable,
+> since it's a percpu variable with strict nesting scopes.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-Wczesne dzia=C5=82ania to mniejsze koszty i wi=C4=99cej mo=C5=BCliwo=C5=9B=
-ci. Czy chcieliby Pa=C5=84stwo dowiedzie=C4=87 si=C4=99, jak mo=C5=BCemy =
-pom=C3=B3c zabezpieczy=C4=87 przysz=C5=82o=C5=9B=C4=87 Pa=C5=84stwa firmy=
-?
+Other than that, thank you two ;)
 
-
-Pozdrawiam
-Katarzyna Chowa=C5=84ska
+Sebastian
