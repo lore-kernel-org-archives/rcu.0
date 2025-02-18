@@ -1,82 +1,82 @@
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF571CEAC3;
-	Tue, 18 Feb 2025 05:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF6A1D5AD3;
+	Tue, 18 Feb 2025 05:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739857566; cv=none; b=X67Kza2YQHu//paPyHDja+uMZQ8z0ZLf8Fo9b8JiI7M0OWW56HodoXBX6fqehYcExVitDQ52XEnyyoSfcV1ScWxNPQLU8YWPv/leBpFDXPXS2OZqRvmlD/SI6wYi3wQr6YbkuzCU0L5wSz7BgXuVRk0+BAvyxpTEg4+SToLbCIo=
+	t=1739857567; cv=none; b=tomc0Tgby0AECMPqXarPNSZP5DB4UIu48Qu1CPKxO4Vc8q/XvcvciqgbJQvrMJBigpyOrCCM6I/U8jFxeLoz7uLi58H04c1yrni2bJuXH6r1qJdHUaxiMv/RKSySObK8YBxLdA5e4ftzjuBIAGx0fL5zWzIDgbxAYbzNNL+5u4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739857566; c=relaxed/simple;
-	bh=gGX4FsCiXZJ8ZZ7+WoZlxvaI6QHaQESgtAxBsTbrf4Y=;
+	s=arc-20240116; t=1739857567; c=relaxed/simple;
+	bh=OfWXye8Of8O9FMlyzbA9MTX1oxKIhmqiEz/OMs6hb7I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CrxUoOcZTUe4igiyWUb8EWUpGjOp+gwEEI7gz7bOefeU8eeoiaEpg1rptvB2OK1bbkPJ54c6K/L2DjQcryxC5grrlO5RwqCK336B3TvIBoeqv+E4w1uwRwI5ryhhrcHlOb29qHcqcvEfEOhrgQa+/jQliZ1a/J/yr9fkmvK6c1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VoWPodqn; arc=none smtp.client-ip=209.85.219.47
+	 MIME-Version; b=LXoxJwBMGfW6Z/Z6Grb3dtQaxp88TE0cteyoFiOeRAQ7W/V9xFQKAxoxis4ZceVqJX6VwIcvBmtUQG/IXOjNX59NRl6JcQTHJ9IRNFs2Tw0/D+zj6ETeiu8Mgxlb3yTCFTRIfx5sQeVD91a1Mu1oDJYrb+CyCub8j9aeZJNE21Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W0IXA1wk; arc=none smtp.client-ip=209.85.219.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VoWPodqn"
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6e6621960eeso41295076d6.0;
-        Mon, 17 Feb 2025 21:46:04 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W0IXA1wk"
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6e660740061so47300456d6.3;
+        Mon, 17 Feb 2025 21:46:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739857563; x=1740462363; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739857565; x=1740462365; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=Ti+Pk+mBk7PK8fxnF7pRwhz3z0nqohliniWgvUQSKn0=;
-        b=VoWPodqnd/TCCxyWymN40byYwKBOJRVJwQCMcH4m29WU3VpuBZgU0pfEkBslO4phaU
-         ubkVJqPoU/d7hn/+xPqwEUrGZGQwh1GTEw+zoV1WKK4ZahfTB+p6N775wS01YtgoIghr
-         xmItY71ecgtUMD6/pIK+55b7JRa5t5cB7GwJL6FMLWortC1bp4Jk3k9tWBBah4LwvqVx
-         JVrIe4tuTf1Gr3kwdCsKObIX+d1Hn34aBK10WN5Upcev5Bzc8fOvhvpiiuHZy2pXNn+l
-         lqcMSiKfyIIGpLi8TPcre5ybV6K6LlrEBFjep1GEH3Mb44hRFuG+NdBX44BU1Uk2bAeK
-         TIsw==
+        bh=KGqcu9I3LwOV/o63af69yARDQi685oRGnRYvxczUj+8=;
+        b=W0IXA1wkxoT6Wflqq3i8fVZmA2ULXfl1K9zUGbilO+n5zaEOk0rMEFda29tTPESNYC
+         h+pOcmKAXIfp/rjjQdIyDH1SLKhKFPqd2tF5c18/1GuvwjTCMWXrUjGzNTebm89CFUKx
+         qyHB1ujhbwBhQ0hPv5/WWZmjcRM8/dPYbyuZkIIaeOb4m0grIlg7mLfod73132V6Pku1
+         TzoFGFg04LmbCrNH9ni2dPPI5EXKkVpdQfxkflpBQ7OONCZw0vba8VVeF6HQtZ19HEH1
+         7mF70k7pOj9CQnomlgMfVqh6EQG29qLBv/rrIcPhrqVtp2RBnd5+WEtOUAqTEDnzzy5q
+         GqKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739857563; x=1740462363;
+        d=1e100.net; s=20230601; t=1739857565; x=1740462365;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ti+Pk+mBk7PK8fxnF7pRwhz3z0nqohliniWgvUQSKn0=;
-        b=ANvQVPlyI8U6ZgI3YipzJM4p/yBANed6xOtTYRqr3DUxNJgXYjoq0si2RVjFort5Dh
-         +iIu8IH9cDM8NdcWTVHA38aaLQ5qMQcwBzHFvSZswOZWuAkH0kxgORoJIYuwrfyCQ690
-         pCpY93L496AjLEYM/4LIOsTXPCAI5j3KzLIV/w8U6XV9PJ0FmRnFi1DSJBx2b+E7boCm
-         qEvEWT3As0WOOq9mMFJ/8NdHOdqDAEmInI5ZfwncZGEnBFzmot+KiCy0TdKPfa2qOc/6
-         /s1F6Tuvnv2bWsjsZQJZOA4LwCJBRmU8KwBN5lNxYijjLvyoRWp0e/Z44NnEo3iJKQhH
-         UG1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUI7MaGViRKD5+djFgf2gMlPnupRRiZv8phWA4awBOWHBxvYLT8ak3Q3SjcltZlts5OvpOJqvamvZA=@vger.kernel.org, AJvYcCVqlvDdvmbwShrV/WPnhZ972K+Pfrjvp91HrPqxhsVM4UznE06CVroldg5UrpOyf5DLbFatyaWiwgspQTCN@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGm4a54OsCjtkZCTflEUujJrSaoAZ/nyHQwp/fdoCcAVgeJUXF
-	DgguQDi7SIjkUkVjc9gE6KLjkqaDsXu5BrNYstYLfegxXqnIvFjI
-X-Gm-Gg: ASbGncscZ5M0zGJ/LFuxewcYdxC14ZYIZWLaB8h0l6Oh4aBT1M2DAFn5gCXS2vKH2Ni
-	PoLcQHo3N1uDO/Z/EnHrEJd8kME5Yvv+KvQP8bulaeaUhGoE5lx8BBgz9vIBS5/my1e+6PgCTRN
-	ih5HTu5T7iLZ3Ivo7cSdSu302S+xmZ8nAnxLP0WUeA2WFl5Zo+rkwT0reroXmtRwiSh5BxWjpvD
-	IBW0+EJ+4CVK3LPTOMadjkEna3766Oz3gwGS+dmiF70aJBdRkxT1shAhu+wUgzpmctoLXtXMcI7
-	8yb4pUdGdAX8cleTu0uZJI+NdVUQvKiLdaO3jV1eV494SkcK841KWjWFOuC92Ad5S2uUry4mYWv
-	IcvpvLg==
-X-Google-Smtp-Source: AGHT+IGXjA0SVcPAeRrYT9L9owbyGfR21mZr9aSl8Vj9CbXvXgYISkJyHB0OXrwPypzsCAZvWUQB/Q==
-X-Received: by 2002:ad4:5e8f:0:b0:6e4:5f2b:9f15 with SMTP id 6a1803df08f44-6e65c8fed77mr273991976d6.14.1739857563558;
-        Mon, 17 Feb 2025 21:46:03 -0800 (PST)
+        bh=KGqcu9I3LwOV/o63af69yARDQi685oRGnRYvxczUj+8=;
+        b=Ob6hGWPrQAWqz/AQFjLNVGFkH2o4d29wEd5msr5IgqnyfHzetHZ3wTYBShC4NnmxaT
+         wOOSxIp9QFTCV+BaJHIYE1lWqcwqExHgOukJPGNl/xDUfAw365WlAq3bH7wi8ZTXgT0/
+         V79hWUYJ+1/jGikWWJ7oqUMBLaWfSCHhgA65/rKweAQ1fYylEczSsMud4TiMIzd1+YxD
+         h+/4OzjWX/fcKie4x6F8WiVfrepxQ8TCnsZMvQ/GzHCoWm8aI4x+Y7ySUAkPK06TF3X0
+         jLCXkD/vOIQcGEcRIQ3vF4+HV1hyGc6bdvRpfwxSwhVQ7Arpn6yZlC8kAdtgygWLOpzX
+         bLWw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6SMuKMN3rf84lBNEm9PCxIC2fPO5ysblNiYAAuuXWlRYZX9OAIDCfzMVT3N5XdECaMTRe7mmurwofmfWj@vger.kernel.org, AJvYcCUHgFcdG1gWpfYECypp8jYduhgt3rsq1W7uo+xqWNTDG55jplDTVW/SiQkRQ5iGGQCvfKtL6P+mYkY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfzmOg4wMg+65iPJNT46X3tBA6FbFgLg9rOZaxOJlA8MDR0+Mx
+	5le0UK2kds+DTfBNh7iqBGwMxwsk9qp7tIlMlVaLeCQrdxFqioXK
+X-Gm-Gg: ASbGncum4NQ29ABAKfVKAl4Cujl+JVBijOhB8XxERoODrxPfoUcklAFfMrjPwWItcnf
+	86ZM42L/IDHN+D9scowFwb9BfGffHB7VFa/V/Du1vjvBgFFfqur7eU7eySLuittB/EwM+GKfWcm
+	JbKmxRJxcldcbMru60P5k86o+dFMMTAKk3nFM2hUPh0NVccGDaZV1MtgZOOPtcrGQDosvNgY1Ph
+	2aNWtLA3VRYIdS9gr6JpgFa4igKscNm80819YUiFr6MD9OHlNnaSqjnPX7JG4ftVjVYznCTyIAW
+	1yPG6QOEHtKkI1q5gA6f7HTmgocGKEKgc8AV1BflIVSEVUVzo928RL/XXAL9yQ+SZ4BvYQ1PE0N
+	8lOh+4Q==
+X-Google-Smtp-Source: AGHT+IEAkSg/F5FygsWRs9N3+5vWlJflzbDzp53QeMTt6VL9QsT/DkGXNgp+CdGkt1Y7eFgLZjdrfg==
+X-Received: by 2002:ad4:5ae6:0:b0:6e6:659d:296 with SMTP id 6a1803df08f44-6e66cc86b35mr222749096d6.5.1739857564934;
+        Mon, 17 Feb 2025 21:46:04 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0a1f089b2sm165544485a.53.2025.02.17.21.46.02
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65d7a4430sm60540986d6.65.2025.02.17.21.46.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:46:03 -0800 (PST)
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 9E12F1200043;
-	Tue, 18 Feb 2025 00:46:02 -0500 (EST)
+        Mon, 17 Feb 2025 21:46:04 -0800 (PST)
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 05CBC1200043;
+	Tue, 18 Feb 2025 00:46:04 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Tue, 18 Feb 2025 00:46:02 -0500
-X-ME-Sender: <xms:mh60Z3bJCwy4TvanRA-86uWDw6K0vDc5tuHDr99EE1_RWE4tR_nt9w>
-    <xme:mh60Z2bnwgwL4aowgFnfYvUJUFGMFb4YssRvvxHjIdW4sw6k0LhWOxZR15itrXQET
-    5i7ijayH-C8liYhPA>
-X-ME-Received: <xmr:mh60Z5-CSkjku0MdYAHTBHCaqPF3JQLPHxZhM-Hs1XKLkURKbE50pkkUTg>
+  by phl-compute-10.internal (MEProxy); Tue, 18 Feb 2025 00:46:04 -0500
+X-ME-Sender: <xms:mx60Z47Srz2WsHqCXY_6CvD54hI_CUG42919RMuElhhw5hPuQsiJrw>
+    <xme:mx60Z55W5sFmtAMZxVROE9UlyhR3hUyfYspnjzsTgSyePrFKQU2d5fmpNep2aLiji
+    zE-wbIS77vHHBcRDg>
+X-ME-Received: <xmr:mx60Z3ct7VWBiOcy2SSiGhazUberXzI9WETrvEbxTUk4QfPFldMDwgv8dw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
     necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
     drtghomheqnecuggftrfgrthhtvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfev
-    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrg
+    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
     hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
     ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduhedpmhho
+    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduiedpmhho
     uggvpehsmhhtphhouhhtpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
     hrghdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthho
     pehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrd
@@ -85,14 +85,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetgg
     hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
     mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
     hsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:mh60Z9rji0oLaPSTQjSJuBZ1PVKkiOOcAGa8NQhQQagCJSzY3UPoFg>
-    <xmx:mh60ZyqkgcH5Lt5PZvZ9GxCj0MYKgA_oYS-cKy_lCXDOxiCZV9gqnw>
-    <xmx:mh60ZzQ-TyH2fqMzpSmkxNLi4cf1jb8Mnl6U-WNKiXeWN48T7miWxw>
-    <xmx:mh60Z6rFLUPAsCy4XU12prTJtlAmCLZhXhHapXMUOvxw9PPhWWEnNg>
-    <xmx:mh60Zz6yfGe9STtcJiA4cxRI6rTj-mW6qG9lUaVn4mgH-i7SMY1uEXnl>
+X-ME-Proxy: <xmx:mx60Z9KxbA3oL6FLO-3py3AqmntsiFUSdlOD40N5OM5-E8AgaeOwkw>
+    <xmx:mx60Z8Im5qQ4YFAmIVY2uxXc3EJpUL7bh5MlDfAO0jMA9CADtK1BDw>
+    <xmx:mx60Z-xoj3SBZuLxNTNSkLyZFBQs1n2ZMs-atXbCLcl1gAb6AN3wCg>
+    <xmx:mx60ZwJGgU3o97eIl-Hq7-ZIGGV1V_BuwJtN5tcy8nBOt40h8mefTA>
+    <xmx:nB60Z7ZneXMZcilSr34l2IGt_06bZo4CP2eYsDKi_ZK-hVNoMVOiwnUR>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Feb 2025 00:46:02 -0500 (EST)
+ 18 Feb 2025 00:46:03 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -108,10 +108,11 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rcu 6/7] rcu: Clarify RCU_LAZY and RCU_LAZY_DEFAULT_OFF help text
-Date: Mon, 17 Feb 2025 21:45:46 -0800
-Message-Id: <20250218054547.7364-7-boqun.feng@gmail.com>
+	linux-kernel@vger.kernel.org,
+	Joe Perches <joe@perches.com>
+Subject: [PATCH rcu 7/7] rcu: Remove references to old grace-period-wait primitives
+Date: Mon, 17 Feb 2025 21:45:47 -0800
+Message-Id: <20250218054547.7364-8-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250218054547.7364-1-boqun.feng@gmail.com>
 References: <20250218054547.7364-1-boqun.feng@gmail.com>
@@ -125,54 +126,69 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit wordsmiths the RCU_LAZY and RCU_LAZY_DEFAULT_OFF Kconfig
-options' help text.
+The rcu_barrier_sched(), synchronize_sched(), and synchronize_rcu_bh()
+RCU API members have been gone for many years.  This commit therefore
+removes non-historical instances of them.
 
+Reported-by: Joe Perches <joe@perches.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/Kconfig | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ Documentation/RCU/rcubarrier.rst |  5 +----
+ include/linux/rcupdate.h         | 17 +++++++----------
+ 2 files changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-index b9b6bc55185d..2bb22dac3b5a 100644
---- a/kernel/rcu/Kconfig
-+++ b/kernel/rcu/Kconfig
-@@ -323,21 +323,27 @@ config RCU_LAZY
- 	depends on RCU_NOCB_CPU
- 	default n
- 	help
--	  To save power, batch RCU callbacks and flush after delay, memory
--	  pressure, or callback list growing too big.
-+	  To save power, batch RCU callbacks and delay starting the
-+	  corresponding grace  period for multiple seconds.  The grace
-+	  period will be started after this delay, in case of memory
-+	  pressure, or if the corresponding CPU's callback list grows
-+	  too large.
+diff --git a/Documentation/RCU/rcubarrier.rst b/Documentation/RCU/rcubarrier.rst
+index 6da7f66da2a8..12a7b059654f 100644
+--- a/Documentation/RCU/rcubarrier.rst
++++ b/Documentation/RCU/rcubarrier.rst
+@@ -329,10 +329,7 @@ Answer:
+ 	was first added back in 2005.  This is because on_each_cpu()
+ 	disables preemption, which acted as an RCU read-side critical
+ 	section, thus preventing CPU 0's grace period from completing
+-	until on_each_cpu() had dealt with all of the CPUs.  However,
+-	with the advent of preemptible RCU, rcu_barrier() no longer
+-	waited on nonpreemptible regions of code in preemptible kernels,
+-	that being the job of the new rcu_barrier_sched() function.
++	until on_each_cpu() had dealt with all of the CPUs.
  
--	  Requires rcu_nocbs=all to be set.
-+	  These delays happen only on rcu_nocbs CPUs, that is, CPUs
-+	  whose callbacks have been offloaded.
- 
--	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
-+	  Use the rcutree.enable_rcu_lazy=0 kernel-boot parameter to
-+	  globally disable these delays.
- 
- config RCU_LAZY_DEFAULT_OFF
- 	bool "Turn RCU lazy invocation off by default"
- 	depends on RCU_LAZY
- 	default n
- 	help
--	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
--	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
--	  it back on.
-+	  Build the kernel with CONFIG_RCU_LAZY=y, but cause the kernel
-+	  to boot with these energy-efficiency delays disabled.  Use the
-+	  rcutree.enable_rcu_lazy=0 kernel-boot parameter to override
-+	  the this option at boot time, thus re-enabling these delays.
- 
- config RCU_DOUBLE_CHECK_CB_TIME
- 	bool "RCU callback-batch backup time check"
+ 	However, with the RCU flavor consolidation around v4.20, this
+ 	possibility was once again ruled out, because the consolidated
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 48e5c03df1dd..3bb554723074 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -806,11 +806,9 @@ do {									      \
+  * sections, invocation of the corresponding RCU callback is deferred
+  * until after the all the other CPUs exit their critical sections.
+  *
+- * In v5.0 and later kernels, synchronize_rcu() and call_rcu() also
+- * wait for regions of code with preemption disabled, including regions of
+- * code with interrupts or softirqs disabled.  In pre-v5.0 kernels, which
+- * define synchronize_sched(), only code enclosed within rcu_read_lock()
+- * and rcu_read_unlock() are guaranteed to be waited for.
++ * Both synchronize_rcu() and call_rcu() also wait for regions of code
++ * with preemption disabled, including regions of code with interrupts or
++ * softirqs disabled.
+  *
+  * Note, however, that RCU callbacks are permitted to run concurrently
+  * with new RCU read-side critical sections.  One way that this can happen
+@@ -865,11 +863,10 @@ static __always_inline void rcu_read_lock(void)
+  * rcu_read_unlock() - marks the end of an RCU read-side critical section.
+  *
+  * In almost all situations, rcu_read_unlock() is immune from deadlock.
+- * In recent kernels that have consolidated synchronize_sched() and
+- * synchronize_rcu_bh() into synchronize_rcu(), this deadlock immunity
+- * also extends to the scheduler's runqueue and priority-inheritance
+- * spinlocks, courtesy of the quiescent-state deferral that is carried
+- * out when rcu_read_unlock() is invoked with interrupts disabled.
++ * This deadlock immunity also extends to the scheduler's runqueue
++ * and priority-inheritance spinlocks, courtesy of the quiescent-state
++ * deferral that is carried out when rcu_read_unlock() is invoked with
++ * interrupts disabled.
+  *
+  * See rcu_read_lock() for more information.
+  */
 -- 
 2.39.5 (Apple Git-154)
 
