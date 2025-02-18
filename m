@@ -1,72 +1,72 @@
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DE31BCA05;
-	Tue, 18 Feb 2025 05:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E8D1C07DA;
+	Tue, 18 Feb 2025 05:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739857560; cv=none; b=eD7o54Qrd7rf7DBOgOh3h0AU3kacOSXrsukkP0oaUmBWo3LoCHD9y6/x4Pgj9Pa6wIT21bRLVFKSpHzROG6w3gjd9qB5gDE59ctz0FOVlpEjvjmDyAgSiaZdn99tftbRCTkmdRKvwAWkkthUi22531POVn2//7XhpQa/GSn8IWo=
+	t=1739857561; cv=none; b=PdklZIDj9EQ7LxgdOPkLYEMruZKlPjpwI00F2Dvb8wwG6WLB38Qn0vmMMs0F+C1Fs4elZl/O0oSwPsYvz+GEFGecx7aPvkNM6roCHVQIQCzXrrmIt0T8Jn7kzt2alh6fq/B6DY7Ih9f1DoFlivS1jbKzOldu6E+1FGl3vNC9oFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739857560; c=relaxed/simple;
-	bh=znV6q1mDaneWscKdbKWsvN/ldpVZ+IT+N039qxOFjVw=;
+	s=arc-20240116; t=1739857561; c=relaxed/simple;
+	bh=Hhk6qN5cX2HiG95oLWWknwJOUcfQbEf5crAZtdyGlfk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YX+uTe8h9kVODJa5ZY0BlxLHDq7JG6NPX2P265TP1KS50fy3is40dIz7NpT7ExlqYqPSb7tiHiDKIxu42nmV1ykasaptHISGlx220o4MO19aUvGFwkuLmNlG4JdlqOPImcZv39iSE49RBamsXNnmKB+6geeVSeWOyeegK1lUpzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JXrhr5oy; arc=none smtp.client-ip=209.85.219.48
+	 MIME-Version; b=CfdZu6xmOD7IwkC7b4+1ynk46NBlU5oniVAnTIFuWOnEMUXAqWBEZlBPDN4IGRnXkbLac/8CEmairQFrtlisQ4FWdvAY0iAaEXeyHdLY2iv7degTWvLb2PwQAOZNYmo/WSm+s/IbL5njHmpfVkdZ9ue2zdwF1xeZz7lOCiq3VyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X9C531At; arc=none smtp.client-ip=209.85.222.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JXrhr5oy"
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6e17d3e92d9so44320776d6.1;
-        Mon, 17 Feb 2025 21:45:58 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X9C531At"
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c0b0ca6742so7544785a.0;
+        Mon, 17 Feb 2025 21:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739857557; x=1740462357; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739857559; x=1740462359; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=6Vf753JDhe8z6or4Q4Z8/1KFw/b1u1ALZFWVEgBrHYI=;
-        b=JXrhr5oyKU0Mhd0TK+DTvOD4fh6ZtxBtty965znP2YR89xfNnUB8Cd/A4iEp1dIRjA
-         /qD2PXy23jJcdTfjvGgIUwge3+EPaSDANvBCJYPpnxmJWExSPxKHyD3Jgqkdb6ZBJFbp
-         6XQqcv/b+LnmSjnMa6zRWljee8HOJAw0hl0fVl2pvn1RMUUM1KX7MCE17MLtluYjVJsI
-         POZJMB3DqLG/X+15mvUqqF6uHXRvf0iehLC4S07eoKMcjZo3Genp24Ot/V5zyvggIpgY
-         fsrf4EwAoDPd64J9vTWYN63VuTbtI9iL7JW5+omGNhRSf6XpE6LlUyrn/3uRxLwhzYkz
-         yeAA==
+        bh=AFj8E0Qi9rwHd4n/4onPY5cFP0jmlV+xnlSEn6nuc3c=;
+        b=X9C531Aty4409JbrbfOE24ou4LRrtOUW64nnErzL1h2IuBtAzKiJdOGhjMTvkG65zE
+         J0GjHP737fCNNxIeOVT0KB8pFGJswnu8/jj2T0S05ce3H96qvP/EdxE8DUQRRJc5tmhT
+         d7Qu+SMCYoJAkC0AS0evwKOjXysfTzqPSOvqlENDtIZXGqYuxJ57u5hzpm6UR2BMN3I2
+         yTytkVqtt0pNKLAbgUGrSR7Am2ewMrmLiNEFTlm7wKeLwve+lw21sETX3sf8CLz49PCH
+         RP1BqnFMVeK6i7EwYihfJL8R5D5OXJSNevvr1niO9LymowVWq6moF+ILm1qPfmq5+s8z
+         g04g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739857557; x=1740462357;
+        d=1e100.net; s=20230601; t=1739857559; x=1740462359;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=6Vf753JDhe8z6or4Q4Z8/1KFw/b1u1ALZFWVEgBrHYI=;
-        b=WSx+vg6P9ZEusC9OPjf/nvutsgPIbcIDVY9BouVrskti4dzAbNYIeENqcLvobmgptB
-         ZHuhJJTcEsFA+vlZdPSZosrMFTeXUXmWTVD/timeWEAZ4Ix/rqx38NwHoP9QGgFG/J2B
-         vwNvcz9HTQzF2ppR/V/9rjJVKLKHRYRv34noRq5RiNUb8unVrE6DANLsCpp5J1kJQZvT
-         K6GRRoi7RpTB1kIqnWAMrIGNukInzFqTlhXc7JS1CB/P5UgZqiqnkib4d8knIPnZfGgE
-         fgHWka4A4C4aMLeqAuKAO6KV/QiAT6CMO+CzJKlakbUJzG7vKMK5AUgh/FScgGJLt5vl
-         mpbA==
-X-Forwarded-Encrypted: i=1; AJvYcCUx0tzTQhWETw5fXu9CLJX8uXGWBNKk30nmKdQ7rykr/Ix0V2+gwbt6DY3ud1sb/SDe1F9KT45AN4ui3TJY@vger.kernel.org, AJvYcCVWr9Xzo9kSt5lXBwCVUOj0s6JCnXbS1hEgdu4BuKFd78dWPq19DUC36x/sLRInIKhLTXmaAB08Zww=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsVgFd9oULb0ssWVoKzqBd9zF5VxYfKOw7h/LaTKjx2hhT8lLx
-	lN/hnT7HP402ofhXDQ9uRYnIsvyp3oxXVdM5JYlncTlati1NKRUz
-X-Gm-Gg: ASbGncs8kffiYfbx6tOGCEIaY9DTAJP6yxqJSlw3GjcIeL3dkAscCHBam7jYg0lroqw
-	uSaEQBZxz+qT27mDFq5oM3ihnbuwEIVVX4MRBwXfhYFDZpdqW+f96U1lkOlhiicPkIho6FFrpRM
-	A42XLWs6C96t0yRzRMAWiG4MC+Yv/6s2648ZTp+odMZOxZ1Ulimq9nP1fapslcmM5nkN1OtsopJ
-	kSEgg58/pU/3wQxnVlBvBfOaONbAm7BrGOrBqVvjWZctObBEAOX1+NgbFcnp2FmOs5+OxU+UXIu
-	cxM7TfoWjsSH9hZhkImlvhYiSJK/b424qHpnrBTrfpiFFZmAriN9vJWWB7lIs3TqR4UdCQiBJC0
-	BevIHUg==
-X-Google-Smtp-Source: AGHT+IGIisUG3omfsORc+ODA3bDfKzM5YZqfS2TJ+KRKxOHtisbBRQGfzfSfCbUyiKU+SfpmUtXRiA==
-X-Received: by 2002:a05:6214:f2d:b0:6e6:668a:a27d with SMTP id 6a1803df08f44-6e66ccc41acmr207712506d6.16.1739857557541;
-        Mon, 17 Feb 2025 21:45:57 -0800 (PST)
+        bh=AFj8E0Qi9rwHd4n/4onPY5cFP0jmlV+xnlSEn6nuc3c=;
+        b=q3Ds5cbRC0igVo+oQq+giL8QHNkNkEJxmqkuZHo/X7Io4jSonmJQQRQWaCiktQ5Yj8
+         ljZ5XCTSomyVlkwYXOu+Jd4yczlb1RAqAgdQ+mxNn4trnP4McI8jckKeC8jEAwX/HRBF
+         doFSF9YFsWGQt4dgixJ4KKPOZlDDOtbQsTld/vPtyJK8rJSmNH31ZwD4dr84Oe36O0PF
+         J7SWl9whG9n/NNeU4IYulCZ9mk4fGcCed8Q0WEDbFhk7Ms1rBXKG00d0d2okIsOWc79C
+         l75n2/YcpSQOEJCodbuqctsSSDFF8QtRuwgkCAJfJCyv+LuZDoX1YE5Q9g+ztE+1+kbk
+         +siQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU0WAnlupaKWVJ+i8lXose+szClGCYv1H3/qhC0X16zifx9vAS8gUTRV9BI7KToYs1zZ5ChzsoLIx0PtN/C@vger.kernel.org, AJvYcCVvip2vwfoWpRg6N/1bQcGjVxcim9QWxRYKhwEnfn2sukAomoVf6LZdzSlbdELptcBKlu5476cRLyc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUFoahIK65uAkQwYJInPBz3VRYWNBsotXUpTtGUHuSkP8mbNn1
+	/kuATwt4f21+cc9kHQ8vj4pVASIibBZgQDMVPqcXmG2GmYvFhbcg
+X-Gm-Gg: ASbGncsjuf9uf3li7e+EoGtiazeixlZGqdPsUbNfA7w7Fg0bMWrq5mbn8mmLCF048Vp
+	eUhtOz0MOUm0iSyfIRupGJ1NvwJzS0QKXmrShQQMeEw+6SbPhQXcp6A+HqYZw0TO4R+WwK8oT9N
+	55QoyRcUrVaJ66+7nQF8lAPm5vP0h2IvDs83bp9IV7/5sjrQ7bJ5UYwTjPBSRGTozz32Gp5yw/M
+	iiCVobN+XEVkmHeJ/OjzJd9bllAyXKeLiUMZLJAB/IWcP3SP04ZIflOr9rPC1efIb7A0n5b3Mg5
+	Buq0B8w2BKG8wHbEz+dlBFfbhHOcFZm6uIwPgK77urnK9TMqyZZIpFoWRKhxWrlphhSejH4s3CZ
+	fH6pJ9A==
+X-Google-Smtp-Source: AGHT+IHWxpzdBnwxq8h0kCtn53UgHTkb1eFWOIWxmYVOxrW4NcSKcMcZOEzhnOTf1P+9dm5uB1CHSA==
+X-Received: by 2002:a05:620a:2953:b0:7c0:9df3:a0cb with SMTP id af79cd13be357-7c09df3aa26mr971954785a.53.1739857559006;
+        Mon, 17 Feb 2025 21:45:59 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c07c86e878sm621169385a.94.2025.02.17.21.45.56
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c07c886939sm620307885a.114.2025.02.17.21.45.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:45:57 -0800 (PST)
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfauth.phl.internal (Postfix) with ESMTP id AE8951200043;
-	Tue, 18 Feb 2025 00:45:56 -0500 (EST)
+        Mon, 17 Feb 2025 21:45:58 -0800 (PST)
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 2FF6E1200043;
+	Tue, 18 Feb 2025 00:45:58 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Tue, 18 Feb 2025 00:45:56 -0500
-X-ME-Sender: <xms:lB60ZxnrsAkjLRagHYKLyiqpNaMwEnqcZz-yyJz20b7207gb-mPh1g>
-    <xme:lB60Z82rjsRgUvOIuuSB7OyfgMwLYD26M5gI55WCPBPZy9oIyRFC1RjpCKRkZcgdU
-    _qt1XxdkQ9Qs3TmGg>
-X-ME-Received: <xmr:lB60Z3qsdf30C7j0C0JTFxB6OcUGuGck50Ez5GxAjuB_iXQENhJvIygU6w>
+  by phl-compute-05.internal (MEProxy); Tue, 18 Feb 2025 00:45:58 -0500
+X-ME-Sender: <xms:lh60Z07Fnpz1CcsQnRk6oXJSIe9c_-IkozhxudnDRPTU9wjSchFmWA>
+    <xme:lh60Z14yvCTmkcVM7CzUvA8NZ7P_V9b_HYw2kk9YZ2zxjDsaxkcS0nDqsqq-k4XgF
+    Q1tiKrObDucgR7Xqw>
+X-ME-Received: <xmr:lh60Zzc-aqPSpAelp72MvwqCr805J1eGZeZKiHptfjn46hQwyy5lc6pC1Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
@@ -76,7 +76,7 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetgg
     ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
     hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
     ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedujedpmhho
+    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduiedpmhho
     uggvpehsmhhtphhouhhtpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
     hrghdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthho
     pehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrd
@@ -85,14 +85,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetgg
     hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
     mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
     hsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:lB60Zxl4a7Uk29lnXTAjOA0DB3TusJybgH5t-uZaIfSCooL9HC52Yg>
-    <xmx:lB60Z_1c-G01QP0UrW0yVIY8KF7z6fQXJNYIYoOQ02Uz64xdS3avVg>
-    <xmx:lB60ZwuCbZY9ZxHUIelMLJ8AGYIAT41uFdfkusrrrDbJCBnXdGCmhA>
-    <xmx:lB60ZzXSN05Cilabutw1Kvhnj5l7cLZZXU9TEXON7yf1ibO7epxiaA>
-    <xmx:lB60Z23rLDzKRVK12LFLMErlDX-xbqVPVACY4syGNqW60DT-laM5QOR7>
+X-ME-Proxy: <xmx:lh60Z5JTuVk6sQL_kT1Bsou6Cv2j55x3KLpEy_wtO0c7MkU8tn9b9Q>
+    <xmx:lh60Z4KF2Zfd9rCnFJ1zC9POCCJCBdODOXSaCh6SMQa3Q1j5fPS9vw>
+    <xmx:lh60Z6xAT2bk3jYpfkw-KEn3kSRRqyoB-C-49fsLH8JJTl7kfjQcqQ>
+    <xmx:lh60Z8KiBv0hQ63m3BElJA_f1-MaFlu2jUAqtw3ARrMQ8Czh0lZIyQ>
+    <xmx:lh60Z3ZllgF14aGeFB-8e7XXGb8xnh0OINnT_FZ9eD3VoGDFl5Z-Nb1R>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Feb 2025 00:45:56 -0500 (EST)
+ 18 Feb 2025 00:45:57 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -109,11 +109,10 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH rcu 2/7] docs: Improve discussion of this_cpu_ptr(), add raw_cpu_ptr()
-Date: Mon, 17 Feb 2025 21:45:42 -0800
-Message-Id: <20250218054547.7364-3-boqun.feng@gmail.com>
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH rcu 3/7] rcu: Document self-propagating callbacks
+Date: Mon, 17 Feb 2025 21:45:43 -0800
+Message-Id: <20250218054547.7364-4-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250218054547.7364-1-boqun.feng@gmail.com>
 References: <20250218054547.7364-1-boqun.feng@gmail.com>
@@ -127,55 +126,42 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Most of the this_cpu_*() operations may be used in preemptible code,
-but not this_cpu_ptr(), and for good reasons.  Therefore, better explain
-the reasons and call out raw_cpu_ptr() as an alternative in certain very
-special cases.
+This commit documents the fact that a given RCU callback function can
+repost itself.
 
+Reported-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: <linux-doc@vger.kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- Documentation/core-api/this_cpu_ops.rst | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/core-api/this_cpu_ops.rst b/Documentation/core-api/this_cpu_ops.rst
-index 91acbcf30e9b..533ac5dd5750 100644
---- a/Documentation/core-api/this_cpu_ops.rst
-+++ b/Documentation/core-api/this_cpu_ops.rst
-@@ -138,12 +138,22 @@ get_cpu/put_cpu sequence requires. No processor number is
- available. Instead, the offset of the local per cpu area is simply
- added to the per cpu offset.
- 
--Note that this operation is usually used in a code segment when
--preemption has been disabled. The pointer is then used to
--access local per cpu data in a critical section. When preemption
--is re-enabled this pointer is usually no longer useful since it may
--no longer point to per cpu data of the current processor.
--
-+Note that this operation can only be used in code segments where
-+smp_processor_id() may be used, for example, where preemption has been
-+disabled. The pointer is then used to access local per cpu data in a
-+critical section. When preemption is re-enabled this pointer is usually
-+no longer useful since it may no longer point to per cpu data of the
-+current processor.
-+
-+The special cases where it makes sense to obtain a per-CPU pointer in
-+preemptible code are addressed by raw_cpu_ptr(), but such use cases need
-+to handle cases where two different CPUs are accessing the same per cpu
-+variable, which might well be that of a third CPU.  These use cases are
-+typically performance optimizations.  For example, SRCU implements a pair
-+of counters as a pair of per-CPU variables, and rcu_read_lock_nmisafe()
-+uses raw_cpu_ptr() to get a pointer to some CPU's counter, and uses
-+atomic_inc_long() to handle migration between the raw_cpu_ptr() and
-+the atomic_inc_long().
- 
- Per cpu variables and offsets
- -----------------------------
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 475f31deed14..2cd193ed854c 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3107,7 +3107,7 @@ module_param(enable_rcu_lazy, bool, 0444);
+  * critical sections have completed.
+  *
+  * Use this API instead of call_rcu() if you don't want the callback to be
+- * invoked after very long periods of time, which can happen on systems without
++ * delayed for very long periods of time, which can happen on systems without
+  * memory pressure and on systems which are lightly loaded or mostly idle.
+  * This function will cause callbacks to be invoked sooner than later at the
+  * expense of extra power. Other than that, this function is identical to, and
+@@ -3138,6 +3138,12 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+  * might well execute concurrently with RCU read-side critical sections
+  * that started after call_rcu() was invoked.
+  *
++ * It is perfectly legal to repost an RCU callback, potentially with
++ * a different callback function, from within its callback function.
++ * The specified function will be invoked after another full grace period
++ * has elapsed.  This use case is similar in form to the common practice
++ * of reposting a timer from within its own handler.
++ *
+  * RCU read-side critical sections are delimited by rcu_read_lock()
+  * and rcu_read_unlock(), and may be nested.  In addition, but only in
+  * v5.0 and later, regions of code across which interrupts, preemption,
 -- 
 2.39.5 (Apple Git-154)
 
