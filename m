@@ -1,73 +1,73 @@
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3895C1A9B48;
-	Tue, 18 Feb 2025 05:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DE31BCA05;
+	Tue, 18 Feb 2025 05:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739857558; cv=none; b=eoNKKUOpPQf3WazKrWcSxUFvrVxp/UibZd/QK8IHT/l00kn8K1s66ImF4KYCcogMbkCpMoEebwF7agkO3fnO8QSHuOFWdS1wn4hqFMH+bGqxq05ujXgZRqQ+KQTkLPHiFWfCJw7Qpc7Ovsp1gIzFohQii8FJBHK7r5vlYc5Y4jc=
+	t=1739857560; cv=none; b=eD7o54Qrd7rf7DBOgOh3h0AU3kacOSXrsukkP0oaUmBWo3LoCHD9y6/x4Pgj9Pa6wIT21bRLVFKSpHzROG6w3gjd9qB5gDE59ctz0FOVlpEjvjmDyAgSiaZdn99tftbRCTkmdRKvwAWkkthUi22531POVn2//7XhpQa/GSn8IWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739857558; c=relaxed/simple;
-	bh=FNC3ESzhdnefYnWfGSSwUKkIovsievffBMv39YwMHyI=;
+	s=arc-20240116; t=1739857560; c=relaxed/simple;
+	bh=znV6q1mDaneWscKdbKWsvN/ldpVZ+IT+N039qxOFjVw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LM5juGzzpTihD4L781EESYwbvKLmCJWHzdZHee+rM1SeOOyjMfPUY+3zsH8XLx43B9mW4vwZyMEMOjnxW4GGwHRq8jei/wvDX+C1K8scE6sTG9ytIM0GPvYpp6Iu7pLDYydnJNA7jDlqEUQIIwtyyMj2Oh0IYrv8czUWE/1yPUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=abBUv83M; arc=none smtp.client-ip=209.85.160.170
+	 MIME-Version; b=YX+uTe8h9kVODJa5ZY0BlxLHDq7JG6NPX2P265TP1KS50fy3is40dIz7NpT7ExlqYqPSb7tiHiDKIxu42nmV1ykasaptHISGlx220o4MO19aUvGFwkuLmNlG4JdlqOPImcZv39iSE49RBamsXNnmKB+6geeVSeWOyeegK1lUpzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JXrhr5oy; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="abBUv83M"
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-471b5372730so65654621cf.1;
-        Mon, 17 Feb 2025 21:45:56 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JXrhr5oy"
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6e17d3e92d9so44320776d6.1;
+        Mon, 17 Feb 2025 21:45:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739857556; x=1740462356; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739857557; x=1740462357; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=8900xQNk0yNWl72dpFSe4bBu/GJDB2jdwCOQg6tQUXw=;
-        b=abBUv83MDooueHrx9Q2eCGL5aSs/VmWW5L+pTF10fI0U6KO2Q9zlBlua2aVXIRS5ig
-         OLK7907GCbQLrK2qJ/lLECGAfZk7EphhhX/gOJv/BU2bKMVYQ5A/63TY/+3n3ahlg0Oi
-         keks7djY/Ov6E3j5dQUAP20pdQsjnvo1vgsteGaxQiSFzbAGr+oeEtS/lo7Qs43Ry74E
-         i3LofXYAn/BiCvktTsSr1Bl2mjLMqfLkQaNErIhkl0fdPARC2bctAt1btk+hELGnhU/+
-         WUqdU6CAzV79ejKS3EDYp5PiENlUO+Pg+HR8Xnv50FvepNLIMrMeicHdHCDY8hiiwOqi
-         b2zw==
+        bh=6Vf753JDhe8z6or4Q4Z8/1KFw/b1u1ALZFWVEgBrHYI=;
+        b=JXrhr5oyKU0Mhd0TK+DTvOD4fh6ZtxBtty965znP2YR89xfNnUB8Cd/A4iEp1dIRjA
+         /qD2PXy23jJcdTfjvGgIUwge3+EPaSDANvBCJYPpnxmJWExSPxKHyD3Jgqkdb6ZBJFbp
+         6XQqcv/b+LnmSjnMa6zRWljee8HOJAw0hl0fVl2pvn1RMUUM1KX7MCE17MLtluYjVJsI
+         POZJMB3DqLG/X+15mvUqqF6uHXRvf0iehLC4S07eoKMcjZo3Genp24Ot/V5zyvggIpgY
+         fsrf4EwAoDPd64J9vTWYN63VuTbtI9iL7JW5+omGNhRSf6XpE6LlUyrn/3uRxLwhzYkz
+         yeAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739857556; x=1740462356;
+        d=1e100.net; s=20230601; t=1739857557; x=1740462357;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8900xQNk0yNWl72dpFSe4bBu/GJDB2jdwCOQg6tQUXw=;
-        b=CVZX+abpUvb+mAgBIXbOeNBLRnIaWU/+NTHIhrFnx2P5vYtKMD+YfVLEpRoybBx2GZ
-         yfTrSNgGAH26Is5QsYSNJYe3XzGRSplI4dJ+WCJ6Tf2s16nXsLa86GgER11Bk+ExAwOi
-         3AZgHH4QOaJTM6ZEPFVZ5x8Ey+qjcFqAyE6TfsbzCQ3/kH6S0OcEUqoTmKmgGzEVRHiB
-         nPGEzkbtSJaf91iVnSoBx100zsGI2YKjU+L2yTnFMRWaYIKHpNqr3HCt6lkuZ6nBr6z4
-         iqTJfyE3ddDq2TCO80AfFlnXZzR6soVp/q2vQBWxvGwy7v+h3VSc2Vh52k2Y4MYujySS
-         vbUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXemDf79E9JZAGEY6mR6WBNwWkN+PV4fxOxcB0gM8KejAqlJ0+upCBJRZG0eEGANkhsAhY6JF2K05o=@vger.kernel.org, AJvYcCXqwQoJpV3dvFikbVcbyd3SOXxOaAiESfzsrQ5l32Ai+cnCHGvk1Q5mgyipZxtsodQR9c8PX7QqfhE4jCW2@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwSha+7tC8HYLDaj5qbNqMZmnIgoJpWNHy6ssaX21KbjmlhaTh
-	ONXQEUcZVo3NCtwxlSo1V4z0+wPNbpLZ7RZwC/NjoZlfLF7OwrBy
-X-Gm-Gg: ASbGnct1vdsv7u3f7uVQNNg/lrIQsJvjEEZ855uPh3EIlZysU7KD1usX3lttYbqXWO0
-	DUB3cCZ31V9pNy+fDgvZOiqh3l3P5WVk2cg1qymVuhPD+/+P1YsDdDikORw03phLPC/APWlKwgX
-	lRI+0XcHJnhff23AyxRXpgcCtlFcOEC3PAm5lLKpfRb8smhOSi5i3bUSfl/CBagNvYNgxjoKqtX
-	0ztnE4Nxg2z5KfTxpdhYuoTJX2EHs8TvfgBiDt9R0IymqbL9/dU7FNOtnhUtUcxkAbARW/JDSd/
-	dzsTYvDN6NgaMwhlHqK6cefKOHVfiefzefMzHn4wQEKeM3q5M4oQu5hUmAEC2WjjBNcBgrHbdkP
-	+nnqCow==
-X-Google-Smtp-Source: AGHT+IEClAWnk4HlCe5BsrZlJ1ndipvs0umm1ENZRk5e7iXAcUlLyX0HZTrIkd52R3H0ji/u6pIScQ==
-X-Received: by 2002:ac8:5990:0:b0:471:9bbd:83e7 with SMTP id d75a77b69052e-471dbe9e46emr180601471cf.44.1739857556115;
-        Mon, 17 Feb 2025 21:45:56 -0800 (PST)
+        bh=6Vf753JDhe8z6or4Q4Z8/1KFw/b1u1ALZFWVEgBrHYI=;
+        b=WSx+vg6P9ZEusC9OPjf/nvutsgPIbcIDVY9BouVrskti4dzAbNYIeENqcLvobmgptB
+         ZHuhJJTcEsFA+vlZdPSZosrMFTeXUXmWTVD/timeWEAZ4Ix/rqx38NwHoP9QGgFG/J2B
+         vwNvcz9HTQzF2ppR/V/9rjJVKLKHRYRv34noRq5RiNUb8unVrE6DANLsCpp5J1kJQZvT
+         K6GRRoi7RpTB1kIqnWAMrIGNukInzFqTlhXc7JS1CB/P5UgZqiqnkib4d8knIPnZfGgE
+         fgHWka4A4C4aMLeqAuKAO6KV/QiAT6CMO+CzJKlakbUJzG7vKMK5AUgh/FScgGJLt5vl
+         mpbA==
+X-Forwarded-Encrypted: i=1; AJvYcCUx0tzTQhWETw5fXu9CLJX8uXGWBNKk30nmKdQ7rykr/Ix0V2+gwbt6DY3ud1sb/SDe1F9KT45AN4ui3TJY@vger.kernel.org, AJvYcCVWr9Xzo9kSt5lXBwCVUOj0s6JCnXbS1hEgdu4BuKFd78dWPq19DUC36x/sLRInIKhLTXmaAB08Zww=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxsVgFd9oULb0ssWVoKzqBd9zF5VxYfKOw7h/LaTKjx2hhT8lLx
+	lN/hnT7HP402ofhXDQ9uRYnIsvyp3oxXVdM5JYlncTlati1NKRUz
+X-Gm-Gg: ASbGncs8kffiYfbx6tOGCEIaY9DTAJP6yxqJSlw3GjcIeL3dkAscCHBam7jYg0lroqw
+	uSaEQBZxz+qT27mDFq5oM3ihnbuwEIVVX4MRBwXfhYFDZpdqW+f96U1lkOlhiicPkIho6FFrpRM
+	A42XLWs6C96t0yRzRMAWiG4MC+Yv/6s2648ZTp+odMZOxZ1Ulimq9nP1fapslcmM5nkN1OtsopJ
+	kSEgg58/pU/3wQxnVlBvBfOaONbAm7BrGOrBqVvjWZctObBEAOX1+NgbFcnp2FmOs5+OxU+UXIu
+	cxM7TfoWjsSH9hZhkImlvhYiSJK/b424qHpnrBTrfpiFFZmAriN9vJWWB7lIs3TqR4UdCQiBJC0
+	BevIHUg==
+X-Google-Smtp-Source: AGHT+IGIisUG3omfsORc+ODA3bDfKzM5YZqfS2TJ+KRKxOHtisbBRQGfzfSfCbUyiKU+SfpmUtXRiA==
+X-Received: by 2002:a05:6214:f2d:b0:6e6:668a:a27d with SMTP id 6a1803df08f44-6e66ccc41acmr207712506d6.16.1739857557541;
+        Mon, 17 Feb 2025 21:45:57 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471f194f857sm18398031cf.5.2025.02.17.21.45.55
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c07c86e878sm621169385a.94.2025.02.17.21.45.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:45:55 -0800 (PST)
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 41E4D1200043;
-	Tue, 18 Feb 2025 00:45:55 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Tue, 18 Feb 2025 00:45:55 -0500
-X-ME-Sender: <xms:kx60Z2bz3nvLb68xP1nsSR6QpbsfWb-977xTZ_XGthDWX6kZoNSeOg>
-    <xme:kx60Z5ZimSp_Lf2l8nTx_8v9Z8EnVqLXZCO09L_dIG58YFvfpC0wfRAHCveYccFm-
-    8gD2sAR-zsP9b15ig>
-X-ME-Received: <xmr:kx60Zw8Wit_OLY0twW_5PMh5RVjsSPth2UDp5KzSnAwR-RaIE_6bymkEyQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetggdotefrod
+        Mon, 17 Feb 2025 21:45:57 -0800 (PST)
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfauth.phl.internal (Postfix) with ESMTP id AE8951200043;
+	Tue, 18 Feb 2025 00:45:56 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Tue, 18 Feb 2025 00:45:56 -0500
+X-ME-Sender: <xms:lB60ZxnrsAkjLRagHYKLyiqpNaMwEnqcZz-yyJz20b7207gb-mPh1g>
+    <xme:lB60Z82rjsRgUvOIuuSB7OyfgMwLYD26M5gI55WCPBPZy9oIyRFC1RjpCKRkZcgdU
+    _qt1XxdkQ9Qs3TmGg>
+X-ME-Received: <xmr:lB60Z3qsdf30C7j0C0JTFxB6OcUGuGck50Ez5GxAjuB_iXQENhJvIygU6w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
@@ -76,7 +76,7 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetgg
     ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
     hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
     ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduhedpmhho
+    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedujedpmhho
     uggvpehsmhhtphhouhhtpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
     hrghdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthho
     pehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrd
@@ -85,14 +85,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetgg
     hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
     mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
     hsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:kx60Z4pKVNoRI6vFWpCKbGO4Tzsjw46H_boQEgVFtyKT6mzv762vKw>
-    <xmx:kx60Zxp9V1CdA76NIL01TIVSOqmHmtPrgQ0eza8jdsaLkhD0Tq4wOw>
-    <xmx:kx60Z2Q8hDBb2nhXVXL7glzL_PXghn7sDQHbOYMssosWtbawwywWbA>
-    <xmx:kx60ZxogXU1FPGobyKFGGtrftLX9QppVRfHB-DGiTeoCgfn3Q6Xjog>
-    <xmx:kx60Z-7TJsgglVpCsgGcYj8kWxan2mVBzPIp9oxEgQeYtlYFs_LA3eYj>
+X-ME-Proxy: <xmx:lB60Zxl4a7Uk29lnXTAjOA0DB3TusJybgH5t-uZaIfSCooL9HC52Yg>
+    <xmx:lB60Z_1c-G01QP0UrW0yVIY8KF7z6fQXJNYIYoOQ02Uz64xdS3avVg>
+    <xmx:lB60ZwuCbZY9ZxHUIelMLJ8AGYIAT41uFdfkusrrrDbJCBnXdGCmhA>
+    <xmx:lB60ZzXSN05Cilabutw1Kvhnj5l7cLZZXU9TEXON7yf1ibO7epxiaA>
+    <xmx:lB60Z23rLDzKRVK12LFLMErlDX-xbqVPVACY4syGNqW60DT-laM5QOR7>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Feb 2025 00:45:54 -0500 (EST)
+ 18 Feb 2025 00:45:56 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -108,10 +108,12 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rcu 1/7] doc: Add broken-timing possibility to stallwarn.rst
-Date: Mon, 17 Feb 2025 21:45:41 -0800
-Message-Id: <20250218054547.7364-2-boqun.feng@gmail.com>
+	linux-kernel@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH rcu 2/7] docs: Improve discussion of this_cpu_ptr(), add raw_cpu_ptr()
+Date: Mon, 17 Feb 2025 21:45:42 -0800
+Message-Id: <20250218054547.7364-3-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250218054547.7364-1-boqun.feng@gmail.com>
 References: <20250218054547.7364-1-boqun.feng@gmail.com>
@@ -125,34 +127,55 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, stallwarn.rst does not mention the fact that timer bugs can
-result in false-positive RCU CPU stall warnings.  This commit therefore
-adds this to the list.
+Most of the this_cpu_*() operations may be used in preemptible code,
+but not this_cpu_ptr(), and for good reasons.  Therefore, better explain
+the reasons and call out raw_cpu_ptr() as an alternative in certain very
+special cases.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: <linux-doc@vger.kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- Documentation/RCU/stallwarn.rst | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/core-api/this_cpu_ops.rst | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
-index 30080ff6f406..d1ccd6039a8c 100644
---- a/Documentation/RCU/stallwarn.rst
-+++ b/Documentation/RCU/stallwarn.rst
-@@ -96,6 +96,13 @@ warnings:
- 	the ``rcu_.*timer wakeup didn't happen for`` console-log message,
- 	which will include additional debugging information.
+diff --git a/Documentation/core-api/this_cpu_ops.rst b/Documentation/core-api/this_cpu_ops.rst
+index 91acbcf30e9b..533ac5dd5750 100644
+--- a/Documentation/core-api/this_cpu_ops.rst
++++ b/Documentation/core-api/this_cpu_ops.rst
+@@ -138,12 +138,22 @@ get_cpu/put_cpu sequence requires. No processor number is
+ available. Instead, the offset of the local per cpu area is simply
+ added to the per cpu offset.
  
-+-	A timer issue causes time to appear to jump forward, so that RCU
-+	believes that the RCU CPU stall-warning timeout has been exceeded
-+	when in fact much less time has passed.  This could be due to
-+	timer hardware bugs, timer driver bugs, or even corruption of
-+	the "jiffies" global variable.	These sorts of timer hardware
-+	and driver bugs are not uncommon when testing new hardware.
+-Note that this operation is usually used in a code segment when
+-preemption has been disabled. The pointer is then used to
+-access local per cpu data in a critical section. When preemption
+-is re-enabled this pointer is usually no longer useful since it may
+-no longer point to per cpu data of the current processor.
+-
++Note that this operation can only be used in code segments where
++smp_processor_id() may be used, for example, where preemption has been
++disabled. The pointer is then used to access local per cpu data in a
++critical section. When preemption is re-enabled this pointer is usually
++no longer useful since it may no longer point to per cpu data of the
++current processor.
 +
- -	A low-level kernel issue that either fails to invoke one of the
- 	variants of rcu_eqs_enter(true), rcu_eqs_exit(true), ct_idle_enter(),
- 	ct_idle_exit(), ct_irq_enter(), or ct_irq_exit() on the one
++The special cases where it makes sense to obtain a per-CPU pointer in
++preemptible code are addressed by raw_cpu_ptr(), but such use cases need
++to handle cases where two different CPUs are accessing the same per cpu
++variable, which might well be that of a third CPU.  These use cases are
++typically performance optimizations.  For example, SRCU implements a pair
++of counters as a pair of per-CPU variables, and rcu_read_lock_nmisafe()
++uses raw_cpu_ptr() to get a pointer to some CPU's counter, and uses
++atomic_inc_long() to handle migration between the raw_cpu_ptr() and
++the atomic_inc_long().
+ 
+ Per cpu variables and offsets
+ -----------------------------
 -- 
 2.39.5 (Apple Git-154)
 
