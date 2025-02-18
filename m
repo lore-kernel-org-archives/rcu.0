@@ -1,96 +1,98 @@
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE98E1B87FB;
-	Tue, 18 Feb 2025 05:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3895C1A9B48;
+	Tue, 18 Feb 2025 05:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739857557; cv=none; b=jaGaf47SwtBx8i0NODPqzXUElrAA2SPsUQGCLuV83GAefmVSGLRFIokkuxad8BggvgqkNcdQF++QN04RH854zmhNVf21vEapqpsBHB9BtH9HWrLcUQEDBRn4a75xmsUtzEiZBNcd4j7ra6znm7rJ8ZkARQc3oo2/uH/rpLFulXc=
+	t=1739857558; cv=none; b=eoNKKUOpPQf3WazKrWcSxUFvrVxp/UibZd/QK8IHT/l00kn8K1s66ImF4KYCcogMbkCpMoEebwF7agkO3fnO8QSHuOFWdS1wn4hqFMH+bGqxq05ujXgZRqQ+KQTkLPHiFWfCJw7Qpc7Ovsp1gIzFohQii8FJBHK7r5vlYc5Y4jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739857557; c=relaxed/simple;
-	bh=ALADyHX5VhAV02ZKuvBN7XXssxlDHMGJm6kTwpqvGQg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WxSt7/tPRw5S5ms7aRbEvWbRheRnRICMPd0BK+JI6ej3RBGDg8nYBv5mOWtu/ESy2extmiM6VCb/aZnu1txmUay2DJo/369UhPAcKVdtiloIP6yjKbfOivNz8roCA+yO8R+gSIN6/pwNO1oXW95Joi5y6fmouUtznHUxpX/pCU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Su1kuM18; arc=none smtp.client-ip=209.85.222.174
+	s=arc-20240116; t=1739857558; c=relaxed/simple;
+	bh=FNC3ESzhdnefYnWfGSSwUKkIovsievffBMv39YwMHyI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=LM5juGzzpTihD4L781EESYwbvKLmCJWHzdZHee+rM1SeOOyjMfPUY+3zsH8XLx43B9mW4vwZyMEMOjnxW4GGwHRq8jei/wvDX+C1K8scE6sTG9ytIM0GPvYpp6Iu7pLDYydnJNA7jDlqEUQIIwtyyMj2Oh0IYrv8czUWE/1yPUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=abBUv83M; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Su1kuM18"
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7c09d7bb33bso151530685a.1;
-        Mon, 17 Feb 2025 21:45:55 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="abBUv83M"
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-471b5372730so65654621cf.1;
+        Mon, 17 Feb 2025 21:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739857555; x=1740462355; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wjntYJCIcfuD8CldiVvqZE1cSqLv5zhXph107GuOJoA=;
-        b=Su1kuM18yPTqMtYI+WmnK3JdR+mhtEAaewCfGME1nvgiXyUsB272qTC0GJLuua7za5
-         6d0j8rndI2iqzq9kSvF7n55JRmN+R2ZCBcGGW2CD9l1do8FeOLdF/U+59Qa83kTgc7uM
-         2kmA4+WPrBlyCYYtbazgKKbAk7y3dSo2kk+ouJlO/mXtmyzn20bAnI6hPGhVe60CO4pZ
-         dFwM50DS+E6EEYCikgP3ffcZum3bjo9APYR5RyP9wix8WSITZcXOp3xNvZ0+gPu0av70
-         CbGNpA5DC/YkEgZ085HxdSbVuQuNqDS8bvKEj2LJkjLt/CW4A9RwQ7NQIQzijrWLJeKE
-         Rs7A==
+        d=gmail.com; s=20230601; t=1739857556; x=1740462356; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8900xQNk0yNWl72dpFSe4bBu/GJDB2jdwCOQg6tQUXw=;
+        b=abBUv83MDooueHrx9Q2eCGL5aSs/VmWW5L+pTF10fI0U6KO2Q9zlBlua2aVXIRS5ig
+         OLK7907GCbQLrK2qJ/lLECGAfZk7EphhhX/gOJv/BU2bKMVYQ5A/63TY/+3n3ahlg0Oi
+         keks7djY/Ov6E3j5dQUAP20pdQsjnvo1vgsteGaxQiSFzbAGr+oeEtS/lo7Qs43Ry74E
+         i3LofXYAn/BiCvktTsSr1Bl2mjLMqfLkQaNErIhkl0fdPARC2bctAt1btk+hELGnhU/+
+         WUqdU6CAzV79ejKS3EDYp5PiENlUO+Pg+HR8Xnv50FvepNLIMrMeicHdHCDY8hiiwOqi
+         b2zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739857555; x=1740462355;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wjntYJCIcfuD8CldiVvqZE1cSqLv5zhXph107GuOJoA=;
-        b=eECBR8ZUP7m6wjLswAkmw8DwdLxlBUQs760tuQJE0Ha5aoN6eCcCeINCAzP7rrd6VB
-         HUuUyqQi1eNk80ver0Wctp/hHoBypYbB1E9SyJaxfTFwNb59uUSudPU72lneaulL5q5i
-         /1zHI17NAC68up3seK2ZBPm1WJCaqLLPRcy2DcM4er7pNK888apN+jTg7RdZ4w5aJ4mw
-         qI6jqRCZMLM2++5zO54dL94tC5iptJ8BeJzYDiOX8p63SPAinsnaOMGJMQBvk5mbQQzY
-         ULAEuF603p/BUYo4/1L38fhv8LRhbbXFWhljMJNFLXy3Tisi6spfUDgvWBIJpKdOc17s
-         ZG+g==
-X-Forwarded-Encrypted: i=1; AJvYcCU5Dby2dE1aHrx7f7MT+TAroxeRXkwk9Enj47gmkSdLEo4PuvrdOgSPdvPr8kasRpTc/NFsyC1XXVC0enQy@vger.kernel.org, AJvYcCUUf70MaPqTxePABCaLaxmc8FHC3K7j8FkuA3FREj9QG3SfVSuujPopQ6yhJUuFhyltee2YeBI+OUQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw5+tKPE1qExgLux7ymksBY3u6CSSs64H7Zp/OUUl18FeZ7p88W
-	UuylcNInPTY70f+RxxuqM0bLmuSYz4Jv8kHifrDwISOW3cvhpxxp
-X-Gm-Gg: ASbGnctPuT8DLeKlaSnEpHUscKNkignHR/HVrirzz22Zt86MSjiX9Bc/5/BIGdAVoIu
-	XdX5wcBcvgVKBSaPXqPACfprJUq/sGChrRclmvgEQoQPEM0CxPrFHe7VV4DS2Vaoien7SgGNiMZ
-	bTUexX5HdT+S952P1rYdFG7BFBGCdQLVQWisrcPfvs3gH2reV/t5xz6K1BrCiH09YP/Shu8KTAO
-	KE0rkRC/FE0o1x4cRM8pNeyovaDe68chExRb7QPPmFZQhIw3R9mFudfzQiZQQhtx8ZKqjFhfgvU
-	rXHW7KuBJpr5EALp5xB5oxi/pkgWUnOxp0X7o91YcUu9Uaa6BfG/rcbR+hkuAS6BkRne5BVVQCc
-	mHJeD6A==
-X-Google-Smtp-Source: AGHT+IG/SpX3zB0HimK0pVkXAyNU2kXrCbJzwn+N8oY+CNP5mb/YhzJQGmWgJ19Vwa1VFKfuvtQaCQ==
-X-Received: by 2002:a05:620a:4506:b0:7c0:7935:63f9 with SMTP id af79cd13be357-7c08a99ab75mr1426417485a.3.1739857554720;
-        Mon, 17 Feb 2025 21:45:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739857556; x=1740462356;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8900xQNk0yNWl72dpFSe4bBu/GJDB2jdwCOQg6tQUXw=;
+        b=CVZX+abpUvb+mAgBIXbOeNBLRnIaWU/+NTHIhrFnx2P5vYtKMD+YfVLEpRoybBx2GZ
+         yfTrSNgGAH26Is5QsYSNJYe3XzGRSplI4dJ+WCJ6Tf2s16nXsLa86GgER11Bk+ExAwOi
+         3AZgHH4QOaJTM6ZEPFVZ5x8Ey+qjcFqAyE6TfsbzCQ3/kH6S0OcEUqoTmKmgGzEVRHiB
+         nPGEzkbtSJaf91iVnSoBx100zsGI2YKjU+L2yTnFMRWaYIKHpNqr3HCt6lkuZ6nBr6z4
+         iqTJfyE3ddDq2TCO80AfFlnXZzR6soVp/q2vQBWxvGwy7v+h3VSc2Vh52k2Y4MYujySS
+         vbUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXemDf79E9JZAGEY6mR6WBNwWkN+PV4fxOxcB0gM8KejAqlJ0+upCBJRZG0eEGANkhsAhY6JF2K05o=@vger.kernel.org, AJvYcCXqwQoJpV3dvFikbVcbyd3SOXxOaAiESfzsrQ5l32Ai+cnCHGvk1Q5mgyipZxtsodQR9c8PX7QqfhE4jCW2@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwSha+7tC8HYLDaj5qbNqMZmnIgoJpWNHy6ssaX21KbjmlhaTh
+	ONXQEUcZVo3NCtwxlSo1V4z0+wPNbpLZ7RZwC/NjoZlfLF7OwrBy
+X-Gm-Gg: ASbGnct1vdsv7u3f7uVQNNg/lrIQsJvjEEZ855uPh3EIlZysU7KD1usX3lttYbqXWO0
+	DUB3cCZ31V9pNy+fDgvZOiqh3l3P5WVk2cg1qymVuhPD+/+P1YsDdDikORw03phLPC/APWlKwgX
+	lRI+0XcHJnhff23AyxRXpgcCtlFcOEC3PAm5lLKpfRb8smhOSi5i3bUSfl/CBagNvYNgxjoKqtX
+	0ztnE4Nxg2z5KfTxpdhYuoTJX2EHs8TvfgBiDt9R0IymqbL9/dU7FNOtnhUtUcxkAbARW/JDSd/
+	dzsTYvDN6NgaMwhlHqK6cefKOHVfiefzefMzHn4wQEKeM3q5M4oQu5hUmAEC2WjjBNcBgrHbdkP
+	+nnqCow==
+X-Google-Smtp-Source: AGHT+IEClAWnk4HlCe5BsrZlJ1ndipvs0umm1ENZRk5e7iXAcUlLyX0HZTrIkd52R3H0ji/u6pIScQ==
+X-Received: by 2002:ac8:5990:0:b0:471:9bbd:83e7 with SMTP id d75a77b69052e-471dbe9e46emr180601471cf.44.1739857556115;
+        Mon, 17 Feb 2025 21:45:56 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0a62e9865sm119817685a.59.2025.02.17.21.45.53
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471f194f857sm18398031cf.5.2025.02.17.21.45.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:45:54 -0800 (PST)
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 8EA541200043;
-	Tue, 18 Feb 2025 00:45:53 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Tue, 18 Feb 2025 00:45:53 -0500
-X-ME-Sender: <xms:kR60Z8yOr3qb-vK9D9yCXGBZ6G64J4KciVrzWNYRqZM0u-DLTIuBcA>
-    <xme:kR60ZwQxEcsa6Fop05D_KIq7I71Jq5J289DGeizXbv43Zm5CZZCT0M7mjbxZ8JuiM
-    3yy29HY6jmeNSUFoQ>
-X-ME-Received: <xmr:kR60Z-XOa4fHzyHs911Z7i5Toyd2-Ix2TQ_JC4Ti5WLXSRn0nLZDaK-4Ww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetggdotefrod
+        Mon, 17 Feb 2025 21:45:55 -0800 (PST)
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 41E4D1200043;
+	Tue, 18 Feb 2025 00:45:55 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Tue, 18 Feb 2025 00:45:55 -0500
+X-ME-Sender: <xms:kx60Z2bz3nvLb68xP1nsSR6QpbsfWb-977xTZ_XGthDWX6kZoNSeOg>
+    <xme:kx60Z5ZimSp_Lf2l8nTx_8v9Z8EnVqLXZCO09L_dIG58YFvfpC0wfRAHCveYccFm-
+    8gD2sAR-zsP9b15ig>
+X-ME-Received: <xmr:kx60Zw8Wit_OLY0twW_5PMh5RVjsSPth2UDp5KzSnAwR-RaIE_6bymkEyQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecu
-    hfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtg
-    homheqnecuggftrfgrthhtvghrnhepgeegueekgefhvedukedtveejhefhkeffveeufedu
-    iedvleetledtkeehjefgieevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhm
-    vghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekhe
-    ehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghm
-    vgdpnhgspghrtghpthhtohepudehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhope
-    hrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgruhhlmhgtkhes
-    khgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopehnvggvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopehjohgvlhesjhhovghlfhgvrhhnrghnuggvshdrohhrghdprhgtph
-    htthhopehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhgpdhrtghpthhtohepsgho
-    qhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuhhrvgiikhhisehgmh
-    grihhlrdgtohhmpdhrtghpthhtoheprhhoshhtvgguthesghhoohgumhhishdrohhrgh
-X-ME-Proxy: <xmx:kR60Z6hByBo7MdF4BhLIMsnMdNTRbnSGoVKII_7leBpLJ9hY5iPmOw>
-    <xmx:kR60Z-CoZMVG1h1oin7xsrOtJI14tD_m26KCLDQVZ_zpaCheBZ1--w>
-    <xmx:kR60Z7LD--q_GMQX84O6Lrngunl4zWM79dYBBqXN2LxsqwhgP__6JA>
-    <xmx:kR60Z1DQuXWPXJEUwlRxznMS6ImkfuVuPKWYjlxQlR-BSPMvjwLpcA>
-    <xmx:kR60Z-xetoOVGt95xfpZpV6EH35dpolRm9DXt9PIGb2nez-J5AYHfkfs>
+    hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
+    necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
+    drtghomheqnecuggftrfgrthhtvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfev
+    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
+    ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
+    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduhedpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthho
+    pehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrd
+    huphgrughhhigrhieskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhovghlsehjohgv
+    lhhfvghrnhgrnhguvghsrdhorhhgpdhrtghpthhtohepjhhoshhhsehjohhshhhtrhhiph
+    hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
+    mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
+    hsthgvughtsehgohhoughmihhsrdhorhhg
+X-ME-Proxy: <xmx:kx60Z4pKVNoRI6vFWpCKbGO4Tzsjw46H_boQEgVFtyKT6mzv762vKw>
+    <xmx:kx60Zxp9V1CdA76NIL01TIVSOqmHmtPrgQ0eza8jdsaLkhD0Tq4wOw>
+    <xmx:kx60Z2Q8hDBb2nhXVXL7glzL_PXghn7sDQHbOYMssosWtbawwywWbA>
+    <xmx:kx60ZxogXU1FPGobyKFGGtrftLX9QppVRfHB-DGiTeoCgfn3Q6Xjog>
+    <xmx:kx60Z-7TJsgglVpCsgGcYj8kWxan2mVBzPIp9oxEgQeYtlYFs_LA3eYj>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Feb 2025 00:45:53 -0500 (EST)
+ 18 Feb 2025 00:45:54 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -107,10 +109,12 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rcu 0/7] RCU documentation changes for v6.15
-Date: Mon, 17 Feb 2025 21:45:40 -0800
-Message-Id: <20250218054547.7364-1-boqun.feng@gmail.com>
+Subject: [PATCH rcu 1/7] doc: Add broken-timing possibility to stallwarn.rst
+Date: Mon, 17 Feb 2025 21:45:41 -0800
+Message-Id: <20250218054547.7364-2-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250218054547.7364-1-boqun.feng@gmail.com>
+References: <20250218054547.7364-1-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -119,34 +123,36 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Please find the upcoming changes in RCU documentation for v6.15. The
-changes can also be found at:
+Currently, stallwarn.rst does not mention the fact that timer bugs can
+result in false-positive RCU CPU stall warnings.  This commit therefore
+adds this to the list.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git docs.2025.02.04a	
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ Documentation/RCU/stallwarn.rst | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Regards,
-Boqun
-
-Paul E. McKenney (7):
-  doc: Add broken-timing possibility to stallwarn.rst
-  docs: Improve discussion of this_cpu_ptr(), add raw_cpu_ptr()
-  rcu: Document self-propagating callbacks
-  srcu: Point call_srcu() to call_rcu() for detailed memory ordering
-  rcu: Add CONFIG_RCU_LAZY delays to call_rcu() kernel-doc header
-  rcu: Clarify RCU_LAZY and RCU_LAZY_DEFAULT_OFF help text
-  rcu: Remove references to old grace-period-wait primitives
-
- Documentation/RCU/rcubarrier.rst        |  5 +----
- Documentation/RCU/stallwarn.rst         |  7 +++++++
- Documentation/core-api/this_cpu_ops.rst | 22 ++++++++++++++++------
- include/linux/rcupdate.h                | 17 +++++++----------
- kernel/rcu/Kconfig                      | 20 +++++++++++++-------
- kernel/rcu/srcutree.c                   |  8 ++++++--
- kernel/rcu/tree.c                       | 15 ++++++++++++++-
- 7 files changed, 64 insertions(+), 30 deletions(-)
-
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index 30080ff6f406..d1ccd6039a8c 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -96,6 +96,13 @@ warnings:
+ 	the ``rcu_.*timer wakeup didn't happen for`` console-log message,
+ 	which will include additional debugging information.
+ 
++-	A timer issue causes time to appear to jump forward, so that RCU
++	believes that the RCU CPU stall-warning timeout has been exceeded
++	when in fact much less time has passed.  This could be due to
++	timer hardware bugs, timer driver bugs, or even corruption of
++	the "jiffies" global variable.	These sorts of timer hardware
++	and driver bugs are not uncommon when testing new hardware.
++
+ -	A low-level kernel issue that either fails to invoke one of the
+ 	variants of rcu_eqs_enter(true), rcu_eqs_exit(true), ct_idle_enter(),
+ 	ct_idle_exit(), ct_irq_enter(), or ct_irq_exit() on the one
 -- 
 2.39.5 (Apple Git-154)
 
