@@ -1,130 +1,152 @@
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7135BC8EB;
-	Tue, 18 Feb 2025 00:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE98E1B87FB;
+	Tue, 18 Feb 2025 05:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739839882; cv=none; b=V1FdW7wCwOGh2zxuOcAKKWLZANBks2/T29woi0TadyPb4bJS9f6MI0jLdFNWi6p9THp7Pd1pAiILMWgZhOmf+CBzrp/2WA4ED6uCoRLuGfyuGfxHFQHju1dEjjErE+8FHu9rWjpTQgiMqobmpajs34D3/99R+OLvpzJyRrUnYhc=
+	t=1739857557; cv=none; b=jaGaf47SwtBx8i0NODPqzXUElrAA2SPsUQGCLuV83GAefmVSGLRFIokkuxad8BggvgqkNcdQF++QN04RH854zmhNVf21vEapqpsBHB9BtH9HWrLcUQEDBRn4a75xmsUtzEiZBNcd4j7ra6znm7rJ8ZkARQc3oo2/uH/rpLFulXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739839882; c=relaxed/simple;
-	bh=O6Yk2/OQfzp/7Dw/mmNhy/Ct1kWW17flOJOd36ykW4M=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=BAL+Gl/zIBTkPw/JNGrMDJfQ/Z1IdE+R/xFwEPazWXGGVNOa+2fSUDZ7QD5QURJpNCWrJxQAK9lbR4yjIOcS/WVxEs75gJIiY4r8eFRrKY02K6S8j5+DG58e7m5tQsPf7fJNcc79JKIk+7WDWVaAfBjjWBn6FN8efgH6o/Z1fiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YI795mrr; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1739857557; c=relaxed/simple;
+	bh=ALADyHX5VhAV02ZKuvBN7XXssxlDHMGJm6kTwpqvGQg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WxSt7/tPRw5S5ms7aRbEvWbRheRnRICMPd0BK+JI6ej3RBGDg8nYBv5mOWtu/ESy2extmiM6VCb/aZnu1txmUay2DJo/369UhPAcKVdtiloIP6yjKbfOivNz8roCA+yO8R+gSIN6/pwNO1oXW95Joi5y6fmouUtznHUxpX/pCU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Su1kuM18; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YI795mrr"
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5dea50ee572so7488882a12.1;
-        Mon, 17 Feb 2025 16:51:20 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Su1kuM18"
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7c09d7bb33bso151530685a.1;
+        Mon, 17 Feb 2025 21:45:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739839879; x=1740444679; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AA5+vy2BK3E8WNWxhr720SUyREiSZZlYrTfJGobjVLc=;
-        b=YI795mrrdbrX12/oaoWBZm0+L26cBtPRD7F83giQX6+XmktDhO2bR7l09ztwh0z5AL
-         6RMyeuGRlmCcQmpgGPC0NkIV7pQKXL97kKSCbjSk+YgxuPxWGX+giM5qoRicM5qpVaMw
-         aDSC++JcpEcjKTMJooMXLngoocfaAdGk3aaKaheOKxsGuK76Iw0a0zs2W1BKODrv3Vqh
-         trT4c1psgfmEhReSku4i0psuiziQrPRecNd39X1Vb5N9/A1P/4F7SgOj3lXVfYOvaRQx
-         ARUa9mC5rOWRm2ViDBVB6C/UEu5LoXpdzUZfzBDHOd1kTydQoUT2lVrg8wLKdA1ej7P6
-         V8mw==
+        d=gmail.com; s=20230601; t=1739857555; x=1740462355; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjntYJCIcfuD8CldiVvqZE1cSqLv5zhXph107GuOJoA=;
+        b=Su1kuM18yPTqMtYI+WmnK3JdR+mhtEAaewCfGME1nvgiXyUsB272qTC0GJLuua7za5
+         6d0j8rndI2iqzq9kSvF7n55JRmN+R2ZCBcGGW2CD9l1do8FeOLdF/U+59Qa83kTgc7uM
+         2kmA4+WPrBlyCYYtbazgKKbAk7y3dSo2kk+ouJlO/mXtmyzn20bAnI6hPGhVe60CO4pZ
+         dFwM50DS+E6EEYCikgP3ffcZum3bjo9APYR5RyP9wix8WSITZcXOp3xNvZ0+gPu0av70
+         CbGNpA5DC/YkEgZ085HxdSbVuQuNqDS8bvKEj2LJkjLt/CW4A9RwQ7NQIQzijrWLJeKE
+         Rs7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739839879; x=1740444679;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AA5+vy2BK3E8WNWxhr720SUyREiSZZlYrTfJGobjVLc=;
-        b=HAGKmkfJHk/doEiettiEZHmL3yZoEKj8JZgUxTWL+gdq4onZFprp71+xdAG5NVofDv
-         kfDdLXKRB3ezKpOyW1cJ3xHla37ewJCr6wAUv5oZcQQn5EFKxT4Rkq6ZLKTnJRtqOpfH
-         6d/+lNkAgcvcf/Kv9GC6jFuZUkVMo1qdpMPKmZyTILi+vZDo3tkGh0wwXh9MzLvGtSKK
-         U/xZ/GcN10WpLNkzrKyezPq1AVKjaaUJoUwkwXPABwkCio2b1/X8sL7XqEj+du4+JgG6
-         AwVxltfQos5YQ8U/dQjevzF7sRbieeS+FYTWvG5ciqkD/8lcNIyP1vG80sEVIICvzv/Z
-         s38g==
-X-Forwarded-Encrypted: i=1; AJvYcCVl0oH0RaQXieUoEnUQrga9TSy/nFY/fbxw/ZfE4iiI/8mniSWLr3RJm5qeYtbrOp3RiL/3s7bN/Qg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyU8S8fhUhriMG7O2Mme0kyGUztIxQd2Lf7TO7Kb4mDFuyxd9gH
-	zKePaSO3fEx5H/l5QeCYItk2zK4TUQPHF8QzLoPe/L+u8obwT6Zr
-X-Gm-Gg: ASbGnctd0FfYqoMbfnmTufFyZ+n0czJOQ+bwgZELyNK458ulKz3LjyNg2kyeK0SOgBj
-	eSE05rELXcCrWDwESxOg1cUTCLyUbdUw/qJjA5JlarDvuSEQh4QkTp5AQP1uM6RKkBtxqLRLMEk
-	e/T+Y4EJfkwimCUA/HMRiYbhSwyp5XvkowtRjA/PIGxNy0ZDfUCCpg+tkj4jCCBcLKHUoq6MgU9
-	r+2KQ2MVCYtu+ObKRKYDon5T+AFelvqMGmVuegxNj2vP+Sek9Rbdzt0a73/vaPTO7DHXpP6riGE
-	XNRUy9dCpfX0OeM=
-X-Google-Smtp-Source: AGHT+IH/SGvZ3jkeImyxXE5hT8PpupmiBpgpbuaKAsTMtBajDyNpiddyfPDv5GewmK/qniBzlEZqlg==
-X-Received: by 2002:a17:907:9709:b0:ab7:d87f:665b with SMTP id a640c23a62f3a-abb70de2845mr1108304966b.48.1739839878490;
-        Mon, 17 Feb 2025 16:51:18 -0800 (PST)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abbb186c5d5sm90431466b.51.2025.02.17.16.51.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 17 Feb 2025 16:51:17 -0800 (PST)
-From: Wei Yang <richard.weiyang@gmail.com>
-To: paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org
-Cc: rcu@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Wei Yang <richard.weiyang@gmail.com>,
+        d=1e100.net; s=20230601; t=1739857555; x=1740462355;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wjntYJCIcfuD8CldiVvqZE1cSqLv5zhXph107GuOJoA=;
+        b=eECBR8ZUP7m6wjLswAkmw8DwdLxlBUQs760tuQJE0Ha5aoN6eCcCeINCAzP7rrd6VB
+         HUuUyqQi1eNk80ver0Wctp/hHoBypYbB1E9SyJaxfTFwNb59uUSudPU72lneaulL5q5i
+         /1zHI17NAC68up3seK2ZBPm1WJCaqLLPRcy2DcM4er7pNK888apN+jTg7RdZ4w5aJ4mw
+         qI6jqRCZMLM2++5zO54dL94tC5iptJ8BeJzYDiOX8p63SPAinsnaOMGJMQBvk5mbQQzY
+         ULAEuF603p/BUYo4/1L38fhv8LRhbbXFWhljMJNFLXy3Tisi6spfUDgvWBIJpKdOc17s
+         ZG+g==
+X-Forwarded-Encrypted: i=1; AJvYcCU5Dby2dE1aHrx7f7MT+TAroxeRXkwk9Enj47gmkSdLEo4PuvrdOgSPdvPr8kasRpTc/NFsyC1XXVC0enQy@vger.kernel.org, AJvYcCUUf70MaPqTxePABCaLaxmc8FHC3K7j8FkuA3FREj9QG3SfVSuujPopQ6yhJUuFhyltee2YeBI+OUQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw5+tKPE1qExgLux7ymksBY3u6CSSs64H7Zp/OUUl18FeZ7p88W
+	UuylcNInPTY70f+RxxuqM0bLmuSYz4Jv8kHifrDwISOW3cvhpxxp
+X-Gm-Gg: ASbGnctPuT8DLeKlaSnEpHUscKNkignHR/HVrirzz22Zt86MSjiX9Bc/5/BIGdAVoIu
+	XdX5wcBcvgVKBSaPXqPACfprJUq/sGChrRclmvgEQoQPEM0CxPrFHe7VV4DS2Vaoien7SgGNiMZ
+	bTUexX5HdT+S952P1rYdFG7BFBGCdQLVQWisrcPfvs3gH2reV/t5xz6K1BrCiH09YP/Shu8KTAO
+	KE0rkRC/FE0o1x4cRM8pNeyovaDe68chExRb7QPPmFZQhIw3R9mFudfzQiZQQhtx8ZKqjFhfgvU
+	rXHW7KuBJpr5EALp5xB5oxi/pkgWUnOxp0X7o91YcUu9Uaa6BfG/rcbR+hkuAS6BkRne5BVVQCc
+	mHJeD6A==
+X-Google-Smtp-Source: AGHT+IG/SpX3zB0HimK0pVkXAyNU2kXrCbJzwn+N8oY+CNP5mb/YhzJQGmWgJ19Vwa1VFKfuvtQaCQ==
+X-Received: by 2002:a05:620a:4506:b0:7c0:7935:63f9 with SMTP id af79cd13be357-7c08a99ab75mr1426417485a.3.1739857554720;
+        Mon, 17 Feb 2025 21:45:54 -0800 (PST)
+Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0a62e9865sm119817685a.59.2025.02.17.21.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Feb 2025 21:45:54 -0800 (PST)
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 8EA541200043;
+	Tue, 18 Feb 2025 00:45:53 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-07.internal (MEProxy); Tue, 18 Feb 2025 00:45:53 -0500
+X-ME-Sender: <xms:kR60Z8yOr3qb-vK9D9yCXGBZ6G64J4KciVrzWNYRqZM0u-DLTIuBcA>
+    <xme:kR60ZwQxEcsa6Fop05D_KIq7I71Jq5J289DGeizXbv43Zm5CZZCT0M7mjbxZ8JuiM
+    3yy29HY6jmeNSUFoQ>
+X-ME-Received: <xmr:kR60Z-XOa4fHzyHs911Z7i5Toyd2-Ix2TQ_JC4Ti5WLXSRn0nLZDaK-4Ww>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecu
+    hfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtg
+    homheqnecuggftrfgrthhtvghrnhepgeegueekgefhvedukedtveejhefhkeffveeufedu
+    iedvleetledtkeehjefgieevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhm
+    vghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekhe
+    ehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghm
+    vgdpnhgspghrtghpthhtohepudehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhope
+    hrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgruhhlmhgtkhes
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehnvggvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehjohgvlhesjhhovghlfhgvrhhnrghnuggvshdrohhrghdprhgtph
+    htthhopehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhgpdhrtghpthhtohepsgho
+    qhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuhhrvgiikhhisehgmh
+    grihhlrdgtohhmpdhrtghpthhtoheprhhoshhtvgguthesghhoohgumhhishdrohhrgh
+X-ME-Proxy: <xmx:kR60Z6hByBo7MdF4BhLIMsnMdNTRbnSGoVKII_7leBpLJ9hY5iPmOw>
+    <xmx:kR60Z-CoZMVG1h1oin7xsrOtJI14tD_m26KCLDQVZ_zpaCheBZ1--w>
+    <xmx:kR60Z7LD--q_GMQX84O6Lrngunl4zWM79dYBBqXN2LxsqwhgP__6JA>
+    <xmx:kR60Z1DQuXWPXJEUwlRxznMS6ImkfuVuPKWYjlxQlR-BSPMvjwLpcA>
+    <xmx:kR60Z-xetoOVGt95xfpZpV6EH35dpolRm9DXt9PIGb2nez-J5AYHfkfs>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 18 Feb 2025 00:45:53 -0500 (EST)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: rcu@vger.kernel.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: [Patch v2] doc/RCU/listRCU: refine example code for eliminating stale data
-Date: Tue, 18 Feb 2025 00:50:47 +0000
-Message-Id: <20250218005047.27258-1-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH rcu 0/7] RCU documentation changes for v6.15
+Date: Mon, 17 Feb 2025 21:45:40 -0800
+Message-Id: <20250218054547.7364-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-This patch adjust the example code with following two purpose:
+Hi,
 
-  * reduce the confusion on not releasing e->lock
-  * emphasize e is valid and not stale with e->lock held
+Please find the upcoming changes in RCU documentation for v6.15. The
+changes can also be found at:
 
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-CC: Boqun Feng <boqun.feng@gmail.com>
-CC: Alan Huang <mmpgouride@gmail.com>
+	git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git docs.2025.02.04a	
 
----
-v2:
-  * add the missing parameter *key
-  * make function return struct audit_entry
----
- Documentation/RCU/listRCU.rst | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Regards,
+Boqun
 
-diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-index ed5c9d8c9afe..d8bb98623c12 100644
---- a/Documentation/RCU/listRCU.rst
-+++ b/Documentation/RCU/listRCU.rst
-@@ -334,7 +334,7 @@ If the system-call audit module were to ever need to reject stale data, one way
- to accomplish this would be to add a ``deleted`` flag and a ``lock`` spinlock to the
- ``audit_entry`` structure, and modify audit_filter_task() as follows::
- 
--	static enum audit_state audit_filter_task(struct task_struct *tsk)
-+	static struct audit_entry *audit_filter_task(struct task_struct *tsk, char **key)
- 	{
- 		struct audit_entry *e;
- 		enum audit_state   state;
-@@ -346,16 +346,18 @@ to accomplish this would be to add a ``deleted`` flag and a ``lock`` spinlock to
- 				if (e->deleted) {
- 					spin_unlock(&e->lock);
- 					rcu_read_unlock();
--					return AUDIT_BUILD_CONTEXT;
-+					return NULL;
- 				}
- 				rcu_read_unlock();
- 				if (state == AUDIT_STATE_RECORD)
- 					*key = kstrdup(e->rule.filterkey, GFP_ATOMIC);
--				return state;
-+				/* As long as e->lock is held, e is valid and
-+				 * its value is not stale */
-+				return e;
- 			}
- 		}
- 		rcu_read_unlock();
--		return AUDIT_BUILD_CONTEXT;
-+		return NULL;
- 	}
- 
- The ``audit_del_rule()`` function would need to set the ``deleted`` flag under the
+Paul E. McKenney (7):
+  doc: Add broken-timing possibility to stallwarn.rst
+  docs: Improve discussion of this_cpu_ptr(), add raw_cpu_ptr()
+  rcu: Document self-propagating callbacks
+  srcu: Point call_srcu() to call_rcu() for detailed memory ordering
+  rcu: Add CONFIG_RCU_LAZY delays to call_rcu() kernel-doc header
+  rcu: Clarify RCU_LAZY and RCU_LAZY_DEFAULT_OFF help text
+  rcu: Remove references to old grace-period-wait primitives
+
+ Documentation/RCU/rcubarrier.rst        |  5 +----
+ Documentation/RCU/stallwarn.rst         |  7 +++++++
+ Documentation/core-api/this_cpu_ops.rst | 22 ++++++++++++++++------
+ include/linux/rcupdate.h                | 17 +++++++----------
+ kernel/rcu/Kconfig                      | 20 +++++++++++++-------
+ kernel/rcu/srcutree.c                   |  8 ++++++--
+ kernel/rcu/tree.c                       | 15 ++++++++++++++-
+ 7 files changed, 64 insertions(+), 30 deletions(-)
+
 -- 
-2.34.1
+2.39.5 (Apple Git-154)
 
