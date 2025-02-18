@@ -1,79 +1,79 @@
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C802A1C6FF8;
-	Tue, 18 Feb 2025 05:46:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096A51BDA91;
+	Tue, 18 Feb 2025 05:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739857563; cv=none; b=NwdWO331r0SbICQEmuO59e33fCiKK8JwFpGc89yWv8JgqmKkjnWHxyH+HW9coioDoi3dSMB5OF5siiGnUR+mtWYPN6+ofSEFsZDcJTSMPNcFFBgGTBEuWMGnlvKtFmxTCUsKqMbi4Mtol9YY4aTTmiL0GXuUwQGL22rknvsPwTs=
+	t=1739857564; cv=none; b=BV7WuC/h5qecR2gutjNrBWC+Mjilv7ij4v7EOucbpeekmVI/GQ5Ru5Mh4N9edruhYwImK41nRF1f8blKV2gZYoDE7FJeRInUnjKhjva7GUYClNu1rSnQ4zrLWTlinYen1KjP1cUjqhblKwSoKzknvKdyPMNUs0+hSbB4mZvv1ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739857563; c=relaxed/simple;
-	bh=3vFd1mN8dxuIO0lNwxRqYwG2R9ldYvt17FcLNexC85w=;
+	s=arc-20240116; t=1739857564; c=relaxed/simple;
+	bh=SVKo/5gLmbKnQEp50nZawVJcERWFrqzurgjroht0oMc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=u1SKtIW656mY7iUU63FiQ4+hj3cGVWlbzRlX8sy0rYGqHTlUZMylOCm7uxBPwxrAWXYfMfAmWT4TmWY/AQJ82Boci3JFNC1C6w5EnB6jRTsYDVXh5vm7lzlyer21WqBAUKCAawOKQQoVF/Mpu6f0/dmNQQUbwBk+FiUSFeTvTxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vib4qMPA; arc=none smtp.client-ip=209.85.219.54
+	 MIME-Version; b=FVEUlxCcpbmbBPXEOlZzA6ktdBtFRIq7ojpv494NogWmRKECjc0bMYhiD/j1Iu0+QnW4iqkEHmviAL931p6T/YKtviS54bmXlNH4GgGqQ93hBWs16icydWd00C3i7bO/0HzOFIlkfodwdkNOhTuMChGQu7uEIoShf1emhsrWuUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNaCDHEX; arc=none smtp.client-ip=209.85.222.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vib4qMPA"
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6df83fd01cbso24898656d6.2;
-        Mon, 17 Feb 2025 21:46:01 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNaCDHEX"
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c0970e2e79so315252585a.3;
+        Mon, 17 Feb 2025 21:46:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739857561; x=1740462361; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739857562; x=1740462362; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=d+SA0W0F3ElkDDFf84vDj9xLEft1xrgSsYntfglUP4A=;
-        b=Vib4qMPAulC3mFqZNW1rGW0vI8GYa85IiPPIU9nmq8JVldo+/6EAxcv8OAXszoQacB
-         Fe29M86poQIddu6/9+Av1+ctUyOcrmE7y1llt8QdOui0K6/P7r04YQT48IqgfnhIH3Kf
-         7+nBPBG8vxah/2VyREgQqHMlAgGU9Fwx1U/4RqYOnWxlkPJACY3NFJkw3htXLEZr1edO
-         cwEjfsgGQm8n6dpk4jNXvO2whio6aix72mLg+/4k5Ya0pNo8UtnkAdEiNFyCgoAjdGFx
-         ZL1+kUcL1ajuKfbE4cYTtzVBFW2pb0XiKQiBtWvzTg9jVmlXzTkgh9WZul6rA9OUK4M5
-         d/1Q==
+        bh=5Ek/R8Hi0E15SqkOu9AVo8oTZDPYXJVZ85ePqaSyeVw=;
+        b=HNaCDHEXkXOSuD+zqugJWx6d21OMnnztD284nQiXc+pb6Uj6a57iB08yBc7Ht2zCkA
+         Fc55zohduObaY0LNAfIjLniHYd9V33vAm29J9odmWUFaDc1M6ahQo6qBJbF/ZBz3sc4G
+         YapZkT8XixqdSvsW/Dx5+NOxR/f4kYWoIrpYhQHnfd9CsiTvlJ3FpCUWkTXYXScM1R0h
+         Lo4veY9QbOX0g8zB7wQJP4Y9yh+P+GLYRfSiet2DtHlVJ1FIhb7lVxpnEtTXeLKMZ5Gr
+         4WrtPFYvFIA+6yGTkYaW8fDO1sIPviWSy0Q3Rn2FL9Po8hCrTurpQy764MZF6IOKXMMm
+         vWPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739857561; x=1740462361;
+        d=1e100.net; s=20230601; t=1739857562; x=1740462362;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=d+SA0W0F3ElkDDFf84vDj9xLEft1xrgSsYntfglUP4A=;
-        b=tWNyUQAqPy0dOG5u6WszfreyotMdN7VhRaBTuEm0EIWNuTxX6k3Mw5qwEFtYxs7lh2
-         kH0grrECy7yG2bwU9CCZpowN2wkRaxZbVSXIlx0h7bu3h7w2/DfAU7VreFqrY3LaVsTP
-         XQEZsRGlebOsf01H7KSJYPoAmjkjkb/+arJe6MrbYk5ZoQnYCm78mPXMv7sEzPS6O+EP
-         HcTPDYhlw92xlSUSGqKdkW6sG9BiumQwZctrEG4lVgUGAAOzv8Ubc9e0KfC18/zz58H8
-         bWQXx6zv02dG57vHWEPh1ok8zetpjlxHQz+lY1viPubLTPRi41U8FOo2fnuQLpa9RSpz
-         lwZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWP9sN7klLWey1MwdG06AcxtnqkAnmplaam34G46hwOV6049M1T6I9QFpo7enrJt0zEkYfmbpfjny6nqUUQ@vger.kernel.org, AJvYcCXM0xJ9cW+GsAlsHtwiMmF3YbjU0TZ5s6wrra3W6xYgqe7wuOd/oFskzIiYRnKTzbSgBvkFYtiN5js=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+RwKrkzjJtZm9yIk7V61jQfr1VsxIZoNFYMFn6y4ireamY8mm
-	dSbvLZ3Xi2NKHUVsZuDLwk2ORWPVmy6UM7T5bODHFX7N3dVE+C7LWWKuHQ==
-X-Gm-Gg: ASbGncugPHqXNHZsswJBc+VWtckFhgpSFejkeHcDnRBQZPL/lnQjd6qGY+ATIF1qBEo
-	1//lRrFqdGVTUyzxUgUVVoFySAwSnf+5fVCxsXQUS7Y/+iQtJQT1WQpYR5Fg7x0cIFuIMrHK3SG
-	er1nhKExnn4TRP1j2RSoxtilIEQokAIIqN6LEMj4m7gXslHR0FhCbZcsmQ8wLAd7Fo2yHmz3qIw
-	netjDXqFkYt0m42cs2HZZuq4q6ZExK6N5YS1T6jdd8D+kZC1bTV4xz+WyQDzVc9fmnXXGmjnIB0
-	uaUit3n9K9YZq5hJZg+mROTRxJ2S6HqCbrMYfkwkY0zOCpvU5lugI76u3icW1ksh9XxMR1UBLCp
-	CTOvV1Q==
-X-Google-Smtp-Source: AGHT+IH1Npth3Qcqe1DSEFjRrh0txsuwa7zTkMhckGnpeSZQim+JRJAhujp5DQfMimEWJfyHjuE2UQ==
-X-Received: by 2002:a05:6214:300e:b0:6e4:2d22:a566 with SMTP id 6a1803df08f44-6e66cccf032mr159363476d6.12.1739857560678;
-        Mon, 17 Feb 2025 21:46:00 -0800 (PST)
+        bh=5Ek/R8Hi0E15SqkOu9AVo8oTZDPYXJVZ85ePqaSyeVw=;
+        b=drrDFprLYPKt7fIcXtBE/IvJFhx2W6FSbpeH5TwX+/XVcHxK+Xo1ikPLV2I4m3s67x
+         SyyT1hF0ZUXF5AfiF0aIhmpsHPUZztRzX7aRVpcURf8gLoKIiXVpE+ZMq0+wSBOWW9qx
+         K4nZoeYZ5P/d/Lz72DalKqQ6xctgonqiLONBGMch7FC2iWu3PdTyWpHOGnCkmNp0/MYV
+         QBbIDzTemyj4k9NhBGV/TMLSvT99y8Q/WoEGhueD2+1V5rtpPVuxORpigz/D7MzcNZ9p
+         5/DhjhgbndcVAA5sib94mqSFc9k5F39yl/XnGilk/yQVOtFZUOgVBRfOxbhGw7xyWiFH
+         1wjA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0hjGXPAWrhdEtpAlUfHntClip152CgFoZMmxiPkcNlKVY5ZiaJxjTOe5wBbQO1kX6Z2wLJP8LFqzc2xPk@vger.kernel.org, AJvYcCUicnKmeonR29fituoXcqt+ibtVG9Gs6A1EUrZzijNvezKJzZp8QkS8amzArfRIWQMHo3gpQm2jiuQ=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAdCrfHaN0PX1W7bE7eCO+6t7RsKng8kMtYoZtAnvBtWPVBbsc
+	ulz8AekaCpai8bJyWXNKGYTHxF4bLPk6bg0GHQek1eqozJyqnZo8
+X-Gm-Gg: ASbGncsNd9HChD556IYDTp6KZ+gy0AJANdEaZrOSXMifL1x09YvGbZM1r0ktXOnaBhF
+	xrmqIkGwsnziv6rC5Jm0l9dBv/RENAIb0U2dxX3Vbr0mZjpOHK5ymaeKOokw+GK5rvhjYHFp3k6
+	VId+HdmIGyEHcvImLHNv1l/ehXsB9XuMKrHaxGXwr0XZs5eYU+AXKbV4q/cBLB4tPq6Bfh3Ox2i
+	RC2l4cg3l0JiWtJDcJjBcrK1dPS82eL5qSLjHxL2jE8wbMWDHsQqnYUuJgp9cRdVXVNXNFXmu+i
+	txhN4LOJSyLvQvAp2vdEGQ3cCK/DPoNyFdEAZ9MBsLOMusrcGMkK1FdRJfmpj5EWBcT7VXOVACJ
+	EX5Inlg==
+X-Google-Smtp-Source: AGHT+IE+jZADXT1WftgC47lrepiElxgQ0jGHyauZ55yN3mAwZXV4I60zoEAVM2f6IITuz/AD0ZdAcw==
+X-Received: by 2002:a05:620a:290a:b0:7c0:69a0:d9ee with SMTP id af79cd13be357-7c08a9f54b2mr1672320685a.33.1739857562058;
+        Mon, 17 Feb 2025 21:46:02 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471fcbef8d6sm8480841cf.56.2025.02.17.21.45.59
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0ac2bc478sm63711185a.21.2025.02.17.21.46.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:46:00 -0800 (PST)
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id A79541200043;
-	Tue, 18 Feb 2025 00:45:59 -0500 (EST)
+        Mon, 17 Feb 2025 21:46:01 -0800 (PST)
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 2EB9C1200043;
+	Tue, 18 Feb 2025 00:46:01 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Tue, 18 Feb 2025 00:45:59 -0500
-X-ME-Sender: <xms:lx60ZxrCTpa1ePl1Q1hKsWr9sxh4SeN3XtBdkJ_Xh94v28HO8Wh6qQ>
-    <xme:lx60Zzod2oUUCgM-02eWsrQbYSmyRWp4TK3rp1XaUl94029HkvSwFbe-RuwAPh3c3
-    WPrL0a7h6tc_k6sAA>
-X-ME-Received: <xmr:lx60Z-Pl-CgApRlGdPxZy3uC_ueFRgcvP3qm8NWZM-CsbyMlEJKjr5OCEw>
+  by phl-compute-04.internal (MEProxy); Tue, 18 Feb 2025 00:46:01 -0500
+X-ME-Sender: <xms:mR60Z_bVPbisQVgKQW4WKGFWmJXnNaoADQhrwsCz0WM0GIs6QxIE4g>
+    <xme:mR60Z-Y5Tduj42FkXlh0qDKSKPQGxc773sxO-0Qo-UUOlAv0S4SJQ3dr2P7sjPqGL
+    fUd9iXQjOh0lkrBjg>
+X-ME-Received: <xmr:mR60Zx-jTo3xOuP_Go-NidhZfZZqf98Q1G2UiyHt0sWiHmAuYbVWEx7m5w>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
     necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
     drtghomheqnecuggftrfgrthhtvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfev
-    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrg
     hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
     ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
     hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduhedpmhho
@@ -85,14 +85,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetgg
     hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
     mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
     hsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:lx60Z84_qxxGn5vipQ6Eym1TBqcA9i5ZqyueMsJpvTPoaBeVPWF4Og>
-    <xmx:lx60Zw4DacLRwRoDHTukbEfs2B0Axx62t9KEAuUwTjlC_Momv7dWvw>
-    <xmx:lx60Z0h9Q5Wnv-90M8y4dXJVxrKFWJYEB5UBFFGZpeT-A-i0DHk94g>
-    <xmx:lx60Zy6ZSJH1dxFrj0PAVxdNfprh1VICjlQlC2LpYfMFz5YwOvLrRw>
-    <xmx:lx60Z3JZoTiW4hcDKSbVKXr_mRKsij7gFwwsjzhUzF9AlI0iqnjPn04D>
+X-ME-Proxy: <xmx:mR60Z1q6gFi1P-ctqpd0udx8lQAsnCGoWhBuLMrQVxNqz8wPncblTw>
+    <xmx:mR60Z6r4d2meLlzfjMg4XpImz_ayMklsZRXwbJUisS5Ixdi1GoW1kQ>
+    <xmx:mR60Z7Q4HNt7mBShx7V6xkY59v-bER21zpqOI8oBP4b0vtLBotklLQ>
+    <xmx:mR60Zypug3bLoolHwnSZxL1vwZajtfe_hMvqZ7eSvuq9jFQ5HyEYdw>
+    <xmx:mR60Z75wWI7Lrl2yUewH-ugNKn8fjGpxyiU6ehZq2fGrxgeRidyc17CU>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Feb 2025 00:45:59 -0500 (EST)
+ 18 Feb 2025 00:46:00 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -109,9 +109,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rcu 4/7] srcu: Point call_srcu() to call_rcu() for detailed memory ordering
-Date: Mon, 17 Feb 2025 21:45:44 -0800
-Message-Id: <20250218054547.7364-5-boqun.feng@gmail.com>
+Subject: [PATCH rcu 5/7] rcu: Add CONFIG_RCU_LAZY delays to call_rcu() kernel-doc header
+Date: Mon, 17 Feb 2025 21:45:45 -0800
+Message-Id: <20250218054547.7364-6-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250218054547.7364-1-boqun.feng@gmail.com>
 References: <20250218054547.7364-1-boqun.feng@gmail.com>
@@ -125,34 +125,34 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit causes the call_srcu() kernel-doc header to reference that
-of call_rcu() for detailed memory-ordering guarantees.
+This commit adds a description of the energy-efficiency delays that
+call_rcu() can impose, along with a pointer to call_rcu_hurry() for
+latency-sensitive kernel code.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/srcutree.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index b83c74c4dcc0..f87a9fb6d6bb 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1398,8 +1398,12 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
-  * read-side critical sections are delimited by srcu_read_lock() and
-  * srcu_read_unlock(), and may be nested.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2cd193ed854c..780e4b30febb 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3172,6 +3172,13 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
   *
-- * The callback will be invoked from process context, but must nevertheless
-- * be fast and must not block.
-+ * The callback will be invoked from process context, but with bh
-+ * disabled.  The callback function must therefore be fast and must
-+ * not block.
+  * Implementation of these memory-ordering guarantees is described here:
+  * Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
 + *
-+ * See the description of call_rcu() for more detailed information on
-+ * memory ordering guarantees.
++ * Specific to call_rcu() (as opposed to the other call_rcu*() functions),
++ * in kernels built with CONFIG_RCU_LAZY=y, call_rcu() might delay for many
++ * seconds before starting the grace period needed by the corresponding
++ * callback.  This delay can significantly improve energy-efficiency
++ * on low-utilization battery-powered devices.  To avoid this delay,
++ * in latency-sensitive kernel code, use call_rcu_hurry().
   */
- void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 	       rcu_callback_t func)
+ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
 -- 
 2.39.5 (Apple Git-154)
 
