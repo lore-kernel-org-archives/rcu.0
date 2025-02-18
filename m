@@ -1,72 +1,72 @@
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096A51BDA91;
-	Tue, 18 Feb 2025 05:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF571CEAC3;
+	Tue, 18 Feb 2025 05:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739857564; cv=none; b=BV7WuC/h5qecR2gutjNrBWC+Mjilv7ij4v7EOucbpeekmVI/GQ5Ru5Mh4N9edruhYwImK41nRF1f8blKV2gZYoDE7FJeRInUnjKhjva7GUYClNu1rSnQ4zrLWTlinYen1KjP1cUjqhblKwSoKzknvKdyPMNUs0+hSbB4mZvv1ec=
+	t=1739857566; cv=none; b=X67Kza2YQHu//paPyHDja+uMZQ8z0ZLf8Fo9b8JiI7M0OWW56HodoXBX6fqehYcExVitDQ52XEnyyoSfcV1ScWxNPQLU8YWPv/leBpFDXPXS2OZqRvmlD/SI6wYi3wQr6YbkuzCU0L5wSz7BgXuVRk0+BAvyxpTEg4+SToLbCIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739857564; c=relaxed/simple;
-	bh=SVKo/5gLmbKnQEp50nZawVJcERWFrqzurgjroht0oMc=;
+	s=arc-20240116; t=1739857566; c=relaxed/simple;
+	bh=gGX4FsCiXZJ8ZZ7+WoZlxvaI6QHaQESgtAxBsTbrf4Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FVEUlxCcpbmbBPXEOlZzA6ktdBtFRIq7ojpv494NogWmRKECjc0bMYhiD/j1Iu0+QnW4iqkEHmviAL931p6T/YKtviS54bmXlNH4GgGqQ93hBWs16icydWd00C3i7bO/0HzOFIlkfodwdkNOhTuMChGQu7uEIoShf1emhsrWuUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HNaCDHEX; arc=none smtp.client-ip=209.85.222.177
+	 MIME-Version; b=CrxUoOcZTUe4igiyWUb8EWUpGjOp+gwEEI7gz7bOefeU8eeoiaEpg1rptvB2OK1bbkPJ54c6K/L2DjQcryxC5grrlO5RwqCK336B3TvIBoeqv+E4w1uwRwI5ryhhrcHlOb29qHcqcvEfEOhrgQa+/jQliZ1a/J/yr9fkmvK6c1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VoWPodqn; arc=none smtp.client-ip=209.85.219.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HNaCDHEX"
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c0970e2e79so315252585a.3;
-        Mon, 17 Feb 2025 21:46:02 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VoWPodqn"
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6e6621960eeso41295076d6.0;
+        Mon, 17 Feb 2025 21:46:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739857562; x=1740462362; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739857563; x=1740462363; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=5Ek/R8Hi0E15SqkOu9AVo8oTZDPYXJVZ85ePqaSyeVw=;
-        b=HNaCDHEXkXOSuD+zqugJWx6d21OMnnztD284nQiXc+pb6Uj6a57iB08yBc7Ht2zCkA
-         Fc55zohduObaY0LNAfIjLniHYd9V33vAm29J9odmWUFaDc1M6ahQo6qBJbF/ZBz3sc4G
-         YapZkT8XixqdSvsW/Dx5+NOxR/f4kYWoIrpYhQHnfd9CsiTvlJ3FpCUWkTXYXScM1R0h
-         Lo4veY9QbOX0g8zB7wQJP4Y9yh+P+GLYRfSiet2DtHlVJ1FIhb7lVxpnEtTXeLKMZ5Gr
-         4WrtPFYvFIA+6yGTkYaW8fDO1sIPviWSy0Q3Rn2FL9Po8hCrTurpQy764MZF6IOKXMMm
-         vWPA==
+        bh=Ti+Pk+mBk7PK8fxnF7pRwhz3z0nqohliniWgvUQSKn0=;
+        b=VoWPodqnd/TCCxyWymN40byYwKBOJRVJwQCMcH4m29WU3VpuBZgU0pfEkBslO4phaU
+         ubkVJqPoU/d7hn/+xPqwEUrGZGQwh1GTEw+zoV1WKK4ZahfTB+p6N775wS01YtgoIghr
+         xmItY71ecgtUMD6/pIK+55b7JRa5t5cB7GwJL6FMLWortC1bp4Jk3k9tWBBah4LwvqVx
+         JVrIe4tuTf1Gr3kwdCsKObIX+d1Hn34aBK10WN5Upcev5Bzc8fOvhvpiiuHZy2pXNn+l
+         lqcMSiKfyIIGpLi8TPcre5ybV6K6LlrEBFjep1GEH3Mb44hRFuG+NdBX44BU1Uk2bAeK
+         TIsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739857562; x=1740462362;
+        d=1e100.net; s=20230601; t=1739857563; x=1740462363;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5Ek/R8Hi0E15SqkOu9AVo8oTZDPYXJVZ85ePqaSyeVw=;
-        b=drrDFprLYPKt7fIcXtBE/IvJFhx2W6FSbpeH5TwX+/XVcHxK+Xo1ikPLV2I4m3s67x
-         SyyT1hF0ZUXF5AfiF0aIhmpsHPUZztRzX7aRVpcURf8gLoKIiXVpE+ZMq0+wSBOWW9qx
-         K4nZoeYZ5P/d/Lz72DalKqQ6xctgonqiLONBGMch7FC2iWu3PdTyWpHOGnCkmNp0/MYV
-         QBbIDzTemyj4k9NhBGV/TMLSvT99y8Q/WoEGhueD2+1V5rtpPVuxORpigz/D7MzcNZ9p
-         5/DhjhgbndcVAA5sib94mqSFc9k5F39yl/XnGilk/yQVOtFZUOgVBRfOxbhGw7xyWiFH
-         1wjA==
-X-Forwarded-Encrypted: i=1; AJvYcCU0hjGXPAWrhdEtpAlUfHntClip152CgFoZMmxiPkcNlKVY5ZiaJxjTOe5wBbQO1kX6Z2wLJP8LFqzc2xPk@vger.kernel.org, AJvYcCUicnKmeonR29fituoXcqt+ibtVG9Gs6A1EUrZzijNvezKJzZp8QkS8amzArfRIWQMHo3gpQm2jiuQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAdCrfHaN0PX1W7bE7eCO+6t7RsKng8kMtYoZtAnvBtWPVBbsc
-	ulz8AekaCpai8bJyWXNKGYTHxF4bLPk6bg0GHQek1eqozJyqnZo8
-X-Gm-Gg: ASbGncsNd9HChD556IYDTp6KZ+gy0AJANdEaZrOSXMifL1x09YvGbZM1r0ktXOnaBhF
-	xrmqIkGwsnziv6rC5Jm0l9dBv/RENAIb0U2dxX3Vbr0mZjpOHK5ymaeKOokw+GK5rvhjYHFp3k6
-	VId+HdmIGyEHcvImLHNv1l/ehXsB9XuMKrHaxGXwr0XZs5eYU+AXKbV4q/cBLB4tPq6Bfh3Ox2i
-	RC2l4cg3l0JiWtJDcJjBcrK1dPS82eL5qSLjHxL2jE8wbMWDHsQqnYUuJgp9cRdVXVNXNFXmu+i
-	txhN4LOJSyLvQvAp2vdEGQ3cCK/DPoNyFdEAZ9MBsLOMusrcGMkK1FdRJfmpj5EWBcT7VXOVACJ
-	EX5Inlg==
-X-Google-Smtp-Source: AGHT+IE+jZADXT1WftgC47lrepiElxgQ0jGHyauZ55yN3mAwZXV4I60zoEAVM2f6IITuz/AD0ZdAcw==
-X-Received: by 2002:a05:620a:290a:b0:7c0:69a0:d9ee with SMTP id af79cd13be357-7c08a9f54b2mr1672320685a.33.1739857562058;
-        Mon, 17 Feb 2025 21:46:02 -0800 (PST)
+        bh=Ti+Pk+mBk7PK8fxnF7pRwhz3z0nqohliniWgvUQSKn0=;
+        b=ANvQVPlyI8U6ZgI3YipzJM4p/yBANed6xOtTYRqr3DUxNJgXYjoq0si2RVjFort5Dh
+         +iIu8IH9cDM8NdcWTVHA38aaLQ5qMQcwBzHFvSZswOZWuAkH0kxgORoJIYuwrfyCQ690
+         pCpY93L496AjLEYM/4LIOsTXPCAI5j3KzLIV/w8U6XV9PJ0FmRnFi1DSJBx2b+E7boCm
+         qEvEWT3As0WOOq9mMFJ/8NdHOdqDAEmInI5ZfwncZGEnBFzmot+KiCy0TdKPfa2qOc/6
+         /s1F6Tuvnv2bWsjsZQJZOA4LwCJBRmU8KwBN5lNxYijjLvyoRWp0e/Z44NnEo3iJKQhH
+         UG1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUI7MaGViRKD5+djFgf2gMlPnupRRiZv8phWA4awBOWHBxvYLT8ak3Q3SjcltZlts5OvpOJqvamvZA=@vger.kernel.org, AJvYcCVqlvDdvmbwShrV/WPnhZ972K+Pfrjvp91HrPqxhsVM4UznE06CVroldg5UrpOyf5DLbFatyaWiwgspQTCN@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGm4a54OsCjtkZCTflEUujJrSaoAZ/nyHQwp/fdoCcAVgeJUXF
+	DgguQDi7SIjkUkVjc9gE6KLjkqaDsXu5BrNYstYLfegxXqnIvFjI
+X-Gm-Gg: ASbGncscZ5M0zGJ/LFuxewcYdxC14ZYIZWLaB8h0l6Oh4aBT1M2DAFn5gCXS2vKH2Ni
+	PoLcQHo3N1uDO/Z/EnHrEJd8kME5Yvv+KvQP8bulaeaUhGoE5lx8BBgz9vIBS5/my1e+6PgCTRN
+	ih5HTu5T7iLZ3Ivo7cSdSu302S+xmZ8nAnxLP0WUeA2WFl5Zo+rkwT0reroXmtRwiSh5BxWjpvD
+	IBW0+EJ+4CVK3LPTOMadjkEna3766Oz3gwGS+dmiF70aJBdRkxT1shAhu+wUgzpmctoLXtXMcI7
+	8yb4pUdGdAX8cleTu0uZJI+NdVUQvKiLdaO3jV1eV494SkcK841KWjWFOuC92Ad5S2uUry4mYWv
+	IcvpvLg==
+X-Google-Smtp-Source: AGHT+IGXjA0SVcPAeRrYT9L9owbyGfR21mZr9aSl8Vj9CbXvXgYISkJyHB0OXrwPypzsCAZvWUQB/Q==
+X-Received: by 2002:ad4:5e8f:0:b0:6e4:5f2b:9f15 with SMTP id 6a1803df08f44-6e65c8fed77mr273991976d6.14.1739857563558;
+        Mon, 17 Feb 2025 21:46:03 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0ac2bc478sm63711185a.21.2025.02.17.21.46.01
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0a1f089b2sm165544485a.53.2025.02.17.21.46.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:46:01 -0800 (PST)
+        Mon, 17 Feb 2025 21:46:03 -0800 (PST)
 Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 2EB9C1200043;
-	Tue, 18 Feb 2025 00:46:01 -0500 (EST)
+	by mailfauth.phl.internal (Postfix) with ESMTP id 9E12F1200043;
+	Tue, 18 Feb 2025 00:46:02 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Tue, 18 Feb 2025 00:46:01 -0500
-X-ME-Sender: <xms:mR60Z_bVPbisQVgKQW4WKGFWmJXnNaoADQhrwsCz0WM0GIs6QxIE4g>
-    <xme:mR60Z-Y5Tduj42FkXlh0qDKSKPQGxc773sxO-0Qo-UUOlAv0S4SJQ3dr2P7sjPqGL
-    fUd9iXQjOh0lkrBjg>
-X-ME-Received: <xmr:mR60Zx-jTo3xOuP_Go-NidhZfZZqf98Q1G2UiyHt0sWiHmAuYbVWEx7m5w>
+  by phl-compute-04.internal (MEProxy); Tue, 18 Feb 2025 00:46:02 -0500
+X-ME-Sender: <xms:mh60Z3bJCwy4TvanRA-86uWDw6K0vDc5tuHDr99EE1_RWE4tR_nt9w>
+    <xme:mh60Z2bnwgwL4aowgFnfYvUJUFGMFb4YssRvvxHjIdW4sw6k0LhWOxZR15itrXQET
+    5i7ijayH-C8liYhPA>
+X-ME-Received: <xmr:mh60Z5-CSkjku0MdYAHTBHCaqPF3JQLPHxZhM-Hs1XKLkURKbE50pkkUTg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
@@ -85,14 +85,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetgg
     hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
     mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
     hsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:mR60Z1q6gFi1P-ctqpd0udx8lQAsnCGoWhBuLMrQVxNqz8wPncblTw>
-    <xmx:mR60Z6r4d2meLlzfjMg4XpImz_ayMklsZRXwbJUisS5Ixdi1GoW1kQ>
-    <xmx:mR60Z7Q4HNt7mBShx7V6xkY59v-bER21zpqOI8oBP4b0vtLBotklLQ>
-    <xmx:mR60Zypug3bLoolHwnSZxL1vwZajtfe_hMvqZ7eSvuq9jFQ5HyEYdw>
-    <xmx:mR60Z75wWI7Lrl2yUewH-ugNKn8fjGpxyiU6ehZq2fGrxgeRidyc17CU>
+X-ME-Proxy: <xmx:mh60Z9rji0oLaPSTQjSJuBZ1PVKkiOOcAGa8NQhQQagCJSzY3UPoFg>
+    <xmx:mh60ZyqkgcH5Lt5PZvZ9GxCj0MYKgA_oYS-cKy_lCXDOxiCZV9gqnw>
+    <xmx:mh60ZzQ-TyH2fqMzpSmkxNLi4cf1jb8Mnl6U-WNKiXeWN48T7miWxw>
+    <xmx:mh60Z6rFLUPAsCy4XU12prTJtlAmCLZhXhHapXMUOvxw9PPhWWEnNg>
+    <xmx:mh60Zz6yfGe9STtcJiA4cxRI6rTj-mW6qG9lUaVn4mgH-i7SMY1uEXnl>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Feb 2025 00:46:00 -0500 (EST)
+ 18 Feb 2025 00:46:02 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -109,9 +109,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH rcu 5/7] rcu: Add CONFIG_RCU_LAZY delays to call_rcu() kernel-doc header
-Date: Mon, 17 Feb 2025 21:45:45 -0800
-Message-Id: <20250218054547.7364-6-boqun.feng@gmail.com>
+Subject: [PATCH rcu 6/7] rcu: Clarify RCU_LAZY and RCU_LAZY_DEFAULT_OFF help text
+Date: Mon, 17 Feb 2025 21:45:46 -0800
+Message-Id: <20250218054547.7364-7-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250218054547.7364-1-boqun.feng@gmail.com>
 References: <20250218054547.7364-1-boqun.feng@gmail.com>
@@ -125,34 +125,54 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds a description of the energy-efficiency delays that
-call_rcu() can impose, along with a pointer to call_rcu_hurry() for
-latency-sensitive kernel code.
+This commit wordsmiths the RCU_LAZY and RCU_LAZY_DEFAULT_OFF Kconfig
+options' help text.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/tree.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/rcu/Kconfig | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2cd193ed854c..780e4b30febb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3172,6 +3172,13 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
-  *
-  * Implementation of these memory-ordering guarantees is described here:
-  * Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst.
-+ *
-+ * Specific to call_rcu() (as opposed to the other call_rcu*() functions),
-+ * in kernels built with CONFIG_RCU_LAZY=y, call_rcu() might delay for many
-+ * seconds before starting the grace period needed by the corresponding
-+ * callback.  This delay can significantly improve energy-efficiency
-+ * on low-utilization battery-powered devices.  To avoid this delay,
-+ * in latency-sensitive kernel code, use call_rcu_hurry().
-  */
- void call_rcu(struct rcu_head *head, rcu_callback_t func)
- {
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index b9b6bc55185d..2bb22dac3b5a 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -323,21 +323,27 @@ config RCU_LAZY
+ 	depends on RCU_NOCB_CPU
+ 	default n
+ 	help
+-	  To save power, batch RCU callbacks and flush after delay, memory
+-	  pressure, or callback list growing too big.
++	  To save power, batch RCU callbacks and delay starting the
++	  corresponding grace  period for multiple seconds.  The grace
++	  period will be started after this delay, in case of memory
++	  pressure, or if the corresponding CPU's callback list grows
++	  too large.
+ 
+-	  Requires rcu_nocbs=all to be set.
++	  These delays happen only on rcu_nocbs CPUs, that is, CPUs
++	  whose callbacks have been offloaded.
+ 
+-	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
++	  Use the rcutree.enable_rcu_lazy=0 kernel-boot parameter to
++	  globally disable these delays.
+ 
+ config RCU_LAZY_DEFAULT_OFF
+ 	bool "Turn RCU lazy invocation off by default"
+ 	depends on RCU_LAZY
+ 	default n
+ 	help
+-	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
+-	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
+-	  it back on.
++	  Build the kernel with CONFIG_RCU_LAZY=y, but cause the kernel
++	  to boot with these energy-efficiency delays disabled.  Use the
++	  rcutree.enable_rcu_lazy=0 kernel-boot parameter to override
++	  the this option at boot time, thus re-enabling these delays.
+ 
+ config RCU_DOUBLE_CHECK_CB_TIME
+ 	bool "RCU callback-batch backup time check"
 -- 
 2.39.5 (Apple Git-154)
 
