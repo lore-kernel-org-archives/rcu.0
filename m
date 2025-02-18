@@ -1,73 +1,73 @@
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E8D1C07DA;
-	Tue, 18 Feb 2025 05:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C802A1C6FF8;
+	Tue, 18 Feb 2025 05:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739857561; cv=none; b=PdklZIDj9EQ7LxgdOPkLYEMruZKlPjpwI00F2Dvb8wwG6WLB38Qn0vmMMs0F+C1Fs4elZl/O0oSwPsYvz+GEFGecx7aPvkNM6roCHVQIQCzXrrmIt0T8Jn7kzt2alh6fq/B6DY7Ih9f1DoFlivS1jbKzOldu6E+1FGl3vNC9oFM=
+	t=1739857563; cv=none; b=NwdWO331r0SbICQEmuO59e33fCiKK8JwFpGc89yWv8JgqmKkjnWHxyH+HW9coioDoi3dSMB5OF5siiGnUR+mtWYPN6+ofSEFsZDcJTSMPNcFFBgGTBEuWMGnlvKtFmxTCUsKqMbi4Mtol9YY4aTTmiL0GXuUwQGL22rknvsPwTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739857561; c=relaxed/simple;
-	bh=Hhk6qN5cX2HiG95oLWWknwJOUcfQbEf5crAZtdyGlfk=;
+	s=arc-20240116; t=1739857563; c=relaxed/simple;
+	bh=3vFd1mN8dxuIO0lNwxRqYwG2R9ldYvt17FcLNexC85w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CfdZu6xmOD7IwkC7b4+1ynk46NBlU5oniVAnTIFuWOnEMUXAqWBEZlBPDN4IGRnXkbLac/8CEmairQFrtlisQ4FWdvAY0iAaEXeyHdLY2iv7degTWvLb2PwQAOZNYmo/WSm+s/IbL5njHmpfVkdZ9ue2zdwF1xeZz7lOCiq3VyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X9C531At; arc=none smtp.client-ip=209.85.222.177
+	 MIME-Version; b=u1SKtIW656mY7iUU63FiQ4+hj3cGVWlbzRlX8sy0rYGqHTlUZMylOCm7uxBPwxrAWXYfMfAmWT4TmWY/AQJ82Boci3JFNC1C6w5EnB6jRTsYDVXh5vm7lzlyer21WqBAUKCAawOKQQoVF/Mpu6f0/dmNQQUbwBk+FiUSFeTvTxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vib4qMPA; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X9C531At"
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c0b0ca6742so7544785a.0;
-        Mon, 17 Feb 2025 21:45:59 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vib4qMPA"
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6df83fd01cbso24898656d6.2;
+        Mon, 17 Feb 2025 21:46:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739857559; x=1740462359; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1739857561; x=1740462361; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=AFj8E0Qi9rwHd4n/4onPY5cFP0jmlV+xnlSEn6nuc3c=;
-        b=X9C531Aty4409JbrbfOE24ou4LRrtOUW64nnErzL1h2IuBtAzKiJdOGhjMTvkG65zE
-         J0GjHP737fCNNxIeOVT0KB8pFGJswnu8/jj2T0S05ce3H96qvP/EdxE8DUQRRJc5tmhT
-         d7Qu+SMCYoJAkC0AS0evwKOjXysfTzqPSOvqlENDtIZXGqYuxJ57u5hzpm6UR2BMN3I2
-         yTytkVqtt0pNKLAbgUGrSR7Am2ewMrmLiNEFTlm7wKeLwve+lw21sETX3sf8CLz49PCH
-         RP1BqnFMVeK6i7EwYihfJL8R5D5OXJSNevvr1niO9LymowVWq6moF+ILm1qPfmq5+s8z
-         g04g==
+        bh=d+SA0W0F3ElkDDFf84vDj9xLEft1xrgSsYntfglUP4A=;
+        b=Vib4qMPAulC3mFqZNW1rGW0vI8GYa85IiPPIU9nmq8JVldo+/6EAxcv8OAXszoQacB
+         Fe29M86poQIddu6/9+Av1+ctUyOcrmE7y1llt8QdOui0K6/P7r04YQT48IqgfnhIH3Kf
+         7+nBPBG8vxah/2VyREgQqHMlAgGU9Fwx1U/4RqYOnWxlkPJACY3NFJkw3htXLEZr1edO
+         cwEjfsgGQm8n6dpk4jNXvO2whio6aix72mLg+/4k5Ya0pNo8UtnkAdEiNFyCgoAjdGFx
+         ZL1+kUcL1ajuKfbE4cYTtzVBFW2pb0XiKQiBtWvzTg9jVmlXzTkgh9WZul6rA9OUK4M5
+         d/1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739857559; x=1740462359;
+        d=1e100.net; s=20230601; t=1739857561; x=1740462361;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=AFj8E0Qi9rwHd4n/4onPY5cFP0jmlV+xnlSEn6nuc3c=;
-        b=q3Ds5cbRC0igVo+oQq+giL8QHNkNkEJxmqkuZHo/X7Io4jSonmJQQRQWaCiktQ5Yj8
-         ljZ5XCTSomyVlkwYXOu+Jd4yczlb1RAqAgdQ+mxNn4trnP4McI8jckKeC8jEAwX/HRBF
-         doFSF9YFsWGQt4dgixJ4KKPOZlDDOtbQsTld/vPtyJK8rJSmNH31ZwD4dr84Oe36O0PF
-         J7SWl9whG9n/NNeU4IYulCZ9mk4fGcCed8Q0WEDbFhk7Ms1rBXKG00d0d2okIsOWc79C
-         l75n2/YcpSQOEJCodbuqctsSSDFF8QtRuwgkCAJfJCyv+LuZDoX1YE5Q9g+ztE+1+kbk
-         +siQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0WAnlupaKWVJ+i8lXose+szClGCYv1H3/qhC0X16zifx9vAS8gUTRV9BI7KToYs1zZ5ChzsoLIx0PtN/C@vger.kernel.org, AJvYcCVvip2vwfoWpRg6N/1bQcGjVxcim9QWxRYKhwEnfn2sukAomoVf6LZdzSlbdELptcBKlu5476cRLyc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUFoahIK65uAkQwYJInPBz3VRYWNBsotXUpTtGUHuSkP8mbNn1
-	/kuATwt4f21+cc9kHQ8vj4pVASIibBZgQDMVPqcXmG2GmYvFhbcg
-X-Gm-Gg: ASbGncsjuf9uf3li7e+EoGtiazeixlZGqdPsUbNfA7w7Fg0bMWrq5mbn8mmLCF048Vp
-	eUhtOz0MOUm0iSyfIRupGJ1NvwJzS0QKXmrShQQMeEw+6SbPhQXcp6A+HqYZw0TO4R+WwK8oT9N
-	55QoyRcUrVaJ66+7nQF8lAPm5vP0h2IvDs83bp9IV7/5sjrQ7bJ5UYwTjPBSRGTozz32Gp5yw/M
-	iiCVobN+XEVkmHeJ/OjzJd9bllAyXKeLiUMZLJAB/IWcP3SP04ZIflOr9rPC1efIb7A0n5b3Mg5
-	Buq0B8w2BKG8wHbEz+dlBFfbhHOcFZm6uIwPgK77urnK9TMqyZZIpFoWRKhxWrlphhSejH4s3CZ
-	fH6pJ9A==
-X-Google-Smtp-Source: AGHT+IHWxpzdBnwxq8h0kCtn53UgHTkb1eFWOIWxmYVOxrW4NcSKcMcZOEzhnOTf1P+9dm5uB1CHSA==
-X-Received: by 2002:a05:620a:2953:b0:7c0:9df3:a0cb with SMTP id af79cd13be357-7c09df3aa26mr971954785a.53.1739857559006;
-        Mon, 17 Feb 2025 21:45:59 -0800 (PST)
+        bh=d+SA0W0F3ElkDDFf84vDj9xLEft1xrgSsYntfglUP4A=;
+        b=tWNyUQAqPy0dOG5u6WszfreyotMdN7VhRaBTuEm0EIWNuTxX6k3Mw5qwEFtYxs7lh2
+         kH0grrECy7yG2bwU9CCZpowN2wkRaxZbVSXIlx0h7bu3h7w2/DfAU7VreFqrY3LaVsTP
+         XQEZsRGlebOsf01H7KSJYPoAmjkjkb/+arJe6MrbYk5ZoQnYCm78mPXMv7sEzPS6O+EP
+         HcTPDYhlw92xlSUSGqKdkW6sG9BiumQwZctrEG4lVgUGAAOzv8Ubc9e0KfC18/zz58H8
+         bWQXx6zv02dG57vHWEPh1ok8zetpjlxHQz+lY1viPubLTPRi41U8FOo2fnuQLpa9RSpz
+         lwZw==
+X-Forwarded-Encrypted: i=1; AJvYcCWP9sN7klLWey1MwdG06AcxtnqkAnmplaam34G46hwOV6049M1T6I9QFpo7enrJt0zEkYfmbpfjny6nqUUQ@vger.kernel.org, AJvYcCXM0xJ9cW+GsAlsHtwiMmF3YbjU0TZ5s6wrra3W6xYgqe7wuOd/oFskzIiYRnKTzbSgBvkFYtiN5js=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+RwKrkzjJtZm9yIk7V61jQfr1VsxIZoNFYMFn6y4ireamY8mm
+	dSbvLZ3Xi2NKHUVsZuDLwk2ORWPVmy6UM7T5bODHFX7N3dVE+C7LWWKuHQ==
+X-Gm-Gg: ASbGncugPHqXNHZsswJBc+VWtckFhgpSFejkeHcDnRBQZPL/lnQjd6qGY+ATIF1qBEo
+	1//lRrFqdGVTUyzxUgUVVoFySAwSnf+5fVCxsXQUS7Y/+iQtJQT1WQpYR5Fg7x0cIFuIMrHK3SG
+	er1nhKExnn4TRP1j2RSoxtilIEQokAIIqN6LEMj4m7gXslHR0FhCbZcsmQ8wLAd7Fo2yHmz3qIw
+	netjDXqFkYt0m42cs2HZZuq4q6ZExK6N5YS1T6jdd8D+kZC1bTV4xz+WyQDzVc9fmnXXGmjnIB0
+	uaUit3n9K9YZq5hJZg+mROTRxJ2S6HqCbrMYfkwkY0zOCpvU5lugI76u3icW1ksh9XxMR1UBLCp
+	CTOvV1Q==
+X-Google-Smtp-Source: AGHT+IH1Npth3Qcqe1DSEFjRrh0txsuwa7zTkMhckGnpeSZQim+JRJAhujp5DQfMimEWJfyHjuE2UQ==
+X-Received: by 2002:a05:6214:300e:b0:6e4:2d22:a566 with SMTP id 6a1803df08f44-6e66cccf032mr159363476d6.12.1739857560678;
+        Mon, 17 Feb 2025 21:46:00 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c07c886939sm620307885a.114.2025.02.17.21.45.58
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471fcbef8d6sm8480841cf.56.2025.02.17.21.45.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2025 21:45:58 -0800 (PST)
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 2FF6E1200043;
-	Tue, 18 Feb 2025 00:45:58 -0500 (EST)
+        Mon, 17 Feb 2025 21:46:00 -0800 (PST)
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfauth.phl.internal (Postfix) with ESMTP id A79541200043;
+	Tue, 18 Feb 2025 00:45:59 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Tue, 18 Feb 2025 00:45:58 -0500
-X-ME-Sender: <xms:lh60Z07Fnpz1CcsQnRk6oXJSIe9c_-IkozhxudnDRPTU9wjSchFmWA>
-    <xme:lh60Z14yvCTmkcVM7CzUvA8NZ7P_V9b_HYw2kk9YZ2zxjDsaxkcS0nDqsqq-k4XgF
-    Q1tiKrObDucgR7Xqw>
-X-ME-Received: <xmr:lh60Zzc-aqPSpAelp72MvwqCr805J1eGZeZKiHptfjn46hQwyy5lc6pC1Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetggdotefrod
+  by phl-compute-01.internal (MEProxy); Tue, 18 Feb 2025 00:45:59 -0500
+X-ME-Sender: <xms:lx60ZxrCTpa1ePl1Q1hKsWr9sxh4SeN3XtBdkJ_Xh94v28HO8Wh6qQ>
+    <xme:lx60Zzod2oUUCgM-02eWsrQbYSmyRWp4TK3rp1XaUl94029HkvSwFbe-RuwAPh3c3
+    WPrL0a7h6tc_k6sAA>
+X-ME-Received: <xmr:lx60Z-Pl-CgApRlGdPxZy3uC_ueFRgcvP3qm8NWZM-CsbyMlEJKjr5OCEw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdeglecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
@@ -76,7 +76,7 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetgg
     ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
     hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
     ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduiedpmhho
+    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeduhedpmhho
     uggvpehsmhhtphhouhhtpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
     hrghdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthho
     pehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrd
@@ -85,14 +85,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeitdegkecutefuodetgg
     hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
     mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
     hsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:lh60Z5JTuVk6sQL_kT1Bsou6Cv2j55x3KLpEy_wtO0c7MkU8tn9b9Q>
-    <xmx:lh60Z4KF2Zfd9rCnFJ1zC9POCCJCBdODOXSaCh6SMQa3Q1j5fPS9vw>
-    <xmx:lh60Z6xAT2bk3jYpfkw-KEn3kSRRqyoB-C-49fsLH8JJTl7kfjQcqQ>
-    <xmx:lh60Z8KiBv0hQ63m3BElJA_f1-MaFlu2jUAqtw3ARrMQ8Czh0lZIyQ>
-    <xmx:lh60Z3ZllgF14aGeFB-8e7XXGb8xnh0OINnT_FZ9eD3VoGDFl5Z-Nb1R>
+X-ME-Proxy: <xmx:lx60Z84_qxxGn5vipQ6Eym1TBqcA9i5ZqyueMsJpvTPoaBeVPWF4Og>
+    <xmx:lx60Zw4DacLRwRoDHTukbEfs2B0Axx62t9KEAuUwTjlC_Momv7dWvw>
+    <xmx:lx60Z0h9Q5Wnv-90M8y4dXJVxrKFWJYEB5UBFFGZpeT-A-i0DHk94g>
+    <xmx:lx60Zy6ZSJH1dxFrj0PAVxdNfprh1VICjlQlC2LpYfMFz5YwOvLrRw>
+    <xmx:lx60Z3JZoTiW4hcDKSbVKXr_mRKsij7gFwwsjzhUzF9AlI0iqnjPn04D>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 18 Feb 2025 00:45:57 -0500 (EST)
+ 18 Feb 2025 00:45:59 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -108,11 +108,10 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH rcu 3/7] rcu: Document self-propagating callbacks
-Date: Mon, 17 Feb 2025 21:45:43 -0800
-Message-Id: <20250218054547.7364-4-boqun.feng@gmail.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH rcu 4/7] srcu: Point call_srcu() to call_rcu() for detailed memory ordering
+Date: Mon, 17 Feb 2025 21:45:44 -0800
+Message-Id: <20250218054547.7364-5-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250218054547.7364-1-boqun.feng@gmail.com>
 References: <20250218054547.7364-1-boqun.feng@gmail.com>
@@ -126,42 +125,34 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit documents the fact that a given RCU callback function can
-repost itself.
+This commit causes the call_srcu() kernel-doc header to reference that
+of call_rcu() for detailed memory-ordering guarantees.
 
-Reported-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/tree.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ kernel/rcu/srcutree.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 475f31deed14..2cd193ed854c 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3107,7 +3107,7 @@ module_param(enable_rcu_lazy, bool, 0444);
-  * critical sections have completed.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index b83c74c4dcc0..f87a9fb6d6bb 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -1398,8 +1398,12 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+  * read-side critical sections are delimited by srcu_read_lock() and
+  * srcu_read_unlock(), and may be nested.
   *
-  * Use this API instead of call_rcu() if you don't want the callback to be
-- * invoked after very long periods of time, which can happen on systems without
-+ * delayed for very long periods of time, which can happen on systems without
-  * memory pressure and on systems which are lightly loaded or mostly idle.
-  * This function will cause callbacks to be invoked sooner than later at the
-  * expense of extra power. Other than that, this function is identical to, and
-@@ -3138,6 +3138,12 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
-  * might well execute concurrently with RCU read-side critical sections
-  * that started after call_rcu() was invoked.
-  *
-+ * It is perfectly legal to repost an RCU callback, potentially with
-+ * a different callback function, from within its callback function.
-+ * The specified function will be invoked after another full grace period
-+ * has elapsed.  This use case is similar in form to the common practice
-+ * of reposting a timer from within its own handler.
+- * The callback will be invoked from process context, but must nevertheless
+- * be fast and must not block.
++ * The callback will be invoked from process context, but with bh
++ * disabled.  The callback function must therefore be fast and must
++ * not block.
 + *
-  * RCU read-side critical sections are delimited by rcu_read_lock()
-  * and rcu_read_unlock(), and may be nested.  In addition, but only in
-  * v5.0 and later, regions of code across which interrupts, preemption,
++ * See the description of call_rcu() for more detailed information on
++ * memory ordering guarantees.
+  */
+ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 	       rcu_callback_t func)
 -- 
 2.39.5 (Apple Git-154)
 
