@@ -1,237 +1,162 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C8A1FA261
-	for <rcu@vger.kernel.org>; Wed, 19 Feb 2025 16:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54311FCCFD;
+	Wed, 19 Feb 2025 16:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739981905; cv=none; b=bdZX3DX7w5TLOvJtj9r6vYJDMCYHDZqmXikNNPnvxGz7fjNlC5+M/wuCluESUjiweQHTP6cMHIB/mo2F0Lb7ntWBz06jN5QpmRzenu6j/w3hKG4i6VeY98ZU3K0AAUkW7Sn36SWmWU0jXEsSY+jJuCPxhcsB/KUQredWKXuOc3s=
+	t=1739983241; cv=none; b=ONwUfFBDPsARDx7QWbZPLcemznoJPK645VyTK+pdNBuX7LgtXJTeH9gInV2Ip7zKObiw4rB3fZsstgxXpWL84lAqeLeGFEUTZd5EMls5cKAaRI5vDp5rFeAGXV2791M8Hr9jIesVfDimoD12KVKnb2ugNDil2NQw/zkvoghFl4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739981905; c=relaxed/simple;
-	bh=b38N2G5pI18KXCo6dYoQ0A/4T04VhxVdQ6rNeU31Ph8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YsTzWmtuvkzPTNg80Xo/XFW2+vhg+u0TsUJVVToRYVaILc3mdybgLe9RgeWc98LjkU4sxaPgNGgvQnEm7LGnIYCSl8qUwryJX6meTQLJwwIjBz9v0l/ddgqB25NnuIJ3Zzs6IuT0BWhmE85OOJxWp6NPpjzkP1IcgDdtIu/AAMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=co6lGl8f; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1739983241; c=relaxed/simple;
+	bh=FIoMuFSQ07R4o7KPNr9JeFn01rMJbvd5w5qUNvpz920=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=RnbM+hShkMHQzMQduwlcFRZ9kcqddhToAk07T/w64IL4yNehEOOZGT6JK4I1en/e+IVLk/cpRVQosMbgrpMh0B8BXiDW++Zr06CQrHJpC0tmfamUUBx0bO6UNRg4faJ5HC/4x3NU2imAV71wtLzH8hXzJ9eIudtUeJmgdqREtHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hawEzdym; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="co6lGl8f"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739981902;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b38N2G5pI18KXCo6dYoQ0A/4T04VhxVdQ6rNeU31Ph8=;
-	b=co6lGl8fYC4dTkPOxYlwGM/Z7S5GyonXvd/YAfs4hEqu0oXze8tm1RGXV5k0vYdtSL4v+0
-	8eLl32wh/UsRYvsICmYHGARtgbSYp8NxVzdWp+0vVQEks3E60lwnIVBkIQ5Bejz3QuHyyB
-	r1ohSdWEL/wQ+q8/w2C1C2Z/tCCP+hg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-284-TMHf_MoAPr2dl1qGndwJxg-1; Wed, 19 Feb 2025 11:18:20 -0500
-X-MC-Unique: TMHf_MoAPr2dl1qGndwJxg-1
-X-Mimecast-MFC-AGG-ID: TMHf_MoAPr2dl1qGndwJxg_1739981899
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4394b2c19ccso58314755e9.1
-        for <rcu@vger.kernel.org>; Wed, 19 Feb 2025 08:18:20 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hawEzdym"
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7c0b9f35dc7so101295285a.2;
+        Wed, 19 Feb 2025 08:40:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739983238; x=1740588038; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xpi4TVSx9yEIiCT1ccXBg1RQMkm0prwwjlpAEx2L3Vs=;
+        b=hawEzdymHHek2vYP07WhbTYSb4N8ZpsWQtP7PYww6Vy1dIfH5h8ghbyrcdTd7NmBfA
+         xVLwJFlNrWS6G11+fJERJFrjo5xAkJ3cd5+khc5svc/FYDGydgFpviATtK5qyb+q1WQJ
+         uKrcbXlEMOKoo/aM67Sgh5KUnp2mGoev02BVMg054Z3b8oH/G5psrMxL7NeQ777vLCH/
+         D9tfI2o2fjA4y/PONjqjy5/CcEYuyeIfC8jiEaak6gkOV2JG6vUKHION2jz3tYTZIQRH
+         HzCCUrTs351Y0kKyeck1WFMg4lYPqXKeNzymYq2E765Hk05iZLWy+i1OhfNsZcS946SF
+         claw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739981899; x=1740586699;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1739983238; x=1740588038;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b38N2G5pI18KXCo6dYoQ0A/4T04VhxVdQ6rNeU31Ph8=;
-        b=QToEfIlqo7OYlA6q2bjIi5MCYmnBCDdbSbzCJk/pPl1DZpc0ciFG2zzkqA5PxIZiGp
-         68IYHExn3FKWcyCWSwKxlXay+a04iAjW3/nygU1B+4l5iBYPw4l2c//ukHNI0lGyPYfW
-         N40iom+uwAGfxEc8Abbpwiz6B6ot1Wf7iM3A57JIREsc9w9vsWqcOPASAd9PbXWChth3
-         oZZ+8G4DaUkrTMgZHnwBKkm1FXxB/u4FITSpL4OphG0qn5LtgEfAczZ9JwKbLAZS0uG8
-         c/2wHbe7+FOY0ONYzPTLUkOtCRzjbFDscUz34OCEgqNs1e0SO1M/vRiOOqOFW7alOGwI
-         Bsag==
-X-Forwarded-Encrypted: i=1; AJvYcCXQY3hI0LSIM8GD3VJ3EwqFCv17Ti5AeyIT9DGx/DVJ6R3q8xGr2AKVHHUMQgBUSpX9mLs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxH2igGha3wjnrtfhpJjzMwfnBND5i+YZKx2X4S5URcLtubTkkt
-	mCGs7luwQtir8f++d/yVzsvdip97ZbBwV/ZNBYjJKtNQwN2vjx5iLRi9KPt2sZTczp7+Umyaics
-	tEjyLY2/indO3RU2XgSuCSK8yZjq8x4saJsPlf8Z4vJRfsXZmiQ==
-X-Gm-Gg: ASbGncv4Peyhsfrd34UuKoJvkF4GG1PWrt3y13W17U+m6wZ/YfAOpNmFBh93GDwTZbu
-	XVlJw4yGfcOdA9T6lEOtxkIGtgeFnT+6hu0IVP4RspT3NpDpHxL/u0StHyv4VBVeaLZHurlJDnd
-	RLqe3XuWSPby1b2nZooy5pKpaJxLJ9pD4c2nExEGsCh4NNmfbu5CAJnnBFkkJkFRldGpa3nYk6A
-	BXqfHH9fzFAWdGmKoFXNEGaSO5fI4jmEiey8Esfzqjy5m32bOfrmItLw4gAFsiaiQN+9ksBBG+z
-	aEzSjT/0yP/ftubmsSUQVEG3So5dHMiCaztjoSNmlEZNJK7bt6PGZXOEmmj0R2FUig==
-X-Received: by 2002:a05:600c:5246:b0:439:9d75:9e92 with SMTP id 5b1f17b1804b1-4399d75b257mr27951655e9.28.1739981899401;
-        Wed, 19 Feb 2025 08:18:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGrgaKWzB18Ksr+NPSQeT1o3+i2kAVUfh7lIILUz6n7wULpVTIiD8VAP1UIlBXohEkgY6+FYQ==
-X-Received: by 2002:a05:600c:5246:b0:439:9d75:9e92 with SMTP id 5b1f17b1804b1-4399d75b257mr27950675e9.28.1739981898863;
-        Wed, 19 Feb 2025 08:18:18 -0800 (PST)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f2591570esm18461449f8f.59.2025.02.19.08.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 08:18:17 -0800 (PST)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, virtualization@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
- xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
- linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
- <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
- Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
- <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
- Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
- Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
- Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
- Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
- <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
- Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
- <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
- <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
- Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-In-Reply-To: <20250219145302.GA480110@joelnvbox>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
- <xhsmhzfjpfkky.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <20250219145302.GA480110@joelnvbox>
-Date: Wed, 19 Feb 2025 17:18:14 +0100
-Message-ID: <xhsmhecztj4c9.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        bh=Xpi4TVSx9yEIiCT1ccXBg1RQMkm0prwwjlpAEx2L3Vs=;
+        b=LcjdyVCqWiTlNJtHS/wNjrRoAqe0s7ccZ+KYnGgf9jiU+6dGmhWqwzD4T9jD+7hSTR
+         c/K++Pavm35gPRyxi5vvXSWEyY/cHUvMPmjsSx8HUGEhzpLoCkAUQz+d433aH0HacgQ1
+         KZybJUKqTAH4FwDL14oaxtR6SZwKsVogxKn2dOpGAMbgvOytTKbS8/xJD1cjHzbffHEp
+         /d6tFNtc/BaKlUH8mr7OMKueboKpgTIZYGctRoxBmG1O0N1/CXSzEfwSZ2wy2i23gSio
+         79oatH+tUb0DnNFGxV7gfUI6i4zykCZ/WKjnr0EFOvNCYkvgb6d7i34LkFJFfXPDfnM9
+         zf3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWNJzFVDaESI6hJjx80+vA78LvrNNEFtlT7QtJ4JSBC9iARp0YriR4tpgBpx51uEptgMs8+EeKshDo=@vger.kernel.org, AJvYcCWUHWwBy0KInVnJ8VTpHIXeZ0QGDyvSqbrBL3hV6uIaQkjYox2ejIGYS+Nynz8j4Cji0Kkn@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlzSaOtr+2DFC2/4fm0yjA3FMWd1huaHmworbH3jN2qyxNmmuX
+	ZAikucucgl2K/BpiDucsCvWdmfNgZU/1JdW53UdCsvqsmiTStq4k
+X-Gm-Gg: ASbGncuqTwXs6n8hirMW3Yr4rFGdqH8GPNqKnIhVzZiS76dXxxqwFp1bZdaWguN3kHj
+	YA6NMmI6zifnwGC8WvG9xQQnXldN1t/lxVMg9sWhbdcqTMRErFBL9aZ5p8hkDWfcCKMlApz+g2c
+	atTthYShEDMqgr7KnDjoV6u65ksU82QgCQIAYLOT6FNMiQvFtVbjISMesPi8w3DajCFwBBfHOyF
+	pjZmeJq6k8HQMAJ4nWs3XObrcmHmrXSE8fRouoHf86BqwDPU7Ijm23jOpwR6zsW6kOAcU11lHU=
+X-Google-Smtp-Source: AGHT+IEbuLd5HABKsV2aaCeyqHdmc714c4tXv8nksALYv3eJ2MSAwcyoxK6FMyiIX6qmIK88BOOKGA==
+X-Received: by 2002:a05:620a:4591:b0:7c0:b0eb:4fa9 with SMTP id af79cd13be357-7c0b51cde08mr664398285a.5.1739983238153;
+        Wed, 19 Feb 2025 08:40:38 -0800 (PST)
+Received: from smtpclient.apple ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0af0aceb1sm201588685a.89.2025.02.19.08.40.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Feb 2025 08:40:36 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
+Subject: Re: [Patch v2] doc/RCU/listRCU: refine example code for eliminating
+ stale data
+From: Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <20250218005047.27258-1-richard.weiyang@gmail.com>
+Date: Thu, 20 Feb 2025 00:40:20 +0800
+Cc: paulmck@kernel.org,
+ frederic@kernel.org,
+ neeraj.upadhyay@kernel.org,
+ rcu@vger.kernel.org,
+ linux-doc@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <AB18BC5D-AD55-46DF-939C-44DFA845D168@gmail.com>
+References: <20250218005047.27258-1-richard.weiyang@gmail.com>
+To: Wei Yang <richard.weiyang@gmail.com>,
+ Boqun Feng <boqun.feng@gmail.com>
+X-Mailer: Apple Mail (2.3826.400.131.1.6)
 
-On 19/02/25 10:05, Joel Fernandes wrote:
-> On Fri, Jan 17, 2025 at 05:53:33PM +0100, Valentin Schneider wrote:
->> On 17/01/25 16:52, Jann Horn wrote:
->> > On Fri, Jan 17, 2025 at 4:25=E2=80=AFPM Valentin Schneider <vschneid@r=
-edhat.com> wrote:
->> >> On 14/01/25 19:16, Jann Horn wrote:
->> >> > On Tue, Jan 14, 2025 at 6:51=E2=80=AFPM Valentin Schneider <vschnei=
-d@redhat.com> wrote:
->> >> >> vunmap()'s issued from housekeeping CPUs are a relatively common s=
-ource of
->> >> >> interference for isolated NOHZ_FULL CPUs, as they are hit by the
->> >> >> flush_tlb_kernel_range() IPIs.
->> >> >>
->> >> >> Given that CPUs executing in userspace do not access data in the v=
-malloc
->> >> >> range, these IPIs could be deferred until their next kernel entry.
->> >> >>
->> >> >> Deferral vs early entry danger zone
->> >> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> >> >>
->> >> >> This requires a guarantee that nothing in the vmalloc range can be=
- vunmap'd
->> >> >> and then accessed in early entry code.
->> >> >
->> >> > In other words, it needs a guarantee that no vmalloc allocations th=
-at
->> >> > have been created in the vmalloc region while the CPU was idle can
->> >> > then be accessed during early entry, right?
->> >>
->> >> I'm not sure if that would be a problem (not an mm expert, please do
->> >> correct me) - looking at vmap_pages_range(), flush_cache_vmap() isn't
->> >> deferred anyway.
->> >
->> > flush_cache_vmap() is about stuff like flushing data caches on
->> > architectures with virtually indexed caches; that doesn't do TLB
->> > maintenance. When you look for its definition on x86 or arm64, you'll
->> > see that they use the generic implementation which is simply an empty
->> > inline function.
->> >
->> >> So after vmapping something, I wouldn't expect isolated CPUs to have
->> >> invalid TLB entries for the newly vmapped page.
->> >>
->> >> However, upon vunmap'ing something, the TLB flush is deferred, and th=
-us
->> >> stale TLB entries can and will remain on isolated CPUs, up until they
->> >> execute the deferred flush themselves (IOW for the entire duration of=
- the
->> >> "danger zone").
->> >>
->> >> Does that make sense?
->> >
->> > The design idea wrt TLB flushes in the vmap code is that you don't do
->> > TLB flushes when you unmap stuff or when you map stuff, because doing
->> > TLB flushes across the entire system on every vmap/vunmap would be a
->> > bit costly; instead you just do batched TLB flushes in between, in
->> > __purge_vmap_area_lazy().
->> >
->> > In other words, the basic idea is that you can keep calling vmap() and
->> > vunmap() a bunch of times without ever doing TLB flushes until you run
->> > out of virtual memory in the vmap region; then you do one big TLB
->> > flush, and afterwards you can reuse the free virtual address space for
->> > new allocations again.
->> >
->> > So if you "defer" that batched TLB flush for CPUs that are not
->> > currently running in the kernel, I think the consequence is that those
->> > CPUs may end up with incoherent TLB state after a reallocation of the
->> > virtual address space.
->> >
->>
->> Ah, gotcha, thank you for laying this out! In which case yes, any vmalloc
->> that occurred while an isolated CPU was NOHZ-FULL can be an issue if said
->> CPU accesses it during early entry;
->
-> So the issue is:
->
-> CPU1: unmappes vmalloc page X which was previously mapped to physical page
-> P1.
->
-> CPU2: does a whole bunch of vmalloc and vfree eventually crossing some la=
-zy
-> threshold and sending out IPIs. It then goes ahead and does an allocation
-> that maps the same virtual page X to physical page P2.
->
-> CPU3 is isolated and executes some early entry code before receving said =
-IPIs
-> which are supposedly deferred by Valentin's patches.
->
-> It does not receive the IPI becuase it is deferred, thus access by early
-> entry code to page X on this CPU results in a UAF access to P1.
->
-> Is that the issue?
->
+On Feb 18, 2025, at 08:50, Wei Yang <richard.weiyang@gmail.com> wrote:
+>=20
+> This patch adjust the example code with following two purpose:
+>=20
+>  * reduce the confusion on not releasing e->lock
+>  * emphasize e is valid and not stale with e->lock held
+>=20
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> CC: Boqun Feng <boqun.feng@gmail.com>
+> CC: Alan Huang <mmpgouride@gmail.com>
+>=20
+> ---
+> v2:
+>  * add the missing parameter *key
+>  * make function return struct audit_entry
+> ---
+> Documentation/RCU/listRCU.rst | 10 ++++++----
+> 1 file changed, 6 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/Documentation/RCU/listRCU.rst =
+b/Documentation/RCU/listRCU.rst
+> index ed5c9d8c9afe..d8bb98623c12 100644
+> --- a/Documentation/RCU/listRCU.rst
+> +++ b/Documentation/RCU/listRCU.rst
+> @@ -334,7 +334,7 @@ If the system-call audit module were to ever need =
+to reject stale data, one way
+> to accomplish this would be to add a ``deleted`` flag and a ``lock`` =
+spinlock to the
+> ``audit_entry`` structure, and modify audit_filter_task() as follows::
+>=20
+> - static enum audit_state audit_filter_task(struct task_struct *tsk)
+> + static struct audit_entry *audit_filter_task(struct task_struct =
+*tsk, char **key)
+> {
+> struct audit_entry *e;
+> enum audit_state   state;
+> @@ -346,16 +346,18 @@ to accomplish this would be to add a ``deleted`` =
+flag and a ``lock`` spinlock to
+> if (e->deleted) {
+> spin_unlock(&e->lock);
+> rcu_read_unlock();
+> - return AUDIT_BUILD_CONTEXT;
+> + return NULL;
+> }
+> rcu_read_unlock();
+> if (state =3D=3D AUDIT_STATE_RECORD)
+> *key =3D kstrdup(e->rule.filterkey, GFP_ATOMIC);
+> - return state;
+> + /* As long as e->lock is held, e is valid and
+> + * its value is not stale */
+> + return e;
+> }
+> }
+> rcu_read_unlock();
+> - return AUDIT_BUILD_CONTEXT;
+> + return NULL;
+> }
+>=20
+> The ``audit_del_rule()`` function would need to set the ``deleted`` =
+flag under the
+> --=20
+> 2.34.1
+>=20
 
-Pretty much so yeah. That is, *if* there such a vmalloc'd address access in
-early entry code - testing says it's not the case, but I haven't found a
-way to instrumentally verify this.
+I think it=E2=80=99s good enough to illustrate the intention here:
+
+Reviewed-by: Alan Huang <mmpgouride@gmail.com>
+
+Boqun, there is an unreviewed doc patch[1] that fixes the section
+
+ =E2=80=9CUsing RCU hlist_nulls to protect list and objects=E2=80=9D
+
+[1] =
+https://lore.kernel.org/rcu/20240326124431.77430-1-mmpgouride@gmail.com/
+
+: )
+
+
 
