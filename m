@@ -1,188 +1,190 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2084.outbound.protection.outlook.com [40.107.93.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3171E1F8AE5;
-	Wed, 19 Feb 2025 15:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739980507; cv=none; b=RXEAxRZVWdAa9gkg93QJkGsLnxiSgOCayDPG9JahDzs/xAMOV578HwhZt7LrM3w1Z7UgTID48INVvq42gnjZC6d0k/sDniRnFuc+TiK3RdcTZQHlr1lGC8YNaJeb3sCpOAKDvdkpXXrAabBv/xz8skIFTyWA6vV0qZD+vd5q8ps=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739980507; c=relaxed/simple;
-	bh=7q/Od81HOGTmVblpP6svDOzuqkZWjDxFL25IFDT+QuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tmzw67TotfUgJFMn56pdBMraBIxUzIZwd/9uhUUgNKur9e2NDJ/idn/llPjG8uqYzsvRpSpXc7+HFSeRRM+PFatViL6W3e0QMB/6DifOXC1NKDoPg3rrX06DGeVRGT3cCe/Al1B3oMnCGRnL/tDDVCH9+9kdh7SyT+7XkEGY6VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X804gVej; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95FB1F8AE5
+	for <rcu@vger.kernel.org>; Wed, 19 Feb 2025 15:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739980661; cv=fail; b=WD3hYEyCqBl4zffE+Gk42D6DSqMIBg9/3o8NAfTm2eYjZtXwgAHpzf+ZzA+qH/TMDQEsByLD7Vu521NoMks8nEG3TYfwdPV32ZIBPxN4dxpZk770aIv7y4GyOI/qpqHjAzvT7PQzVeRoEco6/vpDMufZJeXS385JGV0jB5wgPkU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739980661; c=relaxed/simple;
+	bh=k0CxmYgbtS6oWQA92H9eGHiNM+DdhEOOpE8cX2zRvJw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=fNmfu9iL/wrOrKhp6gj7oVv6mhoVx+bSzjGIyRVNYcRjLKfKCOlb9YY9BkuwGuG+pZN2dcwtiorhJDxUnZKkZNrn4ht+7utN1nUFck8xpJExxtMdwSE2mJTZuZzccb0rlCFF7zp/rQvy5OY2I8YIHDbMZteV11IK1bUYmO7U1iM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hKj4zn/E; arc=fail smtp.client-ip=40.107.93.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X804gVej"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D79FC4CED1;
-	Wed, 19 Feb 2025 15:55:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739980505;
-	bh=7q/Od81HOGTmVblpP6svDOzuqkZWjDxFL25IFDT+QuA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=X804gVejbT4L+d1fY5FnTcRYOCWDsGHZUWbATkKy34efzsryLRlFJqSapZlOvDqY2
-	 5G9Ld2cb2/cThPmrxtscO+I3y5A7Zfif73c5KgR8qa6ViJWR7oBiil1hBzjIkVjpTB
-	 2XDYOOI0QOakPJystV9WW1ygDFImxRPkHaWD3/l8ZP1OzXp/OYNRm8Naa2lKEwFlEi
-	 AXdSwA/+vcaxspb6eKQwN2NUrR6gyr3VUOcVO+qxb9Sk5124jvH4kHhReMtuhwJyNn
-	 8oFsWdsxM3Xl++YRgX7MTTKvmdGpqGd9qdUgb9re0A7fUPrpMaMElgVfRtyJqdCc2Q
-	 LShuyE2tzJ5GA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4DD82CE0885; Wed, 19 Feb 2025 07:55:05 -0800 (PST)
-Date: Wed, 19 Feb 2025 07:55:05 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
- report
-Message-ID: <966fe653-7dbf-40b6-8b6e-c9bcf7b34335@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250213232559.34163-1-frederic@kernel.org>
- <20250213232559.34163-4-frederic@kernel.org>
- <fe931d3a-bf97-4be5-8420-f1fcb55e6a46@paulmck-laptop>
- <Z68yzBURiIr_7Lmy@pavilion.home>
- <610596cf-9836-473f-bcdc-15c69b7e0cd4@paulmck-laptop>
- <Z7ET8S4HKqSPubQY@pavilion.home>
- <c5ea9684-291f-4952-b834-ed8e39cfdf8f@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hKj4zn/E"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=nqZZHT+y82a96yhwue4RO07jlGSFRRmMK2Rds1kla4qIXbUL+dTQs0wArW6FSdompJqNsou3WfDD0zan7B/CMuFDgZKMHxmLbQmDmBOKsKC+ivyplLcYvadfXFjqYnkXuyziuiaZdSqP7KSOK8FTm1SfCS9UAxkfEFUryboH8TBcnnZoioPt3QpC54VIFPS3J6YbY65G2OU/+V1LwbKUB2yTqRaM5bT+HR4ZxlxV6qKLL2QwPv4D6kBTFi1fOe3KnEJyeiayJXGBcs+IKuesFHbMWwqWQC2AND1lVNFSHlncJ6CsockjkeyrunWVaymjHAS21VK7+RmL+M0ZLaX0Fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aFMP6//JR27o/19ZaGAYnBXfYmRnzoJ3awfGbqSWork=;
+ b=aDvSyVS9jRL3wifKi56lH93XJiI37fr6ulbCj2eTuWTro6KNDuspnBvuGmP+etr+O/eF3R9AZm/zVVNr4Cp+zn85HTtlHlog4K8BRpSPxwraZ9ypdqHQudKir8gNQ4SC26jHwaqFJd4EBC0+JVXALnHlhEZYpwWDPKq4X/mD5TCHRdeCr29Z+U1PqEbREg5dr1LLE2M3zJTKWWOnjSJWCP5QAXxF6EY8J7VAvgW96wxWgbC4bnTxOpy17qbW/ERM7Vab2psRVZ8Zgu8en7tmtJkaAdtTqvpZEovXo55l4v2nY5LkoSLTcY+FwIJlbCITIgljtnIZXj/5+0V+gykgQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aFMP6//JR27o/19ZaGAYnBXfYmRnzoJ3awfGbqSWork=;
+ b=hKj4zn/EWOYZMKJYhyvyAPb/gJ6W/NXztkI+fY+fxiGrMzEPUqYbG3rKD1bvwtIhbz4tVSlYtvlVNGJHlEW6RqN7iJMEp+y2fI5z7MQMZLe8mEmFQyNn9QJtgvoWy6zdASKVZwUj5al2HuOXKyu5Mf52Gil7XYCNPrGUmruCdQp6uF9wfHR4te0/r1dPpu+tQo/PgQ5GwWCAATvpyUVKv8ZU9DNTywv1s5dvk+3rXll4bI0bQ4ot2x7NMpD56FYp0QLDZlbO2YLOZoFNyXxyZjVvhQJYn8F3K3pM4P+Ow+aAO2hrXfNb8Bb6/Jbf6eMp07sR52SWt3u+HUGnbb+wtQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by DS0PR12MB8414.namprd12.prod.outlook.com (2603:10b6:8:fb::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8466.14; Wed, 19 Feb 2025 15:57:31 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8445.017; Wed, 19 Feb 2025
+ 15:57:31 +0000
+Message-ID: <7dd7431d-a8d9-4ac1-9c28-e43c7c1fcbce@nvidia.com>
+Date: Wed, 19 Feb 2025 10:57:29 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: The rdp->gpwrap behavior
+To: paulmck@kernel.org
+Cc: rcu@vger.kernel.org
+References: <20250213183033.GA2635051@joelnvbox>
+ <b04b997e-fee6-4c5f-a0f9-12e671d27f8c@paulmck-laptop>
+ <009ef653-f41e-4101-886e-d9a4ce4d6e32@nvidia.com>
+ <d1ebe3a6-42d9-489e-8df2-9dc8c2635a61@paulmck-laptop>
+ <03416b20-789a-464e-8c2a-f9a96eec4b68@nvidia.com>
+ <b613df84-a176-4333-8c7b-2f3a75c7fdaa@paulmck-laptop>
+ <04e2c857-d66c-4ab6-8db8-33dd88160910@nvidia.com>
+ <f23140ec-2676-48a0-ab59-51ee18f22238@paulmck-laptop>
+Content-Language: en-US
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <f23140ec-2676-48a0-ab59-51ee18f22238@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BLAPR05CA0046.namprd05.prod.outlook.com
+ (2603:10b6:208:335::26) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c5ea9684-291f-4952-b834-ed8e39cfdf8f@paulmck-laptop>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|DS0PR12MB8414:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48c25fd8-c940-4779-52e9-08dd50fe1dcd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?NDYxbGxuK1kyeXU3SGJjdDRERWZDeEVNUDdaVWhFRnlvcWRLZVQvcm8rUGtJ?=
+ =?utf-8?B?cmxyekVuVDFGb2I0N1kzSU40OHFVQmxxZGFucjlPSUR5RDlsWlRPN3hncURO?=
+ =?utf-8?B?VUpFVFpOSUNzR25jdUpXcEI2dDFRNmxIR04wdnRkZDRaMEIvb3hpK3ljdHVU?=
+ =?utf-8?B?UlEwaHRTZnQwMys1WjdOMkRMSUN0bVlpUDZ1R214UnhtYUhrOUxFb2Z6eWx3?=
+ =?utf-8?B?R1grSGZ2ZTd0anA4V2JlUXd6aHZXTzhxLzUxSnlWWlltK1RWYVNZaUtnRmsv?=
+ =?utf-8?B?OExucWNkbjN5ZXhMQ04xOG9qVzJWOVZFcVQ3VTM1b1FtVUQweklKeXFOb1Fv?=
+ =?utf-8?B?aFhidGNiay91cEJNcFZ5eVBoWElpM2dxZ2VURzJsOVJrNXBPRzNQdVVOYmFl?=
+ =?utf-8?B?eUJidm1JU3BiQlJ6R2phTmRtN05scmEwRkp4dktWZjFFenZVV2JMUkw3Witt?=
+ =?utf-8?B?eFRPMWc1eXY0cE1sSk9tNjZ3UHlWeDg1S1BSYm9XQ2toendlU285MkZhQ0Zr?=
+ =?utf-8?B?cmg2RjVYQjl0QnZDM0wrbUQzSzhMUFR6VGMweW1RMmtsRi9WMDZxdmpDMkpY?=
+ =?utf-8?B?b0kzcUdpZ3JHOHZIcTEwOTBlOHY0ZU1IRExMaUpLTDd6ZG1TcklUNmtsQldP?=
+ =?utf-8?B?cWduYUJKbnVnbndEVk1YRXljM3VIWDJZMlpsbXZTMVR1SkdhejcwT3NHWUtJ?=
+ =?utf-8?B?TkdoR0s1U2ZocGt2dktuQ21TaXBCMDBUUHpTQ29HWnRtTnBFY3VVTTFaMUYx?=
+ =?utf-8?B?STZUWHFDc1VhTDVSQW1IYWc3ZmJTMEdSNTlzRWhEV200YkV5aDZqV2VDTmZm?=
+ =?utf-8?B?Y2x3YVovUGFILzVSMXpuTmhIR24rYUk4SGtWdTZCVFBEMkc4MUYxWUY2TDY3?=
+ =?utf-8?B?VWQxTlNNVHNlcFo1aU50Y3QwSVhGcm9sNS85cFUvNHNJV1pRZ2kzK01MVDlx?=
+ =?utf-8?B?ZkhrWUVtbitaWmk5SThYdlEzc3pwSUNsT1UycDV5N3luYitSWkloY2hhTSs2?=
+ =?utf-8?B?Nk1HT1Nid3JhUS9LQmdEazVUYk1hWXZSN2dLWkZqWVJwU3hSU0pib1RuK3cy?=
+ =?utf-8?B?cHpabzcwTUVHMmFwbGM0eW0zMlNEOTdYNUt2TnNrc05lbXozYnNVTVZKeXhF?=
+ =?utf-8?B?azlZZmNzR1QrNDVqanppM0hLL2srekZyaEt4azFqTUdlUG5kUjhPZHhRMzJm?=
+ =?utf-8?B?c3h5Z3czM0MzR2RnRTBOcVdJOTFTblNwVTZTRGY5dk1NUEZmMnpudVc0czg0?=
+ =?utf-8?B?cS95NnBUaEloUFFHMVN0a1hTUDBhS1RyV3hIL2RZUXMyclNBNGNQRVYzVGVT?=
+ =?utf-8?B?M29aajFOVzVsSlFTYk9KTEhkOGlSVUgwTklUUTljTFZmcmtINkZoME9aQjZQ?=
+ =?utf-8?B?WDJmWU1QMWY2QzFqSkE1ME50RXR6VlA5VnhmM1UwSzRWK2l0WGlXLys1QTVt?=
+ =?utf-8?B?UDZoVVdkYm5yOUNScWdpRGdqbmtwNC9VamFtbmZRMUxTTlJnZUVSbVE3S29o?=
+ =?utf-8?B?bXFkYkF5QXp5NDYrTDlDMy9LWjZheWdwcUk2bnRweS80WFNsNGRnYTVtM2My?=
+ =?utf-8?B?em5nRzZEQTZ2ZW0zcmVGOVZ5b0J4TEcyMFBEZi95Nm5GK0l0d0F3cWgvYjhv?=
+ =?utf-8?B?cDNmY3djRktzRGJOU2VaRUxGOHAzdjE2Uk1weUkwRTE3NXNYQUVhUmNZTE03?=
+ =?utf-8?B?R0t3TUFCUzVQcXpRZmNtWGhnUmRwUWVDeURiQ3lueDNhVjBJRVp0R2hQMEZa?=
+ =?utf-8?B?YXVwU0hZbWo5em5TSnlhWTVxRDhDVlBKcUFObGZQcGtzY0J0MzFpNndxQXRt?=
+ =?utf-8?B?bnRWcVF6aFkwaDE5aWdwR3dtd1hoeDhQNzBmT3ZhNUo3RUZwd09NYllnYUFP?=
+ =?utf-8?Q?r3qS+NfX04Jfg?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TmtUWWZhMHF6SllwU3NibThoK1pFazBBdjdDU1N1TnRTcWF6aVZNZy9CSEk3?=
+ =?utf-8?B?VWRrQXZaelhqUFhLSEpHUFh6VmNXN0hmVGlmRnQ1R1ZXTS9yRXlSNlBaaFI0?=
+ =?utf-8?B?Y1NZQ2IydUNWOXg5NkgwZWY1Rko2TFhYbWc4Y2JwY3ZnU1gwZDR5VHJvMXBn?=
+ =?utf-8?B?Nlhkb0hENkY0NktRQWcrQjQxSURLQ2FsNVlxT3BwQ2F5NmhBVGl3cWduUnkw?=
+ =?utf-8?B?SUhlVnhiNTRKUGNxTzg1UWJxZ09EbS9ScjhmNzhQMkRycHlhYVpZVmJhN1I0?=
+ =?utf-8?B?amVZYUdQY09icS9yVGJ2ZXEwVk9rUlR3dGV1UkNVeFZlWXdXajVVZjRQd21L?=
+ =?utf-8?B?YVJoS3hzSUgvUHBYMThDSXdUSm0vK0hvNURjdTlReWFMYlBIcG1iNm5XbkNL?=
+ =?utf-8?B?SE5oNzNROFcwTkptY2FrYlRIc3FUQ09BRS9LNlZvUEJBUSs1MzNPaHZBRWNa?=
+ =?utf-8?B?encrdzU5cnJ5anRkdElsZEw4d0JKdUZSVXdTbzRBdERrVjdwdlQ1R0wrNWpI?=
+ =?utf-8?B?NldZZHBBbHZEN3pxM2l3MVVvQXdzai9RZjl3VFVTVUtoYUZQSlRWM0krSnQ0?=
+ =?utf-8?B?SVVDcDJBc2pXbWxCeWlWQXo4czFhUWNKM1FCNjV5T2VDZjFMYUhHSjg4KzZa?=
+ =?utf-8?B?QkJMNkFFbmQ4c2ovMkpWbDc5dlhsZU93QTd0cFUxUEN3TjJrRDhYc3lTTDRE?=
+ =?utf-8?B?OXpPS2l6R1g3MFd2eU82WXlqOHVtT2hHQVNtOXAzakpUejdrNi9iRzlnbDh0?=
+ =?utf-8?B?ekRqc0RvSDM3a3Vhclo0QUVSamRRRUxKakZDVGczSXZSMEdCMmJ3SUpMcmdM?=
+ =?utf-8?B?QjR5cTZSblBJU1ROV0xOeVNtekFteXFCR0JHZzNWUVpaSnR6QTVXVTk0OWxi?=
+ =?utf-8?B?S1hrcnIwYTUrc3BvT1l0dFkrQ3RnTkFEV1QzaVo5NzZHVXZnWnpRZ0VCYXdw?=
+ =?utf-8?B?MnRzZ3JmUW8vaWZXSHZyWFMzUHdCbVQyU1o5emRXSlMrVy84aitPUDlKV2Mr?=
+ =?utf-8?B?YjdIdDhqbXdtSjRpbG82Y3JVMCtQUEJwa0lQazRpNkpkZDhIdXZ2bzNYR215?=
+ =?utf-8?B?Y053VFB5RC9ab3JnR2g1VmZvaE5sYjZ4NWpRbk11TkwvWElrMnppcVpHT0hH?=
+ =?utf-8?B?R2ZzZFB3dFcra1IrWUhkN0lBbVdxMy9uZXAwRDY0YTQ4UU1mY2V0VWVtdTY1?=
+ =?utf-8?B?WUhsT0NULzdiQ3Fnd1kzWnFGblBlaDFxWUZxbTIxK0gzWmYxTTAvZnh4WnVI?=
+ =?utf-8?B?MTZQOE9vNGhpTndlekVydkpoTEFzbU5SR3ZzMkkrNGwvSFZoNzhzaWU3L1Zr?=
+ =?utf-8?B?a0VlUm1PVW1uczRYcFZYM3pGSnBaVEdEN04rUVFHNGdEYThSUjR4WEZ2aVRQ?=
+ =?utf-8?B?RXFOQUs3bUNobkYrUk9EdDFkQ1lCYjUxd0lzVTRNMUpTUHR2SXIvSU1TeUNl?=
+ =?utf-8?B?dGswdUFMSUh4bGxKNzFYdHpUZnlPdjA0VTE2VFg2d1NlVk5pWXd4YzYwS1Vp?=
+ =?utf-8?B?YW1FOE5iOE1WbVdpVUpWVHN3Z1hWVFRJY1ZjTWhyVllvS0JmS24yNkpQVmFq?=
+ =?utf-8?B?RDl0eTM2bFVmN2srWVkvTTlUWTJUUStkdGQzYTQyQ3UvZ0JWUjc1Z2pWa1pI?=
+ =?utf-8?B?SWF5YkFuOHR6djVYYVFTL1JXcG9wbkFMRGpOVHErNHhhRjl0dklXQTA2QmRp?=
+ =?utf-8?B?S1U3TFNRRTVETGpQcUJrK2g0dVFwV0UyRjFyZ2hRVXNmY0h6N3hKQjN1MlpG?=
+ =?utf-8?B?alZOblIxVDJjVGdrNndSYVkzN2V1OGNibUdSMEgrSHRCRU5MRUV2K3EvOGFv?=
+ =?utf-8?B?YzNQT2NLTFA0SjRUWnRVaS91TytGQ3hCWFQxUHNjeHRCVVpDUWh1NGhQRUdS?=
+ =?utf-8?B?WTdZWXJocnBjeVJvMDNCenZHZmJaMnNYMmt1Q0pwcWdGTVFrakRHWGdnNTZl?=
+ =?utf-8?B?MjVKaEo4Q3Qvcy9ndkhLajVuSnJKNW4vbUFPYnRvOFpBZnd5SWNaVkJHaVNR?=
+ =?utf-8?B?U1UvVDZHeUp6NGhsUDYyZ1dlYUZpdVI2R1p3OVY3djV0amVEK1pVeHJHQkdr?=
+ =?utf-8?B?RjJIaUYyV0Z6MU5yVFpLamUvbDZQUGZVS1diK2l0VnBFQWJUbVlTTGFoZkJl?=
+ =?utf-8?Q?LCD+6vTd5/xlWPqyQblDFIFPR?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48c25fd8-c940-4779-52e9-08dd50fe1dcd
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2025 15:57:31.0142
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dPVRpkLAhE+pQ8ZofFIJc49CstjIperOya0GfiAt0oLrvP253eB+gUsqzQ3Aqs9FFmhcBtReWVyrkojkqgkPXw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8414
 
-On Wed, Feb 19, 2025 at 06:58:36AM -0800, Paul E. McKenney wrote:
-> On Sat, Feb 15, 2025 at 11:23:45PM +0100, Frederic Weisbecker wrote:
-> > Le Sat, Feb 15, 2025 at 02:38:04AM -0800, Paul E. McKenney a écrit :
-> > > On Fri, Feb 14, 2025 at 01:10:52PM +0100, Frederic Weisbecker wrote:
-> > > > Le Fri, Feb 14, 2025 at 01:01:56AM -0800, Paul E. McKenney a écrit :
-> > > > > On Fri, Feb 14, 2025 at 12:25:59AM +0100, Frederic Weisbecker wrote:
-> > > > > > A CPU coming online checks for an ongoing grace period and reports
-> > > > > > a quiescent state accordingly if needed. This special treatment that
-> > > > > > shortcuts the expedited IPI finds its origin as an optimization purpose
-> > > > > > on the following commit:
-> > > > > > 
-> > > > > > 	338b0f760e84 (rcu: Better hotplug handling for synchronize_sched_expedited()
-> > > > > > 
-> > > > > > The point is to avoid an IPI while waiting for a CPU to become online
-> > > > > > or failing to become offline.
-> > > > > > 
-> > > > > > However this is pointless and even error prone for several reasons:
-> > > > > > 
-> > > > > > * If the CPU has been seen offline in the first round scanning offline
-> > > > > >   and idle CPUs, no IPI is even tried and the quiescent state is
-> > > > > >   reported on behalf of the CPU.
-> > > > > > 
-> > > > > > * This means that if the IPI fails, the CPU just became offline. So
-> > > > > >   it's unlikely to become online right away, unless the cpu hotplug
-> > > > > >   operation failed and rolled back, which is a rare event that can
-> > > > > >   wait a jiffy for a new IPI to be issued.
-> > > 
-> > > But the expedited grace period might be preempted for an arbitrarily
-> > > long period, especially if a hypervisor is in play.  And we do drop
-> > > that lock midway through...
-> > 
-> > Well, then that delays the expedited grace period as a whole anyway...
-> 
-> Fair enough.  Part of this is the paranoia that has served me so well.
-> But which can also cause the occasional problem.  On the other hand,
-> we really do occasionally lose things during CPU hotplug operations...
-> 
-> > > > > > For all those reasons, remove this optimization that doesn't look worthy
-> > > > > > to keep around.
-> > > > > 
-> > > > > Thank you for digging into this!
-> > > > > 
-> > > > > When I ran tests that removed the call to sync_sched_exp_online_cleanup()
-> > > > > a few months ago, I got grace-period hangs [1].  Has something changed
-> > > > > to make this safe?
-> > > > 
-> > > > Hmm, but was it before or after "rcu: Fix get_state_synchronize_rcu_full()
-> > > > GP-start detection" ?
-> > > 
-> > > Before.  There was also some buggy debug code in play.  Also, to get the
-> > > failure, it was necessary to make TREE03 disable preemption, as stock
-> > > TREE03 has an empty sync_sched_exp_online_cleanup() function.
-> > > 
-> > > I am rerunning the test with a WARN_ON_ONCE() after the early exit from
-> > > the sync_sched_exp_online_cleanup().  Of course, lack of a failure does
-> > > not necessairly indicate
-> > 
-> > Cool, thanks!
-> 
-> No failures.  But might it be wise to put this WARN_ON_ONCE() in,
-> let things go for a year or two, and complete the removal if it never
-> triggers?  Or is the lack of forward progress warning enough?
-> 
-> > > > And if after do we know why?
-> > > 
-> > > Here are some (possibly bogus) possibilities that came to mind:
-> > > 
-> > > 1.	There is some coming-online race that deprives the incoming
-> > > 	CPU of an IPI, but nevertheless marks that CPU as blocking the
-> > > 	current grace period.
-> > 
-> > Arguably there is a tiny window between rcutree_report_cpu_starting()
-> > and set_cpu_online() that could make ->qsmaskinitnext visible before
-> > cpu_online() and therefore delay the IPI a bit. But I don't expect
-> > more than a jiffy to fill up the gap. And if that's relevant, note that
-> > only !PREEMPT_RCU is then "fixed" by sync_sched_exp_online_cleanup() here.
-> 
-> Agreed.  And I vaguely recall that there was some difference due to
-> preemptible RCU's ability to clean up at the next rcu_read_unlock(),
-> though more recently, possibly deferred.
-> 
-> > > 2.	Some strange scenario involves the CPU going offline for just a
-> > > 	little bit, so that the IPI gets wasted on the outgoing due to
-> > > 	neither of the "if" conditions in rcu_exp_handler() being true.
-> > > 	The outgoing CPU just says "I need a QS", then leaves and
-> > > 	comes back.  (The expedited grace period doesn't retry because
-> > > 	it believes that it already sent that IPI.)
-> > 
-> > I don't think this is possible. Once the CPU enters CPUHP_TEARDOWN_CPU with
-> > stop_machine, no more IPIs can be issued. The remaining ones are executed
-> > at CPUHP_AP_SMPCFD_DYING, still in stop_machine. So this is the last call
-> > for rcu_exp_handler() execution. And this last call has to be followed
-> > by rcu_note_context_switch() between stop_machine and the final schedule to
-> > idle. And that rcu_note_context_switch() must report the rdp exp context
-> > switch.
-> 
-> Makes sense to me.
-> 
-> > One easy way to assert that is:
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 86935fe00397..40d6090a33f5 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -4347,6 +4347,12 @@ void rcutree_report_cpu_dead(void)
-> >  	 * may introduce a new READ-side while it is actually off the QS masks.
-> >  	 */
-> >  	lockdep_assert_irqs_disabled();
-> > +	/*
-> > +	 * CPUHP_AP_SMPCFD_DYING was the last call for rcu_exp_handler() execution.
-> > +	 * The requested QS must have been reported on the last context switch
-> > +	 * from stop machine to idle.
-> > +	 */
-> > +	WARN_ON_ONCE(rdp->cpu_no_qs.b.exp);
-> >  	// Do any dangling deferred wakeups.
-> >  	do_nocb_deferred_wakeup(rdp);
-> 
-> I fired off a 30-minute run of 100*TREE03 with this change also.
 
-And no failures!
 
-							Thanx, Paul
+On 2/19/2025 8:54 AM, Paul E. McKenney wrote:
+>>> the system, by scaling the default by the number of CPUs.  After all,
+>>> we want to test both the ->gpwrap path *and* the non-->gpwrap path.
+>> Agreed. But do we want to test both these paths only under rcutorture testing or
+>> were you considering we do it for regular operation as well? i.e. wrap in 10
+>> minutes in regular operation. I am guessing you want it only for rcutorture
+>> _and_ have a 10 minute default.
+>>
+>> If that is the case, we would then need rcu_gpnum_ovf() to consult rcutorture,
+>> if it is enabled, about what what the threshold is.
+> The rcu_gp_slow() function does something similar for the grace-period
+> kthread's injected delays, so that can work.  Probably better than putting
+> the module parameter in tree.c, because putting it in rcutorture makes
+> in more clear that it is for debugging.
 
-> > > 3.	Your ideas here!  ;-)
-> > 
-> > :-)
-> 
-> 							Thanx, Paul
+Ok thanks, just to clarify:
+
+Normal operation is still ULONG/2 threshold.
+rcutorture operation will be 10 minutes (overridable by rcutorture module
+option, not module option in non-test kernel code itself).
+
+If we are in disagreement about this, please let me know. Otherwise I will work
+on a patch as a next step on this.
+
+ - Joel
+
