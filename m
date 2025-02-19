@@ -1,162 +1,296 @@
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54311FCCFD;
-	Wed, 19 Feb 2025 16:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B1D212FA5;
+	Wed, 19 Feb 2025 16:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739983241; cv=none; b=ONwUfFBDPsARDx7QWbZPLcemznoJPK645VyTK+pdNBuX7LgtXJTeH9gInV2Ip7zKObiw4rB3fZsstgxXpWL84lAqeLeGFEUTZd5EMls5cKAaRI5vDp5rFeAGXV2791M8Hr9jIesVfDimoD12KVKnb2ugNDil2NQw/zkvoghFl4g=
+	t=1739983906; cv=none; b=c95A9rteV1QMSp72n6L05R/6pS9teMKWd7cBYyPwYPXxiXi6AfDUraxHKDkM4UOqncBYnAoSC0Uq/ku8ljsx95KZ4NHRMDx0c3xDWorkZ/06GFXD6jflKeyUbl7SGjDcLvFxRWTI0Bk5a4/8zmsKjqL4dvpkzuA+ZRmN5+SH6xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739983241; c=relaxed/simple;
-	bh=FIoMuFSQ07R4o7KPNr9JeFn01rMJbvd5w5qUNvpz920=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=RnbM+hShkMHQzMQduwlcFRZ9kcqddhToAk07T/w64IL4yNehEOOZGT6JK4I1en/e+IVLk/cpRVQosMbgrpMh0B8BXiDW++Zr06CQrHJpC0tmfamUUBx0bO6UNRg4faJ5HC/4x3NU2imAV71wtLzH8hXzJ9eIudtUeJmgdqREtHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hawEzdym; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1739983906; c=relaxed/simple;
+	bh=9lD2kJAK7qTHRYkfwV34CMvuZMgTnDNUe1b6lOrNJoA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iW3PQeaLJ4CMcTn5mFbD6aHoKM7g7KmcKgTXryc+tgstLAErDQ8sJcnN1sU5gh47qXA+fTWnnANqeJYlbZrErbmWbKX0GOObwUAiQY3zLiRfAWzWQRG9S3soi5EqCOnUWs5cv2yTNet/heWwCSCTKe8mJNY1e+4BoZ8Aw1nzQHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r9XesV8x; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hawEzdym"
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7c0b9f35dc7so101295285a.2;
-        Wed, 19 Feb 2025 08:40:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739983238; x=1740588038; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xpi4TVSx9yEIiCT1ccXBg1RQMkm0prwwjlpAEx2L3Vs=;
-        b=hawEzdymHHek2vYP07WhbTYSb4N8ZpsWQtP7PYww6Vy1dIfH5h8ghbyrcdTd7NmBfA
-         xVLwJFlNrWS6G11+fJERJFrjo5xAkJ3cd5+khc5svc/FYDGydgFpviATtK5qyb+q1WQJ
-         uKrcbXlEMOKoo/aM67Sgh5KUnp2mGoev02BVMg054Z3b8oH/G5psrMxL7NeQ777vLCH/
-         D9tfI2o2fjA4y/PONjqjy5/CcEYuyeIfC8jiEaak6gkOV2JG6vUKHION2jz3tYTZIQRH
-         HzCCUrTs351Y0kKyeck1WFMg4lYPqXKeNzymYq2E765Hk05iZLWy+i1OhfNsZcS946SF
-         claw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739983238; x=1740588038;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xpi4TVSx9yEIiCT1ccXBg1RQMkm0prwwjlpAEx2L3Vs=;
-        b=LcjdyVCqWiTlNJtHS/wNjrRoAqe0s7ccZ+KYnGgf9jiU+6dGmhWqwzD4T9jD+7hSTR
-         c/K++Pavm35gPRyxi5vvXSWEyY/cHUvMPmjsSx8HUGEhzpLoCkAUQz+d433aH0HacgQ1
-         KZybJUKqTAH4FwDL14oaxtR6SZwKsVogxKn2dOpGAMbgvOytTKbS8/xJD1cjHzbffHEp
-         /d6tFNtc/BaKlUH8mr7OMKueboKpgTIZYGctRoxBmG1O0N1/CXSzEfwSZ2wy2i23gSio
-         79oatH+tUb0DnNFGxV7gfUI6i4zykCZ/WKjnr0EFOvNCYkvgb6d7i34LkFJFfXPDfnM9
-         zf3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWNJzFVDaESI6hJjx80+vA78LvrNNEFtlT7QtJ4JSBC9iARp0YriR4tpgBpx51uEptgMs8+EeKshDo=@vger.kernel.org, AJvYcCWUHWwBy0KInVnJ8VTpHIXeZ0QGDyvSqbrBL3hV6uIaQkjYox2ejIGYS+Nynz8j4Cji0Kkn@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlzSaOtr+2DFC2/4fm0yjA3FMWd1huaHmworbH3jN2qyxNmmuX
-	ZAikucucgl2K/BpiDucsCvWdmfNgZU/1JdW53UdCsvqsmiTStq4k
-X-Gm-Gg: ASbGncuqTwXs6n8hirMW3Yr4rFGdqH8GPNqKnIhVzZiS76dXxxqwFp1bZdaWguN3kHj
-	YA6NMmI6zifnwGC8WvG9xQQnXldN1t/lxVMg9sWhbdcqTMRErFBL9aZ5p8hkDWfcCKMlApz+g2c
-	atTthYShEDMqgr7KnDjoV6u65ksU82QgCQIAYLOT6FNMiQvFtVbjISMesPi8w3DajCFwBBfHOyF
-	pjZmeJq6k8HQMAJ4nWs3XObrcmHmrXSE8fRouoHf86BqwDPU7Ijm23jOpwR6zsW6kOAcU11lHU=
-X-Google-Smtp-Source: AGHT+IEbuLd5HABKsV2aaCeyqHdmc714c4tXv8nksALYv3eJ2MSAwcyoxK6FMyiIX6qmIK88BOOKGA==
-X-Received: by 2002:a05:620a:4591:b0:7c0:b0eb:4fa9 with SMTP id af79cd13be357-7c0b51cde08mr664398285a.5.1739983238153;
-        Wed, 19 Feb 2025 08:40:38 -0800 (PST)
-Received: from smtpclient.apple ([2402:d0c0:11:86::1])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0af0aceb1sm201588685a.89.2025.02.19.08.40.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Feb 2025 08:40:36 -0800 (PST)
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r9XesV8x"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6026C4CED6;
+	Wed, 19 Feb 2025 16:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739983905;
+	bh=9lD2kJAK7qTHRYkfwV34CMvuZMgTnDNUe1b6lOrNJoA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=r9XesV8xCrWbRyYsyA+8W+CdSLCSwfL5lQCZNNOZXJ9kYQwEjq529KFIgNbr9DYNM
+	 LduSuvhw4hF13roLG9/bo0SKijheUs0AleyixNfLsjwxMrYLxz6N2JQADRC1ARE2+1
+	 5HdOPdwVuv/ioCXGzc3Ndvvhg497qfc48qJSJjQlb93f1j7egDjLUwSEQSgv2THEIJ
+	 Rx6Lx4D+Z0XNa8UMl94IQDW9z+i3bOH0Z5pzCTtlUHIEdBnQMcaXozyherTsIHja43
+	 J7BXbmgOxchkUiDiq8xynL/pm86YOptdMJv2nXa3MxROF+9ejai0Wqliuhk14TuuU8
+	 /stlSWjAJuGaA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 618DCCE03D1; Wed, 19 Feb 2025 08:51:45 -0800 (PST)
+Date: Wed, 19 Feb 2025 08:51:45 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: Ankur Arora <ankur.a.arora@oracle.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, Boqun Feng <boqun.feng@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
+Subject: Re: [linux-next:master] [rcu]  c9b55f9da0:
+ WARNING:at_kernel/rcu/rcutorture.c:#rcutorture_one_extend_check[rcutorture]
+Message-ID: <08e755d1-9f7d-4238-ac2d-1869d68a8ddc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202502171415.8ec87c87-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
-Subject: Re: [Patch v2] doc/RCU/listRCU: refine example code for eliminating
- stale data
-From: Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <20250218005047.27258-1-richard.weiyang@gmail.com>
-Date: Thu, 20 Feb 2025 00:40:20 +0800
-Cc: paulmck@kernel.org,
- frederic@kernel.org,
- neeraj.upadhyay@kernel.org,
- rcu@vger.kernel.org,
- linux-doc@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <AB18BC5D-AD55-46DF-939C-44DFA845D168@gmail.com>
-References: <20250218005047.27258-1-richard.weiyang@gmail.com>
-To: Wei Yang <richard.weiyang@gmail.com>,
- Boqun Feng <boqun.feng@gmail.com>
-X-Mailer: Apple Mail (2.3826.400.131.1.6)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202502171415.8ec87c87-lkp@intel.com>
 
-On Feb 18, 2025, at 08:50, Wei Yang <richard.weiyang@gmail.com> wrote:
->=20
-> This patch adjust the example code with following two purpose:
->=20
->  * reduce the confusion on not releasing e->lock
->  * emphasize e is valid and not stale with e->lock held
->=20
-> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> CC: Boqun Feng <boqun.feng@gmail.com>
-> CC: Alan Huang <mmpgouride@gmail.com>
->=20
-> ---
-> v2:
->  * add the missing parameter *key
->  * make function return struct audit_entry
-> ---
-> Documentation/RCU/listRCU.rst | 10 ++++++----
-> 1 file changed, 6 insertions(+), 4 deletions(-)
->=20
-> diff --git a/Documentation/RCU/listRCU.rst =
-b/Documentation/RCU/listRCU.rst
-> index ed5c9d8c9afe..d8bb98623c12 100644
-> --- a/Documentation/RCU/listRCU.rst
-> +++ b/Documentation/RCU/listRCU.rst
-> @@ -334,7 +334,7 @@ If the system-call audit module were to ever need =
-to reject stale data, one way
-> to accomplish this would be to add a ``deleted`` flag and a ``lock`` =
-spinlock to the
-> ``audit_entry`` structure, and modify audit_filter_task() as follows::
->=20
-> - static enum audit_state audit_filter_task(struct task_struct *tsk)
-> + static struct audit_entry *audit_filter_task(struct task_struct =
-*tsk, char **key)
-> {
-> struct audit_entry *e;
-> enum audit_state   state;
-> @@ -346,16 +346,18 @@ to accomplish this would be to add a ``deleted`` =
-flag and a ``lock`` spinlock to
-> if (e->deleted) {
-> spin_unlock(&e->lock);
-> rcu_read_unlock();
-> - return AUDIT_BUILD_CONTEXT;
-> + return NULL;
-> }
-> rcu_read_unlock();
-> if (state =3D=3D AUDIT_STATE_RECORD)
-> *key =3D kstrdup(e->rule.filterkey, GFP_ATOMIC);
-> - return state;
-> + /* As long as e->lock is held, e is valid and
-> + * its value is not stale */
-> + return e;
-> }
-> }
-> rcu_read_unlock();
-> - return AUDIT_BUILD_CONTEXT;
-> + return NULL;
-> }
->=20
-> The ``audit_del_rule()`` function would need to set the ``deleted`` =
-flag under the
-> --=20
-> 2.34.1
->=20
+On Mon, Feb 17, 2025 at 02:30:16PM +0800, kernel test robot wrote:
+> 
+> hi, Ankur Arora and all,
+> 
+> this is not a regression report as our bot normally does. this report is just
+> FYI that we observe a WARNING with this config, in case it could supply any
+> useful information and/or somebody wants to have a look.
+> 
+> by this change, the config has below diff with parent:
+> 
+> ==================== PARENT FIRST_BAD KCONFIGS f001b7165def8f7af6ce95d08f0e1bbc2442654d ====================
+> --- /pkg/linux/i386-randconfig-r121-20250212/gcc-12/f001b7165def8f7af6ce95d08f0e1bbc2442654d/.config    2025-02-13 07:56:33.420457682 +0800
+> +++ /pkg/linux/i386-randconfig-r121-20250212/gcc-12/c9b55f9da0d2c72c8c8d8cd5df84af5251b74283/.config    2025-02-13 08:43:08.186415593 +0800
+> @@ -147,7 +147,6 @@ CONFIG_BSD_PROCESS_ACCT=y
+>  # RCU Subsystem
+>  #
+>  CONFIG_TREE_RCU=y
+> -CONFIG_PREEMPT_RCU=y
+>  CONFIG_RCU_EXPERT=y
+>  CONFIG_TREE_SRCU=y
+>  CONFIG_TASKS_RCU_GENERIC=y
+> @@ -162,7 +161,6 @@ CONFIG_RCU_STALL_COMMON=y
+>  CONFIG_RCU_NEED_SEGCBLIST=y
+>  CONFIG_RCU_FANOUT=32
+>  CONFIG_RCU_FANOUT_LEAF=16
+> -# CONFIG_RCU_BOOST is not set
+>  # CONFIG_RCU_NOCB_CPU is not set
+>  # CONFIG_TASKS_TRACE_RCU_READ_MB is not set
+>  # CONFIG_RCU_DOUBLE_CHECK_CB_TIME is not set
+> 
+> 
+> below is full report.
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "WARNING:at_kernel/rcu/rcutorture.c:#rcutorture_one_extend_check[rcutorture]" on:
+> 
+> commit: c9b55f9da0d2c72c8c8d8cd5df84af5251b74283 ("rcu: limit PREEMPT_RCU configurations")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> 
+> [test failed on linux-next/master c674aa7c289e51659e40dda0f954886ef7f80042]
+> 
+> in testcase: rcutorture
+> version: 
+> with following parameters:
+> 
+> 	runtime: 300s
+> 	test: cpuhotplug
+> 	torture_type: rcu
+> 
+> 
+> 
+> config: i386-randconfig-r121-20250212
+> compiler: gcc-12
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> +-----------------------------------------------------------------------------+------------+------------+
+> |                                                                             | f001b7165d | c9b55f9da0 |
+> +-----------------------------------------------------------------------------+------------+------------+
+> | WARNING:at_kernel/rcu/rcutorture.c:#rcutorture_one_extend_check[rcutorture] | 0          | 12         |
+> | EIP:rcutorture_one_extend_check                                             | 0          | 12         |
+> +-----------------------------------------------------------------------------+------------+------------+
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202502171415.8ec87c87-lkp@intel.com
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20250217/202502171415.8ec87c87-lkp@intel.com
+> 
+> 
+> [  109.553253][  T781] rcu-torture: rcu_torture_reader task started
+> [  109.553258][  T781] ------------[ cut here ]------------
+> [  109.553259][  T781] rcutorture_one_extend_check during change: Current 0x4  To add 0x4  To remove 0x0  preempt_count() 0x1
+> [  109.553292][  T781] WARNING: CPU: 1 PID: 781 at kernel/rcu/rcutorture.c:1905 rcutorture_one_extend_check+0x25a/0x267 [rcutorture]
+> [  109.553302][  T781] Modules linked in: rcutorture(+) torture
+> [  109.553307][  T781] CPU: 1 UID: 0 PID: 781 Comm: rcu_torture_rea Tainted: G                T  6.14.0-rc1-00007-gc9b55f9da0d2 #1
+> [  109.553310][  T781] Tainted: [T]=RANDSTRUCT
+> [  109.553311][  T781] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  109.553312][  T781] EIP: rcutorture_one_extend_check+0x25a/0x267 [rcutorture]
+> [  109.553318][  T781] Code: 75 2d c6 05 fd 04 1c f1 01 64 a1 84 77 7c 97 25 ff ff ff 7f 50 ff 75 08 57 53 56 68 60 9f 1c f1 68 a4 74 1c f1 e8 8d d3 ca a3 <0f> 0b 83 c4 1c 8d 65 f4 5b 5e 5f 5d c3 55 31 d2 83 f8 1f 89 e5 53
+> [  109.553320][  T781] EAX: 00000066 EBX: 00000004 ECX: 00000027 EDX: e89c1a00
+> [  109.553322][  T781] ESI: f11c92d9 EDI: 00000004 EBP: 825d1d88 ESP: 825d1d54
+> [  109.553323][  T781] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010282
+> [  109.553327][  T781] CR0: 80050033 CR2: 77235000 CR3: 010c5000 CR4: 00040690
+> [  109.553328][  T781] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+> [  109.553330][  T781] DR6: fffe0ff0 DR7: 00000400
+> [  109.553331][  T781] Call Trace:
+> [  109.553333][  T781]  ? show_regs+0x4c/0x52
+> [  109.553343][  T781]  ? rcutorture_one_extend_check+0x25a/0x267 [rcutorture]
+> [  109.553349][  T781]  ? __warn+0x9e/0x15f
+> [  109.553354][  T781]  ? report_bug+0xe8/0x14a
+> [  109.553357][  T781]  ? rcutorture_one_extend_check+0x25a/0x267 [rcutorture]
+> [  109.553364][  T781]  ? exc_overflow+0x37/0x37
+> [  109.553367][  T781]  ? handle_bug+0x3a/0x55
+> [  109.553369][  T781]  ? exc_invalid_op+0x1a/0x56
+> [  109.553372][  T781]  ? handle_exception+0x148/0x148
+> [  109.553376][  T781]  ? osq_wait_next+0x18/0x41
+> [  109.553379][  T781]  ? exc_overflow+0x37/0x37
+> [  109.553381][  T781]  ? rcutorture_one_extend_check+0x25a/0x267 [rcutorture]
+> [  109.553388][  T781]  ? exc_overflow+0x37/0x37
+> [  109.553390][  T781]  ? rcutorture_one_extend_check+0x25a/0x267 [rcutorture]
+> [  109.553399][  T781]  rcutorture_one_extend+0x18c/0x3c1 [rcutorture]
+> [  109.553410][  T781]  rcu_torture_one_read+0x95/0x4d2 [rcutorture]
+> [  109.553417][  T781]  ? validate_chain+0x3d/0x24c
+> [  109.553420][  T781]  ? mark_lock+0x6a/0x14d
+> [  109.553440][  T781]  rcu_torture_reader+0xc4/0xdbd [rcutorture]
+> [  109.553448][  T781]  ? rcu_torture_one_read+0x4d2/0x4d2 [rcutorture]
+> [  109.553457][  T781]  kthread+0x169/0x16e
+> [  109.553459][  T781]  ? rcu_torture_read_exit_child+0x3a/0x3a [rcutorture]
+> [  109.553466][  T781]  ? kthread_is_per_cpu+0x17/0x17
+> [  109.553468][  T781]  ret_from_fork+0x19/0x2c
+> [  109.553471][  T781]  ? kthread_is_per_cpu+0x17/0x17
+> [  109.553472][  T781]  ret_from_fork_asm+0x12/0x20
+> [  109.553475][  T781]  entry_INT80_32+0x108/0x108
+> [  109.553481][  T781] irq event stamp: 307
+> [  109.553482][  T781] hardirqs last  enabled at (313): [<94ebb6cb>] console_trylock_spinning+0x6b/0x10a
+> [  109.553485][  T781] hardirqs last disabled at (318): [<94ebb691>] console_trylock_spinning+0x31/0x10a
+> [  109.553486][  T781] softirqs last  enabled at (0): [<94e613c4>] copy_process+0x945/0x1a7d
+> [  109.553489][  T781] softirqs last disabled at (0): [<00000000>] 0x0
+> [  109.553491][  T781] ---[ end trace 0000000000000000 ]---
+> [  109.553494][  T781] ------------[ cut here ]------------
+> [  109.553496][  T781] rcutorture_one_extend_check after change: Current 0x60  To add 0x60  To remove 0x4  preempt_count() 0x2
+> [  109.553510][  T781] WARNING: CPU: 1 PID: 781 at kernel/rcu/rcutorture.c:1902 rcutorture_one_extend_check+0x20d/0x267 [rcutorture]
+> [  109.553517][  T781] Modules linked in: rcutorture(+) torture
+> [  109.553520][  T781] CPU: 1 UID: 0 PID: 781 Comm: rcu_torture_rea Tainted: G        W       T  6.14.0-rc1-00007-gc9b55f9da0d2 #1
+> [  109.553523][  T781] Tainted: [W]=WARN, [T]=RANDSTRUCT
+> [  109.553524][  T781] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  109.553525][  T781] EIP: rcutorture_one_extend_check+0x20d/0x267 [rcutorture]
+> [  109.553530][  T781] Code: 3d fe 04 1c f1 00 75 27 25 ff ff ff 7f c6 05 fe 04 1c f1 01 50 ff 75 08 57 53 56 68 60 9f 1c f1 68 a4 74 1c f1 e8 da d3 ca a3 <0f> 0b 83 c4 1c a1 40 09 1c f1 8b 40 1c 85 c0 74 41 f6 c3 60 75 3c
+> [  109.553532][  T781] EAX: 00000067 EBX: 00000060 ECX: 00000027 EDX: e89c1a00
+> [  109.553533][  T781] ESI: f11c936d EDI: 00000060 EBP: 825d1d88 ESP: 825d1d54
+> [  109.553535][  T781] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010282
+> [  109.553537][  T781] CR0: 80050033 CR2: 77235000 CR3: 010c5000 CR4: 00040690
+> [  109.553539][  T781] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+> [  109.553540][  T781] DR6: fffe0ff0 DR7: 00000400
+> [  109.553541][  T781] Call Trace:
+> [  109.553543][  T781]  ? show_regs+0x4c/0x52
+> [  109.553545][  T781]  ? rcutorture_one_extend_check+0x20d/0x267 [rcutorture]
+> [  109.553551][  T781]  ? __warn+0x9e/0x15f
+> [  109.553555][  T781]  ? report_bug+0xe8/0x14a
+> [  109.553558][  T781]  ? rcutorture_one_extend_check+0x20d/0x267 [rcutorture]
+> [  109.553565][  T781]  ? exc_overflow+0x37/0x37
+> [  109.553567][  T781]  ? handle_bug+0x3a/0x55
+> [  109.553569][  T781]  ? exc_invalid_op+0x1a/0x56
+> [  109.553572][  T781]  ? handle_exception+0x148/0x148
+> [  109.553575][  T781]  ? osq_wait_next+0x18/0x41
+> [  109.553578][  T781]  ? exc_overflow+0x37/0x37
+> [  109.553580][  T781]  ? rcutorture_one_extend_check+0x20d/0x267 [rcutorture]
+> [  109.553587][  T781]  ? exc_overflow+0x37/0x37
+> [  109.553589][  T781]  ? rcutorture_one_extend_check+0x20d/0x267 [rcutorture]
+> [  109.553599][  T781]  rcutorture_one_extend+0x3b7/0x3c1 [rcutorture]
+> [  109.553610][  T781]  rcu_torture_one_read+0x21b/0x4d2 [rcutorture]
+> [  109.553638][  T781]  rcu_torture_reader+0xc4/0xdbd [rcutorture]
+> [  109.553646][  T781]  ? rcu_torture_one_read+0x4d2/0x4d2 [rcutorture]
+> [  109.553655][  T781]  kthread+0x169/0x16e
+> [  109.553658][  T781]  ? rcu_torture_read_exit_child+0x3a/0x3a [rcutorture]
+> [  109.553664][  T781]  ? kthread_is_per_cpu+0x17/0x17
+> [  109.553667][  T781]  ret_from_fork+0x19/0x2c
+> [  109.553669][  T781]  ? kthread_is_per_cpu+0x17/0x17
+> [  109.553671][  T781]  ret_from_fork_asm+0x12/0x20
+> [  109.553673][  T781]  entry_INT80_32+0x108/0x108
+> [  109.553679][  T781] irq event stamp: 607
+> [  109.553680][  T781] hardirqs last  enabled at (613): [<94ebb6cb>] console_trylock_spinning+0x6b/0x10a
+> [  109.553682][  T781] hardirqs last disabled at (618): [<94ebb691>] console_trylock_spinning+0x31/0x10a
+> [  109.553684][  T781] softirqs last  enabled at (0): [<94e613c4>] copy_process+0x945/0x1a7d
+> [  109.553686][  T781] softirqs last disabled at (0): [<00000000>] 0x0
+> [  109.553688][  T781] ---[ end trace 0000000000000000 ]---
+> [  109.634034][  T769] rcu-torture: Creating torture_shuffle task
+> [  109.635952][  T782] rcu-torture: rcu_torture_stats task started
+> [  109.637994][  T769] rcu-torture: Creating torture_stutter task
 
-I think it=E2=80=99s good enough to illustrate the intention here:
+And rcutorture's WARN_ON() has a bug that is exposed by that change
+in Kconfig option.  Does the patch shown below help?
 
-Reviewed-by: Alan Huang <mmpgouride@gmail.com>
+Either way, thank you for your testing efforts!
 
-Boqun, there is an unreviewed doc patch[1] that fixes the section
+							Thanx, Paul
 
- =E2=80=9CUsing RCU hlist_nulls to protect list and objects=E2=80=9D
+------------------------------------------------------------------------
 
-[1] =
-https://lore.kernel.org/rcu/20240326124431.77430-1-mmpgouride@gmail.com/
+commit bb638fe1a683316397d5517cb7d1797d70d21c86
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Feb 19 08:41:11 2025 -0800
 
-: )
+    rcutorture: Update rcutorture_one_extend_check() for lazy preemption
+    
+    The rcutorture_one_extend_check() function's last check assumes that
+    if cur_ops->readlock_nesting() returns greater than zero, either the
+    RCUTORTURE_RDR_RCU_1 or the RCUTORTURE_RDR_RCU_2 bit must be set, that
+    is, there must be at least one rcu_read_lock() in effect.
+    
+    This works for preemptible RCU and for non-preemptible RCU running in
+    a non-preemptible kernel.  But it fails for non-preemptible RCU running
+    in a preemptible kernel because then RCU's cur_ops->readlock_nesting()
+    function, which is rcu_torture_readlock_nesting(), will return
+    the PREEMPT_MASK mask bits from preempt_count().  The result will
+    be greater than zero if preemption is disabled, including by the
+    RCUTORTURE_RDR_PREEMPT and RCUTORTURE_RDR_SCHED bits.
+    
+    This commit therefore adjusts this check to take into account the case
+    fo non-preemptible RCU running in a preemptible kernel.
+    
+    Reported-by: kernel test robot <oliver.sang@intel.com>
+    Closes: https://lore.kernel.org/oe-lkp/202502171415.8ec87c87-lkp@intel.com
+    Co-developed-by: Boqun Feng <boqun.feng@gmail.com>
+    Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+    Co-developed-by: Joel Fernandes <joelagnelf@nvidia.com>
+    Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-
-
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 895a27545ae1e..0f446ff04eda1 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1981,6 +1981,8 @@ static void rcu_torture_reader_do_mbchk(long myid, struct rcu_torture *rtp,
+ #define ROEC_ARGS "%s %s: Current %#x  To add %#x  To remove %#x  preempt_count() %#x\n", __func__, s, curstate, new, old, preempt_count()
+ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old, bool insoftirq)
+ {
++	int mask;
++
+ 	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE))
+ 		return;
+ 
+@@ -2010,8 +2012,10 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
+ 	WARN_ONCE(cur_ops->extendables &&
+ 		  !(curstate & (RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED)) &&
+ 		  (preempt_count() & PREEMPT_MASK), ROEC_ARGS);
+-	WARN_ONCE(cur_ops->readlock_nesting &&
+-		  !(curstate & (RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2)) &&
++	mask = RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2;
++	if (IS_ENABLED(CONFIG_PREEMPT_RCU))
++		mask |= RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
++	WARN_ONCE(cur_ops->readlock_nesting && !(curstate & mask) &&
+ 		  cur_ops->readlock_nesting() > 0, ROEC_ARGS);
+ }
+ 
