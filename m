@@ -1,223 +1,243 @@
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407B21C8618;
-	Wed, 19 Feb 2025 13:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739971796; cv=fail; b=T0n/XrSspumVOBPJWwWh1+ux9t9w+ReDtV4uPldWkJyhL6Hr6JKWbOFXBcgrFSNC8ftQhTYEY4w94GS9RkOOmxUCXNgC1EISvU6TLojoas/0fRk+rx/p9e7W+MVSvbuVsJxTVcRSwqCIXeb3M04olDxNZyJRlfylylFtcrEzio8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739971796; c=relaxed/simple;
-	bh=ImlpdudygmALp9hfMplbYlLhSKNKUwW3SvSzVuzh4kg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dhkqd75gPooU9qMyS7Lf88frImJsQksWzFsPzZDj6g0xDDjp7qVi+s6DIsbYYQ7vo2MtSJe5CQtME6My2HLkjDFS8NY475HmcAYNfuRlOOO4r7yfPUMidfj5eosYesfTxOm3S3WabndgWV6RkQwqTTtppZVa+Dn9CbNMtKH4+rc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=MrIRLh2K; arc=fail smtp.client-ip=40.107.237.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807791EA7ED
+	for <rcu@vger.kernel.org>; Wed, 19 Feb 2025 13:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739973296; cv=none; b=IEBhc4mnEVgu66itn/BCyNjDTYfoFzCZvzRA2a6AmBBGMbIKkWpcylFK3JEpIBd4H8/QEYjVWNaYHk3zwGf90M8bGVzN2j9qxKlqVXgMXQm8fTIgKsaNMr0O9gzY/Lr9hXAysCbKo7EKHqKNHW7jcPqknVAva+44wSf0vlTdk4w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739973296; c=relaxed/simple;
+	bh=cIlClc2yeQzEECvTdTSM3l1Z1DxeDuvBRUGAUbh8xh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TzOHBLv0Q6mW505mWvI7TsU+wGWuhKq4wsGhd8bTdktQ+5lKmgb7QvqHYgt2GOV1UiJeC6Of2h8UWP3/NtHNPhRY7E33IL2NeTAQ+LuLzJYd+LKLayfoAY6/xDQ8NIYaiZ9qURb1JsXGCuWRnw3VR9avxWf+v8Tca1oUxn5gnn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i/uUkXU6; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="MrIRLh2K"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JLlPJckmNBgu1V2mpqBtF3jnRGzZW/LDi1ZVQI+XgSvnr4uEjEerXYjPViKpMvWsPOolq92V3tPq+jK2tULl4F/eyYNtuY39+5TAtB8InqZwRSIqU3B6LSKuNwjRbN/0l2RAs9bliLrCOYQy0UbEQcB0pBpY9fBwg5iqizQjLxvsr0lRgpZrJ1qKSAmaZ52sUAsn+L1wlhADvvri6fdkpESJIqSTpaObPxK1LawkND8fmG3C2zkTTPk1qb4cqIaQK5CYhbj9lOW0Sa2E0pMizVp9FLKg1bcYiu3tx0h9eyIlh3qHU3MkzJb6UZmh+zHkkuW2RB2qZAjqPUlwZfQxFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6/QG+xs72OvTzmVbZZnnO8X4rznKAb++LovyUvGmjww=;
- b=CqdA/2e6tXQfzMlye2VffzFKCyqRUKj2MCk64MhiqOi3LiowIMWm0BD7qVPLfG9h3H0I8WDT90d/nXEE70bmlb+cXfLqibQcMfOB8APRu1cPcBkifpg4vtNBNAK3LTx95Kf9Xxe1xn4MXLzEDV3ADd49aaXGwn3aB+mT/XGwNsedZPDKm1dKlSFvKBfD1p5622GWFArTYX6AduUnp0PQpcNKPY2PgV3yIoLaytkrNwFwbQ9P6MSWFwKptlfZXjwCy7yTP/7t+4GoLuaG0havDRDlTvRBDZUDUdi1m0funsriih0b8aXCtUuKgDfv4n2a//sdApT415A0VbSmR1qZBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6/QG+xs72OvTzmVbZZnnO8X4rznKAb++LovyUvGmjww=;
- b=MrIRLh2KFqEt4DTN0bgsCCuS27amNsAzJPocGHRBKMJSsfRqoaSbCQvrX3MNDaH+bz5q+FflYbScazS0zM2KyPpVvJ1dnuM7/heVF53NgWgql6C0k3ZtVFDHtz4oCQ7KjjPjSZbjx62lN7KVo72N3M4b//B+ud1gzTmLib5s2Opshd0q/0IR8D5YkIba9h1P295Lwf5xUSFTROBmmDz4o++iAUtCBP67kudlB03Nithqy8OleN4kXSwnhxjvftOb5eKcHGPlpdYZaian2/uMx3+kfl/nVclUYqtVSPejwBCNwy0a8sPI6r0Y9cciaP4U+qCLr5HjXx0Ty6R+udhX4Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by IA1PR12MB7543.namprd12.prod.outlook.com (2603:10b6:208:42d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.19; Wed, 19 Feb
- 2025 13:29:49 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8445.017; Wed, 19 Feb 2025
- 13:29:49 +0000
-Message-ID: <52320693-3247-454f-931f-d9e23592862a@nvidia.com>
-Date: Wed, 19 Feb 2025 08:29:47 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -rcu] srcu: Use rcu_seq_done_exact() for polling API
-To: paulmck@kernel.org, Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>,
- Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>, rcu@vger.kernel.org
-References: <20250219124309.463702-1-joelagnelf@nvidia.com>
- <dde0f073-c3d9-44c9-bd85-cf0e8a0fd628@paulmck-laptop>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <dde0f073-c3d9-44c9-bd85-cf0e8a0fd628@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN8PR07CA0007.namprd07.prod.outlook.com
- (2603:10b6:408:ac::20) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i/uUkXU6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9DA1C4CED1;
+	Wed, 19 Feb 2025 13:54:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739973293;
+	bh=cIlClc2yeQzEECvTdTSM3l1Z1DxeDuvBRUGAUbh8xh4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=i/uUkXU6MmkmjQAouH7qLBIBcRd0cwOrFdFkAweqWAALsa6FjkvPPc3aJdGviiLcC
+	 58Wtj8cepZzqZnu1xVokFM4gVvuXyLymp5D05MbZ4v/gxvFMkjTUDjtwfoBHRH77hq
+	 Qf0kJZmIzc/EOfv004U5/yQ63xjtejSkqUHDzyWH7gcAGD41R+Z8xcvDciD4FQ32Td
+	 Hr20tAu2JPbuMXTsBnuCrHAAcyZ+qaGeHb0bD4HW3DN6H91vSUDLNXYnXF33wh4xbM
+	 o1rBRq/Ex2mvrsEysSvZfhjhdKwbvo75okeNmywZEEa+YdSx7gwjXd7H15aD6gubDe
+	 CvtDtKcSDSxjw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 841ABCE0BDE; Wed, 19 Feb 2025 05:54:53 -0800 (PST)
+Date: Wed, 19 Feb 2025 05:54:53 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: rcu@vger.kernel.org
+Subject: Re: The rdp->gpwrap behavior
+Message-ID: <f23140ec-2676-48a0-ab59-51ee18f22238@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250213183033.GA2635051@joelnvbox>
+ <b04b997e-fee6-4c5f-a0f9-12e671d27f8c@paulmck-laptop>
+ <009ef653-f41e-4101-886e-d9a4ce4d6e32@nvidia.com>
+ <d1ebe3a6-42d9-489e-8df2-9dc8c2635a61@paulmck-laptop>
+ <03416b20-789a-464e-8c2a-f9a96eec4b68@nvidia.com>
+ <b613df84-a176-4333-8c7b-2f3a75c7fdaa@paulmck-laptop>
+ <04e2c857-d66c-4ab6-8db8-33dd88160910@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|IA1PR12MB7543:EE_
-X-MS-Office365-Filtering-Correlation-Id: d336f8db-7bde-4c5f-46f7-08dd50e97bed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Ni9wQ3QrZUtwQkR4Uzh4NUFjaTk1ZCtVOFFuWEJ3QkFuUlN3eDdDbkdQNlpt?=
- =?utf-8?B?Um9oZVJGMGNYa3hFWDI5a25rek1JVEVVcFpjUnFyNzliU0JYQTg2OEdOZGN1?=
- =?utf-8?B?enNwOXJJUkEyd1RjbEFGVjlCQVZ2REpCVkF4S2p0dEdPN0Z0VXFBOExTWmls?=
- =?utf-8?B?VTBIUEM5YWRVS3cwelRqNWdnVUpKSHFUZXJHbllIb3p3N1NhdHYzMWdDVHNm?=
- =?utf-8?B?Z3d5aEozRHh2UkRxeUdRRkpnb0tVSjJhMWVpenBreGxrL3g4NGNjN3krOU5E?=
- =?utf-8?B?czFtMGVrMGlhamRlb20zR1ZkSUkwNyt1MDhmWHVBSUNmclpQTGVEOGtLanlx?=
- =?utf-8?B?Ulgzd016bERqU0xlclpZWW4yVVN2bnpqbXM0aDNybmV3R3VuTUtYekZQeHcx?=
- =?utf-8?B?TDJJcVdPUHFlbWtHZEtHN0xBSm55UlpCelZ2YUM4aTNkcDJINkZxckVkaFJQ?=
- =?utf-8?B?NG0rTUdGL243cUI5RDltN2xUNWZnMEZUOVl0VXJVaWJBVlBSU05xalIvVys5?=
- =?utf-8?B?Wlp3NEZlUkVZMEZnWTBBRXRhS0FUYVpZNnk5KytKNjJ5M3NOOUxkTWk2WGlB?=
- =?utf-8?B?bWNQd1lTaXVFWEVsUlRyMmtrTnF4aHFLd2JmV250aEgrS1V3SUgzZlhNNHpI?=
- =?utf-8?B?Tm9KWFp4SEFFWDZCYWk3U2dMSUJzQy9JWnoxWUdEY2toeWhmMnRDb3owdUdN?=
- =?utf-8?B?Mm1LeFpmS0dDK05ibzY5TmE4QklTdWh4dmRoZ3AxNEd6YWJVczVoRFVZNU55?=
- =?utf-8?B?UXUzWktDREJSUG1XQXdrRCt6TFJybDFId3FMcS8xU3hXVkp6SnFJc2VKcnJO?=
- =?utf-8?B?bVFHVWJTSFlhVkVoQnkzK0FwT0VBeCtNYWdhdEdmU005SFBHNU1CejR1Tkpz?=
- =?utf-8?B?TURwNDNZNjVscTdxNXRLZ0l2dHl5b3YvYzVzVW9sbmhSd1IyMTZ0bWpCR2JX?=
- =?utf-8?B?T1JkZVJDYUF2VjdLMnpsbFd3a2szOFBQUDJGdnprejZCN2hVTjBZY0Q1ajVC?=
- =?utf-8?B?U2JxMERsYnBkOXY5cU1zRFRjWWx2VjVoU2V5NXlqSmdHZVFNcHpiWHQ5RVVp?=
- =?utf-8?B?WmNhOTVQNno0VGh4ZTRyWiswemJmSGtyNU04QjVORGQ1UWE3TGZrM1RiM2lD?=
- =?utf-8?B?MDI3ZkNMVFBaU0FDZzZPL016aEFpT3k3R3dPQm1pbVE2dERERjN2ZER5Zkpk?=
- =?utf-8?B?RTgvdGlCMHF4eE1SZlJUMVJFeWw4WDNodG9ubndDb0ZIZEdsTmxLNndGSXc4?=
- =?utf-8?B?dGh0M3NITTB0MjdtMDhzSURPbW9lNG1EbXJBTGZTTy9uRGkyaUtpRVNhSGRI?=
- =?utf-8?B?MnpKTEJ6OWhBNnpnbk5WdXprNmpoQU5PQkVmdnRKbHpxT1g4NThYWkFYS2FD?=
- =?utf-8?B?ODRNL0c5aXl0RlY3M1dWaDlucUZOa1IxcTQxb3hta2Z1WEx3REVnL2M3T0Zv?=
- =?utf-8?B?ODF0a2paSnlwUTlxclpYSDk3cmN3YXMzYzBuUzZPWFVteWQyM0dhcGhNNzFh?=
- =?utf-8?B?MEh3T2tOeXV4MUxVNnVtVWhJelhSRlVUc1FUdlcycUdVK3RGZzJhMCt2cW9G?=
- =?utf-8?B?M2xyeU5IN0RCaXRpdFZ6WWxkUUFrellYTGRjelVUOC9pK1RpUVFvRERzK2No?=
- =?utf-8?B?c0szL0xFVE9xeVdhT21ra0p5VXFocUlDblJFeEhYRXRaSWcrVG9nbkNROHQ1?=
- =?utf-8?B?b25GMWhwc1A0TEYzUHI3a3pDZWV4Z3Q3MzJPRHh5VnBPaHNQMlB6NVRvUEI1?=
- =?utf-8?B?WE5yUkV5NjBFY00vOWFiMDlrdEp6NU5IWDgyb29yRzVER3RWd2xkclRQaUh1?=
- =?utf-8?B?NzVTTVk1MlBYWENWMDhLTmVpY2pNcnhkNitsRGZ5UThmUFlVamRjL1JhcWpp?=
- =?utf-8?Q?dzSTkWkFb/PcX?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SUdGTjNlbnBZRnJlVzc1Mkg5WlZ1eVNqdHM3azdlVVBxd1lyTjBWcTAzMzI0?=
- =?utf-8?B?QnhyMW40V0xqSkp3SGxvZFNpTnpUNUpmeEZoWFloeVlGNUFkSEZYMlA2aDNs?=
- =?utf-8?B?QmpaWUV3MG5JQmhyYzRRc3ZYRnl3R1hXQ2pHWlZFRGxtUFBpdmpKZ0Q2Ky9i?=
- =?utf-8?B?N0ZVNW9tQmQwM25sR3U0MnhMcm9PMnowUWpoemZWRXBWUHY2Y2Z3dnd2bm5O?=
- =?utf-8?B?Ukk2Um51eklDVkZqck5TWlhhZ1JsTlRxeE92U2FRVnFUZ3Vpc2pIeTJBdmZO?=
- =?utf-8?B?VEZ4ZDJIS3BPKzdKS0VVRmM4YkpHbjNaYnI0ZG44Q1pLazRITVI1aVJXU0gx?=
- =?utf-8?B?ZzNrcGhWWndiVVRUN3B0VUVmVnAxTlJ0RWo2QmMrMlp5d0lpNXRDdjRRc2xO?=
- =?utf-8?B?cEFpRjM5c3FLMTd1K2twVFUwQUFwSndzSkZCTEUxOGRxbHRzRFZiQU5YUGkw?=
- =?utf-8?B?QTZ0MzZUb3BrOVBzQnNZZ0ZwVHlZaERnYWhKdFZGRTd0ckJqbG9Vc09XV2sw?=
- =?utf-8?B?anpUNmN6OW5kT1pZWXplU29iMEVkbmhmbW1SbkMrc2hQT0xxUVJ6TDcyTVdh?=
- =?utf-8?B?dTZZcVZKRElteWZaTlNNcHRXbjh5a0ZYRW1MRDVBZ0dONDB1NjFrRk1FQXJO?=
- =?utf-8?B?MjN2V3dURkNhcSt1Rm9OcDB5OFllYWFNTmxFanRoanVOM0k2Q0ZueHRJVEIw?=
- =?utf-8?B?VGJxZUczSFZDcG5BUU8zNlBZbGU4ZEY1dnZjNFM2Ykw2VzNzZHFSYko4UDlz?=
- =?utf-8?B?WmhremVzUnNVKzZJbjY3K1lzL1BZT1B3bm9BOVpCSkN2Z09GRDJVdHorSVFt?=
- =?utf-8?B?cnE4ZFNRWE5GQ281VmtRUU9yUnJMQnZzUjdrektiVXozZ3o5dG9RblFBa1Vz?=
- =?utf-8?B?dzE3S1pPUFNKMGJTWXhNSEhieFMrUTlvNGVuUFUraWVGSTRlNllnK2Y2Mzdv?=
- =?utf-8?B?WG12aDNyT3ljNEVtdGxJY29pcllZRks3K002bjc1Mld3UUNyeDZiZS9mSldF?=
- =?utf-8?B?alFQYXo4RW9KZDU3bTl6YWdOdzBaQlB5ZDJQQlNFR3ZhVVdhZWdrN3FRdmNw?=
- =?utf-8?B?RXJGUWMySU44UEUwa0J4YlF3L1hmUi9tVEU4WVJCVVZYWlltaU8zblEvVGYz?=
- =?utf-8?B?djczNkwzUzZWZ1YrR2dUOGJtSmxtNmdES0s2VSsvMWpKM2ZYTEwxZmU3VVpu?=
- =?utf-8?B?eXFPb3lSVzI3VW1mYU4yOTF0V05HQytnOHN3YzdIbzJhdXQ2bzVManc1Vjgz?=
- =?utf-8?B?dHZnd0FxdXk1RWxlRDVkZHZkU2hmakZObkt3Y0dtUVJlTzJLMm9DVWdwYStu?=
- =?utf-8?B?SENWRjhuMWJSelduNVg3Nnh0NDVCd2pESjZEbVB0QVg1SFl1RE5EK0J6cHZ0?=
- =?utf-8?B?YVFMVzMyTG5uTWFQVVd1Yk9YQklvbWRiam5iWFY0a2lPaEtmWjBlMHkraG5S?=
- =?utf-8?B?cWE5U1NjWjJZcVNSZ1VUbVlENTBqclBhdTlQOHpyMUJKZklMMVFRbnhNRHhC?=
- =?utf-8?B?SjFIcGpabHJSRlBPR040ZUpHV25HWC95WWR3K3N3UUNDdjdpRE85V0REYlBU?=
- =?utf-8?B?bHNjOEZkaFNDUzJjbFBtb0pSY1h3bldzUTYyNjVkQm5ubjZJMTRNY0VPdFVq?=
- =?utf-8?B?YVhGSkNSekNTNHFnZEo5ZGVST1ZjcDYxN3Q0R2tMQ3pzZ3hYcTZJSkFmM2Rk?=
- =?utf-8?B?SlF1a0orMUVBRCszcTJVNGxXbFA0MUNCTlhOOUlyR1NlaXpuRVg0eE1yaGt6?=
- =?utf-8?B?OVpyajU2RnJrdFZua0lMU1RCalcyb2xwckFWelpxNUYvbkF6aUZVZTNoZEJv?=
- =?utf-8?B?MmxubFlJMllvQ0NHanN4bW51RmhlOXFUdU9GWHJ6UUNkdFpBNjFVRUlFUFNy?=
- =?utf-8?B?VGR3M1YvNi9SRytCSFlPVFlEUnpkVUp5dDRwTlhyL3F5ZUY4Rjhqbzk1Zjhw?=
- =?utf-8?B?dWluZGlzOWxzZmNNUnkwTW9MRXByUVd3ZEpRbGd0c0Z4V2FKRGlPNjRxTHpz?=
- =?utf-8?B?akJsbUs0V01MZTQ2YVgwWVJ4cW81alg0Y0NFWjc3TzJxQXhISGJGVGJ5K2lB?=
- =?utf-8?B?SWVicVRwbkw4cTVwS1ZZdmJ5Z2hBaUpSTm45eTZZcDRNTkJCOTBESy9oQm9i?=
- =?utf-8?Q?2uaXxCSJYVXnLcdFtVZjJcjou?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d336f8db-7bde-4c5f-46f7-08dd50e97bed
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2025 13:29:49.5252
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FgAAFRe7/KN0WD7MoqKE1x7b/8M4I8MAeCGRYimwH7BHGB3zKSjkXVulSyBlvo/EnqqbBBGt7yA/SyRfjDuyAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7543
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04e2c857-d66c-4ab6-8db8-33dd88160910@nvidia.com>
 
-
-
-On 2/19/2025 8:22 AM, Paul E. McKenney wrote:
-> On Wed, Feb 19, 2025 at 07:43:08AM -0500, Joel Fernandes wrote:
->> poll_state_synchronize_srcu() uses rcu_seq_done() unlike
->> poll_state_synchronize_rcu() which uses rcu_seq_done_exact().
->>
->> The  rcu_seq_done_exact() makes more sense for polling API, as with
->> this API, there is a higher chance that there is a significant delay
->> between the get_state..() and poll_state..() calls since a cookie
->> can be stored and reused at a later time. During such a delay, if
->> the gp_seq counter progresses more than ULONG_MAX/2 distance, then
->> poll_state..() may return false for a long time unwantedly.
->>
->> Fix by using the more accurate rcu_seq_done_exact() API which is
->> exactly what straight RCU's polling does.
->>
->> It may make sense, as future work, to add debug code here as well, where
->> we compare a physical timestamp between get_state..() and poll_state()
->> calls and yell if significant time has past but the grace period has
->> still not progressed.
->>
->> Reviewed-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
->> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+On Tue, Feb 18, 2025 at 05:50:27PM -0500, Joel Fernandes wrote:
+> Hi Paul,
 > 
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> On 2/18/2025 8:17 AM, Paul E. McKenney wrote:
+> > On Sun, Feb 16, 2025 at 07:23:48AM -0500, Joel Fernandes wrote:
+> >> On 2/15/2025 5:28 AM, Paul E. McKenney wrote:
+> >>> On Fri, Feb 14, 2025 at 01:03:40PM -0500, Joel Fernandes wrote:
+> >>>>>> Following up about our gpwrap discussions, I did some tracing of rdp->gpwrap
+> >>>>>> with just boot testing.
+> >>>>>>
+> >>>>>> I actually never see it set because rdp->gp_seq and rnp->gp_seq are usually
+> >>>>>> very close.
+> >>>>>>
+> >>>>>> Example trace:
+> >>>>>>
+> >>>>>> # rnp->gp_seq starts with -1200 on boot and then right around the wrap:
+> >>>>>>
+> >>>>>> 178.096329: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: -3 (0xfffffffffffffffd), rdp->gp_seq: -3 (0xfffffffffffffffd), wrap before: 0
+> >>>>>> 178.096330: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: -3 (0xfffffffffffffffd), rdp->gp_seq: -3 (0xfffffffffffffffd), wrap after: 0
+> >>>>>> 178.100327: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: 1 (0x1), rdp->gp_seq: 1 (0x1), wrap before: 0
+> >>>>>> 178.100328: rcu_gpnum_ovf: CPU: 2, rnp->gp_seq: 1 (0x1), rdp->gp_seq: 1 (0x1), wrap after: 0
+> >>>>>>
+> >>>>>> The wrap "before" and "after" are the value of gpwrap before and after
+> >>>>>> calling rcu_gpnum_ovf().
+> >>>>>>
+> >>>>>> Closer look at the _ovf() shows it should be only set if rdp->gp_seq and
+> >>>>>> rnp->gp_seq are quite a distance apart (say if the CPU was idle for too long
+> >>>>>> and many GPs have passed. This can happen both with/without wrap. So imminent
+> >>>>>> wrapping seems not necessary for ->gpwrap to be even set AFAICS.
+> >>>>>>
+> >>>>>> I think the problem is ULONG_CMP_LT is not really "<" so even after wrap, it
+> >>>>>> can false. i.e if rdp->gpseq + ULONG/4 wraps, it could still return false.
+> >>>>>
+> >>>>> Exactly, and all of that is in fact the intended behavior.
+> >>>>
+> >>>> Ah I think I get it now, so the wrap isn't really about the counter wrapping
+> >>>> causing an issue, but about the design of the ULONG_CMP APIs which are designed
+> >>>> for comparisons that wrap around. Due to this design, there is a side effect
+> >>>> that the numbers being compared have to be at a distance that is less than half
+> >>>> the number wheel. Otherwise the comparisons of numbers yields incorrect results.
+> >>>> Is that accurate to say?  IOW, ->gpwrap == true means, don't compare the numbers
+> >>>> anymore till we sort these huge deltas out.
+> >>>
+> >>> But "incorrect" is such a harsh and judgmental word.  ;-)
+> >>>
+> >>> Somewhat more seriously, ULONG_CMP_{GE,LT}() are defined to return the
+> >>> sign (or its complement) of differences between a pair of 32-bit or 64-bit
+> >>> numbers, as sizeof(unsigned long) dictates.  This is, mathematically,
+> >>> how you do signed differences.  The result coming out negative isn't
+> >>> incorrect, but instead the expected result given the numbers in question.
+> >>>
+> >>> Current RCU use cases might interpret a negative result as "no one did
+> >>> it for us yet", as in rcu_barrier(), "this CPU has not completed the
+> >>> current grace period", as in __note_gp_changes(), and so on.
+> >>>
+> >>> Now, these can get a false-positive/-negative result.  In the case of
+> >>> rcu_barrier(), we get a needless rcu_barrier() computation.  In the case
+> >>> of __note_gp_changes(), the false negative is OK, but a false positive
+> >>> from wrapping all the way around, could be fatal for a CPU that was idle
+> >>> for a long time (hence ->gpwrap).  And so on.
+> >>
+> >> Understood and agreed! I guess what I was getting at was that ->gpwrap can be
+> >> true and false-negatives start getting reported well before a full wrap /
+> >> false-positive situation arises, I believe. And a false-negative may not be
+> >> desirable in all scenarios. In my other patch, I posted a scenario where I was
+> >> concerned about missed wakeups on a false-negative situation.
+> >>
+> >> In srcutree.c
+> >> 		swait_event_interruptible_exclusive(
+> >> 			rnp->nocb_gp_wq[rcu_seq_ctr(wait_gp_seq) & 0x1],
+> >> 			rcu_seq_done(&rnp->gp_seq, wait_gp_seq) ||
+> >> 			!READ_ONCE(my_rdp->nocb_gp_sleep));
+> >>
+> >> But I shamelessly admit I don't understand this code well enough to say if this
+> >> is an issue :/.
+> > 
+> > This looks like RCU NOCB code rather than SRCU code?  Could you please
+> > tell me what function this code lives in?  The closest match I see is
+> > in nocb_gp_wait()?
 > 
-> But we should also run this by Kent Overstreet, given that bcachefs
-> uses this.  Should be OK, given that bcachefs uses this API in the same
-> way that it does poll_state_synchronize_rcu(), but still...
-
-Thanks Paul!  Adding Kent Overstreet to the email to raise any objections.
-
-thanks,
-
- - Joel
-
+> Oops, sorry I was looking at too many things.
 > 
-> 							Thanx, Paul
-> 
->> ---
->> v1->v2: Resend with Neeraj review tag. Rebased on rcu/dev.
->>
->>  kernel/rcu/srcutree.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->> index d2a694944553..591371d62e89 100644
->> --- a/kernel/rcu/srcutree.c
->> +++ b/kernel/rcu/srcutree.c
->> @@ -1589,7 +1589,7 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
->>  bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
->>  {
->>  	if (cookie != SRCU_GET_STATE_COMPLETED &&
->> -	    !rcu_seq_done(&ssp->srcu_sup->srcu_gp_seq, cookie))
->> +	    !rcu_seq_done_exact(&ssp->srcu_sup->srcu_gp_seq, cookie))
->>  		return false;
->>  	// Ensure that the end of the SRCU grace period happens before
->>  	// any subsequent code that the caller might execute.
->> -- 
->> 2.34.1
->>
+> Yes, it is in nocb_gp_wait(). I meant the rcu_seq_done() in that snippet in
+> 'tree_nocb.h'.
 
+OK, same as any other use case.  Can wrap happen, either across ULONG_MIN
+or zero, and if so, what are the consequences?  Are things better or worse
+with rcu_seq_done_exact()?  If a change is in order, how do we test it?
+
+Plus, given that this is nocb code, we should get Frederic's opinion.
+
+> >>>>>> >From a testing POV, the example shows it is not set even when around when a
+> >>>>>> wrap actually happened.  So may be, we are not testing gpwrap much, or at
+> >>>>>> all, with rcutorture?
+> >>>>>
+> >>>>> True enough, and that would be well worth fixing.
+> >>>>>
+> >>>>> One simple (and maybe too simple) fix is to add a Kconfig option to
+> >>>>> kernel/rcu/Kconfig.debug that makes rcu_gpnum_ovf() use something like
+> >>>>> (32 << RCU_SEQ_CTR_SHIFT).  This, or some similar value, should cause
+> >>>>> rcutorture's stuttering and/or shuffling to trigger setting of ->gpwrap
+> >>>>> within a few minutes.
+> >>
+> >> Since minutes was too long for me :-D, I am trying just a count of 4, and I do
+> >> see 15 total wraps in just 2 minutes, on 36 CPU system.
+> > 
+> > Very good, and thank you for taking this on!
+> > 
+> >> I am trying this same patch now for 10 minute run on all scenarios:
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git/commit/?h=rcu/next&id=984c47eeb7728829901b33462baae2771af80ea0
+> >> Will try longer runs after.
+> > 
+> > A good prototype!
+> 
+> Thanks, so far I could not produce any issue with doing this. Which could mean
+> that the code is robust to any wrap issues, but I guess no harm in testing it
+> for future-proofing?
+
+As long as we have proper control and proper default values, as outlined
+in my earlier message.  ;-)
+
+> >> Are you interested in an rcutorture patch where we force this? Would this be a
+> >> default setting where we always run it, or do we want to set it only under
+> >> torture command line options? Do we default to say a high value like 32, but
+> >> still provide an option to lower it to say 4, like I am doing?
+> > 
+> > Something like this would be good, but only under options.  (In order to
+> > more easily debug something that only happens with hyperactive ->gpwrap
+> > setting.)  For example, defined with yet another "rcutree." module_param()
+> > that is also recorded in kernel-parameters.txt.  And printed out at boot,
+> > perhaps in the rcu_bootup_announce_oddness() function.
+> > 
+> > We need a default setting that causes it to happen (very roughly) every
+> > ten minutes on a given CPU, or perhaps better, every minute or so across
+> 
+> And that default is certainly not ULONG_MAX/2 but rather something that I
+> empirically calculate to cause a half-way wrap in 10 minutes?
+
+Exactly!
+
+Maybe also use negative numbers to allow scaling by the number of CPUs,
+but that can be separate, when/if needed.  (Mentioning this now to avoid
+the negative numbers being used unwittingly.)
+
+> > the system, by scaling the default by the number of CPUs.  After all,
+> > we want to test both the ->gpwrap path *and* the non-->gpwrap path.
+> 
+> Agreed. But do we want to test both these paths only under rcutorture testing or
+> were you considering we do it for regular operation as well? i.e. wrap in 10
+> minutes in regular operation. I am guessing you want it only for rcutorture
+> _and_ have a 10 minute default.
+> 
+> If that is the case, we would then need rcu_gpnum_ovf() to consult rcutorture,
+> if it is enabled, about what what the threshold is.
+
+The rcu_gp_slow() function does something similar for the grace-period
+kthread's injected delays, so that can work.  Probably better than putting
+the module parameter in tree.c, because putting it in rcutorture makes
+in more clear that it is for debugging.
+
+> > Then that parameter's value would of course take the place of the
+> > hard-coded "4" in your new ULONG_CMP_LT() call in rcu_gpnum_ovf().
+> > 
+> > For example, the "pr_alert("%s%s total_gpwrap_count...);" works well
+> > for prototyping, but for production needs to take its place elsewhere,
+> > most likely later in that same series of pr_cont() invocations.
+> > 
+> > The get_gp_wrap_count() should sum up the per-CPU ->gpwrap_count fields,
+> > right?  Ah, but you are calling it from a per-CPU loop anyway, so either
+> > way should be fine.  But either way, get_gp_wrap_count() does need a
+> > header comment saying why.  Trust me, it won't necessarily be obvious
+> > five years from now.  ;-)
+> > 
+> > And that "atomic_inc(&rdp->gpwrap_count)" could be this_cpu_inc(), or
+> > even "WRITE_ONCE(..., ... + 1)", given that we are not worried about
+> > losing counts once in awhile.
+> 
+> Agreed to all these, I will make these changes.
+> 
+> > I *think* that it is OK to have the tree.[ch] and rcutorture.c portions
+> > in the same patch, but whoever is pushing this to mainline might well ask
+> > for it to be split if we happen to end up with merge conflicts.  Or maybe
+> > just get more practice handling merge conflicts, but it is their call.
+> 
+> Ok, will see how it looks and consider splitting.
+
+Sounds good, looking forward to seeing what you come up with.
+
+							Thanx, Paul
