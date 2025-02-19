@@ -1,161 +1,188 @@
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A5820FA98;
-	Wed, 19 Feb 2025 15:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3171E1F8AE5;
+	Wed, 19 Feb 2025 15:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739979604; cv=none; b=QdcIKM0TmpJJxfO/uXdpJUgd0uVIK/jdzqUBGpbaZz+DoGYE3vYdYfCHzuA+UnzhYgcAqB+9SSx9bLda682xClDRthec9ESw8MVWeUAFKjmqSwwpodx5YmIWlfyiEOQQujXjsKMv89G50i6D06JwLrCUKKpHmT78OSHPd/J8wlU=
+	t=1739980507; cv=none; b=RXEAxRZVWdAa9gkg93QJkGsLnxiSgOCayDPG9JahDzs/xAMOV578HwhZt7LrM3w1Z7UgTID48INVvq42gnjZC6d0k/sDniRnFuc+TiK3RdcTZQHlr1lGC8YNaJeb3sCpOAKDvdkpXXrAabBv/xz8skIFTyWA6vV0qZD+vd5q8ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739979604; c=relaxed/simple;
-	bh=D4UAwGRV/rLGXDfFkq1T0zDIPu8VapGkWiAaTWgA+wQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Lag333xMu1HpUvEF6vXRkG881JJxYYh0/lPgWttASMJNmj7J3cfkMYei32V/lVN7BoeEVxLE9GGpV9XC9+985GzI56Oo/dxFMWR96tQw15IwgXUpjR1EHHMkEH8cvQNrKzcwpnYMXCG1KqAgPqPR40beTAUxeIjuZyqUggkiQTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MWRBiEiG; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1739980507; c=relaxed/simple;
+	bh=7q/Od81HOGTmVblpP6svDOzuqkZWjDxFL25IFDT+QuA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tmzw67TotfUgJFMn56pdBMraBIxUzIZwd/9uhUUgNKur9e2NDJ/idn/llPjG8uqYzsvRpSpXc7+HFSeRRM+PFatViL6W3e0QMB/6DifOXC1NKDoPg3rrX06DGeVRGT3cCe/Al1B3oMnCGRnL/tDDVCH9+9kdh7SyT+7XkEGY6VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X804gVej; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MWRBiEiG"
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6e65e0a3f7eso30644656d6.0;
-        Wed, 19 Feb 2025 07:40:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739979601; x=1740584401; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=g49jKhUh2JPVCZHODS61I1a/EiyeOU7HVFqD+UrZfhs=;
-        b=MWRBiEiGyhXfTs/Gd5F1c+SgB3OscvNAAdh1A8LU3AOyTJfhAXlNwbEWEoL7tw4lnN
-         W/YE+XiEV+kje4PaDFDKs/8qq0TMyd9ofgC/jbA4qByqs+3C/5TTfX/9EkyDOBsL4tvy
-         /8IrCD5YX8+Ka1TTyI0O20VVlrDqUhML3Kx7eMoJyduFu0O5OcKEnesiqiGvSbi33fVY
-         GXHB3JXwtyRYwzHC+vEWr0oEBFinp2mAWS9k+pwGxTth94eN6xp7g1Oja/JAMeZISy3Y
-         JsNpCYE14ld87i6M8C7h8qqyNKebXWdJXZNh8TmesMaNkQN1WSA68Lk0LZefJZI1978l
-         ZghA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739979601; x=1740584401;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g49jKhUh2JPVCZHODS61I1a/EiyeOU7HVFqD+UrZfhs=;
-        b=EWw9GV2nUO922c5Wi82L58Ao9RztQW81v6BuQzA4JJHtVyoOVLfmcfUzelgwiIbKun
-         QH+C/85xXFmjlvk2gyUWsm869exGre8Yu3OECvbFyGBJtaN/UGqCJKHg7/y2fsyCmv67
-         OTeowqR0VtQlXWdUTh2sIgr7te5sQCGng0F0JIDEe0P6UWEr+e0R9y6NYJ/YMvuMMDwj
-         m9hEqmD96mPCYtmjDCmzR6IZxuDHhB1Y4qZEhEfr7JnrP3H0QjsZ974pX30Vo320VGbb
-         njR81WoKb1BT7aw9BPWwfv812QaVeCiYSQhl4sQ+dPNa07bgczGTmyYeNql2m5pRN8He
-         As+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU2LnrF5ax5aW5eTviqGPxKyfFqwwgyIkNDXzQplwW1rNmNx4aUl9sALi8QA7SnzZSMa8jVTs/6UjOdedvv@vger.kernel.org, AJvYcCVYO/UBxwBc9q1M5HUGtK5k/Puu1c/NJkwDMJUW5WIF8vg2iw+Ns1YW1qohsrkQtHpdZCHqsfVAuUd6jv8mNuVn@vger.kernel.org, AJvYcCW4WnbWdayRlLAeABE05BSzuiAQ+sEsacXMtM1+4KK4nzsl2ns2tLClxPdDqTCskOmMnYUSmli2UE2Mk/bUTBjN4j1q@vger.kernel.org, AJvYcCXMz7vuuYeYeS+aor8GRipOJQttEEP+fqnLTQ165w26ZMYE9mzB8mABhiznMZc4O/JlIhTbfwsQ5E8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyiQv/cKXkVQDE9Wc+qWflDL78PJuEuWih9RJvJkRrJ/JQEu0mU
-	M10eLIkQmdLlgDHo4kJ/Hj22p1bC6XfC6guvlQWB38ZUUA3hlFIP
-X-Gm-Gg: ASbGncs07XcGHIHtIe1O3IJRux8WLth8YsFV/dhuEiLIi9nX+Kp/oAyWAm0Vq+EH84c
-	nb40oUO2AmLUkwZoifM+sIt/vmL33u1zlhn+COS/89+jDF+nLUOnjvuLlRZpWQHuhI7lcpfVpJl
-	l9WqZlSe4GpxoZWsT2DOGoSGpDp9eoWHkIeloseJ/QbM/VPhrJ00oHKvDqjddUFUnmiBlEPJpc+
-	A99WkW0QW6MVhoZjSS4r1BLgrYEyBjIXI2AVpMOArsyWFmC9bx8byt5qPR130aAT0rZxsYWvNU4
-	e7QTadt/r6v4wa2bucSuLlsOqyD/EI8GWKEbfN2VR6NwJtb/r0Mw9AHsjFTq474KZGO4bv+Fylf
-	W8J7cJg==
-X-Google-Smtp-Source: AGHT+IGKJnxieMFJEOFo52+HKtndsK/DmeEtF5DMpKHp0PX0Qx4rfm4qgOAj21WgLMdNp0LJ8LEQ9Q==
-X-Received: by 2002:a05:6214:2269:b0:6e1:c77d:db8f with SMTP id 6a1803df08f44-6e6975bd12emr39188566d6.41.1739979601245;
-        Wed, 19 Feb 2025 07:40:01 -0800 (PST)
-Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65db006efsm75685036d6.106.2025.02.19.07.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 07:40:00 -0800 (PST)
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 3BB3D1200043;
-	Wed, 19 Feb 2025 10:40:00 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Wed, 19 Feb 2025 10:40:00 -0500
-X-ME-Sender: <xms:UPu1Z4Bgds8MS1CsvwiLohDGxCbtEdSZaXLk82JU37ySC5Dh23-Hdg>
-    <xme:UPu1Z6gyEO7wEhz7d03gg8-b8ZeNs-RgUlBhib_TwuHRo1uD7AgYbLPm-gy_uEEcg
-    KoZFVOHckcRYXBV3Q>
-X-ME-Received: <xmr:UPu1Z7nZqEQpxVlr84n_2L12NI3MQRdaVMKGsgvnY5W2BKo84z1dQvDCVA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeigeeifecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
-    necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
-    drtghomheqnecuggftrfgrthhtvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfev
-    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
-    ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedvkedpmhho
-    uggvpehsmhhtphhouhhtpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopegtohhrsggvtheslhifnhdrnhgvthdprhgtphhtthhopehrohhs
-    thgvughtsehgohhoughmihhsrdhorhhgpdhrtghpthhtohepmhhhihhrrghmrghtsehkvg
-    hrnhgvlhdrohhrghdprhgtphhtthhopehmrghthhhivghurdguvghsnhhohigvrhhssegv
-    fhhfihgtihhoshdrtghomhdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthht
-    ohepnhgvvghrrghjrdhuphgrughhhigrhieskhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    epjhhovghlsehjohgvlhhfvghrnhgrnhguvghsrdhorhhg
-X-ME-Proxy: <xmx:UPu1Z-xV8FgEmKEiasXTlUS3hk1hwzWYD6Sg132_ppXtxrCK9LjGtA>
-    <xmx:UPu1Z9RhWuVBNTe613lQ7B2Bcv2EJ2atcgWX-cPFTnYz8X8DR8je4A>
-    <xmx:UPu1Z5a7tmOh9zbTnwiBalQIMrObEOeVj_tPNSzxGOQSWTsE0wEYtQ>
-    <xmx:UPu1Z2Q0PBZEcPssFUO0_dwRaKsfljt9GXGmvMD73jV8TgKSCTbpNw>
-    <xmx:UPu1Z3DzlJtoFBgWff_WDOM_lRbEipBOgrukwxdGv8JyJ53wygCKQRNt>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 19 Feb 2025 10:39:59 -0500 (EST)
-From: Boqun Feng <boqun.feng@gmail.com>
-To: rcu@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>,	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X804gVej"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D79FC4CED1;
+	Wed, 19 Feb 2025 15:55:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739980505;
+	bh=7q/Od81HOGTmVblpP6svDOzuqkZWjDxFL25IFDT+QuA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=X804gVejbT4L+d1fY5FnTcRYOCWDsGHZUWbATkKy34efzsryLRlFJqSapZlOvDqY2
+	 5G9Ld2cb2/cThPmrxtscO+I3y5A7Zfif73c5KgR8qa6ViJWR7oBiil1hBzjIkVjpTB
+	 2XDYOOI0QOakPJystV9WW1ygDFImxRPkHaWD3/l8ZP1OzXp/OYNRm8Naa2lKEwFlEi
+	 AXdSwA/+vcaxspb6eKQwN2NUrR6gyr3VUOcVO+qxb9Sk5124jvH4kHhReMtuhwJyNn
+	 8oFsWdsxM3Xl++YRgX7MTTKvmdGpqGd9qdUgb9re0A7fUPrpMaMElgVfRtyJqdCc2Q
+	 LShuyE2tzJ5GA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 4DD82CE0885; Wed, 19 Feb 2025 07:55:05 -0800 (PST)
+Date: Wed, 19 Feb 2025 07:55:05 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,	Boqun Feng <boqun.feng@gmail.com>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,	Davidlohr Bueso <dave@stgolabs.net>,
-	Shuah Khan <shuah@kernel.org>,	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Huth <thuth@redhat.com>,	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,	Yury Norov <yury.norov@gmail.com>,
-	Valentin Schneider <vschneid@redhat.com>,	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,	linux-trace-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH rcu 11/11] torture: Make SRCU lockdep testing use srcu_read_lock_nmisafe()
-Date: Wed, 19 Feb 2025 07:39:38 -0800
-Message-Id: <20250219153938.24966-12-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250219153938.24966-1-boqun.feng@gmail.com>
-References: <20250219153938.24966-1-boqun.feng@gmail.com>
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
+ report
+Message-ID: <966fe653-7dbf-40b6-8b6e-c9bcf7b34335@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250213232559.34163-1-frederic@kernel.org>
+ <20250213232559.34163-4-frederic@kernel.org>
+ <fe931d3a-bf97-4be5-8420-f1fcb55e6a46@paulmck-laptop>
+ <Z68yzBURiIr_7Lmy@pavilion.home>
+ <610596cf-9836-473f-bcdc-15c69b7e0cd4@paulmck-laptop>
+ <Z7ET8S4HKqSPubQY@pavilion.home>
+ <c5ea9684-291f-4952-b834-ed8e39cfdf8f@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c5ea9684-291f-4952-b834-ed8e39cfdf8f@paulmck-laptop>
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Wed, Feb 19, 2025 at 06:58:36AM -0800, Paul E. McKenney wrote:
+> On Sat, Feb 15, 2025 at 11:23:45PM +0100, Frederic Weisbecker wrote:
+> > Le Sat, Feb 15, 2025 at 02:38:04AM -0800, Paul E. McKenney a écrit :
+> > > On Fri, Feb 14, 2025 at 01:10:52PM +0100, Frederic Weisbecker wrote:
+> > > > Le Fri, Feb 14, 2025 at 01:01:56AM -0800, Paul E. McKenney a écrit :
+> > > > > On Fri, Feb 14, 2025 at 12:25:59AM +0100, Frederic Weisbecker wrote:
+> > > > > > A CPU coming online checks for an ongoing grace period and reports
+> > > > > > a quiescent state accordingly if needed. This special treatment that
+> > > > > > shortcuts the expedited IPI finds its origin as an optimization purpose
+> > > > > > on the following commit:
+> > > > > > 
+> > > > > > 	338b0f760e84 (rcu: Better hotplug handling for synchronize_sched_expedited()
+> > > > > > 
+> > > > > > The point is to avoid an IPI while waiting for a CPU to become online
+> > > > > > or failing to become offline.
+> > > > > > 
+> > > > > > However this is pointless and even error prone for several reasons:
+> > > > > > 
+> > > > > > * If the CPU has been seen offline in the first round scanning offline
+> > > > > >   and idle CPUs, no IPI is even tried and the quiescent state is
+> > > > > >   reported on behalf of the CPU.
+> > > > > > 
+> > > > > > * This means that if the IPI fails, the CPU just became offline. So
+> > > > > >   it's unlikely to become online right away, unless the cpu hotplug
+> > > > > >   operation failed and rolled back, which is a rare event that can
+> > > > > >   wait a jiffy for a new IPI to be issued.
+> > > 
+> > > But the expedited grace period might be preempted for an arbitrarily
+> > > long period, especially if a hypervisor is in play.  And we do drop
+> > > that lock midway through...
+> > 
+> > Well, then that delays the expedited grace period as a whole anyway...
+> 
+> Fair enough.  Part of this is the paranoia that has served me so well.
+> But which can also cause the occasional problem.  On the other hand,
+> we really do occasionally lose things during CPU hotplug operations...
+> 
+> > > > > > For all those reasons, remove this optimization that doesn't look worthy
+> > > > > > to keep around.
+> > > > > 
+> > > > > Thank you for digging into this!
+> > > > > 
+> > > > > When I ran tests that removed the call to sync_sched_exp_online_cleanup()
+> > > > > a few months ago, I got grace-period hangs [1].  Has something changed
+> > > > > to make this safe?
+> > > > 
+> > > > Hmm, but was it before or after "rcu: Fix get_state_synchronize_rcu_full()
+> > > > GP-start detection" ?
+> > > 
+> > > Before.  There was also some buggy debug code in play.  Also, to get the
+> > > failure, it was necessary to make TREE03 disable preemption, as stock
+> > > TREE03 has an empty sync_sched_exp_online_cleanup() function.
+> > > 
+> > > I am rerunning the test with a WARN_ON_ONCE() after the early exit from
+> > > the sync_sched_exp_online_cleanup().  Of course, lack of a failure does
+> > > not necessairly indicate
+> > 
+> > Cool, thanks!
+> 
+> No failures.  But might it be wise to put this WARN_ON_ONCE() in,
+> let things go for a year or two, and complete the removal if it never
+> triggers?  Or is the lack of forward progress warning enough?
+> 
+> > > > And if after do we know why?
+> > > 
+> > > Here are some (possibly bogus) possibilities that came to mind:
+> > > 
+> > > 1.	There is some coming-online race that deprives the incoming
+> > > 	CPU of an IPI, but nevertheless marks that CPU as blocking the
+> > > 	current grace period.
+> > 
+> > Arguably there is a tiny window between rcutree_report_cpu_starting()
+> > and set_cpu_online() that could make ->qsmaskinitnext visible before
+> > cpu_online() and therefore delay the IPI a bit. But I don't expect
+> > more than a jiffy to fill up the gap. And if that's relevant, note that
+> > only !PREEMPT_RCU is then "fixed" by sync_sched_exp_online_cleanup() here.
+> 
+> Agreed.  And I vaguely recall that there was some difference due to
+> preemptible RCU's ability to clean up at the next rcu_read_unlock(),
+> though more recently, possibly deferred.
+> 
+> > > 2.	Some strange scenario involves the CPU going offline for just a
+> > > 	little bit, so that the IPI gets wasted on the outgoing due to
+> > > 	neither of the "if" conditions in rcu_exp_handler() being true.
+> > > 	The outgoing CPU just says "I need a QS", then leaves and
+> > > 	comes back.  (The expedited grace period doesn't retry because
+> > > 	it believes that it already sent that IPI.)
+> > 
+> > I don't think this is possible. Once the CPU enters CPUHP_TEARDOWN_CPU with
+> > stop_machine, no more IPIs can be issued. The remaining ones are executed
+> > at CPUHP_AP_SMPCFD_DYING, still in stop_machine. So this is the last call
+> > for rcu_exp_handler() execution. And this last call has to be followed
+> > by rcu_note_context_switch() between stop_machine and the final schedule to
+> > idle. And that rcu_note_context_switch() must report the rdp exp context
+> > switch.
+> 
+> Makes sense to me.
+> 
+> > One easy way to assert that is:
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 86935fe00397..40d6090a33f5 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -4347,6 +4347,12 @@ void rcutree_report_cpu_dead(void)
+> >  	 * may introduce a new READ-side while it is actually off the QS masks.
+> >  	 */
+> >  	lockdep_assert_irqs_disabled();
+> > +	/*
+> > +	 * CPUHP_AP_SMPCFD_DYING was the last call for rcu_exp_handler() execution.
+> > +	 * The requested QS must have been reported on the last context switch
+> > +	 * from stop machine to idle.
+> > +	 */
+> > +	WARN_ON_ONCE(rdp->cpu_no_qs.b.exp);
+> >  	// Do any dangling deferred wakeups.
+> >  	do_nocb_deferred_wakeup(rdp);
+> 
+> I fired off a 30-minute run of 100*TREE03 with this change also.
 
-Recent experience shows that the srcu_read_lock_nmisafe() and
-srcu_read_unlock_nmisafe() functions are not sufficiently tested.
-This commit therefore causes the torture.sh script's SRCU lockdep testing
-to use these two functions.  This will cause these two functions to
-be regularly tested by several developers (myself included) who use
-torture.sh as an RCU acceptance test.
+And no failures!
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+							Thanx, Paul
 
-diff --git a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
-index 2e63ef009d59..2db12c5cad9c 100755
---- a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
-+++ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
-@@ -49,7 +49,7 @@ do
- 		do
- 			err=
- 			val=$((d*1000+t*10+c))
--			tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5s --configs "SRCU-P" --bootargs "rcutorture.test_srcu_lockdep=$val" --trust-make --datestamp "$ds/$val" > "$T/kvm.sh.out" 2>&1
-+			tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5s --configs "SRCU-P" --kconfig "CONFIG_FORCE_NEED_SRCU_NMI_SAFE=y" --bootargs "rcutorture.test_srcu_lockdep=$val rcutorture.reader_flavor=0x2" --trust-make --datestamp "$ds/$val" > "$T/kvm.sh.out" 2>&1
- 			ret=$?
- 			mv "$T/kvm.sh.out" "$RCUTORTURE/res/$ds/$val"
- 			if test "$d" -ne 0 && test "$ret" -eq 0
--- 
-2.39.5 (Apple Git-154)
-
+> > > 3.	Your ideas here!  ;-)
+> > 
+> > :-)
+> 
+> 							Thanx, Paul
