@@ -1,178 +1,237 @@
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 937921DF980;
-	Wed, 19 Feb 2025 16:00:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C8A1FA261
+	for <rcu@vger.kernel.org>; Wed, 19 Feb 2025 16:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739980820; cv=none; b=aPYAZzuo50dn03OmS+PWvZblDGkpPfOhLfFh4l9+dEqHCeSGpXtLj5XcXD2+vrG5f1caHKd6P96HK9p/5xWgIjmYoVtBNCg6naW3T4tmgC+gxxfWvkz4Q8fgIj1Jsb1VI+1/aZeWaZ2OXjJzNoYkpwIWDEAurg0w/dLth5lpyHw=
+	t=1739981905; cv=none; b=bdZX3DX7w5TLOvJtj9r6vYJDMCYHDZqmXikNNPnvxGz7fjNlC5+M/wuCluESUjiweQHTP6cMHIB/mo2F0Lb7ntWBz06jN5QpmRzenu6j/w3hKG4i6VeY98ZU3K0AAUkW7Sn36SWmWU0jXEsSY+jJuCPxhcsB/KUQredWKXuOc3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739980820; c=relaxed/simple;
-	bh=86FKLdBrRSJU/fb0e9dIY3qBu2HykrBbgvF7eeAGAJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r/WYv/rIVmT785mwVxj7mkdT4gosdSAL3797FwYxSBsZ99eGtYfjwzCSNZLJla/wQReJwT50LHbB8mP00rcCz4V/eoq34szxMGnwJn382F72l2PMYnky4iGIUhcsMv29+i0pQv2S5CVAcP13d5fe0Qk9WEAYdIRD28mcne7Xdy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JwziLFg+; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1739981905; c=relaxed/simple;
+	bh=b38N2G5pI18KXCo6dYoQ0A/4T04VhxVdQ6rNeU31Ph8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YsTzWmtuvkzPTNg80Xo/XFW2+vhg+u0TsUJVVToRYVaILc3mdybgLe9RgeWc98LjkU4sxaPgNGgvQnEm7LGnIYCSl8qUwryJX6meTQLJwwIjBz9v0l/ddgqB25NnuIJ3Zzs6IuT0BWhmE85OOJxWp6NPpjzkP1IcgDdtIu/AAMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=co6lGl8f; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JwziLFg+"
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7be8f281714so695464185a.1;
-        Wed, 19 Feb 2025 08:00:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739980817; x=1740585617; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7xowfHEK7d7ldV64lQxLZTiso3cgJbh7FniDAgbQiTs=;
-        b=JwziLFg+ZBXh28sU+mOPXWVis+8oP1XuaKxVyFsmahlkDXQIgA2q7IvCyzZZ/PGMkn
-         /2tLcsP1m6BfgaurOQLV02t12AcU4XKrPnOcA+5i3eGmowg4UknIAcm8Tw+swHJpuRY6
-         SGV4GFfCqh5Lq1AWPZBEZCrZ1YcjmRkuogTGJAI+xUR1V3aqIjchgSRifaFopDhieMUD
-         a8HEjPNb9EpNJqQSIErEIhl7aagha6Y3xpahX5P3Fxhtil2rNBt8RV+yegb7L4xusgMe
-         v6TXB/cohZjC2WcLSfWVB04Snis+KPgbCqavWgRKtymOa9nCfxfsc9f9J4p8Hj3wZRjj
-         v9aQ==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="co6lGl8f"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739981902;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b38N2G5pI18KXCo6dYoQ0A/4T04VhxVdQ6rNeU31Ph8=;
+	b=co6lGl8fYC4dTkPOxYlwGM/Z7S5GyonXvd/YAfs4hEqu0oXze8tm1RGXV5k0vYdtSL4v+0
+	8eLl32wh/UsRYvsICmYHGARtgbSYp8NxVzdWp+0vVQEks3E60lwnIVBkIQ5Bejz3QuHyyB
+	r1ohSdWEL/wQ+q8/w2C1C2Z/tCCP+hg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-284-TMHf_MoAPr2dl1qGndwJxg-1; Wed, 19 Feb 2025 11:18:20 -0500
+X-MC-Unique: TMHf_MoAPr2dl1qGndwJxg-1
+X-Mimecast-MFC-AGG-ID: TMHf_MoAPr2dl1qGndwJxg_1739981899
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4394b2c19ccso58314755e9.1
+        for <rcu@vger.kernel.org>; Wed, 19 Feb 2025 08:18:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739980817; x=1740585617;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1739981899; x=1740586699;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7xowfHEK7d7ldV64lQxLZTiso3cgJbh7FniDAgbQiTs=;
-        b=k5Ek80mqjKWqJQ3RhnSjYShSLlnoWQZs1j/3HNFMyOZp85yJeTQmWYNmUrTSMQ9qJG
-         p8UtT+4qpgQzp5ho0+2/NkG7CutQE8tNXJ2QoBk90gTToS2qm9IgHYHRbw1WIQs0ljU7
-         OOfZknTuSYP9rmTMMSlFZSV+Ne213Rd47bpOyys792YLecQqZmxdPiEpWxc9OpPnBP+/
-         uLOm1cG0hk1CJGjVlz23w0T12uxNqTMedkJRFjoQAxzA+o3Xq+soS1hFj0ASZDlBpcR6
-         Lez4T6RBbun+xp/0ojHVwxKkqN+Cs8Y4lfVl9AVcOEOEcOVBHaTAljGrahXVcQdKm/a4
-         XcIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWApfZdiuRq4deis8KhJdBASYGPYsodWL5qfeBUGI7SeNU2fnjLuIBIAwFmICUHXdA0ilEF@vger.kernel.org, AJvYcCX6uceZh8rsQ/ubZtMDHKYFL8qYDX8wBb5xzIzjA5UTXVVMa2hIT+63N58jEjLly8cFNFbyoDYd2/M=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBdA436TNXR4YhdhvO3kX59lydWCbb1RDsxRQE0pDDSytZMk7j
-	rmKO3yqHu00VMGzLy3MAozBGWynce4ScS28WPWnUAebiS+cYMRqE
-X-Gm-Gg: ASbGnctnnDcPzDMoJb1zgHFbXKV/gJYMGckiNYgvLS18ehrgfjsC9kg4FKMpvJ/7eR/
-	bdKUR71hvk6sQ5d8B6hvUt+AxfYtKPVwLK2cSHvUucBfinIC0wCz9V/QsMMXmSF1TQv9uLYxMoD
-	X/EvAdO8MTCvV4ggZFkE+UYwns0SF8OikGQQm1xkIROKCptNMYHgTG6k8jv4TngGXQ49/a8+Hoj
-	fGrLuuY/fDAwLOs9iJlyIcFRawUd9L3XbBPLk9QWLUGikOQAgF3CWiRLtgLMMe7cKfqxCOX2z2m
-	JHzq+bO6Vpc8zcYCxPpTlpW7fqQgM6uEkzzEGbN4EfNnTDr4u+P0R0cUg+WKem7auICKGVPL2Es
-	VcQXDjQ==
-X-Google-Smtp-Source: AGHT+IFyIZGeMELLxH4+gRuW1ReVl3v5h8RimIqkv7kvlSbY2QsaqnnOsCGVJyfarjyVsCjwH1yNVw==
-X-Received: by 2002:a05:620a:1986:b0:7c0:791a:6faf with SMTP id af79cd13be357-7c08aa74353mr2821854485a.53.1739980816884;
-        Wed, 19 Feb 2025 08:00:16 -0800 (PST)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0b3bf7374sm136188485a.95.2025.02.19.08.00.15
+        bh=b38N2G5pI18KXCo6dYoQ0A/4T04VhxVdQ6rNeU31Ph8=;
+        b=QToEfIlqo7OYlA6q2bjIi5MCYmnBCDdbSbzCJk/pPl1DZpc0ciFG2zzkqA5PxIZiGp
+         68IYHExn3FKWcyCWSwKxlXay+a04iAjW3/nygU1B+4l5iBYPw4l2c//ukHNI0lGyPYfW
+         N40iom+uwAGfxEc8Abbpwiz6B6ot1Wf7iM3A57JIREsc9w9vsWqcOPASAd9PbXWChth3
+         oZZ+8G4DaUkrTMgZHnwBKkm1FXxB/u4FITSpL4OphG0qn5LtgEfAczZ9JwKbLAZS0uG8
+         c/2wHbe7+FOY0ONYzPTLUkOtCRzjbFDscUz34OCEgqNs1e0SO1M/vRiOOqOFW7alOGwI
+         Bsag==
+X-Forwarded-Encrypted: i=1; AJvYcCXQY3hI0LSIM8GD3VJ3EwqFCv17Ti5AeyIT9DGx/DVJ6R3q8xGr2AKVHHUMQgBUSpX9mLs=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxH2igGha3wjnrtfhpJjzMwfnBND5i+YZKx2X4S5URcLtubTkkt
+	mCGs7luwQtir8f++d/yVzsvdip97ZbBwV/ZNBYjJKtNQwN2vjx5iLRi9KPt2sZTczp7+Umyaics
+	tEjyLY2/indO3RU2XgSuCSK8yZjq8x4saJsPlf8Z4vJRfsXZmiQ==
+X-Gm-Gg: ASbGncv4Peyhsfrd34UuKoJvkF4GG1PWrt3y13W17U+m6wZ/YfAOpNmFBh93GDwTZbu
+	XVlJw4yGfcOdA9T6lEOtxkIGtgeFnT+6hu0IVP4RspT3NpDpHxL/u0StHyv4VBVeaLZHurlJDnd
+	RLqe3XuWSPby1b2nZooy5pKpaJxLJ9pD4c2nExEGsCh4NNmfbu5CAJnnBFkkJkFRldGpa3nYk6A
+	BXqfHH9fzFAWdGmKoFXNEGaSO5fI4jmEiey8Esfzqjy5m32bOfrmItLw4gAFsiaiQN+9ksBBG+z
+	aEzSjT/0yP/ftubmsSUQVEG3So5dHMiCaztjoSNmlEZNJK7bt6PGZXOEmmj0R2FUig==
+X-Received: by 2002:a05:600c:5246:b0:439:9d75:9e92 with SMTP id 5b1f17b1804b1-4399d75b257mr27951655e9.28.1739981899401;
+        Wed, 19 Feb 2025 08:18:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGrgaKWzB18Ksr+NPSQeT1o3+i2kAVUfh7lIILUz6n7wULpVTIiD8VAP1UIlBXohEkgY6+FYQ==
+X-Received: by 2002:a05:600c:5246:b0:439:9d75:9e92 with SMTP id 5b1f17b1804b1-4399d75b257mr27950675e9.28.1739981898863;
+        Wed, 19 Feb 2025 08:18:18 -0800 (PST)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f2591570esm18461449f8f.59.2025.02.19.08.18.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2025 08:00:15 -0800 (PST)
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 5D6A71200043;
-	Wed, 19 Feb 2025 11:00:15 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Wed, 19 Feb 2025 11:00:15 -0500
-X-ME-Sender: <xms:DwC2Z8mjHQWUXWpZM6CKiApWzYwbNIJAZXWfEskhHrGlJ2tzeLjolw>
-    <xme:DwC2Z71uB2LIlTDG7kHSiqLU_V5rGhgIRdVk1B6HjUICaGVyCGz7jAqJDEzAnta-b
-    AiiJebVaIRZoAfHmg>
-X-ME-Received: <xmr:DwC2Z6pMRF6uXmzNA_Hhb2DhHQiVOt8S0LoMtVH2OuTCxgnaV0_XlxJjJA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdeigeeikecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
-    drtghomheqnecuggftrfgrthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleel
-    ieevtdeguefhgeeuveeiudffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
-    ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeekpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopehrihgthhgrrhgurdifvghihigrnhhgsehgmh
-    grihhlrdgtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhr
-    tghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvg
-    gvrhgrjhdruhhprgguhhihrgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehrtghu
-    sehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqughotgesvh
-    hgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehmmhhpghhouhhrihguvgesghhm
-    rghilhdrtghomhdprhgtphhtthhopegsohhquhhnsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:DwC2Z4nMkN17pl3TR7llDyhfr1HTcK-c74tcRxPGobjdBPwXjNDDsg>
-    <xmx:DwC2Z63w-QZRtngEnVBWp-XEC3leaxZ8b6y5cWc55rNHBJwRk9jmUQ>
-    <xmx:DwC2Z_uDCe2A3mQar42tGxgq1KNeHExx0vB3gVfJTTZRS2E6HePYHw>
-    <xmx:DwC2Z2VFokEsH_S6ZAT07c5UPuG8Wq_e5fIvAyaTx0jGe5NDcLVWmw>
-    <xmx:DwC2Z90WPVQdSc9jakINUMBMcCqG-zkDrr-LDbezkyZZ2BhMrCsr96Yf>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 19 Feb 2025 11:00:14 -0500 (EST)
-Date: Wed, 19 Feb 2025 08:00:13 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Wei Yang <richard.weiyang@gmail.com>
-Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-	Alan Huang <mmpgouride@gmail.com>
-Subject: Re: [Patch v2] doc/RCU/listRCU: refine example code for eliminating
- stale data
-Message-ID: <Z7YADfJ7OEJKB_zk@Mac.home>
-References: <20250218005047.27258-1-richard.weiyang@gmail.com>
+        Wed, 19 Feb 2025 08:18:17 -0800 (PST)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: Jann Horn <jannh@google.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, virtualization@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+ linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+ linux-arch@vger.kernel.org, rcu@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
+ Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
+ <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
+ <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
+ <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
+ <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
+ Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
+ Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
+ Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
+ Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
+ <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
+ Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
+ <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+ Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
+ Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
+ <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
+ Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+In-Reply-To: <20250219145302.GA480110@joelnvbox>
+References: <20250114175143.81438-1-vschneid@redhat.com>
+ <20250114175143.81438-30-vschneid@redhat.com>
+ <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
+ <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
+ <xhsmhzfjpfkky.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20250219145302.GA480110@joelnvbox>
+Date: Wed, 19 Feb 2025 17:18:14 +0100
+Message-ID: <xhsmhecztj4c9.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250218005047.27258-1-richard.weiyang@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 18, 2025 at 12:50:47AM +0000, Wei Yang wrote:
-> This patch adjust the example code with following two purpose:
-> 
->   * reduce the confusion on not releasing e->lock
->   * emphasize e is valid and not stale with e->lock held
-> 
-> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> CC: Boqun Feng <boqun.feng@gmail.com>
-> CC: Alan Huang <mmpgouride@gmail.com>
-> 
+On 19/02/25 10:05, Joel Fernandes wrote:
+> On Fri, Jan 17, 2025 at 05:53:33PM +0100, Valentin Schneider wrote:
+>> On 17/01/25 16:52, Jann Horn wrote:
+>> > On Fri, Jan 17, 2025 at 4:25=E2=80=AFPM Valentin Schneider <vschneid@r=
+edhat.com> wrote:
+>> >> On 14/01/25 19:16, Jann Horn wrote:
+>> >> > On Tue, Jan 14, 2025 at 6:51=E2=80=AFPM Valentin Schneider <vschnei=
+d@redhat.com> wrote:
+>> >> >> vunmap()'s issued from housekeeping CPUs are a relatively common s=
+ource of
+>> >> >> interference for isolated NOHZ_FULL CPUs, as they are hit by the
+>> >> >> flush_tlb_kernel_range() IPIs.
+>> >> >>
+>> >> >> Given that CPUs executing in userspace do not access data in the v=
+malloc
+>> >> >> range, these IPIs could be deferred until their next kernel entry.
+>> >> >>
+>> >> >> Deferral vs early entry danger zone
+>> >> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >> >>
+>> >> >> This requires a guarantee that nothing in the vmalloc range can be=
+ vunmap'd
+>> >> >> and then accessed in early entry code.
+>> >> >
+>> >> > In other words, it needs a guarantee that no vmalloc allocations th=
+at
+>> >> > have been created in the vmalloc region while the CPU was idle can
+>> >> > then be accessed during early entry, right?
+>> >>
+>> >> I'm not sure if that would be a problem (not an mm expert, please do
+>> >> correct me) - looking at vmap_pages_range(), flush_cache_vmap() isn't
+>> >> deferred anyway.
+>> >
+>> > flush_cache_vmap() is about stuff like flushing data caches on
+>> > architectures with virtually indexed caches; that doesn't do TLB
+>> > maintenance. When you look for its definition on x86 or arm64, you'll
+>> > see that they use the generic implementation which is simply an empty
+>> > inline function.
+>> >
+>> >> So after vmapping something, I wouldn't expect isolated CPUs to have
+>> >> invalid TLB entries for the newly vmapped page.
+>> >>
+>> >> However, upon vunmap'ing something, the TLB flush is deferred, and th=
+us
+>> >> stale TLB entries can and will remain on isolated CPUs, up until they
+>> >> execute the deferred flush themselves (IOW for the entire duration of=
+ the
+>> >> "danger zone").
+>> >>
+>> >> Does that make sense?
+>> >
+>> > The design idea wrt TLB flushes in the vmap code is that you don't do
+>> > TLB flushes when you unmap stuff or when you map stuff, because doing
+>> > TLB flushes across the entire system on every vmap/vunmap would be a
+>> > bit costly; instead you just do batched TLB flushes in between, in
+>> > __purge_vmap_area_lazy().
+>> >
+>> > In other words, the basic idea is that you can keep calling vmap() and
+>> > vunmap() a bunch of times without ever doing TLB flushes until you run
+>> > out of virtual memory in the vmap region; then you do one big TLB
+>> > flush, and afterwards you can reuse the free virtual address space for
+>> > new allocations again.
+>> >
+>> > So if you "defer" that batched TLB flush for CPUs that are not
+>> > currently running in the kernel, I think the consequence is that those
+>> > CPUs may end up with incoherent TLB state after a reallocation of the
+>> > virtual address space.
+>> >
+>>
+>> Ah, gotcha, thank you for laying this out! In which case yes, any vmalloc
+>> that occurred while an isolated CPU was NOHZ-FULL can be an issue if said
+>> CPU accesses it during early entry;
+>
+> So the issue is:
+>
+> CPU1: unmappes vmalloc page X which was previously mapped to physical page
+> P1.
+>
+> CPU2: does a whole bunch of vmalloc and vfree eventually crossing some la=
+zy
+> threshold and sending out IPIs. It then goes ahead and does an allocation
+> that maps the same virtual page X to physical page P2.
+>
+> CPU3 is isolated and executes some early entry code before receving said =
+IPIs
+> which are supposedly deferred by Valentin's patches.
+>
+> It does not receive the IPI becuase it is deferred, thus access by early
+> entry code to page X on this CPU results in a UAF access to P1.
+>
+> Is that the issue?
+>
 
-Alan, could you take a look and if all looks reasonable to you, maybe a
-Reviewed-by or Acked-by? Thanks!
+Pretty much so yeah. That is, *if* there such a vmalloc'd address access in
+early entry code - testing says it's not the case, but I haven't found a
+way to instrumentally verify this.
 
-Regards,
-Boqun
-
-> ---
-> v2:
->   * add the missing parameter *key
->   * make function return struct audit_entry
-> ---
->  Documentation/RCU/listRCU.rst | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/RCU/listRCU.rst b/Documentation/RCU/listRCU.rst
-> index ed5c9d8c9afe..d8bb98623c12 100644
-> --- a/Documentation/RCU/listRCU.rst
-> +++ b/Documentation/RCU/listRCU.rst
-> @@ -334,7 +334,7 @@ If the system-call audit module were to ever need to reject stale data, one way
->  to accomplish this would be to add a ``deleted`` flag and a ``lock`` spinlock to the
->  ``audit_entry`` structure, and modify audit_filter_task() as follows::
->  
-> -	static enum audit_state audit_filter_task(struct task_struct *tsk)
-> +	static struct audit_entry *audit_filter_task(struct task_struct *tsk, char **key)
->  	{
->  		struct audit_entry *e;
->  		enum audit_state   state;
-> @@ -346,16 +346,18 @@ to accomplish this would be to add a ``deleted`` flag and a ``lock`` spinlock to
->  				if (e->deleted) {
->  					spin_unlock(&e->lock);
->  					rcu_read_unlock();
-> -					return AUDIT_BUILD_CONTEXT;
-> +					return NULL;
->  				}
->  				rcu_read_unlock();
->  				if (state == AUDIT_STATE_RECORD)
->  					*key = kstrdup(e->rule.filterkey, GFP_ATOMIC);
-> -				return state;
-> +				/* As long as e->lock is held, e is valid and
-> +				 * its value is not stale */
-> +				return e;
->  			}
->  		}
->  		rcu_read_unlock();
-> -		return AUDIT_BUILD_CONTEXT;
-> +		return NULL;
->  	}
->  
->  The ``audit_del_rule()`` function would need to set the ``deleted`` flag under the
-> -- 
-> 2.34.1
-> 
-> 
