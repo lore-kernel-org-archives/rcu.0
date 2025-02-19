@@ -1,93 +1,182 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736411F426F;
-	Wed, 19 Feb 2025 13:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D511EEA54;
+	Wed, 19 Feb 2025 14:58:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739973486; cv=none; b=hdTQcraCOqfsvCOrBhtcZkvsNPOTtQ+/pXoWpEUjV+2qBt9YVwcvO2JJu5G9r44cC9lBk7VreAx+yJ99Hv265kQFe69REDMbqqZ744guygAxK96x10LyuZR8lOoS7Vc4QaMW2YteqoCmRVxWGHqJoHyBemPwfws6/Vc/hAVhtHQ=
+	t=1739977118; cv=none; b=ABWRpLYb4dBE4vlL2l7T7CBsF4bZG89LKNevAnbSqj1vXjEcsmpH8b5ARjtH+3Ist+c/0+VYuCnxLrUsc9+JB/U2t/5WtwhGITLyiufoRp2qU9B9xfPuBxWI812zAzwYpr5dll+6owz0zV1B3Q2PMQwDlwTrNAqSDGOSMzqoxHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739973486; c=relaxed/simple;
-	bh=WalWz80t0PynaBELBTIscR8pkNUsFIOizWMAEnD7w6c=;
+	s=arc-20240116; t=1739977118; c=relaxed/simple;
+	bh=oYk4H1atTJGw8DMfE19z+D1ECLWGgsgD/yiuFGFYVBo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UOaHFdxJH7RWEHFaO1r+cdbTHu8nVIH7sEB9NakP6QDoDKTMWecw1Sx7GhAho+uqEMJjAtluvJ2ORyQt8R8vAQqHv39JLyyMKiJLJ/ntArX6hksxvqqBie5lkwZzE8HxX727aWgf61TP9NxnUJWQSX8dAjLPfHdPEY1ebJt+pyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aD6xFqWP; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=uEW6nKpDpUeMwibytK4LYPyzD+9tQ2g9qqpxcLGTJfrK89/iKK+iz/vqEbimhrvtIPTsLsr/TV0jilYR1lqkCsyRHTGROf05rlaet80m75LEEj4eOc/ARvioCenVdYQMQTAR+qFAR3FZchvhukO8z3YXhO4hJ39d0bSytOXC6GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e80Hwn69; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aD6xFqWP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E681DC4CED1;
-	Wed, 19 Feb 2025 13:58:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e80Hwn69"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5881CC4CED1;
+	Wed, 19 Feb 2025 14:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739973485;
-	bh=WalWz80t0PynaBELBTIscR8pkNUsFIOizWMAEnD7w6c=;
+	s=k20201202; t=1739977117;
+	bh=oYk4H1atTJGw8DMfE19z+D1ECLWGgsgD/yiuFGFYVBo=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=aD6xFqWPxRvjY1HUlH71YzSkYaU5DYGTnkCCu0Jo+lu0rH0glwR26h6Nsmqy3N9T3
-	 px7MDGJcHf9s09ECwBmt8bIkzY0yeibH7W9v1UBXnsFWpqKbxSg9vTcKGfpCZwU7w4
-	 KR0oLbBqqcrgL3zvmUEd8Kd4f+rZ1lSDZQ67D0/7ooIRMtvvmyLiqKxbJ7ITUiIe+b
-	 eWt5BDHv/OM8uxJPO+tQ1gemaSoK7ZWvTKcPr8fjXL3HxrpNkXM7amwvvtNe+s1A6Y
-	 RJrsdHaxwedBUvvbUpP8Ea6Hynm6rLe+QQmNp1HyXtW9REtToXWOxcvjw5ouHCJ5kM
-	 MRib+A/Zizg5Q==
+	b=e80Hwn69SJHmdsFk624FrUD5GHN8JmMfUllNO0H11/Yaj0y9xA3VotfxfCIDeDt9U
+	 U50pv+G9Dgsvtyzv3oNvpPdi/+jAFCT9AwcWf/th9w+xvqfDAC9cjHWkBw9rYSx+vG
+	 3nhiWiEw9NopsD6Ee6hQPsQ0RBgfuRolJBVwNDF1cv6A4rFr9gOxFPAy7zTmz7q3d1
+	 DmB3wJd7DUbSzaqq5iAj6HlRvmGXjcvb7TJEZ/D30YSOGbcZGVALK4KpmKAVbXkMHF
+	 0jAA5e82qSv7LOm2xPHXpcg79SmguyLAvRqc0qQw7+f7laQaBdSYsYyNLtbPU4ECbQ
+	 a260jlsQiAEFw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 897F9CE0BDE; Wed, 19 Feb 2025 05:58:05 -0800 (PST)
-Date: Wed, 19 Feb 2025 05:58:05 -0800
+	id E4AA2CE0885; Wed, 19 Feb 2025 06:58:36 -0800 (PST)
+Date: Wed, 19 Feb 2025 06:58:36 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: syzbot <syzbot+ae5b16688c0c675b1a1f@syzkaller.appspotmail.com>,
-	jiangshanlai@gmail.com, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-	rcu@vger.kernel.org, rostedt@goodmis.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [rcu?] WARNING in srcu_invoke_callbacks (2)
-Message-ID: <27f4ffbe-2342-484d-9924-716a799b265f@paulmck-laptop>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
+ report
+Message-ID: <c5ea9684-291f-4952-b834-ed8e39cfdf8f@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <67b4c7af.050a0220.14d86d.000a.GAE@google.com>
- <20250219132538.GA468969@joelnvbox>
+References: <20250213232559.34163-1-frederic@kernel.org>
+ <20250213232559.34163-4-frederic@kernel.org>
+ <fe931d3a-bf97-4be5-8420-f1fcb55e6a46@paulmck-laptop>
+ <Z68yzBURiIr_7Lmy@pavilion.home>
+ <610596cf-9836-473f-bcdc-15c69b7e0cd4@paulmck-laptop>
+ <Z7ET8S4HKqSPubQY@pavilion.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20250219132538.GA468969@joelnvbox>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z7ET8S4HKqSPubQY@pavilion.home>
 
-On Wed, Feb 19, 2025 at 08:25:38AM -0500, Joel Fernandes wrote:
-> On Tue, Feb 18, 2025 at 09:47:27AM -0800, syzbot wrote:
-> > Hello,
+On Sat, Feb 15, 2025 at 11:23:45PM +0100, Frederic Weisbecker wrote:
+> Le Sat, Feb 15, 2025 at 02:38:04AM -0800, Paul E. McKenney a écrit :
+> > On Fri, Feb 14, 2025 at 01:10:52PM +0100, Frederic Weisbecker wrote:
+> > > Le Fri, Feb 14, 2025 at 01:01:56AM -0800, Paul E. McKenney a écrit :
+> > > > On Fri, Feb 14, 2025 at 12:25:59AM +0100, Frederic Weisbecker wrote:
+> > > > > A CPU coming online checks for an ongoing grace period and reports
+> > > > > a quiescent state accordingly if needed. This special treatment that
+> > > > > shortcuts the expedited IPI finds its origin as an optimization purpose
+> > > > > on the following commit:
+> > > > > 
+> > > > > 	338b0f760e84 (rcu: Better hotplug handling for synchronize_sched_expedited()
+> > > > > 
+> > > > > The point is to avoid an IPI while waiting for a CPU to become online
+> > > > > or failing to become offline.
+> > > > > 
+> > > > > However this is pointless and even error prone for several reasons:
+> > > > > 
+> > > > > * If the CPU has been seen offline in the first round scanning offline
+> > > > >   and idle CPUs, no IPI is even tried and the quiescent state is
+> > > > >   reported on behalf of the CPU.
+> > > > > 
+> > > > > * This means that if the IPI fails, the CPU just became offline. So
+> > > > >   it's unlikely to become online right away, unless the cpu hotplug
+> > > > >   operation failed and rolled back, which is a rare event that can
+> > > > >   wait a jiffy for a new IPI to be issued.
 > > 
-> > syzbot found the following issue on:
-> > 
-> > HEAD commit:    a64dcfb451e2 Linux 6.14-rc2
-> > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=12398f18580000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c9c47badcd079906
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=ae5b16688c0c675b1a1f
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > userspace arch: arm64
-> > 
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> > 
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/c0a862fcec77/disk-a64dcfb4.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/f03793fc001b/vmlinux-a64dcfb4.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/ae71c33eae14/Image-a64dcfb4.gz.xz
-> > 
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+ae5b16688c0c675b1a1f@syzkaller.appspotmail.com
-> > 
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 6430 at kernel/rcu/srcutree.c:1798 srcu_invoke_callbacks+0x368/0x3d8
+> > But the expedited grace period might be preempted for an arbitrarily
+> > long period, especially if a hypervisor is in play.  And we do drop
+> > that lock midway through...
 > 
-> This is weird, happens to be WARN_ON_ONCE(ready_cbs.len); in
-> srcu_invoke_callbacks().
+> Well, then that delays the expedited grace period as a whole anyway...
 
-Thank you for tracking that down!
+Fair enough.  Part of this is the paranoia that has served me so well.
+But which can also cause the occasional problem.  On the other hand,
+we really do occasionally lose things during CPU hotplug operations...
 
-> Perhaps, stack corruption or the SRCU cblist's ->seglen got corrupted?
+> > > > > For all those reasons, remove this optimization that doesn't look worthy
+> > > > > to keep around.
+> > > > 
+> > > > Thank you for digging into this!
+> > > > 
+> > > > When I ran tests that removed the call to sync_sched_exp_online_cleanup()
+> > > > a few months ago, I got grace-period hangs [1].  Has something changed
+> > > > to make this safe?
+> > > 
+> > > Hmm, but was it before or after "rcu: Fix get_state_synchronize_rcu_full()
+> > > GP-start detection" ?
+> > 
+> > Before.  There was also some buggy debug code in play.  Also, to get the
+> > failure, it was necessary to make TREE03 disable preemption, as stock
+> > TREE03 has an empty sync_sched_exp_online_cleanup() function.
+> > 
+> > I am rerunning the test with a WARN_ON_ONCE() after the early exit from
+> > the sync_sched_exp_online_cleanup().  Of course, lack of a failure does
+> > not necessairly indicate
+> 
+> Cool, thanks!
 
-That has been the usual cause.  And a double call_srcu() is a common
-cause of ->cblist corruption.  We have CONFIG_DEBUG_OBJECTS_RCU_HEAD=y
-set up for SRCU as well as for RCU, it appears, so perhaps retry with
-that should this ever become reproducible?
+No failures.  But might it be wise to put this WARN_ON_ONCE() in,
+let things go for a year or two, and complete the removal if it never
+triggers?  Or is the lack of forward progress warning enough?
+
+> > > And if after do we know why?
+> > 
+> > Here are some (possibly bogus) possibilities that came to mind:
+> > 
+> > 1.	There is some coming-online race that deprives the incoming
+> > 	CPU of an IPI, but nevertheless marks that CPU as blocking the
+> > 	current grace period.
+> 
+> Arguably there is a tiny window between rcutree_report_cpu_starting()
+> and set_cpu_online() that could make ->qsmaskinitnext visible before
+> cpu_online() and therefore delay the IPI a bit. But I don't expect
+> more than a jiffy to fill up the gap. And if that's relevant, note that
+> only !PREEMPT_RCU is then "fixed" by sync_sched_exp_online_cleanup() here.
+
+Agreed.  And I vaguely recall that there was some difference due to
+preemptible RCU's ability to clean up at the next rcu_read_unlock(),
+though more recently, possibly deferred.
+
+> > 2.	Some strange scenario involves the CPU going offline for just a
+> > 	little bit, so that the IPI gets wasted on the outgoing due to
+> > 	neither of the "if" conditions in rcu_exp_handler() being true.
+> > 	The outgoing CPU just says "I need a QS", then leaves and
+> > 	comes back.  (The expedited grace period doesn't retry because
+> > 	it believes that it already sent that IPI.)
+> 
+> I don't think this is possible. Once the CPU enters CPUHP_TEARDOWN_CPU with
+> stop_machine, no more IPIs can be issued. The remaining ones are executed
+> at CPUHP_AP_SMPCFD_DYING, still in stop_machine. So this is the last call
+> for rcu_exp_handler() execution. And this last call has to be followed
+> by rcu_note_context_switch() between stop_machine and the final schedule to
+> idle. And that rcu_note_context_switch() must report the rdp exp context
+> switch.
+
+Makes sense to me.
+
+> One easy way to assert that is:
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 86935fe00397..40d6090a33f5 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4347,6 +4347,12 @@ void rcutree_report_cpu_dead(void)
+>  	 * may introduce a new READ-side while it is actually off the QS masks.
+>  	 */
+>  	lockdep_assert_irqs_disabled();
+> +	/*
+> +	 * CPUHP_AP_SMPCFD_DYING was the last call for rcu_exp_handler() execution.
+> +	 * The requested QS must have been reported on the last context switch
+> +	 * from stop machine to idle.
+> +	 */
+> +	WARN_ON_ONCE(rdp->cpu_no_qs.b.exp);
+>  	// Do any dangling deferred wakeups.
+>  	do_nocb_deferred_wakeup(rdp);
+
+I fired off a 30-minute run of 100*TREE03 with this change also.
+
+> > 3.	Your ideas here!  ;-)
+> 
+> :-)
 
 							Thanx, Paul
