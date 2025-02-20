@@ -1,126 +1,133 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E99A1EC01F;
-	Thu, 20 Feb 2025 22:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098331F1934
+	for <rcu@vger.kernel.org>; Thu, 20 Feb 2025 23:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740090971; cv=none; b=V50qxolcWR9vZ9/EJ/JF0xQMlM/C1b4ZD+Y+ldJpGTn9KuZswzVRonYP6pJClRFnL8OuDWeq+Jn5BKo8IlcECjNS6904J/WSi6p3yTidOnBnhbaLQP9U94Hb2IP9YcNrXxaClH7VYw3eeiX4GBc0QsEb+L+Pr/ZL6eJ7dDt52K8=
+	t=1740095515; cv=none; b=CfQ9Xv3ly0V2T6zZKhKTsLBM0JKBQXa06HLhw3XNQF49fRGnaPhZOU3bdjawxmnRKjvyj+Q2P4BMDpi8jVXiBuxoKEo5QHoaGJkoq+3AsaGuFNuNvzfDFF1pU8ZbgzHVKZ8zH253n1AEngo7JfYLnvgn8tt/Wj1egzVw9aJm5DU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740090971; c=relaxed/simple;
-	bh=NxbLe0M3BChvVfjcttKakBoKBCdnuodr8JnG2bwAuVg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XEf3eczDy9KPOn5TO6coA9EaD9Oojv3TEzZP2AqrcqK9f+h4Xm9fHqbbta9Mdabg3SngwnpuRLMhXdWpYpXuui0F97MEE7O36TKCuf6LWtE3A1Z5KU2Wsr+PIl0x26QzdfBLTyb82jMh90Q7hOrF+rXNny7r1kn6VkyBxCtVCBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FDyKg2pu; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1740095515; c=relaxed/simple;
+	bh=vtOPXa8BnfbMCfX15af3q+cMPZ2p9MawIwGAHAHQBUk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Kcl/Yr4o0PrLISZOUDF8yfgfyYkSpbymeZwPuJ34NYuLAYeRjPa1gs07v/WqqjJYKm8YzHU/zmFkSerQb+avHle9MeCo/1g5LR7AcS28Kuw6gLHESXY2j1/6wdNCprPl9JpPpixxBnFyK1W8TBVD6uognKYwi4fUoMFtw67bslA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=F9TzKXtt; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDyKg2pu"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1158C4CED1;
-	Thu, 20 Feb 2025 22:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740090970;
-	bh=NxbLe0M3BChvVfjcttKakBoKBCdnuodr8JnG2bwAuVg=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=FDyKg2puhExOStHHCGZfQvF0OJ5i0wDNvhiSU1ndTj99/u1ULIkxjmxbhBkJbKSPD
-	 DIv1SBe9o77eIDEzgn1JThcHqDtktta6Ru/UtZHcqvgXwOV94od+7Hn+SrwX8anFiX
-	 ZL7XJk3OuMQs0CgHiB/Uiuck2W61xST6SIdHayOxjuxVdSoZcVZ08MwmY+mPAr8ToV
-	 rxscLQPcKml/GHQ3u9DY7PBkw/dIjdGpm481LCCt+wHTMwDWccSrTNV3j1Lh7/KH30
-	 BtTl89zqMsHO3OUFvWhEi5aAaPOs0fdqRPxXPbGJMMsdjYs3baERWvUBNDMfTOXxcM
-	 qnVeMw3xfmLow==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5E986CE0B34; Thu, 20 Feb 2025 14:36:10 -0800 (PST)
-Date: Thu, 20 Feb 2025 14:36:10 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Marco Elver <elver@google.com>
-Cc: Alexander Potapenko <glider@google.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, rcu@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH RFC 15/24] rcu: Support Clang's capability analysis
-Message-ID: <3f255ebb-80ca-4073-9d15-fa814d0d7528@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250206181711.1902989-1-elver@google.com>
- <20250206181711.1902989-16-elver@google.com>
- <a1483cb1-13a5-4d6e-87b0-fda5f66b0817@paulmck-laptop>
- <CANpmjNOPiZ=h69V207AfcvWOB=Q+6QWzBKoKk1qTPVdfKsDQDw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="F9TzKXtt"
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51KMp5Y7011936
+	for <rcu@vger.kernel.org>; Thu, 20 Feb 2025 23:51:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	K7rfm+etXdnbK/bhupbhOu+OTfhMZMjRNpbnrpPFumo=; b=F9TzKXttQBcvVdpA
+	4mqLXqt9q62BpW0D8bH/BkUCb06gQnnqs8r+FbdAUaSGPYZ10oFqdHoLlCp/aqqA
+	khIkbz13slmNuKyjzaU1yM4+YlddOBXv5MpZzZVDNhWjaJuh6T5ydC++gtNxkUVn
+	kTdQYlyRxEJ4KkL2WdOdno4LDiWx11+khimC9rxAQAMw1UEr7w3uSyxt8LCubts8
+	uI1hBMLMKidDWA+foCOHjmKTgo2jLo2l0ek1Mntee3ucb5HKIYjwhVK15K9uKYZP
+	ea5T1Kll2QOLXVC2gYFkfV92Sqr1+DeSSjjgCzE7MboIq/iixtlDOZ2RLLm/f09p
+	zwtHtw==
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44x2xb9yp7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <rcu@vger.kernel.org>; Thu, 20 Feb 2025 23:51:53 +0000 (GMT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2fc0bc05b36so4642035a91.3
+        for <rcu@vger.kernel.org>; Thu, 20 Feb 2025 15:51:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740095512; x=1740700312;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K7rfm+etXdnbK/bhupbhOu+OTfhMZMjRNpbnrpPFumo=;
+        b=aXcC5BFhzZWvR72f+ot2agKRQ94f95vr+S1l9GgLMHYf3r3jpwMh8edgLDxXep37HD
+         rLyrHBT0HAFqZ8bgm1P+mwV5wfMYnO4hIVmXKE9Pvj+JksS7eQ2bwh3SrDIaNBkSJoN8
+         ERalNi1rDF01GLdTxYZgYZx82wXxUcv7z5nr1LziVVdMNyt1SNmv+uXTxAI+MPDH+5tD
+         DNtLiMm+MNHJg0zSs5m67f1ue2Y8J+Eeptn0+mxqMdROlNUInl5kQDlRGR9VeaF/izWx
+         qvvBtWJRV9PCN2o64H2C7FPKVYm7TrNtsqEY42WvXM9D/DQf/KApfn2ufA4bw5C+5cEL
+         TkCw==
+X-Gm-Message-State: AOJu0YwxU8FK1c440rO0xia+bPQ9ze98FzfzxsxSvRVWoPWEsv4J3X/S
+	LBCJ/ej+SaquficjlwuZoJe8JJ8nNwx1pXkr2ja1QAPIiMUq617BXYT0n+thxxcEyWZfcBQTYfF
+	0WNgNyngduai3e4QKQctE+DANTtsCvha2oH21OmLG21gEZpI8MjjOhrxMldk=
+X-Gm-Gg: ASbGncsHdNDsTqRVHDEwbCLs4/J2lAu+NOTZYrV2uNj9Be7U5SRusM+NjMAkKFVjfMN
+	IyQv7lpK/oNvuWtDFPgCa8xgu98Z++qKUbMFqOxBc3LKyu5F3uqn1huI2mMO8mwoDE95MN5XGVq
+	9oVMOddjHOArXGZxZQIbyEgk/S7y42PTSi1XeJ0naothhe6E6FUSNCyUMhean6llr0TNs0aH03v
+	tJz+InjiAgDM1aLaYNr0fDpf1TkdFg/kKGjR9xMGRtzskX+4ltAStmqKDCPUSWeLpv93LKXQLZA
+	BaxuEUYZ5ZKAHHg7Y/s1uEnZxVgyZFsEgpWNPoXWie07vcZqaLce+fIUrIpR582oiMKxzdY/JA=
+	=
+X-Received: by 2002:a17:90b:2e44:b0:2ea:77d9:6345 with SMTP id 98e67ed59e1d1-2fce87244f6mr885578a91.22.1740095512009;
+        Thu, 20 Feb 2025 15:51:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHeRN2ESFgXnPd9OtGenw5lXipvYA29oO/tOIysMPDxjxWiyqAI15+Vg9TfM3kmmfB3zBrreQ==
+X-Received: by 2002:a17:90b:2e44:b0:2ea:77d9:6345 with SMTP id 98e67ed59e1d1-2fce87244f6mr885554a91.22.1740095511638;
+        Thu, 20 Feb 2025 15:51:51 -0800 (PST)
+Received: from [192.168.1.111] (c-73-202-227-126.hsd1.ca.comcast.net. [73.202.227.126])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fcb8571586sm2111645a91.0.2025.02.20.15.51.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Feb 2025 15:51:51 -0800 (PST)
+Message-ID: <ea5341a5-a5c6-4214-96c3-32d668ce3f11@oss.qualcomm.com>
+Date: Thu, 20 Feb 2025 15:51:50 -0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNOPiZ=h69V207AfcvWOB=Q+6QWzBKoKk1qTPVdfKsDQDw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rcu 1/9] rcu: Add lockdep_assert_in_rcu_read_lock() and
+ friends
+To: paulmck@kernel.org
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, Jens Axboe <axboe@kernel.dk>,
+        ath12k@lists.infradead.org
+References: <657595c8-e86c-4594-a5b1-3c64a8275607@paulmck-laptop>
+ <20240604222355.2370768-1-paulmck@kernel.org>
+ <9130e3da-1cc5-43ea-9153-47117d57caca@oss.qualcomm.com>
+ <67063387-6ba9-47fe-b283-d6346da15d9a@paulmck-laptop>
+From: Jeff Johnson <jeff.johnson@oss.qualcomm.com>
+Content-Language: en-US
+In-Reply-To: <67063387-6ba9-47fe-b283-d6346da15d9a@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: 6LuP9Q5aODE6P0ehyCuJ1LiyPTxWdyGx
+X-Proofpoint-ORIG-GUID: 6LuP9Q5aODE6P0ehyCuJ1LiyPTxWdyGx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-20_09,2025-02-20_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 lowpriorityscore=0 phishscore=0 impostorscore=0 spamscore=0
+ mlxlogscore=905 clxscore=1015 priorityscore=1501 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
+ definitions=main-2502200158
 
-On Thu, Feb 20, 2025 at 11:11:04PM +0100, Marco Elver wrote:
-> On Thu, 20 Feb 2025 at 23:00, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Thu, Feb 06, 2025 at 07:10:09PM +0100, Marco Elver wrote:
-> > > Improve the existing annotations to properly support Clang's capability
-> > > analysis.
-> > >
-> > > The old annotations distinguished between RCU, RCU_BH, and RCU_SCHED.
-> > > However, it does not make sense to acquire rcu_read_lock_bh() after
-> > > rcu_read_lock() - annotate the _bh() and _sched() variants to also
-> > > acquire 'RCU', so that Clang (and also Sparse) can warn about it.
-> >
-> > You lost me on this one.  What breaks if rcu_read_lock_bh() is invoked
-> > while rcu_read_lock() is in effect?
+On 2/20/2025 2:04 PM, Paul E. McKenney wrote:
+> On Thu, Feb 20, 2025 at 11:38:14AM -0800, Jeff Johnson wrote:
+>> On 6/4/24 15:23, Paul E. McKenney wrote:
+>>> There is no direct RCU counterpart to lockdep_assert_irqs_disabled()
+>>> and friends.  Although it is possible to construct them, it would
+>>> be more convenient to have the following lockdep assertions:
+>>>
+>>> lockdep_assert_in_rcu_read_lock()
+>>> lockdep_assert_in_rcu_read_lock_bh()
+>>> lockdep_assert_in_rcu_read_lock_sched()
+>>> lockdep_assert_in_rcu_reader()
+>>>
+>>> This commit therefore creates them.
+>>
+>> I'm looking at some downstream code that is trying to become
+>> upstream compliant, and currently that code uses:
+>>
+>> 	RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "some message");
+>>
+>> It seems like this would be a good use of one of these helper
+>> functions, but I'm shocked to see that no upstream code is using
+>> them yet.
+>>
+>> Is there a reason to not use these helpers?
 > 
-> I thought something like this does not make sense:
-> 
->   rcu_read_lock_bh();
->   ..
->   rcu_read_lock();
->   ..
->   rcu_read_unlock();
->   ..
->   rcu_read_unlock_bh();
+> In cases where there is no additional useful information that can be
+> placed in "some message", the new helpers should be just fine.
 
-If you have the choice, it is often better to do the rcu_read_lock()
-first and the rcu_read_lock_bh() second.
+Thanks for the confirmation, Paul!
 
-> However, the inverse may well be something we might find somewhere in
-> the kernel?
-
-Suppose that one function walks an RCU-protected list, calling some
-function from some other subsystem on each element.  Suppose that each
-element has another RCU protected list.
-
-It would be good if the two subsystems could just choose their desired
-flavor of RCU reader, without having to know about each other.
-
-> Another problem was that if we want to indicate that "RCU" read lock
-> is held, then we should just be able to write
-> "__must_hold_shared(RCU)", and it shouldn't matter if rcu_read_lock()
-> or rcu_read_lock_bh() was used. Previously each of them acquired their
-> own capability "RCU" and "RCU_BH" respectively. But rather, we're
-> dealing with one acquiring a superset of the other, and expressing
-> that is also what I attempted to solve.
-> Let me rethink this...
-
-Would it work to have just one sort of RCU reader, relying on a separate
-BH-disable capability for the additional semantics of rcu_read_lock_bh()?
-
-							Thanx, Paul
+/jeff
