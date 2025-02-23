@@ -1,72 +1,71 @@
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DCB1C84D8
-	for <rcu@vger.kernel.org>; Sun, 23 Feb 2025 04:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EDCF15383A
+	for <rcu@vger.kernel.org>; Sun, 23 Feb 2025 04:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740284700; cv=none; b=p6caw1qLtxUaKfHnokjBJ5g1Pb9KZofdR57VvtLscyUPYLgN3saDN7v/Mmxydsi4GdcIek6Hu5HM5qKSIzZzACU03V/sp2Fp4E9riyJXk6eyCo9urn10TmfOkSdKVRSt0Ss8/3fVqmsdtE1gcPhBcjTxz5x3z5tTYF+pGdqbcNo=
+	t=1740284865; cv=none; b=DVifKjzbMIWlP8kP/H6n+6qNa/IX6H0b1eIZELUYaxz64DrUiw5X9i0vchzbuIhtF8YbLKcYZfEBI+kTzHABOASlQfNtUUI+yl5zlpSo4HSRxtqbbpfWqOBJBkoQxA9G/QMsICcB5HnuUsxYX798DyMZy977G1/Te5T03hEqGnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740284700; c=relaxed/simple;
-	bh=9GP2lBa/7rb4R1z1gLFL28iPgxNWPnJIHbpv1+3wKHQ=;
+	s=arc-20240116; t=1740284865; c=relaxed/simple;
+	bh=8EVSiL99zAeOpD/QvDtBerJcoYAm3xePWOBvFsPwUOg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=byS5hW+3JyKCMlYz0vC7kD1VCwOzzdQi/fd9jovmzyspArfpJbXR7g9Crnig9dLOyn6zMIBNGkSlsJcSrMkr2ruFHUSdAjOeAPMyQMJIXtDDaIoXRG3UaIeyom/gkMNliP/1L9Y+DZIA6cIsOru3mGQApNeLSdAMFI6M3Z2KVYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oTs7604J; arc=none smtp.client-ip=209.85.160.178
+	 To:Cc:Content-Type; b=I+ITW15DMUw8Kydbrjqtb/bar35TGW6fgCb1RAw3p/8irjQIXYrQlvywDsPiyWTpEl3CMK7Tb1ZjDTmwwoQyt6gO9noyYrxZJ9qXO3CBtM9HU6be6Lt0G1brhUF2jf/P0W8Gau12mLSRnQ0zYn4NHDAxV6t/itKSWYAAcESeaxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zgr0MdA6; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oTs7604J"
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-471f1dd5b80so165381cf.1
-        for <rcu@vger.kernel.org>; Sat, 22 Feb 2025 20:24:58 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zgr0MdA6"
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-472098e6e75so243501cf.1
+        for <rcu@vger.kernel.org>; Sat, 22 Feb 2025 20:27:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740284698; x=1740889498; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1740284863; x=1740889663; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FpuQrwj5kn8T28pwd/be4/nwdyPl0g5tN+YxiK2nm1I=;
-        b=oTs7604JlwUsnwbwrsAwr/w20A4mJPhk08S3GNxXWAM8SXu2oPBTg99OhytbmEa7S1
-         Oymje22A4lIM68MzpULZxuYY3jCJYPShiUXQEEu/r2SYVkaytelgZeqNC2sQf8YfF9Oc
-         TsJ9YEzB8j2pntQrNP6gdJrxWAsPJQCLqTAEbBg5K9VM5olI5ldOxEBcrR0/HY7QgalY
-         OMIsO4m+ASxUVSO5p4r+F1+BR5OOCXHd2SCMb4HyhAsH8x7EYhi31gfROwjz5J7LOTC0
-         xUWHZV53McJTa54UeCG4rP1ybeN+rBim+L2VN6efrPc/pKDGdp/0FI6Zj60Kt9GB8P4G
-         GmDw==
+        bh=nmm1I+SoVSWD3Lw3CCPR58AX+UVflR4TsL2veWY2GZs=;
+        b=zgr0MdA6VWPMuKxUb8SZ2b2mVcUaoR6rkQm/5iduQypJHb1qWNTDyXEllK3j2H+OGh
+         NK9K1tLHvHCDoN80IFYgm9SUXG7ZAoUNhx4IxcqC2SEJVPieAOUKfQuySXnnsesTcrdd
+         6mJO2HsSzwJKbBwzlS7KT/im5+D0m2IXwQHI4NtUUGIRY/e6el7hyHH1wG+vC4KAPSO4
+         jOtmZX+O06R76acquxlfddghZV4A6JHj/sqtZsmE4MSHCDbMdy8VeU0NB7npH10tJJxc
+         bKRiSYVUHMg+pV8iln4kAiNkfUTGwFndcTzjq8OyWesrymc6fsb8gTtMXTwz7xIQMCRB
+         EJxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740284698; x=1740889498;
+        d=1e100.net; s=20230601; t=1740284863; x=1740889663;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FpuQrwj5kn8T28pwd/be4/nwdyPl0g5tN+YxiK2nm1I=;
-        b=tqHq3OT8MzrwKYNUAikL7MEWDBm2M0gOvXfhV8YrvuBsV12rVesWH/D/XYqjkkzYrm
-         fAVt9KyU7GoCU3Bubr5gDY+RaHdTgolG8DzOhsU5E9WfTeV6nB7y/g7PxLVcf8JBUJ82
-         EPObPKwsSZHnIWbwS37gybks7dr9BqPICQU3tvQ4Cdhfan2Wh6IHVZLVKvWMTYV7mtOc
-         JO8xfeEtGY4um0xdQhmJoqBnWcSvGWqPbDPFdF6OZNNEJ8qAeAmzWLEHFJ5wlz7nI9XO
-         +TikiHWYUOOw1sTRPXD7YYNAKtRlOSemQrruz1vljo6RTxzVlj5SVeHyqj3AaHOf97rp
-         aImw==
-X-Forwarded-Encrypted: i=1; AJvYcCVk1mpxOLrP9GMEOnyxGE+h3qPuqTorpWloQQkG4gcA3RBdand7zmaPYiiXgaPTwYzFHc4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8cK7ciHDs8RHtEA5W7snvjWtnhlUkaHuOs+7DrQVMwSw1Oz/k
-	50LkaOVueBVzi4BkFuWMmUx8szqvz1EDVxCbBLd18KEpwTv6zT/bKvIoljgiBlaW4z0nHtZ6+mH
-	x2sIdI+3GKDRIx7xtjZeXaolIVXIjrFlvzXzl
-X-Gm-Gg: ASbGncsmVOIZM3cpWMPothUN7bZOVmCy5wUWCzqWq+/qgbBs9htaGjFDur8KNo8Jk3k
-	swD9pu0JaHicclTV07pfrLNscccPXW3CVaBXz+2rzqmayE3UMcuuxjk5AeH7F688bCTEm0bUcDn
-	u1pPrkoCY=
-X-Google-Smtp-Source: AGHT+IHqlzzGDmchqwuv8tYa4UkHB33x2EQ4/CZTGjQcdIRYOou0hG8nG/b3fkWrYXhGj3FEx8URbFUtx3hdrLHzmmQ=
-X-Received: by 2002:ac8:7c49:0:b0:471:eab0:ef21 with SMTP id
- d75a77b69052e-47234bc7c92mr2878751cf.13.1740284697438; Sat, 22 Feb 2025
- 20:24:57 -0800 (PST)
+        bh=nmm1I+SoVSWD3Lw3CCPR58AX+UVflR4TsL2veWY2GZs=;
+        b=tD6P10E6yEkQ/sEhRJIup0TrJHJk9x+C81w04KD4eGJVBDdQAg1TMJQKCPY4m7GlN5
+         DzEVRkqI5l934vgxWg7+BzGzmzO+5MsF0EtNUzptaI9gec94EPIo4md8MwrcWZdE1m9n
+         Pd2V8o7P/cM9XzW/gr2DKmxQoKsWdcNfeMzlkqxEoVsJSxB6da++Ru1Syg7bqr3YhBtL
+         QGOB1X28rajy7GKFlX0ORY5KOdUMI3rj8eCyzOI2Y2lyzzOTcvfv23+2XOwJe+FbLNh5
+         yXzkQk5JLMp4negYrGNxVyQoRpzEtY09FEHnCbPhaOxHjw/3gY5dyEzY+oqmPkZneiD6
+         wMSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWdgF4Qh6lsE2Z8wFU4HSexY7Um0WnE/vsjUBvfPP4Sh2STHaz1iLly1RLydsscU5/j/RI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfpgUQhscMiEoSHty1YW2NReO3k+zDMW2IRMCFRtgq3xRtBYY+
+	zG8xijcqrHb1DVQnwMK1qbz5BKxO6W+wTO02/5OfIKUbeJyLXLMFix5Z15fAw1lJiBvvQ35DD6W
+	xGo0xUiGVGAPYnBym+zFcBWw22SYrCf5N7uyB
+X-Gm-Gg: ASbGnctskUJvGTxqEw9lq/FAiOIseuld/GCchjdKyoD9zidB9yE/UryyZV3hEunJC3C
+	+sNRHkpySSdEpzqQ7jL54gcXDsYwy/JNKn5526iaYOHSlgMZt4BDafCqFqjtqh5PKTPiX240I9X
+	F6mB/BUlQ=
+X-Google-Smtp-Source: AGHT+IFKfxPHgKbPeASJWumHoaXB34NvZ31EQJsUHMALoZH4DiPcJzVNOQgIWlGulYe46FriKG+KJhd2DEw1EVddR1I=
+X-Received: by 2002:a05:622a:206:b0:471:812b:508 with SMTP id
+ d75a77b69052e-472334f363bmr3276441cf.14.1740284862672; Sat, 22 Feb 2025
+ 20:27:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz> <20250214-slub-percpu-caches-v2-8-88592ee0966a@suse.cz>
-In-Reply-To: <20250214-slub-percpu-caches-v2-8-88592ee0966a@suse.cz>
+References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz> <20250214-slub-percpu-caches-v2-10-88592ee0966a@suse.cz>
+In-Reply-To: <20250214-slub-percpu-caches-v2-10-88592ee0966a@suse.cz>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Sat, 22 Feb 2025 20:24:46 -0800
-X-Gm-Features: AWEUYZkeoIfRGvLjXhEb5mYFlAdmLxCXFljBSmvRWT3okNr4_KEdDGtF6irOEXA
-Message-ID: <CAJuCfpGOwZY=MSizk-xx9R4cBBP0MgYA0MQhAv9Svf0Yt1DgjQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 08/10] tools: Add testing support for changes to
- rcu and slab for sheaves
+Date: Sat, 22 Feb 2025 20:27:30 -0800
+X-Gm-Features: AWEUYZl6dIhm_eWSWjzkMiAN7GpBCH5Emzl1y5_M1yS7d4skO0MoR1hBC6n3Cog
+Message-ID: <CAJuCfpGsAJZrS2HLTpe5mADn9wF6WeO3bxK9L-npCcg_6N9veQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 10/10] maple_tree: use percpu sheaves for maple_node_cache
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@linux.com>, 
 	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
@@ -76,225 +75,62 @@ Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@linux.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 14, 2025 at 8:27=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+On Fri, Feb 14, 2025 at 8:28=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
 ote:
 >
-> From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
->
-> Make testing work for the slab and rcu changes that have come in with
-> the sheaves work.
->
-> This only works with one kmem_cache, and only the first one used.
-> Subsequent setting of keme_cache will not update the active kmem_cache
+> Setup the maple_node_cache with percpu sheaves of size 32 to hopefully
+> improve its performance.
 
-s/keme_cache/kmem_cache
+I guess 32 might change in the future based on further testing?
 
+> Change the single node rcu freeing in
+> ma_free_rcu() to use kfree_rcu() instead of the custom callback, which
+> allows the rcu_free sheaf batching to be used. Note there are other
+> users of mt_free_rcu() where larger parts of maple tree are submitted to
+> call_rcu() as a whole, and that cannot use the rcu_free sheaf, but it's
+> still possible for maple nodes freed this way to be reused via the barn,
+> even if only some cpus are allowed to process rcu callbacks.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-> and will be silently dropped because there are other tests which happen
-> after the kmem_cache of interest is set.
->
-> The saved active kmem_cache is used in the rcu callback, which passes
-> the object to be freed.
->
-> The rcu call takes the rcu_head, which is passed in as the field in the
-> struct (in this case rcu in the maple tree node), which is calculated by
-> pointer math.  The offset of which is saved (in a global variable) for
-> restoring the node pointer on the callback after the rcu grace period
-> expires.
->
-> Don't use any of this outside of testing, please.
->
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+
 > ---
->  tools/include/linux/slab.h            | 41 +++++++++++++++++++++++++++++=
-+++---
->  tools/testing/shared/linux.c          | 24 ++++++++++++++++----
->  tools/testing/shared/linux/rcupdate.h | 22 +++++++++++++++++++
->  3 files changed, 80 insertions(+), 7 deletions(-)
+>  lib/maple_tree.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 >
-> diff --git a/tools/include/linux/slab.h b/tools/include/linux/slab.h
-> index 51b25e9c4ec7b66bdf4c68cc1353c6faf1ca7bb8..a475364cfd9fcdb10db252aab=
-18ea3a620326b6b 100644
-> --- a/tools/include/linux/slab.h
-> +++ b/tools/include/linux/slab.h
-> @@ -22,6 +22,12 @@ enum slab_state {
->         FULL
->  };
->
-> +struct kmem_cache_args {
-> +       unsigned int align;
-> +       unsigned int sheaf_capacity;
-> +       void (*ctor)(void *);
-> +};
-> +
->  static inline void *kzalloc(size_t size, gfp_t gfp)
+> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+> index f7153ade1be5f16423f0ca073846a7f3dfa60523..56e7a00f6f0941bff163091c9=
+99a873e4273f071 100644
+> --- a/lib/maple_tree.c
+> +++ b/lib/maple_tree.c
+> @@ -208,7 +208,7 @@ static void mt_free_rcu(struct rcu_head *head)
+>  static void ma_free_rcu(struct maple_node *node)
 >  {
->         return kmalloc(size, gfp | __GFP_ZERO);
-> @@ -36,9 +42,38 @@ static inline void *kmem_cache_alloc(struct kmem_cache=
- *cachep, int flags)
+>         WARN_ON(node->parent !=3D ma_parent_ptr(node));
+> -       call_rcu(&node->rcu, mt_free_rcu);
+> +       kfree_rcu(node, rcu);
 >  }
->  void kmem_cache_free(struct kmem_cache *cachep, void *objp);
 >
-> -struct kmem_cache *kmem_cache_create(const char *name, unsigned int size=
-,
-> -                       unsigned int align, unsigned int flags,
-> -                       void (*ctor)(void *));
-> +
-> +struct kmem_cache *
-> +__kmem_cache_create_args(const char *name, unsigned int size,
-> +               struct kmem_cache_args *args, unsigned int flags);
-> +
-> +/* If NULL is passed for @args, use this variant with default arguments.=
- */
-> +static inline struct kmem_cache *
-> +__kmem_cache_default_args(const char *name, unsigned int size,
-> +               struct kmem_cache_args *args, unsigned int flags)
-> +{
-> +       struct kmem_cache_args kmem_default_args =3D {};
-> +
-> +       return __kmem_cache_create_args(name, size, &kmem_default_args, f=
-lags);
-> +}
-> +
-> +static inline struct kmem_cache *
-> +__kmem_cache_create(const char *name, unsigned int size, unsigned int al=
-ign,
-> +               unsigned int flags, void (*ctor)(void *))
-> +{
-> +       struct kmem_cache_args kmem_args =3D {
-> +               .align  =3D align,
-> +               .ctor   =3D ctor,
+>  static void mas_set_height(struct ma_state *mas)
+> @@ -6258,9 +6258,14 @@ bool mas_nomem(struct ma_state *mas, gfp_t gfp)
+>
+>  void __init maple_tree_init(void)
+>  {
+> +       struct kmem_cache_args args =3D {
+> +               .align  =3D sizeof(struct maple_node),
+> +               .sheaf_capacity =3D 32,
 > +       };
 > +
-> +       return __kmem_cache_create_args(name, size, &kmem_args, flags);
-> +}
-> +
-> +#define kmem_cache_create(__name, __object_size, __args, ...)           =
-\
-> +       _Generic((__args),                                              \
-> +               struct kmem_cache_args *: __kmem_cache_create_args,     \
-> +               void *: __kmem_cache_default_args,                      \
-> +               default: __kmem_cache_create)(__name, __object_size, __ar=
-gs, __VA_ARGS__)
->
->  void kmem_cache_free_bulk(struct kmem_cache *cachep, size_t size, void *=
-*list);
->  int kmem_cache_alloc_bulk(struct kmem_cache *cachep, gfp_t gfp, size_t s=
-ize,
-> diff --git a/tools/testing/shared/linux.c b/tools/testing/shared/linux.c
-> index 66dbb362385f3c3d923233448cc591adfe6dc9e7..9f5fd722f27f1d3877be8927b=
-e30409cd74ab3c3 100644
-> --- a/tools/testing/shared/linux.c
-> +++ b/tools/testing/shared/linux.c
-> @@ -20,6 +20,7 @@ struct kmem_cache {
->         pthread_mutex_t lock;
->         unsigned int size;
->         unsigned int align;
-> +       unsigned int sheaf_capacity;
->         int nr_objs;
->         void *objs;
->         void (*ctor)(void *);
-> @@ -31,6 +32,8 @@ struct kmem_cache {
->         void *private;
->  };
->
-> +static struct kmem_cache *kmem_active =3D NULL;
-> +
->  void kmem_cache_set_callback(struct kmem_cache *cachep, void (*callback)=
-(void *))
->  {
->         cachep->callback =3D callback;
-> @@ -147,6 +150,14 @@ void kmem_cache_free(struct kmem_cache *cachep, void=
- *objp)
->         pthread_mutex_unlock(&cachep->lock);
+>         maple_node_cache =3D kmem_cache_create("maple_node",
+> -                       sizeof(struct maple_node), sizeof(struct maple_no=
+de),
+> -                       SLAB_PANIC, NULL);
+> +                       sizeof(struct maple_node), &args,
+> +                       SLAB_PANIC);
 >  }
 >
-> +void kmem_cache_free_active(void *objp)
-> +{
-> +       if (!kmem_active)
-> +               printf("WARNING: No active kmem_cache\n");
-> +
-> +       kmem_cache_free(kmem_active, objp);
-> +}
-> +
->  void kmem_cache_free_bulk(struct kmem_cache *cachep, size_t size, void *=
-*list)
->  {
->         if (kmalloc_verbose)
-> @@ -234,23 +245,28 @@ int kmem_cache_alloc_bulk(struct kmem_cache *cachep=
-, gfp_t gfp, size_t size,
->  }
->
->  struct kmem_cache *
-> -kmem_cache_create(const char *name, unsigned int size, unsigned int alig=
-n,
-> -               unsigned int flags, void (*ctor)(void *))
-> +__kmem_cache_create_args(const char *name, unsigned int size,
-> +                         struct kmem_cache_args *args,
-> +                         unsigned int flags)
->  {
->         struct kmem_cache *ret =3D malloc(sizeof(*ret));
->
->         pthread_mutex_init(&ret->lock, NULL);
->         ret->size =3D size;
-> -       ret->align =3D align;
-> +       ret->align =3D args->align;
-> +       ret->sheaf_capacity =3D args->sheaf_capacity;
->         ret->nr_objs =3D 0;
->         ret->nr_allocated =3D 0;
->         ret->nr_tallocated =3D 0;
->         ret->objs =3D NULL;
-> -       ret->ctor =3D ctor;
-> +       ret->ctor =3D args->ctor;
->         ret->non_kernel =3D 0;
->         ret->exec_callback =3D false;
->         ret->callback =3D NULL;
->         ret->private =3D NULL;
-> +       if (!kmem_active)
-> +               kmem_active =3D ret;
-
-This kmem_active and kfree_cb_offset look like bad hacks... Could we
-maybe modify kmem_cache_alloc() to allocate a small metadata at the
-beginning to store a pointer to kmem_cache and kfree_cb_offset value?
-
-> +
->         return ret;
->  }
->
-> diff --git a/tools/testing/shared/linux/rcupdate.h b/tools/testing/shared=
-/linux/rcupdate.h
-> index fed468fb0c78db6f33fb1900c7110ab5f3c19c65..c95e2f0bbd93798e544d7d34e=
-0823ed68414f924 100644
-> --- a/tools/testing/shared/linux/rcupdate.h
-> +++ b/tools/testing/shared/linux/rcupdate.h
-> @@ -9,4 +9,26 @@
->  #define rcu_dereference_check(p, cond) rcu_dereference(p)
->  #define RCU_INIT_POINTER(p, v) do { (p) =3D (v); } while (0)
->
-> +void kmem_cache_free_active(void *objp);
-> +static unsigned long kfree_cb_offset =3D 0;
-> +
-> +static inline void kfree_rcu_cb(struct rcu_head *head)
-> +{
-> +       void *objp =3D (void *) ((unsigned long)head - kfree_cb_offset);
-> +
-> +       kmem_cache_free_active(objp);
-> +}
-> +
-> +#ifndef offsetof
-> +#define offsetof(TYPE, MEMBER) __builtin_offsetof(TYPE, MEMBER)
-> +#endif
-> +
-> +#define kfree_rcu(ptr, rhv)                                            \
-> +do {                                                                   \
-> +       if (!kfree_cb_offset)                                           \
-> +               kfree_cb_offset =3D offsetof(typeof(*(ptr)), rhv);       =
- \
-> +                                                                       \
-> +       call_rcu(&ptr->rhv, kfree_rcu_cb);                              \
-> +} while (0)
-> +
->  #endif
+>  /**
 >
 > --
 > 2.48.1
