@@ -1,64 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7427424887A;
-	Mon, 24 Feb 2025 15:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D20318B482;
+	Mon, 24 Feb 2025 17:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740411457; cv=none; b=hWf1RBqaN25FiXcHr6maCDfgC5Mz/Mxpo/NnhOOVauGBr5VNm3k52dTfuVlHluQXWx/MCgNdq5ICL2aYCpAnzlQtMeKXAn73jLU22dsQ/uNcPTirdxQuVVpGB1YD3H8lFp71Du+wola+5MX7KOeu+beALe3DaaQL+IjlGaeV3EQ=
+	t=1740416874; cv=none; b=GnKqIVXiZKH1YZgThPk7jDE64y74j5/4whJo5b9tsA8x1B1lrnQZ3JFg2c+39OB6Y7ozwEgt9fHiMQjZmgilI4gRiSf1ogdWg+f6SN4/LkTO3DwvcNw5VcYaadGlVmeNH83+cDWFs/B3tZlUqLoT9+53/TzVtqCO2sGrjt5Nsy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740411457; c=relaxed/simple;
-	bh=u5QAJ42DRy8ZnhVq2mJsa+QiTU0Mr4iCvNVvkjkRrkA=;
+	s=arc-20240116; t=1740416874; c=relaxed/simple;
+	bh=cEYAY+iSio8M0SXczMwaWtZ7QZYtbIkXjLE/+/NOXqs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hYJAy0g7hIE4dDA2ng3NieoUHWRsyEgTY0ztZO4WV8RsV4V3tq+KAwf+AmtQjdExnzph9/jx/nXubi5HifrV+zKeAdFS0/QLldXwLp+8ujN+HOCXwWPil77Xo2xxgHV/2yCCZACqWNqvMAVZiQ2M8rAhGCALZqKNbBUmeq9zZ+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n26tiAiP; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=RpJyWvBecLj15XXC/xrYo6m6R7SN00vUkLP+KhWTvF6ucYsZeE/YjMbxwncHn2qHxngu1+K4JsW/2dFdajpYrXSpQSUUkXWfs+Ut4ecwK7vI55PwhFbxcBPJP7iyylYtnsjq7eXDkjra4yXfWCMrB5MoVxt0D8ku4aV8elfQuPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XAbsISiy; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n26tiAiP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12E79C4CED6;
-	Mon, 24 Feb 2025 15:37:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XAbsISiy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46185C4CED6;
+	Mon, 24 Feb 2025 17:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740411456;
-	bh=u5QAJ42DRy8ZnhVq2mJsa+QiTU0Mr4iCvNVvkjkRrkA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n26tiAiPA/EnLuWwHHXxJQo0XxQ6+FBmRROtzKyw8CLdXwa+DUo1mj9Y81reXwfVZ
-	 WsGSbBt/XxZBtCP3SjbQaQV0jXl0wUunnuQV+Tav5kL71Bkz4hcCFGRPIIBsNAAAAN
-	 P9zs048qa1Mg83YtIgXR9odTHlLhs6p02flIpiTIRkQdZCL3+tOzQqkkDTI34AlpXZ
-	 gwj7c3LauJTxkhK0uaxhrDDqPFNrPT+XjxpKm/a/R/3PIVSX+/OXHaDyJuxtlDNckI
-	 Zu+f8gLBnxvo1ONE8vsDhNDYeSbcQZfgqXZ4yLzM4l2GnAmsE1jZZVNAar2DCThAVf
-	 zarhrfHExOnzw==
-Date: Mon, 24 Feb 2025 08:37:32 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Christoph Lameter <cl@linux.com>,
-	David Rientjes <rientjes@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Alexander Potapenko <glider@google.com>,
-	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
-	kasan-dev@googlegroups.com, Jann Horn <jannh@google.com>,
-	Mateusz Guzik <mjguzik@gmail.com>, linux-nvme@lists.infradead.org,
-	leitao@debian.org
-Subject: Re: [PATCH v2 6/7] mm, slab: call kvfree_rcu_barrier() from
- kmem_cache_destroy()
-Message-ID: <Z7ySPC32oKBccunx@kbusch-mbp>
-References: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
- <20240807-b4-slab-kfree_rcu-destroy-v2-6-ea79102f428c@suse.cz>
- <Z7iqJtCjHKfo8Kho@kbusch-mbp>
- <2811463a-751f-4443-9125-02628dc315d9@suse.cz>
- <Z7xbrnP8kTQKYO6T@pc636>
+	s=k20201202; t=1740416873;
+	bh=cEYAY+iSio8M0SXczMwaWtZ7QZYtbIkXjLE/+/NOXqs=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=XAbsISiyxjMmCJOnCbEriub41yNiEf7rAJHLD9FUOhN7tvD5m7zbS33EGXWsAInJs
+	 n2ySvoRFSPRAfBpOZ4EFCAgcXnRjzHiSuTqQgsW6zf9236aSJlyOudcBwBiElNCBDf
+	 ZUe/OGDE4s8EzlwMOsYdM5kPV2/OIzHKh1S17jzAumFFjSvKPyO4b3eOaOl2pl7SXw
+	 s9yL97sLp6zFFwbzyXx3kdRyVXFRg8qph2AmavJ2Q68YqoLJd8WC6hb8eKgLkyy8cz
+	 vFAYdtROxVteJwDMoprLjzZNIBj8IVaqfG9z4QUUt9W8+jIGtW38dBC5ISBmydPxOS
+	 aAMvr4aIQhIng==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D7D61CE0B34; Mon, 24 Feb 2025 09:07:52 -0800 (PST)
+Date: Mon, 24 Feb 2025 09:07:52 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Oliver Sang <oliver.sang@intel.com>,
+	Ankur Arora <ankur.a.arora@oracle.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] rcutorture: Update ->extendables check for lazy
+ preemption
+Message-ID: <d43d929a-d17c-4f11-9048-b9ddf08f713c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <Z7v4MytjhhBZkG4S@Mac.home>
+ <20250224044310.14373-1-boqun.feng@gmail.com>
+ <20250224044310.14373-2-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,45 +50,52 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z7xbrnP8kTQKYO6T@pc636>
+In-Reply-To: <20250224044310.14373-2-boqun.feng@gmail.com>
 
-On Mon, Feb 24, 2025 at 12:44:46PM +0100, Uladzislau Rezki wrote:
-> On Fri, Feb 21, 2025 at 06:28:49PM +0100, Vlastimil Babka wrote:
-> > > 
-> > > The warning indicates that this shouldn't be called from a
-> > > WQ_MEM_RECLAIM workqueue. This workqueue is responsible for bringing up
-> > > and tearing down block devices, so this is a memory reclaim use AIUI.
-> > > I'm a bit confused why we can't tear down a disk from within a memory
-> > > reclaim workqueue. Is the recommended solution to simply remove the WQ
-> > > flag when creating the workqueue?
-> > 
-> > I think it's reasonable to expect a memory reclaim related action would
-> > destroy a kmem cache. Mateusz's suggestion would work around the issue, but
-> > then we could get another surprising warning elsewhere. Also making the
-> > kmem_cache destroys async can be tricky when a recreation happens
-> > immediately under the same name (implications with sysfs/debugfs etc). We
-> > managed to make the destroying synchronous as part of this series and it
-> > would be great to keep it that way.
-> > 
-> > >   ------------[ cut here ]------------
-> > >   workqueue: WQ_MEM_RECLAIM nvme-wq:nvme_scan_work is flushing !WQ_MEM_RECLAIM events_unbound:kfree_rcu_work
-> > 
-> > Maybe instead kfree_rcu_work should be using a WQ_MEM_RECLAIM workqueue? It
-> > is after all freeing memory. Ulad, what do you think?
-> > 
-> We reclaim memory, therefore WQ_MEM_RECLAIM seems what we need.
-> AFAIR, there is an extra rescue worker, which can really help
-> under a low memory condition in a way that we do a progress.
+On Sun, Feb 23, 2025 at 08:43:10PM -0800, Boqun Feng wrote:
+> The rcutorture_one_extend_check() function's second last check assumes
+> that "preempt_count() & PREEMPT_MASK" is non-zero only if
+> RCUTORTURE_RDR_PREEMPT or RCUTORTURE_RDR_SCHED bit is set.
 > 
-> Do we have a reproducer of mentioned splat?
+> This works for preemptible RCU and for non-preemptible RCU running in
+> a non-preemptible kernel.  But it fails for non-preemptible RCU running
+> in a preemptible kernel because then rcu_read_lock() is just
+> preempt_disable(), which increases preempt count.
+> 
+> This commit therefore adjusts this check to take into account the case
+> fo non-preemptible RCU running in a preemptible kernel.
+> 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-We're observing this happen in production, and I'm trying to get more
-details on what is going on there. The stack trace says that the nvme
-controller deleted a namespace, and it happens to also be the last disk
-that drops the slab's final ref, which deletes the kmem_cache. I think
-this must be part of some automated reimaging process, as the disk is
-immediately recreated followed by a kexec.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-Trying to manually recreate this hasn't been successful so far because
-it's never the last disk on my test machines, so I'm always seeing a
-non-zero ref when deleting namespaces from this nvme workqueue.
+> ---
+>  kernel/rcu/rcutorture.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 280bff706017..4cae119dece8 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -1901,8 +1901,16 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
+>  	WARN_ONCE(cur_ops->extendables &&
+>  		  !(curstate & (RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH)) &&
+>  		  (preempt_count() & SOFTIRQ_MASK), ROEC_ARGS);
+> -	WARN_ONCE(cur_ops->extendables &&
+> -		  !(curstate & (RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED)) &&
+> +
+> +	/*
+> +	 * non-preemptible RCU in a preemptible kernel uses preempt_disable()
+> +	 * as rcu_read_lock().
+> +	 */
+> +	mask = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
+> +		mask |= RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2;
+> +
+> +	WARN_ONCE(cur_ops->extendables && !(curstate & mask) &&
+>  		  (preempt_count() & PREEMPT_MASK), ROEC_ARGS);
+>  
+>  	/*
+> -- 
+> 2.39.5 (Apple Git-154)
+> 
