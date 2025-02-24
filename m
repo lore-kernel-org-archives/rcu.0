@@ -1,193 +1,171 @@
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DD11624F5
-	for <rcu@vger.kernel.org>; Mon, 24 Feb 2025 01:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74A2156C5E;
+	Mon, 24 Feb 2025 02:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740361394; cv=none; b=orURT08+m9YUB73sYyJhD4j6qzOH2qChTMEWzT9wx3GFES9Sz0KZ8VdP3Y/VI3AQ4KnW0dB8zImOa0r5ilB3886CEM+CZXepiKwXegAjFjwWEm/pSt3+Rg4xrKclaXHbjjGc+3mGx1xp4b5f5vbDMtZJVRy0yKdjUUFfpjcPfY8=
+	t=1740363740; cv=none; b=VPrCCqPtqX2NFm2pPqArhMaYP/gezFP74/85iquETW0wSimf9T1/RdSEZtht7SiQBCScos7wljgvHBniPptlb/y+bzMmQC4acd663QCPi6WrN5rinNORKVJZ1eBERmHFchiTSw9UacF/kxRLjI7rLNWraJ/nKAvqF8OcLxZlcno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740361394; c=relaxed/simple;
-	bh=vdtp4eQZcAfe4JNSX52sOZpuWEKdb6wt8qJjerVOHDQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JSTjKaa/WJNAEeXH8Zs5lCJu8Qjvt/aPxxR6vEo8bx+/OgKgtlroNWLCn0mR8RgW7ycXPMJWyVXW9udjsT+a3BLeudJJjFTontp4qAnCzKvvMq0qGnFpm7Hqr/O1FsAhnyKrRqXP33czixizrlI445ktXQ/vDCol65PmdAqBg6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sm0z9XSr; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1740363740; c=relaxed/simple;
+	bh=jI7ZO3NuOHCRGWYIkk0Ep38pgswb06/96+GrIdTvQ4Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RSXV183ao5YsrqVditQdWsAPSUz7OCRIcL1IlFaNxCVZPta5O7bU0WqFMnIOI5pUcD/VFCEiRuOg02PAQvRs1E0NfWeXypvc8e9KzEqH4mm/p/wPL1hFK7T4Icphhn92tjKKNcWNxNqE8XLcRT+1GOYj4Tys/JZlRPSz8HnJaII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N6CMQzLW; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sm0z9XSr"
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-472098e6e75so382291cf.1
-        for <rcu@vger.kernel.org>; Sun, 23 Feb 2025 17:43:12 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N6CMQzLW"
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4720fb0229fso38679291cf.0;
+        Sun, 23 Feb 2025 18:22:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740361392; x=1740966192; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hs4/qefU1QtpU6+89lIxVt3csQSR47g1ulJgvu+2+tI=;
-        b=sm0z9XSr/H9I10CD4fPvS8qlEdMwYoe9SjwkHgjetHeyKp5wAqzpyCjXOLUXPuKdBX
-         JvfdgQljmfsCQkyCBAqbtjgLfrb9dupa0p8sg0McngWTHx4Blz30Kaj4t5Qsk9by8OVH
-         /E/K3DgI8dvPLnwvg/mfNYiSNMTAvEO09NvZ9vqZ9BOhrOdb6mwa8brXSVy1VeNBaBIu
-         K8yPvw4CC87vvWnCB93DapnyaIKXEtORYC2Xp7hRwLwQwdUb/BSdbBg+iN3cVXv1qKPX
-         4sJLgwVXRIvySsx7eK8bBjzaZbJcq1S5VrtRnvP1UQYiyWxjNh3dqK6ZXskLLv3dXFUy
-         muPQ==
+        d=gmail.com; s=20230601; t=1740363737; x=1740968537; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=yrrPZ5ryMu2bp7LE7X5PSIh2Y8sPYdQgIhsVTV+ySuY=;
+        b=N6CMQzLWVAHKh9cVMFjYadYQI0WVbwHpfywJUiMfIc3nNGxn+WIVgACx8zEYQqh/Ms
+         ZLpOuLGRjpp9NenDqyjEL7uykmsiizEIlF9G3AxDM1bCHE9uA4ploSove3t9XJEYskPL
+         auF/+C2qJ1LHCfE4den5IW5QF5Oug3zrZTSHibtwQDG5xmILsmeNeEugSvkf6mBLyD3d
+         1+trSmE3vQRLrGaidt1PuM8dtUqp2bTNrkagO4k/E1o0I5IqM3RYuq0kU7eK/5dwQKsd
+         SeSUrgYccnEdi9eesVd+r+Vn13VQrvsUEwpuLdaRnc7xSl6Xwo/crJEmR5GRGccC41OR
+         qjtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740361392; x=1740966192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hs4/qefU1QtpU6+89lIxVt3csQSR47g1ulJgvu+2+tI=;
-        b=tZ34P/xep+WE4Ka+WlnXRj0IKptFSG0RLpedjfnRUa9J95qFxLDoPgg+0szdB255Ic
-         vdC5LQBHQ95Em9UrO2CPtwuN/K7Q8famDADBZEwVuyGYCInQpzdPnCZn4EC9mUPc22Yq
-         U/G5gP6aBmazawFamWrN5p7G9gd2sK4av1fS3K1q1g9ix4UOpUzCYX1fEXSsaDo06QXp
-         6y48+4jfwE0WdJ2O2+9V70wTMOe7PkKY7UspeiO4bBpXWCXKPfbozqjOzM6ulbYWOjtH
-         YbYx+i52IOZTJ3lsVyVEV8WwbKVWXVz5xlCYxApHzJVf305P+0t7MGsmrfqnCbuLqq5c
-         I0Dg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5wVVoxHlhyPSxJdrNILiUR6l8sM/Iev8eaWkPYm2U3/EkVXrMRv2qE7AToaJ+FWwddc0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyTf4nw1VZ0yrffQwruRhsEw3ucSgbcCn27dkGBRFGSjJEUHKMW
-	navy4CRvApadEfI19g+QvRSxHr80Yu731hFuJIkaIBdDbqHFUUzeDYSW6ovfvVYwYACxNGDE4pP
-	AQAHObfydQ4Q7SVJLm/FjOauxjjzfs0q+fNak
-X-Gm-Gg: ASbGncuC/R0GTx+z8ZWx0rZ/m+ROlEeA43nI2fqF/2oLqgbn3MPZGUBpVomNIGgy/Ua
-	iXow/MPtFWS2iVkevHS+ONM3ejwzfmVEdfuw4Cnahg+5zoQ/qaVCIiMCXGqVhw4izg90+3YEG2t
-	ZHYAwDcZU=
-X-Google-Smtp-Source: AGHT+IF7PPzw9XcMzPgLGpS7L2yRjtVaj+8b437HR+N/kpecVcMii6hLGNH3rtRgLFLnrd2gUYIVZgktNFtVKAFAVsU=
-X-Received: by 2002:a05:622a:120f:b0:472:744:e271 with SMTP id
- d75a77b69052e-47233587224mr4504221cf.24.1740361391878; Sun, 23 Feb 2025
- 17:43:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740363737; x=1740968537;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yrrPZ5ryMu2bp7LE7X5PSIh2Y8sPYdQgIhsVTV+ySuY=;
+        b=nu++0d+TZRbcrFH7YQyq2KRytRJM7I0K2BW1MEg33GqZYu0Y+sN6gKQW1dwVTh5Swv
+         /cOVaRqKQcid6jC1beagUW5Z6hhCKOFO9kLJcgnoDhUUd70gYIisXqSsraTPWdDeT4AR
+         wbNueRaHV9gGFhJnOTsC/frLwzixbVcaC2fhGxKtz9ERPZ2JpCDQM2yiScjqTXCvrTBs
+         0K1uEAy7YbnsD5i2B4zo2BWu/oH+83dxcHzA022kymTm3F1ugcJ3/cldMofKsJBpTpzT
+         hyx/tiV++g4rN5WfXhmaWnyPGWSQhaWaQnPvwdX4HJjEg+DJO8xfPhStAXr/TJ7RKnCv
+         1vjg==
+X-Forwarded-Encrypted: i=1; AJvYcCUfHbJRnjjL5gdzVSC8gflAkNL10i0NiTArqay3CGHW4VQz9NEXrkjx5SGnx1c70AWdaUg=@vger.kernel.org, AJvYcCWipnMUtjQTEVJ7xP/nLM8FaJcDQNkjxoopOnhe2zbETZ0QHvtztdtpBpjaMrjtIbwecfORzerkFup29nPD2N6i@vger.kernel.org, AJvYcCX+pZSTOOMIcwg1a2tFnsV1wm/9GtrIwhwvFmFvsbFYStiwbQXfBQzrFAGxQtWKBKwvzXcjWxMyIKm3+wPd@vger.kernel.org
+X-Gm-Message-State: AOJu0YxqKeKduos1Q++uzz+zj461bF1+SWHzAeomfnYdTeKCrL5cI/Ym
+	VLnNrZZtlMGA3FeEzL57DGFjDZTk+u7LbuqPaT6levtxsyWn17j7
+X-Gm-Gg: ASbGncsgPc4IgUUBd/I/jowJ2C5C0Ypi9JInCvbccTLqN1ALZgc/jvF6FGEvKp2Exjf
+	T/cEBxRMK91y+IyGzBSvW348oMfxbLcCQEXWryejLKZwOT4NgMUoVrNcIo3olBy0t3lqtDisVL8
+	Y7ubbdMLNCQ3OkdQQCpsHYiJv2/mURrCNlWQueyeehKxXDPWOTHXdy7djB4uzK0hLTo0AUAX3fY
+	bRjFba9wclWUIdNNGkEZd9VVcsp3p+HjFMtU51Pz9Vmv633dSgtVpxPjUCPmK4be5bnEjm0sS7Z
+	ySlGJDtMWnB7FGNHGrSauP47tThJX0kaUuxRKQkubkl9vJJxtoWgB6j/1KXHhPOWcSmrq81qZA5
+	NyfokcyjHc9RkJH8F
+X-Google-Smtp-Source: AGHT+IGbFJ39dCWO0ABqeYWexGOEycpbdMZZOM5vbZdVCayF52Cae7jcBD3iqERUhW2/PRwEe6VJmg==
+X-Received: by 2002:ac8:7fd6:0:b0:472:bbb:1bab with SMTP id d75a77b69052e-4722485b110mr115913581cf.24.1740363737556;
+        Sun, 23 Feb 2025 18:22:17 -0800 (PST)
+Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471f41b78c2sm83981211cf.67.2025.02.23.18.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Feb 2025 18:22:17 -0800 (PST)
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 8DB411200043;
+	Sun, 23 Feb 2025 21:22:16 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Sun, 23 Feb 2025 21:22:16 -0500
+X-ME-Sender: <xms:2Ne7ZwcwTb3JBTVuHFFLyDIhV_8WWtqj0DlUn-p2Wiq5ATpTOTlyEg>
+    <xme:2Ne7ZyPZbZOLHNbcw1nYb_dK_DU85c0vfVLXPKLoBU3lTeLPGNvgwFlv4HKpLOcAr
+    nG6YMH-Ca-0q6EAFQ>
+X-ME-Received: <xmr:2Ne7Zxg-f_TYycKthZZ75DaKLWX4nR16sgwa5DTmgBOlthzx3H_kbJ_zrQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdejjeehgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecu
+    hfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtg
+    homheqnecuggftrfgrthhtvghrnhepgeegueekgefhvedukedtveejhefhkeffveeufedu
+    iedvleetledtkeehjefgieevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhm
+    vghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekhe
+    ehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghm
+    vgdpnhgspghrtghpthhtohepudejpdhmohguvgepshhmthhpohhuthdprhgtphhtthhope
+    hrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhirghnghhshhgr
+    nhhlrghisehgmhgrihhlrdgtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvg
+    hlrdhorhhgpdhrtghpthhtohepjhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrghdp
+    rhgtphhtthhopehrohhsthgvughtsehgohhoughmihhsrdhorhhgpdhrtghpthhtohepmh
+    grthhhihgvuhdruggvshhnohihvghrshesvghffhhitghiohhsrdgtohhmpdhrtghpthht
+    ohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvrhgrjh
+    druhhprgguhhihrgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohgvlhesjhho
+    vghlfhgvrhhnrghnuggvshdrohhrgh
+X-ME-Proxy: <xmx:2Ne7Z19s-r6Ol3gRs8bDeMRUiCt3J2sPlaNbOB4TLh8w3sR91o7OzA>
+    <xmx:2Ne7Z8tC1dOyEZvG2fbBopdZJtQqsCnDpMIes9qv1t_hVGBGI2Q3yw>
+    <xmx:2Ne7Z8Fu2ukd4duHy76xEYkHrXB8jrytkNi0m01VnItwr-XbUOgHxw>
+    <xmx:2Ne7Z7MfDLwK1hJ3v6SSXlKDLi48y6LqnLqqsuBjYYotsBX60qONuA>
+    <xmx:2Ne7ZxMeWXEQw5fod255jMAgPBWeUfKDKAmy_Lcihspw9QOXlCkQQ63_>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 23 Feb 2025 21:22:16 -0500 (EST)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: rcu@vger.kernel.org
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH rcu 00/20] SRCU changes for v6.15
+Date: Sun, 23 Feb 2025 18:21:54 -0800
+Message-Id: <20250224022214.12037-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz>
- <ztssad52ikws3a2dwodju4o73h6rsutxnvzj5i6vyjjkudkiel@g7c7g5i3l7jd>
- <CAJuCfpHi4Od4K2xQEUFWuG=a4zCKecWBMwBiy_7mVn6QgsTSvA@mail.gmail.com> <CAJuCfpEq8P4cz7HXaRVqaagONPBKrFgOSqdigEYU60sGAE4-rg@mail.gmail.com>
-In-Reply-To: <CAJuCfpEq8P4cz7HXaRVqaagONPBKrFgOSqdigEYU60sGAE4-rg@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Sun, 23 Feb 2025 17:43:00 -0800
-X-Gm-Features: AWEUYZmBheVTFZ7LsU1XyyiDk7lQ-8DjR4Kpy3qUz4phiAg_D9I2iBy4_sFiFc8
-Message-ID: <CAJuCfpEQb=ZmTcAvCMNZrD+-r1hkPfqfw-VvDR_X2a5wm=K_ew@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 00/10] SLUB percpu sheaves
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	rcu@vger.kernel.org, maple-tree@lists.infradead.org, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 23, 2025 at 5:36=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Sat, Feb 22, 2025 at 8:44=E2=80=AFPM Suren Baghdasaryan <surenb@google=
-.com> wrote:
-> >
-> > On Sat, Feb 22, 2025 at 4:19=E2=80=AFPM Kent Overstreet
-> > <kent.overstreet@linux.dev> wrote:
-> > >
-> > > On Fri, Feb 14, 2025 at 05:27:36PM +0100, Vlastimil Babka wrote:
-> > > > - Cheaper fast paths. For allocations, instead of local double cmpx=
-chg,
-> > > >   after Patch 5 it's preempt_disable() and no atomic operations. Sa=
-me for
-> > > >   freeing, which is normally a local double cmpxchg only for a shor=
-t
-> > > >   term allocations (so the same slab is still active on the same cp=
-u when
-> > > >   freeing the object) and a more costly locked double cmpxchg other=
-wise.
-> > > >   The downside is the lack of NUMA locality guarantees for the allo=
-cated
-> > > >   objects.
-> > >
-> > > Is that really cheaper than a local non locked double cmpxchg?
-> >
-> > Don't know about this particular part but testing sheaves with maple
-> > node cache and stress testing mmap/munmap syscalls shows performance
-> > benefits as long as there is some delay to let kfree_rcu() do its job.
-> > I'm still gathering results and will most likely post them tomorrow.
->
-> Here are the promised test results:
->
-> First I ran an Android app cycle test comparing the baseline against shea=
-ves
-> used for maple tree nodes (as this patchset implements). I registered abo=
-ut
-> 3% improvement in app launch times, indicating improvement in mmap syscal=
-l
-> performance.
-> Next I ran an mmap stress test which maps 5 1-page readable file-backed
-> areas, faults them in and finally unmaps them, timing mmap syscalls.
+Hi,
 
-I forgot to mention that I also added a 500us delay after each cycle
-described above to give kfree_rcu() a chance to run.
+Please find the upcoming changes in SRCU for v6.15. The changes can also
+be found at:
 
-> Repeats that 200000 cycles and reports the total time. Average of 10 such
-> runs is used as the final result.
-> 3 configurations were tested:
->
-> 1. Sheaves used for maple tree nodes only (this patchset).
->
-> 2. Sheaves used for maple tree nodes with vm_lock to vm_refcnt conversion=
- [1].
-> This patchset avoids allocating additional vm_lock structure on each mmap
-> syscall and uses TYPESAFE_BY_RCU for vm_area_struct cache.
->
-> 3. Sheaves used for maple tree nodes and for vm_area_struct cache with vm=
-_lock
-> to vm_refcnt conversion [1]. For the vm_area_struct cache I had to replac=
-e
-> TYPESAFE_BY_RCU with sheaves, as we can't use both for the same cache.
->
-> The values represent the total time it took to perform mmap syscalls, les=
-s is
-> better.
->
-> (1)                  baseline       control
-> Little core       7.58327       6.614939 (-12.77%)
-> Medium core  2.125315     1.428702 (-32.78%)
-> Big core          0.514673     0.422948 (-17.82%)
->
-> (2)                  baseline      control
-> Little core       7.58327       5.141478 (-32.20%)
-> Medium core  2.125315     0.427692 (-79.88%)
-> Big core          0.514673    0.046642 (-90.94%)
->
-> (3)                   baseline      control
-> Little core        7.58327      4.779624 (-36.97%)
-> Medium core   2.125315    0.450368 (-78.81%)
-> Big core           0.514673    0.037776 (-92.66%)
->
-> Results in (3) vs (2) indicate that using sheaves for vm_area_struct
-> yields slightly better averages and I noticed that this was mostly due
-> to sheaves results missing occasional spikes that worsened
-> TYPESAFE_BY_RCU averages (the results seemed more stable with
-> sheaves).
->
-> [1] https://lore.kernel.org/all/20250213224655.1680278-1-surenb@google.co=
-m/
->
-> >
-> > >
-> > > Especially if you now have to use pushf/popf...
-> > >
-> > > > - kfree_rcu() batching and recycling. kfree_rcu() will put objects =
-to a
-> > > >   separate percpu sheaf and only submit the whole sheaf to call_rcu=
-()
-> > > >   when full. After the grace period, the sheaf can be used for
-> > > >   allocations, which is more efficient than freeing and reallocatin=
-g
-> > > >   individual slab objects (even with the batching done by kfree_rcu=
-()
-> > > >   implementation itself). In case only some cpus are allowed to han=
-dle rcu
-> > > >   callbacks, the sheaf can still be made available to other cpus on=
- the
-> > > >   same node via the shared barn. The maple_node cache uses kfree_rc=
-u() and
-> > > >   thus can benefit from this.
-> > >
-> > > Have you looked at fs/bcachefs/rcu_pending.c?
+	git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git srcu.2025.02.05a
+
+Regards,
+Boqun
+
+Paul E. McKenney (20):
+  srcu: Make Tiny SRCU able to operate in preemptible kernels
+  srcu: Define SRCU_READ_FLAVOR_ALL in terms of symbols
+  srcu: Use ->srcu_gp_seq for rcutorture reader batch
+  srcu: Pull ->srcu_{un,}lock_count into a new srcu_ctr structure
+  srcu: Make SRCU readers use ->srcu_ctrs for counter selection
+  srcu: Make Tree SRCU updates independent of ->srcu_idx
+  srcu: Force synchronization for srcu_get_delay()
+  srcu: Rename srcu_check_read_flavor_lite() to
+    srcu_check_read_flavor_force()
+  srcu: Add SRCU_READ_FLAVOR_SLOWGP to flag need for synchronize_rcu()
+  srcu: Pull pointer-to-integer conversion into __srcu_ptr_to_ctr()
+  srcu: Pull integer-to-pointer conversion into __srcu_ctr_to_ptr()
+  srcu: Move SRCU Tree/Tiny definitions from srcu.h
+  srcu: Add SRCU-fast readers
+  rcutorture: Add ability to test srcu_read_{,un}lock_fast()
+  refscale: Add srcu_read_lock_fast() support using "srcu-fast"
+  rcutorture:  Make scenario SRCU-P use srcu_read_lock_fast()
+  srcu: Fix srcu_read_unlock_{lite,nmisafe}() kernel-doc
+  srcu: Document that srcu_{read_lock,down_read}() can share srcu_struct
+  srcu: Add srcu_down_read_fast() and srcu_up_read_fast()
+  srcu: Make SRCU-fast also be NMI-safe
+
+ include/linux/srcu.h                          | 102 +++++++--
+ include/linux/srcutiny.h                      |  27 ++-
+ include/linux/srcutree.h                      |  98 +++++++--
+ kernel/rcu/rcu.h                              |   9 +-
+ kernel/rcu/rcutorture.c                       |  11 +
+ kernel/rcu/refscale.c                         |  32 ++-
+ kernel/rcu/srcutiny.c                         |   6 +
+ kernel/rcu/srcutree.c                         | 199 +++++++++---------
+ .../rcutorture/configs/rcu/SRCU-P.boot        |   1 +
+ 9 files changed, 359 insertions(+), 126 deletions(-)
+
+-- 
+2.39.5 (Apple Git-154)
+
