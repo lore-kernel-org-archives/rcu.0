@@ -1,163 +1,166 @@
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3531B0413
-	for <rcu@vger.kernel.org>; Mon, 24 Feb 2025 04:43:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A979312B94
+	for <rcu@vger.kernel.org>; Mon, 24 Feb 2025 04:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740372199; cv=none; b=PeKPbdgfVeyqCGiV8tNrmsI6k91YxvYB53Ld+W1e3UIjF0koFvX8q2InpZmN8Mr1S1WhQV3MoS1mrzE97T0OYEGqmaKfzeyHHLDXguGCP0vjwCdq21RJhBe32+anU8trm7v1eOcZhVCgQOYXbw5mqqgXTEelmXXf4Y3IR3PYKmQ=
+	t=1740372565; cv=none; b=UvKzrc+YREztlfMN1apNrV/M0vMfEOGczK427qRxA49gQqVR6VCqyUZNYrS+99qO9Jtji7Yp121qw4Rr1Jxl11h8DFy+fq5QkLFgopCsrziXixeZ0gm8FpYzuU9+IQ80pb4shbdIVbNllssqBP8R3twLq8nq26HHxzh9kf2tAA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740372199; c=relaxed/simple;
-	bh=DCpT12y5iABPXJogLv/iS8tsEGReP23KAJetFgd3HaM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=H84Tdj3aH3ivW4rqixZEazEGnJihSwbeiG7nxCOXlTfBOf7jaI1itc1Jk5qo2BX0xe41uyKmGHydpfjL0MxnZoPcTzy2pZ6CBn8Ui3loA+5xLSfRc9m7D/e7VdcXuQP72iTovdHgJNZopjGlttxnHTM5byy/dPvJcMbE13/eTjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k44KdZbH; arc=none smtp.client-ip=209.85.222.171
+	s=arc-20240116; t=1740372565; c=relaxed/simple;
+	bh=m+ya0m48Hy05uufbgBSlRUASp/gEt5wNCSXXagY3Veo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nfDO4XNVmfEkdgNKB5Vk+kdgU1v1paZ0k5QmHFzPJLBivK3/WmsLbSu6Qd/EwMikaJktcnMRbHSnbawu+2v1wqaeJdwni2GOiB8TX4ko0p9TvjLMuznM6a+YHgMB3jOV/mxxnlhMJ7S5LGhWUo3FM2zlSqWggBkVauYD419DK/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QNr66Qvo; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k44KdZbH"
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7c0970e2e79so784845185a.3
-        for <rcu@vger.kernel.org>; Sun, 23 Feb 2025 20:43:16 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QNr66Qvo"
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6e67bc04a3bso45560956d6.3
+        for <rcu@vger.kernel.org>; Sun, 23 Feb 2025 20:49:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740372195; x=1740976995; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YgJlvUcrCnk4Px28zeJAYzHwYl+dJt5tTj1CIQ5lvao=;
-        b=k44KdZbHvE1EtHjd6SzEL3jI5qkvR2JRHfDVzLbq53y316oDzWoowDL5lajS8FWMZH
-         3aTTaaLO9owjSwUREf2d7AvUTzeVz7/xkZzi6qThvu0g5ysZPXuVq6QwcCNcIMVSh2e6
-         NEot2mMBB6ry2s4satMFaxMTH8ndkwko2mTkX4Tm6j4Pl8wP4vDtBWfDr4hbtU3P/ujR
-         g8IPbWR6p5P3k48t0PkWZbuSDWRJNLvFOD3KkajFmwV2mIfKM4svKHGScKYgZ41SiA4X
-         +sHA5Rf5b5QOgbn2UwpIAEEbUiGeVhp5ESvbt+qexo17VBSHkyY9dvzTUco6llder33s
-         KByg==
+        d=gmail.com; s=20230601; t=1740372562; x=1740977362; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZytZEk8JtOudqPt3UiEgxftAzf8RUB8NEf9J511wOpk=;
+        b=QNr66Qvooh9BnEzaIgKsoFNb19Dv5ldlStapOifOXVxQXASZs8UMOgX59b0ELA120v
+         m5jiQoECR7nDYEVEu9WpyGjwkdL5TBJ+x0Hz/Ho0htmbbHPRJGgEL7JAyIRDDZv1D8xh
+         wu9l33czgf/r0nc86kjBBjZJbvyYFPjlTVBf7f5uQyatmiq+9SJZ2Pr2J1yyzTnY8WCb
+         bK7hYT6THVwkuRyKDOfFIL67AoOl9JvdisUhFBNOESfNSqY7HAsHaixBUZemptTqM+rO
+         g4apzvNx0hNSzzVvtGCXMKKceFUuYEZJRQK2M3Gch7mknt9Ga7dsDEaHGpZnwqEnEzFP
+         NIlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740372195; x=1740976995;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YgJlvUcrCnk4Px28zeJAYzHwYl+dJt5tTj1CIQ5lvao=;
-        b=osc8usVxZ6ilSJkydGejvwMjDpfr09d7x7kJV1aXG3xnkzCBRdFDEa6cM/9BFA2nai
-         D96LGdTgSMTAu6mcI8IhHeIj/1SSdq4GUTx1WwnXq9rsgro81gP65vV0JiZ6dJT33HQ6
-         Sjz2zeAh3SXuTPFurLflIRZ/Hny9Apti44mg7Xmltwa7UeoJsjQWcJ7b8khLsJqEkDxF
-         fPNZVbB2M+0KVJDQxdPU6MgeB5R83wv2DMEUK+fKM+YTeD6xMogC7YUmzm2TGbdigFYM
-         7TMTGujF0jSzauKz3ZE9ogF0NlSbvUrGSH3IuHr11EzsAALz541qPxUuLeo/CTKbb05G
-         ZecA==
-X-Forwarded-Encrypted: i=1; AJvYcCVcPunXjldUS2zbOsF/og8anZELC1gu0LA7XHRbO6/LayIt/RwKmafcC5gjqwLQqbqtFeQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4y2Vo3rE1e9w8YcPh5MhQQ+Zk0oNfRZ//+dV3KGV3gdWFxWFz
-	VqKluT3SU69dTBCCky9snTJOWcMQ7hX8iRnDzHSeGET6+UPRXAba
-X-Gm-Gg: ASbGncvMaTvMso2KiegdrdKc+PhGsiD8hIykEPoJ3mHU/ZV3C0yMMazQbEZliCICjqp
-	BPjZ97CAcAx5AjHSmgocOu06zfuLJAmc80xJpaiKrQYWsrsISyxKRQff7eOSrzxOnPlJuwFF5L6
-	r0Px/kX/3bczMiJoPVzf7aoCkh+W9qKpDVoJrrGq6oa/nJNM2bXrPlkR1gOAtU7taBdW68+HvNa
-	2kI1Wm6m5woVSQsSnUwpGs/2oKNENY2XV+/NnPr7JnIL8PEFjmKeC4PgrMohRsipqP93LhMnyan
-	WB9ePijr1oEyJHmFVJO5RNfL1mdkpo/kSKq2MPD8RvlIDaF5Frn9W5mMygkQW8yKUgcuyzbC8Um
-	LMxAWNNx+aOPZzULq
-X-Google-Smtp-Source: AGHT+IHS9+jNMo1GQfaJagEheVTBWOidCeWDjc8eISITAFSDWoITb4z2932ycfJh1KoNWHhNuPWriw==
-X-Received: by 2002:a05:620a:4486:b0:7c0:b1f3:b4b4 with SMTP id af79cd13be357-7c0ceef74cdmr1480032785a.15.1740372195286;
-        Sun, 23 Feb 2025 20:43:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740372562; x=1740977362;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZytZEk8JtOudqPt3UiEgxftAzf8RUB8NEf9J511wOpk=;
+        b=ZsuwFzo+Cu+zPewihq/GTgM+fiUe4dFXtkVPkc6S5IeQiHSElpJoEhi/98G2tuUP0y
+         +VltiyUE8UlrRI+4Rlp7+20H2abu+uQUHV5Bk1x9mQQa3/0l8gnaflcsfeR9ul+Sm5Jj
+         p3bTFaANzCeDrBLbdPmTxbaWoWCqV6PM7dpDzGnxvVlcERgeiM4HSGOZ9DHXoU+V7Qlt
+         wj/gGTL3wKuyJi3K2yKhUH7grZkozYzVgD1SU48K0lSdywG3ceF5mNm0w9ysT+e4P8HT
+         6IKkEgd3kzsfRGxeeC6raBhbkwjqMgkUq6YeVmCT+yDCziQceg3vo6VqtBaU91ujBZOI
+         hT9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXmN340a/xPzHTx+FM48v7bNxTswgG0HbuXV5mJ79WN3ymUWzQERyyR8Hlqbg1hgTy2KQ8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxL7LL8HD8Vj7iTJC39qNRalnUth91k5n/YyY7uqEAE6wng/gyu
+	PTYlkQY+aw9U5U48OuXnQ/LUTvOmI1HISESgQHSX89SifdBDs4BF
+X-Gm-Gg: ASbGncsZCsxhSDrgMz24uuu/qyT7bdB5lPC50mWQY2+5zugW1tI6vZKFdD2nqv/4XfY
+	F0VHYM7QREsTVgJQznQLpz+qyyHUFNcBHwQFTMz1lw6Cd/uzRdERCeSZEY059vbezgQKoYd9fC4
+	GkV0/Ef8XHSVGyhPNQTRwSW5ZS2BTRwf9EsZPzxpE2xS7HAy46a7OxeWfLMjHlgtGZSSaCnQOhW
+	3m5EENADI/3GBv2mUAEfQnmpkAnbEQC9YoUYmgYumfQJym3b9O8W+DAzM5o1+DB31TNzvNpiAKN
+	HWsF/S+IokJtB6U2EJcX40G0cFueoGrKv+3V9QG1DBqloec4TbBwz6aW12iPMF9DAzdc+Kj499G
+	JBhPi67iOSiDgbmyO
+X-Google-Smtp-Source: AGHT+IGjls3lBddW8jue9cvVaCf9vRvupnJQ9GTSqDJC38TUqs63gYmU+yWxY3XU8XZjabI9hBLEsA==
+X-Received: by 2002:a05:6214:c88:b0:6e4:9b59:d9ce with SMTP id 6a1803df08f44-6e6ae7c6e0fmr154787516d6.5.1740372562507;
+        Sun, 23 Feb 2025 20:49:22 -0800 (PST)
 Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0a49c29bfsm886093785a.45.2025.02.23.20.43.14
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65d779446sm129229726d6.1.2025.02.23.20.49.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Feb 2025 20:43:14 -0800 (PST)
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 8FF85120006A;
-	Sun, 23 Feb 2025 23:43:14 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-08.internal (MEProxy); Sun, 23 Feb 2025 23:43:14 -0500
-X-ME-Sender: <xms:4vi7Z7Egz8DbRg-p9rZWo0IcBDNzX4pSsxyAQHpppGtZ5_0zpYtqow>
-    <xme:4vi7Z4UNshhPZnw_qYtIz6VeOtTCCZv7tWX_ReGQJ7HhKqQ4CjsS2MBN0vfXAVE1b
-    gD9pHFHv1UFox6J1A>
-X-ME-Received: <xmr:4vi7Z9KX8T8KvFxSCyVW8PPSoV_BDBHqva4G4BzqfLj06A7k6UiNbh7LSg>
+        Sun, 23 Feb 2025 20:49:22 -0800 (PST)
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfauth.phl.internal (Postfix) with ESMTP id A1E7E120006A;
+	Sun, 23 Feb 2025 23:49:21 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Sun, 23 Feb 2025 23:49:21 -0500
+X-ME-Sender: <xms:Ufq7ZxZT6_hf1f2H2yHrUk1Kn9v2kMHXnMpI_IipPkCQZWg9iAJSoQ>
+    <xme:Ufq7Z4ZAFl0h1bkcH-VTPTHme6J1bPJmIDNSVldwECeI6yA-K5hA0ayh3y8uIfSDY
+    xFQIqqQ-VcnEuDkyA>
+X-ME-Received: <xmr:Ufq7Zz81WkcjWPTOSd5JBfGIT6AYBoMU0geSsm_khJaT8rES6Wd0yvPX8A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdejjeekgecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
     necuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilh
-    drtghomheqnecuggftrfgrthhtvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfev
-    ffeiueejhfeuiefggeeuheeggefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    drtghomheqnecuggftrfgrthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleel
+    ieevtdeguefhgeeuveeiudffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
     hmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghl
     ihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepgh
-    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeelpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopeholhhivhgvrhdrshgrnhhgsehinhhtvghlrd
-    gtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthht
-    oheprghnkhhurhdrrgdrrghrohhrrgesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepoh
-    gvqdhlkhhpsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtoheplhhkphesihhn
-    thgvlhdrtghomhdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrgh
-    dprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    rhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvg
-    hnghesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:4vi7Z5G8v57U_AtDAMMnvnN99XVGfo3wkuT8zEL1VAEbT9oiRT-wmQ>
-    <xmx:4vi7ZxVU_aq7gyoLAzzVIiCAF-u-PsX8tO8120TMM6aytf7XyFEUrw>
-    <xmx:4vi7Z0NHqqGzTPQaVHrd0aPxED4DsXBmgqwo8FCGEq4BhBcowCf_IA>
-    <xmx:4vi7Zw0b6A932iD_i4Pc5EDg_-7Me3Oi10f_kEb9Ua28OY4N-e6I1g>
-    <xmx:4vi7Z2X_zYxKkGxmOITXtYg3ULt_1KakIhQsDG0YE-KKPztSD0eU1nrj>
+    hmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedutddpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtohepohhlihhvvghrrdhsrghnghesihhnthgvlh
+    drtghomhdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphht
+    thhopegrnhhkuhhrrdgrrdgrrhhorhgrsehorhgrtghlvgdrtghomhdprhgtphhtthhope
+    hovgdqlhhkpheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehlkhhpsehi
+    nhhtvghlrdgtohhmpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorh
+    hgpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthho
+    pehrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhovghlrghgnh
+    gvlhhfsehnvhhiughirgdrtghomh
+X-ME-Proxy: <xmx:Ufq7Z_qxNmoTRj4Q0TZvqePNINaIkNDHi0eGkRoK4UwsdyKNuhf9DA>
+    <xmx:Ufq7Z8on7Hd1kh2H6PvfCIwOZqKEEC18qhKG7kcyE0FSSWXhJwmxvQ>
+    <xmx:Ufq7Z1QJa5ZrDDtygzpj6hLYZsHH-mOjBHi0mAqyEdD77gZWsyJGOw>
+    <xmx:Ufq7Z0oCAhqgf3oCNiMW1yKnk32g-VStHTTKo1d6L0bzW8Rm3j2mqg>
+    <xmx:Ufq7Z15C0jGZqqjTMzQ-yvUwZA6k-w-d0fueUuQfQ7pC1EjlQGDCbSeF>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 23 Feb 2025 23:43:14 -0500 (EST)
+ 23 Feb 2025 23:49:21 -0500 (EST)
+Date: Sun, 23 Feb 2025 20:49:20 -0800
 From: Boqun Feng <boqun.feng@gmail.com>
 To: Oliver Sang <oliver.sang@intel.com>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	oe-lkp@lists.linux.dev,
-	lkp@intel.com,
-	Peter Zijlstra <peterz@infradead.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	rcu@vger.kernel.org,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH v2 2/2] rcutorture: Update ->extendables check for lazy preemption
-Date: Sun, 23 Feb 2025 20:43:10 -0800
-Message-Id: <20250224044310.14373-2-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250224044310.14373-1-boqun.feng@gmail.com>
+	Ankur Arora <ankur.a.arora@oracle.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, Peter Zijlstra <peterz@infradead.org>,
+	Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org,
+	Joel Fernandes <joelagnelf@nvidia.com>
+Subject: Re: [PATCH v2 2/2] rcutorture: Update ->extendables check for lazy
+ preemption
+Message-ID: <Z7v6UD8SeXPoTkXG@Mac.home>
 References: <Z7v4MytjhhBZkG4S@Mac.home>
  <20250224044310.14373-1-boqun.feng@gmail.com>
+ <20250224044310.14373-2-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250224044310.14373-2-boqun.feng@gmail.com>
 
-The rcutorture_one_extend_check() function's second last check assumes
-that "preempt_count() & PREEMPT_MASK" is non-zero only if
-RCUTORTURE_RDR_PREEMPT or RCUTORTURE_RDR_SCHED bit is set.
+[Cc Joel]
 
-This works for preemptible RCU and for non-preemptible RCU running in
-a non-preemptible kernel.  But it fails for non-preemptible RCU running
-in a preemptible kernel because then rcu_read_lock() is just
-preempt_disable(), which increases preempt count.
-
-This commit therefore adjusts this check to take into account the case
-fo non-preemptible RCU running in a preemptible kernel.
-
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- kernel/rcu/rcutorture.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 280bff706017..4cae119dece8 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1901,8 +1901,16 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
- 	WARN_ONCE(cur_ops->extendables &&
- 		  !(curstate & (RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH)) &&
- 		  (preempt_count() & SOFTIRQ_MASK), ROEC_ARGS);
--	WARN_ONCE(cur_ops->extendables &&
--		  !(curstate & (RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED)) &&
-+
-+	/*
-+	 * non-preemptible RCU in a preemptible kernel uses preempt_disable()
-+	 * as rcu_read_lock().
-+	 */
-+	mask = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
-+		mask |= RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2;
-+
-+	WARN_ONCE(cur_ops->extendables && !(curstate & mask) &&
- 		  (preempt_count() & PREEMPT_MASK), ROEC_ARGS);
- 
- 	/*
--- 
-2.39.5 (Apple Git-154)
-
+On Sun, Feb 23, 2025 at 08:43:10PM -0800, Boqun Feng wrote:
+> The rcutorture_one_extend_check() function's second last check assumes
+> that "preempt_count() & PREEMPT_MASK" is non-zero only if
+> RCUTORTURE_RDR_PREEMPT or RCUTORTURE_RDR_SCHED bit is set.
+> 
+> This works for preemptible RCU and for non-preemptible RCU running in
+> a non-preemptible kernel.  But it fails for non-preemptible RCU running
+> in a preemptible kernel because then rcu_read_lock() is just
+> preempt_disable(), which increases preempt count.
+> 
+> This commit therefore adjusts this check to take into account the case
+> fo non-preemptible RCU running in a preemptible kernel.
+> 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  kernel/rcu/rcutorture.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 280bff706017..4cae119dece8 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -1901,8 +1901,16 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
+>  	WARN_ONCE(cur_ops->extendables &&
+>  		  !(curstate & (RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH)) &&
+>  		  (preempt_count() & SOFTIRQ_MASK), ROEC_ARGS);
+> -	WARN_ONCE(cur_ops->extendables &&
+> -		  !(curstate & (RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED)) &&
+> +
+> +	/*
+> +	 * non-preemptible RCU in a preemptible kernel uses preempt_disable()
+> +	 * as rcu_read_lock().
+> +	 */
+> +	mask = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
+> +	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
+> +		mask |= RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2;
+> +
+> +	WARN_ONCE(cur_ops->extendables && !(curstate & mask) &&
+>  		  (preempt_count() & PREEMPT_MASK), ROEC_ARGS);
+>  
+>  	/*
+> -- 
+> 2.39.5 (Apple Git-154)
+> 
+> 
