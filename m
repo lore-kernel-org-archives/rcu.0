@@ -1,145 +1,113 @@
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34A4267F62;
-	Tue, 25 Feb 2025 11:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6630264F9D;
+	Tue, 25 Feb 2025 11:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740481228; cv=none; b=pFaUCS4Q22DZGlLSsWR1DHsf86wR/PehjNJc4BZC6NpJbTQb470Y3udpQ/53dwfWKcESZsuhqOy6GGtnbyEhjRTAa4NN8qml+ADt3ltEzh7K5ms7kexkFXQpYe+Kt9WmGXt4WUy3JOljy4WzSGsOgDCPBQNueYYVHWMdMqyw7AU=
+	t=1740481485; cv=none; b=lKlUHNW4EGbAOILzzS13NPAM4gOP0H4mHT3w4QOnWklZd8TJhd5N+0TGO8b31L4UtFYG7y+XdtU8WeMxSKD6LAFSUvjQRKt7euZnEqsMrmXJpdQ+98Md9CC1Cp6wUzO4jYTPVFkEIPtAmLddSQ4odEqr2R8dIny1K3C5aYRRaz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740481228; c=relaxed/simple;
-	bh=4LvdbPCYHfIEA9VMVlfoNGibN70QZsOBdBupKny+JlM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=P+eKNufaVAlNDdTgYwH/E9phkbmaA9ccCk59gnfSNsw9G0P/Sfw+pLE+Sa/Qtm/4bXj8NTf10Tk8XOuQu9JGjfgQ37AZ4gElpDxDQ8Szhm1xP2+KaU3nfLi6uVhnfiTUOaqkMYA2BrnENduE/Y8ktuviJI4S9W+XB4HmKXoNhRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m4wBJ6Kp; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1740481485; c=relaxed/simple;
+	bh=yG++BUr1pNW36WEJ6xY32Zg5CTCOUnmylM4FpVv0kMQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B24Qxb+deaOrk5zTL29EbeGtmBzxCCtDkWDx8uhjsQwX2eJSpjt5m1ZIZ//JC3vJMPyUvETrxv/XiIlJd3kYY6EZP7So0jZgTrK0VKxkpdd2/89Ia7HACWcaBAltYrw4YQ2d2F4dxp7jclpsD9+RaaxsDDFLTsxjeGYERfWWvY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A1UR7qNU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4wBJ6Kp"
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-546210287c1so5581725e87.2;
-        Tue, 25 Feb 2025 03:00:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740481225; x=1741086025; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rniMvaYIi26adKpEqcx0hyA8jOwUTjRcY3RJP/H9jWw=;
-        b=m4wBJ6KpddcjyHTF1/czgbvXQ8ipvZdPtVh9OLxqWCrFIHArHNzeexEvdnhc9qOAH8
-         eVKAY6ZB+bx7ssg53Tea3/oAPckfHTQBXSzolb0lA9lGhFsDlr8IRESeg3jJ05ggZ40+
-         avmYsXFRGmZV4A3I2wuoFd4R6iJRsqPLk+jf8g20rYX4l/RpZqsP3db00fUnBt0w7JAo
-         Dof0YZQ28eT2wXRj+XdL1jX/L9COeYg96U4tRwVDSGbB0KmD9KblxqSwwf3k7F2VB2j8
-         TZmc6mXwA+IPv0GPiFYeox4kmzlwt5YHUxnMoLzjuASy0jty93kc+Wpts26hzLH15tHr
-         Kx1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740481225; x=1741086025;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rniMvaYIi26adKpEqcx0hyA8jOwUTjRcY3RJP/H9jWw=;
-        b=QI7daNxEl3NjMM22yaFCxLkJXVtVQ9DbEn5XKIRAtNrVDsrLH6VgGFaepf/METzkR4
-         io1Jouln+D8A4d0slgWCfRrYm9qM4vU3rUOcEhG34bR/XN2p4Ri1AlID0dts1mUrNbzk
-         KYy/TWA8vi0qORbH/LF83FGbDBYgjFi8vM9QVgzFdkdgVTU/GCTTG1y/SP+yYfBwdTyl
-         6pzcuDu5yoVn3uBXF0qwZ3+WqBCSs09ncDjC9fjdJDACCRyyPG3TMWQRP5fU/tz2vAxW
-         k8xEFyI9zSFiM5FyHU7TP29tDQT47a3EM4gk+9lHqmWilj8LzfH4fJcHXxzJSLmLHxmC
-         jPuw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEVVk6eXHYq/S0Ulg7hzFXN74Z8pb0IfVnU8cUIy8ZeC2dGnNzdy2xP1AWQQvk1QfUegR/vlYcbW4CdVw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLC/O/hHlCZ+V3hh/LZX9UVn+/l3A0rXjJ043SCbDqF8fOMPTX
-	+Uj2DcElh06d3vhJmOVq0Wg2/Bt/KrEuXxUdgkjjiqUssX1L7ZP+
-X-Gm-Gg: ASbGncss0RefhknDxo3bn9VzbFbCDUSX9O6LeQKtDclIIXOWsf7mihwFeDEHG+bM4MB
-	9iXbPPYzxg4zElXMz5Hdc+2bH0NA3YgF/t80RtCGBtCQR7s3dNtQqiMVGmFWCyAqtNsUPf8b7MD
-	vADp6EytliyxvPr9EUaRzNIszj/sa60qKkoNGaezWzvRmp8trvTnYtatBWT4XKOj97C8Jdr79Ty
-	qrfkKEP5fPty+hgXC4qjnTjdAzRUQOajn7IC43TW15GxP0NgiJMYm5J3XT8Rfpal7VXr8+ZkVBu
-	I/Vbb44EZLemMVlZmw+8sQ==
-X-Google-Smtp-Source: AGHT+IFsvQXrb22vLgRYUoiA2ph8/sr59XjDMExdY1gmmRC6ZweDxkH7vhPkJt6W41kay8eJlK//cA==
-X-Received: by 2002:a05:6512:3a89:b0:545:2a96:34fc with SMTP id 2adb3069b0e04-5483914820dmr7023064e87.31.1740481224332;
-        Tue, 25 Feb 2025 03:00:24 -0800 (PST)
-Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-548514b9886sm143850e87.71.2025.02.25.03.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2025 03:00:23 -0800 (PST)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Cheung Wall <zzqq0103.hey@gmail.com>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v3 3/3] rcu: Use _full() API to debug synchronize_rcu()
-Date: Tue, 25 Feb 2025 12:00:20 +0100
-Message-Id: <20250225110020.59221-3-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250225110020.59221-1-urezki@gmail.com>
-References: <20250225110020.59221-1-urezki@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A1UR7qNU"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA153C4CEDD;
+	Tue, 25 Feb 2025 11:04:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740481484;
+	bh=yG++BUr1pNW36WEJ6xY32Zg5CTCOUnmylM4FpVv0kMQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A1UR7qNUbDGRyiD1BhKsH5VWnThtZcFC0d27b9VJeHmkHZxNCdC6Ckq8KDmabuyhu
+	 L5g08E7PlSDrM54pDhgvaMHfZ09mqWSNccGhPVlc9rG+G/Pzxtbn4U0v4PjUpe8Ppj
+	 gF+fG5gJ5z3rnDfLDakSHIpRa9mnNEkPEQP9c5XPXefnzdLkCzk2k+0hN5ht3Ps6ym
+	 E5Z6gu8sEAqI6Xfpe/EdrXaSR14kPDAYqZAWoFcVIhFfC25WFfRJQpfuAH5JueBd98
+	 ayRBqiZirbr4/LPy8PqGdeSdPtSxZVfcrjBNBto088z/zUVFJm5w8ANmqTbw/CyUD8
+	 lZJP6AlKfBcqA==
+Date: Tue, 25 Feb 2025 12:04:35 +0100
+From: Danilo Krummrich <dakr@kernel.org>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com,
+	ojeda@kernel.org, alex.gaynor@gmail.com, boqun.feng@gmail.com,
+	gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me,
+	tmgross@umich.edu, a.hindborg@samsung.com, aliceryhl@google.com,
+	airlied@gmail.com, fujita.tomonori@gmail.com, lina@asahilina.net,
+	pstanner@redhat.com, ajanulgu@redhat.com, lyude@redhat.com,
+	robh@kernel.org, daniel.almeida@collabora.com, saravanak@google.com,
+	dirk.behme@de.bosch.com, j@jannau.net, fabien.parent@linaro.org,
+	chrisi.schrefl@gmail.com, paulmck@kernel.org,
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: Re: [PATCH v7 07/16] rust: add `io::{Io, IoRaw}` base types
+Message-ID: <Z72jw3TYJHm7N242@pollux>
+References: <20241219170425.12036-1-dakr@kernel.org>
+ <20241219170425.12036-8-dakr@kernel.org>
+ <g63h5f3zowy375yutftautqhurflahq3o5nmujbr274c5d7u7u@j5cbqi5aba6k>
+ <CANiq72=gZhG8MOCqPi8F0yp3WR1oW77V+MXdLP=RK_R2Jzg-cw@mail.gmail.com>
+ <wnzq3vlgawjdchjck7nzwlzmm5qbmactwlhtj44ak7s7kefphd@m7emgjnmnkjn>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <wnzq3vlgawjdchjck7nzwlzmm5qbmactwlhtj44ak7s7kefphd@m7emgjnmnkjn>
 
-Switch for using of get_state_synchronize_rcu_full() and
-poll_state_synchronize_rcu_full() pair for debug a normal
-synchronize_rcu() call.
+On Tue, Feb 25, 2025 at 04:50:05PM +1100, Alistair Popple wrote:
+> Kind of, but given the current state of build_assert's and the impossiblity of
+> debugging them should we avoid adding them until they can be fixed?
 
-Just using "not" full APIs to identify if a grace period
-is passed or not might lead to a false kernel splat.
+If you build the module as built-in the linker gives you some more hints, but
+I agree it's still not great.
 
-Link: https://lore.kernel.org/lkml/Z5ikQeVmVdsWQrdD@pc636/T/
-Fixes: 988f569ae041 ("rcu: Reduce synchronize_rcu() latency")
-Reported-by: cheung wall <zzqq0103.hey@gmail.com>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- include/linux/rcupdate_wait.h | 3 +++
- kernel/rcu/tree.c             | 8 +++-----
- 2 files changed, 6 insertions(+), 5 deletions(-)
+I think build_assert() is not widely used yet and, until the situation improves,
+we could also keep a list of common pitfalls if that helps?
 
-diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-index f9bed3d3f78d..4c92d4291cce 100644
---- a/include/linux/rcupdate_wait.h
-+++ b/include/linux/rcupdate_wait.h
-@@ -16,6 +16,9 @@
- struct rcu_synchronize {
- 	struct rcu_head head;
- 	struct completion completion;
-+
-+	/* This is for debugging. */
-+	struct rcu_gp_oldstate oldstate;
- };
- void wakeme_after_rcu(struct rcu_head *head);
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8625f616c65a..48384fa2eaeb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1632,12 +1632,10 @@ static void rcu_sr_normal_complete(struct llist_node *node)
- {
- 	struct rcu_synchronize *rs = container_of(
- 		(struct rcu_head *) node, struct rcu_synchronize, head);
--	unsigned long oldstate = (unsigned long) rs->head.func;
- 
- 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
--		!poll_state_synchronize_rcu(oldstate),
--		"A full grace period is not passed yet: %lu",
--		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-+		!poll_state_synchronize_rcu_full(&rs->oldstate),
-+		"A full grace period is not passed yet!\n");
- 
- 	/* Finally. */
- 	complete(&rs->completion);
-@@ -3247,7 +3245,7 @@ static void synchronize_rcu_normal(void)
- 	 * snapshot before adding a request.
- 	 */
- 	if (IS_ENABLED(CONFIG_PROVE_RCU))
--		rs.head.func = (void *) get_state_synchronize_rcu();
-+		get_state_synchronize_rcu_full(&rs.oldstate);
- 
- 	rcu_sr_normal_add_req(&rs);
- 
--- 
-2.39.5
+> Unless the code absolutely cannot compile without them I think it would be
+> better to turn them into runtime errors that can at least hint at what might
+> have gone wrong. For example I think a run-time check would have been much more
+> appropriate and easy to debug here, rather than having to bisect my changes.
 
+No, especially for I/O the whole purpose of the non-try APIs is to ensure that
+boundary checks happen at compile time.
+
+> I was hoping I could suggest CONFIG_RUST_BUILD_ASSERT_ALLOW be made default yes,
+> but testing with that also didn't yeild great results - it creates a backtrace
+> but that doesn't seem to point anywhere terribly close to where the bad access
+> was, I'm guessing maybe due to inlining and other optimisations - or is
+> decode_stacktrace.sh not the right tool for this job?
+
+I was about to suggest CONFIG_RUST_BUILD_ASSERT_ALLOW=y to you, since this will
+make the kernel panic when hitting a build_assert().
+
+I gave this a quick try with [1] in qemu and it lead to the following hint,
+right before the oops:
+
+[    0.957932] rust_kernel: panicked at /home/danilo/projects/linux/nova/nova-next/rust/kernel/io.rs:216:9:
+
+Seeing this immediately tells me that I'm trying to do out of bound I/O accesses
+in my driver, which indeed doesn't tell me the exact line (in case things are
+inlined too much to gather it from the backtrace of the oops), but it should be
+good enough, no?
+
+[1]
+
+diff --git a/samples/rust/rust_driver_pci.rs b/samples/rust/rust_driver_pci.rs
+index 1fb6e44f3395..2ff3af11d711 100644
+--- a/samples/rust/rust_driver_pci.rs
++++ b/samples/rust/rust_driver_pci.rs
+@@ -13,7 +13,7 @@ impl Regs {
+     const OFFSET: usize = 0x4;
+     const DATA: usize = 0x8;
+     const COUNT: usize = 0xC;
+-    const END: usize = 0x10;
++    const END: usize = 0x2;
+ }
+
+ type Bar0 = pci::Bar<{ Regs::END }>;
