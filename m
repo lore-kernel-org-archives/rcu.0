@@ -1,73 +1,73 @@
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CAD82566D9;
-	Tue, 25 Feb 2025 03:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228281A2393;
+	Tue, 25 Feb 2025 03:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740455737; cv=none; b=KqfqRLbo1kyPwIVmdIytBnZgSvi3ln9A6YWCHqgTP0+Mv6c3YfAMRLo2qm+KKtZiG4YYyJq3SdislqpUfBmmjJv1NmjciI8sYg3RqruPHw1a29aK94PJryoRDQDGwe/coGNG9HvQq7QsXxFGuF8MMNUgoiHPWOczpaIiLciOnpw=
+	t=1740455738; cv=none; b=Ys5hRy86luALhxh/8/rESmXI4xezZR4kXxfrkWYIJL0+F0uyyN35piErYnvqh7m4oDq07u+UnB40iUc3D9YA2Yi115eXxsqDTlEM4/GY3V4eLsHOEGqI+ERGbnk+bx8bbufVFFvHYNeBUJBk4zzTHwKxUkcp15VWRtITWOohwrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740455737; c=relaxed/simple;
-	bh=lypcfpF4/N47ol4CwHDwwB0rg0jxZ07VELUbrb87mhE=;
+	s=arc-20240116; t=1740455738; c=relaxed/simple;
+	bh=IhkoHcLkUW1HTDPz7nFHSIO9D1UaWcIW0uk1mkBzn9E=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PrCrSvKRSCckUKNhdgsL4fd2WqelcNpZxRI3M0cWzS4i1IuYO5YST2MmBibMR8sCbwxgP4F6drTsqQxX1eSkoMMDiKm9vvlJeFmwhGzOoasdrypnTjoXgrodHWB1uxnQ86S+ZnIUO8buVgJj9MrBrBdppuWqRy6/7DhQ7aOdnsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KMHwwhFZ; arc=none smtp.client-ip=209.85.160.170
+	 MIME-Version; b=Y+Nzf2lW8a+iZqdBgOweYN4UMzWF3vzU9kFZE7sUCQtjdyX+gPAvjMqglHt4O2zGKnk5HiHhuPGoS0/695aW5ZpkTgOmE1tuVdYDJ3mExqZBJjwx+RhoKFUgZXJT6IUpjMhc+wQlqymvUHde3OhbU96VU0oHqaLszHlbc1kd338=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z/wtI3DN; arc=none smtp.client-ip=209.85.160.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KMHwwhFZ"
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-472180fec01so49122431cf.0;
-        Mon, 24 Feb 2025 19:55:33 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z/wtI3DN"
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-47210a94356so41102451cf.3;
+        Mon, 24 Feb 2025 19:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740455733; x=1741060533; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740455736; x=1741060536; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=h419Jx9H2aghJLfc8GQxEdkY5w4iKmNadb4INpgW1eA=;
-        b=KMHwwhFZ6Fx9oElOCGJpmypR0h53HRAa/leq9vXuN+yP+X9RC5jC3hcxRgovBQ2QbE
-         Qtdk57innRStYNDX8uuVpN+19RnXmJInRiEqMGM6m8WOuGlHVfvnOB+UGbFzhoaoQgfx
-         B1BmmxicgsiVTKtiDrjZ9k6pmX0F1OtQPQ7dmS5s+DISS2jUT6GkU8oHtmnaN3DKe6Ub
-         ZYWU15x+lpN+jhHyF2ZwANCF+Lf2p+fmzn0HCIFgLIcThvsod+ueCBrOeUjKj0rNDlku
-         Ob08SrwG8JZm3qYhJ/qMxfPfbfn4RAKoF+/ufGYKyR0leMrro6km/Pa/yGMj29tVgkNi
-         GHAQ==
+        bh=jXC9zawY7wJtvjckwQj8TFr/iOcB1jE0LV9gQoKP54I=;
+        b=Z/wtI3DN4HZIZekchGXDUt8SYb8oSB0KavIddHY7hZdL52WgOlDWbPZ4KJv0j35C8a
+         +g/CwJv5bWzGPNG1BCcMim0oM9c3rdnTGPpqTbLzkKNYOzLyBN/k1/ce3I+hqm0ZdfNQ
+         WYK2wEoS0kveuR0K+DsGMaPCGbn+FcYoA26N474N21w7myJiJWnJEz/NdXxWleVOwUkk
+         ZohglnebcMS42xUeRl9YwrHKoeQPH57NpyT1GxID99RyDERfhWjHa0tbn/1BYm6iyXRe
+         gu3bDhqcalccOrlZkUNb0UY0oC2w3EZQkNCzZn7bF/pqxr9ddSpcFrOjPzigy614laTY
+         oStw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740455733; x=1741060533;
+        d=1e100.net; s=20230601; t=1740455736; x=1741060536;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=h419Jx9H2aghJLfc8GQxEdkY5w4iKmNadb4INpgW1eA=;
-        b=f2Cd9nk31lp88etDV9xVd7Dmbi33TJA3sZOWWuMPsPyB6+kZ2nv3GRn1kJY0bpAFUV
-         aguY2Yw4ZZJGeGU8ckhp7AIaFYst8sVOji5TaTrW1X2uB7drNjdJdBeLe2tHGQhIIkwL
-         PGrp4l2+pT0lGFrUQf8RWDFgKEQNzTN+0mMAZK1cXFt7sYamyscP8Lg+hW/zoVYKoRpx
-         OwHd4DdGqzCjPIPMpn1pO2HMzE378fwcniOL2/FMQAI9h0xi6XAhBSaSkUTbxRyT6o2J
-         Zt6YwDzkE+FTSUAH4EfB1l8zXHRrpWUfQLSBCaEn+JznUA02JPWmxiGZaMTUIRCAKAsI
-         /8zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMwlBXPHLiKIir8O6oNfV0SVkl7IsvTAixpE1rF+fV9KEf/RPB6gytlMBb8GRv+LM/oB1Dt+4K6rNMcKJAEVwt@vger.kernel.org, AJvYcCVgAO+n1W260wE8cODvF9FDuBaGmX8OPrLBmeAnG6ct48EOGrCxVo4jY3iSRQi17XzzOuMvHG11KogiP7E=@vger.kernel.org, AJvYcCWN523XRorrGTkFMlrlC+hlEQa0FTv9aJDK6j+ILlAqFwzYktROCE42hh468h524iC5K19XqbYItn0bSlQaNp6e2x94@vger.kernel.org
-X-Gm-Message-State: AOJu0YyuExUfPoYMRiJq91vzvXS3ZHJynkLnw//y9xLOGuHosiqrcTxa
-	khSRxzVQOZBYH82GoOUXAaFdQGbw5TS+xclQfwYrX730yP59Aoqw
-X-Gm-Gg: ASbGncvNph92YUZ7OcpXb3yqONeAEfBXi5dlnvWo3yAsruqvbup6z5YMooGAuwuRX3R
-	jN1Vq6bIZUg4NJBYQLG9pUIrF2LMVR3OXo7ykF5c11Ax7c5YBqHIgNhcG5N5K504nlVFfmU2a7R
-	XLPvBtN8yFo8lP+2RDR+OyVHMhAxFvYwS72yVROul39fgCrAwlOI/RQx6+OG5t4ca+xzDGPb+DT
-	NYBLNA8K/62YgXqpfCkgVMdWt9exJOS9MJoFfwDviPYFdAaflgaLmLWuNtqar6GTjyVyQ6NY0cm
-	wX+SSxtCI3+gJccVrTaLm0bhxRASY3TPcuvItfqK2NRbBxZRF7PKl5RPQb28Tz8mip4N39xFwtt
-	CXYknTHBnnPFgF59h
-X-Google-Smtp-Source: AGHT+IF1bw2/M4rJe7oPlREsRl6H7CKb+zSI/4ZcCobx1E7yiXEWmFhjkYKWpWSFZOo7fD2ufyGkCQ==
-X-Received: by 2002:ac8:58c3:0:b0:472:744:e26d with SMTP id d75a77b69052e-47222944f84mr224990431cf.39.1740455732873;
-        Mon, 24 Feb 2025 19:55:32 -0800 (PST)
+        bh=jXC9zawY7wJtvjckwQj8TFr/iOcB1jE0LV9gQoKP54I=;
+        b=LnnGWzJAA7W764Jqq88yf71hKAhgjSmoTl//5cZsobBYtOqHufZksYiyAAzpZlrLyp
+         vHew8YLZbQT6k7apa8J0XUv1zVI0U0ckS6ncj5nVVeHjpA6ejM1iH7IzNWzVhzUbrTax
+         QhTB+ddMLFjFsXGI1dhWDkOW9YvzDtk5LVqDFOmMiAcQCuuRNLuC/n0auK46C8RjtIxN
+         b3tCcPGJceoJUzzDKDdytRHDJlu4L6slLN4sMk7SjP72AbCg5YN29RULoE1UxtKrw84z
+         or3Ova0+I50PWlSI2vGuVjjnkbwrGvYGfstknRgn7BghrbooDBW4pq3kVgeyKnQeSAm2
+         gVQw==
+X-Forwarded-Encrypted: i=1; AJvYcCURexsYCQpLZET/cu8KJgyvRwGK56SBAZqW1p21CQ+/7Bn2sIsOd/jpq9zVJBZfCeh3nOJOnUKgwW+ZJ5YN8+7F@vger.kernel.org, AJvYcCWFQ+3/d8Ah+kzYgkbLB3f3wqSF3okeWa7i8Kc2yv3EGYRo0fXVHhCMKcudad9F+rNHUYn6ffMWS4au+oA=@vger.kernel.org, AJvYcCX8de0PolR13KyrNp/He5fbGZHH/1Kh8lICZnNV3bScpjsxbXQWqHCsF6Szlr0oT1xcWKI8v5ie6CqDpBKi7N31yFtK@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKsSa/LzZtKJut24xR2WPtcEi64cSL0N4FzzlDR/mflWApwJ+B
+	kBYPHudXai3X23n41PSmBuci45d0uAyJ98YyHgT7UlGEHzVETcVw
+X-Gm-Gg: ASbGncvam9mMEH+1ThIB+Taph4rmq67kcaK7qDvO2D8lCZ+12OKBAysp1KX+F0UQa0D
+	tenMhvOT7OO8P87eL1JHEZIUyWpch1CUlz5RVFBJzgFOTX2RPLsDVQoa3Y4DLmTy+UnXHohK7ez
+	AqiTj8kbb66DwaGiVEqbsboZSq5kOALyQpDY76s9slMkKnkcmhDfTTErwGJQPYFLsWK1mjc9zyG
+	nBa7zWpB2jBUXJLHb1KYwsZAKjFwNXaiGZgk01o192Fj0xX6B9iRumSU1DWIT09YgaJg7Tpf56Q
+	3gSkGX062GJTFZcMjgho04e2rIRYbkMxrC5bOL8h+sRDutYWUk8/XrBttMNreI9bfE4ws+jQXrE
+	f3CPmx1STilPJys/+
+X-Google-Smtp-Source: AGHT+IF0ja1Sg/mWiJyMe7MASVqniJnXWzUOGt9oWixkxEnaidRrfPol1LofMc9zJH82mMa3+AMz3w==
+X-Received: by 2002:ac8:604d:0:b0:472:dff:37fa with SMTP id d75a77b69052e-473772707c8mr22740771cf.47.1740455736147;
+        Mon, 24 Feb 2025 19:55:36 -0800 (PST)
 Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47377e24400sm5295041cf.41.2025.02.24.19.55.31
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47377e24caasm5271531cf.47.2025.02.24.19.55.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 19:55:32 -0800 (PST)
-Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
-	by mailfauth.phl.internal (Postfix) with ESMTP id C8CDF1200043;
-	Mon, 24 Feb 2025 22:55:31 -0500 (EST)
+        Mon, 24 Feb 2025 19:55:35 -0800 (PST)
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfauth.phl.internal (Postfix) with ESMTP id D024D1200043;
+	Mon, 24 Feb 2025 22:55:34 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-09.internal (MEProxy); Mon, 24 Feb 2025 22:55:31 -0500
-X-ME-Sender: <xms:Mz-9Z7qu2smBu6OdQDdawB0_S1PDO3OL9dymZqGTa6jV6Bi6AdHMDA>
-    <xme:Mz-9Z1qdhRJSwTxgURHKtLy8viiMNEQ-FEmQDeqHeCElPNaDKLJw1d-wlJDku7lwH
-    5WmcZDsKzaEEeAkDQ>
-X-ME-Received: <xmr:Mz-9Z4MzmwA6BaS6Mjd0TMipaPrtK6DBgfQwQ6ZQRsQq6X7Bwom1nRmZYg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdektdeiiecutefuodetggdotefrod
+  by phl-compute-02.internal (MEProxy); Mon, 24 Feb 2025 22:55:34 -0500
+X-ME-Sender: <xms:Nj-9Z5gpLwUEVmEiMNzFLH1TF2z5MRVJFbw84AITSFs1uSrhx-I-Nw>
+    <xme:Nj-9Z-BhiQSNC-4vtgfgAIXzYXgWw6_dd6gl4jOMDhQf-wgyU9R1KVz7SvVFHekTo
+    hq5f026-3_dLQCTJQ>
+X-ME-Received: <xmr:Nj-9Z5FETs7guUaqS1loXBmXD7loiYDHLxKMpkZ5e4abDEd-xJ9CJG_bNw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdektdeihecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddt
@@ -85,14 +85,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdektdeiiecutefuodetgg
     hlvghtthdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
     mhdprhgtphhtthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehroh
     hsthgvughtsehgohhoughmihhsrdhorhhg
-X-ME-Proxy: <xmx:Mz-9Z-4MBA6GNmmvuQJGHF8MKTEpQnG10BEof-BI9CqvcI1AnGpKtQ>
-    <xmx:Mz-9Z64ZAyelYGL_5E5hl-rhzMLbQfC0-P4EiJFnVB2GxxUFNPgSVA>
-    <xmx:Mz-9Z2jfsnZw34aKX-TakcG6fBXwxHkbXtKGOQ3-k5xzxjZYZ8cySg>
-    <xmx:Mz-9Z84gXtXIC_NZlZLBuOipl7C6YI6Q84oj3mSHOWMiyOCP-Sn72w>
-    <xmx:Mz-9Z5LYJVWtxCdE438UgxRcxHeP8cwHdH8qHSKrj2w9eByDD86uNv2z>
+X-ME-Proxy: <xmx:Nj-9Z-TjfGGwG10TA8JgEywmtax-TZNqQLlnkgJlKHEHnl7eYNvYfg>
+    <xmx:Nj-9Z2ykX8GDx5Etcy0_Er8EUFWdA8dfk_oxdsw2VXNRAsXOnXbNCQ>
+    <xmx:Nj-9Z06m6P8cm-giL490TcnWc0Q2QqNwZAMePKm95Iz6OzaidRw6eg>
+    <xmx:Nj-9Z7x0_mEDYstQH0MkTBKVtxcVRD3A314djWeI1WFVcg1AT9twww>
+    <xmx:Nj-9Z-hoOQSinSK3_JVRLGXLNRoCgXlJowZ40jnJXrsIa33TqSrYiZKb>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 24 Feb 2025 22:55:31 -0500 (EST)
+ 24 Feb 2025 22:55:34 -0500 (EST)
 From: Boqun Feng <boqun.feng@gmail.com>
 To: rcu@vger.kernel.org
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
@@ -116,9 +116,9 @@ Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Clark Williams <clrkwllms@kernel.org>,	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,	linux-kselftest@vger.kernel.org,
 	linux-rt-devel@lists.linux.dev,	Ankur Arora <ankur.a.arora@oracle.com>
-Subject: [PATCH rcu 08/11] rcutorture: Update ->extendables check for lazy preemption
-Date: Mon, 24 Feb 2025 19:55:13 -0800
-Message-Id: <20250225035516.26443-9-boqun.feng@gmail.com>
+Subject: [PATCH rcu 10/11] rcutorture: Make scenario TREE10 build CONFIG_PREEMPT_LAZY=y
+Date: Mon, 24 Feb 2025 19:55:15 -0800
+Message-Id: <20250225035516.26443-11-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20250225035516.26443-1-boqun.feng@gmail.com>
 References: <20250225035516.26443-1-boqun.feng@gmail.com>
@@ -130,47 +130,30 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The rcutorture_one_extend_check() function's second last check assumes
-that "preempt_count() & PREEMPT_MASK" is non-zero only if
-RCUTORTURE_RDR_PREEMPT or RCUTORTURE_RDR_SCHED bit is set.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This works for preemptible RCU and for non-preemptible RCU running in
-a non-preemptible kernel.  But it fails for non-preemptible RCU running
-in a preemptible kernel because then rcu_read_lock() is just
-preempt_disable(), which increases preempt count.
+This commit tests lazy preemption by causing the TREE10 rcutorture
+scenario to build its kernel with CONFIG_PREEMPT_LAZY=y.
 
-This commit therefore adjusts this check to take into account the case
-fo non-preemptible RCU running in a preemptible kernel.
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/rcu/rcutorture.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/configs/rcu/TREE10 | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 280bff706017..4cae119dece8 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1901,8 +1901,16 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
- 	WARN_ONCE(cur_ops->extendables &&
- 		  !(curstate & (RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH)) &&
- 		  (preempt_count() & SOFTIRQ_MASK), ROEC_ARGS);
--	WARN_ONCE(cur_ops->extendables &&
--		  !(curstate & (RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED)) &&
-+
-+	/*
-+	 * non-preemptible RCU in a preemptible kernel uses preempt_disable()
-+	 * as rcu_read_lock().
-+	 */
-+	mask = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
-+		mask |= RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2;
-+
-+	WARN_ONCE(cur_ops->extendables && !(curstate & mask) &&
- 		  (preempt_count() & PREEMPT_MASK), ROEC_ARGS);
- 
- 	/*
+diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE10 b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
+index 759ee51d3ddc..420632b030dc 100644
+--- a/tools/testing/selftests/rcutorture/configs/rcu/TREE10
++++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE10
+@@ -1,6 +1,7 @@
+ CONFIG_SMP=y
+ CONFIG_NR_CPUS=74
+-CONFIG_PREEMPT_NONE=y
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_LAZY=y
+ CONFIG_PREEMPT_VOLUNTARY=n
+ CONFIG_PREEMPT=n
+ CONFIG_PREEMPT_DYNAMIC=n
 -- 
 2.39.5 (Apple Git-154)
 
