@@ -1,62 +1,62 @@
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2AC267F4D;
-	Tue, 25 Feb 2025 11:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34A4267F62;
+	Tue, 25 Feb 2025 11:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740481227; cv=none; b=hj58KgwCFkyq0GjSaZt4wNqWvn/tAX/9Fd+OXkPJy0QXyFnpYUtNiqAC/EonUxDIOrLX24neO+DrUL/+33PD39jpP+6zOnGyHZMb9We3Iyf3dqRJlhi+uJsY3to4VmI9jDxUGDkb4ItvbWmRn/M07scC56fK+zazUi3E7SCgOTA=
+	t=1740481228; cv=none; b=pFaUCS4Q22DZGlLSsWR1DHsf86wR/PehjNJc4BZC6NpJbTQb470Y3udpQ/53dwfWKcESZsuhqOy6GGtnbyEhjRTAa4NN8qml+ADt3ltEzh7K5ms7kexkFXQpYe+Kt9WmGXt4WUy3JOljy4WzSGsOgDCPBQNueYYVHWMdMqyw7AU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740481227; c=relaxed/simple;
-	bh=sCuflgFUh/45tShowZi3ebLKyBuj3+UPfLcwZ/CRsbA=;
+	s=arc-20240116; t=1740481228; c=relaxed/simple;
+	bh=4LvdbPCYHfIEA9VMVlfoNGibN70QZsOBdBupKny+JlM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cLza+1tTOiYhpChYNx7P7jTc31Tre65Uw3yZMWszrPQJSob0hJLNIvbxoOzRYOQDMlepiLLyL4NVLlqtaECu/XNqmmZkosPqWBcuhbrEMhPlmwXAuV+tj0CBSvi8ITFdkswjMteme5W5yBKPfchpt9dg9MrkvtAk9CG8ii982dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dbj0C96D; arc=none smtp.client-ip=209.85.167.45
+	 MIME-Version; b=P+eKNufaVAlNDdTgYwH/E9phkbmaA9ccCk59gnfSNsw9G0P/Sfw+pLE+Sa/Qtm/4bXj8NTf10Tk8XOuQu9JGjfgQ37AZ4gElpDxDQ8Szhm1xP2+KaU3nfLi6uVhnfiTUOaqkMYA2BrnENduE/Y8ktuviJI4S9W+XB4HmKXoNhRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m4wBJ6Kp; arc=none smtp.client-ip=209.85.167.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dbj0C96D"
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5461dab4bfdso6525263e87.3;
-        Tue, 25 Feb 2025 03:00:25 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4wBJ6Kp"
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-546210287c1so5581725e87.2;
+        Tue, 25 Feb 2025 03:00:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740481223; x=1741086023; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740481225; x=1741086025; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c8AAp3JK/Rr4QIILXNDXheLWWABxs1/zeQyrDjipUFA=;
-        b=Dbj0C96Dhw2tHrfYDpY1HGtY7aCDtprZTI1XdNJJexbBUPBrem1Y+5kJ1QMdwOwjrL
-         7cLxAVE/OavYW5qZHbjHPnIuz72XGzQgIwJoDNryISGbctiUe8mzG9mt7WT7K54HZBAe
-         3fVPLvA6ZG5Fx7tgocp2b7Q/zefzDExL3UMcP02bC8cJ+fQagWzVMR/nRomI/0GforrG
-         3rRHiz0Q3PGjguOYghFMGVDPFPN/1zg/B97l9nRztwtIlYKNx0xxvmtxfsxT61SxDRcW
-         oVgkQHCudFv8sXaEHXmzUBLjKTkZru7nwNcAo2v1aukTSsRGRAL8SYxT9pSB7hwhaRc3
-         ZZ9Q==
+        bh=rniMvaYIi26adKpEqcx0hyA8jOwUTjRcY3RJP/H9jWw=;
+        b=m4wBJ6KpddcjyHTF1/czgbvXQ8ipvZdPtVh9OLxqWCrFIHArHNzeexEvdnhc9qOAH8
+         eVKAY6ZB+bx7ssg53Tea3/oAPckfHTQBXSzolb0lA9lGhFsDlr8IRESeg3jJ05ggZ40+
+         avmYsXFRGmZV4A3I2wuoFd4R6iJRsqPLk+jf8g20rYX4l/RpZqsP3db00fUnBt0w7JAo
+         Dof0YZQ28eT2wXRj+XdL1jX/L9COeYg96U4tRwVDSGbB0KmD9KblxqSwwf3k7F2VB2j8
+         TZmc6mXwA+IPv0GPiFYeox4kmzlwt5YHUxnMoLzjuASy0jty93kc+Wpts26hzLH15tHr
+         Kx1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740481223; x=1741086023;
+        d=1e100.net; s=20230601; t=1740481225; x=1741086025;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c8AAp3JK/Rr4QIILXNDXheLWWABxs1/zeQyrDjipUFA=;
-        b=N1IRdLvqKoJx5b3HbFqb0FqJarddMC6oOn0AnLbASuUFbpGYZ7xQIY2yk4OW9Lo0fM
-         nKmcr1cfWUOEwlzPA9GPBbtDMavtVgF6sTAarHk7CXPkVZ6D+o5TPjXn06HaSglj41xA
-         EKjkWWIiGCAq90NbAK5R2C+fFw4Mj/Hgj6rPXznc8a4JyruD4pL2MOY9Ew+xiQqlBuoh
-         Dv/RrWWmhWCoqGmycjUExhm+GXKGScebM0Vm/xavL1Kg1ve9r1d8qoywhcAcHJJE9p2D
-         c8o12DYBZ8tAryRr5Wnd+McblXQbg647fUFmZt0e7DhD/22gUimMxkcnhVaqSNEMHVoM
-         dKww==
-X-Forwarded-Encrypted: i=1; AJvYcCXQswzNROtGuGkVd7nJDujr+NE9GG0Zyjt0NgW16NJteiJ8Zui7OzQoms9ttxTma4+TY4XG+1R/RwzYvT4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYC6pOYTC7yKR68FnNiAlL/qP3VgfV0AG9miS2HfI4xrjMgVLj
-	jCsK1B3eLI9LWZrT612DfcoR5Ks9EDCuOLiYZYOk3r0daBsEQtxB
-X-Gm-Gg: ASbGncslyT0FqOhSFG0WkY3lSTkKox6ZjIfMwqKDcCA0qbiG0rspxnhpMb/St053N8K
-	c5v1wlqybJHgo+EC0s4NjNAUgACDpWPFeRPQqrlqZ8L3EJHZ4JTk8FCeVrmLDCK3fOedidfMTxZ
-	dbck8w81jx/68FPzq6aus3pWYiTRDVLyIUTN/L8q44tU/yt85Ad/mqwyMu7DESXvFsZjToPHE9f
-	Wu/rRPmcv7wlklmpJTGXMc5ntOBqLKa0PeWNDvqfmTHNZQAY7ZS3ODSN/IGQzzFsuQsP+kqFpjc
-	A/LZc7Lf5vfRjZlD2sTsrA==
-X-Google-Smtp-Source: AGHT+IG45xtz1HHVnO5crMZXIQ+BrSf+jRQ/5TkER2bq6dQc/Ri7XOY6S0Xc752+lL68GgNCOEr1JA==
-X-Received: by 2002:a19:3806:0:b0:545:296e:ac1d with SMTP id 2adb3069b0e04-54838f5b8aamr5129849e87.51.1740481223339;
-        Tue, 25 Feb 2025 03:00:23 -0800 (PST)
+        bh=rniMvaYIi26adKpEqcx0hyA8jOwUTjRcY3RJP/H9jWw=;
+        b=QI7daNxEl3NjMM22yaFCxLkJXVtVQ9DbEn5XKIRAtNrVDsrLH6VgGFaepf/METzkR4
+         io1Jouln+D8A4d0slgWCfRrYm9qM4vU3rUOcEhG34bR/XN2p4Ri1AlID0dts1mUrNbzk
+         KYy/TWA8vi0qORbH/LF83FGbDBYgjFi8vM9QVgzFdkdgVTU/GCTTG1y/SP+yYfBwdTyl
+         6pzcuDu5yoVn3uBXF0qwZ3+WqBCSs09ncDjC9fjdJDACCRyyPG3TMWQRP5fU/tz2vAxW
+         k8xEFyI9zSFiM5FyHU7TP29tDQT47a3EM4gk+9lHqmWilj8LzfH4fJcHXxzJSLmLHxmC
+         jPuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVEVVk6eXHYq/S0Ulg7hzFXN74Z8pb0IfVnU8cUIy8ZeC2dGnNzdy2xP1AWQQvk1QfUegR/vlYcbW4CdVw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLC/O/hHlCZ+V3hh/LZX9UVn+/l3A0rXjJ043SCbDqF8fOMPTX
+	+Uj2DcElh06d3vhJmOVq0Wg2/Bt/KrEuXxUdgkjjiqUssX1L7ZP+
+X-Gm-Gg: ASbGncss0RefhknDxo3bn9VzbFbCDUSX9O6LeQKtDclIIXOWsf7mihwFeDEHG+bM4MB
+	9iXbPPYzxg4zElXMz5Hdc+2bH0NA3YgF/t80RtCGBtCQR7s3dNtQqiMVGmFWCyAqtNsUPf8b7MD
+	vADp6EytliyxvPr9EUaRzNIszj/sa60qKkoNGaezWzvRmp8trvTnYtatBWT4XKOj97C8Jdr79Ty
+	qrfkKEP5fPty+hgXC4qjnTjdAzRUQOajn7IC43TW15GxP0NgiJMYm5J3XT8Rfpal7VXr8+ZkVBu
+	I/Vbb44EZLemMVlZmw+8sQ==
+X-Google-Smtp-Source: AGHT+IFsvQXrb22vLgRYUoiA2ph8/sr59XjDMExdY1gmmRC6ZweDxkH7vhPkJt6W41kay8eJlK//cA==
+X-Received: by 2002:a05:6512:3a89:b0:545:2a96:34fc with SMTP id 2adb3069b0e04-5483914820dmr7023064e87.31.1740481224332;
+        Tue, 25 Feb 2025 03:00:24 -0800 (PST)
 Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-548514b9886sm143850e87.71.2025.02.25.03.00.22
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-548514b9886sm143850e87.71.2025.02.25.03.00.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2025 03:00:22 -0800 (PST)
+        Tue, 25 Feb 2025 03:00:23 -0800 (PST)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To: "Paul E . McKenney" <paulmck@kernel.org>,
 	Boqun Feng <boqun.feng@gmail.com>
@@ -68,9 +68,9 @@ Cc: RCU <rcu@vger.kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v3 2/3] rcu: Update TREE05.boot to test normal synchronize_rcu()
-Date: Tue, 25 Feb 2025 12:00:19 +0100
-Message-Id: <20250225110020.59221-2-urezki@gmail.com>
+Subject: [PATCH v3 3/3] rcu: Use _full() API to debug synchronize_rcu()
+Date: Tue, 25 Feb 2025 12:00:20 +0100
+Message-Id: <20250225110020.59221-3-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250225110020.59221-1-urezki@gmail.com>
 References: <20250225110020.59221-1-urezki@gmail.com>
@@ -82,36 +82,64 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add extra parameters for rcutorture module. One is the "nfakewriters"
-which is set -1. There will be created number of test-kthreads which
-correspond to number of CPUs in a test system. Those threads randomly
-invoke synchronize_rcu() call.
+Switch for using of get_state_synchronize_rcu_full() and
+poll_state_synchronize_rcu_full() pair for debug a normal
+synchronize_rcu() call.
 
-Apart of that "rcu_normal" is set to 1, because it is specifically for
-a normal synchronize_rcu() testing, also a newly added parameter which
-is "rcu_normal_wake_from_gp" is set to 1 also. That prevents interaction
-with other callbacks in a system.
+Just using "not" full APIs to identify if a grace period
+is passed or not might lead to a false kernel splat.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Link: https://lore.kernel.org/lkml/Z5ikQeVmVdsWQrdD@pc636/T/
+Fixes: 988f569ae041 ("rcu: Reduce synchronize_rcu() latency")
+Reported-by: cheung wall <zzqq0103.hey@gmail.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/linux/rcupdate_wait.h | 3 +++
+ kernel/rcu/tree.c             | 8 +++-----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
-index c419cac233ee..54f5c9053474 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE05.boot
-@@ -2,3 +2,9 @@ rcutree.gp_preinit_delay=3
- rcutree.gp_init_delay=3
- rcutree.gp_cleanup_delay=3
- rcupdate.rcu_self_test=1
+diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
+index f9bed3d3f78d..4c92d4291cce 100644
+--- a/include/linux/rcupdate_wait.h
++++ b/include/linux/rcupdate_wait.h
+@@ -16,6 +16,9 @@
+ struct rcu_synchronize {
+ 	struct rcu_head head;
+ 	struct completion completion;
 +
-+# This part is for synchronize_rcu() testing
-+rcutorture.nfakewriters=-1
-+rcutorture.gp_sync=1
-+rcupdate.rcu_normal=1
-+rcutree.rcu_normal_wake_from_gp=1
++	/* This is for debugging. */
++	struct rcu_gp_oldstate oldstate;
+ };
+ void wakeme_after_rcu(struct rcu_head *head);
+ 
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8625f616c65a..48384fa2eaeb 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1632,12 +1632,10 @@ static void rcu_sr_normal_complete(struct llist_node *node)
+ {
+ 	struct rcu_synchronize *rs = container_of(
+ 		(struct rcu_head *) node, struct rcu_synchronize, head);
+-	unsigned long oldstate = (unsigned long) rs->head.func;
+ 
+ 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+-		!poll_state_synchronize_rcu(oldstate),
+-		"A full grace period is not passed yet: %lu",
+-		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
++		!poll_state_synchronize_rcu_full(&rs->oldstate),
++		"A full grace period is not passed yet!\n");
+ 
+ 	/* Finally. */
+ 	complete(&rs->completion);
+@@ -3247,7 +3245,7 @@ static void synchronize_rcu_normal(void)
+ 	 * snapshot before adding a request.
+ 	 */
+ 	if (IS_ENABLED(CONFIG_PROVE_RCU))
+-		rs.head.func = (void *) get_state_synchronize_rcu();
++		get_state_synchronize_rcu_full(&rs.oldstate);
+ 
+ 	rcu_sr_normal_add_req(&rs);
+ 
 -- 
 2.39.5
 
