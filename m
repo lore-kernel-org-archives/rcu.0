@@ -1,70 +1,70 @@
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B783927701;
-	Tue, 25 Feb 2025 08:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6DE51A5BA1;
+	Tue, 25 Feb 2025 08:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740470494; cv=fail; b=Pj8P3iC6yKne3ajch/OOMNMwVC2Vpc9AKI46PpDeSEPo2Y3HaL7p8GXjwk9jZsn4F0Ps27dFbJxRqNHO9pI5yEGzN16BD1yogQ0NtC0ZwYnuijkkqXC0Q/LQSfvLEEc9q4W/w9r2vy16NCiEEBA+43GsQE+wGTP/Ha1OX5Htrs4=
+	t=1740473705; cv=fail; b=fcnei1u6nvTbAGkncmcTMX6wccdOLsFXtjbOcFoUBXCESm08vOj6WMnxPE5pN/KQBx/SPlyjxMB2hWZMd9G+gIsCF3D8VTAh/tiNOfe062mgfz6+WhWxs5fenyAhBsD6iSKZ7htx+UPubs3V8xtiHt16JF8W4u+IWM7DfW0Yll8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740470494; c=relaxed/simple;
-	bh=DD3AjaTCUFTaccVDlilOIWCH0a8M69AtI+wXSwGs0zw=;
+	s=arc-20240116; t=1740473705; c=relaxed/simple;
+	bh=Ca2lZPuAHG4MpPuPun79C5Wm2p4s6cE6NqQw49toIaY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=mnIajhpES4tSxqVlnNa8C4pKHkQc6lVU3KvvVLVlcNt0xo0ReanA5ek3LCo8ywJj65ai3Kv/1rkpxj9ea4G1EJu5rqsbyZqK7hbRMVN15BfFdNb+O6zPWqG/ZXnBHufuGo9HMdqhcz8NYyi1MnthcmZK7XXk0empUEs7ZqebQzU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MvZnXbpH; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=g4o/Aczu; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Disposition:In-Reply-To:MIME-Version; b=nDqFGANtUJOXGF34aw9zH9rHNKfFIUY7lxh+3P/7NU7jyrTnG4e3/9Ylu9n67Gjf/W0h8mZaiKSAKyVGbQhhfwdTphA0E3hMCnLnv8+767IpITR3TFUDQ2XtpbNftKX5gy3habko43ViOnEwsmaQyblqiVww75P1rFMZeXjcJqw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Ae4qa0CC; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ZyfgDpue; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MvZnXbpH";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="g4o/Aczu"
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51P1BkPi011148;
-	Tue, 25 Feb 2025 08:01:12 GMT
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Ae4qa0CC";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ZyfgDpue"
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51P1BwS2001784;
+	Tue, 25 Feb 2025 08:54:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2023-11-20; bh=9fGu/ivjfcFP9Ezgex
-	dI5QNoQ2iNm3pMWvKHU6M2a2A=; b=MvZnXbpHaGGd8zDs9BFYKxIZH51LcQvuAW
-	+HXyBtfak892CT/f7+xBBXZPgNJgh0jAhsXuBvaicrjAdWtv6In78f8V8rS55Z3q
-	kvnjuy+i9e3ceR0MMyZWvnj/wm3RTKnIl/1HX6x1nmGD7VqPGVieeM36l2lpDC5t
-	2Eh+6JqGFi6U2n9AMpAd9/lI2hWpfNEIBMdltL9v9ep860aslURDFWaaLMez0Pn8
-	6Xo30vUI2SVBPSOejJWNj368Jna8KLckCDL75YOVQIIkE4p7+Gfbw5x38VlSpYGs
-	iALD8qi5BZvofhDDsbDyc+peyUZNdxx1SgiqugFC0b+FkQXisgkQ==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44y5gamf0g-1
+	:references:subject:to; s=corp-2023-11-20; bh=D5ei5biUG7KPPOdwMQ
+	imc7rlbdG7qEVKwKcR351eWKg=; b=Ae4qa0CCkUaAgMzxUQuclkp+H4IXJlf6lD
+	Z8D1+j3zQYybh+PGPY5pCNWVRkSz0/fItttR4RDPBS7GCWvmZLitDP3TOUZ5XpTJ
+	DVE4EFN+sov22a9XJI60wUnspPumjoJeN72kzMp95+Kw2CtQyaQK9OVmpeWObOGO
+	s3z84BAhyGUfGkPskBUfBFncYpCNfdPOCxE1a8Mp65HZ5JrSuRpkSJjV5oVpvQdk
+	ARZL9vEGWE32fBoF4u1oQpwva0Nu4osIlApPD1+Ct+yN+QQY2m54M6frhbR9nlOM
+	557oAn6xgMBEKzSFmdDLEhjLELRTMMGYIr7gm8H3dwYcswpEZeQw==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 44y5604hw8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 25 Feb 2025 08:01:12 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 51P60RRT025484;
-	Tue, 25 Feb 2025 08:01:10 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 44y51fbgr0-1
+	Tue, 25 Feb 2025 08:54:40 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 51P8QDiW002704;
+	Tue, 25 Feb 2025 08:54:38 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 44y5193qc4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 25 Feb 2025 08:01:10 +0000
+	Tue, 25 Feb 2025 08:54:38 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=PlJbk21UGeZFyEu7LqdKgaWOleksKYZg/FNvbxCUhcD9BkIAssgpXf129A5aPaVULW8tUYT44MfV7KpYA+CtOf3mqWCP2SwAIeIN9JtIOEgG6U6eXAoC6zZmQo2/NBCaoE2GLZCbAmoVyaj3GwBD+WGDIlDH6t0cUTcehumfZtB1XiBLDcaPzvwJSmn8f2L61zsB/X2SaW4Aye+ZDD3p4izsNsd88Yv7N+LZ2WW8iJVdwd651psWSxm0NE9gVRxFBs8nXSgZLKB7TbLmQccp9TndUxkuSa9pU/jUdOvA1p6+T2m8iVfLnV/gj2TNBke9s4ovfYcf+516vmrYCb55qw==
+ b=GT0g19Lb1HuI7gV86PYgCnDgAv6woNCLXga0DOVPRh9yJK9TA9xkdsDnukkci5TDIaJng/OdoAZS2cjl53qG66geA3Rwk9b0AcioeMD+UP9yoljdp3gTFTNgrimaM8RkKBFf2nyKEFTWPqO0E40SBdqJJPqgB5l+aXpf9A6zWQeT3eNqAOyTmjcq65PNK91uGgu/R9muLCZwopqyILlKuyWcL2jFbKYH83rsY/I8nL3Zh78thGSmw88sZ41PDniNq3DUW6D4G7SbYarwjJS4oUUzCXbUSIkklgJ4TXNXUEGcRUX4P9w8hYR1qMiADuU47/Tn/FQ6Cc80PKjKXVSZWg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9fGu/ivjfcFP9EzgexdI5QNoQ2iNm3pMWvKHU6M2a2A=;
- b=J7HT+bjLinGxkmgjxICHAlSfb+F7XRNYu2ManBNhP6ryDUdhxZ/HCyrL5MtQkWN1Qcl1uqsunCa95RrpeKs5cAZmKpDOOJTBwd4CkEPQ9YFLa5zWcI93mYOGIvcMjcjqOdsmRsCrdv5u+3MBja9kmN3vJnN5sKQtxu7aRQfQZcd0fZMqCiYnYKyzq5gb2uoFbDHFKmBZVHVCe6lV74dFaViSnI8+Bhr1JXqUOJ52wWjgdG2EUSHhekSQofi7Fd5Rq97uFQSp75v84dRJVVgROHCBDDvKCxMM6fKC5tPcFq79ATAG4uyGNprqSRGlgvTamYXx91bW3/OXjnkkXMVALw==
+ bh=D5ei5biUG7KPPOdwMQimc7rlbdG7qEVKwKcR351eWKg=;
+ b=ArikhkUQq7qwdwD3nkHz/DYEnJDiW9JNvOgg8rWIAUVUyqdQASpBQOUcFAA8Q6bqWZO7FxPdxre13X/653Gq648NqOLxwC0cm6afhOXk60T0ilP65l26ao6T6Kz0EAImGBVNAOiYEiyVPL9Rl838qFi6gSc42GNZUqV9sl46O8E5OrgBH+lXmJQPnKdeuuX+W9e4n9KjchT/ilfbP+Df4ckERF45EG2ShY2NeZUrPex8nxUcFkMrvLD+kHUCkAF7Zlr2N24UUgss/JlufvqdnO8e5A3CYdtthAEsbpCIWl77MzlKS5SchLg/ddjxAILDzm5GT5WWIA8AF05bU7OfKg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9fGu/ivjfcFP9EzgexdI5QNoQ2iNm3pMWvKHU6M2a2A=;
- b=g4o/AczuwA0JYV4NH1SIlKZocJXxEr86h87dkqmnSka/d8gg9MqTc6fB4KL0/xthu/Jc4deE2n9tAXiuBCUFUNUbd4jH6OB5CvzT/7JYIC6hinWxvMLBafQ7B55ktn0N5EggjpPsdtIg8Qzgstqp0ATuzhkeNYCDpv2cAzhzU8Y=
+ bh=D5ei5biUG7KPPOdwMQimc7rlbdG7qEVKwKcR351eWKg=;
+ b=ZyfgDpuedNTCxZvFNukdo96k7XNeYqfRmqosXdgF8h4kL2n2NA93sG4w1oGCHUga3UQ0K6JNmil50lB8PenoI+Pu0LAGGg/0puuS7bVpGJ+UuntYesch34t2zuxjEnXujCAt8rD5R+bL5JVdLTXwsSTpWfRRmxGKxS+qrwO9lug=
 Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by IA0PR10MB7181.namprd10.prod.outlook.com (2603:10b6:208:400::18) with
+ by CH2PR10MB4184.namprd10.prod.outlook.com (2603:10b6:610:7f::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.19; Tue, 25 Feb
- 2025 08:01:08 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.18; Tue, 25 Feb
+ 2025 08:54:36 +0000
 Received: from CH3PR10MB7329.namprd10.prod.outlook.com
  ([fe80::f238:6143:104c:da23]) by CH3PR10MB7329.namprd10.prod.outlook.com
  ([fe80::f238:6143:104c:da23%6]) with mapi id 15.20.8466.016; Tue, 25 Feb 2025
- 08:01:08 +0000
-Date: Tue, 25 Feb 2025 17:00:56 +0900
+ 08:54:36 +0000
+Date: Tue, 25 Feb 2025 17:54:22 +0900
 From: Harry Yoo <harry.yoo@oracle.com>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: Suren Baghdasaryan <surenb@google.com>,
@@ -75,16 +75,16 @@ Cc: Suren Baghdasaryan <surenb@google.com>,
         Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         maple-tree@lists.infradead.org
-Subject: Re: [PATCH RFC v2 06/10] slab: sheaf prefilling for guaranteed
- allocations
-Message-ID: <Z714uDm4VcusQ7-Z@harry>
+Subject: Re: [PATCH RFC v2 07/10] slab: determine barn status racily outside
+ of lock
+Message-ID: <Z72FPj_FzhCZpRsk@harry>
 References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz>
- <20250214-slub-percpu-caches-v2-6-88592ee0966a@suse.cz>
+ <20250214-slub-percpu-caches-v2-7-88592ee0966a@suse.cz>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250214-slub-percpu-caches-v2-6-88592ee0966a@suse.cz>
-X-ClientProxiedBy: SL2PR01CA0008.apcprd01.prod.exchangelabs.com
- (2603:1096:100:41::20) To CH3PR10MB7329.namprd10.prod.outlook.com
+In-Reply-To: <20250214-slub-percpu-caches-v2-7-88592ee0966a@suse.cz>
+X-ClientProxiedBy: SL2P216CA0190.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:1a::16) To CH3PR10MB7329.namprd10.prod.outlook.com
  (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -93,258 +93,255 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|IA0PR10MB7181:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d41fca6-0eb4-4933-13f2-08dd55728fd2
+X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|CH2PR10MB4184:EE_
+X-MS-Office365-Filtering-Correlation-Id: 78cc9444-8f7a-46b0-a6fb-08dd557a07b5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|1800799024|376014|366016|7053199007;
+	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?CXILjiCx/W+LyNIKERwf2qzWw8PeWdIhPLkaLuuwDC6FI/zvABoyJa+GYYFb?=
- =?us-ascii?Q?fWMEU7yNSqr2RbusD7USPBxlHLPGmPhn+uMIpc1Jys/WU56UELBYcmCEmDhj?=
- =?us-ascii?Q?MUIAPUfrid7nezaH/lBhXoMlC/FDw0lgYmEIITu4CO+LvzWzU+LRK8btsxeW?=
- =?us-ascii?Q?bi68UzjBkhSBJwmPSaZ+jPnWmNFT81oziUWOa2dT9lbtOKoBPfP3B5HKX8UB?=
- =?us-ascii?Q?zIbf5sUVQY2/oAIpgq1a1sntSj74MYxGtqAm012Ffpdi+QSZFPX/B7oYm1jl?=
- =?us-ascii?Q?t8rgntXfAeLqzeHhYOXBy3axR31OoVnOE7VyP5mcbu1Vf/cfem+k4fADG6XW?=
- =?us-ascii?Q?OQM7zIWZdv7KyQ8t1c1YdVlsNJvWrX22UeH8DmqkBUew/J09I/odJqRlomjB?=
- =?us-ascii?Q?nQmxiHH9Zj4JOmVe6tNqrMbnQkImoK2EoSAEOoBNFPaY8nxo0L7hRS5NTBL6?=
- =?us-ascii?Q?x0lIqNuVDWAufsZ72XzoO97Pzqtkpc0ZQfteudmJ7jnwsXjvtY0jYrYWdzZv?=
- =?us-ascii?Q?ocWEObriCL/LynGBfnMt+zJxEROsnXVM+je6Hb0++bzQQBH8FE7V4OQtp2El?=
- =?us-ascii?Q?K52eFsUb6SXHEY+eyhOKnRA7eB4aa71WHZWaRvoQYKJ4Oj/FADiYx5HV0sZf?=
- =?us-ascii?Q?3dxEZZOFUT/NJRcFNCK/r7SOExXkj3mv12qwP+ZSZWJd2Puw+dkVyWVeEDbM?=
- =?us-ascii?Q?QPG4HUmzlLAIGaENmESJ7jly0g5Kvku+G44PR5s3XQc9HCIN+c/3lmfLEUF5?=
- =?us-ascii?Q?gJ+sGNqtpo0L6r9sPDWfypb0TMfDYv3sNjJfwlDQQH9wquoYULlHfpzjqdHN?=
- =?us-ascii?Q?C9VzRtEJlq8ZO/ufWs8C8EMqO8fj4HH2/2QvR3ktvxZKyDQ5zbONNIY9cyvh?=
- =?us-ascii?Q?gONgLXDCgf0H66v0ikWoD6ALM7AQm+S46fzjdQvesMmMS7tBiLoIkknQVPt3?=
- =?us-ascii?Q?cwukt3PIjhgo9kSYiK8OmvQ0rVqIaUWCHDt9y2eL1apGRXlXk02eQAAh1Juv?=
- =?us-ascii?Q?3kFygvR1YVAagWMgJJMDOwOCiGsYLtH2Cwlv/Pd7kvVMhcuMm2Pv4sZkkptQ?=
- =?us-ascii?Q?2FIIj2E+fr11pXQoktRvNYzN2Iw/p1K5wFO9FszHw9YGrdX0akkvGiw5JjZP?=
- =?us-ascii?Q?XXbamXdQ4up/67xuczBOUfbo245wpj5+GkFsXC1RyZtvWj3nGKOiW6Ft+dHn?=
- =?us-ascii?Q?QE3M+haacV7oZwBxeuBoRaBRwg1cdp8uVn/oAL4YseSDfPLpBuXe1KRo2PQa?=
- =?us-ascii?Q?J4BJ++oHCYIDxn4l8KFx12DsSDhwJ65EUOp75s4hBUZSBrR6giV5G2Foy6Sc?=
- =?us-ascii?Q?75Cu7ZWJzj2+qGKWZDjGNc1LPHhYpfzXslZ2Zq6pgmUY3VAZYs+HtbiHOiXB?=
- =?us-ascii?Q?pbSgBPIfHKBKAujrKoqZcGvmwQrh?=
+	=?us-ascii?Q?MkOZMPredakFcVZy1qy5SfBiSQy8moAkCGLFbgsFAX3+NeZqph/fz0ySEPOy?=
+ =?us-ascii?Q?do5bFWsLX9HemL4zBn4px+RB7MPojeYXVgsdrYrYzvWtfV/Fd+U+Nfz763Zf?=
+ =?us-ascii?Q?xtQ3q7sdX/c1YfEaP+rEwcJxNQFPo0pr4visAWSootlwRC6mB8opgxPTOeWa?=
+ =?us-ascii?Q?oyFOHIF1p41Q8Jsi9iLK1S2kgK26ofzd/MKR4L7Q5RmYwAcXb2kCI063/Jmw?=
+ =?us-ascii?Q?1ptUf7TxG1CUiE98uLRY6nvT/fTB4wdb8xer1Z6u0Le1gVhKxLZbc4jspiUw?=
+ =?us-ascii?Q?awVFlFczJrq3IspBa+06HJt7aPmOSoPwim114ZXvjnBZ0gcUrz/B8Xa93Exg?=
+ =?us-ascii?Q?NQscnonZTW3m4CDrhZjEJ03fVlYrPoAHpM8/7uj0tYP66sikaPH2+Ov8lc0S?=
+ =?us-ascii?Q?epmcsyHx6DJcRV/tj0pV+uz5G7/wuKL0kaLtPahYF3P4qMyRDaG2xasM5cMI?=
+ =?us-ascii?Q?9SVHpbPUfAWnYQ8VY/oCltM3+vZz11eKv2oWFwOO2Qs42kUsuaYFy3GaZiBg?=
+ =?us-ascii?Q?QabvARMvvB9VZofXgJJUKOLGLAedXZgUQosG84vUtr3IVIXMAp97qAOxj3Fg?=
+ =?us-ascii?Q?Gr82/qYOf+22YIa7Mz+VqmVCKYEP4l2asSdy3AD22DiAaSMZxngLzNjoFPLp?=
+ =?us-ascii?Q?TEx5UFXh8rEQTRMA9QW6YC3Giz0jC3MZPv0HIjwhAgdzLvx3lhIxk84OKsMP?=
+ =?us-ascii?Q?QBqeXGky9t8vHT7b3G8Rin/6CkWcHVMWy9FjMJQPNn1mX51w3Pqfgv3T36aq?=
+ =?us-ascii?Q?rNjpFHZXCylqUlGouokCJY2qv89DcdOd+Ih1BzWCU9m/Trf6WfFgBTdlA2m0?=
+ =?us-ascii?Q?2qoIusG2t193KChkzfgzjte9fIBhiN17cJlYtm7HkxKHP2//1WpFb/89LmfQ?=
+ =?us-ascii?Q?qiUuqrfrQ61PqMIeVtMw/Q4C+QD6qlr00+Vm0MoPPXjG16jUqMV9jcR2ChmT?=
+ =?us-ascii?Q?/Mn5pvIoD9OYjvog2QL8OGTcpEs9yKJzsUtFjw7Bemc7vHlC7Oitpg/dNrm+?=
+ =?us-ascii?Q?YCCIS2hl6cigFhdXyKU8XHKCJNSu7Mh4vf3ws+yjZCSS3eycz0Cka4vAPQIR?=
+ =?us-ascii?Q?kZdCPOf/KZF1RahuQHzMHFHw7W63anBJDwty/pY7UaN/iR1f3SLnn9F8wMTc?=
+ =?us-ascii?Q?wyqO5SHh8QOZ2lqRXFJRyDrnWvmlzSgpqYEEbxMb8ithYSx+BNcSZ8B8U+Sn?=
+ =?us-ascii?Q?ShKSY5mMYGnLlHrgZAe5ZSsw/t5xY4MrmEb/exfPudEx9DSFJdGuBJhW/YBZ?=
+ =?us-ascii?Q?Fs2mmGoUzRsqfXlkyWiyrOG+/atO7BkCWj57kneCNZTgVnT9qocfrfnGHCnQ?=
+ =?us-ascii?Q?cHHq4RWjxfDEZXbgilwgEJhswlic8i+K1bIIqAN6JfKBcqeGt6+8G31ispLt?=
+ =?us-ascii?Q?T4pTSnbKiamk8Rv3R/qXkuRIgpZR?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(366016)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?D3Y0XmNZSHSKDIT+mzbkEkCcDI5QZN3NRsVEMYSn4oLJm8PZI1VHkbAsfPYS?=
- =?us-ascii?Q?HOm+baRq0Gck9i1LVhdi9+3d8PLqXlEDBAL4pF3CcJVdErsIURdP8zpYqruO?=
- =?us-ascii?Q?0asyRQXn1ySvyltK2gmGcgPr0aGWkB5uaxz8Tu5XWx2Sc+8xcE5mqEVHo0wz?=
- =?us-ascii?Q?uMwK9wUOuCCSLu7/m9G4h9bhVK9d+opln72fp3Oj8pEnMh/DzHa2SVZBam9H?=
- =?us-ascii?Q?BNLDcGn8/dgeZ0oBdpjaI848DoTMoVTWVPNG+0UzEkKKECKBqjOPExVOwKag?=
- =?us-ascii?Q?ZpA3lsuMJhrTBIBqF07NJ+hskATdjvPBU9Bi1pxkMxtw6y8QtE33lef38A2q?=
- =?us-ascii?Q?ZWAl7dZJS9dVMrUPE9wv42XnJ1BeL7D/xXKRG7+9Erkn24m62/Nfx3zC55an?=
- =?us-ascii?Q?qpN4mhUL+xZV4LrTSPo27AM27IrEX18zT/25onl5xeX8bgKLdq6JC0/qX3Y8?=
- =?us-ascii?Q?D0UwovpPLtngE6DkYORAI74JV4OTQl0QccyF8SMRH23ox4M7oy+aVzgDjNf1?=
- =?us-ascii?Q?ewWsjJjDMG8eAHGRSrM7fPHsQa9773jPVPVKVIPnS5tiSWActO3xY0p82XqP?=
- =?us-ascii?Q?y8tCzfg3j3nkPeydwnghnFToQQ74uc229Xfkiw8GFHoeVPfVMQ4USnzDv9of?=
- =?us-ascii?Q?vSQlFMGZ5k/aheBulhwny/xdFHJX3E8/Y+FlVVrVs1rMQUDcwrevnz8F+4N2?=
- =?us-ascii?Q?46Wqm6ogSnQBrukIK3g0ZO6e1EbHDfNNxlOVWsBvnU5kY/68OSiS8vH4Vb5s?=
- =?us-ascii?Q?KeBo7uX+58uBWQP76PCiWyHSboI+UXU4bi6i9uqiywkCIQogKKCpctrAhs3e?=
- =?us-ascii?Q?WvErNmO4iCtCu3YAlXA4eE2vzn03GH9Xjj4+RKKoWL3jq4oWtkuQpbX7QgK2?=
- =?us-ascii?Q?TjPouH2/2zJuIsHQvXTVKnGZqNT1v+69VqYDt52TUln2up85E05EoR4qPWjZ?=
- =?us-ascii?Q?dYDP7gli/Ft5fpVoZ5+ovtnCMy+yaARTD7TeK8a96u8C2A35829vkCDQUgx4?=
- =?us-ascii?Q?441eh2siou40n4FKfz7Nu3orD/vRP76Jj5lfYyh9zN+MBGM1otR1FXvRS86s?=
- =?us-ascii?Q?PZGJNUfgYyOtkxeTsWk/xt+0XvRdYunrgCLl722YLnEsZeXjTZPbfYefs4WL?=
- =?us-ascii?Q?uiaOFdaWTVPZxdKYU2NiAeYqMnBKEiFfEw6r78luRBFH5dddqYADv6cPA6WE?=
- =?us-ascii?Q?wS9/sAZZuv6K9U0p19izzaLNRBwBQr4/zgD/jct0jeS7rEodQue8oqWCVXzV?=
- =?us-ascii?Q?JkpVwbb7H9aQ3iMwm13Omjl4dgJlhVES0kACvMNXRfXKQ265ffYrVNtjrUFG?=
- =?us-ascii?Q?iSvW3jbFyGk9Luabjg0XOVM4SRZumUAcQXzxYoo0ViE7CanObYA6iYQ3s8Cs?=
- =?us-ascii?Q?b5y1CvC2SmId1spjlQ9Dz2ROS5+9ZSKgA14TyongtBx5mhE7HJ5AuqXjJy0o?=
- =?us-ascii?Q?bDRQ5eakksHI+FkU2HJHRx+IeXXhaLP3qcV00lQZHcUDqKXhvDRejYCPJE5C?=
- =?us-ascii?Q?jCIJ4jRogBgsBbUHRE61nYQO7eAg5dgmGay1Z3/vrtzZ5bd0EvQ5jQysv34b?=
- =?us-ascii?Q?vCyNUvCulIC3o7Bz8tJBaxtVkF7t9F1z+v6R3Ijt?=
+	=?us-ascii?Q?OjLrQbGne2KlNhpkp0mhY7pDhh3T+pzC1JeT/pz1Tw6euyrIvJt2KzegGLGG?=
+ =?us-ascii?Q?uINiMfxiZAlE+2GYKxaL9aZFZhyfDe9hlZI+dtTXK7uFSf9FX01Om/dbq/MR?=
+ =?us-ascii?Q?78WwhR6bR3dFIrq+c+ntG68FBNE36DcarEX+Ubz3pO+6ohimclv+MK22jvC0?=
+ =?us-ascii?Q?U3BjdnYEC7E1ClrbujV7XTieTwMGQneLjHDA4jS7iid2aKp1d+m4G2dN4313?=
+ =?us-ascii?Q?nLx9VpHdsY7JjCR6ntTWznYZoGyOCAhkM3Xuzp5b1F3QHEPXLaM97Z6QRW8r?=
+ =?us-ascii?Q?kfDcaNrkcUo8xO/lWR8kZb5GdcTyveuh/YJ0vS5rUCoISYiOSajCxcHThB3s?=
+ =?us-ascii?Q?hZfCcTqJysi2F5r3N7fzld0e9pAESj6peKjbbPK1HsmBWBGiXp15eTmxprL0?=
+ =?us-ascii?Q?SY+QKs0cPW2wJT1LYgYhNj1r21aSxFWKnw4m1PP+d5k7eND6mxbRX1+KUTjr?=
+ =?us-ascii?Q?4/WCNyiNYFo9RZJshzvCCYMDCZzvYLZwCNFFY1U/ckwbTQFZHQ7KAfUSDqd7?=
+ =?us-ascii?Q?WOPVioD2gyLgXvgxb4gzJA6C2jWSOSMXbxviuwRy+/l2OA8i+GM7tmPjW9mA?=
+ =?us-ascii?Q?5Ulwzyht4ULU5nc2EWWwERWy1fS7zQIfWDiD5OT9Z5xbEVIFDY4Edxkl9yCB?=
+ =?us-ascii?Q?Asu5yul4hqZIoWpwYIOkIwPMiofqIY8inzBF0VeaxNX14VRwIOw/EmhWW2mP?=
+ =?us-ascii?Q?Y/WJLh6e4GWDOBQtiexppZaqAGnGwYdjs4qv7QlTdSo0m5bYknHAe0BHP3tw?=
+ =?us-ascii?Q?hunOpwpS2lqJa84XXH2HjBmhSeszRzlG6FMpN2HKJW+Pp3abdWOyZ10SIhQO?=
+ =?us-ascii?Q?6yhCUmx/gGITivNcwXfoEt5xz1G+PwcWKcz5HS4c7xHDHIXMqpWOZTJcSlDf?=
+ =?us-ascii?Q?rQt1xF5vQIiY1gw4Tm0Wpa4H8J58pK4gcIEZa8I1ygORRlgttG+38xe0T5ox?=
+ =?us-ascii?Q?rVpPBsRFWbxbjM+Zth1/v0MVJznUk+kqCEWXyv4zchYgEQImy/2iDhsXEYIW?=
+ =?us-ascii?Q?XI9tE264hfhuAGhlhZK4VAYdM257/uPVHwz12yCQDpz2Jaca1pW9Dv+HJmVZ?=
+ =?us-ascii?Q?oSHJX21PLYBOVhSCUl75SlZoIFUZi1mGuq8tszbF4dlgumgiSfrxi+3gFUVo?=
+ =?us-ascii?Q?S3hzJ3ogWU/UZRt30nf0NpXnZcz81eUfD19W5+2ri7pfvYkFRIo6P1uEGPxp?=
+ =?us-ascii?Q?51KGkz+Kn938qG6loSdRgHnD0kTOSlkMha4QTAT9pU0XeNjS54U6F7sAezEL?=
+ =?us-ascii?Q?BQu8Zbo1hKnLgeWzf05r5sqqqx7rKEj94ozhyc5RO03vX+8y/qMPlz3bcoEb?=
+ =?us-ascii?Q?xtdt79hAmZKJvpYignW3juxrpEcofhmqwbNFIzR2fZCbpjEkOHjuPm0sgxBR?=
+ =?us-ascii?Q?bxqNgWjvAYo3P2ZwiEU4+90hWU7cruhjmTY8qg0U3ERU2eULapHjQ6EloLH0?=
+ =?us-ascii?Q?Ov5ucEcj6tgw2ayd9+M8WaiO6Oh4juSTf44g/RLIIVCxzz5HccgAuGKrUZGb?=
+ =?us-ascii?Q?6N91PhVrGuzQQQHqJtysrFIjj2bsCxOjjh+bHuKKtakVQvfI9QMlOetCQ0GX?=
+ =?us-ascii?Q?Q9o5dEy8ww6ssLDHazTlyJ7mx4UqJ5KzrFfaVK6M?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Gg3T4AvRV9aBXWy1/IivbNko2mpv+QtD90vddj9IGP1Mb1VXwed9MtUEbRBWWocKs8rWgULSfO+R7jG9wpQmUiJpuadObBqEkIP8+H/Ai8hSPNLwRKAjLpi2d9OcFquGXytgmC5I/ogfPi9oqwqRPvQOWkqm+6/Q47/DdcI+283j3NJlX1MJHMZ8noAvIc7xSqcumufgujAyRFHiJ+paH0qEJtq1/oqZIH02S2CFG+1nqTk/H5RTQAj8nvQkBWunUAqEwQhHSkyu0DK/7t+4GnHY7IRDHgQSiCMoCO2bA/NXKXm7VVz2ZVCbK2mpZ7tC6fga3LcBP7o+K2KYao5zUTMvjhEctKnyXwvwOHLyX3BeXr4kWTUO+sxDvHCaTHS+krXljEhdlOtVACnOqypxe5NFNA3k6iyl8W9W6DTSO7CpYeZUPaRApIt+oi01fnEoqxWRliSPRZ+ndu4B8/TEFvzsyUvZUGSMqbkSHX3SU6WAv2U3Ee8r+U0qJkL6P4HVFEJkHNxSNUrkyKyUBtQQ0EFl3A6YH/Qo+dKqwxrl1KAbezAo6WfMN0RuvCW/q3cJ/UudX8Y6NTSXZQHJ4gfpOgS6FAqoDtSPz0LJowit6f0=
+	znI2wGh/gC0tAPRm559ceFMRo4jq1H9pGFQSmzpKol3jT3hU383z/GITuDyI0lpSz58X+aX0SBxtbr+fkjJMOX3J09ZaNAL3rINaMfQ8XxnGvlAGyaBf/9/+CZJFv4UP7ToaGGhu8T6zNpDxm2t+n53U2TXBupi09NwRT1bVB05fTVhmpwFandF4t+lLO5f4COh2AqspQ9CA6OJXGuh45h26mxZ/AZpjRx6K4SXHywB5mFfslDG5tl860fEFUywr3v0/E45wPLfA+w83h7WLS192dsc46xrki+o4Hwzp7PptTbX0p50OL01k7vd16W9RSPK6N1TUqILaFDBu1W113k1Vi3EsxyrHEFqbZb0zgma7epAJWAZbLgUrQzIcg4/T+a9trt6jYtS9aoHGE2CpJsEWDDKDE+iIvC0ZX0BT1NldUSWIFUtppkdPKqxJCcsFaRcZawWGJFeyAGjgfoZfT/yxpa5BixDSd0Ng08WJxDrfJtqCWVKcT0UdokRFe8KwFhJ/Wr6DGi5qMpFk9Edl7nvnlvtAK3FrOLaALT+NWFeurYyy4DBHy0RFRJwvG9L4+JkFcqQ5kpuHGOuMQ1dXjE6/oTl/P7TPo6Ixjl6bS9I=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d41fca6-0eb4-4933-13f2-08dd55728fd2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78cc9444-8f7a-46b0-a6fb-08dd557a07b5
 X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2025 08:01:08.7267
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2025 08:54:36.3432
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iGSvST+avAsMTeOhlFw3FrBRn9cJJwgOyH56orVBLsNLDoJsmR1/J4FHUclNeMzc6tKhKPInKddur0hNS63NDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB7181
+X-MS-Exchange-CrossTenant-UserPrincipalName: dgBtnklNZ7s4bKAFitl3JliLVuADdnb6+WGxfYvsb85WR/6nVrbh3IhaEO/qqzw+y7LnCiupALvx7Nmk6rTn+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4184
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2025-02-25_03,2025-02-24_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 mlxscore=0 suspectscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502100000
- definitions=main-2502250053
-X-Proofpoint-ORIG-GUID: w59I9pQMKj_FA2jrmkrKD5H29IDO3jIN
-X-Proofpoint-GUID: w59I9pQMKj_FA2jrmkrKD5H29IDO3jIN
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2502100000 definitions=main-2502250060
+X-Proofpoint-GUID: HBvRRtvVchVq2SlcSOIehIA5m0NSicuZ
+X-Proofpoint-ORIG-GUID: HBvRRtvVchVq2SlcSOIehIA5m0NSicuZ
 
-On Fri, Feb 14, 2025 at 05:27:42PM +0100, Vlastimil Babka wrote:
-> Add functions for efficient guaranteed allocations e.g. in a critical
-> section that cannot sleep, when the exact number of allocations is not
-> known beforehand, but an upper limit can be calculated.
+On Fri, Feb 14, 2025 at 05:27:43PM +0100, Vlastimil Babka wrote:
+> The possibility of many barn operations is determined by the current
+> number of full or empty sheaves. Taking the barn->lock just to find out
+> that e.g. there are no empty sheaves results in unnecessary overhead and
+> lock contention. Thus perform these checks outside of the lock with a
+> data_race() annotated variable read and fail quickly without taking the
+> lock.
 > 
-> kmem_cache_prefill_sheaf() returns a sheaf containing at least given
-> number of objects.
-> 
-> kmem_cache_alloc_from_sheaf() will allocate an object from the sheaf
-> and is guaranteed not to fail until depleted.
-> 
-> kmem_cache_return_sheaf() is for giving the sheaf back to the slab
-> allocator after the critical section. This will also attempt to refill
-> it to cache's sheaf capacity for better efficiency of sheaves handling,
-> but it's not stricly necessary to succeed.
-> 
-> kmem_cache_refill_sheaf() can be used to refill a previously obtained
-> sheaf to requested size. If the current size is sufficient, it does
-> nothing. If the requested size exceeds cache's sheaf_capacity and the
-> sheaf's current capacity, the sheaf will be replaced with a new one,
-> hence the indirect pointer parameter.
-> 
-> kmem_cache_sheaf_size() can be used to query the current size.
-> 
-> The implementation supports requesting sizes that exceed cache's
-> sheaf_capacity, but it is not efficient - such sheaves are allocated
-> fresh in kmem_cache_prefill_sheaf() and flushed and freed immediately by
-> kmem_cache_return_sheaf(). kmem_cache_refill_sheaf() might be expecially
-> ineffective when replacing a sheaf with a new one of a larger capacity.
-> It is therefore better to size cache's sheaf_capacity accordingly.
+> Checks for sheaf availability that racily succeed have to be obviously
+> repeated under the lock for correctness, but we can skip repeating
+> checks if there are too many sheaves on the given list as the limits
+> don't need to be strict.
 > 
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/linux/slab.h |  16 ++++
->  mm/slub.c            | 227 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 243 insertions(+)
 
-[... snip ... ]
+Looks good to me,
+Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 
-> @@ -4831,6 +4857,207 @@ void *kmem_cache_alloc_node_noprof(struct kmem_cache *s, gfp_t gfpflags, int nod
->  }
->  EXPORT_SYMBOL(kmem_cache_alloc_node_noprof);
->  
-> +
-> +/*
-> + * returns a sheaf that has least the requested size
-> + * when prefilling is needed, do so with given gfp flags
-> + *
-> + * return NULL if sheaf allocation or prefilling failed
-> + */
-> +struct slab_sheaf *
-> +kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
-> +{
-> +	struct slub_percpu_sheaves *pcs;
-> +	struct slab_sheaf *sheaf = NULL;
-> +
-> +	if (unlikely(size > s->sheaf_capacity)) {
-> +		sheaf = kzalloc(struct_size(sheaf, objects, size), gfp);
-> +		if (!sheaf)
-> +			return NULL;
-> +
-> +		sheaf->cache = s;
-> +		sheaf->capacity = size;
-> +
-> +		if (!__kmem_cache_alloc_bulk(s, gfp, size,
-> +					     &sheaf->objects[0])) {
-> +			kfree(sheaf);
-> +			return NULL;
-> +		}
-> +
-> +		sheaf->size = size;
-> +
-> +		return sheaf;
-> +	}
-> +
-> +	localtry_lock(&s->cpu_sheaves->lock);
-> +	pcs = this_cpu_ptr(s->cpu_sheaves);
-> +
-> +	if (pcs->spare) {
-> +		sheaf = pcs->spare;
-> +		pcs->spare = NULL;
-> +	}
-> +
-> +	if (!sheaf)
-> +		sheaf = barn_get_full_or_empty_sheaf(pcs->barn);
+in kmem_cache_return_sheaf:
+> if (!pcs->spare) {                                                      
+> 	pcs->spare = sheaf;                                             
+>	sheaf = NULL;                                                   
+> } else if (pcs->barn->nr_full >= MAX_FULL_SHEAVES) {                    
+>	/* racy check */                                                
+>	barn = pcs->barn;                                               
+>	keep = true;                                                    
+> }  
 
-Can this be outside localtry lock?
-
-> +
-> +	localtry_unlock(&s->cpu_sheaves->lock);
-> +
-> +	if (!sheaf) {
-> +		sheaf = alloc_empty_sheaf(s, gfp);
-> +	}
-> +
-> +	if (sheaf && sheaf->size < size) {
-> +		if (refill_sheaf(s, sheaf, gfp)) {
-> +			sheaf_flush(s, sheaf);
-> +			free_empty_sheaf(s, sheaf);
-> +			sheaf = NULL;
-> +		}
-> +	}
-> +
-> +	if (sheaf)
-> +		sheaf->capacity = s->sheaf_capacity;
-> +
-> +	return sheaf;
-> +}
-> +
-> +/*
-> + * Use this to return a sheaf obtained by kmem_cache_prefill_sheaf()
-> + * It tries to refill the sheaf back to the cache's sheaf_capacity
-> + * to avoid handling partially full sheaves.
-> + *
-> + * If the refill fails because gfp is e.g. GFP_NOWAIT, the sheaf is
-> + * instead dissolved
-> + */
-> +void kmem_cache_return_sheaf(struct kmem_cache *s, gfp_t gfp,
-> +			     struct slab_sheaf *sheaf)
-> +{
-> +	struct slub_percpu_sheaves *pcs;
-> +	bool refill = false;
-> +	struct node_barn *barn;
-> +
-> +	if (unlikely(sheaf->capacity != s->sheaf_capacity)) {
-> +		sheaf_flush(s, sheaf);
-> +		kfree(sheaf);
-> +		return;
-> +	}
-> +
-> +	localtry_lock(&s->cpu_sheaves->lock);
-> +	pcs = this_cpu_ptr(s->cpu_sheaves);
-> +
-> +	if (!pcs->spare) {
-> +		pcs->spare = sheaf;
-> +		sheaf = NULL;
-> +	} else if (pcs->barn->nr_full >= MAX_FULL_SHEAVES) {
-
-Did you mean (pcs->barn->nr_full < MAX_FULL_SHEAVES)?
-
-Otherwise looks good to me.
+By the way this code also needs data_race()?
 
 -- 
 Cheers,
 Harry
 
-> +		/* racy check */
-> +		barn = pcs->barn;
-> +		refill = true;
-> +	}
+> ---
+>  mm/slub.c | 57 ++++++++++++++++++++++++++++++++++-----------------------
+>  1 file changed, 34 insertions(+), 23 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index c1df7cf22267f28f743404531bef921e25fac086..72e6437f1d74bfacbb1cd7642af42929c48cc66a 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2685,9 +2685,12 @@ static struct slab_sheaf *barn_get_empty_sheaf(struct node_barn *barn)
+>  	struct slab_sheaf *empty = NULL;
+>  	unsigned long flags;
+>  
+> +	if (!data_race(barn->nr_empty))
+> +		return NULL;
 > +
-> +	localtry_unlock(&s->cpu_sheaves->lock);
+>  	spin_lock_irqsave(&barn->lock, flags);
+>  
+> -	if (barn->nr_empty) {
+> +	if (likely(barn->nr_empty)) {
+>  		empty = list_first_entry(&barn->sheaves_empty,
+>  					 struct slab_sheaf, barn_list);
+>  		list_del(&empty->barn_list);
+> @@ -2703,38 +2706,36 @@ static int barn_put_empty_sheaf(struct node_barn *barn,
+>  				struct slab_sheaf *sheaf, bool ignore_limit)
+>  {
+>  	unsigned long flags;
+> -	int ret = 0;
 > +
-> +	if (!sheaf)
-> +		return;
+> +	/* we don't repeat the check under barn->lock as it's not critical */
+> +	if (!ignore_limit && data_race(barn->nr_empty) >= MAX_EMPTY_SHEAVES)
+> +		return -E2BIG;
+>  
+>  	spin_lock_irqsave(&barn->lock, flags);
+>  
+> -	if (!ignore_limit && barn->nr_empty >= MAX_EMPTY_SHEAVES) {
+> -		ret = -E2BIG;
+> -	} else {
+> -		list_add(&sheaf->barn_list, &barn->sheaves_empty);
+> -		barn->nr_empty++;
+> -	}
+> +	list_add(&sheaf->barn_list, &barn->sheaves_empty);
+> +	barn->nr_empty++;
+>  
+>  	spin_unlock_irqrestore(&barn->lock, flags);
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static int barn_put_full_sheaf(struct node_barn *barn, struct slab_sheaf *sheaf,
+>  			       bool ignore_limit)
+>  {
+>  	unsigned long flags;
+> -	int ret = 0;
 > +
-> +	/*
-> +	 * if the barn is full of full sheaves or we fail to refill the sheaf,
-> +	 * simply flush and free it
-> +	 */
-> +	if (!refill || refill_sheaf(s, sheaf, gfp)) {
-> +		sheaf_flush(s, sheaf);
-> +		free_empty_sheaf(s, sheaf);
-> +		return;
-> +	}
+> +	/* we don't repeat the check under barn->lock as it's not critical */
+> +	if (!ignore_limit && data_race(barn->nr_full) >= MAX_FULL_SHEAVES)
+> +		return -E2BIG;
+>  
+>  	spin_lock_irqsave(&barn->lock, flags);
+>  
+> -	if (!ignore_limit && barn->nr_full >= MAX_FULL_SHEAVES) {
+> -		ret = -E2BIG;
+> -	} else {
+> -		list_add(&sheaf->barn_list, &barn->sheaves_full);
+> -		barn->nr_full++;
+> -	}
+> +	list_add(&sheaf->barn_list, &barn->sheaves_full);
+> +	barn->nr_full++;
+>  
+>  	spin_unlock_irqrestore(&barn->lock, flags);
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static struct slab_sheaf *barn_get_full_or_empty_sheaf(struct node_barn *barn)
+> @@ -2742,6 +2743,9 @@ static struct slab_sheaf *barn_get_full_or_empty_sheaf(struct node_barn *barn)
+>  	struct slab_sheaf *sheaf = NULL;
+>  	unsigned long flags;
+>  
+> +	if (!data_race(barn->nr_full) && !data_race(barn->nr_empty))
+> +		return NULL;
 > +
-> +	/* we racily determined the sheaf would fit, so now force it */
-> +	barn_put_full_sheaf(barn, sheaf, true);
-> +}
+>  	spin_lock_irqsave(&barn->lock, flags);
+>  
+>  	if (barn->nr_full) {
+> @@ -2772,9 +2776,12 @@ barn_replace_empty_sheaf(struct node_barn *barn, struct slab_sheaf *empty)
+>  	struct slab_sheaf *full = NULL;
+>  	unsigned long flags;
+>  
+> +	if (!data_race(barn->nr_full))
+> +		return NULL;
+> +
+>  	spin_lock_irqsave(&barn->lock, flags);
+>  
+> -	if (barn->nr_full) {
+> +	if (likely(barn->nr_full)) {
+>  		full = list_first_entry(&barn->sheaves_full, struct slab_sheaf,
+>  					barn_list);
+>  		list_del(&full->barn_list);
+> @@ -2797,19 +2804,23 @@ barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full)
+>  	struct slab_sheaf *empty;
+>  	unsigned long flags;
+>  
+> +	/* we don't repeat this check under barn->lock as it's not critical */
+> +	if (data_race(barn->nr_full) >= MAX_FULL_SHEAVES)
+> +		return ERR_PTR(-E2BIG);
+> +	if (!data_race(barn->nr_empty))
+> +		return ERR_PTR(-ENOMEM);
+> +
+>  	spin_lock_irqsave(&barn->lock, flags);
+>  
+> -	if (barn->nr_full >= MAX_FULL_SHEAVES) {
+> -		empty = ERR_PTR(-E2BIG);
+> -	} else if (!barn->nr_empty) {
+> -		empty = ERR_PTR(-ENOMEM);
+> -	} else {
+> +	if (likely(barn->nr_empty)) {
+>  		empty = list_first_entry(&barn->sheaves_empty, struct slab_sheaf,
+>  					 barn_list);
+>  		list_del(&empty->barn_list);
+>  		list_add(&full->barn_list, &barn->sheaves_full);
+>  		barn->nr_empty--;
+>  		barn->nr_full++;
+> +	} else {
+> +		empty = ERR_PTR(-ENOMEM);
+>  	}
+>  
+>  	spin_unlock_irqrestore(&barn->lock, flags);
+> 
+> -- 
+> 2.48.1
+> 
