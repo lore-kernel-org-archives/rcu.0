@@ -1,141 +1,197 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2072.outbound.protection.outlook.com [40.107.220.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103672206A4;
-	Wed, 26 Feb 2025 15:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740582269; cv=none; b=U62TNoTXr2cHAhyKRjRwob6DgjbAh6AIrREDxaJM8CkraRBljqWC1EOskOzatQ7IV4DrF0c9s4BxWe711syBlASrHiojaz7d4j6roghFAjEucgMWOe+MN0MH2GRmD0ifOwvTyw6mQBWKORGHmC8bpCe+Ms/TsSEZsfkLPnS0/pg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740582269; c=relaxed/simple;
-	bh=Kd2BF1a6VfS2P8GI8jSZHLKC/prjfy/cW+xW96oUPs0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R3SatLrXiQKYA29Zf3loLxOvVtLtHFJNHeavjpBwe8qgLP0h0WFHVxu4eK7klmKhvysUODS18apiVUeRQHIoF58JofzxlxHEMCmpjQQ51fqnZNEh8H5gYCg0mkaFf+DoVbDakvxwArzCtdIc02+V/3VlU1hqoY79D5YPVHCW9hA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j5gj1+Nd; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5132A22157E;
+	Wed, 26 Feb 2025 15:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.72
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740583599; cv=fail; b=mZ3fDjecFhOmcQ0akZIHy00XqXFQWmM9ny2vS0CDvYdWBoK2fJmcyKrAL+LsYSSL9oHJRJAjWe695Z91JtIFJWUZ//icyxTUnegku9Krv6OPicSiKUEVXgNSIdp8RR1qAzmWJuNNavInRix6UXgpsIIjocFytkg5+OFLoYJObbc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740583599; c=relaxed/simple;
+	bh=MAFkSkAjGTNQrYcULi0TgWS6X/w7UxYBfqJ/Z32MAJw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=htTyhcYxROjj5shEH8KdHRnNn9Eg2rpBoiYZoqNGZCQTcLkLSCySnhV2ZIDTZw3K5vTv+dGRywiCgRNBZxB4LukayGWWLz1Xvo2WmH/0DZYsa/L2B0vd+mWYXgGrRFHqHzXmKwBpltXWR3GZYdhC2zdbx10VQPmPa3REv90qOek=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tT8UYGGB; arc=fail smtp.client-ip=40.107.220.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5gj1+Nd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73661C4CED6;
-	Wed, 26 Feb 2025 15:04:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740582268;
-	bh=Kd2BF1a6VfS2P8GI8jSZHLKC/prjfy/cW+xW96oUPs0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=j5gj1+NdHNNtjJ+PLc+5MU4pc/MW1xuzZ5iP0afNu7QWcW57kLslhnjSmPMpSOCFj
-	 +0F08Wxpi1wt7gdJ9tE87GPGoq4/eFZ2ulbvjhtR5xIsGBlg71z/wIIhgaav/S7ZRy
-	 7uM0RJU9evju4ilIY6mCW6Apky4z8vZoalle5EzALiTHr8Mw2cQArT2sIGVtevFTGb
-	 xT9VyrfI2kxWZABSJKifYb+TZBIpI9Q4f+AfK6kaBUUVyjKUezWbYDDTdvimhFZ9pM
-	 SpLl7iAtDE/Yaz37Tfn9gjXNhyXmLKsjIQX/pHTr2QWb0fszibFYpOooc8Pux+wcgB
-	 FY7LDzH2btduw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 11D50CE04E3; Wed, 26 Feb 2025 07:04:28 -0800 (PST)
-Date: Wed, 26 Feb 2025 07:04:28 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tT8UYGGB"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lY/lL7eYPxKtpFSPF3Hcrsc2TXnMlqtb1B79F1k+fIDgocz3ZU8VrvPlgtC2I+K8bxAr06hEu71Y7jDIgrTh+y6aELkkbFLRlYlc8FQGoiSBN5iILWooyk8UHNR2vEBLSUzaAU2aJglpVtqipu5TzH66/PsqkDVtO81tEr5DKRSaLaav6VSXtbZrpUB4BtXWoFKZBJCbDO6tpZMyw0EZifICCDV2R7TDZzXysOgiMZ9jSijiJVdpbXlKVyssWTRvHKleB5UfKskeEDo5b+CHtKrtomMSUZpa63WZYCrhVEtUky0lu6+gtUriYwHBzLrWBkE+u/yOa3utY/i/z7EdSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PrxcJSf7+SzL4RxPn4AHjAed2RdjRBiwzWzdZWzeib8=;
+ b=o26eyrRr27PWYuzoDqX7+P/OXGe1+WByrcBOZSm9g8jPk79KVZG2MGmMUmEzyNqTxuU+9V2ESWp3L7b+3C42CTwjJ0TSn5ZCiPyJMmWp7etIV5wWT73RhdE8L2tkbjbldOXTeJZpipjDFhpeSY46c9zV4JBPiJLarSz9aLnFWLnzteQxVqAy/iq0C7veFi1eSq31fhauCI4XorT7MsacmfPf/gNhY8+gz3ZLdnUtV3ndGdfERmFDmGtveh5HgQrZUeQBIUITOjkIyMMSwFkFWL29fZYaFDriEhR1E40HRa8WA/69l6AsXoBEESfKZYsolGkIYga2T0n3KjMKoiYLeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PrxcJSf7+SzL4RxPn4AHjAed2RdjRBiwzWzdZWzeib8=;
+ b=tT8UYGGBTGFNJPYjNJrDrWdNFnDJdzoZKOqmgzQBflvCeNTUSU7LceN0GgMqAy4HWx8OGmwIfjelzVQ1wcdzJnm6+d+sqsm2/OMuxg5Df7Ihc3lyk5IE5GBV2F9UNF8ptVmrA6jYqqBVKHvIyQxEedQgrvwdbXrPBN4zFUp42TViYUIjNAOU66gerHJr18Atb+r7jB5cNbQ6Wwe/LJbsY1MWAgjFVtir5lS7687w3jwh2WLg4aIfkyacg+2RmG1sLZkrQ4/Jyj1+3BAgPl0dOqqJcmsDONhzJyNVBEHN+vDYerHmCxVtgb4pdimN25KWBCnWvNnAYo17TmMibOaLLw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by DS7PR12MB9475.namprd12.prod.outlook.com (2603:10b6:8:251::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.20; Wed, 26 Feb
+ 2025 15:26:36 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8466.016; Wed, 26 Feb 2025
+ 15:26:35 +0000
+Message-ID: <c0c0f393-fa50-4437-80b2-f38d65b43fab@nvidia.com>
+Date: Wed, 26 Feb 2025 10:26:34 -0500
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 2/3] rcu/exp: Remove confusing needless full barrier on
  task unblock
-Message-ID: <63cbab19-a7d4-4daa-8b54-58665e159e23@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+To: paulmck@kernel.org, Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ rcu <rcu@vger.kernel.org>
 References: <20250213232559.34163-1-frederic@kernel.org>
  <20250213232559.34163-3-frederic@kernel.org>
- <20250225215908.GA1812344@joelnvbox>
- <Z78OeeyarjDB63Dj@localhost.localdomain>
+ <20250225215908.GA1812344@joelnvbox> <Z78OeeyarjDB63Dj@localhost.localdomain>
+ <63cbab19-a7d4-4daa-8b54-58665e159e23@paulmck-laptop>
+Content-Language: en-US
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <63cbab19-a7d4-4daa-8b54-58665e159e23@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BLAPR03CA0020.namprd03.prod.outlook.com
+ (2603:10b6:208:32b::25) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z78OeeyarjDB63Dj@localhost.localdomain>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|DS7PR12MB9475:EE_
+X-MS-Office365-Filtering-Correlation-Id: ffc09354-7aa2-4757-a385-08dd5679f4f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?MnllcmRsOUtpbkI3NnJiVVBiMGJpamVXU2M2VXkrN2xlWDFvUGxlQktML1Zz?=
+ =?utf-8?B?VFpRUzhHaE55aWJnUEpscGZkOXpIVEZrU1lDcFZ2YTdhOGVtUnhGNE5mVnFQ?=
+ =?utf-8?B?NThid3BmQVIwSzBRQWFpZ1NoRS9RS1cwMmZ4S2NiTFBPNXZuelR0cWlKWXhC?=
+ =?utf-8?B?YlNEZU5mK1B4cE56dFltTGpJQVNwSjJIYy8vS21nZ3ZGWDR6NjdjSGNSUHFJ?=
+ =?utf-8?B?aEo5b3p6UkF0ZW1BWnVpT2ordjFVdmFsc3E5WnU2Rldnc2MyOStZdjZ3VzVt?=
+ =?utf-8?B?RENYcVMvdDVDNFpDMnZsWTY2L211T1dFajJGTEJocEdVckU2SzZDbVhHeDFX?=
+ =?utf-8?B?blVodHVuaVZtYXVyVDFTWlhITTY2Vm1NRG9nRU00bGtVbXd5Y1V6ZU9GbnpR?=
+ =?utf-8?B?a2dkOVNTdFN1TCswNW02SU5OaWhHaDUrSFo2dVp0akc4ZTA3dVliVTFha0hK?=
+ =?utf-8?B?OU1jck1XUUpXenlyOGlaNkxCMzlQd0QvdE9wMzVRbDdEWmp2VGZEelgwa0FC?=
+ =?utf-8?B?RjJ4TkhweGswYkdRK2NMd09XTE9uOHJvL3B6Y05qclh2UlpVL0YxQkNueHUv?=
+ =?utf-8?B?a293ZVV4ckFlZllkREpKcHFYQmY3SXVyT3h4dmM0SzJIS2JBZk9QaUhOL3By?=
+ =?utf-8?B?SVFVMkgxRGgxRkEyK3I4bVppSzZseWhRbDVTZVlMTlZpQjJDMlM0aG1HelVZ?=
+ =?utf-8?B?NHZKcjlrVFdCd1NPZjU0akxWNFF3OWphTjF6c01aSHNDT2tNSEltVHZTbERk?=
+ =?utf-8?B?Z0krMFBEaTJoMU9ZZmxLWlVkcU5xT0NwL29ZRFRqL1RLbkZjcEVFNWVXTkJl?=
+ =?utf-8?B?UUVaZjBPMVQ1eUUxelRUcXRpZ0dnWlkrWHhGZ2pTRlJHQ2dwWFkxeFJ3S1cz?=
+ =?utf-8?B?MU5nbDNjTXNFQldFa3UweEFYZkdqOU1IcmNpc1lMb2hpcmhTVGw3dFdDN3JV?=
+ =?utf-8?B?N2JjenpLWXl5SEEydndVRWdwbllCeElmelNVQlR3d1E3bDlaNzVuQkRKZGdV?=
+ =?utf-8?B?elprLzdKWmNhQnZEMjdhMzFvVDlRREQrcTJoQ0ZTelVXdUw1bWZmcnV4Sy9R?=
+ =?utf-8?B?bVFrNzZqSHlrZTdLYkhhcUtmWmtzS2U2eGduTVJ2TFcxMnJZRk5BTUh0VFFs?=
+ =?utf-8?B?RlAvSmRSek1WalR1UXZxc1gxbmRaRTdiWVR4c2VqUjhWRjBibDV1QzBlVmQr?=
+ =?utf-8?B?ZjlPeU10dFc0MVZMKy81aytvSk9SazNoWWVNMk1uYjA3STlVYjQyVTJ3cExz?=
+ =?utf-8?B?Y3FqaTBtVnBGWm0xdk1ZV2Vsa1RxNFlZR2VKMGZLaUN5a3dKMk11YXBRNy9D?=
+ =?utf-8?B?SFk1T2kwNlg0Q09kdTFDaE5rS2trbnUyTGxiV21hMVBQRkVPRzJEenpyOVBY?=
+ =?utf-8?B?djgyWmpEZzFwWTBGYnpjZmVMQmxpczhZRWJUMGxXaDNwQW1vaE1qOUd6YThN?=
+ =?utf-8?B?cjdGcmhqTWRBMDFrRERvM1pJMTIvUXlxY3Z1TjhMdWZveGVENktWVDVpSHl6?=
+ =?utf-8?B?VGNJd2QwN05odlNUdXJVMVdnUkRGSDZlMzBoSkJ1c0NDMGE5ZkVLMjFNb1lx?=
+ =?utf-8?B?eDJVRHAyQzF6V0lPVkdoK0VZdFA3NGdsOVRoSXNmd0V5Q00xVHVoMUNBQXlW?=
+ =?utf-8?B?NWtUWlU3Zjk1UTc0OFZPeG1xd1V1aStwSkpLamRaVnNubHRlSGhLQWkyTWJD?=
+ =?utf-8?B?OVVmck4vRS8rbUU5K1EzazhFcHlhZUN3TG9iR3doVncveEcwRWpYbVFJbWdD?=
+ =?utf-8?B?Sy9YS0hBVEt5eGdIaU4vWGdaekc2c1cyZGRGZlVNbjYySmU2bzFMQ0cvVGFh?=
+ =?utf-8?B?bXZvNFM2YXFrOVJkRTJFVTExa0U4ekhPSDBzSDRYMFdUZHBGRS9DVjB3QkhH?=
+ =?utf-8?Q?5nu6XKQUO+F4G?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RmdPNE9jWDBHWHNrQUZhTzc0K25iRDV0VytRRGMwYXBMVDl5c2FJOWVqSDNn?=
+ =?utf-8?B?UjVvNHdMdWVoTkQ1UCt2UnRPLzd5bGVranVxT3hvRFVMTEVOY1JUdEdYUHdX?=
+ =?utf-8?B?QzRjYnpDb2w1cEhlY1dTb0NhaWpEcU9qeWRsdFZTY3VtYVVvVFQ4MCtNazBD?=
+ =?utf-8?B?N2RMbEtxQ3liMlFFTFVHRnpzMC9tOGVwYTVnSmlhUkVocUF2em5KTi9XZGky?=
+ =?utf-8?B?U2o1ZkJkRHhzQ01xQ2JOOC9TeFgraXhqVDE1MEJjU3pCOVJpOWlCR0kzbWc2?=
+ =?utf-8?B?SlNZSk9jNVhGMWtESlhaK3daOSs2WXF0dDVaTDFFU0tkbDVkR3BjZjZETHJv?=
+ =?utf-8?B?d3FWVXBVOS90RkY5WWM4VzcySzh5eXFrSngvdk1qZm9qdndCdksxa2o0U3I1?=
+ =?utf-8?B?MlZ1TTFMcHpyR21GTEsxcDcvYkpUVFoyWkJMWUwyTUpBZjArQ0grajdSSFE5?=
+ =?utf-8?B?aVY0eVYvWU5kNmxnN0tlWVNnTFBSTWNsUmdMZE1uVzEvQWEwUXVqYlR2dHNm?=
+ =?utf-8?B?RjlTRy9NeGg3K2RaNjJZTzhaN25oS1hyaDJUeTNMK2Q3NXEvOUIwOC8vdEMy?=
+ =?utf-8?B?YVNxT2MzdW9LdzM3ZFE3SVBmc25CKzVmN1pGSkhDT0RuMzdVTnBlaWl5cU82?=
+ =?utf-8?B?VlA2aFY1K3BjbGRabVVCQmlpTE9SRlVXM2MyYy9NWVFzNDg5M1hnR0pQSzUv?=
+ =?utf-8?B?Qk4wZVA2eXlEbnF0WnpCZkRraUhZeEZIbk0vRkxTRklpem81eE5UMGlObDFM?=
+ =?utf-8?B?K1JOSVAwQ3JRdTAyN1lkVVlQTU5kd1YwSUFOb3ExanNEY1padXJDMDZkMkIv?=
+ =?utf-8?B?ZHY5R0dYS0wwQ3I5VWlxemhFY1d6NXErcWsrc0plRU5PZ2p5YXdaeE1SMlp0?=
+ =?utf-8?B?Zm9BUkZGOVJZZllrWDVFTWN4TVVmS2NwajdvVEVieGdYd2ZkR3NVSCtqbk0r?=
+ =?utf-8?B?TDRJaU5IOFRIME5qZU00aUxTTFArU0RzVVZQWTRYVTZSUGFKVDlmQUd5WXdD?=
+ =?utf-8?B?RE9IQkt5R1Q1SkpmSGw1VEVsOUZxb3JlYXdnMUMwY3BuTXpiQVQvczJ5bGZz?=
+ =?utf-8?B?anJVVU5zTzIyVW1Ia1hSUHFBcmdsdjB4ZWVpVUFTMmNKUWlKTk5aUHVtUHNw?=
+ =?utf-8?B?Qno0UmRETXptMG4yZzU2bzBXb1Ava0NnMmw5ZlVrL3IzSVhhOENxVVJWRWZr?=
+ =?utf-8?B?K1p5NVNOSmtwV1RHRnBabU5sS1BlNEp3S3JKVHFkaFNoZDc1VmhnWW4xeTRB?=
+ =?utf-8?B?aUhrdUFOaFVEQmo0Zmp3NGppdTdtaG41cE5zTUh6K1lUTzRoVk1SR0w4Z0lw?=
+ =?utf-8?B?Q0lmeTFvVlFJNkZwckdwVXZmK1lKamtDeVZIbHk3Rm9SVGllRHlmU1NqZysy?=
+ =?utf-8?B?TGhqRHpQYWlFMk11ZTR5Zld3eFBadlBmWFhhcXdMVmFYalVwNzZHR1NjQnRQ?=
+ =?utf-8?B?ZVFPai9jSWZCdVc2cDJFOTNXL0pMSlRQSHVWVkJUbWFSb1R2b2g1MWhobEhx?=
+ =?utf-8?B?eEFkbVJEWlEveGJJQ0YvbHFDaFB3VHIrcUYrQmsyY1d5RjFKUWhzMzFNZk1I?=
+ =?utf-8?B?a1g4RnFxenNaSjFiZ2NEYVZkZ3Jib1dnY2crY3hpWEZzWk5COE1CSWI1Y2Fq?=
+ =?utf-8?B?VlFDUk8wendxQ2diTmM5QzVTcGIrcXQvTFJUREJ1eTJCbVRvUWRkVm5qTm44?=
+ =?utf-8?B?a2Z4N2g3QXg2V2VPZ2tJNjIwZUlXd0x4MTFFS2dXREI1a3Q4bFYxeG1iUmNt?=
+ =?utf-8?B?emxwRG1RT0RqTURCTTBPMVl4NzlOSGFqZkpyeUhsNW85Y0pTZUcwR3lweVZO?=
+ =?utf-8?B?NkNoOWVCNm5TZG94SEYzeGlRZ1JSWTd3aVhKZ1VJVTBvTVVDQi95SzlvQnpi?=
+ =?utf-8?B?Q1NidzBieDVYQTR0anJxdDd4UVBEQWQ1b3k3d2I2enpvcmNTcVNyQTlaYThw?=
+ =?utf-8?B?TDZsd1RBOURaUkhNWW1kZ3VWTk1nVEUxSlNaajdBTlpzVVZTcU1rL25WcTdt?=
+ =?utf-8?B?M0NZeWZMZWNJWFJlRElieDcwamhzcDFLeDZHZWJNTVF0SjY5YzUyUW5wOVF0?=
+ =?utf-8?B?Vmh2SmU4RjdKZHRSQzZXNUVNTktweXI3endJYm9JTU1vclhTOW5DcXBvRG1x?=
+ =?utf-8?B?RjlPbkY5Uy9kTHBlUWtNVjJ6RjFldFBxWjAzTC9PamZYU1VWMlIxVElrZ015?=
+ =?utf-8?B?NkE9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffc09354-7aa2-4757-a385-08dd5679f4f7
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2025 15:26:35.9002
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fAMDFCDWVepKL7Y2o1kWapKzjB3wa8QtifALA/qoQrKhzO/RpsTdsvEeqF0sZx3mIkHVr1jKgQ3+PtZGg2Bhtw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB9475
 
-On Wed, Feb 26, 2025 at 01:52:09PM +0100, Frederic Weisbecker wrote:
-> Le Tue, Feb 25, 2025 at 04:59:08PM -0500, Joel Fernandes a �crit :
-> > On Fri, Feb 14, 2025 at 12:25:58AM +0100, Frederic Weisbecker wrote:
-> > > A full memory barrier in the RCU-PREEMPT task unblock path advertizes
-> > > to order the context switch (or rather the accesses prior to
-> > > rcu_read_unlock()) with the expedited grace period fastpath.
-> > > 
-> > > However the grace period can not complete without the rnp calling into
-> > > rcu_report_exp_rnp() with the node locked. This reports the quiescent
-> > > state in a fully ordered fashion against updater's accesses thanks to:
-> > > 
-> > > 1) The READ-SIDE smp_mb__after_unlock_lock() barrier accross nodes
-> > >    locking while propagating QS up to the root.
-> > > 
-> > > 2) The UPDATE-SIDE smp_mb__after_unlock_lock() barrier while holding the
-> > >    the root rnp to wait/check for the GP completion.
-> > > 
-> > > 3) The (perhaps redundant given step 1) and 2)) smp_mb() in rcu_seq_end()
-> > >    before the grace period completes.
-> > > 
-> > > This makes the explicit barrier in this place superflous. Therefore
-> > > remove it as it is confusing.
-> > > 
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > ---
-> > >  kernel/rcu/tree_plugin.h | 1 -
-> > >  1 file changed, 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > index 3c0bbbbb686f..d51cc7a5dfc7 100644
-> > > --- a/kernel/rcu/tree_plugin.h
-> > > +++ b/kernel/rcu/tree_plugin.h
-> > > @@ -534,7 +534,6 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-> > >  		WARN_ON_ONCE(rnp->completedqs == rnp->gp_seq &&
-> > >  			     (!empty_norm || rnp->qsmask));
-> > >  		empty_exp = sync_rcu_exp_done(rnp);
-> > > -		smp_mb(); /* ensure expedited fastpath sees end of RCU c-s. */
-> > 
-> > I was wondering though, this is a slow path and the smp_mb() has been there
-> > since 2009 or so. Not sure if it is super valuable to remove it at this
-> > point. But we/I should definitely understand it.
+
+
+On 2/26/2025 10:04 AM, Paul E. McKenney wrote:
+>>> I was wondering if you could also point to the fastpath that this is racing
+>>> with, it is not immediately clear (to me) what this smp_mb() is pairing with
+>>> 🙁
+>> It is supposed to pair with the barrier in sync_exp_work_done() but then again
+>> this is already enforced by the smp_mb__after_unlock_lock() chained through
+>> rnp locking.
+> You could interpret that "Order GP completion with preceding accesses"
+> to include preceding readers, which to your point sounds plausible.
+> And in that case, again as you say, the raw_spin_lock_irqsave_rcu_node()
+> in rcu_report_exp_rnp() provides the needed ordering.
 > 
-> The point is indeed not to improve performance because this is a slowpath
-> (although...). The main goal is to maintain a clear picture of the ordering
-> without needless barriers that leave a taste of doubt to reviewers.
+> I think.  😉
 
-Agreed!
+This is for the case where readers are blocked. For the case where readers were
+not blocked, and we exited the RSCS, we just expect the regular QS reporting
+paths to call into rcu_report_exp_rnp() and similarly provide the full memory
+barrier (smp_mb) on the now-reader-unlocked-CPU right?
 
-> > I was wondering if you could also point to the fastpath that this is racing
-> > with, it is not immediately clear (to me) what this smp_mb() is pairing with
-> > :(
-> 
-> It is supposed to pair with the barrier in sync_exp_work_done() but then again
-> this is already enforced by the smp_mb__after_unlock_lock() chained through
-> rnp locking.
+Just wanted to check my understanding was correct :)
 
-You could interpret that "Order GP completion with preceding accesses"
-to include preceding readers, which to your point sounds plausible.
-And in that case, again as you say, the raw_spin_lock_irqsave_rcu_node()
-in rcu_report_exp_rnp() provides the needed ordering.
+Also if I may paraphrase the ordering requirement here, we do not want RCU
+readers to observe any modifications happening to data after the GP has ended
+(i.e. synchronize_rcu_expedited() has returned). Similarly, we do not want
+updates in the pre-existing readers to not be visible to accesses after the GP
+has ended. Right?
 
-I think.  ;-)
+thanks,
 
-							Thanx, Paul
-
-> Thanks.
-> 
-> > 
-> > thanks,
-> > 
-> >  - Joel
-> > 
-> > 
-> > 
-> > 
-> > 
-> > >  		np = rcu_next_node_entry(t, rnp);
-> > >  		list_del_init(&t->rcu_node_entry);
-> > >  		t->rcu_blocked_node = NULL;
-> > > -- 
-> > > 2.46.0
-> > > 
+ - Joel
