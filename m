@@ -1,81 +1,101 @@
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1619F225785;
-	Wed, 26 Feb 2025 15:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F8D22541F;
+	Wed, 26 Feb 2025 15:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740584416; cv=none; b=n1aJHcCL3uvBXoXjPQHgIzsfSTJYpgLmjxiRaAm9fw0/N+1O3L4FH/vOhb8ZvA7bJq9mJHprXN4Thz0ixeMMiV+YYRpWjR064SioG0Pq3kpW+QjR7ScS6pgrd6wFt6Kd1m2HUAofdFtf9U96KyXAuLFA0bXKYj6/o78V520+Z1o=
+	t=1740584578; cv=none; b=UYw1Keywyih18NN9Kp8qfcPVfOp1lmkh8UK2md6VHxBwQXuot6QNsw+Vn2s35WywbMymPz2weskHgsrkG+lY3yOOw+LrPvxI9VvbuLtJrZZLGSiaBcdsgaMehSnB+XhuRKYp5OQwjanDlTk0j7UDY9eN/pMvqkFRsK7cxt80Eok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740584416; c=relaxed/simple;
-	bh=LX9lKHB7J/Sp926ST10IdRatbigu0UA7eelyCUQ8uug=;
+	s=arc-20240116; t=1740584578; c=relaxed/simple;
+	bh=y2U4LiplXrqnccDqV+8uusl1+bnBBatPfxdZRviXsbE=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pA/0sM5knNVI1uWWjslFsd48GWI3MnkZ6IBrs8Duf24ScgsisdkHJG79QsY6KOI64uo7XpFf9QDCb04IHzs348vBirtUjWeIx7q7/TlCU7U/esvlXDfOv0UkiwtBCX+GA59WDHvsIVHbPzSEaNFFjiO1bjnw1UqRNOKFdGxJalM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D3c0McrJ; arc=none smtp.client-ip=209.85.208.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=MZ88lm1Js60fnPJK9F3ooh4VAPD56oNrqqIdg6l8yaIiAyIwrFePmMb9WzM8Xad9DioKXcAR+1ptH3atwMEZkAWSG413xFjGtc6L3GjCndSHJpB5KbXgJNmjRTt0SKKrjt8f+wnYQk8dNe8/IYDDc0IOtsGsTfolKnlMb78plc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J8UxfAq/; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D3c0McrJ"
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-30797730cbdso68622541fa.3;
-        Wed, 26 Feb 2025 07:40:13 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J8UxfAq/"
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-3078fb1fa28so54782341fa.3;
+        Wed, 26 Feb 2025 07:42:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740584412; x=1741189212; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740584575; x=1741189375; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=O7L2Hmq1Tugg72Rbml2F5bkVZSahtOM1a0b2g+ur13E=;
-        b=D3c0McrJ8tdxVviHMD21SA6Bbv1/S35jHGrns0gDQJjTR+JQIndZSt4nbtsc51AlS+
-         +lz85QUmLLIiZAwt7Qi0dUYZ7IcpnGgyHgHJjQBy5EDfEdCeU2vXH5k+nhsw/jGL+kld
-         1+lWm5uC/Xtd9SCRO4NNdesX5t9JbecJmlELDQKP7Sc0Wgt7/DFrIjLq3QQpWsJ3yUe/
-         J7RzeoqlsS7rwqlCUeuP94oM2NRn3/GrrxFUYvUJGmQTHPDNpHo9w8aKwFp7EhZhMAQh
-         j07D6kV82II5eGBXPGpYVnbONmO6958+wfmJpj3sLpbCBLgugm3xfi+HR+OBuGkGcHac
-         HLTA==
+        bh=EC1eEy16dWk77oUwR2C/pnSf364aeM1Gi+/TEG7RfzQ=;
+        b=J8UxfAq/b1A8CKRW1adinMe8HL/aesxCubfLsvL0xr5Ml6P13zgAX9IlxwiR2+6dED
+         lfCMDorBY5D510f2TZGrWvFnrh0GM7BKGIG5Ak9pLkEivzT9m+MvBtroRp1VtYzqJaaI
+         J9OtLr1WK82ohmGnYRZ2iMTZoqEmyx2+GmnRYjQ45yR5dkCj0CoDSyiB29qhZJjvBwWE
+         wSe2+XDGseUepAkQhI8+DznPt9oKvUJklZywEUT2DMyjhz1KIf3pQ3iVpYZWm+5WDan1
+         SwT66l3mtrE8AUZbvkK6oGVg5WaBESOiZcPAZ6ffo/jtYAvdnJV5/ePBl7A2f0IfExm2
+         EmSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740584412; x=1741189212;
+        d=1e100.net; s=20230601; t=1740584575; x=1741189375;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O7L2Hmq1Tugg72Rbml2F5bkVZSahtOM1a0b2g+ur13E=;
-        b=hUrskRbzgmYJq2FdRVYMzVyvbTYZ9kbcwFNdjRn5MvCh/CETEAJOb46lXJGISJ7XSB
-         QDMC2ncqAIlYAE/Gd4BOCNlzbzyyxZjJdNhJAkxb/BlN/6c5iCQzfoqv6o9k+6XaaFgz
-         2NuX0aDiFrPFSXKsR1iZHOHPixEbxVyHo33HUyTC/jUpII0p5EXM2/lcZu82560r8Frh
-         c1+FVtPOhsNyZBEwBfWxhdSwDLwt0+AUKW2raEbOg6PTGWNJrFBCjl7aEomczp5a0pW/
-         ChDflt3M35UafU7uhoEC4Mrp75fRJRUiJmCuEBsO2lQO5qLzDiBut7HNDrFWdJJbHKX3
-         wr2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWFe2ZgZrIIu23/RQFN7eAIYSKkbjJH1JZ6vX2M3r0Qd1E8Xxw4JQiHlCmIOyIu29785kir@vger.kernel.org, AJvYcCXNhrC+pziIMfvmK/Fhh9q2+PjCb9mfwXebShxO7fcTSLnkpC/VcNP5qVE7KVfAgQ0OFG8KstBm+v3LBic=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDbc/1gTbeOD8Wuwxxz0VBRNpaUpOQe7Lw9enwD6Zi4IdQgv0i
-	WVXYVKuqYVJAXyOBNCNlYjMgef8r82+7kbSx2RBhBeW/201XzQdF
-X-Gm-Gg: ASbGncufURrm8rTKbntRdAytXLMQIcPXrAyiCsMAxNb+u57mN2EArm79r1STkDPW8qf
-	Plnh2hBr0zwEiL/wyKxPs3TGRQJM9CT8YoGi/XxxV/bm8dm00zIyakaejwS9Vw4ft3eK/Wjk+I1
-	bnRYvOg3Iju3MYvJiF4aDBe68SQHzVaT4dOoQ8hCDhH0WEyfX4KIdqR/ClfYB65zZed53xm0b6v
-	zPbiVncZUwOYmFVIaz2bajrf07Sjtjpf6SBhI2Q/hfbQRAzzbQxDSpKim/+NtcSPh1itD3kJ66d
-	Xg71sdjzNZtfMB0JN/nojTmKkh4M4bWwq4vC6qoB/CuGZoCT
-X-Google-Smtp-Source: AGHT+IHS1X4U58RB24oH4u/yF0C7d4oRT5Mi+KpmI1mp2l/WxPYNeE8Z6PN4paH4DQMm0Q2Vzq7wlg==
-X-Received: by 2002:a2e:9bd2:0:b0:308:f4cc:952e with SMTP id 38308e7fff4ca-30b79163e4dmr28141091fa.11.1740584411525;
-        Wed, 26 Feb 2025 07:40:11 -0800 (PST)
+        bh=EC1eEy16dWk77oUwR2C/pnSf364aeM1Gi+/TEG7RfzQ=;
+        b=j1EIhKK81M3Y8eGtLAzYhOYGMJLJ+rltbcsPsODGSaJZgHNzctIx4PIobAKB7nKU0z
+         a2yUoiKMrRMaHkOwg+nbqXvIhV16+lL11n44WZd54VQMhyXf4TcpxeIblVHJ693rLK/Q
+         cW+P5iqgvR6Vmu+SSGZBdRuAwfm12vSvGB+OibtRp7qC+03o8JRknV5etZFdnYNAm7TW
+         J2DLDgLFXeI863lVtY3kb+wkcmu39rZKwJcMF1apjQr27CrDNqHJhhoByEH03i374/FF
+         0jtL72o0caSMSMrAKk18/wC0VGG9sDlp0fufRJExNa8ZfccFbn6oVwxiE9Fk/hUBfqPv
+         04Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGoz8g0JMtpIu+49YsOpejlCxQo0UYeuNoaD924M9GLn/QN50C02Bqz+lVF9zRkzzEn1sg@vger.kernel.org, AJvYcCUnGe48OgLe0EJ79t+nnFf71iJ0t8eayzsWP5zf6kx6n05EzHFy3pBYMiISil6aQMkPhPEXsGaxEappzWw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyczrAxePrv8MTAzYneKm77JYk6lXy6BhcflF3XCTRAC1CA0eWK
+	VqqEtG7Taa9Jb0k6s+jQ6K20m4kIt/8X+MwXUAA5uRyIV6NJ8NW9
+X-Gm-Gg: ASbGncuQZohe5Iy0DOy9tozhoMdZZpKtg9JoAMagGwCKAkfTGdd7jKRfcUr0qJM1IFn
+	jA6trDJw4jdHoO7MT3cR38LlxtItJ437nwu7Ntq/8aqxnoYM243KLH0OfQ4/NIgzOhKsO9NuTLN
+	Pr/2D3sIPUL4aesz9dFevo8onM+Uq9iejBDR0zpflT0w4/g4v6MOB5Ryj/D65o9ZLh5KnuoY+mc
+	oCJ7wF/hJ16EpZqv5CrnzOvSno3M9WlelfjXSimQgDaBIURHLyycRLBQAWLF2MEzZnQHwa9jcgR
+	19Y5Lw5XmcxcXP/IcgwlTuuqdTbrZBkucrFrFWWq+y9QbheO
+X-Google-Smtp-Source: AGHT+IGXJ4oZ/znpdkecPp5tddj+wrT+wUd+ZQGedDdTB7EiMlBVxjC98UHDukKm8jBLnJwAplj21Q==
+X-Received: by 2002:a2e:3207:0:b0:309:bc3:3b01 with SMTP id 38308e7fff4ca-30a5af4c7bbmr85358301fa.0.1740584574916;
+        Wed, 26 Feb 2025 07:42:54 -0800 (PST)
 Received: from pc636 (host-95-203-6-24.mobileonline.telia.com. [95.203.6.24])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30a819e0a37sm5504051fa.11.2025.02.26.07.40.09
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30a819ebe39sm5640871fa.28.2025.02.26.07.42.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2025 07:40:10 -0800 (PST)
+        Wed, 26 Feb 2025 07:42:54 -0800 (PST)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 26 Feb 2025 16:40:08 +0100
-To: "Paul E. McKenney" <paulmck@kernel.org>
+Date: Wed, 26 Feb 2025 16:42:50 +0100
+To: Vlastimil Babka <vbabka@suse.cz>
 Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Cheung Wall <zzqq0103.hey@gmail.com>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Keith Busch <keith.busch@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v3 1/3] rcutorture: Allow a negative value for
- nfakewriters
-Message-ID: <Z7812CnMT0-NLA4m@pc636>
-References: <20250225110020.59221-1-urezki@gmail.com>
- <20250225212409.GA1807836@joelnvbox>
- <Z78lNRKjLQKigyLw@pc636>
- <186b2fd7-587d-4647-bbbf-7f6940de30b4@paulmck-laptop>
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>, Christoph Lameter <cl@linux.com>,
+	David Rientjes <rientjes@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Alexander Potapenko <glider@google.com>,
+	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+	kasan-dev@googlegroups.com, Jann Horn <jannh@google.com>,
+	Mateusz Guzik <mjguzik@gmail.com>, linux-nvme@lists.infradead.org,
+	leitao@debian.org
+Subject: Re: [PATCH v2 6/7] mm, slab: call kvfree_rcu_barrier() from
+ kmem_cache_destroy()
+Message-ID: <Z782eoh-d48KXhTn@pc636>
+References: <2811463a-751f-4443-9125-02628dc315d9@suse.cz>
+ <Z7xbrnP8kTQKYO6T@pc636>
+ <ef97428b-f6e7-481e-b47e-375cc76653ad@suse.cz>
+ <Z73p2lRwKagaoUnP@kbusch-mbp>
+ <CAOSXXT6-oWjKPV1hzXa5Ra4SPQg0L_FvxCPM0Sh0Yk6X90h0Sw@mail.gmail.com>
+ <Z74Av6tlSOqcfb-q@pc636>
+ <Z74KHyGGMzkhx5f-@pc636>
+ <8d7aabb2-2836-4c09-9fc7-8bde271e7f23@suse.cz>
+ <Z78lpfLFvNxjoTNf@pc636>
+ <93f03922-3d3a-4204-89c1-90ea4e1fc217@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -84,47 +104,24 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <186b2fd7-587d-4647-bbbf-7f6940de30b4@paulmck-laptop>
+In-Reply-To: <93f03922-3d3a-4204-89c1-90ea4e1fc217@suse.cz>
 
-On Wed, Feb 26, 2025 at 06:50:02AM -0800, Paul E. McKenney wrote:
-> On Wed, Feb 26, 2025 at 03:29:09PM +0100, Uladzislau Rezki wrote:
-> > On Tue, Feb 25, 2025 at 04:24:09PM -0500, Joel Fernandes wrote:
-> > > On Tue, Feb 25, 2025 at 12:00:18PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > Currently "nfakewriters" parameter can be set to any value but
-> > > > there is no possibility to adjust it automatically based on how
-> > > > many CPUs a system has where a test is run on.
-> > > > 
-> > > > To address this, if the "nfakewriters" is set to negative it will
-> > > > be adjusted to num_online_cpus() during torture initialization.
-> > > > 
-> > > > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > > ---
-> > > >  kernel/rcu/rcutorture.c | 22 ++++++++++++++++------
-> > > >  1 file changed, 16 insertions(+), 6 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > > > index d98b3bd6d91f..f376262532ce 100644
-> > > > --- a/kernel/rcu/rcutorture.c
-> > > > +++ b/kernel/rcu/rcutorture.c
-> > > > @@ -148,6 +148,7 @@ MODULE_PARM_DESC(torture_type, "Type of RCU to torture (rcu, srcu, ...)");
-> > > 
-> > > IMO, this should also be updated to reflect the possibily to set it negative
-> > > and hence to number CPUs:
-> > > 
-> > > torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
-> > > 
-> > You can set it to a negative as well as to number of CPUs or any other
-> > number.
+On Wed, Feb 26, 2025 at 03:36:39PM +0100, Vlastimil Babka wrote:
+> On 2/26/25 3:31 PM, Uladzislau Rezki wrote:
+> > On Wed, Feb 26, 2025 at 11:59:53AM +0100, Vlastimil Babka wrote:
+> >> On 2/25/25 7:21 PM, Uladzislau Rezki wrote:
+> >>>>
+> >>> WQ_MEM_RECLAIM-patch fixes this for me:
+> >>
+> >> Sounds good, can you send a formal patch then?
+> >>
+> > Do you mean both? Test case and fix? I can :)
 > 
-> Joel does have a good point, though.  Could I interest one of you in
-> updating the Documentation/admin-guide/kernel-parameters.txt entry for
-> rcutorture.nfakewriters?  The rcutorture.nreaders entry is a decent guide.
+> Sure, but only the fix is for stable. Thanks!
 > 
-OK. Then i misunderstood Joel. It was about updating a documentation
-about this!
-
-Good point :)
+It is taken by Gregg if there is a Fixes tag in the commit.
+What do you mean: the fix is for stable? The current Linus
+tree is not suffering from this?
 
 --
 Uladzislau Rezki
