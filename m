@@ -1,158 +1,255 @@
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02A21531E8;
-	Wed, 26 Feb 2025 05:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F3226BD8A
+	for <rcu@vger.kernel.org>; Wed, 26 Feb 2025 10:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740548569; cv=none; b=KWwK8IvudGdVIPfNJp/OJ9psZG1FXWEnk0DZhozznmnF3WogZx2kOcccCS5QPqthxFGvPuikKc5MF1qpw3YVh06TXh4Nm8UEfmkhHiSW8I5q4Xu3VHy6tnqb74CYS5m9ZJiQAX4MqRFgwrSn/LrZ0gxR+Da31X9ld998f/yGXyY=
+	t=1740567494; cv=none; b=L+A5Htk4sLlTavG74JARLVipp8FlVlKBx+L7XUNUO2kkz/4p76kecQL2qMyz1X/+XaCwjMVuIQHlFzsgZEz3d35nlq527SHoF6k6Yzj0MtBiO6zEFe7M97QjHmDzVoh9Miz0o+ra/Z+zE9za1EGlC0n86frnuxJge1QGBI4oGdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740548569; c=relaxed/simple;
-	bh=qgwn/5gHrE2jyzZRW6bmAicNqyZrpWmfrBL9qb4fBeA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=taiPAkktbKyQAS9Gj9aJqvuVusSpK6j79fVdKMhJnZqXYuZmkVhpPcWsLaskD5NduwvG7QamxQUFfJv1JBRPdmCoUcUJFOHWTlm763+FEt3h57i3C2nnnqdtThb4ce3FKbnoH87GKZHosJG8ZRJ42846dXgiJBq48utZJYS5h9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CP6L4w+7; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1740567494; c=relaxed/simple;
+	bh=FYTq0J18TlOij80ZguLWv+5Ha4QBIlOo/uEcM3VQfKM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FL1s8Cr8+d4hrgMY9SpnheE9ZTTBC1RGzPozE+lUGp+jQx1ZiJbqq03+VgGpjQXcCgGMOPxApanb4th6ssMwQp5itYQswA6rRHoF9uKZW3DveKlDsXBtFfZJpN5au+3u7BThjuAHicqwGivN798O/c9nmHAyZ6yq/H/JXokX8NI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zqQI5+yM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=40ObUHLU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zqQI5+yM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=40ObUHLU; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CP6L4w+7"
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-38f2b7ce2f3so4550739f8f.0;
-        Tue, 25 Feb 2025 21:42:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740548566; x=1741153366; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qgwn/5gHrE2jyzZRW6bmAicNqyZrpWmfrBL9qb4fBeA=;
-        b=CP6L4w+7s2o76Aps7WND6FiHfRFlVE7tyGt/IsDq0aYeVBR46ei4LdTcHai/HAt+LJ
-         GSsTqA1JUhVaaQGjxW5Knsm1lUdJRxQz5IrlwU/LyD4JAj1KZDMBv+1o9zY4hpRDwqU/
-         sSmbXM1zEMG1Jni2nrQWuKpFDpYXpeQgSVOdRcOGz81cZhmhFbmtnQcwTjYrNA6oyVy3
-         odui4/MJ5kg4IdgxnuvJK6yFkdt+HbhPuwscBHqCpNdAfj6Uv+i8Osx5YLTSgeYBcqFb
-         WzmvJIrlCgF1ZwVncxHk490wtjH5HJS4It5w8H/MM3Yj/IRkFIkw0/L/tLDM9g6iPdTM
-         NQZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740548566; x=1741153366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qgwn/5gHrE2jyzZRW6bmAicNqyZrpWmfrBL9qb4fBeA=;
-        b=ge3BAAcgzjnkbGqV1EVDpZ1rXpmZ/UlcKEwuSuIdM+fCiNS0qEHsto3fqd6rMJP/F4
-         /DMGcuw9jQX67/nLu8s4Vze8d2hwgKMqgU7qfv4EzEDyoPnTvGpVtv3PuFcSKtLHcbzv
-         Y4/s8O0UuqXFHB6aRwM9ZRtTodNvKG4U7urnjj8fhjQhNyCt8fcNqr1vIKD3S2MhuO7g
-         hFCGQdkkG3tCBhi32r2SDLRLyixk4sB0TToz+pUw9JzHrkNMDPGweO957+t/Nx2jVgXF
-         IdnFpx8FEwWfDhiNHu0B5Bzar+89VR/pgZnkppQrjhuYcr3ZwaDQtsu/NSuKGrSbQKWD
-         KzJg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwL3g5JsQV948QDjYb+YASGbScGDW54DJ7J2EVZJbymoZpriknzhqDXP9FGrKiqmpIKmQ=@vger.kernel.org, AJvYcCW+NzZlODhjojqHIlCmgtVWPM/33C32dXDWMRbSzwX0H6P3gIp8e01gJSmBkdE1p8Cfp2ID8aL1GeFbGKdr@vger.kernel.org, AJvYcCXvIb272EGir/Zt8ufnjvRZ3Xq38DZHmfcsaDlZhROV/YT+obzGU2y7aSosiXj51NGYePnO@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbB0m0l6JoL2YPGhQX7BQRWdw87Ip7QLspCec1N4tEuDNPyebD
-	JBTv1XKiYsqcWWkyGqockGJ/SNRefgpl9VqieZKXDkEivJohz0fw+bAOXd7Y5471+ScBPE5gmxF
-	8faLKaIAwHHl+RGs4VaowtAnBS5M=
-X-Gm-Gg: ASbGncuCMIJZB/+QEguG9tq30tiC4HdvDWlu9bXBRvWVZIimNgD+QyuYp9F8tIFNfK7
-	9V4GRlRK5ye353HDvBx16+XVxJ5lLeCRp2JG3h6YVRIxEnby5TUTcVnNsXqRvjxAN0gQ8+knr7U
-	QFfE6kUuSRPW8eFgeXjupxKBg=
-X-Google-Smtp-Source: AGHT+IGJ7kKSE9Klc2Pk10yZQs5vQ/oeFEoz2dII3HbyhmfLav6YXGB6DB5PetIU24Eu8QrsIzvJESpzNLNcomiDBdY=
-X-Received: by 2002:a5d:5f94:0:b0:38e:6cd0:f973 with SMTP id
- ffacd0b85a97d-38f7079a39emr16785278f8f.21.1740548565859; Tue, 25 Feb 2025
- 21:42:45 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zqQI5+yM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="40ObUHLU";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zqQI5+yM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="40ObUHLU"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 68A6221184;
+	Wed, 26 Feb 2025 10:58:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740567490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WvQMaogfR4p5vXml1R1gl73Lc4GXJegwVY6rJmvbNrQ=;
+	b=zqQI5+yMO6yV3jxwiKP42S0fE0YF0JhLpTM+nLG6l1933VXSW+zLE2lfLXoRZfvJxeWuu4
+	G3y8qKDjpgk2MiX8YP7+xy354Y+FKgQb5ewbL9NoYSjlf+35YjyS3AqA1PujhidnbV4mRU
+	mi4dVNgoXqxqzP9CbBcvFCHyd+BqRLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740567490;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WvQMaogfR4p5vXml1R1gl73Lc4GXJegwVY6rJmvbNrQ=;
+	b=40ObUHLUWyTtsyo7VM6q8v3Scind4/Ubjn28AvhTB1BWxzficxhr/BOj1Ak9F9rSwSj6UN
+	+Dtsqe0OY/rifSBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zqQI5+yM;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=40ObUHLU
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1740567490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WvQMaogfR4p5vXml1R1gl73Lc4GXJegwVY6rJmvbNrQ=;
+	b=zqQI5+yMO6yV3jxwiKP42S0fE0YF0JhLpTM+nLG6l1933VXSW+zLE2lfLXoRZfvJxeWuu4
+	G3y8qKDjpgk2MiX8YP7+xy354Y+FKgQb5ewbL9NoYSjlf+35YjyS3AqA1PujhidnbV4mRU
+	mi4dVNgoXqxqzP9CbBcvFCHyd+BqRLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1740567490;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WvQMaogfR4p5vXml1R1gl73Lc4GXJegwVY6rJmvbNrQ=;
+	b=40ObUHLUWyTtsyo7VM6q8v3Scind4/Ubjn28AvhTB1BWxzficxhr/BOj1Ak9F9rSwSj6UN
+	+Dtsqe0OY/rifSBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3DA491377F;
+	Wed, 26 Feb 2025 10:58:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HQrvDcLzvmdaeQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 26 Feb 2025 10:58:10 +0000
+Message-ID: <8d7aabb2-2836-4c09-9fc7-8bde271e7f23@suse.cz>
+Date: Wed, 26 Feb 2025 11:59:53 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250204082848.13471-1-hotforest@gmail.com> <20250204082848.13471-3-hotforest@gmail.com>
- <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com> <8734gr3yht.fsf@toke.dk>
- <d191084a-4ab4-8269-640f-1ecf269418a6@huaweicloud.com> <CAADnVQKD94q-G4N=w9PJU+k6gPhM8GmUYcyfj=33B_mKX6Qbjw@mail.gmail.com>
- <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com>
-In-Reply-To: <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 25 Feb 2025 21:42:34 -0800
-X-Gm-Features: AQ5f1JrKFHxryEEBl1o8lc_G6EKvZ6s53yPq_lKQmFG77O2pmmULv0mgtif1f4U
-Message-ID: <CAADnVQLrJBOSXP41iO+-FtH+XC9AmuOne7xHzvgXop3DUC5KjQ@mail.gmail.com>
-Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
- map atomically
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, rcu@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, "Paul E . McKenney" <paulmck@kernel.org>, Cody Haas <chaas@riotgames.com>, 
-	Hou Tao <hotforest@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/7] mm, slab: call kvfree_rcu_barrier() from
+ kmem_cache_destroy()
+To: Uladzislau Rezki <urezki@gmail.com>, Keith Busch <keith.busch@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Jakub Kicinski <kuba@kernel.org>,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+ Jann Horn <jannh@google.com>, Mateusz Guzik <mjguzik@gmail.com>,
+ linux-nvme@lists.infradead.org, leitao@debian.org
+References: <20240807-b4-slab-kfree_rcu-destroy-v2-0-ea79102f428c@suse.cz>
+ <20240807-b4-slab-kfree_rcu-destroy-v2-6-ea79102f428c@suse.cz>
+ <Z7iqJtCjHKfo8Kho@kbusch-mbp> <2811463a-751f-4443-9125-02628dc315d9@suse.cz>
+ <Z7xbrnP8kTQKYO6T@pc636> <ef97428b-f6e7-481e-b47e-375cc76653ad@suse.cz>
+ <Z73p2lRwKagaoUnP@kbusch-mbp>
+ <CAOSXXT6-oWjKPV1hzXa5Ra4SPQg0L_FvxCPM0Sh0Yk6X90h0Sw@mail.gmail.com>
+ <Z74Av6tlSOqcfb-q@pc636> <Z74KHyGGMzkhx5f-@pc636>
+From: Vlastimil Babka <vbabka@suse.cz>
+Content-Language: en-US
+In-Reply-To: <Z74KHyGGMzkhx5f-@pc636>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 68A6221184
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[kernel.org,joelfernandes.org,joshtriplett.org,gmail.com,linux.com,google.com,goodmis.org,efficios.com,inria.fr,zx2c4.com,linux-foundation.org,linux.dev,kvack.org,vger.kernel.org,googlegroups.com,lists.infradead.org,debian.org];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLctujmen6hjyrx8fu4drawbuj)];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:mid,suse.cz:dkim]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue, Feb 25, 2025 at 8:05=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> Hi,
->
-> On 2/26/2025 11:24 AM, Alexei Starovoitov wrote:
-> > On Sat, Feb 8, 2025 at 2:17=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
- wrote:
-> >> Hi Toke,
-> >>
-> >> On 2/6/2025 11:05 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >>> Hou Tao <houtao@huaweicloud.com> writes:
-> >>>
-> >>>> +cc Cody Haas
-> >>>>
-> >>>> Sorry for the resend. I sent the reply in the HTML format.
-> >>>>
-> >>>> On 2/4/2025 4:28 PM, Hou Tao wrote:
-> >>>>> Currently, the update of existing element in hash map involves two
-> >>>>> steps:
-> >>>>> 1) insert the new element at the head of the hash list
-> >>>>> 2) remove the old element
-> >>>>>
-> >>>>> It is possible that the concurrent lookup operation may fail to fin=
-d
-> >>>>> either the old element or the new element if the lookup operation s=
-tarts
-> >>>>> before the addition and continues after the removal.
-> >>>>>
-> >>>>> Therefore, replacing the two-step update with an atomic update. Aft=
-er
-> >>>>> the change, the update will be atomic in the perspective of the loo=
-kup
-> >>>>> operation: it will either find the old element or the new element.
-> > I'm missing the point.
-> > This "atomic" replacement doesn't really solve anything.
-> > lookup will see one element.
-> > That element could be deleted by another thread.
-> > bucket lock and either two step update or single step
-> > don't change anything from the pov of bpf prog doing lookup.
->
-> The point is that overwriting an existed element may lead to concurrent
-> lookups return ENOENT as demonstrated by the added selftest and the
-> patch tried to "fix" that. However, it seems using
-> hlist_nulls_replace_rcu() for the overwriting update is still not
-> enough. Because when the lookup procedure found the old element, the old
-> element may be reusing, the comparison of the map key may fail, and the
-> lookup procedure may still return ENOENT.
+On 2/25/25 7:21 PM, Uladzislau Rezki wrote:
+>>
+> WQ_MEM_RECLAIM-patch fixes this for me:
 
-you mean l_old =3D=3D l_new ? I don't think it's possible
-within htab_map_update_elem(),
-but htab_map_delete_elem() doing hlist_nulls_del_rcu()
-then free_htab_elem, htab_map_update_elem, alloc, hlist_nulls_add_head_rcu
-and just deleted elem is reused to be inserted
-into another bucket.
+Sounds good, can you send a formal patch then?
+Some nits below:
 
-I'm not sure whether this new hlist_nulls_replace_rcu()
-primitive works with nulls logic.
+> <snip>
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 4030907b6b7d..1b5ed5512782 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1304,6 +1304,8 @@ module_param(rcu_min_cached_objs, int, 0444);
+>  static int rcu_delay_page_cache_fill_msec = 5000;
+>  module_param(rcu_delay_page_cache_fill_msec, int, 0444);
+> 
+> +static struct workqueue_struct *rcu_reclaim_wq;
+> +
+>  /* Maximum number of jiffies to wait before draining a batch. */
+>  #define KFREE_DRAIN_JIFFIES (5 * HZ)
+>  #define KFREE_N_BATCHES 2
+> @@ -1632,10 +1634,10 @@ __schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
+>         if (delayed_work_pending(&krcp->monitor_work)) {
+>                 delay_left = krcp->monitor_work.timer.expires - jiffies;
+>                 if (delay < delay_left)
+> -                       mod_delayed_work(system_unbound_wq, &krcp->monitor_work, delay);
+> +                       mod_delayed_work(rcu_reclaim_wq, &krcp->monitor_work, delay);
+>                 return;
+>         }
+> -       queue_delayed_work(system_unbound_wq, &krcp->monitor_work, delay);
+> +       queue_delayed_work(rcu_reclaim_wq, &krcp->monitor_work, delay);
+>  }
+> 
+>  static void
+> @@ -1733,7 +1735,7 @@ kvfree_rcu_queue_batch(struct kfree_rcu_cpu *krcp)
+>                         // "free channels", the batch can handle. Break
+>                         // the loop since it is done with this CPU thus
+>                         // queuing an RCU work is _always_ success here.
+> -                       queued = queue_rcu_work(system_unbound_wq, &krwp->rcu_work);
+> +                       queued = queue_rcu_work(rcu_reclaim_wq, &krwp->rcu_work);
+>                         WARN_ON_ONCE(!queued);
+>                         break;
+>                 }
+> @@ -1883,7 +1885,7 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+>         if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+>                         !atomic_xchg(&krcp->work_in_progress, 1)) {
+>                 if (atomic_read(&krcp->backoff_page_cache_fill)) {
+> -                       queue_delayed_work(system_unbound_wq,
+> +                       queue_delayed_work(rcu_reclaim_wq,
+>                                 &krcp->page_cache_work,
+>                                         msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
+>                 } else {
+> @@ -2120,6 +2122,10 @@ void __init kvfree_rcu_init(void)
+>         int i, j;
+>         struct shrinker *kfree_rcu_shrinker;
+> 
+> +       rcu_reclaim_wq = alloc_workqueue("rcu_reclaim",
 
-So back to the problem statement..
-Are you saying that adding new to a head while lookup is in the middle
-is causing it to miss an element that
-is supposed to be updated assuming atomicity of the update?
-While now update_elem() is more like a sequence of delete + insert?
+Should we name it "kvfree_rcu_reclaim"? rcu_reclaim sounds too generic
+as if it's part of rcu itself?
 
-Hmm.
+> +               WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
 
-> I see. In v2 I will fallback to the original idea: adding a standalone
-> update procedure for htab of maps in which it will atomically overwrite
-> the map_ptr just like array of maps does.
+Do we want WQ_SYSFS? Or maybe only when someone asks, with a use case?
 
-hold on. is this only for hash-of-maps ?
-How that non-atomic update manifested in real production?
+Thanks,
+Vlastimil
+
+> +       WARN_ON(!rcu_reclaim_wq);
+> +
+>         /* Clamp it to [0:100] seconds interval. */
+>         if (rcu_delay_page_cache_fill_msec < 0 ||
+>                 rcu_delay_page_cache_fill_msec > 100 * MSEC_PER_SEC) {
+> <snip>
+> 
+> it passes:
+> 
+> <snip>
+> [   15.972416] KTAP version 1
+> [   15.972421] 1..1
+> [   15.973467]     KTAP version 1
+> [   15.973470]     # Subtest: slub_test
+> [   15.973472]     # module: slub_kunit
+> [   15.973474]     1..10
+> [   15.974483]     ok 1 test_clobber_zone
+> [   15.974927]     ok 2 test_next_pointer
+> [   15.975308]     ok 3 test_first_word
+> [   15.975672]     ok 4 test_clobber_50th_byte
+> [   15.976035]     ok 5 test_clobber_redzone_free
+> [   15.976128] stackdepot: allocating hash table of 1048576 entries via kvcalloc
+> [   15.979505]     ok 6 test_kmalloc_redzone_access
+> [   16.014408]     ok 7 test_kfree_rcu
+> [   17.726602]     ok 8 test_kfree_rcu_wq_destroy
+> [   17.750323]     ok 9 test_leak_destroy
+> [   17.750883]     ok 10 test_krealloc_redzone_zeroing
+> [   17.750887] # slub_test: pass:10 fail:0 skip:0 total:10
+> [   17.750890] # Totals: pass:10 fail:0 skip:0 total:10
+> [   17.750891] ok 1 slub_test
+> <snip>
+> 
+> --
+> Uladzislau Rezki
+
