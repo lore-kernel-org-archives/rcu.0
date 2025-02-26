@@ -1,124 +1,117 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD32258CD1;
-	Wed, 26 Feb 2025 12:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DDC21171A;
+	Wed, 26 Feb 2025 14:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740574332; cv=none; b=AnfQGaDCj5L5jytRJS1R6FVRx3sFcVHLoyq11NKlUvjIa6dRYqYjvuug3YKt5nQ1nFoolGvMEOpDZYXB1o6p44STr3KcuGvsEjmm2++qXzrKlRFUHS3IYZdvEAox6MMCZoXHOQJOdhke4W94dwaeI1dR2FHejI/2lKdmdTNgWBc=
+	t=1740580157; cv=none; b=tuu2dZzDMuS9zAmYfISzbYirMa0vQKZ3i9yHK94IJRa3/nKvp0Cxb6YHAcJvo6XYloKsvS3sVvGOCTPJnzAWbOJXYfHVUJdu+aGjiMo1cShXhEWEqqgnzieeojLCy/Wzkl2WADvLK6+3aZddUsLOPiU/87ffqfcArZHoIrjYOpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740574332; c=relaxed/simple;
-	bh=JGlk4/4dQ34bJu4CjCMr5WRqinwgziK4sNHqtXrh+ds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sLEtMjdPsMuTYOUx26ln+g1UJ2BwCh04MzakT6nEMKAAosDt8Md4CjCIZk35iYxd3ZDVlujixUBYU28ws3zo9Ka3U8/AQIx5M4K7VaGOPjhbANPr4CplewP6CekhqyhniUnWRfR2HOoMM2xuNE5UrVIkDkcseFxHAadXbmlVC/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OPLq2lv7; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1740580157; c=relaxed/simple;
+	bh=U3XRu9BKSm5XctFw50gAsIGx5i29PiCx3IkvGID+i84=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lUYUH3sMvhf3rR/mQ78EP3Zz5oBACJKgSEKuMLwuvhYQUShnQHH3u3D3bXT5TaFOZugEQS3dEoo5D2lT89AaloxQcy08I5p4LFqLOctc4wDXigSrc+6qsl5ELzR2jWyBqcjVvxG4SW+1ETkZ0P5EO0bF96EXb64hUcYEYKQXgtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WOt/uCgm; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OPLq2lv7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F043C4CED6;
-	Wed, 26 Feb 2025 12:52:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740574332;
-	bh=JGlk4/4dQ34bJu4CjCMr5WRqinwgziK4sNHqtXrh+ds=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OPLq2lv79TwtWjDM21fe2SkmG1VW6txtJvF8LgdsDJswnignJcKUGfM14yYJYOKNA
-	 KQ0Dff+RcE4fENAOaS71Olw64vgN0hhgQPuuFNj2BAHHSHOqg6Q5/vdtt2Jp05lj4S
-	 BAITyDsgNNdvYcypfZ6jBdNleJllNpe5IfovuiSv6PQfHo8HxMrbht2wJJCsW2gV5S
-	 dBuzvDllkg0dhpR+dyvm5kf+5WhhGJVd1Xn1Ns3BF4TTl1GoXnJykmAzVeTuVq1fVv
-	 w4BV45y2TbGsPDiXiszS+77loffjHqkp69U4Aly8bH2lRlWbxkytC/jQn4O8d4KKpp
-	 PPAn1h9YuWg8A==
-Date: Wed, 26 Feb 2025 13:52:09 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WOt/uCgm"
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-543e4bbcd86so7852115e87.1;
+        Wed, 26 Feb 2025 06:29:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740580153; x=1741184953; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=P2kiu/HsUSKw59lXGQxuGghGnHIXAC6zHsBsQ9Wyn90=;
+        b=WOt/uCgmB52JDNqvMqBaxDvo0DLTgMguPGtyUm/n5XIgK7pBF6lSvMNxpH06awe7bK
+         fJpTNQ0gbIj1hyZmdEKYBZezvwFWf9vhkzk8y+Q6uzfvK9TaogVXsswB7hX/FYqU7DDh
+         uc0bDQXzAwvVN4Of2G5+2Y9V3BrrmQGuqNga9Oir/mXZqLxC+kgtRMmU9FFy2cg48KMk
+         bJCJ7NhPi37bAXxyxKuxujc2e7s6/5V7Pivz0DSHcAzKIr+wIxklQevXnHcU5EEs3P5Z
+         bHEwgj2J6nXW15OFpnMb2HcgphKcZhoLwZQhFbWHxavPrVCHJz6e5GmgLGGcKJ9qPaUY
+         bhrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740580153; x=1741184953;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P2kiu/HsUSKw59lXGQxuGghGnHIXAC6zHsBsQ9Wyn90=;
+        b=KzGLpYanAsaaAMLMci1OPmTDf1CQD5zQ52kwIRUy/guVlu0XAfYGRkBbs5JojyUTGI
+         8hBHbH/5N7E6+VgOB08XskavYrlO2StnXTCrHovZq6DtjdLNEH9oFdgN7suCEhMnUMyL
+         jqhuzUMSbmbK0FZhnEyiSpa4jhW324foDap+2UeTHd5KXM+NE+FbNstV1X3Z1t0XMHbF
+         tXZeOeKOElwcCErZj3fPtyy5cTlZqQCud6n2gQpVLvNMCZ5oqFGLcDIMWU96nGSji2fX
+         rM5AOg7Kc1+kmKnWqFOfSVGGTAzVPwJSOLBpBJEg1iMfxU4egWEIeNHLUUI9dEIo4NHf
+         DUHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWJr7MdqhQm7TK7ja55aXe7tueRTg0PpjwzAgcId2dBgkRUgqVQJJFF525SW4GqpGZXSsQmw0/imO30YSo=@vger.kernel.org, AJvYcCX84ojp5EdXVtGOjAsPJzkA26BD/e2RGhMOLvw4GROc64JqzhxjQ5smVoCyz9ygRcxtq8X/@vger.kernel.org
+X-Gm-Message-State: AOJu0YwSWpPvEFzqJEyrAZg8wySEXvvkk79C8D1kozvZwXMWtuOSnBAo
+	Dx+0WZdQxxO6mRhU9JoR68Hm1P6MeSClimxORsjZLyApWocg+aH9Wfq8/GNc
+X-Gm-Gg: ASbGncv33g/XUVBXjyi/zoBXXV+gTU2VabVTCL/dK/K5lIPT1B+1CCDHSAeDLn5L/Lg
+	kMqUQr1k1Y+bxYIyKC75AIxFvbF7BCMc1sPm6vcTKxHuh4DlzdIT9e1wj6ktRbi/gWTbA/aEnn0
+	ebX1i5jjL+FoOx99f+rE2QQf1gBdmdOU7hb6mavfeNLzeOppaRIa5WE+GlTLLEoDgkDc6ozih8l
+	oEHbi2DHeSL9eoNGJIlECR3Kr3/ostOuZqlUAUc0RlY3UR5Qf1if9lkPf/eaIIXWw+zMSNUwALA
+	NhCn3r2lV0SL0zixJBubl6DjCNNJqwsZnsXl9EgBV4YnlDlN
+X-Google-Smtp-Source: AGHT+IEwjEWmxx978qjGI809JUeWj0qQG87ubxYGrnt++ojs9L+/TlCz0ZiMFqjIWL2+srJwoWhmfw==
+X-Received: by 2002:a05:6512:3c99:b0:549:38eb:d690 with SMTP id 2adb3069b0e04-5493c5c11b5mr1910652e87.36.1740580152930;
+        Wed, 26 Feb 2025 06:29:12 -0800 (PST)
+Received: from pc636 (host-95-203-6-24.mobileonline.telia.com. [95.203.6.24])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-548b3fc7a07sm391300e87.20.2025.02.26.06.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Feb 2025 06:29:12 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 26 Feb 2025 15:29:09 +0100
 To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 2/3] rcu/exp: Remove confusing needless full barrier on
- task unblock
-Message-ID: <Z78OeeyarjDB63Dj@localhost.localdomain>
-References: <20250213232559.34163-1-frederic@kernel.org>
- <20250213232559.34163-3-frederic@kernel.org>
- <20250225215908.GA1812344@joelnvbox>
+	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Cheung Wall <zzqq0103.hey@gmail.com>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 1/3] rcutorture: Allow a negative value for
+ nfakewriters
+Message-ID: <Z78lNRKjLQKigyLw@pc636>
+References: <20250225110020.59221-1-urezki@gmail.com>
+ <20250225212409.GA1807836@joelnvbox>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250225215908.GA1812344@joelnvbox>
+In-Reply-To: <20250225212409.GA1807836@joelnvbox>
 
-Le Tue, Feb 25, 2025 at 04:59:08PM -0500, Joel Fernandes a écrit :
-> On Fri, Feb 14, 2025 at 12:25:58AM +0100, Frederic Weisbecker wrote:
-> > A full memory barrier in the RCU-PREEMPT task unblock path advertizes
-> > to order the context switch (or rather the accesses prior to
-> > rcu_read_unlock()) with the expedited grace period fastpath.
+On Tue, Feb 25, 2025 at 04:24:09PM -0500, Joel Fernandes wrote:
+> On Tue, Feb 25, 2025 at 12:00:18PM +0100, Uladzislau Rezki (Sony) wrote:
+> > Currently "nfakewriters" parameter can be set to any value but
+> > there is no possibility to adjust it automatically based on how
+> > many CPUs a system has where a test is run on.
 > > 
-> > However the grace period can not complete without the rnp calling into
-> > rcu_report_exp_rnp() with the node locked. This reports the quiescent
-> > state in a fully ordered fashion against updater's accesses thanks to:
+> > To address this, if the "nfakewriters" is set to negative it will
+> > be adjusted to num_online_cpus() during torture initialization.
 > > 
-> > 1) The READ-SIDE smp_mb__after_unlock_lock() barrier accross nodes
-> >    locking while propagating QS up to the root.
-> > 
-> > 2) The UPDATE-SIDE smp_mb__after_unlock_lock() barrier while holding the
-> >    the root rnp to wait/check for the GP completion.
-> > 
-> > 3) The (perhaps redundant given step 1) and 2)) smp_mb() in rcu_seq_end()
-> >    before the grace period completes.
-> > 
-> > This makes the explicit barrier in this place superflous. Therefore
-> > remove it as it is confusing.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > > ---
-> >  kernel/rcu/tree_plugin.h | 1 -
-> >  1 file changed, 1 deletion(-)
+> >  kernel/rcu/rcutorture.c | 22 ++++++++++++++++------
+> >  1 file changed, 16 insertions(+), 6 deletions(-)
 > > 
-> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > index 3c0bbbbb686f..d51cc7a5dfc7 100644
-> > --- a/kernel/rcu/tree_plugin.h
-> > +++ b/kernel/rcu/tree_plugin.h
-> > @@ -534,7 +534,6 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
-> >  		WARN_ON_ONCE(rnp->completedqs == rnp->gp_seq &&
-> >  			     (!empty_norm || rnp->qsmask));
-> >  		empty_exp = sync_rcu_exp_done(rnp);
-> > -		smp_mb(); /* ensure expedited fastpath sees end of RCU c-s. */
+> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> > index d98b3bd6d91f..f376262532ce 100644
+> > --- a/kernel/rcu/rcutorture.c
+> > +++ b/kernel/rcu/rcutorture.c
+> > @@ -148,6 +148,7 @@ MODULE_PARM_DESC(torture_type, "Type of RCU to torture (rcu, srcu, ...)");
 > 
-> I was wondering though, this is a slow path and the smp_mb() has been there
-> since 2009 or so. Not sure if it is super valuable to remove it at this
-> point. But we/I should definitely understand it.
+> IMO, this should also be updated to reflect the possibily to set it negative
+> and hence to number CPUs:
+> 
+> torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
+> 
+You can set it to a negative as well as to number of CPUs or any other
+number.
 
-The point is indeed not to improve performance because this is a slowpath
-(although...). The main goal is to maintain a clear picture of the ordering
-without needless barriers that leave a taste of doubt to reviewers.
-
-> I was wondering if you could also point to the fastpath that this is racing
-> with, it is not immediately clear (to me) what this smp_mb() is pairing with
-> :(
-
-It is supposed to pair with the barrier in sync_exp_work_done() but then again
-this is already enforced by the smp_mb__after_unlock_lock() chained through
-rnp locking.
-
-Thanks.
-
-> 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> 
-> 
-> 
-> >  		np = rcu_next_node_entry(t, rnp);
-> >  		list_del_init(&t->rcu_node_entry);
-> >  		t->rcu_blocked_node = NULL;
-> > -- 
-> > 2.46.0
-> > 
+--
+Uladzislau Rezki
