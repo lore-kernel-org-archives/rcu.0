@@ -1,79 +1,101 @@
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DDC21171A;
-	Wed, 26 Feb 2025 14:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1EA218AAB;
+	Wed, 26 Feb 2025 14:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740580157; cv=none; b=tuu2dZzDMuS9zAmYfISzbYirMa0vQKZ3i9yHK94IJRa3/nKvp0Cxb6YHAcJvo6XYloKsvS3sVvGOCTPJnzAWbOJXYfHVUJdu+aGjiMo1cShXhEWEqqgnzieeojLCy/Wzkl2WADvLK6+3aZddUsLOPiU/87ffqfcArZHoIrjYOpw=
+	t=1740580269; cv=none; b=XfUQjDiRekla9z3AkNtnoAwg9f8+WtvKNBjUsPIDi6kG7p8sdD6tV8+CNcK1bfR6bAqOQquL9WLTsc9JM9PMyDP5hQAnw3a5Fy+SR7iue21MYwK7LdkqOH3IkmZYat62sIi938w4u+jA63kyM+M2oV5qKG0O9xqtxEm16TbrEfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740580157; c=relaxed/simple;
-	bh=U3XRu9BKSm5XctFw50gAsIGx5i29PiCx3IkvGID+i84=;
+	s=arc-20240116; t=1740580269; c=relaxed/simple;
+	bh=32HpFo50ac9idpc84DjD9AHiRDMLXxEkvUovO/ujBfo=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lUYUH3sMvhf3rR/mQ78EP3Zz5oBACJKgSEKuMLwuvhYQUShnQHH3u3D3bXT5TaFOZugEQS3dEoo5D2lT89AaloxQcy08I5p4LFqLOctc4wDXigSrc+6qsl5ELzR2jWyBqcjVvxG4SW+1ETkZ0P5EO0bF96EXb64hUcYEYKQXgtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WOt/uCgm; arc=none smtp.client-ip=209.85.167.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=cFiUHeq57RU+09NCXb83pGOwzSuvsnDYdL2qyPAFj+uD5ibc7XBP4aO+zKLRv3YXV+RA1BzgobYKJzjg/OzPRVEwcLuvZrxkvrCinnooQ2Tsx4sXr90/umq7wGvUZYpqCFMruMeEQ1t2HSrRtM7K9ewa8m8yc6KGNotJNhM7nWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g6Z20c4v; arc=none smtp.client-ip=209.85.208.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WOt/uCgm"
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-543e4bbcd86so7852115e87.1;
-        Wed, 26 Feb 2025 06:29:14 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g6Z20c4v"
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-30a2d4b61e4so50550961fa.1;
+        Wed, 26 Feb 2025 06:31:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740580153; x=1741184953; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740580266; x=1741185066; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P2kiu/HsUSKw59lXGQxuGghGnHIXAC6zHsBsQ9Wyn90=;
-        b=WOt/uCgmB52JDNqvMqBaxDvo0DLTgMguPGtyUm/n5XIgK7pBF6lSvMNxpH06awe7bK
-         fJpTNQ0gbIj1hyZmdEKYBZezvwFWf9vhkzk8y+Q6uzfvK9TaogVXsswB7hX/FYqU7DDh
-         uc0bDQXzAwvVN4Of2G5+2Y9V3BrrmQGuqNga9Oir/mXZqLxC+kgtRMmU9FFy2cg48KMk
-         bJCJ7NhPi37bAXxyxKuxujc2e7s6/5V7Pivz0DSHcAzKIr+wIxklQevXnHcU5EEs3P5Z
-         bHEwgj2J6nXW15OFpnMb2HcgphKcZhoLwZQhFbWHxavPrVCHJz6e5GmgLGGcKJ9qPaUY
-         bhrg==
+        bh=eswWLfkEnQpdtu+isG+K14u+ZfJSvAbvqWCgztSMnzs=;
+        b=g6Z20c4vzn6m7QRftTJifouyaoZmqTzg8hKvrifQAU6mEdPd9IYscYbGxuGXg7y5VH
+         xKsSnCvx+ZFWP4WZB7nVMh9dE5r7ccNr92YKKwFyqT1mDoePZ0uwTTkYu54jfYAwZh/v
+         TEydLx4Ut6AFIc1hc+Ulp8L9+knwp5RFb/ObiLyZpi5WMzHJFlMcGJJ56jkEd/EoVyta
+         x8dURyDQjiSjTIg3dsOhG7Uq8G8yhyrA2Iyu8032Q1a5V65jFtQUyuY9L3ikdjr1BsXG
+         ++zogDGQiXJUNJ4AXvJVpJB54IkEoVuPt5s2/iUQhiIRIhYjN+jUBVyjPUK5vIFYJ1fd
+         kU8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740580153; x=1741184953;
+        d=1e100.net; s=20230601; t=1740580266; x=1741185066;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P2kiu/HsUSKw59lXGQxuGghGnHIXAC6zHsBsQ9Wyn90=;
-        b=KzGLpYanAsaaAMLMci1OPmTDf1CQD5zQ52kwIRUy/guVlu0XAfYGRkBbs5JojyUTGI
-         8hBHbH/5N7E6+VgOB08XskavYrlO2StnXTCrHovZq6DtjdLNEH9oFdgN7suCEhMnUMyL
-         jqhuzUMSbmbK0FZhnEyiSpa4jhW324foDap+2UeTHd5KXM+NE+FbNstV1X3Z1t0XMHbF
-         tXZeOeKOElwcCErZj3fPtyy5cTlZqQCud6n2gQpVLvNMCZ5oqFGLcDIMWU96nGSji2fX
-         rM5AOg7Kc1+kmKnWqFOfSVGGTAzVPwJSOLBpBJEg1iMfxU4egWEIeNHLUUI9dEIo4NHf
-         DUHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWJr7MdqhQm7TK7ja55aXe7tueRTg0PpjwzAgcId2dBgkRUgqVQJJFF525SW4GqpGZXSsQmw0/imO30YSo=@vger.kernel.org, AJvYcCX84ojp5EdXVtGOjAsPJzkA26BD/e2RGhMOLvw4GROc64JqzhxjQ5smVoCyz9ygRcxtq8X/@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSWpPvEFzqJEyrAZg8wySEXvvkk79C8D1kozvZwXMWtuOSnBAo
-	Dx+0WZdQxxO6mRhU9JoR68Hm1P6MeSClimxORsjZLyApWocg+aH9Wfq8/GNc
-X-Gm-Gg: ASbGncv33g/XUVBXjyi/zoBXXV+gTU2VabVTCL/dK/K5lIPT1B+1CCDHSAeDLn5L/Lg
-	kMqUQr1k1Y+bxYIyKC75AIxFvbF7BCMc1sPm6vcTKxHuh4DlzdIT9e1wj6ktRbi/gWTbA/aEnn0
-	ebX1i5jjL+FoOx99f+rE2QQf1gBdmdOU7hb6mavfeNLzeOppaRIa5WE+GlTLLEoDgkDc6ozih8l
-	oEHbi2DHeSL9eoNGJIlECR3Kr3/ostOuZqlUAUc0RlY3UR5Qf1if9lkPf/eaIIXWw+zMSNUwALA
-	NhCn3r2lV0SL0zixJBubl6DjCNNJqwsZnsXl9EgBV4YnlDlN
-X-Google-Smtp-Source: AGHT+IEwjEWmxx978qjGI809JUeWj0qQG87ubxYGrnt++ojs9L+/TlCz0ZiMFqjIWL2+srJwoWhmfw==
-X-Received: by 2002:a05:6512:3c99:b0:549:38eb:d690 with SMTP id 2adb3069b0e04-5493c5c11b5mr1910652e87.36.1740580152930;
-        Wed, 26 Feb 2025 06:29:12 -0800 (PST)
+        bh=eswWLfkEnQpdtu+isG+K14u+ZfJSvAbvqWCgztSMnzs=;
+        b=FLu2zfuleyWJXT5in/nWns6t3+PLGSGs2O08Ibij+zy7RZi8zf3S5Zg3GdrxvGBV/K
+         KvjW0N0G/jrpmt/cEO+imzl3XZjUKnqPbz27TP6RIOwzipOhZQ0NpOAwQcJEfjBIiih4
+         VM72np+bwaYpUxZzi7P/fdD83D1cDdzGXQ5T2uF6EeMIz1+blGN2nOX9r7G+UDgUeTRP
+         PrfWZyexz8KhW0EmUpbNqnQxLQAMoUs+S7k9MmXxla/49mHk3vKVp9o99mS9fmWE6Cqp
+         gYQ/C+DGmQYvHxDXLAIYJOBGlbkPaQTLbSlpTZyVYy5TQOYZvYjzgyKv/H/swNptZ5vE
+         +UNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUekZpOrtxLnHt7wJKv3L02+ACMb1wijMdatWGCq4HCtLJGI586BiT0eZ4yRhIXl0wiJBos/rXVT4GgMvQ=@vger.kernel.org, AJvYcCVtVvu8Sz3Pp9vm4ERbmyQg8HQ15aSHlifbYpiZnHR3grdsEVlWtKC9i2Q15MaOHaK+n2sM@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkQe+9WCR78YUx0ijP6VWwpwRS/p+yHQhfuwGXV81iTbNtaa3A
+	rXxNZI0kFD9iPESfSWlKhrDfKm8CA403rq9GdPGleR3k7sG4crPv
+X-Gm-Gg: ASbGnctUWuW6Xo9gH/TbljQfj5nZ4sMYu+WnuYvT6CejqzMBUbXpOYMWhUhZN5sOM12
+	tE8o8gjKoSfm6NgV5zyMIwoWFeWbg8375PnopLWGz8ev7D+mRu3ydEpwu+Qvov5x0EHSrXopAT7
+	pBXqQYlaxT06qXLManD+mC3EsGqhuIrathuyX9JM/xCWwNpqac1IKzwtnIX7OAeh8wNwIKMgkiX
+	bghRit56VIy+VdZ6BHC82URwk0EwUIaJSK5J2PNh713IuaR+usLxCvpO9qjvC+0hneRny4cQNoM
+	35FlGgiYpEDvQjgJlOvpOjMU8VdwL0MAoNTl2vOE2UqOarDT
+X-Google-Smtp-Source: AGHT+IGJW1NAlywvROVKX3Fy47FV/keZ7CVdQO/S4ffINoO6dO3Lou+LoCLXMQL+bGSH5kPPCn5/wg==
+X-Received: by 2002:a2e:9a98:0:b0:307:5879:e7d8 with SMTP id 38308e7fff4ca-30b792cb29cmr26025521fa.30.1740580265244;
+        Wed, 26 Feb 2025 06:31:05 -0800 (PST)
 Received: from pc636 (host-95-203-6-24.mobileonline.telia.com. [95.203.6.24])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-548b3fc7a07sm391300e87.20.2025.02.26.06.29.11
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30a819f5e4asm5422341fa.63.2025.02.26.06.31.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Feb 2025 06:29:12 -0800 (PST)
+        Wed, 26 Feb 2025 06:31:04 -0800 (PST)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 26 Feb 2025 15:29:09 +0100
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Cheung Wall <zzqq0103.hey@gmail.com>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+Date: Wed, 26 Feb 2025 15:31:01 +0100
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Keith Busch <keith.busch@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v3 1/3] rcutorture: Allow a negative value for
- nfakewriters
-Message-ID: <Z78lNRKjLQKigyLw@pc636>
-References: <20250225110020.59221-1-urezki@gmail.com>
- <20250225212409.GA1807836@joelnvbox>
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>, Christoph Lameter <cl@linux.com>,
+	David Rientjes <rientjes@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Alexander Potapenko <glider@google.com>,
+	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+	kasan-dev@googlegroups.com, Jann Horn <jannh@google.com>,
+	Mateusz Guzik <mjguzik@gmail.com>, linux-nvme@lists.infradead.org,
+	leitao@debian.org
+Subject: Re: [PATCH v2 6/7] mm, slab: call kvfree_rcu_barrier() from
+ kmem_cache_destroy()
+Message-ID: <Z78lpfLFvNxjoTNf@pc636>
+References: <20240807-b4-slab-kfree_rcu-destroy-v2-6-ea79102f428c@suse.cz>
+ <Z7iqJtCjHKfo8Kho@kbusch-mbp>
+ <2811463a-751f-4443-9125-02628dc315d9@suse.cz>
+ <Z7xbrnP8kTQKYO6T@pc636>
+ <ef97428b-f6e7-481e-b47e-375cc76653ad@suse.cz>
+ <Z73p2lRwKagaoUnP@kbusch-mbp>
+ <CAOSXXT6-oWjKPV1hzXa5Ra4SPQg0L_FvxCPM0Sh0Yk6X90h0Sw@mail.gmail.com>
+ <Z74Av6tlSOqcfb-q@pc636>
+ <Z74KHyGGMzkhx5f-@pc636>
+ <8d7aabb2-2836-4c09-9fc7-8bde271e7f23@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -82,36 +104,78 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250225212409.GA1807836@joelnvbox>
+In-Reply-To: <8d7aabb2-2836-4c09-9fc7-8bde271e7f23@suse.cz>
 
-On Tue, Feb 25, 2025 at 04:24:09PM -0500, Joel Fernandes wrote:
-> On Tue, Feb 25, 2025 at 12:00:18PM +0100, Uladzislau Rezki (Sony) wrote:
-> > Currently "nfakewriters" parameter can be set to any value but
-> > there is no possibility to adjust it automatically based on how
-> > many CPUs a system has where a test is run on.
-> > 
-> > To address this, if the "nfakewriters" is set to negative it will
-> > be adjusted to num_online_cpus() during torture initialization.
-> > 
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  kernel/rcu/rcutorture.c | 22 ++++++++++++++++------
-> >  1 file changed, 16 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index d98b3bd6d91f..f376262532ce 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -148,6 +148,7 @@ MODULE_PARM_DESC(torture_type, "Type of RCU to torture (rcu, srcu, ...)");
+On Wed, Feb 26, 2025 at 11:59:53AM +0100, Vlastimil Babka wrote:
+> On 2/25/25 7:21 PM, Uladzislau Rezki wrote:
+> >>
+> > WQ_MEM_RECLAIM-patch fixes this for me:
 > 
-> IMO, this should also be updated to reflect the possibily to set it negative
-> and hence to number CPUs:
+> Sounds good, can you send a formal patch then?
+>
+Do you mean both? Test case and fix? I can :)
+
+> Some nits below:
 > 
-> torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
+> > <snip>
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index 4030907b6b7d..1b5ed5512782 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -1304,6 +1304,8 @@ module_param(rcu_min_cached_objs, int, 0444);
+> >  static int rcu_delay_page_cache_fill_msec = 5000;
+> >  module_param(rcu_delay_page_cache_fill_msec, int, 0444);
+> > 
+> > +static struct workqueue_struct *rcu_reclaim_wq;
+> > +
+> >  /* Maximum number of jiffies to wait before draining a batch. */
+> >  #define KFREE_DRAIN_JIFFIES (5 * HZ)
+> >  #define KFREE_N_BATCHES 2
+> > @@ -1632,10 +1634,10 @@ __schedule_delayed_monitor_work(struct kfree_rcu_cpu *krcp)
+> >         if (delayed_work_pending(&krcp->monitor_work)) {
+> >                 delay_left = krcp->monitor_work.timer.expires - jiffies;
+> >                 if (delay < delay_left)
+> > -                       mod_delayed_work(system_unbound_wq, &krcp->monitor_work, delay);
+> > +                       mod_delayed_work(rcu_reclaim_wq, &krcp->monitor_work, delay);
+> >                 return;
+> >         }
+> > -       queue_delayed_work(system_unbound_wq, &krcp->monitor_work, delay);
+> > +       queue_delayed_work(rcu_reclaim_wq, &krcp->monitor_work, delay);
+> >  }
+> > 
+> >  static void
+> > @@ -1733,7 +1735,7 @@ kvfree_rcu_queue_batch(struct kfree_rcu_cpu *krcp)
+> >                         // "free channels", the batch can handle. Break
+> >                         // the loop since it is done with this CPU thus
+> >                         // queuing an RCU work is _always_ success here.
+> > -                       queued = queue_rcu_work(system_unbound_wq, &krwp->rcu_work);
+> > +                       queued = queue_rcu_work(rcu_reclaim_wq, &krwp->rcu_work);
+> >                         WARN_ON_ONCE(!queued);
+> >                         break;
+> >                 }
+> > @@ -1883,7 +1885,7 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+> >         if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+> >                         !atomic_xchg(&krcp->work_in_progress, 1)) {
+> >                 if (atomic_read(&krcp->backoff_page_cache_fill)) {
+> > -                       queue_delayed_work(system_unbound_wq,
+> > +                       queue_delayed_work(rcu_reclaim_wq,
+> >                                 &krcp->page_cache_work,
+> >                                         msecs_to_jiffies(rcu_delay_page_cache_fill_msec));
+> >                 } else {
+> > @@ -2120,6 +2122,10 @@ void __init kvfree_rcu_init(void)
+> >         int i, j;
+> >         struct shrinker *kfree_rcu_shrinker;
+> > 
+> > +       rcu_reclaim_wq = alloc_workqueue("rcu_reclaim",
 > 
-You can set it to a negative as well as to number of CPUs or any other
-number.
+> Should we name it "kvfree_rcu_reclaim"? rcu_reclaim sounds too generic
+> as if it's part of rcu itself?
+> 
+> > +               WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
+> 
+> Do we want WQ_SYSFS? Or maybe only when someone asks, with a use case?
+> 
+If someone asks, IMO.
 
 --
 Uladzislau Rezki
