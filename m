@@ -1,160 +1,127 @@
-Received: from slategray.cherry.relay.mailchannels.net (slategray.cherry.relay.mailchannels.net [23.83.223.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B2F239584;
-	Wed, 26 Feb 2025 19:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.223.169
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740598129; cv=pass; b=SK4hY2gFETscQTTAYcZOq8+PP6OYuy8u4FOaMor1MgLrEBFowxAVRJEdd6bud8Jx/l41BrYyhK9MtGYWiOVhgWh4LxHN4oASGoAbNhhJ+tJ3wSvHK+Yf3QmE/UFhXKqRy93Rv1ARjYIsaiVH5AcgwxhjTi7KnfjIdQbSWeTarAY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740598129; c=relaxed/simple;
-	bh=pYIw9z3bS5deLOWEgf2733YFTI87p9O1CnGmqE0gF08=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XUZq6UMznYvEDLudCoh0nI4n9qF4jkPhNXbn7cg7fLArC75wR6ZD9dzrGD9O4Gz68Rx7rpbPTQ9vd08Iez97T12+tYv6YHTYYZh4XpdJXIyEQhMuPYbobaZKq20PxTn1dXfndXqzTkwOeqKS7jUt5us0DFLbKNz9XQhmjNHVXVM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=mkc0h+Lv; arc=pass smtp.client-ip=23.83.223.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 990B927560B;
+	Wed, 26 Feb 2025 20:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740602938; cv=none; b=JQgmYOjr0mXsh+KkOn2TtNzE+MTwIFDMp0vdd9g77q/v797skHUUBkJFhdChHwZkqZJB47hMO7pGZJKF7C6aIhMEly4Qum98Pf4dLifYjDciYBs0AgMEolpi2CCAgSwQtrpigduoYSSxvhyigrkKfdTi2OZaqKWyUNaERZyphYc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740602938; c=relaxed/simple;
+	bh=gZjBcOl/386CqJSbAK0vfOXEhFi8iYGEu8dKGfYaEDE=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UM2I4WRu3owWk0oqFGs93Dh1r9j5j8VtUHgJm+q/9JszjY1JB11S760J97mhuuc9Sm5ZrnD904ezCDgPcs3dFINrF0M3/5cKPz+vK5dgXSBF+Ej/ybp4ZB53qgZBfyp8verMtnD+ft27XpGvTScE5yAH3O1VUhcYXU6hiHc0qY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y9XutZNi; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="mkc0h+Lv"
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 0EB399054F5;
-	Wed, 26 Feb 2025 19:28:41 +0000 (UTC)
-Received: from pdx1-sub0-mail-a232.dreamhost.com (100-99-192-59.trex-nlb.outbound.svc.cluster.local [100.99.192.59])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 85BE3903CC7;
-	Wed, 26 Feb 2025 19:28:40 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1740598120; a=rsa-sha256;
-	cv=none;
-	b=OKAz95KvTk5hRyDwD7osiCT/FD/FEjnfvSK3cZaf4w8vDvr4iOaCnc8iMFisKIXctETH9m
-	4CiUXoBk/m9tIB5C831nwrJOeHmb0Iky7c6n68rRnbEDT4T6n/atUO1HB96j+ClQ3qVklr
-	Ch0pMX0RFFRe8XceTwPo2mKcFXcVnBKK4AFBB49oNWIold7L3tyswycOLhEZCl18gkZhWk
-	xJRU//KP/8EjznmlDjm2JkYNawmf8V+LqfHLpcD8hwwzb3hda5lqtqs2r5FwHzbEXazgAW
-	hKyK7QJKqzeyxa33WiUTjAJ8wZrgBUPvAT+FtKOf7hsi4io2qf3cMI3UmjiaWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1740598120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=pYIw9z3bS5deLOWEgf2733YFTI87p9O1CnGmqE0gF08=;
-	b=UWQRn6xsASkGBMAtFOr/ULkhbwi1IpSOwjhH86ZbdrwhTE61imWUpb2iyKM9npq5EcUGAn
-	LyRJRWqDN9hXK6RLhmIBeKl2/wkzKSMHKYvTc/iocQMbcgIeU+Dyc9PmUf0OVRmWu0AQPS
-	pkiPLPVxCtjbZ/vLa0OyGsgVKPZbDB+bmK2Ee1D45ulnC4K3RO5R8qH0BrNp6O/G7Sjl6+
-	3kVr23g6aq9wyCtCae3ulKKolU8Jd9nWUjYmF8oA4DMHbbcMtLPRl314sQLOpzTO71MgRe
-	Zd5C3g2h74czoGSuUEeToI/aPDOc4RU26HeKflI+IisA1CYPfr9qtWLSR9JNlQ==
-ARC-Authentication-Results: i=1;
-	rspamd-6d7cc6b78d-jpb69;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Shrill-Squirrel: 7e800a0258e359d8_1740598120877_3242746971
-X-MC-Loop-Signature: 1740598120877:4221620723
-X-MC-Ingress-Time: 1740598120877
-Received: from pdx1-sub0-mail-a232.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.99.192.59 (trex/7.0.2);
-	Wed, 26 Feb 2025 19:28:40 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a232.dreamhost.com (Postfix) with ESMTPSA id 4Z34Jl41B8zLF;
-	Wed, 26 Feb 2025 11:28:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1740598120;
-	bh=pYIw9z3bS5deLOWEgf2733YFTI87p9O1CnGmqE0gF08=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=mkc0h+Lv2m2i8Hp/ny7cTPnrR/Rj06rgBp19qbgM+HJkUxv4+L7sNLswOk1B+LvPW
-	 Hr5aiWVaS+rtM/rLs3zK92JGFKVRBVUm41EGuEVNzWT0itjZGxW70SJfEkWQr+iZgY
-	 kdKj1/z1jYwQRFhpy2Wvxj8hl//mgctMgkBfk4rB+3hmNF6Hg6669l0tzAx7Hh/QiJ
-	 61hmzUNp0hVBL7EOmEF7ylfynogImtwg9gI+QwADgUCmjeiiR4oYn8saabBknSlfZq
-	 ikU24o3LalQBplB+pTzYYrCmPApZqou/d3a0GGanJ74pHq5BRVaC9ArYVNYeYOW+aT
-	 sr28ct+tivzmw==
-Date: Wed, 26 Feb 2025 11:28:35 -0800
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Christoph Lameter <cl@linux.com>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>,
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-	maple-tree@lists.infradead.org,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH RFC v2 03/10] locking/local_lock: Introduce
- localtry_lock_t
-Message-ID: <20250226192835.bmehafm2rjcbq42z@offworld>
-Mail-Followup-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Suren Baghdasaryan <surenb@google.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Christoph Lameter <cl@linux.com>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm <linux-mm@kvack.org>,
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-	maple-tree@lists.infradead.org,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>
-References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz>
- <20250214-slub-percpu-caches-v2-3-88592ee0966a@suse.cz>
- <20250226170053.lxpreaegz5tysef7@offworld>
- <CAADnVQLAfZBvSyqE=2sbdH-kuNhvAJM+R_qMzfgPv=MDF+=VQA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y9XutZNi"
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5454f00fc8dso184179e87.0;
+        Wed, 26 Feb 2025 12:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1740602935; x=1741207735; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T5LN/OwxnNW6hXEfH/vlgCwxT5V7SAIvLyLle5g1daI=;
+        b=Y9XutZNipPcaaAF6zn38qwJr/jgt3dd+6Y05bVDB04yJiRNfHNeS0WFBbxo+OlE64c
+         rM78+jwL1PV5R6eRs2a+gzVyYlehJeT5ozaFwVZFReWWplsyHub9Qg3aqZb1TamD6ymo
+         v4qu+x6B+bu6H4xYay7NOXCTvFAh/tyqnr97zT1gbt/efYuWZWdd+/JJF75q9HuxHfMu
+         07EViw/VWeozXYRSXBXOsSUJ4cEDGsFr1JayP3o+6Knz06srlq7+7sKh0eqdJNkvqeyk
+         sDk663eRm5fTNYyympZYATYL5uHTKjkqgkn0EWgw0lHGaUXGt0x4PQr5KPk+r81/LfIX
+         Igjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740602935; x=1741207735;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T5LN/OwxnNW6hXEfH/vlgCwxT5V7SAIvLyLle5g1daI=;
+        b=WwvSg3IzeSrSMA1xHo8qrY0HhMRbIkj5sR3TNbKQhdhox/LOnb4pgdha9292ShILS0
+         i1OCfmICeteQkOnenpb54dbKZobogRXPoH+Sr6JkBu9kZwouEFeXzuKr9eus5On1R8aL
+         9ogAFc8xZjP8PJL+LuUSin39gfASG6oU4lsfuG/VWimUq+0YAEwD3htnLWRALYVLB3ow
+         /9HwlE8uSdzUlat7P3FPJG8l8mzpn0WCwAROhCdzUCz2yJHqxxlRwPHkSF9e/Igq03aW
+         3U7gnRMVAbyyi2191mRUREP2i6qOhNJKeWBY+JKemP0HphDJbuZPfVBmruwim7HGXEXu
+         EcqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUS67DCXuyfYIfyWzaj7T5Et9oOlIiM+cIxAGhg8t1jJvVoGQwQqfeAuHnldiJWa6SWBKea@vger.kernel.org, AJvYcCWBOLdPc4k/dhflaO03a9CzCl309pYILozbTZL0NMQLB3XT4/bBVBc7JZA8l2usqx5x/1HaBDIgmiD2RdU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyxyiw2isHgIluoJ/1pS8sokw8zQWr+d2QpqmzNbo8olgdxcsXy
+	iIqb+XRr+RcG5KZTcv1PlD33IywWTzli0Kkr78LUugMCtHSgYF7l
+X-Gm-Gg: ASbGncuKlpe8aXa1BmqKBkZF79Mf/i7YrklGfxTyT2Nc46NSAsmEkOPD4kqH3SV/ffo
+	6XcFm+8OavaABbeuSvPQ/pW7pkvFusxC12B28nmbRkRCiAzOBbpfGM4PxiP7YyqM0417It6d78n
+	LCSGKaYIxerLi2b4vU8qXuOdYf44xWjsc6DJOXggIZ7YW8J1mRy1jUHesCe+Xtroakbfv3w58FH
+	y3mJF46HztvedHFYuu6rkc5a41gOrWLWaEr0OBRDAZ7opBbptFGOUkGZAi3ucbUm2Sr
+X-Google-Smtp-Source: AGHT+IH4nWCLKEp9bNdPJh7bKmngRMcPhiiv96pUqJ1z6vVUk/7nMiqfAkvDV3dF+eQn4i1eSlN2VQ==
+X-Received: by 2002:a05:6512:b0f:b0:53e:3a7c:c0b5 with SMTP id 2adb3069b0e04-5493c570467mr3182150e87.10.1740602934302;
+        Wed, 26 Feb 2025 12:48:54 -0800 (PST)
+Received: from pc636 ([2001:9b1:d5a0:a500::800])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30a81ae8193sm6113851fa.105.2025.02.26.12.48.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Feb 2025 12:48:53 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 26 Feb 2025 21:48:52 +0100
+To: Boqun Feng <boqun.feng@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Cheung Wall <zzqq0103.hey@gmail.com>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 3/3] rcu: Use _full() API to debug synchronize_rcu()
+Message-ID: <Z79-NAOoK-Vimgbr@pc636>
+References: <20250225110020.59221-1-urezki@gmail.com>
+ <20250225110020.59221-3-urezki@gmail.com>
+ <Z79kKiokpq9FpjYc@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQLAfZBvSyqE=2sbdH-kuNhvAJM+R_qMzfgPv=MDF+=VQA@mail.gmail.com>
-User-Agent: NeoMutt/20220429
+In-Reply-To: <Z79kKiokpq9FpjYc@boqun-archlinux>
 
-On Wed, 26 Feb 2025, Alexei Starovoitov wrote:
+Hello, Boqun.
 
->On Wed, Feb 26, 2025 at 9:01???AM Davidlohr Bueso <dave@stgolabs.net> wrote:
->>
->> On Fri, 14 Feb 2025, Vlastimil Babka wrote:
->>
->> >From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> >
->> >In !PREEMPT_RT local_lock_irqsave() disables interrupts to protect
->> >critical section, but it doesn't prevent NMI, so the fully reentrant
->> >code cannot use local_lock_irqsave() for exclusive access.
->> >
->> >Introduce localtry_lock_t and localtry_lock_irqsave() that
->> >disables interrupts and sets acquired=1, so localtry_lock_irqsave()
->> >from NMI attempting to acquire the same lock will return false.
->> >
->> >In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
->> >Map localtry_lock_irqsave() to preemptible spin_trylock().
->> >When in hard IRQ or NMI return false right away, since
->> >spin_trylock() is not safe due to PI issues.
->> >
->> >Note there is no need to use local_inc for acquired variable,
->> >since it's a percpu variable with strict nesting scopes.
->> >
->>
->> LGTM.
->>
->> Acked-by: Davidlohr Bueso <dave@stgolabs.net>
+> Hi Ulad,
+> 
+> On Tue, Feb 25, 2025 at 12:00:20PM +0100, Uladzislau Rezki (Sony) wrote:
+> > Switch for using of get_state_synchronize_rcu_full() and
+> > poll_state_synchronize_rcu_full() pair for debug a normal
+> > synchronize_rcu() call.
+> > 
+> > Just using "not" full APIs to identify if a grace period
+> > is passed or not might lead to a false kernel splat.
+> > 
+> 
+> Could you provide detailed explanation on this? I.e. why is _full() is
+> needed? I find the current commit message is a bit vague.
 >
->Thanks for the review.
->Do you mind if I apply your ack to the latest version of this patch?
->https://lore.kernel.org/bpf/20250222024427.30294-2-alexei.starovoitov@gmail.com/
+<snip>
+rcu: Use _full() API to debug synchronize_rcu()
 
-Yes, that is fine.
+Switch for using of get_state_synchronize_rcu_full() and
+poll_state_synchronize_rcu_full() pair to debug a normal
+synchronize_rcu() call.
 
-Thanks,
-Davidlohr
+Just using "not" full APIs to identify if a grace period is
+passed or not might lead to a false-positive kernel splat.
+
+It can happen, because get_state_synchronize_rcu() compresses
+both normal and expedited states into one single unsigned long
+value, so a poll_state_synchronize_rcu() can miss GP-completion
+when synchronize_rcu()/synchronize_rcu_expedited() concurrently
+run.
+
+To address this, switch to poll_state_synchronize_rcu_full() and
+get_state_synchronize_rcu_full() APIs, which use separate variables
+for expedited and normal states.
+<snip>
+
+Does it look better?
+
+--
+Uladzislau Rezki
+
