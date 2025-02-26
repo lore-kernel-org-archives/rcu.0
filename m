@@ -1,118 +1,115 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A9219AA56
-	for <rcu@vger.kernel.org>; Tue, 25 Feb 2025 23:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B13383;
+	Wed, 26 Feb 2025 00:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740527110; cv=none; b=GnAKzYWCX5jeDX3+B6ia/KyG3h05h0ufekq3gGGN7SKxcFaYxqsTTwUQUjweVQH1UY0DevNKaOoiYklH1FybxCG4aRKUszNgEKQpDHKZBLQwkZYaZObBeHMnpHFvVE6MasN4GTzFvLIO2kDkGuYDGJ7ZBUT6uYY3+wx1cQznnGs=
+	t=1740528053; cv=none; b=BvOQTMTo++IC3I/xMpxx2Ffco+RHZ3X6RSQBo7/KuKfs+FTppJ6trM8Sl4N8J1AZ5teR/m1kUHmSeipdr2jEsOWCLTUgrKLTdGMYQrO/LULCFWHxW4QfNM2b+Gnc3SeBCkExZYJvRagygkL6hnW3FCrgL0DmckL0ZA1ORWzsS1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740527110; c=relaxed/simple;
-	bh=13LdUDWPAPpjlFp+arx/PlnbMUaWA4FsbSmdEF9hIhc=;
+	s=arc-20240116; t=1740528053; c=relaxed/simple;
+	bh=FUyqeCWZx5yDLvMhUXGRQhA9BQ3wD+MoRIPGa0LLz5Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fy2Xi6m/g055+M4MttWOZ8YPnYgtGsXw2ZIxJz4AmNbgG8gU5oTuaOP28/H3sa4Johf9fSyx3QZ6pFlZ2CEGU87ljDZc4i8UQinfvM6gkmokMzrVrVUNadQFKuguzVlt7i3onfifqnUjM2+oUmTHTA0qN/5vZ16rbzHu15Q3yps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bi5nlY5V; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ETAwNAFFbY/o9eFY8CCXpZIlP2CdSyMe5Xhkc5wkNhJtripIJD+rBHFAKxytxCSsf27vcL6UcRT7/MnldMtlJrB0huvb9vQjLWO6DJ6bx0zPNd/s48JkAZzv0pzvDOcQwnjxGvbgRFPmX31Isfoz4/TlMEI1rYx6m7DiNx4AlRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F7DgOZEP; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bi5nlY5V"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96642C4CEDD;
-	Tue, 25 Feb 2025 23:45:09 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F7DgOZEP"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 290FCC4CEDD;
+	Wed, 26 Feb 2025 00:00:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740527109;
-	bh=13LdUDWPAPpjlFp+arx/PlnbMUaWA4FsbSmdEF9hIhc=;
+	s=k20201202; t=1740528053;
+	bh=FUyqeCWZx5yDLvMhUXGRQhA9BQ3wD+MoRIPGa0LLz5Y=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Bi5nlY5VJDFd+Fzkdt+B/OKR5NJRwW9VNRviYePUcn8JKSl/HjOe/AkJQdYuk37CH
-	 f88o99z1PmSOLlSv0QSmCXfQwR3RHaGnhea4y//nxolTANOY+rBIKKTH/TNRR2XI6p
-	 mbSJP0QcELqxfXcv0RFqJe2wwtwCpteO2+USRZ+Jfbn+Lqqf15XtQyvUrHW3etO9it
-	 fm4xKdIGW5WqFAhaQ3wOv9xPtq4b/QtNWXR4pe85K36m0Mdk79LDAlohwFWpgt6wE8
-	 bUBibIjf694rpcfg7J+75aEip/RNTCg7b7OV7aobcvBkI7ysoxTwL1S5Bxgcz9sfMo
-	 e66UdFpaOhZDg==
+	b=F7DgOZEPdhvsUjvTjmW2IVW85oG1M2Alx/Vz2reqRnh9WjmTIjdlK22WcFWYjeFuq
+	 6JPYUjgemdEXC45zy8yCKLJM3rWVMItK/jF45i45RoKfMVOtizqLDuBDSyk3k6Sf+V
+	 u3YVtGyGn5hkVT7AN4hDbtstHC5hm1NfThEN0lmodgORtoZ4L4RbRsgXEhzCw1e8Gj
+	 Oqj6vU9SsekmmMIul3q/pz/ItJU52vt4V2GnW2RhPqzj/akYEu38nDl2APylpy8BBK
+	 jb7pF3Xz6wQMxU1XSM/7zHXQC+LXDeKw4h2786B0yab9qDsUU3NdBSHzcLzaBmZEOf
+	 rVoLJDRlAKMTA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2DEA9CE0B75; Tue, 25 Feb 2025 15:45:09 -0800 (PST)
-Date: Tue, 25 Feb 2025 15:45:09 -0800
+	id BA4CBCE0B75; Tue, 25 Feb 2025 16:00:52 -0800 (PST)
+Date: Tue, 25 Feb 2025 16:00:52 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>, rcu@vger.kernel.org
-Subject: Re: Testing of shared RCU branching
-Message-ID: <6bb936e8-5507-456c-a77c-3a72e40408cb@paulmck-laptop>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
+ report
+Message-ID: <be5188d7-0ae3-4f08-b6e9-759f45e45013@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <c5bd6873-6e29-4f44-9c40-fbdffc6d1165@paulmck-laptop>
- <Z73rFVTHr-etZ8SE@Mac.home>
- <Z73rn9nqlCwns1IY@Mac.home>
- <267f54c6-4604-41fc-8cc9-6adb761fa257@paulmck-laptop>
- <20250225212007.GA1806882@joelnvbox>
- <e4853773-f834-4224-bf17-f7ed895ffef3@paulmck-laptop>
- <5c7f08b3-a007-4bd4-b063-eb034373a385@nvidia.com>
+References: <20250213232559.34163-1-frederic@kernel.org>
+ <20250213232559.34163-4-frederic@kernel.org>
+ <fe931d3a-bf97-4be5-8420-f1fcb55e6a46@paulmck-laptop>
+ <Z68yzBURiIr_7Lmy@pavilion.home>
+ <610596cf-9836-473f-bcdc-15c69b7e0cd4@paulmck-laptop>
+ <Z7ET8S4HKqSPubQY@pavilion.home>
+ <c5ea9684-291f-4952-b834-ed8e39cfdf8f@paulmck-laptop>
+ <Z7ihR0eMfoJMi-qx@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5c7f08b3-a007-4bd4-b063-eb034373a385@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Z7ihR0eMfoJMi-qx@localhost.localdomain>
 
-On Tue, Feb 25, 2025 at 05:04:37PM -0500, Joel Fernandes wrote:
+On Fri, Feb 21, 2025 at 04:52:39PM +0100, Frederic Weisbecker wrote:
+> Le Wed, Feb 19, 2025 at 06:58:36AM -0800, Paul E. McKenney a écrit :
+> > On Sat, Feb 15, 2025 at 11:23:45PM +0100, Frederic Weisbecker wrote:
+> > > > Before.  There was also some buggy debug code in play.  Also, to get the
+> > > > failure, it was necessary to make TREE03 disable preemption, as stock
+> > > > TREE03 has an empty sync_sched_exp_online_cleanup() function.
+> > > > 
+> > > > I am rerunning the test with a WARN_ON_ONCE() after the early exit from
+> > > > the sync_sched_exp_online_cleanup().  Of course, lack of a failure does
+> > > > not necessairly indicate
+> > > 
+> > > Cool, thanks!
+> > 
+> > No failures.  But might it be wise to put this WARN_ON_ONCE() in,
+> > let things go for a year or two, and complete the removal if it never
+> > triggers?  Or is the lack of forward progress warning enough?
 > 
+> Hmm, what prevents a WARN_ON_ONCE() after the early exit of
+> sync_sched_exp_online_cleanup() to hit?
 > 
-> On 2/25/2025 4:53 PM, Paul E. McKenney wrote:
-> > On Tue, Feb 25, 2025 at 04:20:07PM -0500, Joel Fernandes wrote:
-> >> On Tue, Feb 25, 2025 at 09:54:29AM -0800, Paul E. McKenney wrote:
-> >>> On Tue, Feb 25, 2025 at 08:11:11AM -0800, Boqun Feng wrote:
-> >> [...]
-> >>>>>> These passed other than a KCSAN complaint involving
-> >>>>>> rcu_preempt_deferred_qs_handler() and rcu_read_unlock_special().
-> >>>>>> This looks like the plain C-language writes to ->defer_qs_iw_pending.
-> >>>>>>
-> >>>>>> My guess is that this is low probability, despite having happened twice,
-> >>>>>> and that it happens when rcu_read_unlock_special() is interrupted,
-> >>>>>> resulting in rcu_preempt_deferred_qs_handler() being invoked as an
-> >>>>>> IRQ-work handler.  Keeping in mind that RCU runs KCSAN so as to locate
-> >>>>>> data races between task and handler on the same CPU.
-> >>>>>>
-> >>>>>> Thoughts?
-> >>>>>>
-> >>>>>
-> >>>>> Do you have a KCSAN of this? Also this is not a regression, right?
-> >>>>> Meaning you probably have seen this before? Anyway, it should be an easy
-> >>>>> fix (just using READ_ONCE() and WRITE_ONCE()). I can send the fix out
-> >>>>> and put it in.
-> >>>
-> >>> Here you go!  And you are right, if it is a regression, it is from a
-> >>> long time ago, though something more recent might have made it more
-> >>> probable.
-> >>
-> >> In my opinion I probably wouldn't even call it a regression because the
-> >> data-race is happening on a boolean element. If I am not mistaken, this is
-> >> thus a false-positive and KCSAN has no way of silencing it?
-> > 
-> > You can still get in trouble with booleans.  The usual example
-> > is as follows:
-> > 
-> > 	bool x;
-> > 
-> > 	...
-> > 
-> > 
-> > 	while (!x)
-> > 		do_something();
-> > 
-> > In many cases, the compiler is free to transform that "while" loop
-> > into this:
-> > 
-> > 	if (!x)
-> > 		for (;;)
-> > 			do_something();
-> > 
-> > Putting a READ_ONCE() in the original "while" condition prevents this
-> > transformation.
-> 
-> True, thanks for clarifying. I will be a bit more annoying and say that in
-> rcu_read_unlock_special(), there is no such looping transformation possible
-> though AFAICS. The test is an if() block. But this is beyond KCSAN's ability to
-> analyze I guess.
+> All it takes is for sync_sched_exp_online_cleanup() to execute between
+> sync_exp_reset_tree() and  __sync_rcu_exp_select_node_cpus() manage
+> to send an IPI.
 
-Besides, better safe than sorry.  Especially given the decades-long
-trend of increasingly clever compilers.  ;-)
+You are right, that would do it!
+
+> But we can warn about the lack of forward progress after a few iterations
+> of the retry_ipi label in __sync_rcu_exp_select_node_cpus().
+
+Agreed, that would make more sense.
+
+> > > > > And if after do we know why?
+> > > > 
+> > > > Here are some (possibly bogus) possibilities that came to mind:
+> > > > 
+> > > > 1.	There is some coming-online race that deprives the incoming
+> > > > 	CPU of an IPI, but nevertheless marks that CPU as blocking the
+> > > > 	current grace period.
+> > > 
+> > > Arguably there is a tiny window between rcutree_report_cpu_starting()
+> > > and set_cpu_online() that could make ->qsmaskinitnext visible before
+> > > cpu_online() and therefore delay the IPI a bit. But I don't expect
+> > > more than a jiffy to fill up the gap. And if that's relevant, note that
+> > > only !PREEMPT_RCU is then "fixed" by sync_sched_exp_online_cleanup() here.
+> > 
+> > Agreed.  And I vaguely recall that there was some difference due to
+> > preemptible RCU's ability to clean up at the next rcu_read_unlock(),
+> > though more recently, possibly deferred.
+> 
+> Perhaps at the time but today at least I can't find any.
+
+And maybe not even back then.  ;-)
 
 							Thanx, Paul
