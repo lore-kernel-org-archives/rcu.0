@@ -1,155 +1,112 @@
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F6222F38E;
-	Thu, 27 Feb 2025 13:16:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860C826FDB7;
+	Thu, 27 Feb 2025 16:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740662181; cv=none; b=sggsuC6IxqjDg2B4/crJvXETWmrRZmmTHsjz2T4nEPobBWUP3vS1yU8T3x9htgmkQpixTl8iYLEMe1TjTVpzGFxaWW30+nLjYDSmb+2AFXxV1aHC9ZdB/VoDKLxlG2FDtH0zP452fG1dNICFrBqmPKW4x5WET4h7AlZQT/iST50=
+	t=1740672403; cv=none; b=ntG45iO5WTLmGmXcmxcoytMC/irZiBJTlsYyd8sAhFq/S1KFm7tnmwqoA2MpL4Njjp+y8KQQpQT9vIZZhg+pQeSTelQHYP0pY6Cp82rY8h0sjK1xcOp+PNzqxa0PC3HwOLaXot1jTqfJ6KmFVJaZCn8pg9aYLcuBl9qz7KMb9GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740662181; c=relaxed/simple;
-	bh=bYUZ+mFYgQy3fmEZhoYJu6Kf0gd8Eq8OYrkuc81YJ4k=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fDx3tEqn7VoT5v/tq//mFQtfhlCDm9wUpqO5kBJbLY7ytIxBN34DSlNwk7gefdvTqLjCoYu3ZhEjfereAJJzOmBWa08Q77EaKKMewUCfYwj3RuhU0sH2hxkVpWYoIIyNUHth2XvuKFM4ILn/fOcIu8IALM9YvdFJ7tMGm3bMcXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KojPpKf3; arc=none smtp.client-ip=209.85.167.47
+	s=arc-20240116; t=1740672403; c=relaxed/simple;
+	bh=PJfgPnKJ89sswz05HEjeGzyw+HZGCWBZpjHbZs0nHMA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VZtQzlOJWwYIuOKkTnFo2tgVXz0phz3Kqs5TslY32ihGLC2vRXn0uxq8DCE5WnHrG76OPjmraxGKoL+stxEHzPXNu9O0foNMdSHsPgW7RyRAe0eUrJ6mByQHjoa5hUVhoXvpCEsVweUaPvKhoo2+fW+JwMVkDvFUr1Pp1ZcIOkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I1yXLbDV; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KojPpKf3"
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-546267ed92fso919865e87.2;
-        Thu, 27 Feb 2025 05:16:19 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I1yXLbDV"
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2fe8f6a4bfaso305367a91.0;
+        Thu, 27 Feb 2025 08:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740662178; x=1741266978; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1740672402; x=1741277202; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0RTsy7+StkyF/uZICr0cKjY+TqTfaQpfCUKBRMx4ff0=;
-        b=KojPpKf3wdhe0z9S0/NFI/Qu3NCoqr4NgkfO/A2VKW9Q3XkbFUpGfe41LMq4jxNQZ4
-         JvjOmGfE7voEmu64Yg7yvBTGJPZ6S7sxtLMGzkTrl6vebUTyFTIno8XDGq5GLhl/Y4u7
-         eMPVpRtPGtU0IttEAO2oE1oMX87hffJZ6Xzg56D2E69lvzZ8rf5SsVOgvH5td5bGxvFq
-         GkGBlA5HaE6sV3W28AVyeHKW/icY11A7bnEiSjbd2u7HP86VwYzj5whmtU/1QD9I1rYx
-         e/rgj2u9CteYivR0pmCEfWCoh8rOTGGN7l/Yva0Q7oRaZKZ2zRlAEEOmPlGPMT2IM7un
-         S8Lw==
+        bh=PJfgPnKJ89sswz05HEjeGzyw+HZGCWBZpjHbZs0nHMA=;
+        b=I1yXLbDVK0AarkOV01ID3SFH86PTImcP6Rl0LikMc15i/7wNVUHSkjsYFyJWWpbngR
+         nUM0blQpCdHjHzq/l76H7FSG5RDcIbdzsO1kGxqwoMKHINCGJpID3jvlGx4S8pA/eCZs
+         v9QQb1yqKbj3puS77N0S1MimkGdEhtYY5vZvx7JFgZ7JGI0KvZlNCvd6xkBHK/Uv/XUK
+         L11bu4bMI2CONMMQlmgHmYvFbNYl9mULHHRLZw3Gy0pZw0+j6tmlL1hOEgWxS2869uzX
+         K2Ie1RgQ0+IRtQyPi80lWyTzX3mofmfjO4k1rEeNB4IosQHCEOINzzWclg88Hj3v0Bfo
+         gotQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740662178; x=1741266978;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1740672402; x=1741277202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0RTsy7+StkyF/uZICr0cKjY+TqTfaQpfCUKBRMx4ff0=;
-        b=TXihGsWEyXKH1H5m82aCZjEeN2DqPc+jWP4g2nsQsqWlahrvzwUP9srS4eVUDC92JT
-         8rLgyLU24NViBEwUX2SGMs2vSFfRRg8Cb92U7PqO9nyUeWNN5gzWi7MHbfFPmpe6uVWS
-         GYlzIfax5RF08K+48FxHPcFLxQJdIZq/RWGAZd69rHIIGvUZOaNiyJ4l1edF3J2qMWhq
-         ADKX9IOz8HZFDwCWYiC4RK1wG3B5IJTmEeXTfvUith7JFKkSXYmB8JEAWsgaU08yvjIM
-         Pg8RsFmQl3Om2c9z9or3kvl/HFDG31KrEj+AO4gI4LTzrrknkPRkY+TQXuOp8oEEi/Z5
-         obCw==
-X-Forwarded-Encrypted: i=1; AJvYcCX5F2hYUvM78KNJv8fvpFnIn9qqkOvIvUIBNQMV71Z/pRxHI5Q7QMRLjvZMBkm/lBz4OhKL+Gy0wqAvFr0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzcLNOxg/5ioVTpZ6wgV0zJS7dUTHsJSEPdgwlvm55QR1Ywi0Dv
-	HQkc7tSr/kdDFpStg+h83pMh/mKSpqMrehdNy/n2Vj8RyW56V7Yg
-X-Gm-Gg: ASbGnctb/oOcOJBBhYTnasoFwFOw0NOOsXvlgNP+54/ObbZv+RrHWf4U8ure7azwv7x
-	TaGg+cdwlgSe/311QZTDIZuUBz3m/1kPNb3ejt4BmsooqJcNM3WOB/ZTKBAClA2mS913mr1o5mV
-	sUtjZkq9D+9K3mdx15FFhnpECfVTU1TNpEPNNU0wzF8KdjJO+votFu0K5QJSZ2WR3ArNhN0ZhxA
-	E6ka2ORrfXihi892eFAIt7kznxjIEfb56vOV8TghPnzqTURiCq8bXuiv3iIoepW2UQiSWjL1/dA
-	GDATDPzrl3B4Iz1Qf1obrA==
-X-Google-Smtp-Source: AGHT+IFR9Hk30gIJ7yteYrIHtrcQYiEdSi1movsTxUujeeNXz5xGprrz0YptnKOLbXdsoX2pYNP1lQ==
-X-Received: by 2002:ac2:4e07:0:b0:545:a2a:589 with SMTP id 2adb3069b0e04-548510ed8e7mr6796685e87.52.1740662177923;
-        Thu, 27 Feb 2025 05:16:17 -0800 (PST)
-Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54944174505sm157011e87.37.2025.02.27.05.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2025 05:16:16 -0800 (PST)
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To: "Paul E . McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Cheung Wall <zzqq0103.hey@gmail.com>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: [PATCH v4 3/3] rcu: Use _full() API to debug synchronize_rcu()
-Date: Thu, 27 Feb 2025 14:16:13 +0100
-Message-Id: <20250227131613.52683-3-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250227131613.52683-1-urezki@gmail.com>
-References: <20250227131613.52683-1-urezki@gmail.com>
+        bh=PJfgPnKJ89sswz05HEjeGzyw+HZGCWBZpjHbZs0nHMA=;
+        b=o0hZBXoG2XhVoTBPchcMM7KsA1Pkm4I9ZpeJuvX43r94pWACFek4JkoWqunfMMcovQ
+         f0+b/shb8sGvvsG2nk4Y3+OyVgaek4kxDTDif+aCuAageCbcI8ZM2/SiChJ/feJFFYlu
+         3ajxYg6cZbDYzrimh7e+Pop1pp+9bEJGRulDznohjkk873LyfdI/3PKabooqKus7AjtM
+         mvxk8gRVPA6dzMio7PiqLAmmXOGMmEwZb9EPQtQBKFvUh/BspnpU4LuzfHhmO8lFDiYs
+         Y2SPWXtQ1dR4hFnYYCTB0xeMEU9PYv7UraCsGuqmqFpif9LDPxnFkbsUTP+YhUe5I3bp
+         jIng==
+X-Forwarded-Encrypted: i=1; AJvYcCUH2Bg/mHSw8Pm3zNvFvk8z80M1NwChqeC+dqX0XCBQwTTx76a8keSCOhGnlK4uYgK0MZiT9Ntisj6p@vger.kernel.org, AJvYcCVwYljQoJmwa3pbxplPYkm7/z9c0n8B+BX9aYLepEdzB39R9aWdkyZetCLlwzjojcPp2aQ7s71Wy/Wz@vger.kernel.org, AJvYcCWuDQ9kzkbj9NAgFPAoUwx0DwmDP96ermbDoxajHNgBmWnDKvYwXqTZvmSOUulEWiNw05vd27ipOg/URfNj6Io=@vger.kernel.org, AJvYcCXikuNVkGmgswLLCDIdgiVLnYZ7aP7giEF4XA3VxmqAwHu6XxGC9Gol6flhXT2Ytf1aYzt1@vger.kernel.org, AJvYcCXwE39QtVtPZRZ4Z8xWqyf82sgeHp/vQyf/W5vriy3OFwdMlLj94bsoYUNKhGRnxryIH2arTKEFOWwA2bCg@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjQGhAEWz7jaU4f2e4T+lydk6WHY5TORk2NRX0M6h39/+xPJqW
+	YctZdc1QRlj8sALnVXFqkdOEV0V7zVOZ84d/SXVvqUesCUympsVb7S6dt/R/SYUUafjFYSnPkUj
+	ALMNJQBy2b4bPlnXUOiu8vhnmQmw=
+X-Gm-Gg: ASbGnctcF3POyyvaBSUY/0As05pB8fFGUpCwz11535HESlgbv/AJSJgvtq8y2XDWsNS
+	NbK6uWhHEl6G/mDvTGQA0PZQkVd7MYT+FA9bzHp6Xs/cF87nRHdQeC0lIHPzmnUDHkbnK30DqyZ
+	xkl/s2lM8=
+X-Google-Smtp-Source: AGHT+IErgJSlzMKoFDBnkaE7/t4p7pkyKYyZBw7RJv2MRmTY5RNYgYWmYi0oEf6W6z4sa2855ARS13/cWfLtygNaRCM=
+X-Received: by 2002:a17:90b:3a8b:b0:2fe:a8b1:7cd with SMTP id
+ 98e67ed59e1d1-2fea8b1093cmr1569044a91.2.1740672401702; Thu, 27 Feb 2025
+ 08:06:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241219170425.12036-1-dakr@kernel.org> <20241219170425.12036-8-dakr@kernel.org>
+ <g63h5f3zowy375yutftautqhurflahq3o5nmujbr274c5d7u7u@j5cbqi5aba6k>
+ <CANiq72=gZhG8MOCqPi8F0yp3WR1oW77V+MXdLP=RK_R2Jzg-cw@mail.gmail.com>
+ <wnzq3vlgawjdchjck7nzwlzmm5qbmactwlhtj44ak7s7kefphd@m7emgjnmnkjn>
+ <Z72jw3TYJHm7N242@pollux> <nlngenb6udempavyevw62qvdzuo7jr4m5mt4fwvznza347vicl@ynn4c5lojoub>
+In-Reply-To: <nlngenb6udempavyevw62qvdzuo7jr4m5mt4fwvznza347vicl@ynn4c5lojoub>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 27 Feb 2025 17:06:28 +0100
+X-Gm-Features: AQ5f1JqLW2JqfenVRPiw0Bw5DJ2q63fM_hLXAaW41V4GKj_UYjrOy-DoLwS8j8U
+Message-ID: <CANiq72n7gi=BJr72P1z_MKaOTRV5p2R3EoP_dUZ6C02xf2WA=g@mail.gmail.com>
+Subject: Re: [PATCH v7 07/16] rust: add `io::{Io, IoRaw}` base types
+To: Alistair Popple <apopple@nvidia.com>, Gary Guo <gary@garyguo.net>
+Cc: Danilo Krummrich <dakr@kernel.org>, gregkh@linuxfoundation.org, rafael@kernel.org, 
+	bhelgaas@google.com, ojeda@kernel.org, alex.gaynor@gmail.com, 
+	boqun.feng@gmail.com, bjorn3_gh@protonmail.com, benno.lossin@proton.me, 
+	tmgross@umich.edu, a.hindborg@samsung.com, aliceryhl@google.com, 
+	airlied@gmail.com, fujita.tomonori@gmail.com, lina@asahilina.net, 
+	pstanner@redhat.com, ajanulgu@redhat.com, lyude@redhat.com, robh@kernel.org, 
+	daniel.almeida@collabora.com, saravanak@google.com, dirk.behme@de.bosch.com, 
+	j@jannau.net, fabien.parent@linaro.org, chrisi.schrefl@gmail.com, 
+	paulmck@kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, 
+	devicetree@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Switch for using of get_state_synchronize_rcu_full() and
-poll_state_synchronize_rcu_full() pair to debug a normal
-synchronize_rcu() call.
+On Thu, Feb 27, 2025 at 1:26=E2=80=AFAM Alistair Popple <apopple@nvidia.com=
+> wrote:
+>
+> I've asked a few times, but are there any plans/ideas on how to improve t=
+he
+> situation? I'm kind of suprised we're building things on top of a fairly =
+broken
+> feature without an idea of how we might make that feature work. I'd love =
+to
+> help, but being new to R4L no immediately useful ideas come to mind.
 
-Just using "not" full APIs to identify if a grace period is
-passed or not might lead to a false-positive kernel splat.
+It is not "broken" -- after all, it works as it was intended/designed
+when it was introduced, though it is definitely a hack and thus indeed
+the message could be improved greatly. :)
 
-It can happen, because get_state_synchronize_rcu() compresses
-both normal and expedited states into one single unsigned long
-value, so a poll_state_synchronize_rcu() can miss GP-completion
-when synchronize_rcu()/synchronize_rcu_expedited() concurrently
-run.
+As for how to improve it, e.g. Gary suggested the other day to use the
+DWARF information to locate the call site.
 
-To address this, switch to poll_state_synchronize_rcu_full() and
-get_state_synchronize_rcu_full() APIs, which use separate variables
-for expedited and normal states.
+I guess another way would be to generate different symbol names per
+call site, so that we can embed the path and line number into it (more
+or less), so that the user at least has a hint, though that may have
+disadvantages.
 
-Link: https://lore.kernel.org/lkml/Z5ikQeVmVdsWQrdD@pc636/T/
-Fixes: 988f569ae041 ("rcu: Reduce synchronize_rcu() latency")
-Reported-by: cheung wall <zzqq0103.hey@gmail.com>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- include/linux/rcupdate_wait.h | 3 +++
- kernel/rcu/tree.c             | 8 +++-----
- 2 files changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-index f9bed3d3f78d..4c92d4291cce 100644
---- a/include/linux/rcupdate_wait.h
-+++ b/include/linux/rcupdate_wait.h
-@@ -16,6 +16,9 @@
- struct rcu_synchronize {
- 	struct rcu_head head;
- 	struct completion completion;
-+
-+	/* This is for debugging. */
-+	struct rcu_gp_oldstate oldstate;
- };
- void wakeme_after_rcu(struct rcu_head *head);
- 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8625f616c65a..48384fa2eaeb 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1632,12 +1632,10 @@ static void rcu_sr_normal_complete(struct llist_node *node)
- {
- 	struct rcu_synchronize *rs = container_of(
- 		(struct rcu_head *) node, struct rcu_synchronize, head);
--	unsigned long oldstate = (unsigned long) rs->head.func;
- 
- 	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
--		!poll_state_synchronize_rcu(oldstate),
--		"A full grace period is not passed yet: %lu",
--		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-+		!poll_state_synchronize_rcu_full(&rs->oldstate),
-+		"A full grace period is not passed yet!\n");
- 
- 	/* Finally. */
- 	complete(&rs->completion);
-@@ -3247,7 +3245,7 @@ static void synchronize_rcu_normal(void)
- 	 * snapshot before adding a request.
- 	 */
- 	if (IS_ENABLED(CONFIG_PROVE_RCU))
--		rs.head.func = (void *) get_state_synchronize_rcu();
-+		get_state_synchronize_rcu_full(&rs.oldstate);
- 
- 	rcu_sr_normal_add_req(&rs);
- 
--- 
-2.39.5
-
+Cheers,
+Miguel
