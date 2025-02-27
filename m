@@ -1,78 +1,79 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CAE1DEFEB;
-	Thu, 27 Feb 2025 17:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F4E1DEFEB;
+	Thu, 27 Feb 2025 17:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740678240; cv=none; b=djFYh5idSOCgfjnb6ElcZS0sDPqr5PsRzCXXF6TTR3UoDRosouHkh/PuLVjK/KgTIaSfivt9Lusl3GBgqKUceZ/mqCp7fLLCe18Ur1nY2cq8zw7bfiLdGc6x8RAvEYBg5K85AB07vctdVAa8EVyskkn8pYQNurEwjpwGTpeRWU4=
+	t=1740678261; cv=none; b=EggTWUKiWIVviMHV7EKQpSmFyxxqAeydvc1pOWpOGTtk57FzifnPnhG0IYd3/w5QvoYhuMjGEUhJMvZaKO90Tzup+/5UIw44H453OvcUH6nEJWH2nLry8MLLMipGvs8wDYu0ixw+QHmHsFynjxCdF5Y6ghKpOOzAsyLh5GG7bmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740678240; c=relaxed/simple;
-	bh=CJMTauSRCEWnlEAWxjoYy7NZ0L4FJshH0qmAshtRy2E=;
+	s=arc-20240116; t=1740678261; c=relaxed/simple;
+	bh=jIDEnSIPQbFfExmTC460MWObe17Tb9qy5aFuBghQhYo=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nJbMGNdBbKiuUhdOpR/Hx81TalK+T2JGYmFoxpkL64eSHkiVGe+RiCs96hncui6GONxoFq+/vXUPxxH/JoQ1GWn9nrokfcKl5u2g5iHyXwWhy9b0LEKmidAKW3ZPCthzMtOkrZ5gmp/yh3KG2utNgkuELpaq6hdyX5luQHiWlkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zgw/CVow; arc=none smtp.client-ip=209.85.167.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=bisGVKNrikxzhklzxoxURLtVJ4dkud8X6wAdFXtvbCTz+1xKhASP6ALvv21qeHeE9u1Z+KpVwe2aVSmdU/ec7xGGMWqH2twEnpIsdBdp3NF0BEsZRFp5uhficLC96ndO+9FZ+VJyccJDbgQCwIYl2bv1/vQRZtJQARJaWI6/evk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XWaGp2LU; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zgw/CVow"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-54943bb8006so1210409e87.0;
-        Thu, 27 Feb 2025 09:43:58 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XWaGp2LU"
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5494bc4d796so196273e87.3;
+        Thu, 27 Feb 2025 09:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740678237; x=1741283037; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1740678258; x=1741283058; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X3vEaodisrvKcNhPG/ww/1OyCGncwG4JxfefrvjSq2w=;
-        b=Zgw/CVowjlcw9KCeqDPZZl/bZ0diW6phcVyDgz7Md4PKbgSACu44zDGKiCd9/tf6sg
-         4QMfNCOdfbuk7bcYtKxjl8OYP2SeMjpFWE4OWVw9drvNYhUbDPQOeOKAVEOz6TO/Ko6+
-         sUNIInHV26wuKMPRzDtwxrSScx3GG5ekEjLONUVkcndMl2XGY8oCBErImxwZ1oFcPH0A
-         ogULPUBr0nmNR0LFiEnj0lhtNfXgCvY0VTkjcywlk6zz7ad4Re2rVpXGSzU/NGeoHhns
-         NL6D9ADP+wFdlQ5ic2CIziK3PFki/fV5sl1f+yNUDfpbh7KhtWijeJfsUfRp6Q728QnX
-         qLvA==
+        bh=+kPjfRpGRka+XnOdnG4bcjCQPFB/UOhax6LyvKzL3iU=;
+        b=XWaGp2LUescMOwdtdAhqCEc0OyEyJFLYIwOSgOcvuTtJlZoEHKwWVv6J6n4rttXdy+
+         d1eYONJ49C+vAfuJorqhAKlCs9aAnx/9+hCJ/6cEDvLwfYdKNnTrPRDNarNW+7+gX9tR
+         +LN+spQwxCL3gO9AazgAElvVjIWzW46+ZUMVOG4EOQA0E/KSyxo9JxEHZpa7jtqmA6Ot
+         6KFUpcRAxZo3ygjvXPJWmtVz2slHN5FsiROMUmZgttUDXiCq6siGkCrLs6rQbDDGgL+o
+         4poRkuHMTg2zhHl5GWiomr2r7GPGBmVQyvGoRZ4si7yzuSTEoy1p3TgB8hUGygkRpvu8
+         WPqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740678237; x=1741283037;
+        d=1e100.net; s=20230601; t=1740678258; x=1741283058;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X3vEaodisrvKcNhPG/ww/1OyCGncwG4JxfefrvjSq2w=;
-        b=D6qjrNZKF0xz/TWF6WKzSP9Nlw+408Bdof3Uvukp6yksqL/7ks1eltTsKimax3jZu7
-         AgXWiQCEsuMig/OJHSRpcTxw5hB0JUn+LsA6oVmKqPqVJcBpRVHOYsmLVKwJTlK/qIQG
-         4kXzr19a1rEPdqZcnDWr3oNt/EvuosZh46eYah2AnXC1ReVf8P9jup/5XwwWSc4iIn2J
-         j5PcbJlzRf4GvIKc1TOpyvxK3LoB6OZmvYzSRTLfwLekLJDaiaoxZ3TO6zAVAxDmCfy+
-         mrxvyezYIQ4ITMpBH9nosN8um9cn4QH0FUElFRTgOmrpjTRBg+ldtHVcIlsd6j2eOhzp
-         rsbw==
-X-Forwarded-Encrypted: i=1; AJvYcCUT6JQG5+b+wKq20fUf7O5XcSzoIumWn4gNMZjJ7xbV2XLCjEpvXqD7P8O0mSWQhnvCettA@vger.kernel.org, AJvYcCVrbq8emfwmz+T5R5nDYrg8bnTVpILCZoMUDCQFZ1Hs5KtCyaeRNMWro+F3c3MZqt9RzJmTZjTJ6SrtJBs=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzgV5tSrYYEjoFU8Mid/OQJWDsCTsBfbWXFx8YII+qg5KGblZBd
-	JzGiTdQzoeJUXgeFw+Eel3HtG+OV2J42OOa5xf06cgsH4c0n1gr4
-X-Gm-Gg: ASbGncsoJduz9By7kVZtGPcFmZQZf6y4ZZyAywms3lXm/tbhIow5nHxObzZIdQmhgGb
-	BLwak98B2yl0FPz+WIs/Gl2DQB2ANVF4nenb43KHrjPazLV7LyNoMQFt5rxptIg5vTpO5/ewJdG
-	jS6eoMQsKsogodtaVXfzTLqXzCwN2rO1wahsUDaUP9cZNtDmhsbhxmwCBBazLOub4Cmp4pMYTh8
-	7Pa8lhN46wRjsnpRuRt3cUD4CSr/2fQka0fm4nYeK83qmUreM3mlB4mwkaMCi+esLR7qFOcv9Mc
-	LdXD4n18hm2bGmRns3z2OjEofJKAGieT5P+7xxGhPhJ55Ejg
-X-Google-Smtp-Source: AGHT+IGLQeTGJpG2m7C1VeIlUSZuQjnIL1ku5l1tB/izF3+EkRVVl1HYHlLSBB4oXrSJjG74ftT/oA==
-X-Received: by 2002:a05:6512:281d:b0:545:5d:a5d8 with SMTP id 2adb3069b0e04-5494c10c5efmr143109e87.7.1740678236456;
-        Thu, 27 Feb 2025 09:43:56 -0800 (PST)
+        bh=+kPjfRpGRka+XnOdnG4bcjCQPFB/UOhax6LyvKzL3iU=;
+        b=l4v2Vky/iuslHE2Ym4maEnmuboNpQOJeBqYxWIuVv8HioOpNXZlT9g4DCuDmjzY+4v
+         0229vMQDGZMiv46f6oJ8b+9TX42DWrMBHzJVekl4Hs4i31LmTJAgcu9aSCb2M8Fl8H3v
+         CMl4kyzof5fnVLJTFmyVAf3j0rlX1WOwif1Y8glueTKjtpNvk2kBtFJXuCKAxBqMjWHS
+         jM5Q2paKcB44MuvuGpmMdPc1cSJkmrj3bVvY4CpZw5c7RLNTgLVKXYo9YKYdISIp1yqA
+         YZNFtTmzHQIq9FwO8PpIrkLBv8WCZHsvlmlHHuxq9wr8FeNPhnsCWpRmUuOjYT/CaXVv
+         zHKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGEO3USXTgG+pREu67UfeMOKSuaMEsdru1DJfoDwtA/QT232rmRhSKkEAnE+zdcJz0Cni1@vger.kernel.org, AJvYcCXrdZ4J/3TVlO1NGt6NxMXYSBaoYkKh0dHC7kSmRpsg3WtLgBvLDqIZNdu47aKS8y4GFYXLDwHxZnaPWLY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7b9+DBWvn8Aui6uppBL3Oogu3jyuWnVxnty2/4s8nqFjfenZk
+	7O3uxui1zYsGI2gV241fEZh9CUfIonqg9s1vzQ3TDIKEiqzgeSkU
+X-Gm-Gg: ASbGncvz9yIzzG9clmwfGxatg/zFDvftK2JZD7yTT6F8doa660qotG5XmaWBAvZekHK
+	DWr9+SIBo5+SyWR/WAQJd9wuXsW3tLGMLzChBoz2/LtRjKJHxDBntFDNFScJ2FD2VS0B7VWy1cI
+	keyYIfPxs2BSsT3Gs1BaWUxAcvuov/aM+r6xRdSBNS9eIlFPkgsNjgGPQMnp7SD/23dKW8/DNLa
+	XaEmJ2Uw9ebt2/oXP6p311u3i6ETtkma/ZlRj4tiG56acjh8kHxE9jj8tFkP658z77DyU8hKLsY
+	bTbVCWx05Nt95zCwxnfJQkeSvp17c2b5X6S00liNRuc0QA91
+X-Google-Smtp-Source: AGHT+IHYKO2+7ab78Gcv+LzYpCAqHPLlvJNLrKf9EGC/h3+5JmkdHcq4c07Vdys5iwDgmutQTGKXzw==
+X-Received: by 2002:a05:6512:104a:b0:549:4444:605e with SMTP id 2adb3069b0e04-5494c38d615mr149485e87.50.1740678257907;
+        Thu, 27 Feb 2025 09:44:17 -0800 (PST)
 Received: from pc636 (host-95-203-6-24.mobileonline.telia.com. [95.203.6.24])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-549443cd45dsm215760e87.252.2025.02.27.09.43.54
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5494417424asm216311e87.6.2025.02.27.09.44.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2025 09:43:55 -0800 (PST)
+        Thu, 27 Feb 2025 09:44:17 -0800 (PST)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 27 Feb 2025 18:43:53 +0100
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
+Date: Thu, 27 Feb 2025 18:44:15 +0100
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Cheung Wall <zzqq0103.hey@gmail.com>,
 	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
 Subject: Re: [PATCH v4 3/3] rcu: Use _full() API to debug synchronize_rcu()
-Message-ID: <Z8CkWWR4IYmrsXKg@pc636>
+Message-ID: <Z8Ckb6spK35-Ez4U@pc636>
 References: <20250227131613.52683-1-urezki@gmail.com>
  <20250227131613.52683-3-urezki@gmail.com>
  <Z8CdB0Hzvdu5ZVSI@Mac.home>
+ <d8b196c1-c1b5-4bf9-b1cb-dde8642cc34b@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -81,52 +82,49 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z8CdB0Hzvdu5ZVSI@Mac.home>
+In-Reply-To: <d8b196c1-c1b5-4bf9-b1cb-dde8642cc34b@paulmck-laptop>
 
-Hello, Boqun!
-
-> Hi Ulad,
-> 
-> I put these three patches into next (and misc.2025.02.27a) for some
-> testing, hopefully it all goes well and they can make it v6.15.
-> 
-> A few tag changed below:
-> 
-> On Thu, Feb 27, 2025 at 02:16:13PM +0100, Uladzislau Rezki (Sony) wrote:
-> > Switch for using of get_state_synchronize_rcu_full() and
-> > poll_state_synchronize_rcu_full() pair to debug a normal
-> > synchronize_rcu() call.
+On Thu, Feb 27, 2025 at 09:26:40AM -0800, Paul E. McKenney wrote:
+> On Thu, Feb 27, 2025 at 09:12:39AM -0800, Boqun Feng wrote:
+> > Hi Ulad,
 > > 
-> > Just using "not" full APIs to identify if a grace period is
-> > passed or not might lead to a false-positive kernel splat.
+> > I put these three patches into next (and misc.2025.02.27a) for some
+> > testing, hopefully it all goes well and they can make it v6.15.
 > > 
-> > It can happen, because get_state_synchronize_rcu() compresses
-> > both normal and expedited states into one single unsigned long
-> > value, so a poll_state_synchronize_rcu() can miss GP-completion
-> > when synchronize_rcu()/synchronize_rcu_expedited() concurrently
-> > run.
+> > A few tag changed below:
 > > 
-> > To address this, switch to poll_state_synchronize_rcu_full() and
-> > get_state_synchronize_rcu_full() APIs, which use separate variables
-> > for expedited and normal states.
+> > On Thu, Feb 27, 2025 at 02:16:13PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > Switch for using of get_state_synchronize_rcu_full() and
+> > > poll_state_synchronize_rcu_full() pair to debug a normal
+> > > synchronize_rcu() call.
+> > > 
+> > > Just using "not" full APIs to identify if a grace period is
+> > > passed or not might lead to a false-positive kernel splat.
+> > > 
+> > > It can happen, because get_state_synchronize_rcu() compresses
+> > > both normal and expedited states into one single unsigned long
+> > > value, so a poll_state_synchronize_rcu() can miss GP-completion
+> > > when synchronize_rcu()/synchronize_rcu_expedited() concurrently
+> > > run.
+> > > 
+> > > To address this, switch to poll_state_synchronize_rcu_full() and
+> > > get_state_synchronize_rcu_full() APIs, which use separate variables
+> > > for expedited and normal states.
+> > > 
+> > > Link: https://lore.kernel.org/lkml/Z5ikQeVmVdsWQrdD@pc636/T/
 > > 
-> > Link: https://lore.kernel.org/lkml/Z5ikQeVmVdsWQrdD@pc636/T/
+> > I switch this into "Closes:" per checkpatch.
+> > 
+> > > Fixes: 988f569ae041 ("rcu: Reduce synchronize_rcu() latency")
+> > > Reported-by: cheung wall <zzqq0103.hey@gmail.com>
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > 
+> > You seem to forget add Paul's Reviewed-by, so I add it in rcu/next.
+> > Would you or Paul double-check the Reviewed-by should be here?
 > 
-> I switch this into "Closes:" per checkpatch.
+> I am good with keeping my Reviewed-by tags.
 > 
-Thanks!
-
-> > Fixes: 988f569ae041 ("rcu: Reduce synchronize_rcu() latency")
-> > Reported-by: cheung wall <zzqq0103.hey@gmail.com>
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> 
-> You seem to forget add Paul's Reviewed-by, so I add it in rcu/next.
-> Would you or Paul double-check the Reviewed-by should be here?
-> 
-Probably. But i do not remember that i got a review from Paul. Might
-be wrong and have missed that :)
-
-Anyway, thank you for adding.
+Thanks Paul!
 
 --
 Uladzislau Rezki
