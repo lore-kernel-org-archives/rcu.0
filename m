@@ -1,119 +1,193 @@
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37492157A55;
-	Fri, 28 Feb 2025 10:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A46326A1AC;
+	Fri, 28 Feb 2025 12:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740738167; cv=none; b=nj2NjRajig+LWIRJBDiiTXxUurDi16H8d9tUc3btSspnC7mn90orfNvTwSsVxojct+Nb9Dbcw1d1vzAeV0V6QVfvcRjFv/SC59s2+Xh8oyyJhryQwcCWSLbXfSFmddhxA1n8jptagTbTUh/oWX5MYLuNXhU4+PN8JD89L/zbS64=
+	t=1740744843; cv=none; b=sBZRL/fvZG+lf93z19dAZaLk1iacYlnYLs9bBTOL02TBowPFsOax3LxoJKq8fJ2JVuJP1fHx0JWOZ2eyw9xhtlQK2qbYBJLUsJPLZiiIoKNG1T5+mnkUNu7As4JqNrYgsqdeWIrqUlbi88LcETRKJ1olIOzn+gJyt3nDnM5Wubk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740738167; c=relaxed/simple;
-	bh=zQMkQAtj6vzSQBpImtNQZFAAzOJ67Rs10PHBe6Pdo/Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aOkC60npJ5IfJlSZEHokHYP1EJpm9RJY4UOK7P+xZLE0HASWvOGvUibYd+ZhI7thT+Ul4N6RXOIdOTbjuGLa3fWRpppXc6NrphmHKPjxOWxdMy+aCW2LMGl0MPAmu1O9iN3AgqWYnSVDP93FH7uoPYFW2YDcUGTPGP4PTushF98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ywooo/Qw; arc=none smtp.client-ip=209.85.216.48
+	s=arc-20240116; t=1740744843; c=relaxed/simple;
+	bh=tnfpMuVm4VBQfp3yu7qk3PMClI30zaEI7FgcpejGHl0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nJZ3we27a8HZmODx8uzGgXVTPiu/pE6z/trBLHtkGXsE99gMz4LKoTMSUyl0aL5Hc0hgvnzJnM8NDf9WD0I/sMBPXnsRri429iQHfskEruy6PoKbW2SDAHwtTUhaRRlaxBkviktuWrRhP5//brwmWtX34mPXxXd5wANlHGHcca8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QMd+9NV4; arc=none smtp.client-ip=209.85.167.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ywooo/Qw"
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2fe9596a582so475770a91.3;
-        Fri, 28 Feb 2025 02:22:45 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QMd+9NV4"
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-548409cd2a8so2084383e87.3;
+        Fri, 28 Feb 2025 04:14:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740738165; x=1741342965; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zQMkQAtj6vzSQBpImtNQZFAAzOJ67Rs10PHBe6Pdo/Y=;
-        b=Ywooo/QwziEi+rLbWHW9j2XP2SValmUxDlR7gsMikRgjHSH9StwxTZiTmiJjlfK+gm
-         lkLeS2RUVA61KPIacQHjx90ozvovkmc0XaPwejjYAum8RKvDQhIS881gpE/gojJWUHcc
-         EJeQYhITGlcB0o/Zh45jBuNVHd3JMR54TzmxkC9t6dzOL+0Xx2mU/fyFa+qU4+8stK9a
-         KwiKqJzQGoP2leFGamqDMChXojWMCF1QdghuHo8BXauxi2IHhcJ53heLwL3CCJ1ooQSs
-         xe+CKy4GkcyUrXPIatgY+tgh3xxVZlL3vVKjTpb9yZpdxfrnAop4AftuYs+mVYWz+h/5
-         v4cA==
+        d=gmail.com; s=20230601; t=1740744839; x=1741349639; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pkAygyolNUDpTR2GUn/c3jGDRfvql77S9asYrw4dJlg=;
+        b=QMd+9NV4zsHqGHL5LRd8KJZSEJgfNUm61jvgygievHKi362sr1maqrSjLAD7tcj7m4
+         cVy78bEBHcAnuHp8KigNLg0BoY4jWwpYFC6lB+QfocQtu4ll/bWRm0ygjoRLGcRb6CM5
+         3+ZQVSrv4S4WGzDT52VlCdVjglurvytVKkJx5jzgLpfvWD+YrBEej9IwcTTHhz9dQAbC
+         FEHYtigvXubjPl0O4eczBUIbJkT6immXod3mHnxNtYE+1BZNn0IE5aV2fcjErPSCDtbA
+         4iak+uRwMOUwnQRcd6eFStbofaAwxmGiQIXM3Lb0lh1Ei+AI08buw2kSvbYc7H83kgtc
+         d0oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740738165; x=1741342965;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zQMkQAtj6vzSQBpImtNQZFAAzOJ67Rs10PHBe6Pdo/Y=;
-        b=MgyZJEnjyMUws1Vnb9jBHuQ7D9GNCNRoREBGRcosIPoTZjF+cHvaG+eM5yF2zSCUTe
-         Qket5+ZSr/hLCd6xcJm03U0Bqb0No36T7BjugosuRQSNRwv5Dn+3DV5SmASbj67NVzp2
-         UBQOoMEVL0YiiM1l4sOgSnAa1Y8AtOQaJw7w7f4vPsKMBiUEgRZwLGUjtgffruVThIPM
-         YbFg67yE3/lbvtnRvvKEnQQMa1La0ICMDUSv+NL6ZLbSh1uiN//EZWYjkIW9hvrvLKAx
-         V/geGtMqeVN1X4QvrbB4nZRLEFXnyPKwJxxTtLHteSbNEfhWRpAVkTEehxClVyu4Ms9Q
-         PGzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVBprYe94Q92qwjGOlHjqeqrZ0IQSVDrhBsis7UjW/peDyMv/bBpTJx+jW130xxZfKYh/92@vger.kernel.org, AJvYcCVknXTQo1o0ApWkS9DZxLAGjtnoP2uiBxNgn7aOcRHc+78g+69CDlxQu+0FLJ1Czm2hOdMLIZS8Kkn6@vger.kernel.org, AJvYcCVqXCiTn/k0u0WIU7+d1FCGFW8ZKDLeRmF78poN4Harj+D4elI0POChb9OQvHip28UawabMCC64y+EY@vger.kernel.org, AJvYcCXGDYvro+L6qve4bFWLo/c1AxPTpvg/s4EtwU0qiECHISDN/LXEWaHpmL5pD6o4uA+RU4ifcXiShVXXu+Yswjw=@vger.kernel.org, AJvYcCXwLdAVn9et3qhMT7lFzIE0G0fECMQoszgkNaTi7bgAFVe7t/VKsKazKuU3so7+88MJp7Os3K8B43N/RYfh@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyxn71jxs6OzWagodT/liUt0NKeXPyeLxvjcqUukOAiWWlI8NhJ
-	PhpfnqBa5NjaiWA4jiYJt4G7omtcqN4O4xzCgpECUqCJBicst95KANQuABjxgu1IDnO51UDhqWO
-	YQ262G3afKeSo+0WD5pGuYjwv3U8=
-X-Gm-Gg: ASbGncspADguRiiL2x091JegG+aIzErRLi+HnJXbTS9PpS6R5rRf2s8datufvISkr+s
-	+OM+TX1jQkKde/HLM3QcDZNMMfO4SFE8dGZKAvBOgWod5M2Dv832mqZ0c9axKTe77vi3b1U0lRj
-	P9mYVg9bc=
-X-Google-Smtp-Source: AGHT+IHIittGCPQby1z/CAAucXt5JFtqaN9s/CywTLEe2k/+dixEbEMthbGRpWklymixZ1tzV0vdjHdcEd+cYidEN04=
-X-Received: by 2002:a17:90b:1a91:b0:2fe:a747:935a with SMTP id
- 98e67ed59e1d1-2febabc3f2amr1758599a91.4.1740738165504; Fri, 28 Feb 2025
- 02:22:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740744839; x=1741349639;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pkAygyolNUDpTR2GUn/c3jGDRfvql77S9asYrw4dJlg=;
+        b=D26PFPi27Eiaf4XWqga5aH5fpfbDYDaw2ZMbgNAtl+EHwx2q2F1oHl6+8DkxVRFk4N
+         izsmqY5/mF1v0lYLUlJQ3nCPdmuhU2NuTNj4IfbVjZxpr3dNZhM3lWpxa3NXGRi8MLuY
+         xRvCOme64sfkVImevZ9MA0aJkkQ76HRMuceMgOgCkvUEDIDBCAhVkRcaRBNP2SSbSgIv
+         cFVTQZCrNEnB6RHEWofKsowS2YqUxEoC2J9QR+/cQABqr68AFHAKikTFTSSq6fwBrGtA
+         RlmXfv/VZtUME5SBQKvEIQxgYKyRTlfqI6LMq+lCe0iL6HX6ixCXbLlv/ZUtTckttCdE
+         7n3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUASeW4yxlRHL9WdfoKbzn9nNSU6a3/M4uA0xw3eGTxLZdHPf0BQVxn0inDSmr5hX8QcXujtV2XPoljx2I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxkR4F4mDCgsS3AlEGPxvO6rYw9fW9DVd67/wDtj/Vhi0yDfaDO
+	VDpca+FqgH8XLrpZipxxv+BBe3IUX7nK9bXsAA9qWYw+s/UjFxl/
+X-Gm-Gg: ASbGnct+pPL9wl3rc0kqrunEaj21wAlBhCpyXOP2G5yTnML/TLxnw6Nx9mcfr36Rvak
+	cNOQQGlBoc8SMzDxUg+089VbqLN+YZ/8J/bn7hpvZskjWNGnedTtIYHXK1vEkih8Xupnc9FisYF
+	opl3Alh1tnTteR603Jh13z0Z9Q0XfKIrP6JYnEtdcWjT9qQk7uczwVkXQYK/6tMDXJ5CFGOpw8Y
+	TvCXF4o+COAVNXvbZLaR9dP3X0yBIU1k8XsoVehNdltpYbLP7VjlVG9Q8QufyBs2Qe4/RXm8Mx/
+	yWZ6BJ3VvryOstcShODJqg==
+X-Google-Smtp-Source: AGHT+IEE5Sgq0pD0++96L3Rw5rUNxBxVx36PbQHqHNZ8eGIdUS/xL5nATldx2m3megBQRV1h9xxkCw==
+X-Received: by 2002:a05:6512:3b11:b0:549:3be2:bfa3 with SMTP id 2adb3069b0e04-5494c320bfcmr1209187e87.30.1740744838853;
+        Fri, 28 Feb 2025 04:13:58 -0800 (PST)
+Received: from pc638.lan ([2001:9b1:d5a0:a500:2d8:61ff:fec9:d743])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-549443ccfb7sm466768e87.230.2025.02.28.04.13.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Feb 2025 04:13:58 -0800 (PST)
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To: linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>
+Cc: RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Keith Busch <kbusch@kernel.org>
+Subject: [PATCH v1 1/2] kunit, slub: Add test_kfree_rcu_wq_destroy use case
+Date: Fri, 28 Feb 2025 13:13:55 +0100
+Message-Id: <20250228121356.336871-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241219170425.12036-1-dakr@kernel.org> <20241219170425.12036-8-dakr@kernel.org>
- <g63h5f3zowy375yutftautqhurflahq3o5nmujbr274c5d7u7u@j5cbqi5aba6k>
- <CANiq72=gZhG8MOCqPi8F0yp3WR1oW77V+MXdLP=RK_R2Jzg-cw@mail.gmail.com>
- <wnzq3vlgawjdchjck7nzwlzmm5qbmactwlhtj44ak7s7kefphd@m7emgjnmnkjn>
- <Z72jw3TYJHm7N242@pollux> <nlngenb6udempavyevw62qvdzuo7jr4m5mt4fwvznza347vicl@ynn4c5lojoub>
- <Z8A4E_AyDlSUT5Bq@pollux> <w2udn7qfzcvncghilcwaz4qc6rv2si3dqpjcs2wrbvits3b44k@parw3mnusbuf>
-In-Reply-To: <w2udn7qfzcvncghilcwaz4qc6rv2si3dqpjcs2wrbvits3b44k@parw3mnusbuf>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 28 Feb 2025 11:22:33 +0100
-X-Gm-Features: AQ5f1JoBAMoLfZEmHB4LoCW7CaOXRtnCBfVtt6Z6is_lk4ig8YbV9oYSmUL7ugI
-Message-ID: <CANiq72myNPVD=1jHzFxryvnBuwqdw7-PDbPsQ+FdpCjeYtVzig@mail.gmail.com>
-Subject: Re: [PATCH v7 07/16] rust: add `io::{Io, IoRaw}` base types
-To: Alistair Popple <apopple@nvidia.com>
-Cc: Danilo Krummrich <dakr@kernel.org>, gregkh@linuxfoundation.org, rafael@kernel.org, 
-	bhelgaas@google.com, ojeda@kernel.org, alex.gaynor@gmail.com, 
-	boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com, 
-	benno.lossin@proton.me, tmgross@umich.edu, a.hindborg@samsung.com, 
-	aliceryhl@google.com, airlied@gmail.com, fujita.tomonori@gmail.com, 
-	lina@asahilina.net, pstanner@redhat.com, ajanulgu@redhat.com, 
-	lyude@redhat.com, robh@kernel.org, daniel.almeida@collabora.com, 
-	saravanak@google.com, dirk.behme@de.bosch.com, j@jannau.net, 
-	fabien.parent@linaro.org, chrisi.schrefl@gmail.com, paulmck@kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 28, 2025 at 6:29=E2=80=AFAM Alistair Popple <apopple@nvidia.com=
-> wrote:
->
-> I'm not sure I agree it works perfectly fine. Developer ergonomics are
-> an important aspect of any build environment, and I'd argue the ergonomic
-> limitation for (2) means it is at least somewhat broken and needs fixing.
->
-> Anyway thanks for your time and detailed explainations, I really just sta=
-rted
-> this thread as I think reducing friction for existing kernel developers t=
-o start
-> looking at Rust in the kernel is important.
+Add a test_kfree_rcu_wq_destroy test to verify a kmem_cache_destroy()
+from a workqueue context. The problem is that, before destroying any
+cache the kvfree_rcu_barrier() is invoked to guarantee that in-flight
+freed objects are flushed.
 
-+1, it is indeed very, very important.
+The _barrier() function queues and flushes its own internal workers
+which might conflict with a workqueue type a kmem-cache gets destroyed
+from.
 
-But, just to clarify, we have been caring about ergonomics and
-reducing friction for kernel developers since the very beginning,
-including asking upstream Rust for features and so on when applicable.
+One example is when a WQ_MEM_RECLAIM workqueue is flushing !WQ_MEM_RECLAIM
+events which leads to a kernel splat. See the check_flush_dependency() in
+the workqueue.c file.
 
-In general, it has been a factor in most topics we have discussed in
-the team since 2020, not just for source code or debugging features,
-but also docs, KUnit, and so on.
+If this test does not emits any kernel warning, it is passed.
 
-That is why we would like to improve it and why we have it in our
-upstream Rust wishlist and so on. In other words, it is not that we do
-not see the issue!
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Co-developed-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ lib/slub_kunit.c | 59 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
 
-I hope that clarifies.
+diff --git a/lib/slub_kunit.c b/lib/slub_kunit.c
+index f11691315c2f..d47c472b0520 100644
+--- a/lib/slub_kunit.c
++++ b/lib/slub_kunit.c
+@@ -6,6 +6,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/rcupdate.h>
++#include <linux/delay.h>
+ #include "../mm/slab.h"
+ 
+ static struct kunit_resource resource;
+@@ -181,6 +182,63 @@ static void test_kfree_rcu(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, slab_errors);
+ }
+ 
++struct cache_destroy_work {
++	struct work_struct work;
++	struct kmem_cache *s;
++};
++
++static void cache_destroy_workfn(struct work_struct *w)
++{
++	struct cache_destroy_work *cdw;
++
++	cdw = container_of(w, struct cache_destroy_work, work);
++	kmem_cache_destroy(cdw->s);
++}
++
++#define KMEM_CACHE_DESTROY_NR 10
++
++static void test_kfree_rcu_wq_destroy(struct kunit *test)
++{
++	struct test_kfree_rcu_struct *p;
++	struct cache_destroy_work cdw;
++	struct workqueue_struct *wq;
++	struct kmem_cache *s;
++	unsigned int delay;
++	int i;
++
++	if (IS_BUILTIN(CONFIG_SLUB_KUNIT_TEST))
++		kunit_skip(test, "can't do kfree_rcu() when test is built-in");
++
++	INIT_WORK_ONSTACK(&cdw.work, cache_destroy_workfn);
++	wq = alloc_workqueue("test_kfree_rcu_destroy_wq",
++			WQ_HIGHPRI | WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
++
++	if (!wq)
++		kunit_skip(test, "failed to alloc wq");
++
++	for (i = 0; i < KMEM_CACHE_DESTROY_NR; i++) {
++		s = test_kmem_cache_create("TestSlub_kfree_rcu_wq_destroy",
++				sizeof(struct test_kfree_rcu_struct),
++				SLAB_NO_MERGE);
++
++		if (!s)
++			kunit_skip(test, "failed to create cache");
++
++		delay = get_random_u8();
++		p = kmem_cache_alloc(s, GFP_KERNEL);
++		kfree_rcu(p, rcu);
++
++		cdw.s = s;
++
++		msleep(delay);
++		queue_work(wq, &cdw.work);
++		flush_work(&cdw.work);
++	}
++
++	destroy_workqueue(wq);
++	KUNIT_EXPECT_EQ(test, 0, slab_errors);
++}
++
+ static void test_leak_destroy(struct kunit *test)
+ {
+ 	struct kmem_cache *s = test_kmem_cache_create("TestSlub_leak_destroy",
+@@ -254,6 +312,7 @@ static struct kunit_case test_cases[] = {
+ 	KUNIT_CASE(test_clobber_redzone_free),
+ 	KUNIT_CASE(test_kmalloc_redzone_access),
+ 	KUNIT_CASE(test_kfree_rcu),
++	KUNIT_CASE(test_kfree_rcu_wq_destroy),
+ 	KUNIT_CASE(test_leak_destroy),
+ 	KUNIT_CASE(test_krealloc_redzone_zeroing),
+ 	{}
+-- 
+2.39.5
 
-Cheers,
-Miguel
