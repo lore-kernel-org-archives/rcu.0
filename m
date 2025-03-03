@@ -1,48 +1,48 @@
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2082.outbound.protection.outlook.com [40.107.223.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E15101E6;
-	Mon,  3 Mar 2025 00:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA21A5661;
+	Mon,  3 Mar 2025 00:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.82
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740960914; cv=fail; b=US8nMpWjbhaN8e7fyPWwLNW7MpEN77m7hh/ZzbWEr5v0Ctq7MpHz3IqFPgvxRO6QJpRUQLrXYY4N8gkFYwoauOq2qCubore/vDL6AvtWDypiK1KrKEb8H4Dv3Vog1Qy59pYbbX9HSdR5iyObt/ivS71M/C/70BTFZPA3D/yaXnY=
+	t=1740961038; cv=fail; b=o0ecM6naFSu9GPhYlHJbayX5GoxInYCW9S++5b7YzgrE5zz5kjlH7aL8S18kJFjisuNnJp5Vg5/v+e2eZNynUcmiMFWRTqqsgANjobZRfvMgggMHpW3LOlSTh2HW/X2qFXnCyd2ogAUd5nV88f6uGBEO4ltz6SPfmgajYJEZOOw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740960914; c=relaxed/simple;
-	bh=74hDCKhZM4F0Us7Gtz9rDBiT2IO8QQ21ZLhW0xo+vFQ=;
+	s=arc-20240116; t=1740961038; c=relaxed/simple;
+	bh=j2/G8Cg/A1mOV7Z7EZWX3aX0HQt/V/5XULr8mhWsQvs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=eftjBArGLtV0hNlvH61aqLFs49VbMzh2B2GT0cGlyCPYffqPJ2vubMHIgON8YUHfE3/EARVPUaCST6ajiyoHslUADJljFHai2Qk2qRij7qdf9PUrLmt4kwvWZMm3GDFTy9YAXNNcB5rttu6lf5DqUoDj2Z8s3wiJWOJRvyYFwnI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Q4NMQR4b; arc=fail smtp.client-ip=40.107.237.54
+	 Content-Disposition:In-Reply-To:MIME-Version; b=k2XbwN3XnTEd38zFTB5D80QF5BC7EkTaj5Mvagmi9vUfQOfHfBLcH4B9GEv49lb4gUQRPS3ezNk4WT+O0C6MpmC6Lov+mU3y4C/rPDMjy7vkkYZ9/NYsMfov78XxPlaP+6QyzMm8hcV7RJPvuCLmlJW197XBOR0HkUPbXiI6TWY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=BqIRS6RE; arc=fail smtp.client-ip=40.107.223.82
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Q4NMQR4b"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BqIRS6RE"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=BUpCIrGT3QYRujp3iN/ZZvmFTauJXU1GNWpqnUwc5kaj2EVY30qG1oKrJAZasXix+iWsDvFUFhrzSBik5ibgLoRy1dReHTvVctqdHRhaxCg/MU6xFve0EDmVAyIfQ522ycXWIem4yn6ZNPux7yCVT3Df4DAb+JOiG3nnmwF9kkMBhfZi/Oc4yVof1WBdY8VLAQHS+JJNSXk3AHRVz66ytrDfSQtBC5Qj7uIxbgfuRmRdKC0wgNz87IS76485L2zK5qhn7QxAKcYNp50n8MjyT+8NybTer+eQP0VHyhN7ODtOHC/xYxE0yfTWLCutXi9/ZxDFxl3P8b9YpD8L3jbYvg==
+ b=PGwqwkCL7EbpkN6PMran7Q3cB5azCgF9f9i0zIjz88fxE7I/yWO48o4zGzCgunvkMjSixDKIXr3aGn2HVee5nkuyg56YdH7Vnl1MfDBtkGZ2qs0P4mnny2yW/khGxFMJLer2vC/Lia6jBJD/STw7QSc4EVkKUriqbDE7/TXQk1zhJjdP2D+1XRKaNDWYLYN3yeF8KrYjHjyw9OFMyy9mIJnxCyfHJpK0iuoTitRGTX3R0Pz+ByozhEi2jGP51Xg+jTAt7SIFtETMwNNZ4DZd/q4Pqg6L3+Y0RwBV1QY0lGEEitgBRCLwAdYiDcYhgvPA36wPbI4fbJHzh4gRWZn8Ug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J1Sv4M39kKr2JxV7VtXBFA/WUX9vAgevDkiTrkrv3aU=;
- b=deQG3sFz3QdAvOdyJ4qcmYGRKPckRafIw4uZAakDzkHcahUqrSqC1kVQyyVSICI79aNhO7fjx3OFktt8UO/yI+1He5+J8Uhxsk7A7eO5qLbjab5ylXmUt4D4RUn1HFtebZxLBsMY6wLNOyMcuCYIS9vB3K62I778s3Laf3vMKVgLXmELs1ABBzgiJ8VhgFJi5hkhzC3ufa4wBaqKD/CHiCuqHo7pB/g9FpmKor+TRLDHY056x6xAwB1jESqKUQ8DSM6qTMNH3ivjwL/nfr0qgGzuANBXVAe4h7j+DHPHk12DzPNZfLAGW/w2xMKoJTiJ7OTJsv9IufhUwuLWXhxvOg==
+ bh=YeyuQS+/ZfpKBRbyJHxo7E1mabF3YRxb9v0dcoLwUsY=;
+ b=DzCKyZKmnJx0sB6FRBmt2YgxHWJcDDQcWnTXbx6PZvzESnnfXyPONzu8sPnJDSloWhwavhi4g8Pkr12J9ZspBjtpJsxT1GYFsHx8M/pUE5oa21zJPhMZ+kGQtNOJSmJmZttQrcJ2B0diANJH2ywXKFCTYDjVF3nIoS7grhvqdDNGUZXn6ndclzguq0/4YO33JVtmVVOKPq6eak46x1krnopKSN/Qv1DDoVeAYRBVjSoBoiaLQXHrS/GlaK63zK19kuVb/WWp4kohkt8HYvLmIFqDu7LqJJrDZCqR/ex0VB/jXY5Ns2ACpcKgq9CX+A1EkMFr/shE3IZCKjLPUd3HIQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J1Sv4M39kKr2JxV7VtXBFA/WUX9vAgevDkiTrkrv3aU=;
- b=Q4NMQR4bMW1WK2BsOcAkJuulw/GgOqPcQcrCo++0VHYUSnTJQUmUbnfP17c1/Q7m6c77yu3+hB20MyQ4n3EEalfSgTAVm2MQ3IhVsyaDyH+z8sqbHWkypK56Fq6rCwckHt/L7jYWu8BmJ/DFik/eECBGX+30pBv/sAsvDhT47l8/iclgC5kqhbvmF+9+MUzUdFDexMP/dNxE9tVnrjRvWon0InPqOc8+J7KyIsogY2zPWDD5xo0/fIQLpY5uDcGdpuQsA4EcrGh0u134Oq9jJQDV4xflrDikzgG1KrsXjb4kGTi28Zz5vKoxz4l8wqhjE+FxQ65HSav6Iw9yYSZWIg==
+ bh=YeyuQS+/ZfpKBRbyJHxo7E1mabF3YRxb9v0dcoLwUsY=;
+ b=BqIRS6REL0l5T/I/tMXqRY5BzjInQU/eIwGevxEGsXAB1QMc7+hcHaMpIcsys8c9EQDN2fRKrOfRgKM+oTSFjlB1eqkZf17Q2OIHLX/ieIdyypGRAAP2BgJhziFurv+CZNLlXAWBVK6lZb++qps9qwAvk7zx8u/pkjMtxRa9Yo4SOXSd7NVkip75/GKrads49pfQramoroL1JNxz+PcZz5a3R7L8EXe5PQYQBYotgwl+FAj0rEy232avPXnglfPbWxU1H2jns7+0khOWttFO/2+uKMKEcMaPD4SFOG4GuOv7HyFKc2A2V4Q1ZJVqoo23w/TIUPROb//oAkt3GZeXgw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by DM4PR12MB6253.namprd12.prod.outlook.com (2603:10b6:8:a6::12) with
+ by PH7PR12MB7115.namprd12.prod.outlook.com (2603:10b6:510:1ee::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.22; Mon, 3 Mar
- 2025 00:15:09 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.25; Mon, 3 Mar
+ 2025 00:17:11 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8466.016; Mon, 3 Mar 2025
- 00:15:09 +0000
-Date: Sun, 2 Mar 2025 19:15:07 -0500
+ 00:17:11 +0000
+Date: Sun, 2 Mar 2025 19:17:10 -0500
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: Uladzislau Rezki <urezki@gmail.com>, Boqun Feng <boqun.feng@gmail.com>,
@@ -53,9 +53,8 @@ Cc: Uladzislau Rezki <urezki@gmail.com>, Boqun Feng <boqun.feng@gmail.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
 Subject: Re: [PATCH v4 3/3] rcu: Use _full() API to debug synchronize_rcu()
-Message-ID: <20250303001507.GA3994772@joelnvbox>
-References: <d8b196c1-c1b5-4bf9-b1cb-dde8642cc34b@paulmck-laptop>
- <Z8Ckb6spK35-Ez4U@pc636>
+Message-ID: <20250303001710.GA3997787@joelnvbox>
+References: <Z8Ckb6spK35-Ez4U@pc636>
  <1408fc88-e2c6-4f49-b581-0e9ad5620fe0@paulmck-laptop>
  <Z8HmH85bYNU8enJ2@pc636>
  <dd15fa79-70a5-4929-9339-51a47099c916@paulmck-laptop>
@@ -64,11 +63,12 @@ References: <d8b196c1-c1b5-4bf9-b1cb-dde8642cc34b@paulmck-laptop>
  <Z8IKs-I-YsOoS4uw@pc636>
  <cdab57a4-8d58-41d9-a9b5-71d425a7375e@paulmck-laptop>
  <f6803081-8243-4723-a3ba-00db351aafff@paulmck-laptop>
+ <20250303001507.GA3994772@joelnvbox>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f6803081-8243-4723-a3ba-00db351aafff@paulmck-laptop>
-X-ClientProxiedBy: MN2PR07CA0012.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::22) To SN7PR12MB8059.namprd12.prod.outlook.com
+In-Reply-To: <20250303001507.GA3994772@joelnvbox>
+X-ClientProxiedBy: BL1PR13CA0010.namprd13.prod.outlook.com
+ (2603:10b6:208:256::15) To SN7PR12MB8059.namprd12.prod.outlook.com
  (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -77,214 +77,226 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|DM4PR12MB6253:EE_
-X-MS-Office365-Filtering-Correlation-Id: fd753225-0341-4f80-78fd-08dd59e8756b
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|PH7PR12MB7115:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2a2acdf5-5d58-46a7-b074-08dd59e8be5b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?gY8N8I0JHP4rZivahW9QC5zXu6Jo8xMp21ogOyZq04zE81CsCXFCXyhEuhIO?=
- =?us-ascii?Q?rzh9jn8mQHp0961a4wDwNYMWg70o8nHggKB/6t6XKvXxx3+dyzSwjPgH9fNa?=
- =?us-ascii?Q?JiZPBT5ii3Yiz2bndK9kcryWBP1P643mEow8mOA7z++fL1LYEJc4FFRfMl7g?=
- =?us-ascii?Q?mHV7aN0yeV8wsOoGVGIMoAF7P2KcTVv+z6VMqvRUHzq2c/FzKiecNnNGTHYj?=
- =?us-ascii?Q?K/ZBl0Pf8srg22dtXWkCJPEogQHMHoj7FRqolO8pKb1CREucEvFdqGamKp/O?=
- =?us-ascii?Q?zqjE6HpFgxJm0QAokEzz5/pQfy2rAc7F3lU068BWSz/op0dJy10mUSAjcZqY?=
- =?us-ascii?Q?/tbaKnkZMiETrzEst4FDp37FTXA4pd5j5oabwF3OQZcobHBFNGVmGAl/lsIu?=
- =?us-ascii?Q?B8EsJZqxXMNw/sulYfqtYFfbXeGN0+uT43ZJOSIuz4wJdyb4U1usV1fbEAaf?=
- =?us-ascii?Q?FRgam2JyQAfR6DORGKcVCrFBUDbeATrVqUUqbMufBTX50pnL0qaHqjxynFhL?=
- =?us-ascii?Q?bSfuIuDk0jiK3DD+uv4zUmO1/bGgM4IgHcW3Ce+3CAYy9BV1eP+v3I2LyuHL?=
- =?us-ascii?Q?ThJAsiDLsDdul1cmoT05YGf9e9L2V3aiLS/WbpUeM1hdYh1xoe9DRh8s5g3j?=
- =?us-ascii?Q?1VCBxIC3DSJEm1IeA5EOTHHrTDn6FshsscqETbYxxlwCRdgLpTy7pI4+fYRw?=
- =?us-ascii?Q?WD1WOARAHWYjlfQHZ197zxOxRcaohLAOdBRdtwIt+xU0Qts5Ery+jC2RvQNL?=
- =?us-ascii?Q?x70Lfq/svP4x7hFOT8J8lLlQllbLD1VjLv9CL/abvJetSgf21R2RCfVY6bRw?=
- =?us-ascii?Q?wyvNJI5KEjLrc7KewOEgplBqClYT+Vwh8AfYysexcuO7u8nXIShKyOecDUOX?=
- =?us-ascii?Q?Xo552KycgjOkVm0z1yeKmf8u5Ii4cJcjXOIaEmvCJiJ2hQk59Lnx543l3mGR?=
- =?us-ascii?Q?oe7EE41jnFmJl9u2Xf2AmtdPQxC0ocI29CJ+ztR8sQsrXK9r5OEcHsEixa2c?=
- =?us-ascii?Q?o3PTo2mz26q6WBAHRmlbnwDWaKNQBJg/ZJDJqGX4metlCYbUPkT9iYTwT321?=
- =?us-ascii?Q?4I1pypENZZsZQxpecLcAndqFYTe29tgT6Q/Y9FSfnkwYhJ/lDzBONoWdfAJE?=
- =?us-ascii?Q?YyfmNC668fHm5+CLbxEpHzab+jz0gPHSVRZwigwTq2qK85KCdiPiP5lGb95f?=
- =?us-ascii?Q?V18bUVAm+vL1/cg8lWqCJc6sJHydTMsO3rNxwbPuscY8UnW2lYaXP+AmwsO1?=
- =?us-ascii?Q?JS8jGvxzSHZDILE1Utd4tuzRCp1mtPeJ+nF3bHO2XvahQ7N2qWS5FHb7rHEK?=
- =?us-ascii?Q?w9T+0qjkz56K9jsSnYu28rtDgT2CKOCp92rXvqJb5B6DH3/2v6u1KSgm56h1?=
- =?us-ascii?Q?IgrMwh+sFVExS4OUIlPRgh70qKfN?=
+	=?us-ascii?Q?uuwspHCCJh2tgZuGoi7QP/CpOlREkIpQnGP7rSd2FV/JguR8j8VG7wldaC6P?=
+ =?us-ascii?Q?B6/BCoSeFMC8hEIaEta6jM/bu9nbi25cdhlbsjiQACOdE1IAfh3KE6fkRmVh?=
+ =?us-ascii?Q?xnuIgnZVhWpD6yf6sL/9QzRwrEfdv2dVMpIO+LE3tCgFWQeEPILLnBzSRbfk?=
+ =?us-ascii?Q?onpuL5T1Tke3GQ0gfWV09Y1AKYl0UIUpr+/DKFh8KUrbYQYCVOmjhwrQsfuq?=
+ =?us-ascii?Q?PV5EW7I1tMUU1Q3bEI4wTxulNbtBeL7KrfwqTJh2SnO90O4G4Upm92bItK9/?=
+ =?us-ascii?Q?f64QvK7IZcbOQsWUhY+aodfxWTfBzluzMoLTabpfjj+9/NIXqRjKT6gj41Cb?=
+ =?us-ascii?Q?gZ0QkTdYSTFTiRfga1klLixKpIizjAQATMDQJFHJ88rv4RQTIb5ZfSICJ35R?=
+ =?us-ascii?Q?QO6x+LdA3X5aPhyE8PiQ0Hwp+ca+vx7DDdoRWMInfcynOMtLOXeDu5d2WUbn?=
+ =?us-ascii?Q?8vPFiy7VEpPH3mucYer2tV4rXs6T/yx4wL2Dz+snnqHJPLAD3Y2QKvqiuFB8?=
+ =?us-ascii?Q?v3BRZW2In2T274R7oXnGXFs0L6uq3njGmMtrEUH6x0o66nflusuDVCyX/2gn?=
+ =?us-ascii?Q?KTu2qCylNCxNoGEy8uDTXKn6iKMzT2MmV2JVdIwmP/GZM0CXn/f64lFMTwxo?=
+ =?us-ascii?Q?y48QvONdNeuVGQ94h4ktLRF3DM7SVzPu9yMZ4RtvIIbm6JznTU0juTPfWp2i?=
+ =?us-ascii?Q?8dSAuWBZEoQL6uuPEwBjQ5CIUTsZ2x8tZ4e2MnXYtcfqa/hEQILCfBmKUCCZ?=
+ =?us-ascii?Q?qiWv5B63dwRj7TOaZ0NeYhK/oh9o3nauYTAaHK8bO3zIFx8QNHo8DYmHWX2b?=
+ =?us-ascii?Q?lhVp8NuzSJcHVSVJEkrITgosSqx1vurcQ7dROIQboLmN4xOtseXqNBHZ6bbT?=
+ =?us-ascii?Q?Ow3F1N5jeuPR/C5JUqDiEYgcxvZ7JqM+Dh9Rsbwoql70Z9MKk8li3IPkziAT?=
+ =?us-ascii?Q?bgZ+OVRp+r6YSsmQasNh6xTOxCg2ytI0bqwI1w1yDPMBdNThh0XYsqRBP6zT?=
+ =?us-ascii?Q?XbUc8dSd94N69Q6CHKPTTawdiua5eVy7kmKynzMNGe5m+q77Kyo/gw4vijCS?=
+ =?us-ascii?Q?8ACGu92m5K488s5sj/I5jGxcxkzE3TXfmIiKvGEUf/aj4avNKnV2gms/CSaO?=
+ =?us-ascii?Q?cUu9No4Yz40zZjf+On60Nj7x6VMQ2Zlni5wbNSf0LWL9p5NAN5ffhUZYcqLb?=
+ =?us-ascii?Q?Y7qmxCyk4npa1HyKaDLmTmt8uhq7W7prC94ovRmR4UyMYzBdk/zU6QPDxe2p?=
+ =?us-ascii?Q?TLG22c241VHF+ZsEkSKPleJBOHmviAY0CwwuvGfIZMH7SvLebvBc8GAbvo8y?=
+ =?us-ascii?Q?YsPmHD9eN5BmsekEvVdvGynIA9KsZGAr2ej8H+40vr7+fmDukV5X7HUiN0xx?=
+ =?us-ascii?Q?Hl/TP0aiUSlSNV1bLgJmpEVPKMLN?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?9Ab2mbdNG/XIjoag0lnytJHhMJGw6xHVSoVf4yJg9Ksp9LoCLslnmPVjLE3i?=
- =?us-ascii?Q?mhG8c21elj/f6JmEliv1PX5htFKt49PJcMt4HB6ktkK8SOx7gPwCD/2UfdNw?=
- =?us-ascii?Q?AWU1oBxgEGSlCrdvT/fjJW1VGkrHgAFIhMOuNVX4jwCy8k/xgSyrDyKZ9dUv?=
- =?us-ascii?Q?jgSsYEvM3D5ZQBpknAaITUKmOCl272yr39Y6wuu0hvqrwM+mBdkkR9ML5iWW?=
- =?us-ascii?Q?EWo8h1sQll1u2TMIPiOAbB7nsVhq2Hx0JZgnnP4twpBCgXcG68F6rL/gulpb?=
- =?us-ascii?Q?WgZfa3CrLzpDwzxroWFtOc1Am7BJUU60Q1GBXoq+Yzya1YQhBONR5orDGvgO?=
- =?us-ascii?Q?elHvsxWKlQx8JYtLq0sFz8XyuuOEJeAdz6buB/j23zFt/P3qvMHg7AMOaTU2?=
- =?us-ascii?Q?3xzEipsi7PH4R8BUhFbDJjJp8c17kkS4m4UMRtc4TM/DgzgErwti3sp7Q12P?=
- =?us-ascii?Q?fzjnGtTWAcm17eP7q5qkBo1IY2XOR5GqXaTU2S2sIiwSQgVYi9nKBd2Hkpkf?=
- =?us-ascii?Q?2kuv8vDsywlP03QutQ+h/uhKfAmdjAGOMxZE/V2irgWbxfJdh/A0mm4O17b/?=
- =?us-ascii?Q?oy3r0Ggems5nCMdb/ys8spV75qrIVac9qjW1l+qSrcpWsvRqGDiu44tZ7q8B?=
- =?us-ascii?Q?oqYIColcf1I0K5Hi/NuHoa1Df8fs8vBNDEpCXT3cnpEF52sjh696/ZbV+fPn?=
- =?us-ascii?Q?t82+wXKUMeOmuk7ogKojYSj3RrSVp02MI61Vrn/jUaAEOvhO1z089Fcgfes8?=
- =?us-ascii?Q?sayS9XGGFpxvMZGmJqwSTbO2ZLLEjum06Fmgb3b/e/WIaeZuUiYuK8z77fst?=
- =?us-ascii?Q?HcjyF+ZoMiC6SSok6NwyPrAk5+6CFkxkGH1bkMBly9AhtJ1v0LCRcQUvtI/h?=
- =?us-ascii?Q?2mJ6H3rqmMSBX2Qw2mk/R//URhybpWJ1bb4yaRROciq8/ndjIMQ0P2r/VWKR?=
- =?us-ascii?Q?r5/IDeSkXwvUc1Nyi+iui9RuFhKMGjAQwkO4u79yfxFj1ZfHe1mNAobVYayu?=
- =?us-ascii?Q?acNpgZXrGJQ+09xIpc7Z0mXCGFs7YDLEY1Wa+y8FhVT3h3VWPRnTDQVNxgYl?=
- =?us-ascii?Q?d/XfUIvlLIKsIiETpPDEaeZf7tjbqvFwq+88rI6Ur8V4ixnxZHzsmz87ejEj?=
- =?us-ascii?Q?L/HeSbq73eby7Oa0zEpvqs070E+rQsnCD69JkA7Qtor1ttyaS7CszmFkW7VK?=
- =?us-ascii?Q?hgP3exTku1Mt5/fMR+JDuIHxUqYOybAblaMma37GEjvdQAuX/LXib+WPx/bl?=
- =?us-ascii?Q?fHNoErYP7mkSFmbj+K3KNDjJxb5DV+zgOCW+nYgP+vdqOs43MP7RreJ4jup8?=
- =?us-ascii?Q?798wSsN2LbbZOD5RSqnXepKaCZ1avr4TuEYzyqaWcad7WOHcxEC7Ix+6wVcE?=
- =?us-ascii?Q?JthN2kRmN1SnHMEK5yoEEG2fd9pph3imYJ2wUbJCDpEvvZEJtMnwc07sgLHW?=
- =?us-ascii?Q?3EoJK9W/zyPnwKckxi+oIpNxuE9G/emH0YK8E2j5S6H/2OzVdhsZjMvOTlkF?=
- =?us-ascii?Q?Ygk4RdD1NyfVzgK1nID3XXT0tKa5VyakPF86b7gxvx3+0Fxtu0zSd1D7qKKx?=
- =?us-ascii?Q?a/+TV1XcrdwkcFX3EHVkzSrAPNsLfpbxvccpkSB9?=
+	=?us-ascii?Q?sj777zcxElX5BXFmS5sxvgNwyaLJd9HDJAM6MbSLKkn5YQL9c9+taMNypAAG?=
+ =?us-ascii?Q?x6hH3MajrblDfd4AAZDFwklkP2jPQrBphBzte/vC4fOhU4OsFkik6EWxKBaY?=
+ =?us-ascii?Q?PMfQZZ3x+idiRJKCWPpuMveked5qHXzyuPd8YupT9OVXPQMMcMe3k9hLL9i8?=
+ =?us-ascii?Q?ixRau4UKg0GtskYekF8pydHmeNOWtqVg1e+irstRHsMH+7SsPzjrSvyGxeLv?=
+ =?us-ascii?Q?Nmuf2ywYJt+CddanRqlun5LCa4+R5oiCh9xMn/g0GKQH+RTZGcBCdA+8VU1A?=
+ =?us-ascii?Q?0lBArlX9kJixg//6+0a0QO9M/ihgrjCAo9JeeD8YBq+lVTvBv8Jvo/H5Btau?=
+ =?us-ascii?Q?m662ywXDwQ9MmIn5OViNX+fZYgwQe25idajRgw/95ZOIZKKVp/1pQNSPX3m9?=
+ =?us-ascii?Q?kSiQ7zMeE+2WpmPbWdhXgeSvEq2+CypXEpf1JddyEajMTp8YwUx3JZWp+QdT?=
+ =?us-ascii?Q?QtZIp864v90GOKKwgsI4NeDawjixOqYtSAnVegdFKcHUxeH0ZDEFoyK1DrEo?=
+ =?us-ascii?Q?DYbXd/NuNnHdbrc8AcB53iGhznnKeI2s64l++Puyd/sbUVUyVEGAYjbAFhKB?=
+ =?us-ascii?Q?IOtU0WLuHSE6dIO8DuJARmBfeRYaSq4TSKzrLkWPbQP4rIltYvdv2kpntDaA?=
+ =?us-ascii?Q?g6iIBcoegHZmh/SXn4jjnv/R0bbXocdQmGK2SjKk5mbpzYHFYXf2JBb7Fj8V?=
+ =?us-ascii?Q?jhYzJbn8wnteolIz7RdBgANsm1yqEnxazUoYgRpQzz0EIlGUhHoNjFR7Mqem?=
+ =?us-ascii?Q?IocSfvK5eyBKziBeNRiFlAhXWgb92MrXwrNTR0z4rX74/MCw07FAmQ5nB3bY?=
+ =?us-ascii?Q?0uwI29OJsOElYG3DQC6cPlg5/aOy9xOrrUKchm0bnRa/u9EyTzKzeCQ/fZIE?=
+ =?us-ascii?Q?cS9ZbLqQLdvY/Q28B+qTPy0SbEO45BSwGuxcUzspaVQ0DWzOObBjm/4tuobA?=
+ =?us-ascii?Q?6xuIJ3VWiggPh7fU/SqE01eMzTiLCdd9MKuyZ1SnOKaj2tY1BQQ/EmGPYGKm?=
+ =?us-ascii?Q?bNK0UPFERAKEHwi3Wx3l55isnUBtoMrf8KeGlA5YeKccE2p9rtFEmZnOAqt+?=
+ =?us-ascii?Q?tJleVkPy12ijbf8It2U8K3OiG+yQa1JPJhtvdMxcod7gP/FkOqip4by+VOpi?=
+ =?us-ascii?Q?ntPbkCM25z2nPc0NZVzQEKseVeW2mwa1u5+9OgjpXBylJHel0LZ4AxQyu5wk?=
+ =?us-ascii?Q?j+t7X2XQ1hbvV68Cz5LhGqyA4ICKSnnRZlm5G/WlmrGY0A3B6bKwUQ6XRu+7?=
+ =?us-ascii?Q?As43kZ9LGxYzxAfvBWyCsQ379KCBQ0bTCay4cZU+mvnXxK3aPw8eJVGVOCX+?=
+ =?us-ascii?Q?Zmbx4haNsHwYJEMOJWuz/QU2LCU4gMFVsMo+lBbNvlt2KlDNjUgtXPuv3EI+?=
+ =?us-ascii?Q?MVhZ77SXgXrrZnelX9fYrCTw3ul5rbFVofSJPAex+jTq7iphMCc3odh0SQRK?=
+ =?us-ascii?Q?y62uwWA6myIr/4lbk8ExzlMwXFCFXgekBqXrTJK7dGC6wibSx4UBCflJK2Dx?=
+ =?us-ascii?Q?JXz2/+p9LVixYRoYiynf0DKDD1/qcfBj7doO+o4e3AZfxquUC91XjUCTLqIm?=
+ =?us-ascii?Q?uNOeS38b4xHa0JGuamxfs9m+uHa/VYqSdhyUTpM1?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd753225-0341-4f80-78fd-08dd59e8756b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a2acdf5-5d58-46a7-b074-08dd59e8be5b
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2025 00:15:09.5577
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2025 00:17:11.8699
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vuvnFt4wwAYqZhj2WyBQw7B4jtr9f2ZSd9lly4sNgtGtbHWUlKO5qepXXlz4D8WxsTt/B1G0Er4dTMtY532viQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6253
+X-MS-Exchange-CrossTenant-UserPrincipalName: HG9/a+EHX/DcqKoNf5PAeri6ALmq4vzbnAxmMYM2qCDgbJmj61a8NVluCLZI8YpYDqSwZf7j4e1kOya+L/INOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7115
 
-On Fri, Feb 28, 2025 at 05:08:49PM -0800, Paul E. McKenney wrote:
-> On Fri, Feb 28, 2025 at 11:59:55AM -0800, Paul E. McKenney wrote:
-> > On Fri, Feb 28, 2025 at 08:12:51PM +0100, Uladzislau Rezki wrote:
-> > > Hello, Paul!
-> > > 
-> > > > > > > > 
-> > > > > > > > Except that I got this from overnight testing of rcu/dev on the shared
-> > > > > > > > RCU tree:
-> > > > > > > > 
-> > > > > > > > WARNING: CPU: 5 PID: 14 at kernel/rcu/tree.c:1636 rcu_sr_normal_complete+0x5c/0x80
-> > > > > > > > 
-> > > > > > > > I see this only on TREE05.  Which should not be too surprising, given
-> > > > > > > > that this is the scenario that tests it.  It happened within five minutes
-> > > > > > > > on all 14 of the TREE05 runs.
-> > > > > > > > 
-> > > > > > > Hm.. This is not fun. I tested this on my system and i did not manage to
-> > > > > > > trigger this whereas you do. Something is wrong.
+On Sun, Mar 02, 2025 at 07:15:07PM -0500, Joel Fernandes wrote:
+> On Fri, Feb 28, 2025 at 05:08:49PM -0800, Paul E. McKenney wrote:
+> > On Fri, Feb 28, 2025 at 11:59:55AM -0800, Paul E. McKenney wrote:
+> > > On Fri, Feb 28, 2025 at 08:12:51PM +0100, Uladzislau Rezki wrote:
+> > > > Hello, Paul!
+> > > > 
+> > > > > > > > > 
+> > > > > > > > > Except that I got this from overnight testing of rcu/dev on the shared
+> > > > > > > > > RCU tree:
+> > > > > > > > > 
+> > > > > > > > > WARNING: CPU: 5 PID: 14 at kernel/rcu/tree.c:1636 rcu_sr_normal_complete+0x5c/0x80
+> > > > > > > > > 
+> > > > > > > > > I see this only on TREE05.  Which should not be too surprising, given
+> > > > > > > > > that this is the scenario that tests it.  It happened within five minutes
+> > > > > > > > > on all 14 of the TREE05 runs.
+> > > > > > > > > 
+> > > > > > > > Hm.. This is not fun. I tested this on my system and i did not manage to
+> > > > > > > > trigger this whereas you do. Something is wrong.
+> > > > > > > 
+> > > > > > > If you have a debug patch, I would be happy to give it a go.
+> > > > > > > 
+> > > > > > I can trigger it. But.
 > > > > > > 
-> > > > > > If you have a debug patch, I would be happy to give it a go.
-> > > > > > 
-> > > > > I can trigger it. But.
+> > > > > > Some background. I tested those patches during many hours on the stable
+> > > > > > kernel which is 6.13. On that kernel i was not able to trigger it. Running
+> > > > > > the rcutorture on the our shared "dev" tree, which i did now, triggers this
+> > > > > > right away.
 > > > > > 
-> > > > > Some background. I tested those patches during many hours on the stable
-> > > > > kernel which is 6.13. On that kernel i was not able to trigger it. Running
-> > > > > the rcutorture on the our shared "dev" tree, which i did now, triggers this
-> > > > > right away.
+> > > > > Bisection?  (Hey, you knew that was coming!)
+> > > > > 
+> > > > Looks like this: rcu: Fix get_state_synchronize_rcu_full() GP-start detection
 > > > > 
-> > > > Bisection?  (Hey, you knew that was coming!)
-> > > > 
-> > > Looks like this: rcu: Fix get_state_synchronize_rcu_full() GP-start detection
+> > > > After revert in the dev, rcutorture passes TREE05, 16 instances.
 > > > 
-> > > After revert in the dev, rcutorture passes TREE05, 16 instances.
+> > > Huh.  We sure don't get to revert that one...
+> > > 
+> > > Do we have a problem with the ordering in rcu_gp_init() between the calls
+> > > to rcu_seq_start() and portions of rcu_sr_normal_gp_init()?  For example,
+> > > do we need to capture the relevant portion of the list before the call
+> > > to rcu_seq_start(), and do the grace-period-start work afterwards?
 > > 
-> > Huh.  We sure don't get to revert that one...
+> > I tried moving the call to rcu_sr_normal_gp_init() before the call to
+> > rcu_seq_start() and got no failures in a one-hour run of 200*TREE05.
+> > Which does not necessarily mean that this is the correct fix, but I
+> > figured that it might at least provide food for thought.
 > > 
-> > Do we have a problem with the ordering in rcu_gp_init() between the calls
-> > to rcu_seq_start() and portions of rcu_sr_normal_gp_init()?  For example,
-> > do we need to capture the relevant portion of the list before the call
-> > to rcu_seq_start(), and do the grace-period-start work afterwards?
+> >                                           Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 48384fa2eaeb8..d3efeff7740e7 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1819,10 +1819,10 @@ static noinline_for_stack bool rcu_gp_init(void)
+> >  
+> >        /* Advance to a new grace period and initialize state. */
+> >        record_gp_stall_check_time();
+> > +      start_new_poll = rcu_sr_normal_gp_init();
+> >        /* Record GP times before starting GP, hence rcu_seq_start(). */
+> >        rcu_seq_start(&rcu_state.gp_seq);
+> >        ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > -      start_new_poll = rcu_sr_normal_gp_init();
+> >        trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
 > 
-> I tried moving the call to rcu_sr_normal_gp_init() before the call to
-> rcu_seq_start() and got no failures in a one-hour run of 200*TREE05.
-> Which does not necessarily mean that this is the correct fix, but I
-> figured that it might at least provide food for thought.
+> Oh... so the bug is this? Good catch...
 > 
->                                           Thanx, Paul
 > 
-> ------------------------------------------------------------------------
+> CPU 0                                           CPU 1
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 48384fa2eaeb8..d3efeff7740e7 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1819,10 +1819,10 @@ static noinline_for_stack bool rcu_gp_init(void)
->  
->        /* Advance to a new grace period and initialize state. */
->        record_gp_stall_check_time();
-> +      start_new_poll = rcu_sr_normal_gp_init();
->        /* Record GP times before starting GP, hence rcu_seq_start(). */
->        rcu_seq_start(&rcu_state.gp_seq);
->        ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> -      start_new_poll = rcu_sr_normal_gp_init();
->        trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+>                                                 rcu_gp_init()
+>                                                       rcu_seq_start(rcu_state.gp_seq)
+> sychronize_rcu_normal()
+>       rs.head.func
+>       	= (void *) get_state_synchronize_rcu();
+>                    // save rcu_state.gp_seq
+>       rcu_sr_normal_add_req() ->
+>             llist_add(rcu_state.srs_next)
+>       (void) start_poll_synchronize_rcu();
+> 
+> 
+>                                                       sr_normal_gp_init()
+>                                                             llist_add(wait_head, &rcu_state.srs_next);
+> 							    // pick up the
+> 							    // injected WH
+>                                                             rcu_state.srs_wait_tail = wait_head;
+> 
+>                                                 rcu_gp_cleanup()
+>                                                       rcu_seq_end(&rcu_state.gp_seq);
+>                                                       sr_normal_complete()
+>                                                             WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+>                                                             !poll_state_synchronize_rcu(oldstate),
+> 
+> Where as reordering sr_normal_gp_init() prevents this:
+> 
+>                                                 rcu_gp_init()
+> 
+>                                                       sr_normal_gp_init()
+> 							    // WH has not
+> 							    // been injected
+> 							    // so nothing to
+> 							    // wait on
+> 
+>                                                       rcu_seq_start(rcu_state.gp_seq)
+> sychronize_rcu_normal()
+>       rs.head.func
+>       	= (void *) get_state_synchronize_rcu();
+>                    // save rcu_state.gp_seq
+>       rcu_sr_normal_add_req() ->
+>             llist_add(rcu_state.srs_next)
+>       (void) start_poll_synchronize_rcu();
+> 
+>                                                 rcu_gp_cleanup()
+>                                                       rcu_seq_end(&rcu_state.gp_seq);
+>                                                       // sr_normal_complete()
+> 						      // wont do anything so
+> 						      // no warning
+> 
+> Did I get that right?
+> 
+> I think this is a real bug AFAICS, hoping all the memory barriers are in
+> place to make sure the code reordering also correctly orders the accesses.
+> I'll double check that.
+> 
+> I also feel its 'theoretical', because as long as rcu_gp_init() and
+> rcu_gp_cleanup() are properly ordered WRT pre-existing readers, then
+> synchronize_rcu_normal() still waits for pre-existing readers even though its
+> a bit confused about the value of the cookies.
+> 
+> For the fix,
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Oh... so the bug is this? Good catch...
+Oops, this should be:
 
+Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-CPU 0                                           CPU 1
-
-                                                rcu_gp_init()
-                                                      rcu_seq_start(rcu_state.gp_seq)
-sychronize_rcu_normal()
-      rs.head.func
-      	= (void *) get_state_synchronize_rcu();
-                   // save rcu_state.gp_seq
-      rcu_sr_normal_add_req() ->
-            llist_add(rcu_state.srs_next)
-      (void) start_poll_synchronize_rcu();
-
-
-                                                      sr_normal_gp_init()
-                                                            llist_add(wait_head, &rcu_state.srs_next);
-							    // pick up the
-							    // injected WH
-                                                            rcu_state.srs_wait_tail = wait_head;
-
-                                                rcu_gp_cleanup()
-                                                      rcu_seq_end(&rcu_state.gp_seq);
-                                                      sr_normal_complete()
-                                                            WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
-                                                            !poll_state_synchronize_rcu(oldstate),
-
-Where as reordering sr_normal_gp_init() prevents this:
-
-                                                rcu_gp_init()
-
-                                                      sr_normal_gp_init()
-							    // WH has not
-							    // been injected
-							    // so nothing to
-							    // wait on
-
-                                                      rcu_seq_start(rcu_state.gp_seq)
-sychronize_rcu_normal()
-      rs.head.func
-      	= (void *) get_state_synchronize_rcu();
-                   // save rcu_state.gp_seq
-      rcu_sr_normal_add_req() ->
-            llist_add(rcu_state.srs_next)
-      (void) start_poll_synchronize_rcu();
-
-                                                rcu_gp_cleanup()
-                                                      rcu_seq_end(&rcu_state.gp_seq);
-                                                      // sr_normal_complete()
-						      // wont do anything so
-						      // no warning
-
-Did I get that right?
-
-I think this is a real bug AFAICS, hoping all the memory barriers are in
-place to make sure the code reordering also correctly orders the accesses.
-I'll double check that.
-
-I also feel its 'theoretical', because as long as rcu_gp_init() and
-rcu_gp_cleanup() are properly ordered WRT pre-existing readers, then
-synchronize_rcu_normal() still waits for pre-existing readers even though its
-a bit confused about the value of the cookies.
-
-For the fix,
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-(If possible, include a Link: to my (this) post so that the sequence of
-events is further clarified.)
+;-)
 
 thanks,
 
  - Joel
 
+> 
+> (If possible, include a Link: to my (this) post so that the sequence of
+> events is further clarified.)
+> 
+> thanks,
+> 
+>  - Joel
+> 
