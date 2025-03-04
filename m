@@ -1,163 +1,131 @@
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662C11FF1A2
-	for <rcu@vger.kernel.org>; Tue,  4 Mar 2025 11:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29478202960;
+	Tue,  4 Mar 2025 12:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741088635; cv=none; b=YwGpd57s6r5gRz7YB9PhTuBCQ9HJ5oqphUbIB7o728ZOkERfo4Gqc3BwfzjY7boAsW62t6HMWHqhNsl6lz5Vnvt8cZFIDIEJ6xltH7G2E73rb/vHcWULKnyIz/GOipK9IG/qfFsPte9JiTlEDU1NkNzQZuC/l7I7Pa5zcm+tbjA=
+	t=1741092939; cv=none; b=iDQJzYu13zyWJ9oyNOulFTPptnhmOHKgNGTw6SnD6r2XoJSbVvhCNLx6a7XRWG4nGC/yXe8lfW8LH/2peI9STugjtt9hUQkDCq/GNgiqCYZ2MvaPTi1egXboqHFh05fY4XYyUoo77OeQy7A5BKLfi7qNMsx7Lmv3GSqtvb59N2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741088635; c=relaxed/simple;
-	bh=7JMGCeJF/Dp3pl5kzpMvrUbvwzv+GjyKlzt033ZLbrw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JyIqcV+lN1RUL2+VPDpHNMkC1FV9PcWMZ33KvFqasbGDfUgM1MBdv7vONZwIoeyLDNmzHTzuhLabGNtk0DpLqjQ9gFIZWPhMo0O+mYM4uNq5ZNCVTVAJgLTy3WNRsEpLxKXldieRjcXChu6Z1ELH9ivQHUDX6ciX2T8KSanohAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vRw1+VEA; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1741092939; c=relaxed/simple;
+	bh=DmjwCKwsD93HO73VrBgBAQWDy8GDmDWgK3GfYhS4AJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HDAxWGlruGLvIlbsZt8yLCF9LgpopZVCjjPLcMv2kTTFNfkl5E4ls3ou1fTIHfQHIpRQlHIms80MTGl1qnsgOqaLE9YLErGZV/8Ur3K4as6VMCR3ZOHikVnoptMUrAUOcAb7rkA9vak3a/aWol5e8FkkOVhVpLutJgzMg/JsZhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NRcGU9tD; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vRw1+VEA"
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-22355618fd9so93518375ad.3
-        for <rcu@vger.kernel.org>; Tue, 04 Mar 2025 03:43:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1741088633; x=1741693433; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QR5Fe2yNdtUQN8MYBySGOzmABqc40NGzK767K+eex7I=;
-        b=vRw1+VEAt4PRU3DtY9BxsLnStXiAXNOfV90ci4wjIKGuhoSBuH4MFSbK46UhUXb1Vb
-         TMxvBaJYaQ6H7RdAaVca8BaFQloCSWXsk3yjbL1Z+tGkihJszaZ6IvMTBxHI1oULOCi+
-         8ODVdWAzTUTrlOJB/f00hKvFqNAZ+lT/lrG5aYjKnx+AJ9zcAIZIWIztaiRXizmG4u7w
-         RdA1uO92AMD23sXxsQP4ufauZ60qCFHuRgFwosnGOjs+rPsegvul1OZnuh5nyRHsMIV9
-         iwqmqxAqeuMyz4AUWWTz1AJnOPsWvb14n8C6RaMKOpBZg1Trj3bwfYv7q+CnlQVzU2Ju
-         m18w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741088633; x=1741693433;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QR5Fe2yNdtUQN8MYBySGOzmABqc40NGzK767K+eex7I=;
-        b=RdY6JjtDAwQKounAgCu4/EDeQBk2OkyC3JPB6r1ilR6KSLAaStyl86vwus75y1c5Vt
-         AO1BrB2Uda5LoZtYiX8ffmrEsdfpwuZzQyDlcyvCYoGXRvNtGQ9db3MGrugKFidfDtj3
-         RTM/fc4+vyH75x0Q/8VaMXxIRMvveppasdYgUqcLBwGlkaE9jsSKXcCJBrSY5fxKFiDv
-         dkIWVgDv9uTYFpT00j/bxiWBdtcBb2lG9Tm54ABCqevcYNPRVHfeVZnHQHcbZVpskMRR
-         B0FqCzZIGsDk9PDbC9YX1LfV7uZeja+dRtzwbV8flz5UkNupEuqOIfEtUH9nAG35jiFU
-         H+2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVRU5OSq8gPUk1+h+6jewx8VdKrsHQU/DhQRfZ9fXhoaoJzrpDzYYkv/tGafS41dVx4+rg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVcdFtLrBR53eC/ykKDrqW+C29cbd/f4uj1iUhJDYiPzH9sVPU
-	6Gevt9hi6/QZJtNuKfVaaiJp/Gxz16SG0icxge9eQYjGKWBl2X983mAdURfVNEQC5HV1vJefj4g
-	QKFJBsMdBhLiQhNi/3MiEYJzsK1Bj1cprD8OE
-X-Gm-Gg: ASbGncv6c4ue255LrxB2Cii9UmOlmQv2Cer75WDSXWdZXW476VguF/iq6MafsG+0HbO
-	z8t1uOA3HnTbfQLYPkNdmnmD87PtSf1a7gTkOvLkAK7lhd9UMptQRZAXJ67o4NperdGme63L9/Z
-	UeTDsLXM4rfcNbwyxZ1j7rPH3y9NjVr9tpqqkNTHdcUfs4pc8jb/FIbtyd
-X-Google-Smtp-Source: AGHT+IEVXXLrKnpkIy+GQHgCDOyqfRoqXWkok7n4CEJmqUNtrw4OipvJO9eUgzweAGOK6LFHiiUO/kAFxvZ/Vg2r6rk=
-X-Received: by 2002:a17:903:17cf:b0:215:89a0:416f with SMTP id
- d9443c01a7336-22368fc97c4mr252442495ad.30.1741088632488; Tue, 04 Mar 2025
- 03:43:52 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NRcGU9tD"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ZOOYa20v84BFJHD1ayfwn3RBGuxwB4d68Xr0Wae/NAo=; b=NRcGU9tDBhoqGCIPbQGfFWXxKw
+	RWjX7cPHBFk715BfPa7+c4U0pkvE2rlQvhrS5bwrgs6nXifwyYdsAyGI7UZ6kyLR9Ljx68sBkonBF
+	dKdqrkAFi9nGHT5oQDFToz1VDbU5JNvHXZZ6Kzj8q6oy91t+BUKIvBbsXwVBmIlfc63kXhiOlYN0V
+	4L4Px2wPqvym2Icjfet6mKLyn3t8Buzxg825uarwxAg2f27pqaQJpHSRifnuT6BIZtLDrAXCQvlX0
+	4fXl8ITe0RdCSeDq3ofNrMlIGpeo1g5vpp6QVAJhsBjf7N9aSjC4Ez69+RHslFlbri5YYzDKwx1Rv
+	GILKGJug==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tpRnp-000000002P6-1xXA;
+	Tue, 04 Mar 2025 12:55:17 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id B29BB30057E; Tue,  4 Mar 2025 13:55:16 +0100 (CET)
+Date: Tue, 4 Mar 2025 13:55:16 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Marco Elver <elver@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Alexander Potapenko <glider@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
+	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, rcu@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 06/34] cleanup: Basic compatibility with capability
+ analysis
+Message-ID: <20250304125516.GF11590@noisy.programming.kicks-ass.net>
+References: <20250304092417.2873893-1-elver@google.com>
+ <20250304092417.2873893-7-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250304092417.2873893-1-elver@google.com> <20250304112114.GE11590@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250304112114.GE11590@noisy.programming.kicks-ass.net>
-From: Marco Elver <elver@google.com>
-Date: Tue, 4 Mar 2025 12:43:15 +0100
-X-Gm-Features: AQ5f1Jq8MTV2B3C5aow9x7Sg78yjoK0kjhHzTC3jNgyCezrqQgZfKxcyrD8i65c
-Message-ID: <CANpmjNP6N0d0dnGjDUGLeH4FQ2-G5YAuWrSPp+bvDR==0hYykw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/34] Compiler-Based Capability- and Locking-Analysis
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Bart Van Assche <bvanassche@acm.org>, Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@kernel.org>, 
-	Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Josh Triplett <josh@joshtriplett.org>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <kees@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
-	Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250304092417.2873893-7-elver@google.com>
 
-On Tue, 4 Mar 2025 at 12:21, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Mar 04, 2025 at 10:20:59AM +0100, Marco Elver wrote:
->
-> > === Initial Uses ===
-> >
-> > With this initial series, the following synchronization primitives are
-> > supported: `raw_spinlock_t`, `spinlock_t`, `rwlock_t`, `mutex`,
-> > `seqlock_t`, `bit_spinlock`, RCU, SRCU (`srcu_struct`), `rw_semaphore`,
-> > `local_lock_t`, `ww_mutex`.
->
-> Wasn't there a limitation wrt recursion -- specifically RCU is very much
-> a recursive lock and TS didn't really fancy that?
+On Tue, Mar 04, 2025 at 10:21:05AM +0100, Marco Elver wrote:
+> Due to the scoped cleanup helpers used for lock guards wrapping
+> acquire/release around their own constructors/destructors that store
+> pointers to the passed locks in a separate struct, we currently cannot
+> accurately annotate *destructors* which lock was released. While it's
+> possible to annotate the constructor to say which lock was acquired,
+> that alone would result in false positives claiming the lock was not
+> released on function return.
+> 
+> Instead, to avoid false positives, we can claim that the constructor
+> "asserts" that the taken lock is held. This will ensure we can still
+> benefit from the analysis where scoped guards are used to protect access
+> to guarded variables, while avoiding false positives. The only downside
+> are false negatives where we might accidentally lock the same lock
+> again:
+> 
+> 	raw_spin_lock(&my_lock);
+> 	...
+> 	guard(raw_spinlock)(&my_lock);  // no warning
+> 
+> Arguably, lockdep will immediately catch issues like this.
+> 
+> While Clang's analysis supports scoped guards in C++ [1], there's no way
+> to apply this to C right now. Better support for Linux's scoped guard
+> design could be added in future if deemed critical.
 
-Yup, I mentioned that in the rcu patch. Make it more prominent in documentation?
+Would definitely be nice to have.
 
-> >   - Rename __var_guarded_by to simply __guarded_by. Initially the idea
-> >     was to be explicit about if the variable itself or the pointed-to
-> >     data is guarded, but in the long-term, making this shorter might be
-> >     better.
-> >
-> >   - Likewise rename __ref_guarded_by to __pt_guarded_by.
->
-> Shorter is better :-)
->
-> Anyway; I think I would like to start talking about extensions for these
-> asap.
->
-> Notably I feel like we should have a means to annotate the rules for
-> access/read vs modify/write to a variable.
->
-> The obvious case is RCU; where holding RCU is sufficient to read, but
-> modification requires a 'real' lock. This is not something that can be
-> currently expressed.
 
-It can. It distinguishes between holding shared/read locks and
-exclusive/read-write locks.
+> @@ -383,6 +387,7 @@ static inline void *class_##_name##_lock_ptr(class_##_name##_t *_T)	\
+>  
+>  #define __DEFINE_LOCK_GUARD_1(_name, _type, _lock)			\
+>  static inline class_##_name##_t class_##_name##_constructor(_type *l)	\
+> +	__no_capability_analysis __asserts_cap(l)			\
+>  {									\
+>  	class_##_name##_t _t = { .lock = l }, *_T = &_t;		\
+>  	_lock;								\
+> @@ -391,6 +396,7 @@ static inline class_##_name##_t class_##_name##_constructor(_type *l)	\
+>  
+>  #define __DEFINE_LOCK_GUARD_0(_name, _lock)				\
+>  static inline class_##_name##_t class_##_name##_constructor(void)	\
+> +	__no_capability_analysis					\
 
-RCU is is a bit special because we also have rcu_dereference() and
-rcu_assign_pointer() and such, but in general if you only hold a
-"shared capability" e.g. the RCU read lock only, it won't let you
-write to __guarded_by variables. Again, the RCU case is special
-because updating RCU-guarded can be done any number of ways, so I had
-to make rcu_assign_pointer() a bit more relaxed.
+Does this not need __asserts_cal(_lock) or somesuch?
 
-But besides RCU, the distinction between holding a lock exclusively or
-shared does what one would expect: holding the lock exclusively lets
-you write, and holding it shared only lets you only read a
-__guarded_by() member.
+GUARD_0 is the one used for RCU and preempt, rather sad if it doesn't
+have annotations at all.
 
-> The other is the lock pattern I touched upon the other day, where
-> reading is permitted when holding one of two locks, while writing
-> requires holding both locks.
->
-> Being able to explicitly write that in the __guarded_by() annotations is
-> the cleanest way I think.
-
-Simpler forms of this are possible if you stack __guarded_by(): you
-must hold both locks exclusively to write, otherwise you can only read
-(but must still hold both locks "shared", or "shared"+"exclusive").
-
-The special case regarding "hold lock A -OR- B to read" is problematic
-of course - that can be solved by designing lock-wrappers that "fake
-acquire" some lock, or we do design some extension. We can go off and
-propose something to the Clang maintainers, but I fear that there are
-only few cases where we need __guarded_by(A OR B). If you say we need
-an extension, then we need a list of requirements that we can go and
-design a clear and implementable extension.
-
-In general, yes, the analysis imposes additional constraints, and not
-all kernel locking patterns will be expressible (if ever). But a lot
-of the "regular" code (drivers!) can be opted in today.
-
-Thanks,
--- Marco
