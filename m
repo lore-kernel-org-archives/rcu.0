@@ -1,87 +1,74 @@
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F274E1EEA36;
-	Tue,  4 Mar 2025 10:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817411FC7F8;
+	Tue,  4 Mar 2025 11:21:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741085785; cv=none; b=N4aLuT7VDBXUsVIOKmaT040pOLNfbWhyNh6BglEe/iP674O5RiECrudUKLs0aVgi4GIvnzP5bBRxlFiONC4D7qy0o5IoevCOEkX2EQsA6Ydtrwcl7kwfTDjvNsGya6UKS4jM1LvPg+M7KNogH5RKgVVzkkGPn4rz5oRhWMtpz2M=
+	t=1741087304; cv=none; b=lj6DnEhyhZ1VRJ1JdWdSlVfF9dw5pDrx3FWWCzP8iQYde88+dHaCSyPkOcJBNTfciMqs8GvR2xykoM4iTLFm5XTWDqs73zWyUsfU7YaOHIFW7IU52aiNunYfOYfo12Y6gs4ombQNk1s/Pa1aWW576RfO5lNSAxaYkkL8F5K0vY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741085785; c=relaxed/simple;
-	bh=2kGF20McTMFx0eUue31jMUlOjQ9gcD4Iwep/bNKlJ5s=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GtDky47SrYPD8I0yjRgeuvOf4wka1FiyeSIiOkMHfX6mq53ItQFUEsbwtG5kRPAe4I3ZWSB/YDZ4VglhosXnO9lfwslfHMxahVwkiNG+4J4saljghGGwz4NP1YxASFPCV9b7oGnfsX5nnFfHu5T1K3mjkOfl5mGya4OG5fNedYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ut2IkYiT; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1741087304; c=relaxed/simple;
+	bh=G4rIjTvAN3MSAYInYwgzNgQTNoCcPC635BrmCLwJ9OI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z3fv5s7QCjQX/4vby1nQoJW30fyz75HroLo6744m57uPRU958hTs0V5us0xyhWbo0vsCrR1212P1J8mZ/68IZkax7DEvowtErEZIBlMJJzlhL9v/VSj4ufAMHKxFrUeXoH6wB/8NUmJUcyi0wypnd1bd5xAFdis45iCtSf4nrbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NLhOclrZ; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ut2IkYiT"
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-30761be8fa8so59488741fa.2;
-        Tue, 04 Mar 2025 02:56:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741085782; x=1741690582; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=O95iyxsB97GdILIsg3CJ17biJahUULxaDIffyMB/KYQ=;
-        b=Ut2IkYiTZQCFmHrho5HO0az0GOLmvOwsf+5SqTrECg5o6njqA+WFypc/mHKhoY3svq
-         S+qArNiKqy3brrQ1zdsO0rDS5gAx8ECp853mK5hYWVXkKr/jORctqnN5AFlm4c58+OLt
-         NPWNg9Jgn4aHpYe9VUqAMCrNGHG7Hd51QSxqK+A/FJcRwnJhowDFfefjVm28rSuH/b7e
-         ISsq1y8b5HIi10OUV4qsDEEWUJrTijuHBaGJFN/YkzTu/shy+3NCvQmUEwe9Q4ST4JZh
-         2cQ6DztE/DkPsrE4YtbcSWnILeo/leeKrMg2XUQSQV0x5B+hqL4i52hk0f5CzNNYXHkr
-         lsdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741085782; x=1741690582;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O95iyxsB97GdILIsg3CJ17biJahUULxaDIffyMB/KYQ=;
-        b=kA7TKKvXzGf8PAYg0zRUrb3lYSLOYdweBT5jMHEYwQ2U09CT8aT2MlYCMxwfngib1Q
-         MfrfvLLoXRXe7CDADUYQAx/5zV/1Do9zhx5MB5we6AC2VwJXuYKHwHXXsMsHCnnEYrkF
-         xbw3+gt0sBI5YKQlIj4j4/jcyI9WvLBGJsUw6+URIu6wXeAblaGgJdP2gLT+/8vF20lx
-         XEO/YcwYvE9Dt2jrVjc7eeP0fG9tMILQyK5sK3w+twT6xSWzEqm0X6IA7joIHbQal5YC
-         W3++yZA1837+V4vioqM1eiO3BAoLx5E9UtputFWHfzASJa8LYA4Tke/B+mC+5c7a5r9F
-         dHHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSrBUoGMhh3Ek3yOyjFYnauGdOisNLdPD3CSCbqto4GEyTgVrMMz8NjkjrE3r1cZUg2MYO7+NOfAdyey8=@vger.kernel.org, AJvYcCXNxgA5EgfPGQ0KFLhmLeYIrbjuJvKVMP4nQOlgl1mgwmCwWe0AlLf3mn8KVERsHfqfj3gl@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6Dm8aaIMDwhnr02MTK+8+ycIh/afhgJVJRMBrXO/DrmNf0EEx
-	mPfa9pUV1/0QuPTtfIIUKk98NO2OivyEJ/mkU+zRHreDpABzE1+8z6lGgg==
-X-Gm-Gg: ASbGnctdSYvgIaifY+MYI5WYJHVt/s6EJMuh90TWEF8e5TjeUJ1fABRYxqMp6GHvXwe
-	vsWZThAL9zQBSIvbF+nu13KY7GkgdJPevTuXuGNNxWlGB/tiTQBgwZbdrBOIIFbWSFw+NaT/CRG
-	TVhpUf3fICO7u3P/TZ6FZyjIsGJY5XJwGoAhCDgX63C4C5B6vh5TqtBxEEwSN8bhj8NR/3e2GKE
-	d5D3WxGX15FchC26TAGsb7OK/ssgfrTqDCRWcAKbbz51RXBbF+j/dbFaqRuF2Rga86wepsQOqFO
-	D13dEi2iMehwvPK8GSLyv5BgSc9zUj0MWkEoSqNRhJq8hssdJzTky5ZRomrFYlTQEvY=
-X-Google-Smtp-Source: AGHT+IG62xsTicqIGs8h4VbHFjHjPLcnMPXMDsOyoL+7BsLuk5RhgPyDfe83OKJDbDlniqQKF969Dg==
-X-Received: by 2002:a2e:b890:0:b0:309:1fee:378d with SMTP id 38308e7fff4ca-30b932531aamr62575651fa.19.1741085781684;
-        Tue, 04 Mar 2025 02:56:21 -0800 (PST)
-Received: from pc636 (host-95-203-6-24.mobileonline.telia.com. [95.203.6.24])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30badb30ff1sm8826341fa.47.2025.03.04.02.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Mar 2025 02:56:21 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Tue, 4 Mar 2025 11:56:18 +0100
-To: Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NLhOclrZ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=TnqWbk5+EzTofNzXNZf/lQYyzC/wnfe6I/8xtsT0bhY=; b=NLhOclrZC0zl92yrjEf3oFJWig
+	kr8Ss/TwDTcr86gvSMjVEKVQmk6rFv6TL88NINFYDRp3DYj73/4yoejRdIMDBYn3O6cBnWD5VjvuK
+	t5ZtFoYjSAW7g0zMwW0XfYD28WCsjHtUlFlIlpWp4mmrThbsVnSvY1UGwm1nG6fVNx+anNNlCiaLM
+	BwHn820XzhDRHyhtfXFvy8YKeJyR/angRWzevLLxwGIDgmN6AD3PavlhiVPfFPqc6XEUOd0It5am5
+	JPjv9ZOH0zGYKN+nN+2aq/dFxeLpeUZ3+ELTCyxbFrMeNn6a7DdP0V7qLCfqOLV1+E3UI+FadMsbt
+	xxD4prkg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tpQKp-000000000gA-3GAm;
+	Tue, 04 Mar 2025 11:21:16 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id CCF5430049D; Tue,  4 Mar 2025 12:21:14 +0100 (CET)
+Date: Tue, 4 Mar 2025 12:21:14 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Marco Elver <elver@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Alexander Potapenko <glider@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
+	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Cheung Wall <zzqq0103.hey@gmail.com>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v4 3/3] rcu: Use _full() API to debug synchronize_rcu()
-Message-ID: <Z8bcUsZ9IpRi1QoP@pc636>
-References: <Z8HmH85bYNU8enJ2@pc636>
- <dd15fa79-70a5-4929-9339-51a47099c916@paulmck-laptop>
- <Z8H_aYBUHD2sS2Ir@pc636>
- <73724164-71f4-4671-b612-eb82a784da58@paulmck-laptop>
- <Z8IKs-I-YsOoS4uw@pc636>
- <cdab57a4-8d58-41d9-a9b5-71d425a7375e@paulmck-laptop>
- <f6803081-8243-4723-a3ba-00db351aafff@paulmck-laptop>
- <20250303001507.GA3994772@joelnvbox>
- <Z8ZyMaUhXMIxX7WE@tardis>
- <Z8bbary51FZ2TsUA@pc636>
+	Jonathan Corbet <corbet@lwn.net>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, rcu@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 00/34] Compiler-Based Capability- and Locking-Analysis
+Message-ID: <20250304112114.GE11590@noisy.programming.kicks-ass.net>
+References: <20250304092417.2873893-1-elver@google.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -90,68 +77,45 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z8bbary51FZ2TsUA@pc636>
+In-Reply-To: <20250304092417.2873893-1-elver@google.com>
 
-On Tue, Mar 04, 2025 at 11:52:26AM +0100, Uladzislau Rezki wrote:
-> > > Did I get that right?
-> > > 
-> > 
-> > Other than I'm unable to follow what do you mean "WH has not been
-> > injected, so nothing to wait on", maybe because I am missing some
-> > terminology from you ;-) I think it's a good analysis, thank you!
-> > 
-> > > I think this is a real bug AFAICS, hoping all the memory barriers are in
-> > > place to make sure the code reordering also correctly orders the accesses.
-> > > I'll double check that.
-> > > 
-> > > I also feel its 'theoretical', because as long as rcu_gp_init() and
-> > > rcu_gp_cleanup() are properly ordered WRT pre-existing readers, then
-> > > synchronize_rcu_normal() still waits for pre-existing readers even though its
-> > > a bit confused about the value of the cookies.
-> > > 
-> > > For the fix,
-> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > 
-> > > (If possible, include a Link: to my (this) post so that the sequence of
-> > > events is further clarified.)
-> > > 
-> > 
-> > Will add the tag (with the email you really want ;-)) and a link to this
-> > email to the patch. Thanks!
-> > 
-> 
-> CPU_1:                                | CPU_2:
->   # Increase a seq-number             |
->   rcu_seq_start(&rcu_state.gp_seq);   |
->                                       | add_client() {
-> 				      |   # Record a gp-sec state 
-> 				      |   get_state_synchronize_rcu_full(&rs.oldstate);
->                                       | }
->                                       |
->                                       | rcu_sr_normal_gp_init() {
-> 				      |   add a dummy-wait-head;
-> 				      | }
-> 
-> 
-> A client has been added with already updated gp-sec number, i.e.
-> "oldstate" would refer to this GP, not to previous. A poll_state_synchronize_rcu_full()
-> will complain because this GP is not passed, it will on a next iteration.
-> 
-> This is how i see this.
-> 
-Updated the plain-text, removed tabs:
+On Tue, Mar 04, 2025 at 10:20:59AM +0100, Marco Elver wrote:
 
-CPU_1:                                 | CPU_2:
-   # Increase a seq-number             |
-   rcu_seq_start(&rcu_state.gp_seq);   |
-                                       | add_client() {
-                                       |   # Record a gp-sec state 
-                                       |   get_state_synchronize_rcu_full(&rs.oldstate);
-                                       | }
-                                       |
-                                       | rcu_sr_normal_gp_init() {
-                                       |   add a dummy-wait-head;
-                                       | }
+> === Initial Uses ===
+> 
+> With this initial series, the following synchronization primitives are
+> supported: `raw_spinlock_t`, `spinlock_t`, `rwlock_t`, `mutex`,
+> `seqlock_t`, `bit_spinlock`, RCU, SRCU (`srcu_struct`), `rw_semaphore`,
+> `local_lock_t`, `ww_mutex`.
 
---
-Uladzislau Rezki
+Wasn't there a limitation wrt recursion -- specifically RCU is very much
+a recursive lock and TS didn't really fancy that?
+
+
+>   - Rename __var_guarded_by to simply __guarded_by. Initially the idea
+>     was to be explicit about if the variable itself or the pointed-to
+>     data is guarded, but in the long-term, making this shorter might be
+>     better.
+> 
+>   - Likewise rename __ref_guarded_by to __pt_guarded_by.
+
+Shorter is better :-)
+
+Anyway; I think I would like to start talking about extensions for these
+asap.
+
+Notably I feel like we should have a means to annotate the rules for
+access/read vs modify/write to a variable.
+
+The obvious case is RCU; where holding RCU is sufficient to read, but
+modification requires a 'real' lock. This is not something that can be
+currently expressed.
+
+The other is the lock pattern I touched upon the other day, where
+reading is permitted when holding one of two locks, while writing
+requires holding both locks.
+
+Being able to explicitly write that in the __guarded_by() annotations is
+the cleanest way I think.
+
+Anyway, let me go stare at the actual patches :-)
