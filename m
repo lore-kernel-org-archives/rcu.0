@@ -1,115 +1,172 @@
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C5A25EFA8
-	for <rcu@vger.kernel.org>; Tue,  4 Mar 2025 16:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2037624C090
+	for <rcu@vger.kernel.org>; Tue,  4 Mar 2025 18:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741104373; cv=none; b=GhDVumNlTRRwgGndlfrs1SRn3N1fj316Rl48v/V1P6UhOjl6cgNMqbhhxo+m+AVyQ7aA+epibxfC8fE2Kc+j+XG7R5HFKAN1JEF5Uy14CPy7BUneJf/IV2vI35K/t2t8wIDb+yrypAhJrN1kVukZDiZhDVDas5Yi5qFJOSTwwS8=
+	t=1741113327; cv=none; b=Aw1qvPhUx2eyV+j1EdI91slcpmvJ0R7rQZef9DcjhJWI6lP4BkBGJsBtL2FQCUUTqMXzaPlF6ObfhZZa++UYWbFv56ZLltbO1Mkgx6aG3YHKzLOmZ+4FJUWr8gptstnb1l/KZs/k95H5agyJ56ouTLW+anlpWCa8NR2MKFh2vMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741104373; c=relaxed/simple;
-	bh=WWkPvNPAsAK/o9BV1/7oCW3olPK1i28GTmpPd97Esgc=;
+	s=arc-20240116; t=1741113327; c=relaxed/simple;
+	bh=rmqIxeLRyZ4MRFodNpW8/HMglrn0z0awEKd7PNYXyd0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GfDjzc3Hpgg1oeDEULX9Zk5H+ks3JExjGJ1FjvB9+mQAa6dMwhwoDSJEuR6BeEl26xENC+BSo8rOafuH1uPGf/rjFqQXrrCDTQGCZC/nybXndKUqsEJHvg0DXGd+gMizM2SZTBIWBKKVCPAbOnosOBwB5BkuhVQwUY6YAUlQpSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z9HOCrOx; arc=none smtp.client-ip=209.85.216.51
+	 To:Cc:Content-Type; b=ievPYguC+ygsQtY9pOMCrJ/+eunfyCLehiOphsgj8zEcTyZPXxRi/BrjPAXfscLMZGGTZv89n+MP/Xd/qEpjEf3yTDJZ+1/elmOr4zTs5GBteYySqQ7KMDnNWvzJJkWP9pRNtlErdCYUbzFqApc5lqfcN4MsEA0q99JzODanPbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uEWyyATP; arc=none smtp.client-ip=209.85.160.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z9HOCrOx"
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2feb867849fso7962862a91.3
-        for <rcu@vger.kernel.org>; Tue, 04 Mar 2025 08:06:11 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uEWyyATP"
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-472098e6e75so12841cf.1
+        for <rcu@vger.kernel.org>; Tue, 04 Mar 2025 10:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1741104371; x=1741709171; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1t6ivLIoIuftK2f6E0pPM+6bkcWx6f6OEyc75s3kSwQ=;
-        b=Z9HOCrOxgbWushjjjNNkwcx9LKZumjOrDWDWYrSFZVwByCC3MPD1pvISqu/wDAtyuc
-         YMBhbv2R70SVZXOnu0MOtBL7Og0Z6dSY6mY5QaE1TjYTghl3t2/dcgtWi07T677SBW6y
-         F++hDWUDhN1nYsEmn/8vGVpeNrT3JT7aG6de1v2wxpVL8Qm9MCWfZf7Wp6dcqdEUUFNZ
-         zlvekDTGvU+NRADexTCVCpEpKjLhuXeXSkjFKtzq2oS/M5hovCbfMqHd19CCWAkR3lzX
-         XUl22CFKGBH0G2aZKmOAxQWQdcT8KLcHcahH7sgWn0gvzlODtN896EyrQCvU9Cj/bTW9
-         q3Og==
+        d=google.com; s=20230601; t=1741113324; x=1741718124; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sE5nK4GFeJJ6OO4073CP21uOwPN4nuaYHAb6WJCLI3A=;
+        b=uEWyyATPX4JAjzb+sX/y3erQfjZ3XKhdIM80A6faJF0wXQw3WwvDzs2cqxlJotQtvc
+         0NKSmj76X+eNHmVkgWv25DQHFrrMJ+Oh87zVkZbJsj0fS+/JOYUuhMgUswzYVNkbyR5U
+         oiEDpjK9p2maW7FHr0063Nc6x45i+z1ImFXF1mJyhF3NkEng08WcGfeh80uhYDaqq8sW
+         ZRgcgBWNp324hEkQ4QIvSg3HxoSUERU/j6ejxgE4jtAvKUyd1Mz/B+CX4XGHmzGwdJgL
+         BGgflHg6/6497T/iFEy4T+W+fN/os87MSllbhV6Au1NumJmeVt2GbKI67m5g6EcxOswi
+         gSJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741104371; x=1741709171;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1t6ivLIoIuftK2f6E0pPM+6bkcWx6f6OEyc75s3kSwQ=;
-        b=Tze1IGnmi8rvZgAYnmFXzVsXvN6+Yq4Wc9nCvYdsQ/qlvqhT2v4opyVOxr4p2kKB4h
-         rTbJnOz2zfELnuM34MSIq1T/OpuvWYyono0kQWjeNs07nqwcW9hgmCwmW7Vs/+y6rqZR
-         obPXc7nwbGAR4h1+KHcTjTN11kdxXRzHeLKKi4SkaJ97NWtFVLiANhQ74mV6GWXOS6Fu
-         D+wMVFQiUp61+71TeT6i46vvnFv856nk2HtNRuF+c2hPRGEyHTPQs6WCGDAjSBU7uzjY
-         TNtEznChMvRBtWosyTyNINxVRtR2rT6W1e2CiYT1dYHEYrNLBfasoJ970bow4dJuu0Aw
-         hiVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDQSQy4Dr3ZVhvR8STcY4rMQIhk8veZYL4hQBmzPyXrD8dCb+L0BEvXM/ogHJdbdDlKzA=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywtbpcivc9mFniGAMyegzGG+92JlvzeW9mOg07m8vgd63SgBbnx
-	X4E59eFiFZNaoOzdln3lzIqo4vFQKljHti37qE6RUOy4Gbjndg/c7FJNJY2OZtfCIyVcnReH0ma
-	RvCdzwls0yMjopIxfhrQ4zw/FszzqpTESemAX
-X-Gm-Gg: ASbGncuE0CKewCNUTna3wpbJLq6YLFmD05mcHtTKoQSlPuipo3InW8DfNsgE/PR+1uB
-	/kGwk+MMdXskDTGUYAK4oMGenZBlw97K2oDums88eq8vmO8FEpuME36Jpocr21B+MFs2ri5oTrc
-	TtkkU3t01NXoDwnAfQQMTW5OCWAreWrpVw92Q16i6njhObOJdFKZNiYWz5
-X-Google-Smtp-Source: AGHT+IGC++S0t8n6ETtzwl720fo704PFOyUfTbjjLTjxsG9B6ISbxU7AjY+lsYqZ8bJrf6DliVj8kaBM3qPLyBgfJME=
-X-Received: by 2002:a17:90b:1ccd:b0:2ee:c918:cd60 with SMTP id
- 98e67ed59e1d1-2febab78da2mr27444913a91.20.1741104371050; Tue, 04 Mar 2025
- 08:06:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1741113324; x=1741718124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sE5nK4GFeJJ6OO4073CP21uOwPN4nuaYHAb6WJCLI3A=;
+        b=ZITAqjNzSRLII6jKwoqlngVRJpXGbdOMQRj4nGffmTZ33rs2zPzM7pyGgdp3kqlu0Y
+         gIJ9M6RPVGOapbr1Hydu3ZAyMPaKuT15GkoKOxgC5y3Cv4xq60MQpmHjIcFgpcahhPd5
+         ACj86D7HL0gpiYJBD3R3CKSnfqhOHnKluIQZRXesznifHkbENDV2gCRldq3xK4hq1Tf6
+         cJUf9cV9Etr9cJ+5RTj+F0QFgq3aIANY6LnOeVItD5g555eIcMVrbUcGw1Azkq2iKm6C
+         x3OisUlZ9g5jzZX96Y1ExVMrqBIcfR5exDRJYKK+advucDyZrwDA2EPXCcP8raFuNN1R
+         jxkw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYdp8IvinBaUGkIJbVOIUo0YWU1yaUqs6Ii1VY/bDbAmxqKwzUVMnr/Vtme5T1hxMQbPw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+Gv9cMKz+2yxMpxg9QHqXm6ShQDPY/JMO650KHsFLhiJ9ALRm
+	kvFq3Sz04hMzXmg2sYUku6h5LCTaFik6/XdGpSgIcPYUEBGTULmSuhtjHtDCCnbXInVbPvQwtmD
+	FUjMI/kp/4aDooBXjddKc3EwbHdZudpbhLLHL
+X-Gm-Gg: ASbGnctDHF6p9EOvFs80xN7s7y9NR20R/e2QgF8cDVJ0cF5FzU40jB47Ohj+swTic/4
+	FFer3vbuE27omvoKbjk9RAZFW0xip6V/tzY7VsKNd3fxca92EyMA9Xe7O45U4NTYEnENAkvyVN9
+	Q3XXhmhEZjgsEEdd8QKT+no4ypv93etg7ayCPTb3eZz/C0RdMZdJm4vE9E
+X-Google-Smtp-Source: AGHT+IE0ojfFK56Nsc3hks2mutUiZjNncnjFf0jJTwub5pXkrgW/XbWDNcjElNzyhKr+WIvjR4oqHA7Mz9eABlzihIM=
+X-Received: by 2002:ac8:5e49:0:b0:472:8ac:7d3d with SMTP id
+ d75a77b69052e-4750a596138mr793651cf.29.1741113323385; Tue, 04 Mar 2025
+ 10:35:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250304092417.2873893-1-elver@google.com> <20250304092417.2873893-3-elver@google.com>
- <20250304152909.GH11590@noisy.programming.kicks-ass.net>
-In-Reply-To: <20250304152909.GH11590@noisy.programming.kicks-ass.net>
-From: Marco Elver <elver@google.com>
-Date: Tue, 4 Mar 2025 17:05:34 +0100
-X-Gm-Features: AQ5f1JrbHN1FRthi_aRGgJ-kY7WYoWmU4g-pqTmD_Y1oCMFum9IakZQE8Yg9HXM
-Message-ID: <CANpmjNOR=EaPPhnkj+WwV8mDYNuM7fY2r_xdjORv2MGGxxH_0g@mail.gmail.com>
-Subject: Re: [PATCH v2 02/34] compiler-capability-analysis: Add infrastructure
- for Clang's capability analysis
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Bart Van Assche <bvanassche@acm.org>, Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@kernel.org>, 
-	Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Josh Triplett <josh@joshtriplett.org>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <kees@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Thomas Gleixner <tglx@linutronix.de>, 
-	Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-serial@vger.kernel.org
+References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz>
+ <ztssad52ikws3a2dwodju4o73h6rsutxnvzj5i6vyjjkudkiel@g7c7g5i3l7jd>
+ <CAJuCfpHi4Od4K2xQEUFWuG=a4zCKecWBMwBiy_7mVn6QgsTSvA@mail.gmail.com>
+ <CAJuCfpEq8P4cz7HXaRVqaagONPBKrFgOSqdigEYU60sGAE4-rg@mail.gmail.com>
+ <173d4dbe-399d-4330-944c-9689588f18e8@suse.cz> <CAJuCfpHHXYKGjaOxHcuJcuQbUVO7YqLMpcYeF3HM5Ayxy1fE+g@mail.gmail.com>
+ <CAJuCfpE7t83PKWw+8XJLE5538kKJnbhirLg2siDSw=F4sw=9uA@mail.gmail.com> <19df9218-c984-4cbc-8b5d-4e0f7658935f@suse.cz>
+In-Reply-To: <19df9218-c984-4cbc-8b5d-4e0f7658935f@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 4 Mar 2025 10:35:12 -0800
+X-Gm-Features: AQ5f1JouTAVSQFXAmbLWqUnRspW1HmqjJwV-_XkDFpiV6uDsQZI3IuNVoE7yJ74
+Message-ID: <CAJuCfpG2U0DW2PubJw6aAwf2VLdy8Y9ov5iwt7nkn9XskBc6Ww@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 00/10] SLUB percpu sheaves
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	rcu@vger.kernel.org, maple-tree@lists.infradead.org, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 4 Mar 2025 at 16:29, Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Mar 4, 2025 at 2:55=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wro=
+te:
 >
-> On Tue, Mar 04, 2025 at 10:21:01AM +0100, Marco Elver wrote:
+> On 2/25/25 21:26, Suren Baghdasaryan wrote:
+> > On Mon, Feb 24, 2025 at 1:12=E2=80=AFPM Suren Baghdasaryan <surenb@goog=
+le.com> wrote:
+> >>
+> >> >
+> >> > > The values represent the total time it took to perform mmap syscal=
+ls, less is
+> >> > > better.
+> >> > >
+> >> > > (1)                  baseline       control
+> >> > > Little core       7.58327       6.614939 (-12.77%)
+> >> > > Medium core  2.125315     1.428702 (-32.78%)
+> >> > > Big core          0.514673     0.422948 (-17.82%)
+> >> > >
+> >> > > (2)                  baseline      control
+> >> > > Little core       7.58327       5.141478 (-32.20%)
+> >> > > Medium core  2.125315     0.427692 (-79.88%)
+> >> > > Big core          0.514673    0.046642 (-90.94%)
+> >> > >
+> >> > > (3)                   baseline      control
+> >> > > Little core        7.58327      4.779624 (-36.97%)
+> >> > > Medium core   2.125315    0.450368 (-78.81%)
+> >> > > Big core           0.514673    0.037776 (-92.66%)
+> >
+> > (4)                   baseline      control
+> > Little core        7.58327      4.642977 (-38.77%)
+> > Medium core   2.125315    0.373692 (-82.42%)
+> > Big core           0.514673    0.043613 (-91.53%)
+> >
+> > I think the difference between (3) and (4) is noise.
+> > Thanks,
+> > Suren.
 >
-> > +# define __asserts_cap(var)                  __attribute__((assert_capability(var)))
-> > +# define __asserts_shared_cap(var)           __attribute__((assert_shared_capability(var)))
+> Hi, as we discussed yesterday, it would be useful to set the baseline to
+> include everything before sheaves as that's already on the way to 6.15, s=
+o
+> we can see more clearly what sheaves do relative to that. So at this poin=
+t
+> it's the vma lock conversion including TYPESAFE_BY_RCU (that's not undone=
+,
+> thus like in scenario (4)), and benchmark the following:
 >
-> > +     static __always_inline void __assert_cap(const struct name *var)                                \
-> > +             __attribute__((overloadable)) __asserts_cap(var) { }                                    \
-> > +     static __always_inline void __assert_shared_cap(const struct name *var)                         \
-> > +             __attribute__((overloadable)) __asserts_shared_cap(var) { }                             \
+> - baseline - vma locking conversion with TYPESAFE_BY_RCU
+> - baseline+maple tree node reduction from mm-unstable (Liam might point o=
+ut
+> which patches?)
+> - the above + this series + sheaves enabled for vm_area_struct cache
+> - the above + full maple node sheaves conversion [1]
+> - the above + the top-most patches from [1] that are optimizations with a
+> tradeoff (not clear win-win) so it would be good to know if they are usef=
+ul
 >
-> Since this does not in fact check -- that's __must_hold(), I would
-> suggest renaming these like s/assert/assume/.
+> [1] currently the 4 commits here:
+> https://web.git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/=
+?h=3Dslub-percpu-sheaves-v2-maple
+> from "maple_tree: Sheaf conversion" to "maple_tree: Clean up sheaf"
+> but as Liam noted, they won't cherry pick without conflict once maple tre=
+e
+> node reduction is backported, but he's working on a rebase
+>
+> Thanks in advance!
 
-Yeah, that's better.
-
-FTR - the "asserts_capability" attribute was originally meant to be
-used on runtime functions that check that a lock is held at runtime;
-what Clang does underneath is simply adding the given capability/lock
-to the held lockset, so no real checking is enforced. In this series
-it's used for a lot more than just our lockdep_assert*() helpers, so
-the "assert" naming is indeed confusing.
-
+Sure, I'll run the tests and post results sometime later this week.
 Thanks!
+
+>
+> >> > >
+> >> > > Results in (3) vs (2) indicate that using sheaves for vm_area_stru=
+ct
+> >> > > yields slightly better averages and I noticed that this was mostly=
+ due
+> >> > > to sheaves results missing occasional spikes that worsened
+> >> > > TYPESAFE_BY_RCU averages (the results seemed more stable with
+> >> > > sheaves).
+> >> >
+> >> > Thanks a lot, that looks promising!
+> >>
+> >> Indeed, that looks better than I expected :)
+> >> Cheers!
+> >>
+> >> >
+> >> > > [1] https://lore.kernel.org/all/20250213224655.1680278-1-surenb@go=
+ogle.com/
+> >> > >
+> >> >
+>
