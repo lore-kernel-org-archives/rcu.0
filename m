@@ -1,180 +1,234 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2065.outbound.protection.outlook.com [40.107.237.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC6A202F8F;
-	Tue,  4 Mar 2025 15:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741101278; cv=none; b=Z8f0kqeGyGdRaP78SgqT+fysve17OAkuwQ4AyxOfoL1nfVQ258+vSBcx2OtCgS2wxV3PZWBcIKZNt57u7hDDDVEx37RhglN/BDjXVt5tluEWBrJLCxM4UTkjErcw2tV2Whvl36KV2UKagNXkh7hOvy8fAaWN5zIDk5sASpGcfVU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741101278; c=relaxed/simple;
-	bh=zWrzCGCyEtmz4bprxj0QGkAf7nnb/KqKRPqPQWMwaxY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nhySPWhB+8BYwIJCq1VwfggVgtJ7sIkl/ZWDW+nbnQtt8C8deYGAlQZA2cy8FHXs3JvwshjipQPB7npHL3bj4LnI/jqf0Xhlh9yczDjM5gQFmIDea5/vS+b+mpdMxzzhdpGNsSY/uYHByKSTJ4tYpOEt1LzhukmrsdY3GY7CscU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BC4C4CEE5;
-	Tue,  4 Mar 2025 15:14:36 +0000 (UTC)
-Date: Tue, 4 Mar 2025 10:15:31 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Strforexc yn <strforexc@gmail.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kent Overstreet <kent.overstreet@linux.dev>,
- linux-bcachefs@vger.kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6896E24EAA7;
+	Tue,  4 Mar 2025 15:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741101538; cv=fail; b=mPLN0DImS/y20qAhVu0rE4Q8zVCYIb0YSAkCK10svlQNv0x/8+pE3zNEpfws4zOMeC2m5HrJmABuPXTZbHG/vemAAaKky3xBvVDtuJgtNpaTDdGPw7WpilQrq/67G8ZmCSXg0shAL5FW3d2XWaIG5WnFYt+lE4fDupmEMoF/lxQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741101538; c=relaxed/simple;
+	bh=iWs8eg3tizLMXkHjStG5O1++L+k+BlAMSVjsilzLyXw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=p5O2AXIt6+cKyFIELACKyCTW/UZPQ5BcL6ATC7BcCRv4BQ4N0r4Ujb0+89Jp5SYMzs/864ugt14lOzaEHquvt1B01mLcV029nEwXChYeQymnt4RyE7QQkVVJi1vcPuBhI/Gi2bPi11rxtC3ATd2sgwgNpP9c8/pUyOBjllYTEXI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kxQ9Kkig; arc=fail smtp.client-ip=40.107.237.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kxQ9Kkig"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=U4gANMQSfC+1tG9fXP+tbRm03zYVQaNfMDqzNoU0YLU5k9k0VGCmli5ilVxFO/y3zwI9b6LPA+AlXvHCyOGMgw25VN9M6TM4i+JE+ID/wOyXRTK5lzD3tl5Hkh2uPWJwgpEH+ExfqqjfnUmwcMDtbSLj9bb3BkHebkOy7PffdWtXrLkMp4ZONxV8BwcZXZGJ1/qmLSmwjKhLqczBkdzboyqFqfgirwZXdIM9ZIjGAoXui2RJpVX4ofgmpYCAqUOGF93eL28fd5NC0j5hD1yjPZ7nEMdv3dldDv23u3H/L5c1AjSjAgLT2a4vJL5Zsw4bMhIIbLviNJuWYbqxFd57Zw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PA2PKfuIzhDtrPavFJI/YfFjpp9v4aFBPdDP4+sfQEI=;
+ b=E5000x8LW3qgx7Tp9Fit9Io1dlKFwmAP5ST+a5aQ4OHubfwgDQcujX89P82BWBccEvi1cGTQJkj4pvVlPbNcx3ZK31ijyElh8YlBVvmAG56Y8X+blRwWcn0IUI/klThUYHkfrAPqy9yOo8uYxeFUXdEcFw+zQcetjhBuMw+s5y45VOgu1R7pKmZyosWorjZVWJKFx9Wsyk80R6CzWvefSh9qR3Iw6y9bA1Ah70On9pj2kEZd+HSpGuZ4MW/z8snVPYzYA6fKQIj7jqpGkz5BM8n5Ai3Db577t9VAvd97rpH2HYDgYLOI0zVDGFmmCBuanE4ShDYj25Xp2LkRKKnY0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PA2PKfuIzhDtrPavFJI/YfFjpp9v4aFBPdDP4+sfQEI=;
+ b=kxQ9Kkigp1j6QP+8GxXclNd3GncBf5mo13aXvA2/rPqYLIECXL+9e9Krt40hI5uZkcg6pAtG2qvEFrZNcPmfDlj8YHNg7aSuwHDmsdwiGwR/mbzLi4yRDc4CFhotv6mbJEFqkNWu/2Q18kOUB1s1QmA8+wH59CnW+CuAtqt3KW+qgNi0vdkxIOaRCeVXUeaDMYjSiY/8WkXOyWcy43ehX/Zzqak75/ANbjb+cTWZf2jRO/DVy12i5dqQW1dyTU+OTfO6vbgULfMQXmB0gVmWVeESyojNhb8rhMe/EwHIlq6Fu7SKirnV85hXgO5ftjXuXdlnxM3S/+Oh68Yp8te84Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by CH0PR12MB8488.namprd12.prod.outlook.com (2603:10b6:610:18d::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.29; Tue, 4 Mar
+ 2025 15:18:51 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8489.028; Tue, 4 Mar 2025
+ 15:18:51 +0000
+Message-ID: <b0a52bb4-9f5a-4b52-8209-c585228ca28f@nvidia.com>
+Date: Tue, 4 Mar 2025 10:18:47 -0500
+User-Agent: Mozilla Thunderbird
 Subject: Re: KASAN: global-out-of-bounds Read in srcu_gp_start_if_needed
-Message-ID: <20250304101531.55de1072@gandalf.local.home>
-In-Reply-To: <CA+HokZrPb-oHcuZQsc=LZ6_aJfjKy9oMeCBd-tq4b_sX5EG7NQ@mail.gmail.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Strforexc yn <strforexc@gmail.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 References: <CA+HokZrPb-oHcuZQsc=LZ6_aJfjKy9oMeCBd-tq4b_sX5EG7NQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+ <20250303114711.12716d05@gandalf.local.home>
+ <20250304035732.GA128190@joelnvbox>
+ <20250304101150.0eb83618@gandalf.local.home>
+Content-Language: en-US
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <20250304101150.0eb83618@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0005.namprd17.prod.outlook.com
+ (2603:10b6:a03:1b8::18) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|CH0PR12MB8488:EE_
+X-MS-Office365-Filtering-Correlation-Id: da990a40-00b1-4ec2-cfb7-08dd5b2fde76
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?QkpmYjBhb2FNcFdRQVJwSU5meHo4WENoa0JFblE2Nng3cnBHb0dPN2M0elJ1?=
+ =?utf-8?B?MnQvalBqRXhNRmhVRHJ5ckVjUXFlcEJEQ0prRnJmUk9UUlFSaTdXWW8zMFpG?=
+ =?utf-8?B?RGtCL3IvL2QrUGV1am9UQm5zVTM5NlZUcThmNkpaWGNQTFg1eG1PR1A5R0p3?=
+ =?utf-8?B?VlZsbnkzL0ZBTFNybkVsRFM1TmIzd1RiZ0FBZFUrZ1diQnpteTgwWTZicko3?=
+ =?utf-8?B?MXRrK2ZBMXFMRWlIVlNZcWQyNjZPVURFam5oSGZia0JycWl0cmRjMlZycHo0?=
+ =?utf-8?B?MnlJODdNb1VaR2dqQk1pSnl0R1YzRGpWemVyT1EwV0RUbjFkR0FWYkhQUk9L?=
+ =?utf-8?B?OTlCckF3SjdPSmZOTkJWajQzOWU3SFNSUG9ocnB0bEkxWCt2ZVJDTHdDdTJx?=
+ =?utf-8?B?K0Rkb0FhclBrMjJYRU5QRkZxd1NHZHNSQ1dqVlFpdWFtUmlsRlRBZm5oaS9P?=
+ =?utf-8?B?Tyt4ZFJTZjFXUUpBVnRsdHdOb3NxUFVTdXhjUEh2Rk1USldnbTJpQ2lvZFBo?=
+ =?utf-8?B?elAvQW1zQ1AvbmFQTVM3M204bVg3ckxYSFRDS0srMklLc1FFM3JyQ2w5MU5k?=
+ =?utf-8?B?NUU0OGZ5ZDhmR2JvZFBsd2FQRS9udFBQR2JKSWZnNG9TM1Q2OUgzc1BqWFBR?=
+ =?utf-8?B?OW9TeTVUbXdLZERrM05SZ0RCNk12b0RpTWJPcG9Fa3N3L0F6cjJsei9FRmRY?=
+ =?utf-8?B?K1Z5My93bGRCSTRqT29lOG1CWkFxbUVkbW5aUWgrWkhGRVFnK21BUGVKT1h0?=
+ =?utf-8?B?bDdGb1JNNnYwNzJRYnJHaHVMc2FFNWtkZEJWQ25XMUJsTjhDRDFDNWZUR29Z?=
+ =?utf-8?B?emxLZFBrS3h3TUUzN3lQWjhjcHlFWkM2clBZVFFjYXBBNitueElsakVsSXBZ?=
+ =?utf-8?B?aU1zOHRVczdTb29lSUgxZEo3TllpTDVjNFBJbHRtQURteDRzd2k0a1U5SWk1?=
+ =?utf-8?B?UUI5akhRQzJJWHd0TjhIYVA0dGtVM2ZLQTJoYTc5ckZXeXhBZUFXbkpCQWlr?=
+ =?utf-8?B?NVRiRGJBU0JTelRWc1BWV3FPVHBtbjVyKzFhTWxxOTN5eTA2SmtwbWdyL2tF?=
+ =?utf-8?B?MUR3elNFWnVEZXlkNnpmOTJQcENhSmZLU0MrdW9ibEpJNHkyMGN0cGZITzBW?=
+ =?utf-8?B?Szh5aVZRSllOZlRKa1R5Q2lUWjN1Wm5DdTBTc2hvRi8yMzlEMEYxZ3ZTbUlL?=
+ =?utf-8?B?UTNXcFZLeklDUGtodFIzM0l6ZkJKYTE4cHJBc0c1QVdHS2hmdXFQdGVhb2Vm?=
+ =?utf-8?B?YnlJcGRXa2c1aE5valM4QUZLcnFsUFBCVno3MWpVZEVtbE1jZDJFaU1EZ1BU?=
+ =?utf-8?B?SmcyOG9HZHZOSjZiMGlEOENzVU10T1VuWktDcDJ2bVYrUWljd28xSzBvRlVv?=
+ =?utf-8?B?SVhXMG02bEMxcG9yV0ZtTmp2UHdsUGRLTW1Vd2pQb2hrZWhQQnpsMGRaWFZ6?=
+ =?utf-8?B?Qjh3enc3eWxqdyt4ciszRVN2RExJM3B3M1pXTk9udVBRMHUrWStmSXdQcHEx?=
+ =?utf-8?B?cTNZeHBQdDA4ZGsxVXhORnhuYTJEbjdpSkVScWpPaEVML2tKRTlSVno2bnNh?=
+ =?utf-8?B?SE45VGZZb0liTlhHWkMrQW11Y2cwS2M3MEpKNXIzYnJ3ZFBOUTdzQjV2ZXRh?=
+ =?utf-8?B?VDYvVFllNThhVTdKT3ZEdkxLT0ZhdndpR3JXT2NUaWw3TnNKWUR6bFoxM2wx?=
+ =?utf-8?B?T0wzWGpVWGdYeStPYWJQRFhtd3lvcmI1ZzNYeFZ0Wi9lMCtSU3ZyMzFPMEEx?=
+ =?utf-8?B?VXgyeTNBd2xwQXN1NFFJMTJ2eTEzQ2pLRU5GUWplSHYvdnBHdHJsL05wODl3?=
+ =?utf-8?B?K0x2Z1RlVUkwdWpTY1hqb0xCTzhpUHBIQ2xvTHVRcXdMY3pkVEdNaVlud2l5?=
+ =?utf-8?Q?UV4jth3O3Bvg1?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?K1Z1NHlDeTNUck5tcUx5UVBENGtESklYZ21RVEduWmgvZ3ZNWVhxeXloRjJZ?=
+ =?utf-8?B?aVZVcjhBQlF3bVBPZTNwWFlpN1huQmtUSWRyN1lkTmJmNWk0ZlRSQ05zM1VR?=
+ =?utf-8?B?SUJ0Tk9PS1dNVUFaQTliUWczN2FYSlpNRS8zSm9xMTlHbFd5T2xhVWlpcDBr?=
+ =?utf-8?B?bVlyLytsa1NNVnNaT1IzQjd0K3ZiUnpQYTg4T1AxcGpMRnV1SVlUOEpRT0px?=
+ =?utf-8?B?bzQ5Q1NCSkZ1R0xTYWFYL25PUTFWNjBNdzg0NUpneDdqRUEvc3U0UG1kMEc0?=
+ =?utf-8?B?RGdQM3h6UjZmWmFrNVRQa1lZRW1FTERPVkZDWTcrT2VNS29sYldvZkorZEJa?=
+ =?utf-8?B?d3llb3pVdzVuNG1xRlAyTmNYaldaRGp3NzNkSnMwQkZ1V09oRjhwMytjeFdP?=
+ =?utf-8?B?b1I4N3g0NU95TUpoaVprVGptRlUxRGVGMGp0bzVVb1RTWTdnZzQ4d2NtT0M4?=
+ =?utf-8?B?QTVrVWFLcXM3VVdVN05YZXZteEVITW5IQUE5NG5XcWVsK3J6L3FINFBacmVQ?=
+ =?utf-8?B?ZmdJL0xKa2p0Mi9EVkdwNGhkNzJOVmR1d1VESy9vWVRBbEVSTnp6MzJDRUFW?=
+ =?utf-8?B?Vk10TXl3WGRSZnJvclVRaHJVTlFoRkNvT253ZHY1Yzhpa1gvL25IL3gxamlR?=
+ =?utf-8?B?eTNDMkI1VlZ3dGlHMDVWRE5DZys0YmU5VjdkcXp5ZStyTmp2U3k5MHRZbGtk?=
+ =?utf-8?B?ZncyWVBDMFFOZVVIbUZpWjFvSnVHQUp0L3A3UHJlK2pCT2NGNGFPRjNIWlRR?=
+ =?utf-8?B?c1hMUlJVSjVZbzF5ZUprdTBLUUJXSkFja2lISWtsMFNtQTRISXBrN0c1dFAv?=
+ =?utf-8?B?bHMvb1J2U2M4MmEzcE5saGN5SmhyaW11VE9yWUdjWTdzMFcvSXB3RXBzSVhr?=
+ =?utf-8?B?SzZGQkQ1ZndPMm90UWowazkwWFJsQ3Y0UFB0ZDRHUWFyTEJIbVdQemVTUVJG?=
+ =?utf-8?B?RnJGU2JtOVg1SWkvY2k1VlFLU01OTjBMTnlabWNYQjNNblhrOER5cy9oa2U0?=
+ =?utf-8?B?QmNDQndnSUlKeDJva2JpUkR4YzlHK0lmWEVMbFBiS1VlNFFldkdnMFRXMGZ1?=
+ =?utf-8?B?eWJUOEN5a0d4a2JLZUo5ZWE3NTF3RTkxTm9qSlgzSkowWjM0bG5UZzJPcnln?=
+ =?utf-8?B?Vm5ueEl6ay9kYkdNais1eXNJc0dISXFrT3N2OVNkNlo1UUwzVEFKemhacHBN?=
+ =?utf-8?B?OURORVROSjNjbEtuWjJmdHdqSThXanphUmx2cThCQ3lRUk9rRzhtUzE1WGlq?=
+ =?utf-8?B?VUNWRHNuUk5LdGpCbk55a2JMSitjUmlwaU9vWUVMeXBteldxQmRCV3lVcXZ1?=
+ =?utf-8?B?eTBUVWtyN1JYNUJrUEZ4ZmNGcDU5YlhmZ1BxY1dYaVFKSTc2Rm9TL2RoTVM1?=
+ =?utf-8?B?RVFiWGpyTlltd25BRHFzK3pnRlVycWxFaEFVUVdqV3hjTXVOTXpjYzNVVzlZ?=
+ =?utf-8?B?azl0VFJtYkR1a290Z1J5QjNtN1RPVDJNaFBiZE9zUUtjdDFOUlRiVERlTEdQ?=
+ =?utf-8?B?UnowRlNhQ2hUSEROQnoyUDNrREVQZ1FyckVZLzRoMXViSTRGWTlreXo4TkZn?=
+ =?utf-8?B?RjJDRmxnT2JwVCt4Z1pFNjMvTVZNWTdrVDMvcUJyZGdYYTJTdGx5bE9aaTN1?=
+ =?utf-8?B?bGRmeGJJYnNXMGF4aW5jS29wempHYTIwb1FVY2F3R2IyWHZGbjFhcy93Umcx?=
+ =?utf-8?B?T3F2MHFaQ01QeVRXWUhXL3luZTlLWEw3TTJmNlR3Z1ZMSVRObitRRlZOaU1L?=
+ =?utf-8?B?TGt6bFVsbUVBVkd1UG1XY0xENlpsUkYwQ0U0MFJjQy9UaHZOQWFCQmh4N1lB?=
+ =?utf-8?B?by82T29pMEp0Y25Cd3dZdWR2TjRiSnBhSUxYSlh0VURMNWIrOHU0ZkVhZ015?=
+ =?utf-8?B?T3hBQUhkOEV2NWVLaGEwcTBqdFRVMURUeS85UFViblhwbHdvS3o2TDdpaDR2?=
+ =?utf-8?B?ZC9WY0pOQzU2MWc2a3l1Q2l3dzlmb2NlKytXSVF5NUhZblNhQmJrWEpUVzhx?=
+ =?utf-8?B?QUxpSkZ1ZDlPcjh4c3NRUnhMNENhZFJZQUxDTUEyUUxUb0hGdGFURGVqMEpU?=
+ =?utf-8?B?OW9sanJVTk1LRzFFdFRlb3dPUjhKMDRPeVRPTTNTdDF4RTZmczBhR2Zha0Zv?=
+ =?utf-8?B?U1N5QTFCZ3grc0kzWTNiRHhSbXo3VFFGc25aR1NnOXZ6aWNoV0lQRC9PTnNz?=
+ =?utf-8?B?R3c9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da990a40-00b1-4ec2-cfb7-08dd5b2fde76
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2025 15:18:51.2597
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l6c8nlFfwb0Axy7iyck6aT76H/XU3M4nU7mivxD75re1girw12DDexU+CJByDuGkc6w2O/pUgALtXHIvDQZeTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8488
 
 
-I just realized that the bcachefs maintainer wasn't Cc'd on this.
 
-As I believe that this is more likely a bcachefs bug than an RCU bug, I'm
-adding the bcachefs maintainer and mailing list to this.
+On 3/4/2025 10:11 AM, Steven Rostedt wrote:
+> On Mon, 3 Mar 2025 22:57:32 -0500
+> Joel Fernandes <joelagnelf@nvidia.com> wrote:
+> 
+>>>
+>>> The lock taken is from the passed in rcu_pending pointer.
+>>>   
+>>>> [   92.322655][   T28]  rcu_pending_enqueue+0x686/0xd30
+>>>> [   92.322676][   T28]  ? __pfx_rcu_pending_enqueue+0x10/0x10
+>>>> [   92.322693][   T28]  ? trace_lock_release+0x11a/0x180
+>>>> [   92.322708][   T28]  ? bkey_cached_free+0xa3/0x170
+>>>> [   92.322725][   T28]  ? lock_release+0x13/0x180
+>>>> [   92.322744][   T28]  ? bkey_cached_free+0xa3/0x170
+>>>> [   92.322760][   T28]  bkey_cached_free+0xfd/0x170  
+>>>
+>>> Which has:
+>>>
+>>> static void bkey_cached_free(struct btree_key_cache *bc,
+>>>                              struct bkey_cached *ck)
+>>> {
+>>>         kfree(ck->k);
+>>>         ck->k           = NULL;
+>>>         ck->u64s        = 0;
+>>>                 
+>>>         six_unlock_write(&ck->c.lock);
+>>>         six_unlock_intent(&ck->c.lock);
+>>>
+>>>         bool pcpu_readers = ck->c.lock.readers != NULL;
+>>>         rcu_pending_enqueue(&bc->pending[pcpu_readers], &ck->rcu);
+>>>         this_cpu_inc(*bc->nr_pending);
+>>> }
+>>>
+>>> So if that bc->pending[pcpu_readers] gets corrupted in anyway, that could trigger this.  
+>>
+>> True, another thing that could corrupt it is if per-cpu global data section
+>> section is corrupted, because the crash is happening in this trylock per the
+>> above stack:
+>>
+>>  srcu_gp_start_if_needed ->
+>> 	spin_lock_irqsave_sdp_contention(sdp) ->
+>> 		spin_trylock(sdp->lock)
+>>
+>> 	where sdp is ssp->sda and is allocated from per-cpu storage.
+>>
+>> So corruption of the per-cpu global data section can also trigger this, even
+>> if the rcu_pending pointer is intact.
+> 
+> If there was corruption of the per-cpu section, you would think it would
+> have a bigger impact than just this location. As most of the kernel relies
+> on the per-cpu section.
+> 
+> But it could be corruption of the per-cpu variable that was used. Caused by
+> the code that uses it.
+> 
+> That code is quite complex, and I usually try to rule out the code that is
+> used in one location as being the issue before looking at something like
+> per-cpu or RCU code which is used all over the place, and if that was
+> buggy, it would likely blow up elsewhere outside of bcachefs.
 
+Your strategy does make sense, as usually bugs are isolated though FWIW, we are
+in a monolithic world leading to some definition of "isolated" ;-)
 
-On Mon, 3 Mar 2025 08:44:48 +0800
-Strforexc yn <strforexc@gmail.com> wrote:
+> But who knows, perhaps the bcachefs triggered a corner case?
 
-> Dear Maintainers, When using our customized Syzkaller to fuzz the
-> latest Linux kernel, the following crash was triggered.
->=20
-> Kernel commit: v6.14-rc4 (Commits on Feb 24, 2025)
-> Kernel Config : https://github.com/Strforexc/LinuxKernelbug/blob/main/.co=
-nfig
-> Kernel Log: attachment
->=20
-> I=E2=80=99ve encountered a KASAN-reported global-out-of-bounds read in Li=
-nux
-> kernel 6.14.0-rc4, involving the RCU subsystem and bcachefs. Here are
+Yeah could be. Anyway, lets see if the complaint comes back. ;-)
 
-In the future, if you see an issue between two subsystems, make sure to
-include the maintainers of both subsystems!
-
-Thanks,
-
--- Steve
-
-
-> the details:
->=20
-> A global-out-of-bounds read of size 1 was detected at address
-> ffffffff8b8e8d55 in string_nocheck (lib/vsprintf.c:632), called from
-> string (lib/vsprintf.c:714). The buggy address belongs to
-> str__rcu__trace_system_name+0x815/0xb40, triggered by a kworker task.
->=20
-> The issue occurs during a bcachefs transaction commit
-> (bch2_trans_commit), which enqueues an RCU callback via
-> srcu_gp_start_if_needed. The out-of-bounds access happens in
-> string_nocheck, likely during a printk or tracepoint operation
-> (vprintk_emit), triggered by a lockdep warning (__warn_printk). The
-> variable str__rcu__trace_system_name (size 0xb40) is overrun at offset
-> 0x815, suggesting a string handling bug in RCU or bcachefs debug
-> output.
->=20
-> The bug was observed in a QEMU environment during
-> btree_interior_update_work execution in bcachefs. It may involve
-> filesystem operations (e.g., key cache dropping) under load. I don=E2=80=
-=99t
-> have a precise reproducer yet but can assist with testing.
->=20
-> Could RCU or bcachefs maintainers investigate? This might be a
-> tracepoint or printk format string issue in srcu_gp_start_if_needed or
-> related code. I suspect an invalid index into
-> str__rcu__trace_system_name or a pointer corruption. Happy to provide
-> more logs or test patches.
->=20
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Zhizhuo Tang <strforexctzzchange@foxmail.com>, Jianzhou
-> Zhao <xnxc22xnxc22@qq.com>, Haoran Liu <cherest_san@163.com>
-> ------------[ cut here ]------------
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KASAN: global-out-of-bounds in string_nocheck lib/vsprintf.c:632 [in=
-line]
-> BUG: KASAN: global-out-of-bounds in string+0x4b3/0x500 lib/vsprintf.c:714
-> Read of size 1 at addr ffffffff8b8e8d55 by task kworker/u10:0/28
->=20
-> CPU: 1 UID: 0 PID: 28 Comm: kworker/u10:0 Not tainted 6.14.0-rc4 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/0=
-1/2014
-> Workqueue: btree_update btree_interior_update_work
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:94 [inline]
->  dump_stack_lvl+0x116/0x1b0 lib/dump_stack.c:120
->  print_address_description.constprop.0+0x2c/0x420 mm/kasan/report.c:408
->  print_report+0xaa/0x270 mm/kasan/report.c:521
->  kasan_report+0xbd/0x100 mm/kasan/report.c:634
->  string_nocheck lib/vsprintf.c:632 [inline]
->  string+0x4b3/0x500 lib/vsprintf.c:714
->  vsnprintf+0x620/0x1120 lib/vsprintf.c:2843
->  vprintk_store+0x34f/0xb90 kernel/printk/printk.c:2279
->  vprintk_emit+0x151/0x330 kernel/printk/printk.c:2408
->  __warn_printk+0x162/0x320 kernel/panic.c:797
->  look_up_lock_class+0xad/0x160 kernel/locking/lockdep.c:938
->  register_lock_class+0xb2/0xfc0 kernel/locking/lockdep.c:1292
->  __lock_acquire+0xc3/0x16a0 kernel/locking/lockdep.c:5103
->  lock_acquire+0x181/0x3a0 kernel/locking/lockdep.c:5851
->  __raw_spin_trylock include/linux/spinlock_api_smp.h:90 [inline]
->  _raw_spin_trylock+0x76/0xa0 kernel/locking/spinlock.c:138
->  spin_lock_irqsave_sdp_contention kernel/rcu/srcutree.c:375 [inline]
->  srcu_gp_start_if_needed+0x1a9/0x5f0 kernel/rcu/srcutree.c:1270
->  __call_rcu fs/bcachefs/rcu_pending.c:76 [inline]
->  __rcu_pending_enqueue fs/bcachefs/rcu_pending.c:497 [inline]
->  rcu_pending_enqueue+0x686/0xd30 fs/bcachefs/rcu_pending.c:531
->  bkey_cached_free+0xfd/0x170 fs/bcachefs/btree_key_cache.c:115
->  bch2_btree_key_cache_drop+0xe7/0x770 fs/bcachefs/btree_key_cache.c:613
->  bch2_trans_commit_write_locked.constprop.0+0x2bc6/0x3bc0
-> fs/bcachefs/btree_trans_commit.c:794
->  do_bch2_trans_commit.isra.0+0x7a6/0x12f0 fs/bcachefs/btree_trans_commit.=
-c:866
->  __bch2_trans_commit+0x1018/0x18e0 fs/bcachefs/btree_trans_commit.c:1070
->  bch2_trans_commit fs/bcachefs/btree_update.h:183 [inline]
->  btree_update_nodes_written+0x1352/0x2210
-> fs/bcachefs/btree_update_interior.c:708
->  btree_interior_update_work+0xda/0x100 fs/bcachefs/btree_update_interior.=
-c:846
->  process_one_work+0x109d/0x18c0 kernel/workqueue.c:3236
->  process_scheduled_works kernel/workqueue.c:3317 [inline]
->  worker_thread+0x677/0xe90 kernel/workqueue.c:3398
->  kthread+0x3b3/0x760 kernel/kthread.c:464
->  ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:148
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->  </TASK>
->=20
-> The buggy address belongs to the variable:
->  str__rcu__trace_system_name+0x815/0xb40
->=20
-> The buggy address belongs to the physical page:
-> page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xb8e8
-> flags: 0xfff00000002000(reserved|node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-> raw: 00fff00000002000 ffffea00002e3a08 ffffea00002e3a08 0000000000000000
-> raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner info is not present (never set?)
->=20
-> Memory state around the buggy address:
->  ffffffff8b8e8c00: f9 f9 f9 f9 00 00 00 00 03 f9 f9 f9 f9 f9 f9 f9
->  ffffffff8b8e8c80: 00 00 00 00 00 00 01 f9 f9 f9 f9 f9 00 00 00 07
-> >ffffffff8b8e8d00: f9 f9 f9 f9 00 00 00 03 f9 f9 f9 f9 00 00 00 06 =20
->                                                  ^
->  ffffffff8b8e8d80: f9 f9 f9 f9 00 00 03 f9 f9 f9 f9 f9 00 00 01 f9
->  ffffffff8b8e8e00: f9 f9 f9 f9 00 01 f9 f9 f9 f9 f9 f9 00 00 00 00
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Thanks,
-> Zhizhuo Tang
+ - Joel
 
