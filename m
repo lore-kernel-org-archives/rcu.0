@@ -1,120 +1,127 @@
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E94945C18;
-	Wed,  5 Mar 2025 02:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D0545C18;
+	Wed,  5 Mar 2025 02:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741143250; cv=none; b=cVONC7v0Hlai4bo6Ul3DCXEw5Ttdcuj+TkJ4va79Q3r3v9jW/sLZlSyb/p57Yxhyy0LJDagONJvmjQzJyyarB4VJslub7h6//HpODMXMbbDtcmo8e0PRWa0xMNz+5qegHX2DcBQlx6WuKbgA4Fy7VcbWSr5IWBkiipNSlPAtlBM=
+	t=1741143285; cv=none; b=PMjgOKi++Qyp0nNA0h5ZGpu2X/1Os7eOZGKDqOxA/tddIrAkZ2+PXEV1zzijx1Wh+qumx2AmuwR5bgSVy9f+lBaupHfYsLmzfc23Bm/lbkeVyJCQ7xwEKitVgHGmy5jiZ4zuR2v9cxrTokZda8Tu5uWvL11cFb5qJgxqITkswcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741143250; c=relaxed/simple;
-	bh=EMuYMdqhBKQtfKn4RO+aq63aX39iNliJdyr2b5wjJMI=;
+	s=arc-20240116; t=1741143285; c=relaxed/simple;
+	bh=UV6gyGazzJ42NubyrUwHa0PU0qVcgVll114FV7ifGlA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=In9rRb1rUKWAc9GMGUXsrmhGjVALkUwa0eXoKtMdSFCbNjvFV5yv2+orSe/Rkraf251qt5lqQlPfoS/BzTbnx0IBNJBLu5OyamORfmJtzUfKbzl2Afn29ajO3wXIuiThO9g7fbBSPN05TKjcJscWCCFC6o3dUBSpQLkK+xS0/u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G8dRx7vz; arc=none smtp.client-ip=209.85.160.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=GrcQRhLV+dXW72XusvMWbxglGrv86WRI7Na6VYuWkT4B8mzxGyHC9JvIo1FsDRW4yCQPs8JnmYFuHc31z+k1kyPoJT6+ZfslzMTMzw3cs0sYLcOQx7I8gRwkA+NtLm8Ih0cxs+kI1JLmSN+JR/DSIdOKsOx4G00t6eRYf9snuUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C4B4NUjW; arc=none smtp.client-ip=209.85.222.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8dRx7vz"
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-47210ab1283so93020001cf.1;
-        Tue, 04 Mar 2025 18:54:08 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C4B4NUjW"
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7c3b4c4b409so495400785a.3;
+        Tue, 04 Mar 2025 18:54:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741143247; x=1741748047; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1741143283; x=1741748083; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7IxSlL+2EA5j3XbfzMKhUhR9vhXqsS9YXraGxEpys8w=;
-        b=G8dRx7vzrpABZzDRIQlitfCN6Kx+2NXA+sOSbrq8gvIpRoIdjdPUqp8Ham8+yfdwKK
-         kI/0SWraWD4jMVHCzdyR4T0xJa2YCPj0TgwpgZprGZ9hTBhD/txQ7heey7aZ4KRbdIUh
-         /0Hv5LneyogWyrY4GemS1ybWmKkqF+OQONP/9X/P0s+A9sbOEaGqKT4Gi/4fC+80av5w
-         TeD58qUDDmuZGT+hU2jTYasdB9nwo8XcNUXiFVa+OQgjIAXNpfIkwANSVUWGn0WfTLOf
-         z0HodakfeLDK8Ntb+38SPxKDqXjXD6jWaTDC1hM4EQ0YUirBH2iQ6VGKLRr12Z1on/yN
-         dPvg==
+        bh=UV6gyGazzJ42NubyrUwHa0PU0qVcgVll114FV7ifGlA=;
+        b=C4B4NUjWr9adFGs1UGGtUwqZQAcB5IHNJq1++qHwkFlsLCKvoHOoJ/0115JMQssPgT
+         MsCan0gxBrwsOwbPXsFHBGepmZlSUzBlCRO6WkK1xhfBOCu3VxUlttE2FfiZSUdU8l2F
+         dxGqOdFA/I063Tf8/+lbFrGPnygor5CDX1AOks8d/7e8QdDl1ulTucX//gMfQTJ+zrwt
+         ljzQ84A34REWanHJRO5gXBVTY/DlBo42Ah+Koprf5UAQd1SnnEr59XrSck78u1i8VEma
+         IBWxjf+gToPfM87u+0u30qOfC4B2Z9+S1f7fm+Cafw5wnF3K3mEe+EUa+15cbK7qiQxa
+         bRRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741143247; x=1741748047;
+        d=1e100.net; s=20230601; t=1741143283; x=1741748083;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7IxSlL+2EA5j3XbfzMKhUhR9vhXqsS9YXraGxEpys8w=;
-        b=g6Ci0VHF6gCarKBnGwf3vsou48ezoixq6ToW0UaXVw+mHukULPNE3PXpKmrF/hxfFf
-         LRXH94pu2Oj4kWe+CRMlJT42cuOZaRAe/lniaLTsfrgugf3DCsnq8cbho6/OjOdWomTj
-         KXDcSUqNmUeP5aXIDBE4pz5zUc+IedhcY8cQOR6CVcgq8sI33EYMIFjHbByIwP72PHye
-         GKoqsVo6LRJ2idwzkfxZap3svA7OZkMTHQg/rQMJNerpntet/00Wy6nep7DdmWSzuDw9
-         Py36ZzXRCOBwOYymnqcfTLhuqC13T9n648jGl6wcZiR0hwCtUY2d0WEDsYQQncZXbWlL
-         /kBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUWXet3Eoz4XBguJtAQAHJ9v8e0sRrOhH/OauCd7PFzq7u3veTchXYAc5Q4GffdqBvRZoOJ@vger.kernel.org, AJvYcCUYGdDy9O0XE+oNK4H9+H3j1ktjYQllUBdGNqTw48VOeae4slvfkqlBwYpJIrM9uNPEkSa4shzowV6KULU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOMO4qcFs6p8jPkUibZA1jdOHG7RK/2H54aJHvv8Wb/qtmQl2R
-	123bRBPGwCtYVk9t4N/KKFunEN/09CZr0d/gxCds3BCKs9zK6Myc
-X-Gm-Gg: ASbGncstOK+LVoQg4mspGA+6pfjmxpSCPxoKa3v2P8TV5XALjY843yJQLt12HgRQw5U
-	Gh87921I9OT8+WZBPhcecnWQJ8+J6WBhjQADwuBx5LcKaEZUTW1ocOYDQ12/P7DMQOY+1u+wU2x
-	Wsfm1q21UPyr6wwdkkAHoA+nIV22EA/RC8yJpSp0kXtHW9TlEH6445SKUkMXD4ghDI8d0kQvqJM
-	Gcj/0QWFqK9ggtb57s1JSv+wdpgH3PnBx/kmYyeNdDcoYTGdW0Bcw0LeAio8mr0fyXCxuuNdjnQ
-	Ss0KNrh80kfdyvoz2Tp1N2nB2omLTw2qUNPzIalXVi5PfpHQLBaLwr46Glck4O5BqpdHm7CuTpt
-	497Tpq5d5M58Hbo41Bk8ozXmPLlQrgVcRHHg=
-X-Google-Smtp-Source: AGHT+IFChScsO1pL9gVvgFXu/cdDXxG2PV+tQRp9rGpMRjXSE6qRwc9NpPsq0JZcpjvg9NGtyLu91A==
-X-Received: by 2002:a05:622a:1888:b0:475:5bd:e9a7 with SMTP id d75a77b69052e-4750b4c95ddmr20045031cf.38.1741143247374;
-        Tue, 04 Mar 2025 18:54:07 -0800 (PST)
+        bh=UV6gyGazzJ42NubyrUwHa0PU0qVcgVll114FV7ifGlA=;
+        b=D4ABOLKCMiOsj2u7yLophJF5yhM3BGa0DlkdzUvwCjfOCP0uQkjgQQgvJPv9zMLZ3x
+         8H1d8EE2T259KpVXmA2Zp/ANgg65CFe5szzz+rTNhBsTNPTbFL/SjWcjpAouvcnn8LW/
+         NIRlDrqIWXUus9SPKWZI/Hnng3+RkAQZ4OUzcroudMH8RU/Rf2xBMDb5HQukdQziClMB
+         yu7R3NMWTvyztibUMntAp0xDFQ9SmneURMbJkA9UINZ0gXqQ9HSHqkcBy3gf5gtrcbTH
+         YkLXNQGU9bCV5b8YhpkL70Wu4KDgQloRqtTY96+PZVC58Uyc5EHxH2OlFBYlSdCTVh5X
+         Jifg==
+X-Forwarded-Encrypted: i=1; AJvYcCUrdEdC78OMUSZ4rk1fYgPnriLn7UwkEe0aNzgBXh4mS8LYYSYWO957iXTy2Z7QgIE1adMfG5yDpErz7WeD3qNi@vger.kernel.org, AJvYcCWgxPnrx29q+gAU4BXE3vMjQKo7TJDJXaW6z2fk+G34d0sGpng8MS+5YKGgJWnFandgMYuy3lbudebMfI2ckaCPKfXG@vger.kernel.org, AJvYcCWnfmVU3QQxiU/U3a0Ah0jYWAegfJrppPglaehbI+6J4cj3yF6pEBNDx5l7e2N8m1XfC67MG7ziMdNnNmE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxpRNTzuQk+6WB7Ff3huGIRnhiQbXbTBmoMf2hYfPnjNE2k8Si6
+	vtzxTCWYffxsPuFYeQSgViNUbVufQ6MjpyVuq8RkY3fpHVQUjokv
+X-Gm-Gg: ASbGncsyjzMxhnx4CcF9bHCrMRc4q214bzUzkNdujlHcUSsztrY28tGikmZVQNuhNFg
+	HZu0wrpAf/8+5lQyDjALaiwpzEq2iPosb8Q1Qjcvo0fSCoBZsIO0F4K9OJK0XEQ7Y5oo+bdU22X
+	aBGK8eaYQKg+6VS0govHROurwO9etnOdzgxSweJKnTaRV2zyzhius7Q3A/xo1GiDdKzzDHw112U
+	HVX123LGX5b475Zc9HPS9yHWq36Hwb/GwXJr0R848+p49WBc9CG+otKiIjOVQIIn9i3q2Ocqqjl
+	KmzmkMry8em59RVtmI+PPpp2EhBHMTLcms905hT3O4FPumZlYUzTcthVqNn2A/EHHgZ3VC23NZ8
+	YDRtU7Beqj5cuIUxWsa2f4fwZJIjVgthED/g=
+X-Google-Smtp-Source: AGHT+IHBoQiW7YLCUvoHR0BGtgdkr30Lh1JWx2qiZpsHE/51TJNn1Bw7Jeixsoev4iKBvUmgHnx5uQ==
+X-Received: by 2002:a05:620a:2607:b0:7c2:40d1:8593 with SMTP id af79cd13be357-7c3d8e20ee3mr236316985a.3.1741143282793;
+        Tue, 04 Mar 2025 18:54:42 -0800 (PST)
 Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4750a4cdc78sm6762071cf.15.2025.03.04.18.54.06
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c3ca43ad81sm228200185a.80.2025.03.04.18.54.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Mar 2025 18:54:06 -0800 (PST)
-Received: from phl-compute-13.internal (phl-compute-13.phl.internal [10.202.2.53])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 51CCE1200068;
-	Tue,  4 Mar 2025 21:54:06 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-13.internal (MEProxy); Tue, 04 Mar 2025 21:54:06 -0500
-X-ME-Sender: <xms:zrzHZySvLhrU34s-wXLXDPxSg7qDi0w04WKzB5IPTVkOi58g4D5qJA>
-    <xme:zrzHZ3wGYQwVYFBJ-qUOMOQyP658_7WilAUdbRnbbPQmZvU41XsD22vT3Gkpt__y8
-    XKKRoTjekOxy-S_Dg>
-X-ME-Received: <xmr:zrzHZ_2C0-oxxDtj-dNF0FubhM7Oac0QEzI9eB6PEXLj5mnFUvNITelBKg>
+        Tue, 04 Mar 2025 18:54:42 -0800 (PST)
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 71EED1200068;
+	Tue,  4 Mar 2025 21:54:41 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Tue, 04 Mar 2025 21:54:41 -0500
+X-ME-Sender: <xms:8bzHZ9LFSO-a7ihBB_pv8V5rMhqrCR_uO6brALv_DTsMkbnINqpj9w>
+    <xme:8bzHZ5ICRQVksAlERae5OZAvduwZlz1qAgrERq5bNKjTQt0f2uYUbcUpoMigZ3QGd
+    UpwwI3GC1dXsBLtQA>
+X-ME-Received: <xmr:8bzHZ1ucqTCiCh6UQ1HAcC2SWKqx4g4_vR06lzjQbgjSp2dCVHYOF0BiRw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdefjedtucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
     gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtqhfstddt
     tddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrg
-    hilhdrtghomheqnecuggftrfgrthhtvghrnhephfeuhfelvedvieehvdetfeduveejteeu
-    feefgeehhfeuieefgfdtfefhkeehgeelnecuffhomhgrihhnpehkvghrnhgvlhdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhq
-    uhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqud
-    ejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgv
-    rdhnrghmvgdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgtph
-    htthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehjohgvlhgrghhn
-    vghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvg
-    hlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
-    phhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprh
-    gtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepiiii
-    qhhqtddutdefrdhhvgihsehgmhgrihhlrdgtohhmpdhrtghpthhtohepnhgvvghrrghjrd
-    huphgrughhhigrhiesrghmugdrtghomhdprhgtphhtthhopehjohgvlhesjhhovghlfhgv
-    rhhnrghnuggvshdrohhrgh
-X-ME-Proxy: <xmx:zrzHZ-B_3W-TLRB2bATE3jbZ5A7vJXaA97HwY9LcoCtoF_RUO5txyg>
-    <xmx:zrzHZ7h29gAw2BTi_a0kreyPzv0uo9wV5w_pCda0F5HJMeGuH1m7gQ>
-    <xmx:zrzHZ6p4IFrsM4YqhIK6munuiZLPq62o3h5WOl2csG8Fb5DWr7BF9g>
-    <xmx:zrzHZ-itkafyWz6KQLb1yPyrGwYu9SR5GpMpTDMX9sTFoowGnvPILw>
-    <xmx:zrzHZ6RI1sWS7206kz-B3Smgy3zLUO8CX_dsACzSlPs5rZJNiBu42kYD>
+    hilhdrtghomheqnecuggftrfgrthhtvghrnhepheeufeduuefftdevffffhfehudeitdff
+    uedvveegleffudetueegvdehtdfhlefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhn
+    rghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpe
+    epghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgvpdhnsggprhgtphhtthhopeeftddp
+    mhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprhhoshhtvgguthesghhoohgumhhish
+    drohhrghdprhgtphhtthhopehrtghusehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+    thhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvg
+    hrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvggvrhgrjhdruhhprgguhhih
+    rgihsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohgvlhesjhhovghlfhgvrhhnrg
+    hnuggvshdrohhrghdprhgtphhtthhopehjohhshhesjhhoshhhthhrihhplhgvthhtrdho
+    rhhgpdhrtghpthhtohepuhhrvgiikhhisehgmhgrihhlrdgtohhmpdhrtghpthhtohepmh
+    grthhhihgvuhdruggvshhnohihvghrshesvghffhhitghiohhsrdgtohhm
+X-ME-Proxy: <xmx:8bzHZ-bAeG0ZN1GRSTXMehPu8GzSaSPV29guxqRdGz2fwFl_WYKV5Q>
+    <xmx:8bzHZ0aKBJ5-5VFBHCz5DMRPMteMbfFZAPBaND6ZAQN2X7WHkXQD7Q>
+    <xmx:8bzHZyBgmAnxKIcGNuSZ5RxojsTbDVVWDzKB6k-raS6dr88qNYe3dQ>
+    <xmx:8bzHZyY_W8yOb5yK3MJYbCUbBXmGtxXxETMRJS4EIEmVEcYWau52eQ>
+    <xmx:8bzHZwrUTjFR0__3g6VW5Q28j-I-8Okx3u1SPTqqw8wuH5BuD7BoXgjr>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 4 Mar 2025 21:54:05 -0500 (EST)
-Date: Tue, 4 Mar 2025 18:54:02 -0800
+ 4 Mar 2025 21:54:40 -0500 (EST)
+Date: Tue, 4 Mar 2025 18:54:38 -0800
 From: Boqun Feng <boqun.feng@gmail.com>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, Cheung Wall <zzqq0103.hey@gmail.com>, 
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v4 3/3] rcu: Use _full() API to debug synchronize_rcu()
-Message-ID: <qlqvu355hs2vbj4tkfercqfpdynd7ezjg4uhg22hd6223yqh7w@4zp6haxokdpc>
-References: <dd15fa79-70a5-4929-9339-51a47099c916@paulmck-laptop>
- <Z8H_aYBUHD2sS2Ir@pc636>
- <73724164-71f4-4671-b612-eb82a784da58@paulmck-laptop>
- <Z8IKs-I-YsOoS4uw@pc636>
- <cdab57a4-8d58-41d9-a9b5-71d425a7375e@paulmck-laptop>
- <f6803081-8243-4723-a3ba-00db351aafff@paulmck-laptop>
- <20250303001507.GA3994772@joelnvbox>
- <Z8ZyMaUhXMIxX7WE@tardis>
- <Z8bbary51FZ2TsUA@pc636>
- <Z8bcUsZ9IpRi1QoP@pc636>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+ 	Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ 	Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>,
+ 	Uladzislau Rezki <urezki@gmail.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ 	Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, 	Davidlohr Bueso <dave@stgolabs.net>,
+ Ingo Molnar <mingo@redhat.com>, 	Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ 	Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ 	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ 	Valentin Schneider <vschneid@redhat.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, 	Shuah Khan <shuah@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ 	Clark Williams <clrkwllms@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, 	linux-kselftest@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, 	Ankur Arora <ankur.a.arora@oracle.com>
+Subject: Re: [PATCH rcu 06/11] osnoise: provide quiescent states
+Message-ID: <hrwgh7fevnkmkaizc7226kyywgzi22efmtnepzwah7ticrozbv@lcg23v6j7p7g>
+References: <20250225035516.26443-1-boqun.feng@gmail.com>
+ <20250225035516.26443-7-boqun.feng@gmail.com>
+ <20250304142127.391ca6bd@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -124,86 +131,50 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <Z8bcUsZ9IpRi1QoP@pc636>
+In-Reply-To: <20250304142127.391ca6bd@gandalf.local.home>
 
-On Tue, Mar 04, 2025 at 11:56:18AM +0100, Uladzislau Rezki wrote:
-> On Tue, Mar 04, 2025 at 11:52:26AM +0100, Uladzislau Rezki wrote:
-> > > > Did I get that right?
-> > > >=20
-> > >=20
-> > > Other than I'm unable to follow what do you mean "WH has not been
-> > > injected, so nothing to wait on", maybe because I am missing some
-> > > terminology from you ;-) I think it's a good analysis, thank you!
-> > >=20
-> > > > I think this is a real bug AFAICS, hoping all the memory barriers a=
-re in
-> > > > place to make sure the code reordering also correctly orders the ac=
-cesses.
-> > > > I'll double check that.
-> > > >=20
-> > > > I also feel its 'theoretical', because as long as rcu_gp_init() and
-> > > > rcu_gp_cleanup() are properly ordered WRT pre-existing readers, then
-> > > > synchronize_rcu_normal() still waits for pre-existing readers even =
-though its
-> > > > a bit confused about the value of the cookies.
-> > > >=20
-> > > > For the fix,
-> > > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > >=20
-> > > > (If possible, include a Link: to my (this) post so that the sequenc=
-e of
-> > > > events is further clarified.)
-> > > >=20
-> > >=20
-> > > Will add the tag (with the email you really want ;-)) and a link to t=
-his
-> > > email to the patch. Thanks!
-> > >=20
-> >=20
-> > CPU_1:                                | CPU_2:
-> >   # Increase a seq-number             |
-> >   rcu_seq_start(&rcu_state.gp_seq);   |
-> >                                       | add_client() {
-> > 				      |   # Record a gp-sec state=20
-> > 				      |   get_state_synchronize_rcu_full(&rs.oldstate);
-> >                                       | }
-> >                                       |
-> >                                       | rcu_sr_normal_gp_init() {
-> > 				      |   add a dummy-wait-head;
-> > 				      | }
-> >=20
-> >=20
-> > A client has been added with already updated gp-sec number, i.e.
-> > "oldstate" would refer to this GP, not to previous. A poll_state_synchr=
-onize_rcu_full()
-> > will complain because this GP is not passed, it will on a next iteratio=
-n.
-> >=20
-> > This is how i see this.
-> >=20
-> Updated the plain-text, removed tabs:
+On Tue, Mar 04, 2025 at 02:21:27PM -0500, Steven Rostedt wrote:
+> On Mon, 24 Feb 2025 19:55:11 -0800
+> Boqun Feng <boqun.feng@gmail.com> wrote:
 >=20
-> CPU_1:                                 | CPU_2:
->    # Increase a seq-number             |
->    rcu_seq_start(&rcu_state.gp_seq);   |
->                                        | add_client() {
->                                        |   # Record a gp-sec state=20
->                                        |   get_state_synchronize_rcu_full=
-(&rs.oldstate);
->                                        | }
->                                        |
->                                        | rcu_sr_normal_gp_init() {
->                                        |   add a dummy-wait-head;
->                                        | }
+> > From: Ankur Arora <ankur.a.arora@oracle.com>
+> >=20
+> > To reduce RCU noise for nohz_full configurations, osnoise depends
+> > on cond_resched() providing quiescent states for PREEMPT_RCU=3Dn
+> > configurations. For PREEMPT_RCU=3Dy configurations -- where
+> > cond_resched() is a stub -- we do this by directly calling
+> > rcu_momentary_eqs().
+> >=20
+> > With (PREEMPT_LAZY=3Dy, PREEMPT_DYNAMIC=3Dn), however, we have a
+> > configuration with (PREEMPTION=3Dy, PREEMPT_RCU=3Dn) where neither
+> > of the above can help.
+> >=20
+> > Handle that by providing an explicit quiescent state here for all
+> > configurations.
+> >=20
+> > As mentioned above this is not needed for non-stubbed cond_resched(),
+> > but, providing a quiescent state here just pulls in one that a future
+> > cond_resched() would provide, so doesn't cause any extra work for
+> > this configuration.
+> >=20
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+>=20
+> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 >=20
 
-Thank you. I added links from you and Joel as the detailed explanation
-to the commit log, and the comment I proposed[1].
-
-[1]: https://lore.kernel.org/rcu/Z8SnhS_LnzN_wvxr@tardis/
+Applied, thanks!
 
 Regards,
 Boqun
 
-> --
-> Uladzislau Rezki
+> -- Steve
+>=20
+> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > Acked-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
