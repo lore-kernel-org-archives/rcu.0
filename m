@@ -1,117 +1,209 @@
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829EEA32
-	for <rcu@vger.kernel.org>; Wed,  5 Mar 2025 00:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E94945C18;
+	Wed,  5 Mar 2025 02:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741133071; cv=none; b=H65/AsLEfc6/gRmbOOtcbsk6HgWmQhbvxp4b5fpoQ60hzTBodQzwso7EscWM/tX+8XKexJUxa7QXjSkzl6U6Guj5+rW6REjX6zzZMPtS8umALypcRyvCpzBDLLKncP1bZyD+EtQmrYYKfG2K4PTsWYuE50Oc+FA+nxr/o2RH7hE=
+	t=1741143250; cv=none; b=cVONC7v0Hlai4bo6Ul3DCXEw5Ttdcuj+TkJ4va79Q3r3v9jW/sLZlSyb/p57Yxhyy0LJDagONJvmjQzJyyarB4VJslub7h6//HpODMXMbbDtcmo8e0PRWa0xMNz+5qegHX2DcBQlx6WuKbgA4Fy7VcbWSr5IWBkiipNSlPAtlBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741133071; c=relaxed/simple;
-	bh=obB0h8AHDTv9/LrRGXUTQqWYXLHGR7G5bwHes9VJzA0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QZWTFhtJsxb7RGM+JrpwBcVlnD1qKeYTb7+0KaGL2Wf/lY4ox1hkM6iuvU0O2C/ZxMVeix9ZQ8xGehbqWbw1uRg686aXuMTAuNkN1zNPbI9eClsBCNIhix7TgPfcdJzs0lJnS38dBybApo2qEziRylaWGOwYx97MaRktVYEOiac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gm6eIZ0T; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1741143250; c=relaxed/simple;
+	bh=EMuYMdqhBKQtfKn4RO+aq63aX39iNliJdyr2b5wjJMI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=In9rRb1rUKWAc9GMGUXsrmhGjVALkUwa0eXoKtMdSFCbNjvFV5yv2+orSe/Rkraf251qt5lqQlPfoS/BzTbnx0IBNJBLu5OyamORfmJtzUfKbzl2Afn29ajO3wXIuiThO9g7fbBSPN05TKjcJscWCCFC6o3dUBSpQLkK+xS0/u0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G8dRx7vz; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gm6eIZ0T"
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2fa8ac56891so9922335a91.2
-        for <rcu@vger.kernel.org>; Tue, 04 Mar 2025 16:04:29 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G8dRx7vz"
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-47210ab1283so93020001cf.1;
+        Tue, 04 Mar 2025 18:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1741133069; x=1741737869; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LM4+VbDeQgzb/55NI3t+9R4dHqP/5jKcZhBFBtOBqBA=;
-        b=gm6eIZ0Tz5znH7+Y+X9dk2eBqkHgynYAWQfqsjqVyBF8ETXt8cfDR5xgZFJguu+liJ
-         8UrZjVBOhKjFgaGTiE+fgb4SQaOud+QtD4LgHwdAiGikppuFoTcKHFMfO7FErBFvaOU3
-         k7sjNIM6Uvw7qe3QlkyhhLQJ2lwbReohwIgL/nuslOM2fdpVaDluJvOh/xKa0L+TxjTV
-         Pso6g6MXXTeFjIF3p7rkDHtr/bXIdwR+4YgGLM5Eku29aAb4yxRgjWxEaz4qSFq1NmKI
-         USzp48uboOzSHTV5WDm5h6VFxJ65E5qX4Z/cChJ/SLJ2Eine6Bnymdhnynz0ryQFnLOU
-         SWWw==
+        d=gmail.com; s=20230601; t=1741143247; x=1741748047; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=7IxSlL+2EA5j3XbfzMKhUhR9vhXqsS9YXraGxEpys8w=;
+        b=G8dRx7vzrpABZzDRIQlitfCN6Kx+2NXA+sOSbrq8gvIpRoIdjdPUqp8Ham8+yfdwKK
+         kI/0SWraWD4jMVHCzdyR4T0xJa2YCPj0TgwpgZprGZ9hTBhD/txQ7heey7aZ4KRbdIUh
+         /0Hv5LneyogWyrY4GemS1ybWmKkqF+OQONP/9X/P0s+A9sbOEaGqKT4Gi/4fC+80av5w
+         TeD58qUDDmuZGT+hU2jTYasdB9nwo8XcNUXiFVa+OQgjIAXNpfIkwANSVUWGn0WfTLOf
+         z0HodakfeLDK8Ntb+38SPxKDqXjXD6jWaTDC1hM4EQ0YUirBH2iQ6VGKLRr12Z1on/yN
+         dPvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741133069; x=1741737869;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1741143247; x=1741748047;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LM4+VbDeQgzb/55NI3t+9R4dHqP/5jKcZhBFBtOBqBA=;
-        b=IqAEkXXJOjXhI9flWzU4BfZIzfYzDeXr+PbcBXHHOFpjHE5vsn+BI2R37SL0jeXqu7
-         EZHvimAS5c+/x36x2Gks8mRoN2npv/4CyzcBx2a47Ny7b5vQ0JoOaVKassYJQZfSAZwM
-         uwNkga2uwc1vOEE8Nb0HxkVD+gXbQCrQ2gV7Il5wbDr7Bl2pDdrIOu2dtdLLRZm0/jSj
-         G0PH8x3pj/kc/THv/iRUo+houQmmO1rI3vDMZIY47d7CPDOHgUVJwJnat4BtQkrKCTWb
-         51ra8F6zxO5M0FJi1W8mn4Wq6WIN+MUi1RSuSY338iEpOpzI4gDw2SeZDcbnliaGzNL/
-         8e7g==
-X-Forwarded-Encrypted: i=1; AJvYcCWGiTpuS9sf7oLtXANE0DE4yIOIV3EJyqQ1FmM996oRVRDS/KcEYuUDVGuSDwgJugWijeE=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9bterIjydEodxWqSP1GF+gESiXWpk2MAsW9DMBI/G4NNzT+Jr
-	kUOjS60crgKXWRwSrjzlx176AgcBQbUV2Yw5Tv+iO5Ji/RiySkNam/ORnaKN0s+dKDgVh9AAz8Y
-	B57OnUK9+nnD/KsbCJopQnjmidFvX05g/awxk
-X-Gm-Gg: ASbGncsLgQoj8FspbyWzHogBbk+oauVMXQbl8cz2AGm60J3ZogJZKHQlIdA/xLZ+g8w
-	wyPdOx1XSl7O5JDdwrzww3zVPmYMud00Xmr9ss0tzTimgiBKL3PED7b6IubFZVJQIfeO6/TKr+s
-	ZKmS4EBn0bYe8y0+SJ8qKbK72skYtemnrgLIeqDFzDIW9mazdl5iG0eu+Q
-X-Google-Smtp-Source: AGHT+IEtISi7Tlt5kX4zmOO9FEZtWXEEe9J/QPKTHvSqVUkwchS3k7u+aPOlcVNfd6t4Doh8lMUn/x9+fE5ZVoRcpzI=
-X-Received: by 2002:a17:90b:4ad1:b0:2f4:423a:8fb2 with SMTP id
- 98e67ed59e1d1-2ff497cce8emr1999183a91.20.1741133068525; Tue, 04 Mar 2025
- 16:04:28 -0800 (PST)
+        bh=7IxSlL+2EA5j3XbfzMKhUhR9vhXqsS9YXraGxEpys8w=;
+        b=g6Ci0VHF6gCarKBnGwf3vsou48ezoixq6ToW0UaXVw+mHukULPNE3PXpKmrF/hxfFf
+         LRXH94pu2Oj4kWe+CRMlJT42cuOZaRAe/lniaLTsfrgugf3DCsnq8cbho6/OjOdWomTj
+         KXDcSUqNmUeP5aXIDBE4pz5zUc+IedhcY8cQOR6CVcgq8sI33EYMIFjHbByIwP72PHye
+         GKoqsVo6LRJ2idwzkfxZap3svA7OZkMTHQg/rQMJNerpntet/00Wy6nep7DdmWSzuDw9
+         Py36ZzXRCOBwOYymnqcfTLhuqC13T9n648jGl6wcZiR0hwCtUY2d0WEDsYQQncZXbWlL
+         /kBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUWXet3Eoz4XBguJtAQAHJ9v8e0sRrOhH/OauCd7PFzq7u3veTchXYAc5Q4GffdqBvRZoOJ@vger.kernel.org, AJvYcCUYGdDy9O0XE+oNK4H9+H3j1ktjYQllUBdGNqTw48VOeae4slvfkqlBwYpJIrM9uNPEkSa4shzowV6KULU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOMO4qcFs6p8jPkUibZA1jdOHG7RK/2H54aJHvv8Wb/qtmQl2R
+	123bRBPGwCtYVk9t4N/KKFunEN/09CZr0d/gxCds3BCKs9zK6Myc
+X-Gm-Gg: ASbGncstOK+LVoQg4mspGA+6pfjmxpSCPxoKa3v2P8TV5XALjY843yJQLt12HgRQw5U
+	Gh87921I9OT8+WZBPhcecnWQJ8+J6WBhjQADwuBx5LcKaEZUTW1ocOYDQ12/P7DMQOY+1u+wU2x
+	Wsfm1q21UPyr6wwdkkAHoA+nIV22EA/RC8yJpSp0kXtHW9TlEH6445SKUkMXD4ghDI8d0kQvqJM
+	Gcj/0QWFqK9ggtb57s1JSv+wdpgH3PnBx/kmYyeNdDcoYTGdW0Bcw0LeAio8mr0fyXCxuuNdjnQ
+	Ss0KNrh80kfdyvoz2Tp1N2nB2omLTw2qUNPzIalXVi5PfpHQLBaLwr46Glck4O5BqpdHm7CuTpt
+	497Tpq5d5M58Hbo41Bk8ozXmPLlQrgVcRHHg=
+X-Google-Smtp-Source: AGHT+IFChScsO1pL9gVvgFXu/cdDXxG2PV+tQRp9rGpMRjXSE6qRwc9NpPsq0JZcpjvg9NGtyLu91A==
+X-Received: by 2002:a05:622a:1888:b0:475:5bd:e9a7 with SMTP id d75a77b69052e-4750b4c95ddmr20045031cf.38.1741143247374;
+        Tue, 04 Mar 2025 18:54:07 -0800 (PST)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4750a4cdc78sm6762071cf.15.2025.03.04.18.54.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Mar 2025 18:54:06 -0800 (PST)
+Received: from phl-compute-13.internal (phl-compute-13.phl.internal [10.202.2.53])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 51CCE1200068;
+	Tue,  4 Mar 2025 21:54:06 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-13.internal (MEProxy); Tue, 04 Mar 2025 21:54:06 -0500
+X-ME-Sender: <xms:zrzHZySvLhrU34s-wXLXDPxSg7qDi0w04WKzB5IPTVkOi58g4D5qJA>
+    <xme:zrzHZ3wGYQwVYFBJ-qUOMOQyP658_7WilAUdbRnbbPQmZvU41XsD22vT3Gkpt__y8
+    XKKRoTjekOxy-S_Dg>
+X-ME-Received: <xmr:zrzHZ_2C0-oxxDtj-dNF0FubhM7Oac0QEzI9eB6PEXLj5mnFUvNITelBKg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdefjedtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtqhfstddt
+    tddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrg
+    hilhdrtghomheqnecuggftrfgrthhtvghrnhephfeuhfelvedvieehvdetfeduveejteeu
+    feefgeehhfeuieefgfdtfefhkeehgeelnecuffhomhgrihhnpehkvghrnhgvlhdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhq
+    uhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqud
+    ejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgv
+    rdhnrghmvgdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgtph
+    htthhopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehjohgvlhgrghhn
+    vghlfhesnhhvihguihgrrdgtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvg
+    hlrdhorhhgpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
+    phhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprh
+    gtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepiiii
+    qhhqtddutdefrdhhvgihsehgmhgrihhlrdgtohhmpdhrtghpthhtohepnhgvvghrrghjrd
+    huphgrughhhigrhiesrghmugdrtghomhdprhgtphhtthhopehjohgvlhesjhhovghlfhgv
+    rhhnrghnuggvshdrohhrgh
+X-ME-Proxy: <xmx:zrzHZ-B_3W-TLRB2bATE3jbZ5A7vJXaA97HwY9LcoCtoF_RUO5txyg>
+    <xmx:zrzHZ7h29gAw2BTi_a0kreyPzv0uo9wV5w_pCda0F5HJMeGuH1m7gQ>
+    <xmx:zrzHZ6p4IFrsM4YqhIK6munuiZLPq62o3h5WOl2csG8Fb5DWr7BF9g>
+    <xmx:zrzHZ-itkafyWz6KQLb1yPyrGwYu9SR5GpMpTDMX9sTFoowGnvPILw>
+    <xmx:zrzHZ6RI1sWS7206kz-B3Smgy3zLUO8CX_dsACzSlPs5rZJNiBu42kYD>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 4 Mar 2025 21:54:05 -0500 (EST)
+Date: Tue, 4 Mar 2025 18:54:02 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Cheung Wall <zzqq0103.hey@gmail.com>, 
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v4 3/3] rcu: Use _full() API to debug synchronize_rcu()
+Message-ID: <qlqvu355hs2vbj4tkfercqfpdynd7ezjg4uhg22hd6223yqh7w@4zp6haxokdpc>
+References: <dd15fa79-70a5-4929-9339-51a47099c916@paulmck-laptop>
+ <Z8H_aYBUHD2sS2Ir@pc636>
+ <73724164-71f4-4671-b612-eb82a784da58@paulmck-laptop>
+ <Z8IKs-I-YsOoS4uw@pc636>
+ <cdab57a4-8d58-41d9-a9b5-71d425a7375e@paulmck-laptop>
+ <f6803081-8243-4723-a3ba-00db351aafff@paulmck-laptop>
+ <20250303001507.GA3994772@joelnvbox>
+ <Z8ZyMaUhXMIxX7WE@tardis>
+ <Z8bbary51FZ2TsUA@pc636>
+ <Z8bcUsZ9IpRi1QoP@pc636>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250304092417.2873893-1-elver@google.com> <20250304092417.2873893-4-elver@google.com>
- <41a14b09-9f09-4abe-8caa-89cfe2687562@acm.org>
-In-Reply-To: <41a14b09-9f09-4abe-8caa-89cfe2687562@acm.org>
-From: Marco Elver <elver@google.com>
-Date: Wed, 5 Mar 2025 01:03:51 +0100
-X-Gm-Features: AQ5f1Jpv14gcn7aAs4yWXHhRLBF4i5EQTdXxL-iYYKY2gY0B-tX3E5j-KtDZzBU
-Message-ID: <CANpmjNMYoRTj3F1L9UCp2gHVbVZw0ieNnk0xPZ8Q--BhFCy7Ww@mail.gmail.com>
-Subject: Re: [PATCH v2 03/34] compiler-capability-analysis: Add test stub
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Alexander Potapenko <glider@google.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Eric Dumazet <edumazet@google.com>, 
-	Frederic Weisbecker <frederic@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@kernel.org>, 
-	Jann Horn <jannh@google.com>, Jiri Slaby <jirislaby@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Josh Triplett <josh@joshtriplett.org>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <kees@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Waiman Long <longman@redhat.com>, 
-	Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, rcu@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Z8bcUsZ9IpRi1QoP@pc636>
 
-On Wed, 5 Mar 2025 at 00:52, Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 3/4/25 1:21 AM, Marco Elver wrote:
-> > +#include <linux/build_bug.h>
-> > +
-> > +/*
-> > + * Test that helper macros work as expected.
-> > + */
-> > +static void __used test_common_helpers(void)
-> > +{
-> > +     BUILD_BUG_ON(capability_unsafe(3) != 3); /* plain expression */
-> > +     BUILD_BUG_ON(capability_unsafe((void)2; 3;) != 3); /* does not swallow semi-colon */
-> > +     BUILD_BUG_ON(capability_unsafe((void)2, 3) != 3); /* does not swallow commas */
-> > +     capability_unsafe(do { } while (0)); /* works with void statements */
-> > +}
->
-> Is it guaranteed that <linux/build_bug.h> includes the header file that
-> defines capability_unsafe() or should that header file perhaps be
-> included explicitly?
+On Tue, Mar 04, 2025 at 11:56:18AM +0100, Uladzislau Rezki wrote:
+> On Tue, Mar 04, 2025 at 11:52:26AM +0100, Uladzislau Rezki wrote:
+> > > > Did I get that right?
+> > > >=20
+> > >=20
+> > > Other than I'm unable to follow what do you mean "WH has not been
+> > > injected, so nothing to wait on", maybe because I am missing some
+> > > terminology from you ;-) I think it's a good analysis, thank you!
+> > >=20
+> > > > I think this is a real bug AFAICS, hoping all the memory barriers a=
+re in
+> > > > place to make sure the code reordering also correctly orders the ac=
+cesses.
+> > > > I'll double check that.
+> > > >=20
+> > > > I also feel its 'theoretical', because as long as rcu_gp_init() and
+> > > > rcu_gp_cleanup() are properly ordered WRT pre-existing readers, then
+> > > > synchronize_rcu_normal() still waits for pre-existing readers even =
+though its
+> > > > a bit confused about the value of the cookies.
+> > > >=20
+> > > > For the fix,
+> > > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > >=20
+> > > > (If possible, include a Link: to my (this) post so that the sequenc=
+e of
+> > > > events is further clarified.)
+> > > >=20
+> > >=20
+> > > Will add the tag (with the email you really want ;-)) and a link to t=
+his
+> > > email to the patch. Thanks!
+> > >=20
+> >=20
+> > CPU_1:                                | CPU_2:
+> >   # Increase a seq-number             |
+> >   rcu_seq_start(&rcu_state.gp_seq);   |
+> >                                       | add_client() {
+> > 				      |   # Record a gp-sec state=20
+> > 				      |   get_state_synchronize_rcu_full(&rs.oldstate);
+> >                                       | }
+> >                                       |
+> >                                       | rcu_sr_normal_gp_init() {
+> > 				      |   add a dummy-wait-head;
+> > 				      | }
+> >=20
+> >=20
+> > A client has been added with already updated gp-sec number, i.e.
+> > "oldstate" would refer to this GP, not to previous. A poll_state_synchr=
+onize_rcu_full()
+> > will complain because this GP is not passed, it will on a next iteratio=
+n.
+> >=20
+> > This is how i see this.
+> >=20
+> Updated the plain-text, removed tabs:
+>=20
+> CPU_1:                                 | CPU_2:
+>    # Increase a seq-number             |
+>    rcu_seq_start(&rcu_state.gp_seq);   |
+>                                        | add_client() {
+>                                        |   # Record a gp-sec state=20
+>                                        |   get_state_synchronize_rcu_full=
+(&rs.oldstate);
+>                                        | }
+>                                        |
+>                                        | rcu_sr_normal_gp_init() {
+>                                        |   add a dummy-wait-head;
+>                                        | }
+>=20
 
-It doesn't come in via build_bug.h, but via:
+Thank you. I added links from you and Joel as the detailed explanation
+to the commit log, and the comment I proposed[1].
 
-  scripts/Makefile.lib -> "-include
-$(srctree)/include/linux/compiler_types.h" (all TUs) ->
-compiler-capability-analysis.h.
+[1]: https://lore.kernel.org/rcu/Z8SnhS_LnzN_wvxr@tardis/
 
-The things pulled in via compiler_types.h are treated a bit like
-builtins available everywhere implicitly.
+Regards,
+Boqun
+
+> --
+> Uladzislau Rezki
