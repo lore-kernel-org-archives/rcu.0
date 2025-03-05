@@ -1,64 +1,66 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD421E5B9E
-	for <rcu@vger.kernel.org>; Wed,  5 Mar 2025 08:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA78202C40
+	for <rcu@vger.kernel.org>; Wed,  5 Mar 2025 09:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741163778; cv=none; b=onRKvnDE3SE6mQrB08LXpxu2RxtyvleJzN3uSTOnO38VKYwn6MQkMkkZ88k3wVsvPAW+s1oxibBWNF+WSee0mss7vXIxKwxeDuD5uq5nCGDtyWhFr4TKxrJof7FhCPgUy0UYJwLadsrUIInSZNfLD1MwZkqZ4E8s7juR33mXY+Y=
+	t=1741166038; cv=none; b=nWmX+WNiZLffSROq3Tn2jaJSrs5m2Mq+TNjlugnLJZd0TlC8XtlRZ/EHvpvmxSIwJis/eDqk1kCJ++bd6CR6GcOts9YZKkZL2Ft/DRIA1wKBP5+ms99L9vWPEWhgjTl8Wknlq3rucVzGgKJXsJbSZxO0sdns1qMNlqcbawz0YsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741163778; c=relaxed/simple;
-	bh=tclfnaQ+78uJUqE4m2J8GwrNwDst3SKOWGjXQTac2LE=;
+	s=arc-20240116; t=1741166038; c=relaxed/simple;
+	bh=EOEdPWIPXhYnJjUhm7qwGkUHilTR1xlGtYvOLl5TcvE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LW+Idvi8PDfdPIq0h0a630OvO7XRtu4CsIIW2i9OndEc+odnebFOya+zkNi9XmBt+MFYWpvYvqzy8q8dlQi0Kxl5YpBhI9cHrVFT0ZDRjZ90CT91D+AdrPcWT3LnZFEdwPx0dQPJmiYNQUuSKZSjH9V8xOlD07r5+Ef06shw9Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mRucgZbg; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=ghPP+w99ZDl+CQNovQslybw/vAE+Go17MYSDzC4022Jw75TLCcToKgmt2T7iN8AdhWedPe+qRarwauZLEfeVO4/vwIndhLiD17JC7JSLJm10OcOaK5+5OCYzzq8kjSlATcF8VQ552SbmMBIsbuPC8BjKftuhsHO1Q46OWpPsA7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0rPLFzwV; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mRucgZbg"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-390e702d481so3008725f8f.1
-        for <rcu@vger.kernel.org>; Wed, 05 Mar 2025 00:36:15 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0rPLFzwV"
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4394345e4d5so44403335e9.0
+        for <rcu@vger.kernel.org>; Wed, 05 Mar 2025 01:13:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1741163774; x=1741768574; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZfQXwUL3Ydz7mR+cjRUeO/xqWRGS7uJqxxJMkaNfgT0=;
-        b=mRucgZbgodwpnJ/LEwx6AquTZQHVsPy5Wt7PkYj3/3iuVXlzlfYtpsV5C2wYRBmbjw
-         3EoNk2BCWG1GAhSntBmEettOHYWTw2qcwjQFFgUL1MBd4YosDoTysLdpXDjaGw4dS5/N
-         Afz6ZJnF3JarVvhJSD/cRh7RFuYL7ulENxsauISFdD0pBKnaBVNiVDZ1LdAb5/NKn++B
-         5iWGnQFlmfBbr4Dr/jZayWeKdN15hWB7yQvny/iE3hdmhtMSsRKqZKIQU6aD7hHmimWU
-         5BgNaV21Aa7Kck9JS9G6E/zL3yh/A8g5Gr1dvG6j87h9dCZniNs542brkWusvVD9JHQo
-         W0fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741163774; x=1741768574;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1741166034; x=1741770834; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZfQXwUL3Ydz7mR+cjRUeO/xqWRGS7uJqxxJMkaNfgT0=;
-        b=KtLrrdkI7BOBowxhprEvlN6ucEAeztyuArSslYg/1bWuCsvJFXY1MMPXyk9tVhOK1H
-         MFZ7BvbdzFV/seMLtYUO+TeU215SXJ2i94NSMobQrYGZR0RNuaWMQ0RG50ptc24dNqrl
-         nhDYPgi8+TN9Fd8fbkLn8rhM6s2uHJoTnwcHHeuslJ8Ivfg9mOSgi/tv0NseHfWH2clG
-         bBio6vSw0VgpscbN3w6CrZpz8u5jR6JTvZT7WuQVxlTE+B+hch8L/pKeOcF8zUdjn2mz
-         E9lYhKn8xGYC7vGbA5DLvVWDxn3g+iorI5C5PJLf2M9IUTxcScG/FVXvB6qkYTLzDuWy
-         qNiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUIcy9/mP9KpZBAHYrug+A4a8A0Rzo1Z18e9/TiJ+UFe2LKkSzdxY4poIw1m84CtweqoSM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw4UOry/MqV4MelUlvX0SPHM0KczhXwEj4fFlCrSHfD+KhG2Lu5
-	QdQIaDOoUubliCK/H3HXzBMZTd3IQUreKnjxW4a8uKN9+C4he7RZWJ3oOE5UZ4A=
-X-Gm-Gg: ASbGnctj3e2EaeTfRaLGufkZ1OWzJL0DL9y0ARVPPZLfADS3t7eBTS4Vat7WaMK/iXD
-	p/fY8xHk/4pjbydWNpU0DOklLCne/N/ACYSLEwtsDwA4hh05WlBDI+k8tuw1N2YZUvQ7Kxh5H5S
-	2kRAQvRghWJvZ5Nanj4fOHPQMkzlAydLlFC9bNoPsT2VhNzaA8HpE0kyX1lQZ7AKo6ZEARYqFfQ
-	XZPXnhyTtVpmhrKYFnplMig7UhphFrn3bVu4VRSOJ+uAkkf479JdrWDR51Zka2sjLw3Ujtf/GED
-	cnqwjWEsQxOnGLcuYPKGrWCMhe4tZu9rWs8ovI/cUzBRJXhtPw==
-X-Google-Smtp-Source: AGHT+IG1TdRy5Kvu8p1cmT5U4TYJbrUoCcVGa1tX1dkQIqW9WiR2lgUQPgvjP/3zB9IzHIHCvQwYww==
-X-Received: by 2002:a05:6000:184c:b0:391:23de:b1b4 with SMTP id ffacd0b85a97d-39123deb51dmr497486f8f.45.1741163774150;
-        Wed, 05 Mar 2025 00:36:14 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-390e479608fsm20564933f8f.14.2025.03.05.00.36.13
+        bh=9cBjuy2PLDHX7EYpa/ALszjDhP6sn2qNCfw9I5BYuy8=;
+        b=0rPLFzwVeftt/ZgtAMb716GptgL9ElMUz7Jcoww8RuTTES+Ci9tvgSzBHZp2PB7/aI
+         rZevOdDheyHYBkrAHC6tvsIlWzX/v+tx1F5x0U3hWtYRqsIDj+dFMhQJp3w5tVbKmMrU
+         bYgzPdMQ68Gpp3pQYiIqca5y9CRgE34pdRx616C3iz0abVsdx3G0GGyWidZrhD0T0Vba
+         UDgRP5gkIIj4bHmFo4i8+zDG08/EpUgycpWkA9iJj1jAORgHKnz4/PH3dSGBj6zxYmvY
+         oHNo4ZoquVUIPIYg2uZKuEji/wfgrdmXdrCSr+Bhlec/hgwitXHVcjn6SNef01d83aNc
+         1UyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741166034; x=1741770834;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9cBjuy2PLDHX7EYpa/ALszjDhP6sn2qNCfw9I5BYuy8=;
+        b=JlFv/XpMydEz7qlL/QFG3XFORMSXKLScfq0HfMf6Sj7FFOAkAKFXUkMoH0yg0fEzcC
+         ZhFAclbEqOa5lG+GXpmxZObW21W6qiVcJBjWMGcMWY7R8tiZ94AA2hTMUHU+Yp+CrTQm
+         R9DqoPGneTJDVRjAlTRi19DFgFOaLCfuqJHZXnMxmiAxxo4WsPwL2fFinndWE5AemtOz
+         URl7jgJMbAtwG8NdHb4iv3sbD5qq5PDI0Q5Xv05z6IZPEyOI49RYA1SkyUzXUYXyd95b
+         ap4+17BaRkVmX5Fk6azYCtE41nk4uPW0mbcLyrhU7NHsbzO+MTDiqWEbJX74Lzc2ebDb
+         2Fbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUa3ib+a+5j6ZpT4jtnf69bVb4xstYUV/AYhpk42FWylG0p0uNIbALItMId2pFyLy06M4g=@vger.kernel.org
+X-Gm-Message-State: AOJu0YybLJnn0K8GGXTTTWeFFqKbULbbUaewrlOuowDIolV8xzbvyZOW
+	R4rr6RfSQ5Q+ZkB2DRaiYKWaGzfQ5zh4to8AdFc+KN/j6n8hguK6BKeIuKVV2Q==
+X-Gm-Gg: ASbGnctLLk0E8p/Tuu6n9vVMligI6C+qC9eL8qPg1Hv/ZOfb8gIwo2LLTphTRJ82BBg
+	zcvvVPryQsh9ttHGsf00P4CMiVTCJGswwqMiQzlvRGnPB8u40Q+P4W6h1jn/pJRXf2xoI5Y3rhK
+	+l8iDzuDl13hikMYdrDTev4/vhKl82TC6EBBG1WVkJHxrPHJSJ6Z26qOwZFOQejtzf89YpxXK8E
+	plNyQaWROao2Bl1ZGF8n8X4/uj4cAQ/LnWW/uoTdZ6RZJlDuhBzUV+HWWd+A+sGu1bAwlxc/dG7
+	GtV0ikMbFqqVqdPBv4kn21og1bDw2BRd3C9Tb3KmbenA3M3VaTuvFcStNK0T2wjwZc8cevB25NF
+	aKaqBJw==
+X-Google-Smtp-Source: AGHT+IFF0lGPHBWULqd+AVLRPIhf489c6sXiFErCWBRvEttV2lhuAn1pCKQ/kfJiJNdoh7SFX/JFGw==
+X-Received: by 2002:a05:600c:190a:b0:43b:cbe2:ec0c with SMTP id 5b1f17b1804b1-43bd29c9377mr14815785e9.27.1741166033783;
+        Wed, 05 Mar 2025 01:13:53 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:2834:9:11d6:a25d:6219:d5fb])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bd42c588dsm11275665e9.21.2025.03.05.01.13.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Mar 2025 00:36:13 -0800 (PST)
-Date: Wed, 5 Mar 2025 11:36:10 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Marco Elver <elver@google.com>
+        Wed, 05 Mar 2025 01:13:52 -0800 (PST)
+Date: Wed, 5 Mar 2025 10:13:44 +0100
+From: Marco Elver <elver@google.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
 Cc: "David S. Miller" <davem@davemloft.net>,
 	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -93,9 +95,10 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org
 Subject: Re: [PATCH v2 01/34] compiler_types: Move lock checking attributes
  to compiler-capability-analysis.h
-Message-ID: <f76a48fe-09da-41e0-be2e-e7f1b939b7e3@stanley.mountain>
+Message-ID: <Z8gVyLIU71Fg1QWK@elver.google.com>
 References: <20250304092417.2873893-1-elver@google.com>
  <20250304092417.2873893-2-elver@google.com>
+ <f76a48fe-09da-41e0-be2e-e7f1b939b7e3@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -104,28 +107,71 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250304092417.2873893-2-elver@google.com>
+In-Reply-To: <f76a48fe-09da-41e0-be2e-e7f1b939b7e3@stanley.mountain>
+User-Agent: Mutt/2.2.13 (2024-03-09)
 
-On Tue, Mar 04, 2025 at 10:21:00AM +0100, Marco Elver wrote:
-> +#ifndef _LINUX_COMPILER_CAPABILITY_ANALYSIS_H
-> +#define _LINUX_COMPILER_CAPABILITY_ANALYSIS_H
-> +
-> +#ifdef __CHECKER__
-> +
-> +/* Sparse context/lock checking support. */
-> +# define __must_hold(x)		__attribute__((context(x,1,1)))
-> +# define __acquires(x)		__attribute__((context(x,0,1)))
-> +# define __cond_acquires(x)	__attribute__((context(x,0,-1)))
-> +# define __releases(x)		__attribute__((context(x,1,0)))
-> +# define __acquire(x)		__context__(x,1)
-> +# define __release(x)		__context__(x,-1)
-> +# define __cond_lock(x, c)	((c) ? ({ __acquire(x); 1; }) : 0)
-> +
+On Wed, Mar 05, 2025 at 11:36AM +0300, Dan Carpenter wrote:
+> On Tue, Mar 04, 2025 at 10:21:00AM +0100, Marco Elver wrote:
+> > +#ifndef _LINUX_COMPILER_CAPABILITY_ANALYSIS_H
+> > +#define _LINUX_COMPILER_CAPABILITY_ANALYSIS_H
+> > +
+> > +#ifdef __CHECKER__
+> > +
+> > +/* Sparse context/lock checking support. */
+> > +# define __must_hold(x)		__attribute__((context(x,1,1)))
+> > +# define __acquires(x)		__attribute__((context(x,0,1)))
+> > +# define __cond_acquires(x)	__attribute__((context(x,0,-1)))
+> > +# define __releases(x)		__attribute__((context(x,1,0)))
+> > +# define __acquire(x)		__context__(x,1)
+> > +# define __release(x)		__context__(x,-1)
+> > +# define __cond_lock(x, c)	((c) ? ({ __acquire(x); 1; }) : 0)
+> > +
+> 
+> The other thing you might want to annotate is ww_mutex_destroy().
 
-The other thing you might want to annotate is ww_mutex_destroy().
+We can add an annotation to check the lock is not held:
 
-I'm happy about the new __guarded_by annotation.
 
-regards,
-dan carpenter
+diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
+index 63978cb36a98..549d75aee76a 100644
+--- a/include/linux/ww_mutex.h
++++ b/include/linux/ww_mutex.h
+@@ -372,6 +372,7 @@ extern int __must_check ww_mutex_trylock(struct ww_mutex *lock,
+  * this function is called.
+  */
+ static inline void ww_mutex_destroy(struct ww_mutex *lock)
++	__must_not_hold(lock)
+ {
+ #ifndef CONFIG_PREEMPT_RT
+ 	mutex_destroy(&lock->base);
+diff --git a/lib/test_capability-analysis.c b/lib/test_capability-analysis.c
+index 13e7732c38a2..1a466b362373 100644
+--- a/lib/test_capability-analysis.c
++++ b/lib/test_capability-analysis.c
+@@ -516,6 +516,8 @@ static void __used test_ww_mutex_lock_noctx(struct test_ww_mutex_data *d)
+ 	ww_mutex_lock_slow(&d->mtx, NULL);
+ 	d->counter++;
+ 	ww_mutex_unlock(&d->mtx);
++
++	ww_mutex_destroy(&d->mtx);
+ }
+ 
+ static void __used test_ww_mutex_lock_ctx(struct test_ww_mutex_data *d)
+@@ -545,4 +547,6 @@ static void __used test_ww_mutex_lock_ctx(struct test_ww_mutex_data *d)
+ 
+ 	ww_acquire_done(&ctx);
+ 	ww_acquire_fini(&ctx);
++
++	ww_mutex_destroy(&d->mtx);
+ }
 
+
+Probably a fixup for the ww_mutex patch:
+https://lore.kernel.org/all/20250304092417.2873893-21-elver@google.com/
+Or extra patch depending on when/if Peter decides to take the series.
+
+> I'm happy about the new __guarded_by annotation.
+
+Thanks!
+
+-- Marco
