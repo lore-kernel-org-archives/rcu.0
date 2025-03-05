@@ -1,1214 +1,382 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2073.outbound.protection.outlook.com [40.107.223.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC574235BE4;
-	Wed,  5 Mar 2025 11:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741173666; cv=none; b=JEd60rgS0ufe/gYDusz5zAAbYobqdzAeGouqKNTnMI1MGuqZjNQPZzAm8Mf8+Wk8dMLLZnMtQLCB1x2SIQInsPiZDJPMbT/VuPbecgDnRNon+V1eIV4RSaYWYydHversU6LOgI958c0mn2TjlvmGyR/kr84e9TuePsvIo040hiI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741173666; c=relaxed/simple;
-	bh=Sbkmn+Zrkri4H3urquoe/oprFfn4YsRk0cFetpBWkwM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JYsP5rnQtzBNbJIAqiklYsUpe1FheU5s1GYr4xFV8bzvbsVxbH2h7EiHBFicr2P2JAOzHacWmgUVeN3cDWhLvl86e2mpyBssKPXDd53JR717unSRXRIz6hhMUFWliqcpXIG8Xvw1/EzSrzTZGodgaTlI7Qqcu8Lwug+AV/hWkG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sya0l82c; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A856E2E3362;
+	Wed,  5 Mar 2025 15:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741188294; cv=fail; b=UwVIzNMM1P6qYHryXAv6N/59cvCHom65E8hSQU9DX2TRUCU5nsUojM5CZdtBzdIJinJcWKgfjb0X4rlHVnGup5ltukHB16rH1/oYinHGWySSMu53YOfuY6lppCfSHQBeRskN4+ZmzfPmcMvYSg2VHUa5WoZsvdf6dTQ985AM3eM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741188294; c=relaxed/simple;
+	bh=EnQUTixPSazXBYQ3rPD4g0fJ5ej3zQf3xpyxuk9tczw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WJvwqIWq7uyGrNBfqioM5VuH1RmxkchpHyYnU+SguPLa+XmkAI39F2d8WYIxhHGJI0HvZ5o1t8mE4938pq6lRACOBmE5CHxfcAVwCKkVZ8dFtNOoFzLHZKhnFZw41AqonkMeoEoKHrBpKEnIj1mmod8MHDCgwYgfgmKV37ElOm0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uRXMeg7B; arc=fail smtp.client-ip=40.107.223.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sya0l82c"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=pdCawEmuLWYqoZ6PyVVzOB+K0ySBdLGnJMGBT8c9lF4=; b=sya0l82cQQYxfAHsHrklV/81Ym
-	CdZhkPtElCV1DWR7IKhNdErZhBRX8j17/j4VrjfgTpvR9A3sUaWu10zlJ46DZ7Wn9fp6feFyR/awE
-	89pCW293MGrdMpq9ySKhzgwx8oI2YH78WUaZt0Sj8zYrYZguO//we+vRaNPQTOZD+zgyF5NHPsZ4D
-	mXVZCtHl9/AJs2mxn2XVaHkxYeih59sKKEYdpZqzqXJkJMAXCl9uxONX2hHNOXdwtQ4oDHnluthRZ
-	sfIFYqYuVRME6j7LmMAdsMtnGkxHiwBdaPvkNPY+z4MOxeCxquYNorkfwjs62iW5DUGKI9FiudDKh
-	I4op8BZg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tpmnp-00000005Ncm-3lnK;
-	Wed, 05 Mar 2025 11:20:42 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 0DA7430049D; Wed,  5 Mar 2025 12:20:41 +0100 (CET)
-Date: Wed, 5 Mar 2025 12:20:41 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Marco Elver <elver@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Alexander Potapenko <glider@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Bart Van Assche <bvanassche@acm.org>,
-	Bill Wendling <morbo@google.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Justin Stitt <justinstitt@google.com>, Kees Cook <kees@kernel.org>,
-	Kentaro Takeda <takedakn@nttdata.co.jp>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, rcu@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 00/34] Compiler-Based Capability- and Locking-Analysis
-Message-ID: <20250305112041.GA16878@noisy.programming.kicks-ass.net>
-References: <20250304092417.2873893-1-elver@google.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uRXMeg7B"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=uRADsj+cYddLm0CSjoB5DRzloYtdnhNSgfT5559Y5/KSRTGmWOl32nOq/j7WP5Kam/h72x/awIL54Q3OPYLYlpFdTwdsLYjawybuwGVvH989Xxatj+5t7BlCvsKqFtUORXDAubwYfVjKv9iUT7A8ne9IBcpFa61qTbFwYbC1ezSqAa2V9oFOCdRsJ3359qWqEiRC03F50utWwnAcCDnR3TjG351d+iF4b+YgtJydMUn/riDIkC7XhiZb+YlqvseY7urcZnfVH5VKN3+nKeSmry616k+2Qej7A0xzlSHI/WY1vXKvK+a7VupHJ4OTRrEMvZsJl3sFIeQyd95DlZ2niQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=18hVKb9ABcAmvp1LHyWb2p+wYEUOrgCFCnxBA+Oe9fk=;
+ b=rruPdLBNhcAOZn7MokEUaYoJIv2Ewmag4Hocb6UexzKj/ZVaz+FcWPSpHI7NDW17UT38RCt//rNZoUJKPcZi9w2xX7a0VgLW3Bbz64XUZNBlPoGKQgme5FpGbkXlRcYZIr0hilFurImU0VgIUZqJlb5SMNktdXTA5O6rkgvkeMSCePhZV+AmmbqcQnenvfxg+Mg7ncY5kKnrSpIXato9mHJn4wMDq6UQMNh0io97vC+PSJjLBI6gMZPKK2JV9hdH/0qabW74DSbFU9y5DM7e7SfkIsn3xLWyh/466z5fQBSfpM2syC4irxRTbpWjtsm2IVMsGAVEhbwTnDREohNEAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=18hVKb9ABcAmvp1LHyWb2p+wYEUOrgCFCnxBA+Oe9fk=;
+ b=uRXMeg7B6e4y753OJz55l6krWFIVwNEIFJDGIz2MZ0X7g58YYYx3Um1Ay7rRMR2U8Q+joPAfvefweJ8+gJhRH1rYS9RC236YK/Aljy9meeQcMjHD1v613JGPrpm2Qus9TJG4pRPG/cspU2A6sZYNFtjjyXHHQSL8p+cRSb4qXoKQWB8awOUHeragrwsasF/ckiUy3zhpGcacJePW8C6LPt6/h1nK/1JI8hSVXzBpxUZNG8QlxgQgbFWGir8WBDH5xAexjFQVXBnAic+PWY97SlUlzXiR7iSDVoK7izczCkLrS+i6g0eICllMQR7Logf1rFF3/E6Lt5zvO87GrXGXzg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by PH7PR12MB5758.namprd12.prod.outlook.com (2603:10b6:510:1d1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.16; Wed, 5 Mar
+ 2025 15:24:49 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8489.028; Wed, 5 Mar 2025
+ 15:24:49 +0000
+Message-ID: <7081437b-63d4-45a9-8645-8c3445703ead@nvidia.com>
+Date: Wed, 5 Mar 2025 10:24:47 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] rcu: Use _full() API to debug synchronize_rcu()
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Cheung Wall <zzqq0103.hey@gmail.com>,
+ Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+References: <Z8Ckb6spK35-Ez4U@pc636>
+ <1408fc88-e2c6-4f49-b581-0e9ad5620fe0@paulmck-laptop>
+ <Z8HmH85bYNU8enJ2@pc636>
+ <dd15fa79-70a5-4929-9339-51a47099c916@paulmck-laptop>
+ <Z8H_aYBUHD2sS2Ir@pc636>
+ <73724164-71f4-4671-b612-eb82a784da58@paulmck-laptop>
+ <Z8IKs-I-YsOoS4uw@pc636>
+ <cdab57a4-8d58-41d9-a9b5-71d425a7375e@paulmck-laptop>
+ <f6803081-8243-4723-a3ba-00db351aafff@paulmck-laptop>
+ <20250303001507.GA3994772@joelnvbox> <Z8ZyMaUhXMIxX7WE@tardis>
+Content-Language: en-US
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <Z8ZyMaUhXMIxX7WE@tardis>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BLAPR03CA0179.namprd03.prod.outlook.com
+ (2603:10b6:208:32f::33) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250304092417.2873893-1-elver@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|PH7PR12MB5758:EE_
+X-MS-Office365-Filtering-Correlation-Id: a03ebf15-672d-4d06-391b-08dd5bf9de1a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?dG0wMmZ1aE5qS3MrSW9yMnBvcDNLY0F3REEwaWNLOGVoakxhVEdIVXZJRGlt?=
+ =?utf-8?B?dEg5U1g5dE8wMmhpNlQ5bEdsa1djYkRDN2hWR2JvamprUXVzY1dVVHVJeHkx?=
+ =?utf-8?B?WkJMODU4UVE2NXNMcEU4SkVDcVFId25NUnR3WXZJdnFJcThXbDFPeXF0aFF2?=
+ =?utf-8?B?RENlNzVzcCtpWnNoVUpiZTAzZnNBT1JDRm1KbDdqRXdTQmpRTUZLcFYrMDhi?=
+ =?utf-8?B?L1hEUjdFTzVvNGF0d2dTZDNVb1RnWGp1ZlhUemNrM0dVdWV6RkMrWVE2WGxL?=
+ =?utf-8?B?cEkyQVU2OVFsbmJvQi9nY2VWdlY0TzFua0lNb0NvRHhERTFoamFqWnZqTS9r?=
+ =?utf-8?B?U2daNEdPbzhScEVjMXVFKzNRa0htcmxiQ1pwSllVV3RjNkFMdVQrQ3lUTDdV?=
+ =?utf-8?B?QXFDd1lyLzVIT2JpUG1wU2hPSlR0VmJPa1l6MTFDak1XSmJaeVdJMlB2Qk5O?=
+ =?utf-8?B?c2JyN2Z3cHk0U1FselFPdmxBczNMRE9PQ2ZuMWFHWm9aYnp5TWFqTTFMQ0Ru?=
+ =?utf-8?B?aHZHUnZQMnRwMStPejZTaklyd2VjRFR0YXhQNi90aVlBdFpxQWoycmVuMnpy?=
+ =?utf-8?B?L1psY0tWeWU0dVpOYXVReEVqSUNqZ0hVYUZTVFpYS3hzOThocGQwRzhuUG9m?=
+ =?utf-8?B?KzRXSU5LR0VmZTh0SThyejc3M0NHZ3JCbFBsRkZrK2dKcGFoTVBjYVpEbE1j?=
+ =?utf-8?B?SmprckNsRmYwVm9XVm1jc1U5ZHhzWXBmUTJRRmdoc2Yzd3F3NnN3TGpQeExE?=
+ =?utf-8?B?bkdXSW1aSGtJUjNpdDR0ZWlNNXpyd1VFL0w1OS8vblJzdG9IYUpKeklqS05P?=
+ =?utf-8?B?ZXR5WHBTTEllbWhLU3JTazdwaDFYckthL1dpWnBhb1F4MlBZRGlVYWUxcGFa?=
+ =?utf-8?B?eS8yYlVPTWFJcGx3WFM5YmdyN0xiQm1oT0RtU05aVzBlY3ZxanBheVFHU0VY?=
+ =?utf-8?B?K2Vwbk1hVlJJYzgzOFIzdElyZjdrbHpndVIvWWFqaktxbDlPQnVldHpTL3VF?=
+ =?utf-8?B?SFMraXU2M3NIOStxWnRITkF3VWFBcWhZaTFiQ3M5eWdKc2FoTjNXd29GYVJB?=
+ =?utf-8?B?WFY2ZjlxbVBScU5BRzN6ZU5ZeE94OUxzbi9TelFpZXE5MWRDK2tETkJoaXZW?=
+ =?utf-8?B?bzgrejh0bE1vWVZDL3dyUFZSZkgrRG56NGwvVGNiSCt6ZUJVelkvOUl2YUIx?=
+ =?utf-8?B?OVhhY0IrRjRrTnd1TVJXVnJtYXl3VTlCa2dWcWZDWHUxajdPNldWNVdrUnh4?=
+ =?utf-8?B?M3c2Z0FOcDlrbFhLRzd3QW96dzdFczZnZ3piVUdwaFlPV2FQcjN1M2dacnJu?=
+ =?utf-8?B?dE50NFJnemZNYXFncWp0eDc5V0dEUW1YOHhiTHdKSnVhdXNIdlRGWmd3R1Bs?=
+ =?utf-8?B?S0lMSElNa1U2eFE1SHhyZFBUdGdBYkNhaHNqMXJsUmtaR01tUEpkRkJYM1JT?=
+ =?utf-8?B?eVZLWHZUT3BIZ3dKUUpHOG50WVlGSllMMGJMQUlWY2Vwb3F3bnUzc1oreDFL?=
+ =?utf-8?B?OERob0FBN0IrSW81THJUTVIyYUw4UWs1V3h6N0hhT3hwVGJEa0ZpTGJjWjZl?=
+ =?utf-8?B?TnB1bTFzRy9UZTkwdXQ0eCtqWHNJSU9TUUpWcVBBSXVQMHJGd0g0SGlyN0o1?=
+ =?utf-8?B?eDYrTDIvWUVkV2RoendNTkNwQUR5b1BDTjhLbjNmM2hURkNmZlEzOWxCQ1NL?=
+ =?utf-8?B?VWx0Yk5lMzZRaXFrcFVoQStwVE5KSGQyR2gvUVFobGJsNVlzSVh4MTRJMlB3?=
+ =?utf-8?B?V3FzQnpHS0RDNU1YaFlyNUZ5RmZmWm1jKzlFTFBIQTRPOFVnbTYzamZPME9T?=
+ =?utf-8?B?V2FyK3ZFdExqM20rUFp4TnZZWWg1dUVrMjRCWDE1Q2oxODlKcm10eFF3bnJJ?=
+ =?utf-8?Q?0w+GYzwNAEKAY?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?c3dYL04zUGpwQm5MVjNqcmY0TlBNdmF3MmVTLzdtNmo2ZDZxdFpJZGl1MEN4?=
+ =?utf-8?B?WlppSDByTlVNUjBuMEVtYVBDMWNJMyt2TFliV2RtTkY5aUpoVHR4bFZ3cm8r?=
+ =?utf-8?B?cW13dXRxak9oNVZjZzh3V3R2NjVlUEtaSE40MVNMT29RYWhOWG9EaGtTVGVX?=
+ =?utf-8?B?WWlIQ2pLdFFMTUhNbzYrSXI0RTNkWmt6clVaajVacGswK1MvOWduc0VKYjBT?=
+ =?utf-8?B?M2ZVbUR0WXpIT211ZDlER3B2RDBlMzN6akltZXlYclNyd2J2OVBrU2pHMnNU?=
+ =?utf-8?B?NmNScG5ZVWRzaitmWnhPWW41MlI5ODIxOFZuemMxUkFBMnczemJqWDNlSkh5?=
+ =?utf-8?B?UDR3NXYyU1Q4TmNobjRJWWt3OFhySkNjVkFxVVp6NkNPYXhIbm9jek13UGFV?=
+ =?utf-8?B?M0hob1hFUHNTc0RWUWRneHhjYlAxRXVaWHFIT1RQUDBOQ0NrYUJsMHdJb20z?=
+ =?utf-8?B?VStPTTM3cWZ4NG1pYVRralR2RTlnZGxLV3gzMS8rcEtNSG1yVVBFTXUwV2Vw?=
+ =?utf-8?B?bGlOMVgwSHdrL0ZzS2NTZUh4NW1MVTZmTU1Eb3dMSW9IamNYWFBldTd0MnNj?=
+ =?utf-8?B?UHhhSDhpLzNuS05LZlpTd1VlUnJvSno0S1dvdkRneWw1ZkFxKzlXWEVTN2Vh?=
+ =?utf-8?B?ampNU1BlY0oxaVRHOTR5TGp4T1JWek5aNWVpditaRFlUckZVenhscFoyN0FI?=
+ =?utf-8?B?UlFNRzYyeThOUHFCMitkR2VZUlliN1ZvTTI3VHBQeGl6L1lrVHV4UmRId09u?=
+ =?utf-8?B?Ny8xUHQzS3A2UUlna0I3M3JNcGpVVFNtWno5SnV2WXZBdnJMU2Z0VDk1TWk5?=
+ =?utf-8?B?U29WZ2c2eVZjOGhEanRyZ2VFR0ZTekcwdnhyV1JieUF5ZWMwQTNnOEhuSi9i?=
+ =?utf-8?B?NkpIR3I4MXRGeGovWmJQS2NDU2N0RS9IRmJhemVWUFE0SE9maEZNMmJjU0lY?=
+ =?utf-8?B?RlI2M1d5NkRRbXB6ZDNIbnlwM09uUFNjL1diclE4UlIvMW1QTXhTdDdhdHFr?=
+ =?utf-8?B?bm9BWS8vR1hyd0pRMU5VRE5IYndyZlhCQndYVzB3OFpJN1MwNjNrKzUzNG1L?=
+ =?utf-8?B?WjRUWDMyTEloc3BJbFlQU204dENmQ0JzL3ZiTWd0ZTMvWWtRUllrTVJQbmxF?=
+ =?utf-8?B?WUI2TCtpZWkzQjBqWGFYaENCRDBtU09wdFBCVnowNkFmVXE0NHY0NThTVVBQ?=
+ =?utf-8?B?OTcvTk1NRTlYQzF0UGd1U1phZnhrQkh3YzhEajBlUlA1RkIzMzhqT21KWUpT?=
+ =?utf-8?B?VW9DVVoyUUppNzNIcU5UZ3dRM1ZHQnJJblZPTDhkU0NZdVhxaTFFQUVIaTdI?=
+ =?utf-8?B?RFdWNFk5SlJRaHdXMmVTSXlISnhLV2l1dU84TE9wbnNLWnp5MU1RUm5YUmJB?=
+ =?utf-8?B?QVRnZm5JVjBkQkpOWUhVZGJnTHFIa20rUlcyU2dCNGJsUGl2bzlROGErbHA4?=
+ =?utf-8?B?VTkvOFlQcENieGNzTWtuZEVDbmdtR2FMbE1NSjdXbDJBc1dqYXVqMmxneUNI?=
+ =?utf-8?B?anBpMVpHL0JvNy8yQVJhUjl5Ti8vTlVHQ1hZcHUzaHlxcGhMRHpIREMwTFZo?=
+ =?utf-8?B?NlhTWmFOaXVHNy9LTStOa1g0dExRbU5LNGZRcnBoYW5KWkRmdG5lREdPUEVj?=
+ =?utf-8?B?RjloWmNGSS9VbmppQnVWZEVrMjdTTXRubHNNM0JvZnh0TGNOaTZKb1EwTGd3?=
+ =?utf-8?B?bkFlMU1XbWRDLzNLMHZmVmpJMDJubXZFejBXUVFjcWQzeEdXNnB4KzA2dSsx?=
+ =?utf-8?B?UmNxVGpQWlFaWjdtZGZrbm5NdGVjb1hxY28zUENHajdwdlExWFJsK0h2Vm8v?=
+ =?utf-8?B?MlV2ZzhqZzNLVGl2SzNRWll3QlhFOUdMeC9LR01QVXZVV0tqQUJKYjMrVkxR?=
+ =?utf-8?B?Qm5aM3dOQkhFeWtrcU5weTZIcHQ5akdRVEtjY2pwcDJPaHhwRUVLSEg0OEtR?=
+ =?utf-8?B?M2RzMmxacXQ3OFA3UFNlOHBuN0dQcis5empPN0dqdEpydmNwbUkyTkpDVU90?=
+ =?utf-8?B?YmVWVEZvV3g0aWFhemo4MGhqb3RnaU9GaWk2REFlWXdkaW5jbkFVRFVubVlZ?=
+ =?utf-8?B?L3lhdXVhZlhzSGljSExMaDVZWHNMbll5Q2VqMHJoY2tjTCtwMEltVU5UQ3gw?=
+ =?utf-8?Q?22D2v9cprgdnK6f51KzdmOoiO?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a03ebf15-672d-4d06-391b-08dd5bf9de1a
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2025 15:24:48.9532
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XRRAnIEdsAi/gocFdRYUVTdIKAQelpugBkBj7odjygqqGIk3NoydL7l/XR6BocEyExXJbqxXA5iWrWXrbQr+uQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5758
 
 
 
-Right, so since this is all awesome, I figured I should try and have it
-compile kernel/sched/, see how far I get.
+On 3/3/2025 10:23 PM, Boqun Feng wrote:
+> On Sun, Mar 02, 2025 at 07:15:07PM -0500, Joel Fernandes wrote:
+>> On Fri, Feb 28, 2025 at 05:08:49PM -0800, Paul E. McKenney wrote:
+>>> On Fri, Feb 28, 2025 at 11:59:55AM -0800, Paul E. McKenney wrote:
+>>>> On Fri, Feb 28, 2025 at 08:12:51PM +0100, Uladzislau Rezki wrote:
+>>>>> Hello, Paul!
+>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Except that I got this from overnight testing of rcu/dev on the shared
+>>>>>>>>>> RCU tree:
+>>>>>>>>>>
+>>>>>>>>>> WARNING: CPU: 5 PID: 14 at kernel/rcu/tree.c:1636 rcu_sr_normal_complete+0x5c/0x80
+>>>>>>>>>>
+>>>>>>>>>> I see this only on TREE05.  Which should not be too surprising, given
+>>>>>>>>>> that this is the scenario that tests it.  It happened within five minutes
+>>>>>>>>>> on all 14 of the TREE05 runs.
+>>>>>>>>>>
+>>>>>>>>> Hm.. This is not fun. I tested this on my system and i did not manage to
+>>>>>>>>> trigger this whereas you do. Something is wrong.
+>>>>>>>>
+>>>>>>>> If you have a debug patch, I would be happy to give it a go.
+>>>>>>>>
+>>>>>>> I can trigger it. But.
+>>>>>>>
+>>>>>>> Some background. I tested those patches during many hours on the stable
+>>>>>>> kernel which is 6.13. On that kernel i was not able to trigger it. Running
+>>>>>>> the rcutorture on the our shared "dev" tree, which i did now, triggers this
+>>>>>>> right away.
+>>>>>>
+>>>>>> Bisection?  (Hey, you knew that was coming!)
+>>>>>>
+>>>>> Looks like this: rcu: Fix get_state_synchronize_rcu_full() GP-start detection
+>>>>>
+>>>>> After revert in the dev, rcutorture passes TREE05, 16 instances.
+>>>>
+>>>> Huh.  We sure don't get to revert that one...
+>>>>
+>>>> Do we have a problem with the ordering in rcu_gp_init() between the calls
+>>>> to rcu_seq_start() and portions of rcu_sr_normal_gp_init()?  For example,
+>>>> do we need to capture the relevant portion of the list before the call
+>>>> to rcu_seq_start(), and do the grace-period-start work afterwards?
+>>>
+>>> I tried moving the call to rcu_sr_normal_gp_init() before the call to
+>>> rcu_seq_start() and got no failures in a one-hour run of 200*TREE05.
+>>> Which does not necessarily mean that this is the correct fix, but I
+>>> figured that it might at least provide food for thought.
+>>>
+>>>                                           Thanx, Paul
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>> index 48384fa2eaeb8..d3efeff7740e7 100644
+>>> --- a/kernel/rcu/tree.c
+>>> +++ b/kernel/rcu/tree.c
+>>> @@ -1819,10 +1819,10 @@ static noinline_for_stack bool rcu_gp_init(void)
+>>>  
+>>>        /* Advance to a new grace period and initialize state. */
+>>>        record_gp_stall_check_time();
+>>> +      start_new_poll = rcu_sr_normal_gp_init();
+>>>        /* Record GP times before starting GP, hence rcu_seq_start(). */
+>>>        rcu_seq_start(&rcu_state.gp_seq);
+>>>        ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+>>> -      start_new_poll = rcu_sr_normal_gp_init();
+>>>        trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+>>
+>> Oh... so the bug is this? Good catch...
+>>
+>>
+>> CPU 0                                           CPU 1
+>>
+>>                                                 rcu_gp_init()
+>>                                                       rcu_seq_start(rcu_state.gp_seq)
+>> sychronize_rcu_normal()
+>>       rs.head.func
+>>       	= (void *) get_state_synchronize_rcu();
+>>                    // save rcu_state.gp_seq
+>>       rcu_sr_normal_add_req() ->
+>>             llist_add(rcu_state.srs_next)
+>>       (void) start_poll_synchronize_rcu();
+>>
+>>
+> 
+> This means synchronize_rcu_normal() got the new state of gp_seq, but
+> its wait request was inserted before the new wait_head, therefore..
+> 
+>>                                                       sr_normal_gp_init()
+>>                                                             llist_add(wait_head, &rcu_state.srs_next);
+>> 							    // pick up the
+>> 							    // injected WH
+>>                                                             rcu_state.srs_wait_tail = wait_head;
+>>
+>>                                                 rcu_gp_cleanup()
+>>                                                       rcu_seq_end(&rcu_state.gp_seq);
+>>                                                       sr_normal_complete()
+> 
+> at rcu_gp_cleanup() time, rcu_sr_normal_complete() complete the
+> corresponding wait request, however, the sychronize_rcu_normal()
+> observed the new gp_seq, its poll state will expect the next gp, hence
+> the WARN_ONCE().
+> 
+> Yes, I believe this is the scenario for the bug.
+> 
+>>                                                             WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
+>>                                                             !poll_state_synchronize_rcu(oldstate),
+>>
+>> Where as reordering sr_normal_gp_init() prevents this:
+>>
+>>                                                 rcu_gp_init()
+>>
+>>                                                       sr_normal_gp_init()
+>> 							    // WH has not
+>> 							    // been injected
+>> 							    // so nothing to
+>> 							    // wait on
+>>
+> 
+> I don't quite get the comment above, the fix I believe is that wait_head
+> was inserted with a llist_add() which is a fully ordered cmpxchg(), so
+> we have:
+> 
+> 							  llist_add(wait_head, ..)
+> 							  // ^ provding the ordering againt
+> 							  // the seq change below
+> 
+> , which means if...
+> 
+>>                                                       rcu_seq_start(rcu_state.gp_seq)
+>> sychronize_rcu_normal()
+>>       rs.head.func
+>>       	= (void *) get_state_synchronize_rcu();
+>>                    // save rcu_state.gp_seq
+> 
+> ... the synchronize_rcu_normal() observes the new gp_seq, then...
+> 
+>>       rcu_sr_normal_add_req() ->
+>>             llist_add(rcu_state.srs_next)
+> 
+> ... when its corresponding wait request gets queued, the above wait_head
+> must be already in the llist...
 
-I know I can't use the __guarded_by() things, they're just too primitive
-for that I need, but I figured I should try and have it track the
-lock/unlock thingies at least.
+Correct exactly!
 
-I've had to rework how the GUARD bits work, since some guards are
-defined on objects that contain locks, rather than the locks themselves.
+> 
+>>       (void) start_poll_synchronize_rcu();
+>>
+>>                                                 rcu_gp_cleanup()
+>>                                                       rcu_seq_end(&rcu_state.gp_seq);
+> 
+> ... hence, as the comment below said, won't do anything.
+> 
+>>                                                       // sr_normal_complete()
+>> 						      // wont do anything so
+>> 						      // no warning
+>>
+>> Did I get that right?
+>>
+> 
+> Other than I'm unable to follow what do you mean "WH has not been
+> injected, so nothing to wait on", maybe because I am missing some
+> terminology from you ;-) I think it's a good analysis, thank you!
 
-We've also had discussions on IRQ on all the things I've ran across,
-like needing to be able to reference the return object for things like:
+Sorry I should have clarified, you are right the wait_head is inserted (via
+sr_normal_gp_init() -> llist_add(wait_head, &rcu_state.srs_next)) always;  but
+since per the fix it is done BEFORE the rcu_seq_start(), it means that:
 
-  struct sighand_struct *
-  lock_task_sighand(struct task_struct *task, unsigned long *flags)
-  	__cond_acquires(nonnull, return->siglock);
+IF synchronize_rcu_normal() saved the gp_seq via (which is required condition
+for the WARN)
 
-The patch below tried working around that by doing:
+    rs.head.func
+      	= (void *) get_state_synchronize_rcu();
+                   // save rcu_state.gp_seq
 
-	__cond_acquires(nonnull, task->sighand->siglock)
+then, that also means that this path.. :
+sychronize_rcu_normal() ->
+      rcu_sr_normal_add_req() ->
+            llist_add(rcu_state.srs_next)
 
-But I'm not quite sure it does the right thing, and definitely doesn't
-always work for other such cases. Notably, I've managed to ICE clang
-(send you the details).
+.. will NOT be picked up (have its request serviced) by the end of the current
+grace period, because rcu_sr_normal_add_req() happened AFTER sr_normal_gp_init()
+due to the reordering in the fix.
 
-This is on top of queue.git/locking/core, but I imagine that tree won't
-live very long at those point.
+Thus making the bug impossible.
 
-It is basically tip/locking/core with your patches ran through:
+Does that make sense or did I miss something?
 
-  sed -e 's/__acquire/__assume/g'
+>> I think this is a real bug AFAICS, hoping all the memory barriers are in
+>> place to make sure the code reordering also correctly orders the accesses.
+>> I'll double check that.
+>>
+>> I also feel its 'theoretical', because as long as rcu_gp_init() and
+>> rcu_gp_cleanup() are properly ordered WRT pre-existing readers, then
+>> synchronize_rcu_normal() still waits for pre-existing readers even though its
+>> a bit confused about the value of the cookies.
+>>
+>> For the fix,
+>> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>>
+>> (If possible, include a Link: to my (this) post so that the sequence of
+>> events is further clarified.)
+>>
+> 
+> Will add the tag (with the email you really want ;-)) and a link to this
+> email to the patch. Thanks!
+Awesome, thanks!
 
-before applying them.
+ - Joel
 
----
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 248416ecd01c..d27607d9c2dc 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -945,6 +945,7 @@ static inline unsigned int blk_boundary_sectors_left(sector_t offset,
-  */
- static inline struct queue_limits
- queue_limits_start_update(struct request_queue *q)
-+	__acquires(q->limits_lock)
- {
- 	mutex_lock(&q->limits_lock);
- 	return q->limits;
-@@ -965,6 +966,7 @@ int blk_validate_limits(struct queue_limits *lim);
-  * starting update.
-  */
- static inline void queue_limits_cancel_update(struct request_queue *q)
-+	__releases(q->limits_lock)
- {
- 	mutex_unlock(&q->limits_lock);
- }
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f3f50e29d639..2b6d8cc1f144 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2196,6 +2196,7 @@ bpf_prog_run_array(const struct bpf_prog_array *array,
- static __always_inline u32
- bpf_prog_run_array_uprobe(const struct bpf_prog_array *array,
- 			  const void *ctx, bpf_prog_run_fn run_prog)
-+	__no_capability_analysis /* too stupid for cond rcu lock */
- {
- 	const struct bpf_prog_array_item *item;
- 	const struct bpf_prog *prog;
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index f8ef47f8a634..cbda68703858 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -364,11 +364,13 @@ static inline void cgroup_put(struct cgroup *cgrp)
- extern struct mutex cgroup_mutex;
- 
- static inline void cgroup_lock(void)
-+	__acquires(cgroup_mutex)
- {
- 	mutex_lock(&cgroup_mutex);
- }
- 
- static inline void cgroup_unlock(void)
-+	__releases(cgroup_mutex)
- {
- 	mutex_unlock(&cgroup_mutex);
- }
-diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-index 2ce479b1873e..69da4f20ec57 100644
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -249,12 +249,13 @@ static inline _type class_##_name##_constructor(_init_args)		\
- 	__no_capability_analysis					\
- { _type t = _init; return t; }
- 
--#define EXTEND_CLASS(_name, ext, ctor_attrs, _init, _init_args...)		\
-+#define EXTEND_CLASS(_name, ext, _init, _init_args...)			\
-+typedef lock_##_name##_t lock_##_name##ext##_t;				\
- typedef class_##_name##_t class_##_name##ext##_t;			\
- static inline void class_##_name##ext##_destructor(class_##_name##_t *p)\
- { class_##_name##_destructor(p); }					\
- static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
--	__no_capability_analysis ctor_attrs					\
-+	__no_capability_analysis \
- { class_##_name##_t t = _init; return t; }
- 
- #define CLASS(_name, var)						\
-@@ -302,7 +303,7 @@ static __maybe_unused const bool class_##_name##_is_conditional = _is_cond
- 
- #define DEFINE_GUARD_COND(_name, _ext, _condlock) \
- 	__DEFINE_CLASS_IS_CONDITIONAL(_name##_ext, true); \
--	EXTEND_CLASS(_name, _ext,, \
-+	EXTEND_CLASS(_name, _ext, \
- 		     ({ void *_t = _T; if (_T && !(_condlock)) _t = NULL; _t; }), \
- 		     class_##_name##_t _T) \
- 	static inline void * class_##_name##_ext##_lock_ptr(class_##_name##_t *_T) \
-@@ -368,6 +369,7 @@ _label:									\
-  */
- 
- #define __DEFINE_UNLOCK_GUARD(_name, _type, _unlock, ...)		\
-+typedef _type lock_##_name##_t;						\
- typedef struct {							\
- 	_type *lock;							\
- 	__VA_ARGS__;							\
-@@ -387,7 +389,7 @@ static inline void *class_##_name##_lock_ptr(class_##_name##_t *_T)	\
- 
- #define __DEFINE_LOCK_GUARD_1(_name, _type, _lock)			\
- static inline class_##_name##_t class_##_name##_constructor(_type *l)	\
--	__no_capability_analysis __assumes_cap(l)			\
-+	__no_capability_analysis 					\
- {									\
- 	class_##_name##_t _t = { .lock = l }, *_T = &_t;		\
- 	_lock;								\
-@@ -408,6 +410,10 @@ static inline class_##_name##_t class_##_name##_constructor(void)	\
- static inline class_##_name##_t class_##_name##_constructor(void) _lock;\
- static inline void class_##_name##_destructor(class_##_name##_t *_T) _unlock
- 
-+#define DECLARE_LOCK_GUARD_1_ATTRS(_name, _lock, _unlock)		\
-+static inline class_##_name##_t class_##_name##_constructor(lock_##_name##_t *_T) _lock;\
-+static inline void class_##_name##_destructor(class_##_name##_t *_T) _unlock
-+
- #define DEFINE_LOCK_GUARD_1(_name, _type, _lock, _unlock, ...)		\
- __DEFINE_CLASS_IS_CONDITIONAL(_name, false);				\
- __DEFINE_UNLOCK_GUARD(_name, _type, _unlock, __VA_ARGS__)		\
-@@ -420,7 +426,7 @@ __DEFINE_LOCK_GUARD_0(_name, _lock)
- 
- #define DEFINE_LOCK_GUARD_1_COND(_name, _ext, _condlock)		\
- 	__DEFINE_CLASS_IS_CONDITIONAL(_name##_ext, true);		\
--	EXTEND_CLASS(_name, _ext, __assumes_cap(l),			\
-+	EXTEND_CLASS(_name, _ext, 					\
- 		     ({ class_##_name##_t _t = { .lock = l }, *_T = &_t;\
- 		        if (_T->lock && !(_condlock)) _T->lock = NULL;	\
- 			_t; }),						\
-@@ -428,5 +434,4 @@ __DEFINE_LOCK_GUARD_0(_name, _lock)
- 	static inline void * class_##_name##_ext##_lock_ptr(class_##_name##_t *_T) \
- 	{ return class_##_name##_lock_ptr(_T); }
- 
--
- #endif /* _LINUX_CLEANUP_H */
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 80a5b3268986..283fb85d96c8 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -1026,21 +1026,25 @@ static inline bool dev_pm_test_driver_flags(struct device *dev, u32 flags)
- }
- 
- static inline void device_lock(struct device *dev)
-+	__acquires(dev->mutex)
- {
- 	mutex_lock(&dev->mutex);
- }
- 
- static inline int device_lock_interruptible(struct device *dev)
-+	__cond_acquires(0, dev->mutex)
- {
- 	return mutex_lock_interruptible(&dev->mutex);
- }
- 
- static inline int device_trylock(struct device *dev)
-+	__cond_acquires(true, dev->mutex)
- {
- 	return mutex_trylock(&dev->mutex);
- }
- 
- static inline void device_unlock(struct device *dev)
-+	__releases(dev->mutex)
- {
- 	mutex_unlock(&dev->mutex);
- }
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 2c3b2f8a621f..52b69fed3e65 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -540,31 +540,37 @@ static inline bool mapping_tagged(struct address_space *mapping, xa_mark_t tag)
- }
- 
- static inline void i_mmap_lock_write(struct address_space *mapping)
-+	__acquires(mapping->i_mmap_rwsem)
- {
- 	down_write(&mapping->i_mmap_rwsem);
- }
- 
- static inline int i_mmap_trylock_write(struct address_space *mapping)
-+	__cond_acquires(true, mapping->i_mmap_rwsem)
- {
- 	return down_write_trylock(&mapping->i_mmap_rwsem);
- }
- 
- static inline void i_mmap_unlock_write(struct address_space *mapping)
-+	__releases(mapping->i_mmap_rwsem)
- {
- 	up_write(&mapping->i_mmap_rwsem);
- }
- 
- static inline int i_mmap_trylock_read(struct address_space *mapping)
-+	__cond_acquires_shared(true, mapping->i_mmap_rwsem)
- {
- 	return down_read_trylock(&mapping->i_mmap_rwsem);
- }
- 
- static inline void i_mmap_lock_read(struct address_space *mapping)
-+	__acquires_shared(mapping->i_mmap_rwsem)
- {
- 	down_read(&mapping->i_mmap_rwsem);
- }
- 
- static inline void i_mmap_unlock_read(struct address_space *mapping)
-+	__releases_shared(mapping->i_mmap_rwsem)
- {
- 	up_read(&mapping->i_mmap_rwsem);
- }
-@@ -873,31 +879,37 @@ enum inode_i_mutex_lock_class
- };
- 
- static inline void inode_lock(struct inode *inode)
-+	__acquires(inode->i_rwsem)
- {
- 	down_write(&inode->i_rwsem);
- }
- 
- static inline void inode_unlock(struct inode *inode)
-+	__releases(inode->i_rwsem)
- {
- 	up_write(&inode->i_rwsem);
- }
- 
- static inline void inode_lock_shared(struct inode *inode)
-+	__acquires_shared(inode->i_rwsem)
- {
- 	down_read(&inode->i_rwsem);
- }
- 
- static inline void inode_unlock_shared(struct inode *inode)
-+	__releases_shared(inode->i_rwsem)
- {
- 	up_read(&inode->i_rwsem);
- }
- 
- static inline int inode_trylock(struct inode *inode)
-+	__cond_acquires(true, inode->i_rwsem)
- {
- 	return down_write_trylock(&inode->i_rwsem);
- }
- 
- static inline int inode_trylock_shared(struct inode *inode)
-+	__cond_acquires_shared(true, inode->i_rwsem)
- {
- 	return down_read_trylock(&inode->i_rwsem);
- }
-@@ -908,38 +920,45 @@ static inline int inode_is_locked(struct inode *inode)
- }
- 
- static inline void inode_lock_nested(struct inode *inode, unsigned subclass)
-+	__acquires(inode->i_rwsem)
- {
- 	down_write_nested(&inode->i_rwsem, subclass);
- }
- 
- static inline void inode_lock_shared_nested(struct inode *inode, unsigned subclass)
-+	__acquires_shared(inode->i_rwsem)
- {
- 	down_read_nested(&inode->i_rwsem, subclass);
- }
- 
- static inline void filemap_invalidate_lock(struct address_space *mapping)
-+	__acquires(mapping->invalidate_lock)
- {
- 	down_write(&mapping->invalidate_lock);
- }
- 
- static inline void filemap_invalidate_unlock(struct address_space *mapping)
-+	__releases(mapping->invalidate_lock)
- {
- 	up_write(&mapping->invalidate_lock);
- }
- 
- static inline void filemap_invalidate_lock_shared(struct address_space *mapping)
-+	__acquires_shared(mapping->invalidate_lock)
- {
- 	down_read(&mapping->invalidate_lock);
- }
- 
- static inline int filemap_invalidate_trylock_shared(
- 					struct address_space *mapping)
-+	__cond_acquires_shared(true, mapping->invalidate_lock)
- {
- 	return down_read_trylock(&mapping->invalidate_lock);
- }
- 
- static inline void filemap_invalidate_unlock_shared(
- 					struct address_space *mapping)
-+	__releases_shared(mapping->invalidate_lock)
- {
- 	up_read(&mapping->invalidate_lock);
- }
-@@ -3873,6 +3892,7 @@ static inline bool dir_emit_dots(struct file *file, struct dir_context *ctx)
- 	return true;
- }
- static inline bool dir_relax(struct inode *inode)
-+	__releases(inode->i_rwsem) __acquires(inode->i_rwsem)
- {
- 	inode_unlock(inode);
- 	inode_lock(inode);
-@@ -3880,6 +3900,7 @@ static inline bool dir_relax(struct inode *inode)
- }
- 
- static inline bool dir_relax_shared(struct inode *inode)
-+	__releases_shared(inode->i_rwsem) __acquires_shared(inode->i_rwsem)
- {
- 	inode_unlock_shared(inode);
- 	inode_lock_shared(inode);
-diff --git a/include/linux/idr.h b/include/linux/idr.h
-index da5f5fa4a3a6..c157f872240c 100644
---- a/include/linux/idr.h
-+++ b/include/linux/idr.h
-@@ -170,6 +170,7 @@ static inline bool idr_is_empty(const struct idr *idr)
-  * function.  See idr_preload() for details.
-  */
- static inline void idr_preload_end(void)
-+	__releases(radix_tree_preloads.lock)
- {
- 	local_unlock(&radix_tree_preloads.lock);
- }
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 8cd9327e4e78..74ef6df7549c 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -236,8 +236,8 @@ extern void enable_percpu_irq(unsigned int irq, unsigned int type);
- extern bool irq_percpu_is_enabled(unsigned int irq);
- extern void irq_wake_thread(unsigned int irq, void *dev_id);
- 
--DEFINE_LOCK_GUARD_1(disable_irq, int,
--		    disable_irq(*_T->lock), enable_irq(*_T->lock))
-+DEFINE_GUARD(disable_irq, int,
-+	     disable_irq(_T), enable_irq(_T));
- 
- extern void disable_nmi_nosync(unsigned int irq);
- extern void disable_percpu_nmi(unsigned int irq);
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 6e74b8254d9b..9afbea99feea 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1512,17 +1512,20 @@ static inline struct lruvec *parent_lruvec(struct lruvec *lruvec)
- }
- 
- static inline void unlock_page_lruvec(struct lruvec *lruvec)
-+	__releases(lruvec->lru_lock)
- {
- 	spin_unlock(&lruvec->lru_lock);
- }
- 
- static inline void unlock_page_lruvec_irq(struct lruvec *lruvec)
-+	__releases(lruvec->lru_lock)
- {
- 	spin_unlock_irq(&lruvec->lru_lock);
- }
- 
- static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
--		unsigned long flags)
-+						 unsigned long flags)
-+	__releases(lruvec->lru_lock)
- {
- 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
- }
-@@ -1537,7 +1540,8 @@ static inline bool folio_matches_lruvec(struct folio *folio,
- 
- /* Don't lock again iff page's lruvec locked */
- static inline struct lruvec *folio_lruvec_relock_irq(struct folio *folio,
--		struct lruvec *locked_lruvec)
-+						     struct lruvec *locked_lruvec)
-+	__no_capability_analysis /* no __cond_releases */
- {
- 	if (locked_lruvec) {
- 		if (folio_matches_lruvec(folio, locked_lruvec))
-@@ -1551,7 +1555,9 @@ static inline struct lruvec *folio_lruvec_relock_irq(struct folio *folio,
- 
- /* Don't lock again iff folio's lruvec locked */
- static inline void folio_lruvec_relock_irqsave(struct folio *folio,
--		struct lruvec **lruvecp, unsigned long *flags)
-+					       struct lruvec **lruvecp, 
-+					       unsigned long *flags)
-+	__no_capability_analysis
- {
- 	if (*lruvecp) {
- 		if (folio_matches_lruvec(folio, *lruvecp))
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index eaac5ae8c05c..aebdcaa83b86 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -99,18 +99,22 @@ bool mhp_supports_memmap_on_memory(void);
-  * can't be changed while pgdat_resize_lock() held.
-  */
- static inline unsigned zone_span_seqbegin(struct zone *zone)
-+	__acquires_shared(zone->span_seqlock)
- {
- 	return read_seqbegin(&zone->span_seqlock);
- }
- static inline int zone_span_seqretry(struct zone *zone, unsigned iv)
-+	__releases_shared(zone->span_seqlock)
- {
- 	return read_seqretry(&zone->span_seqlock, iv);
- }
- static inline void zone_span_writelock(struct zone *zone)
-+	__acquires(zone->span_seqlock)
- {
- 	write_seqlock(&zone->span_seqlock);
- }
- static inline void zone_span_writeunlock(struct zone *zone)
-+	__releases(zone->span_seqlock)
- {
- 	write_sequnlock(&zone->span_seqlock);
- }
-@@ -178,11 +182,13 @@ void mem_hotplug_done(void);
- 
- /* See kswapd_is_running() */
- static inline void pgdat_kswapd_lock(pg_data_t *pgdat)
-+	__acquires(pgdat->kswapd_lock)
- {
- 	mutex_lock(&pgdat->kswapd_lock);
- }
- 
- static inline void pgdat_kswapd_unlock(pg_data_t *pgdat)
-+	__releases(pgdat->kswapd_lock)
- {
- 	mutex_unlock(&pgdat->kswapd_lock);
- }
-@@ -252,11 +258,13 @@ struct range arch_get_mappable_range(void);
-  */
- static inline
- void pgdat_resize_lock(struct pglist_data *pgdat, unsigned long *flags)
-+	__acquires(pgdat->node_size_lock)
- {
- 	spin_lock_irqsave(&pgdat->node_size_lock, *flags);
- }
- static inline
- void pgdat_resize_unlock(struct pglist_data *pgdat, unsigned long *flags)
-+	__releases(pgdat->node_size_lock)
- {
- 	spin_unlock_irqrestore(&pgdat->node_size_lock, *flags);
- }
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index dbf4eb414bd1..3979b6546082 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -703,6 +703,7 @@ static inline void vma_numab_state_free(struct vm_area_struct *vma) {}
-  * using mmap_lock. The function should never yield false unlocked result.
-  */
- static inline bool vma_start_read(struct vm_area_struct *vma)
-+	__cond_acquires_shared(true, vma->vm_lock->lock)
- {
- 	/*
- 	 * Check before locking. A race might cause false locked result.
-@@ -736,6 +737,7 @@ static inline bool vma_start_read(struct vm_area_struct *vma)
- }
- 
- static inline void vma_end_read(struct vm_area_struct *vma)
-+	__releases_shared(vma->vm_lock->lock)
- {
- 	rcu_read_lock(); /* keeps vma alive till the end of up_read */
- 	up_read(&vma->vm_lock->lock);
-@@ -800,6 +802,7 @@ static inline void vma_mark_detached(struct vm_area_struct *vma, bool detached)
- }
- 
- static inline void release_fault_lock(struct vm_fault *vmf)
-+	__no_capability_analysis
- {
- 	if (vmf->flags & FAULT_FLAG_VMA_LOCK)
- 		vma_end_read(vmf->vma);
-@@ -3016,7 +3019,8 @@ static inline bool pagetable_pte_ctor(struct ptdesc *ptdesc)
- 	return true;
- }
- 
--pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr, pmd_t *pmdvalp);
-+pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr, pmd_t *pmdvalp)
-+	__cond_acquires_shared(nonnull, RCU);
- 
- static inline pte_t *pte_offset_map(pmd_t *pmd, unsigned long addr)
- {
-@@ -3092,6 +3096,7 @@ static inline bool pmd_ptlock_init(struct ptdesc *ptdesc) { return true; }
- #endif
- 
- static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
-+	__no_capability_analysis
- {
- 	spinlock_t *ptl = pmd_lockptr(mm, pmd);
- 	spin_lock(ptl);
-@@ -3119,6 +3124,7 @@ static inline spinlock_t *pud_lockptr(struct mm_struct *mm, pud_t *pud)
- }
- 
- static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
-+	__no_capability_analysis
- {
- 	spinlock_t *ptl = pud_lockptr(mm, pud);
- 
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 45a21faa3ff6..17aa837362ae 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -129,6 +129,7 @@ static inline void mmap_init_lock(struct mm_struct *mm)
- }
- 
- static inline void mmap_write_lock(struct mm_struct *mm)
-+	__acquires(mm->mmap_lock)
- {
- 	__mmap_lock_trace_start_locking(mm, true);
- 	down_write(&mm->mmap_lock);
-@@ -137,6 +138,7 @@ static inline void mmap_write_lock(struct mm_struct *mm)
- }
- 
- static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
-+	__acquires(mm->mmap_lock)
- {
- 	__mmap_lock_trace_start_locking(mm, true);
- 	down_write_nested(&mm->mmap_lock, subclass);
-@@ -145,6 +147,7 @@ static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
- }
- 
- static inline int mmap_write_lock_killable(struct mm_struct *mm)
-+	__cond_acquires(0, mm->mmap_lock)
- {
- 	int ret;
- 
-@@ -171,6 +174,7 @@ static inline void vma_end_write_all(struct mm_struct *mm)
- }
- 
- static inline void mmap_write_unlock(struct mm_struct *mm)
-+	__releases(mm->mmap_lock)
- {
- 	__mmap_lock_trace_released(mm, true);
- 	vma_end_write_all(mm);
-@@ -178,6 +182,7 @@ static inline void mmap_write_unlock(struct mm_struct *mm)
- }
- 
- static inline void mmap_write_downgrade(struct mm_struct *mm)
-+	__releases(mm->mmap_lock) __acquires_shared(mm->mmap_lock)
- {
- 	__mmap_lock_trace_acquire_returned(mm, false, true);
- 	vma_end_write_all(mm);
-@@ -185,6 +190,7 @@ static inline void mmap_write_downgrade(struct mm_struct *mm)
- }
- 
- static inline void mmap_read_lock(struct mm_struct *mm)
-+	__acquires_shared(mm->mmap_lock)
- {
- 	__mmap_lock_trace_start_locking(mm, false);
- 	down_read(&mm->mmap_lock);
-@@ -192,6 +198,7 @@ static inline void mmap_read_lock(struct mm_struct *mm)
- }
- 
- static inline int mmap_read_lock_killable(struct mm_struct *mm)
-+	__cond_acquires_shared(0, mm->mmap_lock)
- {
- 	int ret;
- 
-@@ -202,6 +209,7 @@ static inline int mmap_read_lock_killable(struct mm_struct *mm)
- }
- 
- static inline bool mmap_read_trylock(struct mm_struct *mm)
-+	__cond_acquires_shared(true, mm->mmap_lock)
- {
- 	bool ret;
- 
-@@ -212,12 +220,14 @@ static inline bool mmap_read_trylock(struct mm_struct *mm)
- }
- 
- static inline void mmap_read_unlock(struct mm_struct *mm)
-+	__releases_shared(mm->mmap_lock)
- {
- 	__mmap_lock_trace_released(mm, false);
- 	up_read(&mm->mmap_lock);
- }
- 
- static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
-+	__releases_shared(mm->mmap_lock)
- {
- 	__mmap_lock_trace_released(mm, false);
- 	up_read_non_owner(&mm->mmap_lock);
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index d653692078ad..4b1f794f58a6 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -203,4 +203,8 @@ DEFINE_LOCK_GUARD_1(mutex, struct mutex, mutex_lock(_T->lock), mutex_unlock(_T->
- DEFINE_LOCK_GUARD_1_COND(mutex, _try, mutex_trylock(_T->lock))
- DEFINE_LOCK_GUARD_1_COND(mutex, _intr, mutex_lock_interruptible(_T->lock) == 0)
- 
-+DECLARE_LOCK_GUARD_1_ATTRS(mutex, __assumes_cap(_T), /* */);
-+DECLARE_LOCK_GUARD_1_ATTRS(mutex_try, __assumes_cap(_T), /* */);
-+DECLARE_LOCK_GUARD_1_ATTRS(mutex_intr, __assumes_cap(_T), /* */);
-+
- #endif /* __LINUX_MUTEX_H */
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 94d267d02372..9f5841f1e0bd 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -132,6 +132,7 @@ static inline pte_t *__pte_map(pmd_t *pmd, unsigned long address)
- 	return pte_offset_kernel(pmd, address);
- }
- static inline void pte_unmap(pte_t *pte)
-+	__releases_shared(RCU)
- {
- 	rcu_read_unlock();
- }
-diff --git a/include/linux/radix-tree.h b/include/linux/radix-tree.h
-index eae67015ce51..46771d36af34 100644
---- a/include/linux/radix-tree.h
-+++ b/include/linux/radix-tree.h
-@@ -236,7 +236,7 @@ void *radix_tree_delete(struct radix_tree_root *, unsigned long);
- unsigned int radix_tree_gang_lookup(const struct radix_tree_root *,
- 			void **results, unsigned long first_index,
- 			unsigned int max_items);
--int radix_tree_preload(gfp_t gfp_mask);
-+int radix_tree_preload(gfp_t gfp_mask) __acquires(radix_tree_preloads.lock);
- int radix_tree_maybe_preload(gfp_t gfp_mask);
- void radix_tree_init(void);
- void *radix_tree_tag_set(struct radix_tree_root *,
-@@ -256,6 +256,7 @@ unsigned int radix_tree_gang_lookup_tag_slot(const struct radix_tree_root *,
- int radix_tree_tagged(const struct radix_tree_root *, unsigned int tag);
- 
- static inline void radix_tree_preload_end(void)
-+	__releases(radix_tree_preloads.lock)
- {
- 	local_unlock(&radix_tree_preloads.lock);
- }
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 82c486b67e92..ecb7b2fd8381 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -733,10 +733,12 @@ static inline int thread_group_empty(struct task_struct *p)
- 		(thread_group_leader(p) && !thread_group_empty(p))
- 
- extern struct sighand_struct *lock_task_sighand(struct task_struct *task,
--						unsigned long *flags);
-+						unsigned long *flags)
-+	__cond_acquires(nonnull, task->sighand->siglock);
- 
- static inline void unlock_task_sighand(struct task_struct *task,
- 						unsigned long *flags)
-+	__releases(task->sighand->siglock)
- {
- 	spin_unlock_irqrestore(&task->sighand->siglock, *flags);
- }
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index ca1db4b92c32..d215d42449b2 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -226,11 +226,13 @@ static inline struct vm_struct *task_stack_vm_area(const struct task_struct *t)
-  * neither inside nor outside.
-  */
- static inline void task_lock(struct task_struct *p)
-+	__acquires(p->alloc_lock)
- {
- 	spin_lock(&p->alloc_lock);
- }
- 
- static inline void task_unlock(struct task_struct *p)
-+	__releases(p->alloc_lock)
- {
- 	spin_unlock(&p->alloc_lock);
- }
-diff --git a/include/linux/sched/wake_q.h b/include/linux/sched/wake_q.h
-index 0f28b4623ad4..765bbc3d54be 100644
---- a/include/linux/sched/wake_q.h
-+++ b/include/linux/sched/wake_q.h
-@@ -66,6 +66,7 @@ extern void wake_up_q(struct wake_q_head *head);
- /* Spin unlock helpers to unlock and call wake_up_q with preempt disabled */
- static inline
- void raw_spin_unlock_wake(raw_spinlock_t *lock, struct wake_q_head *wake_q)
-+	__releases(lock)
- {
- 	guard(preempt)();
- 	raw_spin_unlock(lock);
-@@ -77,6 +78,7 @@ void raw_spin_unlock_wake(raw_spinlock_t *lock, struct wake_q_head *wake_q)
- 
- static inline
- void raw_spin_unlock_irq_wake(raw_spinlock_t *lock, struct wake_q_head *wake_q)
-+	__releases(lock)
- {
- 	guard(preempt)();
- 	raw_spin_unlock_irq(lock);
-@@ -89,6 +91,7 @@ void raw_spin_unlock_irq_wake(raw_spinlock_t *lock, struct wake_q_head *wake_q)
- static inline
- void raw_spin_unlock_irqrestore_wake(raw_spinlock_t *lock, unsigned long flags,
- 				     struct wake_q_head *wake_q)
-+	__releases(lock)
- {
- 	guard(preempt)();
- 	raw_spin_unlock_irqrestore(lock, flags);
-diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
-index d05ed91de15f..ec7abf93fad9 100644
---- a/include/linux/spinlock.h
-+++ b/include/linux/spinlock.h
-@@ -359,11 +359,13 @@ static __always_inline int spin_trylock(spinlock_t *lock)
- #define spin_lock_nested(lock, subclass)			\
- do {								\
- 	raw_spin_lock_nested(spinlock_check(lock), subclass);	\
-+	__release(spinlock_check(lock)); __acquire(lock);	\
- } while (0)
- 
- #define spin_lock_nest_lock(lock, nest_lock)				\
- do {									\
- 	raw_spin_lock_nest_lock(spinlock_check(lock), nest_lock);	\
-+	__release(spinlock_check(lock)); __acquire(lock);	\
- } while (0)
- 
- static __always_inline void spin_lock_irq(spinlock_t *lock)
-@@ -535,73 +537,92 @@ void free_bucket_spinlocks(spinlock_t *locks);
- DEFINE_LOCK_GUARD_1(raw_spinlock, raw_spinlock_t,
- 		    raw_spin_lock(_T->lock),
- 		    raw_spin_unlock(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(raw_spinlock, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1_COND(raw_spinlock, _try, raw_spin_trylock(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(raw_spinlock_try, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(raw_spinlock_nested, raw_spinlock_t,
- 		    raw_spin_lock_nested(_T->lock, SINGLE_DEPTH_NESTING),
- 		    raw_spin_unlock(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(raw_spinlock_nested, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(raw_spinlock_irq, raw_spinlock_t,
- 		    raw_spin_lock_irq(_T->lock),
- 		    raw_spin_unlock_irq(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(raw_spinlock_irq, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1_COND(raw_spinlock_irq, _try, raw_spin_trylock_irq(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(raw_spinlock_irq_try, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(raw_spinlock_irqsave, raw_spinlock_t,
- 		    raw_spin_lock_irqsave(_T->lock, _T->flags),
- 		    raw_spin_unlock_irqrestore(_T->lock, _T->flags),
- 		    unsigned long flags)
-+DECLARE_LOCK_GUARD_1_ATTRS(raw_spinlock_irqsave, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1_COND(raw_spinlock_irqsave, _try,
- 			 raw_spin_trylock_irqsave(_T->lock, _T->flags))
-+DECLARE_LOCK_GUARD_1_ATTRS(raw_spinlock_irqsave_try, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(spinlock, spinlock_t,
- 		    spin_lock(_T->lock),
- 		    spin_unlock(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(spinlock, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1_COND(spinlock, _try, spin_trylock(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(spinlock_try, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(spinlock_irq, spinlock_t,
- 		    spin_lock_irq(_T->lock),
- 		    spin_unlock_irq(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(spinlock_irq, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1_COND(spinlock_irq, _try,
- 			 spin_trylock_irq(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(spinlock_irq_try, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(spinlock_irqsave, spinlock_t,
- 		    spin_lock_irqsave(_T->lock, _T->flags),
- 		    spin_unlock_irqrestore(_T->lock, _T->flags),
- 		    unsigned long flags)
-+DECLARE_LOCK_GUARD_1_ATTRS(spinlock_irqsave, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1_COND(spinlock_irqsave, _try,
- 			 spin_trylock_irqsave(_T->lock, _T->flags))
-+DECLARE_LOCK_GUARD_1_ATTRS(spinlock_irqsave_try, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(read_lock, rwlock_t,
- 		    read_lock(_T->lock),
- 		    read_unlock(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(read_lock, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(read_lock_irq, rwlock_t,
- 		    read_lock_irq(_T->lock),
- 		    read_unlock_irq(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(read_lock_irq, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(read_lock_irqsave, rwlock_t,
- 		    read_lock_irqsave(_T->lock, _T->flags),
- 		    read_unlock_irqrestore(_T->lock, _T->flags),
- 		    unsigned long flags)
-+DECLARE_LOCK_GUARD_1_ATTRS(read_lock_irqsave, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(write_lock, rwlock_t,
- 		    write_lock(_T->lock),
- 		    write_unlock(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(write_lock, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(write_lock_irq, rwlock_t,
- 		    write_lock_irq(_T->lock),
- 		    write_unlock_irq(_T->lock))
-+DECLARE_LOCK_GUARD_1_ATTRS(write_lock_irq, __assumes_cap(_T), /* */);
- 
- DEFINE_LOCK_GUARD_1(write_lock_irqsave, rwlock_t,
- 		    write_lock_irqsave(_T->lock, _T->flags),
- 		    write_unlock_irqrestore(_T->lock, _T->flags),
- 		    unsigned long flags)
-+DECLARE_LOCK_GUARD_1_ATTRS(write_lock_irqsave, __assumes_cap(_T), /* */);
- 
- #undef __LINUX_INSIDE_SPINLOCK_H
- #endif /* __LINUX_SPINLOCK_H */
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index b93c8c3dc05a..c3a1beaafdb6 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1512,28 +1512,37 @@ static inline void lockdep_assert_rq_held(struct rq *rq)
- 	lockdep_assert_held(__rq_lockp(rq));
- }
- 
--extern void raw_spin_rq_lock_nested(struct rq *rq, int subclass);
--extern bool raw_spin_rq_trylock(struct rq *rq);
--extern void raw_spin_rq_unlock(struct rq *rq);
-+extern void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
-+	__acquires(rq->__lock);
-+	
-+extern bool raw_spin_rq_trylock(struct rq *rq)
-+	__cond_acquires(true, rq->__lock);
-+
-+extern void raw_spin_rq_unlock(struct rq *rq)
-+	__releases(rq->__lock);
- 
- static inline void raw_spin_rq_lock(struct rq *rq)
-+	__acquires(rq->__lock)
- {
- 	raw_spin_rq_lock_nested(rq, 0);
- }
- 
- static inline void raw_spin_rq_lock_irq(struct rq *rq)
-+	__acquires(rq->__lock)
- {
- 	local_irq_disable();
- 	raw_spin_rq_lock(rq);
- }
- 
- static inline void raw_spin_rq_unlock_irq(struct rq *rq)
-+	__releases(rq->__lock)
- {
- 	raw_spin_rq_unlock(rq);
- 	local_irq_enable();
- }
- 
- static inline unsigned long _raw_spin_rq_lock_irqsave(struct rq *rq)
-+	__acquires(rq->__lock)
- {
- 	unsigned long flags;
- 
-@@ -1544,6 +1553,7 @@ static inline unsigned long _raw_spin_rq_lock_irqsave(struct rq *rq)
- }
- 
- static inline void raw_spin_rq_unlock_irqrestore(struct rq *rq, unsigned long flags)
-+	__releases(rq->__lock)
- {
- 	raw_spin_rq_unlock(rq);
- 	local_irq_restore(flags);
-@@ -1803,15 +1813,14 @@ static inline void rq_repin_lock(struct rq *rq, struct rq_flags *rf)
- 
- extern
- struct rq *__task_rq_lock(struct task_struct *p, struct rq_flags *rf)
--	__acquires(rq->lock);
-+	__acquires(task_rq(p)->__lock) /* ICEs clang!!, wants to be: return->__lock */
- 
- extern
- struct rq *task_rq_lock(struct task_struct *p, struct rq_flags *rf)
--	__acquires(p->pi_lock)
--	__acquires(rq->lock);
-+	__acquires(p->pi_lock);
- 
- static inline void __task_rq_unlock(struct rq *rq, struct rq_flags *rf)
--	__releases(rq->lock)
-+	__releases(rq->__lock)
- {
- 	rq_unpin_lock(rq, rf);
- 	raw_spin_rq_unlock(rq);
-@@ -1819,7 +1828,7 @@ static inline void __task_rq_unlock(struct rq *rq, struct rq_flags *rf)
- 
- static inline void
- task_rq_unlock(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
--	__releases(rq->lock)
-+	__releases(rq->__lock)
- 	__releases(p->pi_lock)
- {
- 	rq_unpin_lock(rq, rf);
-@@ -1832,43 +1841,45 @@ DEFINE_LOCK_GUARD_1(task_rq_lock, struct task_struct,
- 		    task_rq_unlock(_T->rq, _T->lock, &_T->rf),
- 		    struct rq *rq; struct rq_flags rf)
- 
-+DECLARE_LOCK_GUARD_1_ATTRS(task_rq_lock, __assumes_cap(_T->pi_lock), /* nothing */);
-+
- static inline void rq_lock_irqsave(struct rq *rq, struct rq_flags *rf)
--	__acquires(rq->lock)
-+	__acquires(rq->__lock)
- {
- 	raw_spin_rq_lock_irqsave(rq, rf->flags);
- 	rq_pin_lock(rq, rf);
- }
- 
- static inline void rq_lock_irq(struct rq *rq, struct rq_flags *rf)
--	__acquires(rq->lock)
-+	__acquires(rq->__lock)
- {
- 	raw_spin_rq_lock_irq(rq);
- 	rq_pin_lock(rq, rf);
- }
- 
- static inline void rq_lock(struct rq *rq, struct rq_flags *rf)
--	__acquires(rq->lock)
-+	__acquires(rq->__lock)
- {
- 	raw_spin_rq_lock(rq);
- 	rq_pin_lock(rq, rf);
- }
- 
- static inline void rq_unlock_irqrestore(struct rq *rq, struct rq_flags *rf)
--	__releases(rq->lock)
-+	__releases(rq->__lock)
- {
- 	rq_unpin_lock(rq, rf);
- 	raw_spin_rq_unlock_irqrestore(rq, rf->flags);
- }
- 
- static inline void rq_unlock_irq(struct rq *rq, struct rq_flags *rf)
--	__releases(rq->lock)
-+	__releases(rq->__lock)
- {
- 	rq_unpin_lock(rq, rf);
- 	raw_spin_rq_unlock_irq(rq);
- }
- 
- static inline void rq_unlock(struct rq *rq, struct rq_flags *rf)
--	__releases(rq->lock)
-+	__releases(rq->__lock)
- {
- 	rq_unpin_lock(rq, rf);
- 	raw_spin_rq_unlock(rq);
-@@ -1879,18 +1890,24 @@ DEFINE_LOCK_GUARD_1(rq_lock, struct rq,
- 		    rq_unlock(_T->lock, &_T->rf),
- 		    struct rq_flags rf)
- 
-+DECLARE_LOCK_GUARD_1_ATTRS(rq_lock, __assumes_cap(_T->__lock), /* */);
-+
- DEFINE_LOCK_GUARD_1(rq_lock_irq, struct rq,
- 		    rq_lock_irq(_T->lock, &_T->rf),
- 		    rq_unlock_irq(_T->lock, &_T->rf),
- 		    struct rq_flags rf)
- 
-+DECLARE_LOCK_GUARD_1_ATTRS(rq_lock_irq, __assumes_cap(_T->__lock), /* */);
-+
- DEFINE_LOCK_GUARD_1(rq_lock_irqsave, struct rq,
- 		    rq_lock_irqsave(_T->lock, &_T->rf),
- 		    rq_unlock_irqrestore(_T->lock, &_T->rf),
- 		    struct rq_flags rf)
- 
-+DECLARE_LOCK_GUARD_1_ATTRS(rq_lock_irqsave, __assumes_cap(_T->__lock), /* */);
-+
- static inline struct rq *this_rq_lock_irq(struct rq_flags *rf)
--	__acquires(rq->lock)
-+	__no_capability_analysis /* need return value */
- {
- 	struct rq *rq;
- 
-@@ -2954,9 +2971,15 @@ static inline void double_rq_clock_clear_update(struct rq *rq1, struct rq *rq2)
- #define DEFINE_LOCK_GUARD_2(name, type, _lock, _unlock, ...)				\
- __DEFINE_UNLOCK_GUARD(name, type, _unlock, type *lock2; __VA_ARGS__)			\
- static inline class_##name##_t class_##name##_constructor(type *lock, type *lock2)	\
-+	__no_capability_analysis							\
- { class_##name##_t _t = { .lock = lock, .lock2 = lock2 }, *_T = &_t;			\
-   _lock; return _t; }
- 
-+#define DECLARE_LOCK_GUARD_2_ATTRS(_name, _lock, _unlock) \
-+static inline class_##_name##_t class_##_name##_constructor(lock_##_name##_t *_T1, \
-+							    lock_##_name##_t *_T2) _lock; \
-+static inline void class_##_name##_destructor(class_##_name##_t *_T) _unlock
-+
- #ifdef CONFIG_SMP
- 
- static inline bool rq_order_less(struct rq *rq1, struct rq *rq2)
-@@ -2985,7 +3008,8 @@ static inline bool rq_order_less(struct rq *rq1, struct rq *rq2)
- 	return rq1->cpu < rq2->cpu;
- }
- 
--extern void double_rq_lock(struct rq *rq1, struct rq *rq2);
-+extern void double_rq_lock(struct rq *rq1, struct rq *rq2)
-+	__acquires(rq1->__lock) __acquires(rq2->__lock);
- 
- #ifdef CONFIG_PREEMPTION
- 
-@@ -2998,9 +3022,9 @@ extern void double_rq_lock(struct rq *rq1, struct rq *rq2);
-  * also adds more overhead and therefore may reduce throughput.
-  */
- static inline int _double_lock_balance(struct rq *this_rq, struct rq *busiest)
--	__releases(this_rq->lock)
--	__acquires(busiest->lock)
--	__acquires(this_rq->lock)
-+	__releases(this_rq->__lock)
-+	__acquires(busiest->__lock)
-+	__acquires(this_rq->__lock)
- {
- 	raw_spin_rq_unlock(this_rq);
- 	double_rq_lock(this_rq, busiest);
-@@ -3017,9 +3041,9 @@ static inline int _double_lock_balance(struct rq *this_rq, struct rq *busiest)
-  * regardless of entry order into the function.
-  */
- static inline int _double_lock_balance(struct rq *this_rq, struct rq *busiest)
--	__releases(this_rq->lock)
--	__acquires(busiest->lock)
--	__acquires(this_rq->lock)
-+	__releases(this_rq->__lock)
-+	__acquires(busiest->__lock)
-+	__acquires(this_rq->__lock)
- {
- 	if (__rq_lockp(this_rq) == __rq_lockp(busiest) ||
- 	    likely(raw_spin_rq_trylock(busiest))) {
-@@ -3045,6 +3069,9 @@ static inline int _double_lock_balance(struct rq *this_rq, struct rq *busiest)
-  * double_lock_balance - lock the busiest runqueue, this_rq is locked already.
-  */
- static inline int double_lock_balance(struct rq *this_rq, struct rq *busiest)
-+	__releases(this_rq->__lock)
-+	__acquires(this_rq->__lock)
-+	__acquires(busiest->__lock)
- {
- 	lockdep_assert_irqs_disabled();
- 
-@@ -3052,7 +3079,8 @@ static inline int double_lock_balance(struct rq *this_rq, struct rq *busiest)
- }
- 
- static inline void double_unlock_balance(struct rq *this_rq, struct rq *busiest)
--	__releases(busiest->lock)
-+	__releases(busiest->__lock)
-+	__no_capability_analysis /* conditional code */
- {
- 	if (__rq_lockp(this_rq) != __rq_lockp(busiest))
- 		raw_spin_rq_unlock(busiest);
-@@ -3060,6 +3088,8 @@ static inline void double_unlock_balance(struct rq *this_rq, struct rq *busiest)
- }
- 
- static inline void double_lock(spinlock_t *l1, spinlock_t *l2)
-+	__acquires(l1)
-+	__acquires(l2)
- {
- 	if (l1 > l2)
- 		swap(l1, l2);
-@@ -3069,6 +3099,8 @@ static inline void double_lock(spinlock_t *l1, spinlock_t *l2)
- }
- 
- static inline void double_lock_irq(spinlock_t *l1, spinlock_t *l2)
-+	__acquires(l1)
-+	__acquires(l2)
- {
- 	if (l1 > l2)
- 		swap(l1, l2);
-@@ -3078,6 +3110,8 @@ static inline void double_lock_irq(spinlock_t *l1, spinlock_t *l2)
- }
- 
- static inline void double_raw_lock(raw_spinlock_t *l1, raw_spinlock_t *l2)
-+	__acquires(l1)
-+	__acquires(l2)
- {
- 	if (l1 > l2)
- 		swap(l1, l2);
-@@ -3087,6 +3121,8 @@ static inline void double_raw_lock(raw_spinlock_t *l1, raw_spinlock_t *l2)
- }
- 
- static inline void double_raw_unlock(raw_spinlock_t *l1, raw_spinlock_t *l2)
-+	__releases(l1)
-+	__releases(l2)
- {
- 	raw_spin_unlock(l1);
- 	raw_spin_unlock(l2);
-@@ -3096,6 +3132,8 @@ DEFINE_LOCK_GUARD_2(double_raw_spinlock, raw_spinlock_t,
- 		    double_raw_lock(_T->lock, _T->lock2),
- 		    double_raw_unlock(_T->lock, _T->lock2))
- 
-+DECLARE_LOCK_GUARD_2_ATTRS(double_raw_spinlock, __assumes_cap(_T1) __assumes_cap(_T2), /* */);
-+
- /*
-  * double_rq_unlock - safely unlock two runqueues
-  *
-@@ -3103,13 +3141,13 @@ DEFINE_LOCK_GUARD_2(double_raw_spinlock, raw_spinlock_t,
-  * you need to do so manually after calling.
-  */
- static inline void double_rq_unlock(struct rq *rq1, struct rq *rq2)
--	__releases(rq1->lock)
--	__releases(rq2->lock)
-+	__releases(rq1->__lock)
-+	__releases(rq2->__lock)
- {
- 	if (__rq_lockp(rq1) != __rq_lockp(rq2))
- 		raw_spin_rq_unlock(rq2);
- 	else
--		__release(rq2->lock);
-+		__release_cap(&rq2->__lock);
- 	raw_spin_rq_unlock(rq1);
- }
- 
-@@ -3127,8 +3165,8 @@ extern bool sched_smp_initialized;
-  * you need to do so manually before calling.
-  */
- static inline void double_rq_lock(struct rq *rq1, struct rq *rq2)
--	__acquires(rq1->lock)
--	__acquires(rq2->lock)
-+	__acquires(rq1->__lock)
-+	__acquires(rq2->__lock)
- {
- 	WARN_ON_ONCE(!irqs_disabled());
- 	WARN_ON_ONCE(rq1 != rq2);
-@@ -3144,8 +3182,8 @@ static inline void double_rq_lock(struct rq *rq1, struct rq *rq2)
-  * you need to do so manually after calling.
-  */
- static inline void double_rq_unlock(struct rq *rq1, struct rq *rq2)
--	__releases(rq1->lock)
--	__releases(rq2->lock)
-+	__releases(rq1->__lock)
-+	__releases(rq2->__lock)
- {
- 	WARN_ON_ONCE(rq1 != rq2);
- 	raw_spin_rq_unlock(rq1);
