@@ -1,253 +1,269 @@
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2087.outbound.protection.outlook.com [40.107.220.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4265224FA
-	for <rcu@vger.kernel.org>; Thu,  6 Mar 2025 01:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741224313; cv=fail; b=JRgyzZ71EdHpGiWMllIqoCO5YH5pMWPNudCyTdyQWJvc8EVlzYgB9dybFS/nTcSiuJi/edIEb1XpQwQ4A4wHpe1vgC5nftYUVsNikEmx/QiVuiKlTjMi9UR+yYL0pvO5q4ghj0eiArv6F8xlvOwy94akfpb5myZb2bFnzZNvizE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741224313; c=relaxed/simple;
-	bh=iNqzw6I9ZrnXAi4yX5JvPhJBob1kaXOBR4FaYwg0HlY=;
-	h=Message-ID:Date:Subject:References:To:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Z3XTlJv1ZaJATy7yjYxAPcz6Wxa21tKP/gjJLCSnUCpvyOZ8PG8zIAb+6tJUG0bjDt9+tJ7yHwxz4zldXvsr/4p593s5LNWx5ssgrMFn+y9uCtzjTdASVqj2aShhnE2W5ljK4512iBrCGnm8SpNy9hPBvtLHJuWk6zPOqk/xBQ0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VXskGOCR; arc=fail smtp.client-ip=40.107.220.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D505417B50B;
+	Thu,  6 Mar 2025 10:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741256586; cv=none; b=aHxSmF9p+ebA4/vBdt//JmJYyHHeYsB2PxP+LJWDR1PjEmo54Jb/CgH0a+CoeeAb0eB1Lk5k2ERm2lW/5aEOpI7CpJB1eyg5O8b6yDZ6jwlolbEWAeX/7XH0WsG+ZgLyLx6A5uFB8vnOf/KnBZhGM7UxAf9Db+0UzQTXBlaTDGc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741256586; c=relaxed/simple;
+	bh=Fk+ptxHPo0zL9VKayPmWGSh7ru2griwlnIjrUJwnVzQ=;
+	h=From:Content-Type:Mime-Version:Subject:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=f7n6LNgwFblkReleBkwN7Je6soC0m4MGhmTdQCEh1cOyRZc9V36G7tKmWZT+O5bvflidqol2U84E+lJYwfh0WfEzPpYHF0Et1fltuGyFz56cHTBeWmBRv03gw5JHJu6kRdCRMurhxT9GVH0MqVK2lpuLTVrcp/FY2IKmq311m20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kspa7tyK; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VXskGOCR"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CUrRQL+OoGU2O+Tcb7efzBpn3IZBOGAxjqStmaFylHxfTsjfuD/+b5v2hu6s0xB50ktVTvYi+DnTWGeoZCw+4guZEjBO5GdCmFHCSlO/4xC8oS0jOFOBdcQUtQcUuF8ro303IxLBjIkqU6z4tDNmt1bOOnkga+aAgp4mnIfXvdRc2DreB6I8lkr3WkY/s8IcTNMGblMRdYHkwRdtBxdQpB5Qvrl2t+pQn77VpwbpJpxqk/AwaQnvCJuMr7AzGSooLTCLf36x1jKiEIde2NBtFIKFp7ppP/7Q0T0c95m8D3ep7ns8G6AU9Q1c+Zwxw83Homsu1PXtwiHcw0E50wwDtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PF+NpD+lrAX1gMhWfMUXV9bGUplyuiD/LBApKtNJ4K0=;
- b=PP8+CKHoIZV3dUXy202a0ZEDmWnPcJfJNeO+t5ZYeN5PTUYaswgHtyx3Qnqi9pakbCADEgKPOy/KCKQTXo9VjQrn8VPkWkuY1V9lWbmek6+5aKt2o/M1wgo5ZLi52ysqobpCF5m1bS8qioPCzgQec95VxDm7dUjhJCxrI4YW1QHtl/W2bvhI+xE896Py7peqXjLkbGyczX9gbqiDnf2eI75aqdFrPrqNayUnbgB7A4FUxE2/G7Bc0xS2O+kW71PLFw/IWQGQpTX+BGtmEULEqvdOfd3DGGuLmjV3zVfnlVvquILtEGfzBZ5h4PTUkjyqjvommR/bhHXo7hBL3mY3EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PF+NpD+lrAX1gMhWfMUXV9bGUplyuiD/LBApKtNJ4K0=;
- b=VXskGOCRHM855lUyYIp2s4mauhd3SuZuj7nMU3xV5zBIAYNe0JAc8aEn+mvvT583LvIFdOLehL1ynNMv04XvHiRh3U7/xn+z7tnYxBHA71UKwCkFMhz3KRXY0SmWw3sFHG2SRvb39RYRy37eFK3ocU0vWY/UaON59BKhSn1RShO8GNfe6a5z56R+EoAyEotu38oxWFPrpeK1hSA89MpH7U42GmrSnvnyKfB7sBZIS38MMvr+0w36KitLfJGsZtwy7VfnuM9PW9uDIT/cx8amuXpiPbufkdpyc01iTMq1sVQiKH6kCjV+0RVaiUmNtfXK5XWZeviLzw7ThW+7Bv7vZQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by DS0PR12MB8368.namprd12.prod.outlook.com (2603:10b6:8:fe::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.30; Thu, 6 Mar
- 2025 01:25:08 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%5]) with mapi id 15.20.8489.028; Thu, 6 Mar 2025
- 01:25:08 +0000
-Message-ID: <078dd26a-9118-48f7-b9f9-c5476b168f6a@nvidia.com>
-Date: Wed, 5 Mar 2025 20:25:06 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Fwd: [PATCH v2] sched/fair: Disable DL server on
- rcu_torture_disable_rt_throttle()
-References: <20250306011014.2926917-1-joelagnelf@nvidia.com>
-Content-Language: en-US
-To: rcu <rcu@vger.kernel.org>
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <20250306011014.2926917-1-joelagnelf@nvidia.com>
-X-Forwarded-Message-Id: <20250306011014.2926917-1-joelagnelf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0285.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::20) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kspa7tyK"
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5dccaaca646so1031664a12.0;
+        Thu, 06 Mar 2025 02:23:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741256583; x=1741861383; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:subject:mime-version:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YSreNIH4adMVMjlthJ/Tlzvq8nw1Qi3pxgZbONEY0EE=;
+        b=Kspa7tyKYXS4GgjSfsmfXWAADS6XOrrpDzE2lLqxCtJlQ07wO1ktV7PlVHdB/MbdkR
+         +IVCgQg3EOB9KU4yLcxTq8/6hv2FjHYbAWZVjYHdbWFl0BX9+UROxG9MB/tOi84oyAqp
+         V1OqCW6LWD0pDv7Qa/dLLpfDAWn1IF4MrJGyovN33nxFx9pb2CXOQRLar7Udp/pvOBo0
+         BNUSUQ1uLkXRfZwNQ3Oo0xyJVJ4PbWs20GoQXEsEnqkmfbHNVTOk969M1iomaFC9d49m
+         s194JmOzROeCEGEebMIywYzDWwsLJkCGTazlTdENk/QxtWQ7guqPCMsxO3++zxeB1NoE
+         aYBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741256583; x=1741861383;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:subject:mime-version:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YSreNIH4adMVMjlthJ/Tlzvq8nw1Qi3pxgZbONEY0EE=;
+        b=TsoqWzdzFH2GS5Bg3jnnKRpOzQobdV3N59yVgqy+jQjIwXSdWaWdOLFFN/ZBivxju1
+         R8R9GFXbcSxt6YAxa8Ir3ozlvH7X6YsfFlsDU6msIN4pRhbECgR5f/at1RLIMX4BTy25
+         HuAG3vE6lWMECQgpEp30+BPcb0inJwQRxdvExKhPm++85pTyDCj++j01OPmP9jWgExQO
+         y74EoLnq4tLZislH3cbipgyzPcVscdsqeniWnfA6wmcMCEieNeZkUqYkbt6BOQFtqBRo
+         4yFtNuqh/w1LChRNzmsU3jByp4mKWgA6PCdADGrgvDou73cLwkX6BHCZnnhnIHPBUmNw
+         Fj6g==
+X-Forwarded-Encrypted: i=1; AJvYcCVj04xPzp1Pu0M/wZ6jHuzTYMgE0+pp2tzijWohs4IymmLdbVDAVrxCQgN1+AGpjD2uQrsk@vger.kernel.org, AJvYcCW3h3ZDOBym01feVNZTp4pKgg8CZOkEbdGXDlTmS0MFq8yfH0dXEceYvcEKNEjp8rtFPGOHX72BVicXG1vg@vger.kernel.org, AJvYcCXkgAmJN5izOcF7cd90GyhStvq7dx970fY0RVH8XU0Zxqi9nPHoWaVnVzJvNWiLT6uXq2o=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+jB9G5kGLGckkdOWGPVDw3BoPFraYGTUgW1Bt11/1/6ihNvMX
+	6nnP5UcmZT6MU5gLfAa/cLhXQVM2364mTTwLnstvk1WVDkE5FUfG
+X-Gm-Gg: ASbGncuveLWfu8TB7fUU43UH6yDxxMPA+6A3hpiX9aV0zrnyfmQ2pH0C+TvyDoeqRWi
+	E9s+CI7Gh46YjNvujNv7LH6nmkH61NKpwObS/XBFPP98fRa0p8la7UOknjqVpsXMKA1BB4O2l7Z
+	0n2k4gYFQ2bidcAPQ3yLT+ClV9fBCVuIJZ4RX2bXl215u222XxSud+mk95dkVJJ+c9KZq2hNd8y
+	tEuneWoa7hK6VwFFmprMczg6k7iJfafFLDDHBjOlCZ2x1akTW/oCiCnW0rn61xjSq/jT6DQ8YIs
+	oLxb9mxlokjPUMQKS/1Lfv7cLe8mQ9RR0GtmFd3tRTxXbkmk//zt640f6A==
+X-Google-Smtp-Source: AGHT+IFMBMMD1hiit+xZF2Scen4nqwH8NOgCkmQvow1VZWtTjkkHspCV+WaQcKHmLYtLT7YOayoUUw==
+X-Received: by 2002:a05:6402:3581:b0:5e0:8a34:3b5c with SMTP id 4fb4d7f45d1cf-5e5c1a7786emr2354367a12.0.1741256582607;
+        Thu, 06 Mar 2025 02:23:02 -0800 (PST)
+Received: from smtpclient.apple ([209.38.224.166])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e5c76913bbsm709630a12.78.2025.03.06.02.23.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Mar 2025 02:23:01 -0800 (PST)
+From: Nick Zavaritsky <mejedi@gmail.com>
+X-Google-Original-From: Nick Zavaritsky <MeJedi@gmail.com>
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|DS0PR12MB8368:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b5e4f8b-2c54-4bc5-b32d-08dd5c4dbb3e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?L2FESnQwSHZ5QXB6b2NBR1lsWWhxL00xK1FiQXlOa0VyWmRaRVJYNFpoOUpB?=
- =?utf-8?B?NTRYdWtoTm5VMW9Mc2YxQjhJdVRsWUt5S295WEQ4YXRDelZNeGN0NE10ckRn?=
- =?utf-8?B?MkZVYk9JencvZkIvVkd4b3J2YTBEa2pxR0dSV0ZKZjRxTnNFTUlnUWZLd2M0?=
- =?utf-8?B?bDdZaWRUeHNQTS9OdFZvMVQxaE9Nc1ZQbElNL09HOCtPOWFsMXVsS01ILzBK?=
- =?utf-8?B?U3VuUCsyL0F3b1g0aExYckRxZU5CUEZXQ1V2WXhSSkhRU2pDOC9qWXFIcTBS?=
- =?utf-8?B?WmRmeVdURWFIMk93UWRGUEdqSysxelJtSHpaa3gyQTVvbEJ4NlYzRDdCK2tq?=
- =?utf-8?B?bGgyV0ttVWk3Z3lXQUd5SWhBZlByS3R1MGd5cUdGUnhuTXkrU0NSNmdReG5W?=
- =?utf-8?B?cTBtWTYzTWQ3K2M5ODdDTnpWSSt2VjBoYm1IbnIvRlRCL1A3R0VWTXRZaTVy?=
- =?utf-8?B?YmhJSGZhVllVRjArYXhsLzdyUVB6WFlmN2xsbzZJRHdQU09NUjd3c0NkaDIy?=
- =?utf-8?B?MVZFQzEvUnliNnp5dTZFcytNblZhSmZHeTRUOTRVaXM0QUtoM202SHI0ZUNM?=
- =?utf-8?B?ZHQ5ekZjZGs4dzRZTTYxcGRGbnBhblRTRVdaTWhJbHBqbkVHdkZkdk1ickhH?=
- =?utf-8?B?YVh2Z1hlNjhnWGs1alNuNWppSmlxSlBwbGVzbUZPNVRVTmtjL1BlRDhjNHBl?=
- =?utf-8?B?K1RaRXFDQlpxc3IyblRsaGhmSGJubnNTTjcyZWQvMk1JejJxcE56Q0dIUzda?=
- =?utf-8?B?OXprVlVxdVlaN1BMeExmN1VrQmRtVEVTNGtaZmVCV0tZdGRpTnN6THNNR3B5?=
- =?utf-8?B?c3dBWlRFVDI1YzNJTjVKcjBKS0JVSGhzcjhEN0lSM0tXSVEvVjhRVDFzS0JW?=
- =?utf-8?B?Y2phandLQUUrc0xUc0ZOdXU4azhPalpqQ0FhYVJTRHZzdFJCUVVhcnFMV1dI?=
- =?utf-8?B?RTd4bDZEM2FUckd4V0prRzZxSWlyM0NJNVY4QkxGM0lYaHdrZHJTeEI1UFNR?=
- =?utf-8?B?eUJSR3owVlRwVWIyOW16aDNWdDkvVk1NdnUweTB5eEJjUHNtSmFPSDZkcjZh?=
- =?utf-8?B?RHV5SkNVTUdqT3JuMUgydkJFNjVvNnYrdWtJVmVlQWYxdVpnTTJDUHFhOFo3?=
- =?utf-8?B?SERBT3M0NGxNam5jYlZSK0NWZU1XUkxYaGRzM2dIK0w1czYzVGhhYzRvRkN1?=
- =?utf-8?B?bDdOMGpPM09tR015YmZNTWpqREwwQTlCOTkrN3hWWkRpQkNmL3NvMm9VTDVp?=
- =?utf-8?B?QU1IVE5vTDk0TEhyVENxSUxrN05tYnNGZ0ZLQXBGdGdXWVFZU3NTdzFVSndu?=
- =?utf-8?B?bVEwdmw2Ynhkemh6QUVkK1hhQlcyM2xkb0t5Y1NHMWRvUWJ5SDNSeWtOaG5D?=
- =?utf-8?B?eVdGb1hmdUpzOUh0aUFkV0ZhanZYaytpWmZRTlM0REcyWERjY092TFRPdGw0?=
- =?utf-8?B?Ky85Vlhoc3Z5aEJVajlSOVNSMENuQzhPc2phZm9uWTdwRDlYbXBVWUJoc3Bl?=
- =?utf-8?B?OFZ3SzQzS05DSGNVc1dHQUVSWDRpZlgvSGswbjVsa0dBUDZ0Ky9YTXp4WDRi?=
- =?utf-8?B?MnVITnpiSXM2RXVReDcwTmpha0pKN0M1cFlkeVJvaTZFeThEUkZZdllWMHE1?=
- =?utf-8?B?TDFxM2lhNkdnQUZPM1VMaWx6cStTVFhIS29sTFZ3MmY5Z0NwVW1wbnpQallJ?=
- =?utf-8?B?U0JBcHVjZzdvWEQrcGt4VjE0N1FCbXNRVmkxWHlRdnR6TzduZG1SczJSL3dO?=
- =?utf-8?B?cDFRcW5nNmxybnkxakVyYnVXbjVmbTZzVER6V05pQkJrdDJ3b28vUlNrZURG?=
- =?utf-8?B?VkJ1UUtnWkk5MVpZNkJqM1lsV1dSS1lUSVFqWFMrMWplYy9hNXd4NTlpa1R3?=
- =?utf-8?Q?WbVCX14WWFqgB?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?anIrV3htYVA1c3NYa0w3MDN4b2FKM3JoQWY0WXVqQlkxbHY1RlZVZjdPS3Fj?=
- =?utf-8?B?eHkrUE5mSElRY1NPUGZSaG9oNGF0U0h3WFRXZnkxNzNRZjV4SjM2WVpyUVl2?=
- =?utf-8?B?Z0EyUkhmYUVIK2VzcFAyTkF3WGt1RGY1ZVdBRnc0TUJTZGRyaG9aZDJvT0lC?=
- =?utf-8?B?NU1CRmVLTFl0clgzbTdKRjhHZUNNU0RnWXgxbmhGV2tsSXFwWHZKUXRJdHZP?=
- =?utf-8?B?YlY0bWI3NVNpOTRVZVlqMnlEcHlINUJtRkxQSDFHaWI5S0VTclpHRjlZa1lZ?=
- =?utf-8?B?Z1UvYkt5R1BUbTQ3TG1QVDhQQkhHaHZXSm9YenRIRmhla01VMnJVTjFFZzBL?=
- =?utf-8?B?cG5zeE41Y2RSSFh4Z2VKeExnTG1rK256N0hxNk5wRFJTS2xVek1YY241aHBy?=
- =?utf-8?B?bWgrMVkwKzdBK1N0OW1JeTUwQkw4OTY5Y1hCM2JQcURZN3dMbWpLbVc4WkZZ?=
- =?utf-8?B?V3VaTG1VbXEvNGI1TmIyclZBNWdrQ1BITTJlMnpjQ2tpVlBsTHZBUC91dkxs?=
- =?utf-8?B?UU51TUdXajdrSlJKYTU4Si9ZenozUU8rQkJ6bGVqK3RJUW1uS0dTZm1wLzRN?=
- =?utf-8?B?bmd1RTdkdVVvVTZYSEpwelNKZzFZSFNDRUZ1N1lObk5KUitHMDFYVmtwNm5T?=
- =?utf-8?B?cFdjM01paGFtVVh1TGxmNXhIMGQ0SGRZVEpHK1RtTklGWDRyMURhcUxRMmxG?=
- =?utf-8?B?L2M5N3RpaUFPY0JuYWZDM2ladm96cVMvZGFhK3NVRk85SWFvSkQ3UDJicTBK?=
- =?utf-8?B?NkNMRktrMXNZLzZIWFFFVnU1b3k5RndXeFZVamcwWFRHcGxWZ2RoUkhZcVNX?=
- =?utf-8?B?czNxN2hxSkdMaXVPd3k3Z1QvMUFteTJ6ejduYU00YWtLQ1pqQlczNW5WcXBs?=
- =?utf-8?B?YnNZVVo5V2pjKy9pU3B4TXFDdnpuUUhydXFrdThrNVdqLytJcWFkSzFEdEtx?=
- =?utf-8?B?dG14WVdpNDRIYWVRUGVmMk85dVYxL1pCcG1ZOG1KNVRBblFqWTBzbVJXc0Ux?=
- =?utf-8?B?aUVJejlKUmd3b25FZzBzaEVHbkJrbG5Gemtab0s4ZENzTUpNTE0wbXllL0h1?=
- =?utf-8?B?Nk5PMVE5ZkQvSC9zSVhmdjlCS3lSb2d3NlVhN2MvL3U1VWRNSlR1K09OMWpJ?=
- =?utf-8?B?dXIrYyt5Tmk3ZFVTTFdWcFRpTnJPYzFLMGJFMnR4U0FZT1pBZ3dicFZwVVpU?=
- =?utf-8?B?NE9KbHVOcVRiNStwOWV2eDRPMGFQS251SVBaSmtWaDhlU05rY0NYUTcyZklN?=
- =?utf-8?B?aUFESW4xbkNjYW9QYXhRc2VEWWFDV3psT1dOSlIxNWpta20wSytNUXpRMHpu?=
- =?utf-8?B?ZlNjMjB5WVNudU52V1FvNXFzWjlrSTRkeVVndExnSGw4RVg2NFc3cVA4WEJy?=
- =?utf-8?B?L0RDTHJSRnRuSEhBZlFlMnpjMEM4Q0hzOWQ2OURac2YyNUtLd2NBczVJZDFl?=
- =?utf-8?B?Y29wUEgvYlh1eGM5ZTkxcnB3Y2dFRjBBZFBZdHM1Mk1GOEVoRnFXNjUyRG41?=
- =?utf-8?B?WE5NK2JjVDBmSWZ0L3llajZZc3E2VzlZNU1Ebkt5MTY3TlR3U1FCNGpSV0VD?=
- =?utf-8?B?VUtHMTh3cVJISHl3Mm9yQjdBaXY5ZkptVWVxaGV1b0hUS2F3dDZSdklDRTVq?=
- =?utf-8?B?K0wzMGhHQ2FCRGRSNFVvL0RwenI5aVYwNDNyZjFxK0xMOU9sMTZnM3BmZHF3?=
- =?utf-8?B?emRxQkRJblgzSHR6aGkyaWZUS1pQWkNMUFpjbUg0UkdqY3BqK0hZZDZ6c2FF?=
- =?utf-8?B?eUk3WUQ4N2YxRURhMlVYT3NieGRMR044Yi9BNi82WlNzZmhmb3BibGxrdld1?=
- =?utf-8?B?dDNOcmJpOWxpQ3RCQ0d2ZTMxUkFEaDFkUGFxNmdpT0Znb2diUHBOUHgrN1JB?=
- =?utf-8?B?aUI5MFdRNzdtTVhwZ3pEUkxZTGh4dmVUdHVWUkp0MTJ4QVlCaE8zMG5DOFdC?=
- =?utf-8?B?blovaHJYeFVaU0dJc25qdXVkV281V3FDNDI2YVJZWWFwZ0tlZGprVlY1VFZD?=
- =?utf-8?B?MGtBWWlHVHdUbHh2RU8ydFlzL3huODk2YjZGOWl6emdLUllyc2NOaWlpT3Q4?=
- =?utf-8?B?S0NobTcvZ0Q2L0MwL2x4RDg0bG4xa1NLRTRVdG9Vd2cvR1RlZ3hPdW15dmg3?=
- =?utf-8?B?WWJVRWVXMWxpbHdhbFpBQzF1d0RIYVRLK05qUFdZUFV5c3hMTXM2bjdxa1Fo?=
- =?utf-8?B?UFE9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b5e4f8b-2c54-4bc5-b32d-08dd5c4dbb3e
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2025 01:25:08.1537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xXHjYw+2uExiCM/yJd5vglKTFsbsKKTAmFZkIA7zcAgxSA2FCnzzm1lLEjROQ8+mUfnViWnBWmDZM3AJ/HcPhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8368
-
-Oops, forgot to CC rcu@.
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.400.131.1.6\))
+Subject: Re: [RESEND] [PATCH bpf-next 2/3] bpf: Overwrite the element in hash
+ map atomically
+In-Reply-To: <CAADnVQLev2V-ARjPc9EPYaSssCev_87Lc0NWkLvL-5tuy=3Veg@mail.gmail.com>
+Date: Thu, 6 Mar 2025 11:22:48 +0100
+Cc: Hou Tao <houtao@huaweicloud.com>,
+ Zvi Effron <zeffron@riotgames.com>,
+ =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>,
+ bpf <bpf@vger.kernel.org>,
+ rcu@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>,
+ Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>,
+ "Paul E . McKenney" <paulmck@kernel.org>,
+ Cody Haas <chaas@riotgames.com>,
+ Hou Tao <hotforest@gmail.com>,
+ Charalampos Stylianopoulos <charalampos.stylianopoulos@emnify.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4243FBB4-693E-4740-BECE-FDB32322BD97@gmail.com>
+References: <20250204082848.13471-1-hotforest@gmail.com>
+ <20250204082848.13471-3-hotforest@gmail.com>
+ <cca6daf2-48f4-57b9-59a9-75578bb755b9@huaweicloud.com>
+ <8734gr3yht.fsf@toke.dk>
+ <d191084a-4ab4-8269-640f-1ecf269418a6@huaweicloud.com>
+ <CAADnVQKD94q-G4N=w9PJU+k6gPhM8GmUYcyfj=33B_mKX6Qbjw@mail.gmail.com>
+ <6a84a878-0728-0a19-73d2-b5871e10e120@huaweicloud.com>
+ <CAADnVQLrJBOSXP41iO+-FtH+XC9AmuOne7xHzvgXop3DUC5KjQ@mail.gmail.com>
+ <CAC1LvL0ntdrWh_1y0EcVR6C1_WyqOQ15EhihfQRs=ai7pcE-Sw@mail.gmail.com>
+ <7e614d80-b45b-e2f9-5a39-39086c2392dc@huaweicloud.com>
+ <CAADnVQJU9OWAWFk89P6i1RK6vXkuee5s76suHjF+uP+V4iepqQ@mail.gmail.com>
+ <e1b65f13-a426-d707-0319-f57e8b15575a@huaweicloud.com>
+ <CAADnVQLev2V-ARjPc9EPYaSssCev_87Lc0NWkLvL-5tuy=3Veg@mail.gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Mailer: Apple Mail (2.3826.400.131.1.6)
 
 
--------- Forwarded Message --------
-Subject: [PATCH v2] sched/fair: Disable DL server on
-rcu_torture_disable_rt_throttle()
-Date: Wed, 5 Mar 2025 20:10:13 -0500
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Juri
-Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
-Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
-<rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman
-<mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-CC: Joel Fernandes <joelagnelf@nvidia.com>, stable@vger.kernel.org, Paul E .
-McKenney <paulmck@kernel.org>, linux-kernel@vger.kernel.org
+> On 27. Feb 2025, at 04:17, Alexei Starovoitov =
+<alexei.starovoitov@gmail.com> wrote:
+>=20
+> On Wed, Feb 26, 2025 at 6:43=E2=80=AFPM Hou Tao =
+<houtao@huaweicloud.com> wrote:
+>>=20
+>>>>=20
+>>>> lookup procedure A
+>>>> A: find the old element (instead of the new old)
+>>>>=20
+>>>>              update procedure B
+>>>>              B: delete the old element
+>>>>              update procedure C on the same CPU:
+>>>>              C: reuse the old element (overwrite its key and insert =
+in
+>>>> the same bucket)
+>>>>=20
+>>>> A: the key is mismatched and return -ENOENT.
+>>> This is fine. It's just normal reuse.
+>>> Orthogonal to 'update as insert+delete' issue.
+>>=20
+>> OK. However, it will break the lookup procedure because it expects it
+>> will return an valid result instead of -ENOENT.
+>=20
+> What do you mean 'breaks the lookup' ?
+> lookup_elem_raw() matches hash, and then it memcmp(key),
+> if the element is reused anything can happen.
+> Either it succeeds in memcmp() and returns an elem,
+> or miscompares in memcmp().
+> Both are expected, because elems are reused in place.
+>=20
+> And this behavior is expected and not-broken,
+> because bpf prog that does lookup on one cpu and deletes
+> the same element on the other cpu is asking for trouble.
+> bpf infra guarantees the safety of the kernel.
+> It doesn't guarantee that bpf progs are sane.
+>=20
+>>> It's been a long time since I looked into rcu_nulls details.
+>>> Pls help me understand that this new replace_rcu_nulls()
+>>> is correct from nulls pov,
+>>> If it is then this patch set may be the right answer to non-atomic =
+update.
+>>=20
+>> If I understand correctly, only the manipulations of ->first pointer =
+and
+>> ->next pointer need to take care of nulls pointer.
+>=20
+> hmm. I feel we're still talking past each other.
+> See if (get_nulls_value() =3D=3D ...) in lookup_nulls_elem_raw().
+> It's there because of reuse. The lookup can start in one bucket
+> and finish in another.
+>=20
+>>>=20
+>>> And for the future, please please focus on "why" part in
+>>> the cover letter and commit logs instead of "what".
+>>>=20
+>>> Since the only thing I got from the log was:
+>>> "Currently, the update is not atomic
+>>> because the overwrite of existing element happens in a two-steps =
+way,
+>>> but the support of atomic update is feasible".
+>>>=20
+>>> "is feasible" doesn't explain "why".
+>>>=20
+>>> Link to xdp-newbie question is nice for additional context,
+>>> but reviewers should not need to go and read some thread somewhere
+>>> to understand "why" part.
+>>> All of it should be in the commit log.
+>>=20
+>> OK. My original thought is that is a reported problem, so an extra =
+link
+>> will be enough. Will try to add more context next time.
+>>>=20
+>>>> map may still be incorrect (as shown long time ago [1]), so I think
+>>>> maybe for other types of map, the atomic update doesn't matter too =
+much.
+>>>>=20
+>>>> [1]:
+>>>> =
+https://lore.kernel.org/bpf/20221230041151.1231169-1-houtao@huaweicloud.co=
+m/
+>>> A thread from 3 years ago ?! Sorry, it's not helpful to ask
+>>> people to page-in such an old context with lots of follow ups
+>>> that may or may not be relevant today.
+>> Let me reuse part of the diagram above to explain how does the lookup
+>> procedure may return a incorrect value:
+>>=20
+>> lookup procedure A
+>> A: find the old element (instead of the new element)
+>>=20
+>>=20
+>>              update procedure B
+>>              B: delete the old element
+>>              update procedure C on the same CPU:
+>>=20
+>>=20
+>> A: the key is matched and return the value in the element
+>>=20
+>>              C: reuse the old element (overwrite its key and value)
+>>=20
+>> A: read the value (it is incorrect, because it has been reused and
+>> overwritten)
+>=20
+> ... and it's fine. It's by design. It's an element reuse behavior.
+>=20
+> Long ago hashmap had two modes: prealloc (default) and
+> NO_PREALLOC (call_rcu + kfree)
+>=20
+> The call_rcu part was there to make things safe.
+> The memory cannot be kfree-ed to the kernel until RCU GP.
+> With bpf_mem_alloc hashmap elements are freed back to bpf_ma
+> right away. Hashmap is doing bpf_mem_cache_free()
 
-Currently, RCU boost testing in rcutorture is broken because it relies on
-having RT throttling disabled. This means the test will always pass (or
-rarely fail). This occurs because recently, RT throttling was replaced
-by DL server which boosts CFS tasks even when rcutorture tried to
-disable throttling (see rcu_torture_disable_rt_throttle()). However, the
-systctl_sched_rt_runtime variable is not considered thus still allowing
-RT tasks to be preempted by CFS tasks.
+We (emnify.com) missed this change and kept writing code with an
+assumption that NO_PREALLOC implies rcu.
 
-Therefore this patch prevents DL server from starting when RCU torture
-sets the sysctl_sched_rt_runtime to -1.
+Is there something we can do as of today to reduce the likelihood of an
+item getting reused immediately? We are concerned with lookups yielding
+bogus results when racing with updates. Worse, a program could corrupt
+an unrelated item when writing via a pointer obtained from lookup.
 
-With this patch, boosting in TREE09 fails reliably if RCU_BOOST=n.
+You wrote that "lookup on one cpu and deletes the same element on the
+other cpu is asking for trouble.=E2=80=9D It puzzles me since user space
+updating a map while (say) TC program is consulting the map to make a
+routing decision look like a supported and widespread use case.
 
-Steven also mentioned that this could fix RT usecases where users do not
-want DL server to be interfering.
+For us, implications vary in severity, e.g.:
+ - 1-in-1e? packet mis-delivered (bogus lookup: LOW)
+ - a tenant getting billed for a packet of another tenant delivered via
+   satellite and costing USD 0.10 (writing into unrelated item: LOW)
+ - a network flow state corrupted (writing into unrelated item: MEDIUM)
 
-Cc: stable@vger.kernel.org
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Fixes: cea5a3472ac4 ("sched/fair: Cleanup fair_server")
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
----
-v1->v2:
-	Updated Fixes tag (Steven)
-	Moved the stoppage of DL server to fair (Juri)
+We need to audit our code to ensure that e.g. a flow state getting
+corrupted self-corrects and the damage doesn=E2=80=99t spread.
 
- kernel/sched/fair.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+It would be nice if we as eBPF users could decide whether we wish to
+live dangerously or prefer to trade speed for safety, on a case-by-case
+basis.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1c0ef435a7aa..d7ba333393f2 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1242,7 +1242,7 @@ static void update_curr(struct cfs_rq *cfs_rq)
- 		 *    against fair_server such that it can account for this time
- 		 *    and possibly avoid running this period.
- 		 */
--		if (dl_server_active(&rq->fair_server))
-+		if (dl_server_active(&rq->fair_server) && rt_bandwidth_enabled())
- 			dl_server_update(&rq->fair_server, delta_exec);
- 	}
- @@ -5957,7 +5957,7 @@ static bool throttle_cfs_rq(struct cfs_rq *cfs_rq)
- 	sub_nr_running(rq, queued_delta);
-  	/* Stop the fair server if throttling resulted in no runnable tasks */
--	if (rq_h_nr_queued && !rq->cfs.h_nr_queued)
-+	if (rq_h_nr_queued && !rq->cfs.h_nr_queued && dl_server_active(&rq->fair_server))
- 		dl_server_stop(&rq->fair_server);
- done:
- 	/*
-@@ -6056,7 +6056,7 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 	}
-  	/* Start the fair server if un-throttling resulted in new runnable tasks */
--	if (!rq_h_nr_queued && rq->cfs.h_nr_queued)
-+	if (!rq_h_nr_queued && rq->cfs.h_nr_queued && rt_bandwidth_enabled())
- 		dl_server_start(&rq->fair_server);
-  	/* At this point se is NULL and we are at root level*/
-@@ -7005,9 +7005,11 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p,
-int flags)
-  	if (!rq_h_nr_queued && rq->cfs.h_nr_queued) {
- 		/* Account for idle runtime */
--		if (!rq->nr_running)
-+		if (!rq->nr_running && rt_bandwidth_enabled())
- 			dl_server_update_idle_time(rq, rq->curr);
--		dl_server_start(&rq->fair_server);
-+
-+		if (rt_bandwidth_enabled())
-+			dl_server_start(&rq->fair_server);
- 	}
-  	/* At this point se is NULL and we are at root level*/
-@@ -7134,7 +7136,7 @@ static int dequeue_entities(struct rq *rq, struct
-sched_entity *se, int flags)
-  	sub_nr_running(rq, h_nr_queued);
- -	if (rq_h_nr_queued && !rq->cfs.h_nr_queued)
-+	if (rq_h_nr_queued && !rq->cfs.h_nr_queued && dl_server_active(&rq->fair_server))
- 		dl_server_stop(&rq->fair_server);
-  	/* balance early to pull high priority tasks */
--- 
-2.43.0
+> (instead of bpf_mem_cache_free_rcu()) because users need speed.
+> So since 2022 both prealloc and no_prealloc reuse elements.
+> We can consider a new flag for the hash map like F_REUSE_AFTER_RCU_GP
+> that will use _rcu() flavor of freeing into bpf_ma,
+> but it has to have a strong reason.
+> And soon as we add it the default with prealloc would need
+> to use call_rcu() too, right?
+> and that becomes nightmare, since bpf prog can easily DoS the system.
+> Even if we use bpf_mem_cache_free_rcu() only, the DoS is a concern.
+> Unlike new things like bpf_obj_new/obj_drop the hashmap
+> is unpriv, so concerns are drastically different.
 
+Would it be an option to gate F_REUSE_AFTER_RCU under CAP_BPF?
+
+It looks like sleepable programs would need to bpf_rcu_read_lock
+explicitly to reap the benefits, but why not.=
