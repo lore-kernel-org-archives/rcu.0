@@ -1,43 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AE617A2E8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BC223314B;
 	Mon, 10 Mar 2025 18:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741631892; cv=none; b=PZ3UXwsgDVutX94B3gCq7Ayvz+UzcpA9fAbvxqJKwoC1ZpNCz6PLmQ5N6trif7E4zPngsX8waBM+cNgCFLiHEUp8RPBAHj/nnYHn5SK9SfDmTf5DV3OA6tqgq9f00Zh4+mzDUBonCIdX0JYlv3zmn9s7fl/KNaICjUjgwdygrhQ=
+	t=1741631892; cv=none; b=m+TRRHB+aGz5fIEyw9YGgPbmZDSyprzrmhzOckeiO8bN1gye8PeBo4gXETj38TgP1vWRpDBhDHVfCrjE7IFo9DvRSdaTqCbie0rYb/4D94R6MGloUTcKYJj/q3LnWN9QUEXD+cSZmzI4fFrbjD2P8OzN81VPaLmh8j5PYi1MXIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1741631892; c=relaxed/simple;
-	bh=9sDMN4XZIcJRgoHQjxyZQce37ueUrgjbAHGywNbSEVo=;
+	bh=77AYLHKjJDUAxlPSNSjE5Yx8FldJR4VJKjnY8y5KFC8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AFln4PKVY1BNA+BXy42b0gdijN46TcGfTb/bQKd6GDEcskUQZ/1p1VVbuVjY76jDMqM9IdmuSzjR/6iGqUE9w9pgbKL4/ouH3t1KU+uHQP1kvnlMKnP5urQHWKYJXqHd6cQ3FkdFm0p/OiRG3VUIlXYiy/7m3KFWBkjtye8zpYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kBraPChY; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=glNHExND8i3Wmunv00L1lTO64p3H52iZ74ivssblO0yHsk1bV/oBlbeAiVE2Xgg4LKMGW6/D//3+9qiVvTBwJMqo6eGGMdUvNRa3SLCL4ptmnZz1Qb8O7XPluGIknzYyp4EnEjIjZztRCP8prmIWv3drIqyz20EJ1Ji/On6rGCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W8NzDphX; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kBraPChY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A07AC4CEF0;
-	Mon, 10 Mar 2025 18:38:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W8NzDphX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2665C4CEE5;
+	Mon, 10 Mar 2025 18:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741631892;
-	bh=9sDMN4XZIcJRgoHQjxyZQce37ueUrgjbAHGywNbSEVo=;
+	s=k20201202; t=1741631891;
+	bh=77AYLHKjJDUAxlPSNSjE5Yx8FldJR4VJKjnY8y5KFC8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kBraPChYmnALx5Y2wGL+tBRbECOLIs4TW2P4nZbpnFuKeO0FqxNljMlOuYV2vLPHR
-	 8Qt756opii3LzhM9xrENH5OcEPorhFasrFb9rD/tSvfbU6jFUSlJOF6CjAslNFutlj
-	 2z3xfeyQHn5DXbqDIttpaWgv48iQxsvUNFeyq2cxhik5AAbkMXruBV0NCRYxQctU+e
-	 WlJgXodlSLRsulWx/imFSqlIRIFcQxnv0vBClkr2B4hEx8dIo96d08Ofhsju3QQNPQ
-	 jgYb7O86WCqCvE/4zhxuUfmLulnGz1T9oAl0GRIhBInAd6/XPBVqPYsn2EfD0l6Nj2
-	 sX442rE1AfN4g==
+	b=W8NzDphXo/nNkSy2eE9KbOus63p6o6k/4t1IVYntijYbmyxZJlVJ2lX3dtAU41WeM
+	 OLLR6SREBaAvk1MWsGMqCErLVHdM/CmaJ9Vj+Vif2CHNER9hb3BuZTCJeDQgpVP4xw
+	 JwHYOM9emfgViENCO1xd6Ijvjt0zFjGcNogIRWaQ8WNGjKVURkhWttDS8qRXyvafUA
+	 HInMTI/wluAjpPCG5O7v7FcGCpDRptgfQrTKTR7EMRmirja357w7S+TlHYX/7+N2dP
+	 UqIymHEnO86xnuKklz9D6sqf12qlLVA0iTAiXqLc67ombhVHtYM1/c19ST1Hm1gN+3
+	 WNOMrYvdWpCHg==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 9663DCE1163; Mon, 10 Mar 2025 11:38:11 -0700 (PDT)
+	id 8DBAACE079A; Mon, 10 Mar 2025 11:38:11 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 4/9] rcutorture: Make torture.sh --do-rt use CONFIG_PREEMPT_RT
-Date: Mon, 10 Mar 2025 11:38:04 -0700
-Message-Id: <20250310183809.3576320-4-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 1/9] rcutorture: Make srcu_lockdep.sh check kernel Kconfig
+Date: Mon, 10 Mar 2025 11:38:01 -0700
+Message-Id: <20250310183809.3576320-1-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <4bf081c8-9299-4ee3-b337-d5b751cef6be@paulmck-laptop>
 References: <4bf081c8-9299-4ee3-b337-d5b751cef6be@paulmck-laptop>
@@ -49,47 +48,54 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The torture.sh --do-rt command-line parameter is intended to mimic -rt
-kernels.  Now that CONFIG_PREEMPT_RT is upstream, this commit makes this
-mimicking more precise.
-
-Note that testing of RCU priority boosting is disabled in favor
-of forward-progress testing of RCU callbacks.  If it turns out to be
-possible to make kernels built with CONFIG_PREEMPT_RT=y to tolerate
-testing of both, both will be enabled.
+The srcu_lockdep.sh currently blindly trusts the rcutorture SRCU-P
+scenario to build its kernel with lockdep enabled.  Of course, this
+dependency might not be obvious to someone rebalancing SRCU scenarios.
+This commit therefore adds code to srcu_lockdep.sh that verifies that
+the .config file has lockdep enabled.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ .../testing/selftests/rcutorture/bin/srcu_lockdep.sh  | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 0447c4a00cc4d..9cabe505585ea 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -448,13 +448,17 @@ fi
+diff --git a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+index 2db12c5cad9c6..b94f6d3445c6c 100755
+--- a/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
++++ b/tools/testing/selftests/rcutorture/bin/srcu_lockdep.sh
+@@ -39,8 +39,9 @@ do
+ 	shift
+ done
  
- if test "$do_rt" = "yes"
- then
-+	# In both runs, disable testing of RCU priority boosting because
-+	# -rt doesn't like its interaction with testing of callback
-+	# flooding.
+-err=
+ nerrs=0
 +
- 	# With all post-boot grace periods forced to normal.
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcupdate.rcu_normal=1"
--	torture_set "rcurttorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --trust-make
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.test_boost=0 rcupdate.rcu_normal=1"
-+	torture_set "rcurttorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --kconfig "CONFIG_PREEMPT_LAZY=n CONFIG_PREEMPT_RT=y CONFIG_EXPERT=y" --trust-make
- 
- 	# With all post-boot grace periods forced to expedited.
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcupdate.rcu_expedited=1"
--	torture_set "rcurttorture-exp" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --trust-make
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.test_boost=0 rcupdate.rcu_expedited=1"
-+	torture_set "rcurttorture-exp" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --kconfig "CONFIG_PREEMPT_LAZY=n CONFIG_PREEMPT_RT=y CONFIG_EXPERT=y" --trust-make
- fi
- 
- if test "$do_srcu_lockdep" = "yes"
++# Test lockdep's handling of deadlocks.
+ for d in 0 1
+ do
+ 	for t in 0 1 2
+@@ -52,6 +53,12 @@ do
+ 			tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5s --configs "SRCU-P" --kconfig "CONFIG_FORCE_NEED_SRCU_NMI_SAFE=y" --bootargs "rcutorture.test_srcu_lockdep=$val rcutorture.reader_flavor=0x2" --trust-make --datestamp "$ds/$val" > "$T/kvm.sh.out" 2>&1
+ 			ret=$?
+ 			mv "$T/kvm.sh.out" "$RCUTORTURE/res/$ds/$val"
++			if ! grep -q '^CONFIG_PROVE_LOCKING=y' .config
++			then
++				echo "rcu_torture_init_srcu_lockdep:Error: CONFIG_PROVE_LOCKING disabled in rcutorture SRCU-P scenario"
++				nerrs=$((nerrs+1))
++				err=1
++			fi
+ 			if test "$d" -ne 0 && test "$ret" -eq 0
+ 			then
+ 				err=1
+@@ -71,6 +78,8 @@ do
+ 		done
+ 	done
+ done
++
++# Set up exit code.
+ if test "$nerrs" -ne 0
+ then
+ 	exit 1
 -- 
 2.40.1
 
