@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2267E202C39;
-	Fri, 14 Mar 2025 14:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9CA202C34;
+	Fri, 14 Mar 2025 14:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741963019; cv=none; b=C+BAFMAy7DIDPgU0vu3d8gZmsIyqmOyJZhWa0LdEV9tk80+8kx5IzkqlP0FWSzD0UhR7YhrlgyH/fRiUmUgBDh2V3L6sLh3EoVsVwPRiTu5jB07KNPgj8xF8Q9mOPSZNns8FCUK2C3toMx1AFKdLeyEacrI+MmUFq6K1EhBpeaA=
+	t=1741963021; cv=none; b=VHtpMbr3HyjnWmCH1zllClda5JgfhnaFnCfwlTh6fQvyP6tdOi0TL7AhIFfShouLBrqv4gqHfUXcCB25nhXkdcu8fn1dUnmOXvUVHaptKahFhBLNQsZI+xaaXl2YbdEFYD5fMXlZ/GPxZYZTidwmP4vrm3Ai7voCkwHWP3Tp3GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741963019; c=relaxed/simple;
-	bh=2ceJ30Ucuu3ZC70dVdSYC3nnStxus6Nf7//XhyNn4Us=;
+	s=arc-20240116; t=1741963021; c=relaxed/simple;
+	bh=JA73+M7TZ+VjBe+WGmCS+fPRTyG1hrOlK32h7qOdmBI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qxK0zyu3KASDR9o+a/q3tg/iok4liLqd/Lpzk0ZuSvn2/mTqLZ5gYkBOR1y37BBUFnaFfkaaLrxVR29K7yqBHnzU7+OGVK7dwzBykPoNJm1jkb2gZmN8dt5MGu+rjli+eydYlhcCxNLOfiUMZfBiL9Jjs61uoV6ZTY+PRKfA0V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FWtqe7zt; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=S6srBFGiO2uS6+4Onb/RZpwfIdGOUkCeyu67yMcP5g8h0U9OiTyBkJxLnl/WPOHkSq+6W6YESjf789z+3v0ySmVkUoT6qMWHXqXYRB3whk3MtFwXYEK+VrCuNJthLL+x59Ftl6HOuHxYqSFlSjxUJyJaWwtem1ayA/tcP08lbJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9+FVapb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWtqe7zt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E7B4C4CEE3;
-	Fri, 14 Mar 2025 14:36:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9+FVapb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FAC5C4AF09;
+	Fri, 14 Mar 2025 14:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741963018;
-	bh=2ceJ30Ucuu3ZC70dVdSYC3nnStxus6Nf7//XhyNn4Us=;
+	s=k20201202; t=1741963020;
+	bh=JA73+M7TZ+VjBe+WGmCS+fPRTyG1hrOlK32h7qOdmBI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FWtqe7zt+TPZpSTxH32/i2bCY2dI0v/Af0iJyYd6LxWsiwwQi95ebYjvjKHIAN9zs
-	 3IR4p1FLOfqPO0oEAX0ZsJVx8uBEz1wYVN6vroXW7cMk/qppLTTazTIcJpMqOLgNRi
-	 pNZhggIjVI1HffilAmypbqfGwGC7flXrQr3SrG4V7fpRBFkR23qIijjyjreWVS3ds6
-	 b+Q4p4DfsQWoT1n69KCrn3mUL44BS4zk4t8uM5qDpEX5SfnFFPG5jIpvRWXVMaPQ44
-	 PBDrqACIX5JEMrE3roCfH4RNwb5ep0qc8KDVs0H1ae7ee0yptp+mmLK8qFBbppLvtm
-	 V4lYk/tyUzr3Q==
+	b=E9+FVapbWNejlNlU/9D+likKIEzU/gRhun9WJGpIxYVOL4oApNgcIxuzyiejYdCgO
+	 QmqzreRIcvLn8tF04rCv1Od++bmxKzTYJZbNfgrrNOFZ/L3sa7KP45oWZxXDZ0W+HQ
+	 XX1HoS96oNjBQASM1BCg/pdL4J2e53f9svDX+yMyl2i66DL0ZQkVdwi4o9StS7QZAY
+	 gw1ymmCtt96/4QiPL59VcoTf4WptsYJ7xraPriiic4i3xUijFXaG6QBzA81Qsv4wxr
+	 ePfmCe+QQeDhM7aabcL2DIZQE4P9wQEVgn9l8pgSB5WgdJ7m2VvCFtaDdPIhQ4dzGq
+	 gSw6OSMKTHnXQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -36,9 +36,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
 	rcu <rcu@vger.kernel.org>
-Subject: [PATCH 4/5] rcu/exp: Warn on QS requested on dying CPU
-Date: Fri, 14 Mar 2025 15:36:41 +0100
-Message-ID: <20250314143642.72554-5-frederic@kernel.org>
+Subject: [PATCH 5/5] rcu/exp: Warn on CPU lagging for too long within hotplug IPI's blindspot
+Date: Fri, 14 Mar 2025 15:36:42 +0100
+Message-ID: <20250314143642.72554-6-frederic@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250314143642.72554-1-frederic@kernel.org>
 References: <20250314143642.72554-1-frederic@kernel.org>
@@ -50,42 +50,51 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It is not possible to send an IPI to a dying CPU that has passed the
-CPUHP_TEARDOWN_CPU stage. Remaining unhandled IPIs are handled later at
-CPUHP_AP_SMPCFD_DYING stage by stop machine. This is the last
-opportunity for RCU exp handler to request an expedited quiescent state.
-And the upcoming final context switch between stop machine and idle must
-have reported the requested context switch.
+A CPU within hotplug operations can make the RCU exp kworker lagging if:
 
-Therefore, it should not be possible to observe a pending requested
-expedited quiescent state when RCU finally stops watching the outgoing
-CPU. Once IPIs aren't possible anymore, the QS for the target CPU will
-be reported on its behalf by the RCU exp kworker.
+* The dying CPU is running after CPUHP_TEARDOWN_CPU but before
+  rcutree_report_cpu_dead(). It is too late to send an IPI but RCU is
+  still watching the CPU. Therefore the exp kworker can only wait for
+  the target to reach rcutree_report_cpu_dead().
 
-Provide an assertion to verify those expectations.
+* The booting CPU is running after rcutree_report_cpu_starting() but
+  before set_cpu_online(). RCU is watching the CPU but it is too early
+  to be able to send an IPI. Therefore the exp kworker can only wait
+  until it observes the CPU as officially online.
 
+Such a lag is expected to be very short. However #VMEXIT and other
+hazards can stay on the way. Report long delays, 10 jiffies is
+considered a high threshold already.
+
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/rcu/tree.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/rcu/tree_exp.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3fe68057d8b4..79dced5fb72e 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4321,6 +4321,12 @@ void rcutree_report_cpu_dead(void)
- 	 * may introduce a new READ-side while it is actually off the QS masks.
- 	 */
- 	lockdep_assert_irqs_disabled();
-+	/*
-+	 * CPUHP_AP_SMPCFD_DYING was the last call for rcu_exp_handler() execution.
-+	 * The requested QS must have been reported on the last context switch
-+	 * from stop machine to idle.
-+	 */
-+	WARN_ON_ONCE(rdp->cpu_no_qs.b.exp);
- 	// Do any dangling deferred wakeups.
- 	do_nocb_deferred_wakeup(rdp);
+diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+index 6058a734090c..87a44423927d 100644
+--- a/kernel/rcu/tree_exp.h
++++ b/kernel/rcu/tree_exp.h
+@@ -406,8 +406,18 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+ 	for_each_leaf_node_cpu_mask(rnp, cpu, mask_ofl_ipi) {
+ 		struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+ 		unsigned long mask = rdp->grpmask;
++		int nr_retries = 0;
  
+ retry_ipi:
++		/*
++		 * In case of retrying, CPU either is lagging:
++		 *
++		 * - between CPUHP_TEARDOWN_CPU and rcutree_report_cpu_dead()
++		 * or:
++		 * - between rcutree_report_cpu_starting() and set_cpu_online()
++		 */
++		WARN_ON_ONCE(nr_retries++ > 10);
++
+ 		if (rcu_watching_snap_stopped_since(rdp, rdp->exp_watching_snap)) {
+ 			mask_ofl_test |= mask;
+ 			continue;
 -- 
 2.48.1
 
