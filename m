@@ -1,97 +1,100 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A0C201006;
-	Fri, 14 Mar 2025 14:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8B3202C21;
+	Fri, 14 Mar 2025 14:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741963148; cv=none; b=iCHW64y76NA3yiDQrlJeCxzoqtz6UpxKk79r6q8Qc0mcat8rcwWpJWSefMJy0H5p9x82nEWR9xKtHR9luVmZnC353ChEOeFYaWcW1VpI4s9NIdzkfi2nz8jmR/+gDEhSMWDdPTI+Wu2jrIvDftMu3eXfvKFTrgKt98LYBuYGiUs=
+	t=1741963418; cv=none; b=Y5QDwkXYQTsUZzjrD4sPiz2gwc0lFBWhPzPUD7D8ZGxnRxC/lcsfdKVWgByrMMD/aN2518tkzD2LOmu5BoYHFAN1vB4V7uTLzbf9aQS1jymyq2rj9uiofaAlCMO8dInB+wBPOquZ1T4uktFJzb72Cu3L7J4oOydUcNFNhs8WKsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741963148; c=relaxed/simple;
-	bh=+rOCS4ANpOhQrkXaIKAqHuNZwcp5/PpEXC53lEgGM7o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IQzI1PMh9p70WfbSGhlFK3+eRysbapz4W0mc/TASvU3StS3fpDoBbjTAGX2Mu1niTtaPHPxirtvPO8F05wTTQ6lSNmtLBAw2ohuniWYFj11V0Xv9F52IrL4Spg2t6/rnuUVX9CvHPHtwvdlXKmAAGT4jiLT66eQ33Wu8f8wU3gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=loCBhxEB; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1741963418; c=relaxed/simple;
+	bh=XlYepE0qm5GS8Ms85NOW2h1KCpwn8+/laEx53InJ+i0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=miq3x5kNT0TkfVwLnnSGiwylajVTCwH84osJXLMAik+30Vvr39PLGRErrwN4emsuj7eVqGZE4/X25/Nd3D5hpEOtjzsYCJ2/WCSszg8CPmkiWyZxU0K8QjCFhNLCube5f5pRSr7ergnUQmPUdDvUHVQiTUK/n+0nyS1a9+RnXSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rg0iiy0V; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="loCBhxEB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4938EC4CEE9;
-	Fri, 14 Mar 2025 14:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741963147;
-	bh=+rOCS4ANpOhQrkXaIKAqHuNZwcp5/PpEXC53lEgGM7o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=loCBhxEBErKK3ZIht8R39+ptBlFC2S1QBIaARm2aLPojkPkaPZiUl/F+SVqutA0ac
-	 NX2lEwH4CexIWMDqGzyv17BXtlUwYB+szhZLa+fJGJMQd/04J64JyhCWiksYSSDHZU
-	 4Cw0l5C71+PpzLn4kYMj0m70dVGjf0gXQIpn2T/w8b/oKTCr/HaaRuMGMeLQQUvVJo
-	 MQ80z+4JEmZKB1hHaj2PqI6fpbrGlaW0viu9UwzxJpVsXs8Ra5RcaRlWX+tpq4vW4L
-	 vt2wM7lpkf2uPKIhCzk72o/e00wyCpOdIOgaEGLImdi0Ga84XrD6FXdIeHx2khLtrg
-	 UhKQbRMW/U+OQ==
-Date: Fri, 14 Mar 2025 15:39:05 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
- report
-Message-ID: <Z9Q_iWaLfGb9fzA4@localhost.localdomain>
-References: <20250213232559.34163-1-frederic@kernel.org>
- <20250213232559.34163-4-frederic@kernel.org>
- <332cc3da-55fa-4729-81bf-625afa5290bd@paulmck-laptop>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rg0iiy0V"
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-301317939a0so508403a91.2;
+        Fri, 14 Mar 2025 07:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741963417; x=1742568217; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XlYepE0qm5GS8Ms85NOW2h1KCpwn8+/laEx53InJ+i0=;
+        b=Rg0iiy0VnUsbiislzoQ/wIpGr3luq0m86cz/pjTxR7lR87Bgg5LxstWEEYCj8lov96
+         mRcQzPltrun3rN+kQvbEHs5+JICI1x9wnVYyrCrDId//8izRzu0t+H4kvZ/S+ABDAgow
+         qNjBvPbMvTGEfukudNzKOZaK/8an0c/Gut7vDMyqXtfX1l5jlMfyPK60+nj30BJp09t/
+         n5nzbq2qNb32qPA9EXAhkT7Di2r8DzTNsgtX+AU+AYswpSJLvm0I6bXhfOTdCmDg2ujZ
+         L8Z8foOageysz2dJG8rmLhzlFBTANkvj+0qxM5YrMi9+2NyaR+d7/T/5+iXYeuWF6Hv3
+         Todg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741963417; x=1742568217;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XlYepE0qm5GS8Ms85NOW2h1KCpwn8+/laEx53InJ+i0=;
+        b=oJxCOl3W0JCAGkn6B8hlmIP8mYJ81ukT78dakixTWNd+WfhqMlu52PAu7TLzmly+oP
+         7Iz6BWsuXoSgSr1J+IvPKP5/9PwltEgZiozU1X1Sg5zbBIks4QqxqNARkN8ptbE1bEv+
+         ZHkF5YuDaEhIm6NgTo0FJBWBQFR1K8xCYlzyTEPzuJyQG57IkSYJLTR58HcpmF4j4XIz
+         EXGdrRYWjt/9XjL+AHE8JwWHtbxhEgm83Si8VmLIIUfCNaASmy/De6BjLoriPtLgwT83
+         6Ps9YS0ssJG51L346WcF0V5n18F3vDzuLptDP2vxcNvPXp0uUkOu1OrOFijj6ttergVq
+         PF2A==
+X-Forwarded-Encrypted: i=1; AJvYcCV9Xug4eF1Z8ZSaYQyQwOG0Iq7XSR18SpCavwiWT3/ShAodUKJdh7h/4Ai19O5T2czKmYjAKRdfrJSXysY=@vger.kernel.org, AJvYcCW99RRGI1Lvb2tu5LI9CvgyaeYLayimx4s73kbejiyIyr/4j5hn9E75Keud7oUO37grB5Q9@vger.kernel.org, AJvYcCWKf+V2Iq2hyA1mp+l0W1lBPpKulLmnL12uBM+s39tHV9W3cDoGvJ8l3L0xVmnGaZ1AzUxpebkESbsG7ZseJO8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxK4r7pO+m5UUR6QI+PvZhStUU+jdPTMU8d29KXFsHO7CmzduTJ
+	d6Sa9PIQGIjFnOP1QupfC8AUqcktPpfd9DTYmULfWkSZTOWF8Z9p0aA/yW7Hf6jMgbBsl7gt0RR
+	fXa0uukzrJsttsND8A+hssNVQbA8=
+X-Gm-Gg: ASbGncuk6B1UWz/mvE9sqMzWDyN157m2h/gUJ5M5HQFdv75gAY+DX6wGRAtXjYQ6ehK
+	ou3vBDiPYzPeaiDYJJnWGOQTJ2ObUsRnoyX/LuQCWupr7sHbJlbJ6dnB/ngHBU8CMsymyXxfwoP
+	7Bx2/ptF9Cwpb/vG6lIkoapDjCPg==
+X-Google-Smtp-Source: AGHT+IGrQ+XJ1EOoVoOVpa/rZyFLtn7pDDFG2lG8nu+cAc3IqwYiYm4lfiaEKGMt0ILOHT7mZysUFHafTEnb4rjqd90=
+X-Received: by 2002:a17:90b:4f82:b0:2ff:7c5a:216d with SMTP id
+ 98e67ed59e1d1-30151d8178fmr1503361a91.5.1741963416698; Fri, 14 Mar 2025
+ 07:43:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <332cc3da-55fa-4729-81bf-625afa5290bd@paulmck-laptop>
+References: <20250312101723.149135-1-richard120310@gmail.com> <20250313043006.GA1396688@joelnvbox>
+In-Reply-To: <20250313043006.GA1396688@joelnvbox>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 14 Mar 2025 15:43:23 +0100
+X-Gm-Features: AQ5f1JpdKA2_xM48XN7Rbmeslc2fqSu4W8JItvhuGzx6_FCp0JcLccJntLsSGCo
+Message-ID: <CANiq72m3pDny0fUkg4XAFsuA72ku0BKcoj5+zKza=o6Ek_QASQ@mail.gmail.com>
+Subject: Re: [PATCH] rust: sync: rcu: Mark Guard methods as inline
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: I Hsin Cheng <richard120310@gmail.com>, rostedt@goodmis.org, paulmck@kernel.org, 
+	frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org, 
+	josh@joshtriplett.org, boqun.feng@gmail.com, urezki@gmail.com, 
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, 
+	qiang.zhang1211@gmail.com, ojeda@kernel.org, alex.gaynor@gmail.com, 
+	gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me, 
+	a.hindborg@kernel.org, aliceryhl@google.com, tmgross@umich.edu, 
+	dakr@kernel.org, rcu@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org, 
+	jserv@ccns.ncku.edu.tw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le Mon, Mar 03, 2025 at 12:10:50PM -0800, Paul E. McKenney a écrit :
-> On Fri, Feb 14, 2025 at 12:25:59AM +0100, Frederic Weisbecker wrote:
-> > A CPU coming online checks for an ongoing grace period and reports
-> > a quiescent state accordingly if needed. This special treatment that
-> > shortcuts the expedited IPI finds its origin as an optimization purpose
-> > on the following commit:
-> > 
-> > 	338b0f760e84 (rcu: Better hotplug handling for synchronize_sched_expedited()
-> > 
-> > The point is to avoid an IPI while waiting for a CPU to become online
-> > or failing to become offline.
-> > 
-> > However this is pointless and even error prone for several reasons:
-> > 
-> > * If the CPU has been seen offline in the first round scanning offline
-> >   and idle CPUs, no IPI is even tried and the quiescent state is
-> >   reported on behalf of the CPU.
-> > 
-> > * This means that if the IPI fails, the CPU just became offline. So
-> >   it's unlikely to become online right away, unless the cpu hotplug
-> >   operation failed and rolled back, which is a rare event that can
-> >   wait a jiffy for a new IPI to be issued.
-> > 
-> > * But then the "optimization" applying on failing CPU hotplug down only
-> >   applies to !PREEMPT_RCU.
-> > 
-> > * This force reports a quiescent state even if ->cpu_no_qs.b.exp is not
-> >   set. As a result it can race with remote QS reports on the same rdp.
-> >   Fortunately it happens to be OK but an accident is waiting to happen.
-> > 
-> > For all those reasons, remove this optimization that doesn't look worthy
-> > to keep around.
-> > 
-> > Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> 
-> Based on discussions:
-> 
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> If it was still just me doing RCU, I would skip this one, just out of an
-> abundance of caution.  But you break it, you buy it!  ;-)
+On Thu, Mar 13, 2025 at 5:30=E2=80=AFAM Joel Fernandes <joelagnelf@nvidia.c=
+om> wrote:
+>
+> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+>
+> If no objections, I can queue it for 6.16 but let me know if Rust maintai=
+ners
+> prefer to take it.
 
-I'm trying to be optimistic... ;-))
+Thanks! That would be great -- FWIW:
+
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
+
+By the way, should `read_lock()` be marked too? It just calls another
+(now `#[inline]` one).
+
+Cheers,
+Miguel
