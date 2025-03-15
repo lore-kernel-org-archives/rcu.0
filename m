@@ -1,118 +1,139 @@
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B017A17BED0;
-	Sat, 15 Mar 2025 06:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3F8E13AD22;
+	Sat, 15 Mar 2025 16:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742020196; cv=none; b=gutxSJAWtsVtmuqhibbae23cRZhlG60KZ9JMIea+sJCykn9H88MAly/mhfazfnAfpel38B+rHFX53BViUbFgIC3+3S114krhHJuoqWjZ0jhiLti9h1S4EaJrwsYcE4pC1OUNxnYTQiZ4ig35JVJuvKC3JMVn280MRtNe+xqLKS0=
+	t=1742057587; cv=none; b=EnRJtbCTMZCxc2ev1qJhCRZr+XMpyNs/4KCJ/0CW3iOTWTCq/DYZsjJvhrKX8YTsS7lJAw6+TeagZum5nelXa9F7mv2IDFj/j1rydVulRkajNZfWd2IxXz78GfFcICDF/5i0y4te0hLGp3u/pajwWJQZJn84ONk0dp5SbzRj8s8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742020196; c=relaxed/simple;
-	bh=2HPC4NQ90xLggdKKKcJPiPY/4SPFxfrjKCH1FgSkKGA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cOMqabryJEItQg0F79hmHyetG7oS0ZtIWCbeG3V9tiwFT542xEUiU4Oub7c2yJSifdihODAB410tzyc3udW788UC6nbirKXOKZy3PMlaN8JUyfoW1PQemnGtP7LzmzIVPuuOwu6/lbK/3+edGRG1Lc4Myz7UeKhlI5/HypGuxVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DUn/T8II; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1742057587; c=relaxed/simple;
+	bh=zjOSu9/dnsAEMjfIozr3ojYdoi0Fs9oyyhaZpqVgY3w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SUixlBQhEGl5ZhzIFHU1u9VBY1e+z3c9YMgalU0N1uoPEisPk5JAS/mFLL3Q5HuO3aTawkrAmNHdU1XkjmWTG9XC3F/4Y3lOTnesLEOfbD1UupPZJbWhfzzkEnb9dIaOKNwlZ938vT2SuslgfGf5/zbJ2cqmyGT5600G4yVMkWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RHDMyUoH; arc=none smtp.client-ip=209.85.208.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DUn/T8II"
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-30155bbbeaeso508088a91.2;
-        Fri, 14 Mar 2025 23:29:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RHDMyUoH"
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-30613802a59so34362771fa.0;
+        Sat, 15 Mar 2025 09:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742020194; x=1742624994; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tmfpLD0wSy9YLuamDc1npCFGqgQISAxicSJiRUT7xoY=;
-        b=DUn/T8II/5ujFAYXlG7DL9kx/Vbf9hKVIh14i68Z8BfNXrr8kwhzxg4FRxmOHgqVyV
-         4SwhJ1P3ydpaORiADotnsVET2uO/SPNMDgsJypDYXQWI5HtqruZWMDoTc7teD+5tjy9M
-         ij+DlxpqM+ChnljIL1GhArMQqCB8iqLDGcq6MYS7hV+EWGIjFcEv+MGPb20XsNIrTOO3
-         UXmaxNxnGgAdLG5EvgE9VV3kRFErtxU+on1jW1p/u+3NXrR0qEZIlkyZG9GK7ljUDBkF
-         0Pa+4di+ukEmyaBMTKlIYaj6yUSlPjzZSV0b4ACkgIyg+tLmETX0eMsme7SQYTf7JYSn
-         GMww==
+        d=gmail.com; s=20230601; t=1742057584; x=1742662384; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j98XjoqRqS//TK0dhh02Y1wC/XiTzmRNvGvaHw/U+9E=;
+        b=RHDMyUoHIcv7hGOpMeoqZXZlO13zNMJLPrnbDpWbSATz2od/pHEXPVoUyHK7Kuhydi
+         HrC4mwB1uy/ZMBJ60JW0MxH+mghSGgatxuRfuw5tvbDcBoh8uwGipea+oqX4nkmiaAqQ
+         C+z57IWzSCAxseZwVUj/WSM7h7nxaBYvO6wv7l58VXVbmCDFF4SDap4BEAA8b1GR6GaA
+         2P161SljPGcjYbivGLrWmt6wxTEG5AcaqN5Zkeqmvh3oDk6Xtr5nVEPP46jjRS79sK6f
+         6Z2g/dJAHiFmX004U+mORftKsKg4azIe5d05LuaYKOC7K/toaJ3kBTFSlkjtuDPtHwmf
+         2hBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742020194; x=1742624994;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tmfpLD0wSy9YLuamDc1npCFGqgQISAxicSJiRUT7xoY=;
-        b=UrlzTu/cDvszQ558NPTRMbDY9b0uWzMsdFuauXZkmG92tpPYHeyxDYIiajc9PIGMJH
-         UmsgZxgELiBybn4MfGYikk8zhCYtJi86ArnJBlYefBgIYYzUlbiNEQ2S+ZnBHQElozoY
-         GPH0PE7qNYscTDXx5rIuf8NB9yU09mUsWZ6ks6g2BbtfTfkhtyEnqiULpH5tFjtC5GB1
-         vQrWEbiwhxr3NDrWRG48krA8SS2J0+YLPw10nDIbZbQwjjnVQl6uw3ZinBICx641Hoav
-         DJVUqBc1nnsyrhrtETw/s74GDhsNjTB7pva0gvV3NCiubtzmlq0pl3igeKYMJlpzCtta
-         cmBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUEL5YJkuAM0qX5QiCPf5QbhYWkXJC+G2CDF4QZ2mXnzKjbIFvdATH3hu+tRDRAM9Fmi3ERavXz0nWIHjU=@vger.kernel.org, AJvYcCVjph+UV09aK83BVNEL+chViZUb/BYINFV04DKJ3bXYnWUtiRts0xcKDTtk1iSDyCf7L0P1@vger.kernel.org, AJvYcCVzuCI4iGT9/2UYBcWrbV+CIMEPrQcr7rS/xyzT5SuDEWfpZjXjG5/gSmIknFB6JcdjbdHSx6fHe9b7qoRpFdw=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/xs+mgYJmLStaTO4cIR+hamR7/xZVOOLLfXLqjAWP40GQZWah
-	pzzl4W0LS5EOoD58sl4o6MGZO2thAHqPArJfG/tIbtEindNOTzBz
-X-Gm-Gg: ASbGnctyAXi/jHORf6QZ06ig72zcxPmtK6L505xciYOgdJxq6Wd+XFfdTo1o+chOWEw
-	gpBMgK2dVQx8NUyX5cNF0gI4cNkiNVKRNjJDLLMSSAt6OeFKUNUITsod8FRlkjCMZNaedtgmiaH
-	8rb5baECY7cfy1+b72Vf9s1Eq0NLHYVsZAcBNbaMP+AcPhM/A+z1IkbzDNXvmbl14U2RydaoKVp
-	/zxaYW4q3cB7z8x7wO8N6gMMw6Lg+UTapzdp5GHDmSChCCX6cwcJ/s89KH/PVaoZ3WhnPqwuWqI
-	LnEjRCho/ba4v3XHEeT2W5I60vet4my25sFKJ3hHmkJD91VQUq/EFoTXpJJhfw==
-X-Google-Smtp-Source: AGHT+IGEcLAhPjis5DBeTEtDbcfTF37HVEoGh0kLkHJ4BZpXiObeLfEaIXG7pBvmWdz4S7hygKD7Ug==
-X-Received: by 2002:a05:6300:14d:b0:1f5:a577:dd1b with SMTP id adf61e73a8af0-1f5c1126db5mr7478656637.1.1742020193858;
-        Fri, 14 Mar 2025 23:29:53 -0700 (PDT)
-Received: from vaxr-BM6660-BM6360 ([2001:288:7001:2703:c5e6:ccb8:a191:9f7d])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-737116b2bfasm3955892b3a.177.2025.03.14.23.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Mar 2025 23:29:53 -0700 (PDT)
-Date: Sat, 15 Mar 2025 14:29:47 +0800
-From: I Hsin Cheng <richard120310@gmail.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, rostedt@goodmis.org,
-	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
-	joel@joelfernandes.org, josh@joshtriplett.org, boqun.feng@gmail.com,
-	urezki@gmail.com, mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com, ojeda@kernel.org,
-	alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
-	benno.lossin@proton.me, a.hindborg@kernel.org, aliceryhl@google.com,
-	tmgross@umich.edu, dakr@kernel.org, rcu@vger.kernel.org,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org, jserv@ccns.ncku.edu.tw
-Subject: Re: [PATCH] rust: sync: rcu: Mark Guard methods as inline
-Message-ID: <Z9UeWyrcK1t27SQV@vaxr-BM6660-BM6360>
-References: <20250312101723.149135-1-richard120310@gmail.com>
- <20250313043006.GA1396688@joelnvbox>
- <CANiq72m3pDny0fUkg4XAFsuA72ku0BKcoj5+zKza=o6Ek_QASQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1742057584; x=1742662384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j98XjoqRqS//TK0dhh02Y1wC/XiTzmRNvGvaHw/U+9E=;
+        b=ZKL6QZuBMq1Ugbp9onKdyoRUqrdpmDcgwDJej08sIp3qs1q+eo0bFlgsYBohOVOsxk
+         D3KADF9H1B4k4L8rwBwUMf6UCu1dNefnZ5xWX0ARdJU7Ip1tjD+al1lrkydOgP/BKfxI
+         C0uMcDKCoI6uRQXSMgFRao3168/KI9P/zR8eKQkHI5aRGSecgzsEIjTVAb6Nka0k5PrX
+         iuooEXOwQiZH3qYxeHYTPNhEX7i54lluiQHrasqZgSKveEnbNBHWHAPer8guOcuFfgmb
+         0PymACqGf3/2ozqDZ4n/NP2y/o5Av8vZ4rRVo3HtqxmVbJI08pCxx3ZByV8dajri0MSA
+         fm9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUesFFnAqMaraLRP2didkEfIqk91RVtB0COQcTYWzl5ZUwLHvltJW5G2ThNfl7/QnRTNCra@vger.kernel.org, AJvYcCV6kGgkVtLSAsJmgIMZNKCUCQjXs5febhgZXmr/c3aQarzbkjYth6bJx0rJFF+Q904TLizgcc7qnCjiXZsAatU=@vger.kernel.org, AJvYcCVUokwQoBfw+ARN9XQaBmoilgHyZ6vx9tlbUuupv1T1gl6bw2SvKFOZfGfbKtfz8x8j2gZj9X5jo8Bs@vger.kernel.org, AJvYcCWPdq8ed+bhUZhZ8eRu/i6v1wilZW0BpEwN6BF+96Otl+GrdOnRZ8vd7LDSe4txjCgx55nSiR/c4YPG@vger.kernel.org, AJvYcCXULiAbj1iTpmw0RLRIucCTrH6b+R5YTFThRVR3Kg5q7KBAIW2aCBzMxHP+IhmD88iaDNRMpKcNKWwnH6a2@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3sWvnRPkW5zxATc8YsrN+v7kvEsGJdCIT31YV0pTMDYRxzz21
+	C9cIa0GhGitAdVmSxsP5pOQ276ti+bgCWXLA9iQenDrHVSsbgYhUpyTYiXErj+AfrCrUJnSDvER
+	+3E9uXp1fjJQIB6iqVI/phVPKHpk=
+X-Gm-Gg: ASbGncs7p91bJCp8HBCLysuk9u0Rm5CkSnSeV+Rjjb9S6tn9o08548PO1yU7xEr/lhl
+	vObPRPO0aRwHNG5+lk2ut9hY5yJ5SdZZCsn7ZI4VMGO1R+C46+T4z7kR+UN5QPiGBgcrtFsCUK5
+	UrjOoSz2p12TXfX8FpaXrWXu4XqfRZ7OJaYMhEm9QYcse6NoLrJdp1re2kMwFk
+X-Google-Smtp-Source: AGHT+IE6nJLBDig190G3azOZOlfsw3kVizlD3XnA7F8SdKwqqWHAB/0dKbxRfepfM+ueRq00y/aoSc2PeAtrf/Ekzy4=
+X-Received: by 2002:a2e:97d8:0:b0:30b:b852:2f85 with SMTP id
+ 38308e7fff4ca-30c4a85fd06mr19914131fa.13.1742057583484; Sat, 15 Mar 2025
+ 09:53:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72m3pDny0fUkg4XAFsuA72ku0BKcoj5+zKza=o6Ek_QASQ@mail.gmail.com>
+References: <20241219170425.12036-1-dakr@kernel.org> <20241219170425.12036-4-dakr@kernel.org>
+In-Reply-To: <20241219170425.12036-4-dakr@kernel.org>
+From: Tamir Duberstein <tamird@gmail.com>
+Date: Sat, 15 Mar 2025 12:52:27 -0400
+X-Gm-Features: AQ5f1Jr3qW4JM43WfoNMs9V0OgzKr9fN_4HpoGcmMxFqsIJ2AosKUujuVF5CQVY
+Message-ID: <CAJ-ks9nnQU4ryR1mbaWqNqcH+b=-s8Y0xKxTF-TQvfNGsWO7+w@mail.gmail.com>
+Subject: Re: [PATCH v7 03/16] rust: implement `IdArray`, `IdTable` and `RawDeviceId`
+To: Danilo Krummrich <dakr@kernel.org>
+Cc: gregkh@linuxfoundation.org, rafael@kernel.org, bhelgaas@google.com, 
+	ojeda@kernel.org, alex.gaynor@gmail.com, boqun.feng@gmail.com, 
+	gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me, 
+	tmgross@umich.edu, a.hindborg@samsung.com, aliceryhl@google.com, 
+	airlied@gmail.com, fujita.tomonori@gmail.com, lina@asahilina.net, 
+	pstanner@redhat.com, ajanulgu@redhat.com, lyude@redhat.com, robh@kernel.org, 
+	daniel.almeida@collabora.com, saravanak@google.com, dirk.behme@de.bosch.com, 
+	j@jannau.net, fabien.parent@linaro.org, chrisi.schrefl@gmail.com, 
+	paulmck@kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, 
+	devicetree@vger.kernel.org, rcu@vger.kernel.org, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 14, 2025 at 03:43:23PM +0100, Miguel Ojeda wrote:
-> On Thu, Mar 13, 2025 at 5:30 AM Joel Fernandes <joelagnelf@nvidia.com> wrote:
-> >
-> > Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
-> >
-> > If no objections, I can queue it for 6.16 but let me know if Rust maintainers
-> > prefer to take it.
-> 
-> Thanks! That would be great -- FWIW:
-> 
-> Acked-by: Miguel Ojeda <ojeda@kernel.org>
-> 
-> By the way, should `read_lock()` be marked too? It just calls another
-> (now `#[inline]` one).
-> 
-> Cheers,
-> Miguel
+On Thu, Dec 19, 2024 at 12:08=E2=80=AFPM Danilo Krummrich <dakr@kernel.org>=
+ wrote:
+>
+> +/// Marker trait to indicate a Rust device ID type represents a correspo=
+nding C device ID type.
+> +///
+> +/// This is meant to be implemented by buses/subsystems so that they can=
+ use [`IdTable`] to
+> +/// guarantee (at compile-time) zero-termination of device id tables pro=
+vided by drivers.
+> +///
+> +/// # Safety
+> +///
+> +/// Implementers must ensure that:
+> +///   - `Self` is layout-compatible with [`RawDeviceId::RawType`]; i.e. =
+it's safe to transmute to
+> +///     `RawDeviceId`.
+> +///
+> +///     This requirement is needed so `IdArray::new` can convert `Self` =
+to `RawType` when building
+> +///     the ID table.
+> +///
+> +///     Ideally, this should be achieved using a const function that doe=
+s conversion instead of
+> +///     transmute; however, const trait functions relies on `const_trait=
+_impl` unstable feature,
+> +///     which is broken/gone in Rust 1.73.
+> +///
+> +///   - `DRIVER_DATA_OFFSET` is the offset of context/data field of the =
+device ID (usually named
+> +///     `driver_data`) of the device ID, the field is suitable sized to =
+write a `usize` value.
+> +///
+> +///     Similar to the previous requirement, the data should ideally be =
+added during `Self` to
+> +///     `RawType` conversion, but there's currently no way to do it when=
+ using traits in const.
+> +pub unsafe trait RawDeviceId {
+> +    /// The raw type that holds the device id.
+> +    ///
+> +    /// Id tables created from [`Self`] are going to hold this type in i=
+ts zero-terminated array.
+> +    type RawType: Copy;
+> +
+> +    /// The offset to the context/data field.
+> +    const DRIVER_DATA_OFFSET: usize;
+> +
+> +    /// The index stored at `DRIVER_DATA_OFFSET` of the implementor of t=
+he [`RawDeviceId`] trait.
+> +    fn index(&self) -> usize;
+> +}
 
-Hi all,
-
-Thanks for your kindly review and comments!
-
-> By the way, should `read_lock()` be marked too? It just calls another
-> (now `#[inline]` one).
-
-I'll do it and fix the typo mentioned by Charalampos. I'll send v2 to
-you ASAP. Thanks !
-
-Best regards,
-I Hsin Cheng
+Very late to the game here, but have a question about the use of
+OFFSET here. Why is this preferred to a method that returns a pointer
+to the field?
