@@ -1,206 +1,118 @@
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023F017579
-	for <rcu@vger.kernel.org>; Fri, 14 Mar 2025 17:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B017A17BED0;
+	Sat, 15 Mar 2025 06:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741972237; cv=none; b=rEsUAZrLZRTc88wM7a5zhq00LCdVICtgiV1eYDs6LLrZ5ZemUt+i+NakMePZ8Tn89sscoWAZnCir348S1SeAalE6Dc7Ixm4IoCDRqEnp7KntUQ1OIHAULEV/pBAsKZXzk9V2fLtMpWWM9OAewLKwNDefQQl5e5pPNNqDxRCToSs=
+	t=1742020196; cv=none; b=gutxSJAWtsVtmuqhibbae23cRZhlG60KZ9JMIea+sJCykn9H88MAly/mhfazfnAfpel38B+rHFX53BViUbFgIC3+3S114krhHJuoqWjZ0jhiLti9h1S4EaJrwsYcE4pC1OUNxnYTQiZ4ig35JVJuvKC3JMVn280MRtNe+xqLKS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741972237; c=relaxed/simple;
-	bh=fZLD1w5OTYWmuxjNNme0MtrVD/MUya9rZScKtXEj+Fw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=g7ckuUh19KUok0CWb8u5sVFTB2H0bkeMgtEyVJPgiNyjLWlSAOfuS3GLrJzDOoXcyrgDuR30TWztqdz9hVSe/+vNYoI1kQR2Fx8W0eUgvMb0mT9tALxhabRWrczbrihExdHp2WHlC+iLTRcUuO6f7XMISKvQ2+ZUeX0bSlNVj2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lLYY5z8f; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1742020196; c=relaxed/simple;
+	bh=2HPC4NQ90xLggdKKKcJPiPY/4SPFxfrjKCH1FgSkKGA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cOMqabryJEItQg0F79hmHyetG7oS0ZtIWCbeG3V9tiwFT542xEUiU4Oub7c2yJSifdihODAB410tzyc3udW788UC6nbirKXOKZy3PMlaN8JUyfoW1PQemnGtP7LzmzIVPuuOwu6/lbK/3+edGRG1Lc4Myz7UeKhlI5/HypGuxVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DUn/T8II; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lLYY5z8f"
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-47681dba807so7511cf.1
-        for <rcu@vger.kernel.org>; Fri, 14 Mar 2025 10:10:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DUn/T8II"
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-30155bbbeaeso508088a91.2;
+        Fri, 14 Mar 2025 23:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1741972235; x=1742577035; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8EWHBV9blsC4VUtgf9tmLM/z12+DckHNCkeHcX1VEX4=;
-        b=lLYY5z8flTTN5c3nalYVYrQijq8OfRlu2JYGFi7QJG/s1W/45sybU+iO6x+pBuWYnF
-         rPnr3M1sgOfthnyYJsZyQ7+dK2wJvINCievh0SriaaGpamgbZh665Fb3HM7IC1UnwtKF
-         WGHgNk74UDWCRhe4XfNW0RkuWkIXLNqoI5l6c/noDEhYWQQ4xjRbIJwooyLCR573ULIl
-         sL8f63cYRsDxCL9a9wD6BU98+Dx//8hVGfRIo0V2UfJiorg3nJlBQ9ysu2xZRjiYdvDU
-         36eFhYjhTHV6tcbMbWiV6rqd6DqRKLPWG2d3CnWaDK92XWPh+qE3A/jLti3zXWRLXgQW
-         wPDg==
+        d=gmail.com; s=20230601; t=1742020194; x=1742624994; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tmfpLD0wSy9YLuamDc1npCFGqgQISAxicSJiRUT7xoY=;
+        b=DUn/T8II/5ujFAYXlG7DL9kx/Vbf9hKVIh14i68Z8BfNXrr8kwhzxg4FRxmOHgqVyV
+         4SwhJ1P3ydpaORiADotnsVET2uO/SPNMDgsJypDYXQWI5HtqruZWMDoTc7teD+5tjy9M
+         ij+DlxpqM+ChnljIL1GhArMQqCB8iqLDGcq6MYS7hV+EWGIjFcEv+MGPb20XsNIrTOO3
+         UXmaxNxnGgAdLG5EvgE9VV3kRFErtxU+on1jW1p/u+3NXrR0qEZIlkyZG9GK7ljUDBkF
+         0Pa+4di+ukEmyaBMTKlIYaj6yUSlPjzZSV0b4ACkgIyg+tLmETX0eMsme7SQYTf7JYSn
+         GMww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741972235; x=1742577035;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8EWHBV9blsC4VUtgf9tmLM/z12+DckHNCkeHcX1VEX4=;
-        b=m2PZfHvedw0nkyMOTHE7TRAINFm9iZLxFlqiYiXKZ5PrTSQX38/aFfTkWyb5j2FWEO
-         dJYib64dqBgxYFhv5m/GqxeOX/0c9RDbQQe+jS6q3TxLTcLV9jM95DKUJ+3XegTwQN8u
-         n7Vs3KKvNF4RVeOdFQFq9BGhVhu00JHFa8Qv79UxWo8rlbXxgQYdJwpdHLgAxpXDnKOM
-         whaTcAQfnkFa8RAivH0r/WXZYCfFpsYAJnpDweSuRI5GGLoK8XOOAEV/F1NsHiv/oFaT
-         3YJeLgZ9hBwJILw5koqzO9SujBPkg0bdMwM405vTz02NI+6pP/bpyRpS//BggzxXdy0r
-         tMww==
-X-Forwarded-Encrypted: i=1; AJvYcCVI1iCLjQTfGQeEA80GdXCvsZ+koAsplbvZeFyle7V42ZBitn2hjQXa3pVTpkCDUNa7lck=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSAt5aWiDK+h7CFx/3/gPVwFhrDOg6ut3pEiT8I8UkpxfrwHlA
-	IhM02KKYhn29kQ+fyJ944cwCOiMWuGMlxeo8l8OUVz7PiHi6cKisB5xqN5IGEqZlo2TEP9HLjHA
-	kMFNDCeZkwkS7NZF+ALGoX9esdC7THR58NBLU
-X-Gm-Gg: ASbGncucI/5LAwkANQbkKOh4B6ALv77Agx2gnKFXu6hLsHw8ZzApSDgknlPDFMmwxr7
-	wmbcRCcIQPR24hZDzVmTaGU7r8AY1+yTTZTp1n3p3GAbVbwdc0IASQ4dZ9LrwIlXUCO/rIe4xhZ
-	y4tpfhqJ24/PCqQTMDPqhUbkJuXg==
-X-Google-Smtp-Source: AGHT+IGJHHQF4NTn6NB5LyU5PLdvXbvdu8URRo9QL8eVBvNhUTnHirCkG4lnLyzQ9QiIKZuvzTbY1DBtZlnZfbcpR3A=
-X-Received: by 2002:ac8:7d0a:0:b0:466:8887:6751 with SMTP id
- d75a77b69052e-476c7fe8345mr3392701cf.23.1741972234384; Fri, 14 Mar 2025
- 10:10:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1742020194; x=1742624994;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tmfpLD0wSy9YLuamDc1npCFGqgQISAxicSJiRUT7xoY=;
+        b=UrlzTu/cDvszQ558NPTRMbDY9b0uWzMsdFuauXZkmG92tpPYHeyxDYIiajc9PIGMJH
+         UmsgZxgELiBybn4MfGYikk8zhCYtJi86ArnJBlYefBgIYYzUlbiNEQ2S+ZnBHQElozoY
+         GPH0PE7qNYscTDXx5rIuf8NB9yU09mUsWZ6ks6g2BbtfTfkhtyEnqiULpH5tFjtC5GB1
+         vQrWEbiwhxr3NDrWRG48krA8SS2J0+YLPw10nDIbZbQwjjnVQl6uw3ZinBICx641Hoav
+         DJVUqBc1nnsyrhrtETw/s74GDhsNjTB7pva0gvV3NCiubtzmlq0pl3igeKYMJlpzCtta
+         cmBg==
+X-Forwarded-Encrypted: i=1; AJvYcCUEL5YJkuAM0qX5QiCPf5QbhYWkXJC+G2CDF4QZ2mXnzKjbIFvdATH3hu+tRDRAM9Fmi3ERavXz0nWIHjU=@vger.kernel.org, AJvYcCVjph+UV09aK83BVNEL+chViZUb/BYINFV04DKJ3bXYnWUtiRts0xcKDTtk1iSDyCf7L0P1@vger.kernel.org, AJvYcCVzuCI4iGT9/2UYBcWrbV+CIMEPrQcr7rS/xyzT5SuDEWfpZjXjG5/gSmIknFB6JcdjbdHSx6fHe9b7qoRpFdw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/xs+mgYJmLStaTO4cIR+hamR7/xZVOOLLfXLqjAWP40GQZWah
+	pzzl4W0LS5EOoD58sl4o6MGZO2thAHqPArJfG/tIbtEindNOTzBz
+X-Gm-Gg: ASbGnctyAXi/jHORf6QZ06ig72zcxPmtK6L505xciYOgdJxq6Wd+XFfdTo1o+chOWEw
+	gpBMgK2dVQx8NUyX5cNF0gI4cNkiNVKRNjJDLLMSSAt6OeFKUNUITsod8FRlkjCMZNaedtgmiaH
+	8rb5baECY7cfy1+b72Vf9s1Eq0NLHYVsZAcBNbaMP+AcPhM/A+z1IkbzDNXvmbl14U2RydaoKVp
+	/zxaYW4q3cB7z8x7wO8N6gMMw6Lg+UTapzdp5GHDmSChCCX6cwcJ/s89KH/PVaoZ3WhnPqwuWqI
+	LnEjRCho/ba4v3XHEeT2W5I60vet4my25sFKJ3hHmkJD91VQUq/EFoTXpJJhfw==
+X-Google-Smtp-Source: AGHT+IGEcLAhPjis5DBeTEtDbcfTF37HVEoGh0kLkHJ4BZpXiObeLfEaIXG7pBvmWdz4S7hygKD7Ug==
+X-Received: by 2002:a05:6300:14d:b0:1f5:a577:dd1b with SMTP id adf61e73a8af0-1f5c1126db5mr7478656637.1.1742020193858;
+        Fri, 14 Mar 2025 23:29:53 -0700 (PDT)
+Received: from vaxr-BM6660-BM6360 ([2001:288:7001:2703:c5e6:ccb8:a191:9f7d])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-737116b2bfasm3955892b3a.177.2025.03.14.23.29.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Mar 2025 23:29:53 -0700 (PDT)
+Date: Sat, 15 Mar 2025 14:29:47 +0800
+From: I Hsin Cheng <richard120310@gmail.com>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, rostedt@goodmis.org,
+	paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org,
+	joel@joelfernandes.org, josh@joshtriplett.org, boqun.feng@gmail.com,
+	urezki@gmail.com, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com, ojeda@kernel.org,
+	alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
+	benno.lossin@proton.me, a.hindborg@kernel.org, aliceryhl@google.com,
+	tmgross@umich.edu, dakr@kernel.org, rcu@vger.kernel.org,
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org, jserv@ccns.ncku.edu.tw
+Subject: Re: [PATCH] rust: sync: rcu: Mark Guard methods as inline
+Message-ID: <Z9UeWyrcK1t27SQV@vaxr-BM6660-BM6360>
+References: <20250312101723.149135-1-richard120310@gmail.com>
+ <20250313043006.GA1396688@joelnvbox>
+ <CANiq72m3pDny0fUkg4XAFsuA72ku0BKcoj5+zKza=o6Ek_QASQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz>
- <ztssad52ikws3a2dwodju4o73h6rsutxnvzj5i6vyjjkudkiel@g7c7g5i3l7jd>
- <CAJuCfpHi4Od4K2xQEUFWuG=a4zCKecWBMwBiy_7mVn6QgsTSvA@mail.gmail.com>
- <CAJuCfpEq8P4cz7HXaRVqaagONPBKrFgOSqdigEYU60sGAE4-rg@mail.gmail.com>
- <173d4dbe-399d-4330-944c-9689588f18e8@suse.cz> <CAJuCfpHHXYKGjaOxHcuJcuQbUVO7YqLMpcYeF3HM5Ayxy1fE+g@mail.gmail.com>
- <CAJuCfpE7t83PKWw+8XJLE5538kKJnbhirLg2siDSw=F4sw=9uA@mail.gmail.com>
- <19df9218-c984-4cbc-8b5d-4e0f7658935f@suse.cz> <ape445nrqgod4ivtzcwacmfdshi3fgcqmmu54iascbjsk3sluo@w4jjihiz5jzr>
-In-Reply-To: <ape445nrqgod4ivtzcwacmfdshi3fgcqmmu54iascbjsk3sluo@w4jjihiz5jzr>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 14 Mar 2025 10:10:23 -0700
-X-Gm-Features: AQ5f1JrG8no_e7JHX8g1zQia30PtCt7dt-uwm8dg_Hv_0Iod5LHZmZ0lPg9sYMk
-Message-ID: <CAJuCfpFVopL+sMdU4bLRxs+HS_WPCmFZBdCmwE8qV2Dpa5WZnA@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 00/10] SLUB percpu sheaves
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Suren Baghdasaryan <surenb@google.com>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	rcu@vger.kernel.org, maple-tree@lists.infradead.org, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>, 
-	Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72m3pDny0fUkg4XAFsuA72ku0BKcoj5+zKza=o6Ek_QASQ@mail.gmail.com>
 
-On Tue, Mar 4, 2025 at 11:08=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
-e.com> wrote:
->
-> * Vlastimil Babka <vbabka@suse.cz> [250304 05:55]:
-> > On 2/25/25 21:26, Suren Baghdasaryan wrote:
-> > > On Mon, Feb 24, 2025 at 1:12=E2=80=AFPM Suren Baghdasaryan <surenb@go=
-ogle.com> wrote:
-> > >>
-> > >> >
-> > >> > > The values represent the total time it took to perform mmap sysc=
-alls, less is
-> > >> > > better.
-> > >> > >
-> > >> > > (1)                  baseline       control
-> > >> > > Little core       7.58327       6.614939 (-12.77%)
-> > >> > > Medium core  2.125315     1.428702 (-32.78%)
-> > >> > > Big core          0.514673     0.422948 (-17.82%)
-> > >> > >
-> > >> > > (2)                  baseline      control
-> > >> > > Little core       7.58327       5.141478 (-32.20%)
-> > >> > > Medium core  2.125315     0.427692 (-79.88%)
-> > >> > > Big core          0.514673    0.046642 (-90.94%)
-> > >> > >
-> > >> > > (3)                   baseline      control
-> > >> > > Little core        7.58327      4.779624 (-36.97%)
-> > >> > > Medium core   2.125315    0.450368 (-78.81%)
-> > >> > > Big core           0.514673    0.037776 (-92.66%)
-> > >
-> > > (4)                   baseline      control
-> > > Little core        7.58327      4.642977 (-38.77%)
-> > > Medium core   2.125315    0.373692 (-82.42%)
-> > > Big core           0.514673    0.043613 (-91.53%)
-> > >
-> > > I think the difference between (3) and (4) is noise.
-> > > Thanks,
-> > > Suren.
+On Fri, Mar 14, 2025 at 03:43:23PM +0100, Miguel Ojeda wrote:
+> On Thu, Mar 13, 2025 at 5:30 AM Joel Fernandes <joelagnelf@nvidia.com> wrote:
 > >
-> > Hi, as we discussed yesterday, it would be useful to set the baseline t=
-o
-> > include everything before sheaves as that's already on the way to 6.15,=
- so
-> > we can see more clearly what sheaves do relative to that. So at this po=
-int
-> > it's the vma lock conversion including TYPESAFE_BY_RCU (that's not undo=
-ne,
-> > thus like in scenario (4)), and benchmark the following:
+> > Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 > >
-> > - baseline - vma locking conversion with TYPESAFE_BY_RCU
-> > - baseline+maple tree node reduction from mm-unstable (Liam might point=
- out
-> > which patches?)
->
-> Sid's patches [1] are already in mm-unstable.
->
->
-> > - the above + this series + sheaves enabled for vm_area_struct cache
-> > - the above + full maple node sheaves conversion [1]
-> > - the above + the top-most patches from [1] that are optimizations with=
- a
-> > tradeoff (not clear win-win) so it would be good to know if they are us=
-eful
-> >
-> > [1] currently the 4 commits here:
-> > https://web.git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/lo=
-g/?h=3Dslub-percpu-sheaves-v2-maple
-> > from "maple_tree: Sheaf conversion" to "maple_tree: Clean up sheaf"
-> > but as Liam noted, they won't cherry pick without conflict once maple t=
-ree
-> > node reduction is backported, but he's working on a rebase
->
-> Rebased maple tree sheaves, patches are here [2].
+> > If no objections, I can queue it for 6.16 but let me know if Rust maintainers
+> > prefer to take it.
+> 
+> Thanks! That would be great -- FWIW:
+> 
+> Acked-by: Miguel Ojeda <ojeda@kernel.org>
+> 
+> By the way, should `read_lock()` be marked too? It just calls another
+> (now `#[inline]` one).
+> 
+> Cheers,
+> Miguel
 
-Hi Folks,
-Sorry for the delay. I got the numbers last week but they looked a bit
-weird, so I reran the test increasing the number of iterations to make
-sure noise is not a factor. That took most of this week. Below are the
-results. Please note that I had to backport the patchsets to 6.12
-because that's the closest stable Android kernel I can use. I measure
-cumulative time to execute mmap syscalls, so the smaller the number
-the better mmap performance is:
+Hi all,
 
-baseline: 6.12 + vm_lock conversion and TYPESAFE_BY_RCU
-config1: baseline + Sid's patches [1]
-config2: sheaves RFC
-config3: config1 + vm_area_struct with sheaves
-config4: config2 + maple_tree Sheaf conversion [2]
-config5: config3 + 2 last optimization patches from [3]
+Thanks for your kindly review and comments!
 
-               config1     config2     config3     config4     config5
-Little core    -0.10%      -10.10%     -12.89%     -10.02%     -13.64%
-Mid core       -21.05%     -37.31%     -44.97%     -15.81%     -22.15%
-Big core       -17.17%     -34.41%     -45.68%     -11.39%     -15.29%
+> By the way, should `read_lock()` be marked too? It just calls another
+> (now `#[inline]` one).
 
-[1] https://lore.kernel.org/linux-mm/20250227204823.758784-1-sidhartha.kuma=
-r@oracle.com/
-[2] https://www.infradead.org/git/?p=3Dusers/jedix/linux-maple.git;a=3Dshor=
-tlog;h=3Drefs/heads/sheaves_rebase_20250304
-[3] https://web.git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/lo=
-g/?h=3Dslub-percpu-sheaves-v2-maple
+I'll do it and fix the typo mentioned by Charalampos. I'll send v2 to
+you ASAP. Thanks !
 
-From the numbers, it looks like config4 regresses the performance and
-that's what looked weird to me last week and I wanted to confirm this.
-But from sheaves POV, it looks like they provide the benefits I saw
-before. Sid's patches which I did not test separately before also look
-beneficial.
-Thanks,
-Suren.
-
->
->
-> >
-> >
-> ...
->
-> Thanks,
-> Liam
->
-> [1]. https://lore.kernel.org/linux-mm/20250227204823.758784-1-sidhartha.k=
-umar@oracle.com/
-> [2]. https://www.infradead.org/git/?p=3Dusers/jedix/linux-maple.git;a=3Ds=
-hortlog;h=3Drefs/heads/sheaves_rebase_20250304
+Best regards,
+I Hsin Cheng
