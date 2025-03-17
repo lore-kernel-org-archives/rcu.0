@@ -1,120 +1,171 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E751494A8;
-	Sun, 16 Mar 2025 22:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED8B2236FD
+	for <rcu@vger.kernel.org>; Mon, 17 Mar 2025 10:09:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742163851; cv=none; b=Ys0DgV8qeeH1n2Gy0BqYhSAssBJocZ2404JpvE7lb8SOtRNd+cCoYyj/YorYfuJ2+JNDIp1RXr93e1fcw+YOve/wmWpB6VgKt7KM1PdBXRqgZm7T0WwbmWHDxzzdw3wwWizvrJf5o3P3HYr4xnXAyzJ40NDjMv/Xnss0yN4jnus=
+	t=1742206180; cv=none; b=s1sCXIEmq4+ygzeq3wd95hqABWpD0k2wE7eL8lbdrTxONEMzXlcdyil4kBlt4+9adwqbQd9/NaKbnAZtoBllgmePK8cRWkL/aXMzN63icPtiqrrLr9CzfNRc1Y0KuWcjI3CCzKNORWlRZFgn8T6WYjKACYpyC3OC/ZUDwAD7jEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742163851; c=relaxed/simple;
-	bh=bV5T7y1TIGUqZCJO8ytCSbp9dZeJhFc9mSDnxyUxb30=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RiSTyCQewmoOTmlBeEBvygYqD2WnLJYi+4J2fLNc0Owh9zGTQtf4LRlwvO1aHKpMYmFd/W67S7wTHN8b+bqTASDYLZZsxHBo+eDje5abqo9islUuhijz1asPEXtT1DT/QtFdG2tbdUZbJeNM+w3y565nLbbVsMUWWh8J4ZwlYMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qLCLanvx; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1742206180; c=relaxed/simple;
+	bh=RWqYOAA5tbEc6bfm4D63/g9qpPi74sA1IhlXJ1qk+L4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ytnv9CPTph7zs72PoCDhlP25IR/R0cH+m612lPJgs6c9CMS4ycf64kxHav36a54Mytdrs2JAf3Q9BDAhRyOhgPe8ORf4S0op54E9/WlWjPl/GQ6AtF92NRRSz0t7NE6i25UfAyvZJRoPxki+rteUI/rmtNm6QFW0AIxm1dz+gg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2zqCNa3k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZnSs9nuF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2zqCNa3k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZnSs9nuF; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qLCLanvx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9AA9C4CEDD;
-	Sun, 16 Mar 2025 22:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742163851;
-	bh=bV5T7y1TIGUqZCJO8ytCSbp9dZeJhFc9mSDnxyUxb30=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qLCLanvxAMqsZZ9G2f1JFcvm7suGlKnJ+AvkUDJkM4IzgXr5i1wBT0YpMw66YvXOX
-	 6JQGhBsMHvXnbhjsHqiyL9H9vopEIZb4MBHzwhC36wx6oLm7a4pxvmtIoUYdZer9g6
-	 uYdq8908RRfwGy9UxgCLpr8uqTdjkhJI/+OhVcc0LUhvyQeR0nYYWzmb9zNL0VWmrv
-	 dlURoRNnqA6giRihBLR6ioAT6LQY7oE8/FhvWB4d+KTY4KQ1wWLq3scWKJYxjSQa7j
-	 17knuRPjkx7zW+EqofLm3OU9qBc9sPBJNUP7sfwo9t0SxI+3lzh6A7uFH54PLZq1Gz
-	 8g3KdPDgv8Fhw==
-Date: Sun, 16 Mar 2025 23:24:08 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 1/5] rcu/exp: Protect against early QS report
-Message-ID: <Z9dPiCVpxaX1aGEi@pavilion.home>
-References: <20250314143642.72554-1-frederic@kernel.org>
- <20250314143642.72554-2-frederic@kernel.org>
- <20250315235945.GA2634509@joelnvbox>
- <Z9aw252VPvW9K4Wl@pavilion.home>
- <65d7e2db-2293-4fa5-ae73-bcbaa60c01f3@nvidia.com>
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2zqCNa3k";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZnSs9nuF";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2zqCNa3k";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZnSs9nuF"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C79C721A9A;
+	Mon, 17 Mar 2025 10:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742206176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3Xq7lBKy5lPmzEwBcsRowSYenNgBJYixD9T0ziVEtAY=;
+	b=2zqCNa3kOVVBSVca1eFpmuD2rauprLsaCT8uTN/qFLPOeMTXGiTS9CaD4OeQvhwEJq1gso
+	ofI8IPJ+SvfaMp1x4Gu13/5lFeHK7hA5FgfKrOtBZS3QIh2NdLrilv4ga4Quh/VqsU+IUt
+	jqQhTomHtMeYnTnv8IzfxnfvaJodeuY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742206176;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3Xq7lBKy5lPmzEwBcsRowSYenNgBJYixD9T0ziVEtAY=;
+	b=ZnSs9nuFD0z+rG2M8LU8sWQX3IW8ha2hxgwarPk0hSgs1pxan4YEvYoz3z5837YDFSdmn1
+	rqxTVt50H90QMwCQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2zqCNa3k;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZnSs9nuF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1742206176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3Xq7lBKy5lPmzEwBcsRowSYenNgBJYixD9T0ziVEtAY=;
+	b=2zqCNa3kOVVBSVca1eFpmuD2rauprLsaCT8uTN/qFLPOeMTXGiTS9CaD4OeQvhwEJq1gso
+	ofI8IPJ+SvfaMp1x4Gu13/5lFeHK7hA5FgfKrOtBZS3QIh2NdLrilv4ga4Quh/VqsU+IUt
+	jqQhTomHtMeYnTnv8IzfxnfvaJodeuY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1742206176;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3Xq7lBKy5lPmzEwBcsRowSYenNgBJYixD9T0ziVEtAY=;
+	b=ZnSs9nuFD0z+rG2M8LU8sWQX3IW8ha2hxgwarPk0hSgs1pxan4YEvYoz3z5837YDFSdmn1
+	rqxTVt50H90QMwCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77728132CF;
+	Mon, 17 Mar 2025 10:09:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FW3OHOD012cIHQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 17 Mar 2025 10:09:36 +0000
+Message-ID: <cbbaa3f3-bbb2-4dab-8cd2-72a55df7a3a8@suse.cz>
+Date: Mon, 17 Mar 2025 11:09:36 +0100
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 01/10] slab: add opt-in caching layer of percpu
+ sheaves
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Uladzislau Rezki <urezki@gmail.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ maple-tree@lists.infradead.org
+References: <20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz>
+ <20250214-slub-percpu-caches-v2-1-88592ee0966a@suse.cz>
+ <CAJuCfpG4BYNWM24_Jha-SapfeaGdO0GKuteHwNE1hDdWXRS+1Q@mail.gmail.com>
+ <befd17b0-160e-4933-96d9-8d5c4a774162@suse.cz>
+ <CAJuCfpHwvAUep6YT3Eu2SCu-dDbUoN=WE8r9aEV4UDWKfHXV+g@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAJuCfpHwvAUep6YT3Eu2SCu-dDbUoN=WE8r9aEV4UDWKfHXV+g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <65d7e2db-2293-4fa5-ae73-bcbaa60c01f3@nvidia.com>
+X-Rspamd-Queue-Id: C79C721A9A
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,linux.com,google.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-Le Sun, Mar 16, 2025 at 10:23:45AM -0400, Joel Fernandes a écrit :
-> >> A small side effect of this patch could be:
-> >>
-> >> In the existing code, if between the sync_exp_reset_tree() and the
-> >> __sync_rcu_exp_select_node_cpus(), if a pre-existing reader unblocked and
-> >> completed, then I think it wouldn't be responsible for blocking the GP
-> >> anymore.
-> > Hmm, I don't see how that changes after this patch.
-> > 
-> >> Where as with this patch, it would not get a chance to be removed from the
-> >> blocked list because it would have to wait on the rnp lock, which after this
-> >> patch would now be held across the setting of exp_mask and exp_tasks?
-> > So that's sync_exp_reset_tree(). I'm a bit confused. An unblocking task
-> > contend on rnp lock in any case. But after this patch it is still going
-> > to remove itself from the blocking task once the rnp lock is released by
-> > sync_exp_reset_tree().
-> > 
-> > What am I missing?
-> You are probably not missing anything and I'm the one missing something.
+On 3/12/25 16:14, Suren Baghdasaryan wrote:
+> On Wed, Mar 12, 2025 at 7:58â€¯AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>> > I find the program flow in this function quite complex and hard to
+>> > follow. I think refactoring the above block starting from "pcs =
+>> > this_cpu_ptr(s->cpu_sheaves)" would somewhat simplify it. That
+>> > eliminates the need for the "got_empty" label and makes the
+>> > locking/unlocking sequence of s->cpu_sheaves->lock a bit more clear.
+>>
+>> I'm a bit lost, refactoring how exactly?
 > 
-> But I was thinking:
-> 
-> In in the original code, in __sync_rcu_exp_select_node_cpus() if
-> rcu_preempt_has_tasks() returns FALSE because of the finer grained locking, then
-> there is a chance for the GP to conclude sooner,
+> I thought moving the code above into a function above starting from
+> "pcs = this_cpu_ptr(s->cpu_sheaves)" into its own function would
+> simplify the flow. But as I said, it's a nit. If you try and don't
+> like that feel free to ignore this suggestion.
 
-Why do you think it's finer grained locking?
- 
-> On the other hand, after the patch because the unblocking task had to wait (on
-> the lock) to remove itself from the blocked task list, the GP may conclude later
-> than usual. This is just an intuitive guess.
-> 
-> Because this is an expedited GP, my intuition is to unblock + reader unlock and
-> get out of the way ASAP than hoping that it will get access to the lock before
-> any IPIs go out or quiescent state reports/checks happen which are required to
-> conclude the GP
-> 
-> Its just a theory and you're right, if it acquires the lock soon enough and gets
-> out of the way, then it doesn't matter either way.
+OK did it and although I didn't manage to remove the got_empty label, it's
+better and I realized I can handle the cases there in a better order and add
+one extra possible fallback in the unlikely cases. Please check the result
+when I send v3? thanks
 
-I think I understand where the confusion is. A task that is preempted within an
-RCU read side section _always_ adds itself to the rnp's list of blocked tasks
-(&rnp->blkd_tasks). The only thing that changes with expedited GPs is that
-rnp->exp_tasks may or may not be updated on the way. But rnp->exp_tasks is only
-a pointer to an arbitrary element within the rnp->blkd_tasks list.
+>>
+>> >> +       }
+>> >> +
+>> >> +do_free:
+>> >> +       pcs->main->objects[pcs->main->size++] = object;
+>> >> +
+>> >> +       local_unlock_irqrestore(&s->cpu_sheaves->lock, flags);
+>> >> +
+>> >> +       stat(s, FREE_PCS);
+>> >> +}
 
-This means that an unblocking task must always delete itself from
-rnp->blkd_tasks, and possibly update rnp->exp_tasks along the way.
-
-Both the add and the delete happen with rnp locked.
-
-Therefore a task unblocking before __sync_rcu_exp_select_node_cpus()
-can make __sync_rcu_exp_select_node_cpus() contend on rnp locking.
-
-But this patch doesn't change the behaviour in this regard.
-
-Thanks.
-
-
-> 
-> Thanks!
-> 
->  - Joel
-> 
-> 
-> 
