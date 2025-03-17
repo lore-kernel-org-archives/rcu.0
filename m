@@ -1,77 +1,81 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9118A21505B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7A8230995
 	for <rcu@vger.kernel.org>; Mon, 17 Mar 2025 14:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742222017; cv=none; b=Cu1A2Zul8gOaUfDPDN92tuzEJtQqNqsvdOnTu/bQEbZHuR34EboRrTg8XxxHY6FV6r80rtS2UC8qtwbnQjRwt7fnPwI/EJc/F8RQq3qO74a3mBqHp/F6N9eeF2PYsCicU1bMsGujOuwW58kflGgoTG9U2fkWF0YHm7xCat5loB8=
+	t=1742222018; cv=none; b=cPUnWcDdiiFuVM1B63wYt8ogCh6bycCLwkbUxgRE4MIIMri+BKvjDj/f4Tkku1bWPNHIuGJL4mAmxVhsxgBc9/hK5rxH8XsoStQnufxD5aehJbM0cvo2vlsCkkf59dksl0IHgzr4gdT0vI4Vf37RD1HwPRPqrjPjyYDlgp442Ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742222017; c=relaxed/simple;
-	bh=cojkiGUZx3pqYU5Wc6gKC1QcalRM1Q2dL6QAknr/5fQ=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=J28xTrbKeRSvAy9zAp40ixL0AJKwlCIhryLIjKJrpaeoU3923C00aaP/YUb/EeFcXMQBNyZlrOY8yojhKZwASsK30qdoIfGLavaFVTjA0lRN4P2oNBpYQLII6kG/xdkxjzR6qPhJnrlfuy3/H3xN0Td1ANY7WShUQ8VCs9dhOh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mpILBlMf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=C65vA/SA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mpILBlMf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=C65vA/SA; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1742222018; c=relaxed/simple;
+	bh=5iOakY+89Pj0YOnQvt/2O5/OyL1U8TtCyy7+4BzM/z0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=YseIrL8YPSoHqznH/MaedYxTtuzIbij+WjdoTooKV/ccsIPiTZdSPLSv24ZsMXc0ZUwg0EbJKyEd8nZSCgNgPRBxY6cUjAjBBIClkenddgjinIruJjAIlv+VU1TVy83LcQoYlm94c2vZi4VnPm+RPQx9ack2wB7WZSogyNLLN68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UCcLsNG2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vxzVQvw6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UCcLsNG2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vxzVQvw6; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mpILBlMf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="C65vA/SA";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mpILBlMf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="C65vA/SA"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UCcLsNG2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vxzVQvw6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UCcLsNG2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vxzVQvw6"
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A2CD021A7F;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BD5271F7B6;
 	Mon, 17 Mar 2025 14:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1742222013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=POxYOC4nCskQkBmgoHQb2Fm/0NHB4W3IAhsdfcHg6ik=;
-	b=mpILBlMf+l3YnmnWTYaOM6bJ/odxRu6RXeh0LRILT5/zLseMqJASSqcry5d32tgqAMelBJ
-	/gWPVHYMGUUtPmeAshyJLQ+vcrCviSeO95ixjcohpKFk651PO4QChSC9NF/ynhROznj6du
-	80fHv0SkulYEisOqbAVvYxZPBE+VmbY=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tCAdlDM2+tXBDumZZR7BbS1zlXHmvraj7d95vlj0GSo=;
+	b=UCcLsNG2wnBJFeCQRigMOvcNxc8of2lhE8GV8xgGFar5DCl1+eGhF69R2AmaLIPlWGEt1L
+	2wWN+dlDCF99X0/+WXs/MKI9VCpC2yNmAsfzHbtr44LCSBOm1fnvoD1moC+fZhPJ3qLqJ/
+	7KDt7ov5pN1KHYxFUj8MGNtU5d0kx3o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1742222013;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=POxYOC4nCskQkBmgoHQb2Fm/0NHB4W3IAhsdfcHg6ik=;
-	b=C65vA/SAQPyflkSErhepCAPOEfEeaQ2d9+Ymx0CYteJS9NbmbXo+yiXsuyopyUlBaPM1Ky
-	sXuTlRs6AsA2KXAQ==
-Authentication-Results: smtp-out1.suse.de;
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tCAdlDM2+tXBDumZZR7BbS1zlXHmvraj7d95vlj0GSo=;
+	b=vxzVQvw6ynbumcY64dJ4/jwa7t4EKLIfph8BfBBoiGOdYBWQZFRrUoj3BhDq5jvoAeMmLO
+	5IDly0MtlMy8sLDQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1742222013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=POxYOC4nCskQkBmgoHQb2Fm/0NHB4W3IAhsdfcHg6ik=;
-	b=mpILBlMf+l3YnmnWTYaOM6bJ/odxRu6RXeh0LRILT5/zLseMqJASSqcry5d32tgqAMelBJ
-	/gWPVHYMGUUtPmeAshyJLQ+vcrCviSeO95ixjcohpKFk651PO4QChSC9NF/ynhROznj6du
-	80fHv0SkulYEisOqbAVvYxZPBE+VmbY=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tCAdlDM2+tXBDumZZR7BbS1zlXHmvraj7d95vlj0GSo=;
+	b=UCcLsNG2wnBJFeCQRigMOvcNxc8of2lhE8GV8xgGFar5DCl1+eGhF69R2AmaLIPlWGEt1L
+	2wWN+dlDCF99X0/+WXs/MKI9VCpC2yNmAsfzHbtr44LCSBOm1fnvoD1moC+fZhPJ3qLqJ/
+	7KDt7ov5pN1KHYxFUj8MGNtU5d0kx3o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1742222013;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=POxYOC4nCskQkBmgoHQb2Fm/0NHB4W3IAhsdfcHg6ik=;
-	b=C65vA/SAQPyflkSErhepCAPOEfEeaQ2d9+Ymx0CYteJS9NbmbXo+yiXsuyopyUlBaPM1Ky
-	sXuTlRs6AsA2KXAQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tCAdlDM2+tXBDumZZR7BbS1zlXHmvraj7d95vlj0GSo=;
+	b=vxzVQvw6ynbumcY64dJ4/jwa7t4EKLIfph8BfBBoiGOdYBWQZFRrUoj3BhDq5jvoAeMmLO
+	5IDly0MtlMy8sLDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8839A139D2;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0FBE13A2C;
 	Mon, 17 Mar 2025 14:33:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TVjqIL0y2GcycQAAD6G6ig
+	id 6D8GJ70y2GcycQAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Mon, 17 Mar 2025 14:33:33 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH RFC v3 0/8] SLUB percpu sheaves
-Date: Mon, 17 Mar 2025 15:33:01 +0100
-Message-Id: <20250317-slub-percpu-caches-v3-0-9d9884d8b643@suse.cz>
+Date: Mon, 17 Mar 2025 15:33:02 +0100
+Subject: [PATCH RFC v3 1/8] locking/local_lock: Introduce localtry_lock_t
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -80,13 +84,9 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAJ4y2GcC/22Qy26DMBBFfwV5XSOPAWOzqlSpH9BtFVW2GYqV8
- qgNqGmUf6+BNO0iyxlpzj1zzySgdxhIlZyJx8UFN/RxyB4SYlvdvyN1dZwJZzwD4JKGj9nQEb0
- dZ2q1bTFQlecgFWcAdUni4eixcV8b9JW8PD+RQ1w2fujo1HrUNx6TwEBkgpep4ExQRRejzVE/h
- jlgar9XVuvCNPjT5rfARoynOUSXeyoLUEbr2jJTW14iK26s1WHhv4CCccjvAngESFkojsiUEH8
- yh8v+msfPOdY0Xf8zOiC1Q9e5qUoWkUast7CqdxiC3gqskj2SZXvk5PoTPTYe8c3b+Sqd51yaR
- mmp4V/m5QeUltBpogEAAA==
-X-Change-ID: 20231128-slub-percpu-caches-9441892011d7
+Message-Id: <20250317-slub-percpu-caches-v3-1-9d9884d8b643@suse.cz>
+References: <20250317-slub-percpu-caches-v3-0-9d9884d8b643@suse.cz>
+In-Reply-To: <20250317-slub-percpu-caches-v3-0-9d9884d8b643@suse.cz>
 To: Suren Baghdasaryan <surenb@google.com>, 
  "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
  Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>
@@ -95,203 +95,344 @@ Cc: Roman Gushchin <roman.gushchin@linux.dev>,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
  maple-tree@lists.infradead.org, vbabka@suse.cz, 
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
- Davidlohr Bueso <dave@stgolabs.net>, Alexei Starovoitov <ast@kernel.org>, 
- "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+ Davidlohr Bueso <dave@stgolabs.net>, Alexei Starovoitov <ast@kernel.org>
 X-Mailer: b4 0.14.2
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
+X-Spam-Score: -8.30
+X-Spamd-Result: default: False [-8.30 / 50.00];
+	REPLY(-4.00)[];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	ARC_NA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux.dev,oracle.com,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org,suse.cz,linutronix.de,stgolabs.net,kernel.org,Oracle.com];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,oracle.com,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org,suse.cz,linutronix.de,stgolabs.net,kernel.org];
+	R_RATELIMIT(0.00)[to_ip_from(RLsunix6otu811wnbhxcn9byqb)];
 	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,linutronix.de:email]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-Hi,
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-This is the v3 RFC to add an opt-in percpu array-based caching layer to
-SLUB. This is to publish accumulated fixes since v2 ahead of LSF/MM. I
-have also squashed the usage of localtry_lock to be used immediately
-(not converted to in a separate patch) as the lock should be going to
-6.15 at this point. There's still a patch introducing it for this RFC to
-avoid depending on bpf-next tree.
+In !PREEMPT_RT local_lock_irqsave() disables interrupts to protect
+critical section, but it doesn't prevent NMI, so the fully reentrant
+code cannot use local_lock_irqsave() for exclusive access.
 
-The name "sheaf" was invented by Matthew so we don't call it magazine
-like the original Bonwick paper. The per-NUMA-node cache of sheaves is
-thus called "barn".
+Introduce localtry_lock_t and localtry_lock_irqsave() that
+disables interrupts and sets acquired=1, so localtry_lock_irqsave()
+from NMI attempting to acquire the same lock will return false.
 
-This may seem similar to the arrays in SLAB, but the main differences
-are:
+In PREEMPT_RT local_lock_irqsave() maps to preemptible spin_lock().
+Map localtry_lock_irqsave() to preemptible spin_trylock().
+When in hard IRQ or NMI return false right away, since
+spin_trylock() is not safe due to explicit locking in the underneath
+rt_spin_trylock() implementation. Removing this explicit locking and
+attempting only "trylock" is undesired due to PI implications.
 
-- opt-in, not used for every cache
-- does not distinguish NUMA locality, thus no "shared" arrays and no
-  "alien" arrays that would need periodical flushing
-- improves kfree_rcu() handling
-- API for obtaining a preallocated sheaf that can be used for guaranteed
-  and efficient allocations in a restricted context, when the upper
-  bound for needed objects is known but rarely reached
+Note there is no need to use local_inc for acquired variable,
+since it's a percpu variable with strict nesting scopes.
 
-The motivation comes mainly from the ongoing work related to VMA
-scalability and the related maple tree operations. This is why maple
-tree nodes are sheaf-enabled in the RFC, but it's not a full conversion
-that would take benefits of the improved preallocation API. The VMA part
-is currently left out as it's expected that Suren will land the VMA
-TYPESAFE_BY_RCU conversion [3] soon and there would be conflict with that.
-With both series applied it means just adding a line to kmem_cache_args
-in proc_caches_init().
-
-Some performance benefits were measured by Suren and Liam in previous
-versions. Suren's results in [5] look promising, so far except for the
-preallocation support as used by the refactored maple tree code.
-
-A sheaf-enabled cache has the following expected advantages:
-
-- Cheaper fast paths. For allocations, instead of local double cmpxchg,
-  after Patch 5 it's preempt_disable() and no atomic operations. Same for
-  freeing, which is normally a local double cmpxchg only for a short
-  term allocations (so the same slab is still active on the same cpu when
-  freeing the object) and a more costly locked double cmpxchg otherwise.
-  The downside is the lack of NUMA locality guarantees for the allocated
-  objects.
-
-- kfree_rcu() batching and recycling. kfree_rcu() will put objects to a
-  separate percpu sheaf and only submit the whole sheaf to call_rcu()
-  when full. After the grace period, the sheaf can be used for
-  allocations, which is more efficient than freeing and reallocating
-  individual slab objects (even with the batching done by kfree_rcu()
-  implementation itself). In case only some cpus are allowed to handle rcu
-  callbacks, the sheaf can still be made available to other cpus on the
-  same node via the shared barn. The maple_node cache uses kfree_rcu() and
-  thus can benefit from this.
-
-- Preallocation support. A prefilled sheaf can be privately borrowed for
-  a short term operation that is not allowed to block in the middle and
-  may need to allocate some objects. If an upper bound (worst case) for
-  the number of allocations is known, but only much fewer allocations
-  actually needed on average, borrowing and returning a sheaf is much more
-  efficient then a bulk allocation for the worst case followed by a bulk
-  free of the many unused objects. Maple tree write operations should
-  benefit from this.
-
-Patch 1 is copied from the series "bpf, mm: Introduce try_alloc_pages()"
-[2] to introduce a variant of local_lock that has a trylock operation.
-
-Patch 2 implements the basic sheaf functionality as a caching layer on
-top of (per-cpu) slabs.
-
-Patch 3 adds the sheaf kfree_rcu() support.
-
-Patch 4 implements borrowing prefilled sheaves, with maple tree being the
-ancticipated user.
-
-Patch 5 seeks to reduce barn spinlock contention. Separately for
-possible evaluation.
-
-Patches 6 and 7 by Liam add testing stubs that maple tree will use in
-its userspace tests.
-
-Patch 9 enables sheaves for the maple tree node cache, but does not
-take advantage of prefilling yet.
-
-(RFC) LIMITATIONS:
-
-- with slub_debug enabled, objects in sheaves are considered allocated
-  so allocation/free stacktraces may become imprecise and checking of
-  e.g. redzone violations may be delayed
-
-GIT TREES:
-
-this series: https://git.kernel.org/vbabka/l/slub-percpu-sheaves-v3
-
-To avoid conflicts, the series requires (and the branch above is based
-on) the kfree_rcu() code refactoring scheduled for 6.15:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=slab/for-6.15/kfree_rcu_tiny
-
-Vlastimil
-
-[1] https://lore.kernel.org/all/20241111205506.3404479-1-surenb@google.com/
-[2] https://lore.kernel.org/all/20250222024427.30294-2-alexei.starovoitov@gmail.com/
-[3] https://lore.kernel.org/all/20250213224655.1680278-1-surenb@google.com/
-[4] https://www.infradead.org/git/?p=users/jedix/linux-maple.git;a=shortlog;h=refs/heads/slub-percpu-sheaves-v2
-[5] https://lore.kernel.org/all/CAJuCfpFVopL%2BsMdU4bLRxs%2BHS_WPCmFZBdCmwE8qV2Dpa5WZnA@mail.gmail.com/
-
+Acked-by: Davidlohr Bueso <dave@stgolabs.net>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Link: https://lore.kernel.org/r/20250222024427.30294-2-alexei.starovoitov@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
-Changes in v3:
-- Squash localtry_lock conversion so it's used immediately.
-- Incorporate feedback and add tags from Suren and Harry - thanks!
-  - Mostly adding comments and some refactoring.
-  - Fixes for kfree_rcu_sheaf() vmalloc handling, cpu hotremove
-    flushing.
-  - Fix wrong condition in kmem_cache_return_sheaf() that may have
-    affected performance negatively.
-  - Refactoring of free_to_pcs()
-- Link to v2: https://lore.kernel.org/r/20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz
+ include/linux/local_lock.h          |  70 +++++++++++++++++
+ include/linux/local_lock_internal.h | 146 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 216 insertions(+)
 
-Changes in v2:
-- Removed kfree_rcu() destructors support as VMAs will not need it
-  anymore after [3] is merged.
-- Changed to localtry_lock_t borrowed from [2] instead of an own
-  implementation of the same idea.
-- Many fixes and improvements thanks to Liam's adoption for maple tree
-  nodes.
-- Userspace Testing stubs by Liam.
-- Reduced limitations/todos - hooking to kfree_rcu() is complete,
-  prefilled sheaves can exceed cache's sheaf_capacity.
-- Link to v1: https://lore.kernel.org/r/20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz
+diff --git a/include/linux/local_lock.h b/include/linux/local_lock.h
+index 091dc0b6bdfb9f4721f94d19828a38fbfa59346c..1a0bc35839e360d5c8170105849c3883463852f8 100644
+--- a/include/linux/local_lock.h
++++ b/include/linux/local_lock.h
+@@ -51,6 +51,76 @@
+ #define local_unlock_irqrestore(lock, flags)			\
+ 	__local_unlock_irqrestore(lock, flags)
+ 
++/**
++ * localtry_lock_init - Runtime initialize a lock instance
++ */
++#define localtry_lock_init(lock)		__localtry_lock_init(lock)
++
++/**
++ * localtry_lock - Acquire a per CPU local lock
++ * @lock:	The lock variable
++ */
++#define localtry_lock(lock)		__localtry_lock(lock)
++
++/**
++ * localtry_lock_irq - Acquire a per CPU local lock and disable interrupts
++ * @lock:	The lock variable
++ */
++#define localtry_lock_irq(lock)		__localtry_lock_irq(lock)
++
++/**
++ * localtry_lock_irqsave - Acquire a per CPU local lock, save and disable
++ *			 interrupts
++ * @lock:	The lock variable
++ * @flags:	Storage for interrupt flags
++ */
++#define localtry_lock_irqsave(lock, flags)				\
++	__localtry_lock_irqsave(lock, flags)
++
++/**
++ * localtry_trylock - Try to acquire a per CPU local lock.
++ * @lock:	The lock variable
++ *
++ * The function can be used in any context such as NMI or HARDIRQ. Due to
++ * locking constrains it will _always_ fail to acquire the lock in NMI or
++ * HARDIRQ context on PREEMPT_RT.
++ */
++#define localtry_trylock(lock)		__localtry_trylock(lock)
++
++/**
++ * localtry_trylock_irqsave - Try to acquire a per CPU local lock, save and disable
++ *			      interrupts if acquired
++ * @lock:	The lock variable
++ * @flags:	Storage for interrupt flags
++ *
++ * The function can be used in any context such as NMI or HARDIRQ. Due to
++ * locking constrains it will _always_ fail to acquire the lock in NMI or
++ * HARDIRQ context on PREEMPT_RT.
++ */
++#define localtry_trylock_irqsave(lock, flags)				\
++	__localtry_trylock_irqsave(lock, flags)
++
++/**
++ * local_unlock - Release a per CPU local lock
++ * @lock:	The lock variable
++ */
++#define localtry_unlock(lock)		__localtry_unlock(lock)
++
++/**
++ * local_unlock_irq - Release a per CPU local lock and enable interrupts
++ * @lock:	The lock variable
++ */
++#define localtry_unlock_irq(lock)		__localtry_unlock_irq(lock)
++
++/**
++ * localtry_unlock_irqrestore - Release a per CPU local lock and restore
++ *			      interrupt flags
++ * @lock:	The lock variable
++ * @flags:      Interrupt flags to restore
++ */
++#define localtry_unlock_irqrestore(lock, flags)			\
++	__localtry_unlock_irqrestore(lock, flags)
++
+ DEFINE_GUARD(local_lock, local_lock_t __percpu*,
+ 	     local_lock(_T),
+ 	     local_unlock(_T))
+diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+index 8dd71fbbb6d2b6748969438c4642f7d970834871..67bd13d142fac39bc0f8b2c05eaf81717ff480f9 100644
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -15,6 +15,11 @@ typedef struct {
+ #endif
+ } local_lock_t;
+ 
++typedef struct {
++	local_lock_t	llock;
++	unsigned int	acquired;
++} localtry_lock_t;
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define LOCAL_LOCK_DEBUG_INIT(lockname)		\
+ 	.dep_map = {					\
+@@ -31,6 +36,13 @@ static inline void local_lock_acquire(local_lock_t *l)
+ 	l->owner = current;
+ }
+ 
++static inline void local_trylock_acquire(local_lock_t *l)
++{
++	lock_map_acquire_try(&l->dep_map);
++	DEBUG_LOCKS_WARN_ON(l->owner);
++	l->owner = current;
++}
++
+ static inline void local_lock_release(local_lock_t *l)
+ {
+ 	DEBUG_LOCKS_WARN_ON(l->owner != current);
+@@ -45,11 +57,13 @@ static inline void local_lock_debug_init(local_lock_t *l)
+ #else /* CONFIG_DEBUG_LOCK_ALLOC */
+ # define LOCAL_LOCK_DEBUG_INIT(lockname)
+ static inline void local_lock_acquire(local_lock_t *l) { }
++static inline void local_trylock_acquire(local_lock_t *l) { }
+ static inline void local_lock_release(local_lock_t *l) { }
+ static inline void local_lock_debug_init(local_lock_t *l) { }
+ #endif /* !CONFIG_DEBUG_LOCK_ALLOC */
+ 
+ #define INIT_LOCAL_LOCK(lockname)	{ LOCAL_LOCK_DEBUG_INIT(lockname) }
++#define INIT_LOCALTRY_LOCK(lockname)	{ .llock = { LOCAL_LOCK_DEBUG_INIT(lockname.llock) }}
+ 
+ #define __local_lock_init(lock)					\
+ do {								\
+@@ -118,6 +132,104 @@ do {								\
+ #define __local_unlock_nested_bh(lock)				\
+ 	local_lock_release(this_cpu_ptr(lock))
+ 
++/* localtry_lock_t variants */
++
++#define __localtry_lock_init(lock)				\
++do {								\
++	__local_lock_init(&(lock)->llock);			\
++	WRITE_ONCE((lock)->acquired, 0);			\
++} while (0)
++
++#define __localtry_lock(lock)					\
++	do {							\
++		localtry_lock_t *lt;				\
++		preempt_disable();				\
++		lt = this_cpu_ptr(lock);			\
++		local_lock_acquire(&lt->llock);			\
++		WRITE_ONCE(lt->acquired, 1);			\
++	} while (0)
++
++#define __localtry_lock_irq(lock)				\
++	do {							\
++		localtry_lock_t *lt;				\
++		local_irq_disable();				\
++		lt = this_cpu_ptr(lock);			\
++		local_lock_acquire(&lt->llock);			\
++		WRITE_ONCE(lt->acquired, 1);			\
++	} while (0)
++
++#define __localtry_lock_irqsave(lock, flags)			\
++	do {							\
++		localtry_lock_t *lt;				\
++		local_irq_save(flags);				\
++		lt = this_cpu_ptr(lock);			\
++		local_lock_acquire(&lt->llock);			\
++		WRITE_ONCE(lt->acquired, 1);			\
++	} while (0)
++
++#define __localtry_trylock(lock)				\
++	({							\
++		localtry_lock_t *lt;				\
++		bool _ret;					\
++								\
++		preempt_disable();				\
++		lt = this_cpu_ptr(lock);			\
++		if (!READ_ONCE(lt->acquired)) {			\
++			WRITE_ONCE(lt->acquired, 1);		\
++			local_trylock_acquire(&lt->llock);	\
++			_ret = true;				\
++		} else {					\
++			_ret = false;				\
++			preempt_enable();			\
++		}						\
++		_ret;						\
++	})
++
++#define __localtry_trylock_irqsave(lock, flags)			\
++	({							\
++		localtry_lock_t *lt;				\
++		bool _ret;					\
++								\
++		local_irq_save(flags);				\
++		lt = this_cpu_ptr(lock);			\
++		if (!READ_ONCE(lt->acquired)) {			\
++			WRITE_ONCE(lt->acquired, 1);		\
++			local_trylock_acquire(&lt->llock);	\
++			_ret = true;				\
++		} else {					\
++			_ret = false;				\
++			local_irq_restore(flags);		\
++		}						\
++		_ret;						\
++	})
++
++#define __localtry_unlock(lock)					\
++	do {							\
++		localtry_lock_t *lt;				\
++		lt = this_cpu_ptr(lock);			\
++		WRITE_ONCE(lt->acquired, 0);			\
++		local_lock_release(&lt->llock);			\
++		preempt_enable();				\
++	} while (0)
++
++#define __localtry_unlock_irq(lock)				\
++	do {							\
++		localtry_lock_t *lt;				\
++		lt = this_cpu_ptr(lock);			\
++		WRITE_ONCE(lt->acquired, 0);			\
++		local_lock_release(&lt->llock);			\
++		local_irq_enable();				\
++	} while (0)
++
++#define __localtry_unlock_irqrestore(lock, flags)		\
++	do {							\
++		localtry_lock_t *lt;				\
++		lt = this_cpu_ptr(lock);			\
++		WRITE_ONCE(lt->acquired, 0);			\
++		local_lock_release(&lt->llock);			\
++		local_irq_restore(flags);			\
++	} while (0)
++
+ #else /* !CONFIG_PREEMPT_RT */
+ 
+ /*
+@@ -125,8 +237,10 @@ do {								\
+  * critical section while staying preemptible.
+  */
+ typedef spinlock_t local_lock_t;
++typedef spinlock_t localtry_lock_t;
+ 
+ #define INIT_LOCAL_LOCK(lockname) __LOCAL_SPIN_LOCK_UNLOCKED((lockname))
++#define INIT_LOCALTRY_LOCK(lockname) INIT_LOCAL_LOCK(lockname)
+ 
+ #define __local_lock_init(l)					\
+ 	do {							\
+@@ -169,4 +283,36 @@ do {								\
+ 	spin_unlock(this_cpu_ptr((lock)));			\
+ } while (0)
+ 
++/* localtry_lock_t variants */
++
++#define __localtry_lock_init(lock)			__local_lock_init(lock)
++#define __localtry_lock(lock)				__local_lock(lock)
++#define __localtry_lock_irq(lock)			__local_lock(lock)
++#define __localtry_lock_irqsave(lock, flags)		__local_lock_irqsave(lock, flags)
++#define __localtry_unlock(lock)				__local_unlock(lock)
++#define __localtry_unlock_irq(lock)			__local_unlock(lock)
++#define __localtry_unlock_irqrestore(lock, flags)	__local_unlock_irqrestore(lock, flags)
++
++#define __localtry_trylock(lock)				\
++	({							\
++		int __locked;					\
++								\
++		if (in_nmi() | in_hardirq()) {			\
++			__locked = 0;				\
++		} else {					\
++			migrate_disable();			\
++			__locked = spin_trylock(this_cpu_ptr((lock)));	\
++			if (!__locked)				\
++				migrate_enable();		\
++		}						\
++		__locked;					\
++	})
++
++#define __localtry_trylock_irqsave(lock, flags)			\
++	({							\
++		typecheck(unsigned long, flags);		\
++		flags = 0;					\
++		__localtry_trylock(lock);			\
++	})
++
+ #endif /* CONFIG_PREEMPT_RT */
 
----
-Liam R. Howlett (2):
-      tools: Add testing support for changes to rcu and slab for sheaves
-      tools: Add sheafs support to testing infrastructure
-
-Sebastian Andrzej Siewior (1):
-      locking/local_lock: Introduce localtry_lock_t
-
-Vlastimil Babka (5):
-      slab: add opt-in caching layer of percpu sheaves
-      slab: add sheaf support for batching kfree_rcu() operations
-      slab: sheaf prefilling for guaranteed allocations
-      slab: determine barn status racily outside of lock
-      maple_tree: use percpu sheaves for maple_node_cache
-
- include/linux/local_lock.h            |   70 ++
- include/linux/local_lock_internal.h   |  146 ++++
- include/linux/slab.h                  |   50 ++
- lib/maple_tree.c                      |   11 +-
- mm/slab.h                             |    4 +
- mm/slab_common.c                      |   29 +-
- mm/slub.c                             | 1463 +++++++++++++++++++++++++++++++--
- tools/include/linux/slab.h            |   65 +-
- tools/testing/shared/linux.c          |  108 ++-
- tools/testing/shared/linux/rcupdate.h |   22 +
- 10 files changed, 1891 insertions(+), 77 deletions(-)
----
-base-commit: 379487e17ca406b47392e7ab6cf35d1c3bacb371
-change-id: 20231128-slub-percpu-caches-9441892011d7
-prerequisite-message-id: 20250203-slub-tiny-kfree_rcu-v1-0-d4428bf9a8a1@suse.cz
-prerequisite-patch-id: 1a4af92b5eb1b8bfc86bac8d7fc1ef0963e7d9d6
-prerequisite-patch-id: f24a39c38103b7e09fbf2e6f84e6108499ab7980
-prerequisite-patch-id: 23e90b23482f4775c95295821dd779ba4e3712e9
-prerequisite-patch-id: 5c53a619477acdce07071abec0f40e79501ea40b
-
-Best regards,
 -- 
-Vlastimil Babka <vbabka@suse.cz>
+2.48.1
 
