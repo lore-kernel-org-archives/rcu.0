@@ -1,106 +1,130 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD1321148B;
-	Tue, 18 Mar 2025 17:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5346619F489;
+	Tue, 18 Mar 2025 17:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742317638; cv=none; b=JkAqOygBfYuHxbmIsw9ySZyHqwu76ucPnptqz5JpV9NjeZ/eZDy00MFeLBTpQnsfS+5YQriIR/N6wTjFjYHT9A0gBZ416qm8LWyh9ZWxyAseAZCGEfpBdXSq7Nl58DC+V5o62AfzcxvC3h7rZVofM138E6/yvbMJBUnEpf2axbY=
+	t=1742318237; cv=none; b=EIqYI5P2I2yEe7YpH8z5acM7z1NDamUbv7Npj/zyYlxsRm2293uveuLn4IvyzIXzwmWbsHzao9IkIGGJKyXbXK+0v8u90lrmYkWRYyD771tYu929GPnwP1NVia44l52ra+g7LxoPQdgYIJK33ofkf+qL1ZHPcj12ipqfmHYfD8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742317638; c=relaxed/simple;
-	bh=4boUEoGHzUCSh42Ij27ucrvsuBQHEkD0mBcuZvb5kQo=;
+	s=arc-20240116; t=1742318237; c=relaxed/simple;
+	bh=MvFWPBpBcvoirqV2ig5cxuhteo2WBHtMkJIUUkx+Ve8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PSYivYAgxpEYzyjtKMIpQYXiMkhoHxvEisoDg29YC0AmpMtgdxLJ4YLYyToTyjlGJ874qfhslZNjS2JE6xjF2ZSf3BB/+ugEVRpgRz/iaUNaJiZPqL77W1XChQBEJ22NyTR/ET80Ee12vgWiRzOPaNzjZChWhGI3pA7y/3lUwcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScLYgn/D; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=uI+dtY2h1++NpEH2JbVMk/9kwAdrRRXFCdxVXUWkHGd2aAB74lRIf3MwHmEaJ6QmLvXuyMtuJBK6S8HLp6UFX8AOHjbgYttQnGwfS8JZWt2fMUG1gHIRmaHIjDwahKhRbAEG/FJd44reW4CHJFkRTRhGRaN0CoCne3KhiCFQrs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Urg9B0WC; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScLYgn/D"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E61FC4CEDD;
-	Tue, 18 Mar 2025 17:07:16 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Urg9B0WC"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AE9EC4CEDD;
+	Tue, 18 Mar 2025 17:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742317636;
-	bh=4boUEoGHzUCSh42Ij27ucrvsuBQHEkD0mBcuZvb5kQo=;
+	s=k20201202; t=1742318236;
+	bh=MvFWPBpBcvoirqV2ig5cxuhteo2WBHtMkJIUUkx+Ve8=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ScLYgn/DK1tisavY1cUv5HTz4GNKRKNVZtwohaPbC5LYhNIZ01Vj4aGjb9i2xIsgA
-	 fDDKsAUXP9euPayEfnK1cwXP4HIIIvj/hlcmme17nlK2fCdvEyHEeuAJaziBxM8hS3
-	 zySOHI66zKHutaVmn32IxSIZ0HtKjd2gz/yPUsHVaX8M6NWY4JD2OH2X2NGS5nkTMf
-	 ywPbx3ua9Mm7S4bza8ms8l4ycee7cza9WeevuB99Gt7fLbtpcdnG+ACYmmTHFDpCA+
-	 Kfo65ePx76Th14aSScYkxE5ZBUPBH+okEccmW++Pmf+9FlqIMLnPAdNFyLIe1AnyKH
-	 +jvdW9QLJSD6A==
+	b=Urg9B0WCcEKNvvuBTJeneX1U0jG4ezBMKPWF4TCxyunvbq+kEu+OojtIlgq3SVXNU
+	 KQOYmkzGxJEV05IG8qE7yeJ9ewq+0MsaMoWgRvBU8JS8zXPIIGKbP4stMAfhE1TzjD
+	 OTwi0PakDAlqix57/SgsSo8h3F53ZX6TyTPgBLtCBqqheKqUtjUuyJQ0TSOHgznElt
+	 1bU+LGMix3gk2nKhobHMlftRuZsVSNRjxBv9S1J/WV5HeW6hwSt5BvgCpTlbYdC/YU
+	 +wyv219BaihK+fqJWQLiPD7vfNZhdLgQ+5n0pji5BwSiiR/sKczoaRgpbkEz2USQbT
+	 FQng4LRFugZIQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E62AACE0843; Tue, 18 Mar 2025 10:07:15 -0700 (PDT)
-Date: Tue, 18 Mar 2025 10:07:15 -0700
+	id 3EC8DCE0843; Tue, 18 Mar 2025 10:17:16 -0700 (PDT)
+Date: Tue, 18 Mar 2025 10:17:16 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Frederic Weisbecker <frederic@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 3/3] rcu/exp: Remove needless CPU up quiescent state
- report
-Message-ID: <47de9739-7319-4c62-b56c-8f757612744f@paulmck-laptop>
+Subject: Re: [PATCH 1/5] rcu/exp: Protect against early QS report
+Message-ID: <2f9c13de-1e32-4cfb-8cfa-badb26a15bb6@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20250213232559.34163-1-frederic@kernel.org>
- <20250213232559.34163-4-frederic@kernel.org>
- <332cc3da-55fa-4729-81bf-625afa5290bd@paulmck-laptop>
- <Z9Q_iWaLfGb9fzA4@localhost.localdomain>
+References: <20250314143642.72554-1-frederic@kernel.org>
+ <20250314143642.72554-2-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z9Q_iWaLfGb9fzA4@localhost.localdomain>
+In-Reply-To: <20250314143642.72554-2-frederic@kernel.org>
 
-On Fri, Mar 14, 2025 at 03:39:05PM +0100, Frederic Weisbecker wrote:
-> Le Mon, Mar 03, 2025 at 12:10:50PM -0800, Paul E. McKenney a écrit :
-> > On Fri, Feb 14, 2025 at 12:25:59AM +0100, Frederic Weisbecker wrote:
-> > > A CPU coming online checks for an ongoing grace period and reports
-> > > a quiescent state accordingly if needed. This special treatment that
-> > > shortcuts the expedited IPI finds its origin as an optimization purpose
-> > > on the following commit:
-> > > 
-> > > 	338b0f760e84 (rcu: Better hotplug handling for synchronize_sched_expedited()
-> > > 
-> > > The point is to avoid an IPI while waiting for a CPU to become online
-> > > or failing to become offline.
-> > > 
-> > > However this is pointless and even error prone for several reasons:
-> > > 
-> > > * If the CPU has been seen offline in the first round scanning offline
-> > >   and idle CPUs, no IPI is even tried and the quiescent state is
-> > >   reported on behalf of the CPU.
-> > > 
-> > > * This means that if the IPI fails, the CPU just became offline. So
-> > >   it's unlikely to become online right away, unless the cpu hotplug
-> > >   operation failed and rolled back, which is a rare event that can
-> > >   wait a jiffy for a new IPI to be issued.
-> > > 
-> > > * But then the "optimization" applying on failing CPU hotplug down only
-> > >   applies to !PREEMPT_RCU.
-> > > 
-> > > * This force reports a quiescent state even if ->cpu_no_qs.b.exp is not
-> > >   set. As a result it can race with remote QS reports on the same rdp.
-> > >   Fortunately it happens to be OK but an accident is waiting to happen.
-> > > 
-> > > For all those reasons, remove this optimization that doesn't look worthy
-> > > to keep around.
-> > > 
-> > > Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > Based on discussions:
-> > 
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > If it was still just me doing RCU, I would skip this one, just out of an
-> > abundance of caution.  But you break it, you buy it!  ;-)
+On Fri, Mar 14, 2025 at 03:36:38PM +0100, Frederic Weisbecker wrote:
+> When a grace period is started, the ->expmask of each node is set up
+> from sync_exp_reset_tree(). Then later on each leaf node also initialize
+> its ->exp_tasks pointer.
 > 
-> I'm trying to be optimistic... ;-))
+> This means that the initialization of the quiescent state of a node and
+> the initialization of its blocking tasks happen with an unlocked node
+> gap in-between.
+> 
+> It happens to be fine because nothing is expected to report an exp
+> quiescent state within this gap, since no IPI have been issued yet and
+> every rdp's ->cpu_no_qs.b.exp should be false.
+> 
+> However if it were to happen by accident, the quiescent state could be
+> reported and propagated while ignoring tasks that blocked _before_ the
+> start of the grace period.
+> 
+> Prevent such trouble to happen in the future and initialize both the
+> quiescent states mask to report and the blocked tasks head from the same
+> node locked block.
+> 
+> If a task blocks within an RCU read side critical section before
+> sync_exp_reset_tree() is called and is then unblocked between
+> sync_exp_reset_tree() and __sync_rcu_exp_select_node_cpus(), the QS
+> won't be reported because no RCU exp IPI had been issued to request it
+> through the setting of srdp->cpu_no_qs.b.exp.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-So am I.  ;-)
+OK, and because ->expmaskinit has all bits set for all CPUs that have
+ever been online, the ends of any corresponding readers will give up at
+the beginning of the first pass of the loop in __rcu_report_exp_rnp().
+This is because the ->expmask is guaranteed to be non-zero.  (Which is
+kind of what you are saying in the last paragraph of your commit log,
+just digging down another layer.)
 
-							Thanx, Paul
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+
+> ---
+>  kernel/rcu/tree_exp.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
+> index c36c7d5575ca..2fa7aa9155bd 100644
+> --- a/kernel/rcu/tree_exp.h
+> +++ b/kernel/rcu/tree_exp.h
+> @@ -141,6 +141,13 @@ static void __maybe_unused sync_exp_reset_tree(void)
+>  		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+>  		WARN_ON_ONCE(rnp->expmask);
+>  		WRITE_ONCE(rnp->expmask, rnp->expmaskinit);
+> +		/*
+> +		 * Need to wait for any blocked tasks as well.	Note that
+> +		 * additional blocking tasks will also block the expedited GP
+> +		 * until such time as the ->expmask bits are cleared.
+> +		 */
+> +		if (rcu_is_leaf_node(rnp) && rcu_preempt_has_tasks(rnp))
+> +			WRITE_ONCE(rnp->exp_tasks, rnp->blkd_tasks.next);
+>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  	}
+>  }
+> @@ -393,13 +400,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
+>  	}
+>  	mask_ofl_ipi = rnp->expmask & ~mask_ofl_test;
+>  
+> -	/*
+> -	 * Need to wait for any blocked tasks as well.	Note that
+> -	 * additional blocking tasks will also block the expedited GP
+> -	 * until such time as the ->expmask bits are cleared.
+> -	 */
+> -	if (rcu_preempt_has_tasks(rnp))
+> -		WRITE_ONCE(rnp->exp_tasks, rnp->blkd_tasks.next);
+>  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  
+>  	/* IPI the remaining CPUs for expedited quiescent state. */
+> -- 
+> 2.48.1
+> 
