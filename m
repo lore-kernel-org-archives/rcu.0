@@ -1,34 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61E1211A20;
-	Tue, 18 Mar 2025 17:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12783211A33;
+	Tue, 18 Mar 2025 18:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742318982; cv=none; b=LGCEJ2ec2W+fF7ujGtdtwg2RXoynBfGc+sHNsTmmS3lB+LKW9fc8+TtR7I0kHFw2xf+ah3m3OrXJKz0i2HkZruhocgLQvnX9IMPQ+bBYW2lF5QBnYhDNyxfupmE8xKskOr2gfZ3NQCfKmfRjAu+QMf/cECKo5CPFaEEVxI/rPDg=
+	t=1742323059; cv=none; b=QoKkDICJQfUYgojMW4MycVaF5r6S2G0UT3IQvWKSLl4VFezP502RhFePCWrnb1girlCETPMinpjfoAVRlmoUK27lMq5jqKozwn3ru/HxQmpvaZJ9FJqQc3kTi8dzD3+ctfTYKjjSsyvYRmywfpoU+yO8AY7A2PST+Gogv1GNDis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742318982; c=relaxed/simple;
-	bh=Cio401m5J8j6/Hx5tMo+Hm7yebMVzz/u47TvF8D9QvM=;
+	s=arc-20240116; t=1742323059; c=relaxed/simple;
+	bh=NQNyYuQ0gDwFBiLl4iNEd16gJk/XuNGSs7cGNUPV+v8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G0iD918X8Rk5q6X9rXWkZ4uPXPYlwddWYO+kI3A2Q0eJ3ejDrzBks3vdyAHjhbsgLQ/l/fSuD/jhRNEWyFiDKZMwpp3p5s+3UvhY1goAAH9XmKO4GhXm/rGlME7khNAVAPUvc24g+eXPAar2oufQcPDo+QLuIGB2s2Mgs3E/6mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oISihzR0; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=oFC8EN8+tVfMqhLhcsf7vmmKOhJEPybNvKovoTfH5z21LacPeZy8zGymHEPz2IecTggyXeqxr8J9na+03b+4XP3GhNKxAGOIGqxDxxXghwdlbYhwqSFUA3X1liYBQIB9chd9HVJhnLJXBkVFBld5kQ5B7SPZKVH7ivClqXtRRpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nqnikBan; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oISihzR0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AB76C4CEDD;
-	Tue, 18 Mar 2025 17:29:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nqnikBan"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4EBDC4CEDD;
+	Tue, 18 Mar 2025 18:37:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742318981;
-	bh=Cio401m5J8j6/Hx5tMo+Hm7yebMVzz/u47TvF8D9QvM=;
+	s=k20201202; t=1742323058;
+	bh=NQNyYuQ0gDwFBiLl4iNEd16gJk/XuNGSs7cGNUPV+v8=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=oISihzR0AuizwReOex7jaJZZM03k3l+Zw4XqdLmkV4B4iG8g7E6NXKw+Yi5JkLtVm
-	 0GxZbEDQLdbNYY+cS0Zzsh2Y+/ukVlh6GRPHn4fBhxSES7qtFVb2Uc/fOCrlJN0o1N
-	 FVCbvGJAcXKyZEvlAU51nrFnbDarA9uAYk5twZsdqCOfM15xW6o57Pmc+h150HxRxM
-	 yWWUPPDpceAdPrKEaAqulRv689PWiuhesiVxd1Lcs3EGgkC7LIpDUg7/rpA/MG2gtO
-	 24Gngi+UCIh6jeuefsf4o2ksVRKbnx5GYk5ufPPsy1MwWKGYKFR/13jtoxSDDmVq90
-	 A9rxswD53nhVQ==
+	b=nqnikBan2Fe3d5NWhuRT4/5yf7SnVtSfLTTx8VhHEMOGYTNr+pYvohz4qbGAb5aFH
+	 sP0PaaBJL9aJ2dQqHu+GkxamNqIhurNtGSuhxvUMYUfd8FEdRLq3andnyvvUzMDUoO
+	 rUv6b0GKZa0HocdNvxVkXqQjCtw3AOlmTPwUjdFM1okJiyk52Q2vFCdSo4+doTghF6
+	 t4Ix8TCuJKaQA75NHeFq41BQ+tC9mEHXVC9Dlr3UXKQEp0Jw6keJVWObZsbjOzG5mr
+	 Hi/nsr1G6IRx2mGQzp7WQSNL5CuC/KsoyHuq+LbXKctrme1GiuR1w9hoXu/gxABubr
+	 R8wDoll1pppmA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 08641CE0843; Tue, 18 Mar 2025 10:29:41 -0700 (PDT)
-Date: Tue, 18 Mar 2025 10:29:41 -0700
+	id 7401DCE0843; Tue, 18 Mar 2025 11:37:38 -0700 (PDT)
+Date: Tue, 18 Mar 2025 11:37:38 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Frederic Weisbecker <frederic@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
@@ -36,11 +36,12 @@ Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH] rcu/nocb: Dump gp state even if rdp gp itself is not
- offloaded
-Message-ID: <f65f89b2-ce50-471f-b948-5869df69c197@paulmck-laptop>
+Subject: Re: [PATCH 1/2] rcu: Comment on the extraneous delta test on
+ rcu_seq_done_exact()
+Message-ID: <322b052d-0f1f-45a3-bfef-226b15f3a8fd@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20250318092336.5794-1-frederic@kernel.org>
+References: <20250318135619.4300-1-frederic@kernel.org>
+ <20250318135619.4300-2-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,57 +50,70 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250318092336.5794-1-frederic@kernel.org>
+In-Reply-To: <20250318135619.4300-2-frederic@kernel.org>
 
-On Tue, Mar 18, 2025 at 10:23:36AM +0100, Frederic Weisbecker wrote:
-> When a stall is detected, the state of each NOCB CPU is dumped along
-> with the state of each NOCB group. The latter part however is
-> incidentally ignored if the NOCB group leader happens not to be
-> offloaded itself.
+On Tue, Mar 18, 2025 at 02:56:18PM +0100, Frederic Weisbecker wrote:
+> The numbers used in rcu_seq_done_exact() lack some explanation behind
+> their magic. Especially after the commit:
 > 
-> Fix this to make sure related precious informations aren't lost over
-> a stall report.
+>     85aad7cc4178 ("rcu: Fix get_state_synchronize_rcu_full() GP-start detection")
 > 
-> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> which reported a subtle issue where a new GP sequence snapshot was taken
+> on the root node state while a grace period had already been started and
+> reflected on the global state sequence but not yet on the root node
+> sequence, making a polling user waiting on a wrong already started grace
+> period that would ignore freshly online CPUs.
+> 
+> The fix involved taking the snaphot on the global state sequence and
+> waiting on the root node sequence. And since a grace period is first
+> started on the global state and only afterward reflected on the root
+> node, a snapshot taken on the global state sequence might be two full
+> grace periods ahead of the root node as in the following example:
+> 
+> rnp->gp_seq = rcu_state.gp_seq = 0
+> 
+>     CPU 0                                           CPU 1
+>     -----                                           -----
+>     // rcu_state.gp_seq = 1
+>     rcu_seq_start(&rcu_state.gp_seq)
+>                                                     // snap = 8
+>                                                     snap = rcu_seq_snap(&rcu_state.gp_seq)
+>                                                     // Two full GP differences
+>                                                     rcu_seq_done_exact(&rnp->gp_seq, snap)
+>     // rnp->gp_seq = 1
+>     WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
+> 
+> Add a comment about those expectations and to clarify the magic within
+> the relevant function.
+> 
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-
-Much better, thank you!
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
+But it would of course be good to get reviews from the others.
+
 > ---
->  kernel/rcu/tree_nocb.h  | 3 +++
->  kernel/rcu/tree_stall.h | 3 +--
->  2 files changed, 4 insertions(+), 2 deletions(-)
+>  kernel/rcu/rcu.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index 4a954ecf1c36..56baa78c6e85 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1564,6 +1564,9 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
->  	if (rdp->nocb_gp_rdp == rdp)
->  		show_rcu_nocb_gp_state(rdp);
->  
-> +	if (!rcu_segcblist_is_offloaded(&rdp->cblist))
-> +		return;
-> +
->  	nocb_next_rdp = list_next_or_null_rcu(&rdp->nocb_gp_rdp->nocb_head_rdp,
->  					      &rdp->nocb_entry_rdp,
->  					      typeof(*rdp),
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 56b21219442b..f96235d51642 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -927,8 +927,7 @@ void show_rcu_gp_kthreads(void)
->  	for_each_possible_cpu(cpu) {
->  		rdp = per_cpu_ptr(&rcu_data, cpu);
->  		cbs += data_race(READ_ONCE(rdp->n_cbs_invoked));
-> -		if (rcu_segcblist_is_offloaded(&rdp->cblist))
-> -			show_rcu_nocb_state(rdp);
-> +		show_rcu_nocb_state(rdp);
->  	}
->  	pr_info("RCU callbacks invoked since boot: %lu\n", cbs);
->  	show_rcu_tasks_gp_kthreads();
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index eed2951a4962..7acf1f36dd6c 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -157,6 +157,13 @@ static inline bool rcu_seq_done(unsigned long *sp, unsigned long s)
+>   * Given a snapshot from rcu_seq_snap(), determine whether or not a
+>   * full update-side operation has occurred, but do not allow the
+>   * (ULONG_MAX / 2) safety-factor/guard-band.
+> + *
+> + * The token returned by get_state_synchronize_rcu_full() is based on
+> + * rcu_state.gp_seq but it is tested in poll_state_synchronize_rcu_full()
+> + * against the root rnp->gp_seq. Since rcu_seq_start() is first called
+> + * on rcu_state.gp_seq and only later reflected on the root rnp->gp_seq,
+> + * it is possible that rcu_seq_snap(rcu_state.gp_seq) returns 2 full grace
+> + * periods ahead of the root rnp->gp_seq.
+>   */
+>  static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
+>  {
 > -- 
 > 2.48.1
 > 
