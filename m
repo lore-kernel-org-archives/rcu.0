@@ -1,162 +1,129 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E0B211C;
-	Thu, 20 Mar 2025 14:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EB422839A;
+	Thu, 20 Mar 2025 18:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742480138; cv=none; b=GxkqWLTRslVgY6pvdl1zoUB5ejlADBsXyEbNfykj0uTClal9Y1zPOxK4nDQqXLmPvxC4sp+epT/SEftsRyw5DU0l6WZKzgEtmvDEFRYjekTUCfJ7KVpzJ4iiJDYiQt5SwwOl1no8bJTm6t0Hr0qf/Nf9P+dMZjfLkDLJEEUgIDg=
+	t=1742496782; cv=none; b=fyx19tLZWh/YMXDrGjEgT34Q05GMSNBOcaw+wSYtH0wVUKX4RQ0/9WDoeW73gfTtnLQoo5xiVXoR0aBCyZplX+Uf3c3p3aXPa3q+Qv+2vg9QCjqzz+dmDGbnvM3AIYFVBR6aBcYQ/TBwDQLhhkQwbsYXFLENp0dlUflyc9aQFEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742480138; c=relaxed/simple;
-	bh=Cz+zxwlHWKS5x56xzygGWm2d2rVex5Tzua/p3TZygNA=;
+	s=arc-20240116; t=1742496782; c=relaxed/simple;
+	bh=fhayBrvqU5pLUtHSs0Uxv9FPEhHBbC18H/HpNV0tR5c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=atGH1x2jN6qkcwUSgKFItvateoCMMmzEMuOcE+iN3tcHuWGMb0hZ/KxTmry2DzBG8om1+VvgS1htvKofqTLoRsh6Hf4RzTN/3Rj7AJiSqiyJcvFzjKREpQLgeuJ+7ZkZZ5GXuc4KzT0Jx+xX3GHAf0cVbmJL9K2eGVvcTNH0v6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mF8NrnC8; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mF8NrnC8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68183C4CEE3;
-	Thu, 20 Mar 2025 14:15:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742480137;
-	bh=Cz+zxwlHWKS5x56xzygGWm2d2rVex5Tzua/p3TZygNA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mF8NrnC8NFk3YtJg+vy1xQfu5P1ZC5ZX5LrYIbZapDTHlVIHgZnyOIwtJkygagqYY
-	 OKOPgk80Kh9K6mZQEpciByoqdWp/hGIDIt+Vw9NsrMmFZ3aMUqpHcUAS8j1SUY4xBX
-	 sPoEHo21JBwuvhZhFrfr7Tugb8sY3UgL+T4DWGXiKHCPkI9dUR7+q6Cj4085H2GwML
-	 plsSnPA6YKSp2CPOGdfoHFS1DxzGa0yQECpCW2d963EaWEmut6Zm3BhbsoLlCjkiLo
-	 jTldBcg9Gp56d8O9fttzz2FnGLECk8cBOC/bMdkqsYrq883hbviaFqygBDzUiWm/BA
-	 tjWaSB5csaeeQ==
-Date: Thu, 20 Mar 2025 15:15:33 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 1/2] rcu: Comment on the extraneous delta test on
- rcu_seq_done_exact()
-Message-ID: <Z9wjBT3RQDUrFdbE@p200300d06f3e9880e1f174d4afcc9316.dip0.t-ipconnect.de>
-References: <20250318135619.4300-1-frederic@kernel.org>
- <20250318135619.4300-2-frederic@kernel.org>
- <322b052d-0f1f-45a3-bfef-226b15f3a8fd@paulmck-laptop>
- <20250319193831.GA3791727@joelnvbox>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FL6s6ScQoyV01jM4lb/sJC+jc0T+XzdgZsJ65vCj7Y8HhVI7n7w1IXSAV56TL4NlqYuzlVpkmOiKELG+6ZOEhJM6UAPnm8xSQT9vyC3E5qJeeEgH+yFGAtYs/x6FcjfGg0nJcYvpB9nx3M6oAx+rTfpGH3P9BPETpmOeogCnKMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-ac2a089fbbdso211003566b.1;
+        Thu, 20 Mar 2025 11:53:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742496779; x=1743101579;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k/CXK/lkCmDZhi01vUA4HT1uCVDUJUDuW4LmxwM3DFY=;
+        b=KpeOrZFmxj7d5tKjtNtkv6YEYMaCcdOYAToNsWWCz3T/Hwp6YUgVmymMbYBzwGLwFB
+         xxovzzmxZEJere9xyPDumE7qr6TBunWJDaGmc0FV6Q1kh0Tkpbk3Fp8wk20rOA+Yr38r
+         ATwBAhuBUvl94lP+X46Q+D36iL76qLo8rZKyAfqpGXSguHQEy3WmMd2mJb4xj7ze6fvQ
+         Iqh7ncY728ya8mLimCNrRMC/NxUaJWvC5jGymU7k/rkf096TbR1x4iWx77hz7Fhh2PT4
+         IhTHOApjJpA58WaIrezJh4J6DQ+pyd5gPiusHIYSNN4VojymZ6t48LR/RLCJAcc70F/O
+         DwWw==
+X-Forwarded-Encrypted: i=1; AJvYcCUTn85nnxBTZ4iT5AEPBDyLzhoGijJYj/qSmX70r0Kk+xG1uNzrU7Spdoi9OcDoXCKqMhpAAls=@vger.kernel.org, AJvYcCXC0YVWFisNNVpZ1jkt/B1U6rz5VBieFWfa3EhsGa/coElTUnzD3INInLv7Gr/VDwH3yR80@vger.kernel.org
+X-Gm-Message-State: AOJu0YxqyETfgJ09Y+qGUMdsopi4/oiV/d5rdgpMKtZaECENZ201OpgX
+	R1ar00mUXbdTNHjVeCX1UKpHeP2qNOu0iwI73mUo90LFC+UCazqr
+X-Gm-Gg: ASbGncvi4S8wuQFQdwf6/pUe9YxHnbBprfN8g5KOxSrtozAaB1oaaEaHWFqkrGN4N5W
+	sLexNhRVzp4OpTsxhlVC5xDROJoWZJ366Ght8x56SXC4pVXJSs5hojYAabZp786Elxo572sB9aa
+	tbFKQeBXjzwiwDlfGMpjlmDIWSaBcCXbkVjdokEhWasqSQEmfVOqQYt/PgLmFLBWW6uQ5uldlzh
+	x7iPT93sP5AdggxLpad7kpu39VZuVTiZqsZjr405eH6tnH/XaQ5+o4RwC/+lXtzmBGCcNCGu3vr
+	/9KL7uwO493YXwwmpL/9cKteDSmbcSPD
+X-Google-Smtp-Source: AGHT+IFbFHjUuwCHi8RiKbrvgFcyFPjqJ8tNhOn2kWtMfYhYpv1Omd4h+Ssx4NrmidYBzj4Sj66Jiw==
+X-Received: by 2002:a17:906:dc8e:b0:ac1:17fe:c74f with SMTP id a640c23a62f3a-ac3f03c1e7emr51087466b.21.1742496779175;
+        Thu, 20 Mar 2025 11:52:59 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efd4d36csm21371066b.170.2025.03.20.11.52.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Mar 2025 11:52:58 -0700 (PDT)
+Date: Thu, 20 Mar 2025 11:52:56 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, longman@redhat.com,
+	bvanassche@acm.org, Eric Dumazet <edumazet@google.com>,
+	kuba@kernel.org, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+	kuniyu@amazon.com, rcu@vger.kernel.org, kasan-dev@googlegroups.com,
+	netdev@vger.kernel.org
+Subject: Re: tc: network egress frozen during qdisc update with debug kernel
+Message-ID: <20250320-demonic-marmoset-of-economy-bba7ed@leitao>
+References: <20250319-meticulous-succinct-mule-ddabc5@leitao>
+ <CANn89iLRePLUiBe7LKYTUsnVAOs832Hk9oM8Fb_wnJubhAZnYA@mail.gmail.com>
+ <20250319-sloppy-active-bonobo-f49d8e@leitao>
+ <5e0527e8-c92e-4dfb-8dc7-afe909fb2f98@paulmck-laptop>
+ <CANn89iKdJfkPrY1rHjzUn5nPbU5Z+VAuW5Le2PraeVuHVQ264g@mail.gmail.com>
+ <0e9dbde7-07eb-45f1-a39c-6cf76f9c252f@paulmck-laptop>
+ <20250319-truthful-whispering-moth-d308b4@leitao>
+ <CAM0EoM=NJEeCcDdJ5kp0e8iyRG1LmvfzvBVpb2Mq5zP+QcvmMg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250319193831.GA3791727@joelnvbox>
+In-Reply-To: <CAM0EoM=NJEeCcDdJ5kp0e8iyRG1LmvfzvBVpb2Mq5zP+QcvmMg@mail.gmail.com>
 
-Le Wed, Mar 19, 2025 at 03:38:31PM -0400, Joel Fernandes a écrit :
-> On Tue, Mar 18, 2025 at 11:37:38AM -0700, Paul E. McKenney wrote:
-> > On Tue, Mar 18, 2025 at 02:56:18PM +0100, Frederic Weisbecker wrote:
-> > > The numbers used in rcu_seq_done_exact() lack some explanation behind
-> > > their magic. Especially after the commit:
-> > > 
-> > >     85aad7cc4178 ("rcu: Fix get_state_synchronize_rcu_full() GP-start detection")
-> > > 
-> > > which reported a subtle issue where a new GP sequence snapshot was taken
-> > > on the root node state while a grace period had already been started and
-> > > reflected on the global state sequence but not yet on the root node
-> > > sequence, making a polling user waiting on a wrong already started grace
-> > > period that would ignore freshly online CPUs.
-> > > 
-> > > The fix involved taking the snaphot on the global state sequence and
-> > > waiting on the root node sequence. And since a grace period is first
-> > > started on the global state and only afterward reflected on the root
-> > > node, a snapshot taken on the global state sequence might be two full
-> > > grace periods ahead of the root node as in the following example:
-> > > 
-> > > rnp->gp_seq = rcu_state.gp_seq = 0
-> > > 
-> > >     CPU 0                                           CPU 1
-> > >     -----                                           -----
-> > >     // rcu_state.gp_seq = 1
-> > >     rcu_seq_start(&rcu_state.gp_seq)
-> > >                                                     // snap = 8
-> > >                                                     snap = rcu_seq_snap(&rcu_state.gp_seq)
-> > >                                                     // Two full GP differences
-> > >                                                     rcu_seq_done_exact(&rnp->gp_seq, snap)
-> > >     // rnp->gp_seq = 1
-> > >     WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
-> > > 
-> > > Add a comment about those expectations and to clarify the magic within
-> > > the relevant function.
-> > > 
-> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > But it would of course be good to get reviews from the others.
-> 
-> I actually don't agree that the magic in the rcu_seq_done_exact() function about the
-> ~2 GPs is related to the lag between rcu_state.gp_seq and root rnp->gp_seq,
-> because the small lag can just as well survive with the rcu_seq_done()
-> function in the above sequence right?
-> 
-> The rcu_seq_done_exact() function on the other hand is more about not being
-> stuck in the ULONG_MAX/2 guard band, but to actually get to that, you need a
-> wrap around to happen and the delta between "rnp->gp_seq" and "snap" to be at
-> least ULONG_MAX/2 AFAIU.
-> 
-> So the only time this magic will matter is if you have a huge delta between
-> what is being compared, not just 2 GPs.
+Hello Jamal,
 
-You're right, and perhaps I should have made it more specific that my comment
-only explains the magic "3" number here, in that if it were "2" instead, there
-could be accidents with 2 full GPs difference (which is possible) spuriously
-accounted as a wrap around.
+On Wed, Mar 19, 2025 at 05:05:08PM -0400, Jamal Hadi Salim wrote:
+> On Wed, Mar 19, 2025 at 2:12â€¯PM Breno Leitao <leitao@debian.org> wrote:
+> >
+> > On Wed, Mar 19, 2025 at 09:05:07AM -0700, Paul E. McKenney wrote:
+> >
+> > > > I think we should redesign lockdep_unregister_key() to work on a separately
+> > > > allocated piece of memory,
+> > > > then use kfree_rcu() in it.
+> > > >
+> > > > Ie not embed a "struct lock_class_key" in the struct Qdisc, but a pointer to
+> > > >
+> > > > struct ... {
+> > > >      struct lock_class_key;
+> > > >      struct rcu_head  rcu;
+> > > > }
+> > >
+> > > Works for me!
+> >
+> > I've tested a different approach, using synchronize_rcu_expedited()
+> > instead of synchronize_rcu(), given how critical this function is
+> > called, and the command performance improves dramatically.
+> >
+> > This approach has some IPI penalties, but, it might be quicker to review
+> > and get merged, mitigating the network issue.
+> >
+> > Does it sound a bad approach?
+> >
+> > Date:   Wed Mar 19 10:23:56 2025 -0700
+> >
+> >     lockdep: Speed up lockdep_unregister_key() with expedited RCU synchronization
+> >
+> >     lockdep_unregister_key() is called from critical code paths, including
+> >     sections where rtnl_lock() is held. When replacing a qdisc in a network
+> >     device, network egress traffic is disabled while __qdisc_destroy() is
+> >     called for every queue. This function calls lockdep_unregister_key(),
+> >     which was blocked waiting for synchronize_rcu() to complete.
+> >
+> >     For example, a simple tc command to replace a qdisc could take 13
+> >     seconds:
+> >
+> >       # time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> >         real    0m13.195s
+> >         user    0m0.001s
+> >         sys     0m2.746s
+> >
+> 
+> Could you please add the "after your change"  output as well?
 
-Thanks.
+Sure. I will send the official patch tomorrow, and I will update it with
+the information as well.
 
-> 
-> Or, did I miss something?
-> 
-> (Also sorry about slow email responses this week as I had my presentation
-> today and was busy preparing this week and attending other presentations at
-> OSPM, I'll provide an update on that soon!).
-> 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> > 
-> > > ---
-> > >  kernel/rcu/rcu.h | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > > 
-> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > index eed2951a4962..7acf1f36dd6c 100644
-> > > --- a/kernel/rcu/rcu.h
-> > > +++ b/kernel/rcu/rcu.h
-> > > @@ -157,6 +157,13 @@ static inline bool rcu_seq_done(unsigned long *sp, unsigned long s)
-> > >   * Given a snapshot from rcu_seq_snap(), determine whether or not a
-> > >   * full update-side operation has occurred, but do not allow the
-> > >   * (ULONG_MAX / 2) safety-factor/guard-band.
-> > > + *
-> > > + * The token returned by get_state_synchronize_rcu_full() is based on
-> > > + * rcu_state.gp_seq but it is tested in poll_state_synchronize_rcu_full()
-> > > + * against the root rnp->gp_seq. Since rcu_seq_start() is first called
-> > > + * on rcu_state.gp_seq and only later reflected on the root rnp->gp_seq,
-> > > + * it is possible that rcu_seq_snap(rcu_state.gp_seq) returns 2 full grace
-> > > + * periods ahead of the root rnp->gp_seq.
-> > >   */
-> > >  static inline bool rcu_seq_done_exact(unsigned long *sp, unsigned long s)
-> > >  {
-> > > -- 
-> > > 2.48.1
-> > > 
+Thanks
+--breno
