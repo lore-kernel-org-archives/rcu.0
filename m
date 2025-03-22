@@ -1,73 +1,68 @@
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2066.outbound.protection.outlook.com [40.107.212.66])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2076.outbound.protection.outlook.com [40.107.237.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A89235C04;
-	Sat, 22 Mar 2025 14:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE7926AF5;
+	Sat, 22 Mar 2025 17:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.76
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742654463; cv=fail; b=PJKAK6orum5ocKYG/2MIwIdBpQeNJZpIZYHdtkoHFwB/Gtrk+VE3JRgLp/haPXpe2JCV0maF/e5eEAwZdV3y+bA/lq6pVtIaq7he+wEo65BQHBrOil+A9soihf4fnHezx+XmKPD3xPtoXn82ejdmoGnhnqjbMG5q2VQo49NmU8I=
+	t=1742662823; cv=fail; b=HAhZy75VS2FTpx6pUn7/5jJ2hdZ7e5GKDYRzM2LJ15f4lHTnQKjq4gJ59Z+pRWlY0sUdJWBMu6Ue7kCwPqxCOdutwnFq8xgiXiohFX+AcmKhSLMAkSZ6R34cNv/cUs53j4IZzgjpd+6wT44fZWiYOaRF4O2WA8mJJVPqnshT/8A=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742654463; c=relaxed/simple;
-	bh=v8lTgjGDvicB884P5Gm8PFKVExR0gfnpV9BHWl8jX00=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=dLO5Qu9wjGYf6N9eQXPi6RwrZ5Glo6TibvHibTYmlxVCf7ucHbcOa6zPNOakzGuAjCd6N2at3onQQKdtdTu2OvZ5TYx+LDW1RGb+i3Gkyl+dY1xyJyt5lUFPd481Dw6pTzsMURnXk4P3TaFBNIUjGdPMu9qqEngSDntZAHNBREM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=lWmcovRb; arc=fail smtp.client-ip=40.107.212.66
+	s=arc-20240116; t=1742662823; c=relaxed/simple;
+	bh=aldJSGyOcm9xgD1hqzJqP2/DevhrFtJ/u8Vl+sPdDT0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Tl9iFofFrfiSg8u87TZu9tedmEYRzhyRblLpbEqcmf4CET6H/rHFSX1cJIH87V7hovVsZiMZd29bnMdtuOjOWzzGEtD3JM1c90yzM97IJVrUOWRcq3V16LX5AjsJbuPv12SoMGtk9Fvh7zvXCLpQk/eu6YhNBXOoHy2XBQL59ME=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jW2ocVqG; arc=fail smtp.client-ip=40.107.237.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lWmcovRb"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jW2ocVqG"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=bskXfEyaHWIGp2YhlLZaHZ9uhaWk4cveu9MUREw6L9wEw1cvFpqVfJ01dPDeFgJhBnJojFLEPjQfsABh82tGwi8SSG4HlcTR7WJVa6TJniXD9BQimvqnNcM4xII6/6TJxFYpxZxDGosDhrwWF1vJyQmt8mPtgIXexTmAAIstvgMJBNcmAvPM7Cqp1CUyCV1o0O6jC+TvyX+KNyzJY+T5stQ5xJy2Yx3cHcs9O3zmZLv372VzrMY/aKtxNiX4IgbieJ9DyXdsZoutwIzlrQV4mOhNYQ0AJ+TS8XVQibTF//zL7dz65wX386MMMnrMnmVEIANKMscgJSvwGwv+aYpn0A==
+ b=owQGgVb1cLtcQO1zmMcAHrEJ54yPP8KOWsbbMrSkbEJyqayAG2ai4RQS/xz4+JUeb5cwDOpXOVeCiDNhee7BuXohzDJhq+fYOd5bs8iD1QbQg/49gG56Jpm4kw4bPOxNg6qWOlyXlHlYZ4ed3/V4j0l63icgFysJZjGtR7XyTid9nByJed35WPrrpxJnBEuKFVZFxaCIrqTHplpIiDI/kzrfbOP8NgTItsM6wOkBGQcv1m/tzPnrC7dsNY55GlsF5yeSc4gplQVa3Cn1j9HCk8SyBYfxIPN7JX6kppG0ACKrf2pryjgN5QT3FWWYRM99L+//jshz8mT6sGcPENP4Yw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gzFLu0Zo6zyT0nZNgRjuShCLdLCPWW0R5A3HjXWeXIU=;
- b=kzRemeMyRidEKkoLcRIxOv8ckA2CkB7PsGcYLx2uHGucBJ4cyVsGar8sz181dHqfeFaM2rpidOQbVV+Dpfr2ukzwbaTHUCko8SRT5cS4+yE9OagbMt+Z13QBN0/DRfIKHT48IrTSLk5H3bfdsKkhDmLQXRqOS4sqC8ILhB0VygjvuhIOEkMWZi7+mZccpSEDRQ4twsaDersFC3quW6nO8oTx88a9R2jGURnh1mGHD7uyDCRp7LIZ7cs5IYxMZuJhBi/fmoQeoX5SaUbW4O+t2+xzRT4hxvflXYvipzNPdsrcanLp9rUGkM7j13GaNigtJqFN3lpqVu4kL9iK7jqhIA==
+ bh=Q12Nt2FL7J4U4SVxxA3ySQobPjKzmYOd/jr3eUDUBeY=;
+ b=k2inNLAvueCHMY/ud7dZoMOyNdj9XQgPgLM18SXjYT7jDaAPK0u8INrB5wn+WdegkP13mqH7R8aXA+hpzloq8gWLsOxNQki2xO5goUUD6C6H7qiMWUrYY42wXEVI2nSlaFjl93blKo9hMXc/Bx/P/1egph6f8Gj6FGF5UuinLEGMGtOSnf8zANWJknOSZBQoLowLbOz/2ZaEb45soi1P7/jprk/gelAayF/YRxHwjBeNMWRUPkBvSfr5Who8Ax10hZTRLe9XFDaslJoLKixdTtB08IwsRLJlZlnBZzd7N6Xsba6ocUZdyXFoRVU5pXQagmHwtS37mn5aI+OJs/Wbmg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gzFLu0Zo6zyT0nZNgRjuShCLdLCPWW0R5A3HjXWeXIU=;
- b=lWmcovRbEm58pBJ1pv3Krpwiewj5zXgni8A14JMQA+a9YA/tCwgU8Xt3w/4gZ8ky+jxfUUKnr3Uzpvm4ySffYh76WnJI4uf8PxNJgpOdijaa8Hlawn67EF3I1x6USLSMHjSRQTcXywxo0gLCBt7mt/9cWKQykzK28JFtvMrmxCVXgzKc7u+q9Hic1XHwUtd4Xz16kk4+vzkJ8ZA6WW+VQPQYmtyiAYHEy+affD1R315CMnr3le9Z/1FWunwHPSAuEXBdSJmdMwFrUOavMFLh4Vgg786cZBivmicSnA/5ytNkEgN3Sa3rmNQKWTWeRWotu/fkYwbpMX3yAmBKBXrLXg==
+ bh=Q12Nt2FL7J4U4SVxxA3ySQobPjKzmYOd/jr3eUDUBeY=;
+ b=jW2ocVqGtR7F/hEsmSKIUSKaoBu53BHhEDuQNfdWR/TxGSV3QdqdXXAxUwrQvpDLliGr4lK26wDItNRNAZKYc69JdKrqLtGS6jvZVx9O+hUFcxxqWTcZkzPSbx+sPdKG0vomPQyBsJ4DbqKsFtjMsG0xa4eECWyhmiu8DPAwwzRAFGrXq0Zgxke1R0+kaQPZYbvEH3imL4yRX1Vl6Jc2e4jyJQNnwmaaHS97gE0o80iRI6BId7Woua7cJq22ZzWJjB15vJp+dp/ZxUrJxdaQxVP3BeUv5IKB1hA6vVpfndJtduhSBfW5zb50i3/LNkVV7jJf+JU8kVAa/o3eg5MGEQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by CH0PR12MB8552.namprd12.prod.outlook.com (2603:10b6:610:18e::9) with
+ by LV2PR12MB5918.namprd12.prod.outlook.com (2603:10b6:408:174::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.37; Sat, 22 Mar
- 2025 14:40:58 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.34; Sat, 22 Mar
+ 2025 17:00:18 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%4]) with mapi id 15.20.8534.036; Sat, 22 Mar 2025
- 14:40:58 +0000
-Message-ID: <42297734-44af-42f9-8544-f3b25e35d3ef@nvidia.com>
-Date: Sat, 22 Mar 2025 15:40:53 +0100
+ 17:00:18 +0000
+Message-ID: <2a67f99e-7afd-499f-855c-69ecffd7c390@nvidia.com>
+Date: Sat, 22 Mar 2025 18:00:13 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] rcu: Comment on the extraneous delta test on
- rcu_seq_done_exact()
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+Subject: Re: [PATCH 2/2] rcu: Robustify rcu_is_cpu_rrupt_from_idle()
+To: Frederic Weisbecker <frederic@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
  Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
- Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Uladzislau Rezki
+ <urezki@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
  rcu <rcu@vger.kernel.org>
 References: <20250318135619.4300-1-frederic@kernel.org>
- <20250318135619.4300-2-frederic@kernel.org>
- <322b052d-0f1f-45a3-bfef-226b15f3a8fd@paulmck-laptop>
- <20250319193831.GA3791727@joelnvbox>
- <Z9wjBT3RQDUrFdbE@p200300d06f3e9880e1f174d4afcc9316.dip0.t-ipconnect.de>
- <3c7f1032-f2ba-4fc6-91c0-a07fce1b9c3c@nvidia.com>
- <Z96P_K0kt-FumSjz@pavilion.home>
- <a2b9d79f-5406-422c-aa79-f0fd1862d4ab@nvidia.com>
+ <20250318135619.4300-3-frederic@kernel.org>
 Content-Language: en-US
-In-Reply-To: <a2b9d79f-5406-422c-aa79-f0fd1862d4ab@nvidia.com>
+From: Joel Fernandes <joelagnelf@nvidia.com>
+In-Reply-To: <20250318135619.4300-3-frederic@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FRYP281CA0018.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::28)
- To SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0010.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c8::9) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -75,248 +70,197 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|CH0PR12MB8552:EE_
-X-MS-Office365-Filtering-Correlation-Id: 28237bd9-d7d7-4099-00ca-08dd694f8f48
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|LV2PR12MB5918:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a8e269e-e18a-46ce-2042-08dd69630639
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?OCsyYnFBelZUVGgzcmlpd1VYMlRXNTBwL2tMZDFBQ2JkbEdha3dzelFGUTVK?=
- =?utf-8?B?RWRZM0JLaml1ZUQ3d0p2VUpPdEJJMUt4Q0QvZk5WTTZiaDg0OEI1VkNNY3VK?=
- =?utf-8?B?Qng3bi90MGZzNVFLbHh2c0xubEE5aDZoaDFtV0VidHFpajIzelovTEE3dTlQ?=
- =?utf-8?B?MWx6ZU9QOTlRbEUrRUN0azFjcUdGNUo2YUdiM3dlRElMdm9yN2c4clVCeWRQ?=
- =?utf-8?B?cGt2bDBybXVBM05kNUJUaU9oWFNpdkc4UkVGTEV3cFNyM2RoaWhtY1BoVWJz?=
- =?utf-8?B?TVBEVVRWOFFHVUJYWmVyeG92U0dvbEhhSCtQL2d5NHoxbW1hdkVGa056MWh3?=
- =?utf-8?B?Q1N6YjVMeDJzSzU4QUpOK3VPTVMvTXV1c01IdFhpN2VtdVd5eDhnNDR1aGhR?=
- =?utf-8?B?Ry9wZUNsbFB3U1Y2cjNlbzRxL2hHQjBJcXdzaitEM0o3dzdxbXZPS2VrZzZ0?=
- =?utf-8?B?NlZKaGFpc2VlY1Zhc0Y3blUwMWc3ZTZOMWpPUEF0a0N2dWRtZGNXdXYxaDZY?=
- =?utf-8?B?R0NpWDBDeFE0bnJhL09FN1FOU252dmpXTzMxU2ltVWp3dU1ha0l4amtXbWFt?=
- =?utf-8?B?Sm9rQjl6TEV3MWJqbmp5ZmNYeHN2YU5HdmZDcFpCZXM3cW9DVXkrbW9UZDBv?=
- =?utf-8?B?b29vWXp5N0FmVXpiUGhmcEdsbCtML0x3T3RFSXBVekNBWE81Y0l3Q3hQZ2Vz?=
- =?utf-8?B?TnhjYXJKZURzS1hiVCtiOHNCQnJ6YVZqbVZjY0Z1RUhld0xtcFpYcFQrMkg3?=
- =?utf-8?B?NFlCczRzOVN3N0d5VGdsSW1iRCtMN1ZuYWxnZ3hLa2RzQ2VsNU91TXJYK3NB?=
- =?utf-8?B?SEcySW8rRHhneFM5OGpVOUVIdjMyMldLSE4wcHBSUWVyMm5ZYWtuOTJwVVZJ?=
- =?utf-8?B?Yk9ER3dOczFMcXJkVEV2SjBxOXptNXd6SjJWLy9UcC96V08xTmI5WWlKak9L?=
- =?utf-8?B?YW5HeXlYVU9lOXZYYlZqYml2QUYrMXFhTG9GdDk5WXRTUER2V2JVK3FQeFJ2?=
- =?utf-8?B?M3VHUUo5dHpJVmY3QllMTURlUFFOSlZKWDQ0bDRPNFdJY2U5a2UxblhHSmxW?=
- =?utf-8?B?VXdUUE5DRGVDWFZYYVMvcVdsTzA2eEN2bU9Hb1N6ai9uTkNaeitLREEva2g4?=
- =?utf-8?B?MUsxcHdaVGJlQ3hybitGM0huWFpaWHAwNzNFaUtDQmNVMkQzUjhHUW8zdm5h?=
- =?utf-8?B?a0VqYldhUDMrRTdwZGNQbE5kb3VQMHhMZWM3bk9HY3VURjliVXJHR1h0dGZY?=
- =?utf-8?B?WGMxVUg0aVVFa1RBaXRBbUJ5ZlZNSGZrdytDc0ZZaERDMm5hTXF5bUVlWEV4?=
- =?utf-8?B?RVArbzcyTDV3Z25hMmlZQkY2NklXQVVlS0ZQYWVET3JlbUk2RXh6c3NDL2E5?=
- =?utf-8?B?QWVsdHVyUHVtQzkrOHhPL3VWWTNOa2lVdytDZkpsUTJpaGZMRlN1TGVOV0Q2?=
- =?utf-8?B?ekxYTEVqMUE1b0JHYWpVUGppNHFoSjRsUFhLdzFmREFIU1g5R1NDZUNFL3pk?=
- =?utf-8?B?V2VPS3NiN25pbmszRTFicUw4RlZlUUhxb0JUWVlBeCtGOGdqRE5hNFg3RVY2?=
- =?utf-8?B?ZkQrdml6N3M5RzhUbGl1a3JxQlVNbHFKNFRLb3lLelliT0RUNHhWU3RNQTFQ?=
- =?utf-8?B?VzhDRnF3bkwyNm1JRUU4a2J1dWlHdmY4R29hOUpMU3NPOW5FR3RVUjl6eUcv?=
- =?utf-8?B?TEFJOWRCTHRTa2tUaGdHM0ppZkkydmdoaExYRGNRNWVhQ2krakJFUVRsWkVC?=
- =?utf-8?B?bGp6cElCdVBqSVRwcWE2UGFodEFWTUZmSXRFMnJ3Q0VCYnpERGxPN0hqR1Jj?=
- =?utf-8?B?M1hGNzlkcHhSempBL3pyYWd4UEJlTVpkRGZQbE5DYnB0WUdHV1p0NERhS3dw?=
- =?utf-8?Q?2UNI3zrAFvKmu?=
+	=?utf-8?B?TWlCck56L05venRMUG0xcEllUmJFd1h1ODRFMGVNUXRwT0xUUFNsdGRmQWsv?=
+ =?utf-8?B?cWVYODg1NjVRQ1Z3UkYvR1VlVngwU0lTWHhOeW1waGZmQXN2a1QzeHQ3M3h2?=
+ =?utf-8?B?RFVrWVFWVy9vdVF3b0dSYUZkWVBtOGNraHI2NUl3OTBsS3crWkxWUFlZQkZ4?=
+ =?utf-8?B?NUtqRWtlVmk3cjJQUVdwVVFPZ2xzOWYyQmtvbFJhLy9RUHBDZkdSakZsQTU3?=
+ =?utf-8?B?eEgvLy9ibUQ3UytFaUk2Rzh5SHNMM0hBN21ORnF3WnJEdS96eHRwVjh6bkt4?=
+ =?utf-8?B?N0lyM3JXTjNaQzZ1OU9GaENBTGc3VUlkYUlwcmJmUmZDdXZsM0xZMFVNUUJO?=
+ =?utf-8?B?aEVjcld2eXF5cDBxL2xOT0llam5tQ05uTnUyVXZTU1FVa3NpNVQ5SDg5K3dW?=
+ =?utf-8?B?Z3R0MG52SHJ0RUlicElUcXZzZlBjSVVnMXE2VjU0d0wvR3hZZGp6L0lCVUQr?=
+ =?utf-8?B?NHhtUnhObmNpM0xoTVhta0hJUE5hWnFLTjlmREpDWVRRdmF6UUgxaS81U1hO?=
+ =?utf-8?B?QjlqaXZ2YnJveEp4RG9uWitVOE9aajlBc1EyZU9rTmxIUllWRCtheFg1TEo5?=
+ =?utf-8?B?SjV4dms5aEpvVWxQQlpPRjIrNjBwQUxYTHQ4YWcxa2FscTZ4OTJUQS9GYzBu?=
+ =?utf-8?B?RkQ1SjFWTmFZVjRVNFphQkwwVkNUNG1iOHppSXhrM2g5amNYN2V1b2dDbTk1?=
+ =?utf-8?B?NC9hc05WMzVEN0NpVGFhR3AxR1ltTlVOdUFRckpaYWsxa1U1Z3FPWk9zQStV?=
+ =?utf-8?B?RGNNUXRjcllEY3Znc29ERkc1NDY5bWcva0REWDhyWTArOWFVRlF4QklNYm5C?=
+ =?utf-8?B?SmN6S2Rla0kvN0dncGdlVUdSV0NFWFM4MVJTTExXbkxWZzNHZHp3TUNoV3Fj?=
+ =?utf-8?B?bjNFTkZtL2hOays3S2VRSkRrcVl6L1Rldkt3SXAyNXlCMlI3czQ5TW9WYit4?=
+ =?utf-8?B?QS95dmN2aVFRUStHNXRaYnozZ1hBbGY2VTVJKzBaK3dUWE5Ba3c5N3NXRGNj?=
+ =?utf-8?B?V2h0RlNZL2tyc0c5OC9IOHExZjNYeStYL3hBVnJicVBRTmp2OHlIMnBiclh3?=
+ =?utf-8?B?Z28rTkpvVFBrY3hxSGhpMWxXRm42OFE3TGdkZlg5MWFtK1BZbk1UQTdyd2dO?=
+ =?utf-8?B?QzEyaVVrRk1lUG8ySFNjVEZqZ0s1RWZNWlFCWnlkNXVOMEZ2YllUYTRaN2kr?=
+ =?utf-8?B?aDhSZFAxODM2aVJkRXk3aWo4L3c3UHJJM0pqY3dBcDhtcW5odTJOeE9FR2d1?=
+ =?utf-8?B?Q0pkd2Q4elhaeGFkVWFoNEtYSnV5VUN4ZjdpZDk5M2dsY1EwVU9obG1DOGw5?=
+ =?utf-8?B?NTh5S1VlbGc1Vi9QZDU1cENSVjNEUU1QVGVQajVaeWdmT2p6Si9XZXF2OWdF?=
+ =?utf-8?B?cGg3MlFCZzJUYk9kNGxTWmZEL05ac0NUSC9pVHBRSm1nK1pwYklQK0ExQ3U5?=
+ =?utf-8?B?c1ZTejFrSkN4NmRYWHJVblc5Z0JTZ1NoUnhFMmJ3NjdEc1lMZmI0Zy9lTGdv?=
+ =?utf-8?B?T3VPVEVXUzFmOUxEb3pHcEtEMXN1ZDR0QnlwQWRpYjU2ZUFSako2TXN2STdP?=
+ =?utf-8?B?U2V3M095UUpLSUhWNUV0amM4K25YZTV1WW1zMDIxK3dkUWJHaTFJWFE3ZWU2?=
+ =?utf-8?B?MDBpZzBpd0FyRENGeFpuUFpNOVA0TW1sYWFhQytMNGJWeW9wZ3hPbGNydjRE?=
+ =?utf-8?B?Tzl4MHdPZkF5aHNiMGp4WW83WVR6SG1nOE5kM0RwbzUrOTZjcHdWT2RGVWF0?=
+ =?utf-8?B?OTJOandQSjBUb0RtNXVIdTZIaGJnRU9SV2t3cmtQUENIcVdjRW1TRXFsRnFB?=
+ =?utf-8?B?Yzh1K3kwdWk0dTNIQ0xhZEsyYVNNMSs0OTlzcmxBMXo0RW5QRUZwOGttMGVY?=
+ =?utf-8?Q?TpeO22UzNI2Iw?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MHRqZjJISGlsbXRqOVpmMWl2Q3F0M1p1N2oralA5cTBqOUxHRDhzZG1iK3dn?=
- =?utf-8?B?TFJwTEZSUW1PVDQyV1pTNjFReGZZMlQvR1B1NHZ0cGxRV2ErSGYwRWIweUxX?=
- =?utf-8?B?YWx4cjZFSHoxV3dDM2VUYUJJVXlZVlNDNVl4THRTdHZUeEFvTnZvMGxmVlBP?=
- =?utf-8?B?TnRMdkh1eDJDRS9Pazd1bEl1Q3htWHZwZkZKTGVHYlk1SUhlWmNLOVlYejhu?=
- =?utf-8?B?SFFkamNTMTJpK2EzSjNTMlhJT2Y0MERUVkFUZ2hWTEpBTFJuN29uVHhuTkxm?=
- =?utf-8?B?L2FQWGswOTNHVkV5anBxZkE1ZFgwaFNxbzBnWlRkQWJITUNEVFdFMldqZjZY?=
- =?utf-8?B?dFMyZXdYajVCZDBqK2p6eGQ2c3BsQUM0c0VMUEh5eVd4Vk8yY2VDbXF6R3FN?=
- =?utf-8?B?b1RsWDZDY00yWjB2SndaVjRmZHJhWnJ1N21hQW5aem5ub3VLNzlURDg2TGho?=
- =?utf-8?B?K0E2NXZjNWFVMDI2RGNuRi9xbkxQTWFydm9SaStkNHhOWTdYbkkvTGJwaXla?=
- =?utf-8?B?U25Ua0M4dFNTbWhTZm13dWd4TGs3SUNONmtxS1ZMY1ZhZDFqaUpEb3I0YmVL?=
- =?utf-8?B?WTFFc0RsZHY3RkF1YkUrUE1yNS8vQWt5RGdwNWszMS9UMWtEN2J2TEwxcUZV?=
- =?utf-8?B?Y29DVXlGRStGQ0VPTTFzZHI2WUw2SWkzTnI5bDFQODVHS1JCMWhDS2Y2Wkc1?=
- =?utf-8?B?ZkthTDhQUkJ1dHpQTWVlRXJYcjk2UThpVTdTNmdUbWRJN3lnQUl2SE9rVU1P?=
- =?utf-8?B?TDlUTXM2Rk9IUkRyejg5cW9iN0ZuL0phdjBkL09zK1I5WS9lak1SV0hMcGND?=
- =?utf-8?B?K0pZTzVUYTkraTVBbFZ4MHp6MlRIb09STGxVak1XcG9xYUJlb1J1VlIwS0tP?=
- =?utf-8?B?eXZyRzBZVDd2SUJuVGxEOThtaDZpYUhHNUx0WWdydkEzTzFYTjU5VTVLaXFh?=
- =?utf-8?B?dFF4OXU3eURrRjc2WWxaRS9PWEdxaW1DOWx0TThzcDNQbnp4K2VPT1M3QmM5?=
- =?utf-8?B?ZWVBSkowYm9qT1JHNVNtc2FkNVlINCtOSzVuWnZ0S21vakNmMHdTSnB4MjY1?=
- =?utf-8?B?RDRQR3l0UGtFKzlPKzgzVTExWW1Dbnh0aGV2UlVVcjZENlM4aVVoSlNFKzZK?=
- =?utf-8?B?MVByNjErZGNham1Nb2tNekQ5aG1peUp4NXQ5K1Y5Q2xncDgySWd2YWVVVlYv?=
- =?utf-8?B?dkFnNFlIMU1ZMnBYL1dSb1ZiNTR4aTl4bWVWSURvRG5YLzFVcTB6YkxENEZO?=
- =?utf-8?B?cTdLYW1rejJpN2RsYi9nWHNMS0dmeTZJeVBQQWhGTkdOb1Q2MERUc0liaWQ0?=
- =?utf-8?B?Tnlxb3VJYlVEbm04MU5tSW01WjRSZ3d3R3JJb2NkaHFhbGF0VEVBUit3RWh6?=
- =?utf-8?B?YnlpdzArbTcrczRWM2JxVDZjQnJJbXMzK09xRUtuSHlnL0NOVzFZdklVZUZm?=
- =?utf-8?B?bTl4N0c5YlZ6ZkZGZzV1akZ6Vzd3SExIYmFUWTNyZEZoMDIzU2ZNNlY2QTFX?=
- =?utf-8?B?ZmkvSVVudjdhZFZGbHNwc1QzbGN2eTZvNDNEalFFTVMzTUxEV2F5ajlpdi9I?=
- =?utf-8?B?dGlBVG5OaDlabFNnNEYydnBDblplVFoySFVKZE9tem5xRDRaOWFCSUt4WU14?=
- =?utf-8?B?NG9nbkFMUUVhZ0w2azgxV3JaMlpJMkdFajF4RkwwL2hZYWRRWHA3MERxaVMx?=
- =?utf-8?B?bnFXR3d4T0phakRsejAzckpjVnhrZEE0ai9WVUNjWmpQelRPR1dwZVl4enE5?=
- =?utf-8?B?bHE2bWwrS2xMN3Flc1BHUXh2U3VkV0pDZ2paYmpERW1LM0U0cnJEK3A3Q1J5?=
- =?utf-8?B?SEhBVFd5WUFwZTd1K09MdllPaGFQNU1IYWpGTnlJcXJ6WEZDTnFKT2hhVkU5?=
- =?utf-8?B?SHRjMEFWUzB5c1I1eFFqU2dTSjdHVkFWRnBydnVsY0wwaDdmSmlTWmY1VWRJ?=
- =?utf-8?B?ZHVqdEpYMzBsQkZ6aVRiZnd2eVNPT0s2djRzV0hBN2tvWjFqZU1tUVVGdStw?=
- =?utf-8?B?S3BvMDRSQ2FsUTJDZ0owY2lKZzd5NkpzYTZPUk02SEtyUEV2WHpNSzFCZjJj?=
- =?utf-8?B?bnZuOU1XMkdGUFdsT2hxYko3d25TSVR4ejVBd1BUbGhMQ2NJMk5CQkIvaE0v?=
- =?utf-8?Q?cvtJE5Snso49VEUqu9nOcQlsG?=
+	=?utf-8?B?WHhhdVVpMmxZMHJZdnRDbzQ0M0RNTHBkNlgwa0xUSTVTbyt1OEN4V01GaVgz?=
+ =?utf-8?B?SU1ERFNWQnBIU1NSc1dwaDUyTjF5Zm1Pd3hMRmNDSlE3U3dxT3FPTHpwTVQy?=
+ =?utf-8?B?eUhnUjZRRkg1YnNTQWt0cnJFL2RMMUVxTG5hL295aDdHa3BlWFpQNFNBT1pw?=
+ =?utf-8?B?eCt5SFIzSlVFbUpaaWx1QUFpMGx6K1YweE1LV2ZuWHAxM1NoUzVUMUlHWlJQ?=
+ =?utf-8?B?b0ljWjNmUEljck5SaFpJU3hONmNUcWVFVjgvNFJvcjRiQjhRSGp2VWZydmpt?=
+ =?utf-8?B?eWtqRlFtUkhVTHZ3NTRVRmFiWHdvaW1lNkEzYzZ3R0JEbU4xcXduQ0lSRFhz?=
+ =?utf-8?B?WW9vSm1JVGRXUWZndEkrZjR6NG1wMTVwcE1iYnUybmZJbkd0Q0RMRFl2K3VZ?=
+ =?utf-8?B?Yysrd1AreHZUQnJtUnV3M3p6R1hPaXhCTlFoc1B4NjVId1ExM3VNWCtUbDFn?=
+ =?utf-8?B?Vk5wellidXhlUTI1cEFOVkx0djFmMlFCQXd6MERYY0FpbkFLbnF3MGp5bzZM?=
+ =?utf-8?B?cWhHbVVnU2lOZ2FDRG1zNU96U2gxR2NwZ3h1ZzV4MkpLTVdxRGNVeHF5TmlY?=
+ =?utf-8?B?U1REc1psS1h3aWtCeFBGTmxLZGNBeHpsNEVJblR4Ky9vUU5ROGpzOXJES1Rz?=
+ =?utf-8?B?L3ZMMWsvVSsrdDZVSVdSV1dEcmUxcFhXYUQ2U1pVckZSWWwxL0hzVHE2aHh3?=
+ =?utf-8?B?TUdYM2FxS3l1MGx3NDAvazZTc2U3NkJFRjZqNHpPYmp4MUE5NGJhOUUrWU1t?=
+ =?utf-8?B?RkV1VldxbXkyNFF0R3Fic0F5TGk0R3NxTE4xNU9JNWVFVjVxUG1EOHBXWE12?=
+ =?utf-8?B?cHYvZjB4enFUSDJkdS9JcExONXg4TnU4YWlmd1NodVhxVGh2cnJSNHFjYTZn?=
+ =?utf-8?B?eHJicEkydlZwdXg3YmhLREoxdGFJWjFkU2RWVExCU0pDdjd6L3gxZ0VWQ0w2?=
+ =?utf-8?B?eEp1dUxnSGNubEllRzR5UWVWNDliOEo3WUV3dTN0MGx2ZDB0d09zNnZLb1hh?=
+ =?utf-8?B?TFROQlVZUWNGT2hEMndYYzZxb29GT2U4NHQveFBWK3RLZG0vTXRMTmpYZWJn?=
+ =?utf-8?B?dDk5ZHFoYmp3L3lPWlc1VjNoR2xqSHJLcjVTMkd5d216dmZEc3RHWEZPaUh0?=
+ =?utf-8?B?c3dkdTh4MVFsK3VLWnc2Wi9zY2xwY29xcHpMcDYzdzVmUmxiOEFkMVAwV2Jo?=
+ =?utf-8?B?bTBpekt4bEhFMWNSMHBRVncwZ05BQ0w1U1RJOEZMOG9ad0RMa1B4a3h3bGV1?=
+ =?utf-8?B?d3ZGSGExbDdldGUxcTJVN3k1OHMrOWs4VkNiTUxVMm9aZHNuRUpGcVVIb2xh?=
+ =?utf-8?B?VTZ1bHRqa1hvcWJNTHRsNnFHdmkweUowUmhROGhnaXBPNG5IblBtR2xqL0dy?=
+ =?utf-8?B?dzl4WHk0UU9NelBRcSthUE04d2JPMzNDM09ZQ214d2hid2lkNEV0aVZwVHNQ?=
+ =?utf-8?B?eXhCeEhKYzg3c0xDMm1YVlkwWUl6ODlhTEkvYUpSem83bDFvL2xzUWZsZXYw?=
+ =?utf-8?B?MHJhbFNLN09CRHFJSnpybWNnSk9YRVRZVUVobGQzTVVWWXdaN0JRbzg3NVYy?=
+ =?utf-8?B?cDE2REZQWUFwaGQ3VHkzN0Z6c051WjV0UWpPWDRHcjFDVXdXRm5IcDZSMlBi?=
+ =?utf-8?B?U0dUYyt0RE5JNmR0WEhFejhaSHBnSjhiYmVaaEFpQ0UybHlxOEVLeE1PV3Zz?=
+ =?utf-8?B?WEZhOEU0TmRnS3d1M3pDa2d6R2lMNFNYOWZaOFM1eUtDUFZ2WTlOdzVTZHpH?=
+ =?utf-8?B?M0xEdHVEYUxNdnRNeUtEcjBkcmUvM3phSzJsKzhIVE9hOEV3ZG05REdzRUJN?=
+ =?utf-8?B?MXQ3cVhQS2ZEN3RiYnRjMXBXSnhCM3RyVlNRcTVEd1AwRjFKc0lqQWVMamhI?=
+ =?utf-8?B?SGtMNGo5R0JEM0xxVzMwTHcxdTJIT0IzZytlMy9yQnN6d2EvT2pDK1FUdG5Q?=
+ =?utf-8?B?Z3ZxOE9aK0x3WExldFZTSXZIcFc0dVVReVhYS1YwT01ZQk5PUENvUFlWN28w?=
+ =?utf-8?B?WDFMbTZCSkg2aDB4anNQM0NYTFlhdFpmRk1DNmNSbVBUelRWbStCVmdYeDN5?=
+ =?utf-8?B?UnJvdzRkaDhTNjQ1M1ovd1VqWVMweWQ3cWE3SEJTYVZFKzlON0xWQmlucEVU?=
+ =?utf-8?Q?tHHBF9xkSWsevjAn7zIeTVhba?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28237bd9-d7d7-4099-00ca-08dd694f8f48
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a8e269e-e18a-46ce-2042-08dd69630639
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2025 14:40:58.5706
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2025 17:00:18.6041
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Qo/BU08HrZHBFOqeVXfwdhpdL7Lsy0TVjBh1Wyh7f+fI0BQV2ffuF/1NZKKzGdiAaV7K6aITiHg7U1ka47PCkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8552
+X-MS-Exchange-CrossTenant-UserPrincipalName: +7K0QsNruhhmQgzJePrqFurNbBELI9b0Wour1Unw2g6CyyJRo9n7tfX+A3YNVA9kFMPIpSE0v8Ot7xPOsqgPDA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5918
 
 
 
-On 3/22/2025 3:20 PM, Joel Fernandes wrote:
+On 3/18/2025 2:56 PM, Frederic Weisbecker wrote:
+> RCU relies on the context tracking nesting counter in order to determine
+> if it is running in extended quiescent state.
 > 
-> On 3/22/2025 11:25 AM, Frederic Weisbecker wrote:
->> Le Sat, Mar 22, 2025 at 03:06:08AM +0100, Joel Fernandes a écrit :
->>> Insomnia kicked in, so 3 am reply here (Zurich local time) ;-):
->>>
->>> On 3/20/2025 3:15 PM, Frederic Weisbecker wrote:
->>>> Le Wed, Mar 19, 2025 at 03:38:31PM -0400, Joel Fernandes a écrit :
->>>>> On Tue, Mar 18, 2025 at 11:37:38AM -0700, Paul E. McKenney wrote:
->>>>>> On Tue, Mar 18, 2025 at 02:56:18PM +0100, Frederic Weisbecker wrote:
->>>>>>> The numbers used in rcu_seq_done_exact() lack some explanation behind
->>>>>>> their magic. Especially after the commit:
->>>>>>>
->>>>>>>     85aad7cc4178 ("rcu: Fix get_state_synchronize_rcu_full() GP-start detection")
->>>>>>>
->>>>>>> which reported a subtle issue where a new GP sequence snapshot was taken
->>>>>>> on the root node state while a grace period had already been started and
->>>>>>> reflected on the global state sequence but not yet on the root node
->>>>>>> sequence, making a polling user waiting on a wrong already started grace
->>>>>>> period that would ignore freshly online CPUs.
->>>>>>>
->>>>>>> The fix involved taking the snaphot on the global state sequence and
->>>>>>> waiting on the root node sequence. And since a grace period is first
->>>>>>> started on the global state and only afterward reflected on the root
->>>>>>> node, a snapshot taken on the global state sequence might be two full
->>>>>>> grace periods ahead of the root node as in the following example:
->>>>>>>
->>>>>>> rnp->gp_seq = rcu_state.gp_seq = 0
->>>>>>>
->>>>>>>     CPU 0                                           CPU 1
->>>>>>>     -----                                           -----
->>>>>>>     // rcu_state.gp_seq = 1
->>>>>>>     rcu_seq_start(&rcu_state.gp_seq)
->>>>>>>                                                     // snap = 8
->>>>>>>                                                     snap = rcu_seq_snap(&rcu_state.gp_seq)
->>>>>>>                                                     // Two full GP differences
->>>>>>>                                                     rcu_seq_done_exact(&rnp->gp_seq, snap)
->>>>>>>     // rnp->gp_seq = 1
->>>>>>>     WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
->>>>>>>
->>>>>>> Add a comment about those expectations and to clarify the magic within
->>>>>>> the relevant function.
->>>>>>>
->>>>>>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
->>>>>> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
->>>>>>
->>>>>> But it would of course be good to get reviews from the others.
->>>>> I actually don't agree that the magic in the rcu_seq_done_exact() function about the
->>>>> ~2 GPs is related to the lag between rcu_state.gp_seq and root rnp->gp_seq,
->>>>> because the small lag can just as well survive with the rcu_seq_done()
->>>>> function in the above sequence right?
->>>>>
->>>>> The rcu_seq_done_exact() function on the other hand is more about not being
->>>>> stuck in the ULONG_MAX/2 guard band, but to actually get to that, you need a
->>>>> wrap around to happen and the delta between "rnp->gp_seq" and "snap" to be at
->>>>> least ULONG_MAX/2 AFAIU.
->>>>>
->>>>> So the only time this magic will matter is if you have a huge delta between
->>>>> what is being compared, not just 2 GPs.
->>>> You're right, and perhaps I should have made it more specific that my comment
->>>> only explains the magic "3" number here, in that if it were "2" instead, there
->>>> could be accidents with 2 full GPs difference (which is possible) spuriously
->>>> accounted as a wrap around.
->>> Ahh, so I guess I get it now and we are both right. The complete picture is - We
->>> are trying to handle the case of "very large wrap" around but as a part of that,
->>> we don't want to create false-positives for this "snap" case.
->>>
->>> A "snap" can be atmost  (2 * RCU_SEQ_STATE_MASK + 1) away from a gp_seq.
->>>
->>> That's within "2 GPs" worth of counts (about 8 counts)
->>>
->>> Taking some numbers:
->>>
->>> cur_s	s	delta (s - cur_s)
->>> 0	4	4
->>> 1	8	7
->>> 2	8	6
->>> 3	8	5
->>> 4	8	4
->>> 5	12	7
->>>
->>> The maximum delta of a snap from actual gp_seq can be (2 * RCU_SEQ_STATE_MASK +
->>> 1) which in this case is 7.
->>>
->>> So we adjust the comparison by adding the  ULONG_CMP_LT(cur_s, s - (2 *
->>> RCU_SEQ_STATE_MASK + 1)). i.e.
->> 3, right?
-> Just to be absolutely sure, are you talking about the value of RCU_SEQ_STATE_MASK ?
+> However the context tracking nesting counter is not completely
+> synchronized with the actual context tracking state:
 > 
-> That is indeed 3 (RCU_SEQ_STATE_MASK).
+> * The nesting counter is set to 1 or incremented further _after_ the
+>   actual state is set to RCU not watching.
+
+I agree with patch, but this line is a bit confusing ->nesting is set to 1
+*after* the RCU state is set to "watching".  Did you mean "watching" ?
+
+But I think you meant "After RCU transitions from a state of not-watching to
+watching' instead of 'actual state is set to RCU not watching'..
+
+ct_kernel_entry():
+
+	// RCU is not watching here ...
+	ct_kernel_enter_state(offset);
+	// ... but is watching here.
+	WRITE_ONCE(ct->nesting, 1);
+
+>    (then we know for sure we interrupted RCU not watching)
 > 
-> But if we're talking about number of GPs, my understanding is a count of 4 is
-> one GP worth. Per the above table, the delta between gp_seq and is snap is
-> always a count of 7 (hence less than 2 GPs).
+> * The nesting counter is set to 0 or decremented further _before_ the
+>   actual state is set to RCU watching.
 > 
-> Agreed?
+> Therefore it is safe to assume that if ct_nesting() > 0, RCU is not
+> watching. But if ct_nesting() <= 0, RCU is watching except for a tiny
+> window.
 > 
-> If RCU_SEQ_STATE_MASK was 0x1 instead of 0x11, that is a single bit (or a count
-> of 2 instead of 4, for a GP), then the table would be:
+> This hasn't been a problem so far because rcu_is_cpu_rrupt_from_idle()
+> has only been called from interrupts. However the code is confusing
+
+Agreed, and I could also see the existing code's snippet:
+	WARN_ON_ONCE(!nesting && !is_idle_task(current));
+
+.. not working if this function were to be called from non-interrupt kernel context.
+
+
+> and abuses the role of the context tracking nesting counter while there
+> are more accurate indicators available.
 > 
->  cur_s	s (snap)	delta (s - cur_s)
->  0	2		2
->  1	4		3
->  2	4		2
->  3	6		3
->  4	6		2
->  5	8		3
+> Clarify and robustify accordingly.
 > 
-> So delta is always <= 3,  Or more generally: <= (RCU_SEQ_STATE_MASK * 2) + 1
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree.c | 27 +++++++++++++++++----------
+>  1 file changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 79dced5fb72e..90c43061c981 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -367,7 +367,7 @@ EXPORT_SYMBOL_GPL(rcu_momentary_eqs);
+>   */
+>  static int rcu_is_cpu_rrupt_from_idle(void)
+>  {
+> -	long nesting;
+> +	long nmi_nesting = ct_nmi_nesting();
+>  
+>  	/*
+>  	 * Usually called from the tick; but also used from smp_function_call()
+> @@ -379,21 +379,28 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+>  	/* Check for counter underflows */
+>  	RCU_LOCKDEP_WARN(ct_nesting() < 0,
+>  			 "RCU nesting counter underflow!");
+> -	RCU_LOCKDEP_WARN(ct_nmi_nesting() <= 0,
+> -			 "RCU nmi_nesting counter underflow/zero!");
+>  
+> -	/* Are we at first interrupt nesting level? */
+> -	nesting = ct_nmi_nesting();
+> -	if (nesting > 1)
+> +	/* Non-idle interrupt or nested idle interrupt */
+> +	if (nmi_nesting > 1)
+>  		return false;
+>  
+>  	/*
+> -	 * If we're not in an interrupt, we must be in the idle task!
+> +	 * Non nested idle interrupt (interrupting section where RCU
+> +	 * wasn't watching).
+>  	 */
+> -	WARN_ON_ONCE(!nesting && !is_idle_task(current));
+> +	if (nmi_nesting == 1)
+> +		return true;
+>  
+> -	/* Does CPU appear to be idle from an RCU standpoint? */
+> -	return ct_nesting() == 0;
+> +	/* Not in an interrupt */
+> +	if (!nmi_nesting) {
+> +		RCU_LOCKDEP_WARN(!in_task() || !is_idle_task(current),
+> +				 "RCU nmi_nesting counter not in idle task!");
+> +		return !rcu_is_watching_curr_cpu();
 
-Oh man, I am wondering if we are on to a bug here:
-
-From your example:
-
-    CPU 0                                           CPU 1
-    -----                                           -----
-    // rcu_state.gp_seq = 1
-    rcu_seq_start(&rcu_state.gp_seq)
-                                      // snap = 8
-                                      snap = rcu_seq_snap(&rcu_state.gp_seq)
-                                      // Two full GP
-                                      rcu_seq_done_exact(&rnp->gp_seq, snap)
-
-
-Here, the
-ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 1));
-
-Will be
-ULONG_CMP_LT(0, 8 - (2 * RCU_SEQ_STATE_MASK + 1));
-
- = ULONG_CMP_LT(0, 8 - 7)
-
- = TRUE.
-
-Which means rcu_seq_done_exact() will return a false positive saying the GP has
-completed even though it has not.
-
-I think rcu_seq_done_exact() is off by one and should be doing:
-
-ULONG_CMP_LT(cur_s, s - (2 * RCU_SEQ_STATE_MASK + 2));
-
-?
-
-Oh and I see from an old email that Frederic did ask about this: "Should it be
-ULONG_CMP_LT(cur_s, s - (2 * (RCU_SEQ_STATE_MASK + 1))) ?"
+Makes sense to me and it is also consistent with rcu_watching_snap_in_eqs().
 
 thanks,
 
  - Joel
-
-
 
 
