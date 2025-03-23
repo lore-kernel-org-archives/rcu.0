@@ -1,266 +1,318 @@
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2076.outbound.protection.outlook.com [40.107.237.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE7926AF5;
-	Sat, 22 Mar 2025 17:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.76
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742662823; cv=fail; b=HAhZy75VS2FTpx6pUn7/5jJ2hdZ7e5GKDYRzM2LJ15f4lHTnQKjq4gJ59Z+pRWlY0sUdJWBMu6Ue7kCwPqxCOdutwnFq8xgiXiohFX+AcmKhSLMAkSZ6R34cNv/cUs53j4IZzgjpd+6wT44fZWiYOaRF4O2WA8mJJVPqnshT/8A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742662823; c=relaxed/simple;
-	bh=aldJSGyOcm9xgD1hqzJqP2/DevhrFtJ/u8Vl+sPdDT0=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Tl9iFofFrfiSg8u87TZu9tedmEYRzhyRblLpbEqcmf4CET6H/rHFSX1cJIH87V7hovVsZiMZd29bnMdtuOjOWzzGEtD3JM1c90yzM97IJVrUOWRcq3V16LX5AjsJbuPv12SoMGtk9Fvh7zvXCLpQk/eu6YhNBXOoHy2XBQL59ME=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jW2ocVqG; arc=fail smtp.client-ip=40.107.237.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84331FFC62;
+	Sun, 23 Mar 2025 02:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742696489; cv=none; b=h8WLoonUbYudPdhPjt/0H13zAU9vkz6qjgPhHtQ4VQ0UycjoS9BOMwfNLd3C0TnJKUCV5leh3xyBFZ2JOgyX00sa4ydWLD4863n8B3KKCW7suumD7yeiiOSzs915MPxpxP8druejXBwQHf5foAvpTvSSBcf2pc21YR9ZtsTIO98=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742696489; c=relaxed/simple;
+	bh=fQ5Z3NSNCm3aGSYH+FftqQueFBJPG0SOnK6uQ2AsbYM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=l59eZcaEX4KfDG+pgVYRendrcrh9r50XHkSI6K+JEDLWlz5yJuz65uPbFLoSZLrOhqc6G7z+2yCDhKMNNSKCHy7ga3g7OVtIXzn3WppdGgm23jrhjPB15UQZY5SmlMAthriZpLaZD90NotciUJzKm/uY1i3HzI5EpuMkokQoW40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JUmsIPCx; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jW2ocVqG"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=owQGgVb1cLtcQO1zmMcAHrEJ54yPP8KOWsbbMrSkbEJyqayAG2ai4RQS/xz4+JUeb5cwDOpXOVeCiDNhee7BuXohzDJhq+fYOd5bs8iD1QbQg/49gG56Jpm4kw4bPOxNg6qWOlyXlHlYZ4ed3/V4j0l63icgFysJZjGtR7XyTid9nByJed35WPrrpxJnBEuKFVZFxaCIrqTHplpIiDI/kzrfbOP8NgTItsM6wOkBGQcv1m/tzPnrC7dsNY55GlsF5yeSc4gplQVa3Cn1j9HCk8SyBYfxIPN7JX6kppG0ACKrf2pryjgN5QT3FWWYRM99L+//jshz8mT6sGcPENP4Yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q12Nt2FL7J4U4SVxxA3ySQobPjKzmYOd/jr3eUDUBeY=;
- b=k2inNLAvueCHMY/ud7dZoMOyNdj9XQgPgLM18SXjYT7jDaAPK0u8INrB5wn+WdegkP13mqH7R8aXA+hpzloq8gWLsOxNQki2xO5goUUD6C6H7qiMWUrYY42wXEVI2nSlaFjl93blKo9hMXc/Bx/P/1egph6f8Gj6FGF5UuinLEGMGtOSnf8zANWJknOSZBQoLowLbOz/2ZaEb45soi1P7/jprk/gelAayF/YRxHwjBeNMWRUPkBvSfr5Who8Ax10hZTRLe9XFDaslJoLKixdTtB08IwsRLJlZlnBZzd7N6Xsba6ocUZdyXFoRVU5pXQagmHwtS37mn5aI+OJs/Wbmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q12Nt2FL7J4U4SVxxA3ySQobPjKzmYOd/jr3eUDUBeY=;
- b=jW2ocVqGtR7F/hEsmSKIUSKaoBu53BHhEDuQNfdWR/TxGSV3QdqdXXAxUwrQvpDLliGr4lK26wDItNRNAZKYc69JdKrqLtGS6jvZVx9O+hUFcxxqWTcZkzPSbx+sPdKG0vomPQyBsJ4DbqKsFtjMsG0xa4eECWyhmiu8DPAwwzRAFGrXq0Zgxke1R0+kaQPZYbvEH3imL4yRX1Vl6Jc2e4jyJQNnwmaaHS97gE0o80iRI6BId7Woua7cJq22ZzWJjB15vJp+dp/ZxUrJxdaQxVP3BeUv5IKB1hA6vVpfndJtduhSBfW5zb50i3/LNkVV7jJf+JU8kVAa/o3eg5MGEQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by LV2PR12MB5918.namprd12.prod.outlook.com (2603:10b6:408:174::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.34; Sat, 22 Mar
- 2025 17:00:18 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%4]) with mapi id 15.20.8534.036; Sat, 22 Mar 2025
- 17:00:18 +0000
-Message-ID: <2a67f99e-7afd-499f-855c-69ecffd7c390@nvidia.com>
-Date: Sat, 22 Mar 2025 18:00:13 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] rcu: Robustify rcu_is_cpu_rrupt_from_idle()
-To: Frederic Weisbecker <frederic@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
- Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
- "Paul E . McKenney" <paulmck@kernel.org>, Uladzislau Rezki
- <urezki@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- rcu <rcu@vger.kernel.org>
-References: <20250318135619.4300-1-frederic@kernel.org>
- <20250318135619.4300-3-frederic@kernel.org>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <20250318135619.4300-3-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0010.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:c8::9) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JUmsIPCx"
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6e86b92d3b0so26890776d6.2;
+        Sat, 22 Mar 2025 19:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742696487; x=1743301287; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=1dgETDWRkmBFgVmFnp9kqvNBTqgAU/LjYpNxSto7Q5Q=;
+        b=JUmsIPCx9kXQL0XAvqizJe59DiOuuHNRxbDndT7Mmbt5rgeiJaaNiptFYoxQyDHsQ+
+         zbVZzWy/pQB/qxKwSJps6qK4ghszaBk0AquN6Tuu+lhsPut56slQjyvYGG7KJX3jIrgB
+         enYSjlOqC41HvbdsdfWjxH0wiY9rns8Hv3geT9k+kpEaKP/Icc8XhTOuGIfTnS/vyRpC
+         SZo6mBh4RXku3la32HGmReCAOgfKi33+dOE7520qPeoROQQbYEE0TNS6WShgofX2SXnE
+         93A1thnvoy2Y+eU2KuRId771L5RCeumkop2TKigJ/F7bnDIKlNRrrHAL1ZsjM8V/MW4L
+         IKog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742696487; x=1743301287;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1dgETDWRkmBFgVmFnp9kqvNBTqgAU/LjYpNxSto7Q5Q=;
+        b=FAiPNT2IURvKDADLlbivq8SoL3MUtZsBHZGDDlp+ozBWJSztNSC94iqRN37PGanr98
+         xPWbf6ZtkjJZMejwcj/JdnequmQoT7F9rCYwPDe4S2NOVUqAUZ02zTYKmL67CUT+S7p1
+         O3V3M6bZvlohrdikMbU+sYI46MN51iq1UntKMxojQdlFzlJzvGgZj/z1RJ11PB4XS5Dx
+         KouHCZNTtVpzbatjHa42CAw/MdoGq2yH2al5/jeRQLwGqVhMPvTxqNFFkmHsf9cjTkSA
+         aN5PdpebZTWaccG3hbRDrp0TEsFkwLEbH5JPFysTqJN4Sy5vuqjkBIADZwCpH3wmFTVH
+         PCpg==
+X-Forwarded-Encrypted: i=1; AJvYcCU5vCvyEoqwOY5Xxg1X8TcnC+NkDtoQd15b7eoMoVNIU16ycT+kXnQkcZFt4RJSw3LD1PL5@vger.kernel.org, AJvYcCX29QHyowrRJEtzY5zLSCPr6RJzFwIHawJEosvigQNbJ0etAdaL6oZYkkSjUuPzJflPTCOASZ+ofa9dvsk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy954KED/+4swrtQ58wM3xHq1MASnSLMojNFQofJcnIdSn6/06f
+	Koe9RdbubuJL4pRuBTvkog1SBVQSs7zYB1KGrkIgH2+Id6bMJ+7G
+X-Gm-Gg: ASbGnct6iy+dbf3HxrybMp2m1ncVDLZP79di+bFf3+Gay4aTDzeLLuNm3heV0kj+498
+	7HuyZZowQNTfdsOan3uf7xc2U0CMMwJ120IKPhsp14inVnbjXgW0aO8jlRP79wgHbjOktZ7nH6D
+	RhlUwtqdDw9mjlOM6BZdQDj2lYpjc/ai2MoSLXtXut4Til6LZ8wScq6jqDI61RUDTBQbLyfYa03
+	uElluRxSflcSttcqAHGm4br3Pk5GuZu22Kn7dmbZtRPmD3h/gvnV+IPKycf3+31eZBY6wo1jwbD
+	wJ++Uj6gz1XB7xXz3zI1piExH5TRQ/dGQaBvoitojl6PsylsOD1dcHoR4QAZ1nBhtmKpVxipx1v
+	CjwZaxuox3tDCEFUmd8nugk3fZhBPG20ACro=
+X-Google-Smtp-Source: AGHT+IEY/nOy/4Cmx8ig9IgFuv7woYs7hKFIIKiZGzj4NIrbYRzarAmgeaP0LCXRXV0HznrSr/z2sw==
+X-Received: by 2002:a05:6214:194b:b0:6e6:6103:f708 with SMTP id 6a1803df08f44-6eb3f34b97cmr130574206d6.38.1742696486435;
+        Sat, 22 Mar 2025 19:21:26 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6eb3ef0f405sm27756146d6.20.2025.03.22.19.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Mar 2025 19:21:25 -0700 (PDT)
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfauth.phl.internal (Postfix) with ESMTP id A02CD1200043;
+	Sat, 22 Mar 2025 22:21:25 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-06.internal (MEProxy); Sat, 22 Mar 2025 22:21:25 -0400
+X-ME-Sender: <xms:JXDfZzjbFYj0HtszGcL9KVeAgIfoyr0Mi_yZwxVh9ufqqpohNo9B1A>
+    <xme:JXDfZwDD2INI6EMUabBofJ0ZlP1PLzwjQGpwT1I3BuWI1JBPeFBt9BL34XHm3dqGv
+    Y9roW9lChrl-nni-w>
+X-ME-Received: <xmr:JXDfZzFf3Z0UCqZSUxRVtsu9TmEV0iGFpX7yVoroq921ELAfU_TD7x6g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduheehieehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkgggtugesthdtredttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpeeltdefueegfefhuedtheefvdelhfeftedvhfdt
+    veelueegtdejjedvieettedugfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdo
+    mhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejke
+    ehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgr
+    mhgvpdhnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    epthhorhhvrghlughssehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphht
+    thhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrh
+    hitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrdhuphgrughhhigr
+    hieskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhovghlsehjohgvlhhfvghrnhgrnh
+    guvghsrdhorhhgpdhrtghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhm
+    pdhrtghpthhtohepuhhrvgiikhhisehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinh
+    hugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgt
+    uhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:JXDfZwT61p6r8pRS_eZYH9aR01mgKYck12MuiQ6KVnJnINVrs3gT5g>
+    <xmx:JXDfZwzQG_Z6DCtCBr_IAzxpJm3vIMPcoDzf2rr3v36Q-Bt8F4_qQw>
+    <xmx:JXDfZ275uHoLANQD6h8Y9gVgaN32Kk6VRRFjXpmEtx1mJmnbXy0gGw>
+    <xmx:JXDfZ1yZ4DgnvRY_05Amrs15KafMJAW2RHPkMwol02dexU4iuUqYYA>
+    <xmx:JXDfZwjB6jKNlSZXmWHYzjcu8ZYqU2-9VyqwgTQz6bxjsnY7xTEnVdTh>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 22 Mar 2025 22:21:25 -0400 (EDT)
+Date: Sat, 22 Mar 2025 19:21:24 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org
+Subject: [GIT PULL] RCU changes for v6.15
+Message-ID: <Z99wJFZC1XlvA4vC@Mac.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|LV2PR12MB5918:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1a8e269e-e18a-46ce-2042-08dd69630639
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?TWlCck56L05venRMUG0xcEllUmJFd1h1ODRFMGVNUXRwT0xUUFNsdGRmQWsv?=
- =?utf-8?B?cWVYODg1NjVRQ1Z3UkYvR1VlVngwU0lTWHhOeW1waGZmQXN2a1QzeHQ3M3h2?=
- =?utf-8?B?RFVrWVFWVy9vdVF3b0dSYUZkWVBtOGNraHI2NUl3OTBsS3crWkxWUFlZQkZ4?=
- =?utf-8?B?NUtqRWtlVmk3cjJQUVdwVVFPZ2xzOWYyQmtvbFJhLy9RUHBDZkdSakZsQTU3?=
- =?utf-8?B?eEgvLy9ibUQ3UytFaUk2Rzh5SHNMM0hBN21ORnF3WnJEdS96eHRwVjh6bkt4?=
- =?utf-8?B?N0lyM3JXTjNaQzZ1OU9GaENBTGc3VUlkYUlwcmJmUmZDdXZsM0xZMFVNUUJO?=
- =?utf-8?B?aEVjcld2eXF5cDBxL2xOT0llam5tQ05uTnUyVXZTU1FVa3NpNVQ5SDg5K3dW?=
- =?utf-8?B?Z3R0MG52SHJ0RUlicElUcXZzZlBjSVVnMXE2VjU0d0wvR3hZZGp6L0lCVUQr?=
- =?utf-8?B?NHhtUnhObmNpM0xoTVhta0hJUE5hWnFLTjlmREpDWVRRdmF6UUgxaS81U1hO?=
- =?utf-8?B?QjlqaXZ2YnJveEp4RG9uWitVOE9aajlBc1EyZU9rTmxIUllWRCtheFg1TEo5?=
- =?utf-8?B?SjV4dms5aEpvVWxQQlpPRjIrNjBwQUxYTHQ4YWcxa2FscTZ4OTJUQS9GYzBu?=
- =?utf-8?B?RkQ1SjFWTmFZVjRVNFphQkwwVkNUNG1iOHppSXhrM2g5amNYN2V1b2dDbTk1?=
- =?utf-8?B?NC9hc05WMzVEN0NpVGFhR3AxR1ltTlVOdUFRckpaYWsxa1U1Z3FPWk9zQStV?=
- =?utf-8?B?RGNNUXRjcllEY3Znc29ERkc1NDY5bWcva0REWDhyWTArOWFVRlF4QklNYm5C?=
- =?utf-8?B?SmN6S2Rla0kvN0dncGdlVUdSV0NFWFM4MVJTTExXbkxWZzNHZHp3TUNoV3Fj?=
- =?utf-8?B?bjNFTkZtL2hOays3S2VRSkRrcVl6L1Rldkt3SXAyNXlCMlI3czQ5TW9WYit4?=
- =?utf-8?B?QS95dmN2aVFRUStHNXRaYnozZ1hBbGY2VTVJKzBaK3dUWE5Ba3c5N3NXRGNj?=
- =?utf-8?B?V2h0RlNZL2tyc0c5OC9IOHExZjNYeStYL3hBVnJicVBRTmp2OHlIMnBiclh3?=
- =?utf-8?B?Z28rTkpvVFBrY3hxSGhpMWxXRm42OFE3TGdkZlg5MWFtK1BZbk1UQTdyd2dO?=
- =?utf-8?B?QzEyaVVrRk1lUG8ySFNjVEZqZ0s1RWZNWlFCWnlkNXVOMEZ2YllUYTRaN2kr?=
- =?utf-8?B?aDhSZFAxODM2aVJkRXk3aWo4L3c3UHJJM0pqY3dBcDhtcW5odTJOeE9FR2d1?=
- =?utf-8?B?Q0pkd2Q4elhaeGFkVWFoNEtYSnV5VUN4ZjdpZDk5M2dsY1EwVU9obG1DOGw5?=
- =?utf-8?B?NTh5S1VlbGc1Vi9QZDU1cENSVjNEUU1QVGVQajVaeWdmT2p6Si9XZXF2OWdF?=
- =?utf-8?B?cGg3MlFCZzJUYk9kNGxTWmZEL05ac0NUSC9pVHBRSm1nK1pwYklQK0ExQ3U5?=
- =?utf-8?B?c1ZTejFrSkN4NmRYWHJVblc5Z0JTZ1NoUnhFMmJ3NjdEc1lMZmI0Zy9lTGdv?=
- =?utf-8?B?T3VPVEVXUzFmOUxEb3pHcEtEMXN1ZDR0QnlwQWRpYjU2ZUFSako2TXN2STdP?=
- =?utf-8?B?U2V3M095UUpLSUhWNUV0amM4K25YZTV1WW1zMDIxK3dkUWJHaTFJWFE3ZWU2?=
- =?utf-8?B?MDBpZzBpd0FyRENGeFpuUFpNOVA0TW1sYWFhQytMNGJWeW9wZ3hPbGNydjRE?=
- =?utf-8?B?Tzl4MHdPZkF5aHNiMGp4WW83WVR6SG1nOE5kM0RwbzUrOTZjcHdWT2RGVWF0?=
- =?utf-8?B?OTJOandQSjBUb0RtNXVIdTZIaGJnRU9SV2t3cmtQUENIcVdjRW1TRXFsRnFB?=
- =?utf-8?B?Yzh1K3kwdWk0dTNIQ0xhZEsyYVNNMSs0OTlzcmxBMXo0RW5QRUZwOGttMGVY?=
- =?utf-8?Q?TpeO22UzNI2Iw?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WHhhdVVpMmxZMHJZdnRDbzQ0M0RNTHBkNlgwa0xUSTVTbyt1OEN4V01GaVgz?=
- =?utf-8?B?SU1ERFNWQnBIU1NSc1dwaDUyTjF5Zm1Pd3hMRmNDSlE3U3dxT3FPTHpwTVQy?=
- =?utf-8?B?eUhnUjZRRkg1YnNTQWt0cnJFL2RMMUVxTG5hL295aDdHa3BlWFpQNFNBT1pw?=
- =?utf-8?B?eCt5SFIzSlVFbUpaaWx1QUFpMGx6K1YweE1LV2ZuWHAxM1NoUzVUMUlHWlJQ?=
- =?utf-8?B?b0ljWjNmUEljck5SaFpJU3hONmNUcWVFVjgvNFJvcjRiQjhRSGp2VWZydmpt?=
- =?utf-8?B?eWtqRlFtUkhVTHZ3NTRVRmFiWHdvaW1lNkEzYzZ3R0JEbU4xcXduQ0lSRFhz?=
- =?utf-8?B?WW9vSm1JVGRXUWZndEkrZjR6NG1wMTVwcE1iYnUybmZJbkd0Q0RMRFl2K3VZ?=
- =?utf-8?B?Yysrd1AreHZUQnJtUnV3M3p6R1hPaXhCTlFoc1B4NjVId1ExM3VNWCtUbDFn?=
- =?utf-8?B?Vk5wellidXhlUTI1cEFOVkx0djFmMlFCQXd6MERYY0FpbkFLbnF3MGp5bzZM?=
- =?utf-8?B?cWhHbVVnU2lOZ2FDRG1zNU96U2gxR2NwZ3h1ZzV4MkpLTVdxRGNVeHF5TmlY?=
- =?utf-8?B?U1REc1psS1h3aWtCeFBGTmxLZGNBeHpsNEVJblR4Ky9vUU5ROGpzOXJES1Rz?=
- =?utf-8?B?L3ZMMWsvVSsrdDZVSVdSV1dEcmUxcFhXYUQ2U1pVckZSWWwxL0hzVHE2aHh3?=
- =?utf-8?B?TUdYM2FxS3l1MGx3NDAvazZTc2U3NkJFRjZqNHpPYmp4MUE5NGJhOUUrWU1t?=
- =?utf-8?B?RkV1VldxbXkyNFF0R3Fic0F5TGk0R3NxTE4xNU9JNWVFVjVxUG1EOHBXWE12?=
- =?utf-8?B?cHYvZjB4enFUSDJkdS9JcExONXg4TnU4YWlmd1NodVhxVGh2cnJSNHFjYTZn?=
- =?utf-8?B?eHJicEkydlZwdXg3YmhLREoxdGFJWjFkU2RWVExCU0pDdjd6L3gxZ0VWQ0w2?=
- =?utf-8?B?eEp1dUxnSGNubEllRzR5UWVWNDliOEo3WUV3dTN0MGx2ZDB0d09zNnZLb1hh?=
- =?utf-8?B?TFROQlVZUWNGT2hEMndYYzZxb29GT2U4NHQveFBWK3RLZG0vTXRMTmpYZWJn?=
- =?utf-8?B?dDk5ZHFoYmp3L3lPWlc1VjNoR2xqSHJLcjVTMkd5d216dmZEc3RHWEZPaUh0?=
- =?utf-8?B?c3dkdTh4MVFsK3VLWnc2Wi9zY2xwY29xcHpMcDYzdzVmUmxiOEFkMVAwV2Jo?=
- =?utf-8?B?bTBpekt4bEhFMWNSMHBRVncwZ05BQ0w1U1RJOEZMOG9ad0RMa1B4a3h3bGV1?=
- =?utf-8?B?d3ZGSGExbDdldGUxcTJVN3k1OHMrOWs4VkNiTUxVMm9aZHNuRUpGcVVIb2xh?=
- =?utf-8?B?VTZ1bHRqa1hvcWJNTHRsNnFHdmkweUowUmhROGhnaXBPNG5IblBtR2xqL0dy?=
- =?utf-8?B?dzl4WHk0UU9NelBRcSthUE04d2JPMzNDM09ZQ214d2hid2lkNEV0aVZwVHNQ?=
- =?utf-8?B?eXhCeEhKYzg3c0xDMm1YVlkwWUl6ODlhTEkvYUpSem83bDFvL2xzUWZsZXYw?=
- =?utf-8?B?MHJhbFNLN09CRHFJSnpybWNnSk9YRVRZVUVobGQzTVVWWXdaN0JRbzg3NVYy?=
- =?utf-8?B?cDE2REZQWUFwaGQ3VHkzN0Z6c051WjV0UWpPWDRHcjFDVXdXRm5IcDZSMlBi?=
- =?utf-8?B?U0dUYyt0RE5JNmR0WEhFejhaSHBnSjhiYmVaaEFpQ0UybHlxOEVLeE1PV3Zz?=
- =?utf-8?B?WEZhOEU0TmRnS3d1M3pDa2d6R2lMNFNYOWZaOFM1eUtDUFZ2WTlOdzVTZHpH?=
- =?utf-8?B?M0xEdHVEYUxNdnRNeUtEcjBkcmUvM3phSzJsKzhIVE9hOEV3ZG05REdzRUJN?=
- =?utf-8?B?MXQ3cVhQS2ZEN3RiYnRjMXBXSnhCM3RyVlNRcTVEd1AwRjFKc0lqQWVMamhI?=
- =?utf-8?B?SGtMNGo5R0JEM0xxVzMwTHcxdTJIT0IzZytlMy9yQnN6d2EvT2pDK1FUdG5Q?=
- =?utf-8?B?Z3ZxOE9aK0x3WExldFZTSXZIcFc0dVVReVhYS1YwT01ZQk5PUENvUFlWN28w?=
- =?utf-8?B?WDFMbTZCSkg2aDB4anNQM0NYTFlhdFpmRk1DNmNSbVBUelRWbStCVmdYeDN5?=
- =?utf-8?B?UnJvdzRkaDhTNjQ1M1ovd1VqWVMweWQ3cWE3SEJTYVZFKzlON0xWQmlucEVU?=
- =?utf-8?Q?tHHBF9xkSWsevjAn7zIeTVhba?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a8e269e-e18a-46ce-2042-08dd69630639
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2025 17:00:18.6041
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +7K0QsNruhhmQgzJePrqFurNbBELI9b0Wour1Unw2g6CyyJRo9n7tfX+A3YNVA9kFMPIpSE0v8Ot7xPOsqgPDA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5918
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Linus,
+
+When the merge window opens, please pull the RCU update:
+
+The following changes since commit 2014c95afecee3e76ca4a56956a936e23283f05b:
+
+  Linux 6.14-rc1 (2025-02-02 15:39:26 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-next-v6.15
+
+for you to fetch changes up to 467c890f2d1ad6de9fd1dbd196fdc8f3ee63190a:
+
+  Merge branches 'docs.2025.02.04a', 'lazypreempt.2025.03.04a', 'misc.2025.03.04a', 'srcu.2025.02.05a' and 'torture.2025.02.05a' (2025-03-04 18:47:32 -0800)
 
 
+There is a small conflict with slab tree:
 
-On 3/18/2025 2:56 PM, Frederic Weisbecker wrote:
-> RCU relies on the context tracking nesting counter in order to determine
-> if it is running in extended quiescent state.
-> 
-> However the context tracking nesting counter is not completely
-> synchronized with the actual context tracking state:
-> 
-> * The nesting counter is set to 1 or incremented further _after_ the
->   actual state is set to RCU not watching.
+	https://lore.kernel.org/all/20250212150941.5e4fa1c9@canb.auug.org.au/
 
-I agree with patch, but this line is a bit confusing ->nesting is set to 1
-*after* the RCU state is set to "watching".  Did you mean "watching" ?
+and Stephen's resolution looks good to me. I also made an example of my own resolution
+at:
 
-But I think you meant "After RCU transitions from a state of not-watching to
-watching' instead of 'actual state is set to RCU not watching'..
+	git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git merge/rcu-vs-slab.2025.03.21a
 
-ct_kernel_entry():
+Regards,
+Boqun
 
-	// RCU is not watching here ...
-	ct_kernel_enter_state(offset);
-	// ... but is watching here.
-	WRITE_ONCE(ct->nesting, 1);
+----------------------------------------------------------------
+RCU pull request for v6.15
 
->    (then we know for sure we interrupted RCU not watching)
-> 
-> * The nesting counter is set to 0 or decremented further _before_ the
->   actual state is set to RCU watching.
-> 
-> Therefore it is safe to assume that if ct_nesting() > 0, RCU is not
-> watching. But if ct_nesting() <= 0, RCU is watching except for a tiny
-> window.
-> 
-> This hasn't been a problem so far because rcu_is_cpu_rrupt_from_idle()
-> has only been called from interrupts. However the code is confusing
+This pull request contains the following branches:
 
-Agreed, and I could also see the existing code's snippet:
-	WARN_ON_ONCE(!nesting && !is_idle_task(current));
+docs.2025.02.04a:
+ - Add broken-timing possibility to stallwarn.rst.
+ - Improve discussion of this_cpu_ptr(), add raw_cpu_ptr().
+ - Document self-propagating callbacks.
+ - Point call_srcu() to call_rcu() for detailed memory ordering.
+ - Add CONFIG_RCU_LAZY delays to call_rcu() kernel-doc header.
+ - Clarify RCU_LAZY and RCU_LAZY_DEFAULT_OFF help text.
+ - Remove references to old grace-period-wait primitives.
 
-.. not working if this function were to be called from non-interrupt kernel context.
+srcu.2025.02.05a:
+ - Introduce srcu_read_{un,}lock_fast(), which is similar to
+   srcu_read_{un,}lock_lite(): avoid smp_mb()s in lock and unlock at the
+   cost of calling synchronize_rcu() in synchronize_srcu(). Moreover, by
+   returning the percpu offset of the counter at srcu_read_lock_fast()
+   time, srcu_read_unlock_fast() can save extra pointer dereferencing,
+   which makes it faster than srcu_read_{un,}lock_lite().
+   srcu_read_{un,}lock_fast() are intended to replace
+   rcu_read_{un,}lock_trace() if possible.
 
+torture.2025.02.05a:
+ - Add get_torture_init_jiffies() to return the start time of the test.
+ - Add a test_boost_holdoff module parameter to allow delaying boosting
+   tests when building rcutorture as built-in.
+ - Add grace period sequence number logging at the beginning and end of
+   failure/close-call results.
+ - Switch to hexadecimal for the expedited grace period sequence number
+   in the rcu_exp_grace_period trace point.
+ - Make cur_ops->format_gp_seqs take buffer length.
+ - Move RCU_TORTURE_TEST_{CHK_RDR_STATE,LOG_CPU} to bool.
+ - Complain when invalid SRCU reader_flavor is specified.
+ - Add FORCE_NEED_SRCU_NMI_SAFE Kconfig for testing, which forces SRCU
+   uses atomics even when percpu ops are NMI safe, and use the Kconfig
+   for SRCU lockdep testing.
 
-> and abuses the role of the context tracking nesting counter while there
-> are more accurate indicators available.
-> 
-> Clarify and robustify accordingly.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  kernel/rcu/tree.c | 27 +++++++++++++++++----------
->  1 file changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 79dced5fb72e..90c43061c981 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -367,7 +367,7 @@ EXPORT_SYMBOL_GPL(rcu_momentary_eqs);
->   */
->  static int rcu_is_cpu_rrupt_from_idle(void)
->  {
-> -	long nesting;
-> +	long nmi_nesting = ct_nmi_nesting();
->  
->  	/*
->  	 * Usually called from the tick; but also used from smp_function_call()
-> @@ -379,21 +379,28 @@ static int rcu_is_cpu_rrupt_from_idle(void)
->  	/* Check for counter underflows */
->  	RCU_LOCKDEP_WARN(ct_nesting() < 0,
->  			 "RCU nesting counter underflow!");
-> -	RCU_LOCKDEP_WARN(ct_nmi_nesting() <= 0,
-> -			 "RCU nmi_nesting counter underflow/zero!");
->  
-> -	/* Are we at first interrupt nesting level? */
-> -	nesting = ct_nmi_nesting();
-> -	if (nesting > 1)
-> +	/* Non-idle interrupt or nested idle interrupt */
-> +	if (nmi_nesting > 1)
->  		return false;
->  
->  	/*
-> -	 * If we're not in an interrupt, we must be in the idle task!
-> +	 * Non nested idle interrupt (interrupting section where RCU
-> +	 * wasn't watching).
->  	 */
-> -	WARN_ON_ONCE(!nesting && !is_idle_task(current));
-> +	if (nmi_nesting == 1)
-> +		return true;
->  
-> -	/* Does CPU appear to be idle from an RCU standpoint? */
-> -	return ct_nesting() == 0;
-> +	/* Not in an interrupt */
-> +	if (!nmi_nesting) {
-> +		RCU_LOCKDEP_WARN(!in_task() || !is_idle_task(current),
-> +				 "RCU nmi_nesting counter not in idle task!");
-> +		return !rcu_is_watching_curr_cpu();
+misc.2025.03.04a:
+ - Split rcu_report_exp_cpu_mult() mask parameter and use for tracing.
+ - Remove READ_ONCE() for rdp->gpwrap access in __note_gp_changes().
+ - Fix get_state_synchronize_rcu_full() GP-start detection.
+ - Move RCU Tasks self-tests to core_initcall().
+ - Print segment lengths in show_rcu_nocb_gp_state().
+ - Make RCU watch ct_kernel_exit_state() warning.
+ - Flush console log from kernel_power_off().
+ - rcutorture: Allow a negative value for nfakewriters.
+ - rcu: Update TREE05.boot to test normal synchronize_rcu().
+ - rcu: Use _full() API to debug synchronize_rcu().
 
-Makes sense to me and it is also consistent with rcu_watching_snap_in_eqs().
+lazypreempt.2025.03.04a: Make RCU handle PREEMPT_LAZY better:
+ - Fix header guard for rcu_all_qs().
+ - rcu: Rename PREEMPT_AUTO to PREEMPT_LAZY.
+ - Update __cond_resched comment about RCU quiescent states.
+ - Handle unstable rdp in rcu_read_unlock_strict().
+ - Handle quiescent states for PREEMPT_RCU=n, PREEMPT_COUNT=y.
+ - osnoise: Provide quiescent states.
+ - Adjust rcutorture with possible PREEMPT_RCU=n && PREEMPT_COUNT=y
+   combination.
+ - Limit PREEMPT_RCU configurations.
+ - Make rcutorture senario TREE07 and senario TREE10 use PREEMPT_LAZY=y.
 
-thanks,
+----------------------------------------------------------------
+Ankur Arora (7):
+      rcu: fix header guard for rcu_all_qs()
+      rcu: rename PREEMPT_AUTO to PREEMPT_LAZY
+      sched: update __cond_resched comment about RCU quiescent states
+      rcu: handle unstable rdp in rcu_read_unlock_strict()
+      rcu: handle quiescent states for PREEMPT_RCU=n, PREEMPT_COUNT=y
+      osnoise: provide quiescent states
+      rcu: limit PREEMPT_RCU configurations
 
- - Joel
+Boqun Feng (2):
+      rcutorture: Update ->extendables check for lazy preemption
+      Merge branches 'docs.2025.02.04a', 'lazypreempt.2025.03.04a', 'misc.2025.03.04a', 'srcu.2025.02.05a' and 'torture.2025.02.05a'
 
+Paul E. McKenney (47):
+      doc: Add broken-timing possibility to stallwarn.rst
+      docs: Improve discussion of this_cpu_ptr(), add raw_cpu_ptr()
+      rcu: Document self-propagating callbacks
+      srcu: Point call_srcu() to call_rcu() for detailed memory ordering
+      rcu: Add CONFIG_RCU_LAZY delays to call_rcu() kernel-doc header
+      rcu: Clarify RCU_LAZY and RCU_LAZY_DEFAULT_OFF help text
+      rcu: Remove references to old grace-period-wait primitives
+      rcu: Split rcu_report_exp_cpu_mult() mask parameter and use for tracing
+      srcu: Make Tiny SRCU able to operate in preemptible kernels
+      srcu: Define SRCU_READ_FLAVOR_ALL in terms of symbols
+      srcu: Use ->srcu_gp_seq for rcutorture reader batch
+      srcu: Pull ->srcu_{un,}lock_count into a new srcu_ctr structure
+      srcu: Make SRCU readers use ->srcu_ctrs for counter selection
+      srcu: Make Tree SRCU updates independent of ->srcu_idx
+      srcu: Force synchronization for srcu_get_delay()
+      srcu: Rename srcu_check_read_flavor_lite() to srcu_check_read_flavor_force()
+      srcu: Add SRCU_READ_FLAVOR_SLOWGP to flag need for synchronize_rcu()
+      srcu: Pull pointer-to-integer conversion into __srcu_ptr_to_ctr()
+      srcu: Pull integer-to-pointer conversion into __srcu_ctr_to_ptr()
+      srcu: Move SRCU Tree/Tiny definitions from srcu.h
+      srcu: Add SRCU-fast readers
+      rcutorture: Add ability to test srcu_read_{,un}lock_fast()
+      refscale: Add srcu_read_lock_fast() support using "srcu-fast"
+      rcutorture:  Make scenario SRCU-P use srcu_read_lock_fast()
+      srcu: Fix srcu_read_unlock_{lite,nmisafe}() kernel-doc
+      srcu: Document that srcu_{read_lock,down_read}() can share srcu_struct
+      srcu: Add srcu_down_read_fast() and srcu_up_read_fast()
+      srcu: Make SRCU-fast also be NMI-safe
+      torture: Add get_torture_init_jiffies() for test-start time
+      rcutorture: Add a test_boost_holdoff module parameter
+      rcutorture: Include grace-period sequence numbers in failure/close-call
+      rcutorture: Expand failure/close-call grace-period output
+      rcu: Trace expedited grace-period numbers in hexadecimal
+      rcutorture: Add ftrace-compatible timestamp to GP# failure/close-call output
+      rcutorture: Make cur_ops->format_gp_seqs take buffer length
+      rcutorture: Move RCU_TORTURE_TEST_{CHK_RDR_STATE,LOG_CPU} to bool
+      rcutorture: Complain when invalid SRCU reader_flavor is specified
+      srcu: Add FORCE_NEED_SRCU_NMI_SAFE Kconfig for testing
+      torture: Make SRCU lockdep testing use srcu_read_lock_nmisafe()
+      rcu: Fix get_state_synchronize_rcu_full() GP-start detection
+      rcu-tasks: Move RCU Tasks self-tests to core_initcall()
+      rcu/nocb: Print segment lengths in show_rcu_nocb_gp_state()
+      context_tracking: Make RCU watch ct_kernel_exit_state() warning
+      Flush console log from kernel_power_off()
+      rcutorture: Update rcutorture_one_extend_check() for lazy preemption
+      rcutorture: Make scenario TREE10 build CONFIG_PREEMPT_LAZY=y
+      rcutorture: Make scenario TREE07 build CONFIG_PREEMPT_LAZY=y
 
+Uladzislau Rezki (Sony) (3):
+      rcutorture: Allow a negative value for nfakewriters
+      rcu: Update TREE05.boot to test normal synchronize_rcu()
+      rcu: Use _full() API to debug synchronize_rcu()
+
+Zilin Guan (1):
+      rcu: Remove READ_ONCE() for rdp->gpwrap access in __note_gp_changes()
+
+ Documentation/RCU/rcubarrier.rst                   |   5 +-
+ Documentation/RCU/stallwarn.rst                    |   7 +
+ Documentation/admin-guide/kernel-parameters.txt    |   5 +
+ Documentation/core-api/this_cpu_ops.rst            |  22 ++-
+ include/linux/printk.h                             |   6 +
+ include/linux/rcupdate.h                           |  25 +--
+ include/linux/rcupdate_wait.h                      |   3 +
+ include/linux/rcutree.h                            |   2 +-
+ include/linux/srcu.h                               | 102 ++++++++--
+ include/linux/srcutiny.h                           |  29 ++-
+ include/linux/srcutree.h                           |  98 ++++++++--
+ include/linux/torture.h                            |   1 +
+ include/trace/events/rcu.h                         |   2 +-
+ init/main.c                                        |   1 -
+ kernel/context_tracking.c                          |   9 +-
+ kernel/printk/printk.c                             |   4 +-
+ kernel/rcu/Kconfig                                 |  35 +++-
+ kernel/rcu/Kconfig.debug                           |  18 +-
+ kernel/rcu/rcu.h                                   |  13 +-
+ kernel/rcu/rcutorture.c                            | 124 ++++++++++--
+ kernel/rcu/refscale.c                              |  32 +++-
+ kernel/rcu/srcutiny.c                              |  20 +-
+ kernel/rcu/srcutree.c                              | 207 +++++++++++----------
+ kernel/rcu/tasks.h                                 |   5 +-
+ kernel/rcu/tiny.c                                  |  14 ++
+ kernel/rcu/tree.c                                  |  64 +++++--
+ kernel/rcu/tree_exp.h                              |   6 +-
+ kernel/rcu/tree_nocb.h                             |  20 +-
+ kernel/rcu/tree_plugin.h                           |  22 ++-
+ kernel/reboot.c                                    |   1 +
+ kernel/sched/core.c                                |   4 +-
+ kernel/torture.c                                   |  12 ++
+ kernel/trace/trace_osnoise.c                       |  32 ++--
+ .../selftests/rcutorture/bin/srcu_lockdep.sh       |   2 +-
+ .../selftests/rcutorture/configs/rcu/SRCU-P.boot   |   1 +
+ .../selftests/rcutorture/configs/rcu/TREE05.boot   |   6 +
+ .../selftests/rcutorture/configs/rcu/TREE07        |   3 +-
+ .../selftests/rcutorture/configs/rcu/TREE10        |   3 +-
+ 38 files changed, 718 insertions(+), 247 deletions(-)
