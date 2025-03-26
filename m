@@ -1,144 +1,60 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A101A4E70
-	for <rcu@vger.kernel.org>; Wed, 26 Mar 2025 08:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51D41BC9E2;
+	Wed, 26 Mar 2025 16:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742979375; cv=none; b=BrYorJGpFBk/DeDLwa+R3/QS04/D7VEDyihPkM7nBHZD3usyL5+DJPt8TzewPP5C/3n6BiKNlxDVdSXtJ02NGXW+ZCaRtcDjdls5YDw8DA9Wmfks8eMOUT1e/nHn5hVr2R3BNGkA0691pUiynj7djNzAdO+YmLHcZ2+LgfQ3pf0=
+	t=1743007447; cv=none; b=AuDpWaLI6CCR85IuDvveHC161nyDhJ3E7YQAJqBRXlHFsyhWuflA8KYfwn5AkyZuZRoHRUPFBtvj7WQkfCzCUE9v+18gtcd66tRrq9fJF6dmbAimD1wlT2graFpVMxCL5pczSj4hreuE0BQpi8hel0MquZkmmiBjfvARIyCJzMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742979375; c=relaxed/simple;
-	bh=F1foF754pT94sYW+RFuaojIiZBGsMyKzZaxtQLw5N2w=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mge8GvlWvYvbjdAAKX4x0y4YMGbZmizrl4WknOhwRAXMZcUXWceYXpKCCd68rocFoapa2T3RFBEIdSKTJF0iPbJwW6KjP3Jf1L2Z9pHZgDZf9/eYJht1MZyJNNhXXYTIg8yf8aBAAvimyJhBBD8y7b4UtBOa/joOU9ezK9iV8LM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yfhi5Fez; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1743007447; c=relaxed/simple;
+	bh=HQZ65i0Lgo+n3+UKmg9v453XuPjQ0Vay9kyFB9kQqfU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EvZnZ6FoSWGzghG2topsBwzCITZAyssFORuaLFZCYOvbkC65hlX3tXzYHuMFSyUn0b9TxDFxdr+zEREotVDotQ4Vx4hJaeaoNJZLQb3uPyPj+CtKzeARw1pqFAX5Dp7GxkAlrjhtwpSCW728btn4BO3qN+MTEUQ+Sl7TjGLymy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ROUDlNZA; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yfhi5Fez"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742979372;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ctJ2iKS2diL395+WMoYK5u4EcCy52/qwtJ7bficlTlI=;
-	b=Yfhi5Fezki67ljs+vfIlE/81Mso6xrv5nuZ7fPeDMK6fu7mYlLHIo9iF3mg3xgQKjY1yk1
-	E6/zZwNvVWzbt+iBbMXz3X0SSRHG9FqnZ7aEsdMBo0H9uOLR6LjzHwbOHKoP0fae0k0K2u
-	p/gGMSK+IreznDYsmXWDdt3ikTiZlDU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-158-shL93rGUN_ieyn_DQ-eEPw-1; Wed, 26 Mar 2025 04:56:11 -0400
-X-MC-Unique: shL93rGUN_ieyn_DQ-eEPw-1
-X-Mimecast-MFC-AGG-ID: shL93rGUN_ieyn_DQ-eEPw_1742979370
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-43941ad86d4so33772455e9.2
-        for <rcu@vger.kernel.org>; Wed, 26 Mar 2025 01:56:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742979370; x=1743584170;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ctJ2iKS2diL395+WMoYK5u4EcCy52/qwtJ7bficlTlI=;
-        b=ByGnV9nPzI1FTeRZLMe0REVqqzIEuIWyo+NFkbLYeBZcgrjHj2rFgSWDCKti44yERp
-         NF30qWf0dVKyFp7tXAqWdQlQdKHl13o1GUoN/uSGeF0oouLKwVvwoXEp8mHO50HyA9v7
-         LHq8jnIYewDCm+UmZEmPd03651Z2slKKEzpvsDmiONfbdVXTFDcB6VbyMmJ1lB21arMD
-         dLa9M6pMHkO83BvChsrdFR1z0U8f8b1drxRF3d6rCUdiMWWSK0gXZn2kgJxTBS2a9LyR
-         Nd5uWdWsZKY+NpLBMfmFyaJwRgIE+wzCGNo8U110VelCOns5Q3s7mGCagokzaweNcn6y
-         Xzjg==
-X-Forwarded-Encrypted: i=1; AJvYcCUjt0EiQNEShbZvKLq8YmoVhV4L/EHafXRzW0ofDzRkXro0a4bi+CEuUs0JVuIAyeJ5OBc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwH9S6AgLkKDtm5Dr7NNIaPMJLUyCqIiknjUfl4mDVaq/dSxyCz
-	hEGa/lpOhtqdLwqG+51jjNHC59OwWyfFzJD9As+k9JNUXHj+qMjTjRNctoENeREKH9ulvB+MJKK
-	+8RV62KouLV8i2YJgLVForAZJRkgHBBKZtU9CYvYZGCfuLbt4TA==
-X-Gm-Gg: ASbGnctldGbpTC4eci3ak0zxjK3Z+7p4jibHwfKuDXxPKkc44tSnkWQnkdMcdySP4HD
-	nAWONzpznPlIbb2lEKBkkQTvSLAMJuAOd5Qd1knfFfXRGZ8XVJan+pi8ToceVbFt0e8zrOVUptI
-	HpnB0Gy7W4LSWNC6E+KRAkIFOUkKqvccu/neVRJWRXAqRSTJEo9YiLugrudQfW8BSJF+3L6dWpz
-	Ze3YxuOD/9XTJziGEiPTvfBK5gKEKWRTqlagCpA0SrT77IC+seoZ8X4V81Sdvk3vLhL84D5YB0t
-	a2snnIam2kI5ahIbjqV0vsozfvVxIKN7JEr5pbzNPHXzc4+OYrlsh5AvsBBfI+IE3uB8Du8Kun3
-	E
-X-Received: by 2002:a05:600c:5025:b0:43d:300f:fa51 with SMTP id 5b1f17b1804b1-43d509ea850mr177278085e9.9.1742979369938;
-        Wed, 26 Mar 2025 01:56:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGmtDcswSiHFvojL/8/X8XbIAG8pFv35YFW9PLdaiNFn4jtJsKwcY6xoArge3H5jo1mJzUGFA==
-X-Received: by 2002:a05:600c:5025:b0:43d:300f:fa51 with SMTP id 5b1f17b1804b1-43d509ea850mr177277375e9.9.1742979369446;
-        Wed, 26 Mar 2025 01:56:09 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39ac67970a2sm5909443f8f.16.2025.03.26.01.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Mar 2025 01:56:08 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Jann Horn <jannh@google.com>, Rik van Riel <riel@surriel.com>
-Cc: Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, virtualization@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
- xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
- linux-arch@vger.kernel.org, rcu@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, Juergen Gross <jgross@suse.com>,
- Ajay Kaher <ajay.kaher@broadcom.com>, Alexey Makhalov
- <alexey.amakhalov@broadcom.com>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Alexander Shishkin
- <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
- Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Pawan
- Gupta <pawan.kumar.gupta@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski
- <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Jason
- Baron <jbaron@akamai.com>, Steven Rostedt <rostedt@goodmis.org>, Ard
- Biesheuvel <ardb@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang1211@gmail.com>, Juri Lelli <juri.lelli@redhat.com>,
- Clark Williams <williams@redhat.com>, Yair Podemsky <ypodemsk@redhat.com>,
- Tomas Glozar <tglozar@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
- <kees@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Christoph
- Hellwig <hch@infradead.org>, Shuah Khan <shuah@kernel.org>, Sami Tolvanen
- <samitolvanen@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alice Ryhl
- <aliceryhl@google.com>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
- Samuel Holland <samuel.holland@sifive.com>, Rong Xu <xur@google.com>,
- Nicolas Saenz Julienne <nsaenzju@redhat.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Yosry Ahmed <yosryahmed@google.com>, "Kirill A.
- Shutemov" <kirill.shutemov@linux.intel.com>, "Masami Hiramatsu (Google)"
- <mhiramat@kernel.org>, Jinghao Jia <jinghao7@illinois.edu>, Luis
- Chamberlain <mcgrof@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
- Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 29/30] x86/mm, mm/vmalloc: Defer
- flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
-In-Reply-To: <CAG48ez2bSh6=J8cXJhqYX=Y8pXcGsFgC05HsGcF0b1sJK2VH7A@mail.gmail.com>
-References: <20250114175143.81438-1-vschneid@redhat.com>
- <20250114175143.81438-30-vschneid@redhat.com>
- <CAG48ez1Mh+DOy0ysOo7Qioxh1W7xWQyK9CLGNU9TGOsLXbg=gQ@mail.gmail.com>
- <xhsmh34hhh37q.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez3H8OVP1GxBLdmFgusvT1gQhwu2SiXbgi8T9uuCYVK52w@mail.gmail.com>
- <xhsmh5xlhk5p2.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez1EAATYcX520Nnw=P8XtUDSr5pe+qGH1YVNk3xN2LE05g@mail.gmail.com>
- <xhsmh34gkk3ls.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <352317e3-c7dc-43b4-b4cb-9644489318d0@intel.com>
- <xhsmhjz9mj2qo.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <d0450bc8-6585-49ca-9cad-49e65934bd5c@intel.com>
- <xhsmhh64qhssj.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <eef09bdc-7546-462b-9ac0-661a44d2ceae@intel.com>
- <xhsmhfrk84k5k.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <408ebd8b-4bfb-4c4f-b118-7fe853c6e897@intel.com>
- <xhsmhy0wtngkd.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAG48ez2bSh6=J8cXJhqYX=Y8pXcGsFgC05HsGcF0b1sJK2VH7A@mail.gmail.com>
-Date: Wed, 26 Mar 2025 09:56:06 +0100
-Message-ID: <xhsmhv7rwnpax.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROUDlNZA"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 062F8C4CEE2;
+	Wed, 26 Mar 2025 16:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743007447;
+	bh=HQZ65i0Lgo+n3+UKmg9v453XuPjQ0Vay9kyFB9kQqfU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ROUDlNZAp/lWr9mOxkTzKDEy1jGU3LUIjB5SHCCX3+dD0Y5xLduUcYEop47eop9Ov
+	 qRB+U2XW6iyiAEnEXkHzSuzkIvonXhlX/hFM4ocASQBrFPv1Dm76ZBL0XV1MfCGJPZ
+	 0PD1dv9Q490go/hClBnTiwaFkPdmsLzK4DlCGnOFnBkbAj5PFrdeAaLlPxZlffWXZP
+	 8ckh4McAvKq2hOI0jSFwaLiPvbessOfnFwyjnS89ACQpZxkeWlVyqiQ9iNPDxjO2Nw
+	 WcPO1YHJqI72+ypgjFdRcZjkx/KIbg/DeTnlT0XtYHW9JQHaGq+N+r414TlSyy2zOf
+	 ahUyltx5WOV5g==
+Date: Wed, 26 Mar 2025 17:44:02 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Walter Chang =?utf-8?B?KOW8tee2reWTsik=?= <Walter.Chang@mediatek.com>
+Cc: "paulmck@kernel.org" <paulmck@kernel.org>,
+	"joel@joelfernandes.org" <joel@joelfernandes.org>,
+	"boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+	"vlad.wing@gmail.com" <vlad.wing@gmail.com>,
+	"kernel-team@meta.com" <kernel-team@meta.com>,
+	Alex Hoh =?utf-8?B?KOizgOaMr+WdpCk=?= <Alex.Hoh@mediatek.com>,
+	Cheng-Jui Wang =?utf-8?B?KOeOi+ato+edvyk=?= <Cheng-Jui.Wang@mediatek.com>,
+	"usamaarif642@gmail.com" <usamaarif642@gmail.com>,
+	"anna-maria@linutronix.de" <anna-maria@linutronix.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"neeraj.upadhyay@amd.com" <neeraj.upadhyay@amd.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"leitao@debian.org" <leitao@debian.org>,
+	"urezki@gmail.com" <urezki@gmail.com>,
+	Freddy Hsin =?utf-8?B?KOi+m+aBkuixkCk=?= <Freddy.Hsin@mediatek.com>,
+	"qiang.zhang1211@gmail.com" <qiang.zhang1211@gmail.com>,
+	wsd_upstream <wsd_upstream@mediatek.com>,
+	Xinghua Yang =?utf-8?B?KOadqOWFtOWNjik=?= <Xinghua.Yang@mediatek.com>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+	Chun-Hung Wu =?utf-8?B?KOW3q+mnv+Wujyk=?= <Chun-hung.Wu@mediatek.com>
+Subject: Re: [PATCH v4] hrtimers: Force migrate away hrtimers queued after
+ CPUHP_AP_HRTIMERS_DYING
+Message-ID: <Z-Qu0stgvwHF9n3q@localhost.localdomain>
+References: <20250117232433.24027-1-frederic@kernel.org>
+ <a7cb64fb-1c17-4316-abf8-e6a7e07ba4d1@paulmck-laptop>
+ <ef6cf6aaf981aa2035828e55bd66d56b88e70667.camel@mediatek.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -146,59 +62,172 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ef6cf6aaf981aa2035828e55bd66d56b88e70667.camel@mediatek.com>
 
-On 25/03/25 19:41, Jann Horn wrote:
-> On Tue, Mar 25, 2025 at 6:52=E2=80=AFPM Valentin Schneider <vschneid@redh=
-at.com> wrote:
->> On 20/02/25 09:38, Dave Hansen wrote:
->> > But, honestly, I'm still not sure this is worth all the trouble. If
->> > folks want to avoid IPIs for TLB flushes, there are hardware features
->> > that *DO* that. Just get new hardware instead of adding this complicat=
-ed
->> > pile of software that we have to maintain forever. In 10 years, we'll
->> > still have this software *and* 95% of our hardware has the hardware
->> > feature too.
->>
->> Sorry, you're going to have to deal with my ignorance a little bit longe=
-r...
->>
->> Were you thinking x86 hardware specifically, or something else?
->> AIUI things like arm64's TLBIVMALLE1IS can do what is required without a=
-ny
->> IPI:
->>
->> C5.5.78
->> """
->> The invalidation applies to all PEs in the same Inner Shareable shareabi=
-lity domain as the PE that
->> executes this System instruction.
->> """
->>
->> But for (at least) these architectures:
->>
->>   alpha
->>   x86
->>   loongarch
->>   mips
->>   (non-freescale 8xx) powerpc
->>   riscv
->>   xtensa
->>
->> flush_tlb_kernel_range() has a path with a hardcoded use of on_each_cpu(=
-),
->> so AFAICT for these the IPIs will be sent no matter the hardware.
->
-> On X86, both AMD and Intel have some fairly recently introduced CPU
-> features that can shoot down TLBs remotely.
->
-> The patch series
-> <https://lore.kernel.org/all/20250226030129.530345-1-riel@surriel.com/>
-> adds support for the AMD flavor; that series landed in the current
-> merge window (it's present in the mainline git repository now and should
-> be part of 6.15). I think support for the Intel flavor has not yet
-> been implemented, but the linked patch series mentions a plan to look
-> at the Intel flavor next.
+Hi Walter Chang,
 
-Thanks for the info!
+Le Wed, Mar 26, 2025 at 05:46:38AM +0000, Walter Chang (張維哲) a écrit :
+> On Tue, 2025-01-21 at 09:08 -0800, Paul E. McKenney wrote:
+> > On Sat, Jan 18, 2025 at 12:24:33AM +0100, Frederic Weisbecker wrote:
+> > > hrtimers are migrated away from the dying CPU to any online target
+> > > at
+> > > the CPUHP_AP_HRTIMERS_DYING stage in order not to delay bandwidth
+> > > timers
+> > > handling tasks involved in the CPU hotplug forward progress.
+> > > 
+> > > However wake ups can still be performed by the outgoing CPU after
+> > > CPUHP_AP_HRTIMERS_DYING. Those can result again in bandwidth timers
+> > > being armed. Depending on several considerations (crystal ball
+> > > power management based election, earliest timer already enqueued,
+> > > timer
+> > > migration enabled or not), the target may eventually be the current
+> > > CPU even if offline. If that happens, the timer is eventually
+> > > ignored.
+> > > 
+> > > The most notable example is RCU which had to deal with each and
+> > > every of
+> > > those wake-ups by deferring them to an online CPU, along with
+> > > related
+> > > workarounds:
+> > > 
+> > > _ e787644caf76 (rcu: Defer RCU kthreads wakeup when CPU is dying)
+> > > _ 9139f93209d1 (rcu/nocb: Fix RT throttling hrtimer armed from
+> > > offline CPU)
+> > > _ f7345ccc62a4 (rcu/nocb: Fix rcuog wake-up from offline softirq)
+> > > 
+> > > The problem isn't confined to RCU though as the stop machine
+> > > kthread
+> > > (which runs CPUHP_AP_HRTIMERS_DYING) reports its completion at the
+> > > end
+> > > of its work through cpu_stop_signal_done() and performs a wake up
+> > > that
+> > > eventually arms the deadline server timer:
+> > > 
+> > >            WARNING: CPU: 94 PID: 588 at kernel/time/hrtimer.c:1086
+> > > hrtimer_start_range_ns+0x289/0x2d0
+> > >            CPU: 94 UID: 0 PID: 588 Comm: migration/94 Not tainted
+> > >            Stopper: multi_cpu_stop+0x0/0x120 <-
+> > > stop_machine_cpuslocked+0x66/0xc0
+> > >            RIP: 0010:hrtimer_start_range_ns+0x289/0x2d0
+> > >            Call Trace:
+> > >             <TASK>
+> > >             ? hrtimer_start_range_ns
+> > >             start_dl_timer
+> > >             enqueue_dl_entity
+> > >             dl_server_start
+> > >             enqueue_task_fair
+> > >             enqueue_task
+> > >             ttwu_do_activate
+> > >             try_to_wake_up
+> > >             complete
+> > >             cpu_stopper_thread
+> > >             smpboot_thread_fn
+> > >             kthread
+> > >             ret_from_fork
+> > >             ret_from_fork_asm
+> > >             </TASK>
+> > > 
+> > > Instead of providing yet another bandaid to work around the
+> > > situation,
+> > > fix it from hrtimers infrastructure instead: always migrate away a
+> > > timer to an online target whenever it is enqueued from an offline
+> > > CPU.
+> > > 
+> > > This will also allow to revert all the above RCU disgraceful hacks.
+> > > 
+> > > Reported-by: Vlad Poenaru <vlad.wing@gmail.com>
+> > > Reported-by: Usama Arif <usamaarif642@gmail.com>
+> > > Fixes: 5c0930ccaad5 ("hrtimers: Push pending hrtimers away from
+> > > outgoing CPU earlier")
+> > > Closes: 20241213203739.1519801-1-usamaarif642@gmail.com
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > This passes over-holiday testing rcutorture, so, perhaps redundantly:
+> > 
+> > Tested-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> Hi,
+> 
+> I encountered the same issue even after applying this patch.
+> Below are the details of the warning and call trace.
+> 
+> 
+> migration/3: ------------[ cut here ]------------
+> migration/3: WARNING: CPU: 3 PID: 42 at kernel/time/hrtimer.c:1125
+> enqueue_hrtimer+0x7c/0xec
+> migration/3: CPU: 3 UID: 0 PID: 42 Comm: migration/3 Tainted: G       
+> OE      6.12.18-android16-0-g59cb5a849beb-4k #1
+> 0b440e43fa7b24aaa3b7e6e5d2b938948e0cacdb
+> migration/3: Stopper: multi_cpu_stop+0x0/0x184 <-
+> stop_machine_cpuslocked+0xc0/0x15c
 
+It's not the first time I get such a report on an out of tree
+kernel. The problem is I don't know if the tainted modules are
+involved. But something is probably making an offline CPU visible within
+the hierarchy on get_nohz_timer_target(). And that new warning made
+that visible.
+
+Can you try this and tell us if the warning fires?
+
+Thanks.
+
+diff --git a/include/linux/sched/nohz.h b/include/linux/sched/nohz.h
+index 6d67e9a5af6b..f49512628269 100644
+--- a/include/linux/sched/nohz.h
++++ b/include/linux/sched/nohz.h
+@@ -9,6 +9,7 @@
+ #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
+ extern void nohz_balance_enter_idle(int cpu);
+ extern int get_nohz_timer_target(void);
++extern void assert_domain_online(void);
+ #else
+ static inline void nohz_balance_enter_idle(int cpu) { }
+ #endif
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 07455d25329c..98c8f8408403 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -13,6 +13,7 @@
+ #include <linux/sched/isolation.h>
+ #include <linux/sched/task.h>
+ #include <linux/sched/smt.h>
++#include <linux/sched/nohz.h>
+ #include <linux/unistd.h>
+ #include <linux/cpu.h>
+ #include <linux/oom.h>
+@@ -1277,6 +1278,7 @@ static int take_cpu_down(void *_param)
+ 	if (err < 0)
+ 		return err;
+ 
++	assert_domain_online();
+ 	/*
+ 	 * Must be called from CPUHP_TEARDOWN_CPU, which means, as we are going
+ 	 * down, that the current state is CPUHP_TEARDOWN_CPU - 1.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 175a5a7ac107..88157b1645cc 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1163,6 +1163,20 @@ void resched_cpu(int cpu)
+ 
+ #ifdef CONFIG_SMP
+ #ifdef CONFIG_NO_HZ_COMMON
++void assert_domain_online(void)
++{
++	int cpu = smp_processor_id();
++	int i;
++	struct sched_domain *sd;
++
++	guard(rcu)();
++
++	for_each_domain(cpu, sd) {
++		for_each_cpu(i, sched_domain_span(sd)) {
++			WARN_ON_ONCE(cpu_is_offline(i));
++		}
++	}
++}
+ /*
+  * In the semi idle case, use the nearest busy CPU for migrating timers
+  * from an idle CPU.  This is good for power-savings.
