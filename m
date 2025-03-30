@@ -1,52 +1,38 @@
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2056.outbound.protection.outlook.com [40.107.220.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7168229A1;
-	Sat, 29 Mar 2025 23:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743289315; cv=fail; b=EpeCFau5kCBNHcqkHRIxuU04NeBvcY9X5ChqVIvJ9gbzzSqU7Di4SInYrU2pIu4FPnnLuGhIS+rr+puWcso97f+VQ8SClLlZXY5cYW45fwjXGiC4v8JOgd2A7OHD4ieukpSrK/ARIWZI/2Xy1dLW7xv5SPJjKNPBHYvemq8S1zc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743289315; c=relaxed/simple;
-	bh=jcCG4SMfSVKBPX45URhv2oGzIJiT1eshloLEkj0QMRg=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=eMtpOEpCvuuU9lxYEjMWrrGAJPjmceWSMAUPJPAHKH71nmUih47XIKb5xfFF6PqJUrCeI2lqMlA5aQkykPVqOCbbhWHemr1Fk5pjexHXec5K6AglJzJBUDfTOqkjkUvvyBspS4hD0uR/PehKGrYWV/F6FBvFjgCoxFTpN8EW/cI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dIFiwL4s; arc=fail smtp.client-ip=40.107.220.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ECA360;
+	Sun, 30 Mar 2025 22:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743372662; cv=none; b=JXR7nXoDTN6HqKqcaWoWmvTxr6Mduf+uqaWSOsUWz+8nUsxhjrEOkny4V0b5hSacEdnR1fs4UaVLwsWSjlMWXU6+gGWP02oqXXY8UgbGyWJVyyhkB94enRRKSb5NymEPkGj5KE8ExgMifAtpdsBV5ZP+6cfK9wICxTBVCM3cIz4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743372662; c=relaxed/simple;
+	bh=a3GEEyor9irMs8gac907eILMz78C90l/ixp99SJ1ybE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GrM/v7t+vu4qB/WZwUy1+YQ5sS3g1ZO5sEDQAEb9ioHzuU57jG9eOlD8/XeVFm0CKUAlUmcAWB/kjaSJrw7omiYN1VepaQMNDBpYIym5C4vxKoXCd876gOJNaqM6Bkyoi6zb8TvpiomCRppIcVOEb1qXESC3yi5hjnLLN4w4WXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J8G/Bdjr; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dIFiwL4s"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=u/32Gcu3MNe0E0AMtlJn+8lIsya8FXYNUIeNYetQoHY/7oyRheX8mEEgtEGtSDFXmnjmKBcJPBjMexxUQxRllAzWPfdPsf+AiATzQ6CQtrC18tCI51rAIQBlt5OfSKI0VrDd9KL6vdlgxQoLQNQXPWzMVYjrvfMkhGgoty3Lw7ZhdFwlLgEyD5Uq5+Sg5xppgC8sfEuj18gLTQtaVLGeOKXOqYiv+vBn/EODysf8AAfc4/wUDi9dewMs0+8xRuc00dilhQs4ktc22599nAxH2/0sMlhrfuSoRZQHFMPWJH2ufuUcGfFAiwJBfI/5xHqOxS+B6Evkvox8ZHIxQdfpyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QX6O4ygmYt+9ArzrpZ7iHJmcUPTcbAKPXZPO3KLR8sc=;
- b=oqyJDYMy5kLLTyP+G0YtgEIijWNdprpqjnw7iJqvn1a63ttszWcXqN1D87NCaGdRdLVDKW84BI0P4NprZ/hvcj4gsoM0uoFMwmdRfAnfjN/BcHuj99j+FC9lFMaC1WOy0obAcv2KmrLZ7JjoCj/n3UM9Dh9SbzahtexeYQp9hQA7gKsnwuLOEPsrbf6c4COokkaGIJYHLiWcjZuTjYUMQ7AV2pYolkgRvLcRecjrB46gyUbjLMkdRv/5IsIykfUnxd2RkEeCG49hYh+gcYWr8RelonXwBGUfxhNGG5AmHmDSCaKzpqitjCh8FSy269rLN+JgQAj3vFrr8aHq4nnpOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QX6O4ygmYt+9ArzrpZ7iHJmcUPTcbAKPXZPO3KLR8sc=;
- b=dIFiwL4sKLMauwrghu+q2ojhmEr4sYulDyX8RyFsQBetBmhTuG/1ua0RAgswOaLeqWIj0r+Ohdg5NjF1h8HvSv9TJ05arrEwNvi9WtHGf/OSq6qvClAs/UMTMdxFs5adeYM8sjpCjm1xlgyLiOLOnqNmG8G3xDzQTlOwBUdK1BlSCfj7A4lMuAWqGZafBoLow3eKADU+099Hg3utNjZyxKrK+QWmscW4vAuHsviXrRCAynzEC+NIWJ2l7MpfFRm9m/JxF+VyNsbvmIIc0Yd7Y5sm3T59ZzykQQ2FrWr/+YHVI7ur8eKMK0sbiwCwSJMbjhjNl3iBSLOTf7m9ANBhnw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by SA1PR12MB9515.namprd12.prod.outlook.com (2603:10b6:806:45a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Sat, 29 Mar
- 2025 23:01:50 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%4]) with mapi id 15.20.8534.043; Sat, 29 Mar 2025
- 23:01:50 +0000
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J8G/Bdjr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88102C4CEDD;
+	Sun, 30 Mar 2025 22:11:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743372662;
+	bh=a3GEEyor9irMs8gac907eILMz78C90l/ixp99SJ1ybE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J8G/BdjrGZLk8C2NHya3kPqvcdTiKH3qShDLbbFhSfhUh4YahS4OE/qiDkC4o0Ee2
+	 xAqCPWrXioMovkYB/JyZaPiPXuZJOwj1fibGmJep/O6ehjI/Gz8U7DKX6WW7hW1P57
+	 ZpRlFh+WUSfHR0d8h7ah6eyrmAEbh5V1XuxzrrkKt+ffoY2euS/c4BUcaPKhAfdu5p
+	 vrNh2B/CgJnZAPVBrqaRxTfMCSQzsZgh8Cai5+qmP6+mWfsVxYKWxOc9ACE9dZ6oL6
+	 FmNxnwNNVVj6ArNZGcnl/oKLdhncwwZm9+tbF2uMcVg7/BChInInaMtg3GLsQCc987
+	 k6oavt4Kn1xHQ==
+Date: Mon, 31 Mar 2025 00:10:58 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
@@ -54,334 +40,682 @@ To: linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>
-Cc: rcu@vger.kernel.org
-Subject: [PATCH] rcutorture: Perform more frequent testing of ->gpwrap
-Date: Sat, 29 Mar 2025 19:01:42 -0400
-Message-ID: <20250329230143.62292-1-joelagnelf@nvidia.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR16CA0005.namprd16.prod.outlook.com
- (2603:10b6:208:134::18) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH 1/3] rcu: Replace magic number with meaningful constant
+ in rcu_seq_done_exact()
+Message-ID: <Z-nBcg9FJqu5RzME@pavilion.home>
+References: <20250324170156.469763-1-joelagnelf@nvidia.com>
+ <20250324170156.469763-2-joelagnelf@nvidia.com>
+ <eeda52c2-5397-4aad-ad01-ca04e5b0b80f@paulmck-laptop>
+ <DDDD275D-1017-4189-9A8A-578021A33B4A@nvidia.com>
+ <e47e5611-36de-4d12-9c07-57aa2a885299@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|SA1PR12MB9515:EE_
-X-MS-Office365-Filtering-Correlation-Id: c52b4a55-89c9-47ba-5841-08dd6f15b09b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|1800799024|366016|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?HtHCrp1IKIiODS7K2KYWmH6aBj8TMSUVD0hZOPzN3zkMdBf5PnLt9Ed5r5w6?=
- =?us-ascii?Q?35aeYBSg8yeQubEtmZzJJeHA3tC86UMxE/E2QH5Gb3CKbAmEjqc10xARr2I/?=
- =?us-ascii?Q?LvdRwNVaVEGeCaBMkLLyQE3/f1jVrlJlhFDsYxTFc22RlITMvVlrBdZhU25Q?=
- =?us-ascii?Q?QWt8iORRC6a6fdq6VoPO3tBGSGtVzSFaEEn/hXm+qKkpldFpP43iMJRtR2eK?=
- =?us-ascii?Q?w1skthqjj6b+k5I16QPk+PTDXzAKDQ45w9An04Mx30E5zP445f5Z/lTyzg1j?=
- =?us-ascii?Q?37DUPaavyRcRhDm7ZJEBZJAz26pfHwdgSNa6/3H55Voa+vlENgaWnKZLjpEL?=
- =?us-ascii?Q?AwunEe5pBcXFW1OIPg52pkCtQVwpJoXRrlBdR2GGHziS4U/9cNi3KFitwKjy?=
- =?us-ascii?Q?5XiVhjqWCaNWbFrkHLfI50op9RoDvBGUsGnc3/CFzCHGwoZ4g3WL9c2MA417?=
- =?us-ascii?Q?CljxT1bfPD8BMN0DI3I8xK1rx4tzPXN2omLpJFL0EHf0xrWjNL4dNPGYRE3v?=
- =?us-ascii?Q?CjDMsefYYnE1GjXq/wIE5NdIOPTy86sylaE0CGz7vuiElSQgclVfyg2dvEy2?=
- =?us-ascii?Q?ISQ7H96ArvOGMsdP2HcsNQsOGfNsrEhxdpmMphLwVGkmAuXmZrV3m5NDqtj0?=
- =?us-ascii?Q?eXZNzL8IzEG5VpB4MUvftV8JkEsQlAyFP94bnHTI8QHw0YQuDq7Awrhpz0cB?=
- =?us-ascii?Q?2SMgZoJDba27Qjyr1tjuQylAIh/d6vCmxdyxzaLAFZ6FpfGFovcGCyrF9shj?=
- =?us-ascii?Q?jyU9SlP2KyOqu0ASgT0Tj0MyjBrXL+JnIJnG5xzAW4X+hsz2TIIF+VVvsVcx?=
- =?us-ascii?Q?iwSuUE3vPtuuySMTxCWnJ+4JAbJIdrqrF7ZD/byFqVtORHthwJQsYERxfLHy?=
- =?us-ascii?Q?0YTr2fYrySbs5s9k1zi3E/wjjytDGbyz63CysrV0jk2Pxsmm3HUg9hjOATkl?=
- =?us-ascii?Q?r5ajlNTQ1lGa3urdlUQ1q0wq3xl16mbds58BE4Dy0zpRLdLcJHX85tsXvfif?=
- =?us-ascii?Q?hA6lBBvOC4v08suTKWFVERb13uWOxRpOc40DsXr3eAJ0+Ycdb9VD77TFANph?=
- =?us-ascii?Q?TTJfrpdPL4+mzIonOmCbEJYtxmwqNiCgqsgyKMATIARuac3yweGkzApbW0oG?=
- =?us-ascii?Q?mEU0aEuTrJfJA4E8rLOgim38P6POAn9H6nqi8OY3pFnOW1bZDnAhJCZwjMbU?=
- =?us-ascii?Q?T1BYxgMpcoc5q7n8Zogqn9HtAskreeMy4t36Ma4qXar+7+il8wizlinxqOBr?=
- =?us-ascii?Q?U1XhZ/GOenpmlr94kEj09YgOh2QzvGoWaTeZFZC8bzrA4dromUDjetIvvU6H?=
- =?us-ascii?Q?T9T+z8veNUxx/FyycggpJqoRaQLXwvuO0VCyreYe0o7I7dBcOO7sHWhNya3u?=
- =?us-ascii?Q?lY1YEKEbbEONJRoR8+4A/6NkOzlNj3rn0K0ltG9UfOnCm4R0s8cTN9K44gdd?=
- =?us-ascii?Q?qiXUcf2+mgr8lbd7qp4QfYS5S0qZhChn1lTiSJdhcX34FjRUnfZXmQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1+2DJXvTIQ+NpQbwdMb6qEQv+i8Gu6Xd+k6Qs8+MXeHopKantfvb/K5EW1D3?=
- =?us-ascii?Q?KSTlyJbCc6lUaxKt1xo/AMHXemm62GHEBVlJ909YH+nZ7VsX+QQZoVoD+vvb?=
- =?us-ascii?Q?6ORB2MwOmDHWyZHpSOAUrVsOUspVp0zWCDZX0/NgtxV33VljGT3pRwf1BFZX?=
- =?us-ascii?Q?mai5lTk2iPFKXrjddTH8LJ/VVvrQJifD+i7nDxOnH4W5kvcAf5KrmikDJk2y?=
- =?us-ascii?Q?cbyK0yunSZZ4/pIQmQVcxn24GV9QLtkBvIlu9bG+G8Zazu5k/6Wr/qwV/+Rz?=
- =?us-ascii?Q?aqGPaPV6pff8NW1CfjUxxNeHjh+4mfUrj3CkVOysYHBSxPk61wWd/l3Js20E?=
- =?us-ascii?Q?pHQkK+MknwLZeoNJnJppzDa2XzJsnZExzAvnnx1ZkFHmivR6CAs6SfT+SBGc?=
- =?us-ascii?Q?81ZNo6lyu97k0701edgVljzW0yDY9l0MVMwHwxTisH+DCYIp+q5orDzikv+W?=
- =?us-ascii?Q?/ehalTvQdR9zhoTpsT1g9PlrHOWs0dWMF9y9wZ5bbDuMr/pwEv7EHFxfVUR5?=
- =?us-ascii?Q?p/sKuNFhGI4RPtzt4dcM/0MT6MY6DIlq634ZHNef4Y2PK5okRr9X+VhFHjbR?=
- =?us-ascii?Q?w3WXwpBbgrMc13MhGcUJKstN5O1IAllIW284nZww3/S3eCuP19W9mhmT0K59?=
- =?us-ascii?Q?qCYRpMR9bmH0cAIIvuLNEyyRxbguz1yNiygNj/osaChWgPuml/oaE4f3vz9H?=
- =?us-ascii?Q?lLEj0cURLXSkHhSEuuArd+RNbzACpZhz+HGyO9Ldo/ctcmr/OLt9Xq2ceaDv?=
- =?us-ascii?Q?yrGRB4ZnBxY0itGPl3x+OlFB9SVDra/FBh39kMCIPDYT4m+KJWvufEfwHJJa?=
- =?us-ascii?Q?ojnL20UIE/8GimFQcfBI8PjA+FqzPC2noUkUsM/6Df1aAW4MYBpiTqrDw92A?=
- =?us-ascii?Q?KTYz1lWu+ZrSnpcq3j5AerP/rXWOyVgDc4/MUjLX8gbLNwFirIzJAHDZVzW9?=
- =?us-ascii?Q?sERg+i9/z+BlPihVVx5YDILIhjSfkncHEkRuWir99mhamJ2+2VJSXxikpDk7?=
- =?us-ascii?Q?9rjGhEP8A8ddaUnoV8IPgLkhj3EgrY3kLPC46gOmW3OaNcZmMWRY2eyRkRXW?=
- =?us-ascii?Q?LpEYpeUCL+NbjRUim80BabWGZIGlfSeFlYpLAITPxFdDCdr19jwdd9Fm05Tw?=
- =?us-ascii?Q?OyFWMe1FXQwvWw1Jt/3ZXnqtPv32f0E69T19XC0hV0TyKOh5uNU0mROYmbXm?=
- =?us-ascii?Q?fcb7jtlWxTZ+87WfvWNDypm9yl1hQH6x4THIKMNAeWN2nMi9whE8PAA9bUd7?=
- =?us-ascii?Q?C7s2dh9gVQxrq3rHUCi+2E5WjDWfSpWPlNglWS1KxH7R3eDg/WotfCWZAPRW?=
- =?us-ascii?Q?/e3P5w34EI1BV7cc2lD7ZxsXy6AzdU2vUWx5++x1IjgQ/fopKWCwyMBFLeAs?=
- =?us-ascii?Q?c7mbdl6lXhtXSXPqv8mpgeRMjUvFgjQCttDmwsMa3rVs64Fv1fH27kOdcTLI?=
- =?us-ascii?Q?Bwq4gpPxVoKU3guPRWv2c+PBx34U8jUuythYOMkVPDL5FSfUcJQhv/NwMXNn?=
- =?us-ascii?Q?bigH6dicjXjbgtx8V3eFbowihVxzE22+LvX2kzA3Ym2MUCFSKm76QqRfgzKY?=
- =?us-ascii?Q?gaBN+3Z0dI3F7YaKWkSYUQMYNAr0XUX4EyAVzvxo?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c52b4a55-89c9-47ba-5841-08dd6f15b09b
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2025 23:01:50.6105
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K8TK6pyfnmpE61EIIXo6k6309EEIxJeA1ehRZKpkJWF/GGcZ6NW4b7DA5uFIGBgNT3awzAbNy4XK3RIbXZJDVQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB9515
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e47e5611-36de-4d12-9c07-57aa2a885299@paulmck-laptop>
 
-Currently, the ->gpwrap is not tested (at all per my testing) due to the
-requirement of a large delta between a CPU's rdp->gp_seq and its node's
-rnp->gpseq.
+Le Thu, Mar 27, 2025 at 10:09:48AM -0700, Paul E. McKenney a écrit :
+> On Wed, Mar 26, 2025 at 10:42:52PM +0000, Joel Fernandes wrote:
+> > 
+> > 
+> > > On Mar 26, 2025, at 6:33 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > 
+> > > ﻿On Mon, Mar 24, 2025 at 01:01:53PM -0400, Joel Fernandes wrote:
+> > >> The rcu_seq_done_exact() function checks if a grace period has completed by
+> > >> comparing sequence numbers. It includes a guard band to handle sequence number
+> > >> wraparound, which was previously expressed using the magic number calculation
+> > >> '3 * RCU_SEQ_STATE_MASK + 1'.
+> > >> 
+> > >> This magic number is not immediately obvious in terms of what it represents.
+> > >> 
+> > >> Instead, the reason we need this tiny guardband is because of the lag between
+> > >> the setting of rcu_state.gp_seq_polled and root rnp's gp_seq in rcu_gp_init().
+> > >> 
+> > >> This guardband needs to be at least 2 GPs worth of counts, to avoid recognizing
+> > >> the newly started GP as completed immediately, due to the following sequence
+> > >> which arises due to the delay between update of rcu_state.gp_seq_polled and
+> > >> root rnp's gp_seq:
+> > >> 
+> > >> rnp->gp_seq = rcu_state.gp_seq = 0
+> > >> 
+> > >>    CPU 0                                           CPU 1
+> > >>    -----                                           -----
+> > >>    // rcu_state.gp_seq = 1
+> > >>    rcu_seq_start(&rcu_state.gp_seq)
+> > >>                                                    // snap = 8
+> > >>                                                    snap = rcu_seq_snap(&rcu_state.gp_seq)
+> > >>                                                    // Two full GP differences
+> > >>                                                    rcu_seq_done_exact(&rnp->gp_seq, snap)
+> > >>    // rnp->gp_seq = 1
+> > >>    WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
+> > >> 
+> > >> This can happen due to get_state_synchronize_rcu_full() sampling
+> > >> rcu_state.gp_seq_polled, however the poll_state_synchronize_rcu_full()
+> > >> sampling the root rnp's gp_seq. The delay between the update of the 2
+> > >> counters occurs in rcu_gp_init() during which the counters briefly go
+> > >> out of sync.
+> > >> 
+> > >> Make the guardband explictly 2 GPs. This improves code readability and
+> > >> maintainability by making the intent clearer as well.
+> > >> 
+> > >> Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+> > >> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> > > 
+> > > One concern is that a small error anywhere in the code could cause this
+> > > minimal guard band to be too small.  This is not a problem for some
+> > > use cases (rcu_barrier() just does an extra operation, and normal grace
+> > > periods are protected from forever-idle CPUs by ->gpwrap), but could be
+> > > an issue on 32-bit systems for user of polled RCU grace periods.
+> > 
+> > Could you provide more details of the usecase (sequence of steps) causing an issue for 32 bit polled RCU users? I am not able to see how this patch can affect them.
+> > 
+> > > 
+> > > In contrast, making the guard band a bit longer than it needs to be
+> > > has little or no downside.
+> > 
+> > Making it 3 GP instead of 2 should be ok with me as long as we document it but at least it will not be a magic number based on an equation. I feel we should not put random magic numbers which is more dangerous since it is hard to explain (and hence debug — just my 2 cents).
+> 
+> Apologies, I was getting ahead of us on this one.
+> 
+> That third (and maybe also a fourth) grace period becomes important if
+> we start getting memory contention on rcu_state.gp_seq, in which case
+> we would want the polled grace periods to look at the leaf rcu_node
+> structure's gp_seq, which would introduce extra slop.
+> 
+> For now, for this patch, assuming you guys promise to remember this
+> should such memory contention prove problematic:
+> 
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-This results in no testing of ->gpwrap being set. This patch by default
-adds 5 minutes of testing with ->gpwrap forced by lowering the delta
-between rdp->gp_seq and rnp->gp_seq to just 8 GPs. All of this is
-configurable, including the active time for the setting and a full
-testing cycle.
+Taking again a step back on this. This all happens because we have two different
+global gp sequence counter, and the two are used on different occasions, even mixed
+up together since 85aad7cc4178 ("rcu: Fix get_state_synchronize_rcu_full()
+GP-start detection") even though they have different constraints and
+reliability.
 
-By default, the first 25 minutes of a test will have the _default_
-behavior there is right now (ULONG_MAX / 4) delta. Then for 5 minutes,
-we switch to a smaller delta causing 1-2 wraps in 5 minutes. I believe
-this is reasonable since we at least add a little bit of testing for
-usecases where ->gpwrap is set.
+This can be error prone and confusing.
 
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
----
- kernel/rcu/rcu.h        |  4 +++
- kernel/rcu/rcutorture.c | 64 +++++++++++++++++++++++++++++++++++++++++
- kernel/rcu/tree.c       | 34 ++++++++++++++++++++--
- kernel/rcu/tree.h       |  1 +
- 4 files changed, 101 insertions(+), 2 deletions(-)
+So I'm unfortunately asking again if it wouldn't be a good idea to have a single
+global state counter that lives in the root node so that we don't have it
+duplicated in rcu_state.gp_seq.
+
+This involves some special care:
+
+1) As you pointed out, the root can also be the unique leaf. So care must
+   be taken that no QS is reported before new online CPUs have been handled
+   and QS masks initialized. In order for __note_gp_changes() to handle
+   it gracefully we must have two seq states: one to tell the
+   grace period has started (before checking new online CPUs): RCU_STATE_STARTED
+   and one to tell that grace period is ready to receive quiescent states:
+   RCU_STATE_WAIT_QS. Although not strictly required, __note_gp_changes() can
+   ignore simple state changes to RCU_STATE_STARTED in order to spare useless
+   work and rnp locking. No QS will be reported before ->qsmask are initialized
+   in any case.
+
+2) rcu_gp_cleanup() currently ends the grace period top-down through the rnp tree
+   and only then on rcu_state. With this change it's simply top-down. I have audited
+   rcu_seq_snap() and rcu_start_this_gp() uses and I haven't found an obvious
+   issue with that.
+
+The draft below holds 30 minutes of TREE01:
 
 diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index eed2951a4962..9a15e9701e02 100644
+index feb3ac1dc5d5..c4bb3eb92a58 100644
 --- a/kernel/rcu/rcu.h
 +++ b/kernel/rcu/rcu.h
-@@ -572,6 +572,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
- 			       unsigned long c_old,
- 			       unsigned long c);
- void rcu_gp_set_torture_wait(int duration);
-+void rcu_set_torture_ovf_lag(unsigned long lag);
-+int rcu_get_gpwrap_count(int cpu);
- #else
- static inline void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
+@@ -19,6 +19,12 @@
+  * The two least significant bits contain the control flags.
+  * The most significant bits contain the grace-period sequence counter.
+  *
++ * RCU_STATE_STARTED		:	The gp has started but QS are not
++ *					requested yet.
++ *
++ * RCU_STATE_WAIT_QS		:	The gp has started and waits for
++ *					QS to be reported.
++ *
+  * When both control flags are zero, no grace period is in progress.
+  * When either bit is non-zero, a grace period has started and is in
+  * progress. When the grace period completes, the control flags are reset
+@@ -54,6 +60,9 @@
+  *					grace-period sequence number.
+  */
+ 
++#define RCU_STATE_STARTED	0x1
++#define RCU_STATE_WAIT_QS	0x2
++
+ /* Low-order bit definition for polled grace-period APIs. */
+ #define RCU_GET_STATE_COMPLETED	0x1
+ 
+@@ -92,7 +101,13 @@ static inline void rcu_seq_start(unsigned long *sp)
  {
-@@ -589,6 +591,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
- 	do { } while (0)
- #endif
- static inline void rcu_gp_set_torture_wait(int duration) { }
-+static inline void rcu_set_torture_ovf_lag(unsigned long lag) { }
-+static inline int rcu_get_gpwrap_count(int cpu) { return 0; }
- #endif
- unsigned long long rcutorture_gather_gp_seqs(void);
- void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp, size_t len);
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 895a27545ae1..79a72e70913e 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -118,6 +118,9 @@ torture_param(int, nreaders, -1, "Number of RCU reader threads");
- torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
- torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
- torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (jiffies), 0=disable");
-+torture_param(int, ovf_cycle_mins, 30, "Total cycle duration for ovf lag testing (in minutes)");
-+torture_param(int, ovf_active_mins, 5, "Duration for which ovf lag is active within each cycle (in minutes)");
-+torture_param(int, ovf_lag_gps, 8, "Value to set for set_torture_ovf_lag during an active testing period.");
- torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disable");
- torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
- torture_param(int, preempt_duration, 0, "Preemption duration (ms), zero to disable");
-@@ -2629,6 +2632,7 @@ rcu_torture_stats_print(void)
- 	int i;
- 	long pipesummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
- 	long batchsummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
-+	long n_gpwraps = 0;
- 	struct rcu_torture *rtcp;
- 	static unsigned long rtcv_snap = ULONG_MAX;
- 	static bool splatted;
-@@ -2639,6 +2643,7 @@ rcu_torture_stats_print(void)
- 			pipesummary[i] += READ_ONCE(per_cpu(rcu_torture_count, cpu)[i]);
- 			batchsummary[i] += READ_ONCE(per_cpu(rcu_torture_batch, cpu)[i]);
- 		}
-+		n_gpwraps += rcu_get_gpwrap_count(cpu);
- 	}
- 	for (i = RCU_TORTURE_PIPE_LEN; i >= 0; i--) {
- 		if (pipesummary[i] != 0)
-@@ -2672,6 +2677,7 @@ rcu_torture_stats_print(void)
- 	pr_cont("read-exits: %ld ", data_race(n_read_exits)); // Statistic.
- 	pr_cont("nocb-toggles: %ld:%ld\n",
- 		atomic_long_read(&n_nocb_offload), atomic_long_read(&n_nocb_deoffload));
-+	pr_cont("gpwraps: %ld\n", n_gpwraps);
- 
- 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
- 	if (atomic_read(&n_rcu_torture_mberror) ||
-@@ -3842,6 +3848,58 @@ static int rcu_torture_preempt(void *unused)
- 
- static enum cpuhp_state rcutor_hp;
- 
-+static struct hrtimer ovf_lag_timer;
-+static bool ovf_lag_active;
-+
-+/* Timer handler for toggling RCU grace-period sequence overflow test lag value */
-+static enum hrtimer_restart rcu_torture_ovf_lag_timer(struct hrtimer *timer)
-+{
-+	ktime_t next_delay;
-+
-+	if (ovf_lag_active) {
-+		pr_alert("rcu-torture: Disabling ovf lag (value=0)\n");
-+		rcu_set_torture_ovf_lag(0);
-+		ovf_lag_active = false;
-+		next_delay = ktime_set((ovf_cycle_mins - ovf_active_mins) * 60, 0);
-+	} else {
-+		pr_alert("rcu-torture: Enabling ovf lag (value=%d)\n", ovf_lag_gps);
-+		rcu_set_torture_ovf_lag(ovf_lag_gps);
-+		ovf_lag_active = true;
-+		next_delay = ktime_set(ovf_active_mins * 60, 0);
-+	}
-+
-+	if (torture_must_stop())
-+		return HRTIMER_NORESTART;
-+
-+	hrtimer_forward_now(timer, next_delay);
-+	return HRTIMER_RESTART;
+ 	WRITE_ONCE(*sp, *sp + 1);
+ 	smp_mb(); /* Ensure update-side operation after counter increment. */
+-	WARN_ON_ONCE(rcu_seq_state(*sp) != 1);
++	WARN_ON_ONCE(rcu_seq_state(*sp) != RCU_STATE_STARTED);
 +}
 +
-+static int rcu_torture_ovf_lag_init(void)
++static inline void rcu_seq_wait_qs(unsigned long *sp)
 +{
-+	if (ovf_cycle_mins <= 0 || ovf_active_mins <= 0) {
-+		pr_alert("rcu-torture: lag timing parameters must be positive\n");
-+		return -EINVAL;
-+	}
-+
-+	hrtimer_init(&ovf_lag_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	ovf_lag_timer.function = rcu_torture_ovf_lag_timer;
-+	ovf_lag_active = false;
-+	hrtimer_start(&ovf_lag_timer,
-+		      ktime_set((ovf_cycle_mins - ovf_active_mins) * 60, 0), HRTIMER_MODE_REL);
-+
-+	return 0;
-+}
-+
-+static void rcu_torture_ovf_lag_cleanup(void)
-+{
-+	hrtimer_cancel(&ovf_lag_timer);
-+
-+	if (ovf_lag_active) {
-+		rcu_set_torture_ovf_lag(0);
-+		ovf_lag_active = false;
-+	}
-+}
- static void
- rcu_torture_cleanup(void)
- {
-@@ -4015,6 +4073,8 @@ rcu_torture_cleanup(void)
- 	torture_cleanup_end();
- 	if (cur_ops->gp_slow_unregister)
- 		cur_ops->gp_slow_unregister(NULL);
-+
-+	rcu_torture_ovf_lag_cleanup();
++	WRITE_ONCE(*sp, *sp + 1);
++	WARN_ON_ONCE(rcu_seq_state(*sp) != RCU_STATE_WAIT_QS);
  }
  
- static void rcu_torture_leak_cb(struct rcu_head *rhp)
-@@ -4508,6 +4568,10 @@ rcu_torture_init(void)
- 	torture_init_end();
- 	if (cur_ops->gp_slow_register && !WARN_ON_ONCE(!cur_ops->gp_slow_unregister))
- 		cur_ops->gp_slow_register(&rcu_fwd_cb_nodelay);
-+
-+	if (rcu_torture_ovf_lag_init())
-+		goto unwind;
-+
- 	return 0;
- 
- unwind:
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index b77ccc55557b..7b17b578956a 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -80,6 +80,15 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
- static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
- 	.gpwrap = true,
- };
-+
-+int rcu_get_gpwrap_count(int cpu)
-+{
-+	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
-+
-+	return READ_ONCE(rdp->gpwrap_count);
-+}
-+EXPORT_SYMBOL_GPL(rcu_get_gpwrap_count);
-+
- static struct rcu_state rcu_state = {
- 	.level = { &rcu_state.node[0] },
- 	.gp_state = RCU_GP_IDLE,
-@@ -778,6 +787,25 @@ void rcu_request_urgent_qs_task(struct task_struct *t)
- 	smp_store_release(per_cpu_ptr(&rcu_data.rcu_urgent_qs, cpu), true);
+ /* Compute the end-of-grace-period value for the specified sequence number. */
+@@ -135,6 +150,11 @@ static inline unsigned long rcu_seq_current(unsigned long *sp)
+ 	return READ_ONCE(*sp);
  }
  
-+/**
-+ * rcu_set_torture_ovf_lag - Set RCU GP sequence overflow lag value.
-+ * @lag_gps: Set overflow lag to this many grace period worth of counters
-+ * which is used by rcutorture to quickly force a gpwrap situation.
-+ * @lag_gps = 0 means we reset it back to the boot-time value.
-+ */
-+static unsigned long seq_ovf_lag = ULONG_MAX / 4;
-+
-+void rcu_set_torture_ovf_lag(unsigned long lag_gps)
++static inline bool rcu_seq_changed(unsigned long old, unsigned long new)
 +{
-+	unsigned long lag_seq_count;
-+
-+	lag_seq_count = (lag_gps == 0)
-+			? ULONG_MAX / 4
-+			: lag_gps << RCU_SEQ_CTR_SHIFT;
-+	WRITE_ONCE(seq_ovf_lag, lag_seq_count);
++	return (old & ~RCU_STATE_STARTED) != (new & ~RCU_STATE_STARTED);
 +}
-+EXPORT_SYMBOL_GPL(rcu_set_torture_ovf_lag);
 +
  /*
-  * When trying to report a quiescent state on behalf of some other CPU,
-  * it is our responsibility to check for and handle potential overflow
-@@ -788,9 +816,11 @@ void rcu_request_urgent_qs_task(struct task_struct *t)
- static void rcu_gpnum_ovf(struct rcu_node *rnp, struct rcu_data *rdp)
- {
- 	raw_lockdep_assert_held_rcu_node(rnp);
--	if (ULONG_CMP_LT(rcu_seq_current(&rdp->gp_seq) + ULONG_MAX / 4,
--			 rnp->gp_seq))
-+	if (ULONG_CMP_LT(rcu_seq_current(&rdp->gp_seq) + seq_ovf_lag,
-+			 rnp->gp_seq)) {
- 		WRITE_ONCE(rdp->gpwrap, true);
-+		WRITE_ONCE(rdp->gpwrap_count, READ_ONCE(rdp->gpwrap_count) + 1);
-+	}
- 	if (ULONG_CMP_LT(rdp->rcu_iw_gp_seq + ULONG_MAX / 4, rnp->gp_seq))
- 		rdp->rcu_iw_gp_seq = rnp->gp_seq + ULONG_MAX / 4;
+  * Given a snapshot from rcu_seq_snap(), determine whether or not the
+  * corresponding update-side operation has started.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 475f31deed14..54480ee9599f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -81,9 +81,9 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+ 	.gpwrap = true,
+ };
+ static struct rcu_state rcu_state = {
++	.node[0].gp_seq = (0UL - 300UL) << RCU_SEQ_CTR_SHIFT,
+ 	.level = { &rcu_state.node[0] },
+ 	.gp_state = RCU_GP_IDLE,
+-	.gp_seq = (0UL - 300UL) << RCU_SEQ_CTR_SHIFT,
+ 	.barrier_mutex = __MUTEX_INITIALIZER(rcu_state.barrier_mutex),
+ 	.barrier_lock = __RAW_SPIN_LOCK_UNLOCKED(rcu_state.barrier_lock),
+ 	.name = RCU_NAME,
+@@ -192,6 +192,21 @@ int rcu_get_gp_kthreads_prio(void)
  }
+ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
+ 
++/*
++ * Return the root node of the rcu_state structure.
++ */
++static struct rcu_node *rcu_get_root(void)
++{
++	return &rcu_state.node[0];
++}
++
++static unsigned long *rcu_root_seq(void)
++{
++	struct rcu_node *root = rcu_get_root();
++
++	return &root->gp_seq;
++}
++
+ /*
+  * Number of grace periods between delays, normalized by the duration of
+  * the delay.  The longer the delay, the more the grace periods between
+@@ -210,7 +225,7 @@ EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
+  */
+ static int rcu_gp_in_progress(void)
+ {
+-	return rcu_seq_state(rcu_seq_current(&rcu_state.gp_seq));
++	return rcu_seq_state(rcu_seq_current(rcu_root_seq()));
+ }
+ 
+ /*
+@@ -504,7 +519,7 @@ static int rcu_pending(int user);
+  */
+ unsigned long rcu_get_gp_seq(void)
+ {
+-	return READ_ONCE(rcu_state.gp_seq);
++	return READ_ONCE(*rcu_root_seq());
+ }
+ EXPORT_SYMBOL_GPL(rcu_get_gp_seq);
+ 
+@@ -520,21 +535,13 @@ unsigned long rcu_exp_batches_completed(void)
+ }
+ EXPORT_SYMBOL_GPL(rcu_exp_batches_completed);
+ 
+-/*
+- * Return the root node of the rcu_state structure.
+- */
+-static struct rcu_node *rcu_get_root(void)
+-{
+-	return &rcu_state.node[0];
+-}
+-
+ /*
+  * Send along grace-period-related data for rcutorture diagnostics.
+  */
+ void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
+ {
+ 	*flags = READ_ONCE(rcu_state.gp_flags);
+-	*gp_seq = rcu_seq_current(&rcu_state.gp_seq);
++	*gp_seq = rcu_seq_current(rcu_root_seq());
+ }
+ EXPORT_SYMBOL_GPL(rcutorture_get_gp_data);
+ 
+@@ -1010,7 +1017,7 @@ static bool rcu_start_this_gp(struct rcu_node *rnp_start, struct rcu_data *rdp,
+ 		trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("NoGPkthread"));
+ 		goto unlock_out;
+ 	}
+-	trace_rcu_grace_period(rcu_state.name, data_race(rcu_state.gp_seq), TPS("newreq"));
++	trace_rcu_grace_period(rcu_state.name, data_race(*rcu_root_seq()), TPS("newreq"));
+ 	ret = true;  /* Caller must wake GP kthread. */
+ unlock_out:
+ 	/* Push furthest requested GP to leaf node and rcu_data structure. */
+@@ -1095,7 +1102,7 @@ static void rcu_gp_kthread_wake(void)
+ 	    !READ_ONCE(rcu_state.gp_flags) || !t)
+ 		return;
+ 	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+-	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
++	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(*rcu_root_seq()));
+ 	swake_up_one_online(&rcu_state.gp_wq);
+ }
+ 
+@@ -1135,7 +1142,7 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+ 	 * accelerating callback invocation to an earlier grace-period
+ 	 * number.
+ 	 */
+-	gp_seq_req = rcu_seq_snap(&rcu_state.gp_seq);
++	gp_seq_req = rcu_seq_snap(rcu_root_seq());
+ 	if (rcu_segcblist_accelerate(&rdp->cblist, gp_seq_req))
+ 		ret = rcu_start_this_gp(rnp, rdp, gp_seq_req);
+ 
+@@ -1164,7 +1171,7 @@ static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
+ 	bool needwake;
+ 
+ 	rcu_lockdep_assert_cblist_protected(rdp);
+-	c = rcu_seq_snap(&rcu_state.gp_seq);
++	c = rcu_seq_snap(rcu_root_seq());
+ 	if (!READ_ONCE(rdp->gpwrap) && ULONG_CMP_GE(rdp->gp_seq_needed, c)) {
+ 		/* Old request still live, so mark recent callbacks. */
+ 		(void)rcu_segcblist_accelerate(&rdp->cblist, c);
+@@ -1249,7 +1256,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+ 
+ 	raw_lockdep_assert_held_rcu_node(rnp);
+ 
+-	if (rdp->gp_seq == rnp->gp_seq)
++	if (!rcu_seq_changed(rdp->gp_seq, rnp->gp_seq))
+ 		return false; /* Nothing to do. */
+ 
+ 	/* Handle the ends of any preceding grace periods first. */
+@@ -1298,7 +1305,7 @@ static void note_gp_changes(struct rcu_data *rdp)
+ 
+ 	local_irq_save(flags);
+ 	rnp = rdp->mynode;
+-	if ((rdp->gp_seq == rcu_seq_current(&rnp->gp_seq) &&
++	if ((!rcu_seq_changed(rdp->gp_seq, rcu_seq_current(&rnp->gp_seq)) &&
+ 	     !unlikely(READ_ONCE(rdp->gpwrap))) || /* w/out lock. */
+ 	    !raw_spin_trylock_rcu_node(rnp)) { /* irqs already off, so later. */
+ 		local_irq_restore(flags);
+@@ -1341,7 +1348,7 @@ static bool rcu_gp_slow_is_suppressed(void)
+ static void rcu_gp_slow(int delay)
+ {
+ 	if (!rcu_gp_slow_is_suppressed() && delay > 0 &&
+-	    !(rcu_seq_ctr(rcu_state.gp_seq) % (rcu_num_nodes * PER_RCU_NODE_PERIOD * delay)))
++	    !(rcu_seq_ctr(*rcu_root_seq()) % (rcu_num_nodes * PER_RCU_NODE_PERIOD * delay)))
+ 		schedule_timeout_idle(delay);
+ }
+ 
+@@ -1802,10 +1809,9 @@ static noinline_for_stack bool rcu_gp_init(void)
+ 	/* Advance to a new grace period and initialize state. */
+ 	record_gp_stall_check_time();
+ 	/* Record GP times before starting GP, hence rcu_seq_start(). */
+-	rcu_seq_start(&rcu_state.gp_seq);
+-	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
++	rcu_seq_start(rcu_root_seq());
+ 	start_new_poll = rcu_sr_normal_gp_init();
+-	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
++	trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(), TPS("start"));
+ 	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+ 	raw_spin_unlock_irq_rcu_node(rnp);
+ 
+@@ -1902,7 +1908,10 @@ static noinline_for_stack bool rcu_gp_init(void)
+ 		rdp = this_cpu_ptr(&rcu_data);
+ 		rcu_preempt_check_blocked_tasks(rnp);
+ 		rnp->qsmask = rnp->qsmaskinit;
+-		WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
++		if (!rnp->parent)
++			rcu_seq_wait_qs(&rnp->gp_seq);
++		else
++			WRITE_ONCE(rnp->gp_seq, *rcu_root_seq());
+ 		if (rnp == rdp->mynode)
+ 			(void)__note_gp_changes(rnp, rdp);
+ 		rcu_preempt_boost_start_gp(rnp);
+@@ -2018,7 +2027,7 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 			WRITE_ONCE(rcu_state.jiffies_kick_kthreads,
+ 				   jiffies + (j ? 3 * j : 2));
+ 		}
+-		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
++		trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(),
+ 				       TPS("fqswait"));
+ 		WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_FQS);
+ 		(void)swait_event_idle_timeout_exclusive(rcu_state.gp_wq,
+@@ -2041,7 +2050,7 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 		/* If time for quiescent-state forcing, do it. */
+ 		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+ 		    (gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+-			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
++			trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(),
+ 					       TPS("fqsstart"));
+ 			rcu_gp_fqs(first_gp_fqs);
+ 			gf = 0;
+@@ -2049,7 +2058,7 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 				first_gp_fqs = false;
+ 				gf = rcu_state.cbovld ? RCU_GP_FLAG_OVLD : 0;
+ 			}
+-			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
++			trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(),
+ 					       TPS("fqsend"));
+ 			cond_resched_tasks_rcu_qs();
+ 			WRITE_ONCE(rcu_state.gp_activity, jiffies);
+@@ -2060,7 +2069,7 @@ static noinline_for_stack void rcu_gp_fqs_loop(void)
+ 			cond_resched_tasks_rcu_qs();
+ 			WRITE_ONCE(rcu_state.gp_activity, jiffies);
+ 			WARN_ON(signal_pending(current));
+-			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
++			trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(),
+ 					       TPS("fqswaitsig"));
+ 			ret = 1; /* Keep old FQS timing. */
+ 			j = jiffies;
+@@ -2081,7 +2090,6 @@ static noinline void rcu_gp_cleanup(void)
+ 	int cpu;
+ 	bool needgp = false;
+ 	unsigned long gp_duration;
+-	unsigned long new_gp_seq;
+ 	bool offloaded;
+ 	struct rcu_data *rdp;
+ 	struct rcu_node *rnp = rcu_get_root();
+@@ -2103,6 +2111,8 @@ static noinline void rcu_gp_cleanup(void)
+ 	 * period as completed in all of the rcu_node structures.
+ 	 */
+ 	rcu_poll_gp_seq_end(&rcu_state.gp_seq_polled_snap);
++	rcu_seq_end(rcu_root_seq());
++	smp_mb(); // Order against failing poll_state_synchronize_rcu_full().
+ 	raw_spin_unlock_irq_rcu_node(rnp);
+ 
+ 	/*
+@@ -2114,16 +2124,12 @@ static noinline void rcu_gp_cleanup(void)
+ 	 * the rcu_node structures before the beginning of the next grace
+ 	 * period is recorded in any of the rcu_node structures.
+ 	 */
+-	new_gp_seq = rcu_state.gp_seq;
+-	rcu_seq_end(&new_gp_seq);
+ 	rcu_for_each_node_breadth_first(rnp) {
+ 		raw_spin_lock_irq_rcu_node(rnp);
+ 		if (WARN_ON_ONCE(rcu_preempt_blocked_readers_cgp(rnp)))
+ 			dump_blkd_tasks(rnp, 10);
+ 		WARN_ON_ONCE(rnp->qsmask);
+-		WRITE_ONCE(rnp->gp_seq, new_gp_seq);
+-		if (!rnp->parent)
+-			smp_mb(); // Order against failing poll_state_synchronize_rcu_full().
++		WRITE_ONCE(rnp->gp_seq, *rcu_root_seq());
+ 		rdp = this_cpu_ptr(&rcu_data);
+ 		if (rnp == rdp->mynode)
+ 			needgp = __note_gp_changes(rnp, rdp) || needgp;
+@@ -2146,9 +2152,7 @@ static noinline void rcu_gp_cleanup(void)
+ 	raw_spin_lock_irq_rcu_node(rnp); /* GP before ->gp_seq update. */
+ 
+ 	/* Declare grace period done, trace first to use old GP number. */
+-	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("end"));
+-	rcu_seq_end(&rcu_state.gp_seq);
+-	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
++	trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(), TPS("end"));
+ 	WRITE_ONCE(rcu_state.gp_state, RCU_GP_IDLE);
+ 	/* Check for GP requests since above loop. */
+ 	rdp = this_cpu_ptr(&rcu_data);
+@@ -2173,7 +2177,7 @@ static noinline void rcu_gp_cleanup(void)
+ 
+ 		WRITE_ONCE(rcu_state.gp_flags, RCU_GP_FLAG_INIT);
+ 		WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
+-		trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("newreq"));
++		trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(), TPS("newreq"));
+ 	} else {
+ 
+ 		// We get here either if there is no need for an
+@@ -2204,7 +2208,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
+ 
+ 		/* Handle grace-period start. */
+ 		for (;;) {
+-			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
++			trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(),
+ 					       TPS("reqwait"));
+ 			WRITE_ONCE(rcu_state.gp_state, RCU_GP_WAIT_GPS);
+ 			swait_event_idle_exclusive(rcu_state.gp_wq,
+@@ -2218,7 +2222,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
+ 			cond_resched_tasks_rcu_qs();
+ 			WRITE_ONCE(rcu_state.gp_activity, jiffies);
+ 			WARN_ON(signal_pending(current));
+-			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
++			trace_rcu_grace_period(rcu_state.name, *rcu_root_seq(),
+ 					       TPS("reqwaitsig"));
+ 		}
+ 
+@@ -3299,9 +3303,10 @@ void synchronize_rcu(void)
+ 	// these counters.
+ 	local_irq_save(flags);
+ 	WARN_ON_ONCE(num_online_cpus() > 1);
+-	rcu_state.gp_seq += (1 << RCU_SEQ_CTR_SHIFT);
++	rnp = rcu_get_root();
++	rnp->gp_seq += (1 << RCU_SEQ_CTR_SHIFT);
+ 	for (rnp = this_cpu_ptr(&rcu_data)->mynode; rnp; rnp = rnp->parent)
+-		rnp->gp_seq_needed = rnp->gp_seq = rcu_state.gp_seq;
++		rnp->gp_seq_needed = rnp->gp_seq = *rcu_root_seq();
+ 	local_irq_restore(flags);
+ }
+ EXPORT_SYMBOL_GPL(synchronize_rcu);
+@@ -3390,7 +3395,7 @@ static void start_poll_synchronize_rcu_common(void)
+ 	// get a grace period that no one needed.  These accesses are ordered
+ 	// by smp_mb(), and we are accessing them in the opposite order
+ 	// from which they are updated at grace-period start, as required.
+-	needwake = rcu_start_this_gp(rnp, rdp, rcu_seq_snap(&rcu_state.gp_seq));
++	needwake = rcu_start_this_gp(rnp, rdp, rcu_seq_snap(rcu_root_seq()));
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	if (needwake)
+ 		rcu_gp_kthread_wake();
+@@ -3512,11 +3517,9 @@ EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
+  */
+ bool poll_state_synchronize_rcu_full(struct rcu_gp_oldstate *rgosp)
+ {
+-	struct rcu_node *rnp = rcu_get_root();
+-
+ 	smp_mb(); // Order against root rcu_node structure grace-period cleanup.
+ 	if (rgosp->rgos_norm == RCU_GET_STATE_COMPLETED ||
+-	    rcu_seq_done_exact(&rnp->gp_seq, rgosp->rgos_norm) ||
++	    rcu_seq_done_exact(rcu_root_seq(), rgosp->rgos_norm) ||
+ 	    rgosp->rgos_exp == RCU_GET_STATE_COMPLETED ||
+ 	    rcu_seq_done_exact(&rcu_state.expedited_sequence, rgosp->rgos_exp)) {
+ 		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+@@ -4062,9 +4065,9 @@ rcu_boot_init_percpu_data(int cpu)
+ 	WARN_ON_ONCE(ct->nesting != 1);
+ 	WARN_ON_ONCE(rcu_watching_snap_in_eqs(ct_rcu_watching_cpu(cpu)));
+ 	rdp->barrier_seq_snap = rcu_state.barrier_sequence;
+-	rdp->rcu_ofl_gp_seq = rcu_state.gp_seq;
++	rdp->rcu_ofl_gp_seq = *rcu_root_seq();
+ 	rdp->rcu_ofl_gp_state = RCU_GP_CLEANED;
+-	rdp->rcu_onl_gp_seq = rcu_state.gp_seq;
++	rdp->rcu_onl_gp_seq = *rcu_root_seq();
+ 	rdp->rcu_onl_gp_state = RCU_GP_CLEANED;
+ 	rdp->last_sched_clock = jiffies;
+ 	rdp->cpu = cpu;
+@@ -4271,7 +4274,7 @@ void rcutree_report_cpu_starting(unsigned int cpu)
+ 	smp_store_release(&rcu_state.ncpus, rcu_state.ncpus + newcpu); /* ^^^ */
+ 	ASSERT_EXCLUSIVE_WRITER(rcu_state.ncpus);
+ 	rcu_gpnum_ovf(rnp, rdp); /* Offline-induced counter wrap? */
+-	rdp->rcu_onl_gp_seq = READ_ONCE(rcu_state.gp_seq);
++	rdp->rcu_onl_gp_seq = READ_ONCE(*rcu_root_seq());
+ 	rdp->rcu_onl_gp_state = READ_ONCE(rcu_state.gp_state);
+ 
+ 	/* An incoming CPU should never be blocking a grace period. */
+@@ -4322,7 +4325,7 @@ void rcutree_report_cpu_dead(void)
+ 	mask = rdp->grpmask;
+ 	arch_spin_lock(&rcu_state.ofl_lock);
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
+-	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
++	rdp->rcu_ofl_gp_seq = READ_ONCE(*rcu_root_seq());
+ 	rdp->rcu_ofl_gp_state = READ_ONCE(rcu_state.gp_state);
+ 	if (rnp->qsmask & mask) { /* RCU waiting on outgoing CPU? */
+ 		/* Report quiescent state -before- changing ->qsmaskinitnext! */
+@@ -4534,7 +4537,7 @@ void rcu_scheduler_starting(void)
+ 	// Fix up the ->gp_seq counters.
+ 	local_irq_save(flags);
+ 	rcu_for_each_node_breadth_first(rnp)
+-		rnp->gp_seq_needed = rnp->gp_seq = rcu_state.gp_seq;
++		rnp->gp_seq_needed = rnp->gp_seq = *rcu_root_seq();
+ 	local_irq_restore(flags);
+ 
+ 	// Switch out of early boot mode.
+@@ -4583,9 +4586,9 @@ static void __init rcu_init_one(void)
+ 			raw_spin_lock_init(&rnp->fqslock);
+ 			lockdep_set_class_and_name(&rnp->fqslock,
+ 						   &rcu_fqs_class[i], fqs[i]);
+-			rnp->gp_seq = rcu_state.gp_seq;
+-			rnp->gp_seq_needed = rcu_state.gp_seq;
+-			rnp->completedqs = rcu_state.gp_seq;
++			rnp->gp_seq = *rcu_root_seq();
++			rnp->gp_seq_needed = *rcu_root_seq();
++			rnp->completedqs = *rcu_root_seq();
+ 			rnp->qsmask = 0;
+ 			rnp->qsmaskinit = 0;
+ 			rnp->grplo = j * cpustride;
 diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index a9a811d9d7a3..63bea388c243 100644
+index a9a811d9d7a3..9d811270b808 100644
 --- a/kernel/rcu/tree.h
 +++ b/kernel/rcu/tree.h
-@@ -183,6 +183,7 @@ struct rcu_data {
- 	bool		core_needs_qs;	/* Core waits for quiescent state. */
- 	bool		beenonline;	/* CPU online at least once. */
- 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
-+	unsigned int	gpwrap_count;	/* Count of GP sequence wrap. */
- 	bool		cpu_started;	/* RCU watching this onlining CPU. */
- 	struct rcu_node *mynode;	/* This CPU's leaf of hierarchy */
- 	unsigned long grpmask;		/* Mask to apply to leaf qsmask. */
--- 
-2.43.0
-
+@@ -347,7 +347,6 @@ struct rcu_state {
+ 
+ 	/* The following fields are guarded by the root rcu_node's lock. */
+ 
+-	unsigned long gp_seq ____cacheline_internodealigned_in_smp;
+ 						/* Grace-period sequence #. */
+ 	unsigned long gp_max;			/* Maximum GP duration in */
+ 						/*  jiffies. */
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 925fcdad5dea..367adb062a6d 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -344,7 +344,7 @@ static void rcu_dump_cpu_stacks(unsigned long gp_seq)
+ 	rcu_for_each_leaf_node(rnp) {
+ 		printk_deferred_enter();
+ 		for_each_leaf_node_possible_cpu(rnp, cpu) {
+-			if (gp_seq != data_race(rcu_state.gp_seq)) {
++			if (gp_seq != data_race(*rcu_root_seq())) {
+ 				printk_deferred_exit();
+ 				pr_err("INFO: Stall ended during stack backtracing.\n");
+ 				return;
+@@ -474,7 +474,7 @@ static void print_cpu_stall_info(int cpu)
+ 	 */
+ 	touch_nmi_watchdog();
+ 
+-	ticks_value = rcu_seq_ctr(rcu_state.gp_seq - rdp->gp_seq);
++	ticks_value = rcu_seq_ctr(*rcu_root_seq() - rdp->gp_seq);
+ 	if (ticks_value) {
+ 		ticks_title = "GPs behind";
+ 	} else {
+@@ -518,7 +518,7 @@ static void rcu_check_gp_kthread_starvation(void)
+ 		cpu = gpk ? task_cpu(gpk) : -1;
+ 		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x ->cpu=%d\n",
+ 		       rcu_state.name, j,
+-		       (long)rcu_seq_current(&rcu_state.gp_seq),
++		       (long)rcu_seq_current(rcu_root_seq()),
+ 		       data_race(READ_ONCE(rcu_state.gp_flags)),
+ 		       gp_state_getname(rcu_state.gp_state),
+ 		       data_race(READ_ONCE(rcu_state.gp_state)),
+@@ -561,7 +561,7 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
+ 		cpu = task_cpu(gpk);
+ 		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x\n",
+ 		       rcu_state.name, (jiffies - jiffies_fqs),
+-		       (long)rcu_seq_current(&rcu_state.gp_seq),
++		       (long)rcu_seq_current(rcu_root_seq()),
+ 		       data_race(READ_ONCE(rcu_state.gp_flags)), // Diagnostic read
+ 		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
+ 		       data_race(READ_ONCE(gpk->__state)));
+@@ -613,7 +613,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_err("\t(detected by %d, t=%ld jiffies, g=%ld, q=%lu ncpus=%d)\n",
+ 	       smp_processor_id(), (long)(jiffies - gps),
+-	       (long)rcu_seq_current(&rcu_state.gp_seq), totqlen,
++	       (long)rcu_seq_current(rcu_root_seq()), totqlen,
+ 	       data_race(rcu_state.n_online_cpus)); // Diagnostic read
+ 	if (ndetected) {
+ 		rcu_dump_cpu_stacks(gp_seq);
+@@ -622,7 +622,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 		rcu_for_each_leaf_node(rnp)
+ 			rcu_print_detail_task_stall_rnp(rnp);
+ 	} else {
+-		if (rcu_seq_current(&rcu_state.gp_seq) != gp_seq) {
++		if (rcu_seq_current(rcu_root_seq()) != gp_seq) {
+ 			pr_err("INFO: Stall ended before state dump start\n");
+ 		} else {
+ 			j = jiffies;
+@@ -679,7 +679,7 @@ static void print_cpu_stall(unsigned long gp_seq, unsigned long gps)
+ 		totqlen += rcu_get_n_cbs_cpu(cpu);
+ 	pr_err("\t(t=%lu jiffies g=%ld q=%lu ncpus=%d)\n",
+ 		jiffies - gps,
+-		(long)rcu_seq_current(&rcu_state.gp_seq), totqlen,
++		(long)rcu_seq_current(rcu_root_seq()), totqlen,
+ 		data_race(rcu_state.n_online_cpus)); // Diagnostic read
+ 
+ 	rcu_check_gp_kthread_expired_fqs_timer();
+@@ -743,28 +743,28 @@ static void check_cpu_stall(struct rcu_data *rdp)
+ 	/*
+ 	 * Lots of memory barriers to reject false positives.
+ 	 *
+-	 * The idea is to pick up rcu_state.gp_seq, then
++	 * The idea is to pick up rcu_root_seq(), then
+ 	 * rcu_state.jiffies_stall, then rcu_state.gp_start, and finally
+-	 * another copy of rcu_state.gp_seq.  These values are updated in
++	 * another copy of rcu_root_seq().  These values are updated in
+ 	 * the opposite order with memory barriers (or equivalent) during
+ 	 * grace-period initialization and cleanup.  Now, a false positive
+ 	 * can occur if we get an new value of rcu_state.gp_start and a old
+ 	 * value of rcu_state.jiffies_stall.  But given the memory barriers,
+ 	 * the only way that this can happen is if one grace period ends
+ 	 * and another starts between these two fetches.  This is detected
+-	 * by comparing the second fetch of rcu_state.gp_seq with the
+-	 * previous fetch from rcu_state.gp_seq.
++	 * by comparing the second fetch of rcu_root_seq() with the
++	 * previous fetch from rcu_root_seq().
+ 	 *
+ 	 * Given this check, comparisons of jiffies, rcu_state.jiffies_stall,
+ 	 * and rcu_state.gp_start suffice to forestall false positives.
+ 	 */
+-	gs1 = READ_ONCE(rcu_state.gp_seq);
++	gs1 = READ_ONCE(*rcu_root_seq());
+ 	smp_rmb(); /* Pick up ->gp_seq first... */
+ 	js = READ_ONCE(rcu_state.jiffies_stall);
+ 	smp_rmb(); /* ...then ->jiffies_stall before the rest... */
+ 	gps = READ_ONCE(rcu_state.gp_start);
+ 	smp_rmb(); /* ...and finally ->gp_start before ->gp_seq again. */
+-	gs2 = READ_ONCE(rcu_state.gp_seq);
++	gs2 = READ_ONCE(*rcu_root_seq());
+ 	if (gs1 != gs2 ||
+ 	    ULONG_CMP_LT(j, js) ||
+ 	    ULONG_CMP_GE(gps, js) ||
+@@ -893,12 +893,12 @@ void show_rcu_gp_kthreads(void)
+ 		data_race(READ_ONCE(rcu_state.gp_state)),
+ 		t ? data_race(READ_ONCE(t->__state)) : 0x1ffff, t ? t->rt_priority : 0xffU,
+ 		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
+-		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
++		(long)data_race(READ_ONCE(*rcu_root_seq())),
+ 		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
+ 		data_race(READ_ONCE(rcu_state.gp_max)),
+ 		data_race(READ_ONCE(rcu_state.gp_flags)));
+ 	rcu_for_each_node_breadth_first(rnp) {
+-		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq), READ_ONCE(rnp->gp_seq_needed)) &&
++		if (ULONG_CMP_GE(READ_ONCE(*rcu_root_seq()), READ_ONCE(rnp->gp_seq_needed)) &&
+ 		    !data_race(READ_ONCE(rnp->qsmask)) && !data_race(READ_ONCE(rnp->boost_tasks)) &&
+ 		    !data_race(READ_ONCE(rnp->exp_tasks)) && !data_race(READ_ONCE(rnp->gp_tasks)))
+ 			continue;
+@@ -917,7 +917,7 @@ void show_rcu_gp_kthreads(void)
+ 		for_each_leaf_node_possible_cpu(rnp, cpu) {
+ 			rdp = per_cpu_ptr(&rcu_data, cpu);
+ 			if (READ_ONCE(rdp->gpwrap) ||
+-			    ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq),
++			    ULONG_CMP_GE(READ_ONCE(*rcu_root_seq()),
+ 					 READ_ONCE(rdp->gp_seq_needed)))
+ 				continue;
+ 			pr_info("\tcpu %d ->gp_seq_needed %ld\n",
