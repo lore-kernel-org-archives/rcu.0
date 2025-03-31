@@ -1,44 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2301B21B9E3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF8F21C179;
 	Mon, 31 Mar 2025 21:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743454996; cv=none; b=jqbVas16FwIisvWjMapbCymR7keWbJn9tSpMaeWvrl+s4k4fzCxto1psxoNZpML40cypc3EVA9wrSIIxHc7a54ZvD+JiRij9lTb11enem5D/YLdOy9LDSDxszraw9xlb98nJYNJ7MDUNaM5v4rxKMom0DAtIl/npp2BgN1QRJo4=
+	t=1743454996; cv=none; b=Y/fsasU6NWpd1GxKFoUihagChCfVKOyb8IjskcaWhVKsDCTgmwr3ygDjzylL1YbMZZHVUxM461T7NFez24RLom2sy8f6bHfxdJXhrlqMMmwFFHk81j8Y125atolnhXDPdyiD+fSZqWV/mWD1+T4hvlQYoqDIDE83k7lLT+R/V38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1743454996; c=relaxed/simple;
-	bh=gTAZic+ReLagLKWgSKVMUdp+ApS8LL65gzQ81QuWoXQ=;
+	bh=j8gNiTe021vKXl/HqR9kVLbh4GpEoFmmH1JdHrOrQgk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bfpMryg8jSXp/4PtW10uxLNAf3sF/7dRJwpA7Wv9HgSOz0YtjhB2Cv/8A+VT0ZcdErtz5W3xyOCK9K4wlxVwOjgZZRdQrebK2CFz7UYDUaOwCKEX/V8/EWn2CqyS0iQ9Wv/tjeEsV1H5waBLi5VkQz4metXM2iuVPqWsJO6k88I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oe/Mi4ST; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=kwPjhbapWsztNldBiULTDwb+/LL0/y+dweENCJnk7tp9/xwSwcGAq7vyGzmAGx1BkIufSigoLceutYkAWGFdfDU1Ez8uB3wTixJEHqrbfPJDfeXU4pZRFq7ojef9TMMAAkM8ouLOE44ouyzq7GMTc2kWqy8CEMQyx8vP/UTPdfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mNop9wgd; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oe/Mi4ST"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E265CC4CEEB;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mNop9wgd"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEFC3C4CEFA;
 	Mon, 31 Mar 2025 21:03:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743454995;
-	bh=gTAZic+ReLagLKWgSKVMUdp+ApS8LL65gzQ81QuWoXQ=;
+	s=k20201202; t=1743454996;
+	bh=j8gNiTe021vKXl/HqR9kVLbh4GpEoFmmH1JdHrOrQgk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oe/Mi4STr6zlGzc12tva8g859DU2hH75JR2FS6nI+p2xSox3/n0P9CLGEfQtBuv8Z
-	 8v7Ys/1/htvRnrD8l9jsKWtMYT8+ua4PhBCU7e0lhmO0vTaWbnbi1zwbabjjmweBj6
-	 z1Q/xjH+KFSI7hpE/DktXoM5DPCn+p8sEjzHihTtciQ18nzzIk7dKyHbwT6sKkXLHj
-	 ErBZvZBpXqgRP0XecEkrdvpl84sHGna79Hx2q8eoHxbC0PyZZSMUYyIHVzlkzHfZoh
-	 FpUdTrhdav17o8pi9B7NEUYVn9TOzhHeF24hK1gM5JW3ivt3zm80VvRaZmU9/jclmJ
-	 4LGCg1AcHwdRA==
+	b=mNop9wgd5JHvLkW3FO+PZk5MQmmoANAKsSUKzaRx4sgRBAdJSVXqYQTopwmpGuQz4
+	 j6IFU46vHjmnc1lofPodiZNt30hnMXOEqEO4uSnwB5uxiZjqgbO62JJ8bUTrwYKvhL
+	 s5hLYpvOO9eUvOLG48Douvgb+t4LnTDjBh5CdXdklT/sZwjrufFSQXwF56/kQUuXw3
+	 o9EqrdG6EOThza+6PNpdBpc72yL3zxRdVLdFw6tfCtzj4/RLxkeBepo/um9oHe7x+8
+	 iNZFYmEq9I2YmIpYXfOawZRUlJqGgOOKbwk3TnY7uvBkezMuWYvwX60cVCWPQns+S0
+	 +g7dcD4O17hMQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 390A4CE1311; Mon, 31 Mar 2025 14:03:15 -0700 (PDT)
+	id 3DD8BCE13B4; Mon, 31 Mar 2025 14:03:15 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org,
 	Joel Fernandes <joelagnelf@nvidia.com>
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v2 09/12] rcutorture: Check for ->up_read() without matching ->down_read()
-Date: Mon, 31 Mar 2025 14:03:11 -0700
-Message-Id: <20250331210314.590622-9-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v2 11/12] torture: Add --do-{,no-}normal to torture.sh
+Date: Mon, 31 Mar 2025 14:03:13 -0700
+Message-Id: <20250331210314.590622-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <eea8d42f-6d2d-485b-9bb9-4eb77a0e1f95@paulmck-laptop>
 References: <eea8d42f-6d2d-485b-9bb9-4eb77a0e1f95@paulmck-laptop>
@@ -50,76 +49,92 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit creates counters in the rcu_torture_one_read_state_updown
-structure that check for a call to ->up_read() that lacks a matching
-call to ->down_read().
-
-While in the area, add end-of-run cleanup code that prevents calls to
-rcu_torture_updown_hrt() from happening after the test has moved on.  Yes,
-the srcu_barrier() at the end of the test will wait for them, but this
-could result in confusing states, statistics, and diagnostic information.
-So explicitly wait for them before we get to the end-of-test output.
-
-[ paulmck: Apply kernel test robot feedback. ]
+Right now, torture.sh runs normal runs unconditionally, which can be slow
+and thus annoying when you only want to test --kcsan or --kasan runs.
+This commit therefore adds a --do-normal argument so that "--kcsan
+--do-no-kasan --do-no-normal" runs only KCSAN runs.  Note that specifying
+"--do-no-kasan --do-no-kcsan --do-no-normal" gets normal runs, so you
+should not try to use this as a synonym for --do-none.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Tested-by: kernel test robot <oliver.sang@intel.com>
 ---
- kernel/rcu/rcutorture.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ .../selftests/rcutorture/bin/torture.sh       | 30 +++++++++++++++++--
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index d2728e95a69b1..079e164c85a16 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2439,6 +2439,8 @@ struct rcu_torture_one_read_state_updown {
- 	struct hrtimer rtorsu_hrt;
- 	bool rtorsu_inuse;
- 	unsigned long rtorsu_j;
-+	unsigned long rtorsu_ndowns;
-+	unsigned long rtorsu_nups;
- 	struct torture_random_state rtorsu_trs;
- 	struct rcu_torture_one_read_state rtorsu_rtors;
- };
-@@ -2453,6 +2455,8 @@ static enum hrtimer_restart rcu_torture_updown_hrt(struct hrtimer *hrtp)
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index 9cabe505585ea..751ce770e5462 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -51,6 +51,8 @@ do_scftorture=yes
+ do_rcuscale=yes
+ do_refscale=yes
+ do_kvfree=yes
++do_normal=yes
++explicit_normal=no
+ do_kasan=yes
+ do_kcsan=no
+ do_clocksourcewd=yes
+@@ -128,6 +130,8 @@ do
+ 		do_refscale=yes
+ 		do_rt=yes
+ 		do_kvfree=yes
++		do_normal=yes
++		explicit_normal=no
+ 		do_kasan=yes
+ 		do_kcsan=yes
+ 		do_clocksourcewd=yes
+@@ -161,11 +165,17 @@ do
+ 		do_refscale=no
+ 		do_rt=no
+ 		do_kvfree=no
++		do_normal=no
++		explicit_normal=no
+ 		do_kasan=no
+ 		do_kcsan=no
+ 		do_clocksourcewd=no
+ 		do_srcu_lockdep=no
+ 		;;
++	--do-normal|--do-no-normal|--no-normal)
++		do_normal=`doyesno "$1" --do-normal`
++		explicit_normal=yes
++		;;
+ 	--do-rcuscale|--do-no-rcuscale|--no-rcuscale)
+ 		do_rcuscale=`doyesno "$1" --do-rcuscale`
+ 		;;
+@@ -242,6 +252,17 @@ trap 'rm -rf $T' 0 2
+ echo " --- " $scriptname $args | tee -a $T/log
+ echo " --- Results directory: " $ds | tee -a $T/log
  
- 	rtorsup = container_of(hrtp, struct rcu_torture_one_read_state_updown, rtorsu_hrt);
- 	rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1);
-+	WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
-+	rtorsup->rtorsu_nups++;
- 	smp_store_release(&rtorsup->rtorsu_inuse, false);
- 	return HRTIMER_NORESTART;
- }
-@@ -2498,8 +2502,12 @@ static void rcu_torture_updown_cleanup(void)
- 	for (rtorsup = updownreaders; rtorsup < &updownreaders[n_up_down]; rtorsup++) {
- 		if (!smp_load_acquire(&rtorsup->rtorsu_inuse))
- 			continue;
--		if (!hrtimer_cancel(&rtorsup->rtorsu_hrt))
--			WARN_ON_ONCE(rtorsup->rtorsu_inuse);
-+		if (hrtimer_cancel(&rtorsup->rtorsu_hrt) || WARN_ON_ONCE(rtorsup->rtorsu_inuse)) {
-+			rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1);
-+			WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
-+			rtorsup->rtorsu_nups++;
-+			smp_store_release(&rtorsup->rtorsu_inuse, false);
-+		}
- 
- 	}
- 	kfree(updownreaders);
-@@ -2515,11 +2523,14 @@ static void rcu_torture_updown_one(struct rcu_torture_one_read_state_updown *rto
- 
- 	init_rcu_torture_one_read_state(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs);
- 	rawidx = cur_ops->down_read();
-+	rtorsup->rtorsu_ndowns++;
- 	idx = (rawidx << RCUTORTURE_RDR_SHIFT_1) & RCUTORTURE_RDR_MASK_1;
- 	rtorsup->rtorsu_rtors.readstate = idx | RCUTORTURE_RDR_UPDOWN;
- 	rtorsup->rtorsu_rtors.rtrsp++;
- 	if (!rcu_torture_one_read_start(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1)) {
- 		cur_ops->up_read(rawidx);
-+		rtorsup->rtorsu_nups++;
-+		WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
- 		schedule_timeout_idle(HZ);
- 		return;
- 	}
++if test "$do_normal" = "no" && test "$do_kasan" = "no" && test "$do_kcsan" = "no"
++then
++	# Match old scripts so that "--do-none --do-rcutorture" does
++	# normal rcutorture testing, but no KASAN or KCSAN testing.
++	if test $explicit_normal = yes
++	then
++		echo " --- Everything disabled, so explicit --do-normal overridden" | tee -a $T/log
++	fi
++	do_normal=yes
++fi
++
+ # Calculate rcutorture defaults and apportion time
+ if test -z "$configs_rcutorture"
+ then
+@@ -332,9 +353,12 @@ function torture_set {
+ 	local kcsan_kmake_tag=
+ 	local flavor=$1
+ 	shift
+-	curflavor=$flavor
+-	torture_one "$@"
+-	mv $T/last-resdir $T/last-resdir-nodebug || :
++	if test "$do_normal" = "yes"
++	then
++		curflavor=$flavor
++		torture_one "$@"
++		mv $T/last-resdir $T/last-resdir-nodebug || :
++	fi
+ 	if test "$do_kasan" = "yes"
+ 	then
+ 		curflavor=${flavor}-kasan
 -- 
 2.40.1
 
