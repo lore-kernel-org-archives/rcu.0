@@ -1,366 +1,264 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3756E8472;
-	Mon, 31 Mar 2025 21:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743456593; cv=none; b=P0lMQJX2bRWeAzh4tRFKl1x8KsMDrQOFUaeKkuHJelffCBsJnhjDdNOrzjcC7BTmAepHe/UbV8+i9RdaJ6zpITqIEN1shTMO3WKVSktEh+hJuouvxseE5MEAKv73eEK0zPhVKyeBnjiN/uZsIdSeCP3peATwBsJoXmrdtY5JTlY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743456593; c=relaxed/simple;
-	bh=GrffwXCP7JFBv8rfG6BMjEPVH7avRK0zsxrUQE3Qs0I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D6EOEg+Y6ancR2uhWLzJpivMTTEweUx6+6urJ2bVHxCm0HKkUVtqBnDg4M8uVcDG+qnJp8WnZ1AcSYBZV8buAJ9EqsFySLi1kT3DOXVgdJPPWI2nWKjIAiRdGNojyHIQhODACep/zTXxSpfJu8JBL72BR1GWTVFmpLWtFGEJi3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjFf/DDI; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA164685;
+	Tue,  1 Apr 2025 05:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743485279; cv=fail; b=sgAJ5hsmmNeCGLCNIawOnO13dKqGjdCyQRgPX5YAak6iJzwih7NWN4ByJN5iNqhjFrKeEqIskhVGSBy6kR/Ji4URMTtT90c/UlECdgvnXfeikiw3NzAoVZO+nQB/D5pYZE1FLiYKn6qwBuK3k53fLb9b6f9ni35JDKG+vsTkaLM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743485279; c=relaxed/simple;
+	bh=Hzo+g0W2N48E1Svm/hQHCCLtIEuo6nnQHz8JPy9y+C8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=mSvAcI2IMGaiikR9UmiUsGIcs68FU1p7docmhWQX9d0mCv7hwZLlXPClK/IeSR7Z1J1qzbbTom3K8huQq3IgAeVMaEMLCelzre0g4wr5gKhse5dk4ZKlg7uYRqPqLIEKhKT+6/oJ0TuS+pfDTaCDQCelfY3VUtECVeKoQPF/ElE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=Tir88zhN; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=FijfDLOv; arc=fail smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjFf/DDI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F215C4CEE3;
-	Mon, 31 Mar 2025 21:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743456592;
-	bh=GrffwXCP7JFBv8rfG6BMjEPVH7avRK0zsxrUQE3Qs0I=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=cjFf/DDIzY0O/NCyY5Zc6TL52FDtPz7yLdhsA++8BneJPlYxrxMwlK57zuygsRtJB
-	 EILkqdSNrMvCQwuKYgWFSRNoLdmZW226Dw4wS6U4ZvaT/UZOMhWzS8s7r+PmmvIuJO
-	 pekA0xZVu5aHz/+JgpAqn4JerY+B94pT/ECZT040NkOkFJ77osiMnhj7NQSScwSDrp
-	 31hq4TnlahLx8TqlmbcVQzgERwn9FmbuWqF3n5+6MxjxNioBmVI/B7BfD5eKce4PTL
-	 dCIp1CGqjSYfuEzbO50iq2DT6QJ9k1IMSm5INcOA1jGLUvK7WEJdHaUFmV4a83mphb
-	 ytHYfoVGMcniA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 36254CE0869; Mon, 31 Mar 2025 14:29:52 -0700 (PDT)
-Date: Mon, 31 Mar 2025 14:29:52 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [PATCH 1/3] rcu: Replace magic number with meaningful constant
- in rcu_seq_done_exact()
-Message-ID: <bc4d930e-60c2-4ff8-8995-d463b6365b00@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250324170156.469763-1-joelagnelf@nvidia.com>
- <20250324170156.469763-2-joelagnelf@nvidia.com>
- <eeda52c2-5397-4aad-ad01-ca04e5b0b80f@paulmck-laptop>
- <DDDD275D-1017-4189-9A8A-578021A33B4A@nvidia.com>
- <e47e5611-36de-4d12-9c07-57aa2a885299@paulmck-laptop>
- <Z-nBcg9FJqu5RzME@pavilion.home>
- <71fc9642-5fc7-45ec-8196-8fc89ed8e765@paulmck-laptop>
- <Z-sFonl2NrppdGQS@pavilion.home>
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Tir88zhN";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="FijfDLOv"
+X-UUID: 0d44f29c0eba11f08eb9c36241bbb6fb-20250401
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=Hzo+g0W2N48E1Svm/hQHCCLtIEuo6nnQHz8JPy9y+C8=;
+	b=Tir88zhNCS8Oi46bPC4Uec7YzayMOgyR9G1yYlo5fEg9UjiY3tzXGmA+ZRr3eWKwojmaIaPjlxzAZJazpklMEYqBRdhx3bWz2rR2XIGiBoqH6fyl6sAZts+vecHhWV/vm9cy7FhSVvShjKnx1D8ZRs4n06314sTaFrRmFwf05e4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.2.1,REQID:fde7a3da-ad30-4b58-bae9-5d7acd6cbaf6,IP:0,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:0
+X-CID-META: VersionHash:0ef645f,CLOUDID:6a21cf4a-a527-43d8-8af6-bc8b32d9f5e9,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:80|81|82|83|102|110|111,TC:nil,Conte
+	nt:0|50,EDM:-3,IP:nil,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
+	OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 0d44f29c0eba11f08eb9c36241bbb6fb-20250401
+Received: from mtkmbs09n1.mediatek.inc [(172.21.101.35)] by mailgw02.mediatek.com
+	(envelope-from <walter.chang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1050361459; Tue, 01 Apr 2025 13:27:49 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS09N2.mediatek.inc (172.21.101.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.39; Tue, 1 Apr 2025 13:27:48 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1258.39 via Frontend Transport; Tue, 1 Apr 2025 13:27:48 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cg1604g/P0mhBFmNjMRucxk5W5dAafEa9rG4ifLT+JK7kVKna7gC9MzFdvBncT/dTVzLrY+BiIxARPxjA5nS3vz0b59foWQBVexi1Fjmdoj7RBX5z1lgRXzmAqA2uqWzvXFWZ0XzUssAheEhbF4M6hcDa9k8DC1lYKUK60ltvHa85CdVs5nGbqx5h4zddRddB3NNz3rRpBYYjDAomDHS4U9S9hQJsKD7MUjWF1CvYtkSmDN+1fjlamgRZ+a7YjB6X2jPoD7AGLKhvr6WpdGyITOX0wMgkXBZ8WQziLTiUvgp6oiK5LmXQ3+RNYpKfky2OTrQsg9VnvkJrTNBdW0l4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Hzo+g0W2N48E1Svm/hQHCCLtIEuo6nnQHz8JPy9y+C8=;
+ b=MiyuQqlBXgbu3P8oyHNzEe5qLCwVGyPDnfQjwt4e+hEbOTINHPtaOZGxeCqbl2DY1fTNWbV9tixD+WLlpzbMucMVhhU9ga7FBAPTLuRNZplF+Ub4mLzgb5a+HhzggxENJp1wYurrIEOSTzwISCEzEKfCpqD6dp0f4Tli23GEjszNSGVm4KB7RX0VUeF+PEgvKC2fpovduFTAqiHyE1oplhBfOOtU2xMXNt7lH/Rhabb97WmQ4P3eGw+VBSgCoBwdzEC/rvcXbzRIoLdKJ0JHvR+zV9aA5XjrY3exdYh+I5qU1Np4bsyKVm67JSBC0pKS4Z4L5Rpnv+HKh98jbks+nA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hzo+g0W2N48E1Svm/hQHCCLtIEuo6nnQHz8JPy9y+C8=;
+ b=FijfDLOvF+K0zdZMCnJhbyVCzanKCG7WWhneDNHkhVbNDul3fLpA5Mwd6zIrX3XQS8NK5mc4Mq03c2SPM9fGucEi4uQt9/GmwLXLYV8byXICa9XAQa+uwxt6v8TeWbnOWmcuTmMjofknuqx+Ov8BnDNjSAWHeT+TvnNLOK7ZWmU=
+Received: from KL1PR03MB5777.apcprd03.prod.outlook.com (2603:1096:820:64::14)
+ by TYSPR03MB8160.apcprd03.prod.outlook.com (2603:1096:400:47e::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8583.33; Tue, 1 Apr
+ 2025 05:27:46 +0000
+Received: from KL1PR03MB5777.apcprd03.prod.outlook.com
+ ([fe80::fefa:d109:856a:6715]) by KL1PR03MB5777.apcprd03.prod.outlook.com
+ ([fe80::fefa:d109:856a:6715%6]) with mapi id 15.20.8583.038; Tue, 1 Apr 2025
+ 05:27:45 +0000
+From: =?utf-8?B?V2FsdGVyIENoYW5nICjlvLXntq3lk7Ip?= <Walter.Chang@mediatek.com>
+To: "frederic@kernel.org" <frederic@kernel.org>
+CC: wsd_upstream <wsd_upstream@mediatek.com>, "boqun.feng@gmail.com"
+	<boqun.feng@gmail.com>, "vlad.wing@gmail.com" <vlad.wing@gmail.com>,
+	=?utf-8?B?Q2hlbmctSnVpIFdhbmcgKOeOi+ato+edvyk=?=
+	<Cheng-Jui.Wang@mediatek.com>, "kernel-team@meta.com" <kernel-team@meta.com>,
+	=?utf-8?B?QWxleCBIb2ggKOizgOaMr+WdpCk=?= <Alex.Hoh@mediatek.com>,
+	"usamaarif642@gmail.com" <usamaarif642@gmail.com>, "anna-maria@linutronix.de"
+	<anna-maria@linutronix.de>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "neeraj.upadhyay@amd.com"
+	<neeraj.upadhyay@amd.com>, "leitao@debian.org" <leitao@debian.org>,
+	=?utf-8?B?RnJlZGR5IEhzaW4gKOi+m+aBkuixkCk=?= <Freddy.Hsin@mediatek.com>,
+	"urezki@gmail.com" <urezki@gmail.com>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "qiang.zhang1211@gmail.com"
+	<qiang.zhang1211@gmail.com>, "paulmck@kernel.org" <paulmck@kernel.org>,
+	=?utf-8?B?WGluZ2h1YSBZYW5nICjmnajlhbTljY4p?= <Xinghua.Yang@mediatek.com>,
+	"joel@joelfernandes.org" <joel@joelfernandes.org>, "rcu@vger.kernel.org"
+	<rcu@vger.kernel.org>, =?utf-8?B?Q2h1bi1IdW5nIFd1ICjlt6vpp7/lro8p?=
+	<Chun-hung.Wu@mediatek.com>
+Subject: Re: [PATCH v4] hrtimers: Force migrate away hrtimers queued after
+ CPUHP_AP_HRTIMERS_DYING
+Thread-Topic: [PATCH v4] hrtimers: Force migrate away hrtimers queued after
+ CPUHP_AP_HRTIMERS_DYING
+Thread-Index: AQHbngICuuWmYWEDFUWN1ec8w5afx7OE6NyAgAC3rgCACLEJAA==
+Date: Tue, 1 Apr 2025 05:27:45 +0000
+Message-ID: <75585b6fe937a23e380b5d61df4932e8e87f3485.camel@mediatek.com>
+References: <20250117232433.24027-1-frederic@kernel.org>
+	 <a7cb64fb-1c17-4316-abf8-e6a7e07ba4d1@paulmck-laptop>
+	 <ef6cf6aaf981aa2035828e55bd66d56b88e70667.camel@mediatek.com>
+	 <Z-Qu0stgvwHF9n3q@localhost.localdomain>
+In-Reply-To: <Z-Qu0stgvwHF9n3q@localhost.localdomain>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: KL1PR03MB5777:EE_|TYSPR03MB8160:EE_
+x-ms-office365-filtering-correlation-id: 1849df62-ba7d-4f22-bdd2-08dd70ddeefc
+x-ld-processed: a7687ede-7a6b-4ef6-bace-642f677fbe31,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|7416014|1800799024|38070700018;
+x-microsoft-antispam-message-info: =?utf-8?B?YXBObmc5Z3QyVXFzK1FwWGJpZzJxWjV4SExocnVCRGNBbkxoN3lPZGdpcXYz?=
+ =?utf-8?B?OU9lRFVjd3dpOGllZ0ROUkxteFI3ZEh0QkVLSVllVktXdHlFSHRTaWFVQmZk?=
+ =?utf-8?B?RGRsOUJINmRMQytaRjZKTThTSWdYdWVZMjZqemdzMTEzclBDRW9qeHRybDNR?=
+ =?utf-8?B?RkpMREN0bGp3TFpvNHNWa0hjYnN5T1M3RGhMZ2tkSTh5V0JsT2dyd1lIVHpn?=
+ =?utf-8?B?OFRoa0pnUS9ycXRtSFRYMjhTWm03QWtmNEMxcnJUckQzbFNsQjd0RHlYbWIv?=
+ =?utf-8?B?QnFqcVBrTi82ZkdKcUJQb0NPUFREemF2WDkwdUFvYlU5dlJiTzlvKzJJTWpp?=
+ =?utf-8?B?SnNMRS9EVVBHRWV6eFA0Mm1sYmh2b3g3UW81eDJWYlNoVHFIVzJ5aGsvbkRF?=
+ =?utf-8?B?ZExHMFJGK3NpTVZuN1RjZTI2RlBqZ0FaNVFwUktFcDgvREpLU25yb0NoczFU?=
+ =?utf-8?B?VUFEdytlb1JwcVBNVjNCclprV2dyU3dLTXduaHM4OWhuenFIWTY3YnoyZ1ZT?=
+ =?utf-8?B?MXJEMXhkSUMzSmo4RnJZZkhlQy9LQnE1V1hyZERVYld0SUp4RGdsbzFwQ0VC?=
+ =?utf-8?B?S0lIeElGM1hGd2ltWi9CVENVUEo4Y3p6R0RnQXYvZ1F2MW9RaDNPbkVnUVJO?=
+ =?utf-8?B?YWd0S1dZUG9IRkI3VDBSVGh2eTZBdGpsK0xqUTQzUGREZFV2VzY0bTdvREFz?=
+ =?utf-8?B?Q0lHR3ZickhSM2E2TVhjTjhxaFd6dGpGMFJuRVhsYjdOSFh0WmV0UTEvQzV3?=
+ =?utf-8?B?SkNDaWxFQjNlL3ZzWDJCWVBzWjBtaGhnTWdwc3JaQnhFRFgrdHZnVTNEVHhM?=
+ =?utf-8?B?NVh1SFAzT3FhZDdPdk9GNURYVzZoN05oVkpSTG44NWpjclVPZ2MveUg2cW1P?=
+ =?utf-8?B?d3VzejFieERJTTZBUDd6c1FhV0VSbnZwQWtVVXNoK3F6Uzc2WXBCek8rWXNB?=
+ =?utf-8?B?U3BsTlVLZEJaY3BZQ1FLS1hLU2VraGd1N0ZzZE1ObjNDZXVadWpEZGtMZ29x?=
+ =?utf-8?B?VTNNMDBSYk1hZWZwcXpKcUI1L082dEJNMmxoUVpZYVpJc1RXeFNnQWVObklN?=
+ =?utf-8?B?WWsyeG1zdjhkMVhDTFAyOTZ2Wk03SkZqOTV1MkZ2Y2t0dlVNd0RaVWZ4MXJF?=
+ =?utf-8?B?T3NIYmVvVTh2ZTFuQlJaMnhuUjBCdUNUZkNUZ3lhZUhOZTdzTjdyQXpkS0hl?=
+ =?utf-8?B?K1hGUndxQ1ZybUJGVmFBUVBUT1RPU3JkOHBQMFVrYUpiU1d6WitQVkQ2WUxx?=
+ =?utf-8?B?RVRSZUtQaS9ZMnEyaCsySkJYZzhSZEMxeHQ4bmh2dUVwbExaOUxqUVBOMmFD?=
+ =?utf-8?B?cjBoTUhETnZ3QTJWblhyRHJweTR1UmtXdlo4bG9aOEg5UjFVVjMxaVJ3NkVG?=
+ =?utf-8?B?dlBMSW9yOG91SEVNa0JQZjdlOTZDRUcyVksvNXpGa3hsWWVJOW10VWJqMnl5?=
+ =?utf-8?B?b3hQcDJQK2dzQTZQSU1ERnh6NmZsUmI4bE5nSUJUcCtLUE9vYjUrdnZ1aHZK?=
+ =?utf-8?B?QW5HZE4veU5ldXQzS0RibzM4S2UwbThSZ0NtS2E4OGk2Skprem00QkpNQ29z?=
+ =?utf-8?B?eE0vc2FwVVo2NWRYWHI5Rjl4RTFacjV0Szg0WFVqc2xGa0dGdzJFdE9OcnRP?=
+ =?utf-8?B?dE96WDJpdHFMK1JUSTBhdElJc1dsVFVLTndXUnJVWUI4SUJoYXVwMUJtQm9G?=
+ =?utf-8?B?Rkd1eUFKdnhZQnRWUDV3ZERwcUhkdnRqU1FsSnlLTnVRdzR4VytVRktSdnBa?=
+ =?utf-8?B?UTQyeFhJMis0TnRLVmRKZEVzQzNvaDREdzFFdGhpR2d3R0hadzZ3YWFpQldD?=
+ =?utf-8?B?Z2xRY0pVR2ZRV2dPVGRPd25wdFhwTDRhTlVqWmdsSCs0TEtMOE1aa0tpUThp?=
+ =?utf-8?B?VUdDd3d2Q1JHWWdldFNvbUxIbkswWXRlRDdHeGtWdTBtNyt2aXN0dWt2Ly83?=
+ =?utf-8?B?WUdsei9OK0p3K25pODBHZFJGVG9yZ2VMM0hPVUZVZmJzWm9ETllkN2tTdExN?=
+ =?utf-8?B?UVVzeTZLUTR3PT0=?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR03MB5777.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZkhWenR4VlZvQnBJUXYzK0NhcHZETWlvdUtkMmJKZS9uM3lqdndyZ3VvRzJU?=
+ =?utf-8?B?eWJhNkR2SkY1MjNtcUdVT0ljM1dmdEpoVzQ5YncrdmJ5VWhoQlcxZ0VEQjlr?=
+ =?utf-8?B?WmpqUHc0NjdlSHZIS1F0MkVqYzh5dDhlYUlaUHdQSUUxVEdjY1F5SnZyZWJV?=
+ =?utf-8?B?VTZnbFJKaWIzNmkyWmtBbjVZWkpWWUhLRzlMUnFIMVVMamJoOUU3WGhOeG5p?=
+ =?utf-8?B?L2pmZG84dlFLeVZGTWptNWJvV01ITkFERlhnbGpyZWRUUThTOTFRV0NmbGxo?=
+ =?utf-8?B?UitsNUJMdXk5OTQ0Sjl3TTRNWXpqMVFsTlRCTUxjNGc1SU9ia1VaT3Z4Z2Jt?=
+ =?utf-8?B?N2ljY3VPcHhJU2dPQ3BFcTNEQit0WHJtcHRtdmdDR0Ewc3R2U1RabENoOHJq?=
+ =?utf-8?B?U0Q2ZEszc2ZVR21zZVJ5VzdIbEhBR2NmR2JQWDdSNFFiTHNsczZvZ1RMVGRr?=
+ =?utf-8?B?M1JyN3NUN1ExWktkQktQRW5rTjJPMUpCL1pEc1hpU0l3MUZneFRyK1N1cWZy?=
+ =?utf-8?B?eWhpbEFFU2wrdjB0ckxtcjR4ZlltWHlIRkR0N0duSlR6djNCbmdiQno2V0V4?=
+ =?utf-8?B?emtwai9sdzZwT0VSS2hyUzVERWh5ckJxRGVqWStXOVJRQzRXQVdFNFE4YTV6?=
+ =?utf-8?B?dWYwVlVtMVFlbkFwYU1sU0ZsZFB1L3NWeGlTMmI1T3g4Z1J5QkIrRSs2TFQ2?=
+ =?utf-8?B?Z1R1Y0thWms1QnJJODZHNlNoaDZRL0tOZEliQkFvSWpUaWJlNjc5SGUxUjJy?=
+ =?utf-8?B?aEtmLzFianNsSXhrT2NxMlRjRERzNFBnMXViT1B0bldSVG54cHFjYzVLcVVh?=
+ =?utf-8?B?UTlrczdkVVdGZmRIV24xcjU5N2dUWU9yS0g2cDhDYnNvNG1veUZRNk0vSklQ?=
+ =?utf-8?B?VUdSbHQ4K1ZwbVZ2TEoyUTJFNDlYR0VCTVpMdjBRRDREczhEYWcxaHR5MTVU?=
+ =?utf-8?B?OWZRSFZFMWVLNG9LT2dzbFZET2tyWEJXQzNCMWRZMnZyODVmWGNlckREdm9w?=
+ =?utf-8?B?cWRUUzdPSXBXSTBNOEJ1VGV3SE4xK1NUcFRnSy9CS2ZWcUd3VnZTS09CZ1Av?=
+ =?utf-8?B?UHpRM0VNeHkwVjdCUTkxeXF6eFpIamxtTnpQYVNoL0hla2k0eVhsRmk3aUxB?=
+ =?utf-8?B?L0M5d2hTbFkyZU81TWYxSmZmREdTNFNOWTkzUERBL1dhSzhGcWhiOUh6YThp?=
+ =?utf-8?B?Z1B2ZUV3VHp4cTdETkZ3ckpuWUlBb1dwSkV4aHdTazJZWkVnd1BMMUJSeS9p?=
+ =?utf-8?B?OVp1empOd3UxbnlwNC8vMm1hWVFiODZ0dlV2VVcvMzdQc0d4aWZNZEJ6MlVO?=
+ =?utf-8?B?aEFVSjdpRHpxM0ZIR3FvV3BySzd5MDZqMVg3dnA0VUk4YnQwQWl2K1Q5Wit6?=
+ =?utf-8?B?U3lPZFQvMGpnWWtPNC9ZSXNIdU1yOVJlelJHTnJWTEVoR1dFTW1pRmtlMHlz?=
+ =?utf-8?B?Yk5yMmQ2cmdybmd4RnpEaWl0VWN1MjIzaFlpTjUvMlZvQ3NuWFlBK3A3bVQw?=
+ =?utf-8?B?UzNFTzVFekx4MXBiVzRJVEEyY0toV3hISWRxZ05QeGh3dEdqRXFTa2ZYTUdH?=
+ =?utf-8?B?ZUtkY291clp5YlVuLzAzSVg1YitkR3N3Y3hMMmptOVRUa0UwUWtRY28ydVpP?=
+ =?utf-8?B?TTB6QWtFRU9COEpCcHFBNm5MWEtwaUhzeGhES1ZxbHBkTjZXR1JiZHJIOXBm?=
+ =?utf-8?B?ZTFkWUZjcExDSXVteUhRV2xRWUNkeUkvVjJUSnlwdzNMOGFrSnZHMU5tM3pM?=
+ =?utf-8?B?VjZ1amFFMlNBMUdSTUNpUVpvTmNYckh5V2dxeVlKUDVTYlZ5NDFmbk9ZOXRF?=
+ =?utf-8?B?M1pEYWVOWktIaGZoSi8vOXFHUUk1cnA5RnROTDc4bFN3VHBERXpGcXdWSDFJ?=
+ =?utf-8?B?cUtvUUxWZnhVeW5KMDVMb1NNT2prTWt0WDVIOXd6MUZ1Y3FBVll5cTVWa0tX?=
+ =?utf-8?B?c3VXL2R1VXhCdFJBWTJtbWRRY2svRjlFMGl4N3BnQjV6QVpFWlN2WCtNUnBG?=
+ =?utf-8?B?eEZER0NwUDVSM01PMERueWU4bStGb1IzSG8wWU1aekYzWVhmeTRUWEVaRHZk?=
+ =?utf-8?B?cEVpUjVMd0QzTkxnNkhweXIyTmVnZTgvMktjNkk0c05yQ2gyM1Y0M3VRM1hL?=
+ =?utf-8?B?blVTMVhEOXhmQUtocnhMSkdkNjRWMnJ1MnVuSXE1RGNJanduSFprcGwrNVFK?=
+ =?utf-8?B?THc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4CA92BC0E5EFDF468DEB70F817340C09@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z-sFonl2NrppdGQS@pavilion.home>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR03MB5777.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1849df62-ba7d-4f22-bdd2-08dd70ddeefc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2025 05:27:45.5681
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 92pDNDAQcx94ZnrHL+pNLoCG3BAP6rM2NkaJ4Xn6husdRc/h5GFGdymkPDUzvZDdwa667FiiBPf1wyRYqLvePL99mZvBKI1q5MtTl59I244=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR03MB8160
 
-On Mon, Mar 31, 2025 at 11:14:10PM +0200, Frederic Weisbecker wrote:
-> Le Mon, Mar 31, 2025 at 11:28:47AM -0700, Paul E. McKenney a écrit :
-> > > So I'm unfortunately asking again if it wouldn't be a good idea to have a single
-> > > global state counter that lives in the root node so that we don't have it
-> > > duplicated in rcu_state.gp_seq.
-> > > 
-> > > This involves some special care:
-> > > 
-> > > 1) As you pointed out, the root can also be the unique leaf. So care must
-> > >    be taken that no QS is reported before new online CPUs have been handled
-> > >    and QS masks initialized. In order for __note_gp_changes() to handle
-> > >    it gracefully we must have two seq states: one to tell the
-> > >    grace period has started (before checking new online CPUs): RCU_STATE_STARTED
-> > >    and one to tell that grace period is ready to receive quiescent states:
-> > >    RCU_STATE_WAIT_QS. Although not strictly required, __note_gp_changes() can
-> > >    ignore simple state changes to RCU_STATE_STARTED in order to spare useless
-> > >    work and rnp locking. No QS will be reported before ->qsmask are initialized
-> > >    in any case.
-> > 
-> > We have available up to three stages of grace-period processing, which
-> > can be expanded relatively easily.  My concern is that we will be
-> > replacing "which ->gp_seq to use" confusion with "which gp_seq state
-> > to pay attention to" confusion.
-> 
-> True, this comes at the cost of a bit more complex state space.
-
-Choices, choices!  ;-)
-
-> > > 2) rcu_gp_cleanup() currently ends the grace period top-down through the rnp tree
-> > >    and only then on rcu_state. With this change it's simply top-down. I have audited
-> > >    rcu_seq_snap() and rcu_start_this_gp() uses and I haven't found an obvious
-> > >    issue with that.
-> > 
-> > That would result in the root rcu_node structure's ->gp_seq declaring the
-> > grace period over before the rest of the rcu_node structures were aware
-> > of it having ended.  I guess that the last leaf rcu_node structure's
-> > ->gp_seq field would be what you would look at if you were looking for
-> > the actual grace period end.
-> > 
-> > Of course, you could argue that the grace period isn't fully over
-> > until all the CPUs are aware of it, but that can take a very long time,
-> > especially if there are CPUs staying idle for seconds (let alone minutes)
-> > at at time.
-> 
-> Right. And it seems not all parts of RCU agree on a common definition of
-> a complete grace period. Polling seem to be fine with just the root rnp
-> to reflect rcu_seq_end() (which happens before the leaves do). Snapshot takers
-> though rely on the whole tree to reflect the GP end...
-> 
-> As far as I audited the code, mostly rcu_seq_snap() callers, rcu_start_this_gp()
-> and __note_gp_changes(), it looks fine to consider the GP is ended as soon
-> as the root reflects it. I may have missed something of course...
-
-The disagreement is a feature, at least up to a point.  That feature
-allows CPUs to go idle for long periods without RCU having to bother
-them or to mess with their per-CPU data (give or take ->gpwrap).  It also
-allows per-rcu_node-leaf locking, which is important on large systems.
-
-Trying to make precisely globally agreed-on beginnings and ends of
-RCU grace periods will not end well from performance, scalability,
-or real-time-response viewpoints.  ;-)
-
-But simplifications that don't hurt performance, scalability, and
-real-time-response are of course welcome.
-
-> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > index feb3ac1dc5d5..c4bb3eb92a58 100644
-> > > --- a/kernel/rcu/rcu.h
-> > > +++ b/kernel/rcu/rcu.h
-> > > @@ -19,6 +19,12 @@
-> > >   * The two least significant bits contain the control flags.
-> > >   * The most significant bits contain the grace-period sequence counter.
-> > >   *
-> > > + * RCU_STATE_STARTED		:	The gp has started but QS are not
-> > > + *					requested yet.
-> > > + *
-> > > + * RCU_STATE_WAIT_QS		:	The gp has started and waits for
-> > > + *					QS to be reported.
-> > 
-> > Do we want RCU_STATE_IDLE, by analogy with SRCU?
-> 
-> Makes sense.
-> 
-> > 
-> > >   * When both control flags are zero, no grace period is in progress.
-> > >   * When either bit is non-zero, a grace period has started and is in
-> > >   * progress. When the grace period completes, the control flags are reset
-> > > @@ -54,6 +60,9 @@
-> > >   *					grace-period sequence number.
-> > >   */
-> > >  
-> > > +#define RCU_STATE_STARTED	0x1
-> > > +#define RCU_STATE_WAIT_QS	0x2
-> > > +
-> > >  /* Low-order bit definition for polled grace-period APIs. */
-> > >  #define RCU_GET_STATE_COMPLETED	0x1
-> > >  
-> > > @@ -92,7 +101,13 @@ static inline void rcu_seq_start(unsigned long *sp)
-> > >  {
-> > >  	WRITE_ONCE(*sp, *sp + 1);
-> > >  	smp_mb(); /* Ensure update-side operation after counter increment. */
-> > > -	WARN_ON_ONCE(rcu_seq_state(*sp) != 1);
-> > > +	WARN_ON_ONCE(rcu_seq_state(*sp) != RCU_STATE_STARTED);
-> > > +}
-> > > +
-> > > +static inline void rcu_seq_wait_qs(unsigned long *sp)
-> > > +{
-> > > +	WRITE_ONCE(*sp, *sp + 1);
-> > > +	WARN_ON_ONCE(rcu_seq_state(*sp) != RCU_STATE_WAIT_QS);
-> > 
-> > Or we could have the WARN_ON_ONCE() first, and use rcu_seq_set_state().
-> 
-> Right!
-> 
-> > > @@ -192,6 +192,21 @@ int rcu_get_gp_kthreads_prio(void)
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
-> > >  
-> > > +/*
-> > > + * Return the root node of the rcu_state structure.
-> > > + */
-> > > +static struct rcu_node *rcu_get_root(void)
-> > > +{
-> > > +	return &rcu_state.node[0];
-> > > +}
-> > 
-> > OK, just code movement.
-> 
-> Right, if I proceed with this, a series will (try to) split more gently
-> for review.
-
-Fair enough!
-
-> > > +static unsigned long *rcu_root_seq(void)
-> > > +{
-> > > +	struct rcu_node *root = rcu_get_root();
-> > > +
-> > > +	return &root->gp_seq;
-> > > +}
-> > 
-> > Adding this function might be useful in any case, even if we keep the
-> > current rcu_state.gp_seq counter.  A single place to add comments that
-> > address the chosen type of confusion, if nothing else.  ;-)
-> 
-> ;-))
-> 
-> > 
-> > 13 calls want the pointer and 13 want the value.  An even split!
-> 
-> The split is but 13 itself is not even! And I know people who strongly
-> want it to stay that way!
-
-Bad regex morning, apparently...
-
-> > Not sure what lesson to draw from this, though indirecting a function call will
-> > likely cause some confusion.  Some might argue for two access functions,
-> > one for the pointer and the other for the value.  Me, I am just glad that
-> > I included the word "might" in the first sentence of the prior paragraph.
-> 
-> Right, I'm not proud of the *rcu_root_seq() things.
-> I thought about adding rcu_root_seq_current() but I'm not entirely comfortable
-> with having all readers under READ_ONCE(). I like when our assumptions of non
-> concurrent plain accesses are defeatedly reported by KCSAN.
-
-Good point.  I believe that ASSERT_EXCLUSIVE_WRITER() can be used to
-make this work, but plain accesses are admittedly much less typing.
-
-And the small number of uses makes three different access functions less
-than fully attractive.
-
-> > > @@ -1249,7 +1256,7 @@ static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
-> > >  
-> > >  	raw_lockdep_assert_held_rcu_node(rnp);
-> > >  
-> > > -	if (rdp->gp_seq == rnp->gp_seq)
-> > > +	if (!rcu_seq_changed(rdp->gp_seq, rnp->gp_seq))
-> > 
-> > The old code would detect a bunch of elapsed grace periods, starting
-> > and ending in the same state.  The new code does not.  Does the new code
-> > correctly handle CPUs that go idle for many grace periods?
-> 
-> I'm not sure I understand what you mean. rcu_seq_changed() is a comparison
-> that simply clears RCU_SEQ_STARTED on both sides such that:
-> 
-> * Different GP numbers with or without RCU_SEQ_STARTED/RCU_SEQ_WAIT_QS
->   are always considered a change.
-> 
-> * Same GP numbers but rnp has RCU_SEQ_WAIT_QS while rdp hasn't is considered a
->   change
-> 
-> but:
-> 
-> * Same GP numbers but rnp has RCU_SEQ_STARTED while rdp hasn't is _NOT_
->   considered a change. This is not for correctness but rather to spare
->   rnp locking and useless work. The ->qsmask are 0 anyway so no QS can
->   be reported too early.
-
-Idiot here missed the pair of tildes ("~") in that function.
-
-I clearly need to revisit this code with that in mind...
-
-> > > @@ -1802,10 +1809,9 @@ static noinline_for_stack bool rcu_gp_init(void)
-> > >  	/* Advance to a new grace period and initialize state. */
-> > >  	record_gp_stall_check_time();
-> > >  	/* Record GP times before starting GP, hence rcu_seq_start(). */
-> > > -	rcu_seq_start(&rcu_state.gp_seq);
-> > > -	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > 
-> > Why are we dropping the ASSERT_EXCLUSIVE_WRITER()?  As opposed to moving
-> > it to the setting of the rcu_node structures' ->gp_seq updates?
-> 
-> I must confess I misunderstood that macro and thought it was to assert
-> the variable has no other writer _at all_. But that seem to apply
-> scopewise. So yes good point.
-> 
-> > > @@ -1902,7 +1908,10 @@ static noinline_for_stack bool rcu_gp_init(void)
-> > >  		rdp = this_cpu_ptr(&rcu_data);
-> > >  		rcu_preempt_check_blocked_tasks(rnp);
-> > >  		rnp->qsmask = rnp->qsmaskinit;
-> > > -		WRITE_ONCE(rnp->gp_seq, rcu_state.gp_seq);
-> > > +		if (!rnp->parent)
-> > > +			rcu_seq_wait_qs(&rnp->gp_seq);
-> > > +		else
-> > > +			WRITE_ONCE(rnp->gp_seq, *rcu_root_seq());
-> > 
-> > This asymmetry is necessary because if I understand correctly, the
-> > non-root rcu_node structures still have zero state.  But this is one
-> > argument for use of rcu_seq_set_state(), because then you could just do
-> > rcu_seq_set_state(rnp->gp_seq, RCU_STATE_WAIT_QS) in both cases.
-> > 
-> > Or am I missing something that prevents this from working?
-> 
-> Indeed, the sequence counter (but not the state) is expected to be the same on
-> all nodes, so we can just modify the state as you said. And we can then assert
-> WARN_ON_ONCE(rnp->gp_seq != *rcu_root_seq())
-> 
-> > > @@ -2114,16 +2124,12 @@ static noinline void rcu_gp_cleanup(void)
-> > >  	 * the rcu_node structures before the beginning of the next grace
-> > >  	 * period is recorded in any of the rcu_node structures.
-> > >  	 */
-> > > -	new_gp_seq = rcu_state.gp_seq;
-> > > -	rcu_seq_end(&new_gp_seq);
-> > >  	rcu_for_each_node_breadth_first(rnp) {
-> > >  		raw_spin_lock_irq_rcu_node(rnp);
-> > >  		if (WARN_ON_ONCE(rcu_preempt_blocked_readers_cgp(rnp)))
-> > >  			dump_blkd_tasks(rnp, 10);
-> > >  		WARN_ON_ONCE(rnp->qsmask);
-> > > -		WRITE_ONCE(rnp->gp_seq, new_gp_seq);
-> > > -		if (!rnp->parent)
-> > > -			smp_mb(); // Order against failing poll_state_synchronize_rcu_full().
-> > 
-> > OK, this got moved up.
-> > 
-> > > +		WRITE_ONCE(rnp->gp_seq, *rcu_root_seq());
-> > 
-> > The idea being that the root rcu_node ->gp_seq is just overwritten
-> > with itself, correct?
-> 
-> Right!
-> 
-> > 
-> > >  		rdp = this_cpu_ptr(&rcu_data);
-> > >  		if (rnp == rdp->mynode)
-> > >  			needgp = __note_gp_changes(rnp, rdp) || needgp;
-> > > @@ -2146,9 +2152,7 @@ static noinline void rcu_gp_cleanup(void)
-> > >  	raw_spin_lock_irq_rcu_node(rnp); /* GP before ->gp_seq update. */
-> > >  
-> > >  	/* Declare grace period done, trace first to use old GP number. */
-> > > -	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("end"));
-> > > -	rcu_seq_end(&rcu_state.gp_seq);
-> > > -	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> > 
-> > Same question on not moving ASSERT_EXCLUSIVE_WRITER() to the rcu_node
-> > structures' ->gp_seq updates.
-> 
-> Indeed!
-> 
-> > > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > > index a9a811d9d7a3..9d811270b808 100644
-> > > --- a/kernel/rcu/tree.h
-> > > +++ b/kernel/rcu/tree.h
-> > > @@ -347,7 +347,6 @@ struct rcu_state {
-> > >  
-> > >  	/* The following fields are guarded by the root rcu_node's lock. */
-> > >  
-> > > -	unsigned long gp_seq ____cacheline_internodealigned_in_smp;
-> > >  						/* Grace-period sequence #. */
-> > 
-> > Heh!  Does the rcu_node structure's ->gp_seq need alignment?
-> 
-> Probably but then this will increase the size of all rnp's, right?
-
-Indeed, this probably needs actual performance results showing that
-it is needed.  My guess is that only systems with a single rcu_node
-structure that is both leaf and root would have any chance of noticing.
-And those tend to have few CPUs, so they might not care.
-
-							Thanx, Paul
+T24gV2VkLCAyMDI1LTAzLTI2IGF0IDE3OjQ0ICswMTAwLCBGcmVkZXJpYyBXZWlzYmVja2VyIHdy
+b3RlOg0KPiANCj4gSXQncyBub3QgdGhlIGZpcnN0IHRpbWUgSSBnZXQgc3VjaCBhIHJlcG9ydCBv
+biBhbiBvdXQgb2YgdHJlZQ0KPiBrZXJuZWwuIFRoZSBwcm9ibGVtIGlzIEkgZG9uJ3Qga25vdyBp
+ZiB0aGUgdGFpbnRlZCBtb2R1bGVzIGFyZQ0KPiBpbnZvbHZlZC4gQnV0IHNvbWV0aGluZyBpcyBw
+cm9iYWJseSBtYWtpbmcgYW4gb2ZmbGluZSBDUFUgdmlzaWJsZQ0KPiB3aXRoaW4NCj4gdGhlIGhp
+ZXJhcmNoeSBvbiBnZXRfbm9oel90aW1lcl90YXJnZXQoKS4gQW5kIHRoYXQgbmV3IHdhcm5pbmcg
+bWFkZQ0KPiB0aGF0IHZpc2libGUuDQo+IA0KPiBDYW4geW91IHRyeSB0aGlzIGFuZCB0ZWxsIHVz
+IGlmIHRoZSB3YXJuaW5nIGZpcmVzPw0KPiANCj4gVGhhbmtzLg0KPiANCj4gZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvbGludXgvc2NoZWQvbm9oei5oIGIvaW5jbHVkZS9saW51eC9zY2hlZC9ub2h6LmgN
+Cj4gaW5kZXggNmQ2N2U5YTVhZjZiLi5mNDk1MTI2MjgyNjkgMTAwNjQ0DQo+IC0tLSBhL2luY2x1
+ZGUvbGludXgvc2NoZWQvbm9oei5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvc2NoZWQvbm9oei5o
+DQo+IEBAIC05LDYgKzksNyBAQA0KPiDCoCNpZiBkZWZpbmVkKENPTkZJR19TTVApICYmIGRlZmlu
+ZWQoQ09ORklHX05PX0haX0NPTU1PTikNCj4gwqBleHRlcm4gdm9pZCBub2h6X2JhbGFuY2VfZW50
+ZXJfaWRsZShpbnQgY3B1KTsNCj4gwqBleHRlcm4gaW50IGdldF9ub2h6X3RpbWVyX3RhcmdldCh2
+b2lkKTsNCj4gK2V4dGVybiB2b2lkIGFzc2VydF9kb21haW5fb25saW5lKHZvaWQpOw0KPiDCoCNl
+bHNlDQo+IMKgc3RhdGljIGlubGluZSB2b2lkIG5vaHpfYmFsYW5jZV9lbnRlcl9pZGxlKGludCBj
+cHUpIHsgfQ0KPiDCoCNlbmRpZg0KPiBkaWZmIC0tZ2l0IGEva2VybmVsL2NwdS5jIGIva2VybmVs
+L2NwdS5jDQo+IGluZGV4IDA3NDU1ZDI1MzI5Yy4uOThjOGY4NDA4NDAzIDEwMDY0NA0KPiAtLS0g
+YS9rZXJuZWwvY3B1LmMNCj4gKysrIGIva2VybmVsL2NwdS5jDQo+IEBAIC0xMyw2ICsxMyw3IEBA
+DQo+IMKgI2luY2x1ZGUgPGxpbnV4L3NjaGVkL2lzb2xhdGlvbi5oPg0KPiDCoCNpbmNsdWRlIDxs
+aW51eC9zY2hlZC90YXNrLmg+DQo+IMKgI2luY2x1ZGUgPGxpbnV4L3NjaGVkL3NtdC5oPg0KPiAr
+I2luY2x1ZGUgPGxpbnV4L3NjaGVkL25vaHouaD4NCj4gwqAjaW5jbHVkZSA8bGludXgvdW5pc3Rk
+Lmg+DQo+IMKgI2luY2x1ZGUgPGxpbnV4L2NwdS5oPg0KPiDCoCNpbmNsdWRlIDxsaW51eC9vb20u
+aD4NCj4gQEAgLTEyNzcsNiArMTI3OCw3IEBAIHN0YXRpYyBpbnQgdGFrZV9jcHVfZG93bih2b2lk
+ICpfcGFyYW0pDQo+IMKgwqDCoMKgwqDCoMKgIGlmIChlcnIgPCAwKQ0KPiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIGVycjsNCj4gDQo+ICvCoMKgwqDCoMKgwqAgYXNzZXJ0
+X2RvbWFpbl9vbmxpbmUoKTsNCj4gwqDCoMKgwqDCoMKgwqAgLyoNCj4gwqDCoMKgwqDCoMKgwqDC
+oCAqIE11c3QgYmUgY2FsbGVkIGZyb20gQ1BVSFBfVEVBUkRPV05fQ1BVLCB3aGljaCBtZWFucywg
+YXMgd2UNCj4gYXJlIGdvaW5nDQo+IMKgwqDCoMKgwqDCoMKgwqAgKiBkb3duLCB0aGF0IHRoZSBj
+dXJyZW50IHN0YXRlIGlzIENQVUhQX1RFQVJET1dOX0NQVSAtIDEuDQo+IGRpZmYgLS1naXQgYS9r
+ZXJuZWwvc2NoZWQvY29yZS5jIGIva2VybmVsL3NjaGVkL2NvcmUuYw0KPiBpbmRleCAxNzVhNWE3
+YWMxMDcuLjg4MTU3YjE2NDVjYyAxMDA2NDQNCj4gLS0tIGEva2VybmVsL3NjaGVkL2NvcmUuYw0K
+PiArKysgYi9rZXJuZWwvc2NoZWQvY29yZS5jDQo+IEBAIC0xMTYzLDYgKzExNjMsMjAgQEAgdm9p
+ZCByZXNjaGVkX2NwdShpbnQgY3B1KQ0KPiANCj4gwqAjaWZkZWYgQ09ORklHX1NNUA0KPiDCoCNp
+ZmRlZiBDT05GSUdfTk9fSFpfQ09NTU9ODQo+ICt2b2lkIGFzc2VydF9kb21haW5fb25saW5lKHZv
+aWQpDQo+ICt7DQo+ICvCoMKgwqDCoMKgwqAgaW50IGNwdSA9IHNtcF9wcm9jZXNzb3JfaWQoKTsN
+Cj4gK8KgwqDCoMKgwqDCoCBpbnQgaTsNCj4gK8KgwqDCoMKgwqDCoCBzdHJ1Y3Qgc2NoZWRfZG9t
+YWluICpzZDsNCj4gKw0KPiArwqDCoMKgwqDCoMKgIGd1YXJkKHJjdSkoKTsNCj4gKw0KPiArwqDC
+oMKgwqDCoMKgIGZvcl9lYWNoX2RvbWFpbihjcHUsIHNkKSB7DQo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIGZvcl9lYWNoX2NwdShpLCBzY2hlZF9kb21haW5fc3BhbihzZCkpIHsNCj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFdBUk5fT05fT05D
+RShjcHVfaXNfb2ZmbGluZShpKSk7DQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0N
+Cj4gK8KgwqDCoMKgwqDCoCB9DQo+ICt9DQo+IMKgLyoNCj4gwqAgKiBJbiB0aGUgc2VtaSBpZGxl
+IGNhc2UsIHVzZSB0aGUgbmVhcmVzdCBidXN5IENQVSBmb3IgbWlncmF0aW5nDQo+IHRpbWVycw0K
+PiDCoCAqIGZyb20gYW4gaWRsZSBDUFUuwqAgVGhpcyBpcyBnb29kIGZvciBwb3dlci1zYXZpbmdz
+Lg0KDQpIaSBGcmVkZXJpYywNCg0KVGhhbmsgeW91IGZvciBwcm92aWRpbmcgdGhlIHBhdGNoIHRv
+IGRlYnVnIHRoZSBocnRpbWVyIHdhcm5pbmcgaXNzdWUuDQoNCkkgaGF2ZSBhcHBsaWVkIHRoZSBw
+YXRjaCBhbmQgY29uZHVjdGVkIHN0cmVzcyB0ZXN0aW5nIG92ZXIgdGhlIHdlZWtlbmQuDQpBbmQg
+dGhlIHdhcm5pbmcgcHJvdmlkZWQgaW4gdGhlIHBhdGNoIGRpZCBub3Qgb2NjdXIgZHVyaW5nIHRo
+aXMgcGVyaW9kLg0KDQpBZGRpdGlvbmFsbHksIGFmdGVyIGEgdGhvcm91Z2ggcmV2aWV3IG9mIG91
+ciBpbnRlcm5hbCB0YWludGVkIG1vZHVsZXMsDQpJIGNhbiBjb25maXJtIHRoYXQgeW91IGFyZSBj
+b3JyZWN0IGluIHlvdXIgYXNzZXNzbWVudC4gVGhlDQpnZXRfbm9oel90aW1lcl90YXJnZXQoKSB3
+aXRoIG91ciB0YWludGVkIG1vZHVsZXMgbWF5IGluZGVlZCByZXR1cm4gYQ0KQ1BVIHRoYXQgaXMg
+b2ZmbGluZSwgbGVhZGluZyB0byB0aGUgaHJ0aW1lciB3YXJuaW5nIGlzc3VlLiBXZSBhcmUNCndv
+cmtpbmcgb24gZml4aW5nIHRoaXMgd2l0aGluIG91ciB0YWludGVkIG1vZHVsZXMuDQoNClRoYW5r
+cyBhZ2FpbiBmb3IgeW91ciBoZWxwIGluIGRlYnVnZ2luZyB0aGlzIGlzc3VlLg0KDQpCZXN0IHJl
+Z2FyZHMsDQpXYWx0ZXIgQ2hhbmcNCg0K
