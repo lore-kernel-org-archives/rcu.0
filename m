@@ -1,185 +1,356 @@
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2070.outbound.protection.outlook.com [40.107.243.70])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2430B20C48C;
-	Tue,  1 Apr 2025 16:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.70
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743525047; cv=fail; b=KUS9uqWg5BzfUstoG/UXa5zKSbpE+VfAo8QiSodR2D+Nq/4yLE+nVUDlQtxMzXpxqn9BpvD4qxIAZp8/KyCcKeEHIUf5GO5l76B/fffjoufVJLWqZDx8ae98wOwQcGM8WUKHsaeVsIMYQog70PqaU++AguSB0G1+qiasdPkjnq4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743525047; c=relaxed/simple;
-	bh=BJsGYQAJeIPdL+Ga7o9/pAbpdTW8oiJm3M5u2KH/Gyk=;
-	h=Date:Message-ID:Content-Type:From:To:Cc:Subject:MIME-Version; b=SSIIZof+2v7MMYcCl7dhSMnsyfvpsgAZFxQi/tKoI3GM0sl3SR0B1hAnCjXH5tHz9HTeiOtZuh3oOyyfw6g8pZ+/s+2G6CRYR3Bw6yMDuIE9bXMzxRLX+Uw84cOy8KOFeLf8wwWE2jrpxH7Ic2q2T0BQ+Fc3xuI2SbiEf6xdylw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aZTzdtsd; arc=fail smtp.client-ip=40.107.243.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748FC1EB39;
+	Wed,  2 Apr 2025 01:16:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743556562; cv=none; b=SnkiyP5sOdgxnzx8ZzbwJmG4IbO4n557U0wp8iAj0VMxBo+JVttR42Jv+Em7XckiLeXADN35hnpCPH2wqPA92CR1HUGPJmzoqlsUVT3JDbAvqUqd4tya6uy+Arw/6Yzbp6Wu9Y4Jy/ss+UlbjWqTz/aAdTu68Z2Rn0wWtSz0Pvs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743556562; c=relaxed/simple;
+	bh=LYpo0vG3dQ8lYvlY4qVKVbhRU/Q6e2EEmjJrBW+uD2g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NnXzkknwGwCVyYceh5mc+OmjWaq/s6Co86YrCReYVVG/R8I6zW3KXcTDrQuL5CT+jLhp+A0NMc2/hIlFLQPwusMfskNrHBcLMfE7v9PY9r9wotPBySE6HCWvgcmS2OylNXbalpjorws1xc5Xvl8OF8QU4SlmFXD9Bt7CBn3gODc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YurbvMt9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aZTzdtsd"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vUC6xRVAH/pxHb9VTdcE5RsTFp3MmSlVl+AFYfmMdBFfnABylx4XonXIXtUZkLUHzXSjVCP9fvC5nEohKA79j1rOn2qdsEZzlgB6HEmoU+7so3h/fllJRhRegv/Okw0YHxRA7FijSdAkpIHR6Y6GIvLfe06tmWwv+G57QQyuTZ7rrl3tZeBMuJEAVFtmwhN5KCGv/A4SVPQu2YXN927SUrcmaH6VXqyXaRsSV+C1fqJhjvb13+jVaMHfwQxffntMOmWrICmlLSahFyij+zGmDQl+5IjqXh9frisZueaQFNexQ+lMJnOKRVyQzeEiC4GOxOEH+RqE9yeUizDOA3SWhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BJsGYQAJeIPdL+Ga7o9/pAbpdTW8oiJm3M5u2KH/Gyk=;
- b=o2X1fLeb5WlxVmVUcYHUCZNuJBZ2cL61o9U2rsGslZqGmeZaqEdXCvIJXt6WJ2Pd42kErutpAq639R0q01a62f4nF1gdl5vHlsdT+qQl3OoxaFv3MUgrBDnE+X9DlgsiNCnQlL0OORdWvExyrtwZFsuL8OVtziV8wq8vcNmEmrYh9tdKZQwem4DiaGoW6S4dFJ0l/v+HEpxjJnAsUbVsQhSUafoJUDZ7v/tFVhlFgBjDqOlwSgsOzfqYI+9isTt9NLmN9qm7iyKJmd6O5/hHcM9+1OyqtKrd+tHv3ku27XpP/OiOFy6QImuT+w+EDfDwck3im+AEKs8H6T7a5xNeAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BJsGYQAJeIPdL+Ga7o9/pAbpdTW8oiJm3M5u2KH/Gyk=;
- b=aZTzdtsdXx+1I7euh99GiridHVu0d9XudYPjeJj1d9vWmufHwjXHN5msul/bF/5mYOUQ66/hw1DvsQeYnzl9G+oJSuTqci3MPhUgLeXE94cYoQhhMbbi1w9CY+icL8lon0nmwYnx1BMHs4Uj5QO9Vfw8lnmfNSHU3JPC0A5sKbW9KAyQQoziOda2JTmyWM6W9lR71ufZdxoUfxSomaLx5XxsHaYNOGfJpN6gezgen8R24NcpwWJlTfsmXxWYMf+LZB0VQIlSyPT6pF4z66HRJ8xQympLPg2pYF9tFWb4qJNxEo8oSTcyKhjLKK75OBj93rqZChpUkI73+Fv3eXkEPA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from PH7PR12MB8056.namprd12.prod.outlook.com (2603:10b6:510:269::21)
- by IA1PR12MB6652.namprd12.prod.outlook.com (2603:10b6:208:38a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Tue, 1 Apr
- 2025 16:30:42 +0000
-Received: from PH7PR12MB8056.namprd12.prod.outlook.com
- ([fe80::5682:7bec:7be0:cbd6]) by PH7PR12MB8056.namprd12.prod.outlook.com
- ([fe80::5682:7bec:7be0:cbd6%4]) with mapi id 15.20.8534.043; Tue, 1 Apr 2025
- 16:30:42 +0000
-Date: Tue, 01 Apr 2025 12:30:40 -0400
-Message-ID: <8c8932fd34334718e94f979f9bab2fb7.joelagnelf@nvidia.com>
-Content-Type: multipart/mixed; boundary="===============0629731459990192381=="
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: Re: [1/3] rcu: Replace magic number with meaningful constant in rcu_seq_done_exact() - Patchwork
-X-ClientProxiedBy: MN2PR20CA0056.namprd20.prod.outlook.com
- (2603:10b6:208:235::25) To PH7PR12MB8056.namprd12.prod.outlook.com
- (2603:10b6:510:269::21)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YurbvMt9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2330C4CEE4;
+	Wed,  2 Apr 2025 01:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743556561;
+	bh=LYpo0vG3dQ8lYvlY4qVKVbhRU/Q6e2EEmjJrBW+uD2g=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=YurbvMt9SklN9Fj9fCPkJqumCqkRMWfNIiKBPlKOFpVZByQYUocQX/uMW6GztzlQR
+	 I8tXY5arHkfpCtYPhSW33BfZ4R2x1hpD0vQQq3Hg8qfVLPu1X8swoXLUE11Y5g0O0E
+	 seSPG2SVCgylePbpCbhSh80wGEZYczYYKslFgxp9ijWvwRWEJn4bCH8bEhFzPCCXBK
+	 Zbh6xhiwLGtRpTGcu5K3rxrScmSgGdOnWwrFzU3A0RFA0YOCqb79p4dCsdAOT6SUhW
+	 mmIyAe73Oc1y0bbWC8HGOl2rYkRdix896hVVXocuhGMJD7BgLqCV9aertGWbpM96rS
+	 nBD2OGAiQAFwg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 79CFBCE160D; Tue,  1 Apr 2025 18:16:01 -0700 (PDT)
+Date: Tue, 1 Apr 2025 18:16:01 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Perform more frequent testing of ->gpwrap
+Message-ID: <c9c19caa-68c1-4012-bd82-38a24c9edb60@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250329230143.62292-1-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB8056:EE_|IA1PR12MB6652:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3a4b0595-d8b9-49d0-b75d-08dd713a8b6d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?anFYY0xpTU0yb1VDRTNUS0lMZys3SjJIb2JNZHAzb3N5b08zdS9JVGFiVDlT?=
- =?utf-8?B?VWlObTZFbmp6OGhPd01Hc2pNNDZSWVdUUXkyMFlwaUZDUGw4bTN4TVhpVjdV?=
- =?utf-8?B?QXhpRUc1NVBxY1ozOXl1S1pzVlhMczdYbDFodEgyUFRvOHdKRFRGc0wxdzF3?=
- =?utf-8?B?SGRtTHNCaWVWMEc1NnJtT01XMXNyRUhsRXlEVDNGd3Fla2RPYXl3VFZyYVht?=
- =?utf-8?B?NnZwQkU1azQyUE1HdmQwQjFXRmsxUkt4RE0rZlFsQlpsUUtOcEdUZmk0THZh?=
- =?utf-8?B?UDU1emRCWEYremxYaStnd3FVNzNyUGxKNkFmaEFxbktwMU8wNkRhQVo1emRV?=
- =?utf-8?B?aGJuTXZkbnJzYlFtcUhtQ0sxckFTaDhZT2d2SDExVktmS0IwYjFyYU11UW9E?=
- =?utf-8?B?MFk2QjNpYUtFZEpFVmVxMnpnMnArUkRzdzNYVXdkMzdzT2Y3SFpOVmg5eGRW?=
- =?utf-8?B?UUEvNW43M0ZTMmloUGxJUEZibURxdDZSNjdiK2xFemR6Y2JpVUFxclJXaXVn?=
- =?utf-8?B?L3pPVENqb2pQYk8vdCtTV055U1M2WVZaWVFQZlp6QWd3S1pXT3ZBejN3WHJ3?=
- =?utf-8?B?OFh5VHNUTWVRM2d4V1FBL0sveWhDSExRbDc4YXlTNEMzMmlzV2s0MFBsamF2?=
- =?utf-8?B?NVhJODd1WnBGa3RnZDVUT1ArWEVvMzNsWEttZFBQMXFCRnB5bC82YnJFU1l5?=
- =?utf-8?B?WmRHc0lyOC9nTkVMSjEzR1U0T2JEZmZ2c3R3NXMwQ0RmUFE0V29EcG1vRmJj?=
- =?utf-8?B?L2xvMDVOOEdPelEvSlNMdTY5ajVzaUNEekhwL3BCVU9yRFNhYnF5c3EwY3Za?=
- =?utf-8?B?TGhDbVRCTWUvU2h6YTQzRDJKLy80c1hoRS9jcy8vbCszUXB4N1lMUUt0cmd1?=
- =?utf-8?B?YWFRSkxnT09VeVF6ZWVIcnB6MGFvTTlidXhKRW1qRFhwbngvRTArMkN4a2tC?=
- =?utf-8?B?VHdqUmJvdEZoNXVUSmtVVzgwRWVOZ3g5REdDWGcxTGMvVExzblhIK3RlaGkz?=
- =?utf-8?B?YkcwVTRuUDFxQ1JReWtRenNNTXUrOUwxUnYyYVE0Y3V1SkRwS1F0MFZoSkpI?=
- =?utf-8?B?RXNoY2VsV0RpNTNHeTdsWkJhYXpEUDBzQXFCNTBPNDg5a0czSjBjeWJJM3Zl?=
- =?utf-8?B?dmZXOXppZTdBcGNIb3Fla1FyMjN5NzU3eEJoYmhIM1paNDc3QUl4M2pKUERY?=
- =?utf-8?B?TUtSSGxhbzB4VUhQbXA5NHBmQW5tZ2l2czFPQjZHSEdnWXdCcUVQWGcrT1k5?=
- =?utf-8?B?eXo3eEdPVVNOWkZlTkRKSHR1RVM1bDNxN0I4V0VXZU01Tml1V3didFZpMVMv?=
- =?utf-8?B?VStKb1EzVzZtbEhFT0RhZ3ZNS2xpaVN6OVg5aUMwSTI4MHc2dW9xSTFQLy9J?=
- =?utf-8?B?Snl3V0xtQkdId2hXQWtkWUdXVVA5dFM3U3Z0OEg5a2d2d3J2OGRuR3Zrbnlu?=
- =?utf-8?B?TWpHbStFa2YyK0RSQndVM09nLzBXNDZXRnVkRkxTcW9hckJZQ2hKUGtNKzBm?=
- =?utf-8?B?ZHJuMkZNeTJFcDJEbjhaQ1NNWWhoL3EwYXUvclBOWkN2d0pzMjdycWRQUXRu?=
- =?utf-8?B?M0NpVjZ2dUs3bU5YTjNMVlNXdkl5L2QwVVBSdVBYTVNpc3czejhBbHF0STRi?=
- =?utf-8?B?bUpibDkrUC9tbGd3akd1L05Eazk3QVQ5dEZsYUpLSERld1Njbi9XUFA4b3Y5?=
- =?utf-8?B?ZGcra2dzVE9xU2l0ZjNDOGFQaE01dmljQ0VWOWppMlBoY0FYekRhTkorQk43?=
- =?utf-8?B?Mk1DTldPaG9JaGRGYnJqRzZ1RE1CUlFPRDkxZ0dwVjZLNENsSHQ2TG12N0lw?=
- =?utf-8?B?dlRBdHc3VW5nV2ZZTkcrMkFNcTc3UjZWOEl5eU93L0VhWFZFejlUaE9tTjMx?=
- =?utf-8?Q?rpe+W5sdkN3jw?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB8056.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?T3BuMFI0QXZyRVBleTh0K1hJNHkxanNSTzk4cnlwWC9ZUnQydWUwV2wzTXZs?=
- =?utf-8?B?UlQ4WVhWSksvY3d6RWJXNTdhS2MzVzBxUkdTWFdZS0o2aVNHVHFTMGJCNy9q?=
- =?utf-8?B?YzcwRC9ZZnBFRnlFZjVDYzhhbVFGM2p4OG53V21xTVEzWnptT1ZWUFRNNGxI?=
- =?utf-8?B?eXgzOU9YM1pyaUFNc2JGVTE1QUtQR2dMU2pldEQzVXk3TXlPbWJKWXQzMlNr?=
- =?utf-8?B?TzNzS1hqclVWemlETi9BODQxRW14NWw3dTRxNkg4a3p6VWg2d0RYRXZDNm1T?=
- =?utf-8?B?Qkp1NVIvV0dyVnJadUxiR1RGenhzQTFPUGlTRG41UkhXVjdtYjNMYU80OXFK?=
- =?utf-8?B?K0piTkJBMnNBWEtqT1ZhQ0lzNnRlVG1FTEpxTUtwQ2dmT0dwV3pjcE4rOXFm?=
- =?utf-8?B?N01rVFJGNHoreE5iTDExWE9tT3dKdnMwL1V5YXpyNUJIblV6bCtacDdxeDFl?=
- =?utf-8?B?OWwzemtwbHVtV1IxdGNFMkJKempWbGQ1VjYrbHpNUnVlN3lsNFk3Qm5TeUZX?=
- =?utf-8?B?Z0NzR1FIRzdlc2hXQzZuSVpEYWFCcmdybE1NTlozdUhsT1piOGdMVGVOd2Jk?=
- =?utf-8?B?UWFiQll3Q0piRzVMUDhLT2xDNDRqSzhFeG84WmQ1QXdROXJDVXljaThQc3hI?=
- =?utf-8?B?Mms0M1RkVWw4bzFqMlNQclYxaDJLMytXQUJ2ckI1WldVOVJ1dUx6MHh2UEJn?=
- =?utf-8?B?blE1RFN2ZzRZZ3phKy9hUnlnQWV5MGtmb1BJNmpQc3pHSnAvTDBBWDJsRmkx?=
- =?utf-8?B?L1cyYWcxdVB6NEI4cHhVeWw0QUZhUHZPT2VITUNXZlV1QzZ5RkN4djU2aUxS?=
- =?utf-8?B?S1Vqb3F2MTB3M0gxOE41M2FJUjRMWDVSVWtPOWRNRmFFWWN5NjVYanVIZ0Zw?=
- =?utf-8?B?Q1RtMXMzcmJ1NXhMUk1JMHdLU1VqcFhEak5zWTJjWThGS1kxb2ZpWmRyZzFv?=
- =?utf-8?B?WVV2NFV6YzV6VXYwNTdONlh6MVJuS2V1NjhGMGFSQkJxRWhFMWN3RGtORDhV?=
- =?utf-8?B?dlRVaHVHaE5CMDhoMjZLVjN3a3dsRmNJY3Y3NVExOWVKS0c5VnhDdWFaSTY1?=
- =?utf-8?B?L2QwdlVGMnFEdGlBT1pOakRPaTlkTTZXY25DWG5hd2p0L3dVdjlBWHRLUiti?=
- =?utf-8?B?WWkzV1pmS1Fqb290S3dzbmJMRTFLNVZKOS9vUXlJNXlOMWVCZ1RKZTc2U3F3?=
- =?utf-8?B?SjA1c0ZMdHdqbEw3eVY5dWFIMEd1MWwxOVdRSW9ybG1TR1dmdnNiRVNZY05Q?=
- =?utf-8?B?NUVOWFV4WlV6aHUyREN2SXBkaDlhczNvWXJKdXNhZlNINlRYUGc4NHlSWjVR?=
- =?utf-8?B?Y2FUN0Y0UURoTTd4VlBRTUJWWE55SkdrZjBOWVJLdzZlNXVSWlIwZjA3WURr?=
- =?utf-8?B?YW1LRlk4cWRWUi9Wb0hUOWlWbFU5WUlZQmxzMDZmY01GUE1Od0ExeGorWmtw?=
- =?utf-8?B?RTFVa1BQK28rK2h6dWVPOXd3UUliTCs0NWliNDMva2J1TDN3dEc3VTJiMGhO?=
- =?utf-8?B?TEZ2Tm1Dd3YvQjI3MWpOK3lCNWlTbjFYQS9MK1ZCaHNXYUh3WFVMcmQxaFc2?=
- =?utf-8?B?OG1uS1NzTmFVSmdwOGx1OHkxOVcxeS91MzRObE52cHdobEdpMmlycm1yM0Jt?=
- =?utf-8?B?YlNEdHR6UXMxVGtaY2xtWjRSS3hoZURqMEIyWk9kcGZYVVVVcDBsWnMxMlds?=
- =?utf-8?B?czcxemdBMWNYZ0dHNGdhbSt2dVFyelVKK0FaN2g0c0thc2pYSXJ6UWlQVDMv?=
- =?utf-8?B?SE1CRVM2V0lCRTRaNWpMQzg4YUJCcHRURi9tVHYvblF2Qk9WMTFaaXVsbWxJ?=
- =?utf-8?B?SFBWby9oWU5YZGZsSzVYS2tSTXRJSWpEelRlNXF2S010MWNtckZ3a04wQm1s?=
- =?utf-8?B?UUVYN21tUm0rTG4wK1BWVGtzbFB4ZDBQN1Q4cUtXQ3RvMVJJRDhIbmhsTXkx?=
- =?utf-8?B?MEVoV240R25BenNPYWFTQkNKeTI3QTA4L29IRUpoQ1RjQ1FCYW5PY3E2eDlt?=
- =?utf-8?B?Q0VhejBOK2lZdWFlSkJIL0IrYlpLekdBSStJUzh3cmhKeEpHb05sc1JIZGsx?=
- =?utf-8?B?Z2x6NTZTUEZTOWVNc0ZJS21icEFjeGxBTWFpaUljLzhOSmwvWkJXbGtVSVJz?=
- =?utf-8?Q?y0a7k5T0PO7oj4/snhD1eFwmy?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a4b0595-d8b9-49d0-b75d-08dd713a8b6d
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB8056.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2025 16:30:42.0144
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YXh/MGO9PPBrBxpJqFOTQTJlxzi8TCuMXZ/N/3JFSO4WzztRmkA+s7hA37jvMadaUJwJmfNKHAlL2DdqRLwJxw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6652
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250329230143.62292-1-joelagnelf@nvidia.com>
 
---===============0629731459990192381==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+On Sat, Mar 29, 2025 at 07:01:42PM -0400, Joel Fernandes wrote:
+> Currently, the ->gpwrap is not tested (at all per my testing) due to the
+> requirement of a large delta between a CPU's rdp->gp_seq and its node's
+> rnp->gpseq.
+> 
+> This results in no testing of ->gpwrap being set. This patch by default
+> adds 5 minutes of testing with ->gpwrap forced by lowering the delta
+> between rdp->gp_seq and rnp->gp_seq to just 8 GPs. All of this is
+> configurable, including the active time for the setting and a full
+> testing cycle.
+> 
+> By default, the first 25 minutes of a test will have the _default_
+> behavior there is right now (ULONG_MAX / 4) delta. Then for 5 minutes,
+> we switch to a smaller delta causing 1-2 wraps in 5 minutes. I believe
+> this is reasonable since we at least add a little bit of testing for
+> usecases where ->gpwrap is set.
+> 
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-SGVsbG8sIEZyZWRlcmljLAoKT24gVHVlLCAxIEFwciAyMDI1IDE2OjI3OjM2IEdNVCwgRnJlZGVy
-aWMgV2Vpc2JlY2tlciB3cm90ZToKPiBMZSBNb24sIE1hciAzMSwgMjAyNSBhdCAwMjoyOTo1MlBN
-IC0wNzAwLCBQYXVsIEUuIE1jS2VubmV5IGEgw6ljcml0IDoKPiA+IFRoZSBkaXNhZ3JlZW1lbnQg
-aXMgYSBmZWF0dXJlLCBhdCBsZWFzdCB1cCB0byBhIHBvaW50LiAgVGhhdCBmZWF0dXJlCj4gPiBh
-bGxvd3MgQ1BVcyB0byBnbyBpZGxlIGZvciBsb25nIHBlcmlvZHMgd2l0aG91dCBSQ1UgaGF2aW5n
-IHRvIGJvdGhlcgo+ID4gdGhlbSBvciB0byBtZXNzIHdpdGggdGhlaXIgcGVyLUNQVSBkYXRhIChn
-aXZlIG9yIHRha2UgLT5ncHdyYXApLiAgSXQgYWxzbwo+ID4gYWxsb3dzIHBlci1yY3Vfbm9kZS1s
-ZWFmIGxvY2tpbmcsIHdoaWNoIGlzIGltcG9ydGFudCBvbiBsYXJnZSBzeXN0ZW1zLgo+ID4gCj4g
-PiBUcnlpbmcgdG8gbWFrZSBwcmVjaXNlbHkgZ2xvYmFsbHkgYWdyZWVkLW9uIGJlZ2lubmluZ3Mg
-YW5kIGVuZHMgb2YKPiA+IFJDVSBncmFjZSBwZXJpb2RzIHdpbGwgbm90IGVuZCB3ZWxsIGZyb20g
-cGVyZm9ybWFuY2UsIHNjYWxhYmlsaXR5LAo+ID4gb3IgcmVhbC10aW1lLXJlc3BvbnNlIHZpZXdw
-b2ludHMuICA7LSkKPiAKPiBUaGUgZGlzdHJpYnV0ZWQgZGlzYWdyZWVtZW50IGlzIGRlZmluZXRs
-eSBhIGZlYXR1cmUuIFRoZSBkdXBsaWNhdGUgcm9vdAo+IGlzIG1vcmUgZGViYXRhYmxlLgo+IAo+
-ID4gQnV0IHNpbXBsaWZpY2F0aW9ucyB0aGF0IGRvbid0IGh1cnQgcGVyZm9ybWFuY2UsIHNjYWxh
-YmlsaXR5LCBhbmQKPiA+IHJlYWwtdGltZS1yZXNwb25zZSBhcmUgb2YgY291cnNlIHdlbGNvbWUu
-Cj4gCj4gSSdtIG5vdCBldmVuIHN1cmUgbXkgcHJvcG9zYWwgaXMgYSBzaW1wbGlmaWNhdGlvbi4g
-UGVyaGFwcyBpdCBpcy4gQW5vdGhlcgo+IGhvcGUgaXMgdGhhdCBpdCBjb3VsZCBhdm9pZCBmdXR1
-cmUgYWNjaWRlbnRzLgo+IAoKQXNpZGUgZnJvbSB0aGUgcGVyZm9ybWFuY2UgY29uY2VybnM6CgpT
-b3JyeSBpZiB0aGlzIGlzIHNpbGx5IGJ1dCBjb3VsZCB5b3UgcHJvdmlkZSBhIHNtYWxsIGhpbnQg
-YXMgdG8gaG93CnVuaWZ5aW5nIHRoZSBnbG9iYWwgY291bnRlciB3aXRoIHRoZSBub2RlIGFmZmVj
-dHMgUVMgcmVwb3J0aW5nIG9yIGhvdHBsdWc/Ckl0IHdhcyBub3QgaW1tZWRpYXRlbHkgb2J2aW91
-cyB0byBtZS4gVGhhbmtzIGZvciB0aGUgaGVscC4KClRoYW5rcyEKCiAtIEpvZWwKCgoKCj4gPiBJ
-bmRlZWQsIHRoaXMgcHJvYmFibHkgbmVlZHMgYWN0dWFsIHBlcmZvcm1hbmNlIHJlc3VsdHMgc2hv
-d2luZyB0aGF0Cj4gPiBpdCBpcyBuZWVkZWQuICBNeSBndWVzcyBpcyB0aGF0IG9ubHkgc3lzdGVt
-cyB3aXRoIGEgc2luZ2xlIHJjdV9ub2RlCj4gPiBzdHJ1Y3R1cmUgdGhhdCBpcyBib3RoIGxlYWYg
-YW5kIHJvb3Qgd291bGQgaGF2ZSBhbnkgY2hhbmNlIG9mIG5vdGljaW5nLgo+ID4gQW5kIHRob3Nl
-IHRlbmQgdG8gaGF2ZSBmZXcgQ1BVcywgc28gdGhleSBtaWdodCBub3QgY2FyZS4KPiAKPiBEbyB5
-b3UgaGF2ZSBhbnkgaWRlYSBmb3IgYSBiZW5jaG1hcmsgdG8gdGVzdCBoZXJlPwo+IAo+IFRoYW5r
-cy4KPiAKPiA+IAkJCQkJCQlUaGFueCwgUGF1bA==
+I ran this as follows:
 
---===============0629731459990192381==--
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10m --configs "TREE01" --bootargs "rcutorture.ovf_cycle_mins=7" --trust-make
+
+Once I actually applied your patch, I did get this:
+
+[  601.891042] gpwraps: 13745
+
+Which seems to indicate some testing.  ;-)
+
+Additional comments inline.
+
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcu.h        |  4 +++
+>  kernel/rcu/rcutorture.c | 64 +++++++++++++++++++++++++++++++++++++++++
+>  kernel/rcu/tree.c       | 34 ++++++++++++++++++++--
+>  kernel/rcu/tree.h       |  1 +
+>  4 files changed, 101 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index eed2951a4962..9a15e9701e02 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -572,6 +572,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
+>  			       unsigned long c_old,
+>  			       unsigned long c);
+>  void rcu_gp_set_torture_wait(int duration);
+> +void rcu_set_torture_ovf_lag(unsigned long lag);
+> +int rcu_get_gpwrap_count(int cpu);
+>  #else
+>  static inline void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
+>  {
+> @@ -589,6 +591,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
+>  	do { } while (0)
+>  #endif
+>  static inline void rcu_gp_set_torture_wait(int duration) { }
+> +static inline void rcu_set_torture_ovf_lag(unsigned long lag) { }
+> +static inline int rcu_get_gpwrap_count(int cpu) { return 0; }
+
+Very good, you did remember CONFIG_SMP=n.  And yes, I did try it.  ;-)
+
+But shouldn't these be function pointers in rcu_torture_ops?  That way if
+some other flavor of RCU starts doing wrap protection for its grace-period
+sequence numbers, this testing can apply directly to that flavor as well.
+
+Then the pointers can simply be NULL in kernels built with CONFIG_SMP=n.
+
+>  #endif
+>  unsigned long long rcutorture_gather_gp_seqs(void);
+>  void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp, size_t len);
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index 895a27545ae1..79a72e70913e 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -118,6 +118,9 @@ torture_param(int, nreaders, -1, "Number of RCU reader threads");
+>  torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
+>  torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
+>  torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (jiffies), 0=disable");
+> +torture_param(int, ovf_cycle_mins, 30, "Total cycle duration for ovf lag testing (in minutes)");
+> +torture_param(int, ovf_active_mins, 5, "Duration for which ovf lag is active within each cycle (in minutes)");
+> +torture_param(int, ovf_lag_gps, 8, "Value to set for set_torture_ovf_lag during an active testing period.");
+
+Given that "ovf" means just "overflow", would it make sense to get a "gp"
+in there?  Maybe just "gpwrap_..."?
+
+"What is in a name?"  ;-)
+
+I could argue with the defaults, but I run long tests often enough that
+I am not worried about coverage.  As long as we remember to either run
+long tests or specify appropriate rcutorture.ovf_cycle_mins when messing
+with ->gpwrap code.
+
+>  torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disable");
+>  torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
+>  torture_param(int, preempt_duration, 0, "Preemption duration (ms), zero to disable");
+> @@ -2629,6 +2632,7 @@ rcu_torture_stats_print(void)
+>  	int i;
+>  	long pipesummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
+>  	long batchsummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
+> +	long n_gpwraps = 0;
+>  	struct rcu_torture *rtcp;
+>  	static unsigned long rtcv_snap = ULONG_MAX;
+>  	static bool splatted;
+> @@ -2639,6 +2643,7 @@ rcu_torture_stats_print(void)
+>  			pipesummary[i] += READ_ONCE(per_cpu(rcu_torture_count, cpu)[i]);
+>  			batchsummary[i] += READ_ONCE(per_cpu(rcu_torture_batch, cpu)[i]);
+>  		}
+> +		n_gpwraps += rcu_get_gpwrap_count(cpu);
+>  	}
+>  	for (i = RCU_TORTURE_PIPE_LEN; i >= 0; i--) {
+>  		if (pipesummary[i] != 0)
+> @@ -2672,6 +2677,7 @@ rcu_torture_stats_print(void)
+>  	pr_cont("read-exits: %ld ", data_race(n_read_exits)); // Statistic.
+>  	pr_cont("nocb-toggles: %ld:%ld\n",
+
+The "\n" on the above line needs to be deleted.
+
+>  		atomic_long_read(&n_nocb_offload), atomic_long_read(&n_nocb_deoffload));
+> +	pr_cont("gpwraps: %ld\n", n_gpwraps);
+>  
+>  	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
+>  	if (atomic_read(&n_rcu_torture_mberror) ||
+> @@ -3842,6 +3848,58 @@ static int rcu_torture_preempt(void *unused)
+>  
+>  static enum cpuhp_state rcutor_hp;
+>  
+> +static struct hrtimer ovf_lag_timer;
+> +static bool ovf_lag_active;
+
+Same "ovf" naming complaint as before.
+
+> +
+> +/* Timer handler for toggling RCU grace-period sequence overflow test lag value */
+> +static enum hrtimer_restart rcu_torture_ovf_lag_timer(struct hrtimer *timer)
+> +{
+> +	ktime_t next_delay;
+> +
+> +	if (ovf_lag_active) {
+> +		pr_alert("rcu-torture: Disabling ovf lag (value=0)\n");
+> +		rcu_set_torture_ovf_lag(0);
+> +		ovf_lag_active = false;
+> +		next_delay = ktime_set((ovf_cycle_mins - ovf_active_mins) * 60, 0);
+> +	} else {
+> +		pr_alert("rcu-torture: Enabling ovf lag (value=%d)\n", ovf_lag_gps);
+> +		rcu_set_torture_ovf_lag(ovf_lag_gps);
+> +		ovf_lag_active = true;
+> +		next_delay = ktime_set(ovf_active_mins * 60, 0);
+> +	}
+> +
+> +	if (torture_must_stop())
+> +		return HRTIMER_NORESTART;
+> +
+> +	hrtimer_forward_now(timer, next_delay);
+> +	return HRTIMER_RESTART;
+
+OK, this does look to do cycles.
+
+> +}
+> +
+> +static int rcu_torture_ovf_lag_init(void)
+> +{
+> +	if (ovf_cycle_mins <= 0 || ovf_active_mins <= 0) {
+> +		pr_alert("rcu-torture: lag timing parameters must be positive\n");
+> +		return -EINVAL;
+> +	}
+
+Why not refuse to start this portion of the test when testing CONFIG_SMP=n
+or something other than vanilla RCU?  No need to fail the test, just
+print something saying that this testing won't be happening.
+
+> +	hrtimer_init(&ovf_lag_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +	ovf_lag_timer.function = rcu_torture_ovf_lag_timer;
+> +	ovf_lag_active = false;
+> +	hrtimer_start(&ovf_lag_timer,
+> +		      ktime_set((ovf_cycle_mins - ovf_active_mins) * 60, 0), HRTIMER_MODE_REL);
+> +
+> +	return 0;
+> +}
+
+All hrtimers, no kthreads.  Nice!
+
+> +
+> +static void rcu_torture_ovf_lag_cleanup(void)
+> +{
+> +	hrtimer_cancel(&ovf_lag_timer);
+> +
+> +	if (ovf_lag_active) {
+> +		rcu_set_torture_ovf_lag(0);
+> +		ovf_lag_active = false;
+> +	}
+> +}
+
+Did you try the modprobe/rmmod testing to verify that this
+cleans up appropriately?  You could use the drgn tool to check.
+See tools/rcu//rcu-cbs.py for an example drgn script that digs into the
+rcu_data structures.
+
+>  static void
+>  rcu_torture_cleanup(void)
+>  {
+> @@ -4015,6 +4073,8 @@ rcu_torture_cleanup(void)
+>  	torture_cleanup_end();
+>  	if (cur_ops->gp_slow_unregister)
+>  		cur_ops->gp_slow_unregister(NULL);
+> +
+> +	rcu_torture_ovf_lag_cleanup();
+>  }
+>  
+>  static void rcu_torture_leak_cb(struct rcu_head *rhp)
+> @@ -4508,6 +4568,10 @@ rcu_torture_init(void)
+>  	torture_init_end();
+>  	if (cur_ops->gp_slow_register && !WARN_ON_ONCE(!cur_ops->gp_slow_unregister))
+>  		cur_ops->gp_slow_register(&rcu_fwd_cb_nodelay);
+> +
+> +	if (rcu_torture_ovf_lag_init())
+> +		goto unwind;
+> +
+>  	return 0;
+>  
+>  unwind:
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index b77ccc55557b..7b17b578956a 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -80,6 +80,15 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
+>  static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
+>  	.gpwrap = true,
+>  };
+> +
+> +int rcu_get_gpwrap_count(int cpu)
+> +{
+> +	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> +
+> +	return READ_ONCE(rdp->gpwrap_count);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_get_gpwrap_count);
+> +
+>  static struct rcu_state rcu_state = {
+>  	.level = { &rcu_state.node[0] },
+>  	.gp_state = RCU_GP_IDLE,
+> @@ -778,6 +787,25 @@ void rcu_request_urgent_qs_task(struct task_struct *t)
+>  	smp_store_release(per_cpu_ptr(&rcu_data.rcu_urgent_qs, cpu), true);
+>  }
+>  
+> +/**
+> + * rcu_set_torture_ovf_lag - Set RCU GP sequence overflow lag value.
+> + * @lag_gps: Set overflow lag to this many grace period worth of counters
+> + * which is used by rcutorture to quickly force a gpwrap situation.
+> + * @lag_gps = 0 means we reset it back to the boot-time value.
+> + */
+> +static unsigned long seq_ovf_lag = ULONG_MAX / 4;
+> +
+> +void rcu_set_torture_ovf_lag(unsigned long lag_gps)
+> +{
+> +	unsigned long lag_seq_count;
+> +
+> +	lag_seq_count = (lag_gps == 0)
+> +			? ULONG_MAX / 4
+> +			: lag_gps << RCU_SEQ_CTR_SHIFT;
+> +	WRITE_ONCE(seq_ovf_lag, lag_seq_count);
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_set_torture_ovf_lag);
+> +
+>  /*
+>   * When trying to report a quiescent state on behalf of some other CPU,
+>   * it is our responsibility to check for and handle potential overflow
+> @@ -788,9 +816,11 @@ void rcu_request_urgent_qs_task(struct task_struct *t)
+>  static void rcu_gpnum_ovf(struct rcu_node *rnp, struct rcu_data *rdp)
+>  {
+>  	raw_lockdep_assert_held_rcu_node(rnp);
+> -	if (ULONG_CMP_LT(rcu_seq_current(&rdp->gp_seq) + ULONG_MAX / 4,
+> -			 rnp->gp_seq))
+> +	if (ULONG_CMP_LT(rcu_seq_current(&rdp->gp_seq) + seq_ovf_lag,
+> +			 rnp->gp_seq)) {
+>  		WRITE_ONCE(rdp->gpwrap, true);
+> +		WRITE_ONCE(rdp->gpwrap_count, READ_ONCE(rdp->gpwrap_count) + 1);
+> +	}
+>  	if (ULONG_CMP_LT(rdp->rcu_iw_gp_seq + ULONG_MAX / 4, rnp->gp_seq))
+>  		rdp->rcu_iw_gp_seq = rnp->gp_seq + ULONG_MAX / 4;
+>  }
+
+Looks plausible.
+
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index a9a811d9d7a3..63bea388c243 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -183,6 +183,7 @@ struct rcu_data {
+>  	bool		core_needs_qs;	/* Core waits for quiescent state. */
+>  	bool		beenonline;	/* CPU online at least once. */
+>  	bool		gpwrap;		/* Possible ->gp_seq wrap. */
+> +	unsigned int	gpwrap_count;	/* Count of GP sequence wrap. */
+>  	bool		cpu_started;	/* RCU watching this onlining CPU. */
+>  	struct rcu_node *mynode;	/* This CPU's leaf of hierarchy */
+>  	unsigned long grpmask;		/* Mask to apply to leaf qsmask. */
+> -- 
+> 2.43.0
+> 
