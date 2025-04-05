@@ -1,257 +1,322 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2059.outbound.protection.outlook.com [40.107.243.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 332DD22EE5;
-	Sat,  5 Apr 2025 17:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743873778; cv=none; b=U67eoN2TNha1zQG4cIAg4CgH+lja2kVL5yRjTEepglxEoIIksA8iGopTucuwxy+SnE2tLqUbPcy4M7amw39ER30GyEjfyIYifIEU2ExvlISIfnbl18V9lPOOmJ5IbonJj8YQkqt+1M1Mpq/7zswax9uVI0x5HBpPacs6SzpBHmk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743873778; c=relaxed/simple;
-	bh=/HGdFkBDHweEqKtwu/S3Nr9JZY3SsjylPP69MMb0PyI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sz86ZqEzdGxS6XZ83jNGVVVBj0QXwveX+hAKHZ/nWyN77Omvs2DW/KV0Z6DuUfgy2YRGVGk9DX7Ur/0r4NikomuGBgZbT+wIW4fupMiPMrjFEw8/JekFA1cm5m2q+x/fVtn5fZWEMI3X/YWH8IwH6ZbEj85W8Rcq5U//egWq42Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YRq48dN7; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7FB70838;
+	Sat,  5 Apr 2025 17:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743875647; cv=fail; b=ZvJWNei5UAPTtSKo6BxFwEYatUPPJaDWlW7oMd8XPdsktEjPztlAAVGMJIfcVCE6GubLgDBeI/9YJwUByJ+YE2JULqpwhXhVBPMIP3Nx1WCsXEbTycQG/7CAF6SUU3a18xsL+/U0+ejMI9mnmpzGneC6A7mNgif4yEVjfXk/g5Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743875647; c=relaxed/simple;
+	bh=lAG23ohXetldjCzlJ3ZeAoxHKH1cFCyqdB7oj1h34Go=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=e63BVRrxZaAX9l/lzTAcgvnRGFN/nOJHM8szypR0CqPd6/+jwX/jN2ifZTohRx/zGICNiB/E/cwf1+TSvp1CJ0O66d36f7QPThOJ3V25caX7oqYdOIAjvQZnO+5U5HKM1hvhQvqeLaUD77jcETNvDFnZIzk+A8yDq+NLeP1rb+Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=EY78typp; arc=fail smtp.client-ip=40.107.243.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YRq48dN7"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B864C4CEE4;
-	Sat,  5 Apr 2025 17:22:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743873777;
-	bh=/HGdFkBDHweEqKtwu/S3Nr9JZY3SsjylPP69MMb0PyI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=YRq48dN7hmlzLxwibllkQyLQyMDy/hAWllDcO/9qb5V7sd6mIUpEjUYKc+oGjrr5R
-	 a1+bhfAGXA0FFvD8XZEgjIQuu7e68L6JFX6QknPahDRMuTtlbAs73DkHeJx6XqqjxV
-	 hRrDFJ399Yww+sEU7Fi4Yn6Y3/4E2hz00gPL5o12+D+X4u0gGdSYLKO9disWmnimXQ
-	 V0kStMbftlZgAr8UBwMnr3RNYSMRx2DT/XZjeGi4HSalUF09QtaelHd0ETwYmbLZi2
-	 ZZsHtrzppimfX3i+KZxrK9v6KjiC8yXcA0Db24S6D+ghA9L4AYOH5Zwnl54GRrv0xz
-	 83l95Pj/dF+bQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1FEABCE0565; Sat,  5 Apr 2025 10:22:57 -0700 (PDT)
-Date: Sat, 5 Apr 2025 10:22:57 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, rcu <rcu@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="EY78typp"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=EUYg3tEy3C/apLqsyEIM9CKOrM52EMCYP5ZTDJyHLDjGpPUfugAROF2RtMikhoNpXx7oRvv17K0dgxCKb0nKZv2u2b1kYCXffEGNUlpH/t76Jkl6eXxKNBnMJVKiz5P81dii84ZqTlFzqesWjuJaKHalVw6m8QutUJqdHlFLp98mLe06MaegEiJ5//viiYlmr4iw2/AW64YnyZQcimBFnfrM3d7cuZLIwbeJAyMkiKMZnq9cTHSvEDOerYCTkDS+Lzgt1MqkmSIR9IJ88DR6AJ69mpEfYVfkyxLnzReSobtfIDs9pJjVI4H50wmUSVXzkIUEs6FoXqYX2hJCcx6R2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lAG23ohXetldjCzlJ3ZeAoxHKH1cFCyqdB7oj1h34Go=;
+ b=rhcYQTc25A6LYTwj2wecoegm3gdh0RGA5CFVYxRANHH71JjKdSzfn/g4L/dkaHMnkGw1xU1DxA4gOljzwLULfRK52ppn0F2OIaCI6yIXrayXF/PrCZPRReADWKhIn4fn/mTzfQWmNk6e/52FqNtljj8OMFEoDUP250IG6ZEtVYv+73sWtiSm/YlAhKd+fCeuDAO7pDIMySPAO1YkoM+53Pjb5vcSr99B3KN+aEFYAulGH3nBRJ3CfPaFxoLaEV1xYFZNLj7oZll7e7MJMZ/+aVxOMBDBJXqtm4aow0U9V6CX30yClqikedZNNxPrECt+/WY4d8A5rgljuw3aBaEfvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lAG23ohXetldjCzlJ3ZeAoxHKH1cFCyqdB7oj1h34Go=;
+ b=EY78typpuMBzJqCELU/cLLfHZtCzdh6yofdXxkik1NsVr9geNABQ3a+XyJ22T48psYUfVFlXX4Ro4bNyZZCBkSRDN70jTKGK4ZtKR/sXtNoGvbOK8s+z43qrHiJv0FbtNZyZOdn7hZ+W5RID1jhf21EOZwJMW6Ux0wgLLjISOWZgOn6d+LOWKKq22F3xXj1htwdShXKfNV8bR2I0DlWDx0YIGIV4Y8Fji0qh/52FxkMmT9dCKOpZsal7Z+UjrLWM3Y2RDATo5gmhbE/R87guHRZOEeNZIp3SwP/SqHt9Myr4juNMxXjLFfJIH1YDEPy/iyyYEBw9MBy1WFjO0VgMiw==
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by PH7PR12MB6884.namprd12.prod.outlook.com (2603:10b6:510:1ba::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8606.29; Sat, 5 Apr
+ 2025 17:54:01 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%4]) with mapi id 15.20.8583.045; Sat, 5 Apr 2025
+ 17:54:00 +0000
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: "paulmck@kernel.org" <paulmck@kernel.org>
+CC: linux-kernel <linux-kernel@vger.kernel.org>, Frederic Weisbecker
+	<frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Josh
+ Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+	<jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, Davidlohr Bueso
+	<dave@stgolabs.net>, rcu <rcu@vger.kernel.org>
 Subject: Re: rcutorture: Perform more frequent testing of ->gpwrap
-Message-ID: <93682939-6e82-43e7-8681-cc84539d9bc0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Thread-Topic: rcutorture: Perform more frequent testing of ->gpwrap
+Thread-Index: AQHbpiaWc5Oi0OE0HE+CCgJBoShT+bOVUnGAgAAIrhI=
+Date: Sat, 5 Apr 2025 17:54:00 +0000
+Message-ID: <9707440F-315F-4A33-8EEC-DDAC86538264@nvidia.com>
 References: <c9c19caa-68c1-4012-bd82-38a24c9edb60@paulmck-laptop>
  <174385625883.111.5710608020798879272@patchwork.local>
+ <93682939-6e82-43e7-8681-cc84539d9bc0@paulmck-laptop>
+In-Reply-To: <93682939-6e82-43e7-8681-cc84539d9bc0@paulmck-laptop>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR12MB8059:EE_|PH7PR12MB6884:EE_
+x-ms-office365-filtering-correlation-id: 5a4e4c9c-6b29-4f5f-780a-08dd746ad8d0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|7416014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?cjJuK2llUGNrN29rdllqL2FQNWcwbGV3SXpBRmlpSG5SQkoyK0ViTGpIWGdh?=
+ =?utf-8?B?R3YxTnZ4cDlmcElwUXB6ZXJzNFdjV29VVWo3TUlOSmNnUndsOWJXNGNKQXRJ?=
+ =?utf-8?B?cEVBYmEzYVJHTnR5YUtObXRnODFvU0V1dzNuclJVdjkyTXJleHloS3NMbm51?=
+ =?utf-8?B?TTcyVy93ZlhyMzcyTmU2Y2E0Ky9wMW96M0wwYzE0b1VaTWF4SnJENmVCc1pt?=
+ =?utf-8?B?dlJKdEZrcWY0RmREOVRjRHZOZW9nUzVQbnppeVRYaCtEVy9FdHdGMGcwaWtx?=
+ =?utf-8?B?bDNxMjNNY0RKUEpKaVRvQlRVdXBObFRUSmwxUDJ6LzdISFh5MWJzOW95SnZQ?=
+ =?utf-8?B?aS9RQnNSelFMcWdCWDJ3TjVTRnV5YTlGWFFybkxqMUpkUktsTjFLaGNpMWlv?=
+ =?utf-8?B?UjZIbGFiTmgxYjRHM2c0aXI3U0Z6STFFVjB2WHAyeXoyTDFZbFIxcm1DRDEv?=
+ =?utf-8?B?SkpzM2VaQmtIZGVtcFpRUjY5aHNiN21qUW5zZmNLYVFSMUFPaGdGRkd2b0E3?=
+ =?utf-8?B?TklZVWg2TG5IYlI2ZkhpVzNPUnRVb3I2blNqV1ZoU1FXeng5K3hDVnEvV01N?=
+ =?utf-8?B?anFWc09uS3VYZmdIK0Y2SUNpN3hvb2cvMkJnQ0o4bnoxLzZneGZPejE5OGxn?=
+ =?utf-8?B?cUtlN0NRK0t3RlBTMktCQlNVYkhqZ09XQ2Q4ejgzQWl5andUenRQakcwVzRp?=
+ =?utf-8?B?MFkxaHZwMTNZL2c5OTFJOVBjK3NNalI2UkhHczVVY1FZaGd1YW83N1h0NXlH?=
+ =?utf-8?B?eS9PYzRwLzgwb1AxYzJwY1lkZ3RuTWVEL0FERjhVaTRyZlJ5aURQM0xxVENm?=
+ =?utf-8?B?cXVyT0N5SnRsMzN3aGtFZXlkMmZtTmF3cmMyVlNTRTVTd1VjVWNET2huMWJQ?=
+ =?utf-8?B?KzlkYkpRcXhyZjZSbzJycGNxcU1qcVkwSzRGRmNHM2dhN0c2WFZXeUN5SCs1?=
+ =?utf-8?B?b3IwV1pRemNzQThrMTBlckZvWHhiZ01zcm84VU4xZTMxY0lmT1h6YXdkMStS?=
+ =?utf-8?B?Skl2SVpVUTNTcFBnWFZkTzBseXJQYStDMFdyT3J1NE1Va1R2eFcyYzVhVWJI?=
+ =?utf-8?B?cDRuUUcwb1ByalV3QmVwR3RzVzRpelpKR2doZjlIL2NwSS9jVEJ5MzBOSzV4?=
+ =?utf-8?B?V000UmV4WEdhdU01eExSVXYrRmJwYlNPc0szaU0rZ1h4WTA0OVdYK1IzY2Ju?=
+ =?utf-8?B?ZlowL21iWVdZL1gyV0MrL3pmMldqdWlqT1FwUmVJeFA0aDV1RW42ODJpNTlX?=
+ =?utf-8?B?eUNORDlEcTdwdEVqb1VGM29OTXlwNURjU0t0aVFrallQZ2YvOFZ5Wm5IaUZq?=
+ =?utf-8?B?eHhJeFBVZXNWeHk0QlBidzkzUnFyYkxvVmJoL28zNkZzVVI5cVZub2lJZUFt?=
+ =?utf-8?B?c25wdllJeExFYzNENHRicU0yRDM3ZXlma2k4Njg4MkdmUkZWdEg3QlZZcjhT?=
+ =?utf-8?B?T0RYU200N1M1MU5Fc0lEY3orcHJ0SWRZV3VabmVFNkZSdVh0UzFvUDBYZnpn?=
+ =?utf-8?B?M3pRb3IrR05NejhpMW04Nkh5YWFpYXYrMzRDRlZEV05rVElKWjJyeUlCbTB5?=
+ =?utf-8?B?SElPVmZQbHJ5QUdkMnZxN0hmQ2tXVGd6SDIrRG9aRUttNlJqZ0szRUswR1Qr?=
+ =?utf-8?B?WmU5dURoN2RVQjNPQTFEcGJCMTQxR1U4a3BiZ3RWQUYrZVhweGx6TFJjcG9M?=
+ =?utf-8?B?QlpHTzdhZklLTXF5elZ1bmF0eWJhY3lJM1hkOXN3aUxGN1RZelRTSWsvM3hT?=
+ =?utf-8?B?a2dTUU1DcFZrMmFtRlZLOXBnSjZXRkRzNUdFNEc3cUJnTllQNkNpa1hKSkx5?=
+ =?utf-8?B?TXdMemFoWm9aWi9FMjBmY29iZjNGODhyVTJYRHpucm9sZ0N2aTd3Uk5Vemll?=
+ =?utf-8?B?YjRtU056WmJEczlha2pQVFV5WmRISWtOMUxNQ2dWTjk0TFNTT2ZHcUs2RDVJ?=
+ =?utf-8?Q?1rKsWbeRxg9n11959bFDOfMrvrC9DxJx?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?K09KN0x1OTk1bGl4aEFLc3ZmckpsTW0xaDM0eEpCNUZMb2xKVEs2QnJSNGNU?=
+ =?utf-8?B?ZGNOOVg5ZWNWTWhJbnNTSTdLV3ZzMllSaUtkeDAyZ21kSHlVR1RzVmRQcjhN?=
+ =?utf-8?B?VVRiT2JqaUZnd3gwNko2UEdOcDc3Mzd5RkpWN1l1Q0NrK0V6Q2ptdXR5bC9Y?=
+ =?utf-8?B?bDJpd1BQV2svMjhtWllhdnNiZGpaOEpWRm12T0xwWWNOYnhzUWN4cGcwU3ZR?=
+ =?utf-8?B?aHpmVWhKb1J4UXhNMVA1UHd1VXM5TkpGSEZEODVpaFhuYTUwR1FkcnR2U1h3?=
+ =?utf-8?B?dnBmeTlzR1NnV3M5S1R6T3p6YXF5L1RZOUJZdXBLNDJSV3IyRWdvMXozMlh3?=
+ =?utf-8?B?Yk55TEdja0lHNHMyUmNZYWxpc3RzUmpCMEJlL0Nua0pFaWdzVXhFWE9yUE9H?=
+ =?utf-8?B?RktEaVNENEhtQzVXT2VzVXpqSTZ4dGN0UHYzK1NSZkt0QnRua254TzZ2OXFp?=
+ =?utf-8?B?OUtHNFhqb2JYek91QXkzZlI3K0kxYlFjclBDYXVkNE5WRXg5azdhZDY4UXdR?=
+ =?utf-8?B?NjJGTUtOU3ViR1d6eE9YWUVnN0M4enFBTWpTWGViU3JvRGpJRlZVeVBTajZq?=
+ =?utf-8?B?WW5GWHNOODVKTVdscjhzK2hWMXZieXhoaHBYenk4VHVveXM2Zi9qaDZGb1FQ?=
+ =?utf-8?B?TDB2MDlyOFVIL21jSWVhd3l0RDJoY3ljQ1BPVUNzTDBXb2gxL1dodTlMV1d1?=
+ =?utf-8?B?OEpOWEFONXphUVlIbDQ0NURDWTNwS3FNYnBnU01oTWEzcHRMTThBUllrTHU2?=
+ =?utf-8?B?RmFVZVIrYUowYVJQckd3QjJMazVHTVhCZFA0ZWhwZ28rNFRLMHM4blBJb2do?=
+ =?utf-8?B?Wll0NmNpdytIR3g4emZsc3RlWDRIbGJCb0MrNk9GTzVLZWtCSi9kVEIrUjdD?=
+ =?utf-8?B?U0x2RzhjUXlEQlJ0eVN2R2RvNzIwZWszRGRLQjQxZ1JBUHBydFgwdFBrZGpq?=
+ =?utf-8?B?RjFnRWY2YnZEck4ySHZBd0RLcExNbDJyWTljbG8ydzNBbHpsN2J3YTFIVVBx?=
+ =?utf-8?B?Tm1qam9JSCtFZnp2eW1TNEV1TnVvTWVpUGdqRXYwd1ExLytVZG8vRHIwQjh0?=
+ =?utf-8?B?NWdqYzlOL29qRlNWQ0Z5YnNITmFFY3RoZFpiR3lPWGxRL05CVG83Mi9CT2Nm?=
+ =?utf-8?B?bkFaVHVSM3dBbmhGd1R1T01PVGdWbCtpRWtlaVdHQ3k1bzNxalhsUWhxS2o1?=
+ =?utf-8?B?VUhTM3M1R1FHMFZJRGJVKzR5K2dERVhEL2N1QlFWY2Q5NzJqWExQc3J0VGZS?=
+ =?utf-8?B?T3JLZTEvSTFzckU0dEJIZXhxZDBjM0YxMkc5MzdmMlZ5NTdFVk5rSldpRDRR?=
+ =?utf-8?B?U1FyUU5SQnJlbTYwMFBreDk2WitaTld2cEZ6M2lHSWpybnZERHBiTVJ5R04v?=
+ =?utf-8?B?Yk9oMTltVGxQaGtMbnFXWWJ6bGZ0c3F6K2lFL0prR0xpcTBEQ0dRNFhBckhk?=
+ =?utf-8?B?QVdPZ3pIeUpidHhZZ2tSbElvMDl3TCtxV3Y4T0N1R0JQQ2lCd3B1MHlHSjEy?=
+ =?utf-8?B?dDlHNGZOYjQrWnltRmgyS2JKZDM2OXJZa0xZcndtckJYV0xlWXg3eWRobFBI?=
+ =?utf-8?B?M1oydU00M0lQNjdUMHBGODl2eWNQYzlVakdRTnlQd05LZFpSak5NMDJkeVpP?=
+ =?utf-8?B?OUdXWVBzUU56OVVvZndDbVJONzAvUHQyUlNyMFVtYWtIVklWcWFTTzRpL0M3?=
+ =?utf-8?B?cU9taFduVVBXYndpaUJ3WlRnRGtFVmI4RVlDdUExVG9VSzlIcXZZUWFqaEM3?=
+ =?utf-8?B?RnRuL2V2L1M2UWE1dDh0UmtlNThPQmM1QkV4R2JEOUhtR3RHWVJ4cUsyRWFO?=
+ =?utf-8?B?dndzb3FPTGh3Wlh6SXJkbkxVTzhYUWhma0JSVjJUblQzbStzRVdNMUVWT2JB?=
+ =?utf-8?B?TkNXSTJKbG9BQXZlbktUNmpGMnFTOXJBZHhhVGZKMW01N3NoWG1EN0lCMG9G?=
+ =?utf-8?B?SHBwSk41QU95dXB0N1lQQThlNmlPdVJ5K3pscDdDQWZ0UzNXVnIzUHVRWmMr?=
+ =?utf-8?B?RmdIOTd4MCt0MlBUVlNVY2NjRjRFaUxYVmZSTW0yUUdZVUt4VUhMM1Z6aFpv?=
+ =?utf-8?B?ejZFeEh1TDU5bTNqMkpuNUhLK0N6QUdPTStYMmhlNGptZThuWHNHMFh4ajBL?=
+ =?utf-8?Q?eHW7ck7oDibA1/M8sTA8ZVJCN?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <174385625883.111.5710608020798879272@patchwork.local>
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a4e4c9c-6b29-4f5f-780a-08dd746ad8d0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2025 17:54:00.9191
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7k+vJcBUAI5z/fPuuCzffDOzbcihddzAt7j3p2phK09+0PwjXfQbZqbXNYBuUUwzmwW96FDdEXcB+OYDrJrdFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6884
 
-On Sat, Apr 05, 2025 at 12:30:58PM -0000, Joel Fernandes wrote:
-> Hello, Paul,
-> 
-> On Sat, 5 Apr 2025 12:26:12 GMT, "Paul E. McKenney" wrote:
-> > On Sat, Mar 29, 2025 at 07:01:42PM -0400, Joel Fernandes wrote:
-> > > Currently, the ->gpwrap is not tested (at all per my testing) due to the
-> > > requirement of a large delta between a CPU's rdp->gp_seq and its node's
-> > > rnp->gpseq.
-> > > 
-> > > This results in no testing of ->gpwrap being set. This patch by default
-> > > adds 5 minutes of testing with ->gpwrap forced by lowering the delta
-> > > between rdp->gp_seq and rnp->gp_seq to just 8 GPs. All of this is
-> > > configurable, including the active time for the setting and a full
-> > > testing cycle.
-> > > 
-> > > By default, the first 25 minutes of a test will have the _default_
-> > > behavior there is right now (ULONG_MAX / 4) delta. Then for 5 minutes,
-> > > we switch to a smaller delta causing 1-2 wraps in 5 minutes. I believe
-> > > this is reasonable since we at least add a little bit of testing for
-> > > usecases where ->gpwrap is set.
-> > > 
-> > > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-> > 
-> > I ran this as follows:
-> > 
-> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10m --configs "TREE01" --bootargs "rcutorture.ovf_cycle_mins=7" --trust-make
-> > 
-> > Once I actually applied your patch, I did get this:
-> > 
-> > [  601.891042] gpwraps: 13745
-> > 
-> > Which seems to indicate some testing.  ;-)
-> 
-> Thanks a lot for running it. I am wondering if I should check in tree.c (only in
-> testing mode), if the wraps are too many and restrict testing if so. Otherwise,
-> it is hard to come up with a constant that ensures the wraps are under control.
-> On the other hand, since this is only for 5 minutes every 30 minutes, we can leave
-> it as is and avoid the complexity.
-
-I don't (yet) see a problem with lots of wraps.
-
-> > Additional comments inline.
-> > 
-> > 							Thanx, Paul
-> > 
-> > > ---
-> > >  kernel/rcu/rcu.h        |  4 +++
-> > >  kernel/rcu/rcutorture.c | 64 +++++++++++++++++++++++++++++++++++++++++
-> > >  kernel/rcu/tree.c       | 34 ++++++++++++++++++++--
-> > >  kernel/rcu/tree.h       |  1 +
-> > >  4 files changed, 101 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > index eed2951a4962..9a15e9701e02 100644
-> > > --- a/kernel/rcu/rcu.h
-> > > +++ b/kernel/rcu/rcu.h
-> > > @@ -572,6 +572,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
-> > >  			       unsigned long c_old,
-> > >  			       unsigned long c);
-> > >  void rcu_gp_set_torture_wait(int duration);
-> > > +void rcu_set_torture_ovf_lag(unsigned long lag);
-> > > +int rcu_get_gpwrap_count(int cpu);
-> > >  #else
-> > >  static inline void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
-> > >  {
-> > > @@ -589,6 +591,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
-> > >  	do { } while (0)
-> > >  #endif
-> > >  static inline void rcu_gp_set_torture_wait(int duration) { }
-> > > +static inline void rcu_set_torture_ovf_lag(unsigned long lag) { }
-> > > +static inline int rcu_get_gpwrap_count(int cpu) { return 0; }
-> > 
-> > Very good, you did remember CONFIG_SMP=n.  And yes, I did try it.  ;-)
-> > 
-> > But shouldn't these be function pointers in rcu_torture_ops?  That way if
-> > some other flavor of RCU starts doing wrap protection for its grace-period
-> > sequence numbers, this testing can apply directly to that flavor as well.
-> 
-> These are here because 'rdp' is not accessible AFAIK from rcutorture.c.
-> I could add wrappers to these and include them as pointers the a struct as well.
-> But I think these will still stay to access rdp.
-
-Why not just pass in the CPU number and let the pointed-to function find
-the rdp?
-
-> > Then the pointers can simply be NULL in kernels built with CONFIG_SMP=n.
-> > 
-> > >  #endif
-> > >  unsigned long long rcutorture_gather_gp_seqs(void);
-> > >  void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp, size_t len);
-> > > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > > index 895a27545ae1..79a72e70913e 100644
-> > > --- a/kernel/rcu/rcutorture.c
-> > > +++ b/kernel/rcu/rcutorture.c
-> > > @@ -118,6 +118,9 @@ torture_param(int, nreaders, -1, "Number of RCU reader threads");
-> > >  torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
-> > >  torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
-> > >  torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (jiffies), 0=disable");
-> > > +torture_param(int, ovf_cycle_mins, 30, "Total cycle duration for ovf lag testing (in minutes)");
-> > > +torture_param(int, ovf_active_mins, 5, "Duration for which ovf lag is active within each cycle (in minutes)");
-> > > +torture_param(int, ovf_lag_gps, 8, "Value to set for set_torture_ovf_lag during an active testing period.");
-> > 
-> > Given that "ovf" means just "overflow", would it make sense to get a "gp"
-> > in there?  Maybe just "gpwrap_..."?
-> > 
-> > "What is in a name?"  ;-)
-> 
-> Sure, makes sense I will rename.
-
-Thank you!
-
-> > I could argue with the defaults, but I run long tests often enough that
-> > I am not worried about coverage.  As long as we remember to either run
-> > long tests or specify appropriate rcutorture.ovf_cycle_mins when messing
-> > with ->gpwrap code.
-> > 
-> > >  torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disable");
-> > >  torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
-> > >  torture_param(int, preempt_duration, 0, "Preemption duration (ms), zero to disable");
-> > > @@ -2629,6 +2632,7 @@ rcu_torture_stats_print(void)
-> > >  	int i;
-> > >  	long pipesummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
-> > >  	long batchsummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
-> > > +	long n_gpwraps = 0;
-> > >  	struct rcu_torture *rtcp;
-> > >  	static unsigned long rtcv_snap = ULONG_MAX;
-> > >  	static bool splatted;
-> > > @@ -2639,6 +2643,7 @@ rcu_torture_stats_print(void)
-> > >  			pipesummary[i] += READ_ONCE(per_cpu(rcu_torture_count, cpu)[i]);
-> > >  			batchsummary[i] += READ_ONCE(per_cpu(rcu_torture_batch, cpu)[i]);
-> > >  		}
-> > > +		n_gpwraps += rcu_get_gpwrap_count(cpu);
-> > >  	}
-> > >  	for (i = RCU_TORTURE_PIPE_LEN; i >= 0; i--) {
-> > >  		if (pipesummary[i] != 0)
-> > > @@ -2672,6 +2677,7 @@ rcu_torture_stats_print(void)
-> > >  	pr_cont("read-exits: %ld ", data_race(n_read_exits)); // Statistic.
-> > >  	pr_cont("nocb-toggles: %ld:%ld\n",
-> > 
-> > The "\n" on the above line needs to be deleted.
-> 
-> Ok.
-> 
-> > >  		atomic_long_read(&n_nocb_offload), atomic_long_read(&n_nocb_deoffload));
-> > > +	pr_cont("gpwraps: %ld\n", n_gpwraps);
-> > >  
-> > >  	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
-> > >  	if (atomic_read(&n_rcu_torture_mberror) ||
-> > > @@ -3842,6 +3848,58 @@ static int rcu_torture_preempt(void *unused)
-> > >  
-> > >  static enum cpuhp_state rcutor_hp;
-> > >  
-> > > +static struct hrtimer ovf_lag_timer;
-> > > +static bool ovf_lag_active;
-> > 
-> > Same "ovf" naming complaint as before.
-> 
-> Ok.
-> 
-> > > +}
-> > > +
-> > > +static int rcu_torture_ovf_lag_init(void)
-> > > +{
-> > > +	if (ovf_cycle_mins <= 0 || ovf_active_mins <= 0) {
-> > > +		pr_alert("rcu-torture: lag timing parameters must be positive\n");
-> > > +		return -EINVAL;
-> > > +	}
-> > 
-> > Why not refuse to start this portion of the test when testing CONFIG_SMP=n
-> > or something other than vanilla RCU?  No need to fail the test, just
-> > print something saying that this testing won't be happening.
-> 
-> Got it, will do.
-
-Again, thank you!
-
-> > > +static void rcu_torture_ovf_lag_cleanup(void)
-> > > +{
-> > > +	hrtimer_cancel(&ovf_lag_timer);
-> > > +
-> > > +	if (ovf_lag_active) {
-> > > +		rcu_set_torture_ovf_lag(0);
-> > > +		ovf_lag_active = false;
-> > > +	}
-> > > +}
-> > 
-> > Did you try the modprobe/rmmod testing to verify that this
-> > cleans up appropriately?  You could use the drgn tool to check.
-> > See tools/rcu//rcu-cbs.py for an example drgn script that digs into the
-> > rcu_data structures.
-> 
-> Nice, will check!
-> 
-> Will work on this and provide v2.
-
-Looking forward to it!
-
-							Thanx, Paul
+DQoNCj4gT24gQXByIDUsIDIwMjUsIGF0IDE6MjPigK9QTSwgUGF1bCBFLiBNY0tlbm5leSA8cGF1
+bG1ja0BrZXJuZWwub3JnPiB3cm90ZToNCj4gDQo+IO+7v09uIFNhdCwgQXByIDA1LCAyMDI1IGF0
+IDEyOjMwOjU4UE0gLTAwMDAsIEpvZWwgRmVybmFuZGVzIHdyb3RlOg0KPj4gSGVsbG8sIFBhdWws
+DQo+PiANCj4+PiBPbiBTYXQsIDUgQXByIDIwMjUgMTI6MjY6MTIgR01ULCAiUGF1bCBFLiBNY0tl
+bm5leSIgd3JvdGU6DQo+Pj4gT24gU2F0LCBNYXIgMjksIDIwMjUgYXQgMDc6MDE6NDJQTSAtMDQw
+MCwgSm9lbCBGZXJuYW5kZXMgd3JvdGU6DQo+Pj4+IEN1cnJlbnRseSwgdGhlIC0+Z3B3cmFwIGlz
+IG5vdCB0ZXN0ZWQgKGF0IGFsbCBwZXIgbXkgdGVzdGluZykgZHVlIHRvIHRoZQ0KPj4+PiByZXF1
+aXJlbWVudCBvZiBhIGxhcmdlIGRlbHRhIGJldHdlZW4gYSBDUFUncyByZHAtPmdwX3NlcSBhbmQg
+aXRzIG5vZGUncw0KPj4+PiBybnAtPmdwc2VxLg0KPj4+PiANCj4+Pj4gVGhpcyByZXN1bHRzIGlu
+IG5vIHRlc3Rpbmcgb2YgLT5ncHdyYXAgYmVpbmcgc2V0LiBUaGlzIHBhdGNoIGJ5IGRlZmF1bHQN
+Cj4+Pj4gYWRkcyA1IG1pbnV0ZXMgb2YgdGVzdGluZyB3aXRoIC0+Z3B3cmFwIGZvcmNlZCBieSBs
+b3dlcmluZyB0aGUgZGVsdGENCj4+Pj4gYmV0d2VlbiByZHAtPmdwX3NlcSBhbmQgcm5wLT5ncF9z
+ZXEgdG8ganVzdCA4IEdQcy4gQWxsIG9mIHRoaXMgaXMNCj4+Pj4gY29uZmlndXJhYmxlLCBpbmNs
+dWRpbmcgdGhlIGFjdGl2ZSB0aW1lIGZvciB0aGUgc2V0dGluZyBhbmQgYSBmdWxsDQo+Pj4+IHRl
+c3RpbmcgY3ljbGUuDQo+Pj4+IA0KPj4+PiBCeSBkZWZhdWx0LCB0aGUgZmlyc3QgMjUgbWludXRl
+cyBvZiBhIHRlc3Qgd2lsbCBoYXZlIHRoZSBfZGVmYXVsdF8NCj4+Pj4gYmVoYXZpb3IgdGhlcmUg
+aXMgcmlnaHQgbm93IChVTE9OR19NQVggLyA0KSBkZWx0YS4gVGhlbiBmb3IgNSBtaW51dGVzLA0K
+Pj4+PiB3ZSBzd2l0Y2ggdG8gYSBzbWFsbGVyIGRlbHRhIGNhdXNpbmcgMS0yIHdyYXBzIGluIDUg
+bWludXRlcy4gSSBiZWxpZXZlDQo+Pj4+IHRoaXMgaXMgcmVhc29uYWJsZSBzaW5jZSB3ZSBhdCBs
+ZWFzdCBhZGQgYSBsaXR0bGUgYml0IG9mIHRlc3RpbmcgZm9yDQo+Pj4+IHVzZWNhc2VzIHdoZXJl
+IC0+Z3B3cmFwIGlzIHNldC4NCj4+Pj4gDQo+Pj4+IFNpZ25lZC1vZmYtYnk6IEpvZWwgRmVybmFu
+ZGVzIDxqb2VsYWduZWxmQG52aWRpYS5jb20+DQo+Pj4gDQo+Pj4gSSByYW4gdGhpcyBhcyBmb2xs
+b3dzOg0KPj4+IA0KPj4+IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3JjdXRvcnR1cmUvYmluL2t2
+bS5zaCAtLWFsbGNwdXMgLS1kdXJhdGlvbiAxMG0gLS1jb25maWdzICJUUkVFMDEiIC0tYm9vdGFy
+Z3MgInJjdXRvcnR1cmUub3ZmX2N5Y2xlX21pbnM9NyIgLS10cnVzdC1tYWtlDQo+Pj4gDQo+Pj4g
+T25jZSBJIGFjdHVhbGx5IGFwcGxpZWQgeW91ciBwYXRjaCwgSSBkaWQgZ2V0IHRoaXM6DQo+Pj4g
+DQo+Pj4gWyAgNjAxLjg5MTA0Ml0gZ3B3cmFwczogMTM3NDUNCj4+PiANCj4+PiBXaGljaCBzZWVt
+cyB0byBpbmRpY2F0ZSBzb21lIHRlc3RpbmcuICA7LSkNCj4+IA0KPj4gVGhhbmtzIGEgbG90IGZv
+ciBydW5uaW5nIGl0LiBJIGFtIHdvbmRlcmluZyBpZiBJIHNob3VsZCBjaGVjayBpbiB0cmVlLmMg
+KG9ubHkgaW4NCj4+IHRlc3RpbmcgbW9kZSksIGlmIHRoZSB3cmFwcyBhcmUgdG9vIG1hbnkgYW5k
+IHJlc3RyaWN0IHRlc3RpbmcgaWYgc28uIE90aGVyd2lzZSwNCj4+IGl0IGlzIGhhcmQgdG8gY29t
+ZSB1cCB3aXRoIGEgY29uc3RhbnQgdGhhdCBlbnN1cmVzIHRoZSB3cmFwcyBhcmUgdW5kZXIgY29u
+dHJvbC4NCj4+IE9uIHRoZSBvdGhlciBoYW5kLCBzaW5jZSB0aGlzIGlzIG9ubHkgZm9yIDUgbWlu
+dXRlcyBldmVyeSAzMCBtaW51dGVzLCB3ZSBjYW4gbGVhdmUNCj4+IGl0IGFzIGlzIGFuZCBhdm9p
+ZCB0aGUgY29tcGxleGl0eS4NCj4gDQo+IEkgZG9uJ3QgKHlldCkgc2VlIGEgcHJvYmxlbSB3aXRo
+IGxvdHMgb2Ygd3JhcHMuDQo+IA0KPj4+IEFkZGl0aW9uYWwgY29tbWVudHMgaW5saW5lLg0KPj4+
+IA0KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRoYW54LCBQYXVsDQo+Pj4gDQo+Pj4+
+IC0tLQ0KPj4+PiBrZXJuZWwvcmN1L3JjdS5oICAgICAgICB8ICA0ICsrKw0KPj4+PiBrZXJuZWwv
+cmN1L3JjdXRvcnR1cmUuYyB8IDY0ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrDQo+Pj4+IGtlcm5lbC9yY3UvdHJlZS5jICAgICAgIHwgMzQgKysrKysrKysrKysrKysr
+KysrKystLQ0KPj4+PiBrZXJuZWwvcmN1L3RyZWUuaCAgICAgICB8ICAxICsNCj4+Pj4gNCBmaWxl
+cyBjaGFuZ2VkLCAxMDEgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4+Pj4gDQo+Pj4+
+IGRpZmYgLS1naXQgYS9rZXJuZWwvcmN1L3JjdS5oIGIva2VybmVsL3JjdS9yY3UuaA0KPj4+PiBp
+bmRleCBlZWQyOTUxYTQ5NjIuLjlhMTVlOTcwMWUwMiAxMDA2NDQNCj4+Pj4gLS0tIGEva2VybmVs
+L3JjdS9yY3UuaA0KPj4+PiArKysgYi9rZXJuZWwvcmN1L3JjdS5oDQo+Pj4+IEBAIC01NzIsNiAr
+NTcyLDggQEAgdm9pZCBkb190cmFjZV9yY3VfdG9ydHVyZV9yZWFkKGNvbnN0IGNoYXIgKnJjdXRv
+cnR1cmVuYW1lLA0KPj4+PiAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIGNfb2xkLA0K
+Pj4+PiAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIGMpOw0KPj4+PiB2b2lkIHJjdV9n
+cF9zZXRfdG9ydHVyZV93YWl0KGludCBkdXJhdGlvbik7DQo+Pj4+ICt2b2lkIHJjdV9zZXRfdG9y
+dHVyZV9vdmZfbGFnKHVuc2lnbmVkIGxvbmcgbGFnKTsNCj4+Pj4gK2ludCByY3VfZ2V0X2dwd3Jh
+cF9jb3VudChpbnQgY3B1KTsNCj4+Pj4gI2Vsc2UNCj4+Pj4gc3RhdGljIGlubGluZSB2b2lkIHJj
+dXRvcnR1cmVfZ2V0X2dwX2RhdGEoaW50ICpmbGFncywgdW5zaWduZWQgbG9uZyAqZ3Bfc2VxKQ0K
+Pj4+PiB7DQo+Pj4+IEBAIC01ODksNiArNTkxLDggQEAgdm9pZCBkb190cmFjZV9yY3VfdG9ydHVy
+ZV9yZWFkKGNvbnN0IGNoYXIgKnJjdXRvcnR1cmVuYW1lLA0KPj4+PiAgICBkbyB7IH0gd2hpbGUg
+KDApDQo+Pj4+ICNlbmRpZg0KPj4+PiBzdGF0aWMgaW5saW5lIHZvaWQgcmN1X2dwX3NldF90b3J0
+dXJlX3dhaXQoaW50IGR1cmF0aW9uKSB7IH0NCj4+Pj4gK3N0YXRpYyBpbmxpbmUgdm9pZCByY3Vf
+c2V0X3RvcnR1cmVfb3ZmX2xhZyh1bnNpZ25lZCBsb25nIGxhZykgeyB9DQo+Pj4+ICtzdGF0aWMg
+aW5saW5lIGludCByY3VfZ2V0X2dwd3JhcF9jb3VudChpbnQgY3B1KSB7IHJldHVybiAwOyB9DQo+
+Pj4gDQo+Pj4gVmVyeSBnb29kLCB5b3UgZGlkIHJlbWVtYmVyIENPTkZJR19TTVA9bi4gIEFuZCB5
+ZXMsIEkgZGlkIHRyeSBpdC4gIDstKQ0KPj4+IA0KPj4+IEJ1dCBzaG91bGRuJ3QgdGhlc2UgYmUg
+ZnVuY3Rpb24gcG9pbnRlcnMgaW4gcmN1X3RvcnR1cmVfb3BzPyAgVGhhdCB3YXkgaWYNCj4+PiBz
+b21lIG90aGVyIGZsYXZvciBvZiBSQ1Ugc3RhcnRzIGRvaW5nIHdyYXAgcHJvdGVjdGlvbiBmb3Ig
+aXRzIGdyYWNlLXBlcmlvZA0KPj4+IHNlcXVlbmNlIG51bWJlcnMsIHRoaXMgdGVzdGluZyBjYW4g
+YXBwbHkgZGlyZWN0bHkgdG8gdGhhdCBmbGF2b3IgYXMgd2VsbC4NCj4+IA0KPj4gVGhlc2UgYXJl
+IGhlcmUgYmVjYXVzZSAncmRwJyBpcyBub3QgYWNjZXNzaWJsZSBBRkFJSyBmcm9tIHJjdXRvcnR1
+cmUuYy4NCj4+IEkgY291bGQgYWRkIHdyYXBwZXJzIHRvIHRoZXNlIGFuZCBpbmNsdWRlIHRoZW0g
+YXMgcG9pbnRlcnMgdGhlIGEgc3RydWN0IGFzIHdlbGwuDQo+PiBCdXQgSSB0aGluayB0aGVzZSB3
+aWxsIHN0aWxsIHN0YXkgdG8gYWNjZXNzIHJkcC4NCj4gDQo+IFdoeSBub3QganVzdCBwYXNzIGlu
+IHRoZSBDUFUgbnVtYmVyIGFuZCBsZXQgdGhlIHBvaW50ZWQtdG8gZnVuY3Rpb24gZmluZA0KPiB0
+aGUgcmRwPw0KDQpZb3UgbWVhbiBwcm92aWRlIGEgaGVscGVyIGZyb20gdHJlZS5jIHRoYXQgaXMg
+Y2FsbGVkIGluIHJjdXRvcnR1cmUsIHRoZW4gaGVscGVyIGZ1bmN0aW9uIHJldHVybmluZyBhbiBy
+ZHA/DQoNCklmIHNvLCBJIGNhbiBjZXJ0YWlubHkgZG8gdGhhdCwgd2FzIGp1c3Qgbm90IHN1cmUg
+aWYgdGhpcyBzb3J0IG9mIHRoaW5nIHdhcyBvayBzaW5jZSBub3RoaW5nIGVsc2UgaW4gcmN1dG9y
+dHVyZSBhY2Nlc3NlcyByZHAgZGlyZWN0bHkgOikNCg0KVGhhbmtzLA0KDQotIEpvZWwNCg0KDQo+
+IA0KPj4+IFRoZW4gdGhlIHBvaW50ZXJzIGNhbiBzaW1wbHkgYmUgTlVMTCBpbiBrZXJuZWxzIGJ1
+aWx0IHdpdGggQ09ORklHX1NNUD1uLg0KPj4+IA0KPj4+PiAjZW5kaWYNCj4+Pj4gdW5zaWduZWQg
+bG9uZyBsb25nIHJjdXRvcnR1cmVfZ2F0aGVyX2dwX3NlcXModm9pZCk7DQo+Pj4+IHZvaWQgcmN1
+dG9ydHVyZV9mb3JtYXRfZ3Bfc2Vxcyh1bnNpZ25lZCBsb25nIGxvbmcgc2VxcywgY2hhciAqY3As
+IHNpemVfdCBsZW4pOw0KPj4+PiBkaWZmIC0tZ2l0IGEva2VybmVsL3JjdS9yY3V0b3J0dXJlLmMg
+Yi9rZXJuZWwvcmN1L3JjdXRvcnR1cmUuYw0KPj4+PiBpbmRleCA4OTVhMjc1NDVhZTEuLjc5YTcy
+ZTcwOTEzZSAxMDA2NDQNCj4+Pj4gLS0tIGEva2VybmVsL3JjdS9yY3V0b3J0dXJlLmMNCj4+Pj4g
+KysrIGIva2VybmVsL3JjdS9yY3V0b3J0dXJlLmMNCj4+Pj4gQEAgLTExOCw2ICsxMTgsOSBAQCB0
+b3J0dXJlX3BhcmFtKGludCwgbnJlYWRlcnMsIC0xLCAiTnVtYmVyIG9mIFJDVSByZWFkZXIgdGhy
+ZWFkcyIpOw0KPj4+PiB0b3J0dXJlX3BhcmFtKGludCwgb2JqZWN0X2RlYnVnLCAwLCAiRW5hYmxl
+IGRlYnVnLW9iamVjdCBkb3VibGUgY2FsbF9yY3UoKSB0ZXN0aW5nIik7DQo+Pj4+IHRvcnR1cmVf
+cGFyYW0oaW50LCBvbm9mZl9ob2xkb2ZmLCAwLCAiVGltZSBhZnRlciBib290IGJlZm9yZSBDUFUg
+aG90cGx1Z3MgKHMpIik7DQo+Pj4+IHRvcnR1cmVfcGFyYW0oaW50LCBvbm9mZl9pbnRlcnZhbCwg
+MCwgIlRpbWUgYmV0d2VlbiBDUFUgaG90cGx1Z3MgKGppZmZpZXMpLCAwPWRpc2FibGUiKTsNCj4+
+Pj4gK3RvcnR1cmVfcGFyYW0oaW50LCBvdmZfY3ljbGVfbWlucywgMzAsICJUb3RhbCBjeWNsZSBk
+dXJhdGlvbiBmb3Igb3ZmIGxhZyB0ZXN0aW5nIChpbiBtaW51dGVzKSIpOw0KPj4+PiArdG9ydHVy
+ZV9wYXJhbShpbnQsIG92Zl9hY3RpdmVfbWlucywgNSwgIkR1cmF0aW9uIGZvciB3aGljaCBvdmYg
+bGFnIGlzIGFjdGl2ZSB3aXRoaW4gZWFjaCBjeWNsZSAoaW4gbWludXRlcykiKTsNCj4+Pj4gK3Rv
+cnR1cmVfcGFyYW0oaW50LCBvdmZfbGFnX2dwcywgOCwgIlZhbHVlIHRvIHNldCBmb3Igc2V0X3Rv
+cnR1cmVfb3ZmX2xhZyBkdXJpbmcgYW4gYWN0aXZlIHRlc3RpbmcgcGVyaW9kLiIpOw0KPj4+IA0K
+Pj4+IEdpdmVuIHRoYXQgIm92ZiIgbWVhbnMganVzdCAib3ZlcmZsb3ciLCB3b3VsZCBpdCBtYWtl
+IHNlbnNlIHRvIGdldCBhICJncCINCj4+PiBpbiB0aGVyZT8gIE1heWJlIGp1c3QgImdwd3JhcF8u
+Li4iPw0KPj4+IA0KPj4+ICJXaGF0IGlzIGluIGEgbmFtZT8iICA7LSkNCj4+IA0KPj4gU3VyZSwg
+bWFrZXMgc2Vuc2UgSSB3aWxsIHJlbmFtZS4NCj4gDQo+IFRoYW5rIHlvdSENCj4gDQo+Pj4gSSBj
+b3VsZCBhcmd1ZSB3aXRoIHRoZSBkZWZhdWx0cywgYnV0IEkgcnVuIGxvbmcgdGVzdHMgb2Z0ZW4g
+ZW5vdWdoIHRoYXQNCj4+PiBJIGFtIG5vdCB3b3JyaWVkIGFib3V0IGNvdmVyYWdlLiAgQXMgbG9u
+ZyBhcyB3ZSByZW1lbWJlciB0byBlaXRoZXIgcnVuDQo+Pj4gbG9uZyB0ZXN0cyBvciBzcGVjaWZ5
+IGFwcHJvcHJpYXRlIHJjdXRvcnR1cmUub3ZmX2N5Y2xlX21pbnMgd2hlbiBtZXNzaW5nDQo+Pj4g
+d2l0aCAtPmdwd3JhcCBjb2RlLg0KPj4+IA0KPj4+PiB0b3J0dXJlX3BhcmFtKGludCwgbm9jYnNf
+bnRocmVhZHMsIDAsICJOdW1iZXIgb2YgTk9DQiB0b2dnbGUgdGhyZWFkcywgMCB0byBkaXNhYmxl
+Iik7DQo+Pj4+IHRvcnR1cmVfcGFyYW0oaW50LCBub2Nic190b2dnbGUsIDEwMDAsICJUaW1lIGJl
+dHdlZW4gdG9nZ2xpbmcgbm9jYiBzdGF0ZSAobXMpIik7DQo+Pj4+IHRvcnR1cmVfcGFyYW0oaW50
+LCBwcmVlbXB0X2R1cmF0aW9uLCAwLCAiUHJlZW1wdGlvbiBkdXJhdGlvbiAobXMpLCB6ZXJvIHRv
+IGRpc2FibGUiKTsNCj4+Pj4gQEAgLTI2MjksNiArMjYzMiw3IEBAIHJjdV90b3J0dXJlX3N0YXRz
+X3ByaW50KHZvaWQpDQo+Pj4+ICAgIGludCBpOw0KPj4+PiAgICBsb25nIHBpcGVzdW1tYXJ5W1JD
+VV9UT1JUVVJFX1BJUEVfTEVOICsgMV0gPSB7IDAgfTsNCj4+Pj4gICAgbG9uZyBiYXRjaHN1bW1h
+cnlbUkNVX1RPUlRVUkVfUElQRV9MRU4gKyAxXSA9IHsgMCB9Ow0KPj4+PiArICAgIGxvbmcgbl9n
+cHdyYXBzID0gMDsNCj4+Pj4gICAgc3RydWN0IHJjdV90b3J0dXJlICpydGNwOw0KPj4+PiAgICBz
+dGF0aWMgdW5zaWduZWQgbG9uZyBydGN2X3NuYXAgPSBVTE9OR19NQVg7DQo+Pj4+ICAgIHN0YXRp
+YyBib29sIHNwbGF0dGVkOw0KPj4+PiBAQCAtMjYzOSw2ICsyNjQzLDcgQEAgcmN1X3RvcnR1cmVf
+c3RhdHNfcHJpbnQodm9pZCkNCj4+Pj4gICAgICAgICAgICBwaXBlc3VtbWFyeVtpXSArPSBSRUFE
+X09OQ0UocGVyX2NwdShyY3VfdG9ydHVyZV9jb3VudCwgY3B1KVtpXSk7DQo+Pj4+ICAgICAgICAg
+ICAgYmF0Y2hzdW1tYXJ5W2ldICs9IFJFQURfT05DRShwZXJfY3B1KHJjdV90b3J0dXJlX2JhdGNo
+LCBjcHUpW2ldKTsNCj4+Pj4gICAgICAgIH0NCj4+Pj4gKyAgICAgICAgbl9ncHdyYXBzICs9IHJj
+dV9nZXRfZ3B3cmFwX2NvdW50KGNwdSk7DQo+Pj4+ICAgIH0NCj4+Pj4gICAgZm9yIChpID0gUkNV
+X1RPUlRVUkVfUElQRV9MRU47IGkgPj0gMDsgaS0tKSB7DQo+Pj4+ICAgICAgICBpZiAocGlwZXN1
+bW1hcnlbaV0gIT0gMCkNCj4+Pj4gQEAgLTI2NzIsNiArMjY3Nyw3IEBAIHJjdV90b3J0dXJlX3N0
+YXRzX3ByaW50KHZvaWQpDQo+Pj4+ICAgIHByX2NvbnQoInJlYWQtZXhpdHM6ICVsZCAiLCBkYXRh
+X3JhY2Uobl9yZWFkX2V4aXRzKSk7IC8vIFN0YXRpc3RpYy4NCj4+Pj4gICAgcHJfY29udCgibm9j
+Yi10b2dnbGVzOiAlbGQ6JWxkXG4iLA0KPj4+IA0KPj4+IFRoZSAiXG4iIG9uIHRoZSBhYm92ZSBs
+aW5lIG5lZWRzIHRvIGJlIGRlbGV0ZWQuDQo+PiANCj4+IE9rLg0KPj4gDQo+Pj4+ICAgICAgICBh
+dG9taWNfbG9uZ19yZWFkKCZuX25vY2Jfb2ZmbG9hZCksIGF0b21pY19sb25nX3JlYWQoJm5fbm9j
+Yl9kZW9mZmxvYWQpKTsNCj4+Pj4gKyAgICBwcl9jb250KCJncHdyYXBzOiAlbGRcbiIsIG5fZ3B3
+cmFwcyk7DQo+Pj4+IA0KPj4+PiAgICBwcl9hbGVydCgiJXMlcyAiLCB0b3J0dXJlX3R5cGUsIFRP
+UlRVUkVfRkxBRyk7DQo+Pj4+ICAgIGlmIChhdG9taWNfcmVhZCgmbl9yY3VfdG9ydHVyZV9tYmVy
+cm9yKSB8fA0KPj4+PiBAQCAtMzg0Miw2ICszODQ4LDU4IEBAIHN0YXRpYyBpbnQgcmN1X3RvcnR1
+cmVfcHJlZW1wdCh2b2lkICp1bnVzZWQpDQo+Pj4+IA0KPj4+PiBzdGF0aWMgZW51bSBjcHVocF9z
+dGF0ZSByY3V0b3JfaHA7DQo+Pj4+IA0KPj4+PiArc3RhdGljIHN0cnVjdCBocnRpbWVyIG92Zl9s
+YWdfdGltZXI7DQo+Pj4+ICtzdGF0aWMgYm9vbCBvdmZfbGFnX2FjdGl2ZTsNCj4+PiANCj4+PiBT
+YW1lICJvdmYiIG5hbWluZyBjb21wbGFpbnQgYXMgYmVmb3JlLg0KPj4gDQo+PiBPay4NCj4+IA0K
+Pj4+PiArfQ0KPj4+PiArDQo+Pj4+ICtzdGF0aWMgaW50IHJjdV90b3J0dXJlX292Zl9sYWdfaW5p
+dCh2b2lkKQ0KPj4+PiArew0KPj4+PiArICAgIGlmIChvdmZfY3ljbGVfbWlucyA8PSAwIHx8IG92
+Zl9hY3RpdmVfbWlucyA8PSAwKSB7DQo+Pj4+ICsgICAgICAgIHByX2FsZXJ0KCJyY3UtdG9ydHVy
+ZTogbGFnIHRpbWluZyBwYXJhbWV0ZXJzIG11c3QgYmUgcG9zaXRpdmVcbiIpOw0KPj4+PiArICAg
+ICAgICByZXR1cm4gLUVJTlZBTDsNCj4+Pj4gKyAgICB9DQo+Pj4gDQo+Pj4gV2h5IG5vdCByZWZ1
+c2UgdG8gc3RhcnQgdGhpcyBwb3J0aW9uIG9mIHRoZSB0ZXN0IHdoZW4gdGVzdGluZyBDT05GSUdf
+U01QPW4NCj4+PiBvciBzb21ldGhpbmcgb3RoZXIgdGhhbiB2YW5pbGxhIFJDVT8gIE5vIG5lZWQg
+dG8gZmFpbCB0aGUgdGVzdCwganVzdA0KPj4+IHByaW50IHNvbWV0aGluZyBzYXlpbmcgdGhhdCB0
+aGlzIHRlc3Rpbmcgd29uJ3QgYmUgaGFwcGVuaW5nLg0KPj4gDQo+PiBHb3QgaXQsIHdpbGwgZG8u
+DQo+IA0KPiBBZ2FpbiwgdGhhbmsgeW91IQ0KPiANCj4+Pj4gK3N0YXRpYyB2b2lkIHJjdV90b3J0
+dXJlX292Zl9sYWdfY2xlYW51cCh2b2lkKQ0KPj4+PiArew0KPj4+PiArICAgIGhydGltZXJfY2Fu
+Y2VsKCZvdmZfbGFnX3RpbWVyKTsNCj4+Pj4gKw0KPj4+PiArICAgIGlmIChvdmZfbGFnX2FjdGl2
+ZSkgew0KPj4+PiArICAgICAgICByY3Vfc2V0X3RvcnR1cmVfb3ZmX2xhZygwKTsNCj4+Pj4gKyAg
+ICAgICAgb3ZmX2xhZ19hY3RpdmUgPSBmYWxzZTsNCj4+Pj4gKyAgICB9DQo+Pj4+ICt9DQo+Pj4g
+DQo+Pj4gRGlkIHlvdSB0cnkgdGhlIG1vZHByb2JlL3JtbW9kIHRlc3RpbmcgdG8gdmVyaWZ5IHRo
+YXQgdGhpcw0KPj4+IGNsZWFucyB1cCBhcHByb3ByaWF0ZWx5PyAgWW91IGNvdWxkIHVzZSB0aGUg
+ZHJnbiB0b29sIHRvIGNoZWNrLg0KPj4+IFNlZSB0b29scy9yY3UvL3JjdS1jYnMucHkgZm9yIGFu
+IGV4YW1wbGUgZHJnbiBzY3JpcHQgdGhhdCBkaWdzIGludG8gdGhlDQo+Pj4gcmN1X2RhdGEgc3Ry
+dWN0dXJlcy4NCj4+IA0KPj4gTmljZSwgd2lsbCBjaGVjayENCj4+IA0KPj4gV2lsbCB3b3JrIG9u
+IHRoaXMgYW5kIHByb3ZpZGUgdjIuDQo+IA0KPiBMb29raW5nIGZvcndhcmQgdG8gaXQhDQo+IA0K
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICBUaGFueCwgUGF1bA0K
