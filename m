@@ -1,208 +1,287 @@
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2089.outbound.protection.outlook.com [40.107.220.89])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209C270838;
-	Sat,  5 Apr 2025 17:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.89
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743875800; cv=fail; b=mFxI29XGKLJn70Gv+1g+kKwW8F5R5fb9SaY2xTuNGORO+sT4tAvX9cLTLFiL+UISQiOtnEEQkFaWkyv9p0WUfx1Cil+evTGLORTWqPobZTULDQf/8392Zzt9qERX0GsMzJOIhD+he5IjjsW84vi9c6nf1XiOwJi8MT/VmbhVjR8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743875800; c=relaxed/simple;
-	bh=ATsL2yjLK0UZuOPQ/hraCn6evtAVCFhbRMBrGJ2Y1Lw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=sgxKtJhHDO3uTFOQB2XwfTWEFw4hTvfgMQjnRbxCg5oE68cWqg9gl+nhRbx2XdTKC3wN7S6dXlRqcP10wtoYrPDweutjYBjcPGS40Cp0wMlZsKORncHbchrQXF52EpOa8Wyu5zbQobrWvNcNZ1o66Y0QaCiBm2N42XbFq/EU4GM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=GLBDXfn7; arc=fail smtp.client-ip=40.107.220.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C425145FE8;
+	Sat,  5 Apr 2025 19:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743880198; cv=none; b=lQ/h6xCGlrvDwU7sRsbV4c7q2LnuAh2zd8BtCA2yFhikKlh6rMRxkFCOvj1lXeelq4tIO9Vg0Dk43+r9O543TMq1sQLiPBzOYMMzZAVSD14rsjzBLFw4/lFTqMkuMpK8NBfhFCRkKVTAcNGy5RtAbQwxsuaxg9//UjJ4XtR+pTA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743880198; c=relaxed/simple;
+	bh=OauDZOuslXTCYnl130mst/mTqaCXUcMHb7UAgFIjc3c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OTLDWho5Y9NKcerh2/2iUuQtcbu4Xje9fg6aiv2swR2n5mAiiCoRlza6lrv91PNlfLLB2bl3Mm8uA/pXlJh2TE2YzXtWen45PpwbKGza7kzf6mSISxO2pEZ4Mk7U6Ica+hIMWdwtvldrR3wOXjboCdljT7Wf9GET4Bl0fgK30Ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JInR5ldy; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="GLBDXfn7"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=osaCkEyUV0yuU5hiTRBEj7qgbzqBbXK6oBmD0Uqms1fqTgK/2Gtd+KCpE3YARlW4OtyLSLYrES/o656B8LyTa4+ygZRufjG+1kTjJ2faTAiyoo+s4QtP7eKfYcG+b/ap1AGIt/RbXzBL7e1gBmZJsO7YZsnJuAYA4BBG3otFCSilCZqrLgo9GjI9sXo5lCDH61IDYRE6gf5iuHmxVCJwh0MV0GYAyqLkd7DVTM/fVHU096B+pYEZp3OHndjqq0ppyPGI1cQqXb1KneGuLkGuz73R4exmics8FSUzLKSbxaDsgDfWZP0SsACgEmlhX0gDBOFSMpjxTIcYUQnB648FpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ATsL2yjLK0UZuOPQ/hraCn6evtAVCFhbRMBrGJ2Y1Lw=;
- b=W+XI74zHc63Yqsn5MAKsQRAJXwG9uH8Si17GtQrgmTtTpBoD4kEcrWtf2ZQS99UOsUil+SIvjXuHhOsjFRnb76m9CMFw8scmmjD3OJf9U7bo9fJDPiD/eNTUPWZSjHXcwOPsOCP0ioUouRIW5/PCCncGjk8mwxFHCLidXgBAEb4DMtFBVTRD3KLrH0b86+SGnlWD3fkYY99zdpj+rJjvsarIhas7aYnRTucCYwcg9d1XW46/+o7/siZhNzYsV5N32cFwX4lOYUFQRVtt8t9LjPI2pp2mIAI50+SoI5FULLqX4RT34Bthyb1f8c2gdjYplBJTxoHfjUniv/crqX7Mww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ATsL2yjLK0UZuOPQ/hraCn6evtAVCFhbRMBrGJ2Y1Lw=;
- b=GLBDXfn7yRNTjTBCtxPKXsXcXMLp9Xz/by77EGapgiTi3moMxX1x4u19MKL842qvn80NAla/Tpk24BUkgk6f9bDgC6LL9+06TbCqzkn+ERcO21hILZwx+zEc9VnFesvcOK5vBxCuDzeQVq93RBHOvL2Ym3ojMRiobPrZ1frdYOVYFeDHKdGcGZ/z3IXA6I7tUJOvjTOARcqlo/z8D/nyFTL/Bvx400EQCztaBIdjHOL3+F8MaQyjobDycDwd1AsrfV0gdwHKZPfwj371fXnAikvburL6c37FtZ3vsNCEHXRc+oYBj7XhwYhixEEj6+qk9OOoMFe+KylMH0mE4rku8g==
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by LV2PR12MB5989.namprd12.prod.outlook.com (2603:10b6:408:171::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8583.44; Sat, 5 Apr
- 2025 17:56:35 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%4]) with mapi id 15.20.8583.045; Sat, 5 Apr 2025
- 17:56:35 +0000
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: "paulmck@kernel.org" <paulmck@kernel.org>
-CC: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, rcu
-	<rcu@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-	kernel-team <kernel-team@meta.com>, rostedt <rostedt@goodmis.org>
-Subject: Re: [v2,04/12] rcutorture: Make torture.sh --do-rt use
- CONFIG_PREEMPT_RT
-Thread-Topic: [v2,04/12] rcutorture: Make torture.sh --do-rt use
- CONFIG_PREEMPT_RT
-Thread-Index: AQHbo+r5Ab6wNBzOp0SQ05obQZv0mLOQv/AAgAQsUYCAAGcoAIAADOUQ
-Date: Sat, 5 Apr 2025 17:56:35 +0000
-Message-ID: <82466C54-67A8-4D78-B56F-47496407DD95@nvidia.com>
-References: <5da8ff7a10670359647fc8135668be7c.joelagnelf@nvidia.com>
- <72693320-1863-4e47-941f-0e887f87a855@paulmck-laptop>
- <0dc1bec4-ed35-4852-a15b-781041d26df9@nvidia.com>
- <7cf5ad76-7624-4714-a6d1-3e1dbb9ab7b3@paulmck-laptop>
-In-Reply-To: <7cf5ad76-7624-4714-a6d1-3e1dbb9ab7b3@paulmck-laptop>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR12MB8059:EE_|LV2PR12MB5989:EE_
-x-ms-office365-filtering-correlation-id: 315836fd-ac79-4f53-f177-08dd746b34e7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?RkNkTllNZkpSUXV0aHpNYWFjWnNnN2REQUJtNkUyZDVTeldKRE1EdG0wK2FD?=
- =?utf-8?B?b1RtUlAxakdzSDJvaU5uZWFPUyt4ckdTYXp3RVZXUGFSeVNIcVZJTlY0bXd1?=
- =?utf-8?B?Yk4zekVQUFk0U00xNzY0djh1aW5HbkRmTFF0TG4wR0gyQ00vVDVNeUFvb2J1?=
- =?utf-8?B?NlRlV3o2SGdnSFluN1IzWHRFTVZKVTkwK1B4RFpUMGtRYnJlOVkwTnliNFUz?=
- =?utf-8?B?aDNsMkt2N25kNExoRUFrZ1dBcEU0T1IrcmZ3cVppMnoyMDdWMUdJUS9Fdkl5?=
- =?utf-8?B?SzM4bWYraEFFS1lHWnVveG9jYXBqb0V0Z0dFSWczU1VPcksxN2R2ME9vYTBG?=
- =?utf-8?B?Wk80RWFmUFFtaGdsN0RYbUsxM3VoM1FHV2JnYnYwanluZStPRHhETWNXV3h3?=
- =?utf-8?B?c3VYT0ZEbGNqQnlTN0Znc280S0RxWkNSWERPNS9xUzFTektsUUFkWFNZTS9K?=
- =?utf-8?B?eWR0aFJjOVRudyttYzlJM1FvaWhGclBrZFFEM014NmNQa09UZWZ5WmlUcTdw?=
- =?utf-8?B?ZDlmN0NwZlIrSnc1MDdZcFRxenFES3NKZWFMQndjZUpqQjZHaVhUQzhQbFNB?=
- =?utf-8?B?MjgzbWxLbUdsdWJYRG91ZTl2blN0SDRyZktuNEgwN3BvbWJva1BrNlB4WDdu?=
- =?utf-8?B?NmFXS1dRVS90U255aUZWUGU1c3R4cUdJVVdBNzMvU0owb01EMHhUV3liUG9H?=
- =?utf-8?B?M1Jldk15K0lSeFRvUGtZQ1hicEpZZlhUbjJ0WUhWT0U3L09oMGpRRHl4NXB0?=
- =?utf-8?B?dENnNWVZa3ZudVZJYk4wemM3VHRwL1l6K24rMG0xYjFyRk16dExqSWlZZHFu?=
- =?utf-8?B?SWQyRjFQNXB5NFlKSS8xRHhFN0dzemUydHErVnVqZUlXalJ5UGc2emJFVWUx?=
- =?utf-8?B?TlBYOFg3UzgrcVMyZUhqbWFabDU5YmxKanZaZmc0cStqOGwxN29yQWJ5dzNu?=
- =?utf-8?B?U0xEMmpGd2pmUXdwUTIvYmFLSEdvcStZa3d4WndtSmxZcjdIeHhPaEtJWGFG?=
- =?utf-8?B?ZlVZc3dZYXdXU3B3aHhWYXBDODFFeTRMUnRtcnhBU1N4Tm1ZSmRNZ1JidExE?=
- =?utf-8?B?NkxIQStPQkIvUWI4OGpUZ200NUoyckJlOVZSVE5HK09lOWdLVDNOcmJXRGtj?=
- =?utf-8?B?cmVoZFdWelNkSjdiY0l2WGhQcEswR3daTWJSbG51OEoveTBnUnhhOGlUaUI5?=
- =?utf-8?B?akdkNStDNFArdGdoc3A3aTdkRmlqU1dIK25zSThlTGErMGRpV2hzWWlnNmty?=
- =?utf-8?B?dTV5clZFK0owaWdRR2xvWHRsTGlYd242amgxcmNsU3pIK2dmRkxPZkdBeTl4?=
- =?utf-8?B?c2lHY05tdDRPMTNwdW50S1dDZkRsUjBCTjhmQ3ZnQ1BQMklRcXVDdDJjY2pE?=
- =?utf-8?B?a25zZXoxR0Q3UkhFVDhKSGZmbHRLbTZMWG93aUZsaCtSWWFRTWo0SUpXZTZq?=
- =?utf-8?B?NmVLanlYcnByd2ZDeTFLTDcxM2hKOFBaZnp2UG94VHpwcEw0dkpQbDZQalpC?=
- =?utf-8?B?K3pkeWwyZ2txaFZQeDhGNGZBcGphcm5XNU9TcmhtSDZKU3RLOHFOSE1rVUk0?=
- =?utf-8?B?cTUxR1dRWXVQK2YwZGNLWnNlZzJZT0owRnA0SzlIZVdBSVRJNXF5S29xcklo?=
- =?utf-8?B?Tm1oR3JSUnI1TzU3ZnJHZWVWYVYxdER3RUF4a3d6dGFHV2tZSDVOM3RJaU8r?=
- =?utf-8?B?S2x0MDdBT09sMlQ4bWtNVnI3NExJMXN5TDR2RGpjVS9GcFJyb2UrbnNwYkhE?=
- =?utf-8?B?Y2FKTjliNEk0c2FZNStKaDluWTl6TGtMNVN4c1QrNXlCSlJTL2l3aURiUHcz?=
- =?utf-8?B?NFNyazdrVHR4R092WGc4R3pBKzhHSHorSlhzaTAwT1h3cUVnL25ydmthakNk?=
- =?utf-8?B?NWV5QmdjWkdMUG5FNWdjWXlra2QrYVh5STdUNUhjMzg0RkVjUVA3ZkpFQTVv?=
- =?utf-8?Q?nAC5RX3HGKpgl7CtMQcToDdfh0swjWn7?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?SG1Qam1zMVlZMUE5dnZFb1B6RURsQ3JQc3ZNYWdVa1gveTVEZTFBQTNVWUtU?=
- =?utf-8?B?SWo4N0IrRUhxTDlYdFFSNkU5S3FiWHV3dmhFRFpVRVpMZHU5eWpKc0ZhWTEr?=
- =?utf-8?B?TzVUTTRTa0ZqSnd6WU9BbS9KTmpHTStNMkRpT2JsK2NWRWVHajBKVldncXpZ?=
- =?utf-8?B?Q2xNTEh3dDF1dERtZlFpUTF6TXkwbDlJeGQ1aEpoKzQxVU5uTG92UDZ6bHBl?=
- =?utf-8?B?eDVvelNNTWRMYW5HSmdPL09VS2NDMEdIVmFjMUN0R0pNbUdRbndGSlFBVTF0?=
- =?utf-8?B?SnFHcTZQNWxQVTlNYmcrK01xaVN3WndOaTRkbHdiUFk1US90Mld5WmFVcHMy?=
- =?utf-8?B?emRwL1lpdWp4ZnlqczU0bERraU5ybHhvNzlORi9paWRCQm9PUmJUV2Z2d25r?=
- =?utf-8?B?dlNTakp1Z1dRMk1WM3RTc2FJVlFNazNyblJybytlMTJIQ0UwVHQzRm1vczRz?=
- =?utf-8?B?dU9TYnRJelVzdHhJekdLQVVvSXRPUEZXUk9lTE5rdGVpY2tXclpBZkJsTFhS?=
- =?utf-8?B?YWVRREZkRXdENzRZVWFLRkFGSHBkVktSSk5mMzdGK2Q1c2ZoMUNONmZLcHpl?=
- =?utf-8?B?UkpOWlY5b0toMHRnN2p6ZU9JUnJBU0p1S21jOVVpZEhyNk1DWnNCOFhRKzNL?=
- =?utf-8?B?YVRTKzRvVGJhV1dMM1V2aFdOMTA5SEt1aDZORFdMcWYxK3pOSHkxTlprbE1N?=
- =?utf-8?B?MlA3M251bEhoNStWUGFKeWRLYU1rMzFSUFllck9vLzBRVVZQRkFqUXRDd3Fq?=
- =?utf-8?B?dlNGUDExQkI4NWg4US9WcVBIMHJUN1FuMnpXOE5kaGVGN3Y1bmxYRmV2ME1M?=
- =?utf-8?B?U04veHNubDVyYnYra2lEN3c3WlpUZkQ5U2ZpOTdqejYrTjJ4Zmk2UU02UEI0?=
- =?utf-8?B?QjFjL1dzVkpzUzE1VUozcWNHT25qWmlvRFJPUUNOclhrTmJOT1hjVVVjSzdK?=
- =?utf-8?B?RHVyNzFZaHBUcjRDV1doWGEweHYxYkMyQTEvZ3VZNVNjVGVaRUZtdS9HQ2NL?=
- =?utf-8?B?bDdBMnNsUldUUlEyMHlkZGwyOVFCc1lVVzJFeDBDSkp1dnhOc0c4WVRUNHAr?=
- =?utf-8?B?ampnQUR6MEt3ZitGZzErLzh5cUhmeW5xM2kwS25YdE1ySkI0SEdxek9SVVdB?=
- =?utf-8?B?QUZrRU1yZ1pycXFEZjVzWVBCanA1dVdhK1dtc0UrMTZSS0ZaODZucUF5dGk3?=
- =?utf-8?B?Z1ZjVEQ4WitkblU2WVl2NWwvVms4enl4aWJuYUsrQWhaVjVYWG1DY1JPbVhu?=
- =?utf-8?B?R2YzVFFJN3luV1ZjdVp3YWoybVVUUU1lOUtrVTFoQ3Vwdmdhd3ZvcnNRaThS?=
- =?utf-8?B?dlc5cTdQYm8rSmp0ZUJyWEZaR0hmT2RUcUpsMWpDLzlrQmJpSHVoaXpnNGo5?=
- =?utf-8?B?MytGdytVeG9CUHdLaXdZSHRtVEE1SEp4dXNmd2ZTQ1c1ZldkNWlMRWdmZ1Fx?=
- =?utf-8?B?bTFxYmVSTkRmcEtGRllFRkxBd1h2MWlKVUl4ZlNPRkhQT0w3TzYwS3J5Q3ZS?=
- =?utf-8?B?dzZ5VWxiMFh0UlJsekpiSFVNYWJZSG5LN09SMkxBQTZ6V1VqcmdwMHM3NHQv?=
- =?utf-8?B?ZjlPSW5ndlFDcW1sRy9mS1pZMnEyZUk4NG1zWHY3d3cxUEgzKzBOMGJOU0F6?=
- =?utf-8?B?QzhVa0IzUEk1aitpeTZCdU5qL0lreWtEQTZLbGdOazFUQ3ZOdHpnTFVqbGpE?=
- =?utf-8?B?M0Y4RmV0emFDUjFVYXI1c1I4VU9yOUVBT2prQ2F1RHJwWlZiOXI1OFVITXVE?=
- =?utf-8?B?WTVuM1owbktSR05ZaFFUYXZ5UkJYeUF2MmxjdXhITkMyV0ZEbDFidVRBM2Vq?=
- =?utf-8?B?MkNnLzVJL0Y0bDJiUHM3RUEwSjR4UXk4U2JpQ2YzSi9xMFpPbWR0cUdqZGxE?=
- =?utf-8?B?QUZ5anBWWFZJU2E3c2xSNlIycjZTY3d1Um5QYTBDaHpXS0RCbTRJQnUwS1F2?=
- =?utf-8?B?SmFpekhoY0d1Y1dqTDRHbE5EcFc2aUZ0OU5IR3hHb05kTzlMcFZnQlBaMUFl?=
- =?utf-8?B?clZybmZNMTVxd1lrc1Vwc0xCWFZ3UDQvNklzQ3ovRm1oWW5rYmk4ZGVCTnlL?=
- =?utf-8?B?WU1pb1h0Ry94RTFhRUdiN1FqSjM4TlZuWjBzS0YreU4yRGVySmlyWDNESUdY?=
- =?utf-8?Q?B8AYEqWV+WpPowbH5GktAt/P3?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JInR5ldy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1F46C4CEE4;
+	Sat,  5 Apr 2025 19:09:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743880196;
+	bh=OauDZOuslXTCYnl130mst/mTqaCXUcMHb7UAgFIjc3c=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=JInR5ldy8Cy9DqV4wHRfRSKA2yuknZxamwx/TO6wOIVi2FvGJI350oO82HRX8xu3f
+	 ziDNIx0e0hIojFB/IA+7zuSce7ZmuWI/jy4mGdcivH77z6QA9k6pjbHpAkNYKlpfnE
+	 ijyoLnQNCorRdmTPMUoUuSVzpopANP4vX6YobL9GWX8DTjcZaLn+44ivm4YirDQurA
+	 6H59MatRLppL6caQQmF2OLyyEP6k2Xuzga8x8gjYvP6mRBgOZHnWIZLgxfdL1svRR5
+	 6OUaplX/VUTl7imiPjGmTQmAUnbINOEqoPaR2l0+srDfLFXK3ciTaNkkbFMCa7fG2f
+	 5abQlgngIiZ/A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 50F24CE0565; Sat,  5 Apr 2025 12:09:56 -0700 (PDT)
+Date: Sat, 5 Apr 2025 12:09:56 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, rcu <rcu@vger.kernel.org>
+Subject: Re: rcutorture: Perform more frequent testing of ->gpwrap
+Message-ID: <616886d9-2511-4f4e-bd64-c1500b4104bf@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <c9c19caa-68c1-4012-bd82-38a24c9edb60@paulmck-laptop>
+ <174385625883.111.5710608020798879272@patchwork.local>
+ <93682939-6e82-43e7-8681-cc84539d9bc0@paulmck-laptop>
+ <9707440F-315F-4A33-8EEC-DDAC86538264@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 315836fd-ac79-4f53-f177-08dd746b34e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2025 17:56:35.4384
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CF30GhXc0Q5uuaDsuG4+6dGzYTsjGa+nfNnqIe6IJTnJSoQF+XWBCh7/2EKau7GEQr/O40Q9TxqjK2HG0gy3wQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5989
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9707440F-315F-4A33-8EEC-DDAC86538264@nvidia.com>
 
-DQoNCj4gT24gQXByIDUsIDIwMjUsIGF0IDE6MTDigK9QTSwgUGF1bCBFLiBNY0tlbm5leSA8cGF1
-bG1ja0BrZXJuZWwub3JnPiB3cm90ZToNCj4gDQo+IO+7v09uIFNhdCwgQXByIDA1LCAyMDI1IGF0
-IDA3OjAxOjEzQU0gLTA0MDAsIEpvZWwgRmVybmFuZGVzIHdyb3RlOg0KPj4gDQo+PiANCj4+PiBP
-biA0LzIvMjAyNSAzOjE3IFBNLCBQYXVsIEUuIE1jS2VubmV5IHdyb3RlOg0KPj4+IE9uIFdlZCwg
-QXByIDAyLCAyMDI1IGF0IDEyOjE5OjEzUE0gLTA0MDAsIEpvZWwgRmVybmFuZGVzIHdyb3RlOg0K
-Pj4+PiBIZWxsbywNCj4+Pj4gDQo+Pj4+IE9uIFdlZCwgMiBBcHIgMjAyNSAxNjoxNzowNiBHTVQs
-IFNlYmFzdGlhbiBBbmRyemVqIFNpZXdpb3Igd3JvdGU6DQo+Pj4+PiBPbiAyMDI1LTAzLTMxIDE0
-OjAzOjA2IFstMDcwMF0sIFBhdWwgRS4gTWNLZW5uZXkgd3JvdGU6DQo+Pj4+Pj4gVGhlIHRvcnR1
-cmUuc2ggLS1kby1ydCBjb21tYW5kLWxpbmUgcGFyYW1ldGVyIGlzIGludGVuZGVkIHRvIG1pbWlj
-IC1ydA0KPj4+Pj4+IGtlcm5lbHMuICBOb3cgdGhhdCBDT05GSUdfUFJFRU1QVF9SVCBpcyB1cHN0
-cmVhbSwgdGhpcyBjb21taXQgbWFrZXMgdGhpcw0KPj4+Pj4+IG1pbWlja2luZyBtb3JlIHByZWNp
-c2UuDQo+Pj4+Pj4gDQo+Pj4+Pj4gTm90ZSB0aGF0IHRlc3Rpbmcgb2YgUkNVIHByaW9yaXR5IGJv
-b3N0aW5nIGlzIGRpc2FibGVkIGluIGZhdm9yDQo+Pj4+Pj4gb2YgZm9yd2FyZC1wcm9ncmVzcyB0
-ZXN0aW5nIG9mIFJDVSBjYWxsYmFja3MuICBJZiBpdCB0dXJucyBvdXQgdG8gYmUNCj4+Pj4+PiBw
-b3NzaWJsZSB0byBtYWtlIGtlcm5lbHMgYnVpbHQgd2l0aCBDT05GSUdfUFJFRU1QVF9SVD15IHRv
-IHRvbGVyYXRlDQo+Pj4+Pj4gdGVzdGluZyBvZiBib3RoLCBib3RoIHdpbGwgYmUgZW5hYmxlZC4N
-Cj4+Pj4+IA0KPj4+Pj4gTm90IHN1cmUgd2hhdCB5b3UgcG9pbnQgYXQgaGVyZTogWW91IGNhbiBi
-dWlsZCBhIFBSRUVNUFRfUlQga2VybmVsIGFuZA0KPj4+Pj4gUkNVIGJvb3N0aW5nIGlzIGVuYWJs
-ZWQgYnkgZGVmYXVsdC4gWW91IGNvdWxkIGRpc2FibGUgaXQgaWYgbmVlZGVkLg0KPj4+PiANCj4+
-Pj4gWWVhaCwgUkNVX0JPT1NUIGhhcyBkZWZhdWx0IHkgaWYgUFJFRU1QVF9SVC4NCj4+Pj4gDQo+
-Pj4+IFBhdWwsIHNob3VsZCB3ZSBiZSBkaXNhYmxpbmcgaXQgaW4gdGhlIC0tZG8tcnQgc2NyaXB0
-Pw0KPj4+IA0KPj4+IFlvdSBzaG91bGQgaGF2ZSBhICJyY3V0b3J0dXJlLnRlc3RfYm9vc3Q9MCIg
-ZnJvbSBmMmFjNTU5NjhkZjINCj4+PiAoInJjdXRvcnR1cmU6IE1ha2UgdG9ydHVyZS5zaCAtLWRv
-LXJ0IHVzZSBDT05GSUdfUFJFRU1QVF9SVCIpLg0KPj4+IA0KPj4+IFBsdXMgSSBqdXN0IG5vdyBt
-YWRlIGFkZGl0aW9uYWwgYWRqdXN0bWVudHMgYmFzZWQgb24gU2ViYXN0aWFuIFNpZXdpb3Incw0K
-Pj4+IGZlZWRiYWNrLiAgSGUgaXMgbGlrZWx5IHRvIGhhdmUgYWRkaXRpb25hbCBmZWVkYmFjaywg
-c28gdGhpcyBpcyBjdXJyZW50bHkNCj4+PiBhICJzcXVhc2ghIiBjb21taXQgaW4gbXkgdHJlZS4N
-Cj4+IE9rLCB0aGFua3MuIElmIHlvdSBjb3VsZCByZXBvc3Qgd2hlbmV2ZXIgaXQgaXMgcmVhZHkg
-dG8gdGhlIGxpc3QsIEknbGwgcHVsbCBpdC4NCj4gDQo+IElmIHRoZXJlIGFyZSBubyBjb21wbGFp
-bnRzIGJ5IE1vbmRheSwgUGFjaWZpYyBUaW1lLCBJIHdpbGwgcmVzZW5kIGl0Lg0KPiANCj4+IEFs
-c28gSSdtIGd1ZXNzaW5nIHRoYXQgY2hlY2twYXRjaCBvbmUgZG9lcyBub3QgbmVlZCBhbnkgY2hh
-bmdlcywgYnV0IHdlJ3ZlIHRvDQo+PiBhZGQgYSByZW1pbmRlciB0byByZXZlcnQgaXQgaW4gdGhl
-IGZ1dHVyZS4NCj4gDQo+IEkgaGF2ZSBhZGRlZCBhIHJlbWluZGVyIGluIG15IHVzdWFsIHRvZG8u
-dHh0IGZpbGUuICBJIGhhdmUgbm8gb2JqZWN0aW9uDQo+IHRvIGl0IGJlaW5nIGFkZGVkIHRvIGEg
-bW9yZSB2aXNpYmxlIGxvY2F0aW9uLiAgT24gcG9zc2libGUgcGxhY2Ugd291bGQNCj4gYmUgdGhl
-IFJDVSBEZXNpZ24gRG9jdW1lbnRzIGdkb2MsIGJ1dCBJIHdpbGwgbGV0IHlvdSBndXlzIGNob29z
-ZS4NCg0KTWFrZXMgc2Vuc2UsIEkgdGhpbmsgd2Ugc2hvdWxkIGFkZCB0aGlzIGFuZCBvdGhlciB0
-b2RvIGl0ZW1zIHNvbWV3aGVyZSAtIHRoZSBsb2NhdGlvbiB5b3Ugc3VnZ2VzdCBzb3VuZHMgcmVh
-c29uYWJsZSB0byBtZSwgSSd2ZSBub3RlZCBpdC4gSSBhbSBhbHNvIHdvbmRlcmluZyBCb3F1biAt
-IGFyZSB5b3Ugd29ya2luZyBvbiB0aGF0IFBSIGhhbmRib29rIGRvYyBwYXRjaD8gSWYgc28sIHBs
-ZWFzZSBzZW5kIGZvciByZXZpZXcgYW5kIGluY2x1c2lvbiBpbiA2LjE2IDopDQoNClRoYW5rcywN
-Cg0KIC0gSm9lbCANCg0KDQo+IA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBUaGFueCwg
-UGF1bA0K
+On Sat, Apr 05, 2025 at 05:54:00PM +0000, Joel Fernandes wrote:
+> > On Apr 5, 2025, at 1:23 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > ﻿On Sat, Apr 05, 2025 at 12:30:58PM -0000, Joel Fernandes wrote:
+> >> Hello, Paul,
+> >> 
+> >>> On Sat, 5 Apr 2025 12:26:12 GMT, "Paul E. McKenney" wrote:
+> >>> On Sat, Mar 29, 2025 at 07:01:42PM -0400, Joel Fernandes wrote:
+> >>>> Currently, the ->gpwrap is not tested (at all per my testing) due to the
+> >>>> requirement of a large delta between a CPU's rdp->gp_seq and its node's
+> >>>> rnp->gpseq.
+> >>>> 
+> >>>> This results in no testing of ->gpwrap being set. This patch by default
+> >>>> adds 5 minutes of testing with ->gpwrap forced by lowering the delta
+> >>>> between rdp->gp_seq and rnp->gp_seq to just 8 GPs. All of this is
+> >>>> configurable, including the active time for the setting and a full
+> >>>> testing cycle.
+> >>>> 
+> >>>> By default, the first 25 minutes of a test will have the _default_
+> >>>> behavior there is right now (ULONG_MAX / 4) delta. Then for 5 minutes,
+> >>>> we switch to a smaller delta causing 1-2 wraps in 5 minutes. I believe
+> >>>> this is reasonable since we at least add a little bit of testing for
+> >>>> usecases where ->gpwrap is set.
+> >>>> 
+> >>>> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> >>> 
+> >>> I ran this as follows:
+> >>> 
+> >>> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10m --configs "TREE01" --bootargs "rcutorture.ovf_cycle_mins=7" --trust-make
+> >>> 
+> >>> Once I actually applied your patch, I did get this:
+> >>> 
+> >>> [  601.891042] gpwraps: 13745
+> >>> 
+> >>> Which seems to indicate some testing.  ;-)
+> >> 
+> >> Thanks a lot for running it. I am wondering if I should check in tree.c (only in
+> >> testing mode), if the wraps are too many and restrict testing if so. Otherwise,
+> >> it is hard to come up with a constant that ensures the wraps are under control.
+> >> On the other hand, since this is only for 5 minutes every 30 minutes, we can leave
+> >> it as is and avoid the complexity.
+> > 
+> > I don't (yet) see a problem with lots of wraps.
+> > 
+> >>> Additional comments inline.
+> >>> 
+> >>>                            Thanx, Paul
+> >>> 
+> >>>> ---
+> >>>> kernel/rcu/rcu.h        |  4 +++
+> >>>> kernel/rcu/rcutorture.c | 64 +++++++++++++++++++++++++++++++++++++++++
+> >>>> kernel/rcu/tree.c       | 34 ++++++++++++++++++++--
+> >>>> kernel/rcu/tree.h       |  1 +
+> >>>> 4 files changed, 101 insertions(+), 2 deletions(-)
+> >>>> 
+> >>>> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> >>>> index eed2951a4962..9a15e9701e02 100644
+> >>>> --- a/kernel/rcu/rcu.h
+> >>>> +++ b/kernel/rcu/rcu.h
+> >>>> @@ -572,6 +572,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
+> >>>>                   unsigned long c_old,
+> >>>>                   unsigned long c);
+> >>>> void rcu_gp_set_torture_wait(int duration);
+> >>>> +void rcu_set_torture_ovf_lag(unsigned long lag);
+> >>>> +int rcu_get_gpwrap_count(int cpu);
+> >>>> #else
+> >>>> static inline void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
+> >>>> {
+> >>>> @@ -589,6 +591,8 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
+> >>>>    do { } while (0)
+> >>>> #endif
+> >>>> static inline void rcu_gp_set_torture_wait(int duration) { }
+> >>>> +static inline void rcu_set_torture_ovf_lag(unsigned long lag) { }
+> >>>> +static inline int rcu_get_gpwrap_count(int cpu) { return 0; }
+> >>> 
+> >>> Very good, you did remember CONFIG_SMP=n.  And yes, I did try it.  ;-)
+> >>> 
+> >>> But shouldn't these be function pointers in rcu_torture_ops?  That way if
+> >>> some other flavor of RCU starts doing wrap protection for its grace-period
+> >>> sequence numbers, this testing can apply directly to that flavor as well.
+> >> 
+> >> These are here because 'rdp' is not accessible AFAIK from rcutorture.c.
+> >> I could add wrappers to these and include them as pointers the a struct as well.
+> >> But I think these will still stay to access rdp.
+> > 
+> > Why not just pass in the CPU number and let the pointed-to function find
+> > the rdp?
+> 
+> You mean provide a helper from tree.c that is called in rcutorture, then helper function returning an rdp?
+> 
+> If so, I can certainly do that, was just not sure if this sort of thing was ok since nothing else in rcutorture accesses rdp directly :)
+
+Actually, this is done quite a bit.
+
+For example, the "rcu" .gp_kthread_dbg() function pointer is set to
+show_rcu_gp_kthreads(), which is defined either in rcu.h (for Tiny) or
+in tree_stall.h (for Tree).  Alternatively, sometimes a small wrapper
+function is defined in rcutorture.c which calls functions defined
+differently for different RCU flavors.
+
+So please feel free to create a function pointer and to define the
+function in tree.c.  But learn from my many mistakes and make sure to
+provide a suitable definition for Tiny RCU!  ;-)
+
+							Thanx, Paul
+
+> Thanks,
+> 
+> - Joel
+> 
+> 
+> > 
+> >>> Then the pointers can simply be NULL in kernels built with CONFIG_SMP=n.
+> >>> 
+> >>>> #endif
+> >>>> unsigned long long rcutorture_gather_gp_seqs(void);
+> >>>> void rcutorture_format_gp_seqs(unsigned long long seqs, char *cp, size_t len);
+> >>>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> >>>> index 895a27545ae1..79a72e70913e 100644
+> >>>> --- a/kernel/rcu/rcutorture.c
+> >>>> +++ b/kernel/rcu/rcutorture.c
+> >>>> @@ -118,6 +118,9 @@ torture_param(int, nreaders, -1, "Number of RCU reader threads");
+> >>>> torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
+> >>>> torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
+> >>>> torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (jiffies), 0=disable");
+> >>>> +torture_param(int, ovf_cycle_mins, 30, "Total cycle duration for ovf lag testing (in minutes)");
+> >>>> +torture_param(int, ovf_active_mins, 5, "Duration for which ovf lag is active within each cycle (in minutes)");
+> >>>> +torture_param(int, ovf_lag_gps, 8, "Value to set for set_torture_ovf_lag during an active testing period.");
+> >>> 
+> >>> Given that "ovf" means just "overflow", would it make sense to get a "gp"
+> >>> in there?  Maybe just "gpwrap_..."?
+> >>> 
+> >>> "What is in a name?"  ;-)
+> >> 
+> >> Sure, makes sense I will rename.
+> > 
+> > Thank you!
+> > 
+> >>> I could argue with the defaults, but I run long tests often enough that
+> >>> I am not worried about coverage.  As long as we remember to either run
+> >>> long tests or specify appropriate rcutorture.ovf_cycle_mins when messing
+> >>> with ->gpwrap code.
+> >>> 
+> >>>> torture_param(int, nocbs_nthreads, 0, "Number of NOCB toggle threads, 0 to disable");
+> >>>> torture_param(int, nocbs_toggle, 1000, "Time between toggling nocb state (ms)");
+> >>>> torture_param(int, preempt_duration, 0, "Preemption duration (ms), zero to disable");
+> >>>> @@ -2629,6 +2632,7 @@ rcu_torture_stats_print(void)
+> >>>>    int i;
+> >>>>    long pipesummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
+> >>>>    long batchsummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
+> >>>> +    long n_gpwraps = 0;
+> >>>>    struct rcu_torture *rtcp;
+> >>>>    static unsigned long rtcv_snap = ULONG_MAX;
+> >>>>    static bool splatted;
+> >>>> @@ -2639,6 +2643,7 @@ rcu_torture_stats_print(void)
+> >>>>            pipesummary[i] += READ_ONCE(per_cpu(rcu_torture_count, cpu)[i]);
+> >>>>            batchsummary[i] += READ_ONCE(per_cpu(rcu_torture_batch, cpu)[i]);
+> >>>>        }
+> >>>> +        n_gpwraps += rcu_get_gpwrap_count(cpu);
+> >>>>    }
+> >>>>    for (i = RCU_TORTURE_PIPE_LEN; i >= 0; i--) {
+> >>>>        if (pipesummary[i] != 0)
+> >>>> @@ -2672,6 +2677,7 @@ rcu_torture_stats_print(void)
+> >>>>    pr_cont("read-exits: %ld ", data_race(n_read_exits)); // Statistic.
+> >>>>    pr_cont("nocb-toggles: %ld:%ld\n",
+> >>> 
+> >>> The "\n" on the above line needs to be deleted.
+> >> 
+> >> Ok.
+> >> 
+> >>>>        atomic_long_read(&n_nocb_offload), atomic_long_read(&n_nocb_deoffload));
+> >>>> +    pr_cont("gpwraps: %ld\n", n_gpwraps);
+> >>>> 
+> >>>>    pr_alert("%s%s ", torture_type, TORTURE_FLAG);
+> >>>>    if (atomic_read(&n_rcu_torture_mberror) ||
+> >>>> @@ -3842,6 +3848,58 @@ static int rcu_torture_preempt(void *unused)
+> >>>> 
+> >>>> static enum cpuhp_state rcutor_hp;
+> >>>> 
+> >>>> +static struct hrtimer ovf_lag_timer;
+> >>>> +static bool ovf_lag_active;
+> >>> 
+> >>> Same "ovf" naming complaint as before.
+> >> 
+> >> Ok.
+> >> 
+> >>>> +}
+> >>>> +
+> >>>> +static int rcu_torture_ovf_lag_init(void)
+> >>>> +{
+> >>>> +    if (ovf_cycle_mins <= 0 || ovf_active_mins <= 0) {
+> >>>> +        pr_alert("rcu-torture: lag timing parameters must be positive\n");
+> >>>> +        return -EINVAL;
+> >>>> +    }
+> >>> 
+> >>> Why not refuse to start this portion of the test when testing CONFIG_SMP=n
+> >>> or something other than vanilla RCU?  No need to fail the test, just
+> >>> print something saying that this testing won't be happening.
+> >> 
+> >> Got it, will do.
+> > 
+> > Again, thank you!
+> > 
+> >>>> +static void rcu_torture_ovf_lag_cleanup(void)
+> >>>> +{
+> >>>> +    hrtimer_cancel(&ovf_lag_timer);
+> >>>> +
+> >>>> +    if (ovf_lag_active) {
+> >>>> +        rcu_set_torture_ovf_lag(0);
+> >>>> +        ovf_lag_active = false;
+> >>>> +    }
+> >>>> +}
+> >>> 
+> >>> Did you try the modprobe/rmmod testing to verify that this
+> >>> cleans up appropriately?  You could use the drgn tool to check.
+> >>> See tools/rcu//rcu-cbs.py for an example drgn script that digs into the
+> >>> rcu_data structures.
+> >> 
+> >> Nice, will check!
+> >> 
+> >> Will work on this and provide v2.
+> > 
+> > Looking forward to it!
+> > 
+> >                            Thanx, Paul
