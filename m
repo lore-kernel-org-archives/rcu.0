@@ -1,159 +1,152 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-43166.protonmail.ch (mail-43166.protonmail.ch [185.70.43.166])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E297F266EE2
-	for <rcu@vger.kernel.org>; Wed,  9 Apr 2025 15:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2BD59B71;
+	Thu, 10 Apr 2025 01:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.166
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744211351; cv=none; b=L1GJW7KXfmU9QLj50QN3sMSUru2W/7PYAAVL1nTRmc7nVIXE+2Jn+rPsudC/P6JDJSZuRk/v5cgyecoY48BnGqtJ0vRMgr9/ZYYAyHyO6jCGVLXK9q9bi/1HIK4o3v5+MfHJ/4qoPq9VJh+8RJwIRBpQb6A0YxdG5kMyNi0qJRM=
+	t=1744247608; cv=none; b=kpKI0BwwZ5pLsjR4KAm05+6YxDGzr99BguhgdlSgQP8GaPGgT6MrDf8ZNbYW4l5TT84//FsNKE8whrWNrBNpZ//PbR5rUPJX4tPouB7dXaZU4oxZIK6w53+1CvOFY1HS+Apm2Th+PtttJqjrR8DjlOVqqYguE9wtJS+kaEL81NQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744211351; c=relaxed/simple;
-	bh=dccumOqzcotHIcSTHMQVxrHHRSWZwdakiBo+SRB27Cs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UnvbxeoaVu1iHqXazjGGBdEXAaM8Xtk7oXMENVYluraMKAx8BpbA5e69uQlWnWT4o3dZSHpzdzmnDwZbNtfc/d6uC53zl2mefbps8rScPwMzCAdHH2S5gIMK0ET1sR3UWmOpoywD0lT/4HnnoEUIAsFUqWAlCBTvIbE29jHxB74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lHeHIBXB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CL0zlLRp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lHeHIBXB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CL0zlLRp; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1744247608; c=relaxed/simple;
+	bh=YzQiks8GXtr147u0QhDm7ied2ITLaM9fgBAb0ZkvAI8=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=sZ+N9jcJDkF1joO61FXw7h5mL3aCctUolCv/dT5aEdlir63dMLPPBTES/ppNDBo0yBX7DKzM60dGMRrFDdkH9M6S3T2vFKjPgUYoDY11QgwmWpD6GgD9PdIH8wSfH93oZTv4x8hqEbWDhS4Yo+DRe+C8onpyqkotlz78cNaSq5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=FK714v6p; arc=none smtp.client-ip=185.70.43.166
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lHeHIBXB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CL0zlLRp";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lHeHIBXB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CL0zlLRp"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B04151F445;
-	Wed,  9 Apr 2025 15:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744211347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GzjR4oQ2qzzHMq50duuwsOgZ3sY0afnl6ZVMYTeN7mQ=;
-	b=lHeHIBXB9K0yN22hxOlp/aqyN035ygY/uCteI0u4BeP5R/23NHblkxtNz1t4tB5o77tZNI
-	qDImqWPRzPPT8H26XeMYXfrGOwWMuUEE5xg+oo2zFpoiUOENSa1VuqGnVBHLdv8mi6blJo
-	SkqpYQed5XnESE7yfxX97Q58ATupaYM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744211347;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GzjR4oQ2qzzHMq50duuwsOgZ3sY0afnl6ZVMYTeN7mQ=;
-	b=CL0zlLRpfL/PdyHX/n/HeVuT/po0VWiPjAV/2Gaz4tOBc6Sp78vd1uEKMhyrTJYcTpjxxU
-	gm12g6kK96UYLoAA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=lHeHIBXB;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=CL0zlLRp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1744211347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GzjR4oQ2qzzHMq50duuwsOgZ3sY0afnl6ZVMYTeN7mQ=;
-	b=lHeHIBXB9K0yN22hxOlp/aqyN035ygY/uCteI0u4BeP5R/23NHblkxtNz1t4tB5o77tZNI
-	qDImqWPRzPPT8H26XeMYXfrGOwWMuUEE5xg+oo2zFpoiUOENSa1VuqGnVBHLdv8mi6blJo
-	SkqpYQed5XnESE7yfxX97Q58ATupaYM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1744211347;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GzjR4oQ2qzzHMq50duuwsOgZ3sY0afnl6ZVMYTeN7mQ=;
-	b=CL0zlLRpfL/PdyHX/n/HeVuT/po0VWiPjAV/2Gaz4tOBc6Sp78vd1uEKMhyrTJYcTpjxxU
-	gm12g6kK96UYLoAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D34B13691;
-	Wed,  9 Apr 2025 15:09:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +D25IZON9mfPYAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 09 Apr 2025 15:09:07 +0000
-Message-ID: <4f4adc4c-72fd-481f-8b41-f107f2b91ef8@suse.cz>
-Date: Wed, 9 Apr 2025 17:09:08 +0200
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="FK714v6p"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1744247603; x=1744506803;
+	bh=5IhPW6iSibHV5VNeY2F53/jyEHnH+AF5dzWCrAbv3wU=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
+	 List-Unsubscribe:List-Unsubscribe-Post;
+	b=FK714v6p6esgjwd64AXKp4Z+TaM4Dszi8BR7ru9JwMJtRrUi2kjRmAKKz8tYLQtAB
+	 0U6EcTzEv5HKlPVeV+euf8sQTQm5n7Dr72vmOtdBiuD8EPYfV3FEuI1cQbsjpIog2U
+	 IgyiAOiAku9KHJ3C2/uMtrYW7RveVBPT8NuxTD4fqy3c6jEIHBBqAon4Woiw/ADpSd
+	 ql0WgTCReJOPe8uTJEZ71qh28blTV6yZOU3G3eGRd6BMOGkzbMdNiEmnhqEH4eDee+
+	 kubeFPob7TJ/vmWs1QwAZtuuNisrMWo+XDZfRnAxj+I/6CM2sv1dLyGiokWLTsuQ8W
+	 juH6y85WdcqJg==
+Date: Thu, 10 Apr 2025 01:13:18 +0000
+To: Linux regressions mailing list <regressions@lists.linux.dev>, Vitaly Kuznetsov <vkuznets@redhat.com>, Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+From: Myrsky Lintu <myrskylintu@proton.me>
+Cc: kvm@vger.kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, Yiwei Zhang <zzyiwei@google.com>, Lai Jiangshan <jiangshanlai@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Gerd Hoffmann <kraxel@redhat.com>
+Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
+Message-ID: <0f37f8e5-3cfe-4efb-bec9-b0882d85ead2@proton.me>
+Feedback-ID: 89599038:user:proton
+X-Pm-Message-ID: 463996738ae8f38ea5d8024aed4a838ee2cca8ef
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 3/8] slab: add sheaf support for batching
- kfree_rcu() operations
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Suren Baghdasaryan <surenb@google.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter
- <cl@linux.com>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- maple-tree@lists.infradead.org
-References: <20250317-slub-percpu-caches-v3-0-9d9884d8b643@suse.cz>
- <20250317-slub-percpu-caches-v3-3-9d9884d8b643@suse.cz>
- <Z_XScomDqU_Dke17@harry>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <Z_XScomDqU_Dke17@harry>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: B04151F445
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[google.com,oracle.com,linux.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:mid]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 4/9/25 3:50 AM, Harry Yoo wrote:
-> On Mon, Mar 17, 2025 at 03:33:04PM +0100, Vlastimil Babka wrote:
-> 
-> Hmm this hunk in v3 is fine, but on your slub-percpu-shaves-v4r0 branch
-> it's calling local_unlock() twice. Probably a rebase error?
+Hello,
 
-Yeah, thanks a lot for catching that! I've just pushed
-https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-percpu-sheaves-v4r1
+I am completely new to and uninformed about kernel development. I was=20
+pointed here from Mesa documentation for Venus (Vulkan encapsulation for=20
+KVM/QEMU): https://docs.mesa3d.org/drivers/venus.html
 
-with this fixed, and fixups for 2/8 to the points you made, plus a
-proper strict_numa handling in 2/8, and an extra patch for better NUMA
-locality
+Based on my limited understanding of what has happened here, this patch=20
+series was partially reverted due to an issue with the Bochs DRM driver.=20
+A fix for that issue has been merged months ago according to the link=20
+provided in an earlier message. Since then work on this detail of KVM=20
+seems to have stalled.
 
-> Otherwise looks good to me.
-> 
-> When you address this, please feel free to add:
-> 
-> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
-> 
-> Thanks!
-> 
+Is it reasonable to ask here for this patch series to be evaluated and=20
+incorporated again?
+
+My layperson's attempt at applying the series against 6.14.1 source code=20
+failed. In addition to the parts that appear to have already been=20
+incorporated there are some parts of the patch series that are rejected.=20
+I lack the knowledge to correct that.
+
+Distro kernels currently ship without it which limits the usability of=20
+Venus on AMD and NVIDIA GPUs paired with Intel CPUs. Convincing=20
+individual distro maintainers of the necessity of this patch series=20
+without the specialized knowledge required for understanding what it=20
+does and performing that evaluation is quite hard. If upstream (kernel)=20
+would apply it now the distros would ship a kernel including the=20
+required changes to users, including me, without that multiplicated effort.
+
+Thank you for your time. If this request is out of place here please=20
+forgive me for engaging this mailing list without a proper understanding=20
+of the list's scope.
+
+On 2024-10-07 14:04:24, Linux regression tracking (Thorsten Leemhuis) wrote=
+:
+> On 07.10.24 15:38, Vitaly Kuznetsov wrote:
+>> "Linux regression tracking (Thorsten Leemhuis)"
+>> <regressions@leemhuis.info> writes:
+>>
+>>> On 30.08.24 11:35, Vitaly Kuznetsov wrote:
+>>>> Sean Christopherson <seanjc@google.com> writes:
+>>>>
+>>>>> Unconditionally honor guest PAT on CPUs that support self-snoop, as
+>>>>> Intel has confirmed that CPUs that support self-snoop always snoop ca=
+ches
+>>>>> and store buffers.  I.e. CPUs with self-snoop maintain cache coherenc=
+y
+>>>>> even in the presence of aliased memtypes, thus there is no need to tr=
+ust
+>>>>> the guest behaves and only honor PAT as a last resort, as KVM does to=
+day.
+>>>>>
+>>>>> Honoring guest PAT is desirable for use cases where the guest has acc=
+ess
+>>>>> to non-coherent DMA _without_ bouncing through VFIO, e.g. when a virt=
+ual
+>>>>> (mediated, for all intents and purposes) GPU is exposed to the guest,=
+ along
+>>>>> with buffers that are consumed directly by the physical GPU, i.e. whi=
+ch
+>>>>> can't be proxied by the host to ensure writes from the guest are perf=
+ormed
+>>>>> with the correct memory type for the GPU.
+>>>>
+>>>> Necroposting!
+>>>>
+>>>> Turns out that this change broke "bochs-display" driver in QEMU even
+>>>> when the guest is modern (don't ask me 'who the hell uses bochs for
+>>>> modern guests', it was basically a configuration error :-). E.g:
+>>>> [...]
+>>>
+>>> This regression made it to the list of tracked regressions. It seems
+>>> this thread stalled a while ago. Was this ever fixed? Does not look lik=
+e
+>>> it, but I might have missed something. Or is this a regression I should
+>>> just ignore for one reason or another?
+>>>
+>>
+>> The regression was addressed in by reverting 377b2f359d1f in 6.11
+>>
+>> commit 9d70f3fec14421e793ffbc0ec2f739b24e534900
+>> Author: Paolo Bonzini <pbonzini@redhat.com>
+>> Date:   Sun Sep 15 02:49:33 2024 -0400
+>>
+>>      Revert "KVM: VMX: Always honor guest PAT on CPUs that support self-=
+snoop"
+>=20
+> Thx. Sorry, missed that, thx for pointing me towards it. I had looked
+> for things like that, but seems I messed up my lore query. Apologies for
+> the noise!
+>=20
+>> Also, there's a (pending) DRM patch fixing it from the guest's side:
+>> https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/9388ccf699252232=
+23c87355a417ba39b13a5e8e
+>=20
+> Great!
+>=20
+> Ciao, Thorsten
+>=20
+> P.S.:
+>=20
+> #regzbot fix: 9d70f3fec14421e793ffbc0ec2f739b24e534900
+>=20
+>=20
+>=20
+
 
