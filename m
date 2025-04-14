@@ -1,180 +1,231 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63511EA7C6;
-	Fri, 11 Apr 2025 19:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B041728F4;
+	Mon, 14 Apr 2025 06:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744399111; cv=none; b=gYMigs1fR3ocAp30Jw9fIwgonY92YRq2ZepR/BR0LHcT5WvpHV31MsAPMlQsbfo5/EcHBL9QKKB+8CLBbgkoFv2qAV7g/hZl8G0AVhT+HMOpNAS95Yi6esJ8HXKAdNCHqHoJbIL4m0XClZBJKB4lRGNjvVNQgxzWN930aJw4g1I=
+	t=1744610483; cv=none; b=dZ2sAmTmQfmtrYmf4QshwM8vuLcXJyDyZaMzWdF0c3VXpF2gIYCqToOpel7JveUwFPJUp4POkMBbyX7qQ2rRShS6qLEPp7wb95dwcAgfhpVd+SkKS7SNAG7hCsDJLMPxojSbu6yN5igLYCQWXhBdv06XrMEK0HjNUfxVJ2ZEIXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744399111; c=relaxed/simple;
-	bh=WWX74wMw8P+3SiSVGCD3WpJZ/NhT6CLtAP82zrmAOSM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FKT4Gg832ApyMGIQcA3MRy2cNkmrgsi/Q/xfrCmW8wUtIpgrViG+pHvIi579LlJn9kNZIwSjq3T0aCSiswp2nXfyZD2cwtguKnvu2oHLyG9oBpP8wOgKEeK+203siFXbfH3+9rrClx2zcmfZcIf5KOPJahJ2Kxqp2YoX2LfHuA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QeuftKYg; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1744610483; c=relaxed/simple;
+	bh=oZAK8zrupjjH+O6tNbwe6KbSyiTI2uGDFByDdDSwCXQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SMjPxwAasROPIq2ZjBAlGyF4elLWP7Wc1qvLFNu+2dzq3XVylU8XVt8QEy5qy/ygFk6ghuosC2NYKdsO3KfMazMstH9HEAWIVaXoqohlMvgaBmReDH5L3ULXtCZF5VY13qC1ZY7mbU8d879pdZTV45n/Y4RL2Q9YcE+GHDcGHRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jw1zYXRT; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QeuftKYg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2A1C4CEE2;
-	Fri, 11 Apr 2025 19:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744399110;
-	bh=WWX74wMw8P+3SiSVGCD3WpJZ/NhT6CLtAP82zrmAOSM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=QeuftKYg/GRbcdgWf0r2NZkvDf1PnLOoE20ucsVekdCn5N7fxvxFGyieELTM6K51g
-	 ulwQwfndccIDCa5aQctrX6WlsW6U4nWod7LMQU30RB0Or6LeJRJOSvO+2Kh05rqeVj
-	 ab8k6AsGqnYHB/u1L54Nt7kFiiqREkiHzSgQE5OybcObW9Tim805O5Df3tDTVCmqSv
-	 zIHOoSeyJM8nOr94yIkPbHtpSERT2UtIJKdHzVcMS0lICmBGiEtZZ6OBzTtTI0H681
-	 BjrB5HidJG75rkb6BrOKjGhY37wgTrkWMMM3CgK/RIdQ5U0Nva1v6VzE/MrRmQIb4u
-	 0odkk7su6tHVQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D85DACE0414; Fri, 11 Apr 2025 12:18:29 -0700 (PDT)
-Date: Fri, 11 Apr 2025 12:18:29 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jw1zYXRT"
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6ecfa716ec1so38718716d6.2;
+        Sun, 13 Apr 2025 23:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744610479; x=1745215279; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=L0L1XVEs/40Inqn2wXUAx/QRxfMJixUhrq/LYTX7ULk=;
+        b=Jw1zYXRTtV0/wsSGoVh8sq4HMOwSuBQIMQjOYVzG5d1Oqk8vkvj4Um9O9fRY7+sU8T
+         FHvSfwwhjF7aD78g1n5NmMtd2yR0CzGy6CU4NSR3Cut5cpZDEQRuG1t47V7MC3vNeq1T
+         VsxLAaMVYAo/AiXs7JDx8kE2ILgYzqAdORs3nGiKNsNwGjkyVOw5ZwvzarWXeIzrI2sw
+         HkMksynIFnQRjg2L6BTQE2y3pQ86KPYsHTLl/ygqLyNWsKB2YjI/WAdHKzReKS7zg7ki
+         ixGoYrqLmLd+iYagKUV64fCkNVE0T94d07Z4Qf9IZWCGgTC/8WAcYVP3L4KvKEEa+YFF
+         H20A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744610479; x=1745215279;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L0L1XVEs/40Inqn2wXUAx/QRxfMJixUhrq/LYTX7ULk=;
+        b=FxriTyLu4pk/Et2bvrysMfbkwksMWIojeXrmWTrlqegrMuiyseKo5hTL8w2AzaBu5I
+         OBDNTBDOPyjPOqlndK56iziKZ1MK4CKB8krhpoIDMjxwW0yg6tRe11qN9QQvcHJbJ2I9
+         SDBygbdAyaAEeRllW23oJMVBVWaHt5ASRKz+cq7sVS22aOu2KeSXCh1ruDaR/kCzoRiD
+         UaP7pNcvz4lAiRFBT8OSM7zLLBwPO1Jl260zy7jJ0ice3ZTev0oxp9QaGstxLooB2nQj
+         5YHD6aj/PXXtsgnrviXdx+3VX6EiArn5Lig/mU9cu2MhEMwMUKUwaYdPy8KK6MZEE5gB
+         bBEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVkIT8j1Px90jtoRU4Deb0p7urjFWOFaTz3Qu3enDJfm5GF6Sv+1QqZar4n0ELwUH67h8kf4vQvTmDwGOU=@vger.kernel.org, AJvYcCWGEcQNZviBnK0MybyON8RWOLobmOvUzOgN7PJjrQFnmaLX/mxC1sU/cMTbNeVSzJaD+YhrWdRh@vger.kernel.org, AJvYcCXhS97G9LviOKZtbPb52j9dglaJ8+/IecpZ4Nm/7Tr+ycMvYDov8SeqDzaOUYoHulubFoOL@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlR+PVzT6RwXm6hOzE9wj8viUKVRyCDI29/6dd4pZv2Bl6hcuk
+	2Z3/MeHu7y6lLVW4yraQ6BdpimMYU4IyMO5f0kM9EPH9Ss3IlVzs
+X-Gm-Gg: ASbGncvF8VPE8BPDq+0CuPuvHcBte0mGkEox/WjFT24uYdLPLnJUpaPvXfUqLSGzZbP
+	snXqHdxbaUo9+zK9TlGCCGEF7JYGJjIBIYAUfEGgOrWGYJU6LhT7GcfKNdV3lDCyHY3GXmVM2H+
+	rJ3V8JLOOAxoaa7SzN86SvyeW7W8sqs1GvAWd1uRGLL/WqEXOC7v5n9+vBFQFBg2tl15IxH6ptd
+	I0jEtQv0JaGaHjhtu5Iu9ElQxKTxk5zxDrlpNcv5cIMjHT2dk9QAS/7ChAi+mUoIzUSYk2SBnd+
+	VNMOAU2jF/t8Mobove/jKaoxe8KjZ1kbOJkKOCGtSSxhncGjifl7esdLsK0/ZtVV6ARI5SYGXI2
+	ILBMF4R+akfyZ2FtOT3pOoHAQA2WbhYI=
+X-Google-Smtp-Source: AGHT+IETl7E/+bzwq61cS2fWibUseOcyKaw0dAYo3A+plXELvtQoVtUaR+f6mDLalDZp7TNAsX4tEQ==
+X-Received: by 2002:ad4:5c64:0:b0:6e8:ef80:bcbc with SMTP id 6a1803df08f44-6f230cb9778mr167100666d6.5.1744610479281;
+        Sun, 13 Apr 2025 23:01:19 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c7a8a0de11sm682145785a.101.2025.04.13.23.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Apr 2025 23:01:18 -0700 (PDT)
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 241701200043;
+	Mon, 14 Apr 2025 02:01:18 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Mon, 14 Apr 2025 02:01:18 -0400
+X-ME-Sender: <xms:rqT8ZyHTy2LBwH2v3_nnp5OCGu6cEzSlURtWJxHEskXZKhcAKl98oA>
+    <xme:rqT8ZzWn2rjwaBl9rg7u_4ZvZXLvVyQGM8PYN7FPvLldyPT_oa0sXuO1wjev7Sxz8
+    yq_xji3SfaEpfFJBQ>
+X-ME-Received: <xmr:rqT8Z8InjznoLs0NWBUPZoHrW4HjnfN722D88fUkDTQBp18iCwIeC1fb7VOogg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvudeljeekucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhephffvvefufffkofgggfestdekredtredttden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpeeggeeukeeghfevudektdevjeehhfekffevueef
+    udeivdelteeltdekheejgfeiveenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdo
+    mhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejke
+    ehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgr
+    mhgvpdhnsggprhgtphhtthhopeduledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    eplhgvihhtrghoseguvggsihgrnhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhn
+    fhhrrgguvggrugdrohhrghdprhgtphhtthhopehmihhnghhosehrvgguhhgrthdrtghomh
+    dprhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhonhhg
+    mhgrnhesrhgvughhrghtrdgtohhmpdhrtghpthhtoheprggvhhesmhgvthgrrdgtohhmpd
+    hrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpth
+    htohepvgguuhhmrgiivghtsehgohhoghhlvgdrtghomh
+X-ME-Proxy: <xmx:rqT8Z8GlZ0cHY8lIpgu0dp1X1nZKRXI0VadFbxDCvEdIs7LcRm-C4w>
+    <xmx:rqT8Z4W9PO4LnyzNAeAn2XtR96sZpmUdbU1hma1Kc5AlCpIMHnTHUQ>
+    <xmx:rqT8Z_PLpI9zz2SASZvNpjoObvWPwjCr3YIRo_uawWVO-gAiAfDLWA>
+    <xmx:rqT8Z_25CGlTdI6lgz_yaJSqvwdtLsOzq8t6GMQL5qcS6l4oaNZvzQ>
+    <xmx:rqT8Z5VLvXMdMielQ5yr1d1OyMXftwyE5xipADGIHjlEEGi5eZH7pKT5>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 14 Apr 2025 02:01:17 -0400 (EDT)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Breno Leitao <leitao@debian.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Cc: aeh@meta.com,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	edumazet@google.com,
+	jhs@mojatatu.com,
+	kernel-team@meta.com,
+	Erik Lundgren <elundgren@meta.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, rcu <rcu@vger.kernel.org>
-Subject: Re: [v3,1/2] rcutorture: Perform more frequent testing of ->gpwrap
-Message-ID: <71ab408c-a01b-43a9-993c-4a55294e15ef@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <78c902f2-3b01-49ce-85c0-3c748fa43224@paulmck-laptop>
- <174434979260.108.12165413620035643068@patchwork.local>
+	rcu@vger.kernel.org,
+	Boqun Feng <boqun.feng@gmail.com>
+Subject: [RFC PATCH 0/8] Introduce simple hazard pointers for lockdep
+Date: Sun, 13 Apr 2025 23:00:47 -0700
+Message-ID: <20250414060055.341516-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <174434979260.108.12165413620035643068@patchwork.local>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 11, 2025 at 05:36:32AM -0000, Joel Fernandes wrote:
-> Hello, Paul,
-> 
-> On Fri, 11 Apr 2025 05:33:16 GMT, "Paul E. McKenney" wrote:
-> > On Thu, Apr 10, 2025 at 11:54:13AM -0700, Paul E. McKenney wrote:
-> > > On Thu, Apr 10, 2025 at 11:29:03AM -0700, Paul E. McKenney wrote:
-> > > > On Thu, Apr 10, 2025 at 11:03:27AM -0400, Joel Fernandes wrote: >
-> > > > Currently, the ->gpwrap is not tested (at all per my testing) due to
-> > > > the > requirement of a large delta between a CPU's rdp->gp_seq and its
-> > > > node's > rnp->gpseq.  > > This results in no testing of ->gpwrap being
-> > > > set. This patch by default > adds 5 minutes of testing with ->gpwrap
-> > > > forced by lowering the delta > between rdp->gp_seq and rnp->gp_seq to
-> > > > just 8 GPs. All of this is > configurable, including the active time for
-> > > > the setting and a full > testing cycle.  > > By default, the first 25
-> > > > minutes of a test will have the _default_ > behavior there is right now
-> > > > (ULONG_MAX / 4) delta. Then for 5 minutes, > we switch to a smaller delt
-> > a
-> > > > causing 1-2 wraps in 5 minutes. I believe > this is reasonable since we
-> > > > at least add a little bit of testing for > usecases where ->gpwrap is se
-> > t.
-> > > > > > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-> > > > 
-> > > > Much better, thank you!
-> > > > 
-> > > > One potential nit below.  I will run some tests on this version.
-> > > 
-> > > And please feel free to apply the following to both:
-> > > 
-> > > Tested-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > And this happy situation lasted only until I rebased onto v6.15-rc1 and
-> > on top of this commit:
-> > 
-> > 1342aec2e442 ("Merge branches 'rcu/misc-for-6.16', 'rcu/seq-counters-for-6.1
-> > 6' and 'rcu/torture-for-6.16' into rcu/for-next")
-> > 
-> > This got me the splat shown below when running rcutorture scenario SRCU-N.
-> > I reverted this commit and tests pass normally.
-> > 
-> > Your other commit (ARM64 images) continues working fine.
-> 
-> Interesting.. it seems to be crashing during statistics printing.
-> 
-> I am wondering if the test itself uncovered a bug or the bug is in the test
-> itself.
+Hi,
 
-Both are quite possible, also a bug somewhere else entirely.
+This RFC is mostly a follow-up on discussion:
 
-> Looking forward to your test with the other patch and we could hold off on this
-> one till we have more data about what is going on.
+	https://lore.kernel.org/lkml/20250321-lockdep-v1-1-78b732d195fb@debian.org/
 
-This one got lot of OOMs when tests of RCU priority boosting overlapped
-with testing of RCU callback flooding on TREE03, as in 13 of the 14
-9-hour runs.  Back on v6.14-rc1, these were quite rare.
+I found that using a hazard pointer variant can speed up the
+lockdep_unregister_key(), on my system (a 96-cpu VMs), the results of:
 
-Ah, and I am carrying this as an experimental patch:
+	time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq
 
-269b9b5be09d ("EXP sched: Disable DL server if sysctl_sched_rt_runtime is -1")
+are
 
-Just checking to see if this is still something I should be carrying.
+	(without the patchset)
+	real    0m1.039s
+	user    0m0.001s
+	sys     0m0.069s
 
-							Thanx, Paul
+	(with the patchset)
+	real    0m0.053s
+	user    0m0.000s
+	sys     0m0.051s
 
-> thanks,
-> 
->  - Joel
-> 
-> 
-> 
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > [   15.911885] BUG: kernel NULL pointer dereference, address: 00000000000000
-> > 00
-> > [   15.912413] #PF: supervisor instruction fetch in kernel mode
-> > [   15.912826] #PF: error_code(0x0010) - not-present page
-> > [   15.913218] PGD 0 P4D 0 
-> > [   15.913420] Oops: Oops: 0010 [#1] SMP PTI
-> > [   15.913715] CPU: 3 UID: 0 PID: 62 Comm: rcu_torture_sta Not tainted 6.15.
-> > 0-rc1-00047-g6e14cad86633 #19 PREEMPT(undef) 
-> > [   15.914535] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15
-> > .0-1 04/01/2014
-> > [   15.915147] RIP: 0010:0x0
-> > [   15.915348] Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-> > [   15.915856] RSP: 0000:ffffa0380021fdc8 EFLAGS: 00010246
-> > [   15.916256] RAX: 0000000000000000 RBX: ffffffffb6b02cc0 RCX: 000000000000
-> > 000a
-> > [   15.916802] RDX: 0000000000000000 RSI: ffff9f121f418cc0 RDI: 000000000000
-> > 0000
-> > [   15.917305] RBP: 0000000000000000 R08: ffff9f121f418d20 R09: 000000000000
-> > 0000
-> > [   15.917789] R10: 0000000000000000 R11: 0000000000000005 R12: ffffffffb6b0
-> > 2d20
-> > [   15.918293] R13: 0000000000000000 R14: ffffa0380021fe50 R15: ffffa0380021
-> > fdf8
-> > [   15.918801] FS:  0000000000000000(0000) GS:ffff9f1268a96000(0000) knlGS:0
-> > 000000000000000
-> > [   15.919313] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   15.919628] CR2: ffffffffffffffd6 CR3: 0000000017c32000 CR4: 000000000000
-> > 06f0
-> > [   15.920004] Call Trace:
-> > [   15.920139]  <TASK>
-> > [   15.920256]  rcu_torture_stats_print+0x16b/0x670
-> > [   15.920514]  ? __switch_to_asm+0x39/0x70
-> > [   15.920719]  ? finish_task_switch.isra.0+0x76/0x250
-> > [   15.920982]  ? __pfx_rcu_torture_stats+0x10/0x10
-> > [   15.921222]  rcu_torture_stats+0x25/0x70
-> > [   15.921435]  kthread+0xf1/0x1e0
-> > [   15.921602]  ? __pfx_kthread+0x10/0x10
-> > [   15.921797]  ? __pfx_kthread+0x10/0x10
-> > [   15.922000]  ret_from_fork+0x2f/0x50
-> > [   15.922193]  ? __pfx_kthread+0x10/0x10
-> > [   15.922395]  ret_from_fork_asm+0x1a/0x30
-> > [   15.922605]  </TASK>
-> > [   15.922723] Modules linked in:
-> > [   15.922890] CR2: 0000000000000000
-> > [   15.923072] ---[ end trace 0000000000000000 ]---
+i.e. almost 20x speed-up.
+
+Other comparisons between RCU and shazptr, the rcuscale results (using
+default configuration from
+tools/testing/selftests/rcutorture/bin/kvm.sh):
+
+RCU:
+
+	Average grace-period duration: 7470.02 microseconds
+	Minimum grace-period duration: 3981.6
+	50th percentile grace-period duration: 6002.73
+	90th percentile grace-period duration: 7008.93
+	99th percentile grace-period duration: 10015
+	Maximum grace-period duration: 142228
+
+shazptr:
+
+	Average grace-period duration: 0.845825 microseconds
+	Minimum grace-period duration: 0.199
+	50th percentile grace-period duration: 0.585
+	90th percentile grace-period duration: 1.656
+	99th percentile grace-period duration: 3.872
+	Maximum grace-period duration: 3049.05
+
+shazptr (skip_synchronize_self_scan=1, i.e. always let scan kthread to
+wakeup):
+
+	Average grace-period duration: 467.861 microseconds
+	Minimum grace-period duration: 92.913
+	50th percentile grace-period duration: 440.691
+	90th percentile grace-period duration: 460.623
+	99th percentile grace-period duration: 650.068
+	Maximum grace-period duration: 5775.46
+
+shazptr_wildcard (i.e. readers always use SHAZPTR_WILDCARD):
+
+	Average grace-period duration: 599.569 microseconds
+	Minimum grace-period duration: 1.432
+	50th percentile grace-period duration: 582.631
+	90th percentile grace-period duration: 781.704
+	99th percentile grace-period duration: 1160.26
+	Maximum grace-period duration: 6727.53
+
+shazptr_wildcard (skip_synchronize_self_scan=1):
+
+	Average grace-period duration: 460.466 microseconds
+	Minimum grace-period duration: 303.546
+	50th percentile grace-period duration: 424.334
+	90th percentile grace-period duration: 482.637
+	99th percentile grace-period duration: 600.214
+	Maximum grace-period duration: 4126.94
+	
+
+Overall it looks promising to me, but I would like to see how it
+performs in the environment of Breno. Also as Paul always reminds me:
+buggy code usually run faster, so please take a look in case I'm missing
+something ;-) Thanks!
+
+The patchset is based on v6.15-rc1.
+
+Boqun Feng (8):
+  Introduce simple hazard pointers
+  shazptr: Add refscale test
+  shazptr: Add refscale test for wildcard
+  shazptr: Avoid synchronize_shaptr() busy waiting
+  shazptr: Allow skip self scan in synchronize_shaptr()
+  rcuscale: Allow rcu_scale_ops::get_gp_seq to be NULL
+  rcuscale: Add tests for simple hazard pointers
+  locking/lockdep: Use shazptr to protect the key hashlist
+
+ include/linux/shazptr.h  |  73 +++++++++
+ kernel/locking/Makefile  |   2 +-
+ kernel/locking/lockdep.c |  11 +-
+ kernel/locking/shazptr.c | 318 +++++++++++++++++++++++++++++++++++++++
+ kernel/rcu/rcuscale.c    |  60 +++++++-
+ kernel/rcu/refscale.c    |  77 ++++++++++
+ 6 files changed, 534 insertions(+), 7 deletions(-)
+ create mode 100644 include/linux/shazptr.h
+ create mode 100644 kernel/locking/shazptr.c
+
+-- 
+2.47.1
+
