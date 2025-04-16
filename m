@@ -1,54 +1,71 @@
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8628D192D68;
-	Wed, 16 Apr 2025 14:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 832611FCF7C;
+	Wed, 16 Apr 2025 15:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744812852; cv=none; b=W8u9eV/esLiCVMRIl3bphG/3C7qoznDa1dNN6SX0edZ8sQ/DPnYcEJkvd+XMyLE+R2xAWY1oddLzbeLMVZH7o3sf8AhCS+J907CpFXmpjWUYQSwKn/bXU7zQn9xZBrJkBFrk5GfzJfdmoI1/GM6krkwJl5lk0qdgxqNpgNdFp8Y=
+	t=1744815880; cv=none; b=J7REHj/VA+ND+OMKjDopn4dV4XdEqS8wCNZHf1+W+BBfmLwRiIBOgkDWsgOrJ/kl9Or8E2cKC7aFezavDbNO7YVLgD9UohmrvFNrScdC3RH76vSdl6mcYGc57MJort8vLl/I6VBAWXeg6/OL6sxi0MW6ziwWbva+ak2JPsi4FdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744812852; c=relaxed/simple;
-	bh=P8RyqmbFkaSkJG3Ix7pdpJZrWqUmUydL79exEYIicoM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iy8XAcCVVqPWJ4LihS9JeyGdPAnFOZORvmOQh4gF/6XehZ+OTX8seC0uvTj+VmlYfSBImYvqX/iD0lboSy6Z/IiBzIdERvn1fzHpgKspFYQqsp4/zHJi7yxrg9eydhLfJR6Q/D/OaAqOqolgYxr0i5QrqivVEn7jk4gl+8Yw9Go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1744815880; c=relaxed/simple;
+	bh=U+MEQ0NJyN29e2hatoEg0pd9WT6SIc00si1vlhfXOuI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IfVGWGJnswM2w4J9PIC76L3n6u1tri4T8tlepsP48w42Q64Ew+ddvN+W2QXs3Wg8JBioKouczeWunjPvaCvIPwh36VfngbJJ0N6SSy9h/bUSZ4Q1ECQDJTCzFNOKSEx9fEuA/xlx04RsfJkIF4dh9aT9GBbJ5XjJq3Zp7/WEwPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Msbb5A/8; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5f435c9f2f9so5195726a12.1;
-        Wed, 16 Apr 2025 07:14:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744812848; x=1745417648;
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Msbb5A/8"
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-54954fa61c9so8363268e87.1;
+        Wed, 16 Apr 2025 08:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744815876; x=1745420676; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7pT35+V8RBeV9Mc9LqTDuhSOlu7PteaZppAzx6rau6g=;
+        b=Msbb5A/884WtCLTuxapRHbOV9WbH6BQNES85FJTdsN4wWn9THDyhlb2ZpFBfCujGSn
+         inhmFLBbVsbIHlk2S3BDU9drhRsAG9ZR855Nxe9o8MgSZStWinjYZ00ibFJbZe3M0CZG
+         UdYH6kWp7pQnPuCxI15KjAXKNdDwaoH5MjIfoe24go8Q7Tp9ZrZS+FutWYPLZaWl8YX0
+         LLE7yQzS5c3TWMtRzq7essg5XQk3auoTTJRbvgEZUzCHBEsjvx7PTlQSBpoCa5452d8A
+         juc3poZtSDgyxl/LlLrq3atd+stsUQUA4W6dqg7QOF0ocS2hK1wP675/p17QU1MMG/2V
+         6b0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744815876; x=1745420676;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aQgHDDXnnzWRzJaD14GNyp8/kByAyC6tvTlmaDv4JQU=;
-        b=kBU0ozp/u6yQMyHiesVVqPGZcXCmmqcJsS2PttCIqVDFzRrs1YKUG50/CPmnuyO0rt
-         da8iad6DJkkwY6IMq9Zz5C2Oo+y99NWhVAJWtpeXpkxt01IDK05RjXurpbBmEeN/0ARi
-         7Je1aaf7N5bCeBu6aCKNlu3CbST3tr5o/Yesb2voiLb40hLZoVhYjYCeZlKn6x0vpJNI
-         hgx75579qZ9m58dLAnJuuWK37EAeKB/1bt1/oim2hwWdX2y8RjFhYtrf7PMDqwmow5ht
-         z0viyClTo4HAfdoM4xGIsr1xF62F+5hOwZy0YVPru1cb7cbwuO1PjzZgnWe7G7CCGd3m
-         28Rg==
-X-Forwarded-Encrypted: i=1; AJvYcCUXFUS/kRK1dJeTQps1of4HC/TM6N3zBsc4XAWR49/N+7ImImJuPEjWfrcwrp/cQ+Ov+Uofp3b1@vger.kernel.org, AJvYcCV/k8dOtcNscr50sxDcFwchadBLpWHOXFGX/h93ul873HMk+tgm3jXS1HYHdRHmi3RrnVllyBpgtNYkq0M=@vger.kernel.org, AJvYcCWLD88mM9aAcwnChlnbOgk5sOBlSJG9LcnC4lwwbcK5H201nH+pis1dK9Q/PqBgG49fS9nX@vger.kernel.org
-X-Gm-Message-State: AOJu0YymdQA7Y4rwCUFTS7PZGITPBw2UoyE4olHu4qvo5hwwVpXq8NB/
-	26CwtrwMwtAVV39aEw21fOeAcIXWRL6eXaDeTliV4qKiUsiQW8tt
-X-Gm-Gg: ASbGncuM+mzatgapFxXqvwUP1jrK99O16UTWs1d8wsMKTzSTX5ZrcYqZUKpjWnElLmg
-	pFQCf7yNaDFMgXR3exZ109Wodpxx/JOVLMNUro9MqadG0DgxL3L2MSu6BuTJu/RwTWN/boFnTVI
-	fgJ0crj0AJuwb3Nh2Ga/w0Xof9+tFMnP4adCZcfGIJHPxUDO0K3nKO6WwrUJn1jdGu9NuHbVpM3
-	jd4bUtP4TomDOpscjgnCOSv7y84+MgkIuu3XB6k0MI3ioXR5PrVUv6jMutSC4Q4eSGJbUzel+eE
-	+XaP39AE6Rpmo7D9NERUp7Fe7nsIhmk=
-X-Google-Smtp-Source: AGHT+IF/gy9/45ncvysC9Q/2W6qeo7ZVy26R66Z4JYMUvVjVlHXtwBR64Y2bD+mMPpEWZZIP4NNGtg==
-X-Received: by 2002:a17:906:c108:b0:aca:d4f0:2b9f with SMTP id a640c23a62f3a-acb42875ecbmr212168066b.10.1744812847353;
-        Wed, 16 Apr 2025 07:14:07 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:4::])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-acb3cdeb9f7sm133316866b.58.2025.04.16.07.14.05
+        bh=7pT35+V8RBeV9Mc9LqTDuhSOlu7PteaZppAzx6rau6g=;
+        b=hahwps0lo6QnXAS+vDbU2ZlqhpoyMt16qlkIKGU3kiiPsTf5656Dmj5EchZuC2Xubt
+         RSOsszsIwDFuqNv3rmUDENPGHDCCYNs68UteupCahqmpmNQ2QkdaKLIKcivgLi0qnwmJ
+         l+gC3E+PS0X7tBhMefxPeFAHZ3G7ku4sOzNtSzKvQGXNC4ZUbGmSkMSBnlWPoKRNs04L
+         nmnAWtD+rcHulYxDNZELAlk+fnjlW81B2dXlIv3GUiSbSe5HUA7yGR+utcIMH8crxxfz
+         djpUiYw4p7plrOVK1uB9P/Rp7+oq4EZ/awkTIoDrptbL+1CWWISYDi+/EXZFm4SGqFhU
+         5SOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvaBBTm2O8GSGxBQOX7g/dMx2pdqnNEq+yslC4e7L/1mbrZYPXKN3awFBlwX3/jgqUO2pD3PVI@vger.kernel.org, AJvYcCX6WF6g9qcWWPIB+3TrnCaMYfMTWf2K7/Sz0V6SxRJ2s+OZNpvayVuqHSzGqMF/HR6Dk/Fs@vger.kernel.org, AJvYcCXAb8OP8qURNQvPaq5fv5q+YANTyhGaNEUBFMoe+IUWFXa8zk+5Y2Ij/1gK1LXTeRQH3h4L7CBXibSTfLk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYtisKBCUbTJIjx796YmeYQRJs/iknduahMKlp5RBTCG8g6G1c
+	+MkMmZ8044ycWB7mDEaSCmMQ2ZPqzmP8FHbM++CkCQvYqUIRvzFC
+X-Gm-Gg: ASbGncvU5YwPyDTC5xcjuVf0I/9WyCk+xn6EaDlBttJKoKwkXRR78JU82PJpwoCoyZS
+	kmJnRP8mKmEJWEmtDp3/SYCzhi5av9sXxjYv13zHUYbRxPhwypz15Nvhxyv84w9ijICPkywK4dp
+	xvNBff5u6RYTRYc10RyeaGHkX0wi3ANxzzP8bRQ8DF7WozGRT4anZ5NphYxfP2FW5WczUn7r5gu
+	ZnA7fqHg/XmPaEntvFgjbh2WsaDkrVUfimfO5K8J4DVZJdKKRkl0WOGqnGIi33QrbBtbssgw74O
+	sR+vKtiGiBMjxsl+mbqZuF4hXBgidOhQ820zS+QU/3o8M2bmQmjqq3ob2geVS5wL57itPlpBgum
+	uPXs=
+X-Google-Smtp-Source: AGHT+IFe70dbGyjGUfP6DKrUnE2JPkJFtUOdZH/9mOEmn3TQ1RWJF0i3Mbzb/Dsr/0bYDlDLorlv5w==
+X-Received: by 2002:a05:6512:3c85:b0:545:8c5:44cb with SMTP id 2adb3069b0e04-54d64aab466mr898300e87.31.1744815875881;
+        Wed, 16 Apr 2025 08:04:35 -0700 (PDT)
+Received: from pc636 (host-90-233-217-52.mobileonline.telia.com. [90.233.217.52])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54d3d5104c6sm1695748e87.195.2025.04.16.08.04.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 07:14:06 -0700 (PDT)
-Date: Wed, 16 Apr 2025 07:14:04 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
-	aeh@meta.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Wed, 16 Apr 2025 08:04:34 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 16 Apr 2025 17:04:31 +0200
+To: Breno Leitao <leitao@debian.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, aeh@meta.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
 	edumazet@google.com, jhs@mojatatu.com, kernel-team@meta.com,
 	Erik Lundgren <elundgren@meta.com>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -57,8 +74,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org
 Subject: Re: [RFC PATCH 0/8] Introduce simple hazard pointers for lockdep
-Message-ID: <Z/+7LMnQqtV+mnJ+@gmail.com>
+Message-ID: <Z__G_8VNrgUpfpuk@pc636>
 References: <20250414060055.341516-1-boqun.feng@gmail.com>
+ <Z/+7LMnQqtV+mnJ+@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -67,42 +85,52 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250414060055.341516-1-boqun.feng@gmail.com>
+In-Reply-To: <Z/+7LMnQqtV+mnJ+@gmail.com>
 
-Hi Boqun,
+On Wed, Apr 16, 2025 at 07:14:04AM -0700, Breno Leitao wrote:
+> Hi Boqun,
+> 
+> On Sun, Apr 13, 2025 at 11:00:47PM -0700, Boqun Feng wrote:
+> 
+> > Overall it looks promising to me, but I would like to see how it
+> > performs in the environment of Breno. Also as Paul always reminds me:
+> > buggy code usually run faster, so please take a look in case I'm missing
+> > something ;-) Thanks!
+> 
+> Thanks for the patchset. I've confirmed that the wins are large on my
+> environment, but, at the same magnitute of synchronize_rcu_expedited().
+> 
+> Here are the numbers I got:
+> 
+> 	6.15-rc1 (upstream)
+> 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> 		real	0m3.986s
+> 		user	0m0.001s
+> 		sys	0m0.093s
+> 
+> 	Your patchset on top of 6.15-rc1
+> 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> 		real	0m0.072s
+> 		user	0m0.001s
+> 		sys	0m0.070s
+> 
+> 
+> 	My original proposal of using synchronize_rcu_expedited()[1]
+> 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> 		real	0m0.074s
+> 		user	0m0.001s
+> 		sys	0m0.061s
+> 
+> Link: https://lore.kernel.org/all/20250321-lockdep-v1-1-78b732d195fb@debian.org/ [1]
+> 
+Could you please also do the test of fist scenario with a regular
+synchronize_rcu() but switch to its faster variant:
 
-On Sun, Apr 13, 2025 at 11:00:47PM -0700, Boqun Feng wrote:
+echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
 
-> Overall it looks promising to me, but I would like to see how it
-> performs in the environment of Breno. Also as Paul always reminds me:
-> buggy code usually run faster, so please take a look in case I'm missing
-> something ;-) Thanks!
+and run the test. If you have a time.
 
-Thanks for the patchset. I've confirmed that the wins are large on my
-environment, but, at the same magnitute of synchronize_rcu_expedited().
+Thank you!
 
-Here are the numbers I got:
-
-	6.15-rc1 (upstream)
-		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-		real	0m3.986s
-		user	0m0.001s
-		sys	0m0.093s
-
-	Your patchset on top of 6.15-rc1
-		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-		real	0m0.072s
-		user	0m0.001s
-		sys	0m0.070s
-
-
-	My original proposal of using synchronize_rcu_expedited()[1]
-		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-		real	0m0.074s
-		user	0m0.001s
-		sys	0m0.061s
-
-Link: https://lore.kernel.org/all/20250321-lockdep-v1-1-78b732d195fb@debian.org/ [1]
-
-Thanks for working on it,
---breno
+--
+Vlad Rezki
