@@ -1,52 +1,66 @@
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68A8223704;
-	Wed, 16 Apr 2025 18:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B5D22F175;
+	Thu, 17 Apr 2025 08:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744828444; cv=none; b=COWwWzJVqGZkcGjWpAh8euZp1L+Wn3SgE++djmgrlrGO8dsP+7eKC8lQBNMy7R0wlZGWeF+Uj6oX95HB34B0WoXmtSoYq7osqbFqSj4Pfbtl0nMUbFVkqaMGCdZOaFrVcY3OhwwavzBZJeh7lAWQKaYEbDzOTlG77T/vbW+oCNk=
+	t=1744878148; cv=none; b=fBrSRRfPwMpss0CVflvvEY4zE3XZYfmWtMgdjCNfyLISEctVNNYdP474ljFddib+7t6Elu6dDo8Q9vfJ3DLi+MIPFtI+FcNhr2F04DNvaoysu+CvJy690UJNzRw9el+zK73GLmFh8BEAJcb8uPyyzfyftJdopmpkv6/P5my3Jz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744828444; c=relaxed/simple;
-	bh=nI4eMCXpXlIIBaVnc9BH396gww79YEtpd2CqFazhQOk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cm5AyU1dev2FHuGN+as3vANg/SzD8f+nKFJ3C81t39rLfJ/+fC3cyvg7GUrKpK3+HSBnjRxJW2KPSSuetDhZwQQBHzthgfJSmS6M523JaC/7EPpVIQXj1mgYQhoY5hRjyIZGdhC9GYpV6vEw8cPQ8JahOJtai0IIjdxnElS5FY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1744878148; c=relaxed/simple;
+	bh=XaLWudfU75UnKIdaIpmE5WlbFHKJ3Zsed/6soZVriaY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wz25Rzb9t9edfgjYVeuTf16bI+GWqBnpiyctyCFtJfyZCGmQtZ+SsAMREPGRUi1766kGYf62Jw6t07DkEPVRrQ0Sx7hSl1xnYkFGjCoSFumKCVqrIoD5Ca6533TX3CKyo8xa2DTNrmnPR1Hs2x4i7Hyvasps5TgZgGZ12YCPRBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nSZUFr//; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5e686d39ba2so12876377a12.2;
-        Wed, 16 Apr 2025 11:34:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744828441; x=1745433241;
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nSZUFr//"
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-3105ef2a06cso4717991fa.2;
+        Thu, 17 Apr 2025 01:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744878145; x=1745482945; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aOerJZt7N7TJbcdxM6FzsrLlZ/8eU0Fzpj/ouPW/K/M=;
+        b=nSZUFr//xjRjiCFB1m3kgEQGZ5s0W0ZMvZsyrMLqPUeeX6py5UERgfxRrSV1aJ1b2f
+         3qN8YJuHWxaRq5ePdDo/1YHERrJ0/rI4l5NoEv3XU/UFewJVnURwho41DvYsLSDpHT3X
+         fVn0qYGlIBG2q9k3sORbCGuqWweDQQpY+eUzg26lWIPwFzpEkOpi/ltaIJ+tky5PEib3
+         PFa7jGVKivdRo3wkTOMiBRhOMdpiw3MacoIKeoNrFBNc7oomEGJqaobZ52r49qwmwcGV
+         Gny+gf0cbTSz8wnZ7j9k7WZWkci5DJWAOLn1UtxwsW82EM+2Q2KtuD8T+JNZVy7Mpgyd
+         w23Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744878145; x=1745482945;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=II34oFPyGmpovKrvCA1FDiNQbtnPbuqRHfz3wqrX0Nc=;
-        b=Wzhk9c9Co6t7VC6DCkj3fbdmrG5ARKJByNcn3/bW8zYgG27k/sV0TMFsrQZSHzT6CP
-         UQw0bpcpAfP072uBA9T58Ss5rWLg40zZD/PaAsR0ffvo0mEvytjHaAmQE1hbm9jNP3By
-         S6J3ZnAdsu7WYvLF/wg8XMOhv89kZPBkHr6kdML2laYIXjtE0uqEjgYREFMduPrPLm8f
-         geuj1I4T9wuAPw1qDGRMHP7XMNzPqREO705WiLIg2JDxOnmRLMSWJEjtmeyBJ0Lqi8HP
-         gq8sulT1b2xVKF+QFBCJl8AP6yNfpsGkDXZMUoEkoiV/vF0PwlkdPTEl3KrrQulsxXit
-         qSJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXhlAgsGZlhiL4YaTCawNdYmZM6vEQE2HzGUTUJuGKIBqr18HXlpaliPv4ZNS8gnUab7+dXL0l@vger.kernel.org, AJvYcCXXofit5MHenpBGZobrSURBakbD5Sly6xa9iMSXeb9Xqr8uzfZeGccCocW6QVtNlr0RvUJH@vger.kernel.org, AJvYcCXlf6RgxeITMbXjl2+XIYfNfHsRwwzaSrm1s4qH21OdWxAkyoUnRNomYbk5EnI3noaN5FqlfjWraNRDKVc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXPs7wEX4UKjBO+V5mi/M64FciGJSMWQU7zCXtt0AtD1C8iohc
-	zUIFNUbDOzoM67+8j4VmP4PSZhWobpsLTQ1JqQhiwGXdyjhOy6cQ
-X-Gm-Gg: ASbGnctYpeUuQe8nEQppTGF4rn1dH3+MM69rKbb1UfoDa3qN43HYXS4yZiFKPL6PJ60
-	T+RBVfJcki+dHuXb77VOl3twlEBjIanaWpxGo+eS5gbCqFQP77N+GVNFxs8g5ID+RHGiq6Nm53F
-	kq0aUvvINcewLvyH3FuUZeMen/1harWAVk/NBJ06Z+Jc2TEpTJnZHnu0MeXaln8N0blHH6J3xjw
-	EovRgDyHRbEerMl4wIZ5UYpwsx/BbISq9v8rcbnKHpt3Y+O20KM2BFc9MNj5L9PIqOa/OFaaLlP
-	Y0C/vNcawVOjxKgnNPjcjCs7SvCW90Bw
-X-Google-Smtp-Source: AGHT+IGfcWO1OWqg4XBLUSJ9Zwiz91FknHiSYKJiNdaWcjNSyHc4W1J3O1QOnmtZgxqyH2rgmq//xw==
-X-Received: by 2002:a05:6402:239c:b0:5f0:9eb3:8e76 with SMTP id 4fb4d7f45d1cf-5f4b76f4db4mr1959270a12.34.1744828440735;
-        Wed, 16 Apr 2025 11:34:00 -0700 (PDT)
-Received: from gmail.com ([2a03:2880:30ff:70::])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5f36f06c4fcsm9052083a12.47.2025.04.16.11.33.59
+        bh=aOerJZt7N7TJbcdxM6FzsrLlZ/8eU0Fzpj/ouPW/K/M=;
+        b=QZA9piolEs5jRJGoCel9xmSFibDdr5IWyZz9zqypkspf0PIUYEyfP9d81HIDDDHWl8
+         rJnF3fqj9xWlVmNzo13L9rlZNL0HWYrTisv8BYPsieFT0Kh/YF98fhyMvMj4WN+sGTvT
+         qPYAdkKQOioVMkj0bHKTLjolYcQzpZpxTK4lPWh0VsQ/sqkYhkqBYgqOg0RDBJR21+Eg
+         TSBf4W39VhanC2qQ4ioK45k60woYb/AxIwIOFQXyhpm3Y6qUtzkhac274HG+DR20dAeS
+         M23xhcsrXqyUZ0jigAOA7RoBBQp0Dk7WYOAxTeDNEuixzErvQYZc0ry9ri4XCTMJWtNe
+         nuEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU6iphJ8FqWj33A4AFrULwTV2tscySjdcj2Yt8x3XA5BwzBSNMt+FHh+9R8Vptot6gmLgXsL0Fu@vger.kernel.org, AJvYcCUB01aTapu2ozHPXyJZxb8ZRSQPaFxD0K8cA+FsEafijyV3LqgKwwAlADHwU5eqf5A3hoGGG5BDhPQztvo=@vger.kernel.org, AJvYcCVmnCT4jeQ47lJEo1F+DJFDeluLOqg1lIGmhu183W4tkbemBtY3oyVkkA4j31cHM55akbfm@vger.kernel.org
+X-Gm-Message-State: AOJu0YwksIyVL2TV5mDX9GhNqwG3/OzbqqH8G+7zJSfhVV0Hlm5Xnh1z
+	2Yi2VgHM+EBaV6w9qaSto98A2RaxVsSPfOx6LoLUH/CHmfsDrzdC
+X-Gm-Gg: ASbGnctnSnpvNGH+5j3acBopga2+JepbLwuvpdb1b0FH62D9f3Jql1s8kA+bIZP47hj
+	LutvCa2V3Yt/tfZ79cOdud3ytlq7QLJ33IQD0FD2VAPiCiJ5YzKeBwLO3Eaevj7cGTEKNW8nEjT
+	IUpxDGUs2nZFh7moPSYx0gGykGwzV4wEoX3La09ZVjzpqg/QAcnCui2ypW55O4+AYcGfXcVQ2n5
+	QwnBa9W+58kVpM09ek7HLM2Ic/0/QGxex+3ZbI7S9YhkCJlTGtyEgyIRmilK+AoWj4a6Ly831YF
+	HWaQ4Ps=
+X-Google-Smtp-Source: AGHT+IGMLKxq2LO15KmhGtkOiM7gb90wl6nIY0Y+lquxul1vxlYn5GuuUoaTIqIvxIK7OETTr7XVxg==
+X-Received: by 2002:a2e:a58e:0:b0:308:df1e:24c4 with SMTP id 38308e7fff4ca-3107f718becmr16592671fa.29.1744878144740;
+        Thu, 17 Apr 2025 01:22:24 -0700 (PDT)
+Received: from pc636 ([2001:9b1:d5a0:a500::800])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30f465d4ed2sm27214161fa.86.2025.04.17.01.22.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 11:34:00 -0700 (PDT)
-Date: Wed, 16 Apr 2025 11:33:57 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
+        Thu, 17 Apr 2025 01:22:24 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 17 Apr 2025 10:22:22 +0200
+To: Breno Leitao <leitao@debian.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Boqun Feng <boqun.feng@gmail.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
 	Waiman Long <longman@redhat.com>, aeh@meta.com,
@@ -58,10 +72,11 @@ Cc: Boqun Feng <boqun.feng@gmail.com>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
 Subject: Re: [RFC PATCH 0/8] Introduce simple hazard pointers for lockdep
-Message-ID: <Z//4FUsm1/jbOTP1@gmail.com>
+Message-ID: <aAC6PgzV1kOHT2go@pc636>
 References: <20250414060055.341516-1-boqun.feng@gmail.com>
  <Z/+7LMnQqtV+mnJ+@gmail.com>
  <Z__G_8VNrgUpfpuk@pc636>
+ <Z//4FUsm1/jbOTP1@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -70,77 +85,86 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z__G_8VNrgUpfpuk@pc636>
+In-Reply-To: <Z//4FUsm1/jbOTP1@gmail.com>
 
-Hello Vlad,
+Hello, Breno!
 
-On Wed, Apr 16, 2025 at 05:04:31PM +0200, Uladzislau Rezki wrote:
-> On Wed, Apr 16, 2025 at 07:14:04AM -0700, Breno Leitao wrote:
-> > Hi Boqun,
-> > 
-> > On Sun, Apr 13, 2025 at 11:00:47PM -0700, Boqun Feng wrote:
-> > 
-> > > Overall it looks promising to me, but I would like to see how it
-> > > performs in the environment of Breno. Also as Paul always reminds me:
-> > > buggy code usually run faster, so please take a look in case I'm missing
-> > > something ;-) Thanks!
-> > 
-> > Thanks for the patchset. I've confirmed that the wins are large on my
-> > environment, but, at the same magnitute of synchronize_rcu_expedited().
-> > 
-> > Here are the numbers I got:
-> > 
-> > 	6.15-rc1 (upstream)
-> > 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-> > 		real	0m3.986s
-> > 		user	0m0.001s
-> > 		sys	0m0.093s
-> > 
-> > 	Your patchset on top of 6.15-rc1
-> > 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-> > 		real	0m0.072s
-> > 		user	0m0.001s
-> > 		sys	0m0.070s
-> > 
-> > 
-> > 	My original proposal of using synchronize_rcu_expedited()[1]
-> > 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-> > 		real	0m0.074s
-> > 		user	0m0.001s
-> > 		sys	0m0.061s
-> > 
-> > Link: https://lore.kernel.org/all/20250321-lockdep-v1-1-78b732d195fb@debian.org/ [1]
-> > 
-> Could you please also do the test of fist scenario with a regular
-> synchronize_rcu() but switch to its faster variant:
+> Hello Vlad,
 > 
-> echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> On Wed, Apr 16, 2025 at 05:04:31PM +0200, Uladzislau Rezki wrote:
+> > On Wed, Apr 16, 2025 at 07:14:04AM -0700, Breno Leitao wrote:
+> > > Hi Boqun,
+> > > 
+> > > On Sun, Apr 13, 2025 at 11:00:47PM -0700, Boqun Feng wrote:
+> > > 
+> > > > Overall it looks promising to me, but I would like to see how it
+> > > > performs in the environment of Breno. Also as Paul always reminds me:
+> > > > buggy code usually run faster, so please take a look in case I'm missing
+> > > > something ;-) Thanks!
+> > > 
+> > > Thanks for the patchset. I've confirmed that the wins are large on my
+> > > environment, but, at the same magnitute of synchronize_rcu_expedited().
+> > > 
+> > > Here are the numbers I got:
+> > > 
+> > > 	6.15-rc1 (upstream)
+> > > 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> > > 		real	0m3.986s
+> > > 		user	0m0.001s
+> > > 		sys	0m0.093s
+> > > 
+> > > 	Your patchset on top of 6.15-rc1
+> > > 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> > > 		real	0m0.072s
+> > > 		user	0m0.001s
+> > > 		sys	0m0.070s
+> > > 
+> > > 
+> > > 	My original proposal of using synchronize_rcu_expedited()[1]
+> > > 		# time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> > > 		real	0m0.074s
+> > > 		user	0m0.001s
+> > > 		sys	0m0.061s
+> > > 
+> > > Link: https://lore.kernel.org/all/20250321-lockdep-v1-1-78b732d195fb@debian.org/ [1]
+> > > 
+> > Could you please also do the test of fist scenario with a regular
+> > synchronize_rcu() but switch to its faster variant:
+> > 
+> > echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> > 
+> > and run the test. If you have a time.
 > 
-> and run the test. If you have a time.
+> Of course, I am more than interesting in this topic. This is what I run:
+> 
+> 
+> 	# /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq; time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> 	real	0m4.150s
+> 	user	0m0.001s
+> 	sys	0m0.076s
+> 
+> 	[root@host2 ~]# echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> 	[root@host2 ~]# /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq; time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> 	real	0m4.225s
+> 	user	0m0.000s
+> 	sys	0m0.106s
+> 
+> 	[root@host2 ~]# cat /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> 	1
+> 	[root@host2 ~]# echo 0 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> 	[root@host2 ~]# /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq; time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+> 	real	0m4.152s
+> 	user	0m0.001s
+> 	sys	0m0.099s
+> 
+> It seems it made very little difference?
+> 
+Yep, no difference. In your case you just need to speed up a grace
+period completion. So an expedited version really improves your case.
 
-Of course, I am more than interesting in this topic. This is what I run:
+So you do not have a lot of callbacks which may delay a normal GP.
 
+Thank you!
 
-	# /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq; time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-	real	0m4.150s
-	user	0m0.001s
-	sys	0m0.076s
-
-	[root@host2 ~]# echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-	[root@host2 ~]# /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq; time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-	real	0m4.225s
-	user	0m0.000s
-	sys	0m0.106s
-
-	[root@host2 ~]# cat /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-	1
-	[root@host2 ~]# echo 0 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-	[root@host2 ~]# /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq; time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
-	real	0m4.152s
-	user	0m0.001s
-	sys	0m0.099s
-
-It seems it made very little difference?
-
-Thanks
---breno
+--
+Uladzislau Rezki
