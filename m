@@ -1,71 +1,73 @@
 Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2073.outbound.protection.outlook.com [40.107.244.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C50021577E;
-	Fri, 18 Apr 2025 16:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D110B215F5F;
+	Fri, 18 Apr 2025 16:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.73
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744992632; cv=fail; b=dn0b8xAbxIShKxl8DkWhEhTyLgTEk9iLiuIS28uz4Pjmk+PaRd9RF6mHzb3JOl8svuCJnKMQUkDJmko0oony/1IdqM41XCVJKg4iCh51Ao1wRLRbZRYFP/hj73z9WfHVzolVFvrrNH7pmY3VwQ0/tVfe7LefkjjXad3Ga733zFA=
+	t=1744992634; cv=fail; b=QSrHR7LDsbHtpiJQOnLzV4ZOOpCWClqQdqScL7Djm69gLY3mN7NGfGnFtPulTe0MIJxCJUEtoJ+Tiy4B6Q4uSIHUU9NejZhWwfP5tUuKG44qSnZ7GBE4BOMhN6fTY+7vLPcUp5PQlZ6o+TFf5iilPgHW7GQuAQl+LLknUxHAMOY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744992632; c=relaxed/simple;
-	bh=YP0aKrK7t4dZMo3zpbXvouphDo9hJrnLNLvXuKHYXnk=;
+	s=arc-20240116; t=1744992634; c=relaxed/simple;
+	bh=BrXqNmgwhrFzqbjUmdWHSF9dtcn1ihitGKuSX+9eQlo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=csOnEXPAJJulIgCnNwBhGaAUY9x8tW2RddofJ0UH1MMuC0jzznGIUby3OY+cd59biFIn73nXHfdSDV5F7p5ckFe02AuKDB+RuVeXYmCOoky+ygNFcWVNJoT+97bx1f5PkDzTuNKrs7IJLbibtWIN1KIuKQBsDnqvtg+7dLZBiLY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YGm7bcIN; arc=fail smtp.client-ip=40.107.244.73
+	 Content-Type:MIME-Version; b=XxxGR7MGeV/Cb576bFin2kVb/2SOfy3hv5EMQTIhZCDtlNaLhmIQl6uRtsY3titJ+pNdZircqQe9qCDDqf4VoAXoMX7ZklTXtQCHqmHQyQWZtbMMRuUI4X/Lf1o12Bl8/WCWonqSofKhNODMGZqIaf441EGpMtMvb+XEFA+uMzY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=lqnnpjDD; arc=fail smtp.client-ip=40.107.244.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YGm7bcIN"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lqnnpjDD"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Npm1a90/VGq6OXuTsw30oVB/Phk0qjAZB0I4vyG1opVe4JMw0drfMZXRJy0wN2HjmcwyehoiHyJNvLfE6Cgy6qd/O2poq/ytvcKhZSHKwhVjOZ0XlIsd9J5IILe1h3+DVEhsQqxTsTcoeZR3uSWlMXPIvcaoXisWclfAMb42MLxHJ7RXh3C5eC2a4WKXjE9oshyfU26DOMeWsb/h/FTpuMYGYmmcyGWIlx4K1nl0yqa3iB1ZJNbXTeg1rMaLpTX4ehEv3frLvsTgbCPrGGhgysUS7mmK3ZqVTuBRqs/E3N0D0Ze1Pzq8i+l0LAnnOhwERcNpOzrkwLoVWJQ3Bgl6TA==
+ b=pIT9TryXauKO6A+uKhR42F+dKok4vvILNTiweOOvPymG6HqIyqnQA78Saw7heHtzAV62Jde8bmo+4LmMdB+FWzOLWRolpBGb3XPEpSbOEHBXjJUDd4+vTpDhRTVMPlZdT8TfXQgYyxkGLRacuJuohpFbTNA4MdI8lqmuFIDmLBgo+MRSJGKRSMfP+pAkipghw0c97RiS2aX4G6wqqqX8U7mLFCPXEZn07TFPUSnxRcd0/MvmNbz2bmI/LuiLQ8X6ES+7Frns0aqVPNe1tmyxsYt6tlretweU14J0DsyP9PtHUghq9Etmc3SVkDnl7hX8QgG6eX20a3yXdUgO/bTNiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vCZQvz2PSjgu7Ewi3GlXCSujigWKeqPHTWNMbcbPoJg=;
- b=swGJxALkuK0yCp5Z+qtDhGYaCnFc+h077tSpvMa8KkVYh56juXW9hvhfHz1M2bS0yf4k5zVUOuMu1NRWR/SlKvSF8CgWJhpZomcbVwnZfJGzXYtPW8IpYWUNytd1S7X6jwRbKLpoTmW0Q5iBK8dlp43OYNbqgPQQyfPK7zmqxV5E4ShJEBJTyHsWYjGUvxFNETSG0InXQil08UnYaZZnWMlSL/MoP0fp4+/AVEOzSzeVa2yM5JIhq56AJ4+oMTceiEN29kHMX6Rx3ZH5uOsRr6h4ThEn9NOhfHKRg7ImXInVylRbfhO6kWbjSdyblYoyiInSYxxZ2165FVX6Fi9/hA==
+ bh=Gu/KJGG1bO36meIzLlDIYvGc8wgwR2cGLs24TJSUElI=;
+ b=JVCKdZlgfl/c25MSDaiaP24vxQhMsuT3YVWYwUB8ykrheH27ODmXGojsh6OcWFfXUf8wm4pT7cJAfPFNjzY540PaEmT8f492nLWNFN3ooIgf/JP1fO7TjDt+fpWtwHLEvvctkeeSJsrynQ2jHMhpeXULZn/qvZOHPQgwqwkIMPonFgJ35XUQ4JDMm0yk0iocBJzo878TSbtm8lB0WK9EjNgTXUe8PTDqq5oRHYIyCg9EWybVSLw+FlzrDIQm1zgTDeD3jnIAa8MuqW0MGAS03VXIB4PNBIXpBanD4ii2GVg0G0r70PKhsTATFUj2FUWJCA7L1KuwmHfV/0JY1CnRhg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vCZQvz2PSjgu7Ewi3GlXCSujigWKeqPHTWNMbcbPoJg=;
- b=YGm7bcINNqBpU7aCUuk486nL8C//voEV64t+khRekXagz1ta7mahTwWqvsNpcANXRq2sAzjxpW7jVnKsJUPQ7GvsrEfMlVF53xCumCTozgkpoHl5WQIrYUgoju2D4IIhA2ZRh0IupC6WNGs9sbmDVT0kJ8sbKHYzno6sUMd6RsZ+iHj+F6gITjPVHQQh2XmyGctyzMDAUzjsT4czg2RU8WKO0unU+J2Q9UzmdgvQGxXm1PDNgDrbL36W5UCAPNsrEOCr+2zUXAA3NrIGA39/Bor6ZP3JBfLPPVJVRCLfy9T5mQpI7PpBBgGemu0KE2w+NDKUQJc0i0I3rpKSci4MIQ==
+ bh=Gu/KJGG1bO36meIzLlDIYvGc8wgwR2cGLs24TJSUElI=;
+ b=lqnnpjDD+KZh0TjbQRokTIjw5tQoqdBPlr7wcdkAJnVv43XXaL8Ch30FmoE0MGv7mMUFk+gJIPBXhBJDXHQ7o+Qdw6btqtMK7Nn3Vwzfwpl5laO3XxU53hraAN7ENHSuE1E9Jt4tbwlvHdjo89wNJwA9yO4CCTGmIVjqUhHlYRBXaQNMMy7t6j6vUvDMtmvYpEz7BonMpqBpvuPGZCEaJzX+AIDvHD5O8W/mpv9OPAuZA4MNUClL6dKtrJ8MrrMldw6Kbkvv7npQdA7VehypflEA5xxpXrFyl9nt8N9z0dvEu1LOHfyvGlNC3lo+xOcio6gANcRp5SgW4NdMSwN/QA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
  by CH2PR12MB9544.namprd12.prod.outlook.com (2603:10b6:610:280::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.29; Fri, 18 Apr
- 2025 16:10:28 +0000
+ 2025 16:10:25 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%6]) with mapi id 15.20.8655.022; Fri, 18 Apr 2025
- 16:10:27 +0000
+ 16:10:25 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org,
+	Davidlohr Bueso <dave@stgolabs.net>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>
+	Zqiang <qiang.zhang1211@gmail.com>
 Cc: rcu@vger.kernel.org,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Subject: [PATCH 04/14] rcutorture: Make torture.sh --do-rt use CONFIG_PREEMPT_RT
-Date: Fri, 18 Apr 2025 12:09:36 -0400
-Message-ID: <20250418161005.2425391-5-joelagnelf@nvidia.com>
+	Joel Fernandes <joelagnelf@nvidia.com>
+Subject: [PATCH 03/14] rcutorture: Split out beginning and end from rcu_torture_one_read()
+Date: Fri, 18 Apr 2025 12:09:35 -0400
+Message-ID: <20250418161005.2425391-4-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250418161005.2425391-1-joelagnelf@nvidia.com>
 References: <20250418161005.2425391-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BN9PR03CA0138.namprd03.prod.outlook.com
- (2603:10b6:408:fe::23) To SN7PR12MB8059.namprd12.prod.outlook.com
+X-ClientProxiedBy: BLAP220CA0009.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:32c::14) To SN7PR12MB8059.namprd12.prod.outlook.com
  (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -75,126 +77,295 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|CH2PR12MB9544:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7bbc3fd4-e5e3-45de-c7ac-08dd7e93888d
+X-MS-Office365-Filtering-Correlation-Id: c14af837-de23-46b2-3bf0-08dd7e938741
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|1800799024|7416014|366016|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?krdLJZGUu/4vL3Re3/LHl3CK8iLUPVOTRUmF+zNfLEvWS1gE/b83PhHSzvI9?=
- =?us-ascii?Q?5bT0SnauJGzL1Q0Wtnk2xZUo2O00mrr/Op0PZA98ruF54z1k2B1CvtJFtGja?=
- =?us-ascii?Q?yOnJOdxaXy2IYYlRN8CEmT7Za153/njD77Sw7l/8/Ly16oZmPG2F1bA32Aol?=
- =?us-ascii?Q?5Q0HTJ8joJ5xtsWSo2gp1kP1UCm0/1bSujNQh7ORux4MfQk66FLxUDv44Sas?=
- =?us-ascii?Q?j2iuBziQHrfN1hKk+xZ6nt3vRChQR+7XdOMAd/ZCLWreQ5njC7dykUrSve1e?=
- =?us-ascii?Q?tpvTLtwqAnXguNxE9OTXkeuwbSrV0KzGXK/z3y/B5fwPJ31HLNtpzzskFXRK?=
- =?us-ascii?Q?ccwROqCLMwDtl2cGlFgX7xV9KKYD+fU1CtTDggdgj65YdPGoDxH+cit+rFy5?=
- =?us-ascii?Q?A3ZERc7o2RUsk4X6uk1R1P1iqlpzaGYei/R7i0bvriGZr+eKSRIq2OxVZcKi?=
- =?us-ascii?Q?XadZBXt0ro401cAVDQzQvhVusBj2yjM4cOOFeTD49XbXQyJpEl0Z2EG4q6LJ?=
- =?us-ascii?Q?LuQkszKJZSjrgUfV49E+tFkcM99wM9udym3Y1RhdyMK4tjwWGK1LbumakVlB?=
- =?us-ascii?Q?AlQOW+96WgsQn8CY0Lcrr1rKLwMtEQXaezsO+jDaW+Rsavw5OZcwzZLneaUM?=
- =?us-ascii?Q?pROJtDSrma7xN1Xp1zObQhoH9cKHIIMVhHkqzti30pRH4ktIjeTdd3FxCm5X?=
- =?us-ascii?Q?7067IM1ZsB/yjPxqIwo7eFncedRmj3L4JqPISh9Fw/xD8rjn0ptHGX9wkNVz?=
- =?us-ascii?Q?49Bb/pEuFRm7aovhQAdLchf2Y7gsxPCZr/V6osFYvAYdMOCoXMywwTntHOm6?=
- =?us-ascii?Q?Num4dSWfuP7osjTGkJL8DTCX8/cbPuuhw5QVuG9NLHycSDZi3mbMFUEbuGqJ?=
- =?us-ascii?Q?YhtlWlk+nJ9tECcvfErz6JYBT0s2DwpGSkyEBwgXK0Zu0NOoTjY33W1IzR64?=
- =?us-ascii?Q?Ore1flh4RvlYvPXVD3v2LTNa0Uqru8m+zU9y9TjjjZeN4RCPmNzzQduPg1s0?=
- =?us-ascii?Q?Dh7mzrcLgWsGDaDwdilF0xj+10+u/ANgK81cZBvOAkXAXTbSvh9oihAAJNoT?=
- =?us-ascii?Q?fQM1DiN4YUWFascTyyWvgCtrOOO+pQmq0rLJn+gXCVZXEGNA3uv4Cx5xU+AF?=
- =?us-ascii?Q?tdWHmwjUuEQxShx4q4gFc9sYnDrJR0iYMq3tuQJ8y7JNmmqch2QntBDuYQWk?=
- =?us-ascii?Q?4Qs1tEKCVLDTa9tPJlXPgteF5hQxWyDw8cJjVorns2HN2+HZkdi74xbJtfEn?=
- =?us-ascii?Q?2xOslawrRMFY9Cp7WdNWhjoc2Vh8g6Tz7Mo73tb3AI5W3vU/DTXlg5XHgflt?=
- =?us-ascii?Q?vyRd9GQ8VzqVAOkGS6IzT6dadO/bmtC/VspPHwxjraShkZYB1iUUKCmW5q5t?=
- =?us-ascii?Q?CLisiGHpp0w8H6brvAdBFKEhZCrY6tj0+ZZDvqE0Bxs+H1FbrdzqJHlmqWfK?=
- =?us-ascii?Q?6YsmBkRpQHk=3D?=
+	=?us-ascii?Q?iBgnAVuBwB60EEm0jlwbEv0CwRh6xZxstEi7jN9d+WTdlSCk8GeoBM4ll6eB?=
+ =?us-ascii?Q?8jCPvjb2oZS7I9jzqUrP1RhDYs2FWIxqSjkLuNiYmpO5IGZ9FVDhSShppEEX?=
+ =?us-ascii?Q?eJlDJNV5GClQ+9mqhsM98s3Nk0QdHtEj6m92HJhGXoCs0lTHmml/Ww19AWVN?=
+ =?us-ascii?Q?6LXDVfvof9vKnxN5dVT0oaDW+dPg68Cz5zj1se01S/qUBt6hQROFswr5W342?=
+ =?us-ascii?Q?uQ9GcS2sZ8QlIieYS9+wDUaM0OrSpzdeZHkzeSKH+m/uBA/KfJgn4Trlkvkp?=
+ =?us-ascii?Q?5W1oGwEQg/jt9BDzXQ6+zfUyaA8r9zc/vLgthWFoJlH1fRReaKreMys2ztXU?=
+ =?us-ascii?Q?GgQ9tTU622JsdtoiF2EpsCU5zH7imvtTJVMK7K0kfbw+Rwoz0pCO7zgpJDuo?=
+ =?us-ascii?Q?8MRUPtJ7mY3Lm5ekDdoF4nFa3jefSnh5/+7NwrcHQ6/HZn4R8aWQsHCShu0X?=
+ =?us-ascii?Q?nqDuIvEoNbdX/DGnjkFa/6S2UKP5gWMvfLPopDbVod0IRgiNl1NJOAHWOlFA?=
+ =?us-ascii?Q?syfd+tt1b8DU/GTJXYWjDDNijQGh/I2AEYuIYpwZw4yJYDvpppvybDC6ZJJj?=
+ =?us-ascii?Q?s9Rtf9TSAH4N8qLBrxwRi7cBRnTmecwak+ZxuKWE5sJEnIS7qY1fUTbL3rW0?=
+ =?us-ascii?Q?n/whRYvO1L52t+Sn+Blo43YCpBTgnpBU9rJ01PN+Cy+KGxXphCVHvsGa3wLS?=
+ =?us-ascii?Q?T8qVdM2XAXXIvHFvecFj3MstJtdfN1XFWpUAyDu4jKa9nd/046RpTBhwpmOz?=
+ =?us-ascii?Q?ayzozxD6Gu1SmtppwQX91yZXrgoZ8KzRUplcip2yOLY/2vNKRa429eMc1xxQ?=
+ =?us-ascii?Q?1DPqsGfdOhBQZzkRD0AZxZti+wLJxqeTfEfMg+sO2WpYx+oH/OrmEQeZhuuR?=
+ =?us-ascii?Q?LRwJCQYwx1d8Sp8wF7p53n5NppUHoaeh7uGAr/MVvPOXgFd4TOfRt3q36kQZ?=
+ =?us-ascii?Q?utPAXhQzB4a77H6Y4F9cnnB2RG2tmFFsSqExmNRhzqqY9m+wyqK1HQgUCxsg?=
+ =?us-ascii?Q?0tToSm1W6E5bvr+s8ExO6Cy71wJtDbBl8Bwq0AeAHb3hSP+vTxqDOYnVIS3K?=
+ =?us-ascii?Q?t3my79OcObMFKPmo3XaduBDt5MWslxi0yBjrDY6aAMBBjo85Y1sNEZeIJYA4?=
+ =?us-ascii?Q?5HpGjhrO0Gw8+fq72h63CeldPhknEc26MU33Nxygx0Ha/HHI826kEx+puIKx?=
+ =?us-ascii?Q?Hv4z+Yd9VX+/AiLy2Hz/GfdpAT/BPP2iqz2+Qtsw1hz0hMkTWlf+vzmG0bo6?=
+ =?us-ascii?Q?uEMDZD4fsI9cKSDpCRU4foVipPn2ETzWMKIxq0ik7vuPeG2+Mz9mlvCsOcPP?=
+ =?us-ascii?Q?lumTWzTLUwRrB12bQEKFioYJT+n8pFdqrNvGQ2f3jn3XvoppAsDxWGasYXD+?=
+ =?us-ascii?Q?AAXs1vPD0bQeGWhoV4Wj8KwZRF2W2yQ3az2HwCVTCTXODnGlbkK4sUuqQ8zS?=
+ =?us-ascii?Q?8i/mtnlx1L4E51mzw5F0qaVLu8L7y/fb?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?zSVWDZz/ft7YWtifiLBqv3pDLIMDwgPcgAARRmExBXTDk55b0phGlnAOOfl1?=
- =?us-ascii?Q?82FhnErKdAfnX+EoV+M0qb+In8AvKlV8qwbgxtqof+n8LNDi7rhvMT4toJ7e?=
- =?us-ascii?Q?L55SlTwJSk5kZnVY/IxuRFyIdvNfyNdcHJ0z1BCqtd6d/TA5BbTM0CM96MAx?=
- =?us-ascii?Q?I69x4cluw8xhfs4emt3HY/52MwGP7KEgqxg55K4D/eFFfffjyY3thxhI0LFV?=
- =?us-ascii?Q?qtVGWXS4bs8SVHCKjSSZ+PvX907pHRINua1aTL1pnRmW7PoByYE21KdqLF59?=
- =?us-ascii?Q?gH/N6rayHp0U8FAOeUDzluPUw7NFonLquZ5XlnegC2c7zAK0QxYGhP1IIVz1?=
- =?us-ascii?Q?x8vfrIucLo6aQUuH9AtvpOIXg7/fSpLQyeZqZnVG2NcZFJcJ8Hrt2A/77nMF?=
- =?us-ascii?Q?Cpv5SLrTNBsr0cp148eIu0L4O0h5RjAo8o0i85ZQ4cz7HjlgAh5hFwkN4Bza?=
- =?us-ascii?Q?AM2XWsYlXZzrrGuppRKjRaBLkU2JXG7zxb/q7Pp9bK7eCdExvDU0zEaRvDPN?=
- =?us-ascii?Q?57G7C5DMrfJdRoBdSTRACZP/HlRu0+2j4H7CvTFbgXwkvAQULWKvkPFwfvvP?=
- =?us-ascii?Q?yB5k0Vb1PoUK1vgOiMEqRMfzEQt761Y+4Mr4NkevfbVyqoIIyfrWT15inwKW?=
- =?us-ascii?Q?omYEtFq5+ZbcQZi7vzY0YwCR4yDD3+i96/ZLZNGJ/GWOQDeDvrIjl+4a0LOO?=
- =?us-ascii?Q?uwuqcYqpnEOOi8s9tkaHCo3jpgItzw9EdiFIiRLC4W6ZqkDRSRprsaXjuqQV?=
- =?us-ascii?Q?BlxVwwdpQGewvzRQczMKf1Bz3TjVv3EdVQkdN3+i6bt/dVZqKkSVtU1zsBp6?=
- =?us-ascii?Q?lyydShd5bEuD289T2kyUOIr81JU9BU0NGbzqrNZLK9426yc0C2DcwhSzdnMp?=
- =?us-ascii?Q?LlUjpQ6czom0yKmQAZc9ia3xdytMrldNWXvnzUEqT/kgVC1g/2awc/oRn2gv?=
- =?us-ascii?Q?ZCNgnbEGJqGfCFPeOXNO3nzRcQA7+IG87iF+eE+lfbbcA8uf0FxdgAlUQ6wy?=
- =?us-ascii?Q?1b7N5o6puCKaYMsHakzhABlxhj8cH5cd8t2OJ6qkJtvNpKUCIqr6dHUOjiGu?=
- =?us-ascii?Q?rzWVKB8GzWsU0ujWECzpnLlPTbN0JMlWB1v8X9xUcKwy50SBidkASI7M8PBm?=
- =?us-ascii?Q?7NJNppmWVg2bqPmjXrGbSWQvv/Vd/jxEq1pVpZXv8eeFdy3ZjNZjd3E65SHd?=
- =?us-ascii?Q?OG5WVxf0qxTni8Z5TA/w9s7428UYQvYmTz0WBSbZtybj5GsWGso7Z/DsGtMN?=
- =?us-ascii?Q?ZDALGGSvLAPcqatzETlyI9HrRPzxWHJ+dOVF0+P89e55Fn1QaI5/qld2u6mQ?=
- =?us-ascii?Q?WUgWyHX/Cw6cCoLjvID2xMTRPrs+jx2/mjxiJ3AohVqt1GmwaU9fQniHz2I8?=
- =?us-ascii?Q?iYoKAjk3QMf3DNmyykFoR3uJiT0wrK4XD0Ma8UYpPExfGGIYtnNEdC0g2T7e?=
- =?us-ascii?Q?bEGLKORqFLBvAs92e14RZrYihHWUs4LtmslMcDTWFS7QbVfse0Af+iVdcX6f?=
- =?us-ascii?Q?cp38do/qs7UXGz+6E7cHHMxtaYQqXFkUcSLpfi2qW/UG5ezYH2v/xIH/1yDD?=
- =?us-ascii?Q?fxW9d+FP3lKDHYSbKck/gbpm7ViHDqnGMM7MNiAy?=
+	=?us-ascii?Q?J2joDm+U6qIsHgAPSnVT1/YLnL/smRshD+mzImnjxNmKThq6OnH0xWBHDXzn?=
+ =?us-ascii?Q?l5lPW2z6/gpjrGxDz/Q53vot41Y5CNHnKAmgb+vw6A6DY1P5gj9M9lJQ+6Pp?=
+ =?us-ascii?Q?X8F+Ctm/rFIsZXDwMt9eNdzcUnmrpXrSd0aefkuXI25nTrxmuvyaJ84iyTZN?=
+ =?us-ascii?Q?TMaSaji0ei1JGkJguXLTFuyD25xoifMA4JLtG8gApVxvw7JZAkawyL7ITE7d?=
+ =?us-ascii?Q?mWBF3k6SMVv+9VztytW3VmsBg33W5VQ4p7cdbOndeVs+SyMjittpzOu6AmfL?=
+ =?us-ascii?Q?M76IQ+mZR6N7aYrQhL66syv6AGAm5fhvVnxpIm7n+v0G4oTEt/ozk8+SP4fS?=
+ =?us-ascii?Q?g0UGV2ffkF2nJMtFGRcrE1h6E/bqBzWblQG33HXam5K01AvwD2k6HbmVm5Qj?=
+ =?us-ascii?Q?yCrjea5AMWcbmxvYrTO8VQcJZtsYVSMdxhZnqI5tvevJvb6oDZgyTI85ypH6?=
+ =?us-ascii?Q?6P/sE0JaDNQeSL39TmFBHpyRdEzhDjL5KCRXv8JQApoakA2iUTsfTCKfOGkX?=
+ =?us-ascii?Q?mB8b+iyZQrD4XJiPjorl34RSRcYT3ntUBREdxhoOIkH5SsfFxcfv4tGasn+Z?=
+ =?us-ascii?Q?KKN96Tmao4kh7+6uW8oFypOqdLb7o4+lnFTWc87tIh0lV1VxdqQTYGRGf7oQ?=
+ =?us-ascii?Q?JsSwj4HYDT0lTGT8nRIA9i+Bkdg6t8UipofQ4UNh5vkb4o5c6pcAZHslLTnE?=
+ =?us-ascii?Q?opl4ETXhyUEcV+MH9z4O2XkMZgoN7Sfbn1Rie2LmBvrDTo60JY+ns/IDKHso?=
+ =?us-ascii?Q?l0kGItzIBe6B7TRRjeb9ObYJLUDngHRA5Gcot+SMOvs/U2sf2zerc2CQQeZ5?=
+ =?us-ascii?Q?0hsUaNtTcxSyBQNqTcX8flYFj0knOkvl5epuH1B6zHAmv3sShmQcCET3OzTz?=
+ =?us-ascii?Q?Yi8+L90Hv8MhKF5nN46oreALNQp5lj6gRGCaVYJVo2cf8+KQOHHi642PBxek?=
+ =?us-ascii?Q?cFMjg1G54Z0l3Yx/Qyr5uYnriGCiTSbce2/1KniNeUrENV62LnyBoPMtXBsn?=
+ =?us-ascii?Q?415bOVm4q5BSR4dPza93ovOd9v2D/pCygL20fkreXFZUwZZRfFNsK4e0ZWlP?=
+ =?us-ascii?Q?9ldDEWDMVzDR/vRElXIdGKvoGLmRO2c1dsDBvfhEGYUa2xwRSCZ6s3i9qYje?=
+ =?us-ascii?Q?mZKdEdxiUu5DpxYgZmTkqIcdbRFIjlksq/mV9iB5WLWoSe5W0JLJFcqC6jH7?=
+ =?us-ascii?Q?sMkVb/IB8PzT9Qj9QsEi42cpwvrc7+BNF2EoZNfmcOIHgY3w2SP9C2BZym7L?=
+ =?us-ascii?Q?iQq2PUvw5xN7pxGDsj3huFQY9n4+6AoMnHNGQt78Df5nGFDtqLaL6humK4Yv?=
+ =?us-ascii?Q?01Z2pOdjjo5xSjcJyEORWAyJATFhH7+H3DEKnnLveY1ex0AaWR5JQYgJRTOD?=
+ =?us-ascii?Q?nsjO7bx5+9/2lxbhKwU6d5SMWxxPVIM6VtbPBCJyztD7vKaHSpTI1RBTTs9U?=
+ =?us-ascii?Q?8exPFPAbfb43zitosAVMSAYTpmSjyBJdY/GMuTGRsSbCLC9eZYc1t/ck5A4A?=
+ =?us-ascii?Q?SHvc0i+maCkJCVOsH0OzPOXBQWl4urVVUcBKdbxlOCBJMUC57TlPCKhFw+N+?=
+ =?us-ascii?Q?P2gPpQ7osVQQ+TVtbHYVT2kEq7r2Y6lS4aidUCbb?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bbc3fd4-e5e3-45de-c7ac-08dd7e93888d
+X-MS-Exchange-CrossTenant-Network-Message-Id: c14af837-de23-46b2-3bf0-08dd7e938741
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2025 16:10:27.3791
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2025 16:10:25.2859
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4xkEj/wqDTPEaIXE19HuY5XU6ORSKqKKXOD6ZAFVuxf2GN/1IPwyy07IIurLHZnCkc2gVAcsTXmvRCkrTOEa7g==
+X-MS-Exchange-CrossTenant-UserPrincipalName: EqX9jvQVflzWivUGdbXQRJ/2R1XuyqB7KiNxAA7aqg1XDnOoISa5uPJ5E6UTE51/dR/bOW3d6fiZLHMoG6tWRA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB9544
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The torture.sh --do-rt command-line parameter is intended to mimic -rt
-kernels.  Now that CONFIG_PREEMPT_RT is upstream, this commit makes this
-mimicking more precise.
+The rcu_torture_one_read() function is designed for RCU readers that are
+confined to a task, such that a single thread of control extends from the
+beginning of a given RCU read-side critical section to its end.  This does
+not suffice for things like srcu_down_read() and srcu_up_read(), where
+the critical section might start at task level and end in a timer handler.
 
-Note that testing of RCU priority boosting is disabled in favor
-of forward-progress testing of RCU callbacks.  If it turns out to be
-possible to make kernels built with CONFIG_PREEMPT_RT=y to tolerate
-testing of both, both will be enabled.
+This commit therefore creates separate init_rcu_torture_one_read_state(),
+rcu_torture_one_read_start(), and rcu_torture_one_read_end() functions,
+along with a rcu_torture_one_read_state structure to coordinate their
+actions.  These will be used to create tests for srcu_down_read()
+and friends.
 
-[ paulmck: Apply Sebastian Siewior feedback. ]
+One caution:  The caller to rcu_torture_one_read_start() must enter the
+initial read-side critical section prior to the call.  This enables use
+of non-standard primitives such as srcu_down_read() while still using
+the same validation code.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ kernel/rcu/rcutorture.c | 124 ++++++++++++++++++++++++++--------------
+ 1 file changed, 81 insertions(+), 43 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 0447c4a00cc4..b64b356f55ff 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -448,13 +448,17 @@ fi
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 4fa7772be183..ae7b68043150 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2164,53 +2164,70 @@ rcutorture_loop_extend(int *readstate, bool insoftirq, struct torture_random_sta
+ 	return &rtrsp[j];
+ }
  
- if test "$do_rt" = "yes"
- then
--	# With all post-boot grace periods forced to normal.
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcupdate.rcu_normal=1"
--	torture_set "rcurttorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --trust-make
-+	# In both runs, disable testing of RCU priority boosting because
-+	# -rt doesn't like its interaction with testing of callback
-+	# flooding.
+-/*
+- * Do one read-side critical section, returning false if there was
+- * no data to read.  Can be invoked both from process context and
+- * from a timer handler.
+- */
+-static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+-{
+-	bool checkpolling = !(torture_random(trsp) & 0xfff);
++struct rcu_torture_one_read_state {
++	bool checkpolling;
+ 	unsigned long cookie;
+ 	struct rcu_gp_oldstate cookie_full;
+-	int i;
+ 	unsigned long started;
+-	unsigned long completed;
+-	int newstate;
+ 	struct rcu_torture *p;
+-	int pipe_count;
+-	bool preempted = false;
+-	int readstate = 0;
+-	struct rt_read_seg rtseg[RCUTORTURE_RDR_MAX_SEGS] = { { 0 } };
+-	struct rt_read_seg *rtrsp = &rtseg[0];
+-	struct rt_read_seg *rtrsp1;
++	int readstate;
++	struct rt_read_seg rtseg[RCUTORTURE_RDR_MAX_SEGS];
++	struct rt_read_seg *rtrsp;
+ 	unsigned long long ts;
++};
+ 
+-	WARN_ON_ONCE(!rcu_is_watching());
+-	newstate = rcutorture_extend_mask(readstate, trsp);
+-	rcutorture_one_extend(&readstate, newstate, myid < 0, trsp, rtrsp++);
+-	if (checkpolling) {
++static void init_rcu_torture_one_read_state(struct rcu_torture_one_read_state *rtorsp,
++					    struct torture_random_state *trsp)
++{
++	memset(rtorsp, 0, sizeof(*rtorsp));
++	rtorsp->checkpolling = !(torture_random(trsp) & 0xfff);
++	rtorsp->rtrsp = &rtorsp->rtseg[0];
++}
 +
-+	# With all post-boot grace periods forced to normal (default for PREEMPT_RT).
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.test_boost=0 rcutorture.preempt_duration=0"
-+	torture_set "rcurttorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --kconfig "CONFIG_PREEMPT_RT=y CONFIG_EXPERT=y CONFIG_HZ_PERIODIC=n CONFIG_NO_HZ_IDLE=y CONFIG_RCU_NOCB_CPU=y" --trust-make
++/*
++ * Set up the first segment of a series of overlapping read-side
++ * critical sections.  The caller must have actually initiated the
++ * outermost read-side critical section.
++ */
++static bool rcu_torture_one_read_start(struct rcu_torture_one_read_state *rtorsp,
++				       struct torture_random_state *trsp, long myid)
++{
++	if (rtorsp->checkpolling) {
+ 		if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
+-			cookie = cur_ops->get_gp_state();
++			rtorsp->cookie = cur_ops->get_gp_state();
+ 		if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
+-			cur_ops->get_gp_state_full(&cookie_full);
++			cur_ops->get_gp_state_full(&rtorsp->cookie_full);
+ 	}
+-	started = cur_ops->get_gp_seq();
+-	ts = rcu_trace_clock_local();
+-	p = rcu_dereference_check(rcu_torture_current,
++	rtorsp->started = cur_ops->get_gp_seq();
++	rtorsp->ts = rcu_trace_clock_local();
++	rtorsp->p = rcu_dereference_check(rcu_torture_current,
+ 				  !cur_ops->readlock_held || cur_ops->readlock_held());
+-	if (p == NULL) {
++	if (rtorsp->p == NULL) {
+ 		/* Wait for rcu_torture_writer to get underway */
+-		rcutorture_one_extend(&readstate, 0, myid < 0, trsp, rtrsp);
++		rcutorture_one_extend(&rtorsp->readstate, 0, myid < 0, trsp, rtorsp->rtrsp);
+ 		return false;
+ 	}
+-	if (p->rtort_mbtest == 0)
++	if (rtorsp->p->rtort_mbtest == 0)
+ 		atomic_inc(&n_rcu_torture_mberror);
+-	rcu_torture_reader_do_mbchk(myid, p, trsp);
+-	rtrsp = rcutorture_loop_extend(&readstate, myid < 0, trsp, rtrsp);
++	rcu_torture_reader_do_mbchk(myid, rtorsp->p, trsp);
++	return true;
++}
++
++/*
++ * Complete the last segment of a series of overlapping read-side
++ * critical sections and check for errors.
++ */
++static void rcu_torture_one_read_end(struct rcu_torture_one_read_state *rtorsp,
++				     struct torture_random_state *trsp, long myid)
++{
++	int i;
++	unsigned long completed;
++	int pipe_count;
++	bool preempted = false;
++	struct rt_read_seg *rtrsp1;
++
+ 	preempt_disable();
+-	pipe_count = READ_ONCE(p->rtort_pipe_count);
++	pipe_count = READ_ONCE(rtorsp->p->rtort_pipe_count);
+ 	if (pipe_count > RCU_TORTURE_PIPE_LEN) {
+ 		// Should not happen in a correct RCU implementation,
+ 		// happens quite often for torture_type=busted.
+@@ -2218,28 +2235,28 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ 	}
+ 	completed = cur_ops->get_gp_seq();
+ 	if (pipe_count > 1) {
+-		do_trace_rcu_torture_read(cur_ops->name, &p->rtort_rcu,
+-					  ts, started, completed);
++		do_trace_rcu_torture_read(cur_ops->name, &rtorsp->p->rtort_rcu,
++					  rtorsp->ts, rtorsp->started, completed);
+ 		rcu_ftrace_dump(DUMP_ALL);
+ 	}
+ 	__this_cpu_inc(rcu_torture_count[pipe_count]);
+-	completed = rcutorture_seq_diff(completed, started);
++	completed = rcutorture_seq_diff(completed, rtorsp->started);
+ 	if (completed > RCU_TORTURE_PIPE_LEN) {
+ 		/* Should not happen, but... */
+ 		completed = RCU_TORTURE_PIPE_LEN;
+ 	}
+ 	__this_cpu_inc(rcu_torture_batch[completed]);
+ 	preempt_enable();
+-	if (checkpolling) {
++	if (rtorsp->checkpolling) {
+ 		if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
+-			WARN_ONCE(cur_ops->poll_gp_state(cookie),
++			WARN_ONCE(cur_ops->poll_gp_state(rtorsp->cookie),
+ 				  "%s: Cookie check 2 failed %s(%d) %lu->%lu\n",
+ 				  __func__,
+ 				  rcu_torture_writer_state_getname(),
+ 				  rcu_torture_writer_state,
+-				  cookie, cur_ops->get_gp_state());
++				  rtorsp->cookie, cur_ops->get_gp_state());
+ 		if (cur_ops->get_gp_state_full && cur_ops->poll_gp_state_full)
+-			WARN_ONCE(cur_ops->poll_gp_state_full(&cookie_full),
++			WARN_ONCE(cur_ops->poll_gp_state_full(&rtorsp->cookie_full),
+ 				  "%s: Cookie check 6 failed %s(%d) online %*pbl\n",
+ 				  __func__,
+ 				  rcu_torture_writer_state_getname(),
+@@ -2248,21 +2265,42 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ 	}
+ 	if (cur_ops->reader_blocked)
+ 		preempted = cur_ops->reader_blocked();
+-	rcutorture_one_extend(&readstate, 0, myid < 0, trsp, rtrsp);
+-	WARN_ON_ONCE(readstate);
++	rcutorture_one_extend(&rtorsp->readstate, 0, myid < 0, trsp, rtorsp->rtrsp);
++	WARN_ON_ONCE(rtorsp->readstate);
+ 	// This next splat is expected behavior if leakpointer, especially
+ 	// for CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels.
+-	WARN_ON_ONCE(leakpointer && READ_ONCE(p->rtort_pipe_count) > 1);
++	WARN_ON_ONCE(leakpointer && READ_ONCE(rtorsp->p->rtort_pipe_count) > 1);
  
- 	# With all post-boot grace periods forced to expedited.
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcupdate.rcu_expedited=1"
--	torture_set "rcurttorture-exp" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --trust-make
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.test_boost=0 rcupdate.rcu_normal_after_boot=0 rcupdate.rcu_expedited=1 rcutorture.preempt_duration=0"
-+	torture_set "rcurttorture-exp" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --kconfig "CONFIG_PREEMPT_RT=y CONFIG_EXPERT=y CONFIG_HZ_PERIODIC=n CONFIG_NO_HZ_FULL=y CONFIG_RCU_NOCB_CPU=y" --trust-make
- fi
+ 	/* If error or close call, record the sequence of reader protections. */
+ 	if ((pipe_count > 1 || completed > 1) && !xchg(&err_segs_recorded, 1)) {
+ 		i = 0;
+-		for (rtrsp1 = &rtseg[0]; rtrsp1 < rtrsp; rtrsp1++)
++		for (rtrsp1 = &rtorsp->rtseg[0]; rtrsp1 < rtorsp->rtrsp; rtrsp1++)
+ 			err_segs[i++] = *rtrsp1;
+ 		rt_read_nsegs = i;
+ 		rt_read_preempted = preempted;
+ 	}
++}
  
- if test "$do_srcu_lockdep" = "yes"
++/*
++ * Do one read-side critical section, returning false if there was
++ * no data to read.  Can be invoked both from process context and
++ * from a timer handler.
++ */
++static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
++{
++	int newstate;
++	struct rcu_torture_one_read_state rtors;
++
++	WARN_ON_ONCE(!rcu_is_watching());
++	init_rcu_torture_one_read_state(&rtors, trsp);
++	newstate = rcutorture_extend_mask(rtors.readstate, trsp);
++	rcutorture_one_extend(&rtors.readstate, newstate, myid < 0, trsp, rtors.rtrsp++);
++	if (!rcu_torture_one_read_start(&rtors, trsp, myid)) {
++		rcutorture_one_extend(&rtors.readstate, 0, myid < 0, trsp, rtors.rtrsp);
++		return false;
++	}
++	rtors.rtrsp = rcutorture_loop_extend(&rtors.readstate, myid < 0, trsp, rtors.rtrsp);
++	rcu_torture_one_read_end(&rtors, trsp, myid);
+ 	return true;
+ }
+ 
 -- 
 2.43.0
 
