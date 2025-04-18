@@ -1,94 +1,105 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3424284A3E;
-	Fri, 18 Apr 2025 18:04:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF591C5F2C;
+	Fri, 18 Apr 2025 18:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744999442; cv=none; b=tSaHjBthR6b8G+5+8YLHKRGnQGXjrrP2QJ1JE04dxeEkTN5y2h2RGDBgKBYsCV4mLcXqr85ZI0UaOWWHMUg45YSiUKICptpFiNixFKu1e1zF2C76a67QhXVM5ajRjBvH57WX/tP5CZlehlWIJmTgXXuY+qaNH1F48nrbWxLdt2g=
+	t=1745001180; cv=none; b=boDnlNv+Yi5QbEuOVIes93DBzsLnInucxe/hF6QJ9a+ljmb3g6lM6uoWpOV9UmoGDgUNFZdOat3jD1u0QgHfmAmXvxzCa4I+HkoaDGLh24UUNPic1XVIt4sbiOp2tgJje0KFH76wp2i8N7vv69xHtyZTLMYDFXSgukmpiUp3Heg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744999442; c=relaxed/simple;
-	bh=NaeCcSP6DCirfqAipsADTtNWV3q2qdvhgZOsW/GhJXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jl1aPI4OQtSO+Px4F6ScMTAUnGESvhAmTEoAmx0myChJ9CAGhPwB2EYqkeDSUOwe63ImZu3DVHFsda58sl8HCNbYAZqWAsnO0A/0snJSzV4JXltQdXNwWg52gVzHDwcrutTdiOw+lvjHJvjNOlxH/cYM3G5WUxl9spfGQY6xAkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jc0EhWrY; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1745001180; c=relaxed/simple;
+	bh=ou5tcv9JxiL2u1j3f5J7z0CBvUbEeh6Xv6UWW41q/Ts=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PIKGvnzxPoBsNSjHGV7G/i5tIHPHR6XzM0SRVp8mU2ReJjuX74SQDJE/fVYLmQU8vUswxRfxZO9ekltSaDgzF4IhHnKpiLMnzD4ZzyAz7uGnmeBp4Ug8Oe5BFCzhmYcbptKDMBG5W3rQ089BBi5FVewIBDIO0qZ8nftemLsRoak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DTkfKw4e; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jc0EhWrY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95038C4CEE2;
-	Fri, 18 Apr 2025 18:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744999441;
-	bh=NaeCcSP6DCirfqAipsADTtNWV3q2qdvhgZOsW/GhJXU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=jc0EhWrYPnnoA3Xv2hluLsIQHobLE/zY9vGf2gm0uO1k0F1cTtRbnxd3/bT827+x2
-	 5AShxhJfeyhhW60PV59GyeQwYbeovHdZaCQ9YgFpfLPOm8aRbqXGKX4MjeQr6KQh7z
-	 KgA/K1qdrCgsfXqc9sfm/6fh+PKnoc3x9XXlemTLZghpbAlgIOc7YDwuIUld0Owkrq
-	 wRlErLhuR9Prz/g603vkneK3keus+cXbz93vFacsQ2GKxTh4IskfSEruponcJma6xx
-	 JIzbJrV0c/BRupX/bQLc0vzXNBk5LOoPxXSJF4xCAsJ/mL0vteL/STt1mlTRfpCXpD
-	 yv0IrEfdloT4w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4240DCE077B; Fri, 18 Apr 2025 11:04:01 -0700 (PDT)
-Date: Fri, 18 Apr 2025 11:04:01 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shuah Khan <shuah@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH 12/14] torture: Add testing of RCU's Rust bindings to
- torture.sh
-Message-ID: <42da7c8e-08ff-4b04-ab58-6c0c2e287eb3@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250418161005.2425391-1-joelagnelf@nvidia.com>
- <20250418161005.2425391-13-joelagnelf@nvidia.com>
- <CANiq72nCfBdsfKzP72DWxLBh+Eueack9sS-E97wtsr0UtkAnUA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DTkfKw4e"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-227e29b6c55so3339165ad.1;
+        Fri, 18 Apr 2025 11:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745001179; x=1745605979; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HFANXjtKTfEx9kV/YD0moYxXkPIgDxsA41WYPtohNLk=;
+        b=DTkfKw4etkWpNh+RFUp8WY1PgivSEv9PZw17qp44dcaCOl3v7OYsw2IPxNSuD7N2k+
+         eWGOXbUuIfoYl9XNNNmKnxQrbqmTPXrOK7lnf0rj40wSQjandtGCbllalR1idb5xZbFR
+         YkwW5YQDYzdTcAcd/RaF++/VlPVZVtWmx78DZW2Cpp4DBCe6PTPDcY48KN3DDg6qmM12
+         4iayocZ2eJFMo0DOl78m97Mm8F1g6lv3qa73/Fp3cMVqUjWWUfSXaL1AkTp8avv8MJzM
+         2tpaWNbLwSx+RFg4K6446CdmdXcJVSMYYCfCYsUgI+fZRQNnEhH8ya0ui9R3uaX0rhL6
+         bg+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745001179; x=1745605979;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HFANXjtKTfEx9kV/YD0moYxXkPIgDxsA41WYPtohNLk=;
+        b=DfD7NCvQCl4XBQzpuyMYsjh7WQgIPnik++OqFFv+dDbteWxE81kEZFWZ9Qf9KyPMlI
+         yw9R1WqxrPTgD9juQsx8fxdib6B+iyG3xT03HZzzo/+341U6KRxBDXQAV9ka/MfshVZk
+         mmu/HQN7OlBlt7oaaHrhKy9nkBNJ/E+T0SBx98aHocGTnWeHZfAy/ufjuu8wyuj2hrfW
+         +hTDkIMtVPyPM0Zbpf/yrarWDr5pRXHMrbYC4uuPKofr0zPOFjZHQAu/p9MiV7UUdbsQ
+         14ff+8oBgrFe4UQXuC4gOz/IzbN6ddrK8tG8Z2oIu1KRGNfUFoAve5QbGE1qPmPeAhFL
+         mdzg==
+X-Forwarded-Encrypted: i=1; AJvYcCVCv31lp3b3yhOT0tHEzABNB3MZh1FML4CtPe/9knpAOxzsVRzo5wuC4XIgjNRxF/2JPLT5W62OsfYQCe7oy0U=@vger.kernel.org, AJvYcCVFMqCYaN+nQe8rfjF8W3CSMV9C1t+parxQ6h4FccePISEDj4cR8pjng8zO7y4AcJqdVq5o@vger.kernel.org, AJvYcCVdg0h/ox9pTpMpVSs294Jrs/vkl7u8Lwz6+GE3dppBU7jis/r91GJoqFRs2XGdJTWx+ud1J9QEGlwpxu2wiLbh@vger.kernel.org, AJvYcCWdEP0lb1EiHWqMeam0t9glxtbC/KJGMZig4sc4SiwtdoMqs1eziVHT4KTBda6uw7qIeP/oqm8tFYZFNe8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLrgXMqFevOaeqoJg3hkL6mPY5eglY7jH/WqP18RE5tdpANI0q
+	Hwp7qDYTU/3DQELJYspcosEEPFHoCyJnpUc/RHvypz4y/8bFIyFqxITx6/SkVNUUov7b91IIMpp
+	Wkl7FOgZLtlE5Tb+6vUpIzZEPI/Q=
+X-Gm-Gg: ASbGncu1tjehtdweVcFwppYC6Qmkuyexnk5H135pjuJEUWDgHv+ImTcE1RqZcJ4NRgO
+	usb9xkRg6cM/2j6gAv9/l2vRek0RgX16G5mtNjA1Cpif4ypwb1B7R96QF6zW1KfH12JX+XWJpmY
+	8xhHbH4/rt7f1wPmDQmBKQSA==
+X-Google-Smtp-Source: AGHT+IFADhdep+T0QJPWyAyGB7omOjzqUUQUGaXKFwOncpJL98lO4epAjyTx4Uxd27a0AOpj/taau4IzgTr9RsgnsRg=
+X-Received: by 2002:a17:90b:1b44:b0:2fe:7f51:d2ec with SMTP id
+ 98e67ed59e1d1-3087ba5cf08mr1856703a91.0.1745001178768; Fri, 18 Apr 2025
+ 11:32:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72nCfBdsfKzP72DWxLBh+Eueack9sS-E97wtsr0UtkAnUA@mail.gmail.com>
+References: <20250418161005.2425391-1-joelagnelf@nvidia.com>
+ <20250418161005.2425391-13-joelagnelf@nvidia.com> <CANiq72nCfBdsfKzP72DWxLBh+Eueack9sS-E97wtsr0UtkAnUA@mail.gmail.com>
+ <42da7c8e-08ff-4b04-ab58-6c0c2e287eb3@paulmck-laptop>
+In-Reply-To: <42da7c8e-08ff-4b04-ab58-6c0c2e287eb3@paulmck-laptop>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 18 Apr 2025 20:32:46 +0200
+X-Gm-Features: ATxdqUE11d5kf2E85BZuTAmKAI_UEsrp_SwqW-Oi0y3Ijarw0S_IvhRNYkCwLgs
+Message-ID: <CANiq72nE2cH93W2qZrzAxfbz3hjsw4Xy0YYNwOUQ74SeGiirgw@mail.gmail.com>
+Subject: Re: [PATCH 12/14] torture: Add testing of RCU's Rust bindings to torture.sh
+To: paulmck@kernel.org
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org, 
+	Josh Triplett <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Shuah Khan <shuah@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@kernel.org>, 
+	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, 
+	Danilo Krummrich <dakr@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, rcu@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 18, 2025 at 07:31:53PM +0200, Miguel Ojeda wrote:
-> On Fri, Apr 18, 2025 at 6:10 PM Joel Fernandes <joelagnelf@nvidia.com> wrote:
-> >
-> > a rust_doctests_kernel kunit run.  Note that kunit wants a clean source
-> > tree, so this runs "make mrproper", which might come as a surprise to
-> > some users.  Should there be a --mrproper parameter to torture.sh to make
-> > the user explicitly ask for it?
-> 
-> One may run KUnit without using `kunit.py`, i.e. by enabling the
-> Kconfigs and booting the kernel. Would that help?
+On Fri, Apr 18, 2025 at 8:04=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> Suppose we fired up a guest OS and captured the console output.  Is there
+> a way to make that guest OS shut down automatically at the end of the
+> test and to extract the test results?
 
-Potentially?
+Ah, sorry, I thought you were already doing something like that, i.e.
+that perhaps you could reuse some kernel build you already had and
+avoiding a full rebuild/`mrproper`. The KUnit Python script uses QEMU
+and parses the results; e.g. you could look for the results lines
+like:
 
-Suppose we fired up a guest OS and captured the console output.  Is there
-a way to make that guest OS shut down automatically at the end of the
-test and to extract the test results?
+    # Totals: pass:133 fail:0 skip:0 total:133
+    ok 2 rust_doctests_kernel
 
-In the short term, I am good with this the current state of this being
-default-disabled and those of us wishing to run it regularly adjusting
-our scripts accordingly.
-
-But, longer term, if there is a better way...
-
-							Thanx, Paul
+Cheers,
+Miguel
