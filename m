@@ -1,71 +1,73 @@
 Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2079.outbound.protection.outlook.com [40.107.94.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF48217670;
-	Fri, 18 Apr 2025 16:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F6F225396;
+	Fri, 18 Apr 2025 16:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.79
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744992666; cv=fail; b=Rr3/IG0NaIlAILW5L2xkAhQ77tnkgjMKjPEJwlnyE+XHLP8ouzEFvavMpPdT0uTjEfIIwBBUoWaM49K951Bhj/q7knxYn5ZUVZ4dHBiQdvMWCXbG1jJBmM3N2YVABOimkZjXmUDcA+wien0RL52h3vb8OFoMSdXJJRMJPj3W0q0=
+	t=1744992672; cv=fail; b=fPI1ooxpOOMKmqXonJfca1AtcDEabsUflD5mdmSJD6kCGoN8pHbG9rBgiIo1woUDg95JftWTLPC1o0lD/uxLGoHLHgv+4HM2Cqqz4j2BD/r5ar9K6MUvS1f6d3U+goLIU6JhAkLe891G8rDeUKiRLnTwUD7MdIDf154ma974+kM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744992666; c=relaxed/simple;
-	bh=tN0yXp/74IQLMZ5KD4ZSQ93Qy+VXoayWZUatNkARH7E=;
+	s=arc-20240116; t=1744992672; c=relaxed/simple;
+	bh=uZw6vJE3txH426aYUhKnCJE67RQTx9pWxkC4WC2tS5Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aUEQJc/9jhT+QwWA94DD7Hur2P6Mavl3sFsBtm7XL3m6v5MC5RhYEjWsdJb5k3ReW5NoPMWTEXAYAAt17GykDf+JfBYBQwX2Ux/SU9A+iPm8vN+hEn3TD3X0dGRUlfG8ju8GJggoW140VPExz73AMaRY0Q4CjDY5yxdiB4P+N3M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=TfpuvV+1; arc=fail smtp.client-ip=40.107.94.79
+	 Content-Type:MIME-Version; b=HKTmxnMxFlkiEDbtqZrp5p4SKk8lzPjAZFQQDwPGdp751s88H4Wpm0BzC3RoFgtkR9xJgNrOiQPSZUwnrE6AWz65qR6kT8FD10p5Z2K7VgvxTPD/6QUcy74sncTpbzSlpjJnXVPYqyT5+42J52Ai9WGLwnyjMBB8xDQHaharNl0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Y8WAX3Dp; arc=fail smtp.client-ip=40.107.94.79
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="TfpuvV+1"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Y8WAX3Dp"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Q2afPzCGh8dvWen9+ZGLloPIWjSwS670Io0GlYsgm+b6FXBKo8x8eEiM36CKtiG/R+J4Rz/pJ+MPNha7K/f2QjO0nLDJ0LcAzRMvxYt+bohOX6LVCwkQlpLYdJT8D9XcDo7RMv/Kburog+1HQnN84Iw6Wd9WHFBNux6rEFv11pyp22qf7fVjuNnf3H82hptUbPbXBWd2ZqGgcplNLDdb+UoQarO6384gAdqqIlwSQQwJsT3wEVkwn7VqqpK1o4MrE3QJ+V3OQUrJDKksEshhiOe9yPx4soSq9S0djZqrcrAJNwDHN0AHPanMlkBHoOaMHKcGHPXsq8UOLfCW7XeSxw==
+ b=GbPJdIt6rWgeDkNF6Nr3dzxqkExzdPT+Yf3aTRqiKZGz93rw1b/aXOKzH4ROAWnl5hb6y0fjIiw+lZb7HwxXSoDxPcYW4Sf72ZxoQQygoCjXO+ywTNWeP2fkUSt+rqb2i/eEVp5h1UhZ4FDnsmHYgT92poM1SkbyIo9meendnCGqkS+N6R5Vx1C7gJQ3Juvxh3oohWU4OLcRYlIJtxbUqDgniqmHSZrpK+Bws8y0c4QX3Ll1rMqYR6VRAPVOC7wnzBukLpXIRn/0/vT6nxbtecOfe1/HMAsnXE4SKv4T22u1o8epsT8aV+Cb3eh/Axx9VgX6lfK2k117iWjOaZjBxg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Sy6cGgNJv05JiZ0CKfmr4xNPJ1uZr2IGyejShc2/Dg4=;
- b=ccQfnCEgJBOuHD9DyCxEukPQrVHWup4aUQsBpSRbWUFfjrEJfzDQF9IS78eHKXbkM5ojekU0ErCC/NrO3JI3uKX9OL2R+zCbyFjM9oq60VkJbH0hAove4NZcS38ByvJ4LU2GGRG91Q3QGugmbm8PfnM0NdDt0NcmxzPds1aUbMqup6bU4BnIDVTl6KoMyW9cGumZ/HXOKgFoas5IM4b3eE+HUql8Z1z87wxfQrqNyTDc+sboyUmpHDlngtG5Lnpes3fgfHJVTHFCuRVhZWa4mY0L5SJp0KPoIE4NWsRT1iOt2irmABYYE6Oihn3or+OBl628d8MFst1+amybiOKejQ==
+ bh=RIQqoMc/ZwLJlXJdQd2WCjtQLfJPP1ny8zqRE38qSJw=;
+ b=X7AkXh6l2phlz0Zl+/MqLpi45nVvzSwBCjkppPmU9LvJkG+FAsgDOnCD/11oR67KDVC1fmoUH+N6tdDG2pfAFxm7p8fr58NdPTXNxNyY3w+5dRAKUqCFt3dFhRlGD2U+FNvy+6B7RcPGcj/uuKA+8j+DtxVHXDfcyRi3VjwgohRdZMYfjPz1uvIIUqYwgTozTViyfp/0ttzV6Y1oe3O9T6llE2G9g90LIS1CT8+auc2MhMeoX7y1nblEHksH5p2DKUp/V0cvzvl/SoRHWHJkd4xrwHlGT1Crjew33b8WAjasQ2xllZHIRoTebC2AZbImlw7RCaaLmnvpNw6wA+ALQA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Sy6cGgNJv05JiZ0CKfmr4xNPJ1uZr2IGyejShc2/Dg4=;
- b=TfpuvV+1G6Hm/05qLgzUy5ziRovFO1uoJEmGyfhvTa8AZDOG0zEDNgFhJ9gkKxF236laF4wUcJcm3Je4x+B6SnBqzylt+83iyoovrhP1iMueGxHMAXid3uIQmo0QOZJeZIf9tZ+YuTrM49D5yCa5dFatQH6SL/yS1GRO6/Y7yqNBc1B+k19EAbaOZAaD/BqGBwriEHkm72jawvbW/obwykrAw+0DxheNjA4KSH6lLJ115M+g+m6buKc3rKZs/OVA2huhzXgJzZVAt4I7szEL5DkUH8vl5ligk3BxIo73ngvYpmmvibuiWf39V1kAEmuNyz9jwuPdKxOSij/+nowwHg==
+ bh=RIQqoMc/ZwLJlXJdQd2WCjtQLfJPP1ny8zqRE38qSJw=;
+ b=Y8WAX3Dp71YxVfS0m7v//VnaRpGSdlpQLFcTF4RL0qXYGi69dODJ6Kx5+uKiITVpvZTY7ZDZXfdPElNL123Mgw1gGuBkbK9av0WHRSksJnWprCLxwA/zPqwgjcaNPTaCmOTJntppEH9WEvd1FxZqZsqGBps4OywMyH0R+Gxmu4Cqe62r30BQJ+Yxh2eaE5Y7yCZfheZaVsmYIW3AKXYJZOeT8lJS+CC7bkVnSPpU5WbMHZ4ZNSZXiObaYaj/6lqYYzwHe6SPKdTaSV1uwuF5mRSMXTwhrE2NRvqx9dCvGEdFSY35BgDCMnlHmAIu3NKK8RT6f8rXBOzypkBobOkEmg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
  by CYYPR12MB8962.namprd12.prod.outlook.com (2603:10b6:930:c4::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8655.22; Fri, 18 Apr
- 2025 16:11:00 +0000
+ 2025 16:11:02 +0000
 Received: from SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
  ([fe80::4ee2:654e:1fe8:4b91%6]) with mapi id 15.20.8655.022; Fri, 18 Apr 2025
- 16:11:00 +0000
+ 16:11:02 +0000
 From: Joel Fernandes <joelagnelf@nvidia.com>
 To: linux-kernel@vger.kernel.org,
+	Davidlohr Bueso <dave@stgolabs.net>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>
+	Zqiang <qiang.zhang1211@gmail.com>
 Cc: rcu@vger.kernel.org,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Subject: [PATCH 04/12] rcutorture: Make torture.sh --do-rt use CONFIG_PREEMPT_RT
-Date: Fri, 18 Apr 2025 12:09:50 -0400
-Message-ID: <20250418161005.2425391-19-joelagnelf@nvidia.com>
+	Joel Fernandes <joelagnelf@nvidia.com>
+Subject: [PATCH 05/12] rcutorture: Add tests for SRCU up/down reader primitives
+Date: Fri, 18 Apr 2025 12:09:51 -0400
+Message-ID: <20250418161005.2425391-20-joelagnelf@nvidia.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250418161005.2425391-1-joelagnelf@nvidia.com>
 References: <20250418161005.2425391-1-joelagnelf@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BN9PR03CA0146.namprd03.prod.outlook.com
- (2603:10b6:408:fe::31) To SN7PR12MB8059.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN0P223CA0024.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:208:52b::31) To SN7PR12MB8059.namprd12.prod.outlook.com
  (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
@@ -75,126 +77,456 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|CYYPR12MB8962:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5236ec27-6fe6-4581-eeb1-08dd7e939c06
+X-MS-Office365-Filtering-Correlation-Id: fa4616f0-c536-4eb4-65e5-08dd7e939d7e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|1800799024|366016|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?HIWRXOkX5oMEVEP68DM+jTJ7K9Ay0+FALMCpYXxS1V1uLH37x/A6IWvtMYkv?=
- =?us-ascii?Q?1O67yn29XCZ80uXNZbEyFUR1vDAbf9q8MCU9fjYX+IkpqBEVfOK3LAfCMFH9?=
- =?us-ascii?Q?q7NXDTvc5cnXBOuUOQKIXZDA1bBAuGGdkgu5ZFlNARmTzpMUDMAFlzVMlJ+H?=
- =?us-ascii?Q?4G5YE+RQ7BUaPfUi/nRt1pwuFeG287pPWAECC4hZnJJCIrdgEoyOnJBQ1l2O?=
- =?us-ascii?Q?CT05NLLke5uUgxrocy0eKsVkJTyW2y8RmlErhSz5/OTIsO0Y2CYbGhq+UBXj?=
- =?us-ascii?Q?iYNG5Pp07yHQ3hX6UxKPT5poamQf5dc/UCPVSR5QOYLPOqw/DuK8vtrzcl5Z?=
- =?us-ascii?Q?5H/EcDgFtYY34DfiuK4M6Jmv//s4bjfnp84FNUTLJLCtz37oA7x7T63h7U0U?=
- =?us-ascii?Q?acTtPFxgozjrSprAlKnljYK/GBatNV3NDapxpsF+0fGOCZhFyBYJql9U6jq9?=
- =?us-ascii?Q?/sF5e/XC4qMEEhPRT76LX9T9EFTk5M/dL5sw/9ta54L7Pq//lqcSQ42PlmOP?=
- =?us-ascii?Q?zN9lf8A8CCPj6v2qtm/wsPHMrfRqAZ68iZjxeKaI9mXKDxthuSFffUcXXtBM?=
- =?us-ascii?Q?aoyuzrbawhEQlb2Z90cgKsZBTklQMDLNaI1rJ0bqLcRZ+z7bGv9nxRlLzPAH?=
- =?us-ascii?Q?WLC6EM+X5htGmzPWRqjUvMc55/nBAfmuk2j0bGwct84gGqrB44GnRzorV+M7?=
- =?us-ascii?Q?clX6b5gh5ThDeA4xFJsyVYaI6yB6lFzKuXfV8/ThYIu3TJtLR5OMk1V8adkM?=
- =?us-ascii?Q?NXCDEFm6UXFlk+Dea9poXnw5y5Wk1JXGSoHO8I68lcFS2L3LMA5dNusGHh3v?=
- =?us-ascii?Q?AHPyfM9HCxP609TQiXjecSlWjYcRByVjKENBYzOBepGyCDuyuzeB9eTd35nW?=
- =?us-ascii?Q?5hW2L2JUxDkaz/Hmp1KSQHHxTv2xo56YVOzOX/kL5QXxhRZuaDOiRzbIoxJ/?=
- =?us-ascii?Q?9W7Q5wI1UGOZBVeO6LRceIPDXXxLq///RWzDu+lkWObkEOiuJwpsYUn20PcN?=
- =?us-ascii?Q?qIT05GiciJM/7SR3C8FvNur24ODjqNSpP8TP7jozQJOSNShkr/z8w/ssXRSl?=
- =?us-ascii?Q?zbuZwL5zXoWClF7KEM6/u/JeFMRfrh7keTN7cD0CST0y7sDLJJBWcBT8C0tb?=
- =?us-ascii?Q?9AFZ5MoyDJQUiVYyiCAzSA96ijNIVn2xOur8ag0qVXGLokBY55GqGD01/Cra?=
- =?us-ascii?Q?lZHaRk9DV7Kx8z5C0+6w+3U4Fn4wCJbnOe1B4Q0C8j87LUuH0a/l+EHxCSCI?=
- =?us-ascii?Q?H249EGnpRp9aooiep26gN5RNqNx+Xw250hr4PbSgMNmgy1d+F9PrVd59qyVK?=
- =?us-ascii?Q?UU3n/uSV+br3xwG2MRTmml4EezO+FL8GprQe819p/Em0fxo2kKgt9n2U2m1W?=
- =?us-ascii?Q?3jv3yQyT2KbxLrfQbBcXz6Gx4yA1L6xKxjEUUTVn6XXs4q5NA62HINkYb2ow?=
- =?us-ascii?Q?hg2rSyEnMNo=3D?=
+	=?us-ascii?Q?LWFedtQUu7g8aHRvrxmwWWisLGNehkxoy6iIURFr6BWt9vOn+atmH2p1Fswr?=
+ =?us-ascii?Q?9I4czCqdqH1jfJpKEt0IXoEeLNm+f8MND+ldnk6UJ6Wi23UER7qBD3OLgyCO?=
+ =?us-ascii?Q?vPo4ntUl8niSd3WE0mYomA7tWakyH4aTiWmh6oaa5yaiqdeG9lUwXThyvZOi?=
+ =?us-ascii?Q?dCUajkNJap7gYa2CKwPTxbJKBFEiT36icowEMdrdEVjjUHfqNM+Ma34XS4no?=
+ =?us-ascii?Q?DjXSVBWwHW/ej2vDxApO1goAJd+Zw/qkgcOdephV7+N8Yc+Weny8FYYW3IxC?=
+ =?us-ascii?Q?8Wa5apdS8w2Yh49oR39bneeMe2IGlDewyfJ7aTd6vsC3+KuoN9oDHJFdhPD5?=
+ =?us-ascii?Q?zWz0Aq47c0G4SW6llTio2Pnx3Lyp7aomu5ZABGRPjDTmC6Xjg0zOtZyQ1F6+?=
+ =?us-ascii?Q?Lwmi9mQOQoi2yAoydEAG5cGjcSOfF38MB5stbgX4+6SkB852pq5hOlu4cC/G?=
+ =?us-ascii?Q?soMaWnJfZN2vnH2jcIp9/cSCvpAJedC+lVHF7yPtNHWRBeDDTVDjqmk53BKL?=
+ =?us-ascii?Q?jm6PejVEmefdSYEM8XUXRv8JE+AJTzh2foWf1+WUc1YDb8CpQsqyEWwPdKL9?=
+ =?us-ascii?Q?VbfDOAO4Bi0CVurOx3imacKzbCDzn+BQHhln2OUW864X9fFx0fojn0alK+mA?=
+ =?us-ascii?Q?KlyY65g04QPGfxd0glrffh10aYpCiDX6i/pUDWqUGzU7FMWDR24ZT9J7n4Hn?=
+ =?us-ascii?Q?93dl/pmrkksZeHzSOEb5mvjlSzDgcrGLvfin90mbD9Rlz6S071ap2JD0NRoh?=
+ =?us-ascii?Q?94s8jkTN1dfZBL/5UQR/cDXfMNVvRC2p4wHTKrIOzoaMkpPSugZeusWy6Prm?=
+ =?us-ascii?Q?q0xDS+38lus0Viv1Pij6vyM5ZqwXmvczrIItgaZhtF0aB4wARDsfBbGKTKLa?=
+ =?us-ascii?Q?ZSdcb/fLQNpvLDJrJszmG1oKhoncM2y2B0PvergSvuyLc3QxAesCXgG81kZF?=
+ =?us-ascii?Q?js11y1+A83yNH5wRBZv8Q5fc7dcNGDPBQIQYeTrhc/mmNjFsXw0t5Wsw00su?=
+ =?us-ascii?Q?BDBh4SsfuK2/f4yswKSE4Bq2TIgFtjwrEjHTcijwlB9mWBrRjOk2ylR/WXCu?=
+ =?us-ascii?Q?RvXA/BjQOLN9Kzgd4sOlgrNJMDwyy95+C0jtctrH0e64vcZSVdoxmeBl9KLc?=
+ =?us-ascii?Q?d7UC6YJblTRLt5EixSAGp/AGiZUffo3p9kdT4PS3Gb99ARkJdzhn9QsdirUN?=
+ =?us-ascii?Q?7yPWu7vx78Px6R3zO121GoGbZNFvrVlkj67GGDfzndjiH1yKiCk8Bj67fvH9?=
+ =?us-ascii?Q?wraILyOHeCumi7xJ0hSTR/luRIizl0XztH0yf8ICjKlKobRYpgBENT8nC37B?=
+ =?us-ascii?Q?Q+DNk7SJD6rHvUT2HREvDdseowLWQS0vQRWQZh+Y84RuqltLUbKiiUJ8Es04?=
+ =?us-ascii?Q?JgTgUECfoG3iv8o3wpPKALImMqnWQ733CCTEYqgFb87U5BQOfhwGMRxD+RC9?=
+ =?us-ascii?Q?zsedeRYan17ziR9lGNalIGhGZhJw4G0SunRANY/9tgs8cKqC95wZ9Q=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(921020);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?UuiQxMrba7CItG0e2R/FgbAxPzidzBORNY/XyxqLHBM7+bc7/Br06hhbqbOI?=
- =?us-ascii?Q?HeXixB42ltOh21YO7ajnR0eZNtyqOz7GI+73DhriC37Mj+2b/GWuvV8r2cUz?=
- =?us-ascii?Q?N116Uw/TWwuVT2V3JhrBpSyKanOng62aVq4rCxmLjhv//1I1ngG81/Z5I9gm?=
- =?us-ascii?Q?XqPUgFmdd8ie3JujZQZBDzNO9LDRjnSIQUqiLZKefaGHxW9XGfIbCYGSCC2h?=
- =?us-ascii?Q?MtsJtvs0/9jy7A/WPBhkt7PpLU1SayHC1vUgxbU9zc/DdiWH3NylwaIdKzYA?=
- =?us-ascii?Q?232960wAmZZEl+t3B67xgAhXN1HmYy+vUcEPXusmTgKKczY1M1dOSZd+qvlX?=
- =?us-ascii?Q?Ctz/nN4s5BkQ62BH27srW+18o/SmZVvpVK+MMog6KZCQQTbWkNDYG27k0afu?=
- =?us-ascii?Q?knlI6oByg2U1Q0RmgGzcdORLnBvQFKR6YoWoZ6G3yOSrvX7KDFkVvrNYqpEZ?=
- =?us-ascii?Q?DmFuDQg5OvUjs4Ajd572RHf6GBIF5BuG7wCRVZieOGfw6slL+DUb/Q+mGSzu?=
- =?us-ascii?Q?rxPurzRcyCbr4EYrvCyyb9NptKJZ1E4zJpKvCCyzuoJtjF8CsClhPaoUYEx6?=
- =?us-ascii?Q?gU5NXAjmui0DwJcavedxAXvyKEueiJH6ZiqSWBsOSn3qKhWJv6gexgJeEPHP?=
- =?us-ascii?Q?PUaaSmXjMNC2WGI6BXBktiIBD8XWIjvoBvQmuI5ht5X9Uui03KB7vuJUNMqj?=
- =?us-ascii?Q?08zs809ug/x9k4Ld17kUxwaoLPH1MGj+iXPXWUpETYG5ZNs7CqY/vSOqhUH5?=
- =?us-ascii?Q?XyOXE0RIBvjtq9sWgNWJDJbyu8vy3bpYCpeiDKcCbAuLccFvO5XfhJ4OcWYZ?=
- =?us-ascii?Q?cSL++JffJRerKh4aexUt9EeQYchdqbfBFbKkqdXPQ15fw6SLL+A8bHjGX+eX?=
- =?us-ascii?Q?hi8D1abhP7aHEzDP611SaJhtdrwCJDkHDmzJVpYok3/cxP0HeNBhDjqyIJWy?=
- =?us-ascii?Q?xaqB36byYhxne9UT0Pc/0IKG+3/UIHLCfroOjXJT//pp3xZtwav0r3+TsS7b?=
- =?us-ascii?Q?IJTV28Pb/P3xuDrvhSyVzEjP1wD0cXmo8d1E1/xAzx2kANj+z1BV9gfxcA18?=
- =?us-ascii?Q?2unrsVACWkIL6muPXBDw025DO2ztBDuTMNmQKKVJ49LGvDiHdRd0nbYbYxDI?=
- =?us-ascii?Q?j5/8tIySWqokzWgN5BzmmZ+EY8XzUd+kTsB999rqXm7J6i1J6Ffrjwb0xpAu?=
- =?us-ascii?Q?NiNULM4agvqiyyBb1E06YiqqdK0x5ygaWfXZN8r8UlK7xyu2WkfRzusKjh+c?=
- =?us-ascii?Q?GenqHp9kBuGPicfyMkQFiblRc6FJ8NvdJHNWK0M0oDhUv6cUA1BdlICXMBgq?=
- =?us-ascii?Q?1k1u8eIslQSs0AxEd78mtFEjI/msTvLuq3nV9y2D6QNGAZ1kl/1uFUqmxZej?=
- =?us-ascii?Q?EoLNzJQ2oYFBl+FfEuioqL9Rq+PfkI80jx3sLvaG91bJrZyT8KpYvyLP7kRh?=
- =?us-ascii?Q?epxX1hOprrK8w6NwT++PIz6lTgW06n3WK3p3PO1RmljORjMf5W37LNx/mmxO?=
- =?us-ascii?Q?+KcGqRabkTBKPh167xKvE2laoXZGfW2njyn1HtgQL2VjsX8V9LYRjy4RiwAs?=
- =?us-ascii?Q?VkBNcef8my2oUGRmSpoO2fcR87Km7lBTX2v6yBJn?=
+	=?us-ascii?Q?0j/QHRLLJlnUDP0te4vJ/dZG9iT76y/KLQaXB6+fnG+Fp6NnOXlqh5Ayjtgc?=
+ =?us-ascii?Q?AVVl7vm+Mp7Y1oed/Ymgv1HoUvf6qdscjcEt6evygKg+gkEmWjlwZmHG/rpU?=
+ =?us-ascii?Q?eSXT3yFr5ap0AfkRp0tY0r4yF5g3J60FxYlOSSeO5/QoCYg78tVr3ockyFHQ?=
+ =?us-ascii?Q?Fy6OR4gjPWJkshXu2UB8ZUEQ2PJvdlNTzjbCwSxZTLHeVzf9g4KJnDjvVnhY?=
+ =?us-ascii?Q?lzANR1zqSpJtHpGiAvy5540I0ae3elLpX6qApPKd3Ee7zOADQbFuOUtv5PIa?=
+ =?us-ascii?Q?6010gIttvr2+I7/wtgLj+gnQf8LA1TuCTMVHBwp9A7YzsgX+zEAE4TTxCr7H?=
+ =?us-ascii?Q?J4YQs7hJxLRaE1LAfogjCAGGvBkh6lklUbBbz+ppHm8wtt+iDhOklUOlwbKc?=
+ =?us-ascii?Q?wf8OvkIMy0dRhIhqweEBxbW5tEwL49J9EFxaZfGXAHVz7AJ9oyZMmMQJVFHY?=
+ =?us-ascii?Q?GgGjOfAAI3F1YM2kR2RbYYFJmtVc7wj9IPVu5+TnylXkzjouUEi8IBVw0nvZ?=
+ =?us-ascii?Q?hAAvuwtS8KZL7yqadS76ivT0BcX6aJoh8A+fkYFNgn75TmmXxwlJeNMcoVNR?=
+ =?us-ascii?Q?P77x9E6sVaJj6VqmjAcdQCtOkQhd/aPPwe/ZucioFzTlPUJJGsSFy7ZzJWrD?=
+ =?us-ascii?Q?j9P6yB75JgjldPFRZQxv7tUoTcXpaPa2znDr/uftEGG3OG8oEtrCH2li7fLF?=
+ =?us-ascii?Q?EeotFwJ57eRU9sa8+aVUoCM9C//z82anfkYr0iLDBXzSrkSQmJgkX4otMarP?=
+ =?us-ascii?Q?1eXLgmX65+JiJA6OIZuBc2Auy/tljLkZQhUHa3NvBBktZtQ7IBo/s9MGWJRm?=
+ =?us-ascii?Q?wW0uL2fXd0d9gJTHodJPErhjWwemFCn+LikKxapRGX6Cz/30tjNHnwiW7SuP?=
+ =?us-ascii?Q?HVsfjXvMdies65wjTPnaoW8Uen4ot02/GP1AqJHNpxqpwvBvqWRRtKy95CMd?=
+ =?us-ascii?Q?NMCI35rRUGdT0ldiCzPA2aIdbMhYvkSD0XhMD3wc7PIHtIaQY2b2OybmZfgI?=
+ =?us-ascii?Q?lNG4CWvwTq7gg7mb3iVSqfCaCZh88ToGQJcwn3mAJhQhmsK5vWOxz1b/rLg4?=
+ =?us-ascii?Q?G1PpPHWCKh/pQyI3WZXUDF6qKhGmXECkJucYqKemGMFG7rqy/aBfoaEsxoAY?=
+ =?us-ascii?Q?Vf0JQnt/k5cTg4CNYMSC6SHpEhXV32a26TdcP9WDwd3yk4/X3Y+ZbH2MZktR?=
+ =?us-ascii?Q?NKRAUDbB6IcwtZHK28bFiFwctpTvvRSUHQbV+5YOGd+tVlMaPMjKTYwOtQrP?=
+ =?us-ascii?Q?apMr8/Hm5R4smugQZ3c8Uc8lux6o9I2ZUxiSXarUV3amANya7AD9bUmWRKbz?=
+ =?us-ascii?Q?f/Sj7YzpkI2ItK8FqQ/6PKWU4S5zx1QoLHlzBzOhZxvvJ6Abi/o3wPjwwUly?=
+ =?us-ascii?Q?GMv91ijwh/b64MH5X6HfU506ZDvplFC1QVlcknvJJFC+Jn7uOocSkUkAqFkz?=
+ =?us-ascii?Q?PxEhgPcwKDpfgatkDV6DoDo6uzTpR9/7bU3+p86SBWbnZuPHQKv3ZXZZjV6G?=
+ =?us-ascii?Q?R/0sR19hzSIujlnORouHdg6Sqn22eFz9BXfZDHmz6HxmUwFUqRq0ExQWzt+I?=
+ =?us-ascii?Q?gyzVc42c8kMzvL1njwHP2jChlm+BSvVw3QOqLzw7?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5236ec27-6fe6-4581-eeb1-08dd7e939c06
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa4616f0-c536-4eb4-65e5-08dd7e939d7e
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2025 16:11:00.0446
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2025 16:11:02.5356
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cFfF7TzW7xZ2etGiILt14oMCXZKHTMUs3b8O0CrRYbaeMZjeDszxTzHxNCBrQ5gJlXquk+abjSBquYuqtPPVsA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: itBb5zfDPbc1B5FXAhN4+0gSGRJUco762gmAisc6vIP9j0JwZvbpLVHQvLRXvXFrN1ijaHwtpmcrjRilLf8NJw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8962
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The torture.sh --do-rt command-line parameter is intended to mimic -rt
-kernels.  Now that CONFIG_PREEMPT_RT is upstream, this commit makes this
-mimicking more precise.
+This commit adds a new rcutorture.n_up_down kernel boot parameter
+that specifies the number of outstanding SRCU up/down readers, which
+begin in kthread context and end in an hrtimer handler.  There is a new
+kthread ("rcu_torture_updown") that scans an per-reader array looking
+for elements whose readers have ended.  This kthread sleeps between one
+and two milliseconds between consecutive scans.
 
-Note that testing of RCU priority boosting is disabled in favor
-of forward-progress testing of RCU callbacks.  If it turns out to be
-possible to make kernels built with CONFIG_PREEMPT_RT=y to tolerate
-testing of both, both will be enabled.
-
-[ paulmck: Apply Sebastian Siewior feedback. ]
+[ paulmck: Apply kernel test robot feedback. ]
+[ paulmck: Apply Z qiang feedback. ]
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ kernel/rcu/rcutorture.c | 227 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 208 insertions(+), 19 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 0447c4a00cc4..d53ee1e0ffc7 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -448,13 +448,17 @@ fi
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index b0e96df63622..e7f0521c56d0 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -55,22 +55,24 @@ MODULE_DESCRIPTION("Read-Copy Update module-based torture test facility");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@joshtriplett.org>");
  
- if test "$do_rt" = "yes"
- then
--	# With all post-boot grace periods forced to normal.
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcupdate.rcu_normal=1"
--	torture_set "rcurttorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --trust-make
-+	# In both runs, disable testing of RCU priority boosting because
-+	# -rt doesn't like its interaction with testing of callback
-+	# flooding.
+-/* Bits for ->extendables field, extendables param, and related definitions. */
+-#define RCUTORTURE_RDR_SHIFT_1	 8	/* Put SRCU index in upper bits. */
+-#define RCUTORTURE_RDR_MASK_1	 (0xff << RCUTORTURE_RDR_SHIFT_1)
+-#define RCUTORTURE_RDR_SHIFT_2	 16	/* Put SRCU index in upper bits. */
+-#define RCUTORTURE_RDR_MASK_2	 (0xff << RCUTORTURE_RDR_SHIFT_2)
+-#define RCUTORTURE_RDR_BH	 0x01	/* Extend readers by disabling bh. */
+-#define RCUTORTURE_RDR_IRQ	 0x02	/*  ... disabling interrupts. */
+-#define RCUTORTURE_RDR_PREEMPT	 0x04	/*  ... disabling preemption. */
+-#define RCUTORTURE_RDR_RBH	 0x08	/*  ... rcu_read_lock_bh(). */
+-#define RCUTORTURE_RDR_SCHED	 0x10	/*  ... rcu_read_lock_sched(). */
+-#define RCUTORTURE_RDR_RCU_1	 0x20	/*  ... entering another RCU reader. */
+-#define RCUTORTURE_RDR_RCU_2	 0x40	/*  ... entering another RCU reader. */
+-#define RCUTORTURE_RDR_NBITS	 7	/* Number of bits defined above. */
+-#define RCUTORTURE_MAX_EXTEND	 \
++// Bits for ->extendables field, extendables param, and related definitions.
++#define RCUTORTURE_RDR_SHIFT_1	8	// Put SRCU index in upper bits.
++#define RCUTORTURE_RDR_MASK_1	(0xff << RCUTORTURE_RDR_SHIFT_1)
++#define RCUTORTURE_RDR_SHIFT_2	16	// Put SRCU index in upper bits.
++#define RCUTORTURE_RDR_MASK_2	(0xff << RCUTORTURE_RDR_SHIFT_2)
++#define RCUTORTURE_RDR_BH	0x01	// Extend readers by disabling bh.
++#define RCUTORTURE_RDR_IRQ	0x02	//  ... disabling interrupts.
++#define RCUTORTURE_RDR_PREEMPT	0x04	//  ... disabling preemption.
++#define RCUTORTURE_RDR_RBH	0x08	//  ... rcu_read_lock_bh().
++#define RCUTORTURE_RDR_SCHED	0x10	//  ... rcu_read_lock_sched().
++#define RCUTORTURE_RDR_RCU_1	0x20	//  ... entering another RCU reader.
++#define RCUTORTURE_RDR_RCU_2	0x40	//  ... entering another RCU reader.
++#define RCUTORTURE_RDR_UPDOWN	0x80	//  ... up-read from task, down-read from timer.
++					//	Note: Manual start, automatic end.
++#define RCUTORTURE_RDR_NBITS	8	// Number of bits defined above.
++#define RCUTORTURE_MAX_EXTEND	\
+ 	(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_IRQ | RCUTORTURE_RDR_PREEMPT | \
+-	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED)
++	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED)  // Intentionally omit RCUTORTURE_RDR_UPDOWN.
+ #define RCUTORTURE_RDR_ALLBITS	\
+ 	(RCUTORTURE_MAX_EXTEND | RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2 | \
+ 	 RCUTORTURE_RDR_MASK_1 | RCUTORTURE_RDR_MASK_2)
+@@ -110,6 +112,7 @@ torture_param(bool, gp_sync, false, "Use synchronous GP wait primitives");
+ torture_param(int, irqreader, 1, "Allow RCU readers from irq handlers");
+ torture_param(int, leakpointer, 0, "Leak pointer dereferences from readers");
+ torture_param(int, n_barrier_cbs, 0, "# of callbacks/kthreads for barrier testing");
++torture_param(int, n_up_down, 32, "# of concurrent up/down hrtimer-based RCU readers");
+ torture_param(int, nfakewriters, 4, "Number of RCU fake writer threads");
+ torture_param(int, nreaders, -1, "Number of RCU reader threads");
+ torture_param(int, object_debug, 0, "Enable debug-object double call_rcu() testing");
+@@ -152,6 +155,7 @@ static int nrealfakewriters;
+ static struct task_struct *writer_task;
+ static struct task_struct **fakewriter_tasks;
+ static struct task_struct **reader_tasks;
++static struct task_struct *updown_task;
+ static struct task_struct **nocb_tasks;
+ static struct task_struct *stats_task;
+ static struct task_struct *fqs_task;
+@@ -374,6 +378,8 @@ struct rcu_torture_ops {
+ 	void (*readunlock)(int idx);
+ 	int (*readlock_held)(void);   // lockdep.
+ 	int (*readlock_nesting)(void); // actual nesting, if available, -1 if not.
++	int (*down_read)(void);
++	void (*up_read)(int idx);
+ 	unsigned long (*get_gp_seq)(void);
+ 	unsigned long (*gp_diff)(unsigned long new, unsigned long old);
+ 	void (*deferred_free)(struct rcu_torture *p);
+@@ -421,6 +427,7 @@ struct rcu_torture_ops {
+ 	int no_pi_lock;
+ 	int debug_objects;
+ 	int start_poll_irqsoff;
++	int have_up_down;
+ 	const char *name;
+ };
+ 
+@@ -754,6 +761,50 @@ static int torture_srcu_read_lock_held(void)
+ 	return srcu_read_lock_held(srcu_ctlp);
+ }
+ 
++static bool srcu_torture_have_up_down(void)
++{
++	int rf = reader_flavor;
 +
-+	# With all post-boot grace periods forced to normal (default for PREEMPT_RT).
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.test_boost=0 rcutorture.preempt_duration=0"
-+	torture_set "rcurttorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --kconfig "CONFIG_PREEMPT_RT=y CONFIG_EXPERT=y CONFIG_HZ_PERIODIC=n CONFIG_NO_HZ_IDLE=y" --trust-make
++	if (!rf)
++		rf = SRCU_READ_FLAVOR_NORMAL;
++	return !!(cur_ops->have_up_down & rf);
++}
++
++static int srcu_torture_down_read(void)
++{
++	int idx;
++	struct srcu_ctr __percpu *scp;
++
++	WARN_ON_ONCE(reader_flavor & ~SRCU_READ_FLAVOR_ALL);
++	WARN_ON_ONCE(reader_flavor & (reader_flavor - 1));
++
++	if ((reader_flavor & SRCU_READ_FLAVOR_NORMAL) || !(reader_flavor & SRCU_READ_FLAVOR_ALL)) {
++		idx = srcu_down_read(srcu_ctlp);
++		WARN_ON_ONCE(idx & ~0x1);
++		return idx;
++	}
++	if (reader_flavor & SRCU_READ_FLAVOR_FAST) {
++		scp = srcu_down_read_fast(srcu_ctlp);
++		idx = __srcu_ptr_to_ctr(srcu_ctlp, scp);
++		WARN_ON_ONCE(idx & ~0x1);
++		return idx << 3;
++	}
++	WARN_ON_ONCE(1);
++	return 0;
++}
++
++static void srcu_torture_up_read(int idx)
++{
++	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
++	if (reader_flavor & SRCU_READ_FLAVOR_FAST)
++		srcu_up_read_fast(srcu_ctlp, __srcu_ctr_to_ptr(srcu_ctlp, (idx & 0x8) >> 3));
++	else if ((reader_flavor & SRCU_READ_FLAVOR_NORMAL) ||
++		 !(reader_flavor & SRCU_READ_FLAVOR_ALL))
++		srcu_up_read(srcu_ctlp, idx & 0x1);
++	else
++		WARN_ON_ONCE(1);
++}
++
+ static unsigned long srcu_torture_completed(void)
+ {
+ 	return srcu_batches_completed(srcu_ctlp);
+@@ -811,6 +862,8 @@ static struct rcu_torture_ops srcu_ops = {
+ 	.readlock	= srcu_torture_read_lock,
+ 	.read_delay	= srcu_read_delay,
+ 	.readunlock	= srcu_torture_read_unlock,
++	.down_read	= srcu_torture_down_read,
++	.up_read	= srcu_torture_up_read,
+ 	.readlock_held	= torture_srcu_read_lock_held,
+ 	.get_gp_seq	= srcu_torture_completed,
+ 	.gp_diff	= rcu_seq_diff,
+@@ -831,6 +884,8 @@ static struct rcu_torture_ops srcu_ops = {
+ 	.irq_capable	= 1,
+ 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+ 	.debug_objects	= 1,
++	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
++				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST,
+ 	.name		= "srcu"
+ };
  
- 	# With all post-boot grace periods forced to expedited.
--	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcupdate.rcu_expedited=1"
--	torture_set "rcurttorture-exp" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --trust-make
-+	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.test_boost=0 rcupdate.rcu_normal_after_boot=0 rcupdate.rcu_expedited=1 rcutorture.preempt_duration=0"
-+	torture_set "rcurttorture-exp" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "TREE03" --kconfig "CONFIG_PREEMPT_RT=y CONFIG_EXPERT=y CONFIG_HZ_PERIODIC=n CONFIG_NO_HZ_FULL=y" --trust-make
- fi
+@@ -856,6 +911,8 @@ static struct rcu_torture_ops srcud_ops = {
+ 	.read_delay	= srcu_read_delay,
+ 	.readunlock	= srcu_torture_read_unlock,
+ 	.readlock_held	= torture_srcu_read_lock_held,
++	.down_read	= srcu_torture_down_read,
++	.up_read	= srcu_torture_up_read,
+ 	.get_gp_seq	= srcu_torture_completed,
+ 	.gp_diff	= rcu_seq_diff,
+ 	.deferred_free	= srcu_torture_deferred_free,
+@@ -875,6 +932,8 @@ static struct rcu_torture_ops srcud_ops = {
+ 	.irq_capable	= 1,
+ 	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
+ 	.debug_objects	= 1,
++	.have_up_down	= IS_ENABLED(CONFIG_TINY_SRCU)
++				? 0 : SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_FAST,
+ 	.name		= "srcud"
+ };
  
- if test "$do_srcu_lockdep" = "yes"
+@@ -1985,7 +2044,7 @@ static void rcutorture_one_extend(int *readstate, int newstate, bool insoftirq,
+ 
+ 	first = idxold1 == 0;
+ 	WARN_ON_ONCE(idxold2 < 0);
+-	WARN_ON_ONCE(idxold2 & ~RCUTORTURE_RDR_ALLBITS);
++	WARN_ON_ONCE(idxold2 & ~(RCUTORTURE_RDR_ALLBITS | RCUTORTURE_RDR_UPDOWN));
+ 	rcutorture_one_extend_check("before change", idxold1, statesnew, statesold, insoftirq);
+ 	rtrsp->rt_readstate = newstate;
+ 
+@@ -2061,6 +2120,11 @@ static void rcutorture_one_extend(int *readstate, int newstate, bool insoftirq,
+ 		if (lockit)
+ 			raw_spin_unlock_irqrestore(&current->pi_lock, flags);
+ 	}
++	if (statesold & RCUTORTURE_RDR_UPDOWN) {
++		cur_ops->up_read((idxold1 & RCUTORTURE_RDR_MASK_1) >> RCUTORTURE_RDR_SHIFT_1);
++		WARN_ON_ONCE(idxnew1 != -1);
++		idxold1 = 0;
++	}
+ 
+ 	/* Delay if neither beginning nor end and there was a change. */
+ 	if ((statesnew || statesold) && *readstate && newstate)
+@@ -2201,7 +2265,8 @@ static bool rcu_torture_one_read_start(struct rcu_torture_one_read_state *rtorsp
+ 	rtorsp->started = cur_ops->get_gp_seq();
+ 	rtorsp->ts = rcu_trace_clock_local();
+ 	rtorsp->p = rcu_dereference_check(rcu_torture_current,
+-				  !cur_ops->readlock_held || cur_ops->readlock_held());
++					  !cur_ops->readlock_held || cur_ops->readlock_held() ||
++					  (rtorsp->readstate & RCUTORTURE_RDR_UPDOWN));
+ 	if (rtorsp->p == NULL) {
+ 		/* Wait for rcu_torture_writer to get underway */
+ 		rcutorture_one_extend(&rtorsp->readstate, 0, myid < 0, trsp, rtorsp->rtrsp);
+@@ -2370,6 +2435,123 @@ rcu_torture_reader(void *arg)
+ 	return 0;
+ }
+ 
++struct rcu_torture_one_read_state_updown {
++	struct hrtimer rtorsu_hrt;
++	bool rtorsu_inuse;
++	struct torture_random_state rtorsu_trs;
++	struct rcu_torture_one_read_state rtorsu_rtors;
++};
++
++static struct rcu_torture_one_read_state_updown *updownreaders;
++static DEFINE_TORTURE_RANDOM(rcu_torture_updown_rand);
++static int rcu_torture_updown(void *arg);
++
++static enum hrtimer_restart rcu_torture_updown_hrt(struct hrtimer *hrtp)
++{
++	struct rcu_torture_one_read_state_updown *rtorsup;
++
++	rtorsup = container_of(hrtp, struct rcu_torture_one_read_state_updown, rtorsu_hrt);
++	rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1);
++	smp_store_release(&rtorsup->rtorsu_inuse, false);
++	return HRTIMER_NORESTART;
++}
++
++static int rcu_torture_updown_init(void)
++{
++	int i;
++	struct torture_random_state *rand = &rcu_torture_updown_rand;
++	int ret;
++
++	if (n_up_down < 0)
++		return 0;
++	if (!srcu_torture_have_up_down()) {
++		VERBOSE_TOROUT_STRING("rcu_torture_updown_init: Disabling up/down reader tests due to lack of primitives");
++		return 0;
++	}
++	updownreaders = kcalloc(n_up_down, sizeof(*updownreaders), GFP_KERNEL);
++	if (!updownreaders) {
++		VERBOSE_TOROUT_STRING("rcu_torture_updown_init: Out of memory, disabling up/down reader tests");
++		return -ENOMEM;
++	}
++	for (i = 0; i < n_up_down; i++) {
++		init_rcu_torture_one_read_state(&updownreaders[i].rtorsu_rtors, rand);
++		hrtimer_init(&updownreaders[i].rtorsu_hrt, CLOCK_MONOTONIC,
++			     HRTIMER_MODE_REL | HRTIMER_MODE_SOFT);
++		updownreaders[i].rtorsu_hrt.function = rcu_torture_updown_hrt;
++		torture_random_init(&updownreaders[i].rtorsu_trs);
++		init_rcu_torture_one_read_state(&updownreaders[i].rtorsu_rtors,
++						&updownreaders[i].rtorsu_trs);
++	}
++	ret = torture_create_kthread(rcu_torture_updown, rand, updown_task);
++	if (ret) {
++		kfree(updownreaders);
++		updownreaders = NULL;
++	}
++	return ret;
++}
++
++static void rcu_torture_updown_cleanup(void)
++{
++	struct rcu_torture_one_read_state_updown *rtorsup;
++
++	for (rtorsup = updownreaders; rtorsup < &updownreaders[n_up_down]; rtorsup++) {
++		if (!smp_load_acquire(&rtorsup->rtorsu_inuse))
++			continue;
++		if (!hrtimer_cancel(&rtorsup->rtorsu_hrt))
++			WARN_ON_ONCE(rtorsup->rtorsu_inuse);
++
++	}
++	kfree(updownreaders);
++	updownreaders = NULL;
++}
++
++/*
++ * RCU torture up/down reader kthread, starting RCU readers in kthread
++ * context and ending them in hrtimer handlers.  Otherwise similar to
++ * rcu_torture_reader().
++ */
++static int
++rcu_torture_updown(void *arg)
++{
++	int idx;
++	int rawidx;
++	struct rcu_torture_one_read_state_updown *rtorsup;
++	ktime_t t;
++
++	VERBOSE_TOROUT_STRING("rcu_torture_updown task started");
++	do {
++		for (rtorsup = updownreaders; rtorsup < &updownreaders[n_up_down]; rtorsup++) {
++			if (torture_must_stop())
++				break;
++			if (smp_load_acquire(&rtorsup->rtorsu_inuse))
++				continue;
++			init_rcu_torture_one_read_state(&rtorsup->rtorsu_rtors,
++							&rtorsup->rtorsu_trs);
++			rawidx = cur_ops->down_read();
++			idx = (rawidx << RCUTORTURE_RDR_SHIFT_1) & RCUTORTURE_RDR_MASK_1;
++			rtorsup->rtorsu_rtors.readstate = idx | RCUTORTURE_RDR_UPDOWN;
++			rtorsup->rtorsu_rtors.rtrsp++;
++			if (!rcu_torture_one_read_start(&rtorsup->rtorsu_rtors,
++							&rtorsup->rtorsu_trs, -1)) {
++				cur_ops->up_read(rawidx);
++				schedule_timeout_idle(HZ);
++				continue;
++			}
++			smp_store_release(&rtorsup->rtorsu_inuse, true);
++			t = torture_random(&rtorsup->rtorsu_trs) & 0xfffff; // One per million.
++			if (t < 10 * 1000)
++				t = 200 * 1000 * 1000;
++			hrtimer_start(&rtorsup->rtorsu_hrt, t,
++				      HRTIMER_MODE_REL | HRTIMER_MODE_SOFT);
++		}
++		torture_hrtimeout_ms(1, 1000, &rcu_torture_updown_rand);
++		stutter_wait("rcu_torture_updown");
++	} while (!torture_must_stop());
++	rcu_torture_updown_cleanup();
++	torture_kthread_stopping("rcu_torture_updown");
++	return 0;
++}
++
+ /*
+  * Randomly Toggle CPUs' callback-offload state.  This uses hrtimers to
+  * increase race probabilities and fuzzes the interval between toggling.
+@@ -2620,7 +2802,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 "reader_flavor=%x "
+ 		 "nocbs_nthreads=%d nocbs_toggle=%d "
+ 		 "test_nmis=%d "
+-		 "preempt_duration=%d preempt_interval=%d\n",
++		 "preempt_duration=%d preempt_interval=%d n_up_down=%d\n",
+ 		 torture_type, tag, nrealreaders, nrealfakewriters,
+ 		 stat_interval, verbose, test_no_idle_hz, shuffle_interval,
+ 		 stutter, irqreader, fqs_duration, fqs_holdoff, fqs_stutter,
+@@ -2634,7 +2816,7 @@ rcu_torture_print_module_parms(struct rcu_torture_ops *cur_ops, const char *tag)
+ 		 reader_flavor,
+ 		 nocbs_nthreads, nocbs_toggle,
+ 		 test_nmis,
+-		 preempt_duration, preempt_interval);
++		 preempt_duration, preempt_interval, n_up_down);
+ }
+ 
+ static int rcutorture_booster_cleanup(unsigned int cpu)
+@@ -3686,6 +3868,10 @@ rcu_torture_cleanup(void)
+ 		nocb_tasks = NULL;
+ 	}
+ 
++	if (updown_task) {
++		torture_stop_kthread(rcu_torture_updown, updown_task);
++		updown_task = NULL;
++	}
+ 	if (reader_tasks) {
+ 		for (i = 0; i < nrealreaders; i++)
+ 			torture_stop_kthread(rcu_torture_reader,
+@@ -4216,6 +4402,9 @@ rcu_torture_init(void)
+ 		if (torture_init_error(firsterr))
+ 			goto unwind;
+ 	}
++	firsterr = rcu_torture_updown_init();
++	if (torture_init_error(firsterr))
++		goto unwind;
+ 	nrealnocbers = nocbs_nthreads;
+ 	if (WARN_ON(nrealnocbers < 0))
+ 		nrealnocbers = 1;
 -- 
 2.43.0
 
