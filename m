@@ -1,64 +1,59 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0BC2594;
-	Sun, 20 Apr 2025 00:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BEA647;
+	Sun, 20 Apr 2025 00:21:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745108248; cv=none; b=MpjobDuC+bS+a9pga/LpxLsdc+jBv1oiWJFYMWtWXMcCFONjtGq+e1A0B376V0uyYQZIucyX1IcZWQfUzK4Tqxw6gq9IzTiEQZRpdtoFAe0qm4kxok4/b1urgk9V/p0KC04/DXz1bMz70Q5bDsVitXNaheBtDVNhg96PXPCHvcU=
+	t=1745108489; cv=none; b=KDkkSW43yNECMd8ev0yRRIzxkb9uP1AZg9FiWyfoYIinE4KfVpL9Auitj8r30y4jTeN7Q4WqiArMbauoXk8ybzTuEDIJiGk/VUdEmEwzOYdWojujnez9dKKxNjhQaIcMf2pM776LwYnZXRRFKdAaYV9O8Wrzfo5wEBQ9g2qrQzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745108248; c=relaxed/simple;
-	bh=XbWywE/ADb2906GHPJBQp0phcFHCX/X3oZAeWJ380SY=;
+	s=arc-20240116; t=1745108489; c=relaxed/simple;
+	bh=rZuukaW3diAf5pHqdu7NbmQkIvsNnCYFbeDogA39qGE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XX7DLE9bndQsty3InQ0HmufZM+c3jzxS90AU4kJ0Cghv9VMV+AC22QHprzRk6kxFfPMccEKXbO/JpN0bMWCvTzt0o/mp47GYI+Z8sFtsTHlM1v6QgtvO8pCsKt0IWZVrlNUw56756AJOonOl+LQTJbPMO9TTdnPT+cNACqhIPM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=caUQcNlD; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljgYfJmD4pqs01wBOGjbhZ4i44ka1EGqpbcB+fEnu95nw/crm1qyI6XKLv3l4Z/ndHfMfZU4uW35wVqBMBRUGkTWDfPWbkS/lmKhFqQuE3g0qx3YSeYfZMVGZaxsyzMc7Z70VMwbOyB35MhfBYDPBiW5qKjLD2yjKN97STrpbac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rWhfBSFs; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="caUQcNlD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E591CC4CEE7;
-	Sun, 20 Apr 2025 00:17:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rWhfBSFs"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ED72C4CEE7;
+	Sun, 20 Apr 2025 00:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745108248;
-	bh=XbWywE/ADb2906GHPJBQp0phcFHCX/X3oZAeWJ380SY=;
+	s=k20201202; t=1745108489;
+	bh=rZuukaW3diAf5pHqdu7NbmQkIvsNnCYFbeDogA39qGE=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=caUQcNlDyhi08AGRBTfHqosDM1URsh8+/uGYOZE9+OjuXF4/8z+ttextlXUAmaRzm
-	 9kn0ASYgrE1aJ6MDuaakk9n1zJdXxbi+9U7+RYV90In5e4vnHXPxjQ8VF/Lx4fiDQT
-	 keVv0G1eWTwGotGqrI6kB0Qopl0mqt/i8moU0HGQWZ8jjty0IoIGh5qbVHzFbjck3d
-	 d2WeaPswgeDexu5gyW2nM0Su61/LO2Wy5ihNd8b7Hqq1FV9Yh2AyOdw5P0SaUd9RJe
-	 3l/3jQX/Qf76/U3gpZv4hPg5Ag7F/q/HjXujLHFqtazRE6KqTjtLc69jM5F18Q/TXI
-	 AI066KsWPTlrA==
+	b=rWhfBSFsXrtSnNMHTwE1wiZ+CvEkkBW040Wfwmuc5NS6F5wPOQFVjRHg6oU6b+1sY
+	 0pCWLrDSDEjYiVLg0ngKfajeqeMVxCnU7PN+BNBTQYvN//idIro6viEB14xYRlknZL
+	 nULzeP2lNpunjoQInoRWzDHnNxu4vg3wPuZkfN1dlZdEAU86M7dYsdzXAJjuZ5uP25
+	 44Ks0XctBr+EgLA5qnG+4AF/cELnQv8ZZzhddf7rZzMmKD3N59eEbsUuY2kALcBTVD
+	 +0mV+Op8xsT1C/EBT8eK1bOjCc/RS6QVOicjZMyLE9m8Utq8c6zraA8IVvwwDVsmVQ
+	 NqrXBludGrWcQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 901EDCE095D; Sat, 19 Apr 2025 17:17:27 -0700 (PDT)
-Date: Sat, 19 Apr 2025 17:17:27 -0700
+	id EAF4BCE095D; Sat, 19 Apr 2025 17:21:28 -0700 (PDT)
+Date: Sat, 19 Apr 2025 17:21:28 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
 	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Shuah Khan <shuah@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@kernel.org>,
-	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
-	Danilo Krummrich <dakr@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, rcu <rcu@vger.kernel.org>,
-	linux-kselftest <linux-kselftest@vger.kernel.org>,
-	rust-for-linux <rust-for-linux@vger.kernel.org>,
-	llvm <llvm@lists.linux.dev>
-Subject: Re: [12/14] torture: Add testing of RCU's Rust bindings to torture.sh
-Message-ID: <5d339b87-3eb7-4c1f-b862-79ea8e659a9a@paulmck-laptop>
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] rcutorture: Perform more frequent testing of
+ ->gpwrap
+Message-ID: <9377c713-9a23-4ac3-ac2e-b5af105706a1@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <cbf1a147-0a24-4146-98a0-a9666bb60433@paulmck-laptop>
- <174501535977.2294.12061268025763464111@patchwork.local>
- <a0743fa8-7676-4930-b9de-73650b577bd9@paulmck-laptop>
- <b26e8dc2-ab0e-4d68-aaa1-5c2353f2ef52@nvidia.com>
+References: <20250410150329.3807285-1-joelagnelf@nvidia.com>
+ <20250410150329.3807285-2-joelagnelf@nvidia.com>
+ <11caaa93-7acf-417c-9223-1b14a76310b2@paulmck-laptop>
+ <5ee46103-caef-46ac-8660-4b9f4bb5e4f0@nvidia.com>
+ <587e21be-9595-4625-b929-0e8b4a215a43@paulmck-laptop>
+ <8603B8C7-DE79-4362-BE60-DE95ABE015BE@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -68,63 +63,79 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b26e8dc2-ab0e-4d68-aaa1-5c2353f2ef52@nvidia.com>
+In-Reply-To: <8603B8C7-DE79-4362-BE60-DE95ABE015BE@nvidia.com>
 
-On Sat, Apr 19, 2025 at 06:24:56PM -0400, Joel Fernandes wrote:
-> Hi Paul,
+On Wed, Apr 16, 2025 at 11:19:22AM +0000, Joel Fernandes wrote:
 > 
-> On 4/18/2025 6:45 PM, Paul E. McKenney wrote:
-> >>>>> Suppose we fired up a guest OS and captured the console output.  Is there
-> >>>>> a way to make that guest OS shut down automatically at the end of the
-> >>>>> test and to extract the test results?
-> >>>> Ah, sorry, I thought you were already doing something like that, i.e.
-> >>>> that perhaps you could reuse some kernel build you already had and
-> >>>> avoiding a full rebuild/mrproper. The KUnit Python script uses QEMU
-> >>>> and parses the results; e.g. you could look for the results lines
-> >>>> like:
-> >>>>
-> >>>>     # Totals: pass:133 fail:0 skip:0 total:133
-> >>>>     ok 2 rust_doctests_kernel
-> >>>>
-> >>> Alternatively, I could clone a copy of the current archive into a
-> >>> temporary directory, "make mrproper" there, run kunit normally, then
-> >>> clean up the temporary directory.  Extra storage, but quite a bit
-> >>> more robust and user-friendly.
-> >>>
-> >> Just to be on the same page, is the concern about the
-> >> slowness of mrproper or that it kills the kernel build
-> >> artifacts requiring a clean build?
-> >
-> > It blows away things like tags and cscope databases.  Me, I have my
-> > cscope databases elsewhere, but lots of people build them for their
-> > live git repos.  And they are (quite understandably) unhappy when their
-> > source-code browsing tools are blown away by some random test doing an
-> > unsuspected "make mrproper".  😉
 > 
-> Cool. One thing is, running other test modes in torture.sh also reconfigures the
-> kernel and potentially recompiles the entire kernel as a result. So if someone
-> is already having their own kernel build, running torture.sh already may cause
-> them to have to do a full rebuild, AFAICS. But yes, and to your point, the
-> cscope DB and stuff may get blown away for additional disruption.
-> 
+> > On Apr 15, 2025, at 8:19 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
 > > 
-> >> What kind of improvement are we looking for and why would
-> >> this patch in its current form not work?
-> > For the near term, I am OK with its current form because it is
-> > non-default.  Longer term, though, we need it to be tested by default,
-> > and that means making it avoid undoing people's work.  My short-term
-> > approach is to enable this test on my employer's test systems, which
-> > have Rust set up correctly, and skip it on my laptop, which has a strange
-> > FrankenRust due to my early playing around with that language.
+> > ﻿On Mon, Apr 14, 2025 at 11:05:45AM -0400, Joel Fernandes wrote:
+> >> On 4/10/2025 2:29 PM, Paul E. McKenney wrote:
+> >>>> +static int rcu_gpwrap_lag_init(void)
+> >>>> +{
+> >>>> +    if (gpwrap_lag_cycle_mins <= 0 || gpwrap_lag_active_mins <= 0) {
+> >>>> +        pr_alert("rcu-torture: lag timing parameters must be positive\n");
+> >>>> +        return -EINVAL;
+> >>> When rcutorture is initiated by modprobe, this makes perfect sense.
+> >>> 
+> >>> But if rcutorture is built in, we have other choices:  (1) Disable gpwrap
+> >>> testing and do other testing but splat so that the bogus scripting can
+> >>> be fixed, (2) Force default values and splat as before, (3) Splat and
+> >>> halt the system.
+> >>> 
+> >>> The usual approach has been #1, but what makes sense in this case?
+> >> 
+> >> If the user deliberately tries to prevent the test, I am Ok with #3 which I
+> >> believe is the current behavior. But otherwise #1 is also Ok with me but I don't
+> >> feel strongly about doing that.
+> >> 
+> >> If we want to do #3, it will just involve changing the "return -EINVAL" to
+> >> "return 0" but also may need to be doing so only if RCU torture is a built-in.
+> >> 
+> >> IMO the current behavior is reasonable than adding more complexity for an
+> >> unusual case for a built-in?
 > > 
-> Or we teach kunit.py to not require a mrproper? :-) I wonder why it needs to do
-> that. I may run into that too considering my other kernel project requires me to
-> mess around with rust.
+> > The danger is that someone adjusts a scenario, accidentally disables
+> > *all* ->gpwrap testing during built-in tests (kvm.sh, kvm-remote,sh,
+> > and torture.sh), and nobody notices.  This has tripped me up in the
+> > past, hence the existing splats in rcutorture, but only for runs with
+> > built-in rcutorture.
+> 
+> But in the code we are discussing, we will splat with an error if either parameter is set to 0?  Sorry if I missed something.
 
-They might have a good reason for that "make mrproper", but it does
-sound like a good avenue to investigate.  Otherwise, as noted earlier, my
-thought is to clone the repo into a temp directory, run "make mrproper"
-there, continue being a non-special user of kunit, and avoid messing up
-people's databases and tags.
+The idea would be to instead splat if the user requested a given type of
+testing, but that request conflicted with some other setting so that the
+user's request had to be refused.  If the user did not request a given
+type of testing (so that the corresponding parameter was zero), no splats.
+
+Also, no splats of this type for modprobe (error return instead), rather,
+modprobe gets an error code in this case.
+
+Or am I missing the point of your question?
 
 							Thanx, Paul
+
+> >> On the other hand if the issue is with providing the user with a way to disable
+> >> gpwrap testing, that should IMO be another parameter than setting the _mins
+> >> parameters to be 0. But I think we may not want this testing disabled since it
+> >> is already "self-disabled" for the first 25 miutes.
+> > 
+> > We do need a way of disabling the testing on long runs for fault-isolation
+> > purposes.
+> 
+> Thanks, I will add an option for this.
+> 
+> > 
+> > For example, rcutorture.n_up_down=0 disables SRCU up/down testing.
+> > Speaking of which, I am adding a section on that topic to this document:
+> > 
+> > https://docs.google.com/document/d/1RoYRrTsabdeTXcldzpoMnpmmCjGbJNWtDXN6ZNr_4H8/edit?usp=sharing
+> 
+> Nice, thanks,
+> 
+>  - Joel
+> 
+> 
+> > 
+> >                            Thanx, Paul
