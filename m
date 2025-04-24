@@ -1,214 +1,113 @@
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A162D289367
-	for <rcu@vger.kernel.org>; Wed, 23 Apr 2025 17:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C96519A
+	for <rcu@vger.kernel.org>; Thu, 24 Apr 2025 00:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745428448; cv=none; b=lj+X/khB4Qh37shxKRshnz1H9+exsDNI9srl4KVHxDOXP5dHlU9nAYoz4AYzex1mSydoTiPFOe2lYuYQuXH5ceZAVgFS+vJzrKEpGaL2R5BIXwn9EvNgz6x2UXEwTpbE8GjqFSF4aaHDO+K9z/iwkt8NLtw35sH2wNEWA74m3mk=
+	t=1745455298; cv=none; b=O7yC1mytBBXssWQ40dx3P8l9O2UcffIEih/gaaXHGs1IFfj3U08RWBsZadBd7hTcSHdimv0lgm0Navj3k3lhM0iMIGyPyMoPcWqPD5XeknCyLQvQ+E/CGB3FDq1ajFRrb0ZRSDmh1+uMgB5vQhoIgz4NnuE+MPFDM7KH8jkuYeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745428448; c=relaxed/simple;
-	bh=u726+L+2oFTMFgN4P3RXRTbhmAIBIw1FdZRgTNCgABE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZXWiC85CUGNY8n15wvOP2X1tHj+er8u+7Gzp5V9hiZqIKW6/vHgd0uU8J5KDRFYD2lqhlXg1T1eXzc0AAVoKIGN4ZMcgFHTXstO393Cw3fZDmqSiXK4P93gHH3c6mSXiOOVw8EdL0HRjbdJ+iXCTAg2mPKvTDqLCrt5h2vDVz84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mgq9NvJ1; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1745455298; c=relaxed/simple;
+	bh=lmyAljHDnD9EHWVm3SyZMyY99yZ7flABaFzO+P8FiyQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=noM5l/RHR48TQWJ6Sf42AtyfKws4DYRo0lm3h7GpcSNI/GxqHC0J9l6mj65D6W+oyQhSF2/kPwdt5OWJJULzdt20tsC6wnRyH2/hf00uA6aZPBeLK0iHd+swB2eBTvMon43SqziWix/2YAIpqGCbcvTbBxvQEs1QshX2OHfoZ/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p8tQfuBT; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mgq9NvJ1"
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4774611d40bso16581cf.0
-        for <rcu@vger.kernel.org>; Wed, 23 Apr 2025 10:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1745428445; x=1746033245; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gZlHk0IEwmTveeH9vxcXCwphmflVIjvR9gZOHVKJlFI=;
-        b=mgq9NvJ1JEG+ZvR0VSEPcZjnKR7SXWUusPpBGVZg055may19dWxWdNHf5+/kQFmujv
-         vcERZWoAm05rriqG/Uuh5Olmyrn9pgHrwvGiMsl5Z5S0hH/Wpjvub9jnpJrzG6rsmh3g
-         buEp3ZeXF9RzAf/KlhfTfA+zjEIMXhdORuQzNjFB+3WE8LI4/PhRUzPWEP3AI57mOS7Y
-         ZpJ4nYBT5g8bsoTnwhpctTyJ9SxOWasgs6jr9i4o7eCT6XeMGsqfOO/LhjwVPluyv46I
-         kV7bwmV+jX+SH/x4W3o1t5qmfP7TruYJcFeLj4ySWOIe88pFnwRPfxhAgHkYK17VRFL2
-         52uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745428445; x=1746033245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gZlHk0IEwmTveeH9vxcXCwphmflVIjvR9gZOHVKJlFI=;
-        b=Kq73HyPRRo16W8OkHbWBQKB27UBx38SQv4TpLABRnksCPHmU1nuRFfL16H57/Q4Slw
-         Un3N/2rR8Ky1Mp8vbcTjtTqXiIHCZ7woslK5urdtXzxMr3tPHtEE1T8HK+y5R0Mleu27
-         2FQ48+Bsd/phxGiBo2O0dmxhlwIpI9CC2iAWMWUA9NNNbcUrisFsG8nG2pc3yidIJasF
-         y2kUDubyKy65JTm+2GzMHtCyWfmcyrO87s54ycFkl1NaZXOSIYUbJB2X7hD5IATfRGub
-         PKhqI5eI4iOejZbFUOqXojrtFnmruxZY5HovnVG0JQQ3fMGvHSH79kcyrlOBJnn3JnqX
-         KLiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUCPf8a6dwcDKcaRD1u1S2Nc3TJ5C4zi7oapmNBlMlDAUy4wl8pBgT3j3GWdQ4xKuYyGDk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy3UVPKXH7Gt0eK96mnZrw2K2/gFe5JO5YN3kABMSoiNHUNkwkn
-	aTJNLExx8+g74VWKDVaHFSQFXLRxIOb8nThPxQfN6SQ0XKUIVu2Hc+joyRcfSDw8XeOk3i07AiW
-	WzAmjjUz5VcJSjmxeozeUqFDOjl/I46FrtwNV
-X-Gm-Gg: ASbGncu2LmPQ4439jTp1HsxSEbpTfzH9+mcdIBD5s9mn3Nx9SKHIX0Iw4M2XzpCpbpG
-	svRdsKDiE7gqbRNnn8rvsNQhRebRo2hiSUqVkaezjrVaYqQYs5yBkq/fLKimqe972WSwAEG61o4
-	BSb+JO+cDl7dlpF9OK5ur6ScC2r7IZSc6fnrrviMsJwNdX/eyvwg4wRYxmVr8jfzY=
-X-Google-Smtp-Source: AGHT+IFemTcKUy6fxMlOI4jhn/Hhuu8/huR+owTvyVraA5YSBg1pXC76xUTvyFCR85NVFf7HslnCsGlciVWVETFFKZ4=
-X-Received: by 2002:a05:622a:228c:b0:47b:4be:8572 with SMTP id
- d75a77b69052e-47d13ae63f5mr5126871cf.18.1745428445177; Wed, 23 Apr 2025
- 10:14:05 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p8tQfuBT"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6416C4CEE2;
+	Thu, 24 Apr 2025 00:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745455297;
+	bh=lmyAljHDnD9EHWVm3SyZMyY99yZ7flABaFzO+P8FiyQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=p8tQfuBT0JSuzPern/6OJzB3TcH2DStIw1jNX9aZ868iy8zag3MD4eoc2ANNhrmah
+	 6hNexJ5W+cMlVyHnViGn6HjYf1l+C9oy1KIEfwqEf7+Z6gup6HIGPvxMChItMQvkni
+	 IO04SK8toiAcfT4ytiAt4TeV7gZvrytIa9PQoZrLANqRWJhoLBt706MMXsjCBGgA4F
+	 hAhj7UQpr9vHDJBJ7nmYQkI74PrtYuhcyzpBGrsVUIJ4mf0XZnbbPQy7W7aYN3p3mn
+	 vh2WCr3T8Xy6cApbZ9tcNRD44O+FxS8ELq6Pm67Q/bcLNo6Z1afvizsSLhw+6UMg+k
+	 F5HdwssUEz6zA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 75C55CE0B75; Wed, 23 Apr 2025 17:41:37 -0700 (PDT)
+Date: Wed, 23 Apr 2025 17:41:37 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>, rcu@vger.kernel.org
+Subject: Re: [bug report] rcutorture: Perform more frequent testing of
+ ->gpwrap
+Message-ID: <a2090431-7299-4fc3-89cb-114026f482b1@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <aAiT_KWYN-gP-2MN@stanley.mountain>
+ <f8669b6b-63e0-454d-8a58-09043015bc61@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250317-slub-percpu-caches-v3-0-9d9884d8b643@suse.cz>
- <20250317-slub-percpu-caches-v3-4-9d9884d8b643@suse.cz> <CAJuCfpEg8bXVy2F61VNfn2AGW-SJBovGf69SEhK9oJeijjVpJA@mail.gmail.com>
- <7c4fe3af-a38b-4d40-9824-2935b46e1ecd@suse.cz>
-In-Reply-To: <7c4fe3af-a38b-4d40-9824-2935b46e1ecd@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 23 Apr 2025 10:13:53 -0700
-X-Gm-Features: ATxdqUEzf-fg78GSI15nKo9lP9ML7j0Z7oXB6Y9N1-xuSsNihrXGsraffOmbrPk
-Message-ID: <CAJuCfpHV7kewvi9kghPAE_JGCBchDDWxe0_LP8_2QkpQePWyDw@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 4/8] slab: sheaf prefilling for guaranteed allocations
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@linux.com>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	maple-tree@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8669b6b-63e0-454d-8a58-09043015bc61@stanley.mountain>
 
-On Wed, Apr 23, 2025 at 6:06=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 4/10/25 22:47, Suren Baghdasaryan wrote:
-> >> +/*
-> >> + * refill a sheaf previously returned by kmem_cache_prefill_sheaf to =
-at least
-> >> + * the given size
-> >> + *
-> >> + * the sheaf might be replaced by a new one when requesting more than
-> >> + * s->sheaf_capacity objects if such replacement is necessary, but th=
-e refill
-> >> + * fails (returning -ENOMEM), the existing sheaf is left intact
-> >> + *
-> >> + * In practice we always refill to full sheaf's capacity.
-> >> + */
-> >> +int kmem_cache_refill_sheaf(struct kmem_cache *s, gfp_t gfp,
-> >> +                           struct slab_sheaf **sheafp, unsigned int s=
-ize)
-> >
-> > nit: Would returning a refilled sheaf be a slightly better API than
-> > passing pointer to a pointer?
->
-> I'm not sure it would be simpler to use, since we need to be able to
-> indicate -ENOMEM which would presumably become NULL, so the user would ha=
-ve
-> to store the existing sheaf pointer and not just blindly do "sheaf =3D
-> refill(sheaf)".
+On Wed, Apr 23, 2025 at 10:19:56AM +0300, Dan Carpenter wrote:
+> On Wed, Apr 23, 2025 at 10:17:16AM +0300, Dan Carpenter wrote:
+> > Hello Joel Fernandes,
+> > 
+> > Commit bd57ec707441 ("rcutorture: Perform more frequent testing of
+> > ->gpwrap") from Feb 16, 2025 (linux-next), leads to the following
+> > Smatch static checker warning:
+> > 
+> > 	kernel/rcu/rcutorture.c:4586 rcu_torture_init()
+> > 	warn: missing error code 'firsterr'
+> > 
+> > kernel/rcu/rcutorture.c
+> >     4576                 if (torture_init_error(firsterr))
+> >     4577                         goto unwind;
+> >     4578         }
+> >     4579         if (object_debug)
+> >     4580                 rcu_test_debug_objects();
+> >     4581         torture_init_end();
+>                    ^^^^^^^^^^^^^^^^^^^
+> Also:
+> 
+> kernel/rcu/rcutorture.c:4591 rcu_torture_init() warn: double unlock 'global &fullstop_mutex' (orig line 4581)
 
-Ack.
+You lost me on this one.  This mutex is acquired by the earlier call to
+torture_init_begin(), but only if that function returns true.  If that
+function returns false, yes, it releases fullstop_mutex, but in that case
+rcu_torture_init() returns immediately, thus avoiding this invocation
+of torture_init_end().
 
-> Or the semantics would have to be that in case of failure
-> the existing sheaf is returned and caller is left with nothing. Liam, wha=
-t
-> do you think?
+Or am I missing something subtle here?  Or missing something obvious,
+for that matter!  ;-)
 
-That sounds confusing. Compared to that alternative, I would prefer
-keeping it the way it is now.
+							Thanx, Paul
 
->
-> >> +{
-> >> +       struct slab_sheaf *sheaf;
-> >> +
-> >> +       /*
-> >> +        * TODO: do we want to support *sheaf =3D=3D NULL to be equiva=
-lent of
-> >> +        * kmem_cache_prefill_sheaf() ?
-> >> +        */
-> >> +       if (!sheafp || !(*sheafp))
-> >> +               return -EINVAL;
-> >> +
-> >> +       sheaf =3D *sheafp;
-> >> +       if (sheaf->size >=3D size)
-> >> +               return 0;
-> >> +
-> >> +       if (likely(sheaf->capacity >=3D size)) {
-> >> +               if (likely(sheaf->capacity =3D=3D s->sheaf_capacity))
-> >> +                       return refill_sheaf(s, sheaf, gfp);
-> >> +
-> >> +               if (!__kmem_cache_alloc_bulk(s, gfp, sheaf->capacity -=
- sheaf->size,
-> >> +                                            &sheaf->objects[sheaf->si=
-ze])) {
-> >> +                       return -ENOMEM;
-> >> +               }
-> >> +               sheaf->size =3D sheaf->capacity;
-> >> +
-> >> +               return 0;
-> >> +       }
-> >> +
-> >> +       /*
-> >> +        * We had a regular sized sheaf and need an oversize one, or w=
-e had an
-> >> +        * oversize one already but need a larger one now.
-> >> +        * This should be a very rare path so let's not complicate it.
-> >> +        */
-> >> +       sheaf =3D kmem_cache_prefill_sheaf(s, gfp, size);
-> >> +       if (!sheaf)
-> >> +               return -ENOMEM;
-> >> +
-> >> +       kmem_cache_return_sheaf(s, gfp, *sheafp);
-> >> +       *sheafp =3D sheaf;
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +/*
-> >> + * Allocate from a sheaf obtained by kmem_cache_prefill_sheaf()
-> >> + *
-> >> + * Guaranteed not to fail as many allocations as was the requested si=
-ze.
-> >> + * After the sheaf is emptied, it fails - no fallback to the slab cac=
-he itself.
-> >> + *
-> >> + * The gfp parameter is meant only to specify __GFP_ZERO or __GFP_ACC=
-OUNT
-> >> + * memcg charging is forced over limit if necessary, to avoid failure=
-.
-> >> + */
-> >> +void *
-> >> +kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
-> >> +                                  struct slab_sheaf *sheaf)
-> >> +{
-> >> +       void *ret =3D NULL;
-> >> +       bool init;
-> >> +
-> >> +       if (sheaf->size =3D=3D 0)
-> >> +               goto out;
-> >> +
-> >> +       ret =3D sheaf->objects[--sheaf->size];
-> >> +
-> >> +       init =3D slab_want_init_on_alloc(gfp, s);
-> >> +
-> >> +       /* add __GFP_NOFAIL to force successful memcg charging */
-> >> +       slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, ini=
-t, s->object_size);
-> >> +out:
-> >> +       trace_kmem_cache_alloc(_RET_IP_, ret, s, gfp, NUMA_NO_NODE);
-> >> +
-> >> +       return ret;
-> >> +}
-> >> +
-> >> +unsigned int kmem_cache_sheaf_size(struct slab_sheaf *sheaf)
-> >> +{
-> >> +       return sheaf->size;
-> >> +}
-> >>  /*
-> >>   * To avoid unnecessary overhead, we pass through large allocation re=
-quests
-> >>   * directly to the page allocator. We use __GFP_COMP, because we will=
- need to
-> >>
-> >> --
-> >> 2.48.1
-> >>
->
+> >     4582         if (cur_ops->gp_slow_register && !WARN_ON_ONCE(!cur_ops->gp_slow_unregister))
+> >     4583                 cur_ops->gp_slow_register(&rcu_fwd_cb_nodelay);
+> >     4584 
+> >     4585         if (cur_ops->set_gpwrap_lag && rcu_gpwrap_lag_init())
+> > --> 4586                 goto unwind;
+> > 
+> > set an error code?
+> > 
+> >     4587 
+> >     4588         return 0;
+> >     4589 
+> >     4590 unwind:
+> >     4591         torture_init_end();
+>                    ^^^^^^^^^^^^^^^^^^^
+> 
+> regards,
+> dan carpenter
+> 
+> >     4592         rcu_torture_cleanup();
+> >     4593         if (shutdown_secs) {
+> >     4594                 WARN_ON(!IS_MODULE(CONFIG_RCU_TORTURE_TEST));
+> >     4595                 kernel_power_off();
+> >     4596         }
+> >     4597         return firsterr;
+> >     4598 }
+> > 
+> > regards,
+> > dan carpenter
+> 
