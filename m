@@ -1,270 +1,466 @@
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2079.outbound.protection.outlook.com [40.107.92.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4BC028CF48
-	for <rcu@vger.kernel.org>; Thu, 24 Apr 2025 18:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745518506; cv=fail; b=Pig1mWMivgDXNUyqTs7pwk1NU/ot4S4NbXgTsscqWFvPwhGUSwK+bde4E8IlgE0Ydc0MNLeXQ7EmWVasV/ezHYRJaROjBCGd4VkD9OeSh7HAoOiOGNAhqggaRjB2FFL+4xOhj0JWhn1G7b2ruIczI2tj41P6+fKW6LswlqmcaUc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745518506; c=relaxed/simple;
-	bh=Sqg43bu6sAIQT5b/vVy99L3SP7RR5VCkp5ODZBjzPqI=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=prNwZl/dWc0SxfslkclMqs95Hcc3SxL9YWQZJd8RHhqOsLLwCp1D09eodj4LTeq2GahTjJTAW1yAxxiqXYs/zMmaCv8gVp4Vn7BYozQ/ZmtL34MePSAsdI8F6iPUVK17liDrKAB3KQYfhGPCuL+hfIgQkLyTLSjTfabkfPs1hPA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=pdixWBV5; arc=fail smtp.client-ip=40.107.92.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="pdixWBV5"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=jctyzrZii5flzAs/xPT5ospEqxnjWEhAeHXCrYGO+Qo6iQ5+3Ktk6DRNatunqpcoQ/9tXIv7akvw3ObR8bvV+NmasQylkVeS/jekLVSe7QlbB7ic1RmRLat3sbMIVfRYrvcpIE5LEmeuFVarH4gPHOSuDO2gcE5Hh7PVA1U/Q7VYV1T/bpNj18f1SJdPhfJ5wpDMw+smr1jP1/l4HSX9fvm2q7947SOdiiLOmDFjQiZqmQqC15mBperAbtvNBiwnGP8iamDoVNKYxL4DoB1ffsLOXUKH9Io+x0oNh6Ln2VaNVjVecsmbVDhaceqBZGXZSlK5b02uUZ1Iyq9/QA/5TQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4V7Qp52KrVg7Sjxkww5VBF+QphTOklBVL9iJm8ASLVM=;
- b=uYx5ZB9PHa3UfErzocIXr5nRFjv5u7nzt7dn/drAW+ncz7sg4YVMEvXGwd75/9RG8zC6cG4JTTnj1NM0K4ndab/UCHzxPNxUSeYCd7azW00DYQkUp2ToMaPl4Xh2CsJhQrqWUX67Ep7+hCQO7UIi37DpOmq8V+5/h3cNVYPr/490b+VxnSIgnz4eIzcyb1RzEp9r4egTMfGnvUCu6cRcqahyuVbvn2l9xVkHP3bh+0OG2JXPIERw/QSGhtEyGhf+R39xbgOWSJpp8J8HMM3GjusDQEFEmweLL94Tuhsobz0tydH7GI6WycHUiH6+RwCi/fGRACcNitBtFK+aGReedg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4V7Qp52KrVg7Sjxkww5VBF+QphTOklBVL9iJm8ASLVM=;
- b=pdixWBV5YZ7ktlvuKFcCCJ44FDPd08EPnuvtal+SBzMeiatoDPQfg4uEWEhj6jrMJJnIM+OIvZLQ72OYtTsYY1eQTiL5fR9FyPoZOOFFsKtg8DITnx4ArOljjsIXvTgJ0IAVTz9YT5It0AnYbQLBcb/ack+7Y/6KOPX7w/KwerBxz28sqoDGgUFkLYNzH1T7CDz6v4IR4rZ4HpuRR1jpluVpERKXoNGTw4gNjVMo9G7MEqxRKzCGnTjEKsV5xFlkFwsWM996s8wYuJChHIKSU1pw7wf9eUqklYWOXLifjbICz46+hH0BlWVmdh6baXHT+QQUYakVSzgigTFyzhvqNw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by PH7PR12MB5901.namprd12.prod.outlook.com (2603:10b6:510:1d5::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.27; Thu, 24 Apr
- 2025 18:15:00 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%6]) with mapi id 15.20.8655.033; Thu, 24 Apr 2025
- 18:15:00 +0000
-Message-ID: <1bb64781-4fe3-4b46-a246-1673371d7c1c@nvidia.com>
-Date: Thu, 24 Apr 2025 14:14:58 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [bug report] rcutorture: Perform more frequent testing of
- ->gpwrap
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: paulmck@kernel.org, Dan Carpenter <dan.carpenter@linaro.org>
-Cc: rcu@vger.kernel.org
-References: <aAiT_KWYN-gP-2MN@stanley.mountain>
- <f8669b6b-63e0-454d-8a58-09043015bc61@stanley.mountain>
- <a2090431-7299-4fc3-89cb-114026f482b1@paulmck-laptop>
- <616131f6-5365-40ee-ab57-27d484077a31@stanley.mountain>
- <6b26b3cc-6429-48c4-ae58-868d6512f0d3@paulmck-laptop>
- <849e0751-2911-4b71-8274-725255f4826c@nvidia.com>
-Content-Language: en-US
-In-Reply-To: <849e0751-2911-4b71-8274-725255f4826c@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR15CA0015.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::28) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B516D22615
+	for <rcu@vger.kernel.org>; Fri, 25 Apr 2025 08:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745569676; cv=none; b=bkzKBfq7NSUEZfdr2K4X0D6HSOAOyM3i5EXrAGnBkw1syhNjaa9XZyKKlyH06M3wmpViDBJ4NHNV7Ym41PKIXfoG6O0tnQ3E6MC8zUueoeC2DMZD/UfLA+C4Q0Q47/WIA4R7ygBsMR9FeCowrVGb1QlotEvX2nBVAwyVXqGBeTg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745569676; c=relaxed/simple;
+	bh=M3ffs8KMEipTT6biUJ+CzfIFeKlxlgZv2vbAdiKjHkg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=UUauE1ySJ4vn615Yqvvq28urQ1P8MeR7RgoVtVaPHB8HzudRnPo5cyHuYm34G6gAbWsxSsxacTn8vf+5YlBKQDkp7a4PXZWQnq7qtAbr20fSvp2d+aiqS0+MfrNBSHuCKbyvHRMQEOg28JXFI5uiRqhCa492O7JA6xjIqjS1WyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DF94E1F38C;
+	Fri, 25 Apr 2025 08:27:52 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA98013A9E;
+	Fri, 25 Apr 2025 08:27:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id EBFDLYhHC2htfwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 25 Apr 2025 08:27:52 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Fri, 25 Apr 2025 10:27:22 +0200
+Subject: [PATCH v4 2/9] slab: add sheaf support for batching kfree_rcu()
+ operations
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|PH7PR12MB5901:EE_
-X-MS-Office365-Filtering-Correlation-Id: a324c8a3-051c-41e9-e22a-08dd835bed42
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SWwvQ0VzbGRva1NtL2l5Z1p2R2dBZmhmK0xFZEFKK2xMbGUxT3JLZ3NYdzUv?=
- =?utf-8?B?eW55WE5EbmxTUFJxRHNnMlFzU1RPMEVoVWFGd0tmWFZSa0tVcHBmQUY3Z0hP?=
- =?utf-8?B?TXR4eHlod3FBbFR6dEF6NU4zZ25lWEFMYlYvaWpya0ZGUWNpMDdvbHJNSTVk?=
- =?utf-8?B?azZSeGRWbHZpR2lxKzN0VWR0U05aTmJWV2xxTTV2UWZVdmpoMFdwcnpwcFBr?=
- =?utf-8?B?T2Q5b0k1TFJQQmIzRmN4SUhzam9KS1ZEQlUvcTQ2Y2M4TW9sRFNvdVEraDVG?=
- =?utf-8?B?ak1zaThmTmxIRTFENFREMlkwRkR2NElONGpua1RScy9lWld6Nk5oQ1crTjlT?=
- =?utf-8?B?bm9qVWk4RW5abWgrZUduNUwrcVM2c3JjT2lpMkxJLzBkWnBOdldRZTZkUnMy?=
- =?utf-8?B?MjRkdys1NlhBbHVUajRBOEFXZzlWOFlSK095dENxMzRSQzk0SzlmM3BnaWx3?=
- =?utf-8?B?NEQrQ1drdG1hUk0rNXBMSEIzWEFKNXVTcFRnNmJWbVZ1VUphVkhuS2oxamhM?=
- =?utf-8?B?bm9zMzNNMzJtK00zVWUvU1lqcDNPS3ZGblpqc2UyblgxMU4xNE9hNnY4QzQr?=
- =?utf-8?B?amdwSFJOWTVSRjkvakJXS1cwbDdpdm1RUXc0M1hWM08rWlBDS3dxNnlJa1Az?=
- =?utf-8?B?WmtPbno5UXQ0R0VCNmdlSU5VcUlmNitsZVJ4bHo4MnJMNFhyU3BKeWZIV0Fh?=
- =?utf-8?B?YnV0NngrZUR6Tk10d2dFUzNkNVpiOU5uVHMvWHFFSmVvekpJSFFtN21uVisz?=
- =?utf-8?B?ZjBsSjV6cG8xbTYzNitZTkl4alUwMG14c2dhVDJjS0p4VUhpcnRBenpYTjhl?=
- =?utf-8?B?cExyT29SRFBPYUpQT3dtMXo5QjFBejZKTHdheGRDWjNBNmtYV1NsRkJsTFk2?=
- =?utf-8?B?NjFEY0RSeDQvTUxrZVhnUFQ1c2xrcXNwRzB4ZEpjYm9iQVVKcHM2RGJzSzlO?=
- =?utf-8?B?K21NQTJDODh2ODhzSEo2TVRiZ3FKZjg2VmxjaWtXOUJtcUMzam9HVmkydzdu?=
- =?utf-8?B?N0JFUm9QVER0ZlRIZnFBMWlGY1NYNFd5T09UODZ6TlgyM3FwY01zQmNMeXFj?=
- =?utf-8?B?bGtMN0s0UEwwbnZJcGNNcks2VDNGcFkvSVRpSjZIRXFSV1JXRUxoMDRrSUli?=
- =?utf-8?B?ZW9hNytOdHQ4d0p4UkY2WkwzUzgrQ0RFY2F0UnlVZHpFZlcyVmJYOHRrNTl2?=
- =?utf-8?B?ZjlCeVpRZ2V0NnRsV1JzL2FMTEpYMHYyZFBXSUtIZ2pWb1FnUFRtTjU3Y0lP?=
- =?utf-8?B?ZW5nVlBHTDJ2UUZEMGloMkkzaDlJd1dZeHh4MmJrbkJ6czludGVsNHNNRTB2?=
- =?utf-8?B?Smo5RWxDMWZyT2YxSkxsOURZNU1WQVk2UHNUMzFUalpzNUxmbmZabEcrUURY?=
- =?utf-8?B?UHcxMkJNSktwc1JLSldkTVF2NGE3YkZzTG16WXVCcXJZdUZ1K3U0aGk5SURC?=
- =?utf-8?B?UHFvU1BYYit4UFpPWS9ySHVPOWZVaHFiTlc3Z2ZjOHlmOTlkbHhCVDdySklx?=
- =?utf-8?B?UGVIVkM4cHV3TjFxUWlZR090dFUrSDkxcUpSLzFvQ2c2c01IcDJRUlNsTkZ0?=
- =?utf-8?B?VGRESXZUZTlZNWF1K09tOThGNG40ZG1DZjBwWDVrRmlTOGpVZi9FQlFWSVZv?=
- =?utf-8?B?RnZWdngxaUw4OEFOazZpSUNUeDF5S1M2cW95VTQvWkg1UGloZlVwOC9LbFhX?=
- =?utf-8?B?dHVaOTBPcWJkSm1mSldjNC9qWGZDU0l1K0grWHExaDlsWnFuRHltRzNBVlFP?=
- =?utf-8?B?eEdscXk3RXhhbnIyOUdCUmh6d0x6eDcyNUg2Z2hDUzlybkw5WEsyalIycVJM?=
- =?utf-8?B?d2U4a2h2S25KNFlGU0VVSk8wNis5UGJOTTNUbHM1d25vT1o1c1p1ZzB6blAy?=
- =?utf-8?B?Nnl0alJoeWhoaERvaTc4R3N1SXFoaHRialVpVGRVRThHZXZ5MkJaRTF6VTI0?=
- =?utf-8?Q?7n9ImHd5Z/c=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dDY3aGFyN1ZmeXUyYlVuV2h5VWV4ekw2KzVVS2dZTjJndEJTU1M4ZUE1OGFv?=
- =?utf-8?B?N1laWXdoa0pmQjVrdXMyT3RLZW5rQU96NGRmNGhxRkxXYW5aQmdUWXF4Y2lT?=
- =?utf-8?B?TE5iN1VlNW9Xc3hPZ0pOd094WEpYYVd3UmdIQ0FianUybjhRR3ZQTHNqUWsz?=
- =?utf-8?B?VG1pSzEzR2l1bEo1bXUxSWxOV0E0MWVFNzZWeUF3U0ZKd2tkYklueERWT1B4?=
- =?utf-8?B?eDBYbzNpeUlKS1g1SE9TNXQzU1pSYTZLS01lZUtwSVJ4dkZxNzNmMlQ3RVdn?=
- =?utf-8?B?SFA4cEhxcjJhRXJ4Z1NJMXNmWmt5aDRMMjY2ZnRmbUc4cXErWE1LclVwQmk3?=
- =?utf-8?B?YmhCYy8yaWxRbWZucXZDUTc0RjhXM1MrQW5yM3Vad3VuOURIMUVLalI0Wkgw?=
- =?utf-8?B?bDRCa1RXTW5vd01wbDMyVGpXeEl1TUxuWk1EUmhjMVVVV2t5dTd2VGtaRGIy?=
- =?utf-8?B?aVR5MXhmbjBhMWZnQlFKblhTd2dRS0JJeEVFQ0o1ZktFWTh5T3FVYUJYMWVq?=
- =?utf-8?B?YzFzM1pEYjdRVTdjMldnOEZzRkkrTGlPWVhYL3FjZkw4VG45R1AydHR0VnF1?=
- =?utf-8?B?SlJlOG0wbzdNMktsSElHMjhqa04yazlOV1VzL2Rtb0NVdkpvTkJkWnpESDV4?=
- =?utf-8?B?NzJyOXpLMEFaUXRmN3k5aW95TmVCNTR5dVhJNDJYWlRoY2tJdEVORGxHRlJZ?=
- =?utf-8?B?QjNrQmpzK3VBdERNZ29qY3MrTW5NdnExcXpGNENOSWcvdm5mcXNzdThIM2dm?=
- =?utf-8?B?TS85M3NxVC83RktCNGxIWDJ6SUhIVkIxbjVibGhNaDN4V3RKMHRLRGtnQk1p?=
- =?utf-8?B?NDJMdTFhTFdNdmlUS29ZVEZDZG4xdnVDV0NjSUZDeUdlYXFXQWFrek8xay9k?=
- =?utf-8?B?TGtkMWlXTlA3T3pCUHVFUUtld1pLRjZHd052MG9HOThtVStmOGFuMVRub2NP?=
- =?utf-8?B?bHlRYVZseW9YRGxTUTlyUWxaeHNUN3JhRXBPU1FzYVBINkFXUVFkRVF1TGdh?=
- =?utf-8?B?eDNPZnArdlBCMlB5NHNNN2hySWdGY050cHllSXBlWVF3c2YwY3NyUFhKaDBB?=
- =?utf-8?B?Z3NmVitnSmRUR0hRMXROWGxqamRuWFQ5U1BTRkYxS1k5WFpadFJxOXhOTHlv?=
- =?utf-8?B?MUgzN0pORXhlbTZNQ1VsRThMNEV3ZkdScnRoaXM2T1oyMDhaM01rYTJ5SzZj?=
- =?utf-8?B?bWQ3eE1hT3V4eFdGay9HaFJ0ZHM4SWw4TEd4MXlaajFWTDRIYmxJclA1Tno5?=
- =?utf-8?B?UlZtVk9EYTMwUFJVckp1aW85Ym1BOEl3SWxHa0xGeWx0T0UrTFEwenl1ZmRC?=
- =?utf-8?B?cjVLOExGb1o3VmtNU3Y0NXJjKzJjTE8rZWNTOFR0ZUxjV0diR3llTHJIS0Zr?=
- =?utf-8?B?L3IybUQ3YmVUNE9kMEhzVWk3dmV5emJYV0cyOTRjS3NFRU9aamhpOUF5Ujhh?=
- =?utf-8?B?VEZ1aDJIU1oreDR6MGpNd2ZybXBMVGc2Y3FFYWRBUWVpaVFuUFR0SXRjVFBn?=
- =?utf-8?B?VVFwdUlaa3dKaXc3RzZXQUxGQ1FMN1BkVkRiU2d6UXZBemdDWHRsQnV6MGRR?=
- =?utf-8?B?UTgxK1kxYlhUWXF4M01uVmwvSWdOMTlDdHQ3NVlveEZsSzF1V1RqVkt5SEpT?=
- =?utf-8?B?ejNnTnVnOWR1UU5IeTBja2dETzJRSDJDUy9hb283ZHYxazRIbHlDWEZlVG12?=
- =?utf-8?B?WVo5ekpWR2VnZjhnSWZjS0QrNXdoMG1ZQ3hxQUtzeDVSRWxWVm9QN21IYlly?=
- =?utf-8?B?ZEUwejhRQXNDTXZQazdHcXdyUnA5MTdQOElrZE5QT0taWUJBWnhaVE9iM2NF?=
- =?utf-8?B?Qkc2MHhsQzhuNnRzRlZnWW1QVUFJNGZZTDRFUkkwd0dEMDF6SlI5SVEzM0JC?=
- =?utf-8?B?dU4zN2ZxQkx1ZU5QWVNScVhiTGFZSUwrb3VoVjhrWHQ1dXQwajRScnFLb0ZR?=
- =?utf-8?B?S2Fac1M5SjNwQ2NlckxVazJibVhXT3YxMjcxbU02WXlFM2hzRHJDUlYraDMw?=
- =?utf-8?B?M0VYZi9nSUtqSXJTelROYnR5dThOYmVXSlMzWnFiaHcxbzVmdEptaU5UWXBF?=
- =?utf-8?B?amI3UTZraHcvakxVWjVQK09sL25Ja0ZDcmpMUk1zZjZWaFVObzF6NEhUMEtj?=
- =?utf-8?Q?w93Hyd+w490cV27BbCD6WIQ5H?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a324c8a3-051c-41e9-e22a-08dd835bed42
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Apr 2025 18:15:00.4375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GGMxUUCYSCdUIBTOOfuaaZX/7zPOA4NLhD0n6r6IQG4nXJrGX8yBAxOSphxAE7vnoejkEb43Ie2F6hbQ8ynzwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5901
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250425-slub-percpu-caches-v4-2-8a636982b4a4@suse.cz>
+References: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
+In-Reply-To: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
+To: Suren Baghdasaryan <surenb@google.com>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
+ Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+ maple-tree@lists.infradead.org, vbabka@suse.cz
+X-Mailer: b4 0.14.2
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: DF94E1F38C
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
 
+Extend the sheaf infrastructure for more efficient kfree_rcu() handling.
+For caches with sheaves, on each cpu maintain a rcu_free sheaf in
+addition to main and spare sheaves.
 
+kfree_rcu() operations will try to put objects on this sheaf. Once full,
+the sheaf is detached and submitted to call_rcu() with a handler that
+will try to put it in the barn, or flush to slab pages using bulk free,
+when the barn is full. Then a new empty sheaf must be obtained to put
+more objects there.
 
-On 4/24/2025 11:17 AM, Joel Fernandes wrote:
-> 
-> 
-> On 4/24/2025 10:44 AM, Paul E. McKenney wrote:
->> On Thu, Apr 24, 2025 at 09:54:14AM +0300, Dan Carpenter wrote:
->>> On Wed, Apr 23, 2025 at 05:41:37PM -0700, Paul E. McKenney wrote:
->>>> On Wed, Apr 23, 2025 at 10:19:56AM +0300, Dan Carpenter wrote:
->>>>> On Wed, Apr 23, 2025 at 10:17:16AM +0300, Dan Carpenter wrote:
->>>>>> Hello Joel Fernandes,
->>>>>>
->>>>>> Commit bd57ec707441 ("rcutorture: Perform more frequent testing of
->>>>>> ->gpwrap") from Feb 16, 2025 (linux-next), leads to the following
->>>>>> Smatch static checker warning:
->>>>>>
->>>>>> 	kernel/rcu/rcutorture.c:4586 rcu_torture_init()
->>>>>> 	warn: missing error code 'firsterr'
->>>>>>
->>>>>> kernel/rcu/rcutorture.c
->>>>>>     4576                 if (torture_init_error(firsterr))
->>>>>>     4577                         goto unwind;
->>>>>>     4578         }
->>>>>>     4579         if (object_debug)
->>>>>>     4580                 rcu_test_debug_objects();
->>>>>>     4581         torture_init_end();
->>>>>                    ^^^^^^^^^^^^^^^^^^^
->>>>> Also:
->>>>>
->>>>> kernel/rcu/rcutorture.c:4591 rcu_torture_init() warn: double unlock 'global &fullstop_mutex' (orig line 4581)
->>>>
->>>> You lost me on this one.  This mutex is acquired by the earlier call to
->>>> torture_init_begin(), but only if that function returns true.  If that
->>>> function returns false, yes, it releases fullstop_mutex, but in that case
->>>> rcu_torture_init() returns immediately, thus avoiding this invocation
->>>> of torture_init_end().
->>>>
->>>> Or am I missing something subtle here?  Or missing something obvious,
->>>> for that matter!  ;-)
->>>>
->>>
->>> I explained it badly.  Joel's patch added a goto so now we call
->>> torture_init_end() twice in a row.
->>>
->>>> 							Thanx, Paul
->>>>
->>>>>>     4582         if (cur_ops->gp_slow_register && !WARN_ON_ONCE(!cur_ops->gp_slow_unregister))
->>>>>>     4583                 cur_ops->gp_slow_register(&rcu_fwd_cb_nodelay);
->>>>>>     4584 
->>>>>>     4585         if (cur_ops->set_gpwrap_lag && rcu_gpwrap_lag_init())
->>>>>> --> 4586                 goto unwind;
->>>>>>
->>>>>> set an error code?
->>>
->>> Here is the goto.
->>>
->>>>>>
->>>>>>     4587 
->>>>>>     4588         return 0;
->>>>>>     4589 
->>>>>>     4590 unwind:
->>>>>>     4591         torture_init_end();
->>>>>                    ^^^^^^^^^^^^^^^^^^^
->>>
->>> Here is the second torture_init_end().
->>
->> Ah!  Thank you for persisting.  Over to you, Joel!
-> 
-> Oops, thanks for finding both the issues. I will move the torture_init_end()
-> further down and run some tests. At first look, that seems like the right thing
-> to do:
-> 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 92e2686a4795..bb9a8e718533 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -4582,13 +4582,17 @@ rcu_torture_init(void)
->         }
->         if (object_debug)
->                 rcu_test_debug_objects();
-> -       torture_init_end();
-> +
->         if (cur_ops->gp_slow_register &&
-> !WARN_ON_ONCE(!cur_ops->gp_slow_unregister))
->                 cur_ops->gp_slow_register(&rcu_fwd_cb_nodelay);
-> 
-> -       if (gpwrap_lag && cur_ops->set_gpwrap_lag && rcu_gpwrap_lag_init())
-> -               goto unwind;
-> +       if (gpwrap_lag && cur_ops->set_gpwrap_lag) {
-> +               firsterr = rcu_gpwrap_lag_init();
-> +               if (torture_init_error(firsterr))
-> +                       goto unwind;
-> +       }
-> 
-> +       torture_init_end();
->         return 0;
-Passes basic testing, fixed and pushed for more testing with attribution:
+It's possible that no free sheaves are available to use for a new
+rcu_free sheaf, and the allocation in kfree_rcu() context can only use
+GFP_NOWAIT and thus may fail. In that case, fall back to the existing
+kfree_rcu() implementation.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git (next.2025.04.24b)
+Expected advantages:
+- batching the kfree_rcu() operations, that could eventually replace the
+  existing batching
+- sheaves can be reused for allocations via barn instead of being
+  flushed to slabs, which is more efficient
+  - this includes cases where only some cpus are allowed to process rcu
+    callbacks (Android)
 
-Thanks!
+Possible disadvantage:
+- objects might be waiting for more than their grace period (it is
+  determined by the last object freed into the sheaf), increasing memory
+  usage - but the existing batching does that too.
 
- - Joel
+Only implement this for CONFIG_KVFREE_RCU_BATCHED as the tiny
+implementation favors smaller memory footprint over performance.
 
+Add CONFIG_SLUB_STATS counters free_rcu_sheaf and free_rcu_sheaf_fail to
+count how many kfree_rcu() used the rcu_free sheaf successfully and how
+many had to fall back to the existing implementation.
 
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ mm/slab.h        |   3 +
+ mm/slab_common.c |  24 ++++++++
+ mm/slub.c        | 183 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 208 insertions(+), 2 deletions(-)
 
+diff --git a/mm/slab.h b/mm/slab.h
+index 1980330c2fcb4a4613a7e4f7efc78b349993fd89..ddf1e4bcba734dccbf67e83bdbab3ca7272f540e 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -459,6 +459,9 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
+ 	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUNT));
+ }
+ 
++bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
++
++/* Legal flag mask for kmem_cache_create(), for various configurations */
+ #define SLAB_CORE_FLAGS (SLAB_HWCACHE_ALIGN | SLAB_CACHE_DMA | \
+ 			 SLAB_CACHE_DMA32 | SLAB_PANIC | \
+ 			 SLAB_TYPESAFE_BY_RCU | SLAB_DEBUG_OBJECTS | \
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 4f295bdd2d42355af6311a799955301005f8a532..6c3b90f03cb79b57f426824450f576a977d85c53 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1608,6 +1608,27 @@ static void kfree_rcu_work(struct work_struct *work)
+ 		kvfree_rcu_list(head);
+ }
+ 
++static bool kfree_rcu_sheaf(void *obj)
++{
++	struct kmem_cache *s;
++	struct folio *folio;
++	struct slab *slab;
++
++	if (is_vmalloc_addr(obj))
++		return false;
++
++	folio = virt_to_folio(obj);
++	if (unlikely(!folio_test_slab(folio)))
++		return false;
++
++	slab = folio_slab(folio);
++	s = slab->slab_cache;
++	if (s->cpu_sheaves)
++		return __kfree_rcu_sheaf(s, obj);
++
++	return false;
++}
++
+ static bool
+ need_offload_krc(struct kfree_rcu_cpu *krcp)
+ {
+@@ -1952,6 +1973,9 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+ 	if (!head)
+ 		might_sleep();
+ 
++	if (kfree_rcu_sheaf(ptr))
++		return;
++
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+diff --git a/mm/slub.c b/mm/slub.c
+index ae3e80ad9926ca15601eef2f2aa016ca059498f8..6f31a27b5d47fa6621fa8af6d6842564077d4b60 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -350,6 +350,8 @@ enum stat_item {
+ 	ALLOC_FASTPATH,		/* Allocation from cpu slab */
+ 	ALLOC_SLOWPATH,		/* Allocation by getting a new cpu slab */
+ 	FREE_PCS,		/* Free to percpu sheaf */
++	FREE_RCU_SHEAF,		/* Free to rcu_free sheaf */
++	FREE_RCU_SHEAF_FAIL,	/* Failed to free to a rcu_free sheaf */
+ 	FREE_FASTPATH,		/* Free to cpu slab */
+ 	FREE_SLOWPATH,		/* Freeing not to cpu slab */
+ 	FREE_FROZEN,		/* Freeing to frozen slab */
+@@ -444,6 +446,7 @@ struct slab_sheaf {
+ 		struct rcu_head rcu_head;
+ 		struct list_head barn_list;
+ 	};
++	struct kmem_cache *cache;
+ 	unsigned int size;
+ 	void *objects[];
+ };
+@@ -452,6 +455,7 @@ struct slub_percpu_sheaves {
+ 	local_trylock_t lock;
+ 	struct slab_sheaf *main; /* never NULL when unlocked */
+ 	struct slab_sheaf *spare; /* empty or full, may be NULL */
++	struct slab_sheaf *rcu_free; /* for batching kfree_rcu() */
+ 	struct node_barn *barn;
+ };
+ 
+@@ -2507,6 +2511,8 @@ static struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp)
+ 	if (unlikely(!sheaf))
+ 		return NULL;
+ 
++	sheaf->cache = s;
++
+ 	stat(s, SHEAF_ALLOC);
+ 
+ 	return sheaf;
+@@ -2631,6 +2637,24 @@ static void sheaf_flush_unused(struct kmem_cache *s, struct slab_sheaf *sheaf)
+ 	sheaf->size = 0;
+ }
+ 
++static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
++				     struct slab_sheaf *sheaf);
++
++static void rcu_free_sheaf_nobarn(struct rcu_head *head)
++{
++	struct slab_sheaf *sheaf;
++	struct kmem_cache *s;
++
++	sheaf = container_of(head, struct slab_sheaf, rcu_head);
++	s = sheaf->cache;
++
++	__rcu_free_sheaf_prepare(s, sheaf);
++
++	sheaf_flush_unused(s, sheaf);
++
++	free_empty_sheaf(s, sheaf);
++}
++
+ /*
+  * Caller needs to make sure migration is disabled in order to fully flush
+  * single cpu's sheaves
+@@ -2643,7 +2667,7 @@ static void sheaf_flush_unused(struct kmem_cache *s, struct slab_sheaf *sheaf)
+ static void pcs_flush_all(struct kmem_cache *s)
+ {
+ 	struct slub_percpu_sheaves *pcs;
+-	struct slab_sheaf *spare;
++	struct slab_sheaf *spare, *rcu_free;
+ 
+ 	local_lock(&s->cpu_sheaves->lock);
+ 	pcs = this_cpu_ptr(s->cpu_sheaves);
+@@ -2651,6 +2675,9 @@ static void pcs_flush_all(struct kmem_cache *s)
+ 	spare = pcs->spare;
+ 	pcs->spare = NULL;
+ 
++	rcu_free = pcs->rcu_free;
++	pcs->rcu_free = NULL;
++
+ 	local_unlock(&s->cpu_sheaves->lock);
+ 
+ 	if (spare) {
+@@ -2658,6 +2685,9 @@ static void pcs_flush_all(struct kmem_cache *s)
+ 		free_empty_sheaf(s, spare);
+ 	}
+ 
++	if (rcu_free)
++		call_rcu(&rcu_free->rcu_head, rcu_free_sheaf_nobarn);
++
+ 	sheaf_flush_main(s);
+ }
+ 
+@@ -2674,6 +2704,11 @@ static void __pcs_flush_all_cpu(struct kmem_cache *s, unsigned int cpu)
+ 		free_empty_sheaf(s, pcs->spare);
+ 		pcs->spare = NULL;
+ 	}
++
++	if (pcs->rcu_free) {
++		call_rcu(&pcs->rcu_free->rcu_head, rcu_free_sheaf_nobarn);
++		pcs->rcu_free = NULL;
++	}
+ }
+ 
+ static void pcs_destroy(struct kmem_cache *s)
+@@ -2699,6 +2734,7 @@ static void pcs_destroy(struct kmem_cache *s)
+ 		 */
+ 
+ 		WARN_ON(pcs->spare);
++		WARN_ON(pcs->rcu_free);
+ 
+ 		if (!WARN_ON(pcs->main->size)) {
+ 			free_empty_sheaf(s, pcs->main);
+@@ -3755,7 +3791,7 @@ static bool has_pcs_used(int cpu, struct kmem_cache *s)
+ 
+ 	pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
+ 
+-	return (pcs->spare || pcs->main->size);
++	return (pcs->spare || pcs->rcu_free || pcs->main->size);
+ }
+ 
+ static void pcs_flush_all(struct kmem_cache *s);
+@@ -5304,6 +5340,140 @@ bool free_to_pcs(struct kmem_cache *s, void *object)
+ 	return true;
+ }
+ 
++static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
++				     struct slab_sheaf *sheaf)
++{
++	bool init = slab_want_init_on_free(s);
++	void **p = &sheaf->objects[0];
++	unsigned int i = 0;
++
++	while (i < sheaf->size) {
++		struct slab *slab = virt_to_slab(p[i]);
++
++		memcg_slab_free_hook(s, slab, p + i, 1);
++		alloc_tagging_slab_free_hook(s, slab, p + i, 1);
++
++		if (unlikely(!slab_free_hook(s, p[i], init, true))) {
++			p[i] = p[--sheaf->size];
++			continue;
++		}
++
++		i++;
++	}
++}
++
++static void rcu_free_sheaf(struct rcu_head *head)
++{
++	struct slab_sheaf *sheaf;
++	struct node_barn *barn;
++	struct kmem_cache *s;
++
++	sheaf = container_of(head, struct slab_sheaf, rcu_head);
++
++	s = sheaf->cache;
++
++	/*
++	 * This may reduce the number of objects that the sheaf is no longer
++	 * technically full, but it's easier to treat it that way (unless it's
++	 * competely empty), as the code handles it fine, there's just slightly
++	 * worse batching benefit. It only happens due to debugging, which
++	 * is a performance hit anyway.
++	 */
++	__rcu_free_sheaf_prepare(s, sheaf);
++
++	barn = get_node(s, numa_mem_id())->barn;
++
++	/* due to slab_free_hook() */
++	if (unlikely(sheaf->size == 0))
++		goto empty;
++
++	/*
++	 * Checking nr_full/nr_empty outside lock avoids contention in case the
++	 * barn is at the respective limit. Due to the race we might go over the
++	 * limit but that should be rare and harmless.
++	 */
++
++	if (data_race(barn->nr_full) < MAX_FULL_SHEAVES) {
++		stat(s, BARN_PUT);
++		barn_put_full_sheaf(barn, sheaf);
++		return;
++	}
++
++	stat(s, BARN_PUT_FAIL);
++	sheaf_flush_unused(s, sheaf);
++
++empty:
++	if (data_race(barn->nr_empty) < MAX_EMPTY_SHEAVES) {
++		barn_put_empty_sheaf(barn, sheaf);
++		return;
++	}
++
++	free_empty_sheaf(s, sheaf);
++}
++
++bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
++{
++	struct slub_percpu_sheaves *pcs;
++	struct slab_sheaf *rcu_sheaf;
++
++	if (!local_trylock(&s->cpu_sheaves->lock))
++		goto fail;
++
++	pcs = this_cpu_ptr(s->cpu_sheaves);
++
++	if (unlikely(!pcs->rcu_free)) {
++
++		struct slab_sheaf *empty;
++
++		empty = barn_get_empty_sheaf(pcs->barn);
++
++		if (empty) {
++			pcs->rcu_free = empty;
++			goto do_free;
++		}
++
++		local_unlock(&s->cpu_sheaves->lock);
++
++		empty = alloc_empty_sheaf(s, GFP_NOWAIT);
++
++		if (!empty)
++			goto fail;
++
++		if (!local_trylock(&s->cpu_sheaves->lock))
++			goto fail;
++
++		pcs = this_cpu_ptr(s->cpu_sheaves);
++
++		if (unlikely(pcs->rcu_free))
++			barn_put_empty_sheaf(pcs->barn, empty);
++		else
++			pcs->rcu_free = empty;
++	}
++
++do_free:
++
++	rcu_sheaf = pcs->rcu_free;
++
++	rcu_sheaf->objects[rcu_sheaf->size++] = obj;
++
++	if (likely(rcu_sheaf->size < s->sheaf_capacity))
++		rcu_sheaf = NULL;
++	else
++		pcs->rcu_free = NULL;
++
++	local_unlock(&s->cpu_sheaves->lock);
++
++	if (rcu_sheaf)
++		call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
++
++	stat(s, FREE_RCU_SHEAF);
++	return true;
++
++fail:
++	stat(s, FREE_RCU_SHEAF_FAIL);
++	return false;
++}
++
+ /*
+  * Bulk free objects to the percpu sheaves.
+  * Unlike free_to_pcs() this includes the calls to all necessary hooks
+@@ -6802,6 +6972,11 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
+ 	struct kmem_cache_node *n;
+ 
+ 	flush_all_cpus_locked(s);
++
++	/* we might have rcu sheaves in flight */
++	if (s->cpu_sheaves)
++		rcu_barrier();
++
+ 	/* Attempt to free all objects */
+ 	for_each_kmem_cache_node(s, node, n) {
+ 		if (n->barn)
+@@ -8214,6 +8389,8 @@ STAT_ATTR(ALLOC_PCS, alloc_cpu_sheaf);
+ STAT_ATTR(ALLOC_FASTPATH, alloc_fastpath);
+ STAT_ATTR(ALLOC_SLOWPATH, alloc_slowpath);
+ STAT_ATTR(FREE_PCS, free_cpu_sheaf);
++STAT_ATTR(FREE_RCU_SHEAF, free_rcu_sheaf);
++STAT_ATTR(FREE_RCU_SHEAF_FAIL, free_rcu_sheaf_fail);
+ STAT_ATTR(FREE_FASTPATH, free_fastpath);
+ STAT_ATTR(FREE_SLOWPATH, free_slowpath);
+ STAT_ATTR(FREE_FROZEN, free_frozen);
+@@ -8312,6 +8489,8 @@ static struct attribute *slab_attrs[] = {
+ 	&alloc_fastpath_attr.attr,
+ 	&alloc_slowpath_attr.attr,
+ 	&free_cpu_sheaf_attr.attr,
++	&free_rcu_sheaf_attr.attr,
++	&free_rcu_sheaf_fail_attr.attr,
+ 	&free_fastpath_attr.attr,
+ 	&free_slowpath_attr.attr,
+ 	&free_frozen_attr.attr,
+
+-- 
+2.49.0
 
