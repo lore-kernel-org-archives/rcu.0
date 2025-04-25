@@ -1,41 +1,77 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B516D22615
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDF017A2EE
 	for <rcu@vger.kernel.org>; Fri, 25 Apr 2025 08:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745569676; cv=none; b=bkzKBfq7NSUEZfdr2K4X0D6HSOAOyM3i5EXrAGnBkw1syhNjaa9XZyKKlyH06M3wmpViDBJ4NHNV7Ym41PKIXfoG6O0tnQ3E6MC8zUueoeC2DMZD/UfLA+C4Q0Q47/WIA4R7ygBsMR9FeCowrVGb1QlotEvX2nBVAwyVXqGBeTg=
+	t=1745569677; cv=none; b=k3JWEFV1o53rOqzTeLenw5n8amGPAU67lxyRqrr7ng18JnU4cSTG28w/KkvvZICJH2Sc2iv/mQ+OSWHT4jFvIPeYy57Oke9pv34TByATrOIjh5hWg+22qQXexl9Rh6GQTE+4FC6f5uZMU/NRt2JQRkHJuuumqw2bD9b5Rr0up4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745569676; c=relaxed/simple;
-	bh=M3ffs8KMEipTT6biUJ+CzfIFeKlxlgZv2vbAdiKjHkg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UUauE1ySJ4vn615Yqvvq28urQ1P8MeR7RgoVtVaPHB8HzudRnPo5cyHuYm34G6gAbWsxSsxacTn8vf+5YlBKQDkp7a4PXZWQnq7qtAbr20fSvp2d+aiqS0+MfrNBSHuCKbyvHRMQEOg28JXFI5uiRqhCa492O7JA6xjIqjS1WyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1745569677; c=relaxed/simple;
+	bh=sBDPAp0HPy8vjmmkX+PZk30VjcYafj0a2g1pDT2xgN0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=SNuZb8g7+SywQHLuqwkNU0Nci/ZlOfVprqDouwXHZ+V5raLyBeb/eTl5YO0G/jsAMCfbLa1RfzR2AkHlk7RGtthrjkQNP6UcQgLXxSgiArCQSYRvYAnZbDi2WIj4G//pysU0hj0Du6TcKObDFCD3ImoypZrIbtkvSqJHIG7h13g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DP2Hzioa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XSfDmBC3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DP2Hzioa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XSfDmBC3; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DP2Hzioa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XSfDmBC3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DP2Hzioa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XSfDmBC3"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DF94E1F38C;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A781121164;
 	Fri, 25 Apr 2025 08:27:52 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745569672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DyQE//GcgRfm4C5qTatYzEET3PMAoGBC3YbFpdgMWgM=;
+	b=DP2Hzioam72G/38bV3f9MW3AmDrnHgnXag/VxUEbCvfjiLCIgt+PNnepaGwYD2yHAkkDzq
+	btFZP9TOHx9r+C3ImNOdQv6Mkm2XOdFExHz3MzeZ1ouV2j5WZ7gkwHxAYovdebOlATNQxw
+	t93rGgLyXMMg34j3V4yVy2ra3Pv39ng=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745569672;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DyQE//GcgRfm4C5qTatYzEET3PMAoGBC3YbFpdgMWgM=;
+	b=XSfDmBC3EDhW7TMhwQZdpIjX1bZaE30Wvida2t4/btTd1t3cnqcY1ej06t4LZ18lvc4k5D
+	sFFpOhgYjxLeu+Aw==
+Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1745569672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DyQE//GcgRfm4C5qTatYzEET3PMAoGBC3YbFpdgMWgM=;
+	b=DP2Hzioam72G/38bV3f9MW3AmDrnHgnXag/VxUEbCvfjiLCIgt+PNnepaGwYD2yHAkkDzq
+	btFZP9TOHx9r+C3ImNOdQv6Mkm2XOdFExHz3MzeZ1ouV2j5WZ7gkwHxAYovdebOlATNQxw
+	t93rGgLyXMMg34j3V4yVy2ra3Pv39ng=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1745569672;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DyQE//GcgRfm4C5qTatYzEET3PMAoGBC3YbFpdgMWgM=;
+	b=XSfDmBC3EDhW7TMhwQZdpIjX1bZaE30Wvida2t4/btTd1t3cnqcY1ej06t4LZ18lvc4k5D
+	sFFpOhgYjxLeu+Aw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BA98013A9E;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8FD0A13A80;
 	Fri, 25 Apr 2025 08:27:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EBFDLYhHC2htfwAAD6G6ig
+	id IijLIohHC2htfwAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Fri, 25 Apr 2025 08:27:52 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Fri, 25 Apr 2025 10:27:22 +0200
-Subject: [PATCH v4 2/9] slab: add sheaf support for batching kfree_rcu()
- operations
+Subject: [PATCH v4 0/9] SLUB percpu sheaves
+Date: Fri, 25 Apr 2025 10:27:20 +0200
+Message-Id: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -44,423 +80,212 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250425-slub-percpu-caches-v4-2-8a636982b4a4@suse.cz>
-References: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
-In-Reply-To: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
+X-B4-Tracking: v=1; b=H4sIAGlHC2gC/23QzU7DMBAE4FepfMbVru04dk+8B+Lgnw2xoE2wk
+ wio+u44rWiFlOMc5tNozqxQTlTYYXdmmZZU0nCqQT3tWOjd6Y14ijUzAUIiCsPLx+z5SDmMMw8
+ u9FS4VQqNFYAYW1aLY6YufV3Rl9eauzwc+dRncncKDAJqqUW71wI0t3zxzr+75zIX2oeflelTm
+ Yb8fZ224IqtVYV1xtaKBTnwGAP4GERL0NytdcMi/oAGBKpNQFTAmMYKIrBau/+AfAAS201AVsB
+ Ga4yKxmslH8Dldkumz7lePN2+Yd4V4mE4HtN02BlBXWy0dcaC7YRHiQoCehmpjpKNIwceGqzY5
+ RfvPMFOtwEAAA==
+X-Change-ID: 20231128-slub-percpu-caches-9441892011d7
 To: Suren Baghdasaryan <surenb@google.com>, 
  "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
  Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>
 Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
  Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, 
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
- maple-tree@lists.infradead.org, vbabka@suse.cz
+ maple-tree@lists.infradead.org, vbabka@suse.cz, 
+ "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 X-Mailer: b4 0.14.2
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: DF94E1F38C
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,oracle.com,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org,suse.cz,Oracle.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -4.30
+X-Spam-Flag: NO
 
-Extend the sheaf infrastructure for more efficient kfree_rcu() handling.
-For caches with sheaves, on each cpu maintain a rcu_free sheaf in
-addition to main and spare sheaves.
+Hi,
 
-kfree_rcu() operations will try to put objects on this sheaf. Once full,
-the sheaf is detached and submitted to call_rcu() with a handler that
-will try to put it in the barn, or flush to slab pages using bulk free,
-when the barn is full. Then a new empty sheaf must be obtained to put
-more objects there.
+This is the v4 and first non-RFC series to add an opt-in percpu
+array-based caching layer to SLUB, following the LSF/MM discussions.
+Since v3 I've also made changes to achieve full compatibility with
+slub_debug, and IRC discussions led to the last patch intended to
+improve NUMA locality (the patch remains separate for evaluation
+purposes).
 
-It's possible that no free sheaves are available to use for a new
-rcu_free sheaf, and the allocation in kfree_rcu() context can only use
-GFP_NOWAIT and thus may fail. In that case, fall back to the existing
-kfree_rcu() implementation.
+Harry's RFC [1] also prompted me to reconsider the stat counters and as
+a result I removed some that seemed unnecessary and added others that
+were missing to evaluate how effective the barns and sheaf preffiling
+are.
 
-Expected advantages:
-- batching the kfree_rcu() operations, that could eventually replace the
-  existing batching
-- sheaves can be reused for allocations via barn instead of being
-  flushed to slabs, which is more efficient
-  - this includes cases where only some cpus are allowed to process rcu
-    callbacks (Android)
+I have also addressed the RFC v3 feedback by Suren and Harry - thanks!
 
-Possible disadvantage:
-- objects might be waiting for more than their grace period (it is
-  determined by the last object freed into the sheaf), increasing memory
-  usage - but the existing batching does that too.
+Note the name "sheaf" was invented by Matthew so we don't call the
+arrays magazine like the original Bonwick paper. The per-NUMA-node cache
+of sheaves is thus called "barn".
 
-Only implement this for CONFIG_KVFREE_RCU_BATCHED as the tiny
-implementation favors smaller memory footprint over performance.
+This caching may seem similar to the arrays in SLAB, but there are some
+important differences:
 
-Add CONFIG_SLUB_STATS counters free_rcu_sheaf and free_rcu_sheaf_fail to
-count how many kfree_rcu() used the rcu_free sheaf successfully and how
-many had to fall back to the existing implementation.
+- opt-in, not used for every cache
+- does not distinguish NUMA locality, thus there are no per-node
+  "shared" arrays (with possible lock contention) and no "alien" arrays
+  that would need periodical flushing
+  - NUMA restricted allocations and strict_numa mode is still honoured,
+    the percpu sheaves are bypassed for those allocations
+  - a later patch (for separate evaluation) makes freeing remote objects
+    bypass sheaves so sheaves contain mostly (not strictly) local objects
+- improves kfree_rcu() handling by reusing whole sheaves
+- there is an API for obtaining a preallocated sheaf that can be used
+  for guaranteed and efficient allocations in a restricted context, when
+  the upper bound for needed objects is known but rarely reached
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+The motivation comes mainly from the ongoing work related to VMA locking
+scalability and the related maple tree operations. This is why VMA and
+maple nodes caches are sheaf-enabled in the patchset, but for maple tree
+it's not a full conversion that would benefit from the improved
+preallocation API.
+
+Some performance benefits were measured by Suren and Liam in previous
+versions. Suren's results in [2] looked quite promising.
+
+A sheaf-enabled cache has the following expected advantages:
+
+- Cheaper fast paths. For allocations, instead of local double cmpxchg,
+  thanks to local_trylock() it becomes a preempt_disable() and no atomic
+  operations. Same for freeing, which is normally a local double cmpxchg
+  only for short term allocations (so the same slab is still active on the
+  same cpu when freeing the object) and a more costly locked double
+  cmpxchg otherwise.
+
+  There is a possible downside with a larger fraction of
+  non-NUMA-restricted allocations to get remote objects. The last patch
+  changes it by making remote frees bypass sheaves. Some very preliminary
+  measurements suggest only 5% frees are remote, but whether this is a net
+  improvement has to be evaluated.
+
+- kfree_rcu() batching and recycling. kfree_rcu() will put objects to a
+  separate percpu sheaf and only submit the whole sheaf to call_rcu()
+  when full. After the grace period, the sheaf can be used for
+  allocations, which is more efficient than freeing and reallocating
+  individual slab objects (even with the batching done by kfree_rcu()
+  implementation itself). In case only some cpus are allowed to handle rcu
+  callbacks, the sheaf can still be made available to other cpus on the
+  same node via the shared barn. The maple_node cache uses kfree_rcu() and
+  thus can benefit from this.
+
+- Preallocation support. A prefilled sheaf can be privately borrowed to
+  perform a short term operation that is not allowed to block in the
+  middle and may need to allocate some objects. If an upper bound (worst
+  case) for the number of allocations is known, but only much fewer
+  allocations actually needed on average, borrowing and returning a sheaf
+  is much more efficient then a bulk allocation for the worst case
+  followed by a bulk free of the many unused objects. Maple tree write
+  operations should benefit from this.
+
+- Compatibility with slub_debug. When slub_debug is enabled for a cache,
+  we simply don't create the percpu sheaves so that the debugging hooks
+  (at the node partial list slowpaths) are reached as before. Sheaf
+  preallocation still works by reusing the (ineffective) paths for
+  requests exceeding the cache's sheaf_capacity. This is in line with the
+  existing approach where debugging bypasses the fast paths.
+
+GIT TREES:
+
+this series: https://git.kernel.org/vbabka/l/slub-percpu-sheaves-v4r2
+
+It is based on post-6.15-rc3 commit 82efd569a890 ("locking/local_lock:
+fix _Generic() matching of local_trylock_t") as it definitely needs
+local_trylock_t to work properly.
+
+I have tried to rebase the full maple tree conversion, but there were
+conflicts due to 6.15 changes and I don't know the code well enought to
+resolve them confidently.
+
+Vlastimil
+
+[1] https://lore.kernel.org/all/20250407041810.13861-1-harry.yoo@oracle.com/
+[2] https://lore.kernel.org/all/CAJuCfpFVopL%2BsMdU4bLRxs%2BHS_WPCmFZBdCmwE8qV2Dpa5WZnA@mail.gmail.com/
+
 ---
- mm/slab.h        |   3 +
- mm/slab_common.c |  24 ++++++++
- mm/slub.c        | 183 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 208 insertions(+), 2 deletions(-)
+Changes in v4:
+- slub_debug disables sheaves for the cache in order to work properly
+- strict_numa mode works as intended
+- added a separate patch to make freeing remote objects skip sheaves
+- various code refactoring suggested by Suren and Harry
+- removed less useful stat counters and added missing ones for barn
+  and prefilled sheaf events
+- Link to v3: https://lore.kernel.org/r/20250317-slub-percpu-caches-v3-0-9d9884d8b643@suse.cz
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 1980330c2fcb4a4613a7e4f7efc78b349993fd89..ddf1e4bcba734dccbf67e83bdbab3ca7272f540e 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -459,6 +459,9 @@ static inline bool is_kmalloc_normal(struct kmem_cache *s)
- 	return !(s->flags & (SLAB_CACHE_DMA|SLAB_ACCOUNT|SLAB_RECLAIM_ACCOUNT));
- }
- 
-+bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj);
-+
-+/* Legal flag mask for kmem_cache_create(), for various configurations */
- #define SLAB_CORE_FLAGS (SLAB_HWCACHE_ALIGN | SLAB_CACHE_DMA | \
- 			 SLAB_CACHE_DMA32 | SLAB_PANIC | \
- 			 SLAB_TYPESAFE_BY_RCU | SLAB_DEBUG_OBJECTS | \
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 4f295bdd2d42355af6311a799955301005f8a532..6c3b90f03cb79b57f426824450f576a977d85c53 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1608,6 +1608,27 @@ static void kfree_rcu_work(struct work_struct *work)
- 		kvfree_rcu_list(head);
- }
- 
-+static bool kfree_rcu_sheaf(void *obj)
-+{
-+	struct kmem_cache *s;
-+	struct folio *folio;
-+	struct slab *slab;
-+
-+	if (is_vmalloc_addr(obj))
-+		return false;
-+
-+	folio = virt_to_folio(obj);
-+	if (unlikely(!folio_test_slab(folio)))
-+		return false;
-+
-+	slab = folio_slab(folio);
-+	s = slab->slab_cache;
-+	if (s->cpu_sheaves)
-+		return __kfree_rcu_sheaf(s, obj);
-+
-+	return false;
-+}
-+
- static bool
- need_offload_krc(struct kfree_rcu_cpu *krcp)
- {
-@@ -1952,6 +1973,9 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
- 	if (!head)
- 		might_sleep();
- 
-+	if (kfree_rcu_sheaf(ptr))
-+		return;
-+
- 	// Queue the object but don't yet schedule the batch.
- 	if (debug_rcu_head_queue(ptr)) {
- 		// Probable double kfree_rcu(), just leak.
-diff --git a/mm/slub.c b/mm/slub.c
-index ae3e80ad9926ca15601eef2f2aa016ca059498f8..6f31a27b5d47fa6621fa8af6d6842564077d4b60 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -350,6 +350,8 @@ enum stat_item {
- 	ALLOC_FASTPATH,		/* Allocation from cpu slab */
- 	ALLOC_SLOWPATH,		/* Allocation by getting a new cpu slab */
- 	FREE_PCS,		/* Free to percpu sheaf */
-+	FREE_RCU_SHEAF,		/* Free to rcu_free sheaf */
-+	FREE_RCU_SHEAF_FAIL,	/* Failed to free to a rcu_free sheaf */
- 	FREE_FASTPATH,		/* Free to cpu slab */
- 	FREE_SLOWPATH,		/* Freeing not to cpu slab */
- 	FREE_FROZEN,		/* Freeing to frozen slab */
-@@ -444,6 +446,7 @@ struct slab_sheaf {
- 		struct rcu_head rcu_head;
- 		struct list_head barn_list;
- 	};
-+	struct kmem_cache *cache;
- 	unsigned int size;
- 	void *objects[];
- };
-@@ -452,6 +455,7 @@ struct slub_percpu_sheaves {
- 	local_trylock_t lock;
- 	struct slab_sheaf *main; /* never NULL when unlocked */
- 	struct slab_sheaf *spare; /* empty or full, may be NULL */
-+	struct slab_sheaf *rcu_free; /* for batching kfree_rcu() */
- 	struct node_barn *barn;
- };
- 
-@@ -2507,6 +2511,8 @@ static struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp)
- 	if (unlikely(!sheaf))
- 		return NULL;
- 
-+	sheaf->cache = s;
-+
- 	stat(s, SHEAF_ALLOC);
- 
- 	return sheaf;
-@@ -2631,6 +2637,24 @@ static void sheaf_flush_unused(struct kmem_cache *s, struct slab_sheaf *sheaf)
- 	sheaf->size = 0;
- }
- 
-+static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
-+				     struct slab_sheaf *sheaf);
-+
-+static void rcu_free_sheaf_nobarn(struct rcu_head *head)
-+{
-+	struct slab_sheaf *sheaf;
-+	struct kmem_cache *s;
-+
-+	sheaf = container_of(head, struct slab_sheaf, rcu_head);
-+	s = sheaf->cache;
-+
-+	__rcu_free_sheaf_prepare(s, sheaf);
-+
-+	sheaf_flush_unused(s, sheaf);
-+
-+	free_empty_sheaf(s, sheaf);
-+}
-+
- /*
-  * Caller needs to make sure migration is disabled in order to fully flush
-  * single cpu's sheaves
-@@ -2643,7 +2667,7 @@ static void sheaf_flush_unused(struct kmem_cache *s, struct slab_sheaf *sheaf)
- static void pcs_flush_all(struct kmem_cache *s)
- {
- 	struct slub_percpu_sheaves *pcs;
--	struct slab_sheaf *spare;
-+	struct slab_sheaf *spare, *rcu_free;
- 
- 	local_lock(&s->cpu_sheaves->lock);
- 	pcs = this_cpu_ptr(s->cpu_sheaves);
-@@ -2651,6 +2675,9 @@ static void pcs_flush_all(struct kmem_cache *s)
- 	spare = pcs->spare;
- 	pcs->spare = NULL;
- 
-+	rcu_free = pcs->rcu_free;
-+	pcs->rcu_free = NULL;
-+
- 	local_unlock(&s->cpu_sheaves->lock);
- 
- 	if (spare) {
-@@ -2658,6 +2685,9 @@ static void pcs_flush_all(struct kmem_cache *s)
- 		free_empty_sheaf(s, spare);
- 	}
- 
-+	if (rcu_free)
-+		call_rcu(&rcu_free->rcu_head, rcu_free_sheaf_nobarn);
-+
- 	sheaf_flush_main(s);
- }
- 
-@@ -2674,6 +2704,11 @@ static void __pcs_flush_all_cpu(struct kmem_cache *s, unsigned int cpu)
- 		free_empty_sheaf(s, pcs->spare);
- 		pcs->spare = NULL;
- 	}
-+
-+	if (pcs->rcu_free) {
-+		call_rcu(&pcs->rcu_free->rcu_head, rcu_free_sheaf_nobarn);
-+		pcs->rcu_free = NULL;
-+	}
- }
- 
- static void pcs_destroy(struct kmem_cache *s)
-@@ -2699,6 +2734,7 @@ static void pcs_destroy(struct kmem_cache *s)
- 		 */
- 
- 		WARN_ON(pcs->spare);
-+		WARN_ON(pcs->rcu_free);
- 
- 		if (!WARN_ON(pcs->main->size)) {
- 			free_empty_sheaf(s, pcs->main);
-@@ -3755,7 +3791,7 @@ static bool has_pcs_used(int cpu, struct kmem_cache *s)
- 
- 	pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
- 
--	return (pcs->spare || pcs->main->size);
-+	return (pcs->spare || pcs->rcu_free || pcs->main->size);
- }
- 
- static void pcs_flush_all(struct kmem_cache *s);
-@@ -5304,6 +5340,140 @@ bool free_to_pcs(struct kmem_cache *s, void *object)
- 	return true;
- }
- 
-+static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
-+				     struct slab_sheaf *sheaf)
-+{
-+	bool init = slab_want_init_on_free(s);
-+	void **p = &sheaf->objects[0];
-+	unsigned int i = 0;
-+
-+	while (i < sheaf->size) {
-+		struct slab *slab = virt_to_slab(p[i]);
-+
-+		memcg_slab_free_hook(s, slab, p + i, 1);
-+		alloc_tagging_slab_free_hook(s, slab, p + i, 1);
-+
-+		if (unlikely(!slab_free_hook(s, p[i], init, true))) {
-+			p[i] = p[--sheaf->size];
-+			continue;
-+		}
-+
-+		i++;
-+	}
-+}
-+
-+static void rcu_free_sheaf(struct rcu_head *head)
-+{
-+	struct slab_sheaf *sheaf;
-+	struct node_barn *barn;
-+	struct kmem_cache *s;
-+
-+	sheaf = container_of(head, struct slab_sheaf, rcu_head);
-+
-+	s = sheaf->cache;
-+
-+	/*
-+	 * This may reduce the number of objects that the sheaf is no longer
-+	 * technically full, but it's easier to treat it that way (unless it's
-+	 * competely empty), as the code handles it fine, there's just slightly
-+	 * worse batching benefit. It only happens due to debugging, which
-+	 * is a performance hit anyway.
-+	 */
-+	__rcu_free_sheaf_prepare(s, sheaf);
-+
-+	barn = get_node(s, numa_mem_id())->barn;
-+
-+	/* due to slab_free_hook() */
-+	if (unlikely(sheaf->size == 0))
-+		goto empty;
-+
-+	/*
-+	 * Checking nr_full/nr_empty outside lock avoids contention in case the
-+	 * barn is at the respective limit. Due to the race we might go over the
-+	 * limit but that should be rare and harmless.
-+	 */
-+
-+	if (data_race(barn->nr_full) < MAX_FULL_SHEAVES) {
-+		stat(s, BARN_PUT);
-+		barn_put_full_sheaf(barn, sheaf);
-+		return;
-+	}
-+
-+	stat(s, BARN_PUT_FAIL);
-+	sheaf_flush_unused(s, sheaf);
-+
-+empty:
-+	if (data_race(barn->nr_empty) < MAX_EMPTY_SHEAVES) {
-+		barn_put_empty_sheaf(barn, sheaf);
-+		return;
-+	}
-+
-+	free_empty_sheaf(s, sheaf);
-+}
-+
-+bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
-+{
-+	struct slub_percpu_sheaves *pcs;
-+	struct slab_sheaf *rcu_sheaf;
-+
-+	if (!local_trylock(&s->cpu_sheaves->lock))
-+		goto fail;
-+
-+	pcs = this_cpu_ptr(s->cpu_sheaves);
-+
-+	if (unlikely(!pcs->rcu_free)) {
-+
-+		struct slab_sheaf *empty;
-+
-+		empty = barn_get_empty_sheaf(pcs->barn);
-+
-+		if (empty) {
-+			pcs->rcu_free = empty;
-+			goto do_free;
-+		}
-+
-+		local_unlock(&s->cpu_sheaves->lock);
-+
-+		empty = alloc_empty_sheaf(s, GFP_NOWAIT);
-+
-+		if (!empty)
-+			goto fail;
-+
-+		if (!local_trylock(&s->cpu_sheaves->lock))
-+			goto fail;
-+
-+		pcs = this_cpu_ptr(s->cpu_sheaves);
-+
-+		if (unlikely(pcs->rcu_free))
-+			barn_put_empty_sheaf(pcs->barn, empty);
-+		else
-+			pcs->rcu_free = empty;
-+	}
-+
-+do_free:
-+
-+	rcu_sheaf = pcs->rcu_free;
-+
-+	rcu_sheaf->objects[rcu_sheaf->size++] = obj;
-+
-+	if (likely(rcu_sheaf->size < s->sheaf_capacity))
-+		rcu_sheaf = NULL;
-+	else
-+		pcs->rcu_free = NULL;
-+
-+	local_unlock(&s->cpu_sheaves->lock);
-+
-+	if (rcu_sheaf)
-+		call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
-+
-+	stat(s, FREE_RCU_SHEAF);
-+	return true;
-+
-+fail:
-+	stat(s, FREE_RCU_SHEAF_FAIL);
-+	return false;
-+}
-+
- /*
-  * Bulk free objects to the percpu sheaves.
-  * Unlike free_to_pcs() this includes the calls to all necessary hooks
-@@ -6802,6 +6972,11 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
- 	struct kmem_cache_node *n;
- 
- 	flush_all_cpus_locked(s);
-+
-+	/* we might have rcu sheaves in flight */
-+	if (s->cpu_sheaves)
-+		rcu_barrier();
-+
- 	/* Attempt to free all objects */
- 	for_each_kmem_cache_node(s, node, n) {
- 		if (n->barn)
-@@ -8214,6 +8389,8 @@ STAT_ATTR(ALLOC_PCS, alloc_cpu_sheaf);
- STAT_ATTR(ALLOC_FASTPATH, alloc_fastpath);
- STAT_ATTR(ALLOC_SLOWPATH, alloc_slowpath);
- STAT_ATTR(FREE_PCS, free_cpu_sheaf);
-+STAT_ATTR(FREE_RCU_SHEAF, free_rcu_sheaf);
-+STAT_ATTR(FREE_RCU_SHEAF_FAIL, free_rcu_sheaf_fail);
- STAT_ATTR(FREE_FASTPATH, free_fastpath);
- STAT_ATTR(FREE_SLOWPATH, free_slowpath);
- STAT_ATTR(FREE_FROZEN, free_frozen);
-@@ -8312,6 +8489,8 @@ static struct attribute *slab_attrs[] = {
- 	&alloc_fastpath_attr.attr,
- 	&alloc_slowpath_attr.attr,
- 	&free_cpu_sheaf_attr.attr,
-+	&free_rcu_sheaf_attr.attr,
-+	&free_rcu_sheaf_fail_attr.attr,
- 	&free_fastpath_attr.attr,
- 	&free_slowpath_attr.attr,
- 	&free_frozen_attr.attr,
+Changes in v3:
+- Squash localtry_lock conversion so it's used immediately.
+- Incorporate feedback and add tags from Suren and Harry - thanks!
+  - Mostly adding comments and some refactoring.
+  - Fixes for kfree_rcu_sheaf() vmalloc handling, cpu hotremove
+    flushing.
+  - Fix wrong condition in kmem_cache_return_sheaf() that may have
+    affected performance negatively.
+  - Refactoring of free_to_pcs()
+- Link to v2: https://lore.kernel.org/r/20250214-slub-percpu-caches-v2-0-88592ee0966a@suse.cz
 
+Changes in v2:
+- Removed kfree_rcu() destructors support as VMAs will not need it
+  anymore after [3] is merged.
+- Changed to localtry_lock_t borrowed from [2] instead of an own
+  implementation of the same idea.
+- Many fixes and improvements thanks to Liam's adoption for maple tree
+  nodes.
+- Userspace Testing stubs by Liam.
+- Reduced limitations/todos - hooking to kfree_rcu() is complete,
+  prefilled sheaves can exceed cache's sheaf_capacity.
+- Link to v1: https://lore.kernel.org/r/20241112-slub-percpu-caches-v1-0-ddc0bdc27e05@suse.cz
+
+---
+Liam R. Howlett (2):
+      tools: Add testing support for changes to rcu and slab for sheaves
+      tools: Add sheaves support to testing infrastructure
+
+Vlastimil Babka (7):
+      slab: add opt-in caching layer of percpu sheaves
+      slab: add sheaf support for batching kfree_rcu() operations
+      slab: sheaf prefilling for guaranteed allocations
+      slab: determine barn status racily outside of lock
+      maple_tree: use percpu sheaves for maple_node_cache
+      mm, vma: use percpu sheaves for vm_area_struct cache
+      mm, slub: skip percpu sheaves for remote object freeing
+
+ include/linux/slab.h                  |   47 +
+ kernel/fork.c                         |    1 +
+ lib/maple_tree.c                      |   11 +-
+ mm/slab.h                             |    5 +
+ mm/slab_common.c                      |   32 +-
+ mm/slub.c                             | 1573 +++++++++++++++++++++++++++++++--
+ tools/include/linux/slab.h            |   65 +-
+ tools/testing/shared/linux.c          |  108 ++-
+ tools/testing/shared/linux/rcupdate.h |   22 +
+ 9 files changed, 1791 insertions(+), 73 deletions(-)
+---
+base-commit: 82efd569a8909f2b13140c1b3de88535aea0b051
+change-id: 20231128-slub-percpu-caches-9441892011d7
+
+Best regards,
 -- 
-2.49.0
+Vlastimil Babka <vbabka@suse.cz>
 
