@@ -1,67 +1,88 @@
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2059.outbound.protection.outlook.com [40.107.237.59])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12082AD04;
-	Mon, 28 Apr 2025 14:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D18A367;
+	Tue, 29 Apr 2025 01:09:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745851613; cv=fail; b=sMs0BCV/pY+RQLAxCm/vBI2tODgsIgs4OLgGoZpYnk1iNU0bFQOYtduuzH6OdpANjMkJ5KsRuNUiJbwWhvY1+vQSwdsH24r6xRexfNZwl+aRJBLBky5GxkcCxCHx71yMJ7U8hxSccOcSXH03RkpATYluUesXXX3ns2jnWMEPZjU=
+	t=1745888955; cv=fail; b=DhYRZnp3omcvVVsYjEmkpsxeQw1KbwBQQ6PIsZ7jcGDk7KlMWBU88xOk0rDrLcrp4uQEFs6L6pM0PF4LgtojDhwVd3cukhEVvPKWQnRMG6SVWfTgVAaP6iS+f1UCE+T6qQdDgsCq8wzH8Vq9P/e9A76Hs0Bl1QQ4KYGcD0At1eo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745851613; c=relaxed/simple;
-	bh=/pyih8nmUdFQxGFHjdOVk+shNu1JsIeTfwMqWFJtOfk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=hGTnrWQJXsfYVRac/Ps0baWhm1GoxuI5EsS8ypUUqZIA0tKt5sDbQ2jrb/km/sediT8os7u2HImlkwfzumGB4dPLMxNBZaRa7Dn3pMyCtfqh/EdpoB5khFcOd+BeY1A5/szvbf7qPrsbn0LSOrdFz+72liYMBoAQ0cq3EXngOtY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=M5Way3gt; arc=fail smtp.client-ip=40.107.237.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1745888955; c=relaxed/simple;
+	bh=lmVN7Pegrb7ihiObkJ0/o1oPtOPHOrR4CjQbIh3I3OE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=D+hLHLjlFaoykTyGrEu52XceFFYZn2f4FGjD9A1LrOSK7soyvcihYQhcW/OVT8ADDnbYV1I1gOUxg2F3RRTLcpFXB9ixLs/yE2DwJ4qS1Ni3SvP1a6+dkavYzYEFIz3fOiFmsyzpja8SJntR8N/OeLxUVeOc3RaBmGGL0UUs364=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Fk7wL+XR; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=WjmxPPE8; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="M5Way3gt"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Fk7wL+XR";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="WjmxPPE8"
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 53T12vh6014031;
+	Tue, 29 Apr 2025 01:08:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2023-11-20; bh=jOGOL6Vf6Y4w0WOMRf
+	/nt5ybLOFV8nQQ/w9DW6DpXNk=; b=Fk7wL+XRVGJepvfyfIw+Zn84zCLS9qqW3U
+	hdI6oAf0gvsY+wljbiUfH/5X3vc42QmpVHVkTJVRrBfHT99tGUjmHhO1UuBaxzbg
+	djuRYPKhFiPcKaimI+RJVX7QZ+GxLVM+JHvMa9t9FryBO4Wm/vDgf/C7DCOlq+71
+	opeSVMy9ne+XMertqtrD8CPRKCmoFv7QdbC7XXES9tmR1+Llhd6ki0lrU62eczEX
+	lTPBVzx7LmnjrpJo0tbodlEUNZnrjQ0Nd9G9rCIX/Rs8W6anrAG45M7ALPyW9AK+
+	13Ei+DmfoA0DPLaFWiskPfN8m4uPRGD24c8KBtAAAR8bBdlio7PA==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 46amre0059-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 29 Apr 2025 01:08:53 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 53SMsMGT033466;
+	Tue, 29 Apr 2025 01:08:53 GMT
+Received: from byapr05cu005.outbound.protection.outlook.com (mail-westusazlp17010005.outbound.protection.outlook.com [40.93.1.5])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 468nx9666r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 29 Apr 2025 01:08:53 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=p5+i+vEHccXvSHTx6fXGo/OVmZFAd9EQuR16n99pQIvc29Yt4m7h8ipfEOhRDrH+TdT4qp6gfrtGQEiYEANP9lA1UYL8g5XV0F+PZmGQK8sa3JiWwx0aedjPR9H1V/oLfND0l1WekTUzCr66gFYGyCQDOxHP3jo6SOpZZq5Hva98HwdSr4+nyGp9W2S6YcpguOn6GMtNYpJcUQaDVypx38wvFV2Mo/n0EAMTSz4WANj2GtwcGGaucRsPljbRhNnvDTZ5Emz3XId8+areiaEyFRgW+RTz6c8Wd3iu64ed2+Owi1yREkZZLaNuF2J62iWWFh94mh1MogC5A9PcYScSCw==
+ b=bYkheWDY0nIdswoZEXzU/ZEkBb5xdkvsaNxaQBYB5DK/naHtnOoGCs/Hz7OC7nrHJZbmQCor9UUwQ9rVwBa4TAGq0Dd/Ef6F/+I1+GoKDt5vqZpTqiZjDi+4uX1pRa2BpCcQB8pF5Tg938l9zFH+p4SooSnMZB7afFbwF3l9I2H/oVWmagWhJ/TPRwMCpn3u36I+tY+E3sjZyyzSxVMt7gTB+sLkdIZ1qttkz/JJKfWJg9TEk3OMdhF4T//TaNfrZS30kr49r7vbW+gWcr8UniOzcmlCer7f67IS1Omb9MGB2qz0fpbINVyfRhxZfUi3dF47FL5hZVCotueYsu12xg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cwriJOgxBqD2UGvr6oUEceeJ+AZYSaJL8mkcm66dCbY=;
- b=yVF5F32Butxt+mn+cCTGGUocy/MoJ6YYS+DH8oyBxj/AdME3jK9JBfntfHXqvkYSu/DDeariOC8wCegvmwAyaOfyCaNto+yM9s0Cf69nN3Yl4+APvOjbmGbJDrm/4J863ijoecdAsucd3nuM1FV6cQ57N/I0mYi+WOvCKpUlv5jMmc8iScPMMFOvo5eqTVU8D2pVrB3vww6YXpOVmlJpGyUb7qWoNaQ58EuyIygLdsPhKK3SM57YdTJhgxpfWWusJbDBEtOXtvDHwx5rPRfP9v0LN71aW0F/8IfEyp7hXzDmcFEt2R25zyGKkK3DfZOhsGnmBp14+ApKhTy3YCNhEg==
+ bh=jOGOL6Vf6Y4w0WOMRf/nt5ybLOFV8nQQ/w9DW6DpXNk=;
+ b=AA2+ccu8pgGaA4hTQiwRAt+86dQTyoDDKQVslosLfV1qU4folwI8UdDnnVc1DU/BXyX3+m/OBXM/+PCMl4xgB1slzGt+Djm9JtZcj/Z2rlOIzzYKFNalzDq4VNxwnFF18MoOER7XDxC4rxIlVTJWAj2l0mHlHoED+BeTwCr0JxIcwNFxO/ixKKNdfmNebZbBt1v/miTQs/DbxBwxY2FlCmaH7tL5FuZB/Tkz5/S+gQGoOMO/fViRxBcroYYmRTZu5wEf0q1owy3QMDyQBcbWUJ3kHSrSr4pdLoQKYPtIKAWA3XLUxrjbH35885KWrk1Ob6pE/t544OQ9yxbISVTBpw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cwriJOgxBqD2UGvr6oUEceeJ+AZYSaJL8mkcm66dCbY=;
- b=M5Way3gtV4SDya6hWbm895VDlSyqufarMX6z41ufUArznOcuz5zgh7j0H9dzvLMPH+V391FKgOD9tlcJyXvPg0SyAnDb9mHOXeSugeCcj/+GqMxCkDLePtRidn3TrJUEHPQZa71TGUQpqc6n8TbjTP/duNBeWdolBLs2BrMD/bO/+aba4KGiFFDpMEzPguJpippyQd1XpYZn1sKb+VzlYdtC+dSa70zJBVDAPJXFboyXJYIpVLuPWFCQUmy5iJs10aPZnSPyENKrZsp3rQwVCXCKG1f82IE68SM4rx1vP2qwNsyiLKkxdc6ORDmaViv2WfYECOEGJ2KMbtVnbnjiIQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by MW4PR12MB7213.namprd12.prod.outlook.com (2603:10b6:303:22a::18) with
+ bh=jOGOL6Vf6Y4w0WOMRf/nt5ybLOFV8nQQ/w9DW6DpXNk=;
+ b=WjmxPPE85YljRXkdzPjhPYB84HsPKi/rdYN1Keu1Pg2nqlABRG9AnjYX8srz+9Djdov+TYtsdf/HVXxB2xa1z29kNA8Yp+tLXpZ7aW/kPHVtdD2qD6NMyH+QdeyjK6guHN1z20oAdQ7Ot6q1CKgyGy7Cdm4giMzfiMvrJbCfFv0=
+Received: from DS0PR10MB7341.namprd10.prod.outlook.com (2603:10b6:8:f8::22) by
+ DS4PPF3984739DB.namprd10.prod.outlook.com (2603:10b6:f:fc00::d15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.33; Mon, 28 Apr
- 2025 14:46:45 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%6]) with mapi id 15.20.8678.028; Mon, 28 Apr 2025
- 14:46:45 +0000
-Message-ID: <b1d6d155-de0a-4715-9de6-45d3d9e5c9a6@nvidia.com>
-Date: Mon, 28 Apr 2025 10:46:42 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcu/nocb: Add Safe checks for access offloaded rdp
-To: Z qiang <qiang.zhang1211@gmail.com>,
- Frederic Weisbecker <frederic@kernel.org>
-Cc: paulmck@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
- urezki@gmail.com, boqun.feng@gmail.com, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250428095403.22889-1-qiang.zhang1211@gmail.com>
- <aA9U9QvB2t2MLuU2@pavilion.home>
- <CALm+0cW2tXM-HvzoMsNBk4DNyZ-LuUkGj5M4wVLJixSvUDP+Dw@mail.gmail.com>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <CALm+0cW2tXM-HvzoMsNBk4DNyZ-LuUkGj5M4wVLJixSvUDP+Dw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BLAPR05CA0043.namprd05.prod.outlook.com
- (2603:10b6:208:335::23) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.34; Tue, 29 Apr
+ 2025 01:08:51 +0000
+Received: from DS0PR10MB7341.namprd10.prod.outlook.com
+ ([fe80::3d6b:a1ef:44c3:a935]) by DS0PR10MB7341.namprd10.prod.outlook.com
+ ([fe80::3d6b:a1ef:44c3:a935%7]) with mapi id 15.20.8678.028; Tue, 29 Apr 2025
+ 01:08:51 +0000
+Date: Tue, 29 Apr 2025 10:08:27 +0900
+From: Harry Yoo <harry.yoo@oracle.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        maple-tree@lists.infradead.org
+Subject: Re: [PATCH v4 1/9] slab: add opt-in caching layer of percpu sheaves
+Message-ID: <aBAmi38oWka6ckjk@harry>
+References: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
+ <20250425-slub-percpu-caches-v4-1-8a636982b4a4@suse.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250425-slub-percpu-caches-v4-1-8a636982b4a4@suse.cz>
+X-ClientProxiedBy: SL2P216CA0075.KORP216.PROD.OUTLOOK.COM (2603:1096:101:2::8)
+ To CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -69,183 +90,345 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|MW4PR12MB7213:EE_
-X-MS-Office365-Filtering-Correlation-Id: de18fdb5-3d3b-43b9-1dfe-08dd86637f1e
+X-MS-TrafficTypeDiagnostic: DS0PR10MB7341:EE_|DS4PPF3984739DB:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3abbb566-773a-438c-7cb7-08dd86ba5da1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|7053199007;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?SjkrM0hCdTZack9pVHVBQ1pMT1ZpbG5VUTlDaE1Ib1NlR3Q2bGdtbStjUVFo?=
- =?utf-8?B?MEsxVUF2d3BPOW1LSkl1SmU0NjdqWEV2WkR0UnFUMjNiS1hZTTNIMWZLaHAv?=
- =?utf-8?B?UU0yN09weW9FdHJLQ3lzdE4zM1lUK1ZWNUpzWEdsNWtxY09acEg3MFBNbzVJ?=
- =?utf-8?B?TkNXaVVaSDV6NjM1WlFsUUs1MkF6RE4rN1hmOW1BVHV0RzBWNVRxL052ZXBS?=
- =?utf-8?B?djVLd0xQRWpzVU5PM1BWdCt5c0lMNVhnNEFJT1dtdFZoa2FVZVpyamRaUXhu?=
- =?utf-8?B?MFgyQktnT005UUxtZDJTNFJ1MTF3dFp2RWZycllheEltaFZXTFBQM0h0RTFM?=
- =?utf-8?B?YVNKQTlZdHZhUlZ6UUw0bnBxYkFyTWJQWjAyN2lpb3RNd2VWM0N6engzMjN4?=
- =?utf-8?B?bVA4MUhFTVpwV1VrVm55VU9IT3VBQllHZUI5ZHJaOGt5dDJZbUMzOW13TFZp?=
- =?utf-8?B?eC9GbjdlUGVsV3paYUM0aG5sRjIrdTZPQVFHbmZncStZaWJJR2pxQ05pL09P?=
- =?utf-8?B?QWNaMDI5Sm9EcVZFUmVEb0x6VXcyZDN5ZmUrYzFIZzFnZWxhbGEzN0laNWJO?=
- =?utf-8?B?UmdvMG14Zmg2NUw3dW1CNUxWU2svT3p2S0kvbHBSelFOMkRkU1h0UXhmdFM4?=
- =?utf-8?B?cGwvdTAvaEl4OTBwM0JqNFVDM2xqRnBaL2JsNXVqNVIzOUl2ZjMrU3kxelJE?=
- =?utf-8?B?KzJWL0J3ZXZDdXFkcHgrVElMa3BhWXZ2SDk1aGhobGFPRUgzWGtjMTQrRHVN?=
- =?utf-8?B?OWRMNXQzUmgvcUQ5R2hFRFlBUFU0ZVg0Q25hVE44dWhnVTVaNUpsYW5jQjVH?=
- =?utf-8?B?VjFLSXErOVhwKzI0dVFJU0IzRTBXZ0pRL3dIVlI0S3VrNHJtRTNhK3NQdjYw?=
- =?utf-8?B?RmE5NW0vTFp3NnFjY1ZZNGNiaXlvMW9TaWU5ZHU4enltTUpoZEU1OC96WWp2?=
- =?utf-8?B?WXJ1bGZ2cjRTUkw3bHNLOTlzRHdFMVE3MVAxZDJKeTBBRlhMM3hQMWVHYnRl?=
- =?utf-8?B?Wm9tblYvMzh2eldzNng5VTUwcWZWb20ybEYwdGtoUVo0M3RXVEJvSDlQazVh?=
- =?utf-8?B?S0hXQ24xdmFUZmtXbWFTNVhxUWdzMHM3U3d4NjdoS2hIelE0UDJIMTh5Qmo5?=
- =?utf-8?B?cnQzVlJpTVJwLzU5bDVhRDVVRnhUY0l4VUFKcXBTcE1UMGUxZDdUNi93cFl0?=
- =?utf-8?B?RDVpL3RaT1YxTzN1QlB3RmZUOEMxeG9QTlAyUm8rejZqSFczMFJyeVFpTkZ5?=
- =?utf-8?B?TmxudllKM29vNzdmdW50WVRoVnBXaVFGQ3VFSnVZWmhyQ1BjMWt5eE9RanVs?=
- =?utf-8?B?SXpnRHdFQVU4Z1A2SlhwS0lYaFdNNDUyZEdIYmxyU2FHc3NISUZvSkgzVDZV?=
- =?utf-8?B?S0VCcTN3Vk9GdURnMWFJSnBEQkFOenR5N1JFMU5jdkF1cHA2M0xzTE1WNFA4?=
- =?utf-8?B?N0VZczJzZlQwd2JMTjUzR2d2RDNyTEVQQkV3OTIwb05xSUhCOE8zZEl1N1hX?=
- =?utf-8?B?OE4rUHM4Q0ttcHBGejV6ZDhqVFhIUzJNcDh3V1RyVUhsT2F6YjRWbldDTTJV?=
- =?utf-8?B?RnA5QU1lTElTaVI1OVBJQ0l6eWR6OEtWUTlPcTNUVDhlUHJGb1BOVFNYZUhN?=
- =?utf-8?B?WnRuQ0crTG1wZ2g0VmhmQ3o5S21HOFZYT1F4cGNYZEh2MEpPdE1NMkRGQVpy?=
- =?utf-8?B?TjZndW4zQlErdTZQalE5L1NJOWgxTnZZVHZKUGNyRlZrZnoySlI4TExqRmpl?=
- =?utf-8?B?Rm4zSUlIOXk1bTdaZExic0x3STdtN1FSV3NzRGRUODh5NC9JQ2EvT2dJSlA4?=
- =?utf-8?B?U3BXaFFGSHRwRGRmYmpDM1NxTzdlYlYraWtHUmNmOE5OckVuaVZ4N2J0MlBW?=
- =?utf-8?B?UjRxS1FzWExPR0dOWUlyN0ZVeXBseE55ZDBkRWMwbTc2NzdERU5BSDB2OUFx?=
- =?utf-8?Q?f18LigXhtF0=3D?=
+	=?us-ascii?Q?vnuATpr/MJ4UFZFFjqEMlSZqcf2k6l7mkZoACFej3cs5dR4GqOZSvPwxrLC2?=
+ =?us-ascii?Q?CPGMzOmpvqS4WXgRC+9NZntJwYeoukIoodfpqPk85TDVeVrZC5wfpuzIxppM?=
+ =?us-ascii?Q?G/T+t93K5NcuLKeAO85ULAtEnyY5mtnz4fj3otTe2/aLI1kQt9T+7sBizEty?=
+ =?us-ascii?Q?RQWJ4WE4meCA61y53cdITkiYHyzk9cY/lPOWPwa3CIV6tTVoUU2eVHjkkURf?=
+ =?us-ascii?Q?ixld2DxwbBCpLgXnaNUkwInVOE/D15jBbjQ/9vZCJvg5J4owSRRE/jpkfTTy?=
+ =?us-ascii?Q?x+rbSlU+9AQ6vgEIDCjDIuN0zKd4W/QgeOwztKl4RR5t8m12DzzQk10/4DHq?=
+ =?us-ascii?Q?t5K6ZMBwrJVUyeDytQSbF0SXOXOrfo+ExJleXz2pPQ7FxQqxRuJFhwB+r6q9?=
+ =?us-ascii?Q?JP+cwv1ezadyDdwkqVGe1jGAvfd8e8RL3dRyeNNi0kykxKmZTDB52d35Eo2X?=
+ =?us-ascii?Q?gl/DS3d+vzD5VhEv5lc+ynqXNyg2NjMMWJOsfcec1rDqsgoq8JjWcBykeVVX?=
+ =?us-ascii?Q?zuLuUnFczKBOP0pFoBxQ9qm/X06Ni/LH/E88BMwiAqMmYlTWbGt351a1xG7K?=
+ =?us-ascii?Q?U5lbmVpSHAhi4v9qrx/waYMWRTLFSxBIP9WIgC6xNl9A6kpdidNVWaUq1o56?=
+ =?us-ascii?Q?7qMHorY2LkYBA0Kv/8hlk9W0CAVRfsTm7FAubuvO88D+ED08QTjr67Kpx6Bg?=
+ =?us-ascii?Q?iOeZ5Qq76HIOemKvnkOwaU3p2tveTpNpTl/ZY0Zt+/uuNFL+hD0WQHh9UNXI?=
+ =?us-ascii?Q?4CP6RNAaBuaISuSVKiVuh8xRdD/yMqzD3Y8yumA9/4yB8XZOcA4lj80Tonb9?=
+ =?us-ascii?Q?FMv6xqDm47iB1+T6kIPS92pczr1Gw4XPyv8X/RmvRGgyYTUZY9+yZ1KRYP8e?=
+ =?us-ascii?Q?ZnjV5JvJVPFe+QzWP3EN4+ry8+UNznOALtl4DPVNZDOGjrWKOat7IJNA4d0T?=
+ =?us-ascii?Q?gtMj1S0kwbLp6sojyaE6/o9wM0sed+78g7Pq18xI3/xIdqpKpaq7jNg1BP14?=
+ =?us-ascii?Q?XeI7cUck3sSfWq/sWBKCZCUy7DdN/2H9UAS4b9UCInnjTjR28PoEYFuO90k0?=
+ =?us-ascii?Q?m3YEDH1sAvL+N3vSVnsPz8C7uMJIatzAUxdSVUmgpJm+qd18hZhwoXpVtrvs?=
+ =?us-ascii?Q?vomVIsLmL4UZRQ+D1G8e84r9EmGPB3UUEtnx+seMIWb7FPD7Wti0GLBKg+W+?=
+ =?us-ascii?Q?d/Cf4PMS/yO7ZKc/nQqXgjK9FUaaGzqZgVRPNVTKZnigpAQ0aNGsx/4ukt0p?=
+ =?us-ascii?Q?JhktrYSM10ysWKembokAqxVuXcsvAyAKydkHoTT7Puyml/+J315fjtji3uA1?=
+ =?us-ascii?Q?gkhZY8yoaseQMtPEdb8oHBj+tbSo2nvs7b5ErTTlI3T2ykz6imAqEINTnDer?=
+ =?us-ascii?Q?oLLC+UWZ2+egqxJbPrkXh2tG01XMv+AgCE8oXdT3lwOs+ltIGwqiMD2xn9/E?=
+ =?us-ascii?Q?wstBf7m9d0E=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7341.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UVIyektUZ3Z4QUJIZHJzR3lGc0JZMHpNS1gydFJBTUY3VDR2K3dacGljVGE0?=
- =?utf-8?B?dFdmVWFJbTNXQ3c4NC90NFlNazllb3VlWHJmdlQrU1EyQ0JsQVBxQWRlY25s?=
- =?utf-8?B?ZzlqRGxQWm84OHV4TnBDcW5kVTFOOEZqQmxFVEpFTHM3cGlxWDF6MlNieW8w?=
- =?utf-8?B?cm1PY29WUHJ0dGNDYlhiQmpSZWc3dFlFRG94T0hzYU4xcXJEYjhUSnYvYndj?=
- =?utf-8?B?TDFaNnZoZCt5ajdzbk5UekR6dWlhZFJQVElJUDVwZmJSbW02OFdEQnY4MjNO?=
- =?utf-8?B?MTZ1SWM3Yi90TW1xZWM1dzJBd3BEb2lJRDI0bitWM1ZvYXpBWHdDSmVGdzdo?=
- =?utf-8?B?czNWTndSZDNTaFI3eUd1Vk1Yb01jeGxaQ1FvMlM5d013NUNlV2d0bG8zUGhO?=
- =?utf-8?B?ZmRQdW1SbnhnUC9FYVRFTjZ3eE1aSGR0TW5zeEwwNUVtWnRuRWduZ2EyV0Ey?=
- =?utf-8?B?SXpFd0h1OE9ZMXQwZFlSclhMUkgyWE0zeEQ3Ylk4clE4WjlzeVdFWmg3M3Za?=
- =?utf-8?B?b1AxeWRjU3gvMWpjRFRKSDMzR3RoQmlJRnZCQVdpWE9UVTgrOXV4bjdLM1Bs?=
- =?utf-8?B?cVI1QUQ0Vy9EcVpQcFBwQ0REVmRiVkZrVjNNZFU2NXZ2bUZqc05oUENTbnYy?=
- =?utf-8?B?aFVYRXhzM2dGSzBoVFVGcFhwZDNKUkR2TVl1a1BjblI3NFg1OE44RFFZdWFL?=
- =?utf-8?B?VXRkdUEwM1lwMVNBSnJ2QXYwRWFPaUE2VzJIemZCMExISW1rWkUyVk9VV0Na?=
- =?utf-8?B?RWxMeS9kNzJPOTU4TG56SWI3LzdLcllabGl5WVh3cURFZnlVcnVJUmljM3l4?=
- =?utf-8?B?aXJxdTZwS0xBTGRhT3lpSDMzN2x1dEdxOGJmaUZZMVBLay8xd3hqOWpLZEVl?=
- =?utf-8?B?Y1IwemlBVGhNSm44Y0tSOHRoVGlqeVBmQU9xYmNpbUNoZkxtWXcrUHVKWFg1?=
- =?utf-8?B?RUVDaXk2RVhYakVydkZnLzNWQTFacHZMZmc0czBkTEpJaVUwckE2bDlMci9o?=
- =?utf-8?B?bHZiUHFuMEwxMXRJWHEweEhMbFB6dFd6MG16K0xqUGVDQ09NZms1MUpkdy8v?=
- =?utf-8?B?THE4dURzQkZsSms3czZqREZwNVR6K3AwU1owelQ1aWxWWnRhTnNTSXZINGQ0?=
- =?utf-8?B?VTNqazYyMExGbG9wZXFQQUx2N1pCTTgvMFdaNW1SNGVzNEdFa2dhWW51cWFl?=
- =?utf-8?B?bkwwbDN3bHVITTlmTGZKellzeUZGVjhZMmNMUmwxUnVpdHdYekhtVUQ4Zkhj?=
- =?utf-8?B?RFFXR1lqUG4xdkp5anpoQTNqcGlKdmdYTjFUUysyZjhCNmlmUEFKOHNJdDdq?=
- =?utf-8?B?N1p6VzRUUlU2UEhuaExRMnhXM0hjZGR2c0lCYUY1RHZyMURSR3dXdW5qdkhT?=
- =?utf-8?B?eTlnOFhIdURJYW1aWFFpVG9WSWF4WUNETDRDUGJScERWVEVUbFRkT0hINU1s?=
- =?utf-8?B?cExNYm1EaWpYSjJQK1E0UXc2dmJLaGp2MzUyMUpMYVJLNDBXVy9jYzl4aFBh?=
- =?utf-8?B?dDB5cmNUUVhodVdVZkc2bjRrUjRONDA1cDhxUWNzak1aWXNJVmhpc3J4UzVw?=
- =?utf-8?B?ekxRUUczUlg4S3licTFJYVF6cTAzZUpJQXFrV3RTdkQrQTRNYTN0UTUrM0JI?=
- =?utf-8?B?VFY1RXgwL0NCQllqaDhrZFovclBiMkk5ZkVhNy9UVjBFRVNBL0pLTll5Z1Fa?=
- =?utf-8?B?YW9mM3l0TExYTzJRd3cyQk5rS2FaL3JvQXBrWG92TmduRGQveTFzakNNYlpX?=
- =?utf-8?B?cFlNZFIvMEJLNmlDc1ZlelZXb1B2dkpLWEp3MEVBZmloanRSc3dyeHd6ZWhn?=
- =?utf-8?B?akYxLzFZejI4S0JGZUFZa2ZSbERFRVdnNjg2RnovUDE4bEQrTGNkZDFod3RC?=
- =?utf-8?B?Qm5kdG1XRkZ5MGhOaXl3R3llUGozeTVib21GVFF6N3g2MGxoVWM4SklJYUZL?=
- =?utf-8?B?azFCWGtWajlTQVV1M0xxa2Zhbi9LblVVNThmM3JoQ3Qxc05veEVrTGp4TFRH?=
- =?utf-8?B?bUJMUnNWSDJ6SVVoZmRBYkJSZlFMNStXckdYaEtUTUlKRTl6NEp0YSsveVRC?=
- =?utf-8?B?TGxJZGhDUTFycnNiTVltKzlWREFLcS9OUU1NaU44V2V6cXFjd2dMdWFBSjNJ?=
- =?utf-8?Q?Epq3tlo6b5mSAQ4WzXTGEEvEQ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de18fdb5-3d3b-43b9-1dfe-08dd86637f1e
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+	=?us-ascii?Q?nNEcj9ksAOuhY4utvY/Y8qXugN/U4RgkDbEpXOXpKyRNfRA61I71oY4YWadv?=
+ =?us-ascii?Q?abHke4u1tt0N1+SR2KHfo99dkV1FRw7NUdcPrvavkOf/AVtfwVenc3B1vB1Z?=
+ =?us-ascii?Q?AfZBS28wgFLs1MrLLdwxIhc0SPZJzvzQZeU5GpAACP0cyuP5JXAtQbjm+HKb?=
+ =?us-ascii?Q?c5CmDCMnMygB+fQuINeod+8/HEbG4uTR0CzpkfJFNamO6/gZWM1LdC92TlRM?=
+ =?us-ascii?Q?SRUzjRTNwTrvlDQazkCQTa6vNMhzaCuJLBOk68Vw2JLHtlYAhLH27OaziLiN?=
+ =?us-ascii?Q?YBv83aqgsNw/KbPS9pznaGVz3mr87ul1n0zg/lR7ccaLIk+uGxpPGmJMBCY3?=
+ =?us-ascii?Q?dQawDO7f2F3wJPBPDniECeKG2FFURcdAknN/Mo2SYB7ycVEHdw4uRkLIQAcr?=
+ =?us-ascii?Q?orrDum5UTfSTp+crjw915ZpIs0d+NA9ynVi7MEkzRb9zq5zZ8Sh0IwxDQIu2?=
+ =?us-ascii?Q?xBvorlich7+/rMacMuqgy9zvdY2s2c3PGDMlqA4QRTXsAZCUApR65QEgxiMa?=
+ =?us-ascii?Q?PpUDxdMAVPFZ8L5izFTA3ooAymW7YA+urhFqlGboP524VKA8U8qdaom4edlU?=
+ =?us-ascii?Q?vArTdC6O6yotVuDDMEBZiEq5Lss7lHithXGLlXmUXMOpkMUjGBLA3AUl3rWY?=
+ =?us-ascii?Q?rjemMCOFE6VW9PdTB97Yp0T9bmEAbpbagc3Q4sYGOUFDm6xwozS5IH9clghX?=
+ =?us-ascii?Q?IUZqzwVVG2D1+OifnvOh259ptcvWOQpPjKI89lWO803guV4xzVe4MkFD3Vjd?=
+ =?us-ascii?Q?WMSNlGXfCUvcXUEidpYXKzbnUZGleztQUjP1jJI53P52EFXo944Cf9UE7eIz?=
+ =?us-ascii?Q?xIwN6H82r0sHHqpHKMNu1yI9yvJw8M7bAicMUq0dJ8yQm7HtFhF+HwgIZG+l?=
+ =?us-ascii?Q?XdxFkkEcamRM3JERoOPlPGiR77CXjr2wKaKd1DreDTMEwUnWQjufagRQMNZ9?=
+ =?us-ascii?Q?sesqjv1co0Cx6DvAJqb4RKUBcFwW7Op9665bdHc5V6MJBsye64TgNbTpxAPj?=
+ =?us-ascii?Q?ZktnVIpf4xi8caYZDg7SyHgjOX3b1jylNCEmUqmZ/wKJNL4qUhaKCV7Y24eB?=
+ =?us-ascii?Q?/Kpoh0urwxaUg0vVyLmSIIS92TREe9rZEbl9khZsYbDdJzeoSk/IDW9TDG1R?=
+ =?us-ascii?Q?PbgL++7XyCLgLhwA5+wkufhC+2Q/aePyBLtLCZ4GXQmiFhcX6dXK8Hb6kGtP?=
+ =?us-ascii?Q?HoQ907LF4W1D7dkhfkk4U+cv9/x4t2QTWu7LTHwN30DM/jFEE22LV4cdlVYT?=
+ =?us-ascii?Q?pjbVt1dp37fdaad3NyVecgYLkOji4ERMl37XpMsal9Zt0ipPQedIX3WQcV/l?=
+ =?us-ascii?Q?lAjfxesSG6e/xpR1BKU/+6iKBbH8KWHLJwVtUwfSx4HOs8Av1JfmNslkb/dJ?=
+ =?us-ascii?Q?xij9hsILl4fkFIxPvpYo9besR3GXSKpTo5JTp+UTQtK+m7JEZrX/qHK/yMqV?=
+ =?us-ascii?Q?rnsHSL6LNgjtM/FO/A1Klljz+OmqhP5eAG01dtPqOQSGc6iveaybjwIR5B0j?=
+ =?us-ascii?Q?6v6rX6KaYbnFRQ908eKF3SIOn1QNBgPzfh0DJmOL8JvskZH94LStT/Kc/ZaL?=
+ =?us-ascii?Q?QHs4JwpTS2RD1SQ+YUvo5ndkxOFaz9XwGJ9ecY2A?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	XihEglFAy3XY0mkv4VDNIq8UWgaHUdBxuFyRVDNT5t/diflj0KJEWZrQkB7WzV0HulHZT4uL+rpqip6R4DyPkMsy4tJmUfjUbqGtFs5PUQp0l8/xl1JiWuhqdTqNaQ5L1QvR+dfv6BnBWd9nNoFzHYqekG+H/7Q0J/AApK8qvLIu/8n5lrlVSSw6MyDToUAyAPlEvHwM8uFjVmX2KS334ho3dpRDGSvHStC8cQKZcBvLSJLzY+GREB3BLE/4GPkQOl12gAOqVJTZdtxloKEOkelFKtZH9G8k2Fbf8v6Fqa1KmdCbQXCB9QfQ1qiMu9pBwRYyO6VIAd5t8MjyK0IQmtB7l9BZTlESIyeRDm4MSXTK3WyJc0W7xlq4GjwkIlYXmaVkyLdCd249NcEjqH+iCllF67MEozDx2hbAN8TfHCPuU54h41z5w1PxuOVpvqeedfMNQFS7zwM2zia++MQaBVvhUANReqKjlj3icQdzmh5TM/Yuj+JqNeeVLMJ95Bww1WSdvnF8fXHmQuxaU8abC7tfAIG4HRwtOB6MZs+Ad+TjNMnRRdMpgi4YYhpCkjcXTGqL6DYuQfVGN9DT/VIfI4Z7l2dLVIL0L2y6mFXi/TI=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3abbb566-773a-438c-7cb7-08dd86ba5da1
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2025 14:46:45.0555
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2025 01:08:51.1858
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yP+tdhnqn+3N4N2kGZghhipv7CkcxZxHSPFlZ6sXGM4fuM0l6WE1dGg6OAmBTCgf7OsB1rVEzXXH3IAlKcvwwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7213
+X-MS-Exchange-CrossTenant-UserPrincipalName: zc7ec3a0I3zxpGymbkiGjjIMy+gJgY/gE4FS1x8iTWGc/RpdmnFM8MK+MRX+FmBDQzHU+UFGpXpJmrXLpYYR2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PPF3984739DB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-04-28_09,2025-04-24_02,2025-02-21_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2504070000 definitions=main-2504290006
+X-Authority-Analysis: v=2.4 cv=d4/1yQjE c=1 sm=1 tr=0 ts=681026a6 cx=c_pps a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17 a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=wKuvFiaSGQ0qltdbU6+NXLB8nM8=:19 a=Ol13hO9ccFRV9qXi2t6ftBPywas=:19 a=xqWC_Br6kY4A:10
+ a=kj9zAlcOel0A:10 a=XR8D0OoHHMoA:10 a=GoEa3M9JfhUA:10 a=yPCof4ZbAAAA:8 a=Go37wd9on4-azaSdT40A:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-GUID: ZPHYrLf4bXh7lBhunI5kdwotNIjg6NAD
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNDI5MDAwNiBTYWx0ZWRfXzyVllxc7G+6s PW60ULp2AZg02FTtPcZyjiCDIuQjnh1gEbekY8BJSnTeiv06WcWOEcGx6w9UgMmWfE7SWr7QfLE KOz+hS4YzJ8TSymvwR2h+aveA+QbdMth5GMfWUrTTrjm1C0I112qApzSiecZpmv2atgYAmeJ5lP
+ 2mk1HsQfo7hSipHifznBf0EOBzra5aOowLARoLKSk1CMiClxPMGQabHL8ic+QJvS1FMpZCKMvrZ C3W1+nSEhGq4SyUbLedR1awVPkG3mhYga39dT2ND+6jgHUhfTDAyZZU9xrd8vNLtY3GPnqwSAz6 7z38caHLeh4vUo95QSXG0IQ2RO8W87rtkIsHRe2UeKQxICHjb8QgWKx+cLG6FvLSV+7z+az/Z0g wxzaA77V
+X-Proofpoint-ORIG-GUID: ZPHYrLf4bXh7lBhunI5kdwotNIjg6NAD
 
-
-
-On 4/28/2025 6:59 AM, Z qiang wrote:
->>
->> Le Mon, Apr 28, 2025 at 05:54:03PM +0800, Zqiang a écrit :
->>> For Preempt-RT kernel, when enable CONFIG_PROVE_RCU Kconfig,
->>> disable local bh in rcuc kthreads will not affect preempt_count(),
->>> this resulted in the following splat:
->>>
->>> WARNING: suspicious RCU usage
->>> kernel/rcu/tree_plugin.h:36 Unsafe read of RCU_NOCB offloaded state!
->>> stack backtrace:
->>> CPU: 0 UID: 0 PID: 22 Comm: rcuc/0
->>> Call Trace:
->>> [    0.407907]  <TASK>
->>> [    0.407910]  dump_stack_lvl+0xbb/0xd0
->>> [    0.407917]  dump_stack+0x14/0x20
->>> [    0.407920]  lockdep_rcu_suspicious+0x133/0x210
->>> [    0.407932]  rcu_rdp_is_offloaded+0x1c3/0x270
->>> [    0.407939]  rcu_core+0x471/0x900
->>> [    0.407942]  ? lockdep_hardirqs_on+0xd5/0x160
->>> [    0.407954]  rcu_cpu_kthread+0x25f/0x870
->>> [    0.407959]  ? __pfx_rcu_cpu_kthread+0x10/0x10
->>> [    0.407966]  smpboot_thread_fn+0x34c/0xa50
->>> [    0.407970]  ? trace_preempt_on+0x54/0x120
->>> [    0.407977]  ? __pfx_smpboot_thread_fn+0x10/0x10
->>> [    0.407982]  kthread+0x40e/0x840
->>> [    0.407990]  ? __pfx_kthread+0x10/0x10
->>> [    0.407994]  ? rt_spin_unlock+0x4e/0xb0
->>> [    0.407997]  ? rt_spin_unlock+0x4e/0xb0
->>> [    0.408000]  ? __pfx_kthread+0x10/0x10
->>> [    0.408006]  ? __pfx_kthread+0x10/0x10
->>> [    0.408011]  ret_from_fork+0x40/0x70
->>> [    0.408013]  ? __pfx_kthread+0x10/0x10
->>> [    0.408018]  ret_from_fork_asm+0x1a/0x30
->>> [    0.408042]  </TASK>
->>>
->>> Currently, triggering an rdp offloaded state change need the
->>> corresponding rdp's CPU goes offline, and at this time the rcuc
->>> kthreads has already in parking state. this means the corresponding
->>> rcuc kthreads can safely read offloaded state of rdp while it's
->>> corresponding cpu is online.
->>>
->>> This commit therefore add rdp->rcu_cpu_kthread_task check for
->>> Preempt-RT kernels.
->>>
->>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
->>> ---
->>>  kernel/rcu/tree_plugin.h | 4 +++-
->>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
->>> index 003e549f6514..fe728eded36e 100644
->>> --- a/kernel/rcu/tree_plugin.h
->>> +++ b/kernel/rcu/tree_plugin.h
->>> @@ -31,7 +31,9 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
->>>                 lockdep_is_held(&rcu_state.nocb_mutex) ||
->>>                 (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) &&
->>>                  rdp == this_cpu_ptr(&rcu_data)) ||
->>> -               rcu_current_is_nocb_kthread(rdp)),
->>> +               rcu_current_is_nocb_kthread(rdp) ||
->>> +               (IS_ENABLED(CONFIG_PREEMPT_RT) &&
->>> +                current == rdp->rcu_cpu_kthread_task)),
->>
->> Isn't it safe also on !CONFIG_PREEMPT_RT ?
+On Fri, Apr 25, 2025 at 10:27:21AM +0200, Vlastimil Babka wrote:
+> Specifying a non-zero value for a new struct kmem_cache_args field
+> sheaf_capacity will setup a caching layer of percpu arrays called
+> sheaves of given capacity for the created cache.
 > 
-> For !CONFIG_PREEMPT_RT and  in rcuc kthreads, it's also safe,
-> but the following check will passed :
+> Allocations from the cache will allocate via the percpu sheaves (main or
+> spare) as long as they have no NUMA node preference. Frees will also
+> put the object back into one of the sheaves.
 > 
-> (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) &&
->           rdp == this_cpu_ptr(&rcu_data))
+> When both percpu sheaves are found empty during an allocation, an empty
+> sheaf may be replaced with a full one from the per-node barn. If none
+> are available and the allocation is allowed to block, an empty sheaf is
+> refilled from slab(s) by an internal bulk alloc operation. When both
+> percpu sheaves are full during freeing, the barn can replace a full one
+> with an empty one, unless over a full sheaves limit. In that case a
+> sheaf is flushed to slab(s) by an internal bulk free operation. Flushing
+> sheaves and barns is also wired to the existing cpu flushing and cache
+> shrinking operations.
+> 
+> The sheaves do not distinguish NUMA locality of the cached objects. If
+> an allocation is requested with kmem_cache_alloc_node() (or a mempolicy
+> with strict_numa mode enabled) with a specific node (not NUMA_NO_NODE),
+> the sheaves are bypassed.
+> 
+> The bulk operations exposed to slab users also try to utilize the
+> sheaves as long as the necessary (full or empty) sheaves are available
+> on the cpu or in the barn. Once depleted, they will fallback to bulk
+> alloc/free to slabs directly to avoid double copying.
+> 
+> The sheaf_capacity value is exported in sysfs for observability.
+> 
+> Sysfs CONFIG_SLUB_STATS counters alloc_cpu_sheaf and free_cpu_sheaf
+> count objects allocated or freed using the sheaves (and thus not
+> counting towards the other alloc/free path counters). Counters
+> sheaf_refill and sheaf_flush count objects filled or flushed from or to
+> slab pages, and can be used to assess how effective the caching is. The
+> refill and flush operations will also count towards the usual
+> alloc_fastpath/slowpath, free_fastpath/slowpath and other counters for
+> the backing slabs.  For barn operations, barn_get and barn_put count how
+> many full sheaves were get from or put to the barn, the _fail variants
+> count how many such requests could not be satisfied mainly  because the
+> barn was either empty or full.
 
-I think the fact that it already passes for !PREEMPT_RT does not matter, because
-it simplifies the code so drop the PREEMPT_RT check?
+> While the barn also holds empty sheaves
+> to make some operations easier, these are not as critical to mandate own
+> counters.  Finally, there are sheaf_alloc/sheaf_free counters.
 
-Or will softirq_count() not work? It appears to have special casing for
-PREEMPT_RT's local_bh_disable():
+I initially thought we need counters for empty sheaves to see how many times
+it grabs empty sheaves from the barn, but looks like barn_put
+("put full sheaves to the barn") is effectively a proxy for that, right?
 
-(   ( !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) || softirq_count() )
-   && rdp == this_cpu_ptr(&rcu_data))  )
+> Access to the percpu sheaves is protected by local_trylock() when
+> potential callers include irq context, and local_lock() otherwise (such
+> as when we already know the gfp flags allow blocking). The trylock
+> failures should be rare and we can easily fallback. Each per-NUMA-node
+> barn has a spin_lock.
+> 
+> When slub_debug is enabled for a cache with sheaf_capacity also
+> specified, the latter is ignored so that allocations and frees reach the
+> slow path where debugging hooks are processed.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
 
-thanks,
+Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 
-- Joel
+LGTM, with a few nits:
 
+>  include/linux/slab.h |   31 ++
+>  mm/slab.h            |    2 +
+>  mm/slab_common.c     |    5 +-
+>  mm/slub.c            | 1053 +++++++++++++++++++++++++++++++++++++++++++++++---
+>  4 files changed, 1044 insertions(+), 47 deletions(-)
+> 
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index d5a8ab98035cf3e3d9043e3b038e1bebeff05b52..4cb495d55fc58c70a992ee4782d7990ce1c55dc6 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -335,6 +335,37 @@ struct kmem_cache_args {
+> 	 * %NULL means no constructor.
+> 	 */
+> 	void (*ctor)(void *);
+>	/**
+>	 * @sheaf_capacity: Enable sheaves of given capacity for the cache.
+>	 *
+>	 * With a non-zero value, allocations from the cache go through caching
+>	 * arrays called sheaves. Each cpu has a main sheaf that's always
+>	 * present, and a spare sheaf thay may be not present. When both become
+>	 * empty, there's an attempt to replace an empty sheaf with a full sheaf
+>	 * from the per-node barn.
+>	 *
+>	 * When no full sheaf is available, and gfp flags allow blocking, a
+>	 * sheaf is allocated and filled from slab(s) using bulk allocation.
+>	 * Otherwise the allocation falls back to the normal operation
+>	 * allocating a single object from a slab.
+>	 *
+>	 * Analogically when freeing and both percpu sheaves are full, the barn
+>	 * may replace it with an empty sheaf, unless it's over capacity. In
+>	 * that case a sheaf is bulk freed to slab pages.
+>	 *
+>	 * The sheaves do not enforce NUMA placement of objects, so allocations
+>	 * via kmem_cache_alloc_node() with a node specified other than
+>	 * NUMA_NO_NODE will bypass them.
+>	 *
+>	 * Bulk allocation and free operations also try to use the cpu sheaves
+>	 * and barn, but fallback to using slab pages directly.
+>	 *
+>	 * When slub_debug is enabled for the cache, the sheaf_capacity argument
+>	 * is ignored.
+>	 *
+>	 * %0 means no sheaves will be created
 
+nit: created -> created. (with a full stop)
 
+>	 */
+>	unsigned int sheaf_capacity;
 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index dc9e729e1d269b5d362cb5bc44f824640ffd00f3..ae3e80ad9926ca15601eef2f2aa016ca059498f8 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> +static void pcs_destroy(struct kmem_cache *s)
+> +{
+> +	int cpu;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		struct slub_percpu_sheaves *pcs;
+> +
+> +		pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
+> +
+> +		/* can happen when unwinding failed create */
+> +		if (!pcs->main)
+> +			continue;
+> +
+> +		/*
+> +		 * We have already passed __kmem_cache_shutdown() so everything
+> +		 * was flushed and there should be no objects allocated from
+> +		 * slabs, otherwise kmem_cache_destroy() would have aborted.
+> +		 * Therefore something would have to be really wrong if the
+> +		 * warnings here trigger, and we should rather leave bojects and
 
+nit: bojects -> objects
+
+> +		 * sheaves to leak in that case.
+> +		 */
+> +
+> +		WARN_ON(pcs->spare);
+> +
+> +		if (!WARN_ON(pcs->main->size)) {
+> +			free_empty_sheaf(s, pcs->main);
+> +			pcs->main = NULL;
+> +		}
+> +	}
+> +
+> +	free_percpu(s->cpu_sheaves);
+> +	s->cpu_sheaves = NULL;
+> +}
+> +
+> +/*
+> + * If a empty sheaf is available, return it and put the supplied full one to
+
+nit: a empty sheaf -> an empty sheaf
+
+> + * barn. But if there are too many full sheaves, reject this with -E2BIG.
+> + */
+>
+> +static struct slab_sheaf *
+> +barn_replace_full_sheaf(struct node_barn *barn, struct slab_sheaf *full)
+> @@ -4567,6 +5169,234 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+>  	discard_slab(s, slab);
+>  }
+>  
+> +/*
+> + * Free an object to the percpu sheaves.
+> + * The object is expected to have passed slab_free_hook() already.
+> + */
+> +static __fastpath_inline
+> +bool free_to_pcs(struct kmem_cache *s, void *object)
+> +{
+> +	struct slub_percpu_sheaves *pcs;
+> +
+> +restart:
+> +	if (!local_trylock(&s->cpu_sheaves->lock))
+> +		return false;
+> +
+> +	pcs = this_cpu_ptr(s->cpu_sheaves);
+> +
+> +	if (unlikely(pcs->main->size == s->sheaf_capacity)) {
+> +
+> +		struct slab_sheaf *empty;
+> +
+> +		if (!pcs->spare) {
+> +			empty = barn_get_empty_sheaf(pcs->barn);
+> +			if (empty) {
+> +				pcs->spare = pcs->main;
+> +				pcs->main = empty;
+> +				goto do_free;
+> +			}
+> +			goto alloc_empty;
+> +		}
+> +
+> +		if (pcs->spare->size < s->sheaf_capacity) {
+> +			swap(pcs->main, pcs->spare);
+> +			goto do_free;
+> +		}
+> +
+> +		empty = barn_replace_full_sheaf(pcs->barn, pcs->main);
+> +
+> +		if (!IS_ERR(empty)) {
+> +			stat(s, BARN_PUT);
+> +			pcs->main = empty;
+> +			goto do_free;
+> +		}
+
+nit: stat(s, BARN_PUT_FAIL); should probably be here instead?
+
+> +
+> +		if (PTR_ERR(empty) == -E2BIG) {
+> +			/* Since we got here, spare exists and is full */
+> +			struct slab_sheaf *to_flush = pcs->spare;
+> +
+> +			stat(s, BARN_PUT_FAIL);
+> +
+> +			pcs->spare = NULL;
+> +			local_unlock(&s->cpu_sheaves->lock);
+> +
+> +			sheaf_flush_unused(s, to_flush);
+> +			empty = to_flush;
+> +			goto got_empty;
+> +		}
+
+> @@ -6455,6 +7374,16 @@ int do_kmem_cache_create(struct kmem_cache *s, const char *name,
+>  
+>  	set_cpu_partial(s);
+>  
+> +	if (args->sheaf_capacity && !(s->flags & SLAB_DEBUG_FLAGS)) {
+> +		s->cpu_sheaves = alloc_percpu(struct slub_percpu_sheaves);
+
+nit: Probably you want to disable sheaves on CONFIG_SLUB_TINY=y too?
+
+> +		if (!s->cpu_sheaves) {
+> +			err = -ENOMEM;
+> +			goto out;
+> +		}
+> +		// TODO: increase capacity to grow slab_sheaf up to next kmalloc size?
+> +		s->sheaf_capacity = args->sheaf_capacity;
+> +	}
+> +
+
+-- 
+Cheers,
+Harry / Hyeonggon
