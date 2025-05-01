@@ -1,111 +1,73 @@
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A06C2153FB
-	for <rcu@vger.kernel.org>; Thu,  1 May 2025 18:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B471DD0EF;
+	Thu,  1 May 2025 21:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746125721; cv=none; b=HcLYaMD756P0KjoPo/kbcgZnALblY3QwMFZ/pTPzIq2O5D0lHNmMBNuYS8U1zZEoHJ/Kuvdrq5hkBrYc5s8PcVRQLjY1FH8UZ6wg5Qzp3IdqcarTJoQBmEJ5lXKotuat+nDHQdRCV5jI+Gvb2EXb5JSGeR96UA9kT4VgmOmIkVQ=
+	t=1746136160; cv=none; b=AKcZuUA61tcLq5anVXyBhH9cR43sLOvbVdB9CJ9hV5a3mbKLLgIOcjcDPs+5YG79L6u6EYr4yETexlOHyQE/Mv6METe1u7xKxojhpC0nxdsBImFhJeguJ6PNkh3heWBUNYtTdTKvuCEXBF2TsYdhQviajc4BYZFlW4rR5OxOvJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746125721; c=relaxed/simple;
-	bh=/3TdA+DA26xkvpwWd9NNx7MPzUtvHZyDWxZl1Qz93uw=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=n4pUdeKGp6fakcDUL+y8jhraJvP1h+z7FgKp0PmstzRa66qIlErkGU6zaoi7gAgBsz6ORzWVZZIFWn+EY9zWcYlfG0L9INN79TClwn5a4X/9ZUNYYmhbRuAwgD/HoM0/BmejBHRxFEhGeqqOcvlfePbcSc68qgGKeXgBcflhfvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=g4b9epPc; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+	s=arc-20240116; t=1746136160; c=relaxed/simple;
+	bh=WOZxd5NvwxFSHlNx186hEgXGLwFGTlHTNP0LW7PRhas=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hWVgLH1w1yNfM7Sie1LmzF3UcJX1nQnmxXJzYYkNiT01Amfu47Y+4GaU7hSDvXPRfgxxG2xo1yARD1FBhBgE4NTeOKcJm16v5yb4FllzbVqFYUX/0SI/dmIssCzM3Z4fAukP0M+RG3NuLskQ/XIC7TzI871S6zBAwREt4YSvS5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N+HczsLl; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="g4b9epPc"
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7c5e39d1db2so87698085a.3
-        for <rcu@vger.kernel.org>; Thu, 01 May 2025 11:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1746125718; x=1746730518; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tZXCYu2EcscUrjQT548d8k6EoYc+DAzNFjTB3gyMei0=;
-        b=g4b9epPcV9Oiz61gDrD4BnRc8PfPkt6wI5woQg6HwotngER8u4tw+sMPVmTyCAjL6A
-         WGHovPGM9+USqumpbZAYMosuwmg6NKJ7TAm0WIU3HvOGVdV9kTusrvcBEZWA87/jGaC4
-         47ODxhnSJQi8/EOJDH+pj1icB+hSBLEE3QBfE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746125718; x=1746730518;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tZXCYu2EcscUrjQT548d8k6EoYc+DAzNFjTB3gyMei0=;
-        b=eGex2XUB30t5GHvwjIiAK/Hh5ZBZuxn0lPx9q0kafYFfL8ZyKzu3l1sKG6hs5Hq5Lx
-         0Ej5mVE2ywl8FrCxkg52m0psvRlutqPJQYBF7BO2zN7Io8AXS4/I4AhRBVtaZWJNKa/z
-         9tfqO7xcJiWahNt8TI3CB0ylbY/a4l28GKgsy+o4Kj2ZC3TIn9bvo35d5wQgGUx2M6+M
-         F8Q8jkrQguxC2uKHJP+OXJ7kP/ncOIUmxfV77w4IXDvJsaYJ0WsMZVO4azP9yVvxWCbc
-         LZXOH+xTLqeVVaUvgjRI2E41FQJcuc8VyNYrYZTnabkAHl+5O7ur0H486MROHIh1sDXZ
-         qL7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVyA1UkoJpTD7n8LyErwF0t8CwJApHzDD9j+J/p8czqltGNLudkMQrjfq3IxgWdij0YDsM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyffPYxZ2KDUgJB8M8Rr0P68Kq4h05bvCFEZoKcUq0ALXQ0Q7yv
-	EXlOaJ3IFXLxXPB25U6mK+/kOT3nSxTCMSqzEbzGNjRqjx5yQ8dLliRyIKCr7IhdufAe5UOw1DK
-	yyk1yiQ==
-X-Gm-Gg: ASbGncuztR/rSn7zxAqI3UkCguN9F5rVTzunEUM+h+hUCjelqnm4PIEOohuBeBCCLz5
-	KUYdjYzUt4deG3/u+/7OYQqzlNl9/MdoIzy0daCmHtgwYEsVQVFNuJ9G2hkE9BMviZFPzRZC+ml
-	7CZtdiDt6fHi+UnAJBvfvalL+kLXcJ/tsRupoinoeTaopRrYQMaGcr5kF4AzJ6UxuB+kIbnBTmJ
-	jByWYvkeKWV2ha5mMSb9AxXTPUyjimsQzihshR6ciF5U27JiyHr9wpnW1NYeJWCcQv8kqDAdMs8
-	o3ubP5AA6LFRlzN+KhbFxNvxIhCL73PL7DTKClKuiwSJEspkog1RXAVsvfYJ4dF5J5zADQ==
-X-Google-Smtp-Source: AGHT+IFqvgE58rEYlaz++lzz39Fq/n/d7EKd9t9wJ6KmHvorurVe7qfMj9pKYFGZP1MKsZIyVjr8mg==
-X-Received: by 2002:a05:620a:2916:b0:7c5:3d60:7f88 with SMTP id af79cd13be357-7cad5b36180mr29388685a.16.1746125717805;
-        Thu, 01 May 2025 11:55:17 -0700 (PDT)
-Received: from smtpclient.apple ([71.51.182.78])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7cad23b5b70sm79556885a.17.2025.05.01.11.55.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 May 2025 11:55:17 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N+HczsLl"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1089BC4CEE3;
+	Thu,  1 May 2025 21:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1746136157;
+	bh=WOZxd5NvwxFSHlNx186hEgXGLwFGTlHTNP0LW7PRhas=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=N+HczsLlYALnYCqoB5iTdtjzetnGWrD2QpUKIHKkzqhrBXrGbY1pe32UtS6S+xoI6
+	 bYOYklyOkoXzp+m0Ir1/e0ym9E5pESXE2H56eJM8Z6iGF7ftm0vUJCgo+JVh647B4c
+	 4+siYSGnROftxZ7OtD4zahpU/XBSJ3PGHNTqe2Pnu79fV5dgVXA5g7xRThEU9rPdta
+	 i6ay42pbiTn0Fqhgu3XY61ZE02cNDfUgpkmqx/G3DjkxL48+1yWid7N5L4ETlcHrlh
+	 BtjRm0bVYrwMzn7Xwgw1CggnSDNFrlfOiB3hI6gfyBGNxBuSK0VA2HcW1+4ltYb5Ud
+	 5COu0EvF9wBfw==
+Date: Thu, 1 May 2025 23:49:14 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+	Paul E McKenney <paulmck@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 5/5] rcu/exp: Warn on CPU lagging for too long within
+ hotplug IPI's blindspot
+Message-ID: <aBPsWkw0juAXDVU8@pavilion.home>
+References: <20250429134304.3824863-1-frederic@kernel.org>
+ <20250429134304.3824863-6-frederic@kernel.org>
+ <8609B469-5CB0-4EBC-94D3-FE3F90697ABC@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Overnight rcutorture tests pass on ARM64
-Date: Thu, 1 May 2025 14:55:06 -0400
-Message-Id: <D5585BEE-AA5F-49F1-A861-319313983172@joelfernandes.org>
-References: <81416100-45bc-4dc9-be17-21e2973410c4@paulmck-laptop>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, rcu <rcu@vger.kernel.org>
-In-Reply-To: <81416100-45bc-4dc9-be17-21e2973410c4@paulmck-laptop>
-To: paulmck@kernel.org
-X-Mailer: iPhone Mail (22E252)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8609B469-5CB0-4EBC-94D3-FE3F90697ABC@nvidia.com>
 
+Le Wed, Apr 30, 2025 at 02:20:31AM +0000, Joel Fernandes a écrit :
+> 
+> 
+> > On Apr 29, 2025, at 9:44 AM, Frederic Weisbecker <frederic@kernel.org> wrote:
+> 
+> Hi Frederic,
+> These all look good to me. Do you wish for
+> these to go into the upcoming merge window or
+> can I push them to a for-Neeraj branch as he
+> is doing the merge window after the next?
 
+Your call :-)
 
-> On May 1, 2025, at 11:47=E2=80=AFAM, Paul E. McKenney <paulmck@kernel.org>=
- wrote:
->=20
-> =EF=BB=BFOn Thu, May 01, 2025 at 08:25:30AM -0400, Joel Fernandes wrote:
->> Hello,
->> Just want to report that my overnight tests on [1] with rcutorture on all=
+If that can help, there is nothing urgent in there.
 
->> scenarios are passing.
->>=20
->> [1] git://git.kernel.org/pub/scm/linux/kernel/git/jfern/linux.git
->>    tag: next.2025.04.29a
->>=20
->> sudo ./tools/testing/selftests/rcutorture/bin/kvm.sh --duration 720 --cpu=
-s 288
->>=20
->> As such, I am planning to freeze new patches for 6.16 (except for maybe Z=
-'s
->> patch fixing the nocb warning) at this.
->=20
-> Very good, great news!!!
->=20
-> Could you please from time to time test merges with linus/master?  If some=
+Thanks.
 
-> merge conflict or bug appears, it is good to catch it early.
-
-Sure I will do this for my next round of overnight testing. Thanks,
-
-- Joel
-
-
-
->=20
->                            Thanx, Paul
->=20
+-- 
+Frederic Weisbecker
+SUSE Labs
