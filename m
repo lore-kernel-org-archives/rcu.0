@@ -1,73 +1,205 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B471DD0EF;
-	Thu,  1 May 2025 21:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AE0235069
+	for <rcu@vger.kernel.org>; Fri,  2 May 2025 09:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746136160; cv=none; b=AKcZuUA61tcLq5anVXyBhH9cR43sLOvbVdB9CJ9hV5a3mbKLLgIOcjcDPs+5YG79L6u6EYr4yETexlOHyQE/Mv6METe1u7xKxojhpC0nxdsBImFhJeguJ6PNkh3heWBUNYtTdTKvuCEXBF2TsYdhQviajc4BYZFlW4rR5OxOvJ4=
+	t=1746179731; cv=none; b=KbFnfe8JvKxVpccyWo1vKrnpMCTwRR05eaEHEDmYz5MnnWYOFxF69UWq65w5Im+MfiQxHf8qC8vOUiK6soiKr5BnVYgjC/RKMmpuYemwvVPsaMgMTbKpId6jxwqopMtvea4DPN3ibV+OmAQR5Gu1oWpKjDocND9/8ZdKy+RAnYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746136160; c=relaxed/simple;
-	bh=WOZxd5NvwxFSHlNx186hEgXGLwFGTlHTNP0LW7PRhas=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hWVgLH1w1yNfM7Sie1LmzF3UcJX1nQnmxXJzYYkNiT01Amfu47Y+4GaU7hSDvXPRfgxxG2xo1yARD1FBhBgE4NTeOKcJm16v5yb4FllzbVqFYUX/0SI/dmIssCzM3Z4fAukP0M+RG3NuLskQ/XIC7TzI871S6zBAwREt4YSvS5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N+HczsLl; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1746179731; c=relaxed/simple;
+	bh=DbOmruiDXqyCFuxtwBSQJBYz2MVx6spaIxjAgcz+Oj8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PSHzSn8CetyhlNluU20ca1N28O36vS8cfd0hbmC+pX4Uf4JQxdY8h5bE+L7Z+ksWB0cdAt/6G+d+xEbfTLZroF1JDt8NvDtJFHbFGnSKtydWpr0yP8yJi4cvzBhSF1AvQH+lJ3Fctq4wNdWvywlLSVsJv4laMLfL0cAKfAdwQ+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c/2SNfyP; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N+HczsLl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1089BC4CEE3;
-	Thu,  1 May 2025 21:49:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746136157;
-	bh=WOZxd5NvwxFSHlNx186hEgXGLwFGTlHTNP0LW7PRhas=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N+HczsLlYALnYCqoB5iTdtjzetnGWrD2QpUKIHKkzqhrBXrGbY1pe32UtS6S+xoI6
-	 bYOYklyOkoXzp+m0Ir1/e0ym9E5pESXE2H56eJM8Z6iGF7ftm0vUJCgo+JVh647B4c
-	 4+siYSGnROftxZ7OtD4zahpU/XBSJ3PGHNTqe2Pnu79fV5dgVXA5g7xRThEU9rPdta
-	 i6ay42pbiTn0Fqhgu3XY61ZE02cNDfUgpkmqx/G3DjkxL48+1yWid7N5L4ETlcHrlh
-	 BtjRm0bVYrwMzn7Xwgw1CggnSDNFrlfOiB3hI6gfyBGNxBuSK0VA2HcW1+4ltYb5Ud
-	 5COu0EvF9wBfw==
-Date: Thu, 1 May 2025 23:49:14 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-	Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-	Paul E McKenney <paulmck@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 5/5] rcu/exp: Warn on CPU lagging for too long within
- hotplug IPI's blindspot
-Message-ID: <aBPsWkw0juAXDVU8@pavilion.home>
-References: <20250429134304.3824863-1-frederic@kernel.org>
- <20250429134304.3824863-6-frederic@kernel.org>
- <8609B469-5CB0-4EBC-94D3-FE3F90697ABC@nvidia.com>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c/2SNfyP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1746179728;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lg/z+bj6Vp6Uwot26MZjMyBdidDV8u4Eq/gx3z2pwHw=;
+	b=c/2SNfyPnj7Q9740GNXSjSEGfyVQvNzu1kfdfMKK8wnyBIbvhRbHp3RRvGxNKhur9XdPjf
+	NDwyDWSpxQFULU3QRWu9NWeR+N9O9AzjSw5ovLXlF7ih/C0yxFkdnAFJo+C44m7WQjSUzY
+	0rKen5oRNhg+LimqnoXiLxENKrWjTpg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-52-wxint8IgOCShv-Tpe3gAVg-1; Fri, 02 May 2025 05:55:27 -0400
+X-MC-Unique: wxint8IgOCShv-Tpe3gAVg-1
+X-Mimecast-MFC-AGG-ID: wxint8IgOCShv-Tpe3gAVg_1746179726
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-39130f02631so496908f8f.2
+        for <rcu@vger.kernel.org>; Fri, 02 May 2025 02:55:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746179726; x=1746784526;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lg/z+bj6Vp6Uwot26MZjMyBdidDV8u4Eq/gx3z2pwHw=;
+        b=LenpsWOhKAx5fxLjgGsn2Q72xIDgsl4JwBSugZizy3JrmViLAmSvdzTH71LtM3XJ4y
+         fJC1mmksbYafShZzb6DHu/lbb5Op+1g5TX7JWzis7i+of1TC2gFsQRQNDsl4LQRak1dU
+         aZICxcwYj3NlRUBGIpoBnnI8IEbxlgskJ+RaUI2NmaTpFYBIfGb9z0vtGNZfIl3j0J/A
+         E2FkBLy/SGxcHhCysffdNF8UHJHUbLnUz4UfOG+Qk9c2qq3hTVx/mO3wbhF2ziZg8ySs
+         FOhhCdbILKKKMzeC/qb6PwAWRwnNh5OWOWRLdh/Xi0VkdNTu+e0IJZaMifeWJNFcFNIB
+         MzFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDJhJ22j2vUzsTooBNafvsWiIlar7FoSYuu50uD1JjZEpVRfwhgpect88D5VG1vJSxBh0=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz3hOrsws7dppYFBkLn1OQ9UoLocjaCPMnYrA8Glf6YjEmKr+Pi
+	TPNI4frkU0txZGgKGxABReURSGi7+z/4m2nRbQcgrCjyej1YeOXU4ZQfJHiOQXW8cCVq18+DHin
+	Gyyyy7vFNUATw99fBPZSgJLL4kPla11yWZXgElVRI27XfjkSeKw==
+X-Gm-Gg: ASbGncuPIUwQbBwG6UWnkqNvFfHl0b/AJM/rgjRLzz0KhT9whw88o/o93O0Tct194Yf
+	6yXfSgUzN2Jkro+R9/xeekcQG/UDdngsaJBWZTqK/JG0x7sj5FoL++h+/EHfi+LuvSItPlFzQHz
+	HA+tIFwY/tV4Hlqh1gn6uQUrnzN6+7mElc9Yhn380WZBu1yydmqNn59TkRpCPz5pGEn0aFSOhwT
+	P9T5G0lPeHmGj4FX4Quo8n2GEb80avV9v2E+QSCzWd9+lFPSyK+QW1NuP4+yc+TxoLRaM6GZ469
+	JIcuy9QMxcOV1TjL4ovn79NlKPjI6zR5OdmSrkxTU3CrjiKN
+X-Received: by 2002:a05:6000:40cd:b0:391:4873:7940 with SMTP id ffacd0b85a97d-3a099aef847mr1613282f8f.54.1746179725807;
+        Fri, 02 May 2025 02:55:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGpWssSttWyCeyGY3CsU2VpUSZWAU4rNhFXcV+QIILeKOWgOhhc72G0KBYplClE77XLY5f7yg==
+X-Received: by 2002:a05:6000:40cd:b0:391:4873:7940 with SMTP id ffacd0b85a97d-3a099aef847mr1613170f8f.54.1746179725069;
+        Fri, 02 May 2025 02:55:25 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb ([2001:861:43c1:5950:3e51:b684:9982:d4a2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a099ae3ccdsm1693329f8f.38.2025.05.02.02.55.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 May 2025 02:55:24 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Dave Hansen <dave.hansen@intel.com>, Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+ linux-riscv@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ kvm@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, linux-hardening@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, bpf@vger.kernel.org, Juri Lelli
+ <juri.lelli@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>, Yair
+ Podemsky <ypodemsk@redhat.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Daniel Wagner <dwagner@suse.de>, Petr Tesarik <ptesarik@suse.com>, Nicolas
+ Saenz Julienne <nsaenz@amazon.com>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, Dave
+ Hansen <dave.hansen@linux.intel.com>, Sean Christopherson
+ <seanjc@google.com>, Juergen Gross <jgross@suse.com>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Alexey Makhalov
+ <alexey.amakhalov@broadcom.com>, Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre
+ Ghiti <alex@ghiti.fr>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, "H.
+ Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
+ <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
+ Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+ <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Jason Baron
+ <jbaron@akamai.com>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain
+ <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, Sami Tolvanen
+ <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, Naveen N
+ Rao <naveen@kernel.org>, Anil S Keshavamurthy
+ <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay
+ <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Kees Cook
+ <kees@kernel.org>, Shuah Khan <shuah@kernel.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda
+ <ojeda@kernel.org>, "Mike Rapoport (Microsoft)" <rppt@kernel.org>, Rong Xu
+ <xur@google.com>, Rafael Aquini <aquini@redhat.com>, Song Liu
+ <song@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Brian Gerst <brgerst@gmail.com>, "Kirill A.
+ Shutemov" <kirill.shutemov@linux.intel.com>, Benjamin Berg
+ <benjamin.berg@intel.com>, Vishal Annapurve <vannapurve@google.com>, Randy
+ Dunlap <rdunlap@infradead.org>, John Stultz <jstultz@google.com>, Tiezhu
+ Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH v5 00/25] context_tracking,x86: Defer some IPIs until a
+ user->kernel transition
+In-Reply-To: <a6b3a331-1ff3-4490-b300-a62b3c21578d@intel.com>
+References: <20250429113242.998312-1-vschneid@redhat.com>
+ <fefcd1a6-f146-4f3c-b28b-f907e7346ddd@intel.com>
+ <20250430132047.01d48647@gandalf.local.home>
+ <019f6713-cfbd-466b-8fb5-dcd982cf8644@intel.com>
+ <20250430154228.1d6306b4@gandalf.local.home>
+ <a6b3a331-1ff3-4490-b300-a62b3c21578d@intel.com>
+Date: Fri, 02 May 2025 11:55:21 +0200
+Message-ID: <xhsmhr0179w1i.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8609B469-5CB0-4EBC-94D3-FE3F90697ABC@nvidia.com>
+Content-Type: text/plain
 
-Le Wed, Apr 30, 2025 at 02:20:31AM +0000, Joel Fernandes a écrit :
-> 
-> 
-> > On Apr 29, 2025, at 9:44 AM, Frederic Weisbecker <frederic@kernel.org> wrote:
-> 
-> Hi Frederic,
-> These all look good to me. Do you wish for
-> these to go into the upcoming merge window or
-> can I push them to a for-Neeraj branch as he
-> is doing the merge window after the next?
+On 30/04/25 13:00, Dave Hansen wrote:
+> On 4/30/25 12:42, Steven Rostedt wrote:
+>>> Look at the syscall code for instance:
+>>>
+>>>> SYM_CODE_START(entry_SYSCALL_64)
+>>>>         swapgs
+>>>>         movq    %rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
+>>>>         SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
+>>> You can _trivially_ audit this and know that swapgs doesn't touch memory
+>>> and that as long as PER_CPU_VAR()s and the process stack don't have
+>>> their mappings munged and flushes deferred that this would be correct.
+>> Hmm, so there is still a path for this?
+>>
+>> At least if it added more ways to debug it, and some other changes to make
+>> the locations where vmalloc is dangerous smaller?
+>
+> Being able to debug it would be a good start. But, more generally, what
+> we need is for more people to be able to run the code in the first
+> place. Would a _normal_ system (without setups that are trying to do
+> NOHZ_FULL) ever be able to defer TLB flush IPIs?
+>
+> If the answer is no, then, yeah, I'll settle for some debugging options.
+>
+> But if you shrink the window as small as I'm talking about, it would
+> look very different from this series.
+>
+> For instance, imagine when a CPU goes into the NOHZ mode. Could it just
+> unconditionally flush the TLB on the way back into the kernel (in the
+> same SWITCH_TO_KERNEL_CR3 spot)? Yeah, it'll make entry into the kernel
+> expensive for NOHZ tasks, but it's not *THAT* bad. And if the entire
+> point of a NOHZ_FULL task is to minimize the number of kernel entries
+> then a little extra overhead there doesn't sound too bad.
+>
 
-Your call :-)
+Right, so my thought per your previous comments was to special case the
+TLB flush, depend on kPTI and do it uncondtionally in SWITCH_TO_KERNEL_CR3
+just like you've described - but keep the context tracking mechanism for
+other deferrable operations.
 
-If that can help, there is nothing urgent in there.
+My gripe with that was having two separate mechanisms
+- super early entry around SWITCH_TO_KERNEL_CR3)
+- later entry at context tracking
 
-Thanks.
+Shifting everything to SWITCH_TO_KERNEL_CR3 means we lose the
+context_tracking infra to dynamically defer operations (atomically reading
+and writing to context_tracking.state), which means we unconditionally run
+all possible deferrable operations. This doesn't scream scalable, even
+though as you say NOHZ_FULL kernel entry is already a "you lose" situation.
 
--- 
-Frederic Weisbecker
-SUSE Labs
+Yet another option is to duplicate the context tracking state specifically
+for IPI deferral and have it driven in/by SWITCH_TO_KERNEL_CR3, which is
+also not super savoury.
+
+I suppose I can start poking around running deferred ops in that
+SWITCH_TO_KERNEL_CR3 region, and add state/infra on top. Let's see where
+this gets me :-)
+
+Again, thanks for the insight and the suggestions Dave!
+
+> Also, about the new hardware, I suspect there's some mystery customer
+> lurking in the shadows asking folks for this functionality. Could you at
+> least go _talk_ to the mystery customer(s) and see which hardware they
+> care about? They might already even have the magic CPUs they need for
+> this, or have them on the roadmap. If they've got Intel CPUs, I'd be
+> happy to help figure it out.
+
