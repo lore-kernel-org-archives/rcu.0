@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE8022DA14;
-	Mon,  5 May 2025 23:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA54822DA18;
+	Mon,  5 May 2025 23:05:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746486330; cv=none; b=WS57V33dnsQ3W+p4aZZZ+P2aucMUrOPk5qBm9TF00fYxfy9lVFQJWzN455RrQl2yUrqBWCWueG13JV9J+UZLwDpyGxCdVbETpOLfnn9dZdMOmYQnltaEPESUSEVWTnzrMt5eAu84Bqxgm+jVgt9D3fMLaS+pgb+nHGHF7EifYsE=
+	t=1746486333; cv=none; b=CEkpz4Cg2JTwdGrFJzlVu+Nw24QzSdIbxdupmfBw+3rc0upIic6uH4Xdw8urm2ICRMuyOoALZOP3cI4EWcZJaqLdjx6tA86Y6GJJP9S7OxdKBDDx+UaTSgCzVcC0zno0kjiJojyZ+Kp0zVnkr1pDujQv1f9csSvZ3/CfTi8++RY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746486330; c=relaxed/simple;
-	bh=QXzH7nV2Y+fEKkz2afxoldpnLN/Y1oQVhmH8CU9tFHQ=;
+	s=arc-20240116; t=1746486333; c=relaxed/simple;
+	bh=vXvdjUF/hV7GZJ2IXMja+Qh44JjPdYQpEmxOugKImzs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bL/59a/1UMPPDm+jDaYYlufPPKDgZh+ME5hNPz0rGAKrpKA3QjMPVQhZQY768eOhWOmQEYuBuB0u53TlT0LPCV13kIytM9Iw5f8Z8ofuwTfQtKLJrH2Bfabpg2CaC7ObzjIsWJKiEr7lKwZupEyXU38IIe6N8b1nUrW6vZphftQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wf0pmqYU; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=IF8B1fejYnNz9EH3Ljd3SbkBk0gGAdg2W1OqXqiex6LKG56c5ZCdPUnpv4UoRIJgnli+Js2Gsotqn/XIPJpKV/YVceOS/nPZ9SbMX9uI1lxCCgwUt4D0UL0Obsj8b5SMLc4g+oh1t5VhU5Js4ZA0FduLho095vBbYtGU1NkH92c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WCjnBuBg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wf0pmqYU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8FD2C4CEEF;
-	Mon,  5 May 2025 23:05:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WCjnBuBg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BAF1C4CEEE;
+	Mon,  5 May 2025 23:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746486329;
-	bh=QXzH7nV2Y+fEKkz2afxoldpnLN/Y1oQVhmH8CU9tFHQ=;
+	s=k20201202; t=1746486332;
+	bh=vXvdjUF/hV7GZJ2IXMja+Qh44JjPdYQpEmxOugKImzs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Wf0pmqYUb3F6dBCHGtK5hOM9fTDoZCM/nYxtDiAOKWdJxtxQNXY+u/H4G6GdWGvaD
-	 9Zap4uwFhda0EVKL4QthRcipIWucdYaFRIvi7ZwcUskGpyoFA5JaFxciGKKnGEGq5d
-	 JprBxOZBL7enhtdriQv5n1Ay80ZYiPmwmpNUK8IcyjFwxT9hf8wR8QHYWq90+RhEBW
-	 op03qWDrCtYNJjTAJJvqiIQ24pXk9db5H/4l+ZwV/eBUe+ju9q6d4Ew6fk17ihdAA/
-	 Ry2gkibrKc9YdhJrSKJZTDqGWdUc7kAjKZ0GDFCJJQyBXQnH8fFlXWZMj7Ez5MVD/H
-	 W4O1TW3euUqNg==
+	b=WCjnBuBgltdT43FCTAPfQffqzCLMb0QdGZFLIAA4NijeuY0+h8BvQnWeNz58AMTpY
+	 ehiubaGvBEMvKgn2wtEXRd9YAgSRc6xUqXNqqyro8d2LJpiFOYM3ur+KRGFiTapg47
+	 pIY9iGBIISW4QgDMAVV60O8zwyZHJV+uSMM2Q3kqmsla6VEBJTK1flkDANHp+B4SkM
+	 eKqsFkuphsGpkb0SRYouobj8msGza3YNgwHSR2hzuoN0f0VJPGYT38Jz8KwykDOZ16
+	 D84UcVtQtcpsykyAKs/tKzQxHzCblJTgoFLEJo6zKTOIowQWAcNKY+LhL1uJNtJA0p
+	 lEhybbgRflFkg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Ankur Arora <ankur.a.arora@oracle.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Frederic Weisbecker <frederic@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	Sasha Levin <sashal@kernel.org>,
 	neeraj.upadhyay@kernel.org,
@@ -40,9 +40,9 @@ Cc: Ankur Arora <ankur.a.arora@oracle.com>,
 	josh@joshtriplett.org,
 	urezki@gmail.com,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 262/294] rcu: handle quiescent states for PREEMPT_RCU=n, PREEMPT_COUNT=y
-Date: Mon,  5 May 2025 18:56:02 -0400
-Message-Id: <20250505225634.2688578-262-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 264/294] rcu: fix header guard for rcu_all_qs()
+Date: Mon,  5 May 2025 18:56:04 -0400
+Message-Id: <20250505225634.2688578-264-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
 References: <20250505225634.2688578-1-sashal@kernel.org>
@@ -59,59 +59,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Ankur Arora <ankur.a.arora@oracle.com>
 
-[ Upstream commit 83b28cfe796464ebbde1cf7916c126da6d572685 ]
+[ Upstream commit ad6b5b73ff565e88aca7a7d1286788d80c97ba71 ]
 
-With PREEMPT_RCU=n, cond_resched() provides urgently needed quiescent
-states for read-side critical sections via rcu_all_qs().
-One reason why this was needed: lacking preempt-count, the tick
-handler has no way of knowing whether it is executing in a
-read-side critical section or not.
+rcu_all_qs() is defined for !CONFIG_PREEMPT_RCU but the declaration
+is conditioned on CONFIG_PREEMPTION.
 
-With (PREEMPT_LAZY=y, PREEMPT_DYNAMIC=n), we get (PREEMPT_COUNT=y,
-PREEMPT_RCU=n). In this configuration cond_resched() is a stub and
-does not provide quiescent states via rcu_all_qs().
-(PREEMPT_RCU=y provides this information via rcu_read_unlock() and
-its nesting counter.)
+With CONFIG_PREEMPT_LAZY, CONFIG_PREEMPTION=y does not imply
+CONFIG_PREEMPT_RCU=y.
 
-So, use the availability of preempt_count() to report quiescent states
-in rcu_flavor_sched_clock_irq().
+Decouple the two.
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ include/linux/rcutree.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 41021080ad258..dccfc46496393 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -963,13 +963,16 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
-  */
- static void rcu_flavor_sched_clock_irq(int user)
- {
--	if (user || rcu_is_cpu_rrupt_from_idle()) {
-+	if (user || rcu_is_cpu_rrupt_from_idle() ||
-+	     (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
-+	      (preempt_count() == HARDIRQ_OFFSET))) {
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index 126f6b418f6af..559f758bf2eaa 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -104,7 +104,7 @@ extern int rcu_scheduler_active;
+ void rcu_end_inkernel_boot(void);
+ bool rcu_inkernel_boot_has_ended(void);
+ bool rcu_is_watching(void);
+-#ifndef CONFIG_PREEMPTION
++#ifndef CONFIG_PREEMPT_RCU
+ void rcu_all_qs(void);
+ #endif
  
- 		/*
- 		 * Get here if this CPU took its interrupt from user
--		 * mode or from the idle loop, and if this is not a
--		 * nested interrupt.  In this case, the CPU is in
--		 * a quiescent state, so note it.
-+		 * mode, from the idle loop without this being a nested
-+		 * interrupt, or while not holding the task preempt count
-+		 * (with PREEMPT_COUNT=y). In this case, the CPU is in a
-+		 * quiescent state, so note it.
- 		 *
- 		 * No memory barrier is required here because rcu_qs()
- 		 * references only CPU-local variables that other CPUs
 -- 
 2.39.5
 
