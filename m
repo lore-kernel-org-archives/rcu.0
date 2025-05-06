@@ -1,135 +1,219 @@
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F70153BD9
-	for <rcu@vger.kernel.org>; Tue,  6 May 2025 17:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0344C24166D
+	for <rcu@vger.kernel.org>; Tue,  6 May 2025 17:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746552780; cv=none; b=HH2czpA7zGsKlGInVeCAggiyyPsvDf5GylU6XE3XcynlcOckfKh2OwrDMjh6iLgLsJid0mS50a+MHKLuByKGcdXuz4SMzWNB9itYQeJRi1p7CJdNS8yEdhQO8AJR0nJNUCmV26ylPO8vB4D3V/zZlwixyNyEZgCm1iERn2x9Ipw=
+	t=1746553801; cv=none; b=Hn5FoHuBkBcHzb9d2mwh1Fs6XWzxGUbW6NGrgu+YeilRhb4aoZ0bK9wg8XmUjMqdy2lS7Hzs7fczPHMmFtOAAkQczg36XSl0h7658Mm2FxcM28upTJgJgB1Kgz2tWbaOIjvZSuIMuueVgvcVeXQRui/lporOCK+VCvx33Xs9Z3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746552780; c=relaxed/simple;
-	bh=LalzK4CX9LfkUFa4w5FknR7IbwVA8GYrWliRe1t3UQg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CQVKtSyg/kXfeqX3BRKFsO/uknEalTY+qlkAMsIMi/K7UgnnRjlVEG+ST7+I8NIKF9pUFqqzHiV3RSdq0Q/zY81qmg98EGtdZj5JYFEEyuiuI7TWPCFDzjTSdY/00vUGEkx9ktkixyrL0I4infxrSThErFVGwxW5zLSlCXjc1ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IMxLx5Ug; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1746553801; c=relaxed/simple;
+	bh=tulPjPj80MjMXdoJ8Xd94FDUk1wB9cD5VtjcRJ5Mw2o=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=hOBVfDe+b8wBQI9eGL9YFkXFXA+FJ/JncaSB5MIwNdZ/w0IpxVGTYTLvvuLAvl0WObUsYVkWkqbHHyAFwiCkDzhKxMzI1jjivVSj0qXaoui7BSieetCEs4V2OY8LPSoK0kZDFFzez38ecvtphJ+ME67gDnsiLlB/vBfXqQF7Zyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=lOUxEQ7A; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IMxLx5Ug"
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-47666573242so15711cf.0
-        for <rcu@vger.kernel.org>; Tue, 06 May 2025 10:32:57 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="lOUxEQ7A"
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4774193fdffso7547221cf.1
+        for <rcu@vger.kernel.org>; Tue, 06 May 2025 10:49:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1746552777; x=1747157577; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3MSIo5Nl0iHVat7aILeomKDUxy2gPnZ7VSQWasqUek=;
-        b=IMxLx5UgXDlZXRRj8mKa0GIu3j8hcvfh4oDY2n8sXeebT2wcPQc5qcfxYWY6i8JPqC
-         sHYBsK5UdZAT92lRz65+MNQVZMp5Ml/t5yeF60ron/rskcxb6HfSLj6evwvOJo+6J+3q
-         tlDCR9aIspykVMEmRYsOaV16tMCWZKcH0yU4uqAMg3CbA/rW8zjd//9DtE/1MMrCL8zZ
-         Hip3kXRqClRhjWEXIAIGGtyddMt0Tgj/oaVIh/8G7aba0kk1TxCFK/YU7tZctzXLXUie
-         e1poTMW8Mr3Rbz9euHbhgRlhbiTgTm3u7fFdwmqibHcUvDB046quyff1G6Ndp57lAlPB
-         x1/A==
+        d=joelfernandes.org; s=google; t=1746553799; x=1747158599; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xGTmzOB1oSO0r6+w67t8pH/xLYGZWvznpYmLdNMjDCc=;
+        b=lOUxEQ7AKBjVJNJUmp/cRtvd9VkCS94Vb3a8qONOIOLqmMXZJFRy0hHvztx07NefC2
+         QZf3sB54KZzUMIxle2y8eKxIs9WZ7tXxINkQPNOohSRT3jfCx0ensiu83eYqu1XdJJG1
+         ap0y9aeuwW+iWYKLhiK/e+q8X5z/xfOlnFei8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746552777; x=1747157577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1746553799; x=1747158599;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a3MSIo5Nl0iHVat7aILeomKDUxy2gPnZ7VSQWasqUek=;
-        b=N+6uGJZVm8/UAqvQ0wDiEWLBF/I128doVgSsropUX6zft1sl5iw5KmgdIe5dF/QAIR
-         lhrmO5SWTpMdkH2aa1FoEH2qdTUKvPjXX4ZN0Cit8R4Sn9NeDxxNpB9fG4OGl9fXBOIY
-         2qMdLqiRNZ26m6qosvYIBLidiZ1wnr5Muxxv0oR0vp5ZS6cKijsfsk6VQeaNrQR+6bwq
-         a2buGh4wdRyXFrQBCji/7VlPYReiZEHgpQqObxv+LSuvgjnajkXFivuBoG6eic/tXbf0
-         g9iB0rDSW8s0cdVsHBpBjKgnfZpZFByNcx3+SAvFFiC9vldxnNhGrePEM+GJh1jp41T+
-         13Hg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8BZ/ttmR6uxtBknucvCvOhXtX2Ft5zB9VNQtCakZV1lpzDXDSfuujbwH+SBqIi1pFisk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyo++0Cn0+eJtKavg4c61g5TmpJ63sKQ8zhVmRRCxIdX7VcZeYF
-	qzdsbD1uZtrLZw0zCusl/97EVTfaPFWDmlpBOw9XwvYrF/rGg0z8BvliYvV4MFgEh7McW2UyCZu
-	c3FilSp3hAV6272Qq8PBN6Tn9f7ZN3ld7/Rek
-X-Gm-Gg: ASbGncvKCdfE9hKs0mU4/dxTGM7BYPTZ+gfLPBb95iXhSeGpjzyNldcp5mO+auCKypl
-	9Oh/kSW9dVR/6+VEUeu0jPANOiJOerW9PBIZaQyYONS+YSPoORrCLZhNNpA10qPyKMd1GznrRJs
-	9sXm9IlZDXLE5+aLGLzz/f56aHWmYQW3Ny1lNaz7pEPulgB746DyuOALBk7MvCHA==
-X-Google-Smtp-Source: AGHT+IG98g81WgMXXkuAILhcqwl2dPFyZHQOV/uqvjQbRfFtgeXEIDp4J9+Lt9m0P4v6pl5tN+tZqWKjP+Q0giH6IS4=
-X-Received: by 2002:a05:622a:316:b0:48d:8f6e:ece7 with SMTP id
- d75a77b69052e-491ff65fdeamr987151cf.3.1746552776442; Tue, 06 May 2025
- 10:32:56 -0700 (PDT)
+        bh=xGTmzOB1oSO0r6+w67t8pH/xLYGZWvznpYmLdNMjDCc=;
+        b=e47zt508q4KwItBVUzWrn7h1WJv2w67h2IJ4xCXUHyLxbIx/1NP2FWd47KlrCjzAwg
+         oDgYgZqR5Fe1l3cPo8og6wgj5QJeWrlaQDABd3XSawtiLJjF5lpMp5acsRsDyqkdRd5q
+         qHw9l7RPI7VC30YFphBGmQtuoIMCqGIAmDeti20K+E8bISWr6qTUh5rTSUHiyG5iDm/O
+         wcTFJEZUfWHBZBpjud1jP+ZMaK80+ni/FgGn38ZaZVKigLQlWgmnh9KDZ2ms8r0vGWdW
+         r+y9pp7UZuL4FItnY5Qd+vBru69qE3V82ukjxeFcna2cgn/xl6EckpU+dzruOec5hnkO
+         NEwg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOTIPPAEXn8QYvddZKpXApCMW7OvsntjneqeNvaZhBAJ2o1zvM+AJfts2BPA/YFaC4MB4=@vger.kernel.org
+X-Gm-Message-State: AOJu0YydcMWz7wMMOvvyTRxOXHMlWq0y97zrYxuiwTn5LGfwMZbiL/Xq
+	eEirM2GwYS+lWM75tMCb8QehZCwoLi15cVRXEFcZibPyI8yOqFmLrXH3gZGAdTQ=
+X-Gm-Gg: ASbGncs06cB7pPo2Co1C3FIu951gO2IZ4xeIpnarXDUoORybe1+DmKXFXMsO8m/rrDr
+	rviFdtqVEgTaVeHXjhlAxMmtiV76paczQppcJ5sUvY3zfGSzrb5xDUlCkQ73PuKuYaqcW4jnKcb
+	boitg1XbGGseuoi/vKODZ5pKtDiQ33S6IB3tka//KfcQA/E1Gje/Y0oSiRu+CuoJjRVS8BUcIuA
+	rBE7KoGyP5Kq7pECLGn+WqNvc2+AmyjfB1hLk9X1IAcP4cXVTGDXrSNRKBWpojG5/xx6ZXEHgk8
+	IudIoVK77cDhHCk50PfjvrqYl6pWVVyefFZlzQE4EYYnvgVdwiPYG07TQfQ=
+X-Google-Smtp-Source: AGHT+IETZ2Wim7BOEcdgPT25dtayviIChpwIJA6V9k8V6Vkf0kFnWST5QMWanOJg/f73MseH5XKdOg==
+X-Received: by 2002:a05:622a:1b8e:b0:478:f00e:eed5 with SMTP id d75a77b69052e-4922786604emr384161cf.48.1746553798729;
+        Tue, 06 May 2025 10:49:58 -0700 (PDT)
+Received: from smtpclient.apple ([71.51.182.78])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-49223457cf6sm348481cf.67.2025.05.06.10.49.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 May 2025 10:49:58 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Joel Fernandes <joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
- <20250425-slub-percpu-caches-v4-1-8a636982b4a4@suse.cz> <142aeeb5-d6d8-84ca-e7a2-ba564185c565@gentwo.org>
- <4fa1f4fb-4148-45e8-930c-1175ce212cab@suse.cz>
-In-Reply-To: <4fa1f4fb-4148-45e8-930c-1175ce212cab@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 6 May 2025 10:32:43 -0700
-X-Gm-Features: ATxdqUH4PjzoYVBacL_EtNXCAZRGtR6y5A7WTiVQvBIg3V1k_Yt6rSRk1bOT3XE
-Message-ID: <CAJuCfpFe3SeY1EX=X4+wAm33Z3a0d_SoynK-86s5JWjsK80t_A@mail.gmail.com>
-Subject: Re: [PATCH v4 1/9] slab: add opt-in caching layer of percpu sheaves
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Christoph Lameter (Ampere)" <cl@gentwo.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	maple-tree@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] rcu/nocb: Add Safe checks for access offloaded rdp
+Date: Tue, 6 May 2025 13:49:47 -0400
+Message-Id: <BC3AD2C0-E78E-4512-BC9A-1454FB13E0F6@joelfernandes.org>
+References: <CALm+0cUuze+CWJ2YS3TGeyayxBqO-pZbK=dq0E_7rfT+Od3KHQ@mail.gmail.com>
+Cc: Joel Fernandes <joelagnelf@nvidia.com>,
+ Frederic Weisbecker <frederic@kernel.org>, paulmck@kernel.org,
+ neeraj.upadhyay@kernel.org, urezki@gmail.com, boqun.feng@gmail.com,
+ rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <CALm+0cUuze+CWJ2YS3TGeyayxBqO-pZbK=dq0E_7rfT+Od3KHQ@mail.gmail.com>
+To: qiang Z <qiang.zhang1211@gmail.com>
+X-Mailer: iPhone Mail (22E252)
 
-On Mon, Apr 28, 2025 at 12:01=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 4/25/25 19:31, Christoph Lameter (Ampere) wrote:
-> > On Fri, 25 Apr 2025, Vlastimil Babka wrote:
-> >
-> >> @@ -4195,7 +4793,11 @@ static __fastpath_inline void *slab_alloc_node(=
-struct kmem_cache *s, struct list
-> >>      if (unlikely(object))
-> >>              goto out;
-> >>
-> >> -    object =3D __slab_alloc_node(s, gfpflags, node, addr, orig_size);
-> >> +    if (s->cpu_sheaves && node =3D=3D NUMA_NO_NODE)
-> >> +            object =3D alloc_from_pcs(s, gfpflags);
-> >
-> > The node to use is determined in __slab_alloc_node() only based on the
-> > memory policy etc. NUMA_NO_NODE allocations can be redirected by memory
-> > policies and this check disables it.
->
-> To handle that, alloc_from_pcs() contains this:
->
-> #ifdef CONFIG_NUMA
->         if (static_branch_unlikely(&strict_numa)) {
->                 if (current->mempolicy)
->                         return NULL;
->         }
-> #endif
->
-> And so there will be a fallback. It doesn't (currently) try to evaluate i=
-f
-> the local node is compatible as this is before taking the local lock (and
-> thus preventing migration).
->
->
-> >> @@ -4653,7 +5483,10 @@ void slab_free(struct kmem_cache *s, struct sla=
-b *slab, void *object,
-> >>      memcg_slab_free_hook(s, slab, &object, 1);
-> >>      alloc_tagging_slab_free_hook(s, slab, &object, 1);
-> >>
-> >> -    if (likely(slab_free_hook(s, object, slab_want_init_on_free(s), f=
-alse)))
-> >> +    if (unlikely(!slab_free_hook(s, object, slab_want_init_on_free(s)=
-, false)))
-> >> +            return;
-> >> +
-> >> +    if (!s->cpu_sheaves || !free_to_pcs(s, object))
-> >>              do_slab_free(s, slab, object, object, 1, addr);
-> >>  }
-> >
-> > We free to pcs even if the object is remote?
 
-Overall the patch LGTM but I would like to hear the answer to this
-question too, please.
 
-> >
->
+> On May 6, 2025, at 2:26=E2=80=AFAM, Z qiang <qiang.zhang1211@gmail.com> wr=
+ote:
+>=20
+> =EF=BB=BF
+>>=20
+>>=20
+>>=20
+>>=20
+>>> On 4/30/2025 12:14 PM, Joel Fernandes wrote:
+>>>=20
+>>>=20
+>>> On 4/30/2025 10:57 AM, Z qiang wrote:
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>> On 4/28/2025 6:59 AM, Z qiang wrote:
+>>>>>>>=20
+>>>>>>> Le Mon, Apr 28, 2025 at 05:54:03PM +0800, Zqiang a =C3=A9crit :
+>>>>>>>> For Preempt-RT kernel, when enable CONFIG_PROVE_RCU Kconfig,
+>>>>>>>> disable local bh in rcuc kthreads will not affect preempt_count(),
+>>>>>>>> this resulted in the following splat:
+>>>>>>>>=20
+>>>>>>>> WARNING: suspicious RCU usage
+>>>>>>>> kernel/rcu/tree_plugin.h:36 Unsafe read of RCU_NOCB offloaded state=
+!
+>>>>>>>> stack backtrace:
+>>>>>>>> CPU: 0 UID: 0 PID: 22 Comm: rcuc/0
+>>>>>>>> Call Trace:
+>>>>>>>> [    0.407907]  <TASK>
+>>>>>>>> [    0.407910]  dump_stack_lvl+0xbb/0xd0
+>>>>>>>> [    0.407917]  dump_stack+0x14/0x20
+>>>>>>>> [    0.407920]  lockdep_rcu_suspicious+0x133/0x210
+>>>>>>>> [    0.407932]  rcu_rdp_is_offloaded+0x1c3/0x270
+>>>>>>>> [    0.407939]  rcu_core+0x471/0x900
+>>>>>>>> [    0.407942]  ? lockdep_hardirqs_on+0xd5/0x160
+>>>>>>>> [    0.407954]  rcu_cpu_kthread+0x25f/0x870
+>>>>>>>> [    0.407959]  ? __pfx_rcu_cpu_kthread+0x10/0x10
+>>>>>>>> [    0.407966]  smpboot_thread_fn+0x34c/0xa50
+>>>>>>>> [    0.407970]  ? trace_preempt_on+0x54/0x120
+>>>>>>>> [    0.407977]  ? __pfx_smpboot_thread_fn+0x10/0x10
+>>>>>>>> [    0.407982]  kthread+0x40e/0x840
+>>>>>>>> [    0.407990]  ? __pfx_kthread+0x10/0x10
+>>>>>>>> [    0.407994]  ? rt_spin_unlock+0x4e/0xb0
+>>>>>>>> [    0.407997]  ? rt_spin_unlock+0x4e/0xb0
+>>>>>>>> [    0.408000]  ? __pfx_kthread+0x10/0x10
+>>>>>>>> [    0.408006]  ? __pfx_kthread+0x10/0x10
+>>>>>>>> [    0.408011]  ret_from_fork+0x40/0x70
+>>>>>>>> [    0.408013]  ? __pfx_kthread+0x10/0x10
+>>>>>>>> [    0.408018]  ret_from_fork_asm+0x1a/0x30
+>>>>>>>> [    0.408042]  </TASK>
+>>>>>>>>=20
+>>>>>>>> Currently, triggering an rdp offloaded state change need the
+>>>>>>>> corresponding rdp's CPU goes offline, and at this time the rcuc
+>>>>>>>> kthreads has already in parking state. this means the corresponding=
+
+>>>>>>>> rcuc kthreads can safely read offloaded state of rdp while it's
+>>>>>>>> corresponding cpu is online.
+>>>>>>>>=20
+>>>>>>>> This commit therefore add rdp->rcu_cpu_kthread_task check for
+>>>>>>>> Preempt-RT kernels.
+>>>>>>>>=20
+>>>>>>>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+>>>>>>>> ---
+>>>>>>>> kernel/rcu/tree_plugin.h | 4 +++-
+>>>>>>>> 1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>>>>>=20
+>>>>>>>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+>>>>>>>> index 003e549f6514..fe728eded36e 100644
+>>>>>>>> --- a/kernel/rcu/tree_plugin.h
+>>>>>>>> +++ b/kernel/rcu/tree_plugin.h
+>>>>>>>> @@ -31,7 +31,9 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *=
+rdp)
+>>>>>>>>                lockdep_is_held(&rcu_state.nocb_mutex) ||
+>>>>>>>>                (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()=
+) &&
+>>>>>>>>                 rdp =3D=3D this_cpu_ptr(&rcu_data)) ||
+>>>>>>>> -               rcu_current_is_nocb_kthread(rdp)),
+>>>>>>>> +               rcu_current_is_nocb_kthread(rdp) ||
+>>>>>>>> +               (IS_ENABLED(CONFIG_PREEMPT_RT) &&
+>>>>>>>> +                current =3D=3D rdp->rcu_cpu_kthread_task)),
+>>>>>>>=20
+>>>>>>> Isn't it safe also on !CONFIG_PREEMPT_RT ?
+>>>>>>=20
+>>>>>> For !CONFIG_PREEMPT_RT and  in rcuc kthreads, it's also safe,
+>>>>>> but the following check will passed :
+>>>>>>=20
+>>>>>> (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) &&
+>>>>>>          rdp =3D=3D this_cpu_ptr(&rcu_data))
+>>>>>=20
+>>>>> I think the fact that it already passes for !PREEMPT_RT does not matte=
+r, because
+>>>>> it simplifies the code so drop the PREEMPT_RT check?
+>>>>>=20
+>>>>> Or will softirq_count() not work? It appears to have special casing fo=
+r
+>>>>> PREEMPT_RT's local_bh_disable():
+>>>>>=20
+>>>>> (   ( !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) || softirq_=
+count() )
+>>>>>   && rdp =3D=3D this_cpu_ptr(&rcu_data))  )
+>>>>=20
+>>>> Thank you for Joel's reply,  I also willing to accept such
+>>>> modifications and resend :) .
+>>> Thanks, I am Ok with either approach whichever you and Frederic together=
+ decide.
+>>> I can then pull this in for the v6.16 merge window once you resend, than=
+ks!
+>>>=20
+>>=20
+>> Frederic, there are a couple of ways we can move forward hear. Does the
+>> softirq_count() approach sound good to you? If yes, I can fixup the patch=
+ myself.
+>=20
+> Hello, Joel
+>=20
+> If you send a patch to fix it, I'd be happy,  you can add me as the
+> Reported-by ;)
+
+Actually Z, could you send the patch with the suggestion above after appropr=
+iate testing? That way I will be more comfortable applying it for 6.16.
+
+Sorry for any confusion,=20
+
+Thanks!
+
+- Joel
+
+
+>=20
+> Thanks
+> Zqiang
+>=20
+>>=20
+>> I am also Ok at this point to take it in for 6.16, though I've also store=
+d it in
+>> my rcu/dev branch for Neeraj's 6.17 PR, just in case :)
+>>=20
+>> - Joel
+>>=20
+>>=20
