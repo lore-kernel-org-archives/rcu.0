@@ -1,202 +1,185 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3DF7260A;
-	Tue,  6 May 2025 06:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B021EFF93;
+	Tue,  6 May 2025 09:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746512769; cv=none; b=CK54l2wVzBMJL6rGlk2E5dsjAR9tCqRu/Gw0qUERpqHjxK8pHvllKPpx4WNop0nXWyzRr1lQ5pFN9Sg1NbWBuYgxfLPp9oTYwC5E2v1X0eqMKRfAY0RHiKU3PpvmRo1f0KVIkDG2uKxQQXcWBKW9+hFr86ZI9ZyzFJ+biGv/gWY=
+	t=1746524723; cv=none; b=X9d3pH5dbRA3FV/NrVygD2anERT3U7/gI/v7VJxqEV2OrDx7vGAAm9mNT92aicbB8PaqTEeIGVZ4JZ8zN1aL/Y2Wqj+8doY2mV5DPvV5r5mdDG4Ymo/jCqzoDbHiLlfdgqX4LrLYChzFAK5/jnAb4lhDw7YmQMDh3iQRi2UPyvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746512769; c=relaxed/simple;
-	bh=Oa7GEmVwDIyoFuJivqYvFuaJTUkd2IHxguH1TOIdb68=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BiW6F7yKeZyNi7X6VUuJSi/2630UrRsOk5PlvHzv1MFPqZMLh78yZrLUL7Z8fR/+ojKvkPjq45BlsedA8e6+YnlnFcxigzgtjzlmn7ObvQR0SMzfVXFz8puv66tybhbs/NiSGx8eKypcG8eKEsWo7UkfRVo/aRCfog8q8bduYNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R56LLUc+; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1746524723; c=relaxed/simple;
+	bh=EpuZPyUJ9zmAZ2c9BUZMxQY/UUSab85EVy6d2dzX2JA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=c4xPJabNXIVVfWTU0RQWklXssYfAFZt3uzChyNnGW2jQwlK8pauWbcI9CFsIbeS9uTNRhkNR0XlhoQOUKpS4xz0ElRhJE6l3YbK7iRJoNYOVrgPxavrfJQshVQw0HMuqfTiV9pfgo82QnB7jMKDrXCGEEeATlP6sr5riUbWPyZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kzalloc.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kzalloc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R56LLUc+"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-224171d6826so77401845ad.3;
-        Mon, 05 May 2025 23:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746512767; x=1747117567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wd5qXJZnOi771YIqf3qDOzHLFEjnUn3XDmfjn9FChrA=;
-        b=R56LLUc+19TDjc94XvoZEc8zIuXWI39bwwp6yPGlPqdKyZjbVmIz14Y9VKoS1cuBky
-         Y8GcYDxWtNnjVX2pZX3dKQcBeRuX5DajZ9dHOsu12PXFOLaqUWxWGEew1bWskjsQhwy8
-         62vlRJRPrrCso2uQfm1HMVdAATskkvSP1nCdmai3f9CNABqOZMQIUYrcChMo27SNF5v4
-         ppzsBCXVJFzEO1L9QA+5cCR1eDVyEwmOO/y851FR3XbpYxC397OhRyJG+DVJIWRn4IR2
-         fghH95Mfwc+yYKsHFhaL0CKHli6/Ffj+2z4ZNsLHN/MSakwnKbIKJfBsxSQ4Ze3uNCnt
-         2BrQ==
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b1faa09bae7so342821a12.1;
+        Tue, 06 May 2025 02:45:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746512767; x=1747117567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wd5qXJZnOi771YIqf3qDOzHLFEjnUn3XDmfjn9FChrA=;
-        b=dscSjqIMUaC8RQ5XUPDfunIksjZH8AXrc0qsDNtwb9uulOPtdO4hHTVWjRUKXt1fO5
-         f96Z1hBMWzaGAZV/S/+qV596zYOxdRWjI/4uFEQK8lmOvFX1aYyu9K1PpgT/EZZYzBeL
-         VN/gsrZNa1i8rpTmDw0t4UNaZffDQalLefrbL4oPwSFUMroYxdpOQoyMrxs8n71Pw3GQ
-         haEET0eRBfaJGb3kYtcDbFsjUrWAdsVgi0NfxBAKyDP3+43HAEmBk8/kakH0sd1L1pWa
-         fsJXKILemX3XIJtd+tnx+1amqeg1GDjpE9npQtkp3sxG7z3AmuD78xp+/HASL8V8e7Mk
-         6QOA==
-X-Forwarded-Encrypted: i=1; AJvYcCUeL4z7osp5h8Q4YH0OJWgW8oNJLauX3MOU6CftfQgvFw+a5MQ7cqPrMML/GOhTji0SJj/B@vger.kernel.org, AJvYcCVnmL9p3LA5zc1YOt/xi26ZhhkFagD7wrjg59QwXcrN8NjBpDiZQhQVDy9q5jzxEs7MhzuBiNRK+ocx/dY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJuEQHB1RXOnkqfwUuHlf/z76MM77+FCrvgJtizcFKioKQd6H3
-	z28Pkxk3/tDNaZfyiNYdv0jYheI4CUdvou8xbnMRmOdhqUNlqftJKWYgSoSxP7yDshCk+wF67DH
-	KXgjzXeQQYhlsq6nkOTeR+xptC4o=
-X-Gm-Gg: ASbGncuRSefNcLfLryNefjE+2JjDGWiNbDHt3D9ugUol5bpfOkRpV+vx9aJ0Pkg+I5v
-	ePPoGq7cNQKYBzLbwgjESXZ1yjF5rsi4SrUGgxK938CPBhPL1K/sELoRM69/oAztmKbvstlNQGQ
-	nI3PUKiCJGqkGOf2B3H0+i0+c=
-X-Google-Smtp-Source: AGHT+IGNUUuvtxWkWTxsOK8iYAV++2+yYFz+cHnebnwgULotgbGheEhe6B0asDvI0hJ5qecsO+KumN7/j/pYZRjhhVk=
-X-Received: by 2002:a17:902:ccc5:b0:21f:564:80a4 with SMTP id
- d9443c01a7336-22e32eeea8amr29101175ad.33.1746512766626; Mon, 05 May 2025
- 23:26:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1746524721; x=1747129521;
+        h=content-transfer-encoding:organization:in-reply-to:content-language
+         :references:cc:to:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cSOD+puqL/4XqSHD2xH6JjKVLDIWqct4rkla2JcDmy0=;
+        b=NPg3PEb6Saxoy5ndGmdaWw+Rqs+4bhuchUcX/eIKSDNgYByOshQYeKy1HJQAQZKIbp
+         5Qi5f8oxH27JSdQcEHgJdpRmumLUL0L/EoKPjkGIRpS5yrVjtS1I+o6kRQ1f9rOruwam
+         dJ1MR781QkCfSMI89QkF5bcuE5HNv/OnnOJelVCbJMG35CBQGxGK3ih29XsnGhAILNeT
+         NfPsWnVhZ2j3ECedM4B/WNHtf4rOq9RyxjiXCattMeVunAlW+2dWcv3z7hZq2NHkEJCB
+         0LOkKpb8kvvtrFMrEa/J65s8Tm1bCrSZRGZINaMbFB1ffisR9seTFFLs404YUrPE/Mia
+         PJ2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWbbHnWtXRQRSxWxaWoVGP2PwUSCYipiJQt9TJ6IgV379WtNlEMpzFVHygeF5D7uNW0KbiU@vger.kernel.org, AJvYcCXSk7hpPKNXK0ngckFGJmv/LqFapf+fVp2jg2ZvX7lxsZMwh2VyWoy9bm/TtiKkIwxCF51Cyq2STDGoraI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGU8oQZi3FVGEt302GJt9lX96P/JLI0G+uCmODLNc8mjl0TG2X
+	lzOy1bG/XSsyke6iH509ULxQ6Gbf1D7CuApSoJlmUBELKNkqyHim
+X-Gm-Gg: ASbGncs+po18ocqI8/6CC54hvvGlY7A0JgcIekiVmspjUb7BO9D1EyhKa+3PCy1hiL8
+	Ba7gVF9mzf6PEXg51svhCG++ddqbqPUGtnlZx8v1Vz+lC1rsAPgHcZ41sL1YNPvoG7Z64GwMo/N
+	Uug/X7afOrBBhAonEV+BnYgD6DiCnChSw51lxj9vtKS6+4qYOiVbfYMRODrEuWugZSJXWnMS/dZ
+	/ccg9IGcLE+mTEke6rY1iSIfOb11I9Xz5rkuxA0jH6RM2yQduT7YIJWo52SvnI4tsgcOax7b2mu
+	lpTsUoDt4aiO2uPGPgHYRQPi0nBhmj4+4Jhm46eyKxOxdHcyAbg3
+X-Google-Smtp-Source: AGHT+IE4XN8fGk6NVgA2xZFj7lr1LVIAwTygyFZpdvp0wgim1KjlAv8Y9fJz8VT968dhSyQepqbBKQ==
+X-Received: by 2002:a17:90b:2247:b0:2fe:b77a:2eba with SMTP id 98e67ed59e1d1-30a4e574bffmr8928554a91.1.1746524721121;
+        Tue, 06 May 2025 02:45:21 -0700 (PDT)
+Received: from [192.168.50.136] ([118.32.98.101])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30a4763f992sm10672445a91.40.2025.05.06.02.45.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 May 2025 02:45:20 -0700 (PDT)
+Message-ID: <2aaa078a-100c-4974-be5b-b58a7f3a6dbb@kzalloc.com>
+Date: Tue, 6 May 2025 18:45:14 +0900
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250428095403.22889-1-qiang.zhang1211@gmail.com>
- <aA9U9QvB2t2MLuU2@pavilion.home> <CALm+0cW2tXM-HvzoMsNBk4DNyZ-LuUkGj5M4wVLJixSvUDP+Dw@mail.gmail.com>
- <b1d6d155-de0a-4715-9de6-45d3d9e5c9a6@nvidia.com> <CALm+0cUx2siBvaRYwWGsN21PC=UUUy1EqLTRe5HmRW2ECWtUWA@mail.gmail.com>
- <2c8098f0-2010-4714-97ca-7f46629d67f8@nvidia.com> <6dc114e4-83d3-40ff-9642-114552f40a75@nvidia.com>
-In-Reply-To: <6dc114e4-83d3-40ff-9642-114552f40a75@nvidia.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Tue, 6 May 2025 14:25:55 +0800
-X-Gm-Features: ATxdqUExgrDRkpeIllBabN5-IkHhuawjE3kM-lwfoxY15RwPwy3k4C1R4UyctX8
-Message-ID: <CALm+0cUuze+CWJ2YS3TGeyayxBqO-pZbK=dq0E_7rfT+Od3KHQ@mail.gmail.com>
-Subject: Re: [PATCH] rcu/nocb: Add Safe checks for access offloaded rdp
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, paulmck@kernel.org, neeraj.upadhyay@kernel.org, 
-	joel@joelfernandes.org, urezki@gmail.com, boqun.feng@gmail.com, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Yunseong Kim <ysk@kzalloc.com>
+Subject: Re: [BUG] RCU: Kernel panic on execute from non-executable memory
+ (binderfs + stress-ng)
+To: "Colin King (gmail)" <colin.i.king@gmail.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Uladzislau Rezki <urezki@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ byungchul@sk.com, max.byungchul.park@gmail.com, rcu@vger.kernel.org,
+ =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+ Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Christian Brauner <brauner@kernel.org>, Carlos Llamas <cmllamas@google.com>,
+ Suren Baghdasaryan <surenb@google.com>, LKML <linux-kernel@vger.kernel.org>
+References: <8bdfa4fc-0e4a-4965-bc29-6ab6c1573ef6@kzalloc.com>
+ <6b5d7f21-459c-48c8-9fa2-d494b01bc5d8@gmail.com>
+ <4eaaaf62-40a6-43f8-bcce-6e23b475e12f@kzalloc.com>
+Content-Language: en-US
+In-Reply-To: <4eaaaf62-40a6-43f8-bcce-6e23b475e12f@kzalloc.com>
+Organization: kzalloc
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
->
->
->
-> On 4/30/2025 12:14 PM, Joel Fernandes wrote:
-> >
-> >
-> > On 4/30/2025 10:57 AM, Z qiang wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 4/28/2025 6:59 AM, Z qiang wrote:
-> >>>>>
-> >>>>> Le Mon, Apr 28, 2025 at 05:54:03PM +0800, Zqiang a =C3=A9crit :
-> >>>>>> For Preempt-RT kernel, when enable CONFIG_PROVE_RCU Kconfig,
-> >>>>>> disable local bh in rcuc kthreads will not affect preempt_count(),
-> >>>>>> this resulted in the following splat:
-> >>>>>>
-> >>>>>> WARNING: suspicious RCU usage
-> >>>>>> kernel/rcu/tree_plugin.h:36 Unsafe read of RCU_NOCB offloaded stat=
-e!
-> >>>>>> stack backtrace:
-> >>>>>> CPU: 0 UID: 0 PID: 22 Comm: rcuc/0
-> >>>>>> Call Trace:
-> >>>>>> [    0.407907]  <TASK>
-> >>>>>> [    0.407910]  dump_stack_lvl+0xbb/0xd0
-> >>>>>> [    0.407917]  dump_stack+0x14/0x20
-> >>>>>> [    0.407920]  lockdep_rcu_suspicious+0x133/0x210
-> >>>>>> [    0.407932]  rcu_rdp_is_offloaded+0x1c3/0x270
-> >>>>>> [    0.407939]  rcu_core+0x471/0x900
-> >>>>>> [    0.407942]  ? lockdep_hardirqs_on+0xd5/0x160
-> >>>>>> [    0.407954]  rcu_cpu_kthread+0x25f/0x870
-> >>>>>> [    0.407959]  ? __pfx_rcu_cpu_kthread+0x10/0x10
-> >>>>>> [    0.407966]  smpboot_thread_fn+0x34c/0xa50
-> >>>>>> [    0.407970]  ? trace_preempt_on+0x54/0x120
-> >>>>>> [    0.407977]  ? __pfx_smpboot_thread_fn+0x10/0x10
-> >>>>>> [    0.407982]  kthread+0x40e/0x840
-> >>>>>> [    0.407990]  ? __pfx_kthread+0x10/0x10
-> >>>>>> [    0.407994]  ? rt_spin_unlock+0x4e/0xb0
-> >>>>>> [    0.407997]  ? rt_spin_unlock+0x4e/0xb0
-> >>>>>> [    0.408000]  ? __pfx_kthread+0x10/0x10
-> >>>>>> [    0.408006]  ? __pfx_kthread+0x10/0x10
-> >>>>>> [    0.408011]  ret_from_fork+0x40/0x70
-> >>>>>> [    0.408013]  ? __pfx_kthread+0x10/0x10
-> >>>>>> [    0.408018]  ret_from_fork_asm+0x1a/0x30
-> >>>>>> [    0.408042]  </TASK>
-> >>>>>>
-> >>>>>> Currently, triggering an rdp offloaded state change need the
-> >>>>>> corresponding rdp's CPU goes offline, and at this time the rcuc
-> >>>>>> kthreads has already in parking state. this means the correspondin=
-g
-> >>>>>> rcuc kthreads can safely read offloaded state of rdp while it's
-> >>>>>> corresponding cpu is online.
-> >>>>>>
-> >>>>>> This commit therefore add rdp->rcu_cpu_kthread_task check for
-> >>>>>> Preempt-RT kernels.
-> >>>>>>
-> >>>>>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> >>>>>> ---
-> >>>>>>  kernel/rcu/tree_plugin.h | 4 +++-
-> >>>>>>  1 file changed, 3 insertions(+), 1 deletion(-)
-> >>>>>>
-> >>>>>> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> >>>>>> index 003e549f6514..fe728eded36e 100644
-> >>>>>> --- a/kernel/rcu/tree_plugin.h
-> >>>>>> +++ b/kernel/rcu/tree_plugin.h
-> >>>>>> @@ -31,7 +31,9 @@ static bool rcu_rdp_is_offloaded(struct rcu_data=
- *rdp)
-> >>>>>>                 lockdep_is_held(&rcu_state.nocb_mutex) ||
-> >>>>>>                 (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible=
-()) &&
-> >>>>>>                  rdp =3D=3D this_cpu_ptr(&rcu_data)) ||
-> >>>>>> -               rcu_current_is_nocb_kthread(rdp)),
-> >>>>>> +               rcu_current_is_nocb_kthread(rdp) ||
-> >>>>>> +               (IS_ENABLED(CONFIG_PREEMPT_RT) &&
-> >>>>>> +                current =3D=3D rdp->rcu_cpu_kthread_task)),
-> >>>>>
-> >>>>> Isn't it safe also on !CONFIG_PREEMPT_RT ?
-> >>>>
-> >>>> For !CONFIG_PREEMPT_RT and  in rcuc kthreads, it's also safe,
-> >>>> but the following check will passed :
-> >>>>
-> >>>> (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) &&
-> >>>>           rdp =3D=3D this_cpu_ptr(&rcu_data))
-> >>>
-> >>> I think the fact that it already passes for !PREEMPT_RT does not matt=
-er, because
-> >>> it simplifies the code so drop the PREEMPT_RT check?
-> >>>
-> >>> Or will softirq_count() not work? It appears to have special casing f=
-or
-> >>> PREEMPT_RT's local_bh_disable():
-> >>>
-> >>> (   ( !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) || softirq=
-_count() )
-> >>>    && rdp =3D=3D this_cpu_ptr(&rcu_data))  )
-> >>
-> >> Thank you for Joel's reply,  I also willing to accept such
-> >> modifications and resend :) .
-> > Thanks, I am Ok with either approach whichever you and Frederic togethe=
-r decide.
-> > I can then pull this in for the v6.16 merge window once you resend, tha=
-nks!
-> >
->
-> Frederic, there are a couple of ways we can move forward hear. Does the
-> softirq_count() approach sound good to you? If yes, I can fixup the patch=
- myself.
+Hi,
 
-Hello, Joel
+I attached the vmcore with vmlinux symbol for further analysis and will share it at the following link.
 
-If you send a patch to fix it, I'd be happy,  you can add me as the
-Reported-by ;)
+Link: https://drive.google.com/file/d/1_RFdpdWNuLdO-Yx6d7vIX-WAFX4X_msH/view?usp=drive_link
 
-Thanks
-Zqiang
+On 5/6/25 9:30 오전, Yunseong Kim wrote:
+> Hi Colin,
+> 
+>>> The crash seems to originate from rcu_do_batch(), jumping to a pointer (0xffff00003a114000) that appears to be non-executable.
+>>> The PTE for the address confirms XN=1. Given the heavy binderfs workload, I suspect there may be a use-after-free or dangling pointer involved in a callback invocation.
+>>>
+>>> Platform:
+>>>   Architecture: arm64
+>>>   Virtualized environment: Apple Silicon M2 (Apple Virtualization Framework)
+>>>   Kernel version: 6.15.0-rc4+
+>>>   Attached Config: CONFIG_PREEMPT_VOLUNTARY=y, CONFIG_KASAN=y
+>>>
+>>> Reproducer:
+>>>   sudo ./stress-ng --binderfs 8 --binderfs-ops 10000 -t 15 \
+>>>    --pathological --timestamp --tz --syslog --perf --no-rand-seed \
+>>>    --times --metrics --klog-check --status 5 -x smi -v --interrupts --change-cpu
+>>
+>>
+>> I suspect --change-cpu is required to trigger this issue. Does it trigger without this option?  Can you reproduce the issue when reducing the number of --binderfs intances?
+> 
+> As you suggested, I've been testing combinations of enabling and disabling '--binderfs' and '--change-cpu' separately.
+> 
+> While I'm not deeply familiar with the internal mechanisms of binderfs,
+> I found that the panic still occurs consistently with --binderfs, even without the --change-cpu option.
+> However, the panic occurred when I used 4 instances.
+> 
+> Reproducer with reduced instance from 8 to 4 and without change-cpu option:
+>  sudo ./stress-ng --binderfs 4 --binderfs-ops 10000 -t 15 \
+>   --pathological --timestamp --tz --syslog --perf --no-rand-seed \
+>   --times --metrics --klog-check --status 5 -x smi -v --interrupts
 
->
-> I am also Ok at this point to take it in for 6.16, though I've also store=
-d it in
-> my rcu/dev branch for Neeraj's 6.17 PR, just in case :)
->
->  - Joel
->
->
+[  194.911021] Unable to handle kernel execute from non-executable memory at virtual address ffff0000312ebe00
+[  194.911043] Mem abort info:
+[  194.911056]   ESR = 0x000000008600000f
+[  194.911065]   EC = 0x21: IABT (current EL), IL = 32 bits
+[  194.911118]   SET = 0, FnV = 0
+[  194.911130]   EA = 0, S1PTW = 0
+[  194.911139]   FSC = 0x0f: level 3 permission fault
+[  194.911149] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000163388000
+[  194.911160] [ffff0000312ebe00] pgd=180000016ffff403, p4d=180000016ffff403, pud=180000016fffe403, pmd=180000016fff4403, pte=00680000712eb707
+[  194.911201] Internal error: Oops: 000000008600000f [#1]  SMP
+[  194.911211] Modules linked in: overlay isofs uinput snd_seq_dummy snd_hrtimer nf_conntrack_netbios_ns nf_conntrack_broadcast nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 rfkill ip_set nf_tables qrtr sunrpc virtio_snd snd_seq snd_seq_device snd_pcm snd_timer snd virtio_net soundcore net_failover virtio_balloon failover vfat fat joydev loop nfnetlink vsock_loopback vmw_vsock_virtio_transport_common zram vmw_vsock_vmci_transport lz4hc_compress vmw_vmci lz4_compress vsock uas polyval_ce polyval_generic ghash_ce usb_storage sha3_ce sha512_ce virtio_gpu sha512_arm64 virtio_dma_buf apple_mfi_fastcharge fuse
+[  194.911440] CPU: 2 UID: 0 PID: 27 Comm: ksoftirqd/2 Kdump: loaded Not tainted 6.15.0-rc4+ #1 PREEMPT(voluntary) 
+[  194.911452] Hardware name: Apple Inc. Apple Virtualization Generic Platform, BIOS 2075.101.2.0.0 03/12/2025
+[  194.911459] pstate: 21400805 (nzCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=-c)
+[  194.911469] pc : 0xffff0000312ebe00
+[  194.911492] lr : rcu_do_batch+0x2dc/0x860
+[  194.911506] sp : ffff800080143c90
+[  194.911512] x29: ffff800080143cb0 x28: ffff00003059e600 x27: ffff0000312ebe00
+[  194.911534] x26: ffff800084442000 x25: 0000000000000000 x24: ffff8000843d9b18
+[  194.911549] x23: ffff800082150ac0 x22: 0000000000000003 x21: 000000000000000a
+[  194.911563] x20: ffff0000c11233c0 x19: ffff00012f0e1e00 x18: 0000000000000000
+[  194.911578] x17: ffff80008214506c x16: 002c7c955b9d7f7c x15: 0000000000000000
+[  194.911592] x14: 0000000000000002 x13: 0000000000ff0100 x12: ffff8000801c3410
+[  194.911607] x11: 0000000000180017 x10: 0000000000ff0100 x9 : ffff80008385a580
+[  194.911621] x8 : 0000000100000100 x7 : 7f7f7f7f7f7f7f7f x6 : ffff8000803f89bc
+[  194.911636] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000002
+[  194.911650] x2 : 0000000000000000 x1 : ffff800082a4aeb8 x0 : ffff00003059e600
+[  194.911744] Call trace:
+[  194.911747]  0xffff0000312ebe00 (P)
+[  194.911759]  rcu_core+0x2a0/0x4e8
+[  194.911767]  rcu_core_si+0x1c/0x30
+[  194.911773]  handle_softirqs+0x1b4/0x588
+[  194.911782]  run_ksoftirqd+0x5c/0xf8
+[  194.911787]  smpboot_thread_fn+0x27c/0x490
+[  194.911794]  kthread+0x2ac/0x318
+[  194.911802]  ret_from_fork+0x10/0x20
+[  194.911811] Code: 00000000 00000000 00000000 00000000 (00000000) 
+[  194.911821] SMP: stopping secondary CPUs
+[  194.912168] Starting crashdump kernel...
+[  194.912171] Bye!
+
+crash> kmem ffff0000312ebe00
+CACHE             OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE  NAME
+ffff0000c000cc00      512        185       576     36     8k  kmalloc-rnd-10-512
+  SLAB              MEMORY            NODE  TOTAL  ALLOCATED  FREE
+  fffffd7fc0f5e920  ffff0000312ea000     0     16          0    16
+  FREE / [ALLOCATED]
+   ffff0000312ebe00  
+
+The address ffff0000312ebe00 is listed in the FREE list, meaning this memory slot has already been freed.
+
+      PAGE        PHYSICAL      MAPPING       INDEX CNT FLAGS
+fffffd7fc0f5e970  712eb000         ffffffff ffffffffffffffff  0 1 locked
+
+This memory page itself no longer has any valid page mapping (MAPPING=ffffffff), and its reference count (CNT) is also 0. it is completely freed.
+
+It appears that a struct rcu_head object, which had already been freed, remained in the RCU callback list, and an attempt was made to call a function using this invalid (freed) slot through the rcu_head, resulting in the error.
+
+I think it is unusual that this memory bug was not detected even with KASAN enabled, especially since it has not been caught despite the issue occurring repeatedly.
+
+I'll check if there are any potential issues with improper RCU usage in otherside.
+
+
+Best regards,
+Yunseong Kim
