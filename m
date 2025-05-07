@@ -1,60 +1,60 @@
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C44189B8C;
-	Wed,  7 May 2025 11:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111DF189B8C;
+	Wed,  7 May 2025 11:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746617177; cv=none; b=n/2pGZuGWNnpaP5a4FPoqb3lBlz0VogivFOCcTaFjjtUH+QL47I1v4E1EoPQjbBoa0PAqBJNXSSAdZwzKNf5C64qzMlmc7BVi+IEz3HgPM0i/+r3lBb5a/3gm8iwDgB/mUXc3maOcrTglOfzDD59zsVbGCEkdC4FbPA66vR7OFQ=
+	t=1746617182; cv=none; b=o9XD2E2Qy0EVEOvKW6bJIRvLBi7ZlkDFK+0ftpy40TtMhkR4SwuwMtPMIiKPoYgklei1BDwkujbc0EVR/wmuDCVsjqvMxGCUCuWlxySpMdweY8iFMzwg25qxTznDUbecQn+VLhO05y2cWhlesIGIO1v1fOw3S5VEJZq01OSbP2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746617177; c=relaxed/simple;
-	bh=mQdRu9nt9DF6a/07VoCCoI4ODboFbNw2SfGiz+1z1M4=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=FJKx8JKbvqkDJ3Mt0cO+RaIztTgDFPBC64AM5zPuBHx8X7JzTUUECqEOyPb2/OKNUuibQkK40G5+XCBEi/kKNPeSO5GyoDy34TAl2dOgjYQg8kcF7MuBxybBDOM1eT/by6yVHXrUrkSCrmcd1wjuBIh6+oFNH/eqCFJDAudLNW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NFNyzTwq; arc=none smtp.client-ip=209.85.210.173
+	s=arc-20240116; t=1746617182; c=relaxed/simple;
+	bh=OWonO6PyHcEEsydcyWemY8C0jemBCk1E0AwXvnaYG/U=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=aAdxiGFS0VnngnXMhGT58LmE10z5z1fRkpwuzIthu1VQQE85PTeWt7bQUkIKdICSmJVsL5G0fYyPP6fjmyzvUNPwK/VKlbya0w2xeZezO2mfCYrVXDzww0jnYmcPcFxihJ4ejERnDYE2nbQbEiDu00sHpdwwmKHZflHaMkrW69E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2CM839D; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NFNyzTwq"
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-736c3e7b390so7570516b3a.2;
-        Wed, 07 May 2025 04:26:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2CM839D"
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-736a72220edso7376008b3a.3;
+        Wed, 07 May 2025 04:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746617175; x=1747221975; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kU4IPVDob4K1HuHAYIVlP4inH/rvK2N+HDjkyfBY+Uo=;
-        b=NFNyzTwq9f3JeoE4oMD9n0A3KoUWY+rwFTQZrOo3GB6aweaXVFkz91nMMosftg+2Up
-         sL/lpqygGo4O919xs1O9/zGFvaq3s3EEDpLMOe9lFB9bXrbMe1S4hYHUMIlICkbjCP54
-         y/YCKBhA/42f07sOFRFMInaDnt6Ow3hoRjfUDR3XEKtWK5FlFvcbM6eXixkuJ7YxRHmk
-         +J9jM3ivJSRjhESKiapTbdsnrLwVg2NL0TyGeSnoRsWMNiFrkOduw+V/teKyxCXBC1BE
-         7t0RKP9Ddu2CWxdtxHRBK0l+7X4Ma82rQLC/v02VIQQJ+l7W70HFj9WkzobdUbvOrWoP
-         0/tw==
+        d=gmail.com; s=20230601; t=1746617179; x=1747221979; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GMNvKxOPFGagkiX4nWGhokncKv/c3K3QOeRTRxkUohI=;
+        b=F2CM839DZSWzeoaNWYGBlqfusgkzeA+7y4Z48cagwYGsHiGMPM7EnvtvwnXx+MPFSN
+         8J28pBAbbT5Kf5uxzeD2myjNDMchUiKxqAtgclfFgghA2QjnTEPPZhXJ97ozGmsZhiFH
+         fOHWA2IV/Pplg+EcE0E7IUY17wcM0JUAMtfY+EhC7S2aLi0XaNXALnXfej9jej9yalfJ
+         DFnR3w2KqO194T1oz1xisZW21Lt28KIUsveMm+JYv8Khk7JhF4+abDiNaNffqi4cBvCz
+         nwAluvbM6eAuKu/WfYpbM+G0nB5TqfONBUlIe9XsOEh7AOGKcTAa6lMLWSc5U4b4qB9U
+         6KNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746617175; x=1747221975;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kU4IPVDob4K1HuHAYIVlP4inH/rvK2N+HDjkyfBY+Uo=;
-        b=NJ1gPknBAfBqKc7yxYBUz8aPk0d+uP1OO9SeCrk5JOfwbJumSgtATVi5h2NjCVrISO
-         Uo0DVeYQza0v4z2vYpblOnYf+0pMsuZ7+yV3nqn9h1rB7StoiIvuWe3ZqabaAZ6omcbw
-         2MYMKEaEbE8TnmOgPcCVC0hVxBQWxO2f+yVLEhnX+xHcsXSIfcnl9/f7bOhGQdUn91rF
-         j7NIwg5PlrKo0FhX0koYuMYiwveVcKDC1ZEK4NfIbpQgOblbwi+QCsPwgyc4dMT3zw3T
-         +Y9PF4VvKYyafYQ/2pJbiQcOQX2oa4GZXyAU2loXmrXQiJUm74e6akocWzpFwAfHuU8g
-         DmwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1o2wJFM9pxZAlRaNCwz17nlT9IdkVO4vsTRJMNLpbSWTReEVVCTLxRixOmy2XpUhbecLKw8A3//3Aae0=@vger.kernel.org, AJvYcCVyLAoStbUAriN5rpQJ/xGyVnJ1A8Wq+ivRDeJD+AQOUlDKC6FiwAR+wqlOhloxWCPev8DS@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuSxwnYUCHheTv0ro4fUu+3s8TKGRkmojaT5WTMMpg2SCPzBRh
-	HX5MpTWA9vInRmVUfeNMiSZ814tF8OkVAn+o2YCLUJ8JEsIlBIMfraQFJE2pzwQ=
-X-Gm-Gg: ASbGnctOn3Lsgwo5KkncOjg8weGl9SKUreR13fi5Qboafwc67fyFrcGZwqvF0MPJfQg
-	J1m1JxdvRclJux3qs80UxYr6nz34GKpQ5nBF9tvk7DYn7FthFI/ZIyt8mpi8pdDtJipCsdzGZ16
-	0eADv7k6Tf6K9FcqEuTt+TaSz/UZlkbT1qqGOpF0vNdNhtsedxAqTKCo/wkgTJyM3JsU9+WtpAB
-	Drfe/AagacDBV0GnZdwjbXZIDYCyRz/O79LRFtGB7mmt+caQWbwzkaw0ytAKbeeJnO6S4BEHDM/
-	2KqU5FFaTKvWb7yFaHS3XfZwybtRYr7yIut7cE8r85eUNDG3N3gZz815defkyqkcaXMR2PbmsQ=
+        d=1e100.net; s=20230601; t=1746617179; x=1747221979;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GMNvKxOPFGagkiX4nWGhokncKv/c3K3QOeRTRxkUohI=;
+        b=wS9Adv4JX3aoRJC1ySf3ikWZtobPno+ESgZwqgVgcVm418fUUNzEaP1PPL3k1DRG7W
+         4wvBDysv6z77wc6t+7HTPB91AsQ+0zzBkQggfdFrQjRg/PQ4esq131p8tPw6tzF0/SKq
+         lhP2nYboyOEblzuv6zveuwwr0sPC/nVJkeyDCsFdsW6Np09NVUFZNcXHmauLKH7kGQZd
+         1ZbXvnFCwWPoxHLK2rcT0636VTS2knrESPHKe3UCggK2otrsj4n9fMj53M29KDNGZj7y
+         gTtxPFLHzOEAfNANF+yqizOlm5VQaDt1J2w6Jy32QhNnk0oXGGTZvPiTDRRSjf6dwiR1
+         ZQog==
+X-Forwarded-Encrypted: i=1; AJvYcCV8giGxviFjlIgkXGw0cb//OV7jZ5vqBVxlbO3zPlqNA4FsPyTfF1So35tZiTn4NJ3qxdnx@vger.kernel.org, AJvYcCWnL6cbq+uD3YwrEaIGPnX1q8WsezTHs0XdDWd6Tl6HGArJs4pzGpAXx8V4wU7WzQMKXZ3JVlMT7fdahlk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxn46Vy/mA178s7YzEcPzQeFUxOwnjuwWkZx5QBMCWPeZjN0vPY
+	ZTrUFOzE0RwI/ABmKWfBqs/wK8CKLJE6rBTVc1SzX9HnXwpmp0i8K7ZDxRk2Bu4=
+X-Gm-Gg: ASbGncthjkHLH41v2JnGoHJCfSLu/vZFG871+pJSoZPHgwj35JBpkCi8Wr3k6X6ygjX
+	YhSZmme0lhk9Zstj1VpFoogDfYc3rrvQO8OPWKfIlvb+j3yBYLyT3L+8VCHPnSQGhCzwbd3w/SV
+	ZzZFxYG06dhG01dXR50kcnQuW5W9jRlvp554FUBOr5p/SklVIloy31VDxiaV0AQrHKdOGrf109q
+	9kodmjlNJpMh1Srl8/UNelpQwBiEt3iGImv3xFRbwF2gux7pEEYv/rNBD9FKB/Um79WZYEmD0FV
+	L0m4f230nW4DI0k2ueE7SDsUcNsr0lh1qvofr8YMADYAsoyQtOPdasQhon0f6uNp+Ac3eEIgWw=
 	=
-X-Google-Smtp-Source: AGHT+IFCD49DiyJAUum+f5nQXJ25qce++pssO6RelGMftkAZs1bU3McbEpddihqy9/89a8+pRYs+Zw==
-X-Received: by 2002:a05:6a21:6d84:b0:1fb:e271:82e2 with SMTP id adf61e73a8af0-2148b9227bemr4334687637.11.1746617174929;
-        Wed, 07 May 2025 04:26:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGTN0G5Dp4LwYX0oFotYV3fs2z0ObHi1fyCHJjWJr6LOIWPO0GtZbVAqqKw7nPvo3BHDhWgig==
+X-Received: by 2002:a05:6a00:1bca:b0:73d:b1ff:c758 with SMTP id d2e1a72fcca58-7409cfa5a4dmr4022519b3a.18.1746617179219;
+        Wed, 07 May 2025 04:26:19 -0700 (PDT)
 Received: from MSCND1355B05.fareast.nevint.com ([117.128.58.94])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-740590610desm11184898b3a.146.2025.05.07.04.26.10
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-740590610desm11184898b3a.146.2025.05.07.04.26.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 May 2025 04:26:14 -0700 (PDT)
+        Wed, 07 May 2025 04:26:18 -0700 (PDT)
 From: Zqiang <qiang.zhang1211@gmail.com>
 To: paulmck@kernel.org,
 	frederic@kernel.org,
@@ -65,84 +65,79 @@ To: paulmck@kernel.org,
 Cc: qiang.zhang1211@gmail.com,
 	rcu@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] rcutorture: Fix rcutorture_one_extend_check() splat in RT kernels
-Date: Wed,  7 May 2025 19:26:03 +0800
-Message-Id: <20250507112605.20910-1-qiang.zhang1211@gmail.com>
+Subject: [PATCH v2] rcu/nocb: Add Safe checks for access offloaded rdp
+Date: Wed,  7 May 2025 19:26:04 +0800
+Message-Id: <20250507112605.20910-2-qiang.zhang1211@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20250507112605.20910-1-qiang.zhang1211@gmail.com>
+References: <20250507112605.20910-1-qiang.zhang1211@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 
-For built with CONFIG_PREEMPT_RT=y kernels, running rcutorture
-tests resulted in the following splat:
-
-[   68.797425] rcutorture_one_extend_check during change: Current 0x1  To add 0x1  To remove 0x0  preempt_count() 0x0
-[   68.797533] WARNING: CPU: 2 PID: 512 at kernel/rcu/rcutorture.c:1993 rcutorture_one_extend_check+0x419/0x560 [rcutorture]
-[   68.797601] Call Trace:
-[   68.797602]  <TASK>
-[   68.797619]  ? lockdep_softirqs_off+0xa5/0x160
-[   68.797631]  rcutorture_one_extend+0x18e/0xcc0 [rcutorture 2466dbd2ff34dbaa36049cb323a80c3306ac997c]
-[   68.797646]  ? local_clock+0x19/0x40
-[   68.797659]  rcu_torture_one_read+0xf0/0x280 [rcutorture 2466dbd2ff34dbaa36049cb323a80c3306ac997c]
-[   68.797678]  ? __pfx_rcu_torture_one_read+0x10/0x10 [rcutorture 2466dbd2ff34dbaa36049cb323a80c3306ac997c]
-[   68.797804]  ? __pfx_rcu_torture_timer+0x10/0x10 [rcutorture 2466dbd2ff34dbaa36049cb323a80c3306ac997c]
-[   68.797815] rcu-torture: rcu_torture_reader task started
-[   68.797824] rcu-torture: Creating rcu_torture_reader task
-[   68.797824]  rcu_torture_reader+0x238/0x580 [rcutorture 2466dbd2ff34dbaa36049cb323a80c3306ac997c]
-[   68.797836]  ? kvm_sched_clock_read+0x15/0x30
-
+For built with CONFIG_PROVE_RCU=y and CONFIG_PREEMPT_RT=y kernels,
 Disable BH does not change the SOFTIRQ corresponding bits in
-preempt_count() for RT kernels, this commit therefore use
-softirq_count() to check the if BH is disabled.
+preempt_count(), but change current->softirq_disable_cnt, this
+resulted in the following splat:
 
+WARNING: suspicious RCU usage
+kernel/rcu/tree_plugin.h:36 Unsafe read of RCU_NOCB offloaded state!
+stack backtrace:
+CPU: 0 UID: 0 PID: 22 Comm: rcuc/0
+Call Trace:
+[    0.407907]  <TASK>
+[    0.407910]  dump_stack_lvl+0xbb/0xd0
+[    0.407917]  dump_stack+0x14/0x20
+[    0.407920]  lockdep_rcu_suspicious+0x133/0x210
+[    0.407932]  rcu_rdp_is_offloaded+0x1c3/0x270
+[    0.407939]  rcu_core+0x471/0x900
+[    0.407942]  ? lockdep_hardirqs_on+0xd5/0x160
+[    0.407954]  rcu_cpu_kthread+0x25f/0x870
+[    0.407959]  ? __pfx_rcu_cpu_kthread+0x10/0x10
+[    0.407966]  smpboot_thread_fn+0x34c/0xa50
+[    0.407970]  ? trace_preempt_on+0x54/0x120
+[    0.407977]  ? __pfx_smpboot_thread_fn+0x10/0x10
+[    0.407982]  kthread+0x40e/0x840
+[    0.407990]  ? __pfx_kthread+0x10/0x10
+[    0.407994]  ? rt_spin_unlock+0x4e/0xb0
+[    0.407997]  ? rt_spin_unlock+0x4e/0xb0
+[    0.408000]  ? __pfx_kthread+0x10/0x10
+[    0.408006]  ? __pfx_kthread+0x10/0x10
+[    0.408011]  ret_from_fork+0x40/0x70
+[    0.408013]  ? __pfx_kthread+0x10/0x10
+[    0.408018]  ret_from_fork_asm+0x1a/0x30
+[    0.408042]  </TASK>
+
+Currently, triggering an rdp offloaded state change need the
+corresponding rdp's CPU goes offline, and at this time the rcuc
+kthreads has already in parking state. this means the corresponding
+rcuc kthreads can safely read offloaded state of rdp while it's
+corresponding cpu is online.
+
+This commit therefore add softirq_count() check for
+Preempt-RT kernels.
+
+Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
 Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 ---
- kernel/rcu/rcutorture.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/rcu/tree_plugin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 373c65a6e103..ef439569f979 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -471,7 +471,7 @@ rcu_read_delay(struct torture_random_state *rrsp, struct rt_read_seg *rtrsp)
- 	    !(torture_random(rrsp) % (nrealreaders * 2000 * longdelay_ms))) {
- 		started = cur_ops->get_gp_seq();
- 		ts = rcu_trace_clock_local();
--		if (preempt_count() & (SOFTIRQ_MASK | HARDIRQ_MASK))
-+		if ((preempt_count() & HARDIRQ_MASK) || softirq_count())
- 			longdelay_ms = 5; /* Avoid triggering BH limits. */
- 		mdelay(longdelay_ms);
- 		rtrsp->rt_delay_ms = longdelay_ms;
-@@ -1990,7 +1990,7 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
- 		return;
- 
- 	WARN_ONCE((curstate & (RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH)) &&
--		  !(preempt_count() & SOFTIRQ_MASK), ROEC_ARGS);
-+		  !softirq_count(), ROEC_ARGS);
- 	WARN_ONCE((curstate & (RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED)) &&
- 		  !(preempt_count() & PREEMPT_MASK), ROEC_ARGS);
- 	WARN_ONCE(cur_ops->readlock_nesting &&
-@@ -2004,7 +2004,7 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
- 
- 	WARN_ONCE(cur_ops->extendables &&
- 		  !(curstate & (RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH)) &&
--		  (preempt_count() & SOFTIRQ_MASK), ROEC_ARGS);
-+		  softirq_count(), ROEC_ARGS);
- 
- 	/*
- 	 * non-preemptible RCU in a preemptible kernel uses preempt_disable()
-@@ -2025,6 +2025,9 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
- 	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
- 		mask |= RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
- 
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) && softirq_count())
-+		mask |= RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
-+
- 	WARN_ONCE(cur_ops->readlock_nesting && !(curstate & mask) &&
- 		  cur_ops->readlock_nesting() > 0, ROEC_ARGS);
- }
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 003e549f6514..a91b2322a0cd 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -29,7 +29,7 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+ 		  (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
+ 		  lockdep_is_held(&rdp->nocb_lock) ||
+ 		  lockdep_is_held(&rcu_state.nocb_mutex) ||
+-		  (!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) &&
++		  ((!(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible()) || softirq_count()) &&
+ 		   rdp == this_cpu_ptr(&rcu_data)) ||
+ 		  rcu_current_is_nocb_kthread(rdp)),
+ 		"Unsafe read of RCU_NOCB offloaded state"
 -- 
 2.17.1
 
