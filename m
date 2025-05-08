@@ -1,73 +1,93 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA33E226D1F;
-	Thu,  8 May 2025 23:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55A8230BC2;
+	Thu,  8 May 2025 23:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746747743; cv=none; b=TuAWcMBjq+LyzbGdp4WXl/iEM4DT6RC01e07RKeo4sDzhDN/zkZh4QT3/XKJm+V08kMemF79kqnI0CwpYklv2R5MIVMBnbGbkLvzHM1b+CCtlQGC2nYhKy1EdpSA7OVoPsbLFVoyO3tkKZci8Of1VXwEpGRaCDN6WE6pPpgJ2/g=
+	t=1746747753; cv=none; b=ZhBhjQzYNQO3Fcwq94/sH+MgEdBkcnp3Crwdt8moUdtlsb5BLQUkvklXot37B/2X6x5MG2uyIkn2H1VajSkwVL8ve2FzSDlUr65bN14Z0EJ2YeIsQ52MqvaPm683YswFBYZ0uUYQ87alPZ9ugcCjtcx3MireByRL8kZc+rX8rBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746747743; c=relaxed/simple;
-	bh=Q3j3Y4xw7S4ia+wnONYW2EEV29BaZCbBzImhzNQrnKI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=nhrCZtC5mfY2SVFw01bgEvDwrux0yDWObX9rgqfxRT6cA1dZh0nYBVhaYfL77fhMygCkHSXYirh+wQHf4QG8SLncJhaozk/8CFFGii8n0vqlMGjYD4HQT1XY811X5PuVIE3Q3Yn2F6zP1reJjb2dbpk+SIT1i2LxlNtw7CNBLFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+xRi2WZ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1746747753; c=relaxed/simple;
+	bh=qKbpk5aA0PmCFIvSfweb7NuQ7n7KI2VncQk39HmbUNk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iaynGOt/c8oRniwCjadxA0aN6raudKBgjJyREUixhn1rPy/dtjS83tyXloZwBOkrID0FC4VETFgTjs73q0RtzuMq3yPDIwCu5XQQ6gX7duKioBIvaH9N4evHIPyNGBB2sfqIYxJMTeLNVIm97x0AuJ5VN0gm4u9/fq6m7KeFUNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uto1rABw; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+xRi2WZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 436ECC4CEE7;
-	Thu,  8 May 2025 23:42:23 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uto1rABw"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58F36C4CEE7;
+	Thu,  8 May 2025 23:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746747743;
-	bh=Q3j3Y4xw7S4ia+wnONYW2EEV29BaZCbBzImhzNQrnKI=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=P+xRi2WZaH6dfSWH+ZmpsEKHKl36JGZBiw3vOnxFtgpuxOUBiKwXnWoYBW9FCDBHc
-	 eOf4B8WLPMc04b8c/M7albeXP3b3WOjIyFv4NvvDiTl4b4tLNj3xKqExPTO5gbNb7A
-	 5jsGWF6sKPs4bFpiXrJECZOq7npaD5JKZf2BjznZhrLn6MuexTGbuz5uwaI/uKjFQj
-	 aN2gkkRkyWBi9ReCEzFtFcZsaI5yJrrxGNxJ5diYblk5tEnqaiBeczyfwa4stSTYU0
-	 10LWJOkeDweKOPSMUbYxlbg4Jv71pP2mSORU1MePXUxgSNz8uX+BZVLg05xWhHAVIF
-	 OBAR9R6NnbyZg==
+	s=k20201202; t=1746747753;
+	bh=qKbpk5aA0PmCFIvSfweb7NuQ7n7KI2VncQk39HmbUNk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=uto1rABwKs++TyHL3Kq0A4qA3EPiRIeCJmEWFhBKgZn18l3PJQaE4b529sBZLFVyl
+	 64gD4cvJlZLxk7QuhSHb93cTPXiS53QSP7jQ2RUpRN+4Obp90ydRwlbn7WTqMzV8oO
+	 7amDdaLcOg8qXUBkYj64g+CbqCG/T9q3sda+/Wol8kIAX+LZvxQ8DHwI7DqsF6fo07
+	 RUdw/b3W1nICahiYHwyutamonPMm7sbvqKQm0ha2Qq7aCZykAeCIGWstHAxHvKRvC6
+	 LJWbWNJEPcxi+ezI4HdU4FbnY0e9DefD13wwGUJb0+jUa+SKFpSNrpGJ15mkiyYtPY
+	 5oijrnh1mbXvw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D98B4CE11A4; Thu,  8 May 2025 16:42:22 -0700 (PDT)
-Date: Thu, 8 May 2025 16:42:22 -0700
+	id 0AEF3CE11A4; Thu,  8 May 2025 16:42:33 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH 0/3] Make rcutorture safe(r) for arm64
-Message-ID: <da86a280-f402-499f-a4ba-df626ca4c748@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>
+Subject: [PATCH 1/3] torture: Check for "Call trace:" as well as "Call Trace:"
+Date: Thu,  8 May 2025 16:42:28 -0700
+Message-Id: <20250508234230.1996554-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <da86a280-f402-499f-a4ba-df626ca4c748@paulmck-laptop>
+References: <da86a280-f402-499f-a4ba-df626ca4c748@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+Different architectures capitalize their splats differently.  Who knew?
 
-This series makes a few small updates to make rcutorture run better
-on arm64 servers.  Remaining issues include TREE07 .config issues
-that are addressed by Mark Rutland's porting of PREEMPT_LAZY to arm64
-and by upcoming work to handle the fact that arm64 kernels cannot be
-built with CONFIG_SMP=n.  In the meantime, the CONFIG_SMP=n issue can
-be worked around by explictly specifying the TREE01, TREE02, TREE03,
-TREE04, TREE05, TREE07, SRCU-L, SRCU-N, SRCU-P, TASKS01, TASKS03, RUDE01,
-TRACE01, and TRACE02 scenarios, preferably in a script.  (But if you
-want typing practice, don't let me stand in your way!)
+This commit therefore checks for both arm64 "Call trace:" and x86
+"Call Trace:".
 
-1.	Check for "Call trace:" as well as "Call Trace:".
+Reported-by: Joel Fernandes <joelagnelf@nvidia.com>
+Closes: https://lore.kernel.org/all/553c33d8-2b51-4772-8aef-97b0163bc78e@nvidia.com/
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/console-badness.sh | 2 +-
+ tools/testing/selftests/rcutorture/bin/parse-console.sh   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-2.	Reduce TREE01 CPU overcommit.
+diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+index aad51e7c0183d..991fb11306eb6 100755
+--- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
++++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
+@@ -10,7 +10,7 @@
+ #
+ # Authors: Paul E. McKenney <paulmck@kernel.org>
+ 
+-grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
++grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Call trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
+ grep -v 'ODEBUG: ' |
+ grep -v 'This means that this is a DEBUG kernel and it is' |
+ grep -v 'Warning: unable to open an initial console' |
+diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+index b07c11cf6929d..21e6ba3615f6a 100755
+--- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
++++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+@@ -148,7 +148,7 @@ then
+ 			summary="$summary  KCSAN: $n_kcsan"
+ 		fi
+ 	fi
+-	n_calltrace=`grep -c 'Call Trace:' $file`
++	n_calltrace=`grep -Ec 'Call Trace:|Call trace:' $file`
+ 	if test "$n_calltrace" -ne 0
+ 	then
+ 		summary="$summary  Call Traces: $n_calltrace"
+-- 
+2.40.1
 
-3.	Remove MAXSMP and CPUMASK_OFFSTACK from TREE01.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- bin/console-badness.sh  |    2 +-
- bin/parse-console.sh    |    2 +-
- configs/rcu/TREE01      |    2 --
- configs/rcu/TREE01.boot |    2 +-
- 4 files changed, 3 insertions(+), 5 deletions(-)
