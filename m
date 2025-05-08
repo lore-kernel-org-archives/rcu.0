@@ -1,82 +1,68 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DA5230BD0;
-	Thu,  8 May 2025 23:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F870230BD0;
+	Thu,  8 May 2025 23:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746747754; cv=none; b=CLWWkQw5URC4NK7bxec52876GG8rjNjn46UN46ULQaJ4EvaCH6EdGX9CNiJmGwDhvj3liPo3O0tj880LblAHsTK2Y9GO9mw3N6NhOc6OUeuqoxppg99hVZztKxziUA8FNgXMLJe2hQS659jwW+n6ViEk9coNxi1ctZZfMaWSJgo=
+	t=1746747895; cv=none; b=R5oDGvmWWx7BdcbbWj48cWznwvA1XXIm1nszKMGtqodlJkmbuxS54faTs/81VgW2MRhHwCYJOGkJ1uw37QX3xI9tX/DDS88RowKYg0lqh7Iu/5lQkVLL2bjv8T7OciVljM39WZ/xlnjMvwiN57Rjl0XUYhN2edpgHgSmvqEiDiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746747754; c=relaxed/simple;
-	bh=xkjlkRzXy3gD07TO4pnDWxA5oWDgHXa+wX7fIFSjXqU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nTurzblRj0jXBsiBo0wqBFKXW44mWrUH6JyEGXU6nNLjxoaLGp1muIAqjH8LuonsRuplM8r55YdGhm0hxYjivFWLrQYmgYDiwLl+lt2ee1mRjoN57adBu3JREWnQbrmfxkd3CwMwYL4QeLfRON+b4CP9eMOAmQgfiy5GMiToZcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCoHP2iM; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1746747895; c=relaxed/simple;
+	bh=GgaaZEfwWTni/AhkB94pMqIyAWLeWgFcqf0B/7AJi7o=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=NdQgEydgM1/u36FToDLy4o9PxlBmFS69789x/LYfZhyYVRfxvnD+RG3Bde/Rz2x7A6RpZ3HqCgA9VolUMCcJ2W/Eace5G9zen7YiDAktbvwdndDcpMTmYP2sFDgj0nNfehNjCW+nF2qHor+kJNu0zfv9J/ljmIU/vAKZHI/zxmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cz1Waep9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCoHP2iM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F953C4CEEE;
-	Thu,  8 May 2025 23:42:33 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cz1Waep9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8CCC4CEE7;
+	Thu,  8 May 2025 23:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746747753;
-	bh=xkjlkRzXy3gD07TO4pnDWxA5oWDgHXa+wX7fIFSjXqU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eCoHP2iMLCyu1EXO6H5ih0kCuk+ZgM727OgswRp34bvzkAIsCtLkkBBe/7UDQdLOx
-	 EMX9peaGxT8xWB3vtONkZx8z3GCyqWHfgyUwoiAhkOGlM8yqLZMfsOWGoRpQZIy8Lu
-	 GnSd6ESnyHCTALw6ybXLltCeZzuk2m/PducscSSWtK8c3iTlYmXSiNKvMpJqgObmf3
-	 C70BMFsMKYkEVTOTDI+7CRO4lJl2IzVbUGhHrt1MRsLgKOLOUKZBOrxYa5VAOVgaBz
-	 nCcQv/YPZqiDEUNc6dPdXNHGGhdzOEQZxpdi14UZoJe0v5RsokiuuKkcirTY/DCf11
-	 ARH05QrcY2NSQ==
+	s=k20201202; t=1746747895;
+	bh=GgaaZEfwWTni/AhkB94pMqIyAWLeWgFcqf0B/7AJi7o=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=cz1Waep9xCEfNgpxu+9eDZHlCe/QJ4RIqnS7SYRYwiHamS4epBGTxRTsJZYpW3Ekz
+	 w4uyWSYk1XznJTbEp8Kwx4jYh8trDGMpbpCgR24Ihnnnu4vvlklEvcOzqXpFC5iWJj
+	 LM/VThovpxBMZ3E/V4xFSi6a2Xyroy7sAhd10rzq7tRs6L0fwa1UatIdqWfMlfST3w
+	 2Dk6+6BTe+OAJi00IyILIktYtDPfgNKhHZWfKgLiDsngp7uED/xArr/BlGG2Ukwku+
+	 bVDYuhwvy7kDJqzH+rvH+Ps07UQ/vx+84TyPWQmHl+0m3E8UWi5+1Gsjp5RtYvgQaI
+	 ppaOQY4iEsLqA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 10694CE11D4; Thu,  8 May 2025 16:42:33 -0700 (PDT)
+	id E7593CE11A4; Thu,  8 May 2025 16:44:54 -0700 (PDT)
+Date: Thu, 8 May 2025 16:44:54 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH 3/3] rcutorture: Remove MAXSMP and CPUMASK_OFFSTACK from TREE01
-Date: Thu,  8 May 2025 16:42:30 -0700
-Message-Id: <20250508234230.1996554-3-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <da86a280-f402-499f-a4ba-df626ca4c748@paulmck-laptop>
-References: <da86a280-f402-499f-a4ba-df626ca4c748@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH 0/5] Miscellaneous rcutorture updates
+Message-ID: <a942066a-85cb-4932-b4de-0ee39287ab7d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Back in the day, rcutorture was about the only thing that tested off-stack
-CPU masks, but now any arm64 system with more than 256 CPUs tests it
-full time.  In fact, it is necessary to hack the kernel to prevent such
-a system from testing off-stack CPU masks.  This means that there is
-no longer much point in rcutorture going out of its way to test this.
-And given the differences in how CPUMASK_OFFSTACK is enabled in x86 and
-arm64, rcutorture would need to go out of its way.
+Hello!
 
-This commit therefore removes CONFIG_CPUMASK_OFFSTACK=y (and the
-CONFIG_MAXSMP=y required to enable it on x86) from TREE01.
+This series provides miscellaneous rcutorture updates:
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/testing/selftests/rcutorture/configs/rcu/TREE01 | 2 --
- 1 file changed, 2 deletions(-)
+1.	Suppress torture.sh "Zero time" messages for disabled tests.
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE01 b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-index 8ae41d5f81a3e..54b1600c7eb5f 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE01
-@@ -8,8 +8,6 @@ CONFIG_NO_HZ_IDLE=y
- CONFIG_NO_HZ_FULL=n
- CONFIG_RCU_TRACE=y
- CONFIG_HOTPLUG_CPU=y
--CONFIG_MAXSMP=y
--CONFIG_CPUMASK_OFFSTACK=y
- CONFIG_RCU_NOCB_CPU=y
- CONFIG_DEBUG_LOCK_ALLOC=n
- CONFIG_RCU_BOOST=n
--- 
-2.40.1
+2.	Print number of RCU up/down readers and migrations.
 
+3.	Check for no up/down readers at task level.
+
+4.	Start rcu_torture_writer() after rcu_torture_reader().
+
+5.	Print only one rtort_pipe_count splat.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/rcutorture.c                           |   30 ++++++++++++++++----
+ b/tools/testing/selftests/rcutorture/bin/torture.sh |    6 ++--
+ kernel/rcu/rcutorture.c                             |   13 +++++---
+ 3 files changed, 36 insertions(+), 13 deletions(-)
