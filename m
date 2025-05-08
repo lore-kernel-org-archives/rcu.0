@@ -1,68 +1,163 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F870230BD0;
-	Thu,  8 May 2025 23:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3153722D9FF;
+	Thu,  8 May 2025 23:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746747895; cv=none; b=R5oDGvmWWx7BdcbbWj48cWznwvA1XXIm1nszKMGtqodlJkmbuxS54faTs/81VgW2MRhHwCYJOGkJ1uw37QX3xI9tX/DDS88RowKYg0lqh7Iu/5lQkVLL2bjv8T7OciVljM39WZ/xlnjMvwiN57Rjl0XUYhN2edpgHgSmvqEiDiI=
+	t=1746747904; cv=none; b=fDumaQAuq6QEBQjdSwqLKncrOSdTmA+vgATA1p4tfLN9hMBgDLNvaikTp3GYZriqS1Y+3y9Z2XOs77rs40eLEdkVJOpB+1GLLlq+5CIgJcMPzJgI2gim3tfU6xuGzF2gqgnGe1RDRHkTX7hoCgmpyuNwFIk3yewtiA/yC3VifYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746747895; c=relaxed/simple;
-	bh=GgaaZEfwWTni/AhkB94pMqIyAWLeWgFcqf0B/7AJi7o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=NdQgEydgM1/u36FToDLy4o9PxlBmFS69789x/LYfZhyYVRfxvnD+RG3Bde/Rz2x7A6RpZ3HqCgA9VolUMCcJ2W/Eace5G9zen7YiDAktbvwdndDcpMTmYP2sFDgj0nNfehNjCW+nF2qHor+kJNu0zfv9J/ljmIU/vAKZHI/zxmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cz1Waep9; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1746747904; c=relaxed/simple;
+	bh=bvCZgli80KnITWarlCrhmBdHt7QXA9LBPnvN1OFeIHs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=d7j8Ck+5BfTRfEcW3Sp0oQSm8OtOmUaXCXSgHTjpgTDS/eFCIsgFaOdhe4YW1gpndujycuKk9IOfymvaI0/l8/DMDLoncJoEvZfOROGPhQfeJhYZyUyWI++2KHAtUzvzC9rbyQP6BxkzEzcTkZshYx68mTFVjQ1/az0Mu1bY5xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEFGDNA9; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cz1Waep9"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8CCC4CEE7;
-	Thu,  8 May 2025 23:44:55 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEFGDNA9"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10ABEC4CEED;
+	Thu,  8 May 2025 23:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746747895;
-	bh=GgaaZEfwWTni/AhkB94pMqIyAWLeWgFcqf0B/7AJi7o=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=cz1Waep9xCEfNgpxu+9eDZHlCe/QJ4RIqnS7SYRYwiHamS4epBGTxRTsJZYpW3Ekz
-	 w4uyWSYk1XznJTbEp8Kwx4jYh8trDGMpbpCgR24Ihnnnu4vvlklEvcOzqXpFC5iWJj
-	 LM/VThovpxBMZ3E/V4xFSi6a2Xyroy7sAhd10rzq7tRs6L0fwa1UatIdqWfMlfST3w
-	 2Dk6+6BTe+OAJi00IyILIktYtDPfgNKhHZWfKgLiDsngp7uED/xArr/BlGG2Ukwku+
-	 bVDYuhwvy7kDJqzH+rvH+Ps07UQ/vx+84TyPWQmHl+0m3E8UWi5+1Gsjp5RtYvgQaI
-	 ppaOQY4iEsLqA==
+	s=k20201202; t=1746747904;
+	bh=bvCZgli80KnITWarlCrhmBdHt7QXA9LBPnvN1OFeIHs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=fEFGDNA9IaWTXP3d6e/ocxz+i83PL2a00I+8tmusPGA3h5OCXw3Aa79muJ1MNGMF/
+	 Lt/A2H/7SAxr3LthaMSWpfW9eDVPe/DPfvfKUNAK9Tozh/FPWWnA5G2Wf0h6TGu7ce
+	 tRcvKHP/IuBR32YINzsi8q6UssmtbspSnm1oQJgC1bMAAB9Uagm6yCp6x4XlpBz3By
+	 yHdwVRRtatdMkR8vmArqqsS8mfiqXzlaHtBp5ZiNZFBcpMOY0QxEJE7jasp5Ol32Vh
+	 SkVTC15OV+rEnbPeAxRjNYF7sZLnLxo8WT8qtI5JJJIp3YTDIUQIVqTbMeedleoD/0
+	 EeM8K3szxx6EQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E7593CE11A4; Thu,  8 May 2025 16:44:54 -0700 (PDT)
-Date: Thu, 8 May 2025 16:44:54 -0700
+	id B242BCE11D3; Thu,  8 May 2025 16:45:03 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
-Subject: [PATCH 0/5] Miscellaneous rcutorture updates
-Message-ID: <a942066a-85cb-4932-b4de-0ee39287ab7d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 2/5] rcutorture: Print number of RCU up/down readers and migrations
+Date: Thu,  8 May 2025 16:44:59 -0700
+Message-Id: <20250508234502.1996788-2-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <a942066a-85cb-4932-b4de-0ee39287ab7d@paulmck-laptop>
+References: <a942066a-85cb-4932-b4de-0ee39287ab7d@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hello!
+This commit prints the number of RCU up/down readers and the number
+of such readers that migrated from one CPU to another, along
+with the rest of the periodic rcu_torture_stats_print() output.
+These statistics are currently used only by srcu_down_read{,_fast}()
+and srcu_up_read(,_fast)().
 
-This series provides miscellaneous rcutorture updates:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-1.	Suppress torture.sh "Zero time" messages for disabled tests.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 0e044afa98d32..21ff365fca5d9 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2447,9 +2447,11 @@ struct rcu_torture_one_read_state_updown {
+ 	struct hrtimer rtorsu_hrt;
+ 	bool rtorsu_inuse;
+ 	ktime_t rtorsu_kt;
++	int rtorsu_cpu;
+ 	unsigned long rtorsu_j;
+ 	unsigned long rtorsu_ndowns;
+ 	unsigned long rtorsu_nups;
++	unsigned long rtorsu_nmigrates;
+ 	struct torture_random_state rtorsu_trs;
+ 	struct rcu_torture_one_read_state rtorsu_rtors;
+ };
+@@ -2460,12 +2462,15 @@ static int rcu_torture_updown(void *arg);
+ 
+ static enum hrtimer_restart rcu_torture_updown_hrt(struct hrtimer *hrtp)
+ {
++	int cpu = raw_smp_processor_id();
+ 	struct rcu_torture_one_read_state_updown *rtorsup;
+ 
+ 	rtorsup = container_of(hrtp, struct rcu_torture_one_read_state_updown, rtorsu_hrt);
+ 	rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1);
+ 	WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
+-	rtorsup->rtorsu_nups++;
++	WRITE_ONCE(rtorsup->rtorsu_nups, rtorsup->rtorsu_nups + 1);
++	WRITE_ONCE(rtorsup->rtorsu_nmigrates,
++		   rtorsup->rtorsu_nmigrates + (cpu != rtorsup->rtorsu_cpu));
+ 	smp_store_release(&rtorsup->rtorsu_inuse, false);
+ 	return HRTIMER_NORESTART;
+ }
+@@ -2513,7 +2518,7 @@ static void rcu_torture_updown_cleanup(void)
+ 		if (hrtimer_cancel(&rtorsup->rtorsu_hrt) || WARN_ON_ONCE(rtorsup->rtorsu_inuse)) {
+ 			rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1);
+ 			WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
+-			rtorsup->rtorsu_nups++;
++			WRITE_ONCE(rtorsup->rtorsu_nups, rtorsup->rtorsu_nups + 1);
+ 			smp_store_release(&rtorsup->rtorsu_inuse, false);
+ 		}
+ 
+@@ -2531,13 +2536,14 @@ static void rcu_torture_updown_one(struct rcu_torture_one_read_state_updown *rto
+ 
+ 	init_rcu_torture_one_read_state(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs);
+ 	rawidx = cur_ops->down_read();
+-	rtorsup->rtorsu_ndowns++;
++	WRITE_ONCE(rtorsup->rtorsu_ndowns, rtorsup->rtorsu_ndowns + 1);
+ 	idx = (rawidx << RCUTORTURE_RDR_SHIFT_1) & RCUTORTURE_RDR_MASK_1;
+ 	rtorsup->rtorsu_rtors.readstate = idx | RCUTORTURE_RDR_UPDOWN;
+ 	rtorsup->rtorsu_rtors.rtrsp++;
++	rtorsup->rtorsu_cpu = raw_smp_processor_id();
+ 	if (!rcu_torture_one_read_start(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1)) {
+ 		WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
+-		rtorsup->rtorsu_nups++;
++		WRITE_ONCE(rtorsup->rtorsu_nups, rtorsup->rtorsu_nups + 1);
+ 		schedule_timeout_idle(HZ);
+ 		return;
+ 	}
+@@ -2646,6 +2652,10 @@ rcu_torture_stats_print(void)
+ 	long pipesummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
+ 	long batchsummary[RCU_TORTURE_PIPE_LEN + 1] = { 0 };
+ 	long n_gpwraps = 0;
++	unsigned long ndowns = 0;
++	unsigned long nunexpired = 0;
++	unsigned long nmigrates = 0;
++	unsigned long nups = 0;
+ 	struct rcu_torture *rtcp;
+ 	static unsigned long rtcv_snap = ULONG_MAX;
+ 	static bool splatted;
+@@ -2659,10 +2669,18 @@ rcu_torture_stats_print(void)
+ 		if (cur_ops->get_gpwrap_count)
+ 			n_gpwraps += cur_ops->get_gpwrap_count(cpu);
+ 	}
++	if (updownreaders) {
++		for (i = 0; i < n_up_down; i++) {
++			ndowns += READ_ONCE(updownreaders[i].rtorsu_ndowns);
++			nups += READ_ONCE(updownreaders[i].rtorsu_nups);
++			nunexpired += READ_ONCE(updownreaders[i].rtorsu_inuse);
++			nmigrates += READ_ONCE(updownreaders[i].rtorsu_nmigrates);
++		}
++	}
+ 	for (i = RCU_TORTURE_PIPE_LEN; i >= 0; i--) {
+ 		if (pipesummary[i] != 0)
+ 			break;
+-	}
++	} // The value of variable "i" is used later, so don't clobber it!
+ 
+ 	pr_alert("%s%s ", torture_type, TORTURE_FLAG);
+ 	rtcp = rcu_access_pointer(rcu_torture_current);
+@@ -2683,6 +2701,8 @@ rcu_torture_stats_print(void)
+ 		n_rcu_torture_boost_failure,
+ 		n_rcu_torture_boosts,
+ 		atomic_long_read(&n_rcu_torture_timers));
++	if (updownreaders)
++		pr_cont("ndowns: %lu nups: %lu nhrt: %lu nmigrates: %lu ", ndowns, nups, nunexpired,  nmigrates);
+ 	torture_onoff_stats();
+ 	pr_cont("barrier: %ld/%ld:%ld ",
+ 		data_race(n_barrier_successes),
+-- 
+2.40.1
 
-2.	Print number of RCU up/down readers and migrations.
-
-3.	Check for no up/down readers at task level.
-
-4.	Start rcu_torture_writer() after rcu_torture_reader().
-
-5.	Print only one rtort_pipe_count splat.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- b/kernel/rcu/rcutorture.c                           |   30 ++++++++++++++++----
- b/tools/testing/selftests/rcutorture/bin/torture.sh |    6 ++--
- kernel/rcu/rcutorture.c                             |   13 +++++---
- 3 files changed, 36 insertions(+), 13 deletions(-)
