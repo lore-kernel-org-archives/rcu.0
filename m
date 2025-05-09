@@ -1,38 +1,37 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF7D290DBE;
-	Fri,  9 May 2025 12:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717D829117E;
+	Fri,  9 May 2025 12:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746795306; cv=none; b=YhailvoZIkhfP/KLess+Y/hQMf5qvH7/iZT1f+PpBus5NQvxthUt8l5ipixPYCLJgh6rM1lf0z41WJHkA+TDTZVfnLcI7K1axsJLer4Mn7ez7AIaKqq+3jOpwqzLb09hGhm3kLlXFj+gzlb9cvdAzVzoB3Ybj/3adqnJ8BTtrMA=
+	t=1746795306; cv=none; b=ZVB/5nN4yHXQhHC/sPtWIX6NARQvlQWRuMnQLnGw/w2uL0OsAJYBaITWz7ea9w7Q2pg0MGYzW4fum+encysA/z0cT4avculgS29wWQyTakDUFxLvSCC3XoBnI3fXSWFvBH3y5eYuh6zM6BsmTzK09psdyYOdL65hzHf7eAzB8CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746795306; c=relaxed/simple;
-	bh=BpmzDMZbudMRxYnWKdn7By3e4oIcbEz4h214VtRxk9I=;
+	bh=lbD12Kxx59vQ4CfWoFvcmBEI0Z7ENmEnOq1lhFaAf3U=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Vz0NZFhwsLqlg5f5jCRh8hvSwNUfJ7l2wCN3I5mvAmgA9VxY6xgbQcGtobN8C4GTkpiay0HrwMQvfyp/RaSb5F7i+2I4F5Cuf8fqWWMx28006V3/qAjXxnC6b5GgsBwWy0+PMaBEsPRKfD1WXyZOAEpwflH58O6jnnMUk9M0Qy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oOk/J+va; arc=none smtp.client-ip=10.30.226.201
+	 In-Reply-To:To:Cc; b=YBvCo1Hx9XEAZjeE9ltI0bSTHQHlBovzbxTRbqM+xKm0dEIBiYx25v3AvmSiFANKBhjwNyBRcVf4zt/QobOnJqkcGc/9sC0weyjkxcVjpCXIqmPR9tw1QRgnL2qXSCp4kPACpZ4EmlkSn22xcYNznDzSPyypAkyzpSyBUi+EdZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dkidCP66; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oOk/J+va"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BD55CC4CEEF;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dkidCP66"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E4760C4AF10;
 	Fri,  9 May 2025 12:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746795305;
-	bh=BpmzDMZbudMRxYnWKdn7By3e4oIcbEz4h214VtRxk9I=;
+	s=k20201202; t=1746795306;
+	bh=lbD12Kxx59vQ4CfWoFvcmBEI0Z7ENmEnOq1lhFaAf3U=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=oOk/J+vaXcCK+KIoAHGzkTE6SF1jxzmX9CvUYcBR+nY+HuSCBjmFriMTsBAAz/W4b
-	 07h7jWzhlKlcjHwLg0p26MQ23p0yUS+5xgty/9MCfu9V7oFN3MXsA39qQyWvh7W3fl
-	 Iq5AgI9VOLFne6dwxGr0dDSl7S1GdCliiuUxzK479K1e6qQtwWgtDX1QtGAEv+mq4c
-	 Hs7ShgRff+NXpp8P6VAJW4xlkiZC5jtQC+MnmliVVuImATzNBgwr08H8s6jJUL4YyT
-	 GOVC4ltAY08YmmX8Y+wSal1CAuiN87dLWgau8HpMQl2CXOPvWV/HeuVnZIhNPL9XGH
-	 gv3BZhiSiwGZg==
+	b=dkidCP6618EWoSqom292OP1GIU75cyTnccRpQuU2HkXtUq6U9TysuXyUCi7yrBr+b
+	 UxElOiOO536gK4hJH/mrskApg9YK20HGvUxmRQQWhJBYRQ4RAsYOkSq9EFRaVJw+gC
+	 k+3KbUHnzPJcEr83n2V+BBeFLuzRx4pt2tDSDf/AXjpsjRrFOKHq2A52DjB+t6y94D
+	 AMPpxswVwEHHr7tGQSoxWvuB3EczqYn3dOrJPYfY9DWgTVNnZCSFMF4J6i3v0tJYOB
+	 2NOPDVku7AReQZJ60Ayi+Yih/wd6Nzy90YLmgWFQbf8eHdK5mXGrbouCExm6xlLKH3
+	 Szn23Bp7vWP/Q==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAD60C3ABC3;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7E93C3ABCA;
 	Fri,  9 May 2025 12:55:05 +0000 (UTC)
 From: Joel Granados <joel.granados@kernel.org>
-Date: Fri, 09 May 2025 14:54:05 +0200
-Subject: [PATCH 01/12] module: Move modprobe_path and modules_disabled
- ctl_tables into the module subsys
+Date: Fri, 09 May 2025 14:54:08 +0200
+Subject: [PATCH 04/12] mm: move randomize_va_space into memory.c
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -41,7 +40,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250509-jag-mv_ctltables_iter2-v1-1-d0ad83f5f4c3@kernel.org>
+Message-Id: <20250509-jag-mv_ctltables_iter2-v1-4-d0ad83f5f4c3@kernel.org>
 References: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
 In-Reply-To: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
 To: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
@@ -67,28 +66,27 @@ Cc: linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-parisc@vger.kernel.org, linux-serial@vger.kernel.org, 
  Joel Granados <joel.granados@kernel.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3577;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1890;
  i=joel.granados@kernel.org; h=from:subject:message-id;
- bh=BpmzDMZbudMRxYnWKdn7By3e4oIcbEz4h214VtRxk9I=;
- b=owJ4nAHtARL+kA0DAAoBupfNUreWQU8ByyZiAGgd+yERlHWpCzKql69kqBrlIddBBHXw3ii2o
- uiBdL8PsdBJNokBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJoHfshAAoJELqXzVK3
- lkFPiYAL/jcKTOT3jHcbWnBmzVITRoAGWzzbqeMhLRmW02xJEovcpCPY557YgiP0MDw733croZF
- E0B+rCl82lMougLjMo2ERjTkG5jEIC1YMnEdSHENOsBYDKsGjQc78C+gjzKuRex2SijKeNi9iQ1
- uyVHT+J023ir1ZOBlut49P1x2aMYq/ijeE0GaEf0fKwCon+h4r4tDZl28rRqr3i54D2Ceg0jR/U
- DdK3iItzrHNAohjw6kT8VcgV38sk6Vqn1GIBtGRXmwT2Hzt8UpXR8Z2UTrHoYw1UoUsT1tjt75K
- knCtPI1vnOkhFgERft4V4NEq2+JM4D7Q4mnWCQWPXogsEFVdIss6C6E/JXzfQqTXfeMbXuSw/aB
- FtYyvMGEbh1FldKAR3MrNrWwkFnOFNfVxGhHR7YLyRfsXpeuVWIzTAwTHK3FG2vEvcogCTywjTA
- QH0H+x43FnFzxiYTQ2JKcV2Nn8mPVyUwTV/FYApI7fa8tKnApPVwY3R+ZcCXgtJy3gd0HxiIcE2
- os=
+ bh=lbD12Kxx59vQ4CfWoFvcmBEI0Z7ENmEnOq1lhFaAf3U=;
+ b=owJ4nAHtARL+kA0DAAoBupfNUreWQU8ByyZiAGgd+yL6XG7IKZNJemnuB1rPOszHmqOCUZ3Zs
+ jVgj6kQvsj0HokBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJoHfsiAAoJELqXzVK3
+ lkFP7zwL+wbFmnyUHyRQDfHaFCGu9MKJ/23nAFqv2PKDDVuL6RnqGSj+Oz9aVfBXXFbgiwfQSdS
+ M8Di+bFDTA1BDI23Pc+gkOLFpi/dAxm/ZTV3e8QUzQTCObyrlB/J2n94yJMrOx0txlaxxyZ83i/
+ k/Fy7MBTnx3gm4/a78AQCIu98FDMVQNCa5D2Fugr1q5sxsV9OS6qmNMcJDFotIhsmXYTyAvtYzg
+ JdnrfOrevEVIcp5CWPDX09gX77gMYx50kH1ZOZ4H/rb7F/JxDqeKvXLgkQJ5Em9k3+zgtunwxH9
+ BSxhe5p0LiO9sdZxARP7ufpuEuj2m6gv3quOYh5dxVHr1Hcf9CIiiXK7+AbN2XFEAYg3Ql70HIw
+ 3u5rhO/KHqWOiSPryFYUXfdE8ScFh/Spr1VxLTqH8p2FAJx3cZN5IraAIDYeR5xEpmN2k9yo0bA
+ yGEsnc69Ev3O3LWMJLiF7aZm2CGi2nZIx/7nmrfhvakk6VVLE5L4vjfu35geou9mZQKPOmnLf78
+ Kg=
 X-Developer-Key: i=joel.granados@kernel.org; a=openpgp;
  fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
 X-Endpoint-Received: by B4 Relay for joel.granados@kernel.org/default with
  auth_id=239
 
-Move module sysctl (modprobe_path and modules_disabled) out of sysctl.c
-and into the modules subsystem. Make the modprobe_path variable static
-as it no longer needs to be exported. Remove module.h from the includes
-in sysctl as it no longer uses any module exported variables.
+Move the randomize_va_space variable together with all its sysctl table
+elements into memory.c. Register it to the "kernel" directory by
+adding it to the subsys initialization calls
 
 This is part of a greater effort to move ctl tables into their
 respective subsystems which will reduce the merge conflicts in
@@ -96,108 +94,59 @@ kernel/sysctl.c.
 
 Signed-off-by: Joel Granados <joel.granados@kernel.org>
 ---
- include/linux/kmod.h |  1 -
- kernel/module/kmod.c | 32 +++++++++++++++++++++++++++++++-
- kernel/sysctl.c      | 20 --------------------
- 3 files changed, 31 insertions(+), 22 deletions(-)
+ kernel/sysctl.c |  9 ---------
+ mm/memory.c     | 18 ++++++++++++++++++
+ 2 files changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/kmod.h b/include/linux/kmod.h
-index 68f69362d427caaaefc2565127a7a4158433e5f5..cc32e56dae44896f74a9faf0e97f432f133869b9 100644
---- a/include/linux/kmod.h
-+++ b/include/linux/kmod.h
-@@ -17,7 +17,6 @@
- #define KMOD_PATH_LEN 256
- 
- #ifdef CONFIG_MODULES
--extern char modprobe_path[]; /* for sysctl */
- /* modprobe exit status on success, -ve on error.  Return value
-  * usually useless though. */
- extern __printf(2, 3)
-diff --git a/kernel/module/kmod.c b/kernel/module/kmod.c
-index 25f25381251281a390b273cd8a734c92b960113a..5701629adc27b4bb5080db75f0e69f9f55e9d2ad 100644
---- a/kernel/module/kmod.c
-+++ b/kernel/module/kmod.c
-@@ -60,7 +60,7 @@ static DEFINE_SEMAPHORE(kmod_concurrent_max, MAX_KMOD_CONCURRENT);
- /*
- 	modprobe_path is set via /proc/sys.
- */
--char modprobe_path[KMOD_PATH_LEN] = CONFIG_MODPROBE_PATH;
-+static char modprobe_path[KMOD_PATH_LEN] = CONFIG_MODPROBE_PATH;
- 
- static void free_modprobe_argv(struct subprocess_info *info)
- {
-@@ -177,3 +177,33 @@ int __request_module(bool wait, const char *fmt, ...)
- 	return ret;
- }
- EXPORT_SYMBOL(__request_module);
-+
-+#ifdef CONFIG_MODULES
-+static const struct ctl_table kmod_sysctl_table[] = {
-+	{
-+		.procname	= "modprobe",
-+		.data		= &modprobe_path,
-+		.maxlen		= KMOD_PATH_LEN,
-+		.mode		= 0644,
-+		.proc_handler	= proc_dostring,
-+	},
-+	{
-+		.procname	= "modules_disabled",
-+		.data		= &modules_disabled,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		/* only handle a transition from default "0" to "1" */
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ONE,
-+		.extra2		= SYSCTL_ONE,
-+	},
-+};
-+
-+static int __init init_kmod_sysctl(void)
-+{
-+	register_sysctl_init("kernel", kmod_sysctl_table);
-+	return 0;
-+}
-+
-+subsys_initcall(init_kmod_sysctl);
-+#endif
 diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 9b4f0cff76eaddc823065ea587760156576a8686..473133d9651eac4ef44b8b63a44b77189818ac08 100644
+index fd76f0e1d490940a67d72403d72d204ff13d888a..adc2d3ea127841d87b7073ed81d6121c9a60e59a 100644
 --- a/kernel/sysctl.c
 +++ b/kernel/sysctl.c
-@@ -19,7 +19,6 @@
-  *  Removed it and replaced it with older style, 03/23/00, Bill Wendling
-  */
- 
--#include <linux/module.h>
- #include <linux/sysctl.h>
- #include <linux/bitmap.h>
- #include <linux/printk.h>
-@@ -1616,25 +1615,6 @@ static const struct ctl_table kern_table[] = {
+@@ -1688,15 +1688,6 @@ static const struct ctl_table kern_table[] = {
  		.proc_handler	= proc_dointvec,
  	},
  #endif
--#ifdef CONFIG_MODULES
+-#if defined(CONFIG_MMU)
 -	{
--		.procname	= "modprobe",
--		.data		= &modprobe_path,
--		.maxlen		= KMOD_PATH_LEN,
--		.mode		= 0644,
--		.proc_handler	= proc_dostring,
--	},
--	{
--		.procname	= "modules_disabled",
--		.data		= &modules_disabled,
+-		.procname	= "randomize_va_space",
+-		.data		= &randomize_va_space,
 -		.maxlen		= sizeof(int),
 -		.mode		= 0644,
--		/* only handle a transition from default "0" to "1" */
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ONE,
--		.extra2		= SYSCTL_ONE,
+-		.proc_handler	= proc_dointvec,
 -	},
 -#endif
- #ifdef CONFIG_UEVENT_HELPER
+ #ifdef CONFIG_SYSCTL_ARCH_UNALIGN_NO_WARN
  	{
- 		.procname	= "hotplug",
+ 		.procname	= "ignore-unaligned-usertrap",
+diff --git a/mm/memory.c b/mm/memory.c
+index ba3ea0a82f7f770b6cacba4526ba9c8c4929ddad..0a9e325fe3d7631e619ab58d79785cc92fd60c29 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -125,6 +125,24 @@ int randomize_va_space __read_mostly =
+ 					2;
+ #endif
+ 
++static const struct ctl_table mmu_sysctl_table[] = {
++	{
++		.procname	= "randomize_va_space",
++		.data		= &randomize_va_space,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++	},
++};
++
++static int __init init_mm_sysctl(void)
++{
++	register_sysctl_init("kernel", mmu_sysctl_table);
++	return 0;
++}
++
++subsys_initcall(init_mm_sysctl);
++
+ #ifndef arch_wants_old_prefaulted_pte
+ static inline bool arch_wants_old_prefaulted_pte(void)
+ {
 
 -- 
 2.47.2
