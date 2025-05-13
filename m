@@ -1,183 +1,176 @@
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2086.outbound.protection.outlook.com [40.107.220.86])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB9C321578F
-	for <rcu@vger.kernel.org>; Mon, 12 May 2025 15:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.86
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747062488; cv=fail; b=BNP+y6/mG+A9rLQPB7QoBFIZ5KbNKopHBvGTqwELaaQ+piAzAXdsB6H9/5kqPCVEdG3RJ+TKZrKYHTuIsm1X3if2Gzi1WonpMIJCuLfxBP8ONSHRXbDT3KlA8vKTTmvCoWnqSPeFwNCyEzvcqPpMakrPM/qq17IYAwCvFMldAjg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747062488; c=relaxed/simple;
-	bh=1U8hVrF3Itewo58CF3uzJ7TQizoz1zE1X4h2EGM5kzY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=K/bG4gD8fRJg5UAkiQfeNP8eRXNdQIJS/JGZwCZyH49gjM2cwhBovCy8da26VGIR4CktDOxLN8mnnAGQuIYg4XPLzcgfOaTIA/mVxOUnLl4hIOFdcgSCSYAoMp15D/8f4Njpk/y6bgwska5KGPEg7MC8VyfplSoK1SkYHNGyeuY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JKp866yb; arc=fail smtp.client-ip=40.107.220.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C274315E;
+	Tue, 13 May 2025 07:33:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747121609; cv=none; b=OK6tE3Wn8RmaaVe7hcx3jEL3twH1WBbsheu4gmYwrWsXtg5TtmcGWyO5g36ZhGEkMRzuZojHigtGiBXNCFUJMoYQL30a97zKvY8cmziGTwX6ZMTdaCM+yfFSK5VfyVVeAjW6vPSnzb1OMfYuonJLp9i5Vr44mvJkCSKtMCTnETY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747121609; c=relaxed/simple;
+	bh=oydnFwFzyvTFZLytjGu4FLOFoRfASVhdPt5sskdlZPs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E/ZrQwHzlUuGaHtfyGcTxFRDPXA3Fa24/HAWubz+wKwcAnApYmKcarAiB/wsNup6f7r+5btGIoRlC0DTZ85x5owSA2NlEi638C8dxHTpIXyIOc9BngBHF7fy7Gj5UESwMtWnAZMV9G+d7rTFPRhZ7W8pWCNO9yzU1PZfo9lGwNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h1cuC8NK; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JKp866yb"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SaOlOqetf3zpADvtaYiA7A4a9lc6wIP6oPMcPUXs3BvlcR3wC30zTmFdvWikzGe0/mFe+aVeXC87q7K/U6CvFHue5qsKKlzVsH+urRkps+1FhgE9BS7Jf0deytBZ+1Q1FhjFxbC0byr+fFQWqxDau6gLues3+kFkOACV37b6+sV26rDa6RzAqwi5USMsJ/9kitbnlcop87VAixSpJOgLPx29OSb6tvv762fpeLWG/XziFupcgiBPDEeQTWMQtl2Ett4eDFJ/kHJCLWK7gFMCXqKhrdoi7clGrP+ZuoIztNI4tqh3nGzalWFtLcwHUtm+8HUmBdIH09jPC38Vz9g6Yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hx38D+O8jFDXg13davozb5Xg4n9FcsmY0kimqKxlhaA=;
- b=hSP4uhmVV8JuP8siBqoC7H6KsEnYNWZl0YZN29ZW56ISJ4LptJPgRGXwSER+Iovrtwjf4WjIydo64MgTA9dvtNDP9CsyrWYaVIwPqD0fI7MKXDN9F//OoFAwMPwcMRwrlbZ4MEtkSEZ+SOxVAR7HF16bXw2wQGmfZxvSXbr9GJQBdfUzKjiluu7rPe2rub0AnFdhbBJufwf2Fg85ok2Xf67u3ysdQKoR1bbegB9FbI6y2TFzGWruLCtyl0OkhWTb3c+V7ZQI+/IC2qA9x0gF9uEbak7qiAB2MRqJWc1LFN1TbAhA7CxrFzrcv+Xf2fL/DSVGxZfbxVjqRqOSoCQ0qA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hx38D+O8jFDXg13davozb5Xg4n9FcsmY0kimqKxlhaA=;
- b=JKp866ybMONYo9YyH+Wo8LvjN8SjTLOWbnjvHIcn1mxDNPFf3xAE8GYMN1pXRGtI1DL6ImbAjS0WJzBIzcLBFOKzx4gwSwO6efV2AGJssurooFFWySss0JClOF0m2oB7SA7u5Uh3/O/VmEr6Qwpdl9UkEHdgZ8aO6FU351dzx+U6OKn4Py9Z6AcKdooV4M/RXncauiI+XjEQcljZ63LgLxFPiJqwjFKeDzbq6w5uFiqQRm+ZR4fh4rig8l/vPlJWFQ08431YuajC0IvoyiR5h6EfMbhmmaul4q861VX7uLrgL7ahABPCeZZBsUgzCpP1qZfSsCDWQo3UcwdkVIuA9g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by SN7PR12MB6960.namprd12.prod.outlook.com (2603:10b6:806:260::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.29; Mon, 12 May
- 2025 15:08:03 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%3]) with mapi id 15.20.8722.027; Mon, 12 May 2025
- 15:08:03 +0000
-Message-ID: <a61d791b-540d-48ab-a20b-83e2ba71226d@nvidia.com>
-Date: Mon, 12 May 2025 11:08:00 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] rcutorture: Perform more frequent testing of ->gpwrap
-To: Akira Yokosawa <akiyks@gmail.com>
-Cc: paulmck@kernel.org, rcu@vger.kernel.org
-References: <20250421174717.3332525-1-joelagnelf@nvidia.com>
- <24beb2bb-b168-4849-804b-033c20ca352e@gmail.com>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <24beb2bb-b168-4849-804b-033c20ca352e@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0063.namprd02.prod.outlook.com
- (2603:10b6:a03:54::40) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h1cuC8NK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38272C4CEE4;
+	Tue, 13 May 2025 07:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747121608;
+	bh=oydnFwFzyvTFZLytjGu4FLOFoRfASVhdPt5sskdlZPs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h1cuC8NKAbWGk5N4z9eoNPIQ6NBkZHWfTFBOMG6WcDqpnNYaelJWfkZf82BqvkDSl
+	 P/SajPouty4fKsU9symCU24kVd6HIGfDEqjl8fysrHGn06p2mqEb6M0ny0gYBoxxBk
+	 KeV2K9sjGbcqfaahL5nhnRXWUj06irpfg80ARwqSV7eG2SqwwBAwTjvK/K/HmYNC+3
+	 ClsSUW2zxuP5+BIRP9Uh8Sg+1e8cC47UVPi/e6Hv3UN5bc6ttmhPXS1uHrb7nlx2Hl
+	 1bxJvfmr+aeiyc8BpGfu5tpnm9UEP2MWYHDM53CjBoe7hXKGFQZU+2v+E1qoSj2UG6
+	 EapmAmIgZLQyQ==
+Date: Tue, 13 May 2025 09:33:23 +0200
+From: Joel Granados <joel.granados@kernel.org>
+To: Kees Cook <kees@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
+	Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
+	linux-parisc@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 09/12] sysctl: move cad_pid into kernel/pid.c
+Message-ID: <hqklj5woeb3hl3n4btn6xognyw63tkp7x2ht6dkw52nmhwfioo@ssagrmnhg2bu>
+References: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
+ <20250509-jag-mv_ctltables_iter2-v1-9-d0ad83f5f4c3@kernel.org>
+ <202505091200.FC2683DD@keescook>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|SN7PR12MB6960:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c57b488-d4c5-489e-56d3-08dd9166caa3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ZE43NTkwUDJTZ2wrSjVHVFNrSXFncGJwN3pONDZJL3VUWGFoMVZreVcrSTg5?=
- =?utf-8?B?cGpwVjBmV0dWaHFleDNwdVl1akpneWQzVkFYTzcyd3dFUGwzSVYyb2FtUCt2?=
- =?utf-8?B?SkNNS0Z2Wk1KSlk2U2lRbkxxZE9CenlEaVFFZmRpbnh5WG5qTjlJbjJyaWJ5?=
- =?utf-8?B?bmVkNlZJZ0c5QjBCeVFMUW1yVFozRS8yWCtLTHZOMmtNRG04OWEyZjBQOUtu?=
- =?utf-8?B?dE56NkxkN1NCUTdsRExvcG1kQ3gvemQ3Wis0dlEyeFV3S2hkelE1MjdKdEJT?=
- =?utf-8?B?T1N4UitDYzRrZEJqN2NZYXB0RXBCdU9lQ2RXZmZPTDVJb21DRTNJczY3VDZj?=
- =?utf-8?B?OGJnMWg4RjJpSkUyQWZlejVZTHBGM21zSmpKZEo0cHVVc0pnanJOd0RBQnp0?=
- =?utf-8?B?bkZ6dHoyaFVob1ptLzdrVFdSTmI4cld0N3FiZC90NnQ1dVExUHdTOC91d215?=
- =?utf-8?B?dGNuNERRY21UQVFJUzluZmUyQ2RZQnFSVHR0TWVzS1RmS2JEME9QUURoOVhE?=
- =?utf-8?B?K0J5NVFQaHVlVnBrS3o2RHhNcGtvK0JVcytGLzZZSkg3b3NPNkdWbWJvNzdB?=
- =?utf-8?B?RWVhVGVLUExTWGZhMm5XZ3B6RThxWDZSWGR1bHBBVHBUeis1S0IrdHdKMlFR?=
- =?utf-8?B?cVRYcFpBczNFNUNKbHI5eDNNRG9va3BONzRMZWhZZ1dReGZiK1hQQUxXSmlk?=
- =?utf-8?B?SVl1ZHNRZHIyVGRrS2tJOUdXOTNPZVdGVTdxVjBXQzlHYXVHOVRtdWJtRmV5?=
- =?utf-8?B?Z2EzRWpHbVlkQXZSMm9tUEpIWUEvbkZWY2lHR2lzR3BtbnBMMWltMVZVQWVz?=
- =?utf-8?B?eE9Ka2xQMUtrdlFlTXJDZ1BnV2tLcVRJUkVoUHBuam44dnBGMDFmMkpjS0xQ?=
- =?utf-8?B?czFsY1QvNUxwd2hlUFoxcHEwT29NM1hXYjkyQkFwMTdRS0lYN2VSdWhyRWdl?=
- =?utf-8?B?cmpTZGE3MW9QOUVKWU1ZaDJ3TnhKVXlQL2hTd2dXcFJtRkNwNmwxYTZzeDcw?=
- =?utf-8?B?UnV3aU9mcFkvQXFaU21XYnAzZklQTHNtbDJBb1h6cmlnR0RteEp5ODhidzBU?=
- =?utf-8?B?RTNHQUtESEh5a1d5MXh2dGpUY2pKelB0bHRtb2c1WW8vdjRRNzY5UHBRZEZ1?=
- =?utf-8?B?UkRma2lxSTJHNTkzQUpDeUlhdEFXV0phREVIdzJudEp4VXJPMDJueC9WL3kw?=
- =?utf-8?B?alVTVFRnenJQbzZBVW5uQjFxWG05ME1BYmdIYWhMbHJ5VWlhTWxEVTRsUFgv?=
- =?utf-8?B?YlphZkNEWnN1L0dqdWFTSG96T1A2OXByRU93dExYWnpTTXVMeWM5blR4bE1m?=
- =?utf-8?B?SmcwRnBBblhiZlpaUHhMT253MjM5NUdvQ3BXaWdwM21wVGpCa3l3OXFQSS8v?=
- =?utf-8?B?bmhvNFgwWlY4WnF6dk84VWFxaDM1cEdtZWRwalMxYWFWSUcwa0lHQlljTnJX?=
- =?utf-8?B?SGdVd3VvTFdoQ25RNzhvQXZTWVZsWVFKK1pBWVNkZjRocEliVE5vQUo5cVkx?=
- =?utf-8?B?N1p6QUZ1NXgzWmxwTVNYZlZHcjFvaWNuanMrL3JjaG1XaUpPZkxVSDRNd1BX?=
- =?utf-8?B?bXlGLy9xY1ZLWmJmd1JQWXU0d1NkSEg1RkptWGptZktFbGFKd2lnVWxEYzAw?=
- =?utf-8?B?NEE1NTRqaGxMeDF4cWxzOXhJVVVWTWVPaytyWnZmQ3BjS2Nvd0Zwcld6VXNO?=
- =?utf-8?B?bUlyTmNZT01uYk85U0phSlEwZHJGRURSVktCa3pqcXljemEvNnY0dXJ2THE4?=
- =?utf-8?B?S2lrTFpRQ1ZUYUdadGNMTWFUSnRvQjU2ZEZjWGcxWTlWQXFIZzVGNjdwbXNn?=
- =?utf-8?B?OTVyMWJIWFRWTXIvandhYmpyZ040L3gwdXJxRExlTnlCcGs1cnNGanNqeU84?=
- =?utf-8?B?ZUdxS3VNVnc0eW93TG1FcDlDdW9hcXZsSC9QaWlyMnMvM2w2c0J4UTlnZ3VB?=
- =?utf-8?Q?vd2U0/fTgXM=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZW5RL25MOEdtYkZLZzlSTWFEUlhFc1FGL1NUOU9mdWFReGZBSTZrZnVYNzNM?=
- =?utf-8?B?SDlTa1VXQWltaWdFREF4SEg3YlZhVXd3NGIzVGp1MnpNQko5YUExRS95OHBs?=
- =?utf-8?B?ZFpNa2tpWHQ2MkpzdDBFcW51djNkMlZoN0JLUFpGbDlVWVloOFY4Ukp2NFll?=
- =?utf-8?B?RGt2cVFKNFkyNmQ2Ukt3ZkRuUW5LRll6b2tGQmdMNFNkQmxBMEV2bEdTYllN?=
- =?utf-8?B?dFk0NGJyTStEYmxSYUtsUUhLKy8wZXg4NTk4cGh5a1hIQ1I0Z2lyZVU1R2Q2?=
- =?utf-8?B?NElpMkZnZVZqcGJqR2lOMk9RbVh3VzJzVXNuVDNFSjdXdk9oK1dqTjR0M0Zk?=
- =?utf-8?B?aWlxZ2VtOVJQNTc5Vy9NMTBCL3RHSWxxOGJWMUY0STlJbjl2Y3c1ZmdHbitX?=
- =?utf-8?B?dG51cnU2bmtJbXNVYzMyYm11WnA2ZTZRYVNobndKWTZ5R0J6LzdHREdoOWk3?=
- =?utf-8?B?VHNYcEJSOGdKbnpQQi9GL2NFeHNJMzlhdDdKbVFzUXdScWE3ZDY4L1lGdW9h?=
- =?utf-8?B?RzN0ODN0RUw2M1huUU4zTURrbS92WStwVlJ5WU5EcElueHB0MEJKR0Q0b09u?=
- =?utf-8?B?RkxZWnRlMTUrQS9mc3Yxem5NR2xoNkVQdWc2bU50TGt2RS84Q2x1dHdvR3M2?=
- =?utf-8?B?bnVWOW9XT0xSMFdGbGh6MyswV0FvME0wR3RUVDN2TjZnNmk4TktPVjNNVjY4?=
- =?utf-8?B?YktPMGxDZnY1Z0R0anUrY09FSXFuRmpscUMvS1JFaDIzVzJQa3J3WkQ4ZHVK?=
- =?utf-8?B?Qm14MTJjNzFxSjFWMnFTOHJxYmtKYk1VQzJodDlLYjJoRHdYZ2JXbVFEbEtH?=
- =?utf-8?B?WWVDUHlHSUZ3SkVIZm5DeUxCclYyR1BOTmhrUnpSUjdGdjJ2WW5vRUVsTmdn?=
- =?utf-8?B?TW4waDVRRzdOM3Z6dHA4NmVxNDVGUzZsV0xLNXVpbG4wVG92OFRKME9DQzl0?=
- =?utf-8?B?a1Y5N1hBWG9PNXpqME1hdUcyd1p1a0tTK1RaZHBDeDh3QWhxN0VzZTl0UnBq?=
- =?utf-8?B?amIrZFJzYXVFeGdhK3VYOEwvK0o0aUJuZDdjUGFrbWJBaE5KeXEwUmJqK3ZR?=
- =?utf-8?B?L2hoOFBoNnFnVDh3NFpWS1pJL2dDVWFacFQ5bmVUT1IvSXo0ZVBKTEtoSjJx?=
- =?utf-8?B?Rkg0clphK2pBZGJsSWRlYnBYL0VTWnBTSVhFblRBbVFYbFBYRVpGSU1leVJ6?=
- =?utf-8?B?a1RlUUNTQmhYd083SkE2ZWtPemJSRnhIcm9CbWVQL3VHc3BwY3F3bmkwWU1G?=
- =?utf-8?B?dXhOdnp3cVVsaU5zVTRRLy9ZUlVoV1BTcHlFM3RKZk12RXRDaGpzM0lWRlhN?=
- =?utf-8?B?Wng0cU5pTVAwVHkvWGNOVi84cnIyOVVtdmw0MDF4R0tDVFF2Q01GQ05jUUlo?=
- =?utf-8?B?OE9HY0dENDZiMWdQcW5PQjM2RWl5UXpuZUlvWFhOTWxZQ045dkxBVzhjeVA2?=
- =?utf-8?B?eEJYcnFGUVZGL0FwOWdVRnZiZGhyRmhQanB6YmxqcW56ZzdVMEZvcEp1NlJH?=
- =?utf-8?B?VFdPUHdwRENoU3VnYTN4UVptalY0RXEwWmxtclA1K2Vkb1Q2QjdxZkZQc1c4?=
- =?utf-8?B?MEkzVVo3YWVPbVc3T09RTStXQ2o0ZWY3YTJBbFZwbHZHWWg5NE5zR3VrZG9D?=
- =?utf-8?B?clZQVmZZc1l0eXdqV3l1UjhIWEpYcjhvOVFtOWdyVmkyREZMNWQ2Ty9IcVJa?=
- =?utf-8?B?bjk1c1FBTk80QTBURWY0TlhKbDdsNEZUaWo3T0taREM3bHMxN2VTMnFJekRu?=
- =?utf-8?B?OExYWHRtS2tFVHByN2dzNUwzU2hvLzlUbkhyVjdDalpCS0R1NDRobVNxakdh?=
- =?utf-8?B?YkRHelFZc2t1Z29IQnFZLzlFSWx0ZS9NSnFTNVZOdDJieGhZTVRCMDI0V050?=
- =?utf-8?B?OEswa255U1dnemU0dVdodjFNNkJ1K0xSem9SSFdBNTN5TE9iUVVuVW1lVW9M?=
- =?utf-8?B?cGVIWWZvWnNvOEM5RmxkNnQrcEJtVGRQOHp5NFcwOE9lZ0R2YUV5TVgzVTBv?=
- =?utf-8?B?bWxIUWs5TDhQSkhWK1FjTm0xenNKRGUzNnE5L3lFOEQ5QzBEbGxrZ1VtOERp?=
- =?utf-8?B?QzFzZTdPajdVSldhemlMVFpUWVYxMEQxQ0lPamlMdDVmbE9ROGtJekJ6bDZj?=
- =?utf-8?B?Tno2bThTaVdZSyt4UGNJanA1WEhlTGpCUnZCVnpaMHNEYVU2WU05TFE3M2lL?=
- =?utf-8?B?Mnc9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c57b488-d4c5-489e-56d3-08dd9166caa3
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2025 15:08:03.0529
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y5+Sdg399EvqTO5wa6qmzZmHKdW6bIjofh/mMjMJYk3yN/iOZqVIBp2xLmCc4C8WcjsS3JCBp6NaEHyB7Ap9HQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6960
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5fouo2tqrgcca44q"
+Content-Disposition: inline
+In-Reply-To: <202505091200.FC2683DD@keescook>
 
 
+--5fouo2tqrgcca44q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 5/11/2025 5:27 AM, Akira Yokosawa wrote:
-> 
->> @@ -757,6 +766,25 @@ void rcu_request_urgent_qs_task(struct task_struct *t)
->>  	smp_store_release(per_cpu_ptr(&rcu_data.rcu_urgent_qs, cpu), true);
->>  }
->>  
->> +/**
->> + * rcu_set_gpwrap_lag - Set RCU GP sequence overflow lag value.
->> + * @lag_gps: Set overflow lag to this many grace period worth of counters
->> + * which is used by rcutorture to quickly force a gpwrap situation.
->> + * @lag_gps = 0 means we reset it back to the boot-time value.
->> + */
-> This kernel-doc comment should be in front of its corresponding function
-> prototype so that it is recognized as such.
-> 
->> +static unsigned long seq_gpwrap_lag = ULONG_MAX / 4;
->> +
-> , so this static variable needs to go above the kernel-doc comment.
+On Fri, May 09, 2025 at 12:01:24PM -0700, Kees Cook wrote:
+> On Fri, May 09, 2025 at 02:54:13PM +0200, Joel Granados wrote:
+> > Move cad_pid as well as supporting function proc_do_cad_pid into
+> > kernel/pic.c. Replaced call to __do_proc_dointvec with proc_dointvec
+> > inside proc_do_cad_pid which requires the copy of the ctl_table to
+> > handle the temp value.
+> >=20
+> > This is part of a greater effort to move ctl tables into their
+> > respective subsystems which will reduce the merge conflicts in
+> > kernel/sysctl.c.
+> >=20
+> > Signed-off-by: Joel Granados <joel.granados@kernel.org>
+> > ---
+> >  kernel/pid.c    | 32 ++++++++++++++++++++++++++++++++
+> >  kernel/sysctl.c | 31 -------------------------------
+> >  2 files changed, 32 insertions(+), 31 deletions(-)
+> >=20
+> > diff --git a/kernel/pid.c b/kernel/pid.c
+> > index 4ac2ce46817fdefff8888681bb5ca3f2676e8add..bc87ba08ae8b7c67f3457b3=
+1309b56b5d90f8c52 100644
+> > --- a/kernel/pid.c
+> > +++ b/kernel/pid.c
+> > @@ -717,6 +717,29 @@ static struct ctl_table_root pid_table_root =3D {
+> >  	.set_ownership	=3D pid_table_root_set_ownership,
+> >  };
+> > =20
+> > +static int proc_do_cad_pid(const struct ctl_table *table, int write, v=
+oid *buffer,
+> > +		size_t *lenp, loff_t *ppos)
+> > +{
+> > +	struct pid *new_pid;
+> > +	pid_t tmp_pid;
+> > +	int r;
+> > +	struct ctl_table tmp_table =3D *table;
+> > +
+> > +	tmp_pid =3D pid_vnr(cad_pid);
+> > +	tmp_table.data =3D &tmp_pid;
+> > +
+> > +	r =3D proc_dointvec(&tmp_table, write, buffer, lenp, ppos);
+> > +	if (r || !write)
+> > +		return r;
+> > +
+> > +	new_pid =3D find_get_pid(tmp_pid);
+> > +	if (!new_pid)
+> > +		return -ESRCH;
+> > +
+> > +	put_pid(xchg(&cad_pid, new_pid));
+> > +	return 0;
+> > +}
+> > +
+> >  static const struct ctl_table pid_table[] =3D {
+> >  	{
+> >  		.procname	=3D "pid_max",
+> > @@ -727,6 +750,15 @@ static const struct ctl_table pid_table[] =3D {
+> >  		.extra1		=3D &pid_max_min,
+> >  		.extra2		=3D &pid_max_max,
+> >  	},
+> > +#ifdef CONFIG_PROC_SYSCTL
+> > +	{
+> > +		.procname	=3D "cad_pid",
+> > +		.data		=3D NULL,
+>=20
+> nit: this is redundant, any unspecified member will be zero-initialized.
+Thx. Changed it locally, but will not resend for this.
+>=20
+> Regardless:
+>=20
+> Reviewed-by: Kees Cook <kees@kernel.org>
+=2E..
+> > -		.data		=3D NULL,
+> > -		.maxlen		=3D sizeof (int),
+> > -		.mode		=3D 0600,
+> > -		.proc_handler	=3D proc_do_cad_pid,
+> > -	},
+> >  #endif
+> >  	{
+> >  		.procname	=3D "overflowuid",
+> >=20
+> > --=20
+> > 2.47.2
+> >=20
+> >=20
+>=20
+> --=20
+> Kees Cook
 
-Thanks a lot Akira, I will fix this now.
+--=20
 
- - Joel
+Joel Granados
+
+--5fouo2tqrgcca44q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmgi9bkACgkQupfNUreW
+QU9gYwv9HmmGGJZHXMl5xZnY6+FsJWyyJPwiDmBpHKqnKUS42gx1LYy2Q2iMzgFt
+YcxKJxmpLBMq0zNs1c7WNKOBf/3YXplkC/1ZGQPADy/fPhZIqjoZgE9IY7rlPuRW
+ZqHGdVvpT6hjyjx9buwt+BAt7LbMZFrpH+KgqIy27NUu6icIQiZv5p1QTqHW4/MP
+mwk0aJcMZnCExOxBdRgKDzhiQRnKFgDZcbM2QeOLuuPZsLA/rPQA5UxlnXVGJ82s
+1bm/UR896mg8Ziq42SuV2yl9S4cT/mNKoNgxTtVAOrNYajc5mcjQPalvDCitBQTk
+L9ieGsR6I/+jYgJVCoc9vHuYkJuX7B52HcHH2rC/9bmSKqr1ea7xFcG7eA3iViJz
+rQzlj+z9wxfi+81TJSPXsUZmFkFhKXaZNQEgt7rhjtwiv2aafkFpOp6vN7dlrkrW
+OyvLd59uapsslRXXBAlyqMbnHEhg69c/Pqk5bup1Cj5WU4zhK2OmMk3sR2Vu80cD
+/fMGl+l+
+=zOoe
+-----END PGP SIGNATURE-----
+
+--5fouo2tqrgcca44q--
