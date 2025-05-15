@@ -1,216 +1,257 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947EE293756
-	for <rcu@vger.kernel.org>; Thu, 15 May 2025 08:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2291C18DB37;
+	Thu, 15 May 2025 10:04:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747299559; cv=none; b=UXXS7PYuYIP1cY6e5V+I/Zs3ETiT0zfUgpFVZR8il1p4k9Pe3b6KMBnhNifkYBJeaL0aaWGQB8QhBt7jGWOWVwtxYwUrqhQyI4gsn8IyitTPCSf+HqIn+675A1sw2rsl/kMonwty18FbqlTbUOMbaL1yjWEwsbhR/uUAf2ZXU18=
+	t=1747303450; cv=none; b=OuAmxfC//9CbH/qtTQ0FeOViBSnvxwoR17D/lveKYdg6q2M9weQieoK9/OtlXmwgEO4rSvnuG+i56l66CX+AN7BwpZAFpwITucIdlGZWXnJS/zcobIW70bOLFMlDBa6rtRfPBJ5Sizo/32gR8FOe0Ppjicy00H9TKNgoJbCJZV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747299559; c=relaxed/simple;
-	bh=3NDHBRjrO56wPFSmrP/tqbVPNtVqcsNX3LEYFCznarY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lGIlD9OTRQG3dnyr0sFSBfTctlT2B+5kilmlfVknKNxxu1yclujfZfXBKuzaWgPgi9FpG2FXmPTz/4a+dL6u6CqLKDlpiuso5XmWQ+DUDiNn5H8V7HBcYKBPmcj5zfXVYiRGvjGBIBadDoUi1tEWA5kZu/s2q+fX7AEwmdgx/3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Pnphta3p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NmIXdFnU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Pnphta3p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NmIXdFnU; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1747303450; c=relaxed/simple;
+	bh=sD1eHD0aNCDTJQ1r/x2BlkpBGb6+H+dwk6qBtn6A6eo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aQiGtNIPnms912SWKmXBcvTnQ5B2vo5AiIynhCGpU000ZY2RsoV2/A+mYnrOfpqMXPLZOmV6HsKFtl4FVfrqdGaZseEcir6oDpmZCyPL4MS7PoYzHZs2c2oS5f1LvnSc7CUOKDGWSdXOMLnDQkquI3RUvU1rgKnE+hz9PMr9OnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SdlfQCTm; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Pnphta3p";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NmIXdFnU";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Pnphta3p";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NmIXdFnU"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B45651F391;
-	Thu, 15 May 2025 08:59:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747299554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QFkGUgAQs5DlUjM0ydlG9GUUFq/7KcW6NX7M7pmvjeQ=;
-	b=Pnphta3pj/hPd36vEObXKs7oZ0yRXLXPve+d4n7PRI8BWxbpSlvygZrWnAcKZ3FH9Xl2c1
-	Be8QO7NDCZVnPH+8GY5eKp+0IXQbjQVeZqJw169CCHTYPbe+EqedilZ9Qqzsq/lb3ybn3C
-	LZkD6mMSDDZZ+dUG0KyyHODqR+TR9VI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747299554;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QFkGUgAQs5DlUjM0ydlG9GUUFq/7KcW6NX7M7pmvjeQ=;
-	b=NmIXdFnUXuSNu01AoL3nca3Ijs1g4XLQ1IEDXnBpVbRnnWbWWz48AeD2HD4wmnz+mbOu+O
-	5dBO7cFrMvmfO4Cw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Pnphta3p;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NmIXdFnU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1747299554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QFkGUgAQs5DlUjM0ydlG9GUUFq/7KcW6NX7M7pmvjeQ=;
-	b=Pnphta3pj/hPd36vEObXKs7oZ0yRXLXPve+d4n7PRI8BWxbpSlvygZrWnAcKZ3FH9Xl2c1
-	Be8QO7NDCZVnPH+8GY5eKp+0IXQbjQVeZqJw169CCHTYPbe+EqedilZ9Qqzsq/lb3ybn3C
-	LZkD6mMSDDZZ+dUG0KyyHODqR+TR9VI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1747299554;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QFkGUgAQs5DlUjM0ydlG9GUUFq/7KcW6NX7M7pmvjeQ=;
-	b=NmIXdFnUXuSNu01AoL3nca3Ijs1g4XLQ1IEDXnBpVbRnnWbWWz48AeD2HD4wmnz+mbOu+O
-	5dBO7cFrMvmfO4Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9DBEB139D0;
-	Thu, 15 May 2025 08:59:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id D5A2JuKsJWgTRAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 May 2025 08:59:14 +0000
-Message-ID: <938fa0c7-86c3-44d4-b583-0612458aed98@suse.cz>
-Date: Thu, 15 May 2025 10:59:14 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SdlfQCTm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB21C4CEE7;
+	Thu, 15 May 2025 10:04:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747303449;
+	bh=sD1eHD0aNCDTJQ1r/x2BlkpBGb6+H+dwk6qBtn6A6eo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SdlfQCTmqiyc9cLRn+bVZ+J/xKgEspqF0Xu5p+/MWV6lwgvd5Lj8GKu0SHK6ExgDM
+	 wdl5smrvYBEAv233vaVzX+xdxBbq8VNg+eXXl1G5vFNI2TVEsSNxMyt1dLNB7OtHmE
+	 i09U3/VA+pM89W75yUOWmZ3HBaqvB2rIFp8kxGmrc0hxCOLryKo/Zn0O/zVzpixJtW
+	 roRpUVx+OI1n7fhD3n1pZbEFimyLqzII6s/qKrupFLv+4KDguIzE0hAHVJiLpuIpTG
+	 wzsrcEMv6piv+Yv2BAzI19UUcFgwLeSGYEj4HyES8HYjMYE17NVnQ6nYEfIv5hGuCb
+	 bUqghGUUvFwbQ==
+Date: Thu, 15 May 2025 12:04:04 +0200
+From: Joel Granados <joel.granados@kernel.org>
+To: Petr Pavlu <petr.pavlu@suse.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+	Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, Kees Cook <kees@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
+	linux-parisc@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 01/12] module: Move modprobe_path and modules_disabled
+ ctl_tables into the module subsys
+Message-ID: <g3e3ygz4jb73b3zhxexpwacwui3imlwauujzeq2nlopp2i2fjp@lzj33hcwztc2>
+References: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
+ <20250509-jag-mv_ctltables_iter2-v1-1-d0ad83f5f4c3@kernel.org>
+ <e2ebf88d-46a2-4f38-a0c8-940c3d3bee49@suse.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 9/9] mm, slub: skip percpu sheaves for remote object
- freeing
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Suren Baghdasaryan <surenb@google.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter
- <cl@linux.com>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- maple-tree@lists.infradead.org
-References: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
- <20250425-slub-percpu-caches-v4-9-8a636982b4a4@suse.cz>
- <aBs4WvzJb4X50Sr2@harry>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <aBs4WvzJb4X50Sr2@harry>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: B45651F391
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[google.com,oracle.com,linux.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim,suse.cz:mid]
-X-Rspamd-Action: no action
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ru77vocekp26ujzg"
+Content-Disposition: inline
+In-Reply-To: <e2ebf88d-46a2-4f38-a0c8-940c3d3bee49@suse.com>
 
-On 5/7/25 12:39, Harry Yoo wrote:
-> On Fri, Apr 25, 2025 at 10:27:29AM +0200, Vlastimil Babka wrote:
->> Since we don't control the NUMA locality of objects in percpu sheaves,
->> allocations with node restrictions bypass them. Allocations without
->> restrictions may however still expect to get local objects with high
->> probability, and the introduction of sheaves can decrease it due to
->> freed object from a remote node ending up in percpu sheaves.
->> 
->> The fraction of such remote frees seems low (5% on an 8-node machine)
->> but it can be expected that some cache or workload specific corner cases
->> exist. We can either conclude that this is not a problem due to the low
->> fraction, or we can make remote frees bypass percpu sheaves and go
->> directly to their slabs. This will make the remote frees more expensive,
->> but if if's only a small fraction, most frees will still benefit from
->> the lower overhead of percpu sheaves.
->> 
->> This patch thus makes remote object freeing bypass percpu sheaves,
->> including bulk freeing, and kfree_rcu() via the rcu_free sheaf. However
->> it's not intended to be 100% guarantee that percpu sheaves will only
->> contain local objects. The refill from slabs does not provide that
->> guarantee in the first place, and there might be cpu migrations
->> happening when we need to unlock the local_lock. Avoiding all that could
->> be possible but complicated so we can leave it for later investigation
->> whether it would be worth it. It can be expected that the more selective
->> freeing will itself prevent accumulation of remote objects in percpu
->> sheaves so any such violations would have only short-term effects.
->> 
->> Another possible optimization to investigate is whether it would be
->> beneficial for node-restricted or strict_numa allocations to attempt to
->> obtain an object from percpu sheaves if the node or mempolicy (i.e.
->> MPOL_LOCAL) happens to want the local node of the allocating cpu. Right
->> now such allocations bypass sheaves, but they could probably look first
->> whether the first available object in percpu sheaves is local, and with
->> high probability succeed - and only bypass the sheaves in cases it's
->> not local.
->> 
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> ---
->>  mm/slab_common.c |  7 +++++--
->>  mm/slub.c        | 43 +++++++++++++++++++++++++++++++++++++------
->>  2 files changed, 42 insertions(+), 8 deletions(-)
->> 
->> diff --git a/mm/slub.c b/mm/slub.c
->> index cc273cc45f632e16644355831132cdc391219cec..2bf83e2b85b23f4db2b311edaded4bef6b7d01de 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -5924,8 +5948,15 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
->>  	if (unlikely(!slab_free_hook(s, object, slab_want_init_on_free(s), false)))
->>  		return;
->>  
->> -	if (!s->cpu_sheaves || !free_to_pcs(s, object))
->> -		do_slab_free(s, slab, object, object, 1, addr);
->> +	if (s->cpu_sheaves) {
->> +		if (likely(!IS_ENABLED(CONFIG_NUMA) ||
->> +			   slab_nid(slab) == numa_node_id())) {
->> +			free_to_pcs(s, object);
-> 
-> Shouldn't it call do_slab_free() when free_to_pcs() failed?
 
-Oops yes, thanks!
+--ru77vocekp26ujzg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
->> +			return;
->> +		}
->> +	}
->> +
->> +	do_slab_free(s, slab, object, object, 1, addr);
->>  }
->>  
->>  #ifdef CONFIG_MEMCG
->> 
->> -- 
->> 2.49.0
->> 
->> 
-> 
+On Thu, May 15, 2025 at 10:04:53AM +0200, Petr Pavlu wrote:
+> On 5/9/25 14:54, Joel Granados wrote:
+> > Move module sysctl (modprobe_path and modules_disabled) out of sysctl.c
+> > and into the modules subsystem. Make the modprobe_path variable static
+> > as it no longer needs to be exported. Remove module.h from the includes
+> > in sysctl as it no longer uses any module exported variables.
+> >=20
+> > This is part of a greater effort to move ctl tables into their
+> > respective subsystems which will reduce the merge conflicts in
+> > kernel/sysctl.c.
+> >=20
+> > Signed-off-by: Joel Granados <joel.granados@kernel.org>
+> > [...]
+> > --- a/kernel/module/kmod.c
+> > +++ b/kernel/module/kmod.c
+> > @@ -60,7 +60,7 @@ static DEFINE_SEMAPHORE(kmod_concurrent_max, MAX_KMOD=
+_CONCURRENT);
+> >  /*
+> >  	modprobe_path is set via /proc/sys.
+> >  */
+> > -char modprobe_path[KMOD_PATH_LEN] =3D CONFIG_MODPROBE_PATH;
+> > +static char modprobe_path[KMOD_PATH_LEN] =3D CONFIG_MODPROBE_PATH;
+> > =20
+> >  static void free_modprobe_argv(struct subprocess_info *info)
+> >  {
+> > @@ -177,3 +177,33 @@ int __request_module(bool wait, const char *fmt, .=
+=2E.)
+> >  	return ret;
+> >  }
+> >  EXPORT_SYMBOL(__request_module);
+> > +
+> > +#ifdef CONFIG_MODULES
+> > +static const struct ctl_table kmod_sysctl_table[] =3D {
+> > +	{
+> > +		.procname	=3D "modprobe",
+> > +		.data		=3D &modprobe_path,
+> > +		.maxlen		=3D KMOD_PATH_LEN,
+> > +		.mode		=3D 0644,
+> > +		.proc_handler	=3D proc_dostring,
+> > +	},
+> > +	{
+> > +		.procname	=3D "modules_disabled",
+> > +		.data		=3D &modules_disabled,
+> > +		.maxlen		=3D sizeof(int),
+> > +		.mode		=3D 0644,
+> > +		/* only handle a transition from default "0" to "1" */
+> > +		.proc_handler	=3D proc_dointvec_minmax,
+> > +		.extra1		=3D SYSCTL_ONE,
+> > +		.extra2		=3D SYSCTL_ONE,
+> > +	},
+>=20
+> This is minor.. but the file kernel/module/kmod.c contains the logic to
+> request direct modprobe invocation by the kernel. Registering the
+> modprobe_path sysctl here is appropriate. However, the modules_disabled
+> setting affects the entire module loader so I don't think it's best to
+> register it here.
+>=20
+> I suggest keeping a single table for the module sysctl values but moving
+> it to kernel/module/main.c. This means the variable modprobe_path must
+> retain external linkage, on the other hand, modules_disabled can be made
+> static.
 
+Like this?:
+
+---
+ include/linux/module.h |  1 -
+ kernel/module/main.c   | 30 +++++++++++++++++++++++++++++-
+ kernel/sysctl.c        | 20 --------------------
+ 3 files changed, 29 insertions(+), 22 deletions(-)
+
+diff --git a/include/linux/module.h b/include/linux/module.h
+index d94b196d5a34..25476168e012 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -302,7 +302,6 @@ struct notifier_block;
+=20
+ #ifdef CONFIG_MODULES
+=20
+-extern int modules_disabled; /* for sysctl */
+ /* Get/put a kernel symbol (calls must be symmetric) */
+ void *__symbol_get(const char *symbol);
+ void *__symbol_get_gpl(const char *symbol);
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index a2859dc3eea6..13055ef65f15 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -126,9 +126,37 @@ static void mod_update_bounds(struct module *mod)
+ }
+=20
+ /* Block module loading/unloading? */
+-int modules_disabled;
++static int modules_disabled;
+ core_param(nomodule, modules_disabled, bint, 0);
+=20
++static const struct ctl_table kmod_sysctl_table[] =3D {
++	{
++		.procname	=3D "modprobe",
++		.data		=3D &modprobe_path,
++		.maxlen		=3D KMOD_PATH_LEN,
++		.mode		=3D 0644,
++		.proc_handler	=3D proc_dostring,
++	},
++	{
++		.procname	=3D "modules_disabled",
++		.data		=3D &modules_disabled,
++		.maxlen		=3D sizeof(int),
++		.mode		=3D 0644,
++		/* only handle a transition from default "0" to "1" */
++		.proc_handler	=3D proc_dointvec_minmax,
++		.extra1		=3D SYSCTL_ONE,
++		.extra2		=3D SYSCTL_ONE,
++	},
++};
++
++static int __init init_kmod_sysctl(void)
++{
++	register_sysctl_init("kernel", kmod_sysctl_table);
++	return 0;
++}
++
++subsys_initcall(init_kmod_sysctl);
++
+ /* Waiting for a module to finish initializing? */
+ static DECLARE_WAIT_QUEUE_HEAD(module_wq);
+=20
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 9b4f0cff76ea..473133d9651e 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -19,7 +19,6 @@
+  *  Removed it and replaced it with older style, 03/23/00, Bill Wendling
+  */
+=20
+-#include <linux/module.h>
+ #include <linux/sysctl.h>
+ #include <linux/bitmap.h>
+ #include <linux/printk.h>
+@@ -1616,25 +1615,6 @@ static const struct ctl_table kern_table[] =3D {
+ 		.proc_handler	=3D proc_dointvec,
+ 	},
+ #endif
+-#ifdef CONFIG_MODULES
+-	{
+-		.procname	=3D "modprobe",
+-		.data		=3D &modprobe_path,
+-		.maxlen		=3D KMOD_PATH_LEN,
+-		.mode		=3D 0644,
+-		.proc_handler	=3D proc_dostring,
+-	},
+-	{
+-		.procname	=3D "modules_disabled",
+-		.data		=3D &modules_disabled,
+-		.maxlen		=3D sizeof(int),
+-		.mode		=3D 0644,
+-		/* only handle a transition from default "0" to "1" */
+-		.proc_handler	=3D proc_dointvec_minmax,
+-		.extra1		=3D SYSCTL_ONE,
+-		.extra2		=3D SYSCTL_ONE,
+-	},
+-#endif
+ #ifdef CONFIG_UEVENT_HELPER
+ 	{
+ 		.procname	=3D "hotplug",
+--=20
+2.47.2
+
+--=20
+
+Joel Granados
+
+--ru77vocekp26ujzg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmglvAoACgkQupfNUreW
+QU8L/Av/YmkHrysPaGwJRKxmis9nMWc0PYzFjViNFVlZuFXAXKu5kWSHvaxsq8fl
++yJvXtS9QV8pXzyKlEgEdknV+d8qh95hPO7WArzybZ3bivL7LsjCnBU6mflIQnOb
+xfvTTJncJ5PUk15VXsPA9mNiYy+xA2y7HCsxD7N3Vz2uDzl2HnJucfga9SRuua52
+lTItMHiKvN0oxOwsVH5jQtPijcknG9sV7Cz84O31WuvY7DPhNFUBhhb6UGB5RA25
+pM4Zb7bWDBv+xnWKGBjHFdhCqCDFr/Honyjvl4xiSbGd0kzucDlJiSkHiJfE/zFl
+2Fvm/edUeW7PUI7pqyYunJeEeTDiNU1/aalCIErLT8idbEf5EwbqPVjMCU9ktVXS
+73LiItIXrewicguZtSGB+nJMz4ETZKzBxFQo2ZTEsZ9saxr0SebmpSg1jar5rkXy
+S+3KjAQKE7JsI7s765cc1m/SCPceaN02cw9zMELFXt/0tQU5xIH2rWTLinYpFVyt
+HrP1upxU
+=vQLm
+-----END PGP SIGNATURE-----
+
+--ru77vocekp26ujzg--
