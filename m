@@ -1,64 +1,81 @@
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E6527BF76
-	for <rcu@vger.kernel.org>; Thu, 15 May 2025 08:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA99284672
+	for <rcu@vger.kernel.org>; Thu, 15 May 2025 08:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747296315; cv=none; b=rMCwAVA9NeWAM092P+YiB72L75DlTh4jy6torKTYJDItzZkzv4mcio0hqv9bNWjvq4zYnE+No7ou0yf89EX1Gd8gLDlJboAq5IRJk1qPq3Ok59I0GU5iCDy+GlgsE6P0hPWeG2XI0amH0YCXYLX59Fb5W+369t0gSUMwG0/vOp8=
+	t=1747298503; cv=none; b=olY2p2gtHjpkuepoOMCQHyE+V2Wcx/6MnMRV1Kap/m/vjXFxTjKX3QzAen/OXcA7+hi2daoZIweBevSg9t/umDxdjQ61pSGTeiNPecLCzDAGj3t6gtR7d7D4mQ+VSHsXBrtmokzKNRDuUSp0ISgQlhof2yrklpNiarec/vxOUv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747296315; c=relaxed/simple;
-	bh=0tGKkkemugSf6qbz3gshaWCoVsCRbxCI+SQBbX3dIFY=;
+	s=arc-20240116; t=1747298503; c=relaxed/simple;
+	bh=JzBQa2+ENO/AX++PutUdUaOZREFdFb61zSEmCQ5WgdE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=COcuADjP9JN/tbu/pT0tqJ77Ds5lNh3ISzjaTc0zwlnyMKbxJ2XcFkyFvmM/KboGII4uPltDlLJSYVMwDQ8aHEUBaD1pJpta/uknxRlQYuZDcrFzVfH11M4DPD2PsVh/eMDy2sXa8zD2gnJuwNY1AW17QJYFb5liNh5bN0zKRbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QleRWDJ1; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	 In-Reply-To:Content-Type; b=lJOddFxuvUbwo8ziPoXtF7ycKHQZYbwkTA3DUEUfs0lujAIBuCrmfUfPvtZdP1VhZAaN1rf+m46UWQgtdeNHJWlsVLz2IldowtWgz5d3qj6GqV2N2DcmIRnvWHml4AicUChWcXXsWNpZRkUQnAKA422ZHe06qwBi6ujXOkryBh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cNPkKacg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0jZJW7Ko; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rfoEs13/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sqKh1Lqk; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QleRWDJ1"
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a108684f90so355731f8f.1
-        for <rcu@vger.kernel.org>; Thu, 15 May 2025 01:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1747296311; x=1747901111; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=edff1LhptN7FQ5Bq2oruaEckY3n2IP7/Je81wTRfspE=;
-        b=QleRWDJ1MjKGuTARD+JMrNkTAxf4HJRsTFLkXkCVtL9CbWW4H8867e4gRrYe6EwAgm
-         XPMtN/ccgxu1Iakt4TGULyjyPIWkeK++REj8S0mb+Lp0Y5BdRQJ1RgMKofZ+1rn3lsyW
-         bxi4phbRhYV5kVMHXtDrnLPMbUHaadKUFkpJh31Uhr5GNhzN3CoyH06OzrvpRMWIGd1p
-         lPNsa58+0OPS7jisV6aHdqQaXvnPOoiqqmJRmt4T6k338Xqel0OrIM7fT7Wlbtpc6I1K
-         tJpyOs9c9HSn4DpSUK56f70L5Bp4sMOeG4KS6HeQFC/D8fEHOlBzkrpRaFUFsy+XNvVH
-         FJ7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747296311; x=1747901111;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=edff1LhptN7FQ5Bq2oruaEckY3n2IP7/Je81wTRfspE=;
-        b=EKkks2WBBB4efYF6SAL7fmg4urCRSR2WFb0RlauGG0lRbpvUC94Oh4aKC5wiXN84yQ
-         sEP9bkCkqLqeX0i2zAb/dxjn2UtClm9JmgKqtxCQz/weLqJrsdpm5D7gsaikfyN5ZrCv
-         sxQbkuHWg8MRimDT4TKvWLfntTDWNN+H1KALYjSbeS1chZyGRP62Jy2NYKkQRw7sSRBr
-         UWsBaTqCYmZkYnAjkkb1RxcxhcZJjTM5gZF47eVThqOtHt+wF7S1cewRYeeHNfL2wymn
-         xeHbkCA5cd6QaDgdBkUagUel+ChM+xIhhEl3LG16DjNofQdMdyRYzJ4Q+fTL1E/p+1i0
-         /Yuw==
-X-Forwarded-Encrypted: i=1; AJvYcCVdXtscRiPZjRrBLLbEZ6IxqhfPYQel1ZbEQzZGQMZoahie4l/Ewg8i8LGSeATSfr1znm8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6H3kOpkgC5GVjirsdXXQWzkT6/hMmNkxY3MDX5Vtgw1qgqXof
-	XXodpiLbL50l+oJ9YvA0QJsGlAEOLiM4UNzb3SRg+wC9aDTo55ap0Vpj/+x0tvs=
-X-Gm-Gg: ASbGncs5PF8IH6ynwJR2LXc8ioE7Nbn2JpOfUqZf9DRhhEI25hcAtPxcOXeINg9ui+k
-	xip35GBG9iYpFt5/pZhkmH31hb090tv++/pu/uBcr6rkuWilTaRE34QwCOzMFvdzEt5dezi/KZh
-	eg7i+W4SGkfXxOGd98X0Kna2+ol+OvTXLFGOt0Y4/MqsdQFCnbhiAiTfuifu6DIxEVEjIyEdCmk
-	NwaCNd3RjtZVl555oO4MrAcOZI1cl+h2+Xj0jHF96SI5OsElHniB9WVoevZc6b9HWEQ0R7xotQt
-	FWYM+1m+Lkn4lKrecxU7RKUDWOVI0aGGUB5QfPy5a3JVNggomcK3kA==
-X-Google-Smtp-Source: AGHT+IGXvziHODCht+twr6uozgFfTyAclIKdnZuTVey4CsU1/XVbIcw96mTLNhe3rmJT4ESA13CsYg==
-X-Received: by 2002:a05:6000:2911:b0:39e:dbb0:310f with SMTP id ffacd0b85a97d-3a34992746amr5945525f8f.39.1747296311397;
-        Thu, 15 May 2025 01:05:11 -0700 (PDT)
-Received: from [10.100.51.48] ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4dea85df68fsm9441727137.18.2025.05.15.01.04.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 May 2025 01:05:10 -0700 (PDT)
-Message-ID: <e2ebf88d-46a2-4f38-a0c8-940c3d3bee49@suse.com>
-Date: Thu, 15 May 2025 10:04:53 +0200
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cNPkKacg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0jZJW7Ko";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rfoEs13/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sqKh1Lqk"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A8C79211B5;
+	Thu, 15 May 2025 08:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747298499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hds4IGkoceQaeUi/wJBpSLkCnk5XKktfUCvS0xFhBvI=;
+	b=cNPkKacgAEltoTCy75IKkvQ8gn9mxFgaCHogP9vwBd4tbvzOT+dXzC9EZJNWYU8vCC4n/Y
+	vNbyP1nVVf4udiu4dtIaFcW8+HLLxZFuvHQBDsbWe+E5HfCDNpYiDE7CqdHva4ZDeazoLR
+	9pUn+htNTbZ4cSQp64uojLl2RxoTvPg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747298499;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hds4IGkoceQaeUi/wJBpSLkCnk5XKktfUCvS0xFhBvI=;
+	b=0jZJW7KoUXa09MI6NueejmYgX9UqkFlQYSSN1Jzgsun6z2KxJalgt3L4kTE6PFe6kVO5i4
+	bZguB3Bk+RQ577Cg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="rfoEs13/";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sqKh1Lqk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1747298497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hds4IGkoceQaeUi/wJBpSLkCnk5XKktfUCvS0xFhBvI=;
+	b=rfoEs13/ATXNW3sCjEkaCwybAGskmpNUW+rfPueuikQ9rlDzmjM94YzKRchthxxScYdF6V
+	Qnb9VtArXSBfzY26bWbAOjM6YLPbH5yqRvCksizjKwe174Keej60MFBvn68OKX6yZJ0PrW
+	pz1ISFCV41Tf+mULqY1kxuQNnkVoPss=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1747298497;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hds4IGkoceQaeUi/wJBpSLkCnk5XKktfUCvS0xFhBvI=;
+	b=sqKh1Lqk1YSrQrfpb4SZEA2EE+mDrNso3Md3R01GDWr4KfSND3iyBqoCl9SaVN8NryVuBK
+	TKI9Lnzu6Wxh50DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9265E137E8;
+	Thu, 15 May 2025 08:41:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FEpuI8GoJWjUPQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 May 2025 08:41:37 +0000
+Message-ID: <488fa28f-e778-4ca2-a171-dba32abaab21@suse.cz>
+Date: Thu, 15 May 2025 10:41:37 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -66,107 +83,115 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/12] module: Move modprobe_path and modules_disabled
- ctl_tables into the module subsys
-To: Joel Granados <joel.granados@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>,
- Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez
- <da.gomez@samsung.com>, Kees Cook <kees@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
- Waiman Long <longman@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>,
- linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
- linux-parisc@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
- <20250509-jag-mv_ctltables_iter2-v1-1-d0ad83f5f4c3@kernel.org>
+Subject: Re: [PATCH v4 3/9] slab: sheaf prefilling for guaranteed allocations
 Content-Language: en-US
-From: Petr Pavlu <petr.pavlu@suse.com>
-In-Reply-To: <20250509-jag-mv_ctltables_iter2-v1-1-d0ad83f5f4c3@kernel.org>
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter
+ <cl@linux.com>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ maple-tree@lists.infradead.org
+References: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
+ <20250425-slub-percpu-caches-v4-3-8a636982b4a4@suse.cz>
+ <aBsktvf4VjQfXGST@harry>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <aBsktvf4VjQfXGST@harry>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: A8C79211B5
+X-Spam-Flag: NO
+X-Spam-Score: -4.51
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[google.com,oracle.com,linux.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,lists.infradead.org];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,oracle.com:email]
+X-Rspamd-Action: no action
 
-On 5/9/25 14:54, Joel Granados wrote:
-> Move module sysctl (modprobe_path and modules_disabled) out of sysctl.c
-> and into the modules subsystem. Make the modprobe_path variable static
-> as it no longer needs to be exported. Remove module.h from the includes
-> in sysctl as it no longer uses any module exported variables.
+On 5/7/25 11:15, Harry Yoo wrote:
+> On Fri, Apr 25, 2025 at 10:27:23AM +0200, Vlastimil Babka wrote:
+>> Add functions for efficient guaranteed allocations e.g. in a critical
+>> section that cannot sleep, when the exact number of allocations is not
+>> known beforehand, but an upper limit can be calculated.
+>> 
+>> kmem_cache_prefill_sheaf() returns a sheaf containing at least given
+>> number of objects.
+>> 
+>> kmem_cache_alloc_from_sheaf() will allocate an object from the sheaf
+>> and is guaranteed not to fail until depleted.
+>> 
+>> kmem_cache_return_sheaf() is for giving the sheaf back to the slab
+>> allocator after the critical section. This will also attempt to refill
+>> it to cache's sheaf capacity for better efficiency of sheaves handling,
+>> but it's not stricly necessary to succeed.
+>> 
+>> kmem_cache_refill_sheaf() can be used to refill a previously obtained
+>> sheaf to requested size. If the current size is sufficient, it does
+>> nothing. If the requested size exceeds cache's sheaf_capacity and the
+>> sheaf's current capacity, the sheaf will be replaced with a new one,
+>> hence the indirect pointer parameter.
+>> 
+>> kmem_cache_sheaf_size() can be used to query the current size.
+>> 
+>> The implementation supports requesting sizes that exceed cache's
+>> sheaf_capacity, but it is not efficient - such "oversize" sheaves are
+>> allocated fresh in kmem_cache_prefill_sheaf() and flushed and freed
+>> immediately by kmem_cache_return_sheaf(). kmem_cache_refill_sheaf()
+>> might be especially ineffective when replacing a sheaf with a new one of
+>> a larger capacity. It is therefore better to size cache's
+>> sheaf_capacity accordingly to make oversize sheaves exceptional.
+>> 
+>> CONFIG_SLUB_STATS counters are added for sheaf prefill and return
+>> operations. A prefill or return is considered _fast when it is able to
+>> grab or return a percpu spare sheaf (even if the sheaf needs a refill to
+>> satisfy the request, as those should amortize over time), and _slow
+>> otherwise (when the barn or even sheaf allocation/freeing has to be
+>> involved). sheaf_prefill_oversize is provided to determine how many
+>> prefills were oversize (counter for oversize returns is not necessary as
+>> all oversize refills result in oversize returns).
+>> 
+>> When slub_debug is enabled for a cache with sheaves, no percpu sheaves
+>> exist for it, but the prefill functionality is still provided simply by
+>> all prefilled sheaves becoming oversize. If percpu sheaves are not
+>> created for a cache due to not passing the sheaf_capacity argument on
+>> cache creation, the prefills also work through oversize sheaves, but
+>> there's a WARN_ON_ONCE() to indicate the omission.
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+>> ---
 > 
-> This is part of a greater effort to move ctl tables into their
-> respective subsystems which will reduce the merge conflicts in
-> kernel/sysctl.c.
+> Looks good to me,
+> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 > 
-> Signed-off-by: Joel Granados <joel.granados@kernel.org>
-> [...]
-> --- a/kernel/module/kmod.c
-> +++ b/kernel/module/kmod.c
-> @@ -60,7 +60,7 @@ static DEFINE_SEMAPHORE(kmod_concurrent_max, MAX_KMOD_CONCURRENT);
->  /*
->  	modprobe_path is set via /proc/sys.
->  */
-> -char modprobe_path[KMOD_PATH_LEN] = CONFIG_MODPROBE_PATH;
-> +static char modprobe_path[KMOD_PATH_LEN] = CONFIG_MODPROBE_PATH;
->  
->  static void free_modprobe_argv(struct subprocess_info *info)
->  {
-> @@ -177,3 +177,33 @@ int __request_module(bool wait, const char *fmt, ...)
->  	return ret;
->  }
->  EXPORT_SYMBOL(__request_module);
-> +
-> +#ifdef CONFIG_MODULES
-> +static const struct ctl_table kmod_sysctl_table[] = {
-> +	{
-> +		.procname	= "modprobe",
-> +		.data		= &modprobe_path,
-> +		.maxlen		= KMOD_PATH_LEN,
-> +		.mode		= 0644,
-> +		.proc_handler	= proc_dostring,
-> +	},
-> +	{
-> +		.procname	= "modules_disabled",
-> +		.data		= &modules_disabled,
-> +		.maxlen		= sizeof(int),
-> +		.mode		= 0644,
-> +		/* only handle a transition from default "0" to "1" */
-> +		.proc_handler	= proc_dointvec_minmax,
-> +		.extra1		= SYSCTL_ONE,
-> +		.extra2		= SYSCTL_ONE,
-> +	},
+> with a nit below.
 
-This is minor.. but the file kernel/module/kmod.c contains the logic to
-request direct modprobe invocation by the kernel. Registering the
-modprobe_path sysctl here is appropriate. However, the modules_disabled
-setting affects the entire module loader so I don't think it's best to
-register it here.
+Thanks, incorporated the suggestion!
 
-I suggest keeping a single table for the module sysctl values but moving
-it to kernel/module/main.c. This means the variable modprobe_path must
-retain external linkage, on the other hand, modules_disabled can be made
-static.
-
--- 
-Thanks,
-Petr
-
-> +};
-> +
-> +static int __init init_kmod_sysctl(void)
-> +{
-> +	register_sysctl_init("kernel", kmod_sysctl_table);
-> +	return 0;
-> +}
-> +
-> +subsys_initcall(init_kmod_sysctl);
-> +#endif
