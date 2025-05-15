@@ -1,383 +1,172 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F37AAD51;
-	Thu, 15 May 2025 04:18:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E6527BF76
+	for <rcu@vger.kernel.org>; Thu, 15 May 2025 08:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747282691; cv=none; b=mf5MstRlUTglz2oF6EzNcemCoEh5TaUVu2QiYJqtF+gUiAzG5wT0FiBLYFtzvR8Vk8x6F3PhI88UnI2aMF6F9Ffpi8nEQg8hgmT1b5hmrcZjpoQsLf0h9zCpt44Zg1ylkpfg3aZqVVuDILj641sXFeCaP5pDiJTujCT79bEai2I=
+	t=1747296315; cv=none; b=rMCwAVA9NeWAM092P+YiB72L75DlTh4jy6torKTYJDItzZkzv4mcio0hqv9bNWjvq4zYnE+No7ou0yf89EX1Gd8gLDlJboAq5IRJk1qPq3Ok59I0GU5iCDy+GlgsE6P0hPWeG2XI0amH0YCXYLX59Fb5W+369t0gSUMwG0/vOp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747282691; c=relaxed/simple;
-	bh=b7qdvvI+b5cEZwkWUixYfpmoqe5s1VOy12QTph0E0Lc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xjw2tSMpjT98llVdwow5Kl5r3Hb2peEcA7cfwQsmBE7ypwN9CtiSDrxWr3oOyO0a1mGk1abWfCEuNEwf/MRUZdBuwQ8Krnc51sBQWtUyliBQ7lYzVCO1NhuHx++CHtzIonmzD95SEX2NpRjL1bCS/kLnEDnjKm4n7329ZuuMkO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JiSJfyOV; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1747296315; c=relaxed/simple;
+	bh=0tGKkkemugSf6qbz3gshaWCoVsCRbxCI+SQBbX3dIFY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=COcuADjP9JN/tbu/pT0tqJ77Ds5lNh3ISzjaTc0zwlnyMKbxJ2XcFkyFvmM/KboGII4uPltDlLJSYVMwDQ8aHEUBaD1pJpta/uknxRlQYuZDcrFzVfH11M4DPD2PsVh/eMDy2sXa8zD2gnJuwNY1AW17QJYFb5liNh5bN0zKRbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QleRWDJ1; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JiSJfyOV"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9D79C4CEE7;
-	Thu, 15 May 2025 04:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747282691;
-	bh=b7qdvvI+b5cEZwkWUixYfpmoqe5s1VOy12QTph0E0Lc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JiSJfyOVOf9Lrqof1qCc64HNqBiOTlhJxnotKyFl4mZ1MU51EX/oNElzfgdkT99GP
-	 zMXXRtvrT7QQqrE6nf0fuXaMOuAUE2TyUXNl9t0HKAVTCa8cANJ8mtW7RmBiYICIOM
-	 Oww0diEZhPCDapPuSq8SFYsvU0bffEXGXRinxFctkk+WqfbHZFYd80uIXUy/JOaq3k
-	 SS7Z4l8UIv90dB+3mZzt5eyHRsWotjxgfIHcpR0O9oISeUCBMOXVKeBD2C+MxuieKc
-	 g3KQbJqZWupTbK+VfF+PcPIOsd4wHXZ6G73lmtAnsdf9TQnM2f6B7w2A57s6RVVtvK
-	 rfqcewL8AePuw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 60DBFCE0857; Wed, 14 May 2025 21:18:10 -0700 (PDT)
-Date: Wed, 14 May 2025 21:18:10 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [linux-next:master] [rcutorture]  c27d0d38f2:
- WARNING:at_kernel/rcu/rcutorture.c:#rcutorture_one_extend_check[rcutorture]
-Message-ID: <cd1ee5a5-73f8-450b-b5be-7f5498e02d78@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202505140917.8ee62cc6-lkp@intel.com>
- <5e4444fb-0c27-4f7c-acbe-e62367f5ed37@paulmck-laptop>
- <aCVRqvPSZLVaVwmR@xsang-OptiPlex-9020>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QleRWDJ1"
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a108684f90so355731f8f.1
+        for <rcu@vger.kernel.org>; Thu, 15 May 2025 01:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1747296311; x=1747901111; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=edff1LhptN7FQ5Bq2oruaEckY3n2IP7/Je81wTRfspE=;
+        b=QleRWDJ1MjKGuTARD+JMrNkTAxf4HJRsTFLkXkCVtL9CbWW4H8867e4gRrYe6EwAgm
+         XPMtN/ccgxu1Iakt4TGULyjyPIWkeK++REj8S0mb+Lp0Y5BdRQJ1RgMKofZ+1rn3lsyW
+         bxi4phbRhYV5kVMHXtDrnLPMbUHaadKUFkpJh31Uhr5GNhzN3CoyH06OzrvpRMWIGd1p
+         lPNsa58+0OPS7jisV6aHdqQaXvnPOoiqqmJRmt4T6k338Xqel0OrIM7fT7Wlbtpc6I1K
+         tJpyOs9c9HSn4DpSUK56f70L5Bp4sMOeG4KS6HeQFC/D8fEHOlBzkrpRaFUFsy+XNvVH
+         FJ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747296311; x=1747901111;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=edff1LhptN7FQ5Bq2oruaEckY3n2IP7/Je81wTRfspE=;
+        b=EKkks2WBBB4efYF6SAL7fmg4urCRSR2WFb0RlauGG0lRbpvUC94Oh4aKC5wiXN84yQ
+         sEP9bkCkqLqeX0i2zAb/dxjn2UtClm9JmgKqtxCQz/weLqJrsdpm5D7gsaikfyN5ZrCv
+         sxQbkuHWg8MRimDT4TKvWLfntTDWNN+H1KALYjSbeS1chZyGRP62Jy2NYKkQRw7sSRBr
+         UWsBaTqCYmZkYnAjkkb1RxcxhcZJjTM5gZF47eVThqOtHt+wF7S1cewRYeeHNfL2wymn
+         xeHbkCA5cd6QaDgdBkUagUel+ChM+xIhhEl3LG16DjNofQdMdyRYzJ4Q+fTL1E/p+1i0
+         /Yuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVdXtscRiPZjRrBLLbEZ6IxqhfPYQel1ZbEQzZGQMZoahie4l/Ewg8i8LGSeATSfr1znm8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6H3kOpkgC5GVjirsdXXQWzkT6/hMmNkxY3MDX5Vtgw1qgqXof
+	XXodpiLbL50l+oJ9YvA0QJsGlAEOLiM4UNzb3SRg+wC9aDTo55ap0Vpj/+x0tvs=
+X-Gm-Gg: ASbGncs5PF8IH6ynwJR2LXc8ioE7Nbn2JpOfUqZf9DRhhEI25hcAtPxcOXeINg9ui+k
+	xip35GBG9iYpFt5/pZhkmH31hb090tv++/pu/uBcr6rkuWilTaRE34QwCOzMFvdzEt5dezi/KZh
+	eg7i+W4SGkfXxOGd98X0Kna2+ol+OvTXLFGOt0Y4/MqsdQFCnbhiAiTfuifu6DIxEVEjIyEdCmk
+	NwaCNd3RjtZVl555oO4MrAcOZI1cl+h2+Xj0jHF96SI5OsElHniB9WVoevZc6b9HWEQ0R7xotQt
+	FWYM+1m+Lkn4lKrecxU7RKUDWOVI0aGGUB5QfPy5a3JVNggomcK3kA==
+X-Google-Smtp-Source: AGHT+IGXvziHODCht+twr6uozgFfTyAclIKdnZuTVey4CsU1/XVbIcw96mTLNhe3rmJT4ESA13CsYg==
+X-Received: by 2002:a05:6000:2911:b0:39e:dbb0:310f with SMTP id ffacd0b85a97d-3a34992746amr5945525f8f.39.1747296311397;
+        Thu, 15 May 2025 01:05:11 -0700 (PDT)
+Received: from [10.100.51.48] ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4dea85df68fsm9441727137.18.2025.05.15.01.04.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 May 2025 01:05:10 -0700 (PDT)
+Message-ID: <e2ebf88d-46a2-4f38-a0c8-940c3d3bee49@suse.com>
+Date: Thu, 15 May 2025 10:04:53 +0200
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aCVRqvPSZLVaVwmR@xsang-OptiPlex-9020>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/12] module: Move modprobe_path and modules_disabled
+ ctl_tables into the module subsys
+To: Joel Granados <joel.granados@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>,
+ Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez
+ <da.gomez@samsung.com>, Kees Cook <kees@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Waiman Long <longman@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>,
+ linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org,
+ linux-parisc@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
+ <20250509-jag-mv_ctltables_iter2-v1-1-d0ad83f5f4c3@kernel.org>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20250509-jag-mv_ctltables_iter2-v1-1-d0ad83f5f4c3@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, May 15, 2025 at 10:30:02AM +0800, Oliver Sang wrote:
-> hi, Paul,
+On 5/9/25 14:54, Joel Granados wrote:
+> Move module sysctl (modprobe_path and modules_disabled) out of sysctl.c
+> and into the modules subsystem. Make the modprobe_path variable static
+> as it no longer needs to be exported. Remove module.h from the includes
+> in sysctl as it no longer uses any module exported variables.
 > 
-> On Wed, May 14, 2025 at 11:26:34AM -0700, Paul E. McKenney wrote:
-> > On Wed, May 14, 2025 at 10:47:30AM +0800, kernel test robot wrote:
-> > > 
-> > > hi, Paul,
-> > > 
-> > > for this commit we tested before, now we found it causes issues in linux-next
-> > > master branch.
-> > 
-> > Good catch as always!!!  Yes, using HRTIMER_MODE_HARD means that this
-> > ircutorture_one_extend_check() function must check for hardirq as well
-> > as softirq.  Which, oddly enough, permits simplifying the code, though
-> > a larger patch.
-> > 
-> > I could reproduce this, and the patch at the end of this email fixes it
-> > for me.  Does it work for you as well?
+> This is part of a greater effort to move ctl tables into their
+> respective subsystems which will reduce the merge conflicts in
+> kernel/sysctl.c.
 > 
-> thanks a lot for information!
-> 
-> what's the base of the patch? I tried to apply it upon c27d0d38f2 or lastest
-> linux-next/master
-> bdd609656ff55 (tag: next-20250514, linux-next/master) Add linux-next specific files for 20250514
-> 
-> both failed. thanks
+> Signed-off-by: Joel Granados <joel.granados@kernel.org>
+> [...]
+> --- a/kernel/module/kmod.c
+> +++ b/kernel/module/kmod.c
+> @@ -60,7 +60,7 @@ static DEFINE_SEMAPHORE(kmod_concurrent_max, MAX_KMOD_CONCURRENT);
+>  /*
+>  	modprobe_path is set via /proc/sys.
+>  */
+> -char modprobe_path[KMOD_PATH_LEN] = CONFIG_MODPROBE_PATH;
+> +static char modprobe_path[KMOD_PATH_LEN] = CONFIG_MODPROBE_PATH;
+>  
+>  static void free_modprobe_argv(struct subprocess_info *info)
+>  {
+> @@ -177,3 +177,33 @@ int __request_module(bool wait, const char *fmt, ...)
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(__request_module);
+> +
+> +#ifdef CONFIG_MODULES
+> +static const struct ctl_table kmod_sysctl_table[] = {
+> +	{
+> +		.procname	= "modprobe",
+> +		.data		= &modprobe_path,
+> +		.maxlen		= KMOD_PATH_LEN,
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_dostring,
+> +	},
+> +	{
+> +		.procname	= "modules_disabled",
+> +		.data		= &modules_disabled,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		/* only handle a transition from default "0" to "1" */
+> +		.proc_handler	= proc_dointvec_minmax,
+> +		.extra1		= SYSCTL_ONE,
+> +		.extra2		= SYSCTL_ONE,
+> +	},
 
-Apologies, I just now pushed it out on my -rcu tree:
+This is minor.. but the file kernel/module/kmod.c contains the logic to
+request direct modprobe invocation by the kernel. Registering the
+modprobe_path sysctl here is appropriate. However, the modules_disabled
+setting affects the entire module loader so I don't think it's best to
+register it here.
 
-db950fccd45a ("rcutorture: Make rcutorture_one_extend_check() account for hardirq")
+I suggest keeping a single table for the module sysctl values but moving
+it to kernel/module/main.c. This means the variable modprobe_path must
+retain external linkage, on the other hand, modules_disabled can be made
+static.
 
-I will need to rebase this to precede the updated version of the commit
-that you tested, but one step at a time...
+-- 
+Thanks,
+Petr
 
-							Thanx, Paul
-
-> > > =========================================================================================
-> > > tbox_group/testcase/rootfs/kconfig/compiler/runtime/test/torture_type:
-> > >   vm-snb/rcutorture/debian-11.1-i386-20220923.cgz/i386-randconfig-141-20250508/clang-20/300s/cpuhotplug/srcud
-> > > 
-> > > c795676b5c0a4ab7 c27d0d38f2cafb70a68ca42c410
-> > > ---------------- ---------------------------
-> > >        fail:runs  %reproduction    fail:runs
-> > >            |             |             |
-> > >            :50           2%           1:50    dmesg.EIP:__kernel_text_address
-> > >            :50           4%           2:50    dmesg.EIP:__srcu_check_read_flavor
-> > >            :50           2%           1:50    dmesg.EIP:_raw_spin_unlock_irq
-> > >            :50          14%           7:50    dmesg.EIP:_raw_spin_unlock_irqrestore
-> > >            :50          30%          15:50    dmesg.EIP:console_flush_all
-> > >            :50           4%           2:50    dmesg.EIP:console_trylock_spinning
-> > >            :50           2%           1:50    dmesg.EIP:delay_tsc
-> > >            :50           2%           1:50    dmesg.EIP:finish_lock_switch
-> > >            :50           2%           1:50    dmesg.EIP:kernel_text_address
-> > >            :50           2%           1:50    dmesg.EIP:lock_acquire
-> > >            :50          36%          18:50    dmesg.EIP:pv_native_safe_halt
-> > >           1:50          -2%            :50    dmesg.EIP:rcu_torture_fwd_prog_cr
-> > >           7:50         -14%            :50    dmesg.EIP:rcu_torture_writer
-> > >            :50         100%          50:50    dmesg.EIP:rcutorture_one_extend_check
-> > >          48:50           0%          48:50    dmesg.INFO:task_blocked_for_more_than#seconds
-> > >          48:50           0%          48:50    dmesg.Kernel_panic-not_syncing:hung_task:blocked_tasks
-> > >          50:50           0%          50:50    dmesg.UBSAN:negation-overflow_in_lib/sort.c
-> > >           1:50          -2%            :50    dmesg.WARNING:at_kernel/rcu/rcutorture.c:#rcu_torture_fwd_prog_cr[rcutorture]
-> > >           7:50         -14%            :50    dmesg.WARNING:at_kernel/rcu/rcutorture.c:#rcu_torture_writer[rcutorture]
-> > >            :50         100%          50:50    dmesg.WARNING:at_kernel/rcu/rcutorture.c:#rcutorture_one_extend_check[rcutorture]   <--- (1)
-> > >           7:50         -14%            :50    dmesg.calltrace:__do_softirq
-> > >           1:50          -2%            :50    dmesg.calltrace:rcu_torture_pipe_update
-> > > 
-> > > though both c27d0d38f2/parent have various issues, it seems (1) is persistent
-> > > on c27d0d38f2 and clean on parent.
-> > > 
-> > > 
-> > > Hello,
-> > > 
-> > > kernel test robot noticed "WARNING:at_kernel/rcu/rcutorture.c:#rcutorture_one_extend_check[rcutorture]" on:
-> > > 
-> > > commit: c27d0d38f2cafb70a68ca42c4105e170862aaf77 ("rcutorture: Complain if an ->up_read() is delayed more than 10 seconds")
-> > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> > > 
-> > > [test failed on linux-next/master f48887a98b78880b7711aca311fbbbcaad6c4e3b]
-> > > 
-> > > in testcase: rcutorture
-> > > version: 
-> > > with following parameters:
-> > > 
-> > > 	runtime: 300s
-> > > 	test: cpuhotplug
-> > > 	torture_type: srcud
-> > > 
-> > > 
-> > > 
-> > > config: i386-randconfig-141-20250508
-> > > compiler: clang-20
-> > > test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> > > 
-> > > (please refer to attached dmesg/kmsg for entire log/backtrace)
-> > > 
-> > > 
-> > > 
-> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > > the same patch/commit), kindly add following tags
-> > > | Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-lkp/202505140917.8ee62cc6-lkp@intel.com
-> > > 
-> > > 
-> > > The kernel config and materials to reproduce are available at:
-> > > https://download.01.org/0day-ci/archive/20250514/202505140917.8ee62cc6-lkp@intel.com
-> > > 
-> > > 
-> > > [   76.027193][    C1] ------------[ cut here ]------------
-> > > [   76.027652][  T661] srcud-torture: rcu_torture_stats task started
-> > > [   76.027754][    C1] rcutorture_one_extend_check before change: Current 0x80  To add 0x0  To remove 0x80  preempt_count() 0x10001
-> > > [   76.029893][    C1] WARNING: CPU: 1 PID: 2 at kernel/rcu/rcutorture.c:1976 rcutorture_one_extend_check+0x5b/0x300 [rcutorture]
-> > > [   76.031093][    C1] Modules linked in: rcutorture(+) torture
-> > > [   76.031736][    C1] CPU: 1 UID: 0 PID: 2 Comm: kthreadd Tainted: G                T   6.15.0-rc1-00008-gc27d0d38f2ca #1 PREEMPT(full)  4c3e2c742772c0895467dcaa42b0aab115cc2926
-> > > [   76.033194][    C1] Tainted: [T]=RANDSTRUCT
-> > > [   76.033728][    C1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> > > [   76.034602][    C1] EIP: rcutorture_one_extend_check+0x5b/0x300 [rcutorture]
-> > > [   76.035319][    C1] Code: 05 68 e2 69 f0 01 64 a1 0c f0 b4 c3 25 ff ff ff 7f 50 ff 75 0c 57 53 56 68 e3 c9 6a f0 68 19 b5 6a f0 e8 b8 c8 96 d0 83 c4 1c <0f> 0b f6 c3 09 75 1d eb 35 9c 8f 45 ec f7 45 ec 00 02 00 00 74 09
-> > > [   76.037024][    C1] EAX: 0000006c EBX: 00000080 ECX: 00000027 EDX: 00000000
-> > > [   76.037760][    C1] ESI: f06ad951 EDI: 00000000 EBP: c7f19da0 ESP: c7f19d8c
-> > > [   76.038490][    C1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010082
-> > > [   76.039252][    C1] CR0: 80050033 CR2: b7e17eb0 CR3: 08be7000 CR4: 00040690
-> > > [   76.039989][    C1] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
-> > > [   76.040713][    C1] DR6: fffe0ff0 DR7: 00000400
-> > > [   76.041313][    C1] Call Trace:
-> > > [   76.041825][    C1]  rcutorture_one_extend+0x54/0x4b0 [rcutorture 4a4a34e515cdd0c53b2c18de8a71945278e82895]
-> > > [   76.042705][    C1]  ? lock_acquire+0xa8/0x1c0
-> > > [   76.043299][    C1]  rcu_torture_one_read_end+0x1b7/0x350 [rcutorture 4a4a34e515cdd0c53b2c18de8a71945278e82895]
-> > > [   76.044196][    C1]  ? local_bh_enable+0x20/0x20 [rcutorture 4a4a34e515cdd0c53b2c18de8a71945278e82895]
-> > > [   76.045049][    C1]  rcu_torture_updown_hrt+0x18/0x30 [rcutorture 4a4a34e515cdd0c53b2c18de8a71945278e82895]
-> > > [   76.045935][    C1]  __hrtimer_run_queues+0x18a/0x3b0
-> > > [   76.046555][    C1]  ? ktime_get_update_offsets_now+0x52/0x200
-> > > [   76.047309][    C1]  hrtimer_run_queues+0xf7/0x130
-> > > [   76.048063][    C1]  update_process_times+0x25/0xb0
-> > > [   76.048680][    C1]  tick_periodic+0xc4/0xe0
-> > > [   76.049272][    C1]  tick_handle_periodic+0x23/0x70
-> > > [   76.049875][    C1]  __sysvec_apic_timer_interrupt+0x73/0x190
-> > > [   76.050528][    C1]  ? sysvec_call_function_single+0x30/0x30
-> > > [   76.051175][    C1]  sysvec_apic_timer_interrupt+0x1a/0x34
-> > > [   76.051812][    C1]  handle_exception+0x150/0x150
-> > > [   76.052405][    C1] EIP: lock_acquire+0xda/0x1c0
-> > > [   76.052998][    C1] Code: 64 0f c1 05 8c 0e b5 c3 83 f8 01 0f 85 a5 00 00 00 9c 8f 45 d4 f7 45 d4 00 02 00 00 0f 85 a6 00 00 00 85 f6 74 01 fb 83 c4 20 <5e> 5f 5b 5d 2e e9 30 3d 3c 01 89 ce 89 55 f0 8b 55 f0 ff 75 14 ff
-> > > [   76.054753][    C1] EAX: 00000001 EBX: c345d894 ECX: b4a771ac EDX: 00000000
-> > > [   76.055499][    C1] ESI: 00000001 EDI: 00000000 EBP: c7f19f50 ESP: c7f19f44
-> > > [   76.056248][    C1] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00000286
-> > > [   76.057032][    C1]  ? try_to_wake_up+0x248/0x850
-> > > [   76.057690][    C1]  ? sysvec_call_function_single+0x30/0x30
-> > > [   76.058377][    C1]  ? try_to_wake_up+0x248/0x850
-> > > [   76.059009][    C1]  ? sysvec_call_function_single+0x30/0x30
-> > > [   76.059693][    C1]  ? lock_acquire+0xda/0x1c0
-> > > [   76.060312][    C1]  _raw_spin_lock+0x2a/0x3c
-> > > [   76.060927][    C1]  ? kthreadd+0xda/0x160
-> > > [   76.061549][    C1]  kthreadd+0xda/0x160
-> > > [   76.062126][    C1]  ? schedule_tail+0xd4/0x120
-> > > [   76.062729][    C1]  ? kthread_stop_put+0x30/0x30
-> > > [   76.063335][    C1]  ? kthread_stop_put+0x30/0x30
-> > > [   76.063933][    C1]  ret_from_fork+0x35/0x40
-> > > [   76.064505][    C1]  ret_from_fork_asm+0x12/0x1c
-> > > [   76.065091][    C1]  entry_INT80_32+0x10d/0x10d
-> > > [   76.065693][    C1] irq event stamp: 4386
-> > > [   76.066236][    C1] hardirqs last  enabled at (4385): [<c10f858d>] finish_lock_switch+0x9d/0xe0
-> > > [   76.067037][    C1] hardirqs last disabled at (4386): [<c24e7ab0>] sysvec_apic_timer_interrupt+0xc/0x34
-> > > [   76.067873][    C1] softirqs last  enabled at (2260): [<c10bb5d2>] handle_softirqs+0x372/0x3b0
-> > > [   76.068659][    C1] softirqs last disabled at (2255): [<c24f627f>] __do_softirq+0xf/0x16
-> > > [   76.069635][    C1] ---[ end trace 0000000000000000 ]---
-> > > [   76.099825][  T636] srcud-torture: Creating torture_stutter task
-> > > [   76.099831][  T667] srcud-torture: torture_shuffle task started
-> > > [   76.101418][  T636] srcud-torture: Creating torture_onoff task
-> > > 
-> > > 
-> > > -- 
-> > > 0-DAY CI Kernel Test Service
-> > > https://github.com/intel/lkp-tests/wiki
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index 373c65a6e1031..0840153c90d18 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -1975,14 +1975,14 @@ static void rcu_torture_reader_do_mbchk(long myid, struct rcu_torture *rtp,
-> >  
-> >  // Verify the specified RCUTORTURE_RDR* state.
-> >  #define ROEC_ARGS "%s %s: Current %#x  To add %#x  To remove %#x  preempt_count() %#x\n", __func__, s, curstate, new, old, preempt_count()
-> > -static void rcutorture_one_extend_check(char *s, int curstate, int new, int old, bool insoftirq)
-> > +static void rcutorture_one_extend_check(char *s, int curstate, int new, int old)
-> >  {
-> >  	int mask;
-> >  
-> > -	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE))
-> > +	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE) || in_nmi())
-> >  		return;
-> >  
-> > -	WARN_ONCE(!(curstate & RCUTORTURE_RDR_IRQ) && irqs_disabled(), ROEC_ARGS);
-> > +	WARN_ONCE(!(curstate & RCUTORTURE_RDR_IRQ) && irqs_disabled() && !in_hardirq(), ROEC_ARGS);
-> >  	WARN_ONCE((curstate & RCUTORTURE_RDR_IRQ) && !irqs_disabled(), ROEC_ARGS);
-> >  
-> >  	// If CONFIG_PREEMPT_COUNT=n, further checks are unreliable.
-> > @@ -1997,9 +1997,9 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
-> >  		  (curstate & (RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2)) &&
-> >  		  cur_ops->readlock_nesting() == 0, ROEC_ARGS);
-> >  
-> > -	// Timer handlers have all sorts of stuff disabled, so ignore
-> > +	// Interrupt handlers have all sorts of stuff disabled, so ignore
-> >  	// unintended disabling.
-> > -	if (insoftirq)
-> > +	if (in_serving_softirq() || in_hardirq())
-> >  		return;
-> >  
-> >  	WARN_ONCE(cur_ops->extendables &&
-> > @@ -2038,8 +2038,7 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
-> >   * beginning or end of the critical section and if there was actually a
-> >   * change, do a ->read_delay().
-> >   */
-> > -static void rcutorture_one_extend(int *readstate, int newstate, bool insoftirq,
-> > -				  struct torture_random_state *trsp,
-> > +static void rcutorture_one_extend(int *readstate, int newstate, struct torture_random_state *trsp,
-> >  				  struct rt_read_seg *rtrsp)
-> >  {
-> >  	bool first;
-> > @@ -2054,7 +2053,7 @@ static void rcutorture_one_extend(int *readstate, int newstate, bool insoftirq,
-> >  	first = idxold1 == 0;
-> >  	WARN_ON_ONCE(idxold2 < 0);
-> >  	WARN_ON_ONCE(idxold2 & ~(RCUTORTURE_RDR_ALLBITS | RCUTORTURE_RDR_UPDOWN));
-> > -	rcutorture_one_extend_check("before change", idxold1, statesnew, statesold, insoftirq);
-> > +	rcutorture_one_extend_check("before change", idxold1, statesnew, statesold);
-> >  	rtrsp->rt_readstate = newstate;
-> >  
-> >  	/* First, put new protection in place to avoid critical-section gap. */
-> > @@ -2074,8 +2073,7 @@ static void rcutorture_one_extend(int *readstate, int newstate, bool insoftirq,
-> >  		idxnew2 = (cur_ops->readlock() << RCUTORTURE_RDR_SHIFT_2) & RCUTORTURE_RDR_MASK_2;
-> >  
-> >  	// Complain unless both the old and the new protection is in place.
-> > -	rcutorture_one_extend_check("during change",
-> > -				    idxold1 | statesnew, statesnew, statesold, insoftirq);
-> > +	rcutorture_one_extend_check("during change", idxold1 | statesnew, statesnew, statesold);
-> >  
-> >  	// Sample CPU under both sets of protections to reduce confusion.
-> >  	if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST_LOG_CPU)) {
-> > @@ -2150,7 +2148,7 @@ static void rcutorture_one_extend(int *readstate, int newstate, bool insoftirq,
-> >  	WARN_ON_ONCE(*readstate < 0);
-> >  	if (WARN_ON_ONCE(*readstate & ~RCUTORTURE_RDR_ALLBITS))
-> >  		pr_info("Unexpected readstate value of %#x\n", *readstate);
-> > -	rcutorture_one_extend_check("after change", *readstate, statesnew, statesold, insoftirq);
-> > +	rcutorture_one_extend_check("after change", *readstate, statesnew, statesold);
-> >  }
-> >  
-> >  /* Return the biggest extendables mask given current RCU and boot parameters. */
-> > @@ -2217,8 +2215,7 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
-> >   * critical section.
-> >   */
-> >  static struct rt_read_seg *
-> > -rcutorture_loop_extend(int *readstate, bool insoftirq, struct torture_random_state *trsp,
-> > -		       struct rt_read_seg *rtrsp)
-> > +rcutorture_loop_extend(int *readstate, struct torture_random_state *trsp, struct rt_read_seg *rtrsp)
-> >  {
-> >  	int i;
-> >  	int j;
-> > @@ -2233,7 +2230,7 @@ rcutorture_loop_extend(int *readstate, bool insoftirq, struct torture_random_sta
-> >  	for (j = 0; j < i; j++) {
-> >  		mask = rcutorture_extend_mask(*readstate, trsp);
-> >  		WARN_ON_ONCE(mask & RCUTORTURE_RDR_UPDOWN);
-> > -		rcutorture_one_extend(readstate, mask, insoftirq, trsp, &rtrsp[j]);
-> > +		rcutorture_one_extend(readstate, mask, trsp, &rtrsp[j]);
-> >  	}
-> >  	return &rtrsp[j];
-> >  }
-> > @@ -2279,7 +2276,7 @@ static bool rcu_torture_one_read_start(struct rcu_torture_one_read_state *rtorsp
-> >  					  (rtorsp->readstate & RCUTORTURE_RDR_UPDOWN));
-> >  	if (rtorsp->p == NULL) {
-> >  		/* Wait for rcu_torture_writer to get underway */
-> > -		rcutorture_one_extend(&rtorsp->readstate, 0, myid < 0, trsp, rtorsp->rtrsp);
-> > +		rcutorture_one_extend(&rtorsp->readstate, 0, trsp, rtorsp->rtrsp);
-> >  		return false;
-> >  	}
-> >  	if (rtorsp->p->rtort_mbtest == 0)
-> > @@ -2293,7 +2290,7 @@ static bool rcu_torture_one_read_start(struct rcu_torture_one_read_state *rtorsp
-> >   * critical sections and check for errors.
-> >   */
-> >  static void rcu_torture_one_read_end(struct rcu_torture_one_read_state *rtorsp,
-> > -				     struct torture_random_state *trsp, long myid)
-> > +				     struct torture_random_state *trsp)
-> >  {
-> >  	int i;
-> >  	unsigned long completed;
-> > @@ -2340,7 +2337,7 @@ static void rcu_torture_one_read_end(struct rcu_torture_one_read_state *rtorsp,
-> >  	}
-> >  	if (cur_ops->reader_blocked)
-> >  		preempted = cur_ops->reader_blocked();
-> > -	rcutorture_one_extend(&rtorsp->readstate, 0, myid < 0, trsp, rtorsp->rtrsp);
-> > +	rcutorture_one_extend(&rtorsp->readstate, 0, trsp, rtorsp->rtrsp);
-> >  	WARN_ON_ONCE(rtorsp->readstate);
-> >  	// This next splat is expected behavior if leakpointer, especially
-> >  	// for CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels.
-> > @@ -2370,13 +2367,13 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
-> >  	init_rcu_torture_one_read_state(&rtors, trsp);
-> >  	newstate = rcutorture_extend_mask(rtors.readstate, trsp);
-> >  	WARN_ON_ONCE(newstate & RCUTORTURE_RDR_UPDOWN);
-> > -	rcutorture_one_extend(&rtors.readstate, newstate, myid < 0, trsp, rtors.rtrsp++);
-> > +	rcutorture_one_extend(&rtors.readstate, newstate, trsp, rtors.rtrsp++);
-> >  	if (!rcu_torture_one_read_start(&rtors, trsp, myid)) {
-> > -		rcutorture_one_extend(&rtors.readstate, 0, myid < 0, trsp, rtors.rtrsp);
-> > +		rcutorture_one_extend(&rtors.readstate, 0, trsp, rtors.rtrsp);
-> >  		return false;
-> >  	}
-> > -	rtors.rtrsp = rcutorture_loop_extend(&rtors.readstate, myid < 0, trsp, rtors.rtrsp);
-> > -	rcu_torture_one_read_end(&rtors, trsp, myid);
-> > +	rtors.rtrsp = rcutorture_loop_extend(&rtors.readstate, trsp, rtors.rtrsp);
-> > +	rcu_torture_one_read_end(&rtors, trsp);
-> >  	return true;
-> >  }
-> >  
-> > @@ -2469,7 +2466,7 @@ static enum hrtimer_restart rcu_torture_updown_hrt(struct hrtimer *hrtp)
-> >  	struct rcu_torture_one_read_state_updown *rtorsup;
-> >  
-> >  	rtorsup = container_of(hrtp, struct rcu_torture_one_read_state_updown, rtorsu_hrt);
-> > -	rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1);
-> > +	rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs);
-> >  	WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
-> >  	WRITE_ONCE(rtorsup->rtorsu_nups, rtorsup->rtorsu_nups + 1);
-> >  	WRITE_ONCE(rtorsup->rtorsu_nmigrates,
-> > @@ -2519,7 +2516,7 @@ static void rcu_torture_updown_cleanup(void)
-> >  		if (!smp_load_acquire(&rtorsup->rtorsu_inuse))
-> >  			continue;
-> >  		if (hrtimer_cancel(&rtorsup->rtorsu_hrt) || WARN_ON_ONCE(rtorsup->rtorsu_inuse)) {
-> > -			rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs, -1);
-> > +			rcu_torture_one_read_end(&rtorsup->rtorsu_rtors, &rtorsup->rtorsu_trs);
-> >  			WARN_ONCE(rtorsup->rtorsu_nups >= rtorsup->rtorsu_ndowns, "%s: Up without matching down #%zu.\n", __func__, rtorsup - updownreaders);
-> >  			WRITE_ONCE(rtorsup->rtorsu_nups, rtorsup->rtorsu_nups + 1);
-> >  			smp_store_release(&rtorsup->rtorsu_inuse, false);
+> +};
+> +
+> +static int __init init_kmod_sysctl(void)
+> +{
+> +	register_sysctl_init("kernel", kmod_sysctl_table);
+> +	return 0;
+> +}
+> +
+> +subsys_initcall(init_kmod_sysctl);
+> +#endif
