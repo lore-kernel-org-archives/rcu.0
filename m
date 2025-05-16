@@ -1,117 +1,207 @@
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F7713E41A
-	for <rcu@vger.kernel.org>; Thu, 15 May 2025 15:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447202153C1;
+	Fri, 16 May 2025 08:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747321455; cv=none; b=AxtTXxxFcTauk+HLjjE7N2iIffpVun9yTOjVtPwqixWxo9ar/jnskYeLh1eZlS3ZY/ZemOmartIgbgHW63WMRLYE4dZI/T5QSGeOrgTRuHaCC6YtnrIo2DuY90rNa/UvH7m0U0XPH/uS3RJzqFZnFYxwR0rd1tvohTMVDWUrHb8=
+	t=1747383338; cv=none; b=tNxw380yWF9dQZrMVxmhtGr73NEctwnkWIhK1ol9QOh37KQgaSyoHDehdIIYNb7UUp89ob9GMft4ldPf33mB0SnJ1DNpKTYm3dZJDjwJcM37sDitigoLzsD8ZklNTzcv3BzG0S37aljfQuZ2eXIn9v84wl+NeHuVv9BxlDvq14E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747321455; c=relaxed/simple;
-	bh=hehqUbJr7rLAsfjf8NUGx4WWTp8rlzuMgfHd+H9FD54=;
+	s=arc-20240116; t=1747383338; c=relaxed/simple;
+	bh=t4d1YWEWv97JuDN1ERQNZh9D5QrQwW6QgPRLvu08c+M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PcgKpQJBk1kkp6b1BflGEkU1oSyT2Oug/fHNd33ePf6cE8mHiLGHsMPEPVwV5jNv+glArOIkF0+hfP10cA+DOt5De90CUy4poCX1XGRpGj91+V9I/G8DPlsADdbN4BIdJzwHLT4yWaHXTiwM8FFvTiV/e7yrcAfJPWH9L5jyijQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S/d7PWgF; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	 To:Cc:Content-Type; b=oaecRtEMWei0679uY+cPqCrdI4fxmVH65sh5erOsAKWIY9jTe6GVhSizSSoI0Ytw8+2jM1SM38ntM3C0SvdTSZafm9TeZ91N4Kzo3MOre+Q+BH6O+b4iozmD0qmWzWjhV/teKJVCN1QSG3zqoxt5hMIy6zGM4jhWN0J/M/a1phs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iWrQHcAn; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S/d7PWgF"
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-47666573242so389111cf.0
-        for <rcu@vger.kernel.org>; Thu, 15 May 2025 08:04:14 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iWrQHcAn"
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-736c277331eso2684319b3a.1;
+        Fri, 16 May 2025 01:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747321453; x=1747926253; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1747383336; x=1747988136; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TESZwvrO5vJ96YaJ7vnx+FVieN+/kHd9koL3nGIsUYA=;
-        b=S/d7PWgFFnnZxdjn3GgcvIu7sS75kTWvNpwtyr9yC1wViDDMipRGI9H27h3PcyY9Jc
-         KOGuFkXW/WzVbPCRq3D/cPbal8sRpHHRyI4oQ96E80X1eC8uY99hMWEmERatSz7x/oqC
-         rTgnTXok6vfWy1nfGpmHaPXHLRbX5vtj9faH28dY8VD116hy7dkDqEZd/onykO5uoA4M
-         mOqcPXAe1ETgcm0q0mFHl6Qv0eODYK/UPdx62fb1J0ZuBA2R2bL/UGkkkxx4thKS2r13
-         EVeEFYQ2LhB0iO0KC33d7usd8gKHKKiaOXo1cpAHKXr5Whz+KsoDnQJA3KXVdKOLytrf
-         1VQg==
+        bh=A69Hh6vhoEvKeSfl8x3ah1eX3eHY2j1XiOvW34UiL1E=;
+        b=iWrQHcAnk+HVOMFSHPHJrGv9txorwhppYCKW72iDNX7tbTdOSoxnZi3Xi36Kp2sNc7
+         aAkGX0/NXF1sTd3ifF0P7SdQOowFL8yKQpbk1GkrjJdJ6C3n6wweH2FDCxPKz/4ulToM
+         oxX398KeNUBGewaL6rrYXm20BTR27NXGLCRQl662S6pyC3E0AL8Zb9FDEDt9jaatjS9R
+         ziFTMW/yqTyPvgRn2Q/0mEIbw6nx5+vxef/L5LwPcUsSJjd7jYzVpj6tWCz3C1a4f0zh
+         xCv+IxbxPHqyHzM93RDkrWGWagMxtUTdrOVhoe7SPZbo4bEXBF/pnKug3l5RtJnxMzv1
+         5Omg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747321453; x=1747926253;
+        d=1e100.net; s=20230601; t=1747383336; x=1747988136;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TESZwvrO5vJ96YaJ7vnx+FVieN+/kHd9koL3nGIsUYA=;
-        b=RaOYWii0fq4wAI1WyFIyK1tzAbYB4/U5rOLIfBPI6uVrKstyc4uATXRiliCDvkZLiT
-         XrlP6s2R+NeolU8U6tXvvqZkiNzQyNyHYDu/2gfjQDlOsBBmNga/oNdDAGSWphNMMyq9
-         ywE51Y02EEze9rxWqLMde/L1bA1jHqBrhecBrkWPb29OHhHJfjWc+lpIhSWthwWqtQf2
-         kOY7ADmMyKxXHiLA2XWNeOCgPV0zbVVNdvSor4+hNTPCzvVbuigIDGys9vMXVGNY8STo
-         FKSRy22rntzu7qbIlwpatte9rpJmI1vX/aLarfwXpgTYkDL8qEYLQqR812H1LUpPK+xf
-         FLXg==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ2px/1iXC6KvwpXaXdxJ0ZW5i+J07epEbF02AKXeoj7jsdfsi7FdphZp5zugxvc0hiPI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDVU55972Y43BZuBy2SUEblSitBH9g1YVq+S2HvzAdPofjaBCl
-	HjwlKPA3m3U/Y1wf8vE14gIybVS2LDrpmZMLX4yVBAvyo0OClRGsfzQXdHxnPFfNlW2AihgRiPO
-	UTs8BZaKyLSyi1zeBuHtpUAI36ic0A9N4vz0Uk7RP
-X-Gm-Gg: ASbGncttM30NFqkUQpzXQI2G9U+93YP+eqbSYZsOfgBloSeIzEm6d32W7uk7+WOtm8q
-	5laVdmWc1qNaHDA/7jFrp9T9Mbzp/yb4k2BFriH0OfP7dZA3wSMDApUqhRIh3Wy/u7Rvw1DVTyE
-	weVRD3W/eyxh/aE0aP9ZGLcWmS4Wm4J6lH7piaM8jaWEctuMLX7iCShHl1lRXgkA==
-X-Google-Smtp-Source: AGHT+IFfkR3W5VNelP+GA4ohCT0Dcsb8uCPnGXBpE2Rk1IDYPjmDvQ6kKMdPCaRrMQMfaOuaSbnoPb4rTNAIPHov2Iw=
-X-Received: by 2002:ac8:5d50:0:b0:491:8f3c:ce0c with SMTP id
- d75a77b69052e-494a1dd13a0mr4202841cf.18.1747321452737; Thu, 15 May 2025
- 08:04:12 -0700 (PDT)
+        bh=A69Hh6vhoEvKeSfl8x3ah1eX3eHY2j1XiOvW34UiL1E=;
+        b=MhRCuKKh1gU1plf3bcGyH7IkdXHQDeKt6CGTsh7JPTyP1iq03nBx00srTq3KVDRn9J
+         nUdnqOqtHchPhZQWyXgM+IawxxIeIEbA7smfEcDMwVq+Mi3k9k1MZIlXR5M/Elu2Ze2u
+         cznvRGv5YrS3GCxHeI8XU3YaruzNWEF6Kvzq8RStXHVrv+jeuOOtzirLyZAjyEDpjTMq
+         AXdSYAkGrnr7VBZIeYGZmm/HcKxzo5XV6mu4lQqo1IihHB3DEyvyhOAHvOdnMPm6LWVV
+         xYYWUpvtPEgwHF+lcRNlmPMor0E3IYDE+NLq2ay3i8HGlQpzFblj8kBJjR+A5rwBWX5G
+         PYyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXMoF+DIYlCaRgP6Rjz3vc9tfNznCPxkpXzDV7RuFf/c7lCGjRePszChsnYGpQEU6yQL0SP@vger.kernel.org, AJvYcCXVWSvvAx5hQL8kYBSs4r2iXXnlIfM69tjJDhdDJM7Z1gEI+dCjWVJVWxgIrypU/nm/e9dNtOK4F1H+Drc=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyx5OmL5+QvmtXtoEMC1ekxjoexWfU5X5oBJLhmXm4OArnW1B5L
+	jyuuClgC8EKDSv/YzrwjJnSFepZoJp5VRbcc0MyPgWClPbd2p+piw99oDOwrLrWIcALgXALIe+A
+	YaKP6K3ijMCtKho8ovdpAK+BOqN++/Bo=
+X-Gm-Gg: ASbGncvmb/yvFxvVlGFgGSCieS/g8stFg28tIs7Gs4+PGsMccmkcDL5yqtieL7q6/ZI
+	QLhJbZVim1uwgsU16QV2dElqubW7eeIxLl2tbklPl90biJrAmnL+7oSGX+5pacXQCp5O6hC052l
+	Osd+6X9+IbC1k7DE02eJVABLA6et3nU4T7/w==
+X-Google-Smtp-Source: AGHT+IHQgx9NdhOovGr9J/DpHORM2Sko8QiPy2j8745V0+60mXqNB5AhZkOSnxnYkRrUgxllgRNOr7GipJmFHGpskOQ=
+X-Received: by 2002:a05:6a20:7d8b:b0:1f3:2e7a:7320 with SMTP id
+ adf61e73a8af0-2160d932afcmr8733872637.19.1747383336346; Fri, 16 May 2025
+ 01:15:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250425-slub-percpu-caches-v4-0-8a636982b4a4@suse.cz>
- <20250425-slub-percpu-caches-v4-2-8a636982b4a4@suse.cz> <CAJuCfpGVx2jG+S2ch2hqK=sAdmTcs9dW0kOdopxgLtH4V_wNXQ@mail.gmail.com>
- <f181285e-4167-4581-a712-8e444a0ab2bb@suse.cz> <07f321d5-4416-4be4-9696-00f0d83895f5@suse.cz>
-In-Reply-To: <07f321d5-4416-4be4-9696-00f0d83895f5@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 15 May 2025 08:03:59 -0700
-X-Gm-Features: AX0GCFvqG0RSuXzDDSF9fFI7cyINP9lGj2diMh8ie4U2ZfZ3NqqakHD4TgfWFYE
-Message-ID: <CAJuCfpG6cCo1WUo3N116DOavmRE6=aeS_s2Hzceqdytgc955xw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/9] slab: add sheaf support for batching kfree_rcu() operations
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Christoph Lameter <cl@linux.com>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Harry Yoo <harry.yoo@oracle.com>, Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	maple-tree@lists.infradead.org
+References: <20250507112605.20910-1-qiang.zhang1211@gmail.com>
+ <20250507112605.20910-3-qiang.zhang1211@gmail.com> <23f488d7-d369-46f2-8da6-c5fd2af0f9d7@nvidia.com>
+ <7581b542-e591-422b-acc3-0c154161ab34@nvidia.com>
+In-Reply-To: <7581b542-e591-422b-acc3-0c154161ab34@nvidia.com>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Fri, 16 May 2025 16:15:25 +0800
+X-Gm-Features: AX0GCFvRdoYepyn2IwhdzNzdBriWBJdd1MLj4-tqIYHyrSbZmH-yboMkBEH8qxI
+Message-ID: <CALm+0cX+hZSO8S+kZ1K1E4mhXuWaFvZrXKzrbb7-jt-Q73mCCQ@mail.gmail.com>
+Subject: Re: [PATCH] rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread
+ pointer access
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: paulmck@kernel.org, frederic@kernel.org, neeraj.upadhyay@kernel.org, 
+	joel@joelfernandes.org, urezki@gmail.com, boqun.feng@gmail.com, 
+	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 15, 2025 at 1:45=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
 >
-> On 5/14/25 16:01, Vlastimil Babka wrote:
-> > On 5/6/25 23:34, Suren Baghdasaryan wrote:
-> >> On Fri, Apr 25, 2025 at 1:27=E2=80=AFAM Vlastimil Babka <vbabka@suse.c=
-z> wrote:
-> >>> @@ -2631,6 +2637,24 @@ static void sheaf_flush_unused(struct kmem_cac=
-he *s, struct slab_sheaf *sheaf)
-> >>>         sheaf->size =3D 0;
-> >>>  }
-> >>>
-> >>> +static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
-> >>> +                                    struct slab_sheaf *sheaf);
-> >>
-> >> I think you could safely move __rcu_free_sheaf_prepare() here and
-> >> avoid the above forward declaration.
+> On 5/9/2025 3:07 PM, Joel Fernandes wrote:
 > >
-> > Right, done.
 > >
-> >>> @@ -5304,6 +5340,140 @@ bool free_to_pcs(struct kmem_cache *s, void *=
-object)
-> >>>         return true;
-> >>>  }
-> >>>
-> >>> +static void __rcu_free_sheaf_prepare(struct kmem_cache *s,
-> >>> +                                    struct slab_sheaf *sheaf)
-> >>
-> >> This function seems to be an almost exact copy of free_to_pcs_bulk()
-> >> from your previous patch. Maybe they can be consolidated?
-> >
-> > True, I've extracted it to __kmem_cache_free_bulk_prepare().
+> > On 5/7/2025 7:26 AM, Zqiang wrote:
+> >> In the preparation stage of CPU online, if the corresponding
+> >> the rdp's->nocb_cb_kthread does not exist, will be created,
+> >> there is a situation where the rdp's rcuop kthreads creation fails,
+> >> and then de-offload this CPU's rdp, does not assign this CPU's
+> >> rdp->nocb_cb_kthread pointer, but this rdp's->nocb_gp_rdp and
+> >> rdp's->rdp_gp->nocb_gp_kthread is still valid.
 >
-> ... and that was a mistake as free_to_pcs_bulk() diverges in patch 9/9 in=
- a
-> way that this makes it too infeasible
+> Maybe I mixed up what you're doing but this commit message is a bit hard =
+to
+> parse. You're saying in the problematic scenario, "rdp's->nocb_gp_rdp" is=
+ valid,
+> but in the patch below you're checking for "rdp's->nocb_gp_rdp". So I am =
+a bit
+> confused, why you would not run into the same problematic scenario. I thi=
+nk I
+> agree with your patch but it would be good to refine and clarify the prob=
+lematic
+> condition, the commit message, and also please add some comments to the c=
+ode :).
 
-Ah, I see. Makes sense. Sorry for the misleading suggestion.
+Hello, Joel
+
+Maybe my description is not clear enough.
+The scenario I want to describe is:
+
+This is a small probability event=EF=BC=8Cthe rdp->nocb_cb_kthread creation
+may fail in rcu_spawn_cpu_nocb_kthread(), this rdp->nocb_cb_kthread
+will not set=EF=BC=8Cis null pointer.  but this rdp->rdp_gp->nocb_gp_kthrea=
+d
+and rdp->nocb_gp_rdp pointer is valid.
+
+but in rcu_nocb_rdp_offload(),  we only check rdp->nocb_gp_rdp and
+rdp->rdp_gp->nocb_gp_kthread,  this will cause kthread_unpark() access
+null rdp->nocb_cb_kthread pointer.
+
+so I use rdp->nocb_gp_kthread condition to make a judgment,
+if the rdp->nocb_gp_kthread is valid,  this means that rdp->nocb_cb_kthread
+is also valid and there is no kthreads creation failure in
+rcu_spawn_cpu_nocb_kthread()
+
+Thanks
+Zqiang
+
+>
+> Do you have a reproducer for this? If not, maybe we can work on some test=
+ cases
+> Both CPU hotplug and offload is tested by rcutorture, so I'd expect we ru=
+n into
+> it. But perhaps not, because it requires kthread creation to fail?
+>
+> thanks,
+>
+>  - Joel
+>
+>
+> >>
+> >> This will cause the subsequent re-offload operation of this offline
+> >> CPU, which will pass the conditional check and the kthread_unpark()
+> >> will access invalid rdp's->nocb_cb_kthread pointer.
+> >>
+> >> This commit therefore use rdp's->nocb_gp_kthread instead of
+> >> rdp_gp's->nocb_gp_kthread for safety check.
+> >>
+> >> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> >
+> > Is it possible that rdp_gp->nocb_gp_kthread is valid, but  rdp->nocb_cb=
+_kthread
+> > is still invalid (because its creation failed?). This seems a bit fragi=
+le to me
+> > to assume that if rdp_gp->nocb_gp_kthread then rdp->nocb_cb_kthread is =
+valid. Or
+> > is there a path that makes sure this invariant is always satisfied? If =
+so, can
+> > we add additional warnings for checking this invariant?
+> >
+> > Also from the other thread, it sounds like there is more work to do her=
+e
+> > (related patches so I'd like to defer this to 6.17 - feel free to keep =
+posting
+> > patches for this work though).
+> >
+> > Thanks!
+> >
+> >  - Joel
+> >
+> >> ---
+> >>  kernel/rcu/tree_nocb.h | 5 ++---
+> >>  1 file changed, 2 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> >> index 1596812f7f12..6679140bb0b5 100644
+> >> --- a/kernel/rcu/tree_nocb.h
+> >> +++ b/kernel/rcu/tree_nocb.h
+> >> @@ -1146,7 +1146,6 @@ static bool rcu_nocb_rdp_offload_wait_cond(struc=
+t rcu_data *rdp)
+> >>  static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+> >>  {
+> >>      int wake_gp;
+> >> -    struct rcu_data *rdp_gp =3D rdp->nocb_gp_rdp;
+> >>
+> >>      WARN_ON_ONCE(cpu_online(rdp->cpu));
+> >>      /*
+> >> @@ -1156,7 +1155,7 @@ static int rcu_nocb_rdp_offload(struct rcu_data =
+*rdp)
+> >>      if (!rdp->nocb_gp_rdp)
+> >>              return -EINVAL;
+> >>
+> >> -    if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
+> >> +    if (WARN_ON_ONCE(!rdp->nocb_gp_kthread))
+> >>              return -EINVAL;
+> >>
+> >>      pr_info("Offloading %d\n", rdp->cpu);
+> >> @@ -1166,7 +1165,7 @@ static int rcu_nocb_rdp_offload(struct rcu_data =
+*rdp)
+> >>
+> >>      wake_gp =3D rcu_nocb_queue_toggle_rdp(rdp);
+> >>      if (wake_gp)
+> >> -            wake_up_process(rdp_gp->nocb_gp_kthread);
+> >> +            wake_up_process(rdp->nocb_gp_kthread);
+> >>
+> >>      swait_event_exclusive(rdp->nocb_state_wq,
+> >>                            rcu_nocb_rdp_offload_wait_cond(rdp));
+> >
+>
