@@ -1,254 +1,279 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2079.outbound.protection.outlook.com [40.107.220.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C8B2746A;
-	Mon, 19 May 2025 15:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747668036; cv=none; b=ZOoGtwz4OiQr11Vthr1y18ZxRHGR0Lpj4QGFW5f0dLavDo3Hp6SLYNrOePXvE9CRfiwf9y+4WuH6yQJdndz8R5EwXg1J13B2f9o+Ya8bUacMKSAM8jmGkM/v0cgrU2645yaS7e6uCD05SW4lSApXJdWalZ5mfHUGQE0nU6tePDY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747668036; c=relaxed/simple;
-	bh=hCsytdVeeJL9k59PuEkSeSt24V1PhRpfKVXpzj7jUtw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TmuY1pafp96XZnbeYS8sjGpmWiuaUkSysChoircafBfcFGvWGnzLE7OOlFFL3zIVN4PlNYNIc3eF9/EntNUE4nBeGEkLVXv0E2atWMLJ6v3Dj4lTQmZAh0h6WfhSEBBEBs2SvlqoPdtfVt4KaAJVmhAYKcG2VP3v3Da6ycANMkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pg+W/TWK; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C349E1E4AB;
+	Mon, 19 May 2025 20:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747686949; cv=fail; b=W2LSRM21auKZoyIatxk9CycVStblTqHavZtnpnSRI6JSe88Jll1RQ3QlnCIw+vmnTnG69bw02rscsm8j9/rhGAQqJtPbniBYwvFCpvX7IkvDn8sWcqSHJFew6DxXumFFHPuFfGYutA/4oSUVeV2xhHDPAlqe5UKrzBnhWXVI0q8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747686949; c=relaxed/simple;
+	bh=5iPX1apg3DZMr2y7N//wgn3svFyv2BE8PbHmO+h/0xo=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=p6/pRMbPpz8uQ067rVBKjweMr8tRIjpDiMVnA8p6rcWXdeMKjSGyVefp0VluT8PawvWFlL2zGGokOeSrkO/prWkD/ADmhyhJ5wZY4L8WbY2gxXxbi23atVhBmxxkKPcGEZGPQX1bOa5klAkcs4yRujhYAmG7Ph8LW4MOyABStuE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kpBZgWqT; arc=fail smtp.client-ip=40.107.220.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pg+W/TWK"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31192C4CEE4;
-	Mon, 19 May 2025 15:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747668035;
-	bh=hCsytdVeeJL9k59PuEkSeSt24V1PhRpfKVXpzj7jUtw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pg+W/TWKKyjgF5xP20j0uAdD0cIn+UCdcUHoBD8pvqnECQMtWaatkCm3ynMk1tcKQ
-	 BnFX9YSkQqtUIqBJw8xMqDfNAU80qfQ5jKuhqN8lSxQ1uBnPX+xsF7kROYIXaoGtbi
-	 p41LAZ79T2BhxM69kZciPyVjVh+p1iGy9hvmiFowCNVhK4wPPalkEdnOUGWnvX3Ph2
-	 N2wvZe/D7j8ui6YHApTHqAm0hdwMIhqIYwg76JLjDrJAoUCh2T4wWySPbqF8c8KZPf
-	 XfUUm4HHS5mTc9BxQFVQ59h5CSgXnfwnOolD5CF6/Y97/QLWj/M15r9u+xhM86jyb7
-	 M5DYrZNKbxFoQ==
-Date: Mon, 19 May 2025 17:20:30 +0200
-From: Joel Granados <joel.granados@kernel.org>
-To: Petr Pavlu <petr.pavlu@suse.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, 
-	Sami Tolvanen <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>, Kees Cook <kees@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Waiman Long <longman@redhat.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, rcu@vger.kernel.org, linux-mm@kvack.org, 
-	linux-parisc@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 01/12] module: Move modprobe_path and modules_disabled
- ctl_tables into the module subsys
-Message-ID: <l7dgle5lhsvfrikd4rqvzuwrqwrseucf5ijgnbi6fxook6dnhj@sc7givb3qimb>
-References: <20250509-jag-mv_ctltables_iter2-v1-0-d0ad83f5f4c3@kernel.org>
- <20250509-jag-mv_ctltables_iter2-v1-1-d0ad83f5f4c3@kernel.org>
- <e2ebf88d-46a2-4f38-a0c8-940c3d3bee49@suse.com>
- <g3e3ygz4jb73b3zhxexpwacwui3imlwauujzeq2nlopp2i2fjp@lzj33hcwztc2>
- <f6058414-e04d-4b7f-b4e6-3ac3613edbc1@suse.com>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kpBZgWqT"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=upeCBIMf+WRQC4UF1YCwMS1NnJ0fvtyta6E8LFNSBXc0xcuvDCCNU1PPboWyHXoM3uZvo8j2j7zV0XPhAIFkdNBmUuGjUydY/YPig56ucOkKjV8MPSMHuzZ5RD7BRLSie77+7eOamD6TBAYwzZTBlmI0chOzyeM7WfoW8PBdoySnlZLU9I4gA5MM4F7NcoXHgtui50VlRCfqGphRdLQkYf3Hf0IY5KfFZx6XItV75hCfmkyMCIjY9ZnGdsGteFXsD6kwHDDgMoKeJVQ4Le4DYUn2drmMbXl9BJbEUb+4qgzorU0kITP/L3zUQRLj1C4U9gAHQUwqaZ6GZRnEf3GnuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=30sDslq/DSc+ad9VZfeHOZ0cGW+RrBPQoKXp8G3ya4M=;
+ b=tS612ORAebBgC7m80LhIrHXc8ChKasgnrvb3V4uMY36cbjM5LJXP+BTNRq+DZfMNEqmZrEf1FMC30/VmU1ED4SfJEiBh44zEafYGdZPjyxa6kaKvYiMO9gR1vVJQGMayucCNrG/ARUE2LOjovJrZ4jrptj3kQIrz6WBRXKtUeOuhqkmTJLHFpNCVAVa5p6B50GXJe5y68L3nsrAQ5JfFvE977BvNXr6fKsuBeXvEB0DRBL2MH8WqKytVHNxp4JNPXHl+IvLtQyhUzBt3lPtOdENFAtAIDMBFlJDTmENXdls7TyLMg65u//tQd0yvXownQmlBLqPbH4l3RiwAdDdKfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=30sDslq/DSc+ad9VZfeHOZ0cGW+RrBPQoKXp8G3ya4M=;
+ b=kpBZgWqTO7FUjclogWNqe4uR/GSLlWG5k91qVl37J37sDiOJtNvEGUe+if+OHRc62ori1X3EWppySNDq6efiTDE1eKX5RODMpJaTQbVyhNFAkxnsrM9ODiZ/enjzD05vjP5PpywNMHyd0PT8VGcFlVPHEhyygbAlh0DhhmPseKYqGo2FkKoSqWYOGeMXMZsXTxoSDMMar5/EVn2etE1yB+FXgZ3VMJELGyJcE+6KzVpHgNx5ufAHOYt4j4o8cZyQ5LRgvxL6ujPWX+O+Tcxd8kQeH3q0uESYeSIi4lmOBVYrEVjzIK7FuKg42cIaCMqU559SP0FVNfe2SyQrJqOqjQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by PH7PR12MB6809.namprd12.prod.outlook.com (2603:10b6:510:1af::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Mon, 19 May
+ 2025 20:35:43 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%3]) with mapi id 15.20.8746.030; Mon, 19 May 2025
+ 20:35:43 +0000
+Date: Mon, 19 May 2025 16:35:40 -0400
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+	rcu@vger.kernel.org, qiang.zhang1211@gmail.com
+Subject: RCU changes for v6.16
+Message-ID: <20250519203540.GA3639139@joelnvbox>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MN0P220CA0026.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:208:52e::19) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="otw3l52sr4y45r5c"
-Content-Disposition: inline
-In-Reply-To: <f6058414-e04d-4b7f-b4e6-3ac3613edbc1@suse.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|PH7PR12MB6809:EE_
+X-MS-Office365-Filtering-Correlation-Id: 94d56c05-6c37-4f71-d623-08dd9714b9f4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?S2pDR1VDY3pucXp2VDdXcytONkhMWExtNkZxTFF1R1lpTk93NzJCUVRvUCtR?=
+ =?utf-8?B?ZHdFK2V2LzJwTHp1UWVibU9MQzN6U0xTV051b1BTclVDR3d1bEF3L2dOWGR1?=
+ =?utf-8?B?ODZ4WDdGMnlMVldONnJBbW1VTFZNMUkyMmM0LzFMbEhLUzBoUHJMdFlyeE1L?=
+ =?utf-8?B?dHVtSlVqeW1yZlVpMm5URGk1RlduSXBrdmtsZ2dXY3JRNDd4R0VvM2FkQmpT?=
+ =?utf-8?B?Q1NaS2YxNjdEbVdMOStoWHo3ekk2ZkphanZtcDZJV3FXc1Q4THhOWU5LVkZN?=
+ =?utf-8?B?cW5yRTNhMG5vempIVFZnQ2c0TjhPOEFzTDZFU2ZCRnJZYkJhVU9oV3JROHp0?=
+ =?utf-8?B?WE9iWDVMaUx3VU9GTkVoMmN5by9LUklMZ2paamt4dzZBaW8xczdZcnI0YmlB?=
+ =?utf-8?B?bXgyN3pJQ1J6NWFtd3N4SnZYanVQOElYYzk3dFROc0JqSUJzSzBpL0RiTHBT?=
+ =?utf-8?B?UDFaOEhsSHJtMGNiYWFOTVVkQ3BaWU03MTM5T2U1c2h4QTlIVTBINzFVWnB4?=
+ =?utf-8?B?TGpiZTg1NVFwT3FCL3RKWFlHTmlCQXlXTjRWNTlmYUdCY3RRWHZMVXhJS3RJ?=
+ =?utf-8?B?VDNSYXpDWmdtTnhvdkhrS25HK0VHbEhkZXAzVUpVa0s5RmZsenJSa2dvV1R4?=
+ =?utf-8?B?a1NQalBzMGdtVTJkWnJxYzRER0xjTE04d0RpdHRsdEZoOTJuL2tZL21xRWJO?=
+ =?utf-8?B?U1RRbGEzTXg5WkZEbCs0WEpXcG91cGRxVks4d0RmRDdOQTV2R2dJUmxxbzBh?=
+ =?utf-8?B?aHg5RVQybnlHNHMvRUlEM1U5cGZSMmZwUEo0aGdqTmd3ZmNRWmE3MTJlZDFQ?=
+ =?utf-8?B?SzRDVnpRODJlVHllU3dBc0RmTnpwUUZEUTlVcnVPa3BMbXd6clUvL255TFBX?=
+ =?utf-8?B?QncwS3JmeHpQSDJQczd4RnBhKytaTktSV0t1RXJkRUxHa1BxaXhyNmw2NGwx?=
+ =?utf-8?B?MVNoMi9sSkV2Qk5IdW5KUnRNNUlwOG5EMlpaa3NuLzM0TUE0SHY5YXJzR0lr?=
+ =?utf-8?B?am4wTmovOTRmZnZ5d2ljY3RyclRBNjJSdzdUaXNyTWRxZ2tGRG93eWFFZUJi?=
+ =?utf-8?B?d1hEbW1PMmRQUGZrbXZibHVhVU9CRVl2OVZOY0Z5OWlRelRwTWVuUEdmZmRW?=
+ =?utf-8?B?TGVTby9oclFLcURFWEwrdmdxbmZQYmVXUmVVQmtlWlZGVkZEMVIxZGlGa3BW?=
+ =?utf-8?B?UVhvVGplOXVSbEVMTGtmaHBRU1pxWk5nQmNRemtzOFN2dWZJOHRSZ0FDRVBw?=
+ =?utf-8?B?Z3FTUlIyK21LQlNHMnZYNTI5MFRQTFdGeVRnUVBkb1dQQ3pmSWtEWjc4UXc5?=
+ =?utf-8?B?bTU4ZkhxdnVEMW9iZFVxa2VyNXNDd2hyOHBuVlZhZ2NVUmZOSEs3NTkyUzUv?=
+ =?utf-8?B?OGc5MDJNYWFRaEZtUDNsOFltblMrdmNBTytoaTJ0TklaRWFvRllFRGxWZkF0?=
+ =?utf-8?B?Y1VON1ZuN010RVprVmFzUDVVN1lPTDAyUGdiMWFrcDk0cUFidFBaTkMxVHdD?=
+ =?utf-8?B?MWlQYWp5aUhDcG5BbFFRb0ZNZCsxL244blZVNjU4aDRnUVRLWkNMWVVmQjdR?=
+ =?utf-8?B?clVEWFpGSjc5Z3htV0hKdFNmcmM1NVQ3UlVOQlNxbGhDWEJjUGpjOWNJNVlt?=
+ =?utf-8?B?aU9aTURRWWtHQkhPSFFGYVQxbm04bDFRRmtzUlZ4ZkkrNE1HOUtseVJ4QUkw?=
+ =?utf-8?B?cTlJeEg5MGk4SXNTMjJLZ0VVczNXRFJNNWdRV2tGeDhaL0dOdzQ3SEVKczdW?=
+ =?utf-8?B?VXhXdlNnZFJIN0tLcHFXZjRpMU05eXBsUWxlZVRtSWFzalFXa1BtRWlPR1V0?=
+ =?utf-8?B?MWx4STMvYytoS1h4TFZBNDhsMlAzRmFsZWtzZnV5NExITC9CZUJhYnVCMkxm?=
+ =?utf-8?B?VCs3VURVVktjWW0xMTA5M1BLVEh6dWlEcS9nTE1kU2I3dnc9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dkJIcS9heFBzeXJXNytxL0loN2wra3dLbE9Mc2tUWFBWY1Q3YVZHUWRBdFJr?=
+ =?utf-8?B?L1d2ZkhiQnlIamVtaWZDaEhmazNXWXJDMkhKUnpMQnNTZy9rWXdyOHk4TENS?=
+ =?utf-8?B?UUZnWGpnYnNod2FxSWdPek5iN3FHTkZMY29yaWFBUnlBaE1HczE0bWg2R1lZ?=
+ =?utf-8?B?enRDVkIzbHpFRjI4bGd2b1grSy9wMEFvdDBQckhyUVFLODhYTGFSMnM0S2NL?=
+ =?utf-8?B?RlIvb2NTSjNGdGdQakhwR2w5WFZGQlRwaWQwNmp6bVhzVU5LWG1lc1lLM0hV?=
+ =?utf-8?B?K3htbTk0enhNdFB6aWpIOTE2RkIrVnBxeEpBMENKeURhNkI0cnI1bzUvQlNX?=
+ =?utf-8?B?Y2xWcHhlNmFYQW1kbU1NVXhOQmJFenhCdE9sV2lNbDBabjhuRTRJbXlheThZ?=
+ =?utf-8?B?elhqK2ZRVE5JU3Y0QzZkbllyRnJtRkk3cGRlSXVLYmtCb0pqb0h6RWZaSWM5?=
+ =?utf-8?B?cHlzR1lNamtkWmxvVHczNEo0T3dIdXVMc3VoN0tVZnpnS3FFbmp6YTlZcEVm?=
+ =?utf-8?B?YjhBOXF2K1d6MDd6NUlCclhLTmw4QTVIbnZ4MnNNYW5nZmVJWHVZc0ppMnRB?=
+ =?utf-8?B?WDdkT2J0WEhCK1AwYXNiY1FaN0Q4N2U3UFVaelZYalNRUi90WHg0eTNHTTA1?=
+ =?utf-8?B?eU9oVjRMc1pKdFFUTkZMS0w2eEhOSXJRdkEvVzBlYkVMd1lwWTUzdWNBanJH?=
+ =?utf-8?B?eUo0dC9RVEJjQXg5cjBtZkFzbStCbjhVc21DMTcwQ0p5NVlPWEtHbG1id0ZI?=
+ =?utf-8?B?ck0yNk9uc20xb2pMR2dZY01jSlJYR3JEcW5tTnphczU5SUF0QUJQWW94enpj?=
+ =?utf-8?B?Z1NxZW4rTnhlbDFqd2lTTHVWSjQvZ0VLR2hJK1JlMzJvNnFIWnk3TjlLbW5q?=
+ =?utf-8?B?WG1rTUx0bVM5UDVGVko4SERLeGtjazNWa3pRRWxzZ0dOQ01Dd250d3p2b21l?=
+ =?utf-8?B?cjk5bGtWZEczNmZ4QlpIMUVmelNneks4ODRUckM4TTRSc3dNaWhkeTRwTzJy?=
+ =?utf-8?B?MFl4RFpLaWVrd3grQkRsOUtrZEVsN2pZUE1UUTRrT2YzSE5YOVBmSGh1dnlH?=
+ =?utf-8?B?NUZ5Y21jOXZsRUdpMDRWTTFHR3BlN2h2L214eUp1d0J1aExPUHlJME9YdnUr?=
+ =?utf-8?B?NlBsVmFrci9QanVhSWpNdktaczhQU2YwdzM4UWszc1oxcUpiOHVvbHh4eUo5?=
+ =?utf-8?B?OTB1cWR2clRMNXJkMzgxeVZ0dFM1bjdvQmlhUE9BMkU2WWlMQkJ2M0dTc0xJ?=
+ =?utf-8?B?MzQxYTR6ZzFZRXIzZ0ZTclE2aGxibTJrVWJiZTN0V2RBWEZOU2syOTk4aW5O?=
+ =?utf-8?B?QnRHdEpGVXUrZlBEcCtlbUdYak5jeEpKcGREWForVmJFZU1RdW5RbW1PQmN5?=
+ =?utf-8?B?eEk3RlRFZEswaVpRWXlxd1M3b1pIbTZFcmxPMjVGbnZLaHpCdWU3RWxySW94?=
+ =?utf-8?B?WGk5bStVbXBKNXR4cmZQeDdLamhBNCtEaHVlVW9PWDhvNGJQZ3dMeDVrL3dv?=
+ =?utf-8?B?MDZhTSszYnMwR0VCTGVibzljMGFyM3hQdFNvMnliTGEwd2hLSUhMYm9HMmI3?=
+ =?utf-8?B?L25FQlZJWG9sSXlSaUM2UiszcERqQjQzVHlVQVlBUEo3Y01rRnJTUVNlbnJt?=
+ =?utf-8?B?V3FiRzYrMGtBaWxrZUF5bTJxSGowZ0pOWUhnMlVwQmFub29vVmtKRXp6RmpH?=
+ =?utf-8?B?Y0txbEllZi9md3E1Tit3WkpaZ2g3MmVsQ3cvWWM0dHZ6eHMzOFd3SWM0aUZh?=
+ =?utf-8?B?dUM1VlpEQ3RpTy9GcC96MXZ6QlZpTEtUelpVa1dySXdmb05SK0o5NVFvQlVs?=
+ =?utf-8?B?T0RKcmdFNkJ0VTVDMllwZUlONjNjRXZpbm45cTBLZ2lMMUVKUUxMd3RxMWUy?=
+ =?utf-8?B?UUIvaFUwRlN3N1Rvek1mVjZjN1hubStoZ2tzQzhXR1dsbEk1N09CZXdFNlg5?=
+ =?utf-8?B?S0JybURBYjJRZGJOcERXME13dVJlZWJUVjJCUVc5dmpQeDN5ZUdUbWwyNWdP?=
+ =?utf-8?B?TkFlZHZjanRHQlNIejVzZ2V4Y1FrQXdTNDlpNVVOQS9RNDlwa2UzcUVxZjUz?=
+ =?utf-8?B?UzBMMUJydm9vRkNsaWJzZmRVaGwzL2QzaWNRdVd3WktFZjdVTzRpaXBFSmFL?=
+ =?utf-8?Q?IRUmoslQqn3w8L34usL18GzGO?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94d56c05-6c37-4f71-d623-08dd9714b9f4
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2025 20:35:43.2965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e4v8M5D6qoPHQmnJW+HiZuIr8cTa8mnzH55qg76A0CBXY/vtuTMSqezcCP4YZPgRKk4I+bIwUH8nbXnVIbj8/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6809
 
+Hi Linus,
 
---otw3l52sr4y45r5c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When the merge window opens, please pull the RCU changes for v6.16:
 
-On Thu, May 15, 2025 at 02:45:22PM +0200, Petr Pavlu wrote:
-> On 5/15/25 12:04, Joel Granados wrote:
-> > On Thu, May 15, 2025 at 10:04:53AM +0200, Petr Pavlu wrote:
-> >> On 5/9/25 14:54, Joel Granados wrote:
-> >>> Move module sysctl (modprobe_path and modules_disabled) out of sysctl=
-=2Ec
-> >>> and into the modules subsystem. Make the modprobe_path variable static
-> >>> as it no longer needs to be exported. Remove module.h from the includ=
-es
-> >>> in sysctl as it no longer uses any module exported variables.
-=2E..
-> > Like this?:
-> > [...]
->=20
-> Let's also move the KMOD_PATH_LEN definition and the modprobe_path
-> declaration from include/linux/kmod.h to kernel/module/internal.h, as
-> they are now fully internal to the module loader, and use "module"
-> instead of "kmod" in the sysctl registration to avoid confusion with the
-> modprobe logic.
->=20
-> The adjusted patch is below.
->=20
-> Reviewed-by: Petr Pavlu <petr.pavlu@suse.com>
-Thx for review and patch. Have applied it to my current V2 branch [1]
+The following changes since commit 0af2f6be1b4281385b618cb86ad946eded089ac8:
 
-Best
+  Linux 6.15-rc1 (2025-04-06 13:11:33 -0700)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux.git=
-/log/?h=3Djag/mv_ctltables_iter2
+are available in the Git repository at:
 
->=20
-> --=20
-> Thanks,
-> Petr
->=20
->=20
-> diff --git a/include/linux/kmod.h b/include/linux/kmod.h
-> index 68f69362d427..9a07c3215389 100644
-> --- a/include/linux/kmod.h
-> +++ b/include/linux/kmod.h
-> @@ -14,10 +14,7 @@
->  #include <linux/workqueue.h>
->  #include <linux/sysctl.h>
-> =20
-> -#define KMOD_PATH_LEN 256
-> -
->  #ifdef CONFIG_MODULES
-> -extern char modprobe_path[]; /* for sysctl */
->  /* modprobe exit status on success, -ve on error.  Return value
->   * usually useless though. */
->  extern __printf(2, 3)
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 8050f77c3b64..f4ab8d90c475 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -304,7 +304,6 @@ struct notifier_block;
-> =20
->  #ifdef CONFIG_MODULES
-> =20
-> -extern int modules_disabled; /* for sysctl */
->  /* Get/put a kernel symbol (calls must be symmetric) */
->  void *__symbol_get(const char *symbol);
->  void *__symbol_get_gpl(const char *symbol);
-> diff --git a/kernel/module/internal.h b/kernel/module/internal.h
-> index 626cf8668a7e..0954c8de00c2 100644
-> --- a/kernel/module/internal.h
-> +++ b/kernel/module/internal.h
-> @@ -58,6 +58,9 @@ extern const struct kernel_symbol __stop___ksymtab_gpl[=
-];
->  extern const u32 __start___kcrctab[];
->  extern const u32 __start___kcrctab_gpl[];
-> =20
-> +#define KMOD_PATH_LEN 256
-> +extern char modprobe_path[];
-> +
->  struct load_info {
->  	const char *name;
->  	/* pointer to module in temporary copy, freed at end of load_module() */
-> diff --git a/kernel/module/main.c b/kernel/module/main.c
-> index a2859dc3eea6..a336b7b3fb23 100644
-> --- a/kernel/module/main.c
-> +++ b/kernel/module/main.c
-> @@ -126,9 +126,37 @@ static void mod_update_bounds(struct module *mod)
->  }
-> =20
->  /* Block module loading/unloading? */
-> -int modules_disabled;
-> +static int modules_disabled;
->  core_param(nomodule, modules_disabled, bint, 0);
-> =20
-> +static const struct ctl_table module_sysctl_table[] =3D {
-> +	{
-> +		.procname	=3D "modprobe",
-> +		.data		=3D &modprobe_path,
-> +		.maxlen		=3D KMOD_PATH_LEN,
-> +		.mode		=3D 0644,
-> +		.proc_handler	=3D proc_dostring,
-> +	},
-> +	{
-> +		.procname	=3D "modules_disabled",
-> +		.data		=3D &modules_disabled,
-> +		.maxlen		=3D sizeof(int),
-> +		.mode		=3D 0644,
-> +		/* only handle a transition from default "0" to "1" */
-> +		.proc_handler	=3D proc_dointvec_minmax,
-> +		.extra1		=3D SYSCTL_ONE,
-> +		.extra2		=3D SYSCTL_ONE,
-> +	},
-> +};
-> +
-> +static int __init init_module_sysctl(void)
-> +{
-> +	register_sysctl_init("kernel", module_sysctl_table);
-> +	return 0;
-> +}
-> +
-> +subsys_initcall(init_module_sysctl);
-> +
->  /* Waiting for a module to finish initializing? */
->  static DECLARE_WAIT_QUEUE_HEAD(module_wq);
-> =20
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 9b4f0cff76ea..473133d9651e 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -19,7 +19,6 @@
->   *  Removed it and replaced it with older style, 03/23/00, Bill Wendling
->   */
-> =20
-> -#include <linux/module.h>
->  #include <linux/sysctl.h>
->  #include <linux/bitmap.h>
->  #include <linux/printk.h>
-> @@ -1616,25 +1615,6 @@ static const struct ctl_table kern_table[] =3D {
->  		.proc_handler	=3D proc_dointvec,
->  	},
->  #endif
-> -#ifdef CONFIG_MODULES
-> -	{
-> -		.procname	=3D "modprobe",
-> -		.data		=3D &modprobe_path,
-> -		.maxlen		=3D KMOD_PATH_LEN,
-> -		.mode		=3D 0644,
-> -		.proc_handler	=3D proc_dostring,
-> -	},
-> -	{
-> -		.procname	=3D "modules_disabled",
-> -		.data		=3D &modules_disabled,
-> -		.maxlen		=3D sizeof(int),
-> -		.mode		=3D 0644,
-> -		/* only handle a transition from default "0" to "1" */
-> -		.proc_handler	=3D proc_dointvec_minmax,
-> -		.extra1		=3D SYSCTL_ONE,
-> -		.extra2		=3D SYSCTL_ONE,
-> -	},
-> -#endif
->  #ifdef CONFIG_UEVENT_HELPER
->  	{
->  		.procname	=3D "hotplug",
->=20
+  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/next.2025.05.17a
 
---=20
+for you to fetch changes up to 9c80e443379861a6b374db3c5bb830167cbe0676:
 
-Joel Granados
+  Merge branches 'rcu/misc-for-6.16', 'rcu/seq-counters-for-6.16' and
+  'rcu/torture-for-6.16' into rcu/for-next (2025-05-16 11:18:16 -0400)
 
---otw3l52sr4y45r5c
-Content-Type: application/pgp-signature; name="signature.asc"
+We in the RCU maintainers crew have done rigorous testing of these patches on
+both x86 and ARM, big and small machines, to ensure high quality so I am
+confident this will go smoothly. Thanks!
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------
+RCU pull request for v6.16
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmgrTDAACgkQupfNUreW
-QU/twAv8DxA6gxRLdNSDZrJxSdnvcFu76bvp0iwD1X6Ms0Yq16tmcaIqSS8XtA7r
-Qe9aRNluUy/XUZj84T/WmyEBTVMLERBJAxp0moXvGXSHJ7hkKDJ2uM74VfH3xvcR
-RhM9Hlc6MkUqywUumSFsCUeqvsftJY/e/3Yg72ANzknwRuNC97dh+EZihUxDnufa
-JrBHT/f2y3qUHeJfpHS8aOa7LuZtL93rHeoju8Sacw6PQcmI2+hZWFr3nC3UK3FW
-jiEn6n2oZgzpdgpgnoguceNDRjqCJMVojeM24vEPT7XRxl8ez9cbu4w/vWqtuts4
-0fekBOrig2pDSWAA2u/Qkyk4uWpLxveSsYb8XCXjYqMWcZSJJ+Z+o/bv5z5niPZP
-DP7eTwecC+yS6lwU2aN0CLFu13QL9XAVp28YO2xzRLN0g5HqqViItD8bl4F3kZCr
-m9bb0y2TKAwncoFOEPGa5tEIZ39w2C7RWlXM8XIRYWR0vp4it6KAi92eO7Cb0374
-3lh/X1hk
-=Ofdx
------END PGP SIGNATURE-----
+Summary of changes:
+- Removed swake_up_one_online() workaround
+- Reverted an incorrect rcuog wake-up fix from offline softirq
+- Rust RCU Guard methods marked as inline
+- Updated MAINTAINERS with Joel’s and Zqiang's new email address
+- Replaced magic constant in rcu_seq_done_exact() with named constant
+- Added warning mechanism to validate rcu_seq_done_exact()
+- Switched SRCU polling API to use rcu_seq_done_exact()
+- Commented on redundant delta check in rcu_seq_done_exact()
+- Made ->gpwrap tests in rcutorture more frequent
+- Fixed reuse of ARM64 images in rcutorture
+- rcutorture improved to check Kconfig and reader conflict handling
+- Extracted logic from rcu_torture_one_read() for clarity
+- Updated LWN RCU API documentation links
+- Enabled --do-rt in torture.sh for CONFIG_PREEMPT_RT
+- Added tests for SRCU up/down reader primitives
+- Added comments and delays checks in rcutorture
+- Deprecated srcu_read_lock_lite() and srcu_read_unlock_lite() via checkpatch
+- Added --do-normal and --do-no-normal to torture.sh
+- Added RCU Rust binding tests to torture.sh
+- Reduced CPU overcommit and removed MAXSMP/CPUMASK_OFFSTACK in TREE01
+- Replaced kmalloc() with kcalloc() in rcuscale
+- Refined listRCU example code for stale data elimination
+- Fixed hardirq count bug for x86 in cpu_stall_cputime
+- Added safety checks in rcu/nocb for offloaded rdp access
+- Other miscellaneous changes
 
---otw3l52sr4y45r5c--
+----------------------------------------------------------------
+Frederic Weisbecker (3):
+      rcu: Comment on the extraneous delta test on rcu_seq_done_exact()
+      rcu: Remove swake_up_one_online() bandaid
+      Revert "rcu/nocb: Fix rcuog wake-up from offline softirq"
+
+I Hsin Cheng (1):
+      rust: sync: rcu: Mark Guard methods as inline
+
+Joel Fernandes (7):
+      MAINTAINERS: Update Joel's email address
+      rcu: Replace magic number with meaningful constant in rcu_seq_done_exact()
+      rcu: Add warning to ensure rcu_seq_done_exact() is working
+      srcu: Use rcu_seq_done_exact() for polling API
+      rcutorture: Perform more frequent testing of ->gpwrap
+      rcutorture: Fix issue with re-using old images on ARM64
+      Merge branches 'rcu/misc-for-6.16', 'rcu/seq-counters-for-6.16' and 'rcu/torture-for-6.16' into rcu/for-next
+
+Paul E. McKenney (12):
+      rcutorture: Make srcu_lockdep.sh check kernel Kconfig
+      rcutorture: Make srcu_lockdep.sh check reader-conflict handling
+      rcutorture: Split out beginning and end from rcu_torture_one_read()
+      rcutorture: Make torture.sh --do-rt use CONFIG_PREEMPT_RT
+      doc: Update LWN RCU API links in whatisRCU.rst
+      rcutorture: Comment invocations of tick_dep_set_task()
+      checkpatch: Deprecate srcu_read_lock_lite() and srcu_read_unlock_lite()
+      torture: Add --do-{,no-}normal to torture.sh
+      torture: Add testing of RCU's Rust bindings to torture.sh
+      torture: Check for "Call trace:" as well as "Call Trace:"
+      rcutorture: Reduce TREE01 CPU overcommit
+      rcutorture: Remove MAXSMP and CPUMASK_OFFSTACK from TREE01
+
+Su Hui (1):
+      rcuscale: using kcalloc() to relpace kmalloc()
+
+Wei Yang (1):
+      doc/RCU/listRCU: refine example code for eliminating stale data
+
+Yongliang Gao (1):
+      rcu/cpu_stall_cputime: fix the hardirq count for x86 architecture
+
+Zqiang (2):
+      MAINTAINERS: Update Zqiang's email address
+      rcu/nocb: Add Safe checks for access offloaded rdp
+
+ Documentation/RCU/listRCU.rst                      |  10 +-
+ Documentation/RCU/whatisRCU.rst                    |   3 +
+ Documentation/admin-guide/kernel-parameters.txt    |  25 +++
+ MAINTAINERS                                        |   8 +-
+ kernel/rcu/rcu.h                                   |  18 +-
+ kernel/rcu/rcuscale.c                              |   2 +-
+ kernel/rcu/rcutorture.c                            | 206 ++++++++++++++++-----
+ kernel/rcu/srcutree.c                              |   2 +-
+ kernel/rcu/tree.c                                  |  84 +++++----
+ kernel/rcu/tree.h                                  |   3 +-
+ kernel/rcu/tree_exp.h                              |   2 +-
+ kernel/rcu/tree_nocb.h                             |  10 +-
+ kernel/rcu/tree_plugin.h                           |   2 +-
+ kernel/rcu/tree_stall.h                            |   4 +-
+ rust/kernel/sync/rcu.rs                            |   5 +
+ scripts/checkpatch.pl                              |   2 +
+ .../selftests/rcutorture/bin/console-badness.sh    |   2 +-
+ .../selftests/rcutorture/bin/kvm-test-1-run.sh     |   2 +-
+ .../selftests/rcutorture/bin/parse-console.sh      |   2 +-
+ .../selftests/rcutorture/bin/srcu_lockdep.sh       |  42 ++++-
+ tools/testing/selftests/rcutorture/bin/torture.sh  |  89 ++++++++-
+ .../selftests/rcutorture/configs/rcu/TREE01        |   2 -
+ .../selftests/rcutorture/configs/rcu/TREE01.boot   |   2 +-
+ 23 files changed, 403 insertions(+), 124 deletions(-)
