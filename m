@@ -1,279 +1,362 @@
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2079.outbound.protection.outlook.com [40.107.220.79])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C349E1E4AB;
-	Mon, 19 May 2025 20:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747686949; cv=fail; b=W2LSRM21auKZoyIatxk9CycVStblTqHavZtnpnSRI6JSe88Jll1RQ3QlnCIw+vmnTnG69bw02rscsm8j9/rhGAQqJtPbniBYwvFCpvX7IkvDn8sWcqSHJFew6DxXumFFHPuFfGYutA/4oSUVeV2xhHDPAlqe5UKrzBnhWXVI0q8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747686949; c=relaxed/simple;
-	bh=5iPX1apg3DZMr2y7N//wgn3svFyv2BE8PbHmO+h/0xo=;
-	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=p6/pRMbPpz8uQ067rVBKjweMr8tRIjpDiMVnA8p6rcWXdeMKjSGyVefp0VluT8PawvWFlL2zGGokOeSrkO/prWkD/ADmhyhJ5wZY4L8WbY2gxXxbi23atVhBmxxkKPcGEZGPQX1bOa5klAkcs4yRujhYAmG7Ph8LW4MOyABStuE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kpBZgWqT; arc=fail smtp.client-ip=40.107.220.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kpBZgWqT"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=upeCBIMf+WRQC4UF1YCwMS1NnJ0fvtyta6E8LFNSBXc0xcuvDCCNU1PPboWyHXoM3uZvo8j2j7zV0XPhAIFkdNBmUuGjUydY/YPig56ucOkKjV8MPSMHuzZ5RD7BRLSie77+7eOamD6TBAYwzZTBlmI0chOzyeM7WfoW8PBdoySnlZLU9I4gA5MM4F7NcoXHgtui50VlRCfqGphRdLQkYf3Hf0IY5KfFZx6XItV75hCfmkyMCIjY9ZnGdsGteFXsD6kwHDDgMoKeJVQ4Le4DYUn2drmMbXl9BJbEUb+4qgzorU0kITP/L3zUQRLj1C4U9gAHQUwqaZ6GZRnEf3GnuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=30sDslq/DSc+ad9VZfeHOZ0cGW+RrBPQoKXp8G3ya4M=;
- b=tS612ORAebBgC7m80LhIrHXc8ChKasgnrvb3V4uMY36cbjM5LJXP+BTNRq+DZfMNEqmZrEf1FMC30/VmU1ED4SfJEiBh44zEafYGdZPjyxa6kaKvYiMO9gR1vVJQGMayucCNrG/ARUE2LOjovJrZ4jrptj3kQIrz6WBRXKtUeOuhqkmTJLHFpNCVAVa5p6B50GXJe5y68L3nsrAQ5JfFvE977BvNXr6fKsuBeXvEB0DRBL2MH8WqKytVHNxp4JNPXHl+IvLtQyhUzBt3lPtOdENFAtAIDMBFlJDTmENXdls7TyLMg65u//tQd0yvXownQmlBLqPbH4l3RiwAdDdKfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=30sDslq/DSc+ad9VZfeHOZ0cGW+RrBPQoKXp8G3ya4M=;
- b=kpBZgWqTO7FUjclogWNqe4uR/GSLlWG5k91qVl37J37sDiOJtNvEGUe+if+OHRc62ori1X3EWppySNDq6efiTDE1eKX5RODMpJaTQbVyhNFAkxnsrM9ODiZ/enjzD05vjP5PpywNMHyd0PT8VGcFlVPHEhyygbAlh0DhhmPseKYqGo2FkKoSqWYOGeMXMZsXTxoSDMMar5/EVn2etE1yB+FXgZ3VMJELGyJcE+6KzVpHgNx5ufAHOYt4j4o8cZyQ5LRgvxL6ujPWX+O+Tcxd8kQeH3q0uESYeSIi4lmOBVYrEVjzIK7FuKg42cIaCMqU559SP0FVNfe2SyQrJqOqjQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by PH7PR12MB6809.namprd12.prod.outlook.com (2603:10b6:510:1af::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Mon, 19 May
- 2025 20:35:43 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%3]) with mapi id 15.20.8746.030; Mon, 19 May 2025
- 20:35:43 +0000
-Date: Mon, 19 May 2025 16:35:40 -0400
-From: Joel Fernandes <joelagnelf@nvidia.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, qiang.zhang1211@gmail.com
-Subject: RCU changes for v6.16
-Message-ID: <20250519203540.GA3639139@joelnvbox>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MN0P220CA0026.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:208:52e::19) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8F7253B5A;
+	Wed, 21 May 2025 09:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747820607; cv=none; b=USStwPEQS2KlwC8lgJEG5bHjVmg+dxOOuaiECwV9qBLqVn5AImZgLrR2eJoNFqqdJ9UREVNm00qk191Q2nTzUTI9T5lb/6xZKinjMPDAKCL1jIwH/NAxppo993YdLo0JtslRJEjljmrSnZgKPg1uWOJaOn8AkWbpEd63f+P82BY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747820607; c=relaxed/simple;
+	bh=AB6vrtrGKSOlL4+NIB8XxZHaFKUtRBpHMQJtFBmqnTA=;
+	h=To:CC:From:Subject:Message-ID:Date:MIME-Version:Content-Type; b=K8SyqDF8JD6joOZTlYAxYZfRR+8Hr+aE9EUnl2BGHlC4/HoOK6dyyu13DfbAw/JsRq/W9XNVOCVgngJj3qIrghEPUWrs09y7OKHmEVDP645dtfJSg7EQvK/5Mt78LhEQtXqJi/HIyuxqes6PhmeaAZUOyb/5jNTM/XAlN3Y/UpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4b2RK42XjxzVmcT;
+	Wed, 21 May 2025 17:42:00 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id EEA6F18006C;
+	Wed, 21 May 2025 17:43:15 +0800 (CST)
+Received: from kwepemq500009.china.huawei.com (7.202.195.53) by
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 21 May 2025 17:43:15 +0800
+Received: from [10.174.179.5] (10.174.179.5) by kwepemq500009.china.huawei.com
+ (7.202.195.53) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 21 May
+ 2025 17:43:14 +0800
+To: <ankur.a.arora@oracle.com>, Frederic Weisbecker <frederic@kernel.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	<neeraj.upadhyay@kernel.org>, <urezki@gmail.com>
+CC: <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <xiqi2@huawei.com>,
+	"Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Subject: [QUESTION] problems report: rcu_read_unlock_special() called in
+ irq_exit() causes dead loop
+Message-ID: <9acd5f9f-6732-7701-6880-4b51190aa070@huawei.com>
+Date: Wed, 21 May 2025 17:43:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|PH7PR12MB6809:EE_
-X-MS-Office365-Filtering-Correlation-Id: 94d56c05-6c37-4f71-d623-08dd9714b9f4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?S2pDR1VDY3pucXp2VDdXcytONkhMWExtNkZxTFF1R1lpTk93NzJCUVRvUCtR?=
- =?utf-8?B?ZHdFK2V2LzJwTHp1UWVibU9MQzN6U0xTV051b1BTclVDR3d1bEF3L2dOWGR1?=
- =?utf-8?B?ODZ4WDdGMnlMVldONnJBbW1VTFZNMUkyMmM0LzFMbEhLUzBoUHJMdFlyeE1L?=
- =?utf-8?B?dHVtSlVqeW1yZlVpMm5URGk1RlduSXBrdmtsZ2dXY3JRNDd4R0VvM2FkQmpT?=
- =?utf-8?B?Q1NaS2YxNjdEbVdMOStoWHo3ekk2ZkphanZtcDZJV3FXc1Q4THhOWU5LVkZN?=
- =?utf-8?B?cW5yRTNhMG5vempIVFZnQ2c0TjhPOEFzTDZFU2ZCRnJZYkJhVU9oV3JROHp0?=
- =?utf-8?B?WE9iWDVMaUx3VU9GTkVoMmN5by9LUklMZ2paamt4dzZBaW8xczdZcnI0YmlB?=
- =?utf-8?B?bXgyN3pJQ1J6NWFtd3N4SnZYanVQOElYYzk3dFROc0JqSUJzSzBpL0RiTHBT?=
- =?utf-8?B?UDFaOEhsSHJtMGNiYWFOTVVkQ3BaWU03MTM5T2U1c2h4QTlIVTBINzFVWnB4?=
- =?utf-8?B?TGpiZTg1NVFwT3FCL3RKWFlHTmlCQXlXTjRWNTlmYUdCY3RRWHZMVXhJS3RJ?=
- =?utf-8?B?VDNSYXpDWmdtTnhvdkhrS25HK0VHbEhkZXAzVUpVa0s5RmZsenJSa2dvV1R4?=
- =?utf-8?B?a1NQalBzMGdtVTJkWnJxYzRER0xjTE04d0RpdHRsdEZoOTJuL2tZL21xRWJO?=
- =?utf-8?B?U1RRbGEzTXg5WkZEbCs0WEpXcG91cGRxVks4d0RmRDdOQTV2R2dJUmxxbzBh?=
- =?utf-8?B?aHg5RVQybnlHNHMvRUlEM1U5cGZSMmZwUEo0aGdqTmd3ZmNRWmE3MTJlZDFQ?=
- =?utf-8?B?SzRDVnpRODJlVHllU3dBc0RmTnpwUUZEUTlVcnVPa3BMbXd6clUvL255TFBX?=
- =?utf-8?B?QncwS3JmeHpQSDJQczd4RnBhKytaTktSV0t1RXJkRUxHa1BxaXhyNmw2NGwx?=
- =?utf-8?B?MVNoMi9sSkV2Qk5IdW5KUnRNNUlwOG5EMlpaa3NuLzM0TUE0SHY5YXJzR0lr?=
- =?utf-8?B?am4wTmovOTRmZnZ5d2ljY3RyclRBNjJSdzdUaXNyTWRxZ2tGRG93eWFFZUJi?=
- =?utf-8?B?d1hEbW1PMmRQUGZrbXZibHVhVU9CRVl2OVZOY0Z5OWlRelRwTWVuUEdmZmRW?=
- =?utf-8?B?TGVTby9oclFLcURFWEwrdmdxbmZQYmVXUmVVQmtlWlZGVkZEMVIxZGlGa3BW?=
- =?utf-8?B?UVhvVGplOXVSbEVMTGtmaHBRU1pxWk5nQmNRemtzOFN2dWZJOHRSZ0FDRVBw?=
- =?utf-8?B?Z3FTUlIyK21LQlNHMnZYNTI5MFRQTFdGeVRnUVBkb1dQQ3pmSWtEWjc4UXc5?=
- =?utf-8?B?bTU4ZkhxdnVEMW9iZFVxa2VyNXNDd2hyOHBuVlZhZ2NVUmZOSEs3NTkyUzUv?=
- =?utf-8?B?OGc5MDJNYWFRaEZtUDNsOFltblMrdmNBTytoaTJ0TklaRWFvRllFRGxWZkF0?=
- =?utf-8?B?Y1VON1ZuN010RVprVmFzUDVVN1lPTDAyUGdiMWFrcDk0cUFidFBaTkMxVHdD?=
- =?utf-8?B?MWlQYWp5aUhDcG5BbFFRb0ZNZCsxL244blZVNjU4aDRnUVRLWkNMWVVmQjdR?=
- =?utf-8?B?clVEWFpGSjc5Z3htV0hKdFNmcmM1NVQ3UlVOQlNxbGhDWEJjUGpjOWNJNVlt?=
- =?utf-8?B?aU9aTURRWWtHQkhPSFFGYVQxbm04bDFRRmtzUlZ4ZkkrNE1HOUtseVJ4QUkw?=
- =?utf-8?B?cTlJeEg5MGk4SXNTMjJLZ0VVczNXRFJNNWdRV2tGeDhaL0dOdzQ3SEVKczdW?=
- =?utf-8?B?VXhXdlNnZFJIN0tLcHFXZjRpMU05eXBsUWxlZVRtSWFzalFXa1BtRWlPR1V0?=
- =?utf-8?B?MWx4STMvYytoS1h4TFZBNDhsMlAzRmFsZWtzZnV5NExITC9CZUJhYnVCMkxm?=
- =?utf-8?B?VCs3VURVVktjWW0xMTA5M1BLVEh6dWlEcS9nTE1kU2I3dnc9PQ==?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dkJIcS9heFBzeXJXNytxL0loN2wra3dLbE9Mc2tUWFBWY1Q3YVZHUWRBdFJr?=
- =?utf-8?B?L1d2ZkhiQnlIamVtaWZDaEhmazNXWXJDMkhKUnpMQnNTZy9rWXdyOHk4TENS?=
- =?utf-8?B?UUZnWGpnYnNod2FxSWdPek5iN3FHTkZMY29yaWFBUnlBaE1HczE0bWg2R1lZ?=
- =?utf-8?B?enRDVkIzbHpFRjI4bGd2b1grSy9wMEFvdDBQckhyUVFLODhYTGFSMnM0S2NL?=
- =?utf-8?B?RlIvb2NTSjNGdGdQakhwR2w5WFZGQlRwaWQwNmp6bVhzVU5LWG1lc1lLM0hV?=
- =?utf-8?B?K3htbTk0enhNdFB6aWpIOTE2RkIrVnBxeEpBMENKeURhNkI0cnI1bzUvQlNX?=
- =?utf-8?B?Y2xWcHhlNmFYQW1kbU1NVXhOQmJFenhCdE9sV2lNbDBabjhuRTRJbXlheThZ?=
- =?utf-8?B?elhqK2ZRVE5JU3Y0QzZkbllyRnJtRkk3cGRlSXVLYmtCb0pqb0h6RWZaSWM5?=
- =?utf-8?B?cHlzR1lNamtkWmxvVHczNEo0T3dIdXVMc3VoN0tVZnpnS3FFbmp6YTlZcEVm?=
- =?utf-8?B?YjhBOXF2K1d6MDd6NUlCclhLTmw4QTVIbnZ4MnNNYW5nZmVJWHVZc0ppMnRB?=
- =?utf-8?B?WDdkT2J0WEhCK1AwYXNiY1FaN0Q4N2U3UFVaelZYalNRUi90WHg0eTNHTTA1?=
- =?utf-8?B?eU9oVjRMc1pKdFFUTkZMS0w2eEhOSXJRdkEvVzBlYkVMd1lwWTUzdWNBanJH?=
- =?utf-8?B?eUo0dC9RVEJjQXg5cjBtZkFzbStCbjhVc21DMTcwQ0p5NVlPWEtHbG1id0ZI?=
- =?utf-8?B?ck0yNk9uc20xb2pMR2dZY01jSlJYR3JEcW5tTnphczU5SUF0QUJQWW94enpj?=
- =?utf-8?B?Z1NxZW4rTnhlbDFqd2lTTHVWSjQvZ0VLR2hJK1JlMzJvNnFIWnk3TjlLbW5q?=
- =?utf-8?B?WG1rTUx0bVM5UDVGVko4SERLeGtjazNWa3pRRWxzZ0dOQ01Dd250d3p2b21l?=
- =?utf-8?B?cjk5bGtWZEczNmZ4QlpIMUVmelNneks4ODRUckM4TTRSc3dNaWhkeTRwTzJy?=
- =?utf-8?B?MFl4RFpLaWVrd3grQkRsOUtrZEVsN2pZUE1UUTRrT2YzSE5YOVBmSGh1dnlH?=
- =?utf-8?B?NUZ5Y21jOXZsRUdpMDRWTTFHR3BlN2h2L214eUp1d0J1aExPUHlJME9YdnUr?=
- =?utf-8?B?NlBsVmFrci9QanVhSWpNdktaczhQU2YwdzM4UWszc1oxcUpiOHVvbHh4eUo5?=
- =?utf-8?B?OTB1cWR2clRMNXJkMzgxeVZ0dFM1bjdvQmlhUE9BMkU2WWlMQkJ2M0dTc0xJ?=
- =?utf-8?B?MzQxYTR6ZzFZRXIzZ0ZTclE2aGxibTJrVWJiZTN0V2RBWEZOU2syOTk4aW5O?=
- =?utf-8?B?QnRHdEpGVXUrZlBEcCtlbUdYak5jeEpKcGREWForVmJFZU1RdW5RbW1PQmN5?=
- =?utf-8?B?eEk3RlRFZEswaVpRWXlxd1M3b1pIbTZFcmxPMjVGbnZLaHpCdWU3RWxySW94?=
- =?utf-8?B?WGk5bStVbXBKNXR4cmZQeDdLamhBNCtEaHVlVW9PWDhvNGJQZ3dMeDVrL3dv?=
- =?utf-8?B?MDZhTSszYnMwR0VCTGVibzljMGFyM3hQdFNvMnliTGEwd2hLSUhMYm9HMmI3?=
- =?utf-8?B?L25FQlZJWG9sSXlSaUM2UiszcERqQjQzVHlVQVlBUEo3Y01rRnJTUVNlbnJt?=
- =?utf-8?B?V3FiRzYrMGtBaWxrZUF5bTJxSGowZ0pOWUhnMlVwQmFub29vVmtKRXp6RmpH?=
- =?utf-8?B?Y0txbEllZi9md3E1Tit3WkpaZ2g3MmVsQ3cvWWM0dHZ6eHMzOFd3SWM0aUZh?=
- =?utf-8?B?dUM1VlpEQ3RpTy9GcC96MXZ6QlZpTEtUelpVa1dySXdmb05SK0o5NVFvQlVs?=
- =?utf-8?B?T0RKcmdFNkJ0VTVDMllwZUlONjNjRXZpbm45cTBLZ2lMMUVKUUxMd3RxMWUy?=
- =?utf-8?B?UUIvaFUwRlN3N1Rvek1mVjZjN1hubStoZ2tzQzhXR1dsbEk1N09CZXdFNlg5?=
- =?utf-8?B?S0JybURBYjJRZGJOcERXME13dVJlZWJUVjJCUVc5dmpQeDN5ZUdUbWwyNWdP?=
- =?utf-8?B?TkFlZHZjanRHQlNIejVzZ2V4Y1FrQXdTNDlpNVVOQS9RNDlwa2UzcUVxZjUz?=
- =?utf-8?B?UzBMMUJydm9vRkNsaWJzZmRVaGwzL2QzaWNRdVd3WktFZjdVTzRpaXBFSmFL?=
- =?utf-8?Q?IRUmoslQqn3w8L34usL18GzGO?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94d56c05-6c37-4f71-d623-08dd9714b9f4
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2025 20:35:43.2965
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e4v8M5D6qoPHQmnJW+HiZuIr8cTa8mnzH55qg76A0CBXY/vtuTMSqezcCP4YZPgRKk4I+bIwUH8nbXnVIbj8/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6809
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ kwepemq500009.china.huawei.com (7.202.195.53)
 
-Hi Linus,
+Hi RCU experts,
 
-When the merge window opens, please pull the RCU changes for v6.16:
+When I ran syskaller in Linux 6.6 with CONFIG_PREEMPT_RCU enabled, I got
+the following soft lockup. The Calltrace is too long. I put it in the end.
+The issue can also be reproduced in the latest kernel.
 
-The following changes since commit 0af2f6be1b4281385b618cb86ad946eded089ac8:
+The issue is as follows. CPU3 is waiting for a spin_lock, which is got by CPU1.
+But CPU1 stuck in the following dead loop.
 
-  Linux 6.15-rc1 (2025-04-06 13:11:33 -0700)
+irq_exit()
+  __irq_exit_rcu()
+    /* in_hardirq() returns false after this */
+    preempt_count_sub(HARDIRQ_OFFSET)
+    tick_irq_exit()
+      tick_nohz_irq_exit()
+	    tick_nohz_stop_sched_tick()
+	      trace_tick_stop()  /* a bpf prog is hooked on this trace point */
+		   __bpf_trace_tick_stop()
+		      bpf_trace_run2()
+			    rcu_read_unlock_special()
+                              /* will send a IPI to itself */
+			      irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
 
-are available in the Git repository at:
+/* after interrupt is enabled again, the irq_work is called */
+asm_sysvec_irq_work()
+  sysvec_irq_work()
+irq_exit() /* after handled the irq_work, we again enter into irq_exit() */
+  __irq_exit_rcu()
+    ...skip...
+	   /* we queue a irq_work again, and enter a dead loop */
+	   irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+	
+I am not familiar with RCU code and don't know how to solve this problem.
+Any guidance would be appreciated.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/next.2025.05.17a
+Thanks,
+Xiongfeng
 
-for you to fetch changes up to 9c80e443379861a6b374db3c5bb830167cbe0676:
 
-  Merge branches 'rcu/misc-for-6.16', 'rcu/seq-counters-for-6.16' and
-  'rcu/torture-for-6.16' into rcu/for-next (2025-05-16 11:18:16 -0400)
-
-We in the RCU maintainers crew have done rigorous testing of these patches on
-both x86 and ARM, big and small machines, to ensure high quality so I am
-confident this will go smoothly. Thanks!
-
-----------------------------------------------------------------
-RCU pull request for v6.16
-
-Summary of changes:
-- Removed swake_up_one_online() workaround
-- Reverted an incorrect rcuog wake-up fix from offline softirq
-- Rust RCU Guard methods marked as inline
-- Updated MAINTAINERS with Joel’s and Zqiang's new email address
-- Replaced magic constant in rcu_seq_done_exact() with named constant
-- Added warning mechanism to validate rcu_seq_done_exact()
-- Switched SRCU polling API to use rcu_seq_done_exact()
-- Commented on redundant delta check in rcu_seq_done_exact()
-- Made ->gpwrap tests in rcutorture more frequent
-- Fixed reuse of ARM64 images in rcutorture
-- rcutorture improved to check Kconfig and reader conflict handling
-- Extracted logic from rcu_torture_one_read() for clarity
-- Updated LWN RCU API documentation links
-- Enabled --do-rt in torture.sh for CONFIG_PREEMPT_RT
-- Added tests for SRCU up/down reader primitives
-- Added comments and delays checks in rcutorture
-- Deprecated srcu_read_lock_lite() and srcu_read_unlock_lite() via checkpatch
-- Added --do-normal and --do-no-normal to torture.sh
-- Added RCU Rust binding tests to torture.sh
-- Reduced CPU overcommit and removed MAXSMP/CPUMASK_OFFSTACK in TREE01
-- Replaced kmalloc() with kcalloc() in rcuscale
-- Refined listRCU example code for stale data elimination
-- Fixed hardirq count bug for x86 in cpu_stall_cputime
-- Added safety checks in rcu/nocb for offloaded rdp access
-- Other miscellaneous changes
-
-----------------------------------------------------------------
-Frederic Weisbecker (3):
-      rcu: Comment on the extraneous delta test on rcu_seq_done_exact()
-      rcu: Remove swake_up_one_online() bandaid
-      Revert "rcu/nocb: Fix rcuog wake-up from offline softirq"
-
-I Hsin Cheng (1):
-      rust: sync: rcu: Mark Guard methods as inline
-
-Joel Fernandes (7):
-      MAINTAINERS: Update Joel's email address
-      rcu: Replace magic number with meaningful constant in rcu_seq_done_exact()
-      rcu: Add warning to ensure rcu_seq_done_exact() is working
-      srcu: Use rcu_seq_done_exact() for polling API
-      rcutorture: Perform more frequent testing of ->gpwrap
-      rcutorture: Fix issue with re-using old images on ARM64
-      Merge branches 'rcu/misc-for-6.16', 'rcu/seq-counters-for-6.16' and 'rcu/torture-for-6.16' into rcu/for-next
-
-Paul E. McKenney (12):
-      rcutorture: Make srcu_lockdep.sh check kernel Kconfig
-      rcutorture: Make srcu_lockdep.sh check reader-conflict handling
-      rcutorture: Split out beginning and end from rcu_torture_one_read()
-      rcutorture: Make torture.sh --do-rt use CONFIG_PREEMPT_RT
-      doc: Update LWN RCU API links in whatisRCU.rst
-      rcutorture: Comment invocations of tick_dep_set_task()
-      checkpatch: Deprecate srcu_read_lock_lite() and srcu_read_unlock_lite()
-      torture: Add --do-{,no-}normal to torture.sh
-      torture: Add testing of RCU's Rust bindings to torture.sh
-      torture: Check for "Call trace:" as well as "Call Trace:"
-      rcutorture: Reduce TREE01 CPU overcommit
-      rcutorture: Remove MAXSMP and CPUMASK_OFFSTACK from TREE01
-
-Su Hui (1):
-      rcuscale: using kcalloc() to relpace kmalloc()
-
-Wei Yang (1):
-      doc/RCU/listRCU: refine example code for eliminating stale data
-
-Yongliang Gao (1):
-      rcu/cpu_stall_cputime: fix the hardirq count for x86 architecture
-
-Zqiang (2):
-      MAINTAINERS: Update Zqiang's email address
-      rcu/nocb: Add Safe checks for access offloaded rdp
-
- Documentation/RCU/listRCU.rst                      |  10 +-
- Documentation/RCU/whatisRCU.rst                    |   3 +
- Documentation/admin-guide/kernel-parameters.txt    |  25 +++
- MAINTAINERS                                        |   8 +-
- kernel/rcu/rcu.h                                   |  18 +-
- kernel/rcu/rcuscale.c                              |   2 +-
- kernel/rcu/rcutorture.c                            | 206 ++++++++++++++++-----
- kernel/rcu/srcutree.c                              |   2 +-
- kernel/rcu/tree.c                                  |  84 +++++----
- kernel/rcu/tree.h                                  |   3 +-
- kernel/rcu/tree_exp.h                              |   2 +-
- kernel/rcu/tree_nocb.h                             |  10 +-
- kernel/rcu/tree_plugin.h                           |   2 +-
- kernel/rcu/tree_stall.h                            |   4 +-
- rust/kernel/sync/rcu.rs                            |   5 +
- scripts/checkpatch.pl                              |   2 +
- .../selftests/rcutorture/bin/console-badness.sh    |   2 +-
- .../selftests/rcutorture/bin/kvm-test-1-run.sh     |   2 +-
- .../selftests/rcutorture/bin/parse-console.sh      |   2 +-
- .../selftests/rcutorture/bin/srcu_lockdep.sh       |  42 ++++-
- tools/testing/selftests/rcutorture/bin/torture.sh  |  89 ++++++++-
- .../selftests/rcutorture/configs/rcu/TREE01        |   2 -
- .../selftests/rcutorture/configs/rcu/TREE01.boot   |   2 +-
- 23 files changed, 403 insertions(+), 124 deletions(-)
+[ 1901.634222][    C3] watchdog: BUG: soft lockup - CPU#3 stuck for 913s!
+[syz.8.781:8076]
+[ 1901.634947][    C3] Modules linked in:
+[ 1901.635261][    C3] CPU: 3 PID: 8076 Comm: syz.8.781 Tainted: G             L
+    6.6.0+ #1873
+[ 1901.635981][    C3] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
+1996), BIOS 0.0.0 02/06/2015
+[ 1901.636735][    C3] RIP: 0010:queued_spin_lock_slowpath+0x109/0x9c0
+[ 1901.637281][    C3] Code: 00 48 8b 44 24 60 65 48 2b 04 25 28 00 00 00 0f 85
+ca 07 00 00 48 83 c4 68 5b 5d 41 5c 41 5d 41 5e 41 5f c3 cc cc cc cc f3 90 <eb>
+85 81 fe 00 01 00 00 0f 84 dc 00 00 00 81 fe ff 00 00 00 0f 87
+[ 1901.638858][    C3] RSP: 0000:ff1100002900f8b0 EFLAGS: 00000202
+[ 1901.639364][    C3] RAX: 0000000000000000 RBX: 0000000000000001 RCX:
+ffffffff961f5ecd
+[ 1901.640001][    C3] RDX: fffa7c000005f936 RSI: 0000000000000004 RDI:
+ffd40000002fc9a8
+[ 1901.640624][    C3] RBP: 0000000000000003 R08: 0000000000000000 R09:
+fffa7c000005f935
+[ 1901.641255][    C3] R10: ffd40000002fc9ab R11: 0000000000000000 R12:
+fffa7c000005f935
+[ 1901.641905][    C3] R13: 0000000000000001 R14: 1fe2200005201f17 R15:
+ffd40000002fc9a8
+[ 1901.642527][    C3] FS:  000000002316c500(0000) GS:ff11000107980000(0000)
+knlGS:0000000000000000
+[ 1901.643272][    C3] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1901.643818][    C3] CR2: 0000000020000000 CR3: 0000000036592004 CR4:
+0000000000771ee0
+[ 1901.644469][    C3] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[ 1901.645105][    C3] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+[ 1901.645724][    C3] PKRU: 80000000
+[ 1901.646010][    C3] Call Trace:
+[ 1901.646287][    C3]  <TASK>
+[ 1901.646526][    C3]  ? __pfx_queued_spin_lock_slowpath+0x10/0x10
+[ 1901.647053][    C3]  _raw_spin_lock+0xd0/0xe0
+[ 1901.647450][    C3]  ? __pfx__raw_spin_lock+0x10/0x10
+[ 1901.647883][    C3]  __pte_offset_map_lock+0x129/0x270
+[ 1901.648335][    C3]  ? __pfx___pte_offset_map_lock+0x10/0x10
+[ 1901.648820][    C3]  migration_entry_wait+0x85/0x270
+[ 1901.649247][    C3]  ? __pfx_migration_entry_wait+0x10/0x10
+[ 1901.649705][    C3]  ? __pfx___schedule+0x10/0x10
+[ 1901.650122][    C3]  ? __hrtimer_start_range_ns+0x355/0xd00
+[ 1901.650623][    C3]  do_swap_page+0x36d2/0x4670
+[ 1901.651016][    C3]  ? plist_del+0x24c/0x450
+[ 1901.651453][    C3]  ? __pte_offset_map+0x2b9/0x3d0
+[ 1901.651981][    C3]  ? __pfx_do_swap_page+0x10/0x10
+[ 1901.652432][    C3]  ? __pfx_default_wake_function+0x10/0x10
+[ 1901.652947][    C3]  handle_pte_fault+0x5ae/0x7b0
+[ 1901.653387][    C3]  __handle_mm_fault+0xf9e/0x17f0
+[ 1901.653839][    C3]  ? __pfx___handle_mm_fault+0x10/0x10
+[ 1901.654335][    C3]  ? lock_vma_under_rcu+0x377/0x4d0
+[ 1901.654797][    C3]  ? __pfx_lock_vma_under_rcu+0x10/0x10
+[ 1901.655294][    C3]  handle_mm_fault+0x4bf/0xa20
+[ 1901.655725][    C3]  exc_page_fault+0x20b/0x7f0
+[ 1901.656150][    C3]  asm_exc_page_fault+0x26/0x30
+[ 1901.656582][    C3] RIP: 0033:0x51d788
+[ 1901.656927][    C3] Code: 66 89 74 17 02 88 0f c3 c5 fa 6f 06 c5 fa 6f 4c 16
+f0 c5 fa 7f 07 c5 fa 7f 4c 17 f0 c3 0f 1f 44 00 00 48 8b 4c 16 f8 48 8b 36 <48>
+89 37 48 89 4c 17 f8 c3 62 e1 fe 28 6f 54 16 ff 62 e1 fe 28 6f
+[ 1901.658618][    C3] RSP: 002b:00007fff991f9118 EFLAGS: 00010202
+[ 1901.659157][    C3] RAX: 0000000020000000 RBX: 0000000000000004 RCX:
+002367732f766564
+[ 1901.659856][    C3] RDX: 0000000000000009 RSI: 2367732f7665642f RDI:
+0000000020000000
+[ 1901.660553][    C3] RBP: 0000000000797ba0 R08: 00007f10a7800000 R09:
+0000000000000001
+[ 1901.661240][    C3] R10: 0000000000000001 R11: 0000000000000009 R12:
+0000000000000032
+[ 1901.661906][    C3] R13: 00000000000e2c77 R14: 0000000000795fa0 R15:
+0000000000795fac
+[ 1901.662589][    C3]  </TASK>
+[ 1901.662864][    C3] Sending NMI from CPU 3 to CPUs 0-2:
+[ 1901.663358][    C1] NMI backtrace for cpu 1
+[ 1901.663365][    C1] AAA2 1901441189248 1901441163169 0 0 0 1901441162197
+[ 1901.663374][    C1] AAA2 1901441197984 993372484411 993372484804 993372484875
+928887973527 928887973577 928887974425 // handle_softirqs
+[ 1901.663383][    C1] softirq_handle_start:
+[ 1901.663385][    C1] 0
+[ 1901.663387][    C1] 928330006990
+[ 1901.663390][    C1] 924221567459
+[ 1901.663392][    C1] 928817263100
+[ 1901.663395][    C1] 928328744939
+[ 1901.663397][    C1] 0
+[ 1901.663399][    C1] 921062008817
+[ 1901.663401][    C1] 928879010614
+[ 1901.663403][    C1] 0
+[ 1901.663405][    C1] 928887973635
+[ 1901.663407][    C1]
+[ 1901.663409][    C1] softirq_handle_end_time:
+[ 1901.663410][    C1] 0
+[ 1901.663412][    C1] 928330009295
+[ 1901.663415][    C1] 924221568491
+[ 1901.663417][    C1] 928817511439
+[ 1901.663419][    C1] 928328806233
+[ 1901.663421][    C1] 0
+[ 1901.663423][    C1] 921062009968
+[ 1901.663425][    C1] 928879011708
+[ 1901.663427][    C1] 0
+[ 1901.663429][    C1] 928887974243
+[ 1901.663432][    C1]
+[ 1901.663434][    C1] CPU: 1 PID: 8079 Comm: syz.8.781 Tainted: G             L
+    6.6.0+ #1873
+[ 1901.663444][    C1] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX,
+1996), BIOS 0.0.0 02/06/2015
+[ 1901.663448][    C1] RIP: 0010:irq_work_claim+0x5c/0xa0
+[ 1901.663464][    C1] Code: 14 02 48 89 e8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2
+75 44 8b 5b 08 e8 c3 74 e7 ff 89 da 41 89 dc 89 d8 83 ca 23 f0 0f b1 55 00 <41>
+0f 94 c5 31 ff 89 c3 44 89 ee e8 74 6a e7 ff 45 84 ed 74 d7 e8
+[ 1901.663473][    C1] RSP: 0018:ff11000107889c68 EFLAGS: 00000046
+[ 1901.663480][    C1] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
+ffffffff8dc11a4d
+[ 1901.663486][    C1] RDX: 0000000000000023 RSI: 0000000000000004 RDI:
+ff110001078c6838
+[ 1901.663491][    C1] RBP: ff110001078c6838 R08: 0000000000000001 R09:
+ffe21c0020f18d07
+[ 1901.663496][    C1] R10: ff110001078c683b R11: 0000000000000000 R12:
+0000000000000000
+[ 1901.663502][    C1] R13: ff110001078c6bf0 R14: 0000000000000000 R15:
+ffffffff99f43000
+[ 1901.663507][    C1] FS:  00007f10a79556c0(0000) GS:ff11000107880000(0000)
+knlGS:0000000000000000
+[ 1901.663517][    C1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1901.663523][    C1] CR2: 0000000000638300 CR3: 0000000036592002 CR4:
+0000000000771ee0
+[ 1901.663529][    C1] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[ 1901.663534][    C1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+[ 1901.663539][    C1] PKRU: 00000000
+[ 1901.663542][    C1] Call Trace:
+[ 1901.663546][    C1]  <IRQ>
+[ 1901.663551][    C1]  irq_work_queue_on+0x59/0x130
+[ 1901.663563][    C1]  rcu_read_unlock_special+0x46a/0x530
+[ 1901.663577][    C1]  bpf_trace_run2+0xf7/0x220
+[ 1901.663588][    C1]  ? __pfx_bpf_trace_run2+0x10/0x10
+[ 1901.663599][    C1]  ? __pfx_ep_poll_callback+0x10/0x10
+[ 1901.663613][    C1]  __bpf_trace_tick_stop+0xb4/0xf0
+[ 1901.663623][    C1]  ? __pfx___bpf_trace_tick_stop+0x10/0x10
+[ 1901.663633][    C1]  ? __pfx_sched_clock_cpu+0x10/0x10
+[ 1901.663643][    C1]  ? __wake_up+0x44/0x60
+[ 1901.663657][    C1]  check_tick_dependency+0x362/0x670
+[ 1901.663673][    C1]  __tick_nohz_full_update_tick+0xd1/0x220
+[ 1901.663683][    C1]  tick_nohz_irq_exit+0x22c/0x2a0
+[ 1901.663694][    C1]  sysvec_irq_work+0x36/0x80
+[ 1901.663705][    C1]  asm_sysvec_irq_work+0x1a/0x20
+[ 1901.663720][    C1] RIP: 0010:handle_softirqs+0x230/0x8d0
+[ 1901.663734][    C1] Code: 24 f5 80 5d 84 98 e8 1f 9b 27 00 4c 89 e2 48 c1 ea
+03 42 80 3c 3a 00 0f 85 d5 05 00 00 49 89 04 24 fb 65 44 8b 35 0c 2c 93 72 <4d>
+63 f6 49 c7 c4 20 0c 03 00 4a 8d 3c f5 80 5d 84 98 48 89 f8 48
+[ 1901.663742][    C1] RSP: 0018:ff11000107889f68 EFLAGS: 00000246
+[ 1901.663748][    C1] RAX: 000000e7499d350b RBX: 0000000000000000 RCX:
+0000000000000018
+[ 1901.663754][    C1] RDX: 1fe2200020f16185 RSI: 00000000001e2170 RDI:
+0000000000000004
+[ 1901.663759][    C1] RBP: ff1100003ae422c0 R08: 0000000000000001 R09:
+ffe21c0020f16239
+[ 1901.663765][    C1] R10: 00000000001e2170 R11: 3030303030302052 R12:
+ff110001078b0c28
+[ 1901.663770][    C1] R13: 0000000000400140 R14: 0000000000000001 R15:
+dffffc0000000000
+[ 1901.663779][    C1]  ? handle_softirqs+0x211/0x8d0
+[ 1901.663792][    C1]  ? update_sibling_normalize_runtime+0x1a/0x410
+[ 1901.663807][    C1]  irq_exit_rcu+0x134/0x190
+[ 1901.663820][    C1]  sysvec_irq_work+0x6a/0x80
+[ 1901.663830][    C1]  </IRQ>
+[ 1901.663833][    C1]  <TASK>
+[ 1901.663835][    C1]  asm_sysvec_irq_work+0x1a/0x20
+[ 1901.663849][    C1] RIP: 0010:rcu_read_unlock_special+0x186/0x530
+[ 1901.663861][    C1] Code: 0f 85 01 01 00 00 4d 85 f6 0f 84 6a 01 00 00 40 84
+ed 0f 84 61 01 00 00 bf 09 00 00 00 e8 c2 45 df ff fb 65 8b 2d 26 65 72 72 <48>
+63 ed 48 c7 c3 40 1a 03 00 48 b8 00 00 00 00 00 fc ff df 48 8d
+[ 1901.663869][    C1] RSP: 0018:ff110000380b6fe8 EFLAGS: 00000283
+[ 1901.663875][    C1] RAX: 0000000000000001 RBX: ff110001078c6800 RCX:
+ffffffff8d7c6a90
+[ 1901.663881][    C1] RDX: 0000000000000001 RSI: 0000000000000046 RDI:
+ff11000100e33084
+[ 1901.663886][    C1] RBP: 0000000000000001 R08: 0000000000000000 R09:
+fffffbfff3716ab4
+[ 1901.663891][    C1] R10: 0000000000000000 R11: 0000000000000001 R12:
+0000000000000000
+[ 1901.663896][    C1] R13: dffffc0000000000 R14: 0000000000000200 R15:
+ffffffff99f43000
+[ 1901.663903][    C1]  ? ttwu_do_activate+0x520/0x6f0
+[ 1901.663918][    C1]  ? rcu_read_unlock_special+0x17e/0x530
+[ 1901.663930][    C1]  page_vma_mapped_walk+0x1e00/0x2b50
+[ 1901.663948][    C1]  ? __netlink_deliver_tap_skb+0x352/0x4d0
+[ 1901.663959][    C1]  ? __pfx_page_vma_mapped_walk+0x10/0x10
+[ 1901.663974][    C1]  ? netlink_ack+0x614/0xba0
+[ 1901.663986][    C1]  try_to_migrate_one+0x3f0/0x2cb0
+[ 1901.663999][    C1]  ? __sys_sendmsg+0xee/0x1b0
+[ 1901.664015][    C1]  ? __pfx_try_to_migrate_one+0x10/0x10
+[ 1901.664028][    C1]  ? __orc_find+0x109/0x140
+[ 1901.664041][    C1]  ? arch_stack_walk+0x92/0x160
+[ 1901.664058][    C1]  ? __anon_vma_interval_tree_subtree_search+0x171/0x1f0
+[ 1901.664080][    C1]  ? __pfx_try_to_migrate_one+0x10/0x10
+[ 1901.664094][    C1]  rmap_walk_anon+0x2b0/0x980
+[ 1901.664108][    C1]  try_to_migrate+0x19f/0x350
+[ 1901.664122][    C1]  ? __pfx_try_to_migrate+0x10/0x10
+[ 1901.664135][    C1]  ? __pfx_try_to_migrate_one+0x10/0x10
+[ 1901.664148][    C1]  ? __pfx_folio_not_mapped+0x10/0x10
+[ 1901.664159][    C1]  ? __pfx_folio_lock_anon_vma_read+0x10/0x10
+[ 1901.664173][    C1]  ? __pfx_invalid_migration_vma+0x10/0x10
+[ 1901.664184][    C1]  ? folio_total_mapcount+0xb4/0x210
+[ 1901.664197][    C1]  split_huge_page_to_list_to_order+0xc84/0x17f0
+[ 1901.664213][    C1]  ? __pfx_split_huge_page_to_list_to_order+0x10/0x10
+[ 1901.664226][    C1]  ? __orc_find+0x109/0x140
+[ 1901.664240][    C1]  ? __orc_find+0x109/0x140
+[ 1901.664253][    C1]  ? entry_SYSCALL_64_after_hwframe+0x77/0xe2
+[ 1901.664269][    C1]  madvise_cold_or_pageout_pte_range+0x1966/0x2450
+[ 1901.664284][    C1]  ? arch_stack_walk+0x92/0x160
+[ 1901.664298][    C1]  ? __read_once_word_nocheck+0x9/0x20
+[ 1901.664311][    C1]  ? deref_stack_reg+0x1a4/0x2b0
+[ 1901.664326][    C1]  ? entry_SYSCALL_64_after_hwframe+0x77/0xe2
+[ 1901.664340][    C1]  ? __pfx_madvise_cold_or_pageout_pte_range+0x10/0x10
+[ 1901.664354][    C1]  ? __read_once_word_nocheck+0x9/0x20
+[ 1901.664368][    C1]  ? __orc_find+0x109/0x140
+[ 1901.664381][    C1]  ? __pfx_madvise_cold_or_pageout_pte_range+0x10/0x10
+[ 1901.664395][    C1]  walk_pmd_range.isra.0+0x240/0x720
+[ 1901.664405][    C1]  ? __read_once_word_nocheck+0x9/0x20
+[ 1901.664419][    C1]  walk_pud_range.isra.0+0x3d3/0x6c0
+[ 1901.664431][    C1]  walk_p4d_range+0x2ef/0x4f0
+[ 1901.664441][    C1]  walk_pgd_range+0x27e/0x530
+[ 1901.664452][    C1]  __walk_page_range+0x4ab/0x5a0
+[ 1901.664461][    C1]  ? find_vma+0x81/0xb0
+[ 1901.664469][    C1]  ? __pfx_find_vma+0x10/0x10
+[ 1901.664477][    C1]  ? folios_put_refs+0x510/0x740
+[ 1901.664487][    C1]  ? walk_page_test+0xa0/0x190
+[ 1901.664503][    C1]  walk_page_range+0x2a0/0x530
+[ 1901.664513][    C1]  ? __pfx_walk_page_range+0x10/0x10
+[ 1901.664522][    C1]  ? vtime_task_switch_generic+0x278/0x5a0
+[ 1901.664535][    C1]  ? folio_batch_move_lru+0x2b8/0x3d0
+[ 1901.664544][    C1]  ? __pfx_lru_add_fn+0x10/0x10
+[ 1901.664554][    C1]  madvise_pageout_page_range+0x1cc/0x6d0
+[ 1901.664567][    C1]  ? __pfx_madvise_pageout_page_range+0x10/0x10
+[ 1901.664582][    C1]  madvise_pageout+0x1f4/0x400
+[ 1901.664595][    C1]  ? __pfx_madvise_pageout+0x10/0x10
+[ 1901.664608][    C1]  ? futex_wait+0x552/0x680
+[ 1901.664624][    C1]  ? __sanitizer_cov_trace_switch+0x54/0x90
+[ 1901.664635][    C1]  ? __sanitizer_cov_trace_switch+0x54/0x90
+[ 1901.664645][    C1]  ? mas_prev_setup.constprop.0+0xb4/0x530
+[ 1901.664661][    C1]  madvise_vma_behavior+0x8fa/0xe30
+[ 1901.664675][    C1]  ? __pfx_madvise_vma_behavior+0x10/0x10
+[ 1901.664688][    C1]  ? find_vma_prev+0xf5/0x170
+[ 1901.664698][    C1]  ? __pfx_find_vma_prev+0x10/0x10
+[ 1901.664711][    C1]  ? do_futex+0x135/0x360
+[ 1901.664724][    C1]  do_madvise+0x3af/0x650
+[ 1901.664737][    C1]  ? __pfx_do_madvise+0x10/0x10
+[ 1901.664749][    C1]  ? __se_sys_futex+0xf7/0x390
+[ 1901.664762][    C1]  ? kvm_steal_clock+0xca/0x100
+[ 1901.664778][    C1]  ? get_vtime_delta+0xd7/0x250
+[ 1901.664793][    C1]  __x64_sys_madvise+0xaf/0x120
+[ 1901.664805][    C1]  ? __ct_user_exit+0x70/0xe0
+[ 1901.664819][    C1]  do_syscall_64+0x59/0x110
+[ 1901.664834][    C1]  entry_SYSCALL_64_after_hwframe+0x78/0xe2
+[ 1901.664849][    C1] RIP: 0033:0x54d2cd
+[ 1901.664856][    C1] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa
+48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48>
+3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+[ 1901.664864][    C1] RSP: 002b:00007f10a7955048 EFLAGS: 00000246 ORIG_RAX:
+000000000000001c
+[ 1901.664873][    C1] RAX: ffffffffffffffda RBX: 0000000000795fa0 RCX:
+000000000054d2cd
+[ 1901.664878][    C1] RDX: 0000000000000015 RSI: 0000000000003000 RDI:
+0000000020001000
+[ 1901.664884][    C1] RBP: 0000000000000000 R08: 0000000000000000 R09:
+0000000000000000
+[ 1901.664889][    C1] R10: 0000000000000000 R11: 0000000000000246 R12:
+0000000000795fac
+[ 1901.664894][    C1] R13: 0000000000000000 R14: 0000000000795fa0 R15:
+00007f10a7935000
