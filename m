@@ -1,79 +1,120 @@
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7DEA55
-	for <rcu@vger.kernel.org>; Sun,  8 Jun 2025 06:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31AF77261B
+	for <rcu@vger.kernel.org>; Sun,  8 Jun 2025 15:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749365885; cv=none; b=mkMOb0kJTLlc2R4+ppydaqe0zqgjqe2RNrX1LCeme/R6C6hCSZbaCWv06+QOXS12aGu3IUzpInRqQ1ZMt37ZzC0vHWU5NX0a3fkCRButW/3Osj3/nSzxyjcJTHY2trtdjRkU9mue9KzbmFBvpZR2D5L+gUUDrdJc+nRP+q4AZc0=
+	t=1749396397; cv=none; b=EMGbJVDiPHwsdMLJQhru+R1Wrwg2Ft9KppMCfenC+GfTvyoCGHmm0Ok+O1we8dmZVfzFeKbvTtVkc1jd5BLjPfNsLLyNJ+tRiYA+UkWh9gzWi0xtPv0a8pUK1MeipPyLfau2DrdqP1ZK2Kz5EwzgBPqQy0MlmbTXMykb5+D/T1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749365885; c=relaxed/simple;
-	bh=hVWo4GD3VhvuKTf8CoKVWw7dN2hdQPhzrdo+CeBpT2A=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=oVeHihFJ4fhqqfIdcFKvsZrojBt2GpAtLuxSypAjCxM/YXuAD16Hqee/m0MKylttlWR7On/pCI2dFnmkowiiEyn92aMDvkjKv6K0447m0xdbt8ter3RNPYVi0QEysoWrZS0R3OL6HscesNm1KHs2LazCMyd98Kky7VeswW0hE64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ddbb34fc1cso41058605ab.1
-        for <rcu@vger.kernel.org>; Sat, 07 Jun 2025 23:58:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749365883; x=1749970683;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=84bg0eAOl4RoDt6abU4tGy6GN7YB+Z7N/qFLriE8C/s=;
-        b=SE+GddTmsLqX7zV8b2Qw+Xm2nomhhgTRHQwoVDnN+GtFg8AhG5KaiS5QTS+M1ZS26L
-         N8BN3tf5Mxl6YwXMySGWEThy8B++sOaL+BGrviL61a6W5wjte9/PJXuzMYCc1jJBlyDC
-         1PL6yAvVR/fnbwvJjc2Y6bxdY7atcWP2cNhs7PPVXMYvGFT5LMGFg1Ta4yklUHBZTuyJ
-         A9J1cWctTcubTH0r83AG/NOmjXgRMIVBQD8Hua2i3siLcv5jgHfGK8NCyu7v49pTK3R4
-         jMnfgVHulFhTV6mX2ZW+PmAzmTIM8tdZ9wbbfm/PyN5+6fNhJl1qYpxmWlLt59O6MwTo
-         Uqaw==
-X-Forwarded-Encrypted: i=1; AJvYcCW1BCambKrzJcczg9CaebYbQHKWkF/0vfGfreUbyxBWu2mlyTf2RP4lkKAS7c5ijoC42yg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeV1UskILsb14br3lVxqUmt/k3lcNTkmu8J7IKu0CwWfDWjvxG
-	7f/jS0pmofIjmRqBbeq4cKFmethza3eeRcSDZ6vJ1FE66+LyV1GdxxIA72TEsoDvCY+bGCVb2Pp
-	jKWlJz4OyM4Xu9PNmC9EUEF7jOPN4NHIw5yeedJYLoZIE5zZ5aGOeCMChnzY=
-X-Google-Smtp-Source: AGHT+IFJAyOgYOZCDWobVWxcQYMe9z3fAwvKf43nlq/XKaJo+ZcNMRmq2P3CMhJgBiuXH0Nhtimb2FbWPDDWOEx1ZdgN0jVi4i3f
+	s=arc-20240116; t=1749396397; c=relaxed/simple;
+	bh=TAcN2Wqva1vjaooOAydwl8d2WBh+sYR8wGRrqqZUGlw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R9B8H97XGJax+YdJUjSdGjROtN9rJIQTa9ODmUpixxdswWbYh93kRCXzXbWku/KKyvzpwBtK+fQO9qPRNqR+jTMhW1AJPfoewagTBtBfmjqlNndApuNk739OAVBJtqEltJ03ESSJ+nE8j8s5/O5ISOuF5zXMDU76RLvE/8u3AHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XXFUfr2/; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XXFUfr2/"
+Date: Sun, 8 Jun 2025 11:26:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749396392;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0Jt4JQmErq4Yny7pnS33f1+VIu1hHHRGrT6P+hATzHU=;
+	b=XXFUfr2/HE2QR5HzLf3Za2ogrd27YGSJfSOqWBrR1Zz8UJFlMtLOqrXlSl41lKdvy50MJj
+	E9eLgGe7RAd3UhbMEaojSl62uK/F8Bb80qBbZesusr492NOg9DKncZ78ypNau4hijhDmD5
+	IUZ0na7Jr1lphTdNWeWjLfFAad3HWPU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, josh@joshtriplett.org, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, rcu@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL
+ pointer dereference in rcu_core (3)
+Message-ID: <jzknqese5idob37wxgclq7ptxnsd66qbqkxtjpjormymsrwv2j@xjum5exljlh6>
+References: <67a2b20a.050a0220.50516.0003.GAE@google.com>
+ <9694d40a-072e-47c2-a950-3b258bbe04f5@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:17c9:b0:3dd:d365:78bf with SMTP id
- e9e14a558f8ab-3ddd365790dmr80334435ab.22.1749365883085; Sat, 07 Jun 2025
- 23:58:03 -0700 (PDT)
-Date: Sat, 07 Jun 2025 23:58:03 -0700
-In-Reply-To: <67a2b20a.050a0220.50516.0003.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6845347b.050a0220.d8705.000c.GAE@google.com>
-Subject: Re: [syzbot] [bcachefs?] [rcu?] BUG: unable to handle kernel NULL
- pointer dereference in rcu_core (3)
-From: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, ayaanmirza.788@gmail.com, 
-	ayaanmirzabaig85@gmail.com, josh@joshtriplett.org, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, luto@kernel.org, paulmck@kernel.org, peterz@infradead.org, 
-	rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9694d40a-072e-47c2-a950-3b258bbe04f5@paulmck-laptop>
+X-Migadu-Flow: FLOW_OUT
 
-syzbot has bisected this issue to:
+On Wed, Feb 05, 2025 at 06:56:19AM -0800, Paul E. McKenney wrote:
+> On Tue, Feb 04, 2025 at 04:34:18PM -0800, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=10faf5f8580000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b69d18580000
+> > 
+> > Downloadable assets:
+> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-0de63bb7.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/1142009a30a7/vmlinux-0de63bb7.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/5d9e46a8998d/bzImage-0de63bb7.xz
+> > mounted in repro: https://storage.googleapis.com/syzbot-assets/526692501242/mount_0.gz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+> > 
+> >  slab radix_tree_node start ffff88803bf382c0 pointer offset 24 size 576
+> > BUG: kernel NULL pointer dereference, address: 0000000000000000
+> > #PF: supervisor instruction fetch in kernel mode
+> > #PF: error_code(0x0010) - not-present page
+> > PGD 0 P4D 0 
+> > Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
+> > CPU: 0 UID: 0 PID: 5705 Comm: syz-executor Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> > RIP: 0010:0x0
+> > Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+> > RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
+> > RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
+> > RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
+> > RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
+> > R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
+> > R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
+> > FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <IRQ>
+> >  rcu_do_batch kernel/rcu/tree.c:2546 [inline]
+> 
+> The usual way that this happens is that someone clobbers the rcu_head
+> structure of something that has been passed to call_rcu().  The most
+> popular way of clobbering this structure is to pass the same something to
+> call_rcu() twice in a row, but other creative arrangements are possible.
+> 
+> Building your kernel with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y can usually
+> spot invoking call_rcu() twice in a row.
 
-commit 14152654805256d760315ec24e414363bfa19a06
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Mon Nov 25 05:21:27 2024 +0000
+I don't think it's that - syzbot's .config already has that enabled.
+KASAN, too.
 
-    bcachefs: Bad btree roots are now autofix
+And the only place we do call_rcu() is from rcu_pending.c, where we've
+got a rearming rcu callback - but we track whether it's outstanding, and
+we do all relevant operations with a lock held.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12fa0a82580000
-start commit:   99fa936e8e4f Merge tag 'affs-6.14-rc5-tag' of git://git.ke..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11fa0a82580000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16fa0a82580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=523d3ff8e053340a
-dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d35a8580000
+And we only use rcu_pending.c with SRCU, not regular RCU.
 
-Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
-Fixes: 141526548052 ("bcachefs: Bad btree roots are now autofix")
+We do use kfree_rcu() in a few places (all boring, I expect), but that
+doesn't (generally?) use the rcu callback list.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+So I'm not sure this is even a bcachefs bug.
