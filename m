@@ -1,189 +1,216 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52E627718
-	for <rcu@vger.kernel.org>; Mon,  9 Jun 2025 18:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3372B22068A;
+	Mon,  9 Jun 2025 19:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749493740; cv=none; b=pAqUEjYosKI/2082rTsdtzVWbym+rhKByxoSs1n4x1QyPhz3R1vdDo5QxNMFjvDEwWQUtwAa7FMkvjiwhr3Xym2JBfswMy5sU9ZdOZypAstcj0+stKfsDiyaJfCzWARz57emyXdIZXi59FnOQU4iaTE7GhSoRnLSDPBRBpiM5fE=
+	t=1749498551; cv=none; b=S2MnrOd29+BuuhInt5ome9KpKiO5U0zY3mgu+k/qlnLUdbVf4dg19QE3UjTbjOe4+xbcr5CjMKJ2GhoDtbmzSmV/FKHa7EVd+qdTRP3UL4FdAOedMXQYc6Iyq0SyfvTMrPsQEB+uODFqlpOHnoUBRBeKdUJhhnP55yl/DNOwg9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749493740; c=relaxed/simple;
-	bh=ipLbgmj0/RbDBE8Zmt1TzEw+CSxoGLoQIMUaaPOKwJE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TX7MpRRh7LS4KaMMo5WEQI/Y2Qvzrd/05c98UZltMN1vM9D4UomhW1fVcdOyjhakGy7ndBP3PYdMmFKhezUm1lW0zEO6AMMbSL7lpv0ijmlZ5uo5m31nLW7mLyDCsRXkhSSE6c/5dZM+/fAMuJ8u5nfqoLQ1XM88BjL3YNgzveo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p0eTnMvB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dyXKUd4B; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pN4duz4w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VA8ZTEAR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1749498551; c=relaxed/simple;
+	bh=NfaEdvw3IQT5MJNS3KQjCx3b2X/FclhrBk50shOMe6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SYPtZJAhQv55eR37SjnRV6WYSZQoRkNBcKE5QliuJ2t2FrZqeQ/mE1UHQS8oyN2sZqavb+Qx/qFYtoS9mauUpxxBjCwhT/V+nvuHefn1i9a57tf+SqykSUW7Rwp50B4q+D7pocNrY0R/RZkSnfFNaHMZr7n4sihWFT4UMc9Se5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hnDkqIch; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p0eTnMvB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dyXKUd4B";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pN4duz4w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VA8ZTEAR"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D45BF1F46E;
-	Mon,  9 Jun 2025 18:28:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749493737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vk21obR3rGzVFeoYj3lWx3wONivKGACTaCAsMFKpPBc=;
-	b=p0eTnMvBSXQYwXqZpbNeQC8G/EqDbx3+xglPqNHGGzHYRHmdCLhAY2BfHyiaGaWBBCTQwe
-	7HWUjoLftHC3yuH5CvU4cltbInalmFKTJuXAW5wyt/S+4webJl9S//1RhMkcrTKZdYIXa4
-	iGdIz22uBe2/yiD6W7sYc0WCaEzWNSA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749493737;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vk21obR3rGzVFeoYj3lWx3wONivKGACTaCAsMFKpPBc=;
-	b=dyXKUd4BeoErH1cyfTQoVexBpEAbb9qGWE/TpFoSIECfm1iZ2AUNR2XLwy3zgBrMTyUbxC
-	ZLe2J5nxFDTvwdDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pN4duz4w;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VA8ZTEAR
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1749493736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vk21obR3rGzVFeoYj3lWx3wONivKGACTaCAsMFKpPBc=;
-	b=pN4duz4woPE/ppLyyDdNxXYyGf2g3V0rE269SgAjC0NCIZbgr+sONrwqz+A6reZibIBGBX
-	s3+yanoSBm/lJE04cvnoXZq1rstOc1hIlNT1XHxdObpHWekWj4dJI9wUjVMvi13LgC546S
-	TXWTRseY68gUPyB9IeERuxysB0yrGuo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1749493736;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vk21obR3rGzVFeoYj3lWx3wONivKGACTaCAsMFKpPBc=;
-	b=VA8ZTEARQF7lhLb3H8o8yGNht9hRcdo1RL1/METHRpOlUEZUz/gPA4Bl4V+nBKzQZIuDDO
-	FKMbpmP1D5I2BMAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B3F7713A1D;
-	Mon,  9 Jun 2025 18:28:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0ZisKugnR2g6MgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 09 Jun 2025 18:28:56 +0000
-Message-ID: <13d5ecd9-3e9f-4593-b300-9141941a29cb@suse.cz>
-Date: Mon, 9 Jun 2025 20:28:56 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hnDkqIch"
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7d09a17d2f7so396106685a.1;
+        Mon, 09 Jun 2025 12:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749498549; x=1750103349; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CeSH/A2je0AmZyahfqiWYvUhnJHMIEFACLeHVV2KLwg=;
+        b=hnDkqIch8oY4mCUkua21TUteOscGioq6XEpI8PrlZl2hDwN91cr2gREs8odJAC4yMY
+         ogvp8JwGwXdOxWkX3qvKW3GySIjTG488SS6PHyaQI+cYZ+Vf9ahNOXNUpyjVR2lTzWsD
+         9l8NBYj4TNuY+ls8jzCN2c0oDKFLUuQrBI2SNtE12N/mLhf0zVz2butVjS8Uhe+9Lk+E
+         SDOmc6Uw2Stnzz8WvRl0QDgf5tNxWnQrfV4miyUonoI+0HfXph4S1um/s8TKETbMPT+f
+         6oRKD4gS/3Qk61ZPlYPWNtX15LU+TlyTsdOQhoxAFGTmBekCXVFfffCcnaXAuIOzZdta
+         Zx6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749498549; x=1750103349;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CeSH/A2je0AmZyahfqiWYvUhnJHMIEFACLeHVV2KLwg=;
+        b=mgaNx9OHX0GZtoMF9iVS8oyVpzDtL9Z8ickXMFQ8ePQwHirDhB+IKKl7Kuh93vnM3K
+         rB2WcxMC5hV4OUL9IwjcL08i/qfJ+hYZUzq7XkqCk15r984xxMVtF8lnryLo9MhC4M8i
+         nEhUAeY2lhqzkU3JKfAzvSvMigR/GMkVpKDl3nfVt6CpmuoVozFZMT334RyW6NBa4jic
+         NtT0YVXFKj+y5pSnvW5Ar4JuLiCpsP42OFmvu0mDKsIOiRbvyz3z1JRIVFaKgotrCSn2
+         jSJVD9yzEo3l0ex0ow2cCrvNXassg6zz7qg3hHg3Fx8I81SCU3ZcYSFqrMmk7a+4l3Cf
+         Vrkg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTDdYny1LybEHQ5yCcPhisO/9oukDYxwNxsglzowp2mQZiKGwhluUXDYTTmqKm4EOVriE=@vger.kernel.org, AJvYcCW04bsoDWbeD3gx2R5sdThcM2GP3ohJM4vQ9HTFzSueTjg5NJJ+0Min/t/DL66MrkXUmecY@vger.kernel.org
+X-Gm-Message-State: AOJu0YyC9ZeGmlRnFDTTPyMpfRowqFnsaK5UmfOiRlmGoAPIKmORPOVz
+	yBsVtUMAfbHh4jsv9Q8vWA+mTyaITdTnkjT3h9SbKpJCDZEOG9Ygpfe2
+X-Gm-Gg: ASbGncsO60kN32vgiQmjk/o7DFVGbTL0PzYk9BE8Dh3W9auaL3IfxTaHvL8CQRQj/Yd
+	DFp7o6ewWioqSmrsxWVow0ZBulVbUA0lnF/eyuvn3lN+QZRbNTjqaRxSuOq5d+Hjv9qqZofaUl5
+	+5BHiaCTSH2gkz+Ve5WG9IYp+e0r1gycf57u1oSQzQEsYpQPqY96/u6TSpBq17mBG7KraUHpOCt
+	PaSQwGIA+0CgPmGNjGKhXhDyViBllzcR1nnHgijbRe6T1lkoOzqopl5hRQgkOsl28hxgT8cTJaZ
+	JxbHXpVfSMMrJ0x8VyO7QcmT8C7uFuhtX0UX+WKXYKYb6VjDuO3I2U6/chZeP5BQkvkicQyfc7y
+	3XnDkS3dhMI8ZorM1mm8y8Oz20IgYq4s8TF4ShoNG1JWhJHvk+Ua4R8I9KUPDR/Y=
+X-Google-Smtp-Source: AGHT+IE6oDGHSdMBa/LHIKbHLa8sGh5BJr+uycjoviYS0NXxIhOgnl9eNve0uTt6ZRgMc69sGw1VZA==
+X-Received: by 2002:a05:620a:19a2:b0:7c7:bb07:af07 with SMTP id af79cd13be357-7d22986104cmr2200375385a.22.1749498548985;
+        Mon, 09 Jun 2025 12:49:08 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6fb09ab9482sm55573216d6.19.2025.06.09.12.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jun 2025 12:49:08 -0700 (PDT)
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfauth.phl.internal (Postfix) with ESMTP id ECA1A1200043;
+	Mon,  9 Jun 2025 15:49:07 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Mon, 09 Jun 2025 15:49:07 -0400
+X-ME-Sender: <xms:szpHaFa_w5E7mnONkbv8ynZWECqbjcX-m9hl7HUqBMoyAMAfqh1E_w>
+    <xme:szpHaMbXfS3RNevBz2ZsHDW49ET9MthGrhmtYcTzv0izYf7WNOxojXc4onLDqkm-_
+    N7HD2hvFJlp3w4U7w>
+X-ME-Received: <xmr:szpHaH8bWQS0a6l9SQST8ue1w5AVbqCzAOMvWQ4XTZa76-Kpvh3i2L9fZgM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdeljeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpefhtedvgfdtueekvdekieetieetjeeihedvteeh
+    uddujedvkedtkeefgedvvdehtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdo
+    mhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejke
+    ehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgr
+    mhgvpdhnsggprhgtphhtthhopeduiedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    epjhhovghlrghgnhgvlhhfsehnvhhiughirgdrtghomhdprhgtphhtthhopehlihhnuhig
+    qdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehprghulh
+    hmtghksehkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhn
+    vghlrdhorhhgpdhrtghpthhtohepnhgvvghrrghjrdhuphgrughhhigrhieskhgvrhhnvg
+    hlrdhorhhgpdhrtghpthhtohepjhhovghlsehjohgvlhhfvghrnhgrnhguvghsrdhorhhg
+    pdhrtghpthhtohepjhhoshhhsehjohhshhhtrhhiphhlvghtthdrohhrghdprhgtphhtth
+    hopehurhgviihkihesghhmrghilhdrtghomhdprhgtphhtthhopehrohhsthgvughtsehg
+    ohhoughmihhsrdhorhhg
+X-ME-Proxy: <xmx:szpHaDo7nKgy5sMpBadtC_6Z9JdU8q0OtDRgU5834E1km3w6FbIUNw>
+    <xmx:szpHaAoYd0nMX0tb5ks0nEthovQDZozKjUVcduWhIngf4wkhxb6ClA>
+    <xmx:szpHaJTUbJ0xTddaN2ieujLxC-XtagAOcMeYx_umnHlzRN6e1rVrdA>
+    <xmx:szpHaIoMYZFzkQc_guNzCUAXy4RdQmv3UVDn-M022IXy5LEkxEI-kA>
+    <xmx:szpHaJ4ff1tS9AlSqMOYhuFKRErxWf25MLDfh9iS-789F7HpWaq3yR-E>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 9 Jun 2025 15:49:07 -0400 (EDT)
+Date: Mon, 9 Jun 2025 12:49:06 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Xiongfeng Wang <wangxiongfeng2@huawei.com>, rcu@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 2/2] rcu: Fix lockup when RCU reader used while IRQ
+ exiting
+Message-ID: <aEc6sroqylvlfx_M@tardis.local>
+References: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+ <20250609180125.2988129-2-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL
- pointer dereference in rcu_core (3)
-Content-Language: en-US
-To: Uladzislau Rezki <urezki@gmail.com>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- "Paul E. McKenney" <paulmck@kernel.org>
-Cc: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, josh@joshtriplett.org,
- linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, rcu@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <67a2b20a.050a0220.50516.0003.GAE@google.com>
- <9694d40a-072e-47c2-a950-3b258bbe04f5@paulmck-laptop>
- <jzknqese5idob37wxgclq7ptxnsd66qbqkxtjpjormymsrwv2j@xjum5exljlh6>
- <aEXVKNVLI3VQInSc@pc636>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <aEXVKNVLI3VQInSc@pc636>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com,linux.dev,kernel.org];
-	URIBL_BLOCKED(0.00)[suse.cz:dkim,suse.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[80e5d6f453f14a53383a];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: D45BF1F46E
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250609180125.2988129-2-joelagnelf@nvidia.com>
 
-On 6/8/25 20:23, Uladzislau Rezki wrote:
-> On Sun, Jun 08, 2025 at 11:26:28AM -0400, Kent Overstreet wrote:
->> 
->> I don't think it's that - syzbot's .config already has that enabled.
->> KASAN, too.
->> 
->> And the only place we do call_rcu() is from rcu_pending.c, where we've
->> got a rearming rcu callback - but we track whether it's outstanding, and
->> we do all relevant operations with a lock held.
->> 
->> And we only use rcu_pending.c with SRCU, not regular RCU.
->> 
->> We do use kfree_rcu() in a few places (all boring, I expect), but that
->> doesn't (generally?) use the rcu callback list.
->>
-> Right, kvfree_rcu() does not intersect with regular callbacks, it has
-> its own path. 
+Hi Joel,
 
-You mean do to the batching? Maybe the batching should be disabled with
-CONFIG_DEBUG_OBJECTS_RCU_HEAD=y if it prevents it from detecting issues?
-Otherwise we now have kvfree_rcu_cb() so the special handling of
-kvfree_rcu() is gone in in the non-batching case.
-
-> It looks like the problem is here:
+On Mon, Jun 09, 2025 at 02:01:24PM -0400, Joel Fernandes wrote:
+> During rcu_read_unlock_special(), if this happens during irq_exit(), we
+> can lockup if an IPI is issued. This is because the IPI itself triggers
+> the irq_exit() path causing a recursive lock up.
 > 
-> <snip>
->   f = rhp->func;
->   debug_rcu_head_callback(rhp);
->   WRITE_ONCE(rhp->func, (rcu_callback_t)0L);
->   f(rhp);
-> <snip>
-> 
-> we do not check if callback, "f", is a NULL. If it is, the kernel bug
-> is triggered right away. For example:
-> 
-> call_rcu(&rh, NULL);
-> 
-> @Paul, do you think it makes sense to narrow callers which apparently
-> pass NULL as a callback? To me it seems the case of this bug. But we
-> do not know the source.
-> 
-> It would give at least a stack-trace of caller which passes a NULL.
-
-Right, AFAIU this kind of check is now possible, previously NULL was being
-interpreted as a valid __is_kvfree_rcu_offset() (i.e. rcu_head at offset 0).
-
-> --
-> Uladzislau Rezki
+> This is precisely what Xiongfeng found when invoking a BPF program on
+> the trace_tick_stop() tracepoint As shown in the trace below. Fix by
+> using context-tracking to tell us if we're still in an IRQ.
+> context-tracking keeps track of the IRQ until after the tracepoint, so
+> it cures the issues.
 > 
 
+This does fix the issue, but do we know when the CPU will eventually
+report a QS after this fix? I believe we still want to report a QS as
+early as possible in this case?
+
+Regards,
+Boqun
+
+> irq_exit()
+>   __irq_exit_rcu()
+>     /* in_hardirq() returns false after this */
+>     preempt_count_sub(HARDIRQ_OFFSET)
+>     tick_irq_exit()
+>       tick_nohz_irq_exit()
+> 	    tick_nohz_stop_sched_tick()
+> 	      trace_tick_stop()  /* a bpf prog is hooked on this trace point */
+> 		   __bpf_trace_tick_stop()
+> 		      bpf_trace_run2()
+> 			    rcu_read_unlock_special()
+>                               /* will send a IPI to itself */
+> 			      irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+> 
+> A simple reproducer can also be obtained by doing the following in
+> tick_irq_exit(). It will hang on boot without the patch:
+> 
+>   static inline void tick_irq_exit(void)
+>   {
+>  +	rcu_read_lock();
+>  +	WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, true);
+>  +	rcu_read_unlock();
+>  +
+> 
+> While at it, add some comments to this code.
+> 
+> Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> Closes: https://lore.kernel.org/all/9acd5f9f-6732-7701-6880-4b51190aa070@huawei.com/
+> Tested-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+> ---
+>  kernel/rcu/tree_plugin.h | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 3c0bbbbb686f..53d8b3415776 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -653,6 +653,9 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  		struct rcu_node *rnp = rdp->mynode;
+>  
+> +		// In cases where the RCU-reader is boosted, we'd attempt deboost sooner than
+> +		// later to prevent inducing latency to other RT tasks. Also, expedited GPs
+> +		// should not be delayed too much. Track both these needs in expboost.
+>  		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+>  			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+>  			   (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+> @@ -670,10 +673,15 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			// Also if no expediting and no possible deboosting,
+>  			// slow is OK.  Plus nohz_full CPUs eventually get
+>  			// tick enabled.
+> +			//
+> +			// Also prevent doing this if context-tracking thinks
+> +			// we're handling an IRQ (including when we're exiting
+> +			// one -- required to prevent self-IPI deadloops).
+>  			set_tsk_need_resched(current);
+>  			set_preempt_need_resched();
+>  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+> -			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+> +			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu) &&
+> +			    !ct_in_irq()) {
+>  				// Get scheduler to re-evaluate and call hooks.
+>  				// If !IRQ_WORK, FQS scan will eventually IPI.
+>  				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+> -- 
+> 2.34.1
+> 
+> 
