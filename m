@@ -1,210 +1,301 @@
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4534D28DF4E;
-	Tue, 10 Jun 2025 12:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB4428EA45;
+	Tue, 10 Jun 2025 12:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749557993; cv=none; b=IhR0/LY5w/jlHeRheqV+Qx9XiFa/wYeBGy8DtZ9MQPxxo0embKRStYE9Qqp4gENZwlGpkzHjfUQx3OQi+6/uT3bEhsH+XixwsMuJVIbzCleRShB4EJ3OoB01o4qfn9OTA3xagPqnUztaVhWVm34Juxx/wBS1jOX946Q9pJiQB/s=
+	t=1749558207; cv=none; b=tqjgcKJgXMbVBjEfH/lyXvDoUJkXcjYoAZjWo5egV/8X8uAU0nGuZsQqbquR9LyBCBPzfrATdoMD0BIgB8g3CWT9Kn92ZHQHOP8H8sBj7MriKG8VXv3dS5PDPxNuSS7lgcomz+Mi9uVrrZYKMtFbbAvLAu7mBh5vhKfNHTPc7aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749557993; c=relaxed/simple;
-	bh=Rnu9CTNBGzpHnVvOua9LbCX8fRyVu5ECQhvPkxgSVl8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u06uJxAuHtwNSysWUKKa5huw0kj1sNBjbitfyKZNpbTJYn6eoTgMU5hfx2ol8F10CZLl4mRB8jlRPAJ43SdzOFqrTHOuRuvr8ktNkUIl+6yFuj9z8KQqsab1sLgp+VOQzpGw1w+0h1xQMlqK5yRDdAkQy2gKaeIjMMFwYvHLvik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UiRBmzPZ; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1749558207; c=relaxed/simple;
+	bh=oc//4EYy1ffqYnSH/0jpWmK1cIoIKuNwXMQerwUzNjQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j2U/vlCYcyWkqbSSgGNC3C/BT+XZOD0QYQNMLAhnEHmfuQyY4t+ZQqCJXsvHxu7lzpS9KxoMnf3JCl7OVy5m2eUr9hTyiLwSu25jA+12fL7YAEZI6PepUbIUEZhk9w56dkPE3gdJ2dly4zKIxW2EnkMEG0Z20x/NpbUtgbEa6eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4augsdW; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UiRBmzPZ"
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5532a30ac41so5490883e87.0;
-        Tue, 10 Jun 2025 05:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749557989; x=1750162789; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eQAN1VoZVMU0LFg5gjayj+lCmiFTFvo/2om6CUAJUKA=;
-        b=UiRBmzPZ/s72WQgbMsmyF4AF4rUqNH1xJVHGG2Kxb1JtEBaNXGhFhfuC4JhYrTz/UN
-         efDK9zgp73JJuODCYeKWJgCUlTrB6BOqP/sbG6Sj2vp1lCPp8nuJxxJCEff0WSnQ1qEc
-         u9sZx0RqRS+9d4Z8Kszru0Pja1aMesAh0vt/C8vE86pIvA5ztBA7ZphzR2aMGvhOxLw8
-         qily0D8K2c66payXvhPzV86+6tohUfygnwtIdBt9LfwXdkreEOL2Z0+ToTP29BGLFQDy
-         h0A522dzoB1JZAmdiUB0/11hEP2L0d/X/oXiTdqPhJkmA6mEGTIfdiwDz2oawSWm/bAb
-         9XTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749557989; x=1750162789;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eQAN1VoZVMU0LFg5gjayj+lCmiFTFvo/2om6CUAJUKA=;
-        b=XPH+wi/E7Ny6eC5T4Gy77Bqa7pYtTaJb68KfcOovuCbHLrvrdxQpnn1BhZGcQ2Yl9B
-         LCcu7aMnayKtqKDCbr7w3Yxv6n1NFyCX2gyIfCwuTzbGxsBVFB1DcgpP3isYOGjChK+y
-         KKhDI0T6Brerk6hJddDUQA7Bzu2JVrdJeE8lB7oHRwAJzASn8dVZ+nfKZHiyRRhgnHzl
-         EshemOk9j+OVVGEEm4gLZtlwiXrKFj9982FAOCzx+Jp7LvnzAKcHNdk/qpANMGSOA4Sh
-         dYlWtVFhp//5YCdUddrQEXVBvTta3WCbVsM3WBugJOQUfjxP1QEsmkBDGX6Gh4cKZ9Wp
-         CaFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5LvWRN2gs4oLlAqzUL1WWfBiO1OF756iK8CaoHhnoE7uTlimKGD0FqpNhjdr2TiNEEeWm1mzLHbMHULGmmg==@vger.kernel.org, AJvYcCVYCHkcV1GeCqFish26u2gzcexwHywvaP1kmY1CRJSxv38J/c7q9CPEB2WzulBH3+UQYgbd@vger.kernel.org, AJvYcCXHdT3vTsThdloZqeET8sOVV1gN8WORtiWkf3tLQ8ZeC1evCNQygyGI8kaGdT5NgrDihWfsWFFsyzwa0L/Z@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLX+2ATfpXH5gXa0YqHGEREcW8GEm3TYBju2D4eMgSB4WKTYeA
-	6+YGPd+L2mGgz/XLcXrq++uXLTiBBa9WEfU/bPoM25YqlpWSZG/uChkt8iMXIQoX
-X-Gm-Gg: ASbGnctApRDUUKZRlYxiGq9sDkkqZsIL/xbdLoBR+VfumRmTtXcZM7gY+i73A/nKL8D
-	BvuUF1U8MCulkwZfpCTzAj59eENsiI+ra/sBcQXeIrwM88Zlb4i2yG8877tf0nR+aGu6fT9cWtl
-	4lNgFWgqRsWK/D06OYqMjMVm1LHokG9TvYUFdvWpa1J3X3TBq3V8h2hFSsixAxf/YGUe1MhAYK9
-	tArnRF0FaJ4PzYzORrxM7/9w669yow+/NHgy2uyyVlAm9Jm6pcLeJ2of0895SYdrSoJKH76RlPe
-	EzwMzTUBMaBKRdc3kM4XT+X+9A8A9nX8pOU1srZIiSsynM5DtSi9K/tct3sv9eb8GUCk4HFF2nc
-	Hc6x/5LktpsQ=
-X-Google-Smtp-Source: AGHT+IEOAiThqyr/g3IbOy9bU1mIQFiH29X+QkzD7LOn1vfWuf50BiAf8qQ83WrZqQTXXFrnlRL34Q==
-X-Received: by 2002:a05:6512:ba9:b0:553:29a6:3398 with SMTP id 2adb3069b0e04-55366e349b3mr4481056e87.55.1749557988857;
-        Tue, 10 Jun 2025 05:19:48 -0700 (PDT)
-Received: from pc636 (host-95-203-1-180.mobileonline.telia.com. [95.203.1.180])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-55367722516sm1497993e87.106.2025.06.10.05.19.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jun 2025 05:19:48 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Tue, 10 Jun 2025 14:19:45 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4augsdW"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5A8FC4CEF1;
+	Tue, 10 Jun 2025 12:23:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749558207;
+	bh=oc//4EYy1ffqYnSH/0jpWmK1cIoIKuNwXMQerwUzNjQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s4augsdWAzQGzGe5ecGB3QeaSvaCP6tGpt8U/v5vLjwmzThp1+OGVjnRBmvsmSqEN
+	 d/LIbVnFCnuxy1hOopR79rvNVEiuQBFviXZLAhz6h5sVbDgmbsdBqdAJdXsJDB6C0r
+	 VySvsGyhnwGnP06404JRXfQG9k4yhiarAhVmDx/Rurn9fEGII66kXUemxxolChqlpm
+	 W7eSN5OHY4V0k/nBXLKmwqWyl2nXdDY997AnO5yYl60LwLNhUflwOBVZlxU9/N9nY8
+	 6VDf96/oZufcNXUfsKXPWbeBZOS+zYSzSBYUhiqHCWiLCE91LIQbAxnImUDBuywjPN
+	 v9rbVfGygNUlQ==
+Date: Tue, 10 Jun 2025 14:23:24 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>,
-	akpm@linux-foundation.org, josh@joshtriplett.org,
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, rcu@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [rcu?] [bcachefs?] BUG: unable to handle kernel NULL
- pointer dereference in rcu_core (3)
-Message-ID: <aEgi4cHN_Mg31F-y@pc636>
-References: <67a2b20a.050a0220.50516.0003.GAE@google.com>
- <9694d40a-072e-47c2-a950-3b258bbe04f5@paulmck-laptop>
- <jzknqese5idob37wxgclq7ptxnsd66qbqkxtjpjormymsrwv2j@xjum5exljlh6>
- <aEXVKNVLI3VQInSc@pc636>
- <602bb1be-f4a4-4194-803f-856e95711870@paulmck-laptop>
- <aEac1veMLffwOdv8@pc636>
- <e3187e7a-cac2-46c4-9c56-3a649e122353@paulmck-laptop>
- <2f762834-d143-4b84-9ab2-8bff4688ae66@nvidia.com>
+Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Xiongfeng Wang <wangxiongfeng2@huawei.com>, rcu@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 2/2] rcu: Fix lockup when RCU reader used while IRQ
+ exiting
+Message-ID: <aEgjvGkYB0RoQFvg@localhost.localdomain>
+References: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+ <20250609180125.2988129-2-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <2f762834-d143-4b84-9ab2-8bff4688ae66@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250609180125.2988129-2-joelagnelf@nvidia.com>
 
-On Mon, Jun 09, 2025 at 10:20:58AM -0400, Joel Fernandes wrote:
+Le Mon, Jun 09, 2025 at 02:01:24PM -0400, Joel Fernandes a écrit :
+> During rcu_read_unlock_special(), if this happens during irq_exit(), we
+> can lockup if an IPI is issued. This is because the IPI itself triggers
+> the irq_exit() path causing a recursive lock up.
 > 
+> This is precisely what Xiongfeng found when invoking a BPF program on
+> the trace_tick_stop() tracepoint As shown in the trace below. Fix by
+> using context-tracking to tell us if we're still in an IRQ.
+> context-tracking keeps track of the IRQ until after the tracepoint, so
+> it cures the issues.
 > 
-> On 6/9/2025 5:47 AM, Paul E. McKenney wrote:
-> > On Mon, Jun 09, 2025 at 10:35:34AM +0200, Uladzislau Rezki wrote:
-> >> On Sun, Jun 08, 2025 at 05:25:05PM -0700, Paul E. McKenney wrote:
-> >>> On Sun, Jun 08, 2025 at 08:23:36PM +0200, Uladzislau Rezki wrote:
-> >>>> On Sun, Jun 08, 2025 at 11:26:28AM -0400, Kent Overstreet wrote:
-> >>>>> On Wed, Feb 05, 2025 at 06:56:19AM -0800, Paul E. McKenney wrote:
-> >>>>>> On Tue, Feb 04, 2025 at 04:34:18PM -0800, syzbot wrote:
-> >>>>>>> Hello,
-> >>>>>>>
-> >>>>>>> syzbot found the following issue on:
-> >>>>>>>
-> >>>>>>> HEAD commit:    0de63bb7d919 Merge tag 'pull-fix' of git://git.kernel.org/..
-> >>>>>>> git tree:       upstream
-> >>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=10faf5f8580000
-> >>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
-> >>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
-> >>>>>>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> >>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b69d18580000
-> >>>>>>>
-> >>>>>>> Downloadable assets:
-> >>>>>>> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-0de63bb7.raw.xz
-> >>>>>>> vmlinux: https://storage.googleapis.com/syzbot-assets/1142009a30a7/vmlinux-0de63bb7.xz
-> >>>>>>> kernel image: https://storage.googleapis.com/syzbot-assets/5d9e46a8998d/bzImage-0de63bb7.xz
-> >>>>>>> mounted in repro: https://storage.googleapis.com/syzbot-assets/526692501242/mount_0.gz
-> >>>>>>>
-> >>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >>>>>>> Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
-> >>>>>>>
-> >>>>>>>  slab radix_tree_node start ffff88803bf382c0 pointer offset 24 size 576
-> >>>>>>> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> >>>>>>> #PF: supervisor instruction fetch in kernel mode
-> >>>>>>> #PF: error_code(0x0010) - not-present page
-> >>>>>>> PGD 0 P4D 0 
-> >>>>>>> Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
-> >>>>>>> CPU: 0 UID: 0 PID: 5705 Comm: syz-executor Not tainted 6.14.0-rc1-syzkaller-00020-g0de63bb7d919 #0
-> >>>>>>> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> >>>>>>> RIP: 0010:0x0
-> >>>>>>> Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-> >>>>>>> RSP: 0018:ffffc90000007bd8 EFLAGS: 00010246
-> >>>>>>> RAX: dffffc0000000000 RBX: 1ffff110077e705c RCX: 23438dd059a4b100
-> >>>>>>> RDX: 0000000000000100 RSI: 0000000000000000 RDI: ffff88803bf382d8
-> >>>>>>> RBP: ffffc90000007e10 R08: ffffffff819f146c R09: 1ffff11003f8519a
-> >>>>>>> R10: dffffc0000000000 R11: 0000000000000000 R12: ffffffff81a6d507
-> >>>>>>> R13: ffff88803bf382e0 R14: 0000000000000000 R15: ffff88803bf382d8
-> >>>>>>> FS:  0000555567992500(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-> >>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>>>>>> CR2: ffffffffffffffd6 CR3: 000000004da38000 CR4: 0000000000352ef0
-> >>>>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >>>>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >>>>>>> Call Trace:
-> >>>>>>>  <IRQ>
-> >>>>>>>  rcu_do_batch kernel/rcu/tree.c:2546 [inline]
-> >>>>>>
-> >>>>>> The usual way that this happens is that someone clobbers the rcu_head
-> >>>>>> structure of something that has been passed to call_rcu().  The most
-> >>>>>> popular way of clobbering this structure is to pass the same something to
-> >>>>>> call_rcu() twice in a row, but other creative arrangements are possible.
-> >>>>>>
-> >>>>>> Building your kernel with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y can usually
-> >>>>>> spot invoking call_rcu() twice in a row.
-> >>>>>
-> >>>>> I don't think it's that - syzbot's .config already has that enabled.
-> >>>>> KASAN, too.
-> >>>>>
-> >>>>> And the only place we do call_rcu() is from rcu_pending.c, where we've
-> >>>>> got a rearming rcu callback - but we track whether it's outstanding, and
-> >>>>> we do all relevant operations with a lock held.
-> >>>>>
-> >>>>> And we only use rcu_pending.c with SRCU, not regular RCU.
-> >>>>>
-> >>>>> We do use kfree_rcu() in a few places (all boring, I expect), but that
-> >>>>> doesn't (generally?) use the rcu callback list.
-> >>>>>
-> >>>> Right, kvfree_rcu() does not intersect with regular callbacks, it has
-> >>>> its own path. 
-> >>>>
-> >>>> It looks like the problem is here:
-> >>>>
-> >>>> <snip>
-> >>>>   f = rhp->func;
-> >>>>   debug_rcu_head_callback(rhp);
-> >>>>   WRITE_ONCE(rhp->func, (rcu_callback_t)0L);
-> >>>>   f(rhp);
-> >>>> <snip>
-> >>>>
-> >>>> we do not check if callback, "f", is a NULL. If it is, the kernel bug
-> >>>> is triggered right away. For example:
-> >>>>
-> >>>> call_rcu(&rh, NULL);
-> >>>>
-> >>>> @Paul, do you think it makes sense to narrow callers which apparently
-> >>>> pass NULL as a callback? To me it seems the case of this bug. But we
-> >>>> do not know the source.
-> >>>>
-> >>>> It would give at least a stack-trace of caller which passes a NULL.
-> >>>
-> >>> Adding a check for NULL func passed to __call_rcu_common(), you mean?
-> >>>
-> >> Yes. Currently there is no any check. So passing a NULL just triggers
-> >> kernel panic.
-> >>
-> >>>
-> >>> That wouldn't hurt, and would either (as you say) catch the culprit
-> >>> or show that the problem is elsewhere.
-> >>>
-> >> I can add it then and send out the patch if no objections.
-> > 
-> > No objections from me!
+> irq_exit()
+>   __irq_exit_rcu()
+>     /* in_hardirq() returns false after this */
+>     preempt_count_sub(HARDIRQ_OFFSET)
+>     tick_irq_exit()
+>       tick_nohz_irq_exit()
+> 	    tick_nohz_stop_sched_tick()
+> 	      trace_tick_stop()  /* a bpf prog is hooked on this trace point */
+> 		   __bpf_trace_tick_stop()
+> 		      bpf_trace_run2()
+> 			    rcu_read_unlock_special()
+>                               /* will send a IPI to itself */
+> 			      irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
 > 
-> Me neither! And I can push that into an -rc release as well once I have it
-> (since it is related to a potential bug).
+> A simple reproducer can also be obtained by doing the following in
+> tick_irq_exit(). It will hang on boot without the patch:
 > 
-I will prepare it and send out today.
+>   static inline void tick_irq_exit(void)
+>   {
+>  +	rcu_read_lock();
+>  +	WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, true);
+>  +	rcu_read_unlock();
+>  +
+> 
+> While at it, add some comments to this code.
+> 
+> Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> Closes: https://lore.kernel.org/all/9acd5f9f-6732-7701-6880-4b51190aa070@huawei.com/
+> Tested-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
---
-Uladzislau Rezki
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+
+Just a few remarks:
+
+> ---
+>  kernel/rcu/tree_plugin.h | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 3c0bbbbb686f..53d8b3415776 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -653,6 +653,9 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  		struct rcu_node *rnp = rdp->mynode;
+>  
+> +		// In cases where the RCU-reader is boosted, we'd attempt deboost sooner than
+> +		// later to prevent inducing latency to other RT tasks. Also, expedited GPs
+> +		// should not be delayed too much. Track both these needs in expboost.
+>  		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+>  			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+>  			   (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+> @@ -670,10 +673,15 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			// Also if no expediting and no possible deboosting,
+>  			// slow is OK.  Plus nohz_full CPUs eventually get
+>  			// tick enabled.
+> +			//
+> +			// Also prevent doing this if context-tracking thinks
+> +			// we're handling an IRQ (including when we're exiting
+> +			// one -- required to prevent self-IPI deadloops).
+>  			set_tsk_need_resched(current);
+>  			set_preempt_need_resched();
+>  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+> -			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+> +			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu) &&
+> +			    !ct_in_irq()) {
+>  				// Get scheduler to re-evaluate and call hooks.
+>  				// If !IRQ_WORK, FQS scan will eventually IPI.
+>  				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+> --
+
+Looking at the irq work handling here:
+
+* What is the point of ->defer_qs_iw_pending ? If the irq work is already
+  queued, it won't be requeued because the irq work code already prevent from
+  that.
+
+* CONFIG_PREEMPT_RT && !CONFIG_RCU_STRICT_GRACE_PERIOD would queue a lazy irq
+  work but still raise a hardirq to wake up softirq to handle it. It's pointless
+  because there is nothing to execute in softirq, all we care about is the
+  hardirq.
+  Also since the work is empty it might as well be executed in hard irq, that
+  shouldn't induce more latency in RT.
+
+* Empty hard irq work raised to trigger something on irq exit also exist
+  elsewhere (see nohz_full_kick_func()). Would it make sense to have that
+  implemented in irq_work.c instead and trigger that through a simple
+  irq_work_kick()?
+
+And then this would look like (only built-tested):
+
+diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
+index 136f2980cba3..4149ed516524 100644
+--- a/include/linux/irq_work.h
++++ b/include/linux/irq_work.h
+@@ -57,6 +57,9 @@ static inline bool irq_work_is_hard(struct irq_work *work)
+ bool irq_work_queue(struct irq_work *work);
+ bool irq_work_queue_on(struct irq_work *work, int cpu);
+ 
++bool irq_work_kick(void);
++bool irq_work_kick_on(int cpu);
++
+ void irq_work_tick(void);
+ void irq_work_sync(struct irq_work *work);
+ 
+diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+index 73f7e1fd4ab4..383a3e9050d9 100644
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -181,6 +181,22 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
+ #endif /* CONFIG_SMP */
+ }
+ 
++static void kick_func(struct irq_work *work)
++{
++}
++
++static DEFINE_PER_CPU(struct irq_work, kick_work) = IRQ_WORK_INIT_HARD(kick_func);
++
++bool irq_work_kick(void)
++{
++	return irq_work_queue(this_cpu_ptr(&kick_work));
++}
++
++bool irq_work_kick_on(int cpu)
++{
++	return irq_work_queue_on(per_cpu_ptr(&kick_work, cpu), cpu);
++}
++
+ bool irq_work_needs_cpu(void)
+ {
+ 	struct llist_head *raised, *lazy;
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index a9a811d9d7a3..b33888071e41 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -191,7 +191,6 @@ struct rcu_data {
+ 					/*  during and after the last grace */
+ 					/* period it is aware of. */
+ 	struct irq_work defer_qs_iw;	/* Obtain later scheduler attention. */
+-	bool defer_qs_iw_pending;	/* Scheduler attention pending? */
+ 	struct work_struct strict_work;	/* Schedule readers for strict GPs. */
+ 
+ 	/* 2) batch handling */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 3c0bbbbb686f..0c7b7c220b46 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -619,17 +619,6 @@ notrace void rcu_preempt_deferred_qs(struct task_struct *t)
+ 	rcu_preempt_deferred_qs_irqrestore(t, flags);
+ }
+ 
+-/*
+- * Minimal handler to give the scheduler a chance to re-evaluate.
+- */
+-static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
+-{
+-	struct rcu_data *rdp;
+-
+-	rdp = container_of(iwp, struct rcu_data, defer_qs_iw);
+-	rdp->defer_qs_iw_pending = false;
+-}
+-
+ /*
+  * Handle special cases during rcu_read_unlock(), such as needing to
+  * notify RCU core processing or task having blocked during the RCU
+@@ -673,18 +662,10 @@ static void rcu_read_unlock_special(struct task_struct *t)
+ 			set_tsk_need_resched(current);
+ 			set_preempt_need_resched();
+ 			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+-			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
++			    expboost && cpu_online(rdp->cpu)) {
+ 				// Get scheduler to re-evaluate and call hooks.
+ 				// If !IRQ_WORK, FQS scan will eventually IPI.
+-				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+-				    IS_ENABLED(CONFIG_PREEMPT_RT))
+-					rdp->defer_qs_iw = IRQ_WORK_INIT_HARD(
+-								rcu_preempt_deferred_qs_handler);
+-				else
+-					init_irq_work(&rdp->defer_qs_iw,
+-						      rcu_preempt_deferred_qs_handler);
+-				rdp->defer_qs_iw_pending = true;
+-				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
++				irq_work_kick();
+ 			}
+ 		}
+ 		local_irq_restore(flags);
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index c527b421c865..84170656334d 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -377,14 +377,6 @@ static bool can_stop_full_tick(int cpu, struct tick_sched *ts)
+ 	return true;
+ }
+ 
+-static void nohz_full_kick_func(struct irq_work *work)
+-{
+-	/* Empty, the tick restart happens on tick_nohz_irq_exit() */
+-}
+-
+-static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) =
+-	IRQ_WORK_INIT_HARD(nohz_full_kick_func);
+-
+ /*
+  * Kick this CPU if it's full dynticks in order to force it to
+  * re-evaluate its dependency on the tick and restart it if necessary.
+@@ -396,7 +388,7 @@ static void tick_nohz_full_kick(void)
+ 	if (!tick_nohz_full_cpu(smp_processor_id()))
+ 		return;
+ 
+-	irq_work_queue(this_cpu_ptr(&nohz_full_kick_work));
++	irq_work_kick();
+ }
+ 
+ /*
+@@ -408,7 +400,7 @@ void tick_nohz_full_kick_cpu(int cpu)
+ 	if (!tick_nohz_full_cpu(cpu))
+ 		return;
+ 
+-	irq_work_queue_on(&per_cpu(nohz_full_kick_work, cpu), cpu);
++	irq_work_kick_on(cpu);
+ }
+ 
+ static void tick_nohz_kick_task(struct task_struct *tsk)
+
+  
+  
+-- 
+Frederic Weisbecker
+SUSE Labs
