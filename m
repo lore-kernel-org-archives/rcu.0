@@ -1,121 +1,97 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E346819D8A7;
-	Wed, 11 Jun 2025 16:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A081FE45A;
+	Wed, 11 Jun 2025 16:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749659108; cv=none; b=IvuEHCZOCnZsF4ykEW7EDT6H5v3bs0NBb8h5HFFXhAz6NQi/r6ewBpETHD6VPrmnOViRlMloJsYwNp9uc+4E647Q4ecgw+1XDAmJsrhr6KamHnvRdZ9RVh0ivvMXs/rG1E9n6Tqiw4olx72cR837CHo0jqo1ULtWOVcmBNJHJ0Q=
+	t=1749660049; cv=none; b=OsX6pkPAJST9dNQoe5osJt741nuupsdqcncnu1iD9aEwqIG0J2wxumq0Ly7QDW28qzulM2Jeb4cmVUP84RD4aNKPvks9PecEyWHt+RGxSMcoK+1z1DVfzBjg6LxZtFpamGRhjc06Nxc19zw/XWoT7YL104anzFeyHTq7cxNafbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749659108; c=relaxed/simple;
-	bh=G+T8wW9Nt6f9EEFn99e/NM3xHauN4ohp03gUHIvPj4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UAOW/QCSAvz8mW+AlYxsxkrcDjZlXO216U/2UP+IHc0s213wW9j61pcUuKnhrLliWbXYKy9kVJ6C6PlkZvYoJVJs/IPCHv3njE1wPfkgEbWOLzdKADEgC6Re9oZ+naEexX9GLylzfRvDsy6mtrKJfrl+615qk6fRK4HJJWtlcdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m/WvkbOb; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1749660049; c=relaxed/simple;
+	bh=yV4JktqvQTygx7IwJSqnpH4MNC8ygUGuE0X8CQrDdzs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=u4NUH9qX9ffaPuNeUZivGlMnlRSBlkv3Sk0P1v4+eFmWYT/iNf0RpfQoPcrBNqWwScShupMQJzFWttAmHPCa6H3z9hzEeLNMQx18gyANbgCvZOOPrIt8nWhTw9PnmJhcGUhOG8bk2tw7PeJioGcV1ac10yY8ibgpgmONGLh+9o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=evOT4nSF; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m/WvkbOb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E01CAC4CEE3;
-	Wed, 11 Jun 2025 16:25:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="evOT4nSF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30D70C4CEEA;
+	Wed, 11 Jun 2025 16:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749659107;
-	bh=G+T8wW9Nt6f9EEFn99e/NM3xHauN4ohp03gUHIvPj4c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m/WvkbObsbjNbgbEriiSoaQKl/8tmYm0VWOix2l+jaU6aISJJ/jeU4XPGeiPg5ecr
-	 o9NIzLQh4Blqe5BtVC/JF9ULmsTdW6ESVq2KjPgTvv4ex0vGX849E/ZuVfz7mqOVOs
-	 f2PKfEQ/gdnBcd8WlJlgh19glj4Tks3/+5R6ZATk+p6io3uzrtmefSZSPx1jOi7O8h
-	 QLXNRFeDP9FqtS9il+mFfflReX29kL/C9p8NG3XsMRMezyP+7Uc3OtWG9APQXlKfa3
-	 cClW3aYu+/KJf9YA4zo/vjFVQtPLJ1rG3012zm/Y4cA8tB/y9WaVadgP+4yZVoTeaG
-	 hlsk3GsEB01FA==
-Date: Wed, 11 Jun 2025 18:25:04 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-	Xiongfeng Wang <wangxiongfeng2@huawei.com>, rcu@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH 1/2] context_tracking: Provide helper to determine if
- we're in IRQ
-Message-ID: <aEmt4Aa3-gULNtic@localhost.localdomain>
-References: <20250609180125.2988129-1-joelagnelf@nvidia.com>
+	s=k20201202; t=1749660049;
+	bh=yV4JktqvQTygx7IwJSqnpH4MNC8ygUGuE0X8CQrDdzs=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=evOT4nSFqkN4qnNCy8xWFPWtDqeNgGqM8IvKq5q2SooA3CnsT+LqKG9uH2RQapxrV
+	 NnIR3W/5gdeiOHKe1DwyJe4juGFa+XWpPUkemkU/kv/NkNzYEFMTU/Hs9TdcO2SRP0
+	 Kx8oyGWcb+TVpSYLdix3adDg4fRPgiwlr/chE5zDw/9eQhi7XgMZBr04FAU7V6whXu
+	 /SS4bJpXY5O6pi28iMTEwht9W4jSdtSqjFrhOLosD/9dMlcW+0XzSlDkgXJcfFBXFR
+	 BhmSyvzNFTLjUEG6nBzNcMgY27llGr6ZFbcweiKuEAlQQgwIyRmJBAoxaUGfvfjX35
+	 hltmV7WH+o3ZA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C186ACE077D; Wed, 11 Jun 2025 09:40:48 -0700 (PDT)
+Date: Wed, 11 Jun 2025 09:40:48 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Christian Brauner <christian@brauner.io>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Warnings in allmodconfig builds in
+ samples/vfs/test-list-all-mounts.c?
+Message-ID: <927f7547-ae55-474c-b211-24854bd988c9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250609180125.2988129-1-joelagnelf@nvidia.com>
 
-Le Mon, Jun 09, 2025 at 02:01:23PM -0400, Joel Fernandes a écrit :
-> context_tracking keeps track of whether we're handling IRQ well after
-> the preempt masks give take it off their books. We need this
-> functionality in a follow-up patch to fix a bug. Provide a helper API
-> for the same.
-> 
-> Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-> ---
->  include/linux/context_tracking_irq.h |  2 ++
->  kernel/context_tracking.c            | 12 ++++++++++++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/include/linux/context_tracking_irq.h b/include/linux/context_tracking_irq.h
-> index 197916ee91a4..35a5ad971514 100644
-> --- a/include/linux/context_tracking_irq.h
-> +++ b/include/linux/context_tracking_irq.h
-> @@ -9,6 +9,7 @@ void ct_irq_enter_irqson(void);
->  void ct_irq_exit_irqson(void);
->  void ct_nmi_enter(void);
->  void ct_nmi_exit(void);
-> +bool ct_in_irq(void);
->  #else
->  static __always_inline void ct_irq_enter(void) { }
->  static __always_inline void ct_irq_exit(void) { }
-> @@ -16,6 +17,7 @@ static inline void ct_irq_enter_irqson(void) { }
->  static inline void ct_irq_exit_irqson(void) { }
->  static __always_inline void ct_nmi_enter(void) { }
->  static __always_inline void ct_nmi_exit(void) { }
-> +static inline bool ct_in_irq(void) { return false; }
->  #endif
->  
->  #endif
-> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-> index fb5be6e9b423..d0759ef9a6bd 100644
-> --- a/kernel/context_tracking.c
-> +++ b/kernel/context_tracking.c
-> @@ -392,6 +392,18 @@ noinstr void ct_irq_exit(void)
->  	ct_nmi_exit();
->  }
->  
-> +/**
-> + * ct_in_irq - check if CPU is in a context-tracked IRQ context.
-> + *
-> + * Returns true if ct_irq_enter() has been called and ct_irq_exit()
-> + * has not yet been called. This indicates the CPU is currently
-> + * processing an interrupt.
-> + */
-> +bool ct_in_irq(void)
-> +{
-> +	return ct_nmi_nesting() != 0;
+Hello, Christian!
 
-If rcu_is_watching() and not in an interrupt, ct_nmi_nesting()
-is actually CT_NESTING_IRQ_NONIDLE. If rcu_is_watching() and
-in an interrupt, ct_nmi_nesting() can be CT_NESTING_IRQ_NONIDLE + whatever.
+Imagine my surprise to learn that "make allmodconfig" builds
+of the kernel also build userspace components, including
+samples/vfs/test-list-all-mounts.c.  ;-)
 
-So this doesn't work. I wish we could remove that CT_NESTING_IRQ_NONIDLE
-that is there for hysterical raisins but that doesn't fit in an urgent pile.
+On CentOS, "make allmodconfig" gives a zero exit code, but gets the
+following warnings:
 
-So probably:
+In file included from samples/vfs/../../tools/testing/selftests/pidfd/../clone3/clone3_selftests.h:8,
+                 from samples/vfs/../../tools/testing/selftests/pidfd/pidfd.h:20,
+                 from samples/vfs/test-list-all-mounts.c:11:
+usr/include/linux/sched.h:114: warning: "SCHED_NORMAL" redefined
+  114 | #define SCHED_NORMAL            0
+      |
+In file included from /usr/include/sched.h:43,
+                 from samples/vfs/../../tools/testing/selftests/pidfd/pidfd.h:9,
+                 from samples/vfs/test-list-all-mounts.c:11:
+/usr/include/bits/sched.h:32: note: this is the location of the previous definition
+   32 | # define SCHED_NORMAL           SCHED_OTHER
+      |
+In file included from samples/vfs/../../tools/testing/selftests/pidfd/../clone3/clone3_selftests.h:8,
+                 from samples/vfs/../../tools/testing/selftests/pidfd/pidfd.h:20,
+                 from samples/vfs/test-list-all-mounts.c:11:
+usr/include/linux/sched.h:137: warning: "SCHED_FLAG_KEEP_ALL" redefined
+  137 | #define SCHED_FLAG_KEEP_ALL     (SCHED_FLAG_KEEP_POLICY | \
+      |
+In file included from /usr/include/sched.h:43,
+                 from samples/vfs/../../tools/testing/selftests/pidfd/pidfd.h:9,
+                 from samples/vfs/test-list-all-mounts.c:11:
+/usr/include/bits/sched.h:51: note: this is the location of the previous definition
+   51 | #define SCHED_FLAG_KEEP_ALL             0x18
+      |
+In file included from samples/vfs/../../tools/testing/selftests/pidfd/../clone3/clone3_selftests.h:8,
+                 from samples/vfs/../../tools/testing/selftests/pidfd/pidfd.h:20,
+                 from samples/vfs/test-list-all-mounts.c:11:
+usr/include/linux/sched.h:140: warning: "SCHED_FLAG_UTIL_CLAMP" redefined
+  140 | #define SCHED_FLAG_UTIL_CLAMP   (SCHED_FLAG_UTIL_CLAMP_MIN | \
+      |
+In file included from /usr/include/sched.h:43,
+                 from samples/vfs/../../tools/testing/selftests/pidfd/pidfd.h:9,
+                 from samples/vfs/test-list-all-mounts.c:11:
+/usr/include/bits/sched.h:52: note: this is the location of the previous definition
 
-bool ct_in_irq(void)
-{
-	long nesting = ct_nmi_nesting();
+But on older Ubuntu, it builds without any warnings.
 
-	return (nesting && nesting != CT_NESTING_IRQ_NONIDLE);
-}
+Is this the sort of problem you would like reported, or should we go
+back to looking only at the build's exit code for allmodconfig builds?
 
-Thanks.
-
--- 
-Frederic Weisbecker
-SUSE Labs
+							Thanx, Paul
