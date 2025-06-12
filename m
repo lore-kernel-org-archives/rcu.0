@@ -1,99 +1,127 @@
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81823223704;
-	Thu, 12 Jun 2025 09:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2062422A804;
+	Thu, 12 Jun 2025 09:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749720941; cv=none; b=ifLoanzfmAjeYSDe1zCJvH/NkEsUubMdGCHVx1MnoHYXZLPJ4eJaLHwsFTWsdNA+ZOrCq2L3vwy6EPj2mAu0L3Xj9irLo3HWnIGxxtVlOaZik+3bca9Zx++a4I8rkXYNFWX70DHau5bZ7PqsxdNxarazTSUxJarUjLkvZ3iQZjk=
+	t=1749721041; cv=none; b=IiWP0IqqMP/Mbl1iNI7yq7u0S9RzIz+E+PMimYbpBw+xfqEOmKz7vkO0qW/E4mHaJYP1CrBl3sUUOzMGzKca5JDEqWWKHxw92H/ogaz4+J5b95MLENftoAVP8VNNZ1+t+ZvEUh25t0tr5xwFCxwDY1T044K2AnRC6aplMu1Vzzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749720941; c=relaxed/simple;
-	bh=z6JQ86YiJIgoBWZwHAMlfkxoeB4xDh9s9thGqfA6IGU=;
+	s=arc-20240116; t=1749721041; c=relaxed/simple;
+	bh=VKQMD6iP+0w1E2dffmvUxlnEMT19ZCyMucFZHtYeZnY=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hs9eXxokDHY709b1V/AkMNBIaQUyedrCqw5Pp5FYYiK3T7Zfqm1D1LJy87Ril/OFjBTAWdcYA4FLtHUi5p0OQ3iataLHsNNdJh6mh2JzZtkCuYFAd3w10ydYo9QQ43N85OvyNHnfV3G3DVk9ShMPt4k2XZdR/SJx1tEvfnAypM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CTsefD8A; arc=none smtp.client-ip=209.85.167.49
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y43or5WG0TjALxiHbU4TctPzNgiapulXNK5y5XVDQ1DZkOQfqKj3puWZtJg4lQ7XYmEKB6+NNaVWxxENHkVGifvFEkZu3CIvF+c6LjnMtAp6ZV2LrwJUuTB3qLFYXi2Rxom97Jn7uSsrSF7rvLkRTJ8U1z9koCFhD7fmymFjNnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NN+tkTww; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CTsefD8A"
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5533c562608so657253e87.3;
-        Thu, 12 Jun 2025 02:35:38 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NN+tkTww"
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5534edc6493so809210e87.1;
+        Thu, 12 Jun 2025 02:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749720936; x=1750325736; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SNGnfTj+6GYNJe3ZS7jJjl4kUJYeOo9otOuIH/BKLGI=;
-        b=CTsefD8AumisvDUya3ZuRozrq4F5gKyCH026SsP1cU2MB9vdHW2T4uoS7m730tCs6Y
-         qT4rcqNn7XjbD91O3EiPysz8iFDRhj+l5JmoV/NBSpaP6x4+WaU3wbA3f2nlV9OiJ59t
-         Q+RZCN6AkosqKgx3vANl+rVG/8JNacOTWVPZao+xwpTwG2Q+FahV23ozUtg/OLN27DDF
-         YD4XJM4NgRdaZeLwi6CQzy0+fM8Meut+beXS0JoTm6J1BA06OAhjq3YLuoy7nj4NlBQj
-         nVfD7/nad/q6/RGVrG2YhdgR+CUQeLMnE/q6pRzLI3HqP5F8g5IFXmrcA+99wVgiI57A
-         SnzQ==
+        d=gmail.com; s=20230601; t=1749721037; x=1750325837; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Xk308O1KlvA6k3uBQDw8z50KFvPVgd1NjWS8ld81/fk=;
+        b=NN+tkTwwmEKFmbe8JXpuOrcKtmTgld6iZkQsUYxHtKhmyiYaSAjZItgDaQoHss7W87
+         U9IhX1DWYesSPc7FS1OzJSXxfoAVG+3f6FVqg0CJpbELMWgoYHEPOoohkY+mRRBsAXs6
+         lzLCQcLgImvbqiobT9adUZ+pSsyY/HouNAy4io3hWc805Ivoqy0SDxq+YdaKMhAPR09M
+         HL1njIjBhUO2eYYWT7V/KerdcR4RDyoDAs2vLqn7xYHfMvt13OOFQAO4b3g0EuJHiN41
+         3rnQpbjptIruHt0yRmEU+Bn+e8JZWrdi9SFmX/EXPlur2ppJXTYVUP06R6eQhffWxhLR
+         3hfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749720936; x=1750325736;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SNGnfTj+6GYNJe3ZS7jJjl4kUJYeOo9otOuIH/BKLGI=;
-        b=cGYV+i58oeiObeR1/cRt5LWxEA4c5wI+k0+XPYYtxwI4pol165gY44cD99eblulWQi
-         2Q3h2V6/Zje8nHlFc9lQlg/iNAfDNUkdhQ22EIG+1RsBgR6BoAf5q1V2647J0VS02d1B
-         473q8gJO16e1R3Os0M3FEP4Plx8w++N4r4d+zhxLnSUoByl8nsK1Jt0kUHfKeZRbr++c
-         ZdRAfMw0WvFD3sXky534g25okd1P7HWZbwaSmWjnvtY1EgXF5rveeAPEAXAUiLus7AqH
-         9imbbHD501krfUNx4werux0r7JoUO++0Vuiu25k97UWyuXRWK0FnrAqNKj3WAsBq6C4N
-         JgqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/Dki/BIR+Ix4/eq4qJJl92F93gDpvDKWi/LQKc21eQXWVw0D1Lzb2TkNbPNtRPndBHDR3@vger.kernel.org, AJvYcCVWqqzX7Rfw06a4RvhKjqy4mKaz36+l5oZjm1GEwCg/ppmoEPexNRVW9DvrRnW8eY3DZ/7VrRgbcbO7Pl0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLCm68WsE/HZvapEGqBsq5gbLdSAtL0qoYN+Wbp3ZexYEIA4yn
-	V+SOLAzrRLaOUP5bHaeWZOWmNtxdoPYnIkuM/DhaRjlUWPL1Ulk/sfWU
-X-Gm-Gg: ASbGncseiw9IBi+YO0P61MLa3ZimHCOAj51Dy3KbGVjmerVzP/lmUp3kwr8la4Dr09i
-	dkZ2bwZa8O/2nLhDVPi2XextM7dEhUNsuio4/TSCwa9RjhpHQcbA05F7YsL9R4IdPfJSyZjyiXU
-	gyAQYNf1OfW7WGhWJfNfku0C76JLo0TrFh6dWCZnGkq8m9uRuG6elcC2BVJqXYtZZWUda8NPY2M
-	YeB4nwt9I3EPnhkJyfkQj/wtDCHRFoL0KWPaTq5cvbYmXQKNcl+FDHzgsNb4vNfLjyqNLPOYdL7
-	8EzGWEAOkFqx/xk35ko9+Jp1db1m3n/8+8xHtWCpDM4vGi6PF7W/j8CADkjWBRkVa076A4CvguY
-	9jDyfHiwXYHs=
-X-Google-Smtp-Source: AGHT+IFjmGroImrsdKJy+SHbFn730/jLMzQMi34SWtprg/tiQowSep8sCJk2Cq27McMGTl0+ZjOd7Q==
-X-Received: by 2002:a05:6512:3ca1:b0:553:653f:1b21 with SMTP id 2adb3069b0e04-553a55f77admr710895e87.37.1749720936298;
-        Thu, 12 Jun 2025 02:35:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749721037; x=1750325837;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xk308O1KlvA6k3uBQDw8z50KFvPVgd1NjWS8ld81/fk=;
+        b=hdmGOL2GnyYihzjl0C6iR5NRECRUiGdqQle7Q6w12/ypQ/AkSiKq7LcB85VXKGeHJI
+         SjM7AAVHS015HFs+1IyYG0Uxcxk41yASJ+3g35dmAp9naU0spy2lKLSi8bUjn3fIzQoI
+         oEiebNZzCaZ44tt2vS5ajdOmluFW9JFsIADE4skVLrpAqaxBfKbDF//1YplBwU05bPD0
+         1sJXOkQIsVQyDLshXRLt5xfFGj7pfddXhy6xoB0i7uCMK+n1dMUqYbA5gqh4kuya40ri
+         zFeetfauCNthUjddSjxfsh9DaLpCufw91AE+AjrK6HhMj/gUBsoLXyzSodpjHjy6gv+d
+         8kZg==
+X-Forwarded-Encrypted: i=1; AJvYcCUKKyiBSfi/yqKQ1S0AJV3Te4vA6Fg9tjR+lqdcZFSrXNJeCCNH9JrfIM5A76B7NPLOSqIsK4/3c+vDx35E@vger.kernel.org, AJvYcCUaZbdhWl27u7crGDBnso2w1VBmxqoqJeocg4NW2nNom/qqfmO96S1qp94j3HkGfoJjf6Pe@vger.kernel.org, AJvYcCWuKDBbDpsT3dU4A5IayCEo5AGxqV2oT27M4xwF/SDGqbssZZtSdzZ9smdxKiERhrIF6Zq30gfW9NjibhsUSQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLXon9iK+HW8y6h+n0VJxYAlskWaXCqA+V0yJyy0UmrK5/YW0Q
+	Z9SV5o94tOnBOtY4zO5JjABTDudsKlOkbU5HSYSSvHBNiEKXzu8mkVP0
+X-Gm-Gg: ASbGncuebTkJZSLHxLumEs/jmdd/rWOFgXiZ7v8VV15iOrlkMPRchQUQSRqRixyBvfl
+	pN85G5eYhwpzpIyGiJqGQdUxzvaorhZwUL8EjxsSNkjAfBSHl0Q9tRV441QUtdDfurn3flcqKzV
+	0N+K8bmmRc5fkiGkXD8f0zb/v4+Eul4t/P9Qeap+lORNPH865r6xSfMNDN32g+NZ4Hklxpn4IG9
+	TSpJMqupXaa/+HmfA3U1RVGU6hLGcFQjtz3dpLO+XDqKQo2PhZGO48y0plNtuPrUh/xFJqVz0hS
+	FcgF6wcyCF7u7zexC5lgDWvCaSIA/gJscw7evmn6zGpeOunRnIfFNIZRS6Lj2mUCmqiPqkLWcTP
+	WSqKzdrk1ylA=
+X-Google-Smtp-Source: AGHT+IEj5f77EREUpZ5E8w/EotPyfdIbWYVJo/+X7KstcTDOFCPPy6sZX4ZtpEWDZ+ZUxCfqDqiafA==
+X-Received: by 2002:a05:6512:3985:b0:553:5d00:be86 with SMTP id 2adb3069b0e04-553a55f7c07mr835838e87.41.1749721036987;
+        Thu, 12 Jun 2025 02:37:16 -0700 (PDT)
 Received: from pc636 (host-95-203-1-180.mobileonline.telia.com. [95.203.1.180])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553ac1aaf71sm52194e87.106.2025.06.12.02.35.35
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553ac1ab650sm52500e87.91.2025.06.12.02.37.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Jun 2025 02:35:35 -0700 (PDT)
+        Thu, 12 Jun 2025 02:37:16 -0700 (PDT)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 12 Jun 2025 11:35:32 +0200
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Joel Fernandes <joel@joelfernandes.org>, RCU <rcu@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 2/2] Documentation/kernel-parameters: Update
- rcu_normal_wake_from_gp doc
-Message-ID: <aEqfZMnp0tGtcEhX@pc636>
-References: <20250611175658.91361-1-urezki@gmail.com>
- <20250611175658.91361-2-urezki@gmail.com>
- <fcac9488-a755-40a3-a643-b7cf7288714e@nvidia.com>
+Date: Thu, 12 Jun 2025 11:37:13 +0200
+To: Aleksandr Nogikh <nogikh@google.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>,
+	akpm@linux-foundation.org, josh@joshtriplett.org,
+	kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	paulmck@kernel.org, rcu@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, urezki@gmail.com
+Subject: Re: [syzbot] [bcachefs?] [rcu?] BUG: unable to handle kernel NULL
+ pointer dereference in rcu_core (3)
+Message-ID: <aEqfySUeBHDbQ-96@pc636>
+References: <aEnVuzK7VhGSizWj@pc636>
+ <6849df90.a70a0220.cc01e.058d.GAE@google.com>
+ <aEnuAp5w6QSoSu_M@tardis.local>
+ <CANp29Y4d3de3cc9weuqHCw2sDMdtArOFz5B=783KZ4419Ux=Ag@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <fcac9488-a755-40a3-a643-b7cf7288714e@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANp29Y4d3de3cc9weuqHCw2sDMdtArOFz5B=783KZ4419Ux=Ag@mail.gmail.com>
 
-On Wed, Jun 11, 2025 at 05:49:14PM -0400, Joel Fernandes wrote:
+On Thu, Jun 12, 2025 at 09:42:32AM +0200, Aleksandr Nogikh wrote:
+> On Wed, Jun 11, 2025 at 10:58 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >
+> > On Wed, Jun 11, 2025 at 12:57:04PM -0700, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> > >
+> > > Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+> > > Tested-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
+> > >
+> > > Tested on:
+> > >
+> > > commit:         488ef356 KEYS: Invert FINAL_PUT bit
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=129a660c580000
+> >
+> > Is there a way to see the whole console output? If Ulad's patch fixes
+> > the exact issue, we should be able to see a WARN_ON_ONCE() triggered.
 > 
+> If WARN_ON_ONCE() were triggered, the associated kernel panic output
+> would have been at the end of this log.
 > 
-> On 6/11/2025 1:56 PM, Uladzislau Rezki (Sony) wrote:
-> > Update the documentation about rcu_normal_wake_from_gp parameter.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> >
+> > Regards,
+> > Boqun
+> >
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=713d218acd33d94
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=80e5d6f453f14a53383a
 > 
-> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+> FWIW the last time the bug was observed on syzbot was 100 days ago, so
+> it has likely been fixed since then or has become much harder to
+> reproduce.
 > 
-Thanks!
+That is even worse, if it is last for 100 days already.
 
 --
 Uladzislau Rezki
