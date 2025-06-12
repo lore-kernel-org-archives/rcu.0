@@ -1,129 +1,190 @@
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DA6214225
-	for <rcu@vger.kernel.org>; Thu, 12 Jun 2025 07:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF221F583D;
+	Thu, 12 Jun 2025 09:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749714166; cv=none; b=JpO63g2Y8lcSnx+X+RrSqbwGo1yLScMnD/6VbsuQFKy/rIHxh9YSZgkeWJxhxl16fk7zn85/7bERqUZfCd+/oU7kNsmPzKK5B+H0BGRIFe1znHfsTmJIcvO9/DdOzVN3HuNCt2eu2Npsvj+ukoOhKz5Mc/flHywnGRx64Ll/EGQ=
+	t=1749720921; cv=none; b=EW/2tnVNDNQS5pHSgazGuHdr3PLs2Bk8D1vHGfGH5hhsED4tPSxZruIAnQjMrgpn2pNhD6MXET5pAkO3DL6h3I/y382iqWnyG3SfMtxi+T6WEH0kL+73s/eM0nz8oiMky/gMbiwdZvxWl1e+1LV0A3HrEUsCYpknk6zs6pc6j+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749714166; c=relaxed/simple;
-	bh=FOQXFaiVwO7dhrkbgNrBD2ORgwbO509L3NsVRqNVEVs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J/l8Dvb8sI0IAgSCxX9AWMKTFbrpEgC5gc3jFyYqnR08i3Gs9m6DnfGMq0H15INz7oUQ2u0Vu4Rd599v49kakK/99qRHkhJREgzbUnZuixkXGz/gJva4or9cur6iNwAZVz+naiy5xt+Rpty6AEPT2ZC//149iTIyEuVh1wjb9XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qSfwi0d/; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	s=arc-20240116; t=1749720921; c=relaxed/simple;
+	bh=6FgB+WvGbctHgE61tfJuDhNLiJzdc+uwCPH8BFiCunc=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tSiaMwkgFlpmjTkKMV4Xwh1tWIl+9sGBy/K8Tw1e1MIm5nGcMxeQ2Syw8HD4PYFwPA7ilnKXPPQVT21DqJU4LsdAo9GeHXrb3/yG+NANNmDJqHEpfbJq9udyVMJGPHJxb+ChhdwHYPWKxG2rmbIXT+jE845HunMdBohoo1Lr28Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AFgHEJn5; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qSfwi0d/"
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-236470b2dceso6598275ad.0
-        for <rcu@vger.kernel.org>; Thu, 12 Jun 2025 00:42:44 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AFgHEJn5"
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-55350d0eedeso640048e87.2;
+        Thu, 12 Jun 2025 02:35:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749714164; x=1750318964; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/EqLSwnInI7/pMnd5ysWVbRy8uvQJPmZ91Nx+44JVcw=;
-        b=qSfwi0d/Q3YbWvcH3abb1v/U4sMurxcSDSPjzXYbk9+9XLnPnMqcWOdFvWBKXeuTJh
-         we0gKNyBP98BZgrPB95VV0h0rYKWa9CGn8XdT4Rk9dcBzdEHWFelLNqqgScxykOZ4DxU
-         JUdnxG1+9y4Ag688nCexDNbFLcMCHyLDRqAS+yBs7hTcf1+LERbQZcCYubXXrIYecghG
-         Fh0IWJV+q+E8EoTttE7T7YfkhDC7NidUrwsxud42A16rdeFzVKlV5wOmsF2mFOBpg8Pd
-         Q2xv59/MFuuMgh4/DwQpsEkXIPeUwbyM7SrKK4CSsgKG/3+Q/KjAOL7564o8HhiZ38IE
-         jOgg==
+        d=gmail.com; s=20230601; t=1749720916; x=1750325716; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B9XgOyLN+6u3eshF39lnx/D7xKZZthMQB0xJDbNgZRg=;
+        b=AFgHEJn5lUKt9K0AzCuvo1Fd2ssPgwjk8b8D0yRmg63a4lupR7jJ9eEv2aaMHNcY9I
+         GemvIaFKFn90zNITrCRF4+nv67fc0bm8Z2kttxk+lDptuXN/bAJoF4P28hYU/t4wwu7K
+         6I+FYQKyFR8hHmYy/gzW4C0mCAYJHONK6lPn1H9B/pSa68HdRSpQMy0QKvgD2flQHPun
+         K7GfF8D5eriU4Kpe+mvAxL/7jCLL3No/3KgBzbN8ioSPIYoIzt5unbA3lZAiPdyeHFlr
+         aWD7ZiNLrN1LGm5WD6G4IW2eXOkgqgmjjTgfXJ/wFuiOp8P7BCMti2lhi/q8Gp8tAJAw
+         s/1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749714164; x=1750318964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/EqLSwnInI7/pMnd5ysWVbRy8uvQJPmZ91Nx+44JVcw=;
-        b=iJF+FmZXMxXEVfcpaPeQ7ZAvRhgeXnJjPJzNkXrLnnXiox10LCuaA/Vq4NxBcAznK2
-         m6PDQzxlMxk6aXX0syixNfPqDu+ISw74+jpomC/1ATL7yQ+/aEapxY9WP0VnercYA87B
-         aNLj0EnSPsPKOhM0DWfM97UAeWZtByXdVUfUURWmzomGxO0zjq4/JoL7NQck08cqALLZ
-         aifQqRQOOC6/ABm/52TgWeAtWIzpNB08Xo5qVatRAfnRwRCFxv2YJ3W1OQVrrxdtxJ42
-         thDx8/XCAlPy+ru9SAbS7rI9kX5kq8eFk5qNDoTj4p7hZmHsPtt0XSVb4B0E5A4I/FWW
-         zg/g==
-X-Forwarded-Encrypted: i=1; AJvYcCW9Z/3opMvC+tldmiogG7z8PIdRRSlHkMGBe/3weIvyqGV+QRO2z2Ri3E+oijR5P400ejk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfjR1aazfEIzg+z4m2eZaGR5XfXILxp9CAonAKFfj1g13H/CWt
-	9x+tnK/th8TF33lj5DvuLo7ErCTZr/+oOI7JSqNuO/owBur685ptOCv7AL8OvjJDJvA7BFlrni7
-	NXuBpBjsGmq8VmX2tImKUGmFaVRHamA2kPzIjnYXJ
-X-Gm-Gg: ASbGncvyx9MTQp00dqAuO6Lk5p/YdMbcc4aU7pg86cnU9S6gYJK0O0o1nollz3oB0lh
-	qXDMyfPjbTnL52j+5GEcdLujukQ6MWovBW6MJo3jwmSDDu0o23FrpVx+fmMJvHRj3y6pB2ivE0k
-	Nj19xUHwSZkq5u3sFMIwI+glRSfP9QlQUfSwtaOd5hv2zXSlionDLHsq2KKAMwEylUwD1u81966
-	A==
-X-Google-Smtp-Source: AGHT+IHWfz6ueRsBMvrL8ANKlYfntcz1uoa4QJR1XOifNxP+96m170S+IXM1efDQIk8mUoonHiE6qKHXDmQCeffxrW4=
-X-Received: by 2002:a17:903:2448:b0:234:c86d:4572 with SMTP id
- d9443c01a7336-2364d8b7d4cmr29659685ad.30.1749714163932; Thu, 12 Jun 2025
- 00:42:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749720916; x=1750325716;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B9XgOyLN+6u3eshF39lnx/D7xKZZthMQB0xJDbNgZRg=;
+        b=LPrIyeQd5ur3PkbAZG4lFF0F6tzQV7t1/aUoA01TLTuHaaa/y0xl86KkwoJJTt8NWZ
+         LhZMWxPhuOCiPwbSfmGO2PX1dvImG7yAHbXYXNZBYnHQ4VsIZCBz0S7XK86u/8s4BEhs
+         1hPzbcQqk8adi3OM4DrbaojvJNBFOq5VqKtSqrTuXrt5UY2EAfi9P8CeQR/6UET6sccz
+         6G8yUVDNFy/3Gw5vJRczd9mS3rZGaVoseTLul7o9RGmw/xe/Xt73crI9yK8q2woylzMl
+         wXcTU0DSaz4jekp6KGfw0YCZnpBCvYvW+8u9n/3XTReJxCOPw+AiKJSCUbaGJV63iS2n
+         hbdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUx+kwgqCKY/OKFBLknv9oT8GAcLB/uftWsJNaD2jeAf2wzqOq2GBBPS7xvyi983+OVMS6x49XM3dRbDo8=@vger.kernel.org, AJvYcCWDRjOtrd3HWZS7Y5gxpgMIizCjr3SLXRZNbw3Hsk/cnEIypdRjtUha0iKHbqqYj5dd6b6Y@vger.kernel.org
+X-Gm-Message-State: AOJu0YzbXgcpYrP1oAhJGXmzfYxdVuWFJKrfyOyVFPjjEdj/s4rc4SyI
+	Kh0h3frDO5++2lv1DKuTTmR4v/O+98VapOlTgnHDE0JXbxbOQsMoknis
+X-Gm-Gg: ASbGnctLjnQWtPvEu7vmMEetHYaDvP7FAz64bzh4EKXrU2LgTtxATYRuP3ivATME1rg
+	IjfX5KsFrerc8mSf1kGxCAiNlHIdqw3ATSQCkrEepHo3yxDWeXTZZdzdMlhuhQ8+vGORBnpa2wn
+	zMUJQUFxn911Nu3XgdDGdOo5sVA+JG/mg0TeSqDKi8XCT7MbKH1yFqoy8fNeWKx/PHGz2Fo8elv
+	BUx53iZjsmqtzNfLeKQMKcEOajfJLWJmgwrHeXwok40wBVIU8PYnVYOBdzp1cQy55Ow4AR7chHQ
+	DLn5SPwJwKNM4IDCt5qpyhydRmEJ4bzCK1eFEb3T16ex3I979Lx5+5vsm6N3R4PacdtOIhI4a9O
+	ymggHz5jgIag=
+X-Google-Smtp-Source: AGHT+IHk9tDnmNn/N3vdm9Jt5yx4W3KvwzVpgTVmppRO7QaeWoYFfo3o/bOG1TFzmwYfFr7qISL+aA==
+X-Received: by 2002:a05:6512:3041:b0:553:35e6:3949 with SMTP id 2adb3069b0e04-553a55f4082mr778067e87.34.1749720916163;
+        Thu, 12 Jun 2025 02:35:16 -0700 (PDT)
+Received: from pc636 (host-95-203-1-180.mobileonline.telia.com. [95.203.1.180])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-553ac13f0dbsm54594e87.85.2025.06.12.02.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Jun 2025 02:35:15 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Thu, 12 Jun 2025 11:35:12 +0200
+To: Joel Fernandes <joelagnelf@nvidia.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Joel Fernandes <joel@joelfernandes.org>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v2 1/2] rcu: Enable rcu_normal_wake_from_gp on small
+ systems
+Message-ID: <aEqfUGW-8fClJDsl@pc636>
+References: <20250611175658.91361-1-urezki@gmail.com>
+ <af4557b3-4352-400b-a000-0a3f2014526e@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aEnVuzK7VhGSizWj@pc636> <6849df90.a70a0220.cc01e.058d.GAE@google.com>
- <aEnuAp5w6QSoSu_M@tardis.local>
-In-Reply-To: <aEnuAp5w6QSoSu_M@tardis.local>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Thu, 12 Jun 2025 09:42:32 +0200
-X-Gm-Features: AX0GCFtO9O5G9ZnuVX3i1JpfXbgajBNsH_rdffk0L3gbJwN5FPeRccN9TijpSvM
-Message-ID: <CANp29Y4d3de3cc9weuqHCw2sDMdtArOFz5B=783KZ4419Ux=Ag@mail.gmail.com>
-Subject: Re: [syzbot] [bcachefs?] [rcu?] BUG: unable to handle kernel NULL
- pointer dereference in rcu_core (3)
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: syzbot <syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com>, 
-	akpm@linux-foundation.org, josh@joshtriplett.org, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, paulmck@kernel.org, rcu@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, urezki@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af4557b3-4352-400b-a000-0a3f2014526e@nvidia.com>
 
-On Wed, Jun 11, 2025 at 10:58=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> =
-wrote:
->
-> On Wed, Jun 11, 2025 at 12:57:04PM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot has tested the proposed patch and the reproducer did not trigger=
- any issue:
-> >
-> > Reported-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
-> > Tested-by: syzbot+80e5d6f453f14a53383a@syzkaller.appspotmail.com
-> >
-> > Tested on:
-> >
-> > commit:         488ef356 KEYS: Invert FINAL_PUT bit
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D129a660c580=
-000
->
-> Is there a way to see the whole console output? If Ulad's patch fixes
-> the exact issue, we should be able to see a WARN_ON_ONCE() triggered.
+On Wed, Jun 11, 2025 at 05:48:57PM -0400, Joel Fernandes wrote:
+> 
+> 
+> On 6/11/2025 1:56 PM, Uladzislau Rezki (Sony) wrote:
+> > Automatically enable the rcu_normal_wake_from_gp parameter on
+> > systems with a small number of CPUs. The activation threshold
+> > is set to 16 CPUs.
+> > 
+> > This helps to reduce a latency of normal synchronize_rcu() API
+> > by waking up GP-waiters earlier and decoupling synchronize_rcu()
+> > callers from regular callback handling.
+> > 
+> > A benchmark running 64 parallel jobs(system with 64 CPUs) invoking
+> > synchronize_rcu() demonstrates a notable latency reduction with the
+> > setting enabled.
+> 
+> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+> 
+Thank you for review!
 
-If WARN_ON_ONCE() were triggered, the associated kernel panic output
-would have been at the end of this log.
+> Just one nit below:
+> 
+> > 
+> > Latency distribution (microseconds):
+> > 
+> > <default>
+> >  0      - 9999   : 1
+> >  10000  - 19999  : 4
+> >  20000  - 29999  : 399
+> >  30000  - 39999  : 3197
+> >  40000  - 49999  : 10428
+> >  50000  - 59999  : 17363
+> >  60000  - 69999  : 15529
+> >  70000  - 79999  : 9287
+> >  80000  - 89999  : 4249
+> >  90000  - 99999  : 1915
+> >  100000 - 109999 : 922
+> >  110000 - 119999 : 390
+> >  120000 - 129999 : 187
+> >  ...
+> > <default>
+> > 
+> > <rcu_normal_wake_from_gp>
+> >  0      - 9999  : 1
+> >  10000  - 19999 : 234
+> >  20000  - 29999 : 6678
+> >  30000  - 39999 : 33463
+> >  40000  - 49999 : 20669
+> >  50000  - 59999 : 2766
+> >  60000  - 69999 : 183
+> >  ...
+> > <rcu_normal_wake_from_gp>
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > ---
+> >  kernel/rcu/tree.c | 14 +++++++++++---
+> >  1 file changed, 11 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index e8a4b720d7d2..b88ceb35cebd 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1625,8 +1625,10 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
+> >  	atomic_set_release(&sr_wn->inuse, 0);
+> >  }
+> >  
+> > -/* Disabled by default. */
+> > -static int rcu_normal_wake_from_gp;
+> > +/* Enable rcu_normal_wake_from_gp automatically on small systems. */
+> > +#define WAKE_FROM_GP_CPU_THRESHOLD 16
+> > +
+> > +static int rcu_normal_wake_from_gp = -1;
+> >  module_param(rcu_normal_wake_from_gp, int, 0644);
+> >  static struct workqueue_struct *sync_wq;
+> >  
+> > @@ -3239,7 +3241,7 @@ static void synchronize_rcu_normal(void)
+> >  
+> >  	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+> >  
+> > -	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
+> > +	if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
+> >  		wait_rcu_gp(call_rcu_hurry);
+> >  		goto trace_complete_out;
+> >  	}
+> > @@ -4843,6 +4845,12 @@ void __init rcu_init(void)
+> >  	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
+> >  	WARN_ON(!sync_wq);
+> >  
+> > +	/* Respect if explicitly disabled via a boot parameter. */
+> > +	if (rcu_normal_wake_from_gp < 0) {
+> > +		if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+> > +			rcu_normal_wake_from_gp = 1;
+> > +	}
+> 
+> nit: better to just do:
+> 
+> 	if (rcu_normal_wake_from_gp < 0 &&
+> 	    num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+>  		rcu_normal_wake_from_gp = 1;
+> 	}
+> 
+Two lines anyway :)
 
->
-> Regards,
-> Boqun
->
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D713d218acd3=
-3d94
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D80e5d6f453f14=
-a53383a
+--
+Uladzislau Rezki
 
-FWIW the last time the bug was observed on syzbot was 100 days ago, so
-it has likely been fixed since then or has become much harder to
-reproduce.
-
-> > compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07=
-757-1~exp1~20250514183223.118), Debian LLD 20.1.6
-> > patch:          https://syzkaller.appspot.com/x/patch.diff?x=3D170e460c=
-580000
-> >
-> > Note: testing is done by a robot and is best-effort only.
-> >
->
-
---=20
-Aleksandr
