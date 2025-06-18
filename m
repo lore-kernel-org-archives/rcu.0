@@ -1,197 +1,124 @@
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2073.outbound.protection.outlook.com [40.107.236.73])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62440F9C0;
-	Tue, 17 Jun 2025 02:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750127117; cv=fail; b=IxItP/cYgKbIl6rxUXDvwOUIgOC/41/NgkA3pNd9fpChMqlDqGFXIOgzU/lL3uXoHMWnAN7htsl95btAgUYRydmUERpUl4ghWJdKi0giVhY9aWSfudk3JMDqegFOLHPlRvKeWs7mJk0Fi7C4Gt2dW8vdZdVJza/HfhzP4ffZlpg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750127117; c=relaxed/simple;
-	bh=3/74kqIexVEGkgq7EQOU0Wi10fSzP4wHE7BOZUHwX7U=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZMFSDQdheNDRgQA/F1TsqXN9jhLHmMtOFDcHSFJL7ML4HrcdzccGaZRjmbJkmKVKS3aTNQ+kfysaRJi3evBdJpEtV5+hRud65QShuXVfnWE8BktAUZEw7D9+3jaEO8ouSx8xhz+4a4Gy/Kx+BnqKFrdnT2xEfmcuf5MOjExMS4Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=osZhZ9cf; arc=fail smtp.client-ip=40.107.236.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF0118027
+	for <rcu@vger.kernel.org>; Wed, 18 Jun 2025 06:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750226785; cv=none; b=Yq52HuUeJigJQpE2YuONgeAQRlPeNtZnaoD4LFxVpwuNvrPVEJr0BgZXXgGkX8yPnnHz5LqHnU3bNZm0Zg9QxmPyDDES//d+bO+CmvlgiItUfAs8E77TRDCL9kBjtFVYmfeGi95G9rIVOg8MBq630JgX4JkAfzByWs/B29GMF3E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750226785; c=relaxed/simple;
+	bh=DhKWQUtjBaR9MPSzsUBaNClt7wNmyxTOD0KG9+Ly+N8=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XcGFJTqaNyaPlplGlht46u3cMnEvhwXtLBcfKV9BFpgoq+N4yvS70X3VM6iJmskdlG+QhTyn4Oq2nEb8UUGpKqbQH67zloEbn0uxaTDLg2icwbPnNq6j1yZzRbjHVT46t7ebXTQA/+IFKZDqLI28t7ABUjNo7PrOK0ChoXeT5FE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+7BfxYb; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="osZhZ9cf"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=nbnG651f1VIz4sebH3ChtGF+5CUOGkoI01pb9FI6CQs/73HCkRdzWYS2wFbabXBANCsi3MMXCegm65SbN8gZAWDOEIn08UhMliYvuWOlrAaNVLwTaIQwYxKjqGVV7LQ9PpmPGoxHFWHMwClayYwusOhwSG+jpWG8kbmui54jfRc/+1h92DkLXja8MCZZQpATbQyQcl/xnxValRIer3+dh0LtATwwUmSW635gSPn1yvdX8wOgivX7+RcLINAmk6oqNkthu4gu7GB0vOeQAh5IjntRhBRepUEaE8Ajmzg1oNP9yi64dt0M8Qqo4gtpW/Hq1QiQm8/4ctBBngbH5k741Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r4yVvSdjMZMeoZ1jjDZuGjaHvkC0qNnVbDQ7pRzYTsA=;
- b=iBXAwzH7xYVX99n0P++ehYlKqEr6CykLuap+9v+a8tuV1ILeSKEknkABSFA/nG367k/RvtrPRSPCSIVNhAEGWjWYFGZraPGmv/gbET3O+FP6/he9QwPLPQXGt5MQN9wCksgxq6U9ZIWs8npewYM0Pv/LJyXNZZVPnvNOhufNuKc1OjjkcZQ6MbCZ4ZTZJjWgCkZTIJMa4GyL3X492F/OaGJe8XupVxaTLZ69/zIwBUu/LKUwKdwUDN/GZjIbMbCoS4EgX/fPkF0zQ0wqAbd0qOeJoto0PW0iQ5uNUOsVjnbUvjxTuO9dQuYgwZAQFLNt2bP7932WFg8qYM5FruRklg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r4yVvSdjMZMeoZ1jjDZuGjaHvkC0qNnVbDQ7pRzYTsA=;
- b=osZhZ9cf2ACtfpGXKxSxu2Ia6+vfQgGOVOC5/8ieYEExz6PVEAmo54hkQUw6m0OzHF2SbPxFqRYlRiX29kcCHIbSG4OqctozMJLkLeL0KTR4+Q5otl0WxD6FJxAhmlXIC4rUsMCMvngPgNsfCJTUW42aPjnadm1hIThUUu/XuCbkulrXIXLe9YSpGhSw9bcN9+7uwjGZvRO8mrqbIMolPA+jXdzcs1KcEqdw8G/KxoaWSsZwop9+YORTbEV8dS5Fz+HKJoRVHPNegIudXocNjDx4dgeRJ5zb1AoqfiN9bT6JyVil5Twcbsfqca5m17pPPiYe2c3VFk5zknVYa5HMWQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
- by DM4PR12MB8572.namprd12.prod.outlook.com (2603:10b6:8:17d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.19; Tue, 17 Jun
- 2025 02:25:13 +0000
-Received: from SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
- ([fe80::4ee2:654e:1fe8:4b91%3]) with mapi id 15.20.8835.027; Tue, 17 Jun 2025
- 02:25:13 +0000
-Message-ID: <e1e70709-b799-4da1-9f0f-9d222b315db4@nvidia.com>
-Date: Mon, 16 Jun 2025 22:25:11 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] rcu: Return early if callback is not specified
-To: Boqun Feng <boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>
-Cc: Boqun Feng <boqun@fixme.name>, "Paul E. McKenney" <paulmck@kernel.org>,
- Joel Fernandes <joel@joelfernandes.org>,
- Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>, RCU <rcu@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-References: <20250610173450.107293-1-urezki@gmail.com>
- <4bc63cf3-29a4-4a64-be65-30f7bd55e31c@nvidia.com>
- <0caf7054-140e-4b6c-abd4-2ec2ebe79b2c@app.fastmail.com>
- <aEsSZINUrRvy1g4F@pc636> <aEtAtLu6IIv_0QHs@tardis.local>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <aEtAtLu6IIv_0QHs@tardis.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN9PR03CA0095.namprd03.prod.outlook.com
- (2603:10b6:408:fd::10) To SN7PR12MB8059.namprd12.prod.outlook.com
- (2603:10b6:806:32b::7)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+7BfxYb"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ACC5C4CEE7;
+	Wed, 18 Jun 2025 06:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750226785;
+	bh=DhKWQUtjBaR9MPSzsUBaNClt7wNmyxTOD0KG9+Ly+N8=;
+	h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
+	b=g+7BfxYbW7/sHnIQxnqWpMC+pX4MT+5eB0Q+mj1nKQ3/wlfEmXCfbNzws2KVUUV0g
+	 ko1nE0lMGLnFkEi8ULYzJI14Kj+0E8xGB648YDE3tRbU1W5UTcWlb8S9bhC9F2grso
+	 7bybvkuDea3OufU3zdFrfq9UKw/cs/abRbaORnygfirPJRq/s2GU96npG9uLIcWg6O
+	 221EuUIfSZ8wI+PtHFx3DzDLjmYh4HgfE9Ks1pXHpIevbLXUZFRLTDdAR/4SsMPxUP
+	 aMxjkRBrU0aK1vuKSQqXqjeRo/br+4VrOQAD5W8U4LrxPN+FrDc7ryi5QsbFWSKiWM
+	 AqObPvuQ+3zYg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 4CEC8CE0875; Tue, 17 Jun 2025 23:06:22 -0700 (PDT)
+Date: Tue, 17 Jun 2025 23:06:22 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: frederic@kernel.org, neeraj.iitr10@gmail.com, urezki@gmail.com,
+	joelagnelf@nvidia.com, boqun.feng@gmail.com, rcu@vger.kernel.org
+Subject: Re: TREE02 warning while initializing expedited grace period
+Message-ID: <932236e9-78cd-4cbe-aeaa-ec177dae8e6f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <b7a341ba-cd4d-468a-9d66-4aabe70a747d@paulmck-laptop>
+ <603add86-47b2-42d2-a2f6-9ea1a2e1d64c@paulmck-laptop>
+ <f4558fee-7733-47a7-8110-62a6753cf1ae@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|DM4PR12MB8572:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33a1450e-123c-4955-bd32-08ddad4630ae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?U3VOajdrRWd3WHIxbmNxUXZqSUJhaE5YWmlFTjg3L2JrMW8yM20rTkNjaTNZ?=
- =?utf-8?B?ZEJNYkpOM0owSmh6cU1uaVFFQmM1QzE4VFpNdGhlSGVUbjNURUFKa2tlK3BP?=
- =?utf-8?B?MVZxbHlzdnhIbDE3WDd1dmdCRFNrd3hzWWFIVGh3djMrZTdUSldWaWdRUG5X?=
- =?utf-8?B?d2UxVjlGSjVqN1Znc2RyblZSMXl4T0l3eloyYXVFemt5WERkY2t0SUFYRmk0?=
- =?utf-8?B?LzRZWGp3TTRUUGZSdjBkSDlxQ0dpd1dvb05heXJEL1RxVlYxa3FjT3hSbFkx?=
- =?utf-8?B?TGRYVFFyZXFkM0hIaUlUMUVkK3V6MXZRVHlKeEZyVndOMjZmVUlwUjQwMjhq?=
- =?utf-8?B?bFoxTUp2ZTJKUm5zZGxweTBKTFFMRjhSUTRRdk1DQTVGOG9tNXVKRW5GTE0v?=
- =?utf-8?B?RUhiQkZFM20wVnZ1ZzBRVitDN1NUOFEyRHJxaStnUUcrNURGRitGYkQ0dy9J?=
- =?utf-8?B?YTRWdkpTdiswa1ZwRGNXWWNwWkozaUlmZi9TWGorLzdKRjhnZ0hWOXRLNzF3?=
- =?utf-8?B?SHpoVTEzNVdpbDY4Q0U1Rmx2ZnFsM0dDa09RMERUSnoramMvTmdjK2hLRzY4?=
- =?utf-8?B?Zis4bmhTZktmeXNYblkzTENVdWQzenZUb21KZUdWaTV3Y3dYdjVQMjNzM1pY?=
- =?utf-8?B?ckNOL0ZLMFptNWpyUlk4dlVuRWVDc0NBSFl6cTB3NnM5ZkNiM0w3ZVMyMzJJ?=
- =?utf-8?B?cWxMK1ZsS0NIMmN3YnBqTTJUdHh4V1piOW1EQ21DYnZiUkI2OHVhQ0FhZ2VG?=
- =?utf-8?B?NVd1YmhWMHd6RlVpZTN5VlJpS0h1c0ZyR3Z1TElDRkw2cDVITGsvS1BncUFK?=
- =?utf-8?B?dlN5VEFkQXFqa2RQcWNRUnBMTU1OQmNoaHB0Q0ozVW8zVDhISUJ6Sm9DNWlh?=
- =?utf-8?B?Y1VsRlJGT3FhcjdRSG42aWlEK3BKcjNRRCtIV2RzZGxxTUtSd2lubGRyemhR?=
- =?utf-8?B?WWFzMnpINWRoYTRTREQ0VWhDTEZQNER5NExsaHZaYS9BblV5eHBudVNYQUh2?=
- =?utf-8?B?R3R0UUhSeVRzaE40M0M5T0drODVZbUlNQXA0dk5GTTgvYVFRNm5ubGMzS2ww?=
- =?utf-8?B?TkVWa2tEMXM2RnhIYUJ6cVd2bHFHN2ZhVHQ1Wll4Q0hIcFMyVzZXWHQ3MUg2?=
- =?utf-8?B?S3FXbTNSUUNCS0RYSkh2WFlMbWF5SURIMGRBRHg4RVN1d1hpbU9YSG1iMU5h?=
- =?utf-8?B?L0pxVzFub0I0SWN4YWdLK1p1aVNpZi92QVNiOU56UTd4SDBXZFpnOC9KNUx2?=
- =?utf-8?B?SjdTQ3dUUk1YTk1LUGJkREwrWGNmNEdCNjZIcXFuSFFRZzIyQlRWaWYyYnBk?=
- =?utf-8?B?VGhQSzljYXNIeUZMNWFJQ1JkSldpOUZKNGFqa0lkSkNPbzV1bzlodzRjZXl1?=
- =?utf-8?B?c3l4VkxnT0tHRWxVS2Ryb0pOQkZSL1JvdmVFY1cxN1l3TUhsQTBVNm1CUm5Y?=
- =?utf-8?B?dzBiazFxSjkybDE2bGJQSlhidjVTcG11RjlybXVRQUZBMkhDRjYvQTdocTZF?=
- =?utf-8?B?eDI0dlZ2TzhSbzcxWWJ1aWVxMXBMWG9rcUFVamhockxuT3VpRFZhYURoeTdw?=
- =?utf-8?B?aGI2azAvSjUrTVhBSkVZcHRvRGV1NHQySWpEcEJBdkJWOU9UTkFlVVRxWldC?=
- =?utf-8?B?QzRQZThySExGMEZrNnd1MWpLTGY2M2p5bGdXWUhoZzNTU1dmY1lLRUZ4V01o?=
- =?utf-8?B?UGVTWWZkUDU0Rm9aQUNaUDllRHdlR2h2amExRFVMTkhCZkw3S25ITlQwZTJm?=
- =?utf-8?B?ZTRWZ1YzclJEUXJPUmt3VldsQ0Z0RXdaaTI3MWRpK0UrVEdFNWRBdWNyZVN2?=
- =?utf-8?B?aUVyalRqVktIZWZWbHEvOHppU3hXS2xzaGJRU3UrdjFMazBMN3kxYklXdmU4?=
- =?utf-8?B?ZXlCeEdybTBTeVhSajBLazNFcmxFVFNWTkNWME1nbVZQUGozY21GQ3k4bmRi?=
- =?utf-8?Q?+li6zgAdeqc=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OWZTL0VKK3RFQVhZenY0VDVMMS9DalpIdTRqZHJRM2xDM2l2Q2EzbGNENUdu?=
- =?utf-8?B?WTBUb0RLYTBjeC9XM0c4ZUVIb253YWdXSzNZbHdCaWRiQjdLU1lHSFM2UGtH?=
- =?utf-8?B?V21qZjJUdTRKYUQ5ZGtwQXNGT0dIK3dyR0dva01pK0pXc3BjTkFsTkNhUHZR?=
- =?utf-8?B?VzNuUnh6WVQzNFdvcW9HdTV6dCtYcDE3MUpkUnFUTWsra1lPdytQdVlyelR4?=
- =?utf-8?B?ZDl6M3dtK2VBT3FuOUNScUVRYjlzL3AzSFhvRzJuYmVoM3NQQWEyQS9LRmRz?=
- =?utf-8?B?elFzTlZTZVpEcG5MM2hBQlFGdmZxMWVhYm5TK3ZXY0ExbTV6QnhCQUtzS3J3?=
- =?utf-8?B?U0FORXR4eHFnWmdBMVZKaEhmM1luR2gxRUptVTVjZnVoMEV1MjRFTEFwZW1P?=
- =?utf-8?B?QWRLSkRrd3hGN010TWRNMlZkTXREMlVGUUtXc2hZVFlRQXlTaDVOemxkK2lm?=
- =?utf-8?B?QWFrbmdJMXJFNUZYNkhZdGZ4V0hWMDNxc0s0clVhLytWMVhUTFhzTWVXM1pX?=
- =?utf-8?B?aXo4eEk1RVBZMUsrSTc5dE0rbE1tNlZ0dFhrSFI3S2VWTHVsNjFEdjBPQyt4?=
- =?utf-8?B?cnh2L01Pd1VacVBSejNTVGtkMGN1Qm9jbXdTUFRJckcwbzArQ2VvNnRjSWVW?=
- =?utf-8?B?dVd1cmVUcGQrN2ZKQlZDYnZsTVM4elBCVDVPOVVWRzk3Qm1kK0xOczhORXQw?=
- =?utf-8?B?SlFsby9HVmtZOWdsZERBU2x5MnNaQWM0QVU2RTdHNDFUbFRWWUVVcXZRM2Mw?=
- =?utf-8?B?SHBHcGZaTTA5cUo0S21yQ0JWbm90U0VvVE45Z1M2SDcwSkJoQkVjL2xVRDQr?=
- =?utf-8?B?V0c2NWdkSFlnVnVhWjl2aFJaWGxZNkJlTGc1T1pIRzVhOGE1SVFqcHJKa1p4?=
- =?utf-8?B?dHpNU1Zvd2JwTTZFU3F0Q3RlRGVMMm9iUEZhdEhFVHRrQ3FvUXJmQUdMKzBH?=
- =?utf-8?B?NGt0WG5VYWhKdEVuUHl4b3Y5TVhnbmJJTVM3Y2hVOGdRZEV0ODhqeXRPZU1i?=
- =?utf-8?B?eFZjSkhRZ2J2T1QvOGNEaHhHUk9SMjFZRHFIb1RCaENWeFhIWmhTbFl6dlQz?=
- =?utf-8?B?eEJnOWdZdktIUHpZR3VONHI4NWhZLzAvZmxZM1M3ZGgxb3dGdU4zSi9qb1ly?=
- =?utf-8?B?SjBGSzJUVlpiV1p0aUlqenBOMnBtY2xORjg3L3dISUVNZ1MrdGVHa0U1Zm00?=
- =?utf-8?B?MXZQb0ROUWVwSC9BZFBzREFXQkFSTXl6eFJjWk9nU2wzUjR6dm1HSUhsaXlX?=
- =?utf-8?B?dStDc1RCQTRLZXc5eHlwVUNTSVczNWhpZGtGWjNOeXdLdTlYR0w5aVg0ck5K?=
- =?utf-8?B?WDBNN3hob2NJK2t2UkVMZW5pUWVqeDd2Sk84eXlaRks2bzhUamo5QnVja2J0?=
- =?utf-8?B?Z0hBSXJzaVdUV2JNY2RPSTJiaEl1b05ocUo5bDN2bGZKWlAweHZmeHd5RlRw?=
- =?utf-8?B?VjlRVVl4NlM1WGZnRGR2eGNWTWdwRE5NTk9QaFlPWHhWYlZHTEhWU1JIZ0hN?=
- =?utf-8?B?Ujc3NE4zT3R1aXIrTGVrRENadkk3Q0tZTW83cXNqaGlLNkMzbzJCUDQ4S3pC?=
- =?utf-8?B?eDFPMjVhWlNtbWV2WVZCeHJkcnBic1NENnIrY1VIQmVtNkJZM2pVM0dBVngv?=
- =?utf-8?B?SHRNeU5uVnlPeXpscnp3VE9YY09QdHpnNjNvaDN5ajVNcU5naDJ6cFhTbWsr?=
- =?utf-8?B?MmxoaWJ2MUxER3UzOVYzNXhQMGY5TjNya1dhN3JZM1I4eXFwVlR5WHR3SG5n?=
- =?utf-8?B?Nkt1d2JuWVFFRzlVUmxsVnRXaXRKbE1wUTQ0QnZnb2hqNS9EazNrRGFPRDRL?=
- =?utf-8?B?eWhiMmVibE9tSVRScnJwSjBtZDBRRGNySVpLZEZqZDZEdGJsSXRadWJOMUlP?=
- =?utf-8?B?VWVyOHkyN3lxUjJTU0tqR1Z6SUxPRjA4WEFQRWhQNlFTN2dXYmhGMm9Ra1Ev?=
- =?utf-8?B?UWlMYWV5eXgxUFlPYUN2RnREY2FQdkd0R1FpS2U5NFlhUlVPdjJWQ1Y2RzAx?=
- =?utf-8?B?cXBtVEFSRGdBWW13L3BRNzdaQlcwZTFVQjN6ajc0TmRhWHV4M2dlb1hBVnVr?=
- =?utf-8?B?MEdoZnVBN0xSb0FhUUNGUE1adGFXMk0zZ1ZKSld5S1RicjJHdTlIUUFEUmly?=
- =?utf-8?Q?6hUW3NyuI0IMXtyH6F53BvmyX?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33a1450e-123c-4955-bd32-08ddad4630ae
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2025 02:25:13.4483
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gItyPTt+HExr/H6mIN0+8tJNy3mvwfYnd+AUKHkRmdfCQU32U2hh373hRV27dZNR15ORQwynsxTU9kYC6E1Kow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8572
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f4558fee-7733-47a7-8110-62a6753cf1ae@paulmck-laptop>
 
-
-
-On 6/12/2025 5:03 PM, Boqun Feng wrote:
-[..]
+On Mon, Jun 09, 2025 at 09:14:42AM -0700, Paul E. McKenney wrote:
+> On Thu, Jun 05, 2025 at 08:45:19AM -0700, Paul E. McKenney wrote:
+> > Hello!
+> > 
+> > You remember that WARN_ON_ONCE(nr_retries++ > 10) we are looking to add
+> > to the __sync_rcu_exp_select_node_cpus() function's initialization of
+> > expedited RCU grace periods?
+> > 
+> > e2cf1ccc99a3 ("rcu/exp: Warn on CPU lagging for too long within hotplug IPI's blindspot")
+> > 
+> > Well, it triggered during one of 14 TREE02 runs yesterday evening:
 > 
->> The kernel robot reports it and it is already a strong indication that
->> the subsystem is not hardened against invalid inputs:
->>
->> "BUG: unable to handle kernel NULL pointer dereference in rcu_core (3)"
->>
->> so this in the rcu_core() which is part of RCU.
->>
->> But, anyway Joel should decide. I shared my opinion :)
->>
+> And again in TREE02 today.  The usual distractions have prevented me
+> from doing a long run, but hopefully other things will settle down soon
+> and I can get a better idea of the statistics of this thing.
+
+Yesterday's 20-hour run got one hit in TREE02 and two each in SRCU-L
+and SRCU-P.  Which might be due to a guest-OS migration event.
+(The rcutorture runs are guest OSes within a guest OS.)
+
+Except that they all happened at different times.  Besides, the system
+subjected to the migration was orchestrating the test (via kvm-remote.sh),
+not actually running any part of it.
+
+Well, time to fire off another test, then!  ;-)
+
+							Thanx, Paul
+
+> > [ 7213.736155] WARNING: CPU: 4 PID: 35 at kernel/rcu/tree_exp.h:419 __sync_rcu_exp_select_node_cpus+0x23d/0x350
+> > [ 7213.737487] Modules linked in:
+> > [ 7213.737907] CPU: 4 UID: 0 PID: 35 Comm: rcu_exp_par_gp_ Not tainted 6.15.0-rc1-00065-g11ef58d03471 #5265 PREEMPT(full)
+> > [ 7213.739348] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> > [ 7213.740845] RIP: 0010:__sync_rcu_exp_select_node_cpus+0x23d/0x350
+> > [ 7213.741675] Code: 01 00 00 49 23 86 70 fc ff ff 0f 84 1f 01 00 00 4c 89 ff e8 55 b2 ee 00 bf 01 00 00 00 e8 bb aa ee 00 83 7c 24 04 0a 7e 04 90 <0f> 0b 90 83 44 24 04 01 e9 61 ff ff ff 83 e2 fc 89 95 60 01 00 00
+> > [ 7213.744176] RSP: 0000:ffffa4a540163e68 EFLAGS: 00010202
+> > [ 7213.751921] RAX: 0000000000000000 RBX: ffff89b45f56c900 RCX: ffffa4a540163d64
+> > [ 7213.752896] RDX: 0000000000000000 RSI: ffff89b45f51ac18 RDI: ffff89b45f51ac00
+> > [ 7213.753865] RBP: 0000000000000005 R08: 0000000000080062 R09: 0000000000000000
+> > [ 7213.757852] R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000003
+> > [ 7213.758847] R13: 0000000000000004 R14: ffffffff89563e08 R15: ffffffff89563a00
+> > [ 7213.759842] FS:  0000000000000000(0000) GS:ffff89b4d5568000(0000) knlGS:0000000000000000
+> > [ 7213.761176] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 7213.762173] CR2: 0000000000000000 CR3: 000000001de4c000 CR4: 00000000000006f0
+> > [ 7213.763402] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [ 7213.764624] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [ 7213.765838] Call Trace:
+> > [ 7213.766271]  <TASK>
+> > [ 7213.766658]  ? __pfx_sync_rcu_exp_select_node_cpus+0x10/0x10
+> > [ 7213.767616]  kthread_worker_fn+0xb2/0x300
+> > [ 7213.768256]  ? __pfx_kthread_worker_fn+0x10/0x10
+> > [ 7213.769049]  kthread+0x102/0x200
+> > [ 7213.769596]  ? __pfx_kthread+0x10/0x10
+> > [ 7213.770238]  ret_from_fork+0x2f/0x50
+> > [ 7213.770862]  ? __pfx_kthread+0x10/0x10
+> > [ 7213.771524]  ret_from_fork_asm+0x1a/0x30
+> > [ 7213.772175]  </TASK>
+> > 
+> > TREE02 is unusual in having not one but two rcutorture.fwd_progress
+> > kthreads.  Although TREE10 also has rcutorture.fwd_progress=2, I normally
+> > run only one instance of TREE10 for each 14 instances of TREE02.  Also,
+> > TREE02 is preemptible and TREE10 is not, so maybe that has an effect.
+> > 
+> > If this is the way that things are, we will need to use less aggressive
+> > reporting (maybe pr_alert() or similar) and reserve the WARN_ON_ONCE()
+> > for much higher thresholds, like maybe 100.
+> > 
+> > But is there a better way?
+> > 
+> > Or are there some ideas for making the initialization of expedited RCU
+> > grace periods be in less need of repeatedly retrying IPIs?
+> > 
+> > 							Thanx, Paul
 > 
-> Of course, my point is that the urgency is not high enough so we have to
-> put it in rcu/fixes, but it's a fix, and if Joel had the time to do
-> it, feel free. Joel's decision.
-> 
-Yeah I feel Vlad's fix for a crash is important so I'll send this up to Linus
-for 6.16 after some testing this week. For the other 2 patches, since that is
-triggered by a trace point, I'll just let Neeraj take them for 6.17.
-
-thanks,
-
- - Joel
-
-
-
-
-
-
