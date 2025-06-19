@@ -1,196 +1,311 @@
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2041.outbound.protection.outlook.com [40.107.92.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7726C2EE98C;
-	Wed, 18 Jun 2025 17:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750267305; cv=none; b=DQ2GIHXUAKXpZaIJFeixkTVCTI2dGqxoCHksypV/o2ourTL2VLvUvVuxGWt6vLuR/u+FmxT8EZ9mXAgs3+bE3bgLE7JRciV/b+o+N2AFUEgyS/RNwj8bRX1zu3+Dg8BVFvqS3d3YyvQ3dNcwxQE5HhBS0lJ76fAh9LemTYf6zMg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750267305; c=relaxed/simple;
-	bh=FkWozodUKen40StoXQS1uyQvcdO2JECfQGlSZypGNZc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gghwq1RnD9hs0uetGO/q2JVgbO5FWnZyxzxOYMZUM3KdVPiKY5hvpDg3LNJ/CkVu6L6UJzgWPxrG0chy5usvFA2LJ2XJeYjvQm067Sh/KGrhGjdN+5yGszqfM7lEyczetvKlDLxo6+skDEhom0M6jC9WmzuoFhJrlTihM0Bje2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BdU8ZFBy; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9D1422F38E;
+	Thu, 19 Jun 2025 17:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750355423; cv=fail; b=gw+3ix3P/4c2Uu0X7dCsuvhczp6Wrul3QwrEEUIyJ3zy9Gt3uJdK1MX3621UEwzLMMwS6cF38+tGwIE69jb0WEiy9QOG+C1Ra4PBpJT/0FoW0da2yOwnWpbuNVUNswDxY7cwNTyzi2Pe4FZSVVCq+ylbw9IODbhDXRZ8JC4zQ30=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750355423; c=relaxed/simple;
+	bh=7EE1fiZeF4AUPTr85T5jrjsMKXs1MJMspeyGqb0zHPQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=rd+hDBiUDyj2DWu9LI9AZnNFk/zyGZTPLf8/gyuxY4rop5BsS4Hsm4tr8PxbAYXLGmqRLex31IT3CjfBqDs26gY2tYT9fdoDrkRHCpiRVd/S8vI+r5tDhYlsFHIf8SZEWk5dYaBCScNS/tDaXZJZUMH7scss0JOL4gT2klATx/8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OhdfxigZ; arc=fail smtp.client-ip=40.107.92.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BdU8ZFBy"
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6fafd3cc8f9so94910326d6.3;
-        Wed, 18 Jun 2025 10:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750267302; x=1750872102; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k0u+i+peyVQga0VUutMCyFjioDjdoFJwmIZs7VrpQUg=;
-        b=BdU8ZFBy6I/i4WP4xi/EuqeRrVRbxexyMA2KS4E8egucCulgJErxoaQxjtQ3SHYvjI
-         q6GOVr2q0cXxEq5RQ6oPn4oKQ6WGTMkUPuJPASAUG9jbH87iv2Mcw8iEvfOYvvxN7Vqr
-         f7w5NCaO/a45NI4kJhbUTSTVYjRuzM29XgUa4b5d/CC4pC+5Ro5BKrjgTlFYZy4lgHdJ
-         1h89qULjB8yv5Wd0c1Jp0aXufJxCYekzVge9RXjDrw/8JP/QslHqiqqzPLbQWzGCfior
-         6W/cSLTg0vCrtM9lAXywruqGU0HqREsk2VDRqP9Ov137lu2Q8gooFML84ufkI8bsshgg
-         /LPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750267302; x=1750872102;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k0u+i+peyVQga0VUutMCyFjioDjdoFJwmIZs7VrpQUg=;
-        b=gn0YeRfkRCFOuPMsE2CVUuqSgY09cuXk0XH8FKASbWvkUBscDHDVkLDNl+DYBx27ZW
-         JwssY95z4uThKcjwX8BVSEt89xroI4+0MkNyzxaS+6xbjBwUOFI8tMf+3V1IqKkcinaA
-         Dex4kGsrlh9UJEUojHX0wJU6wSzMQ/tRoyDrtrnYl7gfnewfeVc+rgQ31ou++MDO8tAY
-         +Ne4gck6LlPvQ4NLAos1O9uYnnyKP/ANBcEs62DWsGLE2IZ1rgJQU3K2wTzRL9GHaNEf
-         5wF+WAIX8ohPZBzxfIrIKpLmgxSUzgiiZWIgR5Rz/ihG32eMHaoc7cdvsPsdIdbKXDho
-         /hgA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6v6pqOjEGcvFl9mVbSWsHU65CA/WtNfZNwvjb9VIS625lyiCY1FKcDP+91l/7bWzkdgwj9WN4NSterI/2vteBDOg=@vger.kernel.org, AJvYcCVt7aUFN0C2FrGwmhQ4dEgQrOLTx1SSqSC2V5bxcyJqmz7yRXKSzSaHCdQ9Fpw7g8LyycmW@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSxY+aRX05eapzBBXo/EgjiixVekIEhieukwMs1uDKbnSs7XJL
-	jr2hOo2FaJaMzBDpgtSyyagPIgASyvsgoNGwkE0cjBDY7zuI3ngyPpUp
-X-Gm-Gg: ASbGncuHLvbOR269rc1NOZ27UasHmih+LoGaLo7CKo4bFjGbmMH4N1lzz80DTMUPuWY
-	U6OmZZentoAYZkRKXmCXVyKJPYIhZg9UvDIMlt7A+LUvr13QY2ri+uE6yWvI0Ab4i2bcRbiNeLF
-	3GWf4FnSCkSRILo1oJNTjWWTU/7EqCUTzaSq04ls1A+06R/ytmYLLGs6BuIr0covmW8wOwFbTkB
-	qhW7do25i/SItOr+RCDqoHdO86+YZCDzFokAsFNmR7h+HtSFnSARy43o8ZXVKlonDg/h0jTcw41
-	TprPJmZDL1DDlEVzio3UypGiTR1vufXpSyOYU2PAX4gOGFAzHL/X2n+9G/iNIhebUFLnc/LUHsd
-	JBrM3snAbQc6lQeb8hdCJDauhqcEqdVYckXatlXUzXRzVzKKzHVHZd+vnxVRLDmo=
-X-Google-Smtp-Source: AGHT+IGMkqZ89ihj8ugCuPYfIGdOfyar11u68nXEwEXSKQEgU9BnoCP9kqRwqbrvC2a/GH3iDHpoOQ==
-X-Received: by 2002:a05:6214:2527:b0:6fa:c054:1628 with SMTP id 6a1803df08f44-6fb477d995fmr296774456d6.23.1750267302291;
-        Wed, 18 Jun 2025 10:21:42 -0700 (PDT)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6fb35c55ff4sm74731226d6.92.2025.06.18.10.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 10:21:41 -0700 (PDT)
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 717E41200043;
-	Wed, 18 Jun 2025 13:21:41 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Wed, 18 Jun 2025 13:21:41 -0400
-X-ME-Sender: <xms:pfVSaAw4X12WcYUMSJe7e4uOeSOpRVNzeeqDtPrQprrTseQ7U-QzAw>
-    <xme:pfVSaETB66gPgWNezDZbL-3GnUO3IxPlHsCXAWAJbGPPj14UGEAzElBQmP9gm8dlj
-    7_vbP3iYQPQJIbLYQ>
-X-ME-Received: <xmr:pfVSaCW6FNZMl2SkPsmLG37JGibqWdXE2klFIJkc3Piqo2QKTbGuFcLY_z1xQA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgdefvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
-    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
-    gtohhmqeenucggtffrrghtthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleei
-    vedtgeeuhfegueevieduffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhi
-    thihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmh
-    grihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohepudejpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopegsihhgvggrshihsehlihhnuhhtrhhonhhigi
-    druggvpdhrtghpthhtoheplhhinhhugidqrhhtqdguvghvvghlsehlihhsthhsrdhlihhn
-    uhigrdguvghvpdhrtghpthhtoheprhgtuhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprh
-    gtphhtthhopehlihhnuhigqdhtrhgrtggvqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrghdprhgtph
-    htthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhhovghl
-    rghgnhgvlhhfsehnvhhiughirgdrtghomhdprhgtphhtthhopehjohhshhesjhhoshhhth
-    hrihhplhgvthhtrdhorhhgpdhrtghpthhtohepjhhirghnghhshhgrnhhlrghisehgmhgr
-    ihhlrdgtohhm
-X-ME-Proxy: <xmx:pfVSaOjrD7t8ihquIN_wdaBaQ_pQy09DADhtsqpE9A2AsUB5KTqneQ>
-    <xmx:pfVSaCCm3dnKo6sHwvLx3UpPOLkUfFlk068b0ZN9N0LcQ_ezYYmdbQ>
-    <xmx:pfVSaPIXB02zpSRAI-h5AzKWHMQHko_N_QKvp4yrsiKv5HGs1NFjOg>
-    <xmx:pfVSaJAvPo32qj6ssNo0y1_T9wlCm5fbJHKGe2iI-EY61DNBhpfdGg>
-    <xmx:pfVSaCxtpsN63EVstI6VOCPUQ2-JdQzRw-foJJ255sG5J1OwZAPmh1gA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Jun 2025 13:21:40 -0400 (EDT)
-Date: Wed, 18 Jun 2025 10:21:40 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OhdfxigZ"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ryf79bKqaVNGUw0Wt9ASDef2ztOElkNWhCZ9Q2mKZMd+eca0QUSvt5GBSdOi6K2JAhwWJw7O5NvAp3QVX/8GOUzcasnTUaDYI/mFFBDG3x3rc94hcDVhbLgTn7E0uoYRy9WEgKZjs193rze2NeNC5Z9ItjMRT5mTmjDPPbQX7/J5jgAM6mNDTOMK0GGR3juyNGbZQ40RvCg546n1wZOqXwd1b8qNr9mKsr8ECmp1ehorjFxELXWNFBCzmRZLluJdDZnekSx/uKNTFz60DxLkHM2P3+1lsNOYU7CNqgUP9ybyOw+l24j69VZxwFoF7/zkz1pgAMLBR3DR6LcUCLMstQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xx2MvIxTqvjMITxf8erA+E/YZi9k5LSupDGqka2rRpI=;
+ b=nvpZRfwfe8rbSnthTgE1+GRKY80hpDD9dtmvdAfPAqkLSIvyxEL0wj1NflAzNVgWjQxvBrkxxfyeF2TCQctWI89YQQUCcwk0OyGeKnYI3Q20LdxlAn6CtRHX9mPPvUb+3986m0PrRQtS74GL2K1/CgO0poqfFRNspORfBTjyxTSs2Gyg0Isw2i1dXx5SPOXRxlfwwGsvBVJC8UFJum3tJ3ux7bgKWRG1ogc9shmAKppql/iqyc/d9fq/zmMF+Ma7+XPsoUwpHjOOt7mkcd4Ri3Lcx+MuyGsJyqzpogo+EEb6HOEGMDJT8JNCnLErmwdadonk9VonOJoko/ktglqeNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xx2MvIxTqvjMITxf8erA+E/YZi9k5LSupDGqka2rRpI=;
+ b=OhdfxigZRsXsKAE6iuTGoKWpLGEWHDXiuaQuw/d7nCu73SHLgqK3moxyx1s/9RGFdetCm5AxuFboAJ1fO/kRHlKR0Xv7qMDzAaO1sqCYD0tHOWRExLT+9wER85pXjz/zowyF4AtyyZGN7rRdnTWC2G9BmpOlJ6ym8kEmqW44N7+eplyMuowg8oqeOgGIwQO4MlMV9W+OioaaXWRtBC7opJxvbEBcx1oYBsXVqmBLAEtxQVKr+NfdpCCa/Ta8qGJEoDpAch0jVw6W1tQSwrHDasrhMmT9vYQMhR+FM4qQCekyLz8+Jn5+0PDLbOsDS2fDHjJCss1exPZuexk1SUCvsw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7)
+ by IA1PR12MB9061.namprd12.prod.outlook.com (2603:10b6:208:3ab::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.28; Thu, 19 Jun
+ 2025 17:50:18 +0000
+Received: from SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91]) by SN7PR12MB8059.namprd12.prod.outlook.com
+ ([fe80::4ee2:654e:1fe8:4b91%3]) with mapi id 15.20.8835.027; Thu, 19 Jun 2025
+ 17:50:18 +0000
+From: Joel Fernandes <joelagnelf@nvidia.com>
+To: linux-kernel@vger.kernel.org,
+	Davidlohr Bueso <dave@stgolabs.net>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>
-Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
-Message-ID: <aFL1pIGMDX5DG9f_@tardis.local>
-References: <20250613152218.1924093-1-bigeasy@linutronix.de>
- <20250613152218.1924093-2-bigeasy@linutronix.de>
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@kernel.org>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Trevor Gross <tmgross@umich.edu>,
+	Danilo Krummrich <dakr@kernel.org>
+Cc: Lyude Paul <lyude@redhat.com>,
+	rcu@vger.kernel.org,
+	Joel Fernandes <joel@joelfernandes.org>,
+	rust-for-linux@vger.kernel.org
+Subject: [PATCH] refscale: Add tests for local_irq_disable() vs local_interrupt_disable()
+Date: Thu, 19 Jun 2025 13:49:20 -0400
+Message-ID: <20250619174921.2903605-1-joelagnelf@nvidia.com>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BL1PR13CA0229.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::24) To SN7PR12MB8059.namprd12.prod.outlook.com
+ (2603:10b6:806:32b::7)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250613152218.1924093-2-bigeasy@linutronix.de>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR12MB8059:EE_|IA1PR12MB9061:EE_
+X-MS-Office365-Filtering-Correlation-Id: 00143237-90bf-4d52-249d-08ddaf59c0d6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?A0AfciLAOer71ePcYfVizgrtRWLN8hqNQFsMgUpyHzbM4Dhprzj9iq8zbc00?=
+ =?us-ascii?Q?sw1TPlNXJyaIHL8xyloZxfOSCYq/HeBhSYIg56Qn9m2/J8gLkyPsUnzA4M2+?=
+ =?us-ascii?Q?DStbKp8ZdpaCxFnx+XqgPSzadkn0nK51fE7WbxFK9U0O4AteKUC1K/msxHxL?=
+ =?us-ascii?Q?wzsPkj359m8WdzyIapTJBdtRtrBMa02o3BfHyRJaCF8+Gug/QvgI9WMsOX+Y?=
+ =?us-ascii?Q?lFvw/HZ1VER1auqFoZ6Ufk/3vnZhnEsZsp4w1YKdC6XRZC/zYCryCIYmCbyV?=
+ =?us-ascii?Q?rs4Tq6l1xlVMmOkAvAQiwibc7WjMppluPZ/9cVdtgnKuAgg2seACqvjXoiG2?=
+ =?us-ascii?Q?mc/0bzBbwXBARxY2U+U/2g+RKcN69VE5XXdLzWdJlQRnru/vaVHDymfWNewZ?=
+ =?us-ascii?Q?SyDg/gcLt4pbqmKM8DmspZHpWMTOXAwYL68XH3mfLmXtPfKXKO+dK/tKmB0m?=
+ =?us-ascii?Q?kjLjHh+LK8YQ4PYDlhaqoKzFJHtHEGyeZtLukkWJmZia65JyoBv09uaZ4863?=
+ =?us-ascii?Q?cympNIcn8TEVBfPNqvrNI0Ng9Rju8geAzygRYKVM7q5QczJLGcCQTGc6H8No?=
+ =?us-ascii?Q?G3C7uFUZGI+nawSZSjYMatpkiRl6R3xwa50gSmLgBdBIgomAieehYl8WqM96?=
+ =?us-ascii?Q?UUajD4O03THTUQMlwUDE039wZ59ndL7jX+tcj6RA3G2o4h3AAnESqzZu1PxR?=
+ =?us-ascii?Q?SyblqpmysLHyI2/uCeVUDhhRm6z/Lrpa+F1cJWHpOCLnu/ZZT3JL338q8TYw?=
+ =?us-ascii?Q?L7nFYmcSVwiBFpQZ4jezBdE5am/6H7O9ZzdCYGwH+bWzCGCoU1qKmBl7Gg2v?=
+ =?us-ascii?Q?6gjTxeZuS6HK58CkpKWvh07D7UBHyZenGKxAnp+jEzSyKcWcvHz+VOanyBQ5?=
+ =?us-ascii?Q?/qPersBdS30m11CDuEwNQHz1Cg7TTmxWhQEoj/Fjpo7lITp8IXDZQZKpcA3t?=
+ =?us-ascii?Q?tWhLy+yubLLSrgU/+hRvBT+AsaSgFzlDAxGCN5MmfwHuRogJ1hgvKuMd0jB9?=
+ =?us-ascii?Q?JSyi7JnvSWQDsrYZGLDZBnPPYVde5ZJdCYEwSund0G9MK3BdbmBZDP6lRCgh?=
+ =?us-ascii?Q?RKdmpT1Ylwn98hU8ohtjDnI2JrOARabKmmbZjPJm03i7kqWbSIZmm6d4shKA?=
+ =?us-ascii?Q?L8WrAmHnw0OhJb1hwxciLc8x6Wm5XjvJJg+1pf7Rrv4cxbrlifY4psZ+8hWJ?=
+ =?us-ascii?Q?s8gsbUg/mwcST3bkI9s4NJydoG+gLw9+LSpI+OBkEU/g2ndf0lsneENoWw8p?=
+ =?us-ascii?Q?9JaIJmFNYl5/2exmCBfTUY2nhYH+86Kwty2GRlXDClwaEqxM51ev7irPqgpL?=
+ =?us-ascii?Q?vXs+JluokDSg3XsU2IiqGm0A84vESTuTStYRYm1mn2ppbaJRgKjujbW32vvc?=
+ =?us-ascii?Q?8FrxKR/NkWVJSjZ0HZbloeGyAdebJvcnnrh6AWoXMWKx+SuppjOu5kBBEXP1?=
+ =?us-ascii?Q?P3Cq0x9BMuzTTqK7V3donWUjgtECVb5Hou4io8OPkdiYvQ5k7+3ACg=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB8059.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?oNACw4VglX3RW7b1Z9Y1zi77iEFDG29lw9aBQOhzZucVWfVqewz+twNvelok?=
+ =?us-ascii?Q?TrlJkgcG3wdD8hZ3fcY25zjJlTJ3/qHbi+KgWmTboN4800snaFyu5SAzaHwa?=
+ =?us-ascii?Q?nr4xSUxk8w68STaKOzbLyEDwyJn/6iTMZEbfoTXAC0apJ7HAVd9Fyr7o7fcl?=
+ =?us-ascii?Q?e7UFbZ0A1ene+eY0vXPiWGloQ8GgF8zkbkH3nQ5iX6ecj/da+K3nYXBXcyaI?=
+ =?us-ascii?Q?uQkBuuasovu4ULZ3PP2MRjABhsnZaIqsgDgOr/b7+ZfeG4tAcmaxXB8n2S/Q?=
+ =?us-ascii?Q?5Pe/yjRTdD9ewXE8oD5xJBkYkEj3yPNvCEkyl8H2uiOjCRVu8sXIUjWvF80r?=
+ =?us-ascii?Q?Ku1svzJQSN4EvXMqJ9773C/0UmH8OaVQEDRzWAPRf/ThLtOGUUi7oJPD5r9n?=
+ =?us-ascii?Q?nNiNneIiKMofVMnIwrh4Qu2pesgDnKlAYqiJFXXK5gjDEl2bNKvedVHVJYXn?=
+ =?us-ascii?Q?pbzayGHu4yQVS6NnHEz+NiqrrsBh4ko9MFVwWUtf1LGA+ZBZkyOd2JWGOvBY?=
+ =?us-ascii?Q?bDhuhdsk1KsYhB/mvfhAr8BCrV58OYx22G+E1qzmYN42seCNiLrRh7qHH0DD?=
+ =?us-ascii?Q?TMbnJ4/uPZnqHP01MaTES8vEhfPYyOQfaPUacaDLOZ3GwKflloT0krwHFYbt?=
+ =?us-ascii?Q?d+zKgVohIquZUfYBQ5GErUlX0JLrtjF9uiE212GrGVTJazdjScJ5ehEEB7yf?=
+ =?us-ascii?Q?Kri5FziUmgxSwUW8uhLpFAcNxcgg2zPH6du8Kr/MP2u3RTafSsDLs4Pn6FAK?=
+ =?us-ascii?Q?KFIUTw/SvkUqPAxGYo++ALQZZEMqoiKJBzQ1McjyqGuJBl2oVMBsVAxXfEYW?=
+ =?us-ascii?Q?MOFBWDemTquyMA2uWXjgC5EBzHww+GfU6nn4L6A925s9dOJ7qLaTL+OgiNu1?=
+ =?us-ascii?Q?mjHcxePqb1tm60OWpVnujtu6l0+cneslGRi+sv6U5o0YvTkTeHgszp2rTGeg?=
+ =?us-ascii?Q?4PqNRbbkzB4lg7TKvZ31+AuRwAn7BkaMXJkYOvFAJPhgYI0fKap+YxJGvllI?=
+ =?us-ascii?Q?JeaahtlvqGTZ+3o4fiyF/5AMjxb72fPv3leChpheOSMEXjJUc6jaSHshU4rd?=
+ =?us-ascii?Q?Kbz0LRflFQDhtZXfd9KWfCkR7gu96gF4ojBe/lXkugY0rP3bSlNYAWGvw6FT?=
+ =?us-ascii?Q?JBlJLt5c2Qkm+m2OP3vsFfstSuq0VtL9Qdcpb9wrHxl8TuN20wv0HpPf9IKs?=
+ =?us-ascii?Q?KogYFDbp2yfSOA+CCsO8nVQ9E5nqCtYcx/M4uS11NsHj4SRToRCfPLeFF6Fk?=
+ =?us-ascii?Q?3vedu8QNbj4GNwp+wRH1OraxFz+gqjikDjRZwpQvx8MrJbKvX5Wcm4xWccwi?=
+ =?us-ascii?Q?07E9A02KY7KjjoTBu/LS2SxGSsYY/OAnyNElB3Bk2coG0h7M1TJCKnY/B6K4?=
+ =?us-ascii?Q?64did3Rs1Nvn9X2eHV6s5DItjVRdnK7yBGcWg4dGlawYfOyq1DJRkGKIoQjm?=
+ =?us-ascii?Q?QPGKNo1GpE/q1VlP9tLU72/ETEvl/Y0oBHvJcX4YeN1oKxO4H17iHijUvw7Z?=
+ =?us-ascii?Q?neMMI+eqV68u6D3YUQNPTWcV/bg6Pi7UwkpaIIFSXidbxp29Y7dg6E8grxow?=
+ =?us-ascii?Q?BxsH6xy8vv/dG4k5uVi2lCATOyaeogYxRXUFhNMu?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00143237-90bf-4d52-249d-08ddaf59c0d6
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB8059.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2025 17:50:18.0534
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CsmlPXCo5d8tWcXw0S8ItnPybpisSNUAOLbP6gIfYEMXzNN77y7ltnukpoN1p72iKIodMprwO5nYLfQTutLt0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB9061
 
-On Fri, Jun 13, 2025 at 05:22:17PM +0200, Sebastian Andrzej Siewior wrote:
-> rcu_read_lock_notrace() follows preempt_disable_notrace(). The idea is
-> provide a rcu_read_lock() version so that the preempt_disable_notrace()
-> user (which use RCU-sched under the hood) can migrate to preemptible
-> RCU.
-> The first user should be tracing (tracepoint) which is using the
-> _notrace variant.
-> 
-> rcu_read_lock_notrace() is a slim version of rcu_read_lock(). It simply
-> increments/ decrements the counter. It does not emit any warnings if
-> RCU_NEST_PMAX is exceeded or patricipates in STRICT_GRACE_PERIOD. It
-> also does not participate in rcu_read_unlock_special() as it would if
-> invoke from NMI.
-> 
+Add two new refscale test cases to compare the performance of
+traditional local_irq_disable()/local_irq_enable() with the newer
+local_interrupt_disable()/local_interrupt_enable() APIs.
 
-If it doesn't participate in rcu_read_unlock_special() then it may not
-report a QS in time, right? For example:
+The local_interrupt_disable()/local_interrupt_enable() APIs are
+introduced to provide a Rust-compatible interface for interrupt
+control, as mentioned in:
+https://lore.kernel.org/all/20240527222254.565881-1-lyude@redhat.com/
 
-	CPU 2			CPU 3
-	=====
-	rcu_read_lock_notrace();
-				synchronize_rcu();
-				// need all CPUs report a QS.
-	rcu_read_unlock_notrace();
-	// no rcu_read_unlock_special() so QS will only be reported next
-	// time we if another RCU read-side critical section exits.
+The 2 new tests are "local_interrupt" for the new API and "local_irq" test
+for the traditional one. This allows direct performance comparison
+between the two approaches.
 
-Wouldn't this be a problem?
+Test results on x86 with 4 readers, 5 runs, 10000 loops:
 
-Regards,
-Boqun
+local_irq (traditional API):
+  Run 1: 1.306 ns
+  Run 2: 1.306 ns
+  Run 3: 1.305 ns
+  Run 4: 1.307 ns
+  Run 5: 1.085 ns
+  Average: ~1.26 ns per operation
 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-[...]
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 0b0f56f6abc85..02cccca917a22 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -420,6 +420,13 @@ void __rcu_read_lock(void)
->  }
->  EXPORT_SYMBOL_GPL(__rcu_read_lock);
->  
-> +notrace void __rcu_read_lock_notrace(void)
-> +{
-> +	rcu_preempt_read_enter();
-> +	barrier();  /* critical section after entry code. */
-> +}
-> +EXPORT_SYMBOL_GPL(__rcu_read_lock_notrace);
-> +
->  /*
->   * Preemptible RCU implementation for rcu_read_unlock().
->   * Decrement ->rcu_read_lock_nesting.  If the result is zero (outermost
-> @@ -445,6 +452,13 @@ void __rcu_read_unlock(void)
->  }
->  EXPORT_SYMBOL_GPL(__rcu_read_unlock);
->  
-> +notrace void __rcu_read_unlock_notrace(void)
-> +{
-> +	barrier();  // critical section before exit code.
-> +	rcu_preempt_read_exit();
-> +}
-> +EXPORT_SYMBOL_GPL(__rcu_read_unlock_notrace);
-> +
->  /*
->   * Advance a ->blkd_tasks-list pointer to the next entry, instead
->   * returning NULL if at the end of the list.
-> -- 
-> 2.49.0
-> 
-> 
+local_interrupt (new API):
+  Run 1: 4.594 ns
+  Run 2: 4.201 ns
+  Run 3: 4.428 ns
+  Run 4: 4.905 ns
+  Run 5: 4.566 ns
+  Average: ~4.54 ns per operation
+
+The results show higher overhead with local_interrupt_disable()/enable()
+possibly coming from the additional state tracking.
+
+To run the module, modprobe refscale scale_type=local_irq (or local_interrupt).
+
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: rcu@vger.kernel.org
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/refscale.c | 50 +++++++++++++++++++++++++++++++++----------
+ 1 file changed, 39 insertions(+), 11 deletions(-)
+
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 461a433e3f53..ac6e2391d672 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -71,7 +71,7 @@ MODULE_AUTHOR("Joel Fernandes (Google) <joel@joelfernandes.org>");
+ 
+ static char *scale_type = "rcu";
+ module_param(scale_type, charp, 0444);
+-MODULE_PARM_DESC(scale_type, "Type of test (rcu, srcu, refcnt, rwsem, rwlock.");
++MODULE_PARM_DESC(scale_type, "Type of test (rcu, srcu, refcnt, rwsem, rwlock, local_interrupt, local_irq.");
+ 
+ torture_param(int, verbose, 0, "Enable verbose debugging printk()s");
+ torture_param(int, verbose_batched, 0, "Batch verbose debugging printk()s");
+@@ -524,8 +524,36 @@ static const struct ref_scale_ops lock_irq_ops = {
+ 	.name		= "lock-irq"
+ };
+ 
+-// Definitions for IRQ disable/enable tests.
+-static void ref_irq_section(const int nloops)
++// IRQ disable/enable tests using interrupt_disable/enable.
++static void ref_local_interrupt_section(const int nloops)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		local_interrupt_disable();
++		local_interrupt_enable();
++	}
++}
++
++static void ref_local_interrupt_delay_section(const int nloops, const int udl, const int ndl)
++{
++	int i;
++
++	for (i = nloops; i >= 0; i--) {
++		local_interrupt_disable();
++		un_delay(udl, ndl);
++		local_interrupt_enable();
++	}
++}
++
++static const struct ref_scale_ops local_interrupt_ops = {
++	.readsection	= ref_local_interrupt_section,
++	.delaysection	= ref_local_interrupt_delay_section,
++	.name		= "local_interrupt"
++};
++
++// IRQ disable/enable tests using local_irq_disable/enable.
++static void ref_local_irq_section(const int nloops)
+ {
+ 	int i;
+ 
+@@ -535,7 +563,7 @@ static void ref_irq_section(const int nloops)
+ 	}
+ }
+ 
+-static void ref_irq_delay_section(const int nloops, const int udl, const int ndl)
++static void ref_local_irq_delay_section(const int nloops, const int udl, const int ndl)
+ {
+ 	int i;
+ 
+@@ -546,10 +574,10 @@ static void ref_irq_delay_section(const int nloops, const int udl, const int ndl
+ 	}
+ }
+ 
+-static const struct ref_scale_ops irq_ops = {
+-	.readsection	= ref_irq_section,
+-	.delaysection	= ref_irq_delay_section,
+-	.name		= "irq"
++static const struct ref_scale_ops local_irq_ops = {
++	.readsection	= ref_local_irq_section,
++	.delaysection	= ref_local_irq_delay_section,
++	.name		= "local_irq"
+ };
+ 
+ // Definitions acquire-release.
+@@ -986,7 +1014,7 @@ ref_scale_reader(void *arg)
+ 	// of preventing entries into slow path for rcu_read_unlock().
+ 	// Exception: for IRQ ops, use preempt_disable instead since we need
+ 	// to test actual IRQ disable/enable performance.
+-	if (cur_ops == &irq_ops)
++	if (cur_ops == &local_interrupt_ops || cur_ops == &local_irq_ops)
+ 		preempt_disable();
+ 	else
+ 		local_irq_save(flags);
+@@ -996,7 +1024,7 @@ ref_scale_reader(void *arg)
+ 
+ 	duration = ktime_get_mono_fast_ns() - start;
+ 
+-	if (cur_ops == &irq_ops)
++	if (cur_ops == &local_interrupt_ops || cur_ops == &local_irq_ops)
+ 		preempt_enable();
+ 	else
+ 		local_irq_restore(flags);
+@@ -1231,7 +1259,7 @@ ref_scale_init(void)
+ 	int firsterr = 0;
+ 	static const struct ref_scale_ops *scale_ops[] = {
+ 		&rcu_ops, &srcu_ops, &srcu_fast_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
+-		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &irq_ops,
++		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops, &local_interrupt_ops, &local_irq_ops,
+ 		&acqrel_ops, &sched_clock_ops, &clock_ops, &jiffies_ops,
+ 		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
+ 	};
+-- 
+2.43.0
+
