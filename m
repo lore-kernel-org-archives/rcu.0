@@ -1,161 +1,75 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596372222D2;
-	Tue, 24 Jun 2025 04:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75FB28A703;
+	Tue, 24 Jun 2025 16:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750738417; cv=none; b=Srl46HLNXdCHcrtPtP5RHx0lzgF2EHZqw3W6HrC+BcKPtc21FEj1XjZYlL4FJzFbjH2Yq5r+POsreftukFJnR7MEF2l/xrJqodTmoeaK5Kdpqhm+R7VmZyf6KeF9Hbb1Es/bTwmIJ+9y1bozCGJ9Ua/N/FPu/x6CqVhxstkuXGg=
+	t=1750781634; cv=none; b=U10da+MjJ/bVLBHjIKRSshwcJF+f64StW6R71rzp0LsnFy84fJcZ/pVnuPWpVdpe5oH3KHD4hseRCd+WCgYuJ8i3A1LKPs1OTI0fBejjQTTuTW29q+WZa6YngQOXHfUzREG7FN/iYUBISk4Vrno8pMR4oCHvtEKt9cBmsK/uxJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750738417; c=relaxed/simple;
-	bh=3/CWgub4U9QtyEkq3ynAFS+ROzrVWSthrxcGBsTsdWs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YeEO2DEdXB4HS58ZyAbIESXNFP1r553bwqQ90SPx/zFCnjad6pXLa0Dl3+VGl0CMJxpl9YrYKPFCgSH+jA+hFhJKUG6xsxf1vdJcz7Xs56weiJ9kXhBh79DAzjg38OBq2Oncmj4LSl1QVuIO0/k7UJBr7MXYCxqZSq3B8xaZ8Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YylBEWXl; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1750781634; c=relaxed/simple;
+	bh=hZCVB2AyXPrDSc6UP3805nf29pF3+Y8CbnsLL41zF+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ptYRiQuL8WsM9ga7YwNskpGWieD7crr0G9JJhd75eYWeRLmf7K3oFwSTkEeQ3HJMN4qHR1iYnSSxwVVYxvdlom3Jfa9m+xaAgqok82LzPEBpKmPgI30MQCf7d+/CYrzTne5IBED0E8PuoDBdW8rjNjQUy7aZ/UHGsJ/iqNKgdjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WuaZVeql; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YylBEWXl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D928C4CEF3;
-	Tue, 24 Jun 2025 04:13:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WuaZVeql"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E1CAC4CEE3;
+	Tue, 24 Jun 2025 16:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750738416;
-	bh=3/CWgub4U9QtyEkq3ynAFS+ROzrVWSthrxcGBsTsdWs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YylBEWXlRAs76JVQLbcTVbUaKQXSK/wjsCtiHkDTiBXuE80xvJ28zd94pqkmh4CaS
-	 Ni2sWrBuF66tcwYF5UcGnrcLvpf50wFYYcdh/bdw4CUmDDQZXMcp7cP2Xyy2SFJxNx
-	 MLEmKnYitzJtun7FqJtplff2WdrIzGH1WCtE5JpPSq3m9YqPeMR8jjufA/M6BLGRHV
-	 Y7L5aijyEmeosBMzA7lcUIy3YTruKhY22b1i4Fg2pU3szhe9J8tbkGf6URZ1HiWUDn
-	 HcsUwIm+USsUBf7xauLEfoBuIbhVJnvpcJfNx0RWNteIUwcgCIPc2Hhg9VnBnInMl0
-	 2X1+wwh47IiGg==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Sasha Levin <sashal@kernel.org>,
-	paulmck@kernel.org,
-	frederic@kernel.org,
-	neeraj.upadhyay@kernel.org,
-	josh@joshtriplett.org,
-	boqun.feng@gmail.com,
-	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 7/7] rcu: Return early if callback is not specified
-Date: Tue, 24 Jun 2025 00:13:26 -0400
-Message-Id: <20250624041327.85407-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250624041327.85407-1-sashal@kernel.org>
-References: <20250624041327.85407-1-sashal@kernel.org>
+	s=k20201202; t=1750781633;
+	bh=hZCVB2AyXPrDSc6UP3805nf29pF3+Y8CbnsLL41zF+s=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=WuaZVeqlHxWNx+ojMovpVXBoAFKJBQnuvrJ9zww92sSmO5aNgBJkCAClJAy6f1bO9
+	 gpxuFvuwL8EWw182j8SZLx9r5QRZJHg1zlP8/8NNMTxTqT6Gntaud1gdJV9A3FtuhZ
+	 mhW77JBD5Oh3fDm6T+t480WhK1pJXMyo0W1/djphBe/EGOT1W6QMbMDO3TTHbMVeRd
+	 HO08dtjTTC6yAKs1B/tFL07IYS3EQ2dz92ro++1KN3AVpUIbIP8u7oW3LVCsjrKd+K
+	 Cdr1M9sfCgsNePsLDi/tJN1C3+tZcmxyEkFGyaEYIcsRKQyW/km1xH9yNr8cIh38xo
+	 VoX7NevsffekA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 20E21CE0B27; Tue, 24 Jun 2025 09:13:51 -0700 (PDT)
+Date: Tue, 24 Jun 2025 09:13:51 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: rcu@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org
+Subject: [PATCH 0/5] Remove SRCU-lite in favor of SRCU-fast
+Message-ID: <e5dd6af2-fdbf-4773-9732-13b84ca13a12@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.294
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Hello!
 
-[ Upstream commit 33b6a1f155d627f5bd80c7485c598ce45428f74f ]
+This series removes the deprecated SRCU-lite flavor:
 
-Currently the call_rcu() API does not check whether a callback
-pointer is NULL. If NULL is passed, rcu_core() will try to invoke
-it, resulting in NULL pointer dereference and a kernel crash.
+1.	Remove support for SRCU-lite.
 
-To prevent this and improve debuggability, this patch adds a check
-for NULL and emits a kernel stack trace to help identify a faulty
-caller.
+2.	Remove SRCU-lite scenarios.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
+3.	Remove support for SRCU-lite.
 
-So I can see that in the current code, `debug_rcu_head_callback()`
-(called at line 2566 in rcu_do_batch) already checks for NULL func and
-dumps memory info, but it doesn't prevent the crash - it still proceeds
-to invoke the NULL function pointer at line 2568.
+4.	Remove SRCU-lite implementation.
 
-Now let me understand the commit more - it adds a check in
-`__call_rcu_common()` to catch NULL callbacks early and warn about them,
-preventing them from being queued at all.
+5.	Remove SRCU-lite deprecation.
 
-## Analysis
+						Thanx, Paul
 
-**Answer: YES**
+------------------------------------------------------------------------
 
-This commit should be backported to stable kernel trees for the
-following reasons:
-
-1. **Fixes a Critical Bug**: The commit addresses a real kernel crash
-   scenario where passing a NULL callback to `call_rcu()` results in a
-   NULL pointer dereference when `rcu_do_batch()` tries to invoke the
-   callback at line 2568 (`f(rhp)`). This is a serious bug that can
-   crash the kernel.
-
-2. **Small and Contained Fix**: The change is minimal - it adds just 4
-   lines of code:
-  ```c
-  /* Avoid NULL dereference if callback is NULL. */
-  if (WARN_ON_ONCE(!func))
-  return;
-  ```
-  This is exactly the type of small, focused fix that stable trees
-  prefer.
-
-3. **Defensive Programming**: While the existing code already has
-   `debug_rcu_head_callback()` that checks for NULL func and dumps
-   memory info (as seen in similar commit #2), it doesn't prevent the
-   crash. This commit adds a proper early return to prevent the NULL
-   callback from being queued at all.
-
-4. **No Side Effects**: The fix simply validates input parameters and
-   returns early if invalid. It doesn't change any architecture, doesn't
-   introduce new features, and has minimal risk of regression.
-
-5. **Clear Bug Prevention**: The commit prevents a programming error
-   (passing NULL callback) from escalating into a kernel crash. Even
-   though passing NULL is a programmer error, the kernel should handle
-   it gracefully rather than crashing.
-
-6. **Similar to Stable-Worthy Commits**: Looking at the similar commits,
-   commit #2 ("rcu: Dump memory object info if callback function is
-   invalid") was marked as suitable for backporting (YES) and dealt with
-   a similar issue of invalid callbacks. That commit added debugging for
-   when callbacks become NULL after being queued, while this commit
-   prevents NULL callbacks from being queued in the first place.
-
-The fix follows the stable kernel rules perfectly:
-- It fixes a real bug (kernel crash)
-- It's small and obvious
-- It has been tested (as indicated by the review process)
-- It doesn't add features or change behavior for valid use cases
-- It improves kernel robustness without any downside
-
-This is a textbook example of a commit that should be backported to
-stable trees to improve kernel reliability across all supported
-versions.
-
- kernel/rcu/tree.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 615283404d9dc..562c1ff452837 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2568,6 +2568,10 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func, bool lazy)
- 	/* Misaligned rcu_head! */
- 	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
- 
-+	/* Avoid NULL dereference if callback is NULL. */
-+	if (WARN_ON_ONCE(!func))
-+		return;
-+
- 	if (debug_rcu_head_queue(head)) {
- 		/*
- 		 * Probable double call_rcu(), so leak the callback.
--- 
-2.39.5
-
+ b/include/linux/srcu.h                                     |    2 
+ b/include/linux/srcutiny.h                                 |    3 
+ b/include/linux/srcutree.h                                 |   38 ----------
+ b/kernel/rcu/rcutorture.c                                  |    7 -
+ b/kernel/rcu/refscale.c                                    |   32 --------
+ b/scripts/checkpatch.pl                                    |    2 
+ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST    |    1 
+ include/linux/srcu.h                                       |   47 -------------
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-L      |   10 --
+ tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot |    3 
+ 10 files changed, 4 insertions(+), 141 deletions(-)
