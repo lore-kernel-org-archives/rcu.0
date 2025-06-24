@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAEE226863;
-	Tue, 24 Jun 2025 04:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47EA0253B73;
+	Tue, 24 Jun 2025 04:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750738378; cv=none; b=OyWpwbA/Xtgj0b6kWeS/rocfdTUUYpC/8OCHds2UUFzxNLi1wh2LqHN2lUcyknYbZhkvlqMlJpZZUSh07gnSSLvstphcGer0hM8itzTqjP/v2k4lRihPGcKjLeiC1ObQHgDfzDYhq9rOK3O27+rvnzO4M/zbwP+VChO9fJ0TJIg=
+	t=1750738395; cv=none; b=a2hL3qjJnX8dk3AT/nbzjLYKATQWK40A/wikJuDK7R4UdGXYE7dMdD/SDfhB+TLGorDlHqTgmVbrAy1k2FzQywrqQIxNvnCSgrikUoaIegGX1cAeYFIpS8mcwAPVjxq/+IreY3R2aMmPtYlkqxZgMYKjlHJuex/wTVF1T18tyWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750738378; c=relaxed/simple;
-	bh=aK4J2HTq7cs6MYYbCIVFriH4hoN2M7xyqlBUgFequuw=;
+	s=arc-20240116; t=1750738395; c=relaxed/simple;
+	bh=qroJ885ZnbcP+FbdAn8w1SdBrAUrlbXXzdJSgZHVacA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oXHzijEL5xYVL+lUdINZr5Rz8vi/eQYAhpkXnc9fCYeHt5Nj+AIAWpTXOL1X9uIJsVJ87A5s55290lzBEVL+s1ouX0RHf488x2SzUpzmo2nNhfGcfeOB67WJqfVfJ2QxiMyvIFVbu5NOdOYH/7twHQU3BeTqcTwq+dBr6WFFhSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fWdezjeh; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Fy3/iliNzWtXH/KjN//Fdc/Q7LeCsBnSF7SuWWCjoWyob+P5tZgEjwDU5Bmh4McWvI4E9GeUoB3csITv1NPJX7cyNJqEIh7cDbJpWuCwH+QCgEkV7BbexdgBvb1H7/ii8DG18kmLRxh4vbhHdzwyJZQx4QLqsE9vTPnBhG+d27k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9TbpkX1; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fWdezjeh"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03B47C4CEEF;
-	Tue, 24 Jun 2025 04:12:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9TbpkX1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5273CC4CEE3;
+	Tue, 24 Jun 2025 04:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750738378;
-	bh=aK4J2HTq7cs6MYYbCIVFriH4hoN2M7xyqlBUgFequuw=;
+	s=k20201202; t=1750738394;
+	bh=qroJ885ZnbcP+FbdAn8w1SdBrAUrlbXXzdJSgZHVacA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fWdezjehbNcrI4AILPEA3PsIfofPHuChP7GhhUE2pJKBoPhJaHyYpeyus3Gq3e+5a
-	 upD+ZDOrLu8mbb00twcUNjIIpz1MuYuf6zAmtP7Qa27RLHH3mqo5t/6NLeuXn4/1b7
-	 xpF72QdFw0O62Zt6RGveGi83zOT4Er2HIm98khtDNNdCGXff4rDeawvDQPMs6xQOls
-	 HhzRfi2Z3dzpoOTCiYq24SXQpJQvYMReg4rNfC7GzVds2acMcel4uKLtayjpUfqBw1
-	 xTBgxjZbtwCyVx+evjI00328ScYCYsH0EP5vaFyueltfQhdbV2EpdIpq4M2r8uKBWK
-	 Xlnb6G429Uu0w==
+	b=p9TbpkX1pUU19mt4EKhcVDJ8v774eXnQ5p1YS4kcCTUcXEzmHs0Mb/NSScS1YB1av
+	 i1EXlp/39iEQ+lMQINxnW24DD8KNoY5dbLtVyGA7hJ6nK9kUu5LdtcTTfnoeEPCWwv
+	 EhVM/Yt8TI6jucqvtZIsww7PH165d0XAAfGY0hYtfr9TxHiZCC0dy+eOqD3+cT4td0
+	 MwUA+ujez7gri1FVgCpLC231MTbs5h5EZfT3Fwkr51eFAte7Ga35GdDsS08BqPJB9a
+	 UABfitS41QoU2imjGHR/kscxkH/l0XB1v1sg+I0PW+ZdjRGknZwc6bxBPgBjBp4EDI
+	 7j28vLvxJueSg==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -38,12 +38,12 @@ Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
 	josh@joshtriplett.org,
 	boqun.feng@gmail.com,
 	rcu@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 15/15] rcu: Return early if callback is not specified
-Date: Tue, 24 Jun 2025 00:12:38 -0400
-Message-Id: <20250624041238.84580-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 11/11] rcu: Return early if callback is not specified
+Date: Tue, 24 Jun 2025 00:12:59 -0400
+Message-Id: <20250624041259.84940-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250624041238.84580-1-sashal@kernel.org>
-References: <20250624041238.84580-1-sashal@kernel.org>
+In-Reply-To: <20250624041259.84940-1-sashal@kernel.org>
+References: <20250624041259.84940-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,7 +52,7 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.141
+X-stable-base: Linux 5.15.185
 Content-Transfer-Encoding: 8bit
 
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
@@ -142,10 +142,10 @@ versions.
  1 file changed, 4 insertions(+)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index dd6e15ca63b0c..38ab28a53e108 100644
+index 66c1ca01dd0e9..185d37b02dc9c 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2827,6 +2827,10 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+@@ -2988,6 +2988,10 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
  	/* Misaligned rcu_head! */
  	WARN_ON_ONCE((unsigned long)head & (sizeof(void *) - 1));
  
