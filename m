@@ -1,73 +1,73 @@
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DCE264A7F;
-	Wed, 25 Jun 2025 14:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D963B264608;
+	Wed, 25 Jun 2025 14:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750860544; cv=none; b=CbZKMv2C8yRMXE1GynCywNvMflkkb3Rt+xctmhQNfmTfEng8i3NmSbAk75uPVVBWpgvLVPbVig8/T1q6s2OxAC97zE5zhR5MK89Pq5WN36OZmuzdfLYF5fxYxGbSMRTHI5S3/hdg8TPGCEE0anqtkuvuQGjYj5C1+bMwYZ+j1AM=
+	t=1750861111; cv=none; b=FI1QCTuCjfwRji6IlcSMtEcJbVOWZThcDgLM1D0LRBOKt75GsTxbmkQom0TP/sauCiS/w6gDMXs9xlZWv5Vt/5P+JBob2b+Yc+LqquPbQeBP15uuBuO6dw5lwMtUCyH4TxjFmAi6amCukGYcp7NqXi0DaNfFlDb1GLJTd0dVnE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750860544; c=relaxed/simple;
-	bh=WpwnfGVGjxp5of/6IZTd6KwuTsBR7L32KPSN66Lelok=;
+	s=arc-20240116; t=1750861111; c=relaxed/simple;
+	bh=v8kTdUhjATpjI9S/z2ca5IIHJ3LI0Gt3dbKmgjAwh4s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UUbAdooXDDtDQQ5+o4nK77C7S+Qb6U4snCj9Dj+Atvl/uchEpBn73zikHBQZKlbPk/VzV/2cIuG8mw68308DKdPwlCIOMU8rMQcfDpDhyLiPL9DFbQEG1gVSIFyXSL5ezqJXy1kLh5vJX6EJ5icwJbCh0RJEH0PLpKFSbr/KuAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XU0kBddW; arc=none smtp.client-ip=209.85.222.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=HS5KPbUK2htVqIteOfp4GbQAAzE968WkA/doO+KQ653PVpIk77/eTWSzFWfT5N7u/Ot3A1uZzICQtsa5S/Dtvay/WJg0+RN4MxS6xKdYH20TfY+liUf5/rZx0zirhYe65ndMBSW6jYpsq12CPdS4lU5p29ECO/UsN3uN6kpCKdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JmMKYV47; arc=none smtp.client-ip=209.85.160.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XU0kBddW"
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7d0a2220fb0so818294585a.3;
-        Wed, 25 Jun 2025 07:09:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JmMKYV47"
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4a4bb155edeso18152401cf.2;
+        Wed, 25 Jun 2025 07:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750860541; x=1751465341; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1750861109; x=1751465909; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FJCFyxNIJ7B2fFTdwEw8L9jsO7+gbSPGHGFr4LFZGcg=;
-        b=XU0kBddWkLI8Rs+F5wilCqHuckRIqbw0Wl/+v7L3udgjt/SRf0uDAiN0+3OT0pHTDJ
-         CnieZNQ/+936h66/nGU/fkIiORIJtTtjvUTW1BPR2naE7zjtbdAXZIGnv6uJ8ih6mPUN
-         8zOasVN7T5hBxZn8TqB/xTo/IVkloy164ya5jQn2WZHrAugmMIXOnF8cEGQcHCiWjwNf
-         I6c6zHKH5nt/hMolThArxBCnbtu1vQBZwz4N+0TClme+tLLRXzeczhbxCs2EOgIxcrTd
-         hP2hjTrRUjwNWHpoG6bfzyWnztPj+PiV8ENygMzwjhwyCVx0cmCA53n9MSkledgIKKJG
-         01ew==
+        bh=SApv73wV95/PW1AcOp5ta6WUGd2OuNz5QHUzFSvdal8=;
+        b=JmMKYV47ed4AWxrmUKDs/1avnvPKTizPxumU+JqjleIPBWtlMcPafNz5vN9QmT4B+Q
+         VbhXVewIwgNGRw9/Kr2yiTcI7hZYS/i4s9CVeb/mJ4NDDVbSFCfnjszposqGS05hXK0d
+         31tc39+XAF+dlsTvgz01wV2eCuV5t/JtgQFkHjGCw8zmrUc2DMgR8d3QRNB2xFde7RGj
+         LHk/toFnVFgpNpMnGVWY4nOXLGChMqPj5vnp2jjeuLh+aeWcPDZuPljmZj7+oBFfU/D+
+         4Kdw264YCpTyeX6G4TLhA0AObxE7sz8cBD1fDMgh7pHtld0Vqnp2JO5yEubEh6GjfFvl
+         0DQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750860541; x=1751465341;
+        d=1e100.net; s=20230601; t=1750861109; x=1751465909;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FJCFyxNIJ7B2fFTdwEw8L9jsO7+gbSPGHGFr4LFZGcg=;
-        b=XAvU0mzU2MxxqkAU5hyiEm9ZKdp9AYm764fjgr16gtpUmwlkNbrQaiTzOlLitAOkX+
-         9K2SbMCwXQjB1MmceElLD0LopKMdHUcMxjZd2s61A72jz7tQQaomS5FJpydd6/UzhNdA
-         cFgWkwchcnbc1nQQgrgoYw+6ETB2EB1HBp08mcQjUy+WE+X2jICbRE8C8u2lwsb69Y8x
-         IKH9sYw5ZDRZEXXQAoiHmZhFqV2LiygtXWHiCwOTb3H8NJ6p9B5LajAgSnfV8D+Sa2aF
-         5F3OYNGGeaEReNqzciiAIRA7aKUxDVNqL6zT6rJRsN3rLa0lS8leTjGinrwXvdXToeGJ
-         1VcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJNub4JQaacroUiDfENLCIZw4jKX5mX1MIpbhPy2t/UJwYQ4U77fnzQwqwzsOR01LTTukR1OA=@vger.kernel.org, AJvYcCVuGXWQQxY44lMCy42JXhpftrm/jTmr1UtYVrpu83IdC5MCz6cuSlm7NCjvfOUg2n2+5iEs@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnVzgzInLOIRIaDvskuLZAkW9YPzGAi2boJk06mV+jQ30ftBsz
-	amH2h1JjyuPJophrtcjOtptN61XuTI4TCgWUHWv4ULH40U36Uk9jExs9
-X-Gm-Gg: ASbGncvWppp3lpvq12rVUfIYmk3Qeu1+m/94ZHGq2D2emETvFUw8xgoHMuwYdShKwRF
-	Wgu/ftohbBhkypc7ZmtFKHzXwptKOf90wszZjghniSlMaRLXnLaag0PK9QBT9hYuGaiuknKDUQD
-	kOwGpB7Cvr4ZwjHq5h0MHj8n6mB4guUkpE8zf5XsTOMDejT2NAOiaWGbDJqsJ/6aCmWC5L4SfZx
-	wozNV86KKCTugagTKZLllsywYmJM/vIYamAXXeieZef4pumke65D27qulHZZW5GPdbx26VDAeUi
-	v9mCRDA2kkrVVaAUeqSipS/p/uWYB6w/OZ6e/ninyQOY5KheHZehsfDQFqhQhwwfMImeUH22pJk
-	MpAwDmRidW84/HzPjafEUz5urLcCu60D9yuhwcAhq5QlzhWMoxrQY
-X-Google-Smtp-Source: AGHT+IGP3xXAQS3aRTeDmPFsQlYIlwFJjsOntFEA1J01weuYZPTG6VG9nUgH89lQn3xG0BigJ5bv8w==
-X-Received: by 2002:a05:620a:2902:b0:7d4:e3e:6606 with SMTP id af79cd13be357-7d4296d49d5mr473909885a.18.1750860541118;
-        Wed, 25 Jun 2025 07:09:01 -0700 (PDT)
-Received: from fauth-a2-smtp.messagingengine.com (fauth-a2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d3f999bfdasm618007285a.1.2025.06.25.07.09.00
+        bh=SApv73wV95/PW1AcOp5ta6WUGd2OuNz5QHUzFSvdal8=;
+        b=Cu3fL+2JL6F+aFIKTuJEr9AOlxgctMiz/77S3zF86Fk8awWH5j6XaP73sHpl8z110e
+         YkFscrdRlnDEsmSAfYB77XkbSfEmOyrw2yCfuyNfFXTUEdmHberpQVqHTGw2JgY6bQ/h
+         536LO1Tja1F3G+S9Eyo8o81/TWkau299Mk8pxCnvQTsg/4vd4tkmUjrr6NyWI958TmZe
+         F0IlnjNpUc1cihFNP2u0sA9ZcuKCFrcNHWFt0ViQSiwM+sFJT7C0KvgQ8233vUIU/POz
+         oZ0bl7y4ZlBT2Xxec2WPqBumu8fr1IHmYdjle/6Pgy2UOCpa4zNuBWtMhvzTGmpf8EkG
+         GJAw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+ahJHXSGP2+Rxx4w3tkcAlBdKzZdrLoUCrBPyNrYQzIAL6CNZGUmtQI3vBMAnZg+A7v+g@vger.kernel.org, AJvYcCWt9mlFDDh+oXZYLKGlPhqbjfUolkO0wAVWOC0OmFTfhb3Sw7WQyGRhRVByZXaw1WnFLgdYT6A=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCnupIEI7QPAfZrzUaKVLyRjEqgQI9FxUAE3qHhtQIgK7EvRH5
+	keSFMMccCMVZSyD4wWKJZNTQBjsIlMJCF8fhF2hw/YW/ti5zebgYfl9A
+X-Gm-Gg: ASbGncuYeEZJyxo1wZ+REBiaSvFwT8fNqsgZZRBvn+U/y1vcaOYanp9/ZT3kv1yO6E2
+	zF/e1DCJAdSWM7lgI0RLbKLl+GIa+Gn83WbuQUb5LTKp3P9H+33h3JpeehCUf+5rPakvwiYrOaa
+	oFr9k5zA9K9erBxjrdqFGE88l3BNOPKoKv16ohp0SfeZWvJsHGyQ7892CaYoyZHeLnAaYE4FPke
+	e2g9oxPhKqxVrdOAJm33tiYsZYpQp7Ii51Wq1M5I43T/6jdG4Ht1woVHAMV9FF9dvGqad3i187n
+	WOl2oG4sULyO2E+G2epncv/DYT4cdHJ9JvO/c5tFrRh6JVc+VpcJkdA8S5khh5RlYf9cSBxTG1M
+	CgoVjiF0EBzVqFzHbN0XIOIOr4yjEYdywm7lZuQlImflns/4bc+sjYYj5ZDNmp/o=
+X-Google-Smtp-Source: AGHT+IFajQmaBSIi950oGCwkkGhdcIDigDTu+52BcWLWhXdTGrL+WmNf84aM6QjCMYIHqOhD0NhhMg==
+X-Received: by 2002:a05:622a:506:b0:494:f1e7:65ef with SMTP id d75a77b69052e-4a7c08452d9mr53303541cf.44.1750861108315;
+        Wed, 25 Jun 2025 07:18:28 -0700 (PDT)
+Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4a779e5d262sm59894161cf.50.2025.06.25.07.18.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Jun 2025 07:09:00 -0700 (PDT)
+        Wed, 25 Jun 2025 07:18:27 -0700 (PDT)
 Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfauth.phl.internal (Postfix) with ESMTP id C6F9FF4006B;
-	Wed, 25 Jun 2025 10:08:59 -0400 (EDT)
+	by mailfauth.phl.internal (Postfix) with ESMTP id 21392F40067;
+	Wed, 25 Jun 2025 10:18:27 -0400 (EDT)
 Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Wed, 25 Jun 2025 10:08:59 -0400
-X-ME-Sender: <xms:-wJcaJdwbGZBmxEN9j6y_78lQL4fcdBQvDTlOCyqeew87MY_tXnEHg>
-    <xme:-wJcaHO2fQ7GEaRxo6xqYDR28zh9SO-8ANjsQIwEDCtQd40EvDSAFHyG6ll5l7hnG
-    u-Ol92oGK7gJditFA>
-X-ME-Received: <xmr:-wJcaChZ1gB2oei1fHWaEjpsWflJu3QQnVqBK3jhFv5uI2C5hjTofK4kKw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvvdeljecutefuodetggdotefrod
+  by phl-compute-11.internal (MEProxy); Wed, 25 Jun 2025 10:18:27 -0400
+X-ME-Sender: <xms:MgVcaOwCVCagevnS9sW-PJ7ylYPYtdu6iXaUdfYmg2HNwWYMt8UPMw>
+    <xme:MgVcaKRi623tvmF9P0BvaTyMyAvAcocMsiFXhFMwHt-3WicPtos_Ah6cAKtW5mJV_
+    XMWv-KLXacVdLQ1Gw>
+X-ME-Received: <xmr:MgVcaAWwaGbiUqOhNRJq1dJuqpKzsYsUstJI_7KFdqlU7_4N1XX-Iat9HQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvvdellecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
     ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
     hrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfh
@@ -76,27 +76,26 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvvdeljecutefuodetgg
     necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
     hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
     jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
-    drnhgrmhgvpdhnsggprhgtphhtthhopedvjedpmhhouggvpehsmhhtphhouhhtpdhrtghp
-    thhtohephhgthhesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqd
-    hkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrtghusehv
-    ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhkmhhmsehlihhsthhsrdhlih
-    hnuhigrdguvghvpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhg
-    pdhrtghpthhtohepmhhinhhgoheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfihilh
-    hlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlohhnghhmrghnsehrvgguhhgrthdr
-    tghomhdprhgtphhtthhopegurghvvgesshhtghholhgrsghsrdhnvght
-X-ME-Proxy: <xmx:-wJcaC9SIRUxm3GO8s19-RXkdVH_rArIOhzfzpcmzNM-_d39bSt6Ew>
-    <xmx:-wJcaFv8nbBOJLcGByCnAxajdWVjxopT8SmEcUiCmBZZYZC3PgMoTg>
-    <xmx:-wJcaBHRyDLwhfOzIx4pKXsYEiKQJhUSMNQ4wc5h5L1PAdmOSr8nYQ>
-    <xmx:-wJcaMPbn_fTVl6EW6q6E9gbgVJTQ0WkpFPVpeq40MWWr-yF0GC_iw>
-    <xmx:-wJcaOOQ9shCLPu7c6XInbYEihY93p9riyskcRSe86qZBaWl3X3bFgqB>
+    drnhgrmhgvpdhnsggprhgtphhtthhopedviedpmhhouggvpehsmhhtphhouhhtpdhrtghp
+    thhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinh
+    hugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgt
+    uhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlkhhmmheslhhishhtsh
+    drlhhinhhugidruggvvhdprhgtphhtthhopehmihhnghhosehkvghrnhgvlhdrohhrghdp
+    rhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhonhhgmh
+    grnhesrhgvughhrghtrdgtohhmpdhrtghpthhtohepuggrvhgvsehsthhgohhlrggsshdr
+    nhgvthdprhgtphhtthhopehprghulhhmtghksehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:MwVcaEjcNogxlCJElq5Ale1bJ6pJZUTJdaXABNsyrKdceAsKRxft7Q>
+    <xmx:MwVcaAA_6AfgxN3VXiJPIlFf5fAKOd1ovbVo0vsoEOvkLjTAj515Sw>
+    <xmx:MwVcaFJvY5vFTAcHAX_cpzwNn-nVmedOU6MB4Aoenx3yRVhBiB8WMQ>
+    <xmx:MwVcaHCjj62N_PPcE_CoPkoZG03OBmd1OkYqSXajhjwJ_k_GNAZO2w>
+    <xmx:MwVcaIwD8Mb8OCae105Kdepdt-LxOuJmSd7xTQiTc0SL56i1uNop8Lmq>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Jun 2025 10:08:58 -0400 (EDT)
-Date: Wed, 25 Jun 2025 07:08:57 -0700
+ 25 Jun 2025 10:18:26 -0400 (EDT)
+Date: Wed, 25 Jun 2025 07:18:25 -0700
 From: Boqun Feng <boqun.feng@gmail.com>
-To: Christoph Hellwig <hch@infradead.org>
+To: Peter Zijlstra <peterz@infradead.org>
 Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, lkmm@lists.linux.dev,
-	Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
 	Waiman Long <longman@redhat.com>,
 	Davidlohr Bueso <dave@stgolabs.net>,
@@ -113,10 +112,12 @@ Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, lkmm@lists.linux.dev,
 	aeh@meta.com, netdev@vger.kernel.org, edumazet@google.com,
 	jhs@mojatatu.com, kernel-team@meta.com,
 	Erik Lundgren <elundgren@meta.com>
-Subject: Re: [PATCH 0/8] Introduce simple hazard pointers for lockdep
-Message-ID: <aFwC-dvuyYRYSWpY@Mac.home>
+Subject: Re: [PATCH 8/8] locking/lockdep: Use shazptr to protect the key
+ hashlist
+Message-ID: <aFwFMf3K_hBygBED@Mac.home>
 References: <20250625031101.12555-1-boqun.feng@gmail.com>
- <aFvl96hO03K1gd2m@infradead.org>
+ <20250625031101.12555-9-boqun.feng@gmail.com>
+ <20250625115929.GF1613376@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -125,79 +126,29 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aFvl96hO03K1gd2m@infradead.org>
+In-Reply-To: <20250625115929.GF1613376@noisy.programming.kicks-ass.net>
 
-On Wed, Jun 25, 2025 at 05:05:11AM -0700, Christoph Hellwig wrote:
-> On Tue, Jun 24, 2025 at 08:10:53PM -0700, Boqun Feng wrote:
-> > Hi,
-> > 
-> > This is the official first version of simple hazard pointers following
-> > the RFC:
+On Wed, Jun 25, 2025 at 01:59:29PM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 24, 2025 at 08:11:01PM -0700, Boqun Feng wrote:
 > 
-> Can you please put an explanation of what hazard pointers are
-> prominently into this cover letter?
+> > +	/* Need preemption disable for using shazptr. */
+> > +	guard(preempt)();
+> > +
+> > +	/* Protect the list search with shazptr. */
+> > +	guard(shazptr)(hash_head);
 > 
+> OK, this is the end of the series, and so far every single user is doing
+> both a preempt and a shazptr guard. Why can't we simplify this and have
+> the shazptr guard imply preempt-disable?
 
-Sure, I will put one for the future version, here is the gist:
+You're right. The background story is that in the beginning, the hazard
+pointer protection was placed at the callsites of is_dynamic_key(): one
+in register_lock_class() and one in lockdep_init_map_type(), and in
+register_lock_class() I could use the fact that it's called with irq
+disabled to save the preempt-disable.
 
-
-Hazard pointers provide the similar synchronzation behavior as RCU:
-readers are cheap, updaters need to wait for existing readers to go
-before they can free the objects.
-
-The difference between hazard pointers and RCU is that instead of
-waiting for a grace period, which all the readers have to exit the RCU
-read-side critical sections, the updaters of hazard pointers only need
-to wait for the readers that are accessing the objects they are about to
-free. For example, if we have 2 readers accessing different objects and
-1 updater is freeing one of them:
-
-using RCU:
-
-	Reader 1		Reader 2		Updater
-	========		========		=======
-	rcu_read_lock();
-	r = rcu_dereference(a);
-				rcu_read_lock();
-				r = rcu_dereference(b);
-							synchronize_rcu();
-	rcu_read_unlock();
-				rcu_read_unlock();
-							<synchronize_rcu() returns>
-							free(a);
-
-The updater will need to wait for reader 2 to finish before it can
-free 'a', however when using hazard pointers:
-
-	Reader 1		Reader 2		Updater
-	========		========		=======
-	g = shazptr_acquire(a);
-				g = shazptr_acqurie(b);
-							synchronize_shazptr(a);
-	shazptr_clear(g);
-							<synchronize_shazptr(a) returns>
-							free(a);
-
-				shazptr_clear(g); // <- updater doesn't
-						  //    need to wait for
-						  //    this.
-
-The updater's wait can finish immediately if no one is accessing 'a', in
-other words it doesn't need to wait for reader 2.
-
-This means for a particular workload, hazard pointers may have smaller
-memory footprint and less updater wait time compared to RCU, while still
-have the similar performance on the reader side.
-
-
-That being said, it does come with some cost, the readers would need to
-provide their own hazard pointer slots (allocating memory) in general
-cases. And in the simple hazard pointer implementation in this series,
-although readers don't need to provide their own hazard pointer slots,
-they need to disable the preemption to use the hazard pointer, and the
-performance would downgrade (to a naive SRCU implementation probably) if
-they want to protect multiple objects in one read-side critical section.
-
+So given the current users, it makes sense to fold the preempt disabling
+into shazptr guard.
 
 Regards,
 Boqun
