@@ -1,106 +1,42 @@
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC611F4611;
-	Wed, 25 Jun 2025 03:11:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81AAF285CB1;
+	Wed, 25 Jun 2025 10:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750821099; cv=none; b=hSTfpYQWaJqneDR9kaIeEaIJG7BaeVNfLUT3uFRmh6SxYkmXIJqT0wo32NYkZ5+lls/KefcuSpYhljOH6pI1h2+CEdM71Tz4wTHd+UA5NTgXQ8DTgdMyYSTWbJxI6ovNzUMVn4El4/EirdGcdYW12UuXchNNvFw8mEJ1ll9alNk=
+	t=1750845652; cv=none; b=Cm19TCJ9vfXh2P1sh7Wc7AU4X/5USwaOMeG0Yo5ZFqiuke4GnWKbnEU4Z/RxIPdKvV44osMWJNfAZfLKS9tFuofVZw28VdOvjRMhPrEXWniNnQ+/7fHRc+guqMOyjw43Qq3yc4CFY+suKFje8RWh8RImRv0rrfLkjE/6bBeFuHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750821099; c=relaxed/simple;
-	bh=A73pes+JuDp33aVXpLNlEeOGjBrNNA3VpTS+s9bm4yg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KoSclaRNcZtO7p60HM5+dcakTu6mvBJA6oAHOO7E8Ju4Cq6NgtAk+0SLe9UTl/h3MZcsbeBRPhOqpaT5ofv51+oBdbIpQU9PHrhrFmdLODfZXLmDnpsalb6BE9YLr3lq76G/QhW5G0jaBJev/cEKb6BlGfNhQpgTckSdYrnjcnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A2pVApyt; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1750845652; c=relaxed/simple;
+	bh=Ewr/9YSg+4KSWKdVpkuiGc4fRNUXEVUrfoJAoNPfx1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r84plxBBaDX/UdUvYgRPdXkENwDX92jD7rwJyPSvcrkW+32DIA0ezcK9sFep0SvRqXzFrJGXhZAkPMo58FbjODcsDu3ePk2XjU/fORDX8SsIcqUxGFujNRPDKMjgAtkA4Pb+zfPn6ff2Zcknaa+89ck7o/ffYQRiTEhOuh+0wqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kN3JT+Ek; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A2pVApyt"
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4a42cb03673so13756811cf.3;
-        Tue, 24 Jun 2025 20:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750821096; x=1751425896; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zuqVIBjGXQL3Pb0oRS7JXPWUTOWoDxLBBUTqhc/Fk5g=;
-        b=A2pVApyt9GS4pQ5YYfwGwcCEoaKVm+tuAik77YJUHLRIVotpF+CeaVRgVmgWrwXiv5
-         DJdZkBJAtQ8ngvfps6uV6SFv0Ot/M0OpvQTpAl/s3rkWc9FbdxOSX+CTZMn/PhXZmnRb
-         m5wr3Dws2PY7ZgulJ1unaLgoEMbh8cT9AUwBwl3M3dxGQmSuPbsl6XztKlYbwNRBwhuX
-         9zCx9D9IgrdOM0V0Sda6QmFwBlqQJAkJ+qZ23mM27aVeXlMqG7Jt/jbQGBBZkq7BtcwG
-         7DmBmriO9GpcLXYQWU+kAYBOVblcos4igIiOwEaGX6MqcBNM3CyLKsn1QM8i/2OFsYN4
-         aQcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750821096; x=1751425896;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zuqVIBjGXQL3Pb0oRS7JXPWUTOWoDxLBBUTqhc/Fk5g=;
-        b=bub1QYRWEwvI7/UniPwzYikvpjq6nJoCObBj/aRZbt7vgMRRZpiH2KpqVCYpW6T3PK
-         tOnQsH/0PmPHegEUOMMMWi/XNxipnp2AxX3Ji/AIxtDQEoEoBYsRK+IBYL3W3Pte2GAk
-         LVf2zLHIocAyfemEeDkDRBVyw3bhvL7ULlmWAHKhgHoDxwHjblwYrpmjSNHYGpQRKNoN
-         cSP3t/o7Rkkho9HOVk+lhoXshxiyIZj3Lmc+GOx8BdY5D1334tWixveNxLd6JrT/8HKg
-         lndjk6qUa/x2dT3CWhkVPeRkbRGYKHQHCigInM2REGsQt0JY8UoFhQ8QHGTxFpMgcg6D
-         ZuiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWeNg8wI1Fr0U46FhKrnBLRz6PDidaQVsrmNfgpQa+psPyWKsYu9og/1iWxi/KzpL5ySB6N7rA=@vger.kernel.org, AJvYcCWkIzu9JsnUNRv63CRSdVeIbHmjapx0S6Pra6PWxJQgp8WDMkvbAr8ImmoAlHx7caRzZyfW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7HEJYYGfZOqEf3qd04K5jLpLFJQ10ftYl9wGGRj0e9cpnC4qx
-	EyMZVAirI4GXcLIBfaylK+ZDaRlpo9Mo3bmMhkCC7T0DtQGssK/O9yWf
-X-Gm-Gg: ASbGncvV2hDcjdJjIr8P3yH8YXk+l1RIAU8A9h3hPIWmOfLT+elEQwZlu8t+DyyWPav
-	nveTY+B5Z6EZ6Y7zURtVHx0ULBNhgNNkh4l7EIoGx5eqlM4KL7o94vDygKItnQImTM7P/jpx93p
-	18C3dYAnFVGqej4Uy2H/6KH1LUwZbfzmuR3t+CSSbwiKJxxzG93q1G9mxRdCLyMdEEiZ/lgA2q2
-	5cGG2d96EP+po6JkiCG5ldCgjSfVKz3D2uwgjAgtzOocXBPhbzOXffh0zAlC++m+fTR0K/rbEZo
-	HTK+Ga5ZEEKUhsm1e3X+kFAYEL9VyDHKojWu/UziAKABSSIZ8tQ8a1vD9aVX/tlKE0zA4ODIKX+
-	LGWeugi8JegRECNxkHEfBRIgBKt1DlNsW6aoxy7TRckoeheHyQKOK
-X-Google-Smtp-Source: AGHT+IEbJPBHSvbUjLDI/ho9eHxTAS4JXGBSJ1tuasc06odARRqHpanKjW7XTONtNu3DCCjVSio2Vg==
-X-Received: by 2002:a05:620a:bc9:b0:7d3:f3a5:71d7 with SMTP id af79cd13be357-7d42973f34emr215814785a.40.1750821096186;
-        Tue, 24 Jun 2025 20:11:36 -0700 (PDT)
-Received: from fauth-a1-smtp.messagingengine.com (fauth-a1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7d3f999a566sm570896785a.8.2025.06.24.20.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jun 2025 20:11:35 -0700 (PDT)
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 0826DF40067;
-	Tue, 24 Jun 2025 23:11:35 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Tue, 24 Jun 2025 23:11:35 -0400
-X-ME-Sender: <xms:5mhbaC01JPxbFccv81BMVkJ4tEmhk31iu2PVX0MTK5fjwwYj8ufJcw>
-    <xme:5mhbaFEuozaSCkHCvVzkMQxN7pAUO5HOXV_ldARR8Rnfh5dGH_gsh2TAsdIywT9e4
-    RS9DxrxdP7rKVZ8mw>
-X-ME-Received: <xmr:5mhbaK7WI8cSYmHV6moATZimuQIToczmFhe4VoW3qhdQt3vA88DZul1j7Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddvudeiiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhnucfh
-    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
-    hrnhepgffhffevhffhvdfgjefgkedvlefgkeegveeuheelhfeivdegffejgfetuefgheei
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
-    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
-    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvgdpnhgspghrtghpthhtohep
-    vdeipdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrtghusehvghgvrhdrkhgv
-    rhhnvghlrdhorhhgpdhrtghpthhtoheplhhkmhhmsehlihhsthhsrdhlihhnuhigrdguvg
-    hvpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthht
-    ohepmhhinhhgoheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdp
-    rhgtphhtthhopehlohhnghhmrghnsehrvgguhhgrthdrtghomhdprhgtphhtthhopegurg
-    hvvgesshhtghholhgrsghsrdhnvght
-X-ME-Proxy: <xmx:5mhbaD0obg6pyZ0mz_KgIsL4yG6n8dxY34eqykwaRYHoZjCCHsqcmg>
-    <xmx:5mhbaFG0jVcxIqP7QCBiHDDXOKqzuG2GndcDI1hDcZX1V4KXq3fWDA>
-    <xmx:5mhbaM8o6ZBcRLCXH5fbh1oy3ThmarYDv7A5k0oPkeaWGgrM28h44A>
-    <xmx:5mhbaKnrYcFS1OBMgyTZ6bUlKo3Cb_BrPlU40j861bSuk21QkMikLQ>
-    <xmx:52hbaNH55ybs0OUzatDJAZEmeLZudbgKUhu3XSgaGlkt1Xt4YPav0t7D>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Jun 2025 23:11:34 -0400 (EDT)
-From: Boqun Feng <boqun.feng@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	lkmm@lists.linux.dev
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kN3JT+Ek"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=iqhhoiKp4vSBiJdf55jnDE3zxzap5f0PWAr4X6NeSW4=; b=kN3JT+Ek7JZ7sSUs+XXPMi9sBD
+	XEBe7jG/uPr4klTRLICC44HoiZ2EMITCuP0ILfLUOy3esgmPcCegIRBf6C86LKA9GFiFAaaCxqJtR
+	sK/n+7fhQzdXcbRjtNVulDf1apwo0mXSV1oND8/zAWUlwMLC7ftnkG0tn6qVHM8cUEVnVvuhD7MDI
+	jQWhqSOc5SWQdaANlDGsLMZcSQL5G30jyioSVU70fD4Y7IOBKKp0MhgP1H6cNWoET7EcLcbcblPFM
+	KdbHdGa3YLzPnIWDE+ww6wWC6fY7CThAajmwjtz+Wqyn5mZWA9WZBjdeoyV+bUmBdMRm4LiCUeEEs
+	hRoonpxg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uUMvh-000000093BE-2l5l;
+	Wed, 25 Jun 2025 10:00:33 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id B5F22307E4E; Wed, 25 Jun 2025 12:00:32 +0200 (CEST)
+Date: Wed, 25 Jun 2025 12:00:32 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, lkmm@lists.linux.dev,
+	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
 	Waiman Long <longman@redhat.com>,
 	Davidlohr Bueso <dave@stgolabs.net>,
 	"Paul E. McKenney" <paulmck@kernel.org>,
@@ -112,92 +48,227 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Breno Leitao <leitao@debian.org>,
-	aeh@meta.com,
-	netdev@vger.kernel.org,
-	edumazet@google.com,
-	jhs@mojatatu.com,
-	kernel-team@meta.com,
+	Zqiang <qiang.zhang@linux.dev>, Breno Leitao <leitao@debian.org>,
+	aeh@meta.com, netdev@vger.kernel.org, edumazet@google.com,
+	jhs@mojatatu.com, kernel-team@meta.com,
 	Erik Lundgren <elundgren@meta.com>
-Subject: [PATCH 8/8] locking/lockdep: Use shazptr to protect the key hashlist
-Date: Tue, 24 Jun 2025 20:11:01 -0700
-Message-Id: <20250625031101.12555-9-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250625031101.12555-1-boqun.feng@gmail.com>
+Subject: Re: [PATCH 1/8] Introduce simple hazard pointers
+Message-ID: <20250625100032.GA1613376@noisy.programming.kicks-ass.net>
 References: <20250625031101.12555-1-boqun.feng@gmail.com>
+ <20250625031101.12555-2-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250625031101.12555-2-boqun.feng@gmail.com>
 
-Erik Lundgren and Breno Leitao reported [1] a case where
-lockdep_unregister_key() can be called from time critical code pathes
-where rntl_lock() may be held. And the synchronize_rcu() in it can slow
-down operations such as using tc to replace a qdisc in a network device.
+On Tue, Jun 24, 2025 at 08:10:54PM -0700, Boqun Feng wrote:
+> As its name suggests, simple hazard pointers (shazptr) is a
+> simplification of hazard pointers [1]: it has only one hazard pointer
+> slot per-CPU and is targeted for simple use cases where the read-side
+> already has preemption disabled. It's a trade-off between full features
+> of a normal hazard pointer implementation (multiple slots, dynamic slot
+> allocation, etc.) and the simple use scenario.
+> 
+> Since there's only one slot per-CPU, so shazptr read-side critical
+> section nesting is a problem that needs to be resolved, because at very
+> least, interrupts and NMI can introduce nested shazptr read-side
+> critical sections. A SHAZPTR_WILDCARD is introduced to resolve this:
+> SHAZPTR_WILDCARD is a special address value that blocks *all* shazptr
+> waiters. In an interrupt-causing shazptr read-side critical section
+> nesting case (i.e. an interrupt happens while the per-CPU hazard pointer
+> slot being used and tries to acquire a hazard pointer itself), the inner
+> critical section will switch the value of the hazard pointer slot into
+> SHAZPTR_WILDCARD, and let the outer critical section eventually zero the
+> slot. The SHAZPTR_WILDCARD still provide the correct protection because
+> it blocks all the waiters.
 
-In fact the synchronize_rcu() in lockdep_unregister_key() is to wait for
-all is_dynamic_key() callers to finish so that removing a key from the
-key hashlist, and we can use shazptr to protect the hashlist as well.
+Don't we typically name such a thing a tombstone?
 
-Compared to the proposed solution which replaces synchronize_rcu() with
-synchronize_rcu_expedited(), using shazptr here can achieve the
-same/better synchronization time without the need to send IPI. Hence use
-shazptr here.
+> It's true that once the wildcard mechanism is activated, shazptr
+> mechanism may be downgrade to something similar to RCU (and probably
+> with a worse implementation), which generally has longer wait time and
+> larger memory footprint compared to a typical hazard pointer
+> implementation. However, that can only happen with a lot of users using
+> hazard pointers, and then it's reasonable to introduce the
+> fully-featured hazard pointer implementation [2] and switch users to it.
+> 
+> Note that shazptr_protect() may be added later, the current potential
+> usage doesn't require it, and a shazptr_acquire(), which installs the
+> protected value to hazard pointer slot and proves the smp_mb(), is
+> enough for now.
+> 
+> [1]: M. M. Michael, "Hazard pointers: safe memory reclamation for
+>      lock-free objects," in IEEE Transactions on Parallel and
+>      Distributed Systems, vol. 15, no. 6, pp. 491-504, June 2004
+> 
+> Link: https://lore.kernel.org/lkml/20240917143402.930114-1-boqun.feng@gmail.com/ [2]
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  include/linux/shazptr.h  | 73 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/locking/Makefile  |  2 +-
+>  kernel/locking/shazptr.c | 29 ++++++++++++++++
+>  3 files changed, 103 insertions(+), 1 deletion(-)
+>  create mode 100644 include/linux/shazptr.h
+>  create mode 100644 kernel/locking/shazptr.c
+> 
+> diff --git a/include/linux/shazptr.h b/include/linux/shazptr.h
+> new file mode 100644
+> index 000000000000..287cd04b4be9
+> --- /dev/null
+> +++ b/include/linux/shazptr.h
+> @@ -0,0 +1,73 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Simple hazard pointers
+> + *
+> + * Copyright (c) 2025, Microsoft Corporation.
+> + *
+> + * Author: Boqun Feng <boqun.feng@gmail.com>
+> + *
+> + * A simple variant of hazard pointers, the users must ensure the preemption
+> + * is already disabled when calling a shazptr_acquire() to protect an address.
+> + * If one shazptr_acquire() is called after another shazptr_acquire() has been
+> + * called without the corresponding shazptr_clear() has been called, the later
+> + * shazptr_acquire() must be cleared first.
+> + *
+> + * The most suitable usage is when only one address need to be protected in a
+> + * preemption disabled critical section.
 
-Reported-by: Erik Lundgren <elundgren@meta.com>
-Reported-by: Breno Leitao <leitao@debian.org>
-Link: https://lore.kernel.org/all/20250321-lockdep-v1-1-78b732d195fb@debian.org/ [1]
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- kernel/locking/lockdep.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+It might be useful to have some example code included here to illustrate
+how this is supposed to be used etc.
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index dd2bbf73718b..5c205dd425f8 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -58,6 +58,7 @@
- #include <linux/context_tracking.h>
- #include <linux/console.h>
- #include <linux/kasan.h>
-+#include <linux/shazptr.h>
- 
- #include <asm/sections.h>
- 
-@@ -1267,14 +1268,18 @@ static bool is_dynamic_key(const struct lock_class_key *key)
- 
- 	hash_head = keyhashentry(key);
- 
--	rcu_read_lock();
-+	/* Need preemption disable for using shazptr. */
-+	guard(preempt)();
-+
-+	/* Protect the list search with shazptr. */
-+	guard(shazptr)(hash_head);
-+
- 	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
- 		if (k == key) {
- 			found = true;
- 			break;
- 		}
- 	}
--	rcu_read_unlock();
- 
- 	return found;
- }
-@@ -6620,7 +6625,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
- 
- 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
--	synchronize_rcu();
-+	synchronize_shazptr(keyhashentry(key));
- }
- EXPORT_SYMBOL_GPL(lockdep_unregister_key);
- 
--- 
-2.39.5 (Apple Git-154)
+> + */
+> +
+> +#ifndef _LINUX_SHAZPTR_H
+> +#define _LINUX_SHAZPTR_H
+> +
+> +#include <linux/cleanup.h>
+> +#include <linux/percpu.h>
+> +
+> +/* Make ULONG_MAX the wildcard value */
+> +#define SHAZPTR_WILDCARD ((void *)(ULONG_MAX))
 
+Right, I typically write that like: ((void *)-1L) or ((void *)~0UL)
+
+> +
+> +DECLARE_PER_CPU_SHARED_ALIGNED(void *, shazptr_slots);
+> +
+> +/* Represent a held hazard pointer slot */
+> +struct shazptr_guard {
+> +	void **slot;
+> +	bool use_wildcard;
+> +};
+
+Natural alignment ensures the LSB of that pointer is 0, which is enough
+space to stick that bool in, no?
+
+> +
+> +/*
+> + * Acquire a hazptr slot and begin the hazard pointer critical section.
+> + *
+> + * Must be called with preemption disabled, and preemption must remain disabled
+> + * until shazptr_clear().
+> + */
+> +static inline struct shazptr_guard shazptr_acquire(void *ptr)
+> +{
+> +	struct shazptr_guard guard = {
+> +		/* Preemption is disabled. */
+> +		.slot = this_cpu_ptr(&shazptr_slots),
+
+What you're trying to say with that comment is that: this_cpu_ptr(),
+will complain if preemption is not already disabled, and as such this
+verifies the assumption?
+
+You can also add:
+
+	lockdep_assert_preemption_disabled();
+
+at the start of this function and then all these comments can go in the
+bin, no?
+
+> +		.use_wildcard = false,
+> +	};
+> +
+> +	if (likely(!READ_ONCE(*guard.slot))) {
+> +		WRITE_ONCE(*guard.slot, ptr);
+> +	} else {
+> +		guard.use_wildcard = true;
+> +		WRITE_ONCE(*guard.slot, SHAZPTR_WILDCARD);
+> +	}
+> +
+> +	smp_mb(); /* Synchronize with smp_mb() at synchronize_shazptr(). */
+> +
+> +	return guard;
+> +}
+> +
+> +static inline void shazptr_clear(struct shazptr_guard guard)
+> +{
+> +	/* Only clear the slot when the outermost guard is released */
+> +	if (likely(!guard.use_wildcard))
+> +		smp_store_release(guard.slot, NULL); /* Pair with ACQUIRE at synchronize_shazptr() */
+> +}
+> +
+> +void synchronize_shazptr(void *ptr);
+> +
+> +DEFINE_CLASS(shazptr, struct shazptr_guard, shazptr_clear(_T),
+> +	     shazptr_acquire(ptr), void *ptr);
+> +#endif
+> diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
+> index a114949eeed5..1517076c98ec 100644
+> --- a/kernel/locking/Makefile
+> +++ b/kernel/locking/Makefile
+> @@ -3,7 +3,7 @@
+>  # and is generally not a function of system call inputs.
+>  KCOV_INSTRUMENT		:= n
+>  
+> -obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
+> +obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o shazptr.o
+>  
+>  # Avoid recursion lockdep -> sanitizer -> ... -> lockdep & improve performance.
+>  KASAN_SANITIZE_lockdep.o := n
+> diff --git a/kernel/locking/shazptr.c b/kernel/locking/shazptr.c
+> new file mode 100644
+> index 000000000000..991fd1a05cfd
+> --- /dev/null
+> +++ b/kernel/locking/shazptr.c
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Simple hazard pointers
+> + *
+> + * Copyright (c) 2025, Microsoft Corporation.
+> + *
+> + * Author: Boqun Feng <boqun.feng@gmail.com>
+> + */
+> +
+> +#include <linux/atomic.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/shazptr.h>
+> +
+> +DEFINE_PER_CPU_SHARED_ALIGNED(void *, shazptr_slots);
+> +EXPORT_PER_CPU_SYMBOL_GPL(shazptr_slots);
+> +
+> +void synchronize_shazptr(void *ptr)
+> +{
+> +	int cpu;
+
+	lockdep_assert_preemption_enabled();
+
+> +
+> +	smp_mb(); /* Synchronize with the smp_mb() in shazptr_acquire(). */
+> +	for_each_possible_cpu(cpu) {
+> +		void **slot = per_cpu_ptr(&shazptr_slots, cpu);
+> +		/* Pair with smp_store_release() in shazptr_clear(). */
+> +		smp_cond_load_acquire(slot,
+> +				      VAL != ptr && VAL != SHAZPTR_WILDCARD);
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(synchronize_shazptr);
+> -- 
+> 2.39.5 (Apple Git-154)
+> 
