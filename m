@@ -1,133 +1,119 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A08219E8;
-	Fri, 27 Jun 2025 02:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83E7207A32;
+	Sun, 29 Jun 2025 23:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750993008; cv=none; b=dpYIUWKpCyck6P4QYO+TFgjMekkSbZGi46Op3iTVy6omoxsu/S5x+TquigVCA6MUJC2/IkHzEHIE0H3m9KLjSADAUUpYbwnB3Ste0Nx9vPyT0kpD3MKaQFW8T5MQvOnhNAj4eoir32gsOXzSBJMJQhycts8+/nv67vcVyuOBWw8=
+	t=1751238760; cv=none; b=QHGE2rmnpSVddfvbkjFQkLqXeKMYN7wWD8u49vp2MwbhSSh0Vy6sHpy4kmxbROOHBKNl41kLwbQrQAe6qMUWhiGSNqp3aeYUCfsraY7BXapDfZw5JEbsPWJKdOHU3Vs9uowO/saN3nNyf5Sjc6T6SiuUwfC3XvnAbT83vNK3nE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750993008; c=relaxed/simple;
-	bh=6HaipL2Nb3QqfyHkXwTX10Vg5Q0zLosiWZASw1iDunI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iygLSTWcfVFe73Ih9S0g7nScfwqovRsLZBtKjIbZygZZLLw0UvPFs2m4rj8TyTIOiio6qYdhYMGiV4i+PqUsTeg9f/UkqjgUHqb3d2tcYXeN6XdhT7V/F2jhMXba/v6LHDN7XCB+RRja6MFwQ26AFR3VgpQAIunoVNNQtmgoxME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OdfZsgQJ; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1751238760; c=relaxed/simple;
+	bh=MM8+F9NfQiipMoco2vrexssEB7cU5Cx6BfqreOJThFc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A/dS2eAWDyndGHhH7dgUJhIWjDxfB6pOJ0C1Iq4Vyz5yk/4kEoXjKY73b8Mivhd8vMGshxQNqDJEh8Xfa+7dXDNYaFXV5nl+3D4JpHoxaePjHyP4Ptf594UrdmtNUKYrTjOs7vfBkSUBt5HgTdUAVeNlNJe5f8V6WeGGMyz6d4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=GRjXIBEd; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OdfZsgQJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECAB8C4CEEE;
-	Fri, 27 Jun 2025 02:56:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750993008;
-	bh=6HaipL2Nb3QqfyHkXwTX10Vg5Q0zLosiWZASw1iDunI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=OdfZsgQJGCnp3QbzwZi/zpPrlV5AoEmH+oQkmwbR6fdiolFsnMuFy5CbxALNOtiIl
-	 K3izNJ445A48065KWMd5dheH849l83Vg0XMaYNBhLm/OHhNIMjXaWIAMIyuVXX1oHj
-	 8ST9CyjCzuLKEuS6AE3RJY1depX4h/si9ywALa8ffHaOKsQEI7czwRP/P4hOmBzHTL
-	 OYSohwCRSgjkzUGQQTKYP6tl5FEs0XMZ0lIalMChEoUf33q/JnyYOB+RIxzXSE8QQG
-	 36bti5RB2cXv7p2zSLKRKySeQrSPbG5gyEzSFr01Z9EIFDkIW2IhWckSxMUE7rmMJt
-	 HDlifh/m7lBFQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 99F29CE0C3C; Thu, 26 Jun 2025 19:56:47 -0700 (PDT)
-Date: Thu, 26 Jun 2025 19:56:47 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, lkmm@lists.linux.dev,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="GRjXIBEd"
+Received: from localhost.localdomain (unknown [178.69.224.101])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 8FD3A552F52B;
+	Sun, 29 Jun 2025 23:12:32 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 8FD3A552F52B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1751238753;
+	bh=CMWpdSXt+aQMl4gzAQ7WlEY+ZVcaSuxy8ltfzBBbdzw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GRjXIBEdgS0kOVv52MlLplQ3rDfOPqtxxJfXqvGLA1W1HSrcvGd/i6mvxiNn5qxXL
+	 Wed/dg9TKdN1N1QM1ixz/4L8eQy97J+rM5E1gcWTskAcVsxeim6EhtZjkjTTO7R2jV
+	 DMx5BjdOypZOUDi1abnS7ecV5vHQCMVcPN9tLwXA=
+From: Artem Sadovnikov <a.sadovnikov@ispras.ru>
+To: rcu@vger.kernel.org
+Cc: Artem Sadovnikov <a.sadovnikov@ispras.ru>,
 	Davidlohr Bueso <dave@stgolabs.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Breno Leitao <leitao@debian.org>,
-	aeh@meta.com, netdev@vger.kernel.org, edumazet@google.com,
-	jhs@mojatatu.com, kernel-team@meta.com,
-	Erik Lundgren <elundgren@meta.com>
-Subject: Re: [PATCH 0/8] Introduce simple hazard pointers for lockdep
-Message-ID: <a8e06076-3f66-441f-9ccb-0b368d95e1a1@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20250625031101.12555-1-boqun.feng@gmail.com>
- <aFvl96hO03K1gd2m@infradead.org>
- <aFwC-dvuyYRYSWpY@Mac.home>
- <aF0eEfoWVCyoIAgx@infradead.org>
- <aF1rjV8XQozi7hXB@Mac.home>
+	Zqiang <qiang.zhang@linux.dev>,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] refscale: Check that nreaders and loops multiplication doesn't overflow
+Date: Sun, 29 Jun 2025 23:12:12 +0000
+Message-ID: <20250629231212.1573-1-a.sadovnikov@ispras.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aF1rjV8XQozi7hXB@Mac.home>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 26, 2025 at 08:47:25AM -0700, Boqun Feng wrote:
-> On Thu, Jun 26, 2025 at 03:16:49AM -0700, Christoph Hellwig wrote:
-> > On Wed, Jun 25, 2025 at 07:08:57AM -0700, Boqun Feng wrote:
-> > > Sure, I will put one for the future version, here is the gist:
-> > 
-> > Thanks a lot!
-> > 
-> > > The updater's wait can finish immediately if no one is accessing 'a', in
-> > > other words it doesn't need to wait for reader 2.
-> > 
-> > So basically it is the RCU concept, but limited to protecting exactly
-> > one pointer update per critical section with no ability for the read
-> > to e.g. acquire a refcount on the objected pointed to by that pointer?
-> 
-> For the current simple hazard pointer, yes. But simple hazard pointers
-> is easily to extend so support reading:
-> 
-> 	{ gp is a global pointer }
-> 
-> 	Reader				Updater
-> 	======				=======
-> 	g = shazptr_acquire(p):
-> 	      WRITE_ONCE(*this_cpu_ptr(slot), gp);
-> 	      smp_mb();
-> 	
-> 	if (READ_ONCE(gp) == *this_cpu_ptr(slot)) {
-> 	    // still being protected.
-> 	    <can read gp here>
-> 					to_free = READ_ONCE(gp);
-> 					WRITE_ONCE(gp, new);
-> 					synchronize_shazptr(to_free):
-> 					  smp_mb();
-> 					  // wait on the slot of reader
-> 					  // CPU being 0.
-> 					  READ_ONCE(per_cpu(reader, slot));
-> 	}
-> 
-> 	shazptr_clear(g):
-> 	  WRITE_ONCE(*this_cpu_ptr(slot), NULL); // unblock synchronize_shazptr()
-> 
-> 
-> Usually the shazptr_acqurie() + "pointer comparison"* is called
-> shazptr_try_protect().
-> 
-> I will add a document about this in the next version along with other
-> bits of hazard pointers.
-> 
-> [*]: The pointer comparison is more complicated topic, but Mathieu has
->      figured out how to do it correctly:
-> 
->      https://lore.kernel.org/lkml/20241008135034.1982519-2-mathieu.desnoyers@efficios.com/
+The nreaders and loops variables are exposed as module parameters, which,
+in certain combinations, can lead to multiplication overflow.
 
-It might be helpful to add that, at a high level, hazard pointers
-are a scalable replacement for reference counting.  At a similarly
-high level, RCU is a scalable replacement for reader-writer locking.
-At lower levels, there is considerable overlap in applicability, so that
-you can use RCU to replace many reference-counting use cases and hazard
-pointers to replace many reader-writer-locking use cases..
+Besides, loops parameter is defined as long, while through the code is
+used as int, which can cause truncation on 64-bit kernels and possible
+zeroes where they shouldn't appear.
 
-Plus, as both Mathieu and Boqun pointed out, both RCU and hazard pointers
-can be combined with other synchronization mechanisms, including each
-other.
+Since code uses result of multiplication as int anyway, it only makes sense
+to replace loops with int. Multiplication overflow check is also added
+due to possible multiplication between two very big numbers.
 
-							Thanx, Paul
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read-side synchronization")
+Signed-off-by: Artem Sadovnikov <a.sadovnikov@ispras.ru>
+---
+ kernel/rcu/refscale.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index f11a7c2af778..ab7fcdc94cc0 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -85,7 +85,7 @@ torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_SCALE_TEST) ? 10 : 0,
+ // Number of typesafe_lookup structures, that is, the degree of concurrency.
+ torture_param(long, lookup_instances, 0, "Number of typesafe_lookup structures.");
+ // Number of loops per experiment, all readers execute operations concurrently.
+-torture_param(long, loops, 10000, "Number of loops per experiment.");
++torture_param(int, loops, 10000, "Number of loops per experiment.");
+ // Number of readers, with -1 defaulting to about 75% of the CPUs.
+ torture_param(int, nreaders, -1, "Number of readers, -1 for 75% of CPUs.");
+ // Number of runs.
+@@ -1140,7 +1140,7 @@ static void
+ ref_scale_print_module_parms(const struct ref_scale_ops *cur_ops, const char *tag)
+ {
+ 	pr_alert("%s" SCALE_FLAG
+-		 "--- %s:  verbose=%d verbose_batched=%d shutdown=%d holdoff=%d lookup_instances=%ld loops=%ld nreaders=%d nruns=%d readdelay=%d\n", scale_type, tag,
++		 "--- %s:  verbose=%d verbose_batched=%d shutdown=%d holdoff=%d lookup_instances=%ld loops=%d nreaders=%d nruns=%d readdelay=%d\n", scale_type, tag,
+ 		 verbose, verbose_batched, shutdown, holdoff, lookup_instances, loops, nreaders, nruns, readdelay);
+ }
+ 
+@@ -1238,12 +1238,16 @@ ref_scale_init(void)
+ 	// Reader tasks (default to ~75% of online CPUs).
+ 	if (nreaders < 0)
+ 		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
+-	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
++	if (WARN_ONCE(loops <= 0, "%s: loops = %d, adjusted to 1\n", __func__, loops))
+ 		loops = 1;
+ 	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
+ 		nreaders = 1;
+ 	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
+ 		nruns = 1;
++	if (WARN_ONCE(loops > INT_MAX / nreaders,
++		      "%s: nreaders * loops will overflow, adjusted loops to %d",
++		      __func__, INT_MAX / nreaders))
++		loops = INT_MAX / nreaders;
+ 	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
+ 			       GFP_KERNEL);
+ 	if (!reader_tasks) {
+-- 
+2.43.0
+
