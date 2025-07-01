@@ -1,119 +1,107 @@
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83E7207A32;
-	Sun, 29 Jun 2025 23:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58758265CC8;
+	Tue,  1 Jul 2025 09:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751238760; cv=none; b=QHGE2rmnpSVddfvbkjFQkLqXeKMYN7wWD8u49vp2MwbhSSh0Vy6sHpy4kmxbROOHBKNl41kLwbQrQAe6qMUWhiGSNqp3aeYUCfsraY7BXapDfZw5JEbsPWJKdOHU3Vs9uowO/saN3nNyf5Sjc6T6SiuUwfC3XvnAbT83vNK3nE0=
+	t=1751361659; cv=none; b=eEk9zUnPBo3mzAdRWznMBT0+YPWMPeyHTutB78Ss/dRMyNjSp7GtNFqr2MZjKz20rI4ox/qX9r+Wa8vAouvI6Kdm+F9dV/ozhxapmS/rn8n79FmY0jhKMBokTnZtNG81GIs43qjRf5J2/5rpx3N/OF2tVpimGp4kE2nxSffXgYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751238760; c=relaxed/simple;
-	bh=MM8+F9NfQiipMoco2vrexssEB7cU5Cx6BfqreOJThFc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A/dS2eAWDyndGHhH7dgUJhIWjDxfB6pOJ0C1Iq4Vyz5yk/4kEoXjKY73b8Mivhd8vMGshxQNqDJEh8Xfa+7dXDNYaFXV5nl+3D4JpHoxaePjHyP4Ptf594UrdmtNUKYrTjOs7vfBkSUBt5HgTdUAVeNlNJe5f8V6WeGGMyz6d4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=GRjXIBEd; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="GRjXIBEd"
-Received: from localhost.localdomain (unknown [178.69.224.101])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 8FD3A552F52B;
-	Sun, 29 Jun 2025 23:12:32 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 8FD3A552F52B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1751238753;
-	bh=CMWpdSXt+aQMl4gzAQ7WlEY+ZVcaSuxy8ltfzBBbdzw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GRjXIBEdgS0kOVv52MlLplQ3rDfOPqtxxJfXqvGLA1W1HSrcvGd/i6mvxiNn5qxXL
-	 Wed/dg9TKdN1N1QM1ixz/4L8eQy97J+rM5E1gcWTskAcVsxeim6EhtZjkjTTO7R2jV
-	 DMx5BjdOypZOUDi1abnS7ecV5vHQCMVcPN9tLwXA=
-From: Artem Sadovnikov <a.sadovnikov@ispras.ru>
-To: rcu@vger.kernel.org
-Cc: Artem Sadovnikov <a.sadovnikov@ispras.ru>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] refscale: Check that nreaders and loops multiplication doesn't overflow
-Date: Sun, 29 Jun 2025 23:12:12 +0000
-Message-ID: <20250629231212.1573-1-a.sadovnikov@ispras.ru>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1751361659; c=relaxed/simple;
+	bh=P3XzVml8VOYHlwM4nPlymyPxhWlJy6Gon8cEG/DVKTk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iRMpuYEuD9nTxrlmAb2ooSBZig4XzIZtcWplrQpzRHlyT4Np9PptTf687G/ClPYahz/DH5twZkLVcKw2W8PzMVc78VYfrFMs9yjXpOy3cio1Kz0ynrbjcd+C8FfSnynWgHS/mnhua1PW7TJFC/6LdFrpE/PBXF5qN6Ul6ZDXuK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bWcpc59kdzWfv4;
+	Tue,  1 Jul 2025 17:16:24 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id E15A51402CF;
+	Tue,  1 Jul 2025 17:20:46 +0800 (CST)
+Received: from kwepemn200010.china.huawei.com (7.202.194.133) by
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 1 Jul 2025 17:20:46 +0800
+Received: from [10.174.178.56] (10.174.178.56) by
+ kwepemn200010.china.huawei.com (7.202.194.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 1 Jul 2025 17:20:45 +0800
+Message-ID: <09e4d018-3db4-404e-a8f0-041cdee15a62@huawei.com>
+Date: Tue, 1 Jul 2025 17:20:45 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [QUESTION] problems report: rcu_read_unlock_special() called in
+ irq_exit() causes dead loop
+To: Joel Fernandes <joelagnelf@nvidia.com>, <paulmck@kernel.org>, "Xiongfeng
+ Wang" <wangxiongfeng2@huawei.com>
+CC: Joel Fernandes <joel@joelfernandes.org>, <ankur.a.arora@oracle.com>,
+	Frederic Weisbecker <frederic@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+	<neeraj.upadhyay@kernel.org>, <urezki@gmail.com>, <rcu@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, "Wangshaobo (bobo)"
+	<bobo.shaobowang@huawei.com>, Xie XiuQi <xiexiuqi@huawei.com>
+References: <9acd5f9f-6732-7701-6880-4b51190aa070@huawei.com>
+ <CAEXW_YRC=f6i3KOd_uhuH=xAOCG7mW7-LwtA4+_fc8FMjfRHeg@mail.gmail.com>
+ <3ce6f3ce-5dfb-8c59-cb7b-4619b70f8d25@huawei.com>
+ <20250603185939.GA1109523@joelnvbox>
+ <066e8121-c6c5-48ac-b35a-e6430d986dff@nvidia.com>
+ <a82784fd-d51e-4ea2-9d5c-43db971a3074@nvidia.com>
+ <c448118b-9f7e-4c29-d6b3-a66e70f7163f@huawei.com>
+ <a963b475-72cd-474d-96d4-9e651fc8f857@paulmck-laptop>
+ <e7354668-2573-4564-834b-44d76d983222@nvidia.com>
+Content-Language: en-GB
+From: Qi Xi <xiqi2@huawei.com>
+In-Reply-To: <e7354668-2573-4564-834b-44d76d983222@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ kwepemn200010.china.huawei.com (7.202.194.133)
 
-The nreaders and loops variables are exposed as module parameters, which,
-in certain combinations, can lead to multiplication overflow.
+Hello everyone,
 
-Besides, loops parameter is defined as long, while through the code is
-used as int, which can cause truncation on 64-bit kernels and possible
-zeroes where they shouldn't appear.
+Friendly ping about this problem :)
 
-Since code uses result of multiplication as int anyway, it only makes sense
-to replace loops with int. Multiplication overflow check is also added
-due to possible multiplication between two very big numbers.
+Qi
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read-side synchronization")
-Signed-off-by: Artem Sadovnikov <a.sadovnikov@ispras.ru>
----
- kernel/rcu/refscale.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index f11a7c2af778..ab7fcdc94cc0 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -85,7 +85,7 @@ torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_SCALE_TEST) ? 10 : 0,
- // Number of typesafe_lookup structures, that is, the degree of concurrency.
- torture_param(long, lookup_instances, 0, "Number of typesafe_lookup structures.");
- // Number of loops per experiment, all readers execute operations concurrently.
--torture_param(long, loops, 10000, "Number of loops per experiment.");
-+torture_param(int, loops, 10000, "Number of loops per experiment.");
- // Number of readers, with -1 defaulting to about 75% of the CPUs.
- torture_param(int, nreaders, -1, "Number of readers, -1 for 75% of CPUs.");
- // Number of runs.
-@@ -1140,7 +1140,7 @@ static void
- ref_scale_print_module_parms(const struct ref_scale_ops *cur_ops, const char *tag)
- {
- 	pr_alert("%s" SCALE_FLAG
--		 "--- %s:  verbose=%d verbose_batched=%d shutdown=%d holdoff=%d lookup_instances=%ld loops=%ld nreaders=%d nruns=%d readdelay=%d\n", scale_type, tag,
-+		 "--- %s:  verbose=%d verbose_batched=%d shutdown=%d holdoff=%d lookup_instances=%ld loops=%d nreaders=%d nruns=%d readdelay=%d\n", scale_type, tag,
- 		 verbose, verbose_batched, shutdown, holdoff, lookup_instances, loops, nreaders, nruns, readdelay);
- }
- 
-@@ -1238,12 +1238,16 @@ ref_scale_init(void)
- 	// Reader tasks (default to ~75% of online CPUs).
- 	if (nreaders < 0)
- 		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
--	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
-+	if (WARN_ONCE(loops <= 0, "%s: loops = %d, adjusted to 1\n", __func__, loops))
- 		loops = 1;
- 	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
- 		nreaders = 1;
- 	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
- 		nruns = 1;
-+	if (WARN_ONCE(loops > INT_MAX / nreaders,
-+		      "%s: nreaders * loops will overflow, adjusted loops to %d",
-+		      __func__, INT_MAX / nreaders))
-+		loops = INT_MAX / nreaders;
- 	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
- 			       GFP_KERNEL);
- 	if (!reader_tasks) {
--- 
-2.43.0
-
+On 2025/6/6 2:56, Joel Fernandes wrote:
+>
+> On 6/4/2025 8:26 AM, Paul E. McKenney wrote:
+>>>>>>>> Or just don't send subsequent self-IPIs if we just sent one for the
+>>>>>>>> rdp. Chances are, if we did not get the scheduler's attention during
+>>>>>>>> the first one, we may not in subsequent ones I think. Plus we do send
+>>>>>>>> other IPIs already if the grace period was over extended (from the FQS
+>>>>>>>> loop), maybe we can tweak that?
+>>>>>>> Thanks a lot for your reply. I think it's hard for me to fix this issue as
+>>>>>>> above without introducing new bugs. I barely understand the RCU code. But I'm
+>>>>>>> very glad to help test if you have any code modifiction need to. I have
+>>>>>>> the VM and the syskaller benchmark which can reproduce the problem.
+>>>>>> Sure, I understand. This is already incredibly valuable so thank you again.
+>>>>>> Will request for your testing help soon. I also have a test module now which
+>>>>>> can sort-off reproduce this. Keep you posted!
+>>>>> Oh sorry I meant to ask - could you provide the full kernel log and also is
+>>>>> there a standalone reproducer syzcaller binary one can run to reproduce it in a VM?
+>>> Sorry, I communicate with the teams who maintain the syzkaller tools. He said
+>>> I can't send the syskaller binary out of the company. Sorry, but I can help to
+>>> reproduce. It's not complicate and not time consuming.
+>>>
+>>> I found the origin log which use kernel v6.6. But it's not complete.
+>>> Then I reprouce the problem using the latest kernel.
+>>> Both logs are attached as attachments.
+>>>
+>> Looking at both the v6.6 version and Joel's fix, I am forced to conclude
+>> that this bug has been there for a very long time.  Thank you for your
+>> testing efforts and Joel for the fix!
+> Thanks. I am still working on polishing the fix Xiongfeng tested. I hope to have
+> it out next week for review. As we discussed I will split the context-tracking
+> API into a separate patch and will also add a separate documentation
+> comment-patch on why we need the irq_work.
+>
+> thanks,
+>
+>   - Joel
