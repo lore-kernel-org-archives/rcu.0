@@ -1,35 +1,35 @@
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 901D519D8A7;
-	Wed,  2 Jul 2025 09:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7614124111D;
+	Wed,  2 Jul 2025 09:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751447075; cv=none; b=ccecAXkFG+433ZDuDo2kBPbngJLDkj49ZLakkDhEXX+Uj/DoT+zwpXuxz2JO7ZwT5hKdykvoPDjTemYXnryBUW1gm36AL7HEHbJiXKau1vSahF7/hw0D6LT8uhaKWB3w4pzH/t4FPXJad8bBAmnjv7augLMuaB8U+fKjwwRZP5g=
+	t=1751447686; cv=none; b=sAAfsCTB2LiWP6zvh/geVue3T95FP1RKEPd8/nkXfniDSTt9FPgWuNik0Svn/CXoivtgUZ1x0utvtq7NW/y0r1s6eSDOhAiDBmd+XdiKn+xBnSXhsKfBni91/b+t5tRYaRBuKiWGj2gKqqCoFO7G4BOSMWZFmN/SBZw9pUPDEEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751447075; c=relaxed/simple;
-	bh=kcztfJkBZkuN7XUV0CYXcYL9JZrdKKPYOBrbgy9LZO0=;
+	s=arc-20240116; t=1751447686; c=relaxed/simple;
+	bh=fins2nf4nlvSpl6nY+hYPifI0DB6eGw9hwvdzJ7z/D8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RaZE06guKUbkH893VvqOLVSsckoSvsdk0o8UCGNJSZz7P1654IBz5YyeAMo+IRhcIPQzR/hC7dIq9AhY1KiirY/Cy/U6DhJGyQtLBL0yAH8sUaucd8h7AY1h2viAbkSsl4nSOeHKZjwXRtp9dpaGHsLyxct1QBYcahHUBKdPJAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 In-Reply-To:Content-Type; b=Wpx1nPxXBmIzLL5OhEqmpIWnfA5PoWOw9z7Dcv5kz41ceZXEDmGe8I2mPhufRon4Q/iWhhnYPn3pjX482PFeonA0v8Nc2fTvcTgOea/fp9T3KetNkDgf/KDL7oKlw66l5JEF+Ls1SQ6EOFSCQqJw45vHhKLJGFwySWahxPal1NU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4bXDSM0c2Mz2TSrp;
-	Wed,  2 Jul 2025 17:02:43 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4bXDdW3NyNzvQB9;
+	Wed,  2 Jul 2025 17:10:39 +0800 (CST)
 Received: from dggemv712-chm.china.huawei.com (unknown [10.1.198.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id 52FBA1A016C;
-	Wed,  2 Jul 2025 17:04:29 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 66D7B140277;
+	Wed,  2 Jul 2025 17:14:40 +0800 (CST)
 Received: from kwepemn200010.china.huawei.com (7.202.194.133) by
  dggemv712-chm.china.huawei.com (10.1.198.32) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 2 Jul 2025 17:04:29 +0800
+ 15.2.1544.11; Wed, 2 Jul 2025 17:14:40 +0800
 Received: from [10.174.178.56] (10.174.178.56) by
  kwepemn200010.china.huawei.com (7.202.194.133) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 2 Jul 2025 17:04:28 +0800
-Message-ID: <de7ba157-bede-4ab2-9b8a-cc63c7fafb79@huawei.com>
-Date: Wed, 2 Jul 2025 17:04:27 +0800
+ 15.2.1544.11; Wed, 2 Jul 2025 17:14:39 +0800
+Message-ID: <506d8c4e-c317-4c85-9bcf-695596551d28@huawei.com>
+Date: Wed, 2 Jul 2025 17:14:38 +0800
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -61,16 +61,34 @@ Content-Language: en-GB
 From: Qi Xi <xiqi2@huawei.com>
 In-Reply-To: <279d2f06-d4f7-46e1-9678-999a2d19b710@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
  kwepemn200010.china.huawei.com (7.202.194.133)
 
 Hi Joel,
 
-After applying those 2 patches on the latest kernel, the problem still 
-occurs. Compared to the previous version which solves this problem, the 
-difference is the following:
+After applying the 2 patches, the problem still exists. Compared to the 
+previous fixes which did solve the problem, the difference is 
+ct_in_irq() in the first patch.
 
+I am wondering why "nesting != CT_NESTING_IRQ_NONIDLE" is added?
+
+
+(previous fix: problem is solved)
+
++bool ct_in_irq(void)
++{
++    return ct_nmi_nesting() != 0;
++}
+
+(current fix: problem still exists)
+
++bool ct_in_irq(void)
++{
++    long nesting = ct_nmi_nesting();
++
++    return (nesting && nesting != CT_NESTING_IRQ_NONIDLE);
++}
 
 
 On 2025/7/1 21:29, Joel Fernandes wrote:
