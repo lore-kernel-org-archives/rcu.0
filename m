@@ -1,45 +1,50 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8143C2F;
-	Sun,  6 Jul 2025 17:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4DE293C4C;
+	Sun,  6 Jul 2025 17:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751821277; cv=none; b=j+MQ4rwmE284IXqJRkH2HGK9cPTegCh15VnS9crI1u/r2a1T2iThzFv2EKd2/06KXgYUCsXnm3puW2KB48h0GpUc7R2lg1MPIWUvjJWIQEcW47Mu0uzQodF3AMbA4HRC1Y4ZDrkdt9aksgwwLalXDJb1c+8agWh4dq5CbUREatQ=
+	t=1751821696; cv=none; b=jwmpKCfExC4aRgXEcAzeihqPVHWCVyw3HLfDx84nXtXqkF/fhHRm9Ixqhu2X/tGfexRCIEJkmi3pBm5ucqM06bFrh5EmMOSq3eaj3hBLl3CpR2OrfMx/WZW1AohnGZBzvfkRSlYFw+IWWwajNhGOd0MAf9mnllu0aGf1+UI9TI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751821277; c=relaxed/simple;
-	bh=i7FjqQB9e86KPDAjZ6ecIlH1DvkdwOFhgxZF87a9aYU=;
+	s=arc-20240116; t=1751821696; c=relaxed/simple;
+	bh=DtkbOqAcIMRVDjPLUKIiiom0YBSaUUIPwrAuQkbAl78=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=stt0DuX2v65u1YkDy2yPyg6hrpK2z+h9/rt6AGTH5/I4KE/kj8wx4Kpi6op8LWz+D2WjEDTidITYqlC69hIfs970Ysw0WL2Q3prmNOsK1Pr1HgNaVPkvG+tA9xKBmMhM6ooZCPTcU+qIBjY+uCa60eEa0zcHDenGs4LKrfBbi+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nljP5jVa; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=rhWXCSjSgGqZQUVWJ+BF9GO2foJjk95/Ng5eKWxcUXXRyllzTlfHWBe/xnm9yFT17VUy8bcBMr/Jiq77QjidvBuPoJ2XMGDKRtYQcsMfqN9yU+Z0Fszb9uR0B8fzHuv7VUrxjJ/upqA3AzMvIElkKZ+v08BZhXxP5vz/JaYtlfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uTHMxSKc; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nljP5jVa"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 550FBC4CEED;
-	Sun,  6 Jul 2025 17:01:16 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uTHMxSKc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F2EC4CEED;
+	Sun,  6 Jul 2025 17:08:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751821276;
-	bh=i7FjqQB9e86KPDAjZ6ecIlH1DvkdwOFhgxZF87a9aYU=;
+	s=k20201202; t=1751821696;
+	bh=DtkbOqAcIMRVDjPLUKIiiom0YBSaUUIPwrAuQkbAl78=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=nljP5jVaRdXI9qxFnCM0VRIwzcK/bkCR/yXiXvXd9seiBwcwYRX+GDYhsy5ne4Ul+
-	 ZedkZzMb3tArHWB4L/OwMXEPdACOgFqg3VmYGZBwe7OWzOoJXi1GlVvrCd38wkA9Yq
-	 EIm4v6v0lPberWLe1DRfvpPq3GTGJOQ/i5Vu5fjqeBkQ9iFSkP9O8XT6tUOocjZB8z
-	 L0BP4FrqijHX2s5M20rmQh2eG2+9RAMyawIup7qDR49aysOA2md8lEHk6BHiX2lVmo
-	 QQOLniNeXaYj4uPUcVsSzm+G4dIsB0XwblRwiodxM+RLZGUHjkk+yiAiyZ9hzZ8R+t
-	 6hEzdY0uKd/9w==
+	b=uTHMxSKceEf2w2K9QxxiCmu0CHvC3BJRGaIX4tj5aX/DPm2Q7GfbL4ZZZyMglnZu8
+	 HEjd0DWAKa5l8fVckXA3wzZH+IY/Z1ZJqNgCmOdtk7mO06KAafzeMntO9wCj2boRRp
+	 TsCHZWbV8h1UMmZlv+bA1bRjwQX43gJPmJLzNwUrDoH4fnSKVlUV5c9qXdy+xU+T74
+	 ZFd/EDy5cRooV7BPNDtbZ6jeXPTIUyvywh4Q6mrySIUKLJgSK9qHrv/42qDlLTjcLq
+	 NJX+BgAFL/rDdtTX0UC+7CujLb9tK8QTlgC+EsQBBC93Vnwhth1aHTBzob2ArNjdmB
+	 L8gLc9vH3Em3Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id F06C5CE09E9; Sun,  6 Jul 2025 10:01:15 -0700 (PDT)
-Date: Sun, 6 Jul 2025 10:01:15 -0700
+	id BA208CE09E9; Sun,  6 Jul 2025 10:08:15 -0700 (PDT)
+Date: Sun, 6 Jul 2025 10:08:15 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrea Righi <arighi@nvidia.com>,
-	Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] smp: Document preemption and stop_machine() mutual
- exclusion
-Message-ID: <dbdd31b5-e341-4191-835a-eb473a21b0ab@paulmck-laptop>
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC 1/3] rcu: Fix rcu_read_unlock() deadloop due to IRQ
+ work
+Message-ID: <960035c6-c5f3-4c31-bd0f-f57d79b040f4@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20250705172328.4114289-1-joelagnelf@nvidia.com>
+References: <20250705203918.4149863-1-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -48,86 +53,137 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250705172328.4114289-1-joelagnelf@nvidia.com>
+In-Reply-To: <20250705203918.4149863-1-joelagnelf@nvidia.com>
 
-On Sat, Jul 05, 2025 at 01:23:27PM -0400, Joel Fernandes wrote:
-> Recently while revising RCU's cpu online checks, there was some discussion
-> around how IPIs synchronize with hotplug.
-> 
-> Add comments explaining how preemption disable creates mutual exclusion with
-> CPU hotplug's stop_machine mechanism. The key insight is that stop_machine()
-> atomically updates CPU masks and flushes IPIs with interrupts disabled, and
-> cannot proceed while any CPU (including the IPI sender) has preemption
-> disabled.
-> 
-> Cc: Andrea Righi <arighi@nvidia.com>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: rcu@vger.kernel.org
-> Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
+On Sat, Jul 05, 2025 at 04:39:15PM -0400, Joel Fernandes wrote:
 > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Definitely headed in the right direction, though it does need just a
+little bit more detail in the commit log.  ;-)
+
+Also a few comments and questions interspersed below.
+
+							Thanx, Paul
 
 > ---
-> v1->v2: Reworded a bit more (minor nit).
+>  kernel/rcu/tree.h        | 11 ++++++++++-
+>  kernel/rcu/tree_plugin.h | 29 ++++++++++++++++++++++-------
+>  2 files changed, 32 insertions(+), 8 deletions(-)
 > 
->  kernel/cpu.c |  4 ++++
->  kernel/smp.c | 12 ++++++++++++
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index a59e009e0be4..a8ce1395dd2c 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -1310,6 +1310,10 @@ static int takedown_cpu(unsigned int cpu)
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index 3830c19cf2f6..f8f612269e6e 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -174,6 +174,15 @@ struct rcu_snap_record {
+>  	unsigned long   jiffies;	/* Track jiffies value */
+>  };
 >  
+> +/*
+> + * The IRQ work (deferred_qs_iw) is used by RCU to get scheduler's attention.
+> + * It can be in one of the following states:
+> + * - DEFER_QS_IDLE: An IRQ work was never scheduled.
+> + * - DEFER_QS_PENDING: An IRQ work was scheduler but never run.
+> + */
+> +#define DEFER_QS_IDLE		0
+> +#define DEFER_QS_PENDING	1
+
+Having names for the states is good!
+
+> +
+>  /* Per-CPU data for read-copy update. */
+>  struct rcu_data {
+>  	/* 1) quiescent-state and grace-period handling : */
+> @@ -192,7 +201,7 @@ struct rcu_data {
+>  					/*  during and after the last grace */
+>  					/* period it is aware of. */
+>  	struct irq_work defer_qs_iw;	/* Obtain later scheduler attention. */
+> -	bool defer_qs_iw_pending;	/* Scheduler attention pending? */
+> +	int defer_qs_iw_pending;	/* Scheduler attention pending? */
+>  	struct work_struct strict_work;	/* Schedule readers for strict GPs. */
+>  
+>  	/* 2) batch handling */
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index dd1c156c1759..baf57745b42f 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -486,13 +486,16 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+>  	struct rcu_node *rnp;
+>  	union rcu_special special;
+>  
+> +	rdp = this_cpu_ptr(&rcu_data);
+> +	if (rdp->defer_qs_iw_pending == DEFER_QS_PENDING)
+> +		rdp->defer_qs_iw_pending = DEFER_QS_IDLE;
+
+Good, this is where the request actually gets serviced.
+
+> +
 >  	/*
->  	 * So now all preempt/rcu users must observe !cpu_active().
-> +	 *
-> +	 * stop_machine() waits for all CPUs to enable preemption. This lets
-> +	 * take_cpu_down() atomically update CPU masks and flush last IPI
-> +	 * before new IPIs can be attempted to be sent.
+>  	 * If RCU core is waiting for this CPU to exit its critical section,
+>  	 * report the fact that it has exited.  Because irqs are disabled,
+>  	 * t->rcu_read_unlock_special cannot change.
 >  	 */
->  	err = stop_machine_cpuslocked(take_cpu_down, NULL, cpumask_of(cpu));
->  	if (err) {
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index 974f3a3962e8..842691467f9e 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -93,6 +93,9 @@ int smpcfd_dying_cpu(unsigned int cpu)
->  	 * explicitly (without waiting for the IPIs to arrive), to
->  	 * ensure that the outgoing CPU doesn't go offline with work
->  	 * still pending.
-> +	 *
-> +	 * This runs in stop_machine's atomic context with interrupts disabled,
-> +	 * thus CPU offlining and IPI flushing happen together atomically.
->  	 */
->  	__flush_smp_call_function_queue(false);
->  	irq_work_run();
-> @@ -418,6 +421,10 @@ void __smp_call_single_queue(int cpu, struct llist_node *node)
+>  	special = t->rcu_read_unlock_special;
+> -	rdp = this_cpu_ptr(&rcu_data);
+>  	if (!special.s && !rdp->cpu_no_qs.b.exp) {
+>  		local_irq_restore(flags);
+>  		return;
+> @@ -623,12 +626,24 @@ notrace void rcu_preempt_deferred_qs(struct task_struct *t)
 >   */
->  static int generic_exec_single(int cpu, call_single_data_t *csd)
+>  static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
 >  {
-> +	/*
-> +	 * Preemption must be disabled by caller to mutually exclude with
-> +	 * stop_machine() atomically updating CPU masks and flushing IPIs.
-> +	 */
->  	if (cpu == smp_processor_id()) {
->  		smp_call_func_t func = csd->func;
->  		void *info = csd->info;
-> @@ -640,6 +647,11 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
->  	/*
->  	 * prevent preemption and reschedule on another processor,
->  	 * as well as CPU removal
-> +	 *
-> +	 * get_cpu() disables preemption, ensuring mutual exclusion with
-> +	 * stop_machine() where CPU offlining and last IPI flushing happen
-> +	 * atomically versus this code. This guarantees here that the cpu_online()
-> +	 * check and IPI sending are safe without losing IPIs due to offlining.
->  	 */
->  	this_cpu = get_cpu();
+> -	unsigned long flags;
+> -	struct rcu_data *rdp;
+> +	volatile unsigned long flags;
+
+I don't understand why this wants to be volatile.
+
+Unless maybe you want to make sure that gdb can see it, in
+which case, is there an existing Kconfig option for that?  Maybe
+CONFIG_DEBUG_INFO_NONE=n?
+
+> +	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
 >  
+> -	rdp = container_of(iwp, struct rcu_data, defer_qs_iw);
+>  	local_irq_save(flags);
+> -	rdp->defer_qs_iw_pending = false;
+> +
+> +	/*
+> +	 * Requeue the IRQ work on next unlock in following situation:
+> +	 * 1. rcu_read_unlock() queues IRQ work (state -> DEFER_QS_PENDING)
+> +	 * 2. CPU enters new rcu_read_lock()
+> +	 * 3. IRQ work runs but cannot report QS due to rcu_preempt_depth() > 0
+> +	 * 4. rcu_read_unlock() does not re-queue work (state still PENDING)
+> +	 * 5. Deferred QS reporting does not happen.
+> +	 */
+> +	if (rcu_preempt_depth() > 0) {
+> +		WRITE_ONCE(rdp->defer_qs_iw_pending, DEFER_QS_IDLE);
+
+Shouldn't we have just this WRITE_ONCE() in this then-clause?
+
+> +		local_irq_restore(flags);
+> +		return;
+> +	}
+>  	local_irq_restore(flags);
+>  }
+>  
+> @@ -675,7 +690,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			set_tsk_need_resched(current);
+>  			set_preempt_need_resched();
+>  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
+> -			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
+> +			    expboost && rdp->defer_qs_iw_pending != DEFER_QS_PENDING && cpu_online(rdp->cpu)) {
+>  				// Get scheduler to re-evaluate and call hooks.
+>  				// If !IRQ_WORK, FQS scan will eventually IPI.
+>  				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+> @@ -685,7 +700,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  				else
+>  					init_irq_work(&rdp->defer_qs_iw,
+>  						      rcu_preempt_deferred_qs_handler);
+> -				rdp->defer_qs_iw_pending = true;
+> +				rdp->defer_qs_iw_pending = DEFER_QS_PENDING;
+>  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
+>  			}
+>  		}
 > -- 
 > 2.43.0
 > 
