@@ -1,65 +1,65 @@
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAAB29CB53;
-	Mon,  7 Jul 2025 13:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8696B1E4AB;
+	Mon,  7 Jul 2025 13:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751894120; cv=none; b=B9uTczUprlH1soR65LJ0AvkCuLxKPyoxZ/qMNdIYr/I77gBKxusJe1NgIdqvXRcWMWHxGm3UgbVO3CaqZTS49QbT0yDdWYEG23Tz1Y0rQ4OFjQUXiQzJZ8rGE5l7l9eStHKc/jqJxPeLPLi+6DHNfa+4nn0AMOrguc4bN+Aef10=
+	t=1751894152; cv=none; b=NOhQaVhv3AFUOJxkJidg2W5ZRlrMZtfeSYJxjatVXy3pC28ZUe0TTi9IufPhBf2qfGyXg6/hvR+aGU4zvYN0+sL6OhNcBdvW7VDDxFdL1MCScnxx5G4hvq5DjcJMjhLoxEAq9WTsQD3onS81Fg0fzxvWije3yb7sCRVFTcHXwog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751894120; c=relaxed/simple;
-	bh=2dWgPe17PK5fdufSva/Q7JmuxJeb+/oVh1AHMVaqkak=;
+	s=arc-20240116; t=1751894152; c=relaxed/simple;
+	bh=WvK92SPSmMS3dpRDjSrlhNAeyZd3LjdOu4GPitB+uCo=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oa0NaIXMWKx+vcF61KbIljcNXNjNz69L3bp29fc+VEKLHrYsI3krAPWSnuTzBXL/lUbsXippESZfTmjW7JDgf0spxJdq/qgmB1oth8/j0uFZHW3J2sVoxi4ufhr7Yma3kjZlFY4cgPNjcSjAJghHGVLetPYRrSuAdE6raD+ZFi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j4xlipVP; arc=none smtp.client-ip=209.85.167.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=cwIu7QNimcLM3IaK4LLZVqo9f0XoTsQfCY+RGRHbrEblyWxNpVQHeGaOno/ncRmm3kIFdxNRJuYAdit3USfbYujSJ++ViLOOmZx/BLMRcxXgWXtJy6DV8OJ20EFY1G/8RGhL8N+uhaKb/J2kpUC07VAxAdCIeZbswjIpqv3nrCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CDSIkeyD; arc=none smtp.client-ip=209.85.167.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j4xlipVP"
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-553bcf41440so3211433e87.3;
-        Mon, 07 Jul 2025 06:15:18 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CDSIkeyD"
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-553dceb345eso3653651e87.1;
+        Mon, 07 Jul 2025 06:15:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1751894117; x=1752498917; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1751894149; x=1752498949; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gbPX0NE/xm0nQIylEPb1G6KJpxgsJepLGdVW149EGic=;
-        b=j4xlipVPTeklMAyij2EkH7A0NCfmQDTgnjjsST+zv8S5ShWthNaNYf7IEanF2+z6aE
-         OE3HnF2aJAg4UpUzz+yZINVE5gJ6Xj9u6PWcs1ZmkRJf+1fkY/hKuEAH+TOVnjhXWVjw
-         7WyzyhbWpLSLPFAItOaRkl5H2kqEOnwdBe7PAVxkO4mS5IMaUQQiTbXwybecLiFhktCJ
-         EMMO2oAwVxTsjMLMOJFVVXEcOmmep9JjnwncUIAAZQUHS0Ld/q3wnNzK2PGh7pjfFUZB
-         q/v6tsY1FUZiecfcebngcZNfNhwYEFZZWgrEtk3P03TXgFXJxVAoZcC9Nenex1VxEPEe
-         oiwQ==
+        bh=VYx0mbXhO6tHN9Rl9G+7SmQU6ij6CMN6DXEWsUBLSiY=;
+        b=CDSIkeyD5L5L1MEIpJ0gxkYGbOiiuPid6VJz3gzelYsHP70+qX0+p2ZcBCZfU6L16j
+         vwlHiA6RV0WQ5Fh9Ap2ShaBq0OB5CNNlvJLnrf5qRO4r8/SfT07HDXROl3COghUz/UD1
+         i8LIPn/BRj//Ic0Xy+mED8Hgv7K6ZQgPp6zYyztLjNRba7XISFr1gjup/nLgT2qKKk1J
+         AgpN2efuL+Od4gVvYl3bemBJY9yY7Jy0yxsQ+WQtWFNIUZuHsgYUBCUh67T0h8URXfxi
+         9WYuy+0dpbqI86sro8wIId95ZhNFcEGzdkQYLSNxpI8ltR9kWYKaf2OtmNudA2qmZpbK
+         gtOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751894117; x=1752498917;
+        d=1e100.net; s=20230601; t=1751894149; x=1752498949;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gbPX0NE/xm0nQIylEPb1G6KJpxgsJepLGdVW149EGic=;
-        b=wjQXknY0tBJsWAzwNIHFJPMxo/2KZd+CJSYNYOrApiDx2vcL9BWeZMZY/Tu3XuT7a+
-         zslBkUmMnQAiJ1IqU6qNjmp/R4Z51MLJ92Iqeqw1VoQFEDhtnygghcHH0Y097fq6TVZK
-         RPuhjBIwCJkbW5PIehnInINej1cxW5o1mCEYqpYkrhrf64WUkYVd/1u8q95iVsPDKVvM
-         CgLhYZtxZj68/zT7pxd3W3OK6SfPCCAlpfjD2Bsnwss+4QRhIRARxBoLhKVyngk7YBe8
-         e/RTq+bdS9JQHaTBRZVbPtcXXn53NcppsO5AT94fhvRmpXyfhVoz/paZDho04xVJslex
-         wWtA==
-X-Forwarded-Encrypted: i=1; AJvYcCVfMc4/1TN53hL3XdR6eam+XnEoZsRrm6jxAxgmK8GeUcRGaG411dWpchI7Kn8VNGRj6p139k0GvwmLmSI=@vger.kernel.org, AJvYcCX95L5hWDEsfGDwKQboAcmdmVSKZWExvs6Aoj4J0xV4cEV9HcxDLKV45usjHmUPQ77N3oe3@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQUUFZYp7bj9eh5hXQivfcN194uYxpYU7Z+qm9nUD7xuppRfzf
-	TCUwRpO8stG5R+YpB2t4TB4Ogg3BmRECMai4mql6WdFywk5/5U6bj2idmFRG4g==
-X-Gm-Gg: ASbGnct9nHfcJbXnGZNJZXYWvoz/wTaR4eXhUtNtzTs6bONynbBHeD4wVQinSaBu9oc
-	d+QtzDmRTgkYcUzMO5KOXpJn1aU27/QukmPbd/oyqQzfkkyTH/Nqa4gcSTYbZJb0UtKh+HOgiAr
-	KxSZabXe2K3/UgxTG58y4BbsS26LXt4U8nzfd104Etm9i49brJ5yrF7DT/cd3tE5fpkr9ydrdcO
-	U0lHeZI+1y43nbIgPQG69TuTiZzO0CG4ZQMjS81s6lzQNZ2DJcjp/UcwC90KqEvIOFd2Es2sHyC
-	rm8SmZ92yuiMI+LwLXpRjay+4Dg/OGxgO0j4R1ZN9u5ONqcATtxNMTen8ZTbLy89vmAuEEQaxOK
-	NDYcPDBTfZpg=
-X-Google-Smtp-Source: AGHT+IFP+25N80hK9wedsBU2WB382/UhHmXyfAE1YhEjnQFs2oNEyyhujLqCT7wV/yUg8AdNcEHOtw==
-X-Received: by 2002:a05:6512:2c05:b0:553:6583:8e6 with SMTP id 2adb3069b0e04-557e5532091mr1980003e87.15.1751894116472;
-        Mon, 07 Jul 2025 06:15:16 -0700 (PDT)
+        bh=VYx0mbXhO6tHN9Rl9G+7SmQU6ij6CMN6DXEWsUBLSiY=;
+        b=YbQSdOUXvmGJwOtv984FhLYSvpHVOlaXeDmbOHBCtnVvXbuRpMhw3O1nO8bBrdzS9w
+         K3cpnqra4FVK1eRNd/ZD8IwGotI/+zx9+nTM87TFBOwjy+Z/8ckJClHgjVxvBzdEAD0m
+         Ht7KqjWXi30qiOhvVb+3Ll/Io3EYg1qS4NJ1y/13JiJtx0oDsf728eKrWro4F8dv5wfj
+         F3WZm9RxoKXQOVbIThmGy8Yx9BAAB/UfM2rU39mLgloG9ivZFWLl5fig55MlhEnjjZnn
+         816h6TV40fc3yFMspqYsuFNgWkO8L/ak9OrDBRSaH5wfap8/PiRm/W2koUBp1d80/BWc
+         G3ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPfvw12LimT9+4riyYksGcoM/rVDTLkPgrIjsNUQlq56OlnVnC423zz9SRk5ZetETMgpVaGLczIiV+HC4=@vger.kernel.org, AJvYcCWl9vR/HgLO/kW8XL8I+r/O3aPyqxMEX5TbelFtjcgfmxea8z/fhGePPEh1XuC8rjGOboVd@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6OYJePB94kymet3mT6FcfjGEFZyllwgEBWlEiFcsTU+iQjNuy
+	V7zTJrp83ENI/t96CtcsOi4kStAE8Gt1K5Inw4P9OqeUctqy9A102eG/
+X-Gm-Gg: ASbGnctRgcgJpok2b3WLGTTM0WlAFsvc26KF4Gbq/t6gnhYZ4KnaSVSTtxe1rZxYkT1
+	yiSX1V4iBroNI2ahO5vDJaunOVFC4Yjf77TMvdm9CR2I6FC1XKMuPcod039Ru+E4RufwmgmmORU
+	A8lEJ1zDsbPJOAhRq06MHCW5fliDyK8PAUvwjQAqyDnplX7Lp/LlQVMWGWMbIz09f6K3JzceiBV
+	IX3CWkyaxsWGJO4Rl4t/ijcIlmH8arCNkIZcg2rrpff/VQzLwj/ZM5VTnGLwnm+9AVGsxVP7BKF
+	Z1fFN62FQN1BhvUwzqVCaD2u24O8fqOcqMkEG+Js5lMp4v5mm3m6bXKevEVm2hzUe21pr1S6p8g
+	fmmbMHRo05yE=
+X-Google-Smtp-Source: AGHT+IHwXTQuWK4ngCiVKCMKRs3GycnlMOonwcKkNKX31PcHxol+f6J6GXptPcpboKdRq3olFMzXbQ==
+X-Received: by 2002:a05:6512:ac8:b0:554:f72c:819d with SMTP id 2adb3069b0e04-556de075fe4mr4199034e87.43.1751894148124;
+        Mon, 07 Jul 2025 06:15:48 -0700 (PDT)
 Received: from pc636 (host-95-203-1-180.mobileonline.telia.com. [95.203.1.180])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-556384a68f3sm1351686e87.144.2025.07.07.06.15.14
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-556383baedesm1337410e87.23.2025.07.07.06.15.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jul 2025 06:15:14 -0700 (PDT)
+        Mon, 07 Jul 2025 06:15:47 -0700 (PDT)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Mon, 7 Jul 2025 15:15:12 +0200
+Date: Mon, 7 Jul 2025 15:15:45 +0200
 To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 Cc: Uladzislau Rezki <urezki@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -67,12 +67,13 @@ Cc: Uladzislau Rezki <urezki@gmail.com>,
 	LKML <linux-kernel@vger.kernel.org>,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>
-Subject: Re: [PATCH v3 1/2] rcu: Enable rcu_normal_wake_from_gp on small
- systems
-Message-ID: <aGvIYMBJsOpNx7-9@pc636>
+Subject: Re: [PATCH v3 2/2] Documentation/kernel-parameters: Update
+ rcu_normal_wake_from_gp doc
+Message-ID: <aGvIgTdZhUC6sKy7@pc636>
 References: <20250702145938.66459-1-urezki@gmail.com>
- <aGajO8rOu_GOnjrS@pc636>
- <ccca5cb2-0d41-4fe1-a4a5-4344b4116770@amd.com>
+ <20250702145938.66459-2-urezki@gmail.com>
+ <aGajYsyMTAD17WIY@pc636>
+ <fee9ae77-2d10-47d2-9fb6-ea6a1f850dd4@amd.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -81,113 +82,44 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ccca5cb2-0d41-4fe1-a4a5-4344b4116770@amd.com>
+In-Reply-To: <fee9ae77-2d10-47d2-9fb6-ea6a1f850dd4@amd.com>
 
-On Mon, Jul 07, 2025 at 09:19:03AM +0530, Neeraj Upadhyay wrote:
+On Mon, Jul 07, 2025 at 09:19:38AM +0530, Neeraj Upadhyay wrote:
 > 
 > 
-> On 7/3/2025 9:05 PM, Uladzislau Rezki wrote:
-> > On Wed, Jul 02, 2025 at 04:59:36PM +0200, Uladzislau Rezki (Sony) wrote:
-> >> Automatically enable the rcu_normal_wake_from_gp parameter on
-> >> systems with a small number of CPUs. The activation threshold
-> >> is set to 16 CPUs.
-> >>
-> >> This helps to reduce a latency of normal synchronize_rcu() API
-> >> by waking up GP-waiters earlier and decoupling synchronize_rcu()
-> >> callers from regular callback handling.
-> >>
-> >> A benchmark running 64 parallel jobs(system with 64 CPUs) invoking
-> >> synchronize_rcu() demonstrates a notable latency reduction with the
-> >> setting enabled.
-> >>
-> >> Latency distribution (microseconds):
-> >>
-> >> <default>
-> >>  0      - 9999   : 1
-> >>  10000  - 19999  : 4
-> >>  20000  - 29999  : 399
-> >>  30000  - 39999  : 3197
-> >>  40000  - 49999  : 10428
-> >>  50000  - 59999  : 17363
-> >>  60000  - 69999  : 15529
-> >>  70000  - 79999  : 9287
-> >>  80000  - 89999  : 4249
-> >>  90000  - 99999  : 1915
-> >>  100000 - 109999 : 922
-> >>  110000 - 119999 : 390
-> >>  120000 - 129999 : 187
-> >>  ...
-> >> <default>
-> >>
-> >> <rcu_normal_wake_from_gp>
-> >>  0      - 9999  : 1
-> >>  10000  - 19999 : 234
-> >>  20000  - 29999 : 6678
-> >>  30000  - 39999 : 33463
-> >>  40000  - 49999 : 20669
-> >>  50000  - 59999 : 2766
-> >>  60000  - 69999 : 183
-> >>  ...
-> >> <rcu_normal_wake_from_gp>
+> On 7/3/2025 9:06 PM, Uladzislau Rezki wrote:
+> > On Wed, Jul 02, 2025 at 04:59:37PM +0200, Uladzislau Rezki (Sony) wrote:
+> >> Update the documentation about rcu_normal_wake_from_gp parameter.
 > >>
 > >> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
 > >> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > >> ---
-> >>  kernel/rcu/tree.c | 14 +++++++++++---
-> >>  1 file changed, 11 insertions(+), 3 deletions(-)
+> >>  Documentation/admin-guide/kernel-parameters.txt | 3 ++-
+> >>  1 file changed, 2 insertions(+), 1 deletion(-)
 > >>
-> >> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> >> index e8a4b720d7d2..b88ceb35cebd 100644
-> >> --- a/kernel/rcu/tree.c
-> >> +++ b/kernel/rcu/tree.c
-> >> @@ -1625,8 +1625,10 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
-> >>  	atomic_set_release(&sr_wn->inuse, 0);
-> >>  }
+> >> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> >> index f1f2c0874da9..f7e4bee2b823 100644
+> >> --- a/Documentation/admin-guide/kernel-parameters.txt
+> >> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> >> @@ -5485,7 +5485,8 @@
+> >>  			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
+> >>  			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
 > >>  
-> >> -/* Disabled by default. */
-> >> -static int rcu_normal_wake_from_gp;
-> >> +/* Enable rcu_normal_wake_from_gp automatically on small systems. */
-> >> +#define WAKE_FROM_GP_CPU_THRESHOLD 16
-> >> +
-> >> +static int rcu_normal_wake_from_gp = -1;
-> >>  module_param(rcu_normal_wake_from_gp, int, 0644);
-> >>  static struct workqueue_struct *sync_wq;
+> >> -			Default is 0.
+> >> +			Default is 1 if num_possible_cpus() <= 16 and it is not explicitly
+> >> +			disabled by the boot parameter passing 0.
 > >>  
-> >> @@ -3239,7 +3241,7 @@ static void synchronize_rcu_normal(void)
-> >>  
-> >>  	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
-> >>  
-> >> -	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
-> >> +	if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
-> >>  		wait_rcu_gp(call_rcu_hurry);
-> >>  		goto trace_complete_out;
-> >>  	}
-> >> @@ -4843,6 +4845,12 @@ void __init rcu_init(void)
-> >>  	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
-> >>  	WARN_ON(!sync_wq);
-> >>  
-> >> +	/* Respect if explicitly disabled via a boot parameter. */
-> >> +	if (rcu_normal_wake_from_gp < 0) {
-> >> +		if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
-> >> +			rcu_normal_wake_from_gp = 1;
-> >> +	}
-> >> +
-> >>  	/* Fill in default value for rcutree.qovld boot parameter. */
-> >>  	/* -After- the rcu_node ->lock fields are initialized! */
-> >>  	if (qovld < 0)
+> >>  	rcuscale.gp_async= [KNL]
+> >>  			Measure performance of asynchronous
 > >> -- 
 > >> 2.39.5
 > >>
-> > Neeraj, are you planning to take this for next merge window?
+> > Same this one. Are you planning?
 > > 
 > 
-> Yes, I have queued v2 of these for testing here:
+> Yes, will be including these in the PR for next merge window.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/log/?h=dev.01.07.2025
-> 
-> Will include them in PR for next merge window.
-> 
-Thank you! I asked because i did not see both in our common RCU tree.
+Appreciate it and thank you!
 
 --
 Uladzislau Rezki
