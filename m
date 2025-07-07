@@ -1,46 +1,58 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EEF62144CF;
-	Mon,  7 Jul 2025 15:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D4716DEB3;
+	Mon,  7 Jul 2025 21:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751903765; cv=none; b=PlbqClWCLKWyiVQMMG9VeMZmdoJjbaSuwp2ToA/A1j46DmLSwEfFhR+n01EVUU7rg4mWWZjiklr8FFuff+iY8spZ9afAZilL4+9iGghKxqJLdEBaUi5KdoiWqpCJM3M6HiJysCDOZGkKAIrrPquyYesoNPfY1ZiVdooYkngkcp8=
+	t=1751925375; cv=none; b=A/SRVNs5UjdaMgXsIDQ0rxw8paev2ZZouv/BQroxEWcFiEGZrWL1K3gCgItG3floycXxsXn4Vl4RYkphh3n48gXIiEUjhs80QKgrQYbiVzgu9sBFWnzFZC1I+pbcs91outykCWoD1E2TrVBUED+rZFB3fcxK3onMWhTmAkM4zQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751903765; c=relaxed/simple;
-	bh=f6DsW0WYHxLyXHwiXum+i83pkEndPZCJeiW0ueulBxk=;
+	s=arc-20240116; t=1751925375; c=relaxed/simple;
+	bh=SN7gE7wv44HsOXYJxG4NYhkPrK17oXrOVljL+MEmuDw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vDrA3HD+MrKpXSBB9KnSZmiHR+aYXZdTe3yG4WjMI1G8VR2Pccn+cdA1hgOaH5tDUzxymM7/rb6Hw65hZ1JUIj1TfM5DAXyHjdcizmBfZrBYOVZxpc81lmY9fsDLuwOd2qSmaLw5lZDk9j+wmlKnNYt1RKRFB/jSaWnIOH9IXO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HdJ5BOzL; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=eOgNHTi658XoCz69FesYftqPLrq1gSA0Sp9XhWk5ubP6jmT+AwF918HuwyAgL+F8AZePsAKlVeb+zWxDfKQmrn/7i0Qs8/HUE0c7/vBuJHDDDgs+MwD1W0aTZz70HUHQGNlzNzXVuCtpH9BYPtWzpnkVGDPxylkcNo1jGFtA9i0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=euzUwa+h; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HdJ5BOzL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF57BC4CEE3;
-	Mon,  7 Jul 2025 15:56:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="euzUwa+h"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C25C4CEE3;
+	Mon,  7 Jul 2025 21:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751903764;
-	bh=f6DsW0WYHxLyXHwiXum+i83pkEndPZCJeiW0ueulBxk=;
+	s=k20201202; t=1751925374;
+	bh=SN7gE7wv44HsOXYJxG4NYhkPrK17oXrOVljL+MEmuDw=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=HdJ5BOzLRtXDqoOLhhV2Qj7wOmLCaQaRGPPjUhbV9euuRWBaKS7jy+ZQnxnfG5VvY
-	 iH4qta6l2IYoiANGgt2ib240phFrRp6C4kPvqGPkhCjDthYNvsj2YbuTWEWIBy5aP/
-	 k2pYmyygJrtZdAbnr+KEj1Oaz2kXMIsb5VcE4c2f+9x1j9smvvGYvDwVun8/QXZ0sT
-	 rNKrEKCa324UB4CPM+2TDltWJnAJKvb7jGUoIyd43xnE+lCTJ9gMeccooSG3fW7fX8
-	 eKiN2C4smyNGFsaq8RlAE7jOSm0DM0SS1oG7541oI+yq6gmg7YgkpA6ry0u81kAQUe
-	 E03HVM1hiIuOg==
+	b=euzUwa+hWzgM2vB6hlO5Ds4h8txZL0Ee+YHbwT6jEx3xE7NwaoevERCfTSnIRcvNf
+	 Z77BTpGPEhXKQSJRY7EESiXdvGQPSn5Yt0E1766VwQJ0fG2w8gdqdvEIYT9Gg6SpfV
+	 ggrv2/s86HLFP3cj8zq2RVcnPN/+b+RfWXJgHnF9BBFsX0Y+N3Z897M7/w2n5WSiSO
+	 ZWOqQe6Z4ISu2VVsLuSokujES01RBrTYKlSXv3/9wmWjUKYOKouC88xufDNgyg5wNY
+	 T5Gpt20kgvnmWiy6uvqZo1j8C/PaEHbCWqCZpScacvMXHLyg3B8+QZaAcIAaVijxea
+	 KjPk8Nr1qqclA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 553B4CE09EB; Mon,  7 Jul 2025 08:56:04 -0700 (PDT)
-Date: Mon, 7 Jul 2025 08:56:04 -0700
+	id 3E7DCCE0E61; Mon,  7 Jul 2025 14:56:14 -0700 (PDT)
+Date: Mon, 7 Jul 2025 14:56:14 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Joel Fernandes <joelagnelf@nvidia.com>, linux-kernel@vger.kernel.org,
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
+	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Andrea Righi <arighi@nvidia.com>,
-	Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] smp: Document preemption and stop_machine() mutual
- exclusion
-Message-ID: <298d86df-65bc-4f7a-a361-a8382cdee296@paulmck-laptop>
+	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>
+Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
+Message-ID: <fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20250705172328.4114289-1-joelagnelf@nvidia.com>
- <20250707075050.GB1613200@noisy.programming.kicks-ass.net>
+References: <20250613152218.1924093-1-bigeasy@linutronix.de>
+ <20250613152218.1924093-2-bigeasy@linutronix.de>
+ <aFL1pIGMDX5DG9f_@tardis.local>
+ <20250620084334.Zb8O2SwS@linutronix.de>
+ <34957424-1f92-4085-b5d3-761799230f40@paulmck-laptop>
+ <20250623104941.WxOQtAmV@linutronix.de>
+ <03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -49,52 +61,105 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250707075050.GB1613200@noisy.programming.kicks-ass.net>
+In-Reply-To: <03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
 
-On Mon, Jul 07, 2025 at 09:50:50AM +0200, Peter Zijlstra wrote:
-> On Sat, Jul 05, 2025 at 01:23:27PM -0400, Joel Fernandes wrote:
-> > Recently while revising RCU's cpu online checks, there was some discussion
-> > around how IPIs synchronize with hotplug.
+On Mon, Jun 23, 2025 at 11:13:03AM -0700, Paul E. McKenney wrote:
+> On Mon, Jun 23, 2025 at 12:49:41PM +0200, Sebastian Andrzej Siewior wrote:
+> > On 2025-06-20 04:23:49 [-0700], Paul E. McKenney wrote:
+> > > > I hope not because it is not any different from
+> > > > 
+> > > >  	CPU 2			CPU 3
+> > > >  	=====                   =====
+> > > > 	NMI
+> > > >  	rcu_read_lock();
+> > > >  				synchronize_rcu();
+> > > >  				// need all CPUs report a QS.
+> > > >  	rcu_read_unlock();
+> > > >  	// no rcu_read_unlock_special() due to in_nmi().
+> > > > 
+> > > > If the NMI happens while the CPU is in userland (say a perf event) then
+> > > > the NMI returns directly to userland.
+> > > > After the tracing event completes (in this case) the CPU should run into
+> > > > another RCU section on its way out via context switch or the tick
+> > > > interrupt.
+> > > > I assume the tick interrupt is what makes the NMI case work.
+> > > 
+> > > Are you promising that interrupts will be always be disabled across
+> > > the whole rcu_read_lock_notrace() read-side critical section?  If so,
+> > > could we please have a lockdep_assert_irqs_disabled() call to check that?
 > > 
-> > Add comments explaining how preemption disable creates mutual exclusion with
-> > CPU hotplug's stop_machine mechanism. The key insight is that stop_machine()
-> > atomically updates CPU masks and flushes IPIs with interrupts disabled, and
-> > cannot proceed while any CPU (including the IPI sender) has preemption
-> > disabled.
+> > No, that should stay preemptible because bpf can attach itself to
+> > tracepoints and this is the root cause of the exercise. Now if you say
+> > it has to be run with disabled interrupts to match the NMI case then it
+> > makes sense (since NMIs have interrupts off) but I do not understand why
+> > it matters here (since the CPU returns to userland without passing the
+> > kernel).
 > 
-> I'm very conflicted on this. While the added comments aren't wrong,
-> they're not quite accurate either. Stop_machine doesn't wait for people
-> to enable preemption as such.
+> Given your patch, if you don't disable interrupts in a preemptible kernel
+> across your rcu_read_lock_notrace()/rcu_read_unlock_notrace() pair, then a
+> concurrent expedited grace period might send its IPI in the middle of that
+> critical section.  That IPI handler would set up state so that the next
+> rcu_preempt_deferred_qs_irqrestore() would report the quiescent state.
+> Except that without the call to rcu_read_unlock_special(), there might
+> not be any subsequent call to rcu_preempt_deferred_qs_irqrestore().
 > 
-> Fundamentally there seems to be a misconception around what stop machine
-> is and how it works, and I don't feel these comments make things better.
+> This is even more painful if this is a CONFIG_PREEMPT_RT kernel.
+> Then if that critical section was preempted and then priority-boosted,
+> the unboosting also won't happen until the next call to that same
+> rcu_preempt_deferred_qs_irqrestore() function, which again might not
+> happen.  Or might be significantly delayed.
 > 
-> Basically, stop-machine (and stop_one_cpu(), stop_two_cpus()) use the
-> stopper task, a task running at the ultimate priority; if it is
-> runnable, it will run.
+> Or am I missing some trick that fixes all of this?
 > 
-> Stop-machine simply wakes all the stopper tasks and co-ordinates them to
-> literally stop the machine. All CPUs have the stopper task scheduled and
-> then they go sit in a spin-loop driven state machine with IRQs disabled.
+> > I'm not sure how much can be done here due to the notrace part. Assuming
+> > rcu_read_unlock_special() is not doable, would forcing a context switch
+> > (via setting need-resched and irq_work, as the IRQ-off case) do the
+> > trick?
+> > Looking through rcu_preempt_deferred_qs_irqrestore() it does not look to
+> > be "usable from the scheduler (with rq lock held)" due to RCU-boosting
+> > or the wake of expedited_wq (which is one of the requirement).
 > 
-> There really isn't anything magical about any of this.
+> But if rq_lock is held, then interrupts are disabled, which will
+> cause the unboosting to be deferred.
+> 
+> Or are the various deferral mechanisms also unusable in this context?
 
-There is the mechanism (which you have described above), and then there
-are the use cases.  Those of us maintaining a given mechanism might
-argue that a detailed description of the mechanism suffices, but that
-argument does not always win the day.
+OK, looking back through this thread, it appears that you need both
+an rcu_read_lock_notrace() and an rcu_read_unlock_notrace() that are
+covered by Mathieu's list of requirements [1]:
 
-I do like the description in the stop_machine() kernel-doc header:
+| - NMI-safe
+	This is covered by the existing rcu_read_lock() and
+	rcu_read_unlock().
+| - notrace
+	I am guessing that by "notrace", you mean the "notrace" CPP
+	macro attribute defined in include/linux/compiler_types.h.
+	This has no fewer than four different definitions, so I will
+	need some help understanding what the restrictions are.
+| - usable from the scheduler (with rq lock held)
+	This is covered by the existing rcu_read_lock() and
+	rcu_read_unlock().
+| - usable to trace the RCU implementation
+	This one I don't understand.  Can I put tracepoints on
+	rcu_read_lock_notrace() and rcu_read_unlock_notrace() or can't I?
+	I was assuming that tracepoints would be forbidden.  Until I
+	reached this requirement, that is.
 
- * This can be thought of as a very heavy write lock, equivalent to
- * grabbing every spinlock in the kernel.
+One possible path forward is to ensure that rcu_read_unlock_special()
+calls only functions that are compatible with the notrace/trace
+requirements.  The ones that look like they might need some help are
+raise_softirq_irqoff() and irq_work_queue_on().  Note that although
+rcu_preempt_deferred_qs_irqrestore() would also need help, it is easy to
+avoid its being invoked, for example, by disabing interrupts across the
+call to rcu_read_unlock_notrace().  Or by making rcu_read_unlock_notrace()
+do the disabling.
 
-Though doesn't this need to upgrace "spinlock" to "raw spinlock"
-now that PREEMPT_RT is in mainline?
+However, I could easily be missing something, especially given my being
+confused by the juxtaposition of "notrace" and "usable to trace the
+RCU implementation".  These appear to me to be contradicting each other.
 
-Also, this function is more powerful than grabbing every write lock
-in the kernel because it also excludes all regions of code that have
-preemption disabled, which is one thing that CPU hotplug is relying on.
-Any objection to calling out that additional semantic?
+Help?
 
 							Thanx, Paul
+
+[1] https://lore.kernel.org/all/20250613152218.1924093-1-bigeasy@linutronix.de/
