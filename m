@@ -1,48 +1,78 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C6E28A3EC;
-	Mon,  7 Jul 2025 07:50:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAAB29CB53;
+	Mon,  7 Jul 2025 13:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751874657; cv=none; b=S3cFAj39WvReE3LvHeh0aF5LzzztXja3Z8AdD7Oy70fup6hvZN4Jj2vPr0Iq+eS2iyxBOL/i6RUKrp1IUcGmI93Yw1AMU9qvdLl6eTFVDOQH9OXNcQcSdaFdgIjyEPZTj3KsOqvvA2gBOXW4NZ6WnYZ/DtpNtp8n4x6pTcTVC9A=
+	t=1751894120; cv=none; b=B9uTczUprlH1soR65LJ0AvkCuLxKPyoxZ/qMNdIYr/I77gBKxusJe1NgIdqvXRcWMWHxGm3UgbVO3CaqZTS49QbT0yDdWYEG23Tz1Y0rQ4OFjQUXiQzJZ8rGE5l7l9eStHKc/jqJxPeLPLi+6DHNfa+4nn0AMOrguc4bN+Aef10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751874657; c=relaxed/simple;
-	bh=95HEUV9sZ4HS+8+sI9aRb/OVdW2LtmltUFiU7K+uQAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ACDZZTlrTx8k66yq+lG0/1LhBAEDx6BYDZRcbZV7E7hBhrpvwp68fEeMo39ysKCsmX9c+QybacltHE+tHQeawv5Cy12WusZicy6ZAdMyjJ7Vg6jVNI++aHfVn5kLbl073fw6uFuu+LX5wt5xCWVaZMp6ICSmY2x9lGRUJ8B6s5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WT5kOkLK; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1751894120; c=relaxed/simple;
+	bh=2dWgPe17PK5fdufSva/Q7JmuxJeb+/oVh1AHMVaqkak=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oa0NaIXMWKx+vcF61KbIljcNXNjNz69L3bp29fc+VEKLHrYsI3krAPWSnuTzBXL/lUbsXippESZfTmjW7JDgf0spxJdq/qgmB1oth8/j0uFZHW3J2sVoxi4ufhr7Yma3kjZlFY4cgPNjcSjAJghHGVLetPYRrSuAdE6raD+ZFi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j4xlipVP; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WT5kOkLK"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=qwZGG4ywOQ0IHJUhaYE22UySUEJmxFhYtMFxI52azbo=; b=WT5kOkLK41i4vyAbd+g9WSE7A3
-	dlLBGG5AkuZhzPhMiCzEUwz3eRWciL5hUzBXRW1Qjs9PA7R6PNb/Q7KVDR2RsmTN5OilaJcZVYndD
-	vf8Ij2dCYkHdZ43ERFjIl9znJkojAUCspgb39sEwfQFYPn5IUrb+obyBZL/coc5qUaxIB8pvUgL96
-	j8tvAiczn7d305WsONBqZiKXJojtAF3z8OCo1S23L3I0Rgt1gUD8P0sp/TwNexC1Omfd9WY4Ra7xf
-	2XHJW+SAU4aNAlDAGpc0jFARPFnbtCK6pvzqQCUqAAGXfvfNUVfHAgS8agd0mAgTq5V18/XpqzkB8
-	udOQjTFA==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1uYgcl-0000000C3aF-3UOo;
-	Mon, 07 Jul 2025 07:50:52 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 790E030041D; Mon, 07 Jul 2025 09:50:50 +0200 (CEST)
-Date: Mon, 7 Jul 2025 09:50:50 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Andrea Righi <arighi@nvidia.com>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j4xlipVP"
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-553bcf41440so3211433e87.3;
+        Mon, 07 Jul 2025 06:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1751894117; x=1752498917; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gbPX0NE/xm0nQIylEPb1G6KJpxgsJepLGdVW149EGic=;
+        b=j4xlipVPTeklMAyij2EkH7A0NCfmQDTgnjjsST+zv8S5ShWthNaNYf7IEanF2+z6aE
+         OE3HnF2aJAg4UpUzz+yZINVE5gJ6Xj9u6PWcs1ZmkRJf+1fkY/hKuEAH+TOVnjhXWVjw
+         7WyzyhbWpLSLPFAItOaRkl5H2kqEOnwdBe7PAVxkO4mS5IMaUQQiTbXwybecLiFhktCJ
+         EMMO2oAwVxTsjMLMOJFVVXEcOmmep9JjnwncUIAAZQUHS0Ld/q3wnNzK2PGh7pjfFUZB
+         q/v6tsY1FUZiecfcebngcZNfNhwYEFZZWgrEtk3P03TXgFXJxVAoZcC9Nenex1VxEPEe
+         oiwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1751894117; x=1752498917;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gbPX0NE/xm0nQIylEPb1G6KJpxgsJepLGdVW149EGic=;
+        b=wjQXknY0tBJsWAzwNIHFJPMxo/2KZd+CJSYNYOrApiDx2vcL9BWeZMZY/Tu3XuT7a+
+         zslBkUmMnQAiJ1IqU6qNjmp/R4Z51MLJ92Iqeqw1VoQFEDhtnygghcHH0Y097fq6TVZK
+         RPuhjBIwCJkbW5PIehnInINej1cxW5o1mCEYqpYkrhrf64WUkYVd/1u8q95iVsPDKVvM
+         CgLhYZtxZj68/zT7pxd3W3OK6SfPCCAlpfjD2Bsnwss+4QRhIRARxBoLhKVyngk7YBe8
+         e/RTq+bdS9JQHaTBRZVbPtcXXn53NcppsO5AT94fhvRmpXyfhVoz/paZDho04xVJslex
+         wWtA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfMc4/1TN53hL3XdR6eam+XnEoZsRrm6jxAxgmK8GeUcRGaG411dWpchI7Kn8VNGRj6p139k0GvwmLmSI=@vger.kernel.org, AJvYcCX95L5hWDEsfGDwKQboAcmdmVSKZWExvs6Aoj4J0xV4cEV9HcxDLKV45usjHmUPQ77N3oe3@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQUUFZYp7bj9eh5hXQivfcN194uYxpYU7Z+qm9nUD7xuppRfzf
+	TCUwRpO8stG5R+YpB2t4TB4Ogg3BmRECMai4mql6WdFywk5/5U6bj2idmFRG4g==
+X-Gm-Gg: ASbGnct9nHfcJbXnGZNJZXYWvoz/wTaR4eXhUtNtzTs6bONynbBHeD4wVQinSaBu9oc
+	d+QtzDmRTgkYcUzMO5KOXpJn1aU27/QukmPbd/oyqQzfkkyTH/Nqa4gcSTYbZJb0UtKh+HOgiAr
+	KxSZabXe2K3/UgxTG58y4BbsS26LXt4U8nzfd104Etm9i49brJ5yrF7DT/cd3tE5fpkr9ydrdcO
+	U0lHeZI+1y43nbIgPQG69TuTiZzO0CG4ZQMjS81s6lzQNZ2DJcjp/UcwC90KqEvIOFd2Es2sHyC
+	rm8SmZ92yuiMI+LwLXpRjay+4Dg/OGxgO0j4R1ZN9u5ONqcATtxNMTen8ZTbLy89vmAuEEQaxOK
+	NDYcPDBTfZpg=
+X-Google-Smtp-Source: AGHT+IFP+25N80hK9wedsBU2WB382/UhHmXyfAE1YhEjnQFs2oNEyyhujLqCT7wV/yUg8AdNcEHOtw==
+X-Received: by 2002:a05:6512:2c05:b0:553:6583:8e6 with SMTP id 2adb3069b0e04-557e5532091mr1980003e87.15.1751894116472;
+        Mon, 07 Jul 2025 06:15:16 -0700 (PDT)
+Received: from pc636 (host-95-203-1-180.mobileonline.telia.com. [95.203.1.180])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-556384a68f3sm1351686e87.144.2025.07.07.06.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Jul 2025 06:15:14 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 7 Jul 2025 15:15:12 +0200
+To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH v2] smp: Document preemption and stop_machine() mutual
- exclusion
-Message-ID: <20250707075050.GB1613200@noisy.programming.kicks-ass.net>
-References: <20250705172328.4114289-1-joelagnelf@nvidia.com>
+	Joel Fernandes <joel@joelfernandes.org>, RCU <rcu@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>
+Subject: Re: [PATCH v3 1/2] rcu: Enable rcu_normal_wake_from_gp on small
+ systems
+Message-ID: <aGvIYMBJsOpNx7-9@pc636>
+References: <20250702145938.66459-1-urezki@gmail.com>
+ <aGajO8rOu_GOnjrS@pc636>
+ <ccca5cb2-0d41-4fe1-a4a5-4344b4116770@amd.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -51,33 +81,113 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250705172328.4114289-1-joelagnelf@nvidia.com>
+In-Reply-To: <ccca5cb2-0d41-4fe1-a4a5-4344b4116770@amd.com>
 
-On Sat, Jul 05, 2025 at 01:23:27PM -0400, Joel Fernandes wrote:
-> Recently while revising RCU's cpu online checks, there was some discussion
-> around how IPIs synchronize with hotplug.
+On Mon, Jul 07, 2025 at 09:19:03AM +0530, Neeraj Upadhyay wrote:
 > 
-> Add comments explaining how preemption disable creates mutual exclusion with
-> CPU hotplug's stop_machine mechanism. The key insight is that stop_machine()
-> atomically updates CPU masks and flushes IPIs with interrupts disabled, and
-> cannot proceed while any CPU (including the IPI sender) has preemption
-> disabled.
+> 
+> On 7/3/2025 9:05 PM, Uladzislau Rezki wrote:
+> > On Wed, Jul 02, 2025 at 04:59:36PM +0200, Uladzislau Rezki (Sony) wrote:
+> >> Automatically enable the rcu_normal_wake_from_gp parameter on
+> >> systems with a small number of CPUs. The activation threshold
+> >> is set to 16 CPUs.
+> >>
+> >> This helps to reduce a latency of normal synchronize_rcu() API
+> >> by waking up GP-waiters earlier and decoupling synchronize_rcu()
+> >> callers from regular callback handling.
+> >>
+> >> A benchmark running 64 parallel jobs(system with 64 CPUs) invoking
+> >> synchronize_rcu() demonstrates a notable latency reduction with the
+> >> setting enabled.
+> >>
+> >> Latency distribution (microseconds):
+> >>
+> >> <default>
+> >>  0      - 9999   : 1
+> >>  10000  - 19999  : 4
+> >>  20000  - 29999  : 399
+> >>  30000  - 39999  : 3197
+> >>  40000  - 49999  : 10428
+> >>  50000  - 59999  : 17363
+> >>  60000  - 69999  : 15529
+> >>  70000  - 79999  : 9287
+> >>  80000  - 89999  : 4249
+> >>  90000  - 99999  : 1915
+> >>  100000 - 109999 : 922
+> >>  110000 - 119999 : 390
+> >>  120000 - 129999 : 187
+> >>  ...
+> >> <default>
+> >>
+> >> <rcu_normal_wake_from_gp>
+> >>  0      - 9999  : 1
+> >>  10000  - 19999 : 234
+> >>  20000  - 29999 : 6678
+> >>  30000  - 39999 : 33463
+> >>  40000  - 49999 : 20669
+> >>  50000  - 59999 : 2766
+> >>  60000  - 69999 : 183
+> >>  ...
+> >> <rcu_normal_wake_from_gp>
+> >>
+> >> Reviewed-by: Joel Fernandes <joelagnelf@nvidia.com>
+> >> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> >> ---
+> >>  kernel/rcu/tree.c | 14 +++++++++++---
+> >>  1 file changed, 11 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> >> index e8a4b720d7d2..b88ceb35cebd 100644
+> >> --- a/kernel/rcu/tree.c
+> >> +++ b/kernel/rcu/tree.c
+> >> @@ -1625,8 +1625,10 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
+> >>  	atomic_set_release(&sr_wn->inuse, 0);
+> >>  }
+> >>  
+> >> -/* Disabled by default. */
+> >> -static int rcu_normal_wake_from_gp;
+> >> +/* Enable rcu_normal_wake_from_gp automatically on small systems. */
+> >> +#define WAKE_FROM_GP_CPU_THRESHOLD 16
+> >> +
+> >> +static int rcu_normal_wake_from_gp = -1;
+> >>  module_param(rcu_normal_wake_from_gp, int, 0644);
+> >>  static struct workqueue_struct *sync_wq;
+> >>  
+> >> @@ -3239,7 +3241,7 @@ static void synchronize_rcu_normal(void)
+> >>  
+> >>  	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
+> >>  
+> >> -	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
+> >> +	if (READ_ONCE(rcu_normal_wake_from_gp) < 1) {
+> >>  		wait_rcu_gp(call_rcu_hurry);
+> >>  		goto trace_complete_out;
+> >>  	}
+> >> @@ -4843,6 +4845,12 @@ void __init rcu_init(void)
+> >>  	sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
+> >>  	WARN_ON(!sync_wq);
+> >>  
+> >> +	/* Respect if explicitly disabled via a boot parameter. */
+> >> +	if (rcu_normal_wake_from_gp < 0) {
+> >> +		if (num_possible_cpus() <= WAKE_FROM_GP_CPU_THRESHOLD)
+> >> +			rcu_normal_wake_from_gp = 1;
+> >> +	}
+> >> +
+> >>  	/* Fill in default value for rcutree.qovld boot parameter. */
+> >>  	/* -After- the rcu_node ->lock fields are initialized! */
+> >>  	if (qovld < 0)
+> >> -- 
+> >> 2.39.5
+> >>
+> > Neeraj, are you planning to take this for next merge window?
+> > 
+> 
+> Yes, I have queued v2 of these for testing here:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git/log/?h=dev.01.07.2025
+> 
+> Will include them in PR for next merge window.
+> 
+Thank you! I asked because i did not see both in our common RCU tree.
 
-I'm very conflicted on this. While the added comments aren't wrong,
-they're not quite accurate either. Stop_machine doesn't wait for people
-to enable preemption as such.
-
-Fundamentally there seems to be a misconception around what stop machine
-is and how it works, and I don't feel these comments make things better.
-
-Basically, stop-machine (and stop_one_cpu(), stop_two_cpus()) use the
-stopper task, a task running at the ultimate priority; if it is
-runnable, it will run.
-
-Stop-machine simply wakes all the stopper tasks and co-ordinates them to
-literally stop the machine. All CPUs have the stopper task scheduled and
-then they go sit in a spin-loop driven state machine with IRQs disabled.
-
-There really isn't anything magical about any of this.
-
-
+--
+Uladzislau Rezki
