@@ -1,31 +1,30 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1D128E610;
-	Wed,  9 Jul 2025 10:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3BC28EC1C;
+	Wed,  9 Jul 2025 10:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057944; cv=none; b=Juik+44wQFmDobWGgQlbHNuU+4IDVJxBKaKtOPkaomQisx9ddTOjt2BmEZ1jwkvwwVyCyTjOLgFAvPMcI/94sV3IxerRmkOHvLPD3ivbGYfSFRkYKeqqNBe7U6R5xcmndHziyEzrDJATVxvV96TYX+r8qjlUuUUx0VgLf9t4E8o=
+	t=1752057969; cv=none; b=WVEqrwoOdRB3NDZ/ZX2VdcfR/dWnGG5vVyrthuO9lPpLV3hLIuHDSj1LeCBP2BwI+rphrcfNd+hZVYlRZYLCO1l/SNN/dXsjakCDjLUNi7Ue6Fy2EInhidEEssyiVQ2bO4T1dkUidIolckV/nwt+abdplRCc4x6DoRHmHPtnTUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057944; c=relaxed/simple;
-	bh=jxOuxwTz2hUC8ZdEi1xl+DpWQ20Qh84KJl4y5qRS0vg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=U9YLWZDgx2aNjAgKRpCJKoR4NAWI9fwq2fA6qdClAVSTSosHSCZa0jCxmXkfOkI7pHKOtDRUIUIMpKxbKwL6borbDH5l2E9FznHP5pUeB+TEeMji7TDL+4u15Yxx72SxSUm9efy72bgh+3Gmg+hsel9s9MyQqMG/doi3dJs79Jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GVWXnu1o; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752057969; c=relaxed/simple;
+	bh=iAcwKVA/T/miVYGymUSSTNuPJn4ESmM99Z9BnTfFpPI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rECMURG0UekELtWAHYsGkHXT/F6g5S6OgPfGjWmKghOvQsIKcZcUv079G+qDmYTaA6hieLV/B5h0dbkaHnnI3PMbeuOWIfm4vLV5gq9XmEi4DeYhWrKBMR7vZFRz2tIBSbC1KHmD2Eyv5SuvJeSq8m2HXdeYXm+BEOL7rfrza8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a9VoS6OF; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GVWXnu1o"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB8BBC4CEEF;
-	Wed,  9 Jul 2025 10:45:38 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a9VoS6OF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE5DDC4CEEF;
+	Wed,  9 Jul 2025 10:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057944;
-	bh=jxOuxwTz2hUC8ZdEi1xl+DpWQ20Qh84KJl4y5qRS0vg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GVWXnu1o/gU7dHKY1zMoUkIjRMWWYhbrClryx7fuMlKtDo2pPmbMOJQRuqKVG3Slq
-	 4sMQ3TP0NCN4+iP1tj4s6ZGgCBb+hJV0tRijZ9eTsSYGIx2f/Fkk66c9WgLi9ENwXX
-	 IhQn3AUkhBFLWHVxMZPj8/vX8c63SfcesgePyMVa8wkUDjJrEjlnBD3rQy3ai9LbwA
-	 4t4DpgbzD8yFw79rmWwc6SDLaPuM90jT2OnSrTwj1f99qmNJxNTvLcglhaQ+lzGm+I
-	 QkSaH155qcQMxOuiOTgc04MVQOjtMRjp0Xs72JrfYa+/czG78gdbQ4t/ojmXEJG0Sv
-	 XdeurXWO/zsfg==
+	s=k20201202; t=1752057969;
+	bh=iAcwKVA/T/miVYGymUSSTNuPJn4ESmM99Z9BnTfFpPI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=a9VoS6OFW6oF/C18DVP5a7fTOzfTyNrYXCsRGe8Okble1EcAsaqm/PhxYDrIH8tEO
+	 6V7OU8fH0WAhJlurKl+xdyKJM1znyT8dl21rQLykblLkYkPpuIeSGQ6ROnPFv3Zyt7
+	 R+d1OsHocue1f6ZOrbi2yMcXP4AugL64bjAIMTWcJ1poIqwVqg0LrNWmIOLbKIRcuC
+	 gZf6FPmnj5XiXNrzDyDqgvlEmgF7vjjNJ9gXWtaPUSloGOpBV/zUYkngPVulVQ3bzE
+	 LEix7y1Q/ORuV0iUp2U/Ow+YTvhYEaOH9jVhhiElAE3FgyehVfBh9WqLY8sKoYi2CX
+	 LjSQrgkVBq2VA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,12 +40,10 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 13/13] torture: Remove support for SRCU-lite
-Date: Wed,  9 Jul 2025 16:14:14 +0530
-Message-Id: <20250709104414.15618-14-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 0/3] SRCU changes for v6.17
+Date: Wed,  9 Jul 2025 16:15:52 +0530
+Message-Id: <20250709104555.15670-1-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20250709104414.15618-1-neeraj.upadhyay@kernel.org>
-References: <20250709104414.15618-1-neeraj.upadhyay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,67 +52,26 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
 
-Because SRCU-lite is being replaced by SRCU-fast, this commit removes
-support for SRCU-lite from refscale.c.
+Hello,
 
-Signed-off-by: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
----
- kernel/rcu/refscale.c | 32 +-------------------------------
- 1 file changed, 1 insertion(+), 31 deletions(-)
+This patch series contains following updates to the SRCU code (rebased
+on git://git.kernel.org/pub/scm/linux/kernel/git/neeraj.upadhyay/linux-rcu.git
+rcutorture.07.07.2025:
 
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index f11a7c2af778..f4b2cea1cce5 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -246,36 +246,6 @@ static const struct ref_scale_ops srcu_fast_ops = {
- 	.name		= "srcu-fast"
- };
- 
--static void srcu_lite_ref_scale_read_section(const int nloops)
--{
--	int i;
--	int idx;
--
--	for (i = nloops; i >= 0; i--) {
--		idx = srcu_read_lock_lite(srcu_ctlp);
--		srcu_read_unlock_lite(srcu_ctlp, idx);
--	}
--}
--
--static void srcu_lite_ref_scale_delay_section(const int nloops, const int udl, const int ndl)
--{
--	int i;
--	int idx;
--
--	for (i = nloops; i >= 0; i--) {
--		idx = srcu_read_lock_lite(srcu_ctlp);
--		un_delay(udl, ndl);
--		srcu_read_unlock_lite(srcu_ctlp, idx);
--	}
--}
--
--static const struct ref_scale_ops srcu_lite_ops = {
--	.init		= rcu_sync_scale_init,
--	.readsection	= srcu_lite_ref_scale_read_section,
--	.delaysection	= srcu_lite_ref_scale_delay_section,
--	.name		= "srcu-lite"
--};
--
- #ifdef CONFIG_TASKS_RCU
- 
- // Definitions for RCU Tasks ref scale testing: Empty read markers.
-@@ -1193,7 +1163,7 @@ ref_scale_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static const struct ref_scale_ops *scale_ops[] = {
--		&rcu_ops, &srcu_ops, &srcu_fast_ops, &srcu_lite_ops, RCU_TRACE_OPS RCU_TASKS_OPS
-+		&rcu_ops, &srcu_ops, &srcu_fast_ops, RCU_TRACE_OPS RCU_TASKS_OPS
- 		&refcnt_ops, &rwlock_ops, &rwsem_ops, &lock_ops, &lock_irq_ops,
- 		&acqrel_ops, &sched_clock_ops, &clock_ops, &jiffies_ops,
- 		&typesafe_ref_ops, &typesafe_lock_ops, &typesafe_seqlock_ops,
+Paul E. McKenney (3):
+  srcu: Expedite SRCU-fast grace periods
+  srcu: Remove SRCU-lite implementation
+  checkpatch: Remove SRCU-lite deprecation
+
+ include/linux/srcu.h     | 47 ++--------------------------------------
+ include/linux/srcutiny.h |  3 ---
+ include/linux/srcutree.h | 38 --------------------------------
+ kernel/rcu/srcutree.c    |  2 ++
+ scripts/checkpatch.pl    |  2 --
+ 5 files changed, 4 insertions(+), 88 deletions(-)
+
 -- 
 2.40.1
 
