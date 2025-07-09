@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E88293C67;
-	Wed,  9 Jul 2025 10:43:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E92293C77;
+	Wed,  9 Jul 2025 10:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057833; cv=none; b=aPzSrtK9FrT8a84ziYRJwaFHPwL+LKNlr4e0fAPUFaUmkfe31JVOJxmRwHJFGOT/Z9MVeUzfx2ALUjwmTDVtTMd9CovAcSiXMxC+64SN1BsGoz1NP07LUROkbV3cj046ytCbAupWMdMFk2ARAqZngIKzotVlw+6RrCMUC6iWx9c=
+	t=1752057839; cv=none; b=mDd/9u8vYxXNhwFrN27hoa8gewb7q5i7ifx5maZXAM8pL7wVgbz/YS0PbXlPfWe/P97z1rTDwsnEM4Cn9b9Xa9Gket95TTHHuM69Nimurvsoqs7ryeQY0WqvYGQeDWwK0rGx4ZAmdMVnesth2iWz14OxB81ai9CL7oEOgPuPtcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057833; c=relaxed/simple;
-	bh=D+BR2jJNoFiZtF4yiFKLu/WnVHe1gWYYXH0zMlfkHXQ=;
+	s=arc-20240116; t=1752057839; c=relaxed/simple;
+	bh=5P4dzPtGQTwTuHcsDkeuA8Wafn1PVojCmEfac+5vgxk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=C+x4+zz5XWBSd4qaDmYrYmypO8YlzGpWNTZ154r0Tai7BNU8KWnyuBxqa9mBYZrmBLILli4qJyVlkGCHi5nJiSCenMiVSpS24EE7kjGVezk1EtCK5UEEeYDMtLGr431LEAbc88741DQHQLuTXDecfDZA9P38CBOIAxM8eOgQcwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pX1qbgCz; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=Umj3vBiV7+cBFQP3mqSDnoUFslzCRc6Rzg2l6d78bofOjDhdLUl6IpWFoGGVzuYrepT8WyqqO/GONCY0/+dkBYJwKy15gZx1xZwNO1FfIj7IEBURNBnFiZD2bjGm5vieUrNcRvBc18KD7vtWY0IQh3PuM3TM7y5lrNaqfvQGouI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OnLTN9Cg; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pX1qbgCz"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AA37C4CEF7;
-	Wed,  9 Jul 2025 10:43:48 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OnLTN9Cg"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E88F3C4CEF7;
+	Wed,  9 Jul 2025 10:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057833;
-	bh=D+BR2jJNoFiZtF4yiFKLu/WnVHe1gWYYXH0zMlfkHXQ=;
+	s=k20201202; t=1752057838;
+	bh=5P4dzPtGQTwTuHcsDkeuA8Wafn1PVojCmEfac+5vgxk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pX1qbgCzsMmankC3cWQue3qLzFw3zApDUyK5O2P3hzw4HH4VQJzPkpJgigNI94EMI
-	 KaB0/TU244jiB2niLytsJC92CNNWjvuRwcKn7UQ3luCXu6fsnrdQSzID6Hl+saZnGp
-	 0mF/DqPaxZKGWP5NxM4vduw/+weX85BQxdlHqgGWUiZHZqHwgM00GECHS9L/+NBYCx
-	 uvT9DxlIfwH1WaT6if0eYOlbACkUaS+w3weWwzzlxGoOfSXnCGhr3m9NHbz2X/sRc4
-	 7ieAf2xdhDPXvI0jWPbR7vT5BZeV6DXiv0nS9FF2a9VxOs54GmMyEzoe+6T/RRut5A
-	 SGcXp/B6Odr/A==
+	b=OnLTN9CgM4Sz6ADqscUjLSJIl04PVsg0kvHEc77kCRLVRb72H7UN60pnGSjvxUms/
+	 pi9UV3CZrc/qXPawY/9DM0bW6N4J5mZwWJY3xTaGzuFGouNAxufHLeP+ExA8Rc5GFS
+	 1XwpitottlwJyeqUQdU6SGJP4nNoNm0AUzqmnkc4ojFbxC5bH64OqaX9SZwqIUeymr
+	 PAJcZovWeBeQF4dMukqIu1QyjO54bODF6RLfvPxc9Ff2/GSyo/wUBUesJh7UXuKWi0
+	 yPmcTehHhsWoeeUrK2SZF5UysbM+j8qd5wLpk8Z3nVZSyJwLpGJvcE1cKpGJbW/1QA
+	 5sgDASx7XfjqQ==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 14/15] rcutorture: Remove SRCU-lite scenarios
-Date: Wed,  9 Jul 2025 16:12:14 +0530
-Message-Id: <20250709104215.15562-15-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 15/15] rcutorture: Remove support for SRCU-lite
+Date: Wed,  9 Jul 2025 16:12:15 +0530
+Message-Id: <20250709104215.15562-16-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20250709104215.15562-1-neeraj.upadhyay@kernel.org>
 References: <20250709104215.15562-1-neeraj.upadhyay@kernel.org>
@@ -57,56 +57,54 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit prepares for the removal of SRCU-Lite by removing the SRCU-L
-rcutorture scenario that tests it.
+Because SRCU-lite is being replaced by SRCU-fast, this commit removes
+support for SRCU-lite from rcutorture.c
 
 Signed-off-by: "Paul E. McKenney" <paulmck@kernel.org>
 Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
 ---
- tools/testing/selftests/rcutorture/configs/rcu/CFLIST  |  1 -
- tools/testing/selftests/rcutorture/configs/rcu/SRCU-L  | 10 ----------
- .../selftests/rcutorture/configs/rcu/SRCU-L.boot       |  3 ---
- 3 files changed, 14 deletions(-)
- delete mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L
- delete mode 100644 tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot
+ include/linux/srcu.h    | 2 +-
+ kernel/rcu/rcutorture.c | 7 -------
+ 2 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-index 45f572570a8c..98b6175e5aa0 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/CFLIST
-@@ -5,7 +5,6 @@ TREE04
- TREE05
- TREE07
- TREE09
--SRCU-L
- SRCU-N
- SRCU-P
- SRCU-T
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L
-deleted file mode 100644
-index 3b4fa8dbef8a..000000000000
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L
-+++ /dev/null
-@@ -1,10 +0,0 @@
--CONFIG_RCU_TRACE=n
--CONFIG_SMP=y
--CONFIG_NR_CPUS=6
--CONFIG_HOTPLUG_CPU=y
--CONFIG_PREEMPT_NONE=y
--CONFIG_PREEMPT_VOLUNTARY=n
--CONFIG_PREEMPT=n
--#CHECK#CONFIG_RCU_EXPERT=n
--CONFIG_KPROBES=n
--CONFIG_FTRACE=n
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot b/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot
-deleted file mode 100644
-index 0207b3138c5b..000000000000
---- a/tools/testing/selftests/rcutorture/configs/rcu/SRCU-L.boot
-+++ /dev/null
-@@ -1,3 +0,0 @@
--rcutorture.torture_type=srcu
--rcutorture.reader_flavor=0x4
--rcutorture.fwd_progress=3
+diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+index 900b0d5c05f5..c20dacb563e5 100644
+--- a/include/linux/srcu.h
++++ b/include/linux/srcu.h
+@@ -49,7 +49,7 @@ int init_srcu_struct(struct srcu_struct *ssp);
+ #define SRCU_READ_FLAVOR_LITE	0x4		// srcu_read_lock_lite().
+ #define SRCU_READ_FLAVOR_FAST	0x8		// srcu_read_lock_fast().
+ #define SRCU_READ_FLAVOR_ALL   (SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_NMI | \
+-				SRCU_READ_FLAVOR_LITE | SRCU_READ_FLAVOR_FAST) // All of the above.
++				SRCU_READ_FLAVOR_FAST) // All of the above.
+ #define SRCU_READ_FLAVOR_SLOWGP	(SRCU_READ_FLAVOR_LITE | SRCU_READ_FLAVOR_FAST)
+ 						// Flavors requiring synchronize_rcu()
+ 						// instead of smp_mb().
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 213f23f20a64..7a893d51d02b 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -718,11 +718,6 @@ static int srcu_torture_read_lock(void)
+ 		WARN_ON_ONCE(idx & ~0x1);
+ 		ret += idx << 1;
+ 	}
+-	if (reader_flavor & SRCU_READ_FLAVOR_LITE) {
+-		idx = srcu_read_lock_lite(srcu_ctlp);
+-		WARN_ON_ONCE(idx & ~0x1);
+-		ret += idx << 2;
+-	}
+ 	if (reader_flavor & SRCU_READ_FLAVOR_FAST) {
+ 		scp = srcu_read_lock_fast(srcu_ctlp);
+ 		idx = __srcu_ptr_to_ctr(srcu_ctlp, scp);
+@@ -756,8 +751,6 @@ static void srcu_torture_read_unlock(int idx)
+ 	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
+ 	if (reader_flavor & SRCU_READ_FLAVOR_FAST)
+ 		srcu_read_unlock_fast(srcu_ctlp, __srcu_ctr_to_ptr(srcu_ctlp, (idx & 0x8) >> 3));
+-	if (reader_flavor & SRCU_READ_FLAVOR_LITE)
+-		srcu_read_unlock_lite(srcu_ctlp, (idx & 0x4) >> 2);
+ 	if (reader_flavor & SRCU_READ_FLAVOR_NMI)
+ 		srcu_read_unlock_nmisafe(srcu_ctlp, (idx & 0x2) >> 1);
+ 	if ((reader_flavor & SRCU_READ_FLAVOR_NORMAL) || !(reader_flavor & SRCU_READ_FLAVOR_ALL))
 -- 
 2.40.1
 
