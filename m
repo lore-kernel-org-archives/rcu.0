@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF2A2C08AC;
-	Wed,  9 Jul 2025 10:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357E72C08D1;
+	Wed,  9 Jul 2025 10:47:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752058021; cv=none; b=GcO2DP6hc7Aktouj9Xgr20NAu3L6bWqEXM6NhCU11wPKI1wJtAsh57gs+CntlW5UTJEkbzAHOdG5Ji73ht14uFQpzp9SfV1J1Z7e76ceQ9/W+n4zO8kCz8Z0FOi+Y0IaiQWhrU4ubGBvB0gBNKiZ3qpg30aAbGoc5Z+OOC23fdU=
+	t=1752058026; cv=none; b=XHCKwpG5vg+DopM5659rnyWfV9liuWsvmc8UevWqtHSVYmZb1I5HMBiDFn/9XoBoD4d/9y8w16g+Y0gFt/uwqHz+JtJN/LArrie7m8e+6wfwlUyL58h6HA/JS9o/JaDLy05aqg8CKkxkwJ7nhg+VRuvNb+k9TXoaanCbPuJVeQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752058021; c=relaxed/simple;
-	bh=5COjt3uAJjZ1DcFXHjY8wDD+SZYLGK6GkQYggnCf478=;
+	s=arc-20240116; t=1752058026; c=relaxed/simple;
+	bh=e1BHcaYIkCpx/CHPZ4PtOBHjn/DmOqQFeLNeR8CAhZY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IqvEPk3Hbhz0AyVNAb0U8kFn6XfQcFqRvPfmHGUltI4ROhFuuJYFhQfRPYSyK1P+eGQbOxGkn6bzTTxcXvdwzYW3xG+CI9x6ZX/79heKhW7SXi9DaUXVbu6OWPJMUXAOrjcO0xsYlNDIuiFvH6pblEQPaU+WgN78maD4hMxCFcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tlwO7hhf; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=tbnyTKVxx/fjqGPEMg6UcLHAI1XdyxISk7GtqlUEybeGsgqNsuQYTqd1ux8z2+5RMhFcBl5ykw2Rp5P/IRCn0KgInugJb8EZ+qVItig6xJLR7k+WMncSmDBzyuktQsou3k+mB0LJKfwKtjXafbpXUPgZf/YCUuX7U0yWo1g1Uic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekI3f6MO; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlwO7hhf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FB62C4CEEF;
-	Wed,  9 Jul 2025 10:46:56 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekI3f6MO"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 995E5C4CEEF;
+	Wed,  9 Jul 2025 10:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752058020;
-	bh=5COjt3uAJjZ1DcFXHjY8wDD+SZYLGK6GkQYggnCf478=;
+	s=k20201202; t=1752058026;
+	bh=e1BHcaYIkCpx/CHPZ4PtOBHjn/DmOqQFeLNeR8CAhZY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tlwO7hhfXaV1EpMX3AXeLkAZEWLYwCbM2Xo+cgo0D5oY+NsTuNSgp8/dCkncjJAxf
-	 gosxNuDaxscnUB2uDw2Nhot5VX5kWfd/XcGNRaa7ERYzKSzSL8LKYeepdSu1rFZh6V
-	 SNpmdBBaqcorpaGGaPtdvym6ly6HO92sRVoSQhgH5Iy6yHAxAUWJUccodeBYk2ayqt
-	 sIEMxTlqoJbEMEx9RN7Sv8O5CyG2n4M/1BipyoE1ndfBedcIbYTU0UkUSASvGdXqMC
-	 8riXaXokyaqDac+uDWazM6lh+cIfN2EAibwzEY40Edx7qNOUd1WAfnePkk0fDMD+BK
-	 +htVeXzPZil4g==
+	b=ekI3f6MOrT72oUwkHmg5gafW55hBKdRwTVZPxtUWaFkH6yrkXiwzXmovAjm7u4HxD
+	 Ij11IbyMPD+UFF6Ol/UFDt0aqZiOTXXpgrEItbpEyqqs1u4lzTo8C47KZ8vY9UOmpi
+	 d5O+FLpu/pg48gVX4eur9g2VDJZz3TwAhyCtV73dyBQO4rYSD1zL58USxijLGiUyuj
+	 N0v9FoCHxtTVgsSIo0g4s0W4ADjnNmpz6u5BYve6n64bx3W9gIJBiG5lTuwvoXbsGX
+	 vbawmB7Ey1mcvkKI+/HFg4M1EQ+CAURRayoGibU965MJ6PRjaC00AtvMQ2wgDDPwH8
+	 d9IAMP77Phcbg==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 1/2] rcu/nocb: Dump gp state even if rdp gp itself is not offloaded
-Date: Wed,  9 Jul 2025 16:16:40 +0530
-Message-Id: <20250709104641.15699-2-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 2/2] rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
+Date: Wed,  9 Jul 2025 16:16:41 +0530
+Message-Id: <20250709104641.15699-3-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20250709104641.15699-1-neeraj.upadhyay@kernel.org>
 References: <20250709104641.15699-1-neeraj.upadhyay@kernel.org>
@@ -55,53 +55,59 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Zqiang <qiang.zhang1211@gmail.com>
 
-When a stall is detected, the state of each NOCB CPU is dumped along
-with the state of each NOCB group. The latter part however is
-incidentally ignored if the NOCB group leader happens not to be
-offloaded itself.
+In the preparation stage of CPU online, if the corresponding
+the rdp's->nocb_cb_kthread does not exist, will be created,
+there is a situation where the rdp's rcuop kthreads creation fails,
+and then de-offload this CPU's rdp, does not assign this CPU's
+rdp->nocb_cb_kthread pointer, but this rdp's->nocb_gp_rdp and
+rdp's->rdp_gp->nocb_gp_kthread is still valid.
 
-Fix this to make sure related precious informations aren't lost over
-a stall report.
+This will cause the subsequent re-offload operation of this offline
+CPU, which will pass the conditional check and the kthread_unpark()
+will access invalid rdp's->nocb_cb_kthread pointer.
 
-Reported-by: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: "Paul E. McKenney" <paulmck@kernel.org>
+This commit therefore use rdp's->nocb_gp_kthread instead of
+rdp_gp's->nocb_gp_kthread for safety check.
+
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/tree_nocb.h  | 3 +++
- kernel/rcu/tree_stall.h | 3 +--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ kernel/rcu/tree_nocb.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index b473ff056f49..cb29b6bb0ed4 100644
+index cb29b6bb0ed4..08eb9b0e2fab 100644
 --- a/kernel/rcu/tree_nocb.h
 +++ b/kernel/rcu/tree_nocb.h
-@@ -1564,6 +1564,9 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 	if (rdp->nocb_gp_rdp == rdp)
- 		show_rcu_nocb_gp_state(rdp);
+@@ -1146,7 +1146,6 @@ static bool rcu_nocb_rdp_offload_wait_cond(struct rcu_data *rdp)
+ static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ {
+ 	int wake_gp;
+-	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
  
-+	if (!rcu_segcblist_is_offloaded(&rdp->cblist))
-+		return;
-+
- 	nocb_next_rdp = list_next_or_null_rcu(&rdp->nocb_gp_rdp->nocb_head_rdp,
- 					      &rdp->nocb_entry_rdp,
- 					      typeof(*rdp),
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 486c00536207..4fa64c959083 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -953,8 +953,7 @@ void show_rcu_gp_kthreads(void)
- 	for_each_possible_cpu(cpu) {
- 		rdp = per_cpu_ptr(&rcu_data, cpu);
- 		cbs += data_race(READ_ONCE(rdp->n_cbs_invoked));
--		if (rcu_segcblist_is_offloaded(&rdp->cblist))
--			show_rcu_nocb_state(rdp);
-+		show_rcu_nocb_state(rdp);
- 	}
- 	pr_info("RCU callbacks invoked since boot: %lu\n", cbs);
- 	show_rcu_tasks_gp_kthreads();
+ 	WARN_ON_ONCE(cpu_online(rdp->cpu));
+ 	/*
+@@ -1156,7 +1155,7 @@ static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ 	if (!rdp->nocb_gp_rdp)
+ 		return -EINVAL;
+ 
+-	if (WARN_ON_ONCE(!rdp_gp->nocb_gp_kthread))
++	if (WARN_ON_ONCE(!rdp->nocb_gp_kthread))
+ 		return -EINVAL;
+ 
+ 	pr_info("Offloading %d\n", rdp->cpu);
+@@ -1166,7 +1165,7 @@ static int rcu_nocb_rdp_offload(struct rcu_data *rdp)
+ 
+ 	wake_gp = rcu_nocb_queue_toggle_rdp(rdp);
+ 	if (wake_gp)
+-		wake_up_process(rdp_gp->nocb_gp_kthread);
++		wake_up_process(rdp->nocb_gp_kthread);
+ 
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+ 			      rcu_nocb_rdp_offload_wait_cond(rdp));
 -- 
 2.40.1
 
