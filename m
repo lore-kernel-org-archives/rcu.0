@@ -1,31 +1,30 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE0D2BEC59;
-	Wed,  9 Jul 2025 10:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393D128DF33;
+	Wed,  9 Jul 2025 10:46:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057987; cv=none; b=ql93YfilohYmCWibkUEGXblAsxq30oc2HPLEcayA1h6BpkXkhE42P2kIkSeXH4a0KX2yfH1WIaIAdA7xwJQTgkz8d8CDM99FcZ/IsbliIIbep19oU9n3xn1MPVWLVlqWudYteyoR1aAeIvdA0z+EoWjoeVcchU+Ic9BmqALtaRg=
+	t=1752058016; cv=none; b=tJjX9+3V981OV2Wo0CTuw1iLZT8QTmRp4V6ud51ts2Op2YZP3jTHQkEa9RYdpdz3h2mk1NIbqUqXWyjIdeULlMoU5n0IW7u4eIg6Rc5KWr0kDgM9HFFJuos7g8CqRnI/kDLRvmaQ73tDBIeAvU/zucOU/8tr7c00d4Ouax5SHS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057987; c=relaxed/simple;
-	bh=veBLTiqmKh7HkHet5CeS+nsL/ZR/56a8XiR132mTNUk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=d0W213uTs+Kbi5j59+RpegzT0ji1cnvNDAgxg9FsADtf98e1ivAV10kU3cEHRdaIG2upEWpMzoW9bdFXccpUtOuHyJBmSmAYod7ZlONBuJbqfLKBxrj3dJS2LddU+mTAvUlFyQj7KlRhu6Qa6ixX68FmJaEBKDEiwVRr8Ggw7Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gthqMnjF; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752058016; c=relaxed/simple;
+	bh=z3oEOuVmMZau4TOqlJCsEtRonxNstKpn9ysIqzbERG4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z16K9ycjG2U/z46PGAdXqtiM+e6zaj2RxNyxZUCWtGc8PN6PBkDFt/SSbW31WoZkOJai+TzCwyBAbYGyPmIny7DVHXu5kkc5rhf6kez4adYw44mrwi9zqjmd71ttHz6NkgFR/0JEC2psImw2vwSY2PCHYl50EPRbGulaWgMNMBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=skqAcGlL; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gthqMnjF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F41DC4CEF4;
-	Wed,  9 Jul 2025 10:46:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="skqAcGlL"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC644C4CEEF;
+	Wed,  9 Jul 2025 10:46:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057987;
-	bh=veBLTiqmKh7HkHet5CeS+nsL/ZR/56a8XiR132mTNUk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gthqMnjF13Z+Ef1e7xBr/DeiXLTsDB9PZRwBDoJAhySLcahsMGyTcJvXyRJdqSccJ
-	 0UQeqVLCQgqMJPmmXgcC9ntJu4Uhk2k4OGYVfwk6eImqGedFd8vVSjaxhIUaqcGoTW
-	 xoh5CnxPhHPx7in45Kdw9+CwOHarlmIta9GjCziF/5X2fTEFm5Xtl9FwuL3B/Tw7I8
-	 6hA/oEL3+8wrtehS6Um13T+tECpzBjxHHatIpodNZILdXxZU6Yrms4/3e/cqSS6CzH
-	 W8R1ETSrM5VckJ+zSagXeatlrB9hSdxyQPpGkkgluVKamc8Le/Uz+5kVqk51Y0NQh6
-	 QTirTzflNzZ/Q==
+	s=k20201202; t=1752058015;
+	bh=z3oEOuVmMZau4TOqlJCsEtRonxNstKpn9ysIqzbERG4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=skqAcGlLlCFVDbsWUGZl3dZM4kP/f1mlmVd5SZvwW6PLu2sOhVGdlf6PSEgCDLUUV
+	 fTb15YhtVKON5AC+punbWySXLhexnD/WiesJiV5GhWeT9GXZiko5w9tzLzbuSU0kjU
+	 NCJl/69zlgi8t6wYTG1An83npsGafqNwZFVpSWa2Qt80zhKdEea1sKAOPKu6j8BoMC
+	 nYfqYXKwD5tn2agcB8w5/j8jzSuqn21JJ0WyurgRzhqNk33gi+D0jeStLwqOFHbM2x
+	 en42pGhTRirCLFor0dagbYAExkL2Xo61CuUWeNaRcALSPbkN1827jaAl6/oxxScOIc
+	 IQVAMF5BN4ZBw==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,12 +40,10 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 3/3] checkpatch: Remove SRCU-lite deprecation
-Date: Wed,  9 Jul 2025 16:15:55 +0530
-Message-Id: <20250709104555.15670-4-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 0/2] RCU nocb changes for v6.17
+Date: Wed,  9 Jul 2025 16:16:39 +0530
+Message-Id: <20250709104641.15699-1-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20250709104555.15670-1-neeraj.upadhyay@kernel.org>
-References: <20250709104555.15670-1-neeraj.upadhyay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,30 +52,23 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
 
-Now that SRCU-lite has been removed from the kernel, let's remove the
-now-redundant deprecation from checkpatch.pl.
+Hello,
 
-Signed-off-by: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
----
- scripts/checkpatch.pl | 2 --
- 1 file changed, 2 deletions(-)
+This patch series contains following updates to the RCU nocb code (rebased
+on v6.16-rc3):
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 664f7b7a622c..867c7b6fd839 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -857,8 +857,6 @@ our %deprecated_apis = (
- 	"kunmap"				=> "kunmap_local",
- 	"kmap_atomic"				=> "kmap_local_page",
- 	"kunmap_atomic"				=> "kunmap_local",
--	"srcu_read_lock_lite"			=> "srcu_read_lock_fast",
--	"srcu_read_unlock_lite"			=> "srcu_read_unlock_fast",
- );
- 
- #Create a search pattern for all these strings to speed up a loop below
+Frederic Weisbecker (1):
+  rcu/nocb: Dump gp state even if rdp gp itself is not offloaded
+
+Zqiang (1):
+  rcu/nocb: Fix possible invalid rdp's->nocb_cb_kthread pointer access
+
+ kernel/rcu/tree_nocb.h  | 8 +++++---
+ kernel/rcu/tree_stall.h | 3 +--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
 -- 
 2.40.1
 
