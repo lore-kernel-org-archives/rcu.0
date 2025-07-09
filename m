@@ -1,34 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2A7A935;
-	Wed,  9 Jul 2025 00:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0661DA935;
+	Wed,  9 Jul 2025 00:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752019214; cv=none; b=L0KrnreMQkiOtsrBRtG8kOScUMoSG8rs5hdvWq5K5o0ovJDVtXJm/8tAzBOVuSScVFyhEObDYcgwx4Hc1UV1hqP48uPxwu9gp+tQKOX4coQrCNy+Qv1JRMbQe1v1otrI0GhyqWlE3VFH2FUlthFne74/H8+R0PRP5sGSGqjQc3U=
+	t=1752019609; cv=none; b=T+hgqzLmdXDFPAzUoXC5/2AcpSEqwMqu7E7GinY34BkV6yTkR4HabssU07/pzm3yagnNTtz6bGIVOuQbO2yUBIlS5bIpuUQwckwZaF+ukW0H7hIPsYcOO4TL/60B+GKnmXdzH3z19fqFsOUti04azghNOnI+ATwvPLIwroDku7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752019214; c=relaxed/simple;
-	bh=Xy5KeN75QHkTJnYMZ5EZGWzwYX/bPTaVG0HvZyXkrOU=;
+	s=arc-20240116; t=1752019609; c=relaxed/simple;
+	bh=9rNRsvhb8ONPeHvn0FHJiNgz9RSnsvZiLhAZJKaONjk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L3ao4EYeBg00/Oyy/ePOZ65Hgeb+xRhtApXmArReJEWQ27jJGNGpksBG3ZZjSeFcaJHZBm0HBnz8IAmmuU6cBxIuJf8eI+BHflQeVgii+0UChUDRdLYczi+IMBFh1vpC3mQ2yXzm2CyntaIdwIz1u9mxXFgBEdoEsSiXLdKKLRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjQMEAoU; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ha5H4rkPPJY+StgpGQDKAwWWTZwDTX+k+teNgwWf+pDXnUt1Z5pekNTeXnoeT61oW1Zt6RYG7Dvd6lkJ65Fp1pkG6Ip+WmK0vRnjvbusRAooF0DGSNiX/epw/AmeABdpoZ8ZzMpaQqQ3AHblp8p2iHG/gTFdmOo+Ikdrj8ZO5pM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mMOOOXKS; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjQMEAoU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD0E3C4CEED;
-	Wed,  9 Jul 2025 00:00:13 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mMOOOXKS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F32C4CEED;
+	Wed,  9 Jul 2025 00:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752019213;
-	bh=Xy5KeN75QHkTJnYMZ5EZGWzwYX/bPTaVG0HvZyXkrOU=;
+	s=k20201202; t=1752019608;
+	bh=9rNRsvhb8ONPeHvn0FHJiNgz9RSnsvZiLhAZJKaONjk=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=AjQMEAoUmEMA23Th0ARij+U9s42LFbjk+/rd+cz8+/hG0Eb/k+U4+q69N33gV1JHa
-	 eB1OAOi4tXAjxhqgQuLzXr7tYv4R9s5fe5ZagQe7FuRBix6tSshbxP2rDcxB3FHyZO
-	 ptyIiAAbE2UH/qb04BekBQe7sZIhSLqqhYpgtzaTR6mkCC+CPaT3ui2K+XihOztRGc
-	 FVyT+t/yAC7NVtVg+dkN10esH3ZoJRA6+kGxUdP22hsgA+1GzOr1fCO5rLJYMrLjU0
-	 mt6DiokZNMy6El+ZRtC61PLJ1psZfFT85xl4XCis5fsuoZg8uuZw8jNT9W4hMO0fDr
-	 8d60jbPFHLQ2g==
+	b=mMOOOXKSxMefVaPQRHc8qGIeW5dHMnOPMeUUGdq1aNQQl4xcr8FYKCLf1gefN03kO
+	 UJMmim2j+m0xG2IZbyarfL4y5MGdZL3cZMkKVdh+DrNgb5bI1E4ceQ+FP2fgzcM0RR
+	 7DpP3dU4s8qxgR7W6sFUNhQUhZcvlOTgH/dlNpB2CJ0aDmupOl882pIjzArSIlnxPU
+	 HgXLjIlzb3ISqzMg8VPJTCbD3oPSXHPvuPQ2sj6/QLi+/+CvUVQmN1ZbDoqbZw5w07
+	 3ema9QRsp/Vv9X9FnEVWSd0uAAm5WfGKTJDpWVq+hL/yafA+KCk44hcMhgJoawshv3
+	 J9YTVeNgnMHUQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 54593CE08A1; Tue,  8 Jul 2025 17:00:13 -0700 (PDT)
-Date: Tue, 8 Jul 2025 17:00:13 -0700
+	id 1E67FCE08A1; Tue,  8 Jul 2025 17:06:48 -0700 (PDT)
+Date: Tue, 8 Jul 2025 17:06:48 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
@@ -40,14 +40,15 @@ Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>,
-	Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-	Qi Xi <xiqi2@huawei.com>, rcu@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH -rcu -next 2/7] rcu: Fix rcu_read_unlock() deadloop due
- to IRQ work
-Message-ID: <4249c87e-7ff4-4c09-b4da-ad64ddd38995@paulmck-laptop>
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Clark Williams <clrkwllms@kernel.org>, rcu@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH -rcu -next 3/7] rcu: Refactor expedited handling check in
+ rcu_read_unlock_special()
+Message-ID: <202666b7-801c-44c7-9402-8c357abb8e5d@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20250708142224.3940851-1-joelagnelf@nvidia.com>
- <20250708142224.3940851-2-joelagnelf@nvidia.com>
+ <20250708142224.3940851-3-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -56,143 +57,135 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250708142224.3940851-2-joelagnelf@nvidia.com>
+In-Reply-To: <20250708142224.3940851-3-joelagnelf@nvidia.com>
 
-On Tue, Jul 08, 2025 at 10:22:19AM -0400, Joel Fernandes wrote:
-> During rcu_read_unlock_special(), if this happens during irq_exit(), we
-> can lockup if an IPI is issued. This is because the IPI itself triggers
-> the irq_exit() path causing a recursive lock up.
+On Tue, Jul 08, 2025 at 10:22:20AM -0400, Joel Fernandes wrote:
+> Extract the complex expedited handling condition in rcu_read_unlock_special()
+> into a separate function rcu_unlock_needs_exp_handling() with detailed
+> comments explaining each condition.
 > 
-> This is precisely what Xiongfeng found when invoking a BPF program on
-> the trace_tick_stop() tracepoint As shown in the trace below. Fix by
-> managing the irq_work state correctly.
+> This improves code readability. No functional change intended.
 > 
-> irq_exit()
->   __irq_exit_rcu()
->     /* in_hardirq() returns false after this */
->     preempt_count_sub(HARDIRQ_OFFSET)
->     tick_irq_exit()
->       tick_nohz_irq_exit()
-> 	    tick_nohz_stop_sched_tick()
-> 	      trace_tick_stop()  /* a bpf prog is hooked on this trace point */
-> 		   __bpf_trace_tick_stop()
-> 		      bpf_trace_run2()
-> 			    rcu_read_unlock_special()
->                               /* will send a IPI to itself */
-> 			      irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
-> 
-> A simple reproducer can also be obtained by doing the following in
-> tick_irq_exit(). It will hang on boot without the patch:
-> 
->   static inline void tick_irq_exit(void)
->   {
->  +	rcu_read_lock();
->  +	WRITE_ONCE(current->rcu_read_unlock_special.b.need_qs, true);
->  +	rcu_read_unlock();
->  +
-> 
-> Reported-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> Closes: https://lore.kernel.org/all/9acd5f9f-6732-7701-6880-4b51190aa070@huawei.com/
-> Tested-by: Qi Xi <xiqi2@huawei.com>
 > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
 > ---
->  kernel/rcu/tree.h        | 11 ++++++++++-
->  kernel/rcu/tree_plugin.h | 23 +++++++++++++++++++----
->  2 files changed, 29 insertions(+), 5 deletions(-)
+>  kernel/rcu/tree_plugin.h | 83 +++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 74 insertions(+), 9 deletions(-)
 > 
-> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> index 3830c19cf2f6..f8f612269e6e 100644
-> --- a/kernel/rcu/tree.h
-> +++ b/kernel/rcu/tree.h
-> @@ -174,6 +174,15 @@ struct rcu_snap_record {
->  	unsigned long   jiffies;	/* Track jiffies value */
->  };
->  
-> +/*
-> + * The IRQ work (deferred_qs_iw) is used by RCU to get scheduler's attention.
-> + * It can be in one of the following states:
-> + * - DEFER_QS_IDLE: An IRQ work was never scheduled.
-> + * - DEFER_QS_PENDING: An IRQ work was scheduler but never run.
-> + */
-> +#define DEFER_QS_IDLE		0
-> +#define DEFER_QS_PENDING	1
-> +
->  /* Per-CPU data for read-copy update. */
->  struct rcu_data {
->  	/* 1) quiescent-state and grace-period handling : */
-> @@ -192,7 +201,7 @@ struct rcu_data {
->  					/*  during and after the last grace */
->  					/* period it is aware of. */
->  	struct irq_work defer_qs_iw;	/* Obtain later scheduler attention. */
-> -	bool defer_qs_iw_pending;	/* Scheduler attention pending? */
-> +	int defer_qs_iw_pending;	/* Scheduler attention pending? */
->  	struct work_struct strict_work;	/* Schedule readers for strict GPs. */
->  
->  	/* 2) batch handling */
 > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index dd1c156c1759..fa7b0d854833 100644
+> index fa7b0d854833..e20c17163c13 100644
 > --- a/kernel/rcu/tree_plugin.h
 > +++ b/kernel/rcu/tree_plugin.h
-> @@ -486,13 +486,16 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
->  	struct rcu_node *rnp;
->  	union rcu_special special;
->  
-> +	rdp = this_cpu_ptr(&rcu_data);
-> +	if (rdp->defer_qs_iw_pending == DEFER_QS_PENDING)
-> +		rdp->defer_qs_iw_pending = DEFER_QS_IDLE;
-> +
->  	/*
->  	 * If RCU core is waiting for this CPU to exit its critical section,
->  	 * report the fact that it has exited.  Because irqs are disabled,
->  	 * t->rcu_read_unlock_special cannot change.
->  	 */
->  	special = t->rcu_read_unlock_special;
-> -	rdp = this_cpu_ptr(&rcu_data);
->  	if (!special.s && !rdp->cpu_no_qs.b.exp) {
->  		local_irq_restore(flags);
->  		return;
-> @@ -628,7 +631,18 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
->  
->  	rdp = container_of(iwp, struct rcu_data, defer_qs_iw);
->  	local_irq_save(flags);
-> -	rdp->defer_qs_iw_pending = false;
-> +
-> +	/*
-> +	 * Requeue the IRQ work on next unlock in following situation:
-> +	 * 1. rcu_read_unlock() queues IRQ work (state -> DEFER_QS_PENDING)
-> +	 * 2. CPU enters new rcu_read_lock()
-> +	 * 3. IRQ work runs but cannot report QS due to rcu_preempt_depth() > 0
-> +	 * 4. rcu_read_unlock() does not re-queue work (state still PENDING)
-> +	 * 5. Deferred QS reporting does not happen.
-> +	 */
-> +	if (rcu_preempt_depth() > 0)
-> +		WRITE_ONCE(rdp->defer_qs_iw_pending, DEFER_QS_IDLE);
-> +
+> @@ -646,6 +646,75 @@ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
 >  	local_irq_restore(flags);
 >  }
 >  
-> @@ -675,7 +689,8 @@ static void rcu_read_unlock_special(struct task_struct *t)
+> +/*
+> + * Check if expedited grace period processing during unlock is needed.
+> + *
+> + * This function determines whether expedited handling is required based on:
+> + * 1. Task blocking an expedited grace period (based on a heuristic, could be
+> + *    false-positive, see below.)
+> + * 2. CPU participating in an expedited grace period
+> + * 3. Strict grace period mode requiring expedited handling
+> + * 4. RCU priority deboosting needs when interrupts were disabled
+> + *
+> + * @t: The task being checked
+> + * @rdp: The per-CPU RCU data
+> + * @rnp: The RCU node for this CPU
+> + * @irqs_were_disabled: Whether interrupts were disabled before rcu_read_unlock()
+> + *
+> + * Returns true if expedited processing of the rcu_read_unlock() is needed.
+> + */
+> +static bool rcu_unlock_needs_exp_handling(struct task_struct *t,
+> +				      struct rcu_data *rdp,
+> +				      struct rcu_node *rnp,
+> +				      bool irqs_were_disabled)
+> +{
+> +	/*
+> +	 * Check if this task is blocking an expedited grace period. If the
+> +	 * task was preempted within an RCU read-side critical section and is
+> +	 * on the expedited grace period blockers list (exp_tasks), we need
+> +	 * expedited handling to unblock the expedited GP. This is not an exact
+> +	 * check because 't' might not be on the exp_tasks list at all - its
+> +	 * just a fast heuristic that can be false-positive sometimes.
+> +	 */
+> +	if (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks))
+> +		return true;
+> +
+> +	/*
+> +	 * Check if this CPU is participating in an expedited grace period.
+> +	 * The expmask bitmap tracks which CPUs need to check in for the
+> +	 * current expedited GP. If our CPU's bit is set, we need expedited
+> +	 * handling to help complete the expedited GP.
+> +	 */
+> +	if (rdp->grpmask & READ_ONCE(rnp->expmask))
+> +		return true;
+> +
+> +	/*
+> +	 * In CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, all grace periods
+> +	 * are treated as short for testing purposes even if that means
+> +	 * disturbing the system more. Check if either:
+> +	 * - This CPU has not yet reported a quiescent state, or
+> +	 * - This task was preempted within an RCU critical section
+> +	 * In either case, require expedited handling for strict GP mode.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+> +	    ((rdp->grpmask & READ_ONCE(rnp->qsmask)) || t->rcu_blocked_node))
+> +		return true;
+> +
+> +	/*
+> +	 * RCU priority boosting case: If a task is subject to RCU priority
+> +	 * boosting and exits an RCU read-side critical section with interrupts
+> +	 * disabled, we need expedited handling to ensure timely deboosting.
+> +	 * Without this, a low-priority task could incorrectly run at high
+> +	 * real-time priority for an extended period degrading real-time
+> +	 * responsiveness. This applies to all CONFIG_RCU_BOOST=y kernels,
+> +	 * not just to PREEMPT_RT.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled && t->rcu_blocked_node)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  /*
+>   * Handle special cases during rcu_read_unlock(), such as needing to
+>   * notify RCU core processing or task having blocked during the RCU
+> @@ -665,18 +734,14 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  	local_irq_save(flags);
+>  	irqs_were_disabled = irqs_disabled_flags(flags);
+>  	if (preempt_bh_were_disabled || irqs_were_disabled) {
+> -		bool expboost; // Expedited GP in flight or possible boosting.
+> +		bool needs_exp; // Expedited handling needed.
+>  		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  		struct rcu_node *rnp = rdp->mynode;
+>  
+> -		expboost = (t->rcu_blocked_node && READ_ONCE(t->rcu_blocked_node->exp_tasks)) ||
+> -			   (rdp->grpmask & READ_ONCE(rnp->expmask)) ||
+> -			   (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
+> -			   ((rdp->grpmask & READ_ONCE(rnp->qsmask)) || t->rcu_blocked_node)) ||
+> -			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+> -			    t->rcu_blocked_node);
+> +		needs_exp = rcu_unlock_needs_exp_handling(t, rdp, rnp, irqs_were_disabled);
+> +	
+>  		// Need to defer quiescent state until everything is enabled.
+> -		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
+> +		if (use_softirq && (in_hardirq() || (needs_exp && !irqs_were_disabled))) {
+>  			// Using softirq, safe to awaken, and either the
+>  			// wakeup is free or there is either an expedited
+>  			// GP in flight or a potential need to deboost.
+> @@ -689,7 +754,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
 >  			set_tsk_need_resched(current);
 >  			set_preempt_need_resched();
 >  			if (IS_ENABLED(CONFIG_IRQ_WORK) && irqs_were_disabled &&
-> -			    expboost && !rdp->defer_qs_iw_pending && cpu_online(rdp->cpu)) {
-> +			    expboost && rdp->defer_qs_iw_pending != DEFER_QS_PENDING &&
-> +			    cpu_online(rdp->cpu)) {
+> -			    expboost && rdp->defer_qs_iw_pending != DEFER_QS_PENDING &&
+> +			    needs_exp && rdp->defer_qs_iw_pending != DEFER_QS_PENDING &&
+>  			    cpu_online(rdp->cpu)) {
 >  				// Get scheduler to re-evaluate and call hooks.
 >  				// If !IRQ_WORK, FQS scan will eventually IPI.
->  				if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) &&
-> @@ -685,7 +700,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
->  				else
->  					init_irq_work(&rdp->defer_qs_iw,
->  						      rcu_preempt_deferred_qs_handler);
-> -				rdp->defer_qs_iw_pending = true;
-> +				rdp->defer_qs_iw_pending = DEFER_QS_PENDING;
->  				irq_work_queue_on(&rdp->defer_qs_iw, rdp->cpu);
->  			}
->  		}
 > -- 
 > 2.34.1
 > 
