@@ -1,123 +1,121 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633A728FFDE;
-	Wed,  9 Jul 2025 10:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EDEC29E0F9;
+	Wed,  9 Jul 2025 11:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752058063; cv=none; b=SC1/H8H5NqQXbv+isnPJXlPWsoohti2uaNBlMeYRqTDBPJEGYl98TNjK31okq+eLhJB09NN+81EdKm+ZAoYYnmdwJYBQ609SsIoBbovGH/Oo0WGwaCqOWskIHaR3PVd+zYSGvc80BlItcmJYe8fZiCxtSsgN1m1BCTxn7w+7CW4=
+	t=1752060472; cv=none; b=FT6P+W/y7lP/+kZshVzFk7jrZPuEnBvo1qcVFxkkiW4z20pECwP2jxKFhhZHETz3ZQyod60XIP4esxNQIUI4zxrKdQFPqpkZ4Wv5YZ5b8/vm+IsieJIIBI/MIpblWqjRx6+PeW3UwAkVNZ9sJPtPC6vXXrosagxbi7y4Mh8uqxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752058063; c=relaxed/simple;
-	bh=txsajfvA8IdeLAqL2hE7eMFpIZ4tPTLyXFsHmPXdMGM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=u2AO4cTiLL2VbkdNUVw5Z4lr34xfsoiLp/D0J+11frjI4b6k6yQTB/DU2IKLnw8VMGTYeLbrjDy6qRI/E18TL+NtnlQs+CV+jR/ixggW1zo75tW89ewN/BeZFN+d4XnmXFtxF3fRYJRv7SrJTLKeEHKOq7f7FlZVDWOS2A3YmTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDegeFoF; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752060472; c=relaxed/simple;
+	bh=HhFX0RfL+sP2Um7Qtfv4Vig0hKSodNaNvx4L1cYbfvI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=audKyN+4hmVZhj6v7FmFg6DB9tBw5/PB8Nx0mlK043kV0/2E5JY92BNBoP7ys6wFawQN6iwwUouh6SzYkb5CP3YijmPYWOX3WM1vbX/6ZDG4co91LuNoHkmpp9mqTPSF2+NEeBFbvUp1lFTh/jWFlXy17by5RDbztAKIGnaBi6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Et+FLqWX; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDegeFoF"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2391C4CEEF;
-	Wed,  9 Jul 2025 10:47:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Et+FLqWX"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 108BAC4CEEF;
+	Wed,  9 Jul 2025 11:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752058063;
-	bh=txsajfvA8IdeLAqL2hE7eMFpIZ4tPTLyXFsHmPXdMGM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mDegeFoFhrHi/XY9o5o3R6x80YBZdJqzEMnjwuDkjySYRaEig4Z3UbMXM4zGd8sag
-	 3/oysv/nkhmM7KSdGaSYh+zyQBln5IFR0OXSlzWtJau4UOec4cGPWlzNbd0o+o+AHs
-	 g7SCWCsBFSzHaSj4WjOg6uloHEV+tmxxFhykVvCZzPiMteOrZFDNLUz3zeNq9wQ5y1
-	 uF0AtfvtzkzTmRErhgs3otzQdd3u/vWSDkOWF+hdnMS26naWhrVs4mfXhcYJhTBlio
-	 MbWsrLRbgFEsknr9DOTbxthtCg97ECZFKS8dR+DgoeKy8vg3fTBZHAC+3gbRYvBcxi
-	 MYzPkQuURMAKw==
-From: neeraj.upadhyay@kernel.org
-To: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	paulmck@kernel.org,
-	joelagnelf@nvidia.com,
-	frederic@kernel.org,
-	boqun.feng@gmail.com,
-	urezki@gmail.com,
-	rostedt@goodmis.org,
-	mathieu.desnoyers@efficios.com,
-	jiangshanlai@gmail.com,
-	qiang.zhang1211@gmail.com,
-	neeraj.iitr10@gmail.com,
-	neeraj.upadhyay@amd.com,
-	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>,
-	Artem Sadovnikov <a.sadovnikov@ispras.ru>
-Subject: [PATCH rcu 1/1] refscale: Check that nreaders and loops multiplication doesn't overflow
-Date: Wed,  9 Jul 2025 16:17:12 +0530
-Message-Id: <20250709104712.15728-2-neeraj.upadhyay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20250709104712.15728-1-neeraj.upadhyay@kernel.org>
-References: <20250709104712.15728-1-neeraj.upadhyay@kernel.org>
+	s=k20201202; t=1752060471;
+	bh=HhFX0RfL+sP2Um7Qtfv4Vig0hKSodNaNvx4L1cYbfvI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Et+FLqWXFP09TYCJoCHwJOIOkHlm6h8Fy5CtahYOJ7SxLK0uorMPQP4D/ryjED6lY
+	 lan7U/lkvkM8aE6vR0jCKhx47JIMwc6wvRfKompMdHwzDmXdR0aCEJnCDw2+q/wzs/
+	 QeUuqGjvWgLVSV4pai/dwofK3gjgYdxiDuH9mhfo98ocFBoSwdHjoQZ6qMeQpySsou
+	 8Olt4UowWOh0Z+LCcL7fmM8CVkrJLFYuAhPajpTcUnaYxvKyEzx4Q/Ki8bZQTdyk6M
+	 krU9MQU2mbSicrIj7Aw8OjmNMNvpW6TbvyfTU498deuhG1sSwLWkavitcoFyief60t
+	 Cj4Cg12mo0SqA==
+Date: Wed, 9 Jul 2025 13:27:48 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: neeraj.upadhyay@kernel.org
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, paulmck@kernel.org,
+	joelagnelf@nvidia.com, boqun.feng@gmail.com, urezki@gmail.com,
+	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+	neeraj.iitr10@gmail.com, neeraj.upadhyay@amd.com
+Subject: Re: [PATCH rcu 2/5] rcu: Protect ->defer_qs_iw_pending from data race
+Message-ID: <aG5SNJpn60Sz9px3@localhost.localdomain>
+References: <20250709104118.15532-1-neeraj.upadhyay@kernel.org>
+ <20250709104118.15532-3-neeraj.upadhyay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250709104118.15532-3-neeraj.upadhyay@kernel.org>
 
-From: Artem Sadovnikov <a.sadovnikov@ispras.ru>
+Le Wed, Jul 09, 2025 at 04:11:15PM +0530, neeraj.upadhyay@kernel.org a écrit :
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> On kernels built with CONFIG_IRQ_WORK=y, when rcu_read_unlock() is
+> invoked within an interrupts-disabled region of code [1], it will invoke
+> rcu_read_unlock_special(), which uses an irq-work handler to force the
+> system to notice when the RCU read-side critical section actually ends.
+> That end won't happen until interrupts are enabled at the soonest.
+> 
+> In some kernels, such as those booted with rcutree.use_softirq=y, the
+> irq-work handler is used unconditionally.
+> 
+> The per-CPU rcu_data structure's ->defer_qs_iw_pending field is
+> updated by the irq-work handler and is both read and updated by
+> rcu_read_unlock_special().  This resulted in the following KCSAN splat:
+> 
+> ------------------------------------------------------------------------
+> 
+> BUG: KCSAN: data-race in rcu_preempt_deferred_qs_handler / rcu_read_unlock_special
+> 
+> read to 0xffff96b95f42d8d8 of 1 bytes by task 90 on cpu 8:
+>  rcu_read_unlock_special+0x175/0x260
+>  __rcu_read_unlock+0x92/0xa0
+>  rt_spin_unlock+0x9b/0xc0
+>  __local_bh_enable+0x10d/0x170
+>  __local_bh_enable_ip+0xfb/0x150
+>  rcu_do_batch+0x595/0xc40
+>  rcu_cpu_kthread+0x4e9/0x830
+>  smpboot_thread_fn+0x24d/0x3b0
+>  kthread+0x3bd/0x410
+>  ret_from_fork+0x35/0x40
+>  ret_from_fork_asm+0x1a/0x30
+> 
+> write to 0xffff96b95f42d8d8 of 1 bytes by task 88 on cpu 8:
+>  rcu_preempt_deferred_qs_handler+0x1e/0x30
+>  irq_work_single+0xaf/0x160
+>  run_irq_workd+0x91/0xc0
+>  smpboot_thread_fn+0x24d/0x3b0
+>  kthread+0x3bd/0x410
+>  ret_from_fork+0x35/0x40
+>  ret_from_fork_asm+0x1a/0x30
+> 
+> no locks held by irq_work/8/88.
+> irq event stamp: 200272
+> hardirqs last  enabled at (200272): [<ffffffffb0f56121>] finish_task_switch+0x131/0x320
+> hardirqs last disabled at (200271): [<ffffffffb25c7859>] __schedule+0x129/0xd70
+> softirqs last  enabled at (0): [<ffffffffb0ee093f>] copy_process+0x4df/0x1cc0
+> softirqs last disabled at (0): [<0000000000000000>] 0x0
+> 
+> ------------------------------------------------------------------------
+> 
+> The problem is that irq-work handlers run with interrupts enabled, which
+> means that rcu_preempt_deferred_qs_handler() could be interrupted,
+> and that interrupt handler might contain an RCU read-side critical
+> section, which might invoke rcu_read_unlock_special().  In the strict
+> KCSAN mode of operation used by RCU, this constitutes a data race on
+> the ->defer_qs_iw_pending field.
+> 
+> This commit therefore disables interrupts across the portion of the
+> rcu_preempt_deferred_qs_handler() that updates the ->defer_qs_iw_pending
+> field.  This suffices because this handler is not a fast path.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
 
-The nreaders and loops variables are exposed as module parameters, which,
-in certain combinations, can lead to multiplication overflow.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Besides, loops parameter is defined as long, while through the code is
-used as int, which can cause truncation on 64-bit kernels and possible
-zeroes where they shouldn't appear.
-
-Since code uses result of multiplication as int anyway, it only makes sense
-to replace loops with int. Multiplication overflow check is also added
-due to possible multiplication between two very big numbers.
-
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: 653ed64b01dc ("refperf: Add a test to measure performance of read-side synchronization")
-Signed-off-by: Artem Sadovnikov <a.sadovnikov@ispras.ru>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
----
- kernel/rcu/refscale.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-index f11a7c2af778..ab7fcdc94cc0 100644
---- a/kernel/rcu/refscale.c
-+++ b/kernel/rcu/refscale.c
-@@ -85,7 +85,7 @@ torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_SCALE_TEST) ? 10 : 0,
- // Number of typesafe_lookup structures, that is, the degree of concurrency.
- torture_param(long, lookup_instances, 0, "Number of typesafe_lookup structures.");
- // Number of loops per experiment, all readers execute operations concurrently.
--torture_param(long, loops, 10000, "Number of loops per experiment.");
-+torture_param(int, loops, 10000, "Number of loops per experiment.");
- // Number of readers, with -1 defaulting to about 75% of the CPUs.
- torture_param(int, nreaders, -1, "Number of readers, -1 for 75% of CPUs.");
- // Number of runs.
-@@ -1140,7 +1140,7 @@ static void
- ref_scale_print_module_parms(const struct ref_scale_ops *cur_ops, const char *tag)
- {
- 	pr_alert("%s" SCALE_FLAG
--		 "--- %s:  verbose=%d verbose_batched=%d shutdown=%d holdoff=%d lookup_instances=%ld loops=%ld nreaders=%d nruns=%d readdelay=%d\n", scale_type, tag,
-+		 "--- %s:  verbose=%d verbose_batched=%d shutdown=%d holdoff=%d lookup_instances=%ld loops=%d nreaders=%d nruns=%d readdelay=%d\n", scale_type, tag,
- 		 verbose, verbose_batched, shutdown, holdoff, lookup_instances, loops, nreaders, nruns, readdelay);
- }
- 
-@@ -1238,12 +1238,16 @@ ref_scale_init(void)
- 	// Reader tasks (default to ~75% of online CPUs).
- 	if (nreaders < 0)
- 		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
--	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
-+	if (WARN_ONCE(loops <= 0, "%s: loops = %d, adjusted to 1\n", __func__, loops))
- 		loops = 1;
- 	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
- 		nreaders = 1;
- 	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
- 		nruns = 1;
-+	if (WARN_ONCE(loops > INT_MAX / nreaders,
-+		      "%s: nreaders * loops will overflow, adjusted loops to %d",
-+		      __func__, INT_MAX / nreaders))
-+		loops = INT_MAX / nreaders;
- 	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
- 			       GFP_KERNEL);
- 	if (!reader_tasks) {
 -- 
-2.40.1
-
+Frederic Weisbecker
+SUSE Labs
