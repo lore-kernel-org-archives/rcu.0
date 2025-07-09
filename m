@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D2FE28D82F;
-	Wed,  9 Jul 2025 10:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1448328FFFB;
+	Wed,  9 Jul 2025 10:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057762; cv=none; b=n1i1naKqcNPsPrgF4VU2H5B+5S8LdgQQG8gu3JONxQiigctVDx+GlKi/4kIgYZ/fXoM0qxM19ygOwKNaemjWyE9FrGX+CZPw9jCyx1Idq91T1PQtIhEWeiErAERnbVizqlaFPc1KV2yF3h4P6/dkIfuWIFwHPEsDLX2kaanr1eQ=
+	t=1752057768; cv=none; b=fVF8UZC7hK9tn9sDflKR8pNPZ2O/8ndxyHg+541fEBohqWgiO0fcV9g3k9lvctKMQZ7dka1y3SBS+BdWKFN+NuCvgqa4fGmd015mDib306l4QTkkzjcRs8Y6CajhRW/6j7hiMSHcCLFm+bbeAuqlZQcFmmx9sL0ueAl5Kp9PnDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057762; c=relaxed/simple;
-	bh=wUBGKF3tuqboI0ct3NbCXZ834tVW8bDTlFnBSWO6xWw=;
+	s=arc-20240116; t=1752057768; c=relaxed/simple;
+	bh=wKdPJPJ/I6sElxr2X9zIgE1Q3fP7t2VCbZRiKZAMmwU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J8oOhoQVqorXNzxCFW0gn9kEwUjV0qpvXmzH9JpaQ2nugnOEqPTMZG11zibS4DK5jUbeaaOdVuhrZRCFGTx1xoLp+E62Y6/qDr8343s1Oh00DztLlWAPA59yl2RGO2EZgsiGjLeslzxn1pn/6s6v2zXqmTxyInzq1T1G0faTQzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lIDmdrhw; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=pIeOAEO/wudYVfBW5AekgKLjxfCGaCbhOWzE/ghPNAM47uVSoa7p98VnFMB14SJ/x05h6fH9xbGgItrBtsz+c6SWe7JVBQhuZUR0WtTFud1OnNpxwrJ1mjNIGMJThMtY3SKb8Do0+O3SS998jZMtiW80/zBuL3lA5VyPfUXzJnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dT8Uvg88; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lIDmdrhw"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BEC2C4CEF7;
-	Wed,  9 Jul 2025 10:42:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dT8Uvg88"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6CB2C4CEEF;
+	Wed,  9 Jul 2025 10:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057762;
-	bh=wUBGKF3tuqboI0ct3NbCXZ834tVW8bDTlFnBSWO6xWw=;
+	s=k20201202; t=1752057767;
+	bh=wKdPJPJ/I6sElxr2X9zIgE1Q3fP7t2VCbZRiKZAMmwU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lIDmdrhwriVle5grseJFdkOFmvNAShnFC0R40m7g0yJigz8XHp6aYNunVlwIrBofD
-	 5dLTg3ZmiT6A6B7nzgSik826UrJzf1Muf1l19i32tfdl8avNVT62CZrUogDKoic+Ii
-	 5q7nw5nLvD6Zw0G9Kqw2vZkDR3EQ3vWvfN+22DjE4ZSpYI8v16TTLmWHk9Zh6Qi+c1
-	 zibgOHVXDPGabNfwtPrLXuWO/uk4rLYj1bZsPw8vBbxc4uh6MpuRfxUXcRmmE/58CK
-	 3o2Ei/eGQ/jB0Ievfsun8sRTcl91JHFPIzPEGychnXO+ZcaUf3rGJXqxJe1IhPk0hK
-	 FZGXSPDFBiHlA==
+	b=dT8Uvg88EFyM/JUm8nXkWLtPg7Egt7t/Zg1orojILyEBvhWWMw4dq4DcHglwxugzb
+	 OSzUFh9PIz7U8OetbxhDfRmTjn4GuM5cVpfcACBbUD/P72e5fbDhOOjdwQKYqJjBDU
+	 epB5uS4lj0B/xfTfdpktxQ+ToR00FjWzLCkX2vNtiBzcXrKA20WicR+nshuHET5Czt
+	 +3/YiLcSsOwM2cv2JrTO8oP0+2GgtA+7kh7887Np93jQVQO+p7yg4tFsw3pbmB2Lwn
+	 hEW+39X8447PDk6RGgbPYbKWdxKHU45oFbhv5rauqmv3jPz82eeFDD1svZbJ4rOgHt
+	 mCATuBXYvC86w==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -40,10 +40,11 @@ Cc: linux-kernel@vger.kernel.org,
 	qiang.zhang1211@gmail.com,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
-	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 02/15] rcutorture: Start rcu_torture_writer() after rcu_torture_reader()
-Date: Wed,  9 Jul 2025 16:12:02 +0530
-Message-Id: <20250709104215.15562-3-neeraj.upadhyay@kernel.org>
+	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH rcu 03/15] rcutorture: Make rcutorture_one_extend_check() account for hard IRQs
+Date: Wed,  9 Jul 2025 16:12:03 +0530
+Message-Id: <20250709104215.15562-4-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20250709104215.15562-1-neeraj.upadhyay@kernel.org>
 References: <20250709104215.15562-1-neeraj.upadhyay@kernel.org>
@@ -57,62 +58,54 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Testing of rcutorture's SRCU-P scenario on a large arm64 system resulted
-in rcu_torture_writer() forward-progress failures, but these same tests
-passed on x86.  After some off-list discussion of possible memory-ordering
-causes for these failures, Boqun showed that these were in fact due to
-reordering, but by the scheduler, not by the memory system.  On x86,
-rcu_torture_writer() would have run quickly enough that by the time
-the rcu_torture_updown() kthread started, the rcu_torture_current
-variable would already be initialized, thus avoiding a bug in which
-a NULL value would cause rcu_torture_updown() to do an extra call to
-srcu_up_read_fast().
+This commit retrospectively prepares for testing of RCU readers invoked
+from hardware interrupt handlers (for example, HRTIMER_MODE_HARD hrtimer
+handlers) in kernels built with CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE=y,
+which is rarely used but sometimes extremely useful.  This preparation
+involves taking early exits if in_hardirq(), and, while we are in the
+area, a very early exit if in_nmi().
 
-This commit therefore moves creation of the rcu_torture_writer() kthread
-after that of the rcu_torture_reader() kthreads.  This results in
-deterministic failures on x86.
+This means that a number of insoftirq parameters are no longer needed,
+but that is the subject of a later commit.
 
-What about the double-srcu_up_read_fast() bug?  Boqun has the fix.
-But let's also fix the test while we are at it!
-
-Reported-by: Joel Fernandes <joelagnelf@nvidia.com>
-Reported-by: Boqun Feng <boqun.feng@gmail.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202505140917.8ee62cc6-lkp@intel.com
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+Tested-by: kernel test robot <oliver.sang@intel.com>
 Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ kernel/rcu/rcutorture.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index d1e0d61d8815..a209d2419cfd 100644
+index a209d2419cfd..7944cc69321d 100644
 --- a/kernel/rcu/rcutorture.c
 +++ b/kernel/rcu/rcutorture.c
-@@ -4246,11 +4246,6 @@ rcu_torture_init(void)
- 	/* Start up the kthreads. */
+@@ -1920,10 +1920,10 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
+ {
+ 	int mask;
  
- 	rcu_torture_write_types();
--	firsterr = torture_create_kthread(rcu_torture_writer, NULL,
--					  writer_task);
--	if (torture_init_error(firsterr))
--		goto unwind;
--
- 	if (nrealfakewriters > 0) {
- 		fakewriter_tasks = kcalloc(nrealfakewriters,
- 					   sizeof(fakewriter_tasks[0]),
-@@ -4283,6 +4278,12 @@ rcu_torture_init(void)
- 		if (torture_init_error(firsterr))
- 			goto unwind;
- 	}
-+
-+	firsterr = torture_create_kthread(rcu_torture_writer, NULL,
-+					  writer_task);
-+	if (torture_init_error(firsterr))
-+		goto unwind;
-+
- 	nrealnocbers = nocbs_nthreads;
- 	if (WARN_ON(nrealnocbers < 0))
- 		nrealnocbers = 1;
+-	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE))
++	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE) || in_nmi())
+ 		return;
+ 
+-	WARN_ONCE(!(curstate & RCUTORTURE_RDR_IRQ) && irqs_disabled(), ROEC_ARGS);
++	WARN_ONCE(!(curstate & RCUTORTURE_RDR_IRQ) && irqs_disabled() && !in_hardirq(), ROEC_ARGS);
+ 	WARN_ONCE((curstate & RCUTORTURE_RDR_IRQ) && !irqs_disabled(), ROEC_ARGS);
+ 
+ 	// If CONFIG_PREEMPT_COUNT=n, further checks are unreliable.
+@@ -1938,9 +1938,9 @@ static void rcutorture_one_extend_check(char *s, int curstate, int new, int old,
+ 		  (curstate & (RCUTORTURE_RDR_RCU_1 | RCUTORTURE_RDR_RCU_2)) &&
+ 		  cur_ops->readlock_nesting() == 0, ROEC_ARGS);
+ 
+-	// Timer handlers have all sorts of stuff disabled, so ignore
++	// Interrupt handlers have all sorts of stuff disabled, so ignore
+ 	// unintended disabling.
+-	if (insoftirq)
++	if (in_serving_softirq() || in_hardirq())
+ 		return;
+ 
+ 	WARN_ONCE(cur_ops->extendables &&
 -- 
 2.40.1
 
