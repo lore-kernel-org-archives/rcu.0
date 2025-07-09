@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB1C2749F1;
-	Wed,  9 Jul 2025 10:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2676228DEE8;
+	Wed,  9 Jul 2025 10:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057588; cv=none; b=B9SAxb2tQQObDogUUVN9ihhiS67oab1pmUU5B/xquiEiCgT4YK5RGUPCLZ6Rk6hL2pRBSGlobxI8OUSTJIfC92JzlIXZ2u5zXSNVUQ2C2f60X8Y9n5WbGvhwTAaljeDLne0XI+6kHDtNye6JB3HIuLYCk+08ja5B3oDUUDvoRfc=
+	t=1752057595; cv=none; b=Cpqqkj4OyRxdrvr7kqxJAjGUabxzqRgjU5Cq6KNV9yKftMfucYMYn5JSWuu5YMVP+ClvEqxZ0wS1wRuOZk3WDaIge+9Qc4aa9Aacky18aN6P4IDekQ99qp5qqSYwkPIVhgptOAhDheedfncR21nUoy/dm1LQHZU5dJd3nA/Yv9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057588; c=relaxed/simple;
-	bh=a+ygBf+amrdcbD9NF+H30vF3/3M/W25SaCHncKnVNdA=;
+	s=arc-20240116; t=1752057595; c=relaxed/simple;
+	bh=PxHHLkx1VHK181EbcOOUVDwD6SaEG/JAFcZiYpxdAyg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T4g7z7+fnoH5eueRDBXchiwS8hvPPLLqfPOzJfnJNIoyAXoZsUGjuu7DQ13Xu+M5+RPnhtI678FlnQgJbWvez0jd6sQ6xV27vKBappl+du1CMulwGIzbFm4fohP9bZ5f5iRcf3q9j1O8GV5xzQmGzUfoo82/hNpiViQZiu9/6M4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mcS7eFmU; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=C4jNEU3Ot7n8r4G2iw/oOSzrjjJLZwxGYt3lET4o3g72V2U807DBoqMV72WLFMNGZXYivAHetuQ0I3UNGAsGj0FnF38bC6SHLSCg9sXUs7cxQTB9mCC4Lq1tjfvJunQqjF6fCp8SECd48z4FSLL60qeGqJWBa4VW4rnT9qA+dzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t70636v+; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mcS7eFmU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 501DAC4CEEF;
-	Wed,  9 Jul 2025 10:39:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t70636v+"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B43BDC4CEF4;
+	Wed,  9 Jul 2025 10:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057586;
-	bh=a+ygBf+amrdcbD9NF+H30vF3/3M/W25SaCHncKnVNdA=;
+	s=k20201202; t=1752057594;
+	bh=PxHHLkx1VHK181EbcOOUVDwD6SaEG/JAFcZiYpxdAyg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mcS7eFmUkHnt7K8ZnLLXPttOZqaqny04nQYBrKEvHa5jc+Cix2fHEXUlnvx7ePq0N
-	 nnSlTlxBuDeS5ch8jQ+MZtuxnb/Q7pbzKNw84+IJhD+h3T0HrxoJgxIbZWgKj1ubLD
-	 Xx6cJTY6fjJwTUmmSHV++2fhGooi4yB4pzXFzj6rIMOccLw2hG/q4FpzH2ZmsFNhDo
-	 d6YuD7VBtNyRBmEPfvuDAEdtf9ZOLTRx7zhaOZ9hwI10s+iK4eQIS3VX5NswKpFLHD
-	 E9KKvvcWON+AQ7rUYhzaEdftMSS+Q+ACocX4LD8geLwX4WFRWQf4TrhwBoy8QC37Pf
-	 NyHIOMfTdsipw==
+	b=t70636v+9hIiUkqS6/SLOSQXsvAYAHtjiwUsqbp7bpABuNOJ+4nLW4TN4NRMa9Jmd
+	 Tj+eDcdSMSOEOTo1y5IDmWiPGMQhO15u1NTmXayVSLdKK4Xfu/zAggVh1AovgEGUkp
+	 KVbTdv8LCSI78FwF8Yd50j6V5Z6h2qT0nAe033e8bAjSRFOovARA3r9uTb4DDHkxCW
+	 0M5UfBmLEPkzWQ9yTEupigqYalj2GmWbiUHPDkrdc82SEEZHjpKesGHNpaZPHPNpMF
+	 hoscYxetbBottenls7WG97EjGZ27QoFwzgg4UgR886icfMrGZxIjavuFZQ7kXtwDar
+	 CyE4xEgX13reQ==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 1/5] rcu/exp: Protect against early QS report
-Date: Wed,  9 Jul 2025 16:09:05 +0530
-Message-Id: <20250709103909.15498-2-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 2/5] rcu/exp: Remove confusing needless full barrier on task unblock
+Date: Wed,  9 Jul 2025 16:09:06 +0530
+Message-Id: <20250709103909.15498-3-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20250709103909.15498-1-neeraj.upadhyay@kernel.org>
 References: <20250709103909.15498-1-neeraj.upadhyay@kernel.org>
@@ -57,72 +57,46 @@ Content-Transfer-Encoding: 8bit
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-When a grace period is started, the ->expmask of each node is set up
-from sync_exp_reset_tree(). Then later on each leaf node also initialize
-its ->exp_tasks pointer.
+A full memory barrier in the RCU-PREEMPT task unblock path advertizes
+to order the context switch (or rather the accesses prior to
+rcu_read_unlock()) with the expedited grace period fastpath.
 
-This means that the initialization of the quiescent state of a node and
-the initialization of its blocking tasks happen with an unlocked node
-gap in-between.
+However the grace period can not complete without the rnp calling into
+rcu_report_exp_rnp() with the node locked. This reports the quiescent
+state in a fully ordered fashion against updater's accesses thanks to:
 
-It happens to be fine because nothing is expected to report an exp
-quiescent state within this gap, since no IPI have been issued yet and
-every rdp's ->cpu_no_qs.b.exp should be false.
+1) The READ-SIDE smp_mb__after_unlock_lock() barrier across nodes
+   locking while propagating QS up to the root.
 
-However if it were to happen by accident, the quiescent state could be
-reported and propagated while ignoring tasks that blocked _before_ the
-start of the grace period.
+2) The UPDATE-SIDE smp_mb__after_unlock_lock() barrier while holding the
+   the root rnp to wait/check for the GP completion.
 
-Prevent such trouble to happen in the future and initialize both the
-quiescent states mask to report and the blocked tasks head from the same
-node locked block.
+3) The (perhaps redundant given step 1) and 2)) smp_mb() in rcu_seq_end()
+   before the grace period completes.
 
-If a task blocks within an RCU read side critical section before
-sync_exp_reset_tree() is called and is then unblocked between
-sync_exp_reset_tree() and __sync_rcu_exp_select_node_cpus(), the QS
-won't be reported because no RCU exp IPI had been issued to request it
-through the setting of srdp->cpu_no_qs.b.exp.
+This makes the explicit barrier in this place superfluous. Therefore
+remove it as it is confusing.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/tree_exp.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ kernel/rcu/tree_plugin.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index c36c7d5575ca..2fa7aa9155bd 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -141,6 +141,13 @@ static void __maybe_unused sync_exp_reset_tree(void)
- 		raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 		WARN_ON_ONCE(rnp->expmask);
- 		WRITE_ONCE(rnp->expmask, rnp->expmaskinit);
-+		/*
-+		 * Need to wait for any blocked tasks as well.	Note that
-+		 * additional blocking tasks will also block the expedited GP
-+		 * until such time as the ->expmask bits are cleared.
-+		 */
-+		if (rcu_is_leaf_node(rnp) && rcu_preempt_has_tasks(rnp))
-+			WRITE_ONCE(rnp->exp_tasks, rnp->blkd_tasks.next);
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	}
- }
-@@ -393,13 +400,6 @@ static void __sync_rcu_exp_select_node_cpus(struct rcu_exp_work *rewp)
- 	}
- 	mask_ofl_ipi = rnp->expmask & ~mask_ofl_test;
- 
--	/*
--	 * Need to wait for any blocked tasks as well.	Note that
--	 * additional blocking tasks will also block the expedited GP
--	 * until such time as the ->expmask bits are cleared.
--	 */
--	if (rcu_preempt_has_tasks(rnp))
--		WRITE_ONCE(rnp->exp_tasks, rnp->blkd_tasks.next);
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 
- 	/* IPI the remaining CPUs for expedited quiescent state. */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 0b0f56f6abc8..0532a13cb75e 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -534,7 +534,6 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
+ 		WARN_ON_ONCE(rnp->completedqs == rnp->gp_seq &&
+ 			     (!empty_norm || rnp->qsmask));
+ 		empty_exp = sync_rcu_exp_done(rnp);
+-		smp_mb(); /* ensure expedited fastpath sees end of RCU c-s. */
+ 		np = rcu_next_node_entry(t, rnp);
+ 		list_del_init(&t->rcu_node_entry);
+ 		t->rcu_blocked_node = NULL;
 -- 
 2.40.1
 
