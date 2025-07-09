@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CAF291C0F;
-	Wed,  9 Jul 2025 10:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552ED28DB63;
+	Wed,  9 Jul 2025 10:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057702; cv=none; b=OL9yiyaBl/3mf8Tjww0oPqmRwrazJreenWsfBdxrokd//TAP+p9OxvBmh4PbctYYDc5XuZZVM6a7LBGlDbkV4vIzSfmR7ska3+3UP3f21PkYR2BwcDJq+cBE0Y56X7nnvIjsgcoNKWRovkRB+utbduAo/Cw7jPBImnLDVH3+BXU=
+	t=1752057708; cv=none; b=VbDLkPBoFIJlB80mwK1dzXZdctTBv0F4TCb5+2cmcdnn8tdluDhswFgan7WWF4w5/kcxyAPzvJ9Xypn2//wce5Be4N2JjcRpblRXV4+m8n2FeEOyiTwD6O1Pz8rGoHFAnaMzAnsD8r6Z5GaWN3nazmh3PkkR2XzAVDQFBZyF/Fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057702; c=relaxed/simple;
-	bh=3oTDZhx4qliFBI97FxAN+GLECJvSn3lalKekQqoF2jc=;
+	s=arc-20240116; t=1752057708; c=relaxed/simple;
+	bh=M8ZjJ30VmwOexsmfFOpejwe1qhUqE7IeUo2Kq/99r1w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=poRhq/woMwEl+JOIKjyEAJZIbCbPIWxzu77KZX4t6bvh/EWU53HbMvPZyAQ+8YszAB+VmQzAKklUFGngJH/KHtUYQ9C9XOS8LQE0xWhIt22bRGMpuqS93iSg73PlX+LatP+XX5kk7GAn92PgQz0pyiw+xhN5S1rglXHINUiYdxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WqOuqJAU; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=V+B4uXP11nyH8Tox5CHzShf2uWBwy5oq6U9KbN/tCqTrkUsJuCtbCkIXsmkOAphbBkY+HDgFNUScDvOO63jlEpTkwtGHu9PJXlhkP3iXgch1ctvqgnaFiJcWRfcGNjw3Buly3upDMqWB1xpmVnzpiJxk9OL0pPAZe+NbdvB4kPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PkB7/kas; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WqOuqJAU"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B44D4C4AF0C;
-	Wed,  9 Jul 2025 10:41:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PkB7/kas"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DEFDC4CEEF;
+	Wed,  9 Jul 2025 10:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057701;
-	bh=3oTDZhx4qliFBI97FxAN+GLECJvSn3lalKekQqoF2jc=;
+	s=k20201202; t=1752057707;
+	bh=M8ZjJ30VmwOexsmfFOpejwe1qhUqE7IeUo2Kq/99r1w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WqOuqJAU5Pl75UXamJjzcDf+V89g6IsktFeLWyDcX/mqlJEwZnxG+EK7blMsIGRX7
-	 crzz9S68t4hgMN/y1PIKoFSZe02IrKRBpiToWZpuwq1X7AwPX3JHm3yfNt7hqdeHWh
-	 ODdeYOKv4pcqHiBB7jFyO42kZ28gE3LRyWKsIV/XIImZuxEW0UVfgBrvhMpmnDHZJC
-	 7YiFRJwHC/paziqD7Jlb1O5qOvqjq++WY03Vm06ET803GBeby9g/SPVD7/9CpZVxTQ
-	 D9r44YPVJAkUmiy/oc9EC2gViC6iCaHd4Nup/ZOGgxxjDOEpLkQKsomANHLIA4L6rZ
-	 Qf8wIIxS7csTw==
+	b=PkB7/kasasKhTB/oXK19iJExNC4RuTeV6UDF5Tne9TWO8EYbXimp70tKs4ZXpqcTB
+	 R9Wl9k8CjYRlY/Wbmwzc74e0dSA8V0yHXRn4MS/ZFs/clxBkQoOuLX9OFZPUkOXEkh
+	 I4xjacRrVYzqbqcARgtpCT96cExVjk6di1WueP/7kBONyPuvDLNG/B1ZRnosnDVkz8
+	 hFqCUCuAW7GgbvsCD4M5qmEbZprdArU+CXAhnMS4o28jDEXN6kKVAt/v7wN9EB9rGy
+	 qrjjTNSUSvW3aFWXgecqTl5HAxWZOEXovc+gXLEcpwxRjIv0mSkuh99eg/jkj8jqtu
+	 DuVitPe53ISmg==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,9 +41,9 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 1/5] rcu: Robustify rcu_is_cpu_rrupt_from_idle()
-Date: Wed,  9 Jul 2025 16:11:14 +0530
-Message-Id: <20250709104118.15532-2-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 2/5] rcu: Protect ->defer_qs_iw_pending from data race
+Date: Wed,  9 Jul 2025 16:11:15 +0530
+Message-Id: <20250709104118.15532-3-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20250709104118.15532-1-neeraj.upadhyay@kernel.org>
 References: <20250709104118.15532-1-neeraj.upadhyay@kernel.org>
@@ -55,89 +55,91 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-RCU relies on the context tracking nesting counter in order to determine
-if it is running in extended quiescent state.
+On kernels built with CONFIG_IRQ_WORK=y, when rcu_read_unlock() is
+invoked within an interrupts-disabled region of code [1], it will invoke
+rcu_read_unlock_special(), which uses an irq-work handler to force the
+system to notice when the RCU read-side critical section actually ends.
+That end won't happen until interrupts are enabled at the soonest.
 
-However the context tracking nesting counter is not completely
-synchronized with the actual context tracking state:
+In some kernels, such as those booted with rcutree.use_softirq=y, the
+irq-work handler is used unconditionally.
 
-* The nesting counter is set to 1 or incremented further _after_ the
-  actual state is set to RCU watching.
+The per-CPU rcu_data structure's ->defer_qs_iw_pending field is
+updated by the irq-work handler and is both read and updated by
+rcu_read_unlock_special().  This resulted in the following KCSAN splat:
 
-* The nesting counter is set to 0 or decremented further _before_ the
-  actual state is set to RCU not watching.
+------------------------------------------------------------------------
 
-Therefore it is safe to assume that if ct_nesting() > 0, RCU is
-watching. But if ct_nesting() <= 0, RCU is not watching except for tiny
-windows.
+BUG: KCSAN: data-race in rcu_preempt_deferred_qs_handler / rcu_read_unlock_special
 
-This hasn't been a problem so far because rcu_is_cpu_rrupt_from_idle()
-has only been called from interrupts. However the code is confusing
-and abuses the role of the context tracking nesting counter while there
-are more accurate indicators available.
+read to 0xffff96b95f42d8d8 of 1 bytes by task 90 on cpu 8:
+ rcu_read_unlock_special+0x175/0x260
+ __rcu_read_unlock+0x92/0xa0
+ rt_spin_unlock+0x9b/0xc0
+ __local_bh_enable+0x10d/0x170
+ __local_bh_enable_ip+0xfb/0x150
+ rcu_do_batch+0x595/0xc40
+ rcu_cpu_kthread+0x4e9/0x830
+ smpboot_thread_fn+0x24d/0x3b0
+ kthread+0x3bd/0x410
+ ret_from_fork+0x35/0x40
+ ret_from_fork_asm+0x1a/0x30
 
-Clarify and robustify accordingly.
+write to 0xffff96b95f42d8d8 of 1 bytes by task 88 on cpu 8:
+ rcu_preempt_deferred_qs_handler+0x1e/0x30
+ irq_work_single+0xaf/0x160
+ run_irq_workd+0x91/0xc0
+ smpboot_thread_fn+0x24d/0x3b0
+ kthread+0x3bd/0x410
+ ret_from_fork+0x35/0x40
+ ret_from_fork_asm+0x1a/0x30
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+no locks held by irq_work/8/88.
+irq event stamp: 200272
+hardirqs last  enabled at (200272): [<ffffffffb0f56121>] finish_task_switch+0x131/0x320
+hardirqs last disabled at (200271): [<ffffffffb25c7859>] __schedule+0x129/0xd70
+softirqs last  enabled at (0): [<ffffffffb0ee093f>] copy_process+0x4df/0x1cc0
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+
+------------------------------------------------------------------------
+
+The problem is that irq-work handlers run with interrupts enabled, which
+means that rcu_preempt_deferred_qs_handler() could be interrupted,
+and that interrupt handler might contain an RCU read-side critical
+section, which might invoke rcu_read_unlock_special().  In the strict
+KCSAN mode of operation used by RCU, this constitutes a data race on
+the ->defer_qs_iw_pending field.
+
+This commit therefore disables interrupts across the portion of the
+rcu_preempt_deferred_qs_handler() that updates the ->defer_qs_iw_pending
+field.  This suffices because this handler is not a fast path.
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
 ---
- kernel/rcu/tree.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ kernel/rcu/tree_plugin.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 14d4499c6fc3..f83bbb408895 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -377,7 +377,7 @@ EXPORT_SYMBOL_GPL(rcu_momentary_eqs);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 0b0f56f6abc8..a91b2322a0cd 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -624,10 +624,13 @@ notrace void rcu_preempt_deferred_qs(struct task_struct *t)
   */
- static int rcu_is_cpu_rrupt_from_idle(void)
+ static void rcu_preempt_deferred_qs_handler(struct irq_work *iwp)
  {
--	long nesting;
-+	long nmi_nesting = ct_nmi_nesting();
++	unsigned long flags;
+ 	struct rcu_data *rdp;
  
- 	/*
- 	 * Usually called from the tick; but also used from smp_function_call()
-@@ -389,21 +389,28 @@ static int rcu_is_cpu_rrupt_from_idle(void)
- 	/* Check for counter underflows */
- 	RCU_LOCKDEP_WARN(ct_nesting() < 0,
- 			 "RCU nesting counter underflow!");
--	RCU_LOCKDEP_WARN(ct_nmi_nesting() <= 0,
--			 "RCU nmi_nesting counter underflow/zero!");
- 
--	/* Are we at first interrupt nesting level? */
--	nesting = ct_nmi_nesting();
--	if (nesting > 1)
-+	/* Non-idle interrupt or nested idle interrupt */
-+	if (nmi_nesting > 1)
- 		return false;
- 
- 	/*
--	 * If we're not in an interrupt, we must be in the idle task!
-+	 * Non nested idle interrupt (interrupting section where RCU
-+	 * wasn't watching).
- 	 */
--	WARN_ON_ONCE(!nesting && !is_idle_task(current));
-+	if (nmi_nesting == 1)
-+		return true;
-+
-+	/* Not in an interrupt */
-+	if (!nmi_nesting) {
-+		RCU_LOCKDEP_WARN(!in_task() || !is_idle_task(current),
-+				 "RCU nmi_nesting counter not in idle task!");
-+		return !rcu_is_watching_curr_cpu();
-+	}
- 
--	/* Does CPU appear to be idle from an RCU standpoint? */
--	return ct_nesting() == 0;
-+	RCU_LOCKDEP_WARN(1, "RCU nmi_nesting counter underflow/zero!");
-+
-+	return false;
+ 	rdp = container_of(iwp, struct rcu_data, defer_qs_iw);
++	local_irq_save(flags);
+ 	rdp->defer_qs_iw_pending = false;
++	local_irq_restore(flags);
  }
  
- #define DEFAULT_RCU_BLIMIT (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ? 1000 : 10)
+ /*
 -- 
 2.40.1
 
