@@ -1,31 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7F7295DB4;
-	Wed,  9 Jul 2025 10:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE60295525;
+	Wed,  9 Jul 2025 10:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057881; cv=none; b=qijbvzJ6KfsHzcpnABU3EcIY7odS4YwtfaxUqsNPR7NYMCnoM0NNQid6s9dOB2qDuNCi3uRe12/jUaUSOl+3W2CH4X7QHZV8AR++CjTSM/wQuuKGHb2Qp2zUgv8sx/2n05qRM1nGl0fRVf4UTvSfX5k6G+dFb7X16es5cblFgNo=
+	t=1752057887; cv=none; b=OjGALVdMUjBrzu+PB58HZNBOA+Wm7ca0QQZNs2XImdAkShkoRw2aJnjaDbpSyOgopIJEZxEmZYnrsXpPTWArzHW1YfoDXn1cVd8fZgSPzTXkHSxEHAMhQmtq1USlo6d7enpdmbCJKB0CFBhpGjY3U0Bql8cp8pw7ffT9tHqLw7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057881; c=relaxed/simple;
-	bh=rQNQFE/ZZfiCg3nCWCzS+MuDWRpJAMAtQMbF0HNbV98=;
+	s=arc-20240116; t=1752057887; c=relaxed/simple;
+	bh=VnCHMy4SVOJ//aF+dQrI1zkwjND2s8/53ZppDcbJ8vQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dd2TCZkcZDSNIoF7NYNAgXzHhOpG4CXWAQ3/+dODcjDqAWnbGQnifj2LXRZ/40HQ5NFlDvVwgRyDk41BWjzZOUbUonBrvUoWtdtVaJ0VDv4Eaggn2H5qrpG1eDSjzk3RY7aVK2S7XLXDRhT9nCbdNL1NOAh7dBZcbmir8evZc4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UOIEbUpJ; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=b1hz5PYV8O4poFYNaddjhqAl6LoIXDxW1KmwlcNC8Fkrv8hRpk/WtaTdWJ7uVPKcsvx2ynXBj4c4zf/0Lc7BCpMGFcQ5YqBi1ddV7kqPOXWg1xk6ELh7xO+E9EvDLfeKsCOS+w2ARrY9+JO7p78BRWfY7kZEX/ItcIGa756UX3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nuZWXVsa; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UOIEbUpJ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB327C4CEF5;
-	Wed,  9 Jul 2025 10:44:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nuZWXVsa"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BD25C4CEEF;
+	Wed,  9 Jul 2025 10:44:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057880;
-	bh=rQNQFE/ZZfiCg3nCWCzS+MuDWRpJAMAtQMbF0HNbV98=;
+	s=k20201202; t=1752057886;
+	bh=VnCHMy4SVOJ//aF+dQrI1zkwjND2s8/53ZppDcbJ8vQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UOIEbUpJel3hqIyNmYvhCrb7AIRSOMIq9rLALscyUnUN2skFxT6pUIdBTOzX6MFPw
-	 EcbLWPqU0xL8TFZv6ihdQB9StuhFzjjVj724KKoFE0aNuZpOW9Aw3YIvcTVmGrDMde
-	 exV5h0INNe90SK/SXFqGujnfoSCHM3sxvde1BO0wWXPJy1rrXsPeTfqta9AgaZHavw
-	 c7/mp6E/XMtf0GJnqlJeCPg4QELf8Av48J5xGjPXMfJ+J8uZEGdb5HfUIhwI9HLeeM
-	 Vu5t12MwvFO0QKr5m1Dr4ZVIAyYYNZPjB9wnmGMHBUVm3Vut5XKDCX3y02gfeBpKRq
-	 UkdHuNr84QRvA==
+	b=nuZWXVsacd/3WRJGbjupW9yWvpGwZ59GDM5yslDFivUwLNi/hG8HJyT8diFgOL3bS
+	 Fnliyh9KzvRVnTKX7rdoFj0MMpHFOGg+X2x8U32983bzPnJ/LdAhQE9+Fdp8AEjOGI
+	 ao/3TR4Rdm5cHXgnkDuArespwT/b5UfclLFPX7vJtlpDqyaNEZG1aBHIAEXuDQUKR8
+	 lJdazJdUfag2d0JnfgiFmbeGxnpPWSRIOl9mStAjOixJCJrdI8x1eRnwztfVamn8PI
+	 Hk52fC988OUcYai4v3MSxIp2jkr+l3s2S7pmhAnAICBOEXJi/u0eHi2ASXVyYqLIvN
+	 I3R4TylnHqlvA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -40,10 +40,11 @@ Cc: linux-kernel@vger.kernel.org,
 	qiang.zhang1211@gmail.com,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
-	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 02/13] torture: Permit multiple space characters in kvm.sh --kconfig argument
-Date: Wed,  9 Jul 2025 16:14:03 +0530
-Message-Id: <20250709104414.15618-3-neeraj.upadhyay@kernel.org>
+	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH rcu 03/13] torture: Make torture.sh KCSAN runs set CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE=y
+Date: Wed,  9 Jul 2025 16:14:04 +0530
+Message-Id: <20250709104414.15618-4-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20250709104414.15618-1-neeraj.upadhyay@kernel.org>
 References: <20250709104414.15618-1-neeraj.upadhyay@kernel.org>
@@ -57,31 +58,41 @@ Content-Transfer-Encoding: 8bit
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The straightforward way of doing bash substitution for optional strings
-leaves a pair of space characters, which the kvm.sh --kconfig option
-rejects as ill-formed.  This commit therefore changes the corresponding
-regular expression to accommodate more than one space character between
-successive Kconfig options.
+The RCU_TORTURE_TEST_CHK_RDR_STATE Kconfig option is used for low-level
+debugging of rcutorture's generation of overlapping and nested RCU
+readers.  It incurs significant overhead, and is thus not to be used
+lightly.  But if it is not tested regularly, it won't be there when it
+is needed, for example, it would have found an rcutorture bug in the
+testing of srcu_up_read().
 
+This commit therefore uses CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE=y when
+building KCSAN kernels, but only for the --do-rcutorture case.
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 42e5e8597a1a..9c1b850b3227 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -199,7 +199,7 @@ do
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index c518de296871..53f61f278fd7 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -378,7 +378,12 @@ function torture_set {
+ 			kcsan_kmake_tag="--kmake-args"
+ 			cur_kcsan_kmake_args="$kcsan_kmake_args"
  		fi
- 		;;
- 	--kconfig|--kconfigs)
--		checkarg --kconfig "(Kconfig options)" $# "$2" '^\(#CHECK#\)\?CONFIG_[A-Z0-9_]\+=\([ynm]\|[0-9]\+\|"[^"]*"\)\( \(#CHECK#\)\?CONFIG_[A-Z0-9_]\+=\([ynm]\|[0-9]\+\|"[^"]*"\)\)*$' '^error$'
-+		checkarg --kconfig "(Kconfig options)" $# "$2" '^\(#CHECK#\)\?CONFIG_[A-Z0-9_]\+=\([ynm]\|[0-9]\+\|"[^"]*"\)\( \+\(#CHECK#\)\?CONFIG_[A-Z0-9_]\+=\([ynm]\|[0-9]\+\|"[^"]*"\)\)* *$' '^error$'
- 		TORTURE_KCONFIG_ARG="`echo "$TORTURE_KCONFIG_ARG $2" | sed -e 's/^ *//' -e 's/ *$//'`"
- 		shift
- 		;;
+-		torture_one "$@" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" $kcsan_kmake_tag $cur_kcsan_kmake_args --kcsan
++		chk_rdr_state=
++		if test "${flavor}" = rcutorture
++		then
++			chk_rdr_state="CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE=y"
++		fi
++		torture_one "$@" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y ${chk_rdr_state}" $kcsan_kmake_tag $cur_kcsan_kmake_args --kcsan
+ 		mv $T/last-resdir $T/last-resdir-kcsan || :
+ 	fi
+ }
 -- 
 2.40.1
 
