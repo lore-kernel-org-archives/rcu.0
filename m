@@ -1,30 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CD528FA91;
-	Wed,  9 Jul 2025 10:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CAF291C0F;
+	Wed,  9 Jul 2025 10:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057698; cv=none; b=M+yQrLrAHPjDeBZL4CENcbB12m0M5KMiApsb8oAixrsFEehaFAnxHvHJtq0NbogqpL/XCsAbiFyoi2sLOJR+WASMIImOtOV0cBSmjdDWqFnqEMzZud2y/ZVzWcf0h/YmIREXPc+5c7eC1ULFgCgocJNDlICJi1HkX6oa6miuF3Q=
+	t=1752057702; cv=none; b=OL9yiyaBl/3mf8Tjww0oPqmRwrazJreenWsfBdxrokd//TAP+p9OxvBmh4PbctYYDc5XuZZVM6a7LBGlDbkV4vIzSfmR7ska3+3UP3f21PkYR2BwcDJq+cBE0Y56X7nnvIjsgcoNKWRovkRB+utbduAo/Cw7jPBImnLDVH3+BXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057698; c=relaxed/simple;
-	bh=dTGkQHg9z5fqkIGCmz69Rpg6Oeq4vJsJBkUXplBSvKs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kSis9OBWRh3Qzxxclh2PCogIXoxIE8CEw6j0/dtx+paqHrrk14ZSDC8fw+q6hO0frLaAhu2Oh/CfZITHtCjwHJL/yiRDwjaiTo1ZtHanWZKc3L+9x2VLjSAf+6oNbI5/Y/8be2zcey9Br7z30zGauVdjqErKYONoZtHg7ofcu5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WgySBrXp; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752057702; c=relaxed/simple;
+	bh=3oTDZhx4qliFBI97FxAN+GLECJvSn3lalKekQqoF2jc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=poRhq/woMwEl+JOIKjyEAJZIbCbPIWxzu77KZX4t6bvh/EWU53HbMvPZyAQ+8YszAB+VmQzAKklUFGngJH/KHtUYQ9C9XOS8LQE0xWhIt22bRGMpuqS93iSg73PlX+LatP+XX5kk7GAn92PgQz0pyiw+xhN5S1rglXHINUiYdxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WqOuqJAU; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WgySBrXp"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C505FC4CEF4;
-	Wed,  9 Jul 2025 10:41:30 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WqOuqJAU"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B44D4C4AF0C;
+	Wed,  9 Jul 2025 10:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057696;
-	bh=dTGkQHg9z5fqkIGCmz69Rpg6Oeq4vJsJBkUXplBSvKs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=WgySBrXp4MLPIbCWNf1oifA/TqfMksbSx8kxigsTixIWrqTBDHHE1WqlC2VwbJx2Q
-	 5H3mUuS+JJYWZ4TePYb1JzCUQWo6SVdI1OVsvDxpktEQ/39N6wdneRavE7shj1Gokv
-	 to0Vxsm+/2nk7sPplmleZlakK1TPJS6okMC++M0EzWs3KONUMbEDJ38Uafk7+RV+VI
-	 2hxjgI7iwz00usOGqQLWDnBwRMRQy5nMdSgdZx/cyLgYKkxKRQJVVNa0ZAl81BY67+
-	 4vsLEwu8RIKUukUA9J7ThOOyj67Eo+N4Io5Qqphs5SdGHHDAzReIfQg5nAxxUujRrA
-	 z4mVqetBxtLig==
+	s=k20201202; t=1752057701;
+	bh=3oTDZhx4qliFBI97FxAN+GLECJvSn3lalKekQqoF2jc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=WqOuqJAU5Pl75UXamJjzcDf+V89g6IsktFeLWyDcX/mqlJEwZnxG+EK7blMsIGRX7
+	 crzz9S68t4hgMN/y1PIKoFSZe02IrKRBpiToWZpuwq1X7AwPX3JHm3yfNt7hqdeHWh
+	 ODdeYOKv4pcqHiBB7jFyO42kZ28gE3LRyWKsIV/XIImZuxEW0UVfgBrvhMpmnDHZJC
+	 7YiFRJwHC/paziqD7Jlb1O5qOvqjq++WY03Vm06ET803GBeby9g/SPVD7/9CpZVxTQ
+	 D9r44YPVJAkUmiy/oc9EC2gViC6iCaHd4Nup/ZOGgxxjDOEpLkQKsomANHLIA4L6rZ
+	 Qf8wIIxS7csTw==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -40,10 +41,12 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 0/5] RCU changes for v6.17
-Date: Wed,  9 Jul 2025 16:11:13 +0530
-Message-Id: <20250709104118.15532-1-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 1/5] rcu: Robustify rcu_is_cpu_rrupt_from_idle()
+Date: Wed,  9 Jul 2025 16:11:14 +0530
+Message-Id: <20250709104118.15532-2-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20250709104118.15532-1-neeraj.upadhyay@kernel.org>
+References: <20250709104118.15532-1-neeraj.upadhyay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -52,32 +55,89 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: "Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-Hello,
+RCU relies on the context tracking nesting counter in order to determine
+if it is running in extended quiescent state.
 
-This patch series contains following updates to the RCU code (rebased
-on v6.16-rc3):
+However the context tracking nesting counter is not completely
+synchronized with the actual context tracking state:
 
-Frederic Weisbecker (1):
-  rcu: Robustify rcu_is_cpu_rrupt_from_idle()
+* The nesting counter is set to 1 or incremented further _after_ the
+  actual state is set to RCU watching.
 
-Joel Fernandes (1):
-  rcu: Fix rcu_read_unlock() deadloop due to IRQ work
+* The nesting counter is set to 0 or decremented further _before_ the
+  actual state is set to RCU not watching.
 
-Paul E. McKenney (1):
-  rcu: Protect ->defer_qs_iw_pending from data race
+Therefore it is safe to assume that if ct_nesting() > 0, RCU is
+watching. But if ct_nesting() <= 0, RCU is not watching except for tiny
+windows.
 
-Uladzislau Rezki (Sony) (2):
-  rcu: Enable rcu_normal_wake_from_gp on small systems
-  Documentation/kernel-parameters: Update rcu_normal_wake_from_gp doc
+This hasn't been a problem so far because rcu_is_cpu_rrupt_from_idle()
+has only been called from interrupts. However the code is confusing
+and abuses the role of the context tracking nesting counter while there
+are more accurate indicators available.
 
- .../admin-guide/kernel-parameters.txt         |  3 +-
- kernel/rcu/tree.c                             | 41 +++++++++++++------
- kernel/rcu/tree.h                             | 11 ++++-
- kernel/rcu/tree_plugin.h                      | 26 ++++++++++--
- 4 files changed, 62 insertions(+), 19 deletions(-)
+Clarify and robustify accordingly.
 
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
+Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
+---
+ kernel/rcu/tree.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 14d4499c6fc3..f83bbb408895 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -377,7 +377,7 @@ EXPORT_SYMBOL_GPL(rcu_momentary_eqs);
+  */
+ static int rcu_is_cpu_rrupt_from_idle(void)
+ {
+-	long nesting;
++	long nmi_nesting = ct_nmi_nesting();
+ 
+ 	/*
+ 	 * Usually called from the tick; but also used from smp_function_call()
+@@ -389,21 +389,28 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+ 	/* Check for counter underflows */
+ 	RCU_LOCKDEP_WARN(ct_nesting() < 0,
+ 			 "RCU nesting counter underflow!");
+-	RCU_LOCKDEP_WARN(ct_nmi_nesting() <= 0,
+-			 "RCU nmi_nesting counter underflow/zero!");
+ 
+-	/* Are we at first interrupt nesting level? */
+-	nesting = ct_nmi_nesting();
+-	if (nesting > 1)
++	/* Non-idle interrupt or nested idle interrupt */
++	if (nmi_nesting > 1)
+ 		return false;
+ 
+ 	/*
+-	 * If we're not in an interrupt, we must be in the idle task!
++	 * Non nested idle interrupt (interrupting section where RCU
++	 * wasn't watching).
+ 	 */
+-	WARN_ON_ONCE(!nesting && !is_idle_task(current));
++	if (nmi_nesting == 1)
++		return true;
++
++	/* Not in an interrupt */
++	if (!nmi_nesting) {
++		RCU_LOCKDEP_WARN(!in_task() || !is_idle_task(current),
++				 "RCU nmi_nesting counter not in idle task!");
++		return !rcu_is_watching_curr_cpu();
++	}
+ 
+-	/* Does CPU appear to be idle from an RCU standpoint? */
+-	return ct_nesting() == 0;
++	RCU_LOCKDEP_WARN(1, "RCU nmi_nesting counter underflow/zero!");
++
++	return false;
+ }
+ 
+ #define DEFAULT_RCU_BLIMIT (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD) ? 1000 : 10)
 -- 
 2.40.1
 
