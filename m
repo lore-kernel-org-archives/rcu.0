@@ -1,31 +1,30 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E92293C77;
-	Wed,  9 Jul 2025 10:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B275B28DEFC;
+	Wed,  9 Jul 2025 10:44:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752057839; cv=none; b=mDd/9u8vYxXNhwFrN27hoa8gewb7q5i7ifx5maZXAM8pL7wVgbz/YS0PbXlPfWe/P97z1rTDwsnEM4Cn9b9Xa9Gket95TTHHuM69Nimurvsoqs7ryeQY0WqvYGQeDWwK0rGx4ZAmdMVnesth2iWz14OxB81ai9CL7oEOgPuPtcw=
+	t=1752057869; cv=none; b=RSn2BfSSdkUtvrpJ1X8QaXjD+8/kCkqCB9I1jH84A2I7u7NrOxfqzAbmo+zSxYuBO7Ibe52QTwS7QkKdDURwGJOn+VyMGudAwPgq7aUXTltxMjP/xBRGe097TtSd1mvXs+zRyVijutMKGulXOfjyeqbWaWIG8MZ4d0pD22HbV6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752057839; c=relaxed/simple;
-	bh=5P4dzPtGQTwTuHcsDkeuA8Wafn1PVojCmEfac+5vgxk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Umj3vBiV7+cBFQP3mqSDnoUFslzCRc6Rzg2l6d78bofOjDhdLUl6IpWFoGGVzuYrepT8WyqqO/GONCY0/+dkBYJwKy15gZx1xZwNO1FfIj7IEBURNBnFiZD2bjGm5vieUrNcRvBc18KD7vtWY0IQh3PuM3TM7y5lrNaqfvQGouI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OnLTN9Cg; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752057869; c=relaxed/simple;
+	bh=w7SaFM6D/+f2nFwf3hbOKCIhux9M5xRlecLz0xuBf2Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=C6CNza40NsOcHVvTihKB7ZsVKHe3rOZHbYBT+bhFLo74NTr+nW6SgS3hnmJyT88jwa7BIykKw1Xi5/oNbhv6UhC7VOsRAXnUtfB8jp04NTSw57Uhj1yws8pk2n4trAeb/zpdMsCvJKYO4D9eIGlLZhzoL8E9rw+jNHM+Bc0BnVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YOIN61tZ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OnLTN9Cg"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E88F3C4CEF7;
-	Wed,  9 Jul 2025 10:43:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YOIN61tZ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 552ADC4CEF4;
+	Wed,  9 Jul 2025 10:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752057838;
-	bh=5P4dzPtGQTwTuHcsDkeuA8Wafn1PVojCmEfac+5vgxk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OnLTN9CgM4Sz6ADqscUjLSJIl04PVsg0kvHEc77kCRLVRb72H7UN60pnGSjvxUms/
-	 pi9UV3CZrc/qXPawY/9DM0bW6N4J5mZwWJY3xTaGzuFGouNAxufHLeP+ExA8Rc5GFS
-	 1XwpitottlwJyeqUQdU6SGJP4nNoNm0AUzqmnkc4ojFbxC5bH64OqaX9SZwqIUeymr
-	 PAJcZovWeBeQF4dMukqIu1QyjO54bODF6RLfvPxc9Ff2/GSyo/wUBUesJh7UXuKWi0
-	 yPmcTehHhsWoeeUrK2SZF5UysbM+j8qd5wLpk8Z3nVZSyJwLpGJvcE1cKpGJbW/1QA
-	 5sgDASx7XfjqQ==
+	s=k20201202; t=1752057869;
+	bh=w7SaFM6D/+f2nFwf3hbOKCIhux9M5xRlecLz0xuBf2Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YOIN61tZvvKFvtFV+hxBPOybYk9W3vysr2GA9bo82GXFNISoRkf8PXDlPiwAKn0m7
+	 dkwj0NwcbzqG8NQj9gltR+75jNVKf8WMs8fB/N/OJ2HbaPjEEhxe0vT9KNsJ2IiLX6
+	 RGdJ3sASzb4vC0TUWQ6YoZMd5DNLYY3204lbrBeqohdDa89YL2KZDZ4XtSNhbHbQ4R
+	 TI8D1qwjvJYfGYpR0/MizByMLaxHWbRX+UhuUl9qRygVXYKIjcnLVgVWOMU+/ytPY1
+	 yeXDs7A40MZEdSY2yEbrcAv5DrGOXsxUoVORkuMtZ5poJIqtPIpUdmSAQVdLcQU09U
+	 NtmF5AiTdJFzA==
 From: neeraj.upadhyay@kernel.org
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -41,70 +40,51 @@ Cc: linux-kernel@vger.kernel.org,
 	neeraj.iitr10@gmail.com,
 	neeraj.upadhyay@amd.com,
 	"Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
-Subject: [PATCH rcu 15/15] rcutorture: Remove support for SRCU-lite
-Date: Wed,  9 Jul 2025 16:12:15 +0530
-Message-Id: <20250709104215.15562-16-neeraj.upadhyay@kernel.org>
+Subject: [PATCH rcu 00/13] Torture script changes for v6.17
+Date: Wed,  9 Jul 2025 16:14:01 +0530
+Message-Id: <20250709104414.15618-1-neeraj.upadhyay@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20250709104215.15562-1-neeraj.upadhyay@kernel.org>
-References: <20250709104215.15562-1-neeraj.upadhyay@kernel.org>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Neeraj Upadhyay (AMD)" <neeraj.upadhyay@kernel.org>
 
-Because SRCU-lite is being replaced by SRCU-fast, this commit removes
-support for SRCU-lite from rcutorture.c
+Hello,
 
-Signed-off-by: "Paul E. McKenney" <paulmck@kernel.org>
-Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.upadhyay@kernel.org>
----
- include/linux/srcu.h    | 2 +-
- kernel/rcu/rcutorture.c | 7 -------
- 2 files changed, 1 insertion(+), 8 deletions(-)
+This patch series contains following updates to the torture scripts (rebased
+on v6.16-rc3):
 
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index 900b0d5c05f5..c20dacb563e5 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -49,7 +49,7 @@ int init_srcu_struct(struct srcu_struct *ssp);
- #define SRCU_READ_FLAVOR_LITE	0x4		// srcu_read_lock_lite().
- #define SRCU_READ_FLAVOR_FAST	0x8		// srcu_read_lock_fast().
- #define SRCU_READ_FLAVOR_ALL   (SRCU_READ_FLAVOR_NORMAL | SRCU_READ_FLAVOR_NMI | \
--				SRCU_READ_FLAVOR_LITE | SRCU_READ_FLAVOR_FAST) // All of the above.
-+				SRCU_READ_FLAVOR_FAST) // All of the above.
- #define SRCU_READ_FLAVOR_SLOWGP	(SRCU_READ_FLAVOR_LITE | SRCU_READ_FLAVOR_FAST)
- 						// Flavors requiring synchronize_rcu()
- 						// instead of smp_mb().
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 213f23f20a64..7a893d51d02b 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -718,11 +718,6 @@ static int srcu_torture_read_lock(void)
- 		WARN_ON_ONCE(idx & ~0x1);
- 		ret += idx << 1;
- 	}
--	if (reader_flavor & SRCU_READ_FLAVOR_LITE) {
--		idx = srcu_read_lock_lite(srcu_ctlp);
--		WARN_ON_ONCE(idx & ~0x1);
--		ret += idx << 2;
--	}
- 	if (reader_flavor & SRCU_READ_FLAVOR_FAST) {
- 		scp = srcu_read_lock_fast(srcu_ctlp);
- 		idx = __srcu_ptr_to_ctr(srcu_ctlp, scp);
-@@ -756,8 +751,6 @@ static void srcu_torture_read_unlock(int idx)
- 	WARN_ON_ONCE((reader_flavor && (idx & ~reader_flavor)) || (!reader_flavor && (idx & ~0x1)));
- 	if (reader_flavor & SRCU_READ_FLAVOR_FAST)
- 		srcu_read_unlock_fast(srcu_ctlp, __srcu_ctr_to_ptr(srcu_ctlp, (idx & 0x8) >> 3));
--	if (reader_flavor & SRCU_READ_FLAVOR_LITE)
--		srcu_read_unlock_lite(srcu_ctlp, (idx & 0x4) >> 2);
- 	if (reader_flavor & SRCU_READ_FLAVOR_NMI)
- 		srcu_read_unlock_nmisafe(srcu_ctlp, (idx & 0x2) >> 1);
- 	if ((reader_flavor & SRCU_READ_FLAVOR_NORMAL) || !(reader_flavor & SRCU_READ_FLAVOR_ALL))
+Paul E. McKenney (13):
+  torture: Suppress torture.sh "Zero time" messages for disabled tests
+  torture: Permit multiple space characters in kvm.sh --kconfig argument
+  torture: Make torture.sh KCSAN runs set
+    CONFIG_RCU_TORTURE_TEST_CHK_RDR_STATE=y
+  torture: Default --no-rcutasksflavors on arm64
+  torture: Default --no-clocksourcewd on arm64
+  torture: Provide EXPERT Kconfig option for arm64 KCSAN torture.sh runs
+  torture: Suppress "find" diagnostics from torture.sh --do-none run
+  torture: Extract testid.txt generation to separate script
+  torture: Add textid.txt file to --do-allmodconfig and --do-rcu-rust
+    runs
+  torture: Make torture.sh tolerate runs having bad kvm.sh arguments
+  torture: Add "ERROR" diagnostic for testing kernel-build output
+  torture: Make torture.sh --allmodconfig testing fail on warnings
+  torture: Remove support for SRCU-lite
+
+ kernel/rcu/refscale.c                         | 32 +-------
+ .../selftests/rcutorture/bin/kvm-build.sh     |  2 +-
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 15 +---
+ .../selftests/rcutorture/bin/mktestid.sh      | 29 +++++++
+ .../selftests/rcutorture/bin/torture.sh       | 78 +++++++++++++++----
+ 5 files changed, 95 insertions(+), 61 deletions(-)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/mktestid.sh
+
 -- 
 2.40.1
 
