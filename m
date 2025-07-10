@@ -1,152 +1,120 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0595141C71;
-	Thu, 10 Jul 2025 12:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6FD27056D;
+	Thu, 10 Jul 2025 14:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752149747; cv=none; b=AIYCRv/MCq195c7i+6+mWX53qMmwAzMIJ0TQblqzSfUSUWYxDQMdbS6+TINk28N9U0YAa6c8yosoIvp8HIky9U63GSQecxbklfKtS1VLNxb6yHumMdEaKgoMSTR0pN7TKadVxLI6ucrXegsDvw8VtbHicVSmtvopcC6gfzn9I6M=
+	t=1752156377; cv=none; b=LYUM5M6JpxxRA0tNRx9OFdeXcEldiGClT2qyky916FScc5oipH6xfImvpDKocJVJHt1Tw0XuN/QC3t9vDvnAXiwv1Aygbu+xc2MPWxfgrm950LS4l/1QZMvbATp5VpB7axvflRgDqmExqN8j6e0Y6lx6MKeu+V/I4zAGH4jlZVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752149747; c=relaxed/simple;
-	bh=eOwThlANCOdcD4JdvjuBEkZYTVcOWjZCsg6qjRDsT7Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PABGIxorrLT2Z4AiDOY1xK9EbK+EviUcM9RK+EGbHNrXG5nHb9c/PIRDavfmUwJONrKXZjekC9da1Xs3GECNdPqRc8AZ0rKUPvcd50+7y5tLC0QTjezVdX8mkg3YXHNC/IQsAM8blg4OVabMITtckXg0X0BRXobb5ISRJd2wXk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y/9sgvrp; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y/9sgvrp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752149746; x=1783685746;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=eOwThlANCOdcD4JdvjuBEkZYTVcOWjZCsg6qjRDsT7Q=;
-  b=Y/9sgvrppO0n9mPO07JJZSEZVz6H81i60WjTX8NVTQ1TYgN+9/dfJgN+
-   HoG96caYIYlh4/9N0p0JN30B6czxpjPceAsSROWuvwGnMhPZKUgSQN9sP
-   W65tT+Wb/iPNDYYZB3HOTN3Bf8usAJl/rydZP7yKtQHGuhesgyAOmUjUu
-   z2hwuGVExp4fdHYn3E/7C6CPKEMBxJtrMyixV4LexBCaPGC+jGdewgwcL
-   fL49wopMLOiN0igzDYy9HWeKCcpNY2XsKF/6tq3B9DVuHyfoa+3fOXhzh
-   n5Yp2NSzZP45U0pKhXDW2u6q1ZgB8j85NIMC3FMGoiGwB+NT7NrPsrmQN
-   w==;
-X-CSE-ConnectionGUID: Qd6PiemwSb2bO0GxWRkAqQ==
-X-CSE-MsgGUID: X118hQwMSsCTqR8GFg/PkA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11489"; a="79863809"
-X-IronPort-AV: E=Sophos;i="6.16,300,1744095600"; 
-   d="scan'208";a="79863809"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2025 05:15:45 -0700
-X-CSE-ConnectionGUID: lMGZMBSDTzOGy5kt8u7kaw==
-X-CSE-MsgGUID: q+wQXCrxTPiICMssF2/A4Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,300,1744095600"; 
-   d="scan'208";a="156535086"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa008.jf.intel.com with ESMTP; 10 Jul 2025 05:15:40 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 0D2871C9; Thu, 10 Jul 2025 15:15:37 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Christian Brauner <brauner@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Maarten Lankhorst <dev@lankhorst.se>,
-	Natalie Vock <natalie.vock@gmx.de>,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Maxime Ripard <mripard@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Subject: [PATCH v1 1/1] rculist: move list_for_each_rcu() to where it belongs
-Date: Thu, 10 Jul 2025 15:15:28 +0300
-Message-ID: <20250710121528.780875-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.47.2
+	s=arc-20240116; t=1752156377; c=relaxed/simple;
+	bh=yA/I0gJM/OKVOhc8b6C9blaRbMv2JfyPFC62inigLKo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LDwrLKHHMH6IsmQmCckgNjgkywuVjlhiJlDQ+y88stPsYs/29sH1vUrgheL/zdXttr3weI/1U5a9ZL5QjvUDcSAMkE4xJKSYXMyjoUvbVBSFPr4sfOP4916CqF5QAQfOmrpKqzh+Qd0nmWdxSE7PfbUuBi/nsKHMqm0UM6hkOk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-607cc1a2bd8so1611487a12.2;
+        Thu, 10 Jul 2025 07:06:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752156374; x=1752761174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6racAcJNW4RKgIaC4lIcLewARYRmDGKH6RcAriCOozU=;
+        b=lI5H0z10XAJ/q7X0MsktC3rlqEgbOc5zjkafj7tKtCg7byC9BUefysO4Y3Q+5LD1EZ
+         O5VUWJoZO+cpUgYaasMfzpKlpwicNhihES9nT6d3uAAA/cWasgmrjevPXP4mIpdowRnH
+         YDGzNanA6AxF4mg5HTN6dHdazGofhqM92gj9yUUFeD9uMYlsu2ra6rhQ/tHP76JKNahT
+         k8GTLklqur4M8pmYa9YcL+U0xakqrtC0cQ5cdK32eNgXSXH6IROBT97+4eRBqPwUM92j
+         E2V9DXfVL034NoFNRvZsFkoEbL+7904DqgqobwuAhS7KFZ779wARXak8tNfVsyrKcVCZ
+         goeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvdf0Fw6Ytv3wk1jvBB2XVqHPQ9I/VKg8fT285tZQGikrfYLh6L/C1HyIMfOGDvwIidDSX@vger.kernel.org, AJvYcCW4qGq/vJH2T/UH5Y8JwbfdhTTTpIZlx0ddXnzQgQ8n4vTPMYKWNhXRWfpa9H5gK6nV0OaD2/U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw86B3UtI2tWRqAf/PQt8TisP6opqAjfMz8rcr6h51sRb0cWu3o
+	9K9Cb/29rqRGcI85xJGlTy4uEHEpw24zJTO9pMgfjokvpYFjZ+Kch9qC
+X-Gm-Gg: ASbGncv64aTezFhSrTGgAooBMKYkPnYlDtyzNeHQM0RaSvwnC5Y2Pp9ETPDYITC3jH4
+	U8+Bp+796LU+AoBEWQus5mdVSBdbG8QmAEnRYlpOf03WNM62tt429QqPgSU59hAFCjkS2Q53xun
+	v5A/B2vOdQehFny6VjRJHAWVqDE1nwS+JcG6VAA6GfzNMgyJYSlKINGrqur4VRQHNgOgIwKGIf0
+	lKshlx8vFWk7v42EgiRaclKIqYzY9KqVWjvmO9jud/hgSiSAhCAItVIeCPceIqou3+rLSJDsiZJ
+	rv5GzPWhXcZdptaLib3KtEIyHxficZYZh6z0wj9sBQEaSS4eTHT8
+X-Google-Smtp-Source: AGHT+IFmVAxl1c+wDjcDDTe+BiajHbN+l+Z6s7GZDC3h8YpwVObUutZTnP3nnWaOqw2omJw6WNqiMQ==
+X-Received: by 2002:a05:6402:1f46:b0:602:36ce:d0e7 with SMTP id 4fb4d7f45d1cf-611c84d65d3mr2307951a12.14.1752156373710;
+        Thu, 10 Jul 2025 07:06:13 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:6::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-611c9524072sm927420a12.20.2025.07.10.07.06.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jul 2025 07:06:13 -0700 (PDT)
+Date: Thu, 10 Jul 2025 07:06:09 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
+	lkmm@lists.linux.dev, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Davidlohr Bueso <dave@stgolabs.net>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang@linux.dev>, aeh@meta.com, netdev@vger.kernel.org, edumazet@google.com, 
+	jhs@mojatatu.com, kernel-team@meta.com, Erik Lundgren <elundgren@meta.com>
+Subject: Re: [PATCH 8/8] locking/lockdep: Use shazptr to protect the key
+ hashlist
+Message-ID: <i3mukc6vgwrp3cy5eis2inyms7f5b4a6pel4cvvdx6jlxrij2g@wgrnkstlifv3>
+References: <20250625031101.12555-1-boqun.feng@gmail.com>
+ <20250625031101.12555-9-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250625031101.12555-9-boqun.feng@gmail.com>
 
-The list_for_each_rcu() relies on the rcu_dereference() API which is not
-provided by the list.h. At the same time list.h is a low-level basic header
-that must not have dependencies like RCU, besides the fact of the potential
-circular dependencies in some cases. With all that said, move RCU related
-API to the rculist.h where it belongs.
+Hello Boqun,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/list.h    | 10 ----------
- include/linux/rculist.h | 10 ++++++++++
- kernel/cgroup/dmem.c    |  1 +
- 3 files changed, 11 insertions(+), 10 deletions(-)
+On Tue, Jun 24, 2025 at 08:11:01PM -0700, Boqun Feng wrote:
+> Erik Lundgren and Breno Leitao reported [1] a case where
+> lockdep_unregister_key() can be called from time critical code pathes
+> where rntl_lock() may be held. And the synchronize_rcu() in it can slow
+> down operations such as using tc to replace a qdisc in a network device.
+> 
+> In fact the synchronize_rcu() in lockdep_unregister_key() is to wait for
+> all is_dynamic_key() callers to finish so that removing a key from the
+> key hashlist, and we can use shazptr to protect the hashlist as well.
+> 
+> Compared to the proposed solution which replaces synchronize_rcu() with
+> synchronize_rcu_expedited(), using shazptr here can achieve the
+> same/better synchronization time without the need to send IPI. Hence use
+> shazptr here.
+> 
+> Reported-by: Erik Lundgren <elundgren@meta.com>
+> Reported-by: Breno Leitao <leitao@debian.org>
+> Link: https://lore.kernel.org/all/20250321-lockdep-v1-1-78b732d195fb@debian.org/ [1]
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-diff --git a/include/linux/list.h b/include/linux/list.h
-index e7e28afd28f8..e7bdad9b8618 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -686,16 +686,6 @@ static inline void list_splice_tail_init(struct list_head *list,
- #define list_for_each(pos, head) \
- 	for (pos = (head)->next; !list_is_head(pos, (head)); pos = pos->next)
- 
--/**
-- * list_for_each_rcu - Iterate over a list in an RCU-safe fashion
-- * @pos:	the &struct list_head to use as a loop cursor.
-- * @head:	the head for your list.
-- */
--#define list_for_each_rcu(pos, head)		  \
--	for (pos = rcu_dereference((head)->next); \
--	     !list_is_head(pos, (head)); \
--	     pos = rcu_dereference(pos->next))
--
- /**
-  * list_for_each_continue - continue iteration over a list
-  * @pos:	the &struct list_head to use as a loop cursor.
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 1b11926ddd47..2abba7552605 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -42,6 +42,16 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
-  */
- #define list_bidir_prev_rcu(list) (*((struct list_head __rcu **)(&(list)->prev)))
- 
-+/**
-+ * list_for_each_rcu - Iterate over a list in an RCU-safe fashion
-+ * @pos:	the &struct list_head to use as a loop cursor.
-+ * @head:	the head for your list.
-+ */
-+#define list_for_each_rcu(pos, head)		  \
-+	for (pos = rcu_dereference((head)->next); \
-+	     !list_is_head(pos, (head)); \
-+	     pos = rcu_dereference(pos->next))
-+
- /**
-  * list_tail_rcu - returns the prev pointer of the head of the list
-  * @head: the head of the list
-diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 10b63433f057..e12b946278b6 100644
---- a/kernel/cgroup/dmem.c
-+++ b/kernel/cgroup/dmem.c
-@@ -14,6 +14,7 @@
- #include <linux/mutex.h>
- #include <linux/page_counter.h>
- #include <linux/parser.h>
-+#include <linux/rculist.h>
- #include <linux/slab.h>
- 
- struct dmem_cgroup_region {
--- 
-2.47.2
+First of all, thanks for working to fix the origianl issue. I've been
+able to test this in my host, and the gain is impressive.
 
+Before:
+
+         # time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+         real    0m13.195s
+         user    0m0.001s
+         sys     0m2.746s
+	
+With your patch:
+
+	#  time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1234: mq
+	real	0m0.135s
+	user	0m0.002s
+	sys	0m0.116s
+
+	#  time /usr/sbin/tc qdisc replace dev eth0 root handle 0x1: mq
+	real	0m0.127s
+	user	0m0.001s
+	sys	0m0.112s
+
+Please add the following to the series:
+
+Tested-by: Breno Leitao <leitao@debian.org>
