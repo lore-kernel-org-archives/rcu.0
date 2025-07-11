@@ -1,34 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABBB18D;
-	Fri, 11 Jul 2025 00:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76218F6C;
+	Fri, 11 Jul 2025 00:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752192108; cv=none; b=ne6Lhr9Qr5eW1/Ozffg/NWuZCR9SuhLygDrzR9EqorTSfPQ8TFXZy94N6xpWcveWkWi6MFU0U5hFOpQjLQpSjim/Vcimghg13KMVoxqeTAEQGdCG2JCozP9uvEYwq33EVDzAoL5otfEoO1prA2rC598tFELYd6+Qsh3N16u3Ubs=
+	t=1752192170; cv=none; b=a76loWyYgAoTXnIkHBRBUxJIICB5pTyk+CowXfRJH+jFV79m1BPYkMup6eEHDVa9daa32bnaeWvAiNBwopCF6OF9TJbV2fUj6IzYN4PTSrw7a5iA1CTg22fuaAwJRWZzNwUG4XQI+pUcx9G7n2HTTgA8ZV9br7UZmm/yZQ0Y7CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752192108; c=relaxed/simple;
-	bh=bfhRUE9KLj4AiPwRuPJog/FV9o9BOqxquXFb122pM2w=;
+	s=arc-20240116; t=1752192170; c=relaxed/simple;
+	bh=xdcFbHRdZncjlRIQrGyU2IWo++gCSR0xp+gqRGqTULM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eBmHTLJe7i4Gaythn/QgOdOr2RFDRLaMoATfMBe3Z4DkouAyIkTR6jUKQYoeqzJKENyCUk7L2Bm5F0guO7CnM6M+I1prcxxEI5NWESZ2hVyiwBFVLu3OckUJEyPJGeOHXcPAU1UzMzStq74xtmmMd8caoK/qXMySEc5fTah8gKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uIkw7as1; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZoW741+sAVUQShR6lar6ocjlDXUOnv3xTEAaxP5gE1x2XwkGeid3eS3D6gXbOvAJeAfdzfEYuFZaQunJ0wg8ER/EeDvGvD8M81EGRPvbo3kNugBgMDr3sHjT8JWZsX5vVL2WCgNzh5pQGPH8Q9NlCL+5iUIQtGN+wvrnGbsV4gI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c18D6O9e; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uIkw7as1"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C31C6C4CEE3;
-	Fri, 11 Jul 2025 00:01:47 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c18D6O9e"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 864D6C4CEE3;
+	Fri, 11 Jul 2025 00:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752192107;
-	bh=bfhRUE9KLj4AiPwRuPJog/FV9o9BOqxquXFb122pM2w=;
+	s=k20201202; t=1752192170;
+	bh=xdcFbHRdZncjlRIQrGyU2IWo++gCSR0xp+gqRGqTULM=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=uIkw7as1EA4K7vu69fCnQpgXiGQ9LgO/KFw/3aJb6hBMxQ/Bw0Lm7V1Pz9KCev0mY
-	 47II1sSNNKOIrk32GLgK166HOzEEBxoIVroUsx2P8XpCzDxKaN3upG9Js3ccu6EyJ8
-	 A9GJwIAVrnwTq4po8l9c6escr1TeukqgAl2XwxOC5Hm4lOYxKKCbgiXAjAM79Bz9z6
-	 mt50hsSOc0u0/mtnlRIgDRK1fK0wRTyHdEaS2KNplmTK5/mlqHTp1YSqyUhzwynGa4
-	 PP5Nc42WWFjx3JAfVg77u6074TpmV7mqzZ19s6N9lSa1iDIRzL23hiDehnDKut6/9c
-	 ecQ6Il9cRchUA==
+	b=c18D6O9eDmQEJTrIMAcbntkGlr+KdNZYb7uDOIG4SYKLBMW4C/O2LhHK+sCiJTAJ5
+	 6HXa5eOjpGCwwbGIIX0BMBCgpwN4Beo/Ag/q28MR4cpHwLnI9VLqHzlt94WYQUbDQ3
+	 4XFgPB+/xN8jlIn7D4V1Ct0Q84gXceA0taACKlhHnFHmpkGhV5IPCXSUcu2/s3Yu83
+	 q4uo6crKNUIc5G6XHThTeTQ/ZOsGdjsTyiqJPg7zyDVVmkuxjy55xSBSNI1S2qd/CC
+	 icdgrEcmUNwOJADbD81GM5/wAUHmhOPXq0BSmlg4kkMxXDUBltZiDZ9u3IsFa3h6gK
+	 JkoS1QGMcBhxA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 662EACE0A44; Thu, 10 Jul 2025 17:01:47 -0700 (PDT)
-Date: Thu, 10 Jul 2025 17:01:47 -0700
+	id 31505CE0A44; Thu, 10 Jul 2025 17:02:50 -0700 (PDT)
+Date: Thu, 10 Jul 2025 17:02:50 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <joelagnelf@nvidia.com>
 Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
@@ -41,12 +41,12 @@ Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>, Jonathan Corbet <corbet@lwn.net>,
 	rcu@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH -rcu -next 5/7] rcu: Document GP init vs hotplug-scan
- ordering requirements
-Message-ID: <92d599bc-dbaa-4dd6-93b7-8fb07b10cf8e@paulmck-laptop>
+Subject: Re: [PATCH -rcu -next 6/7] rcu: Document separation of rcu_state and
+ rnp's gp_seq
+Message-ID: <9fc515d7-313b-4d94-a48a-5a4ef0a40f71@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20250708142224.3940851-1-joelagnelf@nvidia.com>
- <20250708142224.3940851-5-joelagnelf@nvidia.com>
+ <20250708142224.3940851-6-joelagnelf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,94 +55,79 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250708142224.3940851-5-joelagnelf@nvidia.com>
+In-Reply-To: <20250708142224.3940851-6-joelagnelf@nvidia.com>
 
-On Tue, Jul 08, 2025 at 10:22:22AM -0400, Joel Fernandes wrote:
-> Add detailed comments explaining the critical ordering constraints
-> during RCU grace period initialization, based on discussions with
-> Frederic.
+On Tue, Jul 08, 2025 at 10:22:23AM -0400, Joel Fernandes wrote:
+> The details of this are subtle and was discussed recently. Add a
+> quick-quiz about this and refer to it from the code, for more clarity.
 > 
-> Co-developed-by: Frederic Weisbecker <frederic@kernel.org>
 > Signed-off-by: Joel Fernandes <joelagnelf@nvidia.com>
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
 > ---
->  .../RCU/Design/Requirements/Requirements.rst  | 41 +++++++++++++++++++
->  kernel/rcu/tree.c                             |  8 ++++
->  2 files changed, 49 insertions(+)
+>  .../Data-Structures/Data-Structures.rst       | 32 +++++++++++++++++++
+>  kernel/rcu/tree.c                             |  4 +++
+>  2 files changed, 36 insertions(+)
 > 
-> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> index 6125e7068d2c..771a1ce4c84d 100644
-> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> @@ -1970,6 +1970,47 @@ corresponding CPU's leaf node lock is held. This avoids race conditions
->  between RCU's hotplug notifier hooks, the grace period initialization
->  code, and the FQS loop, all of which refer to or modify this bookkeeping.
+> diff --git a/Documentation/RCU/Design/Data-Structures/Data-Structures.rst b/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+> index 04e16775c752..930535f076b4 100644
+> --- a/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+> +++ b/Documentation/RCU/Design/Data-Structures/Data-Structures.rst
+> @@ -286,6 +286,38 @@ in order to detect the beginnings and ends of grace periods in a
+>  distributed fashion. The values flow from ``rcu_state`` to ``rcu_node``
+>  (down the tree from the root to the leaves) to ``rcu_data``.
 >  
-> +Note that grace period initialization (rcu_gp_init()) must carefully sequence
-> +CPU hotplug scanning with grace period state changes. For example, the
-> +following race could occur in rcu_gp_init() if rcu_seq_start() were to happen
-> +after the CPU hotplug scanning.
+> ++-----------------------------------------------------------------------+
+> +| **Quick Quiz**:                                                       |
+> ++-----------------------------------------------------------------------+
+> +| Given that the root rcu_node structure has a gp_seq field,            |
+> +| why does RCU maintain a separate gp_seq in the rcu_state structure?   |
+> +| Why not just use the root rcu_node's gp_seq as the official record    |
+> +| and update it directly when starting a new grace period?              |
+> ++-----------------------------------------------------------------------+
+> +| **Answer**:                                                           |
+> ++-----------------------------------------------------------------------+
+> +| On single-node RCU trees (where the root node is also a leaf),        |
+> +| updating the root node's gp_seq immediately would create unnecessary  |
+> +| lock contention. Here's why:                                          |
+> +|                                                                       |
+> +| If we did rcu_seq_start() directly on the root node's gp_seq:         |
+> +| 1. All CPUs would immediately see their node's gp_seq from their rdp's|
+> +|    gp_seq, in rcu_pending(). They would all then invoke the RCU-core. |
+> +| 2. Which calls note_gp_changes() and try to acquire the node lock.    |
+> +| 3. But rnp->qsmask isn't initialized yet (happens later in            |
+> +|    rcu_gp_init())                                                     |
+> +| 4. So each CPU would acquire the lock, find it can't determine if it  |
+> +|    needs to report quiescent state (no qsmask), update rdp->gp_seq,   |
+> +|    and release the lock.                                              |
+> +| 5. Result: Lots of lock acquisitions with no grace period progress    |
+> +|                                                                       |
+> +| By having a separate rcu_state.gp_seq, we can increment the official  |
+> +| grace period counter without immediately affecting what CPUs see in   |
+> +| their nodes. The hierarchical propagation in rcu_gp_init() then       |
+> +| updates the root node's gp_seq and qsmask together under the same lock|
+> +| acquisition, avoiding this useless contention.                        |
+> ++-----------------------------------------------------------------------+
 > +
-> +.. code-block:: none
-> +
-> +   CPU0 (rcu_gp_init)                   CPU1                          CPU2
-> +   ---------------------                ----                          ----
-> +   // Hotplug scan first (WRONG ORDER)
-> +   rcu_for_each_leaf_node(rnp) {
-> +       rnp->qsmaskinit = rnp->qsmaskinitnext;
-> +   }
-> +                                        rcutree_report_cpu_starting()
-> +                                            rnp->qsmaskinitnext |= mask;
-> +                                        rcu_read_lock()
-> +                                        r0 = *X;
-> +                                                                      r1 = *X;
-> +                                                                      X = NULL;
-> +                                                                      cookie = get_state_synchronize_rcu();
-> +                                                                      // cookie = 8 (future GP)
-> +   rcu_seq_start(&rcu_state.gp_seq);
-> +   // gp_seq = 5
-> +
-> +   // CPU1 now invisible to this GP!
-> +   rcu_for_each_node_breadth_first() {
-> +       rnp->qsmask = rnp->qsmaskinit;
-> +       // CPU1 not included!
-> +   }
-> +
-> +   // GP completes without CPU1
-> +   rcu_seq_end(&rcu_state.gp_seq);
-> +   // gp_seq = 8
-> +                                                                      poll_state_synchronize_rcu(cookie);
-> +                                                                      // Returns true!
-> +                                                                      kfree(r1);
-> +                                        r2 = *r0; // USE-AFTER-FREE!
-> +
-> +By incrementing gp_seq first, CPU1's RCU read-side critical section
-> +is guaranteed to not be missed by CPU2.
-> +
->  Scheduler and RCU
->  ~~~~~~~~~~~~~~~~~
+>  Miscellaneous
+>  '''''''''''''
 >  
 > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 327848f436e7..32fdb66e9c9f 100644
+> index 32fdb66e9c9f..c31b85e62310 100644
 > --- a/kernel/rcu/tree.c
 > +++ b/kernel/rcu/tree.c
-> @@ -1835,6 +1835,14 @@ static noinline_for_stack bool rcu_gp_init(void)
->  	start_new_poll = rcu_sr_normal_gp_init();
->  	/* Record GP times before starting GP, hence rcu_seq_start(). */
->  	old_gp_seq = rcu_state.gp_seq;
-> +	/*
-> +	 * Critical ordering: rcu_seq_start() must happen BEFORE the CPU hotplug
-> +	 * scan below. Otherwise we risk a race where a newly onlining CPU could
-> +	 * be missed by the current grace period, potentially leading to
-> +	 * use-after-free errors. For a detailed explanation of this race, see
-> +	 * Documentation/RCU/Design/Requirements/Requirements.rst in the
-> +	 * "Hotplug CPU" section.
-> +	 */
+> @@ -1842,6 +1842,10 @@ static noinline_for_stack bool rcu_gp_init(void)
+>  	 * use-after-free errors. For a detailed explanation of this race, see
+>  	 * Documentation/RCU/Design/Requirements/Requirements.rst in the
+>  	 * "Hotplug CPU" section.
+> +	 *
+> +	 * Also note that the root rnp's gp_seq is kept separate from, and lags,
+> +	 * the rcu_state's gp_seq, for a reason. See the Quick-Quiz on
+> +	 * Single-node systems for more details (in Data-Structures.rst).
+>  	 */
 >  	rcu_seq_start(&rcu_state.gp_seq);
 >  	/* Ensure that rcu_seq_done_exact() guardband doesn't give false positives. */
->  	WARN_ON_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
 > -- 
 > 2.34.1
 > 
