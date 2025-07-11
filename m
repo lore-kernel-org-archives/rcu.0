@@ -1,194 +1,120 @@
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399EB2192E1
-	for <rcu@vger.kernel.org>; Fri, 11 Jul 2025 09:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E0D279903;
+	Fri, 11 Jul 2025 09:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752224679; cv=none; b=JUor+8onlirFs0MRIdTzFK5DI6/z6d7v6R2cLP9vQU/uTGRC7ix5K69ddFC0+nEmdXv1qm2i2IHdX/+8lvJztnosoGxPP2u4F1jyetdMnc9DtXYFBJT8HW0M5rl10CtzqLHU53vdZ8EcCmcdH0XNqy2SjycBFfbyIccg4+llUSs=
+	t=1752225682; cv=none; b=Je9H3l56SSjONxeT5NAPSpkBAhglo6IW8qe68LEvBbiTiciLHSE55YszrGF5QuV8ynTL0BEmfozZHlMWAFueNz65EivJuIdPw+PfJgIM2xv3VjIqJrjF1G21qJRexdDbSQnioCeWX5xEUu/lGc7w0SY5C7RX0mRVfWbOedMH1k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752224679; c=relaxed/simple;
-	bh=04wwIYzCyIt0hPLEgF4ULkMM62+IXa+xFlcJ6oiE+cE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YAfpU7s/ACwo/fFtHH38bWsTvtkWPWL5pTjH4DIs+pt8qRoOYOK4CD6WING7LNm86k2Kd0DTOZeOoUserOTwj9kOF3VkR4rBY3QOUatgE8N0TUIqcH/lJxXr1k0KCI0TewClUfvsHmxrSabOq32UEtdyhnB4cGRYReQjkxK021k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=gg55oUGs; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+	s=arc-20240116; t=1752225682; c=relaxed/simple;
+	bh=v5skrjljMaiRznKR3++rcBMCio6TA4MIaU7O9AkkvO4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BHK/iHYxLKU3O3jLrK6omNHfF/LkSzskZq8H3dKA25OWGezQumCdCbk+3K/VMsR6oLnYBronlyUySv61BrqolRkcVDezqTv+vTnkiGBwA4Ovjb8LuEl6yPtcivW0mFGchQflOtWc+KimrrQly62kv1tCcdbjHWp1aijmur6uUTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mz9bZPMt; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="gg55oUGs"
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4538bc52a8dso13365705e9.2
-        for <rcu@vger.kernel.org>; Fri, 11 Jul 2025 02:04:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mz9bZPMt"
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-60c5b8ee2d9so4159116a12.2;
+        Fri, 11 Jul 2025 02:21:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1752224674; x=1752829474; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=azkWYqIfD0IX3c6trMXIH2mHQXBlbPclhfsws1MJpdM=;
-        b=gg55oUGs7irbUWBzIK7uVqa3q6GCgjQB80JZQpOJ8VJVKu16QCn/DNCSwGR8Gh9rTt
-         tV1zX9x1ljoEKhveL1K3P42TbOo0j58IiAXheMSp/AN6+uQnhx2SekEGQmESDirvUHyJ
-         tOXACWD78hml+QulsKN4kaVaDWZ32dvMWPBgw=
+        d=gmail.com; s=20230601; t=1752225678; x=1752830478; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v5skrjljMaiRznKR3++rcBMCio6TA4MIaU7O9AkkvO4=;
+        b=mz9bZPMtVFNiRRbp3sk4fXXaeBb3r6m2URxmHzI6NXPQcWxtvJO8cQbdUkh6wP8+/r
+         B3DrwztzxEW42K3wXFsCONhJX0wque4/NLS2+MyhNKr8L2h3tM72BZ+CuJ1d+L5CpkcJ
+         TpoI28IYkrCa3uRcR9QjdIY4H44+Ol3gkeNtzhIKEXcFdgMsZXLIq400H6lgYl6Uv2a7
+         W6ROsProWa0RgjPj0pnbKSylf4QgYKTkpBRKMEf5/QcuYPKiDKLmYl3uUR+xHAp0R1OD
+         LDlIkwaWFtmzcOSv8DQUkS4z6AJk1Z9qW97/3ixQy9SntNoLJB//85Jx+HoMQhuwCPcu
+         tmtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752224674; x=1752829474;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=azkWYqIfD0IX3c6trMXIH2mHQXBlbPclhfsws1MJpdM=;
-        b=DUZYpx9CQ83ZYpaMZ+vuSQUtDk33HHJTSPZ4KB6H8qKEFSs3OlzYYmwPQCAOGeNCvb
-         q+anzPfPnXJDnFdFfXgAzTXFETvcaWeuARDHhpYw02zAZg2PF8tok7fZ9qIRFXdwf2Rt
-         j9CMHXd+r1GeXTzYOp0SjJfGt4zwVr4TZqhNtGpyouLLblzb4j4zwnZpqvuKNVQOTg8m
-         8UpatDF41cKTmAWC5xOG5tpKFA5CEPLkCBFhRGZ4sVZTj0oMoo6QwTG0OCFzIu/kAeNk
-         WajPcn1DAmLZU5fITHB4w7ujfxvAPAq5jLsk+kFALtAdc+Npj23mvfvpwQ6c8pzO7E52
-         EzAA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIu5eS3oXUCgV2fO5cR7yueiUO5vZsOZgTSMJVyMKx+SpZfvQaMtLW4c2Eo3SF/HaYWME=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyyCGBPnI/DFfrZQ5VChwtakZWbxV6wEYqYDBH74bGZQwEBEXQO
-	Sjg8+3sffRNUUIJyBB67wehshkODV8oCYILYGpDDf7NMdBv4o1JG0595JSKJJcdujxM=
-X-Gm-Gg: ASbGncv2PuLOuh2AVGMAYqX+SIiR8ocrh21Dbdxexb57LWWsQOodFn15X5iwaTwtGQS
-	/MgRfy3KiRvSRpb0XTsZMImqNsjxRbyPaETbZyFVCO/3OfGUjUKfBW1aLpj2BNpN82Urbju8pb7
-	VRpXcfldbaLOJkt8rcBByS6BTieZdEH/Uf8olvsVEnPmJlgREd/i3Pio3zBJDDdcmvQvIOPf+MX
-	DY9DBra2h1A7fC6dDURcfgpR/U28SZc/HXqcI/4PZs4QRX5Gl0d3Vkc0E6i7MB9fpK5Rviu5e6s
-	P5IT5p5NmUGMBa7jt5SmPoWWN4lIsxro5j81DM0yRNgRPoDMm1Pbw71hRvyiQ9SYoeTRzzOmdUu
-	vpjOvLq7f2Wau2WbRgorWhZ+IXWbEqK2liQ==
-X-Google-Smtp-Source: AGHT+IFGUXwZZxphgJZiWA8T7e58NqagXtzk90hoNDnBiUkxa4v1W5VvgPBRSAu+F+hnZton6PqeNA==
-X-Received: by 2002:a05:600c:6095:b0:453:c39:d0a7 with SMTP id 5b1f17b1804b1-454ec15a9fcmr17912895e9.5.1752224674202;
-        Fri, 11 Jul 2025 02:04:34 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:5485:d4b2:c087:b497])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-454dd55b1absm41564565e9.40.2025.07.11.02.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jul 2025 02:04:33 -0700 (PDT)
-Date: Fri, 11 Jul 2025 11:04:31 +0200
-From: Simona Vetter <simona.vetter@ffwll.ch>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Maarten Lankhorst <dev@lankhorst.se>,
-	Natalie Vock <natalie.vock@gmx.de>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Maxime Ripard <mripard@kernel.org>,
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v1 1/1] rculist: move list_for_each_rcu() to where it
- belongs
-Message-ID: <aHDTn5JgXOpiG_zd@phenom.ffwll.local>
-Mail-Followup-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Christian Brauner <brauner@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Maarten Lankhorst <dev@lankhorst.se>,
-	Natalie Vock <natalie.vock@gmx.de>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org, cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Maxime Ripard <mripard@kernel.org>,
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-References: <20250710121528.780875-1-andriy.shevchenko@linux.intel.com>
+        d=1e100.net; s=20230601; t=1752225678; x=1752830478;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v5skrjljMaiRznKR3++rcBMCio6TA4MIaU7O9AkkvO4=;
+        b=IxyBskojsWt94aWih4d1ffoNwf1CbA/199uIv/3TNROqctWYxjjaMwt3PoCaEuommV
+         yW2/vJfygL/liHdqmE2fQwC3BCacV8nw980L6PieCZTHY//BitYUNgrpoVnUIZLs9g5h
+         gXzThUJ/EQLYEIK9aARUzMIpI16pY2c/TOx3oFkojMBC4L9RBxJUT1BejEsu2EEhs2bY
+         ZldbP8XPAPmzrKyGcFFuDhvnLNyWjIrCpMfrc5CDa6nFu26dHlv9s2egcoyFE4u2vRFK
+         cb+2hvsCqaYvSfo2YN5SGL96VWbMDPlNT6L3OhwPvXA/UKzg83yYBNqc87fLVHOhgt2W
+         PtOw==
+X-Forwarded-Encrypted: i=1; AJvYcCXSJDqlMTjRUl6tq6XZvlIHlWAO0yHmzQEsLPhAWQaTiDARHfet546nB3gwzYoW9zifG1TXI3RgzNGwIpo=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywoxpbm3JGaZY8bOMAzBX7KYB3awK28xkb6bhDMqACWG/UhFRkh
+	U5mHnJjSd/q2F8jRmuCPDdLUNkSTerIjkB79Jt+5gvl7rVy9+spBQSeIbFpzc8BtegWvLNV9hvm
+	QcdETOJ3PTuIqossm0zAFnBx2ZtNomYs=
+X-Gm-Gg: ASbGnctPubDuFCTe4qMX0fnuqkCSWtf+RUzSapDbBuxz88QGbGRCVVCzyfY4PjJaLv8
+	pvZzruS36r8ESBNTlBrZoqodOLB4dnc+qoXOtsw9nmuK8UjLRYBf6nsUMY+19lRhym7JLZd2Bzg
+	Z72StKZKIvm/vwFX7D5BpVfHbdawPWiFCCDMn9GtbHiDyl0UXAvOs8PoKjKn2g/RGZ6HiuqQwrf
+	m5j+3h4+dZ6pa+6cVnQFKdOJaZJnoFPd6cmjJZNhw==
+X-Google-Smtp-Source: AGHT+IGaxamUHCv58lDZJx8LYdQFjQw/vvdayYy2xVYKdbyGDDDxQONMUPmrxQvmMYNkh8wFCp43zR+0OhbOW77dwW0=
+X-Received: by 2002:a17:906:478a:b0:ae0:ad5c:4185 with SMTP id
+ a640c23a62f3a-ae70131bae6mr153726366b.57.1752225677662; Fri, 11 Jul 2025
+ 02:21:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250710121528.780875-1-andriy.shevchenko@linux.intel.com>
-X-Operating-System: Linux phenom 6.12.30-amd64 
+References: <CA+G9fYvcb-BAreFW=QS=DnWnXX1gK1EAX09tBQzopwH1Jd1d=w@mail.gmail.com>
+In-Reply-To: <CA+G9fYvcb-BAreFW=QS=DnWnXX1gK1EAX09tBQzopwH1Jd1d=w@mail.gmail.com>
+From: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Date: Fri, 11 Jul 2025 14:51:02 +0530
+X-Gm-Features: Ac12FXzUURrO7TVvQDfpHYXggr-im9yTZQ0aOXcB2YcIl5rlAM6oFaGWx2_l_Tc
+Message-ID: <CAFwiDX8A=2N9iOOMRE_tzfPLDfsn70bhxDhiFMkyZ1pEMasXiA@mail.gmail.com>
+Subject: Re: next-20250710: PREEMPT_RT: rcu_preempt self-detected stall on CPU rcu_preempt_deferred_qs_handler
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: rcu <rcu@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	lkft-triage@lists.linaro.org, Linux Regressions <regressions@lists.linux.dev>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, neeraj.upadhyay@kernel.org, 
+	Joel Fernandes <joelagnelf@nvidia.com>, Qi Xi <xiqi2@huawei.com>, 
+	Xiongfeng Wang <wangxiongfeng2@huawei.com>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Anders Roxell <anders.roxell@linaro.org>, 
+	Ben Copeland <benjamin.copeland@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 10, 2025 at 03:15:28PM +0300, Andy Shevchenko wrote:
-> The list_for_each_rcu() relies on the rcu_dereference() API which is not
-> provided by the list.h. At the same time list.h is a low-level basic header
-> that must not have dependencies like RCU, besides the fact of the potential
-> circular dependencies in some cases. With all that said, move RCU related
-> API to the rculist.h where it belongs.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hi Naresh,
 
-Reviewed-by: Simona Vetter <simona.vetter@ffwll.ch>
+On Fri, Jul 11, 2025 at 12:11=E2=80=AFPM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> Regressions on boot failure observed in builds with CONFIG_PREEMPT_RT=3Dy
+> and CONFIG_LAZY_PREEMPT=3Dy enabled on multiple platforms running the
+> Linux next-20250710.
+>
+> Kernel stalls and RCU preempt self-detected stalls reported.
+> Boot log shows CPU stalls and failure as below.
+>
+> Test environments:
+> - Ampere Altra
+> - rk3399-rock-pi-4b
+> - x86_64
+>
+> Regression Analysis:
+> - New regression? Yes
+> - Reproducibility? Yes
+>
+> Boot regression: next-20250710 rcu_preempt self-detected stall on CPU
+> rcu_preempt_deferred_qs_handler
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
 
-Also ack for the dmem part for merging through your tree.
--Sima
+Thanks for the report. We saw the same issue recently. Here is the fixed co=
+mmit:
 
-> ---
->  include/linux/list.h    | 10 ----------
->  include/linux/rculist.h | 10 ++++++++++
->  kernel/cgroup/dmem.c    |  1 +
->  3 files changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/list.h b/include/linux/list.h
-> index e7e28afd28f8..e7bdad9b8618 100644
-> --- a/include/linux/list.h
-> +++ b/include/linux/list.h
-> @@ -686,16 +686,6 @@ static inline void list_splice_tail_init(struct list_head *list,
->  #define list_for_each(pos, head) \
->  	for (pos = (head)->next; !list_is_head(pos, (head)); pos = pos->next)
->  
-> -/**
-> - * list_for_each_rcu - Iterate over a list in an RCU-safe fashion
-> - * @pos:	the &struct list_head to use as a loop cursor.
-> - * @head:	the head for your list.
-> - */
-> -#define list_for_each_rcu(pos, head)		  \
-> -	for (pos = rcu_dereference((head)->next); \
-> -	     !list_is_head(pos, (head)); \
-> -	     pos = rcu_dereference(pos->next))
-> -
->  /**
->   * list_for_each_continue - continue iteration over a list
->   * @pos:	the &struct list_head to use as a loop cursor.
-> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> index 1b11926ddd47..2abba7552605 100644
-> --- a/include/linux/rculist.h
-> +++ b/include/linux/rculist.h
-> @@ -42,6 +42,16 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
->   */
->  #define list_bidir_prev_rcu(list) (*((struct list_head __rcu **)(&(list)->prev)))
->  
-> +/**
-> + * list_for_each_rcu - Iterate over a list in an RCU-safe fashion
-> + * @pos:	the &struct list_head to use as a loop cursor.
-> + * @head:	the head for your list.
-> + */
-> +#define list_for_each_rcu(pos, head)		  \
-> +	for (pos = rcu_dereference((head)->next); \
-> +	     !list_is_head(pos, (head)); \
-> +	     pos = rcu_dereference(pos->next))
-> +
->  /**
->   * list_tail_rcu - returns the prev pointer of the head of the list
->   * @head: the head of the list
-> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-> index 10b63433f057..e12b946278b6 100644
-> --- a/kernel/cgroup/dmem.c
-> +++ b/kernel/cgroup/dmem.c
-> @@ -14,6 +14,7 @@
->  #include <linux/mutex.h>
->  #include <linux/page_counter.h>
->  #include <linux/parser.h>
-> +#include <linux/rculist.h>
->  #include <linux/slab.h>
->  
->  struct dmem_cgroup_region {
-> -- 
-> 2.47.2
-> 
+https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git/commit/?h=3Dn=
+ext&id=3D2e154d164418e1eaadbf5dc58cbf19e7be8fdc67
 
--- 
-Simona Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I have pushed it to rcu next branch:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git/log/?h=3Dnext
+
+
+
+- Neeraj
