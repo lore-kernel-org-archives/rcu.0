@@ -1,34 +1,34 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151FADDBC;
-	Fri, 11 Jul 2025 01:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C452745E;
+	Fri, 11 Jul 2025 01:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752195622; cv=none; b=ON1IihgWAR/R5gbv1JOB+bss7N32dLUDxIcUjEnTn9gYlT55PbrablQ+EKszk5jDeuvAe7Ud7i19f5hXY2FO9He5kn/H11umEOdyDuZGPFN8dpDpSnh1znnsQ2FfQbefGWLHfc+XYsCX6lxjwYFY0VSeckxaE72WouLpFR+sf+Y=
+	t=1752195799; cv=none; b=hunsHC7bX9WvTmRjBxD/4/2zsaxFnDmwEf4rlpsjmfXRDh8mkXQJSs/1Oc4UMpmM9qCyT/kP4BwNwRHuWptVac+njlev1j6Gi79v0eadPrx0Tg+G1zJthmHXnoM3boeXDVfErvE78Uqce6BWTzIWlvIRdqJbyMDFdVEFRnqK2Xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752195622; c=relaxed/simple;
-	bh=MJuGJlagsCsxyWHy4O2CpzzmsL/8SnYaAOmQQNeXOkM=;
+	s=arc-20240116; t=1752195799; c=relaxed/simple;
+	bh=rRGd51Wi/wDKoo3MftlDcLUEgCw/Zs3CnYkieFYpZ7k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WRPnM6A92Zryai3ijFnJF7eEp3EJT0gOYM9TtBrqbt/paQpG5mAtzMJ806QC1k6hMmH0+2ZdDYKE6lYNlciWH2DLvFvJq9RmL5+Myf7FNbs+b1OsY2I1C6/CBTITeqea4Tnw/RNP7mG8/CZE6hcNtuTyLwFwTbbHjxRi0xxConQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YycH4XLx; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ow2QlMGCIdjw3xTHZv6Sw78Lz/TVryQgtLueXb2EWp9gnhW6sftbpzqeXDxj1BfHeqInp/aO3OoYS+fw22vWdDIyxU2oW8XhMVgKcn4bFh0/DhqtpxUPqF/HQeGlMlFVfFQikQlimuzCkxQKHY+065Vrhhjkxssr2VO7EhGS58k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UffrceSQ; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YycH4XLx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7FCDC4CEE3;
-	Fri, 11 Jul 2025 01:00:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UffrceSQ"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2BA5C4CEE3;
+	Fri, 11 Jul 2025 01:03:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752195621;
-	bh=MJuGJlagsCsxyWHy4O2CpzzmsL/8SnYaAOmQQNeXOkM=;
+	s=k20201202; t=1752195796;
+	bh=rRGd51Wi/wDKoo3MftlDcLUEgCw/Zs3CnYkieFYpZ7k=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=YycH4XLxGkztwoGXGaVe6/Y008hg/nhlIqaXMaoISYbg7cxGfORcAY+bRX0/Zzcql
-	 aO1ri6Ntyp+a1fVNbmIp0jRQkVOJUSmLMYxbIdpIFyI54ALlGKzzk/n8CtdqLa/nbj
-	 Jh0z9zdBino527mrqdE6EHHoBQwD+Wz3/ot6nBC3owtoSWcu5MHIeKnSG9ChQjAvcM
-	 onYwkS4B6tkl+lTlfi6GrPM3oVKhryBThnJ+jGAbDn6WH2nwhi29dXG3QGUGueBCAp
-	 a+7p3gsBkYGcbSXEX+pIIFh6pC1gkPrudaayEW9kWQaGgK+NsRqQfYy0/0ZBJxVzMo
-	 VYuP88JDquQaw==
+	b=UffrceSQYPPgWZpb06pFbf0N/mcN1A6WqEWN287pO53iZearX/WQRQ1GbCUMe2AhL
+	 9qUIiD5WFn3rf87n6kOMosYJEtfUmbYtI2Xmls8eMC4Ujhsk1auXEp/r1YcFU4ngQ3
+	 0AZpWWb598N9cXvj2Is9Qwk+dOIfiCE5Q6xptpoBv9ELyE38Ual/nVlonbiGuiOHW0
+	 CuUg4yjgYuUG/ErYTdn8STXX6IvFUABXhDHqe+0fQLTSMsCJjyqak65FCw/X1+IpeZ
+	 v3Jo81NR4kPnVEDKHE8bKrEAKlo0ey492+pu7n4m7GWZC3HyLQ2VvQwxOXPr9tldT+
+	 qSnAlqCKW2XXQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 53464CE0A44; Thu, 10 Jul 2025 18:00:21 -0700 (PDT)
-Date: Thu, 10 Jul 2025 18:00:21 -0700
+	id 43CFDCE0A44; Thu, 10 Jul 2025 18:03:16 -0700 (PDT)
+Date: Thu, 10 Jul 2025 18:03:16 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Boqun Feng <boqun.feng@gmail.com>
 Cc: Breno Leitao <leitao@debian.org>, Peter Zijlstra <peterz@infradead.org>,
@@ -41,12 +41,11 @@ Cc: Breno Leitao <leitao@debian.org>, Peter Zijlstra <peterz@infradead.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Uladzislau Rezki <urezki@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH 6/8] rcuscale: Allow rcu_scale_ops::get_gp_seq to be
- NULL
-Message-ID: <6dbbdfa0-ca6b-425a-85a0-7c80041573fb@paulmck-laptop>
+Subject: Re: [RFC PATCH 7/8] rcuscale: Add tests for simple hazard pointers
+Message-ID: <dd9b0591-aea2-4a50-bf4e-276224f15f68@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <20250414060055.341516-1-boqun.feng@gmail.com>
- <20250414060055.341516-7-boqun.feng@gmail.com>
+ <20250414060055.341516-8-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
@@ -55,51 +54,101 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250414060055.341516-7-boqun.feng@gmail.com>
+In-Reply-To: <20250414060055.341516-8-boqun.feng@gmail.com>
 
-On Sun, Apr 13, 2025 at 11:00:53PM -0700, Boqun Feng wrote:
-> For synchronization mechanisms similar to RCU, there could be no "grace
-> period" concept (e.g. hazard pointers), therefore allow
-> rcu_scale_ops::get_gp_seq to be a NULL pointer for these cases, and
-> simply treat started and finished grace period as 0.
+On Sun, Apr 13, 2025 at 11:00:54PM -0700, Boqun Feng wrote:
+> Add two rcu_scale_ops to include tests from simple hazard pointers
+> (shazptr). One is with evenly distributed readers, and the other is with
+> all WILDCARD readers. This could show the best and worst case scenarios
+> for the synchronization time of simple hazard pointers.
 > 
 > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+
+Cute trick using the CPU number plus one as a stand-in for a pointer.  ;-)
 
 Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
 > ---
->  kernel/rcu/rcuscale.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+>  kernel/rcu/rcuscale.c | 52 ++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 51 insertions(+), 1 deletion(-)
 > 
 > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index 0f3059b1b80d..d9bff4b1928b 100644
+> index d9bff4b1928b..cab42bcc1d26 100644
 > --- a/kernel/rcu/rcuscale.c
 > +++ b/kernel/rcu/rcuscale.c
-> @@ -568,8 +568,10 @@ rcu_scale_writer(void *arg)
->  		if (gp_exp) {
->  			b_rcu_gp_test_started =
->  				cur_ops->exp_completed() / 2;
-> -		} else {
-> +		} else if (cur_ops->get_gp_seq) {
->  			b_rcu_gp_test_started = cur_ops->get_gp_seq();
-> +		} else {
-> +			b_rcu_gp_test_started = 0;
->  		}
->  	}
+> @@ -32,6 +32,7 @@
+>  #include <linux/freezer.h>
+>  #include <linux/cpu.h>
+>  #include <linux/delay.h>
+> +#include <linux/shazptr.h>
+>  #include <linux/stat.h>
+>  #include <linux/srcu.h>
+>  #include <linux/slab.h>
+> @@ -429,6 +430,54 @@ static struct rcu_scale_ops tasks_tracing_ops = {
 >  
-> @@ -625,9 +627,11 @@ rcu_scale_writer(void *arg)
->  				if (gp_exp) {
->  					b_rcu_gp_test_finished =
->  						cur_ops->exp_completed() / 2;
-> -				} else {
-> +				} else if (cur_ops->get_gp_seq) {
->  					b_rcu_gp_test_finished =
->  						cur_ops->get_gp_seq();
-> +				} else {
-> +					b_rcu_gp_test_finished = 0;
->  				}
->  				if (shutdown) {
->  					smp_mb(); /* Assign before wake. */
+>  #endif // #else // #ifdef CONFIG_TASKS_TRACE_RCU
+>  
+> +static int shazptr_scale_read_lock(void)
+> +{
+> +	long cpu = raw_smp_processor_id();
+> +
+> +	/* Use cpu + 1 as the key */
+> +	guard(shazptr)((void *)(cpu + 1));
+> +
+> +	return 0;
+> +}
+> +
+> +static int shazptr_scale_wc_read_lock(void)
+> +{
+> +	guard(shazptr)(SHAZPTR_WILDCARD);
+> +
+> +	return 0;
+> +}
+> +
+> +
+> +static void shazptr_scale_read_unlock(int idx)
+> +{
+> +	/* Do nothing, it's OK since readers are doing back-to-back lock+unlock*/
+> +}
+> +
+> +static void shazptr_scale_sync(void)
+> +{
+> +	long cpu = raw_smp_processor_id();
+> +
+> +	synchronize_shazptr((void *)(cpu + 1));
+> +}
+> +
+> +static struct rcu_scale_ops shazptr_ops = {
+> +	.ptype		= RCU_FLAVOR,
+> +	.readlock	= shazptr_scale_read_lock,
+> +	.readunlock	= shazptr_scale_read_unlock,
+> +	.sync		= shazptr_scale_sync,
+> +	.exp_sync	= shazptr_scale_sync,
+> +	.name		= "shazptr"
+> +};
+> +
+> +static struct rcu_scale_ops shazptr_wc_ops = {
+> +	.ptype		= RCU_FLAVOR,
+> +	.readlock	= shazptr_scale_wc_read_lock,
+> +	.readunlock	= shazptr_scale_read_unlock,
+> +	.sync		= shazptr_scale_sync,
+> +	.exp_sync	= shazptr_scale_sync,
+> +	.name		= "shazptr_wildcard"
+> +};
+> +
+>  static unsigned long rcuscale_seq_diff(unsigned long new, unsigned long old)
+>  {
+>  	if (!cur_ops->gp_diff)
+> @@ -1090,7 +1139,8 @@ rcu_scale_init(void)
+>  	long i;
+>  	long j;
+>  	static struct rcu_scale_ops *scale_ops[] = {
+> -		&rcu_ops, &srcu_ops, &srcud_ops, TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+> +		&rcu_ops, &srcu_ops, &srcud_ops, &shazptr_ops, &shazptr_wc_ops,
+> +		TASKS_OPS TASKS_RUDE_OPS TASKS_TRACING_OPS
+>  	};
+>  
+>  	if (!torture_init_begin(scale_type, verbose))
 > -- 
 > 2.47.1
 > 
