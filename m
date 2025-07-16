@@ -1,98 +1,147 @@
-Received: from relay.hostedemail.com (smtprelay0015.hostedemail.com [216.40.44.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A67199935;
-	Wed, 16 Jul 2025 15:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92FCC28C85D;
+	Wed, 16 Jul 2025 20:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752678577; cv=none; b=BSmCeNZkVM2qdG8tHM2T+8Z80CTGxElTdWu2b3INkx+uCcc5Oou/B3cnO1zAsdj/kB/TMuTBZ+fMdjV8dtiv93KLUHQONrEyBC7BM6vsJfQaCYTIbM0e3fnitWiA96gJbp/r+GbN4yIGV3xRPrXiErgVKpXEvQSJ6GxwPl4Z30U=
+	t=1752698149; cv=none; b=lUNfScU82j8as/fx6WyMjn48r8HH6RZflfOdC8geTjLLeGUvut6f5ckqXjc5jMFok/Zo0cfy+pwLY11ypAgucYjCLzydWmVYRGzaHR55YLC8GG5EaRMVESH8aJxEsUs3TZrHqVBkD3TL9zePA3X5APBZwgThxC1D9IerKqk+S3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752678577; c=relaxed/simple;
-	bh=udKVfp54jvTQVoUSNkCjh4UzprprEWcUqW5CgAHCeb0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WSHkc+uar7vZBkYwjJUHmMYI9tc2NiXgonR4XeAsFmd13+wKXVt69y0p9wSO7ki8r+nZxsMn8n3Wr/g8IkLtLetMOr5hsAH48C8PvhRBFMhzdO3+DfooZFCA5M0uJOwqQB/b2tiP1AGe1vJe4zSXeoqHDZ8EBPeLjPt0M0Pcj+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf14.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id E7A111403BE;
-	Wed, 16 Jul 2025 15:09:26 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf14.hostedemail.com (Postfix) with ESMTPA id 8C5B73B;
-	Wed, 16 Jul 2025 15:09:23 +0000 (UTC)
-Date: Wed, 16 Jul 2025 11:09:22 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sebastian Andrzej
- Siewior <bigeasy@linutronix.de>, Boqun Feng <boqun.feng@gmail.com>,
- linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Frederic Weisbecker
- <frederic@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>
+	s=arc-20240116; t=1752698149; c=relaxed/simple;
+	bh=9qLLJHRCEGmna5JNT8zOmYMkNsoVPnmFYCZsFjxeYm4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C4m1p4RDhJR2UAvuxzXWxhcmM5z/lnSphHSg8nSLpwBESOp0qljXgYotH5umILKKTyZGAGmXox0fK++RVaGHsXZsv6vLZ1ZGjvTw/OEOFFXo+rbIRGi8/chdsqm6PQGGODNj8rX+fR5mdbppnigCgVkWPtH1t9kE3rDaFTGpu9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZDmmk/YH; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZDmmk/YH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06610C4CEE7;
+	Wed, 16 Jul 2025 20:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752698149;
+	bh=9qLLJHRCEGmna5JNT8zOmYMkNsoVPnmFYCZsFjxeYm4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ZDmmk/YHzHkxFofmJ2qeCq9Rk1rUhNUylsE8YRmWFok/wk4KvB3sHujJ7QLvPRumU
+	 8UnCqzQmh5vX2isWbz4ChNYe1BYw5dWatSd0fybxy9KL1Y7Y+QiLCaZO2RFC1uj8ob
+	 rtY+MfSwRAekKvJjfH6VD5z2Puicnu9qY2BXuxs9bkLTQ01BuqdcJVreqGQ6kMtG+I
+	 Li1lBwZS2LhY1sxljLRQ9fYyWLm0PTz++mJk1PNa0iiAaaNFKRI3DCLTvsG37oSbZX
+	 KQaJBeojk8sRxfmRc2KAszVZfnPLGQHBNHPvnm5h3SwopV+3HZpWJ5gVnTd2AqW0b/
+	 loQpUQqQdz24A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9D0EBCE09C2; Wed, 16 Jul 2025 13:35:48 -0700 (PDT)
+Date: Wed, 16 Jul 2025 13:35:48 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
+	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+	bpf@vger.kernel.org
 Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
-Message-ID: <20250716110922.0dadc4ec@batman.local.home>
-In-Reply-To: <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
-References: <20250620084334.Zb8O2SwS@linutronix.de>
-	<34957424-1f92-4085-b5d3-761799230f40@paulmck-laptop>
-	<20250623104941.WxOQtAmV@linutronix.de>
-	<03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
-	<fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop>
-	<29b5c215-7006-4b27-ae12-c983657465e1@efficios.com>
-	<acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
-	<ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
-	<512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
-	<bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
-	<16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Message-ID: <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20250623104941.WxOQtAmV@linutronix.de>
+ <03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
+ <fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop>
+ <29b5c215-7006-4b27-ae12-c983657465e1@efficios.com>
+ <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
+ <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
+ <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
+ <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
+ <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
+ <20250716110922.0dadc4ec@batman.local.home>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 173rm1wg47g3dcjidadpyy4ajng1pjje
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 8C5B73B
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX19DAW/3/GdXtEluzb41g8XAo3DhAQN7QhU=
-X-HE-Tag: 1752678563-58156
-X-HE-Meta: U2FsdGVkX18tz3Yx0CoJowNA+6hIiLSDZdksIfMg0CZ4+eyfoZQQuQFv51+Q0ub/zvLQ1ffeGWjBNtGgHQIHS3e2pU0hhHxqFt4mWTMRUj+EPixtfJi2uzQ+lkxsOKR5GeOhU2Z5aPU9Nrhs7Xy+nWEMDEty77/PyYzLOsNgqAJTjdfLb/US0vhz8g1h9KAZaYP0b1i0ktiPe/7ostSmbC/WXMZx/Tr7od3EYMOnRPsHuA6T9N8WamIKgj1JxZsfijduyO1yhGmh+mkIVERkgO4Ka8W9JH66NBDHNY9Y4DFi5Y1ov0ten/T7No4UhX9uJ1fqokvEif3cQ94lYK7BuvjXa3g0ceRq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250716110922.0dadc4ec@batman.local.home>
 
-On Fri, 11 Jul 2025 10:05:26 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Wed, Jul 16, 2025 at 11:09:22AM -0400, Steven Rostedt wrote:
+> On Fri, 11 Jul 2025 10:05:26 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > This trace point will invoke rcu_read_unlock{,_notrace}(), which will
+> > note that preemption is disabled.  If rcutree.use_softirq is set and
+> > this task is blocking an expedited RCU grace period, it will directly
+> > invoke the non-notrace function raise_softirq_irqoff().  Otherwise,
+> > it will directly invoke the non-notrace function irq_work_queue_on().
+> 
+> Just to clarify some things; A function annotated by "notrace" simply
+> will not have the ftrace hook to that function, but that function may
+> very well have tracing triggered inside of it.
+> 
+> Functions with "_notrace" in its name (like preempt_disable_notrace())
+> should not have any tracing instrumentation (as Mathieu stated)
+> inside of it, so that it can be used in the tracing infrastructure.
+> 
+> raise_softirq_irqoff() has a tracepoint inside of it. If we have the
+> tracing infrastructure call that, and we happen to enable that
+> tracepoint, we will have:
+> 
+>   raise_softirq_irqoff()
+>      trace_softirq_raise()
+>        [..]
+>          raise_softirq_irqoff()
+>             trace_softirq_raise()
+>                [..]
+>                  Ad infinitum!
+> 
+> I'm not sure if that's what is being proposed or not, but I just wanted
+> to make sure everyone is aware of the above.
 
-> This trace point will invoke rcu_read_unlock{,_notrace}(), which will
-> note that preemption is disabled.  If rcutree.use_softirq is set and
-> this task is blocking an expedited RCU grace period, it will directly
-> invoke the non-notrace function raise_softirq_irqoff().  Otherwise,
-> it will directly invoke the non-notrace function irq_work_queue_on().
+OK, I *think* I might actually understand the problem.  Maybe.
 
-Just to clarify some things; A function annotated by "notrace" simply
-will not have the ftrace hook to that function, but that function may
-very well have tracing triggered inside of it.
+I am sure that the usual suspects will not be shy about correcting any
+misapprehensions in the following.  ;-)
 
-Functions with "_notrace" in its name (like preempt_disable_notrace())
-should not have any tracing instrumentation (as Mathieu stated)
-inside of it, so that it can be used in the tracing infrastructure.
+My guess is that some users of real-time Linux would like to use BPF
+programs while still getting decent latencies out of their systems.
+(Not something I would have predicted, but then again, I was surprised
+some years back to see people with a 4096-CPU system complaining about
+200-microsecond latency blows from RCU.)  And the BPF guys (now CCed)
+made some changes some years back to support this, perhaps most notably
+replacing some uses of preempt_disable() with migrate_disable().
 
-raise_softirq_irqoff() has a tracepoint inside of it. If we have the
-tracing infrastructure call that, and we happen to enable that
-tracepoint, we will have:
+Except that the current __DECLARE_TRACE() macro defeats this work
+for tracepoints by disabling preemption across the tracepoint call,
+which might well be a BPF program.  So we need to do something to
+__DECLARE_TRACE() to get the right sort of protection while still leaving
+preemption enabled.
 
-  raise_softirq_irqoff()
-     trace_softirq_raise()
-       [..]
-         raise_softirq_irqoff()
-            trace_softirq_raise()
-               [..]
-                 Ad infinitum!
+One way of attacking this problem is to use preemptible RCU.  The problem
+with this is that although one could construct a trace-safe version
+of rcu_read_unlock(), these would negate some optimizations that Lai
+Jiangshan worked so hard to put in place.  Plus those optimizations
+also simplified the code quite a bit.  Which is why I was pushing back
+so hard, especially given that I did not realize that real-time systems
+would be running BPF programs concurrently with real-time applications.
+This meant that I was looking for a functional problem with the current
+disabling of preemption, and not finding it.
 
-I'm not sure if that's what is being proposed or not, but I just wanted
-to make sure everyone is aware of the above.
+So another way of dealing with this is to use SRCU-fast, which is
+like SRCU, but dispenses with the smp_mb() calls and the redundant
+read-side array indexing.  Plus it is easy to make _notrace variants
+srcu_read_lock_fast_notrace() and srcu_read_unlock_fast_notrace(),
+along with the requisite guards.
 
--- Steve
--
+Re-introducing SRCU requires reverting most of e53244e2c893 ("tracepoint:
+Remove SRCU protection"), and I have hacked together this and the
+prerequisites mentioned in the previous paragraph.
+
+These are passing ridiculously light testing, but probably have at
+least their share of bugs.
+
+But first, do I actually finally understand the problem?
+
+							Thanx, Paul
