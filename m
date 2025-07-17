@@ -1,172 +1,121 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF027E107;
-	Thu, 17 Jul 2025 15:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1E32F85CD;
+	Thu, 17 Jul 2025 15:27:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752765505; cv=none; b=HaORC/ozX+KDR3KrdPwjmV6LmvMmFxLhwo6Hz0EH5BJ16BWyywmFzB6Rjvnk61x2J2iv3F8YcVcElUha27L57d4JZFBPohFTBRm/kCsuU+h86rH+G+bWuKaVZyqhwJC+dX9g6y8iWYcuCl78Tlq3LQgghWEFJrBt9iZVsDhaB3E=
+	t=1752766061; cv=none; b=uh3NhmoFGae3PxsdoIFsjNy8Maf5RYSqshBRY5UzaT/z6fiSc1yWTZyeroXoJ5jnxCaDQ1+6tMOzfURsJb/Ik2T0zccbuT8gqwOFFGmSEYDNu26oBJv/dYu0nnQUKQDurNhmSPRCqX27vMwiaZsTbtXqaKGEXKq+oVf3M5L+GI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752765505; c=relaxed/simple;
-	bh=tRboDQsJ5JM93kjNC6bgN2KgDzfrJvfH+DqeB39GWcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZOq8EqMMbUzPVxGLR4/MRA1RUkiikjjhrG2wy3WKABJriBbHvso0CubQgEDLFWo5mswTamWzabRFnaVZ64pUnvzbY3Junna0lNy/MgBpH283ITK67maNOXTUgEOHC5gLMsseQOiXaQES5OdtaWJ2KW5sdag4kSmddj0G5B7qEa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B/Mjz8N8; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1752766061; c=relaxed/simple;
+	bh=LhrFHpYsRnEHg0B/lmcoVHLZfq1NyHa1tH7Idp+Qoz0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YbWBzKStLZ7uK39Gvv4+Ri+tFjF4vlS26GTGC16/PxVGO777FFgTMMu2OFrYnGD5ohjjnDt045XBuSRSuEfpIVLj78x6SzpaushfjoPK5UYI0dlVR0UmVDit2gTG25O/TOzmy9zpxUju71pVt1LFG8L7Jq81tcfh3doNlQxji1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ILvzVPaH; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B/Mjz8N8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D877C4CEE3;
-	Thu, 17 Jul 2025 15:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752765505;
-	bh=tRboDQsJ5JM93kjNC6bgN2KgDzfrJvfH+DqeB39GWcI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=B/Mjz8N8398vnpqxR1Zs2h91k/JdpgSMflzaLDrK44MpO6jG5Dp/apCe8rqC2FY2S
-	 a958rFhmovVeQaJFTN7pE5Oe26SQzXG+5iGo3PD2XiHD7KsMF+l8jNJmgIiflSgdLS
-	 zhBw5WqCWA1aGOLGNog9eLK0AAO4Cr0c1VD9SyajTJO2WzmPzcBNivMIS37YMYiovu
-	 KDaK8n4Y9aOzIu6KZwSZaHxE7dcs2TNE50ijGsp4ulrnlJyaKDxvXKApBgI99anAo3
-	 awynQ17OrP+iE/y4H/zzjmZuaBpwQTCcRXx+Fh3puMCt//92afakaEi4NXpBCcdnfO
-	 W6LbgWVvhQSXg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BA9F7CE09F5; Thu, 17 Jul 2025 08:18:24 -0700 (PDT)
-Date: Thu, 17 Jul 2025 08:18:24 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
-	rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
-	bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
-Message-ID: <2f8bb8bb-320e-480f-9a56-8eb5cbd4438a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
- <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
- <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
- <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
- <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
- <20250716110922.0dadc4ec@batman.local.home>
- <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
- <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
- <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com>
- <2d9eb910-f880-4966-ba40-9b1e0835279c@efficios.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ILvzVPaH"
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3a4f379662cso827861f8f.0;
+        Thu, 17 Jul 2025 08:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752766058; x=1753370858; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LhrFHpYsRnEHg0B/lmcoVHLZfq1NyHa1tH7Idp+Qoz0=;
+        b=ILvzVPaHjISgRDF6EzAJI/fWPvKDbv6KKGi9ciReNN1vI//3fa3ht2zmsbijetCLoI
+         QkRfIjjCdGm1SgwJQuqnyXMilwonM5n8oi4oOGxZRUE0ufrpfpPjm8QEdib1L3K2FTlo
+         zZMYkn1NVU2NPLDxA8yYOFiinvzqM+Dw/vp3kRlspKguEUaN425po8rhqGk3vDI0gKx6
+         eoeIrb6nJbZl2kiRFzlzb4mWuBkrzNCAO4GyEXEMshveQtYt7io8fnclIthZN4GD8+fi
+         KJO9RoZ4NwKqWlLQVWQj54iyavVN3kWxETLqwLeOqzElYzyeld8GUZo5dCD5893X9jCJ
+         VaeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752766058; x=1753370858;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LhrFHpYsRnEHg0B/lmcoVHLZfq1NyHa1tH7Idp+Qoz0=;
+        b=fICuIA56ig6/6Ck7Qh1M6G7zBEktZjUa2UEhnbXy7ldKhRjEq3bwusRq6zZXNSKMaE
+         dQaCNbC5KggZzP8/vb718o+4upn1yQP4LAI7YY+9cge1spp2YDUYcyhJ060kUgi9/vbz
+         4Ml48OoOAvQY/3bZvkPNGaeIdFgRWralgIQFAOudsSWZnU0s3C5Z8iX56Uq9fIv2Nl8l
+         6ykP8gnuiAVTIs9PjeVgIOLanWnXbgppN3nIp2BJ7u3ss4j3ruBFObEUyR2Fne8z3g6V
+         Zzqo6O8YX0m+0wijsw7bV0m3IbFe3XvdLR/J/nCP6nKlZLPjUkRJRjTRIv1OSxYUMjSd
+         nJ4w==
+X-Forwarded-Encrypted: i=1; AJvYcCUSOs64CliDIrdt2DstHmIWqS4NOQrYwHpla7xd6EQdTWFdI/kImlwbaPmZ90VbNikbhf9Q@vger.kernel.org, AJvYcCWV7KKNmrC7BjQXHmqoiGjsuJZCIhNYlesAE/enpGMW5GjTcuP9Hlaixu66xHDvhZW0yas=@vger.kernel.org, AJvYcCXrRaYFw0u3pWvdylnpQWVwFaLEjfKRd9EHEZmsLBv/7tVPQpgo91htkGB/6SCf6etUXWTE/UPRyNgv7I3e8calYkJD@vger.kernel.org
+X-Gm-Message-State: AOJu0YxD0WdzOVzRsWTyBLg3TLKbubjVwBRociwyPjmlCoG09DIznwUD
+	+Ezcp6idPwUqniggZgfgRzEHJbRKS2k7egXYKIOuuRi+C8+qihcBbrxNt7GeClbs6kpFuVTlAdK
+	0QHvziFSxblK+Xvemp2OQ4oWuRHi1sKzHCQ==
+X-Gm-Gg: ASbGncsXt048p+YEJ/36Es7a3yHEO2hjUP4e9YCQI/rMtWVHsNdAFqJq79u+w6v8lOj
+	8ZI4AsyP2sYNvjruegi8gm3eYuGboNGoOe4QTunIfDuQVOOYMUX+gY/h04/iihJDM8c2Qn0HEfK
+	A5va/VcuYcr42Nak2LXzTHRSQQoWS76HdLa6JSgya9mQN/stEkNN6vG+9SLQEauElOz4+fg8U9w
+	9ZxgQMjqz3J5eJTQGxOVWs=
+X-Google-Smtp-Source: AGHT+IG8k6sso9++qlBvVzKzU6GGWQpGnwuYDmx/VuR8lzCOZhOVTOskA3kl3KXW2xQF9DvJIDyU9xRvxYQr+HGx64U=
+X-Received: by 2002:a05:6000:402a:b0:3a5:27ba:47c7 with SMTP id
+ ffacd0b85a97d-3b60e50ff6amr6259702f8f.48.1752766058238; Thu, 17 Jul 2025
+ 08:27:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2d9eb910-f880-4966-ba40-9b1e0835279c@efficios.com>
+References: <03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
+ <fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop> <29b5c215-7006-4b27-ae12-c983657465e1@efficios.com>
+ <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop> <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
+ <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop> <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
+ <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop> <20250716110922.0dadc4ec@batman.local.home>
+ <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop> <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
+ <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com> <CAADnVQL7gz3OwUVCzt7dbJHvZzOK1zC4AOgMDu5mg6ssKuYU6Q@mail.gmail.com>
+ <20250717111216.4949063d@batman.local.home>
+In-Reply-To: <20250717111216.4949063d@batman.local.home>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 17 Jul 2025 08:27:24 -0700
+X-Gm-Features: Ac12FXzFRC8adLl7CZkn_RpMEeWocBjx5K-fqVR_zZuPS6uWVV2ffn0TRaEQxn4
+Message-ID: <CAADnVQ+r8=Nw0fz8huFHDNe2Z6UnQNyqXW1=sMOrOGd8WniTyw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Boqun Feng <boqun.feng@gmail.com>, 
+	linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Josh Triplett <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 17, 2025 at 10:46:46AM -0400, Mathieu Desnoyers wrote:
-> On 2025-07-17 09:14, Mathieu Desnoyers wrote:
-> > On 2025-07-16 18:54, Paul E. McKenney wrote:
-> [...]
-> > 
-> > 2) I think I'm late to the party in reviewing srcu-fast, I'll
-> >     go have a look :)
-> 
-> OK, I'll bite. :) Please let me know where I'm missing something:
-> 
-> Looking at srcu-lite and srcu-fast, I understand that they fundamentally
-> depend on a trick we published here https://lwn.net/Articles/573497/
-> "The RCU-barrier menagerie" that allows turning, e.g. this Dekker:
-> 
-> volatile int x = 0, y = 0
-> 
-> CPU 0              CPU 1
-> 
-> x = 1              y = 1
-> smp_mb             smp_mb
-> r2 = y             r4 = x
-> 
-> BUG_ON(r2 == 0 && r4 == 0)
-> 
-> into
-> 
-> volatile int x = 0, y = 0
-> 
-> CPU 0            CPU 1
-> 
-> rcu_read_lock()
-> x = 1              y = 1
->                    synchronize_rcu()
-> r2 = y             r4 = x
-> rcu_read_unlock()
-> 
-> BUG_ON(r2 == 0 && r4 == 0)
-> 
-> So looking at srcu-fast, we have:
-> 
->  * Note that both this_cpu_inc() and atomic_long_inc() are RCU read-side
->  * critical sections either because they disables interrupts, because they
->  * are a single instruction, or because they are a read-modify-write atomic
->  * operation, depending on the whims of the architecture.
-> 
-> It appears to be pairing, as RCU read-side:
-> 
-> - irq off/on implied by this_cpu_inc
-> - atomic
-> - single instruction
-> 
-> with synchronize_rcu within the grace period, and hope that this behaves as a
-> smp_mb pairing preventing the srcu read-side critical section from leaking
-> out of the srcu read lock/unlock.
-> 
-> I note that there is a validation that rcu_is_watching() within
-> __srcu_read_lock_fast, but it's one thing to have rcu watching, but
-> another to have an actual read-side critical section. Note that
-> preemption, irqs, softirqs can very well be enabled when calling
-> __srcu_read_lock_fast.
-> 
-> My understanding of the how memory barriers implemented with RCU
-> work is that we need to surround the memory accesses on the fast-path
-> (where we turn smp_mb into barrier) with an RCU read-side critical
-> section to make sure it does not spawn across a synchronize_rcu.
-> 
-> What I am missing here is how can a RCU side-side that only consist
-> of the irq off/on or atomic or single instruction cover all memory
-> accesses we are trying to order, namely those within the srcu
-> critical section after the compiler barrier() ? Is having RCU
-> watching sufficient to guarantee this ?
+On Thu, Jul 17, 2025 at 8:12=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Thu, 17 Jul 2025 07:57:27 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>
+> > I still don't understand what problem is being solved.
+> > As current tracepoint code stands there is no issue with it at all
+> > on PREEMPT_RT from bpf pov.
+> > bpf progs that attach to tracepoints are not sleepable.
+> > They don't call rt_spinlock either.
+> > Recognizing tracepoints that can sleep/fault and allow
+> > sleepable bpf progs there is on our to do list,
+> > but afaik it doesn't need any changes to tracepoint infra.
+> > There is no need to replace existing preempt_disable wrappers
+> > with sleepable srcu_fast or anything else.
+>
+> From the PREEMPT_RT point of view, it wants BPF to be preemptable. It
+> may stop migration, but if someone adds a long running BPF program
+> (when I say long running, it could be anything more than 10us), and it
+> executes on a low priority task. If that BPF program is not preemptable
+> it can delay a high priority task from running. That defeats the
+> purpose of PREEMPT_RT.
+>
+> If this is unsolvable, then we will need to make PREEMPT_RT and BPF
+> mutually exclusive in the configs.
 
-Good eyes!!!
+Stop this fud, please.
 
-The trick is that this "RCU read-side critical section" consists only of
-either this_cpu_inc() or atomic_long_inc(), with the latter only happening
-in systems that have NMIs, but don't have NMI-safe per-CPU operations.
-Neither this_cpu_inc() nor atomic_long_inc() can be interrupted, and
-thus both act as an interrupts-disabled RCU read-side critical section.
-
-Therefore, if the SRCU grace-period computation fails to see an
-srcu_read_lock_fast() increment, its earlier code is guaranteed to
-happen before the corresponding critical section.  Similarly, if the SRCU
-grace-period computation sees an srcu_read_unlock_fast(), its subsequent
-code is guaranteed to happen after the corresponding critical section.
-
-Does that help?  If so, would you be interested and nominating a comment?
-
-Or am I missing something subtle here?
-
-Either way, many thanks for digging into this!!!
-
-							Thanx, Paul
-
-> Thanks,
-> 
-> Mathieu
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
+bpf progs were preemptible for years and had no issue in RT.
+tracepoints are using preempt_disable() still and that's a
+tracepoint infra problem. Nothing to do with users of tracepoints.
