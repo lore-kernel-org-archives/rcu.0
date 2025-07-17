@@ -1,255 +1,207 @@
-Received: from CAN01-YQB-obe.outbound.protection.outlook.com (mail-yqbcan01on2112.outbound.protection.outlook.com [40.107.116.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246183FE7;
-	Thu, 17 Jul 2025 14:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.116.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752763613; cv=fail; b=WmJBkv5QEZcw14PtHwOXe22rsMVD1OldSQ3Tw+HF7RSwc141sGjTlXMTUpRAjebgTW61C9b6pvE6gF9A2CONICRM8CzZTYzIST6ACQCl7SoYYhX/TjRmM10am6g/v1jqYfp8enRsSrJoNJ/uln/chMQas9AQo0/+wg+OGCrzUB4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752763613; c=relaxed/simple;
-	bh=0m6ES/0jnEo9d8i2roZlPKIKbHbbUTR15QBcnn6cGu0=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=bc81zoBpluwZee3Q0VOHWr3YTYWU9FfpR7D90valxKQtpmJro55mmTDLDAfUQrWvPVxk1um+aX+5cXP+BOa8NSWAhDJzQEsLLJhhnn1tv9zpcwXWTdGWSj5g3zig1JDAENrEFeQe36h2Km9H3GQ9p4MT9w7TV0xCUJyEx7uZJ7s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ZmCdPzWg; arc=fail smtp.client-ip=40.107.116.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA791EF363;
+	Thu, 17 Jul 2025 14:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752764262; cv=none; b=AO1w2OZ5HtZOUSQ1g1APeX9Ix/XLvMNVnNKqlnrmxZh4dfxMe/p7bZeBqcZnTb8AFoJX4MMbeKZ9xFUTpYEmdQdYIcg50ZjgLQxarpg5QE0TEGBPDNSv6wkyBTxqugTYL5aQ7VMG3DfyePdqSZVYs6fx5aWpRUNbGjAjOrkBWy4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752764262; c=relaxed/simple;
+	bh=TjJPZjE7LvO6jqYIZfxsmaHsQ8zr8JbRj3GYZAqIXh8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EBbGYW/vu3cdlABH42JBGFM/a8L4hvTv9z7CiMCMGd2TCvNy0gU6T1WD9TlC+HvIkomTmG3wdY+hs78THUeSlmet8nvjQczuoiacLoNMAEJpXg2lOaFK2CqdGRsEzm+Ux8yQi8//Z9C1zkKnUK0cjJIBG8I46gG3G1hW69aMxZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ICM5/suN; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ZmCdPzWg"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vjgAcQCLfskrT+2ownxygeM+YhFv++xs2Dw/vq+wGJBbz+/xOKIIbv/o4uJzfKwShHWKYC510QggKifcAt1cQY0VCw92wRLEVVtdAKGErKp67nsg+HGCjxcLMShOrWVUYB+GvlC7m9fVxR5eBUpvO051VbuuzzOkh3NpEv/UR9JDXd4bkud0pa0TiQVWx8zRYY5wdwu8ScgWMN/fh0bx+2E3OfJt28Z56D3tJj+fpk+/zUttbpxUmn8Dd4ARW2Cv0vyyru/Mg6s/m75iyqIAeH8Es75+x7hFmUHyyd0QTHx02PSiymmYvLyKICUiynTJZwFjKwu3StuBohBf4ZZ4MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xEWmP9t6CWOdqUL7s965YL0bgswbgT9Sf8l7ISttahQ=;
- b=XZXmK0oF4C37W/M7jjcogdsj3drkAoDbAl1oJMtc/Z4xYKws+MaXXhXQMOixacPBtnPQGxJIi1OSd5v/PZJsO8aFneEnyEDTOZN8CAB9LXlNu+OBBkIxICGWjARm4xsd9faHkCKN/sOtm2Vt5M6poYkCs9E89uwngmfUy3G/acuLAr+LL03PT/Vit7kY2JuHeT+5flvyBN8slJlCXuGy1R5fNaAEyey9+3fPYxXPhxjRyFqDJST7Di2C/5zkm5Rm2n7YgvuNvwLfcnxcrdjjXV4ai4Zy0cZ4xfZEbWAg7WWB1zkDUdxTEwbvzGyTrPE34nvSMzRuS6IyzRDr33pLKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=efficios.com; dmarc=pass action=none header.from=efficios.com;
- dkim=pass header.d=efficios.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xEWmP9t6CWOdqUL7s965YL0bgswbgT9Sf8l7ISttahQ=;
- b=ZmCdPzWgCLmNrAqT2pzOpHtdWD47qVE8+lmfzZ5INxb5zk39lf8Opd974ann4k+dPoTuFrXfcJ00L39xWGn0sN7FxL844aiHQiT1XJJThO+b4wfnZbYBangtGuF6naV5JS3m4oiJ97oQWhRtOYfoeKG4Dew4Q+m/t71xfeYWVc7oODxFDVZhjW+QeE3rb0nzr0vJGyqB0KtPztsjlybcHPenqG3ZEL3Mb7GQxF2yQ1XiUdDq35UpyPgLta6DE4cbVQK+5PmOAyp4CiWRin2uUr/wJ/lKPILXn07YzVbMpzALfeFA4KySZ5+ShkBpgn69dzIg6FceuOPv45Zo8Dbcaw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=efficios.com;
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:be::5)
- by YT2PR01MB5903.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:57::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8922.39; Thu, 17 Jul
- 2025 14:46:48 +0000
-Received: from YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4]) by YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- ([fe80::50f1:2e3f:a5dd:5b4%3]) with mapi id 15.20.8922.037; Thu, 17 Jul 2025
- 14:46:47 +0000
-Message-ID: <2d9eb910-f880-4966-ba40-9b1e0835279c@efficios.com>
-Date: Thu, 17 Jul 2025 10:46:46 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: paulmck@kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Boqun Feng <boqun.feng@gmail.com>, linux-rt-devel@lists.linux.dev,
- rcu@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- Frederic Weisbecker <frederic@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
- Zqiang <qiang.zhang@linux.dev>, bpf@vger.kernel.org
-References: <03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
- <fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop>
- <29b5c215-7006-4b27-ae12-c983657465e1@efficios.com>
- <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop>
- <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
- <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop>
- <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
- <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop>
- <20250716110922.0dadc4ec@batman.local.home>
- <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop>
- <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
- <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com>
-Content-Language: en-US
-In-Reply-To: <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQBPR0101CA0280.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:68::29) To YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:be::5)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ICM5/suN"
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-45555e3317aso6665405e9.3;
+        Thu, 17 Jul 2025 07:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752764259; x=1753369059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LJgeoNdML9iq51bMxNPeinGnnB+OEInhGxDVHOGA/Qs=;
+        b=ICM5/suNws9xUoun8BdR0hfUr8i7wvfPDAqOT5CMpnIUQEuDrKx4E5SGQBRxmXEkHH
+         kdTO/DK/sV2QCB/+fuABVvhWTBV2FBdJA+ChuHChfKu1alBcxJ/VU1/Nc+VmwGRvAH3g
+         9XyPnA4pcCkJlfW2jp2zDeLKAVyQTDWtbyFqDKOZW9OlCz5KJclT9YFxpieV4LZt4/YU
+         UcsALsIXrAXGoffE7z3appohU77Mzb+pbiUVZj/FUDiCHEgnbdylz7SGUmY5NmD9uPGV
+         SSTUsdtxB7fg3AI9Y8bvGex/WknPaeJJ1Q12f7E6qrhVzii0n67bDkAZKqkDqhTA3/Fz
+         OKiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752764259; x=1753369059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LJgeoNdML9iq51bMxNPeinGnnB+OEInhGxDVHOGA/Qs=;
+        b=QVaIY8h2yGDHJQMcPj2LQkCK79lFOYWzIINzIAkbQHQAy2/3x1Vaq6V8BIGZNMRHpS
+         qdVGqpKtoG/KYD6VyPtQtlkUjDsfJ5vQuNnyWApCncMkDITh3uQS/1cbMTT4ddA2WQ6+
+         Plp23PxHGDCohRf4YAU55D04tQqTfwNfp3cJU36DkPdT1/672bWOy+x21L99xH0GYb8l
+         A/PJOqV4+/zeAije4B5mXECPuDZr9eFboW+9wwPDSsIWL8m26JZ2hSv44NtFVFCTWQC6
+         vkSw3MRySNLWl5jqCijG7+ykJTGtIHCEfyLt7aE5t0u4LqonSqx1MMCje6bat0QBlOOd
+         0bTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVpdpDIK8xfhqRBGg5H86bYiHu4U/iC+qoOHzo5maQoMaTIEHmSjVgnGSNCxnCnv29pK4bd@vger.kernel.org, AJvYcCWoDFCRreMBsGZ+Bx+/SwzBAzKzwJUY0cPLKU3Fukly8yB2Rlh4/zzPkJFqGOhuBqwAEkE=@vger.kernel.org, AJvYcCX14rc4t5WzIJ9RhEdEiQSS/mMSx07tSYN0z4Z2s5nC/v1ZI0voY3+bAJj2bk0DbItNUJbgLaxiBK6vxSHeNO1Pv3CQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCGFejml0D0CfK9w5RYIoEt7lgY4yis7nC5KYai5tRY5VtVBFr
+	YD3oztzgJrtHn2/gzOWzsuvThxFTJIOzxlOFX9Cxipt7KN44mWk13EmeWr0PTZAS0Xs1Isy068v
+	xkgKE9tmC80htkg1+Vd9xfJiAoBwC43o=
+X-Gm-Gg: ASbGncvLzR0MIc89202YN+9sKYLZJbF+9JDivR9/DLT3/cE+yQYRnu/XEkuvIKNDdnu
+	KTgAc0OVhOTd5k3I0W0aJcSG1eH+KmGeLr0AKUTgdXp+wBUCnwJ6KWIbYdS1HKoHDX+NtgOixcS
+	TApexDITQ0rrEJHLlXbGaV/sAIe0iD+dvHhBUB4WlZj0MOfQfWenIKhwQovIjf+SqDcspWM+n/6
+	VjwJs9trbEL+X1My+aWvegCg6YnOjL9Kg==
+X-Google-Smtp-Source: AGHT+IFVOPWj5ugE6UY0h+KfdvbEFS7sthBRunlQl5uPPpmwXPciExUEPVS27TcOmmVOb9O1RSZY2960vCa1Erl09Dw=
+X-Received: by 2002:a05:600c:4e4a:b0:456:28f4:a576 with SMTP id
+ 5b1f17b1804b1-4562e391fb0mr70054165e9.27.1752764258422; Thu, 17 Jul 2025
+ 07:57:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: YT2PR01MB9175:EE_|YT2PR01MB5903:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85748041-b3dc-4db4-a577-08ddc540c1be
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Q1Job2IrbWNqS3dhaFh4SHlPZ1RGSjRreC9JRTIvVDdYakc1b0lRMy9Qak1M?=
- =?utf-8?B?U0Rad0tlM2ozb1gwS1ZvcUs3YzEvZURCR0E0RDJiK0k0NWx5ZUlUaGlqS3Bn?=
- =?utf-8?B?elpzOCs0UFU3OVhQNXRuREQyZUZwZ0RCZmM2V3czV1hjVGZCTEJ4WGtmVy9P?=
- =?utf-8?B?NkVzbVNvMlZvOWQwZHdSa29aK05zaTNiZ1VFbUdubFZPVHh6ZFFqTjhmODJP?=
- =?utf-8?B?aWZEaExscnZrbm9LbUtSNCswZ0Y5bzlkSXJnRGs5SE5RWkxobGFIVVpFV3c0?=
- =?utf-8?B?Tkh2cVZvK3ZmUHpGYVNoTDdxNDBGc2NBWUpnNXdlME5VdzMzUXlRaFRRaG1w?=
- =?utf-8?B?WGR6aDZFUVIweVJHaTNCNnQzUWd0MFVzK1AyMllQOWZCeFBXdlo5aWNmbWds?=
- =?utf-8?B?cDg2MFJBWlZyeTFqMXJBRVhYWCtzVU9SUmw2TXlBem5yQnhHb0FLNU9WV0kr?=
- =?utf-8?B?RnpXR2IyMWJPVXlham4walpvUUIrYnRacUV3RzZXYVU2dGMwMkVIZGVsdEZk?=
- =?utf-8?B?L2lSQ3l1bmNvQ3JRbFdWbHo3UjAxTmdMT2d6M1R1LzVTYnBKWEg5KytQZlFG?=
- =?utf-8?B?L2YzY0lYMk0ycjU4MVRCRlVtdElkTlZ4RUx1Z1hGKzVkSEM2aHBhK3B6amtR?=
- =?utf-8?B?Vk5hN3ZtYTI4eDJlMC9ENEgzajBpYk9UQ250UXlIM1JLODVPZXdORGlwdHVI?=
- =?utf-8?B?dnhRVHJGK3NnMW1wNUFKT0JncHNpcndpeVNoZDZHRkE2UVIra1ZHQmRGWFlN?=
- =?utf-8?B?QlZIZnYzalhMRkZmNExyamdFa2xsbStFUjVUREJyRFlZSlEwWEZnbDdXd1hP?=
- =?utf-8?B?TEx1MkcybWZZZWVPQVhmSnpITGJ3NjZiWUkreC9JSWVzeUdhOW9uSVFnbzdY?=
- =?utf-8?B?dDFwOWkzMlFSOGJ0UFRkc04rbzByQm11WGl3N1BkaWFTdWJzRTV2WHplYmxK?=
- =?utf-8?B?NTN6WXdPek9kZ2lIV1JYdnQ3ZFVmNGNhSUZTaEVDeFJVWDJLNGcwUU9UdlRR?=
- =?utf-8?B?YXRJZ3MzejhnVFRaQ1lYOVkvc2VkeCtOZDJEb2oxaFlHU2gwNVZLT1pxbE5w?=
- =?utf-8?B?M0pwM0FDZ21EeXJKRTM5MXM1dnBRbFRCSnF3dGNvWEx1V0hKRCsrN1l1QXUx?=
- =?utf-8?B?STFNdUNEVHc5RmVDSzZBd2tKbTNxSURIQnNHNThpVHBEV1NkR0c5MU9hZy9W?=
- =?utf-8?B?VkJVejgwbFNsZVc1aUptYjFuLzZNY2drMnBZYlR5TlBiWHFLdW1SK1EvYkVo?=
- =?utf-8?B?M3UyblpPV1M0L2xXcjgraVVTMStveGpuU3p5c0kyem1oZHZiVVVXZWpid2kv?=
- =?utf-8?B?YlRYajdFQklVRXdCUjc3RFpjUnB3MlI1Y3JGZnFhVm9kSy9idStOdFg1dWxU?=
- =?utf-8?B?NjFVUk90aFk2T3ljWG13MCs2MGpobFpmeFE1eDdSQ1ZXbWRDNEJLSjYwUEo2?=
- =?utf-8?B?SlJ1ZXAzV0w0Nm0wejBLd1llYWFCTlpLamxXTFY4eEQ3RUY3dVJjTFhJdDls?=
- =?utf-8?B?ZUF6UThaa1pZdnNtTUg0TmZ4aXNIUlRiRzdnTFVWM3lhbk03Zmg5UE1FTWl3?=
- =?utf-8?B?bm93VFpBazhZZUxQR25rb1RHd25aV2c3Z1YxQlREMnRkTmVhZFA4eFBKazBt?=
- =?utf-8?B?ZlpnN1BRb3VXWnFnMXlackpneEJnUWlNMno3MUR3UTMyQkZWVTV5YTMwa3k4?=
- =?utf-8?B?QkNDanpRTU11aFhwT1BNOXBOem5iMCttWkJWVDViWUozTjVLbnFaaFBxcW9J?=
- =?utf-8?B?bnA1VXZZTjFQSy9yZ3Y5amlua1prKzlFY0JQKzE0L2lBclIwZWxYUnZOdUEr?=
- =?utf-8?Q?MD53SjWeGcVpn+6hy6pLhXnusDUB6bH50W9w0=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eWZpTGoyVEx6WWEza3RVUFJrSlRVKzU2TUlaTFZMQjJXSDBoc05nb0ErTm9G?=
- =?utf-8?B?QkQvVzRZU0dITHlrZTd0Y2VGRUNrSFZYYmErVkxDMmltcWtmRnd0dWVBeU0z?=
- =?utf-8?B?SWlmMjdBR0FkS3RsNFd5dnVFNUJqWElYYk5OUFpldlFycXdQbVBtRzBHMm1x?=
- =?utf-8?B?R3YybmEyR0N5aXpza0RHWks1bFlGM0QrdmZBV3phKzN5MXVmNkViVDd1aVRY?=
- =?utf-8?B?M3djZmdodjlOSStlMVBoaG1uRVZrMCtMT0tQeUxMNXUxamtWS2tmNU01R0sx?=
- =?utf-8?B?NmhIWXdHemlNcFZZZkU4RHpUcUh1blpKTk9KSVlFR01JZEpwWnQ0SUJJMWxx?=
- =?utf-8?B?dytEdWw4RDBPcEtKeGVkMzlncERaUjcwY0xFcmg2Szd6MmNFMWhLc3F4OVF2?=
- =?utf-8?B?WmwrbGlBUVVTTEJUM21WdWZpTlBJSTRiS0hxTXNZQ0pRSzJXYlhwMG9KTnE2?=
- =?utf-8?B?TFM2NmsyRngvSFBaUnJ5c3d1dWJETXh3NXdYK2t5Mno4THJ5bTNMT0xFdHJW?=
- =?utf-8?B?UjZJN3BCOGRENXlIazlBcmF2c0dPSHBpU2tqKzM2QytLdEZpOWNvSG10akkv?=
- =?utf-8?B?ZU5JNTM5bmUzcGtYMU0xeGx3WWNHdjZ3eWk1L3pqRXdPbVg3WWx6U1VYNEZK?=
- =?utf-8?B?SmVZOUFyNHd0Qk5OZ3U5RTRDazdnTUl6WmNKakxGQWU1TzRzNU9UMWRJRXpX?=
- =?utf-8?B?SURxcThDZVZueGtLNG1PNjF4SnJJQlEyaXRaYWRmMXFaZG40a3hjMy9kSlBz?=
- =?utf-8?B?b0NrNkpXUEJ4VUZXNFRHN2NRQklWR1ZUZWFYaUtzTWFIYWxraGpvblk0enJv?=
- =?utf-8?B?eWtNdUtMRkdOUGl0U3hPalUxM0VaZC80SDZzK1VJT1dBN1h2VCtmcFVpTXdV?=
- =?utf-8?B?VzVidVYxNnUwWHFVM3NmR3JONjJiREF0bm01eU5oT0s4clgzbGNNdHlGaE5X?=
- =?utf-8?B?VllUWHRacGRYcnhNZ1dsOEJIdDU5YWR4Wk1KU3dJZTRWejVtb3FGQ0grMmxO?=
- =?utf-8?B?ejIwb1BTa1dUR09HTHFuUC9yd0RydGVUVG9EajJNOUZlWlBXUlF1OHU1a0tU?=
- =?utf-8?B?c1E2WTR3T2d1SzR4QWdBd2d5enBHSHFQV0JJNVA0ak8zWGhHUVdzbk14NkQ4?=
- =?utf-8?B?eit4bE53TmJ0MW5MemM0ODlKOHNRNE9hRm1wMHhXdnhnS3ZqaW0yYVRDcWdU?=
- =?utf-8?B?NllYTEtUeWJuNzNEVCttOXJKN2RibWVHa2J3bXdXU0xVdjFIVnVKYTA3cFFp?=
- =?utf-8?B?UDJoU1BHWGdyWjhLSlRIKzhNOXhMbHNmenB1a0lQTlAydG14dHhvTlJCeVJJ?=
- =?utf-8?B?OHc0ZVJiNk90Mjc3REo3VWMrc1lOdmQ1am45djg5aVNETjFTWmxZd2hxUlA0?=
- =?utf-8?B?SWNBbmlWZjVhZmVzLzRKellZRVp4L2lKMXN5cHp0R1F4RERHa2dBRyswRlpr?=
- =?utf-8?B?VUJrNUdRaFlBUElML0Zybnlhd0wvcHduMUdlamRMVzhqcDNFRlp5UkJSRldL?=
- =?utf-8?B?dGt2WGcya1dYUFh0a1dpSE1mcVRqdHRxWkFxazFIcjJ1alp4RDVHRWZJK1pL?=
- =?utf-8?B?QjMrWkErbWgvc1BVSG1GUnVqUTlDUVptMDhnOE1IV0tXWGFmQ1Z0MytsVFZN?=
- =?utf-8?B?YkIzbURSWGFCWDRXaXo4cXRvRlRROU5HWFkxWHV2MjhFa0djVDdEMkY5V09X?=
- =?utf-8?B?Mms0eVkycE1wVXl6Vmh4SE1Xb2NoazBUamlqZHczUTJkMkdXY0VuR3pQT1JG?=
- =?utf-8?B?cUw3c3FvcGN6aHNQZzBsbVd5dm9hRi96d2VYNnE5TFcvdHZWR2MyV0VvaTln?=
- =?utf-8?B?N0JmREdwbUE5VS9vaCtzTFRDaGJCZVJmUjZEVmlDWXpNY092Lzd4Y3RvREpl?=
- =?utf-8?B?U3ptT1FKbEZQWWVxNzNra0ZOVE5WVjU2N2FWY3V0Y1JKQVAxOUVNY3lEYVRB?=
- =?utf-8?B?SDhXVDJ2bzJMcTY0TDFQUkNnUEppWW1mT0gzWkh1a2FFbkRPVlJwd1Q2anUx?=
- =?utf-8?B?VHg2NzA2SXpkaU1hKzZqRG05QXBpYUE3RFViY21wYW9NV1g2c3NKWmZjWWNz?=
- =?utf-8?B?UEZyOHNZdkpsNlgvRkR2QSthaEVwY2g0MVYzVWtGem9XNEhBeFFzUFMrb1lq?=
- =?utf-8?B?ZFhLbzhmT3lsNmphQzVVWXpBWGZyZWdycTQrallESFhqZFZ3VEhyOWREekwv?=
- =?utf-8?Q?Wek7DayHfndEsrsG/Pyz+lg=3D?=
-X-OriginatorOrg: efficios.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85748041-b3dc-4db4-a577-08ddc540c1be
-X-MS-Exchange-CrossTenant-AuthSource: YT2PR01MB9175.CANPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2025 14:46:47.7027
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4f278736-4ab6-415c-957e-1f55336bd31e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uF0pjSFGWj149sjHp2Rwbp+J0D+X5t2jhF6c9jEeVR5BrVBAL+KAtNnyLGozng7SBlZrJiVZl1OAsSb3DHRmrszfWKxZYv7YIg2GjPaVfMw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT2PR01MB5903
+References: <03083dee-6668-44bb-9299-20eb68fd00b8@paulmck-laptop>
+ <fa80f087-d4ff-4499-aec9-157edafb85eb@paulmck-laptop> <29b5c215-7006-4b27-ae12-c983657465e1@efficios.com>
+ <acb07426-db2f-4268-97e2-a9588c921366@paulmck-laptop> <ba0743dc-8644-4355-862b-d38a7791da4c@efficios.com>
+ <512331d8-fdb4-4dc1-8d9b-34cc35ba48a5@paulmck-laptop> <bbe08cca-72c4-4bd2-a894-97227edcd1ad@efficios.com>
+ <16dd7f3c-1c0f-4dfd-bfee-4c07ec844b72@paulmck-laptop> <20250716110922.0dadc4ec@batman.local.home>
+ <895b48bd-d51e-4439-b5e0-0cddcc17a142@paulmck-laptop> <bb20a575-235b-499e-aa1d-70fe9e2c7617@paulmck-laptop>
+ <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com>
+In-Reply-To: <e8f7829c-51c9-494a-827a-ee471b2e17cd@efficios.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 17 Jul 2025 07:57:27 -0700
+X-Gm-Features: Ac12FXy5AFevRfwhfAmaQeo4LydVWcXQknsIDwZ-nKzOVg4wL8MqRTNLukqIhwQ
+Message-ID: <CAADnVQL7gz3OwUVCzt7dbJHvZzOK1zC4AOgMDu5mg6ssKuYU6Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] rcu: Add rcu_read_lock_notrace()
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Boqun Feng <boqun.feng@gmail.com>, 
+	linux-rt-devel@lists.linux.dev, rcu@vger.kernel.org, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, 
+	Josh Triplett <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025-07-17 09:14, Mathieu Desnoyers wrote:
+On Thu, Jul 17, 2025 at 6:14=E2=80=AFAM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
 > On 2025-07-16 18:54, Paul E. McKenney wrote:
-[...]
-> 
-> 2) I think I'm late to the party in reviewing srcu-fast, I'll
->     go have a look :)
+> > On Wed, Jul 16, 2025 at 01:35:48PM -0700, Paul E. McKenney wrote:
+> >> On Wed, Jul 16, 2025 at 11:09:22AM -0400, Steven Rostedt wrote:
+> >>> On Fri, 11 Jul 2025 10:05:26 -0700
+> >>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> >>>
+> >>>> This trace point will invoke rcu_read_unlock{,_notrace}(), which wil=
+l
+> >>>> note that preemption is disabled.  If rcutree.use_softirq is set and
+> >>>> this task is blocking an expedited RCU grace period, it will directl=
+y
+> >>>> invoke the non-notrace function raise_softirq_irqoff().  Otherwise,
+> >>>> it will directly invoke the non-notrace function irq_work_queue_on()=
+.
+> >>>
+> >>> Just to clarify some things; A function annotated by "notrace" simply
+> >>> will not have the ftrace hook to that function, but that function may
+> >>> very well have tracing triggered inside of it.
+> >>>
+> >>> Functions with "_notrace" in its name (like preempt_disable_notrace()=
+)
+> >>> should not have any tracing instrumentation (as Mathieu stated)
+> >>> inside of it, so that it can be used in the tracing infrastructure.
+> >>>
+> >>> raise_softirq_irqoff() has a tracepoint inside of it. If we have the
+> >>> tracing infrastructure call that, and we happen to enable that
+> >>> tracepoint, we will have:
+> >>>
+> >>>    raise_softirq_irqoff()
+> >>>       trace_softirq_raise()
+> >>>         [..]
+> >>>           raise_softirq_irqoff()
+> >>>              trace_softirq_raise()
+> >>>                 [..]
+> >>>                   Ad infinitum!
+> >>>
+> >>> I'm not sure if that's what is being proposed or not, but I just want=
+ed
+> >>> to make sure everyone is aware of the above.
+> >>
+> >> OK, I *think* I might actually understand the problem.  Maybe.
+> >>
+> >> I am sure that the usual suspects will not be shy about correcting any
+> >> misapprehensions in the following.  ;-)
+> >>
+> >> My guess is that some users of real-time Linux would like to use BPF
+> >> programs while still getting decent latencies out of their systems.
+> >> (Not something I would have predicted, but then again, I was surprised
+> >> some years back to see people with a 4096-CPU system complaining about
+> >> 200-microsecond latency blows from RCU.)  And the BPF guys (now CCed)
+> >> made some changes some years back to support this, perhaps most notabl=
+y
+> >> replacing some uses of preempt_disable() with migrate_disable().
+> >>
+> >> Except that the current __DECLARE_TRACE() macro defeats this work
+> >> for tracepoints by disabling preemption across the tracepoint call,
+> >> which might well be a BPF program.  So we need to do something to
+> >> __DECLARE_TRACE() to get the right sort of protection while still leav=
+ing
+> >> preemption enabled.
+> >>
+> >> One way of attacking this problem is to use preemptible RCU.  The prob=
+lem
+> >> with this is that although one could construct a trace-safe version
+> >> of rcu_read_unlock(), these would negate some optimizations that Lai
+> >> Jiangshan worked so hard to put in place.  Plus those optimizations
+> >> also simplified the code quite a bit.  Which is why I was pushing back
+> >> so hard, especially given that I did not realize that real-time system=
+s
+> >> would be running BPF programs concurrently with real-time applications=
+.
+> >> This meant that I was looking for a functional problem with the curren=
+t
+> >> disabling of preemption, and not finding it.
+> >>
+> >> So another way of dealing with this is to use SRCU-fast, which is
+> >> like SRCU, but dispenses with the smp_mb() calls and the redundant
+> >> read-side array indexing.  Plus it is easy to make _notrace variants
+> >> srcu_read_lock_fast_notrace() and srcu_read_unlock_fast_notrace(),
+> >> along with the requisite guards.
+> >>
+> >> Re-introducing SRCU requires reverting most of e53244e2c893 ("tracepoi=
+nt:
+> >> Remove SRCU protection"), and I have hacked together this and the
+> >> prerequisites mentioned in the previous paragraph.
+> >>
+> >> These are passing ridiculously light testing, but probably have at
+> >> least their share of bugs.
+> >>
+> >> But first, do I actually finally understand the problem?
+> >
+> > OK, they pass somewhat less ridiculously moderate testing, though I hav=
+e
+> > not yet hit them over the head with the ftrace selftests.
+> >
+> > So might as well post them.
+> >
+> > Thoughts?
+>
+> Your explanation of the problem context fits my understanding.
+>
+> Note that I've mostly been pulled into this by Sebastian who wanted
+> to understand better the how we could make the tracepoint
+> instrumentation work with bpf probes that need to sleep due to
+> locking. Hence my original somewhat high-level desiderata.
 
-OK, I'll bite. :) Please let me know where I'm missing something:
-
-Looking at srcu-lite and srcu-fast, I understand that they fundamentally
-depend on a trick we published here https://lwn.net/Articles/573497/
-"The RCU-barrier menagerie" that allows turning, e.g. this Dekker:
-
-volatile int x = 0, y = 0
-
-CPU 0              CPU 1
-
-x = 1              y = 1
-smp_mb             smp_mb
-r2 = y             r4 = x
-
-BUG_ON(r2 == 0 && r4 == 0)
-
-into
-
-volatile int x = 0, y = 0
-
-CPU 0            CPU 1
-
-rcu_read_lock()
-x = 1              y = 1
-                    synchronize_rcu()
-r2 = y             r4 = x
-rcu_read_unlock()
-
-BUG_ON(r2 == 0 && r4 == 0)
-
-So looking at srcu-fast, we have:
-
-  * Note that both this_cpu_inc() and atomic_long_inc() are RCU read-side
-  * critical sections either because they disables interrupts, because they
-  * are a single instruction, or because they are a read-modify-write atomic
-  * operation, depending on the whims of the architecture.
-
-It appears to be pairing, as RCU read-side:
-
-- irq off/on implied by this_cpu_inc
-- atomic
-- single instruction
-
-with synchronize_rcu within the grace period, and hope that this behaves as a
-smp_mb pairing preventing the srcu read-side critical section from leaking
-out of the srcu read lock/unlock.
-
-I note that there is a validation that rcu_is_watching() within
-__srcu_read_lock_fast, but it's one thing to have rcu watching, but
-another to have an actual read-side critical section. Note that
-preemption, irqs, softirqs can very well be enabled when calling
-__srcu_read_lock_fast.
-
-My understanding of the how memory barriers implemented with RCU
-work is that we need to surround the memory accesses on the fast-path
-(where we turn smp_mb into barrier) with an RCU read-side critical
-section to make sure it does not spawn across a synchronize_rcu.
-
-What I am missing here is how can a RCU side-side that only consist
-of the irq off/on or atomic or single instruction cover all memory
-accesses we are trying to order, namely those within the srcu
-critical section after the compiler barrier() ? Is having RCU
-watching sufficient to guarantee this ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+I still don't understand what problem is being solved.
+As current tracepoint code stands there is no issue with it at all
+on PREEMPT_RT from bpf pov.
+bpf progs that attach to tracepoints are not sleepable.
+They don't call rt_spinlock either.
+Recognizing tracepoints that can sleep/fault and allow
+sleepable bpf progs there is on our to do list,
+but afaik it doesn't need any changes to tracepoint infra.
+There is no need to replace existing preempt_disable wrappers
+with sleepable srcu_fast or anything else.
