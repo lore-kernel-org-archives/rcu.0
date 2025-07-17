@@ -1,207 +1,259 @@
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EADD2036F3;
-	Thu, 17 Jul 2025 05:55:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBC5277CBD;
+	Thu, 17 Jul 2025 08:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752731735; cv=none; b=uMKy5PsLxQMaXCGJriUu1Wg52p15eKSahX2AoU98PaYqxFGS7vgTbWD1Wx2caWXxNHRRBxNAtW6AHFouFqMfkFboz6d5/tMQBjAnjIBpvy9qNjJrA584+TNtK7fwrdNmEJK65JtA6uaJ+065wF2X07yn1jcVf4AoTSfq9who1t8=
+	t=1752739623; cv=none; b=ChuAyqu5L2zzjFq4vuq6izpCt0nw8XVe7z9JDbzea7zEQTF2LjICMohc7dALbBQ+WV8aRJ3URYFacqRzVqw+jAgjdr8Q6gQK8wO0QA4ruUuY8bgIsMRXULxSKlaMCpzP3lX4twXSbeiXEoVs/PhAhfyi7m/JjaSJQxdrmD19McE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752731735; c=relaxed/simple;
-	bh=Jqhxd7A/eWsqPdvJq92jsPu1g+Ra/P0fxg2zat3wFEQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JIQjpXsPL9a5gX6BXwDgZp53TL9mjVAmcg04npmhltf3MlZbk8fd9mnd+ujrxoWBtUS1Q63uTM39KWorLoMTvHNuLKj/pRlBinrisStdR/zmUO8irCJscU9o6LId52jCttmEermqTvWFk85Ay/cIhASoY9PAZOYVhMpsJCzXjLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=FAHqfX3f; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+	s=arc-20240116; t=1752739623; c=relaxed/simple;
+	bh=U3rEHkMFDVqeYNM1YK+WP0qvm2uVyLOr+spTs97POZ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=WtYOGT78w9i67T19RT8j/W/iXLUH6MVnIDE5QzY75z3s3481uoZx3vD+f58UN/jB9czZ0nv6tmEM4jT1m7WKdgJTEZwZTPfSjfRaKmCg0avpI4Bivt1f2rSLEpZIwXo0Xjcd0AEaxER2NBIYfSNH/IqZ8+RfzfLZNhZ8oH9IxrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UuJZK+r0; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="FAHqfX3f"
-X-UUID: a376d29662d211f08b7dc59d57013e23-20250717
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=PWGJHWebyTPRG8s498ziY+Rf4TwzqDFkjnjk6ovCQdM=;
-	b=FAHqfX3fatyEsyyI4hbPGsuDL8slBL94GBE60G/40eYO6PBU6Rwf/6bP2FD22i7gX9EvWD4kbHv6O9dlPoMJ5srGBtvfklVk4f4YrcdW4o6fkMvh2udAOEul2Bb4N8uDdvtOczU+nGaWLHoDZbzzLy3avRkkT2TpHFRIeZ5ag7A=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.2,REQID:0425e4a5-199d-413f-b624-76d79a0b8907,IP:0,UR
-	L:0,TC:0,Content:0,EDM:-30,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-30
-X-CID-META: VersionHash:9eb4ff7,CLOUDID:07a61a73-f565-4a89-86be-304708e7ad47,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0|50,EDM:2,IP:nil
-	,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:
-	1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: a376d29662d211f08b7dc59d57013e23-20250717
-Received: from mtkmbs09n1.mediatek.inc [(172.21.101.35)] by mailgw01.mediatek.com
-	(envelope-from <tze-nan.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 354623613; Thu, 17 Jul 2025 13:55:27 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- MTKMBS09N2.mediatek.inc (172.21.101.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.39; Thu, 17 Jul 2025 13:55:25 +0800
-Received: from mtksitap99.mediatek.inc (10.233.130.16) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1258.39 via Frontend Transport; Thu, 17 Jul 2025 13:55:25 +0800
-From: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-To: <rcu@vger.kernel.org>
-CC: <bobule.chang@mediatek.com>, <wsd_upstream@mediatek.com>, Tze-nan Wu
-	<Tze-nan.Wu@mediatek.com>, Cheng-jui Wang <cheng-jui.wang@mediatek.com>,
-	<Lorry.Luo@mediatek.com>, <weiyangyang@vivo.com>, "Paul E. McKenney"
-	<paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, Neeraj
- Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
-	<joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
-	<boqun.feng@gmail.com>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
-	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, "Joel Fernandes (Google)"
-	<joel@joelfernandes.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] rcu: Fix delayed execution of hurry callbacks
-Date: Thu, 17 Jul 2025 13:53:38 +0800
-Message-ID: <20250717055341.246468-1-Tze-nan.Wu@mediatek.com>
-X-Mailer: git-send-email 2.45.2
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UuJZK+r0"
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-234f17910d8so5694295ad.3;
+        Thu, 17 Jul 2025 01:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752739621; x=1753344421; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9tsmt0+LF0mgELoIzcxHsmAHqp6eKZ3MWd8Pt639i0Q=;
+        b=UuJZK+r0CvJViRbZMiFvJE/YKPeo+l+r7t1/8LhSQRhAh3Bf0HJXcC2DkvxeqMgmMB
+         7syEOdSi53GypkoGuTTemhH/OlXmPrjM2zuoRbSETKdXtk9oUykuiBdJi7UERglB5nuU
+         IIFBHPAkobXM+/JOoDYiekcJR5D4AifobM9z1IkTFuBmdXCQbA1FIBwY8M4DzljgeDT4
+         5FH2c/XHUn3412wa3RT4pbVwHHXyfiBc4+C74SFVS8tw42tcmyVhfN19O0SJZG3sK8XX
+         jgMnzrgeGXlwonVdW7vUTW+fTpftXMg8DLtsK05cBoaPOoIB0KWWvpgqxYRBzfzY53Km
+         d40Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752739621; x=1753344421;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9tsmt0+LF0mgELoIzcxHsmAHqp6eKZ3MWd8Pt639i0Q=;
+        b=EvZGXC2TPpBFlMRk9iAsEkTUSw2WhPTQBXQzw0IkhLq/uZfUdVVsvoqTBil/s5gtSk
+         xpP3M51sNHXc8o7BMHTibG/gYDsR48c3h7/L1FmNpS89iSnHgrtNY8yescu++peMc4M8
+         3LVs/ILV9Wtg/EyEsVNtxppMJw0yq2IJWeuVj8p3avNwf+2fgK6WCmQv9ASxIwHU2GwO
+         ZdSS0oguHocPTjcFR8OsDE6XNCAUjP+dbuzY1nSHh2LoZe3rihdX9AHElOBtziV2z9UG
+         Sz82nWvxzOchN5m/2ENCyjawJOyHEQong6h388E8uMow8iZsU2xASBOUe3d7/I9vMex+
+         yayg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZGTlJt7ef8HVRhoryuhEw7EM1nXLRaCZru2ruCPcdGegHugUX7rEtfqcx45KkK9QUS0P1@vger.kernel.org, AJvYcCVG8G25F4twLFqdLb/Fi86LeNHatVMnCaW8T6T2Jo3N9tagcK7fa2rkzhYnc7k3g1uxVplnO6zcGCMs@vger.kernel.org, AJvYcCVnTkFubW/nk5BcRQM/wT191bI45LnusyUSU3GQLCGPDpe7UdSSnb/lBCIQ82VZtNuO98eQ3i/6tbZI5A==@vger.kernel.org, AJvYcCX4fx1Pcn1qsCYfkpZz9Uu9khr3XyULiAcxlny5zsKfUeRBBDUqFfu//lxJY6QOVp4eZ1U=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6ihvgvCYTE1iv6NYZHWkWVbHAjth2o7PR+6HWbEUclTlKtXEr
+	S2jTcK1qlyE4Odxm9TNT2Gc0DrlFX0EhPNkkZOb29gjynxZRN8w4IrVl
+X-Gm-Gg: ASbGncusT2i5J64zo/9qRAR+c1CkocvIEkBuC7u7AhnHG0sUQX5+Lxk8PXEO6luXick
+	bc9j3Ze4qceJcWl7xyYwS034xMfX3IKdkafz+rdZCKKw5K7ANLnMpFBkDYb0X+Ifam8ujt+iO4G
+	VY6sHXxV4A1IYAN7TjWNG6l365hVsGJtYuQU9lTaiD+FYi2+2Hr3wahib87hTI4dCai/ed8wsX4
+	ypF5BW4XSyNroqsVWHNIdqygkAYsY6Qt1jTGvyeJgRxDJcWkw1RxT8HoA452MqJRjI/l0e7Ywpj
+	pKjinD8pxuIuQOk0FgXuPFzm2fykUUxeQKD9vrt5Jns/6pP5bj0az51VH6jWPBbbLuy6SFfmxZ4
+	tJveXvO7GO0TSIFLIqB2P1w==
+X-Google-Smtp-Source: AGHT+IFDRHT5gKk69iHNgFOk4RqIEj9LmjlaBFo7IYhVrJNGWIeWcgsmkpyoZXnBkXuTx/sDripipA==
+X-Received: by 2002:a17:902:fc43:b0:234:f15b:f158 with SMTP id d9443c01a7336-23e24ed60f5mr73096245ad.13.1752739620354;
+        Thu, 17 Jul 2025 01:07:00 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23de433e527sm142131915ad.187.2025.07.17.01.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jul 2025 01:06:59 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id E0828401640C; Thu, 17 Jul 2025 15:06:53 +0700 (WIB)
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux RCU <rcu@vger.kernel.org>,
+	Linux CPU Architectures Development <linux-arch@vger.kernel.org>,
+	Linux LKMM <lkmm@lists.linux.dev>,
+	Linux KVM <kvm@vger.kernel.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,
+	Luc Maranget <luc.maranget@inria.fr>,
+	Akira Yokosawa <akiyks@gmail.com>,
+	Daniel Lustig <dlustig@nvidia.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Bagas Sanjaya <bagasdotme@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	"Mike Rapoport (Microsoft)" <rppt@kernel.org>,
+	Changyuan Lyu <changyuanl@google.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Xavier <xavier_qy@163.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Maarten Lankhorst <dev@lankhorst.se>,
+	Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 2/4] Documentation: atomic_bitops: Convert to reST format
+Date: Thu, 17 Jul 2025 15:06:15 +0700
+Message-ID: <20250717080617.35577-3-bagasdotme@gmail.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20250717080617.35577-1-bagasdotme@gmail.com>
+References: <20250717080617.35577-1-bagasdotme@gmail.com>
 Precedence: bulk
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3923; i=bagasdotme@gmail.com; h=from:subject; bh=U3rEHkMFDVqeYNM1YK+WP0qvm2uVyLOr+spTs97POZ4=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDBkVa5MTHyX29kj/kI2qCgg0q/lUFHmwhit6pT9jlmLez YUFX+d1lLIwiHExyIopskxK5Gs6vctI5EL7WkeYOaxMIEMYuDgFYCIp1xgZVvSb3tv6Zh3vIYZL 82sr7tezqahkng65dqrq902+n6fe7WNkOLPqpLfAjdMMlme+n+0JF5yQ7jrL5c61eUlnF5yfMm/ CXQYA
+X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
-X-MTK: N
 
-We observed a regression in our customer’s environment after enabling
-CONFIG_LAZY_RCU. In the Android Update Engine scenario, where ioctl() is
-used heavily, we found that callbacks queued via call_rcu_hurry (such as
-percpu_ref_switch_to_atomic_rcu) can sometimes be delayed by up to 5
-seconds before execution. This occurs because the new grace period does
-not start immediately after the previous one completes.
+Convert atomic bitops documentation to reST syntax:
 
-The root cause is that the wake_nocb_gp_defer() function now checks
-"rdp->nocb_defer_wakeup" instead of "rdp_gp->nocb_defer_wakeup". On CPUs
-that are not rcuog, "rdp->nocb_defer_wakeup" may always be
-RCU_NOCB_WAKE_NOT. This can cause "rdp_gp->nocb_defer_wakeup" to be
-downgraded and the "rdp_gp->nocb_timer" to be postponed by up to 10
-seconds, delaying the execution of hurry RCU callbacks.
+* Sentence-case headings
+* List API functions and their semantics in bullet list
 
-The trace log of one scenario we encountered is as follow:
-  // previous GP ends at this point
-  rcu_preempt   [000] d..1.   137.240210: rcu_grace_period: rcu_preempt 8369 end
-  rcu_preempt   [000] .....   137.240212: rcu_grace_period: rcu_preempt 8372 reqwait
-  // call_rcu_hurry enqueues "percpu_ref_switch_to_atomic_rcu", the callback waited on by UpdateEngine
-  update_engine [002] d..1.   137.301593: __call_rcu_common: wyy: unlikely p_ref = 00000000********. lazy = 0
-  // FirstQ on cpu 2 rdp_gp->nocb_timer is set to fire after 1 jiffy (4ms)
-  // and the rdp_gp->nocb_defer_wakeup is set to RCU_NOCB_WAKE
-  update_engine [002] d..2.   137.301595: rcu_nocb_wake: rcu_preempt 2 FirstQ on cpu2 with rdp_gp (cpu0).
-  // FirstBQ event on cpu2 during the 1 jiffy, make the timer postpond 10 seconds later.
-  // also, the rdp_gp->nocb_defer_wakeup is overwrite to RCU_NOCB_WAKE_LAZY
-  update_engine [002] d..1.   137.301601: rcu_nocb_wake: rcu_preempt 2 WakeEmptyIsDeferred
-  ...
-  ...
-  ...
-  // before the 10 seconds timeout, cpu0 received another call_rcu_hurry
-  // reset the timer to jiffies+1 and set the waketype = RCU_NOCB_WAKE.
-  kworker/u32:0 [000] d..2.   142.557564: rcu_nocb_wake: rcu_preempt 0 FirstQ
-  kworker/u32:0 [000] d..1.   142.557576: rcu_nocb_wake: rcu_preempt 0 WakeEmptyIsDeferred
-  kworker/u32:0 [000] d..1.   142.558296: rcu_nocb_wake: rcu_preempt 0 WakeNot
-  kworker/u32:0 [000] d..1.   142.558562: rcu_nocb_wake: rcu_preempt 0 WakeNot
-  // idle(do_nocb_deferred_wakeup) wake rcuog due to waketype == RCU_NOCB_WAKE
-  <idle>        [000] d..1.   142.558786: rcu_nocb_wake: rcu_preempt 0 DoWake
-  <idle>        [000] dN.1.   142.558839: rcu_nocb_wake: rcu_preempt 0 DeferredWake
-  rcuog/0       [000] .....   142.558871: rcu_nocb_wake: rcu_preempt 0 EndSleep
-  rcuog/0       [000] .....   142.558877: rcu_nocb_wake: rcu_preempt 0 Check
-  // finally rcuog request a new GP at this point (5 seconds after the FirstQ event)
-  rcuog/0       [000] d..2.   142.558886: rcu_grace_period: rcu_preempt 8372 newreq
-  rcu_preempt   [001] d..1.   142.559458: rcu_grace_period: rcu_preempt 8373 start
-  ...
-  rcu_preempt   [000] d..1.   142.564258: rcu_grace_period: rcu_preempt 8373 end
-  rcuop/2       [000] D..1.   142.566337: rcu_batch_start: rcu_preempt CBs=219 bl=10
-  // the hurry CB is invoked at this point
-  rcuop/2       [000] b....   142.566352: blk_queue_usage_counter_release: wyy: wakeup. p_ref = 00000000********.
-
-This patch changes the condition to check "rdp_gp->nocb_defer_wakeup" in
-the lazy path. This prevents an already scheduled "rdp_gp->nocb_timer"
-from being postponed and avoids overwriting "rdp_gp->nocb_defer_wakeup"
-when it is not RCU_NOCB_WAKE_NOT.
-
-Fixes: 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power")
-Co-developed-by: Cheng-jui Wang <cheng-jui.wang@mediatek.com>
-Signed-off-by: Cheng-jui Wang <cheng-jui.wang@mediatek.com>
-Co-developed-by: Lorry.Luo@mediatek.com
-Signed-off-by: Lorry.Luo@mediatek.com
-Tested-by: weiyangyang@vivo.com
-Signed-off-by: weiyangyang@vivo.com
-Signed-off-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
-The regression is first observed by wyy in the Update Engine scenario
-with  CONFIG_LAZY_RCU enabled. there is an additional delay of 4–5
-seconds during the heavy ioctl API call, waiting for
-percpu_ref_switch_to_atomic_rcu (RCU hurry CB) to complete.
+ .../atomic_bitops.rst}                        | 39 +++++++++----------
+ Documentation/core-api/index.rst              |  2 +-
+ .../core-api/wrappers/atomic_bitops.rst       | 18 ---------
+ 3 files changed, 20 insertions(+), 39 deletions(-)
+ rename Documentation/{atomic_bitops.txt => core-api/atomic_bitops.rst} (60%)
+ delete mode 100644 Documentation/core-api/wrappers/atomic_bitops.rst
 
-Initially, we suspected that the percpu_ref_switch_to_atomic_rcu
-function itself was taking too long. However, after enabling some
-custome and the following trace events: rcu_do_batch, rcu_nocb_wake, and
-rcu_grace_period. we found that the root cause was that rcuog was not
-being woken up in time to request a new GP. This led to the delay in
-invoking the hurry RCU callback (percpu_ref_switch_to_atomic_rcu).
-
-Environment:
-  Android-16, Kernel: 6.12, 8 CPUs (ARM)
-
-Configuration:
-  CONFIG_TREE_RCU=y
-  CONFIG_PREEMPT_RCU=y
-  CONFIG_LAZY_RCU=y
-  CONFIG_RCU_NOCB_CPU=y
-  CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y
-  rcu_nocb_gp_stride = -1 (default is 4 for 8 cores)
-  jiffies_lazy_flush = 10 * HZ
-
-Contributions:
-Tze-Nan Wu:
-Collaborated with Cheng-Jui to discuss which tracepoints needed to be
-added, jointly analyzed the trace logs, identified the root cause, and
-proposed this upstream change.
-
-Cheng-Jui Wang:
-Provided many valuable suggestions during the debugging process,
-repeatedly found breakthroughs when we were stuck, and helped identify
-the root cause.
-
-Lorry Luo:
-Assisted in verifying whether rcu-hurry-callback was executed too long
-or deferred, supported with testing, and helped with communication.
-
-Weiyangyang:
-Main tester who discovered the regression scenario, confirmed that
-enabling CONFIG_LAZY_RCU caused the regression, and verified that this
-patch resolves the issue.
-
-Note:
-With my limited understanding of lazy RCU, I am not fully confident that
-this is a real issue. In my opinion, hurry callbacks should not be
-delayed by other events such as firstBQ trace event.
-If my understanding is incorrect, I would greatly appreciate any
-guidance or clarification from the maintainers.
----
- kernel/rcu/tree_nocb.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 08eb9b0e2fab..e6cd56603cad 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -276,7 +276,7 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
- 	 * callback storms, no need to wake up too early.
- 	 */
- 	if (waketype == RCU_NOCB_WAKE_LAZY &&
--	    rdp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
-+	    rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
- 		mod_timer(&rdp_gp->nocb_timer, jiffies + rcu_get_jiffies_lazy_flush());
- 		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
- 	} else if (waketype == RCU_NOCB_WAKE_BYPASS) {
+diff --git a/Documentation/atomic_bitops.txt b/Documentation/core-api/atomic_bitops.rst
+similarity index 60%
+rename from Documentation/atomic_bitops.txt
+rename to Documentation/core-api/atomic_bitops.rst
+index edea4656c5c05f..b93c388fd9bdc4 100644
+--- a/Documentation/atomic_bitops.txt
++++ b/Documentation/core-api/atomic_bitops.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: GPL-2.0
++
+ =============
+ Atomic bitops
+ =============
+@@ -11,53 +13,50 @@ API
+ 
+ The single bit operations are:
+ 
+-Non-RMW ops:
++* Non-RMW ops:
+ 
+-  test_bit()
++  * test_bit()
+ 
+-RMW atomic operations without return value:
++* RMW atomic operations without return value:
+ 
+-  {set,clear,change}_bit()
+-  clear_bit_unlock()
++  * {set,clear,change}_bit()
++  * clear_bit_unlock()
+ 
+-RMW atomic operations with return value:
++* RMW atomic operations with return value:
+ 
+-  test_and_{set,clear,change}_bit()
+-  test_and_set_bit_lock()
++  * test_and_{set,clear,change}_bit()
++  * test_and_set_bit_lock()
+ 
+-Barriers:
++* Barriers:
+ 
+-  smp_mb__{before,after}_atomic()
++  * smp_mb__{before,after}_atomic()
+ 
+ 
+ All RMW atomic operations have a '__' prefixed variant which is non-atomic.
+ 
+ 
+-SEMANTICS
++Semantics
+ ---------
+ 
+-Non-atomic ops:
++* Non-atomic ops:
+ 
+-In particular __clear_bit_unlock() suffers the same issue as atomic_set(),
+-which is why the generic version maps to clear_bit_unlock(), see atomic_t.txt.
++  In particular __clear_bit_unlock() suffers the same issue as atomic_set(),
++  which is why the generic version maps to clear_bit_unlock(), see atomic_t.txt.
+ 
+ 
+-RMW ops:
++* RMW ops:
+ 
+-The test_and_{}_bit() operations return the original value of the bit.
++  The test_and_{}_bit() operations return the original value of the bit.
+ 
+ 
+-ORDERING
++Ordering
+ --------
+ 
+ Like with atomic_t, the rule of thumb is:
+ 
+  - non-RMW operations are unordered;
+-
+  - RMW operations that have no return value are unordered;
+-
+  - RMW operations that have a return value are fully ordered.
+-
+  - RMW operations that are conditional are fully ordered.
+ 
+ Except for a successful test_and_set_bit_lock() which has ACQUIRE semantics,
+diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
+index a0c3749c655b05..4bc132fefaab7f 100644
+--- a/Documentation/core-api/index.rst
++++ b/Documentation/core-api/index.rst
+@@ -49,7 +49,7 @@ Library functionality that is used throughout the kernel.
+    timekeeping
+    errseq
+    wrappers/atomic_t
+-   wrappers/atomic_bitops
++   atomic_bitops
+    floating-point
+    union_find
+    min_heap
+diff --git a/Documentation/core-api/wrappers/atomic_bitops.rst b/Documentation/core-api/wrappers/atomic_bitops.rst
+deleted file mode 100644
+index bf24e4081a8f4c..00000000000000
+--- a/Documentation/core-api/wrappers/atomic_bitops.rst
++++ /dev/null
+@@ -1,18 +0,0 @@
+-.. SPDX-License-Identifier: GPL-2.0
+-   This is a simple wrapper to bring atomic_bitops.txt into the RST world
+-   until such a time as that file can be converted directly.
+-
+-=============
+-Atomic bitops
+-=============
+-
+-.. raw:: latex
+-
+-    \footnotesize
+-
+-.. include:: ../../atomic_bitops.txt
+-   :literal:
+-
+-.. raw:: latex
+-
+-    \normalsize
 -- 
-2.45.2
+An old man doll... just what I always wanted! - Clara
 
